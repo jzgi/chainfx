@@ -1,9 +1,14 @@
 ﻿using System.Collections.Generic;
+using System.IO;
 
 namespace Greatbone.Core
 {
     public class JsonCoder : Coder, ITarget, ISource
     {
+        private string str;
+
+        private Stream stream;
+
         public JsonCoder(int initial) : base(initial)
         {
         }
