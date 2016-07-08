@@ -106,7 +106,7 @@ namespace Greatbone.Core
             });
         }
 
-        public void Put<T>(string name, List<T> value) where T : IPersistable
+        public void Put<T>(string name, List<T> value) where T : IPersist
         {
             throw new NotImplementedException();
         }
@@ -147,7 +147,7 @@ namespace Greatbone.Core
             return false;
         }
 
-        public bool Got<T>(string name, out List<T> value) where T : IPersistable
+        public bool Got<T>(string name, out List<T> value) where T : IPersist
         {
             if (Got(name, out value))
             {

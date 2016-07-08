@@ -4,7 +4,7 @@ using System.Text;
 
 namespace Greatbone.Core
 {
-    public abstract class Outlet<T> : IOut where T : Outlet<T>
+    public abstract class Coder : IOut
     {
         // hexidecimal characters
         private static readonly char[] Hex =
@@ -44,7 +44,7 @@ namespace Greatbone.Core
 
         private ulong _checksum; // byte-wise etag checksum
 
-        internal Outlet(int initial)
+        internal Coder(int initial)
         {
             buffer = new byte[initial];
         }
@@ -186,7 +186,7 @@ namespace Greatbone.Core
         }
 
         // sign mask
-        private const int SIGN = unchecked((int) 0x80000000);
+        private const int Sign = unchecked((int) 0x80000000);
 
         public void Put(decimal dec, bool money)
         {
@@ -195,7 +195,7 @@ namespace Greatbone.Core
                 int[] bits = decimal.GetBits(dec); // get the binary representation
                 int low = bits[0], mid = bits[1], flags = bits[3];
 
-                if ((flags & SIGN) != 0) // negative
+                if ((flags & Sign) != 0) // negative
                 {
                     Put('-');
                 }

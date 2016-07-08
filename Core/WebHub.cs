@@ -6,7 +6,7 @@ using Microsoft.AspNetCore.Http;
 
 namespace Greatbone.Core
 {
-    public abstract class WebHub : WebSub, IStateSet
+    public abstract class WebHub : WebSub, ICacheControl
     {
         private Set<WebSub> _subs;
 

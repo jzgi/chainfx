@@ -2,7 +2,7 @@
 {
     ///
     /// An independent scope of state and data.
-    public interface IStateSet
+    public interface ICacheControl
     {
         ///
         /// Cache-Control and Last-Modified and If-Modified-Since

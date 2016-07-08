@@ -2,7 +2,7 @@
 {
     ///
     /// The object can be turned from various source contents and to various target contents.
-    public interface IPersistable
+    public interface IPersist
     {
         void From(ISource s);
 

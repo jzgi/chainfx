@@ -2,7 +2,7 @@
 
 namespace Greatbone.Sample
 {
-    public class Space : IZone, IPersistable
+    public class Space : IZone, IPersist
     {
         internal string key;
 
@@ -27,7 +27,7 @@ namespace Greatbone.Sample
         public string Key => key;
 
 
-        public struct Address : IPersistable
+        public struct Address : IPersist
         {
             internal string address;
             internal string postal;

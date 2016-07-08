@@ -1,8 +1,8 @@
 ﻿namespace Greatbone.Core
 {
-    public abstract class Html<T> : Outlet<T> where T : Html<T>
+    public abstract class HtmlCoder<This> : Coder where This : HtmlCoder<This>
     {
-        protected Html(int initial) : base(initial)
+        protected HtmlCoder(int initial) : base(initial)
         {
         }
 

@@ -2,9 +2,9 @@
 
 namespace Greatbone.Core
 {
-    public class Json : Outlet<Json>, ITarget
+    public class JsonCoder : Coder, ITarget, ISource
     {
-        public Json(int initial) : base(initial)
+        public JsonCoder(int initial) : base(initial)
         {
         }
 
@@ -21,6 +21,11 @@ namespace Greatbone.Core
         }
 
         public bool Got(string name, out string value)
+        {
+            throw new System.NotImplementedException();
+        }
+
+        public bool Got<T>(string name, out List<T> value) where T : IPersist
         {
             throw new System.NotImplementedException();
         }
@@ -58,7 +63,7 @@ namespace Greatbone.Core
             Put(value);
         }
 
-        public void Put<T>(string name, List<T> value) where T : IPersistable
+        public void Put<T>(string name, List<T> value) where T : IPersist
         {
             foreach (T v in value)
             {

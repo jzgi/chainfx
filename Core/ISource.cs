@@ -10,6 +10,6 @@ namespace Greatbone.Core
 
         bool Got(string name, out string value);
 
-        bool Got<T>(string name, out List<T> value) where T : IPersistable;
+        bool Got<T>(string name, out List<T> value) where T : IPersist;
     }
 }

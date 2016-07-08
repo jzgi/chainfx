@@ -1,6 +1,6 @@
 ﻿namespace Greatbone.Core
 {
-    public interface IZone : IStateSet
+    public interface IZone : ICacheControl
     {
         string Key { get; }
     }

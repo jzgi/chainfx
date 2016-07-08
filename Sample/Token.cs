@@ -2,7 +2,7 @@
 
 namespace Greatbone.Sample
 {
-    public class Token : IToken, IPersistable
+    public class Token : IToken, IPersist
     {
         string id;
 

@@ -3,7 +3,7 @@ using Greatbone.Core;
 
 namespace Greatbone.Sample
 {
-    public class Project : IPersistable
+    public class Project : IPersist
     {
         internal int id;
 

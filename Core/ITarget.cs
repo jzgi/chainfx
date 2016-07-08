@@ -12,6 +12,6 @@ namespace Greatbone.Core
 
         void Put(string name, string value);
 
-        void Put<T>(string name, List<T> value) where T : IPersistable;
+        void Put<T>(string name, List<T> value) where T : IPersist;
     }
 }
