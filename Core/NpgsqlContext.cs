@@ -6,7 +6,7 @@ using NpgsqlTypes;
 
 namespace Greatbone.Core
 {
-    public class NpgsqlContext : ITarget, IDisposable
+    public class NpgsqlContext : IInput, IOutput, IDisposable
     {
         private NpgsqlConnection connection;
 
@@ -59,7 +59,7 @@ namespace Greatbone.Core
             }
         }
 
-        public int DoNonQuery(string cmdtext, Action<ITarget> parameters)
+        public int DoNonQuery(string cmdtext, Action<IOutput> parameters)
         {
             if (connection.State != ConnectionState.Open)
             {
@@ -77,6 +77,28 @@ namespace Greatbone.Core
             command = new NpgsqlCommand(sql, connection, transaction);
         }
 
+        //
+        //
+
+        bool IInput.GotStart()
+        {
+            throw new NotImplementedException();
+        }
+
+        bool IInput.GotEnd()
+        {
+            throw new NotImplementedException();
+        }
+
+        void IOutput.PutStart()
+        {
+            throw new NotImplementedException();
+        }
+
+        void IOutput.PutEnd()
+        {
+            throw new NotImplementedException();
+        }
 
         ///
         ///  TURNING TARGET
@@ -106,9 +128,20 @@ namespace Greatbone.Core
             });
         }
 
-        public void Put<T>(string name, List<T> value) where T : IPersist
+        public void Put<T>(string name, List<T> value) where T : IDump
         {
-            throw new NotImplementedException();
+            JsonString json = new JsonString();
+            for (int i = 0; i < value.Count; i++)
+            {
+                if (i > 0)
+                {
+                    json.PutEnd();// comma
+                }
+                json.PutStart();
+                T d = value[i];
+                d.To(json);
+                json.PutEnd();
+            }
         }
 
         public bool Got(string name, out int value)
@@ -147,7 +180,7 @@ namespace Greatbone.Core
             return false;
         }
 
-        public bool Got<T>(string name, out List<T> value) where T : IPersist
+        public bool Got<T>(string name, out List<T> value) where T : IDump
         {
             if (Got(name, out value))
             {

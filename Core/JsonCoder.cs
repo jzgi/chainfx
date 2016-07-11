@@ -3,7 +3,7 @@ using System.IO;
 
 namespace Greatbone.Core
 {
-    public class JsonCoder : Coder, ITarget, ISource
+    public class JsonCoder : Coder, IOutput, IInput
     {
         private string str;
 
@@ -30,7 +30,7 @@ namespace Greatbone.Core
             throw new System.NotImplementedException();
         }
 
-        public bool Got<T>(string name, out List<T> value) where T : IPersist
+        public bool Got<T>(string name, out List<T> value) where T : IDump
         {
             throw new System.NotImplementedException();
         }
@@ -68,12 +68,32 @@ namespace Greatbone.Core
             Put(value);
         }
 
-        public void Put<T>(string name, List<T> value) where T : IPersist
+        public void Put<T>(string name, List<T> value) where T : IDump
         {
             foreach (T v in value)
             {
                 v.To(this);
             }
+        }
+
+        public void PutStart()
+        {
+            throw new System.NotImplementedException();
+        }
+
+        public void PutEnd()
+        {
+            throw new System.NotImplementedException();
+        }
+
+        public bool GotStart()
+        {
+            throw new System.NotImplementedException();
+        }
+
+        public bool GotEnd()
+        {
+            throw new System.NotImplementedException();
         }
     }
 }

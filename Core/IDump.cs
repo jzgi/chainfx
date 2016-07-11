@@ -2,10 +2,10 @@
 {
     ///
     /// The object can be turned from various source contents and to various target contents.
-    public interface IPersist
+    public interface IDump
     {
-        void From(ISource s);
+        void From(IInput i);
 
-        void To(ITarget t);
+        void To(IOutput o);
     }
 }

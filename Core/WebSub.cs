@@ -116,10 +116,10 @@ namespace Greatbone.Core
             return _actions[action];
         }
 
-        public virtual void Handle(string urirest, WebContext wc)
+        public virtual void Handle(string relative, WebContext wc)
         {
             WebAction<TZone> a;
-            if (_actions.TryGet(urirest, out a))
+            if (_actions.TryGet(relative, out a))
             {
                 a.Do(wc, (TZone) (wc.zone));
             }

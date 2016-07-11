@@ -36,35 +36,38 @@ namespace Greatbone.Core
         //
         // output buffer
 
-        internal byte[] buffer; // NOTE: HttpResponseStream doesn't have internal buffer
+        private byte[] _buffer; // NOTE: HttpResponseStream doesn't have internal buffer
 
-        internal int offset;
+        private int _offset;
 
-        internal int count;
+        private int _count;
 
         private ulong _checksum; // byte-wise etag checksum
 
         internal Coder(int initial)
         {
-            buffer = new byte[initial];
+            _buffer = new byte[initial];
         }
 
         public abstract string ContentType { get; }
-        public byte[] Buffer => buffer;
-        public int Offset => offset;
-        public int Count => count;
+
+        public byte[] Buffer => _buffer;
+
+        public int Offset => _offset;
+
+        public int Count => _count;
 
         private void Write(byte b)
         {
             // double the capacity as needed
-            int len = buffer.Length;
-            if (count == len)
+            int len = _buffer.Length;
+            if (_count == len)
             {
-                byte[] old = buffer;
-                buffer = new byte[len * 2];
-                Array.Copy(old, buffer, len);
+                byte[] old = _buffer;
+                _buffer = new byte[len * 2];
+                Array.Copy(old, _buffer, len);
             }
-            buffer[count++] = b; // append to the buffer
+            _buffer[_count++] = b; // append to the buffer
 
             // calculate into checksum
             ulong cs = _checksum;
