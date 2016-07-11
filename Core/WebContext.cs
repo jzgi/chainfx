@@ -5,7 +5,7 @@ namespace Greatbone.Core
     public class WebContext
     {
         // the implementation
-        readonly HttpContext _context;
+        private readonly HttpContext _context;
 
         WebSub _sub;
 
@@ -26,9 +26,9 @@ namespace Greatbone.Core
 
         public HttpResponse Response => _context.Response;
 
-        public void Send<T>(T outlet) where T : IOut
+        public void Send<T>(T content) where T : IContent
         {
-            _context.Response.Body.WriteAsync(outlet.Buffer, outlet.Offset, outlet.Count);
+            _context.Response.Body.WriteAsync(content.Buffer, content.Offset, content.Count);
         }
     }
 }

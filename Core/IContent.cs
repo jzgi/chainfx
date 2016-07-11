@@ -1,6 +1,6 @@
 ﻿namespace Greatbone.Core
 {
-    public interface IOut
+    public interface IContent
     {
         string ContentType { get; }
 

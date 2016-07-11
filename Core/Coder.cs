@@ -4,7 +4,7 @@ using System.Text;
 
 namespace Greatbone.Core
 {
-    public abstract class Coder : IOut
+    public abstract class Coder : IContent
     {
         // hexidecimal characters
         private static readonly char[] Hex =
