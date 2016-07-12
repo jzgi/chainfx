@@ -12,7 +12,7 @@ namespace Greatbone.Core
 
         private IMux _mux;
 
-        protected WebHub(WebHub parent) : base(parent)
+        protected WebHub(WebHub hub) : base(hub)
         {
         }
 
@@ -38,23 +38,23 @@ namespace Greatbone.Core
             return sub;
         }
 
-        public TMux SetMux<TMux, TZone>(Checker<TZone> checker) where TMux : WebMux<TZone> where TZone : IZone
+        public THub SetMux<THub, TZone>(Checker<TZone> checker) where THub : WebMux<TZone> where TZone : IZone
         {
             // create instance by reflection
-            Type type = typeof(TMux);
+            Type type = typeof(THub);
             ConstructorInfo ci = type.GetConstructor(new[] {typeof(WebHub)});
             if (ci == null)
             {
                 throw new WebException(type + " the special constructor not found");
             }
-            TMux mux = (TMux) ci.Invoke(new object[] {this});
+            THub mux = (THub) ci.Invoke(new object[] {this});
             mux.Checker = checker;
 
             _mux = mux;
             return mux;
         }
 
-        protected abstract bool ResolveZone(string zoneId, WebContext wc);
+        protected abstract bool ResolveZone(WebContext wc, string zone);
 
 
         internal async Task Process(HttpContext context)
@@ -84,7 +84,7 @@ namespace Greatbone.Core
                         // send not implemented
                     }
                     string zoneId = dir.Substring(1, dir.Length - 2);
-                    if (ResolveZone(zoneId, wc))
+                    if (ResolveZone(wc, zoneId))
                     {
                         _mux.Handle(relative.Substring(slash + 1), wc);
                     }

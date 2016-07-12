@@ -2,9 +2,9 @@
 
 namespace Greatbone.Sample
 {
-    public class OpUserAdminSub : WebSub
+    public class DirectoryAdminSub : WebSub
     {
-        public OpUserAdminSub(WebHub hub) : base(hub)
+        public DirectoryAdminSub(WebHub hub) : base(hub)
         {
         }
 

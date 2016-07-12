@@ -1,5 +1,6 @@
 ﻿using System.IO;
 using Microsoft.AspNetCore.Hosting;
+using Microsoft.Extensions.DependencyInjection;
 
 namespace Greatbone.Sample
 {
@@ -8,14 +9,15 @@ namespace Greatbone.Sample
         public static void Main(string[] args)
         {
             // the root: /*
-            OpHub root = new OpHub();
+            SiteHub site = new SiteHub();
 
             var host = new WebHostBuilder()
                 .UseKestrel()
                 .UseContentRoot(Directory.GetCurrentDirectory())
                 .UseWebRoot(Path.Combine(Directory.GetCurrentDirectory(), "RES"))
                 .UseUrls("http://localhost:8080/")
-                .Configure(app => { app.Use(_ => root.Process); })
+                .ConfigureServices((coll) => { coll.AddMemoryCache(); })
+                .Configure(app => { app.Use(_ => site.Process); })
                 .Build();
 
             host.Run();

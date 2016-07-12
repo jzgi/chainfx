@@ -4,11 +4,11 @@ namespace Greatbone.Sample
 {
     public class FileHub : WebHub
     {
-        public FileHub(WebHub parent) : base(parent)
+        public FileHub(WebHub hub) : base(hub)
         {
         }
 
-        protected override bool ResolveZone(string zoneId, WebContext wc)
+        protected override bool ResolveZone(WebContext wc, string zone)
         {
             throw new System.NotImplementedException();
         }

@@ -2,9 +2,9 @@
 
 namespace Greatbone.Sample
 {
-    public class OpSpaceMgtSub : WebSub<Space>
+    public class SiteSpaceMgtSub : WebSub<Space>
     {
-        public OpSpaceMgtSub(WebMux<Space> mux) : base(mux)
+        public SiteSpaceMgtSub(WebMux<Space> mux) : base(mux)
         {
         }
 

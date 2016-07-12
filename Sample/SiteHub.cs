@@ -5,13 +5,14 @@ namespace Greatbone.Sample
 {
     ///
     /// WWW
-    public class OpHub : WebHub
+    ///
+    public class SiteHub : WebHub
     {
-        public OpHub() : base(null)
+        public SiteHub() : base(null)
         {
-            AddSub<OpSpaceHub>("space", null); // /space/*
+            SetMux<SiteSpaceMux, Space>(null);
 
-            AddSub<OpUserHub>("user", null); // /user/*
+            AddSub<DirectoryHub>("dir", null);
         }
 
         public override void Default(WebContext wc)
@@ -25,7 +26,7 @@ namespace Greatbone.Sample
         {
         }
 
-        protected override bool ResolveZone(string zoneId, WebContext wc)
+        protected override bool ResolveZone(WebContext wc, string zone)
         {
             throw new System.NotImplementedException();
         }
