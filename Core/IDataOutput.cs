@@ -4,7 +4,7 @@ namespace Greatbone.Core
 {
     ///
     /// DataReader/ParameterCollection, JSON or binary
-    public interface IOutput
+    public interface IDataOutput
     {
         void PutStart();
 
@@ -16,6 +16,6 @@ namespace Greatbone.Core
 
         void Put(string name, string value);
 
-        void Put<T>(string name, List<T> value) where T : IDump;
+        void Put<T>(string name, List<T> value) where T : IData;
     }
 }

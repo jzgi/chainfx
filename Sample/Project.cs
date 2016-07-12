@@ -3,7 +3,7 @@ using Greatbone.Core;
 
 namespace Greatbone.Sample
 {
-    public class Project : IDump
+    public class Project : IData
     {
         internal int id;
 
@@ -21,11 +21,11 @@ namespace Greatbone.Sample
 
 
 
-        public void From(IInput i)
+        public void From(IDataInput i)
         {
         }
 
-        public void To(IOutput o)
+        public void To(IDataOutput o)
         {
         }
     }

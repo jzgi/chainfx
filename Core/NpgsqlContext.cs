@@ -6,7 +6,7 @@ using NpgsqlTypes;
 
 namespace Greatbone.Core
 {
-    public class NpgsqlContext : IInput, IOutput, IDisposable
+    public class NpgsqlContext : IDataInput, IDataOutput, IDisposable
     {
         private NpgsqlConnection connection;
 
@@ -59,7 +59,7 @@ namespace Greatbone.Core
             }
         }
 
-        public int DoNonQuery(string cmdtext, Action<IOutput> parameters)
+        public int DoNonQuery(string cmdtext, Action<IDataOutput> parameters)
         {
             if (connection.State != ConnectionState.Open)
             {
@@ -80,22 +80,22 @@ namespace Greatbone.Core
         //
         //
 
-        bool IInput.GotStart()
+        bool IDataInput.GotStart()
         {
             throw new NotImplementedException();
         }
 
-        bool IInput.GotEnd()
+        bool IDataInput.GotEnd()
         {
             throw new NotImplementedException();
         }
 
-        void IOutput.PutStart()
+        void IDataOutput.PutStart()
         {
             throw new NotImplementedException();
         }
 
-        void IOutput.PutEnd()
+        void IDataOutput.PutEnd()
         {
             throw new NotImplementedException();
         }
@@ -128,9 +128,9 @@ namespace Greatbone.Core
             });
         }
 
-        public void Put<T>(string name, List<T> value) where T : IDump
+        public void Put<T>(string name, List<T> value) where T : IData
         {
-            JsonString json = new JsonString();
+            JsonBin json = new JsonBin(1024);
             for (int i = 0; i < value.Count; i++)
             {
                 if (i > 0)
@@ -180,7 +180,7 @@ namespace Greatbone.Core
             return false;
         }
 
-        public bool Got<T>(string name, out List<T> value) where T : IDump
+        public bool Got<T>(string name, out List<T> value) where T : IData
         {
             if (Got(name, out value))
             {

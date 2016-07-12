@@ -3,7 +3,7 @@ using Greatbone.Core;
 
 namespace Greatbone.Sample
 {
-    public class User : IToken, IDump, IZone
+    public class User : IToken, IData, IZone
     {
         string id;
 
@@ -13,7 +13,7 @@ namespace Greatbone.Sample
 
         List<Perm> perms;
 
-        public void From(IInput i)
+        public void From(IDataInput i)
         {
             i.Got(nameof(id), out id);
             i.Got(nameof(name), out name);
@@ -21,7 +21,7 @@ namespace Greatbone.Sample
             i.Got(nameof(perms), out perms);
         }
 
-        public void To(IOutput o)
+        public void To(IDataOutput o)
         {
             o.Put(nameof(id), id);
             o.Put(nameof(name), name);
@@ -48,19 +48,19 @@ namespace Greatbone.Sample
         public long ModifiedOn { get; set; }
         public string Key { get; }
 
-        struct Perm : IDump
+        struct Perm : IData
         {
             string org;
 
             int role;
 
-            public void From(IInput i)
+            public void From(IDataInput i)
             {
                 i.Got(nameof(org), out org);
                 i.Got(nameof(role), out role);
             }
 
-            public void To(IOutput o)
+            public void To(IDataOutput o)
             {
                 o.Put(nameof(org), org);
                 o.Put(nameof(role), role);

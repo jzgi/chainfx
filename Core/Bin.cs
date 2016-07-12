@@ -4,7 +4,9 @@ using System.Text;
 
 namespace Greatbone.Core
 {
-    public abstract class Coder : IContent
+    ///
+    /// A binary output of text content.
+    public abstract class Bin : IContent
     {
         // hexidecimal characters
         private static readonly char[] Hex =
@@ -44,7 +46,7 @@ namespace Greatbone.Core
 
         private ulong _checksum; // byte-wise etag checksum
 
-        internal Coder(int initial)
+        internal Bin(int initial)
         {
             _buffer = new byte[initial];
         }
@@ -87,7 +89,6 @@ namespace Greatbone.Core
                 Put('0');
                 return;
             }
-
             int x = v;
             bool bgn = false;
             for (int i = OfByte.Length - 1; i >= 0; i--)
@@ -101,6 +102,7 @@ namespace Greatbone.Core
                     bgn = true;
                 }
             }
+            Write(Digits[v]); // last reminder
         }
 
         public void Put(short v)
@@ -110,7 +112,6 @@ namespace Greatbone.Core
                 Put('0');
                 return;
             }
-
             int x = v;
             if (v < 0)
             {
@@ -129,6 +130,7 @@ namespace Greatbone.Core
                     bgn = true;
                 }
             }
+            Write(Digits[v]); // last reminder
         }
 
         public void Put(int v)
@@ -155,6 +157,7 @@ namespace Greatbone.Core
                     bgn = true;
                 }
             }
+            Write(Digits[v]); // last reminder
         }
 
         public void Put(long v)
@@ -181,6 +184,7 @@ namespace Greatbone.Core
                     bgn = true;
                 }
             }
+            Write(Digits[v]); // last reminder
         }
 
         public void Put(decimal v)
@@ -202,7 +206,6 @@ namespace Greatbone.Core
                 {
                     Put('-');
                 }
-
                 if (mid != 0) // money
                 {
                     long x = (low & 0x00ffffff) + ((long) (byte) (low >> 24) << 24) + ((long) mid << 32);

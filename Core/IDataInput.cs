@@ -2,7 +2,7 @@
 
 namespace Greatbone.Core
 {
-    public interface IInput
+    public interface IDataInput
     {
         bool GotStart();
 
@@ -14,6 +14,6 @@ namespace Greatbone.Core
 
         bool Got(string name, out string value);
 
-        bool Got<T>(string name, out List<T> value) where T : IDump;
+        bool Got<T>(string name, out List<T> value) where T : IData;
     }
 }

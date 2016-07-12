@@ -2,7 +2,7 @@
 
 namespace Greatbone.Sample
 {
-    public class Space : IZone, IDump
+    public class Space : IZone, IData
     {
         internal string key;
 
@@ -12,13 +12,13 @@ namespace Greatbone.Sample
 
         public long ModifiedOn { get; set; }
 
-        public void To(IOutput o)
+        public void To(IDataOutput o)
         {
             o.Put(nameof(key), key);
             o.Put(nameof(name), name);
         }
 
-        public void From(IInput i)
+        public void From(IDataInput i)
         {
             i.Got(nameof(key), out key);
             i.Got(nameof(name), out name);
@@ -27,18 +27,18 @@ namespace Greatbone.Sample
         public string Key => key;
 
 
-        public struct Address : IDump
+        public struct Address : IData
         {
             internal string address;
             internal string postal;
 
-            public void From(IInput i)
+            public void From(IDataInput i)
             {
                 i.Got(nameof(address), out address);
                 i.Got(nameof(postal), out postal);
             }
 
-            public void To(IOutput o)
+            public void To(IDataOutput o)
             {
             }
         }
