@@ -8,13 +8,13 @@ namespace Greatbone.Core
 {
     public class NpgsqlContext : IDataInput, IDataOutput, IDisposable
     {
-        private NpgsqlConnection connection;
+        private NpgsqlConnection _conn;
 
-        private NpgsqlCommand command;
+        private NpgsqlCommand _cmd;
 
-        private NpgsqlTransaction transaction;
+        private NpgsqlTransaction _transact;
 
-        private NpgsqlParameterCollection _parameters;
+        private NpgsqlParameterCollection _params;
 
         private NpgsqlDataReader _reader;
 
@@ -23,58 +23,58 @@ namespace Greatbone.Core
 
         public void BeginTransaction()
         {
-            if (transaction == null)
+            if (_transact == null)
             {
-                transaction = connection.BeginTransaction();
-                command.Transaction = transaction;
+                _transact = _conn.BeginTransaction();
+                _cmd.Transaction = _transact;
             }
         }
 
         public void BeginTransaction(IsolationLevel level)
         {
-            if (transaction == null)
+            if (_transact == null)
             {
-                transaction = connection.BeginTransaction(level);
-                command.Transaction = transaction;
+                _transact = _conn.BeginTransaction(level);
+                _cmd.Transaction = _transact;
             }
         }
 
         public void CommitTransaction()
         {
-            if (transaction != null)
+            if (_transact != null)
             {
-                transaction.Commit();
-                command.Transaction = null;
-                transaction = null;
+                _transact.Commit();
+                _cmd.Transaction = null;
+                _transact = null;
             }
         }
 
         public void RollbackTransaction()
         {
-            if (transaction != null)
+            if (_transact != null)
             {
-                transaction.Rollback();
-                command.Transaction = null;
-                transaction = null;
+                _transact.Rollback();
+                _cmd.Transaction = null;
+                _transact = null;
             }
         }
 
         public int DoNonQuery(string cmdtext, Action<IDataOutput> parameters)
         {
-            if (connection.State != ConnectionState.Open)
+            if (_conn.State != ConnectionState.Open)
             {
-                connection.Open();
+                _conn.Open();
             }
             // add parameters
             parameters?.Invoke(this);
 
             // execute
-            return command.ExecuteNonQuery();
+            return _cmd.ExecuteNonQuery();
         }
 
         public void Command(string sql, params object[] args)
         {
-            command = new NpgsqlCommand(sql, connection, transaction);
+            _cmd = new NpgsqlCommand(sql, _conn, _transact);
         }
 
         //
@@ -106,7 +106,7 @@ namespace Greatbone.Core
         ///
         public void Put(string name, int value)
         {
-            _parameters.Add(new NpgsqlParameter(name, NpgsqlDbType.Integer)
+            _params.Add(new NpgsqlParameter(name, NpgsqlDbType.Integer)
             {
                 Value = value
             });
@@ -114,7 +114,7 @@ namespace Greatbone.Core
 
         public void Put(string name, decimal value)
         {
-            _parameters.Add(new NpgsqlParameter(name, NpgsqlDbType.Money)
+            _params.Add(new NpgsqlParameter(name, NpgsqlDbType.Money)
             {
                 Value = value
             });
@@ -122,7 +122,7 @@ namespace Greatbone.Core
 
         public void Put(string name, string value)
         {
-            _parameters.Add(new NpgsqlParameter(name, NpgsqlDbType.Varchar)
+            _params.Add(new NpgsqlParameter(name, NpgsqlDbType.Varchar)
             {
                 Value = value
             });
@@ -194,8 +194,8 @@ namespace Greatbone.Core
             if (!disposed)
             {
                 _reader?.Dispose();
-                command.Dispose();
-                connection.Dispose();
+                _cmd.Dispose();
+                _conn.Dispose();
                 // indicate that the instance has been disposed.
                 disposed = true;
             }
