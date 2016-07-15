@@ -21,6 +21,8 @@ namespace Greatbone.Sample
                 .Build();
 
             host.Run();
+
+
         }
     }
 }

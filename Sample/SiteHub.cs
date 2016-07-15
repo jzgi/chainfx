@@ -26,9 +26,5 @@ namespace Greatbone.Sample
         {
         }
 
-        protected override bool ResolveZone(WebContext wc, string zone)
-        {
-            throw new System.NotImplementedException();
-        }
     }
 }

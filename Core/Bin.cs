@@ -10,7 +10,9 @@ namespace Greatbone.Core
     {
         // hexidecimal characters
         private static readonly char[] Hex =
-            {'0', '1', '2', '3', '4', '5', '6', '7', '8', '9', 'a', 'b', 'c', 'd', 'e', 'f'};
+        {
+            '0', '1', '2', '3', '4', '5', '6', '7', '8', '9', 'a', 'b', 'c', 'd', 'e', 'f'
+        };
 
         // possible chars for representing a number as a string
         private static readonly byte[] Digits =
@@ -26,7 +28,7 @@ namespace Greatbone.Core
         private static readonly short[] OfShort = {1, 10, 100, 1000, 10000};
 
         private static readonly int[] OfInt =
-            {1, 10, 100, 1000, 10000, 100000, 1000000, 10000000, 100000000, 1000000000, 1000000000};
+        {1, 10, 100, 1000, 10000, 100000, 1000000, 10000000, 100000000, 1000000000, 1000000000};
 
         private static readonly long[] OfLong =
         {
@@ -66,7 +68,7 @@ namespace Greatbone.Core
             if (_count == len)
             {
                 byte[] old = _buffer;
-                _buffer = new byte[len * 2];
+                _buffer = new byte[len*2];
                 Array.Copy(old, _buffer, len);
             }
             _buffer[_count++] = b; // append to the buffer
@@ -94,7 +96,7 @@ namespace Greatbone.Core
             for (int i = OfByte.Length - 1; i >= 0; i--)
             {
                 int bas = OfByte[i];
-                int q = x / bas;
+                int q = x/bas;
                 x %= bas;
                 if (q != 0 || bgn)
                 {
@@ -122,8 +124,8 @@ namespace Greatbone.Core
             for (int i = OfShort.Length - 1; i >= 0; i--)
             {
                 int bas = OfShort[i];
-                int q = x / bas;
-                x = x % bas;
+                int q = x/bas;
+                x = x%bas;
                 if (q != 0 || bgn)
                 {
                     Write(Digits[q]);
@@ -149,8 +151,8 @@ namespace Greatbone.Core
             for (int i = OfInt.Length - 1; i >= 0; i--)
             {
                 int bas = OfInt[i];
-                int q = v / bas;
-                v = v % bas;
+                int q = v/bas;
+                v = v%bas;
                 if (q != 0 || bgn)
                 {
                     Write(Digits[q]);
@@ -176,8 +178,8 @@ namespace Greatbone.Core
             for (int i = OfLong.Length - 1; i >= 0; i--)
             {
                 long bas = OfLong[i];
-                long q = v / bas;
-                v = v % bas;
+                long q = v/bas;
+                v = v%bas;
                 if (q != 0 || bgn)
                 {
                     Write(Digits[q]);
@@ -213,8 +215,8 @@ namespace Greatbone.Core
                     for (int i = OfLong.Length - 1; i >= 2; i--)
                     {
                         long bas = OfInt[i];
-                        long q = x / bas;
-                        x = x % bas;
+                        long q = x/bas;
+                        x = x%bas;
                         if (q != 0 || bgn)
                         {
                             Write(Digits[q]);
@@ -238,8 +240,8 @@ namespace Greatbone.Core
                     for (int i = OfInt.Length - 1; i >= 2; i--)
                     {
                         int bas = OfInt[i];
-                        int q = x / bas;
-                        x = x % bas;
+                        int q = x/bas;
+                        x = x%bas;
                         if (q != 0 || bgn)
                         {
                             Write(Digits[q]);

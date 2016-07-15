@@ -36,7 +36,7 @@ namespace Greatbone.Core
             ReInitialize(size);
         }
 
-        void ReInitialize(int size)
+      private void ReInitialize(int size)
         {
             _buckets = new int[size];
             for (int i = 0; i < size; i++)

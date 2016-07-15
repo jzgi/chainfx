@@ -80,22 +80,22 @@ namespace Greatbone.Core
         //
         //
 
-        bool IDataInput.GotStart()
+        public bool GotStart()
         {
             throw new NotImplementedException();
         }
 
-        bool IDataInput.GotEnd()
+        public bool GotEnd()
         {
             throw new NotImplementedException();
         }
 
-        void IDataOutput.PutStart()
+        public void PutStart()
         {
             throw new NotImplementedException();
         }
 
-        void IDataOutput.PutEnd()
+        public void PutEnd()
         {
             throw new NotImplementedException();
         }
