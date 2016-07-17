@@ -4,7 +4,7 @@ namespace Greatbone.Sample
 {
     public class DirectoryAdminSub : WebSub
     {
-        public DirectoryAdminSub(WebHub hub) : base(hub)
+        public DirectoryAdminSub(WebService service) : base(service)
         {
         }
 

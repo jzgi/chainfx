@@ -4,7 +4,7 @@ namespace Greatbone.Sample
 {
     public class DirectoryUserMux : WebMux<User>
     {
-        public DirectoryUserMux(WebHub hub) : base(hub)
+        public DirectoryUserMux(WebService service) : base(service)
         {
         }
 

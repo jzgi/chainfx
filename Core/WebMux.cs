@@ -13,18 +13,18 @@ namespace Greatbone.Core
 
   public abstract class WebMux<TZone> : WebSub<TZone>, IMux where TZone : IZone
   {
-    // the parent hub
-    private readonly WebHub _hub;
+    // the parent service
+    private readonly WebService _service;
 
     // the added subs
     private Set<WebSub<TZone>> _subs;
 
-    protected WebMux(WebHub hub) : base(null)
+    protected WebMux(WebService service) : base(null)
     {
-      _hub = hub;
+      _service = service;
     }
 
-    public WebHub Hub => _hub;
+    public WebService Service => _service;
 
     public TSub AddSub<TSub>(string key, Checker<TZone> checker) where TSub : WebSub<TZone>
     {
@@ -35,7 +35,7 @@ namespace Greatbone.Core
 
       // create instance by reflection
       Type type = typeof(TSub);
-      ConstructorInfo ci = type.GetConstructor(new[] {typeof(WebMux<TZone>)}); // the parent hub as parameter
+      ConstructorInfo ci = type.GetConstructor(new[] {typeof(WebMux<TZone>)}); // the parent service as parameter
       if (ci == null)
       {
         throw new WebException(type + ": required constructor not found");

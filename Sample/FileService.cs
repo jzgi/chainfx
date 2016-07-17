@@ -2,9 +2,9 @@
 
 namespace Greatbone.Sample
 {
-    public class FileHub : WebHub
+    public class FileService : WebService
     {
-        public FileHub(WebHub hub) : base(hub)
+        public FileService(WebService service) : base(service)
         {
         }
 

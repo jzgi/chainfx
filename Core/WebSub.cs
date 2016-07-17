@@ -8,7 +8,7 @@ namespace Greatbone.Core
     public abstract class WebSub : IMember
     {
         // the parent of this instance, if any
-        readonly WebHub _hub;
+        readonly WebService _service;
 
         // the default do, if any
         readonly WebAction _default;
@@ -17,9 +17,9 @@ namespace Greatbone.Core
 
         ///
         /// make initialzation of controller more stablized
-        protected WebSub(WebHub hub)
+        protected WebSub(WebService service)
         {
-            _hub = hub;
+            _service = service;
 
             Type type = GetType();
 

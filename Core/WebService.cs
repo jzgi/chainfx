@@ -7,13 +7,13 @@ using Microsoft.AspNetCore.Http;
 
 namespace Greatbone.Core
 {
-  public abstract class WebHub : WebSub, ICacheControl
+  public abstract class WebService : WebSub, ICacheControl
   {
     private Set<WebSub> _subs;
 
     private IMux _mux;
 
-    protected WebHub(WebHub hub) : base(hub)
+    protected WebService(WebService service) : base(service)
     {
     }
 
@@ -26,7 +26,7 @@ namespace Greatbone.Core
 
       // create instance by reflection
       Type type = typeof(TSub);
-      ConstructorInfo ci = type.GetConstructor(new[] {typeof(WebHub)});
+      ConstructorInfo ci = type.GetConstructor(new[] {typeof(WebService)});
       if (ci == null)
       {
         throw new WebException(type + " the special constructor not found");
@@ -43,7 +43,7 @@ namespace Greatbone.Core
     {
       // create instance by reflection
       Type type = typeof(THub);
-      ConstructorInfo ci = type.GetConstructor(new[] {typeof(WebHub)});
+      ConstructorInfo ci = type.GetConstructor(new[] {typeof(WebService)});
       if (ci == null)
       {
         throw new WebException(type + " the special constructor not found");

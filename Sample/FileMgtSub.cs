@@ -4,7 +4,7 @@ namespace Greatbone.Sample
 {
     public class FileMgtControl : WebSub
     {
-        public FileMgtControl(WebHub hub) : base(hub)
+        public FileMgtControl(WebService service) : base(service)
         {
         }
 

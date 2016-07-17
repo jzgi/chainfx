@@ -139,7 +139,7 @@ namespace Greatbone.Core
                 }
                 json.PutStart();
                 T d = value[i];
-                d.To(json);
+                d.To(json, -1);
                 json.PutEnd();
             }
         }

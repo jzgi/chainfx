@@ -12,13 +12,13 @@ namespace Greatbone.Sample
 
         public long ModifiedOn { get; set; }
 
-        public void To(IDataOutput o)
+        public void To(IDataOutput o, int flags)
         {
             o.Put(nameof(key), key);
             o.Put(nameof(name), name);
         }
 
-        public void From(IDataInput i)
+        public void From(IDataInput i, int flags)
         {
             i.Got(nameof(key), out key);
             i.Got(nameof(name), out name);
@@ -32,13 +32,13 @@ namespace Greatbone.Sample
             internal string address;
             internal string postal;
 
-            public void From(IDataInput i)
+            public void From(IDataInput i, int flags)
             {
                 i.Got(nameof(address), out address);
                 i.Got(nameof(postal), out postal);
             }
 
-            public void To(IDataOutput o)
+            public void To(IDataOutput o, int flags)
             {
             }
         }

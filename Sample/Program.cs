@@ -9,7 +9,7 @@ namespace Greatbone.Sample
         public static void Main(string[] args)
         {
             // the root: /*
-            SiteHub site = new SiteHub();
+            SiteService site = new SiteService();
 
             var host = new WebHostBuilder()
                 .UseKestrel()

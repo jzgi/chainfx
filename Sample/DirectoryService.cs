@@ -5,15 +5,16 @@ using Microsoft.Extensions.Options;
 namespace Greatbone.Sample
 {
   ///
-  ///  The hub controller for user-related functions.
+  ///  The service controller for user-related functions.
   ///   /user/-123-/
   ///   /user/
   ///
-  public class DirectoryHub : WebHub
+  public class DirectoryService : WebService
   {
-//        MemoryCache cache = new MemoryCache("");
+    // user cache
+    // MemoryCache cache = new MemoryCache(null);
 
-    public DirectoryHub(WebHub parent) : base(parent)
+    public DirectoryService(WebService service) : base(service)
     {
       AddSub<DirectoryAdminSub>("admin", (x) => x.Can(null, 1));
 
@@ -24,7 +25,10 @@ namespace Greatbone.Sample
     {
     }
 
-    public void Create(WebContext wc)
+    ///
+    /// Registers or creates a user account.
+    ///
+    public void Register(WebContext wc)
     {
     }
 
