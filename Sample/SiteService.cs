@@ -13,6 +13,8 @@ namespace Greatbone.Sample
             SetMux<SiteSpaceMux, Space>(null);
 
             AddSub<DirectoryService>("dir", null);
+
+            AddSub<SiteCartSub>("cart", null);
         }
 
         public override void Default(WebContext wc)

@@ -1,22 +1,23 @@
 ﻿using System;
 using System.Reflection;
 
-// ReSharper disable All
-
 namespace Greatbone.Core
 {
+    ///
+    /// Represents a sub-controller that consists of a group of action methods.
+    ///
     public abstract class WebSub : IMember
     {
-        // the parent of this instance, if any
+        // the service this sub-controller belongs to
         readonly WebService _service;
 
-        // the default do, if any
+        // the default action
         readonly WebAction _default;
 
-        Set<WebAction> _actions = new Set<WebAction>(32);
+        // the collection of actions declared by this sub-controller
+        readonly Set<WebAction> _actions = new Set<WebAction>(32);
 
-        ///
-        /// make initialzation of controller more stablized
+        // the argument makes state-passing more convenient
         protected WebSub(WebService service)
         {
             _service = service;
@@ -29,18 +30,24 @@ namespace Greatbone.Core
                 ParameterInfo[] pis = mi.GetParameters();
                 if (pis.Length == 1 && pis[0].ParameterType == typeof(WebContext))
                 {
-                    WebAction atn = new WebAction(this, mi);
-                    if (atn.Key.Equals("Default")) _default = atn;
-                    if (_actions == null)
+                    WebAction a = new WebAction(this, mi);
+                    if (a.Key.Equals("Default"))
                     {
-                        _actions = new Set<WebAction>(32);
+                        _default = a;
                     }
-                    _actions.Add(atn);
+                    _actions.Add(a);
                 }
             }
         }
 
-        /// the key by which this service is added to its parent
+        ///
+        /// The service this sub-controller belongs to
+        ///
+        public virtual WebService Service => _service;
+
+        ///
+        /// The key by which this sub-controller is added to its parent
+        ///
         public string Key { get; internal set; }
 
         public Checker Checker { get; internal set; }
@@ -70,18 +77,22 @@ namespace Greatbone.Core
         public abstract void Default(WebContext wc);
     }
 
+
+    ///
+    /// Represents a multiplexed sub-controller that consists of a group of action methods.
+    ///
     public abstract class WebSub<TZone> : IMember where TZone : IZone
     {
-        // the parent multiplexer
+        // the multiplexer that this sub-controller is added to
         readonly WebMux<TZone> _mux;
 
-        // the default action, if any
+        // the default action
         readonly WebAction<TZone> _default;
 
-        Set<WebAction<TZone>> _actions = new Set<WebAction<TZone>>(32);
+        // the collection of multiplexed actions declared by this sub-controller
+        readonly Set<WebAction<TZone>> _actions = new Set<WebAction<TZone>>(32);
 
-        ///
-        /// make initialzation of controller more stablized
+        // the argument makes state-passing more convenient
         protected WebSub(WebMux<TZone> mux)
         {
             _mux = mux;
@@ -97,21 +108,19 @@ namespace Greatbone.Core
                 {
                     WebAction<TZone> a = new WebAction<TZone>(this, mi);
                     if (a.Key.Equals("Default")) _default = a;
-                    if (_actions == null)
-                    {
-                        _actions = new Set<WebAction<TZone>>(32);
-                    }
                     _actions.Add(a);
                 }
             }
         }
 
-        /// the key by which this service is added to its parent
+        ///
+        /// The key by which this sub-controller is added to its parent
+        ///
         public string Key { get; internal set; }
 
         public Checker<TZone> Checker { get; internal set; }
 
-        public WebAction<TZone> GetAction(String action)
+        public WebAction<TZone> GetAction(string action)
         {
             return _actions[action];
         }
