@@ -7,6 +7,28 @@ namespace Greatbone.Core
   {
     HttpResponse _impl;
 
+    private byte[] _buffer;
+
+    private int _offset;
+
+    private int _count;
+
+    internal WebResponse(HttpResponse impl)
+    {
+      _impl = impl;
+      _buffer = null;
+      _offset = 0;
+      _count = 0;
+    }
+
+    public void SetBody(byte[] buffer, int offset, int count)
+    {
+      _buffer = buffer;
+      _offset = offset;
+      _count = count;
+      _impl.ContentLength = count;
+    }
+
 
     public void PutStart()
     {
