@@ -130,7 +130,7 @@ namespace Greatbone.Core
 
         public void Put<T>(string name, List<T> value) where T : IData
         {
-            JsonBin json = new JsonBin(1024);
+            JsonCodec json = new JsonCodec(1024);
             for (int i = 0; i < value.Count; i++)
             {
                 if (i > 0)

@@ -1,8 +1,11 @@
 ﻿using System;
 using System.Net;
 using System.Reflection;
+using System.Text;
+using System.Threading;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Http;
+using Npgsql.NameTranslation;
 
 namespace Greatbone.Core
 {
@@ -22,7 +25,6 @@ namespace Greatbone.Core
         private Set<Publish> _publishes;
 
         private Set<Subscribe> _subscribes;
-
 
 
         protected WebService(WebService parent) : base(null)
@@ -78,14 +80,19 @@ namespace Greatbone.Core
             {
                 _publishes = new Set<Publish>(32);
             }
-
         }
 
-        internal async Task Process(HttpContext context)
+
+        // NOTE: for long-pulling support, a sending acitity must be initailized based on the context
+        //
+        internal Task Process(HttpContext context)
         {
             Console.WriteLine("start Processing ... ");
-            WebContext wc = new WebContext(context);
-            Handle(context.Request.Path.Value.Substring(1), wc);
+
+            context.Response.WriteAsync("OK, this is an output.", Encoding.UTF8);
+            return null;
+//            WebContext wc = new WebContext(context);
+//            Handle(context.Request.Path.Value.Substring(1), wc);
         }
 
         public override void Handle(string relative, WebContext wc)

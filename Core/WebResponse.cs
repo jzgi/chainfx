@@ -303,7 +303,7 @@ namespace Greatbone.Core
             }
         }
 
-        private void Put(char c)
+        public void Put(char c)
         {
             // UTF-8 encoding but without surrogate support
             if (c < 0x80)
@@ -367,32 +367,53 @@ namespace Greatbone.Core
             _impl.ContentLength = count;
         }
 
+        public void Put(string name, int value)
+        {
+            Put('"');
+            Put(name);
+            Put('"');
+            Put(' ');
+            Put(':');
+            Put(' ');
+            Put(value);
+        }
+
+        public void Put(string name, decimal value)
+        {
+            Put('"');
+            Put(name);
+            Put('"');
+            Put(' ');
+            Put(':');
+            Put(' ');
+            Put(value);
+        }
+
+        public void Put(string name, string value)
+        {
+            Put('"');
+            Put(name);
+            Put('"');
+            Put(' ');
+            Put(':');
+            Put(' ');
+            Put(value);
+        }
+
+        public void Put<T>(string name, List<T> value) where T : IData
+        {
+            foreach (T v in value)
+            {
+                v.To(this, -1);
+            }
+        }
+
         public void PutStart()
         {
             throw new System.NotImplementedException();
         }
 
         public void PutEnd()
-        {
-            throw new System.NotImplementedException();
-        }
-
-        public void Put(string name, int value)
-        {
-            throw new System.NotImplementedException();
-        }
-
-        public void Put(string name, decimal value)
-        {
-            throw new System.NotImplementedException();
-        }
-
-        public void Put(string name, string value)
-        {
-            throw new System.NotImplementedException();
-        }
-
-        public void Put<T>(string name, List<T> value) where T : IData
         {
             throw new System.NotImplementedException();
         }

@@ -1,11 +1,12 @@
-﻿using Microsoft.AspNetCore.Http;
+﻿using System;
+using Microsoft.AspNetCore.Http;
 
 namespace Greatbone.Core
 {
     ///
-    /// The encapsulation of a web request/response exchange context.
+    /// The encapsulation of a web request/response exchange context, designed able to live across threads to support long polling.
     ///
-    public class WebContext
+    public class WebContext : IDisposable
     {
         // the underlying implementation
         private readonly HttpContext _impl;
@@ -21,11 +22,14 @@ namespace Greatbone.Core
             _response = new WebResponse(impl.Response);
         }
 
+
+        public ISession Session => _impl.Session;
+
         public WebRequest Request => _request;
 
         public WebResponse Response => _response;
 
-        public WebSub Controller { get; internal set; }
+        public WebSub Control { get; internal set; }
 
         public WebAction Action { get; internal set; }
 
@@ -33,9 +37,8 @@ namespace Greatbone.Core
 
         public IToken Token { get; internal set; }
 
-        public void Send<T>(T content) where T : IContent
+        public void Dispose()
         {
-            _impl.Response.Body.WriteAsync(content.Buffer, content.Offset, content.Count);
         }
     }
 }

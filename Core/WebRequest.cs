@@ -9,7 +9,7 @@ namespace Greatbone.Core
 
         private IFormCollection _form;
 
-        private JsonBin _json;
+        private JsonCodec _json;
 
         internal WebRequest(HttpRequest impl)
         {
@@ -24,7 +24,7 @@ namespace Greatbone.Core
             }
             else if ("application/json".Equals(ctype))
             {
-                _json = new JsonBin(12);
+                _json = new JsonCodec(12);
             }
         }
 
