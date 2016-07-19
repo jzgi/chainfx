@@ -3,9 +3,23 @@ using Microsoft.AspNetCore.Http;
 
 namespace Greatbone.Core
 {
+    ///
+    /// The supported content typess
+    ///
+    enum CType
+    {
+        Form,
+        MultipartForm,
+        Json,
+        Xml,
+        Stream,
+    }
+
     public class WebRequest : IDataInput
     {
         private readonly HttpRequest _impl;
+
+        private CType _ctype;
 
         private IFormCollection _form;
 
@@ -20,6 +34,7 @@ namespace Greatbone.Core
             string ctype = impl.ContentType;
             if ("application/x-www-form-urlencoded".Equals(ctype))
             {
+                _ctype = CType.Form;
                 _form = impl.Form;
             }
             else if ("application/json".Equals(ctype))

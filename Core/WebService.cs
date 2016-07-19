@@ -12,7 +12,7 @@ namespace Greatbone.Core
     ///
     /// A web service controller that may contain sub-controllers and/or a multiplexer.
     ///
-    public abstract class WebService : WebSub, ICacheControl
+    public abstract class WebService : WebSub, ICacheRealm
     {
         private readonly WebService _parent;
 
