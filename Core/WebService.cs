@@ -111,7 +111,7 @@ namespace Greatbone.Core
                     IZone zone;
                     if (_mux.ResolveZone(zoneKey, out zone))
                     {
-                        wc.zone = zone;
+                        wc.Zone = zone;
                         _mux.Handle(relative.Substring(slash + 1), wc);
                     }
                 }

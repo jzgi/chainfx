@@ -130,7 +130,7 @@ namespace Greatbone.Core
             WebAction<TZone> a;
             if (_actions.TryGet(relative, out a))
             {
-                a.Do(wc, (TZone) (wc.zone));
+                a.Do(wc, (TZone) (wc.Zone));
             }
             else
             {
