@@ -1,4 +1,5 @@
 ﻿using System.IO;
+using Greatbone.Core;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.Extensions.DependencyInjection;
 
@@ -8,6 +9,9 @@ namespace Greatbone.Sample
     {
         public static void Main(string[] args)
         {
+            // the static files
+            StaticBundle statics = new StaticBundle(Path.Combine(Directory.GetCurrentDirectory(), "RES"));
+
             // the root: /*
             SiteService site = new SiteService();
 
@@ -17,12 +21,14 @@ namespace Greatbone.Sample
                 .UseWebRoot(Path.Combine(Directory.GetCurrentDirectory(), "RES"))
                 .UseUrls("http://localhost:8080/")
                 .ConfigureServices((coll) => { coll.AddMemoryCache(); })
-                .Configure(app => { app.Use(_ => site.Process); })
+                .Configure(app =>
+                {
+                    app.Use(_ => statics.Process);
+                    app.Use(_ => site.Process);
+                })
                 .Build();
 
             host.Run();
-
-
         }
     }
 }
