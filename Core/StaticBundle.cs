@@ -5,6 +5,7 @@ using System.IO;
 using System.Text;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Http;
+using Microsoft.Net.Http.Headers;
 
 namespace Greatbone.Core
 {
@@ -1555,6 +1556,16 @@ namespace Greatbone.Core
 
         internal Task Process(HttpContext context)
         {
+            string path = context.Request.Path.Value;
+            int dot = path.LastIndexOf('.');
+            if (dot != -1)
+            {
+                Static sta;
+                if (statics.TryGetValue(path, out sta))
+                {
+
+                }
+            }
             context.Response.WriteAsync("OK, this is an output.", Encoding.UTF8);
             return null;
 //            WebContext wc = new WebContext(context);
