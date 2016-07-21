@@ -1554,22 +1554,9 @@ namespace Greatbone.Core
             }
         }
 
-        internal Task Process(HttpContext context)
+        public bool TryGet(string path, out Static v)
         {
-            string path = context.Request.Path.Value;
-            int dot = path.LastIndexOf('.');
-            if (dot != -1)
-            {
-                Static sta;
-                if (statics.TryGetValue(path, out sta))
-                {
-
-                }
-            }
-            context.Response.WriteAsync("OK, this is an output.", Encoding.UTF8);
-            return null;
-//            WebContext wc = new WebContext(context);
-//            Handle(context.Request.Path.Value.Substring(1), wc);
+            return statics.TryGetValue(path, out v);
         }
     }
 }

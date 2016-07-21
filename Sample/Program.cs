@@ -13,19 +13,20 @@ namespace Greatbone.Sample
             StaticBundle statics = new StaticBundle(Path.Combine(Directory.GetCurrentDirectory(), "RES"));
 
             // the root: /*
-            SiteService site = new SiteService();
+            SiteService site = new SiteService()
+            {
+                Statics = statics
+            };
+
+            site.Init();
 
             var host = new WebHostBuilder()
                 .UseKestrel()
                 .UseContentRoot(Directory.GetCurrentDirectory())
                 .UseWebRoot(Path.Combine(Directory.GetCurrentDirectory(), "RES"))
-                .UseUrls("http://localhost:8080/")
+                .UseUrls("http://60.205.104.239:8080/")
                 .ConfigureServices((coll) => { coll.AddMemoryCache(); })
-                .Configure(app =>
-                {
-                    app.Use(_ => statics.Process);
-                    app.Use(_ => site.Process);
-                })
+                .Configure(app => { app.Use(_ => site.Process); })
                 .Build();
 
             host.Run();

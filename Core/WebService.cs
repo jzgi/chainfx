@@ -22,22 +22,12 @@ namespace Greatbone.Core
 
         private Set<Subscribe> _subscribes;
 
-        private readonly StaticBundle statics;
-
-
-        protected WebService(string staticDir)
-        {
-            if (staticDir != null)
-            {
-                statics = new StaticBundle(staticDir);
-            }
-        }
 
         protected WebService()
         {
         }
 
-        public StaticBundle Statics => statics;
+        public StaticBundle Statics { get; set; }
 
 
         public TSub AddSub<TSub>(string key, Checker checker) where TSub : WebSub, new()
@@ -93,22 +83,32 @@ namespace Greatbone.Core
         //
         internal Task Process(HttpContext context)
         {
-            Console.WriteLine("start Processing ... ");
+//            Console.WriteLine("start Processing ... ");
+            string path = context.Request.Path.Value;
+            if (Statics != null && path.IndexOf('.') != -1)
+            {
+                Static sta;
+                if (Statics.TryGet(path, out sta))
+                {
+                    context.Response.Body.WriteAsync(sta.Content, 0, sta.Length);
+                }
+                return null;
+            }
 
             context.Response.WriteAsync("OK, this is an output.", Encoding.UTF8);
+            WebContext wc = new WebContext(context);
+            Handle(context.Request.Path.Value.Substring(1), wc);
             return null;
-//            WebContext wc = new WebContext(context);
-//            Handle(context.Request.Path.Value.Substring(1), wc);
         }
 
         public override void Handle(string relative, WebContext wc)
         {
-            Console.WriteLine("relative: " + relative);
+//            Console.WriteLine("relative: " + relative);
             int slash = relative.IndexOf('/');
             if (slash == -1) // without a slash then handle it locally
             {
                 WebAction a = GetAction(relative);
-                Console.WriteLine("action: " + a);
+//                Console.WriteLine("action: " + a);
                 a?.Do(wc);
             }
             else // not local then sub & mux

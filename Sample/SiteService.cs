@@ -19,7 +19,7 @@ namespace Greatbone.Sample
 
         public override void Default(WebContext wc)
         {
-            Console.WriteLine("start Action: ");
+//            Console.WriteLine("start Action: ");
 
             string id = "";
         }
