@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg width="640" height="480" xmlns="http://www.w3.org/2000/svg" xmlns:svg="http://www.w3.org/2000/svg">
+ <!-- Created with SVG-edit - http://svg-edit.googlecode.com/ -->
+ <defs>
+  <pattern height="100" width="100" y="0" x="0" patternUnits="userSpaceOnUse" id="gridpattern">
+   <image height="100" width="100" y="0" x="0" id="svg_31"/>
+  </pattern>
+ </defs>
+ <g>
+  <title>Layer 1</title>
+  <rect fill="#7f7f7f" stroke="#bfbfbf" stroke-width="3" x="204" y="328.500008" width="85" height="74.000001" id="svg_7"/>
+  <text id="svg_22" fill="#000000" stroke="#ffaaaa" stroke-width="0" stroke-dasharray="null" stroke-linejoin="null" stroke-linecap="null" x="257.727336" y="477.999931" font-size="24" font-family="Sans-serif" text-anchor="middle" xml:space="preserve" transform="matrix(0.647059, 0, 0, 0.666667, 81.7647, 110)">info service</text>
+  <text id="svg_3" fill="#000000" stroke="#ffaaaa" stroke-width="0" stroke-dasharray="null" stroke-linejoin="null" stroke-linecap="null" x="398.102552" y="289.955498" font-size="24" font-family="Sans-serif" text-anchor="middle" xml:space="preserve" transform="matrix(0.647059, 0, 0, 0.666667, 81.7647, 110)">site service</text>
+  <rect id="svg_8" fill="#7f7f7f" stroke="#bfbfbf" stroke-width="3" x="437.831055" y="193.136993" width="85" height="74.000001"/>
+  <text style="cursor: move;" id="svg_17" fill="#000000" stroke="#ffaaaa" stroke-width="0" stroke-dasharray="null" stroke-linejoin="null" stroke-linecap="null" x="619.102477" y="274.955506" font-size="24" font-family="Sans-serif" text-anchor="middle" xml:space="preserve" transform="matrix(0.647059, 0, 0, 0.666667, 81.7647, 110)">order service</text>
+  <rect id="svg_20" fill="#7f7f7f" stroke="#bfbfbf" stroke-width="3" x="309.5" y="181.5" width="85" height="74.000001"/>
+  <rect id="svg_2" fill="#7f7f7f" stroke="#bfbfbf" stroke-width="3" x="293.831055" y="194.136993" width="85" height="74.000001"/>
+  <rect id="svg_23" fill="#7f7f7f" stroke="#bfbfbf" stroke-width="3" x="277.5" y="209.5" width="85" height="74.000001"/>
+  <rect id="svg_24" fill="#7f7f7f" stroke="#bfbfbf" stroke-width="3" x="123.831055" y="200.137" width="85" height="74.000001"/>
+  <text id="svg_25" fill="#000000" stroke="#ffaaaa" stroke-width="0" stroke-dasharray="null" stroke-linejoin="null" stroke-linecap="null" x="133.829921" y="285.455521" font-size="24" font-family="Sans-serif" text-anchor="middle" xml:space="preserve" transform="matrix(0.647059, 0, 0, 0.666667, 81.7647, 110)">directory service</text>
+  <rect id="svg_26" fill="#7f7f7f" stroke="#bfbfbf" stroke-width="3" x="355.831055" y="327.137" width="85" height="74.000001"/>
+  <text style="cursor: move;" id="svg_27" fill="#000000" stroke="#ffaaaa" stroke-width="0" stroke-dasharray="null" stroke-linejoin="null" stroke-linecap="null" x="492.375261" y="475.955414" font-size="24" font-family="Sans-serif" text-anchor="middle" xml:space="preserve" transform="matrix(0.647059, 0, 0, 0.666667, 81.7647, 110)">acct service</text>
+ </g>
+</svg>
