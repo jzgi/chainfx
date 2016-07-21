@@ -4,10 +4,6 @@ namespace Greatbone.Sample
 {
     public class DirectoryUserMux : WebMux<User>
     {
-        public DirectoryUserMux(WebService service) : base(service)
-        {
-        }
-
         ///
         /// Gets a token
         ///

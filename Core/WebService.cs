@@ -2,10 +2,8 @@
 using System.Net;
 using System.Reflection;
 using System.Text;
-using System.Threading;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Http;
-using Npgsql.NameTranslation;
 
 namespace Greatbone.Core
 {
@@ -14,8 +12,6 @@ namespace Greatbone.Core
     ///
     public abstract class WebService : WebSub, ICacheRealm
     {
-        private readonly WebService _parent;
-
         // the attached sub controllers, if any
         private Set<WebSub> _subs;
 
@@ -26,48 +22,58 @@ namespace Greatbone.Core
 
         private Set<Subscribe> _subscribes;
 
+        private readonly StaticBundle statics;
 
-        protected WebService(WebService parent) : base(null)
+
+        protected WebService(string staticDir)
+        {
+            if (staticDir != null)
+            {
+                statics = new StaticBundle(staticDir);
+            }
+        }
+
+        protected WebService()
         {
         }
 
+        public StaticBundle Statics => statics;
 
-        public override WebService Service => this;
 
-        public TSub AddSub<TSub>(string key, Checker checker) where TSub : WebSub
+        public TSub AddSub<TSub>(string key, Checker checker) where TSub : WebSub, new()
         {
             if (_subs == null)
             {
                 _subs = new Set<WebSub>(16);
             }
-
-            // create instance of the subactivity by reflection
-            Type type = typeof(TSub);
-            ConstructorInfo ci = type.GetConstructor(new[] {typeof(WebService)});
-            if (ci == null)
+            // create instance
+            TSub sub = new TSub
             {
-                throw new WebException(type + " the special constructor not found");
-            }
-            TSub sub = (TSub) ci.Invoke(new object[] {this});
-            sub.Key = key;
-            sub.Checker = checker;
+                Parent = this,
+                Key = key,
+                Checker = checker
+            };
+            WebService service = sub as WebService;
+            sub.Service = service ?? this;
 
+            // call the initialization and add
+            sub.Init();
             _subs.Add(sub);
             return sub;
         }
 
-        public TMux SetMux<TMux, TZone>(Checker<TZone> checker) where TMux : WebMux<TZone> where TZone : IZone
+        public TMux SetMux<TMux, TZone>(Checker<TZone> checker) where TMux : WebMux<TZone>, new() where TZone : IZone
         {
-            // create instance by reflection
-            Type type = typeof(TMux);
-            ConstructorInfo ci = type.GetConstructor(new[] {typeof(WebService)});
-            if (ci == null)
+            // create instance
+            TMux mux = new TMux
             {
-                throw new WebException(type + " the special constructor not found");
-            }
-            TMux mux = (TMux) ci.Invoke(new object[] {this});
-            mux.Checker = checker;
-
+                Parent = this,
+                Service = this,
+                Key = null, // key set to null
+                Checker = checker
+            };
+            // call the initialization and set
+            mux.Init();
             _mux = mux;
             return mux;
         }

@@ -8,7 +8,7 @@ namespace Greatbone.Sample
     ///
     public class SiteService : WebService
     {
-        public SiteService() : base(null)
+        protected internal override void Init()
         {
             SetMux<SiteSpaceMux, Space>(null);
 
@@ -27,6 +27,5 @@ namespace Greatbone.Sample
         public void Show(WebContext wc)
         {
         }
-
     }
 }

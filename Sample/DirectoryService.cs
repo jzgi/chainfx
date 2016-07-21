@@ -4,36 +4,36 @@ using Microsoft.Extensions.Options;
 
 namespace Greatbone.Sample
 {
-  ///
-  ///  The service controller for user-related functions.
-  ///   /user/-123-/
-  ///   /user/
-  ///
-  public class DirectoryService : WebService
-  {
-    // user cache
-    // MemoryCache cache = new MemoryCache(null);
-
-    public DirectoryService(WebService service) : base(service)
-    {
-      AddSub<DirectoryAdminSub>("admin", (x) => x.Can(null, 1));
-
-      SetMux<DirectoryUserMux, User>((x, p) => true);
-    }
-
-    public override void Default(WebContext wc)
-    {
-    }
-
     ///
-    /// Registers or creates a user account.
+    ///  The service controller for user-related functions.
+    ///   /user/-123-/
+    ///   /user/
     ///
-    public void Register(WebContext wc)
+    public class DirectoryService : WebService
     {
-    }
+        // user cache
+        // MemoryCache cache = new MemoryCache(null);
 
-    public void Search(WebContext wc)
-    {
+        protected internal override void Init()
+        {
+            AddSub<DirectoryAdminSub>("admin", (x) => x.Can(null, 1));
+
+            SetMux<DirectoryUserMux, User>((x, p) => true);
+        }
+
+        public override void Default(WebContext wc)
+        {
+        }
+
+        ///
+        /// Registers or creates a user account.
+        ///
+        public void Register(WebContext wc)
+        {
+        }
+
+        public void Search(WebContext wc)
+        {
+        }
     }
-  }
 }

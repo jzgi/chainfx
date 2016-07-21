@@ -1,11 +1,14 @@
-﻿using Greatbone.Core;
+﻿using System;
+using Greatbone.Core;
 
 namespace Greatbone.Sample
 {
     public class SiteSpaceMux : WebMux<Space>
     {
-        public SiteSpaceMux(WebService parent) : base(parent)
+
+        protected internal override void Init()
         {
+
             AddSub<SiteSpaceMgtSub>("mgt", null);
         }
 

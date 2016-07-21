@@ -8,9 +8,6 @@ namespace Greatbone.Core
     ///
     public abstract class WebSub : IMember
     {
-        // the service this sub-controller belongs to
-        readonly WebService _service;
-
         // the default action
         readonly WebAction _default;
 
@@ -18,10 +15,8 @@ namespace Greatbone.Core
         readonly Set<WebAction> _actions = new Set<WebAction>(32);
 
         // the argument makes state-passing more convenient
-        protected WebSub(WebService service)
+        public WebSub()
         {
-            _service = service;
-
             Type type = GetType();
 
             // introspect action methods
@@ -40,10 +35,20 @@ namespace Greatbone.Core
             }
         }
 
+
+        protected internal virtual void Init()
+        {
+        }
+
         ///
-        /// The service this sub-controller belongs to
+        /// The parent service that this sub-controller is added to
         ///
-        public virtual WebService Service => _service;
+        public WebService Parent { get; internal set; }
+
+        ///
+        /// The service that this component resides in.
+        ///
+        public WebService Service { get; internal set; }
 
         ///
         /// The key by which this sub-controller is added to its parent
@@ -83,9 +88,6 @@ namespace Greatbone.Core
     ///
     public abstract class WebSub<TZone> : IMember where TZone : IZone
     {
-        // the multiplexer that this sub-controller is added to
-        readonly WebMux<TZone> _mux;
-
         // the default action
         readonly WebAction<TZone> _default;
 
@@ -93,10 +95,8 @@ namespace Greatbone.Core
         readonly Set<WebAction<TZone>> _actions = new Set<WebAction<TZone>>(32);
 
         // the argument makes state-passing more convenient
-        protected WebSub(WebMux<TZone> mux)
+        protected WebSub()
         {
-            _mux = mux;
-
             Type type = GetType();
 
             // introspect action methods
@@ -112,6 +112,20 @@ namespace Greatbone.Core
                 }
             }
         }
+
+        protected internal virtual void Init()
+        {
+        }
+
+        ///
+        /// The parent multiplexer that this sub-controller is added to
+        ///
+        public WebMux<TZone> Parent { get; internal set; }
+
+        ///
+        /// The service that this component resides in.
+        ///
+        public WebService Service { get; internal set; }
 
         ///
         /// The key by which this sub-controller is added to its parent
