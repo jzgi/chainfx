@@ -2,9 +2,9 @@
 
 namespace Greatbone.Sample
 {
-    public class InfoService : WebService
+    public class BusinessService : WebService
     {
-        public InfoService(WebCreationContext wcc) : base(wcc)
+        public BusinessService(WebCreationContext wcc) : base(wcc)
         {
         }
 

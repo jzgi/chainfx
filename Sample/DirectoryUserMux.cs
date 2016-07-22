@@ -2,9 +2,9 @@
 
 namespace Greatbone.Sample
 {
-    public class DirUserMux : WebMux<User>
+    public class DirectoryUserMux : WebMux<User>
     {
-        public DirUserMux(WebCreationContext wcc) : base(wcc)
+        public DirectoryUserMux(WebCreationContext wcc) : base(wcc)
         {
         }
 

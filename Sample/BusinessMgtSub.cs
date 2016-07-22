@@ -2,9 +2,9 @@
 
 namespace Greatbone.Sample
 {
-    public class DirAdminSub : WebSub
+    public class BusinessMgtSub : WebSub
     {
-        public DirAdminSub(WebCreationContext wcc) : base(wcc)
+        public BusinessMgtSub(WebCreationContext wcc) : base(wcc)
         {
         }
 

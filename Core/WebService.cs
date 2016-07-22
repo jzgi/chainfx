@@ -12,6 +12,10 @@ namespace Greatbone.Core
     ///
     public abstract class WebService : WebSub, IParent, ICacheRealm
     {
+        public static readonly Checker AnyOne = (t) => true;
+
+        public static readonly Checker<IZone> AnyOneZone = (t, z) => true;
+
         // the attached sub controllers, if any
         private Set<WebSub> _subs;
 

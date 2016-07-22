@@ -2,9 +2,9 @@
 
 namespace Greatbone.Sample
 {
-    public class FileMgtControl : WebSub
+    public class DirectoryAdminSub : WebSub
     {
-        public FileMgtControl(WebCreationContext wcc) : base(wcc)
+        public DirectoryAdminSub(WebCreationContext wcc) : base(wcc)
         {
         }
 

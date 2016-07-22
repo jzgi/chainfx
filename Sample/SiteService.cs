@@ -4,7 +4,7 @@ using Greatbone.Core;
 namespace Greatbone.Sample
 {
     ///
-    /// WWW
+    /// The main website service (WWW).
     ///
     public class SiteService : WebService
     {
@@ -12,9 +12,19 @@ namespace Greatbone.Sample
         {
             SetMux<SiteSpaceMux, Space>(null);
 
-            AddSub<DirService>("dir", null);
-
             AddSub<SiteCartSub>("cart", null);
+
+
+            //
+            // sub services, placed here to achieve single-machine-deployment
+
+            AddSub<DirectoryService>("dir", null);
+
+            AddSub<BusinessService>("biz", null);
+
+            AddSub<OrderService>("ord", null);
+
+            AddSub<AccountingService>("acctg", null);
         }
 
         public void Show(WebContext wc)

@@ -9,16 +9,16 @@ namespace Greatbone.Sample
     ///   /user/-123-/
     ///   /user/
     ///
-    public class DirService : WebService
+    public class DirectoryService : WebService
     {
         // user cache
         // MemoryCache cache = new MemoryCache(null);
 
-        public DirService(WebCreationContext wcc) : base(wcc)
+        public DirectoryService(WebCreationContext wcc) : base(wcc)
         {
-            AddSub<DirAdminSub>("admin", (x) => x.Can(null, 1));
+            AddSub<DirectoryAdminSub>("admin", (x) => x.Can(null, 1));
 
-            SetMux<DirUserMux, User>((x, p) => true);
+            SetMux<DirectoryUserMux, User>((x, p) => true);
         }
 
 
