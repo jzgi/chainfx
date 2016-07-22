@@ -2,9 +2,9 @@
 
 namespace Greatbone.Sample
 {
-    public class DirectoryAdminSub : WebSub
+    public class InfoService : WebService
     {
-        public DirectoryAdminSub(WebCreationContext wcc) : base(wcc)
+        public InfoService(WebCreationContext wcc) : base(wcc)
         {
         }
 
