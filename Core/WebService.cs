@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Net;
+using System.Net.Sockets;
 using System.Reflection;
 using System.Text;
 using System.Threading.Tasks;
@@ -154,6 +155,7 @@ namespace Greatbone.Core
 
         public void Publish(string topic, string arg, object msg)
         {
+            Socket s;
         }
     }
 }

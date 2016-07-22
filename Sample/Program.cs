@@ -15,12 +15,13 @@ namespace Greatbone.Sample
                 StaticPath = Path.Combine(Directory.GetCurrentDirectory(), "RES")
             };
 
-            // the root: /*
+            // create the site service without access check
             SiteService site = new SiteService(wcc)
             {
                 Checker = null
             };
 
+            // create web host by using the kestrel web server
             var host = new WebHostBuilder()
                 .UseKestrel()
                 .UseUrls("http://60.205.104.239:8080/")
