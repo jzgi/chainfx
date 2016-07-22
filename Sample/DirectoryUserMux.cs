@@ -4,6 +4,10 @@ namespace Greatbone.Sample
 {
     public class DirectoryUserMux : WebMux<User>
     {
+        public DirectoryUserMux(WebCreationContext wcc) : base(wcc)
+        {
+        }
+
         ///
         /// Gets a token
         ///

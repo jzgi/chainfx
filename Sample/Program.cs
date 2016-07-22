@@ -10,15 +10,13 @@ namespace Greatbone.Sample
         public static void Main(string[] args)
         {
             // the static files
-            StaticBundle statics = new StaticBundle(Path.Combine(Directory.GetCurrentDirectory(), "RES"));
-
-            // the root: /*
-            SiteService site = new SiteService()
+            WebCreationContext context = new WebCreationContext
             {
-                Statics = statics
+                StaticPath = Path.Combine(Directory.GetCurrentDirectory(), "RES")
             };
 
-            site.Init();
+            // the root: /*
+            SiteService site = new SiteService(context);
 
             var host = new WebHostBuilder()
                 .UseKestrel()

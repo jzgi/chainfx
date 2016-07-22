@@ -8,20 +8,13 @@ namespace Greatbone.Sample
     ///
     public class SiteService : WebService
     {
-        protected internal override void Init()
+        public SiteService(WebCreationContext wcc) : base(wcc)
         {
             SetMux<SiteSpaceMux, Space>(null);
 
             AddSub<DirectoryService>("dir", null);
 
             AddSub<SiteCartSub>("cart", null);
-        }
-
-        public override void Default(WebContext wc)
-        {
-//            Console.WriteLine("start Action: ");
-
-            string id = "";
         }
 
         public void Show(WebContext wc)

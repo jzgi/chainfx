@@ -1,21 +1,26 @@
 ﻿using System;
+using System.Diagnostics;
+using System.IO;
 using System.Reflection;
 
 namespace Greatbone.Core
 {
     ///
-    /// Represents a sub-controller that consists of a group of action methods.
+    /// Represents a (sub)controller that consists of a group of action methods, as well as a folder of static files.
     ///
-    public abstract class WebSub : IMember
+    public abstract class WebSub : WebController
     {
-        // the default action
-        readonly WebAction _default;
-
         // the collection of actions declared by this sub-controller
         readonly Set<WebAction> _actions = new Set<WebAction>(32);
 
+        // the default action
+        readonly WebAction _defaction;
+
+
+        public Checker Checker { get; internal set; }
+
         // the argument makes state-passing more convenient
-        public WebSub()
+        public WebSub(WebCreationContext wcc) : base(wcc)
         {
             Type type = GetType();
 
@@ -28,7 +33,7 @@ namespace Greatbone.Core
                     WebAction a = new WebAction(this, mi);
                     if (a.Key.Equals("Default"))
                     {
-                        _default = a;
+                        _defaction = a;
                     }
                     _actions.Add(a);
                 }
@@ -36,32 +41,11 @@ namespace Greatbone.Core
         }
 
 
-        protected internal virtual void Init()
-        {
-        }
-
-        ///
-        /// The parent service that this sub-controller is added to
-        ///
-        public WebService Parent { get; internal set; }
-
-        ///
-        /// The service that this component resides in.
-        ///
-        public WebService Service { get; internal set; }
-
-        ///
-        /// The key by which this sub-controller is added to its parent
-        ///
-        public string Key { get; internal set; }
-
-        public Checker Checker { get; internal set; }
-
         public WebAction GetAction(String action)
         {
             if (string.IsNullOrEmpty(action))
             {
-                return _default;
+                return _defaction;
             }
             return _actions[action];
         }
@@ -79,23 +63,32 @@ namespace Greatbone.Core
             }
         }
 
-        public abstract void Default(WebContext wc);
+        public virtual void Default(WebContext wc)
+        {
+            if (DefaultStatic != null)
+            {
+            }
+            else
+            {
+                // send not implemented
+            }
+        }
     }
 
 
     ///
     /// Represents a multiplexed sub-controller that consists of a group of action methods.
     ///
-    public abstract class WebSub<TZone> : IMember where TZone : IZone
+    public abstract class WebSub<TZone> : WebController where TZone : IZone
     {
-        // the default action
-        readonly WebAction<TZone> _default;
-
         // the collection of multiplexed actions declared by this sub-controller
         readonly Set<WebAction<TZone>> _actions = new Set<WebAction<TZone>>(32);
 
+        // the default action
+        readonly WebAction<TZone> _defaction;
+
         // the argument makes state-passing more convenient
-        protected WebSub()
+        protected WebSub(WebCreationContext wcc) : base(wcc)
         {
             Type type = GetType();
 
@@ -103,34 +96,20 @@ namespace Greatbone.Core
             foreach (MethodInfo mi in type.GetMethods(BindingFlags.Public | BindingFlags.Instance))
             {
                 ParameterInfo[] pis = mi.GetParameters();
-                if (pis.Length == 2 && pis[0].ParameterType == typeof(WebContext) &&
+                if (pis.Length == 2 &&
+                    pis[0].ParameterType == typeof(WebContext) &&
                     pis[0].ParameterType == typeof(TZone))
                 {
                     WebAction<TZone> a = new WebAction<TZone>(this, mi);
-                    if (a.Key.Equals("Default")) _default = a;
+                    if (a.Key.Equals("Default"))
+                    {
+                        _defaction = a;
+                    }
                     _actions.Add(a);
                 }
             }
         }
 
-        protected internal virtual void Init()
-        {
-        }
-
-        ///
-        /// The parent multiplexer that this sub-controller is added to
-        ///
-        public WebMux<TZone> Parent { get; internal set; }
-
-        ///
-        /// The service that this component resides in.
-        ///
-        public WebService Service { get; internal set; }
-
-        ///
-        /// The key by which this sub-controller is added to its parent
-        ///
-        public string Key { get; internal set; }
 
         public Checker<TZone> Checker { get; internal set; }
 
@@ -152,6 +131,15 @@ namespace Greatbone.Core
             }
         }
 
-        public abstract void Default(WebContext wc, TZone zone);
+        public virtual void Default(WebContext wc, TZone zone)
+        {
+            if (DefaultStatic != null)
+            {
+            }
+            else
+            {
+                // send not implemented
+            }
+        }
     }
 }

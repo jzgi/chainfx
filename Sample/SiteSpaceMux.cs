@@ -5,12 +5,11 @@ namespace Greatbone.Sample
 {
     public class SiteSpaceMux : WebMux<Space>
     {
-
-        protected internal override void Init()
+        public SiteSpaceMux(WebCreationContext wcc) : base(wcc)
         {
-
             AddSub<SiteSpaceMgtSub>("mgt", null);
         }
+
 
         public override void Default(WebContext wc, Space zone)
         {

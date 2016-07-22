@@ -10,7 +10,7 @@ namespace Greatbone.Core
     ///
     /// A web service controller that may contain sub-controllers and/or a multiplexer.
     ///
-    public abstract class WebService : WebSub, ICacheRealm
+    public abstract class WebService : WebSub, IParent, ICacheRealm
     {
         // the attached sub controllers, if any
         private Set<WebSub> _subs;
@@ -23,47 +23,53 @@ namespace Greatbone.Core
         private Set<Subscribe> _subscribes;
 
 
-        protected WebService()
+        protected WebService(WebCreationContext wcc) : base(wcc)
         {
         }
 
-        public StaticBundle Statics { get; set; }
 
-
-        public TSub AddSub<TSub>(string key, Checker checker) where TSub : WebSub, new()
+        public TSub AddSub<TSub>(string key, Checker checker) where TSub : WebSub
         {
             if (_subs == null)
             {
                 _subs = new Set<WebSub>(16);
             }
-            // create instance
-            TSub sub = new TSub
+            // create instance by reflection
+            Type type = typeof(TSub);
+            ConstructorInfo ci = type.GetConstructor(new[] {typeof(WebCreationContext)});
+            if (ci == null)
             {
-                Parent = this,
+                throw new WebException(type + ": the WebCreationContext parameterized constructor not found");
+            }
+            WebCreationContext wcc = new WebCreationContext
+            {
                 Key = key,
-                Checker = checker
+                StaticPath = ""
             };
-            WebService service = sub as WebService;
-            sub.Service = service ?? this;
+            TSub sub = (TSub) ci.Invoke(new object[] {wcc});
+            sub.Checker = checker;
 
-            // call the initialization and add
-            sub.Init();
+
             _subs.Add(sub);
             return sub;
         }
 
-        public TMux SetMux<TMux, TZone>(Checker<TZone> checker) where TMux : WebMux<TZone>, new() where TZone : IZone
+        public TMux SetMux<TMux, TZone>(Checker<TZone> checker) where TMux : WebMux<TZone> where TZone : IZone
         {
             // create instance
-            TMux mux = new TMux
+            Type type = typeof(TMux);
+            ConstructorInfo ci = type.GetConstructor(new[] {typeof(WebCreationContext)});
+            if (ci == null)
             {
-                Parent = this,
-                Service = this,
-                Key = null, // key set to null
-                Checker = checker
+                throw new WebException(type + ": the WebCreationContext parameterized constructor not found");
+            }
+            WebCreationContext wcc = new WebCreationContext
+            {
+                StaticPath = ""
             };
+            TMux mux = (TMux) ci.Invoke(new object[] {wcc});
+
             // call the initialization and set
-            mux.Init();
             _mux = mux;
             return mux;
         }

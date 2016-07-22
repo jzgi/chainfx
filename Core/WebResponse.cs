@@ -7,7 +7,7 @@ using Microsoft.AspNetCore.Http;
 namespace Greatbone.Core
 {
     ///
-    /// The wrapper of a HTTP response, providing convevient output methods and cache control.
+    /// The wrapper of a HTTP response, providing efficient output methods and cache control.
     ///
     public class WebResponse : IDataOutput
     {
@@ -29,17 +29,17 @@ namespace Greatbone.Core
 
         private const byte Minus = (byte) '-';
 
-        private static readonly byte[] OfByte = {1, 10, 100};
+        private static readonly byte[] Bytes = {1, 10, 100};
 
-        private static readonly short[] OfShort = {1, 10, 100, 1000, 10000};
+        private static readonly short[] Shorts = {1, 10, 100, 1000, 10000};
 
-        private static readonly int[] OfInt =
+        private static readonly int[] Ints =
         {
             1, 10, 100, 1000, 10000, 100000, 1000000, 10000000, 100000000, 1000000000,
             1000000000
         };
 
-        private static readonly long[] OfLong =
+        private static readonly long[] Longs =
         {
             1, 10, 100, 1000, 10000, 100000, 1000000, 10000000, 100000000, 1000000000, 1000000000, 100000000000L,
             1000000000000L, 10000000000000L, 100000000000000L, 100000000000000L, 10000000000000000L, 100000000000000000L,
@@ -98,9 +98,9 @@ namespace Greatbone.Core
             }
             int x = v;
             bool bgn = false;
-            for (int i = OfByte.Length - 1; i >= 0; i--)
+            for (int i = Bytes.Length - 1; i >= 0; i--)
             {
-                int bas = OfByte[i];
+                int bas = Bytes[i];
                 int q = x / bas;
                 x %= bas;
                 if (q != 0 || bgn)
@@ -126,9 +126,9 @@ namespace Greatbone.Core
                 x = -x;
             }
             bool bgn = false;
-            for (int i = OfShort.Length - 1; i >= 0; i--)
+            for (int i = Shorts.Length - 1; i >= 0; i--)
             {
-                int bas = OfShort[i];
+                int bas = Shorts[i];
                 int q = x / bas;
                 x = x % bas;
                 if (q != 0 || bgn)
@@ -153,9 +153,9 @@ namespace Greatbone.Core
                 v = -v;
             }
             bool bgn = false;
-            for (int i = OfInt.Length - 1; i >= 0; i--)
+            for (int i = Ints.Length - 1; i >= 0; i--)
             {
-                int bas = OfInt[i];
+                int bas = Ints[i];
                 int q = v / bas;
                 v = v % bas;
                 if (q != 0 || bgn)
@@ -180,9 +180,9 @@ namespace Greatbone.Core
                 v = -v;
             }
             bool bgn = false;
-            for (int i = OfLong.Length - 1; i >= 0; i--)
+            for (int i = Longs.Length - 1; i >= 0; i--)
             {
-                long bas = OfLong[i];
+                long bas = Longs[i];
                 long q = v / bas;
                 v = v % bas;
                 if (q != 0 || bgn)
@@ -217,9 +217,9 @@ namespace Greatbone.Core
                 {
                     long x = (low & 0x00ffffff) + ((long) (byte) (low >> 24) << 24) + ((long) mid << 32);
                     bool bgn = false;
-                    for (int i = OfLong.Length - 1; i >= 2; i--)
+                    for (int i = Longs.Length - 1; i >= 2; i--)
                     {
-                        long bas = OfInt[i];
+                        long bas = Ints[i];
                         long q = x / bas;
                         x = x % bas;
                         if (q != 0 || bgn)
@@ -242,9 +242,9 @@ namespace Greatbone.Core
                 {
                     int x = low;
                     bool bgn = false;
-                    for (int i = OfInt.Length - 1; i >= 2; i--)
+                    for (int i = Ints.Length - 1; i >= 2; i--)
                     {
-                        int bas = OfInt[i];
+                        int bas = Ints[i];
                         int q = x / bas;
                         x = x % bas;
                         if (q != 0 || bgn)

@@ -11,29 +11,36 @@ namespace Greatbone.Core
         bool ResolveZone(string zoneKey, out IZone zone);
     }
 
-    public abstract class WebMux<TZone> : WebSub<TZone>, IMux where TZone : IZone
+    public abstract class WebMux<TZone> : WebSub<TZone>, IMux, IParent where TZone : IZone
     {
         // the added subs
         private Set<WebSub<TZone>> _subs;
 
-        public new WebService Parent { get; internal set; }
 
-        public TSub AddSub<TSub>(string key, Checker<TZone> checker) where TSub : WebSub<TZone>, new()
+        public WebMux(WebCreationContext wcc) : base(wcc)
+        {
+        }
+
+        public TSub AddSub<TSub>(string key, Checker<TZone> checker) where TSub : WebSub<TZone>
         {
             if (_subs == null)
             {
                 _subs = new Set<WebSub<TZone>>(16);
             }
-            // create instance
-            TSub sub = new TSub
+            // create instance by reflection
+            Type type = typeof(TSub);
+            ConstructorInfo ci = type.GetConstructor(new[] {typeof(WebCreationContext)});
+            if (ci == null)
             {
-                Parent = this,
-                Service = this.Service,
+                throw new WebException(type + ": the WebCreationContext parameterized constructor not found");
+            }
+            WebCreationContext wcc = new WebCreationContext
+            {
                 Key = key,
-                Checker = checker
+                StaticPath = ""
             };
+            TSub sub = (TSub) ci.Invoke(new object[] {wcc});
             // call the initialization and add
-            sub.Init();
             _subs.Add(sub);
             return sub;
         }
