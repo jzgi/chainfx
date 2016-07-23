@@ -19,7 +19,7 @@ namespace Greatbone.Core
         ///
         /// The parent service that this sub-controller is added to
         ///
-        public IParent Parent { get; internal set; }
+        public IParent Parent { get; }
 
         ///
         /// The service that this component resides in.
@@ -40,7 +40,7 @@ namespace Greatbone.Core
             StaticPath = wcc.StaticPath;
 
             // load static files, if any
-            if (StaticPath != null)
+            if (StaticPath != null && Directory.Exists(StaticPath))
             {
                 Statics = new Set<Static>(256);
                 foreach (string path in Directory.GetFiles(StaticPath))

@@ -1,5 +1,7 @@
 ﻿using System;
+using System.IO;
 using System.Net;
+using System.Net.Http;
 using System.Net.Sockets;
 using System.Reflection;
 using System.Text;
@@ -27,6 +29,10 @@ namespace Greatbone.Core
 
         private Set<Subscribe> _subscribes;
 
+        // the async client
+        private HttpClient[] client;
+
+
 
         protected WebService(WebCreationContext wcc) : base(wcc)
         {
@@ -49,7 +55,9 @@ namespace Greatbone.Core
             WebCreationContext wcc = new WebCreationContext
             {
                 Key = key,
-                StaticPath = ""
+                StaticPath = Path.Combine(StaticPath, key),
+                Parent = this,
+                Service = this
             };
             TSub sub = (TSub) ci.Invoke(new object[] {wcc});
             sub.Checker = checker;
@@ -70,7 +78,9 @@ namespace Greatbone.Core
             }
             WebCreationContext wcc = new WebCreationContext
             {
-                StaticPath = ""
+                StaticPath = Path.Combine(StaticPath, "-"),
+                Parent = this,
+                Service = this
             };
             TMux mux = (TMux) ci.Invoke(new object[] {wcc});
 
@@ -92,23 +102,33 @@ namespace Greatbone.Core
 
         // NOTE: for long-pulling support, a sending acitity must be initailized based on the context
         //
-        internal Task Process(HttpContext context)
+        public Task Handle(HttpContext context)
         {
-//            Console.WriteLine("start Processing ... ");
-            string path = context.Request.Path.Value;
-            if (Statics != null && path.IndexOf('.') != -1)
+            string host = context.Request.Headers["Host"];
+            Console.WriteLine("Host: " + host);
+
+            if (host.EndsWith("9090")) // message
             {
-                Static sta;
-                if (Statics.TryGet(path, out sta))
+                // msg
+            }
+            else // request & response
+            {
+                string path = context.Request.Path.Value;
+                if (Statics != null && path.IndexOf('.') != -1)
                 {
-                    context.Response.Body.WriteAsync(sta.Content, 0, sta.Length);
+                    Static sta;
+                    if (Statics.TryGet(path, out sta))
+                    {
+                        context.Response.Body.WriteAsync(sta.Content, 0, sta.Length);
+                    }
+                    return null;
                 }
-                return null;
+
+                context.Response.WriteAsync("OK, this is an output.", Encoding.UTF8);
+                WebContext wc = new WebContext(context);
+                Handle(context.Request.Path.Value.Substring(1), wc);
             }
 
-            context.Response.WriteAsync("OK, this is an output.", Encoding.UTF8);
-            WebContext wc = new WebContext(context);
-            Handle(context.Request.Path.Value.Substring(1), wc);
             return null;
         }
 

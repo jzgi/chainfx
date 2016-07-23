@@ -8,6 +8,6 @@
 
         public IParent Parent { get; set; }
 
-        public WebService Service { get; }
+        public WebService Service { get; set; }
     }
 }

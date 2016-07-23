@@ -36,5 +36,14 @@ namespace Greatbone.Sample
         public void Search(WebContext wc)
         {
         }
+
+        //
+        // EVENT HANDLING
+        //
+
+        public void OnBusinessEnroll()
+        {
+        }
+
     }
 }
