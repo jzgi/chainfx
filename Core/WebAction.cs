@@ -6,71 +6,62 @@ namespace Greatbone.Core
     /// An action method.
     /// </summary>
     /// <param name="wc"></param>
-    public delegate void Actor(WebContext wc);
+    public delegate void ActionDoer(WebContext wc);
 
     public class WebAction : IMember
     {
-        private readonly WebSub _control;
+        private readonly ActionDoer _doer;
 
-        private readonly string _key;
+        public string Key { get; }
 
-        private readonly Actor _actor;
+        public WebSub Controller { get; }
 
-        internal WebAction(WebSub control, MethodInfo mi)
+        internal WebAction(WebSub controller, MethodInfo mi)
         {
-            _control = control;
-            _actor = (Actor) mi.CreateDelegate(typeof(Actor), control);
             // NOTE: strict method name as key here to avoid the default base url trap
-            _key = mi.Name;
+            Key = mi.Name;
+            Controller = controller;
+            _doer = (ActionDoer) mi.CreateDelegate(typeof(ActionDoer), controller);
         }
-
-        public WebSub Control => _control;
-
-        public string Key => _key;
 
         internal void Do(WebContext wc)
         {
-            _actor(wc);
+            _doer(wc);
         }
 
         public override string ToString()
         {
-            return _key;
+            return Key;
         }
     }
 
-    public delegate void Actor<in TZone>(WebContext wc, TZone zone);
+    public delegate void ActionDoer<in TZone>(WebContext wc, TZone zone);
 
 
     public class WebAction<TZone> : IMember where TZone : IZone
     {
-        // the declaring sub
-        readonly WebSub<TZone> _control;
+        private readonly ActionDoer<TZone> _doer;
 
-        readonly string _key;
+        public string Key { get; }
 
-        Actor<TZone> _actor;
+        public WebSub<TZone> Controller { get; }
 
-        internal WebAction(WebSub<TZone> control, MethodInfo mi)
+        internal WebAction(WebSub<TZone> controller, MethodInfo mi)
         {
-            _control = control;
-            _actor = (Actor<TZone>) mi.CreateDelegate(typeof(Actor), control);
             // NOTE: strict method name as key here to avoid the default base url trap
-            _key = mi.Name;
+            Key = mi.Name;
+            Controller = controller;
+            _doer = (ActionDoer<TZone>) mi.CreateDelegate(typeof(ActionDoer), controller);
         }
-
-        public WebSub<TZone> Control => _control;
-
-        public string Key => _key;
 
         internal void Do(WebContext wc, TZone zone)
         {
-            _actor(wc, zone);
+            _doer(wc, zone);
         }
 
         public override string ToString()
         {
-            return _key;
+            return Key;
         }
     }
 }

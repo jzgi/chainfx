@@ -41,7 +41,7 @@ namespace Greatbone.Sample
         // EVENT HANDLING
         //
 
-        public void OnBusinessEnroll()
+        public void OnBizEnroll()
         {
         }
 

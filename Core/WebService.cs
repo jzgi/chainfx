@@ -33,7 +33,6 @@ namespace Greatbone.Core
         private HttpClient[] client;
 
 
-
         protected WebService(WebCreationContext wcc) : base(wcc)
         {
         }
@@ -64,6 +63,12 @@ namespace Greatbone.Core
 
 
             _subs.Add(sub);
+
+
+            //
+            // check declared event handler methods
+
+
             return sub;
         }
 
@@ -173,7 +178,10 @@ namespace Greatbone.Core
         public long ModifiedOn { get; set; }
 
 
-        public void Publish(string topic, string arg, object msg)
+        ///
+        /// sends an event to a target service
+        ///
+        public void Publish(string service, string subarg, string method, IData msg)
         {
             Socket s;
         }
