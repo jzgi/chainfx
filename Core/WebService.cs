@@ -23,7 +23,7 @@ namespace Greatbone.Core
         private Set<WebSub> _subs;
 
         // the attached multiplexer, if any
-        private IMux _mux;
+        private IHub _hub;
 
         private Set<Publish> _publishes;
 
@@ -72,10 +72,10 @@ namespace Greatbone.Core
             return sub;
         }
 
-        public TMux SetMux<TMux, TZone>(Checker<TZone> checker) where TMux : WebMux<TZone> where TZone : IZone
+        public THub SetMux<THub, TZone>(Checker<TZone> checker) where THub : WebHub<TZone> where TZone : IZone
         {
             // create instance
-            Type type = typeof(TMux);
+            Type type = typeof(THub);
             ConstructorInfo ci = type.GetConstructor(new[] {typeof(WebCreationContext)});
             if (ci == null)
             {
@@ -87,10 +87,10 @@ namespace Greatbone.Core
                 Parent = this,
                 Service = this
             };
-            TMux mux = (TMux) ci.Invoke(new object[] {wcc});
+            THub mux = (THub) ci.Invoke(new object[] {wcc});
 
             // call the initialization and set
-            _mux = mux;
+            _hub = mux;
             return mux;
         }
 
@@ -152,16 +152,16 @@ namespace Greatbone.Core
                 string dir = relative.Substring(0, slash);
                 if (dir.StartsWith("-") && dir.EndsWith("-")) // mux
                 {
-                    if (_mux == null)
+                    if (_hub == null)
                     {
                         // send not implemented
                     }
                     string zoneKey = dir.Substring(1, dir.Length - 2);
                     IZone zone;
-                    if (_mux.ResolveZone(zoneKey, out zone))
+                    if (_hub.ResolveZone(zoneKey, out zone))
                     {
                         wc.Zone = zone;
-                        _mux.Handle(relative.Substring(slash + 1), wc);
+                        _hub.Handle(relative.Substring(slash + 1), wc);
                     }
                 }
                 else

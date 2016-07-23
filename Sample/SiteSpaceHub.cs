@@ -3,9 +3,9 @@ using Greatbone.Core;
 
 namespace Greatbone.Sample
 {
-    public class SiteSpaceMux : WebMux<Space>
+    public class SiteSpaceHub : WebHub<Space>
     {
-        public SiteSpaceMux(WebCreationContext wcc) : base(wcc)
+        public SiteSpaceHub(WebCreationContext wcc) : base(wcc)
         {
             AddSub<SiteSpaceMgtSub>("mgt", null);
         }
