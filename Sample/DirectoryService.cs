@@ -18,7 +18,7 @@ namespace Greatbone.Sample
         {
             AddSub<DirectoryAdminSub>("admin", (x) => x.Can(null, 1));
 
-            SetMux<DirectoryUserMux, User>((x, p) => true);
+            MountHub<DirectoryUserHub, User>((x, p) => true);
         }
 
 

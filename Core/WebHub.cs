@@ -1,4 +1,5 @@
 ﻿using System;
+using System.IO;
 using System.Net;
 using System.Reflection;
 
@@ -32,12 +33,14 @@ namespace Greatbone.Core
             ConstructorInfo ci = type.GetConstructor(new[] {typeof(WebCreationContext)});
             if (ci == null)
             {
-                throw new WebException(type + ": the WebCreationContext parameterized constructor not found");
+                throw new WebException(type + ": the WebCreationContext-param constructor not found");
             }
             WebCreationContext wcc = new WebCreationContext
             {
                 Key = key,
-                StaticPath = ""
+              StaticPath = Path.Combine(StaticPath, key),
+              Parent = this,
+              Service = Service
             };
             TSub sub = (TSub) ci.Invoke(new object[] {wcc});
             // call the initialization and add
