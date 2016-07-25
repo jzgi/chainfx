@@ -38,9 +38,9 @@ namespace Greatbone.Core
             WebCreationContext wcc = new WebCreationContext
             {
                 Key = key,
-              StaticPath = Path.Combine(StaticPath, key),
-              Parent = this,
-              Service = Service
+                StaticPath = Path.Combine(StaticPath, key),
+                Parent = this,
+                Service = Service
             };
             TSub sub = (TSub) ci.Invoke(new object[] {wcc});
             // call the initialization and add

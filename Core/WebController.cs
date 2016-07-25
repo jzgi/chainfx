@@ -8,12 +8,21 @@ namespace Greatbone.Core
     ///
     public abstract class WebController : IMember
     {
+        ///
+        /// The key by which this sub-controller is added to its parent
+        ///
+        public string Key { get; }
+
         public string StaticPath { get; }
 
-        // the corresponding static file folder, can be null
+        ///
+        /// The corresponding static folder contents, can be null
+        ///
         public Set<Static> Statics { get; }
 
-        // the default static file, can be null
+        ///
+        /// The default static file of the controller, can be null
+        ///
         public Static DefaultStatic { get; }
 
         ///
@@ -26,17 +35,21 @@ namespace Greatbone.Core
         ///
         public WebService Service { get; }
 
-        ///
-        /// The key by which this sub-controller is added to its parent
-        ///
-        public string Key { get; }
-
 
         internal WebController(WebCreationContext wcc)
         {
+            if (wcc == null)
+            {
+                throw new ArgumentNullException(nameof(wcc));
+            }
+            if (wcc.Key == null)
+            {
+                throw new ArgumentNullException(nameof(wcc.Key));
+            }
+
             Key = wcc.Key;
             Parent = wcc.Parent;
-            Service = wcc.Service;
+            Service = this is WebService ? (WebService) this : wcc.Service;
             StaticPath = wcc.StaticPath;
 
             // load static files, if any
