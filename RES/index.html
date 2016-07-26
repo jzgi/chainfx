@@ -9,11 +9,14 @@
     <script src="http:cdn.bootcss.com/jquery/2.2.4/jquery.min.js"></script>
     <script src="http://cdn.bootcss.com/foundation/6.2.3/foundation.min.js"></script>
     <link rel="stylesheet" href="http://cdn.bootcss.com/foundation/6.2.3/foundation.min.css">
+    <script src="app.js"></script>
 </head>
 <body>
 
 <div class="off-canvas-wrapper">
+
     <div class="off-canvas-wrapper-inner" data-off-canvas-wrapper>
+
         <div class="off-canvas position-left" id="offCanvas" data-off-canvas>
 
             <!-- Close button -->
@@ -39,7 +42,8 @@
 
             <div class="orbit" role="region" aria-label="Favorite Space Pictures" data-orbit>
                 <ul class="orbit-container">
-                    <button class="orbit-previous"><span class="show-for-sr">Previous Slide</span>&#9664;&#xFE0E;</button>
+                    <button class="orbit-previous"><span class="show-for-sr">Previous Slide</span>&#9664;&#xFE0E;
+                    </button>
                     <button class="orbit-next"><span class="show-for-sr">Next Slide</span>&#9654;&#xFE0E;</button>
                     <li class="is-active orbit-slide">
                         <img class="orbit-image" src="01.jpg" alt="Space">
@@ -59,7 +63,8 @@
                     </li>
                 </ul>
                 <nav class="orbit-bullets">
-                    <button class="is-active" data-slide="0"><span class="show-for-sr">First slide details.</span><span class="show-for-sr">Current Slide</span></button>
+                    <button class="is-active" data-slide="0"><span class="show-for-sr">First slide details.</span><span
+                            class="show-for-sr">Current Slide</span></button>
                     <button data-slide="1"><span class="show-for-sr">Second slide details.</span></button>
                     <button data-slide="2"><span class="show-for-sr">Third slide details.</span></button>
                     <button data-slide="3"><span class="show-for-sr">Fourth slide details.</span></button>
@@ -69,28 +74,34 @@
             </div>
 
 
+            <ul class="tabs" data-tabs id="example-tabs">
+                <li class="tabs-title is-active"><a href="#panel1" aria-selected="true">热门红人</a></li>
+                <li class="tabs-title"><a href="#panel2">热门品牌</a></li>
+                <li class="tabs-title"><a href="#panel3">精品作品</a></li>
+            </ul>
+            <div class="tabs-content" data-tabs-content="example-tabs">
+                <div class="tabs-panel is-active" id="panel1">
+                    <p>Vivamus hendrerit arcu sed erat molestie vehicula. Sed auctor neque eu tellus rhoncus ut eleifend
+                        nibh porttitor. Ut in nulla enim. Phasellus molestie magna non est bibendum non venenatis nisl
+                        tempor. Suspendisse dictum feugiat nisl ut dapibus.</p>
+                </div>
+                <div class="tabs-panel" id="panel2">
+                    <p>Suspendisse dictum feugiat nisl ut dapibus. Vivamus hendrerit arcu sed erat molestie vehicula. Ut
+                        in
+                        nulla enim. Phasellus molestie magna non est bibendum non venenatis nisl tempor. Sed auctor
+                        neque eu
+                        tellus rhoncus ut eleifend nibh porttitor.</p>
+                </div>
+                <div class="tabs-panel" id="panel3">
+                    <p>Suspendisse dictum feugiat nisl ut dapibus. Vivamus hendrerit arcu sed erat molestie vehicula. Ut
+                        in
+                        nulla enim. Phasellus molestie magna non est bibendum non venenatis nisl tempor. Sed auctor
+                        neque eu
+                        tellus rhoncus ut eleifend nibh porttitor.</p>
+                </div>
+            </div>
+
         </div>
-
-
-
-
-        <ul class="tabs" data-tabs id="example-tabs">
-            <li class="tabs-title is-active"><a href="#panel1" aria-selected="true">热门红人</a></li>
-            <li class="tabs-title"><a href="#panel2">热门品牌</a></li>
-            <li class="tabs-title"><a href="#panel3">精品作品</a></li>
-        </ul>
-        <div class="tabs-content" data-tabs-content="example-tabs">
-            <div class="tabs-panel is-active" id="panel1">
-                <p>Vivamus hendrerit arcu sed erat molestie vehicula. Sed auctor neque eu tellus rhoncus ut eleifend nibh porttitor. Ut in nulla enim. Phasellus molestie magna non est bibendum non venenatis nisl tempor. Suspendisse dictum feugiat nisl ut dapibus.</p>
-            </div>
-            <div class="tabs-panel" id="panel2">
-                <p>Suspendisse dictum feugiat nisl ut dapibus.  Vivamus hendrerit arcu sed erat molestie vehicula. Ut in nulla enim. Phasellus molestie magna non est bibendum non venenatis nisl tempor.  Sed auctor neque eu tellus rhoncus ut eleifend nibh porttitor.</p>
-            </div>
-            <div class="tabs-panel" id="panel3">
-                <p>Suspendisse dictum feugiat nisl ut dapibus.  Vivamus hendrerit arcu sed erat molestie vehicula. Ut in nulla enim. Phasellus molestie magna non est bibendum non venenatis nisl tempor.  Sed auctor neque eu tellus rhoncus ut eleifend nibh porttitor.</p>
-            </div>
-        </div>
-
 
 
     </div>
@@ -99,6 +110,9 @@
 
 <script>
 $(document).foundation();
+
+
+
 </script>
 
 </body>
