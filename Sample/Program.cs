@@ -22,11 +22,13 @@ namespace Greatbone.Sample
                 Checker = null
             };
 
+            bool debug = args.Length > 0 && "debug".Equals(args[0]);
+
+            string addr = debug ? "localhost" : "60.205.104.239";
             // create web host by using the kestrel web server
             var host = new WebHostBuilder()
                 .UseKestrel()
-//                .UseUrls("http://60.205.104.239:8080/")
-                .UseUrls("http://localhost:8080/", "http://localhost:9090/")
+                .UseUrls("http://" + addr + ":8080/", "http://" + addr + ":9090/")
                 .ConfigureServices((coll) => { coll.AddMemoryCache(); })
                 .Configure(app => { app.Use(_ => site.Handle); })
                 .Build();
