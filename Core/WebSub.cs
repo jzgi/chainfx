@@ -52,37 +52,43 @@ namespace Greatbone.Core
 
         public virtual void Handle(string relative, WebContext wc)
         {
-            // static handling
-            if (Statics != null && relative.IndexOf('.') != -1)
+            if (relative.IndexOf('.') != -1) // static handling
             {
                 Static sta;
-                if (Statics.TryGet(relative, out sta))
+                if (Statics != null && Statics.TryGet(relative, out sta))
                 {
                     wc.Response.SetContent(sta.ContentType, sta.Content, 0, sta.Length);
                 }
-                return;
-            }
-
-            // action handling
-            WebAction a;
-            if (_actions.TryGet(relative, out a))
-            {
-                a.Do(wc);
+                else
+                {
+                    wc.Response.StatusCode = 404;
+                }
             }
             else
-            {
-                // send not found
+            { // action handling
+                WebAction a = relative.Length == 0 ? _defaction : GetAction(relative);
+                if (a == null)
+                {
+                    wc.Response.StatusCode = 404;
+                }
+                else
+                {
+                    a.Do(wc);
+                }
             }
         }
 
         public virtual void Default(WebContext wc)
         {
-            if (DefaultStatic != null)
+            Static sta = IndexStatic;
+            if (sta != null)
             {
+                wc.Response.SetContent(sta.ContentType, sta.Content, 0, sta.Length);
             }
             else
             {
                 // send not implemented
+                wc.Response.StatusCode = 404;
             }
         }
     }
@@ -132,34 +138,38 @@ namespace Greatbone.Core
 
         public virtual void Handle(string relative, WebContext wc)
         {
-            // static handling
-            if (Statics != null && relative.IndexOf('.') != -1)
+            if (relative.IndexOf('.') != -1) // static handling
             {
                 Static sta;
-                if (Statics.TryGet(relative, out sta))
+                if (Statics != null && Statics.TryGet(relative, out sta))
                 {
-                    wc.Response.SetContent("", sta.Content, 0, sta.Length);
+                    wc.Response.SetContent(sta.ContentType, sta.Content, 0, sta.Length);
                 }
-                return;
-            }
-
-            // action handling
-            WebAction<TZone> a;
-            if (_actions.TryGet(relative, out a))
-            {
-                a.Do(wc, (TZone) (wc.Zone));
+                else
+                {
+                    wc.Response.StatusCode = 404;
+                }
             }
             else
-            {
-                // send not found
+            { // action handling
+                WebAction<TZone> a = relative.Length == 0 ? _defaction : GetAction(relative);
+                if (a == null)
+                {
+                    wc.Response.StatusCode = 404;
+                }
+                else
+                {
+                    a.Do(wc, (TZone)(wc.Zone));
+                }
             }
         }
 
         public virtual void Default(WebContext wc, TZone zone)
         {
-            if (DefaultStatic != null)
+            Static sta = IndexStatic;
+            if (sta != null)
             {
-                wc.Response.SetContent(DefaultStatic.ContentType, DefaultStatic.Content, 0, DefaultStatic.Length);
+                wc.Response.SetContent(sta.ContentType, sta.Content, 0, sta.Length);
             }
             else
             {

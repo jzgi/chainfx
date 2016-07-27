@@ -45,7 +45,7 @@ namespace Greatbone.Core
             }
             // create instance by reflection
             Type type = typeof(TSub);
-            ConstructorInfo ci = type.GetConstructor(new[] {typeof(WebCreationContext)});
+            ConstructorInfo ci = type.GetConstructor(new[] { typeof(WebCreationContext) });
             if (ci == null)
             {
                 throw new WebException(type + ": the WebCreationContext parameterized constructor not found");
@@ -57,7 +57,7 @@ namespace Greatbone.Core
                 Parent = this,
                 Service = this
             };
-            TSub sub = (TSub) ci.Invoke(new object[] {wcc});
+            TSub sub = (TSub)ci.Invoke(new object[] { wcc });
             sub.Checker = checker;
 
             _subs.Add(sub);
@@ -72,7 +72,7 @@ namespace Greatbone.Core
         {
             // create instance
             Type type = typeof(THub);
-            ConstructorInfo ci = type.GetConstructor(new[] {typeof(WebCreationContext)});
+            ConstructorInfo ci = type.GetConstructor(new[] { typeof(WebCreationContext) });
             if (ci == null)
             {
                 throw new WebException(type + ": the WebCreationContext parameterized constructor not found");
@@ -84,7 +84,7 @@ namespace Greatbone.Core
                 Parent = this,
                 Service = this
             };
-            THub mux = (THub) ci.Invoke(new object[] {wcc});
+            THub mux = (THub)ci.Invoke(new object[] { wcc });
 
             // call the initialization and set
             _hub = mux;
@@ -104,35 +104,33 @@ namespace Greatbone.Core
 
         // NOTE: for long-pulling support, a sending acitity must be initailized based on the context
         //
-        public Task Handle(HttpContext context)
+        public async Task Handle(HttpContext context)
         {
             string host = context.Request.Headers["Host"];
-            Console.WriteLine("Host: " + host);
 
-            if (host.EndsWith("9090")) // message
+            //            Console.WriteLine("Host: " + host);
+
+            if (host.EndsWith("9090")) // request for events (topics)
             {
                 // msg
             }
-            else // request & response
+            else // request for action or static
             {
                 using (WebContext wc = new WebContext(context))
                 {
                     Handle(context.Request.Path.Value.Substring(1), wc);
+
+                    await wc.SendAsync();
                 }
             }
-
-            return null;
         }
 
         public override void Handle(string relative, WebContext wc)
         {
-//            Console.WriteLine("relative: " + relative);
             int slash = relative.IndexOf('/');
             if (slash == -1) // without a slash then handle it locally
             {
-                WebAction a = GetAction(relative);
-//                Console.WriteLine("action: " + a);
-                a?.Do(wc);
+                base.Handle(relative, wc);
             }
             else // not local then sub & mux
             {
@@ -141,14 +139,17 @@ namespace Greatbone.Core
                 {
                     if (_hub == null)
                     {
-                        // send not implemented
+                        wc.Response.StatusCode = 501; // Not Implemented
                     }
-                    string zoneKey = dir.Substring(1);
-                    IZone zone;
-                    if (_hub.ResolveZone(zoneKey, out zone))
+                    else
                     {
-                        wc.Zone = zone;
-                        _hub.Handle(relative.Substring(slash + 1), wc);
+                        string zoneKey = dir.Substring(1);
+                        IZone zone;
+                        if (_hub.ResolveZone(zoneKey, out zone))
+                        {
+                            wc.Zone = zone;
+                            _hub.Handle(relative.Substring(slash + 1), wc);
+                        }
                     }
                 }
                 else

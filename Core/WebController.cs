@@ -21,9 +21,9 @@ namespace Greatbone.Core
         public Set<Static> Statics { get; }
 
         ///
-        /// The default static file of the controller, can be null
+        /// The index static file of the controller, can be null
         ///
-        public Static DefaultStatic { get; }
+        public Static IndexStatic { get; }
 
         ///
         /// The parent service that this sub-controller is added to
@@ -73,9 +73,9 @@ namespace Greatbone.Core
                             Modified = modified
                         };
                         Statics.Add(sta);
-                        if (file.StartsWith("default."))
+                        if (sta.Key.StartsWith("index."))
                         {
-                            DefaultStatic = sta;
+                            IndexStatic = sta;
                         }
                     }
                 }
