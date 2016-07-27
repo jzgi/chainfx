@@ -171,7 +171,7 @@ namespace Greatbone.Core
         ///
         public void Publish(string topic, string subarg, IData msg)
         {
-            Socket s;
+        
         }
     }
 }
