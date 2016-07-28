@@ -24,27 +24,23 @@ namespace Greatbone.Core
         // possible chars for representing a number as a string
         private static readonly byte[] Digits =
         {
-            (byte) '0', (byte) '1', (byte) '2', (byte) '3', (byte) '4', (byte) '5', (byte) '6', (byte) '7', (byte) '8',
-            (byte) '9'
+            (byte) '0', (byte) '1', (byte) '2', (byte) '3', (byte) '4', (byte) '5', (byte) '6', (byte) '7', (byte) '8', (byte) '9'
         };
 
-        private const byte Minus = (byte) '-';
+        private const byte Minus = (byte)'-';
 
-        private static readonly byte[] Bytes = {1, 10, 100};
+        private static readonly byte[] Bytes = { 1, 10, 100 };
 
-        private static readonly short[] Shorts = {1, 10, 100, 1000, 10000};
+        private static readonly short[] Shorts = { 1, 10, 100, 1000, 10000 };
 
         private static readonly int[] Ints =
         {
-            1, 10, 100, 1000, 10000, 100000, 1000000, 10000000, 100000000, 1000000000,
-            1000000000
+            1, 10, 100, 1000, 10000, 100000, 1000000, 10000000, 100000000, 1000000000, 1000000000
         };
 
         private static readonly long[] Longs =
         {
-            1, 10, 100, 1000, 10000, 100000, 1000000, 10000000, 100000000, 1000000000, 1000000000, 100000000000L,
-            1000000000000L, 10000000000000L, 100000000000000L, 100000000000000L, 10000000000000000L, 100000000000000000L,
-            1000000000000000000L
+            1, 10, 100, 1000, 10000, 100000, 1000000, 10000000, 100000000, 1000000000, 1000000000, 100000000000L, 1000000000000L, 10000000000000L, 100000000000000L, 100000000000000L, 10000000000000000L, 100000000000000000L, 1000000000000000000L
         };
 
         //
@@ -87,7 +83,7 @@ namespace Greatbone.Core
 
         public void Put(bool v)
         {
-            AddByte((byte) '1');
+            AddByte((byte)'1');
         }
 
         public void Put(byte v)
@@ -201,7 +197,7 @@ namespace Greatbone.Core
         }
 
         // sign mask
-        private const int Sign = unchecked((int) 0x80000000);
+        private const int Sign = unchecked((int)0x80000000);
 
         public void Put(decimal dec, bool money)
         {
@@ -216,7 +212,7 @@ namespace Greatbone.Core
                 }
                 if (mid != 0) // money
                 {
-                    long x = (low & 0x00ffffff) + ((long) (byte) (low >> 24) << 24) + ((long) mid << 32);
+                    long x = (low & 0x00ffffff) + ((long)(byte)(low >> 24) << 24) + ((long)mid << 32);
                     bool bgn = false;
                     for (int i = Longs.Length - 1; i >= 2; i--)
                     {
@@ -278,8 +274,8 @@ namespace Greatbone.Core
 
         public void Put(DateTime dt, bool time)
         {
-            short yr = (short) dt.Year;
-            byte mon = (byte) dt.Month, day = (byte) dt.Day;
+            short yr = (short)dt.Year;
+            byte mon = (byte)dt.Month, day = (byte)dt.Day;
 
             Put(yr);
             Put('-');
@@ -289,7 +285,7 @@ namespace Greatbone.Core
             if (day < 10) Put('0');
             AddByte(day);
 
-            byte hr = (byte) dt.Hour, min = (byte) dt.Minute, sec = (byte) dt.Second;
+            byte hr = (byte)dt.Hour, min = (byte)dt.Minute, sec = (byte)dt.Second;
             if (time)
             {
                 Put(' '); // a space for separation
@@ -310,20 +306,20 @@ namespace Greatbone.Core
             if (c < 0x80)
             {
                 // have at most seven bits
-                AddByte((byte) c);
+                AddByte((byte)c);
             }
             else if (c < 0x800)
             {
                 // 2 text, 11 bits
-                AddByte((byte) (0xc0 | (c >> 6)));
-                AddByte((byte) (0x80 | (c & 0x3f)));
+                AddByte((byte)(0xc0 | (c >> 6)));
+                AddByte((byte)(0x80 | (c & 0x3f)));
             }
             else
             {
                 // 3 text, 16 bits
-                AddByte((byte) (0xe0 | ((c >> 12))));
-                AddByte((byte) (0x80 | ((c >> 6) & 0x3f)));
-                AddByte((byte) (0x80 | (c & 0x3f)));
+                AddByte((byte)(0xe0 | ((c >> 12))));
+                AddByte((byte)(0x80 | ((c >> 6) & 0x3f)));
+                AddByte((byte)(0x80 | (c & 0x3f)));
             }
         }
 
