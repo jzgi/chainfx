@@ -16,10 +16,10 @@ $(document)
                         function(index, value) {
                             $('#panel1')
                                 .append('<div class="row ">' +
-                                    '<div class="large-2 columns">' +
+                                    '<div class="small-4 columns">' +
                                     '<a href = "/celeb/' + value.id + '"> <img src = "http://placehold.it/150x200&amp;text=book cover" alt = "book cover" class=" thumbnail"></a>' +
                                     '</div>' +
-                                    '<div class="large-8 columns">' +
+                                    '<div class="small-8 columns">' +
                                     value.name +
                                     '</div>' +
                                     '</div>'
@@ -42,12 +42,12 @@ $(document)
                         function(index, value) {
                             $('#panel2')
                                 .append('<div class="row ">' +
-                                    '<div class="large-2 columns">' +
+                                    '<div class="small-4 columns">' +
                                     '<a href = "/celeb/' +
                                     value.id +
                                     '"> <img src = "http://placehold.it/150x200&amp;text=book cover" alt = "book cover" class=" thumbnail"></a>' +
                                     '</div>' +
-                                    '<div class="large-8 columns">' +
+                                    '<div class="small-8 columns">' +
                                     value.name +
                                     '</div>' +
                                     '</div>'
@@ -69,12 +69,12 @@ $(document)
                         function(index, value) {
                             $('#panel3')
                                 .append('<div class="row ">' +
-                                    '<div class="large-2 columns">' +
+                                    '<div class="small-4 columns">' +
                                     '<a href = "/celeb/' +
                                     value.id +
                                     '"> <img src = "http://placehold.it/150x200&amp;text=book cover" alt = "book cover" class=" thumbnail"></a>' +
                                     '</div>' +
-                                    '<div class="large-8 columns">' +
+                                    '<div class="small-8 columns">' +
                                     value.name +
                                     '</div>' +
                                     '</div>'
