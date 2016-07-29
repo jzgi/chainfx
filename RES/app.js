@@ -15,11 +15,15 @@ $(document)
                     $.each(lst,
                         function(index, value) {
                             $('#panel1')
-                                .append('<input type="checkbox" id="checkbox_' +
-                                    value.id +
-                                    '" checked="checked" value="0" />&nbsp;<div style = "display:inline;" > ' +
+                                .append('<div class="row ">' +
+                                    '<div class="large-2 columns">' +
+                                    '<a href = "/celeb/' + value.id + '"> <img src = "http://placehold.it/150x200&amp;text=book cover" alt = "book cover" class=" thumbnail"></a>' +
+                                    '</div>' +
+                                    '<div class="large-8 columns">' +
                                     value.name +
-                                    '</div >  < br /  > ');
+                                    '</div>' +
+                                    '</div>'
+                                );
 
                         });
                 }
@@ -37,11 +41,17 @@ $(document)
                     $.each(lst,
                         function(index, value) {
                             $('#panel2')
-                                .append('<input type="checkbox" id="checkbox_' +
+                                .append('<div class="row ">' +
+                                    '<div class="large-2 columns">' +
+                                    '<a href = "/celeb/' +
                                     value.id +
-                                    '" checked="checked" value="0" />&nbsp;<div style = "display:inline;" > ' +
+                                    '"> <img src = "http://placehold.it/150x200&amp;text=book cover" alt = "book cover" class=" thumbnail"></a>' +
+                                    '</div>' +
+                                    '<div class="large-8 columns">' +
                                     value.name +
-                                    '</div >  < br /  > ');
+                                    '</div>' +
+                                    '</div>'
+                                );
 
                         });
                 }
@@ -58,11 +68,17 @@ $(document)
                     $.each(lst,
                         function(index, value) {
                             $('#panel3')
-                                .append('<input type="checkbox" id="checkbox_' +
+                                .append('<div class="row ">' +
+                                    '<div class="large-2 columns">' +
+                                    '<a href = "/celeb/' +
                                     value.id +
-                                    '" checked="checked" value="0" />&nbsp;<div style = "display:inline;" > ' +
+                                    '"> <img src = "http://placehold.it/150x200&amp;text=book cover" alt = "book cover" class=" thumbnail"></a>' +
+                                    '</div>' +
+                                    '<div class="large-8 columns">' +
                                     value.name +
-                                    '</div >  < br /  > ');
+                                    '</div>' +
+                                    '</div>'
+                                );
 
                         });
                 }
