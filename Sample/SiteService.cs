@@ -14,17 +14,6 @@ namespace Greatbone.Sample
 
       AddSub<SiteCartSub>("cart", null);
 
-
-      //
-      // sub services, placed here to achieve single-machine-deployment
-
-      AddSub<DirectoryService>("dir", null);
-
-      AddSub<BusinessService>("biz", null);
-
-      AddSub<OrderService>("ord", null);
-
-      AddSub<AccountingService>("acctg", null);
     }
 
     public void Show(WebContext wc)
