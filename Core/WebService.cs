@@ -109,7 +109,7 @@ namespace Greatbone.Core
 
 		// NOTE: for long-pulling support, a sending acitity must be initailized based on the context
 		//
-		public async Task Handle(HttpContext context)
+		internal Task Handle(HttpContext context)
 		{
 			string host = context.Request.Headers["Host"];
 
@@ -125,7 +125,7 @@ namespace Greatbone.Core
 				{
 					Handle(context.Request.Path.Value.Substring(1), wc);
 
-					await wc.SendAsync();
+					return wc.SendAsync();
 				}
 			}
 		}

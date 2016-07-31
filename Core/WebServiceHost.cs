@@ -1,7 +1,10 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Net.Http;
+using System.Reflection.Metadata;
+using System.Threading.Tasks;
 using Microsoft.AspNetCore.Hosting.Internal;
+using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 
@@ -16,7 +19,10 @@ namespace Greatbone.Core
 		{
 		}
 
-		public TService AddService<TService>(string key, Checker checker) where TService : WebService, new()
+		///
+		/// Creates and adds a microservice to this service host.
+		///
+		public TService AddMicroService<TService>(string key, Checker checker) where TService : WebService, new()
 		{
 			TService service = new TService()
 			{
@@ -29,8 +35,30 @@ namespace Greatbone.Core
 			return service;
 		}
 
-		internal void Dispatch(HttpContent ctx)
+		internal async Task Dispatch(HttpContext ctx)
 		{
+			// the host header to dispatch accordingly
+			string host = ctx.Request.Headers["Host"];
+			if (host == null)
+			{
+				await _services[0].Handle(ctx);
+			}
+
+			//            Console.WriteLine("Host: " + host);
+
+			if (host.EndsWith("9090")) // request for events (topics)
+			{
+				// msg
+			}
+			else // request for action or static
+			{
+				using (WebContext wc = new WebContext(context))
+				{
+					Handle(context.Request.Path.Value.Substring(1), wc);
+
+					await wc.SendAsync();
+				}
+			}
 		}
 	}
 }

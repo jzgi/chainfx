@@ -33,7 +33,7 @@ namespace Greatbone.Sample
 //				.Configure(app => { app.Use(_ => site.Handle); })
 				.Build();
 
-			host.AddService<DirectoryService>("dir", null);
+			host.AddMicroService<DirectoryService>("dir", null);
 
 			host.Run();
 		}
