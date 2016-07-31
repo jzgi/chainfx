@@ -18,7 +18,7 @@ namespace Greatbone.Core
 		public static readonly Checker<IZone> AnyOneZone = (t, z) => true;
 
 		// a discriminator of virtual host
-		private string hoststring;
+		private string _hostspec;
 
 		// a discriminator of virtual host
 		private int port;
@@ -96,6 +96,10 @@ namespace Greatbone.Core
 			return mux;
 		}
 
+		internal bool IsTarget(string host)
+		{
+			return false;
+		}
 
 		public void AddPublish(string topic)
 
@@ -128,6 +132,7 @@ namespace Greatbone.Core
 					return wc.SendAsync();
 				}
 			}
+			return null;
 		}
 
 		public override void Handle(string relative, WebContext wc)
