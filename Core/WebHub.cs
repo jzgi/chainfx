@@ -18,7 +18,7 @@ namespace Greatbone.Core
         private Set<WebSub<TZone>> _subs;
 
 
-        public WebHub(WebCreationContext wcc) : base(wcc)
+        public WebHub(WebServiceContext wsc) : base(wsc)
         {
         }
 
@@ -30,12 +30,12 @@ namespace Greatbone.Core
             }
             // create instance by reflection
             Type type = typeof(TSub);
-            ConstructorInfo ci = type.GetConstructor(new[] {typeof(WebCreationContext)});
+            ConstructorInfo ci = type.GetConstructor(new[] {typeof(WebServiceContext)});
             if (ci == null)
             {
                 throw new WebException(type + ": the WebCreationContext-param constructor not found");
             }
-            WebCreationContext wcc = new WebCreationContext
+            WebServiceContext wcc = new WebServiceContext
             {
                 Key = key,
                 StaticPath = Path.Combine(StaticPath, key),

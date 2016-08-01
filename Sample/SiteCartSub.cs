@@ -4,7 +4,7 @@ namespace Greatbone.Sample
 {
     public class SiteCartSub : WebSub
     {
-        public SiteCartSub(WebCreationContext wcc) : base(wcc)
+        public SiteCartSub(WebServiceContext wsc) : base(wsc)
         {
         }
 

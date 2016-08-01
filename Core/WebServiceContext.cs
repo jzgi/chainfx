@@ -1,6 +1,6 @@
 ﻿namespace Greatbone.Core
 {
-    public class WebCreationContext
+    public struct WebServiceContext
     {
         public string Key { get; set; }
 

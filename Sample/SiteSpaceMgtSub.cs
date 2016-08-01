@@ -4,7 +4,7 @@ namespace Greatbone.Sample
 {
     public class SiteSpaceMgtSub : WebSub<Space>
     {
-        public SiteSpaceMgtSub(WebCreationContext wcc) : base(wcc)
+        public SiteSpaceMgtSub(WebServiceContext wsc) : base(wsc)
         {
         }
 

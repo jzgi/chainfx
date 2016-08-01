@@ -4,7 +4,7 @@ namespace Greatbone.Sample
 {
     public class DirectoryUserHub : WebHub<User>
     {
-        public DirectoryUserHub(WebCreationContext wcc) : base(wcc)
+        public DirectoryUserHub(WebServiceContext wsc) : base(wsc)
         {
         }
 

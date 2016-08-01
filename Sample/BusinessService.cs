@@ -8,7 +8,7 @@ namespace Greatbone.Sample
         // INIT
         //
 
-        public BusinessService(WebCreationContext wcc) : base(wcc)
+        public BusinessService(WebServiceContext wsc) : base(wsc)
         {
         }
 

@@ -1,6 +1,8 @@
-﻿namespace Greatbone.Core
+﻿using System;
+
+namespace Greatbone.Core
 {
-    public class Publish : IMember
+    public class PublishAttribute : Attribute
     {
         string topic;
 

@@ -8,7 +8,7 @@ namespace Greatbone.Sample
   ///
   public class SiteService : WebService
   {
-    public SiteService(WebCreationContext wcc) : base(wcc)
+    public SiteService(WebServiceContext wsc) : base(wsc)
     {
       MountHub<SiteSpaceHub, Space>(null);
 

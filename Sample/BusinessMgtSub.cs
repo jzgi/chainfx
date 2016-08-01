@@ -4,7 +4,7 @@ namespace Greatbone.Sample
 {
     public class BusinessMgtSub : WebSub
     {
-        public BusinessMgtSub(WebCreationContext wcc) : base(wcc)
+        public BusinessMgtSub(WebServiceContext wsc) : base(wsc)
         {
         }
 

@@ -4,7 +4,7 @@ namespace Greatbone.Sample
 {
     public class OrderService : WebService
     {
-        public OrderService(WebCreationContext wcc) : base(wcc)
+        public OrderService(WebServiceContext wsc) : base(wsc)
         {
         }
     }

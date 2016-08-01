@@ -4,7 +4,7 @@ namespace Greatbone.Core
 {
     public delegate void EventDoer(WebContext wc);
 
-    public class WebEvent
+    public class WebEvent : IMember
     {
         private readonly EventDoer _doer;
 

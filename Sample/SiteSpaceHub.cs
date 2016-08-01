@@ -5,7 +5,7 @@ namespace Greatbone.Sample
 {
     public class SiteSpaceHub : WebHub<Space>
     {
-        public SiteSpaceHub(WebCreationContext wcc) : base(wcc)
+        public SiteSpaceHub(WebServiceContext wsc) : base(wsc)
         {
             AddSub<SiteSpaceMgtSub>("mgt", null);
         }

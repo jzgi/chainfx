@@ -14,20 +14,11 @@ namespace Greatbone.Sample
         // user cache
         // MemoryCache cache = new MemoryCache(null);
 
-	    public DirectoryService() : base(null)
-	    {
-
-	    }
-        public DirectoryService(WebCreationContext wcc) : base(wcc)
+        public DirectoryService(WebServiceContext wsc) : base(wsc)
         {
             AddSub<DirectoryAdminSub>("admin", (x) => x.Can(null, 1));
 
             MountHub<DirectoryUserHub, User>((x, p) => true);
-        }
-
-
-        public override void Default(WebContext wc)
-        {
         }
 
         ///
