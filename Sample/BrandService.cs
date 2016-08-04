@@ -2,13 +2,13 @@
 
 namespace Greatbone.Sample
 {
-    public class BusinessService : WebService
+    public class BrandService : WebService
     {
         //
         // INIT
         //
 
-        public BusinessService(WebServiceContext wsc) : base(wsc)
+        public BrandService(WebServiceContext wsc) : base(wsc)
         {
         }
 

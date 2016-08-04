@@ -2,9 +2,9 @@
 
 namespace Greatbone.Sample
 {
-    public class BusinessMgtSub : WebSub
+    public class BrandMgtSub : WebSub
     {
-        public BusinessMgtSub(WebServiceContext wsc) : base(wsc)
+        public BrandMgtSub(WebServiceContext wsc) : base(wsc)
         {
         }
 

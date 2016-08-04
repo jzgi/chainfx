@@ -9,12 +9,12 @@ namespace Greatbone.Sample
     ///   /user/-123-/
     ///   /user/
     ///
-    public class DirectoryService : WebService
+    public class UserService : WebService
     {
         // user cache
         // MemoryCache cache = new MemoryCache(null);
 
-        public DirectoryService(WebServiceContext wsc) : base(wsc)
+        public UserService(WebServiceContext wsc) : base(wsc)
         {
             AddSub<DirectoryAdminSub>("admin", (x) => x.Can(null, 1));
 

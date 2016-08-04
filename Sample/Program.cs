@@ -16,22 +16,22 @@ namespace Greatbone.Sample
         ///
         public static readonly Set<WebService> MicroServices = new Set<WebService>(8)
         {
-            new DirectoryService(new WebServiceContext()
-            {
-                Key = "dir",
-                StaticPath = Path.Combine(Directory.GetCurrentDirectory(), "DIR")
-            }),
-            new SiteService(new WebServiceContext()
+            new WwwService(new WebServiceContext()
             {
                 Key = "www",
-                StaticPath = Path.Combine(Directory.GetCurrentDirectory(), "WWW")
+                StaticPath = Path.Combine(Directory.GetCurrentDirectory(), "_WWW")
+            }),
+            new UserService(new WebServiceContext()
+            {
+                Key = "user",
+                StaticPath = Path.Combine(Directory.GetCurrentDirectory(), "_ser")
             }),
             new AccountingService(new WebServiceContext()
             {
                 Key = "acctg",
-                StaticPath = Path.Combine(Directory.GetCurrentDirectory(), "ACCTG")
+                StaticPath = Path.Combine(Directory.GetCurrentDirectory(), "acctg")
             }),
-            new BusinessService(new WebServiceContext()
+            new BrandService(new WebServiceContext()
             {
                 Key = "biz",
                 StaticPath = Path.Combine(Directory.GetCurrentDirectory(), "BIZ")
@@ -58,7 +58,6 @@ namespace Greatbone.Sample
                     if (svc.IsTarget(host))
                     {
                         target = svc;
-                        break;
                     }
                 }
             }
@@ -68,7 +67,6 @@ namespace Greatbone.Sample
             }
             else
             {
-
             }
         }
 

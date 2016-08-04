@@ -6,9 +6,9 @@ namespace Greatbone.Sample
 	///
 	/// The main website service (WWW).
 	///
-	public class SiteService : WebService
+	public class WwwService : WebService
 	{
-		public SiteService(WebServiceContext wsc) : base(wsc)
+		public WwwService(WebServiceContext wsc) : base(wsc)
 		{
 			MountHub<SiteSpaceHub, Space>(null);
 
