@@ -5,31 +5,38 @@ namespace Greatbone.Sample
 	///
 	/// The content management service.
 	///
-    public class ContentService : WebService
-    {
-        //
-        // INIT
-        //
+	public class ContentService : WebService
+	{
+		//
+		// INIT
+		//
 
-        public ContentService(WebServiceContext wsc) : base(wsc)
-        {
-        }
+		public ContentService(WebServiceContext wsc) : base(wsc)
+		{
+			AddSub<ContentNewsSub>("news", null);
 
-        //
-        // REQUEST HANDLING
-        //
+			AddSub<ContentEventSub>("event", null);
 
-        public override void Default(WebContext wc)
-        {
-            throw new System.NotImplementedException();
-        }
+			AddSub<ContentFameService>("fame", null);
 
-        //
-        // EVENT HANDLING
-        //
+			AddSub<ContentBrandService>("brand", null);
+		}
 
-        public void OnEnroll()
-        {
-        }
-    }
+		//
+		// REQUEST HANDLING
+		//
+
+		public override void Default(WebContext wc)
+		{
+			throw new System.NotImplementedException();
+		}
+
+		//
+		// EVENT HANDLING
+		//
+
+		public void OnEnroll()
+		{
+		}
+	}
 }

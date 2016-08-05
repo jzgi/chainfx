@@ -3,7 +3,7 @@
 namespace Greatbone.Sample
 {
 	///
-	/// /user/-/
+	/// /-/
 	///
     public class UserZoneHub : WebZoneHub<User>
     {

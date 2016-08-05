@@ -6,11 +6,11 @@ namespace Greatbone.Sample
 	///
 	/// /fame/-/
 	///
-    public class WwwFameZoneHub : WebZoneHub<Fame>
+    public class ContentFameZoneHub : WebZoneHub<Fame>
     {
-        public WwwFameZoneHub(WebServiceContext wsc) : base(wsc)
+        public ContentFameZoneHub(WebServiceContext wsc) : base(wsc)
         {
-            AddSub<WwwFameZoneMgtSub>("mgt", null);
+            AddSub<ContentFameZoneMgtSub>("mgt", null);
         }
 
 

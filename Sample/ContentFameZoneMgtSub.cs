@@ -5,9 +5,9 @@ namespace Greatbone.Sample
 	///
 	/// /fame/-/mgt/
 	///
-    public class WwwFameZoneMgtSub : WebSub<Fame>
+    public class ContentFameZoneMgtSub : WebSub<Fame>
     {
-        public WwwFameZoneMgtSub(WebServiceContext wsc) : base(wsc)
+        public ContentFameZoneMgtSub(WebServiceContext wsc) : base(wsc)
         {
         }
 

@@ -5,7 +5,7 @@ using Microsoft.Extensions.Options;
 namespace Greatbone.Sample
 {
 	///
-	///  The user directory service controller.
+	/// The user directory service controller.
 	///
 	public class UserService : WebService
 	{
