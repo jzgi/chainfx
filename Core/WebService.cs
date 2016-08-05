@@ -29,7 +29,7 @@ namespace Greatbone.Core
         private Set<WebSub> _subs;
 
         // the attached multiplexer, if any
-        private IZoneHub _hub;
+        private IZoneHub _zonehub;
 
 
         // topic sent by this microservice
@@ -97,7 +97,7 @@ namespace Greatbone.Core
             THub hub = (THub)ci.Invoke(new object[] { wcc });
 
             // call the initialization and set
-            _hub = hub;
+            _zonehub = hub;
             return hub;
         }
 
@@ -118,8 +118,6 @@ namespace Greatbone.Core
             }
         }
 
-
-        // NOTE: for long-pulling support, a sending acitity must be initailized based on the context
         //
         internal Task Handle(HttpContext context)
         {
@@ -143,7 +141,7 @@ namespace Greatbone.Core
                 string dir = relative.Substring(0, slash);
                 if (dir.StartsWith("-")) // mux
                 {
-                    if (_hub == null)
+                    if (_zonehub == null)
                     {
                         wc.Response.StatusCode = 501; // Not Implemented
                     }
@@ -151,10 +149,10 @@ namespace Greatbone.Core
                     {
                         string zoneKey = dir.Substring(1);
                         IZone zone;
-                        if (_hub.ResolveZone(zoneKey, out zone))
+                        if (_zonehub.ResolveZone(zoneKey, out zone))
                         {
                             wc.Zone = zone;
-                            _hub.Handle(relative.Substring(slash + 1), wc);
+                            _zonehub.Handle(relative.Substring(slash + 1), wc);
                         }
                     }
                 }

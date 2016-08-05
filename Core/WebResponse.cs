@@ -379,9 +379,7 @@ namespace Greatbone.Core
             Put('"');
             Put(name);
             Put('"');
-            Put(' ');
             Put(':');
-            Put(' ');
             Put(value);
         }
 
@@ -401,10 +399,20 @@ namespace Greatbone.Core
             Put('"');
             Put(name);
             Put('"');
-            Put(' ');
             Put(':');
-            Put(' ');
-            Put(value);
+            if (value == null)
+            {
+                Put('n');
+                Put('u');
+                Put('l');
+                Put('l');
+            }
+            else
+            {
+                Put('"');
+                Put(value);
+                Put('"');
+            }
         }
 
         public void Put<T>(string name, List<T> value) where T : IData
@@ -417,14 +425,13 @@ namespace Greatbone.Core
 
         public void PutStart()
         {
-            throw new System.NotImplementedException();
+                Put('{');
         }
 
         public void PutEnd()
         {
-            throw new System.NotImplementedException();
+                Put('}');
         }
-
 
         public int StatusCode
         {

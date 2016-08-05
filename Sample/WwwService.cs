@@ -1,5 +1,4 @@
-﻿using System;
-using Greatbone.Core;
+﻿using Greatbone.Core;
 
 namespace Greatbone.Sample
 {
@@ -16,11 +15,14 @@ namespace Greatbone.Sample
         public void Show(WebContext wc)
         {
             Fame v = new Fame();
-            v.To(wc.Response, 0);
+            v.key = "123";
+            v.name = "luke";
+            wc.Response.Output(v, 0);
         }
 
         public void Contact(WebContext wc)
         {
+			wc.Response.StatusCode = 200;
         }
     }
 }

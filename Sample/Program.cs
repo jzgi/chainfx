@@ -1,6 +1,4 @@
-﻿using System;
-using System.ComponentModel.DataAnnotations;
-using System.IO;
+﻿using System.IO;
 using System.Threading.Tasks;
 using Greatbone.Core;
 using Microsoft.AspNetCore.Hosting;
