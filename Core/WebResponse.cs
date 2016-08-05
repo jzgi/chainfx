@@ -29,6 +29,8 @@ namespace Greatbone.Core
 
         private const byte Minus = (byte)'-';
 
+        private const int InitialCapacity = 4096;
+
         private static readonly byte[] Bytes = { 1, 10, 100 };
 
         private static readonly short[] Shorts = { 1, 10, 100, 1000, 10000 };
@@ -65,12 +67,16 @@ namespace Greatbone.Core
 
         private void AddByte(byte b)
         {
-            // double the capacity as needed
+            if (_buffer == null)
+            {
+                _buffer = new byte[InitialCapacity];
+            }
+            // grow the capacity as needed
             int len = _buffer.Length;
             if (_count == len)
             {
                 byte[] old = _buffer;
-                _buffer = new byte[len * 2];
+                _buffer = new byte[len * 4];
                 Array.Copy(old, _buffer, len);
             }
             _buffer[_count++] = b; // append to the buffer
