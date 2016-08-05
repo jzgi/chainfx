@@ -2,9 +2,12 @@
 
 namespace Greatbone.Sample
 {
-    public class DirectoryUserHub : WebHub<User>
+	///
+	/// /user/-/
+	///
+    public class UserZoneHub : WebZoneHub<User>
     {
-        public DirectoryUserHub(WebServiceContext wsc) : base(wsc)
+        public UserZoneHub(WebServiceContext wsc) : base(wsc)
         {
         }
 

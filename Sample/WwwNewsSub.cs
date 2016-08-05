@@ -2,9 +2,12 @@
 
 namespace Greatbone.Sample
 {
-    public class BrandMgtSub : WebSub
+	///
+	/// /news/
+	///
+    public class WwwNewsSub : WebSub
     {
-        public BrandMgtSub(WebServiceContext wsc) : base(wsc)
+        public WwwNewsSub(WebServiceContext wsc) : base(wsc)
         {
         }
 

@@ -29,7 +29,7 @@ namespace Greatbone.Core
 		private Set<WebSub> _subs;
 
 		// the attached multiplexer, if any
-		private IHub _hub;
+		private IZoneHub _hub;
 
 
 		// topic sent by this microservice
@@ -78,7 +78,7 @@ namespace Greatbone.Core
 			return sub;
 		}
 
-		public THub MountHub<THub, TZone>(Checker<TZone> checker) where THub : WebHub<TZone> where TZone : IZone
+		public THub MountHub<THub, TZone>(Checker<TZone> checker) where THub : WebZoneHub<TZone> where TZone : IZone
 		{
 			// create instance
 			Type type = typeof(THub);

@@ -2,9 +2,9 @@
 
 namespace Greatbone.Sample
 {
-    public class DirectoryAdminSub : WebSub
+    public class UserAdminSub : WebSub
     {
-        public DirectoryAdminSub(WebServiceContext wsc) : base(wsc)
+        public UserAdminSub(WebServiceContext wsc) : base(wsc)
         {
         }
 

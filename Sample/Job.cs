@@ -3,7 +3,7 @@ using Greatbone.Core;
 
 namespace Greatbone.Sample
 {
-    public class Work : IData
+    public class Job : IData
     {
         internal int id;
 

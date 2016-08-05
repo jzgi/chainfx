@@ -2,7 +2,7 @@
 
 namespace Greatbone.Sample
 {
-    public class Space : IZone, IData
+    public class Fame : IZone, IData
     {
         internal string key;
 

@@ -5,20 +5,20 @@ using System.Reflection;
 
 namespace Greatbone.Core
 {
-    internal interface IHub
+    internal interface IZoneHub
     {
         void Handle(string basis, WebContext wc);
 
         bool ResolveZone(string zoneKey, out IZone zone);
     }
 
-    public abstract class WebHub<TZone> : WebSub<TZone>, IHub, IParent where TZone : IZone
+    public abstract class WebZoneHub<TZone> : WebSub<TZone>, IZoneHub, IParent where TZone : IZone
     {
         // the added subs
         private Set<WebSub<TZone>> _subs;
 
 
-        public WebHub(WebServiceContext wsc) : base(wsc)
+        public WebZoneHub(WebServiceContext wsc) : base(wsc)
         {
         }
 

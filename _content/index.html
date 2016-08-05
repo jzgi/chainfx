@@ -1,0 +1,174 @@
+<!doctype html>
+<html class="no-js" lang="en">
+
+<head>
+    <meta charset="utf-8"/>
+    <meta http-equiv="x-ua-compatible" content="ie=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+    <title>红娱网</title>
+
+    <script src="http://cdn.bootcss.com/jquery/2.2.4/jquery.min.js"></script>
+    <script src="http://cdn.bootcss.com/foundation/6.2.3/foundation.min.js"></script>
+    <link rel="stylesheet" href="http://cdn.bootcss.com/foundation/6.2.3/foundation.min.css">
+    <link rel="stylesheet" href="foundation-icons.css">
+    <script src="app.js"></script>
+</head>
+
+<body>
+
+<div class="off-canvas-wrapper">
+
+    <div class="off-canvas-wrapper-inner" data-off-canvas-wrapper>
+
+        <div class="off-canvas position-left" id="offCanvas" data-off-canvas>
+
+            <!-- Close button -->
+            <button class="close-button" aria-label="Close menu" type="button" data-close>
+                <span aria-hidden="true">&times;</span>
+            </button>
+
+            <!-- Menu -->
+            <ul class="vertical menu">
+                <li><a href="/news/"><i class="fi-rss" style="font-size: 24px"></i> 资讯</a></li>
+                <li><a href="/fames/"><i class="fi-torso-business" style="font-size: 24px"></i> 红人</a></li>
+                <li><a href="/brands/"><i class="fi-crown" style="font-size: 24px"></i> 品牌商</a></li>
+                <li><a href="/my/"><i class="fi-results" style="font-size: 24px"></i> 我的</a></li>
+            </ul>
+
+        </div>
+
+        <div class="off-canvas-content" data-off-canvas-content> <!-- CONTENT -->
+
+
+            <div data-sticky-container>
+                <div class="sticky" data-sticky data-margin-top="0" style="width: 100%; background-color: white">
+                    <button aria-controls="offCanvasLeft" aria-expanded="false" type="button" data-toggle="offCanvas" style="color: #1585cf">
+                        <i class="fi-list" style="font-size: 48px"></i>
+                    </button>
+                    <a style="margin: 10px 10px 10px 10px; float: right" data-open="signinup">登录／注册</a>
+                </div>
+            </div>
+
+
+            <div class="reveal" id="signinup" data-reveal>
+
+                <div class="row">
+                    <div class="large-6 columns auth-plain">
+                        <div class="signup-panel left-solid">
+                            <p class="welcome">Registered Users</p>
+                            <form>
+                                <div class="row collapse">
+                                    <div class="small-2  columns">
+                                        <span class="prefix"><i class="fi-torso-female"></i></span>
+                                    </div>
+                                    <div class="small-10  columns">
+                                        <input type="text" placeholder="username">
+                                    </div>
+                                </div>
+                                <div class="row collapse">
+                                    <div class="small-2 columns ">
+                                        <span class="prefix"><i class="fi-lock"></i></span>
+                                    </div>
+                                    <div class="small-10 columns ">
+                                        <input type="text" placeholder="password">
+                                    </div>
+                                </div>
+                            </form>
+                            <a href="#" class="button ">Log In </a>
+                        </div>
+                    </div>
+
+                    <div class="large-6 columns auth-plain">
+                        <div class="signup-panel newusers">
+                            <p class="welcome"> New User?</p>
+                            <p>By creating an account with us, you will be able to move through the checkout process
+                                faster,
+                                view and track your orders, and more.</p><br>
+                            <a href="#" class="button ">Sign Up</a><br>
+                        </div>
+                    </div>
+                </div>
+
+                <button class="close-button" data-close aria-label="Close modal" type="button">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+
+
+            <div class="orbit" role="region" aria-label="Favorite Space Pictures" data-orbit>
+                <ul class="orbit-container">
+                    <button class="orbit-previous"><span class="show-for-sr">Previous Slide</span>&#9664;&#xFE0E;
+                    </button>
+                    <button class="orbit-next"><span class="show-for-sr">Next Slide</span>&#9654;&#xFE0E;</button>
+                    <li class="is-active orbit-slide">
+                        <img class="orbit-image" src="01.jpg" alt="Space">
+                        <figcaption class="orbit-caption">Space, the final frontier.</figcaption>
+                    </li>
+                    <li class="orbit-slide">
+                        <img class="orbit-image" src="02.jpg" alt="Space">
+                        <figcaption class="orbit-caption">Lets Rocket!</figcaption>
+                    </li>
+                    <li class="orbit-slide">
+                        <img class="orbit-image" src="03.jpg" alt="Space">
+                        <figcaption class="orbit-caption">Encapsulating</figcaption>
+                    </li>
+                    <li class="orbit-slide">
+                        <img class="orbit-image" src="04.jpg" alt="Space">
+                        <figcaption class="orbit-caption">Outta This World</figcaption>
+                    </li>
+                </ul>
+                <nav class="orbit-bullets">
+                    <button class="is-active" data-slide="0"><span class="show-for-sr">First slide details.</span><span
+                            class="show-for-sr">Current Slide</span></button>
+                    <button data-slide="1"><span class="show-for-sr">Second slide details.</span></button>
+                    <button data-slide="2"><span class="show-for-sr">Third slide details.</span></button>
+                    <button data-slide="3"><span class="show-for-sr">Fourth slide details.</span></button>
+                </nav>
+            </div>
+
+
+            <ul class="tabs" data-tabs id="example-tabs">
+                <li class="tabs-title is-active"><a href="#panel1" aria-selected="true">热门红人</a></li>
+                <li class="tabs-title"><a href="#panel2">热门品牌</a></li>
+                <li class="tabs-title"><a href="#panel3">精品作品</a></li>
+            </ul>
+            <div class="tabs-content" data-tabs-content="example-tabs">
+                <div class="tabs-panel is-active" id="panel1">
+                </div>
+                <div class="tabs-panel" id="panel2">
+                </div>
+                <div class="tabs-panel" id="panel3">
+                </div>
+            </div>
+
+        </div>
+
+
+    </div>
+</div>
+
+
+<script>
+$(document).foundation();
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+</script>
+
+</body>
+
+</html>
