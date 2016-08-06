@@ -4,48 +4,44 @@ using Microsoft.AspNetCore.Http;
 
 namespace Greatbone.Core
 {
-    ///
-    /// The encapsulation of a web request/response exchange context.
-    ///
-    public class WebContext : IDisposable
-    {
-        // the underlying implementation
-        private readonly HttpContext _impl;
+	///
+	/// The encapsulation of a web request/response exchange context.
+	///
+	public class WebContext : IDisposable
+	{
+		private HttpContext _impl;
 
-        private readonly WebRequest _request;
+		private readonly WebRequest _request;
 
-        private readonly WebResponse _response;
+		private readonly WebResponse _response;
 
-        internal WebContext(HttpContext impl)
-        {
-            _impl = impl;
-            _request = new WebRequest(impl.Request);
-            _response = new WebResponse(impl.Response);
-        }
+		internal WebContext(HttpContext impl)
+		{
+			_impl = impl;
+			_request = new WebRequest(impl.Request);
+			_response = new WebResponse(impl.Response);
+		}
 
+		public WebRequest Request => _request;
 
-        public ISession Session => _impl.Session;
+		public WebResponse Response => _response;
 
-        public WebRequest Request => _request;
+		public WebSub Controller { get; internal set; }
 
-        public WebResponse Response => _response;
+		public WebAction Action { get; internal set; }
 
-        public WebSub Controller { get; internal set; }
+		public IZone Zone { get; internal set; }
 
-        public WebAction Action { get; internal set; }
-
-        public IZone Zone { get; internal set; }
-
-        public IToken Token { get; internal set; }
+		public IToken Token { get; internal set; }
 
 
-        internal Task SendAsync()
-        {
-            return _response.SendAsyncTask();
-        }
+		internal Task SendAsync()
+		{
+			return _response.SendAsyncTask();
+		}
 
-        public void Dispose()
-        {
-        }
-    }
+		public void Dispose()
+		{
+		}
+	}
 }
