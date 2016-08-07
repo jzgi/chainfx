@@ -15,12 +15,30 @@ namespace Greatbone.Core
 {
 	public class WebServiceHost : IHttpApplication<HttpContext>, IApplicationLifetime
 	{
-		private KestrelServerOptions options;
+		private KestrelServerOptions _options;
 
-		private KestrelServer server;
+		private readonly LoggerFactory _logger;
 
-		private List<WebService> _services;
+		// the embedded http server
+		private KestrelServer _server;
 
+		public WebService[] Services;
+
+		public string[] Addresses { get; set; }
+
+		public string[] MqAddress { get; set; }
+
+
+		public WebServiceHost()
+		{
+			_logger = new LoggerFactory();
+
+			_options = new KestrelServerOptions();
+
+			_server = new KestrelServer(Options.Create(_options), this, _logger);
+
+			_server.Features.Get<IServerAddressesFeature>().Addresses.Add("http://localhost:8080");
+		}
 
 		public HttpContext CreateContext(IFeatureCollection features)
 		{
@@ -35,13 +53,13 @@ namespace Greatbone.Core
 			WebService target = null;
 			if (host == null)
 			{
-				target = _services[0];
+				target = Services[0];
 			}
 			else
 			{
-				for (int i = 0; i < _services.Count; i++)
+				for (int i = 0; i < Services.Length; i++)
 				{
-					WebService svc = _services[i];
+					WebService svc = Services[i];
 					if (svc.IsTarget(host))
 					{
 						target = svc;
@@ -66,13 +84,7 @@ namespace Greatbone.Core
 
 		public void Start()
 		{
-			var logger = new LoggerFactory();
-
-			server = new KestrelServer(Options.Create(options), this, logger);
-
-			server.Features.Get<IServerAddressesFeature>().Addresses.Add("http://localhost:8080");
-
-			server.Start(this);
+			_server.Start(this);
 
 			Console.WriteLine("OK");
 
