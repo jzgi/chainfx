@@ -27,9 +27,9 @@ namespace Greatbone.Sample
 		{
 			i.GotStart();
 
-			i.Got(nameof(key), out key);
+			i.Got(nameof(key), ref key);
 
-			i.Got(nameof(name), out name);
+			i.Got(nameof(name), ref name);
 
 			i.GotEnd();
 		}
@@ -45,9 +45,9 @@ namespace Greatbone.Sample
 
 			public void From(IDataInput i)
 			{
-				i.Got(nameof(address), out address);
+				i.Got(nameof(address), ref address);
 
-				i.Got(nameof(postal), out postal);
+				i.Got(nameof(postal), ref postal);
 			}
 
 			public void To(IDataOutput o)

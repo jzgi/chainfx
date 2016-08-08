@@ -69,25 +69,25 @@ namespace Greatbone.Core
 			return false;
 		}
 
-		public bool Got(string name, out int value)
+		public bool Got(string name, ref int value)
 		{
 			value = 0;
 			return false;
 		}
 
-		public bool Got(string name, out decimal value)
+		public bool Got(string name, ref decimal value)
 		{
 			value = 0;
 			return false;
 		}
 
-		public bool Got(string name, out string value)
+		public bool Got(string name, ref string value)
 		{
 			value = null;
 			return false;
 		}
 
-		public bool Got<T>(string name, out List<T> value) where T : IData
+		public bool Got<T>(string name, ref List<T> value) where T : IData
 		{
 			value = null;
 			return false;

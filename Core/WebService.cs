@@ -66,7 +66,7 @@ namespace Greatbone.Core
 
 		protected WebService(WebServiceContext wsc) : base(wsc)
 		{
-			_address = wsc.Debug ? "localhost" : wsc.Address;
+			_address = wsc.Debug ? "localhost" : wsc.Host;
 			_port = wsc.Port;
 
 			// create the server instance

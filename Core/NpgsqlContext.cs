@@ -147,7 +147,7 @@ namespace Greatbone.Core
             }
         }
 
-        public bool Got(string name, out int value)
+        public bool Got(string name, ref int value)
         {
             int ordinal = _reader.GetOrdinal(name);
             if (!_reader.IsDBNull(ordinal))
@@ -159,7 +159,7 @@ namespace Greatbone.Core
             return false;
         }
 
-        public bool Got(string name, out decimal value)
+        public bool Got(string name, ref decimal value)
         {
             int ordinal = _reader.GetOrdinal(name);
             if (!_reader.IsDBNull(ordinal))
@@ -171,7 +171,7 @@ namespace Greatbone.Core
             return false;
         }
 
-        public bool Got(string name, out string value)
+        public bool Got(string name, ref string value)
         {
             int ordinal = _reader.GetOrdinal(name);
             if (!_reader.IsDBNull(ordinal))
@@ -183,9 +183,9 @@ namespace Greatbone.Core
             return false;
         }
 
-        public bool Got<T>(string name, out List<T> value) where T : IData
+        public bool Got<T>(string name, ref List<T> value) where T : IData
         {
-            if (Got(name, out value))
+            if (Got(name, ref value))
             {
 //                Json son = new Json();
             }

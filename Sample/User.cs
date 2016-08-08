@@ -16,10 +16,10 @@ namespace Greatbone.Sample
 
     public void From(IDataInput i)
     {
-      i.Got(nameof(login), out login);
-      i.Got(nameof(name), out name);
-      i.Got(nameof(mobile), out mobile);
-      i.Got(nameof(perms), out perms);
+      i.Got(nameof(login), ref login);
+      i.Got(nameof(name), ref name);
+      i.Got(nameof(mobile), ref mobile);
+      i.Got(nameof(perms), ref perms);
     }
 
     public void To(IDataOutput o)
@@ -58,8 +58,8 @@ namespace Greatbone.Sample
 
       public void From(IDataInput i)
       {
-        i.Got(nameof(org), out org);
-        i.Got(nameof(role), out role);
+        i.Got(nameof(org), ref org);
+        i.Got(nameof(role), ref role);
       }
 
       public void To(IDataOutput o)

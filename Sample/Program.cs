@@ -11,7 +11,7 @@ namespace Greatbone.Sample
 			var www = new WwwService(new WebServiceContext()
 			{
 				Key = "www",
-				Address = "60.205.104.239",
+				Host = "60.205.104.239",
 				Port = 8080,
 				Debug = debug
 			});
@@ -19,7 +19,7 @@ namespace Greatbone.Sample
 			var user = new UserService(new WebServiceContext()
 			{
 				Key = "user",
-				Address = "60.205.104.239",
+				Host = "60.205.104.239",
 				Port = 8081,
 				Debug = debug
 			});
@@ -27,7 +27,7 @@ namespace Greatbone.Sample
 			var forum = new ForumService(new WebServiceContext()
 			{
 				Key = "forum",
-				Address = "60.205.104.239",
+				Host = "60.205.104.239",
 				Port = 8082,
 				Debug = debug
 			});
@@ -35,7 +35,7 @@ namespace Greatbone.Sample
 			var biz = new BizService(new WebServiceContext()
 			{
 				Key = "biz",
-				Address = "60.205.104.239",
+				Host = "60.205.104.239",
 				Port = 8083,
 				Debug = debug
 			});
@@ -43,7 +43,7 @@ namespace Greatbone.Sample
 			var job = new JobService(new WebServiceContext()
 			{
 				Key = "job",
-				Address = "60.205.104.239",
+				Host = "60.205.104.239",
 				Port = 8084,
 				Debug = debug
 			});

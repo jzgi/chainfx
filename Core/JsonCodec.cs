@@ -61,7 +61,7 @@ namespace Greatbone.Core
             return false;
         }
 
-        public bool Got(string name, out int value)
+        public bool Got(string name, ref int value)
         {
             while (_pos < _str.Length)
             {
@@ -76,17 +76,17 @@ namespace Greatbone.Core
         }
 
 
-        public bool Got(string name, out decimal value)
+        public bool Got(string name, ref decimal value)
         {
             throw new System.NotImplementedException();
         }
 
-        public bool Got(string name, out string value)
+        public bool Got(string name, ref string value)
         {
             throw new System.NotImplementedException();
         }
 
-        public bool Got<T>(string name, out List<T> value) where T : IData
+        public bool Got<T>(string name, ref List<T> value) where T : IData
         {
             throw new System.NotImplementedException();
         }
