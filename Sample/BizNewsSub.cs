@@ -5,9 +5,9 @@ namespace Greatbone.Sample
 	///
 	/// /news/
 	///
-    public class ContentNewsSub : WebSub
+    public class BizNewsSub : WebSub
     {
-        public ContentNewsSub(WebServiceContext wsc) : base(wsc)
+        public BizNewsSub(WebServiceContext wsc) : base(wsc)
         {
         }
 

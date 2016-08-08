@@ -35,7 +35,7 @@ namespace Greatbone.Core
 		public IToken Token { get; internal set; }
 
 
-		internal Task SendAsync()
+		internal Task SendAsyncTask()
 		{
 			return _response.SendAsyncTask();
 		}
