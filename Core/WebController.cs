@@ -1,5 +1,6 @@
 ﻿using System;
 using System.IO;
+using Npgsql;
 
 namespace Greatbone.Core
 {
@@ -77,5 +78,20 @@ namespace Greatbone.Core
 				}
 			}
 		}
+
+		public NpgsqlContext NewSqlContext()
+		{
+			WebService svc = Service;
+			NpgsqlConnectionStringBuilder builder = new NpgsqlConnectionStringBuilder()
+			{
+				Host = "localhost",
+				Database = svc.Key,
+				Username = "postgres",
+				Password = "Zou###1989"
+			};
+			return new NpgsqlContext(builder);
+		}
+
+
 	}
 }

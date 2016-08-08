@@ -19,6 +19,11 @@ namespace Greatbone.Core
         private NpgsqlDataReader _reader;
 
 
+	    public NpgsqlContext(NpgsqlConnectionStringBuilder builder)
+	    {
+		    _conn = new NpgsqlConnection(builder);
+	    }
+
         bool disposed;
 
         public void BeginTransaction()
