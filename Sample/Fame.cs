@@ -2,45 +2,57 @@
 
 namespace Greatbone.Sample
 {
-    public class Fame : IZone, IData
-    {
-        internal string key;
+	public class Fame : IZone, IData
+	{
+		internal string key;
 
-        internal string name;
+		internal string name;
 
-        public char[] Credential { get; set; }
+		public char[] Credential { get; set; }
 
-        public long ModifiedOn { get; set; }
+		public long ModifiedOn { get; set; }
 
-        public void To(IDataOutput o, int flags)
-        {
-            o.Put(nameof(key), key);
-            o.Put(nameof(name), name);
-        }
+		public void To(IDataOutput o)
+		{
+			o.PutStart();
 
-        public void From(IDataInput i, int flags)
-        {
-            i.Got(nameof(key), out key);
-            i.Got(nameof(name), out name);
-        }
+			o.Put(nameof(key), key);
 
-        public string Key => key;
+			o.Put(nameof(name), name);
+
+			o.PutEnd();
+		}
+
+		public void From(IDataInput i)
+		{
+			i.GotStart();
+
+			i.Got(nameof(key), out key);
+
+			i.Got(nameof(name), out name);
+
+			i.GotEnd();
+		}
+
+		public string Key => key;
 
 
-        public struct Address : IData
-        {
-            internal string address;
-            internal string postal;
+		public struct Address : IData
+		{
+			internal string address;
 
-            public void From(IDataInput i, int flags)
-            {
-                i.Got(nameof(address), out address);
-                i.Got(nameof(postal), out postal);
-            }
+			internal string postal;
 
-            public void To(IDataOutput o, int flags)
-            {
-            }
-        }
-    }
+			public void From(IDataInput i)
+			{
+				i.Got(nameof(address), out address);
+
+				i.Got(nameof(postal), out postal);
+			}
+
+			public void To(IDataOutput o)
+			{
+			}
+		}
+	}
 }

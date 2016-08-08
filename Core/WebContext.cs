@@ -9,7 +9,7 @@ namespace Greatbone.Core
 	///
 	public class WebContext : IDisposable
 	{
-		private HttpContext _impl;
+		private readonly HttpContext _impl;
 
 		private readonly WebRequest _request;
 
@@ -18,21 +18,23 @@ namespace Greatbone.Core
 		internal WebContext(HttpContext impl)
 		{
 			_impl = impl;
-			_request = new WebRequest(impl.Request);
+			_request = new WebRequest(Controller, impl.Request);
 			_response = new WebResponse(impl.Response);
 		}
+
+		public ISession Session => _impl.Session;
 
 		public WebRequest Request => _request;
 
 		public WebResponse Response => _response;
 
-		public WebSub Controller { get; internal set; }
+		public WebSub Controller { get; }
 
-		public WebAction Action { get; internal set; }
+		public WebAction Action { get; }
 
 		public IZone Zone { get; internal set; }
 
-		public IToken Token { get; internal set; }
+		public IToken Token { get; }
 
 
 		internal Task SendAsyncTask()

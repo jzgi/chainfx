@@ -4,12 +4,12 @@ namespace Greatbone.Sample
 {
 	public class Brand : IData, IZone
 	{
-		public void From(IDataInput i, int flags)
+		public void From(IDataInput i)
 		{
 			throw new System.NotImplementedException();
 		}
 
-		public void To(IDataOutput o, int flags)
+		public void To(IDataOutput o)
 		{
 			throw new System.NotImplementedException();
 		}

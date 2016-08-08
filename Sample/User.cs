@@ -14,7 +14,7 @@ namespace Greatbone.Sample
 
     List<Perm> perms;
 
-    public void From(IDataInput i, int flags)
+    public void From(IDataInput i)
     {
       i.Got(nameof(login), out login);
       i.Got(nameof(name), out name);
@@ -22,7 +22,7 @@ namespace Greatbone.Sample
       i.Got(nameof(perms), out perms);
     }
 
-    public void To(IDataOutput o, int flags)
+    public void To(IDataOutput o)
     {
       o.Put(nameof(login), login);
       o.Put(nameof(name), name);
@@ -56,13 +56,13 @@ namespace Greatbone.Sample
 
       int role;
 
-      public void From(IDataInput i, int flags)
+      public void From(IDataInput i)
       {
         i.Got(nameof(org), out org);
         i.Got(nameof(role), out role);
       }
 
-      public void To(IDataOutput o, int flags)
+      public void To(IDataOutput o)
       {
         o.Put(nameof(org), org);
         o.Put(nameof(role), role);

@@ -82,22 +82,20 @@ namespace Greatbone.Core
 
         public bool GotStart()
         {
-            throw new NotImplementedException();
+	        return true;
         }
 
         public bool GotEnd()
         {
-            throw new NotImplementedException();
+	        return true;
         }
 
         public void PutStart()
         {
-            throw new NotImplementedException();
         }
 
         public void PutEnd()
         {
-            throw new NotImplementedException();
         }
 
         ///
@@ -139,7 +137,7 @@ namespace Greatbone.Core
                 }
                 json.PutStart();
                 T d = value[i];
-                d.To(json, -1);
+                d.To(json);
                 json.PutEnd();
             }
         }

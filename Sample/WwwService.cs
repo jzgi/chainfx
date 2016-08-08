@@ -17,7 +17,7 @@ namespace Greatbone.Sample
             Fame v = new Fame();
             v.key = "123";
             v.name = "luke";
-            wc.Response.Output(v, 0);
+	        v.To(wc.Response);
         }
 
         public void Contact(WebContext wc)

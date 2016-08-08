@@ -21,11 +21,11 @@ namespace Greatbone.Sample
 
 
 
-        public void From(IDataInput i, int flags)
+        public void From(IDataInput i)
         {
         }
 
-        public void To(IDataOutput o, int flags)
+        public void To(IDataOutput o)
         {
         }
     }

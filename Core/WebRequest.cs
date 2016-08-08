@@ -1,76 +1,96 @@
 ﻿using System.Collections.Generic;
+using System.Threading.Tasks;
 using Microsoft.AspNetCore.Http;
 
 namespace Greatbone.Core
 {
-    ///
-    /// The supported content typess
-    ///
-    enum CType
-    {
-        Form,
-        MultipartForm,
-        Json,
-        Xml,
-        Stream,
-    }
+	public class WebRequest : IDataInput
+	{
+		private readonly WebController _controller;
 
-    public class WebRequest : IDataInput
-    {
-        private readonly HttpRequest _impl;
+		private readonly HttpRequest _impl;
 
-        private CType _ctype;
+		private JsonCodec _json;
 
-        private IFormCollection _form;
+		private byte[] _buffer;
 
-        private JsonCodec _json;
+		private int _count;
 
-        internal WebRequest(HttpRequest impl)
-        {
-            _impl = impl;
 
-            _form = null;
-            _json = null;
-            string ctype = impl.ContentType;
-            if ("application/x-www-form-urlencoded".Equals(ctype))
-            {
-                _ctype = CType.Form;
-                _form = impl.Form;
-            }
-            else if ("application/json".Equals(ctype))
-            {
-                _json = new JsonCodec(12);
-            }
-        }
+		private IData _data;
 
-        public bool GotStart()
-        {
-            throw new System.NotImplementedException();
-        }
+		internal WebRequest(WebController controller, HttpRequest impl)
+		{
+			_controller = controller;
+			_impl = impl;
 
-        public bool GotEnd()
-        {
-            throw new System.NotImplementedException();
-        }
+			_json = null;
+		}
 
-        public bool Got(string name, out int value)
-        {
-            throw new System.NotImplementedException();
-        }
 
-        public bool Got(string name, out decimal value)
-        {
-            throw new System.NotImplementedException();
-        }
+		internal Task<int> ReadAsyncTask()
+		{
+			string ctype = _impl.ContentType;
+			if ("application/json".Equals(ctype))
+			{
+				// get a pooled byte buffer
+				_buffer = _controller.Service.Lease(false);
+			}
+			if ("application/json".Equals(ctype))
+			{
+				_buffer = _controller.Service.Lease(true);
+			}
+			return _impl.Body.ReadAsync(_buffer, 0, _buffer.Length);
+		}
 
-        public bool Got(string name, out string value)
-        {
-            throw new System.NotImplementedException();
-        }
+		public IFormCollection Form => _impl.Form;
 
-        public bool Got<T>(string name, out List<T> value) where T : IData
-        {
-            throw new System.NotImplementedException();
-        }
-    }
+		public IQueryCollection Query => _impl.Query;
+
+
+		public TData Data<TData>() where TData : IData, new()
+		{
+			if (_data == null)
+			{
+				TData obj = new TData();
+				obj.From(this);
+				_data = obj;
+			}
+			return (TData) _data;
+		}
+
+		public bool GotStart()
+		{
+			return false;
+		}
+
+		public bool GotEnd()
+		{
+			return false;
+		}
+
+		public bool Got(string name, out int value)
+		{
+			value = 0;
+			return false;
+		}
+
+		public bool Got(string name, out decimal value)
+		{
+			value = 0;
+			return false;
+		}
+
+		public bool Got(string name, out string value)
+		{
+			value = null;
+			return false;
+		}
+
+		public bool Got<T>(string name, out List<T> value) where T : IData
+		{
+			value = null;
+			return false;
+		}
+	}
 }

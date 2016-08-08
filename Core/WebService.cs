@@ -1,6 +1,5 @@
 ﻿using System;
 using System.IO;
-using System.Linq;
 using System.Net;
 using System.Net.Http;
 using System.Reflection;
@@ -58,6 +57,11 @@ namespace Greatbone.Core
 		private HttpClient[] client;
 
 
+		//
+		const int Small = 128 * 1024, Large = 4 * 1024 * 1024;
+		private readonly BufferPool _small, _large;
+
+
 		protected WebService(WebServiceContext wsc) : base(wsc)
 		{
 			_address = wsc.Debug ? "localhost" : wsc.Address;
@@ -69,8 +73,29 @@ namespace Greatbone.Core
 			_server = new KestrelServer(Options.Create(_options), Lifetime, _logger);
 			_server.Features.Get<IServerAddressesFeature>().Addresses.Add("http://" + _address + ":" + _port);
 			_server.Features.Get<IServerAddressesFeature>().Addresses.Add("http://" + _address + ":" + MqPort);
+
+			// create buffer pools
+			_small = new BufferPool(Small, Environment.ProcessorCount * 8);
+			_large = new BufferPool(Large, Environment.ProcessorCount / 2);
 		}
 
+
+		internal byte[] Lease(bool large)
+		{
+			return large ? _large.Lease() : _small.Lease();
+		}
+
+		internal void Return(byte[] buf)
+		{
+			if (buf.Length == Small)
+			{
+				_small.Return(buf);
+			}
+			else
+			{
+				_large.Return(buf);
+			}
+		}
 
 		public HttpContext CreateContext(IFeatureCollection features)
 		{
