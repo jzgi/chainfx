@@ -7,7 +7,7 @@ namespace Greatbone.Sample
 	///
 	public class BizBrandZoneHub : WebZoneHub<Brand>
 	{
-		public BizBrandZoneHub(WebServiceContext wsc) : base(wsc)
+		public BizBrandZoneHub(WebServiceBuilder builder) : base(builder)
 		{
 		}
 	}

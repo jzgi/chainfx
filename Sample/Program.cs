@@ -8,7 +8,7 @@ namespace Greatbone.Sample
 		{
 			bool debug = args.Length > 0 && "debug".Equals(args[0]);
 
-			var www = new WwwService(new WebServiceContext()
+			var www = new WwwService(new WebServiceBuilder()
 			{
 				Key = "www",
 				Host = "60.205.104.239",
@@ -16,7 +16,7 @@ namespace Greatbone.Sample
 				Debug = debug
 			});
 
-			var user = new UserService(new WebServiceContext()
+			var user = new UserService(new WebServiceBuilder()
 			{
 				Key = "user",
 				Host = "60.205.104.239",
@@ -24,7 +24,7 @@ namespace Greatbone.Sample
 				Debug = debug
 			});
 
-			var forum = new ForumService(new WebServiceContext()
+			var forum = new ForumService(new WebServiceBuilder()
 			{
 				Key = "forum",
 				Host = "60.205.104.239",
@@ -32,7 +32,7 @@ namespace Greatbone.Sample
 				Debug = debug
 			});
 
-			var biz = new BizService(new WebServiceContext()
+			var biz = new BizService(new WebServiceBuilder()
 			{
 				Key = "biz",
 				Host = "60.205.104.239",
@@ -40,7 +40,7 @@ namespace Greatbone.Sample
 				Debug = debug
 			});
 
-			var job = new JobService(new WebServiceContext()
+			var job = new JobService(new WebServiceBuilder()
 			{
 				Key = "job",
 				Host = "60.205.104.239",

@@ -7,7 +7,7 @@ namespace Greatbone.Sample
 	///
     public class UserZoneHub : WebZoneHub<User>
     {
-        public UserZoneHub(WebServiceContext wsc) : base(wsc)
+        public UserZoneHub(WebServiceBuilder builder) : base(builder)
         {
         }
 

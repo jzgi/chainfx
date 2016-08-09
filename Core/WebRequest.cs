@@ -4,27 +4,23 @@ using Microsoft.AspNetCore.Http;
 
 namespace Greatbone.Core
 {
-	public class WebRequest : IDataInput
+	public class WebRequest
 	{
 		private readonly WebController _controller;
 
 		private readonly HttpRequest _impl;
 
-		private JsonCodec _json;
-
 		private byte[] _buffer;
 
 		private int _count;
 
-
-		private IData _data;
+		private object _data;
 
 		internal WebRequest(WebController controller, HttpRequest impl)
 		{
 			_controller = controller;
 			_impl = impl;
 
-			_json = null;
 		}
 
 
@@ -48,12 +44,11 @@ namespace Greatbone.Core
 		public IQueryCollection Query => _impl.Query;
 
 
-		public TData Data<TData>() where TData : IData, new()
+		public TData Data<TData>() where TData : new()
 		{
 			if (_data == null)
 			{
 				TData obj = new TData();
-				obj.From(this);
 				_data = obj;
 			}
 			return (TData) _data;
@@ -87,7 +82,7 @@ namespace Greatbone.Core
 			return false;
 		}
 
-		public bool Got<T>(string name, ref List<T> value) where T : IData
+		public bool Got<T>(string name, ref List<T> value)
 		{
 			value = null;
 			return false;

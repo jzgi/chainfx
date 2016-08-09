@@ -7,7 +7,7 @@ namespace Greatbone.Sample
 	///
     public class BizNewsSub : WebSub
     {
-        public BizNewsSub(WebServiceContext wsc) : base(wsc)
+        public BizNewsSub(WebServiceBuilder builder) : base(builder)
         {
         }
 

@@ -20,7 +20,7 @@ namespace Greatbone.Core
         public Checker Checker { get; internal set; }
 
         // the argument makes state-passing more convenient
-        public WebSub(WebServiceContext wsc) : base(wsc)
+        public WebSub(WebServiceBuilder builder) : base(builder)
         {
             Type type = GetType();
 
@@ -106,7 +106,7 @@ namespace Greatbone.Core
         private readonly WebAction<TZone> _defaction;
 
         // the argument makes state-passing more convenient
-        protected WebSub(WebServiceContext wsc) : base(wsc)
+        protected WebSub(WebServiceBuilder builder) : base(builder)
         {
             Type type = GetType();
 

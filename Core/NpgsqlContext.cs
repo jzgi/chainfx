@@ -6,7 +6,7 @@ using NpgsqlTypes;
 
 namespace Greatbone.Core
 {
-    public class NpgsqlContext : IDataInput, IDataOutput, IDisposable
+    public class NpgsqlContext : IDisposable, IParameterCollection
     {
         private NpgsqlConnection _conn;
 
@@ -64,7 +64,7 @@ namespace Greatbone.Core
             }
         }
 
-        public int DoNonQuery(string cmdtext, Action<IDataOutput> parameters)
+        public int DoNonQuery(string cmdtext, Action<IParameterCollection> parameters)
         {
             if (_conn.State != ConnectionState.Open)
             {
@@ -131,22 +131,6 @@ namespace Greatbone.Core
             });
         }
 
-        public void Put<T>(string name, List<T> value) where T : IData
-        {
-            JsonCodec json = new JsonCodec(1024);
-            for (int i = 0; i < value.Count; i++)
-            {
-                if (i > 0)
-                {
-                    json.PutEnd();// comma
-                }
-                json.PutStart();
-                T d = value[i];
-                d.To(json);
-                json.PutEnd();
-            }
-        }
-
         public bool Got(string name, ref int value)
         {
             int ordinal = _reader.GetOrdinal(name);
@@ -183,7 +167,7 @@ namespace Greatbone.Core
             return false;
         }
 
-        public bool Got<T>(string name, ref List<T> value) where T : IData
+        public bool Got<T>(string name, ref List<T> value)
         {
             if (Got(name, ref value))
             {

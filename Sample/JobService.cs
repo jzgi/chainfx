@@ -7,7 +7,7 @@ namespace Greatbone.Sample
 	///
     public class JobService : WebService
     {
-        public JobService(WebServiceContext wsc) : base(wsc)
+        public JobService(WebServiceBuilder builder) : base(builder)
         {
         }
     }

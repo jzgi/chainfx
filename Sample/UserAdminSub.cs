@@ -4,7 +4,7 @@ namespace Greatbone.Sample
 {
     public class UserAdminSub : WebSub
     {
-        public UserAdminSub(WebServiceContext wsc) : base(wsc)
+        public UserAdminSub(WebServiceBuilder builder) : base(builder)
         {
         }
 

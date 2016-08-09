@@ -7,7 +7,7 @@ namespace Greatbone.Sample
 	///
 	public class BizBrandService : WebService
 	{
-		public BizBrandService(WebServiceContext wsc) : base(wsc)
+		public BizBrandService(WebServiceBuilder builder) : base(builder)
 		{
 		}
 	}

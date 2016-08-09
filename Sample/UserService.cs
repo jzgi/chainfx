@@ -12,7 +12,7 @@ namespace Greatbone.Sample
 		// user cache
 		// MemoryCache cache = new MemoryCache(null);
 
-		public UserService(WebServiceContext wsc) : base(wsc)
+		public UserService(WebServiceBuilder builder) : base(builder)
 		{
 			AddSub<UserAdminSub>("admin", (x) => x.Can(null, 1));
 

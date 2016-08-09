@@ -8,7 +8,7 @@ namespace Greatbone.Sample
 	///
     public class BizFameZoneHub : WebZoneHub<Fame>
     {
-        public BizFameZoneHub(WebServiceContext wsc) : base(wsc)
+        public BizFameZoneHub(WebServiceBuilder builder) : base(builder)
         {
             AddSub<BizFameZoneMgtSub>("mgt", null);
         }

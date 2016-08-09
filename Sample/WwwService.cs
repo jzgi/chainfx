@@ -7,7 +7,7 @@ namespace Greatbone.Sample
 	///
 	public class WwwService : WebService
 	{
-		public WwwService(WebServiceContext wsc) : base(wsc)
+		public WwwService(WebServiceBuilder builder) : base(builder)
 		{
 			AddSub<WwwMySub>("my", null);
 		}
@@ -23,7 +23,6 @@ namespace Greatbone.Sample
 				key = "123",
 				name = "luke"
 			};
-			v.To(wc.Response);
 		}
 
 		public void Contact(WebContext wc)
@@ -32,7 +31,7 @@ namespace Greatbone.Sample
 			{
 				sc.BeginTransaction();
 
-				sc.DoNonQuery("inaert", o => o.Put("abc", 23));
+//				sc.DoNonQuery("inaert", o => o.ToString(););
 
 				// msg
 

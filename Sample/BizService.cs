@@ -11,7 +11,7 @@ namespace Greatbone.Sample
 		// INIT
 		//
 
-		public BizService(WebServiceContext wsc) : base(wsc)
+		public BizService(WebServiceBuilder builder) : base(builder)
 		{
 			AddSub<BizNewsSub>("news", null);
 

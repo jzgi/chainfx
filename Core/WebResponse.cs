@@ -10,7 +10,7 @@ namespace Greatbone.Core
 	///
 	/// The wrapper of a HTTP response, providing efficient output methods and cache control.
 	///
-	public class WebResponse : IDataOutput
+	public class WebResponse
 	{
 		// the underlying implementation of a response
 		private readonly HttpResponse _impl;
@@ -443,20 +443,6 @@ namespace Greatbone.Core
 			_stack[_level]++;
 		}
 
-		public void Put<T>(string name, List<T> value) where T : IData
-		{
-			if (_stack[_level] > 0)
-			{
-				Put(',');
-			}
-
-			foreach (T v in value)
-			{
-				v.To(this);
-			}
-
-			_stack[_level]++;
-		}
 
 		public void PutStart()
 		{

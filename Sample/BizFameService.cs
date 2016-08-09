@@ -7,7 +7,7 @@ namespace Greatbone.Sample
 	///
 	public class BizFameService : WebService
 	{
-		public BizFameService(WebServiceContext wsc) : base(wsc)
+		public BizFameService(WebServiceBuilder builder) : base(builder)
 		{
 			MountHub<BizFameZoneHub, Fame>(null);
 

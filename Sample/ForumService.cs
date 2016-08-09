@@ -7,7 +7,7 @@ namespace Greatbone.Sample
 	///
 	public class ForumService : WebService
 	{
-		public ForumService(WebServiceContext wsc) : base(wsc)
+		public ForumService(WebServiceBuilder builder) : base(builder)
 		{
 		}
 	}

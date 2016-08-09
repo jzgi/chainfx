@@ -64,10 +64,10 @@ namespace Greatbone.Core
 		private readonly BufferPool _small, _large;
 
 
-		protected WebService(WebServiceContext wsc) : base(wsc)
+		protected WebService(WebServiceBuilder builder) : base(builder)
 		{
-			_address = wsc.Debug ? "localhost" : wsc.Host;
-			_port = wsc.Port;
+			_address = builder.Debug ? "localhost" : builder.Host;
+			_port = builder.Port;
 
 			// create the server instance
 			_logger = new LoggerFactory();
@@ -159,12 +159,12 @@ namespace Greatbone.Core
 			}
 			// create instance by reflection
 			Type type = typeof(TSub);
-			ConstructorInfo ci = type.GetConstructor(new[] {typeof(WebServiceContext)});
+			ConstructorInfo ci = type.GetConstructor(new[] {typeof(WebServiceBuilder)});
 			if (ci == null)
 			{
 				throw new WebException(type + ": the WebCreationContext parameterized constructor not found");
 			}
-			WebServiceContext wcc = new WebServiceContext
+			WebServiceBuilder wcc = new WebServiceBuilder
 			{
 				Key = key,
 				StaticPath = Path.Combine(StaticPath, key),
@@ -186,12 +186,12 @@ namespace Greatbone.Core
 		{
 			// create instance
 			Type type = typeof(THub);
-			ConstructorInfo ci = type.GetConstructor(new[] {typeof(WebServiceContext)});
+			ConstructorInfo ci = type.GetConstructor(new[] {typeof(WebServiceBuilder)});
 			if (ci == null)
 			{
 				throw new WebException(type + ": the WebCreationContext parameterized constructor not found");
 			}
-			WebServiceContext wcc = new WebServiceContext
+			WebServiceBuilder wcc = new WebServiceBuilder
 			{
 				Key = "-",
 				StaticPath = Path.Combine(StaticPath, "-"),
@@ -259,7 +259,7 @@ namespace Greatbone.Core
 		///
 		/// sends an event to a target service
 		///
-		public void Publish(string topic, string subarg, IData msg)
+		public void Publish(string topic, string subarg, object msg)
 		{
 		}
 

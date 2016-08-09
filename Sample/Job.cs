@@ -1,9 +1,8 @@
 ﻿using System;
-using Greatbone.Core;
 
 namespace Greatbone.Sample
 {
-    public class Job : IData
+    public class Job
     {
         internal int id;
 
@@ -20,13 +19,5 @@ namespace Greatbone.Sample
         internal int term;
 
 
-
-        public void From(IDataInput i)
-        {
-        }
-
-        public void To(IDataOutput o)
-        {
-        }
     }
 }

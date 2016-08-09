@@ -7,7 +7,7 @@ namespace Greatbone.Sample
 	///
 	public class WwwMySub : WebSub
 	{
-		public WwwMySub(WebServiceContext wsc) : base(wsc)
+		public WwwMySub(WebServiceBuilder builder) : base(builder)
 		{
 		}
 	}

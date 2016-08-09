@@ -7,7 +7,7 @@ namespace Greatbone.Sample
 	///
     public class BizFameZoneMgtSub : WebSub<Fame>
     {
-        public BizFameZoneMgtSub(WebServiceContext wsc) : base(wsc)
+        public BizFameZoneMgtSub(WebServiceBuilder builder) : base(builder)
         {
         }
 

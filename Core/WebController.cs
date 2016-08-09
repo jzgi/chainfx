@@ -37,17 +37,17 @@ namespace Greatbone.Core
 		public WebService Service { get; }
 
 
-		internal WebController(WebServiceContext wsc)
+		internal WebController(WebServiceBuilder builder)
 		{
-			if (wsc.Key == null)
+			if (builder.Key == null)
 			{
-				throw new ArgumentNullException(nameof(wsc.Key));
+				throw new ArgumentNullException(nameof(builder.Key));
 			}
 
-			Key = wsc.Key;
-			Parent = wsc.Parent;
-			Service = wsc.Service;
-			StaticPath = wsc.StaticPath ?? Path.Combine(Directory.GetCurrentDirectory(), "_" + Key);
+			Key = builder.Key;
+			Parent = builder.Parent;
+			Service = builder.Service;
+			StaticPath = builder.StaticPath ?? Path.Combine(Directory.GetCurrentDirectory(), "_" + Key);
 
 			// load static files, if any
 			if (StaticPath != null && Directory.Exists(StaticPath))

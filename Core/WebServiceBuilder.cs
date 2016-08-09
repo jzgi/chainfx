@@ -2,7 +2,7 @@
 
 namespace Greatbone.Core
 {
-	public struct WebServiceContext : IData
+	public struct WebServiceBuilder
 	{
 		private string key;
 
@@ -27,13 +27,5 @@ namespace Greatbone.Core
 		public WebService Service { get; set; }
 
 
-		public void From(IDataInput i)
-		{
-			i.Got(nameof(key), ref key);
-		}
-
-		public void To(IDataOutput o)
-		{
-		}
 	}
 }
