@@ -5,8 +5,8 @@
 	///
 	public interface IData
 	{
-		void From(IDataInput i);
+		void From(IDataInput s);
 
-		void To(IDataOutput o);
+		void To(IDataOutput s);
 	}
 }

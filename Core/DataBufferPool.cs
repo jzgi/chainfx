@@ -14,9 +14,9 @@ namespace Greatbone.Core
 
 		private int _count;
 
-		public DataBufferPool(int[] specs, int threads)
+		public DataBufferPool(int specs, int threads)
 		{
-			int len = specs.Length;
+			int len = 0;// specs.Length;
 
 
 
@@ -24,29 +24,30 @@ namespace Greatbone.Core
 			for (int i = 0; i < len; i++)
 			{
 
-				len / 2 - i
+//				len / 2 - i
 
-				_queues[i] = new Queue(specs[i], thresholds[i]);
+//				_queues[i] = new Queue(specs[i], thresholds[i]);
 			}
 		}
 
-		public byte[] Lease(int group)
+		public byte[] Lease()
 		{
-			byte[] result;
-			if (!_queues[group].TryDequeue(out result))
-			{
-				result = new byte[_bufsize];
-				_queues[group].Enqueue(result);
-			}
-			return result;
+//			byte[] result;
+//			if (!_queues[group].TryDequeue(out result))
+//			{
+//				result = new byte[_bufsize];
+//				_queues[group].Enqueue(result);
+//			}
+//			return result;
+			return null;
 		}
 
 		public void Return(byte[] buf)
 		{
-			if (Interlocked.Increment(ref _count) < _capacity)
-			{
-				_queues.Enqueue(buf);
-			}
+//			if (Interlocked.Increment(ref _count) < _capacity)
+//			{
+//				_queues.Enqueue(buf);
+//			}
 		}
 
 		public byte[] Supercede(byte[] old)
