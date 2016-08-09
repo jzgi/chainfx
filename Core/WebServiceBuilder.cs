@@ -1,13 +1,10 @@
 ﻿using System;
+using System.IO;
 
 namespace Greatbone.Core
 {
-	public struct WebServiceBuilder
+	public class WebServiceBuilder
 	{
-		private string key;
-
-		private string staticpath;
-
 		public string Key { get; set; }
 
 		public string StaticPath { get; set; }
@@ -16,16 +13,33 @@ namespace Greatbone.Core
 
 		public int Port { get; set; }
 
-		public IParent Parent { get; set; }
+		public string QHost { get; set; }
 
-		public NetAddress WebAddress { get; set; }
+		public int QPort { get; set; }
 
-		public NetAddress DbAddress { get; set; }
+		public string DbHost { get; set; }
+
+		public int DbPort { get; set; }
+
+		public string DbUsername { get; set; }
+
+		public string DbPassword { get; set; }
+
+
+		internal IParent Parent { get; set; }
 
 		public bool Debug { get; set; }
 
 		public WebService Service { get; set; }
 
 
+		public WebServiceBuilder()
+		{
+		}
+
+
+		public WebServiceBuilder(string file)
+		{
+		}
 	}
 }

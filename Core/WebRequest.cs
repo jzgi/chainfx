@@ -1,6 +1,7 @@
 ﻿using System.Collections.Generic;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Http;
+using Newtonsoft.Json.Linq;
 
 namespace Greatbone.Core
 {
@@ -20,7 +21,6 @@ namespace Greatbone.Core
 		{
 			_controller = controller;
 			_impl = impl;
-
 		}
 
 
@@ -44,48 +44,11 @@ namespace Greatbone.Core
 		public IQueryCollection Query => _impl.Query;
 
 
-		public TData Data<TData>() where TData : new()
+		public JObject JsonObject()
 		{
-			if (_data == null)
-			{
-				TData obj = new TData();
-				_data = obj;
-			}
-			return (TData) _data;
-		}
-
-		public bool GotStart()
-		{
-			return false;
-		}
-
-		public bool GotEnd()
-		{
-			return false;
-		}
-
-		public bool Got(string name, ref int value)
-		{
-			value = 0;
-			return false;
-		}
-
-		public bool Got(string name, ref decimal value)
-		{
-			value = 0;
-			return false;
-		}
-
-		public bool Got(string name, ref string value)
-		{
-			value = null;
-			return false;
-		}
-
-		public bool Got<T>(string name, ref List<T> value)
-		{
-			value = null;
-			return false;
+			string s = "";
+			JObject obj = JObject.Parse(s);
+			return obj;
 		}
 	}
 }

@@ -14,15 +14,6 @@ namespace Greatbone.Sample
 
 		public void Show(WebContext wc)
 		{
-			Fame obj = wc.Request.Data<Fame>();
-
-
-
-			Fame v = new Fame()
-			{
-				key = "123",
-				name = "luke"
-			};
 		}
 
 		public void Contact(WebContext wc)

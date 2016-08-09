@@ -58,11 +58,6 @@ namespace Greatbone.Core
 		// number of bytes
 		private int _count;
 
-		//
-		private int[] _stack;
-
-		private int _level;
-
 		// byte-wise etag checksum, for text-based output only
 		private ulong _checksum;
 
@@ -379,87 +374,6 @@ namespace Greatbone.Core
 			_offset = offset;
 			_count = count;
 			_impl.ContentLength = count;
-		}
-
-		public void Put(string name, int value)
-		{
-			if (_stack[_level] > 0)
-			{
-				Put(',');
-			}
-
-			Put('"');
-			Put(name);
-			Put('"');
-			Put(':');
-			Put(value);
-
-			_stack[_level]++;
-		}
-
-		public void Put(string name, decimal value)
-		{
-			if (_stack[_level] > 0)
-			{
-				Put(',');
-			}
-
-			Put('"');
-			Put(name);
-			Put('"');
-			Put(' ');
-			Put(':');
-			Put(' ');
-			Put(value);
-
-			_stack[_level]++;
-		}
-
-		public void Put(string name, string value)
-		{
-			if (_stack[_level] > 0)
-			{
-				Put(',');
-			}
-
-			Put('"');
-			Put(name);
-			Put('"');
-			Put(':');
-			if (value == null)
-			{
-				Put('n');
-				Put('u');
-				Put('l');
-				Put('l');
-			}
-			else
-			{
-				Put('"');
-				Put(value);
-				Put('"');
-			}
-
-			_stack[_level]++;
-		}
-
-
-		public void PutStart()
-		{
-			if (_stack == null)
-			{
-				_stack = new int[8];
-			}
-			_level++;
-
-			Put('{');
-		}
-
-		public void PutEnd()
-		{
-			Put('}');
-
-			_level--;
 		}
 
 		public int StatusCode
