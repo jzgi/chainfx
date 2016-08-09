@@ -5,9 +5,9 @@ namespace Greatbone.Sample
 	///
 	/// /news/
 	///
-    public class BizNewsSub : WebSub
+    public class WwwNewsSub : WebSub
     {
-        public BizNewsSub(WebServiceBuilder builder) : base(builder)
+        public WwwNewsSub(WebServiceBuilder builder) : base(builder)
         {
         }
 

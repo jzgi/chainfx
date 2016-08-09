@@ -1,6 +1,8 @@
-﻿using System.Collections.Generic;
+﻿using System.IO;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Http;
+using Newtonsoft.Json;
+using Newtonsoft.Json.Bson;
 using Newtonsoft.Json.Linq;
 
 namespace Greatbone.Core
@@ -44,11 +46,29 @@ namespace Greatbone.Core
 		public IQueryCollection Query => _impl.Query;
 
 
-		public JObject JsonObject()
+		public JObject Json()
 		{
 			string s = "";
 			JObject obj = JObject.Parse(s);
 			return obj;
+		}
+
+		public T Object<T>()
+		{
+
+
+			JsonSerializer ser = new JsonSerializer();
+			JsonReader reader = new JsonTextReader(new Utf8TextReader(_buffer, 0, 0));
+			return ser.Deserialize<T>(reader);
+		}
+
+		internal class Utf8TextReader : TextReader
+		{
+
+			internal Utf8TextReader(byte[] buf, int offset, int count)
+			{
+
+			}
 		}
 	}
 }

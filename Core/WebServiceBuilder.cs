@@ -1,5 +1,5 @@
-﻿using System;
-using System.IO;
+﻿using System.IO;
+using Newtonsoft.Json;
 
 namespace Greatbone.Core
 {
@@ -13,33 +13,45 @@ namespace Greatbone.Core
 
 		public int Port { get; set; }
 
-		public string QHost { get; set; }
+		public QueueBuilder Queue { get; set; }
 
-		public int QPort { get; set; }
-
-		public string DbHost { get; set; }
-
-		public int DbPort { get; set; }
-
-		public string DbUsername { get; set; }
-
-		public string DbPassword { get; set; }
-
-
-		internal IParent Parent { get; set; }
+		public DataSourceBuilder DataSource { get; set; }
 
 		public bool Debug { get; set; }
 
-		public WebService Service { get; set; }
+		internal IParent Parent { get; set; }
+
+		internal WebService Service { get; set; }
 
 
-		public WebServiceBuilder()
+		public static WebServiceBuilder Load(string key)
 		{
+			string file = Path.GetFileName("_" + key + ".json");
+			WebServiceBuilder builder = JsonConvert.DeserializeObject<WebServiceBuilder>(File.ReadAllText(file));
+			if (builder.Key == null)
+			{
+				builder.Key = key;
+			}
+			return builder;
 		}
+	}
 
 
-		public WebServiceBuilder(string file)
-		{
-		}
+	public class QueueBuilder
+	{
+		public string Host { get; set; }
+
+		public int Port { get; set; }
+	}
+
+	public class DataSourceBuilder
+	{
+		public string Host { get; set; }
+
+		public int Port { get; set; }
+
+		public string Username { get; set; }
+
+		public string Password { get; set; }
 	}
 }

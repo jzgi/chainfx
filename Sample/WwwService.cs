@@ -10,6 +10,15 @@ namespace Greatbone.Sample
 		public WwwService(WebServiceBuilder builder) : base(builder)
 		{
 			AddSub<WwwMySub>("my", null);
+
+			AddSub<WwwNewsSub>("news", null);
+
+			AddSub<WwwEventSub>("event", null);
+
+			AddSub<WwwFameService>("fame", null);
+
+			AddSub<WwwBrandService>("brand", null);
+
 		}
 
 		public void Show(WebContext wc)

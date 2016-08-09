@@ -5,9 +5,9 @@ namespace Greatbone.Sample
 	///
 	/// /fame/-/mgt/
 	///
-    public class BizFameZoneMgtSub : WebSub<Fame>
+    public class WwwFameZoneMgtSub : WebSub<Fame>
     {
-        public BizFameZoneMgtSub(WebServiceBuilder builder) : base(builder)
+        public WwwFameZoneMgtSub(WebServiceBuilder builder) : base(builder)
         {
         }
 
