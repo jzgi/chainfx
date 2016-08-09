@@ -19,7 +19,7 @@ namespace Greatbone.Core
 
 		private object _data;
 
-		private IDataInput _input;
+		private IDocInput _input;
 
 		internal WebRequest(WebController controller, HttpRequest impl)
 		{

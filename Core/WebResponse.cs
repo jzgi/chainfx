@@ -64,7 +64,7 @@ namespace Greatbone.Core
 		private ulong _checksum;
 
 		// json or bson
-		private IDataOutput _output;
+		private IDocOutput _output;
 
 		internal WebResponse(HttpResponse impl)
 		{
