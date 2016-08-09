@@ -7,6 +7,8 @@ namespace Greatbone.Core
 	///
 	/// The encapsulation of a web request/response exchange context.
 	///
+	/// buffer pooling -- reduces GC overhead when dealing with asynchronous request/response I/O
+	///
 	public class WebContext : IDisposable
 	{
 		private readonly HttpContext _impl;
@@ -39,6 +41,7 @@ namespace Greatbone.Core
 
 		internal Task SendAsyncTask()
 		{
+
 			return _response.SendAsyncTask();
 		}
 

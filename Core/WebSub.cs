@@ -57,7 +57,7 @@ namespace Greatbone.Core
                 Static sta;
                 if (Statics != null && Statics.TryGet(relative, out sta))
                 {
-                    wc.Response.SetContent(sta.ContentType, sta.Content, 0, sta.Length);
+                    wc.Response.Set(sta.ContentType, sta.Content, 0, sta.Length);
                 }
                 else
                 {
@@ -83,7 +83,7 @@ namespace Greatbone.Core
             Static sta = IndexStatic;
             if (sta != null)
             {
-                wc.Response.SetContent(sta.ContentType, sta.Content, 0, sta.Length);
+                wc.Response.Set(sta.ContentType, sta.Content, 0, sta.Length);
             }
             else
             {
@@ -143,7 +143,7 @@ namespace Greatbone.Core
                 Static sta;
                 if (Statics != null && Statics.TryGet(relative, out sta))
                 {
-                    wc.Response.SetContent(sta.ContentType, sta.Content, 0, sta.Length);
+                    wc.Response.Set(sta.ContentType, sta.Content, 0, sta.Length);
                 }
                 else
                 {
@@ -169,7 +169,7 @@ namespace Greatbone.Core
             Static sta = IndexStatic;
             if (sta != null)
             {
-                wc.Response.SetContent(sta.ContentType, sta.Content, 0, sta.Length);
+                wc.Response.Set(sta.ContentType, sta.Content, 0, sta.Length);
             }
             else
             {

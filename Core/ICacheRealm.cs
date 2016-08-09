@@ -2,6 +2,7 @@
 {
     ///
     /// An independent scope of state and data.
+    ///
     public interface ICacheRealm
     {
         ///

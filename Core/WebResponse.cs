@@ -4,6 +4,8 @@ using System.Globalization;
 using System.Text;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Http;
+using Newtonsoft.Json;
+using Newtonsoft.Json.Linq;
 
 namespace Greatbone.Core
 {
@@ -61,6 +63,8 @@ namespace Greatbone.Core
 		// byte-wise etag checksum, for text-based output only
 		private ulong _checksum;
 
+		// json or bson
+		private IDataOutput _output;
 
 		internal WebResponse(HttpResponse impl)
 		{
@@ -364,7 +368,7 @@ namespace Greatbone.Core
 			}
 		}
 
-		public void SetContent(string ctype, byte[] buffer, int offset, int count)
+		public void Set(string ctype, byte[] buffer, int offset, int count)
 		{
 			if (ctype != null)
 			{
@@ -374,6 +378,23 @@ namespace Greatbone.Core
 			_offset = offset;
 			_count = count;
 			_impl.ContentLength = count;
+		}
+
+		public void SetJson(object obj)
+		{
+			JsonSerializer ser = new JsonSerializer();
+			JsonTextWriter wrt = new JsonTextWriter(null);
+			ser.Serialize(wrt, obj);
+
+			Set("application/json", _buffer, 0, _count);
+		}
+
+		public void SetJson(JObject obj)
+		{
+		}
+
+		public void SetJson(JArray arr)
+		{
 		}
 
 		public int StatusCode

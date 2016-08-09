@@ -19,6 +19,11 @@ namespace Greatbone.Core
 	///
 	/// A web service controller that may contain sub-controllers and/or a multiplexer.
 	///
+	/// cache-control -- elimicates redundant requests (max-age) or data queries (not-modified).
+	/// response cache -- directly returns shared cached contents
+	/// etag -- reduces network I/O with unchanged results
+	///
+	///
 	public abstract class WebService : WebSub, IParent, ICacheRealm, IHttpApplication<HttpContext>
 	{
 		public static readonly Checker AnyOne = (t) => true;
