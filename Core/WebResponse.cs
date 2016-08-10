@@ -16,7 +16,11 @@ namespace Greatbone.Core
 		// the underlying implementation of a response
 		private readonly HttpResponse _impl;
 
-		private IContent _content;
+		// public, private, or no-cache
+		private bool? _shared;
+
+		// max age in seconds
+		private int _maxage;
 
 		// byte-wise etag checksum, for text-based output only
 		private ulong _checksum;
@@ -26,16 +30,7 @@ namespace Greatbone.Core
 			_impl = impl;
 		}
 
-		public IContent Content
-		{
-			get { return _content; }
-			set { _content = value; }
-		}
-
-		public void SetCacheControl()
-		{
-		}
-
+		public IContent Content { get; set; }
 
 		public void SetJson(object obj)
 		{
@@ -65,6 +60,16 @@ namespace Greatbone.Core
 			set { _impl.StatusCode = value; }
 		}
 
+		public bool? IsShared => _shared;
+
+		public int MaxAge => _maxage;
+
+		public void SetCachePolicy(bool? shared, int maxage)
+		{
+			_shared = shared;
+			_maxage = maxage;
+		}
+
 		public void Redirect(string location)
 		{
 			_impl.Redirect(location);
@@ -77,15 +82,15 @@ namespace Greatbone.Core
 
 		internal Task SendAsyncTask()
 		{
-			if (_content != null)
+			if (Content != null)
 			{
-				_impl.ContentLength = _content.Count;
-				_impl.ContentType = _content.Type;
+				_impl.ContentLength = Content.Count;
+				_impl.ContentType = Content.Type;
 
 				// etag
 
 				//
-				return _impl.Body.WriteAsync(_content.Buffer, _content.Offset, _content.Count);
+				return _impl.Body.WriteAsync(Content.Buffer, Content.Offset, Content.Count);
 			}
 			return null;
 		}
