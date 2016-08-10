@@ -54,25 +54,13 @@ namespace Greatbone.Core
 		private ulong _checksum;
 
 
-		public string MimeType()
-		{
-			throw new NotImplementedException();
-		}
+		public string Type { get; set; }
 
-		public byte[] Buffer()
-		{
-			throw new NotImplementedException();
-		}
+		public byte[] Buffer => _buffer;
 
-		public int Offset()
-		{
-			throw new NotImplementedException();
-		}
+		public int Offset => _offset;
 
-		public int Count()
-		{
-			throw new NotImplementedException();
-		}
+		public int Count => _count;
 
 		private void AddByte(byte b)
 		{
@@ -370,7 +358,5 @@ namespace Greatbone.Core
 				}
 			}
 		}
-
-
 	}
 }

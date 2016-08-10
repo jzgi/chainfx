@@ -1,15 +1,13 @@
 namespace Greatbone.Core
 {
-    public interface IContent 
-    {
+	public interface IContent
+	{
+		string Type { get; }
 
-        string MimeType();
+		byte[] Buffer { get; }
 
-        byte[] Buffer();
+		int Offset { get; }
 
-        int Offset();
-
-        int Count();
-
-    }
+		int Count { get; }
+	}
 }

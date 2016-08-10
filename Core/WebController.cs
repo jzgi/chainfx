@@ -65,8 +65,8 @@ namespace Greatbone.Core
 						Static sta = new Static
 						{
 							Key = file.ToLower(),
-							ContentType = ctype,
-							Content = content,
+							Type = ctype,
+							Buffer = content,
 							Modified = modified
 						};
 						Statics.Add(sta);
@@ -91,7 +91,5 @@ namespace Greatbone.Core
 			};
 			return new NpgsqlContext(builder);
 		}
-
-
 	}
 }
