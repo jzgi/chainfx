@@ -2,7 +2,7 @@
 
 namespace Greatbone.Core
 {
-	public class Bson : IDocInput, IDocOutput
+	public class XmlRw : ContentRw, IDocReader,IDocWriter
 	{
 		public bool GotStart()
 		{

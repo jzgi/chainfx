@@ -8,13 +8,13 @@ namespace Greatbone.Core
 	///
 	/// increased by a 4-times
 	///
-	public class DataBufferPool
+	public class BufferPool
 	{
 		private readonly Queue[] _queues;
 
 		private int _count;
 
-		public DataBufferPool(int specs, int threads)
+		public BufferPool(int specs, int threads)
 		{
 			int len = 0;// specs.Length;
 

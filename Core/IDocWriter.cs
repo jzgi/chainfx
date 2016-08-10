@@ -4,7 +4,7 @@ namespace Greatbone.Core
 {
     ///
     /// DataReader/ParameterCollection, JSON or binary
-    public interface IDocOutput
+    public interface IDocWriter
     {
         void PutStart();
 

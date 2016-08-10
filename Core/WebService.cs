@@ -64,7 +64,7 @@ namespace Greatbone.Core
 
 		//
 		const int Small = 128 * 1024, Large = 4 * 1024 * 1024;
-		private readonly DataBufferPool _small, _large;
+		private readonly BufferPool _small, _large;
 
 
 		protected WebService(WebServiceBuilder builder) : base(builder)
@@ -80,8 +80,8 @@ namespace Greatbone.Core
 			_server.Features.Get<IServerAddressesFeature>().Addresses.Add("http://" + _address + ":" + MqPort);
 
 			// create buffer pools
-			_small = new DataBufferPool(Small, Environment.ProcessorCount * 8);
-			_large = new DataBufferPool(Large, Environment.ProcessorCount / 2);
+			_small = new BufferPool(Small, Environment.ProcessorCount * 8);
+			_large = new BufferPool(Large, Environment.ProcessorCount / 2);
 		}
 
 

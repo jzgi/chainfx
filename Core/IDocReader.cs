@@ -2,7 +2,7 @@
 
 namespace Greatbone.Core
 {
-    public interface IDocInput
+    public interface IDocReader
     {
         bool GotStart();
 

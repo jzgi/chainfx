@@ -1,21 +1,14 @@
 ﻿using System;
 using System.Globalization;
 using System.Text;
-using System.Threading.Tasks;
-using Microsoft.AspNetCore.Http;
-using Newtonsoft.Json;
-using Newtonsoft.Json.Linq;
 
 namespace Greatbone.Core
 {
 	///
-	/// The wrapper of a HTTP response, providing efficient output methods and cache control.
+	/// string is based on UTF-8 encoding/decoding
 	///
-	public class WebResponse
+	public abstract class ContentRw : IContent
 	{
-		// the underlying implementation of a response
-		private readonly HttpResponse _impl;
-
 		// hexidecimal characters
 		private static readonly char[] Hex =
 		{
@@ -48,8 +41,6 @@ namespace Greatbone.Core
 			10000000000000L, 100000000000000L, 100000000000000L, 10000000000000000L, 100000000000000000L, 1000000000000000000L
 		};
 
-		//
-		// output buffer
 
 		private byte[] _buffer; // NOTE: HttpResponseStream doesn't have internal buffer
 
@@ -62,9 +53,25 @@ namespace Greatbone.Core
 		// byte-wise etag checksum, for text-based output only
 		private ulong _checksum;
 
-		internal WebResponse(HttpResponse impl)
+
+		public string MimeType()
 		{
-			_impl = impl;
+			throw new NotImplementedException();
+		}
+
+		public byte[] Buffer()
+		{
+			throw new NotImplementedException();
+		}
+
+		public int Offset()
+		{
+			throw new NotImplementedException();
+		}
+
+		public int Count()
+		{
+			throw new NotImplementedException();
 		}
 
 		private void AddByte(byte b)
@@ -364,59 +371,6 @@ namespace Greatbone.Core
 			}
 		}
 
-		public void Set(string ctype, byte[] buffer, int offset, int count)
-		{
-			if (ctype != null)
-			{
-				_impl.ContentType = ctype;
-			}
-			_buffer = buffer;
-			_offset = offset;
-			_count = count;
-			_impl.ContentLength = count;
-		}
 
-		public void SetJson(object obj)
-		{
-			JsonSerializer ser = new JsonSerializer();
-			JsonTextWriter wrt = new JsonTextWriter(null);
-			ser.Serialize(wrt, obj);
-
-			Set("application/json", _buffer, 0, _count);
-		}
-
-		public void SetJson(JObject obj)
-		{
-		}
-
-		public void SetJson(JArray arr)
-		{
-		}
-
-		public int StatusCode
-		{
-			get { return _impl.StatusCode; }
-			set { _impl.StatusCode = value; }
-		}
-
-		public void Redirect(string location)
-		{
-			_impl.Redirect(location);
-		}
-
-		public void Redirect(string location, bool permanent)
-		{
-			_impl.Redirect(location, permanent);
-		}
-
-		internal Task SendAsyncTask()
-		{
-			if (_count > 0)
-			{
-				_impl.ContentLength = _count;
-				return _impl.Body.WriteAsync(_buffer, _offset, _count);
-			}
-			return null;
-		}
 	}
 }

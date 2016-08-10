@@ -5,8 +5,8 @@
 	///
 	public interface IDoc
 	{
-		void From(IDocInput i);
+		void From(IDocReader r);
 
-		void To(IDocOutput o);
+		void To(IDocWriter w);
 	}
 }
