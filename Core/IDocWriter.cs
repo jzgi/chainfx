@@ -2,20 +2,27 @@
 
 namespace Greatbone.Core
 {
-    ///
-    /// DataReader/ParameterCollection, JSON or binary
-    public interface IDocWriter
-    {
-        void WriteStart();
+	///
+	/// DataReader/ParameterCollection, JSON or binary
+	public interface IDocWriter
+	{
+		void WriteArrayStart();
 
-        void WriteEnd();
+		void WriteArrayEnd();
 
-        void Write(string name, int value);
+		void WriteStart();
 
-        void Write(string name, decimal value);
+		void WriteEnd();
 
-        void Write(string name, string value);
+		void WriteSep();
 
-        void Write<T>(string name, List<T> value) where T : IDoc;
-    }
+		void Write(string name, int value);
+
+		void Write(string name, decimal value);
+
+		void Write(string name, string value);
+
+		void Write<T>(string name, List<T> value) where T : IDoc;
+
+	}
 }

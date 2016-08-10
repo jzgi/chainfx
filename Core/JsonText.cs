@@ -13,6 +13,21 @@ namespace Greatbone.Core
 
 	    private int _pos;
 
+	    public bool ReadArrayStart()
+	    {
+		    throw new System.NotImplementedException();
+	    }
+
+	    public bool ReadArrayEnd()
+	    {
+		    throw new System.NotImplementedException();
+	    }
+
+	    public bool ReadSep()
+	    {
+		    throw new System.NotImplementedException();
+	    }
+
 	    public bool ReadStart()
 	    {
 		    throw new System.NotImplementedException();
@@ -43,12 +58,27 @@ namespace Greatbone.Core
 		    throw new System.NotImplementedException();
 	    }
 
+	    public void WriteArrayStart()
+	    {
+		    throw new System.NotImplementedException();
+	    }
+
+	    public void WriteArrayEnd()
+	    {
+		    throw new System.NotImplementedException();
+	    }
+
 	    public void WriteStart()
 	    {
 		    throw new System.NotImplementedException();
 	    }
 
 	    public void WriteEnd()
+	    {
+		    throw new System.NotImplementedException();
+	    }
+
+	    public void WriteSep()
 	    {
 		    throw new System.NotImplementedException();
 	    }

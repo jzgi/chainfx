@@ -4,6 +4,21 @@ namespace Greatbone.Core
 {
 	public class JsonRw : ContentRw, IDocReader, IDocWriter
 	{
+		public bool ReadArrayStart()
+		{
+			throw new System.NotImplementedException();
+		}
+
+		public bool ReadArrayEnd()
+		{
+			throw new System.NotImplementedException();
+		}
+
+		public bool ReadSep()
+		{
+			throw new System.NotImplementedException();
+		}
+
 		public bool ReadStart()
 		{
 			throw new System.NotImplementedException();
@@ -34,12 +49,27 @@ namespace Greatbone.Core
 			throw new System.NotImplementedException();
 		}
 
+		public void WriteArrayStart()
+		{
+			Put('[');
+		}
+
+		public void WriteArrayEnd()
+		{
+			Put(']');
+		}
+
 		public void WriteStart()
 		{
 			throw new System.NotImplementedException();
 		}
 
 		public void WriteEnd()
+		{
+			throw new System.NotImplementedException();
+		}
+
+		public void WriteSep()
 		{
 			throw new System.NotImplementedException();
 		}

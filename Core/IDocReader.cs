@@ -4,11 +4,17 @@ namespace Greatbone.Core
 {
     public interface IDocReader
     {
-        bool ReadStart();
+	    bool ReadArrayStart();
+
+	    bool ReadArrayEnd();
+
+	    bool ReadStart();
 
         bool ReadEnd();
 
-        bool Read(string name, ref int value);
+	    bool ReadSep();
+
+	    bool Read(string name, ref int value);
 
         bool Read(string name, ref decimal value);
 
