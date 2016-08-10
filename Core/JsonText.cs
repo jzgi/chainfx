@@ -13,62 +13,62 @@ namespace Greatbone.Core
 
 	    private int _pos;
 
-	    public bool GotStart()
+	    public bool ReadStart()
 	    {
 		    throw new System.NotImplementedException();
 	    }
 
-	    public bool GotEnd()
+	    public bool ReadEnd()
 	    {
 		    throw new System.NotImplementedException();
 	    }
 
-	    public bool Got(string name, ref int value)
+	    public bool Read(string name, ref int value)
 	    {
 		    throw new System.NotImplementedException();
 	    }
 
-	    public bool Got(string name, ref decimal value)
+	    public bool Read(string name, ref decimal value)
 	    {
 		    throw new System.NotImplementedException();
 	    }
 
-	    public bool Got(string name, ref string value)
+	    public bool Read(string name, ref string value)
 	    {
 		    throw new System.NotImplementedException();
 	    }
 
-	    public bool Got<T>(string name, ref List<T> value) where T : IDoc
+	    public bool Read<T>(string name, ref List<T> value) where T : IDoc
 	    {
 		    throw new System.NotImplementedException();
 	    }
 
-	    public void PutStart()
+	    public void WriteStart()
 	    {
 		    throw new System.NotImplementedException();
 	    }
 
-	    public void PutEnd()
+	    public void WriteEnd()
 	    {
 		    throw new System.NotImplementedException();
 	    }
 
-	    public void Put(string name, int value)
+	    public void Write(string name, int value)
 	    {
 		    throw new System.NotImplementedException();
 	    }
 
-	    public void Put(string name, decimal value)
+	    public void Write(string name, decimal value)
 	    {
 		    throw new System.NotImplementedException();
 	    }
 
-	    public void Put(string name, string value)
+	    public void Write(string name, string value)
 	    {
 		    throw new System.NotImplementedException();
 	    }
 
-	    public void Put<T>(string name, List<T> value) where T : IDoc
+	    public void Write<T>(string name, List<T> value) where T : IDoc
 	    {
 		    throw new System.NotImplementedException();
 	    }

@@ -6,16 +6,16 @@ namespace Greatbone.Core
     /// DataReader/ParameterCollection, JSON or binary
     public interface IDocWriter
     {
-        void PutStart();
+        void WriteStart();
 
-        void PutEnd();
+        void WriteEnd();
 
-        void Put(string name, int value);
+        void Write(string name, int value);
 
-        void Put(string name, decimal value);
+        void Write(string name, decimal value);
 
-        void Put(string name, string value);
+        void Write(string name, string value);
 
-        void Put<T>(string name, List<T> value) where T : IDoc;
+        void Write<T>(string name, List<T> value) where T : IDoc;
     }
 }

@@ -4,16 +4,16 @@ namespace Greatbone.Core
 {
     public interface IDocReader
     {
-        bool GotStart();
+        bool ReadStart();
 
-        bool GotEnd();
+        bool ReadEnd();
 
-        bool Got(string name, ref int value);
+        bool Read(string name, ref int value);
 
-        bool Got(string name, ref decimal value);
+        bool Read(string name, ref decimal value);
 
-        bool Got(string name, ref string value);
+        bool Read(string name, ref string value);
 
-        bool Got<T>(string name, ref List<T> value) where T : IDoc;
+        bool Read<T>(string name, ref List<T> value) where T : IDoc;
     }
 }
