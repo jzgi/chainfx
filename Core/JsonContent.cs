@@ -2,11 +2,12 @@
 
 namespace Greatbone.Core
 {
-	///
-	/// Binary JSON
-	///
-	public class BsonRw : ContentRw, IDocReader, IDocWriter
+	public class JsonContent : DynamicContent, IReader, IWriter
 	{
+		public JsonContent(byte[] buffer) : base(buffer)
+		{
+		}
+
 		public bool ReadArrayStart()
 		{
 			throw new System.NotImplementedException();
@@ -47,24 +48,24 @@ namespace Greatbone.Core
 			throw new System.NotImplementedException();
 		}
 
-		public bool Read<T>(string name, ref List<T> value) where T : IDoc
+		public bool Read<T>(string name, ref T value) where T : ISerial
+		{
+			throw new System.NotImplementedException();
+		}
+
+		public bool Read<T>(string name, ref List<T> value) where T : ISerial
 		{
 			throw new System.NotImplementedException();
 		}
 
 		public void WriteArrayStart()
 		{
-			throw new System.NotImplementedException();
+			Put('[');
 		}
 
 		public void WriteArrayEnd()
 		{
-			throw new System.NotImplementedException();
-		}
-
-		public void WriteSep()
-		{
-			throw new System.NotImplementedException();
+			Put(']');
 		}
 
 		public void WriteStart()
@@ -73,6 +74,11 @@ namespace Greatbone.Core
 		}
 
 		public void WriteEnd()
+		{
+			throw new System.NotImplementedException();
+		}
+
+		public void WriteSep()
 		{
 			throw new System.NotImplementedException();
 		}
@@ -92,7 +98,12 @@ namespace Greatbone.Core
 			throw new System.NotImplementedException();
 		}
 
-		public void Write<T>(string name, List<T> value) where T : IDoc
+		public void Write<T>(string name, T value) where T : ISerial
+		{
+			throw new System.NotImplementedException();
+		}
+
+		public void Write<T>(string name, List<T> value) where T : ISerial
 		{
 			throw new System.NotImplementedException();
 		}

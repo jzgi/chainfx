@@ -4,7 +4,7 @@ namespace Greatbone.Core
 {
 	///
 	/// DataReader/ParameterCollection, JSON or binary
-	public interface IDocWriter
+	public interface IWriter
 	{
 		void WriteArrayStart();
 
@@ -22,7 +22,9 @@ namespace Greatbone.Core
 
 		void Write(string name, string value);
 
-		void Write<T>(string name, List<T> value) where T : IDoc;
+		void Write<T>(string name, T value) where T : ISerial;
+
+		void Write<T>(string name, List<T> value) where T : ISerial;
 
 	}
 }

@@ -2,7 +2,7 @@
 
 namespace Greatbone.Core
 {
-    public interface IDocReader
+    public interface IReader
     {
 	    bool ReadArrayStart();
 
@@ -20,6 +20,8 @@ namespace Greatbone.Core
 
         bool Read(string name, ref string value);
 
-        bool Read<T>(string name, ref List<T> value) where T : IDoc;
+	    bool Read<T>(string name, ref T value) where T : ISerial;
+
+	    bool Read<T>(string name, ref List<T> value) where T : ISerial;
     }
 }

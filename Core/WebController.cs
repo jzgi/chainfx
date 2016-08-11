@@ -19,12 +19,12 @@ namespace Greatbone.Core
 		///
 		/// The corresponding static folder contents, can be null
 		///
-		public Set<Static> Statics { get; }
+		public Set<StaticContent> Statics { get; }
 
 		///
 		/// The index static file of the controller, can be null
 		///
-		public Static IndexStatic { get; }
+		public StaticContent DefaultStatic { get; }
 
 		///
 		/// The parent service that this sub-controller is added to
@@ -52,44 +52,31 @@ namespace Greatbone.Core
 			// load static files, if any
 			if (StaticPath != null && Directory.Exists(StaticPath))
 			{
-				Statics = new Set<Static>(256);
+				Statics = new Set<StaticContent>(256);
 				foreach (string path in Directory.GetFiles(StaticPath))
 				{
 					string file = Path.GetFileName(path);
 					string ext = Path.GetExtension(path);
 					string ctype;
-					if (Static.TryGetType(ext, out ctype))
+					if (StaticContent.TryGetType(ext, out ctype))
 					{
 						byte[] content = File.ReadAllBytes(path);
 						DateTime modified = File.GetLastWriteTime(path);
-						Static sta = new Static
+						StaticContent sta = new StaticContent
 						{
 							Key = file.ToLower(),
 							Type = ctype,
 							Buffer = content,
-							Modified = modified
+							LastModified = modified
 						};
 						Statics.Add(sta);
 						if (sta.Key.StartsWith("index."))
 						{
-							IndexStatic = sta;
+							DefaultStatic = sta;
 						}
 					}
 				}
 			}
-		}
-
-		public NpgsqlContext NewSqlContext()
-		{
-			WebService svc = Service;
-			NpgsqlConnectionStringBuilder builder = new NpgsqlConnectionStringBuilder()
-			{
-				Host = "localhost",
-				Database = svc.Key,
-				Username = "postgres",
-				Password = "Zou###1989"
-			};
-			return new NpgsqlContext(builder);
 		}
 	}
 }

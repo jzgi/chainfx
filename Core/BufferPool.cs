@@ -1,36 +1,29 @@
-﻿using System.Collections.Concurrent;
-using System.Threading;
+﻿using System;
+using System.Collections.Concurrent;
 
 namespace Greatbone.Core
 {
 	///
-	/// A pool that leases and returns back byte buffers. For json/bson data only.
+	/// A globally accessed buffer pool that leases out and returns back byte buffers.
 	///
-	/// increased by a 4-times
-	///
-	public class BufferPool
+	public static class BufferPool
 	{
-		private readonly Queue[] _queues;
+		private static readonly int Cores = Environment.ProcessorCount;
 
-		private int _count;
-
-		public BufferPool(int specs, int threads)
+		private static readonly Queue[] Queues =
 		{
-			int len = 0;// specs.Length;
+			new Queue(1024 * 4, Cores * 64),
+			new Queue(1024 * 16, Cores * 32),
+			new Queue(1024 * 64, Cores * 16),
+			new Queue(1024 * 256, Cores * 8),
+			new Queue(1024 * 1024, Cores * 4),
+			new Queue(1024 * 1024 * 4, Cores * 2),
+		};
+
+		static int Max = Queues[Queues.Length - 1].Spec;
 
 
-
-			_queues = new Queue[len];
-			for (int i = 0; i < len; i++)
-			{
-
-//				len / 2 - i
-
-//				_queues[i] = new Queue(specs[i], thresholds[i]);
-			}
-		}
-
-		public byte[] Lease()
+		public static byte[] Lease(int demand)
 		{
 //			byte[] result;
 //			if (!_queues[group].TryDequeue(out result))
@@ -39,10 +32,10 @@ namespace Greatbone.Core
 //				_queues[group].Enqueue(result);
 //			}
 //			return result;
-			return null;
+			return new byte[demand];
 		}
 
-		public void Return(byte[] buf)
+		public static void Return(byte[] buf)
 		{
 //			if (Interlocked.Increment(ref _count) < _capacity)
 //			{
@@ -50,31 +43,33 @@ namespace Greatbone.Core
 //			}
 		}
 
-		public byte[] Supercede(byte[] old)
+		public static byte[] Extend(byte[] old)
 		{
-			return null;
+			byte[] a = new byte[old.Length * 2];
+			Array.Copy(old, a, old.Length);
+			return a;
 		}
 
 		internal class Queue
 		{
-			private int _size;
+			private readonly int queued;
 
-			// bytes
-			private int _bufspec;
+			// buffer size in bytes
+			private readonly int spec;
 
 
-			private readonly ConcurrentQueue<byte[]> _queue;
+			private readonly ConcurrentQueue<byte[]> queue;
 
-			internal Queue(int buflen, int size)
+			internal Queue(int spec, int queued)
 			{
-				_bufspec = buflen;
-				_size = size;
-				_queue=new ConcurrentQueue<byte[]>();
+				this.spec = spec;
+				this.queued = queued;
+				queue = new ConcurrentQueue<byte[]>();
 			}
-		}
 
-		static void sdf()
-		{
+			internal int Spec => spec;
+
+			internal int Queued => queued;
 		}
 	}
 }

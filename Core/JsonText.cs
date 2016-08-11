@@ -1,17 +1,22 @@
-
+﻿
 using System.Collections.Generic;
 
 namespace Greatbone.Core
 {
-    public class JsonText : IDocReader, IDocWriter
+    public class JsonText : IReader, IWriter
     {
 	    // for input
-	    private string _text;
+	    private string text;
 
 	    // for output
-	    private char[] _buffer;
+	    private char[] buffer;
 
-	    private int _pos;
+	    private int pos;
+
+	    public JsonText(string str)
+	    {
+
+	    }
 
 	    public bool ReadArrayStart()
 	    {
@@ -53,7 +58,12 @@ namespace Greatbone.Core
 		    throw new System.NotImplementedException();
 	    }
 
-	    public bool Read<T>(string name, ref List<T> value) where T : IDoc
+	    public bool Read<T>(string name, ref T value) where T : ISerial
+	    {
+		    throw new System.NotImplementedException();
+	    }
+
+	    public bool Read<T>(string name, ref List<T> value) where T : ISerial
 	    {
 		    throw new System.NotImplementedException();
 	    }
@@ -98,7 +108,12 @@ namespace Greatbone.Core
 		    throw new System.NotImplementedException();
 	    }
 
-	    public void Write<T>(string name, List<T> value) where T : IDoc
+	    public void Write<T>(string name, T value) where T : ISerial
+	    {
+		    throw new System.NotImplementedException();
+	    }
+
+	    public void Write<T>(string name, List<T> value) where T : ISerial
 	    {
 		    throw new System.NotImplementedException();
 	    }

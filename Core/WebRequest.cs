@@ -28,15 +28,16 @@ namespace Greatbone.Core
 
 		internal Task<int> ReadAsyncTask()
 		{
+			long? len = _impl.ContentLength;
 			string ctype = _impl.ContentType;
 			if ("application/json".Equals(ctype))
 			{
 				// get a pooled byte buffer
-				_buffer = _controller.Service.Lease(false);
+				_buffer = BufferPool.Lease((int)len.Value);
 			}
 			if ("application/json".Equals(ctype))
 			{
-				_buffer = _controller.Service.Lease(true);
+				_buffer = BufferPool.Lease((int) len.Value);
 			}
 			return _impl.Body.ReadAsync(_buffer, 0, _buffer.Length);
 		}

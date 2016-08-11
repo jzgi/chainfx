@@ -8,7 +8,7 @@ namespace Greatbone.Core
 	///
 	/// Represents a static file.
 	///
-	public class Static : IMember, IContent
+	public class StaticContent : IMember, IContent
 	{
 		private static readonly Dictionary<string, string> Types = new Dictionary<string, string>
 		{
@@ -1534,10 +1534,10 @@ namespace Greatbone.Core
 
 		public byte[] Buffer { get; internal set; }
 
-		public int Offset => 0;
-
 		public int Count => Buffer.Length;
 
-		public DateTime Modified { get; internal set; }
+		public DateTime LastModified { get; internal set; }
+
+		public long ETag { get; }
 	}
 }

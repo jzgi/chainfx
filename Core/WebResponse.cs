@@ -1,4 +1,5 @@
-﻿using System.Text;
+﻿using System;
+using System.Text;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Http;
 using Newtonsoft.Json;
@@ -88,7 +89,7 @@ namespace Greatbone.Core
 				// etag
 
 				//
-				return _impl.Body.WriteAsync(Content.Buffer, Content.Offset, Content.Count);
+				return _impl.Body.WriteAsync(Content.Buffer, 0, Content.Count);
 			}
 			return null;
 		}
@@ -103,6 +104,10 @@ namespace Greatbone.Core
 		public int Offset { get; set; }
 
 		public int Count { get; set; }
+
+		public DateTime LastModified { get; }
+
+		public long ETag { get; }
 	}
 
 	class ResponseCachePolicy

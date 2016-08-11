@@ -3,10 +3,10 @@
 	///
 	/// Rerepsents an object that can be converted from/to JSON, BSON or XML document representations.
 	///
-	public interface IDoc
+	public interface ISerial
 	{
-		void From(IDocReader r);
+		void From(IReader r);
 
-		void To(IDocWriter w);
+		void To(IWriter w);
 	}
 }

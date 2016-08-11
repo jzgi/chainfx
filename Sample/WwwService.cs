@@ -27,7 +27,7 @@ namespace Greatbone.Sample
 
 		public void Contact(WebContext wc)
 		{
-			using (var sc = NewSqlContext())
+			using (var sc = NewDbContext())
 			{
 				sc.BeginTransaction();
 

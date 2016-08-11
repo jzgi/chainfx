@@ -13,6 +13,7 @@ using Microsoft.AspNetCore.Http.Features;
 using Microsoft.AspNetCore.Server.Kestrel;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
+using Npgsql;
 
 namespace Greatbone.Core
 {
@@ -62,11 +63,6 @@ namespace Greatbone.Core
 		private HttpClient[] client;
 
 
-		//
-		const int Small = 128 * 1024, Large = 4 * 1024 * 1024;
-		private readonly BufferPool _small, _large;
-
-
 		protected WebService(WebServiceBuilder builder) : base(builder)
 		{
 			_address = builder.Debug ? "localhost" : builder.Host;
@@ -78,29 +74,8 @@ namespace Greatbone.Core
 			_server = new KestrelServer(Options.Create(_options), Lifetime, _logger);
 			_server.Features.Get<IServerAddressesFeature>().Addresses.Add("http://" + _address + ":" + _port);
 			_server.Features.Get<IServerAddressesFeature>().Addresses.Add("http://" + _address + ":" + MqPort);
-
-			// create buffer pools
-			_small = new BufferPool(Small, Environment.ProcessorCount * 8);
-			_large = new BufferPool(Large, Environment.ProcessorCount / 2);
 		}
 
-
-		internal byte[] Lease(bool large)
-		{
-			return large ? _large.Lease() : _small.Lease();
-		}
-
-		internal void Return(byte[] buf)
-		{
-			if (buf.Length == Small)
-			{
-				_small.Return(buf);
-			}
-			else
-			{
-				_large.Return(buf);
-			}
-		}
 
 		public HttpContext CreateContext(IFeatureCollection features)
 		{
@@ -266,6 +241,19 @@ namespace Greatbone.Core
 		{
 		}
 
+
+		public SqlContext NewDbContext()
+		{
+			WebService svc = Service;
+			NpgsqlConnectionStringBuilder builder = new NpgsqlConnectionStringBuilder()
+			{
+				Host = "localhost",
+				Database = svc.Key,
+				Username = "postgres",
+				Password = "Zou###1989"
+			};
+			return new SqlContext(builder);
+		}
 
 		///
 		/// STATIC

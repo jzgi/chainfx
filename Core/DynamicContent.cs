@@ -7,7 +7,7 @@ namespace Greatbone.Core
 	///
 	/// string is based on UTF-8 encoding/decoding
 	///
-	public abstract class ContentRw : IContent
+	public abstract class DynamicContent : IContent
 	{
 		// hexidecimal characters
 		private static readonly char[] Hex =
@@ -42,46 +42,64 @@ namespace Greatbone.Core
 		};
 
 
-		private byte[] _buffer; // NOTE: HttpResponseStream doesn't have internal buffer
+		private byte[] buffer; // NOTE: HttpResponseStream doesn't have internal buffer
 
 		// the offset in buffer from where the content starts
-		private int _offset;
+		private int offset;
 
 		// number of bytes
-		private int _count;
+		private int count;
 
 		// byte-wise etag checksum, for text-based output only
-		private ulong _checksum;
+		private long checksum;
 
+		protected DynamicContent(byte[] buffer)
+		{
+			this.buffer = buffer;
+		}
 
 		public string Type { get; set; }
 
-		public byte[] Buffer => _buffer;
+		public byte[] Buffer => buffer;
 
-		public int Offset => _offset;
+		public int Count => count;
 
-		public int Count => _count;
+		public DateTime LastModified => default(DateTime);
+
+		public long ETag => checksum;
+
+		public bool Got(out char c)
+		{
+			c = ' ';
+			return false;
+		}
+
+		public bool GotName(out char c)
+		{
+			c = ' ';
+			return false;
+		}
 
 		private void AddByte(byte b)
 		{
-			if (_buffer == null)
+			if (buffer == null)
 			{
-				_buffer = new byte[InitialCapacity];
+				buffer = new byte[InitialCapacity];
 			}
 			// grow the capacity as needed
-			int len = _buffer.Length;
-			if (_count == len)
+			int len = buffer.Length;
+			if (count == len)
 			{
-				byte[] old = _buffer;
-				_buffer = new byte[len * 4];
-				Array.Copy(old, _buffer, len);
+				byte[] old = buffer;
+				buffer = new byte[len * 4];
+				Array.Copy(old, buffer, len);
 			}
-			_buffer[_count++] = b; // append to the buffer
+			buffer[count++] = b; // append to the buffer
 
 			// calculate checksum
-			ulong cs = _checksum;
+			long cs = checksum;
 			cs ^= b; // XOR
-			_checksum = cs >> 57 | cs << 7; // circular left shift 7 bit
+			checksum = cs >> 57 | cs << 7; // circular left shift 7 bit
 		}
 
 		public void Put(bool v)

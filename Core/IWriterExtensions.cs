@@ -3,9 +3,9 @@ using System.Collections.Generic;
 
 namespace Greatbone.Core
 {
-	public static class DocWriterExtensions
+	public static class IWriterExtensions
 	{
-		public static void Write(this IDocWriter w, params IDoc[] arr)
+		public static void Write(this IWriter w, params ISerial[] arr)
 		{
 			w.WriteArrayStart();
 			for (int i = 0; i < arr.Length; i++)
@@ -19,7 +19,7 @@ namespace Greatbone.Core
 			w.WriteArrayEnd();
 		}
 
-		public static void Write(this IDocWriter w, ICollection<IDoc> coll)
+		public static void Write(this IWriter w, ICollection<ISerial> coll)
 		{
 			w.WriteArrayStart();
 			int i = 0;
