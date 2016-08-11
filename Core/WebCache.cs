@@ -15,6 +15,7 @@ namespace Greatbone.Core
 
 		internal struct Item
 		{
+
 		}
 	}
 }

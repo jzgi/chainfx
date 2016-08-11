@@ -5,9 +5,9 @@ namespace Greatbone.Core
 	///
 	/// Binary JSON content.
 	///
-	public class BJsonContent : DynamicContent, IReader, IWriter
+	public class BsonContent : DynamicContent, IReader, IWriter
 	{
-		public BJsonContent(byte[] buffer) : base(buffer)
+		public BsonContent(byte[] buffer) : base(buffer)
 		{
 		}
 

@@ -171,7 +171,7 @@ namespace Greatbone.Core
 		public void SendMessage<T>(string topic, string filter, T message) where T : ISerial
 		{
 			// convert message to byte buffer
-			BJsonContent b = new BJsonContent(null);
+			BsonContent b = new BsonContent(null);
 			message.To(b);
 
 			DoNonQuery("INSERT INTO mq (topic, filter, message) VALUES (@topic, @filter, @message)", p =>

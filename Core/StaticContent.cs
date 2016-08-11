@@ -1538,6 +1538,6 @@ namespace Greatbone.Core
 
 		public DateTime LastModified { get; internal set; }
 
-		public long ETag { get; }
+		public long ETag { get; set; }
 	}
 }

@@ -21,13 +21,12 @@ namespace Greatbone.Core
 		// max age in seconds
 		private int _maxage;
 
-		// byte-wise etag checksum, for text-based output only
-		private ulong _checksum;
-
 		internal WebResponse(HttpResponse impl)
 		{
 			_impl = impl;
 		}
+
+		public CachePolicy CachePolicy { get; set; }
 
 		public IContent Content { get; set; }
 
@@ -45,28 +44,10 @@ namespace Greatbone.Core
 			};
 		}
 
-		public void SetJson(JObject obj)
-		{
-		}
-
-		public void SetJson(JArray arr)
-		{
-		}
-
 		public int StatusCode
 		{
 			get { return _impl.StatusCode; }
 			set { _impl.StatusCode = value; }
-		}
-
-		public bool? IsShared => _shared;
-
-		public int MaxAge => _maxage;
-
-		public void SetCachePolicy(bool? shared, int maxage)
-		{
-			_shared = shared;
-			_maxage = maxage;
 		}
 
 		public void Redirect(string location)
@@ -105,12 +86,8 @@ namespace Greatbone.Core
 
 		public int Count { get; set; }
 
-		public DateTime LastModified { get; }
+		public DateTime LastModified { get; set; }
 
-		public long ETag { get; }
-	}
-
-	class ResponseCachePolicy
-	{
+		public long ETag { get; set; }
 	}
 }
