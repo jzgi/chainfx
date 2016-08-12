@@ -7,7 +7,6 @@ using System.Reflection;
 using System.Threading;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Hosting;
-using Microsoft.AspNetCore.Hosting.Internal;
 using Microsoft.AspNetCore.Hosting.Server;
 using Microsoft.AspNetCore.Hosting.Server.Features;
 using Microsoft.AspNetCore.Http;
@@ -15,14 +14,13 @@ using Microsoft.AspNetCore.Http.Features;
 using Microsoft.AspNetCore.Server.Kestrel;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
-using Microsoft.Net.Http.Headers;
 using Npgsql;
 
 namespace Greatbone.Core
 {
 	///
 	///
-	public delegate void MsgHandler(EventContext mc);
+	public delegate void MsgHandler(MsgContext mc);
 
 	///
 	/// A web service controller that may contain sub-controllers and/or a multiplexer.
@@ -40,31 +38,31 @@ namespace Greatbone.Core
 
 		const int MqPort = 7777;
 
-		private KestrelServerOptions _options;
+		private KestrelServerOptions options;
 
-		private readonly LoggerFactory _logger;
+		private readonly LoggerFactory logger;
 
 		// the attached sub controllers, if any
-		private Set<WebSub> _subs;
+		private Set<WebSub> subs;
 
 		// the attached multiplexer, if any
-		private IZoneHub _zonehub;
+		private IZoneHub zonehub;
 
 
 		// topic sent by this microservice
-		private Set<WebEvent> _publishes;
+		private Set<MsgSubscribe> publishes;
 
 		// topic received by this microservice
-		private Set<WebEvent> _subscribes;
+		private Set<MsgSubscribe> subscribes;
 
 		// the embedded http server
-		private readonly KestrelServer _server;
+		private readonly KestrelServer server;
 
 		// a discriminator of virtual host
-		private readonly string _address;
+		private readonly string address;
 
 		// a  virtual host
-		private readonly int _port;
+		private readonly int port;
 
 		// the async client
 		private HttpClient[] client;
@@ -75,15 +73,15 @@ namespace Greatbone.Core
 
 		protected WebService(WebServiceBuilder builder) : base(builder)
 		{
-			_address = builder.Debug ? "localhost" : builder.Host;
-			_port = builder.Port;
+			address = builder.Debug ? "localhost" : builder.Host;
+			port = builder.Port;
 
 			// create the server instance
-			_logger = new LoggerFactory();
-			_options = new KestrelServerOptions();
-			_server = new KestrelServer(Options.Create(_options), Lifetime, _logger);
-			_server.Features.Get<IServerAddressesFeature>().Addresses.Add("http://" + _address + ":" + _port);
-			_server.Features.Get<IServerAddressesFeature>().Addresses.Add("http://" + _address + ":" + MqPort);
+			logger = new LoggerFactory();
+			options = new KestrelServerOptions();
+			server = new KestrelServer(Options.Create(options), Lifetime, logger);
+			server.Features.Get<IServerAddressesFeature>().Addresses.Add("http://" + address + ":" + port);
+			server.Features.Get<IServerAddressesFeature>().Addresses.Add("http://" + address + ":" + MqPort);
 		}
 
 
@@ -97,18 +95,16 @@ namespace Greatbone.Core
 		///
 		public async Task ProcessRequestAsync(HttpContext context)
 		{
-
 			// dispatch the context accordingly
 
 			ConnectionInfo ci = context.Connection;
 			IPAddress ip = ci.LocalIpAddress;
 			int port = ci.LocalPort;
 
-			if (port == _port && ip.Equals(_address))
+			if (port == this.port && ip.Equals(address))
 			{
-				using (EventContext wc = new EventContext(context))
+				using (MsgContext wc = new MsgContext(context))
 				{
-
 				}
 			}
 
@@ -127,9 +123,15 @@ namespace Greatbone.Core
 
 		public void Start()
 		{
-			_server.Start(this);
+			// prepare event queue service
+			//
 
-			var urls = _server.Features.Get<IServerAddressesFeature>().Addresses;
+
+			// start the server
+			//
+			server.Start(this);
+
+			var urls = server.Features.Get<IServerAddressesFeature>().Addresses;
 
 			Console.WriteLine("Listening on");
 
@@ -162,9 +164,9 @@ namespace Greatbone.Core
 
 		public TSub AddSub<TSub>(string key, Checker checker) where TSub : WebSub
 		{
-			if (_subs == null)
+			if (subs == null)
 			{
-				_subs = new Set<WebSub>(16);
+				subs = new Set<WebSub>(16);
 			}
 			// create instance by reflection
 			Type type = typeof(TSub);
@@ -183,7 +185,7 @@ namespace Greatbone.Core
 			TSub sub = (TSub) ci.Invoke(new object[] {wcc});
 			sub.Checker = checker;
 
-			_subs.Add(sub);
+			subs.Add(sub);
 
 			//
 			// check declared event handler methods
@@ -210,7 +212,7 @@ namespace Greatbone.Core
 			THub hub = (THub) ci.Invoke(new object[] {wcc});
 
 			// call the initialization and set
-			_zonehub = hub;
+			zonehub = hub;
 			return hub;
 		}
 
@@ -218,7 +220,7 @@ namespace Greatbone.Core
 		public void AddPublish(string topic)
 
 		{
-			if (_publishes == null)
+			if (publishes == null)
 			{
 			}
 		}
@@ -236,7 +238,7 @@ namespace Greatbone.Core
 				string dir = relative.Substring(0, slash);
 				if (dir.StartsWith("-")) // mux
 				{
-					if (_zonehub == null)
+					if (zonehub == null)
 					{
 						wc.Response.StatusCode = 501; // Not Implemented
 					}
@@ -244,17 +246,17 @@ namespace Greatbone.Core
 					{
 						string zoneKey = dir.Substring(1);
 						IZone zone;
-						if (_zonehub.ResolveZone(zoneKey, out zone))
+						if (zonehub.ResolveZone(zoneKey, out zone))
 						{
 							wc.Zone = zone;
-							_zonehub.Handle(relative.Substring(slash + 1), wc);
+							zonehub.Handle(relative.Substring(slash + 1), wc);
 						}
 					}
 				}
 				else
 				{
 					WebSub sub;
-					if (_subs.TryGet(dir, out sub))
+					if (subs.TryGet(dir, out sub))
 					{
 						sub.Handle(relative.Substring(slash + 1), wc);
 					}

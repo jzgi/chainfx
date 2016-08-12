@@ -1,6 +1,6 @@
 ﻿namespace Greatbone.Core
 {
-	public class EventConnection
+	public class MsgConnection
 	{
 
 		string address;

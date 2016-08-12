@@ -1,7 +1,6 @@
 ﻿using System;
 using System.Collections.Concurrent;
 using System.Threading;
-using Microsoft.AspNetCore.Http.Internal;
 
 namespace Greatbone.Core
 {
@@ -12,7 +11,7 @@ namespace Greatbone.Core
 	{
 		private readonly ConcurrentDictionary<string, Item> items;
 
-		private Thread cleaner;
+		private readonly Thread cleaner;
 
 		private volatile bool stop;
 
