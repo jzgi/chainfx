@@ -3,7 +3,6 @@ using System.Text;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Http;
 using Newtonsoft.Json;
-using Newtonsoft.Json.Linq;
 
 namespace Greatbone.Core
 {
@@ -14,12 +13,6 @@ namespace Greatbone.Core
 	{
 		// the underlying implementation of a response
 		private readonly HttpResponse _impl;
-
-		// public, private, or no-cache
-		private bool? _shared;
-
-		// max age in seconds
-		private int _maxage;
 
 		internal WebResponse(HttpResponse impl)
 		{
