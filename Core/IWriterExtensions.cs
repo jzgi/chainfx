@@ -6,31 +6,31 @@ namespace Greatbone.Core
 	{
 		public static void Write(this IWriter w, params ISerial[] arr)
 		{
-			w.WriteArrayStart();
+//			w.WriteArrayStart();
 			for (int i = 0; i < arr.Length; i++)
 			{
 				if (i > 0)
 				{
-					w.WriteSep();
+//					w.WriteSep();
 				}
 				arr[i].To(w);
 			}
-			w.WriteArrayEnd();
+//			w.WriteArrayEnd();
 		}
 
 		public static void Write(this IWriter w, ICollection<ISerial> coll)
 		{
-			w.WriteArrayStart();
+//			w.WriteArrayStart();
 			int i = 0;
 			foreach (var o in coll)
 			{
 				if (i++ > 0)
 				{
-					w.WriteSep();
+//					w.WriteSep();
 				}
 				o.To(w);
 			}
-			w.WriteArrayEnd();
+//			w.WriteArrayEnd();
 		}
 	}
 }

@@ -20,7 +20,7 @@ namespace Greatbone.Core
 		internal WebContext(HttpContext impl)
 		{
 			_impl = impl;
-			_request = new WebRequest(Controller, impl.Request);
+			_request = new WebRequest(impl.Request);
 			_response = new WebResponse(impl.Response);
 		}
 

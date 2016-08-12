@@ -9,9 +9,9 @@ namespace Greatbone.Core
 		{
 			T obj = new T();
 
-			r.ReadStart();
+//			r.ReadStart();
 			obj.From(r);
-			r.ReadEnd();
+//			r.ReadEnd();
 
 			return obj;
 		}
@@ -19,13 +19,13 @@ namespace Greatbone.Core
 		public static List<T> ReadArray<T>(this IReader r) where T : ISerial, new()
 		{
 			List<T> lst = new List<T>(64);
-			if (!r.ReadArrayStart()) return lst;
+//			if (!r.ReadArrayStart()) return lst;
 
 
 			T obj = new T();
-			r.ReadStart();
+//			r.ReadStart();
 			obj.From(r);
-			r.ReadEnd();
+//			r.ReadEnd();
 			return null;
 		}
 	}
