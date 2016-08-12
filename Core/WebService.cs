@@ -1,5 +1,4 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.IO;
 using System.Net;
 using System.Net.Http;
@@ -19,10 +18,6 @@ using Npgsql;
 namespace Greatbone.Core
 {
 	///
-	///
-	public delegate void MsgHandler(MsgContext mc);
-
-	///
 	/// A web service controller that may contain sub-controllers and/or a multiplexer.
 	///
 	/// cache-control -- elimicates redundant requests (max-age) or data queries (not-modified).
@@ -32,11 +27,7 @@ namespace Greatbone.Core
 	///
 	public abstract class WebService : WebSub, IParent, ICacheRealm, IHttpApplication<HttpContext>
 	{
-		public static readonly Checker AnyOne = (t) => true;
-
-		public static readonly Checker<IZone> AnyOneZone = (t, z) => true;
-
-		const int MqPort = 7777;
+		const int MsgPort = 7777;
 
 		private KestrelServerOptions options;
 
@@ -49,11 +40,12 @@ namespace Greatbone.Core
 		private IZoneHub zonehub;
 
 
-		// topic sent by this microservice
-		private Set<MsgSubscribe> publishes;
+		// topics published by this microservice
+		private Set<MsgPublish> publishes;
 
-		// topic received by this microservice
+		// topics subscribed by this microservice
 		private Set<MsgSubscribe> subscribes;
+
 
 		// the embedded http server
 		private readonly KestrelServer server;
@@ -68,9 +60,6 @@ namespace Greatbone.Core
 		private HttpClient[] client;
 
 
-		private Dictionary<string, MsgHandler> msghandlers;
-
-
 		protected WebService(WebServiceBuilder builder) : base(builder)
 		{
 			address = builder.Debug ? "localhost" : builder.Host;
@@ -81,7 +70,7 @@ namespace Greatbone.Core
 			options = new KestrelServerOptions();
 			server = new KestrelServer(Options.Create(options), Lifetime, logger);
 			server.Features.Get<IServerAddressesFeature>().Addresses.Add("http://" + address + ":" + port);
-			server.Features.Get<IServerAddressesFeature>().Addresses.Add("http://" + address + ":" + MqPort);
+			server.Features.Get<IServerAddressesFeature>().Addresses.Add("http://" + address + ":" + MsgPort);
 		}
 
 
@@ -156,9 +145,9 @@ namespace Greatbone.Core
 		public CancellationToken ApplicationStopped { get; set; }
 
 
-		public void Subscribe(string topic, MsgHandler handler)
+		public void Subscribe(string topic, MsgDoer doer)
 		{
-			msghandlers.Add(topic, handler);
+			subscribes.Add(new MsgSubscribe(topic, doer));
 		}
 
 
@@ -214,15 +203,6 @@ namespace Greatbone.Core
 			// call the initialization and set
 			zonehub = hub;
 			return hub;
-		}
-
-
-		public void AddPublish(string topic)
-
-		{
-			if (publishes == null)
-			{
-			}
 		}
 
 
