@@ -8,6 +8,9 @@ namespace Greatbone.Core
     /// <param name="wc"></param>
     public delegate void ActionDoer(WebContext wc);
 
+
+	///
+	///
     public class WebAction : IMember
     {
         private readonly ActionDoer _doer;

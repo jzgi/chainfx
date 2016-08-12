@@ -2,14 +2,22 @@
 
 namespace Greatbone.Core
 {
-    public class PublishAttribute : Attribute
-    {
-        string topic;
+	[AttributeUsage(AttributeTargets.Class, AllowMultiple = true)]
+	public class PublishAttribute : Attribute
+	{
+		string topic;
 
-        int priority;
+		bool subtype;
 
-        int duration;
+		public PublishAttribute(string topic) : this(topic, false)
+		{
+		}
 
-        public string Key => topic;
-    }
+
+		public PublishAttribute(string topic, bool subtype)
+		{
+			this.topic = topic;
+			this.subtype = subtype;
+		}
+	}
 }

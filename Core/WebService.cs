@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.IO;
 using System.Net;
 using System.Net.Http;
@@ -6,6 +7,7 @@ using System.Reflection;
 using System.Threading;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Hosting;
+using Microsoft.AspNetCore.Hosting.Internal;
 using Microsoft.AspNetCore.Hosting.Server;
 using Microsoft.AspNetCore.Hosting.Server.Features;
 using Microsoft.AspNetCore.Http;
@@ -13,10 +15,15 @@ using Microsoft.AspNetCore.Http.Features;
 using Microsoft.AspNetCore.Server.Kestrel;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
+using Microsoft.Net.Http.Headers;
 using Npgsql;
 
 namespace Greatbone.Core
 {
+	///
+	///
+	public delegate void MsgHandler(EventContext mc);
+
 	///
 	/// A web service controller that may contain sub-controllers and/or a multiplexer.
 	///
@@ -63,6 +70,9 @@ namespace Greatbone.Core
 		private HttpClient[] client;
 
 
+		private Dictionary<string, MsgHandler> msghandlers;
+
+
 		protected WebService(WebServiceBuilder builder) : base(builder)
 		{
 			_address = builder.Debug ? "localhost" : builder.Host;
@@ -87,6 +97,21 @@ namespace Greatbone.Core
 		///
 		public async Task ProcessRequestAsync(HttpContext context)
 		{
+
+			// dispatch the context accordingly
+
+			ConnectionInfo ci = context.Connection;
+			IPAddress ip = ci.LocalIpAddress;
+			int port = ci.LocalPort;
+
+			if (port == _port && ip.Equals(_address))
+			{
+				using (EventContext wc = new EventContext(context))
+				{
+
+				}
+			}
+
 			using (WebContext wc = new WebContext(context))
 			{
 				Handle(context.Request.Path.Value.Substring(1), wc);
@@ -127,6 +152,12 @@ namespace Greatbone.Core
 		public CancellationToken ApplicationStopping { get; set; }
 
 		public CancellationToken ApplicationStopped { get; set; }
+
+
+		public void Subscribe(string topic, MsgHandler handler)
+		{
+			msghandlers.Add(topic, handler);
+		}
 
 
 		public TSub AddSub<TSub>(string key, Checker checker) where TSub : WebSub

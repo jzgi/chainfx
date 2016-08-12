@@ -19,6 +19,14 @@ namespace Greatbone.Sample
 
 			AddSub<WwwBrandService>("brand", null);
 
+
+			//
+
+			Subscribe("amcom", x =>
+				{
+					string s = x.GetType().Name;
+				}
+			);
 		}
 
 		public void Show(WebContext wc)
