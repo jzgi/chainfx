@@ -8,7 +8,6 @@ namespace Greatbone.Sample
 		{
 			bool debug = args.Length > 0 && "debug".Equals(args[0]);
 
-
 			int port = 8080;
 
 			DataSourceBuilder dat = new DataSourceBuilder

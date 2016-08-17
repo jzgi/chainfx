@@ -90,7 +90,7 @@ namespace Greatbone.Core
 		///  TURNING TARGET
 		///
 		///
-		public void Put(string name, int value)
+		public void Add(string name, int value)
 		{
 			@params.Add(new NpgsqlParameter(name, NpgsqlDbType.Integer)
 			{
@@ -98,7 +98,7 @@ namespace Greatbone.Core
 			});
 		}
 
-		public void Put(string name, decimal value)
+		public void Add(string name, decimal value)
 		{
 			@params.Add(new NpgsqlParameter(name, NpgsqlDbType.Money)
 			{
@@ -106,7 +106,7 @@ namespace Greatbone.Core
 			});
 		}
 
-		public void Put(string name, string value)
+		public void Add(string name, string value)
 		{
 			@params.Add(new NpgsqlParameter(name, NpgsqlDbType.Varchar)
 			{
@@ -114,7 +114,7 @@ namespace Greatbone.Core
 			});
 		}
 
-		public void Put(string name, ArraySegment<byte> value)
+		public void Add(string name, ArraySegment<byte> value)
 		{
 			@params.Add(new NpgsqlParameter(name, NpgsqlDbType.Bytea)
 			{
@@ -176,9 +176,9 @@ namespace Greatbone.Core
 
 			DoNonQuery("INSERT INTO mq (topic, filter, message) VALUES (@topic, @filter, @message)", p =>
 			{
-				p.Put("@topic", topic);
-				p.Put("@filter", filter);
-				p.Put("@message", new ArraySegment<byte>(b.Buffer, 0, b.Count));
+				p.Add("@topic", topic);
+				p.Add("@filter", filter);
+				p.Add("@message", new ArraySegment<byte>(b.Buffer, 0, b.Count));
 			});
 		}
 

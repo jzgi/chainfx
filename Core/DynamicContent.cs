@@ -5,7 +5,7 @@ using System.Text;
 namespace Greatbone.Core
 {
 	///
-	/// string is based on UTF-8 encoding/decoding
+	/// A binary content that is dynamically generated, where strings are UTF-8 encoded.
 	///
 	public abstract class DynamicContent : IContent
 	{
@@ -80,7 +80,7 @@ namespace Greatbone.Core
 			return false;
 		}
 
-		private void AddByte(byte b)
+		public void AddByte(byte b)
 		{
 			if (buffer == null)
 			{
@@ -105,6 +105,77 @@ namespace Greatbone.Core
 		public void Put(bool v)
 		{
 			AddByte((byte) '1');
+		}
+
+		public void Put(char c)
+		{
+			// UTF-8 encoding but without surrogate support
+			if (c < 0x80)
+			{
+				// have at most seven bits
+				AddByte((byte) c);
+			}
+			else if (c < 0x800)
+			{
+				// 2 text, 11 bits
+				AddByte((byte) (0xc0 | (c >> 6)));
+				AddByte((byte) (0x80 | (c & 0x3f)));
+			}
+			else
+			{
+				// 3 text, 16 bits
+				AddByte((byte) (0xe0 | ((c >> 12))));
+				AddByte((byte) (0x80 | ((c >> 6) & 0x3f)));
+				AddByte((byte) (0x80 | (c & 0x3f)));
+			}
+		}
+
+		public void Put(char[] v)
+		{
+			Put(v, 0, v.Length);
+		}
+
+		public void Put(char[] v, int offset, int len)
+		{
+			if (v != null)
+			{
+				for (int i = offset; i < len; i++)
+				{
+					Put(v[i]);
+				}
+			}
+		}
+
+		public void Put(string v)
+		{
+			Put(v, 0, v.Length);
+		}
+
+		public void Put(string v, int offset, int len)
+		{
+			if (v != null)
+			{
+				for (int i = offset; i < len; i++)
+				{
+					Put(v[i]);
+				}
+			}
+		}
+
+		public void Put(StringBuilder v)
+		{
+			Put(v, 0, v.Length);
+		}
+
+		public void Put(StringBuilder v, int offset, int len)
+		{
+			if (v != null)
+			{
+				for (int i = offset; i < len; i++)
+				{
+					Put(v[i]);
+				}
+			}
 		}
 
 		public void Put(byte v)
@@ -318,62 +389,6 @@ namespace Greatbone.Core
 				Put(':');
 				if (sec < 10) Put('0');
 				AddByte(sec);
-			}
-		}
-
-		public void Put(char c)
-		{
-			// UTF-8 encoding but without surrogate support
-			if (c < 0x80)
-			{
-				// have at most seven bits
-				AddByte((byte) c);
-			}
-			else if (c < 0x800)
-			{
-				// 2 text, 11 bits
-				AddByte((byte) (0xc0 | (c >> 6)));
-				AddByte((byte) (0x80 | (c & 0x3f)));
-			}
-			else
-			{
-				// 3 text, 16 bits
-				AddByte((byte) (0xe0 | ((c >> 12))));
-				AddByte((byte) (0x80 | ((c >> 6) & 0x3f)));
-				AddByte((byte) (0x80 | (c & 0x3f)));
-			}
-		}
-
-		public void Put(string v, int offset, int len)
-		{
-			if (v != null)
-			{
-				for (int i = offset; i < len; i++)
-				{
-					Put(v[i]);
-				}
-			}
-		}
-
-		public void Put(string v)
-		{
-			if (v != null)
-			{
-				for (int i = 0, len = v.Length; i < len; i++)
-				{
-					Put(v[i]);
-				}
-			}
-		}
-
-		public void Put(StringBuilder v)
-		{
-			if (v != null)
-			{
-				for (int i = 0, len = v.Length; i < len; i++)
-				{
-					Put(v[i]);
-				}
 			}
 		}
 	}

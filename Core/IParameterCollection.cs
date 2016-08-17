@@ -4,12 +4,12 @@ namespace Greatbone.Core
 {
 	public interface IParameterCollection
 	{
-		void Put(string name, int value);
+		void Add(string name, int value);
 
-		void Put(string name, decimal value);
+		void Add(string name, decimal value);
 
-		void Put(string name, string value);
+		void Add(string name, string value);
 
-		void Put(string name, ArraySegment<byte> value);
+		void Add(string name, ArraySegment<byte> value);
 	}
 }
