@@ -2,7 +2,8 @@
   "version": "1.0.0-*",
   "description": "Sample Console Application",
   "buildOptions": {
-    "emitEntryPoint": true
+    "emitEntryPoint": true,
+    "additionalArguments": ["/doc:doc.xml"]
   },
   "dependencies": {
     "Microsoft.NETCore.App": {

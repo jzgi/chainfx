@@ -1,11 +1,9 @@
 ﻿using Greatbone.Core;
-using Microsoft.Extensions.Caching.Memory;
-using Microsoft.Extensions.Options;
 
 namespace Greatbone.Sample
 {
 	///
-	/// The user directory service controller.
+	/// <summary>The user directory service</summary>
 	///
 	public class UserService : WebService
 	{

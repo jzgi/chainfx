@@ -3,6 +3,7 @@
 namespace Greatbone.Sample
 {
 	///
+	/// <summary></summary>
 	/// /-/
 	///
     public class UserZoneHub : WebZoneHub<User>

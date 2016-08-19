@@ -18,7 +18,6 @@ namespace Greatbone.Sample
 				Password = "Zou###1989"
 			};
 
-
 			var www = new WwwService(new WebServiceBuilder
 			{
 				Key = "www",
@@ -46,9 +45,9 @@ namespace Greatbone.Sample
 				Debug = debug
 			});
 
-			var job = new JobService(WebServiceBuilder.Load("job"));
+			var notice = new NoticeService(WebServiceBuilder.Load("job"));
 
-			WebService.Run(www, user, forum, job);
+			WebService.Run(www, user, forum, notice);
 		}
 	}
 }
