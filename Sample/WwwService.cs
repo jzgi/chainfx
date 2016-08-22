@@ -11,15 +11,6 @@ namespace Greatbone.Sample
 		{
 			AddSub<WwwMySub>("my", null);
 
-			AddSub<WwwNewsSub>("news", null);
-
-			AddSub<WwwEventSub>("event", null);
-
-			AddSub<WwwFameService>("fame", null);
-
-			AddSub<WwwBrandService>("brand", null);
-
-
 			//
 
 			Subscribe("amcom", x =>
@@ -29,7 +20,26 @@ namespace Greatbone.Sample
 			);
 		}
 
-		public void Show(WebContext wc)
+		///
+		/// <summary>Returns the default HTML page</summary>
+		public override void Default(WebContext wc)
+		{
+			base.Default(wc);
+		}
+
+		public void Home(WebContext wc)
+		{
+		}
+
+		public void Posts(WebContext wc)
+		{
+		}
+
+		public void Notices(WebContext wc)
+		{
+		}
+
+		public void Search(WebContext wc)
 		{
 		}
 

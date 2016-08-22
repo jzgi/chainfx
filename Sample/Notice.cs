@@ -3,7 +3,7 @@ using Greatbone.Core;
 
 namespace Greatbone.Sample
 {
-	public class Notice : ISerial
+	public class Notice : ISerial, IUnit
 	{
 		public int Id;
 
@@ -18,6 +18,10 @@ namespace Greatbone.Sample
 		public int AcceptorId;
 
 		public int Term;
+
+		public long ModifiedOn { get; set; }
+
+		public string Key { get; }
 
 		public void From(IReader r)
 		{

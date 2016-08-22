@@ -37,7 +37,7 @@ namespace Greatbone.Core
 		private Set<WebSub> subs;
 
 		// the attached multiplexer, if any
-		private IZoneHub zonehub;
+		private IUnitHub zonehub;
 
 
 		// topics published by this microservice
@@ -182,7 +182,7 @@ namespace Greatbone.Core
 			return sub;
 		}
 
-		public THub MountHub<THub, TZone>(Checker<TZone> checker) where THub : WebZoneHub<TZone> where TZone : IZone
+		public THub MountHub<THub, TZone>(Checker<TZone> checker) where THub : WebUnitHub<TZone> where TZone : IUnit
 		{
 			// create instance
 			Type type = typeof(THub);
@@ -225,10 +225,10 @@ namespace Greatbone.Core
 					else
 					{
 						string zoneKey = dir.Substring(1);
-						IZone zone;
-						if (zonehub.ResolveZone(zoneKey, out zone))
+						IUnit unit;
+						if (zonehub.ResolveUnit(zoneKey, out unit))
 						{
-							wc.Zone = zone;
+							wc.Unit = unit;
 							zonehub.Handle(relative.Substring(slash + 1), wc);
 						}
 					}

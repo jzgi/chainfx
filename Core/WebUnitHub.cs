@@ -5,28 +5,28 @@ using System.Reflection;
 
 namespace Greatbone.Core
 {
-    internal interface IZoneHub
+    internal interface IUnitHub
     {
         void Handle(string basis, WebContext wc);
 
-        bool ResolveZone(string zoneKey, out IZone zone);
+        bool ResolveUnit(string unitKey, out IUnit unit);
     }
 
-    public abstract class WebZoneHub<TZone> : WebSub<TZone>, IZoneHub, IParent where TZone : IZone
+    public abstract class WebUnitHub<TUnit> : WebSub<TUnit>, IUnitHub, IParent where TUnit : IUnit
     {
         // the added subs
-        private Set<WebSub<TZone>> _subs;
+        private Set<WebSub<TUnit>> _subs;
 
 
-        public WebZoneHub(WebServiceBuilder builder) : base(builder)
+        public WebUnitHub(WebServiceBuilder builder) : base(builder)
         {
         }
 
-        public TSub AddSub<TSub>(string key, Checker<TZone> checker) where TSub : WebSub<TZone>
+        public TSub AddSub<TSub>(string key, Checker<TUnit> checker) where TSub : WebSub<TUnit>
         {
             if (_subs == null)
             {
-                _subs = new Set<WebSub<TZone>>(16);
+                _subs = new Set<WebSub<TUnit>>(16);
             }
             // create instance by reflection
             Type type = typeof(TSub);
@@ -49,7 +49,7 @@ namespace Greatbone.Core
         }
 
 
-        public bool ResolveZone(string zoneKey, out IZone zone)
+        public bool ResolveUnit(string unitKey, out IUnit unit)
         {
             throw new NotImplementedException();
         }
@@ -59,13 +59,13 @@ namespace Greatbone.Core
             int slash = relative.IndexOf('/');
             if (slash == -1) // without a slash then handle it locally
             {
-                WebAction<TZone> a = GetAction(relative);
-                a?.Do(wc, (TZone) (wc.Zone));
+                WebAction<TUnit> a = GetAction(relative);
+                a?.Do(wc, (TUnit) (wc.Unit));
             }
             else // not local then sub
             {
                 string rsc = relative.Substring(0, slash);
-                WebSub<TZone> sub;
+                WebSub<TUnit> sub;
                 if (_subs.TryGet(rsc, out sub))
                 {
                     sub.Handle(rsc.Substring(slash), wc);

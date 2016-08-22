@@ -7,7 +7,7 @@ namespace Greatbone.Sample
 	/// <example>
 	///     Brand o  new Brand(){}
 	/// </example>
-	public class Post
+	public class Post : IUnit
 	{
 		public long ModifiedOn { get; set; }
 

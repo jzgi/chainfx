@@ -5,9 +5,9 @@ namespace Greatbone.Sample
 	///
 	/// The forum and commenting servoce.
 	///
-	public class ForumService : WebService
+	public class ChatService : WebService
 	{
-		public ForumService(WebServiceBuilder builder) : base(builder)
+		public ChatService(WebServiceBuilder builder) : base(builder)
 		{
 		}
 	}

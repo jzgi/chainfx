@@ -2,24 +2,20 @@
 
 namespace Greatbone.Sample
 {
-	public class Brand : IUnit, ISerial
+	public class Fame : ISerial, IUnit
 	{
-		public string Id;
-
-		public string Name;
-
-		public char[] Credential { get; set; }
-
 		public long ModifiedOn { get; set; }
 
-		public string Key => Id;
+		public string Key { get; }
 
 		public void From(IReader r)
 		{
+			throw new System.NotImplementedException();
 		}
 
 		public void To(IWriter w)
 		{
+			throw new System.NotImplementedException();
 		}
 	}
 }

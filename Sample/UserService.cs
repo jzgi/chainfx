@@ -7,14 +7,11 @@ namespace Greatbone.Sample
 	///
 	public class UserService : WebService
 	{
-		// user cache
-		// MemoryCache cache = new MemoryCache(null);
-
 		public UserService(WebServiceBuilder builder) : base(builder)
 		{
 			AddSub<UserAdminSub>("admin", (x) => x.Can(null, 1));
 
-			MountHub<UserZoneHub, User>((x, p) => true);
+			MountHub<UserUnitHub, User>((x, p) => true);
 		}
 
 		///
@@ -28,12 +25,5 @@ namespace Greatbone.Sample
 		{
 		}
 
-		//
-		// EVENT HANDLING
-		//
-
-		public void OnBizEnroll()
-		{
-		}
 	}
 }

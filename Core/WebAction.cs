@@ -41,7 +41,7 @@ namespace Greatbone.Core
     public delegate void ActionDoer<in TZone>(WebContext wc, TZone zone);
 
 
-    public class WebAction<TZone> : IMember where TZone : IZone
+    public class WebAction<TZone> : IMember where TZone : IUnit
     {
         private readonly ActionDoer<TZone> _doer;
 

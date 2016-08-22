@@ -36,7 +36,7 @@ namespace Greatbone.Sample
 				Debug = debug
 			});
 
-			var forum = new ForumService(new WebServiceBuilder
+			var chat = new ChatService(new WebServiceBuilder
 			{
 				Key = "forum",
 				Host = "60.205.104.239",
@@ -47,7 +47,7 @@ namespace Greatbone.Sample
 
 			var notice = new NoticeService(WebServiceBuilder.Load("job"));
 
-			WebService.Run(www, user, forum, notice);
+			WebService.Run(www, user, chat, notice);
 		}
 	}
 }

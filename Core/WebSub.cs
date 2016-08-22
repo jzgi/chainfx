@@ -96,7 +96,7 @@ namespace Greatbone.Core
 	///
 	/// Represents a multiplexed sub-controller that consists of a group of action methods.
 	///
-	public abstract class WebSub<TZone> : WebController where TZone : IZone
+	public abstract class WebSub<TZone> : WebController where TZone : IUnit
 	{
 		// the collection of multiplexed actions declared by this sub-controller
 		private readonly Set<WebAction<TZone>> _actions = new Set<WebAction<TZone>>(32);
@@ -159,12 +159,12 @@ namespace Greatbone.Core
 				}
 				else
 				{
-					a.Do(wc, (TZone) (wc.Zone));
+					a.Do(wc, (TZone) (wc.Unit));
 				}
 			}
 		}
 
-		public virtual void Default(WebContext wc, TZone zone)
+		public virtual void Default(WebContext wc, TZone unit)
 		{
 			StaticContent sta = DefaultStatic;
 			if (sta != null)
