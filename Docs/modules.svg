@@ -1,0 +1,64 @@
+<?xml version="1.0"?>
+<svg width="640" height="480" xmlns="http://www.w3.org/2000/svg" xmlns:svg="http://www.w3.org/2000/svg" xmlns:se="http://svg-edit.googlecode.com">
+ <!-- Created with SVG-edit - http://svg-edit.googlecode.com/ -->
+ <defs>
+  <marker id="se_marker_end_svg_22" markerUnits="strokeWidth" orient="auto" viewBox="0 0 100 100" markerWidth="5" markerHeight="5" refX="50" refY="50">
+   <path id="svg_17" d="m100,50l-100,40l30,-40l-30,-40l100,40z" fill="#000000" stroke="#000000" stroke-width="10"/>
+  </marker>
+  <marker id="se_marker_end_svg_23" markerUnits="strokeWidth" orient="auto" viewBox="0 0 100 100" markerWidth="5" markerHeight="5" refX="50" refY="50">
+   <path id="svg_20" d="m100,50l-100,40l30,-40l-30,-40l100,40z" fill="#000000" stroke="#000000" stroke-width="10"/>
+  </marker>
+  <marker id="se_marker_end_svg_24" markerUnits="strokeWidth" orient="auto" viewBox="0 0 100 100" markerWidth="5" markerHeight="5" refX="50" refY="50">
+   <path id="svg_27" d="m100,50l-100,40l30,-40l-30,-40l100,40z" fill="#000000" stroke="#000000" stroke-width="10"/>
+  </marker>
+  <marker id="se_marker_end_svg_25" markerUnits="strokeWidth" orient="auto" viewBox="0 0 100 100" markerWidth="5" markerHeight="5" refX="50" refY="50">
+   <path id="svg_28" d="m100,50l-100,40l30,-40l-30,-40l100,40z" fill="#000000" stroke="#000000" stroke-width="10"/>
+  </marker>
+  <marker refY="50" refX="50" markerHeight="5" markerWidth="5" viewBox="0 0 100 100" se_type="rightarrow" orient="auto" markerUnits="strokeWidth" id="se_marker_end_svg_38">
+   <path stroke-width="10" stroke="#000000" fill="#000000" d="m100,50l-100,40l30,-40l-30,-40z"/>
+  </marker>
+ </defs>
+ <g>
+  <title>Layer 1</title>
+  <rect ry="15" rx="15" id="svg_61" height="360" width="190" y="80" x="60" stroke-linecap="null" stroke-linejoin="null" stroke-dasharray="null" stroke-width="3" stroke="#000000" fill="#ffffff"/>
+  <rect ry="15" rx="15" id="svg_58" height="360" width="310" y="80" x="270" stroke-linecap="null" stroke-linejoin="null" stroke-dasharray="null" stroke-width="3" stroke="#000000" fill="#ffffff"/>
+  <polyline marker-end="url(#se_marker_end_svg_38)" se:connector="svg_1 svg_35" fill="none" stroke-width="3" stroke="#000000" points="405.5,265.208 433.25,265.153 461,265.098" id="svg_38"/>
+  <polyline se:connector="svg_1 svg_10" id="svg_25" points="392.867,290.25 414.249,303.625 435.632,317" stroke="#000000" stroke-width="3" fill="none" marker-end="url(#se_marker_end_svg_25)"/>
+  <polyline se:connector="svg_1 svg_8" id="svg_24" points="405.5,240.38 418.25,234.325 431,228.27" stroke="#000000" stroke-width="3" fill="none" marker-end="url(#se_marker_end_svg_24)"/>
+  <polyline se:connector="svg_1 svg_18" id="svg_23" points="362.658,290.25 378.682,331.625 394.705,373" stroke="#000000" stroke-width="3" fill="none" marker-end="url(#se_marker_end_svg_23)"/>
+  <polyline se:connector="svg_1 svg_4" id="svg_22" points="364.815,240.375 381.722,204.688 398.63,169" stroke="#000000" stroke-width="3" fill="none" marker-end="url(#se_marker_end_svg_22)"/>
+  <g id="svg_39">
+   <text xml:space="preserve" text-anchor="middle" font-family="serif" font-size="24" id="svg_31" y="323.5" x="513.5" stroke-width="0" stroke="#000000" fill="#000000"/>
+   <rect id="svg_35" fill="#bfbfbf" stroke="#000000" stroke-width="3" x="470" y="250" width="80" height="30"/>
+   <text id="svg_36" fill="#000000" stroke="#000000" stroke-width="0" stroke-dasharray="null" stroke-linejoin="null" stroke-linecap="null" x="510" y="270" font-size="24" font-family="serif" text-anchor="middle" xml:space="preserve">chat</text>
+  </g>
+  <g id="svg_40">
+   <rect fill="#bfbfbf" stroke="#000000" stroke-width="3" x="434" y="325.999999" width="80" height="30" id="svg_10"/>
+   <text fill="#000000" stroke="#000000" stroke-width="0" stroke-dasharray="null" stroke-linejoin="null" stroke-linecap="null" x="470" y="350" font-size="24" font-family="serif" text-anchor="middle" xml:space="preserve" id="svg_11">biz</text>
+  </g>
+  <g id="svg_41">
+   <rect fill="#bfbfbf" stroke="#000000" stroke-width="3" x="364" y="381.999999" width="80" height="30" id="svg_18"/>
+   <text fill="#000000" stroke="#000000" stroke-width="0" stroke-dasharray="null" stroke-linejoin="null" stroke-linecap="null" x="400" y="400" font-size="24" font-family="serif" text-anchor="middle" xml:space="preserve" id="svg_19">user</text>
+  </g>
+  <g id="svg_42">
+   <rect fill="#bfbfbf" stroke="#000000" stroke-width="3" x="440" y="190" width="80" height="30" id="svg_8"/>
+   <text fill="#000000" stroke="#000000" stroke-width="0" stroke-dasharray="null" stroke-linejoin="null" stroke-linecap="null" x="480" y="210" font-size="24" font-family="serif" text-anchor="middle" xml:space="preserve" id="svg_9">notice</text>
+  </g>
+  <g id="svg_43">
+   <rect fill="#bfbfbf" stroke="#000000" stroke-width="3" x="370" y="130" width="80" height="30" id="svg_4"/>
+   <text fill="#000000" stroke="#000000" stroke-width="0" stroke-dasharray="null" stroke-linejoin="null" stroke-linecap="null" x="410" y="150" font-size="24" font-family="serif" text-anchor="middle" xml:space="preserve" id="svg_5">post</text>
+  </g>
+  <g id="svg_45">
+   <rect fill="#bfbfbf" stroke="#000000" stroke-width="3" x="302" y="241.875003" width="102" height="46.874997" id="svg_1"/>
+   <text transform="matrix(1, 0, 0, 0.68306, 0, 78.0753)" fill="#000000" stroke="#000000" stroke-width="0" stroke-dasharray="null" stroke-linejoin="null" stroke-linecap="null" x="350" y="279.280001" id="svg_3" font-size="24" font-family="serif" text-anchor="middle" xml:space="preserve">www</text>
+  </g>
+  <text xml:space="preserve" text-anchor="middle" font-family="serif" font-size="24" id="svg_53" y="170" x="150" stroke-linecap="null" stroke-linejoin="null" stroke-dasharray="null" stroke-width="0" stroke="#000000" fill="#000000">ionic</text>
+  <text xml:space="preserve" text-anchor="middle" font-family="serif" font-size="24" id="svg_54" y="100" x="500" stroke-linecap="null" stroke-linejoin="null" stroke-dasharray="null" stroke-width="0" stroke="#000000" fill="#000000">c#, postgresql</text>
+  <text id="svg_55" xml:space="preserve" text-anchor="middle" font-family="serif" font-size="24" y="320" x="140" stroke-linecap="null" stroke-linejoin="null" stroke-dasharray="null" stroke-width="0" stroke="#000000" fill="#000000">foundation</text>
+  <text id="svg_56" xml:space="preserve" text-anchor="middle" font-family="serif" font-size="24" y="100" x="200" stroke-linecap="null" stroke-linejoin="null" stroke-dasharray="null" stroke-width="0" stroke="#000000" fill="#000000">html, js</text>
+  <rect id="svg_48" fill="#bfbfbf" stroke="#000000" stroke-width="3" x="110" y="190" width="80" height="30"/>
+  <text id="svg_49" fill="#000000" stroke="#000000" stroke-width="0" stroke-dasharray="null" stroke-linejoin="null" stroke-linecap="null" x="150" y="210" font-size="24" font-family="serif" text-anchor="middle" xml:space="preserve">mobile</text>
+  <rect id="svg_50" fill="#bfbfbf" stroke="#000000" stroke-width="3" x="110" y="250" width="80" height="30"/>
+  <text id="svg_51" fill="#000000" stroke="#000000" stroke-width="0" stroke-dasharray="null" stroke-linejoin="null" stroke-linecap="null" x="150" y="270" font-size="24" font-family="serif" text-anchor="middle" xml:space="preserve">pc</text>
+ </g>
+</svg>
