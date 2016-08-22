@@ -5,11 +5,16 @@ using System.Reflection;
 
 namespace Greatbone.Core
 {
-	public abstract class WebXHub : WebSub
+	internal interface IXHub
 	{
-		// the added subs
-		private Set<WebSub> subs;
+		void Handle(string relative, WebContext ex);
+	}
 
+
+	public abstract class WebXHub<TX> : WebSub<TX>, IXHub where TX : IComparable<TX>, IEquatable<TX>
+	{
+		// the added sub controllers
+		private Set<WebSub> subs;
 
 		protected WebXHub(WebBuilder builder) : base(builder)
 		{
@@ -41,19 +46,14 @@ namespace Greatbone.Core
 			return sub;
 		}
 
-
-		public bool ResolveUnit(string unitKey, out IUnit unit)
-		{
-			throw new NotImplementedException();
-		}
-
 		public override void Handle(string relative, WebContext wc)
 		{
 			int slash = relative.IndexOf('/');
 			if (slash == -1) // without a slash then handle it locally
 			{
-				WebAction a = GetAction(relative);
-				a?.Do(wc, wc.X);
+				WebAction<TX> a = GetAction(relative);
+//				TX x = wc.X as TX;
+//				a?.Do(wc, wc.X);
 			}
 			else // not local then sub
 			{

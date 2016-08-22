@@ -2,7 +2,7 @@
 
 namespace Greatbone.Sample
 {
-	public class Brand : IUnit, ISerial
+	public class Brand : ISerial
 	{
 		public string Id;
 

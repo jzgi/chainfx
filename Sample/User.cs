@@ -3,7 +3,7 @@ using Greatbone.Core;
 
 namespace Greatbone.Sample
 {
-	public class User : IToken, IUnit
+	public class User : IToken
 	{
 		// id
 		public string Login;

@@ -19,7 +19,7 @@ namespace Greatbone.Core
 
 		public bool Debug;
 
-		internal WebSub Parent;
+		internal WebController Parent;
 
 		internal WebService Service;
 

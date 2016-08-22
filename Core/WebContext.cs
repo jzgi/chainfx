@@ -34,14 +34,12 @@ namespace Greatbone.Core
 
 		public WebAction Action { get; }
 
-		public string X { get; internal set; }
+		public object X { get; internal set; }
 
 		public IToken Token { get; }
 
-
 		internal Task SendAsyncTask()
 		{
-
 			return _response.SendAsyncTask();
 		}
 

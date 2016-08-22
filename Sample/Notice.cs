@@ -3,7 +3,7 @@ using Greatbone.Core;
 
 namespace Greatbone.Sample
 {
-	public class Notice : ISerial, IUnit
+	public class Notice : ISerial
 	{
 		public int Id;
 

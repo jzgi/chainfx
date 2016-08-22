@@ -27,6 +27,24 @@ namespace Greatbone.Sample
 				Debug = debug
 			});
 
+			var biz = new BizService(new WebBuilder
+			{
+				Key = "biz",
+				Host = "60.205.104.239",
+				Port = port++,
+				DataSource = dat,
+				Debug = debug
+			});
+
+			var post = new PostService(new WebBuilder
+			{
+				Key = "post",
+				Host = "60.205.104.239",
+				Port = port++,
+				DataSource = dat,
+				Debug = debug
+			});
+
 			var user = new UserService(new WebBuilder
 			{
 				Key = "user",
@@ -38,16 +56,17 @@ namespace Greatbone.Sample
 
 			var chat = new ChatService(new WebBuilder
 			{
-				Key = "forum",
+				Key = "chat",
 				Host = "60.205.104.239",
 				Port = port,
 				DataSource = dat,
 				Debug = debug
 			});
 
-			var notice = new NoticeService(WebBuilder.Load("job"));
+			var notice = new NoticeService(WebBuilder.Load("job")
+			);
 
-			WebService.Run(www, user, chat, notice);
+			WebService.Run(www, biz, post, user, chat, notice);
 		}
 	}
 }

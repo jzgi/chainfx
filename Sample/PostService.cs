@@ -6,7 +6,7 @@ namespace Greatbone.Sample
 	{
 		public PostService(WebBuilder builder) : base(builder)
 		{
-			MountHub<PostXHub>(null);
+			MountHub<PostXHub, long>(null);
 		}
 	}
 }

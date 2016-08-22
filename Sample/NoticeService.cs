@@ -9,7 +9,7 @@ namespace Greatbone.Sample
 	{
 		public NoticeService(WebBuilder builder) : base(builder)
 		{
-			MountHub<NoticeXHub>(null);
+			MountHub<NoticeXHub, int>(null);
 		}
 	}
 }

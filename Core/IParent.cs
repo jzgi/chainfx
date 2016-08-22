@@ -1,6 +1,6 @@
 ﻿namespace Greatbone.Core
 {
-    public interface IUnit
+    public interface IParent
     {
         string Key { get; }
     }

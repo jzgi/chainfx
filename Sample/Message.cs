@@ -2,12 +2,8 @@
 
 namespace Greatbone.Sample
 {
-	public class Fame : ISerial
+	public struct Message : ISerial
 	{
-		public long ModifiedOn { get; set; }
-
-		public string Key { get; }
-
 		public void From(IReader r)
 		{
 			throw new System.NotImplementedException();

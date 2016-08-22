@@ -11,7 +11,7 @@ namespace Greatbone.Sample
 		{
 			AddSub<UserAdminSub>("admin", (x) => x.Can(null, 1));
 
-			MountHub<UserXHub>((x) => true);
+			MountHub<UserXHub, string>((x) => true);
 		}
 
 		///
