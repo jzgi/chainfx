@@ -1,6 +1,6 @@
 ﻿namespace Greatbone.Core
 {
-    public interface IUnit : ICacheRealm
+    public interface IUnit
     {
         string Key { get; }
     }
