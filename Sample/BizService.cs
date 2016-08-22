@@ -4,11 +4,11 @@ namespace Greatbone.Sample
 {
 	public class BizService : WebService
 	{
-		public BizService(WebServiceBuilder builder) : base(builder)
+		public BizService(WebBuilder builder) : base(builder)
 		{
-			AddSub<BizFameService>("fame", null);
+			AddSub<BizFameSuper>("fame", null);
 
-			AddSub<BizBrandService>("brand", null);
+			AddSub<BizBrandSuper>("brand", null);
 		}
 	}
 }

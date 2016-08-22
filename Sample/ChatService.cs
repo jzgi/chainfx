@@ -7,7 +7,7 @@ namespace Greatbone.Sample
 	///
 	public class ChatService : WebService
 	{
-		public ChatService(WebServiceBuilder builder) : base(builder)
+		public ChatService(WebBuilder builder) : base(builder)
 		{
 		}
 	}

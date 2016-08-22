@@ -4,9 +4,9 @@ namespace Greatbone.Sample
 {
 	public class PostService : WebService
 	{
-		public PostService(WebServiceBuilder builder) : base(builder)
+		public PostService(WebBuilder builder) : base(builder)
 		{
-			MountHub<PostUnitHub, Post>(null);
+			MountHub<PostXHub>(null);
 		}
 	}
 }

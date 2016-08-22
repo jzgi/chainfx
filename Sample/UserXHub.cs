@@ -6,16 +6,16 @@ namespace Greatbone.Sample
 	/// <summary></summary>
 	/// /-/
 	///
-    public class UserUnitHub : WebUnitHub<User>
+    public class UserXHub : WebXHub
     {
-        public UserUnitHub(WebServiceBuilder builder) : base(builder)
+        public UserXHub(WebBuilder builder) : base(builder)
         {
         }
 
         ///
         /// Gets a token
         ///
-        public override void Default(WebContext wc, User unit)
+        public override void Default(WebContext wc, string unit)
         {
 //            wc.Response.SendFileAsync()
         }

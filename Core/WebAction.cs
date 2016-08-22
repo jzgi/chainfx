@@ -2,69 +2,57 @@
 
 namespace Greatbone.Core
 {
-    /// <summary>
-    /// An action method.
-    /// </summary>
-    /// <param name="wc"></param>
-    public delegate void ActionDoer(WebContext wc);
+	/// <summary>
+	/// An action method.
+	/// </summary>
+	/// <param name="wc"></param>
+	public delegate void Doer(WebContext wc);
 
+	public delegate void XDoer(WebContext wc, string x);
 
 	///
 	///
-    public class WebAction : IMember
-    {
-        private readonly ActionDoer _doer;
+	public class WebAction : IMember
+	{
+		readonly Doer doer;
 
-        public string Key { get; }
+		readonly XDoer xdoer;
 
-        public WebSub Controller { get; }
+		public WebSub Controller { get; }
 
-        internal WebAction(WebSub controller, MethodInfo mi)
-        {
-            // NOTE: strict method name as key here to avoid the default base url trap
-            Key = mi.Name;
-            Controller = controller;
-            _doer = (ActionDoer) mi.CreateDelegate(typeof(ActionDoer), controller);
-        }
+		public string Key { get; }
 
-        internal void Do(WebContext wc)
-        {
-            _doer(wc);
-        }
+		public bool IsX { get; }
 
-        public override string ToString()
-        {
-            return Key;
-        }
-    }
+		internal WebAction(WebSub controller, MethodInfo mi, bool x)
+		{
+			Controller = controller;
+			// NOTE: strict method name as key here to avoid the default base url trap
+			Key = mi.Name;
+			IsX = x;
+			if (x)
+			{
+				xdoer = (XDoer) mi.CreateDelegate(typeof(XDoer), controller);
+			}
+			else
+			{
+				doer = (Doer) mi.CreateDelegate(typeof(Doer), controller);
+			}
+		}
 
-    public delegate void ActionDoer<in TZone>(WebContext wc, TZone zone);
+		internal void Do(WebContext wc)
+		{
+			doer(wc);
+		}
 
+		internal void Do(WebContext wc, string x)
+		{
+			xdoer(wc, x);
+		}
 
-    public class WebAction<TZone> : IMember where TZone : IUnit
-    {
-        private readonly ActionDoer<TZone> _doer;
-
-        public string Key { get; }
-
-        public WebSub<TZone> Controller { get; }
-
-        internal WebAction(WebSub<TZone> controller, MethodInfo mi)
-        {
-            // NOTE: strict method name as key here to avoid the default base url trap
-            Key = mi.Name;
-            Controller = controller;
-            _doer = (ActionDoer<TZone>) mi.CreateDelegate(typeof(ActionDoer), controller);
-        }
-
-        internal void Do(WebContext wc, TZone zone)
-        {
-            _doer(wc, zone);
-        }
-
-        public override string ToString()
-        {
-            return Key;
-        }
-    }
+		public override string ToString()
+		{
+			return Key;
+		}
+	}
 }

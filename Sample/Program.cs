@@ -18,7 +18,7 @@ namespace Greatbone.Sample
 				Password = "Zou###1989"
 			};
 
-			var www = new WwwService(new WebServiceBuilder
+			var www = new WwwService(new WebBuilder
 			{
 				Key = "www",
 				Host = "60.205.104.239",
@@ -27,7 +27,7 @@ namespace Greatbone.Sample
 				Debug = debug
 			});
 
-			var user = new UserService(new WebServiceBuilder
+			var user = new UserService(new WebBuilder
 			{
 				Key = "user",
 				Host = "60.205.104.239",
@@ -36,7 +36,7 @@ namespace Greatbone.Sample
 				Debug = debug
 			});
 
-			var chat = new ChatService(new WebServiceBuilder
+			var chat = new ChatService(new WebBuilder
 			{
 				Key = "forum",
 				Host = "60.205.104.239",
@@ -45,7 +45,7 @@ namespace Greatbone.Sample
 				Debug = debug
 			});
 
-			var notice = new NoticeService(WebServiceBuilder.Load("job"));
+			var notice = new NoticeService(WebBuilder.Load("job"));
 
 			WebService.Run(www, user, chat, notice);
 		}

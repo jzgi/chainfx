@@ -1,52 +1,34 @@
 ﻿using System;
-using System.Collections.Concurrent;
 using System.IO;
 using System.Net;
 using System.Reflection;
 
 namespace Greatbone.Core
 {
-	internal interface IUnitHub
-	{
-		void Handle(string basis, WebContext wc);
-
-		bool ResolveUnit(string unitKey, out IUnit unit);
-	}
-
-	public abstract class WebUnitHub<TUnit> : WebSub<TUnit>, IUnitHub, IParent where TUnit : IUnit
+	public abstract class WebXHub : WebSub
 	{
 		// the added subs
-		private Set<WebSub<TUnit>> subs;
+		private Set<WebSub> subs;
 
-		// the cached units
-		private readonly ConcurrentDictionary<string, TUnit> cache;
 
-		protected WebUnitHub(WebServiceBuilder builder) : base(builder)
+		protected WebXHub(WebBuilder builder) : base(builder)
 		{
-			cache = new ConcurrentDictionary<string, TUnit>();
 		}
 
-		/// <summary>To invalidate a particular item in the unit cache.</summary>
-		public void Invalid(string unitKey)
-		{
-			TUnit v;
-			cache.TryRemove(unitKey, out v);
-		}
-
-		public TSub AddSub<TSub>(string key, Checker<TUnit> checker) where TSub : WebSub<TUnit>
+		public TSub AddSub<TSub>(string key, Checker checker) where TSub : WebSub
 		{
 			if (subs == null)
 			{
-				subs = new Set<WebSub<TUnit>>(16);
+				subs = new Set<WebSub>(16);
 			}
 			// create instance by reflection
 			Type type = typeof(TSub);
-			ConstructorInfo ci = type.GetConstructor(new[] {typeof(WebServiceBuilder)});
+			ConstructorInfo ci = type.GetConstructor(new[] {typeof(WebBuilder)});
 			if (ci == null)
 			{
 				throw new WebException(type + ": the WebCreationContext-param constructor not found");
 			}
-			WebServiceBuilder wcc = new WebServiceBuilder
+			WebBuilder wcc = new WebBuilder
 			{
 				Key = key,
 				StaticPath = Path.Combine(StaticPath, key),
@@ -70,13 +52,13 @@ namespace Greatbone.Core
 			int slash = relative.IndexOf('/');
 			if (slash == -1) // without a slash then handle it locally
 			{
-				WebAction<TUnit> a = GetAction(relative);
-				a?.Do(wc, (TUnit) (wc.Unit));
+				WebAction a = GetAction(relative);
+				a?.Do(wc, wc.X);
 			}
 			else // not local then sub
 			{
 				string rsc = relative.Substring(0, slash);
-				WebSub<TUnit> sub;
+				WebSub sub;
 				if (subs.TryGet(rsc, out sub))
 				{
 					sub.Handle(rsc.Substring(slash), wc);

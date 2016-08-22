@@ -3,7 +3,7 @@ using Newtonsoft.Json;
 
 namespace Greatbone.Core
 {
-	public class WebServiceBuilder : ISerial
+	public class WebBuilder : ISerial
 	{
 		public string Key;
 
@@ -19,7 +19,7 @@ namespace Greatbone.Core
 
 		public bool Debug;
 
-		internal IParent Parent;
+		internal WebSub Parent;
 
 		internal WebService Service;
 
@@ -39,12 +39,12 @@ namespace Greatbone.Core
 		}
 
 
-		public static WebServiceBuilder Load(string key)
+		public static WebBuilder Load(string key)
 		{
 			string file = Path.GetFileName("_" + key + ".json");
 			string json = File.ReadAllText(file);
 
-			WebServiceBuilder builder = new JsonText(json).Read<WebServiceBuilder>();
+			WebBuilder builder = new JsonText(json).Read<WebBuilder>();
 			if (builder.Key == null)
 			{
 				builder.Key = key;

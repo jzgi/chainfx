@@ -1,8 +1,6 @@
 ﻿using System;
-using System.IO;
 using System.Net;
 using System.Net.Http;
-using System.Reflection;
 using System.Threading;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Hosting;
@@ -25,20 +23,13 @@ namespace Greatbone.Core
 	/// etag -- reduces network I/O with unchanged results
 	///
 	///
-	public abstract class WebService : WebSub, IParent, ICacheRealm, IHttpApplication<HttpContext>
+	public abstract class WebService : WebSuper, ICacheRealm, IHttpApplication<HttpContext>
 	{
 		const int MsgPort = 7777;
 
 		private KestrelServerOptions options;
 
 		private readonly LoggerFactory logger;
-
-		// the attached sub controllers, if any
-		private Set<WebSub> subs;
-
-		// the attached multiplexer, if any
-		private IUnitHub zonehub;
-
 
 		// topics published by this microservice
 		private Set<MsgPublish> publishes;
@@ -60,7 +51,7 @@ namespace Greatbone.Core
 		private HttpClient[] client;
 
 
-		protected WebService(WebServiceBuilder builder) : base(builder)
+		protected WebService(WebBuilder builder) : base(builder)
 		{
 			address = builder.Debug ? "localhost" : builder.Host;
 			port = builder.Port;
@@ -150,99 +141,6 @@ namespace Greatbone.Core
 			subscribes.Add(new MsgSubscribe(topic, doer));
 		}
 
-
-		public TSub AddSub<TSub>(string key, Checker checker) where TSub : WebSub
-		{
-			if (subs == null)
-			{
-				subs = new Set<WebSub>(16);
-			}
-			// create instance by reflection
-			Type type = typeof(TSub);
-			ConstructorInfo ci = type.GetConstructor(new[] {typeof(WebServiceBuilder)});
-			if (ci == null)
-			{
-				throw new WebException(type + ": the WebCreationContext parameterized constructor not found");
-			}
-			WebServiceBuilder wcc = new WebServiceBuilder
-			{
-				Key = key,
-				StaticPath = Path.Combine(StaticPath, key),
-				Parent = this,
-				Service = this
-			};
-			TSub sub = (TSub) ci.Invoke(new object[] {wcc});
-			sub.Checker = checker;
-
-			subs.Add(sub);
-
-			//
-			// check declared event handler methods
-
-			return sub;
-		}
-
-		public THub MountHub<THub, TZone>(Checker<TZone> checker) where THub : WebUnitHub<TZone> where TZone : IUnit
-		{
-			// create instance
-			Type type = typeof(THub);
-			ConstructorInfo ci = type.GetConstructor(new[] {typeof(WebServiceBuilder)});
-			if (ci == null)
-			{
-				throw new WebException(type + ": the WebCreationContext parameterized constructor not found");
-			}
-			WebServiceBuilder wcc = new WebServiceBuilder
-			{
-				Key = "-",
-				StaticPath = Path.Combine(StaticPath, "-"),
-				Parent = this,
-				Service = this
-			};
-			THub hub = (THub) ci.Invoke(new object[] {wcc});
-
-			// call the initialization and set
-			zonehub = hub;
-			return hub;
-		}
-
-
-		public override void Handle(string relative, WebContext wc)
-		{
-			int slash = relative.IndexOf('/');
-			if (slash == -1) // without a slash then handle it locally
-			{
-				base.Handle(relative, wc);
-			}
-			else // not local then sub & mux
-			{
-				string dir = relative.Substring(0, slash);
-				if (dir.StartsWith("-")) // mux
-				{
-					if (zonehub == null)
-					{
-						wc.Response.StatusCode = 501; // Not Implemented
-					}
-					else
-					{
-						string zoneKey = dir.Substring(1);
-						IUnit unit;
-						if (zonehub.ResolveUnit(zoneKey, out unit))
-						{
-							wc.Unit = unit;
-							zonehub.Handle(relative.Substring(slash + 1), wc);
-						}
-					}
-				}
-				else
-				{
-					WebSub sub;
-					if (subs.TryGet(dir, out sub))
-					{
-						sub.Handle(relative.Substring(slash + 1), wc);
-					}
-				}
-			}
-		}
 
 		public long ModifiedOn { get; set; }
 

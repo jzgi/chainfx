@@ -7,11 +7,11 @@ namespace Greatbone.Sample
 	///
 	public class UserService : WebService
 	{
-		public UserService(WebServiceBuilder builder) : base(builder)
+		public UserService(WebBuilder builder) : base(builder)
 		{
 			AddSub<UserAdminSub>("admin", (x) => x.Can(null, 1));
 
-			MountHub<UserUnitHub, User>((x, p) => true);
+			MountHub<UserXHub>((x) => true);
 		}
 
 		///
