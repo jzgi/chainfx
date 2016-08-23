@@ -3,7 +3,7 @@ using Greatbone.Core;
 
 namespace Greatbone.Sample
 {
-	public class ChatXHub : WebXHub<string>
+	public class ChatXHub : WebXHub
 	{
 		private ConcurrentDictionary<string, WebContext> hanging;
 
@@ -11,11 +11,13 @@ namespace Greatbone.Sample
 		{
 		}
 
+		[Allow("@")]
 		public void Get(WebContext wc, string x)
 		{
 
 		}
 
+		[Allow("*")]
 		public void Send(WebContext wc, string x)
 		{
 

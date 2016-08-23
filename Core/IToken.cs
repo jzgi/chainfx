@@ -1,7 +1,9 @@
 ﻿namespace Greatbone.Core
 {
-    public interface IToken
-    {
-        bool Can(string zone, int role);
-    }
+	public interface IToken
+	{
+		string Login { get; }
+
+		string[] Roles { get; }
+	}
 }

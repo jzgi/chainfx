@@ -7,9 +7,9 @@ namespace Greatbone.Core
 	///
 	/// Represents a (sub)controller that consists of a group of action methods, as well as a folder of static files.
 	///
-	public abstract class WebSub : WebController
+	public abstract class WebSub : IMember
 	{
-		// the collection of actions declared by this sub-controller
+		// actions declared by this controller
 		readonly Set<WebAction> actions;
 
 		// the default action
@@ -18,9 +18,74 @@ namespace Greatbone.Core
 
 		public Checker Checker { get; internal set; }
 
+		///
+		/// The key by which this sub-controller is added to its parent
+		///
+		public string Key { get; }
+
+		public string StaticPath { get; }
+
+		///
+		/// The corresponding static folder contents, can be null
+		///
+		public Set<StaticContent> Statics { get; }
+
+		///
+		/// The index static file of the controller, can be null
+		///
+		public StaticContent DefaultStatic { get; }
+
+		///
+		/// The parent service that this sub-controller is added to
+		///
+		public WebSub Parent { get; }
+
+		///
+		/// The service that this component resides in.
+		///
+		public WebService Service { get; }
+
 		// the argument makes state-passing more convenient
-		protected WebSub(WebBuilder builder) : base(builder)
+		protected WebSub(WebBuilder builder)
 		{
+			if (builder.Key == null)
+			{
+				throw new ArgumentNullException(nameof(builder.Key));
+			}
+
+			Key = builder.Key;
+			Parent = builder.Parent;
+			Service = builder.Service;
+			StaticPath = builder.StaticPath ?? Path.Combine(Directory.GetCurrentDirectory(), "_" + Key);
+
+			// load static files, if any
+			if (StaticPath != null && Directory.Exists(StaticPath))
+			{
+				Statics = new Set<StaticContent>(256);
+				foreach (string path in Directory.GetFiles(StaticPath))
+				{
+					string file = Path.GetFileName(path);
+					string ext = Path.GetExtension(path);
+					string ctype;
+					if (StaticContent.TryGetType(ext, out ctype))
+					{
+						byte[] content = File.ReadAllBytes(path);
+						DateTime modified = File.GetLastWriteTime(path);
+						StaticContent sta = new StaticContent
+						{
+							Key = file.ToLower(),
+							Type = ctype,
+							Buffer = content,
+							LastModified = modified
+						};
+						Statics.Add(sta);
+						if (sta.Key.StartsWith("index."))
+						{
+							DefaultStatic = sta;
+						}
+					}
+				}
+			}
 
 			actions = new Set<WebAction>(32);
 
@@ -108,93 +173,4 @@ namespace Greatbone.Core
 			}
 		}
 	}
-
-
-
-	///
-	/// Represents a multiplexed sub-controller that consists of a group of action methods.
-	///
-	public abstract class WebSub<TX> : WebController where TX : IComparable<TX> , IEquatable<TX>
-	{
-		// the collection of multiplexed actions declared by this sub-controller
-		private readonly Set<WebAction<TX>> _actions = new Set<WebAction<TX>>(32);
-
-		// the default action
-		private readonly WebAction<TX> _defaction;
-
-		// the argument makes state-passing more convenient
-		protected WebSub(WebBuilder builder) : base(builder)
-		{
-			Type type = GetType();
-
-			// introspect action methods
-			foreach (MethodInfo mi in type.GetMethods(BindingFlags.Public | BindingFlags.Instance))
-			{
-				ParameterInfo[] pis = mi.GetParameters();
-				if (pis.Length == 2 &&
-				    pis[0].ParameterType == typeof(WebContext) &&
-				    pis[0].ParameterType == typeof(TX))
-				{
-					WebAction<TX> a = new WebAction<TX>(this, mi);
-					if (a.Key.Equals("Default"))
-					{
-						_defaction = a;
-					}
-					_actions.Add(a);
-				}
-			}
-		}
-
-
-		public Checker<TX> Checker { get; internal set; }
-
-		public WebAction<TX> GetAction(string action)
-		{
-			return _actions[action];
-		}
-
-		public virtual void Handle(string relative, WebContext wc)
-		{
-			if (relative.IndexOf('.') != -1) // static handling
-			{
-				StaticContent sta;
-				if (Statics != null && Statics.TryGet(relative, out sta))
-				{
-					wc.Response.Content = sta;
-				}
-				else
-				{
-					wc.Response.StatusCode = 404;
-				}
-			}
-			else
-			{
-				// action handling
-				WebAction<TX> a = relative.Length == 0 ? _defaction : GetAction(relative);
-				if (a == null)
-				{
-					wc.Response.StatusCode = 404;
-				}
-				else
-				{
-					a.Do(wc, (TX) (wc.X));
-				}
-			}
-		}
-
-		public virtual void Default(WebContext wc, TX unit)
-		{
-			StaticContent sta = DefaultStatic;
-			if (sta != null)
-			{
-				wc.Response.Content = sta;
-			}
-			else
-			{
-				// send not implemented
-				wc.Response.StatusCode = 404;
-			}
-		}
-	}
-
 }

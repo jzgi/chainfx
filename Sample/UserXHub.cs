@@ -6,7 +6,7 @@ namespace Greatbone.Sample
 	/// <summary></summary>
 	/// /-/
 	///
-	public class UserXHub : WebXHub<string>
+	public class UserXHub : WebXHub
 	{
 		public UserXHub(WebBuilder builder) : base(builder)
 		{

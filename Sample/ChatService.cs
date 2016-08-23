@@ -9,7 +9,7 @@ namespace Greatbone.Sample
 	{
 		public ChatService(WebBuilder builder) : base(builder)
 		{
-			MountHub<ChatXHub, string>(null);
+			MountHub<ChatXHub>(null);
 		}
 	}
 }

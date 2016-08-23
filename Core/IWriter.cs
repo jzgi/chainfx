@@ -14,7 +14,11 @@ namespace Greatbone.Core
 
 		void Write(string name, ISerial value);
 
+		void Write(string name, List<string> list);
+
 		void Write(string name, List<ISerial> list);
+
+		void Write(string name, params string[] array);
 
 		void Write(string name, params ISerial[] array);
 	}

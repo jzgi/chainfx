@@ -6,7 +6,19 @@ namespace Greatbone.Sample
 	{
 		public PostService(WebBuilder builder) : base(builder)
 		{
-			MountHub<PostXHub, long>(null);
+			MountHub<PostXHub>(null);
+		}
+
+		[Allow("*")]
+		public void GetTop(WebContext wc)
+		{
+
+		}
+
+		[Allow("cm")]
+		public void Remove(WebContext wc)
+		{
+
 		}
 	}
 }

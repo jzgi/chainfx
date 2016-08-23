@@ -5,14 +5,13 @@ using System.Reflection;
 
 namespace Greatbone.Core
 {
-
 	public abstract class WebSuper : WebSub
 	{
-		// the attached sub controllers, if any
+		// the added sub controllers, if any
 		private Set<WebSub> subs;
 
 		// the attached multiplexer, if any
-		private IXHub xhub;
+		private WebXHub xhub;
 
 		protected WebSuper(WebBuilder builder) : base(builder)
 		{
@@ -49,7 +48,7 @@ namespace Greatbone.Core
 			return sub;
 		}
 
-		public THub MountHub<THub, TX>(Checker checker) where THub : WebXHub<TX> where TX : IComparable<TX>, IEquatable<TX>
+		public THub MountHub<THub>(Checker checker) where THub : WebXHub
 		{
 			// create instance
 			Type type = typeof(THub);

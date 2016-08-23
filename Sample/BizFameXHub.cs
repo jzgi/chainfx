@@ -5,7 +5,7 @@ namespace Greatbone.Sample
 	///
 	/// /fame/-/
 	///
-	public class BizFameXHub : WebXHub<string>
+	public class BizFameXHub : WebXHub
 	{
 		public BizFameXHub(WebBuilder builder) : base(builder)
 		{

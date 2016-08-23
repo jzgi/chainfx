@@ -34,6 +34,16 @@ namespace Greatbone.Core
 			throw new System.NotImplementedException();
 		}
 
+		public bool Read(string name, ref List<string> value)
+		{
+			throw new System.NotImplementedException();
+		}
+
+		public bool Read(string name, ref string[] value)
+		{
+			throw new System.NotImplementedException();
+		}
+
 		public void Write(string name, int value)
 		{
 			Put('"');
@@ -98,6 +108,16 @@ namespace Greatbone.Core
 				}
 			}
 			Put(']');
+		}
+
+		public void Write(string name, List<string> list)
+		{
+			throw new System.NotImplementedException();
+		}
+
+		public void Write(string name, params string[] array)
+		{
+			throw new System.NotImplementedException();
 		}
 
 		public void Write(string name, params ISerial[] array)

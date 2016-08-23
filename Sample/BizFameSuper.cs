@@ -10,7 +10,7 @@ namespace Greatbone.Sample
 	{
 		public BizFameSuper(WebBuilder builder) : base(builder)
 		{
-			MountHub<BizFameXHub, string>(null);
+			MountHub<BizFameXHub>(null);
 		}
 	}
 }

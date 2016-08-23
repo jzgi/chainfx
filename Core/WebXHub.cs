@@ -5,13 +5,9 @@ using System.Reflection;
 
 namespace Greatbone.Core
 {
-	internal interface IXHub
-	{
-		void Handle(string relative, WebContext ex);
-	}
-
-
-	public abstract class WebXHub<TX> : WebSub<TX>, IXHub where TX : IComparable<TX>, IEquatable<TX>
+	/// <summary>A multiplexing hub controller that is mounted to a super controller. </summary>
+	///
+	public abstract class WebXHub : WebSub
 	{
 		// the added sub controllers
 		private Set<WebSub> subs;
@@ -51,7 +47,7 @@ namespace Greatbone.Core
 			int slash = relative.IndexOf('/');
 			if (slash == -1) // without a slash then handle it locally
 			{
-				WebAction<TX> a = GetAction(relative);
+				WebAction a = GetAction(relative);
 //				TX x = wc.X as TX;
 //				a?.Do(wc, wc.X);
 			}
