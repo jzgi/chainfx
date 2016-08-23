@@ -7,7 +7,7 @@ namespace Greatbone.Sample
 	{
 		private ConcurrentDictionary<string, WebContext> hanging;
 
-		public ChatXHub(WebServiceBuilder builder) : base(builder)
+		public ChatXHub(WebServiceContext wsc) : base(wsc)
 		{
 		}
 

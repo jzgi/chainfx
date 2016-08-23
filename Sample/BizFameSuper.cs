@@ -8,7 +8,7 @@ namespace Greatbone.Sample
 	[Publish("topicname")]
 	public class BizFameSuper : WebSuper
 	{
-		public BizFameSuper(WebServiceBuilder builder) : base(builder)
+		public BizFameSuper(WebServiceContext wsc) : base(wsc)
 		{
 			MountHub<BizFameXHub>(null);
 		}

@@ -7,7 +7,7 @@ namespace Greatbone.Sample
 	///
 	public class WwwService : WebService
 	{
-		public WwwService(WebServiceBuilder builder) : base(builder)
+		public WwwService(WebServiceContext wsc) : base(wsc)
 		{
 			AddSub<WwwMySub>("my", null);
 

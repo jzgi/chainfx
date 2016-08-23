@@ -7,7 +7,7 @@ namespace Greatbone.Sample
 	///
 	public class NoticeService : WebService
 	{
-		public NoticeService(WebServiceBuilder builder) : base(builder)
+		public NoticeService(WebServiceContext wsc) : base(wsc)
 		{
 			MountHub<NoticeXHub>(null);
 		}

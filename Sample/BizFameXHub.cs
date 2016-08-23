@@ -7,7 +7,7 @@ namespace Greatbone.Sample
 	///
 	public class BizFameXHub : WebXHub
 	{
-		public BizFameXHub(WebServiceBuilder builder) : base(builder)
+		public BizFameXHub(WebServiceContext wsc) : base(wsc)
 		{
 		}
 

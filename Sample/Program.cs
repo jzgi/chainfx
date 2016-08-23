@@ -18,7 +18,7 @@ namespace Greatbone.Sample
 				password = "Zou###1989"
 			};
 
-			var www = new WwwService(new WebServiceBuilder
+			var www = new WwwService(new WebServiceContext
 			{
 				key = "WWW",
 				host = "60.205.104.239",
@@ -26,7 +26,7 @@ namespace Greatbone.Sample
 				debug = debug
 			});
 
-			var biz = new BizService(new WebServiceBuilder
+			var biz = new BizService(new WebServiceContext
 			{
 				key = "BIZ",
 				host = "60.205.104.239",
@@ -34,7 +34,7 @@ namespace Greatbone.Sample
 				debug = debug
 			});
 
-			var post = new PostService(new WebServiceBuilder
+			var post = new PostService(new WebServiceContext
 			{
 				key = "POST",
 				host = "60.205.104.239",
@@ -42,7 +42,7 @@ namespace Greatbone.Sample
 				debug = debug
 			});
 
-			var user = new UserService(new WebServiceBuilder
+			var user = new UserService(new WebServiceContext
 			{
 				key = "USER",
 				host = "60.205.104.239",
@@ -50,7 +50,7 @@ namespace Greatbone.Sample
 				debug = debug
 			});
 
-			var chat = new ChatService(new WebServiceBuilder
+			var chat = new ChatService(new WebServiceContext
 			{
 				key = "CHAT",
 				host = "60.205.104.239",
@@ -58,7 +58,7 @@ namespace Greatbone.Sample
 				debug = debug
 			});
 
-			var notice = new NoticeService(WebServiceBuilder.Load("NOTICE.json")
+			var notice = new NoticeService(WebServiceContext.Load("NOTICE.json")
 			);
 
 			WebService.Run(www, biz, post, user, chat, notice);

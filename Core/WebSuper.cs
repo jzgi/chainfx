@@ -13,7 +13,7 @@ namespace Greatbone.Core
 		// the attached multiplexer, if any
 		private WebXHub xhub;
 
-		protected WebSuper(WebServiceBuilder builder) : base(builder)
+		protected WebSuper(WebServiceContext wsc) : base(wsc)
 		{
 		}
 
@@ -25,20 +25,19 @@ namespace Greatbone.Core
 			}
 			// create instance by reflection
 			Type type = typeof(TSub);
-			ConstructorInfo ci = type.GetConstructor(new[] {typeof(WebServiceBuilder)});
+			ConstructorInfo ci = type.GetConstructor(new[] {typeof(WebServiceContext)});
 			if (ci == null)
 			{
 				throw new WebException(type + ": the constructor with WebBuilder not defined");
 			}
-			WebBuilder wcc = new WebBuilder
-			{
-				Key = key,
-				StaticPath = Path.Combine(StaticPath, key),
-				Parent = this,
-				Service = Service
-			};
-			TSub sub = (TSub) ci.Invoke(new object[] {wcc});
-			sub.Checker = checker;
+//			WebServiceContext wcc = new WebServiceContext
+//			{
+//				Key = key,
+//				StaticPath = Path.Combine(StaticPath, key),
+//				Parent = this,
+//				Service = Service
+//			};
+			TSub sub = (TSub) ci.Invoke(new object[] {null});
 
 			subs.Add(sub);
 
@@ -52,19 +51,19 @@ namespace Greatbone.Core
 		{
 			// create instance
 			Type type = typeof(THub);
-			ConstructorInfo ci = type.GetConstructor(new[] {typeof(WebBuilder)});
+			ConstructorInfo ci = type.GetConstructor(new[] {typeof(WebServiceContext)});
 			if (ci == null)
 			{
 				throw new WebException(type + ": the constructor with WebBuilder not defined");
 			}
-			WebBuilder wb = new WebBuilder
-			{
-				Key = "-",
-				StaticPath = Path.Combine(StaticPath, "-"),
-				Parent = this,
-				Service = Service
-			};
-			THub hub = (THub) ci.Invoke(new object[] {wb});
+//			WebBuilder wb = new WebBuilder
+//			{
+//				Key = "-",
+//				StaticPath = Path.Combine(StaticPath, "-"),
+//				Parent = this,
+//				Service = Service
+//			};
+			THub hub = (THub) ci.Invoke(new object[] {null});
 
 			// call the initialization and set
 			xhub = hub;

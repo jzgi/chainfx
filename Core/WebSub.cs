@@ -5,7 +5,7 @@ using System.Reflection;
 namespace Greatbone.Core
 {
 	///
-	/// Represents a (sub)controller that consists of a group of action methods, as well as a folder of static files.
+	/// Represents a (sub)controller that consists of a group of action methods, and optionally a folder of static files.
 	///
 	public abstract class WebSub : IMember
 	{
@@ -15,38 +15,32 @@ namespace Greatbone.Core
 		// the default action
 		readonly WebAction defaction;
 
-
-		public Checker Checker { get; internal set; }
-
 		///
 		/// The key by which this sub-controller is added to its parent
 		///
-		public string Key { get; }
+		public string Key { get; internal set; }
 
-		public string StaticPath { get; }
+		public string StaticPath { get; internal set; }
 
 		///
 		/// The corresponding static folder contents, can be null
 		///
 		public Set<StaticContent> Statics { get; }
 
-		///
-		/// The index static file of the controller, can be null
+		/// <summary>The default static file in the corresponding folder, can be null</summary>
 		///
 		public StaticContent DefaultStatic { get; }
 
+		/// <summary>The parent controller that this controller is added to.</summary>
 		///
-		/// The parent service that this sub-controller is added to
-		///
-		public WebSub Parent { get; }
+		public WebSub Parent { get; internal set; }
 
+		/// <summary>The service that this controller resides in.</summary>
 		///
-		/// The service that this component resides in.
-		///
-		public WebService Service { get; }
+		public WebService Service { get; internal set; }
 
 		// the argument makes state-passing more convenient
-		protected WebSub(WebServiceBuilder builder)
+		protected WebSub(WebServiceContext wsc)
 		{
 			// load static files, if any
 			if (StaticPath != null && Directory.Exists(StaticPath))

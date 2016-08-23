@@ -10,7 +10,7 @@ namespace Greatbone.Sample
 	{
 		private ConcurrentDictionary<string, ChatSession> sessions;
 
-		public ChatService(WebServiceBuilder builder) : base(builder)
+		public ChatService(WebServiceContext wsc) : base(wsc)
 		{
 			MountHub<ChatXHub>(null);
 		}

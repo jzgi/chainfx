@@ -4,7 +4,7 @@ namespace Greatbone.Sample
 {
 	public class PostXHub : WebXHub
 	{
-		public PostXHub(WebServiceBuilder builder) : base(builder)
+		public PostXHub(WebServiceContext wsc) : base(wsc)
 		{
 		}
 

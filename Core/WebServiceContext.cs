@@ -1,10 +1,16 @@
 ﻿using System.Collections.Generic;
 using System.IO;
+using System;
 
 namespace Greatbone.Core
 {
-	public class WebServiceBuilder : ISerial
+	/// <summary>The configurative settings and the establishment of creation context during initialization of the controller hierarchy.</summary>
+	///
+	public class WebServiceContext : ISerial
 	{
+		// SETTINGS
+		//
+
 		internal string key;
 
 		internal string host;
@@ -16,6 +22,13 @@ namespace Greatbone.Core
 		internal bool debug;
 
 		internal Dictionary<string, string> options;
+
+		// CONTEXT
+		//
+
+		internal WebService Service { get; set; }
+
+		internal Stack<WebSub> Chain { get; } = new Stack<WebSub>(8);
 
 		public void From(IReader r)
 		{
@@ -37,16 +50,16 @@ namespace Greatbone.Core
 			w.Write(nameof(options), options);
 		}
 
-		public static WebServiceBuilder Load(string path)
+		public static WebServiceContext Load(string file)
 		{
-			string json = File.ReadAllText(path);
-			WebServiceBuilder builder = new JsonText(json).Read<WebServiceBuilder>();
-			if (builder.key == null)
+			string json = File.ReadAllText(file);
+			WebServiceContext context = new JsonText(json).Read<WebServiceContext>();
+			if (context.key == null)
 			{
-				string key = Path.GetFileNameWithoutExtension(path);
-				builder.key = key;
+				string key = Path.GetFileNameWithoutExtension(file);
+				context.key = key;
 			}
-			return builder;
+			return context;
 		}
 	}
 

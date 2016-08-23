@@ -51,9 +51,9 @@ namespace Greatbone.Core
 		private HttpClient[] client;
 
 
-		protected WebService(WebServiceBuilder builder) : base(builder)
+		protected WebService(WebServiceContext wsc) : base(wsc)
 		{
-			address = builder.debug ? "localhost" : builder.host;
+			address = wsc.debug ? "localhost" : wsc.host;
 //			port = builder.port;
 
 			// create the server instance

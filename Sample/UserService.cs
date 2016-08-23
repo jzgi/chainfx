@@ -7,7 +7,7 @@ namespace Greatbone.Sample
 	///
 	public class UserService : WebService
 	{
-		public UserService(WebServiceBuilder builder) : base(builder)
+		public UserService(WebServiceContext wsc) : base(wsc)
 		{
 			MountHub<UserXHub>((t, x) => true);
 		}

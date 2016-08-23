@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.ComponentModel;
 
 namespace Greatbone.Core
 {
@@ -129,12 +130,12 @@ namespace Greatbone.Core
 		{
 		}
 
-		void PutValue<V>(V value) where V : struct
+		void PutValue<V>(V value) where V : struct, IConvertible
 		{
 			Type t = typeof(V);
 			if (t == typeof(int))
 			{
-				Put((int) value);
+				Put(value.ToInt32(null));
 			}
 			else
 			{
@@ -183,7 +184,7 @@ namespace Greatbone.Core
 				Put('"');
 				Put(':');
 
-				PutValue(pair.Value);
+//				PutValue(pair.Value);
 			}
 
 			Put('}');
