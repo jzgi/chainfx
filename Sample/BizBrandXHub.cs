@@ -4,7 +4,7 @@ namespace Greatbone.Sample
 {
 	public class BizBrandXHub : WebXHub
 	{
-		public BizBrandXHub(WebBuilder builder) : base(builder)
+		public BizBrandXHub(WebServiceBuilder builder) : base(builder)
 		{
 		}
 	}

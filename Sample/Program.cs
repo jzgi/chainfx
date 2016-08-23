@@ -10,60 +10,55 @@ namespace Greatbone.Sample
 
 			int port = 8080;
 
-			DataSourceBuilder dat = new DataSourceBuilder
+			DataSrcBuilder dat = new DataSrcBuilder
 			{
-				Host = "localhost",
-				Port = 5432,
-				Username = "postgres",
-				Password = "Zou###1989"
+				host = "localhost",
+				port = 5432,
+				username = "postgres",
+				password = "Zou###1989"
 			};
 
-			var www = new WwwService(new WebBuilder
+			var www = new WwwService(new WebServiceBuilder
 			{
-				Key = "www",
-				Host = "60.205.104.239",
-				Port = port++,
-				DataSource = dat,
-				Debug = debug
+				key = "WWW",
+				host = "60.205.104.239",
+				datasrc = dat,
+				debug = debug
 			});
 
-			var biz = new BizService(new WebBuilder
+			var biz = new BizService(new WebServiceBuilder
 			{
-				Key = "biz",
-				Host = "60.205.104.239",
-				Port = port++,
-				DataSource = dat,
-				Debug = debug
+				key = "BIZ",
+				host = "60.205.104.239",
+				datasrc = dat,
+				debug = debug
 			});
 
-			var post = new PostService(new WebBuilder
+			var post = new PostService(new WebServiceBuilder
 			{
-				Key = "post",
-				Host = "60.205.104.239",
-				Port = port++,
-				DataSource = dat,
-				Debug = debug
+				key = "POST",
+				host = "60.205.104.239",
+				datasrc = dat,
+				debug = debug
 			});
 
-			var user = new UserService(new WebBuilder
+			var user = new UserService(new WebServiceBuilder
 			{
-				Key = "user",
-				Host = "60.205.104.239",
-				Port = port++,
-				DataSource = dat,
-				Debug = debug
+				key = "USER",
+				host = "60.205.104.239",
+				datasrc = dat,
+				debug = debug
 			});
 
-			var chat = new ChatService(new WebBuilder
+			var chat = new ChatService(new WebServiceBuilder
 			{
-				Key = "chat",
-				Host = "60.205.104.239",
-				Port = port,
-				DataSource = dat,
-				Debug = debug
+				key = "CHAT",
+				host = "60.205.104.239",
+				datasrc = dat,
+				debug = debug
 			});
 
-			var notice = new NoticeService(WebBuilder.Load("job")
+			var notice = new NoticeService(WebServiceBuilder.Load("NOTICE.json")
 			);
 
 			WebService.Run(www, biz, post, user, chat, notice);

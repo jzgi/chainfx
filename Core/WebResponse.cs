@@ -2,7 +2,6 @@
 using System.Text;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Http;
-using Newtonsoft.Json;
 
 namespace Greatbone.Core
 {
@@ -23,19 +22,19 @@ namespace Greatbone.Core
 
 		public IContent Content { get; set; }
 
-		public void SetJson(object obj)
-		{
-			string text = JsonConvert.SerializeObject(obj);
-
-			byte[] bytes = Encoding.UTF8.GetBytes(text);
-			Content = new DummyContent
-			{
-				Type = "application/json",
-				Buffer = bytes,
-				Offset = 0,
-				Count = bytes.Length
-			};
-		}
+//		public void SetJson(object obj)
+//		{
+//			string text = JsonConvert.SerializeObject(obj);
+//
+//			byte[] bytes = Encoding.UTF8.GetBytes(text);
+//			Content = new DummyContent
+//			{
+//				Type = "application/json",
+//				Buffer = bytes,
+//				Offset = 0,
+//				Count = bytes.Length
+//			};
+//		}
 
 		public int StatusCode
 		{

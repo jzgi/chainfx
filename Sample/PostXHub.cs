@@ -4,7 +4,7 @@ namespace Greatbone.Sample
 {
 	public class PostXHub : WebXHub
 	{
-		public PostXHub(WebBuilder builder) : base(builder)
+		public PostXHub(WebServiceBuilder builder) : base(builder)
 		{
 		}
 
@@ -12,7 +12,6 @@ namespace Greatbone.Sample
 		{
 		}
 
-		[Allow("@")]
 		public void Delete(WebContext wc, long x)
 		{
 		}

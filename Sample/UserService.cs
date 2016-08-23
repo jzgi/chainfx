@@ -7,11 +7,9 @@ namespace Greatbone.Sample
 	///
 	public class UserService : WebService
 	{
-		public UserService(WebBuilder builder) : base(builder)
+		public UserService(WebServiceBuilder builder) : base(builder)
 		{
-			AddSub<UserAdminSub>("admin", null);
-
-			MountHub<UserXHub>((x) => true);
+			MountHub<UserXHub>((t, x) => true);
 		}
 
 		///
@@ -24,6 +22,5 @@ namespace Greatbone.Sample
 		public void Search(WebContext wc)
 		{
 		}
-
 	}
 }

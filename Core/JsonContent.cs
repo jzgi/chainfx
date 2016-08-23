@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 
 namespace Greatbone.Core
 {
@@ -35,6 +36,16 @@ namespace Greatbone.Core
 		}
 
 		public bool Read(string name, ref List<string> value)
+		{
+			throw new System.NotImplementedException();
+		}
+
+		public bool Read(string name, ref bool value)
+		{
+			throw new System.NotImplementedException();
+		}
+
+		public bool Read<K, V>(string name, ref Dictionary<K, V> value)
 		{
 			throw new System.NotImplementedException();
 		}
@@ -110,9 +121,72 @@ namespace Greatbone.Core
 			Put(']');
 		}
 
-		public void Write(string name, List<string> list)
+		public void Write(string name, bool value)
 		{
-			throw new System.NotImplementedException();
+		}
+
+		public void Write<T>(string name, List<T> list)
+		{
+		}
+
+		void PutValue<V>(V value) where V : struct
+		{
+			Type t = typeof(V);
+			if (t == typeof(int))
+			{
+				Put((int) value);
+			}
+			else
+			{
+				Put('n');
+				Put('u');
+				Put('l');
+				Put('l');
+			}
+		}
+
+		void PutObject<V>(V value) where V : class
+		{
+			if (value == null)
+			{
+				return;
+			}
+			if (value is string)
+			{
+				Put('"');
+				Put((string) (object) value);
+				Put('"');
+				Put(':');
+				Put('{');
+			}
+			else if (value is ISerial)
+			{
+				Put('n');
+				Put('u');
+				Put('l');
+				Put('l');
+			}
+		}
+
+		public void Write<V>(string name, Dictionary<string, V> dict)
+		{
+			Put('"');
+			Put(name);
+			Put('"');
+			Put(':');
+
+			Put('{');
+			foreach (var pair in dict)
+			{
+				Put('"');
+				Put(pair.Key);
+				Put('"');
+				Put(':');
+
+				PutValue(pair.Value);
+			}
+
+			Put('}');
 		}
 
 		public void Write(string name, params string[] array)
@@ -128,7 +202,9 @@ namespace Greatbone.Core
 			Put(':');
 
 			Put('[');
-			if (array != null)
+			if (
+				array
+				!= null)
 			{
 				for (int i = 0; i < array.Length; i++)
 				{

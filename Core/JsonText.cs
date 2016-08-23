@@ -73,12 +73,27 @@ namespace Greatbone.Core
 		    throw new System.NotImplementedException();
 	    }
 
-	    public void Write(string name, List<ISerial> list)
+	    public bool Read(string name, ref bool value)
 	    {
 		    throw new System.NotImplementedException();
 	    }
 
-	    public void Write(string name, List<string> list)
+	    public bool Read<K, V>(string name, ref Dictionary<K, V> value)
+	    {
+		    throw new System.NotImplementedException();
+	    }
+
+	    public void Write(string name, bool value)
+	    {
+		    throw new System.NotImplementedException();
+	    }
+
+	    public void Write<T>(string name, List<T> list)
+	    {
+		    throw new System.NotImplementedException();
+	    }
+
+	    public void Write<V>(string name, Dictionary<string, V> dict)
 	    {
 		    throw new System.NotImplementedException();
 	    }

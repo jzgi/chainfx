@@ -7,7 +7,7 @@ namespace Greatbone.Sample
 	///
 	public class BizBrandSuper : WebSuper
 	{
-		public BizBrandSuper(WebBuilder builder) : base(builder)
+		public BizBrandSuper(WebServiceBuilder builder) : base(builder)
 		{
 			MountHub<BizBrandXHub>(null);
 		}

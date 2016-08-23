@@ -51,10 +51,10 @@ namespace Greatbone.Core
 		private HttpClient[] client;
 
 
-		protected WebService(WebBuilder builder) : base(builder)
+		protected WebService(WebServiceBuilder builder) : base(builder)
 		{
-			address = builder.Debug ? "localhost" : builder.Host;
-			port = builder.Port;
+			address = builder.debug ? "localhost" : builder.host;
+//			port = builder.port;
 
 			// create the server instance
 			logger = new LoggerFactory();
@@ -62,6 +62,15 @@ namespace Greatbone.Core
 			server = new KestrelServer(Options.Create(options), Lifetime, logger);
 			server.Features.Get<IServerAddressesFeature>().Addresses.Add("http://" + address + ":" + port);
 			server.Features.Get<IServerAddressesFeature>().Addresses.Add("http://" + address + ":" + MsgPort);
+		}
+
+
+		public virtual void OnStart()
+		{
+		}
+
+		public virtual void OnStop()
+		{
 		}
 
 

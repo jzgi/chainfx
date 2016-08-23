@@ -46,18 +46,8 @@ namespace Greatbone.Core
 		public WebService Service { get; }
 
 		// the argument makes state-passing more convenient
-		protected WebSub(WebBuilder builder)
+		protected WebSub(WebServiceBuilder builder)
 		{
-			if (builder.Key == null)
-			{
-				throw new ArgumentNullException(nameof(builder.Key));
-			}
-
-			Key = builder.Key;
-			Parent = builder.Parent;
-			Service = builder.Service;
-			StaticPath = builder.StaticPath ?? Path.Combine(Directory.GetCurrentDirectory(), "_" + Key);
-
 			// load static files, if any
 			if (StaticPath != null && Directory.Exists(StaticPath))
 			{

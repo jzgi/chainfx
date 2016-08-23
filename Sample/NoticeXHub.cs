@@ -4,7 +4,7 @@ namespace Greatbone.Sample
 {
 	public class NoticeXHub : WebXHub
 	{
-		public NoticeXHub(WebBuilder builder) : base(builder)
+		public NoticeXHub(WebServiceBuilder builder) : base(builder)
 		{
 		}
 

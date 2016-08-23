@@ -1,7 +1,5 @@
 ﻿using System.IO;
 using Microsoft.AspNetCore.Http;
-using Newtonsoft.Json;
-using Newtonsoft.Json.Linq;
 
 namespace Greatbone.Core
 {
@@ -51,13 +49,6 @@ namespace Greatbone.Core
 
 		public IQueryCollection Query => _impl.Query;
 
-
-		public JObject Json()
-		{
-			string s = "";
-			JObject obj = JObject.Parse(s);
-			return obj;
-		}
 
 //		public T Object<T>()
 //		{

@@ -13,7 +13,7 @@ namespace Greatbone.Core
 		// the attached multiplexer, if any
 		private WebXHub xhub;
 
-		protected WebSuper(WebBuilder builder) : base(builder)
+		protected WebSuper(WebServiceBuilder builder) : base(builder)
 		{
 		}
 
@@ -25,7 +25,7 @@ namespace Greatbone.Core
 			}
 			// create instance by reflection
 			Type type = typeof(TSub);
-			ConstructorInfo ci = type.GetConstructor(new[] {typeof(WebBuilder)});
+			ConstructorInfo ci = type.GetConstructor(new[] {typeof(WebServiceBuilder)});
 			if (ci == null)
 			{
 				throw new WebException(type + ": the constructor with WebBuilder not defined");
@@ -48,7 +48,7 @@ namespace Greatbone.Core
 			return sub;
 		}
 
-		public THub MountHub<THub>(Checker checker) where THub : WebXHub
+		public THub MountHub<THub>(XChecker checker) where THub : WebXHub
 		{
 			// create instance
 			Type type = typeof(THub);
@@ -57,14 +57,14 @@ namespace Greatbone.Core
 			{
 				throw new WebException(type + ": the constructor with WebBuilder not defined");
 			}
-			WebBuilder wcc = new WebBuilder
+			WebBuilder wb = new WebBuilder
 			{
 				Key = "-",
 				StaticPath = Path.Combine(StaticPath, "-"),
 				Parent = this,
 				Service = Service
 			};
-			THub hub = (THub) ci.Invoke(new object[] {wcc});
+			THub hub = (THub) ci.Invoke(new object[] {wb});
 
 			// call the initialization and set
 			xhub = hub;
@@ -90,8 +90,8 @@ namespace Greatbone.Core
 					}
 					else
 					{
-						string zoneKey = dir.Substring(1);
-						wc.X = zoneKey;
+						string x = dir.Substring(1);
+						wc.X = x;
 						xhub.Handle(relative.Substring(slash + 1), wc);
 					}
 				}

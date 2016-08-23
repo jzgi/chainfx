@@ -12,7 +12,7 @@ namespace Greatbone.Core
 		// the added sub controllers
 		private Set<WebSub> subs;
 
-		protected WebXHub(WebBuilder builder) : base(builder)
+		protected WebXHub(WebServiceBuilder builder) : base(builder)
 		{
 		}
 
@@ -24,17 +24,17 @@ namespace Greatbone.Core
 			}
 			// create instance by reflection
 			Type type = typeof(TSub);
-			ConstructorInfo ci = type.GetConstructor(new[] {typeof(WebBuilder)});
+			ConstructorInfo ci = type.GetConstructor(new[] {typeof(WebServiceBuilder)});
 			if (ci == null)
 			{
 				throw new WebException(type + ": the WebCreationContext-param constructor not found");
 			}
-			WebBuilder wcc = new WebBuilder
+			WebServiceBuilder wcc = new WebServiceBuilder
 			{
-				Key = key,
-				StaticPath = Path.Combine(StaticPath, key),
-				Parent = this,
-				Service = Service
+				key = key,
+//				StaticPath = Path.Combine(StaticPath, key),
+//				Parent = this,
+//				Service = Service
 			};
 			TSub sub = (TSub) ci.Invoke(new object[] {wcc});
 			// call the initialization and add
