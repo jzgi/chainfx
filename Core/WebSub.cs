@@ -42,6 +42,22 @@ namespace Greatbone.Core
 		// the argument makes state-passing more convenient
 		protected WebSub(WebServiceContext wsc)
 		{
+			// initialize the context for the first time
+			if (wsc.Service == null)
+			{
+				WebService svc = this as WebService;
+				if (svc == null)
+				{
+					throw new InvalidOperationException();
+				}
+				svc.Context = wsc;
+				wsc.Service = svc;
+			}
+
+			Service = wsc.Service;
+			Parent = wsc.Chain.Peek();
+			StaticPath = Path.Combine(Parent.StaticPath, "");
+
 			// load static files, if any
 			if (StaticPath != null && Directory.Exists(StaticPath))
 			{

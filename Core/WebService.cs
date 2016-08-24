@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Net;
 using System.Net.Http;
 using System.Threading;
@@ -27,25 +28,27 @@ namespace Greatbone.Core
 	{
 		const int MsgPort = 7777;
 
-		private KestrelServerOptions options;
-
-		private readonly LoggerFactory logger;
+		public WebServiceContext Context { get; internal set; }
 
 		// topics published by this microservice
-		private Set<MsgPublish> publishes;
+		readonly Set<MsgPublish> publishes;
 
 		// topics subscribed by this microservice
-		private Set<MsgSubscribe> subscribes;
+		readonly Set<MsgSubscribe> subscribes;
 
+
+		readonly KestrelServerOptions options;
+
+		readonly LoggerFactory logger;
 
 		// the embedded http server
-		private readonly KestrelServer server;
+		readonly KestrelServer server;
 
 		// a discriminator of virtual host
-		private readonly string address;
+		readonly string address;
 
 		// a  virtual host
-		private readonly int port;
+		readonly int port;
 
 		// the async client
 		private HttpClient[] client;
@@ -60,8 +63,9 @@ namespace Greatbone.Core
 			logger = new LoggerFactory();
 			options = new KestrelServerOptions();
 			server = new KestrelServer(Options.Create(options), Lifetime, logger);
-			server.Features.Get<IServerAddressesFeature>().Addresses.Add("http://" + address + ":" + port);
-			server.Features.Get<IServerAddressesFeature>().Addresses.Add("http://" + address + ":" + MsgPort);
+			ICollection<string> addrs = server.Features.Get<IServerAddressesFeature>().Addresses;
+			addrs.Add("http://" + address + ":" + port);
+			addrs.Add("http://" + address + ":" + MsgPort);
 		}
 
 
