@@ -60,16 +60,21 @@ namespace Greatbone.Core
 			w.Write(nameof(options), options);
 		}
 
-		public static WebServiceContext Load(string file)
+		public WebServiceContext Load(string file)
 		{
 			string json = File.ReadAllText(file);
-			WebServiceContext context = new JsonText(json).Read<WebServiceContext>();
-			if (context.key == null)
+
+			JsonText text = new JsonText(json);
+
+//			text.Read()
+			From(text);
+//			text.Read()
+
+			if (key == null)
 			{
-				string key = Path.GetFileNameWithoutExtension(file);
-				context.key = key;
+				key = Path.GetFileNameWithoutExtension(file);
 			}
-			return context;
+			return this;
 		}
 	}
 
