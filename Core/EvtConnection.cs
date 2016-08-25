@@ -1,6 +1,6 @@
 ﻿namespace Greatbone.Core
 {
-	public class MsgConnection
+	public class EvtConnection
 	{
 
 		string address;

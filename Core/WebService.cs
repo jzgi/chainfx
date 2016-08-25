@@ -31,10 +31,10 @@ namespace Greatbone.Core
 		public WebServiceContext Context { get; internal set; }
 
 		// topics published by this microservice
-		readonly Set<MsgPublish> publishes;
+		readonly Set<EvtPublish> publishes;
 
 		// topics subscribed by this microservice
-		readonly Set<MsgSubscribe> subscribes;
+		readonly Set<EvtSubscribe> subscribes;
 
 
 		readonly KestrelServerOptions options;
@@ -96,7 +96,7 @@ namespace Greatbone.Core
 
 			if (port == this.port && ip.Equals(address))
 			{
-				using (MsgContext wc = new MsgContext(context))
+				using (EvtContext wc = new EvtContext(context))
 				{
 				}
 			}
@@ -149,9 +149,9 @@ namespace Greatbone.Core
 		public CancellationToken ApplicationStopped { get; set; }
 
 
-		public void Subscribe(string topic, MsgDoer doer)
+		public void Subscribe(string topic, EvtDoer doer)
 		{
-			subscribes.Add(new MsgSubscribe(topic, doer));
+			subscribes.Add(new EvtSubscribe(topic, doer));
 		}
 
 

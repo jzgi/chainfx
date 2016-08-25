@@ -20,50 +20,50 @@ namespace Greatbone.Sample
 
 			var www = new WwwService(new WebServiceContext
 				{
-					key = "WWW",
+					key = "www",
 					host = "60.205.104.239",
 					datasrc = dat,
 					debug = debug
-				}.Load("WWW.json")
+				}.Load("www.json")
 			);
 
 			var biz = new BizService(new WebServiceContext
 				{
-					key = "BIZ",
+					key = "biz",
 					host = "60.205.104.239",
 					datasrc = dat,
 					debug = debug
-				}.Load("BIZ.json")
+				}.Load("biz.json")
 			);
 
 			var post = new PostService(new WebServiceContext
 				{
-					key = "POST",
+					key = "post",
 					host = "60.205.104.239",
 					datasrc = dat,
 					debug = debug
-				}.Load("POST.json")
+				}.Load("post.json")
 			);
 
 			var user = new UserService(new WebServiceContext
 				{
-					key = "USER",
+					key = "user",
 					host = "60.205.104.239",
 					datasrc = dat,
 					debug = debug
-				}.Load("USER.json")
+				}.Load("user.json")
 			);
 
 			var chat = new ChatService(new WebServiceContext
 				{
-					key = "CHAT",
+					key = "chat",
 					host = "60.205.104.239",
 					datasrc = dat,
 					debug = debug
-				}.Load("CHAT.json")
+				}.Load("chat.json")
 			);
 
-			var notice = new NoticeService(new WebServiceContext().Load("NOTICE.json"));
+			var notice = new NoticeService(new WebServiceContext().Load("notice.json"));
 
 			WebService.Run(www, biz, post, user, chat, notice);
 		}

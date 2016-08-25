@@ -4,17 +4,19 @@ using Microsoft.AspNetCore.Http;
 namespace Greatbone.Core
 {
 	///
-	/// A message queue message
+	/// An event queue message
 	///
-	public class MsgContext : IDisposable
+	public class EvtContext : IDisposable
 	{
 		private string topic;
 
-		private string filter;
+		private string skey;
 
-		ISerial @object;
+		private string subkey;
 
-		internal MsgContext(HttpContext context)
+		ISerial body;
+
+		internal EvtContext(HttpContext context)
 		{
 
 		}

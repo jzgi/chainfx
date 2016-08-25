@@ -1,6 +1,9 @@
 ﻿{
-    "host" : "",
-    "port" : 8080,
+    "key" : "www",
+    "subkey" : "jx",
+    "address" : "localhost:8080",
+    "clusterhosts" : ["10.23.5.10-20", ""],
     "options" : {
+        "abc" : "123"
     }
 }
