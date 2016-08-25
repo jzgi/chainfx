@@ -1,5 +1,4 @@
-﻿using System.Collections.Generic;
-using Greatbone.Core;
+﻿using Greatbone.Core;
 
 namespace Greatbone.Sample
 {

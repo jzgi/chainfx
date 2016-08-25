@@ -12,7 +12,7 @@ namespace Greatbone.Sample
 
 		public ChatService(WebServiceContext wsc) : base(wsc)
 		{
-			MountHub<ChatXHub>(null);
+			MountHub<ChatXHub>(false);
 		}
 	}
 

@@ -9,7 +9,7 @@ namespace Greatbone.Sample
 	{
 		public NoticeService(WebServiceContext wsc) : base(wsc)
 		{
-			MountHub<NoticeXHub>(null);
+			MountHub<NoticeXHub>(false);
 		}
 	}
 }

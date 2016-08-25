@@ -1,5 +1,4 @@
 ﻿using System;
-using System.IO;
 using System.Net;
 using System.Reflection;
 
@@ -17,7 +16,7 @@ namespace Greatbone.Core
 		{
 		}
 
-		public TSub AddSub<TSub>(string key, Checker checker) where TSub : WebSub
+		public TSub AddSub<TSub>(string key, bool auth) where TSub : WebSub
 		{
 			if (subs == null)
 			{
@@ -28,7 +27,7 @@ namespace Greatbone.Core
 			ConstructorInfo ci = type.GetConstructor(new[] {typeof(WebServiceContext)});
 			if (ci == null)
 			{
-				throw new WebException(type + ": the constructor with WebBuilder not defined");
+				throw new WebException(type + ": the constructor with WebServiceContext not defined");
 			}
 //			WebServiceContext wcc = new WebServiceContext
 //			{
@@ -47,7 +46,7 @@ namespace Greatbone.Core
 			return sub;
 		}
 
-		public THub MountHub<THub>(XChecker checker) where THub : WebXHub
+		public THub MountHub<THub>(bool auth) where THub : WebXHub
 		{
 			// create instance
 			Type type = typeof(THub);

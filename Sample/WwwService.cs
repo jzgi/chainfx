@@ -9,7 +9,7 @@ namespace Greatbone.Sample
 	{
 		public WwwService(WebServiceContext wsc) : base(wsc)
 		{
-			AddSub<WwwMySub>("my", null);
+			AddSub<WwwMySub>("my", false);
 
 			//
 
@@ -45,7 +45,7 @@ namespace Greatbone.Sample
 
 		public void Contact(WebContext wc)
 		{
-			using (var sc = NewDbContext())
+			using (var sc = NewSqlContext())
 			{
 				sc.BeginTransaction();
 

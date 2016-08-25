@@ -51,7 +51,7 @@ namespace Greatbone.Core
 		readonly int port;
 
 		// the async client
-		private HttpClient[] client;
+		private EvtClient client;
 
 
 		protected WebService(WebServiceContext wsc) : base(wsc)
@@ -166,7 +166,7 @@ namespace Greatbone.Core
 		}
 
 
-		public SqlContext NewDbContext()
+		public SqlContext NewSqlContext()
 		{
 			WebService svc = Service;
 			NpgsqlConnectionStringBuilder builder = new NpgsqlConnectionStringBuilder()

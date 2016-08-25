@@ -10,9 +10,7 @@ namespace Greatbone.Core
 	{
 		private string topic;
 
-		private string skey;
-
-		private string subkey;
+		private string key;
 
 		ISerial body;
 

@@ -10,7 +10,7 @@ namespace Greatbone.Sample
 	{
 		public BizFameSuper(WebServiceContext wsc) : base(wsc)
 		{
-			MountHub<BizFameXHub>(null);
+			MountHub<BizFameXHub>(false);
 		}
 	}
 }

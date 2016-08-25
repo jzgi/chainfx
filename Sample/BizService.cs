@@ -6,9 +6,9 @@ namespace Greatbone.Sample
 	{
 		public BizService(WebServiceContext wsc) : base(wsc)
 		{
-			AddSub<BizFameSuper>("fame", null);
+			AddSub<BizFameSuper>("fame", false);
 
-			AddSub<BizBrandSuper>("brand", null);
+			AddSub<BizBrandSuper>("brand", false);
 		}
 	}
 }

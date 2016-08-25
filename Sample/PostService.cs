@@ -6,7 +6,7 @@ namespace Greatbone.Sample
 	{
 		public PostService(WebServiceContext wsc) : base(wsc)
 		{
-			MountHub<PostXHub>(null);
+			MountHub<PostXHub>(false);
 		}
 
 		public void GetTop(WebContext wc)

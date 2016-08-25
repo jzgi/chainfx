@@ -16,7 +16,7 @@ namespace Greatbone.Core
 		{
 		}
 
-		public TSub AddSub<TSub>(string key, Checker checker) where TSub : WebSub
+		public TSub AddSub<TSub>(string key, bool auth) where TSub : WebSub
 		{
 			if (subs == null)
 			{

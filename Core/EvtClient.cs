@@ -2,9 +2,6 @@
 {
 	public class EvtClient
 	{
-
 		EvtConnection[] conns;
-
-
 	}
 }
