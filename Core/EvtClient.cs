@@ -1,7 +1,29 @@
-﻿namespace Greatbone.Core
+﻿using System.Threading;
+
+namespace Greatbone.Core
 {
 	public class EvtClient
 	{
-		EvtConnection[] conns;
+		private Thread reconn;
+
+		EvtConnection[] connections;
+
+		public EvtClient()
+		{
+			reconn=new Thread(Reconnect);
+		}
+
+		void Reconnect()
+		{
+			foreach (var con in connections)
+			{
+
+			}
+		}
+
+		public void MakeConnections(string[] hosts)
+		{
+
+		}
 	}
 }

@@ -167,6 +167,17 @@ namespace Greatbone.Core
 			return false;
 		}
 
+		///
+		/// sends an event to a target service
+		///
+		public void PostHorizontalEvent<E>(string topic, int verb, E msg) where E : ISerial
+		{
+		}
+
+		public void PostVerticalEvent<E>(string topic, int verb, E msg) where E : ISerial
+		{
+		}
+
 
 		public void SendEvent<T>(string topic, string filter, T @event) where T : ISerial
 		{

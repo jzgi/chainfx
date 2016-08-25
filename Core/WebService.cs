@@ -12,6 +12,7 @@ using Microsoft.AspNetCore.Http.Features;
 using Microsoft.AspNetCore.Server.Kestrel;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
+using Microsoft.Extensions.Primitives;
 using Npgsql;
 
 namespace Greatbone.Core
@@ -46,6 +47,11 @@ namespace Greatbone.Core
 
 		// a discriminator of virtual host
 		readonly string address;
+
+		private IPAddress webaddr;
+		private int webport;
+		private IPAddress evtaddr;
+		private int evtport;
 
 		// a  virtual host
 		readonly int port;
@@ -86,24 +92,27 @@ namespace Greatbone.Core
 		///
 		/// To asynchronously process the request.
 		///
-		public async Task ProcessRequestAsync(HttpContext context)
+		public async Task ProcessRequestAsync(HttpContext hc)
 		{
 			// dispatch the context accordingly
 
-			ConnectionInfo ci = context.Connection;
+			ConnectionInfo ci = hc.Connection;
 			IPAddress ip = ci.LocalIpAddress;
 			int port = ci.LocalPort;
 
-			if (port == this.port && ip.Equals(address))
+			if (port == evtport && ip.Equals(evtaddr))
 			{
-				using (EvtContext wc = new EvtContext(context))
+				StringValues df = hc.Request.Headers["Range"];
+
+
+				using (EvtContext wc = new EvtContext(hc))
 				{
 				}
 			}
 
-			using (WebContext wc = new WebContext(context))
+			using (WebContext wc = new WebContext(hc))
 			{
-				Handle(context.Request.Path.Value.Substring(1), wc);
+				Handle(hc.Request.Path.Value.Substring(1), wc);
 
 				await wc.SendAsyncTask();
 			}
@@ -157,13 +166,6 @@ namespace Greatbone.Core
 
 		public long ModifiedOn { get; set; }
 
-
-		///
-		/// sends an event to a target service
-		///
-		public void Publish(string topic, string subarg, object msg)
-		{
-		}
 
 
 		public SqlContext NewSqlContext()
