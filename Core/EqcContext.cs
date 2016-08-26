@@ -6,7 +6,7 @@ namespace Greatbone.Core
 	///
 	/// An event queue message
 	///
-	public class EvtContext : IDisposable
+	public class EqcContext : IDisposable
 	{
 		private string topic;
 
@@ -14,7 +14,7 @@ namespace Greatbone.Core
 
 		ISerial body;
 
-		internal EvtContext(HttpContext context)
+		internal EqcContext(HttpContext context)
 		{
 
 		}

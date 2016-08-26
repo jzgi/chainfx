@@ -2,13 +2,13 @@
 
 namespace Greatbone.Core
 {
-	public class EvtClient
+	public class EqcClient
 	{
 		private Thread reconn;
 
-		EvtConnection[] connections;
+		EqcConnection[] connections;
 
-		public EvtClient()
+		public EqcClient()
 		{
 			reconn=new Thread(Reconnect);
 		}

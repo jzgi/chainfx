@@ -3,7 +3,7 @@ using System.Net.Http;
 
 namespace Greatbone.Core
 {
-	public class EvtConnection
+	public class EqcConnection
 	{
 		string address;
 

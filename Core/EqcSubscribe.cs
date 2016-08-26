@@ -1,21 +1,21 @@
 ﻿namespace Greatbone.Core
 {
-	public delegate void EvtDoer(EvtContext ec);
+	public delegate void EventDoer(EqcContext ec);
 
-	public class EvtSubscribe : IMember
+	public class EqcSubscribe : IMember
 	{
 		public string Topic { get; }
 
-		private readonly EvtDoer doer;
+		private readonly EventDoer doer;
 
-		internal EvtSubscribe(string topic, EvtDoer doer)
+		internal EqcSubscribe(string topic, EventDoer doer)
 		{
 			// NOTE: strict method nzame as key here to avoid the default base url trap
 			Topic = topic;
 			this.doer = doer;
 		}
 
-		internal void Do(EvtContext ec)
+		internal void Do(EqcContext ec)
 		{
 			doer(ec);
 		}

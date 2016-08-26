@@ -1,12 +1,12 @@
 ﻿namespace Greatbone.Core
 {
-	public class EvtPublish : IMember
+	public class EqcPublish : IMember
 	{
 		public string Topic { get; }
 
 		public bool Subtype { get; }
 
-		internal EvtPublish(string topic, bool subtype)
+		internal EqcPublish(string topic, bool subtype)
 		{
 			Topic = topic;
 			Subtype = subtype;

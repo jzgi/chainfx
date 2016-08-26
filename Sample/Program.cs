@@ -6,10 +6,6 @@ namespace Greatbone.Sample
 	{
 		public static void Main(string[] args)
 		{
-			bool debug = args.Length > 0 && "debug".Equals(args[0]);
-
-			int port = 8080;
-
 			DataSrcBuilder dat = new DataSrcBuilder
 			{
 				host = "localhost",
@@ -20,7 +16,7 @@ namespace Greatbone.Sample
 
 			var www = new WwwService(new WebServiceContext
 				{
-					key = "www",
+					key = "WWW",
 					address = "60.205.104.239",
 					cluster = new[]
 					{
@@ -32,13 +28,13 @@ namespace Greatbone.Sample
 						"localhost:7782",
 					},
 					datasrc = dat,
-					debug = debug
-				}.Load("www.json")
+					debug = true
+				}.Load("WWW.json")
 			);
 
 			var biz = new BizService(new WebServiceContext
 				{
-					key = "biz",
+					key = "BIZ",
 					address = "60.205.104.239",
 					cluster = new[]
 					{
@@ -50,13 +46,13 @@ namespace Greatbone.Sample
 						"localhost:7782",
 					},
 					datasrc = dat,
-					debug = debug
-				}.Load("biz.json")
+					debug = true
+				}.Load("BIZ.json")
 			);
 
 			var post = new PostService(new WebServiceContext
 				{
-					key = "post",
+					key = "POST",
 					address = "60.205.104.239",
 					cluster = new[]
 					{
@@ -68,13 +64,13 @@ namespace Greatbone.Sample
 						"localhost:7782",
 					},
 					datasrc = dat,
-					debug = debug
-				}.Load("post.json")
+					debug = true
+				}.Load("POST.json")
 			);
 
 			var user = new UserService(new WebServiceContext
 				{
-					key = "user",
+					key = "USER",
 					address = "60.205.104.239",
 					cluster = new[]
 					{
@@ -86,13 +82,13 @@ namespace Greatbone.Sample
 						"localhost:7782",
 					},
 					datasrc = dat,
-					debug = debug
-				}.Load("user.json")
+					debug = true
+				}.Load("USER.json")
 			);
 
 			var chat = new ChatService(new WebServiceContext
 				{
-					key = "chat",
+					key = "CHAT",
 					address = "60.205.104.239",
 					cluster = new[]
 					{
@@ -104,8 +100,8 @@ namespace Greatbone.Sample
 						"localhost:7782",
 					},
 					datasrc = dat,
-					debug = debug
-				}.Load("chat.json")
+					debug = true
+				}.Load("CHAT.json")
 			);
 
 			var notice = new NoticeService(new WebServiceContext().Load("notice.json"));

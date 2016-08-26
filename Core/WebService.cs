@@ -30,10 +30,10 @@ namespace Greatbone.Core
 		public WebServiceContext Context { get; internal set; }
 
 		// topics published by this microservice
-		readonly Set<EvtPublish> publishes;
+		readonly Set<EqcPublish> publishes;
 
 		// topics subscribed by this microservice
-		readonly Set<EvtSubscribe> subscribes;
+		readonly Set<EqcSubscribe> subscribes;
 
 		readonly KestrelServerOptions options;
 
@@ -54,7 +54,7 @@ namespace Greatbone.Core
 		readonly int port;
 
 		// the async client
-		private EvtClient client;
+		private EqcClient client;
 
 
 		protected WebService(WebServiceContext wsc) : base(wsc)
@@ -104,7 +104,7 @@ namespace Greatbone.Core
 				StringValues df = hc.Request.Headers["Range"];
 
 
-				using (EvtContext wc = new EvtContext(hc))
+				using (EqcContext wc = new EqcContext(hc))
 				{
 				}
 			}
@@ -157,9 +157,9 @@ namespace Greatbone.Core
 		public CancellationToken ApplicationStopped { get; set; }
 
 
-		public void Subscribe(string topic, EvtDoer doer)
+		public void Subscribe(string topic, EventDoer doer)
 		{
-			subscribes.Add(new EvtSubscribe(topic, doer));
+			subscribes.Add(new EqcSubscribe(topic, doer));
 		}
 
 
