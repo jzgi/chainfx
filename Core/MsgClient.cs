@@ -2,13 +2,13 @@
 
 namespace Greatbone.Core
 {
-	public class EqcClient
+	public class MsgClient
 	{
 		private Thread reconn;
 
-		EqcConnection[] connections;
+		MsgConnection[] connections;
 
-		public EqcClient()
+		public MsgClient()
 		{
 			reconn=new Thread(Reconnect);
 		}
