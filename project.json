@@ -1,5 +1,5 @@
 ﻿{
-  "version": "1.0.0-*",
+  "version": "1.0.1",
   "description": "Sample Console Application",
   "buildOptions": {
     "emitEntryPoint": true,
@@ -8,10 +8,9 @@
   "dependencies": {
     "Microsoft.NETCore.App": {
       "type": "platform",
-      "version": "1.0.0-*"
+      "version": "1.0.0"
     },
     "Microsoft.AspNetCore.Server.Kestrel": "1.0.0",
-    "System.Diagnostics.Contracts": "4.0.1",
     "Npgsql": "3.1.7"
   },
   "frameworks": {

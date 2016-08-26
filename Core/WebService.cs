@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Net;
-using System.Net.Http;
+using System.Net.Sockets;
 using System.Threading;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Hosting;
@@ -42,16 +42,8 @@ namespace Greatbone.Core
 		// the embedded http server
 		readonly KestrelServer server;
 
-		// a discriminator of virtual host
-		readonly string address;
-
-		private IPAddress webaddr;
-		private int webport;
 		private IPAddress evtaddr;
 		private int evtport;
-
-		// a  virtual host
-		readonly int port;
 
 		// the async client
 		private EqcClient client;
@@ -59,8 +51,12 @@ namespace Greatbone.Core
 
 		protected WebService(WebServiceContext wsc) : base(wsc)
 		{
-			address = wsc.address;
-//			port = builder.port;
+			// init eqc client
+			foreach (var ep in wsc.cluster)
+			{
+//				ParseAddress()
+			}
+
 
 			// create the server instance
 			logger = new LoggerFactory();
@@ -73,6 +69,34 @@ namespace Greatbone.Core
 			addrs.Add("http://" + wsc.cluster[0]); // clustered event queue
 		}
 
+
+		bool ParseAddress(string addr, out IPAddress ipaddr, out int port)
+		{
+			port = 0;
+			string sip = addr;
+			int colon = addr.LastIndexOf(':');
+			if (colon != -1)
+			{
+				sip = addr.Substring(0, colon);
+				string sport = addr.Substring(colon + 1);
+				port = Int32.Parse(sport);
+			}
+			ipaddr = IPAddress.Parse(sip);
+			return true;
+		}
+
+		public static bool IsLocal(IPAddress ipaddr)
+		{
+//			var host = Dns.GetHostEntry(Dns.GetHostName());
+//			foreach (var ip in host.AddressList)
+//			{
+//				if (ip.AddressFamily == AddressFamily.InterNetwork)
+//				{
+//					return ip.ToString();
+//				}
+//			}
+			return false;
+		}
 
 		public virtual void OnStart()
 		{
