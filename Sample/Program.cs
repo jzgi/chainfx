@@ -21,7 +21,16 @@ namespace Greatbone.Sample
 			var www = new WwwService(new WebServiceContext
 				{
 					key = "www",
-					host = "60.205.104.239",
+					address = "60.205.104.239",
+					cluster = new[]
+					{
+						"localhost:7777",
+						"localhost:7778",
+						"localhost:7779",
+						"localhost:7780",
+						"localhost:7781",
+						"localhost:7782",
+					},
 					datasrc = dat,
 					debug = debug
 				}.Load("www.json")
@@ -30,7 +39,16 @@ namespace Greatbone.Sample
 			var biz = new BizService(new WebServiceContext
 				{
 					key = "biz",
-					host = "60.205.104.239",
+					address = "60.205.104.239",
+					cluster = new[]
+					{
+						"localhost:7777",
+						"localhost:7778",
+						"localhost:7779",
+						"localhost:7780",
+						"localhost:7781",
+						"localhost:7782",
+					},
 					datasrc = dat,
 					debug = debug
 				}.Load("biz.json")
@@ -39,7 +57,16 @@ namespace Greatbone.Sample
 			var post = new PostService(new WebServiceContext
 				{
 					key = "post",
-					host = "60.205.104.239",
+					address = "60.205.104.239",
+					cluster = new[]
+					{
+						"localhost:7777",
+						"localhost:7778",
+						"localhost:7779",
+						"localhost:7780",
+						"localhost:7781",
+						"localhost:7782",
+					},
 					datasrc = dat,
 					debug = debug
 				}.Load("post.json")
@@ -48,7 +75,16 @@ namespace Greatbone.Sample
 			var user = new UserService(new WebServiceContext
 				{
 					key = "user",
-					host = "60.205.104.239",
+					address = "60.205.104.239",
+					cluster = new[]
+					{
+						"localhost:7777",
+						"localhost:7778",
+						"localhost:7779",
+						"localhost:7780",
+						"localhost:7781",
+						"localhost:7782",
+					},
 					datasrc = dat,
 					debug = debug
 				}.Load("user.json")
@@ -57,7 +93,16 @@ namespace Greatbone.Sample
 			var chat = new ChatService(new WebServiceContext
 				{
 					key = "chat",
-					host = "60.205.104.239",
+					address = "60.205.104.239",
+					cluster = new[]
+					{
+						"localhost:7777",
+						"localhost:7778",
+						"localhost:7779",
+						"localhost:7780",
+						"localhost:7781",
+						"localhost:7782",
+					},
 					datasrc = dat,
 					debug = debug
 				}.Load("chat.json")

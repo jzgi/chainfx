@@ -27,8 +27,6 @@ namespace Greatbone.Core
 	///
 	public abstract class WebService : WebSuper, ICacheRealm, IHttpApplication<HttpContext>
 	{
-		const int MsgPort = 7777;
-
 		public WebServiceContext Context { get; internal set; }
 
 		// topics published by this microservice
@@ -36,7 +34,6 @@ namespace Greatbone.Core
 
 		// topics subscribed by this microservice
 		readonly Set<EvtSubscribe> subscribes;
-
 
 		readonly KestrelServerOptions options;
 
@@ -62,16 +59,18 @@ namespace Greatbone.Core
 
 		protected WebService(WebServiceContext wsc) : base(wsc)
 		{
-			address = wsc.debug ? "localhost" : wsc.host;
+			address = wsc.address;
 //			port = builder.port;
 
 			// create the server instance
 			logger = new LoggerFactory();
+
 			options = new KestrelServerOptions();
+
 			server = new KestrelServer(Options.Create(options), Lifetime, logger);
 			ICollection<string> addrs = server.Features.Get<IServerAddressesFeature>().Addresses;
-			addrs.Add("http://" + address + ":" + port);
-			addrs.Add("http://" + address + ":" + MsgPort);
+			addrs.Add(wsc.tls ? "https://" : "http://" + wsc.address);
+			addrs.Add("http://" + wsc.cluster[0]); // clustered event queue
 		}
 
 
@@ -165,7 +164,6 @@ namespace Greatbone.Core
 
 
 		public long ModifiedOn { get; set; }
-
 
 
 		public SqlContext NewSqlContext()

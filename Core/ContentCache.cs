@@ -7,7 +7,7 @@ namespace Greatbone.Core
 	///
 	/// The server-side response cache
 	///
-	public class WebCache
+	public class ContentCache
 	{
 		private readonly ConcurrentDictionary<string, Item> items;
 
@@ -15,7 +15,7 @@ namespace Greatbone.Core
 
 		private volatile bool stop;
 
-		public WebCache(int concurrency, int capcity)
+		public ContentCache(int concurrency, int capcity)
 		{
 			// create the url-to-item dictionary
 			items = new ConcurrentDictionary<string, Item>(concurrency, capcity);

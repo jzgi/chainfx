@@ -23,9 +23,13 @@ namespace Greatbone.Core
 
 		internal string key;
 
-		internal string host;
+		// socket address
+		internal string address;
 
-		internal string[] evthosts;
+		internal bool tls;
+
+		// event system socket addresses
+		internal string[] cluster;
 
 		internal DataSrcBuilder datasrc;
 
@@ -43,8 +47,9 @@ namespace Greatbone.Core
 		public void From(IReader r)
 		{
 			r.Read(nameof(key), ref key);
-			r.Read(nameof(host), ref host);
-			r.Read(nameof(evthosts), ref evthosts);
+			r.Read(nameof(address), ref address);
+			r.Read(nameof(tls), ref tls);
+			r.Read(nameof(cluster), ref cluster);
 			r.Read(nameof(datasrc), ref datasrc);
 			r.Read(nameof(debug), ref debug);
 			r.Read(nameof(options), ref options);
@@ -53,8 +58,9 @@ namespace Greatbone.Core
 		public void To(IWriter w)
 		{
 			w.Write(nameof(key), key);
-			w.Write(nameof(host), host);
-			w.Write(nameof(evthosts), evthosts);
+			w.Write(nameof(address), address);
+			w.Write(nameof(tls), tls);
+			w.Write(nameof(cluster), cluster);
 			w.Write(nameof(datasrc), datasrc);
 			w.Write(nameof(debug), debug);
 			w.Write(nameof(options), options);
