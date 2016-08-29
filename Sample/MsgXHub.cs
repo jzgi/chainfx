@@ -3,11 +3,11 @@ using Greatbone.Core;
 
 namespace Greatbone.Sample
 {
-	public class ChatXHub : WebXHub
+	public class MsgXHub : WebXHub
 	{
 		private ConcurrentDictionary<string, WebContext> hanging;
 
-		public ChatXHub(WebServiceContext wsc) : base(wsc)
+		public MsgXHub(WebServiceContext wsc) : base(wsc)
 		{
 		}
 

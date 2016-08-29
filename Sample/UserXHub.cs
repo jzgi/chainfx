@@ -3,7 +3,7 @@
 namespace Greatbone.Sample
 {
 	///
-	/// <summary></summary>
+	/// <summary>The features about a particular user principal.</summary>
 	/// /-/
 	///
 	public class UserXHub : WebXHub

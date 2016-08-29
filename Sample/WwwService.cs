@@ -9,10 +9,6 @@ namespace Greatbone.Sample
 	{
 		public WwwService(WebServiceContext wsc) : base(wsc)
 		{
-			AddSub<WwwMySub>("my", false);
-
-			//
-
 			Subscribe("amcom", x =>
 				{
 					string s = x.GetType().Name;

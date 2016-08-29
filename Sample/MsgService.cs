@@ -6,13 +6,13 @@ namespace Greatbone.Sample
 	///
 	/// The forum and commenting servoce.
 	///
-	public class ChatService : WebService
+	public class MsgService : WebService
 	{
 		private ConcurrentDictionary<string, ChatSession> sessions;
 
-		public ChatService(WebServiceContext wsc) : base(wsc)
+		public MsgService(WebServiceContext wsc) : base(wsc)
 		{
-			MountHub<ChatXHub>(false);
+			MountHub<MsgXHub>(false);
 		}
 	}
 

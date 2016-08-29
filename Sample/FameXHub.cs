@@ -5,9 +5,9 @@ namespace Greatbone.Sample
 	///
 	/// /fame/-/
 	///
-	public class BizFameXHub : WebXHub
+	public class FameXHub : WebXHub
 	{
-		public BizFameXHub(WebServiceContext wsc) : base(wsc)
+		public FameXHub(WebServiceContext wsc) : base(wsc)
 		{
 		}
 

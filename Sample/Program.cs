@@ -32,7 +32,25 @@ namespace Greatbone.Sample
 				}.Load("WWW.json")
 			);
 
-			var biz = new BizService(new WebServiceContext
+			var biz = new BrandService(new WebServiceContext
+				{
+					key = "BIZ",
+					address = "60.205.104.239",
+					cluster = new[]
+					{
+						"localhost:7777",
+						"localhost:7778",
+						"localhost:7779",
+						"localhost:7780",
+						"localhost:7781",
+						"localhost:7782",
+					},
+					datasrc = dat,
+					debug = true
+				}.Load("BIZ.json")
+			);
+
+			var fame = new FameService(new WebServiceContext
 				{
 					key = "BIZ",
 					address = "60.205.104.239",
@@ -86,7 +104,7 @@ namespace Greatbone.Sample
 				}.Load("USER.json")
 			);
 
-			var chat = new ChatService(new WebServiceContext
+			var chat = new MsgService(new WebServiceContext
 				{
 					key = "CHAT",
 					address = "60.205.104.239",
@@ -106,7 +124,7 @@ namespace Greatbone.Sample
 
 			var notice = new NoticeService(new WebServiceContext().Load("notice.json"));
 
-			WebService.Run(www, biz, post, user, chat, notice);
+			WebService.Run(www, fame, post, user, chat, notice);
 		}
 	}
 }

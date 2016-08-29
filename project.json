@@ -1,6 +1,6 @@
 ﻿{
   "version": "1.0.1",
-  "description": "Sample Console Application",
+  "description": "Sample Application",
   "buildOptions": {
     "emitEntryPoint": true,
     "additionalArguments": ["/doc:doc.xml"]
@@ -8,7 +8,7 @@
   "dependencies": {
     "Microsoft.NETCore.App": {
       "type": "platform",
-      "version": "1.0.0"
+      "version": "1.0"
     },
     "Microsoft.AspNetCore.Server.Kestrel": "1.0.0",
     "Npgsql": "3.1.7"

@@ -2,7 +2,7 @@
 
 namespace Greatbone.Sample
 {
-	public struct Message : ISerial
+	public struct Msg : ISerial
 	{
 		public void From(IReader r)
 		{
