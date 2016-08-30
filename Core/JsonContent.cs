@@ -10,6 +10,10 @@ namespace Greatbone.Core
 		{
 		}
 
+		public bool Read(string name, ref short value)
+		{
+			throw new NotImplementedException();
+		}
 
 		public bool Read(string name, ref int value)
 		{
@@ -19,6 +23,11 @@ namespace Greatbone.Core
 		public bool Read(string name, ref decimal value)
 		{
 			throw new System.NotImplementedException();
+		}
+
+		public bool Read(string name, ref DateTime value)
+		{
+			throw new NotImplementedException();
 		}
 
 		public bool Read(string name, ref string value)
@@ -56,6 +65,11 @@ namespace Greatbone.Core
 			throw new System.NotImplementedException();
 		}
 
+		public void Write(string name, short value)
+		{
+			throw new NotImplementedException();
+		}
+
 		public void Write(string name, int value)
 		{
 			Put('"');
@@ -72,6 +86,11 @@ namespace Greatbone.Core
 			Put('"');
 			Put(':');
 			Put(value);
+		}
+
+		public void Write(string name, DateTime value)
+		{
+			throw new NotImplementedException();
 		}
 
 		public void Write(string name, string value)
@@ -91,7 +110,7 @@ namespace Greatbone.Core
 			Put(':');
 
 			Put('{');
-			value.To(this);
+			value.WriteTo(this);
 			Put('}');
 		}
 
@@ -115,7 +134,7 @@ namespace Greatbone.Core
 					ISerial obj = list[i];
 
 					Put('{');
-					obj.To(this);
+					obj.WriteTo(this);
 					Put('}');
 				}
 			}
@@ -217,7 +236,7 @@ namespace Greatbone.Core
 					ISerial obj = array[i];
 
 					Put('{');
-					obj.To(this);
+					obj.WriteTo(this);
 					Put('}');
 				}
 			}

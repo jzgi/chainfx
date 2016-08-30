@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 
 namespace Greatbone.Core
 {
@@ -11,6 +12,11 @@ namespace Greatbone.Core
 		{
 		}
 
+		public bool Read(string name, ref short value)
+		{
+			throw new System.NotImplementedException();
+		}
+
 		public bool Read(string name, ref int value)
 		{
 			throw new System.NotImplementedException();
@@ -19,6 +25,11 @@ namespace Greatbone.Core
 		public bool Read(string name, ref decimal value)
 		{
 			throw new System.NotImplementedException();
+		}
+
+		public bool Read(string name, ref DateTime value)
+		{
+			throw new NotImplementedException();
 		}
 
 		public bool Read(string name, ref string value)
@@ -69,6 +80,16 @@ namespace Greatbone.Core
 		public void Write(string name, bool value)
 		{
 			throw new System.NotImplementedException();
+		}
+
+		public void Write(string name, short value)
+		{
+			throw new NotImplementedException();
+		}
+
+		public void Write(string name, DateTime value)
+		{
+			throw new NotImplementedException();
 		}
 
 		public void Write<T>(string name, List<T> list)

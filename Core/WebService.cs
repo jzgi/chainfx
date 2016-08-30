@@ -52,7 +52,7 @@ namespace Greatbone.Core
 		protected WebService(WebServiceContext wsc) : base(wsc)
 		{
 			// init eqc client
-			foreach (var ep in wsc.cluster)
+			foreach (var ep in wsc.peers)
 			{
 //				ParseAddress()
 			}
@@ -64,8 +64,8 @@ namespace Greatbone.Core
 
 			server = new KestrelServer(Options.Create(options), Lifetime, logger);
 			ICollection<string> addrs = server.Features.Get<IServerAddressesFeature>().Addresses;
-			addrs.Add(wsc.tls ? "https://" : "http://" + wsc.address);
-			addrs.Add("http://" + wsc.cluster[0]); // clustered event queue
+			addrs.Add(wsc.tls ? "https://" : "http://" + wsc.@public);
+			addrs.Add("http://" + wsc.peers[0]); // clustered event queue
 		}
 
 

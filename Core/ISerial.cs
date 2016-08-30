@@ -5,8 +5,8 @@
 	///
 	public interface ISerial
 	{
-		void From(IReader r);
+		void ReadFrom(IReader r);
 
-		void To(IWriter w);
+		void WriteTo(IWriter w);
 	}
 }

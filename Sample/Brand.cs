@@ -14,11 +14,11 @@ namespace Greatbone.Sample
 
 		public string Key => Id;
 
-		public void From(IReader r)
+		public void ReadFrom(IReader r)
 		{
 		}
 
-		public void To(IWriter w)
+		public void WriteTo(IWriter w)
 		{
 		}
 	}

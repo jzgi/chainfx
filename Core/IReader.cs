@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 
 namespace Greatbone.Core
 {
@@ -6,9 +7,13 @@ namespace Greatbone.Core
 	{
 		bool Read(string name, ref bool value);
 
+		bool Read(string name, ref short value);
+
 		bool Read(string name, ref int value);
 
 		bool Read(string name, ref decimal value);
+
+		bool Read(string name, ref DateTime value);
 
 		bool Read(string name, ref string value);
 

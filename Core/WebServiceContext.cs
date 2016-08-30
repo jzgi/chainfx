@@ -23,15 +23,18 @@ namespace Greatbone.Core
 
 		internal string key;
 
-		// socket address
-		internal string address;
+		// public socket address
+		internal string @public;
 
 		internal bool tls;
 
-		// event system socket addresses
-		internal string[] cluster;
+		// private socket address
+		internal string @private;
 
-		internal DataSrcBuilder datasrc;
+		// event system socket addresses
+		internal string[] peers;
+
+		internal DataSrcBuilder DataSrc;
 
 		internal bool debug;
 
@@ -44,24 +47,26 @@ namespace Greatbone.Core
 
 		internal Stack<WebSub> Chain { get; } = new Stack<WebSub>(8);
 
-		public void From(IReader r)
+		public void ReadFrom(IReader r)
 		{
 			r.Read(nameof(key), ref key);
-			r.Read(nameof(address), ref address);
+			r.Read(nameof(@public), ref @public);
 			r.Read(nameof(tls), ref tls);
-			r.Read(nameof(cluster), ref cluster);
-			r.Read(nameof(datasrc), ref datasrc);
+			r.Read(nameof(@private), ref @private);
+			r.Read(nameof(peers), ref peers);
+			r.Read(nameof(DataSrc), ref DataSrc);
 			r.Read(nameof(debug), ref debug);
 			r.Read(nameof(options), ref options);
 		}
 
-		public void To(IWriter w)
+		public void WriteTo(IWriter w)
 		{
 			w.Write(nameof(key), key);
-			w.Write(nameof(address), address);
+			w.Write(nameof(@public), @public);
 			w.Write(nameof(tls), tls);
-			w.Write(nameof(cluster), cluster);
-			w.Write(nameof(datasrc), datasrc);
+			w.Write(nameof(@private), @private);
+			w.Write(nameof(peers), peers);
+			w.Write(nameof(DataSrc), DataSrc);
 			w.Write(nameof(debug), debug);
 			w.Write(nameof(options), options);
 		}
@@ -72,9 +77,9 @@ namespace Greatbone.Core
 
 			JsonText text = new JsonText(json);
 
-//			text.Read()
-			From(text);
-//			text.Read()
+			text.ReadLeft();
+			ReadFrom(text);
+			text.ReadRight();
 
 			if (key == null)
 			{
@@ -94,7 +99,7 @@ namespace Greatbone.Core
 
 		internal string password;
 
-		public void From(IReader r)
+		public void ReadFrom(IReader r)
 		{
 			r.Read(nameof(host), ref host);
 			r.Read(nameof(port), ref port);
@@ -102,7 +107,7 @@ namespace Greatbone.Core
 			r.Read(nameof(password), ref password);
 		}
 
-		public void To(IWriter w)
+		public void WriteTo(IWriter w)
 		{
 			w.Write(nameof(host), host);
 			w.Write(nameof(port), port);

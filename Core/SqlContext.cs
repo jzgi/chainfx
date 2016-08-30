@@ -183,7 +183,7 @@ namespace Greatbone.Core
 		{
 			// convert message to byte buffer
 			BJsonContent b = new BJsonContent(null);
-			@event.To(b);
+			@event.WriteTo(b);
 
 			DoNonQuery("INSERT INTO mq (topic, filter, message) VALUES (@topic, @filter, @message)", p =>
 			{

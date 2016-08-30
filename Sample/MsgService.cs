@@ -1,28 +1,46 @@
-﻿using System.Collections.Concurrent;
+﻿using System;
+using System.Collections.Concurrent;
+using System.Collections.Generic;
 using Greatbone.Core;
 
 namespace Greatbone.Sample
 {
-	///
-	/// The forum and commenting servoce.
+	/// <summary>The instant messaging servoce.</summary>
 	///
 	public class MsgService : WebService
 	{
-		private ConcurrentDictionary<string, ChatSession> sessions;
+		// the ongoing chat sessions, keyed by receiver's ID
+		private ConcurrentDictionary<string, Chat> chats;
 
 		public MsgService(WebServiceContext wsc) : base(wsc)
 		{
-			MountHub<MsgXHub>(false);
+			AttachXHub<MsgXHub>(true);
 		}
 	}
 
 
-	struct ChatSession
+	/// <summary>Represent a chat session.</summary>
+	///
+	struct Chat
 	{
 		private int status;
 
+		private List<Message> msgs;
+
 		private long lasttime;
 
-		WebContext context;
+		WebContext wctx;
+
+		internal void Put(string msg)
+		{
+			msgs.Add(new Message());
+		}
+	}
+
+	struct Message
+	{
+		DateTime time;
+
+		string text;
 	}
 }

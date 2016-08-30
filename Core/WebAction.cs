@@ -3,9 +3,11 @@
 namespace Greatbone.Core
 {
 	/// <summary>The delegate of action methods.</summary>
+	///
 	public delegate void Doer(WebContext wc);
 
 	/// <summary>The delegate of mux action methods.</summary>
+	///
 	public delegate void XDoer(WebContext wc, string x);
 
 	/// <summary>The descriptor of an action handling method.</summary>
@@ -17,6 +19,8 @@ namespace Greatbone.Core
 		readonly Doer doer;
 
 		readonly XDoer xdoer;
+
+		private IChecker[] checkers;
 
 		public string Key { get; }
 

@@ -10,7 +10,7 @@ namespace Greatbone.Core
 			T obj = new T();
 
 //			r.ReadStart();
-			obj.From(r);
+			obj.ReadFrom(r);
 //			r.ReadEnd();
 
 			return obj;
@@ -24,7 +24,7 @@ namespace Greatbone.Core
 
 			T obj = new T();
 //			r.ReadStart();
-			obj.From(r);
+			obj.ReadFrom(r);
 //			r.ReadEnd();
 			return null;
 		}

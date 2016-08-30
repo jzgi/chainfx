@@ -1,17 +1,40 @@
-﻿using Greatbone.Core;
+﻿using System;
+using Greatbone.Core;
 
 namespace Greatbone.Sample
 {
 	public struct Msg : ISerial
 	{
-		public void From(IReader r)
+		internal int id;
+
+		internal short subtype;
+
+		internal string from;
+
+		internal string to;
+
+		internal string content;
+
+		internal DateTime time;
+
+		public void ReadFrom(IReader r)
 		{
-			throw new System.NotImplementedException();
+			r.Read(nameof(id), ref id);
+			r.Read(nameof(subtype), ref subtype);
+			r.Read(nameof(from), ref from);
+			r.Read(nameof(to), ref to);
+			r.Read(nameof(content), ref content);
+			r.Read(nameof(time), ref time);
 		}
 
-		public void To(IWriter w)
+		public void WriteTo(IWriter w)
 		{
-			throw new System.NotImplementedException();
+			w.Write(nameof(id),id);
+			w.Write(nameof(subtype), subtype);
+			w.Write(nameof(from), from);
+			w.Write(nameof(to), to);
+			w.Write(nameof(content), content);
+			w.Write(nameof(time), time);
 		}
 	}
 }

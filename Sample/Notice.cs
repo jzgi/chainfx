@@ -23,7 +23,7 @@ namespace Greatbone.Sample
 
 		public string Key { get; }
 
-		public void From(IReader r)
+		public void ReadFrom(IReader r)
 		{
 			r.Read(nameof(Id), ref Id);
 			r.Read(nameof(Title), ref Title);
@@ -32,7 +32,7 @@ namespace Greatbone.Sample
 			r.Read(nameof(Id), ref Id);
 		}
 
-		public void To(IWriter w)
+		public void WriteTo(IWriter w)
 		{
 			w.Write(nameof(Id), Id);
 			w.Write(nameof(Title), Title);

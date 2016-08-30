@@ -30,7 +30,7 @@ namespace Greatbone.Sample
 			return false;
 		}
 
-		public void From(IReader r)
+		public void ReadFrom(IReader r)
 		{
 			r.Read(nameof(id), ref id);
 			r.Read(nameof(name), ref name);
@@ -38,7 +38,7 @@ namespace Greatbone.Sample
 			r.Read(nameof(roles), ref roles);
 		}
 
-		public void To(IWriter w)
+		public void WriteTo(IWriter w)
 		{
 			w.Write(nameof(id), id);
 			w.Write(nameof(name), name);

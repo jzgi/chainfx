@@ -9,7 +9,7 @@ namespace Greatbone.Sample
 	{
 		public UserService(WebServiceContext wsc) : base(wsc)
 		{
-			MountHub<UserXHub>(false);
+			AttachXHub<UserXHub>(false);
 		}
 
 		///

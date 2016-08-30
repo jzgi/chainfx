@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 
 namespace Greatbone.Core
 {
@@ -8,9 +9,13 @@ namespace Greatbone.Core
 	{
 		void Write(string name, bool value);
 
+		void Write(string name, short value);
+
 		void Write(string name, int value);
 
 		void Write(string name, decimal value);
+
+		void Write(string name, DateTime value);
 
 		void Write(string name, string value);
 
