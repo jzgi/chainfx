@@ -1,12 +1,15 @@
-﻿using System;
-using System.Collections.Concurrent;
+﻿using System.Collections.Concurrent;
+using System.Collections.Generic;
+using System.Linq;
 using Greatbone.Core;
 
 namespace Greatbone.Sample
 {
+	/// /123/Get
+	/// /123/Put
 	public class MsgXHub : WebXHub
 	{
-		private ConcurrentDictionary<string, Chat> hanging;
+		private ConcurrentDictionary<string, List<Chat>> online;
 
 		public MsgXHub(WebServiceContext wsc) : base(wsc)
 		{
@@ -20,8 +23,32 @@ namespace Greatbone.Sample
 		}
 
 		[Self]
-		public void Get(WebContext wc, string x)
+		public void Get(WebContext wc, string rcv)
 		{
+			List<Chat> chats;
+			if (online.TryGetValue(rcv, out chats)) // put in session
+			{
+				// return cached msgs
+			}
+			else
+			{
+				// database operation
+				using (var sc = Service.NewSqlContext())
+				{
+					var m = sc.DoReader<Msg>("SELECT * FROM chats WHERE to=@to",
+						p => { p.Add("@to", rcv); },
+						b => { return new Msg(); }
+					);
+
+					// load into memory
+				}
+			}
+
+			// return
+			JsonContent c = new JsonContent(null);
+			c.Write(chats);
+
+			wc.Response.Content = c;
 		}
 
 		public void Put(WebContext wc, string receiver)
@@ -30,10 +57,11 @@ namespace Greatbone.Sample
 			string sender = tok.Login;
 			string text = wc.ToString();
 
-			Chat chat;
-			if (hanging.TryGetValue(receiver, out chat)) // put in session
+			List<Chat> chats;
+			if (online.TryGetValue(receiver, out chats)) // put in session
 			{
-				chat.Put(text);
+				Chat chat = chats.First(c => c.partner.Equals(sender));
+				chats[0].Put(text);
 			}
 			else // put in database
 			{

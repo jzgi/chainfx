@@ -18,7 +18,7 @@ namespace Greatbone.Core
 //			w.WriteArrayEnd();
 		}
 
-		public static void Write(this IWriter w, ICollection<ISerial> coll)
+		public static void Write<T>(this IWriter w, IList<T> coll) where T : ISerial
 		{
 //			w.WriteArrayStart();
 			int i = 0;

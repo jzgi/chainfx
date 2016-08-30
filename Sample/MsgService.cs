@@ -21,9 +21,11 @@ namespace Greatbone.Sample
 
 	/// <summary>Represent a chat session.</summary>
 	///
-	struct Chat
+	struct Chat : ISerial
 	{
 		private int status;
+
+		public string partner;
 
 		private List<Message> msgs;
 
@@ -34,6 +36,16 @@ namespace Greatbone.Sample
 		internal void Put(string msg)
 		{
 			msgs.Add(new Message());
+		}
+
+		public void ReadFrom(IReader r)
+		{
+			throw new NotImplementedException();
+		}
+
+		public void WriteTo(IWriter w)
+		{
+			throw new NotImplementedException();
 		}
 	}
 

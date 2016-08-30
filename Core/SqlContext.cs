@@ -6,7 +6,7 @@ using NpgsqlTypes;
 
 namespace Greatbone.Core
 {
-	public class SqlContext : IDisposable, IParameterCollection
+	public class SqlContext : IDisposable, IParameterCollection, IDataReader
 	{
 		private NpgsqlConnection conn;
 
@@ -62,6 +62,22 @@ namespace Greatbone.Core
 				cmd.Transaction = null;
 				transact = null;
 			}
+		}
+
+		public T DoReader<T>(string cmdtext, Action<IParameterCollection> @params, Func<IDataReader, T> garther)
+			where T : new()
+		{
+			if (conn.State != ConnectionState.Open)
+			{
+				conn.Open();
+			}
+			// add parameters
+			@params?.Invoke(this);
+
+			reader = cmd.ExecuteReader();
+
+			// execute
+			return garther(this);
 		}
 
 		public int DoNonQuery(string cmdtext, Action<IParameterCollection> parameters)
