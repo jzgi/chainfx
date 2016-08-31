@@ -6,9 +6,9 @@ using NpgsqlTypes;
 
 namespace Greatbone.Core
 {
-	public class SqlContext : IDisposable, IParameterCollection, IDataReader
+	public class SqlContext : IDisposable, IParameterCollection, IResultSet
 	{
-		private NpgsqlConnection conn;
+		readonly NpgsqlConnection connection;
 
 		private NpgsqlCommand cmd;
 
@@ -21,7 +21,7 @@ namespace Greatbone.Core
 
 		public SqlContext(NpgsqlConnectionStringBuilder builder)
 		{
-			conn = new NpgsqlConnection(builder);
+			connection = new NpgsqlConnection(builder);
 		}
 
 		bool disposed;
@@ -30,7 +30,7 @@ namespace Greatbone.Core
 		{
 			if (transact == null)
 			{
-				transact = conn.BeginTransaction();
+				transact = connection.BeginTransaction();
 				cmd.Transaction = transact;
 			}
 		}
@@ -39,7 +39,7 @@ namespace Greatbone.Core
 		{
 			if (transact == null)
 			{
-				transact = conn.BeginTransaction(level);
+				transact = connection.BeginTransaction(level);
 				cmd.Transaction = transact;
 			}
 		}
@@ -64,12 +64,12 @@ namespace Greatbone.Core
 			}
 		}
 
-		public T DoReader<T>(string cmdtext, Action<IParameterCollection> @params, Func<IDataReader, T> garther)
+		public T DoReader<T>(string cmdtext, Action<IParameterCollection> @params, Func<IResultSet, T> garther)
 			where T : new()
 		{
-			if (conn.State != ConnectionState.Open)
+			if (connection.State != ConnectionState.Open)
 			{
-				conn.Open();
+				connection.Open();
 			}
 			// add parameters
 			@params?.Invoke(this);
@@ -82,9 +82,9 @@ namespace Greatbone.Core
 
 		public int DoNonQuery(string cmdtext, Action<IParameterCollection> parameters)
 		{
-			if (conn.State != ConnectionState.Open)
+			if (connection.State != ConnectionState.Open)
 			{
-				conn.Open();
+				connection.Open();
 			}
 			// add parameters
 			parameters?.Invoke(this);
@@ -95,7 +95,7 @@ namespace Greatbone.Core
 
 		public void Command(string sql, params object[] args)
 		{
-			cmd = new NpgsqlCommand(sql, conn, transact);
+			cmd = new NpgsqlCommand(sql, connection, transact);
 		}
 
 		//
@@ -104,7 +104,6 @@ namespace Greatbone.Core
 
 		///
 		///  TURNING TARGET
-		///
 		///
 		public void Add(string name, int value)
 		{
@@ -215,7 +214,7 @@ namespace Greatbone.Core
 			{
 				reader?.Dispose();
 				cmd.Dispose();
-				conn.Dispose();
+				connection.Dispose();
 				// indicate that the instance has been disposed.
 				disposed = true;
 			}

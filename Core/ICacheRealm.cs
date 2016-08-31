@@ -7,6 +7,6 @@
     {
         ///
         /// Cache-Control and Last-Modified and If-Modified-Since
-        long ModifiedOn { get; set; }
+        long LastModified { get; set; }
     }
 }

@@ -1,7 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Net;
-using System.Net.Sockets;
 using System.Threading;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Hosting;
@@ -25,7 +24,7 @@ namespace Greatbone.Core
 	/// etag -- reduces network I/O with unchanged results
 	///
 	///
-	public abstract class WebService : WebSuper, ICacheRealm, IHttpApplication<HttpContext>
+	public abstract class WebService : WebRealm, IHttpApplication<HttpContext>
 	{
 		public WebServiceContext Context { get; internal set; }
 
@@ -184,10 +183,6 @@ namespace Greatbone.Core
 		{
 			subscribes.Add(new MsgSubscribe(topic, doer));
 		}
-
-
-		public long ModifiedOn { get; set; }
-
 
 		public SqlContext NewSqlContext()
 		{

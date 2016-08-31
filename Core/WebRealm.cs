@@ -4,7 +4,7 @@ using System.Reflection;
 
 namespace Greatbone.Core
 {
-	public abstract class WebSuper : WebSub
+	public abstract class WebRealm : WebSub, ICacheRealm
 	{
 		// the added sub controllers, if any
 		private Set<WebSub> subs;
@@ -12,9 +12,11 @@ namespace Greatbone.Core
 		// the attached multiplexer, if any
 		private WebXHub xhub;
 
-		protected WebSuper(WebServiceContext wsc) : base(wsc)
+		protected WebRealm(WebServiceContext wsc) : base(wsc)
 		{
 		}
+
+		public long LastModified { get; set; }
 
 		public TSub AddSub<TSub>(string key, bool auth) where TSub : WebSub
 		{
