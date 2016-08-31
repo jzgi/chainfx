@@ -4,7 +4,7 @@ using System.Reflection;
 
 namespace Greatbone.Core
 {
-	/// <summary>A multiplexing hub controller that is mounted to a super controller. </summary>
+	/// <summary>A multiplexing hub controller that is attached to a realm controller. </summary>
 	///
 	public abstract class WebXHub : WebSub
 	{

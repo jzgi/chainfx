@@ -3,14 +3,14 @@
 namespace Greatbone.Sample
 {
 	/// <summary>
-    /// 
-    /// </summary>
+	///
+	/// </summary>
 	public class Program
 	{
 		/// <summary>
-        /// 
-        /// </summary>
-        /// <param name="args"></param>
+		///
+		/// </summary>
+		/// <param name="args"></param>
 		public static void Main(string[] args)
 		{
 			DataSrcBuilder dat = new DataSrcBuilder
@@ -142,7 +142,7 @@ namespace Greatbone.Sample
 				}.Load("USER.json")
 			);
 
-			var msg = new MsgService(new WebServiceContext
+			var chat = new ChatService(new WebServiceContext
 				{
 					key = "CHAT",
 					@public = "60.205.104.239",
@@ -162,7 +162,7 @@ namespace Greatbone.Sample
 				}.Load("MSG.json")
 			);
 
-			WebService.Run(www, fame, brand, post, notice, user, msg);
+			WebService.Run(www, fame, brand, post, notice, user, chat);
 		}
 	}
 }

@@ -7,11 +7,11 @@ namespace Greatbone.Sample
 {
 	/// /123/Get
 	/// /123/Put
-	public class MsgXHub : WebXHub
+	public class ChatXHub : WebXHub
 	{
 		private ConcurrentDictionary<string, List<Chat>> online;
 
-		public MsgXHub(WebServiceContext wsc) : base(wsc)
+		public ChatXHub(WebServiceContext wsc) : base(wsc)
 		{
 		}
 

@@ -1,5 +1,4 @@
-﻿// ReSharper disable All
-namespace Greatbone.Core
+﻿namespace Greatbone.Core
 {
 	public static class IQueryCollectionExtensions
 	{

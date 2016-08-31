@@ -1,8 +1,46 @@
 ﻿using System;
+using System.Collections.Generic;
 using Greatbone.Core;
 
 namespace Greatbone.Sample
 {
+	/// <summary>Represent a chat session.</summary>
+	///
+	public struct Chat : ISerial
+	{
+		private int status;
+
+		public string partner;
+
+		private List<Message> msgs;
+
+		private long lasttime;
+
+		WebContext wctx;
+
+		internal void Put(string msg)
+		{
+			msgs.Add(new Message());
+		}
+
+		public void ReadFrom(ISerialReader r)
+		{
+			throw new NotImplementedException();
+		}
+
+		public void WriteTo(ISerialWriter w)
+		{
+			throw new NotImplementedException();
+		}
+	}
+
+	struct Message
+	{
+		DateTime time;
+
+		string text;
+	}
+
 	public struct Msg : ISerial
 	{
 		internal int id;
@@ -29,7 +67,7 @@ namespace Greatbone.Sample
 
 		public void WriteTo(ISerialWriter w)
 		{
-			w.Write(nameof(id),id);
+			w.Write(nameof(id), id);
 			w.Write(nameof(subtype), subtype);
 			w.Write(nameof(from), from);
 			w.Write(nameof(to), to);
