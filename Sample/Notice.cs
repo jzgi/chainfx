@@ -23,7 +23,7 @@ namespace Greatbone.Sample
 
 		public string Key { get; }
 
-		public void ReadFrom(IReader r)
+		public void ReadFrom(ISerialReader r)
 		{
 			r.Read(nameof(Id), ref Id);
 			r.Read(nameof(Title), ref Title);
@@ -32,7 +32,7 @@ namespace Greatbone.Sample
 			r.Read(nameof(Id), ref Id);
 		}
 
-		public void WriteTo(IWriter w)
+		public void WriteTo(ISerialWriter w)
 		{
 			w.Write(nameof(Id), Id);
 			w.Write(nameof(Title), Title);

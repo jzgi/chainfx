@@ -5,7 +5,7 @@ namespace Greatbone.Core
 {
 	///
 	/// DataReader/ParameterCollection, JSON or binary
-	public interface IWriter
+	public interface ISerialWriter
 	{
 		void Write(string name, bool value);
 

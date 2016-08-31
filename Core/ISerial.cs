@@ -1,12 +1,12 @@
 ﻿namespace Greatbone.Core
 {
-	///
-	/// Rerepsents an object that can be converted from/to JSON, BSON or XML document representations.
-	///
+	/// <summary>
+	/// Rerepsents an object that can be converted from/to serialized/deserialized forms, such as JSON and Binary JSON.
+	/// </summary>
 	public interface ISerial
 	{
-		void ReadFrom(IReader r);
+		void ReadFrom(ISerialReader r);
 
-		void WriteTo(IWriter w);
+		void WriteTo(ISerialWriter w);
 	}
 }

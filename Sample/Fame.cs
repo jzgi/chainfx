@@ -8,12 +8,12 @@ namespace Greatbone.Sample
 
 		public string Key { get; }
 
-		public void ReadFrom(IReader r)
+		public void ReadFrom(ISerialReader r)
 		{
 			throw new System.NotImplementedException();
 		}
 
-		public void WriteTo(IWriter w)
+		public void WriteTo(ISerialWriter w)
 		{
 			throw new System.NotImplementedException();
 		}

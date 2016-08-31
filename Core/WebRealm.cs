@@ -4,12 +4,15 @@ using System.Reflection;
 
 namespace Greatbone.Core
 {
+	/// <summary>
+	/// Represents the root of a set of controllers, which may include sub controllers and/or a multiplexer hub controller.
+	/// </summary>
 	public abstract class WebRealm : WebSub, ICacheRealm
 	{
 		// the added sub controllers, if any
 		private Set<WebSub> subs;
 
-		// the attached multiplexer, if any
+		// the attached multiplexer hub controller, if any
 		private WebXHub xhub;
 
 		protected WebRealm(WebServiceContext wsc) : base(wsc)

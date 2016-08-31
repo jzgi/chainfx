@@ -3,191 +3,189 @@ using System.Collections.Generic;
 
 namespace Greatbone.Core
 {
+	/// <summary>
+	/// A member of set that is identified by character key, for mapping with components in HTTP request
+	/// </summary>
+	/// <remarks>URL and parameters keep case-sensitive semantic</remarks>
+	public interface IMember
+	{
+		string Key { get; }
+	}
 
-    /// <summary>
-    /// A member of set that is identified by character key, for mapping with components in HTTP request
-    /// </summary>
-    /// <remarks>URL and parameters keep case-sensitive semantic</remarks>
-    public interface IMember
-    {
-        string Key { get; }
-    }
 
+	/// <summary>
+	/// An addition-only collection of elements with character keys. The members are placed in the addition order.
+	/// </summary>
+	public class Set<TM> : ICollection<TM> where TM : IMember
+	{
+		int[] buckets;
 
-    /// <summary>
-    /// An addition-only collection of elements with character keys. The members are placed in the addition order. 
-    /// </summary>
-    public class Set<TM> : ICollection<TM> where TM : IMember
-    {
+		Entry[] entries;
 
-        int[] _buckets;
+		// number of entries
+		int count;
 
-        Entry[] _entries;
+		public Set(int capacity)
+		{
+			// find a least power of 2 that is greater than or equal to capacity
+			int size = 1;
+			while (size < capacity)
+			{
+				size <<= 1;
+			}
 
-        // number of entries
-        int _count;
+			ReInitialize(size);
+		}
 
-        public Set(int capacity)
-        {
-            // find a least power of 2 that is greater than or equal to capacity
-            int size = 1;
-            while (size < capacity) { size <<= 1; }
+		private void ReInitialize(int size)
+		{
+			buckets = new int[size];
+			for (int i = 0; i < size; i++)
+			{
+				buckets[i] = -1; // initialize all buckets to -1
+			}
+			entries = new Entry[size];
+			count = 0;
+		}
 
-            ReInitialize(size);
-        }
+		public TM this[int index] => entries[index].member;
 
-      private void ReInitialize(int size)
-        {
-            _buckets = new int[size];
-            for (int i = 0; i < size; i++)
-            {
-                _buckets[i] = -1; // initialize all buckets to -1
-            }
-            _entries = new Entry[size];
-            _count = 0;
-        }
+		public TM this[string key]
+		{
+			get
+			{
+				TM mbr;
+				if (TryGet(key, out mbr))
+				{
+					return mbr;
+				}
+				return default(TM);
+			}
+		}
 
-        public TM this[int index] => _entries[index].member;
+		public bool TryGet(string key, out TM member)
+		{
+			int code = key.GetHashCode() & 0x7fffffff;
+			int buck = code % buckets.Length; // target bucket
+			int idx = buckets[buck];
+			while (idx != -1)
+			{
+				Entry e = entries[idx];
+				if (e.Match(code, key))
+				{
+					member = e.member;
+					return true;
+				}
+				idx = entries[idx].next; // adjust for next index
+			}
+			member = default(TM);
+			return false;
+		}
 
-        public TM this[string key]
-        {
-            get
-            {
-                TM mbr;
-                if (TryGet(key, out mbr))
-                {
-                    return mbr;
-                }
-                return default(TM);
-            }
-        }
+		public int Count => count;
 
-        public bool TryGet(string key, out TM member)
-        {
-            int code = key.GetHashCode() & 0x7fffffff;
-            int buck = code % _buckets.Length; // target bucket
-            int idx = _buckets[buck];
-            while (idx != -1)
-            {
-                Entry e = _entries[idx];
-                if (e.Match(code, key))
-                {
-                    member = e.member;
-                    return true;
-                }
-                idx = _entries[idx].next; // adjust for next index
-            }
-            member = default(TM);
-            return false;
-        }
+		public void Add(TM member)
+		{
+			Add(member, false);
+		}
 
-        public int Count => _count;
+		public void Add(TM member, bool rehash)
+		{
+			// ensure double-than-needed capacity
+			if (!rehash && count >= entries.Length / 2)
+			{
+				Entry[] old = entries;
+				int oldcount = count;
+				ReInitialize(entries.Length * 2);
+				// re-add old elements
+				for (int i = 0; i < oldcount; i++)
+				{
+					Add(old[i].member, true);
+				}
+			}
 
-        public void Add(TM member)
-        {
-            Add(member, false);
-        }
+			string key = member.Key;
+			int code = key.GetHashCode() & 0x7fffffff;
+			int buck = code % buckets.Length; // target bucket
+			int idx = buckets[buck];
+			while (idx != -1)
+			{
+				Entry e = entries[idx];
+				if (e.Match(code, key))
+				{
+					e.member = member;
+					return; // replace the old value
+				}
+				idx = entries[idx].next; // adjust for next index
+			}
 
-        public void Add(TM member, bool rehash)
-        {
-            // ensure double-than-needed capacity
-            if (!rehash && _count >= _entries.Length / 2)
-            {
-                Entry[] old = _entries;
-                int oldcount = _count;
-                ReInitialize(_entries.Length * 2);
-                // re-add old elements
-                for (int i = 0; i < oldcount; i++)
-                {
-                    Add(old[i].member, true);
-                }
-            }
+			//
+			// add a new entry
 
-            string key = member.Key;
-            int code = key.GetHashCode() & 0x7fffffff;
-            int buck = code % _buckets.Length; // target bucket
-            int idx = _buckets[buck];
-            while (idx != -1)
-            {
-                Entry e = _entries[idx];
-                if (e.Match(code, key))
-                {
-                    e.member = member; return; // replace the old value
-                }
-                idx = _entries[idx].next;  // adjust for next index
-            }
+			idx = count;
+			entries[idx] = new Entry(code, buckets[buck], key, member);
+			buckets[buck] = idx;
+			count++;
+		}
 
-            //
-            // add a new entry
+		public void Clear()
+		{
+		}
 
-            idx = _count;
-            _entries[idx] = new Entry(code, _buckets[buck], key, member);
-            _buckets[buck] = idx;
-            _count++;
-        }
+		public bool Contains(TM item)
+		{
+			TM mbr;
+			return TryGet(item.Key, out mbr);
+		}
 
-        public void Clear()
-        {
-        }
+		public void CopyTo(TM[] array, int arrayIndex)
+		{
+		}
 
-        public bool Contains(TM item)
-        {
-            TM mbr;
-            return TryGet(item.Key, out mbr);
-        }
+		public bool IsReadOnly => true;
 
-        public void CopyTo(TM[] array, int arrayIndex)
-        {
-        }
+		public bool Remove(TM item)
+		{
+			return false;
+		}
 
-        public bool IsReadOnly => true;
+		public IEnumerator<TM> GetEnumerator()
+		{
+			return null;
+		}
 
-        public bool Remove(TM item)
-        {
-            return false;
-        }
+		IEnumerator IEnumerable.GetEnumerator()
+		{
+			return null;
+		}
 
-        public IEnumerator<TM> GetEnumerator()
-        {
-            return null;
-        }
+		public struct Entry
+		{
+			internal int code; // lower 31 bits of hash code
 
-        IEnumerator IEnumerable.GetEnumerator()
-        {
-            return null;
-        }
+			internal string key; // entry key
 
-        public struct Entry
-        {
+			internal TM member; // entry value
 
-            internal int code; // lower 31 bits of hash code
+			internal int next; // index of next entry, -1 if last
 
-            internal string key; // entry key
+			internal Entry(int code, int next, string key, TM member)
+			{
+				this.code = code;
+				this.next = next;
+				this.key = key;
+				this.member = member;
+			}
 
-            internal TM member; // entry value
+			internal bool Match(int code, string key)
+			{
+				return this.code == code && this.key.Equals(key);
+			}
 
-            internal int next;  // index of next entry, -1 if last
-
-            internal Entry(int code, int next, string key, TM member)
-            {
-                this.code = code;
-                this.next = next;
-                this.key = key;
-                this.member = member;
-            }
-
-            internal bool Match(int code, string key)
-            {
-                return this.code == code && this.key.Equals(key);
-            }
-
-            public override string ToString()
-            {
-                return member.ToString();
-            }
-
-        }
-
-    }
-
+			public override string ToString()
+			{
+				return member.ToString();
+			}
+		}
+	}
 }

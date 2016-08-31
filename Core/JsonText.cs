@@ -3,7 +3,7 @@ using System.Collections.Generic;
 
 namespace Greatbone.Core
 {
-    public class JsonText : IReader, IWriter
+    public class JsonText : ISerialReader, ISerialWriter
     {
         // for input
         private string text;

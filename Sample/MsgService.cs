@@ -38,12 +38,12 @@ namespace Greatbone.Sample
 			msgs.Add(new Message());
 		}
 
-		public void ReadFrom(IReader r)
+		public void ReadFrom(ISerialReader r)
 		{
 			throw new NotImplementedException();
 		}
 
-		public void WriteTo(IWriter w)
+		public void WriteTo(ISerialWriter w)
 		{
 			throw new NotImplementedException();
 		}

@@ -3,7 +3,10 @@ using System.Collections.Generic;
 
 namespace Greatbone.Core
 {
-	public interface IReader
+	/// <summary>
+	/// A serialized content reader.
+	/// </summary>
+	public interface ISerialReader
 	{
 		bool Read(string name, ref bool value);
 

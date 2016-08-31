@@ -47,7 +47,7 @@ namespace Greatbone.Core
 
 		internal Stack<WebSub> Chain { get; } = new Stack<WebSub>(8);
 
-		public void ReadFrom(IReader r)
+		public void ReadFrom(ISerialReader r)
 		{
 			r.Read(nameof(key), ref key);
 			r.Read(nameof(@public), ref @public);
@@ -59,7 +59,7 @@ namespace Greatbone.Core
 			r.Read(nameof(options), ref options);
 		}
 
-		public void WriteTo(IWriter w)
+		public void WriteTo(ISerialWriter w)
 		{
 			w.Write(nameof(key), key);
 			w.Write(nameof(@public), @public);
@@ -99,7 +99,7 @@ namespace Greatbone.Core
 
 		internal string password;
 
-		public void ReadFrom(IReader r)
+		public void ReadFrom(ISerialReader r)
 		{
 			r.Read(nameof(host), ref host);
 			r.Read(nameof(port), ref port);
@@ -107,7 +107,7 @@ namespace Greatbone.Core
 			r.Read(nameof(password), ref password);
 		}
 
-		public void WriteTo(IWriter w)
+		public void WriteTo(ISerialWriter w)
 		{
 			w.Write(nameof(host), host);
 			w.Write(nameof(port), port);

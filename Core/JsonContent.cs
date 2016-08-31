@@ -1,10 +1,9 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.ComponentModel;
 
 namespace Greatbone.Core
 {
-	public class JsonContent : DynamicContent, IReader, IWriter
+	public class JsonContent : DynamicContent, ISerialReader, ISerialWriter
 	{
 		public JsonContent(byte[] buffer) : base(buffer)
 		{

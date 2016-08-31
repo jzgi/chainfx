@@ -2,13 +2,13 @@
 {
 	public struct CachePolicy
 	{
-		public bool? IsShared { get; }
+		public bool? IsPublic { get; }
 
 		public int MaxAge { get; }
 
-		internal CachePolicy(bool? shared, int maxage)
+		internal CachePolicy(bool? @public, int maxage)
 		{
-			IsShared = shared;
+			IsPublic = @public;
 			MaxAge = maxage;
 		}
 	}

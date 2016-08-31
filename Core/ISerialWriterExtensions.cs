@@ -2,9 +2,9 @@
 
 namespace Greatbone.Core
 {
-	public static class IWriterExtensions
+	public static class ISerialWriterExtensions
 	{
-		public static void Write(this IWriter w, params ISerial[] arr)
+		public static void Write(this ISerialWriter w, params ISerial[] arr)
 		{
 //			w.WriteArrayStart();
 			for (int i = 0; i < arr.Length; i++)
@@ -18,7 +18,7 @@ namespace Greatbone.Core
 //			w.WriteArrayEnd();
 		}
 
-		public static void Write<T>(this IWriter w, IList<T> coll) where T : ISerial
+		public static void Write<T>(this ISerialWriter w, IList<T> coll) where T : ISerial
 		{
 //			w.WriteArrayStart();
 			int i = 0;

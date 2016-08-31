@@ -17,7 +17,7 @@ namespace Greatbone.Sample
 
 		internal DateTime time;
 
-		public void ReadFrom(IReader r)
+		public void ReadFrom(ISerialReader r)
 		{
 			r.Read(nameof(id), ref id);
 			r.Read(nameof(subtype), ref subtype);
@@ -27,7 +27,7 @@ namespace Greatbone.Sample
 			r.Read(nameof(time), ref time);
 		}
 
-		public void WriteTo(IWriter w)
+		public void WriteTo(ISerialWriter w)
 		{
 			w.Write(nameof(id),id);
 			w.Write(nameof(subtype), subtype);
