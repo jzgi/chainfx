@@ -117,7 +117,7 @@ namespace Greatbone.Core
             return actions[action];
         }
 
-        public virtual void Handle(string relative, WebContext wc)
+        public virtual void HandleAction(string relative, WebContext wc)
         {
             if (relative.IndexOf('.') != -1) // static handling
             {

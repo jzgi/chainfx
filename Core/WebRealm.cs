@@ -68,12 +68,12 @@ namespace Greatbone.Core
 		}
 
 
-		public override void Handle(string relative, WebContext wc)
+		public override void HandleAction(string relative, WebContext wc)
 		{
 			int slash = relative.IndexOf('/');
 			if (slash == -1) // without a slash then handle it locally
 			{
-				base.Handle(relative, wc);
+				base.HandleAction(relative, wc);
 			}
 			else // not local then sub & mux
 			{
@@ -88,7 +88,7 @@ namespace Greatbone.Core
 					{
 						string x = dir.Substring(1);
 						wc.X = x;
-						xhub.Handle(relative.Substring(slash + 1), wc);
+						xhub.HandleAction(relative.Substring(slash + 1), wc);
 					}
 				}
 				else
@@ -96,7 +96,7 @@ namespace Greatbone.Core
 					WebSub sub;
 					if (subs.TryGet(dir, out sub))
 					{
-						sub.Handle(relative.Substring(slash + 1), wc);
+						sub.HandleAction(relative.Substring(slash + 1), wc);
 					}
 				}
 			}

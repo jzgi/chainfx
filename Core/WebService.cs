@@ -70,7 +70,7 @@ namespace Greatbone.Core
         }
 
 
-        bool ParseAddress(string addr, out IPAddress ipaddr, out int port)
+        static bool ParseAddress(string addr, out IPAddress ipaddr, out int port)
         {
             port = 0;
             string sip = addr;
@@ -115,26 +115,28 @@ namespace Greatbone.Core
             IPAddress ip = ci.LocalIpAddress;
             int port = ci.LocalPort;
 
+            WebContext wc = (WebContext)hc;
             if (port == mqport && ip.Equals(mqaddr))
             {
                 // mq handling or action handling
                 if (hc.Request.Path.Equals("*"))
                 {
                     // msg queue
+                    HandleMsg(wc);
                 }
                 else
                 {
                     // no auth
-                    WebContext wc = (WebContext)hc;
-                    Handle(hc.Request.Path.Value.Substring(1), wc);
+                    HandleAction(hc.Request.Path.Value.Substring(1), wc);
                     await wc.Response.SendAsyncTask();
                 }
-                StringValues df = hc.Request.Headers["Range"];
             }
             else
             {
-                WebContext wc = (WebContext)hc;
-                Handle(hc.Request.Path.Value.Substring(1), wc);
+                // check security token (authentication)
+
+                // handling 
+                HandleAction(hc.Request.Path.Value.Substring(1), wc);
 
                 await wc.Response.SendAsyncTask();
             }
@@ -147,10 +149,6 @@ namespace Greatbone.Core
 
         public void Start()
         {
-            // prepare event queue service
-            //
-
-
             // start the server
             //
             server.Start(this);
@@ -158,17 +156,28 @@ namespace Greatbone.Core
             var urls = server.Features.Get<IServerAddressesFeature>().Addresses;
 
             Console.Write(Key);
-            Console.Write(" =");
+            Console.Write(" started (");
+            int i = 0;
             foreach (var url in urls)
             {
-                Console.Write(" ");
+                if (i > 0)
+                {
+                    Console.Write(", ");
+                }
                 Console.Write(url);
+                i++;
             }
+            Console.Write(")");
             Console.WriteLine();
         }
 
         public void StopApplication()
         {
+        }
+
+        internal void HandleMsg(WebContext wc)
+        {
+
         }
 
         public CancellationToken ApplicationStarted { get; set; }
