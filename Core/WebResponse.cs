@@ -2,23 +2,23 @@
 using System.Text;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Http;
+using Microsoft.AspNetCore.Http.Internal;
 
 namespace Greatbone.Core
 {
 	///
 	/// The wrapper of a HTTP response, providing efficient output methods and cache control.
 	///
-	public class WebResponse
+	public class WebResponse : DefaultHttpResponse
 	{
 		// the underlying implementation of a response
 		private readonly HttpResponse _impl;
 
-		internal WebResponse(HttpResponse impl)
-		{
-			_impl = impl;
-		}
+	    public WebResponse(HttpContext ctx) : base(ctx)
+	    {
+	    }
 
-		public CachePolicy CachePolicy { get; set; }
+	    public CachePolicy CachePolicy { get; set; }
 
 		public IContent Content { get; set; }
 

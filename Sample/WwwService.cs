@@ -9,11 +9,11 @@ namespace Greatbone.Sample
 	{
 		public WwwService(WebServiceContext wsc) : base(wsc)
 		{
-			Subscribe("amcom", x =>
-				{
-					string s = x.GetType().Name;
-				}
-			);
+			// Subscribe("amcom", x =>
+			// 	{
+			// 		string s = x.GetType().Name;
+			// 	}
+			// );
 		}
 
 		///

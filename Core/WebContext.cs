@@ -1,50 +1,37 @@
-﻿using System;
-using System.Threading.Tasks;
-using Microsoft.AspNetCore.Http;
+﻿using Microsoft.AspNetCore.Http;
+using Microsoft.AspNetCore.Http.Features;
 
 namespace Greatbone.Core
 {
-	///
-	/// The encapsulation of a web request/response exchange context.
-	///
-	/// buffer pooling -- reduces GC overhead when dealing with asynchronous request/response I/O
-	///
-	public class WebContext : IDisposable
-	{
-		private readonly HttpContext _impl;
+    ///
+    /// The encapsulation of a web request/response exchange context.
+    ///
+    /// buffer pooling -- reduces GC overhead when dealing with asynchronous request/response I/O
+    ///
+    public class WebContext : DefaultHttpContext
+    {
+        internal WebContext(IFeatureCollection features) : base(features)
+        {
+        }
 
-		private readonly WebRequest _request;
+        protected override HttpRequest InitializeHttpRequest() => new WebRequest(this);
 
-		private readonly WebResponse _response;
+        protected override HttpResponse InitializeHttpResponse() => new WebResponse(this);
 
-		internal WebContext(HttpContext impl)
-		{
-			_impl = impl;
-			_request = new WebRequest(impl.Request);
-			_response = new WebResponse(impl.Response);
-		}
+        public new WebRequest Request => (WebRequest) base.Request;
 
-		public ISession Session => _impl.Session;
+        public new WebResponse Response => (WebResponse) base.Response;
 
-		public WebRequest Request => _request;
+        public WebSub Controller { get; }
 
-		public WebResponse Response => _response;
+        public WebAction Action { get; }
 
-		public WebSub Controller { get; }
+        public string X { get; internal set; }
 
-		public WebAction Action { get; }
+        public IToken Token { get; }
 
-		public string X { get; internal set; }
-
-		public IToken Token { get; }
-
-		internal Task SendAsyncTask()
-		{
-			return _response.SendAsyncTask();
-		}
-
-		public void Dispose()
-		{
-		}
-	}
+        public void Dispose()
+        {
+        }
+    }
 }

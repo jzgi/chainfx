@@ -23,6 +23,8 @@ namespace Greatbone.Core
 
 		public TSub AddSub<TSub>(string key, bool auth) where TSub : WebSub
 		{
+		    Service.Context.Enter(this);
+
 			if (subs == null)
 			{
 				subs = new Set<WebSub>(16);
@@ -34,44 +36,35 @@ namespace Greatbone.Core
 			{
 				throw new WebException(type + ": the constructor with WebServiceContext not defined");
 			}
-//			WebServiceContext wcc = new WebServiceContext
-//			{
-//				Key = key,
-//				StaticPath = Path.Combine(StaticPath, key),
-//				Parent = this,
-//				Service = Service
-//			};
-			TSub sub = (TSub) ci.Invoke(new object[] {null});
+			TSub sub = (TSub) ci.Invoke(new object[] {Service.Context});
 
 			subs.Add(sub);
 
 			//
 			// check declared event handler methods
 
-			return sub;
+		    Service.Context.Exit();
+		    return sub;
 		}
 
 		public THub AttachXHub<THub>(bool auth) where THub : WebXHub
 		{
-			// create instance
+		    Service.Context.Enter(this);
+
+		    // create instance
 			Type type = typeof(THub);
 			ConstructorInfo ci = type.GetConstructor(new[] {typeof(WebServiceContext)});
 			if (ci == null)
 			{
 				throw new WebException(type + ": the constructor with WebBuilder not defined");
 			}
-//			WebBuilder wb = new WebBuilder
-//			{
-//				Key = "-",
-//				StaticPath = Path.Combine(StaticPath, "-"),
-//				Parent = this,
-//				Service = Service
-//			};
-			THub hub = (THub) ci.Invoke(new object[] {null});
+			THub hub = (THub) ci.Invoke(new object[] {Service.Context});
 
 			// call the initialization and set
 			xhub = hub;
-			return hub;
+
+		    Service.Context.Exit();
+		    return hub;
 		}
 
 

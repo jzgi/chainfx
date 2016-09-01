@@ -24,7 +24,7 @@ namespace Greatbone.Sample
 			var www = new WwwService(new WebServiceContext
 				{
 					key = "WWW",
-					@public = "60.205.104.239",
+					@public = "localhost:8080",
 					@private = "localhost:7777",
 					peers = new[]
 					{
@@ -44,8 +44,8 @@ namespace Greatbone.Sample
 			var fame = new FameService(new WebServiceContext
 				{
 					key = "BIZ",
-					@public = "60.205.104.239",
-					@private = "60.205.104.239",
+				    @public = "localhost:8081",
+				    @private = "60.205.104.239",
 					peers = new[]
 					{
 						"localhost:7777",
@@ -64,8 +64,8 @@ namespace Greatbone.Sample
 			var brand = new BrandService(new WebServiceContext
 				{
 					key = "BIZ",
-					@public = "60.205.104.239",
-					@private = "60.205.104.239",
+				    @public = "localhost:8082",
+				    @private = "60.205.104.239",
 					peers = new[]
 					{
 						"localhost:7777",
@@ -84,8 +84,8 @@ namespace Greatbone.Sample
 			var post = new PostService(new WebServiceContext
 				{
 					key = "POST",
-					@public = "60.205.104.239",
-					@private = "60.205.104.239",
+				    @public = "localhost:8083",
+				    @private = "60.205.104.239",
 					peers = new[]
 					{
 						"localhost:7777",
@@ -105,8 +105,8 @@ namespace Greatbone.Sample
 				new WebServiceContext
 				{
 					key = "NOTICE",
-					@public = "60.205.104.239",
-					@private = "60.205.104.239",
+				    @public = "localhost:8084",
+				    @private = "60.205.104.239",
 					peers = new[]
 					{
 						"localhost:7777",
@@ -125,8 +125,8 @@ namespace Greatbone.Sample
 			var user = new UserService(new WebServiceContext
 				{
 					key = "USER",
-					@public = "60.205.104.239",
-					@private = "60.205.104.239",
+				    @public = "localhost:8085",
+				    @private = "60.205.104.239",
 					peers = new[]
 					{
 						"localhost:7777",
@@ -145,8 +145,8 @@ namespace Greatbone.Sample
 			var chat = new ChatService(new WebServiceContext
 				{
 					key = "CHAT",
-					@public = "60.205.104.239",
-					@private = "60.205.104.239",
+				    @public = "localhost:8086",
+				    @private = "60.205.104.239",
 					peers = new[]
 					{
 						"localhost:7777",

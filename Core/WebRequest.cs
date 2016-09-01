@@ -1,27 +1,26 @@
 ﻿using System.IO;
 using Microsoft.AspNetCore.Http;
+using Microsoft.AspNetCore.Http.Internal;
 
 namespace Greatbone.Core
 {
-	public class WebRequest
-	{
-		private readonly HttpRequest _impl;
+    public class WebRequest : DefaultHttpRequest
+    {
+        private readonly HttpRequest _impl;
 
-		private object data;
+        private object data;
 
-		internal WebRequest(HttpRequest impl)
-		{
-			_impl = impl;
-		}
+        public WebRequest(HttpContext context) : base(context)
+        {
+        }
 
-
-		public T Json<T>()
-		{
-			if (data == null)
-			{
-			}
-			return (T) data;
-		}
+        public T Json<T>()
+        {
+            if (data == null)
+            {
+            }
+            return (T) data;
+        }
 
 //		public async ReadBodyAsync()
 //		{
@@ -45,11 +44,6 @@ namespace Greatbone.Core
 //		}
 
 
-		public IFormCollection Form => _impl.Form;
-
-		public IQueryCollection Query => _impl.Query;
-
-
 //		public T Object<T>()
 //		{
 //			JsonSerializer ser = new JsonSerializer();
@@ -57,11 +51,11 @@ namespace Greatbone.Core
 //			return ser.Deserialize<T>(reader);
 //		}
 
-		internal class Utf8TextReader : TextReader
-		{
-			internal Utf8TextReader(byte[] buf, int offset, int count)
-			{
-			}
-		}
-	}
+        internal class Utf8TextReader : TextReader
+        {
+            internal Utf8TextReader(byte[] buf, int offset, int count)
+            {
+            }
+        }
+    }
 }
