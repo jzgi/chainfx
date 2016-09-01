@@ -41,8 +41,8 @@ namespace Greatbone.Core
         // the embedded http server
         readonly KestrelServer server;
 
-        private IPAddress evtaddr;
-        private int evtport;
+        private IPAddress mqaddr;
+        private int mqport;
 
         // the async client
         private MsgClient client;
@@ -51,7 +51,7 @@ namespace Greatbone.Core
         protected WebService(WebServiceContext wsc) : base(wsc)
         {
             // init eqc client
-            foreach (var ep in wsc.peers)
+            foreach (var ep in wsc.foreign)
             {
 //				ParseAddress()
             }
@@ -64,7 +64,9 @@ namespace Greatbone.Core
             server = new KestrelServer(Options.Create(options), Lifetime, logger);
             ICollection<string> addrs = server.Features.Get<IServerAddressesFeature>().Addresses;
             addrs.Add(wsc.tls ? "https://" : "http://" + wsc.@public);
-            addrs.Add("http://" + wsc.peers[0]); // clustered event queue
+            addrs.Add("http://" + wsc.@internal); // clustered msg queue
+
+            ParseAddress(wsc.@internal, out mqaddr, out mqport);
         }
 
 
@@ -83,19 +85,6 @@ namespace Greatbone.Core
             return true;
         }
 
-        public static bool IsLocal(IPAddress ipaddr)
-        {
-//			var host = Dns.GetHostEntry(Dns.GetHostName());
-//			foreach (var ip in host.AddressList)
-//			{
-//				if (ip.AddressFamily == AddressFamily.InterNetwork)
-//				{
-//					return ip.ToString();
-//				}
-//			}
-            return false;
-        }
-
         public virtual void OnStart()
         {
         }
@@ -105,6 +94,9 @@ namespace Greatbone.Core
         }
 
 
+        /// <summary>Returns a framework custom context. </summary>
+        /// <param name="features"></param>
+        /// <returns></returns>
         public HttpContext CreateContext(IFeatureCollection features)
         {
             return new WebContext(features);
@@ -123,15 +115,29 @@ namespace Greatbone.Core
             IPAddress ip = ci.LocalIpAddress;
             int port = ci.LocalPort;
 
-            if (port == evtport && ip.Equals(evtaddr))
+            if (port == mqport && ip.Equals(mqaddr))
             {
+                // mq handling or action handling
+                if (hc.Request.Path.Equals("*"))
+                {
+                    // msg queue
+                }
+                else
+                {
+                    // no auth
+                    WebContext wc = (WebContext) hc;
+                    Handle(hc.Request.Path.Value.Substring(1), wc);
+                    await wc.Response.SendAsyncTask();
+                }
                 StringValues df = hc.Request.Headers["Range"];
             }
+            else
+            {
+                WebContext wc = (WebContext) hc;
+                Handle(hc.Request.Path.Value.Substring(1), wc);
 
-            WebContext wc = (WebContext) hc;
-            Handle(hc.Request.Path.Value.Substring(1), wc);
-
-            await wc.Response.SendAsyncTask();
+                await wc.Response.SendAsyncTask();
+            }
         }
 
         public void DisposeContext(HttpContext context, Exception exception)

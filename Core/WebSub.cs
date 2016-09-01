@@ -80,7 +80,7 @@ namespace Greatbone.Core
                             LastModified = modified
                         };
                         Statics.Add(sta);
-                        if (sta.Key.StartsWith("index."))
+                        if (sta.Key.StartsWith("default."))
                         {
                             DefaultStatic = sta;
                         }

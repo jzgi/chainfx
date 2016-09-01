@@ -3,7 +3,7 @@
   "description": "Sample Application",
   "buildOptions": {
     "emitEntryPoint": true,
-    "additionalArguments": ["/doc:doc.xml"]
+    "additionalArguments": []
   },
   "dependencies": {
     "Microsoft.NETCore.App": {

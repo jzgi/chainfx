@@ -11,9 +11,6 @@ namespace Greatbone.Core
 	///
 	public class WebResponse : DefaultHttpResponse
 	{
-		// the underlying implementation of a response
-		private readonly HttpResponse _impl;
-
 	    public WebResponse(HttpContext ctx) : base(ctx)
 	    {
 	    }
@@ -36,33 +33,17 @@ namespace Greatbone.Core
 //			};
 //		}
 
-		public int StatusCode
-		{
-			get { return _impl.StatusCode; }
-			set { _impl.StatusCode = value; }
-		}
-
-		public void Redirect(string location)
-		{
-			_impl.Redirect(location);
-		}
-
-		public void Redirect(string location, bool permanent)
-		{
-			_impl.Redirect(location, permanent);
-		}
-
 		internal Task SendAsyncTask()
 		{
 			if (Content != null)
 			{
-				_impl.ContentLength = Content.Count;
-				_impl.ContentType = Content.Type;
+				ContentLength = Content.Count;
+				ContentType = Content.Type;
 
 				// etag
 
 				//
-				return _impl.Body.WriteAsync(Content.Buffer, 0, Content.Count);
+				return Body.WriteAsync(Content.Buffer, 0, Content.Count);
 			}
 			return null;
 		}

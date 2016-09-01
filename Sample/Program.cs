@@ -24,19 +24,13 @@ namespace Greatbone.Sample
 			var www = new WwwService(new WebServiceContext
 				{
 					key = "WWW",
-					@public = "localhost:8080",
-					@private = "localhost:7777",
-					peers = new[]
+					@public = "127.0.0.1:8080",
+					@internal = "127.0.0.1:7777",
+					foreign = new[]
 					{
-						"localhost:7777",
-						"localhost:7778",
-						"localhost:7779",
-						"localhost:7780",
-						"localhost:7781",
-						"localhost:7782",
-						"localhost:7783",
+						"localhost:7777"
 					},
-					DataSrc = dat,
+					datasrc = dat,
 					debug = true
 				}.Load("WWW.json")
 			);
@@ -44,19 +38,13 @@ namespace Greatbone.Sample
 			var fame = new FameService(new WebServiceContext
 				{
 					key = "BIZ",
-				    @public = "localhost:8081",
-				    @private = "60.205.104.239",
-					peers = new[]
+				    @public = "127.0.0.1:8081",
+				    @internal = "127.0.0.1:7777",
+				    foreign = new[]
 					{
-						"localhost:7777",
-						"localhost:7778",
-						"localhost:7779",
-						"localhost:7780",
-						"localhost:7781",
-						"localhost:7782",
-						"localhost:7783",
+						"localhost:7777"
 					},
-					DataSrc = dat,
+					datasrc = dat,
 					debug = true
 				}.Load("BIZ.json")
 			);
@@ -64,19 +52,13 @@ namespace Greatbone.Sample
 			var brand = new BrandService(new WebServiceContext
 				{
 					key = "BIZ",
-				    @public = "localhost:8082",
-				    @private = "60.205.104.239",
-					peers = new[]
+				    @public = "127.0.0.1:8082",
+				    @internal = "127.0.0.1:7777",
+				    foreign = new[]
 					{
-						"localhost:7777",
-						"localhost:7778",
-						"localhost:7779",
-						"localhost:7780",
-						"localhost:7781",
-						"localhost:7782",
-						"localhost:7783",
+					    "127.0.0.1:7777"
 					},
-					DataSrc = dat,
+					datasrc = dat,
 					debug = true
 				}.Load("BIZ.json")
 			);
@@ -84,19 +66,13 @@ namespace Greatbone.Sample
 			var post = new PostService(new WebServiceContext
 				{
 					key = "POST",
-				    @public = "localhost:8083",
-				    @private = "60.205.104.239",
-					peers = new[]
+				    @public = "127.0.0.1:8083",
+				    @internal = "127.0.0.1:7777",
+				    foreign = new[]
 					{
-						"localhost:7777",
-						"localhost:7778",
-						"localhost:7779",
-						"localhost:7780",
-						"localhost:7781",
-						"localhost:7782",
-						"localhost:7783",
+						"localhost:7777"
 					},
-					DataSrc = dat,
+					datasrc = dat,
 					debug = true
 				}.Load("POST.json")
 			);
@@ -105,19 +81,13 @@ namespace Greatbone.Sample
 				new WebServiceContext
 				{
 					key = "NOTICE",
-				    @public = "localhost:8084",
-				    @private = "60.205.104.239",
-					peers = new[]
+				    @public = "127.0.0.1:8084",
+				    @internal = "127.0.0.1:7777",
+				    foreign = new[]
 					{
-						"localhost:7777",
-						"localhost:7778",
-						"localhost:7779",
-						"localhost:7780",
-						"localhost:7781",
-						"localhost:7782",
-						"localhost:7783",
+						"localhost:7783"
 					},
-					DataSrc = dat,
+					datasrc = dat,
 					debug = true
 				}.Load("NOTICE.json")
 			);
@@ -125,19 +95,13 @@ namespace Greatbone.Sample
 			var user = new UserService(new WebServiceContext
 				{
 					key = "USER",
-				    @public = "localhost:8085",
-				    @private = "60.205.104.239",
-					peers = new[]
+				    @public = "127.0.0.1:8085",
+				    @internal = "127.0.0.1:7777",
+					foreign = new[]
 					{
-						"localhost:7777",
-						"localhost:7778",
-						"localhost:7779",
-						"localhost:7780",
-						"localhost:7781",
-						"localhost:7782",
-						"localhost:7783",
+						"localhost:7783"
 					},
-					DataSrc = dat,
+					datasrc = dat,
 					debug = true
 				}.Load("USER.json")
 			);
@@ -145,19 +109,13 @@ namespace Greatbone.Sample
 			var chat = new ChatService(new WebServiceContext
 				{
 					key = "CHAT",
-				    @public = "localhost:8086",
-				    @private = "60.205.104.239",
-					peers = new[]
+				    @public = "127.0.0.1:8086",
+				    @internal = "60.205.104.239",
+					foreign = new[]
 					{
-						"localhost:7777",
-						"localhost:7778",
-						"localhost:7779",
-						"localhost:7780",
-						"localhost:7781",
-						"localhost:7782",
-						"localhost:7783",
+						"localhost:7783"
 					},
-					DataSrc = dat,
+					datasrc = dat,
 					debug = true
 				}.Load("MSG.json")
 			);

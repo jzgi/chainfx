@@ -27,13 +27,13 @@ namespace Greatbone.Core
 
         internal bool tls;
 
-        // private socket address
-        internal string @private;
+        // inner socket address
+        internal string @internal;
 
         // event system socket addresses
-        internal string[] peers;
+        internal string[] foreign;
 
-        internal DataSrcBuilder DataSrc;
+        internal DataSrcBuilder datasrc;
 
         internal bool debug;
 
@@ -63,9 +63,9 @@ namespace Greatbone.Core
             r.Read(nameof(key), ref key);
             r.Read(nameof(@public), ref @public);
             r.Read(nameof(tls), ref tls);
-            r.Read(nameof(@private), ref @private);
-            r.Read(nameof(peers), ref peers);
-            r.Read(nameof(DataSrc), ref DataSrc);
+            r.Read(nameof(@internal), ref @internal);
+            r.Read(nameof(foreign), ref foreign);
+            r.Read(nameof(datasrc), ref datasrc);
             r.Read(nameof(debug), ref debug);
             r.Read(nameof(options), ref options);
         }
@@ -75,9 +75,9 @@ namespace Greatbone.Core
             w.Write(nameof(key), key);
             w.Write(nameof(@public), @public);
             w.Write(nameof(tls), tls);
-            w.Write(nameof(@private), @private);
-            w.Write(nameof(peers), peers);
-            w.Write(nameof(DataSrc), DataSrc);
+            w.Write(nameof(@internal), @internal);
+            w.Write(nameof(foreign), foreign);
+            w.Write(nameof(datasrc), datasrc);
             w.Write(nameof(debug), debug);
             w.Write(nameof(options), options);
         }
