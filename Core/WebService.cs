@@ -53,7 +53,7 @@ namespace Greatbone.Core
             // init eqc client
             foreach (var ep in wsc.foreign)
             {
-//				ParseAddress()
+                //				ParseAddress()
             }
 
             // create the server instance
@@ -125,7 +125,7 @@ namespace Greatbone.Core
                 else
                 {
                     // no auth
-                    WebContext wc = (WebContext) hc;
+                    WebContext wc = (WebContext)hc;
                     Handle(hc.Request.Path.Value.Substring(1), wc);
                     await wc.Response.SendAsyncTask();
                 }
@@ -133,7 +133,7 @@ namespace Greatbone.Core
             }
             else
             {
-                WebContext wc = (WebContext) hc;
+                WebContext wc = (WebContext)hc;
                 Handle(hc.Request.Path.Value.Substring(1), wc);
 
                 await wc.Response.SendAsyncTask();
@@ -157,16 +157,14 @@ namespace Greatbone.Core
 
             var urls = server.Features.Get<IServerAddressesFeature>().Addresses;
 
-            Console.WriteLine("Listening on");
-
-            var token = new CancellationToken();
-
-            token.Register(
-                state => { ((IApplicationLifetime) state).StopApplication(); },
-                this
-            );
-
-            ApplicationStopping.WaitHandle.WaitOne();
+            Console.Write(Key);
+            Console.Write(" =");
+            foreach (var url in urls)
+            {
+                Console.Write(" ");
+                Console.Write(url);
+            }
+            Console.WriteLine();
         }
 
         public void StopApplication()
@@ -213,7 +211,7 @@ namespace Greatbone.Core
             var token = new CancellationToken();
 
             token.Register(
-                state => { ((IApplicationLifetime) state).StopApplication(); },
+                state => { ((IApplicationLifetime)state).StopApplication(); },
                 Lifetime
             );
 

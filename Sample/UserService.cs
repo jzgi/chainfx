@@ -17,6 +17,7 @@ namespace Greatbone.Sample
 		///
 		public void Register(WebContext wc)
 		{
+			string s = wc.Request.Host.Value.ToString();
 		}
 
 		public void Search(WebContext wc)
