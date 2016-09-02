@@ -22,10 +22,16 @@ namespace Greatbone.Sample
 
             User u = wc.Request.Object<User>();
             string s = wc.Request.Host.Value.ToString();
+
+            wc.Response.SetJson(u);
         }
 
         public void Search(WebContext wc)
         {
+            ArraySegment<byte> bytes = wc.Request.ByteArray();
+            ad = wc;
         }
+
+        WebContext ad;
     }
 }

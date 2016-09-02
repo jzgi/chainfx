@@ -127,7 +127,11 @@ namespace Greatbone.Core
                 {
                     // no auth
                     HandleAction(hc.Request.Path.Value.Substring(1), wc);
-                    await wc.Response.SendAsyncTask();
+
+                    if (wc.Response.Content != null)
+                    {
+                        await wc.Response.SendAsyncTask();
+                    }
                 }
             }
             else
@@ -137,7 +141,10 @@ namespace Greatbone.Core
                 // handling 
                 HandleAction(hc.Request.Path.Value.Substring(1), wc);
 
-                await wc.Response.SendAsyncTask();
+                if (wc.Response.Content != null)
+                {
+                    await wc.Response.SendAsyncTask();
+                }
             }
         }
 

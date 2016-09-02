@@ -6,18 +6,18 @@ using Microsoft.AspNetCore.Http.Internal;
 
 namespace Greatbone.Core
 {
-	///
-	/// The wrapper of a HTTP response, providing efficient output methods and cache control.
-	///
-	public class WebResponse : DefaultHttpResponse
-	{
-	    public WebResponse(HttpContext ctx) : base(ctx)
-	    {
-	    }
+    ///
+    /// The wrapper of a HTTP response, providing efficient output methods and cache control.
+    ///
+    public class WebResponse : DefaultHttpResponse
+    {
+        public WebResponse(HttpContext ctx) : base(ctx)
+        {
+        }
 
-	    public CachePolicy CachePolicy { get; set; }
+        public CachePolicy CachePolicy { get; set; }
 
-		public IContent Content { get; set; }
+        public IContent Content { get; set; }
 
 //		public void SetJson(object obj)
 //		{
@@ -33,34 +33,57 @@ namespace Greatbone.Core
 //			};
 //		}
 
-		internal Task SendAsyncTask()
-		{
-			if (Content != null)
-			{
-				ContentLength = Content.Count;
-				ContentType = Content.Type;
+        public void SetObject<T>(T obj) where T : ISerial
+        {
+            SetObject(obj, false);
+        }
 
-				// etag
+        public void SetJson<T>(T obj) where T : ISerial
+        {
+            byte[] buf = BufferPool.Lease(16 * 1024);
+            ISerialWriter writer = (ISerialWriter) new JsonContent(buf);
+            writer.Write(obj);
 
-				//
-				return Body.WriteAsync(Content.Buffer, 0, Content.Count);
-			}
-			return null;
-		}
-	}
+            Content = (DynamicContent) writer;
+        }
 
-	class DummyContent : IContent
-	{
-		public string Type { get; set; }
+        public void SetObject<T>(T obj, bool binary) where T : ISerial
+        {
+            byte[] buf = BufferPool.Lease(16 * 1024);
+            ISerialWriter writer = binary ? new BJsonContent(buf) : (ISerialWriter) new JsonContent(buf);
+            writer.Write(obj);
 
-		public byte[] Buffer { get; set; }
+            Content = (DynamicContent) writer;
+        }
 
-		public int Offset { get; set; }
+        internal Task SendAsyncTask()
+        {
+            if (Content != null)
+            {
+                ContentLength = Content.Count;
+                ContentType = Content.Type;
 
-		public int Count { get; set; }
+                // etag
 
-		public DateTime LastModified { get; set; }
+                //
+                return Body.WriteAsync(Content.Buffer, 0, Content.Count);
+            }
+            return null;
+        }
+    }
 
-		public long ETag { get; set; }
-	}
+    class DummyContent : IContent
+    {
+        public string Type { get; set; }
+
+        public byte[] Buffer { get; set; }
+
+        public int Offset { get; set; }
+
+        public int Count { get; set; }
+
+        public DateTime LastModified { get; set; }
+
+        public long ETag { get; set; }
+    }
 }
