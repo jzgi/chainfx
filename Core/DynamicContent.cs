@@ -58,7 +58,13 @@ namespace Greatbone.Core
 			this.buffer = buffer;
 		}
 
-		public string Type { get; set; }
+	    protected DynamicContent(byte[] buffer, int count)
+	    {
+	        this.buffer = buffer;
+	        this.count = count;
+	    }
+
+	    public string Type { get; set; }
 
 		public byte[] Buffer => buffer;
 

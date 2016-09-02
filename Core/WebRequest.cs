@@ -1,55 +1,76 @@
-﻿using System.IO;
+﻿using System;
+using System.IO;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Http.Internal;
 
 namespace Greatbone.Core
 {
+    /// <summary>
+    /// The resources and operations of a web request.
+    ///</summary>
+    /// <remarks>Asynchronou reading are carefully designed. </remarks>
     public class WebRequest : DefaultHttpRequest
     {
-        private readonly HttpRequest _impl;
+        private byte[] buffer;
 
-        private object data;
+        private int count;
 
-        public WebRequest(HttpContext context) : base(context)
+        // the parsed content, that is a deserialized object or bytes
+        private object content;
+
+        public WebRequest(HttpContext ctx) : base(ctx)
         {
         }
 
-        public T Json<T>()
+        /// <summary>
+        /// Receiveds request body into a buffer held by the buffer field.
+        ///</summary>
+        internal async void ReceiveAsync()
         {
-            if (data == null)
+            long? clen = ContentLength;
+            if (buffer == null && clen > 0)
             {
+                int len = (int) clen.Value;
+                // borrow a byte array from the pool
+                buffer = BufferPool.Lease(len);
+                count = len;
+                await Body.ReadAsync(buffer, 0, len);
             }
-            return (T) data;
         }
 
-//		public async ReadBodyAsync()
-//		{
-//			long? len = _impl.ContentLength;
-//			string ctype = _impl.ContentType;
-//			byte[] _buffer;
-//			if ("application/json".Equals(ctype))
-//			{
-//				// get a pooled byte buffer
-//				_buffer = BufferPool.Lease((int) len.Value);
-//			}
-//			if ("application/json".Equals(ctype))
-//			{
-//				_buffer = BufferPool.Lease((int) len.Value);
-//			}
-//
-//			if (_buffer == null)
-//			{
-//			}
-//			await _impl.Body.ReadAsync(_buffer, 0, _buffer.Length);
-//		}
+        public ArraySegment<byte> ByteArray()
+        {
+            if (buffer == null)
+            {
+                ReceiveAsync();
+            }
+            return new ArraySegment<byte>(buffer, 0, count);
+        }
 
-
-//		public T Object<T>()
-//		{
-//			JsonSerializer ser = new JsonSerializer();
-//			JsonReader reader = new JsonTextReader(new Utf8TextReader(_buffer, 0, 0));
-//			return ser.Deserialize<T>(reader);
-//		}
+        public T Object<T>() where T : ISerial, new()
+        {
+            if (content == null)
+            {
+                if (buffer == null)
+                {
+                    ReceiveAsync();
+                }
+                // init content
+                ISerialReader reader = null;
+                string ctype = ContentType;
+                long? clen = ContentLength;
+                if ("application/json".Equals(ctype))
+                {
+                    reader = new JsonContent(buffer, (int) clen);
+                }
+                else if ("application/bjson".Equals(ctype))
+                {
+                    reader = new BJsonContent(buffer, (int) clen);
+                }
+                content = reader.Read<T>();
+            }
+            return (T) content;
+        }
 
         internal class Utf8TextReader : TextReader
         {
