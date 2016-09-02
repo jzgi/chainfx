@@ -13,19 +13,61 @@ namespace Greatbone.Core
         {
         }
 
+        internal void SkipTill(byte c)
+        {
+        }
+
+        internal void SkipWsTill(byte c)
+        {
+        }
+
+        internal bool LocateNameAtLevel()
+        {
+            return false;
+        }
+
+        internal bool GetValue(ref short value)
+        {
+            return false;
+        }
+
+        internal bool GetValue(ref int value)
+        {
+            return false;
+        }
+
+
+        internal bool GetValue(ref decimal value)
+        {
+            return false;
+        }
+
+
         public bool Read(string name, ref short value)
         {
-            throw new NotImplementedException();
+            if (LocateNameAtLevel())
+            {
+                return GetValue(ref value);
+            }
+            return false;
         }
 
         public bool Read(string name, ref int value)
         {
-            throw new System.NotImplementedException();
+            if (LocateNameAtLevel())
+            {
+                return GetValue(ref value);
+            }
+            return false;
         }
 
         public bool Read(string name, ref decimal value)
         {
-            throw new System.NotImplementedException();
+            if (LocateNameAtLevel())
+            {
+                return GetValue(ref value);
+            }
+            return false;
         }
 
         public bool Read(string name, ref DateTime value)
