@@ -5,6 +5,11 @@ namespace Greatbone.Core
 {
     public class JsonContent : DynamicContent, ISerialReader, ISerialWriter
     {
+        Level[] stack;
+
+        int level;
+
+
         public JsonContent(byte[] buffer) : base(buffer)
         {
         }
@@ -23,6 +28,15 @@ namespace Greatbone.Core
 
         internal bool LocateNameAtLevel()
         {
+            int p = stack[level].current;
+
+            // seek two quotations and a colon
+            while (buffer[p] != ':')
+            {
+                p++;
+            }
+
+
             return false;
         }
 
