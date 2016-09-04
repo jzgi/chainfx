@@ -56,7 +56,7 @@ namespace Greatbone.Core
             Content = (DynamicContent) writer;
         }
 
-        internal Task SendAsyncTask()
+        internal void SendAsyncTask()
         {
             if (Content != null)
             {
@@ -66,9 +66,9 @@ namespace Greatbone.Core
                 // etag
 
                 //
-                return Body.WriteAsync(Content.Buffer, 0, Content.Count);
+              Task task =  Body.WriteAsync(Content.Buffer, 0, Content.Count);
+                task.Status = TaskStatus.Running;
             }
-            return null;
         }
     }
 

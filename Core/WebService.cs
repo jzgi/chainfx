@@ -108,6 +108,8 @@ namespace Greatbone.Core
         /// </remarks>
         public async Task ProcessRequestAsync(HttpContext hc)
         {
+            Console.WriteLine(hc.Response.Body.GetType());
+
             // dispatch the context accordingly
 
             ConnectionInfo ci = hc.Connection;
@@ -130,7 +132,7 @@ namespace Greatbone.Core
 
                     if (wc.Response.Content != null)
                     {
-                        await wc.Response.SendAsyncTask();
+                         wc.Response.SendAsyncTask();
                     }
                 }
             }
@@ -143,13 +145,14 @@ namespace Greatbone.Core
 
                 if (wc.Response.Content != null)
                 {
-                    await wc.Response.SendAsyncTask();
+                     wc.Response.SendAsyncTask();
                 }
             }
         }
 
         public void DisposeContext(HttpContext context, Exception exception)
         {
+//            context.
         }
 
 
