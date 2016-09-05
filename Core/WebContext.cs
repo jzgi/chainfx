@@ -30,6 +30,8 @@ namespace Greatbone.Core
 
         public IToken Token { get; }
 
+        public bool IsSuspended { get; set; }
+
         public void Dispose()
         {
         }

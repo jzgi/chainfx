@@ -104,31 +104,6 @@ namespace Greatbone.Core
             return new WebContext(features);
         }
 
-
-        private ConcurrentDictionary<string, AB> chats = new ConcurrentDictionary<string, AB>();
-
-
-        public Task Foo(HttpContext wc)
-        {
-            TaskCompletionSource<int> tcs = new TaskCompletionSource<int>();
-
-
-            chats.TryAdd("123", new AB() {tcs = tcs, hc = wc});
-            return tcs.Task;
-        }
-
-        public void Bar(HttpContext wc)
-        {
-        }
-
-
-        struct AB
-        {
-            internal TaskCompletionSource<int> tcs;
-
-            internal HttpContext hc;
-        }
-
         ///
         /// <summary>To asynchronously process the request.</summary>
         /// <remarks>
@@ -136,21 +111,6 @@ namespace Greatbone.Core
         /// </remarks>
         public async Task ProcessRequestAsync(HttpContext hc)
         {
-            if (hc.Request.Path.Value.Equals("/123"))
-            {
-                await Foo(hc);
-            }
-            else
-            {
-                AB ab;
-                chats.TryGetValue("123", out ab);
-                byte[] buf = Encoding.UTF8.GetBytes("hello, this si sdf ");
-                ab.hc.Response.Body.Write(buf, 0, buf.Length);
-
-                ab.tcs.SetResult(123);
-            }
-
-
             Console.WriteLine(hc.Response.Body.GetType());
 
             // dispatch the context accordingly
@@ -170,26 +130,23 @@ namespace Greatbone.Core
                 }
                 else
                 {
-                    // no auth
-                    HandleAction(hc.Request.Path.Value.Substring(1), wc);
-
-                    if (wc.Response.Content != null)
-                    {
-                        wc.Response.SendAsyncTask();
-                    }
+                    HandleAction(wc.Request.Path.Value.Substring(1), wc);
                 }
             }
             else
             {
                 // check security token (authentication)
 
-                // handling 
-                HandleAction(hc.Request.Path.Value.Substring(1), wc);
+                // handling
+                HandleAction(wc.Request.Path.Value.Substring(1), wc);
+            }
 
-                if (wc.Response.Content != null)
-                {
-                    wc.Response.SendAsyncTask();
-                }
+            if (wc.Response.Content != null)
+            {
+                await wc.Response.WriteContentAsync();
+            }
+            if (wc.IsSuspended)
+            {
             }
         }
 
@@ -197,7 +154,6 @@ namespace Greatbone.Core
         {
 //            context.
         }
-
 
         public void Start()
         {

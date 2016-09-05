@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Net.Http.Headers;
 using System.Text;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Http;
@@ -56,7 +57,17 @@ namespace Greatbone.Core
             Content = (DynamicContent) writer;
         }
 
-        internal void SendAsyncTask()
+        internal void WriteContent()
+        {
+            if (Content != null)
+            {
+                ContentLength = Content.Count;
+                ContentType = Content.Type;
+                Body.Write(Content.Buffer, 0, Content.Count);
+            }
+        }
+
+        internal Task WriteContentAsync()
         {
             if (Content != null)
             {
@@ -65,26 +76,11 @@ namespace Greatbone.Core
 
                 // etag
 
+
                 //
-                TaskCompletionSource<int> tcs = new TaskCompletionSource<int>();
-                tcs.SetResult(123);
-              Task task =  Body.WriteAsync(Content.Buffer, 0, Content.Count);
+                return Body.WriteAsync(Content.Buffer, 0, Content.Count);
             }
+            return Task.CompletedTask;
         }
-    }
-
-    class DummyContent : IContent
-    {
-        public string Type { get; set; }
-
-        public byte[] Buffer { get; set; }
-
-        public int Offset { get; set; }
-
-        public int Count { get; set; }
-
-        public DateTime LastModified { get; set; }
-
-        public long ETag { get; set; }
     }
 }

@@ -32,6 +32,7 @@ namespace Greatbone.Sample
 	    public void Bar(WebContext wc)
 	    {
 
+
 	    }
 
 	    internal struct Wrap
