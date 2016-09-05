@@ -62,10 +62,10 @@ namespace Greatbone.Core
 
             server = new KestrelServer(Options.Create(options), Lifetime, logger);
             ICollection<string> addrs = server.Features.Get<IServerAddressesFeature>().Addresses;
-            addrs.Add(wsc.tls ? "https://" : "http://" + wsc.@public);
-            addrs.Add("http://" + wsc.@internal); // clustered msg queue
+            addrs.Add(wsc.tls ? "https://" : "http://" + wsc.outer);
+            addrs.Add("http://" + wsc.inner); // clustered msg queue
 
-            ParseAddress(wsc.@internal, out mqaddr, out mqport);
+            ParseAddress(wsc.inner, out mqaddr, out mqport);
         }
 
 
@@ -113,7 +113,7 @@ namespace Greatbone.Core
             IPAddress ip = ci.LocalIpAddress;
             int port = ci.LocalPort;
 
-            WebContext wc = (WebContext) hc;
+            WebContext wc = (WebContext)hc;
             if (port == mqport && ip.Equals(mqaddr))
             {
                 // mq handling or action handling
@@ -146,7 +146,7 @@ namespace Greatbone.Core
 
         public void DisposeContext(HttpContext context, Exception exception)
         {
-//            context.
+            //            context.
         }
 
         public void Start()
@@ -221,7 +221,7 @@ namespace Greatbone.Core
             var token = new CancellationToken();
 
             token.Register(
-                state => { ((IApplicationLifetime) state).StopApplication(); },
+                state => { ((IApplicationLifetime)state).StopApplication(); },
                 Lifetime
             );
 

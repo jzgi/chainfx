@@ -23,8 +23,6 @@ namespace Greatbone.Core
 
         public TSub AddSub<TSub>(string key, bool auth) where TSub : WebSub
         {
-            Service.Context.Enter(this);
-
             if (subs == null)
             {
                 subs = new Set<WebSub>(16);
@@ -34,36 +32,46 @@ namespace Greatbone.Core
             ConstructorInfo ci = type.GetConstructor(new[] { typeof(WebServiceContext) });
             if (ci == null)
             {
-                throw new WebException(type + ": the constructor with WebServiceContext not defined");
+                throw new WebException(type + ": the constructor not found (WebServiceContext)");
             }
-            TSub sub = (TSub)ci.Invoke(new object[] { Service.Context });
+            WebServiceContext wsc = new WebServiceContext
+            {
+                key = key,
+                Parent = this,
+                Service = Service,
+                IsX = false
+            };
+            TSub sub = (TSub)ci.Invoke(new object[] { wsc });
 
             subs.Add(sub);
 
             //
             // check declared event handler methods
 
-            Service.Context.Exit();
             return sub;
         }
 
         public THub AttachXHub<THub>(bool auth) where THub : WebXHub
         {
-            Service.Context.Enter(this);
-
             // create instance
             Type type = typeof(THub);
             ConstructorInfo ci = type.GetConstructor(new[] { typeof(WebServiceContext) });
             if (ci == null)
             {
-                throw new WebException(type + ": the constructor with WebBuilder not defined");
+                throw new WebException(type + ": the constructor not found (WebServiceContext)");
             }
-            THub hub = (THub)ci.Invoke(new object[] { Service.Context });
+            WebServiceContext wsc = new WebServiceContext
+            {
+                key = "X",
+                Parent = this,
+                Service = Service,
+                IsX = true
+            };
+            THub hub = (THub)ci.Invoke(new object[] { wsc });
 
             // call the initialization and set
             xhub = hub;
 
-            Service.Context.Exit();
             return hub;
         }
 

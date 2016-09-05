@@ -15,10 +15,18 @@ namespace Greatbone.Core
         // the default action
         readonly WebAction defaction;
 
+        public WebServiceContext Context { get; internal set; }
+
         ///
         /// The key by which this sub-controller is added to its parent
         ///
-        public string Key { get; internal set; }
+        public string Key => Context.key;
+
+        /// <summary>The service that this controller resides in.</summary>
+        ///
+        public WebService Service => Context.Service;
+
+        public WebSub Parent => Context.Parent;
 
         public string StaticPath { get; internal set; }
 
@@ -31,17 +39,11 @@ namespace Greatbone.Core
         ///
         public StaticContent DefaultStatic { get; }
 
-        /// <summary>The parent controller that this controller is added to.</summary>
-        ///
-        public WebSub Parent { get; internal set; }
-
-        /// <summary>The service that this controller resides in.</summary>
-        ///
-        public WebService Service { get; internal set; }
-
         // the argument makes state-passing more convenient
         protected WebSub(WebServiceContext wsc)
         {
+            Context = wsc;
+
             // initialize the context for the first time
             if (wsc.Service == null)
             {
@@ -50,14 +52,11 @@ namespace Greatbone.Core
                 {
                     throw new InvalidOperationException();
                 }
-                svc.Context = (WebServiceBuilder)wsc;
+                svc.Context = (WebServiceBuilder) wsc;
                 wsc.Service = svc;
             }
 
-            Key = wsc.key;
-            Service = wsc.Service;
-            Parent = wsc.Parent;
-            StaticPath = Parent == null ? Key : Path.Combine(Parent.StaticPath, Key);
+            StaticPath = wsc.Parent == null ? Key : Path.Combine(Parent.StaticPath, Key);
 
             // load static files, if any
             if (StaticPath != null && Directory.Exists(StaticPath))
@@ -96,9 +95,24 @@ namespace Greatbone.Core
             foreach (MethodInfo mi in type.GetMethods(BindingFlags.Public | BindingFlags.Instance))
             {
                 ParameterInfo[] pis = mi.GetParameters();
-                if (pis.Length == 1 && pis[0].ParameterType == typeof(WebContext))
+                WebAction a = null;
+                if (wsc.IsX)
                 {
-                    WebAction a = new WebAction(this, mi, false);
+                    if (pis.Length == 2 && pis[0].ParameterType == typeof(WebContext) &&
+                        pis[1].ParameterType == typeof(string))
+                    {
+                        a = new WebAction(this, mi, true);
+                    }
+                }
+                else
+                {
+                    if (pis.Length == 1 && pis[0].ParameterType == typeof(WebContext))
+                    {
+                        a = new WebAction(this, mi, false);
+                    }
+                }
+                if (a != null)
+                {
                     if (a.Key.Equals("Default"))
                     {
                         defaction = a;

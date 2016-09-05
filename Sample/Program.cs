@@ -22,101 +22,100 @@ namespace Greatbone.Sample
             };
 
             var www = new WwwService(new WebServiceBuilder
-                {
-                    key = "WWW",
-                    @public = "127.0.0.1:8080",
-                    @internal = "127.0.0.1:7770",
-                    foreign = new[]
-                    {
+            {
+                key = "www",
+                outer = "127.0.0.1:8080",
+                inner = "127.0.0.1:7770",
+                foreign = new[] {
                         "localhost:7777"
                     },
-                    datasrc = dat,
-                    debug = true
-                }.Load("WWW.json")
+                datasrc = dat,
+                debug = true
+            }.Load("www.json")
             );
 
             var fame = new FameService(new WebServiceBuilder
-                {
-                    key = "BIZ",
-                    @public = "127.0.0.1:8081",
-                    @internal = "127.0.0.1:7771",
-                    foreign = new[]
+            {
+                key = "fame",
+                outer = "127.0.0.1:8081",
+                inner = "127.0.0.1:7771",
+                foreign = new[]
                     {
                         "localhost:7777"
                     },
-                    datasrc = dat,
-                    debug = true
-                }.Load("BIZ.json")
+                datasrc = dat,
+                debug = true
+            }.Load("fame.json")
             );
 
             var brand = new BrandService(new WebServiceBuilder
-                {
-                    key = "BIZ",
-                    @public = "127.0.0.1:8082",
-                    @internal = "127.0.0.1:7772",
-                    foreign = new[]
+            {
+                key = "biz",
+                outer = "127.0.0.1:8082",
+                inner = "127.0.0.1:7772",
+                foreign = new[]
                     {
                         "127.0.0.1:7777"
                     },
-                    datasrc = dat,
-                    debug = true
-                }.Load("BIZ.json")
+                datasrc = dat,
+                debug = true
+            }.Load("biz.json")
             );
 
             var post = new PostService(new WebServiceBuilder
-                {
-                    key = "POST",
-                    @public = "127.0.0.1:8083",
-                    @internal = "127.0.0.1:7773",
-                    foreign = new[]
+            {
+                key = "post",
+                outer = "127.0.0.1:8083",
+                inner = "127.0.0.1:7773",
+                foreign = new[]
                     {
                         "localhost:7777"
                     },
-                    datasrc = dat,
-                    debug = true
-                }.Load("POST.json")
+                datasrc = dat,
+                debug = true
+            }.Load("post.json")
             );
 
             var notice = new NoticeService(new WebServiceBuilder
-                {
-                    key = "NOTICE",
-                    @public = "127.0.0.1:8084",
-                    @internal = "127.0.0.1:7774",
-                    foreign = new[]
+            {
+                key = "notice",
+                outer = "127.0.0.1:8084",
+                inner = "127.0.0.1:7774",
+                foreign = new[]
                     {
                         "localhost:7783"
                     },
-                    datasrc = dat,
-                    debug = true
-                }.Load("NOTICE.json")
+                datasrc = dat,
+                debug = true
+            }.Load("notice.json")
             );
 
             var user = new UserService(new WebServiceBuilder
-                {
-                    key = "USER",
-                    @public = "127.0.0.1:8085",
-                    @internal = "127.0.0.1:7775",
-                    foreign = new[]
+            {
+                key = "user",
+                outer = "127.0.0.1:8085",
+                inner = "127.0.0.1:7775",
+                foreign = new[]
                     {
                         "localhost:7783"
                     },
-                    datasrc = dat,
-                    debug = true
-                }.Load("USER.json")
+                datasrc = dat,
+                debug = true
+            }.Load("user.json")
             );
 
             var chat = new ChatService(new WebServiceBuilder
-                {
-                    key = "CHAT",
-                    @public = "127.0.0.1:8086",
-                    @internal = "127.0.0.1:7776",
-                    foreign = new[]
+            {
+                key = "chat",
+                outer = "127.0.0.1:8086",
+                inner = "127.0.0.1:7776",
+                foreign = new[]
                     {
                         "localhost:7783"
                     },
-                    datasrc = dat,
-                    debug = true
-                }.Load("MSG.json")
+                datasrc = dat,
+                debug = true
+            }.Load("chat.json")
             );
 
             WebService.Run(www, fame, brand, post, notice, user, chat);
