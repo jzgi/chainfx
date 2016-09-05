@@ -51,7 +51,7 @@ namespace Greatbone.Core
             return sub;
         }
 
-        public THub AttachXHub<THub>(bool auth) where THub : WebXHub
+        public THub SetXHub<THub>(bool auth) where THub : WebXHub
         {
             // create instance
             Type type = typeof(THub);

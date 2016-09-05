@@ -9,7 +9,7 @@ namespace Greatbone.Sample
 	{
 		public FameService(WebServiceBuilder wsc) : base(wsc)
 		{
-			AttachXHub<FameXHub>(false);
+			SetXHub<FameXHub>(false);
 		}
 	}
 }

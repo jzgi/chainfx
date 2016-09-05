@@ -9,7 +9,7 @@ namespace Greatbone.Sample
 	{
 		public BrandService(WebServiceBuilder wsc) : base(wsc)
 		{
-			AttachXHub<BrandXHub>(false);
+			SetXHub<BrandXHub>(false);
 		}
 	}
 }

@@ -10,7 +10,7 @@ namespace Greatbone.Sample
     {
         public UserService(WebServiceBuilder wsc) : base(wsc)
         {
-            AttachXHub<UserXHub>(false);
+            SetXHub<UserXHub>(false);
         }
 
         ///

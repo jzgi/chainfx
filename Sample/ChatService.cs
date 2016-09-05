@@ -14,7 +14,7 @@ namespace Greatbone.Sample
 
 		public ChatService(WebServiceBuilder wsc) : base(wsc)
 		{
-			AttachXHub<ChatXHub>(true);
+			SetXHub<ChatXHub>(true);
 		}
 
 	    public void Foo(WebContext wc)

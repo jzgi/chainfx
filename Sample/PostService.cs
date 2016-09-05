@@ -6,7 +6,7 @@ namespace Greatbone.Sample
 	{
 		public PostService(WebServiceBuilder wsc) : base(wsc)
 		{
-			AttachXHub<PostXHub>(false);
+			SetXHub<PostXHub>(false);
 		}
 
 		public void GetTop(WebContext wc)
