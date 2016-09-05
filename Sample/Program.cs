@@ -21,7 +21,7 @@ namespace Greatbone.Sample
                 password = "Zou###1989"
             };
 
-            var www = new WwwService(new WebServiceContext
+            var www = new WwwService(new WebServiceBuilder
                 {
                     key = "WWW",
                     @public = "127.0.0.1:8080",
@@ -35,7 +35,7 @@ namespace Greatbone.Sample
                 }.Load("WWW.json")
             );
 
-            var fame = new FameService(new WebServiceContext
+            var fame = new FameService(new WebServiceBuilder
                 {
                     key = "BIZ",
                     @public = "127.0.0.1:8081",
@@ -49,7 +49,7 @@ namespace Greatbone.Sample
                 }.Load("BIZ.json")
             );
 
-            var brand = new BrandService(new WebServiceContext
+            var brand = new BrandService(new WebServiceBuilder
                 {
                     key = "BIZ",
                     @public = "127.0.0.1:8082",
@@ -63,7 +63,7 @@ namespace Greatbone.Sample
                 }.Load("BIZ.json")
             );
 
-            var post = new PostService(new WebServiceContext
+            var post = new PostService(new WebServiceBuilder
                 {
                     key = "POST",
                     @public = "127.0.0.1:8083",
@@ -77,8 +77,7 @@ namespace Greatbone.Sample
                 }.Load("POST.json")
             );
 
-            var notice = new NoticeService(
-                new WebServiceContext
+            var notice = new NoticeService(new WebServiceBuilder
                 {
                     key = "NOTICE",
                     @public = "127.0.0.1:8084",
@@ -92,7 +91,7 @@ namespace Greatbone.Sample
                 }.Load("NOTICE.json")
             );
 
-            var user = new UserService(new WebServiceContext
+            var user = new UserService(new WebServiceBuilder
                 {
                     key = "USER",
                     @public = "127.0.0.1:8085",
@@ -106,7 +105,7 @@ namespace Greatbone.Sample
                 }.Load("USER.json")
             );
 
-            var chat = new ChatService(new WebServiceContext
+            var chat = new ChatService(new WebServiceBuilder
                 {
                     key = "CHAT",
                     @public = "127.0.0.1:8086",

@@ -7,7 +7,7 @@ namespace Greatbone.Sample
 	///
 	public class WwwService : WebService
 	{
-		public WwwService(WebServiceContext wsc) : base(wsc)
+		public WwwService(WebServiceBuilder wsc) : base(wsc)
 		{
 			// Subscribe("amcom", x =>
 			// 	{

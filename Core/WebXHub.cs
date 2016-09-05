@@ -44,8 +44,7 @@ namespace Greatbone.Core
             if (slash == -1) // without a slash then handle it locally
             {
                 WebAction a = GetAction(relative);
-//				TX x = wc.X as TX;
-//				a?.Do(wc, wc.X);
+				a?.Do(wc, wc.X);
             }
             else // not local then sub
             {

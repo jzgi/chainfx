@@ -1,11 +1,8 @@
 ﻿using System;
-using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.Net;
-using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
-using Greatbone.Sample;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Hosting.Server;
 using Microsoft.AspNetCore.Hosting.Server.Features;
@@ -28,7 +25,7 @@ namespace Greatbone.Core
     ///
     public abstract class WebService : WebRealm, IHttpApplication<HttpContext>
     {
-        public WebServiceContext Context { get; internal set; }
+        public WebServiceBuilder Context { get; internal set; }
 
         // topics published by this microservice
         readonly Set<MsgPublish> publishes;
@@ -50,7 +47,7 @@ namespace Greatbone.Core
         private MsgClient client;
 
 
-        protected WebService(WebServiceContext wsc) : base(wsc)
+        protected WebService(WebServiceBuilder wsc) : base(wsc)
         {
             // init eqc client
             foreach (var ep in wsc.foreign)
@@ -111,10 +108,7 @@ namespace Greatbone.Core
         /// </remarks>
         public async Task ProcessRequestAsync(HttpContext hc)
         {
-            Console.WriteLine(hc.Response.Body.GetType());
-
             // dispatch the context accordingly
-
             ConnectionInfo ci = hc.Connection;
             IPAddress ip = ci.LocalIpAddress;
             int port = ci.LocalPort;
@@ -201,13 +195,13 @@ namespace Greatbone.Core
 
         public SqlContext NewSqlContext()
         {
-            WebService svc = Service;
+            DataSrcBuilder dsb = Service.Context.datasrc;
             NpgsqlConnectionStringBuilder builder = new NpgsqlConnectionStringBuilder()
             {
-                Host = "localhost",
-                Database = svc.Key,
-                Username = "postgres",
-                Password = "Zou###1989"
+                Host = dsb.host,
+                Database = Key,
+                Username = dsb.username,
+                Password = dsb.password
             };
             return new SqlContext(builder);
         }

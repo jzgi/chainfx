@@ -50,7 +50,7 @@ namespace Greatbone.Core
                 {
                     throw new InvalidOperationException();
                 }
-                svc.Context = wsc;
+                svc.Context = (WebServiceBuilder)wsc;
                 wsc.Service = svc;
             }
 

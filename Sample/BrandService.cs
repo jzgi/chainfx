@@ -7,7 +7,7 @@ namespace Greatbone.Sample
 	///
 	public class BrandService : WebService
 	{
-		public BrandService(WebServiceContext wsc) : base(wsc)
+		public BrandService(WebServiceBuilder wsc) : base(wsc)
 		{
 			AttachXHub<BrandXHub>(false);
 		}

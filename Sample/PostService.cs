@@ -4,7 +4,7 @@ namespace Greatbone.Sample
 {
 	public class PostService : WebService
 	{
-		public PostService(WebServiceContext wsc) : base(wsc)
+		public PostService(WebServiceBuilder wsc) : base(wsc)
 		{
 			AttachXHub<PostXHub>(false);
 		}

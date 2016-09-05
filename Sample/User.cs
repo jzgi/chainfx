@@ -5,13 +5,13 @@ namespace Greatbone.Sample
     /// <summary>A user record that is a web access token for all the services. </summary>
     public class User : IToken, ISerial
     {
-        string id;
+        internal string id;
 
-        string name;
+        internal string name;
 
-        string email;
+        internal string email;
 
-        string[] roles;
+        internal string[] roles;
 
         public string Login => id;
 
