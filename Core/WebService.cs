@@ -1,8 +1,11 @@
 ﻿using System;
+using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.Net;
+using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
+using Greatbone.Sample;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Hosting.Server;
 using Microsoft.AspNetCore.Hosting.Server.Features;
@@ -101,6 +104,31 @@ namespace Greatbone.Core
             return new WebContext(features);
         }
 
+
+        private ConcurrentDictionary<string, AB> chats = new ConcurrentDictionary<string, AB>();
+
+
+        public Task Foo(HttpContext wc)
+        {
+            TaskCompletionSource<int> tcs = new TaskCompletionSource<int>();
+
+
+            chats.TryAdd("123", new AB() {tcs = tcs, hc = wc});
+            return tcs.Task;
+        }
+
+        public void Bar(HttpContext wc)
+        {
+        }
+
+
+        struct AB
+        {
+            internal TaskCompletionSource<int> tcs;
+
+            internal HttpContext hc;
+        }
+
         ///
         /// <summary>To asynchronously process the request.</summary>
         /// <remarks>
@@ -108,6 +136,21 @@ namespace Greatbone.Core
         /// </remarks>
         public async Task ProcessRequestAsync(HttpContext hc)
         {
+            if (hc.Request.Path.Value.Equals("/123"))
+            {
+                await Foo(hc);
+            }
+            else
+            {
+                AB ab;
+                chats.TryGetValue("123", out ab);
+                byte[] buf = Encoding.UTF8.GetBytes("hello, this si sdf ");
+                ab.hc.Response.Body.Write(buf, 0, buf.Length);
+
+                ab.tcs.SetResult(123);
+            }
+
+
             Console.WriteLine(hc.Response.Body.GetType());
 
             // dispatch the context accordingly
@@ -116,7 +159,7 @@ namespace Greatbone.Core
             IPAddress ip = ci.LocalIpAddress;
             int port = ci.LocalPort;
 
-            WebContext wc = (WebContext)hc;
+            WebContext wc = (WebContext) hc;
             if (port == mqport && ip.Equals(mqaddr))
             {
                 // mq handling or action handling
@@ -132,7 +175,7 @@ namespace Greatbone.Core
 
                     if (wc.Response.Content != null)
                     {
-                         wc.Response.SendAsyncTask();
+                        wc.Response.SendAsyncTask();
                     }
                 }
             }
@@ -145,7 +188,7 @@ namespace Greatbone.Core
 
                 if (wc.Response.Content != null)
                 {
-                     wc.Response.SendAsyncTask();
+                    wc.Response.SendAsyncTask();
                 }
             }
         }
@@ -186,7 +229,6 @@ namespace Greatbone.Core
 
         internal void HandleMsg(WebContext wc)
         {
-
         }
 
         public CancellationToken ApplicationStarted { get; set; }
@@ -229,7 +271,7 @@ namespace Greatbone.Core
             var token = new CancellationToken();
 
             token.Register(
-                state => { ((IApplicationLifetime)state).StopApplication(); },
+                state => { ((IApplicationLifetime) state).StopApplication(); },
                 Lifetime
             );
 

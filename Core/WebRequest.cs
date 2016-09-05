@@ -1,5 +1,4 @@
 ﻿using System;
-using System.IO;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Http.Internal;
 
@@ -33,8 +32,7 @@ namespace Greatbone.Core
                 int len = (int) clen.Value;
                 // borrow a byte array from the pool
                 buffer = BufferPool.Lease(len);
-                count = len;
-                await Body.ReadAsync(buffer, 0, len);
+                count = await Body.ReadAsync(buffer, 0, len);
             }
         }
 
@@ -70,13 +68,6 @@ namespace Greatbone.Core
                 content = reader.Read<T>();
             }
             return (T) content;
-        }
-
-        internal class Utf8TextReader : TextReader
-        {
-            internal Utf8TextReader(byte[] buf, int offset, int count)
-            {
-            }
         }
     }
 }

@@ -5,24 +5,24 @@ using Greatbone.Core;
 
 namespace Greatbone.Sample
 {
-	/// /123/Get
-	/// /123/Put
-	public class ChatXHub : WebXHub
-	{
-		private ConcurrentDictionary<string, List<Chat>> online;
+    /// /123/Get
+    /// /123/Put
+    public class ChatXHub : WebXHub
+    {
+        private ConcurrentDictionary<string, List<Chat>> online;
 
-		public ChatXHub(WebServiceContext wsc) : base(wsc)
-		{
-		}
+        public ChatXHub(WebServiceContext wsc) : base(wsc)
+        {
+        }
 
-		///<summary>Returns the administration UI.</summary>
-		[Admin]
-		public override void Default(WebContext wc, string x)
-		{
-			base.Default(wc, x);
-		}
+        ///<summary>Returns the administration UI.</summary>
+        [Admin]
+        public override void Default(WebContext wc, string x)
+        {
+            base.Default(wc, x);
+        }
 
-		[Self]
+        [Self]
 		public void Get(WebContext wc, string rcv)
 		{
 			List<Chat> chats;

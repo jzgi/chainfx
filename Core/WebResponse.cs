@@ -66,8 +66,9 @@ namespace Greatbone.Core
                 // etag
 
                 //
+                TaskCompletionSource<int> tcs = new TaskCompletionSource<int>();
+                tcs.SetResult(123);
               Task task =  Body.WriteAsync(Content.Buffer, 0, Content.Count);
-                task.Status = TaskStatus.Running;
             }
         }
     }
