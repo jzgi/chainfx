@@ -37,7 +37,7 @@ namespace Greatbone.Core
             }
         }
 
-        public ArraySegment<byte> ByteArray()
+        public ArraySegment<byte> GetByteArray()
         {
             if (buffer == null)
             {
@@ -46,7 +46,7 @@ namespace Greatbone.Core
             return new ArraySegment<byte>(buffer, 0, count);
         }
 
-        public T Object<T>() where T : ISerial, new()
+        public T GetObject<T>() where T : ISerial, new()
         {
             if (content == null)
             {

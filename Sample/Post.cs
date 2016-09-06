@@ -1,28 +1,46 @@
-﻿using Greatbone.Core;
+﻿using System;
+using System.Collections.Generic;
+using Greatbone.Core;
 
 namespace Greatbone.Sample
 {
-	///
-	/// <summary>A brand object.</summary>
-	/// <example>
-	///     Brand o  new Brand(){}
-	/// </example>
-	public class Post : ISerial
-	{
-		public long ModifiedOn { get; set; }
+    ///
+    /// <summary>A brand object.</summary>
+    /// <example>
+    ///     Brand o  new Brand(){}
+    /// </example>
+    public class Post : ISerial
+    {
+        internal int id;
 
-		///
-		/// <summary>Returns the key of the brand object.</summary>
-		public string Key { get; }
+        internal DateTime publishat;
 
-		public void ReadFrom(ISerialReader r)
-		{
-			throw new System.NotImplementedException();
-		}
+        internal bool comment;
 
-		public void WriteTo(ISerialWriter w)
-		{
-			throw new System.NotImplementedException();
-		}
-	}
+        internal string authorid;
+
+        internal List<Comment> comments;
+
+        internal string text;
+
+        public long ModifiedOn { get; set; }
+
+        ///
+        /// <summary>Returns the key of the brand object.</summary>
+        public string Key { get; }
+
+        public void ReadFrom(ISerialReader r)
+        {
+            throw new System.NotImplementedException();
+        }
+
+        public void WriteTo(ISerialWriter w)
+        {
+            throw new System.NotImplementedException();
+        }
+    }
+
+    public struct Comment
+    {
+    }
 }

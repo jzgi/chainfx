@@ -50,8 +50,22 @@ namespace Greatbone.Sample
 
         /// <summary>To modify the user's profile, normally by him/her self.</summary>
         ///
-        public void Modify(WebContext wc, string x)
+        [Self]
+        public void ChPwd(WebContext wc, string userid)
         {
+            wc.Request.GetObject<User>();
+
+            using (var dc = Service.NewSqlContext())
+            {
+                if (dc.Execute("UPDATE users SET password = @id WHERE id = @id", (p) => p.Set("@id", userid)) > 0)
+                {
+                    wc.Response.StatusCode = (int) HttpStatusCode.OK;
+                }
+                else
+                {
+                    wc.Response.StatusCode = (int) HttpStatusCode.NotAcceptable;
+                }
+            }
 //            wc.Response.SendFileAsync()
         }
 
@@ -63,7 +77,7 @@ namespace Greatbone.Sample
 //            wc.Response.SendFileAsync()
         }
 
-        public static string ComputeMD5(string input)
+        internal static string ComputeMD5(string input)
         {
             // Use input string to calculate MD5 hash
             using (System.Security.Cryptography.MD5 md5 = System.Security.Cryptography.MD5.Create())
