@@ -64,7 +64,7 @@ namespace Greatbone.Core
                 }
                 else if ("application/bjson".Equals(ctype))
                 {
-                    reader = new BJsonContent(buffer, (int)clen);
+                    reader = new BjsonContent(buffer, (int)clen);
                 }
                 content = reader.Read<T>();
             }

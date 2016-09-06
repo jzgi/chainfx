@@ -312,7 +312,7 @@ namespace Greatbone.Core
         public void SendEvent<T>(string topic, string filter, T @event) where T : ISerial
         {
             // convert message to byte buffer
-            BJsonContent b = new BJsonContent(null);
+            BjsonContent b = new BjsonContent(null);
             @event.WriteTo(b);
 
             Execute("INSERT INTO mq (topic, filter, message) VALUES (@topic, @filter, @message)", p =>
