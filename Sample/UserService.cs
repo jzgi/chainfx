@@ -22,13 +22,12 @@ namespace Greatbone.Sample
 
             using (var sc = Service.NewSqlContext())
             {
-                sc.Execute("INSERT INTO users () VALUES (@id, @credential, @name, @fame, @brand, @loggedin)", (p) => u.WriteTo(p));
-
-                sc.ReadRow(ref u);
-//
-//                User o = new User();
-//                sc.Read(ref o.id);
-//                sc.Read(ref o.name);
+                sc.Execute("INSERT INTO users () VALUES (@id, @credential, @name, @fame, @brand, @loggedin)",
+                    p =>
+                    {
+                        p.Set("@id", "");
+                    }
+                );
 
                 wc.Response.SetObject(u);
             }

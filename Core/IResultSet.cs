@@ -1,9 +1,11 @@
 ﻿namespace Greatbone.Core
 {
-    public interface IResultSet : ISerialReader
+    public interface IResultSet
     {
-        bool Read(ref int value);
+        bool Get(ref int value);
 
-        bool Read(ref string value);
+        bool Get(ref string value);
+
+        bool Get(string name, ref string value);
     }
 }

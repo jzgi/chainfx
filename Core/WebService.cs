@@ -193,7 +193,7 @@ namespace Greatbone.Core
             subscribes.Add(new MsgSubscribe(topic, doer));
         }
 
-        public SqlContext NewSqlContext()
+        public DbContext NewSqlContext()
         {
             DataSrcBuilder dsb = Service.Context.datasrc;
             NpgsqlConnectionStringBuilder builder = new NpgsqlConnectionStringBuilder()
@@ -203,7 +203,7 @@ namespace Greatbone.Core
                 Username = dsb.username,
                 Password = dsb.password
             };
-            return new SqlContext(builder);
+            return new DbContext(builder);
         }
 
         ///
