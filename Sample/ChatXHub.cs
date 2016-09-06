@@ -35,7 +35,7 @@ namespace Greatbone.Sample
                 // database operation
                 using (var sc = Service.NewSqlContext())
                 {
-                    sc.DoQuery("SELECT * FROM chats WHERE to=@to", p => { p.Add("@to", rcv); });
+                    sc.QueryOne("SELECT * FROM chats WHERE to=@to", p => { p.Add("@to", rcv); });
                     // load into memory
                 }
             }
@@ -63,7 +63,7 @@ namespace Greatbone.Sample
             {
                 using (var sc = Service.NewSqlContext())
                 {
-                    sc.DoNonQuery("INSERT INTO chats (from, to, ) VALUES () ON CONFLICT DO UPDATE", p => { });
+                    sc.Execute("INSERT INTO chats (from, to, ) VALUES () ON CONFLICT DO UPDATE", p => { });
                 }
             }
         }

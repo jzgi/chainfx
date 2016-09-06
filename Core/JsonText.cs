@@ -122,7 +122,7 @@ namespace Greatbone.Core
             return false;
         }
 
-        public bool Read<T>(string name, ref T value) where T : ISerial
+        public bool Read<T>(string name, ref T value) where T : ISerial, new()
         {
             if (ReadName(name))
             {

@@ -20,7 +20,7 @@ namespace Greatbone.Core
 
         bool Read(string name, ref string value);
 
-        bool Read<T>(string name, ref T value) where T : ISerial;
+        bool Read<T>(string name, ref T value) where T : ISerial, new();
 
         bool Read(string name, ref List<string> value);
 

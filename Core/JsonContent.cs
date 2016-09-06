@@ -94,7 +94,7 @@ namespace Greatbone.Core
             throw new System.NotImplementedException();
         }
 
-        public bool Read<T>(string name, ref T value) where T : ISerial
+        public bool Read<T>(string name, ref T value) where T : ISerial, new()
         {
             throw new System.NotImplementedException();
         }

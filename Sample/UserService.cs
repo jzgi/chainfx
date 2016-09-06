@@ -18,12 +18,20 @@ namespace Greatbone.Sample
         ///
         public void Register(WebContext wc)
         {
-            ArraySegment<byte> bytes = wc.Request.ByteArray();
+            User u = null;
 
-            User u = wc.Request.Object<User>();
-            string s = wc.Request.Host.Value.ToString();
+            using (var sc = Service.NewSqlContext())
+            {
+                sc.Execute("INSERT INTO users () VALUES (@id, @credential, @name, @fame, @brand, @loggedin)", (p) => u.WriteTo(p));
 
-            wc.Response.SetJson(u);
+                sc.ReadRow(ref u);
+//
+//                User o = new User();
+//                sc.Read(ref o.id);
+//                sc.Read(ref o.name);
+
+                wc.Response.SetObject(u);
+            }
         }
 
         public void Search(WebContext wc)

@@ -1,37 +1,38 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Data;
+using System.Runtime.InteropServices;
 using Npgsql;
 using NpgsqlTypes;
 
 namespace Greatbone.Core
 {
-    public class SqlContext : IDisposable, IParameterCollection, IResultSet
+    public class SqlContext : IDisposable, IParameterSet, IResultSet
     {
         readonly NpgsqlConnection connection;
 
-        private NpgsqlCommand cmd;
+        readonly NpgsqlCommand command;
 
         private NpgsqlTransaction transact;
 
-        private NpgsqlParameterCollection @params;
-
         private NpgsqlDataReader reader;
+
+        bool disposed;
 
 
         public SqlContext(NpgsqlConnectionStringBuilder builder)
         {
             connection = new NpgsqlConnection(builder);
+            command = new NpgsqlCommand();
+            command.Connection = connection;
         }
-
-        bool disposed;
 
         public void BeginTransaction()
         {
             if (transact == null)
             {
                 transact = connection.BeginTransaction();
-                cmd.Transaction = transact;
+                command.Transaction = transact;
             }
         }
 
@@ -40,7 +41,7 @@ namespace Greatbone.Core
             if (transact == null)
             {
                 transact = connection.BeginTransaction(level);
-                cmd.Transaction = transact;
+                command.Transaction = transact;
             }
         }
 
@@ -49,7 +50,7 @@ namespace Greatbone.Core
             if (transact != null)
             {
                 transact.Commit();
-                cmd.Transaction = null;
+                command.Transaction = null;
                 transact = null;
             }
         }
@@ -59,56 +60,126 @@ namespace Greatbone.Core
             if (transact != null)
             {
                 transact.Rollback();
-                cmd.Transaction = null;
+                command.Transaction = null;
                 transact = null;
             }
         }
 
-        public void DoQuery(string cmdtext, Action<IParameterCollection> @params)
+        public bool QueryOne(string cmdtext, Action<IParameterSet> ps)
         {
             if (connection.State != ConnectionState.Open)
             {
                 connection.Open();
             }
-            // add parameters
-            @params?.Invoke(this);
+            if (reader != null)
+            {
+                reader.Close();
+                reader = null;
+            }
+            // setup command
+            command.CommandText = cmdtext;
+            command.CommandType = CommandType.Text;
+            command.Parameters.Clear();
+            ps?.Invoke(this);
 
-            reader = cmd.ExecuteReader();
+            reader = command.ExecuteReader();
+            return reader.Read();
         }
 
-        public T Read<T>(Func<IResultSet, T> garther) where T : new()
-        {
-            return garther(this);
-        }
-
-        public int DoNonQuery(string cmdtext, Action<IParameterCollection> parameters)
+        public bool Query(string cmdtext, Action<IParameterSet> ps)
         {
             if (connection.State != ConnectionState.Open)
             {
                 connection.Open();
             }
-            // add parameters
-            parameters?.Invoke(this);
+            if (reader != null)
+            {
+                reader.Close();
+                reader = null;
+            }
+            // setup command
+            command.CommandText = cmdtext;
+            command.CommandType = CommandType.Text;
+            command.Parameters.Clear();
+            ps?.Invoke(this);
 
-            // execute
-            return cmd.ExecuteNonQuery();
+            reader = command.ExecuteReader();
+            return reader.HasRows;
         }
 
-        public void Command(string sql, params object[] args)
+        public bool NextRow()
         {
-            cmd = new NpgsqlCommand(sql, connection, transact);
+            if (reader == null)
+            {
+                return false;
+            }
+            return reader.Read();
         }
 
-        //
-        //
+        public bool HasRows
+        {
+            get
+            {
+                if (reader == null)
+                {
+                    return false;
+                }
+                return reader.HasRows;
+            }
+        }
 
+        public bool NextResult()
+        {
+            if (reader == null)
+            {
+                return false;
+            }
+            return reader.NextResult();
+        }
+
+        public bool ReadRow<T>(ref T value) where T : ISerial, new()
+        {
+            if (value == null)
+            {
+                value = new T();
+            }
+            value.ReadFrom(this);
+            return true;
+        }
+
+        public T ReadRow<T>() where T : ISerial, new()
+        {
+            T value = new T();
+            value.ReadFrom(this);
+            return value;
+        }
+
+        public int Execute(string cmdtext, Action<IParameterSet> ps)
+        {
+            if (connection.State != ConnectionState.Open)
+            {
+                connection.Open();
+            }
+            if (reader != null)
+            {
+                reader.Close();
+                reader = null;
+            }
+            // setup command
+            command.CommandText = cmdtext;
+            command.CommandType = CommandType.Text;
+            command.Parameters.Clear();
+            ps?.Invoke(this);
+
+            return command.ExecuteNonQuery();
+        }
 
         ///
         ///  TURNING TARGET
         ///
         public void Add(string name, int value)
         {
-            @params.Add(new NpgsqlParameter(name, NpgsqlDbType.Integer)
+            command.Parameters.Add(new NpgsqlParameter(name, NpgsqlDbType.Integer)
             {
                 Value = value
             });
@@ -116,7 +187,7 @@ namespace Greatbone.Core
 
         public void Add(string name, decimal value)
         {
-            @params.Add(new NpgsqlParameter(name, NpgsqlDbType.Money)
+            command.Parameters.Add(new NpgsqlParameter(name, NpgsqlDbType.Money)
             {
                 Value = value
             });
@@ -124,7 +195,7 @@ namespace Greatbone.Core
 
         public void Add(string name, string value)
         {
-            @params.Add(new NpgsqlParameter(name, NpgsqlDbType.Varchar)
+            command.Parameters.Add(new NpgsqlParameter(name, NpgsqlDbType.Varchar)
             {
                 Value = value
             });
@@ -132,51 +203,57 @@ namespace Greatbone.Core
 
         public void Add(string name, ArraySegment<byte> value)
         {
-            @params.Add(new NpgsqlParameter(name, NpgsqlDbType.Bytea)
+            command.Parameters.Add(new NpgsqlParameter(name, NpgsqlDbType.Bytea)
             {
                 Value = value
             });
         }
 
-        public bool Got(string name, ref int value)
+
+        //
+        // READER
+        //
+
+        private int ordinal;
+
+
+        public bool Read(ref int value)
         {
-            int ordinal = reader.GetOrdinal(name);
-            if (!reader.IsDBNull(ordinal))
+            int ord = ordinal++;
+            if (!reader.IsDBNull(ord))
             {
-                value = reader.GetInt32(ordinal);
+                value = reader.GetInt32(ord);
                 return true;
             }
-            value = 0;
             return false;
         }
 
-        public bool Got(string name, ref decimal value)
+        public bool Read(ref string value)
         {
-            int ordinal = reader.GetOrdinal(name);
-            if (!reader.IsDBNull(ordinal))
+            int ord = ordinal++;
+            if (!reader.IsDBNull(ord))
             {
-                value = reader.GetDecimal(ordinal);
+                value = reader.GetString(ord);
                 return true;
             }
-            value = 0;
             return false;
         }
 
-        public bool Got(string name, ref string value)
+
+        public bool Read(string name, ref string value)
         {
-            int ordinal = reader.GetOrdinal(name);
-            if (!reader.IsDBNull(ordinal))
+            int ord = reader.GetOrdinal(name);
+            if (!reader.IsDBNull(ord))
             {
-                value = reader.GetString(ordinal);
+                value = reader.GetString(ord);
                 return true;
             }
-            value = null;
             return false;
         }
 
-        public bool Got<T>(string name, ref List<T> value)
+        public bool Read<T>(string name, ref List<T> value)
         {
-            if (Got(name, ref value))
+            if (Read(name, ref value))
             {
                 //                Json son = new Json();
             }
@@ -184,19 +261,164 @@ namespace Greatbone.Core
         }
 
 
-        public bool Got(ref int value)
+        public bool Read(string name, ref bool value)
+        {
+            int ord = reader.GetOrdinal(name);
+            if (!reader.IsDBNull(ord))
+            {
+                value = reader.GetBoolean(ord);
+                return true;
+            }
+            return false;
+        }
+
+        public bool Read(string name, ref short value)
+        {
+            int ord = reader.GetOrdinal(name);
+            if (!reader.IsDBNull(ord))
+            {
+                value = reader.GetInt16(ord);
+                return true;
+            }
+            return false;
+        }
+
+        public bool Read(string name, ref int value)
+        {
+            int ord = reader.GetOrdinal(name);
+            if (!reader.IsDBNull(ord))
+            {
+                value = reader.GetInt32(ord);
+                return true;
+            }
+            return false;
+        }
+
+        public bool Read(string name, ref decimal value)
+        {
+            int ord = reader.GetOrdinal(name);
+            if (!reader.IsDBNull(ord))
+            {
+                value = reader.GetDecimal(ord);
+                return true;
+            }
+            return false;
+        }
+
+        public bool Read(string name, ref DateTime value)
+        {
+            int ord = reader.GetOrdinal(name);
+            if (!reader.IsDBNull(ord))
+            {
+                value = reader.GetDateTime(ord);
+                return true;
+            }
+            return false;
+        }
+
+        public bool Read<T>(string name, ref T value) where T : ISerial, new()
+        {
+            int ord = reader.GetOrdinal(name);
+            if (!reader.IsDBNull(ord))
+            {
+                string str = reader.GetString(ord);
+                JsonText json = new JsonText(str);
+                if (value == null)
+                {
+                    value = new T();
+                }
+                value.ReadFrom(json);
+                return true;
+            }
+            return false;
+        }
+
+        public bool Read(string name, ref List<string> value)
         {
             throw new NotImplementedException();
         }
 
-        public bool Got(ref string value)
+        public bool Read(string name, ref string[] value)
         {
             throw new NotImplementedException();
         }
 
-        ///
-        /// sends an event to a target service
-        ///
+        bool ISerialReader.Read<T>(string name, ref List<T> value)
+        {
+            return Read(name, ref value);
+        }
+
+
+        //
+        // WRITERS
+        //
+
+        public void Write(string name, bool value)
+        {
+            throw new NotImplementedException();
+        }
+
+        public bool Read<K, V>(string name, ref Dictionary<K, V> value)
+        {
+            throw new NotImplementedException();
+        }
+
+        public void Write(string name, short value)
+        {
+            throw new NotImplementedException();
+        }
+
+        public void Write(string name, int value)
+        {
+            throw new NotImplementedException();
+        }
+
+        public void Write(string name, decimal value)
+        {
+            throw new NotImplementedException();
+        }
+
+        public void Write(string name, DateTime value)
+        {
+            throw new NotImplementedException();
+        }
+
+        public void Write(string name, string value)
+        {
+            throw new NotImplementedException();
+        }
+
+        public void Write(string name, ISerial value)
+        {
+            throw new NotImplementedException();
+        }
+
+        public void Write<T>(string name, List<T> list)
+        {
+            throw new NotImplementedException();
+        }
+
+        public void Write<V>(string name, Dictionary<string, V> dict)
+        {
+            throw new NotImplementedException();
+        }
+
+        public void Write(string name, params string[] array)
+        {
+            throw new NotImplementedException();
+        }
+
+        public void Write(string name, params ISerial[] array)
+        {
+            throw new NotImplementedException();
+        }
+
+
+        //
+        // sends an event to a target service
+        //
+
+
         public void PostHorizontalEvent<E>(string topic, int verb, E msg) where E : ISerial
         {
         }
@@ -212,7 +434,7 @@ namespace Greatbone.Core
             BJsonContent b = new BJsonContent(null);
             @event.WriteTo(b);
 
-            DoNonQuery("INSERT INTO mq (topic, filter, message) VALUES (@topic, @filter, @message)", p =>
+            Execute("INSERT INTO mq (topic, filter, message) VALUES (@topic, @filter, @message)", p =>
             {
                 p.Add("@topic", topic);
                 p.Add("@filter", filter);
@@ -225,7 +447,7 @@ namespace Greatbone.Core
             if (!disposed)
             {
                 reader?.Dispose();
-                cmd.Dispose();
+                command.Dispose();
                 connection.Dispose();
                 // indicate that the instance has been disposed.
                 disposed = true;

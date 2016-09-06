@@ -15,7 +15,7 @@ namespace Greatbone.Sample
         {
             DataSrcBuilder dat = new DataSrcBuilder
             {
-                host = "localhost",
+                host = "60.205.104.239",
                 port = 5432,
                 username = "postgres",
                 password = "Zou###1989"

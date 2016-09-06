@@ -19,13 +19,17 @@ namespace Greatbone.Sample
         {
             using (var sc = Service.NewSqlContext())
             {
-                sc.DoQuery("SELECT * FROM users WHERE id = @id", (p) => p.Add("@id", id));
+                if (sc.QueryOne("SELECT * FROM users WHERE id = @id", (p) => p.Add("@id", id)))
+                {
+//                    User u = sc.ReadRow<User>();
 
-                User o = new User();
-                sc.Got(ref o.id);
-                sc.Got(ref o.name);
+//
+                    User u = new User();
+                    sc.Read(ref u.id);
+                    sc.Read(ref u.name);
 
-                wc.Response.SetObject(o);
+                    wc.Response.SetObject(u);
+                }
             }
         }
 
