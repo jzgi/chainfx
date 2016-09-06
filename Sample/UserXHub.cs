@@ -1,4 +1,6 @@
-﻿using Greatbone.Core;
+﻿using System.Net;
+using System.Text;
+using Greatbone.Core;
 
 namespace Greatbone.Sample
 {
@@ -17,18 +19,31 @@ namespace Greatbone.Sample
         ///
         public override void Default(WebContext wc, string id)
         {
-            using (var sc = Service.NewSqlContext())
+            string password = null;
+            wc.Request.GetParameter("password", ref password);
+            using (var dc = Service.NewSqlContext())
             {
-                if (sc.QueryOne("SELECT * FROM users WHERE id = @id", (p) => p.Set("@id", id)))
+                if (dc.QueryA("SELECT id, credential, name FROM users WHERE id = @id", (p) => p.Set("@id", id)))
                 {
-//                    User u = sc.ReadRow<User>();
+                    User o = new User();
+                    dc.Get(ref o.id);
+                    dc.Get(ref o.credential);
+                    dc.Get(ref o.name);
 
-//
-                    User u = new User();
-                    sc.Get(ref u.id);
-                    sc.Get(ref u.name);
-
-                    wc.Response.SetObject(u);
+                    string md5 = ComputeMD5(password);
+                    if (md5.Equals(o.credential))
+                    {
+                        wc.Response.StatusCode = (int) HttpStatusCode.OK;
+                        wc.Response.SetContentAsJson(o);
+                    }
+                    else
+                    {
+                        wc.Response.StatusCode = (int) HttpStatusCode.BadRequest;
+                    }
+                }
+                else
+                {
+                    wc.Response.StatusCode = (int) HttpStatusCode.NotFound;
                 }
             }
         }
@@ -46,6 +61,24 @@ namespace Greatbone.Sample
         public void Drop(WebContext wc, string x)
         {
 //            wc.Response.SendFileAsync()
+        }
+
+        public static string ComputeMD5(string input)
+        {
+            // Use input string to calculate MD5 hash
+            using (System.Security.Cryptography.MD5 md5 = System.Security.Cryptography.MD5.Create())
+            {
+                byte[] inputBytes = System.Text.Encoding.ASCII.GetBytes(input);
+                byte[] hashBytes = md5.ComputeHash(inputBytes);
+
+                // Convert the byte array to hexadecimal string
+                StringBuilder sb = new StringBuilder();
+                for (int i = 0; i < hashBytes.Length; i++)
+                {
+                    sb.Append(hashBytes[i].ToString("X2"));
+                }
+                return sb.ToString();
+            }
         }
     }
 }

@@ -6,7 +6,7 @@ namespace Greatbone.Core
 	{
 		public static void Write(this ISerialWriter w, params ISerial[] arr)
 		{
-//			w.WriteArrayStart();
+			w.WriteStart(false);
 			for (int i = 0; i < arr.Length; i++)
 			{
 				if (i > 0)
@@ -15,7 +15,7 @@ namespace Greatbone.Core
 				}
 				arr[i].WriteTo(w);
 			}
-//			w.WriteArrayEnd();
+			w.WriteEnd(false);
 		}
 
 		public static void Write<T>(this ISerialWriter w, IList<T> coll) where T : ISerial

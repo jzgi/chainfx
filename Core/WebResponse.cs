@@ -34,27 +34,26 @@ namespace Greatbone.Core
 //			};
 //		}
 
-        public void SetObject<T>(T obj) where T : ISerial
+        public void SetContent<T>(T obj) where T : ISerial
         {
-            SetObject(obj, false);
+            SetContent(obj, false);
         }
 
-        public void SetJson<T>(T obj) where T : ISerial
+        public void SetContentAsJson<T>(T obj) where T : ISerial
         {
             byte[] buf = BufferPool.Lease(16 * 1024);
-            ISerialWriter writer = (ISerialWriter) new JsonContent(buf);
-            writer.Write(obj);
+            JsonContent cnt = new JsonContent(buf);
+            cnt.Write(obj);
 
-            Content = (DynamicContent) writer;
+            Content = cnt;
         }
 
-        public void SetObject<T>(T obj, bool binary) where T : ISerial
+        public void SetContent<T>(T obj, bool binary) where T : ISerial
         {
             byte[] buf = BufferPool.Lease(16 * 1024);
-            ISerialWriter writer = binary ? new BJsonContent(buf) : (ISerialWriter) new JsonContent(buf);
-            writer.Write(obj);
-
-            Content = (DynamicContent) writer;
+            DynamicContent cnt = binary ? new BJsonContent(buf) : (DynamicContent) new JsonContent(buf);
+            ((ISerialWriter) cnt).Write(obj);
+            Content = cnt;
         }
 
         internal void WriteContent()

@@ -15,7 +15,7 @@ namespace Greatbone.Core
 
         // parsing context for levels
 
-        Level[] levels = new Level[8];
+        Knob[] levels = new Knob[8];
 
         int level;
 
@@ -156,6 +156,21 @@ namespace Greatbone.Core
                 int p = levels[level].current;
             }
             return false;
+        }
+
+        //
+        // WRITES
+        //
+
+
+        public void WriteStart(bool array)
+        {
+            throw new NotImplementedException();
+        }
+
+        public void WriteEnd(bool array)
+        {
+            throw new NotImplementedException();
         }
 
         void WriteName(string name)

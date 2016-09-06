@@ -29,7 +29,7 @@ namespace Greatbone.Sample
                     }
                 );
 
-                wc.Response.SetObject(u);
+                wc.Response.SetContent(u);
             }
         }
 

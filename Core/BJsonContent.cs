@@ -16,6 +16,8 @@ namespace Greatbone.Core
         {
         }
 
+        public override string Type => "application/bjson";
+
         public bool Read(string name, ref short value)
         {
             throw new System.NotImplementedException();
@@ -64,6 +66,17 @@ namespace Greatbone.Core
         public bool Read<T>(string name, ref List<T> value) where T : ISerial
         {
             throw new System.NotImplementedException();
+        }
+
+
+        public void WriteStart(bool array)
+        {
+            throw new NotImplementedException();
+        }
+
+        public void WriteEnd(bool array)
+        {
+            throw new NotImplementedException();
         }
 
         public void Write(string name, int value)

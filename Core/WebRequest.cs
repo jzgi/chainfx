@@ -1,6 +1,7 @@
 ﻿using System;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Http.Internal;
+using Microsoft.Extensions.Primitives;
 
 namespace Greatbone.Core
 {
@@ -29,7 +30,7 @@ namespace Greatbone.Core
             long? clen = ContentLength;
             if (buffer == null && clen > 0)
             {
-                int len = (int) clen.Value;
+                int len = (int)clen.Value;
                 // borrow a byte array from the pool
                 buffer = BufferPool.Lease(len);
                 count = await Body.ReadAsync(buffer, 0, len);
@@ -59,15 +60,72 @@ namespace Greatbone.Core
                 long? clen = ContentLength;
                 if ("application/json".Equals(ctype))
                 {
-                    reader = new JsonContent(buffer, (int) clen);
+                    reader = new JsonContent(buffer, (int)clen);
                 }
                 else if ("application/bjson".Equals(ctype))
                 {
-                    reader = new BJsonContent(buffer, (int) clen);
+                    reader = new BJsonContent(buffer, (int)clen);
                 }
                 content = reader.Read<T>();
             }
-            return (T) content;
+            return (T)content;
         }
+
+        public bool GetParameter(string name, ref int value)
+        {
+            StringValues values;
+            if (Query.TryGetValue(name, out values))
+            {
+                string v = values[0];
+                int i;
+                if (Int32.TryParse(v, out i))
+                {
+                    value = i;
+                    return true;
+                }
+            }
+            return false;
+        }
+
+        public bool GetParameter(string name, ref string value)
+        {
+            StringValues values;
+            if (Query.TryGetValue(name, out values))
+            {
+                value = values[0];
+                return true;
+            }
+            return false;
+        }
+
+
+        public bool GetField(string name, ref int value)
+        {
+            StringValues values;
+            if (Form.TryGetValue(name, out values))
+            {
+                string v = values[0];
+                int i;
+                if (Int32.TryParse(v, out i))
+                {
+                    value = i;
+                    return true;
+                }
+            }
+            return false;
+        }
+
+        public bool GetField(string name, ref string value)
+        {
+            StringValues values;
+            if (Form.TryGetValue(name, out values))
+            {
+                value = values[0];
+                return true;
+            }
+            return false;
+        }
+
+
     }
 }

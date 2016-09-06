@@ -64,7 +64,7 @@ namespace Greatbone.Core
             }
         }
 
-        public bool QueryOne(string cmdtext, Action<DbParameterCollection> ps)
+        public bool QueryA(string cmdtext, Action<DbParameterCollection> ps)
         {
             if (connection.State != ConnectionState.Open)
             {

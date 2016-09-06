@@ -9,5 +9,8 @@
         public HtmlContent(byte[] buffer, int count) : base(buffer, count)
         {
         }
+
+        public override string Type => "text/html";
+
     }
 }

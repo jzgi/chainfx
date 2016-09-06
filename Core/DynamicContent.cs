@@ -102,7 +102,7 @@ namespace Greatbone.Core
             this.count = count;
         }
 
-        public string Type { get; set; }
+        public abstract string Type { get; }
 
         public byte[] Buffer => buffer;
 

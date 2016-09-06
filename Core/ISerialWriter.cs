@@ -3,30 +3,34 @@ using System.Collections.Generic;
 
 namespace Greatbone.Core
 {
-	///
-	/// DataReader/ParameterCollection, JSON or binary
-	public interface ISerialWriter
-	{
-		void Write(string name, bool value);
+    ///
+    /// DataReader/ParameterCollection, JSON or binary
+    public interface ISerialWriter
+    {
+        void WriteStart(bool array);
 
-		void Write(string name, short value);
+        void WriteEnd(bool array);
 
-		void Write(string name, int value);
+        void Write(string name, bool value);
 
-		void Write(string name, decimal value);
+        void Write(string name, short value);
 
-		void Write(string name, DateTime value);
+        void Write(string name, int value);
 
-		void Write(string name, string value);
+        void Write(string name, decimal value);
 
-		void Write(string name, ISerial value);
+        void Write(string name, DateTime value);
 
-		void Write<T>(string name, List<T> list);
+        void Write(string name, string value);
 
-		void Write<V>(string name, Dictionary<string, V> dict);
+        void Write(string name, ISerial value);
 
-		void Write(string name, params string[] array);
+        void Write<T>(string name, List<T> list);
 
-		void Write(string name, params ISerial[] array);
-	}
+        void Write<V>(string name, Dictionary<string, V> dict);
+
+        void Write(string name, params string[] array);
+
+        void Write(string name, params ISerial[] array);
+    }
 }

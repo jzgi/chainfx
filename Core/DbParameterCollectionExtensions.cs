@@ -7,41 +7,41 @@ namespace Greatbone.Core
 {
     public static class DbParameterCollectionExtensions
     {
-        public static void Set(this DbParameterCollection db, string name, bool value)
+        public static void Set(this DbParameterCollection coll, string name, bool value)
         {
-            db.Add(new NpgsqlParameter(name, NpgsqlDbType.Boolean)
+            coll.Add(new NpgsqlParameter(name, NpgsqlDbType.Boolean)
             {
                 Value = value
             });
         }
 
-        public static void Set(this DbParameterCollection db, string name, int value)
+        public static void Set(this DbParameterCollection coll, string name, int value)
         {
-            db.Add(new NpgsqlParameter(name, NpgsqlDbType.Integer)
+            coll.Add(new NpgsqlParameter(name, NpgsqlDbType.Integer)
             {
                 Value = value
             });
         }
 
-        public static void Set(this DbParameterCollection db, string name, decimal value)
+        public static void Set(this DbParameterCollection coll, string name, decimal value)
         {
-            db.Add(new NpgsqlParameter(name, NpgsqlDbType.Money)
+            coll.Add(new NpgsqlParameter(name, NpgsqlDbType.Money)
             {
                 Value = value
             });
         }
 
-        public static void Set(this DbParameterCollection db, string name, string value)
+        public static void Set(this DbParameterCollection coll, string name, string value)
         {
-            db.Add(new NpgsqlParameter(name, NpgsqlDbType.Text)
+            coll.Add(new NpgsqlParameter(name, NpgsqlDbType.Text)
             {
                 Value = value
             });
         }
 
-        public static void Set(this DbParameterCollection db, string name, ArraySegment<byte> value)
+        public static void Set(this DbParameterCollection coll, string name, ArraySegment<byte> value)
         {
-            db.Add(new NpgsqlParameter(name, NpgsqlDbType.Bytea)
+            coll.Add(new NpgsqlParameter(name, NpgsqlDbType.Bytea)
             {
                 Value = value
             });
