@@ -68,7 +68,7 @@ namespace Greatbone.Sample
                 }));
 
             });
-            wc.Request.GetObject<User>();
+            wc.Request.GetSerialReader<User>();
 
             using (var dc = Service.NewSqlContext())
             {

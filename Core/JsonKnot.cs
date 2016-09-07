@@ -1,6 +1,6 @@
 ﻿namespace Greatbone.Core
 {
-    internal struct Knob
+    internal struct JsonKnot
     {
         internal int start;
 
@@ -15,7 +15,7 @@
         // object or array
         internal bool array;
 
-        internal Knob(bool array)
+        internal JsonKnot(bool array)
         {
             this.array = array;
             start = end = current = -1;

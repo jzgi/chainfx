@@ -25,8 +25,6 @@ namespace Greatbone.Core
     ///
     public abstract class WebService : WebRealm, IHttpApplication<HttpContext>
     {
-        public WebServiceBuilder Context { get; internal set; }
-
         // topics published by this microservice
         readonly Set<MsgPublish> publishes;
 
@@ -197,7 +195,7 @@ namespace Greatbone.Core
 
         public DbContext NewSqlContext()
         {
-            DataSrcBuilder dsb = Service.Context.datasrc;
+            DataSrcBuilder dsb = ((WebServiceBuilder)Context).datasrc;
             NpgsqlConnectionStringBuilder builder = new NpgsqlConnectionStringBuilder()
             {
                 Host = dsb.host,

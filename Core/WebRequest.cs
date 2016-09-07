@@ -11,11 +11,13 @@ namespace Greatbone.Core
     /// <remarks>Asynchronou reading are carefully designed. </remarks>
     public class WebRequest : DefaultHttpRequest
     {
+
+        // in raw bytes
         private byte[] buffer;
 
         private int count;
 
-        // the parsed content, that is a deserialized object or bytes
+        // the content is parsed on demand of the application
         private object content;
 
         public WebRequest(HttpContext ctx) : base(ctx)
@@ -46,7 +48,7 @@ namespace Greatbone.Core
             return new ArraySegment<byte>(buffer, 0, count);
         }
 
-        public T GetObject<T>() where T : ISerial, new()
+        public T GetSerialReader<T>() where T : ISerial, new()
         {
             if (content == null)
             {
