@@ -65,12 +65,6 @@ namespace Greatbone.Core
             throw new System.NotImplementedException();
         }
 
-        public bool Read<T>(string name, ref List<T> value) where T : ISerial
-        {
-            throw new System.NotImplementedException();
-        }
-
-
         public void WriteStart(bool array)
         {
             throw new NotImplementedException();
@@ -149,6 +143,26 @@ namespace Greatbone.Core
         public void Write(string name, params ISerial[] array)
         {
             throw new System.NotImplementedException();
+        }
+
+        public bool ReadArray(Action a)
+        {
+            throw new NotImplementedException();
+        }
+
+        public bool ReadObject(Action a)
+        {
+            throw new NotImplementedException();
+        }
+
+        public void Write<T>(string name, T value) where T : ISerial
+        {
+            throw new NotImplementedException();
+        }
+
+        public bool Read<T>(string name, ref List<T> value) where T : ISerial, new()
+        {
+            throw new NotImplementedException();
         }
     }
 }

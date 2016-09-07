@@ -71,6 +71,26 @@ namespace Greatbone.Core
             return false;
         }
 
+        public bool ReadArray(Action a)
+        {
+            throw new NotImplementedException();
+        }
+
+        public bool ReadObject(Action a)
+        {
+            throw new NotImplementedException();
+        }
+
+        bool ISerialReader.Read<T>(string name, ref List<T> value)
+        {
+            return Read(name, ref value);
+        }
+
+        public void Write<T>(string name, T value) where T : ISerial
+        {
+            throw new NotImplementedException();
+        }
+
         public bool Read(string name, ref int value)
         {
             if (ReadName(name))

@@ -7,9 +7,6 @@ namespace Greatbone.Core
     /// DataReader/ParameterCollection, JSON or binary
     public interface ISerialWriter
     {
-        void WriteStart(bool array);
-
-        void WriteEnd(bool array);
 
         void Write(string name, bool value);
 
@@ -23,7 +20,7 @@ namespace Greatbone.Core
 
         void Write(string name, string value);
 
-        void Write(string name, ISerial value);
+        void Write<T>(string name, T value) where T : ISerial;
 
         void Write<T>(string name, List<T> list);
 

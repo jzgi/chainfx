@@ -55,17 +55,18 @@ namespace Greatbone.Sample
         {
             JsonContent df = new JsonContent(null);
 
-            df.Arr(() =>
+            df.ReadArray(() =>
             {
+                User o = null;
+                df.Read(ref o);
+
                 User u = null;
-                while (df.Obj(() =>
+                while (df.ReadObject(() =>
                 {
                     string name = null;
                     df.Read("name", ref name);
-                }, ref u))
-                {
+                }));
 
-                }
             });
             wc.Request.GetObject<User>();
 

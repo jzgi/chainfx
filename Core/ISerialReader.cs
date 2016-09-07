@@ -8,9 +8,9 @@ namespace Greatbone.Core
     /// </summary>
     public interface ISerialReader
     {
-        bool Arr(Action a);
+        bool ReadArray(Action a);
 
-        bool Object(Action a);
+        bool ReadObject(Action a);
 
         bool Read(string name, ref bool value);
 

@@ -60,17 +60,12 @@ namespace Greatbone.Core
             return false;
         }
 
-        public bool Object(Action a)
-        {
-            throw new NotImplementedException();
-        }
-
         public bool Read<T>(string name, ref List<T> value) where T : ISerial, new()
         {
             throw new NotImplementedException();
         }
 
-        public bool Obj<T>(Action a, ref T obj)
+        public bool ReadObject(Action a)
         {
             while (buffer[pos] != '[')
             {
@@ -88,7 +83,7 @@ namespace Greatbone.Core
             return true;
         }
 
-        public bool Arr(Action a)
+        public bool ReadArray(Action a)
         {
             while (buffer[pos] != '[')
             {
@@ -105,12 +100,57 @@ namespace Greatbone.Core
             }
             return true;
         }
+
+        public bool Read<T>(ref List<T> list)
+        {
+            List<T> lst = new List<T>();
+            ReadArray(() =>
+            {
+                if (typeof(T) == typeof(int))
+                {
+                    string value = null;
+                    if (Read(ref value))
+                    {
+                    }
+                }
+            });
+            return false;
+        }
+
+        public bool Read<T>(ref T value) where T : ISerial, new()
+        {
+            T o = (value != null) ? value : new T();
+            ReadObject(() => { o.ReadFrom(this); });
+            value = o;
+            return true;
+        }
+
+        public bool Read(ref short value)
+        {
+            return false;
+        }
+
+        public bool Read(ref int value)
+        {
+            return false;
+        }
+
+        public bool Read(ref DateTime value)
+        {
+            return false;
+        }
+
+        public bool Read(ref string value)
+        {
+            return false;
+        }
+
 
         public bool Read(string name, ref short value)
         {
-            if (LocateNameAtLevel())
+            if (LocateNameAtLevel(name))
             {
-                return GetValue(ref value);
+                return Read(ref value);
             }
             return false;
         }
@@ -119,7 +159,7 @@ namespace Greatbone.Core
         {
             if (LocateNameAtLevel(name))
             {
-                return GetValue(ref value);
+                return Read(ref value);
             }
             return false;
         }
@@ -152,19 +192,15 @@ namespace Greatbone.Core
         {
             LocateNameAtLevel(name);
 
-            Arr(() =>
+            ReadArray(() =>
             {
                 T o = new T();
-                while (Obj(() =>
-                {
-                    o.ReadFrom(this);
-                }, ref o))
+                while (Read(ref o))
                 {
                     value.Add(o);
                 }
-
             });
-
+            return false;
         }
 
         public bool Read(string name, ref List<string> value)
@@ -192,35 +228,29 @@ namespace Greatbone.Core
         // WRITES
         //
 
-        public void WriteStart(bool array)
+        public void DumpArray(Action inner)
         {
-            Put(array ? '[' : '{');
-
             level++;
+            Put('[');
+
             stack[level].array = true;
-        }
 
-        public void WriteEnd(bool array)
-        {
-            Put(array ? ']' : '}');
-
+            Put(']');
             level--;
         }
 
-        public void WriteEnd()
+        public void DumpObject(Action inner)
         {
             Put('{');
 
             level++;
-            stack[level].array = true;
-        }
+            stack[level].array = false;
 
-        public void WriteObjectEnd()
-        {
             Put('}');
 
             level--;
         }
+
 
         public void Write(string name, short value)
         {
@@ -312,7 +342,7 @@ namespace Greatbone.Core
             stack[level].ordinal++;
         }
 
-        public void Write(string name, ISerial value)
+        public void Write<T>(string name, T value) where T : ISerial
         {
             if (stack[level].ordinal > 0)
             {
@@ -324,9 +354,14 @@ namespace Greatbone.Core
             Put('"');
             Put(':');
 
-            Put('{');
-            value.WriteTo(this);
-            Put('}');
+            if (EqualityComparer<T>.Default.Equals(value, default(T)))
+            {
+                Put("null");
+            }
+            else
+            {
+                DumpObject(() => { value.WriteTo(this); });
+            }
 
             stack[level].ordinal++;
         }
@@ -371,45 +406,6 @@ namespace Greatbone.Core
 
         public void Write<T>(string name, List<T> list)
         {
-        }
-
-        void PutValue<V>(V value) where V : struct, IConvertible
-        {
-            Type t = typeof(V);
-            if (t == typeof(int))
-            {
-                Put(value.ToInt32(null));
-            }
-            else
-            {
-                Put('n');
-                Put('u');
-                Put('l');
-                Put('l');
-            }
-        }
-
-        void PutObject<V>(V value) where V : class
-        {
-            if (value == null)
-            {
-                return;
-            }
-            if (value is string)
-            {
-                Put('"');
-                Put((string)(object)value);
-                Put('"');
-                Put(':');
-                Put('{');
-            }
-            else if (value is ISerial)
-            {
-                Put('n');
-                Put('u');
-                Put('l');
-                Put('l');
-            }
         }
 
         public void Write<V>(string name, Dictionary<string, V> dict)
