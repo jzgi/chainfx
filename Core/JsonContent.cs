@@ -228,7 +228,7 @@ namespace Greatbone.Core
         // WRITES
         //
 
-        public void DumpArray(Action inner)
+        public void WriteArray(Action inner)
         {
             level++;
             Put('[');
@@ -239,7 +239,7 @@ namespace Greatbone.Core
             level--;
         }
 
-        public void DumpObject(Action inner)
+        public void WriteObject(Action inner)
         {
             Put('{');
 
@@ -360,7 +360,7 @@ namespace Greatbone.Core
             }
             else
             {
-                DumpObject(() => { value.WriteTo(this); });
+                WriteObject(() => { value.WriteTo(this); });
             }
 
             stack[level].ordinal++;
