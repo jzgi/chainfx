@@ -40,7 +40,15 @@ namespace Greatbone.Sample
         }
     }
 
-    public struct Comment
+    public struct Comment : ISerial
     {
+        public void ReadFrom(ISerialReader r)
+        {
+        }
+
+        public void WriteTo(ISerialWriter w)
+        {
+            throw new NotImplementedException();
+        }
     }
 }

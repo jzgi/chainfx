@@ -18,6 +18,8 @@ namespace Greatbone.Core
 
         public override string Type => "application/bjson";
 
+        
+
         public bool Read(string name, ref short value)
         {
             throw new System.NotImplementedException();

@@ -30,7 +30,7 @@ namespace Greatbone.Core
         {
         }
 
-        internal bool LocateNameAtLevel()
+        internal bool LocateNameAtLevel(string name)
         {
             int p = stack[level].current;
 
@@ -60,6 +60,51 @@ namespace Greatbone.Core
             return false;
         }
 
+        public bool Object(Action a)
+        {
+            throw new NotImplementedException();
+        }
+
+        public bool Read<T>(string name, ref List<T> value) where T : ISerial, new()
+        {
+            throw new NotImplementedException();
+        }
+
+        public bool Obj<T>(Action a, ref T obj)
+        {
+            while (buffer[pos] != '[')
+            {
+                pos++;
+            }
+            level++;
+
+            a();
+
+            level--;
+            while (buffer[pos] != ']')
+            {
+                pos++;
+            }
+            return true;
+        }
+
+        public bool Arr(Action a)
+        {
+            while (buffer[pos] != '[')
+            {
+                pos++;
+            }
+            level++;
+
+            a();
+
+            level--;
+            while (buffer[pos] != ']')
+            {
+                pos++;
+            }
+            return true;
+        }
 
         public bool Read(string name, ref short value)
         {
@@ -72,7 +117,7 @@ namespace Greatbone.Core
 
         public bool Read(string name, ref int value)
         {
-            if (LocateNameAtLevel())
+            if (LocateNameAtLevel(name))
             {
                 return GetValue(ref value);
             }
@@ -81,7 +126,7 @@ namespace Greatbone.Core
 
         public bool Read(string name, ref decimal value)
         {
-            if (LocateNameAtLevel())
+            if (LocateNameAtLevel(name))
             {
                 return GetValue(ref value);
             }
@@ -103,9 +148,23 @@ namespace Greatbone.Core
             throw new System.NotImplementedException();
         }
 
-        public bool Read<T>(string name, ref List<T> value) where T : ISerial
+        public bool Read<T>(string name, List<T> value) where T : ISerial, new()
         {
-            throw new System.NotImplementedException();
+            LocateNameAtLevel(name);
+
+            Arr(() =>
+            {
+                T o = new T();
+                while (Obj(() =>
+                {
+                    o.ReadFrom(this);
+                }, ref o))
+                {
+                    value.Add(o);
+                }
+
+            });
+
         }
 
         public bool Read(string name, ref List<string> value)

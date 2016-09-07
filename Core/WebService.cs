@@ -146,6 +146,8 @@ namespace Greatbone.Core
 
         public void DisposeContext(HttpContext context, Exception exception)
         {
+            WebContext wc = (WebContext)context;
+            // wc.Request.
             //            context.
         }
 

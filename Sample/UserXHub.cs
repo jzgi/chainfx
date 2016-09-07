@@ -53,6 +53,20 @@ namespace Greatbone.Sample
         [Self]
         public void ChPwd(WebContext wc, string userid)
         {
+            JsonContent df = new JsonContent(null);
+
+            df.Arr(() =>
+            {
+                User u = null;
+                while (df.Obj(() =>
+                {
+                    string name = null;
+                    df.Read("name", ref name);
+                }, ref u))
+                {
+
+                }
+            });
             wc.Request.GetObject<User>();
 
             using (var dc = Service.NewSqlContext())
