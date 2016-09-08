@@ -39,38 +39,42 @@ namespace Greatbone.Core
             }
         }
 
-        public ArraySegment<byte> GetByteArray()
+        public ArraySegment<byte> Bytes
         {
-            if (buffer == null)
-            {
-                ReceiveAsync();
-            }
-            return new ArraySegment<byte>(buffer, 0, count);
-        }
-
-        public T GetSerialReader<T>() where T : ISerial, new()
-        {
-            if (content == null)
+            get
             {
                 if (buffer == null)
                 {
                     ReceiveAsync();
                 }
-                // init content
-                ISerialReader reader = null;
-                string ctype = ContentType;
-                long? clen = ContentLength;
-                if ("application/json".Equals(ctype))
-                {
-                    reader = new JsonContent(buffer, (int)clen);
-                }
-                else if ("application/bjson".Equals(ctype))
-                {
-                    reader = new BjsonContent(buffer, (int)clen);
-                }
-                content = reader.Read<T>();
+                return new ArraySegment<byte>(buffer, 0, count);
             }
-            return (T)content;
+        }
+
+        public ISerialReader Serial
+        {
+            get
+            {
+                if (content == null)
+                {
+                    if (buffer == null)
+                    {
+                        ReceiveAsync();
+                    }
+                    // init content
+                    string ctype = ContentType;
+                    long? clen = ContentLength;
+                    if ("application/bjson".Equals(ctype))
+                    {
+                        return new BjsonContent(buffer, (int)clen);
+                    }
+                    else
+                    {
+                        return new JsonContent(buffer, (int)clen);
+                    }
+                }
+                return null;
+            }
         }
 
         public bool GetParameter(string name, ref int value)

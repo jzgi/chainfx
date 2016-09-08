@@ -18,11 +18,10 @@ namespace Greatbone.Core
         // possible chars for representing a number as a string
         static readonly byte[] Digits =
         {
-            (byte) '0', (byte) '1', (byte) '2', (byte) '3', (byte) '4', (byte) '5', (byte) '6', (byte) '7', (byte) '8',
-            (byte) '9'
+            (byte) '0', (byte) '1', (byte) '2', (byte) '3', (byte) '4', (byte) '5', (byte) '6', (byte) '7', (byte) '8', (byte) '9'
         };
 
-        const byte Minus = (byte) '-';
+        const byte Minus = (byte)'-';
 
         const int InitialCapacity = 4096;
 
@@ -82,20 +81,27 @@ namespace Greatbone.Core
 
         protected byte[] buffer; // NOTE: HttpResponseStream doesn't have internal buffer
 
-        // the offset in buffer from where the content starts
-        protected int offset;
-
-        // number of bytes
+        // number of bytes, not mutable in reading mode
         protected int count;
 
         // byte-wise etag checksum, for text-based output only
         long checksum;
 
-        protected DynamicContent(byte[] buffer)
+        /// <summary>
+        /// Creates a dynamic content in writing mode.
+        /// </summary>
+        /// <param name="capacity">The initial capacity of the content buffer.</param>
+        protected DynamicContent(int capacity)
         {
-            this.buffer = buffer;
+            this.buffer = BufferPool.Lease(capacity);
+            this.count = 0;
         }
 
+        /// <summary>
+        /// Creates a dynamic content in reading mode.
+        /// </summary>
+        /// <param name="buffer">The byte buffer that contains the content.</param>
+        /// <param name="count">The number of bytes.</param>
         protected DynamicContent(byte[] buffer, int count)
         {
             this.buffer = buffer;
@@ -112,17 +118,6 @@ namespace Greatbone.Core
 
         public long ETag => checksum;
 
-        public bool Got(out char c)
-        {
-            c = ' ';
-            return false;
-        }
-
-        public bool GotName(out char c)
-        {
-            c = ' ';
-            return false;
-        }
 
         public void AddByte(byte b)
         {
@@ -148,7 +143,7 @@ namespace Greatbone.Core
 
         public void Put(bool v)
         {
-            AddByte((byte) '1');
+            AddByte((byte)'1');
         }
 
         public void Put(char c)
@@ -157,20 +152,20 @@ namespace Greatbone.Core
             if (c < 0x80)
             {
                 // have at most seven bits
-                AddByte((byte) c);
+                AddByte((byte)c);
             }
             else if (c < 0x800)
             {
                 // 2 text, 11 bits
-                AddByte((byte) (0xc0 | (c >> 6)));
-                AddByte((byte) (0x80 | (c & 0x3f)));
+                AddByte((byte)(0xc0 | (c >> 6)));
+                AddByte((byte)(0x80 | (c & 0x3f)));
             }
             else
             {
                 // 3 text, 16 bits
-                AddByte((byte) (0xe0 | ((c >> 12))));
-                AddByte((byte) (0x80 | ((c >> 6) & 0x3f)));
-                AddByte((byte) (0x80 | (c & 0x3f)));
+                AddByte((byte)(0xe0 | ((c >> 12))));
+                AddByte((byte)(0x80 | ((c >> 6) & 0x3f)));
+                AddByte((byte)(0x80 | (c & 0x3f)));
             }
         }
 
@@ -333,7 +328,7 @@ namespace Greatbone.Core
         }
 
         // sign mask
-        private const int Sign = unchecked((int) 0x80000000);
+        private const int Sign = unchecked((int)0x80000000);
 
         public void Put(decimal dec, bool money)
         {
@@ -348,7 +343,7 @@ namespace Greatbone.Core
                 }
                 if (mid != 0) // money
                 {
-                    long x = (low & 0x00ffffff) + ((long) (byte) (low >> 24) << 24) + ((long) mid << 32);
+                    long x = (low & 0x00ffffff) + ((long)(byte)(low >> 24) << 24) + ((long)mid << 32);
                     bool bgn = false;
                     for (int i = Longs.Length - 1; i >= 2; i--)
                     {
@@ -410,8 +405,8 @@ namespace Greatbone.Core
 
         public void Put(DateTime dt, bool time)
         {
-            short yr = (short) dt.Year;
-            byte mon = (byte) dt.Month, day = (byte) dt.Day;
+            short yr = (short)dt.Year;
+            byte mon = (byte)dt.Month, day = (byte)dt.Day;
 
             Put(yr);
             Put('-');
@@ -421,7 +416,7 @@ namespace Greatbone.Core
             if (day < 10) Put('0');
             AddByte(day);
 
-            byte hr = (byte) dt.Hour, min = (byte) dt.Minute, sec = (byte) dt.Second;
+            byte hr = (byte)dt.Hour, min = (byte)dt.Minute, sec = (byte)dt.Second;
             if (time)
             {
                 Put(' '); // a space for separation

@@ -13,7 +13,7 @@ namespace Greatbone.Core
         int pos;
 
 
-        public JsonContent(byte[] buffer) : base(buffer)
+        public JsonContent(int capacity) : base(capacity)
         {
         }
 
@@ -23,13 +23,6 @@ namespace Greatbone.Core
 
         public override string Type => "application/json";
 
-        internal void SkipTill(byte c)
-        {
-        }
-
-        internal void SkipWsTill(byte c)
-        {
-        }
 
         internal bool LocateNameAtLevel(string name)
         {
@@ -45,18 +38,13 @@ namespace Greatbone.Core
             return false;
         }
 
-        internal bool GetValue(ref short value)
+
+        public bool Read(ref bool value)
         {
-            return false;
+            throw new NotImplementedException();
         }
 
-        internal bool GetValue(ref int value)
-        {
-            return false;
-        }
-
-
-        internal bool GetValue(ref decimal value)
+        internal bool Read(ref decimal value)
         {
             return false;
         }
@@ -169,7 +157,7 @@ namespace Greatbone.Core
         {
             if (LocateNameAtLevel(name))
             {
-                return GetValue(ref value);
+                return Read(ref value);
             }
             return false;
         }

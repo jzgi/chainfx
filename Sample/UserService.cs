@@ -35,7 +35,7 @@ namespace Greatbone.Sample
 
         public void Search(WebContext wc)
         {
-            ArraySegment<byte> bytes = wc.Request.GetByteArray();
+            ArraySegment<byte> bytes = wc.Request.Bytes;
             ad = wc;
         }
 

@@ -12,6 +12,10 @@ namespace Greatbone.Core
 
         bool ReadObject(Action a);
 
+        bool Read(ref bool value);
+
+        bool Read(ref int value);
+
         bool Read(string name, ref bool value);
 
         bool Read(string name, ref short value);

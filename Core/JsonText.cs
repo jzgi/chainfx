@@ -24,6 +24,11 @@ namespace Greatbone.Core
             this.text = str;
         }
 
+        public bool Read(ref bool value)
+        {
+            throw new NotImplementedException();
+        }
+
         public bool ReadLeft()
         {
             level++; // increase nesting
@@ -38,6 +43,11 @@ namespace Greatbone.Core
                 }
             }
             return false;
+        }
+
+        public bool Read(ref int value)
+        {
+            throw new NotImplementedException();
         }
 
         public bool ReadRight()
@@ -109,17 +119,17 @@ namespace Greatbone.Core
             return false;
         }
 
-	    public bool Read(string name, ref short value)
-	    {
-		    throw new NotImplementedException();
-	    }
+        public bool Read(string name, ref short value)
+        {
+            throw new NotImplementedException();
+        }
 
-	    public bool Read(string name, ref DateTime value)
-	    {
-		    throw new NotImplementedException();
-	    }
+        public bool Read(string name, ref DateTime value)
+        {
+            throw new NotImplementedException();
+        }
 
-	    public bool Read<K, V>(string name, ref Dictionary<K, V> value)
+        public bool Read<K, V>(string name, ref Dictionary<K, V> value)
         {
             throw new System.NotImplementedException();
         }
@@ -218,17 +228,17 @@ namespace Greatbone.Core
             //			Put(value);
         }
 
-	    public void Write(string name, short value)
-	    {
-		    throw new NotImplementedException();
-	    }
+        public void Write(string name, short value)
+        {
+            throw new NotImplementedException();
+        }
 
-	    public void Write(string name, DateTime value)
-	    {
-		    throw new NotImplementedException();
-	    }
+        public void Write(string name, DateTime value)
+        {
+            throw new NotImplementedException();
+        }
 
-	    public void Write(string name, ISerial value)
+        public void Write(string name, ISerial value)
         {
             WriteName(name);
             //			Put(':);

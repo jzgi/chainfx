@@ -40,11 +40,7 @@ namespace Greatbone.Sample
                 }
             }
 
-            // return
-            JsonContent c = new JsonContent(null);
-            c.Write(chats);
-
-            wc.Response.Content = c;
+            // wc.Response.SetContentAsJson(chats)
         }
 
         public void Put(WebContext wc, string receiver)

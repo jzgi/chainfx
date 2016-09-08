@@ -2,7 +2,7 @@
 {
     public class HtmlContent : DynamicContent
     {
-        public HtmlContent(byte[] buffer) : base(buffer)
+        public HtmlContent(int capacity) : base(capacity)
         {
         }
 

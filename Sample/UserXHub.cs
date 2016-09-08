@@ -33,17 +33,17 @@ namespace Greatbone.Sample
                     string md5 = ComputeMD5(password);
                     if (md5.Equals(o.credential))
                     {
-                        wc.Response.StatusCode = (int) HttpStatusCode.OK;
+                        wc.Response.StatusCode = (int)HttpStatusCode.OK;
                         wc.Response.SetContentAsJson(o);
                     }
                     else
                     {
-                        wc.Response.StatusCode = (int) HttpStatusCode.BadRequest;
+                        wc.Response.StatusCode = (int)HttpStatusCode.BadRequest;
                     }
                 }
                 else
                 {
-                    wc.Response.StatusCode = (int) HttpStatusCode.NotFound;
+                    wc.Response.StatusCode = (int)HttpStatusCode.NotFound;
                 }
             }
         }
@@ -53,35 +53,27 @@ namespace Greatbone.Sample
         [Self]
         public void ChPwd(WebContext wc, string userid)
         {
-            JsonContent df = new JsonContent(null);
+            ISerialReader r = wc.Request.Serial;
 
-            df.ReadArray(() =>
+            int ret = 0;
+
+            r.ReadArray(() =>
             {
-                User o = null;
-                df.Read(ref o);
-
-                User u = null;
-                while (df.ReadObject(() =>
-                {
-                    string name = null;
-                    df.Read("name", ref name);
-                }));
-
+                r.Read(ref ret);
             });
-            wc.Request.GetSerialReader<User>();
 
             using (var dc = Service.NewSqlContext())
             {
                 if (dc.Execute("UPDATE users SET password = @id WHERE id = @id", (p) => p.Set("@id", userid)) > 0)
                 {
-                    wc.Response.StatusCode = (int) HttpStatusCode.OK;
+                    wc.Response.StatusCode = (int)HttpStatusCode.OK;
                 }
                 else
                 {
-                    wc.Response.StatusCode = (int) HttpStatusCode.NotAcceptable;
+                    wc.Response.StatusCode = (int)HttpStatusCode.NotAcceptable;
                 }
             }
-//            wc.Response.SendFileAsync()
+            //            wc.Response.SendFileAsync()
         }
 
         ///
@@ -89,7 +81,7 @@ namespace Greatbone.Sample
         ///
         public void Drop(WebContext wc, string x)
         {
-//            wc.Response.SendFileAsync()
+            //            wc.Response.SendFileAsync()
         }
 
         internal static string ComputeMD5(string input)

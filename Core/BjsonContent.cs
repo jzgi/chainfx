@@ -8,7 +8,7 @@ namespace Greatbone.Core
     ///
     public class BjsonContent : DynamicContent, ISerialReader, ISerialWriter
     {
-        public BjsonContent(byte[] buffer) : base(buffer)
+        public BjsonContent(int capacity) : base(capacity)
         {
         }
 
@@ -18,7 +18,17 @@ namespace Greatbone.Core
 
         public override string Type => "application/bjson";
 
-        
+
+        public bool Read(ref bool value)
+        {
+            throw new System.NotImplementedException();
+        }
+
+        public bool Read(ref int value)
+        {
+            throw new System.NotImplementedException();
+        }
+
 
         public bool Read(string name, ref short value)
         {
@@ -63,16 +73,6 @@ namespace Greatbone.Core
         public bool Read<T>(string name, ref T value) where T : ISerial, new()
         {
             throw new System.NotImplementedException();
-        }
-
-        public void WriteStart(bool array)
-        {
-            throw new NotImplementedException();
-        }
-
-        public void WriteEnd(bool array)
-        {
-            throw new NotImplementedException();
         }
 
         public void Write(string name, int value)
@@ -164,5 +164,6 @@ namespace Greatbone.Core
         {
             throw new NotImplementedException();
         }
+
     }
 }
