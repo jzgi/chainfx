@@ -4,15 +4,15 @@ using System.Collections.Generic;
 namespace Greatbone.Core
 {
     ///
-    /// Binary JSON content.
+    /// JSON-in-binary content.
     ///
-    public class BjsonContent : DynamicContent, ISerialReader, ISerialWriter
+    public class Json2Content : DynamicContent, ISerialReader, ISerialWriter
     {
-        public BjsonContent(int capacity) : base(capacity)
+        public Json2Content(int capacity) : base(capacity)
         {
         }
 
-        public BjsonContent(byte[] buffer, int count) : base(buffer, count)
+        public Json2Content(byte[] buffer, int count) : base(buffer, count)
         {
         }
 

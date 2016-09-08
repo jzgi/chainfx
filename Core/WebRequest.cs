@@ -66,7 +66,7 @@ namespace Greatbone.Core
                     long? clen = ContentLength;
                     if ("application/bjson".Equals(ctype))
                     {
-                        return new BjsonContent(buffer, (int)clen);
+                        return new Json2Content(buffer, (int)clen);
                     }
                     else
                     {

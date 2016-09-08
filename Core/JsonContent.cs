@@ -5,7 +5,7 @@ namespace Greatbone.Core
 {
     public class JsonContent : DynamicContent, ISerialReader, ISerialWriter
     {
-        JsonKnot[] knots = new JsonKnot[8];
+        Knot[] knots = new Knot[8];
 
         // current level, start with 0
         int level = -1;
@@ -119,8 +119,50 @@ namespace Greatbone.Core
             return false;
         }
 
+        void SkipWs()
+        {
+            for (;;)
+            {
+                byte c = buffer[pos];
+                if (c == ' ' || c == '\t' || c == '\r' || c == '\n')
+                {
+                    pos++;
+                    continue;
+                }
+                return;
+            }
+        }
+
+        char[] seg = new char[1024];
+        int segc = 0;
+
+        void Token()
+        {
+            for (;;)
+            {
+                byte c = buffer[pos];
+                if (c == ' ' || c == '\t')
+                {
+                    pos++;
+                    continue;
+                }
+                break;
+            }
+        }
+
         public bool Read(ref int value)
         {
+            SkipWs();
+
+            for (;;)
+            {
+                byte c = buffer[pos];
+                if (c != ',' && c == '}')
+                {
+                }
+                break;
+            }
+
             return false;
         }
 
