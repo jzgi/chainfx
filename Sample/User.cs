@@ -25,9 +25,11 @@ namespace Greatbone.Sample
 
         internal DateTime loggedin;
 
-        public string Login => id;
+        public string Key => id;
 
         public string[] Roles => null;
+
+        public string Name => name;
 
         public void ReadFrom(ISerialReader r)
         {

@@ -106,7 +106,7 @@ namespace Greatbone.Core
             return reader.HasRows;
         }
 
-        public bool ReadRow()
+        public bool NextRow()
         {
             if (reader == null)
             {
@@ -312,7 +312,7 @@ namespace Greatbone.Core
         public void SendEvent<T>(string topic, string filter, T @event) where T : ISerial
         {
             // convert message to byte buffer
-            Json2Content b = new Json2Content(16 * 1024);
+            JsonyContent b = new JsonyContent(16 * 1024);
             @event.WriteTo(b);
 
             Execute("INSERT INTO mq (topic, filter, message) VALUES (@topic, @filter, @message)", p =>

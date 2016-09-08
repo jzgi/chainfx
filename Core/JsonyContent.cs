@@ -4,15 +4,15 @@ using System.Collections.Generic;
 namespace Greatbone.Core
 {
     ///
-    /// JSON-in-binary content.
+    /// JSON-yet-in-binary content.
     ///
-    public class Json2Content : DynamicContent, ISerialReader, ISerialWriter
+    public class JsonyContent : DynamicContent, ISerialReader, ISerialWriter
     {
-        public Json2Content(int capacity) : base(capacity)
+        public JsonyContent(int capacity) : base(capacity)
         {
         }
 
-        public Json2Content(byte[] buffer, int count) : base(buffer, count)
+        public JsonyContent(byte[] buffer, int count) : base(buffer, count)
         {
         }
 
@@ -165,5 +165,9 @@ namespace Greatbone.Core
             throw new NotImplementedException();
         }
 
+        public bool Read<T>(ref T value) where T : ISerial, new()
+        {
+            throw new NotImplementedException();
+        }
     }
 }

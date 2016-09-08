@@ -122,7 +122,7 @@ namespace Greatbone.Core
                 }
                 else
                 {
-                    HandleAction(wc.Request.Path.Value.Substring(1), wc);
+                    Handle(wc.Request.Path.Value.Substring(1), wc);
                 }
             }
             else
@@ -130,7 +130,7 @@ namespace Greatbone.Core
                 // check security token (authentication)
 
                 // handling
-                HandleAction(wc.Request.Path.Value.Substring(1), wc);
+                Handle(wc.Request.Path.Value.Substring(1), wc);
             }
 
             if (wc.Response.Content != null)

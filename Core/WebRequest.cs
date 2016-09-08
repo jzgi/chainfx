@@ -51,7 +51,7 @@ namespace Greatbone.Core
             }
         }
 
-        public ISerialReader Serial
+        public ISerialReader Reader
         {
             get
             {
@@ -66,7 +66,7 @@ namespace Greatbone.Core
                     long? clen = ContentLength;
                     if ("application/bjson".Equals(ctype))
                     {
-                        return new Json2Content(buffer, (int)clen);
+                        return new JsonyContent(buffer, (int)clen);
                     }
                     else
                     {
@@ -77,7 +77,15 @@ namespace Greatbone.Core
             }
         }
 
-        public bool GetParameter(string name, ref int value)
+        public T Serial<T>() where T : ISerial, new()
+        {
+            ISerialReader r = this.Reader;
+            T o = new T();
+            r.Read(ref o);
+            return o;
+        }
+
+        public bool GetParam(string name, ref int value)
         {
             StringValues values;
             if (Query.TryGetValue(name, out values))

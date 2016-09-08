@@ -16,6 +16,8 @@ namespace Greatbone.Core
 
         bool Read(ref int value);
 
+        bool Read<T>(ref T value) where T : ISerial, new();
+
         bool Read(string name, ref bool value);
 
         bool Read(string name, ref short value);

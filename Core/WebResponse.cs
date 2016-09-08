@@ -32,7 +32,7 @@ namespace Greatbone.Core
 
         public void SetContent<T>(T obj, bool binary) where T : ISerial
         {
-            DynamicContent cnt = binary ? new Json2Content(16 * 1024) : (DynamicContent)new JsonContent(16 * 1024);
+            DynamicContent cnt = binary ? new JsonyContent(16 * 1024) : (DynamicContent)new JsonContent(16 * 1024);
             ((ISerialWriter)cnt).Write(obj);
             Content = cnt;
         }

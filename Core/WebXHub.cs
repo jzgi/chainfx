@@ -42,7 +42,7 @@ namespace Greatbone.Core
             return sub;
         }
 
-        public override void HandleAction(string relative, WebContext wc)
+        public override void Handle(string relative, WebContext wc)
         {
             int slash = relative.IndexOf('/');
             if (slash == -1) // without a slash then handle it locally
@@ -56,7 +56,7 @@ namespace Greatbone.Core
                 WebSub sub;
                 if (subs.TryGet(rsc, out sub))
                 {
-                    sub.HandleAction(rsc.Substring(slash), wc);
+                    sub.Handle(rsc.Substring(slash), wc);
                 }
             }
         }

@@ -5,7 +5,7 @@ namespace Greatbone.Core
 {
     public class JsonContent : DynamicContent, ISerialReader, ISerialWriter
     {
-        Knot[] knots = new Knot[8];
+        JsonKnot[] knots = new JsonKnot[8];
 
         // current level, start with 0
         int level = -1;
@@ -24,14 +24,54 @@ namespace Greatbone.Core
         public override string Type => "application/json";
 
 
-        internal bool LocateNameAtLevel(string name)
+        internal void SkipLevel()
         {
-            int p = knots[level].current;
+
+        }
+
+        internal bool SeekInLevel(string name)
+        {
+            // in between quotation marks 
+            bool inq;
+
+            int qstart, qend;
+            int p = pos;
+            for (;;) // find the start quotation
+            {
+                byte c = buffer[p];
+                if (c == '"')
+                {
+                    inq = true;
+                    qstart = p;
+                }
+                else if (c == '}')
+                {
+                    knots[level].end = p; // mark down the level end
+                }
+                p++;
+                break;
+            }
+
+            for (;;)
+            {
+                byte c = buffer[p];
+                if (c != '"')
+                {
+                    p++;
+                }
+                if (c == '}')
+                {
+                    knots[level].end = p; // mark down the level end
+                }
+                break;
+            }
+
+            SkipWs();
 
             // seek two quotations and a colon
-            while (buffer[p] != ':')
+            while (buffer[pos] != ':')
             {
-                p++;
+                pos++;
             }
 
 
@@ -179,7 +219,7 @@ namespace Greatbone.Core
 
         public bool Read(string name, ref short value)
         {
-            if (LocateNameAtLevel(name))
+            if (SeekInLevel(name))
             {
                 return Read(ref value);
             }
@@ -188,7 +228,7 @@ namespace Greatbone.Core
 
         public bool Read(string name, ref int value)
         {
-            if (LocateNameAtLevel(name))
+            if (SeekInLevel(name))
             {
                 return Read(ref value);
             }
@@ -197,7 +237,7 @@ namespace Greatbone.Core
 
         public bool Read(string name, ref decimal value)
         {
-            if (LocateNameAtLevel(name))
+            if (SeekInLevel(name))
             {
                 return Read(ref value);
             }
@@ -221,7 +261,7 @@ namespace Greatbone.Core
 
         public bool Read<T>(string name, List<T> value) where T : ISerial, new()
         {
-            LocateNameAtLevel(name);
+            SeekInLevel(name);
 
             ReadArray(() =>
             {

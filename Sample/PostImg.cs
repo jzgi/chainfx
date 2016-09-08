@@ -3,7 +3,7 @@ using Greatbone.Core;
 
 namespace Greatbone.Sample
 {
-    public struct PostPic
+    public struct PostImg
     {
         internal int postid;
 

@@ -15,7 +15,7 @@ namespace Greatbone.Core
 
         // parsing context for levels
 
-        Knot[] levels = new Knot[8];
+        JsonKnot[] levels = new JsonKnot[8];
 
         int level;
 
@@ -32,7 +32,7 @@ namespace Greatbone.Core
         public bool ReadLeft()
         {
             level++; // increase nesting
-            int p = levels[level].current;
+            int p = levels[level].pos;
             while (++p < text.Length)
             {
                 char c = text[p];
@@ -52,7 +52,7 @@ namespace Greatbone.Core
 
         public bool ReadRight()
         {
-            int p = levels[level].current;
+            int p = levels[level].pos;
             while (++p < text.Length)
             {
                 char c = text[p];
@@ -68,7 +68,7 @@ namespace Greatbone.Core
 
         public bool ReadName(string name)
         {
-            int p = levels[level].current;
+            int p = levels[level].pos;
             while (++p < text.Length)
             {
                 char c = text[p];
@@ -105,7 +105,7 @@ namespace Greatbone.Core
         {
             if (ReadName(name))
             {
-                int p = levels[level].current;
+                int p = levels[level].pos;
             }
             return false;
         }
@@ -114,7 +114,7 @@ namespace Greatbone.Core
         {
             if (ReadName(name))
             {
-                int p = levels[level].current;
+                int p = levels[level].pos;
             }
             return false;
         }
@@ -138,7 +138,7 @@ namespace Greatbone.Core
         {
             if (ReadName(name))
             {
-                int p = levels[level].current;
+                int p = levels[level].pos;
             }
             return false;
         }
@@ -147,7 +147,7 @@ namespace Greatbone.Core
         {
             if (ReadName(name))
             {
-                int p = levels[level].current;
+                int p = levels[level].pos;
             }
             return false;
         }
@@ -156,7 +156,7 @@ namespace Greatbone.Core
         {
             if (ReadName(name))
             {
-                int p = levels[level].current;
+                int p = levels[level].pos;
             }
             return false;
         }
@@ -165,7 +165,7 @@ namespace Greatbone.Core
         {
             if (ReadName(name))
             {
-                int p = levels[level].current;
+                int p = levels[level].pos;
             }
             return false;
         }
@@ -174,7 +174,7 @@ namespace Greatbone.Core
         {
             if (ReadName(name))
             {
-                int p = levels[level].current;
+                int p = levels[level].pos;
             }
             return false;
         }
@@ -183,7 +183,7 @@ namespace Greatbone.Core
         {
             if (ReadName(name))
             {
-                int p = levels[level].current;
+                int p = levels[level].pos;
             }
             return false;
         }
@@ -278,6 +278,11 @@ namespace Greatbone.Core
             WriteName(name);
             //			Put(':);
             //			Put(value);
+        }
+
+        public bool Read<T>(ref T value) where T : ISerial, new()
+        {
+            throw new NotImplementedException();
         }
     }
 }

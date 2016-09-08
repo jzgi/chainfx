@@ -46,7 +46,7 @@ namespace Greatbone.Sample
         public void Put(WebContext wc, string receiver)
         {
             IToken tok = wc.Token;
-            string sender = tok.Login;
+            string sender = tok.Key;
             string text = wc.ToString();
 
             List<Chat> chats;

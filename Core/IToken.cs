@@ -2,7 +2,9 @@
 {
 	public interface IToken
 	{
-		string Login { get; }
+		string Key { get; }
+
+		string Name { get; }
 
 		string[] Roles { get; }
 	}

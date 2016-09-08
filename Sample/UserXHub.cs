@@ -53,7 +53,7 @@ namespace Greatbone.Sample
         [Self]
         public void ChPwd(WebContext wc, string userid)
         {
-            ISerialReader r = wc.Request.Serial;
+            ISerialReader r = wc.Request.Reader;
 
             int ret = 0;
 

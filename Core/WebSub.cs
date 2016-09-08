@@ -52,7 +52,7 @@ namespace Greatbone.Core
                 {
                     throw new InvalidOperationException();
                 }
-                svc.Context = (WebServiceBuilder) wsc;
+                svc.Context = (WebServiceBuilder)wsc;
                 wsc.Service = svc;
             }
 
@@ -131,7 +131,12 @@ namespace Greatbone.Core
             return actions[action];
         }
 
-        public virtual void HandleAction(string relative, WebContext wc)
+        public virtual void Handle(string relative, WebContext wc, string x)
+        {
+
+        }
+        
+        public virtual void Handle(string relative, WebContext wc)
         {
             if (relative.IndexOf('.') != -1) // static handling
             {
