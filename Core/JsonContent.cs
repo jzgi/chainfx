@@ -29,7 +29,7 @@ namespace Greatbone.Core
 
         }
 
-        internal bool SeekInLevel(string name)
+        internal bool SeekInKnot(string name)
         {
             // in between quotation marks 
             bool inq;
@@ -94,7 +94,7 @@ namespace Greatbone.Core
             throw new NotImplementedException();
         }
 
-        public bool ReadObject(Action a)
+        public bool ReadArray(Action a)
         {
             while (buffer[pos] != '[')
             {
@@ -112,9 +112,9 @@ namespace Greatbone.Core
             return true;
         }
 
-        public bool ReadArray(Action a)
+        public bool ReadObject(Action a)
         {
-            while (buffer[pos] != '[')
+            while (buffer[pos] != '{')
             {
                 pos++;
             }
@@ -123,7 +123,7 @@ namespace Greatbone.Core
             a();
 
             level--;
-            while (buffer[pos] != ']')
+            while (buffer[pos] != '}')
             {
                 pos++;
             }
@@ -149,7 +149,7 @@ namespace Greatbone.Core
         public bool Read<T>(ref T value) where T : ISerial, new()
         {
             T o = (value != null) ? value : new T();
-            ReadObject(() => { o.ReadFrom(this); });
+            ReadArray(() => { o.ReadFrom(this); });
             value = o;
             return true;
         }
@@ -219,7 +219,7 @@ namespace Greatbone.Core
 
         public bool Read(string name, ref short value)
         {
-            if (SeekInLevel(name))
+            if (SeekInKnot(name))
             {
                 return Read(ref value);
             }
@@ -228,7 +228,7 @@ namespace Greatbone.Core
 
         public bool Read(string name, ref int value)
         {
-            if (SeekInLevel(name))
+            if (SeekInKnot(name))
             {
                 return Read(ref value);
             }
@@ -237,7 +237,7 @@ namespace Greatbone.Core
 
         public bool Read(string name, ref decimal value)
         {
-            if (SeekInLevel(name))
+            if (SeekInKnot(name))
             {
                 return Read(ref value);
             }
@@ -261,7 +261,7 @@ namespace Greatbone.Core
 
         public bool Read<T>(string name, List<T> value) where T : ISerial, new()
         {
-            SeekInLevel(name);
+            SeekInKnot(name);
 
             ReadArray(() =>
             {
