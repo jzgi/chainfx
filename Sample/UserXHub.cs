@@ -20,7 +20,7 @@ namespace Greatbone.Sample
         public override void Default(WebContext wc, string id)
         {
             string password = null;
-            wc.Request.GetParameter("password", ref password);
+            wc.Request.GetParam("password", ref password);
             using (var dc = Service.NewSqlContext())
             {
                 if (dc.QueryA("SELECT id, credential, name FROM users WHERE id = @id", (p) => p.Set("@id", id)))

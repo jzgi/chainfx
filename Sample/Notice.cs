@@ -1,41 +1,61 @@
 ﻿using System;
+using System.Collections.Generic;
 using Greatbone.Core;
 
 namespace Greatbone.Sample
 {
-	public class Notice : ISerial
-	{
-		public int Id;
+    public class Notice : ISerial
+    {
+        internal int id;
 
-		public DateTime Opened;
+        internal string loc;
 
-		public string Title;
+        internal char[] authorid;
 
-		public string Description;
+        internal string author;
 
-		public int OffererId;
+        internal DateTime date;
 
-		public int AcceptorId;
+        internal DateTime duedate;
 
-		public int Term;
+        internal short subtype;
 
-		public long ModifiedOn { get; set; }
+        internal string subject;
 
-		public string Key { get; }
+        internal string remark;
 
-		public void ReadFrom(ISerialReader r)
-		{
-			r.Read(nameof(Id), ref Id);
-			r.Read(nameof(Title), ref Title);
-			r.Read(nameof(OffererId), ref OffererId);
-			r.Read(nameof(Id), ref Id);
-			r.Read(nameof(Id), ref Id);
-		}
+        internal int reads;
 
-		public void WriteTo(ISerialWriter w)
-		{
-			w.Write(nameof(Id), Id);
-			w.Write(nameof(Title), Title);
-		}
-	}
+        internal List<Join> joins;
+
+
+        public void ReadFrom(ISerialReader r)
+        {
+            r.Read(nameof(id), ref id);
+            r.Read(nameof(loc), ref loc);
+            r.Read(nameof(authorid), ref authorid);
+            r.Read(nameof(subject), ref subject);
+        }
+
+        public void WriteTo(ISerialWriter w)
+        {
+            w.Write(nameof(id), id);
+            w.Write(nameof(subject), subject);
+        }
+    }
+
+    internal struct Join : ISerial
+    {
+        internal char[] id;
+
+        public void ReadFrom(ISerialReader r)
+        {
+            throw new NotImplementedException();
+        }
+
+        public void WriteTo(ISerialWriter w)
+        {
+            throw new NotImplementedException();
+        }
+    }
 }

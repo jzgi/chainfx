@@ -531,5 +531,10 @@ namespace Greatbone.Core
             }
             Put(']');
         }
+
+        public bool Read(string name, ref char[] value)
+        {
+            throw new NotImplementedException();
+        }
     }
 }

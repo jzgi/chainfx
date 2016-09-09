@@ -7,44 +7,49 @@ namespace Greatbone.Core
 {
     public static class DbParameterCollectionExtensions
     {
-        public static void Set(this DbParameterCollection coll, string name, bool value)
+        public static DbParameterCollection Set(this DbParameterCollection coll, string name, bool value)
         {
             coll.Add(new NpgsqlParameter(name, NpgsqlDbType.Boolean)
             {
                 Value = value
             });
+            return coll;
         }
 
-        public static void Set(this DbParameterCollection coll, string name, int value)
+        public static DbParameterCollection Set(this DbParameterCollection coll, string name, int value)
         {
             coll.Add(new NpgsqlParameter(name, NpgsqlDbType.Integer)
             {
                 Value = value
             });
+            return coll;
         }
 
-        public static void Set(this DbParameterCollection coll, string name, decimal value)
+        public static DbParameterCollection Set(this DbParameterCollection coll, string name, decimal value)
         {
             coll.Add(new NpgsqlParameter(name, NpgsqlDbType.Money)
             {
                 Value = value
             });
+            return coll;
         }
 
-        public static void Set(this DbParameterCollection coll, string name, string value)
+        public static DbParameterCollection Set(this DbParameterCollection coll, string name, string value)
         {
             coll.Add(new NpgsqlParameter(name, NpgsqlDbType.Text)
             {
                 Value = value
             });
+            return coll;
         }
 
-        public static void Set(this DbParameterCollection coll, string name, ArraySegment<byte> value)
+        public static DbParameterCollection Set(this DbParameterCollection coll, string name, ArraySegment<byte> value)
         {
             coll.Add(new NpgsqlParameter(name, NpgsqlDbType.Bytea)
             {
                 Value = value
             });
+            return coll;
         }
 
     }

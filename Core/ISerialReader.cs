@@ -28,6 +28,8 @@ namespace Greatbone.Core
 
         bool Read(string name, ref DateTime value);
 
+        bool Read(string name, ref char[] value);
+
         bool Read(string name, ref string value);
 
         bool Read<T>(string name, ref T value) where T : ISerial, new();

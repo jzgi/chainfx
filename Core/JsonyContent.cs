@@ -169,5 +169,10 @@ namespace Greatbone.Core
         {
             throw new NotImplementedException();
         }
+
+        public bool Read(string name, ref char[] value)
+        {
+            throw new NotImplementedException();
+        }
     }
 }

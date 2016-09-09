@@ -101,7 +101,7 @@ namespace Greatbone.Core
             return false;
         }
 
-        public bool GetParameter(string name, ref string value)
+        public bool GetParam(string name, ref string value)
         {
             StringValues values;
             if (Query.TryGetValue(name, out values))
