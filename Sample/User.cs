@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using Greatbone.Core;
 
 namespace Greatbone.Sample
@@ -19,11 +20,13 @@ namespace Greatbone.Sample
 
         internal bool admin;
 
-        internal DateTime created;
+        internal DateTime date;
 
-        internal DateTime modified;
+        internal List<FavPost> favposts;
 
-        internal DateTime loggedin;
+        internal List<Fav> friends;
+
+        internal List<Fav> fav;
 
         public string Key => id;
 
@@ -53,6 +56,17 @@ namespace Greatbone.Sample
         public static string Decrypt(string src)
         {
             return null;
+        }
+
+        public struct Fav
+        {
+            internal char[] id;
+
+        }
+
+        public struct FavPost
+        {
+            internal int id;
         }
 
     }

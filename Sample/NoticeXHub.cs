@@ -55,11 +55,11 @@ namespace Greatbone.Sample
         }
 
         /// <summary>
-        /// To join/enlist the target notice.
+        /// To join/enlist the current user to the target notice.
         /// </summary>
         /// <param name="wc"></param>
-        /// <param name="id"></param>
-        public void Join(WebContext wc, string id)
+        /// <param name="noticeid"></param>
+        public void Join(WebContext wc, string noticeid)
         {
             string userid = wc.Token.Key;
 
@@ -71,7 +71,7 @@ namespace Greatbone.Sample
 
                     // update back the table
                     List<Join> list = new List<Join>();
-                    if (dc.Execute("UPDATE notices SET joins = @joins", p => p.Set("@joins", list.ToString())) > 0)
+                    if (dc.Execute("UPDATE notices SET joins = @joins", p => p.Set("@joins", list)) > 0)
                     {
 
                     }

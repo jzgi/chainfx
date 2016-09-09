@@ -19,6 +19,10 @@ namespace Greatbone.Core
 
         int level;
 
+        public JsonText(int capacity)
+        {
+        }
+
         public JsonText(string str)
         {
             this.text = str;

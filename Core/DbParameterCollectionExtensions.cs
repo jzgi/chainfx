@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Data.Common;
 using Npgsql;
 using NpgsqlTypes;
@@ -48,6 +49,19 @@ namespace Greatbone.Core
             coll.Add(new NpgsqlParameter(name, NpgsqlDbType.Bytea)
             {
                 Value = value
+            });
+            return coll;
+        }
+
+        public static DbParameterCollection Set<T>(this DbParameterCollection coll, string name, List<T> value) where T : ISerial
+        {
+            JsonText text = new JsonText(1024);
+
+            // text.Write
+
+            coll.Add(new NpgsqlParameter(name, NpgsqlDbType.Jsonb)
+            {
+                Value = text.ToString()
             });
             return coll;
         }
