@@ -96,19 +96,9 @@ namespace Greatbone.Core
             return false;
         }
 
-
-        public bool Read(ref bool value)
-        {
-            throw new NotImplementedException();
-        }
-
-        internal bool Read(ref decimal value)
-        {
-            return false;
-        }
-
         public bool ReadArray(Action a)
         {
+            int p = pos;
             while (buffer[pos] != '[')
             {
                 pos++;
@@ -141,6 +131,33 @@ namespace Greatbone.Core
                 pos++;
             }
             return true;
+        }
+
+        public bool Read(ref bool value)
+        {
+            int p = pos;
+
+            SkipWs();
+
+            if (buffer[p] == 't' && buffer[p + 1] == 'r' && buffer[p + 2] == 'u' && buffer[p + 3] == 'e')
+            {
+                value = true;
+                return true;
+            }
+            else if (buffer[p] == 'f' && buffer[p + 1] == 'a' && buffer[p + 2] == 'l' && buffer[p + 3] == 's' && buffer[p + 4] == 'e')
+            {
+                value = false;
+                return true;
+            }
+
+            SkipWs();
+
+            return false;
+        }
+
+        internal bool Read(ref decimal value)
+        {
+            return false;
         }
 
         public bool Read<T>(ref List<T> list)

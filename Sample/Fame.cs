@@ -15,7 +15,6 @@ namespace Greatbone.Sample
         internal string qq;
         internal string wechat;
         internal string email;
-        internal string province;
         internal string city;
         internal short rank;
         internal short height;
