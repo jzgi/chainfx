@@ -3,7 +3,7 @@ using Greatbone.Core;
 
 namespace Greatbone
 {
-	public class SelfAttribute : Attribute, IChecker
+	public class ToSelfAttribute : Attribute, IChecker
 	{
 		public bool Check(WebContext wc)
 		{

@@ -16,13 +16,13 @@ namespace Greatbone.Sample
         }
 
         ///<summary>Returns the administration UI.</summary>
-        [Admin]
+        [ToAdmin]
         public override void Default(WebContext wc, string x)
         {
             base.Default(wc, x);
         }
 
-        [Self]
+        [ToSelf]
         public void Get(WebContext wc, string rcv)
         {
             List<Chat> chats;

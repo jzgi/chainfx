@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Net.Http;
 using Microsoft.AspNetCore.Http;
 
 namespace Greatbone.Core
@@ -6,7 +7,7 @@ namespace Greatbone.Core
 	///
 	/// An event queue message
 	///
-	public class MsgContext : IDisposable
+	public class MsgEvent : IDisposable
 	{
 		private string topic;
 
@@ -14,7 +15,9 @@ namespace Greatbone.Core
 
 		ISerial body;
 
-		internal MsgContext(HttpContext context)
+		HttpResponseMessage message;
+
+		internal MsgEvent(HttpContext context)
 		{
 
 		}

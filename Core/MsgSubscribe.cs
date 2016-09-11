@@ -1,6 +1,6 @@
 ﻿namespace Greatbone.Core
 {
-	public delegate void MsgDoer(MsgContext ec);
+	public delegate void MsgDoer(MsgEvent ec);
 
 	public class MsgSubscribe : IMember
 	{
@@ -15,9 +15,9 @@
 			this.doer = doer;
 		}
 
-		internal void Do(MsgContext ec)
+		internal void Do(MsgEvent me)
 		{
-			doer(ec);
+			doer(me);
 		}
 
 		public string Key => Topic;

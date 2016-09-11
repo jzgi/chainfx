@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Net;
 using System.Threading;
 using System.Threading.Tasks;
+using System.Reflection;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Hosting.Server;
 using Microsoft.AspNetCore.Hosting.Server.Features;
@@ -23,13 +24,13 @@ namespace Greatbone.Core
     /// etag -- reduces network I/O with unchanged results
     ///
     ///
-    public abstract class WebService : WebRealm, IHttpApplication<HttpContext>
+    public abstract class WebService : WebSuper, IHttpApplication<HttpContext>
     {
         // topics published by this microservice
-        readonly Set<MsgPublish> publishes;
+        readonly Set<MsgPublish> publishes = new Set<MsgPublish>(16);
 
         // topics subscribed by this microservice
-        readonly Set<MsgSubscribe> subscribes;
+        readonly Set<MsgSubscribe> subscribes = new Set<MsgSubscribe>(16);
 
         readonly KestrelServerOptions options;
 
@@ -64,6 +65,11 @@ namespace Greatbone.Core
             addrs.Add("http://" + cfg.inner); // clustered msg queue
 
             ParseAddress(cfg.inner, out mqaddr, out mqport);
+
+            foreach (var a in GetType().GetTypeInfo().GetCustomAttributes<PublishAttribute>())
+            {
+                publishes.Add(new MsgPublish(a.Topic, a.Subtype));
+            }
         }
 
 

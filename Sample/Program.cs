@@ -13,7 +13,7 @@ namespace Greatbone.Sample
         /// <param name="args"></param>
         public static void Main(string[] args)
         {
-            JsonContentTest.Test();
+            // JsonContentTest.Test();
 
             DbConfig postgres = new DbConfig
             {

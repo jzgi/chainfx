@@ -3,7 +3,7 @@ using Greatbone.Core;
 
 namespace Greatbone.Sample
 {
-	public class AdminAttribute : Attribute, IChecker
+	public class ToAdminAttribute : Attribute, IChecker
 	{
 		public bool Check(WebContext wc)
 		{

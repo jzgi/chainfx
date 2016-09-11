@@ -5,9 +5,9 @@ using System.Reflection;
 namespace Greatbone.Core
 {
     /// <summary>
-    /// Represents the root of a set of controllers, which may include sub controllers and/or a multiplexer hub controller.
+    /// A independent set of controllers, including sub controllers and/or multiplexer hub controller.
     /// </summary>
-    public abstract class WebRealm : WebSub, ICacheRealm
+    public abstract class WebSuper : WebSub, ICacheRealm
     {
         // the added sub controllers, if any
         private Set<WebSub> subs;
@@ -15,7 +15,7 @@ namespace Greatbone.Core
         // the attached multiplexer hub controller, if any
         private WebXHub xhub;
 
-        protected WebRealm(WebSubConfig wsc) : base(wsc)
+        protected WebSuper(WebSubConfig wsc) : base(wsc)
         {
         }
 
@@ -28,48 +28,44 @@ namespace Greatbone.Core
                 subs = new Set<WebSub>(16);
             }
             // create instance by reflection
-            Type type = typeof(TSub);
-            ConstructorInfo ci = type.GetConstructor(new[] { typeof(WebSubConfig) });
+            Type typ = typeof(TSub);
+            ConstructorInfo ci = typ.GetConstructor(new[] { typeof(WebSubConfig) });
             if (ci == null)
             {
-                throw new WebException(type + ": the constructor not found (WebServiceContext)");
+                throw new WebException(typ + ": the constructor not found (WebServiceContext)");
             }
-            WebSubConfig wsc = new WebSubConfig
+            WebSubConfig cfg = new WebSubConfig
             {
                 key = key,
                 Parent = this,
                 Service = Service,
                 IsX = false
             };
-            TSub sub = (TSub)ci.Invoke(new object[] { wsc });
+            TSub sub = (TSub)ci.Invoke(new object[] { cfg });
 
             subs.Add(sub);
-
-            //
-            // check declared event handler methods
 
             return sub;
         }
 
-        public THub SetXHub<THub>(bool auth) where THub : WebXHub
+        public TXHub SetXHub<TXHub>(bool auth) where TXHub : WebXHub
         {
             // create instance
-            Type type = typeof(THub);
-            ConstructorInfo ci = type.GetConstructor(new[] { typeof(WebSubConfig) });
+            Type typ = typeof(TXHub);
+            ConstructorInfo ci = typ.GetConstructor(new[] { typeof(WebSubConfig) });
             if (ci == null)
             {
-                throw new WebException(type + ": the constructor not found (WebServiceContext)");
+                throw new WebServiceException(typ + ": the constructor not found (WebServiceContext)");
             }
-            WebSubConfig wsc = new WebSubConfig
+            WebSubConfig cfg = new WebSubConfig
             {
                 key = "X",
                 Parent = this,
                 Service = Service,
                 IsX = true
             };
-            THub hub = (THub)ci.Invoke(new object[] { wsc });
+            TXHub hub = (TXHub)ci.Invoke(new object[] { cfg });
 
-            // call the initialization and set
             xhub = hub;
 
             return hub;

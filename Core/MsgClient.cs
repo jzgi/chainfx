@@ -2,28 +2,28 @@
 
 namespace Greatbone.Core
 {
-	public class MsgClient
-	{
-		private Thread reconn;
+    public class MsgClient
+    {
+        private Thread reconn;
 
-		MsgConnection[] connections;
+        MsgConnection[] connections;
 
-		public MsgClient()
-		{
-			reconn=new Thread(Reconnect);
-		}
+        public MsgClient()
+        {
+            reconn = new Thread(Reconnect);
+        }
 
-		void Reconnect()
-		{
-			foreach (var con in connections)
-			{
+        void Reconnect()
+        {
+            foreach (var con in connections)
+            {
 
-			}
-		}
+            }
+        }
 
-		public void MakeConnections(string[] hosts)
-		{
+        public void MakeConnections(string[] hosts)
+        {
 
-		}
-	}
+        }
+    }
 }

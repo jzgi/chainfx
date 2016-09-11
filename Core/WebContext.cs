@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Http;
+﻿using System;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Http.Features;
 
 namespace Greatbone.Core
@@ -8,7 +9,7 @@ namespace Greatbone.Core
     ///
     /// buffer pooling -- reduces GC overhead when dealing with asynchronous request/response I/O
     ///
-    public class WebContext : DefaultHttpContext
+    public class WebContext : DefaultHttpContext, IDisposable
     {
         internal WebContext(IFeatureCollection features) : base(features)
         {
@@ -17,6 +18,11 @@ namespace Greatbone.Core
         protected override HttpRequest InitializeHttpRequest() => new WebRequest(this);
 
         protected override HttpResponse InitializeHttpResponse() => new WebResponse(this);
+
+        public void Dispose()
+        {
+            throw new NotImplementedException();
+        }
 
         public new WebRequest Request => (WebRequest) base.Request;
 

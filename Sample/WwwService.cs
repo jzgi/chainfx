@@ -2,57 +2,60 @@
 
 namespace Greatbone.Sample
 {
-	///
-	/// The website service controller.
-	///
-	public class WwwService : WebService
-	{
-		public WwwService(WebServiceConfig cfg) : base(cfg)
-		{
-			// Subscribe("amcom", x =>
-			// 	{
-			// 		string s = x.GetType().Name;
-			// 	}
-			// );
-		}
+    ///
+    /// The website service controller.
+    ///
+    [Publish("visits_upd")]
+    public class WwwService : WebService
+    {
+        public WwwService(WebServiceConfig cfg) : base(cfg)
+        {
 
-		///
-		/// <summary>Returns the default HTML page</summary>
-		public override void Default(WebContext wc)
-		{
-			base.Default(wc);
-		}
 
-		public void Home(WebContext wc)
-		{
-		}
+            Subscribe("users_upd", x =>
+            {
+                string s = x.GetType().Name;
+            });
+        }
 
-		public void Posts(WebContext wc)
-		{
-		}
+        ///
+        /// <summary>Returns the default HTML page</summary>
+        public override void Default(WebContext wc)
+        {
+            base.Default(wc);
+        }
 
-		public void Notices(WebContext wc)
-		{
-		}
+        public void Home(WebContext wc)
+        {
+        }
 
-		public void Search(WebContext wc)
-		{
-		}
+        public void Posts(WebContext wc)
+        {
+        }
 
-		public void Contact(WebContext wc)
-		{
-			using (var sc = NewSqlContext())
-			{
-				sc.BeginTransaction();
+        public void Notices(WebContext wc)
+        {
+        }
 
-//				sc.DoNonQuery("inaert", o => o.ToString(););
+        public void Search(WebContext wc)
+        {
+        }
 
-				// msg
+        public void Contact(WebContext wc)
+        {
+            using (var sc = NewSqlContext())
+            {
+                sc.BeginTransaction();
 
-				sc.CommitTransaction();
-			}
+                //				sc.DoNonQuery("inaert", o => o.ToString(););
 
-			wc.Response.StatusCode = 200;
-		}
-	}
+                // msg
+
+                sc.CommitTransaction();
+            }
+
+            wc.Response.StatusCode = 200;
+        }
+
+    }
 }
