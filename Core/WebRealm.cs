@@ -15,7 +15,7 @@ namespace Greatbone.Core
         // the attached multiplexer hub controller, if any
         private WebXHub xhub;
 
-        protected WebRealm(WebSubConf wsc) : base(wsc)
+        protected WebRealm(WebSubConfig wsc) : base(wsc)
         {
         }
 
@@ -29,12 +29,12 @@ namespace Greatbone.Core
             }
             // create instance by reflection
             Type type = typeof(TSub);
-            ConstructorInfo ci = type.GetConstructor(new[] { typeof(WebSubConf) });
+            ConstructorInfo ci = type.GetConstructor(new[] { typeof(WebSubConfig) });
             if (ci == null)
             {
                 throw new WebException(type + ": the constructor not found (WebServiceContext)");
             }
-            WebSubConf wsc = new WebSubConf
+            WebSubConfig wsc = new WebSubConfig
             {
                 key = key,
                 Parent = this,
@@ -55,12 +55,12 @@ namespace Greatbone.Core
         {
             // create instance
             Type type = typeof(THub);
-            ConstructorInfo ci = type.GetConstructor(new[] { typeof(WebSubConf) });
+            ConstructorInfo ci = type.GetConstructor(new[] { typeof(WebSubConfig) });
             if (ci == null)
             {
                 throw new WebException(type + ": the constructor not found (WebServiceContext)");
             }
-            WebSubConf wsc = new WebSubConf
+            WebSubConfig wsc = new WebSubConfig
             {
                 key = "X",
                 Parent = this,

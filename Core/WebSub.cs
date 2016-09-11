@@ -15,18 +15,18 @@ namespace Greatbone.Core
         // the default action
         readonly WebAction defaction;
 
-        public WebSubConf Conf { get; internal set; }
+        public WebSubConfig Config { get; internal set; }
 
         ///
         /// The key by which this sub-controller is added to its parent
         ///
-        public string Key => Conf.key;
+        public string Key => Config.key;
 
         /// <summary>The service that this controller resides in.</summary>
         ///
-        public WebService Service => Conf.Service;
+        public WebService Service => Config.Service;
 
-        public WebSub Parent => Conf.Service;
+        public WebSub Parent => Config.Service;
 
         public string StaticPath { get; internal set; }
 
@@ -40,23 +40,23 @@ namespace Greatbone.Core
         public StaticContent DefaultStatic { get; }
 
         // the argument makes state-passing more convenient
-        protected WebSub(WebSubConf wsc)
+        protected WebSub(WebSubConfig cfg)
         {
 
-            Conf = wsc;
+            Config = cfg;
 
             // initialize build for the first time
-            if (wsc.Service == null)
+            if (cfg.Service == null)
             {
                 WebService svc = this as WebService;
                 if (svc == null)
                 {
                     throw new InvalidOperationException("not a service class");
                 }
-                wsc.Service = svc;
+                cfg.Service = svc;
             }
 
-            StaticPath = wsc.Parent == null ? Key : Path.Combine(Parent.StaticPath, Key);
+            StaticPath = cfg.Parent == null ? Key : Path.Combine(Parent.StaticPath, Key);
 
             // load static files, if any
             if (StaticPath != null && Directory.Exists(StaticPath))
@@ -96,7 +96,7 @@ namespace Greatbone.Core
             {
                 ParameterInfo[] pis = mi.GetParameters();
                 WebAction a = null;
-                if (wsc.IsX)
+                if (cfg.IsX)
                 {
                     if (pis.Length == 2 && pis[0].ParameterType == typeof(WebContext) &&
                         pis[1].ParameterType == typeof(string))

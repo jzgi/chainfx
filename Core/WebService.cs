@@ -45,10 +45,10 @@ namespace Greatbone.Core
         private MsgClient client;
 
 
-        protected WebService(WebServiceConf wsc) : base(wsc)
+        protected WebService(WebServiceConfig cfg) : base(cfg)
         {
             // init eqc client
-            foreach (var ep in wsc.foreign)
+            foreach (var ep in cfg.foreign)
             {
                 //				ParseAddress()
             }
@@ -60,10 +60,10 @@ namespace Greatbone.Core
 
             server = new KestrelServer(Options.Create(options), Lifetime, logger);
             ICollection<string> addrs = server.Features.Get<IServerAddressesFeature>().Addresses;
-            addrs.Add(wsc.tls ? "https://" : "http://" + wsc.outer);
-            addrs.Add("http://" + wsc.inner); // clustered msg queue
+            addrs.Add(cfg.tls ? "https://" : "http://" + cfg.outer);
+            addrs.Add("http://" + cfg.inner); // clustered msg queue
 
-            ParseAddress(wsc.inner, out mqaddr, out mqport);
+            ParseAddress(cfg.inner, out mqaddr, out mqport);
         }
 
 
@@ -195,7 +195,7 @@ namespace Greatbone.Core
 
         public DbContext NewSqlContext()
         {
-            DbConf dsb = ((WebServiceConf)Conf).db;
+            DbConf dsb = ((WebServiceConfig)Config).db;
             NpgsqlConnectionStringBuilder builder = new NpgsqlConnectionStringBuilder()
             {
                 Host = dsb.host,

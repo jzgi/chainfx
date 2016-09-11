@@ -4,7 +4,7 @@ namespace Greatbone.Sample
 {
 	public class BrandXHub : WebXHub
 	{
-		public BrandXHub(WebSubConf wsi) : base(wsi)
+		public BrandXHub(WebSubConfig wsi) : base(wsi)
 		{
 		}
 	}

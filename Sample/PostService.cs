@@ -6,7 +6,7 @@ namespace Greatbone.Sample
 {
     public class PostService : WebService
     {
-        public PostService(WebServiceConf wsb) : base(wsb)
+        public PostService(WebServiceConfig cfg) : base(cfg)
         {
             SetXHub<PostXHub>(false);
         }

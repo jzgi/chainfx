@@ -7,7 +7,7 @@ namespace Greatbone.Sample
 	///
 	public class WwwService : WebService
 	{
-		public WwwService(WebServiceConf wsi) : base(wsi)
+		public WwwService(WebServiceConfig cfg) : base(cfg)
 		{
 			// Subscribe("amcom", x =>
 			// 	{

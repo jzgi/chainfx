@@ -7,7 +7,7 @@ namespace Greatbone.Sample
 	///
 	public class FameXHub : WebXHub
 	{
-		public FameXHub(WebSubConf wsi) : base(wsi)
+		public FameXHub(WebSubConfig cfg) : base(cfg)
 		{
 		}
 

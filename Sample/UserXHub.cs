@@ -10,7 +10,7 @@ namespace Greatbone.Sample
     ///
     public class UserXHub : WebXHub
     {
-        public UserXHub(WebSubConf wsi) : base(wsi)
+        public UserXHub(WebSubConfig cfg) : base(cfg)
         {
         }
 

@@ -11,7 +11,7 @@ namespace Greatbone.Core
         // the added sub controllers
         private Set<WebSub> subs;
 
-        protected WebXHub(WebSubConf wsc) : base(wsc)
+        protected WebXHub(WebSubConfig wsc) : base(wsc)
         {
         }
 
@@ -23,12 +23,12 @@ namespace Greatbone.Core
             }
             // create instance by reflection
             Type type = typeof(TSub);
-            ConstructorInfo ci = type.GetConstructor(new[] { typeof(WebSubConf) });
+            ConstructorInfo ci = type.GetConstructor(new[] { typeof(WebSubConfig) });
             if (ci == null)
             {
                 throw new WebException(type + ": the constructor not found (WebServiceContext)");
             }
-            WebSubConf wsc = new WebSubConf
+            WebSubConfig wsc = new WebSubConfig
             {
                 key = key,
                 Parent = this,

@@ -7,7 +7,7 @@ namespace Greatbone.Sample
 	[Publish("topicname")]
 	public class FameService : WebService
 	{
-		public FameService(WebServiceConf wsi) : base(wsi)
+		public FameService(WebServiceConfig cfg) : base(cfg)
 		{
 			SetXHub<FameXHub>(false);
 		}

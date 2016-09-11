@@ -5,7 +5,7 @@ namespace Greatbone.Sample
 {
     public class PostXHub : WebXHub
     {
-        public PostXHub(WebSubConf wsi) : base(wsi)
+        public PostXHub(WebSubConfig cfg) : base(cfg)
         {
         }
 

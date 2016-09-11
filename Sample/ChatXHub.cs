@@ -11,7 +11,7 @@ namespace Greatbone.Sample
     {
         private ConcurrentDictionary<string, List<Chat>> online;
 
-        public ChatXHub(WebSubConf wsi) : base(wsi)
+        public ChatXHub(WebSubConfig cfg) : base(cfg)
         {
         }
 

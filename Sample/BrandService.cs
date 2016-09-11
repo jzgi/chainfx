@@ -7,7 +7,7 @@ namespace Greatbone.Sample
 	///
 	public class BrandService : WebService
 	{
-		public BrandService(WebServiceConf wsi) : base(wsi)
+		public BrandService(WebServiceConfig cfg) : base(cfg)
 		{
 			SetXHub<BrandXHub>(false);
 		}

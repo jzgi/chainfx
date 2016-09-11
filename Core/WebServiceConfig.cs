@@ -15,7 +15,7 @@ namespace Greatbone.Core
     /// }
     /// </example>
     ///
-    public class WebServiceConf : WebSubConf, ISerial
+    public class WebServiceConfig : WebSubConfig, ISerial
     {
         // public socket address
         internal string outer;
@@ -56,7 +56,7 @@ namespace Greatbone.Core
             w.Write(nameof(options), options);
         }
 
-        public WebServiceConf Load(string file)
+        public WebServiceConfig Load(string file)
         {
             try
             {
