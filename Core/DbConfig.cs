@@ -1,6 +1,6 @@
 namespace Greatbone.Core
 {
-    public class DbConf : ISerial
+    public class DbConfig : ISerial
     {
         internal string host;
 

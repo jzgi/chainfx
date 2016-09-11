@@ -28,7 +28,7 @@ namespace Greatbone.Core
         // event system socket addresses
         internal string[] foreign;
 
-        internal DbConf db;
+        internal DbConfig db;
 
         internal Dictionary<string, string> options;
 

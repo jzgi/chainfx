@@ -195,7 +195,7 @@ namespace Greatbone.Core
 
         public DbContext NewSqlContext()
         {
-            DbConf dsb = ((WebServiceConfig)Config).db;
+            DbConfig dsb = ((WebServiceConfig)Config).db;
             NpgsqlConnectionStringBuilder builder = new NpgsqlConnectionStringBuilder()
             {
                 Host = dsb.host,
