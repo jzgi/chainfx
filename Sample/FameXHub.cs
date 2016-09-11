@@ -7,7 +7,7 @@ namespace Greatbone.Sample
 	///
 	public class FameXHub : WebXHub
 	{
-		public FameXHub(WebServiceContext wsc) : base(wsc)
+		public FameXHub(WebSubConf wsi) : base(wsi)
 		{
 		}
 

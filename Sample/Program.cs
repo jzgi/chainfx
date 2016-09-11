@@ -15,7 +15,7 @@ namespace Greatbone.Sample
         {
             JsonContentTest.Test();
 
-            DbBuilder dat = new DbBuilder
+            DbConf dat = new DbConf
             {
                 host = "60.205.104.239",
                 port = 5432,
@@ -23,7 +23,7 @@ namespace Greatbone.Sample
                 password = "Zou###1989"
             };
 
-            var www = new WwwService(new WebServiceBuilder
+            var www = new WwwService(new WebServiceConf
             {
                 key = "www",
                 outer = "127.0.0.1:8080",
@@ -36,7 +36,7 @@ namespace Greatbone.Sample
             }.Load("www.json")
             );
 
-            var fame = new FameService(new WebServiceBuilder
+            var fame = new FameService(new WebServiceConf
             {
                 key = "fame",
                 outer = "127.0.0.1:8081",
@@ -50,7 +50,7 @@ namespace Greatbone.Sample
             }.Load("fame.json")
             );
 
-            var brand = new BrandService(new WebServiceBuilder
+            var brand = new BrandService(new WebServiceConf
             {
                 key = "biz",
                 outer = "127.0.0.1:8082",
@@ -64,7 +64,7 @@ namespace Greatbone.Sample
             }.Load("biz.json")
             );
 
-            var post = new PostService(new WebServiceBuilder
+            var post = new PostService(new WebServiceConf
             {
                 key = "post",
                 outer = "127.0.0.1:8083",
@@ -78,7 +78,7 @@ namespace Greatbone.Sample
             }.Load("post.json")
             );
 
-            var notice = new NoticeService(new WebServiceBuilder
+            var notice = new NoticeService(new WebServiceConf
             {
                 key = "notice",
                 outer = "127.0.0.1:8084",
@@ -92,7 +92,7 @@ namespace Greatbone.Sample
             }.Load("notice.json")
             );
 
-            var user = new UserService(new WebServiceBuilder
+            var user = new UserService(new WebServiceConf
             {
                 key = "user",
                 outer = "127.0.0.1:8085",
@@ -106,7 +106,7 @@ namespace Greatbone.Sample
             }.Load("user.json")
             );
 
-            var chat = new ChatService(new WebServiceBuilder
+            var chat = new ChatService(new WebServiceConf
             {
                 key = "chat",
                 outer = "127.0.0.1:8086",

@@ -5,7 +5,7 @@ namespace Greatbone.Sample
 {
     public class NoticeXHub : WebXHub
     {
-        public NoticeXHub(WebServiceContext wsc) : base(wsc)
+        public NoticeXHub(WebSubConf wsi) : base(wsi)
         {
         }
 

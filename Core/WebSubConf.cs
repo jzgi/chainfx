@@ -1,6 +1,6 @@
 ﻿namespace Greatbone.Core
 {
-    public class WebServiceContext
+    public class WebSubConf
     {
         // SETTINGS
         //

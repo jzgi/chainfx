@@ -7,7 +7,7 @@ namespace Greatbone.Sample
     ///
     public class NoticeService : WebService
     {
-        public NoticeService(WebServiceBuilder wsc) : base(wsc)
+        public NoticeService(WebServiceConf wsi) : base(wsi)
         {
             SetXHub<NoticeXHub>(false);
         }

@@ -45,7 +45,7 @@ namespace Greatbone.Core
         private MsgClient client;
 
 
-        protected WebService(WebServiceBuilder wsc) : base(wsc)
+        protected WebService(WebServiceConf wsc) : base(wsc)
         {
             // init eqc client
             foreach (var ep in wsc.foreign)
@@ -195,7 +195,7 @@ namespace Greatbone.Core
 
         public DbContext NewSqlContext()
         {
-            DbBuilder dsb = ((WebServiceBuilder)Context).db;
+            DbConf dsb = ((WebServiceConf)Conf).db;
             NpgsqlConnectionStringBuilder builder = new NpgsqlConnectionStringBuilder()
             {
                 Host = dsb.host,

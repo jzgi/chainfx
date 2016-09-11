@@ -8,7 +8,7 @@ namespace Greatbone.Sample
     ///
     public class UserService : WebService
     {
-        public UserService(WebServiceBuilder wsc) : base(wsc)
+        public UserService(WebServiceConf wsi) : base(wsi)
         {
             SetXHub<UserXHub>(false);
         }

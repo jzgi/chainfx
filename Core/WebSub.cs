@@ -15,18 +15,18 @@ namespace Greatbone.Core
         // the default action
         readonly WebAction defaction;
 
-        public WebServiceContext Context { get; internal set; }
+        public WebSubConf Conf { get; internal set; }
 
         ///
         /// The key by which this sub-controller is added to its parent
         ///
-        public string Key => Context.key;
+        public string Key => Conf.key;
 
         /// <summary>The service that this controller resides in.</summary>
         ///
-        public WebService Service => Context.Service;
+        public WebService Service => Conf.Service;
 
-        public WebSub Parent => Context.Parent;
+        public WebSub Parent => Conf.Service;
 
         public string StaticPath { get; internal set; }
 
@@ -40,19 +40,19 @@ namespace Greatbone.Core
         public StaticContent DefaultStatic { get; }
 
         // the argument makes state-passing more convenient
-        protected WebSub(WebServiceContext wsc)
+        protected WebSub(WebSubConf wsc)
         {
-            Context = wsc;
 
-            // initialize the context for the first time
+            Conf = wsc;
+
+            // initialize build for the first time
             if (wsc.Service == null)
             {
                 WebService svc = this as WebService;
                 if (svc == null)
                 {
-                    throw new InvalidOperationException();
+                    throw new InvalidOperationException("not a service class");
                 }
-                svc.Context = (WebServiceBuilder)wsc;
                 wsc.Service = svc;
             }
 
@@ -135,7 +135,7 @@ namespace Greatbone.Core
         {
 
         }
-        
+
         public virtual void Handle(string relative, WebContext wc)
         {
             if (relative.IndexOf('.') != -1) // static handling

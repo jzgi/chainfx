@@ -15,7 +15,7 @@ namespace Greatbone.Core
     /// }
     /// </example>
     ///
-    public class WebServiceBuilder : WebServiceContext, ISerial
+    public class WebServiceConf : WebSubConf, ISerial
     {
         // public socket address
         internal string outer;
@@ -28,7 +28,7 @@ namespace Greatbone.Core
         // event system socket addresses
         internal string[] foreign;
 
-        internal DbBuilder db;
+        internal DbConf db;
 
         internal Dictionary<string, string> options;
 
@@ -56,7 +56,7 @@ namespace Greatbone.Core
             w.Write(nameof(options), options);
         }
 
-        public WebServiceBuilder Load(string file)
+        public WebServiceConf Load(string file)
         {
             try
             {
@@ -82,30 +82,4 @@ namespace Greatbone.Core
         }
     }
 
-    public class DbBuilder : ISerial
-    {
-        internal string host;
-
-        internal int port;
-
-        internal string username;
-
-        internal string password;
-
-        public void ReadFrom(ISerialReader r)
-        {
-            r.Read(nameof(host), ref host);
-            r.Read(nameof(port), ref port);
-            r.Read(nameof(username), ref username);
-            r.Read(nameof(password), ref password);
-        }
-
-        public void WriteTo(ISerialWriter w)
-        {
-            w.Write(nameof(host), host);
-            w.Write(nameof(port), port);
-            w.Write(nameof(username), username);
-            w.Write(nameof(password), password);
-        }
-    }
 }

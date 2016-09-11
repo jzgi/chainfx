@@ -12,7 +12,7 @@ namespace Greatbone.Sample
 		// the ongoing chat sessions, keyed by receiver's ID
 		private ConcurrentDictionary<string, Wrap> chats = new ConcurrentDictionary<string, Wrap>();
 
-		public ChatService(WebServiceBuilder wsc) : base(wsc)
+		public ChatService(WebServiceConf wsi) : base(wsi)
 		{
 			SetXHub<ChatXHub>(true);
 		}
