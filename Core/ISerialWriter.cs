@@ -14,11 +14,15 @@ namespace Greatbone.Core
 
         void Write(string name, int value);
 
+        void Write(string name, long value);
+
         void Write(string name, decimal value);
 
         void Write(string name, DateTime value);
 
         void Write(string name, string value);
+
+        void Write(string name, char[] value);
 
         void Write<T>(string name, T value) where T : ISerial;
 

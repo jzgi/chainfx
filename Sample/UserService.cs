@@ -14,9 +14,9 @@ namespace Greatbone.Sample
         }
 
         ///
-        /// Registers or creates a user account.
+        /// Creates a new user account.
         ///
-        public void Register(WebContext wc)
+        public void New(WebContext wc)
         {
             User u = null;
 
@@ -33,7 +33,7 @@ namespace Greatbone.Sample
             }
         }
 
-        public void Search(WebContext wc)
+        public void Find(WebContext wc)
         {
             ArraySegment<byte> bytes = wc.Request.Bytes;
             ad = wc;

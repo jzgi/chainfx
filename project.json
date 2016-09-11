@@ -3,6 +3,7 @@
   "description": "Sample Application",
   "buildOptions": {
     "emitEntryPoint": true,
+    "debugType": "portable",
     "additionalArguments": []
   },
   "dependencies": {

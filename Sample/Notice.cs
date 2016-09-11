@@ -24,8 +24,6 @@ namespace Greatbone.Sample
 
         internal string remark;
 
-        internal int reads;
-
         internal List<Join> joins;
 
 
@@ -34,13 +32,27 @@ namespace Greatbone.Sample
             r.Read(nameof(id), ref id);
             r.Read(nameof(loc), ref loc);
             r.Read(nameof(authorid), ref authorid);
+            r.Read(nameof(author), ref author);
+            r.Read(nameof(date), ref date);
+            r.Read(nameof(duedate), ref duedate);
+            r.Read(nameof(subtype), ref subtype);
             r.Read(nameof(subject), ref subject);
+            r.Read(nameof(remark), ref remark);
+            r.Read(nameof(joins), ref joins);
         }
 
-        public void WriteTo(ISerialWriter w)
+        public void WriteTo(ISerialWriter r)
         {
-            w.Write(nameof(id), id);
-            w.Write(nameof(subject), subject);
+            r.Write(nameof(id), id);
+            r.Write(nameof(loc), loc);
+            r.Write(nameof(authorid), authorid);
+            r.Write(nameof(author), author);
+            r.Write(nameof(date), date);
+            r.Write(nameof(duedate), duedate);
+            r.Write(nameof(subtype), subtype);
+            r.Write(nameof(subject), subject);
+            r.Write(nameof(remark), remark);
+            r.Write(nameof(joins), joins);
         }
     }
 
