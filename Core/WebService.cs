@@ -17,7 +17,7 @@ using Npgsql;
 namespace Greatbone.Core
 {
     ///
-    /// A web service controller that may contain sub-controllers and/or a multiplexer.
+    /// A web microservice controller that may contain sub-controllers and/or a multiplexer.
     ///
     /// cache-control -- elimicates redundant requests (max-age) or data queries (not-modified).
     /// response cache -- directly returns shared cached contents
@@ -35,9 +35,6 @@ namespace Greatbone.Core
 
         private IPAddress mqaddr;
         private int mqport;
-
-        // topics published by this microservice
-        readonly Set<MsgPublish> publishes = new Set<MsgPublish>(16);
 
         // topics subscribed by this microservice
         readonly Set<MsgSubscribe> subscribes = new Set<MsgSubscribe>(16);
@@ -66,10 +63,6 @@ namespace Greatbone.Core
 
             ParseAddress(cfg.inner, out mqaddr, out mqport);
 
-            foreach (var a in GetType().GetTypeInfo().GetCustomAttributes<PublishAttribute>())
-            {
-                publishes.Add(new MsgPublish(a.Topic, a.Subtype));
-            }
         }
 
 

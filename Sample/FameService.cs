@@ -4,7 +4,6 @@ namespace Greatbone.Sample
 {
 	///
 	///
-	[Publish("topicname")]
 	public class FameService : WebService
 	{
 		public FameService(WebServiceConfig cfg) : base(cfg)

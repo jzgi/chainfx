@@ -5,7 +5,6 @@ namespace Greatbone.Sample
     ///
     /// The website service controller.
     ///
-    [Publish("visits_upd")]
     public class WwwService : WebService
     {
         public WwwService(WebServiceConfig cfg) : base(cfg)

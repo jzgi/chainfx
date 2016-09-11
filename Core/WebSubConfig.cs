@@ -7,7 +7,7 @@
 
         internal string key;
 
-        internal string subtype;
+        internal string subkey;
 
         internal bool debug;
 
