@@ -1,8 +1,8 @@
 ﻿namespace Greatbone.Core
 {
-    public class HtmlWriter : ContentWriter
+    public class HtmlContent : DynamicContent
     {
-        public HtmlWriter(int capacity) : base(capacity)
+        public HtmlContent(int capacity) : base(capacity)
         {
         }
 

@@ -12,7 +12,7 @@ namespace Greatbone.Core
             string rec = "{\"name\":\"jay\", \"age\":12}";
 
             byte[] b = Encoding.UTF8.GetBytes(rec);
-            JsonReader jc = new JsonReader(b, b.Length);
+            JsonContent jc = new JsonContent(b, b.Length);
 
             string name = null;
             int age = 0;
@@ -25,7 +25,7 @@ namespace Greatbone.Core
         }
     }
 
-    public class JsonReader : ContentReader, ISerialReader
+    public class JsonContent : DynamicContent, ISerialReader, ISerialWriter
     {
         JsonKnot[] knots = new JsonKnot[8];
 
@@ -35,7 +35,7 @@ namespace Greatbone.Core
         int pos;
 
 
-        public JsonReader(byte[] buffer, int count) : base(buffer, count)
+        public JsonContent(byte[] buffer, int count) : base(buffer, count)
         {
         }
 
@@ -353,6 +353,328 @@ namespace Greatbone.Core
         }
 
         public bool Read<T>(string name, ref Dictionary<string, T> value)
+        {
+            throw new NotImplementedException();
+        }
+
+
+
+        public JsonContent(int capacity) : base(capacity) { }
+
+
+        //
+        // WRITES
+        //
+
+        public void WriteArray(Action inner)
+        {
+            level++;
+            Put('[');
+
+            knots[level].array = true;
+
+            Put(']');
+            level--;
+        }
+
+        public void WriteObject(Action inner)
+        {
+            Put('{');
+
+            level++;
+            knots[level].array = false;
+
+            Put('}');
+
+            level--;
+        }
+
+
+        public void Write(string name, short value)
+        {
+            if (knots[level].ordinal > 0)
+            {
+                Put(','); // precede a comma
+            }
+
+            Put('"');
+            Put(name);
+            Put('"');
+            Put(':');
+            Put(value);
+
+            knots[level].ordinal++;
+        }
+
+        public void Write(string name, int value)
+        {
+            if (knots[level].ordinal > 0)
+            {
+                Put(','); // precede a comma
+            }
+
+            Put('"');
+            Put(name);
+            Put('"');
+            Put(':');
+            Put(value);
+
+            knots[level].ordinal++;
+        }
+
+        public void Write(string name, decimal value)
+        {
+            if (knots[level].ordinal > 0)
+            {
+                Put(','); // precede a comma
+            }
+
+            Put('"');
+            Put(name);
+            Put('"');
+            Put(':');
+            Put(value);
+
+            knots[level].ordinal++;
+        }
+
+        public void Write(string name, DateTime value)
+        {
+            if (knots[level].ordinal > 0)
+            {
+                Put(','); // precede a comma
+            }
+
+            Put('"');
+            Put(name);
+            Put('"');
+            Put(':');
+            Put(value);
+
+            knots[level].ordinal++;
+        }
+
+        public void Write(string name, string value)
+        {
+            if (knots[level].ordinal > 0)
+            {
+                Put(','); // precede a comma
+            }
+
+            Put('"');
+            Put(name);
+            Put('"');
+            Put(':');
+
+            if (value == null)
+            {
+                Put("null");
+            }
+            else
+            {
+                Put('"');
+                Put(value);
+                Put('"');
+            }
+
+            knots[level].ordinal++;
+        }
+
+        public void Write<T>(string name, T value) where T : ISerial
+        {
+            if (knots[level].ordinal > 0)
+            {
+                Put(','); // precede a comma
+            }
+
+            Put('"');
+            Put(name);
+            Put('"');
+            Put(':');
+
+            if (EqualityComparer<T>.Default.Equals(value, default(T)))
+            {
+                Put("null");
+            }
+            else
+            {
+                WriteObject(() => { value.WriteTo(this); });
+            }
+
+            knots[level].ordinal++;
+        }
+
+        public void Write(string name, List<ISerial> list)
+        {
+            if (knots[level].ordinal > 0)
+            {
+                Put(','); // precede a comma
+            }
+
+            Put('"');
+            Put(name);
+            Put('"');
+            Put(':');
+
+            Put('[');
+            if (list != null)
+            {
+                for (int i = 0; i < list.Count; i++)
+                {
+                    if (i > 0)
+                    {
+                        Put(',');
+                    }
+
+                    ISerial obj = list[i];
+
+                    Put('{');
+                    obj.WriteTo(this);
+                    Put('}');
+                }
+            }
+            Put(']');
+
+            knots[level].ordinal++;
+        }
+
+        public void Write(string name, bool value)
+        {
+        }
+
+        public void Write<T>(string name, List<T> list)
+        {
+        }
+
+        public void Write<V>(string name, Dictionary<string, V> dict)
+        {
+            Put('"');
+            Put(name);
+            Put('"');
+            Put(':');
+
+            Put('{');
+            foreach (var pair in dict)
+            {
+                Put('"');
+                Put(pair.Key);
+                Put('"');
+                Put(':');
+
+                //				PutValue(pair.Value);
+            }
+
+            Put('}');
+        }
+
+        public void Write(string name, params string[] array)
+        {
+            throw new System.NotImplementedException();
+        }
+
+        public void Write(string name, params ISerial[] array)
+        {
+            Put('"');
+            Put(name);
+            Put('"');
+            Put(':');
+
+            Put('[');
+            if (array != null)
+            {
+                for (int i = 0; i < array.Length; i++)
+                {
+                    if (i > 0)
+                    {
+                        Put(',');
+                    }
+
+                    ISerial obj = array[i];
+
+                    Put('{');
+                    obj.WriteTo(this);
+                    Put('}');
+                }
+            }
+            Put(']');
+        }
+
+        public bool Read(string name, char[] value)
+        {
+            throw new NotImplementedException();
+        }
+
+        public void Write(string name, long value)
+        {
+            throw new NotImplementedException();
+        }
+
+        public void Write(string name, char[] value)
+        {
+            throw new NotImplementedException();
+        }
+
+        public void Write(bool value)
+        {
+            throw new NotImplementedException();
+        }
+
+        public void Write(short value)
+        {
+            throw new NotImplementedException();
+        }
+
+        public void Write(int value)
+        {
+            throw new NotImplementedException();
+        }
+
+        public void Write(long value)
+        {
+            throw new NotImplementedException();
+        }
+
+        public void Write(decimal value)
+        {
+            throw new NotImplementedException();
+        }
+
+        public void Write(DateTime value)
+        {
+            throw new NotImplementedException();
+        }
+
+        public void Write(char[] value)
+        {
+            throw new NotImplementedException();
+        }
+
+        public void Write(string value)
+        {
+            throw new NotImplementedException();
+        }
+
+        public void Write<T>(T value) where T : ISerial
+        {
+            throw new NotImplementedException();
+        }
+
+        public void Write<T>(T[] value)
+        {
+            throw new NotImplementedException();
+        }
+
+        public void Write<T>(List<T> value)
+        {
+            throw new NotImplementedException();
+        }
+
+        public void Write<T>(Dictionary<string, T> value)
+        {
+            throw new NotImplementedException();
+        }
+
+        public void Write<T>(string name, T[] value)
         {
             throw new NotImplementedException();
         }

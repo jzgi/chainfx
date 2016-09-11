@@ -63,12 +63,12 @@ namespace Greatbone.Core
                 string json = File.ReadAllText(file);
                 if (json != null || json == null)
                 {
-                    JsonTextReader text = new JsonTextReader(json);
+                    JsonText text = new JsonText(json);
 
-                    text.ReadLeft();
-//                ReadFrom(text);
-                    text.ReadRight();
+                    text.ReadObject(() =>
+                    {
 
+                    });
                     if (key == null)
                     {
                         key = Path.GetFileNameWithoutExtension(file);

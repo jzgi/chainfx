@@ -268,7 +268,7 @@ namespace Greatbone.Core
             if (!reader.IsDBNull(ord))
             {
                 string str = reader.GetString(ord);
-                JsonTextReader json = new JsonTextReader(str);
+                JsonText json = new JsonText(str);
                 if (value == null)
                 {
                     value = new T();
@@ -312,7 +312,7 @@ namespace Greatbone.Core
         public void SendEvent<T>(string topic, string filter, T @event) where T : ISerial
         {
             // convert message to byte buffer
-            JsonbWriter b = new JsonbWriter(16 * 1024);
+            JsonbContent b = new JsonbContent(16 * 1024);
             @event.WriteTo(b);
 
             Execute("INSERT INTO mq (topic, filter, message) VALUES (@topic, @filter, @message)", p =>

@@ -66,11 +66,11 @@ namespace Greatbone.Core
                     long? clen = ContentLength;
                     if ("application/bjson".Equals(ctype))
                     {
-                        return new JsonbReader(buffer, (int)clen);
+                        return new JsonbContent(buffer, (int)clen);
                     }
                     else
                     {
-                        return new JsonReader(buffer, (int)clen);
+                        return new JsonContent(buffer, (int)clen);
                     }
                 }
                 return null;
