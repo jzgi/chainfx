@@ -24,14 +24,8 @@ namespace Greatbone.Core
     /// etag -- reduces network I/O with unchanged results
     ///
     ///
-    public abstract class WebService : WebSuper, IHttpApplication<HttpContext>
+    public abstract class WebService : WebModule, IHttpApplication<HttpContext>
     {
-        // topics published by this microservice
-        readonly Set<MsgPublish> publishes = new Set<MsgPublish>(16);
-
-        // topics subscribed by this microservice
-        readonly Set<MsgSubscribe> subscribes = new Set<MsgSubscribe>(16);
-
         readonly KestrelServerOptions options;
 
         readonly LoggerFactory logger;
@@ -42,6 +36,12 @@ namespace Greatbone.Core
         private IPAddress mqaddr;
         private int mqport;
 
+        // topics published by this microservice
+        readonly Set<MsgPublish> publishes = new Set<MsgPublish>(16);
+
+        // topics subscribed by this microservice
+        readonly Set<MsgSubscribe> subscribes = new Set<MsgSubscribe>(16);
+
         // the async client
         private MsgClient client;
 
@@ -49,7 +49,7 @@ namespace Greatbone.Core
         protected WebService(WebServiceConfig cfg) : base(cfg)
         {
             // init eqc client
-            foreach (var ep in cfg.foreign)
+            foreach (var ep in cfg.cluster)
             {
                 //				ParseAddress()
             }

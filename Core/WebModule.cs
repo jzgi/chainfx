@@ -7,7 +7,7 @@ namespace Greatbone.Core
     /// <summary>
     /// A independent set of controllers, including sub controllers and/or multiplexer hub controller.
     /// </summary>
-    public abstract class WebSuper : WebSub, ICacheRealm
+    public abstract class WebModule : WebSub, ICacheRealm
     {
         // the added sub controllers, if any
         private Set<WebSub> subs;
@@ -15,7 +15,7 @@ namespace Greatbone.Core
         // the attached multiplexer hub controller, if any
         private WebXHub xhub;
 
-        protected WebSuper(WebSubConfig wsc) : base(wsc)
+        protected WebModule(WebSubConfig wsc) : base(wsc)
         {
         }
 
@@ -39,7 +39,7 @@ namespace Greatbone.Core
                 key = key,
                 Parent = this,
                 Service = Service,
-                IsX = false
+                IsXed = false
             };
             TSub sub = (TSub)ci.Invoke(new object[] { cfg });
 
@@ -62,7 +62,7 @@ namespace Greatbone.Core
                 key = "X",
                 Parent = this,
                 Service = Service,
-                IsX = true
+                IsXed = true
             };
             TXHub hub = (TXHub)ci.Invoke(new object[] { cfg });
 

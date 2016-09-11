@@ -15,7 +15,7 @@ namespace Greatbone.Sample
         {
             // JsonContentTest.Test();
 
-            DbConfig postgres = new DbConfig
+            DbConfig pg = new DbConfig
             {
                 host = "60.205.104.239",
                 port = 5432,
@@ -28,10 +28,10 @@ namespace Greatbone.Sample
                 key = "www",
                 outer = "127.0.0.1:8080",
                 inner = "127.0.0.1:7770",
-                foreign = new[] {
+                cluster = new[] {
                         "localhost:7777"
                     },
-                db = postgres,
+                db = pg,
                 debug = true
             }.Load("www.json")
             );
@@ -41,11 +41,11 @@ namespace Greatbone.Sample
                 key = "fame",
                 outer = "127.0.0.1:8081",
                 inner = "127.0.0.1:7771",
-                foreign = new[]
+                cluster = new[]
                     {
                         "localhost:7777"
                     },
-                db = postgres,
+                db = pg,
                 debug = true
             }.Load("fame.json")
             );
@@ -55,11 +55,11 @@ namespace Greatbone.Sample
                 key = "biz",
                 outer = "127.0.0.1:8082",
                 inner = "127.0.0.1:7772",
-                foreign = new[]
+                cluster = new[]
                     {
                         "127.0.0.1:7777"
                     },
-                db = postgres,
+                db = pg,
                 debug = true
             }.Load("biz.json")
             );
@@ -69,11 +69,11 @@ namespace Greatbone.Sample
                 key = "post",
                 outer = "127.0.0.1:8083",
                 inner = "127.0.0.1:7773",
-                foreign = new[]
+                cluster = new[]
                     {
                         "localhost:7777"
                     },
-                db = postgres,
+                db = pg,
                 debug = true
             }.Load("post.json")
             );
@@ -83,11 +83,11 @@ namespace Greatbone.Sample
                 key = "notice",
                 outer = "127.0.0.1:8084",
                 inner = "127.0.0.1:7774",
-                foreign = new[]
+                cluster = new[]
                     {
                         "localhost:7783"
                     },
-                db = postgres,
+                db = pg,
                 debug = true
             }.Load("notice.json")
             );
@@ -97,11 +97,11 @@ namespace Greatbone.Sample
                 key = "user",
                 outer = "127.0.0.1:8085",
                 inner = "127.0.0.1:7775",
-                foreign = new[]
+                cluster = new[]
                     {
                         "localhost:7783"
                     },
-                db = postgres,
+                db = pg,
                 debug = true
             }.Load("user.json")
             );
@@ -111,11 +111,11 @@ namespace Greatbone.Sample
                 key = "chat",
                 outer = "127.0.0.1:8086",
                 inner = "127.0.0.1:7776",
-                foreign = new[]
+                cluster = new[]
                     {
                         "localhost:7783"
                     },
-                db = postgres,
+                db = pg,
                 debug = true
             }.Load("chat.json")
             );

@@ -96,7 +96,7 @@ namespace Greatbone.Core
             {
                 ParameterInfo[] pis = mi.GetParameters();
                 WebAction a = null;
-                if (cfg.IsX)
+                if (cfg.IsXed)
                 {
                     if (pis.Length == 2 && pis[0].ParameterType == typeof(WebContext) &&
                         pis[1].ParameterType == typeof(string))

@@ -33,7 +33,7 @@ namespace Greatbone.Core
                 key = key,
                 Parent = this,
                 Service = Service,
-                IsX = true
+                IsXed = true
             };
             TSub sub = (TSub)ci.Invoke(new object[] { wsc });
             // call the initialization and add

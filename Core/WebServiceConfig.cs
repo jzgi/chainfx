@@ -26,7 +26,7 @@ namespace Greatbone.Core
         internal string inner;
 
         // event system socket addresses
-        internal string[] foreign;
+        internal string[] cluster;
 
         internal DbConfig db;
 
@@ -38,7 +38,7 @@ namespace Greatbone.Core
             r.Read(nameof(outer), ref outer);
             r.Read(nameof(tls), ref tls);
             r.Read(nameof(inner), ref inner);
-            r.Read(nameof(foreign), ref foreign);
+            r.Read(nameof(cluster), ref cluster);
             r.Read(nameof(db), ref db);
             r.Read(nameof(debug), ref debug);
             r.Read(nameof(options), ref options);
@@ -50,7 +50,7 @@ namespace Greatbone.Core
             w.Write(nameof(outer), outer);
             w.Write(nameof(tls), tls);
             w.Write(nameof(inner), inner);
-            w.Write(nameof(foreign), foreign);
+            w.Write(nameof(cluster), cluster);
             w.Write(nameof(db), db);
             w.Write(nameof(debug), debug);
             w.Write(nameof(options), options);
