@@ -3,35 +3,71 @@ using System.Collections.Generic;
 
 namespace Greatbone.Core
 {
-    ///
-    /// DataReader/ParameterCollection, JSON or binary
+    /// <summary> <summary>
+    /// A serial content writer.
+    /// </summary>
     public interface ISerialWriter
     {
 
-        void Write(string name, bool value);
+        //
+        // knot writing
 
-        void Write(string name, short value);
+        bool WriteArray(Action a);
 
-        void Write(string name, int value);
+        bool WriteObject(Action a);
 
-        void Write(string name, long value);
+        //
+        // value writing
 
-        void Write(string name, decimal value);
+        bool Write(bool value);
 
-        void Write(string name, DateTime value);
+        bool Write(short value);
 
-        void Write(string name, string value);
+        bool Write(int value);
 
-        void Write(string name, char[] value);
+        bool Write(long value);
 
-        void Write<T>(string name, T value) where T : ISerial;
+        bool Write(decimal value);
 
-        void Write<T>(string name, List<T> list);
+        bool Write(DateTime value);
 
-        void Write<V>(string name, Dictionary<string, V> dict);
+        bool Write(char[] value);
 
-        void Write(string name, params string[] array);
+        bool Write(string value);
 
-        void Write(string name, params ISerial[] array);
+        bool Write<T>(T value) where T : ISerial;
+
+        bool Write<T>(T[] value);
+
+        bool Write<T>(List<T> value);
+
+        bool Write<T>(Dictionary<string, T> value);
+
+        //
+        // property writing
+
+        bool Write(string name, bool value);
+
+        bool Write(string name, short value);
+
+        bool Write(string name, int value);
+
+        bool Write(string name, long value);
+
+        bool Write(string name, decimal value);
+
+        bool Write(string name, DateTime value);
+
+        bool Write(string name, char[] value);
+
+        bool Write(string name, string value);
+
+        bool Write<T>(string name, T value) where T : ISerial;
+
+        bool Write<T>(string name, T[] value);
+
+        bool Write<T>(string name, List<T> value);
+
+        bool Write<T>(string name, Dictionary<string, T> value);
     }
 }

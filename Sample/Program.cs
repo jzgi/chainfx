@@ -13,7 +13,9 @@ namespace Greatbone.Sample
         /// <param name="args"></param>
         public static void Main(string[] args)
         {
-            DataSrcBuilder dat = new DataSrcBuilder
+            JsonContentTest.Test();
+
+            DbBuilder dat = new DbBuilder
             {
                 host = "60.205.104.239",
                 port = 5432,
@@ -29,7 +31,7 @@ namespace Greatbone.Sample
                 foreign = new[] {
                         "localhost:7777"
                     },
-                datasrc = dat,
+                db = dat,
                 debug = true
             }.Load("www.json")
             );
@@ -43,7 +45,7 @@ namespace Greatbone.Sample
                     {
                         "localhost:7777"
                     },
-                datasrc = dat,
+                db = dat,
                 debug = true
             }.Load("fame.json")
             );
@@ -57,7 +59,7 @@ namespace Greatbone.Sample
                     {
                         "127.0.0.1:7777"
                     },
-                datasrc = dat,
+                db = dat,
                 debug = true
             }.Load("biz.json")
             );
@@ -71,7 +73,7 @@ namespace Greatbone.Sample
                     {
                         "localhost:7777"
                     },
-                datasrc = dat,
+                db = dat,
                 debug = true
             }.Load("post.json")
             );
@@ -85,7 +87,7 @@ namespace Greatbone.Sample
                     {
                         "localhost:7783"
                     },
-                datasrc = dat,
+                db = dat,
                 debug = true
             }.Load("notice.json")
             );
@@ -99,7 +101,7 @@ namespace Greatbone.Sample
                     {
                         "localhost:7783"
                     },
-                datasrc = dat,
+                db = dat,
                 debug = true
             }.Load("user.json")
             );
@@ -113,7 +115,7 @@ namespace Greatbone.Sample
                     {
                         "localhost:7783"
                     },
-                datasrc = dat,
+                db = dat,
                 debug = true
             }.Load("chat.json")
             );

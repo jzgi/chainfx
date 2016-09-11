@@ -55,7 +55,7 @@ namespace Greatbone.Core
 
         public static DbParameterCollection Set<T>(this DbParameterCollection coll, string name, List<T> value) where T : ISerial
         {
-            JsonText text = new JsonText(1024);
+            JsonTextReader text = new JsonTextReader(value.ToString());
 
             // text.Write
 

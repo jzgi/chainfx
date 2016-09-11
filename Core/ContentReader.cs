@@ -7,7 +7,7 @@ namespace Greatbone.Core
     ///
     /// A binary content that is dynamically generated, where strings are UTF-8 encoded.
     ///
-    public abstract class DynamicContent : IContent
+    public abstract class ContentReader : IContent
     {
         // hexidecimal characters
         static readonly char[] Hex =
@@ -87,22 +87,13 @@ namespace Greatbone.Core
         // byte-wise etag checksum, for text-based output only
         long checksum;
 
-        /// <summary>
-        /// Creates a dynamic content in writing mode.
-        /// </summary>
-        /// <param name="capacity">The initial capacity of the content buffer.</param>
-        protected DynamicContent(int capacity)
-        {
-            this.buffer = BufferPool.Lease(capacity);
-            this.count = 0;
-        }
 
         /// <summary>
         /// Creates a dynamic content in reading mode.
         /// </summary>
         /// <param name="buffer">The byte buffer that contains the content.</param>
         /// <param name="count">The number of bytes.</param>
-        protected DynamicContent(byte[] buffer, int count)
+        protected ContentReader(byte[] buffer, int count)
         {
             this.buffer = buffer;
             this.count = count;

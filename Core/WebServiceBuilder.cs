@@ -28,7 +28,7 @@ namespace Greatbone.Core
         // event system socket addresses
         internal string[] foreign;
 
-        internal DataSrcBuilder datasrc;
+        internal DbBuilder db;
 
         internal Dictionary<string, string> options;
 
@@ -39,7 +39,7 @@ namespace Greatbone.Core
             r.Read(nameof(tls), ref tls);
             r.Read(nameof(inner), ref inner);
             r.Read(nameof(foreign), ref foreign);
-            r.Read(nameof(datasrc), ref datasrc);
+            r.Read(nameof(db), ref db);
             r.Read(nameof(debug), ref debug);
             r.Read(nameof(options), ref options);
         }
@@ -51,7 +51,7 @@ namespace Greatbone.Core
             w.Write(nameof(tls), tls);
             w.Write(nameof(inner), inner);
             w.Write(nameof(foreign), foreign);
-            w.Write(nameof(datasrc), datasrc);
+            w.Write(nameof(db), db);
             w.Write(nameof(debug), debug);
             w.Write(nameof(options), options);
         }
@@ -63,7 +63,7 @@ namespace Greatbone.Core
                 string json = File.ReadAllText(file);
                 if (json != null || json == null)
                 {
-                    JsonText text = new JsonText(json);
+                    JsonTextReader text = new JsonTextReader(json);
 
                     text.ReadLeft();
 //                ReadFrom(text);
@@ -82,7 +82,7 @@ namespace Greatbone.Core
         }
     }
 
-    public class DataSrcBuilder : ISerial
+    public class DbBuilder : ISerial
     {
         internal string host;
 
