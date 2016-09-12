@@ -25,6 +25,9 @@ namespace Greatbone.Core
     ///
     public abstract class WebService : WebModule, IHttpApplication<HttpContext>
     {
+        //
+        // SERVER
+
         readonly KestrelServerOptions options;
 
         readonly LoggerFactory logger;
@@ -36,9 +39,11 @@ namespace Greatbone.Core
 
         int inport;
 
+        //
+        // MSG POLLER / CONNECTOR
 
-        // serve messages        
-        readonly Set<MsgPoller> pollers;
+        // load messages        
+        readonly Set<MsgLoader> loaders;
 
 
         // topics subscribed by this microservice
@@ -46,7 +51,7 @@ namespace Greatbone.Core
 
         private Thread scheduler;
 
-        readonly Set<MsgConnector> connectors;
+        readonly Set<MsgPoller> pollers;
 
 
 
@@ -210,9 +215,9 @@ namespace Greatbone.Core
         {
             while (true)
             {
-                for (int i = 0; i < connectors.Count; i++)
+                for (int i = 0; i < pollers.Count; i++)
                 {
-                    MsgConnector conn = connectors[i];
+                    MsgPoller conn = pollers[i];
 
                     // schedule
                 }
