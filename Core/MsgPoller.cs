@@ -6,9 +6,9 @@ namespace Greatbone.Core
 {
     public class MsgPoller : IMember
     {
-        WebService service;
+        readonly WebService service;
 
-        string address;
+        readonly string address;
 
         HttpClient client;
 
@@ -19,6 +19,11 @@ namespace Greatbone.Core
 
         public string Key => address;
 
+        internal MsgPoller(WebService svc, string addr)
+        {
+            service = svc;
+            address = addr;
+        }
 
         internal MsgPoller()
         {
