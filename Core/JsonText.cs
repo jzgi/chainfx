@@ -15,7 +15,7 @@ namespace Greatbone.Core
 
         // parsing context for levels
 
-        JsonSeg[] levels = new JsonSeg[8];
+        JsonPart[] levels = new JsonPart[8];
 
         int level;
 

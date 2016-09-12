@@ -16,7 +16,7 @@ namespace Greatbone.Core
 
             string name = null;
             int age = 0;
-            jc.ReadObject(() =>
+            jc.ReadObject(delegate
             {
                 jc.Read(nameof(name), ref name);
                 jc.Read(nameof(age), ref age);
@@ -28,7 +28,7 @@ namespace Greatbone.Core
     public class JsonContent : DynamicContent, ISerialReader, ISerialWriter
     {
         // stack of json knots in processing
-        readonly JsonSeg[] stack;
+        readonly JsonPart[] stack;
 
         // current level in stack
         int level;
@@ -39,7 +39,7 @@ namespace Greatbone.Core
 
         public JsonContent(byte[] buffer, int count) : base(buffer, count)
         {
-            stack = new JsonSeg[8];
+            stack = new JsonPart[8];
             level = -1;
             pos = -1;
         }
@@ -51,10 +51,10 @@ namespace Greatbone.Core
         {
             int start;
             int p = pos;
-            while (p++ < count)
+            while (++p < count)
             {
                 byte c = buffer[p];
-                if (c == ' ' || c == '\t' || c == '\r' || c == '\n') continue; // skip whitespace
+                if (c == ' ' || c == '\t' || c == '\r' || c == '\n') continue;
                 else if (c == '[')
                 {
                     start = p;
@@ -71,10 +71,10 @@ namespace Greatbone.Core
 
             // skip till a closing brace
             p = pos;
-            while (p++ < count)
+            while (++p < count)
             {
                 byte c = buffer[p];
-                if (c == ' ' || c == '\t' || c == '\r' || c == '\n') continue; // skip whitespace
+                if (c == ' ' || c == '\t' || c == '\r' || c == '\n') continue;
                 else if (c == ']')
                 {
                     start = p;
@@ -128,17 +128,37 @@ namespace Greatbone.Core
 
         public bool Read(ref int value)
         {
-            SkipWs();
-
-            for (;;)
+            JsonNumber str = new JsonNumber();
+            int p = pos;
+            while (++p < count)
             {
-                byte c = buffer[pos];
-                if (c != ',' && c == '}')
+                byte c = buffer[p];
+                if (c == ' ' || c == '\t' || c == '\r' || c == '\n') continue;
+                else if (c == '"')
                 {
+                    break;
                 }
-                break;
+                else
+                {
+                    return false;
+                }
             }
 
+
+            while (++p < count)
+            {
+                byte c = buffer[p];
+                if (c == '"')
+                {
+                    pos = p;
+                    value = str.ToString();
+                    return true;
+                }
+                else
+                {
+                    str.Add(c);
+                }
+            }
             return false;
         }
 
@@ -164,6 +184,37 @@ namespace Greatbone.Core
 
         public bool Read(ref string value)
         {
+            JsonStr str = new JsonStr(64);
+            int p = pos;
+            while (++p < count)
+            {
+                byte c = buffer[p];
+                if (c == ' ' || c == '\t' || c == '\r' || c == '\n') continue;
+                else if (c == '"')
+                {
+                    break;
+                }
+                else
+                {
+                    return false;
+                }
+            }
+
+
+            while (++p < count)
+            {
+                byte c = buffer[p];
+                if (c == '"')
+                {
+                    pos = p;
+                    value = str.ToString();
+                    return true;
+                }
+                else
+                {
+                    str.Add(c);
+                }
+            }
             return false;
         }
 
@@ -226,13 +277,15 @@ namespace Greatbone.Core
         public bool ReadObject(Action a)
         {
             int p = pos;
-            while (p++ < count)
+            while (++p < count)
             {
                 byte c = buffer[p];
-                if (c == ' ' || c == '\t' || c == '\r' || c == '\n') continue; // skip whitespace
+                if (c == ' ' || c == '\t' || c == '\r' || c == '\n') continue;
                 else if (c == '{')
                 {
+                    level++;
                     stack[level].start = p;
+                    stack[level].array = false;
                     pos = p;
                     break;
                 }
@@ -246,10 +299,10 @@ namespace Greatbone.Core
 
             // skip till a closing brace
             p = pos;
-            while (p++ < count)
+            while (++p < count)
             {
                 byte c = buffer[p];
-                if (c == ' ' || c == '\t' || c == '\r' || c == '\n') continue; // skip whitespace
+                if (c == ' ' || c == '\t' || c == '\r' || c == '\n') continue;
                 else if (c == '}')
                 {
                     pos = p;
@@ -261,50 +314,74 @@ namespace Greatbone.Core
 
         internal bool Locate(string name)
         {
-            // in between quotation marks 
-            bool inq;
+            // in between quotation marks
+            bool inq = false;
 
-            int qstart, qend;
-            int p = pos;
-            for (;;) // find the start quotation
+            int p = stack[level].pos;
+
+            int qstart = -1;
+            while (++p < count) // first quotation
             {
                 byte c = buffer[p];
-                if (c == '"')
+                if (c == ' ' || c == '\t' || c == '\r' || c == '\n') continue;
+                else if (c == '"')
                 {
+                    qstart = p; // mark down first quotation
                     inq = true;
-                    qstart = p;
+                    break;
                 }
-                else if (c == '}')
+                else
                 {
-                    stack[level].end = p; // mark down the level end
+                    return false;
                 }
-                p++;
-                break;
             }
 
-            for (;;)
+            int qend = -1;
+            while (++p < count)
             {
                 byte c = buffer[p];
-                if (c != '"')
+                if (c == ' ' || c == '\t' || c == '\r' || c == '\n') continue;
+                else if (c == '"')
                 {
-                    p++;
+                    qend = p; // mark down second quotation 
+                    inq = false;
+                    break;
                 }
-                if (c == '}')
+                else
                 {
-                    stack[level].end = p; // mark down the level end
+                    continue;
                 }
-                break;
             }
 
-            SkipWs();
-
-            // seek two quotations and a colon
-            while (buffer[pos] != ':')
+            // compare with the name
+            int len = qend - qstart - 1;
+            bool fnd = false;
+            if (len == name.Length)
             {
-                pos++;
+                fnd = true;
+                for (int i = 0, q = (qstart + 1); i < len; i++, q++)
+                {
+                    if (buffer[q] != name[i])
+                    {
+                        fnd = false;
+                        break;
+                    }
+                }
             }
-
-
+            if (fnd)
+            {
+                while (++p < count)
+                {
+                    byte c = buffer[p];
+                    if (c == ' ' || c == '\t' || c == '\r' || c == '\n') continue;
+                    else if (c == ':')
+                    {
+                        pos = p;
+                        return true;
+                    }
+                    break;
+                }
+            }
             return false;
         }
 
@@ -366,7 +443,7 @@ namespace Greatbone.Core
         {
             Locate(name);
 
-            ReadArray(() =>
+            ReadArray(delegate
             {
                 T o = new T();
                 while (Read(ref o))

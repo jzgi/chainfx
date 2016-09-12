@@ -1,26 +1,34 @@
+using System;
+
 namespace Greatbone.Core
 {
     internal struct JsonStr
     {
-        bool sign;
+        char[] chars;
 
-        int integer;
+        int count;
 
-        bool dot;
-
-        int fraction;
-
+        internal JsonStr(int initial)
+        {
+            chars = new char[initial];
+            count = 0;
+        }
         internal void Add(byte c)
         {
-            int d = c - '0';
-            if (!dot)
+            int olen = chars.Length;
+            if (count == olen)
             {
-                integer = integer * 10 + d;
+                char[] @new = new char[olen * 4];
+                Array.Copy(chars, 0, @new, 0, olen);
+                chars = @new;
             }
+            chars[count++] = (char)c;
         }
 
-        internal int Int32 => integer;
+        public override string ToString()
+        {
+            return new string(chars, 0, count);
+        }
 
-        internal decimal Decimal => new decimal(0, 0, integer, sign, 0);
     }
 }
