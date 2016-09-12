@@ -10,7 +10,7 @@ namespace Greatbone.Core
 
         string key;
 
-        Queue<Item> cache;
+        Queue<MsgMessage> cache;
 
         string sql;
 
@@ -34,7 +34,7 @@ namespace Greatbone.Core
 
         public void Get()
         {
-            Item item;
+            MsgMessage item;
             if (cache.Count > 0)
             {
                 item = cache.Dequeue();
@@ -46,48 +46,6 @@ namespace Greatbone.Core
                     dc.Query("SELECT * FROM mqueue WHERE id > @lastid AND ", null);
                 }
             }
-        }
-
-        internal struct Item : IContent
-        {
-            byte[] body;
-
-            string topic;
-
-            public byte[] Buffer
-            {
-                get
-                {
-                    throw new NotImplementedException();
-                }
-            }
-
-            public int Count
-            {
-                get
-                {
-                    throw new NotImplementedException();
-                }
-            }
-
-            public long ETag
-            {
-                get
-                {
-                    throw new NotImplementedException();
-                }
-            }
-
-            public DateTime LastModified
-            {
-                get
-                {
-                    throw new NotImplementedException();
-                }
-            }
-
-            public string Type => "msg/bin";
-
         }
 
     }

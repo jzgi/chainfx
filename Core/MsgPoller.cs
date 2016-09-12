@@ -48,7 +48,7 @@ namespace Greatbone.Core
                 MsgSubscribe sub = null;
                 if (service.Subscribes.TryGet("", out sub))
                 {
-                    MsgEvent evt = null;
+                    MsgContext evt = null;
                     sub.Do(evt); // invoke the handler
                 }
             }

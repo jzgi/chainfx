@@ -7,7 +7,7 @@ namespace Greatbone.Core
 	///
 	/// An event queue message
 	///
-	public class MsgEvent : IDisposable
+	public class MsgContext : IDisposable
 	{
 		private string topic;
 
@@ -15,7 +15,7 @@ namespace Greatbone.Core
 
 		HttpResponseMessage msg;
 
-		internal MsgEvent(HttpContext context)
+		internal MsgContext(HttpContext context)
 		{
 
 		}
