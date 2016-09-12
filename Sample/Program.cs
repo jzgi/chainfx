@@ -23,14 +23,20 @@ namespace Greatbone.Sample
                 password = "Zou###1989"
             };
 
+            string[] addrs = {
+                "127.0.0.8081",
+                "127.0.0.8082",
+                "127.0.0.8083",
+                "127.0.0.8084",
+                "127.0.0.8085",
+            };
+
             var www = new WwwService(new WebServiceConfig
             {
                 key = "www",
                 outer = "127.0.0.1:8080",
                 inner = "127.0.0.1:7770",
-                cluster = new[] {
-                        "localhost:7777"
-                    },
+                cluster = addrs,
                 db = pg,
                 debug = true
             }.Load("www.json")
@@ -41,10 +47,7 @@ namespace Greatbone.Sample
                 key = "fame",
                 outer = "127.0.0.1:8081",
                 inner = "127.0.0.1:7771",
-                cluster = new[]
-                    {
-                        "localhost:7777"
-                    },
+                cluster = addrs,
                 db = pg,
                 debug = true
             }.Load("fame.json")
@@ -55,10 +58,7 @@ namespace Greatbone.Sample
                 key = "biz",
                 outer = "127.0.0.1:8082",
                 inner = "127.0.0.1:7772",
-                cluster = new[]
-                    {
-                        "127.0.0.1:7777"
-                    },
+                cluster = addrs,
                 db = pg,
                 debug = true
             }.Load("biz.json")
@@ -69,10 +69,7 @@ namespace Greatbone.Sample
                 key = "post",
                 outer = "127.0.0.1:8083",
                 inner = "127.0.0.1:7773",
-                cluster = new[]
-                    {
-                        "localhost:7777"
-                    },
+                cluster = addrs,
                 db = pg,
                 debug = true
             }.Load("post.json")
@@ -83,10 +80,7 @@ namespace Greatbone.Sample
                 key = "notice",
                 outer = "127.0.0.1:8084",
                 inner = "127.0.0.1:7774",
-                cluster = new[]
-                    {
-                        "localhost:7783"
-                    },
+                cluster = addrs,
                 db = pg,
                 debug = true
             }.Load("notice.json")
@@ -97,10 +91,7 @@ namespace Greatbone.Sample
                 key = "user",
                 outer = "127.0.0.1:8085",
                 inner = "127.0.0.1:7775",
-                cluster = new[]
-                    {
-                        "localhost:7783"
-                    },
+                cluster = addrs,
                 db = pg,
                 debug = true
             }.Load("user.json")
@@ -111,10 +102,7 @@ namespace Greatbone.Sample
                 key = "chat",
                 outer = "127.0.0.1:8086",
                 inner = "127.0.0.1:7776",
-                cluster = new[]
-                    {
-                        "localhost:7783"
-                    },
+                cluster = addrs,
                 db = pg,
                 debug = true
             }.Load("chat.json")

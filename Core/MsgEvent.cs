@@ -13,9 +13,7 @@ namespace Greatbone.Core
 
 		private string key;
 
-		ISerial body;
-
-		HttpResponseMessage message;
+		HttpResponseMessage msg;
 
 		internal MsgEvent(HttpContext context)
 		{

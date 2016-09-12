@@ -3,7 +3,6 @@ using System.Collections.Generic;
 using System.Net;
 using System.Threading;
 using System.Threading.Tasks;
-using System.Reflection;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Hosting.Server;
 using Microsoft.AspNetCore.Hosting.Server.Features;
@@ -30,17 +29,26 @@ namespace Greatbone.Core
 
         readonly LoggerFactory logger;
 
-        // the embedded http server
+        // the embedded server
         readonly KestrelServer server;
 
-        private IPAddress mqaddr;
-        private int mqport;
+        IPAddress inaddr;
+
+        int inport;
+
+
+        // serve messages        
+        readonly Set<MsgPoller> pollers;
+
 
         // topics subscribed by this microservice
-        readonly Set<MsgSubscribe> subscribes = new Set<MsgSubscribe>(16);
+        public Set<MsgSubscribe> Subscribes { get; } = new Set<MsgSubscribe>(16);
 
-        // the async client
-        private MsgClient client;
+        private Thread scheduler;
+
+        readonly Set<MsgConnector> connectors;
+
+
 
 
         protected WebService(WebServiceConfig cfg) : base(cfg)
@@ -61,7 +69,7 @@ namespace Greatbone.Core
             addrs.Add(cfg.tls ? "https://" : "http://" + cfg.outer);
             addrs.Add("http://" + cfg.inner); // clustered msg queue
 
-            ParseAddress(cfg.inner, out mqaddr, out mqport);
+            ParseAddress(cfg.inner, out inaddr, out inport);
 
         }
 
@@ -111,13 +119,13 @@ namespace Greatbone.Core
             int port = ci.LocalPort;
 
             WebContext wc = (WebContext)hc;
-            if (port == mqport && ip.Equals(mqaddr))
+            if (port == inport && ip.Equals(inaddr))
             {
                 // mq handling or action handling
                 if (hc.Request.Path.Equals("*"))
                 {
                     // msg queue
-                    HandleMsg(wc);
+                    Poll(wc);
                 }
                 else
                 {
@@ -176,8 +184,13 @@ namespace Greatbone.Core
         {
         }
 
-        internal void HandleMsg(WebContext wc)
+        /// <summary>
+        /// Poll message from database and cache 
+        /// </summary>
+        /// <param name="wc"></param>
+        internal void Poll(WebContext wc)
         {
+
         }
 
         public CancellationToken ApplicationStarted { get; set; }
@@ -189,7 +202,21 @@ namespace Greatbone.Core
 
         public void Subscribe(string topic, MsgDoer doer)
         {
-            subscribes.Add(new MsgSubscribe(topic, doer));
+            Subscribes.Add(new MsgSubscribe(topic, doer));
+        }
+
+
+        internal void Schedule()
+        {
+            while (true)
+            {
+                for (int i = 0; i < connectors.Count; i++)
+                {
+                    MsgConnector conn = connectors[i];
+
+                    // schedule
+                }
+            }
         }
 
         public DbContext NewSqlContext()
