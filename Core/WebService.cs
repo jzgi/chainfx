@@ -76,6 +76,17 @@ namespace Greatbone.Core
 
             ParseAddress(cfg.inner, out inaddr, out inport);
 
+            // check db
+            string sql = "SELECT to_regclass('schema_name.table_name');";
+            using (var dc = Service.NewSqlContext())
+            {
+                dc.QueryA(sql, null);
+                // if null
+
+                dc.Execute(@"CREATE TABLE sysmsgs", null);
+                dc.Execute(@"CREATE TABLE syslasts", null);
+            }
+
         }
 
 
