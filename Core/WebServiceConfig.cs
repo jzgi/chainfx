@@ -17,6 +17,8 @@ namespace Greatbone.Core
     ///
     public class WebServiceConfig : WebSubConfig, ISerial
     {
+        internal string filter;
+
         // public socket address
         internal string outer;
 

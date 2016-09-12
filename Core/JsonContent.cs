@@ -85,39 +85,28 @@ namespace Greatbone.Core
             return false;
         }
 
-        internal void SkipWs()
-        {
-            for (;;)
-            {
-                byte c = buffer[pos];
-                if (c == ' ' || c == '\t' || c == '\r' || c == '\n')
-                {
-                    pos++;
-                    continue;
-                }
-                return;
-            }
-        }
-
         public bool Read(ref bool value)
         {
             int p = pos;
-
-            SkipWs();
-
-            if (buffer[p] == 't' && buffer[p + 1] == 'r' && buffer[p + 2] == 'u' && buffer[p + 3] == 'e')
+            while (++p < count)
             {
-                value = true;
-                return true;
+                byte c = buffer[p];
+                if (c == ' ' || c == '\t' || c == '\r' || c == '\n') continue;
+                else if (c == 't' && buffer[p + 1] == 'r' && buffer[p + 2] == 'u' && buffer[p + 3] == 'e')
+                {
+                    value = true;
+                    return true;
+                }
+                else if (c == 'f' && buffer[p + 1] == 'a' && buffer[p + 2] == 'l' && buffer[p + 3] == 's' && buffer[p + 4] == 'e')
+                {
+                    value = false;
+                    return true;
+                }
+                else
+                {
+                    return false;
+                }
             }
-            else if (buffer[p] == 'f' && buffer[p + 1] == 'a' && buffer[p + 2] == 'l' && buffer[p + 3] == 's' && buffer[p + 4] == 'e')
-            {
-                value = false;
-                return true;
-            }
-
-            SkipWs();
-
             return false;
         }
 
@@ -128,7 +117,7 @@ namespace Greatbone.Core
 
         public bool Read(ref int value)
         {
-            JsonNumber str = new JsonNumber();
+            JsonNumber num = new JsonNumber();
             int p = pos;
             while (++p < count)
             {
@@ -151,12 +140,11 @@ namespace Greatbone.Core
                 if (c == '"')
                 {
                     pos = p;
-                    value = str.ToString();
                     return true;
                 }
                 else
                 {
-                    str.Add(c);
+                    num.Add(c);
                 }
             }
             return false;
@@ -493,26 +481,27 @@ namespace Greatbone.Core
         public JsonContent(int capacity) : base(capacity) { }
 
 
-        public void WriteArray(Action inner)
+        public void WriteArray(Action a)
         {
             level++;
             Put('[');
 
             stack[level].array = true;
+            a();
 
             Put(']');
             level--;
         }
 
-        public void WriteObject(Action inner)
+        public void WriteObject(Action a)
         {
+            level++;
             Put('{');
 
-            level++;
             stack[level].array = false;
+            a();
 
             Put('}');
-
             level--;
         }
 
@@ -521,7 +510,7 @@ namespace Greatbone.Core
         {
             if (stack[level].ordinal > 0)
             {
-                Put(','); // precede a comma
+                Put(',');
             }
 
             Put('"');
@@ -537,7 +526,7 @@ namespace Greatbone.Core
         {
             if (stack[level].ordinal > 0)
             {
-                Put(','); // precede a comma
+                Put(',');
             }
 
             Put('"');
@@ -553,7 +542,7 @@ namespace Greatbone.Core
         {
             if (stack[level].ordinal > 0)
             {
-                Put(','); // precede a comma
+                Put(',');
             }
 
             Put('"');
@@ -569,7 +558,7 @@ namespace Greatbone.Core
         {
             if (stack[level].ordinal > 0)
             {
-                Put(','); // precede a comma
+                Put(',');
             }
 
             Put('"');
@@ -585,7 +574,7 @@ namespace Greatbone.Core
         {
             if (stack[level].ordinal > 0)
             {
-                Put(','); // precede a comma
+                Put(',');
             }
 
             Put('"');
@@ -611,7 +600,7 @@ namespace Greatbone.Core
         {
             if (stack[level].ordinal > 0)
             {
-                Put(','); // precede a comma
+                Put(',');
             }
 
             Put('"');

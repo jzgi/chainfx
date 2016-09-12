@@ -7,8 +7,6 @@
 
         internal string key;
 
-        internal string subkey;
-
         internal bool debug;
 
         public WebService Service { get; internal set; }
