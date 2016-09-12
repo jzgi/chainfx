@@ -17,7 +17,7 @@ namespace Greatbone.Core
     ///
     public class WebServiceConfig : WebSubConfig, ISerial
     {
-        internal string filter;
+        internal string subkey;
 
         // public socket address
         internal string outer;
@@ -37,6 +37,7 @@ namespace Greatbone.Core
         public void ReadFrom(ISerialReader r)
         {
             r.Read(nameof(key), ref key);
+            r.Read(nameof(subkey), ref subkey);
             r.Read(nameof(outer), ref outer);
             r.Read(nameof(tls), ref tls);
             r.Read(nameof(inner), ref inner);
@@ -49,6 +50,7 @@ namespace Greatbone.Core
         public void WriteTo(ISerialWriter w)
         {
             w.Write(nameof(key), key);
+            w.Write(nameof(subkey), subkey);
             w.Write(nameof(outer), outer);
             w.Write(nameof(tls), tls);
             w.Write(nameof(inner), inner);

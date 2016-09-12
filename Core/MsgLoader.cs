@@ -1,25 +1,43 @@
 using System;
 using System.Collections.Generic;
+using System.Text;
 
 namespace Greatbone.Core
 {
     public class MsgLoader : IMember
     {
-        WebService service;
+        readonly WebService service;
 
         string key;
 
-        Queue<Message> cache;
+        Queue<Item> cache;
+
+        string sql;
 
         public string Key => key;
 
 
+        internal MsgLoader(WebService svc)
+        {
+            service = svc;
+
+            StringBuilder sb = new StringBuilder("SELECT * FROM mqueue WHERE id > @lastid AND ");
+            for (int i = 0; i < svc.Subscribes.Count; i++)
+            {
+                MsgSubscribe sub = svc.Subscribes[i];
+
+                sb.Append("topic = '").Append(sub.Topic).Append("'");
+            }
+            sql = sb.ToString();
+
+        }
+
         public void Get()
         {
-            Message msg;
+            Item item;
             if (cache.Count > 0)
             {
-                msg = cache.Dequeue();
+                item = cache.Dequeue();
             }
             else
             {
@@ -30,7 +48,7 @@ namespace Greatbone.Core
             }
         }
 
-        internal struct Message : IContent
+        internal struct Item : IContent
         {
             byte[] body;
 

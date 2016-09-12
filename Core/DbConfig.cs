@@ -10,12 +10,15 @@ namespace Greatbone.Core
 
         internal string password;
 
+        internal bool msg;
+
         public void ReadFrom(ISerialReader r)
         {
             r.Read(nameof(host), ref host);
             r.Read(nameof(port), ref port);
             r.Read(nameof(username), ref username);
             r.Read(nameof(password), ref password);
+            r.Read(nameof(msg), ref msg);
         }
 
         public void WriteTo(ISerialWriter w)
@@ -24,6 +27,7 @@ namespace Greatbone.Core
             w.Write(nameof(port), port);
             w.Write(nameof(username), username);
             w.Write(nameof(password), password);
+            w.Write(nameof(msg), msg);
         }
     }
 
