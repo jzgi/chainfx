@@ -1,24 +1,24 @@
 ﻿namespace Greatbone.Core
 {
-    internal struct JsonKnot
+    /// <summary>
+    /// A parsing segment of a json stream, usually a json data element.
+    /// </summary>
+    internal struct JsonSeg
     {
         internal int start;
 
         internal int end;
 
-        // current ordinal
+        // the ordinal in its parent segment
         internal int ordinal;
-
-        // current position
-        internal int pos;
 
         // object or array
         internal bool array;
 
-        internal JsonKnot(bool array)
+        internal JsonSeg(bool array)
         {
             this.array = array;
-            start = end = pos = -1;
+            start = end = -1;
             ordinal = 0;
         }
     }
