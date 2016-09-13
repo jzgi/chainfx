@@ -214,9 +214,9 @@ namespace Greatbone.Core
         public CancellationToken ApplicationStopped { get; set; }
 
 
-        public void Subscribe(string topic, MsgDoer doer)
+        public void Subscribe(string topic, string filter, MsgDoer doer)
         {
-            Subscribes.Add(new MsgSubscribe(topic, doer));
+            Subscribes.Add(new MsgSubscribe(topic, filter, doer));
         }
 
 

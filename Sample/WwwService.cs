@@ -10,15 +10,17 @@ namespace Greatbone.Sample
         public WwwService(WebServiceConfig cfg) : base(cfg)
         {
 
-
-            Subscribe("users_upd", x =>
+            Subscribe("users_upd", null, x =>
             {
                 string s = x.GetType().Name;
             });
         }
 
         ///
-        /// <summary>Returns the default HTML page</summary>
+        /// <summary>Returns the default HTML page</summary> <summary>
+        /// 
+        /// </summary>
+        /// <param name="wc"></param>
         public override void Default(WebContext wc)
         {
             base.Default(wc);

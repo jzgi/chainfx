@@ -1,30 +1,33 @@
 ﻿namespace Greatbone.Core
 {
-	public delegate void MsgDoer(MsgContext ec);
+    public delegate void MsgDoer(MsgContext ec);
 
-	public class MsgSubscribe : IMember
-	{
-		public string Topic { get; }
+    public class MsgSubscribe : IMember
+    {
+        public string Topic { get; }
 
-		private readonly MsgDoer doer;
+        public string Filter { get; }
 
-		internal MsgSubscribe(string topic, MsgDoer doer)
-		{
-			// NOTE: strict method nzame as key here to avoid the default base url trap
-			Topic = topic;
-			this.doer = doer;
-		}
+        readonly MsgDoer doer;
 
-		internal void Do(MsgContext me)
-		{
-			doer(me);
-		}
+        internal MsgSubscribe(string topic, string filter, MsgDoer doer)
+        {
+            // NOTE: strict method nzame as key here to avoid the default base url trap
+            Topic = topic;
+            Filter = filter;
+            this.doer = doer;
+        }
 
-		public string Key => Topic;
+        internal void Do(MsgContext me)
+        {
+            doer(me);
+        }
 
-		public override string ToString()
-		{
-			return Topic;
-		}
-	}
+        public string Key => Topic;
+
+        public override string ToString()
+        {
+            return Topic;
+        }
+    }
 }
