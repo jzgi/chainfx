@@ -30,7 +30,7 @@ namespace Greatbone.Core
             }
             WebSubConfig wsc = new WebSubConfig
             {
-                key = key,
+                Key = key,
                 Parent = this,
                 Service = Service,
                 IsXed = true

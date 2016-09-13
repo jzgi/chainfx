@@ -5,9 +5,9 @@
         // SETTINGS
         //
 
-        internal string key;
+        public string Key;
 
-        internal bool debug;
+        public bool Debug;
 
         public WebService Service { get; internal set; }
 

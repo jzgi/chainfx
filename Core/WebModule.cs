@@ -36,7 +36,7 @@ namespace Greatbone.Core
             }
             WebSubConfig cfg = new WebSubConfig
             {
-                key = key,
+                Key = key,
                 Parent = this,
                 Service = Service,
                 IsXed = false
@@ -59,7 +59,7 @@ namespace Greatbone.Core
             }
             WebSubConfig cfg = new WebSubConfig
             {
-                key = "X",
+                Key = "X",
                 Parent = this,
                 Service = Service,
                 IsXed = true

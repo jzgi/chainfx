@@ -54,12 +54,10 @@ namespace Greatbone.Core
         readonly Set<MsgPoller> pollers;
 
 
-
-
         protected WebService(WebServiceConfig cfg) : base(cfg)
         {
             // init eqc client
-            foreach (var ep in cfg.cluster)
+            foreach (var ep in cfg.Cluster)
             {
                 //				ParseAddress()
             }
@@ -71,10 +69,10 @@ namespace Greatbone.Core
 
             server = new KestrelServer(Options.Create(options), Lifetime, logger);
             ICollection<string> addrs = server.Features.Get<IServerAddressesFeature>().Addresses;
-            addrs.Add(cfg.tls ? "https://" : "http://" + cfg.outer);
-            addrs.Add("http://" + cfg.inner); // clustered msg queue
+            addrs.Add(cfg.Tls ? "https://" : "http://" + cfg.Public);
+            addrs.Add("http://" + cfg.Private); // clustered msg queue
 
-            ParseAddress(cfg.inner, out inaddr, out inport);
+            ParseAddress(cfg.Private, out inaddr, out inport);
 
             // check db
             string sql = "SELECT to_regclass('schema_name.table_name');";
@@ -237,13 +235,13 @@ namespace Greatbone.Core
 
         public DbContext NewSqlContext()
         {
-            DbConfig dsb = ((WebServiceConfig)Config).db;
+            DbConfig dsb = ((WebServiceConfig)Config).Db;
             NpgsqlConnectionStringBuilder builder = new NpgsqlConnectionStringBuilder()
             {
-                Host = dsb.host,
+                Host = dsb.Host,
                 Database = Key,
-                Username = dsb.username,
-                Password = dsb.password
+                Username = dsb.Username,
+                Password = dsb.Password
             };
             return new DbContext(builder);
         }

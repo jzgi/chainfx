@@ -20,7 +20,7 @@ namespace Greatbone.Core
         ///
         /// The key by which this sub-controller is added to its parent
         ///
-        public string Key => Config.key;
+        public string Key => Config.Key;
 
         /// <summary>The service that this controller resides in.</summary>
         ///

@@ -17,46 +17,46 @@ namespace Greatbone.Core
     ///
     public class WebServiceConfig : WebSubConfig, ISerial
     {
-        internal string subkey;
+        internal string SubKey;
 
         // public socket address
-        internal string outer;
+        internal string Public;
 
-        internal bool tls;
+        internal bool Tls;
 
-        // inner socket address
-        internal string inner;
+        // private socket address for clustering
+        internal string Private;
 
         // event system socket addresses
-        internal string[] cluster;
+        internal string[] Cluster;
 
-        internal DbConfig db;
+        internal DbConfig Db;
 
         internal Dictionary<string, string> options;
 
         public void ReadFrom(ISerialReader r)
         {
-            r.Read(nameof(key), ref key);
-            r.Read(nameof(subkey), ref subkey);
-            r.Read(nameof(outer), ref outer);
-            r.Read(nameof(tls), ref tls);
-            r.Read(nameof(inner), ref inner);
-            r.Read(nameof(cluster), ref cluster);
-            r.Read(nameof(db), ref db);
-            r.Read(nameof(debug), ref debug);
+            r.Read(nameof(Key), ref Key);
+            r.Read(nameof(SubKey), ref SubKey);
+            r.Read(nameof(Public), ref Public);
+            r.Read(nameof(Tls), ref Tls);
+            r.Read(nameof(Private), ref Private);
+            r.Read(nameof(Cluster), ref Cluster);
+            r.Read(nameof(Db), ref Db);
+            r.Read(nameof(Debug), ref Debug);
             r.Read(nameof(options), ref options);
         }
 
         public void WriteTo(ISerialWriter w)
         {
-            w.Write(nameof(key), key);
-            w.Write(nameof(subkey), subkey);
-            w.Write(nameof(outer), outer);
-            w.Write(nameof(tls), tls);
-            w.Write(nameof(inner), inner);
-            w.Write(nameof(cluster), cluster);
-            w.Write(nameof(db), db);
-            w.Write(nameof(debug), debug);
+            w.Write(nameof(Key), Key);
+            w.Write(nameof(SubKey), SubKey);
+            w.Write(nameof(Public), Public);
+            w.Write(nameof(Tls), Tls);
+            w.Write(nameof(Private), Private);
+            w.Write(nameof(Cluster), Cluster);
+            w.Write(nameof(Db), Db);
+            w.Write(nameof(Debug), Debug);
             w.Write(nameof(options), options);
         }
 
@@ -73,9 +73,9 @@ namespace Greatbone.Core
                     {
 
                     });
-                    if (key == null)
+                    if (Key == null)
                     {
-                        key = Path.GetFileNameWithoutExtension(file);
+                        Key = Path.GetFileNameWithoutExtension(file);
                     }
                 }
             }

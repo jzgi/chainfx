@@ -13,14 +13,15 @@ namespace Greatbone.Sample
         /// <param name="args"></param>
         public static void Main(string[] args)
         {
-            JsonContentTest.Test();
+            // JsonContentTest.Test();
 
             DbConfig pg = new DbConfig
             {
-                host = "60.205.104.239",
-                port = 5432,
-                username = "postgres",
-                password = "Zou###1989"
+                Host = "60.205.104.239",
+                Port = 5432,
+                Username = "postgres",
+                Password = "Zou###1989",
+                MQ = false
             };
 
             string[] addrs = {
@@ -33,78 +34,78 @@ namespace Greatbone.Sample
 
             var www = new WwwService(new WebServiceConfig
             {
-                key = "www",
-                outer = "127.0.0.1:8080",
-                inner = "127.0.0.1:7770",
-                cluster = addrs,
-                db = pg,
-                debug = true
+                Key = "www",
+                Public = "127.0.0.1:8080",
+                Private = "127.0.0.1:7770",
+                Cluster = addrs,
+                Db = pg,
+                Debug = true
             }.Load("www.json")
             );
 
             var fame = new FameService(new WebServiceConfig
             {
-                key = "fame",
-                outer = "127.0.0.1:8081",
-                inner = "127.0.0.1:7771",
-                cluster = addrs,
-                db = pg,
-                debug = true
+                Key = "fame",
+                Public = "127.0.0.1:8081",
+                Private = "127.0.0.1:7771",
+                Cluster = addrs,
+                Db = pg,
+                Debug = true
             }.Load("fame.json")
             );
 
             var brand = new BrandService(new WebServiceConfig
             {
-                key = "biz",
-                outer = "127.0.0.1:8082",
-                inner = "127.0.0.1:7772",
-                cluster = addrs,
-                db = pg,
-                debug = true
+                Key = "biz",
+                Public = "127.0.0.1:8082",
+                Private = "127.0.0.1:7772",
+                Cluster = addrs,
+                Db = pg,
+                Debug = true
             }.Load("biz.json")
             );
 
             var post = new PostService(new WebServiceConfig
             {
-                key = "post",
-                outer = "127.0.0.1:8083",
-                inner = "127.0.0.1:7773",
-                cluster = addrs,
-                db = pg,
-                debug = true
+                Key = "post",
+                Public = "127.0.0.1:8083",
+                Private = "127.0.0.1:7773",
+                Cluster = addrs,
+                Db = pg,
+                Debug = true
             }.Load("post.json")
             );
 
             var notice = new NoticeService(new WebServiceConfig
             {
-                key = "notice",
-                outer = "127.0.0.1:8084",
-                inner = "127.0.0.1:7774",
-                cluster = addrs,
-                db = pg,
-                debug = true
+                Key = "notice",
+                Public = "127.0.0.1:8084",
+                Private = "127.0.0.1:7774",
+                Cluster = addrs,
+                Db = pg,
+                Debug = true
             }.Load("notice.json")
             );
 
             var user = new UserService(new WebServiceConfig
             {
-                key = "user",
-                outer = "127.0.0.1:8085",
-                inner = "127.0.0.1:7775",
-                cluster = addrs,
-                db = pg,
-                debug = true
+                Key = "user",
+                Public = "127.0.0.1:8085",
+                Private = "127.0.0.1:7775",
+                Cluster = addrs,
+                Db = pg,
+                Debug = true
             }.Load("user.json")
             );
 
             var chat = new ChatService(new WebServiceConfig
             {
-                key = "chat",
-                outer = "127.0.0.1:8086",
-                inner = "127.0.0.1:7776",
-                cluster = addrs,
-                db = pg,
-                debug = true
+                Key = "chat",
+                Public = "127.0.0.1:8086",
+                Private = "127.0.0.1:7776",
+                Cluster = addrs,
+                Db = pg,
+                Debug = true
             }.Load("chat.json")
             );
 
