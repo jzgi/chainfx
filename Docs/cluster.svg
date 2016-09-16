@@ -84,5 +84,8 @@
    <text id="svg_134" transform="matrix(0.669945, 0, 0, 0.666667, 35.8414, 80)" xml:space="preserve" text-anchor="middle" font-family="serif" font-size="24" y="475.786636" x="162.773422" stroke-linecap="null" stroke-linejoin="null" stroke-dasharray="null" stroke-width="0" stroke="#000000" fill="#ff007f">data</text>
   </g>
   <text id="svg_135" transform="rotate(-90.6656, 90.5299, 272.995) matrix(0.698567, 0, 0, 0.588159, 62.8215, 86.0925)" xml:space="preserve" text-anchor="middle" font-family="serif" font-size="24" y="326.30149" x="38.131776" stroke-linecap="null" stroke-linejoin="null" stroke-dasharray="null" stroke-width="0" stroke="#000000" fill="#000000">&lt;------------- Y-axis -------------&gt;</text>
+  <text transform="matrix(1, 0, 0, 1, 0, 0)" xml:space="preserve" text-anchor="middle" font-family="serif" font-size="24" id="svg_136" y="232.5" x="434.5" stroke-linecap="null" stroke-linejoin="null" stroke-dasharray="null" stroke-width="0" stroke="#000000" fill="#000000">X : master-master replication</text>
+  <text id="svg_137" xml:space="preserve" text-anchor="middle" font-family="serif" font-size="24" y="265.5" x="377.5" stroke-linecap="null" stroke-linejoin="null" stroke-dasharray="null" stroke-width="0" stroke="#000000" fill="#000000">Y : microservices</text>
+  <text id="svg_138" xml:space="preserve" text-anchor="middle" font-family="serif" font-size="24" y="299.5" x="368" stroke-linecap="null" stroke-linejoin="null" stroke-dasharray="null" stroke-width="0" stroke="#000000" fill="#000000">Z : partitioning</text>
  </g>
 </svg>

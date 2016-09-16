@@ -17,27 +17,31 @@ namespace Greatbone.Core
     ///
     public class WebServiceConfig : WebSubConfig, ISerial
     {
-        internal string SubKey;
+        ///<summary></summary>
+        public string Replica;
+
+        ///<summary></summary>
+        public string Shard;
 
         // public socket address
-        internal string Public;
+        public string Public;
 
-        internal bool Tls;
+        public bool Tls;
 
         // private socket address for clustering
-        internal string Private;
+        public string Private;
 
         // event system socket addresses
-        internal string[] Cluster;
+        public string[] Cluster;
 
-        internal DbConfig Db;
+        public DbConfig Db;
 
-        internal Dictionary<string, string> options;
+        public Dictionary<string, string> options;
 
         public void ReadFrom(ISerialReader r)
         {
             r.Read(nameof(Key), ref Key);
-            r.Read(nameof(SubKey), ref SubKey);
+            r.Read(nameof(Shard), ref Shard);
             r.Read(nameof(Public), ref Public);
             r.Read(nameof(Tls), ref Tls);
             r.Read(nameof(Private), ref Private);
@@ -50,7 +54,7 @@ namespace Greatbone.Core
         public void WriteTo(ISerialWriter w)
         {
             w.Write(nameof(Key), Key);
-            w.Write(nameof(SubKey), SubKey);
+            w.Write(nameof(Shard), Shard);
             w.Write(nameof(Public), Public);
             w.Write(nameof(Tls), Tls);
             w.Write(nameof(Private), Private);
