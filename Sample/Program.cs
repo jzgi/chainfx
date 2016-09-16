@@ -8,9 +8,8 @@ namespace Greatbone.Sample
     public class Program
     {
         /// <summary>
-        ///
+        /// The entry point of the application.
         /// </summary>
-        /// <param name="args"></param>
         public static void Main(string[] args)
         {
             // JsonContentTest.Test();
@@ -25,18 +24,18 @@ namespace Greatbone.Sample
             };
 
             string[] addrs = {
-                "127.0.0.8081",
-                "127.0.0.8082",
-                "127.0.0.8083",
-                "127.0.0.8084",
-                "127.0.0.8085",
+                "127.0.0.7070",
+                "127.0.0.7071",
+                "127.0.0.7072",
+                "127.0.0.7073",
+                "127.0.0.7074",
             };
 
             var www = new WwwService(new WebServiceConfig
             {
                 Key = "www",
                 Public = "127.0.0.1:8080",
-                Private = "127.0.0.1:7770",
+                Private = "127.0.0.1:7070",
                 Cluster = addrs,
                 Db = pg,
                 Debug = true
@@ -46,7 +45,7 @@ namespace Greatbone.Sample
             {
                 Key = "biz",
                 Public = "127.0.0.1:8081",
-                Private = "127.0.0.1:7771",
+                Private = "127.0.0.1:7071",
                 Cluster = addrs,
                 Db = pg,
                 Debug = true
@@ -55,8 +54,8 @@ namespace Greatbone.Sample
             var cont = new ContService(new WebServiceConfig
             {
                 Key = "cont",
-                Public = "127.0.0.1:8083",
-                Private = "127.0.0.1:7773",
+                Public = "127.0.0.1:8082",
+                Private = "127.0.0.1:7072",
                 Cluster = addrs,
                 Db = pg,
                 Debug = true
@@ -65,8 +64,8 @@ namespace Greatbone.Sample
             var dir = new DirService(new WebServiceConfig
             {
                 Key = "dir",
-                Public = "127.0.0.1:8085",
-                Private = "127.0.0.1:7775",
+                Public = "127.0.0.1:8083",
+                Private = "127.0.0.1:7073",
                 Cluster = addrs,
                 Db = pg,
                 Debug = true
@@ -75,8 +74,8 @@ namespace Greatbone.Sample
             var chat = new ChatService(new WebServiceConfig
             {
                 Key = "chat",
-                Public = "127.0.0.1:8086",
-                Private = "127.0.0.1:7776",
+                Public = "127.0.0.1:8084",
+                Private = "127.0.0.1:7074",
                 Cluster = addrs,
                 Db = pg,
                 Debug = true
