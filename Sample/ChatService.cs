@@ -5,7 +5,7 @@ using Greatbone.Core;
 
 namespace Greatbone.Sample
 {
-	/// <summary>The instant messaging servoce.</summary>
+	/// <summary>The chat servoce.</summary>
 	///
 	public class ChatService : WebService
 	{

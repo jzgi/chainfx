@@ -4,9 +4,9 @@ using System.Collections.Generic;
 
 namespace Greatbone.Sample
 {
-    public class PostService : WebService
+    public class PostModule : WebModule
     {
-        public PostService(WebServiceConfig cfg) : base(cfg)
+        public PostModule(WebSubConfig cfg) : base(cfg)
         {
             SetXHub<PostXHub>(false);
         }

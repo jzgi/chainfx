@@ -5,9 +5,9 @@ namespace Greatbone.Sample
     ///
     /// <summary>The notice service.</summary>
     ///
-    public class NoticeService : WebService
+    public class NoticeModule : WebModule
     {
-        public NoticeService(WebServiceConfig cfg) : base(cfg)
+        public NoticeModule(WebSubConfig cfg) : base(cfg)
         {
             SetXHub<NoticeXHub>(false);
         }

@@ -4,9 +4,9 @@ namespace Greatbone.Sample
 {
 	///
 	///
-	public class FameService : WebService
+	public class FameModule : WebModule
 	{
-		public FameService(WebServiceConfig cfg) : base(cfg)
+		public FameModule(WebSubConfig cfg) : base(cfg)
 		{
 			SetXHub<FameXHub>(false);
 		}

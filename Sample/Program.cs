@@ -40,63 +40,37 @@ namespace Greatbone.Sample
                 Cluster = addrs,
                 Db = pg,
                 Debug = true
-            }.Load("www.json")
-            );
+            }.Load("www.json"));
 
-            var fame = new FameService(new WebServiceConfig
+            var biz = new BizService(new WebServiceConfig
             {
-                Key = "fame",
+                Key = "biz",
                 Public = "127.0.0.1:8081",
                 Private = "127.0.0.1:7771",
                 Cluster = addrs,
                 Db = pg,
                 Debug = true
-            }.Load("fame.json")
-            );
+            }.Load("biz.json"));
 
-            var brand = new BrandService(new WebServiceConfig
+            var cont = new ContService(new WebServiceConfig
             {
-                Key = "biz",
-                Public = "127.0.0.1:8082",
-                Private = "127.0.0.1:7772",
-                Cluster = addrs,
-                Db = pg,
-                Debug = true
-            }.Load("biz.json")
-            );
-
-            var post = new PostService(new WebServiceConfig
-            {
-                Key = "post",
+                Key = "cont",
                 Public = "127.0.0.1:8083",
                 Private = "127.0.0.1:7773",
                 Cluster = addrs,
                 Db = pg,
                 Debug = true
-            }.Load("post.json")
-            );
+            }.Load("cont.json"));
 
-            var notice = new NoticeService(new WebServiceConfig
+            var dir = new DirService(new WebServiceConfig
             {
-                Key = "notice",
-                Public = "127.0.0.1:8084",
-                Private = "127.0.0.1:7774",
-                Cluster = addrs,
-                Db = pg,
-                Debug = true
-            }.Load("notice.json")
-            );
-
-            var user = new UserService(new WebServiceConfig
-            {
-                Key = "user",
+                Key = "dir",
                 Public = "127.0.0.1:8085",
                 Private = "127.0.0.1:7775",
                 Cluster = addrs,
                 Db = pg,
                 Debug = true
-            }.Load("user.json")
-            );
+            }.Load("dir.json"));
 
             var chat = new ChatService(new WebServiceConfig
             {
@@ -106,10 +80,9 @@ namespace Greatbone.Sample
                 Cluster = addrs,
                 Db = pg,
                 Debug = true
-            }.Load("chat.json")
-            );
+            }.Load("chat.json"));
 
-            WebService.Run(www, fame, brand, post, notice, user, chat);
+            WebService.Run(www, biz, cont, dir, chat);
         }
     }
 }

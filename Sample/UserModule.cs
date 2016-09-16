@@ -6,9 +6,9 @@ namespace Greatbone.Sample
     ///
     /// <summary>The user directory service</summary>
     ///
-    public class UserService : WebService
+    public class UserModule : WebModule
     {
-        public UserService(WebServiceConfig cfg) : base(cfg)
+        public UserModule(WebSubConfig cfg) : base(cfg)
         {
             SetXHub<UserXHub>(false);
         }
