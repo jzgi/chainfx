@@ -5,11 +5,11 @@ namespace Greatbone.Sample
     ///
     /// <summary>The notice service.</summary>
     ///
-    public class NoticeModule : WebModule
+    public class NoticeHub : WebModule
     {
-        public NoticeModule(WebSubConfig cfg) : base(cfg)
+        public NoticeHub(WebConfig cfg) : base(cfg)
         {
-            SetXHub<NoticeXHub>(false);
+            SetVarHub<NoticeVarHub>(false);
         }
 
         /// <summary>

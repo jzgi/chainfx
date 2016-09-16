@@ -7,9 +7,9 @@ namespace Greatbone.Sample
     ///
     public class BrandModule : WebModule
     {
-        public BrandModule(WebSubConfig cfg) : base(cfg)
+        public BrandModule(WebConfig cfg) : base(cfg)
         {
-            SetXHub<BrandXHub>(false);
+            SetVarHub<BrandVarHub>(false);
         }
     }
 }

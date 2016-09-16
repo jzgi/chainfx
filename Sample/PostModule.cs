@@ -6,9 +6,9 @@ namespace Greatbone.Sample
 {
     public class PostModule : WebModule
     {
-        public PostModule(WebSubConfig cfg) : base(cfg)
+        public PostModule(WebConfig cfg) : base(cfg)
         {
-            SetXHub<PostXHub>(false);
+            SetVarHub<PostVarHub>(false);
         }
 
         public void Top(WebContext wc)

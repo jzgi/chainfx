@@ -6,9 +6,9 @@ namespace Greatbone.Sample
 	///
 	public class FameModule : WebModule
 	{
-		public FameModule(WebSubConfig cfg) : base(cfg)
+		public FameModule(WebConfig cfg) : base(cfg)
 		{
-			SetXHub<FameXHub>(false);
+			SetVarHub<FameVarHub>(false);
 		}
 
 		        /// <summary>

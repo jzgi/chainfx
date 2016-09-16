@@ -15,7 +15,7 @@ namespace Greatbone.Core
         // the default action
         readonly WebAction defaction;
 
-        public WebSubConfig Config { get; internal set; }
+        public WebConfig Config { get; internal set; }
 
         ///
         /// The key by which this sub-controller is added to its parent
@@ -40,7 +40,7 @@ namespace Greatbone.Core
         public StaticContent DefaultStatic { get; }
 
         // the argument makes state-passing more convenient
-        protected WebSub(WebSubConfig cfg)
+        protected WebSub(WebConfig cfg)
         {
 
             Config = cfg;
@@ -49,11 +49,12 @@ namespace Greatbone.Core
             if (cfg.Service == null)
             {
                 WebService svc = this as WebService;
-                if (svc == null)
+                WebServiceConfig svccfg = cfg as WebServiceConfig;
+                if (svc == null || svccfg == null)
                 {
                     throw new InvalidOperationException("not a service class");
                 }
-                cfg.Service = svc;
+                svccfg.Service = svc;
             }
 
             StaticPath = cfg.Parent == null ? Key : Path.Combine(Parent.StaticPath, Key);
@@ -96,7 +97,7 @@ namespace Greatbone.Core
             {
                 ParameterInfo[] pis = mi.GetParameters();
                 WebAction a = null;
-                if (cfg.IsXed)
+                if (cfg.IsVar)
                 {
                     if (pis.Length == 2 && pis[0].ParameterType == typeof(WebContext) &&
                         pis[1].ParameterType == typeof(string))

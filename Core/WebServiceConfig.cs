@@ -15,7 +15,7 @@ namespace Greatbone.Core
     /// }
     /// </example>
     ///
-    public class WebServiceConfig : WebSubConfig, ISerial
+    public class WebServiceConfig : WebConfig, ISerial
     {
         ///<summary></summary>
         public string Replica;

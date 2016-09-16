@@ -12,10 +12,10 @@ namespace Greatbone.Core
         // the added sub controllers, if any
         private Set<WebSub> subs;
 
-        // the attached multiplexer hub controller, if any
-        private WebXHub xhub;
+        // the attached multiplexer controller, if any
+        private WebVarHub hub;
 
-        protected WebModule(WebSubConfig wsc) : base(wsc)
+        protected WebModule(WebConfig wsc) : base(wsc)
         {
         }
 
@@ -29,17 +29,17 @@ namespace Greatbone.Core
             }
             // create instance by reflection
             Type typ = typeof(TSub);
-            ConstructorInfo ci = typ.GetConstructor(new[] { typeof(WebSubConfig) });
+            ConstructorInfo ci = typ.GetConstructor(new[] { typeof(WebConfig) });
             if (ci == null)
             {
                 throw new WebException(typ + ": the constructor not found (WebServiceContext)");
             }
-            WebSubConfig cfg = new WebSubConfig
+            WebConfig cfg = new WebConfig
             {
                 Key = key,
                 Parent = this,
                 Service = Service,
-                IsXed = false
+                IsVar = false
             };
             TSub sub = (TSub)ci.Invoke(new object[] { cfg });
 
@@ -48,25 +48,25 @@ namespace Greatbone.Core
             return sub;
         }
 
-        public TXHub SetXHub<TXHub>(bool auth) where TXHub : WebXHub
+        public THub SetVarHub<THub>(bool auth) where THub : WebVarHub
         {
             // create instance
-            Type typ = typeof(TXHub);
-            ConstructorInfo ci = typ.GetConstructor(new[] { typeof(WebSubConfig) });
+            Type typ = typeof(THub);
+            ConstructorInfo ci = typ.GetConstructor(new[] { typeof(WebConfig) });
             if (ci == null)
             {
                 throw new WebServiceException(typ + ": the constructor not found (WebServiceContext)");
             }
-            WebSubConfig cfg = new WebSubConfig
+            WebConfig cfg = new WebConfig
             {
                 Key = "X",
                 Parent = this,
                 Service = Service,
-                IsXed = true
+                IsVar = true
             };
-            TXHub hub = (TXHub)ci.Invoke(new object[] { cfg });
+            THub hub = (THub)ci.Invoke(new object[] { cfg });
 
-            xhub = hub;
+            this.hub = hub;
 
             return hub;
         }
@@ -87,14 +87,14 @@ namespace Greatbone.Core
                 {
                     sub.Handle(relative.Substring(slash + 1), wc);
                 }
-                else if (xhub == null)
+                else if (hub == null)
                 {
                     wc.Response.StatusCode = 501; // Not Implemented
                 }
                 else
                 {
                     wc.X = dir;
-                    xhub.Handle(relative.Substring(slash + 1), wc);
+                    hub.Handle(relative.Substring(slash + 1), wc);
                 }
             }
         }

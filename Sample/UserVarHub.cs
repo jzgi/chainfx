@@ -8,9 +8,9 @@ namespace Greatbone.Sample
     /// <summary>The features about a particular user principal.</summary>
     /// /-/
     ///
-    public class UserXHub : WebXHub
+    public class UserVarHub : WebVarHub
     {
-        public UserXHub(WebSubConfig cfg) : base(cfg)
+        public UserVarHub(WebConfig cfg) : base(cfg)
         {
         }
 

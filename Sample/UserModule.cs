@@ -8,9 +8,9 @@ namespace Greatbone.Sample
     ///
     public class UserModule : WebModule
     {
-        public UserModule(WebSubConfig cfg) : base(cfg)
+        public UserModule(WebConfig cfg) : base(cfg)
         {
-            SetXHub<UserXHub>(false);
+            SetVarHub<UserVarHub>(false);
         }
 
         ///

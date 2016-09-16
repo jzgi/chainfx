@@ -7,11 +7,11 @@ namespace Greatbone.Sample
 {
     /// /123/Get
     /// /123/Put
-    public class ChatXHub : WebXHub
+    public class ChatVarHub : WebVarHub
     {
         private ConcurrentDictionary<string, List<Chat>> online;
 
-        public ChatXHub(WebSubConfig cfg) : base(cfg)
+        public ChatVarHub(WebConfig cfg) : base(cfg)
         {
         }
 

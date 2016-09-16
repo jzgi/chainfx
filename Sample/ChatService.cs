@@ -14,7 +14,7 @@ namespace Greatbone.Sample
 
 		public ChatService(WebServiceConfig cfg) : base(cfg)
 		{
-			SetXHub<ChatXHub>(true);
+			SetVarHub<ChatVarHub>(true);
 		}
 
 	    public void Foo(WebContext wc)

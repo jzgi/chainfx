@@ -6,12 +6,12 @@ namespace Greatbone.Core
 {
     /// <summary>A multiplexing hub controller that is attached to a realm controller. </summary>
     ///
-    public abstract class WebXHub : WebSub
+    public abstract class WebVarHub : WebSub
     {
         // the added sub controllers
         private Set<WebSub> subs;
 
-        protected WebXHub(WebSubConfig wsc) : base(wsc)
+        protected WebVarHub(WebConfig wsc) : base(wsc)
         {
         }
 
@@ -23,17 +23,17 @@ namespace Greatbone.Core
             }
             // create instance by reflection
             Type type = typeof(TSub);
-            ConstructorInfo ci = type.GetConstructor(new[] { typeof(WebSubConfig) });
+            ConstructorInfo ci = type.GetConstructor(new[] { typeof(WebConfig) });
             if (ci == null)
             {
                 throw new WebException(type + ": the constructor not found (WebServiceContext)");
             }
-            WebSubConfig wsc = new WebSubConfig
+            WebConfig wsc = new WebConfig
             {
                 Key = key,
                 Parent = this,
                 Service = Service,
-                IsXed = true
+                IsVar = true
             };
             TSub sub = (TSub)ci.Invoke(new object[] { wsc });
             // call the initialization and add

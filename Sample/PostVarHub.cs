@@ -3,9 +3,9 @@ using System.Net;
 
 namespace Greatbone.Sample
 {
-    public class PostXHub : WebXHub
+    public class PostVarHub : WebVarHub
     {
-        public PostXHub(WebSubConfig cfg) : base(cfg)
+        public PostVarHub(WebConfig cfg) : base(cfg)
         {
         }
 
