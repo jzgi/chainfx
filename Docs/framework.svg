@@ -1,0 +1,49 @@
+<?xml version="1.0"?>
+<svg width="640" height="480" xmlns="http://www.w3.org/2000/svg" xmlns:svg="http://www.w3.org/2000/svg">
+ <!-- Created with SVG-edit - http://svg-edit.googlecode.com/ -->
+ <defs>
+  <marker id="se_marker_end_svg_25" markerUnits="strokeWidth" orient="auto" viewBox="0 0 100 100" markerWidth="5" markerHeight="5" refX="50" refY="50">
+   <path id="svg_28" d="m100,50l-100,40l30,-40l-30,-40l100,40z" fill="#000000" stroke="#000000" stroke-width="10"/>
+  </marker>
+  <marker refY="50" refX="50" markerHeight="5" markerWidth="5" viewBox="0 0 100 100" orient="auto" markerUnits="strokeWidth" id="se_marker_end_svg_32">
+   <path stroke-width="10" stroke="#000000" fill="#000000" d="m100,50l-100,40l30,-40l-30,-40l100,40z" id="svg_6"/>
+  </marker>
+  <marker id="se_marker_mid_svg_33" markerUnits="strokeWidth" orient="auto" viewBox="0 0 100 100" markerWidth="5" markerHeight="5" refX="50" refY="50">
+   <path id="svg_2" d="m0,50l100,40l-30,-40l30,-40l-100,40z" fill="#000000" stroke="#000000" stroke-width="10"/>
+  </marker>
+ </defs>
+ <g>
+  <title>Layer 1</title>
+  <rect ry="15" rx="15" id="svg_58" height="349.999995" width="259.666678" y="91.000005" x="280.333323" stroke-linecap="null" stroke-linejoin="null" stroke-dasharray="null" stroke="#000000" fill="#ffffff"/>
+  <rect fill="#bfbfbf" stroke="#000000" stroke-width="2" x="322.000008" y="151.874998" width="95" height="131.875016" id="svg_1"/>
+  <text transform="matrix(0.91036, 0, 0, 0.853043, 32.7296, 28.8976)" fill="#000000" stroke="#000000" stroke-width="0" stroke-dasharray="null" stroke-linejoin="null" stroke-linecap="null" x="357.954006" y="288.658192" id="svg_3" font-size="24" font-family="serif" text-anchor="middle" xml:space="preserve">service</text>
+  <text fill="#000000" stroke="#000000" stroke-width="0" stroke-dasharray="null" stroke-linejoin="null" stroke-linecap="null" x="140.459476" y="234.725442" id="svg_26" font-size="24" font-family="serif" text-anchor="middle" xml:space="preserve" transform="rotate(-34.9025, 145.718, 250.178) matrix(0.819458, 0, 0, 0.563799, 30.6169, 122.249)">json/http</text>
+  <text xml:space="preserve" text-anchor="middle" font-family="serif" font-size="24" y="37.478568" x="83.395714" stroke-linecap="null" stroke-linejoin="null" stroke-dasharray="null" stroke-width="0" stroke="#000000" fill="#000000" id="svg_30" font-weight="normal" transform="matrix(0.921547, 0, 0, 0.909467, 235.971, 23.3053)">Microservice Framework</text>
+  <line marker-end="url(#se_marker_end_svg_25)" id="svg_25" y2="206.5" x2="215.499999" y1="206.5" x1="103.499997" stroke-linecap="null" stroke-linejoin="null" stroke-dasharray="null" stroke-width="3" stroke="#000000" fill="none"/>
+  <line marker-end="url(#se_marker_end_svg_32)" id="svg_32" y2="226.5" x2="217.5" y1="312.500004" x1="102.500001" stroke-linecap="null" stroke-linejoin="null" stroke-dasharray="null" stroke-width="3" stroke="#000000" fill="none"/>
+  <polyline points="100.5,321.5 158.5,322 216.5,322.5" stroke="#000000" stroke-width="3" fill="none" marker-mid="url(#se_marker_mid_svg_33)" id="svg_33"/>
+  <rect fill="#bfbfbf" stroke="#000000" stroke-width="2" x="373" y="199.999996" width="80" height="44.000002" id="svg_8"/>
+  <rect id="svg_37" fill="#bfbfbf" stroke="#000000" stroke-width="2" x="373" y="137.000002" width="80" height="32.000001"/>
+  <rect id="svg_42" fill="#bfbfbf" stroke="#000000" stroke-width="2" x="423" y="182.000002" width="80" height="32.000001"/>
+  <g id="svg_35"/>
+  <g id="svg_46"/>
+  <g id="svg_47"/>
+  <g id="svg_48"/>
+  <rect id="svg_49" height="98.000013" width="94.999996" y="284.499991" x="321.500002" stroke-linecap="null" stroke-linejoin="null" stroke-dasharray="null" stroke-width="2" stroke="#000000" fill="#ffffff"/>
+  <rect fill="#bfbfbf" stroke="#000000" stroke-width="2" x="423" y="238.000002" width="80" height="30" id="svg_10"/>
+  <text fill="#000000" stroke="#000000" stroke-width="0" stroke-dasharray="null" stroke-linejoin="null" stroke-linecap="null" x="367.269817" y="429.258049" font-size="24" font-family="serif" text-anchor="middle" xml:space="preserve" id="svg_7" transform="matrix(0.734072, 0, 0, 0.805185, 147.052, 85.3925)">webservicecontext (creation)</text>
+  <text fill="#000000" stroke="#000000" stroke-width="0" stroke-dasharray="null" stroke-linejoin="null" stroke-linecap="null" x="389.032692" y="57.768732" font-size="24" font-family="serif" text-anchor="middle" xml:space="preserve" id="svg_12" transform="matrix(0.760525, 0, 0, 0.736577, 127.949, 81.3489)">webcontext (handling))</text>
+  <text fill="#000000" stroke="#000000" stroke-width="0" stroke-dasharray="null" stroke-linejoin="null" stroke-linecap="null" x="366.251063" y="342.875726" font-size="24" font-family="serif" text-anchor="middle" xml:space="preserve" transform="matrix(0.760525, 0, 0, 0.736577, 127.949, 81.3489)" id="svg_14">msgcontext (handling))</text>
+  <text fill="#000000" stroke="#000000" stroke-width="0" stroke-dasharray="null" stroke-linejoin="null" stroke-linecap="null" x="57.688125" y="314.54344" font-size="24" font-family="serif" text-anchor="middle" xml:space="preserve" id="svg_15" transform="matrix(0.677284, 0, 0, 0.644858, 33.6679, 118.769)">private</text>
+  <text fill="#000000" stroke="#000000" stroke-width="0" stroke-dasharray="null" stroke-linejoin="null" stroke-linecap="null" x="50.650567" y="205.914209" font-size="24" font-family="serif" text-anchor="middle" xml:space="preserve" id="svg_17" transform="matrix(0.68412, 0, 0, 0.654195, 37.0701, 74.8973)">public</text>
+  <rect fill="#bfbfbf" stroke="#000000" stroke-width="3" x="224" y="192" width="80" height="30" id="svg_4"/>
+  <rect id="svg_16" fill="#ffffff" stroke="#000000" stroke-width="3" x="223" y="308.5" width="80" height="30"/>
+  <text fill="#000000" stroke="#000000" stroke-width="0" stroke-dasharray="null" stroke-linejoin="null" stroke-linecap="null" x="143.410588" y="464.0103" font-size="24" font-family="serif" text-anchor="middle" xml:space="preserve" transform="matrix(0.786509, 0, 0, 0.684885, 36.6835, 34.2046)" id="svg_20">jsonbi/http</text>
+  <text id="svg_13" fill="#000000" stroke="#000000" stroke-width="0" stroke-dasharray="null" stroke-linejoin="null" stroke-linecap="null" x="438.569491" y="242.410996" font-size="24" font-family="serif" text-anchor="middle" xml:space="preserve" transform="matrix(0.760525, 0, 0, 0.736577, 127.949, 81.3489)">xhub</text>
+  <text id="svg_19" fill="#000000" stroke="#000000" stroke-width="0" stroke-dasharray="null" stroke-linejoin="null" stroke-linecap="null" x="438.569534" y="165.026024" font-size="24" font-family="serif" text-anchor="middle" xml:space="preserve" transform="matrix(0.760525, 0, 0, 0.736577, 127.949, 81.3489)">sub</text>
+  <text id="svg_22" fill="#000000" stroke="#000000" stroke-width="0" stroke-dasharray="null" stroke-linejoin="null" stroke-linecap="null" x="373.472458" y="102.574974" font-size="24" font-family="serif" text-anchor="middle" xml:space="preserve" transform="matrix(0.760525, 0, 0, 0.736577, 127.949, 81.3489)">sub</text>
+  <text id="svg_23" fill="#000000" stroke="#000000" stroke-width="0" stroke-dasharray="null" stroke-linejoin="null" stroke-linecap="null" x="368.212936" y="201.682069" font-size="24" font-family="serif" text-anchor="middle" xml:space="preserve" transform="matrix(0.760525, 0, 0, 0.736577, 127.949, 81.3489)">module</text>
+  <text id="svg_24" fill="#000000" stroke="#000000" stroke-width="0" stroke-dasharray="null" stroke-linejoin="null" stroke-linecap="null" x="180.184926" y="178.602333" font-size="24" font-family="serif" text-anchor="middle" xml:space="preserve" transform="matrix(0.760525, 0, 0, 0.736577, 127.949, 81.3489)">action</text>
+  <text id="svg_27" fill="#000000" stroke="#000000" stroke-width="0" stroke-dasharray="null" stroke-linejoin="null" stroke-linecap="null" x="176.240281" y="336.087575" font-size="24" font-family="serif" text-anchor="middle" xml:space="preserve" transform="matrix(0.760525, 0, 0, 0.736577, 127.949, 81.3489)">msg</text>
+ </g>
+</svg>

@@ -1,78 +1,34 @@
-<?xml version="1.0" encoding="UTF-8"?>
+<?xml version="1.0"?>
 <svg width="640" height="480" xmlns="http://www.w3.org/2000/svg" xmlns:svg="http://www.w3.org/2000/svg" xmlns:se="http://svg-edit.googlecode.com">
  <!-- Created with SVG-edit - http://svg-edit.googlecode.com/ -->
  <defs>
-  <marker refY="50" refX="50" markerHeight="5" markerWidth="5" viewBox="0 0 100 100" orient="auto" markerUnits="strokeWidth" id="se_marker_end_svg_22">
-   <path stroke-width="10" stroke="#000000" fill="#000000" d="m100,50l-100,40l30,-40l-30,-40l100,40z" id="svg_17"/>
+  <marker id="se_marker_end_svg_24" markerUnits="strokeWidth" orient="auto" viewBox="0 0 100 100" markerWidth="5" markerHeight="5" refX="50" refY="50">
+   <path id="svg_27" d="m100,50l-100,40l30,-40l-30,-40l100,40z" fill="#000000" stroke="#000000" stroke-width="10"/>
   </marker>
-  <marker refY="50" refX="50" markerHeight="5" markerWidth="5" viewBox="0 0 100 100" orient="auto" markerUnits="strokeWidth" id="se_marker_end_svg_23">
-   <path stroke-width="10" stroke="#000000" fill="#000000" d="m100,50l-100,40l30,-40l-30,-40l100,40z" id="svg_20"/>
-  </marker>
-  <marker refY="50" refX="50" markerHeight="5" markerWidth="5" viewBox="0 0 100 100" orient="auto" markerUnits="strokeWidth" id="se_marker_end_svg_24">
-   <path stroke-width="10" stroke="#000000" fill="#000000" d="m100,50l-100,40l30,-40l-30,-40l100,40z" id="svg_27"/>
-  </marker>
-  <marker refY="50" refX="50" markerHeight="5" markerWidth="5" viewBox="0 0 100 100" orient="auto" markerUnits="strokeWidth" id="se_marker_end_svg_25">
-   <path stroke-width="10" stroke="#000000" fill="#000000" d="m100,50l-100,40l30,-40l-30,-40l100,40z" id="svg_28"/>
-  </marker>
-  <marker id="se_marker_end_svg_38" markerUnits="strokeWidth" orient="auto" viewBox="0 0 100 100" markerWidth="5" markerHeight="5" refX="50" refY="50">
-   <path id="svg_2" d="m100,50l-100,40l30,-40l-30,-40l100,40z" fill="#000000" stroke="#000000" stroke-width="10"/>
-  </marker>
-  <marker refY="50" refX="50" markerHeight="5" markerWidth="5" viewBox="0 0 100 100" se_type="rightarrow" orient="auto" markerUnits="strokeWidth" id="se_marker_end_svg_15">
-   <path stroke-width="10" stroke="#000000" fill="#000000" d="m100,50l-100,40l30,-40l-30,-40z"/>
+  <marker id="se_marker_end_svg_15" markerUnits="strokeWidth" orient="auto" viewBox="0 0 100 100" markerWidth="5" markerHeight="5" refX="50" refY="50">
+   <path id="svg_7" d="m100,50l-100,40l30,-40l-30,-40l100,40z" fill="#000000" stroke="#000000" stroke-width="10"/>
   </marker>
  </defs>
  <g>
   <title>Layer 1</title>
-  <polyline marker-end="url(#se_marker_end_svg_15)" se:connector="svg_61 svg_58" fill="none" stroke-width="5" stroke="#000000" points="231.958,260 248.646,260 265.333,260" id="svg_15"/>
-  <rect fill="#ffffff" stroke="#000000" stroke-width="3" stroke-dasharray="null" stroke-linejoin="null" stroke-linecap="null" x="60" y="80" width="170.458326" height="360" id="svg_61" rx="15" ry="15"/>
-  <rect fill="#ffffff" stroke="#000000" stroke-width="3" stroke-dasharray="null" stroke-linejoin="null" stroke-linecap="null" x="279.333324" y="80" width="300.666676" height="360" id="svg_58" rx="15" ry="15"/>
-  <polyline se:connector="svg_1 svg_35" id="svg_38" points="405.5,265.208 433.25,265.153 461,265.098" stroke="#000000" stroke-width="3" fill="none" marker-end="url(#se_marker_end_svg_38)"/>
-  <polyline se:connector="svg_1 svg_10" marker-end="url(#se_marker_end_svg_25)" fill="none" stroke-width="3" stroke="#000000" points="392.867,290.25 414.249,303.625 435.632,317" id="svg_25"/>
-  <polyline se:connector="svg_1 svg_8" marker-end="url(#se_marker_end_svg_24)" fill="none" stroke-width="3" stroke="#000000" points="405.5,240.38 418.25,234.325 431,228.27" id="svg_24"/>
-  <polyline se:connector="svg_1 svg_18" marker-end="url(#se_marker_end_svg_23)" fill="none" stroke-width="3" stroke="#000000" points="362.658,290.25 378.682,331.625 394.705,373" id="svg_23"/>
-  <polyline se:connector="svg_1 svg_4" marker-end="url(#se_marker_end_svg_22)" fill="none" stroke-width="3" stroke="#000000" points="364.815,240.375 381.722,204.688 398.63,169" id="svg_22"/>
-  <g id="svg_39">
-   <text fill="#000000" stroke="#000000" stroke-width="0" x="513.5" y="323.5" id="svg_31" font-size="24" font-family="serif" text-anchor="middle" xml:space="preserve"/>
-   <rect height="30" width="80" y="250" x="470" stroke-width="3" stroke="#000000" fill="#bfbfbf" id="svg_35"/>
-   <text xml:space="preserve" text-anchor="middle" font-family="serif" font-size="24" y="270" x="510" stroke-linecap="null" stroke-linejoin="null" stroke-dasharray="null" stroke-width="0" stroke="#000000" fill="#000000" id="svg_36">chat</text>
-  </g>
-  <g id="svg_40">
-   <rect id="svg_10" height="30" width="80" y="325.999999" x="434" stroke-width="3" stroke="#000000" fill="#bfbfbf"/>
-   <text id="svg_11" xml:space="preserve" text-anchor="middle" font-family="serif" font-size="24" y="350" x="470" stroke-linecap="null" stroke-linejoin="null" stroke-dasharray="null" stroke-width="0" stroke="#000000" fill="#000000">biz</text>
-  </g>
-  <g id="svg_41">
-   <rect id="svg_18" height="30" width="80" y="381.999999" x="364" stroke-width="3" stroke="#000000" fill="#bfbfbf"/>
-   <text id="svg_19" xml:space="preserve" text-anchor="middle" font-family="serif" font-size="24" y="400" x="400" stroke-linecap="null" stroke-linejoin="null" stroke-dasharray="null" stroke-width="0" stroke="#000000" fill="#000000">user</text>
-  </g>
-  <g id="svg_42">
-   <rect id="svg_8" height="30" width="80" y="190" x="440" stroke-width="3" stroke="#000000" fill="#bfbfbf"/>
-   <text id="svg_9" xml:space="preserve" text-anchor="middle" font-family="serif" font-size="24" y="210" x="480" stroke-linecap="null" stroke-linejoin="null" stroke-dasharray="null" stroke-width="0" stroke="#000000" fill="#000000">notice</text>
-  </g>
-  <g id="svg_43">
-   <rect id="svg_4" height="30" width="80" y="130" x="370" stroke-width="3" stroke="#000000" fill="#bfbfbf"/>
-   <text id="svg_5" xml:space="preserve" text-anchor="middle" font-family="serif" font-size="24" y="150" x="410" stroke-linecap="null" stroke-linejoin="null" stroke-dasharray="null" stroke-width="0" stroke="#000000" fill="#000000">post</text>
-  </g>
-  <g id="svg_45">
-   <rect id="svg_1" height="46.874997" width="102" y="241.875003" x="302" stroke-width="3" stroke="#000000" fill="#bfbfbf"/>
-   <text xml:space="preserve" text-anchor="middle" font-family="serif" font-size="24" id="svg_3" y="279.280001" x="350" stroke-linecap="null" stroke-linejoin="null" stroke-dasharray="null" stroke-width="0" stroke="#000000" fill="#000000" transform="matrix(1, 0, 0, 0.68306, 0, 78.0753)">www</text>
-  </g>
-  <text fill="#000000" stroke="#000000" stroke-width="0" stroke-dasharray="null" stroke-linejoin="null" stroke-linecap="null" x="147.333333" y="194.000001" id="svg_53" font-size="24" font-family="serif" text-anchor="middle" xml:space="preserve">ionic</text>
-  <text fill="#000000" stroke="#000000" stroke-width="0" stroke-dasharray="null" stroke-linejoin="null" stroke-linecap="null" x="497.333333" y="100" id="svg_54" font-size="24" font-family="serif" text-anchor="middle" xml:space="preserve">c#, postgresql</text>
-  <text fill="#000000" stroke="#000000" stroke-width="0" stroke-dasharray="null" stroke-linejoin="null" stroke-linecap="null" x="145.333333" y="332" font-size="24" font-family="serif" text-anchor="middle" xml:space="preserve" id="svg_55">foundation</text>
-  <text fill="#000000" stroke="#000000" stroke-width="0" stroke-dasharray="null" stroke-linejoin="null" stroke-linecap="null" x="182.666666" y="101.333333" font-size="24" font-family="serif" text-anchor="middle" xml:space="preserve" id="svg_56">html, js</text>
-  <rect height="30" width="80" y="204.666667" x="108.666667" stroke-width="3" stroke="#000000" fill="#bfbfbf" id="svg_48"/>
-  <text xml:space="preserve" text-anchor="middle" font-family="serif" font-size="24" y="224.666667" x="150" stroke-linecap="null" stroke-linejoin="null" stroke-dasharray="null" stroke-width="0" stroke="#000000" fill="#000000" id="svg_49">mobile</text>
-  <text transform="matrix(0.613723, 0, 0, 0.557014, 211.503, 167.602)" xml:space="preserve" text-anchor="middle" font-family="serif" font-size="24" id="svg_6" y="367.687532" x="487.694612" stroke-width="0" stroke="#00ff00" fill="#000000">红人，品牌商</text>
-  <text transform="matrix(0.730337, 0, 0, 0.627907, 154.904, 79.9884)" id="svg_12" fill="#000000" stroke="#000000" stroke-width="0" stroke-dasharray="null" stroke-linejoin="null" stroke-linecap="null" x="533.721154" y="205.552083" font-size="24" font-family="serif" text-anchor="middle" xml:space="preserve">通告</text>
-  <text transform="matrix(0.658262, 0, 0, 0.662538, 156.07, 44.1272)" id="svg_13" fill="#000000" stroke="#000000" stroke-width="0" stroke-dasharray="null" stroke-linejoin="null" stroke-linecap="null" x="481.051727" y="159.885812" font-size="24" font-family="serif" text-anchor="middle" xml:space="preserve">帖子</text>
-  <text style="cursor: move;" id="svg_14" transform="matrix(0.658262, 0, 0, 0.662538, 156.07, 44.1272)" fill="#000000" stroke="#000000" stroke-width="0" stroke-dasharray="null" stroke-linejoin="null" stroke-linecap="null" x="265.129478" y="285.484928" font-size="24" font-family="serif" text-anchor="middle" xml:space="preserve">主站</text>
-  <text id="svg_16" fill="#000000" stroke="#000000" stroke-width="0" stroke-dasharray="null" stroke-linejoin="null" stroke-linecap="null" x="185.999987" y="420.000005" font-size="24" font-family="serif" text-anchor="middle" xml:space="preserve">前端</text>
-  <text style="cursor: move;" id="svg_21" fill="#000000" stroke="#000000" stroke-width="0" stroke-dasharray="null" stroke-linejoin="null" stroke-linecap="null" x="538.000017" y="418.666677" font-size="24" font-family="serif" text-anchor="middle" xml:space="preserve">后端</text>
-  <text xml:space="preserve" text-anchor="middle" font-family="serif" font-size="24" id="svg_26" y="239.333344" x="253.333351" stroke-linecap="null" stroke-linejoin="null" stroke-dasharray="null" stroke-width="0" stroke="#000000" fill="#000000">http</text>
-  <g id="svg_29">
-   <rect height="30" width="80" y="278.000001" x="108.666667" stroke-width="3" stroke="#000000" fill="#bfbfbf" id="svg_50"/>
-   <text xml:space="preserve" text-anchor="middle" font-family="serif" font-size="24" y="298.000001" x="148.666667" stroke-linecap="null" stroke-linejoin="null" stroke-dasharray="null" stroke-width="0" stroke="#000000" fill="#000000" id="svg_51">pc</text>
-  </g>
-  <text transform="matrix(0.753325, 0, 0, 1.54085, 229.735, -3.21828)" font-weight="normal" id="svg_30" fill="#000000" stroke="#000000" stroke-width="0" stroke-dasharray="null" stroke-linejoin="null" stroke-linecap="null" x="130.072405" y="34.666677" font-size="24" font-family="serif" text-anchor="middle" xml:space="preserve">红娱网系统架构</text>
+  <polyline marker-end="url(#se_marker_end_svg_24)" se:connector="svg_23 svg_58" fill="none" stroke-width="4" stroke="#000000" points="235.729,333.403 274.281,320.628 312.833,307.854" id="svg_24"/>
+  <polyline se:connector="svg_61 svg_58" id="svg_15" points="234.958,198.112 273.896,210.497 312.833,222.883" stroke="#000000" stroke-width="4" fill="none" marker-end="url(#se_marker_end_svg_15)"/>
+  <rect ry="15" rx="15" id="svg_61" height="152.999992" width="147.458328" y="97.999999" x="86.999998" stroke-linecap="null" stroke-linejoin="null" stroke-dasharray="null" stroke="#000000" fill="#ffffff"/>
+  <rect ry="15" rx="15" id="svg_58" height="349.000003" width="240.666683" y="89.999997" x="323.333321" stroke-linecap="null" stroke-linejoin="null" stroke-dasharray="null" stroke="#000000" fill="#ffffff"/>
+  <text xml:space="preserve" text-anchor="middle" font-family="serif" font-size="24" id="svg_31" y="323.5" x="513.5" stroke-width="0" stroke="#000000" fill="#000000"/>
+  <text id="svg_36" fill="#000000" stroke="#000000" stroke-width="0" stroke-dasharray="null" stroke-linejoin="null" stroke-linecap="null" x="395.190796" y="315" font-size="24" font-family="Sans-serif" text-anchor="middle" xml:space="preserve">chat service</text>
+  <text fill="#000000" stroke="#000000" stroke-width="0" stroke-dasharray="null" stroke-linejoin="null" stroke-linecap="null" x="387.690796" y="235" font-size="24" font-family="Sans-serif" text-anchor="middle" xml:space="preserve" id="svg_11">biz service</text>
+  <text fill="#000000" stroke="#000000" stroke-width="0" stroke-dasharray="null" stroke-linejoin="null" stroke-linecap="null" x="385.690796" y="355" font-size="24" font-family="Sans-serif" text-anchor="middle" xml:space="preserve" id="svg_19">dir service</text>
+  <text transform="matrix(1, 0, 0, 0.915906, 0, 7.70139)" fill="#000000" stroke="#000000" stroke-width="0" stroke-dasharray="null" stroke-linejoin="null" stroke-linecap="null" x="399" y="292.456004" id="svg_3" font-size="24" font-family="Sans-serif" text-anchor="middle" xml:space="preserve">www service</text>
+  <text xml:space="preserve" text-anchor="middle" font-family="serif" font-size="24" id="svg_53" y="168.000001" x="147.333333" stroke-linecap="null" stroke-linejoin="null" stroke-dasharray="null" stroke-width="0" stroke="#000000" fill="#7f003f">ionic 2</text>
+  <text style="cursor: move;" xml:space="preserve" text-anchor="middle" font-family="serif" font-size="24" id="svg_54" y="126" x="445.333333" stroke-linecap="null" stroke-linejoin="null" stroke-dasharray="null" stroke-width="0" stroke="#000000" fill="#7f003f">.netcore + postgresql</text>
+  <text font-weight="bold" xml:space="preserve" text-anchor="middle" font-family="Fantasy" font-size="24" y="420.666677" x="495.000017" stroke-linecap="null" stroke-linejoin="null" stroke-dasharray="null" stroke-width="0" stroke="#000000" fill="#000000" id="svg_21">backend</text>
+  <text style="cursor: move;" fill="#000000" stroke="#000000" stroke-width="0" stroke-dasharray="null" stroke-linejoin="null" stroke-linecap="null" x="263.333351" y="271.333344" id="svg_26" font-size="24" font-family="serif" text-anchor="middle" xml:space="preserve">http</text>
+  <text xml:space="preserve" text-anchor="middle" font-family="serif" font-size="24" y="35.509001" x="139.470476" stroke-linecap="null" stroke-linejoin="null" stroke-dasharray="null" stroke-width="0" stroke="#000000" fill="#000000" id="svg_30" font-weight="normal" transform="matrix(1.48967, 0, 0, 1.18719, 86.2175, 11.7713)">Frontend &amp; Backend</text>
+  <text fill="#000000" stroke="#000000" stroke-width="0" stroke-dasharray="null" stroke-linejoin="null" stroke-linecap="null" x="395.190796" y="192" font-size="24" font-family="Sans-serif" text-anchor="middle" xml:space="preserve" id="svg_5">cont service</text>
+  <rect id="svg_23" ry="15" rx="15" height="146.999997" width="147.45833" y="284.500001" x="87.770843" stroke-linecap="null" stroke-linejoin="null" stroke-dasharray="null" stroke="#000000" fill="#ffffff"/>
+  <text id="svg_25" xml:space="preserve" text-anchor="middle" font-family="serif" font-size="24" y="338.500001" x="158.499989" stroke-linecap="null" stroke-linejoin="null" stroke-dasharray="null" stroke-width="0" stroke="#000000" fill="#7f003f">riotjs + mdl</text>
+  <text font-weight="bold" id="svg_32" xml:space="preserve" text-anchor="middle" font-family="Fantasy" font-size="24" y="412.500001" x="196.499989" stroke-linecap="null" stroke-linejoin="null" stroke-dasharray="null" stroke-width="0" stroke="#000000" fill="#000000">PC</text>
+  <text font-weight="bold" id="svg_33" xml:space="preserve" text-anchor="middle" font-family="Fantasy" font-size="24" y="233.500001" x="183.000005" stroke-linecap="null" stroke-linejoin="null" stroke-dasharray="null" stroke-width="0" stroke="#000000" fill="#000000">Mobile</text>
  </g>
 </svg>
