@@ -132,11 +132,6 @@ namespace Greatbone.Core
             return actions[action];
         }
 
-        public virtual void Handle(string relative, WebContext wc, string x)
-        {
-
-        }
-
         public virtual void Handle(string relative, WebContext wc)
         {
             if (relative.IndexOf('.') != -1) // static handling
@@ -166,6 +161,11 @@ namespace Greatbone.Core
             }
         }
 
+        public virtual void Handle(string relative, WebContext wc, string var)
+        {
+
+        }
+
         public virtual void Default(WebContext wc)
         {
             StaticContent sta = DefaultStatic;
@@ -180,7 +180,7 @@ namespace Greatbone.Core
             }
         }
 
-        public virtual void Default(WebContext wc, string x)
+        public virtual void Default(WebContext wc, string var)
         {
             StaticContent sta = DefaultStatic;
             if (sta != null)

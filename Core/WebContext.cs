@@ -32,7 +32,7 @@ namespace Greatbone.Core
 
         public WebAction Action { get; }
 
-        public string X { get; internal set; }
+        public string Var { get; internal set; }
 
         public IToken Token { get; }
 

@@ -11,7 +11,7 @@ namespace Greatbone.Core
         // the added sub controllers
         private Set<WebSub> subs;
 
-        protected WebVarHub(WebConfig wsc) : base(wsc)
+        protected WebVarHub(WebConfig cfg) : base(cfg)
         {
         }
 
@@ -48,7 +48,7 @@ namespace Greatbone.Core
             if (slash == -1) // without a slash then handle it locally
             {
                 WebAction a = GetAction(relative);
-                a?.Do(wc, wc.X);
+                a?.Do(wc, wc.Var);
             }
             else // not local then sub
             {

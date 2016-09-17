@@ -2,59 +2,59 @@
 
 namespace Greatbone.Core
 {
-	/// <summary>The delegate of action methods.</summary>
-	///
-	public delegate void Doer(WebContext wc);
+    /// <summary>The delegate of action methods.</summary>
+    ///
+    public delegate void Doer(WebContext wc);
 
-	/// <summary>The delegate of mux action methods.</summary>
-	///
-	public delegate void XDoer(WebContext wc, string x);
+    /// <summary>The delegate of mux action methods.</summary>
+    ///
+    public delegate void VarDoer(WebContext wc, string x);
 
-	/// <summary>The descriptor of an action handling method.</summary>
-	///
-	public class WebAction : IMember
-	{
-		public WebSub Controller { get; }
+    /// <summary>The descriptor of an action handling method.</summary>
+    ///
+    public class WebAction : IMember
+    {
+        public WebSub Controller { get; }
 
-		readonly Doer doer;
+        readonly Doer doer;
 
-		readonly XDoer xdoer;
+        readonly VarDoer vardoer;
 
-		private IChecker[] checkers;
+        private IChecker[] checkers;
 
-		public string Key { get; }
+        public string Key { get; }
 
-		public bool IsX { get; }
+        public bool IsX { get; }
 
-		internal WebAction(WebSub controller, MethodInfo mi, bool x)
-		{
-			Controller = controller;
-			// NOTE: strict method name as key here to avoid the default base url trap
-			Key = mi.Name;
-			IsX = x;
-			if (x)
-			{
-				xdoer = (XDoer) mi.CreateDelegate(typeof(XDoer), controller);
-			}
-			else
-			{
-				doer = (Doer) mi.CreateDelegate(typeof(Doer), controller);
-			}
-		}
+        internal WebAction(WebSub controller, MethodInfo mi, bool x)
+        {
+            Controller = controller;
+            // NOTE: strict method name as key here to avoid the default base url trap
+            Key = mi.Name;
+            IsX = x;
+            if (x)
+            {
+                vardoer = (VarDoer)mi.CreateDelegate(typeof(VarDoer), controller);
+            }
+            else
+            {
+                doer = (Doer)mi.CreateDelegate(typeof(Doer), controller);
+            }
+        }
 
-		internal void Do(WebContext wc)
-		{
-			doer(wc);
-		}
+        internal void Do(WebContext wc)
+        {
+            doer(wc);
+        }
 
-		internal void Do(WebContext wc, string x)
-		{
-			xdoer(wc, x);
-		}
+        internal void Do(WebContext wc, string var)
+        {
+            vardoer(wc, var);
+        }
 
-		public override string ToString()
-		{
-			return Key;
-		}
-	}
+        public override string ToString()
+        {
+            return Key;
+        }
+    }
 }

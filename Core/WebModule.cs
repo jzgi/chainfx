@@ -5,7 +5,7 @@ using System.Reflection;
 namespace Greatbone.Core
 {
     /// <summary>
-    /// A independent set of controllers, including sub controllers and/or multiplexer hub controller.
+    /// A module consists of sub controllers and/or variable-key hub controller.
     /// </summary>
     public abstract class WebModule : WebSub, ICacheRealm
     {
@@ -15,7 +15,7 @@ namespace Greatbone.Core
         // the attached multiplexer controller, if any
         private WebVarHub hub;
 
-        protected WebModule(WebConfig wsc) : base(wsc)
+        protected WebModule(WebConfig cfg) : base(cfg)
         {
         }
 
@@ -32,7 +32,7 @@ namespace Greatbone.Core
             ConstructorInfo ci = typ.GetConstructor(new[] { typeof(WebConfig) });
             if (ci == null)
             {
-                throw new WebException(typ + ": the constructor not found (WebServiceContext)");
+                throw new WebServiceException(typ + ": the constructor with WebConfig");
             }
             WebConfig cfg = new WebConfig
             {
@@ -55,11 +55,11 @@ namespace Greatbone.Core
             ConstructorInfo ci = typ.GetConstructor(new[] { typeof(WebConfig) });
             if (ci == null)
             {
-                throw new WebServiceException(typ + ": the constructor not found (WebServiceContext)");
+                throw new WebServiceException(typ + ": the constructor with WebConfig");
             }
             WebConfig cfg = new WebConfig
             {
-                Key = "X",
+                Key = "var",
                 Parent = this,
                 Service = Service,
                 IsVar = true
@@ -93,7 +93,7 @@ namespace Greatbone.Core
                 }
                 else
                 {
-                    wc.X = dir;
+                    wc.Var = dir;
                     hub.Handle(relative.Substring(slash + 1), wc);
                 }
             }
