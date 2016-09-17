@@ -3,7 +3,7 @@
     /// <summary>
     /// An encountered component part during parsing json stream, usually a json data element.
     /// </summary>
-    internal struct JsonPart
+    internal struct JsonStruct
     {
         internal int start;
 
@@ -17,7 +17,7 @@
         // object or array
         internal bool array;
 
-        internal JsonPart(bool array)
+        internal JsonStruct(bool array)
         {
             this.array = array;
             start = end = -1;

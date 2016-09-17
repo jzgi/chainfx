@@ -6,7 +6,7 @@ namespace Greatbone.Core
 
     public class JsonbContent : DynamicContent, ISerialReader, ISerialWriter
     {
-        JsonPart[] knots = new JsonPart[8];
+        JsonStruct[] knots = new JsonStruct[8];
 
         // current level, start with 0
         int level = -1;

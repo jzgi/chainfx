@@ -28,7 +28,7 @@ namespace Greatbone.Core
     public class JsonContent : DynamicContent, ISerialReader, ISerialWriter
     {
         // stack of json knots in processing
-        readonly JsonPart[] stack;
+        readonly JsonStruct[] stack;
 
         // current level in stack
         int level;
@@ -39,7 +39,7 @@ namespace Greatbone.Core
 
         public JsonContent(byte[] buffer, int count) : base(buffer, count)
         {
-            stack = new JsonPart[8];
+            stack = new JsonStruct[8];
             level = -1;
             pos = -1;
         }

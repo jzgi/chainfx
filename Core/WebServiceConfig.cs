@@ -17,10 +17,7 @@ namespace Greatbone.Core
     ///
     public class WebServiceConfig : WebConfig, ISerial
     {
-        ///<summary></summary>
-        public string Replica;
-
-        ///<summary></summary>
+        ///<summary>Z-axis scaling</summary>
         public string Shard;
 
         // public socket address
