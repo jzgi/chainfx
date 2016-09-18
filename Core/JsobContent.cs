@@ -4,7 +4,10 @@ using System.Collections.Generic;
 namespace Greatbone.Core
 {
 
-    public class JsonbContent : DynamicContent, ISerialReader, ISerialWriter
+    /// <summary>
+    /// JjavaScript Object Binary
+    /// </summary>
+    public class JsobContent : DynamicContent, ISerialReader, ISerialWriter
     {
         JsonStruct[] knots = new JsonStruct[8];
 
@@ -14,7 +17,7 @@ namespace Greatbone.Core
         int pos;
 
 
-        public JsonbContent(byte[] buffer, int count) : base(buffer, count)
+        public JsobContent(byte[] buffer, int count) : base(buffer, count)
         {
         }
 
@@ -338,7 +341,7 @@ namespace Greatbone.Core
 
 
 
-        public JsonbContent(int capacity) : base(capacity) { }
+        public JsobContent(int capacity) : base(capacity) { }
 
 
         //

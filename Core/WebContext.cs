@@ -35,7 +35,7 @@ namespace Greatbone.Core
 
 
         //
-        // REQUEST
+        // REQUEST ACCESSORS
         //
 
         // in raw bytes
@@ -56,7 +56,7 @@ namespace Greatbone.Core
             if (buffer == null && clen > 0)
             {
                 int len = (int)clen.Value;
-                // borrow a byte array from the pool
+                // borrow a byte array from buffer pool
                 buffer = BufferPool.Lease(len);
                 count = await Request.Body.ReadAsync(buffer, 0, len);
             }
@@ -89,7 +89,7 @@ namespace Greatbone.Core
                     long? clen = Request.ContentLength;
                     if ("application/bjson".Equals(ctype))
                     {
-                        return new JsonbContent(buffer, (int)clen);
+                        return new JsobContent(buffer, (int)clen);
                     }
                     else
                     {
@@ -169,7 +169,7 @@ namespace Greatbone.Core
 
 
         //
-        // RESPONSE
+        // RESPONSE ACCESSORS
         //
 
         public int StatusCode { get { return Response.StatusCode; } set { Response.StatusCode = value; } }
@@ -193,7 +193,7 @@ namespace Greatbone.Core
 
         public void SetContent<T>(T obj, bool binary) where T : ISerial
         {
-            DynamicContent cnt = binary ? new JsonbContent(16 * 1024) : (DynamicContent)new JsonContent(16 * 1024);
+            DynamicContent cnt = binary ? new JsobContent(16 * 1024) : (DynamicContent)new JsonContent(16 * 1024);
             ((ISerialWriter)cnt).Write(obj);
             Content = cnt;
         }
