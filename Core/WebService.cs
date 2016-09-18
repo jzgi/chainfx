@@ -23,7 +23,7 @@ namespace Greatbone.Core
     /// etag -- reduces network I/O with unchanged results
     ///
     ///
-    public abstract class WebService : WebModule, IHttpApplication<HttpContext>
+    public abstract class WebService : WebZone, IHttpApplication<HttpContext>
     {
         //
         // SERVER
@@ -183,8 +183,7 @@ namespace Greatbone.Core
         public void DisposeContext(HttpContext context, Exception exception)
         {
             WebContext wc = (WebContext)context;
-            // wc.Request.
-            //            context.
+            wc.Dispose();
         }
 
         public void Start()

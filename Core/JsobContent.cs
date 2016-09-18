@@ -17,7 +17,7 @@ namespace Greatbone.Core
         int pos;
 
 
-        public JsobContent(byte[] buffer, int count) : base(buffer, count)
+        public JsobContent(ArraySegment<byte> seg) : base(seg)
         {
         }
 

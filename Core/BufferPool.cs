@@ -23,7 +23,7 @@ namespace Greatbone.Core
         static int Max = Queues[Queues.Length - 1].Spec;
 
 
-        public static byte[] Lease(int demand)
+        public static byte[] Borrow(int demand)
         {
             //			byte[] result;
             //			if (!_queues[group].TryDequeue(out result))

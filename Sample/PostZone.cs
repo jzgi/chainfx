@@ -4,9 +4,9 @@ using System.Collections.Generic;
 
 namespace Greatbone.Sample
 {
-    public class PostModule : WebModule
+    public class PostZone : WebZone
     {
-        public PostModule(WebConfig cfg) : base(cfg)
+        public PostZone(WebConfig cfg) : base(cfg)
         {
             SetVarHub<PostVarHub>(false);
         }
@@ -48,7 +48,7 @@ namespace Greatbone.Sample
         {
             IToken tok = wc.Token;
 
-            Post o = wc.Serial<Post>();
+            Post o = wc.GetSerial<Post>();
 
             using (var dc = Service.NewSqlContext())
             {

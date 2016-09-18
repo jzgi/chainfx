@@ -12,7 +12,7 @@ namespace Greatbone.Core
             string rec = "{\"name\":\"jay\", \"age\":12}";
 
             byte[] b = Encoding.UTF8.GetBytes(rec);
-            JsonContent jc = new JsonContent(b, b.Length);
+            JsonContent jc = new JsonContent(new ArraySegment<byte>(b, 0, b.Length));
 
             string name = null;
             int age = 0;
@@ -37,7 +37,7 @@ namespace Greatbone.Core
         int pos;
 
 
-        public JsonContent(byte[] buffer, int count) : base(buffer, count)
+        public JsonContent(ArraySegment<byte> bytes) : base(bytes)
         {
             stack = new JsonStruct[8];
             level = -1;

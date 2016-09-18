@@ -15,7 +15,7 @@ namespace Greatbone.Core
 
 		/// <summary>The number of bytes.</summary>
 		///
-		int Count { get; }
+		int Length { get; }
 
 		/// <summary>Time that was last modified.</summary>
 		DateTime LastModified { get; }

@@ -2,9 +2,9 @@
 
 namespace Greatbone.Sample
 {
-    public class FameModule : WebModule
+    public class FameZone : WebZone
     {
-        public FameModule(WebConfig cfg) : base(cfg)
+        public FameZone(WebConfig cfg) : base(cfg)
         {
             SetVarHub<FameVarHub>(false);
         }

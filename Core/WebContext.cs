@@ -19,7 +19,11 @@ namespace Greatbone.Core
 
         public void Dispose()
         {
-            throw new NotImplementedException();
+            byte[] b = reqBytes.Array;
+            if (b != null)
+            {
+                BufferPool.Return(b);
+            }
         }
 
 
@@ -38,27 +42,30 @@ namespace Greatbone.Core
         // REQUEST ACCESSORS
         //
 
-        // in raw bytes
-        private byte[] buffer;
+        bool reqRcved;
 
-        private int count;
+        // request body bytes
+        ArraySegment<byte> reqBytes;
 
-        // the content is parsed on demand of the application
-        private object content;
-
+        // request content that is parsed , can be IFormCollection, ISerial, etc.
+        private object reqContent;
 
         /// <summary>
         /// Receiveds request body into a buffer held by the buffer field.
         ///</summary>
-        internal async void ReceiveAsync()
+        internal async void TryReceiveAsync()
         {
-            long? clen = Request.ContentLength;
-            if (buffer == null && clen > 0)
+            if (reqBytes.Array != null) return;
+
+            HttpRequest req = Request;
+            long? clen = req.ContentLength;
+            if (clen > 0)
             {
                 int len = (int)clen.Value;
                 // borrow a byte array from buffer pool
-                buffer = BufferPool.Lease(len);
-                count = await Request.Body.ReadAsync(buffer, 0, len);
+                byte[] buf = BufferPool.Borrow(len);
+                int num = await req.Body.ReadAsync(buf, 0, len);
+                reqBytes = new ArraySegment<byte>(buf, 0, num);
             }
         }
 
@@ -66,43 +73,39 @@ namespace Greatbone.Core
         {
             get
             {
-                if (buffer == null)
-                {
-                    ReceiveAsync();
-                }
-                return new ArraySegment<byte>(buffer, 0, count);
+                TryReceiveAsync();
+                return reqBytes;
             }
         }
 
-        public ISerialReader Reader
+        public ISerialReader Serial
         {
             get
             {
-                if (content == null)
+                if (reqContent == null)
                 {
-                    if (buffer == null)
+                    TryReceiveAsync();
+
+                    if (reqBytes.Array != null)
                     {
-                        ReceiveAsync();
-                    }
-                    // init content
-                    string ctype = Request.ContentType;
-                    long? clen = Request.ContentLength;
-                    if ("application/bjson".Equals(ctype))
-                    {
-                        return new JsobContent(buffer, (int)clen);
-                    }
-                    else
-                    {
-                        return new JsonContent(buffer, (int)clen);
+                        string ctype = Request.ContentType;
+                        if ("application/jsob".Equals(ctype))
+                        {
+                            reqContent = new JsobContent(reqBytes);
+                        }
+                        else
+                        {
+                            reqContent = new JsonContent(reqBytes);
+                        }
                     }
                 }
-                return null;
+                return (ISerialReader)reqContent;
             }
         }
 
-        public T Serial<T>() where T : ISerial, new()
+        public T GetSerial<T>() where T : ISerial, new()
         {
-            ISerialReader r = this.Reader;
+            ISerialReader r = this.Serial;
             T o = new T();
             r.Read(ref o);
             return o;
@@ -174,16 +177,16 @@ namespace Greatbone.Core
 
         public int StatusCode { get { return Response.StatusCode; } set { Response.StatusCode = value; } }
 
-        public CachePolicy CachePolicy { get; set; }
+        public CachePolicy Policy { get; set; }
 
         public IContent Content { get; set; }
 
         public void SetContent<T>(T obj) where T : ISerial
         {
-            SetContent(obj, false);
+            SetSerialObj(obj, false);
         }
 
-        public void SetContentAsJson<T>(T obj) where T : ISerial
+        public void SetSerialObj<T>(T obj) where T : ISerial
         {
             JsonContent cnt = new JsonContent(16 * 1024);
             cnt.Write(obj);
@@ -191,7 +194,7 @@ namespace Greatbone.Core
             Content = cnt;
         }
 
-        public void SetContent<T>(T obj, bool binary) where T : ISerial
+        public void SetSerialObj<T>(T obj, bool binary) where T : ISerial
         {
             DynamicContent cnt = binary ? new JsobContent(16 * 1024) : (DynamicContent)new JsonContent(16 * 1024);
             ((ISerialWriter)cnt).Write(obj);
@@ -202,9 +205,10 @@ namespace Greatbone.Core
         {
             if (Content != null)
             {
-                Response.ContentLength = Content.Count;
-                Response.ContentType = Content.Type;
-                Response.Body.Write(Content.Buffer, 0, Content.Count);
+                HttpResponse resp = Response;
+                resp.ContentLength = Content.Length;
+                resp.ContentType = Content.Type;
+                resp.Body.Write(Content.Buffer, 0, Content.Length);
             }
         }
 
@@ -212,14 +216,14 @@ namespace Greatbone.Core
         {
             if (Content != null)
             {
-                Response.ContentLength = Content.Count;
-                Response.ContentType = Content.Type;
+                HttpResponse rsp = Response;
+                rsp.ContentLength = Content.Length;
+                rsp.ContentType = Content.Type;
 
                 // etag
 
-
                 //
-                return Response.Body.WriteAsync(Content.Buffer, 0, Content.Count);
+                return rsp.Body.WriteAsync(Content.Buffer, 0, Content.Length);
             }
             return Task.CompletedTask;
         }

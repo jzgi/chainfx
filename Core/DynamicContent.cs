@@ -93,7 +93,7 @@ namespace Greatbone.Core
         /// <param name="capacity">The initial capacity of the content buffer.</param>
         protected DynamicContent(int capacity)
         {
-            this.buffer = BufferPool.Lease(capacity);
+            this.buffer = BufferPool.Borrow(capacity);
             this.count = 0;
         }
 
@@ -102,17 +102,17 @@ namespace Greatbone.Core
         /// </summary>
         /// <param name="buffer">The byte buffer that contains the content.</param>
         /// <param name="count">The number of bytes.</param>
-        protected DynamicContent(byte[] buffer, int count)
+        protected DynamicContent(ArraySegment<byte> bytes)
         {
-            this.buffer = buffer;
-            this.count = count;
+            this.buffer = bytes.Array;
+            this.count = bytes.Count;
         }
 
         public abstract string Type { get; }
 
         public byte[] Buffer => buffer;
 
-        public int Count => count;
+        public int Length => count;
 
         public DateTime LastModified => default(DateTime);
 

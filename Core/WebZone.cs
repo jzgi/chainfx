@@ -6,7 +6,7 @@ namespace Greatbone.Core
     /// <summary>
     /// A module consists of sub controllers and/or variable-key hub controller.
     /// </summary>
-    public abstract class WebModule : WebSub, ICacheRealm
+    public abstract class WebZone : WebSub, ICacheRealm
     {
         // the added sub controllers, if any
         private Set<WebSub> subs;
@@ -14,7 +14,7 @@ namespace Greatbone.Core
         // the attached multiplexer controller, if any
         private WebVarHub hub;
 
-        protected WebModule(WebConfig cfg) : base(cfg)
+        protected WebZone(WebConfig cfg) : base(cfg)
         {
         }
 

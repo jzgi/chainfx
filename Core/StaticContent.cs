@@ -1532,7 +1532,7 @@ namespace Greatbone.Core
 
         public byte[] Buffer { get; internal set; }
 
-        public int Count => Buffer.Length;
+        public int Length => Buffer.Length;
 
         public DateTime LastModified { get; internal set; }
 

@@ -6,9 +6,9 @@ namespace Greatbone.Sample
     ///
     /// <summary>The user directory service</summary>
     ///
-    public class UserModule : WebModule
+    public class UserZone : WebZone
     {
-        public UserModule(WebConfig cfg) : base(cfg)
+        public UserZone(WebConfig cfg) : base(cfg)
         {
             SetVarHub<UserVarHub>(false);
         }

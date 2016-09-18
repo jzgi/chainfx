@@ -16,7 +16,7 @@ namespace Greatbone.Core
             }
         }
 
-        public int Count
+        public int Length
         {
             get
             {
