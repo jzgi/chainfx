@@ -29,13 +29,13 @@ namespace Greatbone.Sample
                     }
                 );
 
-                wc.Response.SetContent(u);
+                wc.SetContent(u);
             }
         }
 
         public void Find(WebContext wc)
         {
-            ArraySegment<byte> bytes = wc.Request.Bytes;
+            ArraySegment<byte> bytes = wc.Bytes;
             ad = wc;
         }
 

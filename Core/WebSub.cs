@@ -139,7 +139,7 @@ namespace Greatbone.Core
                 StaticContent sta;
                 if (Statics != null && Statics.TryGet(relative, out sta))
                 {
-                    wc.Response.Content = sta;
+                    wc.Content = sta;
                 }
                 else
                 {
@@ -171,7 +171,7 @@ namespace Greatbone.Core
             StaticContent sta = DefaultStatic;
             if (sta != null)
             {
-                wc.Response.Content = sta;
+                wc.Content = sta;
             }
             else
             {
@@ -185,12 +185,12 @@ namespace Greatbone.Core
             StaticContent sta = DefaultStatic;
             if (sta != null)
             {
-                wc.Response.Content = sta;
+                wc.Content = sta;
             }
             else
             {
                 // send not implemented
-                wc.Response.StatusCode = 404;
+                wc.StatusCode = 404;
             }
         }
     }

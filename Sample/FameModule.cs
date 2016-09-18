@@ -2,29 +2,29 @@
 
 namespace Greatbone.Sample
 {
-	///
-	///
-	public class FameModule : WebModule
-	{
-		public FameModule(WebConfig cfg) : base(cfg)
-		{
-			SetVarHub<FameVarHub>(false);
-		}
+    public class FameModule : WebModule
+    {
+        public FameModule(WebConfig cfg) : base(cfg)
+        {
+            SetVarHub<FameVarHub>(false);
+        }
 
-		        /// <summary>
-        /// Gets the top fames. 
+        /// <summary>
+        /// Gets the top list of fames. 
         /// </summary>
         /// <param name="page">page number</param>
         public override void Default(WebContext wc)
         {
-            int page = 0;
-            wc.Request.GetParam("page", ref page);
+            int page;
+            wc.GetParam("page", out page);
 
             using (var dc = Service.NewSqlContext())
             {
                 if (dc.Query("SELECT * FROM fames WHERE ORDER BY  LIMIT 20 OFFSET @offset", p => p.Set("@offset", page * 20)))
                 {
-
+                    while (dc.NextRow())
+                    {
+                    }
                 }
                 else
                 {
@@ -35,8 +35,8 @@ namespace Greatbone.Sample
 
         public void Top(WebContext wc)
         {
-            int page = 0;
-            wc.Request.GetParam("page", ref page);
+            int page;
+            wc.GetParam("page", out page);
 
             using (var dc = Service.NewSqlContext())
             {
@@ -52,5 +52,5 @@ namespace Greatbone.Sample
         }
 
 
-	}
+    }
 }

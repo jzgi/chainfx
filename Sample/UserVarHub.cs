@@ -19,8 +19,12 @@ namespace Greatbone.Sample
         ///
         public override void Default(WebContext wc, string id)
         {
-            string password = null;
-            wc.Request.GetParam("password", ref password);
+            string password;
+            if (wc.GetParam("password", out password))
+            {
+                wc.Response.StatusCode = 400;
+                return;
+            }
             using (var dc = Service.NewSqlContext())
             {
                 if (dc.QueryA("SELECT id, credential, name FROM users WHERE id = @id", (p) => p.Set("@id", id)))
@@ -33,17 +37,17 @@ namespace Greatbone.Sample
                     string md5 = ComputeMD5(password);
                     if (md5.Equals(o.credential))
                     {
-                        wc.Response.StatusCode = (int)HttpStatusCode.OK;
-                        wc.Response.SetContentAsJson(o);
+                        wc.StatusCode = 200;
+                        wc.SetContentAsJson(o);
                     }
                     else
                     {
-                        wc.Response.StatusCode = (int)HttpStatusCode.BadRequest;
+                        wc.Response.StatusCode = 400;
                     }
                 }
                 else
                 {
-                    wc.Response.StatusCode = (int)HttpStatusCode.NotFound;
+                    wc.Response.StatusCode = 404;
                 }
             }
         }
@@ -53,7 +57,7 @@ namespace Greatbone.Sample
         [ToSelf]
         public void ChPwd(WebContext wc, string userid)
         {
-            ISerialReader r = wc.Request.Reader;
+            ISerialReader r = wc.Reader;
 
             int ret = 0;
 

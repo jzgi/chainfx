@@ -23,8 +23,8 @@ namespace Greatbone.Sample
 
         public void Img(WebContext wc, long x)
         {
-            int id = 0;
-            if (wc.Request.GetParam("id", ref id))
+            int id;
+            if (wc.GetParam("id", out id))
             {
 
             }

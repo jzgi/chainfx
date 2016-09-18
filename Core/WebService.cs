@@ -74,17 +74,34 @@ namespace Greatbone.Core
 
             ParseAddress(cfg.Private, out inaddr, out inport);
 
+
+            CreateMsgTables();
+        }
+
+        internal bool CreateMsgTables()
+        {
             // check db
-            string sql = "SELECT to_regclass('schema_name.table_name');";
             using (var dc = Service.NewSqlContext())
             {
-                dc.QueryA(sql, null);
-                // if null
-
-                dc.Execute(@"CREATE TABLE sysmsgs", null);
-                dc.Execute(@"CREATE TABLE syslasts", null);
+                dc.Execute(@"CREATE TABLE IF NOT EXISTS msgq (
+                                id serial4 NOT NULL,
+                                time timestamp without time zone,
+                                topic character varying(20),
+                                shard character varying(10),
+                                body bytea,
+                                CONSTRAINT msgq_pkey PRIMARY KEY (id)
+                            ) WITH (OIDS=FALSE)",
+                            null
+                );
+                dc.Execute(@"CREATE TABLE IF NOT EXISTS msgu (
+                                addr character varying(45) NOT NULL,
+                                lastid int4,
+                                CONSTRAINT msgu_pkey PRIMARY KEY (addr)
+                            ) WITH (OIDS=FALSE)",
+                            null
+                );
             }
-
+            return true;
         }
 
 
@@ -154,9 +171,9 @@ namespace Greatbone.Core
                 Handle(wc.Request.Path.Value.Substring(1), wc);
             }
 
-            if (wc.Response.Content != null)
+            if (wc.Content != null)
             {
-                await wc.Response.WriteContentAsync();
+                await wc.WriteContentAsync();
             }
             if (wc.IsSuspended)
             {
@@ -235,13 +252,13 @@ namespace Greatbone.Core
 
         public DbContext NewSqlContext()
         {
-            DbConfig dsb = ((WebServiceConfig)Config).Db;
+            DbConfig cfg = ((WebServiceConfig)Config).Db;
             NpgsqlConnectionStringBuilder builder = new NpgsqlConnectionStringBuilder()
             {
-                Host = dsb.Host,
+                Host = cfg.Host,
                 Database = Key,
-                Username = dsb.Username,
-                Password = dsb.Password
+                Username = cfg.Username,
+                Password = cfg.Password
             };
             return new DbContext(builder);
         }

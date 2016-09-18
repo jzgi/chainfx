@@ -4,6 +4,9 @@
   "buildOptions": {
     "emitEntryPoint": true,
     "debugType": "portable",
+    "define": [
+      "__DEMO__,__DEMO_EXPERIMENTAL__ "
+    ],
     "additionalArguments": []
   },
   "dependencies": {

@@ -13,8 +13,11 @@ namespace Greatbone.Sample
 
         public void Top(WebContext wc)
         {
-            int page = 0;
-            wc.Request.GetParam("page", ref page);
+            int page;
+            if (wc.GetParam("page", out page))
+            {
+                wc.Response.StatusCode = 400; return;
+            }
 
             using (var dc = Service.NewSqlContext())
             {
@@ -45,7 +48,7 @@ namespace Greatbone.Sample
         {
             IToken tok = wc.Token;
 
-            Post o = wc.Request.Serial<Post>();
+            Post o = wc.Serial<Post>();
 
             using (var dc = Service.NewSqlContext())
             {
