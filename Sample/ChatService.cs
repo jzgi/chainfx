@@ -16,15 +16,13 @@ namespace Greatbone.Sample
 			SetVarHub<ChatVarHub>(true);
 		}
 
-	    public void Foo(WebContext wc)
+	    public void Get(WebContext wc)
 	    {
 	        Wrap w = new Wrap()
 	        {
 	            key = "123",
-	            ctx = wc,
 	            tcs = new TaskCompletionSource<int>()
 	        };
-
 	        chats.TryAdd("123", w);
 	    }
 
@@ -38,11 +36,15 @@ namespace Greatbone.Sample
 	    {
 	        internal string key;
 
-	        internal WebContext ctx;
-
 	        internal TaskCompletionSource<int> tcs;
 
 	    }
 
+		struct Session
+		{
+			internal TaskCompletionSource<string> com;
+		}
+
 	}
+
 }

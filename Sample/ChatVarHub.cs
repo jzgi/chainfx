@@ -23,10 +23,10 @@ namespace Greatbone.Sample
         }
 
         [ToSelf]
-        public void Get(WebContext wc, string rcv)
+        public void Get(WebContext wc, string userid)
         {
             List<Chat> chats;
-            if (online.TryGetValue(rcv, out chats)) // put in session
+            if (online.TryGetValue(userid, out chats)) // put in session
             {
                 // return cached msgs
             }
@@ -35,7 +35,7 @@ namespace Greatbone.Sample
                 // database operation
                 using (var sc = Service.NewSqlContext())
                 {
-                    sc.QueryA("SELECT * FROM chats WHERE to=@to", p => p.Set("@to", rcv));
+                    sc.QueryA("SELECT * FROM chats WHERE to=@to", p => p.Set("@to", userid));
                     // load into memory
                 }
             }
