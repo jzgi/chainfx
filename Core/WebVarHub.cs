@@ -6,12 +6,12 @@ namespace Greatbone.Core
 {
     /// <summary>A variable-key multiplexer ontroller that is attached to a hub controller. </summary>
     ///
-    public abstract class WebVarSub : WebSub
+    public abstract class WebVarHub : WebSub
     {
         // the added sub controllers
         private Set<WebSub> subs;
 
-        protected WebVarSub(WebConfig cfg) : base(cfg)
+        protected WebVarHub(WebConfig cfg) : base(cfg)
         {
         }
 

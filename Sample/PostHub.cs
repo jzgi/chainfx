@@ -8,7 +8,7 @@ namespace Greatbone.Sample
     {
         public PostHub(WebConfig cfg) : base(cfg)
         {
-            SetVarSub<PostVarSub>(false);
+            SetVarHub<PostVarHub>(false);
         }
 
         public void Top(WebContext wc)

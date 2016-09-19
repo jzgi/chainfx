@@ -1,4 +1,4 @@
-namespace Greatbone.Core
+﻿namespace Greatbone.Core
 {
     public class WebConfig
     {

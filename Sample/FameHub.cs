@@ -6,7 +6,7 @@ namespace Greatbone.Sample
     {
         public FameHub(WebConfig cfg) : base(cfg)
         {
-            SetVarSub<FameVarSub>(false);
+            SetVarHub<FameVarHub>(false);
         }
 
         /// <summary>
@@ -20,7 +20,8 @@ namespace Greatbone.Sample
 
             using (var dc = Service.NewSqlContext())
             {
-                if (dc.Query("SELECT * FROM fames WHERE ORDER BY  LIMIT 20 OFFSET @offset", p => p.Set("@offset", page * 20)))
+                if (dc.Query("SELECT * FROM fames WHERE ORDER BY  LIMIT 20 OFFSET @offset",
+                    p => p.Set("@offset", page * 20)))
                 {
                     while (dc.NextRow())
                     {
@@ -40,9 +41,9 @@ namespace Greatbone.Sample
 
             using (var dc = Service.NewSqlContext())
             {
-                if (dc.Query("SELECT * FROM fames WHERE ORDER BY rating LIMIT 20 OFFSET @offset", p => p.Set("@offset", page * 20)))
+                if (dc.Query("SELECT * FROM fames WHERE ORDER BY rating LIMIT 20 OFFSET @offset",
+                    p => p.Set("@offset", page * 20)))
                 {
-
                 }
                 else
                 {
@@ -50,7 +51,5 @@ namespace Greatbone.Sample
                 }
             }
         }
-
-
     }
 }

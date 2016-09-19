@@ -3,9 +3,9 @@ using Greatbone.Core;
 
 namespace Greatbone.Sample
 {
-    public class NoticeVarSub : WebVarSub
+    public class NoticeVarHub : WebVarHub
     {
-        public NoticeVarSub(WebConfig cfg) : base(cfg)
+        public NoticeVarHub(WebConfig cfg) : base(cfg)
         {
         }
 

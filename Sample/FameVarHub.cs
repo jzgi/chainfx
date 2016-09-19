@@ -5,9 +5,9 @@ namespace Greatbone.Sample
 	///
 	/// /fame/-/
 	///
-	public class FameVarSub : WebVarSub
+	public class FameVarHub : WebVarHub
 	{
-		public FameVarSub(WebConfig cfg) : base(cfg)
+		public FameVarHub(WebConfig cfg) : base(cfg)
 		{
 		}
 

@@ -9,7 +9,7 @@ namespace Greatbone.Sample
     {
         public BrandHub(WebConfig cfg) : base(cfg)
         {
-            SetVarSub<BrandVarSub>(false);
+            SetVarHub<BrandVarHub>(false);
         }
     }
 }

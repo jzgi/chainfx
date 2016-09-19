@@ -9,6 +9,9 @@ namespace Greatbone.Sample
     {
         public WwwService(WebServiceConfig cfg) : base(cfg)
         {
+            AddSub<MySub>("my", true);
+
+            // msg
 
             Subscribe("users_upd", null, x =>
             {
@@ -57,6 +60,5 @@ namespace Greatbone.Sample
 
             wc.Response.StatusCode = 200;
         }
-
     }
 }

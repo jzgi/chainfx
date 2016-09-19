@@ -1,11 +1,11 @@
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Text;
 
 namespace Greatbone.Core
 {
     public class MsgLoader : IMember
     {
-        readonly WebService service;
+        readonly WebService _service;
 
         string key;
 
@@ -18,7 +18,7 @@ namespace Greatbone.Core
 
         internal MsgLoader(WebService svc)
         {
-            service = svc;
+            _service = svc;
 
             StringBuilder sb = new StringBuilder("SELECT * FROM mqueue WHERE id > @lastid AND ");
             for (int i = 0; i < svc.Subscribes.Count; i++)
@@ -40,7 +40,7 @@ namespace Greatbone.Core
             }
             else
             {
-                using (var dc = service.NewSqlContext())
+                using (var dc = _service.NewSqlContext())
                 {
                     dc.Query("SELECT * FROM mqueue WHERE id > @lastid AND ", null);
                 }

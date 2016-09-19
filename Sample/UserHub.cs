@@ -10,7 +10,7 @@ namespace Greatbone.Sample
     {
         public UserHub(WebConfig cfg) : base(cfg)
         {
-            SetVarSub<UserVarSub>(false);
+            SetVarHub<UserVarHub>(false);
         }
 
         ///

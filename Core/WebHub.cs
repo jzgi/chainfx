@@ -12,7 +12,7 @@ namespace Greatbone.Core
         private Set<WebSub> subs;
 
         // the attached variable-key multiplexer, if any
-        private WebVarSub varsub;
+        private WebVarHub varhub;
 
         protected WebHub(WebConfig cfg) : base(cfg)
         {
@@ -47,7 +47,7 @@ namespace Greatbone.Core
             return sub;
         }
 
-        public T SetVarSub<T>(bool auth) where T : WebVarSub
+        public T SetVarHub<T>(bool auth) where T : WebVarHub
         {
             // create instance
             Type typ = typeof(T);
@@ -65,7 +65,7 @@ namespace Greatbone.Core
             };
             T hub = (T) ci.Invoke(new object[] {cfg});
 
-            this.varsub = hub;
+            this.varhub = hub;
 
             return hub;
         }
@@ -86,14 +86,14 @@ namespace Greatbone.Core
                 {
                     sub.Handle(relative.Substring(slash + 1), wc);
                 }
-                else if (varsub == null)
+                else if (varhub == null)
                 {
                     wc.Response.StatusCode = 501; // Not Implemented
                 }
                 else
                 {
                     wc.Var = dir;
-                    varsub.Handle(relative.Substring(slash + 1), wc);
+                    varhub.Handle(relative.Substring(slash + 1), wc);
                 }
             }
         }
