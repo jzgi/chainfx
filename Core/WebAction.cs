@@ -20,7 +20,7 @@ namespace Greatbone.Core
 
         readonly VarDoer vardoer;
 
-        private IChecker[] checkers;
+        private IfAttribute[] checkers;
 
         public string Key { get; }
 

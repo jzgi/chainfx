@@ -6,7 +6,7 @@ namespace Greatbone.Core
 {
     public class MsgPoller : IMember
     {
-        readonly WebService _service;
+        readonly WebService service;
 
         readonly string address;
 
@@ -21,7 +21,7 @@ namespace Greatbone.Core
 
         internal MsgPoller(WebService svc, string addr)
         {
-            _service = svc;
+            service = svc;
             address = addr;
         }
 
@@ -51,7 +51,7 @@ namespace Greatbone.Core
             if (resp.IsSuccessStatusCode)
             {
                 MsgSubscribe sub = null;
-                if (_service.Subscribes.TryGet("", out sub))
+                if (service.Subscribes.TryGet("", out sub))
                 {
                     MsgContext evt = null;
                     sub.Do(evt); // invoke the handler

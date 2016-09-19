@@ -54,7 +54,7 @@ namespace Greatbone.Sample
 
         /// <summary>To modify the user's profile, normally by him/her self.</summary>
         ///
-        [ToSelf]
+        [IfSelf]
         public void ChPwd(WebContext wc, string userid)
         {
             ISerialReader r = wc.Serial;
