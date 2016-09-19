@@ -2,15 +2,18 @@
 
 namespace Greatbone.Sample
 {
-    public class FameZone : WebSection
+    ///
+    /// <summary>The notice service.</summary>
+    ///
+    public class NoticeHub : WebHub
     {
-        public FameZone(WebConfig cfg) : base(cfg)
+        public NoticeHub(WebConfig cfg) : base(cfg)
         {
-            SetVarHub<FameVarHub>(false);
+            SetVarSub<NoticeVarSub>(false);
         }
 
         /// <summary>
-        /// Gets the top list of fames. 
+        /// Gets the specified top page from the notices table. 
         /// </summary>
         /// <param name="page">page number</param>
         public override void Default(WebContext wc)
@@ -20,11 +23,9 @@ namespace Greatbone.Sample
 
             using (var dc = Service.NewSqlContext())
             {
-                if (dc.Query("SELECT * FROM fames WHERE ORDER BY  LIMIT 20 OFFSET @offset", p => p.Set("@offset", page * 20)))
+                if (dc.Query("SELECT * FROM notices WHERE duedate <= current_date ORDER BY id LIMIT 20 OFFSET @offset", p => p.Set("@offset", page * 20)))
                 {
-                    while (dc.NextRow())
-                    {
-                    }
+
                 }
                 else
                 {
@@ -33,14 +34,20 @@ namespace Greatbone.Sample
             }
         }
 
-        public void Top(WebContext wc)
+        /// <summary>
+        /// Gets the specified top page from the notices table. 
+        /// </summary>
+        public void New(WebContext wc)
         {
             int page;
             wc.GetParam("page", out page);
 
             using (var dc = Service.NewSqlContext())
             {
-                if (dc.Query("SELECT * FROM fames WHERE ORDER BY rating LIMIT 20 OFFSET @offset", p => p.Set("@offset", page * 20)))
+                if (dc.Query("INSERT INTO notices () VALUES ()", p => p
+                    .Set("@offset", page * 20)
+                    .Set("@offset", page * 20)
+                ))
                 {
 
                 }
@@ -50,7 +57,6 @@ namespace Greatbone.Sample
                 }
             }
         }
-
 
     }
 }

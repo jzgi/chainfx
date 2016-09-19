@@ -4,11 +4,11 @@ using System.Collections.Generic;
 
 namespace Greatbone.Sample
 {
-    public class PostZone : WebSection
+    public class PostHub : WebHub
     {
-        public PostZone(WebConfig cfg) : base(cfg)
+        public PostHub(WebConfig cfg) : base(cfg)
         {
-            SetVarHub<PostVarHub>(false);
+            SetVarSub<PostVarSub>(false);
         }
 
         public void Top(WebContext wc)

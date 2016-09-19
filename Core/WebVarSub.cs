@@ -4,26 +4,26 @@ using System.Reflection;
 
 namespace Greatbone.Core
 {
-    /// <summary>A multiplexing hub controller that is attached to a realm controller. </summary>
+    /// <summary>A variable-key multiplexer ontroller that is attached to a hub controller. </summary>
     ///
-    public abstract class WebVarHub : WebSub
+    public abstract class WebVarSub : WebSub
     {
         // the added sub controllers
         private Set<WebSub> subs;
 
-        protected WebVarHub(WebConfig cfg) : base(cfg)
+        protected WebVarSub(WebConfig cfg) : base(cfg)
         {
         }
 
-        public TSub AddSub<TSub>(string key, bool auth) where TSub : WebSub
+        public T AddSub<T>(string key, bool auth) where T : WebSub
         {
             if (subs == null)
             {
                 subs = new Set<WebSub>(16);
             }
             // create instance by reflection
-            Type type = typeof(TSub);
-            ConstructorInfo ci = type.GetConstructor(new[] { typeof(WebConfig) });
+            Type type = typeof(T);
+            ConstructorInfo ci = type.GetConstructor(new[] {typeof(WebConfig)});
             if (ci == null)
             {
                 throw new WebException(type + ": the constructor not found (WebServiceContext)");
@@ -35,7 +35,7 @@ namespace Greatbone.Core
                 Service = Service,
                 IsVar = true
             };
-            TSub sub = (TSub)ci.Invoke(new object[] { wsc });
+            T sub = (T) ci.Invoke(new object[] {wsc});
             // call the initialization and add
             subs.Add(sub);
 

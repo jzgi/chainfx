@@ -6,29 +6,29 @@ namespace Greatbone.Core
     /// <summary>
     /// A section consists of sub controllers and/or variable-key hub controller.
     /// </summary>
-    public abstract class WebSection : WebSub, ICacheRealm
+    public abstract class WebHub : WebSub, ICacheRealm
     {
         // the added sub controllers, if any
         private Set<WebSub> subs;
 
-        // the attached multiplexer controller, if any
-        private WebVarHub hub;
+        // the attached variable-key multiplexer, if any
+        private WebVarSub varsub;
 
-        protected WebSection(WebConfig cfg) : base(cfg)
+        protected WebHub(WebConfig cfg) : base(cfg)
         {
         }
 
         public long LastModified { get; set; }
 
-        public TSub AddSub<TSub>(string key, bool auth) where TSub : WebSub
+        public T AddSub<T>(string key, bool auth) where T : WebSub
         {
             if (subs == null)
             {
                 subs = new Set<WebSub>(16);
             }
             // create instance by reflection
-            Type typ = typeof(TSub);
-            ConstructorInfo ci = typ.GetConstructor(new[] { typeof(WebConfig) });
+            Type typ = typeof(T);
+            ConstructorInfo ci = typ.GetConstructor(new[] {typeof(WebConfig)});
             if (ci == null)
             {
                 throw new WebServiceException(typ + ": the constructor with WebConfig");
@@ -40,18 +40,18 @@ namespace Greatbone.Core
                 Service = Service,
                 IsVar = false
             };
-            TSub sub = (TSub)ci.Invoke(new object[] { cfg });
+            T sub = (T) ci.Invoke(new object[] {cfg});
 
             subs.Add(sub);
 
             return sub;
         }
 
-        public THub SetVarHub<THub>(bool auth) where THub : WebVarHub
+        public T SetVarSub<T>(bool auth) where T : WebVarSub
         {
             // create instance
-            Type typ = typeof(THub);
-            ConstructorInfo ci = typ.GetConstructor(new[] { typeof(WebConfig) });
+            Type typ = typeof(T);
+            ConstructorInfo ci = typ.GetConstructor(new[] {typeof(WebConfig)});
             if (ci == null)
             {
                 throw new WebServiceException(typ + ": the constructor with WebConfig");
@@ -63,9 +63,9 @@ namespace Greatbone.Core
                 Service = Service,
                 IsVar = true
             };
-            THub hub = (THub)ci.Invoke(new object[] { cfg });
+            T hub = (T) ci.Invoke(new object[] {cfg});
 
-            this.hub = hub;
+            this.varsub = hub;
 
             return hub;
         }
@@ -86,14 +86,14 @@ namespace Greatbone.Core
                 {
                     sub.Handle(relative.Substring(slash + 1), wc);
                 }
-                else if (hub == null)
+                else if (varsub == null)
                 {
                     wc.Response.StatusCode = 501; // Not Implemented
                 }
                 else
                 {
                     wc.Var = dir;
-                    hub.Handle(relative.Substring(slash + 1), wc);
+                    varsub.Handle(relative.Substring(slash + 1), wc);
                 }
             }
         }

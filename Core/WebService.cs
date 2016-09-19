@@ -23,7 +23,7 @@ namespace Greatbone.Core
     /// etag -- reduces network I/O with unchanged results
     ///
     ///
-    public abstract class WebService : WebSection, IHttpApplication<HttpContext>
+    public abstract class WebService : WebHub, IHttpApplication<HttpContext>
     {
         //
         // SERVER
@@ -91,14 +91,14 @@ namespace Greatbone.Core
                                 body bytea,
                                 CONSTRAINT msgq_pkey PRIMARY KEY (id)
                             ) WITH (OIDS=FALSE)",
-                            null
+                    null
                 );
                 dc.Execute(@"CREATE TABLE IF NOT EXISTS msgu (
                                 addr character varying(45) NOT NULL,
                                 lastid int4,
                                 CONSTRAINT msgu_pkey PRIMARY KEY (addr)
                             ) WITH (OIDS=FALSE)",
-                            null
+                    null
                 );
             }
             return true;
@@ -149,7 +149,7 @@ namespace Greatbone.Core
             IPAddress ip = ci.LocalIpAddress;
             int port = ci.LocalPort;
 
-            WebContext wc = (WebContext)hc;
+            WebContext wc = (WebContext) hc;
             if (port == inport && ip.Equals(inaddr))
             {
                 // mq handling or action handling
@@ -182,7 +182,7 @@ namespace Greatbone.Core
 
         public void DisposeContext(HttpContext context, Exception exception)
         {
-            WebContext wc = (WebContext)context;
+            WebContext wc = (WebContext) context;
             wc.Dispose();
         }
 
@@ -220,7 +220,6 @@ namespace Greatbone.Core
         /// <param name="wc"></param>
         internal void Poll(WebContext wc)
         {
-
         }
 
         public CancellationToken ApplicationStarted { get; set; }
@@ -251,7 +250,7 @@ namespace Greatbone.Core
 
         public DbContext NewSqlContext()
         {
-            DbConfig cfg = ((WebServiceConfig)Config).Db;
+            DbConfig cfg = ((WebServiceConfig) Config).Db;
             NpgsqlConnectionStringBuilder builder = new NpgsqlConnectionStringBuilder()
             {
                 Host = cfg.Host,
@@ -277,7 +276,7 @@ namespace Greatbone.Core
             var token = new CancellationToken();
 
             token.Register(
-                state => { ((IApplicationLifetime)state).StopApplication(); },
+                state => { ((IApplicationLifetime) state).StopApplication(); },
                 Lifetime
             );
 

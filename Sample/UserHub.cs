@@ -6,11 +6,11 @@ namespace Greatbone.Sample
     ///
     /// <summary>The user directory service</summary>
     ///
-    public class UserZone : WebSection
+    public class UserHub : WebHub
     {
-        public UserZone(WebConfig cfg) : base(cfg)
+        public UserHub(WebConfig cfg) : base(cfg)
         {
-            SetVarHub<UserVarHub>(false);
+            SetVarSub<UserVarSub>(false);
         }
 
         ///
@@ -23,10 +23,7 @@ namespace Greatbone.Sample
             using (var sc = Service.NewSqlContext())
             {
                 sc.Execute("INSERT INTO users () VALUES (@id, @credential, @name, @fame, @brand, @loggedin)",
-                    p =>
-                    {
-                        p.Set("@id", "");
-                    }
+                    p => { p.Set("@id", ""); }
                 );
 
                 wc.SetContent(u);
