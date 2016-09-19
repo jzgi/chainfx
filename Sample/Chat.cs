@@ -57,12 +57,12 @@ namespace Greatbone.Sample
 
 		public void ReadFrom(ISerialReader r)
 		{
-			r.Read(nameof(id), ref id);
-			r.Read(nameof(subtype), ref subtype);
-			r.Read(nameof(from), ref from);
-			r.Read(nameof(to), ref to);
-			r.Read(nameof(content), ref content);
-			r.Read(nameof(time), ref time);
+			r.Read(nameof(id), out id);
+			r.Read(nameof(subtype), out subtype);
+			r.Read(nameof(@from), out @from);
+			r.Read(nameof(to), out to);
+			r.Read(nameof(content), out content);
+			r.Read(nameof(time), out time);
 		}
 
 		public void WriteTo(ISerialWriter w)

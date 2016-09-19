@@ -107,7 +107,7 @@ namespace Greatbone.Core
         {
             ISerialReader r = this.Serial;
             T o = new T();
-            r.Read(ref o);
+            r.Read(out o);
             return o;
         }
 

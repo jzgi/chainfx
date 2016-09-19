@@ -3,13 +3,12 @@ using System.Collections.Generic;
 
 namespace Greatbone.Core
 {
-
     /// <summary>
     /// JjavaScript Object Binary
     /// </summary>
     public class JsobContent : DynamicContent, ISerialReader, ISerialWriter
     {
-        JsonStruct[] knots = new JsonStruct[8];
+        JsonLR[] stack = new JsonLR[8];
 
         // current level, start with 0
         int level = -1;
@@ -26,7 +25,6 @@ namespace Greatbone.Core
 
         internal void SkipLevel()
         {
-
         }
 
         internal bool SeekInKnot(string name)
@@ -46,7 +44,7 @@ namespace Greatbone.Core
                 }
                 else if (c == '}')
                 {
-                    knots[level].end = p; // mark down the level end
+                    stack[level].end = p; // mark down the level end
                 }
                 p++;
                 break;
@@ -61,7 +59,7 @@ namespace Greatbone.Core
                 }
                 if (c == '}')
                 {
-                    knots[level].end = p; // mark down the level end
+                    stack[level].end = p; // mark down the level end
                 }
                 break;
             }
@@ -79,13 +77,14 @@ namespace Greatbone.Core
         }
 
 
-        public bool Read(ref bool value)
+        public bool Read(out bool value)
         {
             throw new NotImplementedException();
         }
 
-        internal bool Read(ref decimal value)
+        internal bool Read(out decimal value)
         {
+            value = 0;
             return false;
         }
 
@@ -125,7 +124,7 @@ namespace Greatbone.Core
             return true;
         }
 
-        public bool Read<T>(ref List<T> list)
+        public bool Read<T>(out List<T> list)
         {
             List<T> lst = new List<T>();
             ReadArray(() =>
@@ -133,24 +132,26 @@ namespace Greatbone.Core
                 if (typeof(T) == typeof(int))
                 {
                     string value = null;
-                    if (Read(ref value))
+                    if (Read(out value))
                     {
                     }
                 }
             });
+            list = null;
             return false;
         }
 
-        public bool Read<T>(ref T value) where T : ISerial, new()
+        public bool Read<T>(out T value) where T : ISerial, new()
         {
-            T o = (value != null) ? value : new T();
+            T o = new T();
             ReadArray(() => { o.ReadFrom(this); });
             value = o;
             return true;
         }
 
-        public bool Read(ref short value)
+        public bool Read(out short value)
         {
+            value = 0;
             return false;
         }
 
@@ -185,7 +186,7 @@ namespace Greatbone.Core
             }
         }
 
-        public bool Read(ref int value)
+        public bool Read(out int value)
         {
             SkipWs();
 
@@ -197,59 +198,64 @@ namespace Greatbone.Core
                 }
                 break;
             }
-
+            value = 0;
             return false;
         }
 
-        public bool Read(ref DateTime value)
+        public bool Read(out DateTime value)
         {
+            value = default(DateTime);
             return false;
         }
 
-        public bool Read(ref string value)
+        public bool Read(out string value)
         {
+            value = null;
             return false;
         }
 
 
-        public bool Read(string name, ref short value)
-        {
-            if (SeekInKnot(name))
-            {
-                return Read(ref value);
-            }
-            return false;
-        }
-
-        public bool Read(string name, ref int value)
+        public bool Read(string name, out short value)
         {
             if (SeekInKnot(name))
             {
-                return Read(ref value);
+                return Read(out value);
             }
+            value = 0;
             return false;
         }
 
-        public bool Read(string name, ref decimal value)
+        public bool Read(string name, out int value)
         {
             if (SeekInKnot(name))
             {
-                return Read(ref value);
+                return Read(out value);
             }
+            value = 0;
             return false;
         }
 
-        public bool Read(string name, ref DateTime value)
+        public bool Read(string name, out decimal value)
+        {
+            if (SeekInKnot(name))
+            {
+                return Read(out value);
+            }
+            value = 0;
+            return false;
+        }
+
+        public bool Read(string name, out DateTime value)
         {
             throw new NotImplementedException();
         }
 
-        public bool Read(string name, ref string value)
+        public bool Read(string name, out string value)
         {
             throw new System.NotImplementedException();
         }
 
-        public bool Read<T>(string name, ref T value) where T : ISerial, new()
+        public bool Read<T>(string name, out T value) where T : ISerial, new()
         {
             throw new System.NotImplementedException();
         }
@@ -261,11 +267,12 @@ namespace Greatbone.Core
             ReadArray(() =>
             {
                 T o = new T();
-                while (Read(ref o))
+                while (Read(out o))
                 {
                     value.Add(o);
                 }
             });
+            value = null;
             return false;
         }
 
@@ -274,7 +281,7 @@ namespace Greatbone.Core
             throw new System.NotImplementedException();
         }
 
-        public bool Read(string name, ref bool value)
+        public bool Read(string name, out bool value)
         {
             throw new System.NotImplementedException();
         }
@@ -289,59 +296,60 @@ namespace Greatbone.Core
             throw new System.NotImplementedException();
         }
 
-        public bool Read(string name, ref char[] value)
+        public bool Read(string name, out char[] value)
         {
             throw new NotImplementedException();
         }
 
-        public bool Read(ref long value)
+        public bool Read(out long value)
         {
             throw new NotImplementedException();
         }
 
-        bool ISerialReader.Read(ref decimal value)
+        bool ISerialReader.Read(out decimal value)
         {
             throw new NotImplementedException();
         }
 
-        public bool Read(ref char[] value)
+        public bool Read(out char[] value)
         {
             throw new NotImplementedException();
         }
 
-        public bool Read<T>(ref T[] value)
+        public bool Read<T>(out T[] value)
         {
             throw new NotImplementedException();
         }
 
-        public bool Read<T>(ref Dictionary<string, T> value)
+        public bool Read<T>(out Dictionary<string, T> value)
         {
             throw new NotImplementedException();
         }
 
-        public bool Read(string name, ref long value)
+        public bool Read(string name, out long value)
         {
             throw new NotImplementedException();
         }
 
-        public bool Read<T>(string name, ref T[] value)
+        public bool Read<T>(string name, out T[] value)
         {
             throw new NotImplementedException();
         }
 
-        public bool Read<T>(string name, ref List<T> value)
+        public bool Read<T>(string name, out List<T> value)
         {
             throw new NotImplementedException();
         }
 
-        public bool Read<T>(string name, ref Dictionary<string, T> value)
+        public bool Read<T>(string name, out Dictionary<string, T> value)
         {
             throw new NotImplementedException();
         }
 
 
-
-        public JsobContent(int capacity) : base(capacity) { }
+        public JsobContent(int capacity) : base(capacity)
+        {
+        }
 
 
         //
@@ -353,7 +361,7 @@ namespace Greatbone.Core
             level++;
             Put('[');
 
-            knots[level].array = true;
+            stack[level].array = true;
 
             Put(']');
             level--;
@@ -364,7 +372,7 @@ namespace Greatbone.Core
             Put('{');
 
             level++;
-            knots[level].array = false;
+            stack[level].array = false;
 
             Put('}');
 
@@ -374,7 +382,7 @@ namespace Greatbone.Core
 
         public void Write(string name, short value)
         {
-            if (knots[level].ordinal > 0)
+            if (stack[level].ordinal > 0)
             {
                 Put(','); // precede a comma
             }
@@ -385,12 +393,12 @@ namespace Greatbone.Core
             Put(':');
             Put(value);
 
-            knots[level].ordinal++;
+            stack[level].ordinal++;
         }
 
         public void Write(string name, int value)
         {
-            if (knots[level].ordinal > 0)
+            if (stack[level].ordinal > 0)
             {
                 Put(','); // precede a comma
             }
@@ -401,12 +409,12 @@ namespace Greatbone.Core
             Put(':');
             Put(value);
 
-            knots[level].ordinal++;
+            stack[level].ordinal++;
         }
 
         public void Write(string name, decimal value)
         {
-            if (knots[level].ordinal > 0)
+            if (stack[level].ordinal > 0)
             {
                 Put(','); // precede a comma
             }
@@ -417,12 +425,12 @@ namespace Greatbone.Core
             Put(':');
             Put(value);
 
-            knots[level].ordinal++;
+            stack[level].ordinal++;
         }
 
         public void Write(string name, DateTime value)
         {
-            if (knots[level].ordinal > 0)
+            if (stack[level].ordinal > 0)
             {
                 Put(','); // precede a comma
             }
@@ -433,12 +441,12 @@ namespace Greatbone.Core
             Put(':');
             Put(value);
 
-            knots[level].ordinal++;
+            stack[level].ordinal++;
         }
 
         public void Write(string name, string value)
         {
-            if (knots[level].ordinal > 0)
+            if (stack[level].ordinal > 0)
             {
                 Put(','); // precede a comma
             }
@@ -459,12 +467,12 @@ namespace Greatbone.Core
                 Put('"');
             }
 
-            knots[level].ordinal++;
+            stack[level].ordinal++;
         }
 
         public void Write<T>(string name, T value) where T : ISerial
         {
-            if (knots[level].ordinal > 0)
+            if (stack[level].ordinal > 0)
             {
                 Put(','); // precede a comma
             }
@@ -483,12 +491,12 @@ namespace Greatbone.Core
                 WriteObject(() => { value.WriteTo(this); });
             }
 
-            knots[level].ordinal++;
+            stack[level].ordinal++;
         }
 
         public void Write(string name, List<ISerial> list)
         {
-            if (knots[level].ordinal > 0)
+            if (stack[level].ordinal > 0)
             {
                 Put(','); // precede a comma
             }
@@ -517,7 +525,7 @@ namespace Greatbone.Core
             }
             Put(']');
 
-            knots[level].ordinal++;
+            stack[level].ordinal++;
         }
 
         public void Write(string name, bool value)

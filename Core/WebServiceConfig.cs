@@ -37,15 +37,15 @@ namespace Greatbone.Core
 
         public void ReadFrom(ISerialReader r)
         {
-            r.Read(nameof(Key), ref Key);
-            r.Read(nameof(Shard), ref Shard);
-            r.Read(nameof(Public), ref Public);
-            r.Read(nameof(Tls), ref Tls);
-            r.Read(nameof(Private), ref Private);
-            r.Read(nameof(Cluster), ref Cluster);
-            r.Read(nameof(Db), ref Db);
-            r.Read(nameof(Debug), ref Debug);
-            r.Read(nameof(options), ref options);
+            r.Read(nameof(Key), out Key);
+            r.Read(nameof(Shard), out Shard);
+            r.Read(nameof(Public), out Public);
+            r.Read(nameof(Tls), out Tls);
+            r.Read(nameof(Private), out Private);
+            r.Read(nameof(Cluster), out Cluster);
+            r.Read(nameof(Db), out Db);
+            r.Read(nameof(Debug), out Debug);
+            r.Read(nameof(options), out options);
         }
 
         public void WriteTo(ISerialWriter w)

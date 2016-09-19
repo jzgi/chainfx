@@ -63,7 +63,7 @@ namespace Greatbone.Sample
 
             r.ReadArray(() =>
             {
-                r.Read(ref ret);
+                r.Read(out ret);
             });
 
             using (var dc = Service.NewSqlContext())

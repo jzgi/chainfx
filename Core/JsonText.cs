@@ -15,7 +15,7 @@ namespace Greatbone.Core
 
         // parsing context for levels
 
-        JsonStruct[] levels = new JsonStruct[8];
+        JsonLR[] levels = new JsonLR[8];
 
         int level;
 
@@ -42,122 +42,122 @@ namespace Greatbone.Core
             throw new NotImplementedException();
         }
 
-        public bool Read(ref bool value)
+        public bool Read(out bool value)
         {
             throw new NotImplementedException();
         }
 
-        public bool Read(ref short value)
+        public bool Read(out short value)
         {
             throw new NotImplementedException();
         }
 
-        public bool Read(ref int value)
+        public bool Read(out int value)
         {
             throw new NotImplementedException();
         }
 
-        public bool Read(ref long value)
+        public bool Read(out long value)
         {
             throw new NotImplementedException();
         }
 
-        public bool Read(ref decimal value)
+        public bool Read(out decimal value)
         {
             throw new NotImplementedException();
         }
 
-        public bool Read(ref DateTime value)
+        public bool Read(out DateTime value)
         {
             throw new NotImplementedException();
         }
 
-        public bool Read(ref char[] value)
+        public bool Read(out char[] value)
         {
             throw new NotImplementedException();
         }
 
-        public bool Read(ref string value)
+        public bool Read(out string value)
         {
             throw new NotImplementedException();
         }
 
-        public bool Read<T>(ref T value) where T : ISerial, new()
+        public bool Read<T>(out T value) where T : ISerial, new()
         {
             throw new NotImplementedException();
         }
 
-        public bool Read<T>(ref T[] value)
+        public bool Read<T>(out T[] value)
         {
             throw new NotImplementedException();
         }
 
-        public bool Read<T>(ref List<T> value)
+        public bool Read<T>(out List<T> value)
         {
             throw new NotImplementedException();
         }
 
-        public bool Read<T>(ref Dictionary<string, T> value)
+        public bool Read<T>(out Dictionary<string, T> value)
         {
             throw new NotImplementedException();
         }
 
-        public bool Read(string name, ref bool value)
+        public bool Read(string name, out bool value)
         {
             throw new NotImplementedException();
         }
 
-        public bool Read(string name, ref short value)
+        public bool Read(string name, out short value)
         {
             throw new NotImplementedException();
         }
 
-        public bool Read(string name, ref int value)
+        public bool Read(string name, out int value)
         {
             throw new NotImplementedException();
         }
 
-        public bool Read(string name, ref long value)
+        public bool Read(string name, out long value)
         {
             throw new NotImplementedException();
         }
 
-        public bool Read(string name, ref decimal value)
+        public bool Read(string name, out decimal value)
         {
             throw new NotImplementedException();
         }
 
-        public bool Read(string name, ref DateTime value)
+        public bool Read(string name, out DateTime value)
         {
             throw new NotImplementedException();
         }
 
-        public bool Read(string name, ref char[] value)
+        public bool Read(string name, out char[] value)
         {
             throw new NotImplementedException();
         }
 
-        public bool Read(string name, ref string value)
+        public bool Read(string name, out string value)
         {
             throw new NotImplementedException();
         }
 
-        public bool Read<T>(string name, ref T value) where T : ISerial, new()
+        public bool Read<T>(string name, out T value) where T : ISerial, new()
         {
             throw new NotImplementedException();
         }
 
-        public bool Read<T>(string name, ref T[] value)
+        public bool Read<T>(string name, out T[] value)
         {
             throw new NotImplementedException();
         }
 
-        public bool Read<T>(string name, ref List<T> value)
+        public bool Read<T>(string name, out List<T> value)
         {
             throw new NotImplementedException();
         }
 
-        public bool Read<T>(string name, ref Dictionary<string, T> value)
+        public bool Read<T>(string name, out Dictionary<string, T> value)
         {
             throw new NotImplementedException();
         }

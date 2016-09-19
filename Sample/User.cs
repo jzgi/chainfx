@@ -36,9 +36,9 @@ namespace Greatbone.Sample
 
         public void ReadFrom(ISerialReader r)
         {
-            r.Read(nameof(id), ref id);
-            r.Read(nameof(name), ref name);
-            r.Read(nameof(credential), ref credential);
+            r.Read(nameof(id), out id);
+            r.Read(nameof(name), out name);
+            r.Read(nameof(credential), out credential);
         }
 
         public void WriteTo(ISerialWriter w)

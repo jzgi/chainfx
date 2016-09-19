@@ -18,8 +18,8 @@ namespace Greatbone.Core
             int age = 0;
             jc.ReadObject(delegate
             {
-                jc.Read(nameof(name), ref name);
-                jc.Read(nameof(age), ref age);
+                jc.Read(nameof(name), out name);
+                jc.Read(nameof(age), out age);
             });
 
         }
@@ -28,7 +28,7 @@ namespace Greatbone.Core
     public class JsonContent : DynamicContent, ISerialReader, ISerialWriter
     {
         // stack of json knots in processing
-        readonly JsonStruct[] stack;
+        readonly JsonLR[] stack;
 
         // current level in stack
         int level;
@@ -39,7 +39,7 @@ namespace Greatbone.Core
 
         public JsonContent(ArraySegment<byte> bytes) : base(bytes)
         {
-            stack = new JsonStruct[8];
+            stack = new JsonLR[8];
             level = -1;
             pos = -1;
         }
@@ -85,7 +85,7 @@ namespace Greatbone.Core
             return false;
         }
 
-        public bool Read(ref bool value)
+        public bool Read(out bool value)
         {
             int p = pos;
             while (++p < count)
@@ -104,18 +104,21 @@ namespace Greatbone.Core
                 }
                 else
                 {
+                    value = false;
                     return false;
                 }
             }
+            value = false;
             return false;
         }
 
-        public bool Read(ref short value)
+        public bool Read(out short value)
         {
+            value = 0;
             return false;
         }
 
-        public bool Read(ref int value)
+        public bool Read(out int value)
         {
             JsonNumber num = new JsonNumber();
             int p = pos;
@@ -129,6 +132,7 @@ namespace Greatbone.Core
                 }
                 else
                 {
+                    value = 0;
                     return false;
                 }
             }
@@ -140,6 +144,7 @@ namespace Greatbone.Core
                 if (c == '"')
                 {
                     pos = p;
+                    value = 0;
                     return true;
                 }
                 else
@@ -147,30 +152,34 @@ namespace Greatbone.Core
                     num.Add(c);
                 }
             }
+            value = 0;
             return false;
         }
 
-        public bool Read(ref long value)
+        public bool Read(out long value)
         {
             throw new NotImplementedException();
         }
 
-        public bool Read(ref decimal value)
+        public bool Read(out decimal value)
         {
+            value = 0;
             return false;
         }
 
-        public bool Read(ref DateTime value)
+        public bool Read(out DateTime value)
         {
+            value = default(DateTime);
+
             return false;
         }
 
-        public bool Read(ref char[] value)
+        public bool Read(out char[] value)
         {
             throw new NotImplementedException();
         }
 
-        public bool Read(ref string value)
+        public bool Read(out string value)
         {
             JsonStr str = new JsonStr(64);
             int p = pos;
@@ -184,6 +193,7 @@ namespace Greatbone.Core
                 }
                 else
                 {
+                    value = null;
                     return false;
                 }
             }
@@ -203,24 +213,25 @@ namespace Greatbone.Core
                     str.Add(c);
                 }
             }
+            value = null;
             return false;
         }
 
 
-        public bool Read<T>(ref T value) where T : ISerial, new()
+        public bool Read<T>(out T value) where T : ISerial, new()
         {
-            T o = (value != null) ? value : new T();
+            T o = new T();
             ReadArray(() => { o.ReadFrom(this); });
             value = o;
             return true;
         }
 
-        public bool Read<T>(ref T[] value)
+        public bool Read<T>(out T[] value)
         {
             throw new NotImplementedException();
         }
 
-        public bool Read<T>(ref List<T> list)
+        public bool Read<T>(out List<T> list)
         {
             List<T> lst = new List<T>();
             ReadArray(() =>
@@ -228,15 +239,16 @@ namespace Greatbone.Core
                 if (typeof(T) == typeof(int))
                 {
                     string value = null;
-                    if (Read(ref value))
+                    if (Read(out value))
                     {
                     }
                 }
             });
+            list = null;
             return false;
         }
 
-        public bool Read<T>(ref Dictionary<string, T> value)
+        public bool Read<T>(out Dictionary<string, T> value)
         {
             throw new NotImplementedException();
         }
@@ -373,57 +385,63 @@ namespace Greatbone.Core
             return false;
         }
 
-        public bool Read(string name, ref short value)
+        public bool Read(string name, out short value)
         {
             if (Locate(name))
             {
-                return Read(ref value);
+                return Read(out value);
             }
+            value = 0;
             return false;
         }
 
-        public bool Read(string name, ref int value)
+        public bool Read(string name, out int value)
         {
             if (Locate(name))
             {
-                return Read(ref value);
+                return Read(out value);
             }
+            value = 0;
             return false;
         }
 
-        public bool Read(string name, ref decimal value)
+        public bool Read(string name, out decimal value)
         {
             if (Locate(name))
             {
-                return Read(ref value);
+                return Read(out value);
             }
+            value = 0;
             return false;
         }
 
-        public bool Read(string name, ref DateTime value)
+        public bool Read(string name, out DateTime value)
         {
             if (Locate(name))
             {
-                return Read(ref value);
+                return Read(out value);
             }
+            value = default (DateTime);
             return false;
         }
 
-        public bool Read(string name, ref string value)
+        public bool Read(string name, out string value)
         {
             if (Locate(name))
             {
-                return Read(ref value);
+                return Read(out value);
             }
+            value = null;
             return false;
         }
 
-        public bool Read<T>(string name, ref T value) where T : ISerial, new()
+        public bool Read<T>(string name, out T value) where T : ISerial, new()
         {
             if (Locate(name))
             {
-                return Read(ref value);
+                return Read(out value);
             }
+            value = default (T);
             return false;
         }
 
@@ -434,7 +452,7 @@ namespace Greatbone.Core
             ReadArray(delegate
             {
                 T o = new T();
-                while (Read(ref o))
+                while (Read(out o))
                 {
                     value.Add(o);
                 }
@@ -442,32 +460,32 @@ namespace Greatbone.Core
             return false;
         }
 
-        public bool Read(string name, ref bool value)
+        public bool Read(string name, out bool value)
         {
             throw new System.NotImplementedException();
         }
 
-        public bool Read(string name, ref char[] value)
+        public bool Read(string name, out char[] value)
         {
             throw new NotImplementedException();
         }
 
-        public bool Read(string name, ref long value)
+        public bool Read(string name, out long value)
         {
             throw new NotImplementedException();
         }
 
-        public bool Read<T>(string name, ref T[] value)
+        public bool Read<T>(string name, out T[] value)
         {
             throw new NotImplementedException();
         }
 
-        public bool Read<T>(string name, ref List<T> value)
+        public bool Read<T>(string name, out List<T> value)
         {
             throw new NotImplementedException();
         }
 
-        public bool Read<T>(string name, ref Dictionary<string, T> value)
+        public bool Read<T>(string name, out Dictionary<string, T> value)
         {
             throw new NotImplementedException();
         }

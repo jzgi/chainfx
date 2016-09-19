@@ -1,9 +1,9 @@
 ﻿namespace Greatbone.Core
 {
     /// <summary>
-    /// An encountered component part during parsing json stream, usually a json data element.
+    /// An encountered data struct in left-to-right parsing context.
     /// </summary>
-    internal struct JsonStruct
+    internal struct JsonLR
     {
         internal int start;
 
@@ -17,7 +17,7 @@
         // object or array
         internal bool array;
 
-        internal JsonStruct(bool array)
+        internal JsonLR(bool array)
         {
             this.array = array;
             start = end = -1;
