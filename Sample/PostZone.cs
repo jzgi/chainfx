@@ -4,7 +4,7 @@ using System.Collections.Generic;
 
 namespace Greatbone.Sample
 {
-    public class PostZone : WebZone
+    public class PostZone : WebSection
     {
         public PostZone(WebConfig cfg) : base(cfg)
         {

@@ -5,7 +5,7 @@ namespace Greatbone.Sample
     ///
     /// <summary>The notice service.</summary>
     ///
-    public class NoticeZone : WebZone
+    public class NoticeZone : WebSection
     {
         public NoticeZone(WebConfig cfg) : base(cfg)
         {

@@ -5,7 +5,7 @@ namespace Greatbone.Sample
     ///
     /// /brand/
     ///
-    public class BrandZone : WebZone
+    public class BrandZone : WebSection
     {
         public BrandZone(WebConfig cfg) : base(cfg)
         {

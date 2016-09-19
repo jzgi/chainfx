@@ -4,9 +4,9 @@ using System.Reflection;
 namespace Greatbone.Core
 {
     /// <summary>
-    /// A module consists of sub controllers and/or variable-key hub controller.
+    /// A section consists of sub controllers and/or variable-key hub controller.
     /// </summary>
-    public abstract class WebZone : WebSub, ICacheRealm
+    public abstract class WebSection : WebSub, ICacheRealm
     {
         // the added sub controllers, if any
         private Set<WebSub> subs;
@@ -14,7 +14,7 @@ namespace Greatbone.Core
         // the attached multiplexer controller, if any
         private WebVarHub hub;
 
-        protected WebZone(WebConfig cfg) : base(cfg)
+        protected WebSection(WebConfig cfg) : base(cfg)
         {
         }
 

@@ -23,7 +23,7 @@ namespace Greatbone.Core
     /// etag -- reduces network I/O with unchanged results
     ///
     ///
-    public abstract class WebService : WebZone, IHttpApplication<HttpContext>
+    public abstract class WebService : WebSection, IHttpApplication<HttpContext>
     {
         //
         // SERVER

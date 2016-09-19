@@ -2,7 +2,7 @@
 
 namespace Greatbone.Sample
 {
-    public class FameZone : WebZone
+    public class FameZone : WebSection
     {
         public FameZone(WebConfig cfg) : base(cfg)
         {

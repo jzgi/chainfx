@@ -6,7 +6,7 @@ namespace Greatbone.Sample
     ///
     /// <summary>The user directory service</summary>
     ///
-    public class UserZone : WebZone
+    public class UserZone : WebSection
     {
         public UserZone(WebConfig cfg) : base(cfg)
         {
