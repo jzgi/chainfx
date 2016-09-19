@@ -26,7 +26,7 @@ namespace Greatbone.Sample
 
         internal List<Fav> friends;
 
-        internal List<Fav> fav;
+        internal List<Fav> favs;
 
         public string Key => id;
 
@@ -39,6 +39,13 @@ namespace Greatbone.Sample
             r.Read(nameof(id), out id);
             r.Read(nameof(name), out name);
             r.Read(nameof(credential), out credential);
+            r.Read(nameof(fame), out fame);
+            r.Read(nameof(brand), out brand);
+            r.Read(nameof(admin), out admin);
+            r.Read(nameof(date), out date);
+            r.Read(nameof(favposts), out favposts);
+            r.Read(nameof(friends), out friends);
+            r.Read(nameof(favs), out favs);
         }
 
         public void WriteTo(ISerialWriter w)
@@ -46,6 +53,13 @@ namespace Greatbone.Sample
             w.Write(nameof(id), id);
             w.Write(nameof(name), name);
             w.Write(nameof(credential), credential);
+            w.Write(nameof(fame), fame);
+            w.Write(nameof(brand), brand);
+            w.Write(nameof(admin), admin);
+            w.Write(nameof(date), date);
+            w.Write(nameof(favposts), favposts);
+            w.Write(nameof(friends), friends);
+            w.Write(nameof(favs), favs);
         }
 
         public static string Encrypt(string orig)
@@ -61,13 +75,11 @@ namespace Greatbone.Sample
         public struct Fav
         {
             internal char[] id;
-
         }
 
         public struct FavPost
         {
             internal int id;
         }
-
     }
 }

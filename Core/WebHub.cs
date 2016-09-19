@@ -6,7 +6,7 @@ namespace Greatbone.Core
     /// <summary>
     /// A section consists of sub controllers and/or variable-key hub controller.
     /// </summary>
-    public abstract class WebHub : WebSub, ICacheRealm
+    public abstract class WebHub : WebSub
     {
         // the added sub controllers, if any
         private Set<WebSub> subs;
