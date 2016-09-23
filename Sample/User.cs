@@ -36,16 +36,16 @@ namespace Greatbone.Sample
 
         public void ReadFrom(ISerialReader r)
         {
-            r.Read(nameof(id), out id);
-            r.Read(nameof(name), out name);
-            r.Read(nameof(credential), out credential);
-            r.Read(nameof(fame), out fame);
-            r.Read(nameof(brand), out brand);
-            r.Read(nameof(admin), out admin);
-            r.Read(nameof(date), out date);
-            r.Read(nameof(favposts), out favposts);
-            r.Read(nameof(friends), out friends);
-            r.Read(nameof(favs), out favs);
+            r.Read(nameof(id), ref id);
+            r.Read(nameof(name), ref name);
+            r.Read(nameof(credential), ref credential);
+            r.Read(nameof(fame), ref fame);
+            r.Read(nameof(brand), ref brand);
+            r.Read(nameof(admin), ref admin);
+            r.Read(nameof(date), ref date);
+            r.Read(nameof(favposts), ref favposts);
+            r.Read(nameof(friends), ref friends);
+            r.Read(nameof(favs), ref favs);
         }
 
         public void WriteTo(ISerialWriter w)

@@ -19,8 +19,8 @@ namespace Greatbone.Sample
         ///
         public override void Default(WebContext wc, string id)
         {
-            string password;
-            if (wc.GetParam("password", out password))
+            string password = null;
+            if (wc.GetParam("password", ref password))
             {
                 wc.Response.StatusCode = 400;
                 return;
@@ -30,9 +30,9 @@ namespace Greatbone.Sample
                 if (dc.QueryA("SELECT id, credential, name FROM users WHERE id = @id", (p) => p.Set("@id", id)))
                 {
                     User o = new User();
-                    dc.Get(out o.id);
-                    dc.Get(out o.credential);
-                    dc.Get(out o.name);
+                    dc.Get(ref o.id);
+                    dc.Get(ref o.credential);
+                    dc.Get(ref o.name);
 
                     string md5 = ComputeMD5(password);
                     if (md5.Equals(o.credential))
@@ -63,7 +63,7 @@ namespace Greatbone.Sample
 
             r.ReadArray(() =>
             {
-                r.Read(out ret);
+                r.Read(ref ret);
             });
 
             using (var dc = Service.NewSqlContext())

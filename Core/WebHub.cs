@@ -28,7 +28,7 @@ namespace Greatbone.Core
             }
             // create instance by reflection
             Type typ = typeof(T);
-            ConstructorInfo ci = typ.GetConstructor(new[] {typeof(WebConfig)});
+            ConstructorInfo ci = typ.GetConstructor(new[] { typeof(WebConfig) });
             if (ci == null)
             {
                 throw new WebServiceException(typ + ": the constructor with WebConfig");
@@ -40,7 +40,7 @@ namespace Greatbone.Core
                 Service = Service,
                 IsVar = false
             };
-            T sub = (T) ci.Invoke(new object[] {cfg});
+            T sub = (T)ci.Invoke(new object[] { cfg });
 
             subs.Add(sub);
 
@@ -51,7 +51,7 @@ namespace Greatbone.Core
         {
             // create instance
             Type typ = typeof(T);
-            ConstructorInfo ci = typ.GetConstructor(new[] {typeof(WebConfig)});
+            ConstructorInfo ci = typ.GetConstructor(new[] { typeof(WebConfig) });
             if (ci == null)
             {
                 throw new WebServiceException(typ + ": the constructor with WebConfig");
@@ -63,7 +63,7 @@ namespace Greatbone.Core
                 Service = Service,
                 IsVar = true
             };
-            T hub = (T) ci.Invoke(new object[] {cfg});
+            T hub = (T)ci.Invoke(new object[] { cfg });
 
             this.varhub = hub;
 
@@ -88,7 +88,7 @@ namespace Greatbone.Core
                 }
                 else if (varhub == null)
                 {
-                    wc.Response.StatusCode = 501; // Not Implemented
+                    wc.StatusCode = 501; // Not Implemented
                 }
                 else
                 {

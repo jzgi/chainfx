@@ -35,24 +35,24 @@ namespace Greatbone.Sample
 
         public void ReadFrom(ISerialReader r)
         {
-            r.Read(nameof(id), out id);
-            r.Read(nameof(time), out time);
-            r.Read(nameof(authorid), out authorid);
-            r.Read(nameof(author), out author);
-            r.Read(nameof(commentable), out commentable);
-            r.Read(nameof(comments), out comments);
-            r.Read(nameof(text), out text);
+            r.Read(nameof(id), ref id);
+            r.Read(nameof(time), ref time);
+            r.Read(nameof(authorid), ref authorid);
+            r.Read(nameof(author), ref author);
+            r.Read(nameof(commentable), ref commentable);
+            r.Read(nameof(comments), ref comments);
+            r.Read(nameof(text), ref text);
 
-            r.Read(nameof(m0), out m0);
-            r.Read(nameof(m1), out m1);
-            r.Read(nameof(m2), out m2);
-            r.Read(nameof(m3), out m3);
-            r.Read(nameof(m4), out m4);
-            r.Read(nameof(m5), out m5);
-            r.Read(nameof(m6), out m6);
-            r.Read(nameof(m7), out m7);
-            r.Read(nameof(m8), out m8);
-            r.Read(nameof(m9), out m9);
+            r.Read(nameof(m0), ref m0);
+            r.Read(nameof(m1), ref m1);
+            r.Read(nameof(m2), ref m2);
+            r.Read(nameof(m3), ref m3);
+            r.Read(nameof(m4), ref m4);
+            r.Read(nameof(m5), ref m5);
+            r.Read(nameof(m6), ref m6);
+            r.Read(nameof(m7), ref m7);
+            r.Read(nameof(m8), ref m8);
+            r.Read(nameof(m9), ref m9);
         }
 
         public void WriteTo(ISerialWriter w)
@@ -92,11 +92,11 @@ namespace Greatbone.Sample
 
         public void ReadFrom(ISerialReader r)
         {
-            r.Read(nameof(time), out time);
-            r.Read(nameof(emoji), out emoji);
-            r.Read(nameof(authorid), out authorid);
-            r.Read(nameof(author), out author);
-            r.Read(nameof(text), out text);
+            r.Read(nameof(time), ref time);
+            r.Read(nameof(emoji), ref emoji);
+            r.Read(nameof(authorid), ref authorid);
+            r.Read(nameof(author), ref author);
+            r.Read(nameof(text), ref text);
         }
 
         public void WriteTo(ISerialWriter w)

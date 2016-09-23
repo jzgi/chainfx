@@ -14,11 +14,11 @@
 
         public void ReadFrom(ISerialReader r)
         {
-            r.Read(nameof(Host), out Host);
-            r.Read(nameof(Port), out Port);
-            r.Read(nameof(Username), out Username);
-            r.Read(nameof(Password), out Password);
-            r.Read(nameof(MQ), out MQ);
+            r.Read(nameof(Host), ref Host);
+            r.Read(nameof(Port), ref Port);
+            r.Read(nameof(Username), ref Username);
+            r.Read(nameof(Password), ref Password);
+            r.Read(nameof(MQ), ref MQ);
         }
 
         public void WriteTo(ISerialWriter w)

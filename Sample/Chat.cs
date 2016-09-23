@@ -25,10 +25,10 @@ namespace Greatbone.Sample
 
         public void ReadFrom(ISerialReader r)
         {
-            r.Read(nameof(status), out status);
-            r.Read(nameof(partner), out partner);
-            r.Read(nameof(msgs), out msgs);
-            r.Read(nameof(lasttime), out lasttime);
+            r.Read(nameof(status), ref status);
+            r.Read(nameof(partner), ref partner);
+            r.Read(nameof(msgs), ref msgs);
+            r.Read(nameof(lasttime), ref lasttime);
         }
 
         public void WriteTo(ISerialWriter w)
@@ -63,12 +63,12 @@ namespace Greatbone.Sample
 
         public void ReadFrom(ISerialReader r)
         {
-            r.Read(nameof(id), out id);
-            r.Read(nameof(subtype), out subtype);
-            r.Read(nameof(@from), out @from);
-            r.Read(nameof(to), out to);
-            r.Read(nameof(content), out content);
-            r.Read(nameof(time), out time);
+            r.Read(nameof(id), ref id);
+            r.Read(nameof(subtype), ref subtype);
+            r.Read(nameof(@from), ref @from);
+            r.Read(nameof(to), ref to);
+            r.Read(nameof(content), ref content);
+            r.Read(nameof(time), ref time);
         }
 
         public void WriteTo(ISerialWriter w)

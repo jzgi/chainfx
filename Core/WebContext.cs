@@ -17,16 +17,6 @@ namespace Greatbone.Core
         {
         }
 
-        public void Dispose()
-        {
-            byte[] b = reqBytes.Array;
-            if (b != null)
-            {
-                BufferPool.Return(b);
-            }
-        }
-
-
         public WebSub Controller { get; }
 
         public WebAction Action { get; }
@@ -107,11 +97,11 @@ namespace Greatbone.Core
         {
             ISerialReader r = this.Serial;
             T o = new T();
-            r.Read(out o);
+            r.Read(ref o);
             return o;
         }
 
-        public bool GetParam(string name, out int value)
+        public bool GetParam(string name, ref int value)
         {
             StringValues values;
             if (Request.Query.TryGetValue(name, out values))
@@ -128,7 +118,7 @@ namespace Greatbone.Core
             return false;
         }
 
-        public bool GetParam(string name, out string value)
+        public bool GetParam(string name, ref string value)
         {
             StringValues values;
             if (Request.Query.TryGetValue(name, out values))
@@ -141,7 +131,7 @@ namespace Greatbone.Core
         }
 
 
-        public bool GetField(string name, out int value)
+        public bool GetField(string name, ref int value)
         {
             StringValues values;
             if (Request.Form.TryGetValue(name, out values))
@@ -158,7 +148,7 @@ namespace Greatbone.Core
             return false;
         }
 
-        public bool GetField(string name, out string value)
+        public bool GetField(string name, ref string value)
         {
             StringValues values;
             if (Request.Form.TryGetValue(name, out values))
@@ -226,6 +216,23 @@ namespace Greatbone.Core
                 return rsp.Body.WriteAsync(Content.Buffer, 0, Content.Length);
             }
             return Task.CompletedTask;
+        }
+
+
+        public void Dispose()
+        {
+            // return request content buffer
+            byte[] b = reqBytes.Array;
+            if (b != null)
+            {
+                BufferPool.Return(b);
+            }
+
+            // return response content buffer
+            if (Content != null)
+            {
+                BufferPool.Return(Content.Buffer);
+            }
         }
 
     }

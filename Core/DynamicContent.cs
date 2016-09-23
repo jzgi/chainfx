@@ -100,8 +100,6 @@ namespace Greatbone.Core
         /// <summary>
         /// Creates a dynamic content in reading mode.
         /// </summary>
-        /// <param name="buffer">The byte buffer that contains the content.</param>
-        /// <param name="count">The number of bytes.</param>
         protected DynamicContent(ArraySegment<byte> bytes)
         {
             this.buffer = bytes.Array;

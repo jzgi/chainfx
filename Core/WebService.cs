@@ -74,7 +74,6 @@ namespace Greatbone.Core
 
             ParseAddress(cfg.Private, out inaddr, out inport);
 
-
             CreateMsgTables();
         }
 

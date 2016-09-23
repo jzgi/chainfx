@@ -163,7 +163,7 @@ namespace Greatbone.Core
         private int ordinal;
 
 
-        public bool Get(out int value)
+        public bool Get(ref int value)
         {
             int ord = ordinal++;
             if (!reader.IsDBNull(ord))
@@ -175,7 +175,7 @@ namespace Greatbone.Core
             return false;
         }
 
-        public bool Get(out string value)
+        public bool Get(ref string value)
         {
             int ord = ordinal++;
             if (!reader.IsDBNull(ord))
@@ -188,7 +188,7 @@ namespace Greatbone.Core
         }
 
 
-        public bool Get(string name, out string value)
+        public bool Get(string name, ref string value)
         {
             int ord = reader.GetOrdinal(name);
             if (!reader.IsDBNull(ord))
@@ -196,22 +196,20 @@ namespace Greatbone.Core
                 value = reader.GetString(ord);
                 return true;
             }
-            value = null;
             return false;
         }
 
-        public bool Get<T>(string name, out List<T> value)
+        public bool Get<T>(string name, ref List<T> value)
         {
-            if (Get(name, out value))
+            if (Get(name, ref value))
             {
                 //                Json son = new Json();
             }
-            value = null;
             return false;
         }
 
 
-        public bool Get(string name, out bool value)
+        public bool Get(string name, ref bool value)
         {
             int ord = reader.GetOrdinal(name);
             if (!reader.IsDBNull(ord))
@@ -219,11 +217,10 @@ namespace Greatbone.Core
                 value = reader.GetBoolean(ord);
                 return true;
             }
-            value = false;
             return false;
         }
 
-        public bool Get(string name, out short value)
+        public bool Get(string name, ref short value)
         {
             int ord = reader.GetOrdinal(name);
             if (!reader.IsDBNull(ord))
@@ -231,11 +228,10 @@ namespace Greatbone.Core
                 value = reader.GetInt16(ord);
                 return true;
             }
-            value = 0;
             return false;
         }
 
-        public bool Get(string name, out int value)
+        public bool Get(string name, ref int value)
         {
             int ord = reader.GetOrdinal(name);
             if (!reader.IsDBNull(ord))
@@ -243,11 +239,10 @@ namespace Greatbone.Core
                 value = reader.GetInt32(ord);
                 return true;
             }
-            value = 0;
             return false;
         }
 
-        public bool Get(string name, out decimal value)
+        public bool Get(string name, ref decimal value)
         {
             int ord = reader.GetOrdinal(name);
             if (!reader.IsDBNull(ord))
@@ -255,11 +250,10 @@ namespace Greatbone.Core
                 value = reader.GetDecimal(ord);
                 return true;
             }
-            value = 0;
             return false;
         }
 
-        public bool Get(string name, out DateTime value)
+        public bool Get(string name, ref DateTime value)
         {
             int ord = reader.GetOrdinal(name);
             if (!reader.IsDBNull(ord))
@@ -267,11 +261,10 @@ namespace Greatbone.Core
                 value = reader.GetDateTime(ord);
                 return true;
             }
-            value = default(DateTime);
             return false;
         }
 
-        public bool Get<T>(string name, out T value) where T : ISerial, new()
+        public bool Get<T>(string name, ref T value) where T : ISerial, new()
         {
             int ord = reader.GetOrdinal(name);
             if (!reader.IsDBNull(ord))
@@ -282,7 +275,6 @@ namespace Greatbone.Core
                 value.ReadFrom(json);
                 return true;
             }
-            value = default(T);
             return false;
         }
 

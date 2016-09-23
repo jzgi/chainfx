@@ -32,29 +32,29 @@ namespace Greatbone.Sample
 
         public void ReadFrom(ISerialReader r)
         {
-            r.Read(nameof(id), out id);
-            r.Read(nameof(name), out name);
-            r.Read(nameof(quote), out quote);
-            r.Read(nameof(sex), out sex);
-            r.Read(nameof(icon), out icon);
-            r.Read(nameof(birthday), out birthday);
-            r.Read(nameof(qq), out qq);
-            r.Read(nameof(wechat), out wechat);
-            r.Read(nameof(email), out email);
-            r.Read(nameof(city), out city);
-            r.Read(nameof(rank), out rank);
-            r.Read(nameof(height), out height);
-            r.Read(nameof(weight), out weight);
-            r.Read(nameof(bust), out bust);
-            r.Read(nameof(waist), out waist);
-            r.Read(nameof(hip), out hip);
-            r.Read(nameof(cup), out cup);
-            r.Read(nameof(styles), out styles);
-            r.Read(nameof(skills), out skills);
-            r.Read(nameof(remark), out remark);
-            r.Read(nameof(sites), out sites);
-            r.Read(nameof(friends), out friends);
-            r.Read(nameof(awards), out awards);
+            r.Read(nameof(id), ref id);
+            r.Read(nameof(name), ref name);
+            r.Read(nameof(quote), ref quote);
+            r.Read(nameof(sex), ref sex);
+            r.Read(nameof(icon), ref icon);
+            r.Read(nameof(birthday), ref birthday);
+            r.Read(nameof(qq), ref qq);
+            r.Read(nameof(wechat), ref wechat);
+            r.Read(nameof(email), ref email);
+            r.Read(nameof(city), ref city);
+            r.Read(nameof(rank), ref rank);
+            r.Read(nameof(height), ref height);
+            r.Read(nameof(weight), ref weight);
+            r.Read(nameof(bust), ref bust);
+            r.Read(nameof(waist), ref waist);
+            r.Read(nameof(hip), ref hip);
+            r.Read(nameof(cup), ref cup);
+            r.Read(nameof(styles), ref styles);
+            r.Read(nameof(skills), ref skills);
+            r.Read(nameof(remark), ref remark);
+            r.Read(nameof(sites), ref sites);
+            r.Read(nameof(friends), ref friends);
+            r.Read(nameof(awards), ref awards);
         }
 
         public void WriteTo(ISerialWriter w)
@@ -95,9 +95,9 @@ namespace Greatbone.Sample
 
         public void ReadFrom(ISerialReader r)
         {
-            r.Read(nameof(uid), out uid);
-            r.Read(nameof(url), out url);
-            r.Read(nameof(desc), out desc);
+            r.Read(nameof(uid), ref uid);
+            r.Read(nameof(url), ref url);
+            r.Read(nameof(desc), ref desc);
         }
 
         public void WriteTo(ISerialWriter w)

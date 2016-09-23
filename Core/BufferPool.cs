@@ -8,10 +8,10 @@ namespace Greatbone.Core
     ///
     public static class BufferPool
     {
-        private static readonly int Cores = Environment.ProcessorCount;
+        static readonly int Cores = Environment.ProcessorCount;
 
-        private static readonly Queue[] Queues =
-        {
+        static readonly Queue[] Queues =
+       {
             new Queue(1024 * 4, Cores * 64),
             new Queue(1024 * 16, Cores * 32),
             new Queue(1024 * 64, Cores * 16),
@@ -25,51 +25,67 @@ namespace Greatbone.Core
 
         public static byte[] Borrow(int demand)
         {
-            //			byte[] result;
-            //			if (!_queues[group].TryDequeue(out result))
-            //			{
-            //				result = new byte[_bufsize];
-            //				_queues[group].Enqueue(result);
-            //			}
-            //			return result;
-            return new byte[demand];
+            // locate the appropriate queue
+            int i = 0;
+            while (Queues[i].Spec < demand)
+            {
+                i++;
+            }
+            Queue q = Queues[i];
+            // get or create a buffer
+            byte[] buf;
+            if (!q.TryDequeue(out buf))
+            {
+                buf = new byte[q.Spec];
+            }
+            return buf;
         }
 
         public static void Return(byte[] buf)
         {
-            //			if (Interlocked.Increment(ref _count) < _capacity)
-            //			{
-            //				_queues.Enqueue(buf);
-            //			}
+            int blen = buf.Length;
+            for (int i = 0; i < Queues.Length; i++)
+            {
+                Queue q = Queues[i];
+                if (q.Spec == blen) // the right queue to add
+                {
+                    if (q.Count < q.Limit)
+                    {
+                        q.Enqueue(buf);
+                    }
+                }
+                else if (q.Spec > blen)
+                {
+                    break;
+                }
+            }
         }
 
-        public static byte[] Extend(byte[] old)
+        public static byte[] Expand(byte[] old)
         {
-            byte[] a = new byte[old.Length * 2];
-            Array.Copy(old, a, old.Length);
-            return a;
+            int olen = old.Length;
+            byte[] buf = Borrow(olen * 4) ;
+            Array.Copy(old, buf, olen);
+            Return(old);
+            return buf;
         }
 
-        internal class Queue
+        internal class Queue : ConcurrentQueue<byte[]>
         {
-            private readonly int queued;
+            readonly int limit;
 
             // buffer size in bytes
-            private readonly int spec;
+            readonly int spec;
 
-
-            private readonly ConcurrentQueue<byte[]> queue;
-
-            internal Queue(int spec, int queued)
+            internal Queue(int spec, int limit)
             {
                 this.spec = spec;
-                this.queued = queued;
-                queue = new ConcurrentQueue<byte[]>();
+                this.limit = limit;
             }
 
             internal int Spec => spec;
 
-            internal int Queued => queued;
+            internal int Limit => limit;
         }
     }
 }

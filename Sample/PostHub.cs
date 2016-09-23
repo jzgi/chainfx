@@ -13,8 +13,8 @@ namespace Greatbone.Sample
 
         public void Top(WebContext wc)
         {
-            int page;
-            if (wc.GetParam("page", out page))
+            int page = 0;
+            if (wc.GetParam("page", ref page))
             {
                 wc.Response.StatusCode = 400; return;
             }

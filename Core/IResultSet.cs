@@ -2,10 +2,14 @@
 {
     public interface IResultSet
     {
-        bool Get(out int value);
+        bool Get(ref int value);
 
-        bool Get(out string value);
+        bool Get(ref string value);
 
-        bool Get(string name, out string value);
+        bool Get(string name, ref short value);
+
+        bool Get(string name, ref int value);
+
+        bool Get(string name, ref string value);
     }
 }
