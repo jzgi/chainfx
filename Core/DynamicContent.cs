@@ -97,6 +97,13 @@ namespace Greatbone.Core
             this.count = 0;
         }
 
+
+        protected DynamicContent(byte[] buf, int count)
+        {
+            this.buffer = buf;
+            this.count = count;
+        }
+
         /// <summary>
         /// Creates a dynamic content in reading mode.
         /// </summary>

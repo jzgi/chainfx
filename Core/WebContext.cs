@@ -85,7 +85,7 @@ namespace Greatbone.Core
                         }
                         else
                         {
-                            reqContent = new JsonContent(reqBytes);
+                            reqContent = new JsonContent(reqBytes.Array, reqBytes.Count);
                         }
                     }
                 }

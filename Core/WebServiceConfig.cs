@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.IO;
 
 namespace Greatbone.Core
@@ -65,20 +66,10 @@ namespace Greatbone.Core
         {
             try
             {
-                string json = File.ReadAllText(file);
-                if (json != null || json == null)
-                {
-                    JsonText text = new JsonText(json);
+                byte[] bytes = File.ReadAllBytes(file);
+                JsonContent jc = new JsonContent(bytes, bytes.Length);
 
-                    text.ReadObject(() =>
-                    {
-
-                    });
-                    if (Key == null)
-                    {
-                        Key = Path.GetFileNameWithoutExtension(file);
-                    }
-                }
+                jc.Read<WebServiceConfig>();
             }
             catch
             {

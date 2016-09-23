@@ -12,7 +12,7 @@ namespace Greatbone.Sample
         /// </summary>
         public static void Main(string[] args)
         {
-            // JsonContentTest.Test();
+            JsonContentTest.Test();
 
             DbConfig pg = new DbConfig
             {
