@@ -37,8 +37,6 @@ namespace Greatbone.Core
 
         void Write<T>(T value) where T : ISerial;
 
-        void Write<T>(T[] value);
-
         void Write<T>(List<T> value);
 
         void Write<T>(Dictionary<string, T> value);
@@ -63,8 +61,6 @@ namespace Greatbone.Core
         void Write(string name, string value);
 
         void Write<T>(string name, T value) where T : ISerial;
-
-        void Write<T>(string name, T[] value);
 
         void Write<T>(string name, List<T> value);
 

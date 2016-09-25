@@ -5,24 +5,22 @@
     /// </summary>
     internal struct JsonLR
     {
-        internal int start;
+        // object or array
+        public bool IsArray;
 
-        internal int end;
+        public int Start;
+
+        public int End;
 
         // the ordinal in its parent segment
-        internal int ordinal;
-
-        internal int pos;
-
-        // object or array
-        internal bool array;
+        public int Ordinal;
 
         internal JsonLR(bool array)
         {
-            this.array = array;
-            start = end = -1;
-            ordinal = 0;
-            pos = -1;
+            this.IsArray = array;
+            Start = -1;
+            End = -1;
+            Ordinal = 0;
         }
     }
 }

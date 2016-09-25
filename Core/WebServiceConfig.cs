@@ -30,7 +30,7 @@ namespace Greatbone.Core
         public string Private;
 
         // event system socket addresses
-        public string[] Cluster;
+        public List<string> Cluster;
 
         public DbConfig Db;
 
@@ -69,7 +69,10 @@ namespace Greatbone.Core
                 byte[] bytes = File.ReadAllBytes(file);
                 JsonContent jc = new JsonContent(bytes, bytes.Length);
 
-                jc.Read<WebServiceConfig>();
+                jc.ReadObject(() =>
+                {
+                    ReadFrom(jc);
+                });
             }
             catch
             {

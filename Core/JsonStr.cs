@@ -13,6 +13,7 @@ namespace Greatbone.Core
             chars = new char[initial];
             count = 0;
         }
+
         internal void Add(byte c)
         {
             int olen = chars.Length;
@@ -22,7 +23,7 @@ namespace Greatbone.Core
                 Array.Copy(chars, 0, @new, 0, olen);
                 chars = @new;
             }
-            chars[count++] = (char)c;
+            chars[count++] = (char) c;
         }
 
         public override string ToString()
@@ -30,5 +31,17 @@ namespace Greatbone.Core
             return new string(chars, 0, count);
         }
 
+        public bool Equals(string str)
+        {
+            if (str == null) return false;
+
+            if (count != str.Length) return false;
+
+            for (int i = 0; i < count; i++)
+            {
+                if (chars[i] != str[i]) return false;
+            }
+            return true;
+        }
     }
 }

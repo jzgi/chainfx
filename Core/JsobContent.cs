@@ -20,7 +20,7 @@ namespace Greatbone.Core
         {
         }
 
-        public override string Type => "application/json";
+        public override string Type => "application/jsob";
 
 
         internal void SkipLevel()
@@ -44,7 +44,7 @@ namespace Greatbone.Core
                 }
                 else if (c == '}')
                 {
-                    stack[level].end = p; // mark down the level end
+                    stack[level].End = p; // mark down the level end
                 }
                 p++;
                 break;
@@ -59,7 +59,7 @@ namespace Greatbone.Core
                 }
                 if (c == '}')
                 {
-                    stack[level].end = p; // mark down the level end
+                    stack[level].End = p; // mark down the level end
                 }
                 break;
             }
@@ -361,7 +361,7 @@ namespace Greatbone.Core
             level++;
             Put('[');
 
-            stack[level].array = true;
+            stack[level].IsArray = true;
 
             Put(']');
             level--;
@@ -372,7 +372,7 @@ namespace Greatbone.Core
             Put('{');
 
             level++;
-            stack[level].array = false;
+            stack[level].IsArray = false;
 
             Put('}');
 
@@ -382,7 +382,7 @@ namespace Greatbone.Core
 
         public void Write(string name, short value)
         {
-            if (stack[level].ordinal > 0)
+            if (stack[level].Ordinal > 0)
             {
                 Put(','); // precede a comma
             }
@@ -393,12 +393,12 @@ namespace Greatbone.Core
             Put(':');
             Put(value);
 
-            stack[level].ordinal++;
+            stack[level].Ordinal++;
         }
 
         public void Write(string name, int value)
         {
-            if (stack[level].ordinal > 0)
+            if (stack[level].Ordinal > 0)
             {
                 Put(','); // precede a comma
             }
@@ -409,12 +409,12 @@ namespace Greatbone.Core
             Put(':');
             Put(value);
 
-            stack[level].ordinal++;
+            stack[level].Ordinal++;
         }
 
         public void Write(string name, decimal value)
         {
-            if (stack[level].ordinal > 0)
+            if (stack[level].Ordinal > 0)
             {
                 Put(','); // precede a comma
             }
@@ -425,12 +425,12 @@ namespace Greatbone.Core
             Put(':');
             Put(value);
 
-            stack[level].ordinal++;
+            stack[level].Ordinal++;
         }
 
         public void Write(string name, DateTime value)
         {
-            if (stack[level].ordinal > 0)
+            if (stack[level].Ordinal > 0)
             {
                 Put(','); // precede a comma
             }
@@ -441,12 +441,12 @@ namespace Greatbone.Core
             Put(':');
             Put(value);
 
-            stack[level].ordinal++;
+            stack[level].Ordinal++;
         }
 
         public void Write(string name, string value)
         {
-            if (stack[level].ordinal > 0)
+            if (stack[level].Ordinal > 0)
             {
                 Put(','); // precede a comma
             }
@@ -467,12 +467,12 @@ namespace Greatbone.Core
                 Put('"');
             }
 
-            stack[level].ordinal++;
+            stack[level].Ordinal++;
         }
 
         public void Write<T>(string name, T value) where T : ISerial
         {
-            if (stack[level].ordinal > 0)
+            if (stack[level].Ordinal > 0)
             {
                 Put(','); // precede a comma
             }
@@ -491,12 +491,12 @@ namespace Greatbone.Core
                 WriteObject(() => { value.WriteTo(this); });
             }
 
-            stack[level].ordinal++;
+            stack[level].Ordinal++;
         }
 
         public void Write(string name, List<ISerial> list)
         {
-            if (stack[level].ordinal > 0)
+            if (stack[level].Ordinal > 0)
             {
                 Put(','); // precede a comma
             }
@@ -525,7 +525,7 @@ namespace Greatbone.Core
             }
             Put(']');
 
-            stack[level].ordinal++;
+            stack[level].Ordinal++;
         }
 
         public void Write(string name, bool value)

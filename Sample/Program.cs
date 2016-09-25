@@ -1,4 +1,5 @@
-﻿using Greatbone.Core;
+﻿using System.Collections.Generic;
+using Greatbone.Core;
 
 namespace Greatbone.Sample
 {
@@ -12,8 +13,6 @@ namespace Greatbone.Sample
         /// </summary>
         public static void Main(string[] args)
         {
-            JsonContentTest.Test();
-
             DbConfig pg = new DbConfig
             {
                 Host = "60.205.104.239",
@@ -23,7 +22,8 @@ namespace Greatbone.Sample
                 MQ = false
             };
 
-            string[] addrs = {
+            List<string> addrs = new List<string>
+            {
                 "127.0.0.7070",
                 "127.0.0.7071",
                 "127.0.0.7072",

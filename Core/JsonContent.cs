@@ -4,27 +4,6 @@ using System.Text;
 
 namespace Greatbone.Core
 {
-
-    public class JsonContentTest
-    {
-        public static void Test()
-        {
-            string rec = "{\"name\":\"jay\", \"age\":12}";
-
-            byte[] b = Encoding.UTF8.GetBytes(rec);
-            JsonContent jc = new JsonContent(b, b.Length);
-
-            string name = null;
-            int age = 0;
-            jc.ReadObject(() =>
-            {
-                jc.Read(nameof(name), ref name);
-                jc.Read(nameof(age), ref age);
-            });
-
-        }
-    }
-
     public class JsonContent : DynamicContent, ISerialReader, ISerialWriter
     {
         // stack of json knots in processing
@@ -49,64 +28,69 @@ namespace Greatbone.Core
 
         public bool ReadArray(Action a)
         {
-            int start;
+            // enter the openning brace
             int p = pos;
-            while (++p < count)
+            for (;;)
             {
-                byte c = buffer[p];
-                if (c == ' ' || c == '\t' || c == '\r' || c == '\n') continue;
-                else if (c == '[')
-                {
-                    start = p;
-                    pos = p;
-                    break;
-                }
-                else
+                p++;
+                if (p >= count)
                 {
                     return false;
                 }
+                byte c = buffer[p];
+                if (c == '[')
+                {
+                    level++;
+                    stack[level].IsArray = true;
+                    stack[level].Start = p;
+                    pos = p;
+                    break;
+                }
             }
 
-            a();
+            a?.Invoke();
 
-            // skip till a closing brace
+            // exit the closing brace
             p = pos;
-            while (++p < count)
+            while (p < count)
             {
                 byte c = buffer[p];
-                if (c == ' ' || c == '\t' || c == '\r' || c == '\n') continue;
-                else if (c == ']')
+                p++;
+                if (c == ']')
                 {
-                    start = p;
+                    level--;
                     pos = p;
                     return true;
                 }
             }
-            return false;
-        }
+            return false;        }
 
         public bool Read(ref bool value)
         {
             int p = pos;
-            while (++p < count)
+            byte c;
+            for (;;) // skip white spaces
             {
-                byte c = buffer[p];
-                if (c == ' ' || c == '\t' || c == '\r' || c == '\n') continue;
-                else if (c == 't' && buffer[p + 1] == 'r' && buffer[p + 2] == 'u' && buffer[p + 3] == 'e')
+                c = buffer[p];
+                if (c == ' ' || c == '\t' || c == '\r' || c == '\n')
                 {
-                    value = true;
-                    return true;
+                    p++;
+                    if (p >= count) return false;
                 }
-                else if (c == 'f' && buffer[p + 1] == 'a' && buffer[p + 2] == 'l' && buffer[p + 3] == 's' && buffer[p + 4] == 'e')
-                {
-                    return true;
-                }
-                else
-                {
-                    return false;
-                }
+                else break;
             }
-            value = false;
+
+            if (c == 't' && buffer[p + 1] == 'r' && buffer[p + 2] == 'u' && buffer[p + 3] == 'e')
+            {
+                value = true;
+                return true;
+            }
+            if (c == 'f' && buffer[p + 1] == 'a' && buffer[p + 2] == 'l' && buffer[p + 3] == 's' && buffer[p + 4] == 'e')
+            {
+                value = false;
+                return true;
+            }
+
             return false;
         }
 
@@ -118,35 +102,23 @@ namespace Greatbone.Core
 
         public bool Read(ref int value)
         {
-            JsonNumber num = new JsonNumber();
+            JsonNum num;
             int p = pos;
-            while (++p < count)
+            byte c;
+            for (;;) // skip white spaces
             {
-                byte c = buffer[p];
-                if (c == ' ' || c == '\t' || c == '\r' || c == '\n') continue;
-                else if (c == '"')
-                {
-                    break;
-                }
-                else
-                {
-                    return false;
-                }
+                p++;
+                if (p >= count) return false;
+                c = buffer[p];
+                if (c != ' ' && c != '\t' && c != '\r' && c != '\n') break;
             }
 
-
-            while (++p < count)
+            for (;;)
             {
-                byte c = buffer[p];
-                if (c == '"')
-                {
-                    pos = p;
-                    value = 0;
-                    return true;
-                }
-                else
+                if (c >= '0' && c <= '9' || c == '.')
                 {
                     num.Add(c);
+                    p++;
                 }
             }
             return false;
@@ -267,35 +239,37 @@ namespace Greatbone.Core
 
         public bool ReadObject(Action a)
         {
+            // enter the openning brace
             int p = pos;
-            while (++p < count)
+            for (;;)
             {
-                byte c = buffer[p];
-                if (c == ' ' || c == '\t' || c == '\r' || c == '\n') continue;
-                else if (c == '{')
-                {
-                    level++;
-                    stack[level].start = p;
-                    stack[level].array = false;
-                    pos = p;
-                    break;
-                }
-                else
+                p++;
+                if (p >= count)
                 {
                     return false;
                 }
+                byte c = buffer[p];
+                if (c == '{')
+                {
+                    level++;
+                    stack[level].IsArray = false;
+                    stack[level].Start = p;
+                    pos = p;
+                    break;
+                }
             }
 
-            a();
+            a?.Invoke();
 
-            // skip till a closing brace
+            // exit the closing brace
             p = pos;
-            while (++p < count)
+            while (p < count)
             {
                 byte c = buffer[p];
-                if (c == ' ' || c == '\t' || c == '\r' || c == '\n') continue;
-                else if (c == '}')
+                p++;
+                if (c == '}')
                 {
+                    level--;
                     pos = p;
                     return true;
                 }
@@ -303,82 +277,77 @@ namespace Greatbone.Core
             return false;
         }
 
-        internal bool Locate(string name)
+        internal bool Seek(string name)
         {
             // in between quotation marks
             bool inq = false;
 
-            int p = stack[level].pos;
+            int p = pos;
 
+            // seek openning quotation
             int qstart = -1;
-            while (++p < count) // first quotation
+            for (;;)
             {
+                p++;
+                if (p >= count) return false;
                 byte c = buffer[p];
-                if (c == ' ' || c == '\t' || c == '\r' || c == '\n') continue;
-                else if (c == '"')
+                if (c == '"')
                 {
-                    qstart = p; // mark down first quotation
+                    qstart = p;
                     inq = true;
                     break;
                 }
-                else
-                {
-                    return false;
-                }
             }
 
+            // seek closing quotation
             int qend = -1;
-            while (++p < count)
+            for (;;)
             {
+                p++;
+                if (p >= count) return false;
                 byte c = buffer[p];
-                if (c == ' ' || c == '\t' || c == '\r' || c == '\n') continue;
-                else if (c == '"')
+                if (c == '"')
                 {
                     qend = p; // mark down second quotation 
                     inq = false;
                     break;
                 }
-                else
+            }
+
+            // locate the colon
+            for (;;)
+            {
+                p++;
+                if (p >= count) return false;
+                byte c = buffer[p];
+                if (c == ':')
                 {
-                    continue;
+                    pos = p;
+                    break;
                 }
             }
 
-            // compare with the name
-            int len = qend - qstart - 1;
-            bool fnd = false;
+            int k = qstart + 1;
+            int len = qend - k;
+            bool eq = false;
             if (len == name.Length)
             {
-                fnd = true;
-                for (int i = 0, q = (qstart + 1); i < len; i++, q++)
+                eq = true;
+                for (int i = 0; i < len; i++,k++)
                 {
-                    if (buffer[q] != name[i])
+                    if (buffer[k] != name[i])
                     {
-                        fnd = false;
+                        eq = false;
                         break;
                     }
                 }
             }
-            if (fnd)
-            {
-                while (++p < count)
-                {
-                    byte c = buffer[p];
-                    if (c == ' ' || c == '\t' || c == '\r' || c == '\n') continue;
-                    else if (c == ':')
-                    {
-                        pos = p;
-                        return true;
-                    }
-                    break;
-                }
-            }
-            return false;
+            return eq;
         }
 
         public bool Read(string name, ref short value)
         {
-            if (Locate(name))
+            if (Seek(name))
             {
                 return Read(ref value);
             }
@@ -387,7 +356,7 @@ namespace Greatbone.Core
 
         public bool Read(string name, ref int value)
         {
-            if (Locate(name))
+            if (Seek(name))
             {
                 return Read(ref value);
             }
@@ -396,7 +365,7 @@ namespace Greatbone.Core
 
         public bool Read(string name, ref decimal value)
         {
-            if (Locate(name))
+            if (Seek(name))
             {
                 return Read(ref value);
             }
@@ -405,7 +374,7 @@ namespace Greatbone.Core
 
         public bool Read(string name, ref DateTime value)
         {
-            if (Locate(name))
+            if (Seek(name))
             {
                 return Read(ref value);
             }
@@ -414,7 +383,7 @@ namespace Greatbone.Core
 
         public bool Read(string name, ref string value)
         {
-            if (Locate(name))
+            if (Seek(name))
             {
                 return Read(ref value);
             }
@@ -423,7 +392,7 @@ namespace Greatbone.Core
 
         public bool Read<T>(string name, ref T value) where T : ISerial, new()
         {
-            if (Locate(name))
+            if (Seek(name))
             {
                 return Read(ref value);
             }
@@ -432,7 +401,7 @@ namespace Greatbone.Core
 
         public bool Read<T>(string name, List<T> value) where T : ISerial, new()
         {
-            Locate(name);
+            Seek(name);
 
             ReadArray(delegate
             {
@@ -481,7 +450,9 @@ namespace Greatbone.Core
         //
 
 
-        public JsonContent(int capacity) : base(capacity) { }
+        public JsonContent(int capacity) : base(capacity)
+        {
+        }
 
 
         public void WriteArray(Action a)
@@ -489,7 +460,7 @@ namespace Greatbone.Core
             level++;
             Put('[');
 
-            stack[level].array = true;
+            stack[level].IsArray = true;
             a();
 
             Put(']');
@@ -501,7 +472,7 @@ namespace Greatbone.Core
             level++;
             Put('{');
 
-            stack[level].array = false;
+            stack[level].IsArray = false;
             a();
 
             Put('}');
@@ -511,7 +482,7 @@ namespace Greatbone.Core
 
         public void Write(string name, short value)
         {
-            if (stack[level].ordinal > 0)
+            if (stack[level].Ordinal > 0)
             {
                 Put(',');
             }
@@ -522,12 +493,12 @@ namespace Greatbone.Core
             Put(':');
             Put(value);
 
-            stack[level].ordinal++;
+            stack[level].Ordinal++;
         }
 
         public void Write(string name, int value)
         {
-            if (stack[level].ordinal > 0)
+            if (stack[level].Ordinal > 0)
             {
                 Put(',');
             }
@@ -538,12 +509,12 @@ namespace Greatbone.Core
             Put(':');
             Put(value);
 
-            stack[level].ordinal++;
+            stack[level].Ordinal++;
         }
 
         public void Write(string name, decimal value)
         {
-            if (stack[level].ordinal > 0)
+            if (stack[level].Ordinal > 0)
             {
                 Put(',');
             }
@@ -554,12 +525,12 @@ namespace Greatbone.Core
             Put(':');
             Put(value);
 
-            stack[level].ordinal++;
+            stack[level].Ordinal++;
         }
 
         public void Write(string name, DateTime value)
         {
-            if (stack[level].ordinal > 0)
+            if (stack[level].Ordinal > 0)
             {
                 Put(',');
             }
@@ -570,12 +541,12 @@ namespace Greatbone.Core
             Put(':');
             Put(value);
 
-            stack[level].ordinal++;
+            stack[level].Ordinal++;
         }
 
         public void Write(string name, string value)
         {
-            if (stack[level].ordinal > 0)
+            if (stack[level].Ordinal > 0)
             {
                 Put(',');
             }
@@ -596,12 +567,12 @@ namespace Greatbone.Core
                 Put('"');
             }
 
-            stack[level].ordinal++;
+            stack[level].Ordinal++;
         }
 
         public void Write<T>(string name, T value) where T : ISerial
         {
-            if (stack[level].ordinal > 0)
+            if (stack[level].Ordinal > 0)
             {
                 Put(',');
             }
@@ -620,12 +591,12 @@ namespace Greatbone.Core
                 WriteObject(() => { value.WriteTo(this); });
             }
 
-            stack[level].ordinal++;
+            stack[level].Ordinal++;
         }
 
         public void Write(string name, List<ISerial> list)
         {
-            if (stack[level].ordinal > 0)
+            if (stack[level].Ordinal > 0)
             {
                 Put(','); // precede a comma
             }
@@ -654,7 +625,7 @@ namespace Greatbone.Core
             }
             Put(']');
 
-            stack[level].ordinal++;
+            stack[level].Ordinal++;
         }
 
         public void Write(string name, bool value)

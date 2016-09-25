@@ -1,6 +1,6 @@
 namespace Greatbone.Core
 {
-    internal struct JsonNumber
+    internal struct JsonNum
     {
         bool sign;
 
