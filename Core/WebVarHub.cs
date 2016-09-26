@@ -9,7 +9,7 @@ namespace Greatbone.Core
     public abstract class WebVarHub : WebSub
     {
         // the added sub controllers
-        private Set<WebSub> subs;
+        private Roll<WebSub> subs;
 
         protected WebVarHub(WebConfig cfg) : base(cfg)
         {
@@ -19,7 +19,7 @@ namespace Greatbone.Core
         {
             if (subs == null)
             {
-                subs = new Set<WebSub>(16);
+                subs = new Roll<WebSub>(16);
             }
             // create instance by reflection
             Type type = typeof(T);

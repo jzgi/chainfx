@@ -36,6 +36,8 @@ namespace Greatbone.Core
 
         bool Read<T>(ref T value) where T : ISerial, new();
 
+        bool Read(ref byte[] value);
+
         bool Read<T>(ref List<T> value);
 
         bool Read<T>(ref Dictionary<string, T> value);
@@ -60,6 +62,8 @@ namespace Greatbone.Core
         bool Read(string name, ref string value);
 
         bool Read<T>(string name, ref T value) where T : ISerial, new();
+
+        bool Read(string name, ref byte[] value);
 
         bool Read<T>(string name, ref List<T> value);
 

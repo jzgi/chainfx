@@ -35,6 +35,8 @@ namespace Greatbone.Core
 
         void Write(string value);
 
+        void Write(byte[] value);
+
         void Write<T>(T value) where T : ISerial;
 
         void Write<T>(List<T> value);
@@ -61,6 +63,8 @@ namespace Greatbone.Core
         void Write(string name, string value);
 
         void Write<T>(string name, T value) where T : ISerial;
+
+        void Write(string name, byte[] value);
 
         void Write<T>(string name, List<T> value);
 

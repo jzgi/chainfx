@@ -43,15 +43,15 @@ namespace Greatbone.Core
         // MSG POLLER / CONNECTOR
 
         // load messages        
-        readonly Set<MsgLoader> loaders;
+        readonly Roll<MsgLoader> loaders;
 
 
         // topics subscribed by this microservice
-        public Set<MsgSubscribe> Subscribes { get; } = new Set<MsgSubscribe>(16);
+        public Roll<MsgSubscribe> Subscribes { get; } = new Roll<MsgSubscribe>(16);
 
         private Thread scheduler;
 
-        readonly Set<MsgPoller> pollers;
+        readonly Roll<MsgPoller> pollers;
 
 
         protected WebService(WebServiceConfig cfg) : base(cfg)

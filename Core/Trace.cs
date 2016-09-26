@@ -3,7 +3,7 @@
     /// <summary>
     /// An encountered data struct in left-to-right parsing context.
     /// </summary>
-    internal struct JsonLR
+    internal struct Trace
     {
         // object or array
         public bool IsArray;
@@ -15,9 +15,9 @@
         // the ordinal in its parent segment
         public int Ordinal;
 
-        internal JsonLR(bool array)
+        internal Trace(bool array)
         {
-            this.IsArray = array;
+            IsArray = array;
             Start = -1;
             End = -1;
             Ordinal = 0;

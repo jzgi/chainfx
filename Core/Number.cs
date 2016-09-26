@@ -1,6 +1,6 @@
 namespace Greatbone.Core
 {
-    internal struct JsonNum
+    internal struct Number
     {
         bool sign;
 
@@ -9,6 +9,7 @@ namespace Greatbone.Core
         bool dot;
 
         int fraction;
+
 
         internal void Add(byte c)
         {
@@ -19,7 +20,7 @@ namespace Greatbone.Core
             }
         }
 
-        internal int Int32 => integer;
+        internal long Int32 => integer;
 
         internal decimal Decimal => new decimal(0, 0, integer, sign, 0);
     }

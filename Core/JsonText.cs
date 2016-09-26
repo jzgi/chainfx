@@ -15,7 +15,7 @@ namespace Greatbone.Core
 
         // parsing context for levels
 
-        JsonLR[] levels = new JsonLR[8];
+        Trace[] levels = new Trace[8];
 
         int level;
 
@@ -87,7 +87,7 @@ namespace Greatbone.Core
             throw new NotImplementedException();
         }
 
-        public bool Read<T>(ref T[] value)
+        public bool Read(ref byte[] value)
         {
             throw new NotImplementedException();
         }
@@ -147,7 +147,7 @@ namespace Greatbone.Core
             throw new NotImplementedException();
         }
 
-        public bool Read<T>(string name, ref T[] value)
+        public bool Read(string name, ref byte[] value)
         {
             throw new NotImplementedException();
         }
@@ -217,7 +217,7 @@ namespace Greatbone.Core
             throw new NotImplementedException();
         }
 
-        public void Write<T>(T[] value)
+        public void Write(byte[] value)
         {
             throw new NotImplementedException();
         }
@@ -277,7 +277,7 @@ namespace Greatbone.Core
             throw new NotImplementedException();
         }
 
-        public void Write<T>(string name, T[] value)
+        public void Write(string name, byte[] value)
         {
             throw new NotImplementedException();
         }

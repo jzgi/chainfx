@@ -1,3 +1,6 @@
 // Place your settings in this file to overwrite default and user settings.
 {
+        "csharp.omnisharp": "/home/michael/.vscode/extensions/ms-vscode.csharp-1.4.1/out/.omnisharp-coreclr",
+        "omnisharp.path": "/home/michael/.vscode/extensions/ms-vscode.csharp-1.4.1/out/.omnisharp-coreclr",
+        "omnisharp.useMono": true
 }

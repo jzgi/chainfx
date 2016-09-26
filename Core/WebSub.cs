@@ -10,7 +10,7 @@ namespace Greatbone.Core
     public abstract class WebSub : IMember
     {
         // actions declared by this controller
-        readonly Set<WebAction> actions;
+        readonly Roll<WebAction> actions;
 
         // the default action
         readonly WebAction defaction;
@@ -33,7 +33,7 @@ namespace Greatbone.Core
         ///
         /// The corresponding static folder contents, can be null
         ///
-        public Set<StaticContent> Statics { get; }
+        public Roll<StaticContent> Statics { get; }
 
         /// <summary>The default static file in the corresponding folder, can be null</summary>
         ///
@@ -62,7 +62,7 @@ namespace Greatbone.Core
             // load static files, if any
             if (StaticPath != null && Directory.Exists(StaticPath))
             {
-                Statics = new Set<StaticContent>(256);
+                Statics = new Roll<StaticContent>(256);
                 foreach (string path in Directory.GetFiles(StaticPath))
                 {
                     string file = Path.GetFileName(path);
@@ -88,7 +88,7 @@ namespace Greatbone.Core
                 }
             }
 
-            actions = new Set<WebAction>(32);
+            actions = new Roll<WebAction>(32);
 
             Type type = GetType();
 
