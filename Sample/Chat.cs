@@ -23,7 +23,7 @@ namespace Greatbone.Sample
             msgs.Add(new Message());
         }
 
-        public void ReadFrom(ISerialReader r)
+        public void From(ISerialReader r)
         {
             r.Read(nameof(status), ref status);
             r.Read(nameof(partner), ref partner);
@@ -31,7 +31,7 @@ namespace Greatbone.Sample
             r.Read(nameof(lasttime), ref lasttime);
         }
 
-        public void WriteTo(ISerialWriter w)
+        public void To(ISerialWriter w)
         {
             w.Write(nameof(status), status);
             w.Write(nameof(partner), partner);
@@ -61,7 +61,7 @@ namespace Greatbone.Sample
 
         internal DateTime time;
 
-        public void ReadFrom(ISerialReader r)
+        public void From(ISerialReader r)
         {
             r.Read(nameof(id), ref id);
             r.Read(nameof(subtype), ref subtype);
@@ -71,7 +71,7 @@ namespace Greatbone.Sample
             r.Read(nameof(time), ref time);
         }
 
-        public void WriteTo(ISerialWriter w)
+        public void To(ISerialWriter w)
         {
             w.Write(nameof(id), id);
             w.Write(nameof(subtype), subtype);

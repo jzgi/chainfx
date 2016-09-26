@@ -34,7 +34,7 @@ namespace Greatbone.Sample
 
         public string Name => name;
 
-        public void ReadFrom(ISerialReader r)
+        public void From(ISerialReader r)
         {
             r.Read(nameof(id), ref id);
             r.Read(nameof(name), ref name);
@@ -48,7 +48,7 @@ namespace Greatbone.Sample
             r.Read(nameof(favs), ref favs);
         }
 
-        public void WriteTo(ISerialWriter w)
+        public void To(ISerialWriter w)
         {
             w.Write(nameof(id), id);
             w.Write(nameof(name), name);

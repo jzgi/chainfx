@@ -272,7 +272,7 @@ namespace Greatbone.Core
                 string str = reader.GetString(ord);
                 JsonText json = new JsonText(str);
                 value = new T();
-                value.ReadFrom(json);
+                value.From(json);
                 return true;
             }
             return false;
@@ -312,7 +312,7 @@ namespace Greatbone.Core
         {
             // convert message to byte buffer
             JsobContent b = new JsobContent(16 * 1024);
-            @event.WriteTo(b);
+            @event.To(b);
 
             Execute("INSERT INTO mq (topic, filter, message) VALUES (@topic, @filter, @message)", p =>
             {

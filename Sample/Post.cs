@@ -33,7 +33,7 @@ namespace Greatbone.Sample
         /// <summary>Returns the key of the brand object.</summary>
         public string Key { get; }
 
-        public void ReadFrom(ISerialReader r)
+        public void From(ISerialReader r)
         {
             r.Read(nameof(id), ref id);
             r.Read(nameof(time), ref time);
@@ -55,7 +55,7 @@ namespace Greatbone.Sample
             r.Read(nameof(m9), ref m9);
         }
 
-        public void WriteTo(ISerialWriter w)
+        public void To(ISerialWriter w)
         {
             w.Write(nameof(id), id);
             w.Write(nameof(time), time);
@@ -90,7 +90,7 @@ namespace Greatbone.Sample
 
         internal string text;
 
-        public void ReadFrom(ISerialReader r)
+        public void From(ISerialReader r)
         {
             r.Read(nameof(time), ref time);
             r.Read(nameof(emoji), ref emoji);
@@ -99,7 +99,7 @@ namespace Greatbone.Sample
             r.Read(nameof(text), ref text);
         }
 
-        public void WriteTo(ISerialWriter w)
+        public void To(ISerialWriter w)
         {
             w.Write(nameof(time), time);
             w.Write(nameof(emoji), emoji);

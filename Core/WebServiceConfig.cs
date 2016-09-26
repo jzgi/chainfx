@@ -36,7 +36,7 @@ namespace Greatbone.Core
 
         public Dictionary<string, string> options;
 
-        public void ReadFrom(ISerialReader r)
+        public void From(ISerialReader r)
         {
             r.Read(nameof(Key), ref Key);
             r.Read(nameof(Shard), ref Shard);
@@ -49,7 +49,7 @@ namespace Greatbone.Core
             r.Read(nameof(options), ref options);
         }
 
-        public void WriteTo(ISerialWriter w)
+        public void To(ISerialWriter w)
         {
             w.Write(nameof(Key), Key);
             w.Write(nameof(Shard), Shard);
@@ -69,9 +69,9 @@ namespace Greatbone.Core
                 byte[] bytes = File.ReadAllBytes(file);
                 JsonContent jc = new JsonContent(bytes, bytes.Length);
 
-                jc.ReadObject(() =>
+                jc.Object(delegate
                 {
-                    ReadFrom(jc);
+                    From(jc);
                 });
             }
             catch

@@ -9,7 +9,7 @@ namespace Greatbone.Core
     public class JsobContent : DynamicContent, ISerialReader, ISerialWriter
     {
         // stack of json knots in processing
-        readonly Trace[] stack;
+        readonly int[] starts;
 
         // current level in stack
         int level;
@@ -20,7 +20,7 @@ namespace Greatbone.Core
 
         public JsobContent(byte[] buf, int count) : base(buf, count)
         {
-            stack = new Trace[8];
+            starts = new int[8];
             level = -1;
             pos = -1;
         }
@@ -34,7 +34,7 @@ namespace Greatbone.Core
         public override string Type => "application/jsob";
 
 
-        public bool ReadArray(Action a)
+        public bool Array(Action a)
         {
             int p = pos;
             p++;
@@ -46,7 +46,7 @@ namespace Greatbone.Core
             return false;
         }
 
-        public bool ReadObject(Action a)
+        public bool Object(Action a)
         {
             int p = pos;
             p++;
@@ -174,16 +174,6 @@ namespace Greatbone.Core
         }
 
         public bool Read<T>(string name, ref Dictionary<string, T> value)
-        {
-            throw new NotImplementedException();
-        }
-
-        public void WriteArray(Action a)
-        {
-            throw new NotImplementedException();
-        }
-
-        public void WriteObject(Action a)
         {
             throw new NotImplementedException();
         }

@@ -12,7 +12,7 @@
 
         public bool MQ;
 
-        public void ReadFrom(ISerialReader r)
+        public void From(ISerialReader r)
         {
             r.Read(nameof(Host), ref Host);
             r.Read(nameof(Port), ref Port);
@@ -21,7 +21,7 @@
             r.Read(nameof(MQ), ref MQ);
         }
 
-        public void WriteTo(ISerialWriter w)
+        public void To(ISerialWriter w)
         {
             w.Write(nameof(Host), Host);
             w.Write(nameof(Port), Port);

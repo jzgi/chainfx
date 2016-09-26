@@ -30,7 +30,7 @@ namespace Greatbone.Sample
         internal List<Item> friends;
         internal List<Item> awards;
 
-        public void ReadFrom(ISerialReader r)
+        public void From(ISerialReader r)
         {
             r.Read(nameof(id), ref id);
             r.Read(nameof(name), ref name);
@@ -57,7 +57,7 @@ namespace Greatbone.Sample
             r.Read(nameof(awards), ref awards);
         }
 
-        public void WriteTo(ISerialWriter w)
+        public void To(ISerialWriter w)
         {
             w.Write(nameof(id), id);
             w.Write(nameof(name), name);
@@ -93,14 +93,14 @@ namespace Greatbone.Sample
 
         internal string desc;
 
-        public void ReadFrom(ISerialReader r)
+        public void From(ISerialReader r)
         {
             r.Read(nameof(uid), ref uid);
             r.Read(nameof(url), ref url);
             r.Read(nameof(desc), ref desc);
         }
 
-        public void WriteTo(ISerialWriter w)
+        public void To(ISerialWriter w)
         {
             w.Write(nameof(uid), uid);
             w.Write(nameof(url), url);

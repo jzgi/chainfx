@@ -17,7 +17,7 @@ namespace Greatbone.Core
 
         // parsing context for levels
 
-        Trace[] traces = new Trace[8];
+        int[] starts = new int[8];
 
         int level;
 
@@ -35,7 +35,7 @@ namespace Greatbone.Core
         // READ
         //
 
-        public bool ReadArray(Action a)
+        public bool Array(Action a)
         {
             // enter the openning bracket
             int p = pos;
@@ -51,8 +51,7 @@ namespace Greatbone.Core
                 if (c == '[')
                 {
                     level++;
-                    traces[level].IsArray = true;
-                    traces[level].Start = p;
+                    starts[level] = p;
                     pos = p;
                     break;
                 }
@@ -81,7 +80,7 @@ namespace Greatbone.Core
             }
         }
 
-        public bool ReadObject(Action a)
+        public bool Object(Action a)
         {
             // enter the openning bracket
             int p = pos;
@@ -97,8 +96,7 @@ namespace Greatbone.Core
                 if (c == '{')
                 {
                     level++;
-                    traces[level].IsArray = true;
-                    traces[level].Start = p;
+                    starts[level] = p;
                     pos = p;
                     break;
                 }
@@ -267,16 +265,6 @@ namespace Greatbone.Core
         }
 
         public bool Read<T>(string name, ref Dictionary<string, T> value)
-        {
-            throw new NotImplementedException();
-        }
-
-        public void WriteArray(Action a)
-        {
-            throw new NotImplementedException();
-        }
-
-        public void WriteObject(Action a)
         {
             throw new NotImplementedException();
         }

@@ -7,9 +7,9 @@ namespace Greatbone.Core
         public static T Read<T>(this ISerialReader r) where T : ISerial, new()
         {
             T obj = new T();
-            r.ReadObject(() =>
+            r.Object(() =>
             {
-                obj.ReadFrom(r);
+                obj.From(r);
             });
             return obj;
         }
@@ -22,7 +22,7 @@ namespace Greatbone.Core
 
             T obj = new T();
             //			r.ReadStart();
-            obj.ReadFrom(r);
+            obj.From(r);
             //			r.ReadEnd();
             return null;
         }

@@ -12,9 +12,9 @@ namespace Greatbone.Core
         //
         // knot writing
 
-        void WriteArray(Action a);
+        bool Array(Action a);
 
-        void WriteObject(Action a);
+        bool Object(Action a);
 
         //
         // value writing

@@ -11,9 +11,9 @@ namespace Greatbone.Core
         //
         // knot reading
 
-        bool ReadArray(Action a);
+        bool Array(Action a);
 
-        bool ReadObject(Action a);
+        bool Object(Action a);
 
         //
         // value reading

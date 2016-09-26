@@ -5,8 +5,8 @@
 	/// </summary>
 	public interface ISerial
 	{
-		void ReadFrom(ISerialReader r);
+		void From(ISerialReader r);
 
-		void WriteTo(ISerialWriter w);
+		void To(ISerialWriter w);
 	}
 }

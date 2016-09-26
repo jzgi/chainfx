@@ -27,7 +27,7 @@ namespace Greatbone.Sample
         internal List<Join> joins;
 
 
-        public void ReadFrom(ISerialReader r)
+        public void From(ISerialReader r)
         {
             r.Read(nameof(id), ref id);
             r.Read(nameof(loc), ref loc);
@@ -41,7 +41,7 @@ namespace Greatbone.Sample
             r.Read(nameof(joins), ref joins);
         }
 
-        public void WriteTo(ISerialWriter r)
+        public void To(ISerialWriter r)
         {
             r.Write(nameof(id), id);
             r.Write(nameof(loc), loc);
@@ -60,12 +60,12 @@ namespace Greatbone.Sample
     {
         internal char[] id;
 
-        public void ReadFrom(ISerialReader r)
+        public void From(ISerialReader r)
         {
             throw new NotImplementedException();
         }
 
-        public void WriteTo(ISerialWriter w)
+        public void To(ISerialWriter w)
         {
             throw new NotImplementedException();
         }

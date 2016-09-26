@@ -61,7 +61,7 @@ namespace Greatbone.Sample
 
             int ret = 0;
 
-            r.ReadArray(() =>
+            r.Array(() =>
             {
                 r.Read(ref ret);
             });
