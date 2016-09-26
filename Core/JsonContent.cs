@@ -5,7 +5,7 @@ namespace Greatbone.Core
 {
     public class JsonContent : DynamicContent, ISerialReader, ISerialWriter
     {
-        // stack of json  in processing
+        // stack parsing traces
         readonly Trace[] traces;
 
         // current level in stack
@@ -733,11 +733,6 @@ namespace Greatbone.Core
             Put(']');
         }
 
-        public bool Read(string name, char[] value)
-        {
-            throw new NotImplementedException();
-        }
-
         public void Write(string name, long value)
         {
             throw new NotImplementedException();
@@ -793,22 +788,12 @@ namespace Greatbone.Core
             throw new NotImplementedException();
         }
 
-        public void Write<T>(T[] value)
-        {
-            throw new NotImplementedException();
-        }
-
         public void Write<T>(List<T> value)
         {
             throw new NotImplementedException();
         }
 
         public void Write<T>(Dictionary<string, T> value)
-        {
-            throw new NotImplementedException();
-        }
-
-        public void Write<T>(string name, T[] value)
         {
             throw new NotImplementedException();
         }

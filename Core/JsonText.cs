@@ -5,27 +5,30 @@ namespace Greatbone.Core
 {
     public class JsonText : ISerialReader, ISerialWriter
     {
+        // for parsing json text
+        string text;
 
-       private string text;
+        // for building json text
+        char[] buffer;
 
-        // for output
-        private char[] buffer;
+        int count;
 
-        private int pos;
+        int pos;
 
         // parsing context for levels
 
-        Trace[] levels = new Trace[8];
+        Trace[] traces = new Trace[8];
 
         int level;
 
         public JsonText(int capacity)
         {
+            buffer = new char[capacity];
         }
 
-        public JsonText(string str)
+        public JsonText(string json)
         {
-            this.text = str;
+            text = json;
         }
 
         //
@@ -34,17 +37,123 @@ namespace Greatbone.Core
 
         public bool ReadArray(Action a)
         {
-            throw new NotImplementedException();
+            // enter the openning bracket
+            int p = pos;
+            for (;;)
+            {
+                p++;
+                if (p >= count) return false;
+                char c = buffer[p];
+                if (c == ' ' || c == '\t' || c == '\r' || c == '\n')
+                {
+                    continue;
+                }
+                if (c == '[')
+                {
+                    level++;
+                    traces[level].IsArray = true;
+                    traces[level].Start = p;
+                    pos = p;
+                    break;
+                }
+                return false;
+            }
+
+            a?.Invoke();
+
+            // exit the closing bracket
+            p = pos;
+            for (;;)
+            {
+                char c = buffer[p++];
+                if (p >= count) return false;
+                if (c == ' ' || c == '\t' || c == '\r' || c == '\n')
+                {
+                    continue;
+                }
+                if (c == ']')
+                {
+                    level--;
+                    pos = p;
+                    return true;
+                }
+                return false;
+            }
         }
 
         public bool ReadObject(Action a)
         {
-            throw new NotImplementedException();
+            // enter the openning bracket
+            int p = pos;
+            for (;;)
+            {
+                p++;
+                if (p >= count) return false;
+                char c = buffer[p];
+                if (c == ' ' || c == '\t' || c == '\r' || c == '\n')
+                {
+                    continue;
+                }
+                if (c == '{')
+                {
+                    level++;
+                    traces[level].IsArray = true;
+                    traces[level].Start = p;
+                    pos = p;
+                    break;
+                }
+                return false;
+            }
+
+            a?.Invoke();
+
+            // exit the closing bracket
+            p = pos;
+            for (;;)
+            {
+                char c = buffer[p++];
+                if (p >= count) return false;
+                if (c == ' ' || c == '\t' || c == '\r' || c == '\n')
+                {
+                    continue;
+                }
+                if (c == '}')
+                {
+                    level--;
+                    pos = p;
+                    return true;
+                }
+                return false;
+            }
         }
 
         public bool Read(ref bool value)
         {
-            throw new NotImplementedException();
+            int p = pos;
+            char c;
+            for (;;) // skip white spaces
+            {
+                c = buffer[p];
+                if (c == ' ' || c == '\t' || c == '\r' || c == '\n')
+                {
+                    p++;
+                    if (p >= count) return false;
+                }
+                else break;
+            }
+
+            if (c == 't' && buffer[p + 1] == 'r' && buffer[p + 2] == 'u' && buffer[p + 3] == 'e')
+            {
+                value = true;
+                return true;
+            }
+            if (c == 'f' && buffer[p + 1] == 'a' && buffer[p + 2] == 'l' && buffer[p + 3] == 's' && buffer[p + 4] == 'e')
+            {
+                value = false;
+                return true;
+            }
+
+            return false;
         }
 
         public bool Read(ref short value)
@@ -295,6 +404,5 @@ namespace Greatbone.Core
         //
         // WRITE
         //
-
     }
 }

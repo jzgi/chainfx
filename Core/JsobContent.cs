@@ -36,12 +36,26 @@ namespace Greatbone.Core
 
         public bool ReadArray(Action a)
         {
-            throw new NotImplementedException();
+            int p = pos;
+            p++;
+            if (buffer[p] != '[')
+            {
+                return false;
+            }
+
+            return false;
         }
 
         public bool ReadObject(Action a)
         {
-            throw new NotImplementedException();
+            int p = pos;
+            p++;
+            if (buffer[p] != '[')
+            {
+                return false;
+            }
+
+            return false;
         }
 
         public bool Read(ref bool value)
