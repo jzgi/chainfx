@@ -16,29 +16,25 @@ namespace Greatbone.Sample
             int page = 0;
             if (wc.GetParam("page", ref page))
             {
-                wc.Response.StatusCode = 400; return;
+                wc.Response.StatusCode = 400;
+                return;
             }
 
             using (var dc = Service.NewSqlContext())
             {
-                if (dc.Query(@"SELECT * FROM posts ORDER BY id DESC LIMIT @limit OFFSET @offset", p =>
+                if (dc.Query(@"SELECT * FROM posts ORDER BY id DESC LIMIT @limit OFFSET @offset",
+                    p => p.Set("@limit", 20).Set("@offset", 20 * page)))
                 {
-                    p.Set("@limit", 20);
-                    p.Set("@offset", 20 * page);
-                }))
-                {
-
                     List<Post> list = null;
                     while (dc.NextRow())
                     {
-
                     }
-                    wc.Response.StatusCode = (int)HttpStatusCode.OK;
+                    wc.Response.StatusCode = (int) HttpStatusCode.OK;
                     // wc.Response.SetContent(list);
                 }
                 else
                 {
-                    wc.Response.StatusCode = (int)HttpStatusCode.NoContent;
+                    wc.Response.StatusCode = (int) HttpStatusCode.NoContent;
                 }
             }
         }
@@ -60,7 +56,6 @@ namespace Greatbone.Sample
                     }
                 );
             }
-
         }
 
         public void Remove(WebContext wc)
