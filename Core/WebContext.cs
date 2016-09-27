@@ -68,6 +68,22 @@ namespace Greatbone.Core
             }
         }
 
+        public Obj Obj
+        {
+            get
+            {
+                return null;
+            }
+        }
+
+        public Arr Array
+        {
+            get
+            {
+                return null;
+            }
+        }
+
         public ISerialReader Serial
         {
             get

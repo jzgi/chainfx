@@ -39,6 +39,10 @@ namespace Greatbone.Sample
         /// </summary>
         public void New(WebContext wc)
         {
+            Obj o = wc.Obj;
+            int age = o[nameof(age)];
+            int ab = wc.Obj[nameof(ab)];
+
             int page = 0;
             wc.GetParam("page", ref page);
 
