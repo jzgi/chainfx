@@ -5,6 +5,5 @@
         void From(IInput i);
 
         void To(IOutput o);
-      
     }
 }

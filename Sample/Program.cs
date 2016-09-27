@@ -36,7 +36,7 @@ namespace Greatbone.Sample
                 Key = "www",
                 Public = "127.0.0.1:8080",
                 Private = "127.0.0.1:7070",
-                Cluster = addrs,
+                Net = addrs,
                 Db = pg,
                 Debug = true
             }.Load("www.json"));
@@ -46,7 +46,7 @@ namespace Greatbone.Sample
                 Key = "biz",
                 Public = "127.0.0.1:8081",
                 Private = "127.0.0.1:7071",
-                Cluster = addrs,
+                Net = addrs,
                 Db = pg,
                 Debug = true
             }.Load("biz.json"));
@@ -56,7 +56,7 @@ namespace Greatbone.Sample
                 Key = "cont",
                 Public = "127.0.0.1:8082",
                 Private = "127.0.0.1:7072",
-                Cluster = addrs,
+                Net = addrs,
                 Db = pg,
                 Debug = true
             }.Load("cont.json"));
@@ -66,7 +66,7 @@ namespace Greatbone.Sample
                 Key = "dir",
                 Public = "127.0.0.1:8083",
                 Private = "127.0.0.1:7073",
-                Cluster = addrs,
+                Net = addrs,
                 Db = pg,
                 Debug = true
             }.Load("dir.json"));
@@ -76,7 +76,7 @@ namespace Greatbone.Sample
                 Key = "chat",
                 Public = "127.0.0.1:8084",
                 Private = "127.0.0.1:7074",
-                Cluster = addrs,
+                Net = addrs,
                 Db = pg,
                 Debug = true
             }.Load("chat.json"));

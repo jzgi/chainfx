@@ -19,7 +19,7 @@ namespace Greatbone.Core
     public class WebServiceConfig : WebConfig, IDat
     {
         ///<summary>Z-axis scaling</summary>
-        public string Shard;
+        public string Part;
 
         // public socket address
         public string Public;
@@ -30,7 +30,7 @@ namespace Greatbone.Core
         public string Private;
 
         // event system socket addresses
-        public List<string> Cluster;
+        public List<string> Net;
 
         public DbConfig Db;
 
@@ -39,11 +39,11 @@ namespace Greatbone.Core
         public void From(IInput r)
         {
             r.Get(nameof(Key), ref Key);
-            r.Get(nameof(Shard), ref Shard);
+            r.Get(nameof(Part), ref Part);
             r.Get(nameof(Public), ref Public);
             r.Get(nameof(Tls), ref Tls);
             r.Get(nameof(Private), ref Private);
-            r.Get(nameof(Cluster), ref Cluster);
+            r.Get(nameof(Net), ref Net);
             r.Get(nameof(Db), ref Db);
             r.Get(nameof(Debug), ref Debug);
             r.Get(nameof(options), ref options);
@@ -52,11 +52,11 @@ namespace Greatbone.Core
         public void To(IOutput w)
         {
             w.Put(nameof(Key), Key);
-            w.Put(nameof(Shard), Shard);
+            w.Put(nameof(Part), Part);
             w.Put(nameof(Public), Public);
             w.Put(nameof(Tls), Tls);
             w.Put(nameof(Private), Private);
-            w.Put(nameof(Cluster), Cluster);
+            w.Put(nameof(Net), Net);
             w.Put(nameof(Db), Db);
             w.Put(nameof(Debug), Debug);
             w.Put(nameof(options), options);

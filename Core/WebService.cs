@@ -57,7 +57,7 @@ namespace Greatbone.Core
         protected WebService(WebServiceConfig cfg) : base(cfg)
         {
             // init eqc client
-            foreach (var ep in cfg.Cluster)
+            foreach (var ep in cfg.Net)
             {
                 //				ParseAddress()
             }
