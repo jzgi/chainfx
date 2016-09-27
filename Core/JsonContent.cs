@@ -61,7 +61,7 @@ namespace Greatbone.Core
         }
 
 
-        public void Put(string name, short value)
+        public IOut Put(string name, short value)
         {
             if (starts[level] > 0)
             {
@@ -74,9 +74,11 @@ namespace Greatbone.Core
             Put(':');
             Put(value);
 
+
+            return this;
         }
 
-        public void Put(string name, int value)
+        public IOut Put(string name, int value)
         {
             if (starts[level] > 0)
             {
@@ -89,9 +91,10 @@ namespace Greatbone.Core
             Put(':');
             Put(value);
 
+            return this;
         }
 
-        public void Put(string name, decimal value)
+        public IOut Put(string name, decimal value)
         {
             if (starts[level] > 0)
             {
@@ -104,9 +107,11 @@ namespace Greatbone.Core
             Put(':');
             Put(value);
 
+            return this;
+
         }
 
-        public void Put(string name, DateTime value)
+        public IOut Put(string name, DateTime value)
         {
             if (starts[level] > 0)
             {
@@ -119,9 +124,11 @@ namespace Greatbone.Core
             Put(':');
             Put(value);
 
+            return this;
+
         }
 
-        public void Put(string name, string value)
+        public IOut Put(string name, string value)
         {
             if (starts[level] > 0)
             {
@@ -144,24 +151,30 @@ namespace Greatbone.Core
                 Put('"');
             }
 
+            return this;
+
         }
 
 
 
-        public void Put(string name, bool value)
+        public IOut Put(string name, bool value)
         {
+            return this;
+
         }
 
-        public void Put(string name, byte[] value)
+        public IOut Put(string name, byte[] value)
         {
             throw new NotImplementedException();
         }
 
-        public void Put<T>(string name, List<T> list)
+        public IOut Put<T>(string name, List<T> list)
         {
+            return this;
+
         }
 
-        public void Put<V>(string name, Dictionary<string, V> dict)
+        public IOut Put<V>(string name, Dictionary<string, V> dict)
         {
             Put('"');
             Put(name);
@@ -180,69 +193,26 @@ namespace Greatbone.Core
             }
 
             Put('}');
+            return this;
+
         }
 
-        public void Write(string name, params string[] array)
-        {
-            throw new System.NotImplementedException();
-        }
-
-        public void Write(string name, params IData[] array)
-        {
-            Put('"');
-            Put(name);
-            Put('"');
-            Put(':');
-
-            Put('[');
-            if (array != null)
-            {
-                for (int i = 0; i < array.Length; i++)
-                {
-                    if (i > 0)
-                    {
-                        Put(',');
-                    }
-
-                    IData obj = array[i];
-
-                    Put('{');
-                    obj.Write(this);
-                    Put('}');
-                }
-            }
-            Put(']');
-        }
-
-        public void Put(string name, long value)
+        public IOut Put(string name, long value)
         {
             throw new NotImplementedException();
         }
 
-        public void Put(string name, char[] value)
+        public IOut Put(string name, char[] value)
         {
             throw new NotImplementedException();
         }
 
-        public void Write(bool value)
+        public  IOut Put<T>(string name, long value)
         {
             throw new NotImplementedException();
         }
 
-
-
-
-        public void Arr(Action a)
-        {
-            throw new NotImplementedException();
-        }
-
-        public void Obj(Action a)
-        {
-            throw new NotImplementedException();
-        }
-
-        public new void Put<T>(string name, T value)
+        public IOut Put<T>(string name, T value) where T : IData
         {
             throw new NotImplementedException();
         }

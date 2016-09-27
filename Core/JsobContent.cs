@@ -27,72 +27,72 @@ namespace Greatbone.Core
 
 
 
-        public void Put(string name, bool value)
+        public IOut Put(string name, bool value)
         {
             throw new NotImplementedException();
         }
 
-        public void Put(string name, short value)
+        public IOut Put(string name, short value)
         {
             throw new NotImplementedException();
         }
 
-        public void Put(string name, int value)
+        public IOut Put(string name, int value)
         {
             throw new NotImplementedException();
         }
 
-        public void Put(string name, long value)
+        public IOut Put(string name, long value)
         {
             throw new NotImplementedException();
         }
 
-        public void Put(string name, decimal value)
+        public IOut Put(string name, decimal value)
         {
             throw new NotImplementedException();
         }
 
-        public void Put(string name, DateTime value)
+        public IOut Put(string name, DateTime value)
         {
             throw new NotImplementedException();
         }
 
-        public void Put(string name, char[] value)
+        public IOut Put(string name, char[] value)
         {
             throw new NotImplementedException();
         }
 
-        public void Put(string name, string value)
+        public IOut Put(string name, string value)
         {
             throw new NotImplementedException();
         }
 
-        public void Put(string name, byte[] value)
+        public IOut Put(string name, byte[] value)
         {
             throw new NotImplementedException();
         }
 
-        public void Put<T>(string name, List<T> value)
+        public IOut Put<T>(string name, List<T> value)
         {
             throw new NotImplementedException();
         }
 
-        public void Put<T>(string name, Dictionary<string, T> value)
+        public IOut Put<T>(string name, Dictionary<string, T> value)
         {
             throw new NotImplementedException();
         }
 
-        public void Arr(Action a)
+        public IOut Arr(Action a)
         {
             throw new NotImplementedException();
         }
 
-        public void Obj(Action a)
+        public IOut Obj(Action a)
         {
             throw new NotImplementedException();
         }
 
-        public new void Put<T>(string name, T value)
+        public IOut Put<T>(string name, T value) where T : IData
         {
             throw new NotImplementedException();
         }

@@ -23,7 +23,7 @@ namespace Greatbone.Sample
             using (var dc = Service.NewSqlContext())
             {
                 if (dc.Query(@"SELECT * FROM posts ORDER BY id DESC LIMIT @limit OFFSET @offset",
-                    p => p.Set("@limit", 20).Set("@offset", 20 * page)))
+                    p => p.Put("@limit", 20).Put("@offset", 20 * page)))
                 {
                     List<Post> list = null;
                     while (dc.NextRow())
@@ -49,8 +49,8 @@ namespace Greatbone.Sample
                 dc.Execute("INSERT INTO posts () VALUES ()",
                     p =>
                     {
-                        p.Set("@authorid", tok.Key);
-                        p.Set("@author", tok.Name);
+                        p.Put("@authorid", tok.Key);
+                        p.Put("@author", tok.Name);
                     }
                 );
             }

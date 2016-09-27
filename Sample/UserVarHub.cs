@@ -27,7 +27,7 @@ namespace Greatbone.Sample
             }
             using (var dc = Service.NewSqlContext())
             {
-                if (dc.QueryA("SELECT id, credential, name FROM users WHERE id = @id", (p) => p.Set("@id", id)))
+                if (dc.QueryA("SELECT id, credential, name FROM users WHERE id = @id", (p) => p.Put("@id", id)))
                 {
                     User o = new User();
                     dc.Get(ref o.id);
@@ -63,7 +63,7 @@ namespace Greatbone.Sample
 
             using (var dc = Service.NewSqlContext())
             {
-                if (dc.Execute("UPDATE users SET password = @id WHERE id = @id", (p) => p.Set("@id", userid)) > 0)
+                if (dc.Execute("UPDATE users SET password = @id WHERE id = @id", (p) => p.Put("@id", userid)) > 0)
                 {
                     wc.Response.StatusCode = (int)HttpStatusCode.OK;
                 }

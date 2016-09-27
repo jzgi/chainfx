@@ -23,7 +23,7 @@ namespace Greatbone.Sample
 
             using (var dc = Service.NewSqlContext())
             {
-                if (dc.Query("SELECT * FROM notices WHERE duedate <= current_date ORDER BY id LIMIT 20 OFFSET @offset", p => p.Set("@offset", page * 20)))
+                if (dc.Query("SELECT * FROM notices WHERE duedate <= current_date ORDER BY id LIMIT 20 OFFSET @offset", p => p.Put("@offset", page * 20)))
                 {
 
                 }
@@ -47,7 +47,8 @@ namespace Greatbone.Sample
 
             using (var dc = Service.NewSqlContext())
             {
-                if (dc.Query("INSERT INTO notices () VALUES ()", _ => _.Set("@offset", page * 20).Set("@offset", page * 20)))
+                if (dc.Query("INSERT INTO notices () VALUES ()",
+                    p => p.Put("@offset", page * 20).Put("@offset", page * 20)))
                 {
 
                 }

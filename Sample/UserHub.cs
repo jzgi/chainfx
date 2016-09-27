@@ -23,7 +23,7 @@ namespace Greatbone.Sample
             using (var sc = Service.NewSqlContext())
             {
                 sc.Execute("INSERT INTO users () VALUES (@id, @credential, @name, @fame, @brand, @loggedin)",
-                    p => { p.Set("@id", ""); }
+                    p => { p.Put("@id", ""); }
                 );
 
                 // wc.SetContent(u);

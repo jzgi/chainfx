@@ -9,35 +9,28 @@ namespace Greatbone.Core
     public interface IOut
     {
 
-        //
-        // knot writing
+        IOut Put(string name, bool value);
 
-        void Arr(Action a);
+        IOut Put(string name, short value);
 
-        void Obj(Action a);
+        IOut Put(string name, int value);
 
-        void Put(string name, bool value);
+        IOut Put(string name, long value);
 
-        void Put(string name, short value);
+        IOut Put(string name, decimal value);
 
-        void Put(string name, int value);
+        IOut Put(string name, DateTime value);
 
-        void Put(string name, long value);
+        IOut Put(string name, char[] value);
 
-        void Put(string name, decimal value);
+        IOut Put(string name, string value);
 
-        void Put(string name, DateTime value);
+        IOut Put<T>(string name, T value) where T : IData;
 
-        void Put(string name, char[] value);
+        IOut Put(string name, byte[] value);
 
-        void Put(string name, string value);
+        IOut Put<T>(string name, List<T> value);
 
-        void Put<T>(string name, T value);
-
-        void Put(string name, byte[] value);
-
-        void Put<T>(string name, List<T> value);
-
-        void Put<T>(string name, Dictionary<string, T> value);
+        IOut Put<T>(string name, Dictionary<string, T> value);
     }
 }

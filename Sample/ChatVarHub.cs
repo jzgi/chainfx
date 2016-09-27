@@ -35,7 +35,7 @@ namespace Greatbone.Sample
                 // database operation
                 using (var sc = Service.NewSqlContext())
                 {
-                    sc.QueryA("SELECT * FROM chats WHERE to=@to", p => p.Set("@to", userid));
+                    sc.QueryA("SELECT * FROM chats WHERE to=@to", p => p.Put("@to", userid));
                     // load into memory
                 }
             }

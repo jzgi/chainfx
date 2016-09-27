@@ -1,16 +1,18 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Data;
-using System.Data.Common;
 using Npgsql;
+using NpgsqlTypes;
 
 namespace Greatbone.Core
 {
-    public class DbContext : IDisposable, IResultSet
+    public class DbContext : IDisposable, IResultSet, IParameterSet
     {
         readonly NpgsqlConnection connection;
 
         readonly NpgsqlCommand command;
+
+        readonly NpgsqlParameterCollection parameters;
 
         private NpgsqlTransaction transact;
 
@@ -23,6 +25,7 @@ namespace Greatbone.Core
         {
             connection = new NpgsqlConnection(builder);
             command = new NpgsqlCommand();
+            parameters = command.Parameters;
             command.Connection = connection;
         }
 
@@ -64,7 +67,7 @@ namespace Greatbone.Core
             }
         }
 
-        public bool QueryA(string cmdtext, Action<DbParameterCollection> ps)
+        public bool QueryA(string cmdtext, Action<IParameterSet> ps)
         {
             if (connection.State != ConnectionState.Open)
             {
@@ -79,13 +82,13 @@ namespace Greatbone.Core
             command.CommandText = cmdtext;
             command.CommandType = CommandType.Text;
             command.Parameters.Clear();
-            ps?.Invoke(command.Parameters);
+            ps?.Invoke(this);
 
             reader = command.ExecuteReader();
             return reader.Read();
         }
 
-        public bool Query(string cmdtext, Action<DbParameterCollection> ps)
+        public bool Query(string cmdtext, Action<IParameterSet> ps)
         {
             if (connection.State != ConnectionState.Open)
             {
@@ -100,7 +103,7 @@ namespace Greatbone.Core
             command.CommandText = cmdtext;
             command.CommandType = CommandType.Text;
             command.Parameters.Clear();
-            ps?.Invoke(command.Parameters);
+            ps?.Invoke(this);
 
             reader = command.ExecuteReader();
             return reader.HasRows;
@@ -136,7 +139,7 @@ namespace Greatbone.Core
             return reader.NextResult();
         }
 
-        public int Execute(string cmdtext, Action<DbParameterCollection> ps)
+        public int Execute(string cmdtext, Action<IOut> ps)
         {
             if (connection.State != ConnectionState.Open)
             {
@@ -151,7 +154,7 @@ namespace Greatbone.Core
             command.CommandText = cmdtext;
             command.CommandType = CommandType.Text;
             command.Parameters.Clear();
-            ps?.Invoke(command.Parameters);
+            ps?.Invoke(this);
 
             return command.ExecuteNonQuery();
         }
@@ -316,9 +319,9 @@ namespace Greatbone.Core
 
             Execute("INSERT INTO mq (topic, filter, message) VALUES (@topic, @filter, @message)", p =>
             {
-                p.Set("@topic", topic);
-                p.Set("@filter", filter);
-                p.Set("@message", new ArraySegment<byte>(b.Buffer, 0, b.Length));
+                p.Put("@topic", topic);
+                p.Put("@filter", filter);
+                // p.Put("@message", new ArraySegment<byte>(b.Buffer, 0, b.Length));
             });
         }
 
@@ -350,6 +353,87 @@ namespace Greatbone.Core
         }
 
         public bool Get<T>(string name, ref Dictionary<string, T> value)
+        {
+            throw new NotImplementedException();
+        }
+
+
+        public IOut Put(string name, bool value)
+        {
+            parameters.Add(new NpgsqlParameter(name, NpgsqlDbType.Boolean)
+            {
+                Value = value
+            });
+            return this;
+        }
+
+        public IOut Put(string name, short value)
+        {
+            throw new NotImplementedException();
+        }
+
+        public IOut Put(string name, int value)
+        {
+            parameters.Add(new NpgsqlParameter(name, NpgsqlDbType.Integer)
+            {
+                Value = value
+            });
+            return this;
+        }
+
+        public IOut Put(string name, long value)
+        {
+            parameters.Add(new NpgsqlParameter(name, NpgsqlDbType.Bigint)
+            {
+                Value = value
+            });
+            return this;
+        }
+
+        public IOut Put(string name, decimal value)
+        {
+            parameters.Add(new NpgsqlParameter(name, NpgsqlDbType.Money)
+            {
+                Value = value
+            });
+            return this;
+        }
+
+        public IOut Put(string name, DateTime value)
+        {
+            parameters.Add(new NpgsqlParameter(name, NpgsqlDbType.Timestamp)
+            {
+                Value = value
+            });
+            return this;
+        }
+
+        public IOut Put(string name, char[] value)
+        {
+            throw new NotImplementedException();
+        }
+
+        public IOut Put(string name, string value)
+        {
+            throw new NotImplementedException();
+        }
+
+        public IOut Put<T>(string name, T value) where T : IData
+        {
+            throw new NotImplementedException();
+        }
+
+        public IOut Put(string name, byte[] value)
+        {
+            throw new NotImplementedException();
+        }
+
+        public IOut Put<T>(string name, List<T> value)
+        {
+            throw new NotImplementedException();
+        }
+
+        public IOut Put<T>(string name, Dictionary<string, T> value)
         {
             throw new NotImplementedException();
         }
