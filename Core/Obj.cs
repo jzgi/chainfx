@@ -5,11 +5,11 @@ namespace Greatbone.Core
 {
     public class Obj : IInput
     {
-        Roll<Pair> pairs;
+        readonly Roll<Elem> pairs = new Roll<Elem>(16);
 
         public bool Get(string name, ref int value)
         {
-            Pair pair;
+            Elem pair;
             if (pairs.TryGet(name, out pair))
             {
                 value = pair;
@@ -73,7 +73,7 @@ namespace Greatbone.Core
             throw new NotImplementedException();
         }
 
-        public Pair this[string name]
+        public Elem this[string name]
         {
             get
             {

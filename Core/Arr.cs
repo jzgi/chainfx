@@ -2,11 +2,11 @@ namespace Greatbone.Core
 {
     public class Arr
     {
-        Value[] values;
+        Elem[] values;
 
         int count;
 
-        public Value this[int index]
+        public Elem this[int index]
         {
             get { return values[index]; }
         }
