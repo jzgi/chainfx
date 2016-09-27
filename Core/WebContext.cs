@@ -68,7 +68,7 @@ namespace Greatbone.Core
             }
         }
 
-        public Record Obj
+        public Obj Obj
         {
             get
             {
@@ -76,7 +76,7 @@ namespace Greatbone.Core
             }
         }
 
-        public Vector Array
+        public Arr Array
         {
             get
             {

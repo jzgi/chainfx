@@ -32,14 +32,14 @@ namespace Greatbone.Core
 
         public bool IsPair => name != null;
 
-        public static implicit operator Record(Element v)
+        public static implicit operator Obj(Element v)
         {
-            return (Record)v.refv;
+            return (Obj)v.refv;
         }
 
-        public static implicit operator Vector(Element v)
+        public static implicit operator Arr(Element v)
         {
-            return (Vector)v.refv;
+            return (Arr)v.refv;
         }
 
         public static implicit operator int(Element v)

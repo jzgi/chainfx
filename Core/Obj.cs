@@ -3,7 +3,7 @@ using System.Collections.Generic;
 
 namespace Greatbone.Core
 {
-    public class Record : IIn
+    public class Obj : IIn
     {
         readonly Roll<Element> pairs = new Roll<Element>(16);
 

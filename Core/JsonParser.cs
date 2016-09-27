@@ -3,11 +3,11 @@ namespace Greatbone.Core
 
     public class JsonParser
     {
-        public Record ParseObj()
+        public Obj ParseObj()
         {
             return null;
         }
-        public Record ParseArr()
+        public Obj ParseArr()
         {
             return null;
         }

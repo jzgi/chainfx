@@ -1,6 +1,6 @@
 namespace Greatbone.Core
 {
-    public class Vector
+    public class Arr
     {
         Element[] values;
 
@@ -21,12 +21,12 @@ namespace Greatbone.Core
 
         }
 
-        internal void Add(Record v)
+        internal void Add(Obj v)
         {
 
         }
 
-        internal void Add(Vector v)
+        internal void Add(Arr v)
         {
 
         }

@@ -39,7 +39,7 @@ namespace Greatbone.Sample
         /// </summary>
         public void New(WebContext wc)
         {
-            Record o = wc.Obj;
+            Obj o = wc.Obj;
             int age = o[nameof(age)];
 
             int page = 0;
