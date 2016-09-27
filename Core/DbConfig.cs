@@ -1,6 +1,6 @@
 ﻿namespace Greatbone.Core
 {
-    public class DbConfig : ISerial
+    public class DbConfig : IDat
     {
         public string Host;
 
@@ -12,22 +12,22 @@
 
         public bool MQ;
 
-        public void From(ISerialReader r)
+        public void From(IInput r)
         {
-            r.Read(nameof(Host), ref Host);
-            r.Read(nameof(Port), ref Port);
-            r.Read(nameof(Username), ref Username);
-            r.Read(nameof(Password), ref Password);
-            r.Read(nameof(MQ), ref MQ);
+            r.Get(nameof(Host), ref Host);
+            r.Get(nameof(Port), ref Port);
+            r.Get(nameof(Username), ref Username);
+            r.Get(nameof(Password), ref Password);
+            r.Get(nameof(MQ), ref MQ);
         }
 
-        public void To(ISerialWriter w)
+        public void To(IOutput w)
         {
-            w.Write(nameof(Host), Host);
-            w.Write(nameof(Port), Port);
-            w.Write(nameof(Username), Username);
-            w.Write(nameof(Password), Password);
-            w.Write(nameof(MQ), MQ);
+            w.Put(nameof(Host), Host);
+            w.Put(nameof(Port), Port);
+            w.Put(nameof(Username), Username);
+            w.Put(nameof(Password), Password);
+            w.Put(nameof(MQ), MQ);
         }
     }
 

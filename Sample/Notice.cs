@@ -4,7 +4,7 @@ using Greatbone.Core;
 
 namespace Greatbone.Sample
 {
-    public class Notice : ISerial
+    public class Notice
     {
         internal int id;
 
@@ -27,45 +27,45 @@ namespace Greatbone.Sample
         internal List<Join> joins;
 
 
-        public void From(ISerialReader r)
+        public void From(IInput r)
         {
-            r.Read(nameof(id), ref id);
-            r.Read(nameof(loc), ref loc);
-            r.Read(nameof(authorid), ref authorid);
-            r.Read(nameof(author), ref author);
-            r.Read(nameof(date), ref date);
-            r.Read(nameof(duedate), ref duedate);
-            r.Read(nameof(subtype), ref subtype);
-            r.Read(nameof(subject), ref subject);
-            r.Read(nameof(remark), ref remark);
-            r.Read(nameof(joins), ref joins);
+            r.Get(nameof(id), ref id);
+            r.Get(nameof(loc), ref loc);
+            r.Get(nameof(authorid), ref authorid);
+            r.Get(nameof(author), ref author);
+            r.Get(nameof(date), ref date);
+            r.Get(nameof(duedate), ref duedate);
+            r.Get(nameof(subtype), ref subtype);
+            r.Get(nameof(subject), ref subject);
+            r.Get(nameof(remark), ref remark);
+            r.Get(nameof(joins), ref joins);
         }
 
-        public void To(ISerialWriter r)
+        public void To(IOutput r)
         {
-            r.Write(nameof(id), id);
-            r.Write(nameof(loc), loc);
-            r.Write(nameof(authorid), authorid);
-            r.Write(nameof(author), author);
-            r.Write(nameof(date), date);
-            r.Write(nameof(duedate), duedate);
-            r.Write(nameof(subtype), subtype);
-            r.Write(nameof(subject), subject);
-            r.Write(nameof(remark), remark);
-            r.Write(nameof(joins), joins);
+            r.Put(nameof(id), id);
+            r.Put(nameof(loc), loc);
+            r.Put(nameof(authorid), authorid);
+            r.Put(nameof(author), author);
+            r.Put(nameof(date), date);
+            r.Put(nameof(duedate), duedate);
+            r.Put(nameof(subtype), subtype);
+            r.Put(nameof(subject), subject);
+            r.Put(nameof(remark), remark);
+            r.Put(nameof(joins), joins);
         }
     }
 
-    internal struct Join : ISerial
+    internal struct Join : IDat
     {
         internal char[] id;
 
-        public void From(ISerialReader r)
+        public void From(IInput r)
         {
             throw new NotImplementedException();
         }
 
-        public void To(ISerialWriter w)
+        public void To(IOutput w)
         {
             throw new NotImplementedException();
         }

@@ -16,7 +16,7 @@ namespace Greatbone.Core
     /// }
     /// </example>
     ///
-    public class WebServiceConfig : WebConfig, ISerial
+    public class WebServiceConfig : WebConfig, IDat
     {
         ///<summary>Z-axis scaling</summary>
         public string Shard;
@@ -36,30 +36,30 @@ namespace Greatbone.Core
 
         public Dictionary<string, string> options;
 
-        public void From(ISerialReader r)
+        public void From(IInput r)
         {
-            r.Read(nameof(Key), ref Key);
-            r.Read(nameof(Shard), ref Shard);
-            r.Read(nameof(Public), ref Public);
-            r.Read(nameof(Tls), ref Tls);
-            r.Read(nameof(Private), ref Private);
-            r.Read(nameof(Cluster), ref Cluster);
-            r.Read(nameof(Db), ref Db);
-            r.Read(nameof(Debug), ref Debug);
-            r.Read(nameof(options), ref options);
+            r.Get(nameof(Key), ref Key);
+            r.Get(nameof(Shard), ref Shard);
+            r.Get(nameof(Public), ref Public);
+            r.Get(nameof(Tls), ref Tls);
+            r.Get(nameof(Private), ref Private);
+            r.Get(nameof(Cluster), ref Cluster);
+            r.Get(nameof(Db), ref Db);
+            r.Get(nameof(Debug), ref Debug);
+            r.Get(nameof(options), ref options);
         }
 
-        public void To(ISerialWriter w)
+        public void To(IOutput w)
         {
-            w.Write(nameof(Key), Key);
-            w.Write(nameof(Shard), Shard);
-            w.Write(nameof(Public), Public);
-            w.Write(nameof(Tls), Tls);
-            w.Write(nameof(Private), Private);
-            w.Write(nameof(Cluster), Cluster);
-            w.Write(nameof(Db), Db);
-            w.Write(nameof(Debug), Debug);
-            w.Write(nameof(options), options);
+            w.Put(nameof(Key), Key);
+            w.Put(nameof(Shard), Shard);
+            w.Put(nameof(Public), Public);
+            w.Put(nameof(Tls), Tls);
+            w.Put(nameof(Private), Private);
+            w.Put(nameof(Cluster), Cluster);
+            w.Put(nameof(Db), Db);
+            w.Put(nameof(Debug), Debug);
+            w.Put(nameof(options), options);
         }
 
         public WebServiceConfig Load(string file)
@@ -69,10 +69,6 @@ namespace Greatbone.Core
                 byte[] bytes = File.ReadAllBytes(file);
                 JsonContent jc = new JsonContent(bytes, bytes.Length);
 
-                jc.Object(delegate
-                {
-                    From(jc);
-                });
             }
             catch
             {

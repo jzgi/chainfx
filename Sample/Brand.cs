@@ -2,7 +2,7 @@
 
 namespace Greatbone.Sample
 {
-	public class Brand : ISerial
+	public class Brand
 	{
 		public string Id;
 
@@ -14,11 +14,11 @@ namespace Greatbone.Sample
 
 		public string Key => Id;
 
-		public void From(ISerialReader r)
+		public void From(IInput r)
 		{
 		}
 
-		public void To(ISerialWriter w)
+		public void To(IOutput w)
 		{
 		}
 	}

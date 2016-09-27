@@ -6,7 +6,7 @@ namespace Greatbone.Sample
 {
     /// <summary>A user record that is a web access token for all the services. </summary>
     ///
-    public class User : IToken, ISerial
+    public class User : IToken
     {
         internal string id;
 
@@ -34,32 +34,32 @@ namespace Greatbone.Sample
 
         public string Name => name;
 
-        public void From(ISerialReader r)
+        public void From(IInput r)
         {
-            r.Read(nameof(id), ref id);
-            r.Read(nameof(name), ref name);
-            r.Read(nameof(credential), ref credential);
-            r.Read(nameof(fame), ref fame);
-            r.Read(nameof(brand), ref brand);
-            r.Read(nameof(admin), ref admin);
-            r.Read(nameof(date), ref date);
-            r.Read(nameof(favposts), ref favposts);
-            r.Read(nameof(friends), ref friends);
-            r.Read(nameof(favs), ref favs);
+            r.Get(nameof(id), ref id);
+            r.Get(nameof(name), ref name);
+            r.Get(nameof(credential), ref credential);
+            r.Get(nameof(fame), ref fame);
+            r.Get(nameof(brand), ref brand);
+            r.Get(nameof(admin), ref admin);
+            r.Get(nameof(date), ref date);
+            r.Get(nameof(favposts), ref favposts);
+            r.Get(nameof(friends), ref friends);
+            r.Get(nameof(favs), ref favs);
         }
 
-        public void To(ISerialWriter w)
+        public void To(IOutput w)
         {
-            w.Write(nameof(id), id);
-            w.Write(nameof(name), name);
-            w.Write(nameof(credential), credential);
-            w.Write(nameof(fame), fame);
-            w.Write(nameof(brand), brand);
-            w.Write(nameof(admin), admin);
-            w.Write(nameof(date), date);
-            w.Write(nameof(favposts), favposts);
-            w.Write(nameof(friends), friends);
-            w.Write(nameof(favs), favs);
+            w.Put(nameof(id), id);
+            w.Put(nameof(name), name);
+            w.Put(nameof(credential), credential);
+            w.Put(nameof(fame), fame);
+            w.Put(nameof(brand), brand);
+            w.Put(nameof(admin), admin);
+            w.Put(nameof(date), date);
+            w.Put(nameof(favposts), favposts);
+            w.Put(nameof(friends), friends);
+            w.Put(nameof(favs), favs);
         }
 
         public static string Encrypt(string orig)

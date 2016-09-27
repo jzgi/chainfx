@@ -44,8 +44,6 @@ namespace Greatbone.Sample
         {
             IToken tok = wc.Token;
 
-            Post o = wc.GetSerial<Post>();
-
             using (var dc = Service.NewSqlContext())
             {
                 dc.Execute("INSERT INTO posts () VALUES ()",

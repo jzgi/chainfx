@@ -2,19 +2,16 @@
 
 namespace Greatbone.Core
 {
-    public static class ISerialReaderExtensions
+    public static class IInputExtensions
     {
-        public static T Read<T>(this ISerialReader r) where T : ISerial, new()
+        public static T Read<T>(this IInput i) where T : IDat, new()
         {
             T obj = new T();
-            r.Object(() =>
-            {
-                obj.From(r);
-            });
+          
             return obj;
         }
 
-        public static List<T> ReadArray<T>(this ISerialReader r) where T : ISerial, new()
+        public static List<T> ReadArray<T>(this IInput r) where T : IDat, new()
         {
             List<T> lst = new List<T>(64);
             //			if (!r.ReadArrayStart()) return lst;

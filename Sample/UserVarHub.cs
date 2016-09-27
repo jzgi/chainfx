@@ -38,7 +38,7 @@ namespace Greatbone.Sample
                     if (md5.Equals(o.credential))
                     {
                         wc.StatusCode = 200;
-                        wc.SetSerialObj(o);
+                        // wc.SetSerialObj(o);
                     }
                     else
                     {
@@ -57,14 +57,9 @@ namespace Greatbone.Sample
         [IfSelf]
         public void ChPwd(WebContext wc, string userid)
         {
-            ISerialReader r = wc.Serial;
+            IInput r = wc.Serial;
 
             int ret = 0;
-
-            r.Array(() =>
-            {
-                r.Read(ref ret);
-            });
 
             using (var dc = Service.NewSqlContext())
             {

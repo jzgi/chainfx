@@ -41,17 +41,13 @@ namespace Greatbone.Sample
         {
             Obj o = wc.Obj;
             int age = o[nameof(age)];
-            int ab = wc.Obj[nameof(ab)];
 
             int page = 0;
             wc.GetParam("page", ref page);
 
             using (var dc = Service.NewSqlContext())
             {
-                if (dc.Query("INSERT INTO notices () VALUES ()", p => p
-                    .Set("@offset", page * 20)
-                    .Set("@offset", page * 20)
-                ))
+                if (dc.Query("INSERT INTO notices () VALUES ()", _ => _.Set("@offset", page * 20).Set("@offset", page * 20)))
                 {
 
                 }

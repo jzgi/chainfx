@@ -26,7 +26,7 @@ namespace Greatbone.Sample
                     p => { p.Set("@id", ""); }
                 );
 
-                wc.SetContent(u);
+                // wc.SetContent(u);
             }
         }
 

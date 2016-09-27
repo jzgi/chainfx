@@ -6,11 +6,29 @@ namespace Greatbone.Core
 
         int count;
 
-
-
         public Value this[int index]
         {
-            get { return null; }
+            get { return values[index]; }
+        }
+
+        internal void Add(Number v)
+        {
+
+        }
+
+        internal void Add(Str v)
+        {
+
+        }
+
+        internal void Add(Obj v)
+        {
+
+        }
+
+        internal void Add(Arr v)
+        {
+
         }
 
     }

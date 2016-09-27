@@ -4,7 +4,7 @@ using Greatbone.Core;
 
 namespace Greatbone.Sample
 {
-    public class Fame : ISerial
+    public struct Fame : IDat
     {
         internal char[] id;
         internal string name;
@@ -30,62 +30,62 @@ namespace Greatbone.Sample
         internal List<Item> friends;
         internal List<Item> awards;
 
-        public void From(ISerialReader r)
+        public void From(IInput i)
         {
-            r.Read(nameof(id), ref id);
-            r.Read(nameof(name), ref name);
-            r.Read(nameof(quote), ref quote);
-            r.Read(nameof(sex), ref sex);
-            r.Read(nameof(icon), ref icon);
-            r.Read(nameof(birthday), ref birthday);
-            r.Read(nameof(qq), ref qq);
-            r.Read(nameof(wechat), ref wechat);
-            r.Read(nameof(email), ref email);
-            r.Read(nameof(city), ref city);
-            r.Read(nameof(rank), ref rank);
-            r.Read(nameof(height), ref height);
-            r.Read(nameof(weight), ref weight);
-            r.Read(nameof(bust), ref bust);
-            r.Read(nameof(waist), ref waist);
-            r.Read(nameof(hip), ref hip);
-            r.Read(nameof(cup), ref cup);
-            r.Read(nameof(styles), ref styles);
-            r.Read(nameof(skills), ref skills);
-            r.Read(nameof(remark), ref remark);
-            r.Read(nameof(sites), ref sites);
-            r.Read(nameof(friends), ref friends);
-            r.Read(nameof(awards), ref awards);
+            i.Get(nameof(id), ref id);
+            i.Get(nameof(name), ref name);
+            i.Get(nameof(quote), ref quote);
+            i.Get(nameof(sex), ref sex);
+            i.Get(nameof(icon), ref icon);
+            i.Get(nameof(birthday), ref birthday);
+            i.Get(nameof(qq), ref qq);
+            i.Get(nameof(wechat), ref wechat);
+            i.Get(nameof(email), ref email);
+            i.Get(nameof(city), ref city);
+            i.Get(nameof(rank), ref rank);
+            i.Get(nameof(height), ref height);
+            i.Get(nameof(weight), ref weight);
+            i.Get(nameof(bust), ref bust);
+            i.Get(nameof(waist), ref waist);
+            i.Get(nameof(hip), ref hip);
+            i.Get(nameof(cup), ref cup);
+            i.Get(nameof(styles), ref styles);
+            i.Get(nameof(skills), ref skills);
+            i.Get(nameof(remark), ref remark);
+            i.Get(nameof(sites), ref sites);
+            i.Get(nameof(friends), ref friends);
+            i.Get(nameof(awards), ref awards);
         }
 
-        public void To(ISerialWriter w)
+        public void To(IOutput w)
         {
-            w.Write(nameof(id), id);
-            w.Write(nameof(name), name);
-            w.Write(nameof(quote), quote);
-            w.Write(nameof(sex), sex);
-            w.Write(nameof(icon), icon);
-            w.Write(nameof(birthday), birthday);
-            w.Write(nameof(qq), qq);
-            w.Write(nameof(wechat), wechat);
-            w.Write(nameof(email), email);
-            w.Write(nameof(city), city);
-            w.Write(nameof(rank), rank);
-            w.Write(nameof(height), height);
-            w.Write(nameof(weight), weight);
-            w.Write(nameof(bust), bust);
-            w.Write(nameof(waist), waist);
-            w.Write(nameof(hip), hip);
-            w.Write(nameof(cup), cup);
-            w.Write(nameof(styles), styles);
-            w.Write(nameof(skills), skills);
-            w.Write(nameof(remark), remark);
-            w.Write(nameof(sites), sites);
-            w.Write(nameof(friends), friends);
-            w.Write(nameof(awards), awards);
+            w.Put(nameof(id), id);
+            w.Put(nameof(name), name);
+            w.Put(nameof(quote), quote);
+            w.Put(nameof(sex), sex);
+            w.Put(nameof(icon), icon);
+            w.Put(nameof(birthday), birthday);
+            w.Put(nameof(qq), qq);
+            w.Put(nameof(wechat), wechat);
+            w.Put(nameof(email), email);
+            w.Put(nameof(city), city);
+            w.Put(nameof(rank), rank);
+            w.Put(nameof(height), height);
+            w.Put(nameof(weight), weight);
+            w.Put(nameof(bust), bust);
+            w.Put(nameof(waist), waist);
+            w.Put(nameof(hip), hip);
+            w.Put(nameof(cup), cup);
+            w.Put(nameof(styles), styles);
+            w.Put(nameof(skills), skills);
+            w.Put(nameof(remark), remark);
+            w.Put(nameof(sites), sites);
+            w.Put(nameof(friends), friends);
+            w.Put(nameof(awards), awards);
         }
     }
 
-    public struct Item : ISerial
+    public struct Item
     {
         internal char[] uid;
 
@@ -93,18 +93,18 @@ namespace Greatbone.Sample
 
         internal string desc;
 
-        public void From(ISerialReader r)
+        public void From(IInput r)
         {
-            r.Read(nameof(uid), ref uid);
-            r.Read(nameof(url), ref url);
-            r.Read(nameof(desc), ref desc);
+            r.Get(nameof(uid), ref uid);
+            r.Get(nameof(url), ref url);
+            r.Get(nameof(desc), ref desc);
         }
 
-        public void To(ISerialWriter w)
+        public void To(IOutput w)
         {
-            w.Write(nameof(uid), uid);
-            w.Write(nameof(url), url);
-            w.Write(nameof(desc), desc);
+            w.Put(nameof(uid), uid);
+            w.Put(nameof(url), url);
+            w.Put(nameof(desc), desc);
         }
     }
 }

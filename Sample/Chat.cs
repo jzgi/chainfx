@@ -6,7 +6,7 @@ namespace Greatbone.Sample
 {
     /// <summary>Represent a chat session.</summary>
     ///
-    public struct Chat : ISerial
+    public struct Chat
     {
         private int status;
 
@@ -23,20 +23,20 @@ namespace Greatbone.Sample
             msgs.Add(new Message());
         }
 
-        public void From(ISerialReader r)
+        public void From(IInput r)
         {
-            r.Read(nameof(status), ref status);
-            r.Read(nameof(partner), ref partner);
-            r.Read(nameof(msgs), ref msgs);
-            r.Read(nameof(lasttime), ref lasttime);
+            r.Get(nameof(status), ref status);
+            r.Get(nameof(partner), ref partner);
+            r.Get(nameof(msgs), ref msgs);
+            r.Get(nameof(lasttime), ref lasttime);
         }
 
-        public void To(ISerialWriter w)
+        public void To(IOutput w)
         {
-            w.Write(nameof(status), status);
-            w.Write(nameof(partner), partner);
-            w.Write(nameof(msgs), msgs);
-            w.Write(nameof(lasttime), lasttime);
+            w.Put(nameof(status), status);
+            w.Put(nameof(partner), partner);
+            w.Put(nameof(msgs), msgs);
+            w.Put(nameof(lasttime), lasttime);
         }
     }
 
@@ -47,7 +47,7 @@ namespace Greatbone.Sample
         string text;
     }
 
-    public struct Msg : ISerial
+    public struct Msg
     {
         internal int id;
 
@@ -61,24 +61,24 @@ namespace Greatbone.Sample
 
         internal DateTime time;
 
-        public void From(ISerialReader r)
+        public void From(IInput r)
         {
-            r.Read(nameof(id), ref id);
-            r.Read(nameof(subtype), ref subtype);
-            r.Read(nameof(@from), ref @from);
-            r.Read(nameof(to), ref to);
-            r.Read(nameof(content), ref content);
-            r.Read(nameof(time), ref time);
+            r.Get(nameof(id), ref id);
+            r.Get(nameof(subtype), ref subtype);
+            r.Get(nameof(@from), ref @from);
+            r.Get(nameof(to), ref to);
+            r.Get(nameof(content), ref content);
+            r.Get(nameof(time), ref time);
         }
 
-        public void To(ISerialWriter w)
+        public void To(IOutput w)
         {
-            w.Write(nameof(id), id);
-            w.Write(nameof(subtype), subtype);
-            w.Write(nameof(from), from);
-            w.Write(nameof(to), to);
-            w.Write(nameof(content), content);
-            w.Write(nameof(time), time);
+            w.Put(nameof(id), id);
+            w.Put(nameof(subtype), subtype);
+            w.Put(nameof(from), from);
+            w.Put(nameof(to), to);
+            w.Put(nameof(content), content);
+            w.Put(nameof(time), time);
         }
     }
 }

@@ -264,7 +264,7 @@ namespace Greatbone.Core
             return false;
         }
 
-        public bool Get<T>(string name, ref T value) where T : ISerial, new()
+        public bool Get<T>(string name, ref T value) where T : IDat, new()
         {
             int ord = reader.GetOrdinal(name);
             if (!reader.IsDBNull(ord))
@@ -272,7 +272,7 @@ namespace Greatbone.Core
                 string str = reader.GetString(ord);
                 JsonText json = new JsonText(str);
                 value = new T();
-                value.From(json);
+                // value.From(json);
                 return true;
             }
             return false;
@@ -299,16 +299,16 @@ namespace Greatbone.Core
         //
 
 
-        public void PostHorizontalEvent<E>(string topic, int verb, E msg) where E : ISerial
+        public void PostHorizontalEvent<E>(string topic, int verb, E msg) where E : IDat
         {
         }
 
-        public void PostVerticalEvent<E>(string topic, int verb, E msg) where E : ISerial
+        public void PostVerticalEvent<E>(string topic, int verb, E msg) where E : IDat
         {
         }
 
 
-        public void SendEvent<T>(string topic, string filter, T @event) where T : ISerial
+        public void SendEvent<T>(string topic, string filter, T @event) where T : IDat
         {
             // convert message to byte buffer
             JsobContent b = new JsobContent(16 * 1024);
@@ -332,6 +332,26 @@ namespace Greatbone.Core
                 // indicate that the instance has been disposed.
                 disposed = true;
             }
+        }
+
+        public bool Get(string name, ref long value)
+        {
+            throw new NotImplementedException();
+        }
+
+        public bool Get(string name, ref char[] value)
+        {
+            throw new NotImplementedException();
+        }
+
+        public bool Get(string name, ref byte[] value)
+        {
+            throw new NotImplementedException();
+        }
+
+        public bool Get<T>(string name, ref Dictionary<string, T> value)
+        {
+            throw new NotImplementedException();
         }
     }
 }

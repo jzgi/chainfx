@@ -9,7 +9,7 @@ namespace Greatbone.Sample
     /// <example>
     ///     Brand o  new Brand(){}
     /// </example>
-    public class Post : ISerial
+    public class Post
     {
         internal int id;
 
@@ -33,52 +33,52 @@ namespace Greatbone.Sample
         /// <summary>Returns the key of the brand object.</summary>
         public string Key { get; }
 
-        public void From(ISerialReader r)
+        public void From(IInput r)
         {
-            r.Read(nameof(id), ref id);
-            r.Read(nameof(time), ref time);
-            r.Read(nameof(authorid), ref authorid);
-            r.Read(nameof(author), ref author);
-            r.Read(nameof(commentable), ref commentable);
-            r.Read(nameof(comments), ref comments);
-            r.Read(nameof(text), ref text);
+            r.Get(nameof(id), ref id);
+            r.Get(nameof(time), ref time);
+            r.Get(nameof(authorid), ref authorid);
+            r.Get(nameof(author), ref author);
+            r.Get(nameof(commentable), ref commentable);
+            r.Get(nameof(comments), ref comments);
+            r.Get(nameof(text), ref text);
 
-            r.Read(nameof(m0), ref m0);
-            r.Read(nameof(m1), ref m1);
-            r.Read(nameof(m2), ref m2);
-            r.Read(nameof(m3), ref m3);
-            r.Read(nameof(m4), ref m4);
-            r.Read(nameof(m5), ref m5);
-            r.Read(nameof(m6), ref m6);
-            r.Read(nameof(m7), ref m7);
-            r.Read(nameof(m8), ref m8);
-            r.Read(nameof(m9), ref m9);
+            r.Get(nameof(m0), ref m0);
+            r.Get(nameof(m1), ref m1);
+            r.Get(nameof(m2), ref m2);
+            r.Get(nameof(m3), ref m3);
+            r.Get(nameof(m4), ref m4);
+            r.Get(nameof(m5), ref m5);
+            r.Get(nameof(m6), ref m6);
+            r.Get(nameof(m7), ref m7);
+            r.Get(nameof(m8), ref m8);
+            r.Get(nameof(m9), ref m9);
         }
 
-        public void To(ISerialWriter w)
+        public void To(IOutput w)
         {
-            w.Write(nameof(id), id);
-            w.Write(nameof(time), time);
-            w.Write(nameof(authorid), authorid);
-            w.Write(nameof(author), author);
-            w.Write(nameof(commentable), commentable);
-            w.Write(nameof(comments), comments);
-            w.Write(nameof(text), text);
+            w.Put(nameof(id), id);
+            w.Put(nameof(time), time);
+            w.Put(nameof(authorid), authorid);
+            w.Put(nameof(author), author);
+            w.Put(nameof(commentable), commentable);
+            w.Put(nameof(comments), comments);
+            w.Put(nameof(text), text);
 
-            w.Write(nameof(m0), m0);
-            w.Write(nameof(m1), m1);
-            w.Write(nameof(m2), m2);
-            w.Write(nameof(m3), m3);
-            w.Write(nameof(m4), m4);
-            w.Write(nameof(m5), m5);
-            w.Write(nameof(m6), m6);
-            w.Write(nameof(m7), m7);
-            w.Write(nameof(m8), m8);
-            w.Write(nameof(m9), m9);
+            w.Put(nameof(m0), m0);
+            w.Put(nameof(m1), m1);
+            w.Put(nameof(m2), m2);
+            w.Put(nameof(m3), m3);
+            w.Put(nameof(m4), m4);
+            w.Put(nameof(m5), m5);
+            w.Put(nameof(m6), m6);
+            w.Put(nameof(m7), m7);
+            w.Put(nameof(m8), m8);
+            w.Put(nameof(m9), m9);
         }
     }
 
-    public struct Comment : ISerial
+    public struct Comment
     {
         internal DateTime time;
 
@@ -90,22 +90,22 @@ namespace Greatbone.Sample
 
         internal string text;
 
-        public void From(ISerialReader r)
+        public void From(IInput r)
         {
-            r.Read(nameof(time), ref time);
-            r.Read(nameof(emoji), ref emoji);
-            r.Read(nameof(authorid), ref authorid);
-            r.Read(nameof(author), ref author);
-            r.Read(nameof(text), ref text);
+            r.Get(nameof(time), ref time);
+            r.Get(nameof(emoji), ref emoji);
+            r.Get(nameof(authorid), ref authorid);
+            r.Get(nameof(author), ref author);
+            r.Get(nameof(text), ref text);
         }
 
-        public void To(ISerialWriter w)
+        public void To(IOutput w)
         {
-            w.Write(nameof(time), time);
-            w.Write(nameof(emoji), emoji);
-            w.Write(nameof(authorid), authorid);
-            w.Write(nameof(author), author);
-            w.Write(nameof(text), text);
+            w.Put(nameof(time), time);
+            w.Put(nameof(emoji), emoji);
+            w.Put(nameof(authorid), authorid);
+            w.Put(nameof(author), author);
+            w.Put(nameof(text), text);
         }
     }
 }

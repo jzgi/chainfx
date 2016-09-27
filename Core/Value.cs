@@ -7,7 +7,7 @@ namespace Greatbone.Core
         String, Array, Null, Bool
     }
 
-    public class Value
+    public struct Value
     {
         VT vt;
 
@@ -17,7 +17,7 @@ namespace Greatbone.Core
 
         Number numv;
 
-        string strv;
+        internal string strv;
 
         DateTime dtv;
 
@@ -35,6 +35,10 @@ namespace Greatbone.Core
         public static implicit operator int(Value value)
         {
             return 0;
+        }
+        public static implicit operator string(Value value)
+        {
+            return value.strv;
         }
     }
 }

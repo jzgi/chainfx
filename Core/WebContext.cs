@@ -84,7 +84,7 @@ namespace Greatbone.Core
             }
         }
 
-        public ISerialReader Serial
+        public IInput Serial
         {
             get
             {
@@ -105,15 +105,15 @@ namespace Greatbone.Core
                         }
                     }
                 }
-                return (ISerialReader)reqContent;
+                return (IInput)reqContent;
             }
         }
 
-        public T GetSerial<T>() where T : ISerial, new()
+        public T GetSerial<T>() where T : IDat, new()
         {
-            ISerialReader r = this.Serial;
+            IInput r = this.Serial;
             T o = new T();
-            r.Read(ref o);
+            // r.Get(ref o);
             return o;
         }
 
@@ -187,12 +187,12 @@ namespace Greatbone.Core
 
         public IContent Content { get; set; }
 
-        public void SetContent<T>(T obj) where T : ISerial
+        public void SetContent<T>(T obj) where T : IDat
         {
             SetSerialObj(obj, false);
         }
 
-        public void SetSerialObj<T>(T obj) where T : ISerial
+        public void SetSerialObj<T>(T obj) where T : IDat
         {
             JsonContent cnt = new JsonContent(16 * 1024);
             cnt.Write(obj);
@@ -200,10 +200,10 @@ namespace Greatbone.Core
             Content = cnt;
         }
 
-        public void SetSerialObj<T>(T obj, bool binary) where T : ISerial
+        public void SetSerialObj<T>(T obj, bool binary) where T : IDat
         {
             DynamicContent cnt = binary ? new JsobContent(16 * 1024) : (DynamicContent)new JsonContent(16 * 1024);
-            ((ISerialWriter)cnt).Write(obj);
+            ((IOutput)cnt).Write(obj);
             Content = cnt;
         }
 
