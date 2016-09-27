@@ -4,9 +4,9 @@ using System.Collections.Generic;
 namespace Greatbone.Core
 {
     /// <summary>
-    /// A reader that reads serialized content.
+    /// A data intaking source.
     /// </summary>
-    public interface IInput
+    public interface IIn
     {
         //
         // property reading
@@ -27,7 +27,7 @@ namespace Greatbone.Core
 
         bool Get(string name, ref string value);
 
-        bool Get<T>(string name, ref T value) where T : IDat, new();
+        bool Get<T>(string name, ref T value) where T : IData, new();
 
         bool Get(string name, ref byte[] value);
 

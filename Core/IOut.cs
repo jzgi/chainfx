@@ -3,10 +3,10 @@ using System.Collections.Generic;
 
 namespace Greatbone.Core
 {
-    /// <summary> <summary>
-    /// A serial content writer.
+    /// <summary>
+    /// A data outputing destination.
     /// </summary>
-    public interface IOutput
+    public interface IOut
     {
 
         //

@@ -3,7 +3,7 @@ using System.Collections.Generic;
 
 namespace Greatbone.Core
 {
-    public class JsonText : IOutput
+    public class JsonText : IOut
     {
         // for parsing json text
         string text;

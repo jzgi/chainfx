@@ -264,7 +264,7 @@ namespace Greatbone.Core
             return false;
         }
 
-        public bool Get<T>(string name, ref T value) where T : IDat, new()
+        public bool Get<T>(string name, ref T value) where T : IData, new()
         {
             int ord = reader.GetOrdinal(name);
             if (!reader.IsDBNull(ord))
@@ -299,20 +299,20 @@ namespace Greatbone.Core
         //
 
 
-        public void PostHorizontalEvent<E>(string topic, int verb, E msg) where E : IDat
+        public void PostHorizontalEvent<E>(string topic, int verb, E msg) where E : IData
         {
         }
 
-        public void PostVerticalEvent<E>(string topic, int verb, E msg) where E : IDat
+        public void PostVerticalEvent<E>(string topic, int verb, E msg) where E : IData
         {
         }
 
 
-        public void SendEvent<T>(string topic, string filter, T @event) where T : IDat
+        public void SendEvent<T>(string topic, string filter, T @event) where T : IData
         {
             // convert message to byte buffer
             JsobContent b = new JsobContent(16 * 1024);
-            @event.To(b);
+            @event.Write(b);
 
             Execute("INSERT INTO mq (topic, filter, message) VALUES (@topic, @filter, @message)", p =>
             {

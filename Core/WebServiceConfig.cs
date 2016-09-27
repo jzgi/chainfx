@@ -16,7 +16,7 @@ namespace Greatbone.Core
     /// }
     /// </example>
     ///
-    public class WebServiceConfig : WebConfig, IDat
+    public class WebServiceConfig : WebConfig, IData
     {
         ///<summary>Z-axis scaling</summary>
         public string Part;
@@ -36,7 +36,7 @@ namespace Greatbone.Core
 
         public Dictionary<string, string> options;
 
-        public void From(IInput r)
+        public void Read(IIn r)
         {
             r.Get(nameof(Key), ref Key);
             r.Get(nameof(Part), ref Part);
@@ -49,7 +49,7 @@ namespace Greatbone.Core
             r.Get(nameof(options), ref options);
         }
 
-        public void To(IOutput w)
+        public void Write(IOut w)
         {
             w.Put(nameof(Key), Key);
             w.Put(nameof(Part), Part);
@@ -68,9 +68,9 @@ namespace Greatbone.Core
             {
                 byte[] bytes = File.ReadAllBytes(file);
                 JsonParser parser = new JsonParser();
-                Obj obj = parser.ParseObj();
+                Record obj = parser.ParseObj();
 
-                From(obj); // may override
+                Read(obj); // may override
 
             }
             catch

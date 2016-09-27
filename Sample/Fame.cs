@@ -4,7 +4,7 @@ using Greatbone.Core;
 
 namespace Greatbone.Sample
 {
-    public struct Fame : IDat
+    public struct Fame : IData
     {
         internal char[] id;
         internal string name;
@@ -30,7 +30,7 @@ namespace Greatbone.Sample
         internal List<Item> friends;
         internal List<Item> awards;
 
-        public void From(IInput i)
+        public void Read(IIn i)
         {
             i.Get(nameof(id), ref id);
             i.Get(nameof(name), ref name);
@@ -57,31 +57,31 @@ namespace Greatbone.Sample
             i.Get(nameof(awards), ref awards);
         }
 
-        public void To(IOutput w)
+        public void Write(IOut o)
         {
-            w.Put(nameof(id), id);
-            w.Put(nameof(name), name);
-            w.Put(nameof(quote), quote);
-            w.Put(nameof(sex), sex);
-            w.Put(nameof(icon), icon);
-            w.Put(nameof(birthday), birthday);
-            w.Put(nameof(qq), qq);
-            w.Put(nameof(wechat), wechat);
-            w.Put(nameof(email), email);
-            w.Put(nameof(city), city);
-            w.Put(nameof(rank), rank);
-            w.Put(nameof(height), height);
-            w.Put(nameof(weight), weight);
-            w.Put(nameof(bust), bust);
-            w.Put(nameof(waist), waist);
-            w.Put(nameof(hip), hip);
-            w.Put(nameof(cup), cup);
-            w.Put(nameof(styles), styles);
-            w.Put(nameof(skills), skills);
-            w.Put(nameof(remark), remark);
-            w.Put(nameof(sites), sites);
-            w.Put(nameof(friends), friends);
-            w.Put(nameof(awards), awards);
+            o.Put(nameof(id), id);
+            o.Put(nameof(name), name);
+            o.Put(nameof(quote), quote);
+            o.Put(nameof(sex), sex);
+            o.Put(nameof(icon), icon);
+            o.Put(nameof(birthday), birthday);
+            o.Put(nameof(qq), qq);
+            o.Put(nameof(wechat), wechat);
+            o.Put(nameof(email), email);
+            o.Put(nameof(city), city);
+            o.Put(nameof(rank), rank);
+            o.Put(nameof(height), height);
+            o.Put(nameof(weight), weight);
+            o.Put(nameof(bust), bust);
+            o.Put(nameof(waist), waist);
+            o.Put(nameof(hip), hip);
+            o.Put(nameof(cup), cup);
+            o.Put(nameof(styles), styles);
+            o.Put(nameof(skills), skills);
+            o.Put(nameof(remark), remark);
+            o.Put(nameof(sites), sites);
+            o.Put(nameof(friends), friends);
+            o.Put(nameof(awards), awards);
         }
     }
 
@@ -93,14 +93,14 @@ namespace Greatbone.Sample
 
         internal string desc;
 
-        public void From(IInput r)
+        public void From(IIn r)
         {
             r.Get(nameof(uid), ref uid);
             r.Get(nameof(url), ref url);
             r.Get(nameof(desc), ref desc);
         }
 
-        public void To(IOutput w)
+        public void To(IOut w)
         {
             w.Put(nameof(uid), uid);
             w.Put(nameof(url), url);

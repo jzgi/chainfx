@@ -6,7 +6,7 @@ namespace Greatbone.Core
     /// <summary>
     /// JjavaScript Object Binary
     /// </summary>
-    public class JsobContent : DynamicContent, IOutput
+    public class JsobContent : DynamicContent, IOut
     {
         // stack of json knots in processing
         readonly int[] starts;

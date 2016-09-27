@@ -1,6 +1,6 @@
 ﻿namespace Greatbone.Core
 {
-    public interface IResultSet : IInput
+    public interface IResultSet : IIn
     {
         bool Get(ref int value);
 

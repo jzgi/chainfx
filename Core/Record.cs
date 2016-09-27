@@ -3,13 +3,13 @@ using System.Collections.Generic;
 
 namespace Greatbone.Core
 {
-    public class Obj : IInput
+    public class Record : IIn
     {
-        readonly Roll<Elem> pairs = new Roll<Elem>(16);
+        readonly Roll<Element> pairs = new Roll<Element>(16);
 
         public bool Get(string name, ref int value)
         {
-            Elem pair;
+            Element pair;
             if (pairs.TryGet(name, out pair))
             {
                 value = pair;
@@ -53,7 +53,7 @@ namespace Greatbone.Core
             throw new NotImplementedException();
         }
 
-        public bool Get<T>(string name, ref T value) where T : IDat, new()
+        public bool Get<T>(string name, ref T value) where T : IData, new()
         {
             throw new NotImplementedException();
         }
@@ -73,7 +73,7 @@ namespace Greatbone.Core
             throw new NotImplementedException();
         }
 
-        public Elem this[string name]
+        public Element this[string name]
         {
             get
             {

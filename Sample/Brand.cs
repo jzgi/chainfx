@@ -2,24 +2,24 @@
 
 namespace Greatbone.Sample
 {
-	public class Brand
-	{
-		public string Id;
+    public class Brand : IData
+    {
+        public string Id;
 
-		public string Name;
+        public string Name;
 
-		public char[] Credential { get; set; }
+        public char[] Credential { get; set; }
 
-		public long ModifiedOn { get; set; }
+        public long ModifiedOn { get; set; }
 
-		public string Key => Id;
+        public string Key => Id;
 
-		public void From(IInput r)
-		{
-		}
+        public void Read(IIn i)
+        {
+        }
 
-		public void To(IOutput w)
-		{
-		}
-	}
+        public void Write(IOut o)
+        {
+        }
+    }
 }

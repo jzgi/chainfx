@@ -9,7 +9,7 @@ namespace Greatbone.Sample
     /// <example>
     ///     Brand o  new Brand(){}
     /// </example>
-    public class Post
+    public class Post : IData
     {
         internal int id;
 
@@ -33,48 +33,48 @@ namespace Greatbone.Sample
         /// <summary>Returns the key of the brand object.</summary>
         public string Key { get; }
 
-        public void From(IInput r)
+        public void Read(IIn i)
         {
-            r.Get(nameof(id), ref id);
-            r.Get(nameof(time), ref time);
-            r.Get(nameof(authorid), ref authorid);
-            r.Get(nameof(author), ref author);
-            r.Get(nameof(commentable), ref commentable);
-            r.Get(nameof(comments), ref comments);
-            r.Get(nameof(text), ref text);
+            i.Get(nameof(id), ref id);
+            i.Get(nameof(time), ref time);
+            i.Get(nameof(authorid), ref authorid);
+            i.Get(nameof(author), ref author);
+            i.Get(nameof(commentable), ref commentable);
+            i.Get(nameof(comments), ref comments);
+            i.Get(nameof(text), ref text);
 
-            r.Get(nameof(m0), ref m0);
-            r.Get(nameof(m1), ref m1);
-            r.Get(nameof(m2), ref m2);
-            r.Get(nameof(m3), ref m3);
-            r.Get(nameof(m4), ref m4);
-            r.Get(nameof(m5), ref m5);
-            r.Get(nameof(m6), ref m6);
-            r.Get(nameof(m7), ref m7);
-            r.Get(nameof(m8), ref m8);
-            r.Get(nameof(m9), ref m9);
+            i.Get(nameof(m0), ref m0);
+            i.Get(nameof(m1), ref m1);
+            i.Get(nameof(m2), ref m2);
+            i.Get(nameof(m3), ref m3);
+            i.Get(nameof(m4), ref m4);
+            i.Get(nameof(m5), ref m5);
+            i.Get(nameof(m6), ref m6);
+            i.Get(nameof(m7), ref m7);
+            i.Get(nameof(m8), ref m8);
+            i.Get(nameof(m9), ref m9);
         }
 
-        public void To(IOutput w)
+        public void Write(IOut o)
         {
-            w.Put(nameof(id), id);
-            w.Put(nameof(time), time);
-            w.Put(nameof(authorid), authorid);
-            w.Put(nameof(author), author);
-            w.Put(nameof(commentable), commentable);
-            w.Put(nameof(comments), comments);
-            w.Put(nameof(text), text);
+            o.Put(nameof(id), id);
+            o.Put(nameof(time), time);
+            o.Put(nameof(authorid), authorid);
+            o.Put(nameof(author), author);
+            o.Put(nameof(commentable), commentable);
+            o.Put(nameof(comments), comments);
+            o.Put(nameof(text), text);
 
-            w.Put(nameof(m0), m0);
-            w.Put(nameof(m1), m1);
-            w.Put(nameof(m2), m2);
-            w.Put(nameof(m3), m3);
-            w.Put(nameof(m4), m4);
-            w.Put(nameof(m5), m5);
-            w.Put(nameof(m6), m6);
-            w.Put(nameof(m7), m7);
-            w.Put(nameof(m8), m8);
-            w.Put(nameof(m9), m9);
+            o.Put(nameof(m0), m0);
+            o.Put(nameof(m1), m1);
+            o.Put(nameof(m2), m2);
+            o.Put(nameof(m3), m3);
+            o.Put(nameof(m4), m4);
+            o.Put(nameof(m5), m5);
+            o.Put(nameof(m6), m6);
+            o.Put(nameof(m7), m7);
+            o.Put(nameof(m8), m8);
+            o.Put(nameof(m9), m9);
         }
     }
 
@@ -90,7 +90,7 @@ namespace Greatbone.Sample
 
         internal string text;
 
-        public void From(IInput r)
+        public void From(IIn r)
         {
             r.Get(nameof(time), ref time);
             r.Get(nameof(emoji), ref emoji);
@@ -99,7 +99,7 @@ namespace Greatbone.Sample
             r.Get(nameof(text), ref text);
         }
 
-        public void To(IOutput w)
+        public void To(IOut w)
         {
             w.Put(nameof(time), time);
             w.Put(nameof(emoji), emoji);

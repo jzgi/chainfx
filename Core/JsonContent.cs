@@ -3,7 +3,7 @@ using System.Collections.Generic;
 
 namespace Greatbone.Core
 {
-    public class JsonContent : DynamicContent, IOutput
+    public class JsonContent : DynamicContent, IOut
     {
         // starting positions of each level
         readonly int[] starts;
@@ -187,7 +187,7 @@ namespace Greatbone.Core
             throw new System.NotImplementedException();
         }
 
-        public void Write(string name, params IDat[] array)
+        public void Write(string name, params IData[] array)
         {
             Put('"');
             Put(name);
@@ -204,10 +204,10 @@ namespace Greatbone.Core
                         Put(',');
                     }
 
-                    IDat obj = array[i];
+                    IData obj = array[i];
 
                     Put('{');
-                    obj.To(this);
+                    obj.Write(this);
                     Put('}');
                 }
             }

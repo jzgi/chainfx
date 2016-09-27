@@ -1,6 +1,6 @@
 ﻿namespace Greatbone.Core
 {
-    public class DbConfig : IDat
+    public class DbConfig : IData
     {
         public string Host;
 
@@ -12,7 +12,7 @@
 
         public bool MQ;
 
-        public void From(IInput r)
+        public void Read(IIn r)
         {
             r.Get(nameof(Host), ref Host);
             r.Get(nameof(Port), ref Port);
@@ -21,7 +21,7 @@
             r.Get(nameof(MQ), ref MQ);
         }
 
-        public void To(IOutput w)
+        public void Write(IOut w)
         {
             w.Put(nameof(Host), Host);
             w.Put(nameof(Port), Port);

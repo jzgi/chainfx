@@ -11,7 +11,7 @@ namespace Greatbone.Core
     /// <summary>
     /// An element represents either a value or a name/value pair.
     /// </summary>
-    public struct Elem : IMember
+    public struct Element : IMember
     {
         // type of value
         VT vt;
@@ -32,22 +32,22 @@ namespace Greatbone.Core
 
         public bool IsPair => name != null;
 
-        public static implicit operator Obj(Elem v)
+        public static implicit operator Record(Element v)
         {
-            return (Obj)v.refv;
+            return (Record)v.refv;
         }
 
-        public static implicit operator Arr(Elem v)
+        public static implicit operator Vector(Element v)
         {
-            return (Arr)v.refv;
+            return (Vector)v.refv;
         }
 
-        public static implicit operator int(Elem v)
+        public static implicit operator int(Element v)
         {
             return 0;
         }
 
-        public static implicit operator string(Elem v)
+        public static implicit operator string(Element v)
         {
             return (string)v.refv;
         }

@@ -53,7 +53,7 @@ namespace Greatbone.Core
             return coll;
         }
 
-        public static DbParameterCollection Set<T>(this DbParameterCollection coll, string name, List<T> value) where T : IDat
+        public static DbParameterCollection Set<T>(this DbParameterCollection coll, string name, List<T> value) where T : IData
         {
             JsonText text = new JsonText(value.ToString());
 

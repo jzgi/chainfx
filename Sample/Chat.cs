@@ -6,7 +6,7 @@ namespace Greatbone.Sample
 {
     /// <summary>Represent a chat session.</summary>
     ///
-    public struct Chat
+    public struct Chat : IData
     {
         private int status;
 
@@ -23,20 +23,20 @@ namespace Greatbone.Sample
             msgs.Add(new Message());
         }
 
-        public void From(IInput r)
+        public void Read(IIn i)
         {
-            r.Get(nameof(status), ref status);
-            r.Get(nameof(partner), ref partner);
-            r.Get(nameof(msgs), ref msgs);
-            r.Get(nameof(lasttime), ref lasttime);
+            i.Get(nameof(status), ref status);
+            i.Get(nameof(partner), ref partner);
+            i.Get(nameof(msgs), ref msgs);
+            i.Get(nameof(lasttime), ref lasttime);
         }
 
-        public void To(IOutput w)
+        public void Write(IOut o)
         {
-            w.Put(nameof(status), status);
-            w.Put(nameof(partner), partner);
-            w.Put(nameof(msgs), msgs);
-            w.Put(nameof(lasttime), lasttime);
+            o.Put(nameof(status), status);
+            o.Put(nameof(partner), partner);
+            o.Put(nameof(msgs), msgs);
+            o.Put(nameof(lasttime), lasttime);
         }
     }
 
@@ -61,24 +61,24 @@ namespace Greatbone.Sample
 
         internal DateTime time;
 
-        public void From(IInput r)
+        public void Read(IIn i)
         {
-            r.Get(nameof(id), ref id);
-            r.Get(nameof(subtype), ref subtype);
-            r.Get(nameof(@from), ref @from);
-            r.Get(nameof(to), ref to);
-            r.Get(nameof(content), ref content);
-            r.Get(nameof(time), ref time);
+            i.Get(nameof(id), ref id);
+            i.Get(nameof(subtype), ref subtype);
+            i.Get(nameof(@from), ref @from);
+            i.Get(nameof(to), ref to);
+            i.Get(nameof(content), ref content);
+            i.Get(nameof(time), ref time);
         }
 
-        public void To(IOutput w)
+        public void Write(IOut o)
         {
-            w.Put(nameof(id), id);
-            w.Put(nameof(subtype), subtype);
-            w.Put(nameof(from), from);
-            w.Put(nameof(to), to);
-            w.Put(nameof(content), content);
-            w.Put(nameof(time), time);
+            o.Put(nameof(id), id);
+            o.Put(nameof(subtype), subtype);
+            o.Put(nameof(from), from);
+            o.Put(nameof(to), to);
+            o.Put(nameof(content), content);
+            o.Put(nameof(time), time);
         }
     }
 }

@@ -2,16 +2,16 @@
 
 namespace Greatbone.Core
 {
-    public static class IInputExtensions
+    public static class IInExtensions
     {
-        public static T Read<T>(this IInput i) where T : IDat, new()
+        public static T Read<T>(this IIn i) where T : IData, new()
         {
             T obj = new T();
           
             return obj;
         }
 
-        public static List<T> ReadArray<T>(this IInput r) where T : IDat, new()
+        public static List<T> ReadArray<T>(this IIn r) where T : IData, new()
         {
             List<T> lst = new List<T>(64);
             //			if (!r.ReadArrayStart()) return lst;
@@ -19,7 +19,7 @@ namespace Greatbone.Core
 
             T obj = new T();
             //			r.ReadStart();
-            obj.From(r);
+            obj.Read(r);
             //			r.ReadEnd();
             return null;
         }
