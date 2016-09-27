@@ -1,4 +1,4 @@
-namespace Greaatbone.Core
+namespace Greatbone.Core
 {
 
     public class JsonParser

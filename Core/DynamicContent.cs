@@ -98,21 +98,6 @@ namespace Greatbone.Core
         }
 
 
-        protected DynamicContent(byte[] buf, int count)
-        {
-            this.buffer = buf;
-            this.count = count;
-        }
-
-        /// <summary>
-        /// Creates a dynamic content in reading mode.
-        /// </summary>
-        protected DynamicContent(ArraySegment<byte> bytes)
-        {
-            this.buffer = bytes.Array;
-            this.count = bytes.Count;
-        }
-
         public abstract string Type { get; }
 
         public byte[] Buffer => buffer;

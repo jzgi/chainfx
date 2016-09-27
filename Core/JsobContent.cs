@@ -18,14 +18,6 @@ namespace Greatbone.Core
         int pos;
 
 
-        public JsobContent(byte[] buf, int count) : base(buf, count)
-        {
-            starts = new int[8];
-            level = -1;
-            pos = -1;
-        }
-
-
         public JsobContent(int capacity) : base(capacity)
         {
         }

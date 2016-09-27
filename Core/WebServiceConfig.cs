@@ -67,7 +67,7 @@ namespace Greatbone.Core
             try
             {
                 byte[] bytes = File.ReadAllBytes(file);
-                JsonContent jc = new JsonContent(bytes, bytes.Length);
+                JsonParser parser = new JsonParser();
 
             }
             catch

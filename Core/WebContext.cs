@@ -97,11 +97,9 @@ namespace Greatbone.Core
                         string ctype = Request.ContentType;
                         if ("application/jsob".Equals(ctype))
                         {
-                            reqContent = new JsobContent(reqBytes.Array, reqBytes.Count);
                         }
                         else
                         {
-                            reqContent = new JsonContent(reqBytes.Array, reqBytes.Count);
                         }
                     }
                 }

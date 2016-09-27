@@ -14,16 +14,11 @@ namespace Greatbone.Core
         // current position
         int pos;
 
-        readonly bool reading;
 
-
-        public JsonContent(byte[] buf, int count) : base(buf, count)
+        public JsonContent(int capacity) : base(capacity)
         {
-            starts = new int[8];
-            level = -1;
-            pos = -1;
-            reading = true;
         }
+
 
         public override string Type => "application/json";
 
@@ -63,15 +58,6 @@ namespace Greatbone.Core
             level--;
 
             return true;
-        }
-
-        //
-        // WRITES
-        //
-
-
-        public JsonContent(int capacity) : base(capacity)
-        {
         }
 
 
@@ -160,8 +146,8 @@ namespace Greatbone.Core
 
         }
 
-   
- 
+
+
         public void Put(string name, bool value)
         {
         }
@@ -243,8 +229,8 @@ namespace Greatbone.Core
             throw new NotImplementedException();
         }
 
-  
-  
+
+
 
         public void Arr(Action a)
         {
