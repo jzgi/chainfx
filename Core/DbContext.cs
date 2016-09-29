@@ -314,7 +314,7 @@ namespace Greatbone.Core
         public void SendEvent<T>(string topic, string filter, T @event) where T : IData
         {
             // convert message to byte buffer
-            CJsonContent b = new CJsonContent(16 * 1024);
+            JsonContent b = new JsonContent(16 * 1024);
             @event.Write(b);
 
             Execute("INSERT INTO mq (topic, filter, message) VALUES (@topic, @filter, @message)", p =>

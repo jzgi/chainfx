@@ -5,10 +5,11 @@ namespace Greatbone.Core
 
     public class JsonParser
     {
-        byte[] buffer;
+        byte[] array;
 
-        int count;
+        int limit;
 
+        // UTF-8 string builder
         Str str;
 
         public void Parse(Obj obj)
@@ -26,8 +27,8 @@ namespace Greatbone.Core
             int lq = 0;
             for (;;)
             {
-                byte b = buffer[++p];
-                if (p >= count) return null;
+                byte b = array[++p];
+                if (p >= limit) return null;
                 if (b == '"')
                 {
                     break;
@@ -37,8 +38,8 @@ namespace Greatbone.Core
             int close = -1;
             for (;;)
             {
-                byte b = buffer[++p];
-                if (p >= count) return null;
+                byte b = array[++p];
+                if (p >= limit) return null;
                 if (b == '"')
                 {
                     break;
@@ -51,8 +52,8 @@ namespace Greatbone.Core
 
             for (;;)
             {
-                byte b = buffer[++p];
-                if (p >= count) return null;
+                byte b = array[++p];
+                if (p >= limit) return null;
                 if (b == ':')
                 {
                     break;
@@ -61,7 +62,7 @@ namespace Greatbone.Core
 
             //
 
-            byte c = buffer[p];
+            byte c = array[p];
             if (c == '{')
             {
                 Obj v = ParseObj(p);
@@ -72,13 +73,24 @@ namespace Greatbone.Core
                 Obj v = ParseObj(p);
                 obj.Add(sb.ToString(), v);
             }
+            else if (c == '"')
+            {
+                string v = ParseString(p);
+                obj.Add(sb.ToString(), v);
+            }
 
 
             Parse(obj);
 
             return obj;
         }
+
         public Arr ParseArr(int left)
+        {
+            return null;
+        }
+
+        public string ParseString(int start)
         {
             return null;
         }
