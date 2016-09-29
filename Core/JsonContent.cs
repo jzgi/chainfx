@@ -64,6 +64,18 @@ namespace Greatbone.Core
         }
 
 
+        public IOut _(int value)
+        {
+            if (starts[level] > 0)
+            {
+                Put(',');
+            }
+
+            Put(value);
+
+            return this;
+        }
+
         public IOut Put(string name, short value)
         {
             if (starts[level] > 0)
@@ -210,7 +222,7 @@ namespace Greatbone.Core
             throw new NotImplementedException();
         }
 
-        public  IOut Put<T>(string name, long value)
+        public IOut Put<T>(string name, long value)
         {
             throw new NotImplementedException();
         }

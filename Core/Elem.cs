@@ -16,7 +16,7 @@ namespace Greatbone.Core
     /// </summary>
     public struct Elem : IMember
     {
-        // type of value
+        // type of the value
         readonly VT vt;
 
         // Obj, Arr, string, byte[]
@@ -100,12 +100,20 @@ namespace Greatbone.Core
 
         public static implicit operator int(Elem v)
         {
+            if (v.vt == VT.Number)
+            {
+                // return v.numv.Int32();
+            }
             return 0;
         }
 
         public static implicit operator string(Elem v)
         {
-            return (string)v.refv;
+            if (v.vt == VT.String)
+            {
+                return (string)v.refv;
+            }
+            return null;
         }
     }
 }

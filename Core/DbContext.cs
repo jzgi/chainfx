@@ -21,7 +21,7 @@ namespace Greatbone.Core
         bool disposed;
 
 
-        public DbContext(NpgsqlConnectionStringBuilder builder)
+        internal DbContext(NpgsqlConnectionStringBuilder builder)
         {
             connection = new NpgsqlConnection(builder);
             command = new NpgsqlCommand();
@@ -29,7 +29,7 @@ namespace Greatbone.Core
             command.Connection = connection;
         }
 
-        public void BeginTransaction()
+        public void Begin()
         {
             if (transact == null)
             {
@@ -38,7 +38,7 @@ namespace Greatbone.Core
             }
         }
 
-        public void BeginTransaction(IsolationLevel level)
+        public void Begin(IsolationLevel level)
         {
             if (transact == null)
             {
@@ -47,7 +47,7 @@ namespace Greatbone.Core
             }
         }
 
-        public void CommitTransaction()
+        public void Commit()
         {
             if (transact != null)
             {
@@ -57,7 +57,7 @@ namespace Greatbone.Core
             }
         }
 
-        public void RollbackTransaction()
+        public void Rollback()
         {
             if (transact != null)
             {
@@ -82,8 +82,9 @@ namespace Greatbone.Core
             command.CommandText = cmdtext;
             command.CommandType = CommandType.Text;
             command.Parameters.Clear();
+            index = 0;
             ps?.Invoke(this);
-
+            ordinal = 0;
             reader = command.ExecuteReader();
             return reader.Read();
         }
@@ -103,14 +104,17 @@ namespace Greatbone.Core
             command.CommandText = cmdtext;
             command.CommandType = CommandType.Text;
             command.Parameters.Clear();
+            index = 0;
             ps?.Invoke(this);
-
+            ordinal = 0;
             reader = command.ExecuteReader();
             return reader.HasRows;
         }
 
         public bool NextRow()
         {
+            ordinal = 0; // reset column ordinal
+
             if (reader == null)
             {
                 return false;
@@ -132,6 +136,8 @@ namespace Greatbone.Core
 
         public bool NextResult()
         {
+            ordinal = 0; // reset column ordinal
+
             if (reader == null)
             {
                 return false;
@@ -154,8 +160,9 @@ namespace Greatbone.Core
             command.CommandText = cmdtext;
             command.CommandType = CommandType.Text;
             command.Parameters.Clear();
+            index = 0;
             ps?.Invoke(this);
-
+            ordinal = 0;
             return command.ExecuteNonQuery();
         }
 
@@ -166,6 +173,28 @@ namespace Greatbone.Core
         private int ordinal;
 
 
+        public bool Get(ref bool value)
+        {
+            int ord = ordinal++;
+            if (!reader.IsDBNull(ord))
+            {
+                value = reader.GetBoolean(ord);
+                return true;
+            }
+            return false;
+        }
+
+        public bool Get(ref short value)
+        {
+            int ord = ordinal++;
+            if (!reader.IsDBNull(ord))
+            {
+                value = reader.GetInt16(ord);
+                return true;
+            }
+            return false;
+        }
+
         public bool Get(ref int value)
         {
             int ord = ordinal++;
@@ -174,7 +203,39 @@ namespace Greatbone.Core
                 value = reader.GetInt32(ord);
                 return true;
             }
-            value = 0;
+            return false;
+        }
+
+        public bool Get(ref long value)
+        {
+            int ord = ordinal++;
+            if (!reader.IsDBNull(ord))
+            {
+                value = reader.GetInt64(ord);
+                return true;
+            }
+            return false;
+        }
+
+        public bool Get(ref decimal value)
+        {
+            int ord = ordinal++;
+            if (!reader.IsDBNull(ord))
+            {
+                value = reader.GetDecimal(ord);
+                return true;
+            }
+            return false;
+        }
+
+        public bool Get(ref DateTime value)
+        {
+            int ord = ordinal++;
+            if (!reader.IsDBNull(ord))
+            {
+                value = reader.GetDateTime(ord);
+                return true;
+            }
             return false;
         }
 
@@ -186,30 +247,9 @@ namespace Greatbone.Core
                 value = reader.GetString(ord);
                 return true;
             }
-            value = null;
             return false;
         }
 
-
-        public bool Get(string name, ref string value)
-        {
-            int ord = reader.GetOrdinal(name);
-            if (!reader.IsDBNull(ord))
-            {
-                value = reader.GetString(ord);
-                return true;
-            }
-            return false;
-        }
-
-        public bool Get<T>(string name, ref List<T> value)
-        {
-            if (Get(name, ref value))
-            {
-                //                Json son = new Json();
-            }
-            return false;
-        }
 
 
         public bool Get(string name, ref bool value)
@@ -263,6 +303,26 @@ namespace Greatbone.Core
             {
                 value = reader.GetDateTime(ord);
                 return true;
+            }
+            return false;
+        }
+
+        public bool Get(string name, ref string value)
+        {
+            int ord = reader.GetOrdinal(name);
+            if (!reader.IsDBNull(ord))
+            {
+                value = reader.GetString(ord);
+                return true;
+            }
+            return false;
+        }
+
+        public bool Get<T>(string name, ref List<T> value)
+        {
+            if (Get(name, ref value))
+            {
+                //                Json son = new Json();
             }
             return false;
         }
@@ -357,6 +417,59 @@ namespace Greatbone.Core
             throw new NotImplementedException();
         }
 
+        //
+        // PARAMETERS
+        //
+
+        static string[] Params = { "1", "2", "3", "4", "5", "6", "7", "8", "9", "10" };
+
+        int index; // current parameter index
+
+        public IOut Put(bool value)
+        {
+            parameters.Add(new NpgsqlParameter(Params[index++], NpgsqlDbType.Boolean)
+            {
+                Value = value
+            });
+            return this;
+        }
+
+        public IOut Put(short value)
+        {
+            parameters.Add(new NpgsqlParameter(Params[index++], NpgsqlDbType.Smallint)
+            {
+                Value = value
+            });
+            return this;
+        }
+
+        public IOut Put(int value)
+        {
+            parameters.Add(new NpgsqlParameter(Params[index++], NpgsqlDbType.Integer)
+            {
+                Value = value
+            });
+            return this;
+        }
+
+        public IOut Put(long value)
+        {
+            parameters.Add(new NpgsqlParameter(Params[index++], NpgsqlDbType.Bigint)
+            {
+                Value = value
+            });
+            return this;
+        }
+
+        public IOut Put(decimal value)
+        {
+            parameters.Add(new NpgsqlParameter(Params[index++], NpgsqlDbType.Money)
+            {
+                Value = value
+            });
+            return this;
+        }
+
 
         public IOut Put(string name, bool value)
         {
@@ -369,7 +482,11 @@ namespace Greatbone.Core
 
         public IOut Put(string name, short value)
         {
-            throw new NotImplementedException();
+            parameters.Add(new NpgsqlParameter(name, NpgsqlDbType.Smallint)
+            {
+                Value = value
+            });
+            return this;
         }
 
         public IOut Put(string name, int value)
@@ -410,12 +527,20 @@ namespace Greatbone.Core
 
         public IOut Put(string name, char[] value)
         {
-            throw new NotImplementedException();
+            parameters.Add(new NpgsqlParameter(name, NpgsqlDbType.Char, value.Length)
+            {
+                Value = value
+            });
+            return this;
         }
 
         public IOut Put(string name, string value)
         {
-            throw new NotImplementedException();
+            parameters.Add(new NpgsqlParameter(name, NpgsqlDbType.Varchar, value.Length)
+            {
+                Value = value
+            });
+            return this;
         }
 
         public IOut Put<T>(string name, T value) where T : IData
@@ -425,7 +550,11 @@ namespace Greatbone.Core
 
         public IOut Put(string name, byte[] value)
         {
-            throw new NotImplementedException();
+            parameters.Add(new NpgsqlParameter(name, NpgsqlDbType.Bytea, value.Length)
+            {
+                Value = value
+            });
+            return this;
         }
 
         public IOut Put<T>(string name, List<T> value)

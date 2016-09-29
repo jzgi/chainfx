@@ -49,13 +49,13 @@ namespace Greatbone.Sample
         {
             using (var sc = NewSqlContext())
             {
-                sc.BeginTransaction();
+                sc.Begin();
 
                 //				sc.DoNonQuery("inaert", o => o.ToString(););
 
                 // msg
 
-                sc.CommitTransaction();
+                sc.Commit();
             }
 
             wc.Response.StatusCode = 200;
