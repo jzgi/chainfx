@@ -7,7 +7,7 @@ namespace Greatbone.Core
     {
         readonly Roll<Elem> pairs = new Roll<Elem>(16);
 
-        internal void AddNull(string name)
+        internal void Add(string name)
         {
             Elem e = new Elem()
             {

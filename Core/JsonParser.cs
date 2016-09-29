@@ -5,7 +5,7 @@ namespace Greatbone.Core
 
     public class JsonParser
     {
-        static readonly JsonException FormatEx = new JsonException("Invalid Format");
+        static readonly JsonException FormatEx = new JsonException("JSON Format");
 
         readonly byte[] array;
 
@@ -33,14 +33,8 @@ namespace Greatbone.Core
                 byte b = array[++p];
                 if (p >= limit) throw FormatEx;
                 if (b == ' ' || b == '\t' || b == '\n' || b == '\r') continue; // skip ws
-                if (b == '{')
-                {
-                    return ParseObj(p);
-                }
-                if (b == '[')
-                {
-                    return ParseArr(p);
-                }
+                if (b == '{') return ParseObj(p);
+                if (b == '[') return ParseArr(p);
                 throw FormatEx;
             }
         }
@@ -56,10 +50,7 @@ namespace Greatbone.Core
                     byte b = array[++p];
                     if (p >= limit) throw FormatEx;
                     if (b == ' ' || b == '\t' || b == '\n' || b == '\r') continue;
-                    if (b == '"') // meet first quote
-                    {
-                        break;
-                    }
+                    if (b == '"') break; // meet first quote
                     throw FormatEx;
                 }
 
@@ -68,29 +59,20 @@ namespace Greatbone.Core
                 {
                     byte b = array[++p];
                     if (p >= limit) throw FormatEx;
-                    if (b == '"') // meet second quote
-                    {
-                        break;
-                    }
-                    else
-                    {
-                        name.Append((char)b);
-                    }
+                    if (b == '"') break; // meet second quote
+                    else name.Append((char)b);
                 }
 
-                for (;;)
+                for (;;) // till a colon
                 {
                     byte b = array[++p];
                     if (p >= limit) throw FormatEx;
                     if (b == ' ' || b == '\t' || b == '\n' || b == '\r') continue;
-                    if (b == ':')
-                    {
-                        break;
-                    }
+                    if (b == ':') break;
                     throw FormatEx;
                 }
 
-                // analyze the value part
+                // parse the value part
                 for (;;)
                 {
                     byte b = array[++p];
@@ -113,10 +95,7 @@ namespace Greatbone.Core
                     }
                     else if (b == 'n')
                     {
-                        if (ParseNull(p))
-                        {
-                            obj.AddNull(name.ToString());
-                        }
+                        if (ParseNull(p)) obj.Add(name.ToString());
                     }
                     else if (b == 't' || b == 'f')
                     {
@@ -133,10 +112,8 @@ namespace Greatbone.Core
                         byte[] v = ParseBytes(p);
                         obj.Add(name.ToString(), v);
                     }
-                    else
-                    {
-                        throw FormatEx;
-                    }
+                    else throw FormatEx;
+                    break;
                 }
 
                 // comma or end
@@ -145,48 +122,72 @@ namespace Greatbone.Core
                     byte b = array[p++];
                     if (p >= limit) throw FormatEx;
                     if (b == ' ' || b == '\t' || b == '\n' || b == '\r') continue;
-                    if (b == ',')
-                    {
-                        break;
-                    }
-                    if (b == '}')
-                    {
-                        goto End;
-                    }
+                    if (b == ',') break;
+                    if (b == '}') goto End;
                     throw FormatEx;
                 }
             }
-        End: return obj;
+        End:
+            return obj;
         }
 
         Arr ParseArr(int start)
         {
             Arr arr = new Arr(16);
-
-            //
             int p = start;
-            byte c = array[p];
-            if (c == '{')
+            for (;;)
             {
-                Obj v = ParseObj(p);
-                arr.Add(new Elem(v));
-            }
-            else if (c == '[')
-            {
-                Obj v = ParseObj(p);
-                arr.Add(new Elem(v));
-            }
-            else if (c == '"')
-            {
-                string v = ParseString(p);
-                arr.Add(new Elem(v));
-            }
-            else if (c >= '0' && c <= '9')
-            {
-                Number v = ParseNumber(p);
-                arr.Add(new Elem(v));
-            }
+                byte b = array[++p];
+                if (p >= limit) throw FormatEx;
+                if (b == ' ' || b == '\t' || b == '\n' || b == '\r') continue; // skip ws
+                if (b == '{')
+                {
+                    Obj v = ParseObj(p);
+                    arr.Add(new Elem(v));
+                }
+                else if (b == '[')
+                {
+                    Arr v = ParseArr(p);
+                    arr.Add(new Elem(v));
+                }
+                else if (b == '"')
+                {
+                    string v = ParseString(p);
+                    arr.Add(new Elem(v));
+                }
+                else if (b == 'n')
+                {
+                    if (ParseNull(p)) arr.Add(new Elem());
+                }
+                else if (b == 't' || b == 'f')
+                {
+                    bool v = ParseBool(p);
+                    arr.Add(new Elem(v));
+                }
+                else if (b >= '0' && b <= '9')
+                {
+                    Number v = ParseNumber(p);
+                    arr.Add(new Elem(v));
+                }
+                else if (b == '&') // bytes extension
+                {
+                    byte[] v = ParseBytes(p);
+                    arr.Add(new Elem(v));
+                }
+                else throw FormatEx;
 
+                // comma or end
+                for (;;)
+                {
+                    b = array[p++];
+                    if (p >= limit) throw FormatEx;
+                    if (b == ' ' || b == '\t' || b == '\n' || b == '\r') continue; // skip ws
+                    if (b == ',') break;
+                    if (b == ']') goto End;
+                    throw FormatEx;
+                }
+            }
+        End:
             return null;
         }
 
