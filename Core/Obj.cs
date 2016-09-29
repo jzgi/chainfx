@@ -5,11 +5,57 @@ namespace Greatbone.Core
 {
     public class Obj : IIn
     {
-        readonly Roll<Element> pairs = new Roll<Element>(16);
+        readonly Roll<Elem> pairs = new Roll<Elem>(16);
+
+        internal void Add(string name, Obj v)
+        {
+            Elem e = new Elem(v)
+            {
+                Key = name
+            };
+            pairs.Add(e);
+        }
+
+        internal void Add(string name, Arr v)
+        {
+            Elem e = new Elem(v)
+            {
+                Key = name
+            };
+            pairs.Add(e);
+        }
+
+        internal void Add(string name, string v)
+        {
+            Elem e = new Elem(v)
+            {
+                Key = name
+            };
+            pairs.Add(e);
+        }
+
+        internal void Add(string name, bool v)
+        {
+            Elem e = new Elem(v)
+            {
+                Key = name
+            };
+            pairs.Add(e);
+        }
+
+        internal void Add(string name, Number v)
+        {
+            Elem e = new Elem(v)
+            {
+                Key = name
+            };
+            pairs.Add(e);
+        }
+
 
         public bool Get(string name, ref int value)
         {
-            Element pair;
+            Elem pair;
             if (pairs.TryGet(name, out pair))
             {
                 value = pair;
@@ -73,7 +119,7 @@ namespace Greatbone.Core
             throw new NotImplementedException();
         }
 
-        public Element this[string name]
+        public Elem this[string name]
         {
             get
             {

@@ -1,34 +1,34 @@
+using System;
+
 namespace Greatbone.Core
 {
     public class Arr
     {
-        Element[] values;
+        Elem[] elements;
 
         int count;
 
-        public Element this[int index]
+        internal Arr(int capacity)
         {
-            get { return values[index]; }
+            elements = new Elem[capacity];
+            count = 0;
         }
 
-        internal void Add(Number v)
+        public Elem this[int index]
         {
-
+            get { return elements[index]; }
         }
 
-        internal void Add(Str v)
+        internal void Add(Elem elem)
         {
-
-        }
-
-        internal void Add(Obj v)
-        {
-
-        }
-
-        internal void Add(Arr v)
-        {
-
+            int len = elements.Length;
+            if (count >= len)
+            {
+                Elem[] @new = new Elem[len * 4];
+                Array.Copy(elements, @new, len);
+                elements = @new;
+            }
+            elements[count++] = elem;
         }
 
     }
