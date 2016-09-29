@@ -3,6 +3,9 @@ using System.Collections.Generic;
 
 namespace Greatbone.Core
 {
+    /// <summary>
+    /// To generate a UTF-8 encoded JSON document. It includes a binary-value extension to the standard JSON format.
+    /// </summary>
     public class JsonContent : DynamicContent, IOut
     {
         // starting positions of each level

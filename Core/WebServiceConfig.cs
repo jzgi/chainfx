@@ -67,8 +67,8 @@ namespace Greatbone.Core
             try
             {
                 byte[] bytes = File.ReadAllBytes(file);
-                JsonParser parser = new JsonParser();
-                Obj obj = parser.ParseObj(0);
+                JsonParser parser = new JsonParser(bytes);
+                Obj obj = (Obj)parser.Parse();
 
                 Read(obj); // may override
 

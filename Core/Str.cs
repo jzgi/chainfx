@@ -2,7 +2,11 @@ using System;
 
 namespace Greatbone.Core
 {
-    internal struct Str
+
+    /// <summary>
+    /// a UTF-8 and escaping enabled string builder.
+    /// </summary>
+    internal class Str
     {
         char[] buffer;
 

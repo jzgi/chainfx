@@ -7,6 +7,15 @@ namespace Greatbone.Core
     {
         readonly Roll<Elem> pairs = new Roll<Elem>(16);
 
+        internal void AddNull(string name)
+        {
+            Elem e = new Elem()
+            {
+                Key = name
+            };
+            pairs.Add(e);
+        }
+
         internal void Add(string name, Obj v)
         {
             Elem e = new Elem(v)
@@ -26,6 +35,15 @@ namespace Greatbone.Core
         }
 
         internal void Add(string name, string v)
+        {
+            Elem e = new Elem(v)
+            {
+                Key = name
+            };
+            pairs.Add(e);
+        }
+
+        internal void Add(string name, byte[] v)
         {
             Elem e = new Elem(v)
             {
