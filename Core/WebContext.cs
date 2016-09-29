@@ -200,7 +200,7 @@ namespace Greatbone.Core
 
         public void SetSerialObj<T>(T obj, bool binary) where T : IData
         {
-            DynamicContent cnt = binary ? new JsobContent(16 * 1024) : (DynamicContent)new JsonContent(16 * 1024);
+            DynamicContent cnt = binary ? new CJsonContent(16 * 1024) : (DynamicContent)new JsonContent(16 * 1024);
             ((IOut)cnt).Write(obj);
             Content = cnt;
         }

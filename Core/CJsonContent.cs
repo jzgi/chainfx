@@ -4,9 +4,9 @@ using System.Collections.Generic;
 namespace Greatbone.Core
 {
     /// <summary>
-    /// JjavaScript Object Binary
+    /// Compact JSON content.
     /// </summary>
-    public class JsobContent : DynamicContent, IOut
+    public class CJsonContent : DynamicContent, IOut
     {
         // stack of json knots in processing
         readonly int[] starts;
@@ -18,12 +18,12 @@ namespace Greatbone.Core
         int pos;
 
 
-        public JsobContent(int capacity) : base(capacity)
+        public CJsonContent(int capacity) : base(capacity)
         {
         }
 
 
-        public override string Type => "application/jsob";
+        public override string Type => "application/cjson";
 
 
 
