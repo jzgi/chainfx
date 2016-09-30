@@ -14,7 +14,7 @@ namespace Greatbone.Core
     /// <summary>
     /// An element represents either a value or a name/value pair, depending on the presence of the name property.
     /// </summary>
-    public struct Elem : IKeyed
+    public struct Member : IKeyed
     {
         // type of the value
         readonly VT vt;
@@ -27,7 +27,7 @@ namespace Greatbone.Core
         // key as in an object member
         string key;
 
-        internal Elem(Obj v)
+        internal Member(Obj v)
         {
             vt = VT.Object;
             refv = v;
@@ -35,7 +35,7 @@ namespace Greatbone.Core
             key = null;
         }
 
-        internal Elem(Arr v)
+        internal Member(Arr v)
         {
             vt = VT.Array;
             refv = v;
@@ -43,7 +43,7 @@ namespace Greatbone.Core
             key = null;
         }
 
-        internal Elem(string v)
+        internal Member(string v)
         {
             vt = VT.String;
             refv = v;
@@ -51,7 +51,7 @@ namespace Greatbone.Core
             key = null;
         }
 
-        internal Elem(byte[] v)
+        internal Member(byte[] v)
         {
             vt = VT.Bytes;
             refv = v;
@@ -59,7 +59,7 @@ namespace Greatbone.Core
             key = null;
         }
 
-        internal Elem(bool v)
+        internal Member(bool v)
         {
             vt = v ? VT.True : VT.False;
             refv = null;
@@ -67,7 +67,7 @@ namespace Greatbone.Core
             key = null;
         }
 
-        internal Elem(Number v)
+        internal Member(Number v)
         {
             vt = VT.Number;
             refv = null;
@@ -83,22 +83,30 @@ namespace Greatbone.Core
 
         public bool IsPair => key != null;
 
-        public static implicit operator Obj(Elem v)
+        public static implicit operator Obj(Member v)
         {
-            return (Obj)v.refv;
+            if (v.vt == VT.Object)
+            {
+                return (Obj)v.refv;
+            }
+            return null;
         }
 
-        public static implicit operator Arr(Elem v)
+        public static implicit operator Arr(Member v)
         {
-            return (Arr)v.refv;
+            if (v.vt == VT.Array)
+            {
+                return (Arr)v.refv;
+            }
+            return null;
         }
 
-        public static implicit operator bool(Elem v)
+        public static implicit operator bool(Member v)
         {
             return v.vt == VT.True;
         }
 
-        public static implicit operator int(Elem v)
+        public static implicit operator short(Member v)
         {
             if (v.vt == VT.Number)
             {
@@ -107,7 +115,34 @@ namespace Greatbone.Core
             return 0;
         }
 
-        public static implicit operator string(Elem v)
+        public static implicit operator int(Member v)
+        {
+            if (v.vt == VT.Number)
+            {
+                // return v.numv.Int32();
+            }
+            return 0;
+        }
+
+        public static implicit operator DateTime(Member v)
+        {
+            if (v.vt == VT.String)
+            {
+                return default(DateTime);
+            }
+            return default(DateTime);
+        }
+
+        public static implicit operator char[] (Member v)
+        {
+            if (v.vt == VT.String)
+            {
+                return (char[])v.refv;
+            }
+            return null;
+        }
+
+        public static implicit operator string(Member v)
         {
             if (v.vt == VT.String)
             {

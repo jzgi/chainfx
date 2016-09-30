@@ -5,11 +5,11 @@ namespace Greatbone.Core
 {
     public class Obj : IIn
     {
-        readonly Roll<Elem> pairs = new Roll<Elem>(16);
+        readonly Roll<Member> pairs = new Roll<Member>(16);
 
         internal void Add(string name)
         {
-            Elem e = new Elem()
+            Member e = new Member()
             {
                 Key = name
             };
@@ -18,7 +18,7 @@ namespace Greatbone.Core
 
         internal void Add(string name, Obj v)
         {
-            Elem e = new Elem(v)
+            Member e = new Member(v)
             {
                 Key = name
             };
@@ -27,7 +27,7 @@ namespace Greatbone.Core
 
         internal void Add(string name, Arr v)
         {
-            Elem e = new Elem(v)
+            Member e = new Member(v)
             {
                 Key = name
             };
@@ -36,7 +36,7 @@ namespace Greatbone.Core
 
         internal void Add(string name, string v)
         {
-            Elem e = new Elem(v)
+            Member e = new Member(v)
             {
                 Key = name
             };
@@ -45,7 +45,7 @@ namespace Greatbone.Core
 
         internal void Add(string name, byte[] v)
         {
-            Elem e = new Elem(v)
+            Member e = new Member(v)
             {
                 Key = name
             };
@@ -54,7 +54,7 @@ namespace Greatbone.Core
 
         internal void Add(string name, bool v)
         {
-            Elem e = new Elem(v)
+            Member e = new Member(v)
             {
                 Key = name
             };
@@ -63,7 +63,7 @@ namespace Greatbone.Core
 
         internal void Add(string name, Number v)
         {
-            Elem e = new Elem(v)
+            Member e = new Member(v)
             {
                 Key = name
             };
@@ -73,7 +73,7 @@ namespace Greatbone.Core
 
         public bool Get(string name, ref int value)
         {
-            Elem pair;
+            Member pair;
             if (pairs.TryGet(name, out pair))
             {
                 value = pair;
@@ -84,37 +84,79 @@ namespace Greatbone.Core
 
         public bool Get(string name, ref bool value)
         {
-            throw new NotImplementedException();
+            Member pair;
+            if (pairs.TryGet(name, out pair))
+            {
+                value = pair;
+                return true;
+            }
+            return false;
         }
 
         public bool Get(string name, ref short value)
         {
-            throw new NotImplementedException();
+            Member pair;
+            if (pairs.TryGet(name, out pair))
+            {
+                value = pair;
+                return true;
+            }
+            return false;
         }
 
         public bool Get(string name, ref long value)
         {
-            throw new NotImplementedException();
+            Member pair;
+            if (pairs.TryGet(name, out pair))
+            {
+                value = pair;
+                return true;
+            }
+            return false;
         }
 
         public bool Get(string name, ref decimal value)
         {
-            throw new NotImplementedException();
+            Member pair;
+            if (pairs.TryGet(name, out pair))
+            {
+                value = pair;
+                return true;
+            }
+            return false;
         }
 
         public bool Get(string name, ref DateTime value)
         {
-            throw new NotImplementedException();
+            Member pair;
+            if (pairs.TryGet(name, out pair))
+            {
+                value = pair;
+                return true;
+            }
+            return false;
         }
 
         public bool Get(string name, ref char[] value)
         {
-            throw new NotImplementedException();
+            Member pair;
+            if (pairs.TryGet(name, out pair))
+            {
+                value = pair;
+                return true;
+            }
+            return false;
         }
 
         public bool Get(string name, ref string value)
         {
-            throw new NotImplementedException();
+            Member pair;
+            if (pairs.TryGet(name, out pair))
+            {
+                value = pair;
+                return true;
+            }
+            return false;
         }
 
         public bool Get<T>(string name, ref T value) where T : IData, new()
@@ -137,7 +179,7 @@ namespace Greatbone.Core
             throw new NotImplementedException();
         }
 
-        public Elem this[string name]
+        public Member this[string name]
         {
             get
             {

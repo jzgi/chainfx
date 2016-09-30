@@ -4,27 +4,27 @@ namespace Greatbone.Core
 {
     public class Arr
     {
-        Elem[] elements;
+        Member[] elements;
 
         int count;
 
         internal Arr(int capacity)
         {
-            elements = new Elem[capacity];
+            elements = new Member[capacity];
             count = 0;
         }
 
-        public Elem this[int index]
+        public Member this[int index]
         {
             get { return elements[index]; }
         }
 
-        internal void Add(Elem elem)
+        internal void Add(Member elem)
         {
             int len = elements.Length;
             if (count >= len)
             {
-                Elem[] @new = new Elem[len * 4];
+                Member[] @new = new Member[len * 4];
                 Array.Copy(elements, @new, len);
                 elements = @new;
             }

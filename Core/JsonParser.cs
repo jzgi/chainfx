@@ -143,36 +143,36 @@ namespace Greatbone.Core
                 if (b == '{')
                 {
                     Obj v = ParseObj(p);
-                    arr.Add(new Elem(v));
+                    arr.Add(new Member(v));
                 }
                 else if (b == '[')
                 {
                     Arr v = ParseArr(p);
-                    arr.Add(new Elem(v));
+                    arr.Add(new Member(v));
                 }
                 else if (b == '"')
                 {
                     string v = ParseString(p);
-                    arr.Add(new Elem(v));
+                    arr.Add(new Member(v));
                 }
                 else if (b == 'n')
                 {
-                    if (ParseNull(p)) arr.Add(new Elem());
+                    if (ParseNull(p)) arr.Add(new Member());
                 }
                 else if (b == 't' || b == 'f')
                 {
                     bool v = ParseBool(p);
-                    arr.Add(new Elem(v));
+                    arr.Add(new Member(v));
                 }
                 else if (b >= '0' && b <= '9')
                 {
                     Number v = ParseNumber(p);
-                    arr.Add(new Elem(v));
+                    arr.Add(new Member(v));
                 }
                 else if (b == '&') // bytes extension
                 {
                     byte[] v = ParseBytes(p);
-                    arr.Add(new Elem(v));
+                    arr.Add(new Member(v));
                 }
                 else throw FormatEx;
 
