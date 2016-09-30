@@ -19,7 +19,7 @@ namespace Greatbone.Core
 
         public WebSub Controller { get; }
 
-        public WebDoer Action { get; }
+        public WebAction Action { get; }
 
         public string Var { get; internal set; }
 

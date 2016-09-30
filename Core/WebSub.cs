@@ -10,10 +10,10 @@ namespace Greatbone.Core
     public abstract class WebSub : IKeyed
     {
         // doer declared by this controller
-        readonly Roll<WebDoer> doers;
+        readonly Roll<WebAction> actions;
 
         // the default doer
-        readonly WebDoer defdoer;
+        readonly WebAction defaction;
 
         public WebConfig Config { get; internal set; }
 
@@ -88,7 +88,7 @@ namespace Greatbone.Core
                 }
             }
 
-            doers = new Roll<WebDoer>(32);
+            actions = new Roll<WebAction>(32);
 
             Type type = GetType();
 
@@ -96,36 +96,36 @@ namespace Greatbone.Core
             foreach (MethodInfo mi in type.GetMethods(BindingFlags.Public | BindingFlags.Instance))
             {
                 ParameterInfo[] pis = mi.GetParameters();
-                WebDoer doer = null;
+                WebAction doer = null;
                 if (cfg.IsVar)
                 {
                     if (pis.Length == 2 && pis[0].ParameterType == typeof(WebContext) && pis[1].ParameterType == typeof(string))
                     {
-                        doer = new WebDoer(this, mi, true);
+                        doer = new WebAction(this, mi, true);
                     }
                 }
                 else
                 {
                     if (pis.Length == 1 && pis[0].ParameterType == typeof(WebContext))
                     {
-                        doer = new WebDoer(this, mi, false);
+                        doer = new WebAction(this, mi, false);
                     }
                 }
                 if (doer != null)
                 {
-                    if (doer.Key.Equals("default")) { defdoer = doer; }
-                    doers.Add(doer);
+                    if (doer.Key.Equals("default")) { defaction = doer; }
+                    actions.Add(doer);
                 }
             }
         }
 
-        public WebDoer GetDoer(String method)
+        public WebAction GetDoer(String method)
         {
             if (string.IsNullOrEmpty(method))
             {
-                return defdoer;
+                return defaction;
             }
-            return doers[method];
+            return actions[method];
         }
 
         public virtual void Do(string rsc, WebContext wc)
@@ -144,14 +144,14 @@ namespace Greatbone.Core
             }
             else // dynamic handling
             {
-                WebDoer doer = string.IsNullOrEmpty(rsc) ? defdoer : GetDoer(rsc);
-                if (doer == null)
+                WebAction a = string.IsNullOrEmpty(rsc) ? defaction : GetDoer(rsc);
+                if (a == null)
                 {
                     wc.StatusCode = 404;
                 }
                 else
                 {
-                    doer.Do(wc);
+                    a.Do(wc);
                 }
             }
         }
@@ -172,14 +172,14 @@ namespace Greatbone.Core
             }
             else // dynamic handling
             {
-                WebDoer doer = string.IsNullOrEmpty(rsc) ? defdoer : GetDoer(rsc);
-                if (doer == null)
+                WebAction a = string.IsNullOrEmpty(rsc) ? defaction : GetDoer(rsc);
+                if (a == null)
                 {
                     wc.StatusCode = 404;
                 }
                 else
                 {
-                    doer.Do(wc, var);
+                    a.Do(wc, var);
                 }
             }
         }
@@ -194,7 +194,7 @@ namespace Greatbone.Core
             else
             {
                 // send not implemented
-                wc.Response.StatusCode = 404;
+                wc.StatusCode = 404;
             }
         }
 

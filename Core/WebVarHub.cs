@@ -47,7 +47,7 @@ namespace Greatbone.Core
             int slash = rsc.IndexOf('/');
             if (slash == -1) // handle it locally
             {
-                WebDoer doer = GetDoer(rsc);
+                WebAction doer = GetDoer(rsc);
                 if (doer != null)
                 {
                     doer.Do(wc, var);

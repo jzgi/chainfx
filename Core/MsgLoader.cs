@@ -23,7 +23,7 @@ namespace Greatbone.Core
             StringBuilder sb = new StringBuilder("SELECT * FROM mqueue WHERE id > @lastid AND ");
             for (int i = 0; i < svc.Subscribers.Count; i++)
             {
-                MsgSubscriber sub = svc.Subscribers[i];
+                MsgDoer sub = svc.Subscribers[i];
 
                 sb.Append("topic = '").Append(sub.Topic).Append("'");
             }

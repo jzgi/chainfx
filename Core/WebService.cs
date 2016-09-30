@@ -47,7 +47,7 @@ namespace Greatbone.Core
 
 
         // topics subscribed by this microservice
-        public Roll<MsgSubscriber> Subscribers { get; } = new Roll<MsgSubscriber>(16);
+        public Roll<MsgDoer> Subscribers { get; } = new Roll<MsgDoer>(16);
 
         private Thread scheduler;
 

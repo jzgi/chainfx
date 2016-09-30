@@ -1,8 +1,8 @@
 ﻿namespace Greatbone.Core
 {
-    public delegate void MsgDoer(MsgContext ec);
+    public delegate void MsgDoer(MsgContext mc);
 
-    public class MsgSubscriber : IKeyed
+    public class MsgAction : IKeyed
     {
         public string Topic { get; }
 
@@ -10,7 +10,7 @@
 
         readonly MsgDoer doer;
 
-        internal MsgSubscriber(string topic, string filter, MsgDoer doer)
+        internal MsgAction(string topic, string filter, MsgDoer doer)
         {
             // NOTE: strict method nzame as key here to avoid the default base url trap
             Topic = topic;
