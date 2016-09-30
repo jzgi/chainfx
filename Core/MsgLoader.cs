@@ -5,7 +5,8 @@ namespace Greatbone.Core
 {
     public class MsgLoader : IKeyed
     {
-        readonly WebService _service;
+
+        WebService service;
 
         string key;
 
@@ -15,15 +16,16 @@ namespace Greatbone.Core
 
         public string Key => key;
 
+        Roll<MsgAction> mactions ;
 
-        internal MsgLoader(WebService svc)
+        internal MsgLoader( WebService service)
         {
-            _service = svc;
+            this.service = service;
 
             StringBuilder sb = new StringBuilder("SELECT * FROM mqueue WHERE id > @lastid AND ");
-            for (int i = 0; i < svc.Subscribers.Count; i++)
+            for (int i = 0; i < mactions.Count; i++)
             {
-                MsgDoer sub = svc.Subscribers[i];
+                MsgAction sub = mactions[i];
 
                 sb.Append("topic = '").Append(sub.Topic).Append("'");
             }
@@ -40,7 +42,7 @@ namespace Greatbone.Core
             }
             else
             {
-                using (var dc = _service.NewDbContext())
+                using (var dc = service.NewDbContext())
                 {
                     dc.Query("SELECT * FROM mqueue WHERE id > @lastid AND ", null);
                 }

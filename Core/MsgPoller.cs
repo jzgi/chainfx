@@ -6,6 +6,7 @@ namespace Greatbone.Core
 {
     public class MsgPoller : IKeyed
     {
+
         readonly WebService service;
 
         readonly string address;
@@ -17,18 +18,15 @@ namespace Greatbone.Core
         // tick count
         private int lastConnect;
 
+        Roll<MsgAction> mas;
+
         public string Key => address;
 
-        internal MsgPoller(WebService svc, string addr)
+        internal MsgPoller(WebService service, string addr)
         {
-            service = svc;
-            address = addr;
-        }
-
-        internal MsgPoller()
-        {
-            client.BaseAddress = new Uri("");
-
+            this.service = service;
+            address = "http://" + addr;
+            client = new HttpClient() { BaseAddress = new Uri(address) };
         }
 
         public void Schedule()
@@ -50,11 +48,11 @@ namespace Greatbone.Core
             HttpResponseMessage resp = await client.GetAsync("");
             if (resp.IsSuccessStatusCode)
             {
-                MsgDoer sub = null;
-                if (service.Subscribers.TryGet("", out sub))
+                MsgAction a = null;
+                if (service.MsgActions.TryGet("", out a))
                 {
                     MsgContext evt = null;
-                    sub.Do(evt); // invoke the handler
+                    a.Do(evt);
                 }
             }
         }

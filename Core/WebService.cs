@@ -11,6 +11,7 @@ using Microsoft.AspNetCore.Http.Features;
 using Microsoft.AspNetCore.Server.Kestrel;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
+using Microsoft.Extensions.Primitives;
 using Npgsql;
 
 namespace Greatbone.Core
@@ -43,15 +44,14 @@ namespace Greatbone.Core
         // MSG POLLER / CONNECTOR
 
         // load messages        
-        readonly Roll<MsgLoader> loaders;
-
+        internal Roll<MsgLoader> MsgLoaders { get; } = new Roll<MsgLoader>(32);
 
         // topics subscribed by this microservice
-        public Roll<MsgDoer> Subscribers { get; } = new Roll<MsgDoer>(16);
+        internal Roll<MsgAction> MsgActions { get; } = new Roll<MsgAction>(16);
 
-        private Thread scheduler;
+        private Thread mscheduler;
 
-        readonly Roll<MsgPoller> pollers;
+        internal Roll<MsgPoller> MsgPollers { get; } = new Roll<MsgPoller>(32);
 
 
         protected WebService(WebServiceConfig cfg) : base(cfg)
@@ -75,6 +75,15 @@ namespace Greatbone.Core
             ParseAddress(cfg.Private, out inaddr, out inport);
 
             CreateMsgTables();
+
+            List<string> net = cfg.Net;
+            for (int i = 0; i < net.Count; i++)
+            {
+                string addr = net[i];
+                if (addr.Equals(cfg.Private)) continue;
+                if (MsgPollers == null) MsgPollers = new Roll<MsgPoller>(net.Count);
+                MsgPollers.Add(new MsgPoller(this, addr));
+            }
         }
 
         internal bool CreateMsgTables()
@@ -165,6 +174,7 @@ namespace Greatbone.Core
             else
             {
                 // check security token (authentication)
+                Authenticate(wc);
 
                 // handling
                 Do(wc.Request.Path.Value.Substring(1), wc);
@@ -181,8 +191,13 @@ namespace Greatbone.Core
 
         public void DisposeContext(HttpContext context, Exception exception)
         {
-            WebContext wc = (WebContext)context;
-            wc.Dispose();
+            ((WebContext)context).Dispose();
+        }
+
+        void Authenticate(WebContext wc)
+        {
+            StringValues h;
+            wc.Request.Headers.TryGetValue("Authorize", out h);
         }
 
         public void Start()
@@ -232,9 +247,9 @@ namespace Greatbone.Core
         {
             while (true)
             {
-                for (int i = 0; i < pollers.Count; i++)
+                for (int i = 0; i < MsgPollers.Count; i++)
                 {
-                    MsgPoller conn = pollers[i];
+                    MsgPoller conn = MsgPollers[i];
 
                     // schedule
                 }

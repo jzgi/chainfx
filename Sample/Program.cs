@@ -24,11 +24,11 @@ namespace Greatbone.Sample
 
             List<string> addrs = new List<string>
             {
-                "127.0.0.7070",
-                "127.0.0.7071",
-                "127.0.0.7072",
-                "127.0.0.7073",
-                "127.0.0.7074",
+                "127.0.0.1:7070",
+                "127.0.0.1:7071",
+                "127.0.0.1:7072",
+                "127.0.0.1:7073",
+                "127.0.0.1:7074",
             };
 
             var www = new WwwService(new WebServiceConfig
