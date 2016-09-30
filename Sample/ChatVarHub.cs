@@ -17,13 +17,13 @@ namespace Greatbone.Sample
 
         ///<summary>Returns the administration UI.</summary>
         [IfAdmin]
-        public override void Default(WebContext wc, string x)
+        public override void @default(WebContext wc, string x)
         {
-            base.Default(wc, x);
+            base.@default(wc, x);
         }
 
         [IfSelf]
-        public void Get(WebContext wc, string userid)
+        public void get(WebContext wc, string userid)
         {
             List<Chat> chats;
             if (online.TryGetValue(userid, out chats)) // put in session
@@ -33,9 +33,9 @@ namespace Greatbone.Sample
             else
             {
                 // database operation
-                using (var sc = Service.NewSqlContext())
+                using (var dc = Service.NewDbContext())
                 {
-                    sc.QueryA("SELECT * FROM chats WHERE to=@to", p => p.Put("@to", userid));
+                    dc.QueryA("SELECT * FROM chats WHERE to=@to", p => p.Put("@to", userid));
                     // load into memory
                 }
             }
@@ -43,7 +43,7 @@ namespace Greatbone.Sample
             // wc.Response.SetContentAsJson(chats)
         }
 
-        public void Put(WebContext wc, string receiver)
+        public void put(WebContext wc, string receiver)
         {
             IToken tok = wc.Token;
             string sender = tok.Key;
@@ -57,7 +57,7 @@ namespace Greatbone.Sample
             }
             else // put in database
             {
-                using (var sc = Service.NewSqlContext())
+                using (var sc = Service.NewDbContext())
                 {
                     sc.Execute("INSERT INTO chats (from, to, ) VALUES () ON CONFLICT DO UPDATE", p => { });
                 }

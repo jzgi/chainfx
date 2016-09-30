@@ -20,7 +20,7 @@ namespace Greatbone.Sample
         {
             User u = null;
 
-            using (var sc = Service.NewSqlContext())
+            using (var sc = Service.NewDbContext())
             {
                 sc.Execute("INSERT INTO users () VALUES (@id, @credential, @name, @fame, @brand, @loggedin)",
                     p => { p.Put("@id", ""); }

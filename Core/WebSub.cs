@@ -9,7 +9,7 @@ namespace Greatbone.Core
     ///
     public abstract class WebSub : IKeyed
     {
-        // actions declared by this controller
+        // does declared by this controller
         readonly Roll<WebAction> actions;
 
         // the default action
@@ -99,8 +99,7 @@ namespace Greatbone.Core
                 WebAction a = null;
                 if (cfg.IsVar)
                 {
-                    if (pis.Length == 2 && pis[0].ParameterType == typeof(WebContext) &&
-                        pis[1].ParameterType == typeof(string))
+                    if (pis.Length == 2 && pis[0].ParameterType == typeof(WebContext) && pis[1].ParameterType == typeof(string))
                     {
                         a = new WebAction(this, mi, true);
                     }
@@ -114,10 +113,7 @@ namespace Greatbone.Core
                 }
                 if (a != null)
                 {
-                    if (a.Key.Equals("Default"))
-                    {
-                        defaction = a;
-                    }
+                    if (a.Key.Equals("default")) { defaction = a; }
                     actions.Add(a);
                 }
             }
@@ -166,7 +162,7 @@ namespace Greatbone.Core
 
         }
 
-        public virtual void Default(WebContext wc)
+        public virtual void @default(WebContext wc)
         {
             StaticContent sta = DefaultStatic;
             if (sta != null)
@@ -180,7 +176,7 @@ namespace Greatbone.Core
             }
         }
 
-        public virtual void Default(WebContext wc, string var)
+        public virtual void @default(WebContext wc, string var)
         {
             StaticContent sta = DefaultStatic;
             if (sta != null)

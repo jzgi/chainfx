@@ -9,19 +9,19 @@ namespace Greatbone.Sample
         {
         }
 
-        public void Get(WebContext wc, long x)
+        public void get(WebContext wc, string var)
         {
         }
 
-        public void Delete(WebContext wc, long x)
+        public void del(WebContext wc, string var)
         {
         }
 
-        public void AddImg(WebContext wc, long x)
+        public void addimg(WebContext wc, string var)
         {
         }
 
-        public void Img(WebContext wc, long x)
+        public void img(WebContext wc, string var)
         {
             int id = 0;
             if (wc.GetParam("id", ref id))
@@ -32,11 +32,9 @@ namespace Greatbone.Sample
             {
                 wc.Response.StatusCode = (int)HttpStatusCode.BadRequest;
             }
-
-
         }
 
-        public void Publish(WebContext wc, long x)
+        public void pub(WebContext wc, long x)
         {
         }
     }

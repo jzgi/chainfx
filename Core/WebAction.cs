@@ -8,7 +8,7 @@ namespace Greatbone.Core
 
     /// <summary>The delegate of mux action methods.</summary>
     ///
-    public delegate void VarDoer(WebContext wc, string x);
+    public delegate void VarDoer(WebContext wc, string var);
 
     /// <summary>The descriptor of an action handling method.</summary>
     ///
@@ -24,14 +24,14 @@ namespace Greatbone.Core
 
         public string Key { get; }
 
-        public bool IsX { get; }
+        public bool IsVar { get; }
 
         internal WebAction(WebSub controller, MethodInfo mi, bool x)
         {
             Controller = controller;
             // NOTE: strict method name as key here to avoid the default base url trap
             Key = mi.Name;
-            IsX = x;
+            IsVar = x;
             if (x)
             {
                 vardoer = (VarDoer)mi.CreateDelegate(typeof(VarDoer), controller);

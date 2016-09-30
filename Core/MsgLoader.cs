@@ -21,9 +21,9 @@ namespace Greatbone.Core
             _service = svc;
 
             StringBuilder sb = new StringBuilder("SELECT * FROM mqueue WHERE id > @lastid AND ");
-            for (int i = 0; i < svc.Subscribes.Count; i++)
+            for (int i = 0; i < svc.Subscriptions.Count; i++)
             {
-                MsgSubscribe sub = svc.Subscribes[i];
+                MsgSubscription sub = svc.Subscriptions[i];
 
                 sb.Append("topic = '").Append(sub.Topic).Append("'");
             }
@@ -40,7 +40,7 @@ namespace Greatbone.Core
             }
             else
             {
-                using (var dc = _service.NewSqlContext())
+                using (var dc = _service.NewDbContext())
                 {
                     dc.Query("SELECT * FROM mqueue WHERE id > @lastid AND ", null);
                 }

@@ -11,7 +11,7 @@ namespace Greatbone.Sample
             SetVarHub<PostVarHub>(false);
         }
 
-        public void Top(WebContext wc)
+        public void top(WebContext wc)
         {
             int page = 0;
             if (wc.GetParam("page", ref page))
@@ -20,14 +20,9 @@ namespace Greatbone.Sample
                 return;
             }
 
-            using (var dc = Service.NewSqlContext())
+            using (var dc = Service.NewDbContext())
             {
-                if (dc.Query(@"SELECT * FROM posts ORDER BY id DESC LIMIT @limit OFFSET @offset",
-                    p =>
-                    {
-                        p.Put(20);
-                        p.Put(20 * page);
-                    }))
+                if (dc.Query(@"SELECT * FROM posts ORDER BY id DESC LIMIT @limit OFFSET @offset", p => p.Put(20).Put(20 * page)))
                 {
                     List<Post> list = null;
                     while (dc.NextRow())
@@ -48,15 +43,9 @@ namespace Greatbone.Sample
         {
             IToken tok = wc.Token;
 
-            using (var dc = Service.NewSqlContext())
+            using (var dc = Service.NewDbContext())
             {
-                dc.Execute("INSERT INTO posts () VALUES ()",
-                    p =>
-                    {
-                        p.Put("@authorid", tok.Key);
-                        p.Put("@author", tok.Name);
-                    }
-                );
+                dc.Execute("INSERT INTO posts () VALUES ()", p => p.Put(tok.Key).Put(tok.Name));
             }
         }
 

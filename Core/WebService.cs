@@ -47,7 +47,7 @@ namespace Greatbone.Core
 
 
         // topics subscribed by this microservice
-        public Roll<MsgSubscribe> Subscribes { get; } = new Roll<MsgSubscribe>(16);
+        public Roll<MsgSubscription> Subscriptions { get; } = new Roll<MsgSubscription>(16);
 
         private Thread scheduler;
 
@@ -80,7 +80,7 @@ namespace Greatbone.Core
         internal bool CreateMsgTables()
         {
             // check db
-            using (var dc = Service.NewSqlContext())
+            using (var dc = Service.NewDbContext())
             {
                 dc.Execute(@"CREATE TABLE IF NOT EXISTS msgq (
                                 id serial4 NOT NULL,
@@ -148,7 +148,7 @@ namespace Greatbone.Core
             IPAddress ip = ci.LocalIpAddress;
             int port = ci.LocalPort;
 
-            WebContext wc = (WebContext) hc;
+            WebContext wc = (WebContext)hc;
             if (port == inport && ip.Equals(inaddr))
             {
                 // mq handling or action handling
@@ -181,7 +181,7 @@ namespace Greatbone.Core
 
         public void DisposeContext(HttpContext context, Exception exception)
         {
-            WebContext wc = (WebContext) context;
+            WebContext wc = (WebContext)context;
             wc.Dispose();
         }
 
@@ -228,12 +228,6 @@ namespace Greatbone.Core
         public CancellationToken ApplicationStopped { get; set; }
 
 
-        public void Subscribe(string topic, string filter, MsgDoer doer)
-        {
-            Subscribes.Add(new MsgSubscribe(topic, filter, doer));
-        }
-
-
         internal void Schedule()
         {
             while (true)
@@ -247,9 +241,9 @@ namespace Greatbone.Core
             }
         }
 
-        public DbContext NewSqlContext()
+        public DbContext NewDbContext()
         {
-            DbConfig cfg = ((WebServiceConfig) Config).Db;
+            DbConfig cfg = ((WebServiceConfig)Config).Db;
             NpgsqlConnectionStringBuilder builder = new NpgsqlConnectionStringBuilder()
             {
                 Host = cfg.Host,
@@ -275,7 +269,7 @@ namespace Greatbone.Core
             var token = new CancellationToken();
 
             token.Register(
-                state => { ((IApplicationLifetime) state).StopApplication(); },
+                state => { ((IApplicationLifetime)state).StopApplication(); },
                 Lifetime
             );
 

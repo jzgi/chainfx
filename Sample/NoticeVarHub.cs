@@ -14,10 +14,10 @@ namespace Greatbone.Sample
         /// </summary>
         /// <param name="wc"></param>
         /// <param name="id"></param>
-        public override void Default(WebContext wc, string id)
+        public override void @default(WebContext wc, string id)
         {
 
-            using (var dc = Service.NewSqlContext())
+            using (var dc = Service.NewDbContext())
             {
                 if (dc.QueryA("SELECT * FROM notices WHERE id = @id", p => p.Put("@id", id)))
                 {
@@ -39,7 +39,7 @@ namespace Greatbone.Sample
         {
             string userid = wc.Token.Key;
 
-            using (var dc = Service.NewSqlContext())
+            using (var dc = Service.NewDbContext())
             {
                 if (dc.Execute("DELETE FROM notices WHERE id = @id AND authorid = @userid", p => p
                     .Put("@id", id)
@@ -63,7 +63,7 @@ namespace Greatbone.Sample
         {
             string userid = wc.Token.Key;
 
-            using (var dc = Service.NewSqlContext())
+            using (var dc = Service.NewDbContext())
             {
                 if (dc.QueryA("SELECT joins FROM notices WHERE id = @id", p => p.Put("@userid", userid)))
                 {

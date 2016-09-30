@@ -16,12 +16,12 @@ namespace Greatbone.Sample
         /// Gets the specified top page from the notices table. 
         /// </summary>
         /// <param name="page">page number</param>
-        public override void Default(WebContext wc)
+        public override void @default(WebContext wc)
         {
             int page = 0;
             wc.GetParam("page", ref page);
 
-            using (var dc = Service.NewSqlContext())
+            using (var dc = Service.NewDbContext())
             {
                 if (dc.Query("SELECT * FROM notices WHERE duedate <= current_date ORDER BY id LIMIT 20 OFFSET @offset", p => p.Put("@offset", page * 20)))
                 {
@@ -45,7 +45,7 @@ namespace Greatbone.Sample
             int page = 0;
             wc.GetParam("page", ref page);
 
-            using (var dc = Service.NewSqlContext())
+            using (var dc = Service.NewDbContext())
             {
                 if (dc.Query("INSERT INTO notices () VALUES ()",
                     p => { p.Put(page * 20); p.Put(page * 20); }))

@@ -50,8 +50,8 @@ namespace Greatbone.Core
             HttpResponseMessage resp = await client.GetAsync("");
             if (resp.IsSuccessStatusCode)
             {
-                MsgSubscribe sub = null;
-                if (service.Subscribes.TryGet("", out sub))
+                MsgSubscription sub = null;
+                if (service.Subscriptions.TryGet("", out sub))
                 {
                     MsgContext evt = null;
                     sub.Do(evt); // invoke the handler

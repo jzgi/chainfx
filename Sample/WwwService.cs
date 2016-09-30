@@ -11,12 +11,6 @@ namespace Greatbone.Sample
         {
             AddSub<MySub>("my", true);
 
-            // msg
-
-            Subscribe("users_upd", null, x =>
-            {
-                string s = x.GetType().Name;
-            });
         }
 
         ///
@@ -24,9 +18,9 @@ namespace Greatbone.Sample
         /// 
         /// </summary>
         /// <param name="wc"></param>
-        public override void Default(WebContext wc)
+        public override void @default(WebContext wc)
         {
-            base.Default(wc);
+            base.@default(wc);
         }
 
         public void Home(WebContext wc)
@@ -37,7 +31,7 @@ namespace Greatbone.Sample
         {
         }
 
-        public void Notices(WebContext wc)
+        public void notices(WebContext wc)
         {
         }
 
@@ -47,18 +41,27 @@ namespace Greatbone.Sample
 
         public void Contact(WebContext wc)
         {
-            using (var sc = NewSqlContext())
+            using (var dc = NewDbContext())
             {
-                sc.Begin();
+                dc.Begin();
 
                 //				sc.DoNonQuery("inaert", o => o.ToString(););
 
                 // msg
 
-                sc.Commit();
+                dc.Commit();
             }
 
-            wc.Response.StatusCode = 200;
+            wc.StatusCode = 200;
+        }
+
+        //
+        // MESSAGES
+        // 
+
+        public void USER_UPD(MsgContext mc)
+        {
+
         }
     }
 }

@@ -13,5 +13,7 @@ namespace Greatbone.Core
         IParameters Put(short value);
 
         IParameters Put(int value);
+
+        IParameters Put(string value);
     }
 }

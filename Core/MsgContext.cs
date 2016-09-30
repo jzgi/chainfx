@@ -15,6 +15,8 @@ namespace Greatbone.Core
 
 		HttpResponseMessage msg;
 
+		object parsed;
+
 		internal MsgContext(HttpContext context)
 		{
 

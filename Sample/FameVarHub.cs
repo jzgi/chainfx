@@ -12,7 +12,7 @@ namespace Greatbone.Sample
 		}
 
 
-		public override void Default(WebContext wc, string x)
+		public override void @default(WebContext wc, string x)
 		{
 			throw new System.NotImplementedException();
 		}

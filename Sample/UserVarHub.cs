@@ -17,7 +17,7 @@ namespace Greatbone.Sample
         ///
         /// Gets a token
         ///
-        public override void Default(WebContext wc, string id)
+        public override void @default(WebContext wc, string id)
         {
             string password = null;
             if (wc.GetParam("password", ref password))
@@ -25,7 +25,7 @@ namespace Greatbone.Sample
                 wc.Response.StatusCode = 400;
                 return;
             }
-            using (var dc = Service.NewSqlContext())
+            using (var dc = Service.NewDbContext())
             {
                 if (dc.QueryA("SELECT id, credential, name FROM users WHERE id = @id", (p) => p.Put("@id", id)))
                 {
@@ -61,7 +61,7 @@ namespace Greatbone.Sample
 
             int ret = 0;
 
-            using (var dc = Service.NewSqlContext())
+            using (var dc = Service.NewDbContext())
             {
                 if (dc.Execute("UPDATE users SET password = @id WHERE id = @id", (p) => p.Put("@id", userid)) > 0)
                 {

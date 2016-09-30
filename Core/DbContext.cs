@@ -470,6 +470,15 @@ namespace Greatbone.Core
             return this;
         }
 
+        public IParameters Put(string value)
+        {
+            parameters.Add(new NpgsqlParameter(Params[index++], NpgsqlDbType.Text)
+            {
+                Value = value
+            });
+            return this;
+        }
+
         public IParameters Put(string name, bool value)
         {
             parameters.Add(new NpgsqlParameter(name, NpgsqlDbType.Boolean)

@@ -13,12 +13,12 @@ namespace Greatbone.Sample
         /// Gets the top list of fames. 
         /// </summary>
         /// <param name="page">page number</param>
-        public override void Default(WebContext wc)
+        public override void @default(WebContext wc)
         {
             int page = 0;
             wc.GetParam("page", ref page);
 
-            using (var dc = Service.NewSqlContext())
+            using (var dc = Service.NewDbContext())
             {
                 if (dc.Query("SELECT * FROM fames WHERE ORDER BY  LIMIT 20 OFFSET @offset",
                     p => p.Put("@offset", page * 20)))
@@ -34,12 +34,12 @@ namespace Greatbone.Sample
             }
         }
 
-        public void Top(WebContext wc)
+        public void top(WebContext wc)
         {
             int page = 0;
             wc.GetParam("page", ref page);
 
-            using (var dc = Service.NewSqlContext())
+            using (var dc = Service.NewDbContext())
             {
                 if (dc.Query("SELECT * FROM fames WHERE ORDER BY rating LIMIT 20 OFFSET @offset",
                     p => p.Put("@offset", page * 20)))
