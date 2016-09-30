@@ -23,7 +23,7 @@ namespace Greatbone.Core
             }
             // create instance by reflection
             Type type = typeof(T);
-            ConstructorInfo ci = type.GetConstructor(new[] {typeof(WebConfig)});
+            ConstructorInfo ci = type.GetConstructor(new[] { typeof(WebConfig) });
             if (ci == null)
             {
                 throw new WebException(type + ": the constructor not found (WebServiceContext)");
@@ -35,24 +35,31 @@ namespace Greatbone.Core
                 Service = Service,
                 IsVar = true
             };
-            T sub = (T) ci.Invoke(new object[] {wsc});
+            T sub = (T)ci.Invoke(new object[] { wsc });
             // call the initialization and add
             subs.Add(sub);
 
             return sub;
         }
 
-        public override void Do(string relative, WebContext wc)
+        public override void Do(string rsc, WebContext wc, string var)
         {
-            int slash = relative.IndexOf('/');
-            if (slash == -1) // without a slash then handle it locally
+            int slash = rsc.IndexOf('/');
+            if (slash == -1) // handle it locally
             {
-                WebDoer a = GetDoer(relative);
-                a?.Do(wc, wc.Var);
+                WebDoer doer = GetDoer(rsc);
+                if (doer != null)
+                {
+                    doer.Do(wc, var);
+                }
+                else
+                {
+                    wc.StatusCode = 404;
+                }
             }
             else // not local then sub
             {
-                string rsc = relative.Substring(0, slash);
+                string dir = rsc.Substring(0, slash);
                 WebSub sub;
                 if (subs.TryGet(rsc, out sub))
                 {

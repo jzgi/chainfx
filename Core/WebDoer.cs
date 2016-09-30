@@ -24,15 +24,14 @@ namespace Greatbone.Core
 
         public string Key { get; }
 
-        public bool IsVar { get; }
+        public bool IsVar => vardoer != null;
 
-        internal WebDoer(WebSub controller, MethodInfo mi, bool x)
+        internal WebDoer(WebSub controller, MethodInfo mi, bool isVar)
         {
             Controller = controller;
             // NOTE: strict method name as key here to avoid the default base url trap
             Key = mi.Name;
-            IsVar = x;
-            if (x)
+            if (isVar)
             {
                 vardoer = (VarDoer)mi.CreateDelegate(typeof(VarDoer), controller);
             }

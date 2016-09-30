@@ -71,20 +71,20 @@ namespace Greatbone.Core
         }
 
 
-        public override void Do(string relative, WebContext wc)
+        public override void Do(string rsc, WebContext wc)
         {
-            int slash = relative.IndexOf('/');
-            if (slash == -1) // without a slash then handle it locally
+            int slash = rsc.IndexOf('/');
+            if (slash == -1) // handle it locally
             {
-                base.Do(relative, wc);
+                base.Do(rsc, wc);
             }
             else // not local then sub & mux
             {
-                string dir = relative.Substring(0, slash);
+                string dir = rsc.Substring(0, slash);
                 WebSub sub;
                 if (subs != null && subs.TryGet(dir, out sub))
                 {
-                    sub.Do(relative.Substring(slash + 1), wc);
+                    sub.Do(rsc.Substring(slash + 1), wc);
                 }
                 else if (varhub == null)
                 {
@@ -92,8 +92,7 @@ namespace Greatbone.Core
                 }
                 else
                 {
-                    wc.Var = dir;
-                    varhub.Do(relative.Substring(slash + 1), wc);
+                    varhub.Do(rsc.Substring(slash + 1), wc, dir); // var = dir
                 }
             }
         }

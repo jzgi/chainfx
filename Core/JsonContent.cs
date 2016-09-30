@@ -43,7 +43,7 @@ namespace Greatbone.Core
         // READ OBJECT
         //
 
-        public void Object(Action a)
+        public void Obj(Action a)
         {
             if (level >= 0 && nums[level] > 0)
             {

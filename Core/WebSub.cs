@@ -92,29 +92,29 @@ namespace Greatbone.Core
 
             Type type = GetType();
 
-            // introspect action methods
+            // introspect doer methods
             foreach (MethodInfo mi in type.GetMethods(BindingFlags.Public | BindingFlags.Instance))
             {
                 ParameterInfo[] pis = mi.GetParameters();
-                WebDoer d = null;
+                WebDoer doer = null;
                 if (cfg.IsVar)
                 {
                     if (pis.Length == 2 && pis[0].ParameterType == typeof(WebContext) && pis[1].ParameterType == typeof(string))
                     {
-                        d = new WebDoer(this, mi, true);
+                        doer = new WebDoer(this, mi, true);
                     }
                 }
                 else
                 {
                     if (pis.Length == 1 && pis[0].ParameterType == typeof(WebContext))
                     {
-                        d = new WebDoer(this, mi, false);
+                        doer = new WebDoer(this, mi, false);
                     }
                 }
-                if (d != null)
+                if (doer != null)
                 {
-                    if (d.Key.Equals("default")) { defdoer = d; }
-                    doers.Add(d);
+                    if (doer.Key.Equals("default")) { defdoer = doer; }
+                    doers.Add(doer);
                 }
             }
         }
@@ -144,7 +144,7 @@ namespace Greatbone.Core
             }
             else // dynamic handling
             {
-                WebDoer doer = rsc.Length == 0 ? defdoer : GetDoer(rsc);
+                WebDoer doer = string.IsNullOrEmpty(rsc) ? defdoer : GetDoer(rsc);
                 if (doer == null)
                 {
                     wc.StatusCode = 404;
@@ -172,7 +172,7 @@ namespace Greatbone.Core
             }
             else // dynamic handling
             {
-                WebDoer doer = rsc.Length == 0 ? defdoer : GetDoer(rsc);
+                WebDoer doer = string.IsNullOrEmpty(rsc) ? defdoer : GetDoer(rsc);
                 if (doer == null)
                 {
                     wc.StatusCode = 404;
