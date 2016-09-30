@@ -23,15 +23,6 @@ namespace Greatbone.Core
 
         const byte Minus = (byte)'-';
 
-        const int InitialCapacity = 4096;
-
-        static readonly byte[] Bytes =
-        {
-            1,
-            10,
-            100
-        };
-
         static readonly short[] Shorts =
         {
             1,
@@ -111,13 +102,9 @@ namespace Greatbone.Core
 
         public void AddByte(byte b)
         {
-            if (buffer == null)
-            {
-                buffer = new byte[InitialCapacity];
-            }
             // grow the capacity as needed
             int len = buffer.Length;
-            if (count == len)
+            if (count >= len)
             {
                 byte[] old = buffer;
                 buffer = new byte[len * 4];
@@ -131,12 +118,12 @@ namespace Greatbone.Core
             checksum = cs >> 57 | cs << 7; // circular left shift 7 bit
         }
 
-        public void Put(bool v)
+        public void Add(bool v)
         {
-            AddByte((byte)'1');
+            Add(v ? "true" : "false");
         }
 
-        public void Put(char c)
+        public void Add(char c)
         {
             // UTF-8 encoding but without surrogate support
             if (c < 0x80)
@@ -159,82 +146,59 @@ namespace Greatbone.Core
             }
         }
 
-        public void Put(char[] v)
+        public void Add(char[] v)
         {
-            Put(v, 0, v.Length);
+            Add(v, 0, v.Length);
         }
 
-        public void Put(char[] v, int offset, int len)
-        {
-            if (v != null)
-            {
-                for (int i = offset; i < len; i++)
-                {
-                    Put(v[i]);
-                }
-            }
-        }
-
-        public void Put(string v)
-        {
-            Put(v, 0, v.Length);
-        }
-
-        public void Put(string v, int offset, int len)
+        public void Add(char[] v, int offset, int len)
         {
             if (v != null)
             {
                 for (int i = offset; i < len; i++)
                 {
-                    Put(v[i]);
+                    Add(v[i]);
                 }
             }
         }
 
-        public void Put(StringBuilder v)
+        public void Add(string v)
         {
-            Put(v, 0, v.Length);
+            Add(v, 0, v.Length);
         }
 
-        public void Put(StringBuilder v, int offset, int len)
+        public void Add(string v, int offset, int len)
         {
             if (v != null)
             {
                 for (int i = offset; i < len; i++)
                 {
-                    Put(v[i]);
+                    Add(v[i]);
                 }
             }
         }
 
-        public void Put(byte v)
+        public void Add(StringBuilder v)
+        {
+            Add(v, 0, v.Length);
+        }
+
+        public void Add(StringBuilder v, int offset, int len)
+        {
+            if (v != null)
+            {
+                for (int i = offset; i < len; i++)
+                {
+                    Add(v[i]);
+                }
+            }
+        }
+
+        public void Add(short v)
         {
             if (v == 0)
             {
-                Put('0');
-                return;
-            }
-            int x = v;
-            bool bgn = false;
-            for (int i = Bytes.Length - 1; i >= 0; i--)
-            {
-                int bas = Bytes[i];
-                int q = x / bas;
-                x %= bas;
-                if (q != 0 || bgn)
-                {
-                    AddByte(Digits[q]);
-                    bgn = true;
-                }
-            }
-            AddByte(Digits[v]); // last reminder
-        }
-
-        public void Put(short v)
-        {
-            if (v == 0)
-            {
-                Put('0');
+                Add('0');
                 return;
             }
             int x = v;
@@ -258,13 +222,14 @@ namespace Greatbone.Core
             AddByte(Digits[v]); // last reminder
         }
 
-        public void Put(int v)
+        public void Add(int v)
         {
-            if (v == 0)
+            if (v >= short.MinValue && v <= short.MaxValue)
             {
-                Put('0');
+                Add((short)v);
                 return;
             }
+
             if (v < 0)
             {
                 AddByte(Minus);
@@ -285,13 +250,14 @@ namespace Greatbone.Core
             AddByte(Digits[v]); // last reminder
         }
 
-        public void Put(long v)
+        public void Add(long v)
         {
-            if (v == 0)
+            if (v >= int.MinValue && v <= int.MaxValue)
             {
-                Put('0');
+                Add((int)v);
                 return;
             }
+
             if (v < 0)
             {
                 AddByte(Minus);
@@ -312,15 +278,15 @@ namespace Greatbone.Core
             AddByte(Digits[v]); // last reminder
         }
 
-        public void Put(decimal v)
+        public void Add(decimal v)
         {
-            Put(v, true);
+            Add(v, true);
         }
 
         // sign mask
         private const int Sign = unchecked((int)0x80000000);
 
-        public void Put(decimal dec, bool money)
+        public void Add(decimal dec, bool money)
         {
             if (money)
             {
@@ -329,7 +295,7 @@ namespace Greatbone.Core
 
                 if ((flags & Sign) != 0) // negative
                 {
-                    Put('-');
+                    Add('-');
                 }
                 if (mid != 0) // money
                 {
@@ -349,10 +315,10 @@ namespace Greatbone.Core
                         {
                             if (!bgn)
                             {
-                                Put('0');
+                                Add('0');
                                 bgn = true;
                             }
-                            Put('.');
+                            Add('.');
                         }
                     }
                 }
@@ -374,49 +340,49 @@ namespace Greatbone.Core
                         {
                             if (!bgn)
                             {
-                                Put('0');
+                                Add('0');
                                 bgn = true;
                             }
-                            Put('.');
+                            Add('.');
                         }
                     }
                 }
             }
             else // ordinal decimal number
             {
-                Put(dec.ToString(NumberFormatInfo.CurrentInfo));
+                Add(dec.ToString(NumberFormatInfo.CurrentInfo));
             }
         }
 
-        public void Put(DateTime v)
+        public void Add(DateTime v)
         {
-            Put(v, true);
+            Add(v, true);
         }
 
-        public void Put(DateTime dt, bool time)
+        public void Add(DateTime dt, bool time)
         {
             short yr = (short)dt.Year;
             byte mon = (byte)dt.Month, day = (byte)dt.Day;
 
-            Put(yr);
-            Put('-');
-            if (mon < 10) Put('0');
+            Add(yr);
+            Add('-');
+            if (mon < 10) Add('0');
             AddByte(mon);
-            Put('-');
-            if (day < 10) Put('0');
+            Add('-');
+            if (day < 10) Add('0');
             AddByte(day);
 
             byte hr = (byte)dt.Hour, min = (byte)dt.Minute, sec = (byte)dt.Second;
             if (time)
             {
-                Put(' '); // a space for separation
-                if (hr < 10) Put('0');
+                Add(' '); // a space for separation
+                if (hr < 10) Add('0');
                 AddByte(hr);
-                Put(':');
-                if (min < 10) Put('0');
+                Add(':');
+                if (min < 10) Add('0');
                 AddByte(min);
-                Put(':');
-                if (sec < 10) Put('0');
+                Add(':');
+                if (sec < 10) Add('0');
                 AddByte(sec);
             }
         }

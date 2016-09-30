@@ -6,7 +6,7 @@ namespace Greatbone.Core
     ///
     /// Represents a static file.
     ///
-    public class StaticContent : IMember, IContent
+    public class StaticContent : IKeyed, IContent
     {
         private static readonly Dictionary<string, string> Types = new Dictionary<string, string>
         {

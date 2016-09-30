@@ -3,10 +3,10 @@
 namespace Greatbone.Core
 {
     /// <summary>
-    /// Represents a data object that is compliant to standard data exchange mechanisms.
+    /// Represents a JSON-related exception occured.
     /// </summary>
     public class JsonException : Exception
     {
-        public JsonException(string msg) : base(msg) { }
+        public JsonException(string message) : base(message) { }
     }
 }

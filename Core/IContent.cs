@@ -12,7 +12,6 @@ namespace Greatbone.Core
 		///
 		byte[] Buffer { get; }
 
-
 		/// <summary>The number of bytes.</summary>
 		///
 		int Length { get; }

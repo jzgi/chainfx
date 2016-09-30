@@ -7,7 +7,7 @@ namespace Greatbone.Core
     ///
     /// Represents a (sub)controller that consists of a group of action methods, and optionally a folder of static files.
     ///
-    public abstract class WebSub : IMember
+    public abstract class WebSub : IKeyed
     {
         // actions declared by this controller
         readonly Roll<WebAction> actions;

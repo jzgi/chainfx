@@ -14,7 +14,7 @@ namespace Greatbone.Core
     /// <summary>
     /// An element represents either a value or a name/value pair, depending on the presence of the name property.
     /// </summary>
-    public struct Elem : IMember
+    public struct Elem : IKeyed
     {
         // type of the value
         readonly VT vt;

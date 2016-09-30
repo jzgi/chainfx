@@ -7,7 +7,7 @@ namespace Greatbone.Core
     /// A member of set that is identified by character key, for mapping with components in HTTP request
     /// </summary>
     /// <remarks>URL and parameters keep case-sensitive semantic</remarks>
-    public interface IMember
+    public interface IKeyed
     {
         string Key { get; }
     }
@@ -16,7 +16,7 @@ namespace Greatbone.Core
     /// <summary>
     /// An addition-only collection of elements with character keys. The members are placed in the addition order.
     /// </summary>
-    public class Roll<T> : ICollection<T> where T : IMember
+    public class Roll<T> : ICollection<T> where T : IKeyed
     {
         int[] buckets;
 

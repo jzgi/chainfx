@@ -3,7 +3,7 @@ using System.Text;
 
 namespace Greatbone.Core
 {
-    public class MsgLoader : IMember
+    public class MsgLoader : IKeyed
     {
         readonly WebService _service;
 

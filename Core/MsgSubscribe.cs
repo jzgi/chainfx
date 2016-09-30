@@ -2,7 +2,7 @@
 {
     public delegate void MsgDoer(MsgContext ec);
 
-    public class MsgSubscribe : IMember
+    public class MsgSubscribe : IKeyed
     {
         public string Topic { get; }
 

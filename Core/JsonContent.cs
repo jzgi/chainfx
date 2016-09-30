@@ -4,90 +4,90 @@ using System.Collections.Generic;
 namespace Greatbone.Core
 {
     /// <summary>
-    /// To generate a UTF-8 encoded JSON document. It includes a binary-value extension to the standard JSON format.
+    /// To generate a UTF-8 encoded JSON document. An extension of putting byte array is supported.
     /// </summary>
     public class JsonContent : DynamicContent, IOut
     {
         // starting positions of each level
-        readonly int[] starts;
+        readonly int[] nums;
 
         // current level
         int level;
 
-        // current position
-        int pos;
-
-
         public JsonContent(int capacity) : base(capacity)
         {
+            nums = new int[8];
+            level = -1;
         }
-
 
         public override string Type => "application/json";
 
 
-        public bool Array(Action a)
+        public IOut Arr(Action a)
         {
+            if (level >= 0 && nums[level] > 0)
+            {
+                Add(',');
+            }
+
             level++;
-            Put('[');
+            Add('[');
 
-            starts[level] = pos;
-            a();
+            a?.Invoke();
 
-            Put(']');
+            Add(']');
             level--;
 
-            return true;
-        }
-
-        public void Write(byte[] value)
-        {
-            throw new NotImplementedException();
+            return this;
         }
 
         //
         // READ OBJECT
         //
 
-        public bool Object(Action a)
+        public IOut Object(Action a)
         {
+            if (level >= 0 && nums[level] > 0)
+            {
+                Add(',');
+            }
+
             level++;
-            Put('{');
+            Add('{');
 
-            starts[level] = pos;
-            a();
+            a?.Invoke();
 
-            Put('}');
+            Add('}');
             level--;
 
-            return true;
+            return this;
         }
 
 
         public IOut _(int value)
         {
-            if (starts[level] > 0)
+            if (nums[level] > 0)
             {
-                Put(',');
+                Add(',');
             }
 
-            Put(value);
+            Add(value);
 
             return this;
         }
 
         public IOut Put(string name, short value)
         {
-            if (starts[level] > 0)
+            if (nums[level]++ > 0)
             {
-                Put(',');
+                Add(',');
             }
 
-            Put('"');
-            Put(name);
-            Put('"');
-            Put(':');
-            Put(value);
+            Add('"');
+            Add(name);
+            Add('"');
+            Add(':');
+            Add(value);
 
 
             return this;
@@ -95,87 +95,136 @@ namespace Greatbone.Core
 
         public IOut Put(string name, int value)
         {
-            if (starts[level] > 0)
+            if (nums[level]++ > 0)
             {
-                Put(',');
+                Add(',');
             }
 
-            Put('"');
-            Put(name);
-            Put('"');
-            Put(':');
-            Put(value);
+            Add('"');
+            Add(name);
+            Add('"');
+            Add(':');
+            Add(value);
+
+            return this;
+        }
+
+        public IOut Put(string name, long value)
+        {
+            if (nums[level]++ > 0)
+            {
+                Add(',');
+            }
+
+            Add('"');
+            Add(name);
+            Add('"');
+            Add(':');
+            Add(value);
 
             return this;
         }
 
         public IOut Put(string name, decimal value)
         {
-            if (starts[level] > 0)
+            if (nums[level]++ > 0)
             {
-                Put(',');
+                Add(',');
             }
 
-            Put('"');
-            Put(name);
-            Put('"');
-            Put(':');
-            Put(value);
+            Add('"');
+            Add(name);
+            Add('"');
+            Add(':');
+            Add(value);
 
             return this;
-
         }
 
         public IOut Put(string name, DateTime value)
         {
-            if (starts[level] > 0)
+            if (nums[level]++ > 0)
             {
-                Put(',');
+                Add(',');
             }
 
-            Put('"');
-            Put(name);
-            Put('"');
-            Put(':');
-            Put(value);
+            Add('"');
+            Add(name);
+            Add('"');
+            Add(':');
+            Add(value);
 
             return this;
+        }
 
+        public IOut Put(string name, char[] value)
+        {
+            if (nums[level]++ > 0)
+            {
+                Add(',');
+            }
+
+            Add('"');
+            Add(name);
+            Add('"');
+            Add(':');
+
+            if (value == null)
+            {
+                Add("null");
+            }
+            else
+            {
+                Add('"');
+                Add(value);
+                Add('"');
+            }
+
+            return this;
         }
 
         public IOut Put(string name, string value)
         {
-            if (starts[level] > 0)
+            if (nums[level]++ > 0)
             {
-                Put(',');
+                Add(',');
             }
 
-            Put('"');
-            Put(name);
-            Put('"');
-            Put(':');
+            Add('"');
+            Add(name);
+            Add('"');
+            Add(':');
 
             if (value == null)
             {
-                Put("null");
+                Add("null");
             }
             else
             {
-                Put('"');
-                Put(value);
-                Put('"');
+                Add('"');
+                Add(value);
+                Add('"');
             }
 
             return this;
-
         }
-
 
 
         public IOut Put(string name, bool value)
         {
-            return this;
+            if (nums[level]++ > 0)
+            {
+                Add(',');
+            }
 
+            Add('"');
+            Add(name);
+            Add('"');
+            Add(':');
+
+            Add(value ? "true" : "false");
+
+            return this;
         }
 
         public IOut Put(string name, byte[] value)
@@ -191,40 +240,24 @@ namespace Greatbone.Core
 
         public IOut Put<V>(string name, Dictionary<string, V> dict)
         {
-            Put('"');
-            Put(name);
-            Put('"');
-            Put(':');
+            Add('"');
+            Add(name);
+            Add('"');
+            Add(':');
 
-            Put('{');
+            Add('{');
             foreach (var pair in dict)
             {
-                Put('"');
-                Put(pair.Key);
-                Put('"');
-                Put(':');
+                Add('"');
+                Add(pair.Key);
+                Add('"');
+                Add(':');
 
                 //				PutValue(pair.Value);
             }
+            Add('}');
 
-            Put('}');
             return this;
-
-        }
-
-        public IOut Put(string name, long value)
-        {
-            throw new NotImplementedException();
-        }
-
-        public IOut Put(string name, char[] value)
-        {
-            throw new NotImplementedException();
-        }
-
-        public IOut Put<T>(string name, long value)
-        {
-            throw new NotImplementedException();
         }
 
         public IOut Put<T>(string name, T value) where T : IData

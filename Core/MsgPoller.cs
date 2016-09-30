@@ -4,7 +4,7 @@ using System.Threading.Tasks;
 
 namespace Greatbone.Core
 {
-    public class MsgPoller : IMember
+    public class MsgPoller : IKeyed
     {
         readonly WebService service;
 
