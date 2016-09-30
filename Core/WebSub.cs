@@ -9,11 +9,11 @@ namespace Greatbone.Core
     ///
     public abstract class WebSub : IKeyed
     {
-        // does declared by this controller
-        readonly Roll<WebAction> actions;
+        // doer declared by this controller
+        readonly Roll<WebDoer> doers;
 
-        // the default action
-        readonly WebAction defaction;
+        // the default doer
+        readonly WebDoer defdoer;
 
         public WebConfig Config { get; internal set; }
 
@@ -88,7 +88,7 @@ namespace Greatbone.Core
                 }
             }
 
-            actions = new Roll<WebAction>(32);
+            doers = new Roll<WebDoer>(32);
 
             Type type = GetType();
 
@@ -96,70 +96,92 @@ namespace Greatbone.Core
             foreach (MethodInfo mi in type.GetMethods(BindingFlags.Public | BindingFlags.Instance))
             {
                 ParameterInfo[] pis = mi.GetParameters();
-                WebAction a = null;
+                WebDoer d = null;
                 if (cfg.IsVar)
                 {
                     if (pis.Length == 2 && pis[0].ParameterType == typeof(WebContext) && pis[1].ParameterType == typeof(string))
                     {
-                        a = new WebAction(this, mi, true);
+                        d = new WebDoer(this, mi, true);
                     }
                 }
                 else
                 {
                     if (pis.Length == 1 && pis[0].ParameterType == typeof(WebContext))
                     {
-                        a = new WebAction(this, mi, false);
+                        d = new WebDoer(this, mi, false);
                     }
                 }
-                if (a != null)
+                if (d != null)
                 {
-                    if (a.Key.Equals("default")) { defaction = a; }
-                    actions.Add(a);
+                    if (d.Key.Equals("default")) { defdoer = d; }
+                    doers.Add(d);
                 }
             }
         }
 
-        public WebAction GetAction(String action)
+        public WebDoer GetDoer(String method)
         {
-            if (string.IsNullOrEmpty(action))
+            if (string.IsNullOrEmpty(method))
             {
-                return defaction;
+                return defdoer;
             }
-            return actions[action];
+            return doers[method];
         }
 
-        public virtual void Handle(string relative, WebContext wc)
+        public virtual void Do(string rsc, WebContext wc)
         {
-            if (relative.IndexOf('.') != -1) // static handling
+            if (rsc.IndexOf('.') != -1) // static handling
             {
                 StaticContent sta;
-                if (Statics != null && Statics.TryGet(relative, out sta))
+                if (Statics != null && Statics.TryGet(rsc, out sta))
                 {
                     wc.Content = sta;
                 }
                 else
                 {
-                    wc.Response.StatusCode = 404;
+                    wc.StatusCode = 404;
                 }
             }
-            else
+            else // dynamic handling
             {
-                // action handling
-                WebAction a = relative.Length == 0 ? defaction : GetAction(relative);
-                if (a == null)
+                WebDoer doer = rsc.Length == 0 ? defdoer : GetDoer(rsc);
+                if (doer == null)
                 {
-                    wc.Response.StatusCode = 404;
+                    wc.StatusCode = 404;
                 }
                 else
                 {
-                    a.Do(wc);
+                    doer.Do(wc);
                 }
             }
         }
 
-        public virtual void Handle(string relative, WebContext wc, string var)
+        public virtual void Do(string rsc, WebContext wc, string var)
         {
-
+            if (rsc.IndexOf('.') != -1) // static handling
+            {
+                StaticContent sta;
+                if (Statics != null && Statics.TryGet(rsc, out sta))
+                {
+                    wc.Content = sta;
+                }
+                else
+                {
+                    wc.StatusCode = 404;
+                }
+            }
+            else // dynamic handling
+            {
+                WebDoer doer = rsc.Length == 0 ? defdoer : GetDoer(rsc);
+                if (doer == null)
+                {
+                    wc.StatusCode = 404;
+                }
+                else
+                {
+                    doer.Do(wc, var);
+                }
+            }
         }
 
         public virtual void @default(WebContext wc)

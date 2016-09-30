@@ -12,13 +12,13 @@ namespace Greatbone.Core
 
     /// <summary>The descriptor of an action handling method.</summary>
     ///
-    public class WebAction : IKeyed
+    public class WebDoer : IKeyed
     {
         public WebSub Controller { get; }
 
-        readonly Doer doer;
-
         readonly VarDoer vardoer;
+
+        readonly Doer doer;
 
         private IfAttribute[] checkers;
 
@@ -26,7 +26,7 @@ namespace Greatbone.Core
 
         public bool IsVar { get; }
 
-        internal WebAction(WebSub controller, MethodInfo mi, bool x)
+        internal WebDoer(WebSub controller, MethodInfo mi, bool x)
         {
             Controller = controller;
             // NOTE: strict method name as key here to avoid the default base url trap
@@ -42,14 +42,14 @@ namespace Greatbone.Core
             }
         }
 
-        internal void Do(WebContext wc)
-        {
-            doer(wc);
-        }
-
         internal void Do(WebContext wc, string var)
         {
             vardoer(wc, var);
+        }
+
+        internal void Do(WebContext wc)
+        {
+            doer(wc);
         }
 
         public override string ToString()

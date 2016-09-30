@@ -39,7 +39,7 @@ namespace Greatbone.Sample
         }
 
 
-        public void New(WebContext wc)
+        public void @new(WebContext wc)
         {
             IToken tok = wc.Token;
 
@@ -49,7 +49,7 @@ namespace Greatbone.Sample
             }
         }
 
-        public void Remove(WebContext wc)
+        public void remove(WebContext wc)
         {
         }
     }

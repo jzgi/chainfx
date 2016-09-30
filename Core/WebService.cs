@@ -47,7 +47,7 @@ namespace Greatbone.Core
 
 
         // topics subscribed by this microservice
-        public Roll<MsgSubscription> Subscriptions { get; } = new Roll<MsgSubscription>(16);
+        public Roll<MsgSubscriber> Subscribers { get; } = new Roll<MsgSubscriber>(16);
 
         private Thread scheduler;
 
@@ -159,7 +159,7 @@ namespace Greatbone.Core
                 }
                 else
                 {
-                    Handle(wc.Request.Path.Value.Substring(1), wc);
+                    Do(wc.Request.Path.Value.Substring(1), wc);
                 }
             }
             else
@@ -167,7 +167,7 @@ namespace Greatbone.Core
                 // check security token (authentication)
 
                 // handling
-                Handle(wc.Request.Path.Value.Substring(1), wc);
+                Do(wc.Request.Path.Value.Substring(1), wc);
             }
 
             if (wc.Content != null)

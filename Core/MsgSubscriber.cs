@@ -2,7 +2,7 @@
 {
     public delegate void MsgDoer(MsgContext ec);
 
-    public class MsgSubscription : IKeyed
+    public class MsgSubscriber : IKeyed
     {
         public string Topic { get; }
 
@@ -10,7 +10,7 @@
 
         readonly MsgDoer doer;
 
-        internal MsgSubscription(string topic, string filter, MsgDoer doer)
+        internal MsgSubscriber(string topic, string filter, MsgDoer doer)
         {
             // NOTE: strict method nzame as key here to avoid the default base url trap
             Topic = topic;
