@@ -5,8 +5,8 @@
     /// </summary>
     public interface IData
     {
-        void Read(IIn i);
+        void In(IDataIn i);
 
-        void Write(IOut o);
+        void Out<R>(IDataOut<R> o) where R : IDataOut<R>;
     }
 }

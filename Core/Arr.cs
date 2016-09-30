@@ -19,6 +19,8 @@ namespace Greatbone.Core
             get { return elements[index]; }
         }
 
+        public int Count => count;
+
         internal void Add(Member elem)
         {
             int len = elements.Length;

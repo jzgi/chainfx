@@ -193,6 +193,14 @@ namespace Greatbone.Core
 
         string ParseString(int start)
         {
+            int p = start;
+            for (;;)
+            {
+                byte b = array[p++];
+                if (p >= limit) throw FormatEx;
+                if (b == '"') break;
+                throw FormatEx;
+            }
             return null;
         }
 
@@ -203,6 +211,11 @@ namespace Greatbone.Core
 
         bool ParseNull(int start)
         {
+            int p = start;
+            if (array[++p] == 'u' && array[++p] == 'l' && array[++p] == 'l')
+            {
+                return true;
+            }
             return false;
         }
 
@@ -213,6 +226,11 @@ namespace Greatbone.Core
 
         bool ParseBool(int start)
         {
+            int p = start;
+            if (array[++p] == 'u' && array[++p] == 'l' && array[++p] == 'l')
+            {
+                return true;
+            }
             return false;
         }
     }

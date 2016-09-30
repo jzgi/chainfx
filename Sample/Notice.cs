@@ -27,7 +27,7 @@ namespace Greatbone.Sample
         internal List<Join> joins;
 
 
-        public void Read(IIn i)
+        public void In(IDataIn i)
         {
             i.Get(nameof(id), ref id);
             i.Get(nameof(loc), ref loc);
@@ -41,7 +41,7 @@ namespace Greatbone.Sample
             i.Get(nameof(joins), ref joins);
         }
 
-        public void Write(IOut o)
+        public void Out<R>(IDataOut<R> o) where R : IDataOut<R>
         {
             o.Put(nameof(id), id);
             o.Put(nameof(loc), loc);
@@ -60,12 +60,12 @@ namespace Greatbone.Sample
     {
         internal char[] id;
 
-        public void Read(IIn r)
+        public void In(IDataIn i)
         {
             throw new NotImplementedException();
         }
 
-        public void Write(IOut w)
+        public void Out<R>(IDataOut<R> o) where R : IDataOut<R>
         {
             throw new NotImplementedException();
         }

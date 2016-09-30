@@ -12,7 +12,7 @@ namespace Greatbone.Core
     }
 
     /// <summary>
-    /// An element represents either a value or a name/value pair, depending on the presence of the name property.
+    /// A member represents either a value or a name/value pair, depending on the presence of the name property.
     /// </summary>
     public struct Member : IKeyed
     {

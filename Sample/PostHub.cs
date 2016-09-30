@@ -23,18 +23,22 @@ namespace Greatbone.Sample
             using (var dc = Service.NewSqlContext())
             {
                 if (dc.Query(@"SELECT * FROM posts ORDER BY id DESC LIMIT @limit OFFSET @offset",
-                    p => p.Put("@limit", 20).Put("@offset", 20 * page)))
+                    p =>
+                    {
+                        p.Put(20);
+                        p.Put(20 * page);
+                    }))
                 {
                     List<Post> list = null;
                     while (dc.NextRow())
                     {
                     }
-                    wc.Response.StatusCode = (int) HttpStatusCode.OK;
+                    wc.Response.StatusCode = (int)HttpStatusCode.OK;
                     // wc.Response.SetContent(list);
                 }
                 else
                 {
-                    wc.Response.StatusCode = (int) HttpStatusCode.NoContent;
+                    wc.Response.StatusCode = (int)HttpStatusCode.NoContent;
                 }
             }
         }

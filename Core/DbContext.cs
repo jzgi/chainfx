@@ -6,7 +6,7 @@ using NpgsqlTypes;
 
 namespace Greatbone.Core
 {
-    public class DbContext : IDisposable, IResultSet, IParameterSet
+    public class DbContext : IDisposable, IResultSet, IParameters
     {
         readonly NpgsqlConnection connection;
 
@@ -67,7 +67,7 @@ namespace Greatbone.Core
             }
         }
 
-        public bool QueryA(string cmdtext, Action<IParameterSet> ps)
+        public bool QueryA(string cmdtext, Action<IParameters> ps)
         {
             if (connection.State != ConnectionState.Open)
             {
@@ -89,7 +89,7 @@ namespace Greatbone.Core
             return reader.Read();
         }
 
-        public bool Query(string cmdtext, Action<IParameterSet> ps)
+        public bool Query(string cmdtext, Action<IParameters> ps)
         {
             if (connection.State != ConnectionState.Open)
             {
@@ -145,7 +145,7 @@ namespace Greatbone.Core
             return reader.NextResult();
         }
 
-        public int Execute(string cmdtext, Action<IOut> ps)
+        public int Execute(string cmdtext, Action<IParameters> ps)
         {
             if (connection.State != ConnectionState.Open)
             {
@@ -375,7 +375,7 @@ namespace Greatbone.Core
         {
             // convert message to byte buffer
             JsonContent b = new JsonContent(16 * 1024);
-            @event.Write(b);
+            @event.Out(b);
 
             Execute("INSERT INTO mq (topic, filter, message) VALUES (@topic, @filter, @message)", p =>
             {
@@ -425,7 +425,7 @@ namespace Greatbone.Core
 
         int index; // current parameter index
 
-        public IOut Put(bool value)
+        public IParameters Put(bool value)
         {
             parameters.Add(new NpgsqlParameter(Params[index++], NpgsqlDbType.Boolean)
             {
@@ -434,7 +434,7 @@ namespace Greatbone.Core
             return this;
         }
 
-        public IOut Put(short value)
+        public IParameters Put(short value)
         {
             parameters.Add(new NpgsqlParameter(Params[index++], NpgsqlDbType.Smallint)
             {
@@ -443,7 +443,7 @@ namespace Greatbone.Core
             return this;
         }
 
-        public IOut Put(int value)
+        public IParameters Put(int value)
         {
             parameters.Add(new NpgsqlParameter(Params[index++], NpgsqlDbType.Integer)
             {
@@ -452,7 +452,7 @@ namespace Greatbone.Core
             return this;
         }
 
-        public IOut Put(long value)
+        public IParameters Put(long value)
         {
             parameters.Add(new NpgsqlParameter(Params[index++], NpgsqlDbType.Bigint)
             {
@@ -461,7 +461,7 @@ namespace Greatbone.Core
             return this;
         }
 
-        public IOut Put(decimal value)
+        public IParameters Put(decimal value)
         {
             parameters.Add(new NpgsqlParameter(Params[index++], NpgsqlDbType.Money)
             {
@@ -470,8 +470,7 @@ namespace Greatbone.Core
             return this;
         }
 
-
-        public IOut Put(string name, bool value)
+        public IParameters Put(string name, bool value)
         {
             parameters.Add(new NpgsqlParameter(name, NpgsqlDbType.Boolean)
             {
@@ -480,7 +479,7 @@ namespace Greatbone.Core
             return this;
         }
 
-        public IOut Put(string name, short value)
+        public IParameters Put(string name, short value)
         {
             parameters.Add(new NpgsqlParameter(name, NpgsqlDbType.Smallint)
             {
@@ -489,7 +488,7 @@ namespace Greatbone.Core
             return this;
         }
 
-        public IOut Put(string name, int value)
+        public IParameters Put(string name, int value)
         {
             parameters.Add(new NpgsqlParameter(name, NpgsqlDbType.Integer)
             {
@@ -498,7 +497,7 @@ namespace Greatbone.Core
             return this;
         }
 
-        public IOut Put(string name, long value)
+        public IParameters Put(string name, long value)
         {
             parameters.Add(new NpgsqlParameter(name, NpgsqlDbType.Bigint)
             {
@@ -507,7 +506,7 @@ namespace Greatbone.Core
             return this;
         }
 
-        public IOut Put(string name, decimal value)
+        public IParameters Put(string name, decimal value)
         {
             parameters.Add(new NpgsqlParameter(name, NpgsqlDbType.Money)
             {
@@ -516,7 +515,7 @@ namespace Greatbone.Core
             return this;
         }
 
-        public IOut Put(string name, DateTime value)
+        public IParameters Put(string name, DateTime value)
         {
             parameters.Add(new NpgsqlParameter(name, NpgsqlDbType.Timestamp)
             {
@@ -525,7 +524,7 @@ namespace Greatbone.Core
             return this;
         }
 
-        public IOut Put(string name, char[] value)
+        public IParameters Put(string name, char[] value)
         {
             parameters.Add(new NpgsqlParameter(name, NpgsqlDbType.Char, value.Length)
             {
@@ -534,7 +533,7 @@ namespace Greatbone.Core
             return this;
         }
 
-        public IOut Put(string name, string value)
+        public IParameters Put(string name, string value)
         {
             parameters.Add(new NpgsqlParameter(name, NpgsqlDbType.Varchar, value.Length)
             {
@@ -543,12 +542,12 @@ namespace Greatbone.Core
             return this;
         }
 
-        public IOut Put<T>(string name, T value) where T : IData
+        public IParameters Put<T>(string name, T value) where T : IData
         {
             throw new NotImplementedException();
         }
 
-        public IOut Put(string name, byte[] value)
+        public IParameters Put(string name, byte[] value)
         {
             parameters.Add(new NpgsqlParameter(name, NpgsqlDbType.Bytea, value.Length)
             {
@@ -557,12 +556,12 @@ namespace Greatbone.Core
             return this;
         }
 
-        public IOut Put<T>(string name, List<T> value)
+        public IParameters Put<T>(string name, List<T> value)
         {
             throw new NotImplementedException();
         }
 
-        public IOut Put<T>(string name, Dictionary<string, T> value)
+        public IParameters Put<T>(string name, Dictionary<string, T> value)
         {
             throw new NotImplementedException();
         }

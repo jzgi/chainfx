@@ -33,7 +33,7 @@ namespace Greatbone.Sample
         /// <summary>Returns the key of the brand object.</summary>
         public string Key { get; }
 
-        public void Read(IIn i)
+        public void In(IDataIn i)
         {
             i.Get(nameof(id), ref id);
             i.Get(nameof(time), ref time);
@@ -55,7 +55,7 @@ namespace Greatbone.Sample
             i.Get(nameof(m9), ref m9);
         }
 
-        public void Write(IOut o)
+        public void Out<R>(IDataOut<R> o) where R : IDataOut<R>
         {
             o.Put(nameof(id), id);
             o.Put(nameof(time), time);
@@ -90,22 +90,22 @@ namespace Greatbone.Sample
 
         internal string text;
 
-        public void From(IIn r)
+        public void From(IDataIn i)
         {
-            r.Get(nameof(time), ref time);
-            r.Get(nameof(emoji), ref emoji);
-            r.Get(nameof(authorid), ref authorid);
-            r.Get(nameof(author), ref author);
-            r.Get(nameof(text), ref text);
+            i.Get(nameof(time), ref time);
+            i.Get(nameof(emoji), ref emoji);
+            i.Get(nameof(authorid), ref authorid);
+            i.Get(nameof(author), ref author);
+            i.Get(nameof(text), ref text);
         }
 
-        public void To(IOut w)
+        public void Out<R>(IDataOut<R> o) where R : IDataOut<R>
         {
-            w.Put(nameof(time), time);
-            w.Put(nameof(emoji), emoji);
-            w.Put(nameof(authorid), authorid);
-            w.Put(nameof(author), author);
-            w.Put(nameof(text), text);
+            o.Put(nameof(time), time);
+            o.Put(nameof(emoji), emoji);
+            o.Put(nameof(authorid), authorid);
+            o.Put(nameof(author), author);
+            o.Put(nameof(text), text);
         }
     }
 }

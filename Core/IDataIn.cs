@@ -6,7 +6,7 @@ namespace Greatbone.Core
     /// <summary>
     /// A data intaking source.
     /// </summary>
-    public interface IIn
+    public interface IDataIn
     {
         //
         // property reading

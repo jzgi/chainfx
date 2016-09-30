@@ -14,11 +14,11 @@ namespace Greatbone.Sample
 
         public string Key => Id;
 
-        public void Read(IIn i)
+        public void In(IDataIn i)
         {
         }
 
-        public void Write(IOut o)
+        public void Out<R>(IDataOut<R> o) where R : IDataOut<R>
         {
         }
     }

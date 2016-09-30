@@ -34,7 +34,7 @@ namespace Greatbone.Sample
 
         public string Name => name;
 
-        public void Read(IIn i)
+        public void In(IDataIn i)
         {
             i.Get(nameof(id), ref id);
             i.Get(nameof(name), ref name);
@@ -48,7 +48,7 @@ namespace Greatbone.Sample
             i.Get(nameof(favs), ref favs);
         }
 
-        public void Write(IOut o)
+        public void Out<R>(IDataOut<R> o) where R : IDataOut<R>
         {
             o.Put(nameof(id), id);
             o.Put(nameof(name), name);

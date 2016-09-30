@@ -39,7 +39,7 @@ namespace Greatbone.Sample
         internal List<Item> friends;
         internal List<Item> awards;
 
-        public void Read(IIn i)
+        public void In(IDataIn i)
         {
             i.Get(nameof(id), ref id);
             i.Get(nameof(name), ref name);
@@ -66,7 +66,7 @@ namespace Greatbone.Sample
             i.Get(nameof(awards), ref awards);
         }
 
-        public void Write(IOut o)
+        public void Out<R>(IDataOut<R> o) where R : IDataOut<R>
         {
             o.Put(nameof(id), id);
             o.Put(nameof(name), name);
@@ -102,18 +102,18 @@ namespace Greatbone.Sample
 
         internal string desc;
 
-        public void From(IIn r)
+        public void In(IDataIn i)
         {
-            r.Get(nameof(uid), ref uid);
-            r.Get(nameof(url), ref url);
-            r.Get(nameof(desc), ref desc);
+            i.Get(nameof(uid), ref uid);
+            i.Get(nameof(url), ref url);
+            i.Get(nameof(desc), ref desc);
         }
 
-        public void To(IOut w)
+        public void Out<R>(IDataOut<R> o) where R : IDataOut<R>
         {
-            w.Put(nameof(uid), uid);
-            w.Put(nameof(url), url);
-            w.Put(nameof(desc), desc);
+            o.Put(nameof(uid), uid);
+            o.Put(nameof(url), url);
+            o.Put(nameof(desc), desc);
         }
     }
 }

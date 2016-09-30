@@ -36,7 +36,7 @@ namespace Greatbone.Core
 
         public Dictionary<string, string> options;
 
-        public void Read(IIn r)
+        public void In(IDataIn r)
         {
             r.Get(nameof(Key), ref Key);
             r.Get(nameof(Part), ref Part);
@@ -49,7 +49,7 @@ namespace Greatbone.Core
             r.Get(nameof(options), ref options);
         }
 
-        public void Write(IOut w)
+        public void Out<R>(IDataOut<R> w) where R : IDataOut<R>
         {
             w.Put(nameof(Key), Key);
             w.Put(nameof(Part), Part);
@@ -70,7 +70,7 @@ namespace Greatbone.Core
                 JsonParser parser = new JsonParser(bytes);
                 Obj obj = (Obj)parser.Parse();
 
-                Read(obj); // may override
+                In(obj); // may override
 
             }
             catch

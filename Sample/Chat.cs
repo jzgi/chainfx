@@ -23,7 +23,7 @@ namespace Greatbone.Sample
             msgs.Add(new Message());
         }
 
-        public void Read(IIn i)
+        public void In(IDataIn i)
         {
             i.Get(nameof(status), ref status);
             i.Get(nameof(partner), ref partner);
@@ -31,7 +31,7 @@ namespace Greatbone.Sample
             i.Get(nameof(lasttime), ref lasttime);
         }
 
-        public void Write(IOut o)
+        public void Out<R>(IDataOut<R> o) where R : IDataOut<R>
         {
             o.Put(nameof(status), status);
             o.Put(nameof(partner), partner);
@@ -61,7 +61,7 @@ namespace Greatbone.Sample
 
         internal DateTime time;
 
-        public void Read(IIn i)
+        public void In(IDataIn i)
         {
             i.Get(nameof(id), ref id);
             i.Get(nameof(subtype), ref subtype);
@@ -71,7 +71,7 @@ namespace Greatbone.Sample
             i.Get(nameof(time), ref time);
         }
 
-        public void Write(IOut o)
+        public void Out<R>(IDataOut<R> o) where R : IDataOut<R>
         {
             o.Put(nameof(id), id);
             o.Put(nameof(subtype), subtype);

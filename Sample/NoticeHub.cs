@@ -48,7 +48,7 @@ namespace Greatbone.Sample
             using (var dc = Service.NewSqlContext())
             {
                 if (dc.Query("INSERT INTO notices () VALUES ()",
-                    p => p.Put("@offset", page * 20).Put("@offset", page * 20)))
+                    p => { p.Put(page * 20); p.Put(page * 20); }))
                 {
 
                 }

@@ -3,7 +3,7 @@ using System.Collections.Generic;
 
 namespace Greatbone.Core
 {
-    public class Obj : IIn
+    public class Obj : IDataIn
     {
         readonly Roll<Member> pairs = new Roll<Member>(16);
 
@@ -70,6 +70,11 @@ namespace Greatbone.Core
             pairs.Add(e);
         }
 
+        public int Count => pairs.Count;
+
+        public Member this[int index] => pairs[index];
+
+        public Member this[string name] => pairs[name];
 
         public bool Get(string name, ref int value)
         {
@@ -179,12 +184,5 @@ namespace Greatbone.Core
             throw new NotImplementedException();
         }
 
-        public Member this[string name]
-        {
-            get
-            {
-                return pairs[name];
-            }
-        }
     }
 }

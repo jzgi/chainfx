@@ -6,7 +6,7 @@ namespace Greatbone.Core
     /// <summary>
     /// To generate a UTF-8 encoded JSON document. An extension of putting byte array is supported.
     /// </summary>
-    public class JsonContent : DynamicContent, IOut
+    public class JsonContent : DynamicContent, IDataOut<JsonContent>
     {
         // starting positions of each level
         readonly int[] nums;
@@ -23,7 +23,7 @@ namespace Greatbone.Core
         public override string Type => "application/json";
 
 
-        public IOut Arr(Action a)
+        public void Arr(Action a)
         {
             if (level >= 0 && nums[level] > 0)
             {
@@ -37,15 +37,13 @@ namespace Greatbone.Core
 
             Add(']');
             level--;
-
-            return this;
         }
 
         //
         // READ OBJECT
         //
 
-        public IOut Object(Action a)
+        public void Object(Action a)
         {
             if (level >= 0 && nums[level] > 0)
             {
@@ -59,12 +57,10 @@ namespace Greatbone.Core
 
             Add('}');
             level--;
-
-            return this;
         }
 
 
-        public IOut _(int value)
+        public void _(int value)
         {
             if (nums[level] > 0)
             {
@@ -72,28 +68,9 @@ namespace Greatbone.Core
             }
 
             Add(value);
-
-            return this;
         }
 
-        public IOut Put(string name, short value)
-        {
-            if (nums[level]++ > 0)
-            {
-                Add(',');
-            }
-
-            Add('"');
-            Add(name);
-            Add('"');
-            Add(':');
-            Add(value);
-
-
-            return this;
-        }
-
-        public IOut Put(string name, int value)
+        public JsonContent Put(string name, short value)
         {
             if (nums[level]++ > 0)
             {
@@ -109,7 +86,7 @@ namespace Greatbone.Core
             return this;
         }
 
-        public IOut Put(string name, long value)
+        public JsonContent Put(string name, int value)
         {
             if (nums[level]++ > 0)
             {
@@ -125,7 +102,7 @@ namespace Greatbone.Core
             return this;
         }
 
-        public IOut Put(string name, decimal value)
+        public JsonContent Put(string name, long value)
         {
             if (nums[level]++ > 0)
             {
@@ -141,7 +118,7 @@ namespace Greatbone.Core
             return this;
         }
 
-        public IOut Put(string name, DateTime value)
+        public JsonContent Put(string name, decimal value)
         {
             if (nums[level]++ > 0)
             {
@@ -157,7 +134,23 @@ namespace Greatbone.Core
             return this;
         }
 
-        public IOut Put(string name, char[] value)
+        public JsonContent Put(string name, DateTime value)
+        {
+            if (nums[level]++ > 0)
+            {
+                Add(',');
+            }
+
+            Add('"');
+            Add(name);
+            Add('"');
+            Add(':');
+            Add(value);
+
+            return this;
+        }
+
+        public JsonContent Put(string name, char[] value)
         {
             if (nums[level]++ > 0)
             {
@@ -183,7 +176,7 @@ namespace Greatbone.Core
             return this;
         }
 
-        public IOut Put(string name, string value)
+        public JsonContent Put(string name, string value)
         {
             if (nums[level]++ > 0)
             {
@@ -210,7 +203,7 @@ namespace Greatbone.Core
         }
 
 
-        public IOut Put(string name, bool value)
+        public JsonContent Put(string name, bool value)
         {
             if (nums[level]++ > 0)
             {
@@ -227,18 +220,19 @@ namespace Greatbone.Core
             return this;
         }
 
-        public IOut Put(string name, byte[] value)
+        public JsonContent Put(string name, byte[] value)
         {
             throw new NotImplementedException();
         }
 
-        public IOut Put<T>(string name, List<T> list)
+        public JsonContent Put<T>(string name, List<T> list)
         {
-            return this;
 
+
+            return this;
         }
 
-        public IOut Put<V>(string name, Dictionary<string, V> dict)
+        public JsonContent Put<V>(string name, Dictionary<string, V> dict)
         {
             Add('"');
             Add(name);
@@ -260,7 +254,7 @@ namespace Greatbone.Core
             return this;
         }
 
-        public IOut Put<T>(string name, T value) where T : IData
+        public JsonContent Put<T>(string name, T value) where T : IData
         {
             throw new NotImplementedException();
         }

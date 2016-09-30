@@ -3,7 +3,7 @@ using System.Collections.Generic;
 
 namespace Greatbone.Core
 {
-    public class JsonText : IOut
+    public class JsonText : IDataOut<JsonText>
     {
         // for parsing json text
         string text;
@@ -46,63 +46,63 @@ namespace Greatbone.Core
 
         }
 
-        public IOut Put(string name, bool value)
+        public JsonText Put(string name, bool value)
         {
             throw new NotImplementedException();
         }
 
-        public IOut Put(string name, short value)
+        public JsonText Put(string name, short value)
         {
             throw new NotImplementedException();
         }
 
-        public IOut Put(string name, int value)
+        public JsonText Put(string name, int value)
         {
             throw new NotImplementedException();
         }
 
-        public IOut Put(string name, long value)
+        public JsonText Put(string name, long value)
         {
             throw new NotImplementedException();
         }
 
-        public IOut Put(string name, decimal value)
+        public JsonText Put(string name, decimal value)
         {
             throw new NotImplementedException();
         }
 
-        public IOut Put(string name, DateTime value)
+        public JsonText Put(string name, DateTime value)
         {
             throw new NotImplementedException();
         }
 
-        public IOut Put(string name, char[] value)
+        public JsonText Put(string name, char[] value)
         {
             throw new NotImplementedException();
         }
 
-        public IOut Put(string name, string value)
+        public JsonText Put(string name, string value)
         {
             throw new NotImplementedException();
         }
 
-     
-        public IOut Put(string name, byte[] value)
+
+        public JsonText Put(string name, byte[] value)
         {
             throw new NotImplementedException();
         }
 
-        public IOut Put<T>(string name, List<T> value)
+        public JsonText Put<T>(string name, List<T> value)
         {
             throw new NotImplementedException();
         }
 
-        public IOut Put<T>(string name, Dictionary<string, T> value)
+        public JsonText Put<T>(string name, Dictionary<string, T> value)
         {
             throw new NotImplementedException();
         }
 
-        public IOut Put<T>(string name, T value) where T :IData
+        public JsonText Put<T>(string name, T value) where T : IData
         {
             throw new NotImplementedException();
         }
