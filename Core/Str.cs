@@ -4,7 +4,7 @@ namespace Greatbone.Core
 {
 
     /// <summary>
-    /// a UTF-8 and escaping enabled string builder.
+    /// A string builder that supports UTF-8 decoding as well as escape sequences.
     /// </summary>
     internal class Str
     {
@@ -45,13 +45,7 @@ namespace Greatbone.Core
 
             if (esc)
             {
-                c = c == '"'
-                    ? '"'
-                    : c == '\\'
-                        ? '\\'
-                        : c == 'b'
-                            ? '\b'
-                            : c == 'f' ? '\f' : c == 'n' ? '\n' : c == 'r' ? '\r' : c == 't' ? '\t' : c;
+                c = c == '"' ? '"' : c == '\\' ? '\\' : c == 'b' ? '\b' : c == 'f' ? '\f' : c == 'n' ? '\n' : c == 'r' ? '\r' : c == 't' ? '\t' : c;
                 esc = false;
             }
             else
@@ -71,7 +65,7 @@ namespace Greatbone.Core
             // UTF-8
             if (b < 0x80)
             {
-                c = (char) b;
+                c = (char)b;
             }
             else if (b < 10)
             {

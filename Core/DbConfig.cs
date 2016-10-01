@@ -12,13 +12,13 @@
 
         public bool MQ;
 
-        public void In(IDataIn r)
+        public void In(IDataIn i)
         {
-            r.Get(nameof(Host), ref Host);
-            r.Get(nameof(Port), ref Port);
-            r.Get(nameof(Username), ref Username);
-            r.Get(nameof(Password), ref Password);
-            r.Get(nameof(MQ), ref MQ);
+            i.Get(nameof(Host), ref Host);
+            i.Get(nameof(Port), ref Port);
+            i.Get(nameof(Username), ref Username);
+            i.Get(nameof(Password), ref Password);
+            i.Get(nameof(MQ), ref MQ);
         }
 
         public void Out<R>(IDataOut<R> o) where R : IDataOut<R>

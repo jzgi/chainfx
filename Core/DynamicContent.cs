@@ -133,13 +133,13 @@ namespace Greatbone.Core
             }
             else if (c < 0x800)
             {
-                // 2 text, 11 bits
+                // 2 char, 11 bits
                 AddByte((byte)(0xc0 | (c >> 6)));
                 AddByte((byte)(0x80 | (c & 0x3f)));
             }
             else
             {
-                // 3 text, 16 bits
+                // 3 char, 16 bits
                 AddByte((byte)(0xe0 | ((c >> 12))));
                 AddByte((byte)(0x80 | ((c >> 6) & 0x3f)));
                 AddByte((byte)(0x80 | (c & 0x3f)));
