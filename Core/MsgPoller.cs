@@ -18,8 +18,6 @@ namespace Greatbone.Core
         // tick count
         private int lastConnect;
 
-        Roll<MsgAction> mas;
-
         public string Key => address;
 
         internal MsgPoller(WebService service, string addr)

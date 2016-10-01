@@ -28,6 +28,7 @@ namespace Greatbone.Core
     {
         //
         // SERVER
+        //
 
         readonly KestrelServerOptions options;
 
@@ -36,12 +37,13 @@ namespace Greatbone.Core
         // the embedded server
         readonly KestrelServer server;
 
-        IPAddress inaddr;
+        IPAddress priaddr;
 
-        int inport;
+        int priport;
 
         //
-        // MSG POLLER / CONNECTOR
+        // MESSAGING
+        //
 
         // load messages        
         internal Roll<MsgLoader> MsgLoaders { get; } = new Roll<MsgLoader>(32);
@@ -49,7 +51,7 @@ namespace Greatbone.Core
         // topics subscribed by this microservice
         internal Roll<MsgAction> MsgActions { get; } = new Roll<MsgAction>(16);
 
-        private Thread mscheduler;
+        private Thread msgScheduler;
 
         internal Roll<MsgPoller> MsgPollers { get; } = new Roll<MsgPoller>(32);
 
@@ -72,7 +74,7 @@ namespace Greatbone.Core
             addrs.Add(cfg.Tls ? "https://" : "http://" + cfg.Public);
             addrs.Add("http://" + cfg.Private); // clustered msg queue
 
-            ParseAddress(cfg.Private, out inaddr, out inport);
+            ParseAddress(cfg.Private, out priaddr, out priport);
 
             CreateMsgTables();
 
@@ -152,13 +154,10 @@ namespace Greatbone.Core
         /// </remarks>
         public async Task ProcessRequestAsync(HttpContext hc)
         {
+            WebContext wc = (WebContext)hc;
             // dispatch the context accordingly
             ConnectionInfo ci = hc.Connection;
-            IPAddress ip = ci.LocalIpAddress;
-            int port = ci.LocalPort;
-
-            WebContext wc = (WebContext)hc;
-            if (port == inport && ip.Equals(inaddr))
+            if (priport == ci.LocalPort && priaddr.Equals(ci.LocalIpAddress))
             {
                 // mq handling or action handling
                 if (hc.Request.Path.Equals("*"))

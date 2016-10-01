@@ -49,12 +49,12 @@ namespace Greatbone.Core
             if (cfg.Service == null)
             {
                 WebService svc = this as WebService;
-                WebServiceConfig svccfg = cfg as WebServiceConfig;
-                if (svc == null || svccfg == null)
+                WebServiceConfig scfg = cfg as WebServiceConfig;
+                if (svc == null || scfg == null)
                 {
                     throw new InvalidOperationException("not a service class");
                 }
-                svccfg.Service = svc;
+                scfg.Service = svc;
             }
 
             StaticPath = cfg.Parent == null ? Key : Path.Combine(Parent.StaticPath, Key);
