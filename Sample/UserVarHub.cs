@@ -57,7 +57,7 @@ namespace Greatbone.Sample
         [IfSelf]
         public void ChPwd(WebContext wc, string userid)
         {
-            IDataIn r = wc.Serial;
+            Obj r = (Obj)wc.Doc;
 
             int ret = 0;
 

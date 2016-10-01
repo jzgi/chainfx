@@ -6,7 +6,7 @@ namespace Greatbone.Core
     /// <summary>
     /// A data outputing destination.
     /// </summary>
-    public interface IResultSet : IDataIn
+    public interface IResultSet : ISource
     {
 
 

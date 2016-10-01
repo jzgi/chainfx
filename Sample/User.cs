@@ -6,7 +6,7 @@ namespace Greatbone.Sample
 {
     /// <summary>A user record that is a web access token for all the services. </summary>
     ///
-    public class User : IToken, IData
+    public class User : IToken, IPersist
     {
         internal string id;
 
@@ -34,32 +34,32 @@ namespace Greatbone.Sample
 
         public string Name => name;
 
-        public void In(IDataIn i)
+        public void Load(ISource sc, int fs)
         {
-            i.Get(nameof(id), ref id);
-            i.Get(nameof(name), ref name);
-            i.Get(nameof(credential), ref credential);
-            i.Get(nameof(fame), ref fame);
-            i.Get(nameof(brand), ref brand);
-            i.Get(nameof(admin), ref admin);
-            i.Get(nameof(date), ref date);
-            i.Get(nameof(favposts), ref favposts);
-            i.Get(nameof(friends), ref friends);
-            i.Get(nameof(favs), ref favs);
+            sc.Get(nameof(id), ref id);
+            sc.Get(nameof(name), ref name);
+            sc.Get(nameof(credential), ref credential);
+            sc.Get(nameof(fame), ref fame);
+            sc.Get(nameof(brand), ref brand);
+            sc.Get(nameof(admin), ref admin);
+            sc.Get(nameof(date), ref date);
+            sc.Get(nameof(favposts), ref favposts);
+            sc.Get(nameof(friends), ref friends);
+            sc.Get(nameof(favs), ref favs);
         }
 
-        public void Out<R>(IDataOut<R> o) where R : IDataOut<R>
+        public void Save<R>(ISink<R> sk, int fs) where R : ISink<R>
         {
-            o.Put(nameof(id), id);
-            o.Put(nameof(name), name);
-            o.Put(nameof(credential), credential);
-            o.Put(nameof(fame), fame);
-            o.Put(nameof(brand), brand);
-            o.Put(nameof(admin), admin);
-            o.Put(nameof(date), date);
-            o.Put(nameof(favposts), favposts);
-            o.Put(nameof(friends), friends);
-            o.Put(nameof(favs), favs);
+            sk.Put(nameof(id), id);
+            sk.Put(nameof(name), name);
+            sk.Put(nameof(credential), credential);
+            sk.Put(nameof(fame), fame);
+            sk.Put(nameof(brand), brand);
+            sk.Put(nameof(admin), admin);
+            sk.Put(nameof(date), date);
+            sk.Put(nameof(favposts), favposts);
+            sk.Put(nameof(friends), friends);
+            sk.Put(nameof(favs), favs);
         }
 
         public static string Encrypt(string orig)

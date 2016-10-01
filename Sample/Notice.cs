@@ -4,7 +4,7 @@ using Greatbone.Core;
 
 namespace Greatbone.Sample
 {
-    public class Notice : IData
+    public class Notice : IPersist
     {
         internal int id;
 
@@ -27,45 +27,45 @@ namespace Greatbone.Sample
         internal List<Join> joins;
 
 
-        public void In(IDataIn i)
+        public void Load(ISource sc, int x)
         {
-            i.Get(nameof(id), ref id);
-            i.Get(nameof(loc), ref loc);
-            i.Get(nameof(authorid), ref authorid);
-            i.Get(nameof(author), ref author);
-            i.Get(nameof(date), ref date);
-            i.Get(nameof(duedate), ref duedate);
-            i.Get(nameof(subtype), ref subtype);
-            i.Get(nameof(subject), ref subject);
-            i.Get(nameof(remark), ref remark);
-            i.Get(nameof(joins), ref joins);
+            sc.Get(nameof(id), ref id);
+            sc.Get(nameof(loc), ref loc);
+            sc.Get(nameof(authorid), ref authorid);
+            sc.Get(nameof(author), ref author);
+            sc.Get(nameof(date), ref date);
+            sc.Get(nameof(duedate), ref duedate);
+            sc.Get(nameof(subtype), ref subtype);
+            sc.Get(nameof(subject), ref subject);
+            sc.Get(nameof(remark), ref remark);
+            sc.Get(nameof(joins), ref joins);
         }
 
-        public void Out<R>(IDataOut<R> o) where R : IDataOut<R>
+        public void Save<R>(ISink<R> sk, int x) where R : ISink<R>
         {
-            o.Put(nameof(id), id);
-            o.Put(nameof(loc), loc);
-            o.Put(nameof(authorid), authorid);
-            o.Put(nameof(author), author);
-            o.Put(nameof(date), date);
-            o.Put(nameof(duedate), duedate);
-            o.Put(nameof(subtype), subtype);
-            o.Put(nameof(subject), subject);
-            o.Put(nameof(remark), remark);
-            o.Put(nameof(joins), joins);
+            sk.Put(nameof(id), id);
+            sk.Put(nameof(loc), loc);
+            sk.Put(nameof(authorid), authorid);
+            sk.Put(nameof(author), author);
+            sk.Put(nameof(date), date);
+            sk.Put(nameof(duedate), duedate);
+            sk.Put(nameof(subtype), subtype);
+            sk.Put(nameof(subject), subject);
+            sk.Put(nameof(remark), remark);
+            sk.Put(nameof(joins), joins);
         }
     }
 
-    internal struct Join : IData
+    internal struct Join : IPersist
     {
         internal char[] id;
 
-        public void In(IDataIn i)
+        public void Load(ISource sc, int x)
         {
             throw new NotImplementedException();
         }
 
-        public void Out<R>(IDataOut<R> o) where R : IDataOut<R>
+        public void Save<R>(ISink<R> sk, int x) where R : ISink<R>
         {
             throw new NotImplementedException();
         }

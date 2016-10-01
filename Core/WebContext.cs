@@ -68,23 +68,7 @@ namespace Greatbone.Core
             }
         }
 
-        public Obj Obj
-        {
-            get
-            {
-                return null;
-            }
-        }
-
-        public Arr Array
-        {
-            get
-            {
-                return null;
-            }
-        }
-
-        public IDataIn Serial
+        public object Doc
         {
             get
             {
@@ -97,22 +81,21 @@ namespace Greatbone.Core
                         string ctype = Request.ContentType;
                         if ("application/jsob".Equals(ctype))
                         {
-                        }
-                        else
-                        {
+                            JsonParser parser = new JsonParser(reqBytes.Array);
+                            reqContent = parser.Parse();
                         }
                     }
                 }
-                return (IDataIn)reqContent;
+                return reqContent;
             }
         }
 
-        public T GetSerial<T>() where T : IData, new()
+        public T Dat<T>() where T : IPersist, new()
         {
-            IDataIn r = this.Serial;
-            T o = new T();
-            // r.Get(ref o);
-            return o;
+            Obj obj = (Obj)Doc;
+            T dat = new T();
+            dat.Load(obj, 0);
+            return dat;
         }
 
         public bool GetParam(string name, ref int value)
@@ -185,12 +168,12 @@ namespace Greatbone.Core
 
         public IContent Content { get; set; }
 
-        public void SetContent<T>(T obj) where T : IData
+        public void SetContent<T>(T obj) where T : IPersist
         {
             SetDataObj(obj);
         }
 
-        public void SetDataObj<T>(T obj) where T : IData
+        public void SetDataObj<T>(T obj) where T : IPersist
         {
             JsonContent cnt = new JsonContent(16 * 1024);
             cnt.Write(obj);

@@ -3,7 +3,7 @@ using System.Collections.Generic;
 
 namespace Greatbone.Core
 {
-    public class JsonText : IDataOut<JsonText>
+    public class JsonText : ISink<JsonText>
     {
         // for parsing json text
         string text;
@@ -102,7 +102,7 @@ namespace Greatbone.Core
             throw new NotImplementedException();
         }
 
-        public JsonText Put<T>(string name, T value) where T : IData
+        public JsonText Put<T>(string name, T value) where T : IPersist
         {
             throw new NotImplementedException();
         }

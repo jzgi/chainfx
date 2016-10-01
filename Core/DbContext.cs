@@ -327,7 +327,7 @@ namespace Greatbone.Core
             return false;
         }
 
-        public bool Get<T>(string name, ref T value) where T : IData, new()
+        public bool Get<T>(string name, ref T value) where T : IPersist, new()
         {
             int ord = reader.GetOrdinal(name);
             if (!reader.IsDBNull(ord))
@@ -362,20 +362,20 @@ namespace Greatbone.Core
         //
 
 
-        public void PostHorizontalEvent<E>(string topic, int verb, E msg) where E : IData
+        public void PostHorizontalEvent<E>(string topic, int verb, E msg) where E : IPersist
         {
         }
 
-        public void PostVerticalEvent<E>(string topic, int verb, E msg) where E : IData
+        public void PostVerticalEvent<E>(string topic, int verb, E msg) where E : IPersist
         {
         }
 
 
-        public void SendEvent<T>(string topic, string filter, T @event) where T : IData
+        public void SendEvent<T>(string topic, string filter, T @event) where T : IPersist
         {
             // convert message to byte buffer
             JsonContent b = new JsonContent(16 * 1024);
-            @event.Out(b);
+            @event.Save(b, 0);
 
             Execute("INSERT INTO mq (topic, filter, message) VALUES (@topic, @filter, @message)", p =>
             {
@@ -551,7 +551,7 @@ namespace Greatbone.Core
             return this;
         }
 
-        public IParameters Put<T>(string name, T value) where T : IData
+        public IParameters Put<T>(string name, T value) where T : IPersist
         {
             throw new NotImplementedException();
         }

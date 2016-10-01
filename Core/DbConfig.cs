@@ -1,6 +1,6 @@
 ﻿namespace Greatbone.Core
 {
-    public class DbConfig : IData
+    public class DbConfig : IPersist
     {
         public string Host;
 
@@ -12,22 +12,22 @@
 
         public bool MQ;
 
-        public void In(IDataIn i)
+        public void Load(ISource c, int fs)
         {
-            i.Get(nameof(Host), ref Host);
-            i.Get(nameof(Port), ref Port);
-            i.Get(nameof(Username), ref Username);
-            i.Get(nameof(Password), ref Password);
-            i.Get(nameof(MQ), ref MQ);
+            c.Get(nameof(Host), ref Host);
+            c.Get(nameof(Port), ref Port);
+            c.Get(nameof(Username), ref Username);
+            c.Get(nameof(Password), ref Password);
+            c.Get(nameof(MQ), ref MQ);
         }
 
-        public void Out<R>(IDataOut<R> o) where R : IDataOut<R>
+        public void Save<R>(ISink<R> k, int fs) where R : ISink<R>
         {
-            o.Put(nameof(Host), Host);
-            o.Put(nameof(Port), Port);
-            o.Put(nameof(Username), Username);
-            o.Put(nameof(Password), Password);
-            o.Put(nameof(MQ), MQ);
+            k.Put(nameof(Host), Host);
+            k.Put(nameof(Port), Port);
+            k.Put(nameof(Username), Username);
+            k.Put(nameof(Password), Password);
+            k.Put(nameof(MQ), MQ);
         }
     }
 

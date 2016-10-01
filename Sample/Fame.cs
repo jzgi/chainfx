@@ -11,7 +11,7 @@ namespace Greatbone.Sample
 
     }
 
-    public struct Fame : IData
+    public struct Fame : IPersist
     {
         public FameStates states;
 
@@ -39,58 +39,58 @@ namespace Greatbone.Sample
         internal List<Item> friends;
         internal List<Item> awards;
 
-        public void In(IDataIn i)
+        public void Load(ISource sc, int x)
         {
-            i.Get(nameof(id), ref id);
-            i.Get(nameof(name), ref name);
-            i.Get(nameof(quote), ref quote);
-            i.Get(nameof(sex), ref sex);
-            i.Get(nameof(icon), ref icon);
-            i.Get(nameof(birthday), ref birthday);
-            i.Get(nameof(qq), ref qq);
-            i.Get(nameof(wechat), ref wechat);
-            i.Get(nameof(email), ref email);
-            i.Get(nameof(city), ref city);
-            i.Get(nameof(rank), ref rank);
-            i.Get(nameof(height), ref height);
-            i.Get(nameof(weight), ref weight);
-            i.Get(nameof(bust), ref bust);
-            i.Get(nameof(waist), ref waist);
-            i.Get(nameof(hip), ref hip);
-            i.Get(nameof(cup), ref cup);
-            i.Get(nameof(styles), ref styles);
-            i.Get(nameof(skills), ref skills);
-            i.Get(nameof(remark), ref remark);
-            i.Get(nameof(sites), ref sites);
-            i.Get(nameof(friends), ref friends);
-            i.Get(nameof(awards), ref awards);
+            sc.Get(nameof(id), ref id);
+            sc.Get(nameof(name), ref name);
+            sc.Get(nameof(quote), ref quote);
+            sc.Get(nameof(sex), ref sex);
+            sc.Get(nameof(icon), ref icon);
+            sc.Get(nameof(birthday), ref birthday);
+            sc.Get(nameof(qq), ref qq);
+            sc.Get(nameof(wechat), ref wechat);
+            sc.Get(nameof(email), ref email);
+            sc.Get(nameof(city), ref city);
+            sc.Get(nameof(rank), ref rank);
+            sc.Get(nameof(height), ref height);
+            sc.Get(nameof(weight), ref weight);
+            sc.Get(nameof(bust), ref bust);
+            sc.Get(nameof(waist), ref waist);
+            sc.Get(nameof(hip), ref hip);
+            sc.Get(nameof(cup), ref cup);
+            sc.Get(nameof(styles), ref styles);
+            sc.Get(nameof(skills), ref skills);
+            sc.Get(nameof(remark), ref remark);
+            sc.Get(nameof(sites), ref sites);
+            sc.Get(nameof(friends), ref friends);
+            sc.Get(nameof(awards), ref awards);
         }
 
-        public void Out<R>(IDataOut<R> o) where R : IDataOut<R>
+        public void Save<R>(ISink<R> sk, int x) where R : ISink<R>
         {
-            o.Put(nameof(id), id);
-            o.Put(nameof(name), name);
-            o.Put(nameof(quote), quote);
-            o.Put(nameof(sex), sex);
-            o.Put(nameof(icon), icon);
-            o.Put(nameof(birthday), birthday);
-            o.Put(nameof(qq), qq);
-            o.Put(nameof(wechat), wechat);
-            o.Put(nameof(email), email);
-            o.Put(nameof(city), city);
-            o.Put(nameof(rank), rank);
-            o.Put(nameof(height), height);
-            o.Put(nameof(weight), weight);
-            o.Put(nameof(bust), bust);
-            o.Put(nameof(waist), waist);
-            o.Put(nameof(hip), hip);
-            o.Put(nameof(cup), cup);
-            o.Put(nameof(styles), styles);
-            o.Put(nameof(skills), skills);
-            o.Put(nameof(remark), remark);
-            o.Put(nameof(sites), sites);
-            o.Put(nameof(friends), friends);
-            o.Put(nameof(awards), awards);
+            sk.Put(nameof(id), id);
+            sk.Put(nameof(name), name);
+            sk.Put(nameof(quote), quote);
+            sk.Put(nameof(sex), sex);
+            sk.Put(nameof(icon), icon);
+            sk.Put(nameof(birthday), birthday);
+            sk.Put(nameof(qq), qq);
+            sk.Put(nameof(wechat), wechat);
+            sk.Put(nameof(email), email);
+            sk.Put(nameof(city), city);
+            sk.Put(nameof(rank), rank);
+            sk.Put(nameof(height), height);
+            sk.Put(nameof(weight), weight);
+            sk.Put(nameof(bust), bust);
+            sk.Put(nameof(waist), waist);
+            sk.Put(nameof(hip), hip);
+            sk.Put(nameof(cup), cup);
+            sk.Put(nameof(styles), styles);
+            sk.Put(nameof(skills), skills);
+            sk.Put(nameof(remark), remark);
+            sk.Put(nameof(sites), sites);
+            sk.Put(nameof(friends), friends);
+            sk.Put(nameof(awards), awards);
         }
     }
 
@@ -102,18 +102,18 @@ namespace Greatbone.Sample
 
         internal string desc;
 
-        public void In(IDataIn i)
+        public void Load(ISource sc, int x)
         {
-            i.Get(nameof(uid), ref uid);
-            i.Get(nameof(url), ref url);
-            i.Get(nameof(desc), ref desc);
+            sc.Get(nameof(uid), ref uid);
+            sc.Get(nameof(url), ref url);
+            sc.Get(nameof(desc), ref desc);
         }
 
-        public void Out<R>(IDataOut<R> o) where R : IDataOut<R>
+        public void Save<R>(ISink<R> sk, int x) where R : ISink<R>
         {
-            o.Put(nameof(uid), uid);
-            o.Put(nameof(url), url);
-            o.Put(nameof(desc), desc);
+            sk.Put(nameof(uid), uid);
+            sk.Put(nameof(url), url);
+            sk.Put(nameof(desc), desc);
         }
     }
 }

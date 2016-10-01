@@ -6,7 +6,7 @@ namespace Greatbone.Core
     /// <summary>
     /// A data outputing destination.
     /// </summary>
-    public interface IParameters : IDataOut<IParameters>
+    public interface IParameters : ISink<IParameters>
     {
         IParameters Put(bool value);
 

@@ -1,7 +1,7 @@
 namespace Greatbone.Core
 {
     /// <summary>
-    /// To build a number during parsing process.
+    /// Used to build a number during parsing process.
     /// </summary>
     internal struct Number
     {
@@ -11,8 +11,8 @@ namespace Greatbone.Core
         // the fraction part
         int fract;
 
-        // digital point
-        bool pt;
+        // point & the scaling factor
+        byte pt;
 
         // negative
         bool negat;
@@ -21,7 +21,7 @@ namespace Greatbone.Core
         {
             integr = 0;
             fract = 0;
-            pt = false;
+            pt = 0; // without point yet
             if (b == '-')
             {
                 negat = true;
@@ -37,12 +37,16 @@ namespace Greatbone.Core
         {
             if (b == '.')
             {
-                pt = true;
+                pt = 0;
             }
             else
             {
                 int n = b - '0';
-                if (pt) { fract = fract * 10 + n; }
+                if (pt >= 0)
+                {
+                    fract = fract * 10 + n;
+                    pt++;
+                }
                 else { integr = integr * 10 + n; }
             }
         }
@@ -61,7 +65,7 @@ namespace Greatbone.Core
                 int lo = (int)(integr << bits) | fract;
                 int mid = (int)(integr >> (32 - bits));
                 int hi = (int)(integr >> (64 - bits));
-                byte scale = Digits(fract);
+                byte scale = (byte)(pt - 1);
 
                 return new decimal(lo, mid, hi, negat, scale);
             }
@@ -79,14 +83,5 @@ namespace Greatbone.Core
             return i;
         }
 
-        static byte Digits(int n)
-        {
-            int i = 1;
-            while ((n /= 10) != 0)
-            {
-                i++;
-            }
-            return (byte)i;
-        }
     }
 }

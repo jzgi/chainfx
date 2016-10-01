@@ -6,7 +6,7 @@ namespace Greatbone.Sample
 {
     /// <summary>Represent a chat session.</summary>
     ///
-    public struct Chat : IData
+    public struct Chat : IPersist
     {
         private int status;
 
@@ -23,20 +23,20 @@ namespace Greatbone.Sample
             msgs.Add(new Message());
         }
 
-        public void In(IDataIn i)
+        public void Load(ISource sc, int x)
         {
-            i.Get(nameof(status), ref status);
-            i.Get(nameof(partner), ref partner);
-            i.Get(nameof(msgs), ref msgs);
-            i.Get(nameof(lasttime), ref lasttime);
+            sc.Get(nameof(status), ref status);
+            sc.Get(nameof(partner), ref partner);
+            sc.Get(nameof(msgs), ref msgs);
+            sc.Get(nameof(lasttime), ref lasttime);
         }
 
-        public void Out<R>(IDataOut<R> o) where R : IDataOut<R>
+        public void Save<R>(ISink<R> sk, int x) where R : ISink<R>
         {
-            o.Put(nameof(status), status);
-            o.Put(nameof(partner), partner);
-            o.Put(nameof(msgs), msgs);
-            o.Put(nameof(lasttime), lasttime);
+            sk.Put(nameof(status), status);
+            sk.Put(nameof(partner), partner);
+            sk.Put(nameof(msgs), msgs);
+            sk.Put(nameof(lasttime), lasttime);
         }
     }
 
@@ -61,24 +61,24 @@ namespace Greatbone.Sample
 
         internal DateTime time;
 
-        public void In(IDataIn i)
+        public void Load(ISource sc, int x)
         {
-            i.Get(nameof(id), ref id);
-            i.Get(nameof(subtype), ref subtype);
-            i.Get(nameof(@from), ref @from);
-            i.Get(nameof(to), ref to);
-            i.Get(nameof(content), ref content);
-            i.Get(nameof(time), ref time);
+            sc.Get(nameof(id), ref id);
+            sc.Get(nameof(subtype), ref subtype);
+            sc.Get(nameof(@from), ref @from);
+            sc.Get(nameof(to), ref to);
+            sc.Get(nameof(content), ref content);
+            sc.Get(nameof(time), ref time);
         }
 
-        public void Out<R>(IDataOut<R> o) where R : IDataOut<R>
+        public void Save<R>(ISink<R> sk, int x) where R : ISink<R>
         {
-            o.Put(nameof(id), id);
-            o.Put(nameof(subtype), subtype);
-            o.Put(nameof(from), from);
-            o.Put(nameof(to), to);
-            o.Put(nameof(content), content);
-            o.Put(nameof(time), time);
+            sk.Put(nameof(id), id);
+            sk.Put(nameof(subtype), subtype);
+            sk.Put(nameof(from), from);
+            sk.Put(nameof(to), to);
+            sk.Put(nameof(content), content);
+            sk.Put(nameof(time), time);
         }
     }
 }

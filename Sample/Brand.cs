@@ -2,7 +2,7 @@
 
 namespace Greatbone.Sample
 {
-    public class Brand : IData
+    public class Brand : IPersist
     {
         public string Id;
 
@@ -14,11 +14,11 @@ namespace Greatbone.Sample
 
         public string Key => Id;
 
-        public void In(IDataIn i)
+        public void Load(ISource sc, int x)
         {
         }
 
-        public void Out<R>(IDataOut<R> o) where R : IDataOut<R>
+        public void Save<R>(ISink<R> sk, int x) where R : ISink<R>
         {
         }
     }

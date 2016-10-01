@@ -6,7 +6,7 @@ namespace Greatbone.Core
     /// <summary>
     /// To generate a UTF-8 encoded JSON document. An extension of putting byte array is supported.
     /// </summary>
-    public class JsonContent : DynamicContent, IDataOut<JsonContent>
+    public class JsonContent : DynamicContent, ISink<JsonContent>
     {
         // starting positions of each level
         readonly int[] nums;
@@ -254,7 +254,7 @@ namespace Greatbone.Core
             return this;
         }
 
-        public JsonContent Put<T>(string name, T value) where T : IData
+        public JsonContent Put<T>(string name, T value) where T : IPersist
         {
             throw new NotImplementedException();
         }

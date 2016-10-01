@@ -3,7 +3,7 @@ using System.Collections.Generic;
 
 namespace Greatbone.Core
 {
-    public class Obj : IDataIn
+    public class Obj : ISource
     {
         readonly Roll<Member> pairs = new Roll<Member>(16);
 
@@ -164,7 +164,7 @@ namespace Greatbone.Core
             return false;
         }
 
-        public bool Get<T>(string name, ref T value) where T : IData, new()
+        public bool Get<T>(string name, ref T value) where T : IPersist, new()
         {
             throw new NotImplementedException();
         }

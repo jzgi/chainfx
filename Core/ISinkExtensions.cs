@@ -2,9 +2,9 @@
 
 namespace Greatbone.Core
 {
-	public static class IOutExtensions
+	public static class ISinkExtensions
 	{
-		public static void Write<R>(this IDataOut<R> w, params IData[] arr) where R : IDataOut<R>
+		public static void Write<R>(this ISink<R> w, params IPersist[] arr) where R : ISink<R>
 		{
 			for (int i = 0; i < arr.Length; i++)
 			{
@@ -12,11 +12,11 @@ namespace Greatbone.Core
 				{
 //					w.WriteSep();
 				}
-				arr[i].Out(w);
+				arr[i].Save(w, 0);
 			}
 		}
 
-		public static void Write<T, R>(this IDataOut<R> w, IList<T> coll) where T : IData where R : IDataOut<R>
+		public static void Write<T, R>(this ISink<R> w, IList<T> coll) where T : IPersist where R : ISink<R>
 		{
 //			w.WriteArrayStart();
 			int i = 0;
@@ -26,7 +26,7 @@ namespace Greatbone.Core
 				{
 //					w.WriteSep();
 				}
-				o.Out(w);
+				o.Save(w, 0);
 			}
 //			w.WriteArrayEnd();
 		}

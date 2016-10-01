@@ -6,7 +6,7 @@ namespace Greatbone.Core
     /// <summary>
     /// A data outputing destination.
     /// </summary>
-    public interface IDataOut<R> where R : IDataOut<R> 
+    public interface ISink<R> where R : ISink<R> 
     {
 
         R Put(string name, bool value);
@@ -25,7 +25,7 @@ namespace Greatbone.Core
 
         R Put(string name, string value);
 
-        R Put<T>(string name, T value) where T : IData;
+        R Put<T>(string name, T value) where T : IPersist;
 
         R Put(string name, byte[] value);
 

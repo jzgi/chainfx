@@ -16,7 +16,7 @@ namespace Greatbone.Core
     /// }
     /// </example>
     ///
-    public class WebServiceConfig : WebConfig, IData
+    public class WebServiceConfig : WebConfig, IPersist
     {
         ///<summary>Z-axis scaling</summary>
         public string Part;
@@ -36,30 +36,30 @@ namespace Greatbone.Core
 
         public Dictionary<string, string> options;
 
-        public void In(IDataIn r)
+        public void Load(ISource sc, int x)
         {
-            r.Get(nameof(Key), ref Key);
-            r.Get(nameof(Part), ref Part);
-            r.Get(nameof(Public), ref Public);
-            r.Get(nameof(Tls), ref Tls);
-            r.Get(nameof(Private), ref Private);
-            r.Get(nameof(Net), ref Net);
-            r.Get(nameof(Db), ref Db);
-            r.Get(nameof(Debug), ref Debug);
-            r.Get(nameof(options), ref options);
+            sc.Get(nameof(Key), ref Key);
+            sc.Get(nameof(Part), ref Part);
+            sc.Get(nameof(Public), ref Public);
+            sc.Get(nameof(Tls), ref Tls);
+            sc.Get(nameof(Private), ref Private);
+            sc.Get(nameof(Net), ref Net);
+            sc.Get(nameof(Db), ref Db);
+            sc.Get(nameof(Debug), ref Debug);
+            sc.Get(nameof(options), ref options);
         }
 
-        public void Out<R>(IDataOut<R> w) where R : IDataOut<R>
+        public void Save<R>(ISink<R> sk, int x) where R : ISink<R>
         {
-            w.Put(nameof(Key), Key);
-            w.Put(nameof(Part), Part);
-            w.Put(nameof(Public), Public);
-            w.Put(nameof(Tls), Tls);
-            w.Put(nameof(Private), Private);
-            w.Put(nameof(Net), Net);
-            w.Put(nameof(Db), Db);
-            w.Put(nameof(Debug), Debug);
-            w.Put(nameof(options), options);
+            sk.Put(nameof(Key), Key);
+            sk.Put(nameof(Part), Part);
+            sk.Put(nameof(Public), Public);
+            sk.Put(nameof(Tls), Tls);
+            sk.Put(nameof(Private), Private);
+            sk.Put(nameof(Net), Net);
+            sk.Put(nameof(Db), Db);
+            sk.Put(nameof(Debug), Debug);
+            sk.Put(nameof(options), options);
         }
 
         public WebServiceConfig Load(string file)
@@ -70,7 +70,7 @@ namespace Greatbone.Core
                 JsonParser parser = new JsonParser(bytes);
                 Obj obj = (Obj)parser.Parse();
 
-                In(obj); // may override
+                Load(obj, 0); // may override
 
             }
             catch
