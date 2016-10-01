@@ -23,11 +23,18 @@ namespace Greatbone.Sample
             base.@default(wc);
         }
 
-        public void Home(WebContext wc)
+        public void home(WebContext wc)
         {
+            wc.SetJson(200, json =>
+            {
+                json.Arr(delegate
+                {
+
+                });
+            });
         }
 
-        public void Posts(WebContext wc)
+        public void posts(WebContext wc)
         {
         }
 
@@ -35,11 +42,11 @@ namespace Greatbone.Sample
         {
         }
 
-        public void Search(WebContext wc)
+        public void search(WebContext wc)
         {
         }
 
-        public void Contact(WebContext wc)
+        public void contact(WebContext wc)
         {
             using (var dc = NewDbContext())
             {

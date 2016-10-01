@@ -27,33 +27,30 @@ namespace Greatbone.Core
 
 
         //
-        // REQUEST ACCESSORS
+        // REQUEST
         //
 
-        bool reqRcved;
+        byte[] buffer;
 
-        // request body bytes
-        ArraySegment<byte> reqBytes;
+        int count;
 
-        // request content that is parsed
-        private object reqContent;
+        // parsed request entity, can be Doc or Form
+        object entity;
 
         /// <summary>
         /// Receiveds request body into a buffer held by the buffer field.
         ///</summary>
         internal async void TryReceiveAsync()
         {
-            if (reqBytes.Array != null) return;
+            if (buffer != null) return;
 
             HttpRequest req = Request;
             long? clen = req.ContentLength;
             if (clen > 0)
             {
                 int len = (int)clen.Value;
-                // borrow a byte array from buffer pool
-                byte[] buf = BufferPool.Borrow(len);
-                int num = await req.Body.ReadAsync(buf, 0, len);
-                reqBytes = new ArraySegment<byte>(buf, 0, num);
+                buffer = BufferPool.Borrow(len);
+                count = await req.Body.ReadAsync(buffer, 0, len);
             }
         }
 
@@ -62,7 +59,7 @@ namespace Greatbone.Core
             get
             {
                 TryReceiveAsync();
-                return reqBytes;
+                return new ArraySegment<byte>(buffer, 0, count);
             }
         }
 
@@ -70,29 +67,29 @@ namespace Greatbone.Core
         {
             get
             {
-                if (reqContent == null)
+                if (entity == null)
                 {
                     TryReceiveAsync();
 
-                    if (reqBytes.Array != null)
+                    if (buffer != null)
                     {
                         string ctype = Request.ContentType;
                         if ("application/jsob".Equals(ctype))
                         {
-                            JsonParser parser = new JsonParser(reqBytes.Array);
-                            reqContent = parser.Parse();
+                            JsonParser parser = new JsonParser(buffer, count);
+                            entity = parser.Parse();
                         }
                     }
                 }
-                return reqContent;
+                return entity;
             }
         }
 
-        public T Dat<T>() where T : IPersist, new()
+        public T Dat<T>(int x) where T : IPersist, new()
         {
             Obj obj = (Obj)Doc;
             T dat = new T();
-            dat.Load(obj, 0);
+            dat.Load(obj, x);
             return dat;
         }
 
@@ -134,19 +131,28 @@ namespace Greatbone.Core
 
         public IContent Content { get; set; }
 
-        public void Respond<T>(T obj) where T : IPersist
+        public void SetDat<T>(T obj) where T : IPersist
         {
             JsonContent json = new JsonContent(4 * 1024);
             obj.Save(json, 0);
             Content = json;
         }
 
-        public void Respond(int status, Action<JsonContent> a)
+        public void SetJson(int status, Action<JsonContent> a)
         {
-            JsonContent json = new JsonContent(16 * 1024);
+            StatusCode = status;
+            JsonContent json = new JsonContent(8 * 1024);
             a?.Invoke(json);
             Content = json;
+        }
+
+
+        public void SetHtml(int status, Action<HtmlContent> a)
+        {
             StatusCode = status;
+            HtmlContent html = new HtmlContent(16 * 1024);
+            a?.Invoke(html);
+            Content = html;
         }
 
 
@@ -170,10 +176,9 @@ namespace Greatbone.Core
         public void Dispose()
         {
             // return request content buffer
-            byte[] b = reqBytes.Array;
-            if (b != null)
+            if (buffer != null)
             {
-                BufferPool.Return(b);
+                BufferPool.Return(buffer);
             }
 
             // return response content buffer
