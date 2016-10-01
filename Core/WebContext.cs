@@ -25,8 +25,6 @@ namespace Greatbone.Core
 
         public IToken Token { get; }
 
-        public bool IsSuspended { get; set; }
-
 
         //
         // REQUEST ACCESSORS
@@ -37,7 +35,7 @@ namespace Greatbone.Core
         // request body bytes
         ArraySegment<byte> reqBytes;
 
-        // request content that is parsed , can be IFormCollection, ISerial, etc.
+        // request content that is parsed
         private object reqContent;
 
         /// <summary>
@@ -98,7 +96,7 @@ namespace Greatbone.Core
             return dat;
         }
 
-        public bool GetParam(string name, ref int value)
+        public bool Get(string name, ref int value)
         {
             StringValues values;
             if (Request.Query.TryGetValue(name, out values))
@@ -111,11 +109,10 @@ namespace Greatbone.Core
                     return true;
                 }
             }
-            value = 0;
             return false;
         }
 
-        public bool GetParam(string name, ref string value)
+        public bool Get(string name, ref string value)
         {
             StringValues values;
             if (Request.Query.TryGetValue(name, out values))
@@ -123,37 +120,6 @@ namespace Greatbone.Core
                 value = values[0];
                 return true;
             }
-            value = null;
-            return false;
-        }
-
-
-        public bool GetField(string name, ref int value)
-        {
-            StringValues values;
-            if (Request.Form.TryGetValue(name, out values))
-            {
-                string v = values[0];
-                int i;
-                if (Int32.TryParse(v, out i))
-                {
-                    value = i;
-                    return true;
-                }
-            }
-            value = 0;
-            return false;
-        }
-
-        public bool GetField(string name, ref string value)
-        {
-            StringValues values;
-            if (Request.Form.TryGetValue(name, out values))
-            {
-                value = values[0];
-                return true;
-            }
-            value = null;
             return false;
         }
 
@@ -164,33 +130,25 @@ namespace Greatbone.Core
 
         public int StatusCode { get { return Response.StatusCode; } set { Response.StatusCode = value; } }
 
-        public CachePolicy Policy { get; set; }
+        public CachePolicy Caching { get; set; }
 
         public IContent Content { get; set; }
 
-        public void SetContent<T>(T obj) where T : IPersist
+        public void Respond<T>(T obj) where T : IPersist
         {
-            SetDataObj(obj);
+            JsonContent json = new JsonContent(4 * 1024);
+            obj.Save(json, 0);
+            Content = json;
         }
 
-        public void SetDataObj<T>(T obj) where T : IPersist
+        public void Respond(int status, Action<JsonContent> a)
         {
-            JsonContent cnt = new JsonContent(16 * 1024);
-            cnt.Write(obj);
-
-            Content = cnt;
+            JsonContent json = new JsonContent(16 * 1024);
+            a?.Invoke(json);
+            Content = json;
+            StatusCode = status;
         }
 
-        internal void WriteContent()
-        {
-            if (Content != null)
-            {
-                HttpResponse resp = Response;
-                resp.ContentLength = Content.Length;
-                resp.ContentType = Content.Type;
-                resp.Body.Write(Content.Buffer, 0, Content.Length);
-            }
-        }
 
         internal Task WriteContentAsync()
         {
@@ -219,7 +177,7 @@ namespace Greatbone.Core
             }
 
             // return response content buffer
-            if (Content != null)
+            if (Content is DynamicContent)
             {
                 BufferPool.Return(Content.Buffer);
             }

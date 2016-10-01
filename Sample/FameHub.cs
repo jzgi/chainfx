@@ -16,7 +16,7 @@ namespace Greatbone.Sample
         public override void @default(WebContext wc)
         {
             int page = 0;
-            wc.GetParam("page", ref page);
+            wc.Get("page", ref page);
 
             using (var dc = Service.NewDbContext())
             {
@@ -37,7 +37,7 @@ namespace Greatbone.Sample
         public void top(WebContext wc)
         {
             int page = 0;
-            wc.GetParam("page", ref page);
+            wc.Get("page", ref page);
 
             using (var dc = Service.NewDbContext())
             {

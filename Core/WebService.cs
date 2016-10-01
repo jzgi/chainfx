@@ -183,9 +183,6 @@ namespace Greatbone.Core
             {
                 await wc.WriteContentAsync();
             }
-            if (wc.IsSuspended)
-            {
-            }
         }
 
         public void DisposeContext(HttpContext context, Exception exception)

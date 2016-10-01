@@ -20,7 +20,7 @@ namespace Greatbone.Sample
         public override void @default(WebContext wc, string id)
         {
             string password = null;
-            if (wc.GetParam("password", ref password))
+            if (wc.Get("password", ref password))
             {
                 wc.Response.StatusCode = 400;
                 return;
