@@ -3,52 +3,50 @@ using System.Text;
 namespace Greatbone.Core
 {
 
-    public class JsonParser
+    public struct JsonParse
     {
         static readonly JsonException FormatEx = new JsonException("JSON Format");
 
-        readonly byte[] array;
+        readonly byte[] buffer;
 
-        readonly int limit;
-
-        int pos;
+        readonly int count;
 
         // UTF-8 string builder
-        Str str;
+        readonly Str str;
 
-        public JsonParser(byte[] array) : this(array, array.Length) { }
+        public JsonParse(byte[] buffer) : this(buffer, buffer.Length) { }
 
-        public JsonParser(byte[] array, int limit)
+        public JsonParse(byte[] buffer, int count)
         {
-            this.array = array;
-            this.limit = limit;
-            pos = -1;
+            this.buffer = buffer;
+            this.count = count;
+            this.str = new Str();
         }
 
         public object Parse()
         {
-            int p = pos;
+            int p = -1;
             for (;;)
             {
-                byte b = array[++p];
-                if (p >= limit) throw FormatEx;
+                byte b = buffer[++p];
+                if (p >= count) throw FormatEx;
                 if (b == ' ' || b == '\t' || b == '\n' || b == '\r') continue; // skip ws
-                if (b == '{') return ParseObj(p);
-                if (b == '[') return ParseArr(p);
+                if (b == '{') return ParseObj(ref p);
+                if (b == '[') return ParseArr(ref p);
                 throw FormatEx;
             }
         }
 
-        Obj ParseObj(int start)
+        Obj ParseObj(ref int pos)
         {
             Obj obj = new Obj();
-            int p = start;
+            int p = pos;
             for (;;)
             {
                 for (;;)
                 {
-                    byte b = array[++p];
-                    if (p >= limit) throw FormatEx;
+                    byte b = buffer[++p];
+                    if (p >= count) throw FormatEx;
                     if (b == ' ' || b == '\t' || b == '\n' || b == '\r') continue;
                     if (b == '"') break; // meet first quote
                     throw FormatEx;
@@ -57,16 +55,16 @@ namespace Greatbone.Core
                 StringBuilder name = new StringBuilder();
                 for (;;)
                 {
-                    byte b = array[++p];
-                    if (p >= limit) throw FormatEx;
+                    byte b = buffer[++p];
+                    if (p >= count) throw FormatEx;
                     if (b == '"') break; // meet second quote
                     else name.Append((char)b);
                 }
 
                 for (;;) // till a colon
                 {
-                    byte b = array[++p];
-                    if (p >= limit) throw FormatEx;
+                    byte b = buffer[++p];
+                    if (p >= count) throw FormatEx;
                     if (b == ' ' || b == '\t' || b == '\n' || b == '\r') continue;
                     if (b == ':') break;
                     throw FormatEx;
@@ -75,17 +73,17 @@ namespace Greatbone.Core
                 // parse the value part
                 for (;;)
                 {
-                    byte b = array[++p];
-                    if (p >= limit) throw FormatEx;
+                    byte b = buffer[++p];
+                    if (p >= count) throw FormatEx;
                     if (b == ' ' || b == '\t' || b == '\n' || b == '\r') continue; // skip ws
                     if (b == '{')
                     {
-                        Obj v = ParseObj(p);
+                        Obj v = ParseObj(ref p);
                         obj.Add(name.ToString(), v);
                     }
                     else if (b == '[')
                     {
-                        Arr v = ParseArr(p);
+                        Arr v = ParseArr(ref p);
                         obj.Add(name.ToString(), v);
                     }
                     else if (b == '"')
@@ -119,8 +117,8 @@ namespace Greatbone.Core
                 // comma or end
                 for (;;)
                 {
-                    byte b = array[p++];
-                    if (p >= limit) throw FormatEx;
+                    byte b = buffer[p++];
+                    if (p >= count) throw FormatEx;
                     if (b == ' ' || b == '\t' || b == '\n' || b == '\r') continue;
                     if (b == ',') break;
                     if (b == '}') goto End;
@@ -131,23 +129,23 @@ namespace Greatbone.Core
             return obj;
         }
 
-        Arr ParseArr(int start)
+        Arr ParseArr(ref int pos)
         {
             Arr arr = new Arr(16);
-            int p = start;
+            int p = pos;
             for (;;)
             {
-                byte b = array[++p];
-                if (p >= limit) throw FormatEx;
+                byte b = buffer[++p];
+                if (p >= count) throw FormatEx;
                 if (b == ' ' || b == '\t' || b == '\n' || b == '\r') continue; // skip ws
                 if (b == '{')
                 {
-                    Obj v = ParseObj(p);
+                    Obj v = ParseObj(ref p);
                     arr.Add(new Member(v));
                 }
                 else if (b == '[')
                 {
-                    Arr v = ParseArr(p);
+                    Arr v = ParseArr(ref p);
                     arr.Add(new Member(v));
                 }
                 else if (b == '"')
@@ -179,8 +177,8 @@ namespace Greatbone.Core
                 // comma or end
                 for (;;)
                 {
-                    b = array[p++];
-                    if (p >= limit) throw FormatEx;
+                    b = buffer[p++];
+                    if (p >= count) throw FormatEx;
                     if (b == ' ' || b == '\t' || b == '\n' || b == '\r') continue; // skip ws
                     if (b == ',') break;
                     if (b == ']') goto End;
@@ -196,9 +194,25 @@ namespace Greatbone.Core
             int p = start;
             for (;;)
             {
-                byte b = array[p++];
-                if (p >= limit) throw FormatEx;
+                byte b = buffer[p++];
+                if (p >= count) throw FormatEx;
                 if (b == '"') break;
+                bool esc = false;
+                char c = ' ';
+                if (esc)
+                {
+                    c = c == '"' ? '"' : c == '\\' ? '\\' : c == 'b' ? '\b' : c == 'f' ? '\f' : c == 'n' ? '\n' : c == 'r' ? '\r' : c == 't' ? '\t' : c;
+                    esc = false;
+                }
+                else
+                {
+                    if (c == '\\')
+                    {
+                        esc = true;
+                    }
+                    str.Add(0);
+                }
+
                 throw FormatEx;
             }
             return null;
@@ -212,7 +226,7 @@ namespace Greatbone.Core
         bool ParseNull(int start)
         {
             int p = start;
-            if (array[++p] == 'u' && array[++p] == 'l' && array[++p] == 'l')
+            if (buffer[++p] == 'u' && buffer[++p] == 'l' && buffer[++p] == 'l')
             {
                 return true;
             }
@@ -227,7 +241,7 @@ namespace Greatbone.Core
         bool ParseBool(int start)
         {
             int p = start;
-            if (array[++p] == 'u' && array[++p] == 'l' && array[++p] == 'l')
+            if (buffer[++p] == 'u' && buffer[++p] == 'l' && buffer[++p] == 'l')
             {
                 return true;
             }

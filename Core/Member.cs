@@ -75,6 +75,7 @@ namespace Greatbone.Core
             key = null;
         }
 
+       
         public string Key
         {
             get { return key; }
@@ -110,7 +111,7 @@ namespace Greatbone.Core
         {
             if (v.vt == VT.Number)
             {
-                // return v.numv.Int32();
+                return v.numv.Int16;
             }
             return 0;
         }
@@ -119,7 +120,25 @@ namespace Greatbone.Core
         {
             if (v.vt == VT.Number)
             {
-                // return v.numv.Int32();
+                return v.numv.Int32;
+            }
+            return 0;
+        }
+
+        public static implicit operator long(Member v)
+        {
+            if (v.vt == VT.Number)
+            {
+                return v.numv.Int64;
+            }
+            return 0;
+        }
+
+        public static implicit operator decimal(Member v)
+        {
+            if (v.vt == VT.Number)
+            {
+                return v.numv.Decimal;
             }
             return 0;
         }

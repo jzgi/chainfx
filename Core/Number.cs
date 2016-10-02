@@ -55,7 +55,7 @@ namespace Greatbone.Core
 
         internal int Int32 => negat ? (int)-integr : (int)integr;
 
-        internal int Int16 => negat ? (short)-integr : (short)integr;
+        internal short Int16 => negat ? (short)-integr : (short)integr;
 
         internal decimal Decimal
         {

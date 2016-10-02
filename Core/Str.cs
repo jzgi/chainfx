@@ -4,10 +4,12 @@ namespace Greatbone.Core
 {
 
     /// <summary>
-    /// A string builder that supports UTF-8 decoding as well as escape sequences.
+    /// A string builder that supports UTF-8 decoding.
     /// </summary>
     internal class Str
     {
+        const int InitialCapacity = 256;
+
         char[] buffer;
 
         int count;
@@ -22,7 +24,7 @@ namespace Greatbone.Core
 
         int ordinal; // current
 
-        internal Str(int capacity)
+        internal Str(int capacity = InitialCapacity)
         {
             buffer = new char[capacity];
             count = 0;
@@ -43,19 +45,7 @@ namespace Greatbone.Core
                 buffer = @new;
             }
 
-            if (esc)
-            {
-                c = c == '"' ? '"' : c == '\\' ? '\\' : c == 'b' ? '\b' : c == 'f' ? '\f' : c == 'n' ? '\n' : c == 'r' ? '\r' : c == 't' ? '\t' : c;
-                esc = false;
-            }
-            else
-            {
-                if (c == '\\')
-                {
-                    esc = true;
-                    return;
-                }
-            }
+        
             buffer[count++] = c;
         }
 
@@ -76,6 +66,11 @@ namespace Greatbone.Core
                 {
                 }
             }
+        }
+
+        public void Clear()
+        {
+            count = 0;
         }
 
         public override string ToString()

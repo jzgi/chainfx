@@ -63,7 +63,7 @@ namespace Greatbone.Core
             }
         }
 
-        public object Json
+        public object Doc
         {
             get
             {
@@ -76,7 +76,12 @@ namespace Greatbone.Core
                         string ctype = Request.ContentType;
                         if ("application/jsob".Equals(ctype))
                         {
-                            JsonParser parser = new JsonParser(buffer, count);
+                            JsonParse parser = new JsonParse(buffer, count);
+                            entity = parser.Parse();
+                        }
+                        if ("application/xml".Equals(ctype))
+                        {
+                            XmlParse parser = new XmlParse(buffer, count);
                             entity = parser.Parse();
                         }
                     }
@@ -87,7 +92,7 @@ namespace Greatbone.Core
 
         public T Dat<T>(int x) where T : IPersist, new()
         {
-            Obj obj = (Obj)Json;
+            Obj obj = (Obj)Doc;
             T dat = new T();
             dat.Load(obj, x);
             return dat;
