@@ -68,7 +68,7 @@ namespace Greatbone.Core
 
             options = new KestrelServerOptions();
 
-            server = new KestrelServer(Options.Create(options), Lifetime, logger);
+            server = new KestrelServer(Options.Create(options), App, logger);
             ICollection<string> addrs = server.Features.Get<IServerAddressesFeature>().Addresses;
             addrs.Add(cfg.Tls ? "https://" : "http://" + cfg.Public);
             addrs.Add("http://" + cfg.Private); // clustered msg queue
@@ -224,9 +224,7 @@ namespace Greatbone.Core
             Console.WriteLine();
         }
 
-        public void StopApplication()
-        {
-        }
+      
 
         /// <summary>
         /// Poll message from database and cache 
@@ -236,13 +234,7 @@ namespace Greatbone.Core
         {
         }
 
-        public CancellationToken ApplicationStarted { get; set; }
-
-        public CancellationToken ApplicationStopping { get; set; }
-
-        public CancellationToken ApplicationStopped { get; set; }
-
-
+    
         internal void Schedule()
         {
             while (true)
@@ -272,7 +264,7 @@ namespace Greatbone.Core
         ///
         /// STATIC
         ///
-        static readonly WebLifetime Lifetime = new WebLifetime();
+        static readonly WebLifetime App = new WebLifetime();
 
         public static void Run(params WebService[] services)
         {
@@ -281,14 +273,7 @@ namespace Greatbone.Core
                 svc.Start();
             }
 
-            var token = new CancellationToken();
-
-            token.Register(
-                state => { ((IApplicationLifetime)state).StopApplication(); },
-                Lifetime
-            );
-
-            Lifetime.ApplicationStopping.WaitHandle.WaitOne();
+            App.ApplicationStopping.WaitHandle.WaitOne();
         }
     }
 }

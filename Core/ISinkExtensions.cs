@@ -4,7 +4,7 @@ namespace Greatbone.Core
 {
 	public static class ISinkExtensions
 	{
-		public static void Write<R>(this ISink<R> w, params IPersist[] arr) where R : ISink<R>
+		public static void Save<R>(this ISink<R> w, params IPersist[] arr) where R : ISink<R>
 		{
 			for (int i = 0; i < arr.Length; i++)
 			{
@@ -16,7 +16,7 @@ namespace Greatbone.Core
 			}
 		}
 
-		public static void Write<T, R>(this ISink<R> w, IList<T> coll) where T : IPersist where R : ISink<R>
+		public static void Save<T, R>(this ISink<R> w, IList<T> coll) where T : IPersist where R : ISink<R>
 		{
 //			w.WriteArrayStart();
 			int i = 0;

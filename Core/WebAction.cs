@@ -2,11 +2,11 @@
 
 namespace Greatbone.Core
 {
-    /// <summary>The delegate of action methods.</summary>
+    /// <summary>The delegate of web action methods.</summary>
     ///
     public delegate void WebDoer(WebContext wc);
 
-    /// <summary>The delegate of mux action methods.</summary>
+    /// <summary>The delegate of varied-key action methods.</summary>
     ///
     public delegate void WebVarDoer(WebContext wc, string var);
 

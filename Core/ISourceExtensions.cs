@@ -4,14 +4,14 @@ namespace Greatbone.Core
 {
     public static class ISourceExtensions
     {
-        public static T Read<T>(this ISource i) where T : IPersist, new()
+        public static T Load<T>(this ISource i) where T : IPersist, new()
         {
             T obj = new T();
           
             return obj;
         }
 
-        public static List<T> ReadArray<T>(this ISource r) where T : IPersist, new()
+        public static List<T> LoadArray<T>(this ISource sc) where T : IPersist, new()
         {
             List<T> lst = new List<T>(64);
             //			if (!r.ReadArrayStart()) return lst;
@@ -19,7 +19,7 @@ namespace Greatbone.Core
 
             T obj = new T();
             //			r.ReadStart();
-            obj.Load(r, 0);
+            obj.Load(sc, 0);
             //			r.ReadEnd();
             return null;
         }
