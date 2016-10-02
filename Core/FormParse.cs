@@ -3,7 +3,7 @@ using System.Text;
 namespace Greatbone.Core
 {
 
-    public struct JsonParse
+    public struct FormParse
     {
         static readonly FormatException FormatEx = new FormatException("JSON Format");
 
@@ -14,16 +14,16 @@ namespace Greatbone.Core
         // UTF-8 string builder
         readonly Str str;
 
-        public JsonParse(byte[] buffer) : this(buffer, buffer.Length) { }
+        public FormParse(byte[] buffer) : this(buffer, buffer.Length) { }
 
-        public JsonParse(byte[] buffer, int count)
+        public FormParse(byte[] buffer, int count)
         {
             this.buffer = buffer;
             this.count = count;
             this.str = new Str();
         }
 
-        public object Parse()
+        public Elem Parse()
         {
             int p = -1;
             for (;;)
@@ -32,14 +32,13 @@ namespace Greatbone.Core
                 if (p >= count) throw FormatEx;
                 if (b == ' ' || b == '\t' || b == '\n' || b == '\r') continue; // skip ws
                 if (b == '{') return ParseObj(ref p);
-                if (b == '[') return ParseArr(ref p);
                 throw FormatEx;
             }
         }
 
-        Obj ParseObj(ref int pos)
+        Elem ParseObj(ref int pos)
         {
-            Obj obj = new Obj();
+            Elem obj = new Elem();
             int p = pos;
             for (;;)
             {
@@ -78,14 +77,10 @@ namespace Greatbone.Core
                     if (b == ' ' || b == '\t' || b == '\n' || b == '\r') continue; // skip ws
                     if (b == '{')
                     {
-                        Obj v = ParseObj(ref p);
+                        Elem v = ParseObj(ref p);
                         obj.Add(name.ToString(), v);
                     }
-                    else if (b == '[')
-                    {
-                        Arr v = ParseArr(ref p);
-                        obj.Add(name.ToString(), v);
-                    }
+
                     else if (b == '"')
                     {
                         string v = ParseString(p);
@@ -129,65 +124,6 @@ namespace Greatbone.Core
             return obj;
         }
 
-        Arr ParseArr(ref int pos)
-        {
-            Arr arr = new Arr(16);
-            int p = pos;
-            for (;;)
-            {
-                byte b = buffer[++p];
-                if (p >= count) throw FormatEx;
-                if (b == ' ' || b == '\t' || b == '\n' || b == '\r') continue; // skip ws
-                if (b == '{')
-                {
-                    Obj v = ParseObj(ref p);
-                    arr.Add(new Member(v));
-                }
-                else if (b == '[')
-                {
-                    Arr v = ParseArr(ref p);
-                    arr.Add(new Member(v));
-                }
-                else if (b == '"')
-                {
-                    string v = ParseString(p);
-                    arr.Add(new Member(v));
-                }
-                else if (b == 'n')
-                {
-                    if (ParseNull(p)) arr.Add(new Member());
-                }
-                else if (b == 't' || b == 'f')
-                {
-                    bool v = ParseBool(p);
-                    arr.Add(new Member(v));
-                }
-                else if (b >= '0' && b <= '9')
-                {
-                    Number v = ParseNumber(p);
-                    arr.Add(new Member(v));
-                }
-                else if (b == '&') // bytes extension
-                {
-                    byte[] v = ParseBytes(p);
-                    arr.Add(new Member(v));
-                }
-                else throw FormatEx;
-
-                // comma or end
-                for (;;)
-                {
-                    b = buffer[p++];
-                    if (p >= count) throw FormatEx;
-                    if (b == ' ' || b == '\t' || b == '\n' || b == '\r') continue; // skip ws
-                    if (b == ',') break;
-                    if (b == ']') goto End;
-                    throw FormatEx;
-                }
-            }
-        End:
-            return null;
-        }
 
         string ParseString(int start)
         {

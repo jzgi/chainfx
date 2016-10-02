@@ -35,7 +35,7 @@ namespace Greatbone.Core
         int count;
 
         // parsed request entity, can be Doc or Form
-        object entity;
+        object doc;
 
         /// <summary>
         /// Receiveds request body into a buffer held by the buffer field.
@@ -63,11 +63,15 @@ namespace Greatbone.Core
             }
         }
 
-        public object Doc
+        /// <summary>
+        /// A data object model of type Obj, Arr ,Elem or Form, constructed from parsing the JSON or XML entity.  
+        /// </summary>
+        /// <returns></returns>
+        public object Data
         {
             get
             {
-                if (entity == null)
+                if (doc == null)
                 {
                     TryReceiveAsync();
 
@@ -77,22 +81,27 @@ namespace Greatbone.Core
                         if ("application/jsob".Equals(ctype))
                         {
                             JsonParse parser = new JsonParse(buffer, count);
-                            entity = parser.Parse();
+                            doc = parser.Parse();
                         }
-                        if ("application/xml".Equals(ctype))
+                        else if ("application/xml".Equals(ctype))
                         {
                             XmlParse parser = new XmlParse(buffer, count);
-                            entity = parser.Parse();
+                            doc = parser.Parse();
+                        }
+                        else if ("application/x-www-form-urlencoded".Equals(ctype))
+                        {
+                            XmlParse parser = new XmlParse(buffer, count);
+                            doc = parser.Parse();
                         }
                     }
                 }
-                return entity;
+                return doc;
             }
         }
 
-        public T Dat<T>(int x) where T : IPersist, new()
+        public T Get<T>(int x) where T : IPersist, new()
         {
-            Obj obj = (Obj)Doc;
+            Obj obj = (Obj)Data;
             T dat = new T();
             dat.Load(obj, x);
             return dat;

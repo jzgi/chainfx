@@ -5,7 +5,7 @@ namespace Greatbone.Core
 
     public struct XmlParse
     {
-        static readonly JsonException FormatEx = new JsonException("JSON Format");
+        static readonly FormatException FormatEx = new FormatException("JSON Format");
 
         readonly byte[] buffer;
 
