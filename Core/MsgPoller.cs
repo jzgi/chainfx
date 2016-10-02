@@ -47,7 +47,7 @@ namespace Greatbone.Core
             if (resp.IsSuccessStatusCode)
             {
                 MsgAction a = null;
-                if (service.MsgActions.TryGet("", out a))
+                if (service.MActions.TryGet("", out a))
                 {
                     MsgContext evt = null;
                     a.Do(evt);

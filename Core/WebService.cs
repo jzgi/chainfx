@@ -37,23 +37,22 @@ namespace Greatbone.Core
         // the embedded server
         readonly KestrelServer server;
 
-        IPAddress priaddr;
-
-        int priport;
+        // private address
+        string priaddr;
 
         //
         // MESSAGING
         //
 
         // load messages        
-        internal Roll<MsgLoader> MsgLoaders { get; } = new Roll<MsgLoader>(32);
+        internal Roll<MsgLoader> MLoaders { get; } = new Roll<MsgLoader>(32);
 
         // topics subscribed by this microservice
-        internal Roll<MsgAction> MsgActions { get; } = new Roll<MsgAction>(16);
+        internal Roll<MsgAction> MActions { get; } = new Roll<MsgAction>(16);
 
         private Thread msgScheduler;
 
-        internal Roll<MsgPoller> MsgPollers { get; } = new Roll<MsgPoller>(32);
+        internal Roll<MsgPoller> MPollers { get; } = new Roll<MsgPoller>(32);
 
 
         protected WebService(WebServiceConfig cfg) : base(cfg)
@@ -74,17 +73,17 @@ namespace Greatbone.Core
             addrs.Add(cfg.Tls ? "https://" : "http://" + cfg.Public);
             addrs.Add("http://" + cfg.Private); // clustered msg queue
 
-            ParseAddress(cfg.Private, out priaddr, out priport);
-
             CreateMsgTables();
+
+            priaddr = cfg.Private;
 
             List<string> net = cfg.Net;
             for (int i = 0; i < net.Count; i++)
             {
                 string addr = net[i];
                 if (addr.Equals(cfg.Private)) continue;
-                if (MsgPollers == null) MsgPollers = new Roll<MsgPoller>(net.Count);
-                MsgPollers.Add(new MsgPoller(this, addr));
+                if (MPollers == null) MPollers = new Roll<MsgPoller>(net.Count);
+                MPollers.Add(new MsgPoller(this, addr));
             }
         }
 
@@ -115,21 +114,6 @@ namespace Greatbone.Core
         }
 
 
-        static bool ParseAddress(string addr, out IPAddress ipaddr, out int port)
-        {
-            port = 0;
-            string sip = addr;
-            int colon = addr.LastIndexOf(':');
-            if (colon != -1)
-            {
-                sip = addr.Substring(0, colon);
-                string sport = addr.Substring(colon + 1);
-                port = Int32.Parse(sport);
-            }
-            ipaddr = IPAddress.Parse(sip);
-            return true;
-        }
-
         public virtual void OnStart()
         {
         }
@@ -152,27 +136,35 @@ namespace Greatbone.Core
         /// <remarks>
         ///
         /// </remarks>
-        public async Task ProcessRequestAsync(HttpContext hc)
+        public async Task ProcessRequestAsync(HttpContext hctx)
         {
-            WebContext wc = (WebContext)hc;
-            // dispatch the context accordingly
-            ConnectionInfo ci = hc.Connection;
-            if (priport == ci.LocalPort && priaddr.Equals(ci.LocalIpAddress))
+            WebContext wc = (WebContext)hctx;
+
+            // dispatch among public/private web actions and msg polling
+            ConnectionInfo ci = wc.Connection;
+            string laddr = ci.LocalIpAddress.ToString() + ":" + ci.LocalPort;
+            if (laddr.Equals(priaddr)) // [PROC] private traffic
             {
-                // mq handling or action handling
-                if (hc.Request.Path.Equals("*"))
+                // verify the remote addrees 
+                string raddr = ci.RemoteIpAddress.ToString();
+                if (!MPollers.Contains(raddr))
+                {
+                    wc.StatusCode = (int)HttpStatusCode.Forbidden;
+                    return;
+                }
+
+                if (hctx.Request.Path.Equals("*")) // [PROC] msg polling
                 {
                     // msg queue
-                    Poll(wc);
+                    PollMsg(wc);
                 }
-                else
+                else // [PROC] private web action
                 {
                     Do(wc.Request.Path.Value.Substring(1), wc);
                 }
             }
-            else
+            else // [PROC] public web action
             {
-                // check security token (authentication)
                 Authenticate(wc);
 
                 // handling
@@ -190,10 +182,22 @@ namespace Greatbone.Core
             ((WebContext)context).Dispose();
         }
 
-        void Authenticate(WebContext wc)
+        bool Authenticate(WebContext wc)
         {
             StringValues h;
-            wc.Request.Headers.TryGetValue("Authorize", out h);
+            if (wc.Request.Headers.TryGetValue("Authorization", out h))
+            {
+                string v = (string)h;
+                v.StartsWith("Bearer "); // Bearer scheme
+                return true;
+            }
+            else
+            {
+                wc.StatusCode = (int)HttpStatusCode.Unauthorized;
+                wc.Response.Headers.Add("WWW-Authenticate", "Bearer ");
+                return false;
+            }
+
         }
 
         public void Start()
@@ -228,7 +232,7 @@ namespace Greatbone.Core
         /// Poll message from database and cache 
         /// </summary>
         /// <param name="wc"></param>
-        internal void Poll(WebContext wc)
+        internal void PollMsg(WebContext wc)
         {
         }
 
@@ -243,9 +247,9 @@ namespace Greatbone.Core
         {
             while (true)
             {
-                for (int i = 0; i < MsgPollers.Count; i++)
+                for (int i = 0; i < MPollers.Count; i++)
                 {
-                    MsgPoller conn = MsgPollers[i];
+                    MsgPoller conn = MPollers[i];
 
                     // schedule
                 }

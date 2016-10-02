@@ -63,7 +63,7 @@ namespace Greatbone.Core
             }
         }
 
-        public object Doc
+        public object Json
         {
             get
             {
@@ -87,7 +87,7 @@ namespace Greatbone.Core
 
         public T Dat<T>(int x) where T : IPersist, new()
         {
-            Obj obj = (Obj)Doc;
+            Obj obj = (Obj)Json;
             T dat = new T();
             dat.Load(obj, x);
             return dat;
@@ -122,34 +122,44 @@ namespace Greatbone.Core
 
 
         //
-        // RESPONSE ACCESSORS
+        // RESPONSE
         //
 
         public int StatusCode { get { return Response.StatusCode; } set { Response.StatusCode = value; } }
 
-        public CachePolicy Caching { get; set; }
+        internal bool? pub;
+
+        internal int maxage;
 
         public IContent Content { get; set; }
 
-        public void SetDat<T>(T obj) where T : IPersist
+        public void SetDat<T>(int status, T dat, bool? pub = true, int maxage = 1000) where T : IPersist
         {
-            JsonContent json = new JsonContent(4 * 1024);
-            obj.Save(json, 0);
-            Content = json;
+            SetJson(status, json =>
+            {
+                json.Obj(delegate { dat.Save(json, 0); });
+            }, pub, maxage);
         }
 
-        public void SetJson(int status, Action<JsonContent> a)
+        public void SetJson(int status, Action<JsonContent> a, bool? pub = true, int maxage = 1000)
         {
             StatusCode = status;
+
+            this.pub = pub;
+            this.maxage = maxage;
+
             JsonContent json = new JsonContent(8 * 1024);
             a?.Invoke(json);
             Content = json;
         }
 
-
-        public void SetHtml(int status, Action<HtmlContent> a)
+        public void SetHtml(int status, Action<HtmlContent> a, bool? pub = true, int maxage = 1000)
         {
             StatusCode = status;
+
+            this.pub = pub;
+            this.maxage = maxage;
+
             HtmlContent html = new HtmlContent(16 * 1024);
             a?.Invoke(html);
             Content = html;

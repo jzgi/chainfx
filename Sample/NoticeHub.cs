@@ -39,7 +39,7 @@ namespace Greatbone.Sample
         /// </summary>
         public void New(WebContext wc)
         {
-            Obj o = (Obj)wc.Doc;
+            Obj o = (Obj)wc.Json;
             int age = o[nameof(age)];
 
             int page = 0;

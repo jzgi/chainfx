@@ -54,13 +54,23 @@ namespace Greatbone.Core
         {
             get
             {
-                T mbr;
-                if (TryGet(key, out mbr))
+                T item;
+                if (TryGet(key, out item))
                 {
-                    return mbr;
+                    return item;
                 }
                 return default(T);
             }
+        }
+
+        public bool Contains(string key)
+        {
+            T item;
+            if (TryGet(key, out item))
+            {
+                return true;
+            }
+            return false;
         }
 
         public bool TryGet(string key, out T member)

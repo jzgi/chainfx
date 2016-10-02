@@ -5,16 +5,8 @@ using Greatbone.Core;
 namespace Greatbone.Sample
 {
 
-    [Flags]
-    public enum FameStates
-    {
-
-    }
-
     public struct Fame : IPersist
     {
-        public FameStates states;
-
         internal char[] id;
         internal string name;
         internal string quote;
