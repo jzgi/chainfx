@@ -35,7 +35,7 @@ namespace Greatbone.Core
         int count;
 
         // parsed request entity, can be Doc or Form
-        object doc;
+        object data;
 
         /// <summary>
         /// Receiveds request body into a buffer held by the buffer field.
@@ -71,7 +71,7 @@ namespace Greatbone.Core
         {
             get
             {
-                if (doc == null)
+                if (data == null)
                 {
                     TryReceiveAsync();
 
@@ -81,21 +81,16 @@ namespace Greatbone.Core
                         if ("application/jsob".Equals(ctype))
                         {
                             JsonParse parser = new JsonParse(buffer, count);
-                            doc = parser.Parse();
-                        }
-                        else if ("application/xml".Equals(ctype))
-                        {
-                            XmlParse parser = new XmlParse(buffer, count);
-                            doc = parser.Parse();
+                            data = parser.Parse();
                         }
                         else if ("application/x-www-form-urlencoded".Equals(ctype))
                         {
-                            XmlParse parser = new XmlParse(buffer, count);
-                            doc = parser.Parse();
+                            FormParse parser = new FormParse(buffer, count);
+                            data = parser.Parse();
                         }
                     }
                 }
-                return doc;
+                return data;
             }
         }
 

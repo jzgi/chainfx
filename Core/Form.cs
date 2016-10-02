@@ -10,8 +10,6 @@ namespace Greatbone.Core
     {
         readonly Roll<Member> attrs = new Roll<Member>(16);
 
-        Elem[] childs = new Elem[16];
-
         int count;
 
         internal void Add(string name)
@@ -21,11 +19,6 @@ namespace Greatbone.Core
                 Key = name
             };
             attrs.Add(e);
-        }
-
-        internal void Add(string name, Elem v)
-        {
-           
         }
 
         internal void Add(string name, Arr v)

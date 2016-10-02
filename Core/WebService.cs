@@ -68,7 +68,7 @@ namespace Greatbone.Core
 
             options = new KestrelServerOptions();
 
-            server = new KestrelServer(Options.Create(options), App, logger);
+            server = new KestrelServer(Options.Create(options), Lifetime, logger);
             ICollection<string> addrs = server.Features.Get<IServerAddressesFeature>().Addresses;
             addrs.Add(cfg.Tls ? "https://" : "http://" + cfg.Public);
             addrs.Add("http://" + cfg.Private); // clustered msg queue
@@ -209,22 +209,21 @@ namespace Greatbone.Core
             var urls = server.Features.Get<IServerAddressesFeature>().Addresses;
 
             Console.Write(Key);
-            Console.Write(" started (");
+            Console.Write(" -> ");
             int i = 0;
             foreach (var url in urls)
             {
                 if (i > 0)
                 {
-                    Console.Write(", ");
+                    Console.Write(" + ");
                 }
                 Console.Write(url);
                 i++;
             }
-            Console.Write(")");
             Console.WriteLine();
         }
 
-      
+
 
         /// <summary>
         /// Poll message from database and cache 
@@ -234,7 +233,7 @@ namespace Greatbone.Core
         {
         }
 
-    
+
         internal void Schedule()
         {
             while (true)
@@ -264,16 +263,41 @@ namespace Greatbone.Core
         ///
         /// STATIC
         ///
-        static readonly WebLifetime App = new WebLifetime();
+        static readonly WebLifetime Lifetime = new WebLifetime();
 
+
+        /// <summary>
+        /// Runs a number of web services and block until shutdown.
+        /// </summary>
         public static void Run(params WebService[] services)
         {
-            foreach (WebService svc in services)
+            using (var cts = new CancellationTokenSource())
             {
-                svc.Start();
+                Console.CancelKeyPress += (sender, eventArgs) =>
+                {
+                    Console.WriteLine("---- shutting down...");
+                    cts.Cancel();
+
+                    // wait for the Main thread to exit gracefully.
+                    eventArgs.Cancel = true;
+                };
+
+                foreach (WebService svc in services)
+                {
+                    svc.Start();
+                }
+
+                Console.WriteLine("---- press ctrl_c to shut down.");
+
+                cts.Token.Register(state =>
+                {
+                    ((IApplicationLifetime)state).StopApplication();
+                }, Lifetime);
+
+                Lifetime.ApplicationStopping.WaitHandle.WaitOne();
+
             }
 
-            App.ApplicationStopping.WaitHandle.WaitOne();
         }
     }
 }
