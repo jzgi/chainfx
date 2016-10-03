@@ -14,24 +14,16 @@ namespace Greatbone.Core
 
         int count;
 
-        // started escape sequence
-        bool esc;
+        int sum; // combination of bytes
 
-        // UTF-8 sequence
-        byte b1, b2, b3;
-
-        int octets; // number of octets
-
-        int ordinal; // current
+        int rest; // number of rest octets
 
         internal Str(int capacity = InitialCapacity)
         {
             buffer = new char[capacity];
             count = 0;
-            esc = false;
-            b1 = b2 = b3 = 0;
-            octets = 0;
-            ordinal = 0;
+            sum = 0;
+            rest = 0;
         }
 
         internal void Add(char c)
@@ -49,27 +41,41 @@ namespace Greatbone.Core
 
         internal void Add(byte b)
         {
-            char c;
-            // UTF-8
-            if (b < 0x80)
+            if (rest == 0)
             {
-                c = (char)b;
-            }
-            else if (b < 10)
-            {
-            }
-            if (octets == 0)
-            {
-                if ((b & 0xc0) == 0xc0)
+                if (b < 0x80)
                 {
+                    Add((char)b); // single byte 
+                }
+                else if (b >= 0xc0 && b < 0xe0)
+                {
+                    sum = (b & 0x1f) << 6;
+                    rest = 1;
+                }
+                else if (b >= 0xe0 && b < 0xf0)
+                {
+                    sum = (b & 0x0f) << 12;
+                    rest = 2;
                 }
             }
-            Add((char)b);
+            else if (rest == 1)
+            {
+                sum |= (b & 0x3f);
+                rest--;
+                Add((char)sum);
+            }
+            else if (rest == 2)
+            {
+                sum |= (b & 0x3f) << 6;
+                rest--;
+            }
         }
 
         public void Clear()
         {
             count = 0;
+            sum = 0;
+            rest = 0;
         }
 
         public override string ToString()

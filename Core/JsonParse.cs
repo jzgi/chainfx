@@ -122,7 +122,11 @@ namespace Greatbone.Core
                     if (p >= count) throw FormatEx;
                     if (b == ' ' || b == '\t' || b == '\n' || b == '\r') continue;
                     if (b == ',') break;
-                    if (b == '}') return obj;
+                    if (b == '}')
+                    {
+                        pos = p;
+                        return obj;
+                    }
                     throw FormatEx;
                 }
             }
@@ -181,7 +185,11 @@ namespace Greatbone.Core
                     if (p >= count) throw FormatEx;
                     if (b == ' ' || b == '\t' || b == '\n' || b == '\r') continue; // skip ws
                     if (b == ',') break;
-                    if (b == ']') return arr;
+                    if (b == ']')
+                    {
+                        pos = p;
+                        return arr;
+                    }
                     throw FormatEx;
                 }
             }

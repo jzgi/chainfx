@@ -67,15 +67,15 @@ namespace Greatbone.Core
             try
             {
                 byte[] bytes = File.ReadAllBytes(file);
-                JsonParse parser = new JsonParse(bytes);
-                Obj obj = (Obj)parser.Parse();
+                JsonParse parse = new JsonParse(bytes);
+                Obj obj = (Obj)parse.Parse();
 
                 Load(obj, 0); // may override
 
             }
             catch (Exception ex)
             {
-                Console.WriteLine(ex.Message);
+                Console.WriteLine(ex.StackTrace);
             }
             return this;
         }
