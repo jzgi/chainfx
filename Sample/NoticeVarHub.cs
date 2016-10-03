@@ -19,13 +19,14 @@ namespace Greatbone.Sample
 
             using (var dc = Service.NewDbContext())
             {
-                if (dc.QueryA("SELECT * FROM notices WHERE id = @id", p => p.Put("@id", id)))
+                if (dc.QueryA("SELECT * FROM notices WHERE id = @1", p => p.Put(id)))
                 {
-
+                    Notice obj = null;
+                    dc.Map(ref obj);
                 }
                 else
                 {
-                    wc.Response.StatusCode = 404;
+                    wc.StatusCode = 404;
                 }
             }
         }
@@ -41,15 +42,13 @@ namespace Greatbone.Sample
 
             using (var dc = Service.NewDbContext())
             {
-                if (dc.Execute("DELETE FROM notices WHERE id = @id AND authorid = @userid", p => p
-                    .Put("@id", id)
-                    .Put("@userid", userid)) > 0)
+                if (dc.Execute("DELETE FROM notices WHERE id = @1 AND authorid = @2", p => p.Put(id).Put(userid)) > 0)
                 {
 
                 }
                 else
                 {
-                    wc.Response.StatusCode = 404;
+                    wc.StatusCode = 404;
                 }
             }
         }
@@ -65,13 +64,13 @@ namespace Greatbone.Sample
 
             using (var dc = Service.NewDbContext())
             {
-                if (dc.QueryA("SELECT joins FROM notices WHERE id = @id", p => p.Put("@userid", userid)))
+                if (dc.QueryA("SELECT joins FROM notices WHERE id = @1", p => p.Put(userid)))
                 {
                     // parse to list
 
                     // update back the table
                     List<Ask> list = new List<Ask>();
-                    if (dc.Execute("UPDATE notices SET joins = @joins", _ => _.Put("@joins", list)) > 0)
+                    if (dc.Execute("UPDATE notices SET joins = @1", _ => _.Put(list)) > 0)
                     {
 
                     }
@@ -79,7 +78,7 @@ namespace Greatbone.Sample
                 }
                 else
                 {
-                    wc.Response.StatusCode = 404;
+                    wc.StatusCode = 404;
                 }
             }
         }

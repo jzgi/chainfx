@@ -8,9 +8,9 @@ namespace Greatbone.Core
     /// </summary>
     public interface IResultSet : ISource
     {
-        bool Retrieve<T>(ref T obj, int x) where T : IPersist, new();
+        bool Map<T>(ref T obj, int x = -1) where T : IPersist, new();
 
-        bool Retrieve<T>(ref List<T> lst, int x) where T : IPersist, new();
+        bool Map<T>(ref List<T> lst, int x = -1) where T : IPersist, new();
 
         bool Get(ref bool value);
 

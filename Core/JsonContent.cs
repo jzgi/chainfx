@@ -61,6 +61,10 @@ namespace Greatbone.Core
             level--;
         }
 
+        public void Obj<T>(T obj) where T : IPersist
+        {
+        }
+
 
         public void _(int value)
         {

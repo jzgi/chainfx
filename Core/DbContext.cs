@@ -6,13 +6,13 @@ using NpgsqlTypes;
 
 namespace Greatbone.Core
 {
-    public class DbContext : IDisposable, IResultSet, IParameters
+    public class DbContext : IDisposable, IResultSet
     {
         readonly NpgsqlConnection connection;
 
         readonly NpgsqlCommand command;
 
-        readonly NpgsqlParameterCollection parameters;
+        readonly DbParameters parameters;
 
         private NpgsqlTransaction transact;
 
@@ -25,7 +25,7 @@ namespace Greatbone.Core
         {
             connection = new NpgsqlConnection(builder);
             command = new NpgsqlCommand();
-            parameters = command.Parameters;
+            parameters = new DbParameters(command.Parameters);
             command.Connection = connection;
         }
 
@@ -67,7 +67,7 @@ namespace Greatbone.Core
             }
         }
 
-        public bool QueryA(string cmdtext, Action<IParameters> ps)
+        public bool QueryA(string cmdtext, Action<DbParameters> ps)
         {
             if (connection.State != ConnectionState.Open)
             {
@@ -81,15 +81,14 @@ namespace Greatbone.Core
             // setup command
             command.CommandText = cmdtext;
             command.CommandType = CommandType.Text;
-            command.Parameters.Clear();
-            index = 0;
-            ps?.Invoke(this);
+            parameters.Clear();
+            ps?.Invoke(parameters);
             colord = 0;
             reader = command.ExecuteReader();
             return reader.Read();
         }
 
-        public bool Query(string cmdtext, Action<IParameters> ps)
+        public bool Query(string cmdtext, Action<DbParameters> ps)
         {
             if (connection.State != ConnectionState.Open)
             {
@@ -103,9 +102,8 @@ namespace Greatbone.Core
             // setup command
             command.CommandText = cmdtext;
             command.CommandType = CommandType.Text;
-            command.Parameters.Clear();
-            index = 0;
-            ps?.Invoke(this);
+            parameters.Clear();
+            ps?.Invoke(parameters);
             colord = 0;
             reader = command.ExecuteReader();
             return reader.HasRows;
@@ -145,7 +143,7 @@ namespace Greatbone.Core
             return reader.NextResult();
         }
 
-        public int Execute(string cmdtext, Action<IParameters> ps)
+        public int Execute(string cmdtext, Action<DbParameters> ps)
         {
             if (connection.State != ConnectionState.Open)
             {
@@ -159,9 +157,8 @@ namespace Greatbone.Core
             // setup command
             command.CommandText = cmdtext;
             command.CommandType = CommandType.Text;
-            command.Parameters.Clear();
-            index = 0;
-            ps?.Invoke(this);
+            parameters.Clear();
+            ps?.Invoke(parameters);
             colord = 0;
             return command.ExecuteNonQuery();
         }
@@ -170,7 +167,7 @@ namespace Greatbone.Core
         // RESULTSET
         //
 
-        public bool Retrieve<T>(ref T po, int x) where T : IPersist, new()
+        public bool Map<T>(ref T po, int x = -1) where T : IPersist, new()
         {
             if (po == null)
             {
@@ -180,7 +177,7 @@ namespace Greatbone.Core
             return true;
         }
 
-        public bool Retrieve<T>(ref List<T> lst, int x) where T : IPersist, new()
+        public bool Map<T>(ref List<T> lst, int x = -1) where T : IPersist, new()
         {
             if (lst == null)
             {
@@ -189,7 +186,7 @@ namespace Greatbone.Core
             while (NextRow())
             {
                 T po = new T();
-                if (Retrieve(ref po, x))
+                if (Map(ref po, x))
                 {
                     lst.Add(po);
                 }
@@ -459,199 +456,5 @@ namespace Greatbone.Core
             }
         }
 
-        //
-        // PARAMETERS
-        //
-
-        static string[] Params = { "1", "2", "3", "4", "5", "6", "7", "8", "9", "10" };
-
-        int index; // current parameter index
-
-        public IParameters Put(bool value)
-        {
-            parameters.Add(new NpgsqlParameter(Params[index++], NpgsqlDbType.Boolean)
-            {
-                Value = value
-            });
-            return this;
-        }
-
-        public IParameters Put(short value)
-        {
-            parameters.Add(new NpgsqlParameter(Params[index++], NpgsqlDbType.Smallint)
-            {
-                Value = value
-            });
-            return this;
-        }
-
-        public IParameters Put(int value)
-        {
-            parameters.Add(new NpgsqlParameter(Params[index++], NpgsqlDbType.Integer)
-            {
-                Value = value
-            });
-            return this;
-        }
-
-        public IParameters Put(long value)
-        {
-            parameters.Add(new NpgsqlParameter(Params[index++], NpgsqlDbType.Bigint)
-            {
-                Value = value
-            });
-            return this;
-        }
-
-        public IParameters Put(decimal value)
-        {
-            parameters.Add(new NpgsqlParameter(Params[index++], NpgsqlDbType.Money)
-            {
-                Value = value
-            });
-            return this;
-        }
-
-        public IParameters Put(DateTime v)
-        {
-            NpgsqlDbType dt =
-            (v.Hour == 0 && v.Minute == 0 && v.Second == 0 && v.Millisecond == 0) ? NpgsqlDbType.Date :
-                NpgsqlDbType.Timestamp;
-
-            parameters.Add(new NpgsqlParameter(Params[index++], dt)
-            {
-                Value = v
-            });
-            return this;
-        }
-
-        public IParameters Put(string value)
-        {
-            parameters.Add(new NpgsqlParameter(Params[index++], NpgsqlDbType.Text)
-            {
-                Value = value
-            });
-            return this;
-        }
-
-        public IParameters Put<T>(T value, int x) where T : IPersist
-        {
-            throw new NotImplementedException();
-        }
-
-        public IParameters Put<T>(List<T> value, int x) where T : IPersist
-        {
-            throw new NotImplementedException();
-        }
-
-        public IParameters Put(byte[] value)
-        {
-            throw new NotImplementedException();
-
-        }
-
-        public IParameters Put(Obj value)
-        {
-            throw new NotImplementedException();
-        }
-
-        public IParameters Put(Arr value)
-        {
-            throw new NotImplementedException();
-        }
-
-        ////////////
-
-        public IParameters Put(string name, bool value)
-        {
-            parameters.Add(new NpgsqlParameter(name, NpgsqlDbType.Boolean)
-            {
-                Value = value
-            });
-            return this;
-        }
-
-        public IParameters Put(string name, short value)
-        {
-            parameters.Add(new NpgsqlParameter(name, NpgsqlDbType.Smallint)
-            {
-                Value = value
-            });
-            return this;
-        }
-
-        public IParameters Put(string name, int value)
-        {
-            parameters.Add(new NpgsqlParameter(name, NpgsqlDbType.Integer)
-            {
-                Value = value
-            });
-            return this;
-        }
-
-        public IParameters Put(string name, long value)
-        {
-            parameters.Add(new NpgsqlParameter(name, NpgsqlDbType.Bigint)
-            {
-                Value = value
-            });
-            return this;
-        }
-
-        public IParameters Put(string name, decimal value)
-        {
-            parameters.Add(new NpgsqlParameter(name, NpgsqlDbType.Money)
-            {
-                Value = value
-            });
-            return this;
-        }
-
-        public IParameters Put(string name, DateTime value)
-        {
-            parameters.Add(new NpgsqlParameter(name, NpgsqlDbType.Timestamp)
-            {
-                Value = value
-            });
-            return this;
-        }
-
-        public IParameters Put(string name, string value)
-        {
-            parameters.Add(new NpgsqlParameter(name, NpgsqlDbType.Varchar, value.Length)
-            {
-                Value = value
-            });
-            return this;
-        }
-
-        public IParameters Put<T>(string name, T value, int x) where T : IPersist
-        {
-            throw new NotImplementedException();
-        }
-
-        public IParameters Put<T>(string name, List<T> value, int x) where T : IPersist
-        {
-            throw new NotImplementedException();
-        }
-
-        public IParameters Put(string name, byte[] value)
-        {
-            parameters.Add(new NpgsqlParameter(name, NpgsqlDbType.Bytea, value.Length)
-            {
-                Value = value
-            });
-            return this;
-        }
-
-        public IParameters Put(string name, Obj value)
-        {
-            throw new NotImplementedException();
-        }
-
-        public IParameters Put(string name, Arr value)
-        {
-            throw new NotImplementedException();
-        }
     }
 }
