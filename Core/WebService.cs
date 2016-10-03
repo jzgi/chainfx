@@ -208,18 +208,13 @@ namespace Greatbone.Core
 
             var urls = server.Features.Get<IServerAddressesFeature>().Addresses;
 
+            WebServiceConfig cfg = (WebServiceConfig)Config;
+
             Console.Write(Key);
             Console.Write(" -> ");
-            int i = 0;
-            foreach (var url in urls)
-            {
-                if (i > 0)
-                {
-                    Console.Write(" + ");
-                }
-                Console.Write(url);
-                i++;
-            }
+            Console.Write(cfg.Public);
+            Console.Write(" / ");
+            Console.Write(cfg.Private);
             Console.WriteLine();
         }
 
@@ -275,7 +270,7 @@ namespace Greatbone.Core
             {
                 Console.CancelKeyPress += (sender, eventArgs) =>
                 {
-                    Console.WriteLine("---- shutting down...");
+                    Console.WriteLine("shutting down...");
                     cts.Cancel();
 
                     // wait for the Main thread to exit gracefully.
@@ -287,7 +282,7 @@ namespace Greatbone.Core
                     svc.Start();
                 }
 
-                Console.WriteLine("---- press ctrl_c to shut down.");
+                Console.WriteLine("^C to shut down");
 
                 cts.Token.Register(state =>
                 {

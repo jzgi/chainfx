@@ -17,38 +17,37 @@ namespace Greatbone.Core
         // negative
         bool negat;
 
-        internal Number(byte b)
+        internal Number(byte first)
         {
             integr = 0;
             fract = 0;
             pt = 0; // without point yet
-            if (b == '-')
+            if (first == '-')
             {
                 negat = true;
             }
             else
             {
                 negat = false;
-                Add(b);
+                Add(first);
             }
+        }
+
+        internal bool Point
+        {
+            get { return pt >= 0; }
+            set { if (value) pt = 0; }
         }
 
         internal void Add(byte b)
         {
-            if (b == '.')
+            int n = b - '0';
+            if (pt >= 0)
             {
-                pt = 0;
+                fract = fract * 10 + n;
+                pt++;
             }
-            else
-            {
-                int n = b - '0';
-                if (pt >= 0)
-                {
-                    fract = fract * 10 + n;
-                    pt++;
-                }
-                else { integr = integr * 10 + n; }
-            }
+            else { integr = integr * 10 + n; }
         }
 
         internal long Int64 => negat ? -integr : integr;

@@ -73,8 +73,9 @@ namespace Greatbone.Core
                 Load(obj, 0); // may override
 
             }
-            catch
+            catch (Exception ex)
             {
+                Console.WriteLine(ex.Message);
             }
             return this;
         }

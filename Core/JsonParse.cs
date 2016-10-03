@@ -52,13 +52,13 @@ namespace Greatbone.Core
                     throw FormatEx;
                 }
 
-                StringBuilder name = new StringBuilder();
+                StringBuilder sb = new StringBuilder();
                 for (;;)
                 {
                     byte b = buffer[++p];
                     if (p >= count) throw FormatEx;
                     if (b == '"') break; // meet second quote
-                    else name.Append((char)b);
+                    else sb.Append((char)b);
                 }
 
                 for (;;) // till a colon
@@ -76,39 +76,40 @@ namespace Greatbone.Core
                     byte b = buffer[++p];
                     if (p >= count) throw FormatEx;
                     if (b == ' ' || b == '\t' || b == '\n' || b == '\r') continue; // skip ws
+                    string name = sb.ToString();
                     if (b == '{')
                     {
                         Obj v = ParseObj(ref p);
-                        obj.Add(name.ToString(), v);
+                        obj.Add(name, v);
                     }
                     else if (b == '[')
                     {
                         Arr v = ParseArr(ref p);
-                        obj.Add(name.ToString(), v);
+                        obj.Add(name, v);
                     }
                     else if (b == '"')
                     {
-                        string v = ParseString(p);
-                        obj.Add(name.ToString(), v);
+                        string v = ParseString(ref p);
+                        obj.Add(name, v);
                     }
                     else if (b == 'n')
                     {
-                        if (ParseNull(p)) obj.Add(name.ToString());
+                        if (ParseNull(ref p)) obj.Add(name);
                     }
                     else if (b == 't' || b == 'f')
                     {
-                        bool v = ParseBool(p);
-                        obj.Add(name.ToString(), v);
+                        bool v = ParseBool(ref p, b);
+                        obj.Add(name, v);
                     }
-                    else if (b >= '0' && b <= '9')
+                    else if (b == '-' || b >= '0' && b <= '9')
                     {
-                        Number v = ParseNumber(p);
-                        obj.Add(name.ToString(), v);
+                        Number v = ParseNumber(ref p, b);
+                        obj.Add(name, v);
                     }
                     else if (b == '&') // bytes extension
                     {
                         byte[] v = ParseBytes(p);
-                        obj.Add(name.ToString(), v);
+                        obj.Add(name, v);
                     }
                     else throw FormatEx;
                     break;
@@ -117,16 +118,15 @@ namespace Greatbone.Core
                 // comma or end
                 for (;;)
                 {
-                    byte b = buffer[p++];
+                    byte b = buffer[++p];
                     if (p >= count) throw FormatEx;
                     if (b == ' ' || b == '\t' || b == '\n' || b == '\r') continue;
                     if (b == ',') break;
-                    if (b == '}') goto End;
+                    if (b == '}') return obj;
                     throw FormatEx;
                 }
             }
-        End:
-            return obj;
+
         }
 
         Arr ParseArr(ref int pos)
@@ -150,21 +150,21 @@ namespace Greatbone.Core
                 }
                 else if (b == '"')
                 {
-                    string v = ParseString(p);
+                    string v = ParseString(ref p);
                     arr.Add(new Member(v));
                 }
                 else if (b == 'n')
                 {
-                    if (ParseNull(p)) arr.Add(new Member());
+                    if (ParseNull(ref p)) arr.Add(new Member());
                 }
                 else if (b == 't' || b == 'f')
                 {
-                    bool v = ParseBool(p);
+                    bool v = ParseBool(ref p, b);
                     arr.Add(new Member(v));
                 }
-                else if (b >= '0' && b <= '9')
+                else if (b == '-' || b >= '0' && b <= '9')
                 {
-                    Number v = ParseNumber(p);
+                    Number v = ParseNumber(ref p, b);
                     arr.Add(new Member(v));
                 }
                 else if (b == '&') // bytes extension
@@ -174,48 +174,50 @@ namespace Greatbone.Core
                 }
                 else throw FormatEx;
 
-                // comma or end
+                // comma or return
                 for (;;)
                 {
-                    b = buffer[p++];
+                    b = buffer[++p];
                     if (p >= count) throw FormatEx;
                     if (b == ' ' || b == '\t' || b == '\n' || b == '\r') continue; // skip ws
                     if (b == ',') break;
-                    if (b == ']') goto End;
+                    if (b == ']') return arr;
                     throw FormatEx;
                 }
             }
-        End:
-            return null;
         }
 
-        string ParseString(int start)
+        string ParseString(ref int pos)
         {
-            int p = start;
+            str.Clear();
+            int p = pos;
+            bool esc = false;
             for (;;)
             {
-                byte b = buffer[p++];
+                byte b = buffer[++p];
                 if (p >= count) throw FormatEx;
-                if (b == '"') break;
-                bool esc = false;
-                char c = ' ';
                 if (esc)
                 {
-                    c = c == '"' ? '"' : c == '\\' ? '\\' : c == 'b' ? '\b' : c == 'f' ? '\f' : c == 'n' ? '\n' : c == 'r' ? '\r' : c == 't' ? '\t' : c;
-                    esc = false;
+                    str.Add(b == '"' ? '"' : b == '\\' ? '\\' : b == 'b' ? '\b' : b == 'f' ? '\f' : b == 'n' ? '\n' : b == 'r' ? '\r' : b == 't' ? '\t' : (char)0);
+                    esc = !esc;
                 }
                 else
                 {
-                    if (c == '\\')
+                    if (b == '\\')
                     {
-                        esc = true;
+                        esc = !esc;
                     }
-                    str.Add(0);
+                    else if (b == '"')
+                    {
+                        pos = p;
+                        return str.ToString();
+                    }
+                    else
+                    {
+                        str.Add(b);
+                    }
                 }
-
-                throw FormatEx;
             }
-            return null;
         }
 
         byte[] ParseBytes(int start)
@@ -223,29 +225,61 @@ namespace Greatbone.Core
             return null;
         }
 
-        bool ParseNull(int start)
+        bool ParseNull(ref int pos)
         {
-            int p = start;
+            int p = pos;
             if (buffer[++p] == 'u' && buffer[++p] == 'l' && buffer[++p] == 'l')
             {
+                pos = p;
                 return true;
             }
             return false;
         }
 
-        Number ParseNumber(int start)
+        Number ParseNumber(ref int pos, byte first)
         {
-            return default(Number);
+            Number num = new Number(first);
+            int p = pos;
+            for (;;)
+            {
+                byte b = buffer[p++];
+                if (p >= count) throw FormatEx;
+                if (b == '.')
+                {
+                    num.Point = true;
+                }
+                else if (b >= '0' && b <= '9')
+                {
+                    num.Add(b);
+                }
+                else
+                {
+                    pos = p - 1;
+                    return num;
+                }
+            }
         }
 
-        bool ParseBool(int start)
+        bool ParseBool(ref int pos, byte first)
         {
-            int p = start;
-            if (buffer[++p] == 'u' && buffer[++p] == 'l' && buffer[++p] == 'l')
+            int p = pos;
+            if (first == 't')
             {
-                return true;
+                if (buffer[++p] == 'r' && buffer[++p] == 'u' && buffer[++p] == 'e')
+                {
+                    pos = p;
+                    return true;
+                }
             }
-            return false;
+            else if (first == 'f')
+            {
+                if (buffer[++p] == 'a' && buffer[++p] == 'l' && buffer[++p] == 's' && buffer[++p] == 'e')
+                {
+                    pos = p;
+                    return false;
+                }
+            }
+            throw FormatEx;
         }
     }
 }

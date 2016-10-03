@@ -80,13 +80,13 @@ namespace Greatbone.Core
                         string ctype = Request.ContentType;
                         if ("application/jsob".Equals(ctype))
                         {
-                            JsonParse parser = new JsonParse(buffer, count);
-                            data = parser.Parse();
+                            JsonParse parse = new JsonParse(buffer, count);
+                            data = parse.Parse();
                         }
                         else if ("application/x-www-form-urlencoded".Equals(ctype))
                         {
-                            FormParse parser = new FormParse(buffer, count);
-                            data = parser.Parse();
+                            FormParse parse = new FormParse(buffer, count);
+                            data = parse.Parse();
                         }
                     }
                 }

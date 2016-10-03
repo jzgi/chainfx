@@ -44,8 +44,6 @@ namespace Greatbone.Core
                 Array.Copy(buffer, 0, @new, 0, olen);
                 buffer = @new;
             }
-
-        
             buffer[count++] = c;
         }
 
@@ -66,6 +64,7 @@ namespace Greatbone.Core
                 {
                 }
             }
+            Add((char)b);
         }
 
         public void Clear()
