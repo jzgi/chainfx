@@ -27,7 +27,7 @@ namespace Greatbone.Sample
         {
             sc.Get(nameof(status), ref status);
             sc.Get(nameof(partner), ref partner);
-            sc.Get(nameof(msgs), ref msgs);
+            sc.Get(nameof(msgs), ref msgs, -1);
             sc.Get(nameof(lasttime), ref lasttime);
         }
 
@@ -35,7 +35,7 @@ namespace Greatbone.Sample
         {
             sk.Put(nameof(status), status);
             sk.Put(nameof(partner), partner);
-            sk.Put(nameof(msgs), msgs);
+            sk.Put(nameof(msgs), msgs, -1);
             sk.Put(nameof(lasttime), lasttime);
         }
     }

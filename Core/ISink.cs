@@ -23,11 +23,7 @@ namespace Greatbone.Core
 
         R Put(string name, string value);
 
-        R Put<T>(string name, T value) where T : IPersist;
-
         R Put<T>(string name, T value, int x) where T : IPersist;
-
-        R Put<T>(string name, List<T> value) where T : IPersist;
 
         R Put<T>(string name, List<T> value, int x) where T : IPersist;
 

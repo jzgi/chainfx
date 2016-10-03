@@ -38,7 +38,7 @@ namespace Greatbone.Sample
             sc.Get(nameof(subtype), ref subtype);
             sc.Get(nameof(subject), ref subject);
             sc.Get(nameof(remark), ref remark);
-            sc.Get(nameof(joins), ref joins);
+            sc.Get(nameof(joins), ref joins, -1);
         }
 
         public void Save<R>(ISink<R> sk, int x) where R : ISink<R>
@@ -52,7 +52,7 @@ namespace Greatbone.Sample
             sk.Put(nameof(subtype), subtype);
             sk.Put(nameof(subject), subject);
             sk.Put(nameof(remark), remark);
-            sk.Put(nameof(joins), joins);
+            sk.Put(nameof(joins), joins, -1);
         }
     }
 

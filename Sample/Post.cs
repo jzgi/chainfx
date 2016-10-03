@@ -40,7 +40,7 @@ namespace Greatbone.Sample
             sc.Get(nameof(authorid), ref authorid);
             sc.Get(nameof(author), ref author);
             sc.Get(nameof(commentable), ref commentable);
-            sc.Get(nameof(comments), ref comments);
+            sc.Get(nameof(comments), ref comments, -1);
             sc.Get(nameof(text), ref text);
 
             sc.Get(nameof(m0), ref m0);
@@ -62,7 +62,7 @@ namespace Greatbone.Sample
             sk.Put(nameof(authorid), authorid);
             sk.Put(nameof(author), author);
             sk.Put(nameof(commentable), commentable);
-            sk.Put(nameof(comments), comments);
+            sk.Put(nameof(comments), comments, -1);
             sk.Put(nameof(text), text);
 
             sk.Put(nameof(m0), m0);

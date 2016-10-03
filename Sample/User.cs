@@ -43,9 +43,9 @@ namespace Greatbone.Sample
             sc.Get(nameof(brand), ref brand);
             sc.Get(nameof(admin), ref admin);
             sc.Get(nameof(date), ref date);
-            sc.Get(nameof(favposts), ref favposts);
-            sc.Get(nameof(friends), ref friends);
-            sc.Get(nameof(favs), ref favs);
+            sc.Get(nameof(favposts), ref favposts, -1);
+            sc.Get(nameof(friends), ref friends, -1);
+            sc.Get(nameof(favs), ref favs, -1);
         }
 
         public void Save<R>(ISink<R> sk, int fs) where R : ISink<R>
@@ -57,9 +57,9 @@ namespace Greatbone.Sample
             sk.Put(nameof(brand), brand);
             sk.Put(nameof(admin), admin);
             sk.Put(nameof(date), date);
-            sk.Put(nameof(favposts), favposts);
-            sk.Put(nameof(friends), friends);
-            sk.Put(nameof(favs), favs);
+            sk.Put(nameof(favposts), favposts, -1);
+            sk.Put(nameof(friends), friends, -1);
+            sk.Put(nameof(favs), favs, -1);
 
         }
 

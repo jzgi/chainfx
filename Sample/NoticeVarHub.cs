@@ -71,7 +71,7 @@ namespace Greatbone.Sample
 
                     // update back the table
                     List<Join> list = new List<Join>();
-                    if (dc.Execute("UPDATE notices SET joins = @joins", _ => _.Put("@joins", list)) > 0)
+                    if (dc.Execute("UPDATE notices SET joins = @joins", _ => _.Put("@joins", list, -1)) > 0)
                     {
 
                     }

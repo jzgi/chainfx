@@ -53,9 +53,9 @@ namespace Greatbone.Sample
             sc.Get(nameof(styles), ref styles);
             sc.Get(nameof(skills), ref skills);
             sc.Get(nameof(remark), ref remark);
-            sc.Get(nameof(sites), ref sites);
-            sc.Get(nameof(friends), ref friends);
-            sc.Get(nameof(awards), ref awards);
+            sc.Get(nameof(sites), ref sites, -1);
+            sc.Get(nameof(friends), ref friends, -1);
+            sc.Get(nameof(awards), ref awards, -1);
         }
 
         public void Save<R>(ISink<R> sk, int x) where R : ISink<R>
@@ -80,9 +80,9 @@ namespace Greatbone.Sample
             sk.Put(nameof(styles), styles);
             sk.Put(nameof(skills), skills);
             sk.Put(nameof(remark), remark);
-            sk.Put(nameof(sites), sites);
-            sk.Put(nameof(friends), friends);
-            sk.Put(nameof(awards), awards);
+            sk.Put(nameof(sites), sites, -1);
+            sk.Put(nameof(friends), friends, -1);
+            sk.Put(nameof(awards), awards, -1);
         }
     }
 

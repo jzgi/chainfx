@@ -15,5 +15,7 @@ namespace Greatbone.Core
         IParameters Put(int value);
 
         IParameters Put(string value);
+
+        IParameters Put<T>(List<T> value, int x) where T : IPersist;
     }
 }

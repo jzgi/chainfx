@@ -277,11 +277,6 @@ namespace Greatbone.Core
             return false;
         }
 
-        public bool Get<T>(ref T value) where T : IPersist, new()
-        {
-            return Get(ref value, 0);
-        }
-
         public bool Get<T>(ref T value, int x) where T : IPersist, new()
         {
             int ord = ordinal++;
@@ -293,11 +288,6 @@ namespace Greatbone.Core
                 return true;
             }
             return false;
-        }
-
-        public bool Get<T>(ref List<T> value) where T : IPersist, new()
-        {
-            throw new NotImplementedException();
         }
 
         public bool Get<T>(ref List<T> value, int x) where T : IPersist, new()
@@ -393,11 +383,6 @@ namespace Greatbone.Core
             return false;
         }
 
-        public bool Get<T>(string name, ref T value) where T : IPersist, new()
-        {
-            return Get(name, ref value, 0);
-        }
-
         public bool Get<T>(string name, ref T value, int x) where T : IPersist, new()
         {
             int ord = reader.GetOrdinal(name);
@@ -410,11 +395,6 @@ namespace Greatbone.Core
                 return true;
             }
             return false;
-        }
-
-        public bool Get<T>(string name, ref List<T> value) where T : IPersist, new()
-        {
-            return Get(name, ref value, 0);
         }
 
         public bool Get<T>(string name, ref List<T> value, int x) where T : IPersist, new()
@@ -644,17 +624,7 @@ namespace Greatbone.Core
             return this;
         }
 
-        public IParameters Put<T>(string name, T value) where T : IPersist
-        {
-            throw new NotImplementedException();
-        }
-
         public IParameters Put<T>(string name, T value, int x) where T : IPersist
-        {
-            throw new NotImplementedException();
-        }
-
-        public IParameters Put<T>(string name, List<T> value) where T : IPersist
         {
             throw new NotImplementedException();
         }
