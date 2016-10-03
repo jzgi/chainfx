@@ -40,11 +40,21 @@ namespace Greatbone.Sample
         }
     }
 
-    struct Message
+    struct Message : IPersist
     {
         DateTime time;
 
         string text;
+
+        public void Load(ISource sc, int x)
+        {
+            throw new NotImplementedException();
+        }
+
+        public void Save<R>(ISink<R> sk, int x) where R : ISink<R>
+        {
+            throw new NotImplementedException();
+        }
     }
 
     public struct Msg

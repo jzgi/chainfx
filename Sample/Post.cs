@@ -78,7 +78,7 @@ namespace Greatbone.Sample
         }
     }
 
-    public struct Comment
+    public struct Comment : IPersist
     {
         internal DateTime time;
 

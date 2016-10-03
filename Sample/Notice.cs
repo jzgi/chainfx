@@ -10,7 +10,7 @@ namespace Greatbone.Sample
 
         internal string loc;
 
-        internal char[] authorid;
+        internal string authorid;
 
         internal string author;
 

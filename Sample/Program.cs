@@ -37,9 +37,12 @@ namespace Greatbone.Sample
                 Public = "127.0.0.1:8080",
                 Private = "127.0.0.1:7070",
                 Net = addrs,
-                Db = pg,
-                Debug = true
-            }.Load("www.json"));
+                Db = pg
+            }
+#if !DEBUG
+            .LoadFile("www.json")
+#endif
+            );
 
             var biz = new BizService(new WebServiceConfig
             {
@@ -47,9 +50,12 @@ namespace Greatbone.Sample
                 Public = "127.0.0.1:8081",
                 Private = "127.0.0.1:7071",
                 Net = addrs,
-                Db = pg,
-                Debug = true
-            }.Load("biz.json"));
+                Db = pg
+            }
+#if !DEBUG
+            .LoadFile("biz.json")
+#endif
+            );
 
             var cont = new ContService(new WebServiceConfig
             {
@@ -57,9 +63,12 @@ namespace Greatbone.Sample
                 Public = "127.0.0.1:8082",
                 Private = "127.0.0.1:7072",
                 Net = addrs,
-                Db = pg,
-                Debug = true
-            }.Load("cont.json"));
+                Db = pg
+            }
+#if !DEBUG
+            .LoadFile("cont.json")
+#endif
+            );
 
             var dir = new DirService(new WebServiceConfig
             {
@@ -67,9 +76,12 @@ namespace Greatbone.Sample
                 Public = "127.0.0.1:8083",
                 Private = "127.0.0.1:7073",
                 Net = addrs,
-                Db = pg,
-                Debug = true
-            }.Load("dir.json"));
+                Db = pg
+            }
+#if !DEBUG
+            .LoadFile("dir.json")
+#endif
+            );
 
             var chat = new ChatService(new WebServiceConfig
             {
@@ -77,9 +89,12 @@ namespace Greatbone.Sample
                 Public = "127.0.0.1:8084",
                 Private = "127.0.0.1:7074",
                 Net = addrs,
-                Db = pg,
-                Debug = true
-            }.Load("chat.json"));
+                Db = pg
+            }
+#if !DEBUG
+            .LoadFile("chat.json")
+#endif
+            );
 
             WebService.Run(www, biz, cont, dir, chat);
         }

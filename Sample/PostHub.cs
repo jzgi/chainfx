@@ -1,5 +1,4 @@
 ﻿using Greatbone.Core;
-using System.Net;
 using System.Collections.Generic;
 
 namespace Greatbone.Sample
@@ -14,26 +13,22 @@ namespace Greatbone.Sample
         public void top(WebContext wc)
         {
             int page = 0;
-            if (wc.Get("page", ref page))
+            if (!wc.Get("page", ref page))
             {
-                wc.Response.StatusCode = 400;
-                return;
+                wc.StatusCode = 400; return;
             }
 
             using (var dc = Service.NewDbContext())
             {
                 if (dc.Query(@"SELECT * FROM posts ORDER BY id DESC LIMIT @limit OFFSET @offset", p => p.Put(20).Put(20 * page)))
                 {
-                    List<Post> list = null;
-                    while (dc.NextRow())
-                    {
-                    }
-                    wc.Response.StatusCode = (int)HttpStatusCode.OK;
-                    // wc.Response.SetContent(list);
+                    List<Post> lst = null;
+                    dc.Retrieve(ref lst, 0);
+                    wc.SendJson(200, jc => jc.Arr(lst, 0));
                 }
                 else
                 {
-                    wc.Response.StatusCode = (int)HttpStatusCode.NoContent;
+                    wc.StatusCode = 204; // no content
                 }
             }
         }

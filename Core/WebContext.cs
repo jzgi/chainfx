@@ -144,13 +144,13 @@ namespace Greatbone.Core
 
         public void SetDat<T>(int status, T dat, bool? pub = true, int maxage = 1000) where T : IPersist
         {
-            SetJson(status, json =>
+            SendJson(status, json =>
             {
                 json.Obj(delegate { dat.Save(json, 0); });
             }, pub, maxage);
         }
 
-        public void SetJson(int status, Action<JsonContent> a, bool? pub = true, int maxage = 1000)
+        public void SendJson(int status, Action<JsonContent> a, bool? pub = true, int maxage = 1000)
         {
             StatusCode = status;
 

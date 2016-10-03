@@ -60,6 +60,7 @@ namespace Greatbone.Sample
             sk.Put(nameof(favposts), favposts);
             sk.Put(nameof(friends), friends);
             sk.Put(nameof(favs), favs);
+
         }
 
         public static string Encrypt(string orig)
@@ -72,14 +73,34 @@ namespace Greatbone.Sample
             return null;
         }
 
-        public struct Fav
+        public struct Fav : IPersist
         {
             internal char[] id;
+
+            public void Load(ISource sc, int x)
+            {
+                throw new NotImplementedException();
+            }
+
+            public void Save<R>(ISink<R> sk, int x) where R : ISink<R>
+            {
+                throw new NotImplementedException();
+            }
         }
 
-        public struct FavPost
+        public struct FavPost : IPersist
         {
             internal int id;
+
+            public void Load(ISource sc, int x)
+            {
+                throw new NotImplementedException();
+            }
+
+            public void Save<R>(ISink<R> sk, int x) where R : ISink<R>
+            {
+                throw new NotImplementedException();
+            }
         }
     }
 }

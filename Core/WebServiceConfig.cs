@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.IO;
 
 namespace Greatbone.Core
@@ -34,7 +35,7 @@ namespace Greatbone.Core
 
         public DbConfig Db;
 
-        public Dictionary<string, string> options;
+        public Obj options;
 
         public void Load(ISource sc, int x)
         {
@@ -43,10 +44,8 @@ namespace Greatbone.Core
             sc.Get(nameof(Public), ref Public);
             sc.Get(nameof(Tls), ref Tls);
             sc.Get(nameof(Private), ref Private);
-            sc.Get(nameof(Net), ref Net);
-            sc.Get(nameof(Db), ref Db);
-            sc.Get(nameof(Debug), ref Debug);
-            sc.Get(nameof(options), ref options);
+            // sc.Get(nameof(Net), ref Net);
+            sc.Get(nameof(Db), ref Db, x);
         }
 
         public void Save<R>(ISink<R> sk, int x) where R : ISink<R>
@@ -56,13 +55,11 @@ namespace Greatbone.Core
             sk.Put(nameof(Public), Public);
             sk.Put(nameof(Tls), Tls);
             sk.Put(nameof(Private), Private);
-            sk.Put(nameof(Net), Net);
-            sk.Put(nameof(Db), Db);
-            sk.Put(nameof(Debug), Debug);
-            sk.Put(nameof(options), options);
+            // sk.Put(nameof(Net), Net);
+            sk.Put(nameof(Db), Db, x);
         }
 
-        public WebServiceConfig Load(string file)
+        public WebServiceConfig LoadFile(string file)
         {
             try
             {
@@ -75,7 +72,7 @@ namespace Greatbone.Core
             }
             catch (Exception ex)
             {
-                Console.WriteLine(ex.StackTrace);
+                Debug.WriteLine(ex.StackTrace);
             }
             return this;
         }

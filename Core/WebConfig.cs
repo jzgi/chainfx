@@ -4,8 +4,6 @@
     {
         public string Key;
 
-        public bool Debug;
-
         public bool IsVar { get; internal set; }
 
         public WebSub Parent { get; internal set; }

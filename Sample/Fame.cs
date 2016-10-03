@@ -7,7 +7,7 @@ namespace Greatbone.Sample
 
     public struct Fame : IPersist
     {
-        internal char[] id;
+        internal string id;
         internal string name;
         internal string quote;
         internal bool sex;
@@ -86,9 +86,9 @@ namespace Greatbone.Sample
         }
     }
 
-    public struct Item
+    public struct Item : IPersist
     {
-        internal char[] uid;
+        internal string uid;
 
         internal string url;
 

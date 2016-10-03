@@ -58,10 +58,10 @@ namespace Greatbone.Core
         protected WebService(WebServiceConfig cfg) : base(cfg)
         {
             // init eqc client
-            foreach (var ep in cfg.Net)
-            {
-                //				ParseAddress()
-            }
+            // foreach (var ep in cfg.Net)
+            // {
+            //     //				ParseAddress()
+            // }
 
             // create the server instance
             logger = new LoggerFactory();
@@ -213,7 +213,7 @@ namespace Greatbone.Core
             Console.Write(Key);
             Console.Write(" -> ");
             Console.Write(cfg.Public);
-            Console.Write(" / ");
+            Console.Write(", ");
             Console.Write(cfg.Private);
             Console.WriteLine();
         }

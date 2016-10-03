@@ -170,6 +170,33 @@ namespace Greatbone.Core
         // RESULTSET
         //
 
+        public bool Retrieve<T>(ref T po, int x) where T : IPersist, new()
+        {
+            if (po == null)
+            {
+                po = new T();
+            }
+            po.Load(this, x);
+            return true;
+        }
+
+        public bool Retrieve<T>(ref List<T> lst, int x) where T : IPersist, new()
+        {
+            if (lst == null)
+            {
+                lst = new List<T>(32);
+            }
+            while (NextRow())
+            {
+                T po = new T();
+                if (Retrieve(ref po, x))
+                {
+                    lst.Add(po);
+                }
+            }
+            return true;
+        }
+
         private int ordinal;
 
 
@@ -250,7 +277,50 @@ namespace Greatbone.Core
             return false;
         }
 
+        public bool Get<T>(ref T value) where T : IPersist, new()
+        {
+            return Get(ref value, 0);
+        }
 
+        public bool Get<T>(ref T value, int x) where T : IPersist, new()
+        {
+            int ord = ordinal++;
+            if (!reader.IsDBNull(ord))
+            {
+                string v = reader.GetString(ord);
+
+                // TODO
+                return true;
+            }
+            return false;
+        }
+
+        public bool Get<T>(ref List<T> value) where T : IPersist, new()
+        {
+            throw new NotImplementedException();
+        }
+
+        public bool Get<T>(ref List<T> value, int x) where T : IPersist, new()
+        {
+            throw new NotImplementedException();
+        }
+
+        public bool Get(ref byte[] value)
+        {
+            throw new NotImplementedException();
+        }
+
+        public bool Get(ref Obj value)
+        {
+            throw new NotImplementedException();
+        }
+
+        public bool Get(ref Arr value)
+        {
+            throw new NotImplementedException();
+        }
+
+        // SOURCE
 
         public bool Get(string name, ref bool value)
         {
@@ -283,6 +353,11 @@ namespace Greatbone.Core
                 return true;
             }
             return false;
+        }
+
+        public bool Get(string name, ref long value)
+        {
+            throw new NotImplementedException();
         }
 
         public bool Get(string name, ref decimal value)
@@ -318,40 +393,46 @@ namespace Greatbone.Core
             return false;
         }
 
-        public bool Get<T>(string name, ref List<T> value)
+        public bool Get<T>(string name, ref T value) where T : IPersist, new()
         {
-            if (Get(name, ref value))
-            {
-                //                Json son = new Json();
-            }
-            return false;
+            return Get(name, ref value, 0);
         }
 
-        public bool Get<T>(string name, ref T value) where T : IPersist, new()
+        public bool Get<T>(string name, ref T value, int x) where T : IPersist, new()
         {
             int ord = reader.GetOrdinal(name);
             if (!reader.IsDBNull(ord))
             {
                 string str = reader.GetString(ord);
-                JsonText json = new JsonText(str);
-                value = new T();
-                // value.From(json);
+                // JsonText json = new JsonText(str);
+                // if (value == null) value = new T();
+                // value.Load(json, x);
                 return true;
             }
             return false;
         }
 
-        public bool Get(string name, ref List<string> value)
+        public bool Get<T>(string name, ref List<T> value) where T : IPersist, new()
+        {
+            return Get(name, ref value, 0);
+        }
+
+        public bool Get<T>(string name, ref List<T> value, int x) where T : IPersist, new()
         {
             throw new NotImplementedException();
         }
 
-        public bool Get(string name, ref string[] value)
+        public bool Get(string name, ref byte[] value)
         {
             throw new NotImplementedException();
         }
 
-        public bool Get<K, V>(string name, ref Dictionary<K, V> value)
+        public bool Get(string name, ref Obj value)
+        {
+            throw new NotImplementedException();
+        }
+
+        public bool Get(string name, ref Arr value)
         {
             throw new NotImplementedException();
         }
@@ -395,26 +476,6 @@ namespace Greatbone.Core
                 // indicate that the instance has been disposed.
                 disposed = true;
             }
-        }
-
-        public bool Get(string name, ref long value)
-        {
-            throw new NotImplementedException();
-        }
-
-        public bool Get(string name, ref char[] value)
-        {
-            throw new NotImplementedException();
-        }
-
-        public bool Get(string name, ref byte[] value)
-        {
-            throw new NotImplementedException();
-        }
-
-        public bool Get<T>(string name, ref Dictionary<string, T> value)
-        {
-            throw new NotImplementedException();
         }
 
         //
@@ -470,6 +531,19 @@ namespace Greatbone.Core
             return this;
         }
 
+        public IParameters Put(DateTime v)
+        {
+            NpgsqlDbType dt =
+            (v.Hour == 0 && v.Minute == 0 && v.Second == 0 && v.Millisecond == 0) ? NpgsqlDbType.Date :
+                NpgsqlDbType.Timestamp;
+
+            parameters.Add(new NpgsqlParameter(Params[index++], dt)
+            {
+                Value = v
+            });
+            return this;
+        }
+
         public IParameters Put(string value)
         {
             parameters.Add(new NpgsqlParameter(Params[index++], NpgsqlDbType.Text)
@@ -478,6 +552,34 @@ namespace Greatbone.Core
             });
             return this;
         }
+
+        public IParameters Put<T>(T value, int x) where T : IPersist
+        {
+            throw new NotImplementedException();
+        }
+
+        public IParameters Put<T>(List<T> value, int x) where T : IPersist
+        {
+            throw new NotImplementedException();
+        }
+
+        public IParameters Put(byte[] value)
+        {
+            throw new NotImplementedException();
+
+        }
+
+        public IParameters Put(Obj value)
+        {
+            throw new NotImplementedException();
+        }
+
+        public IParameters Put(Arr value)
+        {
+            throw new NotImplementedException();
+        }
+
+        ////////////
 
         public IParameters Put(string name, bool value)
         {
@@ -533,15 +635,6 @@ namespace Greatbone.Core
             return this;
         }
 
-        public IParameters Put(string name, char[] value)
-        {
-            parameters.Add(new NpgsqlParameter(name, NpgsqlDbType.Char, value.Length)
-            {
-                Value = value
-            });
-            return this;
-        }
-
         public IParameters Put(string name, string value)
         {
             parameters.Add(new NpgsqlParameter(name, NpgsqlDbType.Varchar, value.Length)
@@ -556,6 +649,21 @@ namespace Greatbone.Core
             throw new NotImplementedException();
         }
 
+        public IParameters Put<T>(string name, T value, int x) where T : IPersist
+        {
+            throw new NotImplementedException();
+        }
+
+        public IParameters Put<T>(string name, List<T> value) where T : IPersist
+        {
+            throw new NotImplementedException();
+        }
+
+        public IParameters Put<T>(string name, List<T> value, int x) where T : IPersist
+        {
+            throw new NotImplementedException();
+        }
+
         public IParameters Put(string name, byte[] value)
         {
             parameters.Add(new NpgsqlParameter(name, NpgsqlDbType.Bytea, value.Length)
@@ -565,12 +673,12 @@ namespace Greatbone.Core
             return this;
         }
 
-        public IParameters Put<T>(string name, List<T> value)
+        public IParameters Put(string name, Obj value)
         {
             throw new NotImplementedException();
         }
 
-        public IParameters Put<T>(string name, Dictionary<string, T> value)
+        public IParameters Put(string name, Arr value)
         {
             throw new NotImplementedException();
         }

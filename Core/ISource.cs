@@ -8,9 +8,6 @@ namespace Greatbone.Core
     /// </summary>
     public interface ISource
     {
-        //
-        // property reading
-
         bool Get(string name, ref bool value);
 
         bool Get(string name, ref short value);
@@ -23,16 +20,22 @@ namespace Greatbone.Core
 
         bool Get(string name, ref DateTime value);
 
-        bool Get(string name, ref char[] value);
-
         bool Get(string name, ref string value);
 
         bool Get<T>(string name, ref T value) where T : IPersist, new();
 
+        bool Get<T>(string name, ref T value, int x) where T : IPersist, new();
+
+        bool Get<T>(string name, ref List<T> value) where T : IPersist, new();
+
+        bool Get<T>(string name, ref List<T> value, int x) where T : IPersist, new();
+
         bool Get(string name, ref byte[] value);
 
-        bool Get<T>(string name, ref List<T> value);
+        bool Get(string name, ref Obj value);
 
-        bool Get<T>(string name, ref Dictionary<string, T> value);
+        bool Get(string name, ref Arr value);
+
     }
+
 }

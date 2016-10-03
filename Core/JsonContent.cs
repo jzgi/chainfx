@@ -72,6 +72,50 @@ namespace Greatbone.Core
             Add(value);
         }
 
+
+        public JsonContent Put<T>(T value) where T : IPersist
+        {
+            throw new NotImplementedException();
+        }
+
+        public JsonContent Put<T>(T value, int x) where T : IPersist
+        {
+            throw new NotImplementedException();
+        }
+
+        public JsonContent Arr<T>(List<T> lst) where T : IPersist
+        {
+            throw new NotImplementedException();
+        }
+        public JsonContent Arr<T>(List<T> lst, int x) where T : IPersist
+        {
+            Arr(delegate
+            {
+                for (int i = 0; i < lst.Count; i++)
+                {
+                    Put(lst[i], x);
+                }
+            });
+            return this;
+        }
+
+        public JsonContent Put(string name, bool value)
+        {
+            if (nums[level]++ > 0)
+            {
+                Add(',');
+            }
+
+            Add('"');
+            Add(name);
+            Add('"');
+            Add(':');
+
+            Add(value ? "true" : "false");
+
+            return this;
+        }
+
         public JsonContent Put(string name, short value)
         {
             if (nums[level]++ > 0)
@@ -152,32 +196,6 @@ namespace Greatbone.Core
             return this;
         }
 
-        public JsonContent Put(string name, char[] value)
-        {
-            if (nums[level]++ > 0)
-            {
-                Add(',');
-            }
-
-            Add('"');
-            Add(name);
-            Add('"');
-            Add(':');
-
-            if (value == null)
-            {
-                Add("null");
-            }
-            else
-            {
-                Add('"');
-                Add(value);
-                Add('"');
-            }
-
-            return this;
-        }
-
         public JsonContent Put(string name, string value)
         {
             if (nums[level]++ > 0)
@@ -204,22 +222,24 @@ namespace Greatbone.Core
             return this;
         }
 
-
-        public JsonContent Put(string name, bool value)
+        public JsonContent Put<T>(string name, T value) where T : IPersist
         {
-            if (nums[level]++ > 0)
-            {
-                Add(',');
-            }
+            throw new NotImplementedException();
+        }
 
-            Add('"');
-            Add(name);
-            Add('"');
-            Add(':');
+        public JsonContent Put<T>(string name, T value, int x) where T : IPersist
+        {
+            throw new NotImplementedException();
+        }
 
-            Add(value ? "true" : "false");
+        public JsonContent Put<T>(string name, List<T> value) where T : IPersist
+        {
+            throw new NotImplementedException();
+        }
 
-            return this;
+        public JsonContent Put<T>(string name, List<T> value, int x) where T : IPersist
+        {
+            throw new NotImplementedException();
         }
 
         public JsonContent Put(string name, byte[] value)
@@ -227,36 +247,12 @@ namespace Greatbone.Core
             throw new NotImplementedException();
         }
 
-        public JsonContent Put<T>(string name, List<T> list)
+        public JsonContent Put(string name, Obj value)
         {
-
-
-            return this;
+            throw new NotImplementedException();
         }
 
-        public JsonContent Put<V>(string name, Dictionary<string, V> dict)
-        {
-            Add('"');
-            Add(name);
-            Add('"');
-            Add(':');
-
-            Add('{');
-            foreach (var pair in dict)
-            {
-                Add('"');
-                Add(pair.Key);
-                Add('"');
-                Add(':');
-
-                //				PutValue(pair.Value);
-            }
-            Add('}');
-
-            return this;
-        }
-
-        public JsonContent Put<T>(string name, T value) where T : IPersist
+        public JsonContent Put(string name, Arr value)
         {
             throw new NotImplementedException();
         }

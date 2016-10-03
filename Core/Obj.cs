@@ -76,16 +76,9 @@ namespace Greatbone.Core
 
         public Member this[string name] => pairs[name];
 
-        public bool Get(string name, ref int value)
-        {
-            Member pair;
-            if (pairs.TryGet(name, out pair))
-            {
-                value = pair;
-                return true;
-            }
-            return false;
-        }
+        //
+        // SOURCE
+        //
 
         public bool Get(string name, ref bool value)
         {
@@ -99,6 +92,17 @@ namespace Greatbone.Core
         }
 
         public bool Get(string name, ref short value)
+        {
+            Member pair;
+            if (pairs.TryGet(name, out pair))
+            {
+                value = pair;
+                return true;
+            }
+            return false;
+        }
+
+        public bool Get(string name, ref int value)
         {
             Member pair;
             if (pairs.TryGet(name, out pair))
@@ -142,17 +146,6 @@ namespace Greatbone.Core
             return false;
         }
 
-        public bool Get(string name, ref char[] value)
-        {
-            Member pair;
-            if (pairs.TryGet(name, out pair))
-            {
-                value = pair;
-                return true;
-            }
-            return false;
-        }
-
         public bool Get(string name, ref string value)
         {
             Member pair;
@@ -169,17 +162,32 @@ namespace Greatbone.Core
             throw new NotImplementedException();
         }
 
+        public bool Get<T>(string name, ref T value, int x) where T : IPersist, new()
+        {
+            throw new NotImplementedException();
+        }
+
+        public bool Get<T>(string name, ref List<T> value) where T : IPersist, new()
+        {
+            throw new NotImplementedException();
+        }
+
+        public bool Get<T>(string name, ref List<T> value, int x) where T : IPersist, new()
+        {
+            throw new NotImplementedException();
+        }
+
         public bool Get(string name, ref byte[] value)
         {
             throw new NotImplementedException();
         }
 
-        public bool Get<T>(string name, ref List<T> value)
+        public bool Get(string name, ref Obj value)
         {
             throw new NotImplementedException();
         }
 
-        public bool Get<T>(string name, ref Dictionary<string, T> value)
+        public bool Get(string name, ref Arr value)
         {
             throw new NotImplementedException();
         }

@@ -138,17 +138,6 @@ namespace Greatbone.Core
             return false;
         }
 
-        public bool Get(string name, ref char[] value)
-        {
-            Member pair;
-            if (attrs.TryGet(name, out pair))
-            {
-                value = pair;
-                return true;
-            }
-            return false;
-        }
-
         public bool Get(string name, ref string value)
         {
             Member pair;
@@ -165,20 +154,34 @@ namespace Greatbone.Core
             throw new NotImplementedException();
         }
 
+        public bool Get<T>(string name, ref T value, int x) where T : IPersist, new()
+        {
+            throw new NotImplementedException();
+        }
+
+        public bool Get<T>(string name, ref List<T> value) where T : IPersist, new()
+        {
+            throw new NotImplementedException();
+        }
+
+        public bool Get<T>(string name, ref List<T> value, int x) where T : IPersist, new()
+        {
+            throw new NotImplementedException();
+        }
+
         public bool Get(string name, ref byte[] value)
         {
             throw new NotImplementedException();
         }
 
-        public bool Get<T>(string name, ref List<T> value)
+        public bool Get(string name, ref Obj value)
         {
             throw new NotImplementedException();
         }
 
-        public bool Get<T>(string name, ref Dictionary<string, T> value)
+        public bool Get(string name, ref Arr value)
         {
             throw new NotImplementedException();
         }
-
     }
 }
