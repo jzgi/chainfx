@@ -22,9 +22,9 @@ namespace Greatbone.Core
 
         bool Get(string name, ref string value);
 
-        bool Get<T>(string name, ref T value, int x) where T : IPersist, new();
+        bool Get<T>(string name, ref T value, int x = -1) where T : IPersist, new();
 
-        bool Get<T>(string name, ref List<T> value, int x) where T : IPersist, new();
+        bool Get<T>(string name, ref List<T> value, int x = -1) where T : IPersist, new();
 
         bool Get(string name, ref byte[] value);
 

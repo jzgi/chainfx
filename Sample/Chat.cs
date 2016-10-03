@@ -23,19 +23,19 @@ namespace Greatbone.Sample
             msgs.Add(new Message());
         }
 
-        public void Load(ISource sc, int x)
+        public void Load(ISource sc, int x = -1)
         {
             sc.Get(nameof(status), ref status);
             sc.Get(nameof(partner), ref partner);
-            sc.Get(nameof(msgs), ref msgs, -1);
+            sc.Get(nameof(msgs), ref msgs);
             sc.Get(nameof(lasttime), ref lasttime);
         }
 
-        public void Save<R>(ISink<R> sk, int x) where R : ISink<R>
+        public void Save<R>(ISink<R> sk, int x = -1) where R : ISink<R>
         {
             sk.Put(nameof(status), status);
             sk.Put(nameof(partner), partner);
-            sk.Put(nameof(msgs), msgs, -1);
+            sk.Put(nameof(msgs), msgs);
             sk.Put(nameof(lasttime), lasttime);
         }
     }
@@ -57,7 +57,7 @@ namespace Greatbone.Sample
         }
     }
 
-    public struct Msg
+    public struct Msg : IPersist
     {
         internal int id;
 
@@ -71,7 +71,7 @@ namespace Greatbone.Sample
 
         internal DateTime time;
 
-        public void Load(ISource sc, int x)
+        public void Load(ISource sc, int x = -1)
         {
             sc.Get(nameof(id), ref id);
             sc.Get(nameof(subtype), ref subtype);
@@ -81,7 +81,7 @@ namespace Greatbone.Sample
             sc.Get(nameof(time), ref time);
         }
 
-        public void Save<R>(ISink<R> sk, int x) where R : ISink<R>
+        public void Save<R>(ISink<R> sk, int x = -1) where R : ISink<R>
         {
             sk.Put(nameof(id), id);
             sk.Put(nameof(subtype), subtype);

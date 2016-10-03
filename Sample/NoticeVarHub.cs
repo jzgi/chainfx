@@ -35,7 +35,7 @@ namespace Greatbone.Sample
         /// </summary>
         /// <param name="wc"></param>
         /// <param name="id"></param>
-        public void Del(WebContext wc, string id)
+        public void del(WebContext wc, string id)
         {
             string userid = wc.Token.Key;
 
@@ -59,7 +59,7 @@ namespace Greatbone.Sample
         /// </summary>
         /// <param name="wc"></param>
         /// <param name="noticeid"></param>
-        public void Join(WebContext wc, string noticeid)
+        public void ask(WebContext wc, string noticeid)
         {
             string userid = wc.Token.Key;
 
@@ -70,8 +70,8 @@ namespace Greatbone.Sample
                     // parse to list
 
                     // update back the table
-                    List<Join> list = new List<Join>();
-                    if (dc.Execute("UPDATE notices SET joins = @joins", _ => _.Put("@joins", list, -1)) > 0)
+                    List<Ask> list = new List<Ask>();
+                    if (dc.Execute("UPDATE notices SET joins = @joins", _ => _.Put("@joins", list)) > 0)
                     {
 
                     }

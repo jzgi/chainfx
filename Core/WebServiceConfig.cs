@@ -37,7 +37,7 @@ namespace Greatbone.Core
 
         public Obj options;
 
-        public void Load(ISource sc, int x)
+        public void Load(ISource sc, int x = -1)
         {
             sc.Get(nameof(Key), ref Key);
             sc.Get(nameof(Part), ref Part);
@@ -48,7 +48,7 @@ namespace Greatbone.Core
             sc.Get(nameof(Db), ref Db, x);
         }
 
-        public void Save<R>(ISink<R> sk, int x) where R : ISink<R>
+        public void Save<R>(ISink<R> sk, int x = -1) where R : ISink<R>
         {
             sk.Put(nameof(Key), Key);
             sk.Put(nameof(Part), Part);
@@ -67,7 +67,7 @@ namespace Greatbone.Core
                 JsonParse parse = new JsonParse(bytes);
                 Obj obj = (Obj)parse.Parse();
 
-                Load(obj, 0); // may override
+                Load(obj); // may override
 
             }
             catch (Exception ex)

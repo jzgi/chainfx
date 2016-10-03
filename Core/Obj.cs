@@ -157,22 +157,12 @@ namespace Greatbone.Core
             return false;
         }
 
-        public bool Get<T>(string name, ref T value) where T : IPersist, new()
+        public bool Get<T>(string name, ref T value, int x = -1) where T : IPersist, new()
         {
             throw new NotImplementedException();
         }
 
-        public bool Get<T>(string name, ref T value, int x) where T : IPersist, new()
-        {
-            throw new NotImplementedException();
-        }
-
-        public bool Get<T>(string name, ref List<T> value) where T : IPersist, new()
-        {
-            throw new NotImplementedException();
-        }
-
-        public bool Get<T>(string name, ref List<T> value, int x) where T : IPersist, new()
+        public bool Get<T>(string name, ref List<T> value, int x = -1) where T : IPersist, new()
         {
             throw new NotImplementedException();
         }

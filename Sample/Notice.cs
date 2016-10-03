@@ -24,10 +24,10 @@ namespace Greatbone.Sample
 
         internal string remark;
 
-        internal List<Join> joins;
+        internal List<Ask> asks;
 
 
-        public void Load(ISource sc, int x)
+        public void Load(ISource sc, int x = -1)
         {
             sc.Get(nameof(id), ref id);
             sc.Get(nameof(loc), ref loc);
@@ -38,10 +38,10 @@ namespace Greatbone.Sample
             sc.Get(nameof(subtype), ref subtype);
             sc.Get(nameof(subject), ref subject);
             sc.Get(nameof(remark), ref remark);
-            sc.Get(nameof(joins), ref joins, -1);
+            sc.Get(nameof(asks), ref asks);
         }
 
-        public void Save<R>(ISink<R> sk, int x) where R : ISink<R>
+        public void Save<R>(ISink<R> sk, int x = -1) where R : ISink<R>
         {
             sk.Put(nameof(id), id);
             sk.Put(nameof(loc), loc);
@@ -52,13 +52,13 @@ namespace Greatbone.Sample
             sk.Put(nameof(subtype), subtype);
             sk.Put(nameof(subject), subject);
             sk.Put(nameof(remark), remark);
-            sk.Put(nameof(joins), joins, -1);
+            sk.Put(nameof(asks), asks);
         }
     }
 
-    internal struct Join : IPersist
+    internal struct Ask : IPersist
     {
-        internal char[] id;
+        internal string id;
 
         public void Load(ISource sc, int x)
         {

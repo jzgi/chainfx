@@ -84,7 +84,7 @@ namespace Greatbone.Core
             command.Parameters.Clear();
             index = 0;
             ps?.Invoke(this);
-            ordinal = 0;
+            colord = 0;
             reader = command.ExecuteReader();
             return reader.Read();
         }
@@ -106,14 +106,14 @@ namespace Greatbone.Core
             command.Parameters.Clear();
             index = 0;
             ps?.Invoke(this);
-            ordinal = 0;
+            colord = 0;
             reader = command.ExecuteReader();
             return reader.HasRows;
         }
 
         public bool NextRow()
         {
-            ordinal = 0; // reset column ordinal
+            colord = 0; // reset column ordinal
 
             if (reader == null)
             {
@@ -136,7 +136,7 @@ namespace Greatbone.Core
 
         public bool NextResult()
         {
-            ordinal = 0; // reset column ordinal
+            colord = 0; // reset column ordinal
 
             if (reader == null)
             {
@@ -162,7 +162,7 @@ namespace Greatbone.Core
             command.Parameters.Clear();
             index = 0;
             ps?.Invoke(this);
-            ordinal = 0;
+            colord = 0;
             return command.ExecuteNonQuery();
         }
 
@@ -197,12 +197,13 @@ namespace Greatbone.Core
             return true;
         }
 
-        private int ordinal;
+        // current column ordinal
+        int colord;
 
 
         public bool Get(ref bool value)
         {
-            int ord = ordinal++;
+            int ord = colord++;
             if (!reader.IsDBNull(ord))
             {
                 value = reader.GetBoolean(ord);
@@ -213,7 +214,7 @@ namespace Greatbone.Core
 
         public bool Get(ref short value)
         {
-            int ord = ordinal++;
+            int ord = colord++;
             if (!reader.IsDBNull(ord))
             {
                 value = reader.GetInt16(ord);
@@ -224,7 +225,7 @@ namespace Greatbone.Core
 
         public bool Get(ref int value)
         {
-            int ord = ordinal++;
+            int ord = colord++;
             if (!reader.IsDBNull(ord))
             {
                 value = reader.GetInt32(ord);
@@ -235,7 +236,7 @@ namespace Greatbone.Core
 
         public bool Get(ref long value)
         {
-            int ord = ordinal++;
+            int ord = colord++;
             if (!reader.IsDBNull(ord))
             {
                 value = reader.GetInt64(ord);
@@ -246,7 +247,7 @@ namespace Greatbone.Core
 
         public bool Get(ref decimal value)
         {
-            int ord = ordinal++;
+            int ord = colord++;
             if (!reader.IsDBNull(ord))
             {
                 value = reader.GetDecimal(ord);
@@ -257,7 +258,7 @@ namespace Greatbone.Core
 
         public bool Get(ref DateTime value)
         {
-            int ord = ordinal++;
+            int ord = colord++;
             if (!reader.IsDBNull(ord))
             {
                 value = reader.GetDateTime(ord);
@@ -268,7 +269,7 @@ namespace Greatbone.Core
 
         public bool Get(ref string value)
         {
-            int ord = ordinal++;
+            int ord = colord++;
             if (!reader.IsDBNull(ord))
             {
                 value = reader.GetString(ord);
@@ -277,9 +278,9 @@ namespace Greatbone.Core
             return false;
         }
 
-        public bool Get<T>(ref T value, int x) where T : IPersist, new()
+        public bool Get<T>(ref T value, int x = -1) where T : IPersist, new()
         {
-            int ord = ordinal++;
+            int ord = colord++;
             if (!reader.IsDBNull(ord))
             {
                 string v = reader.GetString(ord);
@@ -290,7 +291,7 @@ namespace Greatbone.Core
             return false;
         }
 
-        public bool Get<T>(ref List<T> value, int x) where T : IPersist, new()
+        public bool Get<T>(ref List<T> value, int x = -1) where T : IPersist, new()
         {
             throw new NotImplementedException();
         }
@@ -383,7 +384,7 @@ namespace Greatbone.Core
             return false;
         }
 
-        public bool Get<T>(string name, ref T value, int x) where T : IPersist, new()
+        public bool Get<T>(string name, ref T value, int x = -1) where T : IPersist, new()
         {
             int ord = reader.GetOrdinal(name);
             if (!reader.IsDBNull(ord))
@@ -397,7 +398,7 @@ namespace Greatbone.Core
             return false;
         }
 
-        public bool Get<T>(string name, ref List<T> value, int x) where T : IPersist, new()
+        public bool Get<T>(string name, ref List<T> value, int x = -1) where T : IPersist, new()
         {
             throw new NotImplementedException();
         }

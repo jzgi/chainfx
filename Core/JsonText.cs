@@ -76,23 +76,7 @@ namespace Greatbone.Core
             throw new NotImplementedException();
         }
 
-        public JsonText Put(string name, char[] value)
-        {
-            throw new NotImplementedException();
-        }
-
         public JsonText Put(string name, string value)
-        {
-            throw new NotImplementedException();
-        }
-
-
-        public JsonText Put(string name, byte[] value)
-        {
-            throw new NotImplementedException();
-        }
-
-        public JsonText Put<T>(string name, T value) where T : IPersist
         {
             throw new NotImplementedException();
         }
@@ -102,12 +86,12 @@ namespace Greatbone.Core
             throw new NotImplementedException();
         }
 
-        public JsonText Put<T>(string name, List<T> value) where T : IPersist
+        public JsonText Put<T>(string name, List<T> value, int x) where T : IPersist
         {
             throw new NotImplementedException();
         }
 
-        public JsonText Put<T>(string name, List<T> value, int x) where T : IPersist
+        public JsonText Put(string name, byte[] value)
         {
             throw new NotImplementedException();
         }

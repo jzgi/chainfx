@@ -72,22 +72,12 @@ namespace Greatbone.Core
             Add(value);
         }
 
-
-        public JsonContent Put<T>(T value) where T : IPersist
+        public JsonContent Put<T>(T value, int x = -1) where T : IPersist
         {
             throw new NotImplementedException();
         }
 
-        public JsonContent Put<T>(T value, int x) where T : IPersist
-        {
-            throw new NotImplementedException();
-        }
-
-        public JsonContent Arr<T>(List<T> lst) where T : IPersist
-        {
-            throw new NotImplementedException();
-        }
-        public JsonContent Arr<T>(List<T> lst, int x) where T : IPersist
+        public JsonContent Arr<T>(List<T> lst, int x = -1) where T : IPersist
         {
             Arr(delegate
             {
@@ -222,22 +212,12 @@ namespace Greatbone.Core
             return this;
         }
 
-        public JsonContent Put<T>(string name, T value) where T : IPersist
+        public JsonContent Put<T>(string name, T value, int x = -1) where T : IPersist
         {
             throw new NotImplementedException();
         }
 
-        public JsonContent Put<T>(string name, T value, int x) where T : IPersist
-        {
-            throw new NotImplementedException();
-        }
-
-        public JsonContent Put<T>(string name, List<T> value) where T : IPersist
-        {
-            throw new NotImplementedException();
-        }
-
-        public JsonContent Put<T>(string name, List<T> value, int x) where T : IPersist
+        public JsonContent Put<T>(string name, List<T> value, int x = -1) where T : IPersist
         {
             throw new NotImplementedException();
         }

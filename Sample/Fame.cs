@@ -80,9 +80,9 @@ namespace Greatbone.Sample
             sk.Put(nameof(styles), styles);
             sk.Put(nameof(skills), skills);
             sk.Put(nameof(remark), remark);
-            sk.Put(nameof(sites), sites, -1);
-            sk.Put(nameof(friends), friends, -1);
-            sk.Put(nameof(awards), awards, -1);
+            sk.Put(nameof(sites), sites);
+            sk.Put(nameof(friends), friends);
+            sk.Put(nameof(awards), awards);
         }
     }
 
