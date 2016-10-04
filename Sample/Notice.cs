@@ -27,21 +27,21 @@ namespace Greatbone.Sample
         internal List<Ask> asks;
 
 
-        public void Load(ISource sc, int x = -1)
+        public void Load(ISource sc)
         {
-            sc.Get(nameof(id), ref id);
-            sc.Get(nameof(loc), ref loc);
-            sc.Get(nameof(authorid), ref authorid);
-            sc.Get(nameof(author), ref author);
-            sc.Get(nameof(date), ref date);
-            sc.Get(nameof(duedate), ref duedate);
-            sc.Get(nameof(subtype), ref subtype);
-            sc.Get(nameof(subject), ref subject);
-            sc.Get(nameof(remark), ref remark);
-            sc.Get(nameof(asks), ref asks);
+            sc.Got(nameof(id), out id);
+            sc.Got(nameof(loc), out loc);
+            sc.Got(nameof(authorid), out authorid);
+            sc.Got(nameof(author), out author);
+            sc.Got(nameof(date), out date);
+            sc.Got(nameof(duedate), out duedate);
+            sc.Got(nameof(subtype), out subtype);
+            sc.Got(nameof(subject), out subject);
+            sc.Got(nameof(remark), out remark);
+            sc.Got(nameof(asks), out asks);
         }
 
-        public void Save<R>(ISink<R> sk, int x = -1) where R : ISink<R>
+        public void Save<R>(ISink<R> sk) where R : ISink<R>
         {
             sk.Put(nameof(id), id);
             sk.Put(nameof(loc), loc);
@@ -60,12 +60,12 @@ namespace Greatbone.Sample
     {
         internal string id;
 
-        public void Load(ISource sc, int x)
+        public void Load(ISource sc)
         {
             throw new NotImplementedException();
         }
 
-        public void Save<R>(ISink<R> sk, int x) where R : ISink<R>
+        public void Save<R>(ISink<R> sk) where R : ISink<R>
         {
             throw new NotImplementedException();
         }

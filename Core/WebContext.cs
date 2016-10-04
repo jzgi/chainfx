@@ -96,10 +96,10 @@ namespace Greatbone.Core
 
         public T Get<T>(int x) where T : IPersist, new()
         {
-            Obj obj = (Obj)Data;
-            T dat = new T();
-            dat.Load(obj, x);
-            return dat;
+            Obj mo = (Obj)Data;
+            T obj = new T();
+            obj.Load(mo);
+            return obj;
         }
 
         public bool Get(string name, ref int value)
@@ -144,9 +144,9 @@ namespace Greatbone.Core
 
         public void SetDat<T>(int status, T dat, bool? pub = true, int maxage = 1000) where T : IPersist
         {
-            SendJson(status, json =>
+            SendJson(status, jc =>
             {
-                json.Obj(delegate { dat.Save(json, 0); });
+                jc.Obj(delegate { dat.Save(jc); });
             }, pub, maxage);
         }
 

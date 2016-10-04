@@ -4,33 +4,34 @@ using System.Collections.Generic;
 namespace Greatbone.Core
 {
     /// <summary>
-    /// A data intaking source.
+    /// A source for data persistence.
     /// </summary>
     public interface ISource
     {
-        bool Get(string name, ref bool value);
 
-        bool Get(string name, ref short value);
+        bool Got(string name, out bool v, bool def = false);
 
-        bool Get(string name, ref int value);
+        bool Got(string name, out short v, short def = 0);
 
-        bool Get(string name, ref long value);
+        bool Got(string name, out int v, int def = 0);
 
-        bool Get(string name, ref decimal value);
+        bool Got(string name, out long v, long def = -1);
 
-        bool Get(string name, ref DateTime value);
+        bool Got(string name, out decimal v, decimal def = 0);
 
-        bool Get(string name, ref string value);
+        bool Got(string name, out DateTime v, DateTime def = default(DateTime));
 
-        bool Get<T>(string name, ref T value, int x = -1) where T : IPersist, new();
+        bool Got(string name, out string v, string def = null);
 
-        bool Get<T>(string name, ref List<T> value, int x = -1) where T : IPersist, new();
+        bool Got<T>(string name, out T v, T def = default(T)) where T : IPersist, new();
 
-        bool Get(string name, ref byte[] value);
+        bool Got<T>(string name, out List<T> v, List<T> def = null) where T : IPersist, new();
 
-        bool Get(string name, ref Obj value);
+        bool Got(string name, out byte[] v, byte[] def = null);
 
-        bool Get(string name, ref Arr value);
+        bool Got(string name, out Obj v, Obj def = null);
+
+        bool Got(string name, out Arr v, Arr def = null);
 
     }
 

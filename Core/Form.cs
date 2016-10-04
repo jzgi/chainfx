@@ -8,168 +8,62 @@ namespace Greatbone.Core
     /// </summary>
     public class Form : ISource
     {
-        readonly Roll<Member> attrs = new Roll<Member>(16);
-
-        int count;
-
-        internal void Add(string name)
-        {
-            Member e = new Member()
-            {
-                Key = name
-            };
-            attrs.Add(e);
-        }
-
-        internal void Add(string name, Arr v)
-        {
-            Member e = new Member(v)
-            {
-                Key = name
-            };
-            attrs.Add(e);
-        }
-
-        internal void Add(string name, string v)
-        {
-            Member e = new Member(v)
-            {
-                Key = name
-            };
-            attrs.Add(e);
-        }
-
-        internal void Add(string name, byte[] v)
-        {
-            Member e = new Member(v)
-            {
-                Key = name
-            };
-            attrs.Add(e);
-        }
-
-        internal void Add(string name, bool v)
-        {
-            Member e = new Member(v)
-            {
-                Key = name
-            };
-            attrs.Add(e);
-        }
-
-        internal void Add(string name, Number v)
-        {
-            Member e = new Member(v)
-            {
-                Key = name
-            };
-            attrs.Add(e);
-        }
-
-        public int Count => attrs.Count;
-
-        public Member this[int index] => attrs[index];
-
-        public Member this[string name] => attrs[name];
-
-        public bool Get(string name, ref int value)
-        {
-            Member pair;
-            if (attrs.TryGet(name, out pair))
-            {
-                value = pair;
-                return true;
-            }
-            return false;
-        }
-
-        public bool Get(string name, ref bool value)
-        {
-            Member pair;
-            if (attrs.TryGet(name, out pair))
-            {
-                value = pair;
-                return true;
-            }
-            return false;
-        }
-
-        public bool Get(string name, ref short value)
-        {
-            Member pair;
-            if (attrs.TryGet(name, out pair))
-            {
-                value = pair;
-                return true;
-            }
-            return false;
-        }
-
-        public bool Get(string name, ref long value)
-        {
-            Member pair;
-            if (attrs.TryGet(name, out pair))
-            {
-                value = pair;
-                return true;
-            }
-            return false;
-        }
-
-        public bool Get(string name, ref decimal value)
-        {
-            Member pair;
-            if (attrs.TryGet(name, out pair))
-            {
-                value = pair;
-                return true;
-            }
-            return false;
-        }
-
-        public bool Get(string name, ref DateTime value)
-        {
-            Member pair;
-            if (attrs.TryGet(name, out pair))
-            {
-                value = pair;
-                return true;
-            }
-            return false;
-        }
-
-        public bool Get(string name, ref string value)
-        {
-            Member pair;
-            if (attrs.TryGet(name, out pair))
-            {
-                value = pair;
-                return true;
-            }
-            return false;
-        }
-
-        public bool Get<T>(string name, ref T value, int x = -1) where T : IPersist, new()
+        public bool Got(string name, out int v, int def = 0)
         {
             throw new NotImplementedException();
         }
 
-        public bool Get<T>(string name, ref List<T> value, int x = -1) where T : IPersist, new()
+        public bool Got(string name, out decimal v, decimal def = 0)
         {
             throw new NotImplementedException();
         }
 
-        public bool Get(string name, ref byte[] value)
+        public bool Got(string name, out string v, string def = null)
         {
             throw new NotImplementedException();
         }
 
-        public bool Get(string name, ref Obj value)
+        public bool Got(string name, out DateTime v, DateTime def = default(DateTime))
         {
             throw new NotImplementedException();
         }
 
-        public bool Get(string name, ref Arr value)
+        public bool Got(string name, out Obj v, Obj def = null)
+        {
+            throw new NotImplementedException();
+        }
+
+        public bool Got(string name, out Arr v, Arr def = null)
+        {
+            throw new NotImplementedException();
+        }
+
+        public bool Got(string name, out byte[] v, byte[] def = null)
+        {
+            throw new NotImplementedException();
+        }
+
+        public bool Got(string name, out long v, long def = -1)
+        {
+            throw new NotImplementedException();
+        }
+
+        public bool Got(string name, out short v, short def = 0)
+        {
+            throw new NotImplementedException();
+        }
+
+        public bool Got(string name, out bool v, bool def = false)
+        {
+            throw new NotImplementedException();
+        }
+
+        public bool Got<T>(string name, out List<T> v, List<T> def = null) where T : IPersist, new()
+        {
+            throw new NotImplementedException();
+        }
+
+        public bool Got<T>(string name, out T v, T def = default(T)) where T : IPersist, new()
         {
             throw new NotImplementedException();
         }

@@ -46,6 +46,8 @@ namespace Greatbone.Core
 
         }
 
+        
+
         public JsonText Put(string name, bool value)
         {
             throw new NotImplementedException();
@@ -105,6 +107,12 @@ namespace Greatbone.Core
         {
             throw new NotImplementedException();
         }
+
+        public JsonText PutNull(string name)
+        {
+            throw new NotImplementedException();
+        }
+
 
         //
         // WRITE

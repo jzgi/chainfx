@@ -34,21 +34,21 @@ namespace Greatbone.Sample
 
         public string Name => name;
 
-        public void Load(ISource sc, int fs)
+        public void Load(ISource sc)
         {
-            sc.Get(nameof(id), ref id);
-            sc.Get(nameof(name), ref name);
-            sc.Get(nameof(credential), ref credential);
-            sc.Get(nameof(fame), ref fame);
-            sc.Get(nameof(brand), ref brand);
-            sc.Get(nameof(admin), ref admin);
-            sc.Get(nameof(date), ref date);
-            sc.Get(nameof(favposts), ref favposts, -1);
-            sc.Get(nameof(friends), ref friends, -1);
-            sc.Get(nameof(favs), ref favs, -1);
+            sc.Got(nameof(id), out id);
+            sc.Got(nameof(name), out name);
+            sc.Got(nameof(credential), out credential);
+            sc.Got(nameof(fame), out fame);
+            sc.Got(nameof(brand), out brand);
+            sc.Got(nameof(admin), out admin);
+            sc.Got(nameof(date), out date);
+            sc.Got(nameof(favposts), out favposts);
+            sc.Got(nameof(friends), out friends);
+            sc.Got(nameof(favs), out favs);
         }
 
-        public void Save<R>(ISink<R> sk, int fs) where R : ISink<R>
+        public void Save<R>(ISink<R> sk) where R : ISink<R>
         {
             sk.Put(nameof(id), id);
             sk.Put(nameof(name), name);
@@ -60,7 +60,6 @@ namespace Greatbone.Sample
             sk.Put(nameof(favposts), favposts, -1);
             sk.Put(nameof(friends), friends, -1);
             sk.Put(nameof(favs), favs, -1);
-
         }
 
         public static string Encrypt(string orig)
@@ -77,12 +76,12 @@ namespace Greatbone.Sample
         {
             internal char[] id;
 
-            public void Load(ISource sc, int x)
+            public void Load(ISource sc)
             {
                 throw new NotImplementedException();
             }
 
-            public void Save<R>(ISink<R> sk, int x) where R : ISink<R>
+            public void Save<R>(ISink<R> sk) where R : ISink<R>
             {
                 throw new NotImplementedException();
             }
@@ -92,12 +91,12 @@ namespace Greatbone.Sample
         {
             internal int id;
 
-            public void Load(ISource sc, int x)
+            public void Load(ISource sc)
             {
                 throw new NotImplementedException();
             }
 
-            public void Save<R>(ISink<R> sk, int x) where R : ISink<R>
+            public void Save<R>(ISink<R> sk) where R : ISink<R>
             {
                 throw new NotImplementedException();
             }

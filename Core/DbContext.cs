@@ -2,7 +2,6 @@
 using System.Collections.Generic;
 using System.Data;
 using Npgsql;
-using NpgsqlTypes;
 
 namespace Greatbone.Core
 {
@@ -167,250 +166,269 @@ namespace Greatbone.Core
         // RESULTSET
         //
 
-        public bool Map<T>(ref T po, int x = -1) where T : IPersist, new()
+        public T Get<T>() where T : IPersist, new()
         {
-            if (po == null)
-            {
-                po = new T();
-            }
-            po.Load(this, x);
-            return true;
+            T obj = new T();
+            obj.Load(this);
+            return obj;
         }
 
-        public bool Map<T>(ref List<T> lst, int x = -1) where T : IPersist, new()
+        public List<T> GetList<T>() where T : IPersist, new()
         {
-            if (lst == null)
-            {
-                lst = new List<T>(32);
-            }
+            List<T> lst = new List<T>(32);
+
             while (NextRow())
             {
-                T po = new T();
-                if (Map(ref po, x))
-                {
-                    lst.Add(po);
-                }
+                T obj = new T();
+                obj.Load(this);
+                lst.Add(obj);
             }
-            return true;
+            return lst;
         }
 
         // current column ordinal
         int colord;
 
 
-        public bool Get(ref bool value)
+        public bool Got(out bool v, bool def = false)
         {
             int ord = colord++;
             if (!reader.IsDBNull(ord))
             {
-                value = reader.GetBoolean(ord);
+                v = reader.GetBoolean(ord);
                 return true;
             }
+            v = def;
             return false;
         }
 
-        public bool Get(ref short value)
+        public bool Got(out short v, short def = 0)
         {
             int ord = colord++;
             if (!reader.IsDBNull(ord))
             {
-                value = reader.GetInt16(ord);
+                v = reader.GetInt16(ord);
                 return true;
             }
+            v = def;
             return false;
         }
 
-        public bool Get(ref int value)
+        public bool Got(out int v, int def = 0)
         {
             int ord = colord++;
             if (!reader.IsDBNull(ord))
             {
-                value = reader.GetInt32(ord);
+                v = reader.GetInt32(ord);
                 return true;
             }
+            v = def;
             return false;
         }
 
-        public bool Get(ref long value)
+        public bool Got(out long v, long def = 0)
         {
             int ord = colord++;
             if (!reader.IsDBNull(ord))
             {
-                value = reader.GetInt64(ord);
+                v = reader.GetInt64(ord);
                 return true;
             }
+            v = def;
             return false;
         }
 
-        public bool Get(ref decimal value)
+        public bool Got(out decimal v, decimal def = 0)
         {
             int ord = colord++;
             if (!reader.IsDBNull(ord))
             {
-                value = reader.GetDecimal(ord);
+                v = reader.GetDecimal(ord);
                 return true;
             }
+            v = def;
             return false;
         }
 
-        public bool Get(ref DateTime value)
+        public bool Got(out DateTime v, DateTime def = default(DateTime))
         {
             int ord = colord++;
             if (!reader.IsDBNull(ord))
             {
-                value = reader.GetDateTime(ord);
+                v = reader.GetDateTime(ord);
                 return true;
             }
+            v = def;
             return false;
         }
 
-        public bool Get(ref string value)
+        public bool Got(out string v, string def = null)
         {
             int ord = colord++;
             if (!reader.IsDBNull(ord))
             {
-                value = reader.GetString(ord);
+                v = reader.GetString(ord);
                 return true;
             }
+            v = def;
             return false;
         }
 
-        public bool Get<T>(ref T value, int x = -1) where T : IPersist, new()
+        public bool Got<T>(out T v, T def = default(T)) where T : IPersist, new()
         {
             int ord = colord++;
             if (!reader.IsDBNull(ord))
             {
-                string v = reader.GetString(ord);
+                string s = reader.GetString(ord);
 
                 // TODO
+                v = def;
                 return true;
             }
+            v = def;
             return false;
         }
 
-        public bool Get<T>(ref List<T> value, int x = -1) where T : IPersist, new()
+        public bool Got<T>(out List<T> v, List<T> def = null) where T : IPersist, new()
         {
             throw new NotImplementedException();
         }
 
-        public bool Get(ref byte[] value)
+        public bool Got(out byte[] v, byte[] def = null)
         {
             throw new NotImplementedException();
         }
 
-        public bool Get(ref Obj value)
+        public bool Got(out Obj v, Obj def = null)
         {
             throw new NotImplementedException();
         }
 
-        public bool Get(ref Arr value)
+        public bool Got(out Arr v, Arr def = null)
         {
             throw new NotImplementedException();
         }
 
         // SOURCE
 
-        public bool Get(string name, ref bool value)
+
+        public bool Got(string name, out bool v, bool def = false)
         {
             int ord = reader.GetOrdinal(name);
             if (!reader.IsDBNull(ord))
             {
-                value = reader.GetBoolean(ord);
+                v = reader.GetBoolean(ord);
                 return true;
             }
+            v = def;
             return false;
         }
 
-        public bool Get(string name, ref short value)
+        public bool Got(string name, out short v, short def = 0)
         {
             int ord = reader.GetOrdinal(name);
             if (!reader.IsDBNull(ord))
             {
-                value = reader.GetInt16(ord);
+                v = reader.GetInt16(ord);
                 return true;
             }
+            v = def;
             return false;
         }
 
-        public bool Get(string name, ref int value)
+        public bool Got(string name, out int v, int def = 0)
         {
             int ord = reader.GetOrdinal(name);
             if (!reader.IsDBNull(ord))
             {
-                value = reader.GetInt32(ord);
+                v = reader.GetInt32(ord);
                 return true;
             }
+            v = def;
             return false;
         }
 
-        public bool Get(string name, ref long value)
-        {
-            throw new NotImplementedException();
-        }
-
-        public bool Get(string name, ref decimal value)
+        public bool Got(string name, out long v, long def = 0)
         {
             int ord = reader.GetOrdinal(name);
             if (!reader.IsDBNull(ord))
             {
-                value = reader.GetDecimal(ord);
+                v = reader.GetInt64(ord);
                 return true;
             }
+            v = def;
             return false;
         }
 
-        public bool Get(string name, ref DateTime value)
+        public bool Got(string name, out decimal v, decimal def = 0)
         {
             int ord = reader.GetOrdinal(name);
             if (!reader.IsDBNull(ord))
             {
-                value = reader.GetDateTime(ord);
+                v = reader.GetDecimal(ord);
                 return true;
             }
+            v = def;
             return false;
         }
 
-        public bool Get(string name, ref string value)
+        public bool Got(string name, out DateTime v, DateTime def = default(DateTime))
         {
             int ord = reader.GetOrdinal(name);
             if (!reader.IsDBNull(ord))
             {
-                value = reader.GetString(ord);
+                v = reader.GetDateTime(ord);
                 return true;
             }
+            v = def;
             return false;
         }
 
-        public bool Get<T>(string name, ref T value, int x = -1) where T : IPersist, new()
+        public bool Got(string name, out string v, string def = null)
         {
             int ord = reader.GetOrdinal(name);
             if (!reader.IsDBNull(ord))
             {
+                v = reader.GetString(ord);
+                return true;
+            }
+            v = def;
+            return false;
+        }
+
+        public bool Got<T>(string name, out T v, T def = default(T)) where T : IPersist, new()
+        {
+            int ord = reader.GetOrdinal(name);
+            if (!reader.IsDBNull(ord))
+            {
+
                 string str = reader.GetString(ord);
                 // JsonText json = new JsonText(str);
                 // if (value == null) value = new T();
                 // value.Load(json, x);
+                v = def;
                 return true;
             }
+            v = def;
             return false;
         }
 
-        public bool Get<T>(string name, ref List<T> value, int x = -1) where T : IPersist, new()
+        public bool Got<T>(string name, out List<T> v, List<T> def = null) where T : IPersist, new()
         {
             throw new NotImplementedException();
         }
 
-        public bool Get(string name, ref byte[] value)
+        public bool Got(string name, out byte[] v, byte[] def = null)
         {
             throw new NotImplementedException();
         }
 
-        public bool Get(string name, ref Obj value)
+        public bool Got(string name, out Obj v, Obj def = null)
         {
             throw new NotImplementedException();
         }
 
-        public bool Get(string name, ref Arr value)
+        public bool Got(string name, out Arr v, Arr def = null)
         {
             throw new NotImplementedException();
         }
@@ -434,7 +452,7 @@ namespace Greatbone.Core
         {
             // convert message to byte buffer
             JsonContent b = new JsonContent(16 * 1024);
-            @event.Save(b, 0);
+            @event.Save(b);
 
             Execute("INSERT INTO mq (topic, filter, message) VALUES (@topic, @filter, @message)", p =>
             {

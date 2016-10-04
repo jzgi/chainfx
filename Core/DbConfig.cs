@@ -12,16 +12,16 @@
 
         public bool MQ;
 
-        public void Load(ISource c, int fs)
+        public void Load(ISource sc)
         {
-            c.Get(nameof(Host), ref Host);
-            c.Get(nameof(Port), ref Port);
-            c.Get(nameof(Username), ref Username);
-            c.Get(nameof(Password), ref Password);
-            c.Get(nameof(MQ), ref MQ);
+            sc.Got(nameof(Host), out Host);
+            sc.Got(nameof(Port), out Port);
+            sc.Got(nameof(Username), out Username);
+            sc.Got(nameof(Password), out Password);
+            sc.Got(nameof(MQ), out MQ);
         }
 
-        public void Save<R>(ISink<R> k, int fs) where R : ISink<R>
+        public void Save<R>(ISink<R> k) where R : ISink<R>
         {
             k.Put(nameof(Host), Host);
             k.Put(nameof(Port), Port);

@@ -12,7 +12,7 @@ namespace Greatbone.Core
                 {
                     //					w.WriteSep();
                 }
-                arr[i].Save(w, 0);
+                arr[i].Save(w);
             }
         }
 
@@ -26,7 +26,7 @@ namespace Greatbone.Core
                 {
                     //					w.WriteSep();
                 }
-                o.Save(w, 0);
+                o.Save(w);
             }
             //			w.WriteArrayEnd();
         }

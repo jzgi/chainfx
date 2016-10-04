@@ -2,13 +2,18 @@ using System;
 
 namespace Greatbone.Core
 {
+    /// <summary>
+    /// An array data model.
+    /// </summary>
     public class Arr
     {
+        const int InitialCapacity = 16;
+
         Member[] elements;
 
         int count;
 
-        internal Arr(int capacity)
+        internal Arr(int capacity = InitialCapacity)
         {
             elements = new Member[capacity];
             count = 0;

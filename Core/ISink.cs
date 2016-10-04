@@ -9,29 +9,31 @@ namespace Greatbone.Core
     public interface ISink<R> where R : ISink<R>
     {
 
-        R Put(string name, bool value);
+        R PutNull(string name);
 
-        R Put(string name, short value);
+        R Put(string name, bool v);
 
-        R Put(string name, int value);
+        R Put(string name, short v);
 
-        R Put(string name, long value);
+        R Put(string name, int v);
 
-        R Put(string name, decimal value);
+        R Put(string name, long v);
 
-        R Put(string name, DateTime value);
+        R Put(string name, decimal v);
 
-        R Put(string name, string value);
+        R Put(string name, DateTime v);
 
-        R Put<T>(string name, T value, int x = -1) where T : IPersist;
+        R Put(string name, string v);
 
-        R Put<T>(string name, List<T> value, int x = -1) where T : IPersist;
+        R Put<T>(string name, T v, int x = -1) where T : IPersist;
 
-        R Put(string name, byte[] value);
+        R Put<T>(string name, List<T> v, int x = -1) where T : IPersist;
 
-        R Put(string name, Obj value);
+        R Put(string name, byte[] v);
 
-        R Put(string name, Arr value);
+        R Put(string name, Obj v);
+
+        R Put(string name, Arr v);
 
     }
 

@@ -75,7 +75,7 @@ namespace Greatbone.Core
             key = null;
         }
 
-       
+
         public string Key
         {
             get { return key; }
@@ -152,11 +152,11 @@ namespace Greatbone.Core
             return default(DateTime);
         }
 
-        public static implicit operator char[] (Member v)
+        public static implicit operator byte[] (Member v)
         {
             if (v.vt == VT.String)
             {
-                return (char[])v.refv;
+                return (byte[])v.refv;
             }
             return null;
         }

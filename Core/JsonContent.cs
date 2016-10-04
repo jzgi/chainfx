@@ -216,27 +216,32 @@ namespace Greatbone.Core
             return this;
         }
 
-        public JsonContent Put<T>(string name, T value, int x = -1) where T : IPersist
+        public JsonContent PutNull(string name)
         {
             throw new NotImplementedException();
         }
 
-        public JsonContent Put<T>(string name, List<T> value, int x = -1) where T : IPersist
+        public JsonContent Put<T>(string name, T v, int x = -1) where T : IPersist
         {
             throw new NotImplementedException();
         }
 
-        public JsonContent Put(string name, byte[] value)
+        public JsonContent Put<T>(string name, List<T> v, int x = -1) where T : IPersist
         {
             throw new NotImplementedException();
         }
 
-        public JsonContent Put(string name, Obj value)
+        public JsonContent Put(string name, byte[] v)
         {
             throw new NotImplementedException();
         }
 
-        public JsonContent Put(string name, Arr value)
+        public JsonContent Put(string name, Obj v)
+        {
+            throw new NotImplementedException();
+        }
+
+        public JsonContent Put(string name, Arr v)
         {
             throw new NotImplementedException();
         }

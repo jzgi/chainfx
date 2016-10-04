@@ -21,8 +21,7 @@ namespace Greatbone.Sample
             {
                 if (dc.QueryA("SELECT * FROM notices WHERE id = @1", p => p.Put(id)))
                 {
-                    Notice obj = null;
-                    dc.Map(ref obj);
+                    Notice obj = dc.Get<Notice>();
                 }
                 else
                 {

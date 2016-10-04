@@ -30,9 +30,9 @@ namespace Greatbone.Sample
                 if (dc.QueryA("SELECT id, credential, name FROM users WHERE id = @id", (p) => p.Put("@id", id)))
                 {
                     User o = new User();
-                    dc.Get(ref o.id);
-                    dc.Get(ref o.credential);
-                    dc.Get(ref o.name);
+                    dc.Got(out o.id);
+                    dc.Got(out o.credential);
+                    dc.Got(out o.name);
 
                     string md5 = ComputeMD5(password);
                     if (md5.Equals(o.credential))

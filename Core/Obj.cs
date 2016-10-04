@@ -3,9 +3,19 @@ using System.Collections.Generic;
 
 namespace Greatbone.Core
 {
+    /// <summary>
+    /// An object data model.
+    /// </summary>
     public class Obj : ISource
     {
-        readonly Roll<Member> pairs = new Roll<Member>(16);
+        const int InitialCapacity = 16;
+
+        readonly Roll<Member> pairs;
+
+        public Obj(int capacity = InitialCapacity)
+        {
+            pairs = new Roll<Member>(16);
+        }
 
         internal void Add(string name)
         {
@@ -80,106 +90,160 @@ namespace Greatbone.Core
         // SOURCE
         //
 
-        public bool Get(string name, ref bool value)
+        public bool Got(string name, out bool v, bool def = false)
         {
             Member pair;
             if (pairs.TryGet(name, out pair))
             {
-                value = pair;
+                v = (bool)pair;
                 return true;
             }
+            v = def;
             return false;
         }
 
-        public bool Get(string name, ref short value)
+        public bool Got(string name, out short v, short def = 0)
         {
             Member pair;
             if (pairs.TryGet(name, out pair))
             {
-                value = pair;
+                v = (short)pair;
                 return true;
             }
+            v = def;
             return false;
         }
 
-        public bool Get(string name, ref int value)
+        public bool Got(string name, out int v, int def = 0)
         {
             Member pair;
             if (pairs.TryGet(name, out pair))
             {
-                value = pair;
+                v = (int)pair;
                 return true;
             }
+            v = def;
             return false;
         }
 
-        public bool Get(string name, ref long value)
+        public bool Got(string name, out long v, long def = 0)
         {
             Member pair;
             if (pairs.TryGet(name, out pair))
             {
-                value = pair;
+                v = (short)pair;
                 return true;
             }
+            v = def;
             return false;
         }
 
-        public bool Get(string name, ref decimal value)
+        public bool Got(string name, out decimal v, decimal def = 0)
         {
             Member pair;
             if (pairs.TryGet(name, out pair))
             {
-                value = pair;
+                v = (decimal)pair;
                 return true;
             }
+            v = def;
             return false;
         }
 
-        public bool Get(string name, ref DateTime value)
+        public bool Got(string name, out DateTime v, DateTime def = default(DateTime))
         {
             Member pair;
             if (pairs.TryGet(name, out pair))
             {
-                value = pair;
+                v = (DateTime)pair;
                 return true;
             }
+            v = def;
             return false;
         }
 
-        public bool Get(string name, ref string value)
+        public bool Got(string name, out string v, string def = null)
         {
             Member pair;
             if (pairs.TryGet(name, out pair))
             {
-                value = pair;
+                v = (string)pair;
                 return true;
             }
+            v = def;
             return false;
         }
 
-        public bool Get<T>(string name, ref T value, int x = -1) where T : IPersist, new()
+        public bool Got<T>(string name, out T v, T def = default(T)) where T : IPersist, new()
         {
-            throw new NotImplementedException();
+            Member pair;
+            if (pairs.TryGet(name, out pair))
+            {
+                T val = new T();
+                val.Load((Obj)pair);
+                v = val;
+                return true;
+            }
+            v = def;
+            return false;
         }
 
-        public bool Get<T>(string name, ref List<T> value, int x = -1) where T : IPersist, new()
+        public bool Got<T>(string name, out List<T> v, List<T> def = null) where T : IPersist, new()
         {
-            throw new NotImplementedException();
+            Member pair;
+            if (pairs.TryGet(name, out pair))
+            {
+                Arr ma = pair;
+                List<T> lst = null;
+                for (int i = 0; i < ma.Count; i++)
+                {
+                    Obj el = ma[i];
+                    T val = new T();
+                    val.Load(el);
+                    if (lst == null) lst = new List<T>(16);
+                    lst.Add(val);
+                }
+                v = lst;
+                return true;
+            }
+            v = def;
+            return false;
         }
 
-        public bool Get(string name, ref byte[] value)
+        public bool Got(string name, out byte[] v, byte[] def = null)
         {
-            throw new NotImplementedException();
+            Member pair;
+            if (pairs.TryGet(name, out pair))
+            {
+                v = (byte[])pair;
+                return true;
+            }
+            v = def;
+            return false;
         }
 
-        public bool Get(string name, ref Obj value)
+        public bool Got(string name, out Obj v, Obj def = null)
         {
-            throw new NotImplementedException();
+            Member pair;
+            if (pairs.TryGet(name, out pair))
+            {
+                v = (Obj)pair;
+                return true;
+            }
+            v = def;
+            return false;
         }
 
-        public bool Get(string name, ref Arr value)
+        public bool Got(string name, out Arr v, Arr def = null)
         {
-            throw new NotImplementedException();
+            Member pair;
+            if (pairs.TryGet(name, out pair))
+            {
+                v = (Arr)pair;
+                return true;
+            }
+            v = def;
+            return false;
         }
 
     }

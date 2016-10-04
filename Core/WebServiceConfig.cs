@@ -37,18 +37,18 @@ namespace Greatbone.Core
 
         public Obj options;
 
-        public void Load(ISource sc, int x = -1)
+        public void Load(ISource sc)
         {
-            sc.Get(nameof(Key), ref Key);
-            sc.Get(nameof(Part), ref Part);
-            sc.Get(nameof(Public), ref Public);
-            sc.Get(nameof(Tls), ref Tls);
-            sc.Get(nameof(Private), ref Private);
+            sc.Got(nameof(Key), out Key);
+            sc.Got(nameof(Part), out Part);
+            sc.Got(nameof(Public), out Public);
+            sc.Got(nameof(Tls), out Tls);
+            sc.Got(nameof(Private), out Private);
             // sc.Get(nameof(Net), ref Net);
-            sc.Get(nameof(Db), ref Db, x);
+            sc.Got(nameof(Db), out Db);
         }
 
-        public void Save<R>(ISink<R> sk, int x = -1) where R : ISink<R>
+        public void Save<R>(ISink<R> sk) where R : ISink<R>
         {
             sk.Put(nameof(Key), Key);
             sk.Put(nameof(Part), Part);
@@ -56,7 +56,7 @@ namespace Greatbone.Core
             sk.Put(nameof(Tls), Tls);
             sk.Put(nameof(Private), Private);
             // sk.Put(nameof(Net), Net);
-            sk.Put(nameof(Db), Db, x);
+            sk.Put(nameof(Db), Db);
         }
 
         public WebServiceConfig LoadFile(string file)

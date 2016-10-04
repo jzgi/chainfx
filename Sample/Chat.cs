@@ -23,15 +23,15 @@ namespace Greatbone.Sample
             msgs.Add(new Message());
         }
 
-        public void Load(ISource sc, int x = -1)
+        public void Load(ISource sc)
         {
-            sc.Get(nameof(status), ref status);
-            sc.Get(nameof(partner), ref partner);
-            sc.Get(nameof(msgs), ref msgs);
-            sc.Get(nameof(lasttime), ref lasttime);
+            sc.Got(nameof(status), out status);
+            sc.Got(nameof(partner), out partner);
+            sc.Got(nameof(msgs), out msgs);
+            sc.Got(nameof(lasttime), out lasttime);
         }
 
-        public void Save<R>(ISink<R> sk, int x = -1) where R : ISink<R>
+        public void Save<R>(ISink<R> sk) where R : ISink<R>
         {
             sk.Put(nameof(status), status);
             sk.Put(nameof(partner), partner);
@@ -46,12 +46,12 @@ namespace Greatbone.Sample
 
         string text;
 
-        public void Load(ISource sc, int x)
+        public void Load(ISource sc)
         {
             throw new NotImplementedException();
         }
 
-        public void Save<R>(ISink<R> sk, int x) where R : ISink<R>
+        public void Save<R>(ISink<R> sk) where R : ISink<R>
         {
             throw new NotImplementedException();
         }
@@ -71,17 +71,17 @@ namespace Greatbone.Sample
 
         internal DateTime time;
 
-        public void Load(ISource sc, int x = -1)
+        public void Load(ISource sc)
         {
-            sc.Get(nameof(id), ref id);
-            sc.Get(nameof(subtype), ref subtype);
-            sc.Get(nameof(@from), ref @from);
-            sc.Get(nameof(to), ref to);
-            sc.Get(nameof(content), ref content);
-            sc.Get(nameof(time), ref time);
+            sc.Got(nameof(id), out id);
+            sc.Got(nameof(subtype), out subtype);
+            sc.Got(nameof(@from), out @from);
+            sc.Got(nameof(to), out to);
+            sc.Got(nameof(content), out content);
+            sc.Got(nameof(time), out time);
         }
 
-        public void Save<R>(ISink<R> sk, int x = -1) where R : ISink<R>
+        public void Save<R>(ISink<R> sk) where R : ISink<R>
         {
             sk.Put(nameof(id), id);
             sk.Put(nameof(subtype), subtype);

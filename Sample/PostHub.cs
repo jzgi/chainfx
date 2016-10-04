@@ -22,8 +22,7 @@ namespace Greatbone.Sample
             {
                 if (dc.Query(@"SELECT * FROM posts ORDER BY id DESC LIMIT @limit OFFSET @offset", p => p.Put(20).Put(20 * page)))
                 {
-                    List<Post> lst = null;
-                    dc.Map(ref lst, 0);
+                    List<Post> lst = dc.GetList<Post>();
                     wc.SendJson(200, jc => jc.Arr(lst, 0));
                 }
                 else
