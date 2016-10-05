@@ -33,29 +33,29 @@ namespace Greatbone.Sample
 
         public void Load(ISource sc)
         {
-            sc.Got(nameof(id), out id);
-            sc.Got(nameof(name), out name);
-            sc.Got(nameof(quote), out quote);
-            sc.Got(nameof(sex), out sex);
-            sc.Got(nameof(icon), out icon);
-            sc.Got(nameof(birthday), out birthday);
-            sc.Got(nameof(qq), out qq);
-            sc.Got(nameof(wechat), out wechat);
-            sc.Got(nameof(email), out email);
-            sc.Got(nameof(city), out city);
-            sc.Got(nameof(rank), out rank);
-            sc.Got(nameof(height), out height);
-            sc.Got(nameof(weight), out weight);
-            sc.Got(nameof(bust), out bust);
-            sc.Got(nameof(waist), out waist);
-            sc.Got(nameof(hip), out hip);
-            sc.Got(nameof(cup), out cup);
-            sc.Got(nameof(styles), out styles);
-            sc.Got(nameof(skills), out skills);
-            sc.Got(nameof(remark), out remark);
-            sc.Got(nameof(sites), out sites);
-            sc.Got(nameof(friends), out friends);
-            sc.Got(nameof(awards), out awards);
+            sc.Got(nameof(id), ref id);
+            sc.Got(nameof(name), ref name);
+            sc.Got(nameof(quote), ref quote);
+            sc.Got(nameof(sex), ref sex);
+            sc.Got(nameof(icon), ref icon);
+            sc.Got(nameof(birthday), ref birthday);
+            sc.Got(nameof(qq), ref qq);
+            sc.Got(nameof(wechat), ref wechat);
+            sc.Got(nameof(email), ref email);
+            sc.Got(nameof(city), ref city);
+            sc.Got(nameof(rank), ref rank);
+            sc.Got(nameof(height), ref height);
+            sc.Got(nameof(weight), ref weight);
+            sc.Got(nameof(bust), ref bust);
+            sc.Got(nameof(waist), ref waist);
+            sc.Got(nameof(hip), ref hip);
+            sc.Got(nameof(cup), ref cup);
+            sc.Got(nameof(styles), ref styles);
+            sc.Got(nameof(skills), ref skills);
+            sc.Got(nameof(remark), ref remark);
+            sc.Got(nameof(sites), ref sites);
+            sc.Got(nameof(friends), ref friends);
+            sc.Got(nameof(awards), ref awards);
         }
 
         public void Save<R>(ISink<R> sk) where R : ISink<R>
@@ -96,9 +96,9 @@ namespace Greatbone.Sample
 
         public void Load(ISource sc)
         {
-            sc.Got(nameof(uid), out uid);
-            sc.Got(nameof(url), out url);
-            sc.Got(nameof(desc), out desc);
+            sc.Got(nameof(uid), ref uid);
+            sc.Got(nameof(url), ref url);
+            sc.Got(nameof(desc), ref desc);
         }
 
         public void Save<R>(ISink<R> sk) where R : ISink<R>

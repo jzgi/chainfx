@@ -8,62 +8,62 @@ namespace Greatbone.Core
     /// </summary>
     public class Form : ISource
     {
-        public bool Got(string name, out int v, int def = 0)
+        public bool Got(string name, ref int v)
         {
             throw new NotImplementedException();
         }
 
-        public bool Got(string name, out decimal v, decimal def = 0)
+        public bool Got(string name, ref decimal v)
         {
             throw new NotImplementedException();
         }
 
-        public bool Got(string name, out string v, string def = null)
+        public bool Got(string name, ref string v)
         {
             throw new NotImplementedException();
         }
 
-        public bool Got(string name, out DateTime v, DateTime def = default(DateTime))
+        public bool Got(string name, ref DateTime v)
         {
             throw new NotImplementedException();
         }
 
-        public bool Got(string name, out Obj v, Obj def = null)
+        public bool Got(string name, ref Obj v)
         {
             throw new NotImplementedException();
         }
 
-        public bool Got(string name, out Arr v, Arr def = null)
+        public bool Got(string name, ref Arr v)
         {
             throw new NotImplementedException();
         }
 
-        public bool Got(string name, out byte[] v, byte[] def = null)
+        public bool Got(string name, ref byte[] v)
         {
             throw new NotImplementedException();
         }
 
-        public bool Got(string name, out long v, long def = -1)
+        public bool Got(string name, ref long v)
         {
             throw new NotImplementedException();
         }
 
-        public bool Got(string name, out short v, short def = 0)
+        public bool Got(string name, ref short v)
         {
             throw new NotImplementedException();
         }
 
-        public bool Got(string name, out bool v, bool def = false)
+        public bool Got(string name, ref bool v)
         {
             throw new NotImplementedException();
         }
 
-        public bool Got<T>(string name, out List<T> v, List<T> def = null) where T : IPersist, new()
+        public bool Got<T>(string name, ref List<T> v) where T : IPersist, new()
         {
             throw new NotImplementedException();
         }
 
-        public bool Got<T>(string name, out T v, T def = default(T)) where T : IPersist, new()
+        public bool Got<T>(string name, ref T v) where T : IPersist, new()
         {
             throw new NotImplementedException();
         }

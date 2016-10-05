@@ -190,7 +190,7 @@ namespace Greatbone.Core
         int colord;
 
 
-        public bool Got(out bool v, bool def = false)
+        public bool Got(ref bool v)
         {
             int ord = colord++;
             if (!reader.IsDBNull(ord))
@@ -198,11 +198,10 @@ namespace Greatbone.Core
                 v = reader.GetBoolean(ord);
                 return true;
             }
-            v = def;
             return false;
         }
 
-        public bool Got(out short v, short def = 0)
+        public bool Got(ref short v)
         {
             int ord = colord++;
             if (!reader.IsDBNull(ord))
@@ -210,11 +209,10 @@ namespace Greatbone.Core
                 v = reader.GetInt16(ord);
                 return true;
             }
-            v = def;
             return false;
         }
 
-        public bool Got(out int v, int def = 0)
+        public bool Got(ref int v)
         {
             int ord = colord++;
             if (!reader.IsDBNull(ord))
@@ -222,11 +220,10 @@ namespace Greatbone.Core
                 v = reader.GetInt32(ord);
                 return true;
             }
-            v = def;
             return false;
         }
 
-        public bool Got(out long v, long def = 0)
+        public bool Got(ref long v)
         {
             int ord = colord++;
             if (!reader.IsDBNull(ord))
@@ -234,11 +231,10 @@ namespace Greatbone.Core
                 v = reader.GetInt64(ord);
                 return true;
             }
-            v = def;
             return false;
         }
 
-        public bool Got(out decimal v, decimal def = 0)
+        public bool Got(ref decimal v)
         {
             int ord = colord++;
             if (!reader.IsDBNull(ord))
@@ -246,11 +242,10 @@ namespace Greatbone.Core
                 v = reader.GetDecimal(ord);
                 return true;
             }
-            v = def;
             return false;
         }
 
-        public bool Got(out DateTime v, DateTime def = default(DateTime))
+        public bool Got(ref DateTime v)
         {
             int ord = colord++;
             if (!reader.IsDBNull(ord))
@@ -258,11 +253,10 @@ namespace Greatbone.Core
                 v = reader.GetDateTime(ord);
                 return true;
             }
-            v = def;
             return false;
         }
 
-        public bool Got(out string v, string def = null)
+        public bool Got(ref string v)
         {
             int ord = colord++;
             if (!reader.IsDBNull(ord))
@@ -270,11 +264,10 @@ namespace Greatbone.Core
                 v = reader.GetString(ord);
                 return true;
             }
-            v = def;
             return false;
         }
 
-        public bool Got<T>(out T v, T def = default(T)) where T : IPersist, new()
+        public bool Got<T>(ref T v) where T : IPersist, new()
         {
             int ord = colord++;
             if (!reader.IsDBNull(ord))
@@ -282,29 +275,27 @@ namespace Greatbone.Core
                 string s = reader.GetString(ord);
 
                 // TODO
-                v = def;
                 return true;
             }
-            v = def;
             return false;
         }
 
-        public bool Got<T>(out List<T> v, List<T> def = null) where T : IPersist, new()
+        public bool Got<T>(ref List<T> v) where T : IPersist, new()
         {
             throw new NotImplementedException();
         }
 
-        public bool Got(out byte[] v, byte[] def = null)
+        public bool Got(ref byte[] v)
         {
             throw new NotImplementedException();
         }
 
-        public bool Got(out Obj v, Obj def = null)
+        public bool Got(ref Obj v)
         {
             throw new NotImplementedException();
         }
 
-        public bool Got(out Arr v, Arr def = null)
+        public bool Got(ref Arr v)
         {
             throw new NotImplementedException();
         }
@@ -312,7 +303,7 @@ namespace Greatbone.Core
         // SOURCE
 
 
-        public bool Got(string name, out bool v, bool def = false)
+        public bool Got(string name, ref bool v)
         {
             int ord = reader.GetOrdinal(name);
             if (!reader.IsDBNull(ord))
@@ -320,11 +311,10 @@ namespace Greatbone.Core
                 v = reader.GetBoolean(ord);
                 return true;
             }
-            v = def;
             return false;
         }
 
-        public bool Got(string name, out short v, short def = 0)
+        public bool Got(string name, ref short v)
         {
             int ord = reader.GetOrdinal(name);
             if (!reader.IsDBNull(ord))
@@ -332,11 +322,10 @@ namespace Greatbone.Core
                 v = reader.GetInt16(ord);
                 return true;
             }
-            v = def;
             return false;
         }
 
-        public bool Got(string name, out int v, int def = 0)
+        public bool Got(string name, ref int v)
         {
             int ord = reader.GetOrdinal(name);
             if (!reader.IsDBNull(ord))
@@ -344,11 +333,10 @@ namespace Greatbone.Core
                 v = reader.GetInt32(ord);
                 return true;
             }
-            v = def;
             return false;
         }
 
-        public bool Got(string name, out long v, long def = 0)
+        public bool Got(string name, ref long v)
         {
             int ord = reader.GetOrdinal(name);
             if (!reader.IsDBNull(ord))
@@ -356,11 +344,10 @@ namespace Greatbone.Core
                 v = reader.GetInt64(ord);
                 return true;
             }
-            v = def;
             return false;
         }
 
-        public bool Got(string name, out decimal v, decimal def = 0)
+        public bool Got(string name, ref decimal v)
         {
             int ord = reader.GetOrdinal(name);
             if (!reader.IsDBNull(ord))
@@ -368,11 +355,10 @@ namespace Greatbone.Core
                 v = reader.GetDecimal(ord);
                 return true;
             }
-            v = def;
             return false;
         }
 
-        public bool Got(string name, out DateTime v, DateTime def = default(DateTime))
+        public bool Got(string name, ref DateTime v)
         {
             int ord = reader.GetOrdinal(name);
             if (!reader.IsDBNull(ord))
@@ -380,11 +366,10 @@ namespace Greatbone.Core
                 v = reader.GetDateTime(ord);
                 return true;
             }
-            v = def;
             return false;
         }
 
-        public bool Got(string name, out string v, string def = null)
+        public bool Got(string name, ref string v)
         {
             int ord = reader.GetOrdinal(name);
             if (!reader.IsDBNull(ord))
@@ -392,11 +377,10 @@ namespace Greatbone.Core
                 v = reader.GetString(ord);
                 return true;
             }
-            v = def;
             return false;
         }
 
-        public bool Got<T>(string name, out T v, T def = default(T)) where T : IPersist, new()
+        public bool Got<T>(string name, ref T v) where T : IPersist, new()
         {
             int ord = reader.GetOrdinal(name);
             if (!reader.IsDBNull(ord))
@@ -406,29 +390,27 @@ namespace Greatbone.Core
                 // JsonText json = new JsonText(str);
                 // if (value == null) value = new T();
                 // value.Load(json, x);
-                v = def;
                 return true;
             }
-            v = def;
             return false;
         }
 
-        public bool Got<T>(string name, out List<T> v, List<T> def = null) where T : IPersist, new()
+        public bool Got<T>(string name, ref List<T> v) where T : IPersist, new()
         {
             throw new NotImplementedException();
         }
 
-        public bool Got(string name, out byte[] v, byte[] def = null)
+        public bool Got(string name, ref byte[] v)
         {
             throw new NotImplementedException();
         }
 
-        public bool Got(string name, out Obj v, Obj def = null)
+        public bool Got(string name, ref Obj v)
         {
             throw new NotImplementedException();
         }
 
-        public bool Got(string name, out Arr v, Arr def = null)
+        public bool Got(string name, ref Arr v)
         {
             throw new NotImplementedException();
         }

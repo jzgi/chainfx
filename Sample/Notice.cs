@@ -29,16 +29,16 @@ namespace Greatbone.Sample
 
         public void Load(ISource sc)
         {
-            sc.Got(nameof(id), out id);
-            sc.Got(nameof(loc), out loc);
-            sc.Got(nameof(authorid), out authorid);
-            sc.Got(nameof(author), out author);
-            sc.Got(nameof(date), out date);
-            sc.Got(nameof(duedate), out duedate);
-            sc.Got(nameof(subtype), out subtype);
-            sc.Got(nameof(subject), out subject);
-            sc.Got(nameof(remark), out remark);
-            sc.Got(nameof(asks), out asks);
+            sc.Got(nameof(id), ref id);
+            sc.Got(nameof(loc), ref loc);
+            sc.Got(nameof(authorid), ref authorid);
+            sc.Got(nameof(author), ref author);
+            sc.Got(nameof(date), ref date);
+            sc.Got(nameof(duedate), ref duedate);
+            sc.Got(nameof(subtype), ref subtype);
+            sc.Got(nameof(subject), ref subject);
+            sc.Got(nameof(remark), ref remark);
+            sc.Got(nameof(asks), ref asks);
         }
 
         public void Save<R>(ISink<R> sk) where R : ISink<R>

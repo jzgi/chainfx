@@ -10,7 +10,7 @@ namespace Greatbone.Sample
     ///
     public class UserVarHub : WebVarHub
     {
-        public UserVarHub(WebInfo cfg) : base(cfg)
+        public UserVarHub(WebBuild cfg) : base(cfg)
         {
         }
 
@@ -30,9 +30,9 @@ namespace Greatbone.Sample
                 if (dc.QueryA("SELECT id, credential, name FROM users WHERE id = @id", (p) => p.Put("@id", id)))
                 {
                     User o = new User();
-                    dc.Got(out o.id);
-                    dc.Got(out o.credential);
-                    dc.Got(out o.name);
+                    dc.Got(ref o.id);
+                    dc.Got(ref o.credential);
+                    dc.Got(ref o.name);
 
                     string md5 = ComputeMD5(password);
                     if (md5.Equals(o.credential))

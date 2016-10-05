@@ -25,10 +25,10 @@ namespace Greatbone.Sample
 
         public void Load(ISource sc)
         {
-            sc.Got(nameof(status), out status);
-            sc.Got(nameof(partner), out partner);
-            sc.Got(nameof(msgs), out msgs);
-            sc.Got(nameof(lasttime), out lasttime);
+            sc.Got(nameof(status), ref status);
+            sc.Got(nameof(partner), ref partner);
+            sc.Got(nameof(msgs), ref msgs);
+            sc.Got(nameof(lasttime), ref lasttime);
         }
 
         public void Save<R>(ISink<R> sk) where R : ISink<R>
@@ -73,12 +73,12 @@ namespace Greatbone.Sample
 
         public void Load(ISource sc)
         {
-            sc.Got(nameof(id), out id);
-            sc.Got(nameof(subtype), out subtype);
-            sc.Got(nameof(@from), out @from);
-            sc.Got(nameof(to), out to);
-            sc.Got(nameof(content), out content);
-            sc.Got(nameof(time), out time);
+            sc.Got(nameof(id), ref id);
+            sc.Got(nameof(subtype), ref subtype);
+            sc.Got(nameof(@from), ref @from);
+            sc.Got(nameof(to), ref to);
+            sc.Got(nameof(content), ref content);
+            sc.Got(nameof(time), ref time);
         }
 
         public void Save<R>(ISink<R> sk) where R : ISink<R>

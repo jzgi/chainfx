@@ -16,7 +16,7 @@ namespace Greatbone.Core
     /// }
     /// </example>
     ///
-    public class WebConfig : WebInfo, IPersist
+    public class WebConfig : WebBuild, IPersist
     {
         // partition
         public string Part;
@@ -41,13 +41,13 @@ namespace Greatbone.Core
 
         public void Load(ISource sc)
         {
-            sc.Got(nameof(Key), out Key);
-            sc.Got(nameof(Part), out Part);
-            sc.Got(nameof(Public), out Public);
-            sc.Got(nameof(Tls), out Tls);
-            sc.Got(nameof(Private), out Private);
+            sc.Got(nameof(Key), ref Key);
+            sc.Got(nameof(Part), ref Part);
+            sc.Got(nameof(Public), ref Public);
+            sc.Got(nameof(Tls), ref Tls);
+            sc.Got(nameof(Private), ref Private);
             // sc.Get(nameof(Net), ref Net);
-            sc.Got(nameof(Db), out Db);
+            sc.Got(nameof(Db), ref Db);
         }
 
         public void Save<R>(ISink<R> sk) where R : ISink<R>

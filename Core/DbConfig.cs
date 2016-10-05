@@ -14,11 +14,11 @@
 
         public void Load(ISource sc)
         {
-            sc.Got(nameof(Host), out Host);
-            sc.Got(nameof(Port), out Port);
-            sc.Got(nameof(Username), out Username);
-            sc.Got(nameof(Password), out Password);
-            sc.Got(nameof(MQ), out MQ);
+            sc.Got(nameof(Host), ref Host);
+            sc.Got(nameof(Port), ref Port);
+            sc.Got(nameof(Username), ref Username);
+            sc.Got(nameof(Password), ref Password);
+            sc.Got(nameof(MQ), ref MQ);
         }
 
         public void Save<R>(ISink<R> k) where R : ISink<R>

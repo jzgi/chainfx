@@ -10,7 +10,7 @@ using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Http.Features;
 using Microsoft.AspNetCore.Server.Kestrel;
 using Microsoft.Extensions.Logging;
-using SysOptions = Microsoft.Extensions.Options;
+using Microsoft.Extensions.Options;
 using Microsoft.Extensions.Primitives;
 using Npgsql;
 
@@ -73,7 +73,7 @@ namespace Greatbone.Core
 
             options = new KestrelServerOptions();
 
-            server = new KestrelServer(SysOptions.Options.Create(options), Lifetime, logger);
+            server = new KestrelServer(Options.Create(options), Lifetime, logger);
             ICollection<string> addrs = server.Features.Get<IServerAddressesFeature>().Addresses;
             addrs.Add(cfg.Tls ? "https://" : "http://" + cfg.Public);
             addrs.Add("http://" + cfg.Private); // clustered msg queue

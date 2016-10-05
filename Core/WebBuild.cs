@@ -1,6 +1,6 @@
 ﻿namespace Greatbone.Core
 {
-    public class WebInfo
+    public class WebBuild
     {
         public string Key;
 

@@ -90,7 +90,7 @@ namespace Greatbone.Core
         // SOURCE
         //
 
-        public bool Got(string name, out bool v, bool def = false)
+        public bool Got(string name, ref bool v)
         {
             Member pair;
             if (pairs.TryGet(name, out pair))
@@ -98,11 +98,10 @@ namespace Greatbone.Core
                 v = (bool)pair;
                 return true;
             }
-            v = def;
             return false;
         }
 
-        public bool Got(string name, out short v, short def = 0)
+        public bool Got(string name, ref short v)
         {
             Member pair;
             if (pairs.TryGet(name, out pair))
@@ -110,11 +109,10 @@ namespace Greatbone.Core
                 v = (short)pair;
                 return true;
             }
-            v = def;
             return false;
         }
 
-        public bool Got(string name, out int v, int def = 0)
+        public bool Got(string name, ref int v)
         {
             Member pair;
             if (pairs.TryGet(name, out pair))
@@ -122,11 +120,10 @@ namespace Greatbone.Core
                 v = (int)pair;
                 return true;
             }
-            v = def;
             return false;
         }
 
-        public bool Got(string name, out long v, long def = 0)
+        public bool Got(string name, ref long v)
         {
             Member pair;
             if (pairs.TryGet(name, out pair))
@@ -134,11 +131,10 @@ namespace Greatbone.Core
                 v = (short)pair;
                 return true;
             }
-            v = def;
             return false;
         }
 
-        public bool Got(string name, out decimal v, decimal def = 0)
+        public bool Got(string name, ref decimal v)
         {
             Member pair;
             if (pairs.TryGet(name, out pair))
@@ -146,11 +142,10 @@ namespace Greatbone.Core
                 v = (decimal)pair;
                 return true;
             }
-            v = def;
             return false;
         }
 
-        public bool Got(string name, out DateTime v, DateTime def = default(DateTime))
+        public bool Got(string name, ref DateTime v)
         {
             Member pair;
             if (pairs.TryGet(name, out pair))
@@ -158,11 +153,10 @@ namespace Greatbone.Core
                 v = (DateTime)pair;
                 return true;
             }
-            v = def;
             return false;
         }
 
-        public bool Got(string name, out string v, string def = null)
+        public bool Got(string name, ref string v)
         {
             Member pair;
             if (pairs.TryGet(name, out pair))
@@ -170,11 +164,10 @@ namespace Greatbone.Core
                 v = (string)pair;
                 return true;
             }
-            v = def;
             return false;
         }
 
-        public bool Got<T>(string name, out T v, T def = default(T)) where T : IPersist, new()
+        public bool Got<T>(string name, ref T v) where T : IPersist, new()
         {
             Member pair;
             if (pairs.TryGet(name, out pair))
@@ -184,11 +177,10 @@ namespace Greatbone.Core
                 v = val;
                 return true;
             }
-            v = def;
             return false;
         }
 
-        public bool Got<T>(string name, out List<T> v, List<T> def = null) where T : IPersist, new()
+        public bool Got<T>(string name, ref List<T> v) where T : IPersist, new()
         {
             Member pair;
             if (pairs.TryGet(name, out pair))
@@ -206,11 +198,10 @@ namespace Greatbone.Core
                 v = lst;
                 return true;
             }
-            v = def;
             return false;
         }
 
-        public bool Got(string name, out byte[] v, byte[] def = null)
+        public bool Got(string name, ref byte[] v)
         {
             Member pair;
             if (pairs.TryGet(name, out pair))
@@ -218,11 +209,10 @@ namespace Greatbone.Core
                 v = (byte[])pair;
                 return true;
             }
-            v = def;
             return false;
         }
 
-        public bool Got(string name, out Obj v, Obj def = null)
+        public bool Got(string name, ref Obj v)
         {
             Member pair;
             if (pairs.TryGet(name, out pair))
@@ -230,11 +220,10 @@ namespace Greatbone.Core
                 v = (Obj)pair;
                 return true;
             }
-            v = def;
             return false;
         }
 
-        public bool Got(string name, out Arr v, Arr def = null)
+        public bool Got(string name, ref Arr v)
         {
             Member pair;
             if (pairs.TryGet(name, out pair))
@@ -242,7 +231,6 @@ namespace Greatbone.Core
                 v = (Arr)pair;
                 return true;
             }
-            v = def;
             return false;
         }
 

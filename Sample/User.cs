@@ -36,16 +36,16 @@ namespace Greatbone.Sample
 
         public void Load(ISource sc)
         {
-            sc.Got(nameof(id), out id);
-            sc.Got(nameof(name), out name);
-            sc.Got(nameof(credential), out credential);
-            sc.Got(nameof(fame), out fame);
-            sc.Got(nameof(brand), out brand);
-            sc.Got(nameof(admin), out admin);
-            sc.Got(nameof(date), out date);
-            sc.Got(nameof(favposts), out favposts);
-            sc.Got(nameof(friends), out friends);
-            sc.Got(nameof(favs), out favs);
+            sc.Got(nameof(id), ref id);
+            sc.Got(nameof(name), ref name);
+            sc.Got(nameof(credential), ref credential);
+            sc.Got(nameof(fame), ref fame);
+            sc.Got(nameof(brand), ref brand);
+            sc.Got(nameof(admin), ref admin);
+            sc.Got(nameof(date), ref date);
+            sc.Got(nameof(favposts), ref favposts);
+            sc.Got(nameof(friends), ref friends);
+            sc.Got(nameof(favs), ref favs);
         }
 
         public void Save<R>(ISink<R> sk) where R : ISink<R>

@@ -20,8 +20,6 @@ namespace Greatbone.Core
         ///
         public string Key { get; internal set; }
 
-        public Obj Options { get; internal set; }
-
         public bool IsVar { get; internal set; }
 
         /// <summary>The service that this controller resides in.</summary>
@@ -42,26 +40,23 @@ namespace Greatbone.Core
         public StaticContent DefaultStatic { get; }
 
         // the argument makes state-passing more convenient
-        protected WebSub(WebInfo info)
+        protected WebSub(WebBuild wb)
         {
-            Key = info.Key;
-            IsVar = info.IsVar;
-            Service = info.Service;
-            Parent = info.Parent;
-
-            // initialize build for the first time
-            if (info.Service == null)
+            // adjust
+            if (wb.Service == null)
             {
-                WebService svc = this as WebService;
-                WebConfig scfg = info as WebConfig;
-                if (svc == null || scfg == null)
-                {
-                    throw new InvalidOperationException("not a service class");
-                }
-                scfg.Service = svc;
+                WebService thissvc = this as WebService;
+                if (thissvc == null) { throw new WebException("not a service class"); }
+                wb.Service = thissvc;
             }
 
-            StaticPath = info.Parent == null ? Key : Path.Combine(Parent.StaticPath, Key);
+            // initialize
+            Key = wb.Key;
+            IsVar = wb.IsVar;
+            Service = wb.Service;
+            Parent = wb.Parent;
+
+            StaticPath = wb.Parent == null ? Key : Path.Combine(Parent.StaticPath, Key);
 
             // load static files, if any
             if (StaticPath != null && Directory.Exists(StaticPath))
@@ -101,7 +96,7 @@ namespace Greatbone.Core
             {
                 ParameterInfo[] pis = mi.GetParameters();
                 WebAction doer = null;
-                if (info.IsVar)
+                if (wb.IsVar)
                 {
                     if (pis.Length == 2 && pis[0].ParameterType == typeof(WebContext) && pis[1].ParameterType == typeof(string))
                     {
@@ -123,7 +118,7 @@ namespace Greatbone.Core
             }
         }
 
-        public WebAction GetDoer(String method)
+        public WebAction GetAction(String method)
         {
             if (string.IsNullOrEmpty(method))
             {
@@ -148,7 +143,7 @@ namespace Greatbone.Core
             }
             else // dynamic handling
             {
-                WebAction a = string.IsNullOrEmpty(rsc) ? defaction : GetDoer(rsc);
+                WebAction a = string.IsNullOrEmpty(rsc) ? defaction : GetAction(rsc);
                 if (a == null)
                 {
                     wc.StatusCode = 404;
@@ -176,7 +171,7 @@ namespace Greatbone.Core
             }
             else // dynamic handling
             {
-                WebAction a = string.IsNullOrEmpty(rsc) ? defaction : GetDoer(rsc);
+                WebAction a = string.IsNullOrEmpty(rsc) ? defaction : GetAction(rsc);
                 if (a == null)
                 {
                     wc.StatusCode = 404;

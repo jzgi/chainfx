@@ -11,7 +11,7 @@ namespace Greatbone.Core
         // the added sub controllers
         private Roll<WebSub> subs;
 
-        protected WebVarHub(WebInfo cfg) : base(cfg)
+        protected WebVarHub(WebBuild cfg) : base(cfg)
         {
         }
 
@@ -23,12 +23,12 @@ namespace Greatbone.Core
             }
             // create instance by reflection
             Type type = typeof(T);
-            ConstructorInfo ci = type.GetConstructor(new[] { typeof(WebInfo) });
+            ConstructorInfo ci = type.GetConstructor(new[] { typeof(WebBuild) });
             if (ci == null)
             {
-                throw new WebException(type + ": the constructor not found (WebServiceContext)");
+                throw new System.Net.WebException(type + ": the constructor not found (WebServiceContext)");
             }
-            WebInfo cfg = new WebInfo
+            WebBuild cfg = new WebBuild
             {
                 Key = key,
                 Parent = this,
@@ -47,7 +47,7 @@ namespace Greatbone.Core
             int slash = rsc.IndexOf('/');
             if (slash == -1) // handle it locally
             {
-                WebAction doer = GetDoer(rsc);
+                WebAction doer = GetAction(rsc);
                 if (doer != null)
                 {
                     doer.Do(wc, var);

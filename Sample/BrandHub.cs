@@ -7,7 +7,7 @@ namespace Greatbone.Sample
     ///
     public class BrandHub : WebHub
     {
-        public BrandHub(WebInfo cfg) : base(cfg)
+        public BrandHub(WebBuild cfg) : base(cfg)
         {
             SetVarHub<BrandVarHub>(false);
         }
