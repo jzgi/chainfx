@@ -6,7 +6,7 @@ namespace Greatbone.Core
     /// <summary>
     /// To generate a UTF-8 encoded JSON document. An extension of putting byte array is supported.
     /// </summary>
-    public class JsonContent : DynamicContent, ISink<JsonContent>
+    public class JContent : DynamicContent, ISink<JContent>
     {
         const int InitialCapacity = 16 * 1024;
 
@@ -16,7 +16,7 @@ namespace Greatbone.Core
         // current level
         int level;
 
-        public JsonContent(int capacity = InitialCapacity) : base(capacity)
+        public JContent(int capacity = InitialCapacity) : base(capacity)
         {
             nums = new int[8];
             level = -1;
@@ -76,24 +76,24 @@ namespace Greatbone.Core
             Add(value);
         }
 
-        public JsonContent Put<T>(T value, int x = -1) where T : IPersist
+        public JContent Put<T>(T value) where T : IPersist
         {
             throw new NotImplementedException();
         }
 
-        public JsonContent Arr<T>(List<T> lst, int x = -1) where T : IPersist
+        public JContent Arr<T>(List<T> lst) where T : IPersist
         {
             Arr(delegate
             {
                 for (int i = 0; i < lst.Count; i++)
                 {
-                    Put(lst[i], x);
+                    Put(lst[i]);
                 }
             });
             return this;
         }
 
-        public JsonContent Put(string name, bool value)
+        public JContent Put(string name, bool value)
         {
             if (nums[level]++ > 0)
             {
@@ -110,7 +110,7 @@ namespace Greatbone.Core
             return this;
         }
 
-        public JsonContent Put(string name, short value)
+        public JContent Put(string name, short value)
         {
             if (nums[level]++ > 0)
             {
@@ -126,7 +126,7 @@ namespace Greatbone.Core
             return this;
         }
 
-        public JsonContent Put(string name, int value)
+        public JContent Put(string name, int value)
         {
             if (nums[level]++ > 0)
             {
@@ -142,7 +142,7 @@ namespace Greatbone.Core
             return this;
         }
 
-        public JsonContent Put(string name, long value)
+        public JContent Put(string name, long value)
         {
             if (nums[level]++ > 0)
             {
@@ -158,7 +158,7 @@ namespace Greatbone.Core
             return this;
         }
 
-        public JsonContent Put(string name, decimal value)
+        public JContent Put(string name, decimal value)
         {
             if (nums[level]++ > 0)
             {
@@ -174,7 +174,7 @@ namespace Greatbone.Core
             return this;
         }
 
-        public JsonContent Put(string name, DateTime value)
+        public JContent Put(string name, DateTime value)
         {
             if (nums[level]++ > 0)
             {
@@ -190,7 +190,7 @@ namespace Greatbone.Core
             return this;
         }
 
-        public JsonContent Put(string name, string value)
+        public JContent Put(string name, string value)
         {
             if (nums[level]++ > 0)
             {
@@ -216,32 +216,32 @@ namespace Greatbone.Core
             return this;
         }
 
-        public JsonContent PutNull(string name)
+        public JContent PutNull(string name)
         {
             throw new NotImplementedException();
         }
 
-        public JsonContent Put<T>(string name, T v, int x = -1) where T : IPersist
+        public JContent Put<T>(string name, T v, int x = -1) where T : IPersist
         {
             throw new NotImplementedException();
         }
 
-        public JsonContent Put<T>(string name, List<T> v, int x = -1) where T : IPersist
+        public JContent Put<T>(string name, List<T> v, int x = -1) where T : IPersist
         {
             throw new NotImplementedException();
         }
 
-        public JsonContent Put(string name, byte[] v)
+        public JContent Put(string name, byte[] v)
         {
             throw new NotImplementedException();
         }
 
-        public JsonContent Put(string name, JObj v)
+        public JContent Put(string name, JObj v)
         {
             throw new NotImplementedException();
         }
 
-        public JsonContent Put(string name, JArr v)
+        public JContent Put(string name, JArr v)
         {
             throw new NotImplementedException();
         }

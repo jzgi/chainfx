@@ -80,7 +80,7 @@ namespace Greatbone.Core
                         string ctype = Request.ContentType;
                         if ("application/jsob".Equals(ctype))
                         {
-                            JsonParse parse = new JsonParse(buffer, count);
+                            JParse parse = new JParse(buffer, count);
                             data = parse.Parse();
                         }
                         else if ("application/x-www-form-urlencoded".Equals(ctype))
@@ -150,14 +150,14 @@ namespace Greatbone.Core
             }, pub, maxage);
         }
 
-        public void SendJson(int status, Action<JsonContent> a, bool? pub = true, int maxage = 1000)
+        public void SendJson(int status, Action<JContent> a, bool? pub = true, int maxage = 1000)
         {
             StatusCode = status;
 
             this.pub = pub;
             this.maxage = maxage;
 
-            JsonContent json = new JsonContent(8 * 1024);
+            JContent json = new JContent(8 * 1024);
             a?.Invoke(json);
             Content = json;
         }

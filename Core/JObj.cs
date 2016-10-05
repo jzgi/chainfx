@@ -10,16 +10,16 @@ namespace Greatbone.Core
     {
         const int InitialCapacity = 16;
 
-        readonly Roll<Member> pairs;
+        readonly Roll<JMember> pairs;
 
         public JObj(int capacity = InitialCapacity)
         {
-            pairs = new Roll<Member>(16);
+            pairs = new Roll<JMember>(16);
         }
 
         internal void Add(string name)
         {
-            Member e = new Member()
+            JMember e = new JMember()
             {
                 Key = name
             };
@@ -28,7 +28,7 @@ namespace Greatbone.Core
 
         internal void Add(string name, JObj v)
         {
-            Member e = new Member(v)
+            JMember e = new JMember(v)
             {
                 Key = name
             };
@@ -37,7 +37,7 @@ namespace Greatbone.Core
 
         internal void Add(string name, JArr v)
         {
-            Member e = new Member(v)
+            JMember e = new JMember(v)
             {
                 Key = name
             };
@@ -46,7 +46,7 @@ namespace Greatbone.Core
 
         internal void Add(string name, string v)
         {
-            Member e = new Member(v)
+            JMember e = new JMember(v)
             {
                 Key = name
             };
@@ -55,7 +55,7 @@ namespace Greatbone.Core
 
         internal void Add(string name, byte[] v)
         {
-            Member e = new Member(v)
+            JMember e = new JMember(v)
             {
                 Key = name
             };
@@ -64,7 +64,7 @@ namespace Greatbone.Core
 
         internal void Add(string name, bool v)
         {
-            Member e = new Member(v)
+            JMember e = new JMember(v)
             {
                 Key = name
             };
@@ -73,7 +73,7 @@ namespace Greatbone.Core
 
         internal void Add(string name, Number v)
         {
-            Member e = new Member(v)
+            JMember e = new JMember(v)
             {
                 Key = name
             };
@@ -82,9 +82,9 @@ namespace Greatbone.Core
 
         public int Count => pairs.Count;
 
-        public Member this[int index] => pairs[index];
+        public JMember this[int index] => pairs[index];
 
-        public Member this[string name] => pairs[name];
+        public JMember this[string name] => pairs[name];
 
         //
         // SOURCE
@@ -92,7 +92,7 @@ namespace Greatbone.Core
 
         public bool Got(string name, ref bool v)
         {
-            Member pair;
+            JMember pair;
             if (pairs.TryGet(name, out pair))
             {
                 v = (bool)pair;
@@ -103,7 +103,7 @@ namespace Greatbone.Core
 
         public bool Got(string name, ref short v)
         {
-            Member pair;
+            JMember pair;
             if (pairs.TryGet(name, out pair))
             {
                 v = (short)pair;
@@ -114,7 +114,7 @@ namespace Greatbone.Core
 
         public bool Got(string name, ref int v)
         {
-            Member pair;
+            JMember pair;
             if (pairs.TryGet(name, out pair))
             {
                 v = (int)pair;
@@ -125,7 +125,7 @@ namespace Greatbone.Core
 
         public bool Got(string name, ref long v)
         {
-            Member pair;
+            JMember pair;
             if (pairs.TryGet(name, out pair))
             {
                 v = (short)pair;
@@ -136,7 +136,7 @@ namespace Greatbone.Core
 
         public bool Got(string name, ref decimal v)
         {
-            Member pair;
+            JMember pair;
             if (pairs.TryGet(name, out pair))
             {
                 v = (decimal)pair;
@@ -147,7 +147,7 @@ namespace Greatbone.Core
 
         public bool Got(string name, ref DateTime v)
         {
-            Member pair;
+            JMember pair;
             if (pairs.TryGet(name, out pair))
             {
                 v = (DateTime)pair;
@@ -158,7 +158,7 @@ namespace Greatbone.Core
 
         public bool Got(string name, ref string v)
         {
-            Member pair;
+            JMember pair;
             if (pairs.TryGet(name, out pair))
             {
                 v = (string)pair;
@@ -169,7 +169,7 @@ namespace Greatbone.Core
 
         public bool Got<T>(string name, ref T v) where T : IPersist, new()
         {
-            Member pair;
+            JMember pair;
             if (pairs.TryGet(name, out pair))
             {
                 T val = new T();
@@ -182,7 +182,7 @@ namespace Greatbone.Core
 
         public bool Got<T>(string name, ref List<T> v) where T : IPersist, new()
         {
-            Member pair;
+            JMember pair;
             if (pairs.TryGet(name, out pair))
             {
                 JArr ma = pair;
@@ -203,7 +203,7 @@ namespace Greatbone.Core
 
         public bool Got(string name, ref byte[] v)
         {
-            Member pair;
+            JMember pair;
             if (pairs.TryGet(name, out pair))
             {
                 v = (byte[])pair;
@@ -214,7 +214,7 @@ namespace Greatbone.Core
 
         public bool Got(string name, ref JObj v)
         {
-            Member pair;
+            JMember pair;
             if (pairs.TryGet(name, out pair))
             {
                 v = (JObj)pair;
@@ -225,7 +225,7 @@ namespace Greatbone.Core
 
         public bool Got(string name, ref JArr v)
         {
-            Member pair;
+            JMember pair;
             if (pairs.TryGet(name, out pair))
             {
                 v = (JArr)pair;

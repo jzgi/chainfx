@@ -14,7 +14,7 @@ namespace Greatbone.Core
     /// <summary>
     /// A member represents either a value or a name/value pair, depending on the presence of the name property.
     /// </summary>
-    public struct Member : IKeyed
+    public struct JMember : IKeyed
     {
         // type of the value
         readonly VT vt;
@@ -27,7 +27,7 @@ namespace Greatbone.Core
         // key as in an object member
         string key;
 
-        internal Member(JObj v)
+        internal JMember(JObj v)
         {
             vt = VT.Object;
             refv = v;
@@ -35,7 +35,7 @@ namespace Greatbone.Core
             key = null;
         }
 
-        internal Member(JArr v)
+        internal JMember(JArr v)
         {
             vt = VT.Array;
             refv = v;
@@ -43,7 +43,7 @@ namespace Greatbone.Core
             key = null;
         }
 
-        internal Member(string v)
+        internal JMember(string v)
         {
             vt = VT.String;
             refv = v;
@@ -51,7 +51,7 @@ namespace Greatbone.Core
             key = null;
         }
 
-        internal Member(byte[] v)
+        internal JMember(byte[] v)
         {
             vt = VT.Bytes;
             refv = v;
@@ -59,7 +59,7 @@ namespace Greatbone.Core
             key = null;
         }
 
-        internal Member(bool v)
+        internal JMember(bool v)
         {
             vt = v ? VT.True : VT.False;
             refv = null;
@@ -67,7 +67,7 @@ namespace Greatbone.Core
             key = null;
         }
 
-        internal Member(Number v)
+        internal JMember(Number v)
         {
             vt = VT.Number;
             refv = null;
@@ -84,7 +84,7 @@ namespace Greatbone.Core
 
         public bool IsPair => key != null;
 
-        public static implicit operator JObj(Member v)
+        public static implicit operator JObj(JMember v)
         {
             if (v.vt == VT.Object)
             {
@@ -93,7 +93,7 @@ namespace Greatbone.Core
             return null;
         }
 
-        public static implicit operator JArr(Member v)
+        public static implicit operator JArr(JMember v)
         {
             if (v.vt == VT.Array)
             {
@@ -102,12 +102,12 @@ namespace Greatbone.Core
             return null;
         }
 
-        public static implicit operator bool(Member v)
+        public static implicit operator bool(JMember v)
         {
             return v.vt == VT.True;
         }
 
-        public static implicit operator short(Member v)
+        public static implicit operator short(JMember v)
         {
             if (v.vt == VT.Number)
             {
@@ -116,7 +116,7 @@ namespace Greatbone.Core
             return 0;
         }
 
-        public static implicit operator int(Member v)
+        public static implicit operator int(JMember v)
         {
             if (v.vt == VT.Number)
             {
@@ -125,7 +125,7 @@ namespace Greatbone.Core
             return 0;
         }
 
-        public static implicit operator long(Member v)
+        public static implicit operator long(JMember v)
         {
             if (v.vt == VT.Number)
             {
@@ -134,7 +134,7 @@ namespace Greatbone.Core
             return 0;
         }
 
-        public static implicit operator decimal(Member v)
+        public static implicit operator decimal(JMember v)
         {
             if (v.vt == VT.Number)
             {
@@ -143,7 +143,7 @@ namespace Greatbone.Core
             return 0;
         }
 
-        public static implicit operator DateTime(Member v)
+        public static implicit operator DateTime(JMember v)
         {
             if (v.vt == VT.String)
             {
@@ -152,7 +152,7 @@ namespace Greatbone.Core
             return default(DateTime);
         }
 
-        public static implicit operator byte[] (Member v)
+        public static implicit operator byte[] (JMember v)
         {
             if (v.vt == VT.String)
             {
@@ -161,7 +161,7 @@ namespace Greatbone.Core
             return null;
         }
 
-        public static implicit operator string(Member v)
+        public static implicit operator string(JMember v)
         {
             if (v.vt == VT.String)
             {

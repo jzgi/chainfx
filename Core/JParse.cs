@@ -3,7 +3,7 @@ using System.Text;
 namespace Greatbone.Core
 {
 
-    public struct JsonParse
+    public struct JParse
     {
         static readonly FormatException FormatEx = new FormatException("JSON Format");
 
@@ -14,9 +14,9 @@ namespace Greatbone.Core
         // UTF-8 string builder
         readonly Str str;
 
-        public JsonParse(byte[] buffer) : this(buffer, buffer.Length) { }
+        public JParse(byte[] buffer) : this(buffer, buffer.Length) { }
 
-        public JsonParse(byte[] buffer, int count)
+        public JParse(byte[] buffer, int count)
         {
             this.buffer = buffer;
             this.count = count;
@@ -145,36 +145,36 @@ namespace Greatbone.Core
                 if (b == '{')
                 {
                     JObj v = ParseObj(ref p);
-                    arr.Add(new Member(v));
+                    arr.Add(new JMember(v));
                 }
                 else if (b == '[')
                 {
                     JArr v = ParseArr(ref p);
-                    arr.Add(new Member(v));
+                    arr.Add(new JMember(v));
                 }
                 else if (b == '"')
                 {
                     string v = ParseString(ref p);
-                    arr.Add(new Member(v));
+                    arr.Add(new JMember(v));
                 }
                 else if (b == 'n')
                 {
-                    if (ParseNull(ref p)) arr.Add(new Member());
+                    if (ParseNull(ref p)) arr.Add(new JMember());
                 }
                 else if (b == 't' || b == 'f')
                 {
                     bool v = ParseBool(ref p, b);
-                    arr.Add(new Member(v));
+                    arr.Add(new JMember(v));
                 }
                 else if (b == '-' || b >= '0' && b <= '9')
                 {
                     Number v = ParseNumber(ref p, b);
-                    arr.Add(new Member(v));
+                    arr.Add(new JMember(v));
                 }
                 else if (b == '&') // bytes extension
                 {
                     byte[] v = ParseBytes(p);
-                    arr.Add(new Member(v));
+                    arr.Add(new JMember(v));
                 }
                 else throw FormatEx;
 

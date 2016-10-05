@@ -413,7 +413,7 @@ namespace Greatbone.Core
         public void SendEvent<T>(string topic, string filter, T @event) where T : IPersist
         {
             // convert message to byte buffer
-            JsonContent b = new JsonContent(16 * 1024);
+            JContent b = new JContent(16 * 1024);
             @event.Save(b);
 
             Execute("INSERT INTO mq (topic, filter, message) VALUES (@topic, @filter, @message)", p =>

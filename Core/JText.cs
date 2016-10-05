@@ -3,7 +3,7 @@ using System.Collections.Generic;
 
 namespace Greatbone.Core
 {
-    public class JsonText : ISink<JsonText>
+    public class JText : ISink<JText>
     {
         // for parsing json text
         string text;
@@ -21,12 +21,12 @@ namespace Greatbone.Core
 
         int level;
 
-        public JsonText(int capacity)
+        public JText(int capacity)
         {
             buffer = new char[capacity];
         }
 
-        public JsonText(string json)
+        public JText(string json)
         {
             text = json;
         }
@@ -48,67 +48,67 @@ namespace Greatbone.Core
 
         
 
-        public JsonText Put(string name, bool value)
+        public JText Put(string name, bool value)
         {
             throw new NotImplementedException();
         }
 
-        public JsonText Put(string name, short value)
+        public JText Put(string name, short value)
         {
             throw new NotImplementedException();
         }
 
-        public JsonText Put(string name, int value)
+        public JText Put(string name, int value)
         {
             throw new NotImplementedException();
         }
 
-        public JsonText Put(string name, long value)
+        public JText Put(string name, long value)
         {
             throw new NotImplementedException();
         }
 
-        public JsonText Put(string name, decimal value)
+        public JText Put(string name, decimal value)
         {
             throw new NotImplementedException();
         }
 
-        public JsonText Put(string name, DateTime value)
+        public JText Put(string name, DateTime value)
         {
             throw new NotImplementedException();
         }
 
-        public JsonText Put(string name, string value)
+        public JText Put(string name, string value)
         {
             throw new NotImplementedException();
         }
 
-        public JsonText Put<T>(string name, T value, int x) where T : IPersist
+        public JText Put<T>(string name, T value, int x) where T : IPersist
         {
             throw new NotImplementedException();
         }
 
-        public JsonText Put<T>(string name, List<T> value, int x) where T : IPersist
+        public JText Put<T>(string name, List<T> value, int x) where T : IPersist
         {
             throw new NotImplementedException();
         }
 
-        public JsonText Put(string name, byte[] value)
+        public JText Put(string name, byte[] value)
         {
             throw new NotImplementedException();
         }
 
-        public JsonText Put(string name, JObj value)
+        public JText Put(string name, JObj value)
         {
             throw new NotImplementedException();
         }
 
-        public JsonText Put(string name, JArr value)
+        public JText Put(string name, JArr value)
         {
             throw new NotImplementedException();
         }
 
-        public JsonText PutNull(string name)
+        public JText PutNull(string name)
         {
             throw new NotImplementedException();
         }
