@@ -4,7 +4,7 @@ namespace Greatbone.Sample
 {
     public class FameHub : WebHub
     {
-        public FameHub(WebConfig cfg) : base(cfg)
+        public FameHub(WebInfo cfg) : base(cfg)
         {
             SetVarHub<FameVarHub>(false);
         }

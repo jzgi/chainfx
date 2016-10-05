@@ -11,7 +11,7 @@ namespace Greatbone.Sample
 		// the ongoing chat sessions, keyed by receiver's ID
 		private ConcurrentDictionary<string, Wrap> chats = new ConcurrentDictionary<string, Wrap>();
 
-		public ChatService(WebServiceConfig cfg) : base(cfg)
+		public ChatService(WebConfig cfg) : base(cfg)
 		{
 			SetVarHub<ChatVarHub>(true);
 		}

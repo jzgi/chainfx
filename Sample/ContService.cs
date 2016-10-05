@@ -7,7 +7,7 @@ namespace Greatbone.Sample
     /// </summary>
     public class ContService : WebService
     {
-        public ContService(WebServiceConfig cfg) : base(cfg)
+        public ContService(WebConfig cfg) : base(cfg)
         {
             AddSub<PostHub>("post", false);
             

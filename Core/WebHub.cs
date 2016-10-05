@@ -14,7 +14,7 @@ namespace Greatbone.Core
         // the attached variable-key multiplexer, if any
         private WebVarHub varhub;
 
-        protected WebHub(WebConfig cfg) : base(cfg)
+        protected WebHub(WebInfo cfg) : base(cfg)
         {
         }
 
@@ -28,19 +28,19 @@ namespace Greatbone.Core
             }
             // create instance by reflection
             Type typ = typeof(T);
-            ConstructorInfo ci = typ.GetConstructor(new[] { typeof(WebConfig) });
+            ConstructorInfo ci = typ.GetConstructor(new[] { typeof(WebInfo) });
             if (ci == null)
             {
                 throw new WebServiceException(typ + ": the constructor with WebConfig");
             }
-            WebConfig cfg = new WebConfig
+            WebConfig build = new WebConfig()
             {
                 Key = key,
                 Parent = this,
                 Service = Service,
                 IsVar = false
             };
-            T sub = (T)ci.Invoke(new object[] { cfg });
+            T sub = (T)ci.Invoke(new object[] { build });
 
             subs.Add(sub);
 
@@ -51,19 +51,19 @@ namespace Greatbone.Core
         {
             // create instance
             Type typ = typeof(T);
-            ConstructorInfo ci = typ.GetConstructor(new[] { typeof(WebConfig) });
+            ConstructorInfo ci = typ.GetConstructor(new[] { typeof(WebInfo) });
             if (ci == null)
             {
                 throw new WebServiceException(typ + ": the constructor with WebConfig");
             }
-            WebConfig cfg = new WebConfig
+            WebInfo build = new WebInfo
             {
                 Key = "var",
                 Parent = this,
                 Service = Service,
                 IsVar = true
             };
-            T hub = (T)ci.Invoke(new object[] { cfg });
+            T hub = (T)ci.Invoke(new object[] { build });
 
             this.varhub = hub;
 

@@ -4,7 +4,7 @@ namespace Greatbone.Sample
 {
 	public class BrandVarHub : WebVarHub
 	{
-		public BrandVarHub(WebConfig cfg) : base(cfg)
+		public BrandVarHub(WebInfo cfg) : base(cfg)
 		{
 		}
 	}

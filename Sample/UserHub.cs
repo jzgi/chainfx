@@ -8,7 +8,7 @@ namespace Greatbone.Sample
     ///
     public class UserHub : WebHub
     {
-        public UserHub(WebConfig cfg) : base(cfg)
+        public UserHub(WebInfo cfg) : base(cfg)
         {
             SetVarHub<UserVarHub>(false);
         }

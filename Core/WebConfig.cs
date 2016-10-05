@@ -1,13 +1,83 @@
-﻿namespace Greatbone.Core
+﻿using System;
+using System.Diagnostics;
+using System.IO;
+
+namespace Greatbone.Core
 {
-    public class WebConfig
+    /// <summary>The configurative settings and the establishment of creation context during initialization of the controller hierarchy.</summary>
+    /// <remarks>It provides a strong semantic that enables the whole controller hierarchy to be established within execution of constructors, starting from the constructor of a service controller.</remarks>
+    /// <example>
+    /// public class FooService : WebService
+    /// {
+    ///         public FooService(WebConfig cfg) : base(wsc)
+    ///         {
+    ///                 AddSub&lt;BarSub&gt;();
+    ///         }
+    /// }
+    /// </example>
+    ///
+    public class WebConfig : WebInfo, IPersist
     {
-        public string Key;
+        // partition
+        public string Part;
 
-        public bool IsVar { get; internal set; }
+        // public socket address
+        public string Public;
 
-        public WebSub Parent { get; internal set; }
+        // TLS or not
+        public bool Tls;
 
-        public WebService Service { get; internal set; }
+        // private socket address
+        public string Private;
+
+        // private networking socket addresses
+        public string[] Net;
+
+        // database connectivity
+        public DbConfig Db;
+
+        // options
+        public Obj Options;
+
+        public void Load(ISource sc)
+        {
+            sc.Got(nameof(Key), out Key);
+            sc.Got(nameof(Part), out Part);
+            sc.Got(nameof(Public), out Public);
+            sc.Got(nameof(Tls), out Tls);
+            sc.Got(nameof(Private), out Private);
+            // sc.Get(nameof(Net), ref Net);
+            sc.Got(nameof(Db), out Db);
+        }
+
+        public void Save<R>(ISink<R> sk) where R : ISink<R>
+        {
+            sk.Put(nameof(Key), Key);
+            sk.Put(nameof(Part), Part);
+            sk.Put(nameof(Public), Public);
+            sk.Put(nameof(Tls), Tls);
+            sk.Put(nameof(Private), Private);
+            // sk.Put(nameof(Net), Net);
+            sk.Put(nameof(Db), Db);
+        }
+
+        public WebConfig LoadFile(string file)
+        {
+            try
+            {
+                byte[] bytes = File.ReadAllBytes(file);
+                JsonParse parse = new JsonParse(bytes);
+                Obj obj = (Obj)parse.Parse();
+
+                Load(obj); // may override
+
+            }
+            catch (Exception ex)
+            {
+                Debug.WriteLine(ex.StackTrace);
+            }
+            return this;
+        }
     }
+
 }

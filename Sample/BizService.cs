@@ -7,7 +7,7 @@ namespace Greatbone.Sample
     /// </summary>
     public class BizService : WebService
     {
-        public BizService(WebServiceConfig cfg) : base(cfg)
+        public BizService(WebConfig cfg) : base(cfg)
         {
             AddSub<FameHub>("fame", false);
 

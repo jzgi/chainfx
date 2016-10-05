@@ -10,7 +10,7 @@ using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Http.Features;
 using Microsoft.AspNetCore.Server.Kestrel;
 using Microsoft.Extensions.Logging;
-using Microsoft.Extensions.Options;
+using SysOptions = Microsoft.Extensions.Options;
 using Microsoft.Extensions.Primitives;
 using Npgsql;
 
@@ -26,6 +26,7 @@ namespace Greatbone.Core
     ///
     public abstract class WebService : WebHub, IHttpApplication<HttpContext>
     {
+
         //
         // SERVER
         //
@@ -39,6 +40,8 @@ namespace Greatbone.Core
 
         // private address
         string priaddr;
+
+        public WebConfig Config { get; internal set; }
 
         //
         // MESSAGING
@@ -55,8 +58,10 @@ namespace Greatbone.Core
         internal Roll<MsgPoller> MPollers { get; } = new Roll<MsgPoller>(32);
 
 
-        protected WebService(WebServiceConfig cfg) : base(cfg)
+        protected WebService(WebConfig cfg) : base(cfg)
         {
+            Config = cfg;
+
             // init eqc client
             // foreach (var ep in cfg.Net)
             // {
@@ -68,7 +73,7 @@ namespace Greatbone.Core
 
             options = new KestrelServerOptions();
 
-            server = new KestrelServer(Options.Create(options), Lifetime, logger);
+            server = new KestrelServer(SysOptions.Options.Create(options), Lifetime, logger);
             ICollection<string> addrs = server.Features.Get<IServerAddressesFeature>().Addresses;
             addrs.Add(cfg.Tls ? "https://" : "http://" + cfg.Public);
             addrs.Add("http://" + cfg.Private); // clustered msg queue
@@ -77,12 +82,12 @@ namespace Greatbone.Core
 
             priaddr = cfg.Private;
 
-            List<string> net = cfg.Net;
-            for (int i = 0; i < net.Count; i++)
+            string[] net = cfg.Net;
+            for (int i = 0; i < net.Length; i++)
             {
                 string addr = net[i];
                 if (addr.Equals(cfg.Private)) continue;
-                if (MPollers == null) MPollers = new Roll<MsgPoller>(net.Count);
+                if (MPollers == null) MPollers = new Roll<MsgPoller>(net.Length);
                 MPollers.Add(new MsgPoller(this, addr));
             }
         }
@@ -112,7 +117,6 @@ namespace Greatbone.Core
             }
             return true;
         }
-
 
         public virtual void OnStart()
         {
@@ -208,13 +212,11 @@ namespace Greatbone.Core
 
             var urls = server.Features.Get<IServerAddressesFeature>().Addresses;
 
-            WebServiceConfig cfg = (WebServiceConfig)Config;
-
             Console.Write(Key);
             Console.Write(" -> ");
-            Console.Write(cfg.Public);
+            Console.Write(Config.Public);
             Console.Write(", ");
-            Console.Write(cfg.Private);
+            Console.Write(Config.Private);
             Console.WriteLine();
         }
 
@@ -244,7 +246,7 @@ namespace Greatbone.Core
 
         public DbContext NewDbContext()
         {
-            DbConfig cfg = ((WebServiceConfig)Config).Db;
+            DbConfig cfg = Config.Db;
             NpgsqlConnectionStringBuilder builder = new NpgsqlConnectionStringBuilder()
             {
                 Host = cfg.Host,

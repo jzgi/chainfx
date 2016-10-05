@@ -5,7 +5,7 @@ namespace Greatbone.Sample
 {
     public class NoticeVarHub : WebVarHub
     {
-        public NoticeVarHub(WebConfig cfg) : base(cfg)
+        public NoticeVarHub(WebInfo cfg) : base(cfg)
         {
         }
 

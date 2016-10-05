@@ -22,8 +22,7 @@ namespace Greatbone.Sample
                 MQ = false
             };
 
-            List<string> addrs = new List<string>
-            {
+            string[] addrs =             {
                 "127.0.0.1:7070",
                 "127.0.0.1:7071",
                 "127.0.0.1:7072",
@@ -31,7 +30,7 @@ namespace Greatbone.Sample
                 "127.0.0.1:7074",
             };
 
-            var www = new WwwService(new WebServiceConfig
+            var www = new WwwService(new WebConfig
             {
                 Key = "www",
                 Public = "127.0.0.1:8080",
@@ -44,7 +43,7 @@ namespace Greatbone.Sample
 #endif
             );
 
-            var biz = new BizService(new WebServiceConfig
+            var biz = new BizService(new WebConfig
             {
                 Key = "biz",
                 Public = "127.0.0.1:8081",
@@ -57,7 +56,7 @@ namespace Greatbone.Sample
 #endif
             );
 
-            var cont = new ContService(new WebServiceConfig
+            var cont = new ContService(new WebConfig
             {
                 Key = "cont",
                 Public = "127.0.0.1:8082",
@@ -70,7 +69,7 @@ namespace Greatbone.Sample
 #endif
             );
 
-            var dir = new DirService(new WebServiceConfig
+            var dir = new DirService(new WebConfig
             {
                 Key = "dir",
                 Public = "127.0.0.1:8083",
@@ -83,7 +82,7 @@ namespace Greatbone.Sample
 #endif
             );
 
-            var chat = new ChatService(new WebServiceConfig
+            var chat = new ChatService(new WebConfig
             {
                 Key = "chat",
                 Public = "127.0.0.1:8084",

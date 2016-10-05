@@ -15,18 +15,20 @@ namespace Greatbone.Core
         // the default doer
         readonly WebAction defaction;
 
-        public WebConfig Config { get; internal set; }
-
         ///
         /// The key by which this sub-controller is added to its parent
         ///
-        public string Key => Config.Key;
+        public string Key { get; internal set; }
+
+        public Obj Options { get; internal set; }
+
+        public bool IsVar { get; internal set; }
 
         /// <summary>The service that this controller resides in.</summary>
         ///
-        public WebService Service => Config.Service;
+        public WebService Service { get; internal set; }
 
-        public WebSub Parent => Config.Service;
+        public WebSub Parent { get; internal set; }
 
         public string StaticPath { get; internal set; }
 
@@ -40,16 +42,18 @@ namespace Greatbone.Core
         public StaticContent DefaultStatic { get; }
 
         // the argument makes state-passing more convenient
-        protected WebSub(WebConfig cfg)
+        protected WebSub(WebInfo info)
         {
-
-            Config = cfg;
+            Key = info.Key;
+            IsVar = info.IsVar;
+            Service = info.Service;
+            Parent = info.Parent;
 
             // initialize build for the first time
-            if (cfg.Service == null)
+            if (info.Service == null)
             {
                 WebService svc = this as WebService;
-                WebServiceConfig scfg = cfg as WebServiceConfig;
+                WebConfig scfg = info as WebConfig;
                 if (svc == null || scfg == null)
                 {
                     throw new InvalidOperationException("not a service class");
@@ -57,7 +61,7 @@ namespace Greatbone.Core
                 scfg.Service = svc;
             }
 
-            StaticPath = cfg.Parent == null ? Key : Path.Combine(Parent.StaticPath, Key);
+            StaticPath = info.Parent == null ? Key : Path.Combine(Parent.StaticPath, Key);
 
             // load static files, if any
             if (StaticPath != null && Directory.Exists(StaticPath))
@@ -97,7 +101,7 @@ namespace Greatbone.Core
             {
                 ParameterInfo[] pis = mi.GetParameters();
                 WebAction doer = null;
-                if (cfg.IsVar)
+                if (info.IsVar)
                 {
                     if (pis.Length == 2 && pis[0].ParameterType == typeof(WebContext) && pis[1].ParameterType == typeof(string))
                     {

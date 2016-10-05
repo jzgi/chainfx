@@ -7,7 +7,7 @@ namespace Greatbone.Sample
     ///
     public class NoticeHub : WebHub
     {
-        public NoticeHub(WebConfig cfg) : base(cfg)
+        public NoticeHub(WebInfo cfg) : base(cfg)
         {
             SetVarHub<NoticeVarHub>(false);
         }

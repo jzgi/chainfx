@@ -7,7 +7,7 @@ namespace Greatbone.Sample
     ///
     public class WwwService : WebService
     {
-        public WwwService(WebServiceConfig cfg) : base(cfg)
+        public WwwService(WebConfig cfg) : base(cfg)
         {
             AddSub<MySub>("my", true);
 

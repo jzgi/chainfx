@@ -10,7 +10,7 @@ namespace Greatbone.Sample
     ///
     public class UserVarHub : WebVarHub
     {
-        public UserVarHub(WebConfig cfg) : base(cfg)
+        public UserVarHub(WebInfo cfg) : base(cfg)
         {
         }
 
