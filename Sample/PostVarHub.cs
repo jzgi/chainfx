@@ -5,7 +5,7 @@ namespace Greatbone.Sample
 {
     public class PostVarHub : WebVarHub
     {
-        public PostVarHub(WebBuild cfg) : base(cfg)
+        public PostVarHub(WebBuild bld) : base(bld)
         {
         }
 

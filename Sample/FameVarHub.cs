@@ -7,7 +7,7 @@ namespace Greatbone.Sample
 	///
 	public class FameVarHub : WebVarHub
 	{
-		public FameVarHub(WebBuild cfg) : base(cfg)
+		public FameVarHub(WebBuild bld) : base(bld)
 		{
 		}
 
