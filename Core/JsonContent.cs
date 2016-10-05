@@ -236,12 +236,12 @@ namespace Greatbone.Core
             throw new NotImplementedException();
         }
 
-        public JsonContent Put(string name, Obj v)
+        public JsonContent Put(string name, JObj v)
         {
             throw new NotImplementedException();
         }
 
-        public JsonContent Put(string name, Arr v)
+        public JsonContent Put(string name, JArr v)
         {
             throw new NotImplementedException();
         }

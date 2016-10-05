@@ -4,15 +4,15 @@ using System.Collections.Generic;
 namespace Greatbone.Core
 {
     /// <summary>
-    /// An object data model.
+    /// An object or record data model.
     /// </summary>
-    public class Obj : ISource
+    public class JObj : ISource
     {
         const int InitialCapacity = 16;
 
         readonly Roll<Member> pairs;
 
-        public Obj(int capacity = InitialCapacity)
+        public JObj(int capacity = InitialCapacity)
         {
             pairs = new Roll<Member>(16);
         }
@@ -26,7 +26,7 @@ namespace Greatbone.Core
             pairs.Add(e);
         }
 
-        internal void Add(string name, Obj v)
+        internal void Add(string name, JObj v)
         {
             Member e = new Member(v)
             {
@@ -35,7 +35,7 @@ namespace Greatbone.Core
             pairs.Add(e);
         }
 
-        internal void Add(string name, Arr v)
+        internal void Add(string name, JArr v)
         {
             Member e = new Member(v)
             {
@@ -173,7 +173,7 @@ namespace Greatbone.Core
             if (pairs.TryGet(name, out pair))
             {
                 T val = new T();
-                val.Load((Obj)pair);
+                val.Load((JObj)pair);
                 v = val;
                 return true;
             }
@@ -185,11 +185,11 @@ namespace Greatbone.Core
             Member pair;
             if (pairs.TryGet(name, out pair))
             {
-                Arr ma = pair;
+                JArr ma = pair;
                 List<T> lst = null;
                 for (int i = 0; i < ma.Count; i++)
                 {
-                    Obj el = ma[i];
+                    JObj el = ma[i];
                     T val = new T();
                     val.Load(el);
                     if (lst == null) lst = new List<T>(16);
@@ -212,23 +212,23 @@ namespace Greatbone.Core
             return false;
         }
 
-        public bool Got(string name, ref Obj v)
+        public bool Got(string name, ref JObj v)
         {
             Member pair;
             if (pairs.TryGet(name, out pair))
             {
-                v = (Obj)pair;
+                v = (JObj)pair;
                 return true;
             }
             return false;
         }
 
-        public bool Got(string name, ref Arr v)
+        public bool Got(string name, ref JArr v)
         {
             Member pair;
             if (pairs.TryGet(name, out pair))
             {
-                v = (Arr)pair;
+                v = (JArr)pair;
                 return true;
             }
             return false;

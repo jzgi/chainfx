@@ -27,7 +27,7 @@ namespace Greatbone.Core
         // key as in an object member
         string key;
 
-        internal Member(Obj v)
+        internal Member(JObj v)
         {
             vt = VT.Object;
             refv = v;
@@ -35,7 +35,7 @@ namespace Greatbone.Core
             key = null;
         }
 
-        internal Member(Arr v)
+        internal Member(JArr v)
         {
             vt = VT.Array;
             refv = v;
@@ -84,20 +84,20 @@ namespace Greatbone.Core
 
         public bool IsPair => key != null;
 
-        public static implicit operator Obj(Member v)
+        public static implicit operator JObj(Member v)
         {
             if (v.vt == VT.Object)
             {
-                return (Obj)v.refv;
+                return (JObj)v.refv;
             }
             return null;
         }
 
-        public static implicit operator Arr(Member v)
+        public static implicit operator JArr(Member v)
         {
             if (v.vt == VT.Array)
             {
-                return (Arr)v.refv;
+                return (JArr)v.refv;
             }
             return null;
         }

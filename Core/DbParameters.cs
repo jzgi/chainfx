@@ -113,12 +113,12 @@ namespace Greatbone.Core
             throw new NotImplementedException();
         }
 
-        public DbParameters Put(Obj v)
+        public DbParameters Put(JObj v)
         {
             throw new NotImplementedException();
         }
 
-        public DbParameters Put(Arr v)
+        public DbParameters Put(JArr v)
         {
             throw new NotImplementedException();
         }
@@ -217,12 +217,12 @@ namespace Greatbone.Core
             return this;
         }
 
-        public DbParameters Put(string name, Obj v)
+        public DbParameters Put(string name, JObj v)
         {
             throw new NotImplementedException();
         }
 
-        public DbParameters Put(string name, Arr v)
+        public DbParameters Put(string name, JArr v)
         {
             throw new NotImplementedException();
         }

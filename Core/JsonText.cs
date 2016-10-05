@@ -98,12 +98,12 @@ namespace Greatbone.Core
             throw new NotImplementedException();
         }
 
-        public JsonText Put(string name, Obj value)
+        public JsonText Put(string name, JObj value)
         {
             throw new NotImplementedException();
         }
 
-        public JsonText Put(string name, Arr value)
+        public JsonText Put(string name, JArr value)
         {
             throw new NotImplementedException();
         }

@@ -166,26 +166,6 @@ namespace Greatbone.Core
         // RESULTSET
         //
 
-        public T Get<T>() where T : IPersist, new()
-        {
-            T obj = new T();
-            obj.Load(this);
-            return obj;
-        }
-
-        public List<T> GetList<T>() where T : IPersist, new()
-        {
-            List<T> lst = new List<T>(32);
-
-            while (NextRow())
-            {
-                T obj = new T();
-                obj.Load(this);
-                lst.Add(obj);
-            }
-            return lst;
-        }
-
         // current column ordinal
         int colord;
 
@@ -290,12 +270,12 @@ namespace Greatbone.Core
             throw new NotImplementedException();
         }
 
-        public bool Got(ref Obj v)
+        public bool Got(ref JObj v)
         {
             throw new NotImplementedException();
         }
 
-        public bool Got(ref Arr v)
+        public bool Got(ref JArr v)
         {
             throw new NotImplementedException();
         }
@@ -405,12 +385,12 @@ namespace Greatbone.Core
             throw new NotImplementedException();
         }
 
-        public bool Got(string name, ref Obj v)
+        public bool Got(string name, ref JObj v)
         {
             throw new NotImplementedException();
         }
 
-        public bool Got(string name, ref Arr v)
+        public bool Got(string name, ref JArr v)
         {
             throw new NotImplementedException();
         }

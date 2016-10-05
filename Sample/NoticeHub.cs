@@ -39,7 +39,7 @@ namespace Greatbone.Sample
         /// </summary>
         public void New(WebContext wc)
         {
-            Obj o = (Obj)wc.Data;
+            JObj o = (JObj)wc.Data;
             int age = o[nameof(age)];
 
             int page = 0;

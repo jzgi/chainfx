@@ -37,9 +37,9 @@ namespace Greatbone.Core
             }
         }
 
-        Obj ParseObj(ref int pos)
+        JObj ParseObj(ref int pos)
         {
-            Obj obj = new Obj();
+            JObj obj = new JObj();
             int p = pos;
             for (;;)
             {
@@ -79,12 +79,12 @@ namespace Greatbone.Core
                     string name = sb.ToString();
                     if (b == '{')
                     {
-                        Obj v = ParseObj(ref p);
+                        JObj v = ParseObj(ref p);
                         obj.Add(name, v);
                     }
                     else if (b == '[')
                     {
-                        Arr v = ParseArr(ref p);
+                        JArr v = ParseArr(ref p);
                         obj.Add(name, v);
                     }
                     else if (b == '"')
@@ -133,9 +133,9 @@ namespace Greatbone.Core
 
         }
 
-        Arr ParseArr(ref int pos)
+        JArr ParseArr(ref int pos)
         {
-            Arr arr = new Arr(16);
+            JArr arr = new JArr(16);
             int p = pos;
             for (;;)
             {
@@ -144,12 +144,12 @@ namespace Greatbone.Core
                 if (b == ' ' || b == '\t' || b == '\n' || b == '\r') continue; // skip ws
                 if (b == '{')
                 {
-                    Obj v = ParseObj(ref p);
+                    JObj v = ParseObj(ref p);
                     arr.Add(new Member(v));
                 }
                 else if (b == '[')
                 {
-                    Arr v = ParseArr(ref p);
+                    JArr v = ParseArr(ref p);
                     arr.Add(new Member(v));
                 }
                 else if (b == '"')

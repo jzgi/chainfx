@@ -31,9 +31,9 @@ namespace Greatbone.Core
 
         R Put(string name, byte[] v);
 
-        R Put(string name, Obj v);
+        R Put(string name, JObj v);
 
-        R Put(string name, Arr v);
+        R Put(string name, JArr v);
 
     }
 

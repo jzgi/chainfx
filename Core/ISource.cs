@@ -29,9 +29,9 @@ namespace Greatbone.Core
 
         bool Got(string name, ref byte[] v);
 
-        bool Got(string name, ref Obj v);
+        bool Got(string name, ref JObj v);
 
-        bool Got(string name, ref Arr v);
+        bool Got(string name, ref JArr v);
 
     }
 

@@ -28,12 +28,12 @@ namespace Greatbone.Core
             throw new NotImplementedException();
         }
 
-        public bool Got(string name, ref Obj v)
+        public bool Got(string name, ref JObj v)
         {
             throw new NotImplementedException();
         }
 
-        public bool Got(string name, ref Arr v)
+        public bool Got(string name, ref JArr v)
         {
             throw new NotImplementedException();
         }

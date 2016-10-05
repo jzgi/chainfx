@@ -96,7 +96,7 @@ namespace Greatbone.Core
 
         public T Get<T>(int x) where T : IPersist, new()
         {
-            Obj mo = (Obj)Data;
+            JObj mo = (JObj)Data;
             T obj = new T();
             obj.Load(mo);
             return obj;

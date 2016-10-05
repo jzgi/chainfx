@@ -5,7 +5,7 @@ namespace Greatbone.Core
     /// <summary>
     /// An array data model.
     /// </summary>
-    public class Arr
+    public class JArr
     {
         const int InitialCapacity = 16;
 
@@ -13,7 +13,7 @@ namespace Greatbone.Core
 
         int count;
 
-        internal Arr(int capacity = InitialCapacity)
+        internal JArr(int capacity = InitialCapacity)
         {
             elements = new Member[capacity];
             count = 0;

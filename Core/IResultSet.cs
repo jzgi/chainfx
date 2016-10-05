@@ -8,10 +8,6 @@ namespace Greatbone.Core
     /// </summary>
     public interface IResultSet : ISource
     {
-        T Get<T>() where T : IPersist, new();
-
-        List<T> GetList<T>() where T : IPersist, new();
-
         bool Got(ref bool v);
 
         bool Got(ref short v);
@@ -32,9 +28,16 @@ namespace Greatbone.Core
 
         bool Got(ref byte[] v);
 
-        bool Got(ref Obj v);
+        bool Got(ref JObj v);
 
-        bool Got(ref Arr v);
+        bool Got(ref JArr v);
+
+        //
+        // OP
+
+        bool NextRow();
+
+        bool NextResult();
 
     }
 }

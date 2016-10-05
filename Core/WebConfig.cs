@@ -37,7 +37,7 @@ namespace Greatbone.Core
         public DbConfig Db;
 
         // options
-        public Obj Options;
+        public JObj Options;
 
         public void Load(ISource sc)
         {
@@ -67,7 +67,7 @@ namespace Greatbone.Core
             {
                 byte[] bytes = File.ReadAllBytes(file);
                 JsonParse parse = new JsonParse(bytes);
-                Obj obj = (Obj)parse.Parse();
+                JObj obj = (JObj)parse.Parse();
 
                 Load(obj); // may override
 
