@@ -1,6 +1,6 @@
 ﻿namespace Greatbone.Core
 {
-    public class WebBuild
+    public class WebTie
     {
         public string Key;
 

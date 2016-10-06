@@ -1,13 +1,14 @@
-﻿using Greatbone.Core;
+﻿using System;
+using Greatbone.Core;
 
 namespace Greatbone.Sample
 {
     ///
     /// <summary>The notice service.</summary>
     ///
-    public class NoticeHub : WebHub
+    public class NoticeHub : WebHub, IAdmin
     {
-        public NoticeHub(WebBuild bld) : base(bld)
+        public NoticeHub(WebTie tie) : base(tie)
         {
             SetVarHub<NoticeVarHub>(false);
         }
@@ -34,10 +35,11 @@ namespace Greatbone.Sample
             }
         }
 
+
         /// <summary>
         /// Gets the specified top page from the notices table. 
         /// </summary>
-        public void New(WebContext wc)
+        public void @new(WebContext wc)
         {
             JObj o = (JObj)wc.Data;
             int age = o[nameof(age)];
@@ -59,5 +61,19 @@ namespace Greatbone.Sample
             }
         }
 
+        public void search(WebContext wc)
+        {
+            throw new NotImplementedException();
+        }
+
+        public void status(WebContext wc)
+        {
+            throw new NotImplementedException();
+        }
+
+        public void del(WebContext wc)
+        {
+            throw new NotImplementedException();
+        }
     }
 }

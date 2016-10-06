@@ -1,5 +1,4 @@
 ﻿using System;
-using System.Net;
 using System.Reflection;
 
 namespace Greatbone.Core
@@ -11,7 +10,7 @@ namespace Greatbone.Core
         // the added sub controllers
         private Roll<WebSub> subs;
 
-        protected WebVarHub(WebBuild cfg) : base(cfg)
+        protected WebVarHub(WebTie cfg) : base(cfg)
         {
         }
 
@@ -22,20 +21,17 @@ namespace Greatbone.Core
                 subs = new Roll<WebSub>(16);
             }
             // create instance by reflection
-            Type type = typeof(T);
-            ConstructorInfo ci = type.GetConstructor(new[] { typeof(WebBuild) });
-            if (ci == null)
-            {
-                throw new System.Net.WebException(type + ": the constructor not found (WebServiceContext)");
-            }
-            WebBuild cfg = new WebBuild
+            Type typ = typeof(T);
+            ConstructorInfo ci = typ.GetConstructor(new[] { typeof(WebTie) });
+            if (ci == null) { throw new WebException(typ + ": the constructor with WebTie"); }
+            WebTie tie = new WebTie
             {
                 Key = key,
                 Parent = this,
                 Service = Service,
                 IsVar = true
             };
-            T sub = (T)ci.Invoke(new object[] { cfg });
+            T sub = (T)ci.Invoke(new object[] { tie });
             // call the initialization and add
             subs.Add(sub);
 

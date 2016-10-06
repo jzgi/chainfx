@@ -1,10 +1,11 @@
-﻿using Greatbone.Core;
+﻿using System;
+using Greatbone.Core;
 
 namespace Greatbone.Sample
 {
-    public class FameHub : WebHub
+    public class FameHub : WebHub, IAdmin
     {
-        public FameHub(WebBuild bld) : base(bld)
+        public FameHub(WebTie tie) : base(tie)
         {
             SetVarHub<FameVarHub>(false);
         }
@@ -34,6 +35,7 @@ namespace Greatbone.Sample
             }
         }
 
+
         public void top(WebContext wc)
         {
             int page = 0;
@@ -50,6 +52,25 @@ namespace Greatbone.Sample
                     wc.Response.StatusCode = 204;
                 }
             }
+        }
+
+        //
+        // ADMIN
+        //
+
+        public void search(WebContext wc)
+        {
+            throw new NotImplementedException();
+        }
+
+        public void del(WebContext wc)
+        {
+            throw new NotImplementedException();
+        }
+
+        public void status(WebContext wc)
+        {
+            throw new NotImplementedException();
         }
     }
 }

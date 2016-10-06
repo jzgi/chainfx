@@ -6,9 +6,9 @@ namespace Greatbone.Sample
     ///
     /// <summary>The user directory service</summary>
     ///
-    public class UserHub : WebHub
+    public class UserHub : WebHub, IAdmin
     {
-        public UserHub(WebBuild bld) : base(bld)
+        public UserHub(WebTie tie) : base(tie)
         {
             SetVarHub<UserVarHub>(false);
         }
@@ -16,7 +16,7 @@ namespace Greatbone.Sample
         ///
         /// Creates a new user account.
         ///
-        public void New(WebContext wc)
+        public void @new(WebContext wc)
         {
             User u = null;
 
@@ -30,12 +30,24 @@ namespace Greatbone.Sample
             }
         }
 
-        public void Find(WebContext wc)
+        //
+        // ADMIN
+        //
+
+        public void search(WebContext wc)
         {
             ArraySegment<byte> bytes = wc.Bytes;
-            ad = wc;
         }
 
-        WebContext ad;
+        public void del(WebContext wc)
+        {
+            throw new NotImplementedException();
+        }
+
+        public void status(WebContext wc)
+        {
+            throw new NotImplementedException();
+        }
+
     }
 }

@@ -16,7 +16,7 @@ namespace Greatbone.Core
     /// }
     /// </example>
     ///
-    public class WebConfig : WebBuild, IPersist
+    public class WebConfig : WebTie, IPersist
     {
         // partition
         public string Part;

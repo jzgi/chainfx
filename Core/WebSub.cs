@@ -40,23 +40,23 @@ namespace Greatbone.Core
         public StaticContent DefaultStatic { get; }
 
         // the argument makes state-passing more convenient
-        protected WebSub(WebBuild wb)
+        protected WebSub(WebTie tie)
         {
             // adjust
-            if (wb.Service == null)
+            if (tie.Service == null)
             {
                 WebService thissvc = this as WebService;
                 if (thissvc == null) { throw new WebException("not a service class"); }
-                wb.Service = thissvc;
+                tie.Service = thissvc;
             }
 
             // initialize
-            Key = wb.Key;
-            IsVar = wb.IsVar;
-            Service = wb.Service;
-            Parent = wb.Parent;
+            Key = tie.Key;
+            IsVar = tie.IsVar;
+            Service = tie.Service;
+            Parent = tie.Parent;
 
-            StaticPath = wb.Parent == null ? Key : Path.Combine(Parent.StaticPath, Key);
+            StaticPath = tie.Parent == null ? Key : Path.Combine(Parent.StaticPath, Key);
 
             // load static files, if any
             if (StaticPath != null && Directory.Exists(StaticPath))
@@ -96,7 +96,7 @@ namespace Greatbone.Core
             {
                 ParameterInfo[] pis = mi.GetParameters();
                 WebAction doer = null;
-                if (wb.IsVar)
+                if (tie.IsVar)
                 {
                     if (pis.Length == 2 && pis[0].ParameterType == typeof(WebContext) && pis[1].ParameterType == typeof(string))
                     {

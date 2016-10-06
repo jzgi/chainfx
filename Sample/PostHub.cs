@@ -1,11 +1,12 @@
 ﻿using Greatbone.Core;
 using System.Collections.Generic;
+using System;
 
 namespace Greatbone.Sample
 {
-    public class PostHub : WebHub
+    public class PostHub : WebHub, IAdmin
     {
-        public PostHub(WebBuild bld) : base(bld)
+        public PostHub(WebTie tie) : base(tie)
         {
             SetVarHub<PostVarHub>(false);
         }
@@ -43,8 +44,23 @@ namespace Greatbone.Sample
             }
         }
 
-        public void remove(WebContext wc)
+        #region IAdmin
+
+        public void search(WebContext wc)
         {
+            throw new NotImplementedException();
         }
+
+        public void del(WebContext wc)
+        {
+            throw new NotImplementedException();
+        }
+
+        public void status(WebContext wc)
+        {
+            throw new NotImplementedException();
+        }
+
+        #endregion
     }
 }

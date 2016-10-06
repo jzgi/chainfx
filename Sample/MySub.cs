@@ -4,7 +4,7 @@ namespace Greatbone.Sample
 {
     public class MySub : WebSub
     {
-        public MySub(WebBuild bld) : base(bld)
+        public MySub(WebTie bld) : base(bld)
         {
         }
     }
