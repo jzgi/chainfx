@@ -9,9 +9,9 @@ namespace Greatbone.Sample
     {
         public BizService(WebConfig cfg) : base(cfg)
         {
-            AddSub<FameHub>("fame", false);
+            AddSub<FameModule>("fame", false);
 
-            AddSub<BrandHub>("brand", false);
+            AddSub<BrandModule>("brand", false);
         }
     }
 }

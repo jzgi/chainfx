@@ -6,9 +6,9 @@ namespace Greatbone.Sample
     ///
     /// <summary>The user directory service</summary>
     ///
-    public class UserHub : WebHub, IAdmin
+    public class UserModule : WebModule, IAdmin
     {
-        public UserHub(WebTie tie) : base(tie)
+        public UserModule(WebTie tie) : base(tie)
         {
             SetVarHub<UserVarHub>(false);
         }

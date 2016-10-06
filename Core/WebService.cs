@@ -24,7 +24,7 @@ namespace Greatbone.Core
     /// etag -- reduces network I/O with unchanged results
     ///
     ///
-    public abstract class WebService : WebHub, IHttpApplication<HttpContext>
+    public abstract class WebService : WebModule, IHttpApplication<HttpContext>
     {
 
         //

@@ -6,9 +6,9 @@ namespace Greatbone.Sample
     ///
     /// /brand/
     ///
-    public class BrandHub : WebHub, IAdmin
+    public class BrandModule : WebModule, IAdmin
     {
-        public BrandHub(WebTie tie) : base(tie)
+        public BrandModule(WebTie tie) : base(tie)
         {
             SetVarHub<BrandVarHub>(false);
         }

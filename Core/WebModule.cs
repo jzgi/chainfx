@@ -6,7 +6,7 @@ namespace Greatbone.Core
     /// <summary>
     /// A section consists of sub controllers and/or variable-key hub controller.
     /// </summary>
-    public abstract class WebHub : WebSub
+    public abstract class WebModule : WebSub
     {
         // the added sub controllers, if any
         private Roll<WebSub> subs;
@@ -14,7 +14,7 @@ namespace Greatbone.Core
         // the attached variable-key multiplexer, if any
         private WebVarHub varhub;
 
-        protected WebHub(WebTie tie) : base(tie)
+        protected WebModule(WebTie tie) : base(tie)
         {
         }
 

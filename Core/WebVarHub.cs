@@ -10,7 +10,7 @@ namespace Greatbone.Core
         // the added sub controllers
         private Roll<WebSub> subs;
 
-        protected WebVarHub(WebTie cfg) : base(cfg)
+        protected WebVarHub(WebTie tie) : base(tie)
         {
         }
 

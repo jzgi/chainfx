@@ -9,9 +9,9 @@ namespace Greatbone.Sample
     {
         public ContService(WebConfig cfg) : base(cfg)
         {
-            AddSub<PostHub>("post", false);
+            AddSub<PostModule>("post", false);
             
-            AddSub<NoticeHub>("notice", false);
+            AddSub<NoticeModule>("notice", false);
         }
     }
 }

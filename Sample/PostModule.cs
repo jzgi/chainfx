@@ -4,9 +4,9 @@ using System;
 
 namespace Greatbone.Sample
 {
-    public class PostHub : WebHub, IAdmin
+    public class PostModule : WebModule, IAdmin
     {
-        public PostHub(WebTie tie) : base(tie)
+        public PostModule(WebTie tie) : base(tie)
         {
             SetVarHub<PostVarHub>(false);
         }
