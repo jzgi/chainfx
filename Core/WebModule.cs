@@ -4,7 +4,7 @@ using System.Reflection;
 namespace Greatbone.Core
 {
     /// <summary>
-    /// A section consists of sub controllers and/or variable-key hub controller.
+    /// A module consists of sub controllers and/or variable-key hub controller. It represents an independent business realm.
     /// </summary>
     public abstract class WebModule : WebSub
     {
@@ -43,7 +43,6 @@ namespace Greatbone.Core
 
             return sub;
         }
-
 
         public Roll<WebSub> Subs => subs;
 

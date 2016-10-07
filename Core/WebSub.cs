@@ -97,25 +97,25 @@ namespace Greatbone.Core
             foreach (MethodInfo mi in typ.GetMethods(BindingFlags.Public | BindingFlags.Instance))
             {
                 ParameterInfo[] pis = mi.GetParameters();
-                WebAction doer = null;
+                WebAction a = null;
                 if (tie.IsVar)
                 {
                     if (pis.Length == 2 && pis[0].ParameterType == typeof(WebContext) && pis[1].ParameterType == typeof(string))
                     {
-                        doer = new WebAction(this, mi, true);
+                        a = new WebAction(this, mi, true);
                     }
                 }
                 else
                 {
                     if (pis.Length == 1 && pis[0].ParameterType == typeof(WebContext))
                     {
-                        doer = new WebAction(this, mi, false);
+                        a = new WebAction(this, mi, false);
                     }
                 }
-                if (doer != null)
+                if (a != null)
                 {
-                    if (doer.Key.Equals("default")) { defaction = doer; }
-                    actions.Add(doer);
+                    if (a.Key.Equals("default")) { defaction = a; }
+                    actions.Add(a);
                 }
             }
         }

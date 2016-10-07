@@ -21,13 +21,13 @@ namespace Greatbone.Core
         // partition
         internal string part;
 
-        // externally-avaiable socket address
+        // socket address for external access
         internal string @extern;
 
         // TLS or not
         internal bool tls;
 
-        // internally-avaiable socket address
+        // socket address for internal access
         internal string intern;
 
         // intranet socket addresses

@@ -2,13 +2,13 @@
 
 namespace Greatbone.Core
 {
-    /// <summary>The delegate of web action methods.</summary>
+    /// <summary>The delegate of  exchange doer  methods.</summary>
     ///
-    public delegate void WebDoer(WebContext wc);
+    public delegate void Doer(WebContext wc);
 
-    /// <summary>The delegate of varied-key action methods.</summary>
+    /// <summary>The delegate of varied-key exchange doer methods.</summary>
     ///
-    public delegate void WebVarDoer(WebContext wc, string var);
+    public delegate void VarDoer(WebContext wc, string var);
 
     /// <summary>The descriptor of an action handling method.</summary>
     ///
@@ -16,9 +16,9 @@ namespace Greatbone.Core
     {
         public WebSub Controller { get; }
 
-        readonly WebVarDoer vardoer;
+        readonly VarDoer vardoer;
 
-        readonly WebDoer doer;
+        readonly Doer doer;
 
         private IfAttribute[] checkers;
 
@@ -33,11 +33,11 @@ namespace Greatbone.Core
             Key = mi.Name;
             if (isVar)
             {
-                vardoer = (WebVarDoer)mi.CreateDelegate(typeof(WebVarDoer), controller);
+                vardoer = (VarDoer)mi.CreateDelegate(typeof(VarDoer), controller);
             }
             else
             {
-                doer = (WebDoer)mi.CreateDelegate(typeof(WebDoer), controller);
+                doer = (Doer)mi.CreateDelegate(typeof(Doer), controller);
             }
         }
 

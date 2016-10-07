@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Net;
+using System.Reflection;
 using System.Threading;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Hosting;
@@ -26,14 +27,13 @@ namespace Greatbone.Core
     ///
     public abstract class WebService : WebModule, IHttpApplication<HttpContext>
     {
-
-        //
         // SERVER
         //
 
         readonly KestrelServerOptions options;
 
-        readonly LoggerFactory logger;
+        // file logger factory
+        readonly LoggerFactory factory;
 
         // the embedded server
         readonly KestrelServer server;
@@ -43,56 +43,71 @@ namespace Greatbone.Core
 
         public WebConfig Config { get; internal set; }
 
-        //
         // MESSAGING
         //
 
-        // load messages        
-        internal Roll<MsgLoader> MLoaders { get; } = new Roll<MsgLoader>(32);
+        // load messages from local queue        
+        readonly Roll<MsgLoader> mloaders;
 
-        // topics subscribed by this microservice
-        internal Roll<MsgAction> MActions { get; } = new Roll<MsgAction>(16);
+        // processing of received messages
+        readonly Roll<MsgAction> mactions;
 
-        private Thread msgScheduler;
+        readonly Thread mscheduler;
 
-        internal Roll<MsgPoller> MPollers { get; } = new Roll<MsgPoller>(32);
+        readonly Roll<MsgPoller> mpollers;
 
 
         protected WebService(WebConfig cfg) : base(cfg)
         {
             Config = cfg;
 
-            // init eqc client
-            // foreach (var ep in cfg.Net)
-            // {
-            //     //				ParseAddress()
-            // }
-
-            // create the server instance
-            logger = new LoggerFactory();
-
+            // create the embedded server instance
+            factory = new LoggerFactory();
+            factory.AddProvider(new WebLoggerProvider());
             options = new KestrelServerOptions();
-
-            server = new KestrelServer(Options.Create(options), Lifetime, logger);
+            server = new KestrelServer(Options.Create(options), Lifetime, factory);
             ICollection<string> addrs = server.Features.Get<IServerAddressesFeature>().Addresses;
             addrs.Add(cfg.tls ? "https://" : "http://" + cfg.@extern);
-            addrs.Add("http://" + cfg.intern); // clustered msg queue
+            addrs.Add("http://" + cfg.intern);
 
-            CreateMsgTables();
-
-            priaddr = cfg.intern;
-
+            // introspect message handler methods
+            Type typ = GetType();
+            foreach (MethodInfo mi in typ.GetMethods(BindingFlags.Public | BindingFlags.Instance))
+            {
+                ParameterInfo[] pis = mi.GetParameters();
+                if (pis.Length == 1 && pis[0].ParameterType == typeof(MsgContext))
+                {
+                    MsgAction a = new MsgAction(this, mi);
+                    if (mactions == null) mactions = new Roll<MsgAction>(16);
+                    mactions.Add(a);
+                }
+            }
+            // setup message loaders and pollers
             string[] net = cfg.net;
             for (int i = 0; i < net.Length; i++)
             {
                 string addr = net[i];
                 if (addr.Equals(cfg.intern)) continue;
-                if (MPollers == null) MPollers = new Roll<MsgPoller>(net.Length);
-                MPollers.Add(new MsgPoller(this, addr));
+                if (mloaders == null) mloaders = new Roll<MsgLoader>(net.Length * 2);
+                mloaders.Add(new MsgLoader(this, addr));
+                if (mactions != null)
+                {
+                    if (mpollers == null) mpollers = new Roll<MsgPoller>(net.Length * 2);
+                    mpollers.Add(new MsgPoller(this, addr));
+                }
             }
+
+            PrepareMsgTables();
+
         }
 
-        internal bool CreateMsgTables()
+        internal Roll<MsgLoader> MsgLoaders => mloaders;
+
+        internal Roll<MsgAction> MsgActions => mactions;
+
+        internal Roll<MsgPoller> MsgPollers => mpollers;
+
+        bool PrepareMsgTables()
         {
             // check db
             using (var dc = Service.NewDbContext())
@@ -151,7 +166,7 @@ namespace Greatbone.Core
             {
                 // verify the remote addrees 
                 string raddr = ci.RemoteIpAddress.ToString();
-                if (!MPollers.Contains(raddr))
+                if (!MsgPollers.Contains(raddr))
                 {
                     wc.StatusCode = (int)HttpStatusCode.Forbidden;
                     return;
@@ -235,9 +250,9 @@ namespace Greatbone.Core
         {
             while (true)
             {
-                for (int i = 0; i < MPollers.Count; i++)
+                for (int i = 0; i < MsgPollers.Count; i++)
                 {
-                    MsgPoller conn = MPollers[i];
+                    MsgPoller conn = MsgPollers[i];
 
                     // schedule
                 }

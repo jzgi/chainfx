@@ -5,7 +5,7 @@ using Microsoft.AspNetCore.Http;
 namespace Greatbone.Core
 {
 	///
-	/// An event queue message
+	/// The processing of an queued message. 
 	///
 	public class MsgContext : IDisposable
 	{

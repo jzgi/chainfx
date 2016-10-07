@@ -1,33 +1,34 @@
-﻿namespace Greatbone.Core
+﻿using System.Reflection;
+
+namespace Greatbone.Core
 {
-    public delegate void MsgDoer(MsgContext mc);
+    /// <summary>
+    /// A delegate of message handler methods.
+    /// </summary>
+    public delegate void Handler(MsgContext mc);
 
     public class MsgAction : IKeyed
     {
-        public string Topic { get; }
+        public WebSub Controller { get; }
 
-        public string Filter { get; }
+        public string Key { get; }
 
-        readonly MsgDoer doer;
+        readonly Handler handler;
 
-        internal MsgAction(string topic, string filter, MsgDoer doer)
+        internal MsgAction(WebSub controller, MethodInfo mi)
         {
-            // NOTE: strict method nzame as key here to avoid the default base url trap
-            Topic = topic;
-            Filter = filter;
-            this.doer = doer;
+            Key = mi.Name;
+            handler = (Handler)mi.CreateDelegate(typeof(Handler), controller);
         }
 
-        internal void Do(MsgContext me)
+        internal void Handle(MsgContext mc)
         {
-            doer(me);
+            handler(mc);
         }
-
-        public string Key => Topic;
 
         public override string ToString()
         {
-            return Topic;
+            return Key;
         }
     }
 }

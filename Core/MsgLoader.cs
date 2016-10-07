@@ -5,33 +5,35 @@ namespace Greatbone.Core
 {
     public class MsgLoader : IKeyed
     {
+        readonly WebService service;
 
-        WebService service;
+        readonly string addr;
 
-        string key;
-
+        // queued for sending out
         Queue<MsgMessage> cache;
 
+        // SQL statement for selecting local messages
         string sql;
 
-        public string Key => key;
+        Roll<MsgAction> mactions;
 
-        Roll<MsgAction> mactions ;
-
-        internal MsgLoader( WebService service)
+        internal MsgLoader(WebService service, string addr)
         {
             this.service = service;
+            this.addr = addr;
 
             StringBuilder sb = new StringBuilder("SELECT * FROM mqueue WHERE id > @lastid AND ");
             for (int i = 0; i < mactions.Count; i++)
             {
                 MsgAction sub = mactions[i];
 
-                sb.Append("topic = '").Append(sub.Topic).Append("'");
+                sb.Append("topic = '").Append(sub.Key).Append("'");
             }
             sql = sb.ToString();
 
         }
+
+        public string Key => addr;
 
         public void Get()
         {
