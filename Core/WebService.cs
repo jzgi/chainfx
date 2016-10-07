@@ -291,46 +291,6 @@ namespace Greatbone.Core
             return new DbContext(builder);
         }
 
-        ///
-        /// STATIC
-        ///
-        static readonly WebLifetime Lifetime = new WebLifetime();
-
-
-        /// <summary>
-        /// Runs a number of web services and block until shutdown.
-        /// </summary>
-        public static void Run(params WebService[] services)
-        {
-            using (var cts = new CancellationTokenSource())
-            {
-                Console.CancelKeyPress += (sender, eventArgs) =>
-                {
-                    Console.WriteLine("shutting down...");
-                    cts.Cancel();
-
-                    // wait for the Main thread to exit gracefully.
-                    eventArgs.Cancel = true;
-                };
-
-                foreach (WebService svc in services)
-                {
-                    svc.Start();
-                }
-
-                Console.WriteLine("^C to shut down");
-
-                cts.Token.Register(state =>
-                {
-                    ((IApplicationLifetime)state).StopApplication();
-                }, Lifetime);
-
-                Lifetime.ApplicationStopping.WaitHandle.WaitOne();
-
-            }
-
-        }
-
         //
         // LOGGING
         //
@@ -344,6 +304,9 @@ namespace Greatbone.Core
         public void Dispose()
         {
             logWriter.Flush();
+
+            Console.Write(Key);
+            Console.WriteLine("!");
         }
 
         //
@@ -395,6 +358,53 @@ namespace Greatbone.Core
                     logWriter.WriteLine(exception.ToString());
                 }
             }
+        }
+
+        ///
+        /// STATIC
+        ///
+        static readonly WebLifetime Lifetime = new WebLifetime();
+
+
+        /// <summary>
+        /// Runs a number of web services and block until shutdown.
+        /// </summary>
+        public static void Run(params WebService[] services)
+        {
+            using (var cts = new CancellationTokenSource())
+            {
+                Console.CancelKeyPress += (sender, eventArgs) =>
+                {
+                    cts.Cancel();
+
+                    // wait for the Main thread to exit gracefully.
+                    eventArgs.Cancel = true;
+                };
+
+                // start services
+                foreach (WebService svc in services)
+                {
+                    svc.Start();
+                }
+
+                Console.WriteLine("ctrl_c to shut down");
+
+                cts.Token.Register(state =>
+                {
+                    ((IApplicationLifetime)state).StopApplication();
+                    // dispose services
+                    foreach (WebService svc in services)
+                    {
+                        svc.Dispose();
+                    }
+
+                },
+                Lifetime);
+
+                Lifetime.ApplicationStopping.WaitHandle.WaitOne();
+
+            }
+
         }
 
     }
