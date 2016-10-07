@@ -10,7 +10,7 @@ namespace Greatbone.Core
         // the added sub controllers
         private Roll<WebSub> subs;
 
-        protected WebVarHub(WebTie tie) : base(tie)
+        protected WebVarHub(ITie tie) : base(tie)
         {
         }
 
@@ -22,11 +22,11 @@ namespace Greatbone.Core
             }
             // create instance by reflection
             Type typ = typeof(T);
-            ConstructorInfo ci = typ.GetConstructor(new[] { typeof(WebTie) });
+            ConstructorInfo ci = typ.GetConstructor(new[] { typeof(ITie) });
             if (ci == null) { throw new WebException(typ + ": the constructor with WebTie"); }
             WebTie tie = new WebTie
             {
-                Key = key,
+                key = key,
                 Parent = this,
                 Service = Service,
                 IsVar = true

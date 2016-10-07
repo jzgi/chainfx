@@ -5,8 +5,8 @@ namespace Greatbone.Core
     /// <summary>
     /// Represents a JSON-related exception occured.
     /// </summary>
-    public class FormatException : Exception
+    public class JException : Exception
     {
-        public FormatException(string message) : base(message) { }
+        public JException(string message) : base(message) { }
     }
 }

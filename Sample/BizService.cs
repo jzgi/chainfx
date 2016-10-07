@@ -13,5 +13,19 @@ namespace Greatbone.Sample
 
             AddSub<BrandModule>("brand", false);
         }
+
+        public override void @default(WebContext wc)
+        {
+            Roll<WebSub> subs = Subs;
+
+            wc.SetHtml(200, html =>
+            {
+
+            });
+            for (int i = 0; i < subs.Count; i++)
+            {
+
+            }
+        }
     }
 }

@@ -40,14 +40,16 @@ namespace Greatbone.Core
         public StaticContent DefaultStatic { get; }
 
         // the argument makes state-passing more convenient
-        protected WebSub(WebTie tie)
+        protected WebSub(ITie tie)
         {
             // adjust
             if (tie.Service == null)
             {
-                WebService thissvc = this as WebService;
-                if (thissvc == null) { throw new WebException("not a service class"); }
-                tie.Service = thissvc;
+                WebService svc = this as WebService;
+                if (svc == null) { throw new WebException("not a WebService"); }
+                WebConfig cfg = tie as WebConfig;
+                if (cfg == null) { throw new WebException("not a WebConfig"); }
+                cfg.Service = svc;
             }
 
             // initialize
@@ -66,15 +68,15 @@ namespace Greatbone.Core
                 {
                     string file = Path.GetFileName(path);
                     string ext = Path.GetExtension(path);
-                    string ctype;
-                    if (StaticContent.TryGetType(ext, out ctype))
+                    string ctyp;
+                    if (StaticContent.TryGetType(ext, out ctyp))
                     {
                         byte[] content = File.ReadAllBytes(path);
                         DateTime modified = File.GetLastWriteTime(path);
                         StaticContent sta = new StaticContent
                         {
                             Key = file.ToLower(),
-                            Type = ctype,
+                            Type = ctyp,
                             Buffer = content,
                             LastModified = modified
                         };
@@ -89,10 +91,10 @@ namespace Greatbone.Core
 
             actions = new Roll<WebAction>(32);
 
-            Type type = GetType();
+            Type typ = GetType();
 
             // introspect doer methods
-            foreach (MethodInfo mi in type.GetMethods(BindingFlags.Public | BindingFlags.Instance))
+            foreach (MethodInfo mi in typ.GetMethods(BindingFlags.Public | BindingFlags.Instance))
             {
                 ParameterInfo[] pis = mi.GetParameters();
                 WebAction doer = null;

@@ -19,46 +19,46 @@ namespace Greatbone.Core
     public class WebConfig : WebTie, IPersist
     {
         // partition
-        public string Part;
+        internal string part;
 
         // public socket address
-        public string Public;
+        internal string @public;
 
         // TLS or not
-        public bool Tls;
+        internal bool tls;
 
         // private socket address
-        public string Private;
+        internal string @private;
 
         // private networking socket addresses
-        public string[] Net;
+        internal string[] net;
 
         // database connectivity
-        public DbConfig Db;
+        internal DbConfig db;
 
         // options
-        public JObj Options;
+        internal JObj options;
 
         public void Load(ISource sc)
         {
-            sc.Got(nameof(Key), ref Key);
-            sc.Got(nameof(Part), ref Part);
-            sc.Got(nameof(Public), ref Public);
-            sc.Got(nameof(Tls), ref Tls);
-            sc.Got(nameof(Private), ref Private);
+            sc.Got(nameof(key), ref key);
+            sc.Got(nameof(part), ref part);
+            sc.Got(nameof(@public), ref @public);
+            sc.Got(nameof(tls), ref tls);
+            sc.Got(nameof(@private), ref @private);
             // sc.Get(nameof(Net), ref Net);
-            sc.Got(nameof(Db), ref Db);
+            sc.Got(nameof(db), ref db);
         }
 
         public void Save<R>(ISink<R> sk) where R : ISink<R>
         {
-            sk.Put(nameof(Key), Key);
-            sk.Put(nameof(Part), Part);
-            sk.Put(nameof(Public), Public);
-            sk.Put(nameof(Tls), Tls);
-            sk.Put(nameof(Private), Private);
+            sk.Put(nameof(key), key);
+            sk.Put(nameof(part), part);
+            sk.Put(nameof(@public), @public);
+            sk.Put(nameof(tls), tls);
+            sk.Put(nameof(@private), @private);
             // sk.Put(nameof(Net), Net);
-            sk.Put(nameof(Db), Db);
+            sk.Put(nameof(db), db);
         }
 
         public WebConfig LoadFile(string file)

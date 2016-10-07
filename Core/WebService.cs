@@ -75,18 +75,18 @@ namespace Greatbone.Core
 
             server = new KestrelServer(Options.Create(options), Lifetime, logger);
             ICollection<string> addrs = server.Features.Get<IServerAddressesFeature>().Addresses;
-            addrs.Add(cfg.Tls ? "https://" : "http://" + cfg.Public);
-            addrs.Add("http://" + cfg.Private); // clustered msg queue
+            addrs.Add(cfg.tls ? "https://" : "http://" + cfg.@public);
+            addrs.Add("http://" + cfg.@private); // clustered msg queue
 
             CreateMsgTables();
 
-            priaddr = cfg.Private;
+            priaddr = cfg.@private;
 
-            string[] net = cfg.Net;
+            string[] net = cfg.net;
             for (int i = 0; i < net.Length; i++)
             {
                 string addr = net[i];
-                if (addr.Equals(cfg.Private)) continue;
+                if (addr.Equals(cfg.@private)) continue;
                 if (MPollers == null) MPollers = new Roll<MsgPoller>(net.Length);
                 MPollers.Add(new MsgPoller(this, addr));
             }
@@ -214,9 +214,9 @@ namespace Greatbone.Core
 
             Console.Write(Key);
             Console.Write(" -> ");
-            Console.Write(Config.Public);
+            Console.Write(Config.@public);
             Console.Write(", ");
-            Console.Write(Config.Private);
+            Console.Write(Config.@private);
             Console.WriteLine();
         }
 
@@ -246,7 +246,7 @@ namespace Greatbone.Core
 
         public DbContext NewDbContext()
         {
-            DbConfig cfg = Config.Db;
+            DbConfig cfg = Config.db;
             NpgsqlConnectionStringBuilder builder = new NpgsqlConnectionStringBuilder()
             {
                 Host = cfg.Host,

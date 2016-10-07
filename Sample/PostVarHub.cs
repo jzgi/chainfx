@@ -5,7 +5,7 @@ namespace Greatbone.Sample
 {
     public class PostVarHub : WebVarHub
     {
-        public PostVarHub(WebTie bld) : base(bld)
+        public PostVarHub(ITie bld) : base(bld)
         {
         }
 

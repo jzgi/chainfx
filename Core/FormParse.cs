@@ -5,7 +5,7 @@ namespace Greatbone.Core
 
     public struct FormParse
     {
-        static readonly FormatException FormatEx = new FormatException("JSON Format");
+        static readonly JException FormatEx = new JException("JSON Format");
 
         readonly byte[] buffer;
 

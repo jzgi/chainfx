@@ -32,11 +32,11 @@ namespace Greatbone.Sample
 
             var www = new WwwService(new WebConfig
             {
-                Key = "www",
-                Public = "127.0.0.1:8080",
-                Private = "127.0.0.1:7070",
-                Net = addrs,
-                Db = pg
+                key = "www",
+                @public = "127.0.0.1:8080",
+                @private = "127.0.0.1:7070",
+                net = addrs,
+                db = pg
             }
 #if !DEBUG
             .LoadFile("www.json")
@@ -45,11 +45,11 @@ namespace Greatbone.Sample
 
             var biz = new BizService(new WebConfig
             {
-                Key = "biz",
-                Public = "127.0.0.1:8081",
-                Private = "127.0.0.1:7071",
-                Net = addrs,
-                Db = pg
+                key = "biz",
+                @public = "127.0.0.1:8081",
+                @private = "127.0.0.1:7071",
+                net = addrs,
+                db = pg
             }
 #if !DEBUG
             .LoadFile("biz.json")
@@ -58,11 +58,11 @@ namespace Greatbone.Sample
 
             var cont = new ContService(new WebConfig
             {
-                Key = "cont",
-                Public = "127.0.0.1:8082",
-                Private = "127.0.0.1:7072",
-                Net = addrs,
-                Db = pg
+                key = "cont",
+                @public = "127.0.0.1:8082",
+                @private = "127.0.0.1:7072",
+                net = addrs,
+                db = pg
             }
 #if !DEBUG
             .LoadFile("cont.json")
@@ -71,11 +71,11 @@ namespace Greatbone.Sample
 
             var dir = new DirService(new WebConfig
             {
-                Key = "dir",
-                Public = "127.0.0.1:8083",
-                Private = "127.0.0.1:7073",
-                Net = addrs,
-                Db = pg
+                key = "dir",
+                @public = "127.0.0.1:8083",
+                @private = "127.0.0.1:7073",
+                net = addrs,
+                db = pg
             }
 #if !DEBUG
             .LoadFile("dir.json")
@@ -84,11 +84,11 @@ namespace Greatbone.Sample
 
             var chat = new ChatService(new WebConfig
             {
-                Key = "chat",
-                Public = "127.0.0.1:8084",
-                Private = "127.0.0.1:7074",
-                Net = addrs,
-                Db = pg
+                key = "chat",
+                @public = "127.0.0.1:8084",
+                @private = "127.0.0.1:7074",
+                net = addrs,
+                db = pg
             }
 #if !DEBUG
             .LoadFile("chat.json")

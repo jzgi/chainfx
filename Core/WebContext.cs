@@ -162,14 +162,14 @@ namespace Greatbone.Core
             Content = json;
         }
 
-        public void SetHtml(int status, Action<HtmlContent> a, bool? pub = true, int maxage = 1000)
+        public void SetHtml(int status, Action<HtmContent> a, bool? pub = true, int maxage = 1000)
         {
             StatusCode = status;
 
             this.pub = pub;
             this.maxage = maxage;
 
-            HtmlContent html = new HtmlContent(16 * 1024);
+            HtmContent html = new HtmContent(16 * 1024);
             a?.Invoke(html);
             Content = html;
         }

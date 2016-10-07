@@ -5,7 +5,7 @@ namespace Greatbone.Sample
 {
     public class FameModule : WebModule, IAdmin
     {
-        public FameModule(WebTie tie) : base(tie)
+        public FameModule(ITie tie) : base(tie)
         {
             SetVarHub<FameVarHub>(false);
         }
