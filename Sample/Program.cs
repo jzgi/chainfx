@@ -33,8 +33,8 @@ namespace Greatbone.Sample
             var www = new WwwService(new WebConfig
             {
                 key = "www",
-                @public = "127.0.0.1:8080",
-                @private = "127.0.0.1:7070",
+                @extern = "127.0.0.1:8080",
+                intern = "127.0.0.1:7070",
                 net = addrs,
                 db = pg
             }
@@ -46,8 +46,8 @@ namespace Greatbone.Sample
             var biz = new BizService(new WebConfig
             {
                 key = "biz",
-                @public = "127.0.0.1:8081",
-                @private = "127.0.0.1:7071",
+                @extern = "127.0.0.1:8081",
+                intern = "127.0.0.1:7071",
                 net = addrs,
                 db = pg
             }
@@ -59,8 +59,8 @@ namespace Greatbone.Sample
             var cont = new ContService(new WebConfig
             {
                 key = "cont",
-                @public = "127.0.0.1:8082",
-                @private = "127.0.0.1:7072",
+                @extern = "127.0.0.1:8082",
+                intern = "127.0.0.1:7072",
                 net = addrs,
                 db = pg
             }
@@ -72,8 +72,8 @@ namespace Greatbone.Sample
             var dir = new DirService(new WebConfig
             {
                 key = "dir",
-                @public = "127.0.0.1:8083",
-                @private = "127.0.0.1:7073",
+                @extern = "127.0.0.1:8083",
+                intern = "127.0.0.1:7073",
                 net = addrs,
                 db = pg
             }
@@ -85,8 +85,8 @@ namespace Greatbone.Sample
             var chat = new ChatService(new WebConfig
             {
                 key = "chat",
-                @public = "127.0.0.1:8084",
-                @private = "127.0.0.1:7074",
+                @extern = "127.0.0.1:8084",
+                intern = "127.0.0.1:7074",
                 net = addrs,
                 db = pg
             }

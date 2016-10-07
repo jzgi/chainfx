@@ -75,18 +75,18 @@ namespace Greatbone.Core
 
             server = new KestrelServer(Options.Create(options), Lifetime, logger);
             ICollection<string> addrs = server.Features.Get<IServerAddressesFeature>().Addresses;
-            addrs.Add(cfg.tls ? "https://" : "http://" + cfg.@public);
-            addrs.Add("http://" + cfg.@private); // clustered msg queue
+            addrs.Add(cfg.tls ? "https://" : "http://" + cfg.@extern);
+            addrs.Add("http://" + cfg.intern); // clustered msg queue
 
             CreateMsgTables();
 
-            priaddr = cfg.@private;
+            priaddr = cfg.intern;
 
             string[] net = cfg.net;
             for (int i = 0; i < net.Length; i++)
             {
                 string addr = net[i];
-                if (addr.Equals(cfg.@private)) continue;
+                if (addr.Equals(cfg.intern)) continue;
                 if (MPollers == null) MPollers = new Roll<MsgPoller>(net.Length);
                 MPollers.Add(new MsgPoller(this, addr));
             }
@@ -214,9 +214,9 @@ namespace Greatbone.Core
 
             Console.Write(Key);
             Console.Write(" -> ");
-            Console.Write(Config.@public);
+            Console.Write(Config.@extern);
             Console.Write(", ");
-            Console.Write(Config.@private);
+            Console.Write(Config.intern);
             Console.WriteLine();
         }
 

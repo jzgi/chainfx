@@ -21,16 +21,16 @@ namespace Greatbone.Core
         // partition
         internal string part;
 
-        // public socket address
-        internal string @public;
+        // externally-avaiable socket address
+        internal string @extern;
 
         // TLS or not
         internal bool tls;
 
-        // private socket address
-        internal string @private;
+        // internally-avaiable socket address
+        internal string intern;
 
-        // private networking socket addresses
+        // intranet socket addresses
         internal string[] net;
 
         // database connectivity
@@ -43,9 +43,9 @@ namespace Greatbone.Core
         {
             sc.Got(nameof(key), ref key);
             sc.Got(nameof(part), ref part);
-            sc.Got(nameof(@public), ref @public);
+            sc.Got(nameof(@extern), ref @extern);
             sc.Got(nameof(tls), ref tls);
-            sc.Got(nameof(@private), ref @private);
+            sc.Got(nameof(intern), ref intern);
             // sc.Get(nameof(Net), ref Net);
             sc.Got(nameof(db), ref db);
         }
@@ -54,9 +54,9 @@ namespace Greatbone.Core
         {
             sk.Put(nameof(key), key);
             sk.Put(nameof(part), part);
-            sk.Put(nameof(@public), @public);
+            sk.Put(nameof(@extern), @extern);
             sk.Put(nameof(tls), tls);
-            sk.Put(nameof(@private), @private);
+            sk.Put(nameof(intern), intern);
             // sk.Put(nameof(Net), Net);
             sk.Put(nameof(db), db);
         }
@@ -67,9 +67,9 @@ namespace Greatbone.Core
             {
                 byte[] bytes = File.ReadAllBytes(file);
                 JParse parse = new JParse(bytes);
-                JObj obj = (JObj)parse.Parse();
+                JObj jobj = (JObj)parse.Parse();
 
-                Load(obj); // may override
+                Load(jobj); // may override
 
             }
             catch (Exception ex)
