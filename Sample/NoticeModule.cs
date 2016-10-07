@@ -8,7 +8,7 @@ namespace Greatbone.Sample
     ///
     public class NoticeModule : WebModule, IAdmin
     {
-        public NoticeModule(ITie tie) : base(tie)
+        public NoticeModule(IScope scope) : base(scope)
         {
             SetVarHub<NoticeVarHub>(false);
         }

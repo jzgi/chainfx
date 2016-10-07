@@ -22,14 +22,14 @@ namespace Greatbone.Core
             this.service = service;
             this.addr = addr;
 
-            StringBuilder sb = new StringBuilder("SELECT * FROM mqueue WHERE id > @lastid AND ");
-            for (int i = 0; i < mactions.Count; i++)
-            {
-                MsgAction sub = mactions[i];
+            // StringBuilder sb = new StringBuilder("SELECT * FROM mqueue WHERE id > @lastid AND ");
+            // for (int i = 0; i < mactions.Count; i++)
+            // {
+            //     MsgAction sub = mactions[i];
 
-                sb.Append("topic = '").Append(sub.Key).Append("'");
-            }
-            sql = sb.ToString();
+            //     sb.Append("topic = '").Append(sub.Key).Append("'");
+            // }
+            // sql = sb.ToString();
 
         }
 

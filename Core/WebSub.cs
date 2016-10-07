@@ -40,25 +40,25 @@ namespace Greatbone.Core
         public StaticContent DefaultStatic { get; }
 
         // the argument makes state-passing more convenient
-        protected WebSub(ITie tie)
+        protected WebSub(IScope scope)
         {
             // adjust
-            if (tie.Service == null)
+            if (scope.Service == null)
             {
                 WebService svc = this as WebService;
                 if (svc == null) { throw new WebException("not a WebService"); }
-                WebConfig cfg = tie as WebConfig;
+                WebConfig cfg = scope as WebConfig;
                 if (cfg == null) { throw new WebException("not a WebConfig"); }
                 cfg.Service = svc;
             }
 
             // initialize
-            Key = tie.Key;
-            IsVar = tie.IsVar;
-            Service = tie.Service;
-            Parent = tie.Parent;
+            Key = scope.Key;
+            IsVar = scope.IsVar;
+            Service = scope.Service;
+            Parent = scope.Parent;
 
-            StaticPath = tie.Parent == null ? Key : Path.Combine(Parent.StaticPath, Key);
+            StaticPath = scope.Parent == null ? Key : Path.Combine(Parent.StaticPath, Key);
 
             // load static files, if any
             if (StaticPath != null && Directory.Exists(StaticPath))
@@ -98,7 +98,7 @@ namespace Greatbone.Core
             {
                 ParameterInfo[] pis = mi.GetParameters();
                 WebAction a = null;
-                if (tie.IsVar)
+                if (scope.IsVar)
                 {
                     if (pis.Length == 2 && pis[0].ParameterType == typeof(WebContext) && pis[1].ParameterType == typeof(string))
                     {
@@ -212,5 +212,6 @@ namespace Greatbone.Core
                 wc.StatusCode = 404;
             }
         }
+
     }
 }

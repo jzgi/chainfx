@@ -25,7 +25,7 @@ namespace Greatbone.Core
     /// etag -- reduces network I/O with unchanged results
     ///
     ///
-    public abstract class WebService : WebModule, IHttpApplication<HttpContext>
+    public abstract class WebService : WebModule, IHttpApplication<HttpContext>, ILoggerProvider
     {
         // SERVER
         //
@@ -49,11 +49,12 @@ namespace Greatbone.Core
         // load messages from local queue        
         readonly Roll<MsgLoader> mloaders;
 
-        // processing of received messages
+        // handling of received messages
         readonly Roll<MsgAction> mactions;
 
         readonly Thread mscheduler;
 
+        // poll remote peer servers for subscribed messages
         readonly Roll<MsgPoller> mpollers;
 
 
@@ -63,7 +64,7 @@ namespace Greatbone.Core
 
             // create the embedded server instance
             factory = new LoggerFactory();
-            factory.AddProvider(new WebLoggerProvider());
+            factory.AddProvider(this);
             options = new KestrelServerOptions();
             server = new KestrelServer(Options.Create(options), Lifetime, factory);
             ICollection<string> addrs = server.Features.Get<IServerAddressesFeature>().Addresses;
@@ -311,5 +312,20 @@ namespace Greatbone.Core
             }
 
         }
+
+        //
+        // LOGGING
+        //
+
+        // sub controllers are already there
+        public ILogger CreateLogger(string name)
+        {
+            return this;
+        }
+
+        public void Dispose()
+        {
+        }
+
     }
 }

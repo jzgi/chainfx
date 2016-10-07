@@ -7,7 +7,7 @@ namespace Greatbone.Sample
 	///
 	public class FameVarHub : WebVarHub
 	{
-		public FameVarHub(ITie bld) : base(bld)
+		public FameVarHub(IScope scope) : base(scope)
 		{
 		}
 

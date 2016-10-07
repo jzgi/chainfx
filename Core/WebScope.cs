@@ -1,6 +1,6 @@
 ﻿namespace Greatbone.Core
 {
-    public class WebTie : ITie
+    public class WebScope : IScope
     {
         internal string key;
 

@@ -11,7 +11,7 @@ namespace Greatbone.Sample
     {
         private ConcurrentDictionary<string, List<Chat>> online;
 
-        public ChatVarHub(ITie bld) : base(bld)
+        public ChatVarHub(IScope scope) : base(scope)
         {
         }
 

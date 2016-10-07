@@ -1,6 +1,6 @@
 ﻿namespace Greatbone.Core
 {
-    public interface ITie
+    public interface IScope
     {
         string Key { get; }
 
