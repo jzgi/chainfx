@@ -1,7 +1,9 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Net;
 using System.Reflection;
+using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Hosting;
@@ -25,7 +27,7 @@ namespace Greatbone.Core
     /// etag -- reduces network I/O with unchanged results
     ///
     ///
-    public abstract class WebService : WebModule, IHttpApplication<HttpContext>, ILoggerProvider
+    public abstract class WebService : WebModule, IHttpApplication<HttpContext>, ILoggerProvider, ILogger, IDisposable
     {
         // SERVER
         //
@@ -38,8 +40,6 @@ namespace Greatbone.Core
         // the embedded server
         readonly KestrelServer server;
 
-        // private address
-        string priaddr;
 
         public WebConfig Config { get; internal set; }
 
@@ -62,9 +62,17 @@ namespace Greatbone.Core
         {
             Config = cfg;
 
-            // create the embedded server instance
+            // setup logging support
             factory = new LoggerFactory();
             factory.AddProvider(this);
+            string logFile = Key + "-" + DateTime.Now.ToString("yyyyMM") + ".log";
+            FileStream fs = new FileStream(logFile, FileMode.Append, FileAccess.Write);
+            logWriter = new StreamWriter(fs, Encoding.UTF8, 1024 * 4, false)
+            {
+                AutoFlush = true
+            };
+
+            // create the embedded server instance
             options = new KestrelServerOptions();
             server = new KestrelServer(Options.Create(options), Lifetime, factory);
             ICollection<string> addrs = server.Features.Get<IServerAddressesFeature>().Addresses;
@@ -89,8 +97,10 @@ namespace Greatbone.Core
             {
                 string addr = net[i];
                 if (addr.Equals(cfg.intern)) continue;
+                // loader
                 if (mloaders == null) mloaders = new Roll<MsgLoader>(net.Length * 2);
                 mloaders.Add(new MsgLoader(this, addr));
+                // poller
                 if (mactions != null)
                 {
                     if (mpollers == null) mpollers = new Roll<MsgPoller>(net.Length * 2);
@@ -102,6 +112,7 @@ namespace Greatbone.Core
 
         }
 
+
         internal Roll<MsgLoader> MsgLoaders => mloaders;
 
         internal Roll<MsgAction> MsgActions => mactions;
@@ -110,6 +121,11 @@ namespace Greatbone.Core
 
         bool PrepareMsgTables()
         {
+            if (!Config.db.MQ)
+            {
+                return false;
+            }
+
             // check db
             using (var dc = Service.NewDbContext())
             {
@@ -163,7 +179,7 @@ namespace Greatbone.Core
             // dispatch among public/private web actions and msg polling
             ConnectionInfo ci = wc.Connection;
             string laddr = ci.LocalIpAddress.ToString() + ":" + ci.LocalPort;
-            if (laddr.Equals(priaddr)) // [PROC] private traffic
+            if (laddr.Equals(Config.intern)) // [PROC] internal traffic
             {
                 // verify the remote addrees 
                 string raddr = ci.RemoteIpAddress.ToString();
@@ -325,6 +341,50 @@ namespace Greatbone.Core
 
         public void Dispose()
         {
+            logWriter.Flush();
+        }
+
+        //
+        // LOGGING
+        //
+
+        // opened writer on the log file
+        readonly StreamWriter logWriter;
+
+        public IDisposable BeginScope<T>(T state)
+        {
+            return this;
+        }
+
+        public bool IsEnabled(LogLevel logLevel)
+        {
+            return true;
+        }
+
+
+        static readonly string[] Hints = { "TRACE", "DEBUG", "INFO", "WARNING", "ERROR" };
+
+        public void Log<T>(LogLevel level, EventId eventId, T state, Exception exception, Func<T, Exception, string> formatter)
+        {
+            if (!IsEnabled(level))
+            {
+                return;
+            }
+
+            logWriter.Write(Hints[(int)level]);
+            if (formatter != null)
+            {
+                var message = formatter(state, exception);
+                logWriter.WriteLine(message);
+            }
+            else
+            {
+                logWriter.WriteLine(state.ToString());
+                if (exception != null)
+                {
+                    logWriter.Write(exception.ToString());
+                }
+            }
         }
 
     }

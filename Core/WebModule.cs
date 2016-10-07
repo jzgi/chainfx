@@ -1,14 +1,12 @@
 ﻿using System;
-using System.IO;
 using System.Reflection;
-using Microsoft.Extensions.Logging;
 
 namespace Greatbone.Core
 {
     /// <summary>
     /// A module consists of sub controllers and/or variable-key hub controller. It represents an independent business realm.
     /// </summary>
-    public abstract class WebModule : WebSub, ILogger
+    public abstract class WebModule : WebSub
     {
         // the added sub controllers, if any
         private Roll<WebSub> subs;
@@ -95,35 +93,6 @@ namespace Greatbone.Core
                 }
             }
         }
-
-        //
-        // LOGGING
-        //
-
-        const string FileName = "module.log";
-
-        // opened writer on the log file
-        StreamWriter writer;
-
-        public IDisposable BeginScope<T>(T state)
-        {
-            throw new NotImplementedException();
-        }
-
-        public bool IsEnabled(LogLevel logLevel)
-        {
-            throw new NotImplementedException();
-        }
-
-        public void Log<T>(LogLevel logLevel, EventId eventId, T state, Exception exception, Func<T, Exception, string> formatter)
-        {
-            if (formatter != null)
-            {
-                var message = formatter(state, exception);
-            }
-            throw new NotImplementedException();
-        }
-
 
     }
 }

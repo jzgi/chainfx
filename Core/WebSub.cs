@@ -1,6 +1,7 @@
 ﻿using System;
 using System.IO;
 using System.Reflection;
+using Microsoft.Extensions.Logging;
 
 namespace Greatbone.Core
 {
@@ -183,6 +184,36 @@ namespace Greatbone.Core
                     a.Do(wc, var);
                 }
             }
+        }
+
+        public void Trace(string message, params object[] args)
+        {
+            string v = String.Format(message, args);
+            Service.Log(LogLevel.Trace, 0, v, null, null);
+        }
+
+        public void Debug(string message, params object[] args)
+        {
+            string v = String.Format(message, args);
+            Service.Log(LogLevel.Debug, 0, v, null, null);
+        }
+
+        public void Info(string message, params object[] args)
+        {
+            string v = String.Format(message, args);
+            Service.Log(LogLevel.Information, 0, v, null, null);
+        }
+
+        public void Warning(string message, params object[] args)
+        {
+            string v = String.Format(message, args);
+            Service.Log(LogLevel.Warning, 0, v, null, null);
+        }
+
+        public void Error(string message, params object[] args)
+        {
+            string v = String.Format(message, args);
+            Service.Log(LogLevel.Error, 0, v, null, null);
         }
 
         public virtual void @default(WebContext wc)
