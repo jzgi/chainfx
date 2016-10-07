@@ -250,6 +250,8 @@ namespace Greatbone.Core
             Console.Write(", ");
             Console.Write(Config.intern);
             Console.WriteLine();
+
+            Info("started");
         }
 
 
@@ -356,33 +358,41 @@ namespace Greatbone.Core
             return this;
         }
 
-        public bool IsEnabled(LogLevel logLevel)
+        public bool IsEnabled(LogLevel level)
         {
-            return true;
+            return (int)level >= Config.logging;
         }
 
 
-        static readonly string[] Hints = { "TRACE", "DEBUG", "INFO", "WARNING", "ERROR" };
+        static readonly string[] Tags = { "TRACE: ", "DEBUG: ", "INFO: ", "WARNING: ", "ERROR: " };
 
-        public void Log<T>(LogLevel level, EventId eventId, T state, Exception exception, Func<T, Exception, string> formatter)
+        public void Log<T>(LogLevel level, EventId eid, T state, Exception exception, Func<T, Exception, string> formatter)
         {
             if (!IsEnabled(level))
             {
                 return;
             }
 
-            logWriter.Write(Hints[(int)level]);
-            if (formatter != null)
+            logWriter.Write(Tags[(int)level]);
+
+            if (eid.Id != 0)
+            {
+                logWriter.Write("{");
+                logWriter.Write(eid.Id);
+                logWriter.Write("} ");
+            }
+
+            if (formatter != null) // custom format
             {
                 var message = formatter(state, exception);
                 logWriter.WriteLine(message);
             }
-            else
+            else // fixed format
             {
                 logWriter.WriteLine(state.ToString());
                 if (exception != null)
                 {
-                    logWriter.Write(exception.ToString());
+                    logWriter.WriteLine(exception.ToString());
                 }
             }
         }

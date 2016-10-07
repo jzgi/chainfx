@@ -53,7 +53,7 @@ namespace Greatbone.Core
                 cfg.Service = svc;
             }
 
-            // initialize
+            // initialize setting values
             Key = setg.Key;
             IsVar = setg.IsVar;
             Service = setg.Service;
@@ -186,34 +186,33 @@ namespace Greatbone.Core
             }
         }
 
-        public void Trace(string message, params object[] args)
+        //
+        // LOGGING METHODS
+        //
+
+        public void Trace(string message, Exception exception = null)
         {
-            string v = String.Format(message, args);
-            Service.Log(LogLevel.Trace, 0, v, null, null);
+            Service.Log(LogLevel.Trace, 0, message, exception, null);
         }
 
-        public void Debug(string message, params object[] args)
+        public void Debug(string message, Exception exception = null)
         {
-            string v = String.Format(message, args);
-            Service.Log(LogLevel.Debug, 0, v, null, null);
+            Service.Log(LogLevel.Debug, 0, message, exception, null);
         }
 
-        public void Info(string message, params object[] args)
+        public void Info(string message, Exception exception = null)
         {
-            string v = String.Format(message, args);
-            Service.Log(LogLevel.Information, 0, v, null, null);
+            Service.Log(LogLevel.Information, 0, message, exception, null);
         }
 
-        public void Warning(string message, params object[] args)
+        public void Warning(string message, Exception exception = null)
         {
-            string v = String.Format(message, args);
-            Service.Log(LogLevel.Warning, 0, v, null, null);
+            Service.Log(LogLevel.Warning, 0, message, exception, null);
         }
 
-        public void Error(string message, params object[] args)
+        public void Error(string message, Exception exception = null)
         {
-            string v = String.Format(message, args);
-            Service.Log(LogLevel.Error, 0, v, null, null);
+            Service.Log(LogLevel.Error, 0, message, exception, null);
         }
 
         public virtual void @default(WebContext wc)

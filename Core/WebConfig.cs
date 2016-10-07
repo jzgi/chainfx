@@ -36,6 +36,9 @@ namespace Greatbone.Core
         // database connectivity
         internal DbConfig db;
 
+        // logging level
+        internal int logging;
+
         // options
         internal JObj options;
 
