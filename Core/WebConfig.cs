@@ -16,7 +16,7 @@ namespace Greatbone.Core
     /// }
     /// </example>
     ///
-    public class WebConfig : WebScope, IPersist
+    public class WebConfig : WebTie, IPersist
     {
         // partition
         internal string part;

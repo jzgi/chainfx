@@ -16,7 +16,7 @@ namespace Greatbone.Core
         // the attached variable-key multiplexer, if any
         private WebVarHub varhub;
 
-        protected WebModule(IScope scope) : base(scope)
+        protected WebModule(ISetting setg) : base(setg)
         {
         }
 
@@ -30,16 +30,16 @@ namespace Greatbone.Core
             }
             // create instance by reflection
             Type typ = typeof(T);
-            ConstructorInfo ci = typ.GetConstructor(new[] { typeof(IScope) });
+            ConstructorInfo ci = typ.GetConstructor(new[] { typeof(ISetting) });
             if (ci == null) { throw new WebException(typ + ": the constructor with WebTie"); }
-            WebScope scope = new WebScope()
+            WebTie tie = new WebTie()
             {
                 key = key,
                 Parent = this,
                 Service = Service,
                 IsVar = false
             };
-            T sub = (T)ci.Invoke(new object[] { scope });
+            T sub = (T)ci.Invoke(new object[] { tie });
 
             subs.Add(sub);
 
@@ -54,16 +54,16 @@ namespace Greatbone.Core
         {
             // create instance
             Type typ = typeof(T);
-            ConstructorInfo ci = typ.GetConstructor(new[] { typeof(IScope) });
+            ConstructorInfo ci = typ.GetConstructor(new[] { typeof(ISetting) });
             if (ci == null) { throw new WebException(typ + ": the constructor with WebTie"); }
-            WebScope scope = new WebScope
+            WebTie tie = new WebTie
             {
                 key = "var",
                 Parent = this,
                 Service = Service,
                 IsVar = true
             };
-            T hub = (T)ci.Invoke(new object[] { scope });
+            T hub = (T)ci.Invoke(new object[] { tie });
 
             this.varhub = hub;
 

@@ -10,7 +10,7 @@ namespace Greatbone.Sample
     ///
     public class UserVarHub : WebVarHub
     {
-        public UserVarHub(IScope scope) : base(scope)
+        public UserVarHub(ISetting setg) : base(setg)
         {
         }
 

@@ -5,7 +5,7 @@ namespace Greatbone.Sample
 {
     public class NoticeVarHub : WebVarHub
     {
-        public NoticeVarHub(IScope scope) : base(scope)
+        public NoticeVarHub(ISetting setg) : base(setg)
         {
         }
 

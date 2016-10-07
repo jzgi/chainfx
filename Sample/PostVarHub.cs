@@ -5,7 +5,7 @@ namespace Greatbone.Sample
 {
     public class PostVarHub : WebVarHub
     {
-        public PostVarHub(IScope scope) : base(scope)
+        public PostVarHub(ISetting setg) : base(setg)
         {
         }
 

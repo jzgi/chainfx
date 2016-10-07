@@ -8,7 +8,7 @@ namespace Greatbone.Sample
     ///
     public class UserModule : WebModule, IAdmin
     {
-        public UserModule(IScope scope) : base(scope)
+        public UserModule(ISetting setg) : base(setg)
         {
             SetVarHub<UserVarHub>(false);
         }

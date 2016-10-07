@@ -13,5 +13,7 @@ namespace Greatbone.Sample
             
             AddSub<NoticeModule>("notice", false);
         }
+
     }
+    
 }

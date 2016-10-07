@@ -6,7 +6,7 @@ namespace Greatbone.Sample
 {
     public class PostModule : WebModule, IAdmin
     {
-        public PostModule(IScope scope) : base(scope)
+        public PostModule(ISetting setg) : base(setg)
         {
             SetVarHub<PostVarHub>(false);
         }
