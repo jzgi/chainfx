@@ -121,7 +121,7 @@ namespace Greatbone.Core
 
         bool PrepareMsgTables()
         {
-            if (!Config.db.MQ)
+            if (!Config.db.msg)
             {
                 return false;
             }
@@ -283,10 +283,10 @@ namespace Greatbone.Core
             DbConfig cfg = Config.db;
             NpgsqlConnectionStringBuilder builder = new NpgsqlConnectionStringBuilder()
             {
-                Host = cfg.Host,
+                Host = cfg.host,
                 Database = Key,
-                Username = cfg.Username,
-                Password = cfg.Password
+                Username = cfg.username,
+                Password = cfg.password
             };
             return new DbContext(builder);
         }

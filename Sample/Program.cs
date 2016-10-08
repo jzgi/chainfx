@@ -15,14 +15,14 @@ namespace Greatbone.Sample
         {
             DbConfig pg = new DbConfig
             {
-                Host = "60.205.104.239",
-                Port = 5432,
-                Username = "postgres",
-                Password = "Zou###1989",
-                MQ = false
+                host = "60.205.104.239",
+                port = 5432,
+                username = "postgres",
+                password = "Zou###1989",
+                msg = false
             };
 
-            string[] addrs =             {
+            string[] addrs = {
                 "127.0.0.1:7070",
                 "127.0.0.1:7071",
                 "127.0.0.1:7072",

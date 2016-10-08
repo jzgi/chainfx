@@ -2,32 +2,33 @@
 {
     public class DbConfig : IPersist
     {
-        public string Host;
+        internal string host;
 
-        public int Port;
+        internal int port;
 
-        public string Username;
+        internal string username;
 
-        public string Password;
+        internal string password;
 
-        public bool MQ;
+        // whether to create message tables
+        internal bool msg;
 
         public void Load(ISource sc, int x = -1)
         {
-            sc.Got(nameof(Host), ref Host);
-            sc.Got(nameof(Port), ref Port);
-            sc.Got(nameof(Username), ref Username);
-            sc.Got(nameof(Password), ref Password);
-            sc.Got(nameof(MQ), ref MQ);
+            sc.Got(nameof(host), ref host);
+            sc.Got(nameof(port), ref port);
+            sc.Got(nameof(username), ref username);
+            sc.Got(nameof(password), ref password);
+            sc.Got(nameof(msg), ref msg);
         }
 
         public void Save<R>(ISink<R> k, int x = -1) where R : ISink<R>
         {
-            k.Put(nameof(Host), Host);
-            k.Put(nameof(Port), Port);
-            k.Put(nameof(Username), Username);
-            k.Put(nameof(Password), Password);
-            k.Put(nameof(MQ), MQ);
+            k.Put(nameof(host), host);
+            k.Put(nameof(port), port);
+            k.Put(nameof(username), username);
+            k.Put(nameof(password), password);
+            k.Put(nameof(msg), msg);
         }
     }
 
