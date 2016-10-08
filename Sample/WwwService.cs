@@ -27,7 +27,7 @@ namespace Greatbone.Sample
         {
             wc.SendJson(200, json =>
             {
-                json.Arr(delegate
+                json.PutArr(delegate
                 {
 
                 });

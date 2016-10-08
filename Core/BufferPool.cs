@@ -64,7 +64,7 @@ namespace Greatbone.Core
         public static byte[] Expand(byte[] old)
         {
             int olen = old.Length;
-            byte[] buf = Borrow(olen * 4) ;
+            byte[] buf = Borrow(olen * 4);
             Array.Copy(old, buf, olen);
             Return(old);
             return buf;

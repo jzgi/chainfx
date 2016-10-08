@@ -10,7 +10,7 @@ namespace Greatbone.Core
     /// </summary>
     public class DbParameters : ISink<DbParameters>
     {
-        static string[] Params = { "1", "2", "3", "4", "5", "6", "7", "8", "9", "10" };
+        static string[] Params = { "1", "2", "3", "4", "5", "6", "7", "8", "9", "10", "11", "12", "13", "14", "15", "16", "17", "18", "19", "20", "21", "22", "23", "24" };
 
         readonly NpgsqlParameterCollection coll;
 
@@ -19,17 +19,17 @@ namespace Greatbone.Core
             this.coll = coll;
         }
 
-        int index; // current parameter index
+        int paramidx; // current parameter index
 
         internal void Clear()
         {
             coll.Clear();
-            index = 0;
+            paramidx = 0;
         }
 
         public DbParameters Put(bool v)
         {
-            coll.Add(new NpgsqlParameter(Params[index++], NpgsqlDbType.Boolean)
+            coll.Add(new NpgsqlParameter(Params[paramidx++], NpgsqlDbType.Boolean)
             {
                 Value = v
             });
@@ -38,7 +38,7 @@ namespace Greatbone.Core
 
         public DbParameters Put(short v)
         {
-            coll.Add(new NpgsqlParameter(Params[index++], NpgsqlDbType.Smallint)
+            coll.Add(new NpgsqlParameter(Params[paramidx++], NpgsqlDbType.Smallint)
             {
                 Value = v
             });
@@ -47,7 +47,7 @@ namespace Greatbone.Core
 
         public DbParameters Put(int v)
         {
-            coll.Add(new NpgsqlParameter(Params[index++], NpgsqlDbType.Integer)
+            coll.Add(new NpgsqlParameter(Params[paramidx++], NpgsqlDbType.Integer)
             {
                 Value = v
             });
@@ -56,7 +56,7 @@ namespace Greatbone.Core
 
         public DbParameters Put(long v)
         {
-            coll.Add(new NpgsqlParameter(Params[index++], NpgsqlDbType.Bigint)
+            coll.Add(new NpgsqlParameter(Params[paramidx++], NpgsqlDbType.Bigint)
             {
                 Value = v
             });
@@ -65,7 +65,7 @@ namespace Greatbone.Core
 
         public DbParameters Put(decimal v)
         {
-            coll.Add(new NpgsqlParameter(Params[index++], NpgsqlDbType.Money)
+            coll.Add(new NpgsqlParameter(Params[paramidx++], NpgsqlDbType.Money)
             {
                 Value = v
             });
@@ -77,7 +77,7 @@ namespace Greatbone.Core
             NpgsqlDbType dt = (v.Hour == 0 && v.Minute == 0 && v.Second == 0 && v.Millisecond == 0) ?
                 NpgsqlDbType.Date : NpgsqlDbType.Timestamp;
 
-            coll.Add(new NpgsqlParameter(Params[index++], dt)
+            coll.Add(new NpgsqlParameter(Params[paramidx++], dt)
             {
                 Value = v
             });
@@ -86,7 +86,7 @@ namespace Greatbone.Core
 
         public DbParameters Put(string v)
         {
-            coll.Add(new NpgsqlParameter(Params[index++], NpgsqlDbType.Text)
+            coll.Add(new NpgsqlParameter(Params[paramidx++], NpgsqlDbType.Text)
             {
                 Value = (v != null) ? (object)v : DBNull.Value
             });

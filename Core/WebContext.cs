@@ -146,7 +146,7 @@ namespace Greatbone.Core
         {
             SendJson(status, jc =>
             {
-                jc.Obj(delegate { dat.Save(jc); });
+                jc.PutObj(delegate { dat.Save(jc); });
             }, pub, maxage);
         }
 
