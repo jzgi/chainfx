@@ -1,5 +1,4 @@
 ﻿using Greatbone.Core;
-using System.Collections.Generic;
 using System;
 
 namespace Greatbone.Sample
@@ -14,7 +13,7 @@ namespace Greatbone.Sample
         public void top(WebContext wc)
         {
             int page = 0;
-            if (!wc.Get("page", ref page))
+            if (!wc.Got("page", ref page))
             {
                 wc.StatusCode = 400; return;
             }
@@ -23,7 +22,7 @@ namespace Greatbone.Sample
             {
                 if (dc.Query(@"SELECT * FROM posts ORDER BY id DESC LIMIT @limit OFFSET @offset", p => p.Put(20).Put(20 * page)))
                 {
-                    List<Post> lst = dc.ToList<Post>();
+                    Post[] lst = dc.ToArr<Post>();
                     wc.SendJson(200, jc => jc.PutArr(lst));
                 }
                 else

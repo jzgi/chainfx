@@ -3,7 +3,7 @@
 namespace Greatbone.Core
 {
     /// <summary>
-    /// Represents a JSON-related exception occured.
+    /// To indicate that a JSON-related exception occured.
     /// </summary>
     public class JException : Exception
     {

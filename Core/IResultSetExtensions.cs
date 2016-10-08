@@ -6,7 +6,7 @@ namespace Greatbone.Core
     public static class IResultSetExtensions
     {
 
-        public static List<T> ToList<T>(this IResultSet rs) where T : IPersist, new()
+        public static T[] ToArr<T>(this IResultSet rs) where T : IPersist, new()
         {
             List<T> lst = new List<T>(32);
 
@@ -16,7 +16,7 @@ namespace Greatbone.Core
                 obj.Load(rs);
                 lst.Add(obj);
             }
-            return lst;
+            return lst.ToArray();
         }
 
         //
@@ -72,16 +72,16 @@ namespace Greatbone.Core
             return v;
         }
 
-        public static T Get<T>(this IResultSet rs, T def = default(T)) where T : IPersist, new()
+        public static T GetObj<T>(this IResultSet rs, T def = default(T)) where T : IPersist, new()
         {
             T v = def;
             rs.Got(ref v);
             return v;
         }
 
-        public static List<T> GetList<T>(this IResultSet rs, List<T> def = null) where T : IPersist, new()
+        public static T[] GetArr<T>(this IResultSet rs, T[] def = null) where T : IPersist, new()
         {
-            List<T> v = def;
+            T[] v = def;
             rs.Got(ref v);
             return v;
         }
@@ -93,14 +93,14 @@ namespace Greatbone.Core
             return v;
         }
 
-        public static JObj GetObj(this IResultSet rs, JObj def = null)
+        public static JObj GetJObj(this IResultSet rs, JObj def = null)
         {
             JObj v = def;
             rs.Got(ref v);
             return v;
         }
 
-        public static JArr GetArr(this IResultSet rs, JArr def = null)
+        public static JArr GetJArr(this IResultSet rs, JArr def = null)
         {
             JArr v = def;
             rs.Got(ref v);

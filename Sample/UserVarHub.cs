@@ -5,8 +5,7 @@ using Greatbone.Core;
 namespace Greatbone.Sample
 {
     ///
-    /// <summary>The features about a particular user principal.</summary>
-    /// /-/
+    /// <summary>The features for a particular user account.</summary>
     ///
     public class UserVarHub : WebVarHub
     {
@@ -20,34 +19,32 @@ namespace Greatbone.Sample
         public override void @default(WebContext wc, string id)
         {
             string password = null;
-            if (wc.Get("password", ref password))
+            if (wc.Got(nameof(password), ref password))
             {
-                wc.Response.StatusCode = 400;
-                return;
+                wc.StatusCode = 400; return;
             }
             using (var dc = Service.NewDbContext())
             {
-                if (dc.QueryA("SELECT id, credential, name FROM users WHERE id = @id", (p) => p.Put("@id", id)))
+                if (dc.QueryA("SELECT id, credential, name FROM users WHERE id = @1", (p) => p.Put(id)))
                 {
                     User o = new User();
                     dc.Got(ref o.id);
                     dc.Got(ref o.credential);
                     dc.Got(ref o.name);
 
-                    string md5 = ComputeMD5(password);
-                    if (md5.Equals(o.credential))
+                    string c16 = StrUtility.C16(password);
+                    if (c16.Equals(o.credential))
                     {
-                        wc.StatusCode = 200;
-                        // wc.SetSerialObj(o);
+                        wc.SendJson(200, jcont => { });
                     }
                     else
                     {
-                        wc.Response.StatusCode = 400;
+                        wc.StatusCode = 400;
                     }
                 }
                 else
                 {
-                    wc.Response.StatusCode = 404;
+                    wc.StatusCode = 404;
                 }
             }
         }
@@ -55,7 +52,7 @@ namespace Greatbone.Sample
         /// <summary>To modify the user's profile, normally by him/her self.</summary>
         ///
         [IfSelf]
-        public void ChPwd(WebContext wc, string userid)
+        public void chpwd(WebContext wc, string userid)
         {
             JObj r = (JObj)wc.Data;
 
@@ -72,33 +69,11 @@ namespace Greatbone.Sample
                     wc.Response.StatusCode = (int)HttpStatusCode.NotAcceptable;
                 }
             }
-            //            wc.Response.SendFileAsync()
         }
 
-        ///
-        /// The user drops this account
-        ///
-        public void Drop(WebContext wc, string x)
+        public void del(WebContext wc, string x)
         {
-            //            wc.Response.SendFileAsync()
         }
 
-        internal static string ComputeMD5(string input)
-        {
-            // Use input string to calculate MD5 hash
-            using (System.Security.Cryptography.MD5 md5 = System.Security.Cryptography.MD5.Create())
-            {
-                byte[] inputBytes = System.Text.Encoding.ASCII.GetBytes(input);
-                byte[] hashBytes = md5.ComputeHash(inputBytes);
-
-                // Convert the byte array to hexadecimal string
-                StringBuilder sb = new StringBuilder();
-                for (int i = 0; i < hashBytes.Length; i++)
-                {
-                    sb.Append(hashBytes[i].ToString("X2"));
-                }
-                return sb.ToString();
-            }
-        }
     }
 }

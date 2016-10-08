@@ -12,7 +12,7 @@
 
         public bool MQ;
 
-        public void Load(ISource sc)
+        public void Load(ISource sc, int x = -1)
         {
             sc.Got(nameof(Host), ref Host);
             sc.Got(nameof(Port), ref Port);
@@ -21,7 +21,7 @@
             sc.Got(nameof(MQ), ref MQ);
         }
 
-        public void Save<R>(ISink<R> k) where R : ISink<R>
+        public void Save<R>(ISink<R> k, int x = -1) where R : ISink<R>
         {
             k.Put(nameof(Host), Host);
             k.Put(nameof(Port), Port);

@@ -1,5 +1,4 @@
 ﻿using System;
-using System.Collections.Generic;
 
 namespace Greatbone.Core
 {
@@ -40,7 +39,7 @@ namespace Greatbone.Core
             return this;
         }
 
-        public JContent PutArr<T>(List<T> lst) where T : IPersist
+        public JContent PutArr<T>(T[] lst) where T : IPersist
         {
             if (counts[++level]++ > 0)
             {
@@ -48,7 +47,7 @@ namespace Greatbone.Core
             }
 
             Add('[');
-            for (int i = 0; i < lst.Count; i++)
+            for (int i = 0; i < lst.Length; i++)
             {
                 Put(lst[i]);
             }
@@ -88,22 +87,152 @@ namespace Greatbone.Core
         }
 
 
-        public void Put(int value)
+        public JContent Put(bool v)
         {
-            if (counts[level]++ > 0)
-            {
-                Add(',');
-            }
-
-            Add(value);
+            if (counts[level]++ > 0) Add(',');
+            Add(v ? "true" : "false");
+            return this;
         }
 
-        public JContent Put<T>(T value) where T : IPersist
+        public JContent Put(short v)
+        {
+            if (counts[level]++ > 0) Add(',');
+            Add(v);
+            return this;
+        }
+
+        public JContent Put(int v)
+        {
+            if (counts[level]++ > 0) Add(',');
+            Add(v);
+            return this;
+        }
+
+        public JContent Put(long v)
+        {
+            if (counts[level]++ > 0) Add(',');
+            Add(v);
+            return this;
+        }
+
+        public JContent Put(decimal v)
+        {
+            if (counts[level]++ > 0) Add(',');
+            Add(v);
+            return this;
+        }
+
+        public JContent Put(DateTime v)
+        {
+            if (counts[level]++ > 0) Add(',');
+            Add(v);
+            return this;
+        }
+
+        public JContent Put(char[] v)
+        {
+            if (counts[level]++ > 0) Add(',');
+            if (v == null)
+            {
+                Add("null");
+            }
+            else
+            {
+                Add('"');
+                Add(v);
+                Add('"');
+            }
+            return this;
+        }
+
+        public JContent Put(string v)
+        {
+            if (counts[level]++ > 0) Add(',');
+            if (v == null)
+            {
+                Add("null");
+            }
+            else
+            {
+                Add('"');
+                Add(v);
+                Add('"');
+            }
+            return this;
+        }
+
+        public JContent Put(byte[] v)
         {
             throw new NotImplementedException();
         }
 
-        public JContent PutNull(string name)
+        public JContent Put<T>(T v) where T : IPersist
+        {
+            if (counts[level]++ > 0) Add(',');
+            if (v == null)
+            {
+                Add("null");
+            }
+            else
+            {
+                PutObj(v);
+            }
+            return this;
+        }
+
+        public JContent Put(JObj v)
+        {
+            throw new NotImplementedException();
+        }
+
+        public JContent Put(JArr v)
+        {
+            throw new NotImplementedException();
+        }
+
+        public JContent Put(short[] v)
+        {
+            if (counts[level]++ > 0) Add(',');
+            // Add(v);
+            return this;
+        }
+
+        public JContent Put(int[] v)
+        {
+            if (counts[level]++ > 0) Add(',');
+            // Add(v);
+            return this;
+        }
+
+        public JContent Put(long[] v)
+        {
+            if (counts[level]++ > 0) Add(',');
+            // Add(v);
+            return this;
+        }
+
+        public JContent Put(string[] v)
+        {
+            if (counts[level]++ > 0) Add(',');
+            // Add(v);
+            return this;
+        }
+
+        public JContent Put<T>(T[] v) where T : IPersist
+        {
+            if (counts[level]++ > 0) Add(',');
+            if (v == null)
+            {
+                Add("null");
+            }
+            else
+            {
+                PutArr(v);
+            }
+            return this;
+        }
+
+        public JContent PutNull()
         {
             if (counts[level]++ > 0)
             {
@@ -211,7 +340,53 @@ namespace Greatbone.Core
             return this;
         }
 
-        public JContent Put(string name, string value)
+        public JContent Put(string name, char[] v)
+        {
+            if (counts[level]++ > 0) Add(',');
+
+            Add('"');
+            Add(name);
+            Add('"');
+            Add(':');
+
+            if (v == null)
+            {
+                Add("null");
+            }
+            else
+            {
+                Add('"');
+                Add(v);
+                Add('"');
+            }
+
+            return this;
+        }
+
+        public JContent Put(string name, string v)
+        {
+            if (counts[level]++ > 0) Add(',');
+
+            Add('"');
+            Add(name);
+            Add('"');
+            Add(':');
+
+            if (v == null)
+            {
+                Add("null");
+            }
+            else
+            {
+                Add('"');
+                Add(v);
+                Add('"');
+            }
+
+            return this;
+        }
+
+        public JContent Put(string name, byte[] v)
         {
             if (counts[level]++ > 0)
             {
@@ -223,15 +398,12 @@ namespace Greatbone.Core
             Add('"');
             Add(':');
 
-            if (value == null)
+            if (v == null)
             {
                 Add("null");
             }
             else
             {
-                Add('"');
-                Add(value);
-                Add('"');
             }
 
             return this;
@@ -256,52 +428,6 @@ namespace Greatbone.Core
             else
             {
                 PutObj(v);
-            }
-
-            return this;
-        }
-
-        public JContent Put<T>(string name, List<T> v, int x = -1) where T : IPersist
-        {
-            if (counts[level]++ > 0)
-            {
-                Add(',');
-            }
-
-            Add('"');
-            Add(name);
-            Add('"');
-            Add(':');
-
-            if (v == null)
-            {
-                Add("null");
-            }
-            else
-            {
-            }
-
-            return this;
-        }
-
-        public JContent Put(string name, byte[] v)
-        {
-            if (counts[level]++ > 0)
-            {
-                Add(',');
-            }
-
-            Add('"');
-            Add(name);
-            Add('"');
-            Add(':');
-
-            if (v == null)
-            {
-                Add("null");
-            }
-            else
-            {
             }
 
             return this;
@@ -351,5 +477,100 @@ namespace Greatbone.Core
             }
             return this;
         }
+
+        public JContent Put(string name, short[] v)
+        {
+            if (counts[level]++ > 0)
+            {
+                Add(',');
+            }
+
+            Add('"');
+            Add(name);
+            Add('"');
+            Add(':');
+
+            return this;
+        }
+
+        public JContent Put(string name, int[] v)
+        {
+            if (counts[level]++ > 0)
+            {
+                Add(',');
+            }
+
+            Add('"');
+            Add(name);
+            Add('"');
+            Add(':');
+
+            return this;
+        }
+
+        public JContent Put(string name, long[] v)
+        {
+            if (counts[level]++ > 0)
+            {
+                Add(',');
+            }
+
+            Add('"');
+            Add(name);
+            Add('"');
+            Add(':');
+
+            return this;
+        }
+
+        public JContent Put(string name, string[] v)
+        {
+            if (counts[level]++ > 0)
+            {
+                Add(',');
+            }
+
+            Add('"');
+            Add(name);
+            Add('"');
+            Add(':');
+
+            return this;
+        }
+
+
+        public JContent Put<T>(string name, T[] v, int x = -1) where T : IPersist
+        {
+            if (counts[level]++ > 0)
+            {
+                Add(',');
+            }
+
+            Add('"');
+            Add(name);
+            Add('"');
+            Add(':');
+
+            if (v == null)
+            {
+                Add("null");
+            }
+            else
+            {
+            }
+
+            return this;
+        }
+
+        public JContent PutNull(string name)
+        {
+            if (counts[level]++ > 0)
+            {
+                Add(',');
+            }
+            Add("null");
+            return this;
+        }
+
     }
 }

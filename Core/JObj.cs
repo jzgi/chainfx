@@ -156,6 +156,17 @@ namespace Greatbone.Core
             return false;
         }
 
+        public bool Got(string name, ref char[] v)
+        {
+            JMember pair;
+            if (pairs.TryGet(name, out pair))
+            {
+                v = (char[])pair;
+                return true;
+            }
+            return false;
+        }
+
         public bool Got(string name, ref string v)
         {
             JMember pair;
@@ -167,7 +178,18 @@ namespace Greatbone.Core
             return false;
         }
 
-        public bool Got<T>(string name, ref T v) where T : IPersist, new()
+        public bool Got(string name, ref byte[] v)
+        {
+            JMember pair;
+            if (pairs.TryGet(name, out pair))
+            {
+                v = (byte[])pair;
+                return true;
+            }
+            return false;
+        }
+
+        public bool Got<T>(string name, ref T v, int x = -1) where T : IPersist, new()
         {
             JMember pair;
             if (pairs.TryGet(name, out pair))
@@ -175,38 +197,6 @@ namespace Greatbone.Core
                 T val = new T();
                 val.Load((JObj)pair);
                 v = val;
-                return true;
-            }
-            return false;
-        }
-
-        public bool Got<T>(string name, ref List<T> v) where T : IPersist, new()
-        {
-            JMember pair;
-            if (pairs.TryGet(name, out pair))
-            {
-                JArr ma = pair;
-                List<T> lst = null;
-                for (int i = 0; i < ma.Count; i++)
-                {
-                    JObj el = ma[i];
-                    T val = new T();
-                    val.Load(el);
-                    if (lst == null) lst = new List<T>(16);
-                    lst.Add(val);
-                }
-                v = lst;
-                return true;
-            }
-            return false;
-        }
-
-        public bool Got(string name, ref byte[] v)
-        {
-            JMember pair;
-            if (pairs.TryGet(name, out pair))
-            {
-                v = (byte[])pair;
                 return true;
             }
             return false;
@@ -229,6 +219,94 @@ namespace Greatbone.Core
             if (pairs.TryGet(name, out pair))
             {
                 v = (JArr)pair;
+                return true;
+            }
+            return false;
+        }
+
+        public bool Got(string name, ref short[] v)
+        {
+            JMember pair;
+            if (pairs.TryGet(name, out pair))
+            {
+                JArr jarr = pair;
+                short[] arr = new short[jarr.Count];
+                for (int i = 0; i < jarr.Count; i++)
+                {
+                    arr[i] = jarr[i];
+                }
+                v = arr;
+                return true;
+            }
+            return false;
+        }
+
+        public bool Got(string name, ref int[] v)
+        {
+            JMember pair;
+            if (pairs.TryGet(name, out pair))
+            {
+                JArr jarr = pair;
+                int[] arr = new int[jarr.Count];
+                for (int i = 0; i < jarr.Count; i++)
+                {
+                    arr[i] = jarr[i];
+                }
+                v = arr;
+                return true;
+            }
+            return false;
+        }
+
+        public bool Got(string name, ref long[] v)
+        {
+            JMember pair;
+            if (pairs.TryGet(name, out pair))
+            {
+                JArr jarr = pair;
+                long[] arr = new long[jarr.Count];
+                for (int i = 0; i < jarr.Count; i++)
+                {
+                    arr[i] = jarr[i];
+                }
+                v = arr;
+                return true;
+            }
+            return false;
+        }
+
+        public bool Got(string name, ref string[] v)
+        {
+            JMember pair;
+            if (pairs.TryGet(name, out pair))
+            {
+                JArr jarr = pair;
+                string[] arr = new string[jarr.Count];
+                for (int i = 0; i < jarr.Count; i++)
+                {
+                    arr[i] = jarr[i];
+                }
+                v = arr;
+                return true;
+            }
+            return false;
+        }
+
+        public bool Got<T>(string name, ref T[] v, int x = -1) where T : IPersist, new()
+        {
+            JMember pair;
+            if (pairs.TryGet(name, out pair))
+            {
+                JArr ma = pair;
+                T[] arr = new T[ma.Count];
+                for (int i = 0; i < ma.Count; i++)
+                {
+                    JObj el = ma[i];
+                    T val = new T();
+                    val.Load(el);
+                    arr[i] = val;
+                }
+                v = arr;
                 return true;
             }
             return false;

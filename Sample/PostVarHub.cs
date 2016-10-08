@@ -24,7 +24,7 @@ namespace Greatbone.Sample
         public void img(WebContext wc, string var)
         {
             int id = 0;
-            if (wc.Get("id", ref id))
+            if (wc.Got("id", ref id))
             {
 
             }

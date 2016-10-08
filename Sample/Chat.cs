@@ -1,5 +1,4 @@
 ﻿using System;
-using System.Collections.Generic;
 using Greatbone.Core;
 
 namespace Greatbone.Sample
@@ -12,7 +11,7 @@ namespace Greatbone.Sample
 
         public string partner;
 
-        private List<Message> msgs;
+        private Message[] msgs;
 
         private long lasttime;
 
@@ -20,10 +19,10 @@ namespace Greatbone.Sample
 
         internal void Put(string msg)
         {
-            msgs.Add(new Message());
+            // msgs.Add(new Message());
         }
 
-        public void Load(ISource sc)
+        public void Load(ISource sc, int x = -1)
         {
             sc.Got(nameof(status), ref status);
             sc.Got(nameof(partner), ref partner);
@@ -31,7 +30,7 @@ namespace Greatbone.Sample
             sc.Got(nameof(lasttime), ref lasttime);
         }
 
-        public void Save<R>(ISink<R> sk) where R : ISink<R>
+        public void Save<R>(ISink<R> sk, int x = -1) where R : ISink<R>
         {
             sk.Put(nameof(status), status);
             sk.Put(nameof(partner), partner);
@@ -46,12 +45,12 @@ namespace Greatbone.Sample
 
         string text;
 
-        public void Load(ISource sc)
+        public void Load(ISource sc, int x = -1)
         {
             throw new NotImplementedException();
         }
 
-        public void Save<R>(ISink<R> sk) where R : ISink<R>
+        public void Save<R>(ISink<R> sk, int x = -1) where R : ISink<R>
         {
             throw new NotImplementedException();
         }
@@ -71,7 +70,7 @@ namespace Greatbone.Sample
 
         internal DateTime time;
 
-        public void Load(ISource sc)
+        public void Load(ISource sc, int x = -1)
         {
             sc.Got(nameof(id), ref id);
             sc.Got(nameof(subtype), ref subtype);
@@ -81,7 +80,7 @@ namespace Greatbone.Sample
             sc.Got(nameof(time), ref time);
         }
 
-        public void Save<R>(ISink<R> sk) where R : ISink<R>
+        public void Save<R>(ISink<R> sk, int x = -1) where R : ISink<R>
         {
             sk.Put(nameof(id), id);
             sk.Put(nameof(subtype), subtype);

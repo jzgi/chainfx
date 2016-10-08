@@ -1,5 +1,4 @@
 ﻿using System;
-using System.Collections.Generic;
 using Greatbone.Core;
 
 namespace Greatbone.Sample
@@ -27,11 +26,11 @@ namespace Greatbone.Sample
         internal short styles;
         internal short skills;
         internal short remark;
-        internal List<Item> sites;
-        internal List<Item> friends;
-        internal List<Item> awards;
+        internal Item[] sites;
+        internal Item[] friends;
+        internal Item[] awards;
 
-        public void Load(ISource sc)
+        public void Load(ISource sc, int x = -1)
         {
             sc.Got(nameof(id), ref id);
             sc.Got(nameof(name), ref name);
@@ -58,7 +57,7 @@ namespace Greatbone.Sample
             sc.Got(nameof(awards), ref awards);
         }
 
-        public void Save<R>(ISink<R> sk) where R : ISink<R>
+        public void Save<R>(ISink<R> sk, int x = -1) where R : ISink<R>
         {
             sk.Put(nameof(id), id);
             sk.Put(nameof(name), name);
@@ -94,14 +93,14 @@ namespace Greatbone.Sample
 
         internal string desc;
 
-        public void Load(ISource sc)
+        public void Load(ISource sc, int x = -1)
         {
             sc.Got(nameof(uid), ref uid);
             sc.Got(nameof(url), ref url);
             sc.Got(nameof(desc), ref desc);
         }
 
-        public void Save<R>(ISink<R> sk) where R : ISink<R>
+        public void Save<R>(ISink<R> sk, int x = -1) where R : ISink<R>
         {
             sk.Put(nameof(uid), uid);
             sk.Put(nameof(url), url);

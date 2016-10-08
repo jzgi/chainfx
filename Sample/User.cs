@@ -1,5 +1,4 @@
 ﻿using System;
-using System.Collections.Generic;
 using Greatbone.Core;
 
 namespace Greatbone.Sample
@@ -12,7 +11,7 @@ namespace Greatbone.Sample
 
         internal string name;
 
-        internal string credential;
+        internal char[] credential;
 
         internal bool fame;
 
@@ -22,11 +21,11 @@ namespace Greatbone.Sample
 
         internal DateTime date;
 
-        internal List<FavPost> favposts;
+        internal FavPost[] favposts;
 
-        internal List<Fav> friends;
+        internal Fav[] friends;
 
-        internal List<Fav> favs;
+        internal Fav[] favs;
 
         public string Key => id;
 
@@ -34,7 +33,7 @@ namespace Greatbone.Sample
 
         public string Name => name;
 
-        public void Load(ISource sc)
+        public void Load(ISource sc, int x = -1)
         {
             sc.Got(nameof(id), ref id);
             sc.Got(nameof(name), ref name);
@@ -48,7 +47,7 @@ namespace Greatbone.Sample
             sc.Got(nameof(favs), ref favs);
         }
 
-        public void Save<R>(ISink<R> sk) where R : ISink<R>
+        public void Save<R>(ISink<R> sk, int x = -1) where R : ISink<R>
         {
             sk.Put(nameof(id), id);
             sk.Put(nameof(name), name);
@@ -76,12 +75,12 @@ namespace Greatbone.Sample
         {
             internal char[] id;
 
-            public void Load(ISource sc)
+            public void Load(ISource sc, int x = -1)
             {
                 throw new NotImplementedException();
             }
 
-            public void Save<R>(ISink<R> sk) where R : ISink<R>
+            public void Save<R>(ISink<R> sk, int x = -1) where R : ISink<R>
             {
                 throw new NotImplementedException();
             }
@@ -91,12 +90,12 @@ namespace Greatbone.Sample
         {
             internal int id;
 
-            public void Load(ISource sc)
+            public void Load(ISource sc, int x = -1)
             {
                 throw new NotImplementedException();
             }
 
-            public void Save<R>(ISink<R> sk) where R : ISink<R>
+            public void Save<R>(ISink<R> sk, int x = -1) where R : ISink<R>
             {
                 throw new NotImplementedException();
             }

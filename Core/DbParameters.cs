@@ -1,5 +1,4 @@
 ﻿using System;
-using System.Collections.Generic;
 using Npgsql;
 using NpgsqlTypes;
 
@@ -84,6 +83,15 @@ namespace Greatbone.Core
             return this;
         }
 
+        public DbParameters Put(char[] v)
+        {
+            coll.Add(new NpgsqlParameter(Params[paramidx++], NpgsqlDbType.Text)
+            {
+                Value = (v != null) ? (object)v : DBNull.Value
+            });
+            return this;
+        }
+
         public DbParameters Put(string v)
         {
             coll.Add(new NpgsqlParameter(Params[paramidx++], NpgsqlDbType.Text)
@@ -93,17 +101,12 @@ namespace Greatbone.Core
             return this;
         }
 
-        public DbParameters Put<T>(T v, int x = -1) where T : IPersist
-        {
-            throw new NotImplementedException();
-        }
-
-        public DbParameters Put<T>(List<T> v, int x = -1) where T : IPersist
-        {
-            throw new NotImplementedException();
-        }
-
         public DbParameters Put(byte[] v)
+        {
+            throw new NotImplementedException();
+        }
+
+        public DbParameters Put<T>(T v, int x = -1) where T : IPersist
         {
             throw new NotImplementedException();
         }
@@ -123,17 +126,37 @@ namespace Greatbone.Core
             throw new NotImplementedException();
         }
 
+        public DbParameters Put(short[] v)
+        {
+            throw new NotImplementedException();
+        }
+
+        public DbParameters Put(int[] v)
+        {
+            throw new NotImplementedException();
+        }
+
+        public DbParameters Put(long[] v)
+        {
+            throw new NotImplementedException();
+        }
+
+        public DbParameters Put(string[] v)
+        {
+            throw new NotImplementedException();
+        }
+
+        public DbParameters Put<T>(T[] v, int x = -1) where T : IPersist
+        {
+            throw new NotImplementedException();
+        }
+
         public DbParameters PutNull()
         {
             throw new NotImplementedException();
         }
 
         // SINK
-
-        public DbParameters PutNull(string name)
-        {
-            throw new NotImplementedException();
-        }
 
         public DbParameters Put(string name, bool v)
         {
@@ -189,7 +212,7 @@ namespace Greatbone.Core
             return this;
         }
 
-        public DbParameters Put(string name, string v)
+        public DbParameters Put(string name, char[] v)
         {
             coll.Add(new NpgsqlParameter(name, NpgsqlDbType.Varchar, v.Length)
             {
@@ -198,14 +221,13 @@ namespace Greatbone.Core
             return this;
         }
 
-        public DbParameters Put<T>(string name, T v, int x = -1) where T : IPersist
+        public DbParameters Put(string name, string v)
         {
-            throw new NotImplementedException();
-        }
-
-        public DbParameters Put<T>(string name, List<T> v, int x = -1) where T : IPersist
-        {
-            throw new NotImplementedException();
+            coll.Add(new NpgsqlParameter(name, NpgsqlDbType.Varchar, v.Length)
+            {
+                Value = v
+            });
+            return this;
         }
 
         public DbParameters Put(string name, byte[] v)
@@ -217,12 +239,47 @@ namespace Greatbone.Core
             return this;
         }
 
+        public DbParameters Put<T>(string name, T v, int x = -1) where T : IPersist
+        {
+            throw new NotImplementedException();
+        }
+
         public DbParameters Put(string name, JObj v)
         {
             throw new NotImplementedException();
         }
 
         public DbParameters Put(string name, JArr v)
+        {
+            throw new NotImplementedException();
+        }
+
+        public DbParameters Put(string name, short[] v)
+        {
+            throw new NotImplementedException();
+        }
+
+        public DbParameters Put(string name, int[] v)
+        {
+            throw new NotImplementedException();
+        }
+
+        public DbParameters Put(string name, long[] v)
+        {
+            throw new NotImplementedException();
+        }
+
+        public DbParameters Put(string name, string[] v)
+        {
+            throw new NotImplementedException();
+        }
+
+        public DbParameters Put<T>(string name, T[] v, int x = -1) where T : IPersist
+        {
+            throw new NotImplementedException();
+        }
+
+        public DbParameters PutNull(string name)
         {
             throw new NotImplementedException();
         }

@@ -59,6 +59,13 @@ namespace Greatbone.Core
             return v;
         }
 
+        public static char[] GetChars(this ISource sc, string name, char[] def = null)
+        {
+            char[] v = def;
+            sc.Got(name, ref v);
+            return v;
+        }
+
         public static string GetString(this ISource sc, string name, string def = null)
         {
             string v = def;
@@ -66,23 +73,23 @@ namespace Greatbone.Core
             return v;
         }
 
-        public static T Get<T>(this ISource sc, string name, T def = default(T)) where T : IPersist, new()
+        public static byte[] GetBytes(this ISource sc, string name, byte[] def = null)
+        {
+            byte[] v = def;
+            sc.Got(name, ref v);
+            return v;
+        }
+
+        public static T GetObj<T>(this ISource sc, string name, T def = default(T)) where T : IPersist, new()
         {
             T v = def;
             sc.Got(name, ref v);
             return v;
         }
 
-        public static List<T> GetList<T>(this ISource sc, string name, List<T> def = null) where T : IPersist, new()
+        public static T[] GetArr<T>(this ISource sc, string name, T[] def = null) where T : IPersist, new()
         {
-            List<T> v = def;
-            sc.Got(name, ref v);
-            return v;
-        }
-
-        public static byte[] GetBytes(this ISource sc, string name, byte[] def = null)
-        {
-            byte[] v = def;
+            T[] v = def;
             sc.Got(name, ref v);
             return v;
         }
@@ -101,6 +108,34 @@ namespace Greatbone.Core
             return v;
         }
 
+
+        public static short[] GetShorts(this ISource sc, string name, short[] def = null)
+        {
+            short[] v = def;
+            sc.Got(name, ref v);
+            return v;
+        }
+
+        public static int[] GetInts(this ISource sc, string name, int[] def = null)
+        {
+            int[] v = def;
+            sc.Got(name, ref v);
+            return v;
+        }
+
+        public static long[] GetLongs(this ISource sc, string name, long[] def = null)
+        {
+            long[] v = def;
+            sc.Got(name, ref v);
+            return v;
+        }
+
+        public static string[] GetStrings(this ISource sc, string name, string[] def = null)
+        {
+            string[] v = def;
+            sc.Got(name, ref v);
+            return v;
+        }
 
 
     }

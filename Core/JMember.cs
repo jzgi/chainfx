@@ -152,11 +152,11 @@ namespace Greatbone.Core
             return default(DateTime);
         }
 
-        public static implicit operator byte[] (JMember v)
+        public static implicit operator char[] (JMember v)
         {
             if (v.vt == VT.String)
             {
-                return (byte[])v.refv;
+                return (char[])v.refv;
             }
             return null;
         }
@@ -169,5 +169,15 @@ namespace Greatbone.Core
             }
             return null;
         }
+
+        public static implicit operator byte[] (JMember v)
+        {
+            if (v.vt == VT.String)
+            {
+                return (byte[])v.refv;
+            }
+            return null;
+        }
+
     }
 }

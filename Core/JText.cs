@@ -1,5 +1,4 @@
 ﻿using System;
-using System.Collections.Generic;
 
 namespace Greatbone.Core
 {
@@ -46,76 +45,94 @@ namespace Greatbone.Core
 
         }
 
-        
-
-        public JText Put(string name, bool value)
-        {
-            throw new NotImplementedException();
-        }
-
-        public JText Put(string name, short value)
-        {
-            throw new NotImplementedException();
-        }
-
-        public JText Put(string name, int value)
-        {
-            throw new NotImplementedException();
-        }
-
-        public JText Put(string name, long value)
-        {
-            throw new NotImplementedException();
-        }
-
-        public JText Put(string name, decimal value)
-        {
-            throw new NotImplementedException();
-        }
-
-        public JText Put(string name, DateTime value)
-        {
-            throw new NotImplementedException();
-        }
-
-        public JText Put(string name, string value)
-        {
-            throw new NotImplementedException();
-        }
-
-        public JText Put<T>(string name, T value, int x) where T : IPersist
-        {
-            throw new NotImplementedException();
-        }
-
-        public JText Put<T>(string name, List<T> value, int x) where T : IPersist
-        {
-            throw new NotImplementedException();
-        }
-
-        public JText Put(string name, byte[] value)
-        {
-            throw new NotImplementedException();
-        }
-
-        public JText Put(string name, JObj value)
-        {
-            throw new NotImplementedException();
-        }
-
-        public JText Put(string name, JArr value)
-        {
-            throw new NotImplementedException();
-        }
-
         public JText PutNull(string name)
         {
             throw new NotImplementedException();
         }
 
+        public JText Put(string name, bool v)
+        {
+            throw new NotImplementedException();
+        }
 
-        //
-        // WRITE
-        //
+        public JText Put(string name, short v)
+        {
+            throw new NotImplementedException();
+        }
+
+        public JText Put(string name, int v)
+        {
+            throw new NotImplementedException();
+        }
+
+        public JText Put(string name, long v)
+        {
+            throw new NotImplementedException();
+        }
+
+        public JText Put(string name, decimal v)
+        {
+            throw new NotImplementedException();
+        }
+
+        public JText Put(string name, DateTime v)
+        {
+            throw new NotImplementedException();
+        }
+
+        public JText Put(string name, char[] v)
+        {
+            throw new NotImplementedException();
+        }
+
+        public JText Put(string name, string v)
+        {
+            throw new NotImplementedException();
+        }
+
+        public JText Put(string name, byte[] v)
+        {
+            throw new NotImplementedException();
+        }
+
+        public JText Put<T>(string name, T v, int x = -1) where T : IPersist
+        {
+            throw new NotImplementedException();
+        }
+
+        public JText Put(string name, JObj v)
+        {
+            throw new NotImplementedException();
+        }
+
+        public JText Put(string name, JArr v)
+        {
+            throw new NotImplementedException();
+        }
+
+        public JText Put(string name, short[] v)
+        {
+            throw new NotImplementedException();
+        }
+
+        public JText Put(string name, int[] v)
+        {
+            throw new NotImplementedException();
+        }
+
+        public JText Put(string name, long[] v)
+        {
+            throw new NotImplementedException();
+        }
+
+        public JText Put(string name, string[] v)
+        {
+            throw new NotImplementedException();
+        }
+
+        public JText Put<T>(string name, T[] v, int x = -1) where T : IPersist
+        {
+            throw new NotImplementedException();
+        }
     }
 }

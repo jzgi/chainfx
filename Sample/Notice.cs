@@ -24,10 +24,10 @@ namespace Greatbone.Sample
 
         internal string remark;
 
-        internal List<Ask> asks;
+        internal Ask[] asks;
 
 
-        public void Load(ISource sc)
+        public void Load(ISource sc, int x = -1)
         {
             sc.Got(nameof(id), ref id);
             sc.Got(nameof(loc), ref loc);
@@ -41,7 +41,7 @@ namespace Greatbone.Sample
             sc.Got(nameof(asks), ref asks);
         }
 
-        public void Save<R>(ISink<R> sk) where R : ISink<R>
+        public void Save<R>(ISink<R> sk, int x = -1) where R : ISink<R>
         {
             sk.Put(nameof(id), id);
             sk.Put(nameof(loc), loc);
@@ -60,12 +60,12 @@ namespace Greatbone.Sample
     {
         internal string id;
 
-        public void Load(ISource sc)
+        public void Load(ISource sc, int x = -1)
         {
             throw new NotImplementedException();
         }
 
-        public void Save<R>(ISink<R> sk) where R : ISink<R>
+        public void Save<R>(ISink<R> sk, int x = -1) where R : ISink<R>
         {
             throw new NotImplementedException();
         }

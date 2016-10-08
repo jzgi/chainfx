@@ -1,5 +1,4 @@
-﻿using System.Collections.Generic;
-using Greatbone.Core;
+﻿using Greatbone.Core;
 
 namespace Greatbone.Sample
 {
@@ -21,7 +20,7 @@ namespace Greatbone.Sample
             {
                 if (dc.QueryA("SELECT * FROM notices WHERE id = @1", p => p.Put(id)))
                 {
-                    Notice obj = dc.Get<Notice>();
+                    Notice obj = dc.GetObj<Notice>();
                 }
                 else
                 {
@@ -68,8 +67,8 @@ namespace Greatbone.Sample
                     // parse to list
 
                     // update back the table
-                    List<Ask> list = new List<Ask>();
-                    if (dc.Execute("UPDATE notices SET joins = @1", _ => _.Put(list)) > 0)
+                    Ask[] arr = null;
+                    if (dc.Execute("UPDATE notices SET joins = @1", p => p.Put(arr)) > 0)
                     {
 
                     }

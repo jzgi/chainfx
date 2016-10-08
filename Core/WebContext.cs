@@ -102,7 +102,7 @@ namespace Greatbone.Core
             return obj;
         }
 
-        public bool Get(string name, ref int value)
+        public bool Got(string name, ref int value)
         {
             StringValues values;
             if (Request.Query.TryGetValue(name, out values))
@@ -118,7 +118,7 @@ namespace Greatbone.Core
             return false;
         }
 
-        public bool Get(string name, ref string value)
+        public bool Got(string name, ref string value)
         {
             StringValues values;
             if (Request.Query.TryGetValue(name, out values))
