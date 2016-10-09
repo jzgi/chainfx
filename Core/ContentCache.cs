@@ -9,13 +9,13 @@ namespace Greatbone.Core
     ///
     public class ContentCache
     {
-        private readonly ConcurrentDictionary<string, Item> items;
+        readonly ConcurrentDictionary<string, Item> items;
 
-        private readonly Thread cleaner;
+        readonly Thread cleaner;
 
-        private volatile bool stop;
+        volatile bool stop;
 
-        public ContentCache(int concurrency, int capcity)
+        internal ContentCache(int concurrency, int capcity)
         {
             // create the url-to-item dictionary
             items = new ConcurrentDictionary<string, Item>(concurrency, capcity);

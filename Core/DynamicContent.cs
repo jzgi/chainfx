@@ -100,7 +100,7 @@ namespace Greatbone.Core
         public long ETag => checksum;
 
 
-        public void AddByte(byte b)
+        internal void Write(byte b)
         {
             // grow the capacity as needed
             int len = buffer.Length;
@@ -129,20 +129,20 @@ namespace Greatbone.Core
             if (c < 0x80)
             {
                 // have at most seven bits
-                AddByte((byte)c);
+                Write((byte)c);
             }
             else if (c < 0x800)
             {
                 // 2 char, 11 bits
-                AddByte((byte)(0xc0 | (c >> 6)));
-                AddByte((byte)(0x80 | (c & 0x3f)));
+                Write((byte)(0xc0 | (c >> 6)));
+                Write((byte)(0x80 | (c & 0x3f)));
             }
             else
             {
                 // 3 char, 16 bits
-                AddByte((byte)(0xe0 | ((c >> 12))));
-                AddByte((byte)(0x80 | ((c >> 6) & 0x3f)));
-                AddByte((byte)(0x80 | (c & 0x3f)));
+                Write((byte)(0xe0 | ((c >> 12))));
+                Write((byte)(0x80 | ((c >> 6) & 0x3f)));
+                Write((byte)(0x80 | (c & 0x3f)));
             }
         }
 
@@ -204,7 +204,7 @@ namespace Greatbone.Core
             int x = v;
             if (v < 0)
             {
-                AddByte(Minus);
+                Write(Minus);
                 x = -x;
             }
             bool bgn = false;
@@ -215,11 +215,11 @@ namespace Greatbone.Core
                 x = x % bas;
                 if (q != 0 || bgn)
                 {
-                    AddByte(Digits[q]);
+                    Write(Digits[q]);
                     bgn = true;
                 }
             }
-            AddByte(Digits[v]); // last reminder
+            Write(Digits[v]); // last reminder
         }
 
         public void Add(int v)
@@ -232,7 +232,7 @@ namespace Greatbone.Core
 
             if (v < 0)
             {
-                AddByte(Minus);
+                Write(Minus);
                 v = -v;
             }
             bool bgn = false;
@@ -243,11 +243,11 @@ namespace Greatbone.Core
                 v = v % bas;
                 if (q != 0 || bgn)
                 {
-                    AddByte(Digits[q]);
+                    Write(Digits[q]);
                     bgn = true;
                 }
             }
-            AddByte(Digits[v]); // last reminder
+            Write(Digits[v]); // last reminder
         }
 
         public void Add(long v)
@@ -260,7 +260,7 @@ namespace Greatbone.Core
 
             if (v < 0)
             {
-                AddByte(Minus);
+                Write(Minus);
                 v = -v;
             }
             bool bgn = false;
@@ -271,11 +271,11 @@ namespace Greatbone.Core
                 v = v % bas;
                 if (q != 0 || bgn)
                 {
-                    AddByte(Digits[q]);
+                    Write(Digits[q]);
                     bgn = true;
                 }
             }
-            AddByte(Digits[v]); // last reminder
+            Write(Digits[v]); // last reminder
         }
 
         public void Add(decimal v)
@@ -308,7 +308,7 @@ namespace Greatbone.Core
                         x = x % bas;
                         if (q != 0 || bgn)
                         {
-                            AddByte(Digits[q]);
+                            Write(Digits[q]);
                             bgn = true;
                         }
                         if (i == 4)
@@ -333,7 +333,7 @@ namespace Greatbone.Core
                         x = x % bas;
                         if (q != 0 || bgn)
                         {
-                            AddByte(Digits[q]);
+                            Write(Digits[q]);
                             bgn = true;
                         }
                         if (i == 4)
@@ -367,23 +367,23 @@ namespace Greatbone.Core
             Add(yr);
             Add('-');
             if (mon < 10) Add('0');
-            AddByte(mon);
+            Write(mon);
             Add('-');
             if (day < 10) Add('0');
-            AddByte(day);
+            Write(day);
 
             byte hr = (byte)dt.Hour, min = (byte)dt.Minute, sec = (byte)dt.Second;
             if (time)
             {
                 Add(' '); // a space for separation
                 if (hr < 10) Add('0');
-                AddByte(hr);
+                Write(hr);
                 Add(':');
                 if (min < 10) Add('0');
-                AddByte(min);
+                Write(min);
                 Add(':');
                 if (sec < 10) Add('0');
-                AddByte(sec);
+                Write(sec);
             }
         }
     }

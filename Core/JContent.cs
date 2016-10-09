@@ -24,61 +24,67 @@ namespace Greatbone.Core
         public override string Type => "application/json";
 
 
-        public JContent PutArr(Action a)
+        //
+        // PUT
+        //
+
+        public void PutArr(Action a)
         {
-            if (counts[++level]++ > 0)
-            {
-                Add(',');
-            }
+            if (counts[level]++ > 0) Write((byte)',');
 
-            Add('[');
-            a?.Invoke();
-            Add(']');
+            counts[++level] = 0;
+            Write((byte)'{');
 
-            counts[level--] = 0;
-            return this;
+            if (a != null) a();
+
+            Write((byte)'}');
+            level--;
         }
 
+        public void PutArr<T>(T[] v, int x = -1) where T : IPersist
+        {
+            PutArr(delegate
+            {
+                for (int i = 0; i < v.Length; i++)
+                {
+                    PutObj(v[i], x);
+                }
+            });
+        }
 
         public void PutObj(Action a)
         {
-            if (counts[++level]++ > 0)
-            {
-                Add(',');
-            }
+            if (counts[level]++ > 0) Write((byte)',');
 
-            Add('{');
-            a?.Invoke();
-            Add('}');
+            counts[++level] = 0;
+            Write((byte)'[');
 
-            counts[level--] = 0;
+            if (a != null) a();
+
+            Write((byte)']');
+            level--;
         }
 
-        public void PutObj<T>(T obj) where T : IPersist
+        public void PutObj<T>(T v, int x = -1) where T : IPersist
         {
-            if (counts[++level]++ > 0)
+            PutObj(delegate
             {
-                Add(',');
-            }
-
-            Add('{');
-            obj.Save(this);
-            Add('}');
-
-            counts[level--] = 0;
+                v.Save(this, x);
+            });
         }
+
 
 
         public JContent Put(string name, bool v)
         {
-            if (counts[level]++ > 0) Add(',');
+            if (counts[level]++ > 0) Write((byte)',');
 
             if (name != null)
             {
-                Add('"');
+                Write((byte)'"');
                 Add(name);
-                Add('"');
-                Add(':');
+                Write((byte)'"');
+                Write((byte)':');
             }
 
             Add(v ? "true" : "false");
@@ -88,14 +94,14 @@ namespace Greatbone.Core
 
         public JContent Put(string name, short v)
         {
-            if (counts[level]++ > 0) Add(',');
+            if (counts[level]++ > 0) Write((byte)',');
 
             if (name != null)
             {
-                Add('"');
+                Write((byte)'"');
                 Add(name);
-                Add('"');
-                Add(':');
+                Write((byte)'"');
+                Write((byte)':');
             }
 
             Add(v);
@@ -105,14 +111,14 @@ namespace Greatbone.Core
 
         public JContent Put(string name, int v)
         {
-            if (counts[level]++ > 0) Add(',');
+            if (counts[level]++ > 0) Write((byte)',');
 
             if (name != null)
             {
-                Add('"');
+                Write((byte)'"');
                 Add(name);
-                Add('"');
-                Add(':');
+                Write((byte)'"');
+                Write((byte)':');
             }
 
             Add(v);
@@ -122,14 +128,14 @@ namespace Greatbone.Core
 
         public JContent Put(string name, long v)
         {
-            if (counts[level]++ > 0) Add(',');
+            if (counts[level]++ > 0) Write((byte)',');
 
             if (name != null)
             {
-                Add('"');
+                Write((byte)'"');
                 Add(name);
-                Add('"');
-                Add(':');
+                Write((byte)'"');
+                Write((byte)':');
             }
 
             Add(v);
@@ -139,14 +145,14 @@ namespace Greatbone.Core
 
         public JContent Put(string name, decimal v)
         {
-            if (counts[level]++ > 0) Add(',');
+            if (counts[level]++ > 0) Write((byte)',');
 
             if (name != null)
             {
-                Add('"');
+                Write((byte)'"');
                 Add(name);
-                Add('"');
-                Add(':');
+                Write((byte)'"');
+                Write((byte)':');
             }
 
             Add(v);
@@ -156,14 +162,14 @@ namespace Greatbone.Core
 
         public JContent Put(string name, Number v)
         {
-            if (counts[level]++ > 0) Add(',');
+            if (counts[level]++ > 0) Write((byte)',');
 
             if (name != null)
             {
-                Add('"');
+                Write((byte)'"');
                 Add(name);
-                Add('"');
-                Add(':');
+                Write((byte)'"');
+                Write((byte)':');
             }
 
             Add(v.integr);
@@ -177,14 +183,14 @@ namespace Greatbone.Core
 
         public JContent Put(string name, DateTime v)
         {
-            if (counts[level]++ > 0) Add(',');
+            if (counts[level]++ > 0) Write((byte)',');
 
             if (name != null)
             {
-                Add('"');
+                Write((byte)'"');
                 Add(name);
-                Add('"');
-                Add(':');
+                Write((byte)'"');
+                Write((byte)':');
             }
 
             Add(v);
@@ -194,14 +200,14 @@ namespace Greatbone.Core
 
         public JContent Put(string name, char[] v)
         {
-            if (counts[level]++ > 0) Add(',');
+            if (counts[level]++ > 0) Write((byte)',');
 
             if (name != null)
             {
-                Add('"');
+                Write((byte)'"');
                 Add(name);
-                Add('"');
-                Add(':');
+                Write((byte)'"');
+                Write((byte)':');
             }
 
             if (v == null)
@@ -220,14 +226,14 @@ namespace Greatbone.Core
 
         public JContent Put(string name, string v)
         {
-            if (counts[level]++ > 0) Add(',');
+            if (counts[level]++ > 0) Write((byte)',');
 
             if (name != null)
             {
-                Add('"');
+                Write((byte)'"');
                 Add(name);
-                Add('"');
-                Add(':');
+                Write((byte)'"');
+                Write((byte)':');
             }
 
             if (v == null)
@@ -246,14 +252,14 @@ namespace Greatbone.Core
 
         public JContent Put(string name, byte[] v)
         {
-            if (counts[level]++ > 0) Add(',');
+            if (counts[level]++ > 0) Write((byte)',');
 
             if (name != null)
             {
-                Add('"');
+                Write((byte)'"');
                 Add(name);
-                Add('"');
-                Add(':');
+                Write((byte)'"');
+                Write((byte)':');
             }
 
             if (v == null)
@@ -270,14 +276,14 @@ namespace Greatbone.Core
 
         public JContent Put<T>(string name, T v, int x = -1) where T : IPersist
         {
-            if (counts[level]++ > 0) Add(',');
+            if (counts[level]++ > 0) Write((byte)',');
 
             if (name != null)
             {
-                Add('"');
+                Write((byte)'"');
                 Add(name);
-                Add('"');
-                Add(':');
+                Write((byte)'"');
+                Write((byte)':');
             }
 
             if (v == null)
@@ -286,11 +292,10 @@ namespace Greatbone.Core
             }
             else
             {
-                level++;
-                AddByte((byte)'{');
-                v.Save(this, x);
-                AddByte((byte)'}');
-                level--;
+                PutObj(delegate
+                {
+                    v.Save(this, x);
+                });
             }
 
             return this;
@@ -298,14 +303,14 @@ namespace Greatbone.Core
 
         public JContent Put(string name, JObj v)
         {
-            if (counts[level]++ > 0) Add(',');
+            if (counts[level]++ > 0) Write((byte)',');
 
             if (name != null)
             {
-                Add('"');
+                Write((byte)'"');
                 Add(name);
-                Add('"');
-                Add(':');
+                Write((byte)'"');
+                Write((byte)':');
             }
 
             if (v == null)
@@ -314,7 +319,10 @@ namespace Greatbone.Core
             }
             else
             {
-                v.Save(this);
+                PutObj(delegate
+                {
+                    v.Save(this);
+                });
             }
 
             return this;
@@ -322,14 +330,14 @@ namespace Greatbone.Core
 
         public JContent Put(string name, JArr v)
         {
-            if (counts[level]++ > 0) Add(',');
+            if (counts[level]++ > 0) Write((byte)',');
 
             if (name != null)
             {
-                Add('"');
+                Write((byte)'"');
                 Add(name);
-                Add('"');
-                Add(':');
+                Write((byte)'"');
+                Write((byte)':');
             }
 
             if (v == null)
@@ -338,21 +346,24 @@ namespace Greatbone.Core
             }
             else
             {
-                v.Save(this);
+                PutArr(delegate
+                {
+                    v.Save(this);
+                });
             }
             return this;
         }
 
         public JContent Put(string name, short[] v)
         {
-            if (counts[level]++ > 0) Add(',');
+            if (counts[level]++ > 0) Write((byte)',');
 
             if (name != null)
             {
-                Add('"');
+                Write((byte)'"');
                 Add(name);
-                Add('"');
-                Add(':');
+                Write((byte)'"');
+                Write((byte)':');
             }
 
             if (v == null)
@@ -361,13 +372,13 @@ namespace Greatbone.Core
             }
             else
             {
-                AddByte((byte)'[');
+                Write((byte)'[');
                 for (int i = 0; i < v.Length; i++)
                 {
-                    if (i > 0) AddByte((byte)',');
+                    if (i > 0) Write((byte)',');
                     Add(v[i]);
                 }
-                AddByte((byte)']');
+                Write((byte)']');
             }
 
             return this;
@@ -375,14 +386,14 @@ namespace Greatbone.Core
 
         public JContent Put(string name, int[] v)
         {
-            if (counts[level]++ > 0) Add(',');
+            if (counts[level]++ > 0) Write((byte)',');
 
             if (name != null)
             {
-                Add('"');
+                Write((byte)'"');
                 Add(name);
-                Add('"');
-                Add(':');
+                Write((byte)'"');
+                Write((byte)':');
             }
 
             if (v == null)
@@ -391,13 +402,13 @@ namespace Greatbone.Core
             }
             else
             {
-                AddByte((byte)'[');
+                Write((byte)'[');
                 for (int i = 0; i < v.Length; i++)
                 {
-                    if (i > 0) AddByte((byte)',');
+                    if (i > 0) Write((byte)',');
                     Add(v[i]);
                 }
-                AddByte((byte)']');
+                Write((byte)']');
             }
 
             return this;
@@ -405,14 +416,14 @@ namespace Greatbone.Core
 
         public JContent Put(string name, long[] v)
         {
-            if (counts[level]++ > 0) Add(',');
+            if (counts[level]++ > 0) Write((byte)',');
 
             if (name != null)
             {
-                Add('"');
+                Write((byte)'"');
                 Add(name);
-                Add('"');
-                Add(':');
+                Write((byte)'"');
+                Write((byte)':');
             }
 
             if (v == null)
@@ -421,13 +432,13 @@ namespace Greatbone.Core
             }
             else
             {
-                AddByte((byte)'[');
+                Write((byte)'[');
                 for (int i = 0; i < v.Length; i++)
                 {
-                    if (i > 0) AddByte((byte)',');
+                    if (i > 0) Write((byte)',');
                     Add(v[i]);
                 }
-                AddByte((byte)']');
+                Write((byte)']');
             }
 
             return this;
@@ -435,14 +446,14 @@ namespace Greatbone.Core
 
         public JContent Put(string name, string[] v)
         {
-            if (counts[level]++ > 0) Add(',');
+            if (counts[level]++ > 0) Write((byte)',');
 
             if (name != null)
             {
-                Add('"');
+                Write((byte)'"');
                 Add(name);
-                Add('"');
-                Add(':');
+                Write((byte)'"');
+                Write((byte)':');
             }
 
             if (v == null)
@@ -451,13 +462,13 @@ namespace Greatbone.Core
             }
             else
             {
-                AddByte((byte)'[');
+                Write((byte)'[');
                 for (int i = 0; i < v.Length; i++)
                 {
-                    if (i > 0) AddByte((byte)',');
+                    if (i > 0) Write((byte)',');
                     Add(v[i]);
                 }
-                AddByte((byte)']');
+                Write((byte)']');
             }
 
             return this;
@@ -466,14 +477,14 @@ namespace Greatbone.Core
 
         public JContent Put<T>(string name, T[] v, int x = -1) where T : IPersist
         {
-            if (counts[level]++ > 0) Add(',');
+            if (counts[level]++ > 0) Write((byte)',');
 
             if (name != null)
             {
-                Add('"');
+                Write((byte)'"');
                 Add(name);
-                Add('"');
-                Add(':');
+                Write((byte)'"');
+                Write((byte)':');
             }
 
             if (v == null)
@@ -482,13 +493,13 @@ namespace Greatbone.Core
             }
             else
             {
-                AddByte((byte)'[');
+                Write((byte)'[');
                 for (int i = 0; i < v.Length; i++)
                 {
-                    if (i > 0) AddByte((byte)',');
+                    if (i > 0) Write((byte)',');
                     Put(null, v[i], x); // output a persist object
                 }
-                AddByte((byte)']');
+                Write((byte)']');
             }
 
             return this;
@@ -496,7 +507,7 @@ namespace Greatbone.Core
 
         public JContent PutNull(string name)
         {
-            if (counts[level]++ > 0) Add(',');
+            if (counts[level]++ > 0) Write((byte)',');
 
             if (name != null)
             {
