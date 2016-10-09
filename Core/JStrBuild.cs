@@ -86,12 +86,12 @@ namespace Greatbone.Core
             buffer[count++] = c; // append to the buffer
         }
 
-        public void Add(char[] v)
+        void Add(char[] v)
         {
             Add(v, 0, v.Length);
         }
 
-        public void Add(char[] v, int offset, int len)
+        void Add(char[] v, int offset, int len)
         {
             if (v != null)
             {
@@ -102,12 +102,12 @@ namespace Greatbone.Core
             }
         }
 
-        public void Add(string v)
+        void Add(string v)
         {
             Add(v, 0, v.Length);
         }
 
-        public void Add(string v, int offset, int len)
+        void Add(string v, int offset, int len)
         {
             if (v != null)
             {
@@ -426,18 +426,22 @@ namespace Greatbone.Core
 
         public JStrBuild Put(string name, Number v)
         {
-            if (counts[level]++ > 0) AddChar(',');
+            if (counts[level]++ > 0) Add(',');
 
             if (name != null)
             {
-                AddChar('"');
+                Add('"');
                 Add(name);
-                AddChar('"');
-                AddChar(':');
+                Add('"');
+                Add(':');
             }
 
-            // Add(v);
-
+            Add(v.integr);
+            if (v.Pt)
+            {
+                Add('.');
+                Add(v.fract);
+            }
             return this;
         }
 
@@ -499,7 +503,30 @@ namespace Greatbone.Core
 
         public JStrBuild Put<T>(string name, T v, int x = -1) where T : IPersist
         {
-            throw new NotImplementedException();
+            if (counts[level]++ > 0) AddChar(',');
+
+            if (name != null)
+            {
+                AddChar('"');
+                Add(name);
+                AddChar('"');
+                AddChar(':');
+            }
+
+            if (v == null)
+            {
+                Add("null");
+            }
+            else
+            {
+                level++;
+                AddChar('{');
+                v.Save(this, x);
+                AddChar('}');
+                level--;
+            }
+
+            return this;
         }
 
         public JStrBuild Put(string name, JObj v)
@@ -520,6 +547,7 @@ namespace Greatbone.Core
             }
             else
             {
+                v.Save(this);
             }
 
             return this;
@@ -537,7 +565,14 @@ namespace Greatbone.Core
                 AddChar(':');
             }
 
-            // Add(v);
+            if (v == null)
+            {
+                Add("null");
+            }
+            else
+            {
+                v.Save(this);
+            }
 
             return this;
         }
@@ -554,7 +589,20 @@ namespace Greatbone.Core
                 AddChar(':');
             }
 
-            // Add(v);
+            if (v == null)
+            {
+                Add("null");
+            }
+            else
+            {
+                AddChar('[');
+                for (int i = 0; i < v.Length; i++)
+                {
+                    if (i > 0) AddChar(',');
+                    Add(v[i]);
+                }
+                AddChar(']');
+            }
 
             return this;
         }
@@ -571,7 +619,20 @@ namespace Greatbone.Core
                 AddChar(':');
             }
 
-            // Add(v);
+            if (v == null)
+            {
+                Add("null");
+            }
+            else
+            {
+                AddChar('[');
+                for (int i = 0; i < v.Length; i++)
+                {
+                    if (i > 0) AddChar(',');
+                    Add(v[i]);
+                }
+                AddChar(']');
+            }
 
             return this;
         }
@@ -588,7 +649,20 @@ namespace Greatbone.Core
                 AddChar(':');
             }
 
-            // Add(v);
+            if (v == null)
+            {
+                Add("null");
+            }
+            else
+            {
+                AddChar('[');
+                for (int i = 0; i < v.Length; i++)
+                {
+                    if (i > 0) AddChar(',');
+                    Add(v[i]);
+                }
+                AddChar(']');
+            }
 
             return this;
         }
@@ -605,7 +679,20 @@ namespace Greatbone.Core
                 AddChar(':');
             }
 
-            // Add(v);
+            if (v == null)
+            {
+                Add("null");
+            }
+            else
+            {
+                AddChar('[');
+                for (int i = 0; i < v.Length; i++)
+                {
+                    if (i > 0) AddChar(',');
+                    Add(v[i]);
+                }
+                AddChar(']');
+            }
 
             return this;
         }
@@ -622,8 +709,20 @@ namespace Greatbone.Core
                 AddChar(':');
             }
 
-            // Add(v);
-
+            if (v == null)
+            {
+                Add("null");
+            }
+            else
+            {
+                AddChar('[');
+                for (int i = 0; i < v.Length; i++)
+                {
+                    if (i > 0) AddChar(',');
+                    Put(null, v[i], x); // output a persist object
+                }
+                AddChar(']');
+            }
             return this;
         }
 

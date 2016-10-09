@@ -262,6 +262,7 @@ namespace Greatbone.Core
             }
             else
             {
+                // TODO
             }
 
             return this;
@@ -285,7 +286,11 @@ namespace Greatbone.Core
             }
             else
             {
-                PutObj(v);
+                level++;
+                AddByte((byte)'{');
+                v.Save(this, x);
+                AddByte((byte)'}');
+                level--;
             }
 
             return this;
@@ -309,6 +314,7 @@ namespace Greatbone.Core
             }
             else
             {
+                v.Save(this);
             }
 
             return this;
@@ -332,6 +338,7 @@ namespace Greatbone.Core
             }
             else
             {
+                v.Save(this);
             }
             return this;
         }
@@ -348,6 +355,21 @@ namespace Greatbone.Core
                 Add(':');
             }
 
+            if (v == null)
+            {
+                Add("null");
+            }
+            else
+            {
+                AddByte((byte)'[');
+                for (int i = 0; i < v.Length; i++)
+                {
+                    if (i > 0) AddByte((byte)',');
+                    Add(v[i]);
+                }
+                AddByte((byte)']');
+            }
+
             return this;
         }
 
@@ -362,6 +384,22 @@ namespace Greatbone.Core
                 Add('"');
                 Add(':');
             }
+
+            if (v == null)
+            {
+                Add("null");
+            }
+            else
+            {
+                AddByte((byte)'[');
+                for (int i = 0; i < v.Length; i++)
+                {
+                    if (i > 0) AddByte((byte)',');
+                    Add(v[i]);
+                }
+                AddByte((byte)']');
+            }
+
             return this;
         }
 
@@ -375,6 +413,21 @@ namespace Greatbone.Core
                 Add(name);
                 Add('"');
                 Add(':');
+            }
+
+            if (v == null)
+            {
+                Add("null");
+            }
+            else
+            {
+                AddByte((byte)'[');
+                for (int i = 0; i < v.Length; i++)
+                {
+                    if (i > 0) AddByte((byte)',');
+                    Add(v[i]);
+                }
+                AddByte((byte)']');
             }
 
             return this;
@@ -391,6 +444,22 @@ namespace Greatbone.Core
                 Add('"');
                 Add(':');
             }
+
+            if (v == null)
+            {
+                Add("null");
+            }
+            else
+            {
+                AddByte((byte)'[');
+                for (int i = 0; i < v.Length; i++)
+                {
+                    if (i > 0) AddByte((byte)',');
+                    Add(v[i]);
+                }
+                AddByte((byte)']');
+            }
+
             return this;
         }
 
@@ -413,6 +482,13 @@ namespace Greatbone.Core
             }
             else
             {
+                AddByte((byte)'[');
+                for (int i = 0; i < v.Length; i++)
+                {
+                    if (i > 0) AddByte((byte)',');
+                    Put(null, v[i], x); // output a persist object
+                }
+                AddByte((byte)']');
             }
 
             return this;
