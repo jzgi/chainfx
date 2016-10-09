@@ -12,7 +12,7 @@ namespace Greatbone.Core
         readonly int count;
 
         // UTF-8 string builder
-        readonly StrBuilder str;
+        readonly StrBuild str;
 
         public JStrParse(string buffer) : this(buffer, buffer.Length) { }
 
@@ -20,7 +20,7 @@ namespace Greatbone.Core
         {
             this.buffer = buffer;
             this.count = count;
-            this.str = new StrBuilder();
+            this.str = new StrBuild();
         }
 
         public object Parse()
