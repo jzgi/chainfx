@@ -5,14 +5,9 @@ namespace Greatbone.Core
 {
     public static class ISourceExtensions
     {
-
-        public static T ToObj<T>(this ISource sc) where T : IPersist, new()
-        {
-            T obj = new T();
-            obj.Load(sc);
-            return obj;
-        }
-
+        //
+        // GOT
+        //
 
         public static bool Got(this ISource sc, ref bool v)
         {
@@ -200,13 +195,6 @@ namespace Greatbone.Core
             return v;
         }
 
-        public static T[] GetArr<T>(this ISource sc, T[] def = null) where T : IPersist, new()
-        {
-            T[] v = def;
-            sc.Got(null, ref v);
-            return v;
-        }
-
         public static JObj GetJObj(this ISource sc, JObj def = null)
         {
             JObj v = def;
@@ -220,7 +208,6 @@ namespace Greatbone.Core
             sc.Got(null, ref v);
             return v;
         }
-
 
         public static short[] GetShorts(this ISource sc, short[] def = null)
         {
@@ -243,6 +230,7 @@ namespace Greatbone.Core
             return v;
         }
 
+
         public static string[] GetStrings(this ISource sc, string[] def = null)
         {
             string[] v = def;
@@ -250,6 +238,16 @@ namespace Greatbone.Core
             return v;
         }
 
+        public static T[] GetArr<T>(this ISource sc, T[] def = null) where T : IPersist, new()
+        {
+            T[] v = def;
+            sc.Got(null, ref v);
+            return v;
+        }
+
+        //
+        // GET SPECIFIC BY NAME
+        //
 
         public static bool GetBool(this ISource sc, string name, bool def = false)
         {
@@ -328,13 +326,6 @@ namespace Greatbone.Core
             return v;
         }
 
-        public static T[] GetArr<T>(this ISource sc, string name, T[] def = null) where T : IPersist, new()
-        {
-            T[] v = def;
-            sc.Got(name, ref v);
-            return v;
-        }
-
         public static JObj GetJObj(this ISource sc, string name, JObj def = null)
         {
             JObj v = def;
@@ -378,6 +369,12 @@ namespace Greatbone.Core
             return v;
         }
 
+        public static T[] GetArr<T>(this ISource sc, string name, T[] def = null) where T : IPersist, new()
+        {
+            T[] v = def;
+            sc.Got(name, ref v);
+            return v;
+        }
 
     }
 
