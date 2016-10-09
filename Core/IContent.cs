@@ -19,7 +19,6 @@ namespace Greatbone.Core
 		/// <summary>Time that was last modified.</summary>
 		DateTime LastModified { get; }
 
-		///
 		/// <summary>A computed ETag value.</summary>
 		///
 		long ETag { get; }
