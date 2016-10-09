@@ -18,17 +18,17 @@ namespace Greatbone.Core
             this.coll = coll;
         }
 
-        int paramidx; // current parameter index
+        int index; // current parameter index
 
         internal void Clear()
         {
             coll.Clear();
-            paramidx = 0;
+            index = 0;
         }
 
         public DbParameters Put(bool v)
         {
-            coll.Add(new NpgsqlParameter(Params[paramidx++], NpgsqlDbType.Boolean)
+            coll.Add(new NpgsqlParameter(Params[index++], NpgsqlDbType.Boolean)
             {
                 Value = v
             });
@@ -37,7 +37,7 @@ namespace Greatbone.Core
 
         public DbParameters Put(short v)
         {
-            coll.Add(new NpgsqlParameter(Params[paramidx++], NpgsqlDbType.Smallint)
+            coll.Add(new NpgsqlParameter(Params[index++], NpgsqlDbType.Smallint)
             {
                 Value = v
             });
@@ -46,7 +46,7 @@ namespace Greatbone.Core
 
         public DbParameters Put(int v)
         {
-            coll.Add(new NpgsqlParameter(Params[paramidx++], NpgsqlDbType.Integer)
+            coll.Add(new NpgsqlParameter(Params[index++], NpgsqlDbType.Integer)
             {
                 Value = v
             });
@@ -55,7 +55,7 @@ namespace Greatbone.Core
 
         public DbParameters Put(long v)
         {
-            coll.Add(new NpgsqlParameter(Params[paramidx++], NpgsqlDbType.Bigint)
+            coll.Add(new NpgsqlParameter(Params[index++], NpgsqlDbType.Bigint)
             {
                 Value = v
             });
@@ -64,7 +64,7 @@ namespace Greatbone.Core
 
         public DbParameters Put(decimal v)
         {
-            coll.Add(new NpgsqlParameter(Params[paramidx++], NpgsqlDbType.Money)
+            coll.Add(new NpgsqlParameter(Params[index++], NpgsqlDbType.Money)
             {
                 Value = v
             });
@@ -76,7 +76,7 @@ namespace Greatbone.Core
             NpgsqlDbType dt = (v.Hour == 0 && v.Minute == 0 && v.Second == 0 && v.Millisecond == 0) ?
                 NpgsqlDbType.Date : NpgsqlDbType.Timestamp;
 
-            coll.Add(new NpgsqlParameter(Params[paramidx++], dt)
+            coll.Add(new NpgsqlParameter(Params[index++], dt)
             {
                 Value = v
             });
@@ -85,7 +85,7 @@ namespace Greatbone.Core
 
         public DbParameters Put(char[] v)
         {
-            coll.Add(new NpgsqlParameter(Params[paramidx++], NpgsqlDbType.Text)
+            coll.Add(new NpgsqlParameter(Params[index++], NpgsqlDbType.Text)
             {
                 Value = (v != null) ? (object)v : DBNull.Value
             });
@@ -94,7 +94,7 @@ namespace Greatbone.Core
 
         public DbParameters Put(string v)
         {
-            coll.Add(new NpgsqlParameter(Params[paramidx++], NpgsqlDbType.Text)
+            coll.Add(new NpgsqlParameter(Params[index++], NpgsqlDbType.Text)
             {
                 Value = (v != null) ? (object)v : DBNull.Value
             });
@@ -123,27 +123,51 @@ namespace Greatbone.Core
 
         public DbParameters Put(JArr v)
         {
-            throw new NotImplementedException();
+            JText jt = new JText();
+            jt.Put(v);
+            string strv = jt.ToString();
+
+            coll.Add(new NpgsqlParameter(Params[index++], NpgsqlDbType.Jsonb)
+            {
+                Value = (v != null) ? (object)strv : DBNull.Value
+            });
+            return this;
         }
 
         public DbParameters Put(short[] v)
         {
-            throw new NotImplementedException();
+            coll.Add(new NpgsqlParameter(Params[index++], NpgsqlDbType.Array | NpgsqlDbType.Smallint)
+            {
+                Value = (v != null) ? (object)v : DBNull.Value
+            });
+            return this;
         }
 
         public DbParameters Put(int[] v)
         {
-            throw new NotImplementedException();
+            coll.Add(new NpgsqlParameter(Params[index++], NpgsqlDbType.Array | NpgsqlDbType.Integer)
+            {
+                Value = (v != null) ? (object)v : DBNull.Value
+            });
+            return this;
         }
 
         public DbParameters Put(long[] v)
         {
-            throw new NotImplementedException();
+            coll.Add(new NpgsqlParameter(Params[index++], NpgsqlDbType.Array | NpgsqlDbType.Bigint)
+            {
+                Value = (v != null) ? (object)v : DBNull.Value
+            });
+            return this;
         }
 
         public DbParameters Put(string[] v)
         {
-            throw new NotImplementedException();
+            coll.Add(new NpgsqlParameter(Params[index++], NpgsqlDbType.Array | NpgsqlDbType.Varchar)
+            {
+                Value = (v != null) ? (object)v : DBNull.Value
+            });
+            return this;
         }
 
         public DbParameters Put<T>(T[] v, int x = -1) where T : IPersist

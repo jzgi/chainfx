@@ -1,5 +1,4 @@
 using System;
-using System.Collections.Generic;
 
 namespace Greatbone.Core
 {
@@ -194,9 +193,8 @@ namespace Greatbone.Core
             JMember pair;
             if (pairs.TryGet(name, out pair))
             {
-                T val = new T();
-                val.Load((JObj)pair);
-                v = val;
+                JObj jo = (JObj)pair;
+                v = new T(); v.Load(jo);
                 return true;
             }
             return false;
@@ -229,13 +227,12 @@ namespace Greatbone.Core
             JMember pair;
             if (pairs.TryGet(name, out pair))
             {
-                JArr jarr = pair;
-                short[] arr = new short[jarr.Count];
-                for (int i = 0; i < jarr.Count; i++)
+                JArr ja = pair;
+                v = new short[ja.Count];
+                for (int i = 0; i < ja.Count; i++)
                 {
-                    arr[i] = jarr[i];
+                    v[i] = ja[i];
                 }
-                v = arr;
                 return true;
             }
             return false;
@@ -246,13 +243,12 @@ namespace Greatbone.Core
             JMember pair;
             if (pairs.TryGet(name, out pair))
             {
-                JArr jarr = pair;
-                int[] arr = new int[jarr.Count];
-                for (int i = 0; i < jarr.Count; i++)
+                JArr ja = pair;
+                v = new int[ja.Count];
+                for (int i = 0; i < ja.Count; i++)
                 {
-                    arr[i] = jarr[i];
+                    v[i] = ja[i];
                 }
-                v = arr;
                 return true;
             }
             return false;
@@ -263,13 +259,12 @@ namespace Greatbone.Core
             JMember pair;
             if (pairs.TryGet(name, out pair))
             {
-                JArr jarr = pair;
-                long[] arr = new long[jarr.Count];
-                for (int i = 0; i < jarr.Count; i++)
+                JArr ja = pair;
+                v = new long[ja.Count];
+                for (int i = 0; i < ja.Count; i++)
                 {
-                    arr[i] = jarr[i];
+                    v[i] = ja[i];
                 }
-                v = arr;
                 return true;
             }
             return false;
@@ -280,13 +275,12 @@ namespace Greatbone.Core
             JMember pair;
             if (pairs.TryGet(name, out pair))
             {
-                JArr jarr = pair;
-                string[] arr = new string[jarr.Count];
-                for (int i = 0; i < jarr.Count; i++)
+                JArr ja = pair;
+                v = new string[ja.Count];
+                for (int i = 0; i < ja.Count; i++)
                 {
-                    arr[i] = jarr[i];
+                    v[i] = ja[i];
                 }
-                v = arr;
                 return true;
             }
             return false;
@@ -297,16 +291,14 @@ namespace Greatbone.Core
             JMember pair;
             if (pairs.TryGet(name, out pair))
             {
-                JArr ma = pair;
-                T[] arr = new T[ma.Count];
-                for (int i = 0; i < ma.Count; i++)
+                JArr ja = pair;
+                v = new T[ja.Count];
+                for (int i = 0; i < ja.Count; i++)
                 {
-                    JObj el = ma[i];
-                    T val = new T();
-                    val.Load(el);
-                    arr[i] = val;
+                    JObj jo = ja[i];
+                    T obj = new T(); obj.Load(jo);
+                    v[i] = obj;
                 }
-                v = arr;
                 return true;
             }
             return false;

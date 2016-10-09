@@ -3,21 +3,20 @@ using System.Text;
 namespace Greatbone.Core
 {
 
-    public struct JParse
+    public struct JStrParse
     {
         static readonly JException FormatEx = new JException("JSON Format");
 
-        // byte buffer content to parse
-        readonly byte[] buffer;
+        readonly string buffer;
 
         readonly int count;
 
         // UTF-8 string builder
         readonly StrBuilder str;
 
-        public JParse(byte[] buffer) : this(buffer, buffer.Length) { }
+        public JStrParse(string buffer) : this(buffer, buffer.Length) { }
 
-        public JParse(byte[] buffer, int count)
+        public JStrParse(string buffer, int count)
         {
             this.buffer = buffer;
             this.count = count;
@@ -29,7 +28,7 @@ namespace Greatbone.Core
             int p = -1;
             for (;;)
             {
-                byte b = buffer[++p];
+                char b = buffer[++p];
                 if (p >= count) throw FormatEx;
                 if (b == ' ' || b == '\t' || b == '\n' || b == '\r') continue; // skip ws
                 if (b == '{') return ParseObj(ref p);
@@ -46,7 +45,7 @@ namespace Greatbone.Core
             {
                 for (;;)
                 {
-                    byte b = buffer[++p];
+                    char b = buffer[++p];
                     if (p >= count) throw FormatEx;
                     if (b == ' ' || b == '\t' || b == '\n' || b == '\r') continue;
                     if (b == '"') break; // meet first quote
@@ -56,7 +55,7 @@ namespace Greatbone.Core
                 StringBuilder sb = new StringBuilder();
                 for (;;)
                 {
-                    byte b = buffer[++p];
+                    char b = buffer[++p];
                     if (p >= count) throw FormatEx;
                     if (b == '"') break; // meet second quote
                     else sb.Append((char)b);
@@ -64,7 +63,7 @@ namespace Greatbone.Core
 
                 for (;;) // till a colon
                 {
-                    byte b = buffer[++p];
+                    char b = buffer[++p];
                     if (p >= count) throw FormatEx;
                     if (b == ' ' || b == '\t' || b == '\n' || b == '\r') continue;
                     if (b == ':') break;
@@ -74,7 +73,7 @@ namespace Greatbone.Core
                 // parse the value part
                 for (;;)
                 {
-                    byte b = buffer[++p];
+                    char b = buffer[++p];
                     if (p >= count) throw FormatEx;
                     if (b == ' ' || b == '\t' || b == '\n' || b == '\r') continue; // skip ws
                     string name = sb.ToString();
@@ -119,7 +118,7 @@ namespace Greatbone.Core
                 // comma or end
                 for (;;)
                 {
-                    byte b = buffer[++p];
+                    char b = buffer[++p];
                     if (p >= count) throw FormatEx;
                     if (b == ' ' || b == '\t' || b == '\n' || b == '\r') continue;
                     if (b == ',') break;
@@ -140,7 +139,7 @@ namespace Greatbone.Core
             int p = pos;
             for (;;)
             {
-                byte b = buffer[++p];
+                char b = buffer[++p];
                 if (p >= count) throw FormatEx;
                 if (b == ' ' || b == '\t' || b == '\n' || b == '\r') continue; // skip ws
                 if (b == '{')
@@ -203,7 +202,7 @@ namespace Greatbone.Core
             bool esc = false;
             for (;;)
             {
-                byte b = buffer[++p];
+                char b = buffer[++p];
                 if (p >= count) throw FormatEx;
                 if (esc)
                 {
@@ -245,13 +244,13 @@ namespace Greatbone.Core
             return false;
         }
 
-        Number ParseNumber(ref int pos, byte first)
+        Number ParseNumber(ref int pos, char first)
         {
-            Number num = new Number(first);
+            Number num = new Number((byte)first);
             int p = pos;
             for (;;)
             {
-                byte b = buffer[p++];
+                char b = buffer[p++];
                 if (p >= count) throw FormatEx;
                 if (b == '.')
                 {
@@ -259,7 +258,7 @@ namespace Greatbone.Core
                 }
                 else if (b >= '0' && b <= '9')
                 {
-                    num.Add(b);
+                    num.Add((byte)b);
                 }
                 else
                 {
@@ -269,7 +268,7 @@ namespace Greatbone.Core
             }
         }
 
-        bool ParseBool(ref int pos, byte first)
+        bool ParseBool(ref int pos, char first)
         {
             int p = pos;
             if (first == 't')

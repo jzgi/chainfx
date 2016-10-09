@@ -12,7 +12,7 @@ namespace Greatbone.Core
         readonly int count;
 
         // UTF-8 string builder
-        readonly Str str;
+        readonly StrBuilder str;
 
         public FormParse(byte[] buffer) : this(buffer, buffer.Length) { }
 
@@ -20,7 +20,7 @@ namespace Greatbone.Core
         {
             this.buffer = buffer;
             this.count = count;
-            this.str = new Str();
+            this.str = new StrBuilder();
         }
 
         public Form Parse()

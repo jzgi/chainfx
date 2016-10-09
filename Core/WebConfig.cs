@@ -39,12 +39,14 @@ namespace Greatbone.Core
         // logging level
         internal int logging;
 
-        // options
-        internal JObj options;
+        internal JObj opts;
+
+        public JObj Opts => opts;
 
         public void Load(ISource sc, int x = -1)
         {
             sc.Got(nameof(key), ref key);
+            sc.Got(nameof(opts), ref opts);
             sc.Got(nameof(part), ref part);
             sc.Got(nameof(@extern), ref @extern);
             sc.Got(nameof(tls), ref tls);
@@ -56,6 +58,7 @@ namespace Greatbone.Core
         public void Save<R>(ISink<R> sk, int x = -1) where R : ISink<R>
         {
             sk.Put(nameof(key), key);
+            sk.Put(nameof(opts), opts);
             sk.Put(nameof(part), part);
             sk.Put(nameof(@extern), @extern);
             sk.Put(nameof(tls), tls);

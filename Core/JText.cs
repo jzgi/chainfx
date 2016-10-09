@@ -4,10 +4,8 @@ namespace Greatbone.Core
 {
     public class JText : ISink<JText>
     {
-        // for parsing json text
-        string text;
+        const int InitialCapacity = 1024;
 
-        // for building json text
         char[] buffer;
 
         int count;
@@ -20,19 +18,10 @@ namespace Greatbone.Core
 
         int level;
 
-        public JText(int capacity)
+        public JText(int capacity = InitialCapacity)
         {
             buffer = new char[capacity];
         }
-
-        public JText(string json)
-        {
-            text = json;
-        }
-
-        //
-        // READ
-        //
 
         public void Arr(Action a)
         {
@@ -43,6 +32,11 @@ namespace Greatbone.Core
         {
 
 
+        }
+
+        public JText Put(JArr v)
+        {
+            throw new NotImplementedException();
         }
 
         public JText PutNull(string name)

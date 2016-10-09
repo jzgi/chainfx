@@ -21,6 +21,8 @@ namespace Greatbone.Core
         ///
         public string Key { get; internal set; }
 
+        public JObj Opts { get; internal set; }
+
         public bool IsVar { get; internal set; }
 
         /// <summary>The service that this controller resides in.</summary>

@@ -1,5 +1,4 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.Data;
 using Npgsql;
 
@@ -82,7 +81,7 @@ namespace Greatbone.Core
             command.CommandType = CommandType.Text;
             parameters.Clear();
             ps?.Invoke(parameters);
-            colord = 0;
+            ordinal = 0;
             reader = command.ExecuteReader();
             return reader.Read();
         }
@@ -103,14 +102,14 @@ namespace Greatbone.Core
             command.CommandType = CommandType.Text;
             parameters.Clear();
             ps?.Invoke(parameters);
-            colord = 0;
+            ordinal = 0;
             reader = command.ExecuteReader();
             return reader.HasRows;
         }
 
         public bool NextRow()
         {
-            colord = 0; // reset column ordinal
+            ordinal = 0; // reset column ordinal
 
             if (reader == null)
             {
@@ -133,7 +132,7 @@ namespace Greatbone.Core
 
         public bool NextResult()
         {
-            colord = 0; // reset column ordinal
+            ordinal = 0; // reset column ordinal
 
             if (reader == null)
             {
@@ -158,7 +157,7 @@ namespace Greatbone.Core
             command.CommandType = CommandType.Text;
             parameters.Clear();
             ps?.Invoke(parameters);
-            colord = 0;
+            ordinal = 0;
             return command.ExecuteNonQuery();
         }
 
@@ -167,12 +166,12 @@ namespace Greatbone.Core
         //
 
         // current column ordinal
-        int colord;
+        int ordinal;
 
 
         public bool Got(ref bool v)
         {
-            int ord = colord++;
+            int ord = ordinal++;
             if (!reader.IsDBNull(ord))
             {
                 v = reader.GetBoolean(ord);
@@ -183,7 +182,7 @@ namespace Greatbone.Core
 
         public bool Got(ref short v)
         {
-            int ord = colord++;
+            int ord = ordinal++;
             if (!reader.IsDBNull(ord))
             {
                 v = reader.GetInt16(ord);
@@ -194,7 +193,7 @@ namespace Greatbone.Core
 
         public bool Got(ref int v)
         {
-            int ord = colord++;
+            int ord = ordinal++;
             if (!reader.IsDBNull(ord))
             {
                 v = reader.GetInt32(ord);
@@ -205,7 +204,7 @@ namespace Greatbone.Core
 
         public bool Got(ref long v)
         {
-            int ord = colord++;
+            int ord = ordinal++;
             if (!reader.IsDBNull(ord))
             {
                 v = reader.GetInt64(ord);
@@ -216,7 +215,7 @@ namespace Greatbone.Core
 
         public bool Got(ref decimal v)
         {
-            int ord = colord++;
+            int ord = ordinal++;
             if (!reader.IsDBNull(ord))
             {
                 v = reader.GetDecimal(ord);
@@ -227,7 +226,7 @@ namespace Greatbone.Core
 
         public bool Got(ref DateTime v)
         {
-            int ord = colord++;
+            int ord = ordinal++;
             if (!reader.IsDBNull(ord))
             {
                 v = reader.GetDateTime(ord);
@@ -238,7 +237,7 @@ namespace Greatbone.Core
 
         public bool Got(ref char[] v)
         {
-            int ord = colord++;
+            int ord = ordinal++;
             if (!reader.IsDBNull(ord))
             {
                 v = reader.GetFieldValue<char[]>(ord);
@@ -249,7 +248,7 @@ namespace Greatbone.Core
 
         public bool Got(ref string v)
         {
-            int ord = colord++;
+            int ord = ordinal++;
             if (!reader.IsDBNull(ord))
             {
                 v = reader.GetString(ord);
@@ -260,12 +259,29 @@ namespace Greatbone.Core
 
         public bool Got(ref byte[] v)
         {
-            throw new NotImplementedException();
+            int ord = ordinal++;
+            try
+            {
+                if (!reader.IsDBNull(ord))
+                {
+                    int len;
+                    if ((len = (int)reader.GetBytes(ord, 0, null, 0, 0)) > 0)
+                    {
+                        // get the number of bytes that are available to read.
+                        v = new byte[len];
+                        reader.GetBytes(ord, 0, v, 0, len); // read data into the buffer
+                        return true;
+                    }
+                }
+            }
+            catch { }
+
+            return false;
         }
 
         public bool Got<T>(ref T v, int x = -1) where T : IPersist, new()
         {
-            int ord = colord++;
+            int ord = ordinal++;
             if (!reader.IsDBNull(ord))
             {
                 string s = reader.GetString(ord);
@@ -278,17 +294,33 @@ namespace Greatbone.Core
 
         public bool Got(ref JObj v)
         {
-            throw new NotImplementedException();
+            int ord = ordinal++;
+            if (!reader.IsDBNull(ord))
+            {
+                string strv = reader.GetString(ord);
+                JStrParse parse = new JStrParse(strv);
+                v = (JObj)parse.Parse();
+                return true;
+            }
+            return false;
         }
 
         public bool Got(ref JArr v)
         {
-            throw new NotImplementedException();
+            int ord = ordinal++;
+            if (!reader.IsDBNull(ord))
+            {
+                string strv = reader.GetString(ord);
+                JStrParse parse = new JStrParse(strv);
+                v = (JArr)parse.Parse();
+                return true;
+            }
+            return false;
         }
 
         public bool Got(ref short[] v)
         {
-            int ord = colord++;
+            int ord = ordinal++;
             if (!reader.IsDBNull(ord))
             {
                 v = reader.GetFieldValue<short[]>(ord);
@@ -299,7 +331,7 @@ namespace Greatbone.Core
 
         public bool Got(ref int[] v)
         {
-            int ord = colord++;
+            int ord = ordinal++;
             if (!reader.IsDBNull(ord))
             {
                 v = reader.GetFieldValue<int[]>(ord);
@@ -310,7 +342,7 @@ namespace Greatbone.Core
 
         public bool Got(ref long[] v)
         {
-            int ord = colord++;
+            int ord = ordinal++;
             if (!reader.IsDBNull(ord))
             {
                 v = reader.GetFieldValue<long[]>(ord);
@@ -321,7 +353,7 @@ namespace Greatbone.Core
 
         public bool Got(ref string[] v)
         {
-            int ord = colord++;
+            int ord = ordinal++;
             if (!reader.IsDBNull(ord))
             {
                 v = reader.GetFieldValue<string[]>(ord);
@@ -332,7 +364,21 @@ namespace Greatbone.Core
 
         public bool Got<T>(ref T[] v, int x = -1) where T : IPersist, new()
         {
-            throw new NotImplementedException();
+            int ord = ordinal++;
+            if (!reader.IsDBNull(ord))
+            {
+                string strv = reader.GetString(ord);
+                JStrParse parse = new JStrParse(strv);
+                JArr jarr = (JArr)parse.Parse();
+                v = new T[jarr.Count];
+                for (int i = 0; i < jarr.Count; i++)
+                {
+                    JObj jobj = (JObj)jarr[i];
+                    v[i].Load(jobj, x);
+                }
+                return true;
+            }
+            return false;
         }
 
         // SOURCE
@@ -428,7 +474,24 @@ namespace Greatbone.Core
 
         public bool Got(string name, ref byte[] v)
         {
-            throw new NotImplementedException();
+            int ord = reader.GetOrdinal(name);
+            try
+            {
+                if (!reader.IsDBNull(ord))
+                {
+                    int len;
+                    if ((len = (int)reader.GetBytes(ord, 0, null, 0, 0)) > 0)
+                    {
+                        // get the number of bytes that are available to read.
+                        v = new byte[len];
+                        reader.GetBytes(ord, 0, v, 0, len); // read data into the buffer
+                        return true;
+                    }
+                }
+            }
+            catch { }
+
+            return false;
         }
 
         public bool Got<T>(string name, ref T v, int x = -1) where T : IPersist, new()
@@ -436,11 +499,11 @@ namespace Greatbone.Core
             int ord = reader.GetOrdinal(name);
             if (!reader.IsDBNull(ord))
             {
-
-                string str = reader.GetString(ord);
-                // JsonText json = new JsonText(str);
-                // if (value == null) value = new T();
-                // value.Load(json, x);
+                string strv = reader.GetString(ord);
+                JStrParse parse = new JStrParse(strv);
+                JObj jobj = (JObj)parse.Parse();
+                v = new T();
+                v.Load(jobj, x);
                 return true;
             }
             return false;
@@ -448,12 +511,28 @@ namespace Greatbone.Core
 
         public bool Got(string name, ref JObj v)
         {
-            throw new NotImplementedException();
+            int ord = reader.GetOrdinal(name);
+            if (!reader.IsDBNull(ord))
+            {
+                string strv = reader.GetString(ord);
+                JStrParse parse = new JStrParse(strv);
+                v = (JObj)parse.Parse();
+                return true;
+            }
+            return false;
         }
 
         public bool Got(string name, ref JArr v)
         {
-            throw new NotImplementedException();
+            int ord = reader.GetOrdinal(name);
+            if (!reader.IsDBNull(ord))
+            {
+                string strv = reader.GetString(ord);
+                JStrParse parse = new JStrParse(strv);
+                v = (JArr)parse.Parse();
+                return true;
+            }
+            return false;
         }
 
         public bool Got(string name, ref short[] v)
@@ -502,7 +581,21 @@ namespace Greatbone.Core
 
         public bool Got<T>(string name, ref T[] v, int x = -1) where T : IPersist, new()
         {
-            throw new NotImplementedException();
+            int ord = reader.GetOrdinal(name);
+            if (!reader.IsDBNull(ord))
+            {
+                string strv = reader.GetString(ord);
+                JStrParse parse = new JStrParse(strv);
+                JArr jarr = (JArr)parse.Parse();
+                v = new T[jarr.Count];
+                for (int i = 0; i < jarr.Count; i++)
+                {
+                    JObj jobj = (JObj)jarr[i];
+                    v[i].Load(jobj, x);
+                }
+                return true;
+            }
+            return false;
         }
 
 
