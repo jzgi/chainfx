@@ -18,7 +18,7 @@ namespace Greatbone.Core
         public JContent(int capacity = InitialCapacity) : base(capacity)
         {
             counts = new int[8];
-            level = -1;
+            level = 0;
         }
 
         public override string Type => "application/json";

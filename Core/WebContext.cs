@@ -142,15 +142,17 @@ namespace Greatbone.Core
 
         public IContent Content { get; set; }
 
-        public void SetDat<T>(int status, T dat, bool? pub = true, int maxage = 1000) where T : IPersist
+        public void SetObj<T>(int status, T obj, int x = -1, bool? pub = true, int maxage = 1000) where T : IPersist
         {
-            SendJson(status, jc =>
-            {
-                jc.PutObj(delegate { dat.Save(jc); });
-            }, pub, maxage);
+            SetJson(status, jcont => jcont.PutObj(obj, x), pub, maxage);
         }
 
-        public void SendJson(int status, Action<JContent> a, bool? pub = true, int maxage = 1000)
+        public void SetArr<T>(int status, T[] arr, int x = -1, bool? pub = true, int maxage = 1000) where T : IPersist
+        {
+            SetJson(status, jcont => jcont.PutArr(arr, x), pub, maxage);
+        }
+
+        public void SetJson(int status, Action<JContent> a, bool? pub = true, int maxage = 1000)
         {
             StatusCode = status;
 

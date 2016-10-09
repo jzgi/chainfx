@@ -24,7 +24,7 @@ namespace Greatbone.Sample
                 {
                     Post[] arr = null;
                     dc.Got(ref arr);
-                    wc.SendJson(200, jc => jc.Put(arr));
+                    wc.SetJson(200, jc => jc.Put(arr));
                 }
                 else
                 {
