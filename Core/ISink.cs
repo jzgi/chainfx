@@ -1,5 +1,4 @@
 ﻿using System;
-using System.Collections.Generic;
 
 namespace Greatbone.Core
 {
@@ -20,6 +19,8 @@ namespace Greatbone.Core
         R Put(string name, long v);
 
         R Put(string name, decimal v);
+
+        R Put(string name, Number v);
 
         R Put(string name, DateTime v);
 

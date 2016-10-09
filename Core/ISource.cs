@@ -1,5 +1,4 @@
 ﻿using System;
-using System.Collections.Generic;
 
 namespace Greatbone.Core
 {
@@ -18,6 +17,8 @@ namespace Greatbone.Core
         bool Got(string name, ref long v);
 
         bool Got(string name, ref decimal v);
+
+        bool Got(string name, ref Number v);
 
         bool Got(string name, ref DateTime v);
 

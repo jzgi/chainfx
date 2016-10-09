@@ -38,5 +38,42 @@ namespace Greatbone.Core
             elements[count++] = elem;
         }
 
+        internal void Save<R>(ISink<R> sk) where R : ISink<R>
+        {
+            for (int i = 0; i < count; i++)
+            {
+                JMember elem = elements[i];
+                VT vt = elem.vt;
+                if (vt == VT.Array)
+                {
+                    sk.Put((JArr)elem);
+                }
+                else if (vt == VT.Object)
+                {
+                    sk.Put((JObj)elem);
+                }
+                else if (vt == VT.String)
+                {
+                    sk.Put((string)elem);
+                }
+                else if (vt == VT.Number)
+                {
+                    sk.Put((Number)elem);
+                }
+                else if (vt == VT.True)
+                {
+                    sk.Put(true);
+                }
+                else if (vt == VT.False)
+                {
+                    sk.Put(false);
+                }
+                else if (vt == VT.Null)
+                {
+                    sk.PutNull();
+                }
+            }
+        }
+
     }
 }

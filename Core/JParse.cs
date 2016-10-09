@@ -255,7 +255,7 @@ namespace Greatbone.Core
                 if (p >= count) throw FormatEx;
                 if (b == '.')
                 {
-                    num.Point = true;
+                    num.Pt = true;
                 }
                 else if (b >= '0' && b <= '9')
                 {

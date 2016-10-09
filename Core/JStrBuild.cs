@@ -90,6 +90,11 @@ namespace Greatbone.Core
             throw new NotImplementedException();
         }
 
+        public JStrBuild Put(string name, Number v)
+        {
+            throw new NotImplementedException();
+        }
+
         public JStrBuild Put(string name, DateTime v)
         {
             throw new NotImplementedException();

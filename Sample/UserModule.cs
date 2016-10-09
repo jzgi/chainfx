@@ -13,9 +13,6 @@ namespace Greatbone.Sample
             SetVarHub<UserVarHub>(false);
         }
 
-        ///
-        /// Creates a new user account.
-        ///
         public void @new(WebContext wc)
         {
             User u = null;

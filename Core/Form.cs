@@ -17,42 +17,7 @@ namespace Greatbone.Core
             throw new NotImplementedException();
         }
 
-        public bool Got(string name, ref char[] v)
-        {
-            throw new NotImplementedException();
-        }
-
-        public bool Got(string name, ref byte[] v)
-        {
-            throw new NotImplementedException();
-        }
-
-        public bool Got(string name, ref JObj v)
-        {
-            throw new NotImplementedException();
-        }
-
-        public bool Got(string name, ref short[] v)
-        {
-            throw new NotImplementedException();
-        }
-
-        public bool Got(string name, ref long[] v)
-        {
-            throw new NotImplementedException();
-        }
-
-        public bool Got(string name, ref string[] v)
-        {
-            throw new NotImplementedException();
-        }
-
-        public bool Got(string name, ref int[] v)
-        {
-            throw new NotImplementedException();
-        }
-
-        public bool Got(string name, ref JArr v)
+        public bool Got(string name, ref DateTime v)
         {
             throw new NotImplementedException();
         }
@@ -62,7 +27,47 @@ namespace Greatbone.Core
             throw new NotImplementedException();
         }
 
-        public bool Got(string name, ref DateTime v)
+        public bool Got(string name, ref byte[] v)
+        {
+            throw new NotImplementedException();
+        }
+
+        public bool Got(string name, ref JArr v)
+        {
+            throw new NotImplementedException();
+        }
+
+        public bool Got(string name, ref int[] v)
+        {
+            throw new NotImplementedException();
+        }
+
+        public bool Got(string name, ref string[] v)
+        {
+            throw new NotImplementedException();
+        }
+
+        public bool Got(string name, ref long[] v)
+        {
+            throw new NotImplementedException();
+        }
+
+        public bool Got(string name, ref short[] v)
+        {
+            throw new NotImplementedException();
+        }
+
+        public bool Got(string name, ref JObj v)
+        {
+            throw new NotImplementedException();
+        }
+
+        public bool Got(string name, ref char[] v)
+        {
+            throw new NotImplementedException();
+        }
+
+        public bool Got(string name, ref Number v)
         {
             throw new NotImplementedException();
         }

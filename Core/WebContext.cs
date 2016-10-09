@@ -94,7 +94,7 @@ namespace Greatbone.Core
             }
         }
 
-        public T Get<T>(int x) where T : IPersist, new()
+        public T Get<T>(int x = -1) where T : IPersist, new()
         {
             JObj mo = (JObj)Data;
             T obj = new T();
@@ -162,15 +162,26 @@ namespace Greatbone.Core
             Content = json;
         }
 
-        public void SetHtml(int status, Action<HtmContent> a, bool? pub = true, int maxage = 1000)
+        public void SetHtml(int status, Action<HtmlContent> a, bool? pub = true, int maxage = 1000)
         {
             StatusCode = status;
 
             this.pub = pub;
             this.maxage = maxage;
 
-            HtmContent html = new HtmContent(16 * 1024);
+            HtmlContent html = new HtmlContent(16 * 1024);
             a?.Invoke(html);
+            Content = html;
+        }
+
+        public void SendBytes(int status, byte[] v, bool? pub = true, int maxage = 1000)
+        {
+            StatusCode = status;
+
+            this.pub = pub;
+            this.maxage = maxage;
+
+            HtmlContent html = new HtmlContent(16 * 1024);
             Content = html;
         }
 

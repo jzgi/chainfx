@@ -3,19 +3,19 @@ namespace Greatbone.Core
     /// <summary>
     /// Used to build a number during parsing process.
     /// </summary>
-    internal struct Number
+    public struct Number
     {
         // the integral part
-        long integr;
+        internal long integr;
 
         // the fraction part
-        int fract;
+        internal int fract;
 
         // point & the scaling factor
         byte pt;
 
         // negative
-        bool negat;
+        internal bool negat;
 
         internal Number(byte first)
         {
@@ -33,7 +33,7 @@ namespace Greatbone.Core
             }
         }
 
-        internal bool Point
+        internal bool Pt
         {
             get { return pt >= 0; }
             set { if (value) pt = 0; }

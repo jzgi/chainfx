@@ -144,6 +144,17 @@ namespace Greatbone.Core
             return false;
         }
 
+        public bool Got(string name, ref Number v)
+        {
+            JMember pair;
+            if (pairs.TryGet(name, out pair))
+            {
+                v = (Number)pair;
+                return true;
+            }
+            return false;
+        }
+
         public bool Got(string name, ref DateTime v)
         {
             JMember pair;
@@ -302,6 +313,44 @@ namespace Greatbone.Core
                 return true;
             }
             return false;
+        }
+
+
+        internal void Save<R>(ISink<R> sk) where R : ISink<R>
+        {
+            for (int i = 0; i < pairs.Count; i++)
+            {
+                JMember pair = pairs[i];
+                VT vt = pair.vt;
+                if (vt == VT.Array)
+                {
+                    sk.Put(pair.Key, (JArr)pair);
+                }
+                else if (vt == VT.Object)
+                {
+                    sk.Put(pair.Key, (JObj)pair);
+                }
+                else if (vt == VT.String)
+                {
+                    sk.Put(pair.Key, (string)pair);
+                }
+                else if (vt == VT.Number)
+                {
+                    sk.Put(pair.Key, (Number)pair);
+                }
+                else if (vt == VT.True)
+                {
+                    sk.Put(pair.Key, true);
+                }
+                else if (vt == VT.False)
+                {
+                    sk.Put(pair.Key, false);
+                }
+                else if (vt == VT.Null)
+                {
+                    sk.PutNull(pair.Key);
+                }
+            }
         }
 
     }

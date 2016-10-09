@@ -12,17 +12,17 @@ namespace Greatbone.Core
     }
 
     /// <summary>
-    /// A member represents either a value or a name/value pair, depending on the presence of the name property.
+    /// A member represents a value or a name/value pair if with the name.
     /// </summary>
     public struct JMember : IKeyed
     {
         // type of the value
-        readonly VT vt;
+        internal readonly VT vt;
 
         // Obj, Arr, string, byte[]
-        readonly object refv;
+        internal readonly object refv;
 
-        readonly Number numv;
+        internal readonly Number numv;
 
         // key as in an object member
         string key;
@@ -141,6 +141,15 @@ namespace Greatbone.Core
                 return v.numv.Decimal;
             }
             return 0;
+        }
+
+        public static implicit operator Number(JMember v)
+        {
+            if (v.vt == VT.Number)
+            {
+                return v.numv;
+            }
+            return default(Number);
         }
 
         public static implicit operator DateTime(JMember v)
