@@ -142,29 +142,29 @@ namespace Greatbone.Core
 
         public IContent Content { get; set; }
 
-        public void SetObj<T>(int status, T obj, ushort x = 0xffff, bool? pub = true, int maxage = 1000) where T : IPersist
+        public void SendObj<T>(int status, T obj, ushort x = 0xffff, bool? pub = true, int maxage = 1000) where T : IPersist
         {
-            SetJson(status, jcont => jcont.PutObj(obj, x), pub, maxage);
+            SendJson(status, jcont => jcont.PutObj(obj, x), pub, maxage);
         }
 
-        public void SetArr<T>(int status, T[] arr, ushort x = 0xffff, bool? pub = true, int maxage = 1000) where T : IPersist
+        public void SendArr<T>(int status, T[] arr, ushort x = 0xffff, bool? pub = true, int maxage = 1000) where T : IPersist
         {
-            SetJson(status, jcont => jcont.PutArr(arr, x), pub, maxage);
+            SendJson(status, jcont => jcont.PutArr(arr, x), pub, maxage);
         }
 
-        public void SetJson(int status, Action<JContent> a, bool? pub = true, int maxage = 1000)
+        public void SendJson(int status, Action<JContent> a, bool? pub = true, int maxage = 1000)
         {
             StatusCode = status;
 
             this.pub = pub;
             this.maxage = maxage;
 
-            JContent json = new JContent(8 * 1024);
-            a?.Invoke(json);
-            Content = json;
+            JContent jcont = new JContent(8 * 1024);
+            a?.Invoke(jcont);
+            Content = jcont;
         }
 
-        public void SetHtml(int status, Action<HtmlContent> a, bool? pub = true, int maxage = 1000)
+        public void SendHtml(int status, Action<HtmlContent> a, bool? pub = true, int maxage = 1000)
         {
             StatusCode = status;
 

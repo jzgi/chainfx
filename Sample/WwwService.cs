@@ -25,7 +25,7 @@ namespace Greatbone.Sample
 
         public void home(WebContext wc)
         {
-            wc.SetJson(200, json =>
+            wc.SendJson(200, json =>
             {
                 json.PutArr(delegate
                 {

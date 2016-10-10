@@ -242,7 +242,7 @@ namespace Greatbone.Core
             //
             server.Start(this);
 
-            var urls = server.Features.Get<IServerAddressesFeature>().Addresses;
+            OnStart();
 
             Console.Write(Key);
             Console.Write(" -> ");
@@ -395,6 +395,8 @@ namespace Greatbone.Core
                     // dispose services
                     foreach (WebService svc in services)
                     {
+                        svc.OnStop();
+
                         svc.Dispose();
                     }
 

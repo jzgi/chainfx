@@ -395,7 +395,7 @@ namespace Greatbone.Core
         }
 
 
-        public void SendEvent<T>(string topic, string filter, T @event) where T : IPersist
+        public void PostMsg<T>(string topic, string filter, T @event) where T : IPersist
         {
             // convert message to byte buffer
             JContent b = new JContent(16 * 1024);

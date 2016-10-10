@@ -158,22 +158,78 @@ namespace Greatbone.Core
 
         public DbParameters Put<T>(string name, T v, ushort x = 0xffff) where T : IPersist
         {
-            throw new NotImplementedException();
+            if (name == null)
+            {
+                name = Defaults[index++];
+            }
+            if (v == null)
+            {
+                coll.Add(new NpgsqlParameter(name, NpgsqlDbType.Jsonb) { Value = DBNull.Value });
+            }
+            else
+            {
+                JStrBuild jsb = new JStrBuild();
+                jsb.PutObj(v, x);
+                string strv = jsb.ToString();
+                coll.Add(new NpgsqlParameter(name, NpgsqlDbType.Jsonb)
+                {
+                    Value = strv
+                });
+            }
+            return this;
         }
 
         public DbParameters Put(string name, JObj v)
         {
-            throw new NotImplementedException();
+            if (name == null)
+            {
+                name = Defaults[index++];
+            }
+            if (v == null)
+            {
+                coll.Add(new NpgsqlParameter(name, NpgsqlDbType.Jsonb) { Value = DBNull.Value });
+            }
+            else
+            {
+                JStrBuild jsb = new JStrBuild();
+                v.Save(jsb);
+                string strv = jsb.ToString();
+                coll.Add(new NpgsqlParameter(name, NpgsqlDbType.Jsonb) { Value = strv });
+            }
+            return this;
         }
 
         public DbParameters Put(string name, JArr v)
         {
-            throw new NotImplementedException();
+            if (name == null)
+            {
+                name = Defaults[index++];
+            }
+            if (v == null)
+            {
+                coll.Add(new NpgsqlParameter(name, NpgsqlDbType.Jsonb) { Value = DBNull.Value });
+            }
+            else
+            {
+                JStrBuild jsb = new JStrBuild();
+                v.Save(jsb);
+                string strv = jsb.ToString();
+                coll.Add(new NpgsqlParameter(name, NpgsqlDbType.Jsonb) { Value = strv });
+            }
+            return this;
         }
 
         public DbParameters Put(string name, short[] v)
         {
-            throw new NotImplementedException();
+            if (name == null)
+            {
+                name = Defaults[index++];
+            }
+            coll.Add(new NpgsqlParameter(name, NpgsqlDbType.Array | NpgsqlDbType.Smallint)
+            {
+                Value = (v != null) ? (object)v : DBNull.Value
+            });
+            return this;
         }
 
         public DbParameters Put(string name, int[] v)
@@ -228,9 +284,8 @@ namespace Greatbone.Core
             else
             {
                 JStrBuild jsb = new JStrBuild();
-                jsb.Put(v);
+                jsb.PutArr(v, x);
                 string strv = jsb.ToString();
-
                 coll.Add(new NpgsqlParameter(Defaults[index++], NpgsqlDbType.Jsonb)
                 {
                     Value = strv
