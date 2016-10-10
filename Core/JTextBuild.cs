@@ -3,7 +3,7 @@ using System.Globalization;
 
 namespace Greatbone.Core
 {
-    public class JStrBuild : ISink<JStrBuild>
+    public class JTextBuild : ISink<JTextBuild>
     {
         // possible chars for representing a number as a string
         static readonly char[] Digits =
@@ -68,7 +68,7 @@ namespace Greatbone.Core
 
         int level;
 
-        public JStrBuild(int capacity = InitialCapacity)
+        public JTextBuild(int capacity = InitialCapacity)
         {
             buffer = new char[capacity];
             level = 0;
@@ -367,7 +367,7 @@ namespace Greatbone.Core
         // SINK
         //
 
-        public JStrBuild PutNull(string name)
+        public JTextBuild PutNull(string name)
         {
             if (counts[level]++ > 0) Write(',');
 
@@ -384,7 +384,7 @@ namespace Greatbone.Core
             return this;
         }
 
-        public JStrBuild Put(string name, bool v)
+        public JTextBuild Put(string name, bool v)
         {
             if (counts[level]++ > 0) Write(',');
 
@@ -401,7 +401,7 @@ namespace Greatbone.Core
             return this;
         }
 
-        public JStrBuild Put(string name, short v)
+        public JTextBuild Put(string name, short v)
         {
             if (counts[level]++ > 0) Write(',');
 
@@ -418,7 +418,7 @@ namespace Greatbone.Core
             return this;
         }
 
-        public JStrBuild Put(string name, int v)
+        public JTextBuild Put(string name, int v)
         {
             if (counts[level]++ > 0) Write(',');
 
@@ -435,7 +435,7 @@ namespace Greatbone.Core
             return this;
         }
 
-        public JStrBuild Put(string name, long v)
+        public JTextBuild Put(string name, long v)
         {
             if (counts[level]++ > 0) Write(',');
 
@@ -452,7 +452,7 @@ namespace Greatbone.Core
             return this;
         }
 
-        public JStrBuild Put(string name, decimal v)
+        public JTextBuild Put(string name, decimal v)
         {
             if (counts[level]++ > 0) Write(',');
 
@@ -469,7 +469,7 @@ namespace Greatbone.Core
             return this;
         }
 
-        public JStrBuild Put(string name, Number v)
+        public JTextBuild Put(string name, Number v)
         {
             if (counts[level]++ > 0) Add(',');
 
@@ -490,7 +490,7 @@ namespace Greatbone.Core
             return this;
         }
 
-        public JStrBuild Put(string name, DateTime v)
+        public JTextBuild Put(string name, DateTime v)
         {
             if (counts[level]++ > 0) Write(',');
 
@@ -507,26 +507,7 @@ namespace Greatbone.Core
             return this;
         }
 
-        public JStrBuild Put(string name, char[] v)
-        {
-            if (counts[level]++ > 0) Write(',');
-
-            if (name != null)
-            {
-                Write('"');
-                Add(name);
-                Write('"');
-                Write(':');
-            }
-
-            Write('"');
-            Add(v);
-            Write('"');
-
-            return this;
-        }
-
-        public JStrBuild Put(string name, string v)
+        public JTextBuild Put(string name, char[] v)
         {
             if (counts[level]++ > 0) Write(',');
 
@@ -545,12 +526,31 @@ namespace Greatbone.Core
             return this;
         }
 
-        public JStrBuild Put(string name, byte[] v)
+        public JTextBuild Put(string name, string v)
+        {
+            if (counts[level]++ > 0) Write(',');
+
+            if (name != null)
+            {
+                Write('"');
+                Add(name);
+                Write('"');
+                Write(':');
+            }
+
+            Write('"');
+            Add(v);
+            Write('"');
+
+            return this;
+        }
+
+        public JTextBuild Put(string name, byte[] v)
         {
             throw new NotImplementedException();
         }
 
-        public JStrBuild Put<T>(string name, T v, ushort x = 0xffff) where T : IPersist
+        public JTextBuild Put<T>(string name, T v, ushort x = 0xffff) where T : IPersist
         {
             if (counts[level]++ > 0) Write(',');
 
@@ -574,7 +574,7 @@ namespace Greatbone.Core
             return this;
         }
 
-        public JStrBuild Put(string name, JObj v)
+        public JTextBuild Put(string name, JObj v)
         {
             if (counts[level]++ > 0) Write(',');
 
@@ -601,7 +601,7 @@ namespace Greatbone.Core
             return this;
         }
 
-        public JStrBuild Put(string name, JArr v)
+        public JTextBuild Put(string name, JArr v)
         {
             if (counts[level]++ > 0) Write(',');
 
@@ -628,7 +628,7 @@ namespace Greatbone.Core
             return this;
         }
 
-        public JStrBuild Put(string name, short[] v)
+        public JTextBuild Put(string name, short[] v)
         {
             if (counts[level]++ > 0) Write(',');
 
@@ -658,7 +658,7 @@ namespace Greatbone.Core
             return this;
         }
 
-        public JStrBuild Put(string name, int[] v)
+        public JTextBuild Put(string name, int[] v)
         {
             if (counts[level]++ > 0) Write(',');
 
@@ -688,7 +688,7 @@ namespace Greatbone.Core
             return this;
         }
 
-        public JStrBuild Put(string name, long[] v)
+        public JTextBuild Put(string name, long[] v)
         {
             if (counts[level]++ > 0) Write(',');
 
@@ -718,7 +718,7 @@ namespace Greatbone.Core
             return this;
         }
 
-        public JStrBuild Put(string name, string[] v)
+        public JTextBuild Put(string name, string[] v)
         {
             if (counts[level]++ > 0) Write(',');
 
@@ -750,7 +750,7 @@ namespace Greatbone.Core
             return this;
         }
 
-        public JStrBuild Put<T>(string name, T[] v, ushort x = 0xffff) where T : IPersist
+        public JTextBuild Put<T>(string name, T[] v, ushort x = 0xffff) where T : IPersist
         {
             if (counts[level]++ > 0) Write(',');
 

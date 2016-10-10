@@ -3,7 +3,7 @@ using System.Text;
 namespace Greatbone.Core
 {
 
-    public struct JStrParse
+    public struct JTextParse
     {
         static readonly JException FormatEx = new JException("JSON Format");
 
@@ -12,15 +12,15 @@ namespace Greatbone.Core
         readonly int count;
 
         // UTF-8 string builder
-        readonly StrBuild str;
+        readonly StringBuild str;
 
-        public JStrParse(string buffer) : this(buffer, buffer.Length) { }
+        public JTextParse(string buffer) : this(buffer, buffer.Length) { }
 
-        public JStrParse(string buffer, int count)
+        public JTextParse(string buffer, int count)
         {
             this.buffer = buffer;
             this.count = count;
-            this.str = new StrBuild();
+            this.str = new StringBuild();
         }
 
         public object Parse()

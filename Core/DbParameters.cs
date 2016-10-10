@@ -168,7 +168,7 @@ namespace Greatbone.Core
             }
             else
             {
-                JStrBuild jsb = new JStrBuild();
+                JTextBuild jsb = new JTextBuild();
                 jsb.PutObj(v, x);
                 string strv = jsb.ToString();
                 coll.Add(new NpgsqlParameter(name, NpgsqlDbType.Jsonb)
@@ -191,7 +191,7 @@ namespace Greatbone.Core
             }
             else
             {
-                JStrBuild jsb = new JStrBuild();
+                JTextBuild jsb = new JTextBuild();
                 v.Save(jsb);
                 string strv = jsb.ToString();
                 coll.Add(new NpgsqlParameter(name, NpgsqlDbType.Jsonb) { Value = strv });
@@ -211,7 +211,7 @@ namespace Greatbone.Core
             }
             else
             {
-                JStrBuild jsb = new JStrBuild();
+                JTextBuild jsb = new JTextBuild();
                 v.Save(jsb);
                 string strv = jsb.ToString();
                 coll.Add(new NpgsqlParameter(name, NpgsqlDbType.Jsonb) { Value = strv });
@@ -283,7 +283,7 @@ namespace Greatbone.Core
             }
             else
             {
-                JStrBuild jsb = new JStrBuild();
+                JTextBuild jsb = new JTextBuild();
                 jsb.PutArr(v, x);
                 string strv = jsb.ToString();
                 coll.Add(new NpgsqlParameter(Defaults[index++], NpgsqlDbType.Jsonb)

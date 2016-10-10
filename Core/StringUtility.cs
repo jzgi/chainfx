@@ -4,7 +4,7 @@ using System.Security.Cryptography;
 
 namespace Greatbone.Core
 {
-    public static class StrUtility
+    public static class StringUtility
     {
 
         static readonly string[] DAYS = { "Mon", "Tue", "Wed", "Thu", "Fri", "Sat", "Sun" };
@@ -253,6 +253,41 @@ namespace Greatbone.Core
                 }
             }
             return new ArraySegment<byte>(buf, 0, p);
+        }
+
+
+        //
+        // CONVERTION
+        //
+
+        public static short ToShort(this string str)
+        {
+            short v;
+            if (short.TryParse(str, out v))
+            {
+                return v;
+            }
+            return 0;
+        }
+
+        public static int ToInt(this string str)
+        {
+            int v;
+            if (int.TryParse(str, out v))
+            {
+                return v;
+            }
+            return 0;
+        }
+
+        public static long ToLong(this string str)
+        {
+            long v;
+            if (long.TryParse(str, out v))
+            {
+                return v;
+            }
+            return 0;
         }
 
     }

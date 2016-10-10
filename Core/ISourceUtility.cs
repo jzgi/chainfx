@@ -2,7 +2,7 @@
 
 namespace Greatbone.Core
 {
-    public static class ISourceExtensions
+    public static class ISourceUtility
     {
         //
         // GOT

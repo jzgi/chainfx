@@ -296,7 +296,7 @@ namespace Greatbone.Core
             if (!reader.IsDBNull(ord))
             {
                 string strv = reader.GetString(ord);
-                JStrParse parse = new JStrParse(strv);
+                JTextParse parse = new JTextParse(strv);
                 JObj jobj = (JObj)parse.Parse();
                 v = new T();
                 v.Load(jobj, x);
@@ -311,7 +311,7 @@ namespace Greatbone.Core
             if (!reader.IsDBNull(ord))
             {
                 string strv = reader.GetString(ord);
-                JStrParse parse = new JStrParse(strv);
+                JTextParse parse = new JTextParse(strv);
                 v = (JObj)parse.Parse();
                 return true;
             }
@@ -324,7 +324,7 @@ namespace Greatbone.Core
             if (!reader.IsDBNull(ord))
             {
                 string strv = reader.GetString(ord);
-                JStrParse parse = new JStrParse(strv);
+                JTextParse parse = new JTextParse(strv);
                 v = (JArr)parse.Parse();
                 return true;
             }
@@ -381,7 +381,7 @@ namespace Greatbone.Core
             if (!reader.IsDBNull(ord))
             {
                 string strv = reader.GetString(ord);
-                JStrParse parse = new JStrParse(strv);
+                JTextParse parse = new JTextParse(strv);
                 JArr jarr = (JArr)parse.Parse();
                 v = new T[jarr.Count];
                 for (int i = 0; i < jarr.Count; i++)

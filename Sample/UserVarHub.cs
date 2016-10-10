@@ -31,7 +31,7 @@ namespace Greatbone.Sample
                     dc.Got(ref o.credential);
                     dc.Got(ref o.name);
 
-                    string c16 = StrUtility.C16(password);
+                    string c16 = StringUtility.C16(password);
                     if (c16.Equals(o.credential))
                     {
                         wc.SendJson(200, jcont => jcont.PutObj(o));

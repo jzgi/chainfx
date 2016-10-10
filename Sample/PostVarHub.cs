@@ -90,7 +90,7 @@ namespace Greatbone.Sample
             {
                 if (dc.QueryA("SELECT comments FROM posts WHERE id = @1", p => p.Put(var)))
                 {
-                    Comment[] arr = dc.GetArr<Comment>();
+                    Comment[] arr = dc.GetArr<Comment>().Concat(c);
 
                     // add new
 
