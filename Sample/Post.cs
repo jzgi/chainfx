@@ -22,11 +22,13 @@ namespace Greatbone.Sample
 
         internal Comment[] comments;
 
+        internal int shared;
+
         internal string text;
 
-        internal byte[] m0, m1, m2, m3, m4, m5, m6, m7, m8, m9;
-        internal char[] mbits;
+        internal byte[] m0, m1, m2, m3, m4, m5, m6, m7, m8;
 
+        internal string mbits;
 
         ///
         /// <summary>Returns the key of the brand object.</summary>
@@ -51,7 +53,6 @@ namespace Greatbone.Sample
             sc.Got(nameof(m6), ref m6);
             sc.Got(nameof(m7), ref m7);
             sc.Got(nameof(m8), ref m8);
-            sc.Got(nameof(m9), ref m9);
         }
 
         public void Save<R>(ISink<R> sk, ushort x = 0xffff) where R : ISink<R>
@@ -73,7 +74,6 @@ namespace Greatbone.Sample
             sk.Put(nameof(m6), m6);
             sk.Put(nameof(m7), m7);
             sk.Put(nameof(m8), m8);
-            sk.Put(nameof(m9), m9);
         }
     }
 
@@ -81,7 +81,7 @@ namespace Greatbone.Sample
     {
         internal DateTime time;
 
-        internal short emoji;
+        internal bool emoji;
 
         internal string authorid;
 

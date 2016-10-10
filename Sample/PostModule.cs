@@ -3,6 +3,8 @@ using System;
 
 namespace Greatbone.Sample
 {
+    ///
+    /// /post/
     public class PostModule : WebModule, IAdmin
     {
         public PostModule(ISetting setg) : base(setg)
@@ -10,21 +12,20 @@ namespace Greatbone.Sample
             SetVarHub<PostVarHub>(false);
         }
 
+        ///
+        /// GET /post/top?[page=_num_]
+        ///
         public void top(WebContext wc)
         {
             int page = 0;
-            if (!wc.Got("page", ref page))
-            {
-                wc.StatusCode = 400; return;
-            }
-
+            wc.Got(nameof(page), ref page);
             using (var dc = Service.NewDbContext())
             {
                 if (dc.Query(@"SELECT * FROM posts ORDER BY id DESC LIMIT @limit OFFSET @offset", p => p.Put(20).Put(20 * page)))
                 {
-                    Post[] arr = null;
-                    dc.Got(ref arr);
-                    wc.SendJson(200, jc => jc.Put(arr));
+                    Post[] posts = null;
+                    dc.Got(ref posts);
+                    wc.SendArr(200, posts);
                 }
                 else
                 {
@@ -33,7 +34,8 @@ namespace Greatbone.Sample
             }
         }
 
-
+        ///
+        /// POST /post/new
         public void @new(WebContext wc)
         {
             IToken tok = wc.Token;
@@ -44,7 +46,10 @@ namespace Greatbone.Sample
             }
         }
 
-        #region IAdmin
+
+        //
+        // ADMIN
+        //
 
         public void search(WebContext wc)
         {
@@ -61,6 +66,5 @@ namespace Greatbone.Sample
             throw new NotImplementedException();
         }
 
-        #endregion
     }
 }
