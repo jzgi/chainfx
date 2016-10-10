@@ -5,8 +5,8 @@
     /// </summary>
     public interface IPersist
     {
-        void Load(ISource sc, int x = -1);
+        void Load(ISource sc, ushort x = 0xffff);
 
-        void Save<R>(ISink<R> sk, int x = -1) where R : ISink<R>;
+        void Save<R>(ISink<R> sk, ushort x = 0xffff) where R : ISink<R>;
     }
 }

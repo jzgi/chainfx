@@ -330,7 +330,7 @@ namespace Greatbone.Core
             level--;
         }
 
-        public void PutArr<T>(T[] v, int x = -1) where T : IPersist
+        public void PutArr<T>(T[] v, ushort x = 0xffff) where T : IPersist
         {
             PutArr(delegate
             {
@@ -354,7 +354,7 @@ namespace Greatbone.Core
             level--;
         }
 
-        public void PutObj<T>(T v, int x = -1) where T : IPersist
+        public void PutObj<T>(T v, ushort x = 0xffff) where T : IPersist
         {
             PutObj(delegate
             {
@@ -550,7 +550,7 @@ namespace Greatbone.Core
             throw new NotImplementedException();
         }
 
-        public JStrBuild Put<T>(string name, T v, int x = -1) where T : IPersist
+        public JStrBuild Put<T>(string name, T v, ushort x = 0xffff) where T : IPersist
         {
             if (counts[level]++ > 0) Write(',');
 
@@ -750,7 +750,7 @@ namespace Greatbone.Core
             return this;
         }
 
-        public JStrBuild Put<T>(string name, T[] v, int x = -1) where T : IPersist
+        public JStrBuild Put<T>(string name, T[] v, ushort x = 0xffff) where T : IPersist
         {
             if (counts[level]++ > 0) Write(',');
 

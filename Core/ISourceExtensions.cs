@@ -66,7 +66,7 @@ namespace Greatbone.Core
         }
 
 
-        public static bool Got<T>(this ISource sc, ref T v, int x = -1) where T : IPersist, new()
+        public static bool Got<T>(this ISource sc, ref T v, ushort x = 0xffff) where T : IPersist, new()
         {
             return sc.Got(null, ref v, x);
         }
@@ -107,7 +107,7 @@ namespace Greatbone.Core
             return sc.Got(null, ref v);
         }
 
-        public static bool Got<T>(this ISource sc, ref T[] v, int x = -1) where T : IPersist, new()
+        public static bool Got<T>(this ISource sc, ref T[] v, ushort x = 0xffff) where T : IPersist, new()
         {
             return sc.Got(null, ref v, x);
         }

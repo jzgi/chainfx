@@ -3,15 +3,18 @@ using Greatbone.Core;
 
 namespace Greatbone.Sample
 {
+
     /// <summary>A user record that is a web access token for all the services. </summary>
     ///
     public class User : IToken, IPersist
     {
+        const ushort MGT = 0x01;
+
         internal string id;
 
         internal string name;
 
-        internal char[] credential;
+        internal string credential;
 
         internal bool fame;
 
@@ -33,7 +36,7 @@ namespace Greatbone.Sample
 
         public string Name => name;
 
-        public void Load(ISource sc, int x = -1)
+        public void Load(ISource sc, ushort x = 0xffff)
         {
             sc.Got(nameof(id), ref id);
             sc.Got(nameof(name), ref name);
@@ -41,13 +44,16 @@ namespace Greatbone.Sample
             sc.Got(nameof(fame), ref fame);
             sc.Got(nameof(brand), ref brand);
             sc.Got(nameof(admin), ref admin);
-            sc.Got(nameof(date), ref date);
-            sc.Got(nameof(favposts), ref favposts);
-            sc.Got(nameof(friends), ref friends);
-            sc.Got(nameof(favs), ref favs);
+            if ((x & MGT) == x)
+            {
+                sc.Got(nameof(date), ref date);
+                sc.Got(nameof(favposts), ref favposts);
+                sc.Got(nameof(friends), ref friends);
+                sc.Got(nameof(favs), ref favs);
+            }
         }
 
-        public void Save<R>(ISink<R> sk, int x = -1) where R : ISink<R>
+        public void Save<R>(ISink<R> sk, ushort x = 0xffff) where R : ISink<R>
         {
             sk.Put(nameof(id), id);
             sk.Put(nameof(name), name);
@@ -55,10 +61,13 @@ namespace Greatbone.Sample
             sk.Put(nameof(fame), fame);
             sk.Put(nameof(brand), brand);
             sk.Put(nameof(admin), admin);
-            sk.Put(nameof(date), date);
-            sk.Put(nameof(favposts), favposts, -1);
-            sk.Put(nameof(friends), friends, -1);
-            sk.Put(nameof(favs), favs, -1);
+            if ((x & MGT) == x)
+            {
+                sk.Put(nameof(date), date);
+                sk.Put(nameof(favposts), favposts, x);
+                sk.Put(nameof(friends), friends, x);
+                sk.Put(nameof(favs), favs, x);
+            }
         }
 
         public static string Encrypt(string orig)
@@ -73,14 +82,14 @@ namespace Greatbone.Sample
 
         public struct Fav : IPersist
         {
-            internal char[] id;
+            internal string id;
 
-            public void Load(ISource sc, int x = -1)
+            public void Load(ISource sc, ushort x = 0xffff)
             {
                 throw new NotImplementedException();
             }
 
-            public void Save<R>(ISink<R> sk, int x = -1) where R : ISink<R>
+            public void Save<R>(ISink<R> sk, ushort x = 0xffff) where R : ISink<R>
             {
                 throw new NotImplementedException();
             }
@@ -90,12 +99,12 @@ namespace Greatbone.Sample
         {
             internal int id;
 
-            public void Load(ISource sc, int x = -1)
+            public void Load(ISource sc, ushort x = 0xffff)
             {
                 throw new NotImplementedException();
             }
 
-            public void Save<R>(ISink<R> sk, int x = -1) where R : ISink<R>
+            public void Save<R>(ISink<R> sk, ushort x = 0xffff) where R : ISink<R>
             {
                 throw new NotImplementedException();
             }

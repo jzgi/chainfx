@@ -28,7 +28,7 @@ namespace Greatbone.Core
 
         bool Got(string name, ref byte[] v);
 
-        bool Got<T>(string name, ref T v, int x = -1) where T : IPersist, new();
+        bool Got<T>(string name, ref T v, ushort x = 0xffff) where T : IPersist, new();
 
         bool Got(string name, ref JObj v);
 
@@ -42,7 +42,7 @@ namespace Greatbone.Core
 
         bool Got(string name, ref string[] v);
 
-        bool Got<T>(string name, ref T[] v, int x = -1) where T : IPersist, new();
+        bool Got<T>(string name, ref T[] v, ushort x = 0xffff) where T : IPersist, new();
 
     }
 

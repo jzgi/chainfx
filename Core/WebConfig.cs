@@ -43,7 +43,7 @@ namespace Greatbone.Core
 
         public JObj Opts => opts;
 
-        public void Load(ISource sc, int x = -1)
+        public void Load(ISource sc, ushort x = 0xffff)
         {
             sc.Got(nameof(key), ref key);
             sc.Got(nameof(opts), ref opts);
@@ -55,7 +55,7 @@ namespace Greatbone.Core
             sc.Got(nameof(db), ref db);
         }
 
-        public void Save<R>(ISink<R> sk, int x = -1) where R : ISink<R>
+        public void Save<R>(ISink<R> sk, ushort x = 0xffff) where R : ISink<R>
         {
             sk.Put(nameof(key), key);
             sk.Put(nameof(opts), opts);

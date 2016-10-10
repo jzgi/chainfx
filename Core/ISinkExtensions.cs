@@ -69,7 +69,7 @@ namespace Greatbone.Core
         }
 
 
-        public static R Put<T, R>(this ISink<R> sk, T v, int x = -1) where T : IPersist where R : ISink<R>
+        public static R Put<T, R>(this ISink<R> sk, T v, ushort x = 0xffff) where T : IPersist where R : ISink<R>
         {
             return sk.Put(null, v, x);
         }
@@ -105,7 +105,7 @@ namespace Greatbone.Core
         }
 
 
-        public static R Put<T, R>(this ISink<R> sk, T[] v, int x = -1) where T : IPersist where R : ISink<R>
+        public static R Put<T, R>(this ISink<R> sk, T[] v, ushort x = 0xffff) where T : IPersist where R : ISink<R>
         {
             return sk.Put(null, v, x);
         }

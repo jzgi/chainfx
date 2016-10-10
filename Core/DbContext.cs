@@ -290,7 +290,7 @@ namespace Greatbone.Core
             return false;
         }
 
-        public bool Got<T>(string name, ref T v, int x = -1) where T : IPersist, new()
+        public bool Got<T>(string name, ref T v, ushort x = 0xffff) where T : IPersist, new()
         {
             int ord = name == null ? ordinal++ : reader.GetOrdinal(name);
             if (!reader.IsDBNull(ord))
@@ -375,7 +375,7 @@ namespace Greatbone.Core
             return false;
         }
 
-        public bool Got<T>(string name, ref T[] v, int x = -1) where T : IPersist, new()
+        public bool Got<T>(string name, ref T[] v, ushort x = 0xffff) where T : IPersist, new()
         {
             int ord = name == null ? ordinal++ : reader.GetOrdinal(name);
             if (!reader.IsDBNull(ord))

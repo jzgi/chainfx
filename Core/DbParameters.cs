@@ -156,7 +156,7 @@ namespace Greatbone.Core
             return this;
         }
 
-        public DbParameters Put<T>(string name, T v, int x = -1) where T : IPersist
+        public DbParameters Put<T>(string name, T v, ushort x = 0xffff) where T : IPersist
         {
             throw new NotImplementedException();
         }
@@ -215,7 +215,7 @@ namespace Greatbone.Core
             return this;
         }
 
-        public DbParameters Put<T>(string name, T[] v, int x = -1) where T : IPersist
+        public DbParameters Put<T>(string name, T[] v, ushort x = 0xffff) where T : IPersist
         {
             if (name == null)
             {

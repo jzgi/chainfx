@@ -1,5 +1,4 @@
 ﻿using System.Net;
-using System.Text;
 using Greatbone.Core;
 
 namespace Greatbone.Sample
@@ -14,12 +13,12 @@ namespace Greatbone.Sample
         }
 
         ///
-        /// Gets a token
+        /// GET /user/_id_/?password=_password_
         ///
         public override void @default(WebContext wc, string id)
         {
             string password = null;
-            if (wc.Got(nameof(password), ref password))
+            if (!wc.Got(nameof(password), ref password))
             {
                 wc.StatusCode = 400; return;
             }
@@ -69,10 +68,6 @@ namespace Greatbone.Sample
                     wc.Response.StatusCode = (int)HttpStatusCode.NotAcceptable;
                 }
             }
-        }
-
-        public void del(WebContext wc, string x)
-        {
         }
 
     }

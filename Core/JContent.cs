@@ -33,15 +33,15 @@ namespace Greatbone.Core
             if (counts[level]++ > 0) Write((byte)',');
 
             counts[++level] = 0;
-            Write((byte)'{');
+            Write((byte)'[');
 
             if (a != null) a();
 
-            Write((byte)'}');
+            Write((byte)']');
             level--;
         }
 
-        public void PutArr<T>(T[] v, int x = -1) where T : IPersist
+        public void PutArr<T>(T[] v, ushort x = 0xffff) where T : IPersist
         {
             PutArr(delegate
             {
@@ -57,15 +57,15 @@ namespace Greatbone.Core
             if (counts[level]++ > 0) Write((byte)',');
 
             counts[++level] = 0;
-            Write((byte)'[');
+            Write((byte)'{');
 
             if (a != null) a();
 
-            Write((byte)']');
+            Write((byte)'}');
             level--;
         }
 
-        public void PutObj<T>(T v, int x = -1) where T : IPersist
+        public void PutObj<T>(T v, ushort x = 0xffff) where T : IPersist
         {
             PutObj(delegate
             {
@@ -274,7 +274,7 @@ namespace Greatbone.Core
             return this;
         }
 
-        public JContent Put<T>(string name, T v, int x = -1) where T : IPersist
+        public JContent Put<T>(string name, T v, ushort x = 0xffff) where T : IPersist
         {
             if (counts[level]++ > 0) Write((byte)',');
 
@@ -475,7 +475,7 @@ namespace Greatbone.Core
         }
 
 
-        public JContent Put<T>(string name, T[] v, int x = -1) where T : IPersist
+        public JContent Put<T>(string name, T[] v, ushort x = 0xffff) where T : IPersist
         {
             if (counts[level]++ > 0) Write((byte)',');
 

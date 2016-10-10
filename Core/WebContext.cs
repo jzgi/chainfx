@@ -78,14 +78,14 @@ namespace Greatbone.Core
                     if (buffer != null)
                     {
                         string ctype = Request.ContentType;
-                        if ("application/jsob".Equals(ctype))
-                        {
-                            JParse parse = new JParse(buffer, count);
-                            data = parse.Parse();
-                        }
-                        else if ("application/x-www-form-urlencoded".Equals(ctype))
+                        if ("application/x-www-form-urlencoded".Equals(ctype))
                         {
                             FormParse parse = new FormParse(buffer, count);
+                            data = parse.Parse();
+                        }
+                        else
+                        {
+                            JParse parse = new JParse(buffer, count);
                             data = parse.Parse();
                         }
                     }
@@ -142,12 +142,12 @@ namespace Greatbone.Core
 
         public IContent Content { get; set; }
 
-        public void SetObj<T>(int status, T obj, int x = -1, bool? pub = true, int maxage = 1000) where T : IPersist
+        public void SetObj<T>(int status, T obj, ushort x = 0xffff, bool? pub = true, int maxage = 1000) where T : IPersist
         {
             SetJson(status, jcont => jcont.PutObj(obj, x), pub, maxage);
         }
 
-        public void SetArr<T>(int status, T[] arr, int x = -1, bool? pub = true, int maxage = 1000) where T : IPersist
+        public void SetArr<T>(int status, T[] arr, ushort x = 0xffff, bool? pub = true, int maxage = 1000) where T : IPersist
         {
             SetJson(status, jcont => jcont.PutArr(arr, x), pub, maxage);
         }

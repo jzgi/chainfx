@@ -30,7 +30,7 @@ namespace Greatbone.Sample
         internal Item[] friends;
         internal Item[] awards;
 
-        public void Load(ISource sc, int x = -1)
+        public void Load(ISource sc, ushort x = 0xffff)
         {
             sc.Got(nameof(id), ref id);
             sc.Got(nameof(name), ref name);
@@ -57,7 +57,7 @@ namespace Greatbone.Sample
             sc.Got(nameof(awards), ref awards);
         }
 
-        public void Save<R>(ISink<R> sk, int x = -1) where R : ISink<R>
+        public void Save<R>(ISink<R> sk, ushort x = 0xffff) where R : ISink<R>
         {
             sk.Put(nameof(id), id);
             sk.Put(nameof(name), name);
@@ -93,14 +93,14 @@ namespace Greatbone.Sample
 
         internal string desc;
 
-        public void Load(ISource sc, int x = -1)
+        public void Load(ISource sc, ushort x = 0xffff)
         {
             sc.Got(nameof(uid), ref uid);
             sc.Got(nameof(url), ref url);
             sc.Got(nameof(desc), ref desc);
         }
 
-        public void Save<R>(ISink<R> sk, int x = -1) where R : ISink<R>
+        public void Save<R>(ISink<R> sk, ushort x = 0xffff) where R : ISink<R>
         {
             sk.Put(nameof(uid), uid);
             sk.Put(nameof(url), url);

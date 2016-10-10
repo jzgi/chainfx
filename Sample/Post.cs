@@ -32,7 +32,7 @@ namespace Greatbone.Sample
         /// <summary>Returns the key of the brand object.</summary>
         public string Key { get; }
 
-        public void Load(ISource sc, int x = -1)
+        public void Load(ISource sc, ushort x = 0xffff)
         {
             sc.Got(nameof(id), ref id);
             sc.Got(nameof(time), ref time);
@@ -54,7 +54,7 @@ namespace Greatbone.Sample
             sc.Got(nameof(m9), ref m9);
         }
 
-        public void Save<R>(ISink<R> sk, int x = -1) where R : ISink<R>
+        public void Save<R>(ISink<R> sk, ushort x = 0xffff) where R : ISink<R>
         {
             sk.Put(nameof(id), id);
             sk.Put(nameof(time), time);
@@ -89,7 +89,7 @@ namespace Greatbone.Sample
 
         internal string text;
 
-        public void Load(ISource sc, int x = -1)
+        public void Load(ISource sc, ushort x = 0xffff)
         {
             sc.Got(nameof(time), ref time);
             sc.Got(nameof(emoji), ref emoji);
@@ -98,7 +98,7 @@ namespace Greatbone.Sample
             sc.Got(nameof(text), ref text);
         }
 
-        public void Save<R>(ISink<R> sk, int x = -1) where R : ISink<R>
+        public void Save<R>(ISink<R> sk, ushort x = 0xffff) where R : ISink<R>
         {
             sk.Put(nameof(time), time);
             sk.Put(nameof(emoji), emoji);
