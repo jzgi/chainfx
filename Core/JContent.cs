@@ -175,7 +175,7 @@ namespace Greatbone.Core
             Add(v.integr);
             if (v.Pt)
             {
-                Add('.');
+                Write((byte)'.');
                 Add(v.fract);
             }
             return this;
@@ -216,9 +216,9 @@ namespace Greatbone.Core
             }
             else
             {
-                Add('"');
+                Write((byte)'"');
                 Add(v);
-                Add('"');
+                Write((byte)'"');
             }
 
             return this;
@@ -242,9 +242,9 @@ namespace Greatbone.Core
             }
             else
             {
-                Add('"');
+                Write((byte)'"');
                 Add(v);
-                Add('"');
+                Write((byte)'"');
             }
 
             return this;
@@ -511,10 +511,10 @@ namespace Greatbone.Core
 
             if (name != null)
             {
-                Add('"');
+                Write((byte)'"');
                 Add(name);
-                Add('"');
-                Add(':');
+                Write((byte)'"');
+                Write((byte)':');
             }
 
             Add("null");

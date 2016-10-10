@@ -1,8 +1,10 @@
-﻿using System;
-using Greatbone.Core;
+﻿using Greatbone.Core;
 
 namespace Greatbone.Sample
 {
+
+    ///
+    /// /fame/
     public class FameModule : WebModule, IAdmin
     {
         public FameModule(ISetting setg) : base(setg)
@@ -10,42 +12,43 @@ namespace Greatbone.Sample
             SetVarHub<FameVarHub>(false);
         }
 
-        /// <summary>
-        /// Gets the top list of fames. 
-        /// </summary>
-        /// <param name="page">page number</param>
-        public override void @default(WebContext wc)
+        ///
+        /// GET /fame/top?[page=_num_]
+        public void top(WebContext wc)
         {
             int page = 0;
-            wc.Got("page", ref page);
+            wc.Got(nameof(page), ref page);
 
             using (var dc = Service.NewDbContext())
             {
-                if (dc.Query("SELECT * FROM fames WHERE ORDER BY  LIMIT 20 OFFSET @offset",
-                    p => p.Put("@offset", page * 20)))
+                if (dc.Query("SELECT * FROM fames WHERE ORDER BY rating LIMIT 20 OFFSET @1", p => p.Put(page * 20)))
                 {
-                    while (dc.NextRow())
-                    {
-                    }
+                    Fame[] fames = dc.GetArr<Fame>();
+                    // dc.Got(ref fames);
+                    wc.SendArr(200, fames);
                 }
                 else
                 {
-                    wc.Response.StatusCode = 204;
+                    wc.StatusCode = 204;
                 }
             }
         }
 
-
-        public void top(WebContext wc)
+        ///
+        /// GET /fame/find?word=_name_
+        ///
+        public void find(WebContext wc)
         {
-            int page = 0;
-            wc.Got("page", ref page);
+            string word = null;
+            wc.Got(nameof(word), ref word);
 
             using (var dc = Service.NewDbContext())
             {
-                if (dc.Query("SELECT * FROM fames WHERE ORDER BY rating LIMIT 20 OFFSET @offset",
-                    p => p.Put("@offset", page * 20)))
+                if (dc.Query("SELECT * FROM fames WHERE name LIKE '%" + word + "%'", null))
                 {
+                    Fame[] fames = dc.GetArr<Fame>();
+                    // dc.Got(ref fames);
+                    wc.SendArr(200, fames);
                 }
                 else
                 {
@@ -83,7 +86,7 @@ namespace Greatbone.Sample
         {
             int id = 0;
             wc.Got(nameof(id), ref id);
-            
+
             using (var dc = Service.NewDbContext())
             {
                 dc.Execute("DELETE fames WHERE id = @2", p => p.Put(id));
