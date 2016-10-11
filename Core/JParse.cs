@@ -6,7 +6,7 @@ namespace Greatbone.Core
 
     public struct JParse
     {
-        static readonly JException FormatEx = new JException("JSON Format");
+        static readonly JException FormatEx = new JException("invalid Format");
 
         // byte buffer content to parse
         readonly byte[] buffer;

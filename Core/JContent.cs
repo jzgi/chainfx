@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Text;
 
 namespace Greatbone.Core
 {
@@ -73,7 +74,56 @@ namespace Greatbone.Core
             });
         }
 
-
+        void AddEsc(string v)
+        {
+            if (v != null)
+            {
+                for (int i = 0; i < v.Length; i++)
+                {
+                    char c = v[i];
+                    if (c < 0x80)
+                    {
+                        if (c == '\"')
+                        {
+                            Write((byte)'\\'); Write((byte)'"');
+                        }
+                        else if (c == '\\')
+                        {
+                            Write((byte)'\\'); Write((byte)'\\');
+                        }
+                        else if (c == '\n')
+                        {
+                            Write((byte)'\\'); Write((byte)'n');
+                        }
+                        else if (c == '\r')
+                        {
+                            Write((byte)'\\'); Write((byte)'r');
+                        }
+                        else if (c == '\t')
+                        {
+                            Write((byte)'\\'); Write((byte)'t');
+                        }
+                        else
+                        {
+                            Write((byte)c);
+                        }
+                    }
+                    else if (c < 0x800)
+                    {
+                        // 2 char, 11 bits
+                        Write((byte)(0xc0 | (c >> 6)));
+                        Write((byte)(0x80 | (c & 0x3f)));
+                    }
+                    else
+                    {
+                        // 3 char, 16 bits
+                        Write((byte)(0xe0 | ((c >> 12))));
+                        Write((byte)(0x80 | ((c >> 6) & 0x3f)));
+                        Write((byte)(0x80 | (c & 0x3f)));
+                    }
+                }
+            }
+        }
 
         public JContent Put(string name, bool v)
         {
@@ -243,7 +293,7 @@ namespace Greatbone.Core
             else
             {
                 Write((byte)'"');
-                Add(v);
+                AddEsc(v);
                 Write((byte)'"');
             }
 

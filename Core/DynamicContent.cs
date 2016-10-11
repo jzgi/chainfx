@@ -120,46 +120,16 @@ namespace Greatbone.Core
 
         public void Add(bool v)
         {
-            Add(v ? "true" : "false", false);
+            Add(v ? "true" : "false");
         }
 
-        public void Add(char c, bool esc = false)
+        public void Add(char c)
         {
             // UTF-8 encoding but without surrogate support
             if (c < 0x80)
             {
                 // have at most seven bits
-                if (esc)
-                {
-                    if (c == '\"')
-                    {
-                        Write((byte)'\\'); Write((byte)'"');
-                    }
-                    else if (c == '\\')
-                    {
-                        Write((byte)'\\'); Write((byte)'\\');
-                    }
-                    else if (c == '\n')
-                    {
-                        Write((byte)'\\'); Write((byte)'n');
-                    }
-                    else if (c == '\r')
-                    {
-                        Write((byte)'\\'); Write((byte)'r');
-                    }
-                    else if (c == '\t')
-                    {
-                        Write((byte)'\\'); Write((byte)'t');
-                    }
-                    else
-                    {
-                        Write((byte)c);
-                    }
-                }
-                else
-                {
-                    Write((byte)c);
-                }
+                Write((byte)c);
             }
             else if (c < 0x800)
             {
@@ -192,18 +162,18 @@ namespace Greatbone.Core
             }
         }
 
-        public void Add(string v, bool esc)
+        public void Add(string v)
         {
-            Add(v, 0, v.Length, esc);
+            Add(v, 0, v.Length);
         }
 
-        public void Add(string v, int offset, int len, bool esc)
+        public void Add(string v, int offset, int len)
         {
             if (v != null)
             {
                 for (int i = offset; i < len; i++)
                 {
-                    Add(v[i], esc);
+                    Add(v[i]);
                 }
             }
         }

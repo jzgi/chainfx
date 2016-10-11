@@ -4,7 +4,7 @@ using System.Collections.Concurrent;
 namespace Greatbone.Core
 {
     ///
-    /// A globally accessed buffer pool that leases out and returns back byte buffers.
+    /// A globally accessible buffer pool that borrow out and returns back byte buffers of certain sizes.
     ///
     public static class BufferPool
     {

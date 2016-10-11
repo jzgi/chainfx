@@ -105,19 +105,67 @@ namespace Greatbone.Core
 
         void Add(string v)
         {
-            Add(v, 0, v.Length);
-        }
-
-        void Add(string v, int offset, int len)
-        {
             if (v != null)
             {
-                for (int i = offset; i < len; i++)
+                for (int i = 0; i < v.Length; i++)
                 {
                     Write(v[i]);
                 }
             }
         }
+
+
+        void AddEsc(string v)
+        {
+            if (v != null)
+            {
+                for (int i = 0; i < v.Length; i++)
+                {
+                    char c = v[i];
+                    if (c < 0x80)
+                    {
+                        if (c == '\"')
+                        {
+                            Write('\\'); Write('"');
+                        }
+                        else if (c == '\\')
+                        {
+                            Write('\\'); Write('\\');
+                        }
+                        else if (c == '\n')
+                        {
+                            Write('\\'); Write('n');
+                        }
+                        else if (c == '\r')
+                        {
+                            Write('\\'); Write('r');
+                        }
+                        else if (c == '\t')
+                        {
+                            Write('\\'); Write('t');
+                        }
+                        else
+                        {
+                            Write(c);
+                        }
+                    }
+                    else if (c < 0x800)
+                    {
+                        // 2 char, 11 bits
+                        Write((char)(0xc0 | (c >> 6)));
+                        Write((char)(0x80 | (c & 0x3f)));
+                    }
+                    else
+                    {
+                        // 3 char, 16 bits
+                        Write((char)(0xe0 | ((c >> 12))));
+                        Write((char)(0x80 | ((c >> 6) & 0x3f)));
+                        Write((char)(0x80 | (c & 0x3f)));
+                    }
+                }
+            }
+        }
+
 
         void Add(short v)
         {
@@ -336,7 +384,15 @@ namespace Greatbone.Core
             {
                 for (int i = 0; i < v.Length; i++)
                 {
-                    PutObj(v[i], x);
+                    T obj = v[i];
+                    if (obj == null)
+                    {
+                        PutNull(null);
+                    }
+                    else
+                    {
+                        PutObj(obj, x);
+                    }
                 }
             });
         }
@@ -538,9 +594,16 @@ namespace Greatbone.Core
                 Write(':');
             }
 
-            Write('"');
-            Add(v);
-            Write('"');
+            if (v == null)
+            {
+                Add("null");
+            }
+            else
+            {
+                Write('"');
+                AddEsc(v);
+                Write('"');
+            }
 
             return this;
         }
@@ -745,9 +808,19 @@ namespace Greatbone.Core
                 for (int i = 0; i < v.Length; i++)
                 {
                     if (i > 0) Write(',');
-                    Write('"');
-                    Add(v[i]);
-                    Write('"');
+
+                    string str = v[i];
+
+                    if (str == null)
+                    {
+                        Add("null");
+                    }
+                    else
+                    {
+                        Write('"');
+                        AddEsc(str);
+                        Write('"');
+                    }
                 }
                 Write(']');
             }
