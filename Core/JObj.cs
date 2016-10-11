@@ -199,6 +199,18 @@ namespace Greatbone.Core
             return false;
         }
 
+        public bool Got(string name, ref ArraySegment<byte> v)
+        {
+            JMember pair;
+            if (pairs.TryGet(name, out pair))
+            {
+                byte[] bv = (byte[])pair;
+                v = new ArraySegment<byte>(bv);
+                return true;
+            }
+            return false;
+        }
+
         public bool Got<T>(string name, ref T v, ushort x = 0xffff) where T : IPersist, new()
         {
             JMember pair;

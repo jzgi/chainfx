@@ -1,4 +1,6 @@
 
+using System;
+
 namespace Greatbone.Core
 {
 
@@ -13,12 +15,10 @@ namespace Greatbone.Core
         // UTF-8 string builder
         readonly StringBuild str;
 
-        public FormParse(byte[] buffer) : this(buffer, buffer.Length) { }
-
-        public FormParse(byte[] buffer, int count)
+        public FormParse(ArraySegment<byte> bytes)
         {
-            this.buffer = buffer;
-            this.count = count;
+            this.buffer = bytes.Array;
+            this.count = bytes.Count;
             this.str = new StringBuild();
         }
 

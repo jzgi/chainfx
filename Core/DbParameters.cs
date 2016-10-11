@@ -9,16 +9,20 @@ namespace Greatbone.Core
     /// </summary>
     public class DbParameters : ISink<DbParameters>
     {
-        static string[] Defaults = { "1", "2", "3", "4", "5", "6", "7", "8", "9", "10", "11", "12", "13", "14", "15", "16", "17", "18", "19", "20", "21", "22", "23", "24" };
+        static string[] Defaults =
+        {
+            "1", "2", "3", "4", "5", "6", "7", "8", "9", "10", "11", "12", "13", "14", "15", "16", "17", "18", "19", "20", "21", "22", "23", "24", "15", "16", "17", "18", "19", "20"
+        };
 
         readonly NpgsqlParameterCollection coll;
+
+        // current parameter index
+        int index;
 
         internal DbParameters(NpgsqlParameterCollection coll)
         {
             this.coll = coll;
         }
-
-        int index; // current parameter index
 
         internal void Clear()
         {
@@ -150,6 +154,19 @@ namespace Greatbone.Core
                 name = Defaults[index++];
             }
             coll.Add(new NpgsqlParameter(name, NpgsqlDbType.Bytea, v.Length)
+            {
+                Value = v
+            });
+            return this;
+        }
+
+        public DbParameters Put(string name, ArraySegment<byte> v)
+        {
+            if (name == null)
+            {
+                name = Defaults[index++];
+            }
+            coll.Add(new NpgsqlParameter(name, NpgsqlDbType.Bytea, v.Count)
             {
                 Value = v
             });

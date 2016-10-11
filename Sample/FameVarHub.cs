@@ -57,7 +57,7 @@ namespace Greatbone.Sample
             int idx = 0;
             if (wc.Got(nameof(idx), ref idx))
             {
-                ArraySegment<byte> bytes = wc.Bytes;
+                ArraySegment<byte> bytes = wc.BytesSeg;
                 using (var dc = Service.NewDbContext())
                 {
                     if (dc.Execute("UPDATE fames SET m" + idx + " = @1 WHERE id = @2", p => p.Put(var).Put(bytes.Array)) > 0)

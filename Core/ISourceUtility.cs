@@ -66,6 +66,12 @@ namespace Greatbone.Core
         }
 
 
+        public static bool Got(this ISource sc, ref ArraySegment<byte> v)
+        {
+            return sc.Got(null, ref v);
+        }
+
+
         public static bool Got<T>(this ISource sc, ref T v, ushort x = 0xffff) where T : IPersist, new()
         {
             return sc.Got(null, ref v, x);
@@ -183,6 +189,13 @@ namespace Greatbone.Core
         public static byte[] GetBytes(this ISource sc, byte[] def = null)
         {
             byte[] v = def;
+            sc.Got(null, ref v);
+            return v;
+        }
+
+        public static ArraySegment<byte> GetBytesSeg(this ISource sc, ArraySegment<byte> def = default(ArraySegment<byte>))
+        {
+            ArraySegment<byte> v = def;
             sc.Got(null, ref v);
             return v;
         }

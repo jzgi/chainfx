@@ -30,76 +30,98 @@ namespace Greatbone.Core
         // REQUEST
         //
 
-        byte[] buffer;
-
-        int count;
+        // received body bytes
+        ArraySegment<byte> bytesSeg;
 
         // parsed request entity, can be Doc or Form
-        object data;
+        object entity;
 
-        /// <summary>
-        /// Receiveds request body into a buffer held by the buffer field.
-        ///</summary>
-        internal async void TryReceiveAsync()
+        async void ReceiveAsync()
         {
-            if (buffer != null) return;
-
+            if (bytesSeg != null)
+            {
+                return;
+            }
             HttpRequest req = Request;
             long? clen = req.ContentLength;
             if (clen > 0)
             {
                 int len = (int)clen.Value;
-                buffer = BufferPool.Borrow(len);
-                count = await req.Body.ReadAsync(buffer, 0, len);
+                byte[] buffer = BufferPool.Borrow(len);
+                int count = await req.Body.ReadAsync(buffer, 0, len);
+                bytesSeg = new ArraySegment<byte>(buffer, 0, count);
             }
         }
 
-        public ArraySegment<byte> Bytes
+        public ArraySegment<byte> BytesSeg
         {
             get
             {
-                TryReceiveAsync();
-                return new ArraySegment<byte>(buffer, 0, count);
+                if (bytesSeg.Array == null) { ReceiveAsync(); }
+                return bytesSeg;
             }
         }
 
-        /// <summary>
-        /// A data object model of type Obj, Arr ,Elem or Form, constructed from parsing the JSON or XML entity.  
-        /// </summary>
-        /// <returns></returns>
-        public object Data
+        void ParseEntity()
         {
-            get
+            if (entity == null)
             {
-                if (data == null)
+                ArraySegment<byte> bseg = BytesSeg;
+                if (bseg.Array != null)
                 {
-                    TryReceiveAsync();
-
-                    if (buffer != null)
+                    string ctyp = Request.ContentType;
+                    if ("application/x-www-form-urlencoded".Equals(ctyp))
                     {
-                        string ctype = Request.ContentType;
-                        if ("application/x-www-form-urlencoded".Equals(ctype))
-                        {
-                            FormParse parse = new FormParse(buffer, count);
-                            data = parse.Parse();
-                        }
-                        else
-                        {
-                            JParse parse = new JParse(buffer, count);
-                            data = parse.Parse();
-                        }
+                        FormParse parse = new FormParse(bseg);
+                        entity = parse.Parse();
+                    }
+                    else
+                    {
+                        JParse parse = new JParse(bseg);
+                        entity = parse.Parse();
                     }
                 }
-                return data;
             }
         }
 
-        public T Get<T>(int x = -1) where T : IPersist, new()
+        public Form Form
         {
-            JObj mo = (JObj)Data;
+            get
+            {
+                ParseEntity();
+                return entity as Form;
+            }
+        }
+
+        public JObj JObj
+        {
+            get
+            {
+                ParseEntity();
+                return entity as JObj;
+            }
+        }
+
+        public JArr JArr
+        {
+            get
+            {
+                ParseEntity();
+                return entity as JArr;
+            }
+        }
+
+        public T Obj<T>(int x = -1) where T : IPersist, new()
+        {
+            JObj jo = JObj;
             T obj = new T();
-            obj.Load(mo);
+            obj.Load(jo);
             return obj;
+        }
+
+        public T[] Arr<T>(int x = -1) where T : IPersist, new()
+        {
+            return null;
         }
 
         public bool Got(string name, ref int value)
@@ -208,9 +230,10 @@ namespace Greatbone.Core
         public void Dispose()
         {
             // return request content buffer
-            if (buffer != null)
+            byte[] buf = bytesSeg.Array;
+            if (buf != null)
             {
-                BufferPool.Return(buffer);
+                BufferPool.Return(buf);
             }
 
             // return response content buffer

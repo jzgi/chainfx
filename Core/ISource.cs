@@ -28,6 +28,8 @@ namespace Greatbone.Core
 
         bool Got(string name, ref byte[] v);
 
+        bool Got(string name, ref ArraySegment<byte> v);
+
         bool Got<T>(string name, ref T v, ushort x = 0xffff) where T : IPersist, new();
 
         bool Got(string name, ref JObj v);

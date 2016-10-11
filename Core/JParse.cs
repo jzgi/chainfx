@@ -1,3 +1,4 @@
+using System;
 using System.Text;
 
 namespace Greatbone.Core
@@ -15,12 +16,10 @@ namespace Greatbone.Core
         // UTF-8 string builder
         readonly StringBuild str;
 
-        public JParse(byte[] buffer) : this(buffer, buffer.Length) { }
-
-        public JParse(byte[] buffer, int count)
+        public JParse(ArraySegment<byte> bytes)
         {
-            this.buffer = buffer;
-            this.count = count;
+            this.buffer = bytes.Array;
+            this.count = bytes.Count;
             this.str = new StringBuild();
         }
 

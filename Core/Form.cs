@@ -32,6 +32,11 @@ namespace Greatbone.Core
             throw new NotImplementedException();
         }
 
+        public bool Got(string name, ref ArraySegment<byte> v)
+        {
+            throw new NotImplementedException();
+        }
+
         public bool Got(string name, ref JArr v)
         {
             throw new NotImplementedException();

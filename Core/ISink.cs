@@ -30,6 +30,8 @@ namespace Greatbone.Core
 
         R Put(string name, byte[] v);
 
+        R Put(string name, ArraySegment<byte> v);
+
         R Put<T>(string name, T v, ushort x = 0xffff) where T : IPersist;
 
         R Put(string name, JObj v);

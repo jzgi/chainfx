@@ -274,6 +274,30 @@ namespace Greatbone.Core
             return this;
         }
 
+        public JContent Put(string name, ArraySegment<byte> v)
+        {
+            if (counts[level]++ > 0) Write((byte)',');
+
+            if (name != null)
+            {
+                Write((byte)'"');
+                Add(name);
+                Write((byte)'"');
+                Write((byte)':');
+            }
+
+            if (v == null)
+            {
+                Add("null");
+            }
+            else
+            {
+                // TODO
+            }
+
+            return this;
+        }
+
         public JContent Put<T>(string name, T v, ushort x = 0xffff) where T : IPersist
         {
             if (counts[level]++ > 0) Write((byte)',');

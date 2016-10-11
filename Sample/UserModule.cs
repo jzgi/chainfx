@@ -18,7 +18,7 @@ namespace Greatbone.Sample
 
         public void vcode(WebContext wc)
         {
-            JObj jo = (JObj)wc.Data;
+            JObj jo = wc.JObj;
             string id = jo[nameof(id)];
             string password = jo[nameof(password)];
             // send vcode through SMS
@@ -30,7 +30,7 @@ namespace Greatbone.Sample
 
         public void @new(WebContext wc)
         {
-            JObj jo = (JObj)wc.Data;
+            JObj jo = wc.JObj;
             string id = jo[nameof(id)];
             string password = jo[nameof(password)];
             string vcode = jo[nameof(vcode)];
@@ -54,7 +54,7 @@ namespace Greatbone.Sample
         [IfAdmin]
         public void create(WebContext wc)
         {
-            JObj jo = (JObj)wc.Data;
+            JObj jo = wc.JObj;
             string id = jo[nameof(id)];
             string password = jo[nameof(password)];
             using (var sc = Service.NewDbContext())
@@ -76,7 +76,6 @@ namespace Greatbone.Sample
 
         public void search(WebContext wc)
         {
-            ArraySegment<byte> bytes = wc.Bytes;
         }
 
         public void del(WebContext wc)

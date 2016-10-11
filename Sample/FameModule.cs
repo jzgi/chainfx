@@ -98,7 +98,7 @@ namespace Greatbone.Sample
             int id = 0;
             wc.Got(nameof(id), ref id);
 
-            JObj jo = (JObj)wc.Data;
+            JObj jo = wc.JObj;
             int status = jo[nameof(status)];
 
             using (var dc = Service.NewDbContext())

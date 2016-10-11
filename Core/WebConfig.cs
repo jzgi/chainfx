@@ -72,7 +72,7 @@ namespace Greatbone.Core
             try
             {
                 byte[] bytes = File.ReadAllBytes(file);
-                JParse parse = new JParse(bytes);
+                JParse parse = new JParse(new ArraySegment<byte>(bytes));
                 JObj jobj = (JObj)parse.Parse();
 
                 Load(jobj); // may override

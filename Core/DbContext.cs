@@ -290,6 +290,28 @@ namespace Greatbone.Core
             return false;
         }
 
+        public bool Got(string name, ref ArraySegment<byte> v)
+        {
+            int ord = name == null ? ordinal++ : reader.GetOrdinal(name);
+            try
+            {
+                if (!reader.IsDBNull(ord))
+                {
+                    int len;
+                    if ((len = (int)reader.GetBytes(ord, 0, null, 0, 0)) > 0)
+                    {
+                        byte[] arr = BufferPool.Borrow(len);
+                        reader.GetBytes(ord, 0, arr, 0, len); // read data into the buffer
+                        v = new ArraySegment<byte>(arr, 0, len);
+                        return true;
+                    }
+                }
+            }
+            catch { }
+
+            return false;
+        }
+
         public bool Got<T>(string name, ref T v, ushort x = 0xffff) where T : IPersist, new()
         {
             int ord = name == null ? ordinal++ : reader.GetOrdinal(name);

@@ -69,6 +69,11 @@ namespace Greatbone.Core
         }
 
 
+        public static R Put<R>(this ISink<R> sk, ArraySegment<byte> v) where R : ISink<R>
+        {
+            return sk.Put(null, v);
+        }
+
         public static R Put<T, R>(this ISink<R> sk, T v, ushort x = 0xffff) where T : IPersist where R : ISink<R>
         {
             return sk.Put(null, v, x);

@@ -41,11 +41,11 @@ namespace Greatbone.Sample
         /// </summary>
         public void @new(WebContext wc)
         {
-            JObj o = (JObj)wc.Data;
-            int age = o[nameof(age)];
+            JObj jo = wc.JObj;
+            int age = jo[nameof(age)];
 
 
-            User obj = wc.Get<User>();
+            User obj = wc.Obj<User>();
 
 
             int page = 0;
@@ -104,7 +104,7 @@ namespace Greatbone.Sample
 
         public void putimg(WebContext wc)
         {
-            ArraySegment<byte> bytes = wc.Bytes;
+            ArraySegment<byte> bytes = wc.BytesSeg;
 
             using (var dc = Service.NewDbContext())
             {

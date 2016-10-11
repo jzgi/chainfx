@@ -77,7 +77,7 @@ namespace Greatbone.Sample
         public void cmt(WebContext wc, string var)
         {
             IToken tok = wc.Token;
-            JObj jo = (JObj)wc.Data;
+            JObj jo = wc.JObj;
             string text = jo[nameof(text)];
 
             Comment c = new Comment

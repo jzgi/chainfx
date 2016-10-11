@@ -550,6 +550,11 @@ namespace Greatbone.Core
             throw new NotImplementedException();
         }
 
+        public JTextBuild Put(string name, ArraySegment<byte> v)
+        {
+            throw new NotImplementedException();
+        }
+
         public JTextBuild Put<T>(string name, T v, ushort x = 0xffff) where T : IPersist
         {
             if (counts[level]++ > 0) Write(',');

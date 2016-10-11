@@ -53,7 +53,7 @@ namespace Greatbone.Sample
         [IfSelf]
         public void chpwd(WebContext wc, string userid)
         {
-            JObj r = (JObj)wc.Data;
+            JObj jo = wc.JObj;
 
             int ret = 0;
 
