@@ -1,5 +1,4 @@
 ﻿using System;
-using System.Collections.Generic;
 using Greatbone.Core;
 
 namespace Greatbone.Sample
@@ -22,9 +21,11 @@ namespace Greatbone.Sample
 
         internal string subject;
 
+        internal string contact;
+
         internal string remark;
 
-        internal Ask[] asks;
+        internal Apply[] applies;
 
 
         public void Load(ISource sc, ushort x = 0xffff)
@@ -37,8 +38,9 @@ namespace Greatbone.Sample
             sc.Got(nameof(duedate), ref duedate);
             sc.Got(nameof(subtype), ref subtype);
             sc.Got(nameof(subject), ref subject);
+            sc.Got(nameof(contact), ref contact);
             sc.Got(nameof(remark), ref remark);
-            sc.Got(nameof(asks), ref asks);
+            sc.Got(nameof(applies), ref applies);
         }
 
         public void Save<R>(ISink<R> sk, ushort x = 0xffff) where R : ISink<R>
@@ -51,23 +53,28 @@ namespace Greatbone.Sample
             sk.Put(nameof(duedate), duedate);
             sk.Put(nameof(subtype), subtype);
             sk.Put(nameof(subject), subject);
+            sk.Put(nameof(contact), contact);
             sk.Put(nameof(remark), remark);
-            sk.Put(nameof(asks), asks);
+            sk.Put(nameof(applies), applies);
         }
     }
 
-    internal struct Ask : IPersist
+    internal struct Apply : IPersist
     {
-        internal string id;
+        internal string userid;
+
+        internal string user;
 
         public void Load(ISource sc, ushort x = 0xffff)
         {
-            throw new NotImplementedException();
+            sc.Got(nameof(userid), ref userid);
+            sc.Got(nameof(user), ref user);
         }
 
         public void Save<R>(ISink<R> sk, ushort x = 0xffff) where R : ISink<R>
         {
-            throw new NotImplementedException();
+            sk.Put(nameof(userid), userid);
+            sk.Put(nameof(user), user);
         }
     }
 }

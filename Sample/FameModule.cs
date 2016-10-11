@@ -57,6 +57,29 @@ namespace Greatbone.Sample
             }
         }
 
+        ///
+        /// GET /fame/find?word=_name_
+        ///
+        public void findbygrp(WebContext wc)
+        {
+            int subtype = 0;
+            wc.Got(nameof(subtype), ref subtype);
+
+            using (var dc = Service.NewDbContext())
+            {
+                if (dc.Query("SELECT * FROM fames WHERE subtype = @1", p => p.Put(subtype)))
+                {
+                    Fame[] fames = dc.GetArr<Fame>();
+                    // dc.Got(ref fames);
+                    wc.Respond(200, fames);
+                }
+                else
+                {
+                    wc.StatusCode = 204;
+                }
+            }
+        }
+
         //
         // ADMIN
         //

@@ -8,19 +8,14 @@ namespace Greatbone.Sample
         {
         }
 
-        /// <summary>
-        /// Gets a particular notice.
-        /// </summary>
-        /// <param name="wc"></param>
-        /// <param name="id"></param>
         public override void @default(WebContext wc, string id)
         {
-
             using (var dc = Service.NewDbContext())
             {
                 if (dc.QueryA("SELECT * FROM notices WHERE id = @1", p => p.Put(id)))
                 {
                     Notice obj = dc.GetObj<Notice>();
+                    wc.Respond(200, obj);
                 }
                 else
                 {
@@ -29,11 +24,6 @@ namespace Greatbone.Sample
             }
         }
 
-        /// <summary>
-        /// Deletes the target notice.
-        /// </summary>
-        /// <param name="wc"></param>
-        /// <param name="id"></param>
         public void del(WebContext wc, string id)
         {
             string userid = wc.Token.Key;
@@ -51,28 +41,27 @@ namespace Greatbone.Sample
             }
         }
 
-        /// <summary>
-        /// To join/enlist the current user to the target notice.
-        /// </summary>
-        /// <param name="wc"></param>
-        /// <param name="noticeid"></param>
-        public void ask(WebContext wc, string noticeid)
+        /// 
+        /// POST /notice/_id_/ask
+        /// 
+        public void apply(WebContext wc, string var)
         {
             string userid = wc.Token.Key;
+            Apply ask = new Apply()
+            {
+                userid = userid
+            };
 
             using (var dc = Service.NewDbContext())
             {
-                if (dc.QueryA("SELECT joins FROM notices WHERE id = @1", p => p.Put(userid)))
+                if (dc.QueryA("SELECT asks FROM notices WHERE id = @1", p => p.Put(userid)))
                 {
-                    // parse to list
+                    Apply[] asks = dc.GetArr<Apply>().Concat(ask);
 
-                    // update back the table
-                    Ask[] arr = null;
-                    if (dc.Execute("UPDATE notices SET joins = @1", p => p.Put(arr)) > 0)
+                    if (dc.Execute("UPDATE notices SET asks = @1", p => p.Put(asks)) > 0)
                     {
-
+                        wc.StatusCode = 201;
                     }
-
                 }
                 else
                 {
@@ -81,5 +70,45 @@ namespace Greatbone.Sample
             }
         }
 
+        ///
+        /// POST /notice/_id_/cmt
+        /// {
+        ///     "text" : "comment text"            
+        /// }            
+        public void cmt(WebContext wc, string var)
+        {
+            IToken tok = wc.Token;
+            JObj jo = wc.JObj;
+            string text = jo[nameof(text)];
+
+            Comment c = new Comment
+            {
+                authorid = tok.Key,
+                text = text
+            };
+
+            using (var dc = Service.NewDbContext())
+            {
+                if (dc.QueryA("SELECT comments FROM notices WHERE id = @1", p => p.Put(var)))
+                {
+                    Comment[] arr = dc.GetArr<Comment>().Concat(c);
+                    if (dc.Execute("UPDATE notices SET WHERE id = @1", p => p.Put(var).Put(tok.Key)) > 0)
+                    {
+                        wc.StatusCode = 200;
+                    }
+                }
+                else
+                {
+                    wc.StatusCode = 404;
+                }
+            }
+
+        }
+
+        ///
+        /// POST /notice/_id_/share
+        public void share(WebContext wc, string var)
+        {
+        }
     }
 }

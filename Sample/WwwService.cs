@@ -13,33 +13,23 @@ namespace Greatbone.Sample
 
         }
 
-        ///
-        /// <summary>Returns the default HTML page</summary> <summary>
-        /// 
-        /// </summary>
-        /// <param name="wc"></param>
-        public override void @default(WebContext wc)
-        {
-            base.@default(wc);
-        }
 
-        public void home(WebContext wc)
+        // GET /groups
+        public void groups(WebContext wc)
         {
-            wc.Respond(200, json =>
+            using (var dc = NewDbContext())
             {
-                json.PutArr(delegate
+                if (dc.Query("SELECT * FROM groups", null))
                 {
+                    Group[] grps = dc.GetArr<Group>();
+                    wc.Respond(200, grps);
+                }
+                else
+                {
+                    wc.StatusCode = 204;
+                }
 
-                });
-            });
-        }
-
-        public void posts(WebContext wc)
-        {
-        }
-
-        public void notices(WebContext wc)
-        {
+            }
         }
 
         public void search(WebContext wc)

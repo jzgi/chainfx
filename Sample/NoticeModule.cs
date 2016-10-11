@@ -13,24 +13,20 @@ namespace Greatbone.Sample
             SetVarHub<NoticeVarHub>(false);
         }
 
-        /// <summary>
-        /// Gets the specified top page from the notices table. 
-        /// </summary>
-        /// <param name="page">page number</param>
-        public override void @default(WebContext wc)
+        public void top(WebContext wc)
         {
             int page = 0;
-            wc.Got("page", ref page);
-
+            wc.Got(nameof(page), ref page);
             using (var dc = Service.NewDbContext())
             {
-                if (dc.Query("SELECT * FROM notices WHERE duedate <= current_date ORDER BY id LIMIT 20 OFFSET @offset", p => p.Put("@offset", page * 20)))
+                if (dc.Query("SELECT * FROM notices WHERE duedate <= current_date ORDER BY id LIMIT 20 OFFSET @1", p => p.Put(page * 20)))
                 {
-
+                    Notice[] nots = dc.GetArr<Notice>();
+                    wc.Respond(200, nots);
                 }
                 else
                 {
-                    wc.Response.StatusCode = 204;
+                    wc.StatusCode = 204;
                 }
             }
         }
