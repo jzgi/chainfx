@@ -14,15 +14,16 @@ namespace Greatbone.Sample
         }
 
 
-        // GET /groups
-        public void groups(WebContext wc)
+        ///
+        /// GET /cats
+        public void cats(WebContext wc)
         {
             using (var dc = NewDbContext())
             {
-                if (dc.Query("SELECT * FROM groups", null))
+                if (dc.Query("SELECT * FROM cats WHERE NOT disabled", null))
                 {
-                    Group[] grps = dc.GetArr<Group>();
-                    wc.Respond(200, grps);
+                    Cat[] arr = dc.GetArr<Cat>();
+                    wc.Respond(200, arr);
                 }
                 else
                 {

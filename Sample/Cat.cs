@@ -1,16 +1,15 @@
-﻿using System;
-using Greatbone.Core;
+﻿using Greatbone.Core;
 
 namespace Greatbone.Sample
 {
     ///
-    public class Group : IPersist
+    public class Cat : IPersist
     {
         internal int id;
 
         internal string title;
 
-        internal short subtype;
+        internal string filter;
 
         internal bool disabled;
 
@@ -18,7 +17,7 @@ namespace Greatbone.Sample
         {
             sc.Got(nameof(id), ref id);
             sc.Got(nameof(title), ref title);
-            sc.Got(nameof(subtype), ref subtype);
+            sc.Got(nameof(filter), ref filter);
             sc.Got(nameof(disabled), ref disabled);
         }
 
@@ -26,7 +25,7 @@ namespace Greatbone.Sample
         {
             sk.Put(nameof(id), id);
             sk.Put(nameof(title), title);
-            sk.Put(nameof(subtype), subtype);
+            sk.Put(nameof(filter), filter);
             sk.Put(nameof(disabled), disabled);
         }
     }

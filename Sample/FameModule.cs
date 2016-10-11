@@ -58,16 +58,16 @@ namespace Greatbone.Sample
         }
 
         ///
-        /// GET /fame/find?word=_name_
+        /// GET /fame/findbygrp?[grp=_grp_name_]
         ///
         public void findbygrp(WebContext wc)
         {
-            int subtype = 0;
-            wc.Got(nameof(subtype), ref subtype);
+            string grp = null;
+            wc.Got(nameof(grp), ref grp);
 
             using (var dc = Service.NewDbContext())
             {
-                if (dc.Query("SELECT * FROM fames WHERE subtype = @1", p => p.Put(subtype)))
+                if (dc.Query("SELECT * FROM fames WHERE subtype = @1", p => p.Put(grp)))
                 {
                     Fame[] fames = dc.GetArr<Fame>();
                     // dc.Got(ref fames);

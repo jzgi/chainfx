@@ -23,8 +23,9 @@ namespace Greatbone.Sample
         internal short waist;
         internal short hip;
         internal short cup;
-        internal short styles;
-        internal short skills;
+        internal string careers; // comma-separated string
+        internal string styles;
+        internal string skills;
         internal short remark;
         internal Item[] sites;
         internal Item[] friends;
@@ -49,6 +50,7 @@ namespace Greatbone.Sample
             sc.Got(nameof(waist), ref waist);
             sc.Got(nameof(hip), ref hip);
             sc.Got(nameof(cup), ref cup);
+            sc.Got(nameof(careers), ref careers);
             sc.Got(nameof(styles), ref styles);
             sc.Got(nameof(skills), ref skills);
             sc.Got(nameof(remark), ref remark);
@@ -76,6 +78,7 @@ namespace Greatbone.Sample
             sk.Put(nameof(waist), waist);
             sk.Put(nameof(hip), hip);
             sk.Put(nameof(cup), cup);
+            sk.Put(nameof(careers), careers);
             sk.Put(nameof(styles), styles);
             sk.Put(nameof(skills), skills);
             sk.Put(nameof(remark), remark);
@@ -91,20 +94,20 @@ namespace Greatbone.Sample
 
         internal string url;
 
-        internal string desc;
+        internal string text;
 
         public void Load(ISource sc, ushort x = 0xffff)
         {
             sc.Got(nameof(uid), ref uid);
             sc.Got(nameof(url), ref url);
-            sc.Got(nameof(desc), ref desc);
+            sc.Got(nameof(text), ref text);
         }
 
         public void Save<R>(ISink<R> sk, ushort x = 0xffff) where R : ISink<R>
         {
             sk.Put(nameof(uid), uid);
             sk.Put(nameof(url), url);
-            sk.Put(nameof(desc), desc);
+            sk.Put(nameof(text), text);
         }
     }
 }
