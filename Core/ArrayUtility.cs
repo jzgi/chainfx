@@ -5,7 +5,7 @@ namespace Greatbone.Core
     public static class ArrayUtility
     {
 
-        public static T[] Concat<T>(this T[] arr, T v)
+        public static T[] Add<T>(this T[] arr, T v)
         {
             int len = arr.Length;
             T[] all = new T[len + 1];
@@ -14,7 +14,7 @@ namespace Greatbone.Core
             return all;
         }
 
-        public static T[] Concat<T>(this T[] arr, params T[] v)
+        public static T[] Add<T>(this T[] arr, params T[] v)
         {
             int len = arr.Length;
             int vlen = v.Length;

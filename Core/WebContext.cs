@@ -111,17 +111,41 @@ namespace Greatbone.Core
             }
         }
 
-        public T Obj<T>(int x = -1) where T : IPersist, new()
+        public T Obj<T>(ushort x = 0xffff) where T : IPersist, new()
         {
             JObj jo = JObj;
             T obj = new T();
-            obj.Load(jo);
+            obj.Load(jo, x);
             return obj;
         }
 
-        public T[] Arr<T>(int x = -1) where T : IPersist, new()
+        public T[] Arr<T>(ushort x = 0xffff) where T : IPersist, new()
         {
-            return null;
+            JArr ja = JArr;
+            T[] arr = new T[ja.Count];
+            for (int i = 0; i < arr.Length; i++)
+            {
+                T obj = new T();
+                obj.Load((JObj)ja[i], x);
+                arr[i] = obj;
+            }
+            return arr;
+        }
+
+        public bool Got(string name, ref short value)
+        {
+            StringValues values;
+            if (Request.Query.TryGetValue(name, out values))
+            {
+                string v = values[0];
+                short i;
+                if (short.TryParse(v, out i))
+                {
+                    value = i;
+                    return true;
+                }
+            }
+            return false;
         }
 
         public bool Got(string name, ref int value)
@@ -131,7 +155,23 @@ namespace Greatbone.Core
             {
                 string v = values[0];
                 int i;
-                if (Int32.TryParse(v, out i))
+                if (int.TryParse(v, out i))
+                {
+                    value = i;
+                    return true;
+                }
+            }
+            return false;
+        }
+
+        public bool Got(string name, ref long value)
+        {
+            StringValues values;
+            if (Request.Query.TryGetValue(name, out values))
+            {
+                string v = values[0];
+                long i;
+                if (long.TryParse(v, out i))
                 {
                     value = i;
                     return true;

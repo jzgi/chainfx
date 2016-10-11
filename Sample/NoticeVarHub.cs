@@ -56,7 +56,7 @@ namespace Greatbone.Sample
             {
                 if (dc.QueryA("SELECT asks FROM notices WHERE id = @1", p => p.Put(userid)))
                 {
-                    Apply[] asks = dc.GetArr<Apply>().Concat(ask);
+                    Apply[] asks = dc.GetArr<Apply>().Add(ask);
 
                     if (dc.Execute("UPDATE notices SET asks = @1", p => p.Put(asks)) > 0)
                     {
@@ -91,7 +91,7 @@ namespace Greatbone.Sample
             {
                 if (dc.QueryA("SELECT comments FROM notices WHERE id = @1", p => p.Put(var)))
                 {
-                    Comment[] arr = dc.GetArr<Comment>().Concat(c);
+                    Comment[] arr = dc.GetArr<Comment>().Add(c);
                     if (dc.Execute("UPDATE notices SET WHERE id = @1", p => p.Put(var).Put(tok.Key)) > 0)
                     {
                         wc.StatusCode = 200;

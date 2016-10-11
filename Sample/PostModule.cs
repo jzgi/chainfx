@@ -23,9 +23,9 @@ namespace Greatbone.Sample
             {
                 if (dc.Query(@"SELECT * FROM posts ORDER BY id DESC LIMIT @limit OFFSET @offset", p => p.Put(20).Put(20 * page)))
                 {
-                    Post[] posts = null;
-                    dc.Got(ref posts);
-                    wc.Respond(200, posts);
+                    Post[] arr = null;
+                    dc.Got(ref arr);
+                    wc.Respond(200, arr);
                 }
                 else
                 {
