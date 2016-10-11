@@ -6,13 +6,12 @@ using Microsoft.Extensions.Primitives;
 
 namespace Greatbone.Core
 {
-    ///
+    /// <summary>
     /// The encapsulation of a web request/response exchange context.
-    ///
-    /// buffer pooling -- reduces GC overhead when dealing with asynchronous request/response I/O
-    ///
-    public class WebContext : DefaultHttpContext, IDisposable
+    /// </summary>
+    public class WebContext : DefaultHttpContext, ISource, IDisposable
     {
+
         internal WebContext(IFeatureCollection features) : base(features)
         {
         }
@@ -64,22 +63,21 @@ namespace Greatbone.Core
 
         void ParseEntity()
         {
-            if (entity == null)
+            if (entity != null) return;
+
+            ArraySegment<byte> bseg = BytesSeg;
+            if (bseg.Array != null)
             {
-                ArraySegment<byte> bseg = BytesSeg;
-                if (bseg.Array != null)
+                string ctyp = Request.ContentType;
+                if ("application/x-www-form-urlencoded".Equals(ctyp))
                 {
-                    string ctyp = Request.ContentType;
-                    if ("application/x-www-form-urlencoded".Equals(ctyp))
-                    {
-                        FormParse parse = new FormParse(bseg);
-                        entity = parse.Parse();
-                    }
-                    else
-                    {
-                        JParse parse = new JParse(bseg);
-                        entity = parse.Parse();
-                    }
+                    FormParse parse = new FormParse(bseg);
+                    entity = parse.Parse();
+                }
+                else
+                {
+                    JParse parse = new JParse(bseg);
+                    entity = parse.Parse();
                 }
             }
         }
@@ -132,65 +130,272 @@ namespace Greatbone.Core
             return arr;
         }
 
-        public bool Got(string name, ref short value)
+
+        //
+        // SOURCE FOR QUERY STRING
+        //
+
+        public bool Got(string name, ref bool v)
         {
             StringValues values;
             if (Request.Query.TryGetValue(name, out values))
             {
-                string v = values[0];
-                short i;
-                if (short.TryParse(v, out i))
+                string str = values[0];
+                if ("true".Equals(str) || "1".Equals(str))
                 {
-                    value = i;
+                    v = true;
+                    return true;
+                }
+                if ("false".Equals(str) || "0".Equals(str))
+                {
+                    v = false;
                     return true;
                 }
             }
             return false;
         }
 
-        public bool Got(string name, ref int value)
+        public bool Got(string name, ref short v)
         {
             StringValues values;
             if (Request.Query.TryGetValue(name, out values))
             {
-                string v = values[0];
-                int i;
-                if (int.TryParse(v, out i))
+                string str = values[0];
+                short num;
+                if (short.TryParse(str, out num))
                 {
-                    value = i;
+                    v = num;
                     return true;
                 }
             }
             return false;
         }
 
-        public bool Got(string name, ref long value)
+        public bool Got(string name, ref int v)
         {
             StringValues values;
             if (Request.Query.TryGetValue(name, out values))
             {
-                string v = values[0];
-                long i;
-                if (long.TryParse(v, out i))
+                string str = values[0];
+                int num;
+                if (int.TryParse(str, out num))
                 {
-                    value = i;
+                    v = num;
                     return true;
                 }
             }
             return false;
         }
 
-        public bool Got(string name, ref string value)
+        public bool Got(string name, ref long v)
         {
             StringValues values;
             if (Request.Query.TryGetValue(name, out values))
             {
-                value = values[0];
+                string str = values[0];
+                long num;
+                if (long.TryParse(str, out num))
+                {
+                    v = num;
+                    return true;
+                }
+            }
+            return false;
+        }
+
+        public bool Got(string name, ref decimal v)
+        {
+            StringValues values;
+            if (Request.Query.TryGetValue(name, out values))
+            {
+                string str = values[0];
+                decimal num;
+                if (decimal.TryParse(str, out num))
+                {
+                    v = num;
+                    return true;
+                }
+            }
+            return false;
+        }
+
+        public bool Got(string name, ref Number v)
+        {
+            throw new NotImplementedException();
+        }
+
+        public bool Got(string name, ref DateTime v)
+        {
+            throw new NotImplementedException();
+        }
+
+        public bool Got(string name, ref char[] v)
+        {
+            throw new NotImplementedException();
+        }
+
+        public bool Got(string name, ref string v)
+        {
+            StringValues values;
+            if (Request.Query.TryGetValue(name, out values))
+            {
+                v = values[0];
                 return true;
             }
             return false;
         }
 
+        public bool Got(string name, ref byte[] v)
+        {
+            throw new NotImplementedException();
+        }
+
+        public bool Got(string name, ref ArraySegment<byte> v)
+        {
+            throw new NotImplementedException();
+        }
+
+        public bool Got<T>(string name, ref T v, ushort x = ushort.MaxValue) where T : IPersist, new()
+        {
+            StringValues values;
+            if (Request.Query.TryGetValue(name, out values))
+            {
+                string str = values[0];
+                JTextParse parse = new JTextParse(str);
+                JObj jo = (JObj)parse.Parse();
+                v = new T();
+                v.Load(jo, x);
+                return true;
+            }
+            return false;
+        }
+
+        public bool Got(string name, ref JObj v)
+        {
+            StringValues values;
+            if (Request.Query.TryGetValue(name, out values))
+            {
+                string str = values[0];
+                JTextParse parse = new JTextParse(str);
+                v = (JObj)parse.Parse();
+                return true;
+            }
+            return false;
+        }
+
+        public bool Got(string name, ref JArr v)
+        {
+            StringValues values;
+            if (Request.Query.TryGetValue(name, out values))
+            {
+                string str = values[0];
+                JTextParse parse = new JTextParse(str);
+                v = (JArr)parse.Parse();
+                return true;
+            }
+            return false;
+        }
+
+        public bool Got(string name, ref short[] v)
+        {
+            StringValues values;
+            if (Request.Query.TryGetValue(name, out values))
+            {
+                int len = values.Count;
+                v = new short[len];
+                for (int i = 0; i < len; i++)
+                {
+                    string str = values[i];
+                    short e = 0;
+                    if (short.TryParse(str, out e))
+                    {
+                        v[i] = e;
+                    }
+                }
+                return true;
+            }
+            return false;
+        }
+
+        public bool Got(string name, ref int[] v)
+        {
+            StringValues values;
+            if (Request.Query.TryGetValue(name, out values))
+            {
+                int len = values.Count;
+                v = new int[len];
+                for (int i = 0; i < len; i++)
+                {
+                    string str = values[i];
+                    int e = 0;
+                    if (int.TryParse(str, out e))
+                    {
+                        v[i] = e;
+                    }
+                }
+                return true;
+            }
+            return false;
+        }
+
+        public bool Got(string name, ref long[] v)
+        {
+            StringValues values;
+            if (Request.Query.TryGetValue(name, out values))
+            {
+                int len = values.Count;
+                v = new long[len];
+                for (int i = 0; i < len; i++)
+                {
+                    string str = values[i];
+                    long e = 0;
+                    if (long.TryParse(str, out e))
+                    {
+                        v[i] = e;
+                    }
+                }
+                return true;
+            }
+            return false;
+        }
+
+        public bool Got(string name, ref string[] v)
+        {
+            StringValues values;
+            if (Request.Query.TryGetValue(name, out values))
+            {
+                int len = values.Count;
+                v = new string[len];
+                for (int i = 0; i < len; i++)
+                {
+                    v[i] = values[i];
+                }
+                return true;
+            }
+            return false;
+        }
+
+        public bool Got<T>(string name, ref T[] v, ushort x = ushort.MaxValue) where T : IPersist, new()
+        {
+            StringValues values;
+            if (Request.Query.TryGetValue(name, out values))
+            {
+                string str = values[0];
+                JTextParse parse = new JTextParse(str);
+                JArr ja = (JArr)parse.Parse();
+                int len = ja.Count;
+                v = new T[len];
+                for (int i = 0; i < len; i++)
+                {
+                    JObj jo = (JObj)ja[i];
+                    T obj = new T();
+                    obj.Load(jo, x);
+                    v[i] = obj;
+                }
+                return true;
+            }
+            return false;
+        }
 
         //
         // RESPONSE

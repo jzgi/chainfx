@@ -319,9 +319,9 @@ namespace Greatbone.Core
             {
                 string strv = reader.GetString(ord);
                 JTextParse parse = new JTextParse(strv);
-                JObj jobj = (JObj)parse.Parse();
+                JObj jo = (JObj)parse.Parse();
                 v = new T();
-                v.Load(jobj, x);
+                v.Load(jo, x);
                 return true;
             }
             return false;
@@ -402,14 +402,17 @@ namespace Greatbone.Core
             int ord = name == null ? ordinal++ : reader.GetOrdinal(name);
             if (!reader.IsDBNull(ord))
             {
-                string strv = reader.GetString(ord);
-                JTextParse parse = new JTextParse(strv);
-                JArr jarr = (JArr)parse.Parse();
-                v = new T[jarr.Count];
-                for (int i = 0; i < jarr.Count; i++)
+                string str = reader.GetString(ord);
+                JTextParse parse = new JTextParse(str);
+                JArr ja = (JArr)parse.Parse();
+                int len = ja.Count;
+                v = new T[len];
+                for (int i = 0; i < len; i++)
                 {
-                    JObj jobj = (JObj)jarr[i];
-                    v[i].Load(jobj, x);
+                    JObj jo = (JObj)ja[i];
+                    T obj = new T();
+                    obj.Load(jo, x);
+                    v[i] = obj;
                 }
                 return true;
             }
