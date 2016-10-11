@@ -178,9 +178,9 @@ namespace Greatbone.Core
         /// <remarks>
         ///
         /// </remarks>
-        public async Task ProcessRequestAsync(HttpContext hctx)
+        public async Task ProcessRequestAsync(HttpContext context)
         {
-            WebContext wc = (WebContext)hctx;
+            WebContext wc = (WebContext)context;
 
             // dispatch among public/private web actions and msg polling
             ConnectionInfo ci = wc.Connection;
@@ -195,7 +195,7 @@ namespace Greatbone.Core
                     return;
                 }
 
-                if (hctx.Request.Path.Equals("*")) // [PROC] msg polling
+                if (context.Request.Path.Equals("*")) // [PROC] msg polling
                 {
                     // msg queue
                     PollMsg(wc);
