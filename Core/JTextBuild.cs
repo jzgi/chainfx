@@ -89,14 +89,9 @@ namespace Greatbone.Core
 
         void Add(char[] v)
         {
-            Add(v, 0, v.Length);
-        }
-
-        void Add(char[] v, int offset, int len)
-        {
             if (v != null)
             {
-                for (int i = offset; i < len; i++)
+                for (int i = 0; i < v.Length; i++)
                 {
                     Write(v[i]);
                 }

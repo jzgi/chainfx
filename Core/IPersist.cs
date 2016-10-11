@@ -1,7 +1,7 @@
 ﻿namespace Greatbone.Core
 {
     /// <summary>
-    /// Represents a persistable object that is compliant to standard data exchange mechanisms.
+    /// Represents a persistable object that provides conventional data exchange mechanisms.
     /// </summary>
     public interface IPersist
     {

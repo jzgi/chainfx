@@ -43,6 +43,9 @@ namespace Greatbone.Core
 
         public WebConfig Config { get; internal set; }
 
+        // response content cache
+        ContentCache cache;
+
         // MESSAGING
         //
 
@@ -91,6 +94,9 @@ namespace Greatbone.Core
                     mactions.Add(a);
                 }
             }
+
+            cache = new ContentCache(1,1);
+
             // setup message loaders and pollers
             string[] net = cfg.net;
             for (int i = 0; i < net.Length; i++)

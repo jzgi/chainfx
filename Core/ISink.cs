@@ -3,7 +3,7 @@
 namespace Greatbone.Core
 {
     /// <summary>
-    /// A data outputing destination.
+    /// Represents an destination for object persistence.
     /// </summary>
     public interface ISink<R> where R : ISink<R>
     {

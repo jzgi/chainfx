@@ -3,7 +3,7 @@
 namespace Greatbone.Core
 {
     /// <summary>
-    /// A source for data inputting.
+    /// Represents A source for object persistence.
     /// </summary>
     public interface ISource
     {

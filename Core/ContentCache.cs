@@ -4,9 +4,9 @@ using System.Threading;
 
 namespace Greatbone.Core
 {
-    ///
-    /// The server-side response cache
-    ///
+    /// <summary>
+    /// The server-side response cache for a particular service.
+    /// </summary>
     public class ContentCache
     {
         readonly ConcurrentDictionary<string, Item> items;
@@ -25,9 +25,9 @@ namespace Greatbone.Core
             cleaner.Start();
         }
 
-        public void Add(string url, bool? pub, int maxage, IContent content)
+        public void Add(string url, int maxage, IContent content)
         {
-            Item item = new Item(pub, maxage, content, Environment.TickCount);
+            Item item = new Item(maxage, content, Environment.TickCount);
             items.TryAdd(url, item);
         }
 
@@ -57,25 +57,23 @@ namespace Greatbone.Core
 
         internal struct Item
         {
-            internal readonly bool? pub;
-
-            internal readonly int maxage;
+            // ticks of expiration
+            internal readonly int expiry;
 
             internal IContent Content { get; }
 
             internal int Ticks { get; }
 
-            internal Item(bool? pub, int maxage, IContent content, int ticks)
+            internal Item(int expiry, IContent content, int ticks)
             {
-                this.pub = pub;
-                this.maxage = maxage;
+                this.expiry = expiry;
                 Content = content;
                 Ticks = ticks;
             }
 
             internal bool Expired(int now)
             {
-                return (Ticks + maxage * 60000) < now;
+                return (Ticks + expiry * 60000) < now;
             }
         }
     }
