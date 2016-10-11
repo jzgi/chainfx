@@ -25,7 +25,7 @@ namespace Greatbone.Sample
                 {
                     Post[] posts = null;
                     dc.Got(ref posts);
-                    wc.SendArr(200, posts);
+                    wc.Respond(200, posts);
                 }
                 else
                 {

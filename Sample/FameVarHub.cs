@@ -36,7 +36,11 @@ namespace Greatbone.Sample
                     if (dc.QueryA("SELECT m" + idx + " FROM fames WHERE id = @1", p => p.Put(var)))
                     {
                         byte[] v = dc.GetBytes();
-                        wc.SendBytes(200, v);
+                        StaticContent sta = new StaticContent()
+                        {
+                            Buffer = v
+                        };
+                        wc.Respond(200, sta, true, 60000);
                     }
                     else
                     {
@@ -57,10 +61,10 @@ namespace Greatbone.Sample
             int idx = 0;
             if (wc.Got(nameof(idx), ref idx))
             {
-                ArraySegment<byte> bytes = wc.BytesSeg;
+                ArraySegment<byte> bseg = wc.BytesSeg;
                 using (var dc = Service.NewDbContext())
                 {
-                    if (dc.Execute("UPDATE fames SET m" + idx + " = @1 WHERE id = @2", p => p.Put(var).Put(bytes.Array)) > 0)
+                    if (dc.Execute("UPDATE fames SET m" + idx + " = @1 WHERE id = @2", p => p.Put(var.ToInt()).Put(bseg)) > 0)
                     {
                         wc.StatusCode = 200;
                     }

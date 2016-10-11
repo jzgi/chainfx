@@ -91,8 +91,12 @@ namespace Greatbone.Sample
             {
                 if (dc.QueryA("SELECT content FROM notices WHERE id = @1", p => p.Put(id)))
                 {
-                    byte[] bytes = dc.GetBytes();
-                    wc.SendBytes(200, bytes);
+                    byte[] v = dc.GetBytes();
+                    StaticContent sta = new StaticContent()
+                    {
+                        Buffer = v
+                    };
+                    wc.Respond(200, sta, true, 60000);
                 }
                 else
                 {

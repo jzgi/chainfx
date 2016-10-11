@@ -26,7 +26,11 @@ namespace Greatbone.Sample
                     if (dc.QueryA("SELECT m" + idx + " FROM fames WHERE id = @1", p => p.Put(var)))
                     {
                         byte[] v = dc.GetBytes();
-                        wc.SendBytes(200, v);
+                        StaticContent sta = new StaticContent()
+                        {
+                            Buffer = v
+                        };
+                        wc.Respond(200, sta, true, 60000);
                     }
                     else
                     {

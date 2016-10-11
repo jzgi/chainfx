@@ -2,7 +2,7 @@
 
 namespace Greatbone.Sample
 {
-	public static class WebContextExtensions
+	public static class WebContextUtility
 	{
 		public static bool CheckOwn(this WebContext wc, string x)
 		{

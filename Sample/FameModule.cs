@@ -25,7 +25,7 @@ namespace Greatbone.Sample
                 {
                     Fame[] fames = dc.GetArr<Fame>();
                     // dc.Got(ref fames);
-                    wc.SendArr(200, fames);
+                    wc.Respond(200, fames);
                 }
                 else
                 {
@@ -48,7 +48,7 @@ namespace Greatbone.Sample
                 {
                     Fame[] fames = dc.GetArr<Fame>();
                     // dc.Got(ref fames);
-                    wc.SendArr(200, fames);
+                    wc.Respond(200, fames);
                 }
                 else
                 {

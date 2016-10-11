@@ -156,59 +156,58 @@ namespace Greatbone.Core
         // RESPONSE
         //
 
-        public int StatusCode { get { return Response.StatusCode; } set { Response.StatusCode = value; } }
-
-        internal bool? pub;
-
-        internal int maxage;
+        public int StatusCode
+        {
+            get { return Response.StatusCode; }
+            set { Response.StatusCode = value; }
+        }
 
         public IContent Content { get; set; }
 
-        public void SendObj<T>(int status, T obj, ushort x = 0xffff, bool? pub = true, int maxage = 1000) where T : IPersist
+        internal bool? Pub { get; set; }
+
+        internal int MaxAge { get; set; }
+
+        public void Respond<T>(int status, T obj, ushort x = 0xffff, bool? pub = false, int maxage = 0) where T : IPersist
         {
-            SendJson(status, jcont => jcont.PutObj(obj, x), pub, maxage);
+            Respond(status, jcont => jcont.PutObj(obj, x), pub, maxage);
         }
 
-        public void SendArr<T>(int status, T[] arr, ushort x = 0xffff, bool? pub = true, int maxage = 1000) where T : IPersist
+        public void Respond<T>(int status, T[] arr, ushort x = 0xffff, bool? pub = false, int maxage = 0) where T : IPersist
         {
-            SendJson(status, jcont => jcont.PutArr(arr, x), pub, maxage);
+            Respond(status, jcont => jcont.PutArr(arr, x), pub, maxage);
         }
 
-        public void SendJson(int status, Action<JContent> a, bool? pub = true, int maxage = 1000)
+        public void Respond(int status, Action<JContent> a, bool? pub = false, int maxage = 0)
         {
-            StatusCode = status;
-
-            this.pub = pub;
-            this.maxage = maxage;
-
             JContent jcont = new JContent(8 * 1024);
             a?.Invoke(jcont);
-            Content = jcont;
+
+            Respond(status, jcont, pub, maxage);
         }
 
-        public void SendHtml(int status, Action<HtmlContent> a, bool? pub = true, int maxage = 1000)
+        public void Respond(int status, Action<HtmlContent> a, bool? pub = true, int maxage = 1000)
         {
             StatusCode = status;
 
-            this.pub = pub;
-            this.maxage = maxage;
+            this.Pub = pub;
+            this.MaxAge = maxage;
 
             HtmlContent html = new HtmlContent(16 * 1024);
             a?.Invoke(html);
             Content = html;
         }
 
-        public void SendBytes(int status, byte[] v, bool? pub = true, int maxage = 1000)
+        public void Respond(int status, IContent cont, bool? pub = null, int maxage = 0)
         {
             StatusCode = status;
-
-            this.pub = pub;
-            this.maxage = maxage;
-
-            HtmlContent html = new HtmlContent(16 * 1024);
-            Content = html;
+            if (cont != null)
+            {
+                Content = cont;
+                Pub = pub;
+                MaxAge = maxage;
+            }
         }
-
 
         internal Task WriteContentAsync()
         {
