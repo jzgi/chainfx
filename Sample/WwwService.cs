@@ -60,6 +60,12 @@ namespace Greatbone.Sample
         public void USER_UPD(MsgContext mc)
         {
 
+
+        }
+        
+        public void RPT_OK(MsgContext mc)
+        {
+
         }
     }
 }

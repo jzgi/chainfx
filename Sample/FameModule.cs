@@ -71,7 +71,7 @@ namespace Greatbone.Sample
                 {
                     Fame[] fames = dc.GetArr<Fame>();
                     // dc.Got(ref fames);
-                    wc.Respond(200, fames);
+                    wc.Respond(200, fames, 0xffff, true, 60000);
                 }
                 else
                 {

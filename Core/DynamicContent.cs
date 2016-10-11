@@ -120,16 +120,46 @@ namespace Greatbone.Core
 
         public void Add(bool v)
         {
-            Add(v ? "true" : "false");
+            Add(v ? "true" : "false", false);
         }
 
-        public void Add(char c)
+        public void Add(char c, bool esc = false)
         {
             // UTF-8 encoding but without surrogate support
             if (c < 0x80)
             {
                 // have at most seven bits
-                Write((byte)c);
+                if (esc)
+                {
+                    if (c == '\"')
+                    {
+                        Write((byte)'\\'); Write((byte)'"');
+                    }
+                    else if (c == '\\')
+                    {
+                        Write((byte)'\\'); Write((byte)'\\');
+                    }
+                    else if (c == '\n')
+                    {
+                        Write((byte)'\\'); Write((byte)'n');
+                    }
+                    else if (c == '\r')
+                    {
+                        Write((byte)'\\'); Write((byte)'r');
+                    }
+                    else if (c == '\t')
+                    {
+                        Write((byte)'\\'); Write((byte)'t');
+                    }
+                    else
+                    {
+                        Write((byte)c);
+                    }
+                }
+                else
+                {
+                    Write((byte)c);
+                }
             }
             else if (c < 0x800)
             {
@@ -157,23 +187,23 @@ namespace Greatbone.Core
             {
                 for (int i = offset; i < len; i++)
                 {
-                    Add(v[i]);
+                    Add(v[i], false);
                 }
             }
         }
 
-        public void Add(string v)
+        public void Add(string v, bool esc)
         {
-            Add(v, 0, v.Length);
+            Add(v, 0, v.Length, esc);
         }
 
-        public void Add(string v, int offset, int len)
+        public void Add(string v, int offset, int len, bool esc)
         {
             if (v != null)
             {
                 for (int i = offset; i < len; i++)
                 {
-                    Add(v[i]);
+                    Add(v[i], esc);
                 }
             }
         }
@@ -189,7 +219,7 @@ namespace Greatbone.Core
             {
                 for (int i = offset; i < len; i++)
                 {
-                    Add(v[i]);
+                    Add(v[i], false);
                 }
             }
         }
@@ -198,7 +228,7 @@ namespace Greatbone.Core
         {
             if (v == 0)
             {
-                Add('0');
+                Write((byte)'0');
                 return;
             }
             int x = v;
