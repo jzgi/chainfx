@@ -7,7 +7,7 @@ namespace Greatbone.Core
     /// </summary>
     public delegate void Handler(MsgContext mc);
 
-    public class MsgAction : IKeyed
+    public class MsgAction : IAction
     {
         public WebSub Controller { get; }
 
