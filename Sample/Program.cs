@@ -1,4 +1,6 @@
-﻿using Greatbone.Core;
+﻿using System;
+using System.Net.Http;
+using Greatbone.Core;
 
 namespace Greatbone.Sample
 {
@@ -12,6 +14,13 @@ namespace Greatbone.Sample
         /// </summary>
         public static void Main(string[] args)
         {
+
+            // Uri uri = new Uri("/", UriKind.Relative);
+            // HttpClient cli = new HttpClient();
+            // cli.BaseAddress = new Uri("http://127.0.0.1:8083");
+            // HttpRequestMessage msg = new HttpRequestMessage(HttpMethod.Trace, "/");
+            // cli.DeleteAsync("");
+
             DbConfig pg = new DbConfig
             {
                 host = "60.205.104.239",

@@ -132,7 +132,7 @@ namespace Greatbone.Core
             return actions[method];
         }
 
-        public virtual void Do(string rsc, WebContext wc)
+        protected internal virtual void Do(string rsc, WebContext wc)
         {
             if (rsc.IndexOf('.') != -1) // static handling
             {
@@ -160,7 +160,7 @@ namespace Greatbone.Core
             }
         }
 
-        public virtual void Do(string rsc, WebContext wc, string var)
+        protected internal virtual void Do(string rsc, WebContext wc, string var)
         {
             if (rsc.IndexOf('.') != -1) // static handling
             {

@@ -95,7 +95,7 @@ namespace Greatbone.Core
                 }
             }
 
-            cache = new ContentCache(1,1);
+            cache = new ContentCache(1, 1);
 
             // setup message loaders and pollers
             string[] net = cfg.net;
@@ -242,6 +242,7 @@ namespace Greatbone.Core
 
         }
 
+
         public void Start()
         {
             // start the server
@@ -307,9 +308,25 @@ namespace Greatbone.Core
             return this;
         }
 
+        public void @catch(WebContext wc)
+        {
+            // load
+            string addr = wc.Connection.RemoteIpAddress.ToString();
+
+            MsgLoader loader = mloaders[addr];
+            loader.Get();
+            MsgMessage msg;
+
+            // wc.Respond(200, msg);
+
+        }
+
         public void Dispose()
         {
+            server.Dispose();
+
             logWriter.Flush();
+            logWriter.Dispose();
 
             Console.Write(Key);
             Console.WriteLine("!");

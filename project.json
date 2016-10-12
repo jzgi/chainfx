@@ -12,7 +12,6 @@
       "version": "1.0"
     },
     "Microsoft.AspNetCore.Server.Kestrel": "1.0.1",
-    "Microsoft.Extensions.Logging": "1.0.0",
     "Npgsql": "3.1.8"
   },
   "frameworks": {

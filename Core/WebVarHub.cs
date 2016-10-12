@@ -38,7 +38,7 @@ namespace Greatbone.Core
             return sub;
         }
 
-        public override void Do(string rsc, WebContext wc, string var)
+        protected internal override void Do(string rsc, WebContext wc, string var)
         {
             int slash = rsc.IndexOf('/');
             if (slash == -1) // handle it locally
