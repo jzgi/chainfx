@@ -331,6 +331,13 @@ namespace Greatbone.Core
             return v;
         }
 
+        public static ArraySegment<byte> GetBytesSeg(this ISource sc, string name, ArraySegment<byte> def = default(ArraySegment<byte>))
+        {
+            ArraySegment<byte> v = def;
+            sc.Got(name, ref v);
+            return v;
+        }
+
         public static T GetObj<T>(this ISource sc, string name, T def = default(T)) where T : IPersist, new()
         {
             T v = def;

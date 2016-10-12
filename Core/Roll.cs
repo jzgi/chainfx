@@ -4,9 +4,8 @@ using System.Collections.Generic;
 namespace Greatbone.Core
 {
     /// <summary>
-    /// A member of set that is identified by character key, for mapping with components in HTTP request
+    /// An obect that is identified by string key thus can be a number of Roll.
     /// </summary>
-    /// <remarks>URL and parameters keep case-sensitive semantic</remarks>
     public interface IKeyed
     {
         string Key { get; }
@@ -14,7 +13,7 @@ namespace Greatbone.Core
 
 
     /// <summary>
-    /// An addition-only collection of elements with character keys. The members are placed in the addition order.
+    /// An addition-only dictionary, where members are placed in the addition order.
     /// </summary>
     public class Roll<T> : ICollection<T> where T : IKeyed
     {
