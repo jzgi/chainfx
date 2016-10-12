@@ -12,7 +12,7 @@ namespace Greatbone.Core
 
     /// <summary>The descriptor of an action handling method.</summary>
     ///
-    public class WebAction : IAction
+    public class WebAction : IKeyed
     {
         public WebSub Controller { get; }
 

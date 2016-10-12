@@ -2,7 +2,7 @@ using System;
 
 namespace Greatbone.Core
 {
-    internal struct MsgMessage : IContent
+    struct MsgMessage : IContent
     {
         byte[] body;
 

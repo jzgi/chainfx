@@ -23,6 +23,13 @@ namespace Greatbone.Core
             this.str = new StringBuild();
         }
 
+        public JParse(byte[] bytes, int count)
+        {
+            this.buffer = bytes;
+            this.count = count;
+            this.str = new StringBuild();
+        }
+
         public object Parse()
         {
             int p = -1;

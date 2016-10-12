@@ -4,28 +4,20 @@ using Microsoft.AspNetCore.Http;
 
 namespace Greatbone.Core
 {
-	///
-	/// The processing of an queued message. 
-	///
-	public class MsgContext : IDisposable
-	{
-		private string topic;
+    ///
+    /// The processing of an queued message. 
+    ///
+    public class MsgContext : IDisposable
+    {
+        private string topic;
 
-		private string key;
+        private string key;
 
-		HttpResponseMessage msg;
+        internal object msg;
 
-		object parsed;
-
-		internal MsgContext(HttpContext context)
-		{
-
-		}
-		
-
-		public void Dispose()
-		{
-			throw new NotImplementedException();
-		}
-	}
+        public void Dispose()
+        {
+            throw new NotImplementedException();
+        }
+    }
 }

@@ -7,7 +7,7 @@ namespace Greatbone.Core
     /// </summary>
     public delegate void Handler(MsgContext mc);
 
-    public class MsgAction : IAction
+    public class MsgHook : IKeyed
     {
         public WebSub Controller { get; }
 
@@ -15,7 +15,7 @@ namespace Greatbone.Core
 
         readonly Handler handler;
 
-        internal MsgAction(WebSub controller, MethodInfo mi)
+        internal MsgHook(WebSub controller, MethodInfo mi)
         {
             Key = mi.Name;
             handler = (Handler)mi.CreateDelegate(typeof(Handler), controller);

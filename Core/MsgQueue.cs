@@ -2,7 +2,7 @@
 
 namespace Greatbone.Core
 {
-    public class MsgLoader : IKeyed
+    public class MsgQueue : IKeyed
     {
         readonly WebService service;
 
@@ -14,9 +14,9 @@ namespace Greatbone.Core
         // SQL statement for selecting local messages
         string sql;
 
-        Roll<MsgAction> mactions;
+        Roll<MsgHook> mactions;
 
-        internal MsgLoader(WebService service, string addr)
+        internal MsgQueue(WebService service, string addr)
         {
             this.service = service;
             this.addr = addr;

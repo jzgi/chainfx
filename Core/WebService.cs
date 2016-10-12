@@ -50,15 +50,15 @@ namespace Greatbone.Core
         //
 
         // load messages from local queue        
-        readonly Roll<MsgLoader> mloaders;
+        readonly Roll<MsgQueue> queues;
 
-        // handling of received messages
-        readonly Roll<MsgAction> mactions;
+        // hooks of received messages
+        readonly Roll<MsgHook> hooks;
 
-        readonly Thread mscheduler;
+        readonly Thread scheduler;
 
         // poll remote peer servers for subscribed messages
-        readonly Roll<MsgPoller> mpollers;
+        readonly Roll<WebClient> clients;
 
 
         protected WebService(WebConfig cfg) : base(cfg)
@@ -89,9 +89,9 @@ namespace Greatbone.Core
                 ParameterInfo[] pis = mi.GetParameters();
                 if (pis.Length == 1 && pis[0].ParameterType == typeof(MsgContext))
                 {
-                    MsgAction a = new MsgAction(this, mi);
-                    if (mactions == null) mactions = new Roll<MsgAction>(16);
-                    mactions.Add(a);
+                    MsgHook a = new MsgHook(this, mi);
+                    if (hooks == null) hooks = new Roll<MsgHook>(16);
+                    hooks.Add(a);
                 }
             }
 
@@ -104,13 +104,13 @@ namespace Greatbone.Core
                 string addr = net[i];
                 if (addr.Equals(cfg.intern)) continue;
                 // loader
-                if (mloaders == null) mloaders = new Roll<MsgLoader>(net.Length * 2);
-                mloaders.Add(new MsgLoader(this, addr));
+                if (queues == null) queues = new Roll<MsgQueue>(net.Length * 2);
+                queues.Add(new MsgQueue(this, addr));
                 // poller
-                if (mactions != null)
+                if (hooks != null)
                 {
-                    if (mpollers == null) mpollers = new Roll<MsgPoller>(net.Length * 2);
-                    mpollers.Add(new MsgPoller(this, addr));
+                    if (clients == null) clients = new Roll<WebClient>(net.Length * 2);
+                    clients.Add(new WebClient(this, addr));
                 }
             }
 
@@ -119,11 +119,11 @@ namespace Greatbone.Core
         }
 
 
-        internal Roll<MsgLoader> MsgLoaders => mloaders;
+        internal Roll<MsgQueue> MsgLoaders => queues;
 
-        internal Roll<MsgAction> MsgActions => mactions;
+        internal Roll<MsgHook> MsgActions => hooks;
 
-        internal Roll<MsgPoller> MsgPollers => mpollers;
+        internal Roll<WebClient> MsgPollers => clients;
 
         bool PrepareMsgTables()
         {
@@ -278,7 +278,7 @@ namespace Greatbone.Core
             {
                 for (int i = 0; i < MsgPollers.Count; i++)
                 {
-                    MsgPoller conn = MsgPollers[i];
+                    WebClient conn = MsgPollers[i];
 
                     // schedule
                 }
@@ -313,7 +313,7 @@ namespace Greatbone.Core
             // load
             string addr = wc.Connection.RemoteIpAddress.ToString();
 
-            MsgLoader loader = mloaders[addr];
+            MsgQueue loader = queues[addr];
             loader.Get();
             MsgMessage msg;
 
