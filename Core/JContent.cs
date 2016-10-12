@@ -29,7 +29,7 @@ namespace Greatbone.Core
         // PUT
         //
 
-        public void PutArr(Action a)
+        public void PutArr(System.Action a)
         {
             if (counts[level]++ > 0) Write((byte)',');
 
@@ -53,7 +53,7 @@ namespace Greatbone.Core
             });
         }
 
-        public void PutObj(Action a)
+        public void PutObj(System.Action a)
         {
             if (counts[level]++ > 0) Write((byte)',');
 

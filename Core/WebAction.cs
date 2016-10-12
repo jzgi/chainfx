@@ -1,54 +1,48 @@
-﻿using System.Reflection;
+﻿using System;
+using System.Reflection;
 
 namespace Greatbone.Core
 {
-    /// <summary>The delegate of  exchange doer  methods.</summary>
-    ///
-    public delegate void Doer(WebContext wc);
-
-    /// <summary>The delegate of varied-key exchange doer methods.</summary>
-    ///
-    public delegate void VarDoer(WebContext wc, string var);
-
-    /// <summary>The descriptor of an action handling method.</summary>
-    ///
+    /// <summary>
+    /// The descriptor of an action method.
+    /// </summary>
     public class WebAction : IKeyed
     {
         public WebSub Controller { get; }
 
-        readonly VarDoer vardoer;
+        readonly Action<WebContext> doer;
 
-        readonly Doer doer;
+        readonly Action<WebContext, string> doerVar;
 
         private IfAttribute[] checkers;
 
         public string Key { get; }
 
-        public bool IsVar => vardoer != null;
+        public bool IsVar => doerVar != null;
 
         internal WebAction(WebSub controller, MethodInfo mi, bool isVar)
         {
             Controller = controller;
             // NOTE: strict method name as key here to avoid the default base url trap
             Key = mi.Name;
-            if (isVar)
+            if (!isVar)
             {
-                vardoer = (VarDoer)mi.CreateDelegate(typeof(VarDoer), controller);
+                doer = (Action<WebContext>)mi.CreateDelegate(typeof(Action<WebContext>), controller);
             }
             else
             {
-                doer = (Doer)mi.CreateDelegate(typeof(Doer), controller);
+                doerVar = (Action<WebContext, string>)mi.CreateDelegate(typeof(Action<WebContext, string>), controller);
             }
-        }
-
-        internal void Do(WebContext wc, string var)
-        {
-            vardoer(wc, var);
         }
 
         internal void Do(WebContext wc)
         {
             doer(wc);
+        }
+
+        internal void Do(WebContext wc, string var)
+        {
+            doerVar(wc, var);
         }
 
         public override string ToString()

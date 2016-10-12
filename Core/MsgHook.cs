@@ -1,29 +1,28 @@
-﻿using System.Reflection;
+﻿using System;
+using System.Reflection;
 
 namespace Greatbone.Core
 {
     /// <summary>
-    /// A delegate of message handler methods.
-    /// </summary>
-    public delegate void Handler(MsgContext mc);
-
+    /// The descriptor of a message hook.
+    /// <summary>
     public class MsgHook : IKeyed
     {
-        public WebSub Controller { get; }
+        public WebService Service { get; }
 
         public string Key { get; }
 
-        readonly Handler handler;
+        readonly Action<MsgContext> doer;
 
-        internal MsgHook(WebSub controller, MethodInfo mi)
+        internal MsgHook(WebService service, MethodInfo mi)
         {
             Key = mi.Name;
-            handler = (Handler)mi.CreateDelegate(typeof(Handler), controller);
+            doer = (Action<MsgContext>)mi.CreateDelegate(typeof(Action<MsgContext>), service);
         }
 
-        internal void Handle(MsgContext mc)
+        internal void Do(MsgContext mc)
         {
-            handler(mc);
+            doer(mc);
         }
 
         public override string ToString()

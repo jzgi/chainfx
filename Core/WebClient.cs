@@ -63,7 +63,7 @@ namespace Greatbone.Core
                     {
                         msg = entity
                     };
-                    a.Handle(evt);
+                    a.Do(evt);
                 }
             }
         }
