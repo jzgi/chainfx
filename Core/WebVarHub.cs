@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Reflection;
+using Microsoft.Extensions.Primitives;
 
 namespace Greatbone.Core
 {
@@ -40,13 +41,20 @@ namespace Greatbone.Core
 
         protected internal override void Do(string rsc, WebContext wc, string var)
         {
+            if (Authenticate && wc.Token == null)
+            {
+                wc.StatusCode = 401;
+                wc.Response.Headers.Add("WWW-Authenticate", new StringValues("Bearer"));
+                return;
+            }
+
             int slash = rsc.IndexOf('/');
             if (slash == -1) // handle it locally
             {
-                WebAction doer = GetAction(rsc);
-                if (doer != null)
+                WebAction a = GetAction(rsc);
+                if (a != null)
                 {
-                    doer.Do(wc, var);
+                    if (!a.Do(wc, var)) wc.StatusCode = 403; // forbidden
                 }
                 else
                 {

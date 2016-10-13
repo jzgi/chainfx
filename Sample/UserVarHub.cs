@@ -24,17 +24,14 @@ namespace Greatbone.Sample
             }
             using (var dc = Service.NewDbContext())
             {
-                if (dc.QueryA("SELECT id, credential, name FROM users WHERE id = @1", (p) => p.Put(id)))
+                if (dc.QueryA("SELECT * FROM users WHERE id = @1", (p) => p.Put(id)))
                 {
-                    User o = new User();
-                    dc.Got(ref o.id);
-                    dc.Got(ref o.credential);
-                    dc.Got(ref o.name);
-
+                    Token obj = new Token();
+                    obj.Load(dc, Token.Out);
                     string c16 = StringUtility.C16(password);
-                    if (c16.Equals(o.credential))
+                    if (c16.Equals(obj.credential))
                     {
-                        wc.Respond(200, jcont => jcont.PutObj(o));
+                        wc.Respond(200, obj, Token.Out);
                     }
                     else
                     {

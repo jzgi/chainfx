@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Reflection;
 
 namespace Greatbone.Core
@@ -14,7 +15,7 @@ namespace Greatbone.Core
 
         readonly Action<WebContext, string> doerVar;
 
-        private IfAttribute[] checkers;
+        private IEnumerable<IfAttribute> ifs;
 
         public string Key { get; }
 
@@ -33,16 +34,31 @@ namespace Greatbone.Core
             {
                 doerVar = (Action<WebContext, string>)mi.CreateDelegate(typeof(Action<WebContext, string>), controller);
             }
+            ifs = mi.GetCustomAttributes<IfAttribute>();
         }
 
-        internal void Do(WebContext wc)
+        internal bool Do(WebContext wc)
         {
+            // check
+            foreach (var @if in ifs)
+            {
+                if (!@if.Check(wc)) return false;
+            }
+            // invoke the action method
             doer(wc);
+            return true;
         }
 
-        internal void Do(WebContext wc, string var)
+        internal bool Do(WebContext wc, string var)
         {
+            // check
+            foreach (var @if in ifs)
+            {
+                if (!@if.Check(wc, var)) return false;
+            }
+            // invoke the action method
             doerVar(wc, var);
+            return true;
         }
 
         public override string ToString()

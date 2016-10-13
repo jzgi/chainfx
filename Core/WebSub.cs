@@ -2,6 +2,7 @@
 using System.IO;
 using System.Reflection;
 using Microsoft.Extensions.Logging;
+using Microsoft.Extensions.Primitives;
 
 namespace Greatbone.Core
 {
@@ -20,6 +21,8 @@ namespace Greatbone.Core
         /// The key by which this sub-controller is added to its parent
         ///
         public string Key { get; internal set; }
+
+        public bool Authenticate { get; internal set; }
 
         public JObj Opts { get; internal set; }
 
@@ -134,6 +137,13 @@ namespace Greatbone.Core
 
         protected internal virtual void Do(string rsc, WebContext wc)
         {
+            if (Authenticate && wc.Token == null)
+            {
+                wc.StatusCode = 401;
+                wc.Response.Headers.Add("WWW-Authenticate", new StringValues("Bearer"));
+                return;
+            }
+
             if (rsc.IndexOf('.') != -1) // static handling
             {
                 StaticContent sta;
@@ -153,15 +163,22 @@ namespace Greatbone.Core
                 {
                     wc.StatusCode = 404;
                 }
-                else
+                else if (!a.Do(wc))
                 {
-                    a.Do(wc);
+                    wc.StatusCode = 403; // Forbidden
                 }
             }
         }
 
         protected internal virtual void Do(string rsc, WebContext wc, string var)
         {
+            if (Authenticate && wc.Token == null)
+            {
+                wc.StatusCode = 401;
+                wc.Response.Headers.Add("WWW-Authenticate", new StringValues("Bearer"));
+                return;
+            }
+
             if (rsc.IndexOf('.') != -1) // static handling
             {
                 StaticContent sta;
@@ -181,9 +198,9 @@ namespace Greatbone.Core
                 {
                     wc.StatusCode = 404;
                 }
-                else
+                else if (!a.Do(wc, var))
                 {
-                    a.Do(wc, var);
+                    wc.StatusCode = 403; // Forbidden
                 }
             }
         }

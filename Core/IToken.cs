@@ -5,7 +5,5 @@
         string Key { get; }
 
         string Name { get; }
-
-        string[] Roles { get; }
     }
 }

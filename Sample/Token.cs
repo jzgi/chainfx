@@ -1,12 +1,15 @@
-﻿using System;
-using Greatbone.Core;
+﻿using Greatbone.Core;
 
 namespace Greatbone.Sample
 {
 
-    ///
-    public class UserToken : IToken, IPersist
+    /// <summary>
+    /// Used by all services.
+    /// </summary>
+    public class Token : IToken, IPersist
     {
+        public const ushort Out = 0x01;
+
         internal string id;
 
         internal string name;
@@ -19,11 +22,7 @@ namespace Greatbone.Sample
 
         internal bool admin;
 
-        internal DateTime date;
-
         public string Key => id;
-
-        public string[] Roles => null;
 
         public string Name => name;
 
@@ -41,7 +40,10 @@ namespace Greatbone.Sample
         {
             sk.Put(nameof(id), id);
             sk.Put(nameof(name), name);
-            sk.Put(nameof(credential), credential);
+            if ((x & Out) != x)
+            {
+                sk.Put(nameof(credential), credential);
+            }
             sk.Put(nameof(fame), fame);
             sk.Put(nameof(brand), brand);
             sk.Put(nameof(admin), admin);

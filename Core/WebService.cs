@@ -19,13 +19,9 @@ using Npgsql;
 
 namespace Greatbone.Core
 {
-    ///
-    /// A web microservice controller that may contain sub-controllers and/or a multiplexer.
-    ///
-    /// cache-control -- elimicates redundant requests (max-age) or data queries (not-modified).
-    /// response cache -- directly returns shared cached contents
-    /// etag -- reduces network I/O with unchanged results
-    ///
+    /// <summary>
+    /// A service controller that is a module implementation of a microservice.
+    /// </summary>
     ///
     public abstract class WebService : WebModule, IHttpApplication<HttpContext>, ILoggerProvider, ILogger, IDisposable
     {

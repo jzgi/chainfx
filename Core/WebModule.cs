@@ -1,10 +1,11 @@
 ﻿using System;
 using System.Reflection;
+using Microsoft.Extensions.Primitives;
 
 namespace Greatbone.Core
 {
     /// <summary>
-    /// A module consists of sub controllers and/or variable-key hub controller. It represents an independent business realm.
+    /// A module controller that can contain sub controllers and varhub controller.
     /// </summary>
     public abstract class WebModule : WebSub
     {
@@ -48,7 +49,7 @@ namespace Greatbone.Core
 
         public WebVarHub VarHub => varhub;
 
-        public T SetVarHub<T>(bool auth) where T : WebVarHub
+        public T SetVarHub<T>(bool authenticate) where T : WebVarHub
         {
             // create instance
             Type typ = typeof(T);
@@ -70,6 +71,13 @@ namespace Greatbone.Core
 
         protected internal override void Do(string rsc, WebContext wc)
         {
+            if (Authenticate && wc.Token == null)
+            {
+                wc.StatusCode = 401;
+                wc.Response.Headers.Add("WWW-Authenticate", new StringValues("Bearer"));
+                return;
+            }
+
             int slash = rsc.IndexOf('/');
             if (slash == -1) // handle it locally
             {

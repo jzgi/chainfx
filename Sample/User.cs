@@ -7,7 +7,7 @@ namespace Greatbone.Sample
     ///
     public class User : IPersist
     {
-        const ushort MGT = 0x01;
+        public const ushort Mgt = 0x01;
 
         internal string id;
 
@@ -43,7 +43,7 @@ namespace Greatbone.Sample
             sc.Got(nameof(fame), ref fame);
             sc.Got(nameof(brand), ref brand);
             sc.Got(nameof(admin), ref admin);
-            if ((x & MGT) == x)
+            if ((x & Mgt) == x)
             {
                 sc.Got(nameof(date), ref date);
                 sc.Got(nameof(favposts), ref favposts);
@@ -60,7 +60,7 @@ namespace Greatbone.Sample
             sk.Put(nameof(fame), fame);
             sk.Put(nameof(brand), brand);
             sk.Put(nameof(admin), admin);
-            if ((x & MGT) == x)
+            if ((x & Mgt) == x)
             {
                 sk.Put(nameof(date), date);
                 sk.Put(nameof(favposts), favposts, x);
