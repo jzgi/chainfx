@@ -6,6 +6,8 @@
 
         public string Key => key;
 
+        public bool Authenticate { get; internal set; }
+
         public bool IsVar { get; internal set; }
 
         public WebSub Parent { get; internal set; }

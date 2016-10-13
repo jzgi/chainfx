@@ -21,7 +21,7 @@ namespace Greatbone.Core
 
         public long LastModified { get; set; }
 
-        public T AddSub<T>(string key, bool auth) where T : WebSub
+        public T AddSub<T>(string key, bool authenticate) where T : WebSub
         {
             if (subs == null)
             {
@@ -34,6 +34,7 @@ namespace Greatbone.Core
             WebTie tie = new WebTie()
             {
                 key = key,
+                Authenticate = authenticate,
                 Parent = this,
                 Service = Service,
                 IsVar = false
@@ -58,6 +59,7 @@ namespace Greatbone.Core
             WebTie tie = new WebTie
             {
                 key = "var",
+                Authenticate = authenticate,
                 Parent = this,
                 Service = Service,
                 IsVar = true

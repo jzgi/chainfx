@@ -60,6 +60,7 @@ namespace Greatbone.Core
 
             // initialize setting values
             Key = setg.Key;
+            Authenticate = setg.Authenticate;
             IsVar = setg.IsVar;
             Service = setg.Service;
             Parent = setg.Parent;
