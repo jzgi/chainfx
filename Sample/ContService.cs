@@ -5,7 +5,7 @@ namespace Greatbone.Sample
     /// <summary>
     /// The content service.
     /// </summary>
-    public class ContService : WebService
+    public class ContService : SampleService
     {
         public ContService(WebConfig cfg) : base(cfg)
         {

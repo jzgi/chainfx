@@ -9,13 +9,19 @@ namespace Greatbone.Sample
         }
 
         ///
+        /// <code>
         /// GET /post/_id_/
+        /// </code>
+        ///
         public override void @default(WebContext wc, string var)
         {
         }
 
         ///
+        /// <code>
         /// GET /post/_id_/img/idx=_pic_idx_
+        /// </code>
+        ///
         public void img(WebContext wc, string var)
         {
             int idx = 0;
@@ -45,7 +51,10 @@ namespace Greatbone.Sample
         }
 
         ///
+        /// <code>
         /// POST /post/_id_/del
+        /// </code>
+        ///
         public void del(WebContext wc, string var)
         {
             IToken tok = wc.Token;
@@ -62,7 +71,9 @@ namespace Greatbone.Sample
             }
         }
 
+        /// <code>
         /// POST /post/_id_/updimg
+        /// </code>
         ///
         public void updimg(WebContext wc)
         {
@@ -74,10 +85,13 @@ namespace Greatbone.Sample
         }
 
         ///
+        /// <code>
         /// POST /post/_id_/cmt
         /// {
         ///     "text" : "comment text"            
         /// }            
+        /// </code>
+        ///
         public void cmt(WebContext wc, string var)
         {
             IToken tok = wc.Token;
@@ -112,7 +126,10 @@ namespace Greatbone.Sample
         }
 
         ///
-        /// /POST/_id_/share
+        /// <code>
+        /// POST /post/_id_/share
+        /// </code>
+        ///
         public void share(WebContext wc, string var)
         {
         }

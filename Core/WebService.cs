@@ -119,11 +119,11 @@ namespace Greatbone.Core
         }
 
 
-        internal Roll<MsgQueue> MsgLoaders => queues;
+        internal Roll<MsgQueue> Queues => queues;
 
-        internal Roll<MsgHook> MsgActions => hooks;
+        internal Roll<MsgHook> Hooks => hooks;
 
-        internal Roll<WebClient> MsgPollers => clients;
+        internal Roll<WebClient> Clients => clients;
 
         bool PrepareMsgTables()
         {
@@ -189,7 +189,7 @@ namespace Greatbone.Core
             {
                 // verify the remote addrees 
                 string raddr = ci.RemoteIpAddress.ToString();
-                if (!MsgPollers.Contains(raddr))
+                if (!Clients.Contains(raddr))
                 {
                     wc.StatusCode = (int)HttpStatusCode.Forbidden;
                     return;
@@ -224,23 +224,8 @@ namespace Greatbone.Core
             ((WebContext)context).Dispose();
         }
 
-        bool Authenticate(WebContext wc)
-        {
-            StringValues h;
-            if (wc.Request.Headers.TryGetValue("Authorization", out h))
-            {
-                string v = (string)h;
-                v.StartsWith("Bearer "); // Bearer scheme
-                return true;
-            }
-            else
-            {
-                wc.StatusCode = (int)HttpStatusCode.Unauthorized;
-                wc.Response.Headers.Add("WWW-Authenticate", "Bearer ");
-                return false;
-            }
+        protected abstract bool Authenticate(WebContext wc);
 
-        }
 
 
         public void Start()
@@ -276,9 +261,9 @@ namespace Greatbone.Core
         {
             while (true)
             {
-                for (int i = 0; i < MsgPollers.Count; i++)
+                for (int i = 0; i < Clients.Count; i++)
                 {
-                    WebClient conn = MsgPollers[i];
+                    WebClient conn = Clients[i];
 
                     // schedule
                 }

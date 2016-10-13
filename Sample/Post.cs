@@ -3,11 +3,6 @@ using Greatbone.Core;
 
 namespace Greatbone.Sample
 {
-    ///
-    /// <summary>A brand object.</summary>
-    /// <example>
-    ///     Brand o  new Brand(){}
-    /// </example>
     public class Post : IPersist
     {
         internal int id;
@@ -26,12 +21,11 @@ namespace Greatbone.Sample
 
         internal string text;
 
+        // indices of available m fields, such as "2384"
+        internal string mset;
+
         internal byte[] m0, m1, m2, m3, m4, m5, m6, m7, m8;
 
-        internal string mbits;
-
-        ///
-        /// <summary>Returns the key of the brand object.</summary>
         public string Key { get; }
 
         public void Load(ISource sc, ushort x = 0xffff)
@@ -42,7 +36,9 @@ namespace Greatbone.Sample
             sc.Got(nameof(author), ref author);
             sc.Got(nameof(commentable), ref commentable);
             sc.Got(nameof(comments), ref comments);
+            sc.Got(nameof(shared), ref shared);
             sc.Got(nameof(text), ref text);
+            sc.Got(nameof(mset), ref mset);
 
             sc.Got(nameof(m0), ref m0);
             sc.Got(nameof(m1), ref m1);
@@ -63,7 +59,9 @@ namespace Greatbone.Sample
             sk.Put(nameof(author), author);
             sk.Put(nameof(commentable), commentable);
             sk.Put(nameof(comments), comments);
+            sk.Put(nameof(shared), shared);
             sk.Put(nameof(text), text);
+            sk.Put(nameof(mset), mset);
 
             sk.Put(nameof(m0), m0);
             sk.Put(nameof(m1), m1);

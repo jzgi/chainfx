@@ -3,8 +3,6 @@ using System;
 
 namespace Greatbone.Sample
 {
-    ///
-    /// /post/
     public class PostModule : WebModule, IAdmin
     {
         public PostModule(ISetting setg) : base(setg)
@@ -12,9 +10,9 @@ namespace Greatbone.Sample
             SetVarHub<PostVarHub>(false);
         }
 
-        ///
+        /// <code>
         /// GET /post/top?[page=_num_]
-        ///
+        /// </code>
         public void top(WebContext wc)
         {
             int page = 0;
@@ -35,14 +33,29 @@ namespace Greatbone.Sample
         }
 
         ///
+        /// <code>
         /// POST /post/new
+        ///
+        /// {
+        ///     "commentable" : true 
+        ///     "text" : "text content" 
+        /// }
+        /// </code>
+        ///
         public void @new(WebContext wc)
         {
             IToken tok = wc.Token;
+            JObj jo = wc.JObj;
+            DateTime time = DateTime.Now;
+            bool commentable = jo[nameof(commentable)];
+            string text = jo[nameof(text)];
 
             using (var dc = Service.NewDbContext())
             {
-                dc.Execute("INSERT INTO posts () VALUES ()", p => p.Put(tok.Key).Put(tok.Name));
+                object id = dc.Scalar("INSERT INTO posts (time, authorid, author, commentable, text) VALUES (@1,@2,@3,@4,@5) RETURNING ID",
+                     p => p.Put(time).Put(tok.Key).Put(tok.Name).Put(commentable).Put(text));
+                wc.SetLocation(id.ToString());
+                wc.StatusCode = 201;
             }
         }
 

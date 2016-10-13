@@ -8,7 +8,7 @@ namespace Greatbone.Core
     ///
     public class StaticContent : IKeyed, IContent
     {
-        private static readonly Dictionary<string, string> Types = new Dictionary<string, string>
+        static readonly Dictionary<string, string> Types = new Dictionary<string, string>
         {
             {
                 ".323",

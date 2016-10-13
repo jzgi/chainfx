@@ -57,7 +57,7 @@ namespace Greatbone.Core
                 JParse parse = new JParse(bytes, bytes.Length);
                 object entity = parse.Parse();
                 MsgHook a = null;
-                if (service.MsgActions.TryGet("", out a))
+                if (service.Hooks.TryGet("", out a))
                 {
                     MsgContext evt = new MsgContext
                     {

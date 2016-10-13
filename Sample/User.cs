@@ -4,9 +4,8 @@ using Greatbone.Core;
 namespace Greatbone.Sample
 {
 
-    /// <summary>A user record that is a web access token for all the services. </summary>
     ///
-    public class User : IToken, IPersist
+    public class User : IPersist
     {
         const ushort MGT = 0x01;
 

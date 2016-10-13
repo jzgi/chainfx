@@ -161,6 +161,26 @@ namespace Greatbone.Core
             return command.ExecuteNonQuery();
         }
 
+        public object Scalar(string cmdtext, Action<DbParameters> ps)
+        {
+            if (connection.State != ConnectionState.Open)
+            {
+                connection.Open();
+            }
+            if (reader != null)
+            {
+                reader.Close();
+                reader = null;
+            }
+            // setup command
+            command.CommandText = cmdtext;
+            command.CommandType = CommandType.Text;
+            parameters.Clear();
+            ps?.Invoke(parameters);
+            ordinal = 0;
+            return command.ExecuteScalar();
+        }
+
         //
         // RESULTSET
         //

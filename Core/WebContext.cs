@@ -22,7 +22,7 @@ namespace Greatbone.Core
 
         public string Var { get; internal set; }
 
-        public IToken Token { get; }
+        public IToken Token { get; internal set; }
 
 
         //
@@ -395,6 +395,12 @@ namespace Greatbone.Core
                 return true;
             }
             return false;
+        }
+
+
+        public void SetLocation(string v)
+        {
+            Response.Headers.Add("Location", new StringValues(v));
         }
 
         //

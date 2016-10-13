@@ -5,7 +5,7 @@ namespace Greatbone.Sample
     ///
     /// The website service controller.
     ///
-    public class WwwService : WebService
+    public class WwwService : SampleService
     {
         public WwwService(WebConfig cfg) : base(cfg)
         {
