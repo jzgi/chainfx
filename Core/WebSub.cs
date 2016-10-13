@@ -11,15 +11,14 @@ namespace Greatbone.Core
     ///
     public abstract class WebSub : IKeyed
     {
+        readonly ISetting setg;
+
         readonly string staticPath;
 
-        ///
-        /// The corresponding static folder contents, can be null
-        ///
+        // the corresponding file folder contents, can be null
         readonly Roll<StaticContent> statics;
 
-        /// <summary>The default static file in the corresponding folder, can be null</summary>
-        ///
+        // the default static file in the file folder, can be null
         readonly StaticContent defstatic;
 
         // doer declared by this controller
@@ -41,12 +40,7 @@ namespace Greatbone.Core
                 cfg.Service = svc;
             }
 
-            // initialize setting values
-            Key = setg.Key;
-            Authenticate = setg.Authenticate;
-            IsVar = setg.IsVar;
-            Service = setg.Service;
-            Parent = setg.Parent;
+            this.setg = setg;
 
             staticPath = setg.Parent == null ? Key : Path.Combine(Parent.staticPath, Key);
 
@@ -113,19 +107,17 @@ namespace Greatbone.Core
         ///
         /// The key by which this sub-controller is added to its parent
         ///
-        public string Key { get; internal set; }
+        public string Key => setg.Key;
 
-        public bool Authenticate { get; internal set; }
+        public bool Authenticate => setg.Authenticate;
 
-        public JObj Opts { get; internal set; }
-
-        public bool IsVar { get; internal set; }
+        public bool IsVar => setg.IsVar;
 
         /// <summary>The service that this controller resides in.</summary>
         ///
-        public WebService Service { get; internal set; }
+        public WebService Service => setg.Service;
 
-        public WebSub Parent { get; internal set; }
+        public WebSub Parent => setg.Parent;
 
         public WebAction GetAction(String method)
         {

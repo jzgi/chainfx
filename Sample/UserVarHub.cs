@@ -4,7 +4,9 @@ using Greatbone.Core;
 namespace Greatbone.Sample
 {
     ///
-    /// <summary>The features for a particular user account.</summary>
+    /// <summary>
+    /// Actions around a particular user account.
+    /// </summary>
     ///
     public class UserVarHub : WebVarHub
     {
@@ -12,9 +14,9 @@ namespace Greatbone.Sample
         {
         }
 
-        ///
+        /// <code>
         /// GET /user/_id_/?password=_password_
-        ///
+        /// </code>
         public override void @default(WebContext wc, string id)
         {
             string password = null;

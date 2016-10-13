@@ -42,11 +42,11 @@ namespace Greatbone.Core
             });
         }
 
-        HttpRequestMessage pollRequest = new HttpRequestMessage();
 
         public async void PollAsync()
         {
 
+            HttpRequestMessage pollRequest = new HttpRequestMessage();
             client.DefaultRequestHeaders.Add("Range", "");
             HttpResponseMessage response = await client.SendAsync(pollRequest, HttpCompletionOption.ResponseContentRead);
             response.Headers.GetValues("lastid");
@@ -68,7 +68,19 @@ namespace Greatbone.Core
             }
         }
 
-        public async Task<object> CallAsync(string service, string part)
+        public async Task<object> GetAsync(string uri)
+        {
+            HttpRequestMessage msg = new HttpRequestMessage();
+            HttpResponseMessage response = await client.SendAsync(msg, HttpCompletionOption.ResponseContentRead);
+            response.Headers.GetValues("lastid");
+
+            byte[] bytes = await response.Content.ReadAsByteArrayAsync();
+
+            JParse parse = new JParse(bytes, bytes.Length);
+            return parse.Parse();
+        }
+
+        public async Task<object> PostAsync(string uri, object content)
         {
             HttpRequestMessage msg = new HttpRequestMessage();
             HttpResponseMessage response = await client.SendAsync(msg, HttpCompletionOption.ResponseContentRead);

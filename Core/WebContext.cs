@@ -477,6 +477,32 @@ namespace Greatbone.Core
         }
 
 
+        //
+        // RPC
+        //
+
+        public void Get(string service, string part)
+        {
+            // token impersonate
+            WebClient cli = Controller.Service.FindClient(service, part);
+            if (cli != null)
+            {
+
+            }
+        }
+
+        public void Post(string service, string part, object content)
+        {
+            // token impersonate
+            WebClient cli = Controller.Service.FindClient(service, part);
+            if (cli != null)
+            {
+
+            }
+        }
+
+
+
         public void Dispose()
         {
             // return request content buffer

@@ -280,9 +280,18 @@ namespace Greatbone.Core
         }
 
         //
-        // LOGGING
+        // MESSGING
         //
 
+        internal WebClient FindClient(string service, string part)
+        {
+            for (int i = 0; i < clients.Count; i++)
+            {
+                WebClient cli = clients[i];
+                if (cli.Key.Equals(service)) return cli;
+            }
+            return null;
+        }
         // sub controllers are already there
         public ILogger CreateLogger(string name)
         {
@@ -298,7 +307,7 @@ namespace Greatbone.Core
             loader.Get();
             MsgMessage msg;
             // headers
-            
+
             // wc.Respond(200, msg);
 
         }
