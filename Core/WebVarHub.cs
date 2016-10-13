@@ -53,23 +53,14 @@ namespace Greatbone.Core
             if (slash == -1) // handle it locally
             {
                 WebAction a = GetAction(rsc);
-                if (a != null)
-                {
-                    if (!a.Do(wc, var)) wc.StatusCode = 403; // forbidden
-                }
-                else
-                {
-                    wc.StatusCode = 404;
-                }
+                if (a != null) if (!a.Do(wc, var)) wc.StatusCode = 403; // forbidden
+                    else wc.StatusCode = 404;
             }
             else // not local then sub
             {
                 string dir = rsc.Substring(0, slash);
                 WebSub sub;
-                if (subs.TryGet(rsc, out sub))
-                {
-                    sub.Do(rsc.Substring(slash), wc);
-                }
+                if (subs.TryGet(rsc, out sub)) sub.Do(rsc.Substring(slash), wc);
             }
         }
     }

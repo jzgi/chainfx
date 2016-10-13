@@ -5,7 +5,7 @@ namespace Greatbone.Sample
     /// <summary>
     /// The business service.
     /// </summary>
-    public class BizService : SampleService
+    public class BizService : AbsService
     {
         public BizService(WebConfig cfg) : base(cfg)
         {

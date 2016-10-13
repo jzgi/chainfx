@@ -14,7 +14,7 @@ namespace Greatbone.Core
         // SQL statement for selecting local messages
         string sql;
 
-        Roll<MsgHook> mactions;
+        Roll<MsgHook> hooks;
 
         internal MsgQueue(WebService service, string addr)
         {

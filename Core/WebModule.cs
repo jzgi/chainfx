@@ -89,18 +89,9 @@ namespace Greatbone.Core
             {
                 string dir = rsc.Substring(0, slash);
                 WebSub sub;
-                if (subs != null && subs.TryGet(dir, out sub))
-                {
-                    sub.Do(rsc.Substring(slash + 1), wc);
-                }
-                else if (varhub == null)
-                {
-                    wc.StatusCode = 501; // Not Implemented
-                }
-                else
-                {
-                    varhub.Do(rsc.Substring(slash + 1), wc, dir); // var = dir
-                }
+                if (subs != null && subs.TryGet(dir, out sub)) sub.Do(rsc.Substring(slash + 1), wc);
+                else if (varhub == null) wc.StatusCode = 501; // Not Implemented
+                else varhub.Do(rsc.Substring(slash + 1), wc, dir); // var = dir
             }
         }
 

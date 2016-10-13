@@ -3,9 +3,9 @@ using Microsoft.Extensions.Primitives;
 
 namespace Greatbone.Sample
 {
-    public abstract class SampleService : WebService
+    public abstract class AbsService : WebService
     {
-        public SampleService(WebConfig cfg) : base(cfg)
+        public AbsService(WebConfig cfg) : base(cfg)
         {
         }
 

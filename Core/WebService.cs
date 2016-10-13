@@ -297,7 +297,8 @@ namespace Greatbone.Core
             MsgQueue loader = queues[addr];
             loader.Get();
             MsgMessage msg;
-
+            // headers
+            
             // wc.Respond(200, msg);
 
         }

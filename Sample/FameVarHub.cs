@@ -24,8 +24,32 @@ namespace Greatbone.Sample
             throw new System.NotImplementedException();
         }
 
-        ///
-        /// GET /fame/_var_/img?idx=_pic_idx_
+        /// <code>
+        /// GET /fame/_id_/icon
+        /// </code>
+        public void icon(WebContext wc, string var)
+        {
+            using (var dc = Service.NewDbContext())
+            {
+                if (dc.QueryA("SELECT icon FROM fames WHERE id = @1", p => p.Put(var)))
+                {
+                    byte[] v = dc.GetBytes();
+                    StaticContent sta = new StaticContent()
+                    {
+                        Buffer = v
+                    };
+                    wc.Respond(200, sta, true, 60000);
+                }
+                else
+                {
+                    wc.StatusCode = 404;
+                }
+            }
+        }
+
+        /// <code>
+        /// GET /fame/_id_/img?idx=_midx_
+        /// </code>
         public void img(WebContext wc, string var)
         {
             int idx = 0;

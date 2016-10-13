@@ -11,39 +11,22 @@ namespace Greatbone.Core
     ///
     public abstract class WebSub : IKeyed
     {
+        readonly string staticPath;
+
+        ///
+        /// The corresponding static folder contents, can be null
+        ///
+        readonly Roll<StaticContent> statics;
+
+        /// <summary>The default static file in the corresponding folder, can be null</summary>
+        ///
+        readonly StaticContent defstatic;
+
         // doer declared by this controller
         readonly Roll<WebAction> actions;
 
         // the default doer
         readonly WebAction defaction;
-
-        ///
-        /// The key by which this sub-controller is added to its parent
-        ///
-        public string Key { get; internal set; }
-
-        public bool Authenticate { get; internal set; }
-
-        public JObj Opts { get; internal set; }
-
-        public bool IsVar { get; internal set; }
-
-        /// <summary>The service that this controller resides in.</summary>
-        ///
-        public WebService Service { get; internal set; }
-
-        public WebSub Parent { get; internal set; }
-
-        public string StaticPath { get; internal set; }
-
-        ///
-        /// The corresponding static folder contents, can be null
-        ///
-        public Roll<StaticContent> Statics { get; }
-
-        /// <summary>The default static file in the corresponding folder, can be null</summary>
-        ///
-        public StaticContent DefaultStatic { get; }
 
         // the argument makes state-passing more convenient
         protected WebSub(ISetting setg)
@@ -65,13 +48,13 @@ namespace Greatbone.Core
             Service = setg.Service;
             Parent = setg.Parent;
 
-            StaticPath = setg.Parent == null ? Key : Path.Combine(Parent.StaticPath, Key);
+            staticPath = setg.Parent == null ? Key : Path.Combine(Parent.staticPath, Key);
 
             // load static files, if any
-            if (StaticPath != null && Directory.Exists(StaticPath))
+            if (staticPath != null && Directory.Exists(staticPath))
             {
-                Statics = new Roll<StaticContent>(256);
-                foreach (string path in Directory.GetFiles(StaticPath))
+                statics = new Roll<StaticContent>(256);
+                foreach (string path in Directory.GetFiles(staticPath))
                 {
                     string file = Path.GetFileName(path);
                     string ext = Path.GetExtension(path);
@@ -87,10 +70,10 @@ namespace Greatbone.Core
                             Buffer = content,
                             LastModified = modified
                         };
-                        Statics.Add(sta);
+                        statics.Add(sta);
                         if (sta.Key.StartsWith("default."))
                         {
-                            DefaultStatic = sta;
+                            defstatic = sta;
                         }
                     }
                 }
@@ -127,6 +110,23 @@ namespace Greatbone.Core
             }
         }
 
+        ///
+        /// The key by which this sub-controller is added to its parent
+        ///
+        public string Key { get; internal set; }
+
+        public bool Authenticate { get; internal set; }
+
+        public JObj Opts { get; internal set; }
+
+        public bool IsVar { get; internal set; }
+
+        /// <summary>The service that this controller resides in.</summary>
+        ///
+        public WebService Service { get; internal set; }
+
+        public WebSub Parent { get; internal set; }
+
         public WebAction GetAction(String method)
         {
             if (string.IsNullOrEmpty(method))
@@ -145,29 +145,17 @@ namespace Greatbone.Core
                 return;
             }
 
-            if (rsc.IndexOf('.') != -1) // static handling
+            if (rsc.IndexOf('.') != -1) // static
             {
                 StaticContent sta;
-                if (Statics != null && Statics.TryGet(rsc, out sta))
-                {
-                    wc.Content = sta;
-                }
-                else
-                {
-                    wc.StatusCode = 404;
-                }
+                if (statics != null && statics.TryGet(rsc, out sta)) wc.Content = sta;
+                else wc.StatusCode = 404;
             }
-            else // dynamic handling
+            else // dynamic
             {
                 WebAction a = string.IsNullOrEmpty(rsc) ? defaction : GetAction(rsc);
-                if (a == null)
-                {
-                    wc.StatusCode = 404;
-                }
-                else if (!a.Do(wc))
-                {
-                    wc.StatusCode = 403; // Forbidden
-                }
+                if (a == null) wc.StatusCode = 404;
+                else if (!a.Do(wc)) wc.StatusCode = 403; // forbidden 
             }
         }
 
@@ -180,29 +168,17 @@ namespace Greatbone.Core
                 return;
             }
 
-            if (rsc.IndexOf('.') != -1) // static handling
+            if (rsc.IndexOf('.') != -1) // static
             {
                 StaticContent sta;
-                if (Statics != null && Statics.TryGet(rsc, out sta))
-                {
-                    wc.Content = sta;
-                }
-                else
-                {
-                    wc.StatusCode = 404;
-                }
+                if (statics != null && statics.TryGet(rsc, out sta)) wc.Content = sta;
+                else wc.StatusCode = 404;
             }
-            else // dynamic handling
+            else // dynamic
             {
                 WebAction a = string.IsNullOrEmpty(rsc) ? defaction : GetAction(rsc);
-                if (a == null)
-                {
-                    wc.StatusCode = 404;
-                }
-                else if (!a.Do(wc, var))
-                {
-                    wc.StatusCode = 403; // Forbidden
-                }
+                if (a == null) wc.StatusCode = 404;
+                else if (!a.Do(wc, var)) wc.StatusCode = 403; // forbidden
             }
         }
 
@@ -237,7 +213,7 @@ namespace Greatbone.Core
 
         public virtual void @default(WebContext wc)
         {
-            StaticContent sta = DefaultStatic;
+            StaticContent sta = defstatic;
             if (sta != null)
             {
                 wc.Content = sta;
@@ -251,7 +227,7 @@ namespace Greatbone.Core
 
         public virtual void @default(WebContext wc, string var)
         {
-            StaticContent sta = DefaultStatic;
+            StaticContent sta = defstatic;
             if (sta != null)
             {
                 wc.Content = sta;
