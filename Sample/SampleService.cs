@@ -18,7 +18,7 @@ namespace Greatbone.Sample
                 v.StartsWith("Bearer "); // Bearer scheme
                 JTextParse parse = new JTextParse(v.Substring(7));
                 JObj jo = (JObj)parse.Parse();
-                IToken tok = new Token();
+                UserToken tok = new UserToken();
                 tok.Load(jo);
                 wc.Token = tok;
 

@@ -5,7 +5,7 @@ namespace Greatbone.Sample
 {
 
     ///
-    public class Token : IToken
+    public class UserToken : IToken, IPersist
     {
         internal string id;
 

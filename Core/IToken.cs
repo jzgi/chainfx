@@ -1,6 +1,6 @@
 ﻿namespace Greatbone.Core
 {
-    public interface IToken : IPersist
+    public interface IToken
     {
         string Key { get; }
 
