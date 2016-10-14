@@ -53,6 +53,7 @@ namespace Greatbone.Core
             sc.Got(nameof(intern), ref intern);
             sc.Got(nameof(net), ref net);
             sc.Got(nameof(db), ref db);
+            sc.Got(nameof(logging), ref logging);
         }
 
         public void Save<R>(ISink<R> sk, ushort x = 0) where R : ISink<R>
@@ -64,7 +65,7 @@ namespace Greatbone.Core
             sk.Put(nameof(tls), tls);
             sk.Put(nameof(intern), intern);
             sk.Put(nameof(net), net);
-            sk.Put(nameof(db), db);
+            sk.Put(nameof(logging), logging);
         }
 
         public WebConfig LoadFile(string file)
@@ -72,10 +73,10 @@ namespace Greatbone.Core
             try
             {
                 byte[] bytes = File.ReadAllBytes(file);
-                JParse parse = new JParse(new ArraySegment<byte>(bytes));
-                JObj jobj = (JObj)parse.Parse();
+                JParse parse = new JParse(bytes, bytes.Length);
+                JObj jo = (JObj)parse.Parse();
 
-                Load(jobj); // may override
+                Load(jo); // may override
 
             }
             catch (Exception ex)

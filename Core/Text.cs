@@ -72,15 +72,16 @@ namespace Greatbone.Core
 
         public void Add(char c)
         {
-            // grow the capacity as needed
-            int len = buffer.Length;
-            if (count >= len)
+            // ensure capacity
+            int olen = buffer.Length;
+            if (count >= olen)
             {
-                char[] old = buffer;
-                buffer = new char[len * 4];
-                Array.Copy(old, buffer, len);
+                char[] alloc = new char[olen * 4];
+                Array.Copy(buffer, 0, alloc, 0, olen);
+                buffer = alloc;
             }
-            buffer[count++] = c; // append to the buffer
+            // append
+            buffer[count++] = c;
         }
 
         public void Add(char[] v)

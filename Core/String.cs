@@ -6,7 +6,7 @@ namespace Greatbone.Core
     /// <summary>
     /// A string builder that supports UTF-8 decoding.
     /// </summary>
-    internal class StringBuild
+    internal class String
     {
         const int InitialCapacity = 256;
 
@@ -18,7 +18,7 @@ namespace Greatbone.Core
 
         int rest; // number of rest octets
 
-        internal StringBuild(int capacity = InitialCapacity)
+        internal String(int capacity = InitialCapacity)
         {
             buffer = new char[capacity];
             count = 0;
@@ -30,12 +30,13 @@ namespace Greatbone.Core
         {
             // ensure capacity
             int olen = buffer.Length;
-            if (count == olen)
+            if (count >= olen)
             {
-                char[] @new = new char[olen * 4];
-                Array.Copy(buffer, 0, @new, 0, olen);
-                buffer = @new;
+                char[] alloc = new char[olen * 4];
+                Array.Copy(buffer, 0, alloc, 0, olen);
+                buffer = alloc;
             }
+            // append
             buffer[count++] = c;
         }
 

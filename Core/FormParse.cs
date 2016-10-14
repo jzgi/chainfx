@@ -13,13 +13,13 @@ namespace Greatbone.Core
         readonly int count;
 
         // UTF-8 string builder
-        readonly StringBuild str;
+        readonly String str;
 
         public FormParse(ArraySegment<byte> bytes)
         {
             this.buffer = bytes.Array;
             this.count = bytes.Count;
-            this.str = new StringBuild();
+            this.str = new String();
         }
 
         public Form Parse()

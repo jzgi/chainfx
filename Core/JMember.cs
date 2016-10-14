@@ -111,7 +111,7 @@ namespace Greatbone.Core
         {
             if (v.vt == VT.Number)
             {
-                return v.numv.Int16;
+                return v.numv.Short;
             }
             return 0;
         }
@@ -120,7 +120,7 @@ namespace Greatbone.Core
         {
             if (v.vt == VT.Number)
             {
-                return v.numv.Int32;
+                return v.numv.Int;
             }
             return 0;
         }
@@ -129,7 +129,7 @@ namespace Greatbone.Core
         {
             if (v.vt == VT.Number)
             {
-                return v.numv.Int64;
+                return v.numv.Long;
             }
             return 0;
         }

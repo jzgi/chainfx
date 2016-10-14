@@ -3,7 +3,7 @@ using System;
 namespace Greatbone.Core
 {
     /// <summary>
-    /// An array data model.
+    /// An array JSON data model.
     /// </summary>
     public class JArr
     {

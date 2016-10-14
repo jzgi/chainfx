@@ -3,7 +3,7 @@ using System;
 namespace Greatbone.Core
 {
     /// <summary>
-    /// An object or record data model.
+    /// An object JSON data model.
     /// </summary>
     public class JObj : ISource
     {

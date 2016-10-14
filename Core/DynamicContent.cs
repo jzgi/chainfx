@@ -102,15 +102,16 @@ namespace Greatbone.Core
 
         void Write(byte b)
         {
-            // grow the capacity as needed
-            int len = buffer.Length;
-            if (count >= len)
+            // ensure capacity
+            int olen = buffer.Length;
+            if (count >= olen)
             {
-                byte[] old = buffer;
-                buffer = new byte[len * 4];
-                Array.Copy(old, buffer, len);
+                byte[] alloc = new byte[olen * 4];
+                Array.Copy(buffer, 0, alloc, 0, olen);
+                buffer = alloc;
             }
-            buffer[count++] = b; // append to the buffer
+            // append
+            buffer[count++] = b;
 
             // calculate checksum
             long cs = checksum;

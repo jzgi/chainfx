@@ -14,20 +14,20 @@ namespace Greatbone.Core
         readonly int count;
 
         // UTF-8 string builder
-        readonly StringBuild str;
+        readonly String str;
 
         public JParse(ArraySegment<byte> bytes)
         {
             this.buffer = bytes.Array;
             this.count = bytes.Count;
-            this.str = new StringBuild();
+            this.str = new String();
         }
 
         public JParse(byte[] bytes, int count)
         {
             this.buffer = bytes;
             this.count = count;
-            this.str = new StringBuild();
+            this.str = new String();
         }
 
         public object Parse()

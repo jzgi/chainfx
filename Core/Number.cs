@@ -1,7 +1,7 @@
 namespace Greatbone.Core
 {
     /// <summary>
-    /// Used to build a number during parsing process.
+    /// Used to build a number during a parsing process.
     /// </summary>
     public struct Number
     {
@@ -50,11 +50,11 @@ namespace Greatbone.Core
             else { integr = integr * 10 + n; }
         }
 
-        internal long Int64 => negat ? -integr : integr;
+        internal long Long => negat ? -integr : integr;
 
-        internal int Int32 => negat ? (int)-integr : (int)integr;
+        internal int Int => negat ? (int)-integr : (int)integr;
 
-        internal short Int16 => negat ? (short)-integr : (short)integr;
+        internal short Short => negat ? (short)-integr : (short)integr;
 
         internal decimal Decimal
         {

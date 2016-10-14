@@ -117,7 +117,7 @@ namespace Greatbone.Core
 
         public WebSub Parent => setg.Parent;
 
-        public WebAction GetAction(String method)
+        public WebAction GetAction(System.String method)
         {
             if (string.IsNullOrEmpty(method))
             {
