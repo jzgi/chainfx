@@ -10,7 +10,7 @@ namespace Greatbone.Core
         // clauses
         const sbyte ColumnList = 1, ValueList = 2, SetList = 3;
 
-        int ordinal;
+        internal int ordinal;
 
         // indication
         internal sbyte clause;
@@ -18,7 +18,7 @@ namespace Greatbone.Core
 
         public DbSql(int capacity = InitialCapacity) : base(capacity)
         {
-            ordinal = 0;
+            ordinal = 1;
         }
 
 
@@ -29,6 +29,7 @@ namespace Greatbone.Core
             sql.Add("SELECT ");
 
             sql.clause = ColumnList;
+            sql.ordinal = 1;
             obj.Save(sql, (ushort)(x | UShortkUtility.SEL));
 
             sql.Add(" FROM ");
@@ -46,14 +47,16 @@ namespace Greatbone.Core
             sql.Add(" (");
 
             sql.clause = ColumnList;
+            sql.ordinal = 1;
             obj.Save(sql, (ushort)(x | UShortkUtility.INS));
 
             sql.Add(") VALUES (");
 
             sql.clause = ValueList;
+            sql.ordinal = 1;
             obj.Save(sql, (ushort)(x | UShortkUtility.INS));
 
-            sql.Add(") ");
+            sql.Add(")");
 
             return sql;
         }
@@ -68,6 +71,7 @@ namespace Greatbone.Core
             sql.Add(" SET ");
 
             sql.clause = ColumnList;
+            sql.ordinal = 1;
             obj.Save(sql, (ushort)(x | UShortkUtility.UPD)); // column list
 
             return sql;
@@ -85,171 +89,138 @@ namespace Greatbone.Core
             return this;
         }
 
-        public DbSql Put(string name, short v)
+
+        void Build(string name)
         {
-            if (ordinal++ > 1) Write(',');
+            if (ordinal > 1) Add(", ");
 
-            if (clause == ColumnList)
+            switch (clause)
             {
-                Add(name);
-            }
-            else
-            {
-                Add(name);
+                case ColumnList: Add(name); break;
+                case ValueList: Add("@"); Add(name); break;
+                case SetList: Add(name); Add("=@"); Add(name); break;
             }
 
-            return this;
+            ordinal++;
         }
 
         public DbSql Put(string name, bool v)
         {
-            if (ordinal++ > 0) Write(',');
+            Build(name);
+            return this;
+        }
 
-            Add(name);
+        public DbSql Put(string name, short v)
+        {
+            Build(name);
             return this;
         }
 
         public DbSql Put(string name, int v)
         {
-            if (ordinal++ > 0) Write(',');
-
-            Add(name);
+            Build(name);
             return this;
         }
 
         public DbSql Put(string name, long v)
         {
-            if (ordinal++ > 0) Write(',');
-
-            Add(name);
+            Build(name);
             return this;
         }
 
         public DbSql Put(string name, Number v)
         {
-            if (ordinal++ > 0) Write(',');
-
-            Add(name);
+            Build(name);
             return this;
         }
 
         public DbSql Put(string name, DateTime v)
         {
-            if (ordinal++ > 0) Write(',');
-
-            Add(name);
+            Build(name);
             return this;
         }
 
         public DbSql Put(string name, decimal v)
         {
-            if (ordinal++ > 0) Write(',');
-
-            Add(name);
+            Build(name);
             return this;
         }
 
         public DbSql Put(string name, string v)
         {
-            if (ordinal++ > 0) Write(',');
-
-            Add(name);
+            Build(name);
             return this;
         }
 
         public DbSql Put(string name, char[] v)
         {
-            if (ordinal++ > 0) Write(',');
-
-            Add(name);
+            Build(name);
             return this;
         }
 
         public DbSql Put(string name, byte[] v)
         {
-            if (ordinal++ > 0) Write(',');
-
-            Add(name);
+            Build(name);
             return this;
         }
 
         public DbSql Put(string name, ArraySegment<byte> v)
         {
-            if (ordinal++ > 0) Write(',');
-
-            Add(name);
+            Build(name);
             return this;
         }
 
         public DbSql Put<F>(string name, F v, ushort x = 0) where F : IPersist
         {
-            if (ordinal++ > 0) Write(',');
-
-            Add(name);
+            Build(name);
             return this;
         }
 
         public DbSql Put(string name, JArr v)
         {
-            if (ordinal++ > 0) Write(',');
-
-            Add(name);
+            Build(name);
             return this;
         }
 
         public DbSql Put(string name, JObj v)
         {
-            if (ordinal++ > 0) Write(',');
-
-            Add(name);
+            Build(name);
             return this;
         }
 
         public DbSql Put(string name, short[] v)
         {
-            if (ordinal++ > 0) Write(',');
-
-            Add(name);
+            Build(name);
             return this;
         }
 
         public DbSql Put(string name, int[] v)
         {
-            if (ordinal++ > 0) Write(',');
-
-            Add(name);
+            Build(name);
             return this;
         }
 
         public DbSql Put(string name, string[] v)
         {
-            if (ordinal++ > 0) Write(',');
-
-            Add(name);
+            Build(name);
             return this;
         }
 
         public DbSql Put(string name, long[] v)
         {
-            if (ordinal++ > 0) Write(',');
-
-            Add(name);
+            Build(name);
             return this;
         }
 
         public DbSql Put<F>(string name, F[] v, ushort x = ushort.MaxValue) where F : IPersist
         {
-            if (ordinal++ > 0) Write(',');
-
-            Add(name);
+            Build(name);
             return this;
         }
 
         public DbSql PutNull(string name)
         {
-            if (ordinal++ > 0) Write(',');
-
-            Add(name);
+            Build(name);
             return this;
         }
     }

@@ -51,8 +51,8 @@ namespace Greatbone.Sample
             IToken tok = wc.Token;
 
             Notice obj = wc.Obj<Notice>();
-            obj.authorid = tok.Key;
-            obj.author = tok.Name;
+            // obj.authorid = tok.Key;
+            // obj.author = tok.Name;
 
             using (var dc = Service.NewDbContext())
             {
@@ -113,7 +113,7 @@ namespace Greatbone.Sample
 
         public void putimg(WebContext wc)
         {
-            ArraySegment<byte> bytes = wc.BytesSeg;
+            ArraySegment<byte> bytes = wc.BytesSeg.Value;
 
             using (var dc = Service.NewDbContext())
             {

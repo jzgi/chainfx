@@ -43,6 +43,8 @@ namespace Greatbone.Sample
         ///
         public void @new(WebContext wc)
         {
+            Console.WriteLine("reached new");
+
             IToken tok = wc.Token;
             JObj jo = wc.JObj;
             DateTime time = DateTime.Now;

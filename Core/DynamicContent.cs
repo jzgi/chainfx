@@ -201,7 +201,7 @@ namespace Greatbone.Core
                 Write((byte)'0');
                 return;
             }
-            int x = v;
+            int x = v; // convert to int
             if (v < 0)
             {
                 Write(Minus);
@@ -219,7 +219,7 @@ namespace Greatbone.Core
                     bgn = true;
                 }
             }
-            Write(Digits[v]); // last reminder
+            Write(Digits[x]); // last reminder
         }
 
         public void Add(int v)

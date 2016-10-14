@@ -112,7 +112,7 @@ namespace Greatbone.Core
                 Write('0');
                 return;
             }
-            int x = v;
+            int x = v; // convert to int
             if (v < 0)
             {
                 Write('-');
@@ -130,7 +130,7 @@ namespace Greatbone.Core
                     bgn = true;
                 }
             }
-            Write(Digits[v]); // last reminder
+            // Write(Digits[x]); // last reminder
         }
 
         public void Add(int v)
@@ -158,7 +158,7 @@ namespace Greatbone.Core
                     bgn = true;
                 }
             }
-            Write(Digits[v]); // last reminder
+            // Write(Digits[v]); // last reminder
         }
 
         public void Add(long v)
@@ -186,7 +186,7 @@ namespace Greatbone.Core
                     bgn = true;
                 }
             }
-            Write(Digits[v]); // last reminder
+            // Write(Digits[v]); // last reminder
         }
 
         public void Add(decimal v)
