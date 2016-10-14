@@ -1,5 +1,4 @@
-﻿using System;
-
+﻿
 namespace Greatbone.Core
 {
     public static class UShortkUtility

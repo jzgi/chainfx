@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Globalization;
+using System.Text;
 
 namespace Greatbone.Core
 {
@@ -69,7 +70,7 @@ namespace Greatbone.Core
             count = 0;
         }
 
-        public void Write(char c)
+        public void Add(char c)
         {
             // grow the capacity as needed
             int len = buffer.Length;
@@ -84,53 +85,78 @@ namespace Greatbone.Core
 
         public void Add(char[] v)
         {
+            Add(v, 0, v.Length);
+        }
+
+        public void Add(char[] v, int offset, int len)
+        {
             if (v != null)
             {
-                for (int i = 0; i < v.Length; i++)
+                for (int i = offset; i < len; i++)
                 {
-                    Write(v[i]);
+                    Add(v[i], false);
                 }
             }
         }
 
         public void Add(string v)
         {
+            Add(v, 0, v.Length);
+        }
+
+        public void Add(string v, int offset, int len)
+        {
             if (v != null)
             {
-                for (int i = 0; i < v.Length; i++)
+                for (int i = offset; i < len; i++)
                 {
-                    Write(v[i]);
+                    Add(v[i]);
                 }
             }
         }
 
+        public void Add(StringBuilder v)
+        {
+            Add(v, 0, v.Length);
+        }
+
+        public void Add(StringBuilder v, int offset, int len)
+        {
+            if (v != null)
+            {
+                for (int i = offset; i < len; i++)
+                {
+                    Add(v[i], false);
+                }
+            }
+        }
 
         public void Add(short v)
         {
             if (v == 0)
             {
-                Write('0');
+                Add('0');
                 return;
             }
             int x = v; // convert to int
             if (v < 0)
             {
-                Write('-');
+                Add('-');
                 x = -x;
             }
             bool bgn = false;
-            for (int i = Shorts.Length - 1; i >= 0; i--)
+            for (int i = Shorts.Length - 1; i > 0; i--)
             {
                 int bas = Shorts[i];
                 int q = x / bas;
                 x = x % bas;
                 if (q != 0 || bgn)
                 {
-                    Write(Digits[q]);
+                    Add(Digits[q]);
                     bgn = true;
                 }
             }
-            // Write(Digits[x]); // last reminder
+            Add(Digits[x]); // last reminder
         }
 
         public void Add(int v)
@@ -143,22 +169,22 @@ namespace Greatbone.Core
 
             if (v < 0)
             {
-                Write('-');
+                Add('-');
                 v = -v;
             }
             bool bgn = false;
-            for (int i = Ints.Length - 1; i >= 0; i--)
+            for (int i = Ints.Length - 1; i > 0; i--)
             {
                 int bas = Ints[i];
                 int q = v / bas;
                 v = v % bas;
                 if (q != 0 || bgn)
                 {
-                    Write(Digits[q]);
+                    Add(Digits[q]);
                     bgn = true;
                 }
             }
-            // Write(Digits[v]); // last reminder
+            Add(Digits[v]); // last reminder
         }
 
         public void Add(long v)
@@ -171,22 +197,22 @@ namespace Greatbone.Core
 
             if (v < 0)
             {
-                Write('-');
+                Add('-');
                 v = -v;
             }
             bool bgn = false;
-            for (int i = Longs.Length - 1; i >= 0; i--)
+            for (int i = Longs.Length - 1; i > 0; i--)
             {
                 long bas = Longs[i];
                 long q = v / bas;
                 v = v % bas;
                 if (q != 0 || bgn)
                 {
-                    Write(Digits[q]);
+                    Add(Digits[q]);
                     bgn = true;
                 }
             }
-            // Write(Digits[v]); // last reminder
+            Add(Digits[v]); // last reminder
         }
 
         public void Add(decimal v)
@@ -206,7 +232,7 @@ namespace Greatbone.Core
 
                 if ((flags & Sign) != 0) // negative
                 {
-                    Write('-');
+                    Add('-');
                 }
                 if (mid != 0) // money
                 {
@@ -219,17 +245,17 @@ namespace Greatbone.Core
                         x = x % bas;
                         if (q != 0 || bgn)
                         {
-                            Write(Digits[q]);
+                            Add(Digits[q]);
                             bgn = true;
                         }
                         if (i == 4)
                         {
                             if (!bgn)
                             {
-                                Write('0');
+                                Add('0');
                                 bgn = true;
                             }
-                            Write('.');
+                            Add('.');
                         }
                     }
                 }
@@ -244,17 +270,17 @@ namespace Greatbone.Core
                         x = x % bas;
                         if (q != 0 || bgn)
                         {
-                            Write(Digits[q]);
+                            Add(Digits[q]);
                             bgn = true;
                         }
                         if (i == 4)
                         {
                             if (!bgn)
                             {
-                                Write('0');
+                                Add('0');
                                 bgn = true;
                             }
-                            Write('.');
+                            Add('.');
                         }
                     }
                 }
@@ -276,24 +302,24 @@ namespace Greatbone.Core
             short mon = (byte)dt.Month, day = (byte)dt.Day;
 
             Add(yr);
-            Write('-');
-            if (mon < 10) Write('0');
+            Add('-');
+            if (mon < 10) Add('0');
             Add(mon);
-            Write('-');
-            if (day < 10) Write('0');
+            Add('-');
+            if (day < 10) Add('0');
             Add(day);
 
             byte hr = (byte)dt.Hour, min = (byte)dt.Minute, sec = (byte)dt.Second;
             if (time)
             {
-                Write(' '); // a space for separation
-                if (hr < 10) Write('0');
+                Add(' '); // a space for separation
+                if (hr < 10) Add('0');
                 Add(hr);
-                Write(':');
-                if (min < 10) Write('0');
+                Add(':');
+                if (min < 10) Add('0');
                 Add(min);
-                Write(':');
-                if (sec < 10) Write('0');
+                Add(':');
+                if (sec < 10) Add('0');
                 Add(sec);
             }
         }

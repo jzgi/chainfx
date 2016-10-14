@@ -100,7 +100,7 @@ namespace Greatbone.Core
         public long ETag => checksum;
 
 
-        internal void Write(byte b)
+        void Write(byte b)
         {
             // grow the capacity as needed
             int len = buffer.Length;
@@ -208,7 +208,7 @@ namespace Greatbone.Core
                 x = -x;
             }
             bool bgn = false;
-            for (int i = Shorts.Length - 1; i >= 0; i--)
+            for (int i = Shorts.Length - 1; i > 0; i--)
             {
                 int bas = Shorts[i];
                 int q = x / bas;
@@ -236,7 +236,7 @@ namespace Greatbone.Core
                 v = -v;
             }
             bool bgn = false;
-            for (int i = Ints.Length - 1; i >= 0; i--)
+            for (int i = Ints.Length - 1; i > 0; i--)
             {
                 int bas = Ints[i];
                 int q = v / bas;
@@ -264,7 +264,7 @@ namespace Greatbone.Core
                 v = -v;
             }
             bool bgn = false;
-            for (int i = Longs.Length - 1; i >= 0; i--)
+            for (int i = Longs.Length - 1; i > 0; i--)
             {
                 long bas = Longs[i];
                 long q = v / bas;
