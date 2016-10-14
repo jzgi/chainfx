@@ -23,13 +23,13 @@ namespace Greatbone.Sample
         internal short waist;
         internal short hip;
         internal short cup;
-        internal string careers; // comma-separated string
-        internal string styles;
-        internal string skills;
+        internal string[] careers; 
+        internal string[] styles;
+        internal string[] skills;
         internal short remark;
-        internal Item[] sites;
-        internal Item[] friends;
-        internal Item[] awards;
+        internal Ref[] sites;
+        internal Ref[] friends;
+        internal Ref[] awards;
 
         public void Load(ISource sc, ushort x = 0)
         {
@@ -88,26 +88,28 @@ namespace Greatbone.Sample
         }
     }
 
-    public struct Item : IPersist
+    public struct Ref : IPersist
     {
-        internal string uid;
+        internal string name;
 
-        internal string url;
+        // an id or url
+        internal string @ref;
 
-        internal string text;
+        internal string hint;
 
         public void Load(ISource sc, ushort x = 0)
         {
-            sc.Got(nameof(uid), ref uid);
-            sc.Got(nameof(url), ref url);
-            sc.Got(nameof(text), ref text);
+            sc.Got(nameof(name), ref name);
+            sc.Got(nameof(@ref), ref @ref);
+            sc.Got(nameof(hint), ref hint);
         }
 
         public void Save<R>(ISink<R> sk, ushort x = 0) where R : ISink<R>
         {
-            sk.Put(nameof(uid), uid);
-            sk.Put(nameof(url), url);
-            sk.Put(nameof(text), text);
+            sk.Put(nameof(name), name);
+            sk.Put(nameof(@ref), @ref);
+            sk.Put(nameof(hint), hint);
         }
     }
+
 }

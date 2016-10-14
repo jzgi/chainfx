@@ -24,46 +24,27 @@ namespace Greatbone.Sample
             throw new System.NotImplementedException();
         }
 
+        ///
         /// <code>
         /// GET /fame/_id_/icon
         /// </code>
+        ///
+        /// <code>
+        /// POST /fame/_id_/icon
+        /// .....
+        /// </code>
+        ///
         public void icon(WebContext wc, string var)
         {
+            string id = var;
             using (var dc = Service.NewDbContext())
             {
-                if (dc.QueryA("SELECT icon FROM fames WHERE id = @1", p => p.Put(var)))
+                if (wc.IsGet)
                 {
-                    byte[] v = dc.GetBytes();
-                    StaticContent sta = new StaticContent()
-                    {
-                        Buffer = v
-                    };
-                    wc.Respond(200, sta, true, 60000);
-                }
-                else
-                {
-                    wc.StatusCode = 404;
-                }
-            }
-        }
-
-        /// <code>
-        /// GET /fame/_id_/img?idx=_midx_
-        /// </code>
-        public void img(WebContext wc, string var)
-        {
-            int idx = 0;
-            if (wc.Got(nameof(idx), ref idx))
-            {
-                using (var dc = Service.NewDbContext())
-                {
-                    if (dc.QueryA("SELECT m" + idx + " FROM fames WHERE id = @1", p => p.Put(var)))
+                    if (dc.QueryA("SELECT icon FROM fames WHERE id = @1", p => p.Put(id)))
                     {
                         byte[] v = dc.GetBytes();
-                        StaticContent sta = new StaticContent()
-                        {
-                            Buffer = v
-                        };
+                        StaticContent sta = new StaticContent() { Buffer = v };
                         wc.Respond(200, sta, true, 60000);
                     }
                     else
@@ -71,30 +52,73 @@ namespace Greatbone.Sample
                         wc.StatusCode = 404;
                     }
                 }
-            }
-            else
-            {
-                wc.StatusCode = 304;
-            }
-        }
-
-        ///
-        /// POST /fame/_var_/updimg?idx=_pic_idx_
-        public void updimg(WebContext wc, string var)
-        {
-            int idx = 0;
-            if (wc.Got(nameof(idx), ref idx))
-            {
-                ArraySegment<byte> bseg = wc.BytesSeg.Value;
-                using (var dc = Service.NewDbContext())
+                else // POST
                 {
-                    if (dc.Execute("UPDATE fames SET m" + idx + " = @1 WHERE id = @2", p => p.Put(var.ToInt()).Put(bseg)) > 0)
+                    ArraySegment<byte>? bytes = wc.BytesSeg;
+                    if (bytes == null)
+                    {
+                        wc.StatusCode = 301;
+                    }
+                    else if (dc.Execute("UPDATE fames SET icon = @1 WHERE id = @2", p => p.Put(bytes.Value).Put(id)) > 0)
                     {
                         wc.StatusCode = 200;
                     }
                     else
                     {
-                        wc.StatusCode = 500;
+                        wc.StatusCode = 404;
+                    }
+                }
+            }
+        }
+
+        ///
+        /// <code>
+        /// GET /fame/_id_/img?idx=_num_
+        /// </code>
+        ///
+        /// <code>
+        /// POST /fame/_id_/img?idx=_num_
+        /// ......
+        /// </code>
+        ///
+        public void img(WebContext wc, string var)
+        {
+            int idx = 0;
+            if (wc.Got(nameof(idx), ref idx))
+            {
+                if (wc.IsGet)
+                {
+                    using (var dc = Service.NewDbContext())
+                    {
+                        if (dc.QueryA("SELECT m" + idx + " FROM fames WHERE id = @1", p => p.Put(var)))
+                        {
+                            byte[] v = dc.GetBytes();
+                            StaticContent sta = new StaticContent() { Buffer = v };
+                            wc.Respond(200, sta, true, 60000);
+                        }
+                        else
+                        {
+                            wc.StatusCode = 404;
+                        }
+                    }
+                }
+                else
+                {
+                    using (var dc = Service.NewDbContext())
+                    {
+                        ArraySegment<byte>? bytes = wc.BytesSeg;
+                        if (bytes == null)
+                        {
+                            wc.StatusCode = 301; ;
+                        }
+                        else if (dc.Execute("UPDATE posts SET m" + idx + " = @1 WHERE id = @2", p => p.Put(bytes.Value).Put(var)) > 0)
+                        {
+                            wc.StatusCode = 200;
+                        }
+                        else
+                        {
+                            wc.StatusCode = 404;
+                        }
                     }
                 }
             }
@@ -102,9 +126,7 @@ namespace Greatbone.Sample
             {
                 wc.StatusCode = 304;
             }
-
         }
-
 
     }
 }
