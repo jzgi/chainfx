@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Data;
 using Npgsql;
 
@@ -185,6 +186,27 @@ namespace Greatbone.Core
         // RESULTSET
         //
 
+        public T ToObj<T>(ushort x = 0) where T : IPersist, new()
+        {
+            T obj = new T();
+            obj.Load(this, x);
+            return obj;
+        }
+
+
+        public T[] ToArr<T>(ushort x = 0) where T : IPersist, new()
+        {
+            List<T> lst = new List<T>(64);
+            while (NextRow())
+            {
+                T obj = new T();
+                obj.Load(this, x);
+                lst.Add(obj);
+            }
+            return lst.ToArray();
+        }
+
+
         // current column ordinal
         int ordinal;
 
@@ -332,7 +354,7 @@ namespace Greatbone.Core
             return false;
         }
 
-        public bool Got<T>(string name, ref T v, ushort x = 0xffff) where T : IPersist, new()
+        public bool Got<F>(string name, ref F v, ushort x = 0) where F : IPersist, new()
         {
             int ord = name == null ? ordinal++ : reader.GetOrdinal(name);
             if (!reader.IsDBNull(ord))
@@ -340,7 +362,7 @@ namespace Greatbone.Core
                 string str = reader.GetString(ord);
                 JTextParse parse = new JTextParse(str);
                 JObj jo = (JObj)parse.Parse();
-                v = new T();
+                v = new F();
                 v.Load(jo, x);
                 return true;
             }
@@ -417,7 +439,7 @@ namespace Greatbone.Core
             return false;
         }
 
-        public bool Got<T>(string name, ref T[] v, ushort x = 0xffff) where T : IPersist, new()
+        public bool Got<F>(string name, ref F[] v, ushort x = 0) where F : IPersist, new()
         {
             int ord = name == null ? ordinal++ : reader.GetOrdinal(name);
             if (!reader.IsDBNull(ord))
@@ -426,11 +448,11 @@ namespace Greatbone.Core
                 JTextParse parse = new JTextParse(str);
                 JArr ja = (JArr)parse.Parse();
                 int len = ja.Count;
-                v = new T[len];
+                v = new F[len];
                 for (int i = 0; i < len; i++)
                 {
                     JObj jo = (JObj)ja[i];
-                    T obj = new T();
+                    F obj = new F();
                     obj.Load(jo, x);
                     v[i] = obj;
                 }

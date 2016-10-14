@@ -35,7 +35,7 @@ namespace Greatbone.Sample
 
         public string Name => name;
 
-        public void Load(ISource sc, ushort x = 0xffff)
+        public void Load(ISource sc, ushort x = 0)
         {
             sc.Got(nameof(id), ref id);
             sc.Got(nameof(name), ref name);
@@ -52,7 +52,7 @@ namespace Greatbone.Sample
             }
         }
 
-        public void Save<R>(ISink<R> sk, ushort x = 0xffff) where R : ISink<R>
+        public void Save<R>(ISink<R> sk, ushort x = 0) where R : ISink<R>
         {
             sk.Put(nameof(id), id);
             sk.Put(nameof(name), name);
@@ -83,12 +83,12 @@ namespace Greatbone.Sample
         {
             internal string id;
 
-            public void Load(ISource sc, ushort x = 0xffff)
+            public void Load(ISource sc, ushort x = 0)
             {
                 throw new NotImplementedException();
             }
 
-            public void Save<R>(ISink<R> sk, ushort x = 0xffff) where R : ISink<R>
+            public void Save<R>(ISink<R> sk, ushort x = 0) where R : ISink<R>
             {
                 throw new NotImplementedException();
             }
@@ -98,12 +98,12 @@ namespace Greatbone.Sample
         {
             internal int id;
 
-            public void Load(ISource sc, ushort x = 0xffff)
+            public void Load(ISource sc, ushort x = 0)
             {
                 throw new NotImplementedException();
             }
 
-            public void Save<R>(ISink<R> sk, ushort x = 0xffff) where R : ISink<R>
+            public void Save<R>(ISink<R> sk, ushort x = 0) where R : ISink<R>
             {
                 throw new NotImplementedException();
             }

@@ -13,6 +13,9 @@ namespace Greatbone.Sample
             SetVarHub<NoticeVarHub>(false);
         }
 
+        /// <code>
+        /// GET /notice/top?[page=_num_]
+        /// </code>
         public void top(WebContext wc)
         {
             int page = 0;
@@ -21,8 +24,8 @@ namespace Greatbone.Sample
             {
                 if (dc.Query("SELECT * FROM notices WHERE duedate <= current_date ORDER BY id LIMIT 20 OFFSET @1", p => p.Put(page * 20)))
                 {
-                    Notice[] nots = dc.GetArr<Notice>();
-                    wc.Respond(200, nots);
+                    Notice[] arr = dc.ToArr<Notice>();
+                    wc.Respond(200, arr);
                 }
                 else
                 {
@@ -32,31 +35,37 @@ namespace Greatbone.Sample
         }
 
 
-        /// <summary>
-        /// Gets the specified top page from the notices table. 
-        /// </summary>
+        ///
+        /// <code>
+        /// POST /post/new
+        ///
+        /// {
+        ///     "commentable" : true 
+        ///     "text" : "text content" 
+        /// }
+        /// </code>
+        ///
+
         public void @new(WebContext wc)
         {
-            JObj jo = wc.JObj;
-            int age = jo[nameof(age)];
+            IToken tok = wc.Token;
 
-
-            User obj = wc.Obj<User>();
-
-
-            int page = 0;
-            wc.Got("page", ref page);
+            Notice obj = wc.Obj<Notice>();
+            obj.authorid = tok.Key;
+            obj.author = tok.Name;
 
             using (var dc = Service.NewDbContext())
             {
-                if (dc.Query("INSERT INTO notices () VALUES ()",
-                    p => { p.Put(page * 20); p.Put(page * 20); }))
+                string sql = DbSql.INSERT_INTO("notices", obj).RETURNING("id").ToString();
+                object id = dc.Scalar(sql, p => obj.Save(p));
+                if (id != null)
                 {
-
+                    wc.StatusCode = 201;
+                    wc.SetLocation(id.ToString());
                 }
                 else
                 {
-                    wc.Response.StatusCode = 204;
+                    wc.StatusCode = 204;
                 }
             }
         }

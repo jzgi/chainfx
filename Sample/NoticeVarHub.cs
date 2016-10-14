@@ -14,7 +14,7 @@ namespace Greatbone.Sample
             {
                 if (dc.QueryA("SELECT * FROM notices WHERE id = @1", p => p.Put(id)))
                 {
-                    Notice obj = dc.GetObj<Notice>();
+                    Notice obj = dc.ToObj<Notice>();
                     wc.Respond(200, obj);
                 }
                 else
@@ -47,7 +47,7 @@ namespace Greatbone.Sample
         public void apply(WebContext wc, string var)
         {
             string userid = wc.Token.Key;
-            Apply ask = new Apply()
+            App ask = new App()
             {
                 userid = userid
             };
@@ -56,7 +56,7 @@ namespace Greatbone.Sample
             {
                 if (dc.QueryA("SELECT asks FROM notices WHERE id = @1", p => p.Put(userid)))
                 {
-                    Apply[] asks = dc.GetArr<Apply>().Add(ask);
+                    App[] asks = dc.GetArr<App>().Add(ask);
 
                     if (dc.Execute("UPDATE notices SET asks = @1", p => p.Put(asks)) > 0)
                     {

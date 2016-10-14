@@ -109,7 +109,7 @@ namespace Greatbone.Core
             }
         }
 
-        public T Obj<T>(ushort x = 0xffff) where T : IPersist, new()
+        public T Obj<T>(ushort x = 0) where T : IPersist, new()
         {
             JObj jo = JObj;
             T obj = new T();
@@ -117,7 +117,7 @@ namespace Greatbone.Core
             return obj;
         }
 
-        public T[] Arr<T>(ushort x = 0xffff) where T : IPersist, new()
+        public T[] Arr<T>(ushort x = 0) where T : IPersist, new()
         {
             JArr ja = JArr;
             T[] arr = new T[ja.Count];
@@ -419,12 +419,12 @@ namespace Greatbone.Core
 
         internal int MaxAge { get; set; }
 
-        public void Respond<T>(int status, T obj, ushort x = 0xffff, bool? pub = false, int maxage = 0) where T : IPersist
+        public void Respond<T>(int status, T obj, ushort x = 0, bool? pub = false, int maxage = 0) where T : IPersist
         {
             Respond(status, jcont => jcont.PutObj(obj, x), pub, maxage);
         }
 
-        public void Respond<T>(int status, T[] arr, ushort x = 0xffff, bool? pub = false, int maxage = 0) where T : IPersist
+        public void Respond<T>(int status, T[] arr, ushort x = 0, bool? pub = false, int maxage = 0) where T : IPersist
         {
             Respond(status, jcont => jcont.PutArr(arr, x), pub, maxage);
         }

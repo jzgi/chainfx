@@ -13,7 +13,8 @@ namespace Greatbone.Core
     {
         readonly ISetting setg;
 
-        readonly string staticPath;
+        // static folder path
+        readonly string path;
 
         // the corresponding file folder contents, can be null
         readonly Roll<StaticContent> statics;
@@ -24,13 +25,13 @@ namespace Greatbone.Core
         // doer declared by this controller
         readonly Roll<WebAction> actions;
 
-        // the default doer
+        // the default action
         readonly WebAction defaction;
 
         // the argument makes state-passing more convenient
         protected WebSub(ISetting setg)
         {
-            // adjust
+            // adjust setting for a service
             if (setg.Service == null)
             {
                 WebService svc = this as WebService;
@@ -42,13 +43,12 @@ namespace Greatbone.Core
 
             this.setg = setg;
 
-            staticPath = setg.Parent == null ? Key : Path.Combine(Parent.staticPath, Key);
-
-            // load static files, if any
-            if (staticPath != null && Directory.Exists(staticPath))
+            // static initialization
+            path = setg.Parent == null ? Key : Path.Combine(Parent.path, Key);
+            if (path != null && Directory.Exists(path))
             {
-                statics = new Roll<StaticContent>(256);
-                foreach (string path in Directory.GetFiles(staticPath))
+                statics = new Roll<StaticContent>(64);
+                foreach (string path in Directory.GetFiles(path))
                 {
                     string file = Path.GetFileName(path);
                     string ext = Path.GetExtension(path);
@@ -73,11 +73,9 @@ namespace Greatbone.Core
                 }
             }
 
+            // action initialization
             actions = new Roll<WebAction>(32);
-
             Type typ = GetType();
-
-            // introspect doer methods
             foreach (MethodInfo mi in typ.GetMethods(BindingFlags.Public | BindingFlags.Instance))
             {
                 ParameterInfo[] pis = mi.GetParameters();

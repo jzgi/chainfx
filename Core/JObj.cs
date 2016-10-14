@@ -211,13 +211,13 @@ namespace Greatbone.Core
             return false;
         }
 
-        public bool Got<T>(string name, ref T v, ushort x = 0xffff) where T : IPersist, new()
+        public bool Got<F>(string name, ref F v, ushort x = 0) where F : IPersist, new()
         {
             JMember pair;
             if (pairs.TryGet(name, out pair))
             {
                 JObj jo = (JObj)pair;
-                v = new T(); v.Load(jo);
+                v = new F(); v.Load(jo);
                 return true;
             }
             return false;
@@ -309,17 +309,17 @@ namespace Greatbone.Core
             return false;
         }
 
-        public bool Got<T>(string name, ref T[] v, ushort x = 0xffff) where T : IPersist, new()
+        public bool Got<F>(string name, ref F[] v, ushort x = 0) where F : IPersist, new()
         {
             JMember pair;
             if (pairs.TryGet(name, out pair))
             {
                 JArr ja = pair;
-                v = new T[ja.Count];
+                v = new F[ja.Count];
                 for (int i = 0; i < ja.Count; i++)
                 {
                     JObj jo = ja[i];
-                    T obj = new T(); obj.Load(jo);
+                    F obj = new F(); obj.Load(jo);
                     v[i] = obj;
                 }
                 return true;

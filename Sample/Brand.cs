@@ -14,11 +14,11 @@ namespace Greatbone.Sample
 
         public string Key => Id;
 
-        public void Load(ISource sc, ushort x = 0xffff)
+        public void Load(ISource sc, ushort x = 0)
         {
         }
 
-        public void Save<R>(ISink<R> sk, ushort x = 0xffff) where R : ISink<R>
+        public void Save<R>(ISink<R> sk, ushort x = 0) where R : ISink<R>
         {
         }
     }

@@ -4,6 +4,14 @@ namespace Greatbone.Core
 {
     public static class ISourceUtility
     {
+
+        public static T ToObj<T>(this ISource sc, ushort x = 0) where T : IPersist, new()
+        {
+            T obj = new T();
+            obj.Load(sc, x);
+            return obj;
+        }
+
         //
         // GOT
         //
@@ -72,7 +80,7 @@ namespace Greatbone.Core
         }
 
 
-        public static bool Got<T>(this ISource sc, ref T v, ushort x = 0xffff) where T : IPersist, new()
+        public static bool Got<T>(this ISource sc, ref T v, ushort x = 0) where T : IPersist, new()
         {
             return sc.Got(null, ref v, x);
         }
@@ -113,7 +121,7 @@ namespace Greatbone.Core
             return sc.Got(null, ref v);
         }
 
-        public static bool Got<T>(this ISource sc, ref T[] v, ushort x = 0xffff) where T : IPersist, new()
+        public static bool Got<T>(this ISource sc, ref T[] v, ushort x = 0) where T : IPersist, new()
         {
             return sc.Got(null, ref v, x);
         }
@@ -200,7 +208,7 @@ namespace Greatbone.Core
             return v;
         }
 
-        public static T GetObj<T>(this ISource sc, ushort x = 0xffff, T def = default(T)) where T : IPersist, new()
+        public static T GetObj<T>(this ISource sc, ushort x = 0, T def = default(T)) where T : IPersist, new()
         {
             T v = def;
             sc.Got(null, ref v, x);
@@ -250,7 +258,7 @@ namespace Greatbone.Core
             return v;
         }
 
-        public static T[] GetArr<T>(this ISource sc, ushort x = 0xffff, T[] def = null) where T : IPersist, new()
+        public static T[] GetArr<T>(this ISource sc, ushort x = 0, T[] def = null) where T : IPersist, new()
         {
             T[] v = def;
             sc.Got(null, ref v, x);

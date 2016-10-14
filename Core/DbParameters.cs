@@ -173,7 +173,7 @@ namespace Greatbone.Core
             return this;
         }
 
-        public DbParameters Put<T>(string name, T v, ushort x = 0xffff) where T : IPersist
+        public DbParameters Put<T>(string name, T v, ushort x = 0) where T : IPersist
         {
             if (name == null)
             {
@@ -185,7 +185,7 @@ namespace Greatbone.Core
             }
             else
             {
-                JTextBuild jtb = new JTextBuild();
+                JText jtb = new JText();
                 jtb.PutObj(v, x);
                 string str = jtb.ToString();
                 coll.Add(new NpgsqlParameter(name, NpgsqlDbType.Jsonb)
@@ -208,7 +208,7 @@ namespace Greatbone.Core
             }
             else
             {
-                JTextBuild jtb = new JTextBuild();
+                JText jtb = new JText();
                 v.Save(jtb);
                 string str = jtb.ToString();
                 coll.Add(new NpgsqlParameter(name, NpgsqlDbType.Jsonb) { Value = str });
@@ -228,7 +228,7 @@ namespace Greatbone.Core
             }
             else
             {
-                JTextBuild jtb = new JTextBuild();
+                JText jtb = new JText();
                 v.Save(jtb);
                 string str = jtb.ToString();
                 coll.Add(new NpgsqlParameter(name, NpgsqlDbType.Jsonb) { Value = str });
@@ -288,7 +288,7 @@ namespace Greatbone.Core
             return this;
         }
 
-        public DbParameters Put<T>(string name, T[] v, ushort x = 0xffff) where T : IPersist
+        public DbParameters Put<T>(string name, T[] v, ushort x = 0) where T : IPersist
         {
             if (name == null)
             {
@@ -300,7 +300,7 @@ namespace Greatbone.Core
             }
             else
             {
-                JTextBuild jsb = new JTextBuild();
+                JText jsb = new JText();
                 jsb.PutArr(v, x);
                 string strv = jsb.ToString();
                 coll.Add(new NpgsqlParameter(Defaults[index++], NpgsqlDbType.Jsonb)
