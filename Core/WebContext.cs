@@ -29,6 +29,10 @@ namespace Greatbone.Core
         // REQUEST
         //
 
+        public bool IsGet => "GET".Equals(Request.Method);
+
+        public bool IsPost => "POST".Equals(Request.Method);
+
         // received body bytes
         ArraySegment<byte>? bytesSeg;
 

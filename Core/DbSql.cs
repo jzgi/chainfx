@@ -22,7 +22,7 @@ namespace Greatbone.Core
         }
 
 
-        public static DbSql SELECT(IPersist obj, string table, ushort x = 0)
+        public static DbSql SELECT_FROM(IPersist obj, string table, ushort x = 0)
         {
             DbSql sql = new DbSql();
 
@@ -62,7 +62,7 @@ namespace Greatbone.Core
         }
 
 
-        public static DbSql UPDATE(string table, IPersist obj, ushort x = 0)
+        public static DbSql UPDATE_SET(string table, IPersist obj, ushort x = 0)
         {
             DbSql sql = new DbSql();
 
@@ -81,11 +81,15 @@ namespace Greatbone.Core
         {
             Add(" WHERE ");
             Add(cond);
+            
             return this;
         }
 
         public DbSql RETURNING(string output)
         {
+            Add(" RETURNING ");
+            Add(output);
+
             return this;
         }
 

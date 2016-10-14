@@ -1,4 +1,5 @@
-﻿using Greatbone.Core;
+﻿using System;
+using Greatbone.Core;
 
 namespace Greatbone.Sample
 {
@@ -19,7 +20,12 @@ namespace Greatbone.Sample
 
         ///
         /// <code>
-        /// GET /post/_id_/img/idx=_pic_idx_
+        /// GET /post/_id_/img/idx=_idx_
+        /// </code>
+        ///
+        /// <code>
+        /// POST /post/_id_/img/idx=_idx_
+        /// ......
         /// </code>
         ///
         public void img(WebContext wc, string var)
@@ -27,20 +33,42 @@ namespace Greatbone.Sample
             int idx = 0;
             if (wc.Got(nameof(idx), ref idx))
             {
-                using (var dc = Service.NewDbContext())
+                if (wc.IsGet)
                 {
-                    if (dc.QueryA("SELECT m" + idx + " FROM fames WHERE id = @1", p => p.Put(var)))
+                    using (var dc = Service.NewDbContext())
                     {
-                        byte[] v = dc.GetBytes();
-                        StaticContent sta = new StaticContent()
+                        if (dc.QueryA("SELECT m" + idx + " FROM fames WHERE id = @1", p => p.Put(var)))
                         {
-                            Buffer = v
-                        };
-                        wc.Respond(200, sta, true, 60000);
+                            byte[] v = dc.GetBytes();
+                            StaticContent sta = new StaticContent()
+                            {
+                                Buffer = v
+                            };
+                            wc.Respond(200, sta, true, 60000);
+                        }
+                        else
+                        {
+                            wc.StatusCode = 404;
+                        }
                     }
-                    else
+                }
+                else
+                {
+                    using (var dc = Service.NewDbContext())
                     {
-                        wc.StatusCode = 404;
+                        ArraySegment<byte>? bytes = wc.BytesSeg;
+                        if (bytes == null)
+                        {
+                            wc.StatusCode = 304; ;
+                        }
+                        else if (dc.Execute("UPDATE posts SET m" + idx + " = @1 WHERE id = @2", p => p.Put(bytes.Value).Put(var)) > 0)
+                        {
+                            wc.StatusCode = 200;
+                        }
+                        else
+                        {
+                            wc.StatusCode = 404;
+                        }
                     }
                 }
             }
@@ -71,18 +99,6 @@ namespace Greatbone.Sample
             }
         }
 
-        /// <code>
-        /// POST /post/_id_/updimg
-        /// </code>
-        ///
-        public void updimg(WebContext wc)
-        {
-            // ArraySegment<byte> bytes = wc.Bytes;
-            // using (var dc = Service.NewDbContext())
-            // {
-            //     dc.Execute("INSERT INTO posts () VALUES ()", p => p.Put(tok.Key).Put(tok.Name));
-            // }
-        }
 
         ///
         /// <code>
