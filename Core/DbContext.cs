@@ -462,19 +462,34 @@ namespace Greatbone.Core
         }
 
 
-        public void PostMsg<T>(string topic, string filter, T @event) where T : IPersist
+        //
+        // MESSAGING
+        //
+
+        public void Publish(string topic, string part, Action<JContent> a)
         {
             // convert message to byte buffer
-            JContent b = new JContent(16 * 1024);
-            @event.Save(b);
+            JContent jcont = new JContent(8 * 1024);
+            a?.Invoke(jcont);
 
             Execute("INSERT INTO mq (topic, filter, message) VALUES (@topic, @filter, @message)", p =>
             {
                 p.Put("@topic", topic);
-                p.Put("@filter", filter);
+                p.Put("@filter", part);
                 // p.Put("@message", new ArraySegment<byte>(b.Buffer, 0, b.Length));
             });
         }
+
+        public void Publish<T>(string topic, string part, T obj) where T : IPersist
+        {
+            Publish(topic, part, jcont => jcont.PutObj(obj));
+        }
+
+        public void Publish<T>(string topic, string part, T[] arr) where T : IPersist
+        {
+            Publish(topic, part, jcont => jcont.PutArr(arr));
+        }
+
 
         public void Dispose()
         {

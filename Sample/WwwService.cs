@@ -22,7 +22,7 @@ namespace Greatbone.Sample
             {
                 if (dc.Query("SELECT * FROM cats WHERE NOT disabled", null))
                 {
-                    Cat[] arr = dc.GetArr<Cat>();
+                    Cat[] arr = dc.GotArr<Cat>();
                     wc.Respond(200, arr);
                 }
                 else

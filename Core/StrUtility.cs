@@ -4,7 +4,7 @@ using System.Security.Cryptography;
 
 namespace Greatbone.Core
 {
-    public static class CharsUtility
+    public static class StrUtility
     {
 
         static readonly string[] Days = { "Mon", "Tue", "Wed", "Thu", "Fri", "Sat", "Sun" };

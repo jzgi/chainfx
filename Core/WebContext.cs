@@ -482,23 +482,24 @@ namespace Greatbone.Core
         // RPC
         //
 
-        public void Get(string service, string part)
+        public async void CallByGet(string service, string part, string uri)
         {
             // token impersonate
             WebClient cli = Controller.Service.FindClient(service, part);
             if (cli != null)
             {
-
+                object obj = await cli.GetAsync(uri);
             }
         }
 
-        public void Post(string service, string part, object content)
+        public void CallByPost(string service, string part, Action<JContent> a)
         {
             // token impersonate
             WebClient cli = Controller.Service.FindClient(service, part);
             if (cli != null)
             {
-
+                JContent jcon = new JContent(8 * 1024);
+                a?.Invoke(jcon);
             }
         }
 

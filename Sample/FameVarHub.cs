@@ -43,7 +43,7 @@ namespace Greatbone.Sample
                 {
                     if (dc.QueryA("SELECT icon FROM fames WHERE id = @1", p => p.Put(id)))
                     {
-                        byte[] v = dc.GetBytes();
+                        byte[] v = dc.GotBytes();
                         StaticContent sta = new StaticContent() { Buffer = v };
                         wc.Respond(200, sta, true, 60000);
                     }
@@ -92,7 +92,7 @@ namespace Greatbone.Sample
                     {
                         if (dc.QueryA("SELECT m" + idx + " FROM fames WHERE id = @1", p => p.Put(var)))
                         {
-                            byte[] v = dc.GetBytes();
+                            byte[] v = dc.GotBytes();
                             StaticContent sta = new StaticContent() { Buffer = v };
                             wc.Respond(200, sta, true, 60000);
                         }

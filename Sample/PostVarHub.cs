@@ -39,7 +39,7 @@ namespace Greatbone.Sample
                     {
                         if (dc.QueryA("SELECT m" + idx + " FROM fames WHERE id = @1", p => p.Put(var)))
                         {
-                            byte[] v = dc.GetBytes();
+                            byte[] v = dc.GotBytes();
                             StaticContent sta = new StaticContent()
                             {
                                 Buffer = v
@@ -124,7 +124,7 @@ namespace Greatbone.Sample
             {
                 if (dc.QueryA("SELECT comments FROM posts WHERE id = @1", p => p.Put(var)))
                 {
-                    Comment[] arr = dc.GetArr<Comment>().Add(c);
+                    Comment[] arr = dc.GotArr<Comment>().Add(c);
 
                     // add new
 

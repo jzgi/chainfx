@@ -23,7 +23,7 @@ namespace Greatbone.Sample
             {
                 if (dc.Query("SELECT * FROM fames WHERE ORDER BY rating LIMIT 20 OFFSET @1", p => p.Put(page * 20)))
                 {
-                    Fame[] fames = dc.GetArr<Fame>();
+                    Fame[] fames = dc.GotArr<Fame>();
                     // dc.Got(ref fames);
                     wc.Respond(200, fames);
                 }
@@ -46,7 +46,7 @@ namespace Greatbone.Sample
             {
                 if (dc.Query("SELECT * FROM fames WHERE name LIKE '%" + word + "%'", null))
                 {
-                    Fame[] fames = dc.GetArr<Fame>();
+                    Fame[] fames = dc.GotArr<Fame>();
                     // dc.Got(ref fames);
                     wc.Respond(200, fames);
                 }
@@ -69,7 +69,7 @@ namespace Greatbone.Sample
             {
                 if (dc.Query("SELECT * FROM fames WHERE subtype = @1", p => p.Put(grp)))
                 {
-                    Fame[] fames = dc.GetArr<Fame>();
+                    Fame[] fames = dc.GotArr<Fame>();
                     // dc.Got(ref fames);
                     wc.Respond(200, fames, 0, true, 60000);
                 }
