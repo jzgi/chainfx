@@ -3,13 +3,13 @@ namespace Greatbone.Core
 {
     public static class UShortkUtility
     {
-        public const ushort SEL = 0x8000;
+        public const ushort Select = 0x8000;
 
-        public const ushort UPD = 0x4000;
+        public const ushort Update = 0x4000;
 
-        public const ushort INS = 0x2000;
+        public const ushort Insert = 0x2000;
 
-        public const ushort INS_OR_UPD = INS | UPD;
+        public const ushort InsertOrUpdate = Insert | Update;
 
 
         public static bool Has(this ushort x, ushort v)
@@ -19,22 +19,22 @@ namespace Greatbone.Core
 
         public static bool Sel(this ushort x)
         {
-            return (x & SEL) == SEL;
+            return (x & Select) == Select;
         }
 
         public static bool Ins(this ushort x)
         {
-            return (x & INS) == INS;
+            return (x & Insert) == Insert;
         }
 
         public static bool Upd(this ushort x)
         {
-            return (x & UPD) == UPD;
+            return (x & Update) == Update;
         }
 
         public static bool InsOrUpd(this ushort x)
         {
-            return (x & INS_OR_UPD) == INS_OR_UPD;
+            return (x & InsertOrUpdate) == InsertOrUpdate;
         }
 
 

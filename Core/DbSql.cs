@@ -30,7 +30,7 @@ namespace Greatbone.Core
 
             sql.clause = ColumnList;
             sql.ordinal = 1;
-            obj.Save(sql, (ushort)(x | UShortkUtility.SEL));
+            obj.Save(sql, (ushort)(x | UShortkUtility.Select));
 
             sql.Add(" FROM ");
             sql.Add(table);
@@ -48,13 +48,13 @@ namespace Greatbone.Core
 
             sql.clause = ColumnList;
             sql.ordinal = 1;
-            obj.Save(sql, (ushort)(x | UShortkUtility.INS));
+            obj.Save(sql, (ushort)(x | UShortkUtility.Insert));
 
             sql.Add(") VALUES (");
 
             sql.clause = ValueList;
             sql.ordinal = 1;
-            obj.Save(sql, (ushort)(x | UShortkUtility.INS));
+            obj.Save(sql, (ushort)(x | UShortkUtility.Insert));
 
             sql.Add(")");
 
@@ -72,7 +72,7 @@ namespace Greatbone.Core
 
             sql.clause = ColumnList;
             sql.ordinal = 1;
-            obj.Save(sql, (ushort)(x | UShortkUtility.UPD)); // column list
+            obj.Save(sql, (ushort)(x | UShortkUtility.Update)); // column list
 
             return sql;
         }

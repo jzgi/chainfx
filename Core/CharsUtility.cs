@@ -7,15 +7,15 @@ namespace Greatbone.Core
     public static class CharsUtility
     {
 
-        static readonly string[] DAYS = { "Mon", "Tue", "Wed", "Thu", "Fri", "Sat", "Sun" };
+        static readonly string[] Days = { "Mon", "Tue", "Wed", "Thu", "Fri", "Sat", "Sun" };
 
-        static readonly string[] MS = { "Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec" };
+        static readonly string[] Mons = { "Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec" };
 
         public static string ToHttpDate(DateTime dt)
         {
             StringBuilder gmt = new StringBuilder();
             dt = dt.ToUniversalTime();
-            gmt.Append(DAYS[dt.Day]);
+            gmt.Append(Days[dt.Day]);
             gmt.Append(", ");
             return gmt.ToString();
         }
@@ -47,9 +47,9 @@ namespace Greatbone.Core
         static int ParseMonth(string str, int start)
         {
             char a = str[start], b = str[start + 1], c = str[start + 2];
-            for (int i = 0; i < MS.Length; i++)
+            for (int i = 0; i < Mons.Length; i++)
             {
-                string m = MS[i];
+                string m = Mons[i];
                 if (a == m[0] && b == m[1] && c == m[2])
                 {
                     return i + 1;
