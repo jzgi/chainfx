@@ -15,7 +15,7 @@ namespace Greatbone.Core
         {
         }
 
-        public T AddSub<T>(string key, bool authenticate) where T : WebSub
+        public T AddSub<T>(string key, bool authen) where T : WebSub
         {
             if (subs == null)
             {
@@ -28,7 +28,7 @@ namespace Greatbone.Core
             WebTie tie = new WebTie
             {
                 key = key,
-                Authenticate = authenticate,
+                Authen = authen,
                 Parent = this,
                 Service = Service,
                 IsVar = true
@@ -42,7 +42,7 @@ namespace Greatbone.Core
 
         protected internal override void Do(string rsc, WebContext wc, string var)
         {
-            if (Authenticate && wc.Token == null)
+            if (Authen && wc.Token == null)
             {
                 wc.StatusCode = 401;
                 wc.Response.Headers.Add("WWW-Authenticate", new StringValues("Bearer"));

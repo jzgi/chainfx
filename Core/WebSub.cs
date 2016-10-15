@@ -107,7 +107,7 @@ namespace Greatbone.Core
         ///
         public string Key => setg.Key;
 
-        public bool Authenticate => setg.Authenticate;
+        public bool Authen => setg.Authen;
 
         public bool IsVar => setg.IsVar;
 
@@ -128,7 +128,7 @@ namespace Greatbone.Core
 
         protected internal virtual void Do(string rsc, WebContext wc)
         {
-            if (Authenticate && wc.Token == null)
+            if (Authen && wc.Token == null)
             {
                 wc.StatusCode = 401;
                 wc.Response.Headers.Add("WWW-Authenticate", new StringValues("Bearer"));
@@ -151,7 +151,7 @@ namespace Greatbone.Core
 
         protected internal virtual void Do(string rsc, WebContext wc, string var)
         {
-            if (Authenticate && wc.Token == null)
+            if (Authen && wc.Token == null)
             {
                 wc.StatusCode = 401;
                 wc.Response.Headers.Add("WWW-Authenticate", new StringValues("Bearer"));

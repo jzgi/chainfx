@@ -6,7 +6,7 @@
 
         public string Key => key;
 
-        public bool Authenticate { get; internal set; }
+        public bool Authen { get; internal set; }
 
         public bool IsVar { get; internal set; }
 

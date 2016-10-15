@@ -4,7 +4,7 @@
     {
         string Key { get; }
 
-        bool Authenticate { get; }
+        bool Authen { get; }
 
         bool IsVar { get; }
 

@@ -21,7 +21,7 @@ namespace Greatbone.Core
 
         public long LastModified { get; set; }
 
-        public T AddSub<T>(string key, bool authenticate) where T : WebSub
+        public T AddSub<T>(string key, bool authen) where T : WebSub
         {
             if (subs == null)
             {
@@ -34,7 +34,7 @@ namespace Greatbone.Core
             WebTie tie = new WebTie()
             {
                 key = key,
-                Authenticate = authenticate,
+                Authen = authen,
                 Parent = this,
                 Service = Service,
                 IsVar = false
@@ -50,7 +50,7 @@ namespace Greatbone.Core
 
         public WebVarHub VarHub => varhub;
 
-        public T SetVarHub<T>(bool authenticate) where T : WebVarHub
+        public T SetVarHub<T>(bool authen) where T : WebVarHub
         {
             // create instance
             Type typ = typeof(T);
@@ -59,7 +59,7 @@ namespace Greatbone.Core
             WebTie tie = new WebTie
             {
                 key = "var",
-                Authenticate = authenticate,
+                Authen = authen,
                 Parent = this,
                 Service = Service,
                 IsVar = true
@@ -73,7 +73,7 @@ namespace Greatbone.Core
 
         protected internal override void Do(string rsc, WebContext wc)
         {
-            if (Authenticate && wc.Token == null)
+            if (Authen && wc.Token == null)
             {
                 wc.StatusCode = 401;
                 wc.Response.Headers.Add("WWW-Authenticate", new StringValues("Bearer"));
