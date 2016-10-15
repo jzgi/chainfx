@@ -30,7 +30,7 @@ namespace Greatbone.Core
 
         bool Got(string name, ref ArraySegment<byte> v);
 
-        bool Got<T>(string name, ref T v, ushort x = 0) where T : IPersist, new();
+        bool Got<V>(string name, ref V v, ushort x = 0) where V : IPersist, new();
 
         bool Got(string name, ref JObj v);
 
@@ -44,7 +44,7 @@ namespace Greatbone.Core
 
         bool Got(string name, ref string[] v);
 
-        bool Got<T>(string name, ref T[] v, ushort x = 0) where T : IPersist, new();
+        bool Got<V>(string name, ref V[] v, ushort x = 0) where V : IPersist, new();
 
     }
 

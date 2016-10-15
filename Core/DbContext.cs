@@ -354,7 +354,7 @@ namespace Greatbone.Core
             return false;
         }
 
-        public bool Got<F>(string name, ref F v, ushort x = 0) where F : IPersist, new()
+        public bool Got<V>(string name, ref V v, ushort x = 0) where V : IPersist, new()
         {
             int ord = name == null ? ordinal++ : reader.GetOrdinal(name);
             if (!reader.IsDBNull(ord))
@@ -362,7 +362,7 @@ namespace Greatbone.Core
                 string str = reader.GetString(ord);
                 JTextParse parse = new JTextParse(str);
                 JObj jo = (JObj)parse.Parse();
-                v = new F();
+                v = new V();
                 v.Load(jo, x);
                 return true;
             }
@@ -439,7 +439,7 @@ namespace Greatbone.Core
             return false;
         }
 
-        public bool Got<F>(string name, ref F[] v, ushort x = 0) where F : IPersist, new()
+        public bool Got<V>(string name, ref V[] v, ushort x = 0) where V : IPersist, new()
         {
             int ord = name == null ? ordinal++ : reader.GetOrdinal(name);
             if (!reader.IsDBNull(ord))
@@ -448,11 +448,11 @@ namespace Greatbone.Core
                 JTextParse parse = new JTextParse(str);
                 JArr ja = (JArr)parse.Parse();
                 int len = ja.Count;
-                v = new F[len];
+                v = new V[len];
                 for (int i = 0; i < len; i++)
                 {
                     JObj jo = (JObj)ja[i];
-                    F obj = new F();
+                    V obj = new V();
                     obj.Load(jo, x);
                     v[i] = obj;
                 }

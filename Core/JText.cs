@@ -328,7 +328,7 @@ namespace Greatbone.Core
             throw new NotImplementedException();
         }
 
-        public JText Put<F>(string name, F v, ushort x = 0) where F : IPersist
+        public JText Put<V>(string name, V v, ushort x = 0) where V : IPersist
         {
             if (counts[level]++ > 0) Add(',');
 
@@ -538,7 +538,7 @@ namespace Greatbone.Core
             return this;
         }
 
-        public JText Put<F>(string name, F[] v, ushort x = 0) where F : IPersist
+        public JText Put<V>(string name, V[] v, ushort x = 0) where V : IPersist
         {
             if (counts[level]++ > 0) Add(',');
 

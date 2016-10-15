@@ -7,7 +7,7 @@ namespace Greatbone.Core
     /// <summary>
     /// The server-side response cache for a particular service.
     /// </summary>
-    public class ContentCache
+    class ContentCache
     {
         readonly ConcurrentDictionary<string, Item> items;
 
@@ -25,7 +25,7 @@ namespace Greatbone.Core
             cleaner.Start();
         }
 
-        public void Add(string url, int maxage, IContent content)
+        internal void Add(string url, int maxage, IContent content)
         {
             Item item = new Item(maxage, content, Environment.TickCount);
             items.TryAdd(url, item);

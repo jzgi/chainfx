@@ -81,7 +81,7 @@ namespace Greatbone.Core
         {
             Add(" WHERE ");
             Add(cond);
-            
+
             return this;
         }
 
@@ -174,7 +174,7 @@ namespace Greatbone.Core
             return this;
         }
 
-        public DbSql Put<F>(string name, F v, ushort x = 0) where F : IPersist
+        public DbSql Put<V>(string name, V v, ushort x = 0) where V : IPersist
         {
             Build(name);
             return this;
@@ -216,7 +216,7 @@ namespace Greatbone.Core
             return this;
         }
 
-        public DbSql Put<F>(string name, F[] v, ushort x = ushort.MaxValue) where F : IPersist
+        public DbSql Put<V>(string name, V[] v, ushort x = 0) where V : IPersist
         {
             Build(name);
             return this;

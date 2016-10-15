@@ -256,7 +256,7 @@ namespace Greatbone.Core
             throw new NotImplementedException();
         }
 
-        public bool Got<T>(string name, ref T v, ushort x = ushort.MaxValue) where T : IPersist, new()
+        public bool Got<V>(string name, ref V v, ushort x = 0) where V : IPersist, new()
         {
             StringValues values;
             if (Request.Query.TryGetValue(name, out values))
@@ -264,7 +264,7 @@ namespace Greatbone.Core
                 string str = values[0];
                 JTextParse parse = new JTextParse(str);
                 JObj jo = (JObj)parse.Parse();
-                v = new T();
+                v = new V();
                 v.Load(jo, x);
                 return true;
             }
@@ -376,7 +376,7 @@ namespace Greatbone.Core
             return false;
         }
 
-        public bool Got<T>(string name, ref T[] v, ushort x = ushort.MaxValue) where T : IPersist, new()
+        public bool Got<V>(string name, ref V[] v, ushort x = 0) where V : IPersist, new()
         {
             StringValues values;
             if (Request.Query.TryGetValue(name, out values))
@@ -385,11 +385,11 @@ namespace Greatbone.Core
                 JTextParse parse = new JTextParse(str);
                 JArr ja = (JArr)parse.Parse();
                 int len = ja.Count;
-                v = new T[len];
+                v = new V[len];
                 for (int i = 0; i < len; i++)
                 {
                     JObj jo = (JObj)ja[i];
-                    T obj = new T();
+                    V obj = new V();
                     obj.Load(jo, x);
                     v[i] = obj;
                 }

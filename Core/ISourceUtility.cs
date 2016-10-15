@@ -80,7 +80,7 @@ namespace Greatbone.Core
         }
 
 
-        public static bool Got<T>(this ISource sc, ref T v, ushort x = 0) where T : IPersist, new()
+        public static bool Got<V>(this ISource sc, ref V v, ushort x = 0) where V : IPersist, new()
         {
             return sc.Got(null, ref v, x);
         }
@@ -121,7 +121,7 @@ namespace Greatbone.Core
             return sc.Got(null, ref v);
         }
 
-        public static bool Got<T>(this ISource sc, ref T[] v, ushort x = 0) where T : IPersist, new()
+        public static bool Got<V>(this ISource sc, ref V[] v, ushort x = 0) where V : IPersist, new()
         {
             return sc.Got(null, ref v, x);
         }
@@ -208,9 +208,9 @@ namespace Greatbone.Core
             return v;
         }
 
-        public static T GetObj<T>(this ISource sc, ushort x = 0, T def = default(T)) where T : IPersist, new()
+        public static V GetObj<V>(this ISource sc, ushort x = 0, V def = default(V)) where V : IPersist, new()
         {
-            T v = def;
+            V v = def;
             sc.Got(null, ref v, x);
             return v;
         }
@@ -258,9 +258,9 @@ namespace Greatbone.Core
             return v;
         }
 
-        public static T[] GetArr<T>(this ISource sc, ushort x = 0, T[] def = null) where T : IPersist, new()
+        public static V[] GetArr<V>(this ISource sc, ushort x = 0, V[] def = null) where V : IPersist, new()
         {
-            T[] v = def;
+            V[] v = def;
             sc.Got(null, ref v, x);
             return v;
         }
@@ -396,9 +396,9 @@ namespace Greatbone.Core
             return v;
         }
 
-        public static T[] GetArr<T>(this ISource sc, string name, T[] def = null) where T : IPersist, new()
+        public static V[] GetArr<V>(this ISource sc, string name, V[] def = null) where V : IPersist, new()
         {
-            T[] v = def;
+            V[] v = def;
             sc.Got(name, ref v);
             return v;
         }
