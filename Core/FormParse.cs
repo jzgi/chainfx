@@ -6,20 +6,20 @@ namespace Greatbone.Core
 
     public struct FormParse
     {
-        static readonly JException FormatEx = new JException("JSON Format");
+        static readonly JException FormatEx = new JException("form Format");
 
         readonly byte[] buffer;
 
         readonly int count;
 
         // UTF-8 string builder
-        readonly String str;
+        readonly Chars str;
 
         public FormParse(ArraySegment<byte> bytes)
         {
             this.buffer = bytes.Array;
             this.count = bytes.Count;
-            this.str = new String();
+            this.str = new Chars();
         }
 
         public Form Parse()

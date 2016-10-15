@@ -30,7 +30,7 @@ namespace Greatbone.Sample
                 {
                     Token obj = new Token();
                     obj.Load(dc, Token.Out);
-                    string c16 = StringUtility.C16(password);
+                    string c16 = CharsUtility.C16(password);
                     if (c16.Equals(obj.credential))
                     {
                         wc.Respond(200, obj, Token.Out);

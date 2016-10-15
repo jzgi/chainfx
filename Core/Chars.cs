@@ -4,9 +4,9 @@ namespace Greatbone.Core
 {
 
     /// <summary>
-    /// A string builder that supports UTF-8 decoding.
+    /// A character string builder that supports UTF-8 decoding.
     /// </summary>
-    internal class String
+    class Chars
     {
         const int InitialCapacity = 256;
 
@@ -18,7 +18,7 @@ namespace Greatbone.Core
 
         int rest; // number of rest octets
 
-        internal String(int capacity = InitialCapacity)
+        internal Chars(int capacity = InitialCapacity)
         {
             buffer = new char[capacity];
             count = 0;
