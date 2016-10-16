@@ -35,8 +35,6 @@ namespace Greatbone.Core
         readonly KestrelServer server;
 
 
-        public WebConfig Config { get; internal set; }
-
         // response content cache
         ContentCache cache;
 
@@ -57,7 +55,8 @@ namespace Greatbone.Core
 
         protected WebService(WebConfig cfg) : base(cfg)
         {
-            Config = cfg;
+            // adjust configuration
+            cfg.Service = this;
 
             // setup logging support
             factory = new LoggerFactory();
@@ -111,6 +110,8 @@ namespace Greatbone.Core
             PrepareMsgTables();
 
         }
+
+        public WebConfig Config => (WebConfig)arg;
 
 
         internal Roll<MsgQueue> Queues => queues;
@@ -258,6 +259,12 @@ namespace Greatbone.Core
         {
             return this;
         }
+
+
+
+        //
+        // MESSAGING
+        //
 
         public void @yield(WebContext wc)
         {

@@ -4,7 +4,7 @@ namespace Greatbone.Sample
 {
 	public class BrandVarHub : WebVarHub
 	{
-		public BrandVarHub(ISetting setg) : base(setg)
+		public BrandVarHub(WebArg arg) : base(arg)
 		{
 		}
 	}

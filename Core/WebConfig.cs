@@ -16,7 +16,7 @@ namespace Greatbone.Core
     /// }
     /// </example>
     ///
-    public class WebConfig : WebTie, IPersist
+    public class WebConfig : WebArg, IPersist
     {
         // partition
         internal string part;
@@ -42,6 +42,9 @@ namespace Greatbone.Core
         internal JObj opts;
 
         public JObj Opts => opts;
+
+        // ovveride to provide a decent folder service name
+        public override string Folder => key;
 
 
         public void Load(ISource sc, ushort x = 0)

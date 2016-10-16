@@ -16,7 +16,7 @@ namespace Greatbone.Core
         // the attached variable-key multiplexer, if any
         private WebVarHub varhub;
 
-        protected WebModule(ISetting setg) : base(setg)
+        protected WebModule(WebArg arg) : base(arg)
         {
         }
 
@@ -30,19 +30,18 @@ namespace Greatbone.Core
             }
             // create instance by reflection
             Type typ = typeof(T);
-            ConstructorInfo ci = typ.GetConstructor(new[] { typeof(ISetting) });
+            ConstructorInfo ci = typ.GetConstructor(new[] { typeof(WebArg) });
             if (ci == null) { throw new WebException(typ + ": the constructor with WebTie"); }
-            WebTie tie = new WebTie
+            WebArg arg = new WebArg
             {
                 key = key,
-                AuthRequired = authreq,
+                Auth = authreq,
                 Parent = this,
                 IsVar = false,
                 Folder = (Parent == null) ? key : Path.Combine(Parent.Folder, key),
                 Service = Service
             };
-            T sub = (T)ci.Invoke(new object[] { tie });
-
+            T sub = (T)ci.Invoke(new object[] { arg });
             subs.Add(sub);
 
             return sub;
@@ -56,19 +55,18 @@ namespace Greatbone.Core
         {
             // create instance
             Type typ = typeof(T);
-            ConstructorInfo ci = typ.GetConstructor(new[] { typeof(ISetting) });
+            ConstructorInfo ci = typ.GetConstructor(new[] { typeof(WebArg) });
             if (ci == null) { throw new WebException(typ + ": the constructor with WebTie"); }
-            WebTie tie = new WebTie
+            WebArg arg = new WebArg
             {
                 key = "var",
-                AuthRequired = authen,
+                Auth = authen,
                 Parent = this,
                 IsVar = false,
                 Folder = (Parent == null) ? "var" : Path.Combine(Parent.Folder, "var"),
                 Service = Service
             };
-            T hub = (T)ci.Invoke(new object[] { tie });
-
+            T hub = (T)ci.Invoke(new object[] { arg });
             this.varhub = hub;
 
             return hub;

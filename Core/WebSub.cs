@@ -13,7 +13,7 @@ namespace Greatbone.Core
     ///
     public abstract class WebSub : IKeyed
     {
-        readonly ISetting setg;
+        internal readonly WebArg arg;
 
         // file folder contents, can be null
         readonly Roll<StaticContent> statics;
@@ -28,20 +28,9 @@ namespace Greatbone.Core
         readonly WebAction defaction;
 
         // the argument makes state-passing more convenient
-        protected WebSub(ISetting setg)
+        protected WebSub(WebArg arg)
         {
-            // adjust setting for a service
-            if (setg.Service == null)
-            {
-                WebService svc = this as WebService;
-                if (svc == null) { throw new WebException("not a WebService"); }
-                WebConfig cfg = setg as WebConfig;
-                if (cfg == null) { throw new WebException("not a WebConfig"); }
-                cfg.Folder = cfg.Key;
-                cfg.Service = svc;
-            }
-
-            this.setg = setg;
+            this.arg = arg;
 
             // static initialization
             if (Directory.Exists(Folder))
@@ -79,7 +68,7 @@ namespace Greatbone.Core
             {
                 ParameterInfo[] pis = mi.GetParameters();
                 WebAction a = null;
-                if (setg.IsVar)
+                if (arg.IsVar)
                 {
                     if (pis.Length == 2 && pis[0].ParameterType == typeof(WebContext) && pis[1].ParameterType == typeof(string))
                     {
@@ -104,17 +93,17 @@ namespace Greatbone.Core
         ///
         /// The key by which this sub-controller is added to its parent
         ///
-        public string Key => setg.Key;
+        public string Key => arg.Key;
 
-        public bool AuthRequired => setg.AuthRequired;
+        public bool AuthRequired => arg.Auth;
 
-        public bool IsVar => setg.IsVar;
+        public bool IsVar => arg.IsVar;
 
-        public string Folder => setg.Folder;
+        public string Folder => arg.Folder;
 
-        public IParent Parent => setg.Parent;
+        public IParent Parent => arg.Parent;
 
-        public WebService Service => setg.Service;
+        public WebService Service => arg.Service;
 
 
 

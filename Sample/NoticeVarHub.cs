@@ -4,7 +4,7 @@ namespace Greatbone.Sample
 {
     public class NoticeVarHub : WebVarHub
     {
-        public NoticeVarHub(ISetting setg) : base(setg)
+        public NoticeVarHub(WebArg arg) : base(arg)
         {
         }
 

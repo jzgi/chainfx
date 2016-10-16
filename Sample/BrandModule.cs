@@ -8,7 +8,7 @@ namespace Greatbone.Sample
     ///
     public class BrandModule : WebModule, IAdmin
     {
-        public BrandModule(ISetting setg) : base(setg)
+        public BrandModule(WebArg arg) : base(arg)
         {
             SetVarHub<BrandVarHub>(false);
         }

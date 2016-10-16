@@ -11,7 +11,7 @@ namespace Greatbone.Sample
     {
         ConcurrentDictionary<string, string> vcodes = new ConcurrentDictionary<string, string>(Environment.ProcessorCount * 4, 1024);
 
-        public UserModule(ISetting setg) : base(setg)
+        public UserModule(WebArg arg) : base(arg)
         {
             SetVarHub<UserVarHub>(false);
         }

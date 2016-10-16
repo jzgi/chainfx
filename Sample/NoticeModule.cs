@@ -6,7 +6,7 @@ namespace Greatbone.Sample
 
     public class NoticeModule : WebModule, IAdmin
     {
-        public NoticeModule(ISetting setg) : base(setg)
+        public NoticeModule(WebArg arg) : base(arg)
         {
             SetVarHub<NoticeVarHub>(false);
         }

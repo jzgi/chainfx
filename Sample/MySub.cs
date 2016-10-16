@@ -4,7 +4,7 @@ namespace Greatbone.Sample
 {
     public class MySub : WebSub
     {
-        public MySub(ISetting setg) : base(setg)
+        public MySub(WebArg setg) : base(setg)
         {
         }
     }
