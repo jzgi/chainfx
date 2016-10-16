@@ -10,7 +10,7 @@
 
         public bool IsVar { get; internal set; }
 
-        public WebSub Parent { get; internal set; }
+        public IParent Parent { get; internal set; }
 
         public WebService Service { get; internal set; }
     }

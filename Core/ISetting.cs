@@ -8,7 +8,7 @@
 
         bool IsVar { get; }
 
-        WebSub Parent { get; }
+        IParent Parent { get; }
 
         WebService Service { get; }
     }

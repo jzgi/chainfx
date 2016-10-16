@@ -6,7 +6,7 @@ namespace Greatbone.Core
 {
     /// <summary>A variable-key multiplexer ontroller that is attached to a hub controller. </summary>
     ///
-    public abstract class WebVarHub : WebSub
+    public abstract class WebVarHub : WebSub, IParent
     {
         // the added sub controllers
         private Roll<WebSub> subs;
@@ -14,6 +14,8 @@ namespace Greatbone.Core
         protected WebVarHub(ISetting setting) : base(setting)
         {
         }
+
+        public Roll<WebSub> Subs => subs;
 
         public T AddSub<T>(string key, bool authen) where T : WebSub
         {
@@ -40,7 +42,7 @@ namespace Greatbone.Core
             return sub;
         }
 
-        protected internal override void Do(string rsc, WebContext wc, string var)
+        protected internal override void Handle(string rsc, WebContext wc, string var)
         {
             if (Authen && wc.Token == null)
             {
@@ -60,7 +62,7 @@ namespace Greatbone.Core
             {
                 string dir = rsc.Substring(0, slash);
                 WebSub sub;
-                if (subs.TryGet(rsc, out sub)) sub.Do(rsc.Substring(slash), wc);
+                if (subs.TryGet(rsc, out sub)) sub.Handle(rsc.Substring(slash), wc);
             }
         }
     }

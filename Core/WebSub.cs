@@ -7,22 +7,24 @@ using Microsoft.Extensions.Primitives;
 namespace Greatbone.Core
 {
     ///
-    /// Represents a (sub)controller that consists of a group of action methods, and optionally a folder of static files.
+    /// <summary>
+    /// The controlling sub-routines pertaining to a virtual web directory, that handles request for static and dynamic contents.
+    /// </summary>
     ///
     public abstract class WebSub : IKeyed
     {
         readonly ISetting setg;
 
         // static folder path
-        readonly string path;
+        readonly string folder;
 
-        // the corresponding file folder contents, can be null
+        // file folder contents, can be null
         readonly Roll<StaticContent> statics;
 
-        // the default static file in the file folder, can be null
+        // the default static file, can be null
         readonly StaticContent defstatic;
 
-        // doer declared by this controller
+        // declared actions 
         readonly Roll<WebAction> actions;
 
         // the default action
@@ -44,11 +46,11 @@ namespace Greatbone.Core
             this.setg = setg;
 
             // static initialization
-            path = setg.Parent == null ? Key : Path.Combine(Parent.path, Key);
-            if (path != null && Directory.Exists(path))
+            folder = setg.Parent == null ? Key : Path.Combine(Parent.Folder, Key);
+            if (folder != null && Directory.Exists(folder))
             {
                 statics = new Roll<StaticContent>(64);
-                foreach (string path in Directory.GetFiles(path))
+                foreach (string path in Directory.GetFiles(folder))
                 {
                     string file = Path.GetFileName(path);
                     string ext = Path.GetExtension(path);
@@ -115,9 +117,16 @@ namespace Greatbone.Core
         ///
         public WebService Service => setg.Service;
 
-        public WebSub Parent => setg.Parent;
+        public IParent Parent => setg.Parent;
 
-        public WebAction GetAction(System.String method)
+
+        public string Folder => folder;
+
+        public Roll<StaticContent> Statics => statics;
+
+        public Roll<WebAction> Actions => actions;
+
+        public WebAction GetAction(string method)
         {
             if (string.IsNullOrEmpty(method))
             {
@@ -126,7 +135,7 @@ namespace Greatbone.Core
             return actions[method];
         }
 
-        protected internal virtual void Do(string rsc, WebContext wc)
+        protected internal virtual void Handle(string rsc, WebContext wc)
         {
             if (Authen && wc.Token == null)
             {
@@ -149,7 +158,7 @@ namespace Greatbone.Core
             }
         }
 
-        protected internal virtual void Do(string rsc, WebContext wc, string var)
+        protected internal virtual void Handle(string rsc, WebContext wc, string var)
         {
             if (Authen && wc.Token == null)
             {

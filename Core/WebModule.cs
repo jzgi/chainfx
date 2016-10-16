@@ -5,9 +5,9 @@ using Microsoft.Extensions.Primitives;
 namespace Greatbone.Core
 {
     /// <summary>
-    /// A module controller that can contain sub controllers and varhub controller.
+    /// A module web directory controller that can contain sub- and varhub- controllers.
     /// </summary>
-    public abstract class WebModule : WebSub
+    public abstract class WebModule : WebSub, IParent
     {
         // the added sub controllers, if any
         private Roll<WebSub> subs;
@@ -71,7 +71,7 @@ namespace Greatbone.Core
             return hub;
         }
 
-        protected internal override void Do(string rsc, WebContext wc)
+        protected internal override void Handle(string rsc, WebContext wc)
         {
             if (Authen && wc.Token == null)
             {
@@ -83,15 +83,15 @@ namespace Greatbone.Core
             int slash = rsc.IndexOf('/');
             if (slash == -1) // handle it locally
             {
-                base.Do(rsc, wc);
+                base.Handle(rsc, wc);
             }
             else // not local then sub & mux
             {
                 string dir = rsc.Substring(0, slash);
                 WebSub sub;
-                if (subs != null && subs.TryGet(dir, out sub)) sub.Do(rsc.Substring(slash + 1), wc);
+                if (subs != null && subs.TryGet(dir, out sub)) sub.Handle(rsc.Substring(slash + 1), wc);
                 else if (varhub == null) wc.StatusCode = 501; // Not Implemented
-                else varhub.Do(rsc.Substring(slash + 1), wc, dir); // var = dir
+                else varhub.Handle(rsc.Substring(slash + 1), wc, dir); // var = dir
             }
         }
 

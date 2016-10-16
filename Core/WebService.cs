@@ -1,7 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.IO;
-using System.Net;
 using System.Reflection;
 using System.Text;
 using System.Threading;
@@ -14,7 +13,6 @@ using Microsoft.AspNetCore.Http.Features;
 using Microsoft.AspNetCore.Server.Kestrel;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
-using Microsoft.Extensions.Primitives;
 using Npgsql;
 
 namespace Greatbone.Core
@@ -178,36 +176,10 @@ namespace Greatbone.Core
         {
             WebContext wc = (WebContext)context;
 
-            // dispatch among public/private web actions and msg polling
-            ConnectionInfo ci = wc.Connection;
-            string laddr = ci.LocalIpAddress.ToString() + ":" + ci.LocalPort;
-            if (laddr.Equals(Config.intern)) // [PROC] internal traffic
-            {
-                // verify the remote addrees 
-                string raddr = ci.RemoteIpAddress.ToString();
-                if (!Clients.Contains(raddr))
-                {
-                    wc.StatusCode = (int)HttpStatusCode.Forbidden;
-                    return;
-                }
+            Authenticate(wc);
 
-                if (context.Request.Path.Equals("*")) // [PROC] msg polling
-                {
-                    // msg queue
-                    PollMsg(wc);
-                }
-                else // [PROC] private web action
-                {
-                    Do(wc.Request.Path.Value.Substring(1), wc);
-                }
-            }
-            else // [PROC] public web action
-            {
-                Authenticate(wc);
-
-                // handling
-                Do(wc.Request.Path.Value.Substring(1), wc);
-            }
+            // handling
+            Handle(wc.Request.Path.Value.Substring(1), wc);
 
             if (wc.Content != null)
             {
@@ -241,17 +213,6 @@ namespace Greatbone.Core
 
             Info("started");
         }
-
-
-
-        /// <summary>
-        /// Poll message from database and cache 
-        /// </summary>
-        /// <param name="wc"></param>
-        internal void PollMsg(WebContext wc)
-        {
-        }
-
 
         internal void Schedule()
         {
@@ -298,18 +259,30 @@ namespace Greatbone.Core
             return this;
         }
 
-        public void @catch(WebContext wc)
+        public void @yield(WebContext wc)
         {
-            // load
-            string addr = wc.Connection.RemoteIpAddress.ToString();
+            // dispatch among public/private web actions and msg polling
+            ConnectionInfo ci = wc.Connection;
+            string laddr = ci.LocalIpAddress.ToString() + ":" + ci.LocalPort;
+            if (laddr.Equals(Config.intern)) // must target the internal address
+            {
+                wc.StatusCode = 403; // forbidden
+                return;
+            }
+            // the peer ip must be enlisted 
+            string raddr = ci.RemoteIpAddress.ToString();
+            if (!Clients.Contains(raddr))
+            {
+                wc.StatusCode = 403; // forbidden
+                return;
+            }
 
-            MsgQueue loader = queues[addr];
+            MsgQueue loader = queues[raddr];
             loader.Get();
             MsgMessage msg;
             // headers
 
             // wc.Respond(200, msg);
-
         }
 
         public void Dispose()
