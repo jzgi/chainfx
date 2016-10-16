@@ -4,11 +4,13 @@
     {
         string Key { get; }
 
-        bool Authen { get; }
+        bool AuthRequired { get; }
 
         bool IsVar { get; }
 
         IParent Parent { get; }
+
+        string Folder { get; }
 
         WebService Service { get; }
     }

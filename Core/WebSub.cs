@@ -15,9 +15,6 @@ namespace Greatbone.Core
     {
         readonly ISetting setg;
 
-        // static folder path
-        readonly string folder;
-
         // file folder contents, can be null
         readonly Roll<StaticContent> statics;
 
@@ -40,17 +37,17 @@ namespace Greatbone.Core
                 if (svc == null) { throw new WebException("not a WebService"); }
                 WebConfig cfg = setg as WebConfig;
                 if (cfg == null) { throw new WebException("not a WebConfig"); }
+                cfg.Folder = cfg.Key;
                 cfg.Service = svc;
             }
 
             this.setg = setg;
 
             // static initialization
-            folder = setg.Parent == null ? Key : Path.Combine(Parent.Folder, Key);
-            if (folder != null && Directory.Exists(folder))
+            if (Directory.Exists(Folder))
             {
                 statics = new Roll<StaticContent>(64);
-                foreach (string path in Directory.GetFiles(folder))
+                foreach (string path in Directory.GetFiles(Folder))
                 {
                     string file = Path.GetFileName(path);
                     string ext = Path.GetExtension(path);
@@ -109,18 +106,17 @@ namespace Greatbone.Core
         ///
         public string Key => setg.Key;
 
-        public bool Authen => setg.Authen;
+        public bool AuthRequired => setg.AuthRequired;
 
         public bool IsVar => setg.IsVar;
 
-        /// <summary>The service that this controller resides in.</summary>
-        ///
-        public WebService Service => setg.Service;
+        public string Folder => setg.Folder;
 
         public IParent Parent => setg.Parent;
 
+        public WebService Service => setg.Service;
 
-        public string Folder => folder;
+
 
         public Roll<StaticContent> Statics => statics;
 
@@ -137,7 +133,7 @@ namespace Greatbone.Core
 
         protected internal virtual void Handle(string rsc, WebContext wc)
         {
-            if (Authen && wc.Token == null)
+            if (AuthRequired && wc.Token == null)
             {
                 wc.StatusCode = 401;
                 wc.Response.Headers.Add("WWW-Authenticate", new StringValues("Bearer"));
@@ -160,7 +156,7 @@ namespace Greatbone.Core
 
         protected internal virtual void Handle(string rsc, WebContext wc, string var)
         {
-            if (Authen && wc.Token == null)
+            if (AuthRequired && wc.Token == null)
             {
                 wc.StatusCode = 401;
                 wc.Response.Headers.Add("WWW-Authenticate", new StringValues("Bearer"));

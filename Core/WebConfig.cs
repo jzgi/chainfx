@@ -43,6 +43,7 @@ namespace Greatbone.Core
 
         public JObj Opts => opts;
 
+
         public void Load(ISource sc, ushort x = 0)
         {
             sc.Got(nameof(key), ref key);

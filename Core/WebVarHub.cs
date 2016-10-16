@@ -1,4 +1,5 @@
 ﻿using System;
+using System.IO;
 using System.Reflection;
 using Microsoft.Extensions.Primitives;
 
@@ -30,10 +31,11 @@ namespace Greatbone.Core
             WebTie tie = new WebTie
             {
                 key = key,
-                Authen = authen,
+                AuthRequired = authen,
                 Parent = this,
-                Service = Service,
-                IsVar = true
+                IsVar = false,
+                Folder = (Parent == null) ? key : Path.Combine(Parent.Folder, key),
+                Service = Service
             };
             T sub = (T)ci.Invoke(new object[] { tie });
             // call the initialization and add
@@ -44,7 +46,7 @@ namespace Greatbone.Core
 
         protected internal override void Handle(string rsc, WebContext wc, string var)
         {
-            if (Authen && wc.Token == null)
+            if (AuthRequired && wc.Token == null)
             {
                 wc.StatusCode = 401;
                 wc.Response.Headers.Add("WWW-Authenticate", new StringValues("Bearer"));

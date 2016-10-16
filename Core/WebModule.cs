@@ -1,4 +1,5 @@
 ﻿using System;
+using System.IO;
 using System.Reflection;
 using Microsoft.Extensions.Primitives;
 
@@ -21,7 +22,7 @@ namespace Greatbone.Core
 
         public long LastModified { get; set; }
 
-        public T AddSub<T>(string key, bool authen) where T : WebSub
+        public T AddSub<T>(string key, bool authreq) where T : WebSub
         {
             if (subs == null)
             {
@@ -31,13 +32,14 @@ namespace Greatbone.Core
             Type typ = typeof(T);
             ConstructorInfo ci = typ.GetConstructor(new[] { typeof(ISetting) });
             if (ci == null) { throw new WebException(typ + ": the constructor with WebTie"); }
-            WebTie tie = new WebTie()
+            WebTie tie = new WebTie
             {
                 key = key,
-                Authen = authen,
+                AuthRequired = authreq,
                 Parent = this,
-                Service = Service,
-                IsVar = false
+                IsVar = false,
+                Folder = (Parent == null) ? key : Path.Combine(Parent.Folder, key),
+                Service = Service
             };
             T sub = (T)ci.Invoke(new object[] { tie });
 
@@ -59,10 +61,11 @@ namespace Greatbone.Core
             WebTie tie = new WebTie
             {
                 key = "var",
-                Authen = authen,
+                AuthRequired = authen,
                 Parent = this,
-                Service = Service,
-                IsVar = true
+                IsVar = false,
+                Folder = (Parent == null) ? "var" : Path.Combine(Parent.Folder, "var"),
+                Service = Service
             };
             T hub = (T)ci.Invoke(new object[] { tie });
 
@@ -73,7 +76,7 @@ namespace Greatbone.Core
 
         protected internal override void Handle(string rsc, WebContext wc)
         {
-            if (Authen && wc.Token == null)
+            if (AuthRequired && wc.Token == null)
             {
                 wc.StatusCode = 401;
                 wc.Response.Headers.Add("WWW-Authenticate", new StringValues("Bearer"));
