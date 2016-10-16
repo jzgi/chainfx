@@ -196,7 +196,6 @@ namespace Greatbone.Core
         protected abstract bool Authenticate(WebContext wc);
 
 
-
         public void Start()
         {
             // start the server

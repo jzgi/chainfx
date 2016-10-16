@@ -4,6 +4,7 @@ using System.Reflection;
 
 namespace Greatbone.Core
 {
+
     /// <summary>
     /// The descriptor of an action method.
     /// </summary>
@@ -15,7 +16,7 @@ namespace Greatbone.Core
 
         readonly Action<WebContext, string> doerVar;
 
-        private IEnumerable<IfAttribute> ifs;
+        readonly IfAttribute[] ifs;
 
         public string Key { get; }
 
@@ -34,16 +35,29 @@ namespace Greatbone.Core
             {
                 doerVar = (Action<WebContext, string>)mi.CreateDelegate(typeof(Action<WebContext, string>), controller);
             }
-            ifs = mi.GetCustomAttributes<IfAttribute>();
+
+            // if attributes
+            List<IfAttribute> lst = null;
+            foreach (var @if in mi.GetCustomAttributes<IfAttribute>())
+            {
+                if (lst == null) lst = new List<IfAttribute>(8);
+                lst.Add(@if);
+            }
+            ifs = lst?.ToArray();
+
         }
 
         internal bool Do(WebContext wc)
         {
-            // check
-            foreach (var @if in ifs)
+            // check ifs
+            if (ifs != null)
             {
-                if (!@if.Check(wc)) return false;
+                for (int i = 0; i < ifs.Length; i++)
+                {
+                    if (!ifs[i].Check(wc)) return false;
+                }
             }
+
             // invoke the action method
             doer(wc);
             return true;
@@ -51,11 +65,15 @@ namespace Greatbone.Core
 
         internal bool Do(WebContext wc, string var)
         {
-            // check
-            foreach (var @if in ifs)
+            // check ifs
+            if (ifs != null)
             {
-                if (!@if.Check(wc, var)) return false;
+                for (int i = 0; i < ifs.Length; i++)
+                {
+                    if (!ifs[i].Check(wc, var)) return false;
+                }
             }
+
             // invoke the action method
             doerVar(wc, var);
             return true;

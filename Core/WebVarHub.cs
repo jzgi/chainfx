@@ -1,7 +1,6 @@
 ﻿using System;
 using System.IO;
 using System.Reflection;
-using Microsoft.Extensions.Primitives;
 
 namespace Greatbone.Core
 {
@@ -18,7 +17,7 @@ namespace Greatbone.Core
 
         public Roll<WebSub> Subs => subs;
 
-        public T AddSub<T>(string key, bool authen) where T : WebSub
+        public T AddSub<T>(string key, bool auth) where T : WebSub
         {
             if (subs == null)
             {
@@ -31,9 +30,9 @@ namespace Greatbone.Core
             WebArg arg = new WebArg
             {
                 key = key,
-                Auth = authen,
+                Auth = auth,
                 Parent = this,
-                IsVar = false,
+                IsVar = true,
                 Folder = (Parent == null) ? key : Path.Combine(Parent.Folder, key),
                 Service = Service
             };
@@ -44,27 +43,23 @@ namespace Greatbone.Core
             return sub;
         }
 
-        protected internal override void Handle(string rsc, WebContext wc, string var)
+        internal override void Handle(string rsc, WebContext wc, string var)
         {
-            if (AuthRequired && wc.Token == null)
-            {
-                wc.StatusCode = 401;
-                wc.Response.Headers.Add("WWW-Authenticate", new StringValues("Bearer"));
-                return;
-            }
+            if (!CheckAuth(wc)) return;
 
             int slash = rsc.IndexOf('/');
             if (slash == -1) // handle it locally
             {
-                WebAction a = GetAction(rsc);
-                if (a != null) if (!a.Do(wc, var)) wc.StatusCode = 403; // forbidden
-                    else wc.StatusCode = 404;
+                Perform(rsc, wc, var);
             }
             else // not local then sub
             {
                 string dir = rsc.Substring(0, slash);
                 WebSub sub;
-                if (subs.TryGet(rsc, out sub)) sub.Handle(rsc.Substring(slash), wc);
+                if (subs != null && subs.TryGet(rsc, out sub))
+                {
+                    sub.Handle(rsc.Substring(slash), wc, var);
+                }
             }
         }
     }

@@ -1,7 +1,6 @@
 ﻿using System;
 using System.IO;
 using System.Reflection;
-using Microsoft.Extensions.Primitives;
 
 namespace Greatbone.Core
 {
@@ -19,8 +18,6 @@ namespace Greatbone.Core
         protected WebModule(WebArg arg) : base(arg)
         {
         }
-
-        public long LastModified { get; set; }
 
         public T AddSub<T>(string key, bool authreq) where T : WebSub
         {
@@ -51,7 +48,7 @@ namespace Greatbone.Core
 
         public WebVarHub VarHub => varhub;
 
-        public T SetVarHub<T>(bool authen) where T : WebVarHub
+        public T SetVarHub<T>(bool auth) where T : WebVarHub
         {
             // create instance
             Type typ = typeof(T);
@@ -60,9 +57,9 @@ namespace Greatbone.Core
             WebArg arg = new WebArg
             {
                 key = "var",
-                Auth = authen,
+                Auth = auth,
                 Parent = this,
-                IsVar = false,
+                IsVar = true,
                 Folder = (Parent == null) ? "var" : Path.Combine(Parent.Folder, "var"),
                 Service = Service
             };
@@ -72,27 +69,31 @@ namespace Greatbone.Core
             return hub;
         }
 
-        protected internal override void Handle(string rsc, WebContext wc)
+        internal override void Handle(string rsc, WebContext wc)
         {
-            if (AuthRequired && wc.Token == null)
-            {
-                wc.StatusCode = 401;
-                wc.Response.Headers.Add("WWW-Authenticate", new StringValues("Bearer"));
-                return;
-            }
+            if (!CheckAuth(wc)) return;
 
             int slash = rsc.IndexOf('/');
             if (slash == -1) // handle it locally
             {
-                base.Handle(rsc, wc);
+                Perform(rsc, wc);
             }
             else // not local then sub & mux
             {
                 string dir = rsc.Substring(0, slash);
                 WebSub sub;
-                if (subs != null && subs.TryGet(dir, out sub)) sub.Handle(rsc.Substring(slash + 1), wc);
-                else if (varhub == null) wc.StatusCode = 501; // Not Implemented
-                else varhub.Handle(rsc.Substring(slash + 1), wc, dir); // var = dir
+                if (subs != null && subs.TryGet(dir, out sub)) // seek sub first
+                {
+                    sub.Handle(rsc.Substring(slash + 1), wc);
+                }
+                else if (varhub == null)
+                {
+                    wc.StatusCode = 404; // not found
+                }
+                else
+                {
+                    varhub.Handle(rsc.Substring(slash + 1), wc, dir); // var = dir
+                }
             }
         }
 

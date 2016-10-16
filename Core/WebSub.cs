@@ -95,7 +95,7 @@ namespace Greatbone.Core
         ///
         public string Key => arg.Key;
 
-        public bool AuthRequired => arg.Auth;
+        public bool Auth => arg.Auth;
 
         public bool IsVar => arg.IsVar;
 
@@ -120,49 +120,71 @@ namespace Greatbone.Core
             return actions[method];
         }
 
-        protected internal virtual void Handle(string rsc, WebContext wc)
+        internal bool CheckAuth(WebContext wc)
         {
-            if (AuthRequired && wc.Token == null)
+            if (Auth && wc.Token == null)
             {
-                wc.StatusCode = 401;
+                wc.StatusCode = 401; // unauthorized
                 wc.Response.Headers.Add("WWW-Authenticate", new StringValues("Bearer"));
-                return;
+                return false;
             }
+            return true;
+        }
 
+        internal virtual void Handle(string rsc, WebContext wc)
+        {
+            if (!CheckAuth(wc)) return;
+
+            Perform(rsc, wc);
+        }
+        internal virtual void Handle(string rsc, WebContext wc, string var)
+        {
+            if (!CheckAuth(wc)) return;
+
+            Perform(rsc, wc, var);
+        }
+
+        protected internal virtual void Perform(string rsc, WebContext wc)
+        {
             if (rsc.IndexOf('.') != -1) // static
             {
                 StaticContent sta;
-                if (statics != null && statics.TryGet(rsc, out sta)) wc.Content = sta;
-                else wc.StatusCode = 404;
+                if (statics != null && statics.TryGet(rsc, out sta))
+                {
+                    wc.Content = sta;
+                }
+                else { wc.StatusCode = 404; }
             }
             else // dynamic
             {
                 WebAction a = string.IsNullOrEmpty(rsc) ? defaction : GetAction(rsc);
-                if (a == null) wc.StatusCode = 404;
-                else if (!a.Do(wc)) wc.StatusCode = 403; // forbidden 
+                if (a == null) { wc.StatusCode = 404; }
+                else if (!a.Do(wc))
+                {
+                    wc.StatusCode = 403; // forbidden 
+                }
             }
         }
 
-        protected internal virtual void Handle(string rsc, WebContext wc, string var)
+        protected internal virtual void Perform(string rsc, WebContext wc, string var)
         {
-            if (AuthRequired && wc.Token == null)
-            {
-                wc.StatusCode = 401;
-                wc.Response.Headers.Add("WWW-Authenticate", new StringValues("Bearer"));
-                return;
-            }
-
             if (rsc.IndexOf('.') != -1) // static
             {
                 StaticContent sta;
-                if (statics != null && statics.TryGet(rsc, out sta)) wc.Content = sta;
-                else wc.StatusCode = 404;
+                if (statics != null && statics.TryGet(rsc, out sta))
+                {
+                    wc.Content = sta;
+                }
+                else { wc.StatusCode = 404; }
             }
             else // dynamic
             {
                 WebAction a = string.IsNullOrEmpty(rsc) ? defaction : GetAction(rsc);
                 if (a == null) wc.StatusCode = 404;
-                else if (!a.Do(wc, var)) wc.StatusCode = 403; // forbidden
+                else if (!a.Do(wc, var))
+                {
+                    wc.StatusCode = 403; // forbidden
+                }
             }
         }
 
