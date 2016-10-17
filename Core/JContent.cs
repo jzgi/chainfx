@@ -80,45 +80,29 @@ namespace Greatbone.Core
                 for (int i = 0; i < v.Length; i++)
                 {
                     char c = v[i];
-                    if (c < 0x80)
+                    if (c == '\"')
                     {
-                        if (c == '\"')
-                        {
-                            Add('\\'); Add('"');
-                        }
-                        else if (c == '\\')
-                        {
-                            Add('\\'); Add('\\');
-                        }
-                        else if (c == '\n')
-                        {
-                            Add('\\'); Add('n');
-                        }
-                        else if (c == '\r')
-                        {
-                            Add('\\'); Add('r');
-                        }
-                        else if (c == '\t')
-                        {
-                            Add('\\'); Add('t');
-                        }
-                        else
-                        {
-                            Add(c);
-                        }
+                        Add('\\'); Add('"');
                     }
-                    else if (c < 0x800)
+                    else if (c == '\\')
                     {
-                        // 2 char, 11 bits
-                        Add((0xc0 | (c >> 6)));
-                        Add((0x80 | (c & 0x3f)));
+                        Add('\\'); Add('\\');
+                    }
+                    else if (c == '\n')
+                    {
+                        Add('\\'); Add('n');
+                    }
+                    else if (c == '\r')
+                    {
+                        Add('\\'); Add('r');
+                    }
+                    else if (c == '\t')
+                    {
+                        Add('\\'); Add('t');
                     }
                     else
                     {
-                        // 3 char, 16 bits
-                        Add((0xe0 | ((c >> 12))));
-                        Add((0x80 | ((c >> 6) & 0x3f)));
-                        Add((0x80 | (c & 0x3f)));
+                        Add(c);
                     }
                 }
             }
