@@ -34,7 +34,9 @@ namespace Greatbone.Sample
         }
 
         ///
+        /// <code> 
         /// GET /fame/find?word=_name_
+        /// </code>
         ///
         public void find(WebContext wc)
         {
@@ -45,32 +47,32 @@ namespace Greatbone.Sample
             {
                 if (dc.Query("SELECT * FROM fames WHERE name LIKE '%" + word + "%'", null))
                 {
-                    Fame[] fames = dc.GotArr<Fame>();
-                    // dc.Got(ref fames);
+                    Fame[] fames = dc.ToArr<Fame>();
                     wc.Respond(200, fames);
                 }
                 else
                 {
-                    wc.Response.StatusCode = 204;
+                    wc.StatusCode = 204;
                 }
             }
         }
 
         ///
-        /// GET /fame/findbygrp?[grp=_grp_name_]
+        /// <code> 
+        /// GET /fame/findby?[by=_career_name_]
+        /// </code>
         ///
-        public void findbygrp(WebContext wc)
+        public void findby(WebContext wc)
         {
-            string grp = null;
-            wc.Got(nameof(grp), ref grp);
+            string by = null;
+            wc.Got(nameof(by), ref by);
 
             using (var dc = Service.NewDbContext())
             {
-                if (dc.Query("SELECT * FROM fames WHERE subtype = @1", p => p.Put(grp)))
+                if (dc.Query("SELECT * FROM fames WHERE careers @> @1", p => p.Put(by)))
                 {
-                    Fame[] fames = dc.GotArr<Fame>();
-                    // dc.Got(ref fames);
-                    wc.Respond(200, fames, 0, true, 60000);
+                    Fame[] fames = dc.ToArr<Fame>();
+                    wc.Respond(200, fames);
                 }
                 else
                 {
@@ -93,7 +95,7 @@ namespace Greatbone.Sample
 
             using (var dc = Service.NewDbContext())
             {
-                if (dc.Query("SELECT * FROM fames WHERE ORDER BY rating LIMIT 20 OFFSET @1", p => p.Put(name)))
+                if (dc.Query("SELECT * FROM fames ORDER BY rating LIMIT 20 OFFSET @1", p => p.Put(name)))
                 {
                 }
                 else

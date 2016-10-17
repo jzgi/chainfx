@@ -12,11 +12,6 @@ namespace Greatbone.Core
             throw new NotImplementedException();
         }
 
-        public bool Got(string name, ref char v)
-        {
-            throw new NotImplementedException();
-        }
-
         public bool Got(string name, ref short v)
         {
             throw new NotImplementedException();

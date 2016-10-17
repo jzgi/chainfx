@@ -100,17 +100,6 @@ namespace Greatbone.Core
             return false;
         }
 
-        public bool Got(string name, ref char v)
-        {
-            JMember pair;
-            if (pairs.TryGet(name, out pair))
-            {
-                v = (char)pair;
-                return true;
-            }
-            return false;
-        }
-
         public bool Got(string name, ref short v)
         {
             JMember pair;

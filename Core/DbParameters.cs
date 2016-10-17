@@ -43,19 +43,6 @@ namespace Greatbone.Core
             return this;
         }
 
-        public DbParameters Put(string name, char v)
-        {
-            if (name == null)
-            {
-                name = Defaults[index++];
-            }
-            coll.Add(new NpgsqlParameter(name, NpgsqlDbType.Char)
-            {
-                Value = v
-            });
-            return this;
-        }
-
         public DbParameters Put(string name, short v)
         {
             if (name == null)
