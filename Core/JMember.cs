@@ -107,6 +107,19 @@ namespace Greatbone.Core
             return v.vt == VT.True;
         }
 
+        public static implicit operator char(JMember v)
+        {
+            if (v.vt == VT.String)
+            {
+                string str = (string)v.refv;
+                if (!string.IsNullOrEmpty(str))
+                {
+                    return str[0];
+                }
+            }
+            return (char)0;
+        }
+
         public static implicit operator short(JMember v)
         {
             if (v.vt == VT.Number)

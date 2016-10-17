@@ -16,9 +16,9 @@ namespace Greatbone.Core
         {
         }
 
-        public WebSub Control { get; internal set;}
+        public WebSub Control { get; internal set; }
 
-        public WebAction Action { get; internal set;}
+        public WebAction Action { get; internal set; }
 
         public IToken Token { get; internal set; }
 
@@ -148,6 +148,21 @@ namespace Greatbone.Core
                 if ("false".Equals(str) || "0".Equals(str))
                 {
                     v = false;
+                    return true;
+                }
+            }
+            return false;
+        }
+
+        public bool Got(string name, ref char v)
+        {
+            StringValues values;
+            if (Request.Query.TryGetValue(name, out values))
+            {
+                string str = values[0];
+                if (!string.IsNullOrEmpty(str))
+                {
+                    v = str[0];
                     return true;
                 }
             }

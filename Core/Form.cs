@@ -7,12 +7,37 @@ namespace Greatbone.Core
     /// </summary>
     public class Form : ISource
     {
+        public bool Got(string name, ref bool v)
+        {
+            throw new NotImplementedException();
+        }
+
+        public bool Got(string name, ref char v)
+        {
+            throw new NotImplementedException();
+        }
+
+        public bool Got(string name, ref short v)
+        {
+            throw new NotImplementedException();
+        }
+
         public bool Got(string name, ref int v)
         {
             throw new NotImplementedException();
         }
 
+        public bool Got(string name, ref long v)
+        {
+            throw new NotImplementedException();
+        }
+
         public bool Got(string name, ref decimal v)
+        {
+            throw new NotImplementedException();
+        }
+
+        public bool Got(string name, ref Number v)
         {
             throw new NotImplementedException();
         }
@@ -72,25 +97,6 @@ namespace Greatbone.Core
             throw new NotImplementedException();
         }
 
-        public bool Got(string name, ref Number v)
-        {
-            throw new NotImplementedException();
-        }
-
-        public bool Got(string name, ref long v)
-        {
-            throw new NotImplementedException();
-        }
-
-        public bool Got(string name, ref short v)
-        {
-            throw new NotImplementedException();
-        }
-
-        public bool Got(string name, ref bool v)
-        {
-            throw new NotImplementedException();
-        }
 
         public bool Got<T>(string name, ref T[] v, ushort x = 0) where T : IPersist, new()
         {

@@ -21,10 +21,9 @@ namespace Greatbone.Sample
 
             using (var dc = Service.NewDbContext())
             {
-                if (dc.Query("SELECT * FROM fames WHERE ORDER BY rating LIMIT 20 OFFSET @1", p => p.Put(page * 20)))
+                if (dc.Query("SELECT * FROM fames ORDER BY rating LIMIT 20 OFFSET @1", p => p.Put(page * 20)))
                 {
-                    Fame[] fames = dc.GotArr<Fame>();
-                    // dc.Got(ref fames);
+                    Fame[] fames = dc.ToArr<Fame>();
                     wc.Respond(200, fames);
                 }
                 else

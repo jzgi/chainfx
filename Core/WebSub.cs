@@ -162,7 +162,7 @@ namespace Greatbone.Core
             {
                 WebAction a = string.IsNullOrEmpty(rsc) ? defaction : GetAction(rsc);
                 if (a == null) { wc.StatusCode = 404; }
-                else if (!a.Do(wc)) wc.StatusCode = 403; // forbidden 
+                else if (!a.TryDo(wc)) wc.StatusCode = 403; // forbidden 
             }
         }
 
@@ -181,8 +181,9 @@ namespace Greatbone.Core
             {
                 WebAction a = string.IsNullOrEmpty(rsc) ? defaction : GetAction(rsc);
                 if (a == null) wc.StatusCode = 404;
-                else if (!a.Do(wc, var)) wc.StatusCode = 403; // forbidden
+                else if (!a.TryDo(wc, var)) wc.StatusCode = 403; // forbidden
             }
+
         }
 
         //

@@ -180,7 +180,14 @@ namespace Greatbone.Core
             Authenticate(wc);
 
             // handling
-            Handle(wc.Request.Path.Value.Substring(1), wc);
+            try
+            {
+                Handle(wc.Request.Path.Value.Substring(1), wc);
+            }
+            catch (Exception e)
+            {
+                Error(e.Message);
+            }
 
             if (wc.Content != null)
             {

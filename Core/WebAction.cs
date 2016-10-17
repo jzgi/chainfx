@@ -47,7 +47,7 @@ namespace Greatbone.Core
 
         }
 
-        internal bool Do(WebContext wc)
+        internal bool TryDo(WebContext wc)
         {
             // check ifs
             if (ifs != null)
@@ -64,7 +64,7 @@ namespace Greatbone.Core
             return true;
         }
 
-        internal bool Do(WebContext wc, string var)
+        internal bool TryDo(WebContext wc, string var)
         {
             // check ifs
             if (ifs != null)
