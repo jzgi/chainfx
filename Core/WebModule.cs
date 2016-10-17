@@ -10,10 +10,10 @@ namespace Greatbone.Core
     public abstract class WebModule : WebSub, IParent
     {
         // the added sub controllers, if any
-        private Roll<WebSub> subs;
+        internal Roll<WebSub> subs;
 
         // the attached variable-key multiplexer, if any
-        private WebVarHub varhub;
+        internal WebVarHub varhub;
 
         protected WebModule(WebArg arg) : base(arg)
         {
@@ -76,7 +76,8 @@ namespace Greatbone.Core
             int slash = rsc.IndexOf('/');
             if (slash == -1) // handle it locally
             {
-                Perform(rsc, wc);
+                wc.Control = this;
+                Do(rsc, wc);
             }
             else // not local then sub & mux
             {

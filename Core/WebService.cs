@@ -196,6 +196,42 @@ namespace Greatbone.Core
         protected abstract bool Authenticate(WebContext wc);
 
 
+        internal override void Handle(string rsc, WebContext wc)
+        {
+            if (!CheckAuth(wc)) return;
+
+            int slash = rsc.IndexOf('/');
+            if (slash == -1) // handle it locally
+            {
+                if ("*".Equals(rsc))
+                {
+                    Peek(wc); // obtain a message
+                }
+                else
+                {
+                    wc.Control = this;
+                    Do(rsc, wc);
+                }
+            }
+            else // not local then sub & mux
+            {
+                string dir = rsc.Substring(0, slash);
+                WebSub sub;
+                if (subs != null && subs.TryGet(dir, out sub)) // seek sub first
+                {
+                    sub.Handle(rsc.Substring(slash + 1), wc);
+                }
+                else if (varhub == null)
+                {
+                    wc.StatusCode = 404; // not found
+                }
+                else
+                {
+                    varhub.Handle(rsc.Substring(slash + 1), wc, dir); // var = dir
+                }
+            }
+        }
+
         public void Start()
         {
             // start the server
@@ -265,9 +301,9 @@ namespace Greatbone.Core
         // MESSAGING
         //
 
-        public void @yield(WebContext wc)
+        void Peek(WebContext wc)
         {
-            // dispatch among public/private web actions and msg polling
+            // ensure internally target
             ConnectionInfo ci = wc.Connection;
             string laddr = ci.LocalIpAddress.ToString() + ":" + ci.LocalPort;
             if (laddr.Equals(Config.intern)) // must target the internal address
@@ -275,14 +311,9 @@ namespace Greatbone.Core
                 wc.StatusCode = 403; // forbidden
                 return;
             }
-            // the peer ip must be enlisted 
-            string raddr = ci.RemoteIpAddress.ToString();
-            if (!Clients.Contains(raddr))
-            {
-                wc.StatusCode = 403; // forbidden
-                return;
-            }
 
+            // queue
+            string raddr = ci.RemoteIpAddress.ToString() + ":" + ci.RemotePort;
             MsgQueue loader = queues[raddr];
             loader.Get();
             MsgMessage msg;

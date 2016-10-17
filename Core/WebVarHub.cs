@@ -50,7 +50,8 @@ namespace Greatbone.Core
             int slash = rsc.IndexOf('/');
             if (slash == -1) // handle it locally
             {
-                Perform(rsc, wc, var);
+                wc.Control = this;
+                Do(rsc, wc, var);
             }
             else // not local then sub
             {

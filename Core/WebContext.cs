@@ -16,11 +16,9 @@ namespace Greatbone.Core
         {
         }
 
-        public WebSub Controller { get; }
+        public WebSub Control { get; internal set;}
 
-        public WebAction Action { get; }
-
-        public string Var { get; internal set; }
+        public WebAction Action { get; internal set;}
 
         public IToken Token { get; internal set; }
 
@@ -485,7 +483,7 @@ namespace Greatbone.Core
         public async void CallByGet(string service, string part, string uri)
         {
             // token impersonate
-            WebClient cli = Controller.Service.FindClient(service, part);
+            WebClient cli = Control.Service.FindClient(service, part);
             if (cli != null)
             {
                 object obj = await cli.GetAsync(uri);
@@ -495,7 +493,7 @@ namespace Greatbone.Core
         public void CallByPost(string service, string part, Action<JContent> a)
         {
             // token impersonate
-            WebClient cli = Controller.Service.FindClient(service, part);
+            WebClient cli = Control.Service.FindClient(service, part);
             if (cli != null)
             {
                 JContent jcon = new JContent(8 * 1024);

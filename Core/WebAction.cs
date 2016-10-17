@@ -14,13 +14,13 @@ namespace Greatbone.Core
 
         readonly Action<WebContext> doer;
 
-        readonly Action<WebContext, string> doerVar;
+        readonly Action<WebContext, string> doer2;
 
         readonly IfAttribute[] ifs;
 
         public string Key { get; }
 
-        public bool IsVar => doerVar != null;
+        public bool IsVar => doer2 != null;
 
         internal WebAction(WebSub controller, MethodInfo mi, bool isVar)
         {
@@ -33,7 +33,7 @@ namespace Greatbone.Core
             }
             else
             {
-                doerVar = (Action<WebContext, string>)mi.CreateDelegate(typeof(Action<WebContext, string>), controller);
+                doer2 = (Action<WebContext, string>)mi.CreateDelegate(typeof(Action<WebContext, string>), controller);
             }
 
             // if attributes
@@ -59,6 +59,7 @@ namespace Greatbone.Core
             }
 
             // invoke the action method
+            wc.Action = this;
             doer(wc);
             return true;
         }
@@ -75,7 +76,7 @@ namespace Greatbone.Core
             }
 
             // invoke the action method
-            doerVar(wc, var);
+            doer2(wc, var);
             return true;
         }
 

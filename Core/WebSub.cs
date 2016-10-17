@@ -135,16 +135,19 @@ namespace Greatbone.Core
         {
             if (!CheckAuth(wc)) return;
 
-            Perform(rsc, wc);
+            wc.Control = this;
+            Do(rsc, wc);
         }
+
         internal virtual void Handle(string rsc, WebContext wc, string var)
         {
             if (!CheckAuth(wc)) return;
 
-            Perform(rsc, wc, var);
+            wc.Control = this;
+            Do(rsc, wc, var);
         }
 
-        protected internal virtual void Perform(string rsc, WebContext wc)
+        protected internal virtual void Do(string rsc, WebContext wc)
         {
             if (rsc.IndexOf('.') != -1) // static
             {
@@ -159,14 +162,11 @@ namespace Greatbone.Core
             {
                 WebAction a = string.IsNullOrEmpty(rsc) ? defaction : GetAction(rsc);
                 if (a == null) { wc.StatusCode = 404; }
-                else if (!a.Do(wc))
-                {
-                    wc.StatusCode = 403; // forbidden 
-                }
+                else if (!a.Do(wc)) wc.StatusCode = 403; // forbidden 
             }
         }
 
-        protected internal virtual void Perform(string rsc, WebContext wc, string var)
+        protected internal virtual void Do(string rsc, WebContext wc, string var)
         {
             if (rsc.IndexOf('.') != -1) // static
             {
@@ -181,10 +181,7 @@ namespace Greatbone.Core
             {
                 WebAction a = string.IsNullOrEmpty(rsc) ? defaction : GetAction(rsc);
                 if (a == null) wc.StatusCode = 404;
-                else if (!a.Do(wc, var))
-                {
-                    wc.StatusCode = 403; // forbidden
-                }
+                else if (!a.Do(wc, var)) wc.StatusCode = 403; // forbidden
             }
         }
 
