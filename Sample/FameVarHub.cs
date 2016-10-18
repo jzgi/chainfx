@@ -43,12 +43,12 @@ namespace Greatbone.Sample
         /// </code>
         public void upd(WebContext wc, string var)
         {
-            Fame obj = wc.ToObj<Fame>();
+            Fame obj = wc.Obj<Fame>();
 
-            string sql = DbSql.INSERT_INTO("faces", obj).ToString();
+            string sql = DbSql.INSERT_INTO_UPDATE_SET("fames", "id", obj).ToString();
             using (var sc = Service.NewDbContext())
             {
-                if (sc.Execute(sql, p => p.Put(obj).Put(wc.Token.Key)) > 0)
+                if (sc.Execute(sql, p => obj.Save(p)) > 0)
                 {
                     wc.StatusCode = 200;
                 }

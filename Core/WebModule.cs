@@ -19,7 +19,7 @@ namespace Greatbone.Core
         {
         }
 
-        public T AddSub<T>(string key, bool authreq) where T : WebSub
+        public T AddSub<T>(string key, bool auth) where T : WebSub
         {
             if (subs == null)
             {
@@ -32,7 +32,7 @@ namespace Greatbone.Core
             WebArg arg = new WebArg
             {
                 key = key,
-                Auth = authreq,
+                Auth = auth,
                 Parent = this,
                 IsVar = false,
                 Folder = (Parent == null) ? key : Path.Combine(Parent.Folder, key),

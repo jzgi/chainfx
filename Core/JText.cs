@@ -247,7 +247,7 @@ namespace Greatbone.Core
                 Add(':');
             }
 
-            Add(v.integr);
+            Add(v.bigint);
             if (v.Pt)
             {
                 Add((int)'.');

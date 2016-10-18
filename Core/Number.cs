@@ -6,7 +6,7 @@ namespace Greatbone.Core
     public struct Number
     {
         // the integral part
-        internal long integr;
+        internal long bigint;
 
         // the fraction part
         internal int fract;
@@ -19,7 +19,7 @@ namespace Greatbone.Core
 
         internal Number(byte first)
         {
-            integr = 0;
+            bigint = 0;
             fract = 0;
             pt = 0; // without point yet
             if (first == '-')
@@ -47,23 +47,23 @@ namespace Greatbone.Core
                 fract = fract * 10 + n;
                 pt++;
             }
-            else { integr = integr * 10 + n; }
+            else { bigint = bigint * 10 + n; }
         }
 
-        internal long Long => negat ? -integr : integr;
+        internal long Long => negat ? -bigint : bigint;
 
-        internal int Int => negat ? (int)-integr : (int)integr;
+        internal int Int => negat ? (int)-bigint : (int)bigint;
 
-        internal short Short => negat ? (short)-integr : (short)integr;
+        internal short Short => negat ? (short)-bigint : (short)bigint;
 
         internal decimal Decimal
         {
             get
             {
                 int bits = Bits(fract);
-                int lo = (int)(integr << bits) | fract;
-                int mid = (int)(integr >> (32 - bits));
-                int hi = (int)(integr >> (64 - bits));
+                int lo = (int)(bigint << bits) | fract;
+                int mid = (int)(bigint >> (32 - bits));
+                int hi = (int)(bigint >> (64 - bits));
                 byte scale = (byte)(pt - 1);
 
                 return new decimal(lo, mid, hi, negat, scale);

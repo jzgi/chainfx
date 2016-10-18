@@ -2,6 +2,12 @@ using System;
 
 namespace Greatbone.Core
 {
+
+    ///
+    /// <summary>
+    /// Tp generate SQL commands.
+    /// </summary>
+    ///
     public class DbSql : Text, ISink<DbSql>
     {
 
@@ -9,26 +15,24 @@ namespace Greatbone.Core
 
         public const int
 
-            SEL = 0x800000,
+            X_SEL = 0x800000,
 
-            UPD = 0x400000,
+            X_UPD = 0x400000,
 
-            INS = 0x200000;
+            X_INS = 0x200000;
 
+        // contexts
+        const sbyte VALUES = 0, COLUMNS = 1, PARAMS = 2, SETS = 3;
 
-
-        // clauses
-        const sbyte Columns = 1, Parameters = 2, Sets = 3;
-
-        internal int ordinal;
-
-        // indication
+        // the putting context
         internal sbyte ctx;
+
+        // used when generating a list
+        internal int ordinal;
 
 
         public DbSql(string str) : base(InitialCapacity)
         {
-            ordinal = 1;
             Add(str);
         }
 
@@ -40,15 +44,47 @@ namespace Greatbone.Core
             return this;
         }
 
+        public DbSql Sets<T>(T obj, uint x = 0) where T : IPersist
+        {
+            ctx = SETS;
+            ordinal = 1;
+            obj.Save(this, x);
+            return this;
+        }
+
+        public DbSql Columns<T>(T obj, uint x = 0) where T : IPersist
+        {
+            ctx = COLUMNS;
+            ordinal = 1;
+            obj.Save(this, x);
+            return this;
+        }
+
+        public DbSql Params<T>(T obj, uint x = 0) where T : IPersist
+        {
+            ctx = PARAMS;
+            ordinal = 1;
+            obj.Save(this, x);
+            return this;
+        }
+
+        public DbSql Values<T>(T obj, uint x = 0) where T : IPersist
+        {
+            ctx = VALUES;
+            ordinal = 1;
+            obj.Save(this, x);
+            return this;
+        }
+
         void Build(string name)
         {
             if (ordinal > 1) Add(", ");
 
             switch (ctx)
             {
-                case Columns: Add(name); break;
-                case Parameters: Add("@"); Add(name); break;
-                case Sets: Add(name); Add("=@"); Add(name); break;
+                case COLUMNS: Add(name); break;
+                case PARAMS: Add("@"); Add(name); break;
+                case SETS: Add(name); Add("=@"); Add(name); break;
             }
 
             ordinal++;
@@ -56,55 +92,118 @@ namespace Greatbone.Core
 
         public DbSql Put(string name, bool v)
         {
-            Build(name);
+            if (name != null)
+            {
+                Build(name);
+            }
+            else
+            {
+                Add(v ? "TRUE" : "FALSE");
+            }
             return this;
         }
 
         public DbSql Put(string name, short v)
         {
-            Build(name);
+            if (name != null)
+            {
+                Build(name);
+            }
+            else
+            {
+                Add(v);
+            }
             return this;
         }
 
         public DbSql Put(string name, int v)
         {
-            Build(name);
+            if (name != null)
+            {
+                Build(name);
+            }
+            else
+            {
+                Add(v);
+            }
             return this;
         }
 
         public DbSql Put(string name, long v)
         {
-            Build(name);
+            if (name != null)
+            {
+                Build(name);
+            }
+            else
+            {
+                Add(v);
+            }
             return this;
         }
 
         public DbSql Put(string name, Number v)
         {
-            Build(name);
+            if (name != null)
+            {
+                Build(name);
+            }
+            else
+            {
+                Add(v);
+            }
             return this;
         }
 
         public DbSql Put(string name, DateTime v)
         {
-            Build(name);
+            if (name != null)
+            {
+                Build(name);
+            }
+            else
+            {
+                Add(v);
+            }
             return this;
         }
 
         public DbSql Put(string name, decimal v)
         {
-            Build(name);
+            if (name != null)
+            {
+                Build(name);
+            }
+            else
+            {
+                Add(v);
+            }
             return this;
         }
 
         public DbSql Put(string name, string v)
         {
-            Build(name);
+            if (name != null)
+            {
+                Build(name);
+            }
+            else
+            {
+                Add('\''); Add(v); Add('\'');
+            }
             return this;
         }
 
         public DbSql Put(string name, char[] v)
         {
-            Build(name);
+            if (name != null)
+            {
+                Build(name);
+            }
+            else
+            {
+                Add('\''); Add(v); Add('\'');
+            }
             return this;
         }
 
@@ -292,27 +391,24 @@ namespace Greatbone.Core
         public static DbSql SELECT_FROM<T>(T obj, string table, uint x = 0) where T : IPersist
         {
             DbSql sql = new DbSql("SELECT ");
-            sql.Put(obj, x | SEL);
-            sql.Add(" FROM ");
-            sql.Add(table);
+
+            sql.Columns(obj, x | X_SEL);
+
+            sql.Add(" FROM "); sql.Add(table);
+
             return sql;
         }
 
         public static DbSql INSERT_INTO<T>(string table, T obj, uint x = 0) where T : IPersist
         {
-            DbSql sql = new DbSql("INSERT INTO ");
-            sql.Add(table);
+            DbSql sql = new DbSql("INSERT INTO "); sql.Add(table);
             sql.Add(" (");
 
-            sql.ctx = Columns;
-            sql.ordinal = 1;
-            sql.Put(obj, x | INS);
+            sql.Columns(obj, x | X_INS);
 
             sql.Add(") VALUES (");
 
-            sql.ctx = Parameters;
-            sql.ordinal = 1;
-            sql.Put(obj, x | INS);
+            sql.Params(obj, x | X_INS);
 
             sql.Add(")");
 
@@ -322,35 +418,23 @@ namespace Greatbone.Core
 
         public static DbSql UPDATE_SET(string table, IPersist obj, uint x = 0)
         {
-            DbSql sql = new DbSql("UPDATE ");
-            sql.Add(table);
+            DbSql sql = new DbSql("UPDATE "); sql.Add(table);
             sql.Add(" SET ");
 
-            sql.ctx = Columns;
-            sql.ordinal = 1;
-            sql.Put(obj, x | UPD);
+            sql.Sets(obj, x | X_UPD);
 
             return sql;
         }
 
-        public static DbSql INSERT_INTO_UPDATE_SET<T>(string table, T obj, uint x = 0) where T : IPersist
+        public static DbSql INSERT_INTO_UPDATE_SET<T>(string table, string targ, T obj, uint x = 0) where T : IPersist
         {
-            DbSql sql = new DbSql("INSERT INTO ");
+            DbSql sql = INSERT_INTO(table, obj, x);
 
-            sql.Add(table);
-            sql.Add(" (");
+            sql.Add(" ON CONFLICT (");
+            sql.Add(targ);
+            sql.Add(") DO UPDATE SET ");
 
-            sql.ctx = Columns;
-            sql.ordinal = 1;
-            sql.Put(obj, x | INS);
-
-            sql.Add(") VALUES (");
-
-            sql.ctx = Parameters;
-            sql.ordinal = 1;
-            sql.Put(obj, x | INS);
-
-            sql.Add(")");
+            sql.Sets(obj, x | X_UPD);
 
             return sql;
         }

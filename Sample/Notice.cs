@@ -46,7 +46,7 @@ namespace Greatbone.Sample
 
         public void Save<R>(ISink<R> sk, uint x = 0) where R : ISink<R>
         {
-            if (x.Neither(INS, UPD))
+            if (x.Neither(X_INS, X_UPD))
             {
                 sk.Put(nameof(id), id);
             }

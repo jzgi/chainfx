@@ -140,9 +140,9 @@ namespace Greatbone.Core
             {
                 name = Defaults[index++];
             }
-            coll.Add(new NpgsqlParameter(name, NpgsqlDbType.Varchar, v.Length)
+            coll.Add(new NpgsqlParameter(name, NpgsqlDbType.Text)
             {
-                Value = v
+                Value = (v != null) ? (object)v : DBNull.Value
             });
             return this;
         }
@@ -153,9 +153,9 @@ namespace Greatbone.Core
             {
                 name = Defaults[index++];
             }
-            coll.Add(new NpgsqlParameter(name, NpgsqlDbType.Bytea, v.Length)
+            coll.Add(new NpgsqlParameter(name, NpgsqlDbType.Bytea)
             {
-                Value = v
+                Value = (v != null) ? (object)v : DBNull.Value
             });
             return this;
         }
@@ -204,7 +204,10 @@ namespace Greatbone.Core
             }
             if (v == null)
             {
-                coll.Add(new NpgsqlParameter(name, NpgsqlDbType.Jsonb) { Value = DBNull.Value });
+                coll.Add(new NpgsqlParameter(name, NpgsqlDbType.Jsonb)
+                {
+                    Value = DBNull.Value
+                });
             }
             else
             {
@@ -224,7 +227,10 @@ namespace Greatbone.Core
             }
             if (v == null)
             {
-                coll.Add(new NpgsqlParameter(name, NpgsqlDbType.Jsonb) { Value = DBNull.Value });
+                coll.Add(new NpgsqlParameter(name, NpgsqlDbType.Jsonb)
+                {
+                    Value = DBNull.Value
+                });
             }
             else
             {
@@ -296,7 +302,10 @@ namespace Greatbone.Core
             }
             if (v == null)
             {
-                coll.Add(new NpgsqlParameter(name, NpgsqlDbType.Jsonb) { Value = DBNull.Value });
+                coll.Add(new NpgsqlParameter(name, NpgsqlDbType.Jsonb)
+                {
+                    Value = DBNull.Value
+                });
             }
             else
             {

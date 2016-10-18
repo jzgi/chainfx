@@ -221,6 +221,16 @@ namespace Greatbone.Core
             Add(v, true);
         }
 
+        public void Add(Number v)
+        {
+            Add(v.Long);
+            if (v.Pt)
+            {
+                Add('.');
+                Add(v.fract);
+            }
+        }
+
         // sign mask
         private const int Sign = unchecked((int)0x80000000);
 

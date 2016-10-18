@@ -50,7 +50,6 @@ namespace Greatbone.Core
         public void Load(ISource sc, uint x = 0)
         {
             sc.Got(nameof(key), ref key);
-            sc.Got(nameof(opts), ref opts);
             sc.Got(nameof(part), ref part);
             sc.Got(nameof(@extern), ref @extern);
             sc.Got(nameof(tls), ref tls);
@@ -58,18 +57,19 @@ namespace Greatbone.Core
             sc.Got(nameof(net), ref net);
             sc.Got(nameof(db), ref db);
             sc.Got(nameof(logging), ref logging);
+            sc.Got(nameof(opts), ref opts);
         }
 
         public void Save<R>(ISink<R> sk, uint x = 0) where R : ISink<R>
         {
             sk.Put(nameof(key), key);
-            sk.Put(nameof(opts), opts);
             sk.Put(nameof(part), part);
             sk.Put(nameof(@extern), @extern);
             sk.Put(nameof(tls), tls);
             sk.Put(nameof(intern), intern);
             sk.Put(nameof(net), net);
             sk.Put(nameof(logging), logging);
+            sk.Put(nameof(opts), opts);
         }
 
         public WebConfig LoadFile(string file)
