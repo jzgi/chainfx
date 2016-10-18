@@ -22,7 +22,7 @@ namespace Greatbone.Core
             X_INS = 0x200000;
 
         // contexts
-        const sbyte VALUES = 0, COLUMNS = 1, PARAMS = 2, SETS = 3;
+        const sbyte ValueList = 0, ColumnList = 1, ParameterList = 2, SetList = 3;
 
         // the putting context
         internal sbyte ctx;
@@ -30,10 +30,6 @@ namespace Greatbone.Core
         // used when generating a list
         internal int ordinal;
 
-
-        public DbSql() : base(InitialCapacity)
-        {
-        }
 
         public DbSql(string str) : base(InitialCapacity)
         {
@@ -55,42 +51,58 @@ namespace Greatbone.Core
             return this;
         }
 
-        public DbSql Sets<T>(T obj, uint x = 0) where T : IPersist
+        public DbSql setlst<T>(T obj, uint x = 0) where T : IPersist
         {
-            ctx = SETS;
+            ctx = SetList;
             ordinal = 1;
             obj.Save(this, x);
             return this;
         }
 
-        public DbSql Columns<T>(T obj, uint x = 0) where T : IPersist
+        public DbSql columnlst<T>(T obj, uint x = 0) where T : IPersist
         {
-            ctx = COLUMNS;
+            ctx = ColumnList;
             ordinal = 1;
             obj.Save(this, x);
             return this;
         }
 
-        public DbSql Params<T>(T obj, uint x = 0) where T : IPersist
+        public DbSql paramlst<T>(T obj, uint x = 0) where T : IPersist
         {
-            ctx = PARAMS;
+            ctx = ParameterList;
             ordinal = 1;
             obj.Save(this, x);
             return this;
         }
 
-        public DbSql Values<T>(T obj, uint x = 0) where T : IPersist
+        public DbSql valuelst<T>(T obj, uint x = 0) where T : IPersist
         {
-            ctx = VALUES;
+            ctx = ValueList;
             ordinal = 1;
             obj.Save(this, x);
             return this;
         }
 
-        public DbSql WHERE(string cond)
+        public DbSql _<T>(T obj, uint x = 0) where T : IPersist
         {
-            Add(" WHERE ");
-            Add(cond);
+            Add(" (");
+            columnlst(obj, x);
+            Add(")");
+            return this;
+        }
+
+        public DbSql _VALUES_<T>(T obj, uint x = 0) where T : IPersist
+        {
+            Add(" VALUES (");
+            valuelst(obj, x);
+            Add(")");
+            return this;
+        }
+
+        public DbSql _SET_<T>(T obj, uint x = 0) where T : IPersist
+        {
+            Add(" SET ");
+            setlst(obj, x);
             return this;
         }
 
@@ -100,9 +112,9 @@ namespace Greatbone.Core
 
             switch (ctx)
             {
-                case COLUMNS: Add(name); break;
-                case PARAMS: Add("@"); Add(name); break;
-                case SETS: Add(name); Add("=@"); Add(name); break;
+                case ColumnList: Add(name); break;
+                case ParameterList: Add("@"); Add(name); break;
+                case SetList: Add(name); Add("=@"); Add(name); break;
             }
 
             ordinal++;
@@ -402,92 +414,6 @@ namespace Greatbone.Core
             return this;
         }
 
-        //
-        // CONVINIENTS
-        //
-
-        public DbSql SELECT_WHERE<T>(T obj, string table, uint x = 0, string cond = null) where T : IPersist
-        {
-            Add("SELECT ");
-
-            Columns(obj, x | X_SEL);
-
-            Add(" FROM "); Add(table);
-
-            if (cond != null)
-            {
-                Add(" WHERE ");
-                Add(cond);
-            }
-
-            return this;
-        }
-
-        public DbSql INSERT_VALUES<T>(string table, T obj, uint x = 0) where T : IPersist
-        {
-            Add("INSERT INTO "); Add(table);
-            Add(" (");
-
-            Columns(obj, x | X_INS);
-
-            Add(") VALUES (");
-
-            Params(obj, x | X_INS);
-
-            Add(")");
-
-            return this;
-        }
-
-
-        public DbSql UPDATE_SET_WHERE(string table, IPersist obj, uint x = 0, string cond = null)
-        {
-            Add("UPDATE "); Add(table);
-            Add(" SET ");
-
-            Sets(obj, x | X_UPD);
-
-            if (cond != null)
-            {
-                Add(" WHERE ");
-                Add(cond);
-            }
-
-            return this;
-        }
-
-        public DbSql INSERT_VALUES_UPDATE_SET<T>(string table, string targ, T obj, uint x = 0) where T : IPersist
-        {
-            INSERT_VALUES(table, obj, x);
-
-            Add(" ON CONFLICT (");
-            Add(targ);
-            Add(") DO UPDATE SET ");
-
-            Sets(obj, x | X_UPD);
-
-            return this;
-        }
-
-        public DbSql DELETE_WHERE(string table, string cond = null)
-        {
-            Add("DELETE FROM "); Add(table);
-            if (cond != null)
-            {
-                Add(" WHERE ");
-                Add(cond);
-            }
-            return this;
-        }
-
-        public DbSql RETURNING(string s)
-        {
-            Add(" RETURNING ");
-            Add(s);
-            return this;
-        }
-
     }
-
 
 }

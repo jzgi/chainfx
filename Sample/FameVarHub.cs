@@ -48,11 +48,10 @@ namespace Greatbone.Sample
         {
             Fame obj = wc.JObj.ToObj<Fame>();
 
-            using (var sc = Service.NewDbContext())
+            using (var dc = Service.NewDbContext())
             {
-                if (sc.Execute(
-                    c => c.INSERT_VALUES_UPDATE_SET("fames", "id", obj),
-                    p => obj.Save(p)) > 0)
+                DbSql sql = new DbSql("INSERT INTO fames")._(obj)._VALUES_(obj)._("ON CONFLICT (id) DO UPDATE")._SET_(obj);
+                if (dc.Execute(sql.ToString(), p => obj.Save(p)) > 0)
                 {
                     wc.StatusCode = 200;
                 }

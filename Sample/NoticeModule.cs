@@ -52,10 +52,8 @@ namespace Greatbone.Sample
 
             using (var dc = Service.NewDbContext())
             {
-                object id = dc.Scalar(
-                    c => c.INSERT_VALUES("notices", obj).RETURNING("id"),
-                    p => obj.Save(p)
-                );
+                DbSql sql = new DbSql("INSERT INTO notices")._(obj)._VALUES_(obj)._("RETURNING id");
+                object id = dc.Scalar(sql.ToString(), p => obj.Save(p));
                 if (id != null)
                 {
                     wc.StatusCode = 201;
