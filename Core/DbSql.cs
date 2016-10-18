@@ -5,7 +5,7 @@ namespace Greatbone.Core
 
     ///
     /// <summary>
-    /// Tp generate SQL commands.
+    /// A helper used to generate SQL commands.
     /// </summary>
     ///
     public class DbSql : Text, ISink<DbSql>
@@ -73,6 +73,13 @@ namespace Greatbone.Core
             ctx = VALUES;
             ordinal = 1;
             obj.Save(this, x);
+            return this;
+        }
+
+        public DbSql WHERE(string cond)
+        {
+            Add(" WHERE ");
+            Add(cond);
             return this;
         }
 
@@ -388,7 +395,7 @@ namespace Greatbone.Core
         // CONVINIENTS
         //
 
-        public static DbSql SELECT_FROM<T>(T obj, string table, uint x = 0) where T : IPersist
+        public static DbSql SELECT_WHERE<T>(T obj, string table, uint x = 0, string cond = null) where T : IPersist
         {
             DbSql sql = new DbSql("SELECT ");
 
@@ -396,10 +403,16 @@ namespace Greatbone.Core
 
             sql.Add(" FROM "); sql.Add(table);
 
+            if (cond != null)
+            {
+                sql.Add(" WHERE ");
+                sql.Add(cond);
+            }
+
             return sql;
         }
 
-        public static DbSql INSERT_INTO<T>(string table, T obj, uint x = 0) where T : IPersist
+        public static DbSql INSERT_VALUES<T>(string table, T obj, uint x = 0) where T : IPersist
         {
             DbSql sql = new DbSql("INSERT INTO "); sql.Add(table);
             sql.Add(" (");
@@ -416,19 +429,25 @@ namespace Greatbone.Core
         }
 
 
-        public static DbSql UPDATE_SET(string table, IPersist obj, uint x = 0)
+        public static DbSql UPDATE_SET_WHERE(string table, IPersist obj, uint x = 0, string cond = null)
         {
             DbSql sql = new DbSql("UPDATE "); sql.Add(table);
             sql.Add(" SET ");
 
             sql.Sets(obj, x | X_UPD);
 
+            if (cond != null)
+            {
+                sql.Add(" WHERE ");
+                sql.Add(cond);
+            }
+
             return sql;
         }
 
-        public static DbSql INSERT_INTO_UPDATE_SET<T>(string table, string targ, T obj, uint x = 0) where T : IPersist
+        public static DbSql INSERT_VALUES_UPDATE_SET<T>(string table, string targ, T obj, uint x = 0) where T : IPersist
         {
-            DbSql sql = INSERT_INTO(table, obj, x);
+            DbSql sql = INSERT_VALUES(table, obj, x);
 
             sql.Add(" ON CONFLICT (");
             sql.Add(targ);
@@ -436,6 +455,17 @@ namespace Greatbone.Core
 
             sql.Sets(obj, x | X_UPD);
 
+            return sql;
+        }
+
+        public static DbSql DELETE_WHERE(string table, string cond = null)
+        {
+            DbSql sql = new DbSql("DELETE FROM "); sql.Add(table);
+            if (cond != null)
+            {
+                sql.Add(" WHERE ");
+                sql.Add(cond);
+            }
             return sql;
         }
 

@@ -52,7 +52,7 @@ namespace Greatbone.Sample
 
             using (var dc = Service.NewDbContext())
             {
-                string sql = DbSql.INSERT_INTO("notices", obj)._("RETURNING id").ToString();
+                string sql = DbSql.INSERT_VALUES("notices", obj)._("RETURNING id").ToString();
                 object id = dc.Scalar(sql, p => obj.Save(p));
                 if (id != null)
                 {

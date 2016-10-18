@@ -12,8 +12,12 @@ namespace Greatbone.Sample
             SetVarHub<FameVarHub>(false);
         }
 
-        ///
-        /// GET /fame/top?[page=_num_]
+        /// <summary>
+        /// Get the nth page on top.
+        /// </summary>
+        /// <code>
+        /// GET /fame/top?[page=_n_]
+        /// </code>
         public void top(WebContext wc)
         {
             int page = 0;
@@ -34,11 +38,12 @@ namespace Greatbone.Sample
         }
 
 
-        ///
+        /// <summary>
+        /// Find records by name matching.
+        /// </summary>
         /// <code> 
-        /// GET /fame/find?word=_name_
+        /// GET /fame/find?word=_name_pattern_
         /// </code>
-        ///
         public void find(WebContext wc)
         {
             string word = null;
@@ -58,7 +63,9 @@ namespace Greatbone.Sample
             }
         }
 
-        ///
+        /// <summary>
+        /// Find records by career matching.
+        /// </summary>
         /// <code> 
         /// GET /fame/findby?[by=_career_name_]
         /// </code>

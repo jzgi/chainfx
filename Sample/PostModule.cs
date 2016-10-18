@@ -10,8 +10,11 @@ namespace Greatbone.Sample
             SetVarHub<PostVarHub>(false);
         }
 
+        /// <summary>
+        /// Get the nth page of records on top.
+        /// </summary>
         /// <code>
-        /// GET /post/top?[page=_num_]
+        /// GET /post/top?[page=_n_]
         /// </code>
         public void top(WebContext wc)
         {
@@ -31,13 +34,14 @@ namespace Greatbone.Sample
             }
         }
 
-        ///
+        /// <summary>
+        /// Create a new record.
+        /// </summary>
         /// <code>
         /// POST /post/new
-        ///
         /// {
-        ///     "commentable" : true 
-        ///     "text" : "text content" 
+        ///     "commentable" : _true_or_false_ 
+        ///     "text" : "_text_content_" 
         /// }
         /// </code>
         ///

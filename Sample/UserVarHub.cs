@@ -4,9 +4,6 @@ using Greatbone.Core;
 namespace Greatbone.Sample
 {
     ///
-    /// <summary>
-    /// Actions around a particular user account.
-    /// </summary>
     ///
     public class UserVarHub : WebVarHub
     {
@@ -14,6 +11,9 @@ namespace Greatbone.Sample
         {
         }
 
+        /// <summary>
+        /// Get a user token.
+        /// </summary>
         /// <code>
         /// GET /user/_id_/?password=_password_
         /// </code>
@@ -47,10 +47,14 @@ namespace Greatbone.Sample
             }
         }
 
-        /// <summary>To modify the user's profile, normally by him/her self.</summary>
-        ///
+        /// <summary>
+        /// Update a profile indicated by token.
+        /// </summary>
+        /// <code>
+        /// POST /user/upd
+        /// </code>
         [IfSelf]
-        public void chpwd(WebContext wc, string userid)
+        public void upd(WebContext wc, string userid)
         {
             JObj jo = wc.JObj;
 

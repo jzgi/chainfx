@@ -16,6 +16,12 @@ namespace Greatbone.Sample
             SetVarHub<UserVarHub>(false);
         }
 
+        /// <summary>
+        /// Get a verification code through SMS.
+        /// </summary>
+        /// <code>
+        /// GET /user/vcode
+        /// </code>
         public void vcode(WebContext wc)
         {
             JObj jo = wc.JObj;
@@ -28,6 +34,17 @@ namespace Greatbone.Sample
             wc.StatusCode = 200;
         }
 
+        /// <summary>
+        /// Create a new user account.
+        /// </summary>
+        /// <code>
+        /// POST /user/new
+        /// {
+        ///   "id" : "_user_id_",            
+        ///   "password" : "_password_",            
+        ///   "vcode" : "_verification_code_"            
+        /// }    
+        /// </code>
         public void @new(WebContext wc)
         {
             JObj jo = wc.JObj;
