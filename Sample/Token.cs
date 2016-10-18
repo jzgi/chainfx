@@ -26,7 +26,7 @@ namespace Greatbone.Sample
 
         public string Name => name;
 
-        public void Load(ISource sc, ushort x = 0)
+        public void Load(ISource sc, uint x = 0)
         {
             sc.Got(nameof(id), ref id);
             sc.Got(nameof(name), ref name);
@@ -36,11 +36,11 @@ namespace Greatbone.Sample
             sc.Got(nameof(admin), ref admin);
         }
 
-        public void Save<R>(ISink<R> sk, ushort x = 0) where R : ISink<R>
+        public void Save<R>(ISink<R> sk, uint x = 0) where R : ISink<R>
         {
             sk.Put(nameof(id), id);
             sk.Put(nameof(name), name);
-            if (!x.If(Out))
+            if (x.No(Out))
             {
                 sk.Put(nameof(credential), credential);
             }

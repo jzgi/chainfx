@@ -28,7 +28,7 @@ namespace Greatbone.Sample
 
         public string Key { get; }
 
-        public void Load(ISource sc, ushort x = 0)
+        public void Load(ISource sc, uint x = 0)
         {
             sc.Got(nameof(id), ref id);
             sc.Got(nameof(time), ref time);
@@ -51,7 +51,7 @@ namespace Greatbone.Sample
             sc.Got(nameof(m8), ref m8);
         }
 
-        public void Save<R>(ISink<R> sk, ushort x = 0) where R : ISink<R>
+        public void Save<R>(ISink<R> sk, uint x = 0) where R : ISink<R>
         {
             sk.Put(nameof(id), id);
             sk.Put(nameof(time), time);
@@ -87,7 +87,7 @@ namespace Greatbone.Sample
 
         internal string text;
 
-        public void Load(ISource sc, ushort x = 0)
+        public void Load(ISource sc, uint x = 0)
         {
             sc.Got(nameof(time), ref time);
             sc.Got(nameof(emoji), ref emoji);
@@ -96,7 +96,7 @@ namespace Greatbone.Sample
             sc.Got(nameof(text), ref text);
         }
 
-        public void Save<R>(ISink<R> sk, ushort x = 0) where R : ISink<R>
+        public void Save<R>(ISink<R> sk, uint x = 0) where R : ISink<R>
         {
             sk.Put(nameof(time), time);
             sk.Put(nameof(emoji), emoji);

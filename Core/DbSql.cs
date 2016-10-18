@@ -7,6 +7,16 @@ namespace Greatbone.Core
 
         const int InitialCapacity = 1024;
 
+        public const int
+
+            SEL = 0x800000,
+
+            UPD = 0x400000,
+
+            INS = 0x200000;
+
+
+
         // clauses
         const sbyte Columns = 1, Parameters = 2, Sets = 3;
 
@@ -110,7 +120,7 @@ namespace Greatbone.Core
             return this;
         }
 
-        public DbSql Put<V>(string name, V v, ushort x = 0) where V : IPersist
+        public DbSql Put<V>(string name, V v, uint x = 0) where V : IPersist
         {
             if (name != null)
             {
@@ -263,7 +273,7 @@ namespace Greatbone.Core
             return this;
         }
 
-        public DbSql Put<V>(string name, V[] v, ushort x = 0) where V : IPersist
+        public DbSql Put<V>(string name, V[] v, uint x = 0) where V : IPersist
         {
             Build(name);
             return this;
@@ -279,29 +289,30 @@ namespace Greatbone.Core
         // CONVINIENTS
         //
 
-        public static DbSql SELECT_FROM<T>(T obj, string table, ushort x = 0) where T : IPersist
+        public static DbSql SELECT_FROM<T>(T obj, string table, uint x = 0) where T : IPersist
         {
             DbSql sql = new DbSql("SELECT ");
-            sql.Put(obj, (ushort)(x | UShortkUtility.X_SEL))._("FROM")._(table);
+            sql.Put(obj, x | SEL);
+            sql.Add(" FROM ");
+            sql.Add(table);
             return sql;
         }
 
-        public static DbSql INSERT_INTO<T>(string table, T obj, ushort x = 0) where T : IPersist
+        public static DbSql INSERT_INTO<T>(string table, T obj, uint x = 0) where T : IPersist
         {
             DbSql sql = new DbSql("INSERT INTO ");
-
             sql.Add(table);
             sql.Add(" (");
 
             sql.ctx = Columns;
             sql.ordinal = 1;
-            obj.Save(sql, x.OrINS());
+            sql.Put(obj, x | INS);
 
             sql.Add(") VALUES (");
 
             sql.ctx = Parameters;
             sql.ordinal = 1;
-            obj.Save(sql, x.OrINS());
+            sql.Put(obj, x | INS);
 
             sql.Add(")");
 
@@ -309,21 +320,20 @@ namespace Greatbone.Core
         }
 
 
-        public static DbSql UPDATE_SET(string table, IPersist obj, ushort x = 0)
+        public static DbSql UPDATE_SET(string table, IPersist obj, uint x = 0)
         {
             DbSql sql = new DbSql("UPDATE ");
-
             sql.Add(table);
             sql.Add(" SET ");
 
             sql.ctx = Columns;
             sql.ordinal = 1;
-            obj.Save(sql, x.OrUPD()); // column list
+            sql.Put(obj, x | UPD);
 
             return sql;
         }
 
-        public static DbSql INSERT_INTO_UPDATE_SET<T>(string table, T obj, ushort x = 0) where T : IPersist
+        public static DbSql INSERT_INTO_UPDATE_SET<T>(string table, T obj, uint x = 0) where T : IPersist
         {
             DbSql sql = new DbSql("INSERT INTO ");
 
@@ -332,13 +342,13 @@ namespace Greatbone.Core
 
             sql.ctx = Columns;
             sql.ordinal = 1;
-            obj.Save(sql, x.OrINS());
+            sql.Put(obj, x | INS);
 
             sql.Add(") VALUES (");
 
             sql.ctx = Parameters;
             sql.ordinal = 1;
-            obj.Save(sql, x.OrINS());
+            sql.Put(obj, x | INS);
 
             sql.Add(")");
 

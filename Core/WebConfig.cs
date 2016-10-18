@@ -47,7 +47,7 @@ namespace Greatbone.Core
         public override string Folder => key;
 
 
-        public void Load(ISource sc, ushort x = 0)
+        public void Load(ISource sc, uint x = 0)
         {
             sc.Got(nameof(key), ref key);
             sc.Got(nameof(opts), ref opts);
@@ -60,7 +60,7 @@ namespace Greatbone.Core
             sc.Got(nameof(logging), ref logging);
         }
 
-        public void Save<R>(ISink<R> sk, ushort x = 0) where R : ISink<R>
+        public void Save<R>(ISink<R> sk, uint x = 0) where R : ISink<R>
         {
             sk.Put(nameof(key), key);
             sk.Put(nameof(opts), opts);

@@ -1,5 +1,6 @@
 ﻿using System;
 using Greatbone.Core;
+using static Greatbone.Core.DbSql;
 
 namespace Greatbone.Sample
 {
@@ -28,7 +29,7 @@ namespace Greatbone.Sample
         internal App[] apps;
 
 
-        public void Load(ISource sc, ushort x = 0)
+        public void Load(ISource sc, uint x = 0)
         {
             sc.Got(nameof(id), ref id);
             sc.Got(nameof(loc), ref loc);
@@ -43,9 +44,9 @@ namespace Greatbone.Sample
             sc.Got(nameof(apps), ref apps);
         }
 
-        public void Save<R>(ISink<R> sk, ushort x = 0) where R : ISink<R>
+        public void Save<R>(ISink<R> sk, uint x = 0) where R : ISink<R>
         {
-            if (!(x.INS() || x.UPD()))
+            if (x.Neither(INS, UPD))
             {
                 sk.Put(nameof(id), id);
             }
@@ -68,13 +69,13 @@ namespace Greatbone.Sample
 
         internal string user;
 
-        public void Load(ISource sc, ushort x = 0)
+        public void Load(ISource sc, uint x = 0)
         {
             sc.Got(nameof(userid), ref userid);
             sc.Got(nameof(user), ref user);
         }
 
-        public void Save<R>(ISink<R> sk, ushort x = 0) where R : ISink<R>
+        public void Save<R>(ISink<R> sk, uint x = 0) where R : ISink<R>
         {
             sk.Put(nameof(userid), userid);
             sk.Put(nameof(user), user);

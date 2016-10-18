@@ -13,7 +13,7 @@
         // whether to create message tables
         internal bool msg;
 
-        public void Load(ISource sc, ushort x = 0)
+        public void Load(ISource sc, uint x = 0)
         {
             sc.Got(nameof(host), ref host);
             sc.Got(nameof(port), ref port);
@@ -22,7 +22,7 @@
             sc.Got(nameof(msg), ref msg);
         }
 
-        public void Save<R>(ISink<R> k, ushort x = 0) where R : ISink<R>
+        public void Save<R>(ISink<R> k, uint x = 0) where R : ISink<R>
         {
             k.Put(nameof(host), host);
             k.Put(nameof(port), port);

@@ -186,7 +186,7 @@ namespace Greatbone.Core
         // RESULTSET
         //
 
-        public T ToObj<T>(ushort x = 0) where T : IPersist, new()
+        public T ToObj<T>(uint x = 0) where T : IPersist, new()
         {
             T obj = new T();
             obj.Load(this, x);
@@ -194,7 +194,7 @@ namespace Greatbone.Core
         }
 
 
-        public T[] ToArr<T>(ushort x = 0) where T : IPersist, new()
+        public T[] ToArr<T>(uint x = 0) where T : IPersist, new()
         {
             List<T> lst = new List<T>(64);
             while (NextRow())
@@ -354,7 +354,7 @@ namespace Greatbone.Core
             return false;
         }
 
-        public bool Got<V>(string name, ref V v, ushort x = 0) where V : IPersist, new()
+        public bool Got<V>(string name, ref V v, uint x = 0) where V : IPersist, new()
         {
             int ord = name == null ? ordinal++ : reader.GetOrdinal(name);
             if (!reader.IsDBNull(ord))
@@ -439,7 +439,7 @@ namespace Greatbone.Core
             return false;
         }
 
-        public bool Got<V>(string name, ref V[] v, ushort x = 0) where V : IPersist, new()
+        public bool Got<V>(string name, ref V[] v, uint x = 0) where V : IPersist, new()
         {
             int ord = name == null ? ordinal++ : reader.GetOrdinal(name);
             if (!reader.IsDBNull(ord))
