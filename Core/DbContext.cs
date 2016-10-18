@@ -11,6 +11,8 @@ namespace Greatbone.Core
 
         readonly NpgsqlCommand command;
 
+        readonly DbSql sql;
+
         readonly DbParameters parameters;
 
         private NpgsqlTransaction transact;
@@ -24,6 +26,7 @@ namespace Greatbone.Core
         {
             connection = new NpgsqlConnection(builder);
             command = new NpgsqlCommand();
+            sql = new DbSql();
             parameters = new DbParameters(command.Parameters);
             command.Connection = connection;
         }
@@ -66,44 +69,72 @@ namespace Greatbone.Core
             }
         }
 
-        public bool QueryA(string cmdtext, Action<DbParameters> ps)
+        void Clear()
         {
-            if (connection.State != ConnectionState.Open)
-            {
-                connection.Open();
-            }
             if (reader != null)
             {
                 reader.Close();
                 reader = null;
             }
-            // setup command
+            parameters.Clear();
+            sql.Clear();
+            ordinal = 0;
+        }
+
+        public bool QueryA(string cmdtext, Action<DbParameters> p)
+        {
+            if (connection.State != ConnectionState.Open)
+            {
+                connection.Open();
+            }
+            Clear();
             command.CommandText = cmdtext;
             command.CommandType = CommandType.Text;
-            parameters.Clear();
-            ps?.Invoke(parameters);
-            ordinal = 0;
+            p?.Invoke(parameters);
             reader = command.ExecuteReader();
             return reader.Read();
         }
 
-        public bool Query(string cmdtext, Action<DbParameters> ps)
+        public bool QueryA(Action<DbSql> cmd, Action<DbParameters> p)
         {
             if (connection.State != ConnectionState.Open)
             {
                 connection.Open();
             }
-            if (reader != null)
+            Clear();
+            cmd(sql); // generate sql
+            command.CommandText = sql.ToString();
+            command.CommandType = CommandType.Text;
+            p?.Invoke(parameters);
+            reader = command.ExecuteReader();
+            return reader.Read();
+        }
+
+        public bool Query(string cmdtext, Action<DbParameters> p)
+        {
+            if (connection.State != ConnectionState.Open)
             {
-                reader.Close();
-                reader = null;
+                connection.Open();
             }
-            // setup command
+            Clear();
             command.CommandText = cmdtext;
             command.CommandType = CommandType.Text;
-            parameters.Clear();
-            ps?.Invoke(parameters);
-            ordinal = 0;
+            p?.Invoke(parameters);
+            reader = command.ExecuteReader();
+            return reader.HasRows;
+        }
+
+        public bool Query(Action<DbSql> cmd, Action<DbParameters> p)
+        {
+            if (connection.State != ConnectionState.Open)
+            {
+                connection.Open();
+            }
+            Clear();
+            cmd(sql); // generate sql
+            command.CommandText = sql.ToString();
+            command.CommandType = CommandType.Text;
+            p?.Invoke(parameters);
             reader = command.ExecuteReader();
             return reader.HasRows;
         }
@@ -142,43 +173,57 @@ namespace Greatbone.Core
             return reader.NextResult();
         }
 
-        public int Execute(string cmdtext, Action<DbParameters> ps)
+        public int Execute(string cmdtext, Action<DbParameters> p)
         {
             if (connection.State != ConnectionState.Open)
             {
                 connection.Open();
             }
-            if (reader != null)
-            {
-                reader.Close();
-                reader = null;
-            }
-            // setup command
+            Clear();
             command.CommandText = cmdtext;
             command.CommandType = CommandType.Text;
-            parameters.Clear();
-            ps?.Invoke(parameters);
-            ordinal = 0;
+            p?.Invoke(parameters);
             return command.ExecuteNonQuery();
         }
 
-        public object Scalar(string cmdtext, Action<DbParameters> ps)
+        public int Execute(Action<DbSql> cmd, Action<DbParameters> p)
         {
             if (connection.State != ConnectionState.Open)
             {
                 connection.Open();
             }
-            if (reader != null)
+            Clear();
+            cmd(sql); // generate sql
+            command.CommandText = sql.ToString();
+            command.CommandType = CommandType.Text;
+            p?.Invoke(parameters);
+            return command.ExecuteNonQuery();
+        }
+
+        public object Scalar(string cmdtext, Action<DbParameters> p)
+        {
+            if (connection.State != ConnectionState.Open)
             {
-                reader.Close();
-                reader = null;
+                connection.Open();
             }
-            // setup command
+            Clear();
             command.CommandText = cmdtext;
             command.CommandType = CommandType.Text;
-            parameters.Clear();
-            ps?.Invoke(parameters);
-            ordinal = 0;
+            p?.Invoke(parameters);
+            return command.ExecuteScalar();
+        }
+
+        public object Scalar(Action<DbSql> cmd, Action<DbParameters> p)
+        {
+            if (connection.State != ConnectionState.Open)
+            {
+                connection.Open();
+            }
+            Clear();
+            cmd(sql); // generate sql
+            command.CommandText = sql.ToString();
+            command.CommandType = CommandType.Text;
+            p?.Invoke(parameters);
             return command.ExecuteScalar();
         }
 

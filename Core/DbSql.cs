@@ -31,9 +31,20 @@ namespace Greatbone.Core
         internal int ordinal;
 
 
+        public DbSql() : base(InitialCapacity)
+        {
+        }
+
         public DbSql(string str) : base(InitialCapacity)
         {
             Add(str);
+        }
+
+        internal void Clear()
+        {
+            count = 0;
+            ctx = 0;
+            ordinal = 0;
         }
 
         public DbSql _(string str)
@@ -395,78 +406,85 @@ namespace Greatbone.Core
         // CONVINIENTS
         //
 
-        public static DbSql SELECT_WHERE<T>(T obj, string table, uint x = 0, string cond = null) where T : IPersist
+        public DbSql SELECT_WHERE<T>(T obj, string table, uint x = 0, string cond = null) where T : IPersist
         {
-            DbSql sql = new DbSql("SELECT ");
+            Add("SELECT ");
 
-            sql.Columns(obj, x | X_SEL);
+            Columns(obj, x | X_SEL);
 
-            sql.Add(" FROM "); sql.Add(table);
+            Add(" FROM "); Add(table);
 
             if (cond != null)
             {
-                sql.Add(" WHERE ");
-                sql.Add(cond);
+                Add(" WHERE ");
+                Add(cond);
             }
 
-            return sql;
+            return this;
         }
 
-        public static DbSql INSERT_VALUES<T>(string table, T obj, uint x = 0) where T : IPersist
+        public DbSql INSERT_VALUES<T>(string table, T obj, uint x = 0) where T : IPersist
         {
-            DbSql sql = new DbSql("INSERT INTO "); sql.Add(table);
-            sql.Add(" (");
+            Add("INSERT INTO "); Add(table);
+            Add(" (");
 
-            sql.Columns(obj, x | X_INS);
+            Columns(obj, x | X_INS);
 
-            sql.Add(") VALUES (");
+            Add(") VALUES (");
 
-            sql.Params(obj, x | X_INS);
+            Params(obj, x | X_INS);
 
-            sql.Add(")");
+            Add(")");
 
-            return sql;
+            return this;
         }
 
 
-        public static DbSql UPDATE_SET_WHERE(string table, IPersist obj, uint x = 0, string cond = null)
+        public DbSql UPDATE_SET_WHERE(string table, IPersist obj, uint x = 0, string cond = null)
         {
-            DbSql sql = new DbSql("UPDATE "); sql.Add(table);
-            sql.Add(" SET ");
+            Add("UPDATE "); Add(table);
+            Add(" SET ");
 
-            sql.Sets(obj, x | X_UPD);
+            Sets(obj, x | X_UPD);
 
             if (cond != null)
             {
-                sql.Add(" WHERE ");
-                sql.Add(cond);
+                Add(" WHERE ");
+                Add(cond);
             }
 
-            return sql;
+            return this;
         }
 
-        public static DbSql INSERT_VALUES_UPDATE_SET<T>(string table, string targ, T obj, uint x = 0) where T : IPersist
+        public DbSql INSERT_VALUES_UPDATE_SET<T>(string table, string targ, T obj, uint x = 0) where T : IPersist
         {
-            DbSql sql = INSERT_VALUES(table, obj, x);
+            INSERT_VALUES(table, obj, x);
 
-            sql.Add(" ON CONFLICT (");
-            sql.Add(targ);
-            sql.Add(") DO UPDATE SET ");
+            Add(" ON CONFLICT (");
+            Add(targ);
+            Add(") DO UPDATE SET ");
 
-            sql.Sets(obj, x | X_UPD);
+            Sets(obj, x | X_UPD);
 
-            return sql;
+            return this;
         }
 
-        public static DbSql DELETE_WHERE(string table, string cond = null)
+        public DbSql DELETE_WHERE(string table, string cond = null)
         {
-            DbSql sql = new DbSql("DELETE FROM "); sql.Add(table);
+            Add("DELETE FROM "); Add(table);
             if (cond != null)
             {
-                sql.Add(" WHERE ");
-                sql.Add(cond);
+                Add(" WHERE ");
+                Add(cond);
             }
-            return sql;
+            return this;
+        }
+
+        public DbSql RETURNING(string s)
+        {
+            Add(" RETURNING ");
+            Add(s);
+            return this;
         }
 
     }

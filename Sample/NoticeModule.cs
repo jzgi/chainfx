@@ -46,14 +46,16 @@ namespace Greatbone.Sample
         {
             IToken tok = wc.Token;
 
-            Notice obj = wc.Obj<Notice>();
+            Notice obj = wc.JObj.ToObj<Notice>();
             obj.authorid = tok.Key;
             obj.author = tok.Name;
 
             using (var dc = Service.NewDbContext())
             {
-                string sql = DbSql.INSERT_VALUES("notices", obj)._("RETURNING id").ToString();
-                object id = dc.Scalar(sql, p => obj.Save(p));
+                object id = dc.Scalar(
+                    c => c.INSERT_VALUES("notices", obj).RETURNING("id"),
+                    p => obj.Save(p)
+                );
                 if (id != null)
                 {
                     wc.StatusCode = 201;

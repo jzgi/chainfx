@@ -108,28 +108,6 @@ namespace Greatbone.Core
             }
         }
 
-        public T Obj<T>(uint x = 0) where T : IPersist, new()
-        {
-            JObj jo = JObj;
-            T obj = new T();
-            obj.Load(jo, x);
-            return obj;
-        }
-
-        public T[] Arr<T>(uint x = 0) where T : IPersist, new()
-        {
-            JArr ja = JArr;
-            T[] arr = new T[ja.Count];
-            for (int i = 0; i < arr.Length; i++)
-            {
-                T obj = new T();
-                obj.Load((JObj)ja[i], x);
-                arr[i] = obj;
-            }
-            return arr;
-        }
-
-
         //
         // SOURCE FOR QUERY STRING
         //

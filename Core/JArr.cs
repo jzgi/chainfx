@@ -75,5 +75,18 @@ namespace Greatbone.Core
             }
         }
 
+
+        public T[] ToArr<T>(uint x = 0) where T : IPersist, new()
+        {
+            T[] arr = new T[count];
+            for (int i = 0; i < arr.Length; i++)
+            {
+                T obj = new T();
+                obj.Load((JObj)this[i], x);
+                arr[i] = obj;
+            }
+            return arr;
+        }
+
     }
 }
