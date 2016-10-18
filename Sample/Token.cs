@@ -40,7 +40,7 @@ namespace Greatbone.Sample
         {
             sk.Put(nameof(id), id);
             sk.Put(nameof(name), name);
-            if (!x.Has(Out))
+            if (!x.If(Out))
             {
                 sk.Put(nameof(credential), credential);
             }

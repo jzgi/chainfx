@@ -13,15 +13,50 @@ namespace Greatbone.Sample
         }
 
         ///
+        /// <code>
         /// GET /fame/_id_/
+        /// </code>
+        ///
         public override void @default(WebContext wc, string var)
         {
-            throw new System.NotImplementedException();
+            using (var dc = Service.NewDbContext())
+            {
+                if (wc.IsGet)
+                {
+                    if (dc.QueryA("SELECT * FROM fames WHERE id = @1", p => p.Put(var)))
+                    {
+                        Fame obj = dc.ToObj<Fame>();
+                        wc.Respond(200, obj);
+                    }
+                    else
+                    {
+                        wc.StatusCode = 404;
+                    }
+                }
+            }
         }
 
+        /// <code>
+        /// POST /fame/_id_/
+        /// {
+        /// }
+        /// </code>
         public void upd(WebContext wc, string var)
         {
-            throw new System.NotImplementedException();
+            Fame obj = wc.ToObj<Fame>();
+
+            string sql = DbSql.INSERT_INTO("faces", obj).ToString();
+            using (var sc = Service.NewDbContext())
+            {
+                if (sc.Execute(sql, p => p.Put(obj).Put(wc.Token.Key)) > 0)
+                {
+                    wc.StatusCode = 200;
+                }
+                else
+                {
+                    wc.StatusCode = 400; // bad request
+                }
+            }
         }
 
         ///

@@ -33,6 +33,7 @@ namespace Greatbone.Sample
             }
         }
 
+
         ///
         /// <code> 
         /// GET /fame/find?word=_name_

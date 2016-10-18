@@ -45,7 +45,7 @@ namespace Greatbone.Sample
 
         public void Save<R>(ISink<R> sk, ushort x = 0) where R : ISink<R>
         {
-            if (!x.InsOrUpd())
+            if (!(x.INS() || x.UPD()))
             {
                 sk.Put(nameof(id), id);
             }

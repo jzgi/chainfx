@@ -3,38 +3,46 @@ namespace Greatbone.Core
 {
     public static class UShortkUtility
     {
-        public const ushort Select = 0x8000;
+        public const ushort X_SEL = 0x8000;
 
-        public const ushort Update = 0x4000;
+        public const ushort X_UPD = 0x4000;
 
-        public const ushort Insert = 0x2000;
-
-        public const ushort InsertOrUpdate = Insert | Update;
+        public const ushort X_INS = 0x2000;
 
 
-        public static bool Has(this ushort x, ushort v)
+        public static bool If(this ushort x, ushort v)
         {
             return (x & v) == v;
         }
 
-        public static bool Sel(this ushort x)
+        public static bool SEL(this ushort x)
         {
-            return (x & Select) == Select;
+            return (x & X_SEL) == X_SEL;
         }
 
-        public static bool Ins(this ushort x)
+        public static bool INS(this ushort x)
         {
-            return (x & Insert) == Insert;
+            return (x & X_INS) == X_INS;
         }
 
-        public static bool Upd(this ushort x)
+        public static bool UPD(this ushort x)
         {
-            return (x & Update) == Update;
+            return (x & X_UPD) == X_UPD;
         }
 
-        public static bool InsOrUpd(this ushort x)
+        public static ushort OrSEL(this ushort x)
         {
-            return (x & InsertOrUpdate) == InsertOrUpdate;
+            return (ushort)(x | X_INS);
+        }
+
+        public static ushort OrINS(this ushort x)
+        {
+            return (ushort)(x | X_INS);
+        }
+
+        public static ushort OrUPD(this ushort x)
+        {
+            return (ushort)(x | X_UPD);
         }
 
 
