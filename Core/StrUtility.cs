@@ -7,6 +7,18 @@ namespace Greatbone.Core
     public static class StrUtility
     {
 
+        private static readonly char[] HEX = { '0', '1', '2', '3', '4', '5', '6', '7', '8', '9', 'a', 'b', 'c', 'd', 'e', 'f' };
+
+        public static string ToHex(long v)
+        {
+            char[] buf = new char[16];
+            for (int i = 0; i < 16; i++)
+            {
+                buf[i] = HEX[(v >> (i * 4)) & 0x0fL];
+            }
+            return new string(buf);
+        }
+
         static readonly string[] Days = { "Mon", "Tue", "Wed", "Thu", "Fri", "Sat", "Sun" };
 
         static readonly string[] Mons = { "Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec" };

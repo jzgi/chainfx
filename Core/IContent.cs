@@ -1,5 +1,4 @@
-﻿using System;
-
+﻿
 namespace Greatbone.Core
 {
 	public interface IContent
@@ -16,11 +15,6 @@ namespace Greatbone.Core
 		///
 		int Length { get; }
 
-		/// <summary>Time that was last modified.</summary>
-		DateTime LastModified { get; }
-
-		/// <summary>A computed ETag value.</summary>
-		///
-		long ETag { get; }
 	}
+
 }

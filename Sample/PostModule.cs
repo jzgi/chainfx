@@ -25,7 +25,7 @@ namespace Greatbone.Sample
                 if (dc.Query(@"SELECT * FROM posts ORDER BY id DESC LIMIT @limit OFFSET @offset", p => p.Put(20).Put(20 * page)))
                 {
                     Post[] arr = dc.ToArr<Post>();
-                    wc.Respond(200, arr);
+                    wc.Out(200, arr);
                 }
                 else
                 {
@@ -57,7 +57,7 @@ namespace Greatbone.Sample
             {
                 object id = dc.Scalar("INSERT INTO posts (time, authorid, author, commentable, text) VALUES (@1,@2,@3,@4,@5) RETURNING ID",
                      p => p.Put(time).Put(tok.Key).Put(tok.Name).Put(commentable).Put(text));
-                wc.SetLocation(id.ToString());
+                wc.SetHeader("Location", id.ToString());
                 wc.StatusCode = 201;
             }
         }

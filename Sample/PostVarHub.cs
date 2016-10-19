@@ -44,7 +44,7 @@ namespace Greatbone.Sample
                             {
                                 Buffer = v
                             };
-                            wc.Respond(200, sta, true, 60000);
+                            wc.Out(200, sta, true, 60000);
                         }
                         else
                         {

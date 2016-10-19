@@ -26,7 +26,7 @@ namespace Greatbone.Sample
                     if (dc.QueryA("SELECT * FROM fames WHERE id = @1", p => p.Put(var)))
                     {
                         Fame obj = dc.ToObj<Fame>();
-                        wc.Respond(200, obj);
+                        wc.Out(200, obj);
                     }
                     else
                     {
@@ -78,7 +78,7 @@ namespace Greatbone.Sample
                 {
                     byte[] v = dc.GotBytes();
                     StaticContent sta = new StaticContent() { Buffer = v };
-                    wc.Respond(200, sta, true, 60000);
+                    wc.Out(200, sta, true, 60000);
                 }
                 else
                 {
@@ -135,7 +135,7 @@ namespace Greatbone.Sample
                     {
                         byte[] v = dc.GotBytes();
                         StaticContent sta = new StaticContent() { Buffer = v };
-                        wc.Respond(200, sta, true, 60000);
+                        wc.Out(200, sta, true, 60000);
                     }
                     else
                     {

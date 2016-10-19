@@ -23,7 +23,7 @@ namespace Greatbone.Sample
                 if (dc.Query("SELECT * FROM notices WHERE duedate <= current_date ORDER BY id LIMIT 20 OFFSET @1", p => p.Put(page * 20)))
                 {
                     Notice[] arr = dc.ToArr<Notice>();
-                    wc.Respond(200, arr);
+                    wc.Out(200, arr);
                 }
                 else
                 {
@@ -57,7 +57,7 @@ namespace Greatbone.Sample
                 if (id != null)
                 {
                     wc.StatusCode = 201;
-                    wc.SetLocation(id.ToString());
+                    wc.SetHeader("Location", id.ToString());
                 }
                 else
                 {

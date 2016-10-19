@@ -3,7 +3,7 @@ using System;
 namespace Greatbone.Core
 {
     /// <summary>
-    /// An XML element that may contains child elements.
+    /// A form object model parsed from www-form-urlencoded.
     /// </summary>
     public class Form : ISource
     {

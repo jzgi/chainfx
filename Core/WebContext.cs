@@ -418,21 +418,6 @@ namespace Greatbone.Core
             return null;
         }
 
-        public void SetHeader(string name, int v)
-        {
-            Response.Headers.Add(name, new StringValues(v.ToString()));
-        }
-
-        public void SetHeader(string name, string v)
-        {
-            Response.Headers.Add(name, new StringValues(v));
-        }
-
-        public void SetLocation(string v)
-        {
-            Response.Headers.Add("Location", new StringValues(v));
-        }
-
         //
         // RESPONSE
         //
@@ -443,69 +428,94 @@ namespace Greatbone.Core
             set { Response.StatusCode = value; }
         }
 
-        public IContent Content { get; set; }
-
-        internal bool? Pub { get; set; }
-
-        internal int MaxAge { get; set; }
-
-        public void Respond<T>(int status, T obj, uint x = 0, bool? pub = false, int maxage = 0) where T : IPersist
+        public void SetHeader(string name, int v)
         {
-            Respond(status, jcont => jcont.PutObj(obj, x), pub, maxage);
+            Response.Headers.Add(name, new StringValues(v.ToString()));
         }
 
-        public void Respond<T>(int status, T[] arr, uint x = 0, bool? pub = false, int maxage = 0) where T : IPersist
+        public void SetHeader(string name, string v)
         {
-            Respond(status, jcont => jcont.PutArr(arr, x), pub, maxage);
+            Response.Headers.Add(name, new StringValues(v));
         }
 
-        public void Respond(int status, Action<JContent> a, bool? pub = false, int maxage = 0)
+        public void SetHeader(string name, DateTime v)
+        {
+            string str = StrUtility.ToHttpDate(v);
+            Response.Headers.Add(name, new StringValues(str));
+        }
+
+        public IContent Content { get; internal set; }
+
+        // public, no-cache or private
+        public bool? Pub { get; internal set; }
+
+        // the content  is to be considered stale after its age is greater than the specified number of seconds.
+        public int MaxAge { get; internal set; }
+
+        public void Out(int status, IContent cont, bool? pub = false, int maxage = 0)
+        {
+            StatusCode = status;
+            Content = cont;
+            Pub = pub;
+            MaxAge = maxage;
+        }
+
+        public void Out<T>(int status, T obj, uint x = 0, bool? pub = false, int maxage = 0) where T : IPersist
+        {
+            Out(status, jcont => jcont.PutObj(obj, x), pub, maxage);
+        }
+
+        public void Out<T>(int status, T[] arr, uint x = 0, bool? pub = false, int maxage = 0) where T : IPersist
+        {
+            Out(status, jcont => jcont.PutArr(arr, x), pub, maxage);
+        }
+
+        public void Out(int status, Action<JContent> a, bool? pub = false, int maxage = 0)
         {
             JContent jcont = new JContent(8 * 1024);
             a?.Invoke(jcont);
-
-            Respond(status, jcont, pub, maxage);
+            Out(status, jcont, pub, maxage);
         }
 
-        public void Respond(int status, Action<HtmlContent> a, bool? pub = true, int maxage = 1000)
+        public void Out(int status, Action<HtmlContent> a, bool? pub = true, int maxage = 1000)
         {
-            StatusCode = status;
-
-            this.Pub = pub;
-            this.MaxAge = maxage;
-
-            HtmlContent html = new HtmlContent(16 * 1024);
-            a?.Invoke(html);
-            Content = html;
-        }
-
-        public void Respond(int status, IContent cont, bool? pub = null, int maxage = 0)
-        {
-            StatusCode = status;
-            if (cont != null)
-            {
-                Content = cont;
-                Pub = pub;
-                MaxAge = maxage;
-            }
+            HtmlContent hcont = new HtmlContent(8 * 1024);
+            a?.Invoke(hcont);
+            Out(status, hcont, pub, maxage);
         }
 
         internal Task WriteContentAsync()
         {
+            // setup appropriate headers
             if (Content != null)
             {
-                HttpResponse rsp = Response;
-                rsp.ContentLength = Content.Length;
-                rsp.ContentType = Content.Type;
+                HttpResponse resp = Response;
+                resp.ContentLength = Content.Length;
+                resp.ContentType = Content.Type;
 
-                // etag
+                if (Pub != null)
+                {
+                    string cc = Pub.Value ? "public" : "private" + ", max-age=" + MaxAge;
+                    SetHeader("Cache-Control", cc);
+                }
 
-                //
-                return rsp.Body.WriteAsync(Content.Buffer, 0, Content.Length);
+                // set etag or last-modified 
+                if (Content is DynamicContent)
+                {
+                    long v = ((DynamicContent)Content).ETag;
+                    SetHeader("ETag", StrUtility.ToHex(v));
+                }
+                else
+                {
+                    DateTime v = ((StaticContent)Content).LastModified;
+                    SetHeader("Last-Modified", StrUtility.ToHttpDate(v));
+                }
+
+                // send async
+                return resp.Body.WriteAsync(Content.Buffer, 0, Content.Length);
             }
             return Task.CompletedTask;
         }
-
 
         //
         // RPC
@@ -531,7 +541,6 @@ namespace Greatbone.Core
                 a?.Invoke(jcon);
             }
         }
-
 
 
         public void Dispose()
