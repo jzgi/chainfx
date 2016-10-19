@@ -389,6 +389,44 @@ namespace Greatbone.Core
             return false;
         }
 
+        //
+        // HEADER
+        //
+
+        public string Header(string name)
+        {
+            StringValues vs;
+            if (Request.Headers.TryGetValue(name, out vs))
+            {
+                return (string)vs;
+            }
+            return null;
+        }
+
+        public int? HeaderInt(string name)
+        {
+            StringValues vs;
+            if (Request.Headers.TryGetValue(name, out vs))
+            {
+                string str = (string)vs;
+                int v;
+                if (int.TryParse(str, out v))
+                {
+                    return v;
+                }
+            }
+            return null;
+        }
+
+        public void SetHeader(string name, int v)
+        {
+            Response.Headers.Add(name, new StringValues(v.ToString()));
+        }
+
+        public void SetHeader(string name, string v)
+        {
+            Response.Headers.Add(name, new StringValues(v));
+        }
 
         public void SetLocation(string v)
         {

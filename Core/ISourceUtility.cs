@@ -16,114 +16,114 @@ namespace Greatbone.Core
         // GOT
         //
 
-        public static bool Got(this ISource sc, ref bool v)
+        public static bool Got(this ISource src, ref bool v)
         {
-            return sc.Got(null, ref v);
+            return src.Got(null, ref v);
         }
 
-        public static bool Got(this ISource sc, ref short v)
+        public static bool Got(this ISource src, ref short v)
         {
-            return sc.Got(null, ref v);
+            return src.Got(null, ref v);
         }
 
-        public static bool Got(this ISource sc, ref int v)
+        public static bool Got(this ISource src, ref int v)
         {
-            return sc.Got(null, ref v);
-        }
-
-
-        public static bool Got(this ISource sc, ref long v)
-        {
-            return sc.Got(null, ref v);
+            return src.Got(null, ref v);
         }
 
 
-        public static bool Got(this ISource sc, ref decimal v)
+        public static bool Got(this ISource src, ref long v)
         {
-            return sc.Got(null, ref v);
+            return src.Got(null, ref v);
         }
 
 
-        public static bool Got(this ISource sc, ref Number v)
+        public static bool Got(this ISource src, ref decimal v)
         {
-            return sc.Got(null, ref v);
+            return src.Got(null, ref v);
         }
 
 
-        public static bool Got(this ISource sc, ref DateTime v)
+        public static bool Got(this ISource src, ref Number v)
         {
-            return sc.Got(null, ref v);
+            return src.Got(null, ref v);
         }
 
 
-        public static bool Got(this ISource sc, ref char[] v)
+        public static bool Got(this ISource src, ref DateTime v)
         {
-            return sc.Got(null, ref v);
+            return src.Got(null, ref v);
         }
 
 
-        public static bool Got(this ISource sc, ref string v)
+        public static bool Got(this ISource src, ref char[] v)
         {
-            return sc.Got(null, ref v);
+            return src.Got(null, ref v);
         }
 
 
-        public static bool Got(this ISource sc, ref byte[] v)
+        public static bool Got(this ISource src, ref string v)
         {
-            return sc.Got(null, ref v);
+            return src.Got(null, ref v);
         }
 
 
-        public static bool Got(this ISource sc, ref ArraySegment<byte> v)
+        public static bool Got(this ISource src, ref byte[] v)
         {
-            return sc.Got(null, ref v);
+            return src.Got(null, ref v);
         }
 
 
-        public static bool Got<V>(this ISource sc, ref V v, uint x = 0) where V : IPersist, new()
+        public static bool Got(this ISource src, ref ArraySegment<byte> v)
         {
-            return sc.Got(null, ref v, x);
+            return src.Got(null, ref v);
         }
 
 
-        public static bool Got(this ISource sc, ref JObj v)
+        public static bool Got<V>(this ISource src, ref V v, uint x = 0) where V : IPersist, new()
         {
-            return sc.Got(null, ref v);
+            return src.Got(null, ref v, x);
         }
 
 
-        public static bool Got(this ISource sc, ref JArr v)
+        public static bool Got(this ISource src, ref JObj v)
         {
-            return sc.Got(null, ref v);
+            return src.Got(null, ref v);
         }
 
 
-        public static bool Got(this ISource sc, ref short[] v)
+        public static bool Got(this ISource src, ref JArr v)
         {
-            return sc.Got(null, ref v);
+            return src.Got(null, ref v);
         }
 
 
-        public static bool Got(this ISource sc, ref int[] v)
+        public static bool Got(this ISource src, ref short[] v)
         {
-            return sc.Got(null, ref v);
+            return src.Got(null, ref v);
         }
 
 
-        public static bool Got(this ISource sc, ref long[] v)
+        public static bool Got(this ISource src, ref int[] v)
         {
-            return sc.Got(null, ref v);
+            return src.Got(null, ref v);
         }
 
 
-        public static bool Got(this ISource sc, ref string[] v)
+        public static bool Got(this ISource src, ref long[] v)
         {
-            return sc.Got(null, ref v);
+            return src.Got(null, ref v);
         }
 
-        public static bool Got<V>(this ISource sc, ref V[] v, uint x = 0) where V : IPersist, new()
+
+        public static bool Got(this ISource src, ref string[] v)
         {
-            return sc.Got(null, ref v, x);
+            return src.Got(null, ref v);
+        }
+
+        public static bool Got<V>(this ISource src, ref V[] v, uint x = 0) where V : IPersist, new()
+        {
+            return src.Got(null, ref v, x);
         }
 
 
@@ -131,137 +131,137 @@ namespace Greatbone.Core
         // GET SPECIFIC
         //
 
-        public static bool GotBool(this ISource sc, bool def = false)
+        public static bool GotBool(this ISource src, bool def = false)
         {
             bool v = def;
-            sc.Got(null, ref v);
+            src.Got(null, ref v);
             return v;
         }
 
-        public static short GotShort(this ISource sc, short def = 0)
+        public static short GotShort(this ISource src, short def = 0)
         {
             short v = def;
-            sc.Got(null, ref v);
+            src.Got(null, ref v);
             return v;
         }
 
-        public static int GotInt(this ISource sc, int def = 0)
+        public static int GotInt(this ISource src, int def = 0)
         {
             int v = def;
-            sc.Got(null, ref v);
+            src.Got(null, ref v);
             return v;
         }
 
-        public static long GotLong(this ISource sc, long def = 0)
+        public static long GotLong(this ISource src, long def = 0)
         {
             long v = def;
-            sc.Got(null, ref v);
+            src.Got(null, ref v);
             return v;
         }
 
-        public static decimal GotDecimal(this ISource sc, decimal def = 0)
+        public static decimal GotDecimal(this ISource src, decimal def = 0)
         {
             decimal v = def;
-            sc.Got(null, ref v);
+            src.Got(null, ref v);
             return v;
         }
 
-        public static Number GotNumber(this ISource sc, Number def = default(Number))
+        public static Number GotNumber(this ISource src, Number def = default(Number))
         {
             Number v = def;
-            sc.Got(null, ref v);
+            src.Got(null, ref v);
             return v;
         }
 
-        public static DateTime GotDateTime(this ISource sc, DateTime def = default(DateTime))
+        public static DateTime GotDateTime(this ISource src, DateTime def = default(DateTime))
         {
             DateTime v = def;
-            sc.Got(null, ref v);
+            src.Got(null, ref v);
             return v;
         }
 
-        public static char[] GotChars(this ISource sc, char[] def = null)
+        public static char[] GotChars(this ISource src, char[] def = null)
         {
             char[] v = def;
-            sc.Got(null, ref v);
+            src.Got(null, ref v);
             return v;
         }
 
-        public static string GotString(this ISource sc, string def = null)
+        public static string GotString(this ISource src, string def = null)
         {
             string v = def;
-            sc.Got(null, ref v);
+            src.Got(null, ref v);
             return v;
         }
 
-        public static byte[] GotBytes(this ISource sc, byte[] def = null)
+        public static byte[] GotBytes(this ISource src, byte[] def = null)
         {
             byte[] v = def;
-            sc.Got(null, ref v);
+            src.Got(null, ref v);
             return v;
         }
 
-        public static ArraySegment<byte> GotBytesSeg(this ISource sc, ArraySegment<byte> def = default(ArraySegment<byte>))
+        public static ArraySegment<byte> GotBytesSeg(this ISource src, ArraySegment<byte> def = default(ArraySegment<byte>))
         {
             ArraySegment<byte> v = def;
-            sc.Got(null, ref v);
+            src.Got(null, ref v);
             return v;
         }
 
-        public static V GotObj<V>(this ISource sc, uint x = 0, V def = default(V)) where V : IPersist, new()
+        public static V GotObj<V>(this ISource src, uint x = 0, V def = default(V)) where V : IPersist, new()
         {
             V v = def;
-            sc.Got(null, ref v, x);
+            src.Got(null, ref v, x);
             return v;
         }
 
-        public static JObj GotJObj(this ISource sc, JObj def = null)
+        public static JObj GotJObj(this ISource src, JObj def = null)
         {
             JObj v = def;
-            sc.Got(null, ref v);
+            src.Got(null, ref v);
             return v;
         }
 
-        public static JArr GotJArr(this ISource sc, JArr def = null)
+        public static JArr GotJArr(this ISource src, JArr def = null)
         {
             JArr v = def;
-            sc.Got(null, ref v);
+            src.Got(null, ref v);
             return v;
         }
 
-        public static short[] GotShorts(this ISource sc, short[] def = null)
+        public static short[] GotShorts(this ISource src, short[] def = null)
         {
             short[] v = def;
-            sc.Got(null, ref v);
+            src.Got(null, ref v);
             return v;
         }
 
-        public static int[] GotInts(this ISource sc, int[] def = null)
+        public static int[] GotInts(this ISource src, int[] def = null)
         {
             int[] v = def;
-            sc.Got(null, ref v);
+            src.Got(null, ref v);
             return v;
         }
 
-        public static long[] GotLongs(this ISource sc, long[] def = null)
+        public static long[] GotLongs(this ISource src, long[] def = null)
         {
             long[] v = def;
-            sc.Got(null, ref v);
+            src.Got(null, ref v);
             return v;
         }
 
 
-        public static string[] GotStrings(this ISource sc, string[] def = null)
+        public static string[] GotStrings(this ISource src, string[] def = null)
         {
             string[] v = def;
-            sc.Got(null, ref v);
+            src.Got(null, ref v);
             return v;
         }
 
-        public static V[] GotArr<V>(this ISource sc, uint x = 0, V[] def = null) where V : IPersist, new()
+        public static V[] GotArr<V>(this ISource src, uint x = 0, V[] def = null) where V : IPersist, new()
         {
             V[] v = def;
-            sc.Got(null, ref v, x);
+            src.Got(null, ref v, x);
             return v;
         }
 
@@ -269,137 +269,137 @@ namespace Greatbone.Core
         // GET SPECIFIC BY NAME
         //
 
-        public static bool GotBool(this ISource sc, string name, bool def = false)
+        public static bool GotBool(this ISource src, string name, bool def = false)
         {
             bool v = def;
-            sc.Got(name, ref v);
+            src.Got(name, ref v);
             return v;
         }
 
-        public static short GotShort(this ISource sc, string name, short def = 0)
+        public static short GotShort(this ISource src, string name, short def = 0)
         {
             short v = def;
-            sc.Got(name, ref v);
+            src.Got(name, ref v);
             return v;
         }
 
-        public static int GotInt(this ISource sc, string name, int def = 0)
+        public static int GotInt(this ISource src, string name, int def = 0)
         {
             int v = def;
-            sc.Got(name, ref v);
+            src.Got(name, ref v);
             return v;
         }
 
-        public static long GotLong(this ISource sc, string name, long def = 0)
+        public static long GotLong(this ISource src, string name, long def = 0)
         {
             long v = def;
-            sc.Got(name, ref v);
+            src.Got(name, ref v);
             return v;
         }
 
-        public static decimal GotDecimal(this ISource sc, string name, decimal def = 0)
+        public static decimal GotDecimal(this ISource src, string name, decimal def = 0)
         {
             decimal v = def;
-            sc.Got(name, ref v);
+            src.Got(name, ref v);
             return v;
         }
 
-        public static Number GotNumber(this ISource sc, string name, Number def = default(Number))
+        public static Number GotNumber(this ISource src, string name, Number def = default(Number))
         {
             Number v = def;
-            sc.Got(name, ref v);
+            src.Got(name, ref v);
             return v;
         }
 
-        public static DateTime GotDateTime(this ISource sc, string name, DateTime def = default(DateTime))
+        public static DateTime GotDateTime(this ISource src, string name, DateTime def = default(DateTime))
         {
             DateTime v = def;
-            sc.Got(name, ref v);
+            src.Got(name, ref v);
             return v;
         }
 
-        public static char[] GotChars(this ISource sc, string name, char[] def = null)
+        public static char[] GotChars(this ISource src, string name, char[] def = null)
         {
             char[] v = def;
-            sc.Got(name, ref v);
+            src.Got(name, ref v);
             return v;
         }
 
-        public static string GotString(this ISource sc, string name, string def = null)
+        public static string GotString(this ISource src, string name, string def = null)
         {
             string v = def;
-            sc.Got(name, ref v);
+            src.Got(name, ref v);
             return v;
         }
 
-        public static byte[] GotBytes(this ISource sc, string name, byte[] def = null)
+        public static byte[] GotBytes(this ISource src, string name, byte[] def = null)
         {
             byte[] v = def;
-            sc.Got(name, ref v);
+            src.Got(name, ref v);
             return v;
         }
 
-        public static ArraySegment<byte> GotBytesSeg(this ISource sc, string name, ArraySegment<byte> def = default(ArraySegment<byte>))
+        public static ArraySegment<byte> GotBytesSeg(this ISource src, string name, ArraySegment<byte> def = default(ArraySegment<byte>))
         {
             ArraySegment<byte> v = def;
-            sc.Got(name, ref v);
+            src.Got(name, ref v);
             return v;
         }
 
-        public static T GotObj<T>(this ISource sc, string name, T def = default(T)) where T : IPersist, new()
+        public static T GotObj<T>(this ISource src, string name, T def = default(T)) where T : IPersist, new()
         {
             T v = def;
-            sc.Got(name, ref v);
+            src.Got(name, ref v);
             return v;
         }
 
-        public static JObj GotJObj(this ISource sc, string name, JObj def = null)
+        public static JObj GotJObj(this ISource src, string name, JObj def = null)
         {
             JObj v = def;
-            sc.Got(name, ref v);
+            src.Got(name, ref v);
             return v;
         }
 
-        public static JArr GotJArr(this ISource sc, string name, JArr def = null)
+        public static JArr GotJArr(this ISource src, string name, JArr def = null)
         {
             JArr v = def;
-            sc.Got(name, ref v);
+            src.Got(name, ref v);
             return v;
         }
 
 
-        public static short[] GotShorts(this ISource sc, string name, short[] def = null)
+        public static short[] GotShorts(this ISource src, string name, short[] def = null)
         {
             short[] v = def;
-            sc.Got(name, ref v);
+            src.Got(name, ref v);
             return v;
         }
 
-        public static int[] GotInts(this ISource sc, string name, int[] def = null)
+        public static int[] GotInts(this ISource src, string name, int[] def = null)
         {
             int[] v = def;
-            sc.Got(name, ref v);
+            src.Got(name, ref v);
             return v;
         }
 
-        public static long[] GotLongs(this ISource sc, string name, long[] def = null)
+        public static long[] GotLongs(this ISource src, string name, long[] def = null)
         {
             long[] v = def;
-            sc.Got(name, ref v);
+            src.Got(name, ref v);
             return v;
         }
 
-        public static string[] GotStrings(this ISource sc, string name, string[] def = null)
+        public static string[] GotStrings(this ISource src, string name, string[] def = null)
         {
             string[] v = def;
-            sc.Got(name, ref v);
+            src.Got(name, ref v);
             return v;
         }
 
-        public static V[] GotArr<V>(this ISource sc, string name, V[] def = null) where V : IPersist, new()
+        public static V[] GotArr<V>(this ISource src, string name, V[] def = null) where V : IPersist, new()
         {
             V[] v = def;
-            sc.Got(name, ref v);
+            src.Got(name, ref v);
             return v;
         }
 

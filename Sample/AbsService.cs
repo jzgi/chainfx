@@ -1,8 +1,13 @@
 using Greatbone.Core;
-using Microsoft.Extensions.Primitives;
 
 namespace Greatbone.Sample
 {
+
+    ///
+    /// <summary>
+    /// The common base class for all service controllers.
+    /// </summary>
+    ///
     public abstract class AbsService : WebService
     {
         public AbsService(WebConfig cfg) : base(cfg)
@@ -11,8 +16,8 @@ namespace Greatbone.Sample
 
         protected override bool Authenticate(WebContext wc)
         {
-            StringValues h;
-            if (wc.Request.Headers.TryGetValue("Authorization", out h))
+            string h = wc.Header("Authorization");
+            if (h != null)
             {
                 string v = (string)h;
                 v.StartsWith("Bearer "); // Bearer scheme

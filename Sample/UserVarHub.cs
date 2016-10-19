@@ -1,9 +1,10 @@
-﻿using System.Net;
-using Greatbone.Core;
+﻿using Greatbone.Core;
 
 namespace Greatbone.Sample
 {
     ///
+    /// <summary>
+    /// The user variable-hub controller.
     ///
     public class UserVarHub : WebVarHub
     {
@@ -53,13 +54,13 @@ namespace Greatbone.Sample
         /// <code>
         /// POST /user/_id_/upd
         /// </code>
-        public void upd(WebContext wc, string userid)
+        public void upd(WebContext wc, string var)
         {
             User obj = wc.JObj.ToObj<User>();
             using (var dc = Service.NewDbContext())
             {
                 DbSql sql = new DbSql("UPDATE users")._SET_(obj)._("WHERE id = @1");
-                if (dc.Execute(sql.ToString(), p => { obj.Save(p); p.Put(userid); }) > 0)
+                if (dc.Execute(sql.ToString(), p => { obj.Save(p); p.Put(var); }) > 0)
                 {
                     wc.StatusCode = 200; // ok
                 }

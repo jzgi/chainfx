@@ -3,7 +3,7 @@
 namespace Greatbone.Sample
 {
     /// <summary>
-    /// The content service.
+    /// The content service controller.
     /// </summary>
     public class ContService : AbsService
     {
