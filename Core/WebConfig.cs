@@ -47,29 +47,29 @@ namespace Greatbone.Core
         public override string Folder => key;
 
 
-        public void Load(ISource sc, uint x = 0)
+        public void Load(ISource s, uint x = 0)
         {
-            sc.Got(nameof(key), ref key);
-            sc.Got(nameof(part), ref part);
-            sc.Got(nameof(@extern), ref @extern);
-            sc.Got(nameof(tls), ref tls);
-            sc.Got(nameof(intern), ref intern);
-            sc.Got(nameof(net), ref net);
-            sc.Got(nameof(db), ref db);
-            sc.Got(nameof(logging), ref logging);
-            sc.Got(nameof(opts), ref opts);
+            s.Got(nameof(key), ref key);
+            s.Got(nameof(part), ref part);
+            s.Got(nameof(@extern), ref @extern);
+            s.Got(nameof(tls), ref tls);
+            s.Got(nameof(intern), ref intern);
+            s.Got(nameof(net), ref net);
+            s.Got(nameof(db), ref db);
+            s.Got(nameof(logging), ref logging);
+            s.Got(nameof(opts), ref opts);
         }
 
-        public void Save<R>(ISink<R> sk, uint x = 0) where R : ISink<R>
+        public void Save<R>(ISink<R> s, uint x = 0) where R : ISink<R>
         {
-            sk.Put(nameof(key), key);
-            sk.Put(nameof(part), part);
-            sk.Put(nameof(@extern), @extern);
-            sk.Put(nameof(tls), tls);
-            sk.Put(nameof(intern), intern);
-            sk.Put(nameof(net), net);
-            sk.Put(nameof(logging), logging);
-            sk.Put(nameof(opts), opts);
+            s.Put(nameof(key), key);
+            s.Put(nameof(part), part);
+            s.Put(nameof(@extern), @extern);
+            s.Put(nameof(tls), tls);
+            s.Put(nameof(intern), intern);
+            s.Put(nameof(net), net);
+            s.Put(nameof(logging), logging);
+            s.Put(nameof(opts), opts);
         }
 
         public WebConfig LoadFile(string file)

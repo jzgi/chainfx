@@ -26,27 +26,27 @@ namespace Greatbone.Sample
 
         public string Name => name;
 
-        public void Load(ISource sc, uint x = 0)
+        public void Load(ISource s, uint x = 0)
         {
-            sc.Got(nameof(id), ref id);
-            sc.Got(nameof(name), ref name);
-            sc.Got(nameof(credential), ref credential);
-            sc.Got(nameof(fame), ref fame);
-            sc.Got(nameof(brand), ref brand);
-            sc.Got(nameof(admin), ref admin);
+            s.Got(nameof(id), ref id);
+            s.Got(nameof(name), ref name);
+            s.Got(nameof(credential), ref credential);
+            s.Got(nameof(fame), ref fame);
+            s.Got(nameof(brand), ref brand);
+            s.Got(nameof(admin), ref admin);
         }
 
-        public void Save<R>(ISink<R> sk, uint x = 0) where R : ISink<R>
+        public void Save<R>(ISink<R> s, uint x = 0) where R : ISink<R>
         {
-            sk.Put(nameof(id), id);
-            sk.Put(nameof(name), name);
+            s.Put(nameof(id), id);
+            s.Put(nameof(name), name);
             if (x.No(Out))
             {
-                sk.Put(nameof(credential), credential);
+                s.Put(nameof(credential), credential);
             }
-            sk.Put(nameof(fame), fame);
-            sk.Put(nameof(brand), brand);
-            sk.Put(nameof(admin), admin);
+            s.Put(nameof(fame), fame);
+            s.Put(nameof(brand), brand);
+            s.Put(nameof(admin), admin);
         }
 
         public static string Encrypt(string orig)

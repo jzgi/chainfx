@@ -37,55 +37,51 @@ namespace Greatbone.Sample
             }
         }
 
-
+        ///
         /// <summary>
-        /// Find records by name matching.
+        /// Find records by name matching, or by career.
         /// </summary>
         /// <code> 
-        /// GET /fame/find?word=_name_pattern_
-        /// </code>
-        public void find(WebContext wc)
-        {
-            string word = null;
-            wc.Got(nameof(word), ref word);
-
-            using (var dc = Service.NewDbContext())
-            {
-                if (dc.Query("SELECT * FROM fames WHERE name LIKE '%" + word + "%'", null))
-                {
-                    Fame[] fames = dc.ToArr<Fame>();
-                    wc.Respond(200, fames);
-                }
-                else
-                {
-                    wc.StatusCode = 204;
-                }
-            }
-        }
-
-        /// <summary>
-        /// Find records by career matching.
-        /// </summary>
-        /// <code> 
-        /// GET /fame/findby?[by=_career_name_]
+        /// GET /fame/find?name=_name_pattern_ OR
+        /// GET /fame/find?career=_career_
         /// </code>
         ///
-        public void findby(WebContext wc)
+        public void find(WebContext wc)
         {
-            string by = null;
-            wc.Got(nameof(by), ref by);
-
-            using (var dc = Service.NewDbContext())
+            string name = null;
+            if (wc.Got(nameof(name), ref name))
             {
-                if (dc.Query("SELECT * FROM fames WHERE careers @> @1", p => p.Put(by)))
+                using (var dc = Service.NewDbContext())
                 {
-                    Fame[] fames = dc.ToArr<Fame>();
-                    wc.Respond(200, fames);
+                    if (dc.Query("SELECT * FROM fames WHERE name LIKE '%" + name + "%'", null))
+                    {
+                        Fame[] fames = dc.ToArr<Fame>();
+                        wc.Respond(200, fames);
+                    }
+                    else
+                    {
+                        wc.StatusCode = 204;
+                    }
                 }
-                else
+                return;
+            }
+
+            string career = null;
+            if (wc.Got(nameof(career), ref career))
+            {
+                using (var dc = Service.NewDbContext())
                 {
-                    wc.StatusCode = 204;
+                    if (dc.Query("SELECT * FROM fames WHERE careers @> @1", p => p.Put(career)))
+                    {
+                        Fame[] fames = dc.ToArr<Fame>();
+                        wc.Respond(200, fames);
+                    }
+                    else
+                    {
+                        wc.StatusCode = 204;
+                    }
                 }
+                return;
             }
         }
 

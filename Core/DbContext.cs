@@ -77,7 +77,7 @@ namespace Greatbone.Core
             ordinal = 0;
         }
 
-        public bool QueryA(string cmdtext, Action<DbParameters> p)
+        public bool QueryA(string cmdtext, Action<DbParameters> p = null)
         {
             if (connection.State != ConnectionState.Open)
             {
@@ -91,7 +91,7 @@ namespace Greatbone.Core
             return reader.Read();
         }
 
-        public bool Query(string cmdtext, Action<DbParameters> p)
+        public bool Query(string cmdtext, Action<DbParameters> p = null)
         {
             if (connection.State != ConnectionState.Open)
             {
@@ -139,7 +139,7 @@ namespace Greatbone.Core
             return reader.NextResult();
         }
 
-        public int Execute(string cmdtext, Action<DbParameters> p)
+        public int Execute(string cmdtext, Action<DbParameters> p = null)
         {
             if (connection.State != ConnectionState.Open)
             {
@@ -152,7 +152,7 @@ namespace Greatbone.Core
             return command.ExecuteNonQuery();
         }
 
-        public object Scalar(string cmdtext, Action<DbParameters> p)
+        public object Scalar(string cmdtext, Action<DbParameters> p = null)
         {
             if (connection.State != ConnectionState.Open)
             {

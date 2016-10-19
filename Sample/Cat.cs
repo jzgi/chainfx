@@ -13,20 +13,20 @@ namespace Greatbone.Sample
 
         internal bool disabled;
 
-        public void Load(ISource sc, uint x = 0)
+        public void Load(ISource s, uint x = 0)
         {
-            sc.Got(nameof(id), ref id);
-            sc.Got(nameof(title), ref title);
-            sc.Got(nameof(filter), ref filter);
-            sc.Got(nameof(disabled), ref disabled);
+            s.Got(nameof(id), ref id);
+            s.Got(nameof(title), ref title);
+            s.Got(nameof(filter), ref filter);
+            s.Got(nameof(disabled), ref disabled);
         }
 
-        public void Save<R>(ISink<R> sk, uint x = 0) where R : ISink<R>
+        public void Save<R>(ISink<R> s, uint x = 0) where R : ISink<R>
         {
-            sk.Put(nameof(id), id);
-            sk.Put(nameof(title), title);
-            sk.Put(nameof(filter), filter);
-            sk.Put(nameof(disabled), disabled);
+            s.Put(nameof(id), id);
+            s.Put(nameof(title), title);
+            s.Put(nameof(filter), filter);
+            s.Put(nameof(disabled), disabled);
         }
     }
 

@@ -51,24 +51,21 @@ namespace Greatbone.Sample
         /// Update a profile indicated by token.
         /// </summary>
         /// <code>
-        /// POST /user/upd
+        /// POST /user/_id_/upd
         /// </code>
-        [IfSelf]
         public void upd(WebContext wc, string userid)
         {
-            JObj jo = wc.JObj;
-
-            int ret = 0;
-
+            User obj = wc.JObj.ToObj<User>();
             using (var dc = Service.NewDbContext())
             {
-                if (dc.Execute("UPDATE users SET password = @id WHERE id = @id", (p) => p.Put("@id", userid)) > 0)
+                DbSql sql = new DbSql("UPDATE users")._SET_(obj)._("WHERE id = @1");
+                if (dc.Execute(sql.ToString(), p => { obj.Save(p); p.Put(userid); }) > 0)
                 {
-                    wc.Response.StatusCode = (int)HttpStatusCode.OK;
+                    wc.StatusCode = 200; // ok
                 }
                 else
                 {
-                    wc.Response.StatusCode = (int)HttpStatusCode.NotAcceptable;
+                    wc.StatusCode = 406; // not acceptable
                 }
             }
         }

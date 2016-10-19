@@ -28,50 +28,50 @@ namespace Greatbone.Sample
 
         public string Key { get; }
 
-        public void Load(ISource sc, uint x = 0)
+        public void Load(ISource s, uint x = 0)
         {
-            sc.Got(nameof(id), ref id);
-            sc.Got(nameof(time), ref time);
-            sc.Got(nameof(authorid), ref authorid);
-            sc.Got(nameof(author), ref author);
-            sc.Got(nameof(commentable), ref commentable);
-            sc.Got(nameof(comments), ref comments);
-            sc.Got(nameof(shared), ref shared);
-            sc.Got(nameof(text), ref text);
-            sc.Got(nameof(mset), ref mset);
+            s.Got(nameof(id), ref id);
+            s.Got(nameof(time), ref time);
+            s.Got(nameof(authorid), ref authorid);
+            s.Got(nameof(author), ref author);
+            s.Got(nameof(commentable), ref commentable);
+            s.Got(nameof(comments), ref comments);
+            s.Got(nameof(shared), ref shared);
+            s.Got(nameof(text), ref text);
+            s.Got(nameof(mset), ref mset);
 
-            sc.Got(nameof(m0), ref m0);
-            sc.Got(nameof(m1), ref m1);
-            sc.Got(nameof(m2), ref m2);
-            sc.Got(nameof(m3), ref m3);
-            sc.Got(nameof(m4), ref m4);
-            sc.Got(nameof(m5), ref m5);
-            sc.Got(nameof(m6), ref m6);
-            sc.Got(nameof(m7), ref m7);
-            sc.Got(nameof(m8), ref m8);
+            s.Got(nameof(m0), ref m0);
+            s.Got(nameof(m1), ref m1);
+            s.Got(nameof(m2), ref m2);
+            s.Got(nameof(m3), ref m3);
+            s.Got(nameof(m4), ref m4);
+            s.Got(nameof(m5), ref m5);
+            s.Got(nameof(m6), ref m6);
+            s.Got(nameof(m7), ref m7);
+            s.Got(nameof(m8), ref m8);
         }
 
-        public void Save<R>(ISink<R> sk, uint x = 0) where R : ISink<R>
+        public void Save<R>(ISink<R> s, uint x = 0) where R : ISink<R>
         {
-            sk.Put(nameof(id), id);
-            sk.Put(nameof(time), time);
-            sk.Put(nameof(authorid), authorid);
-            sk.Put(nameof(author), author);
-            sk.Put(nameof(commentable), commentable);
-            sk.Put(nameof(comments), comments);
-            sk.Put(nameof(shared), shared);
-            sk.Put(nameof(text), text);
-            sk.Put(nameof(mset), mset);
+            s.Put(nameof(id), id);
+            s.Put(nameof(time), time);
+            s.Put(nameof(authorid), authorid);
+            s.Put(nameof(author), author);
+            s.Put(nameof(commentable), commentable);
+            s.Put(nameof(comments), comments);
+            s.Put(nameof(shared), shared);
+            s.Put(nameof(text), text);
+            s.Put(nameof(mset), mset);
 
-            sk.Put(nameof(m0), m0);
-            sk.Put(nameof(m1), m1);
-            sk.Put(nameof(m2), m2);
-            sk.Put(nameof(m3), m3);
-            sk.Put(nameof(m4), m4);
-            sk.Put(nameof(m5), m5);
-            sk.Put(nameof(m6), m6);
-            sk.Put(nameof(m7), m7);
-            sk.Put(nameof(m8), m8);
+            s.Put(nameof(m0), m0);
+            s.Put(nameof(m1), m1);
+            s.Put(nameof(m2), m2);
+            s.Put(nameof(m3), m3);
+            s.Put(nameof(m4), m4);
+            s.Put(nameof(m5), m5);
+            s.Put(nameof(m6), m6);
+            s.Put(nameof(m7), m7);
+            s.Put(nameof(m8), m8);
         }
     }
 
@@ -87,22 +87,22 @@ namespace Greatbone.Sample
 
         internal string text;
 
-        public void Load(ISource sc, uint x = 0)
+        public void Load(ISource s, uint x = 0)
         {
-            sc.Got(nameof(time), ref time);
-            sc.Got(nameof(emoji), ref emoji);
-            sc.Got(nameof(authorid), ref authorid);
-            sc.Got(nameof(author), ref author);
-            sc.Got(nameof(text), ref text);
+            s.Got(nameof(time), ref time);
+            s.Got(nameof(emoji), ref emoji);
+            s.Got(nameof(authorid), ref authorid);
+            s.Got(nameof(author), ref author);
+            s.Got(nameof(text), ref text);
         }
 
-        public void Save<R>(ISink<R> sk, uint x = 0) where R : ISink<R>
+        public void Save<R>(ISink<R> s, uint x = 0) where R : ISink<R>
         {
-            sk.Put(nameof(time), time);
-            sk.Put(nameof(emoji), emoji);
-            sk.Put(nameof(authorid), authorid);
-            sk.Put(nameof(author), author);
-            sk.Put(nameof(text), text);
+            s.Put(nameof(time), time);
+            s.Put(nameof(emoji), emoji);
+            s.Put(nameof(authorid), authorid);
+            s.Put(nameof(author), author);
+            s.Put(nameof(text), text);
         }
     }
 }

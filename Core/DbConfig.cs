@@ -13,22 +13,22 @@
         // whether to create message tables
         internal bool msg;
 
-        public void Load(ISource sc, uint x = 0)
+        public void Load(ISource s, uint x = 0)
         {
-            sc.Got(nameof(host), ref host);
-            sc.Got(nameof(port), ref port);
-            sc.Got(nameof(username), ref username);
-            sc.Got(nameof(password), ref password);
-            sc.Got(nameof(msg), ref msg);
+            s.Got(nameof(host), ref host);
+            s.Got(nameof(port), ref port);
+            s.Got(nameof(username), ref username);
+            s.Got(nameof(password), ref password);
+            s.Got(nameof(msg), ref msg);
         }
 
-        public void Save<R>(ISink<R> k, uint x = 0) where R : ISink<R>
+        public void Save<R>(ISink<R> s, uint x = 0) where R : ISink<R>
         {
-            k.Put(nameof(host), host);
-            k.Put(nameof(port), port);
-            k.Put(nameof(username), username);
-            k.Put(nameof(password), password);
-            k.Put(nameof(msg), msg);
+            s.Put(nameof(host), host);
+            s.Put(nameof(port), port);
+            s.Put(nameof(username), username);
+            s.Put(nameof(password), password);
+            s.Put(nameof(msg), msg);
         }
     }
 

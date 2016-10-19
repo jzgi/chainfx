@@ -22,20 +22,20 @@ namespace Greatbone.Sample
             // msgs.Add(new Message());
         }
 
-        public void Load(ISource sc, uint x = 0)
+        public void Load(ISource s, uint x = 0)
         {
-            sc.Got(nameof(status), ref status);
-            sc.Got(nameof(partner), ref partner);
-            sc.Got(nameof(msgs), ref msgs);
-            sc.Got(nameof(lasttime), ref lasttime);
+            s.Got(nameof(status), ref status);
+            s.Got(nameof(partner), ref partner);
+            s.Got(nameof(msgs), ref msgs);
+            s.Got(nameof(lasttime), ref lasttime);
         }
 
-        public void Save<R>(ISink<R> sk, uint x = 0) where R : ISink<R>
+        public void Save<R>(ISink<R> s, uint x = 0) where R : ISink<R>
         {
-            sk.Put(nameof(status), status);
-            sk.Put(nameof(partner), partner);
-            sk.Put(nameof(msgs), msgs);
-            sk.Put(nameof(lasttime), lasttime);
+            s.Put(nameof(status), status);
+            s.Put(nameof(partner), partner);
+            s.Put(nameof(msgs), msgs);
+            s.Put(nameof(lasttime), lasttime);
         }
     }
 
