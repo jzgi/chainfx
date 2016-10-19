@@ -6,12 +6,14 @@ namespace Greatbone.Sample
     {
         public override bool Check(WebContext wc)
         {
-            return true;
+            Token tok = (Token)wc.Token;
+            return tok.admin;
         }
 
         public override bool Check(WebContext wc, string var)
         {
-            return true;
+            Token tok = (Token)wc.Token;
+            return tok.admin;
         }
     }
 }

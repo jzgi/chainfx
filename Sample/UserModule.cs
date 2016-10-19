@@ -5,7 +5,9 @@ using Greatbone.Core;
 namespace Greatbone.Sample
 {
     ///
-    /// <summary>The user directory service</summary>
+    /// <summary>
+    /// The user module controller.
+    /// </summary>
     ///
     public class UserModule : WebModule, IAdmin
     {

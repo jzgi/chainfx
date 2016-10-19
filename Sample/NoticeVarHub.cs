@@ -8,8 +8,16 @@ namespace Greatbone.Sample
         {
         }
 
-        public override void @default(WebContext wc, string id)
+        /// <summary>
+        /// Get the record.
+        /// </summary>
+        /// <code>
+        /// GET /notice/_id_/
+        /// </code>
+        /// 
+        public override void @default(WebContext wc, string var)
         {
+            int id = var.ToInt();
             using (var dc = Service.NewDbContext())
             {
                 if (dc.QueryA("SELECT * FROM notices WHERE id = @1", p => p.Put(id)))
@@ -24,15 +32,22 @@ namespace Greatbone.Sample
             }
         }
 
-        public void del(WebContext wc, string id)
+        /// <summary>
+        /// Delete the record.
+        /// </summary>
+        /// <code>
+        /// POST /notice/_id_/del
+        /// </code>
+        /// 
+        public void del(WebContext wc, string var)
         {
-            string userid = wc.Token.Key;
-
+            int id = var.ToInt();
+            string uid = wc.Token.Key;
             using (var dc = Service.NewDbContext())
             {
-                if (dc.Execute("DELETE FROM notices WHERE id = @1 AND authorid = @2", p => p.Put(id).Put(userid)) > 0)
+                if (dc.Execute("DELETE FROM notices WHERE id = @1 AND authorid = @2", p => p.Put(id).Put(uid)) > 0)
                 {
-
+                    wc.StatusCode = 200;
                 }
                 else
                 {
@@ -41,24 +56,26 @@ namespace Greatbone.Sample
             }
         }
 
-        /// 
-        /// POST /notice/_id_/ask
+        /// <summary>
+        /// Apply for this opportunity.
+        /// </summary>
+        /// <code>
+        /// POST /notice/_id_/apply
+        /// </code>
         /// 
         public void apply(WebContext wc, string var)
         {
-            string userid = wc.Token.Key;
-            App ask = new App()
+            string uid = wc.Token.Key;
+            App app = new App()
             {
-                userid = userid
+                userid = uid
             };
-
             using (var dc = Service.NewDbContext())
             {
-                if (dc.QueryA("SELECT asks FROM notices WHERE id = @1", p => p.Put(userid)))
+                if (dc.QueryA("SELECT apps FROM notices WHERE id = @1", p => p.Put(uid)))
                 {
-                    App[] asks = dc.GotArr<App>().Add(ask);
-
-                    if (dc.Execute("UPDATE notices SET asks = @1", p => p.Put(asks)) > 0)
+                    App[] arr = dc.GotArr<App>().Add(app);
+                    if (dc.Execute("UPDATE notices SET apps = @1", p => p.Put(arr)) > 0)
                     {
                         wc.StatusCode = 201;
                     }
@@ -70,14 +87,19 @@ namespace Greatbone.Sample
             }
         }
 
-        ///
+        /// <summary>
+        /// Add a comment to this notice.
+        /// </summary>
+        /// <code>
         /// POST /notice/_id_/cmt
         /// {
         ///     "text" : "comment text"            
         /// }            
+        /// </code>
         public void cmt(WebContext wc, string var)
         {
             IToken tok = wc.Token;
+            int id = var.ToInt();
             JObj jo = wc.JObj;
             string text = jo[nameof(text)];
 
@@ -89,10 +111,10 @@ namespace Greatbone.Sample
 
             using (var dc = Service.NewDbContext())
             {
-                if (dc.QueryA("SELECT comments FROM notices WHERE id = @1", p => p.Put(var)))
+                if (dc.QueryA("SELECT comments FROM notices WHERE id = @1", p => p.Put(id)))
                 {
                     Comment[] arr = dc.GotArr<Comment>().Add(c);
-                    if (dc.Execute("UPDATE notices SET WHERE id = @1", p => p.Put(var).Put(tok.Key)) > 0)
+                    if (dc.Execute("UPDATE notices SET comments = @1 WHERE id = @2", p => p.Put(arr).Put(id)) > 0)
                     {
                         wc.StatusCode = 200;
                     }
@@ -109,6 +131,19 @@ namespace Greatbone.Sample
         /// POST /notice/_id_/share
         public void share(WebContext wc, string var)
         {
+            int id = var.ToInt();
+            using (var dc = Service.NewDbContext())
+            {
+                if (dc.Execute("UPDATE notices SET shared = shared + 1 WHERE id = @1", p => p.Put(id)) > 0)
+                {
+                    wc.StatusCode = 200;
+                }
+                else
+                {
+                    wc.StatusCode = 404;
+                }
+            }
         }
+
     }
 }

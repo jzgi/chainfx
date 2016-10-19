@@ -3,7 +3,7 @@
 namespace Greatbone.Sample
 {
     /// <summary>
-    /// The directory service
+    /// The directory service controller.
     /// </summary>
     public class DirService : AbsService
     {

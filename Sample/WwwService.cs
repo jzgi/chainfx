@@ -45,22 +45,6 @@ namespace Greatbone.Sample
         {
         }
 
-        public void contact(WebContext wc)
-        {
-            using (var dc = NewDbContext())
-            {
-                dc.Begin();
-
-                //				sc.DoNonQuery("inaert", o => o.ToString(););
-
-                // msg
-
-                dc.Commit();
-            }
-
-            wc.StatusCode = 200;
-        }
-
         //
         // MESSAGES
         // 
