@@ -7,6 +7,7 @@ namespace Greatbone.Core
     public static class StrUtility
     {
 
+        // hexidecimal numbers
         static readonly char[] HEX = { '0', '1', '2', '3', '4', '5', '6', '7', '8', '9', 'a', 'b', 'c', 'd', 'e', 'f' };
 
         public static string ToHex(ulong v)
@@ -19,24 +20,48 @@ namespace Greatbone.Core
             return new string(buf);
         }
 
-        static readonly string[] Days = { "Mon", "Tue", "Wed", "Thu", "Fri", "Sat", "Sun" };
+        // days of week
+        static readonly string[] DOW = { "Mon", "Tue", "Wed", "Thu", "Fri", "Sat", "Sun" };
 
-        static readonly string[] Mons = { "Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec" };
+        // sexagesimal numbers
+        static readonly string[] SEX = {
+            "00", "01", "02", "03", "04", "05", "06", "07", "08", "09",
+            "10", "11", "12", "13", "14", "15", "16", "17", "18", "19",
+            "20", "21", "22", "23", "24", "25", "26", "27", "28", "29",
+            "30", "31", "32", "33", "34", "35", "36", "37", "38", "39",
+            "40", "41", "42", "43", "44", "45", "46", "47", "48", "49",
+            "50", "51", "52", "53", "54", "55", "56", "57", "58", "59"
+        };
 
-        public static string ToHttpDate(DateTime dt)
+        static readonly string[] MON = { "Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec" };
+
+        public static string ToHttpDate(DateTime v)
         {
+            v = v.ToUniversalTime();
+
             StringBuilder gmt = new StringBuilder();
-            dt = dt.ToUniversalTime();
-            gmt.Append(Days[(int)dt.DayOfWeek]);
+            gmt.Append(DOW[(int)v.DayOfWeek]);
             gmt.Append(", ");
-            gmt.Append(dt.Day).Append(' ').Append(Mons[dt.Month]).Append(' ').Append(dt.Year);
+
+            gmt.Append(SEX[v.Day]);
             gmt.Append(' ');
-            gmt.Append(dt.Hour).Append(':').Append(dt.Minute).Append(':').Append(dt.Second);
+            gmt.Append(MON[v.Month]);
+            gmt.Append(' ');
+            gmt.Append(v.Year);
+            gmt.Append(' ');
+
+            gmt.Append(SEX[v.Hour]);
+            gmt.Append(':');
+            gmt.Append(SEX[v.Minute]);
+            gmt.Append(':');
+            gmt.Append(SEX[v.Second]);
+
             gmt.Append(" GMT");
+
             return gmt.ToString();
         }
 
-        public static DateTime TryParseDate(string utc)
+        public static bool TryParseDate(string utc, out DateTime v)
         {
             int day = ParseNum(utc, 5, 2, 10);
             int month = ParseMonth(utc, 8);
@@ -44,7 +69,16 @@ namespace Greatbone.Core
             int hour = ParseNum(utc, 17, 2, 10);
             int minute = ParseNum(utc, 20, 2, 10);
             int second = ParseNum(utc, 23, 2, 10);
-            return new DateTime(year, month, day, hour, minute, second, DateTimeKind.Utc);
+            try
+            {
+                v = new DateTime(year, month, day, hour, minute, second, DateTimeKind.Utc);
+                return true;
+            }
+            catch
+            {
+                v = default(DateTime);
+                return false;
+            }
         }
 
         static int ParseNum(string str, int start, int count, int @base)
@@ -63,9 +97,9 @@ namespace Greatbone.Core
         static int ParseMonth(string str, int start)
         {
             char a = str[start], b = str[start + 1], c = str[start + 2];
-            for (int i = 0; i < Mons.Length; i++)
+            for (int i = 0; i < MON.Length; i++)
             {
-                string m = Mons[i];
+                string m = MON[i];
                 if (a == m[0] && b == m[1] && c == m[2])
                 {
                     return i + 1;

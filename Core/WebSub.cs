@@ -109,26 +109,39 @@ namespace Greatbone.Core
             Do(rsc, wc, var);
         }
 
-        StaticContent Load(string file, string ext)
+        void DoStatic(string file, string ext, WebContext wc)
         {
-            string path = Path.Combine(Folder, file);
-            if (File.Exists(path))
+            string ctyp;
+            if (!StaticContent.TryGetType(ext, out ctyp))
             {
-                string ctyp;
-                if (StaticContent.TryGetType(ext, out ctyp))
-                {
-                    byte[] content = File.ReadAllBytes(path);
-                    DateTime modified = File.GetLastWriteTime(path);
-                    return new StaticContent
-                    {
-                        Key = file.ToLower(),
-                        Type = ctyp,
-                        Buffer = content,
-                        LastModified = modified
-                    };
-                }
+                wc.StatusCode = 415;  // unsupported media type
+                return;
             }
-            return null;
+
+            string path = Path.Combine(Folder, file);
+            if (!File.Exists(path))
+            {
+                wc.StatusCode = 404; // not found
+            }
+
+            DateTime modified = File.GetLastWriteTime(path);
+            DateTime? since = wc.HeaderDateTime("If-Modified-Since");
+            if (since != null && modified <= since) // not modified
+            {
+                wc.StatusCode = 304;
+                return;
+            }
+
+            // load file content
+            byte[] content = File.ReadAllBytes(path);
+            StaticContent v = new StaticContent
+            {
+                Key = file.ToLower(),
+                Type = ctyp,
+                Buffer = content,
+                LastModified = modified
+            };
+            wc.Out(200, v, true, 5 * 60000);
         }
 
         protected internal virtual void Do(string rsc, WebContext wc)
@@ -136,12 +149,7 @@ namespace Greatbone.Core
             int dot = rsc.IndexOf('.');
             if (dot != -1) // static
             {
-                StaticContent sta = Load(rsc, rsc.Substring(dot + 1));
-                if (sta != null)
-                {
-                    wc.Out(200, sta, true, 5 * 60000);
-                }
-                else { wc.StatusCode = 404; }
+                DoStatic(rsc, rsc.Substring(dot), wc);
             }
             else // dynamic
             {
@@ -156,12 +164,7 @@ namespace Greatbone.Core
             int dot = rsc.IndexOf('.');
             if (dot != -1) // static
             {
-                StaticContent sta = Load(rsc, rsc.Substring(dot + 1));
-                if (sta != null)
-                {
-                    wc.Out(200, sta, true, 5 * 60000);
-                }
-                else { wc.StatusCode = 404; }
+                DoStatic(rsc, rsc.Substring(dot), wc);
             }
             else // dynamic
             {
@@ -170,6 +173,16 @@ namespace Greatbone.Core
                 else if (!a.TryDo(wc, var)) wc.StatusCode = 403; // forbidden
             }
 
+        }
+
+        public virtual void @default(WebContext wc)
+        {
+            DoStatic("default.html", ".html", wc);
+        }
+
+        public virtual void @default(WebContext wc, string var)
+        {
+            DoStatic("default.html", ".html", wc);
         }
 
         //
@@ -199,26 +212,6 @@ namespace Greatbone.Core
         public void Error(string message, Exception exception = null)
         {
             Service.Log(LogLevel.Error, 0, message, exception, null);
-        }
-
-        public virtual void @default(WebContext wc)
-        {
-            StaticContent sta = Load("default.html", ".html");
-            if (sta != null)
-            {
-                wc.Out(200, sta, true, 5 * 60000);
-            }
-            else { wc.StatusCode = 404; }
-        }
-
-        public virtual void @default(WebContext wc, string var)
-        {
-            StaticContent sta = Load("default.html", ".html");
-            if (sta != null)
-            {
-                wc.Out(200, sta, true, 5 * 60000);
-            }
-            else { wc.StatusCode = 404; }
         }
 
     }

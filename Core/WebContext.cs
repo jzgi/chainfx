@@ -418,6 +418,21 @@ namespace Greatbone.Core
             return null;
         }
 
+        public DateTime? HeaderDateTime(string name)
+        {
+            StringValues vs;
+            if (Request.Headers.TryGetValue(name, out vs))
+            {
+                string str = (string)vs;
+                DateTime v;
+                if (StrUtility.TryParseDate(str, out v))
+                {
+                    return v;
+                }
+            }
+            return null;
+        }
+
         //
         // RESPONSE
         //
