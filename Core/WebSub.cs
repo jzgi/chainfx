@@ -15,12 +15,6 @@ namespace Greatbone.Core
     {
         internal readonly WebArg arg;
 
-        // file folder contents, can be null
-        readonly Roll<StaticContent> statics;
-
-        // the default static file, can be null
-        readonly StaticContent defstatic;
-
         // declared actions 
         readonly Roll<WebAction> actions;
 
@@ -31,35 +25,6 @@ namespace Greatbone.Core
         protected WebSub(WebArg arg)
         {
             this.arg = arg;
-
-            // static initialization
-            if (Directory.Exists(Folder))
-            {
-                statics = new Roll<StaticContent>(64);
-                foreach (string path in Directory.GetFiles(Folder))
-                {
-                    string file = Path.GetFileName(path);
-                    string ext = Path.GetExtension(path);
-                    string ctyp;
-                    if (StaticContent.TryGetType(ext, out ctyp))
-                    {
-                        byte[] content = File.ReadAllBytes(path);
-                        DateTime modified = File.GetLastWriteTime(path);
-                        StaticContent sta = new StaticContent
-                        {
-                            Key = file.ToLower(),
-                            Type = ctyp,
-                            Buffer = content,
-                            LastModified = modified
-                        };
-                        statics.Add(sta);
-                        if (sta.Key.StartsWith("default."))
-                        {
-                            defstatic = sta;
-                        }
-                    }
-                }
-            }
 
             // action initialization
             actions = new Roll<WebAction>(32);
@@ -106,9 +71,6 @@ namespace Greatbone.Core
         public WebService Service => arg.Service;
 
 
-
-        public Roll<StaticContent> Statics => statics;
-
         public Roll<WebAction> Actions => actions;
 
         public WebAction GetAction(string method)
@@ -147,14 +109,37 @@ namespace Greatbone.Core
             Do(rsc, wc, var);
         }
 
+        StaticContent Load(string file, string ext)
+        {
+            string path = Path.Combine(Folder, file);
+            if (File.Exists(path))
+            {
+                string ctyp;
+                if (StaticContent.TryGetType(ext, out ctyp))
+                {
+                    byte[] content = File.ReadAllBytes(path);
+                    DateTime modified = File.GetLastWriteTime(path);
+                    return new StaticContent
+                    {
+                        Key = file.ToLower(),
+                        Type = ctyp,
+                        Buffer = content,
+                        LastModified = modified
+                    };
+                }
+            }
+            return null;
+        }
+
         protected internal virtual void Do(string rsc, WebContext wc)
         {
-            if (rsc.IndexOf('.') != -1) // static
+            int dot = rsc.IndexOf('.');
+            if (dot != -1) // static
             {
-                StaticContent sta;
-                if (statics != null && statics.TryGet(rsc, out sta))
+                StaticContent sta = Load(rsc, rsc.Substring(dot + 1));
+                if (sta != null)
                 {
-                    wc.Content = sta;
+                    wc.Out(200, sta, true, 5 * 60000);
                 }
                 else { wc.StatusCode = 404; }
             }
@@ -168,12 +153,13 @@ namespace Greatbone.Core
 
         protected internal virtual void Do(string rsc, WebContext wc, string var)
         {
-            if (rsc.IndexOf('.') != -1) // static
+            int dot = rsc.IndexOf('.');
+            if (dot != -1) // static
             {
-                StaticContent sta;
-                if (statics != null && statics.TryGet(rsc, out sta))
+                StaticContent sta = Load(rsc, rsc.Substring(dot + 1));
+                if (sta != null)
                 {
-                    wc.Content = sta;
+                    wc.Out(200, sta, true, 5 * 60000);
                 }
                 else { wc.StatusCode = 404; }
             }
@@ -217,31 +203,24 @@ namespace Greatbone.Core
 
         public virtual void @default(WebContext wc)
         {
-            StaticContent sta = defstatic;
+            StaticContent sta = Load("default.html", ".html");
             if (sta != null)
             {
-                wc.Content = sta;
+                wc.Out(200, sta, true, 5 * 60000);
             }
-            else
-            {
-                // send not implemented
-                wc.StatusCode = 404;
-            }
+            else { wc.StatusCode = 404; }
         }
 
         public virtual void @default(WebContext wc, string var)
         {
-            StaticContent sta = defstatic;
+            StaticContent sta = Load("default.html", ".html");
             if (sta != null)
             {
-                wc.Content = sta;
+                wc.Out(200, sta, true, 5 * 60000);
             }
-            else
-            {
-                // send not implemented
-                wc.StatusCode = 404;
-            }
+            else { wc.StatusCode = 404; }
         }
 
     }
+
 }

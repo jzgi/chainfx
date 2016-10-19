@@ -452,7 +452,7 @@ namespace Greatbone.Core
         // the content  is to be considered stale after its age is greater than the specified number of seconds.
         public int MaxAge { get; internal set; }
 
-        public void Out(int status, IContent cont, bool? pub = false, int maxage = 0)
+        public void Out(int status, IContent cont, bool? pub = false, int maxage = 60000)
         {
             StatusCode = status;
             Content = cont;
@@ -460,24 +460,24 @@ namespace Greatbone.Core
             MaxAge = maxage;
         }
 
-        public void Out<T>(int status, T obj, uint x = 0, bool? pub = false, int maxage = 0) where T : IPersist
+        public void Out<T>(int status, T obj, uint x = 0, bool? pub = false, int maxage = 60000) where T : IPersist
         {
             Out(status, jcont => jcont.PutObj(obj, x), pub, maxage);
         }
 
-        public void Out<T>(int status, T[] arr, uint x = 0, bool? pub = false, int maxage = 0) where T : IPersist
+        public void Out<T>(int status, T[] arr, uint x = 0, bool? pub = false, int maxage = 60000) where T : IPersist
         {
             Out(status, jcont => jcont.PutArr(arr, x), pub, maxage);
         }
 
-        public void Out(int status, Action<JContent> a, bool? pub = false, int maxage = 0)
+        public void Out(int status, Action<JContent> a, bool? pub = false, int maxage = 60000)
         {
             JContent jcont = new JContent(8 * 1024);
             a?.Invoke(jcont);
             Out(status, jcont, pub, maxage);
         }
 
-        public void Out(int status, Action<HtmlContent> a, bool? pub = true, int maxage = 1000)
+        public void Out(int status, Action<HtmlContent> a, bool? pub = true, int maxage = 60000)
         {
             HtmlContent hcont = new HtmlContent(8 * 1024);
             a?.Invoke(hcont);
@@ -502,7 +502,7 @@ namespace Greatbone.Core
                 // set etag or last-modified 
                 if (Content is DynamicContent)
                 {
-                    long v = ((DynamicContent)Content).ETag;
+                    ulong v = ((DynamicContent)Content).ETag;
                     SetHeader("ETag", StrUtility.ToHex(v));
                 }
                 else

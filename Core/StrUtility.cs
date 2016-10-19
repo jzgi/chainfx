@@ -7,9 +7,9 @@ namespace Greatbone.Core
     public static class StrUtility
     {
 
-        private static readonly char[] HEX = { '0', '1', '2', '3', '4', '5', '6', '7', '8', '9', 'a', 'b', 'c', 'd', 'e', 'f' };
+        static readonly char[] HEX = { '0', '1', '2', '3', '4', '5', '6', '7', '8', '9', 'a', 'b', 'c', 'd', 'e', 'f' };
 
-        public static string ToHex(long v)
+        public static string ToHex(ulong v)
         {
             char[] buf = new char[16];
             for (int i = 0; i < 16; i++)
@@ -27,8 +27,12 @@ namespace Greatbone.Core
         {
             StringBuilder gmt = new StringBuilder();
             dt = dt.ToUniversalTime();
-            gmt.Append(Days[dt.Day]);
+            gmt.Append(Days[(int)dt.DayOfWeek]);
             gmt.Append(", ");
+            gmt.Append(dt.Day).Append(' ').Append(Mons[dt.Month]).Append(' ').Append(dt.Year);
+            gmt.Append(' ');
+            gmt.Append(dt.Hour).Append(':').Append(dt.Minute).Append(':').Append(dt.Second);
+            gmt.Append(" GMT");
             return gmt.ToString();
         }
 

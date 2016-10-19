@@ -76,7 +76,7 @@ namespace Greatbone.Core
         protected int count;
 
         // byte-wise etag checksum, for text-based output only
-        long checksum;
+        ulong checksum;
 
         /// <summary>
         /// Creates a dynamic content in writing mode.
@@ -97,7 +97,7 @@ namespace Greatbone.Core
 
         public DateTime LastModified => default(DateTime);
 
-        public long ETag => checksum;
+        public ulong ETag => checksum;
 
 
         void Write(byte b)
@@ -114,7 +114,7 @@ namespace Greatbone.Core
             buffer[count++] = b;
 
             // calculate checksum
-            long cs = checksum;
+            ulong cs = checksum;
             cs ^= b; // XOR
             checksum = cs >> 57 | cs << 7; // circular left shift 7 bit
         }

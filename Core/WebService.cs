@@ -183,15 +183,14 @@ namespace Greatbone.Core
             try
             {
                 Handle(wc.Request.Path.Value.Substring(1), wc);
+                if (wc.Content != null)
+                {
+                    await wc.WriteContentAsync();
+                }
             }
             catch (Exception e)
             {
                 Error(e.Message);
-            }
-
-            if (wc.Content != null)
-            {
-                await wc.WriteContentAsync();
             }
         }
 
