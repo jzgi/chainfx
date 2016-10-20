@@ -5,7 +5,7 @@ using System.Threading;
 namespace Greatbone.Core
 {
     /// <summary>
-    /// The server-side response cache for a particular service.
+    /// The server-side content cache for a particular service.
     /// </summary>
     class ContentCache
     {
@@ -53,13 +53,27 @@ namespace Greatbone.Core
                     }
                 }
             }
+
         }
 
-        internal struct Item
+        internal bool TryGetContent(string target, out IContent v)
+        {
+            Item itm;
+            if (items.TryGetValue(target, out itm))
+            {
+                v = itm.Content;
+                return true;
+            }
+            v = null;
+            return false;
+        }
+
+        struct Item
         {
             // ticks of expiration
             internal readonly int expiry;
 
+            // can be null
             internal IContent Content { get; }
 
             internal int Ticks { get; }

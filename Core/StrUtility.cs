@@ -33,9 +33,11 @@ namespace Greatbone.Core
             "50", "51", "52", "53", "54", "55", "56", "57", "58", "59"
         };
 
+        // months
         static readonly string[] MON = { "Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec" };
 
-        public static string ToHttpDate(DateTime v)
+        // HTTP date format
+        public static string FormatDate(DateTime v)
         {
             v = v.ToUniversalTime();
 
@@ -191,45 +193,6 @@ namespace Greatbone.Core
             }
             credential = new string(buf);
             return true;
-        }
-
-        public static bool Equals(byte[] a, byte[] b)
-        {
-            if (a.Length != b.Length)
-            {
-                return false;
-            }
-            for (int i = 0; i < a.Length; i++)
-            {
-                if (a[i] != b[i]) return false;
-            }
-            return true;
-        }
-
-        /// <summary>
-        /// Converts a pascal casing name to a headline tag.
-        /// </summary>
-        /// <param name="name"></param>
-        /// <returns></returns>
-        public static string ToLabel(string name)
-        {
-            if (name == null) return null;
-
-            int len = name.Length;
-            StringBuilder sb = new StringBuilder(len + 4);
-            for (int i = 0; i < len; i++)
-            {
-                char c = name[i];
-                if (i > 0 && char.IsUpper(c))
-                {
-                    if (char.IsLower(name[i - 1]) || (i < len - 1 && char.IsLower(name[i + 1])))
-                    {
-                        sb.Append(' ');
-                    }
-                }
-                sb.Append(c);
-            }
-            return sb.ToString();
         }
 
         public static string ToHex(string v)

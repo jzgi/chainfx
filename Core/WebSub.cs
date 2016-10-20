@@ -134,14 +134,14 @@ namespace Greatbone.Core
 
             // load file content
             byte[] content = File.ReadAllBytes(path);
-            StaticContent v = new StaticContent
+            StaticContent sta = new StaticContent
             {
                 Key = file.ToLower(),
                 Type = ctyp,
                 Buffer = content,
                 LastModified = modified
             };
-            wc.Out(200, v, true, 5 * 60000);
+            wc.Out(200, sta, true, 5 * 60000);
         }
 
         protected internal virtual void Do(string rsc, WebContext wc)

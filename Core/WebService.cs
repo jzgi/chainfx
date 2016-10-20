@@ -34,8 +34,7 @@ namespace Greatbone.Core
         // the embedded server
         readonly KestrelServer server;
 
-
-        // response content cache
+        // shared content cache
         ContentCache cache;
 
         // MESSAGING
@@ -88,7 +87,7 @@ namespace Greatbone.Core
                 }
             }
 
-            cache = new ContentCache(1, 1);
+            cache = new ContentCache(Environment.ProcessorCount * 4, 4096);
 
             // setup message loaders and pollers
             string[] net = cfg.net;
@@ -107,12 +106,11 @@ namespace Greatbone.Core
                 }
             }
 
-            PrepareMsgTables();
+            MsgSetup();
 
         }
 
         public WebConfig Config => (WebConfig)arg;
-
 
         internal Roll<MsgQueue> Queues => queues;
 
@@ -120,7 +118,7 @@ namespace Greatbone.Core
 
         internal Roll<WebClient> Clients => clients;
 
-        bool PrepareMsgTables()
+        bool MsgSetup()
         {
             if (!Config.db.msg)
             {
@@ -160,38 +158,44 @@ namespace Greatbone.Core
         }
 
 
-        /// <summary>Returns a framework custom context. </summary>
-        /// <param name="features"></param>
-        /// <returns></returns>
+        /// <summary> 
+        /// Returns a framework custom context.
+        /// </summary>
         public HttpContext CreateContext(IFeatureCollection features)
         {
             return new WebContext(features);
         }
 
-        ///
-        /// <summary>To asynchronously process the request.</summary>
-        /// <remarks>
-        ///
-        /// </remarks>
+        /// <summary>
+        /// To asynchronously process the request.
+        /// </summary>
         public async Task ProcessRequestAsync(HttpContext context)
         {
             WebContext wc = (WebContext)context;
+            HttpRequest r = wc.Request;
+            string path = r.Path.Value;
+            string targ = path + r.QueryString.Value;
 
-            Authenticate(wc);
-
-            // handling
-            try
+            IContent cont;
+            if (wc.IsGet && cache.TryGetContent(targ, out cont)) // check if hit in the cache
             {
-                Handle(wc.Request.Path.Value.Substring(1), wc);
-                if (wc.Content != null)
+                wc.Out(304, cont, true, 0);
+            }
+            else // handling
+            {
+                try
                 {
-                    await wc.WriteContentAsync();
+                    Authenticate(wc);
+                    Handle(path.Substring(1), wc);
+                }
+                catch (Exception e)
+                {
+                    Error(e.Message);
                 }
             }
-            catch (Exception e)
-            {
-                Error(e.Message);
-            }
+
+            // prepare and send
+            await wc.SendAsync();
         }
 
         public void DisposeContext(HttpContext context, Exception exception)
@@ -357,7 +361,7 @@ namespace Greatbone.Core
         }
 
 
-        static readonly string[] Tags = { "TRACE: ", "DEBUG: ", "INFO: ", "WARNING: ", "ERROR: " };
+        static readonly string[] Tags = { "TRC: ", "DBG: ", "INF: ", "WAR: ", "ERR: " };
 
         public void Log<T>(LogLevel level, EventId eid, T state, Exception exception, Func<T, Exception, string> formatter)
         {

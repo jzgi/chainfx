@@ -455,7 +455,7 @@ namespace Greatbone.Core
 
         public void SetHeader(string name, DateTime v)
         {
-            string str = StrUtility.ToHttpDate(v);
+            string str = StrUtility.FormatDate(v);
             Response.Headers.Add(name, new StringValues(str));
         }
 
@@ -467,7 +467,7 @@ namespace Greatbone.Core
         // the content  is to be considered stale after its age is greater than the specified number of seconds.
         public int MaxAge { get; internal set; }
 
-        public void Out(int status, IContent cont, bool? pub = false, int maxage = 60000)
+        public void Out(int status, IContent cont, bool? pub = null, int maxage = 60000)
         {
             StatusCode = status;
             Content = cont;
@@ -475,61 +475,60 @@ namespace Greatbone.Core
             MaxAge = maxage;
         }
 
-        public void Out<T>(int status, T obj, uint x = 0, bool? pub = false, int maxage = 60000) where T : IPersist
+        public void Out<T>(int status, T obj, uint x = 0, bool? pub = null, int maxage = 60000) where T : IPersist
         {
-            Out(status, jcont => jcont.PutObj(obj, x), pub, maxage);
+            Out(status, cont => cont.PutObj(obj, x), pub, maxage);
         }
 
-        public void Out<T>(int status, T[] arr, uint x = 0, bool? pub = false, int maxage = 60000) where T : IPersist
+        public void Out<T>(int status, T[] arr, uint x = 0, bool? pub = null, int maxage = 60000) where T : IPersist
         {
-            Out(status, jcont => jcont.PutArr(arr, x), pub, maxage);
+            Out(status, cont => cont.PutArr(arr, x), pub, maxage);
         }
 
-        public void Out(int status, Action<JContent> a, bool? pub = false, int maxage = 60000)
+        public void Out(int status, Action<JContent> a, bool? pub = null, int maxage = 60000)
         {
-            JContent jcont = new JContent(8 * 1024);
-            a?.Invoke(jcont);
-            Out(status, jcont, pub, maxage);
+            JContent cont = new JContent(8 * 1024);
+            a?.Invoke(cont);
+            Out(status, cont, pub, maxage);
         }
 
         public void Out(int status, Action<HtmlContent> a, bool? pub = true, int maxage = 60000)
         {
-            HtmlContent hcont = new HtmlContent(8 * 1024);
-            a?.Invoke(hcont);
-            Out(status, hcont, pub, maxage);
+            HtmlContent cont = new HtmlContent(8 * 1024);
+            a?.Invoke(cont);
+            Out(status, cont, pub, maxage);
         }
 
-        internal Task WriteContentAsync()
+        internal async Task SendAsync()
         {
+            if (Pub != null)
+            {
+                string cc = Pub.Value ? "public" : "private" + ", max-age=" + MaxAge;
+                SetHeader("Cache-Control", cc);
+            }
+
             // setup appropriate headers
             if (Content != null)
             {
-                HttpResponse resp = Response;
-                resp.ContentLength = Content.Length;
-                resp.ContentType = Content.Type;
+                HttpResponse r = Response;
+                r.ContentLength = Content.Length;
+                r.ContentType = Content.Type;
 
-                if (Pub != null)
-                {
-                    string cc = Pub.Value ? "public" : "private" + ", max-age=" + MaxAge;
-                    SetHeader("Cache-Control", cc);
-                }
-
-                // set etag or last-modified 
-                if (Content is DynamicContent)
+                // cache indicators
+                if (Content is DynamicContent) // set etag
                 {
                     ulong v = ((DynamicContent)Content).ETag;
                     SetHeader("ETag", StrUtility.ToHex(v));
                 }
-                else
+                else // set last-modified
                 {
                     DateTime v = ((StaticContent)Content).LastModified;
-                    SetHeader("Last-Modified", StrUtility.ToHttpDate(v));
+                    SetHeader("Last-Modified", StrUtility.FormatDate(v));
                 }
 
                 // send async
-                return resp.Body.WriteAsync(Content.Buffer, 0, Content.Length);
+                await r.Body.WriteAsync(Content.Buffer, 0, Content.Length);
             }
-            return Task.CompletedTask;
         }
 
         //
