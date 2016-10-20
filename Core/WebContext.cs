@@ -16,11 +16,14 @@ namespace Greatbone.Core
         {
         }
 
-        public WebSub Control { get; internal set; }
+        public WebControl Control { get; internal set; }
 
         public WebAction Action { get; internal set; }
 
         public IToken Token { get; internal set; }
+
+        // superscript
+        public string Super { get; internal set; }
 
 
         //

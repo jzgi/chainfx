@@ -206,38 +206,39 @@ namespace Greatbone.Core
         protected abstract bool Authenticate(WebContext wc);
 
 
-        internal override void Handle(string rsc, WebContext wc)
+        internal override void Handle(string relative, WebContext wc)
         {
             if (!CheckAuth(wc)) return;
 
-            int slash = rsc.IndexOf('/');
+            int slash = relative.IndexOf('/');
             if (slash == -1) // handle it locally
             {
-                if ("*".Equals(rsc))
+                if ("*".Equals(relative))
                 {
                     Peek(wc); // obtain a message
                 }
                 else
                 {
                     wc.Control = this;
-                    Do(rsc, wc);
+                    Do(relative, wc);
                 }
             }
             else // not local then sub & mux
             {
-                string dir = rsc.Substring(0, slash);
-                WebSub sub;
-                if (subs != null && subs.TryGet(dir, out sub)) // seek sub first
+                string dir = relative.Substring(0, slash);
+                WebControl ctrl;
+                if (controls != null && controls.TryGet(dir, out ctrl)) // seek sub first
                 {
-                    sub.Handle(rsc.Substring(slash + 1), wc);
+                    ctrl.Handle(relative.Substring(slash + 1), wc);
                 }
-                else if (varhub == null)
+                else if (multiple == null)
                 {
                     wc.StatusCode = 404; // not found
                 }
                 else
                 {
-                    varhub.Handle(rsc.Substring(slash + 1), wc, dir); // var = dir
+                    wc.Super = dir;
+                    multiple.Handle(relative.Substring(slash + 1), wc);
                 }
             }
         }

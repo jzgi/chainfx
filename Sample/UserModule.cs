@@ -15,7 +15,7 @@ namespace Greatbone.Sample
 
         public UserModule(WebArg arg) : base(arg)
         {
-            SetVarHub<UserVarHub>(false);
+            SetMultiple<UserMultiple>(false);
         }
 
         /// <summary>

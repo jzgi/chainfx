@@ -6,9 +6,9 @@ namespace Greatbone.Sample
     /// <summary>
     /// The user variable-hub controller.
     ///
-    public class UserVarHub : WebVarHub
+    public class UserMultiple : WebMultiple
     {
-        public UserVarHub(WebArg arg) : base(arg)
+        public UserMultiple(WebArg arg) : base(arg)
         {
         }
 
@@ -18,8 +18,9 @@ namespace Greatbone.Sample
         /// <code>
         /// GET /user/_id_/?password=_password_
         /// </code>
-        public override void @default(WebContext wc, string id)
+        public override void @default(WebContext wc, string sub)
         {
+            string id = wc.Super;
             string password = null;
             if (!wc.Got(nameof(password), ref password))
             {

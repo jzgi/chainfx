@@ -4,24 +4,27 @@ using System.Reflection;
 
 namespace Greatbone.Core
 {
-    /// <summary>A variable-key multiplexer ontroller that is attached to a hub controller. </summary>
     ///
-    public abstract class WebVarHub : WebSub, IParent
+    /// <summary>
+    /// A multiplexer that process many variable-keys. 
+    /// </summary>
+    ///
+    public abstract class WebMultiple : WebControl, IParent
     {
-        // the added sub controllers
-        private Roll<WebSub> subs;
+        // child controls
+        private Roll<WebControl> controls;
 
-        protected WebVarHub(WebArg arg) : base(arg)
+        protected WebMultiple(WebArg arg) : base(arg)
         {
         }
 
-        public Roll<WebSub> Subs => subs;
+        public Roll<WebControl> Subs => controls;
 
-        public T AddSub<T>(string key, bool auth) where T : WebSub
+        public T AddControl<T>(string key, bool auth) where T : WebControl
         {
-            if (subs == null)
+            if (controls == null)
             {
-                subs = new Roll<WebSub>(16);
+                controls = new Roll<WebControl>(16);
             }
             // create instance by reflection
             Type typ = typeof(T);
@@ -32,34 +35,35 @@ namespace Greatbone.Core
                 key = key,
                 Auth = auth,
                 Parent = this,
-                IsVar = true,
+                IsMulti = true,
                 Folder = (Parent == null) ? key : Path.Combine(Parent.Folder, key),
                 Service = Service
             };
             // call the initialization and add
             T sub = (T)ci.Invoke(new object[] { arg });
-            subs.Add(sub);
+            controls.Add(sub);
 
             return sub;
         }
 
-        internal override void Handle(string rsc, WebContext wc, string var)
+        internal override void Handle(string relative, WebContext wc)
         {
             if (!CheckAuth(wc)) return;
 
-            int slash = rsc.IndexOf('/');
+            int slash = relative.IndexOf('/');
             if (slash == -1) // handle it locally
             {
                 wc.Control = this;
-                Do(rsc, wc, var);
+                Do(relative, wc);
+                wc.Control = null;
             }
-            else // not local then sub
+            else // not local then child control
             {
-                string dir = rsc.Substring(0, slash);
-                WebSub sub;
-                if (subs != null && subs.TryGet(rsc, out sub))
+                string dir = relative.Substring(0, slash);
+                WebControl ctrl;
+                if (controls != null && controls.TryGet(relative, out ctrl))
                 {
-                    sub.Handle(rsc.Substring(slash), wc, var);
+                    ctrl.Handle(relative.Substring(slash), wc);
                 }
             }
         }

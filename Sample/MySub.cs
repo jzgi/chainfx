@@ -2,7 +2,7 @@
 
 namespace Greatbone.Sample
 {
-    public class MySub : WebSub
+    public class MySub : WebControl
     {
         public MySub(WebArg setg) : base(setg)
         {

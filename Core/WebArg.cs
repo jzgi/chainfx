@@ -9,7 +9,7 @@
 
         public bool Auth { get; internal set; }
 
-        public bool IsVar { get; internal set; }
+        public bool IsMulti { get; internal set; }
 
         public IParent Parent { get; internal set; }
 

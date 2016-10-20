@@ -4,9 +4,9 @@ using Greatbone.Core;
 namespace Greatbone.Sample
 {
 
-    public class FameVarHub : WebVarHub
+    public class FameMultiple : WebMultiple
     {
-        public FameVarHub(WebArg arg) : base(arg)
+        public FameMultiple(WebArg arg) : base(arg)
         {
         }
 

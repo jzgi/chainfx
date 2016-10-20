@@ -7,23 +7,23 @@ namespace Greatbone.Core
     /// <summary>
     /// A module web directory controller that can contain sub- and varhub- controllers.
     /// </summary>
-    public abstract class WebModule : WebSub, IParent
+    public abstract class WebModule : WebControl, IParent
     {
-        // the added sub controllers, if any
-        internal Roll<WebSub> subs;
+        // child controls, if any
+        internal Roll<WebControl> controls;
 
-        // the attached variable-key multiplexer, if any
-        internal WebVarHub varhub;
+        // the attached multiplexer, if any
+        internal WebMultiple multiple;
 
         protected WebModule(WebArg arg) : base(arg)
         {
         }
 
-        public T AddSub<T>(string key, bool auth) where T : WebSub
+        public T AddControl<T>(string key, bool auth) where T : WebControl
         {
-            if (subs == null)
+            if (controls == null)
             {
-                subs = new Roll<WebSub>(16);
+                controls = new Roll<WebControl>(16);
             }
             // create instance by reflection
             Type typ = typeof(T);
@@ -34,21 +34,21 @@ namespace Greatbone.Core
                 key = key,
                 Auth = auth,
                 Parent = this,
-                IsVar = false,
+                IsMulti = false,
                 Folder = (Parent == null) ? key : Path.Combine(Parent.Folder, key),
                 Service = Service
             };
-            T sub = (T)ci.Invoke(new object[] { arg });
-            subs.Add(sub);
+            T ctrl = (T)ci.Invoke(new object[] { arg });
+            controls.Add(ctrl);
 
-            return sub;
+            return ctrl;
         }
 
-        public Roll<WebSub> Subs => subs;
+        public Roll<WebControl> Subs => controls;
 
-        public WebVarHub VarHub => varhub;
+        public WebMultiple VarHub => multiple;
 
-        public T SetVarHub<T>(bool auth) where T : WebVarHub
+        public T SetMultiple<T>(bool auth) where T : WebMultiple
         {
             // create instance
             Type typ = typeof(T);
@@ -59,41 +59,42 @@ namespace Greatbone.Core
                 key = "var",
                 Auth = auth,
                 Parent = this,
-                IsVar = true,
+                IsMulti = true,
                 Folder = (Parent == null) ? "var" : Path.Combine(Parent.Folder, "var"),
                 Service = Service
             };
-            T hub = (T)ci.Invoke(new object[] { arg });
-            this.varhub = hub;
+            T mux = (T)ci.Invoke(new object[] { arg });
+            this.multiple = mux;
 
-            return hub;
+            return mux;
         }
 
-        internal override void Handle(string rsc, WebContext wc)
+        internal override void Handle(string relative, WebContext wc)
         {
             if (!CheckAuth(wc)) return;
 
-            int slash = rsc.IndexOf('/');
+            int slash = relative.IndexOf('/');
             if (slash == -1) // handle it locally
             {
                 wc.Control = this;
-                Do(rsc, wc);
+                Do(relative, wc);
             }
             else // not local then sub & mux
             {
-                string dir = rsc.Substring(0, slash);
-                WebSub sub;
-                if (subs != null && subs.TryGet(dir, out sub)) // seek sub first
+                string dir = relative.Substring(0, slash);
+                WebControl ctrl;
+                if (controls != null && controls.TryGet(dir, out ctrl)) // seek sub first
                 {
-                    sub.Handle(rsc.Substring(slash + 1), wc);
+                    ctrl.Handle(relative.Substring(slash + 1), wc);
                 }
-                else if (varhub == null)
+                else if (multiple == null)
                 {
                     wc.StatusCode = 404; // not found
                 }
                 else
                 {
-                    varhub.Handle(rsc.Substring(slash + 1), wc, dir); // var = dir
+                    wc.Super = dir;
+                    multiple.Handle(relative.Substring(slash + 1), wc);
                 }
             }
         }

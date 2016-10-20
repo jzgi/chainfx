@@ -5,38 +5,30 @@ using System.Reflection;
 namespace Greatbone.Core
 {
 
+    ///
     /// <summary>
-    /// The descriptor of an action method.
+    /// The descriptor for an action handling method.
     /// </summary>
+    ///
     public class WebAction : IKeyed
     {
-        public WebSub Controller { get; }
+        public WebControl Control { get; }
 
-        readonly Action<WebContext> doer;
-
-        readonly Action<WebContext, string> doer2;
+        readonly Action<WebContext, string> doer;
 
         readonly IfAttribute[] ifs;
 
         public string Key { get; }
 
-        public bool IsVar => doer2 != null;
+        public bool IsVar => doer != null;
 
-        internal WebAction(WebSub controller, MethodInfo mi, bool isVar)
+        internal WebAction(WebControl control, MethodInfo mi)
         {
-            Controller = controller;
-            // NOTE: strict method name as key here to avoid the default base url trap
-            Key = mi.Name;
-            if (!isVar)
-            {
-                doer = (Action<WebContext>)mi.CreateDelegate(typeof(Action<WebContext>), controller);
-            }
-            else
-            {
-                doer2 = (Action<WebContext, string>)mi.CreateDelegate(typeof(Action<WebContext, string>), controller);
-            }
+            Control = control;
+            Key = mi.Name; // NOTE: strict method name as key here to avoid the default base url trap
+            doer = (Action<WebContext, string>)mi.CreateDelegate(typeof(Action<WebContext, string>), control);
 
-            // if attributes
+            // prepare if attributes
             List<IfAttribute> lst = null;
             foreach (var @if in mi.GetCustomAttributes<IfAttribute>())
             {
@@ -47,36 +39,19 @@ namespace Greatbone.Core
 
         }
 
-        internal bool TryDo(WebContext wc)
+        internal bool TryDo(WebContext wc, string sub)
         {
             // check ifs
             if (ifs != null)
             {
                 for (int i = 0; i < ifs.Length; i++)
                 {
-                    if (!ifs[i].Check(wc)) return false;
+                    if (!ifs[i].Check(wc, sub)) return false;
                 }
             }
 
             // invoke the action method
-            wc.Action = this;
-            doer(wc);
-            return true;
-        }
-
-        internal bool TryDo(WebContext wc, string var)
-        {
-            // check ifs
-            if (ifs != null)
-            {
-                for (int i = 0; i < ifs.Length; i++)
-                {
-                    if (!ifs[i].Check(wc, var)) return false;
-                }
-            }
-
-            // invoke the action method
-            doer2(wc, var);
+            doer(wc, sub);
             return true;
         }
 

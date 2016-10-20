@@ -9,7 +9,7 @@ namespace Greatbone.Sample
     {
         public FameModule(WebArg arg) : base(arg)
         {
-            SetVarHub<FameVarHub>(false);
+            SetMultiple<FameMultiple>(false);
         }
 
         /// <summary>

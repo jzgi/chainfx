@@ -4,9 +4,9 @@
     {
         string Key { get; }
 
-        Roll<WebSub> Subs { get; }
+        Roll<WebControl> Subs { get; }
 
-        T AddSub<T>(string key, bool authreq) where T : WebSub;
+        T AddControl<T>(string key, bool authreq) where T : WebControl;
 
         string Folder { get; }
 

@@ -2,9 +2,9 @@
 
 namespace Greatbone.Sample
 {
-    public class NoticeVarHub : WebVarHub
+    public class NoticeMultiple : WebMultiple
     {
-        public NoticeVarHub(WebArg arg) : base(arg)
+        public NoticeMultiple(WebArg arg) : base(arg)
         {
         }
 

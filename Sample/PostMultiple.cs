@@ -3,9 +3,9 @@ using Greatbone.Core;
 
 namespace Greatbone.Sample
 {
-    public class PostVarHub : WebVarHub
+    public class PostMultiple : WebMultiple
     {
-        public PostVarHub(WebArg arg) : base(arg)
+        public PostMultiple(WebArg arg) : base(arg)
         {
         }
 

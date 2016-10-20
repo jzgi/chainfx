@@ -8,11 +8,12 @@ namespace Greatbone.Core
 {
     ///
     /// <summary>
-    /// The controlling sub-routines pertaining to a virtual web directory, that handles request for static and dynamic contents.
+    /// The web controller pertaining to a virtual directory, that handles request for static and dynamic contents.
     /// </summary>
     ///
-    public abstract class WebSub : IKeyed
+    public abstract class WebControl : IKeyed
     {
+        // makes state-passing convenient
         internal readonly WebArg arg;
 
         // declared actions 
@@ -21,35 +22,23 @@ namespace Greatbone.Core
         // the default action
         readonly WebAction defaction;
 
-        // the argument makes state-passing more convenient
-        protected WebSub(WebArg arg)
+        protected WebControl(WebArg arg)
         {
             this.arg = arg;
 
-            // action initialization
+            // init actions
             actions = new Roll<WebAction>(32);
             Type typ = GetType();
             foreach (MethodInfo mi in typ.GetMethods(BindingFlags.Public | BindingFlags.Instance))
             {
                 ParameterInfo[] pis = mi.GetParameters();
-                WebAction a = null;
-                if (arg.IsVar)
+                if (pis.Length == 2 && pis[0].ParameterType == typeof(WebContext) && pis[1].ParameterType == typeof(string))
                 {
-                    if (pis.Length == 2 && pis[0].ParameterType == typeof(WebContext) && pis[1].ParameterType == typeof(string))
+                    WebAction a = new WebAction(this, mi);
+                    if (a.Key.Equals("default"))
                     {
-                        a = new WebAction(this, mi, true);
+                        defaction = a;
                     }
-                }
-                else
-                {
-                    if (pis.Length == 1 && pis[0].ParameterType == typeof(WebContext))
-                    {
-                        a = new WebAction(this, mi, false);
-                    }
-                }
-                if (a != null)
-                {
-                    if (a.Key.Equals("default")) { defaction = a; }
                     actions.Add(a);
                 }
             }
@@ -62,7 +51,7 @@ namespace Greatbone.Core
 
         public bool Auth => arg.Auth;
 
-        public bool IsVar => arg.IsVar;
+        public bool IsMulti => arg.IsMulti;
 
         public string Folder => arg.Folder;
 
@@ -93,20 +82,43 @@ namespace Greatbone.Core
             return true;
         }
 
-        internal virtual void Handle(string rsc, WebContext wc)
+        internal virtual void Handle(string relative, WebContext wc)
         {
             if (!CheckAuth(wc)) return;
 
             wc.Control = this;
-            Do(rsc, wc);
+            Do(relative, wc);
+            wc.Control = null;
         }
 
-        internal virtual void Handle(string rsc, WebContext wc, string var)
+        protected internal virtual void Do(string rsc, WebContext wc)
         {
-            if (!CheckAuth(wc)) return;
+            int dot = rsc.LastIndexOf('.');
+            if (dot != -1) // static
+            {
+                DoStatic(rsc, rsc.Substring(dot), wc);
+            }
+            else // dynamic
+            {
+                string key = rsc;
+                string sub = null;
+                int dash = rsc.LastIndexOf('-');
+                if (dash != -1)
+                {
+                    key = rsc.Substring(0, dash);
+                    sub = rsc.Substring(dash + 1);
+                }
+                WebAction a = string.IsNullOrEmpty(key) ? defaction : GetAction(key);
+                if (a == null)
+                {
+                    wc.StatusCode = 404;
+                }
+                else if (!a.TryDo(wc, sub))
+                {
+                    wc.StatusCode = 403; // forbidden
+                }
+            }
 
-            wc.Control = this;
-            Do(rsc, wc, var);
         }
 
         void DoStatic(string file, string ext, WebContext wc)
@@ -144,41 +156,6 @@ namespace Greatbone.Core
             wc.Out(200, sta, true, 5 * 60000);
         }
 
-        protected internal virtual void Do(string rsc, WebContext wc)
-        {
-            int dot = rsc.IndexOf('.');
-            if (dot != -1) // static
-            {
-                DoStatic(rsc, rsc.Substring(dot), wc);
-            }
-            else // dynamic
-            {
-                WebAction a = string.IsNullOrEmpty(rsc) ? defaction : GetAction(rsc);
-                if (a == null) { wc.StatusCode = 404; }
-                else if (!a.TryDo(wc)) wc.StatusCode = 403; // forbidden 
-            }
-        }
-
-        protected internal virtual void Do(string rsc, WebContext wc, string var)
-        {
-            int dot = rsc.IndexOf('.');
-            if (dot != -1) // static
-            {
-                DoStatic(rsc, rsc.Substring(dot), wc);
-            }
-            else // dynamic
-            {
-                WebAction a = string.IsNullOrEmpty(rsc) ? defaction : GetAction(rsc);
-                if (a == null) wc.StatusCode = 404;
-                else if (!a.TryDo(wc, var)) wc.StatusCode = 403; // forbidden
-            }
-
-        }
-
-        public virtual void @default(WebContext wc)
-        {
-            DoStatic("default.html", ".html", wc);
-        }
 
         public virtual void @default(WebContext wc, string var)
         {

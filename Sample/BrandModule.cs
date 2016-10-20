@@ -10,7 +10,7 @@ namespace Greatbone.Sample
     {
         public BrandModule(WebArg arg) : base(arg)
         {
-            SetVarHub<BrandVarHub>(false);
+            SetMultiple<BrandMultiple>(false);
         }
 
         //

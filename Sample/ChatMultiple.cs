@@ -7,19 +7,19 @@ namespace Greatbone.Sample
 {
     /// /123/Get
     /// /123/Put
-    public class ChatVarHub : WebVarHub
+    public class ChatMultiple : WebMultiple
     {
         private ConcurrentDictionary<string, List<Chat>> online;
 
-        public ChatVarHub(WebArg setg) : base(setg)
+        public ChatMultiple(WebArg setg) : base(setg)
         {
         }
 
         ///<summary>Returns the administration UI.</summary>
         [IfAdmin]
-        public override void @default(WebContext wc, string x)
+        public override void @default(WebContext wc, string subscript)
         {
-            base.@default(wc, x);
+            base.@default(wc, subscript);
         }
 
         [IfSelf]

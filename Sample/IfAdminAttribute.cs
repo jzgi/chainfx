@@ -4,12 +4,6 @@ namespace Greatbone.Sample
 {
     public class IfAdminAttribute : IfAttribute
     {
-        public override bool Check(WebContext wc)
-        {
-            Token tok = (Token)wc.Token;
-            return tok.admin;
-        }
-
         public override bool Check(WebContext wc, string var)
         {
             Token tok = (Token)wc.Token;
