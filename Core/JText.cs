@@ -320,12 +320,12 @@ namespace Greatbone.Core
 
         public JText Put(string name, byte[] v)
         {
-            throw new NotImplementedException();
+            return this; // ignore ir
         }
 
         public JText Put(string name, ArraySegment<byte> v)
         {
-            throw new NotImplementedException();
+            return this; // ignore ir
         }
 
         public JText Put<V>(string name, V v, uint x = 0) where V : IPersist
@@ -518,9 +518,7 @@ namespace Greatbone.Core
                 for (int i = 0; i < v.Length; i++)
                 {
                     if (i > 0) Add(',');
-
                     string str = v[i];
-
                     if (str == null)
                     {
                         Add("null");

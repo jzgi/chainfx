@@ -43,7 +43,7 @@ namespace Greatbone.Sample
         /// </summary>
         /// <code> 
         /// GET /fame/find?name=_name_pattern_ OR
-        /// GET /fame/find?career=_career_
+        /// GET /fame/find?skill=_skill_
         /// </code>
         ///
         public void find(WebContext wc)
@@ -66,12 +66,12 @@ namespace Greatbone.Sample
                 return;
             }
 
-            string career = null;
-            if (wc.Got(nameof(career), ref career))
+            string skill = null;
+            if (wc.Got(nameof(skill), ref skill))
             {
                 using (var dc = Service.NewDbContext())
                 {
-                    if (dc.Query("SELECT * FROM fames WHERE careers @> @1", p => p.Put(career)))
+                    if (dc.Query("SELECT * FROM fames WHERE @1 = ANY (skills)", p => p.Put(skill)))
                     {
                         Fame[] fames = dc.ToArr<Fame>();
                         wc.Out(200, fames);

@@ -226,7 +226,9 @@ namespace Greatbone.Core
                 Add(':');
             }
 
+            Add('"');
             Add(v);
+            Add('"');
 
             return this;
         }
@@ -285,50 +287,12 @@ namespace Greatbone.Core
 
         public JContent Put(string name, byte[] v)
         {
-            if (counts[level]++ > 0) Add(',');
-
-            if (name != null)
-            {
-                Add('"');
-                Add(name);
-                Add('"');
-                Add(':');
-            }
-
-            if (v == null)
-            {
-                Add("null");
-            }
-            else
-            {
-                // TODO
-            }
-
-            return this;
+            return this; // ignore ir
         }
 
         public JContent Put(string name, ArraySegment<byte> v)
         {
-            if (counts[level]++ > 0) Add(',');
-
-            if (name != null)
-            {
-                Add('"');
-                Add(name);
-                Add('"');
-                Add(':');
-            }
-
-            if (v == null)
-            {
-                Add("null");
-            }
-            else
-            {
-                // TODO
-            }
-
-            return this;
+            return this; // ignore ir
         }
 
         public JContent Put<V>(string name, V v, uint x = 0) where V : IPersist
@@ -523,7 +487,17 @@ namespace Greatbone.Core
                 for (int i = 0; i < v.Length; i++)
                 {
                     if (i > 0) Add(',');
-                    Add(v[i]);
+                    string str = v[i];
+                    if (str == null)
+                    {
+                        Add("null");
+                    }
+                    else
+                    {
+                        Add('"');
+                        AddEsc(str);
+                        Add('"');
+                    }
                 }
                 Add(']');
             }

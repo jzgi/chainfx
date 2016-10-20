@@ -23,13 +23,11 @@ namespace Greatbone.Sample
         internal short waist;
         internal short hip;
         internal short cup;
-        internal string[] careers;
         internal string[] styles;
         internal string[] skills;
-        internal short remark;
+        internal string remark;
         internal Ref[] sites;
         internal Ref[] friends;
-        internal Ref[] awards;
 
         public void Load(ISource s, uint x = 0)
         {
@@ -50,13 +48,11 @@ namespace Greatbone.Sample
             s.Got(nameof(waist), ref waist);
             s.Got(nameof(hip), ref hip);
             s.Got(nameof(cup), ref cup);
-            s.Got(nameof(careers), ref careers);
             s.Got(nameof(styles), ref styles);
             s.Got(nameof(skills), ref skills);
             s.Got(nameof(remark), ref remark);
             s.Got(nameof(sites), ref sites);
             s.Got(nameof(friends), ref friends);
-            s.Got(nameof(awards), ref awards);
         }
 
         public void Save<R>(ISink<R> s, uint x = 0) where R : ISink<R>
@@ -78,13 +74,11 @@ namespace Greatbone.Sample
             s.Put(nameof(waist), waist);
             s.Put(nameof(hip), hip);
             s.Put(nameof(cup), cup);
-            s.Put(nameof(careers), careers);
             s.Put(nameof(styles), styles);
             s.Put(nameof(skills), skills);
             s.Put(nameof(remark), remark);
             s.Put(nameof(sites), sites);
             s.Put(nameof(friends), friends);
-            s.Put(nameof(awards), awards);
         }
     }
 

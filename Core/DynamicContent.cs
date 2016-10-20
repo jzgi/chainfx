@@ -355,37 +355,38 @@ namespace Greatbone.Core
             }
         }
 
+        // sexagesimal numbers
+        static readonly string[] SEX = {
+            "00", "01", "02", "03", "04", "05", "06", "07", "08", "09",
+            "10", "11", "12", "13", "14", "15", "16", "17", "18", "19",
+            "20", "21", "22", "23", "24", "25", "26", "27", "28", "29",
+            "30", "31", "32", "33", "34", "35", "36", "37", "38", "39",
+            "40", "41", "42", "43", "44", "45", "46", "47", "48", "49",
+            "50", "51", "52", "53", "54", "55", "56", "57", "58", "59"
+        };
+
         public void Add(DateTime v)
         {
-            Add(v, true);
+            short yr = (short)v.Year;
+            byte mon = (byte)v.Month,
+            day = (byte)v.Day;
+
+            Add(v.Year);
+            Add('-');
+            Add(SEX[v.Month]);
+            Add('-');
+            Add(SEX[v.Day]);
+
+            int hr = v.Hour, min = v.Minute, sec = v.Second, mil = v.Millisecond;
+            if (hr == 0 && min == 0 && sec == 0 && mil == 0) return;
+
+            Add(' '); // a space for separation
+            Add(SEX[hr]);
+            Add(':');
+            Add(SEX[min]);
+            Add(':');
+            Add(SEX[sec]);
         }
 
-        public void Add(DateTime dt, bool time)
-        {
-            short yr = (short)dt.Year;
-            byte mon = (byte)dt.Month, day = (byte)dt.Day;
-
-            Add(yr);
-            Add('-');
-            if (mon < 10) Add('0');
-            Write(mon);
-            Add('-');
-            if (day < 10) Add('0');
-            Write(day);
-
-            byte hr = (byte)dt.Hour, min = (byte)dt.Minute, sec = (byte)dt.Second;
-            if (time)
-            {
-                Add(' '); // a space for separation
-                if (hr < 10) Add('0');
-                Write(hr);
-                Add(':');
-                if (min < 10) Add('0');
-                Write(min);
-                Add(':');
-                if (sec < 10) Add('0');
-                Write(sec);
-            }
-        }
     }
 }
