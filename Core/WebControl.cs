@@ -157,7 +157,7 @@ namespace Greatbone.Core
         }
 
 
-        public virtual void @default(WebContext wc, string var)
+        public virtual void @default(WebContext wc, string subscpt)
         {
             DoStatic("default.html", ".html", wc);
         }

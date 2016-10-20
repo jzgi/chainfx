@@ -5,7 +5,7 @@ using System.Reflection;
 namespace Greatbone.Core
 {
     /// <summary>
-    /// A module web directory controller that can contain sub- and varhub- controllers.
+    /// A module web directory controller that can contain child- and multiplexer controllers.
     /// </summary>
     public abstract class WebModule : WebControl, IParent
     {

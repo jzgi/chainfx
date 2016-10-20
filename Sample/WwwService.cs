@@ -12,7 +12,7 @@ namespace Greatbone.Sample
     {
         public WwwService(WebConfig cfg) : base(cfg)
         {
-            AddControl<MySub>("my", true);
+            AddControl<MyControl>("my", true);
         }
 
 

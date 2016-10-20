@@ -55,13 +55,13 @@ namespace Greatbone.Sample
         /// <code>
         /// POST /user/_id_/upd
         /// </code>
-        public void upd(WebContext wc, string var)
+        public void upd(WebContext wc, string subscpt)
         {
             User obj = wc.JObj.ToObj<User>();
             using (var dc = Service.NewDbContext())
             {
                 DbSql sql = new DbSql("UPDATE users")._SET_(obj)._("WHERE id = @1");
-                if (dc.Execute(sql.ToString(), p => { obj.Save(p); p.Put(var); }) > 0)
+                if (dc.Execute(sql.ToString(), p => { obj.Save(p); p.Put(subscpt); }) > 0)
                 {
                     wc.StatusCode = 200; // ok
                 }

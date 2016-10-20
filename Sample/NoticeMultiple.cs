@@ -15,9 +15,9 @@ namespace Greatbone.Sample
         /// GET /notice/_id_/
         /// </code>
         /// 
-        public override void @default(WebContext wc, string var)
+        public override void @default(WebContext wc, string subscpt)
         {
-            int id = var.Int();
+            int id = subscpt.Int();
             using (var dc = Service.NewDbContext())
             {
                 if (dc.QueryA("SELECT * FROM notices WHERE id = @1", p => p.Put(id)))
@@ -39,13 +39,13 @@ namespace Greatbone.Sample
         /// POST /notice/_id_/del
         /// </code>
         /// 
-        public void del(WebContext wc, string var)
+        public void del(WebContext wc, string subscpt)
         {
-            int id = var.Int();
-            string uid = wc.Token.Key;
+            int id = subscpt.Int();
+            string userid = wc.Token.Key;
             using (var dc = Service.NewDbContext())
             {
-                if (dc.Execute("DELETE FROM notices WHERE id = @1 AND authorid = @2", p => p.Put(id).Put(uid)) > 0)
+                if (dc.Execute("DELETE FROM notices WHERE id = @1 AND authorid = @2", p => p.Put(id).Put(userid)) > 0)
                 {
                     wc.StatusCode = 200;
                 }
@@ -63,16 +63,17 @@ namespace Greatbone.Sample
         /// POST /notice/_id_/apply
         /// </code>
         /// 
-        public void apply(WebContext wc, string var)
+        public void apply(WebContext wc, string subscpt)
         {
-            string uid = wc.Token.Key;
+            int id = wc.Super.Int();
+            string userid = wc.Token.Key;
             App app = new App()
             {
-                userid = uid
+                userid = userid
             };
             using (var dc = Service.NewDbContext())
             {
-                if (dc.QueryA("SELECT apps FROM notices WHERE id = @1", p => p.Put(uid)))
+                if (dc.QueryA("SELECT apps FROM notices WHERE id = @1", p => p.Put(id)))
                 {
                     App[] arr = dc.GotArr<App>().Add(app);
                     if (dc.Execute("UPDATE notices SET apps = @1", p => p.Put(arr)) > 0)
@@ -96,10 +97,10 @@ namespace Greatbone.Sample
         ///     "text" : "comment text"            
         /// }            
         /// </code>
-        public void cmt(WebContext wc, string var)
+        public void cmt(WebContext wc, string subscpt)
         {
+            int id = wc.Super.Int();
             IToken tok = wc.Token;
-            int id = var.Int();
             JObj jo = wc.JObj;
             string text = jo[nameof(text)];
 
@@ -129,9 +130,9 @@ namespace Greatbone.Sample
 
         ///
         /// POST /notice/_id_/share
-        public void share(WebContext wc, string var)
+        public void share(WebContext wc, string subscpt)
         {
-            int id = var.Int();
+            int id = wc.Super.Int();
             using (var dc = Service.NewDbContext())
             {
                 if (dc.Execute("UPDATE notices SET shared = shared + 1 WHERE id = @1", p => p.Put(id)) > 0)
