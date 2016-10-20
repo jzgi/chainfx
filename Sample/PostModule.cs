@@ -10,6 +10,9 @@ namespace Greatbone.Sample
             SetVarHub<PostVarHub>(false);
         }
 
+
+        static string topsql = new DbSql("SELECT ").columnlst(new Post(), XUtility.NoBinary)._("FROM posts ORDER BY id DESC LIMIT 20 OFFSET @1").ToString();
+
         /// <summary>
         /// Get the nth page of records on top.
         /// </summary>
@@ -22,9 +25,9 @@ namespace Greatbone.Sample
             wc.Got(nameof(page), ref page);
             using (var dc = Service.NewDbContext())
             {
-                if (dc.Query(@"SELECT * FROM posts ORDER BY id DESC LIMIT @limit OFFSET @offset", p => p.Put(20).Put(20 * page)))
+                if (dc.Query(topsql, p => p.Put(20 * page)))
                 {
-                    Post[] arr = dc.ToArr<Post>();
+                    Post[] arr = dc.ToArr<Post>(XUtility.NoBinary);
                     wc.Out(200, arr);
                 }
                 else

@@ -15,12 +15,6 @@ namespace Greatbone.Sample
         internal bool admin;
         internal DateTime date;
 
-        public string Key => id;
-
-        public string[] Roles => null;
-
-        public string Name => name;
-
         public void Load(ISource s, uint x = 0)
         {
             s.Got(nameof(id), ref id);
@@ -47,16 +41,6 @@ namespace Greatbone.Sample
             {
                 s.Put(nameof(date), date);
             }
-        }
-
-        public static string Encrypt(string orig)
-        {
-            return null;
-        }
-
-        public static string Decrypt(string src)
-        {
-            return null;
         }
 
     }

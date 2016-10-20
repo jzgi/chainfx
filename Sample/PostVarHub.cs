@@ -18,63 +18,61 @@ namespace Greatbone.Sample
         {
         }
 
-        ///
+        /// <summary>
+        /// Get the nth image.
+        /// </summary>
         /// <code>
-        /// GET /post/_id_/img/idx=_idx_
-        /// </code>
-        ///
-        /// <code>
-        /// POST /post/_id_/img/idx=_idx_
-        /// ......
+        /// GET /post/_id_/img?[idx=_n_]
         /// </code>
         ///
         public void img(WebContext wc, string var)
         {
+            int id = var.ToInt();
             int idx = 0;
-            if (wc.Got(nameof(idx), ref idx))
+            wc.Got(nameof(idx), ref idx);
+            using (var dc = Service.NewDbContext())
             {
-                if (wc.IsGet)
+                if (dc.QueryA("SELECT m" + idx + " FROM posts WHERE id = @1", p => p.Put(id)))
                 {
-                    using (var dc = Service.NewDbContext())
-                    {
-                        if (dc.QueryA("SELECT m" + idx + " FROM fames WHERE id = @1", p => p.Put(var)))
-                        {
-                            byte[] v = dc.GotBytes();
-                            StaticContent sta = new StaticContent()
-                            {
-                                Buffer = v
-                            };
-                            wc.Out(200, sta, true, 60000);
-                        }
-                        else
-                        {
-                            wc.StatusCode = 404;
-                        }
-                    }
+                    byte[] v = dc.GotBytes();
+                    StaticContent sta = new StaticContent() { Buffer = v };
+                    wc.Out(200, sta, true, 60000);
                 }
                 else
                 {
-                    using (var dc = Service.NewDbContext())
-                    {
-                        ArraySegment<byte>? bytes = wc.BytesSeg;
-                        if (bytes == null)
-                        {
-                            wc.StatusCode = 304; ;
-                        }
-                        else if (dc.Execute("UPDATE posts SET m" + idx + " = @1 WHERE id = @2", p => p.Put(bytes.Value).Put(var)) > 0)
-                        {
-                            wc.StatusCode = 200;
-                        }
-                        else
-                        {
-                            wc.StatusCode = 404;
-                        }
-                    }
+                    wc.StatusCode = 404;
                 }
             }
-            else
+        }
+
+        /// <summary>
+        /// Update the nth image.
+        /// </summary>
+        /// <code>
+        /// POST /post/_id_/updimg?[idx=_n_]
+        /// [img_bytes]
+        /// </code>
+        ///
+        public void updimg(WebContext wc, string var)
+        {
+            int id = var.ToInt();
+            int idx = 0;
+            wc.Got(nameof(idx), ref idx);
+            using (var dc = Service.NewDbContext())
             {
-                wc.StatusCode = 304;
+                ArraySegment<byte>? bytes = wc.BytesSeg;
+                if (bytes == null)
+                {
+                    wc.StatusCode = 301; ;
+                }
+                else if (dc.Execute("UPDATE posts SET m" + idx + " = @1 WHERE id = @2", p => p.Put(bytes.Value).Put(id)) > 0)
+                {
+                    wc.StatusCode = 200;
+                }
+                else
+                {
+                    wc.StatusCode = 404;
+                }
             }
         }
 
