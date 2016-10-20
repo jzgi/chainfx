@@ -16,16 +16,15 @@ namespace Greatbone.Sample
         /// Get the nth page on top.
         /// </summary>
         /// <code>
-        /// GET /fame/top?[page=_n_]
+        /// GET /fame/top[-_n_]
         /// </code>
-        public void top(WebContext wc)
+        public void top(WebContext wc, string subscpt)
         {
-            int page = 0;
-            wc.Got(nameof(page), ref page);
-
+            string id = wc.Super;
+            int n = subscpt.Int();
             using (var dc = Service.NewDbContext())
             {
-                if (dc.Query("SELECT * FROM fames ORDER BY rating LIMIT 20 OFFSET @1", p => p.Put(page * 20)))
+                if (dc.Query("SELECT * FROM fames ORDER BY rating LIMIT 20 OFFSET @1", p => p.Put(n * 20)))
                 {
                     Fame[] fames = dc.ToArr<Fame>();
                     wc.Out(200, fames);
@@ -46,7 +45,7 @@ namespace Greatbone.Sample
         /// GET /fame/find?skill=_skill_
         /// </code>
         ///
-        public void find(WebContext wc)
+        public void find(WebContext wc, string subscpt)
         {
             string name = null;
             if (wc.Got(nameof(name), ref name))
@@ -89,7 +88,7 @@ namespace Greatbone.Sample
         // ADMIN
         //
 
-        public void search(WebContext wc)
+        public void search(WebContext wc, string subscpt)
         {
             int id = 0;
             wc.Got(nameof(id), ref id);
@@ -110,7 +109,7 @@ namespace Greatbone.Sample
 
         }
 
-        public void del(WebContext wc)
+        public void del(WebContext wc, string subscpt)
         {
             int id = 0;
             wc.Got(nameof(id), ref id);
@@ -121,7 +120,7 @@ namespace Greatbone.Sample
             }
         }
 
-        public void status(WebContext wc)
+        public void status(WebContext wc, string subscpt)
         {
             int id = 0;
             wc.Got(nameof(id), ref id);

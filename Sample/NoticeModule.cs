@@ -14,7 +14,7 @@ namespace Greatbone.Sample
         /// <code>
         /// GET /notice/top?[page=_num_]
         /// </code>
-        public void top(WebContext wc)
+        public void top(WebContext wc, string subscpt)
         {
             int page = 0;
             wc.Got(nameof(page), ref page);
@@ -42,7 +42,7 @@ namespace Greatbone.Sample
         /// }
         /// </code>
         ///
-        public void @new(WebContext wc)
+        public void @new(WebContext wc, string subscpt)
         {
             IToken tok = wc.Token;
 
@@ -66,17 +66,17 @@ namespace Greatbone.Sample
             }
         }
 
-        public void search(WebContext wc)
+        public void search(WebContext wc, string subscpt)
         {
             throw new NotImplementedException();
         }
 
-        public void status(WebContext wc)
+        public void status(WebContext wc, string subscpt)
         {
             throw new NotImplementedException();
         }
 
-        public void del(WebContext wc)
+        public void del(WebContext wc, string subscpt)
         {
             throw new NotImplementedException();
         }

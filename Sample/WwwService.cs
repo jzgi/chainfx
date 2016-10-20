@@ -24,7 +24,7 @@ namespace Greatbone.Sample
         /// GET /cats
         /// </code>
         ///
-        public void cats(WebContext wc)
+        public void cats(WebContext wc, string subscpt)
         {
             using (var dc = NewDbContext())
             {
@@ -41,7 +41,7 @@ namespace Greatbone.Sample
             }
         }
 
-        public void search(WebContext wc)
+        public void search(WebContext wc, string subscpt)
         {
         }
 

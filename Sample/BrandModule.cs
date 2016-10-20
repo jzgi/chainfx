@@ -17,17 +17,17 @@ namespace Greatbone.Sample
         // ADMIN
         //
 
-        public void del(WebContext wc)
+        public void del(WebContext wc, string subscpt)
         {
             throw new NotImplementedException();
         }
 
-        public void search(WebContext wc)
+        public void search(WebContext wc, string subscpt)
         {
             throw new NotImplementedException();
         }
 
-        public void status(WebContext wc)
+        public void status(WebContext wc, string subscpt)
         {
             throw new NotImplementedException();
         }

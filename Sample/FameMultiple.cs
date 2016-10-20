@@ -17,13 +17,13 @@ namespace Greatbone.Sample
         /// GET /fame/_id_/
         /// </code>
         ///
-        public override void @default(WebContext wc, string var)
+        public override void @default(WebContext wc, string subscpt)
         {
             using (var dc = Service.NewDbContext())
             {
                 if (wc.IsGet)
                 {
-                    if (dc.QueryA("SELECT * FROM fames WHERE id = @1", p => p.Put(var)))
+                    if (dc.QueryA("SELECT * FROM fames WHERE id = @1", p => p.Put(subscpt)))
                     {
                         Fame obj = dc.ToObj<Fame>();
                         wc.Out(200, obj);
@@ -44,7 +44,7 @@ namespace Greatbone.Sample
         /// {
         /// }
         /// </code>
-        public void upd(WebContext wc, string var)
+        public void upd(WebContext wc, string subscpt)
         {
             Fame obj = wc.JObj.ToObj<Fame>();
 
@@ -69,9 +69,9 @@ namespace Greatbone.Sample
         /// GET /fame/_id_/icon
         /// </code>
         ///
-        public void icon(WebContext wc, string var)
+        public void icon(WebContext wc, string subscpt)
         {
-            string id = var;
+            string id = wc.Super;
             using (var dc = Service.NewDbContext())
             {
                 if (dc.QueryA("SELECT icon FROM fames WHERE id = @1", p => p.Put(id)))
@@ -96,10 +96,10 @@ namespace Greatbone.Sample
         /// .....
         /// </code>
         ///
-        public void updicon(WebContext wc, string var)
+        public void updicon(WebContext wc, string subscpt)
         {
+            string id = wc.Super;
             ArraySegment<byte>? bytes = wc.BytesSeg;
-            string id = var;
             using (var dc = Service.NewDbContext())
             {
                 if (bytes == null)
@@ -124,28 +124,22 @@ namespace Greatbone.Sample
         /// GET /fame/_id_/img?idx=_n_
         /// </code>
         ///
-        public void img(WebContext wc, string var)
+        public void img(WebContext wc, string subscpt)
         {
-            int idx = 0;
-            if (wc.Got(nameof(idx), ref idx))
+            string id = wc.Super;
+            int n = subscpt.Int();
+            using (var dc = Service.NewDbContext())
             {
-                using (var dc = Service.NewDbContext())
+                if (dc.QueryA("SELECT m" + n + " FROM fames WHERE id = @1", p => p.Put(id)))
                 {
-                    if (dc.QueryA("SELECT m" + idx + " FROM fames WHERE id = @1", p => p.Put(var)))
-                    {
-                        byte[] v = dc.GotBytes();
-                        StaticContent sta = new StaticContent() { Buffer = v };
-                        wc.Out(200, sta, true, 60000);
-                    }
-                    else
-                    {
-                        wc.StatusCode = 404;
-                    }
+                    byte[] v = dc.GotBytes();
+                    StaticContent sta = new StaticContent() { Buffer = v };
+                    wc.Out(200, sta, true, 60000);
                 }
-            }
-            else
-            {
-                wc.StatusCode = 304;
+                else
+                {
+                    wc.StatusCode = 404;
+                }
             }
         }
 
@@ -153,35 +147,29 @@ namespace Greatbone.Sample
         /// Update the nth image.
         /// </summary>
         /// <code>
-        /// POST /fame/_id_/updimg?idx=_n_
+        /// POST /fame/_id_/updimg[-_n_]
         /// [img_bytes]
         /// </code>
         ///
-        public void updimg(WebContext wc, string var)
+        public void updimg(WebContext wc, string subscpt)
         {
-            int idx = 0;
-            if (wc.Got(nameof(idx), ref idx))
+            string id = wc.Super;
+            int n = subscpt.Int();
+            using (var dc = Service.NewDbContext())
             {
-                using (var dc = Service.NewDbContext())
+                ArraySegment<byte>? bytes = wc.BytesSeg;
+                if (bytes == null)
                 {
-                    ArraySegment<byte>? bytes = wc.BytesSeg;
-                    if (bytes == null)
-                    {
-                        wc.StatusCode = 301; ;
-                    }
-                    else if (dc.Execute("UPDATE posts SET m" + idx + " = @1 WHERE id = @2", p => p.Put(bytes.Value).Put(var)) > 0)
-                    {
-                        wc.StatusCode = 200;
-                    }
-                    else
-                    {
-                        wc.StatusCode = 404;
-                    }
+                    wc.StatusCode = 301; ;
                 }
-            }
-            else
-            {
-                wc.StatusCode = 304;
+                else if (dc.Execute("UPDATE posts SET m" + n + " = @1 WHERE id = @2", p => p.Put(bytes.Value).Put(id)) > 0)
+                {
+                    wc.StatusCode = 200;
+                }
+                else
+                {
+                    wc.StatusCode = 404;
+                }
             }
         }
     }

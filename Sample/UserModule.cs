@@ -24,7 +24,7 @@ namespace Greatbone.Sample
         /// <code>
         /// GET /user/vcode
         /// </code>
-        public void vcode(WebContext wc)
+        public void vcode(WebContext wc, string subscpt)
         {
             JObj jo = wc.JObj;
             string id = jo[nameof(id)];
@@ -47,7 +47,7 @@ namespace Greatbone.Sample
         ///   "vcode" : "_verification_code_"            
         /// }    
         /// </code>
-        public void @new(WebContext wc)
+        public void @new(WebContext wc, string subscpt)
         {
             JObj jo = wc.JObj;
             string id = jo[nameof(id)];
@@ -71,7 +71,7 @@ namespace Greatbone.Sample
         }
 
         [IfAdmin]
-        public void create(WebContext wc)
+        public void create(WebContext wc, string subscpt)
         {
             JObj jo = wc.JObj;
             string id = jo[nameof(id)];
@@ -93,16 +93,16 @@ namespace Greatbone.Sample
         // ADMIN
         //
 
-        public void search(WebContext wc)
+        public void search(WebContext wc, string subscpt)
         {
         }
 
-        public void del(WebContext wc)
+        public void del(WebContext wc, string subscpt)
         {
             throw new NotImplementedException();
         }
 
-        public void status(WebContext wc)
+        public void status(WebContext wc, string subscpt)
         {
             throw new NotImplementedException();
         }

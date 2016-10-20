@@ -273,34 +273,34 @@ namespace Greatbone.Core
         // CONVERTION
         //
 
-        public static short ToShort(this string str)
+        public static short Short(this string str, short def = 0)
         {
             short v;
             if (short.TryParse(str, out v))
             {
                 return v;
             }
-            return 0;
+            return def;
         }
 
-        public static int ToInt(this string str)
+        public static int Int(this string str, int def = 0)
         {
             int v;
             if (int.TryParse(str, out v))
             {
                 return v;
             }
-            return 0;
+            return def;
         }
 
-        public static long ToLong(this string str)
+        public static long Long(this string str, long def = 0)
         {
             long v;
             if (long.TryParse(str, out v))
             {
                 return v;
             }
-            return 0;
+            return def;
         }
 
     }

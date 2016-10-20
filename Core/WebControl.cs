@@ -101,19 +101,19 @@ namespace Greatbone.Core
             else // dynamic
             {
                 string key = rsc;
-                string sub = null;
+                string subscpt = null;
                 int dash = rsc.LastIndexOf('-');
                 if (dash != -1)
                 {
                     key = rsc.Substring(0, dash);
-                    sub = rsc.Substring(dash + 1);
+                    subscpt = rsc.Substring(dash + 1);
                 }
                 WebAction a = string.IsNullOrEmpty(key) ? defaction : GetAction(key);
                 if (a == null)
                 {
                     wc.StatusCode = 404;
                 }
-                else if (!a.TryDo(wc, sub))
+                else if (!a.TryDo(wc, subscpt))
                 {
                     wc.StatusCode = 403; // forbidden
                 }

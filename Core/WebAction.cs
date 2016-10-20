@@ -39,19 +39,19 @@ namespace Greatbone.Core
 
         }
 
-        internal bool TryDo(WebContext wc, string sub)
+        internal bool TryDo(WebContext wc, string subscpt)
         {
             // check ifs
             if (ifs != null)
             {
                 for (int i = 0; i < ifs.Length; i++)
                 {
-                    if (!ifs[i].Check(wc, sub)) return false;
+                    if (!ifs[i].Check(wc, subscpt)) return false;
                 }
             }
 
             // invoke the action method
-            doer(wc, sub);
+            doer(wc, subscpt);
             return true;
         }
 
