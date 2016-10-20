@@ -4,29 +4,22 @@ namespace Greatbone.Core
     public static class XUtility
     {
 
-        public static bool Yes(this uint x, uint v)
+        public const uint NoDefault = 2, NoBinary = 4, NoExtra = 8;
+        
+
+        public static bool Default(this uint x)
         {
-            return (x & v) == v;
+            return (x & NoDefault) != NoDefault;
         }
 
-        public static bool No(this uint x, uint v)
+        public static bool Binary(this uint x)
         {
-            return (x & v) != v;
+            return (x & NoBinary) != NoBinary;
         }
 
-        public static bool Both(this uint x, uint v1, uint v2)
+        public static bool Extra(this uint x)
         {
-            return (x & v1) == v1 && (x & v2) == v2;
-        }
-
-        public static bool Either(this uint x, uint v1, uint v2)
-        {
-            return (x & v1) == v1 || (x & v2) == v2;
-        }
-
-        public static bool Neither(this uint x, uint v1, uint v2)
-        {
-            return (x & v1) != v1 && (x & v2) != v2;
+            return (x & NoExtra) != NoExtra;
         }
 
     }

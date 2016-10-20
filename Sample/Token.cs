@@ -8,8 +8,6 @@ namespace Greatbone.Sample
     /// </summary>
     public class Token : IToken, IPersist
     {
-        public const ushort Out = 0x01;
-
         internal string id;
 
         internal string name;
@@ -40,7 +38,7 @@ namespace Greatbone.Sample
         {
             s.Put(nameof(id), id);
             s.Put(nameof(name), name);
-            if (x.No(Out))
+            if (x.Extra())
             {
                 s.Put(nameof(credential), credential);
             }

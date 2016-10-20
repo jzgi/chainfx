@@ -1,31 +1,20 @@
 ﻿using System;
 using Greatbone.Core;
-using static Greatbone.Core.DbSql;
 
 namespace Greatbone.Sample
 {
     public class Notice : IPersist
     {
         internal int id;
-
         internal string loc;
-
         internal string authorid;
-
         internal string author;
-
         internal DateTime date;
-
         internal DateTime duedate;
-
         internal string subject;
-
         internal string tel;
-
         internal string text;
-
         internal int reads;
-
         internal App[] apps;
 
 
@@ -46,7 +35,7 @@ namespace Greatbone.Sample
 
         public void Save<R>(ISink<R> s, uint x = 0) where R : ISink<R>
         {
-            if (x.Neither(X_INS, X_UPD))
+            if (x.Default())
             {
                 s.Put(nameof(id), id);
             }
@@ -66,7 +55,6 @@ namespace Greatbone.Sample
     internal struct App : IPersist
     {
         internal string userid;
-
         internal string user;
 
         public void Load(ISource s, uint x = 0)

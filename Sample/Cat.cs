@@ -9,6 +9,8 @@ namespace Greatbone.Sample
 
         internal string title;
 
+        internal byte[] img;
+
         internal string filter;
 
         internal bool disabled;
@@ -17,6 +19,7 @@ namespace Greatbone.Sample
         {
             s.Got(nameof(id), ref id);
             s.Got(nameof(title), ref title);
+            if (x.Binary()) s.Got(nameof(img), ref img);
             s.Got(nameof(filter), ref filter);
             s.Got(nameof(disabled), ref disabled);
         }
@@ -25,9 +28,11 @@ namespace Greatbone.Sample
         {
             s.Put(nameof(id), id);
             s.Put(nameof(title), title);
+            if (x.Binary()) s.Put(nameof(img), img);
             s.Put(nameof(filter), filter);
             s.Put(nameof(disabled), disabled);
         }
+        
     }
 
 }

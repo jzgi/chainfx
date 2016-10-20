@@ -285,12 +285,12 @@ namespace Greatbone.Core
             return this;
         }
 
-        public JContent Put(string name, byte[] v)
+        public virtual JContent Put(string name, byte[] v)
         {
             return this; // ignore ir
         }
 
-        public JContent Put(string name, ArraySegment<byte> v)
+        public virtual JContent Put(string name, ArraySegment<byte> v)
         {
             return this; // ignore ir
         }

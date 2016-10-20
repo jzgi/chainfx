@@ -7,22 +7,13 @@ namespace Greatbone.Sample
     ///
     public class User : IPersist
     {
-        public const uint X_MGT = 0x01;
-
         internal string id;
-
         internal string name;
-
         internal string credential;
-
         internal bool fame;
-
         internal bool brand;
-
         internal bool admin;
-
         internal DateTime date;
-
 
         public string Key => id;
 
@@ -38,7 +29,7 @@ namespace Greatbone.Sample
             s.Got(nameof(fame), ref fame);
             s.Got(nameof(brand), ref brand);
             s.Got(nameof(admin), ref admin);
-            if ((x & X_MGT) == x)
+            if (x.Extra())
             {
                 s.Got(nameof(date), ref date);
             }
@@ -52,7 +43,7 @@ namespace Greatbone.Sample
             s.Put(nameof(fame), fame);
             s.Put(nameof(brand), brand);
             s.Put(nameof(admin), admin);
-            if ((x & X_MGT) == x)
+            if (x.Extra())
             {
                 s.Put(nameof(date), date);
             }

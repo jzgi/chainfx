@@ -35,7 +35,7 @@ namespace Greatbone.Sample
             s.Got(nameof(name), ref name);
             s.Got(nameof(quote), ref quote);
             s.Got(nameof(sex), ref sex);
-            s.Got(nameof(icon), ref icon);
+            if (x.Binary()) s.Got(nameof(icon), ref icon);
             s.Got(nameof(birthday), ref birthday);
             s.Got(nameof(qq), ref qq);
             s.Got(nameof(wechat), ref wechat);
@@ -61,7 +61,7 @@ namespace Greatbone.Sample
             s.Put(nameof(name), name);
             s.Put(nameof(quote), quote);
             s.Put(nameof(sex), sex);
-            s.Put(nameof(icon), icon);
+            if (x.Binary()) s.Put(nameof(icon), icon);
             s.Put(nameof(birthday), birthday);
             s.Put(nameof(qq), qq);
             s.Put(nameof(wechat), wechat);
