@@ -7,13 +7,9 @@ namespace Greatbone.Sample
     {
         
         internal int id;
-
         internal string title;
-
         internal byte[] img;
-
         internal string filter;
-
         internal bool disabled;
 
         public void Load(ISource s, uint x = 0)

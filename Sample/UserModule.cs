@@ -32,7 +32,7 @@ namespace Greatbone.Sample
             // send vcode through SMS
             string vcode = "1234";
             vcodes.TryAdd(id, vcode);
-            Info(vcode);
+            INF(vcode);
             wc.StatusCode = 200;
         }
 

@@ -31,11 +31,11 @@ namespace Greatbone.Sample
                 if (dc.QueryA("SELECT * FROM users WHERE id = @1", (p) => p.Put(id)))
                 {
                     Token obj = new Token();
-                    obj.Load(dc, User.NoDefault);
+                    obj.Load(dc);
                     string c16 = StrUtility.C16(password);
                     if (c16.Equals(obj.credential))
                     {
-                        wc.Out(200, obj, User.NoDefault);
+                        wc.Out(200, obj);
                     }
                     else
                     {

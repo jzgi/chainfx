@@ -166,27 +166,27 @@ namespace Greatbone.Core
         // LOGGING METHODS
         //
 
-        public void Trace(string message, Exception exception = null)
+        public void TRC(string message, Exception exception = null)
         {
             Service.Log(LogLevel.Trace, 0, message, exception, null);
         }
 
-        public void Debug(string message, Exception exception = null)
+        public void DBG(string message, Exception exception = null)
         {
             Service.Log(LogLevel.Debug, 0, message, exception, null);
         }
 
-        public void Info(string message, Exception exception = null)
+        public void INF(string message, Exception exception = null)
         {
             Service.Log(LogLevel.Information, 0, message, exception, null);
         }
 
-        public void Warning(string message, Exception exception = null)
+        public void WAR(string message, Exception exception = null)
         {
             Service.Log(LogLevel.Warning, 0, message, exception, null);
         }
 
-        public void Error(string message, Exception exception = null)
+        public void ERR(string message, Exception exception = null)
         {
             Service.Log(LogLevel.Error, 0, message, exception, null);
         }

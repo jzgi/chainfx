@@ -8,13 +8,9 @@ namespace Greatbone.Sample
     public struct Chat : IPersist
     {
         private int status;
-
         public string partner;
-
         private Message[] msgs;
-
         private long lasttime;
-
         WebContext wctx;
 
         internal void Put(string msg)

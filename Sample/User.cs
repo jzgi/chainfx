@@ -7,8 +7,6 @@ namespace Greatbone.Sample
     ///
     public class User : IPersist
     {
-        public const uint NoDefault = 2, Extra = 4;
-
         internal string id;
         internal string name;
         internal string credential;

@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.IO;
 using System.Reflection;
 using System.Text;
@@ -190,7 +191,8 @@ namespace Greatbone.Core
                 }
                 catch (Exception e)
                 {
-                    Error(e.Message);
+                    Debug.WriteLine(e.Message);
+                    ERR(e.Message);
                 }
             }
 
@@ -258,7 +260,7 @@ namespace Greatbone.Core
             Console.Write(Config.intern);
             Console.WriteLine();
 
-            Info("started");
+            INF("started");
         }
 
         internal void Schedule()

@@ -5,7 +5,7 @@ using Npgsql;
 
 namespace Greatbone.Core
 {
-    public class DbContext : IDisposable, ISource
+    public class DbContext : IDisposable, IResultSet
     {
         readonly NpgsqlConnection connection;
 
