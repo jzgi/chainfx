@@ -42,14 +42,33 @@ namespace Greatbone.Sample
             s.Put(nameof(admin), admin);
         }
 
-        public static string Encrypt(string orig)
+
+        // hexidecimal numbers
+        static readonly char[] HEX = { '0', '1', '2', '3', '4', '5', '6', '7', '8', '9', 'a', 'b', 'c', 'd', 'e', 'f' };
+
+
+        public static string Encrypt(int tok, string credential)
         {
-            return null;
+            int clen;
+            if (credential == null || (clen = credential.Length) != 16) return null;
+
+            char[] buf = new char[8 + clen];
+            int p = 0;
+            // append id in hex format
+            for (int i = 7; i >= 0; i--)
+            {
+                buf[p++] = HEX[(tok >> (i * 4)) & 0x0f];
+            }
+            // append crendential 
+            for (int i = 0; i < clen; i++) { buf[p++] = credential[i]; }
+            return new string(buf);
         }
 
-        public static string Decrypt(string src)
+        public static bool Decrypt(string tok)
         {
-            return null;
+        
+            return true;
         }
+
     }
 }

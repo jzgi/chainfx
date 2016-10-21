@@ -9,7 +9,7 @@ namespace Greatbone.Sample
     {
         public DirService(WebConfig cfg) : base(cfg)
         {
-            AddControl<UserModule>("user", false);
+            AddControl<UserModule>("user");
         }
 
     }

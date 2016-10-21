@@ -18,9 +18,9 @@ namespace Greatbone.Core
         {
         }
 
-        public Roll<WebControl> Subs => controls;
+        public Roll<WebControl> Controls => controls;
 
-        public T AddControl<T>(string key, bool auth) where T : WebControl
+        public T AddControl<T>(string key, object state = null) where T : WebControl
         {
             if (controls == null)
             {
@@ -33,9 +33,9 @@ namespace Greatbone.Core
             WebArg arg = new WebArg
             {
                 key = key,
-                Auth = auth,
+                State = state,
                 Parent = this,
-                IsMulti = true,
+                IsMultiple = true,
                 Folder = (Parent == null) ? key : Path.Combine(Parent.Folder, key),
                 Service = Service
             };
@@ -48,8 +48,6 @@ namespace Greatbone.Core
 
         internal override void Handle(string relative, WebContext wc)
         {
-            if (!CheckAuth(wc)) return;
-
             int slash = relative.IndexOf('/');
             if (slash == -1) // handle it locally
             {

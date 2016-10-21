@@ -4,11 +4,12 @@
     {
         string Key { get; }
 
-        Roll<WebControl> Subs { get; }
+        Roll<WebControl> Controls { get; }
 
-        T AddControl<T>(string key, bool authreq) where T : WebControl;
+        T AddControl<T>(string key, object state = null) where T : WebControl;
 
         string Folder { get; }
 
     }
+
 }

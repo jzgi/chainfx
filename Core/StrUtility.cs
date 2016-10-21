@@ -144,55 +144,6 @@ namespace Greatbone.Core
             }
         }
 
-        /// <summary>
-        /// 
-        /// </summary>
-        /// <param name="id">principal ID</param>
-        /// <param name="credential">8-byte credential derived from MD5</param>
-        /// <returns></returns>
-        public static string Encrypt(int id, string credential)
-        {
-            int clen;
-            if (credential == null || (clen = credential.Length) != 16) return null;
-
-            char[] buf = new char[8 + clen];
-            int p = 0;
-            // append id in hex format
-            for (int i = 7; i >= 0; i--)
-            {
-                buf[p++] = HEX[(id >> (i * 4)) & 0x0f];
-            }
-            // append crendential 
-            for (int i = 0; i < clen; i++) { buf[p++] = credential[i]; }
-            return new string(buf);
-        }
-
-        public static bool Decrypt(string ticket, out int id, out string credential)
-        {
-            id = 0;
-            credential = null;
-            if (ticket.Length != 24) { return false; }
-
-            int p = 0;
-
-            // hex charactters to int
-            for (int i = 7; i >= 0; i--)
-            {
-                int num = ToNum(ticket[p++]);
-                if (num == -1) { return false; }
-                id += num << (i * 4);
-            }
-
-            // credential
-            char[] buf = new char[16];
-            for (int i = 0; i < buf.Length; i++)
-            {
-                buf[i] = ticket[p++];
-            }
-            credential = new string(buf);
-            return true;
-        }
-
         public static string ToHex(string v)
         {
             int vlen = v.Length;

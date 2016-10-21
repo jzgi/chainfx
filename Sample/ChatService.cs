@@ -13,7 +13,7 @@ namespace Greatbone.Sample
 
 		public ChatService(WebConfig cfg) : base(cfg)
 		{
-			SetMultiple<ChatMultiple>(true);
+			SetMultiple<ChatMultiple>();
 		}
 
 	    public void Get(WebContext wc)

@@ -7,9 +7,9 @@
 
         public string Key => key;
 
-        public bool Auth { get; internal set; }
+        public object State { get; internal set; }
 
-        public bool IsMulti { get; internal set; }
+        public bool IsMultiple { get; internal set; }
 
         public IParent Parent { get; internal set; }
 

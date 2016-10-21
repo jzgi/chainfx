@@ -9,6 +9,8 @@ namespace Greatbone.Core
     /// </summary>
     public abstract class WebModule : WebControl, IParent
     {
+        const string MultipleKey = "*";
+
         // child controls, if any
         internal Roll<WebControl> controls;
 
@@ -19,7 +21,7 @@ namespace Greatbone.Core
         {
         }
 
-        public T AddControl<T>(string key, bool auth) where T : WebControl
+        public T AddControl<T>(string key, object state = null) where T : WebControl
         {
             if (controls == null)
             {
@@ -32,9 +34,9 @@ namespace Greatbone.Core
             WebArg arg = new WebArg
             {
                 key = key,
-                Auth = auth,
+                State = state,
                 Parent = this,
-                IsMulti = false,
+                IsMultiple = false,
                 Folder = (Parent == null) ? key : Path.Combine(Parent.Folder, key),
                 Service = Service
             };
@@ -44,11 +46,11 @@ namespace Greatbone.Core
             return ctrl;
         }
 
-        public Roll<WebControl> Subs => controls;
+        public Roll<WebControl> Controls => controls;
 
-        public WebMultiple VarHub => multiple;
+        public WebMultiple Multiple => multiple;
 
-        public T SetMultiple<T>(bool auth) where T : WebMultiple
+        public T SetMultiple<T>(object state = null) where T : WebMultiple
         {
             // create instance
             Type typ = typeof(T);
@@ -56,11 +58,11 @@ namespace Greatbone.Core
             if (ci == null) { throw new WebException(typ + ": the constructor with WebTie"); }
             WebArg arg = new WebArg
             {
-                key = "var",
-                Auth = auth,
+                key = MultipleKey,
+                State = state,
                 Parent = this,
-                IsMulti = true,
-                Folder = (Parent == null) ? "var" : Path.Combine(Parent.Folder, "var"),
+                IsMultiple = true,
+                Folder = (Parent == null) ? MultipleKey : Path.Combine(Parent.Folder, MultipleKey),
                 Service = Service
             };
             T mux = (T)ci.Invoke(new object[] { arg });
@@ -71,8 +73,6 @@ namespace Greatbone.Core
 
         internal override void Handle(string relative, WebContext wc)
         {
-            if (!CheckAuth(wc)) return;
-
             int slash = relative.IndexOf('/');
             if (slash == -1) // handle it locally
             {

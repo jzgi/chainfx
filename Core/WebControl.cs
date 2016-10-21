@@ -2,7 +2,6 @@
 using System.IO;
 using System.Reflection;
 using Microsoft.Extensions.Logging;
-using Microsoft.Extensions.Primitives;
 
 namespace Greatbone.Core
 {
@@ -49,9 +48,9 @@ namespace Greatbone.Core
         ///
         public string Key => arg.Key;
 
-        public bool Auth => arg.Auth;
+        public object State => arg.State;
 
-        public bool IsMulti => arg.IsMulti;
+        public bool IsMulti => arg.IsMultiple;
 
         public string Folder => arg.Folder;
 
@@ -71,21 +70,8 @@ namespace Greatbone.Core
             return actions[method];
         }
 
-        internal bool CheckAuth(WebContext wc)
-        {
-            if (Auth && wc.Token == null)
-            {
-                wc.StatusCode = 401; // unauthorized
-                wc.Response.Headers.Add("WWW-Authenticate", new StringValues("Bearer"));
-                return false;
-            }
-            return true;
-        }
-
         internal virtual void Handle(string relative, WebContext wc)
         {
-            if (!CheckAuth(wc)) return;
-
             wc.Control = this;
             Do(relative, wc);
             wc.Control = null;
@@ -113,9 +99,9 @@ namespace Greatbone.Core
                 {
                     wc.StatusCode = 404;
                 }
-                else if (!a.TryDo(wc, subscpt))
+                else
                 {
-                    wc.StatusCode = 403; // forbidden
+                    a.TryDo(wc, subscpt);
                 }
             }
 

@@ -210,8 +210,6 @@ namespace Greatbone.Core
 
         internal override void Handle(string relative, WebContext wc)
         {
-            if (!CheckAuth(wc)) return;
-
             int slash = relative.IndexOf('/');
             if (slash == -1) // handle it locally
             {

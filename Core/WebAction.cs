@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Reflection;
+using Microsoft.Extensions.Primitives;
 
 namespace Greatbone.Core
 {
@@ -39,14 +40,26 @@ namespace Greatbone.Core
 
         }
 
+
         internal bool TryDo(WebContext wc, string subscpt)
         {
             // check ifs
             if (ifs != null)
             {
+                if (wc.Token == null)
+                {
+                    wc.StatusCode = 401; // unauthorized
+                    wc.Response.Headers.Add("WWW-Authenticate", new StringValues("Bearer"));
+                    return false;
+                }
+
                 for (int i = 0; i < ifs.Length; i++)
                 {
-                    if (!ifs[i].Check(wc, subscpt)) return false;
+                    if (!ifs[i].Test(wc))
+                    {
+                        wc.StatusCode = 403; // forbidden
+                        return false;
+                    }
                 }
             }
 

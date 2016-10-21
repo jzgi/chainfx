@@ -140,6 +140,7 @@ namespace Greatbone.Sample
 
             Comment c = new Comment
             {
+                time = DateTime.Now,
                 authorid = tok.Key,
                 text = text
             };
