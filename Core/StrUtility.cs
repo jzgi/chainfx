@@ -114,8 +114,6 @@ namespace Greatbone.Core
         // DIGEST
         //
 
-        static readonly char[] H = { '0', '1', '2', '3', '4', '5', '6', '7', '8', '9', 'a', 'b', 'c', 'd', 'e', 'f' };
-
         //
         // custom 8-byte digest
 
@@ -139,8 +137,8 @@ namespace Greatbone.Core
                 for (int i = 0; i < 8; i++)
                 {
                     byte b = hash[i + 4];
-                    c16.Append(H[b >> 4]);
-                    c16.Append(H[b & 0x0f]);
+                    c16.Append(HEX[b >> 4]);
+                    c16.Append(HEX[b & 0x0f]);
                 }
                 return c16.ToString();
             }
@@ -162,7 +160,7 @@ namespace Greatbone.Core
             // append id in hex format
             for (int i = 7; i >= 0; i--)
             {
-                buf[p++] = H[(id >> (i * 4)) & 0x0f];
+                buf[p++] = HEX[(id >> (i * 4)) & 0x0f];
             }
             // append crendential 
             for (int i = 0; i < clen; i++) { buf[p++] = credential[i]; }
@@ -202,10 +200,10 @@ namespace Greatbone.Core
             for (int i = 0; i < vlen; i++)
             {
                 char c = v[i];
-                buf[i * 4 + 0] = H[(c & 0xf000) >> 12];
-                buf[i * 4 + 1] = H[(c & 0x0f00) >> 8];
-                buf[i * 4 + 2] = H[(c & 0x00f0) >> 4];
-                buf[i * 4 + 3] = H[c & 0x000f];
+                buf[i * 4 + 0] = HEX[(c & 0xf000) >> 12];
+                buf[i * 4 + 1] = HEX[(c & 0x0f00) >> 8];
+                buf[i * 4 + 2] = HEX[(c & 0x00f0) >> 4];
+                buf[i * 4 + 3] = HEX[c & 0x000f];
             }
             return new string(buf);
         }

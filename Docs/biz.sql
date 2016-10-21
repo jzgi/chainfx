@@ -1,7 +1,7 @@
 /*
 Navicat PGSQL Data Transfer
 
-Source Server         : aliyun
+Source Server         : Aliyun
 Source Server Version : 90503
 Source Host           : 60.205.104.239:5432
 Source Database       : biz
@@ -11,9 +11,20 @@ Target Server Type    : PGSQL
 Target Server Version : 90503
 File Encoding         : 65001
 
-Date: 2016-09-16 09:58:02
+Date: 2016-10-21 12:36:24
 */
 
+
+-- ----------------------------
+-- Sequence structure for msgq_id_seq
+-- ----------------------------
+DROP SEQUENCE IF EXISTS "public"."msgq_id_seq";
+CREATE SEQUENCE "public"."msgq_id_seq"
+ INCREMENT 1
+ MINVALUE 1
+ MAXVALUE 9223372036854775807
+ START 1
+ CACHE 1;
 
 -- ----------------------------
 -- Table structure for brands
@@ -26,10 +37,6 @@ CREATE TABLE "public"."brands" (
 WITH (OIDS=FALSE)
 
 ;
-
--- ----------------------------
--- Records of brands
--- ----------------------------
 
 -- ----------------------------
 -- Table structure for fames
@@ -53,19 +60,18 @@ CREATE TABLE "public"."fames" (
 "waist" int2,
 "hip" int2,
 "cup" int2,
-"styles" text COLLATE "default",
-"skills" text COLLATE "default",
+"styles" varchar(10)[] COLLATE "default",
+"skills" varchar(10)[] COLLATE "default",
 "remark" text COLLATE "default",
 "sites" json,
 "friends" json,
-"awards" json,
 "date" date,
 "m0" bytea,
 "m1" bytea,
 "m2" bytea,
 "m3" bytea,
 "m4" bytea,
-"mtip" char(1)[] COLLATE "default"
+"mset" varchar(5) COLLATE "default"
 )
 WITH (OIDS=FALSE)
 
@@ -93,16 +99,39 @@ COMMENT ON COLUMN "public"."fames"."skills" IS '技能标签';
 COMMENT ON COLUMN "public"."fames"."remark" IS '备注';
 COMMENT ON COLUMN "public"."fames"."sites" IS '社交平台信息，包括社交平台名称、url';
 COMMENT ON COLUMN "public"."fames"."friends" IS '好友信息';
-COMMENT ON COLUMN "public"."fames"."awards" IS '殊荣';
 COMMENT ON COLUMN "public"."fames"."date" IS '注册日期';
 
 -- ----------------------------
--- Records of fames
+-- Table structure for msgq
 -- ----------------------------
+DROP TABLE IF EXISTS "public"."msgq";
+CREATE TABLE "public"."msgq" (
+"id" int4 DEFAULT nextval('msgq_id_seq'::regclass) NOT NULL,
+"time" timestamp(6),
+"topic" varchar(20) COLLATE "default",
+"shard" varchar(10) COLLATE "default",
+"body" bytea
+)
+WITH (OIDS=FALSE)
+
+;
+
+-- ----------------------------
+-- Table structure for msgu
+-- ----------------------------
+DROP TABLE IF EXISTS "public"."msgu";
+CREATE TABLE "public"."msgu" (
+"addr" varchar(45) COLLATE "default" NOT NULL,
+"lastid" int4
+)
+WITH (OIDS=FALSE)
+
+;
 
 -- ----------------------------
 -- Alter Sequences Owned By 
 -- ----------------------------
+ALTER SEQUENCE "public"."msgq_id_seq" OWNED BY "msgq"."id";
 
 -- ----------------------------
 -- Primary Key structure for table brands
@@ -113,3 +142,13 @@ ALTER TABLE "public"."brands" ADD PRIMARY KEY ("uid");
 -- Primary Key structure for table fames
 -- ----------------------------
 ALTER TABLE "public"."fames" ADD PRIMARY KEY ("id");
+
+-- ----------------------------
+-- Primary Key structure for table msgq
+-- ----------------------------
+ALTER TABLE "public"."msgq" ADD PRIMARY KEY ("id");
+
+-- ----------------------------
+-- Primary Key structure for table msgu
+-- ----------------------------
+ALTER TABLE "public"."msgu" ADD PRIMARY KEY ("addr");

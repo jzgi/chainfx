@@ -10,20 +10,20 @@ namespace Greatbone.Core
     public abstract class DynamicContent : IContent
     {
         // hexidecimal characters
-        static readonly char[] Hex =
+        static readonly char[] HEX =
         {
             '0', '1', '2', '3', '4', '5', '6', '7', '8', '9', 'a', 'b', 'c', 'd', 'e', 'f'
         };
 
         // possible chars for representing a number as a string
-        static readonly byte[] Digits =
+        static readonly byte[] DIGIT =
         {
             (byte) '0', (byte) '1', (byte) '2', (byte) '3', (byte) '4', (byte) '5', (byte) '6', (byte) '7', (byte) '8', (byte) '9'
         };
 
         const byte Minus = (byte)'-';
 
-        static readonly short[] Shorts =
+        static readonly short[] SHORT =
         {
             1,
             10,
@@ -32,7 +32,7 @@ namespace Greatbone.Core
             10000
         };
 
-        static readonly int[] Ints =
+        static readonly int[] INT =
         {
             1,
             10,
@@ -46,7 +46,7 @@ namespace Greatbone.Core
             1000000000
         };
 
-        static readonly long[] Longs =
+        static readonly long[] LONG =
         {
             1L,
             10L,
@@ -209,18 +209,18 @@ namespace Greatbone.Core
                 x = -x;
             }
             bool bgn = false;
-            for (int i = Shorts.Length - 1; i > 0; i--)
+            for (int i = SHORT.Length - 1; i > 0; i--)
             {
-                int bas = Shorts[i];
+                int bas = SHORT[i];
                 int q = x / bas;
                 x = x % bas;
                 if (q != 0 || bgn)
                 {
-                    Write(Digits[q]);
+                    Write(DIGIT[q]);
                     bgn = true;
                 }
             }
-            Write(Digits[x]); // last reminder
+            Write(DIGIT[x]); // last reminder
         }
 
         public void Add(int v)
@@ -237,18 +237,18 @@ namespace Greatbone.Core
                 v = -v;
             }
             bool bgn = false;
-            for (int i = Ints.Length - 1; i > 0; i--)
+            for (int i = INT.Length - 1; i > 0; i--)
             {
-                int bas = Ints[i];
+                int bas = INT[i];
                 int q = v / bas;
                 v = v % bas;
                 if (q != 0 || bgn)
                 {
-                    Write(Digits[q]);
+                    Write(DIGIT[q]);
                     bgn = true;
                 }
             }
-            Write(Digits[v]); // last reminder
+            Write(DIGIT[v]); // last reminder
         }
 
         public void Add(long v)
@@ -265,18 +265,18 @@ namespace Greatbone.Core
                 v = -v;
             }
             bool bgn = false;
-            for (int i = Longs.Length - 1; i > 0; i--)
+            for (int i = LONG.Length - 1; i > 0; i--)
             {
-                long bas = Longs[i];
+                long bas = LONG[i];
                 long q = v / bas;
                 v = v % bas;
                 if (q != 0 || bgn)
                 {
-                    Write(Digits[q]);
+                    Write(DIGIT[q]);
                     bgn = true;
                 }
             }
-            Write(Digits[v]); // last reminder
+            Write(DIGIT[v]); // last reminder
         }
 
         public void Add(decimal v)
@@ -302,14 +302,14 @@ namespace Greatbone.Core
                 {
                     long x = (low & 0x00ffffff) + ((long)(byte)(low >> 24) << 24) + ((long)mid << 32);
                     bool bgn = false;
-                    for (int i = Longs.Length - 1; i >= 2; i--)
+                    for (int i = LONG.Length - 1; i >= 2; i--)
                     {
-                        long bas = Ints[i];
+                        long bas = INT[i];
                         long q = x / bas;
                         x = x % bas;
                         if (q != 0 || bgn)
                         {
-                            Write(Digits[q]);
+                            Write(DIGIT[q]);
                             bgn = true;
                         }
                         if (i == 4)
@@ -327,14 +327,14 @@ namespace Greatbone.Core
                 {
                     int x = low;
                     bool bgn = false;
-                    for (int i = Ints.Length - 1; i >= 2; i--)
+                    for (int i = INT.Length - 1; i >= 2; i--)
                     {
-                        int bas = Ints[i];
+                        int bas = INT[i];
                         int q = x / bas;
                         x = x % bas;
                         if (q != 0 || bgn)
                         {
-                            Write(Digits[q]);
+                            Write(DIGIT[q]);
                             bgn = true;
                         }
                         if (i == 4)

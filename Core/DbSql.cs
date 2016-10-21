@@ -13,13 +13,6 @@ namespace Greatbone.Core
 
         const int InitialCapacity = 1024;
 
-        public const int
-
-            X_SEL = 0x800000,
-
-            X_UPD = 0x400000,
-
-            X_INS = 0x200000;
 
         // contexts
         const sbyte ValueList = 0, ColumnList = 1, ParameterList = 2, SetList = 3;

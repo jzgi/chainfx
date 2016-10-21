@@ -4,17 +4,21 @@ using System.IO;
 
 namespace Greatbone.Core
 {
-    /// <summary>The configurative settings and the establishment of creation context during initialization of the controller hierarchy.</summary>
-    /// <remarks>It provides a strong semantic that enables the whole controller hierarchy to be established within execution of constructors, starting from the constructor of a service controller.</remarks>
-    /// <example>
+    /// <summary>
+    /// The configurative settings and the establishment of creation context during initialization of the controller hierarchy.
+    /// </summary>
+    /// <remarks>
+    /// It provides a strong semantic that enables the whole controller hierarchy to be established within execution of constructors, starting from the constructor of a service controller.
+    /// </remarks>
+    /// <code>
     /// public class FooService : WebService
     /// {
-    ///         public FooService(WebConfig cfg) : base(wsc)
+    ///         public FooService(WebConfig cfg) : base(cfg)
     ///         {
-    ///                 AddSub&lt;BarSub&gt;();
+    ///                 AddControl&lt;BarSub&gt;();
     ///         }
     /// }
-    /// </example>
+    /// </code>
     ///
     public class WebConfig : WebArg, IPersist
     {

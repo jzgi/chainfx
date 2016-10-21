@@ -11,7 +11,7 @@ Target Server Type    : PGSQL
 Target Server Version : 90503
 File Encoding         : 65001
 
-Date: 2016-10-11 16:01:46
+Date: 2016-10-21 12:37:46
 */
 
 
@@ -25,6 +25,7 @@ CREATE SEQUENCE "public"."links_id_seq"
  MAXVALUE 9223372036854775807
  START 1
  CACHE 1;
+SELECT setval('"public"."links_id_seq"', 1, true);
 
 -- ----------------------------
 -- Sequence structure for msgq_id_seq
