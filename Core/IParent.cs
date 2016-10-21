@@ -4,9 +4,9 @@
     {
         string Key { get; }
 
-        Roll<WebControl> Controls { get; }
+        Roll<WebControl> Children { get; }
 
-        T AddControl<T>(string key, object state = null) where T : WebControl;
+        T AddChild<T>(string key, object state = null) where T : WebControl;
 
         string Folder { get; }
 

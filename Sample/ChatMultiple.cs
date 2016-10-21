@@ -11,7 +11,7 @@ namespace Greatbone.Sample
     {
         private ConcurrentDictionary<string, List<Chat>> online;
 
-        public ChatMultiple(WebArg setg) : base(setg)
+        public ChatMultiple(WebArg arg) : base(arg)
         {
         }
 
@@ -23,10 +23,10 @@ namespace Greatbone.Sample
         }
 
         [IfSelf]
-        public void get(WebContext wc, string userid)
+        public void get(WebContext wc, string subscpt)
         {
             List<Chat> chats;
-            if (online.TryGetValue(userid, out chats)) // put in session
+            if (online.TryGetValue(subscpt, out chats)) // put in session
             {
                 // return cached msgs
             }
@@ -35,7 +35,7 @@ namespace Greatbone.Sample
                 // database operation
                 using (var dc = Service.NewDbContext())
                 {
-                    dc.QueryA("SELECT * FROM chats WHERE to=@to", p => p.Put("@to", userid));
+                    dc.QueryA("SELECT * FROM chats WHERE to=@to", p => p.Put("@to", subscpt));
                     // load into memory
                 }
             }
@@ -43,14 +43,14 @@ namespace Greatbone.Sample
             // wc.Response.SetContentAsJson(chats)
         }
 
-        public void put(WebContext wc, string receiver)
+        public void put(WebContext wc, string subscpt)
         {
             IToken tok = wc.Token;
             string sender = tok.Key;
             string text = wc.ToString();
 
             List<Chat> chats;
-            if (online.TryGetValue(receiver, out chats)) // put in session
+            if (online.TryGetValue(subscpt, out chats)) // put in session
             {
                 Chat chat = chats.First(c => c.partner.Equals(sender));
                 chats[0].Put(text);

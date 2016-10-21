@@ -221,15 +221,16 @@ namespace Greatbone.Core
                 {
                     wc.Control = this;
                     Do(relative, wc);
+                    wc.Control = null;
                 }
             }
-            else // not local then sub & mux
+            else // dispatch to child or multiplexer
             {
                 string dir = relative.Substring(0, slash);
-                WebControl ctrl;
-                if (controls != null && controls.TryGet(dir, out ctrl)) // seek sub first
+                WebControl child;
+                if (children != null && children.TryGet(dir, out child)) // seek sub first
                 {
-                    ctrl.Handle(relative.Substring(slash + 1), wc);
+                    child.Handle(relative.Substring(slash + 1), wc);
                 }
                 else if (multiple == null)
                 {
@@ -261,19 +262,6 @@ namespace Greatbone.Core
             INF("started");
         }
 
-        internal void Schedule()
-        {
-            while (true)
-            {
-                for (int i = 0; i < Clients.Count; i++)
-                {
-                    WebClient conn = Clients[i];
-
-                    // schedule
-                }
-            }
-        }
-
         public DbContext NewDbContext()
         {
             DbConfig cfg = Config.db;
@@ -288,7 +276,7 @@ namespace Greatbone.Core
         }
 
         //
-        // MESSGING
+        // MESSAGING
         //
 
         internal WebClient FindClient(string service, string part)
@@ -300,17 +288,7 @@ namespace Greatbone.Core
             }
             return null;
         }
-        // sub controllers are already there
-        public ILogger CreateLogger(string name)
-        {
-            return this;
-        }
 
-
-
-        //
-        // MESSAGING
-        //
 
         void Peek(WebContext wc)
         {
@@ -333,20 +311,28 @@ namespace Greatbone.Core
             // wc.Respond(200, msg);
         }
 
-        public void Dispose()
+        internal void Schedule()
         {
-            server.Dispose();
+            while (true)
+            {
+                for (int i = 0; i < Clients.Count; i++)
+                {
+                    WebClient conn = Clients[i];
 
-            logWriter.Flush();
-            logWriter.Dispose();
-
-            Console.Write(Key);
-            Console.WriteLine("!");
+                    // schedule
+                }
+            }
         }
 
         //
         // LOGGING
         //
+
+        // sub controllers are already there
+        public ILogger CreateLogger(string name)
+        {
+            return this;
+        }
 
         // opened writer on the log file
         readonly StreamWriter logWriter;
@@ -362,7 +348,18 @@ namespace Greatbone.Core
         }
 
 
-        static readonly string[] Tags = { "TRC: ", "DBG: ", "INF: ", "WAR: ", "ERR: " };
+        public void Dispose()
+        {
+            server.Dispose();
+
+            logWriter.Flush();
+            logWriter.Dispose();
+
+            Console.Write(Key);
+            Console.WriteLine(".");
+        }
+
+        static readonly string[] LVL = { "TRC: ", "DBG: ", "INF: ", "WAR: ", "ERR: " };
 
         public void Log<T>(LogLevel level, EventId eid, T state, Exception exception, Func<T, Exception, string> formatter)
         {
@@ -371,7 +368,7 @@ namespace Greatbone.Core
                 return;
             }
 
-            logWriter.Write(Tags[(int)level]);
+            logWriter.Write(LVL[(int)level]);
 
             if (eid.Id != 0)
             {

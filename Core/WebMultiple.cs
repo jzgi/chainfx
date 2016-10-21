@@ -12,19 +12,19 @@ namespace Greatbone.Core
     public abstract class WebMultiple : WebControl, IParent
     {
         // child controls
-        private Roll<WebControl> controls;
+        private Roll<WebControl> children;
 
         protected WebMultiple(WebArg arg) : base(arg)
         {
         }
 
-        public Roll<WebControl> Controls => controls;
+        public Roll<WebControl> Children => children;
 
-        public T AddControl<T>(string key, object state = null) where T : WebControl
+        public T AddChild<T>(string key, object state = null) where T : WebControl
         {
-            if (controls == null)
+            if (children == null)
             {
-                controls = new Roll<WebControl>(16);
+                children = new Roll<WebControl>(16);
             }
             // create instance by reflection
             Type typ = typeof(T);
@@ -41,7 +41,7 @@ namespace Greatbone.Core
             };
             // call the initialization and add
             T sub = (T)ci.Invoke(new object[] { arg });
-            controls.Add(sub);
+            children.Add(sub);
 
             return sub;
         }
@@ -55,13 +55,13 @@ namespace Greatbone.Core
                 Do(relative, wc);
                 wc.Control = null;
             }
-            else // not local then child control
+            else // dispatch to child control
             {
                 string dir = relative.Substring(0, slash);
-                WebControl ctrl;
-                if (controls != null && controls.TryGet(relative, out ctrl))
+                WebControl child;
+                if (children != null && children.TryGet(relative, out child))
                 {
-                    ctrl.Handle(relative.Substring(slash), wc);
+                    child.Handle(relative.Substring(slash), wc);
                 }
             }
         }

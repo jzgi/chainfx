@@ -12,7 +12,7 @@ namespace Greatbone.Core
         const string MultiplexKey = "*";
 
         // child controls, if any
-        internal Roll<WebControl> controls;
+        internal Roll<WebControl> children;
 
         // the attached multiplexer, if any
         internal WebMultiple multiple;
@@ -21,11 +21,11 @@ namespace Greatbone.Core
         {
         }
 
-        public T AddControl<T>(string key, object state = null) where T : WebControl
+        public T AddChild<T>(string key, object state = null) where T : WebControl
         {
-            if (controls == null)
+            if (children == null)
             {
-                controls = new Roll<WebControl>(16);
+                children = new Roll<WebControl>(16);
             }
             // create instance by reflection
             Type typ = typeof(T);
@@ -41,12 +41,12 @@ namespace Greatbone.Core
                 Service = Service
             };
             T ctrl = (T)ci.Invoke(new object[] { arg });
-            controls.Add(ctrl);
+            children.Add(ctrl);
 
             return ctrl;
         }
 
-        public Roll<WebControl> Controls => controls;
+        public Roll<WebControl> Children => children;
 
         public WebMultiple Multiple => multiple;
 
@@ -80,13 +80,13 @@ namespace Greatbone.Core
                 Do(relative, wc);
                 wc.Control = null;
             }
-            else // not local then sub & mux
+            else // dispatch to child or multiplexer
             {
                 string dir = relative.Substring(0, slash);
-                WebControl ctrl;
-                if (controls != null && controls.TryGet(dir, out ctrl)) // seek sub first
+                WebControl child;
+                if (children != null && children.TryGet(dir, out child)) // seek sub first
                 {
-                    ctrl.Handle(relative.Substring(slash + 1), wc);
+                    child.Handle(relative.Substring(slash + 1), wc);
                 }
                 else if (multiple == null)
                 {

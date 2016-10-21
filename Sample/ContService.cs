@@ -9,9 +9,9 @@ namespace Greatbone.Sample
     {
         public ContService(WebConfig cfg) : base(cfg)
         {
-            AddControl<PostModule>("post");
+            AddChild<PostModule>("post");
             
-            AddControl<NoticeModule>("notice");
+            AddChild<NoticeModule>("notice");
         }
 
     }

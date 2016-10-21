@@ -9,9 +9,9 @@ namespace Greatbone.Sample
     {
         public BizService(WebConfig cfg) : base(cfg)
         {
-            AddControl<FameModule>("fame");
+            AddChild<FameModule>("fame");
 
-            AddControl<BrandModule>("brand");
+            AddChild<BrandModule>("brand");
         }
 
     }
