@@ -127,7 +127,7 @@ namespace Greatbone.Sample
         public void img(WebContext wc, string subscpt)
         {
             string id = wc.Super;
-            int n = subscpt.Int();
+            int n = subscpt.ToInt();
             using (var dc = Service.NewDbContext())
             {
                 if (dc.QueryA("SELECT m" + n + " FROM fames WHERE id = @1", p => p.Put(id)))
@@ -154,7 +154,7 @@ namespace Greatbone.Sample
         public void updimg(WebContext wc, string subscpt)
         {
             string id = wc.Super;
-            int n = subscpt.Int();
+            int n = subscpt.ToInt();
             using (var dc = Service.NewDbContext())
             {
                 ArraySegment<byte>? bytes = wc.BytesSeg;

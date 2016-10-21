@@ -25,7 +25,6 @@ namespace Greatbone.Core
         // superscript
         public string Super { get; internal set; }
 
-
         //
         // REQUEST
         //

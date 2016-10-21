@@ -29,7 +29,7 @@ namespace Greatbone.Sample
             s.Got(nameof(text), ref text);
             s.Got(nameof(mset), ref mset);
 
-            if (x.Binary())
+            if (x.BinaryOn())
             {
                 s.Got(nameof(m0), ref m0);
                 s.Got(nameof(m1), ref m1);
@@ -55,7 +55,7 @@ namespace Greatbone.Sample
             s.Put(nameof(text), text);
             s.Put(nameof(mset), mset);
 
-            if (x.Binary())
+            if (x.BinaryOn())
             {
                 s.Put(nameof(m0), m0);
                 s.Put(nameof(m1), m1);

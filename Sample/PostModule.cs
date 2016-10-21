@@ -11,7 +11,7 @@ namespace Greatbone.Sample
         }
 
 
-        static string topsql = new DbSql("SELECT ").columnlst(new Post(), XUtility.NoBinary)._("FROM posts ORDER BY id DESC LIMIT 20 OFFSET @1").ToString();
+        static string TopSql = new DbSql("SELECT ").columnlst(new Post())._("FROM posts ORDER BY id DESC LIMIT 20 OFFSET @1").ToString();
 
         /// <summary>
         /// Get the nth page of records on top.
@@ -21,12 +21,12 @@ namespace Greatbone.Sample
         /// </code>
         public void top(WebContext wc, string subscpt)
         {
-            int page = subscpt.Int();
+            int page = subscpt.ToInt();
             using (var dc = Service.NewDbContext())
             {
-                if (dc.Query(topsql, p => p.Put(20 * page)))
+                if (dc.Query(TopSql, p => p.Put(20 * page)))
                 {
-                    Post[] arr = dc.ToArr<Post>(XUtility.NoBinary);
+                    Post[] arr = dc.ToArr<Post>();
                     wc.Out(200, arr);
                 }
                 else

@@ -9,15 +9,36 @@ namespace Greatbone.Sample
         {
         }
 
+
+        static string DefaultSql = new DbSql("SELECT ").columnlst(new Post())._("FROM posts WHERE id = @1").ToString();
+
         ///
+        /// <summary>
+        /// Get the record.
+        /// </summary>
         /// <code>
         /// GET /post/_id_/
         /// </code>
         ///
         public override void @default(WebContext wc, string subscpt)
         {
+            int id = wc.Super.ToInt();
+            int n = subscpt.ToInt();
+            using (var dc = Service.NewDbContext())
+            {
+                if (dc.QueryA(DefaultSql, p => p.Put(id)))
+                {
+                    Post obj = dc.ToObj<Post>();
+                    wc.Out(200, obj);
+                }
+                else
+                {
+                    wc.StatusCode = 404;
+                }
+            }
         }
 
+        ///
         /// <summary>
         /// Get the nth image.
         /// </summary>
@@ -27,8 +48,8 @@ namespace Greatbone.Sample
         ///
         public void img(WebContext wc, string subscpt)
         {
-            int id = wc.Super.Int();
-            int n = subscpt.Int();
+            int id = wc.Super.ToInt();
+            int n = subscpt.ToInt();
             using (var dc = Service.NewDbContext())
             {
                 if (dc.QueryA("SELECT m" + n + " FROM posts WHERE id = @1", p => p.Put(id)))
@@ -54,8 +75,8 @@ namespace Greatbone.Sample
         ///
         public void updimg(WebContext wc, string subscpt)
         {
-            int id = wc.Super.Int();
-            int n = subscpt.Int();
+            int id = wc.Super.ToInt();
+            int n = subscpt.ToInt();
             using (var dc = Service.NewDbContext())
             {
                 ArraySegment<byte>? bytes = wc.BytesSeg;
@@ -75,6 +96,9 @@ namespace Greatbone.Sample
         }
 
         ///
+        /// <summary>
+        /// Delete the record.
+        /// </summary>
         /// <code>
         /// POST /post/_id_/del
         /// </code>
@@ -97,6 +121,9 @@ namespace Greatbone.Sample
 
 
         ///
+        /// <summary>
+        /// Add a comment to the record.
+        /// </summary>
         /// <code>
         /// POST /post/_id_/cmt
         /// {
@@ -106,6 +133,7 @@ namespace Greatbone.Sample
         ///
         public void cmt(WebContext wc, string subscpt)
         {
+            int id = wc.Super.ToInt();
             IToken tok = wc.Token;
             JObj jo = wc.JObj;
             string text = jo[nameof(text)];
@@ -118,13 +146,10 @@ namespace Greatbone.Sample
 
             using (var dc = Service.NewDbContext())
             {
-                if (dc.QueryA("SELECT comments FROM posts WHERE id = @1", p => p.Put(subscpt)))
+                if (dc.QueryA("SELECT comments FROM posts WHERE id = @1", p => p.Put(id)))
                 {
                     Comment[] arr = dc.GotArr<Comment>().Add(c);
-
-                    // add new
-
-                    if (dc.Execute("UPDATE posts SET WHERE id = @1", p => p.Put(subscpt).Put(tok.Key)) > 0)
+                    if (dc.Execute("UPDATE posts SET comments = @1 WHERE id = @2 AND authorid = @3", p => p.Put(arr).Put(id).Put(tok.Key)) > 0)
                     {
                         wc.StatusCode = 200;
                     }
@@ -138,12 +163,28 @@ namespace Greatbone.Sample
         }
 
         ///
+        /// <summary>
+        /// Increase the shared number of this record.
+        /// </summary>
         /// <code>
         /// POST /post/_id_/share
         /// </code>
         ///
         public void share(WebContext wc, string subscpt)
         {
+            int id = wc.Super.ToInt();
+            using (var dc = Service.NewDbContext())
+            {
+                if (dc.Execute("UPDATE posts SET shared = shared + 1 WHERE id = @1", p => p.Put(id)) > 0)
+                {
+                    wc.StatusCode = 200;
+                }
+                else
+                {
+                    wc.StatusCode = 404;
+                }
+            }
+
         }
     }
 }

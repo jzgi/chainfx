@@ -5,6 +5,7 @@ namespace Greatbone.Sample
     ///
     public class Cat : IPersist
     {
+        
         internal int id;
 
         internal string title;
@@ -19,7 +20,10 @@ namespace Greatbone.Sample
         {
             s.Got(nameof(id), ref id);
             s.Got(nameof(title), ref title);
-            if (x.Binary()) s.Got(nameof(img), ref img);
+            if (x.BinaryOn())
+            {
+                s.Got(nameof(img), ref img);
+            }
             s.Got(nameof(filter), ref filter);
             s.Got(nameof(disabled), ref disabled);
         }
@@ -28,7 +32,9 @@ namespace Greatbone.Sample
         {
             s.Put(nameof(id), id);
             s.Put(nameof(title), title);
-            if (x.Binary()) s.Put(nameof(img), img);
+            if (x.BinaryOn())
+            {
+                s.Put(nameof(img), img);}
             s.Put(nameof(filter), filter);
             s.Put(nameof(disabled), disabled);
         }

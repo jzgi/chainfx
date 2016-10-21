@@ -9,15 +9,10 @@ namespace Greatbone.Sample
     public class Token : IToken, IPersist
     {
         internal string id;
-
         internal string name;
-
         internal string credential;
-
         internal bool fame;
-
         internal bool brand;
-
         internal bool admin;
 
         public string Key => id;
@@ -38,7 +33,7 @@ namespace Greatbone.Sample
         {
             s.Put(nameof(id), id);
             s.Put(nameof(name), name);
-            if (x.Extra())
+            if (x.ExtraOn())
             {
                 s.Put(nameof(credential), credential);
             }

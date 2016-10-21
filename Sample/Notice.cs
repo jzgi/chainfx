@@ -35,7 +35,7 @@ namespace Greatbone.Sample
 
         public void Save<R>(ISink<R> s, uint x = 0) where R : ISink<R>
         {
-            if (x.Default())
+            if (x.DefaultOn())
             {
                 s.Put(nameof(id), id);
             }

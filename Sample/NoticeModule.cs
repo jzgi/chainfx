@@ -33,6 +33,8 @@ namespace Greatbone.Sample
         }
 
 
+        string NewSql = new DbSql("INSERT INTO notices")._(new Notice())._VALUES_(new Notice())._("RETURNING id").ToString();
+
         ///
         /// <code>
         /// POST /post/new
@@ -45,15 +47,12 @@ namespace Greatbone.Sample
         public void @new(WebContext wc, string subscpt)
         {
             IToken tok = wc.Token;
-
             Notice obj = wc.JObj.ToObj<Notice>();
             obj.authorid = tok.Key;
             obj.author = tok.Name;
-
             using (var dc = Service.NewDbContext())
             {
-                DbSql sql = new DbSql("INSERT INTO notices")._(obj)._VALUES_(obj)._("RETURNING id");
-                object id = dc.Scalar(sql.ToString(), p => obj.Save(p));
+                object id = dc.Scalar(NewSql.ToString(), p => obj.Save(p));
                 if (id != null)
                 {
                     wc.StatusCode = 201;

@@ -7,6 +7,8 @@ namespace Greatbone.Sample
     ///
     public class User : IPersist
     {
+        public const uint NoDefault = 2, Extra = 4;
+
         internal string id;
         internal string name;
         internal string credential;
@@ -23,10 +25,7 @@ namespace Greatbone.Sample
             s.Got(nameof(fame), ref fame);
             s.Got(nameof(brand), ref brand);
             s.Got(nameof(admin), ref admin);
-            if (x.Extra())
-            {
-                s.Got(nameof(date), ref date);
-            }
+            s.Got(nameof(date), ref date);
         }
 
         public void Save<R>(ISink<R> s, uint x = 0) where R : ISink<R>
@@ -37,10 +36,7 @@ namespace Greatbone.Sample
             s.Put(nameof(fame), fame);
             s.Put(nameof(brand), brand);
             s.Put(nameof(admin), admin);
-            if (x.Extra())
-            {
-                s.Put(nameof(date), date);
-            }
+            s.Put(nameof(date), date);
         }
 
     }

@@ -4,22 +4,57 @@ namespace Greatbone.Core
     public static class XUtility
     {
 
-        public const uint NoDefault = 2, NoBinary = 4, NoExtra = 8;
-        
+        public const uint
 
-        public static bool Default(this uint x)
+            XDefault = 0x80000000,
+
+            XBinary = 0x20000000,
+
+            XExtra = 0x08000000;
+
+
+        public static bool Has(this uint x, uint v)
         {
-            return (x & NoDefault) != NoDefault;
+            return (x & v) == v;
         }
 
-        public static bool Binary(this uint x)
+        public static bool No(this uint x, uint v)
         {
-            return (x & NoBinary) != NoBinary;
+            return (x & v) != v;
         }
 
-        public static bool Extra(this uint x)
+        public static bool Both(this uint x, uint v1, uint v2)
         {
-            return (x & NoExtra) != NoExtra;
+            return (x & v1) == v1 && (x & v2) == v2;
+        }
+
+        public static bool Either(this uint x, uint v1, uint v2)
+        {
+            return (x & v1) == v1 || (x & v2) == v2;
+        }
+
+        public static bool Neither(this uint x, uint v1, uint v2)
+        {
+            return (x & v1) != v1 && (x & v2) != v2;
+        }
+
+        //
+        // CONVENIENT
+        //
+
+        public static bool DefaultOn(this uint x)
+        {
+            return x.Has(XDefault);
+        }
+
+        public static bool BinaryOn(this uint x)
+        {
+            return x.Has(XBinary);
+        }
+
+        public static bool ExtraOn(this uint x)
+        {
+            return x.Has(XExtra);
         }
 
     }
