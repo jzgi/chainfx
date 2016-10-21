@@ -64,7 +64,9 @@ namespace Greatbone.Core
             }
 
             // invoke the action method
+            wc.Action = this;
             doer(wc, subscpt);
+            wc.Action = null;
             return true;
         }
 

@@ -9,7 +9,7 @@ namespace Greatbone.Core
     /// </summary>
     public abstract class WebModule : WebControl, IParent
     {
-        const string MultipleKey = "*";
+        const string MultiplexKey = "*";
 
         // child controls, if any
         internal Roll<WebControl> controls;
@@ -36,7 +36,7 @@ namespace Greatbone.Core
                 key = key,
                 State = state,
                 Parent = this,
-                IsMultiple = false,
+                IsMultiplex = false,
                 Folder = (Parent == null) ? key : Path.Combine(Parent.Folder, key),
                 Service = Service
             };
@@ -58,17 +58,17 @@ namespace Greatbone.Core
             if (ci == null) { throw new WebException(typ + ": the constructor with WebTie"); }
             WebArg arg = new WebArg
             {
-                key = MultipleKey,
+                key = MultiplexKey,
                 State = state,
                 Parent = this,
-                IsMultiple = true,
-                Folder = (Parent == null) ? MultipleKey : Path.Combine(Parent.Folder, MultipleKey),
+                IsMultiplex = true,
+                Folder = (Parent == null) ? MultiplexKey : Path.Combine(Parent.Folder, MultiplexKey),
                 Service = Service
             };
-            T mux = (T)ci.Invoke(new object[] { arg });
-            this.multiple = mux;
+            T mul = (T)ci.Invoke(new object[] { arg });
+            this.multiple = mul;
 
-            return mux;
+            return mul;
         }
 
         internal override void Handle(string relative, WebContext wc)
@@ -78,6 +78,7 @@ namespace Greatbone.Core
             {
                 wc.Control = this;
                 Do(relative, wc);
+                wc.Control = null;
             }
             else // not local then sub & mux
             {

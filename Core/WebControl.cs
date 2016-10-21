@@ -50,7 +50,7 @@ namespace Greatbone.Core
 
         public object State => arg.State;
 
-        public bool IsMulti => arg.IsMultiple;
+        public bool IsMultiplex => arg.IsMultiplex;
 
         public string Folder => arg.Folder;
 
@@ -104,7 +104,6 @@ namespace Greatbone.Core
                     a.TryDo(wc, subscpt);
                 }
             }
-
         }
 
         void DoStatic(string file, string ext, WebContext wc)

@@ -35,7 +35,7 @@ namespace Greatbone.Core
                 key = key,
                 State = state,
                 Parent = this,
-                IsMultiple = true,
+                IsMultiplex = true,
                 Folder = (Parent == null) ? key : Path.Combine(Parent.Folder, key),
                 Service = Service
             };
