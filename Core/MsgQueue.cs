@@ -34,7 +34,7 @@ namespace Greatbone.Core
 
         public string Key => addr;
 
-        public void Get()
+        public void Get(long last)
         {
             MsgMessage item;
             if (cache.Count > 0)
@@ -45,7 +45,7 @@ namespace Greatbone.Core
             {
                 using (var dc = service.NewDbContext())
                 {
-                    dc.Query("SELECT * FROM mqueue WHERE id > @lastid AND ", null);
+                    dc.Query("SELECT * FROM mqueue WHERE id > @lastid AND ", p=>p.Put(last));
                 }
             }
         }

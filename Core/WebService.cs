@@ -41,7 +41,10 @@ namespace Greatbone.Core
         // MESSAGING
         //
 
-        // load messages from local queue        
+        // connectivity to the remote peers, for remote call as well as messaging
+        readonly Roll<WebClient> clients;
+
+        // local message queues, each for a peer        
         readonly Roll<MsgQueue> queues;
 
         // hooks of received messages
@@ -49,16 +52,13 @@ namespace Greatbone.Core
 
         readonly Thread scheduler;
 
-        // poll remote peer servers for subscribed messages
-        readonly Roll<WebClient> clients;
-
 
         protected WebService(WebConfig cfg) : base(cfg)
         {
             // adjust configuration
             cfg.Service = this;
 
-            // setup logging support
+            // setup logging 
             factory = new LoggerFactory();
             factory.AddProvider(this);
             string logFile = Key + "-" + DateTime.Now.ToString("yyyyMM") + ".log";
@@ -68,46 +68,44 @@ namespace Greatbone.Core
                 AutoFlush = true
             };
 
-            // create the embedded server instance
+            // create embedded server instance
             options = new KestrelServerOptions();
             server = new KestrelServer(Options.Create(options), Lifetime, factory);
             ICollection<string> addrs = server.Features.Get<IServerAddressesFeature>().Addresses;
             addrs.Add(cfg.tls ? "https://" : "http://" + cfg.@extern);
             addrs.Add("http://" + cfg.intern);
 
-            // introspect message handler methods
+            // init message hooks
             Type typ = GetType();
             foreach (MethodInfo mi in typ.GetMethods(BindingFlags.Public | BindingFlags.Instance))
             {
                 ParameterInfo[] pis = mi.GetParameters();
                 if (pis.Length == 1 && pis[0].ParameterType == typeof(MsgContext))
                 {
-                    MsgHook a = new MsgHook(this, mi);
+                    MsgHook h = new MsgHook(this, mi);
                     if (hooks == null) hooks = new Roll<MsgHook>(16);
-                    hooks.Add(a);
+                    hooks.Add(h);
                 }
             }
 
-            cache = new ContentCache(Environment.ProcessorCount * 4, 4096);
-
-            // setup message loaders and pollers
+            // init clients and message queues
             string[] net = cfg.net;
             for (int i = 0; i < net.Length; i++)
             {
                 string addr = net[i];
                 if (addr.Equals(cfg.intern)) continue;
-                // loader
+
+                if (clients == null) clients = new Roll<WebClient>(net.Length * 2);
+                clients.Add(new WebClient(this, addr));
+
                 if (queues == null) queues = new Roll<MsgQueue>(net.Length * 2);
                 queues.Add(new MsgQueue(this, addr));
-                // poller
-                if (hooks != null)
-                {
-                    if (clients == null) clients = new Roll<WebClient>(net.Length * 2);
-                    clients.Add(new WebClient(this, addr));
-                }
             }
 
             MsgSetup();
+
+            // init content cache
+            cache = new ContentCache(Environment.ProcessorCount * 2, 4096);
 
         }
 
@@ -173,9 +171,9 @@ namespace Greatbone.Core
         public async Task ProcessRequestAsync(HttpContext context)
         {
             WebContext wc = (WebContext)context;
-            HttpRequest r = wc.Request;
-            string path = r.Path.Value;
-            string targ = path + r.QueryString.Value;
+            HttpRequest req = wc.Request;
+            string path = req.Path.Value;
+            string targ = path + req.QueryString.Value;
 
             IContent cont;
             if (wc.IsGet && cache.TryGetContent(targ, out cont)) // check if hit in the cache
@@ -303,8 +301,8 @@ namespace Greatbone.Core
 
             // queue
             string raddr = ci.RemoteIpAddress.ToString() + ":" + ci.RemotePort;
-            MsgQueue loader = queues[raddr];
-            loader.Get();
+            MsgQueue que = queues[raddr];
+            que.Get();
             MsgMessage msg;
             // headers
 

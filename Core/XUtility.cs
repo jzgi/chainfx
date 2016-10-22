@@ -8,9 +8,9 @@ namespace Greatbone.Core
 
             XDefault = 0x80000000,
 
-            XBinary = 0x20000000,
+            XBinary = 0x40000000,
 
-            XExtra = 0x08000000;
+            XExtra = 0x20000000;
 
 
         public static bool Has(this uint x, uint v)
