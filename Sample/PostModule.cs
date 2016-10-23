@@ -27,7 +27,7 @@ namespace Greatbone.Sample
                 if (dc.Query(TopSql, p => p.Put(20 * page)))
                 {
                     Post[] arr = dc.ToArr<Post>();
-                    wc.Out(200, arr);
+                    wc.OutJ(200, arr);
                 }
                 else
                 {
@@ -68,17 +68,37 @@ namespace Greatbone.Sample
         //
         // ADMIN
         //
+        public override void @default(WebContext wc, string subscpt)
+        {
+            WebInterface iadm = GetInterface(typeof(IAdmin));
 
-        public void search(WebContext wc, string subscpt)
+            // returh first UI
+            wc.OutPrimeHt(200, "管理功能", a =>
+            {
+                a.BUTTONS(iadm);
+            });
+
+        }
+
+        [Button(ShowDialog = "srchdlg")]
+        public void srch(WebContext wc, string subscpt)
         {
             throw new NotImplementedException();
         }
 
+        [Dialog(3)]
+        public void srchdlg(WebContext wc, string subscpt)
+        {
+            throw new NotImplementedException();
+        }
+
+        [Button(ShowDialog = ""), Dialog(2)]
         public void del(WebContext wc, string subscpt)
         {
             throw new NotImplementedException();
         }
 
+        [Button(ShowDialog = ""), Dialog(2)]
         public void status(WebContext wc, string subscpt)
         {
             throw new NotImplementedException();

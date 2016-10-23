@@ -93,7 +93,7 @@ namespace Greatbone.Sample
         // ADMIN
         //
 
-        public void search(WebContext wc, string subscpt)
+        public void srch(WebContext wc, string subscpt)
         {
         }
 

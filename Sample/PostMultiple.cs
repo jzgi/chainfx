@@ -29,7 +29,7 @@ namespace Greatbone.Sample
                 if (dc.QueryA(DefaultSql, p => p.Put(id)))
                 {
                     Post obj = dc.ToObj<Post>();
-                    wc.Out(200, obj);
+                    wc.OutJ(200, obj);
                 }
                 else
                 {

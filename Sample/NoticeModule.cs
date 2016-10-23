@@ -23,7 +23,7 @@ namespace Greatbone.Sample
                 if (dc.Query("SELECT * FROM notices WHERE duedate <= current_date ORDER BY id LIMIT 20 OFFSET @1", p => p.Put(page * 20)))
                 {
                     Notice[] arr = dc.ToArr<Notice>();
-                    wc.Out(200, arr);
+                    wc.OutJ(200, arr);
                 }
                 else
                 {
@@ -65,7 +65,7 @@ namespace Greatbone.Sample
             }
         }
 
-        public void search(WebContext wc, string subscpt)
+        public void srch(WebContext wc, string subscpt)
         {
             throw new NotImplementedException();
         }

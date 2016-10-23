@@ -10,15 +10,25 @@ namespace Greatbone.Core
     public abstract class DynamicContent : IContent
     {
         // hexidecimal characters
-        static readonly char[] HEX =
+        protected static readonly char[] HEX =
         {
             '0', '1', '2', '3', '4', '5', '6', '7', '8', '9', 'a', 'b', 'c', 'd', 'e', 'f'
         };
 
         // possible chars for representing a number as a string
-        static readonly byte[] DIGIT =
+        protected static readonly byte[] DIGIT =
         {
             (byte) '0', (byte) '1', (byte) '2', (byte) '3', (byte) '4', (byte) '5', (byte) '6', (byte) '7', (byte) '8', (byte) '9'
+        };
+
+        // sexagesimal numbers
+        protected static readonly string[] SEX = {
+            "00", "01", "02", "03", "04", "05", "06", "07", "08", "09",
+            "10", "11", "12", "13", "14", "15", "16", "17", "18", "19",
+            "20", "21", "22", "23", "24", "25", "26", "27", "28", "29",
+            "30", "31", "32", "33", "34", "35", "36", "37", "38", "39",
+            "40", "41", "42", "43", "44", "45", "46", "47", "48", "49",
+            "50", "51", "52", "53", "54", "55", "56", "57", "58", "59"
         };
 
         const byte Minus = (byte)'-';
@@ -354,16 +364,6 @@ namespace Greatbone.Core
                 Add(dec.ToString(NumberFormatInfo.CurrentInfo));
             }
         }
-
-        // sexagesimal numbers
-        static readonly string[] SEX = {
-            "00", "01", "02", "03", "04", "05", "06", "07", "08", "09",
-            "10", "11", "12", "13", "14", "15", "16", "17", "18", "19",
-            "20", "21", "22", "23", "24", "25", "26", "27", "28", "29",
-            "30", "31", "32", "33", "34", "35", "36", "37", "38", "39",
-            "40", "41", "42", "43", "44", "45", "46", "47", "48", "49",
-            "50", "51", "52", "53", "54", "55", "56", "57", "58", "59"
-        };
 
         public void Add(DateTime v)
         {

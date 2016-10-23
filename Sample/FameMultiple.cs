@@ -26,7 +26,7 @@ namespace Greatbone.Sample
                     if (dc.QueryA("SELECT * FROM fames WHERE id = @1", p => p.Put(subscpt)))
                     {
                         Fame obj = dc.ToObj<Fame>();
-                        wc.Out(200, obj);
+                        wc.OutJ(200, obj);
                     }
                     else
                     {

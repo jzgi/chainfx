@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.IO;
 using System.Reflection;
 using Microsoft.Extensions.Logging;
@@ -21,6 +22,9 @@ namespace Greatbone.Core
         // the default action
         readonly WebAction defaction;
 
+
+        List<WebInterface> interfs;
+
         protected WebControl(WebArg arg)
         {
             this.arg = arg;
@@ -40,6 +44,27 @@ namespace Greatbone.Core
                     }
                     actions.Add(a);
                 }
+            }
+
+            // init interfaces
+            Type[] ityps = typ.GetInterfaces();
+            for (int i = 0; i < ityps.Length; i++)
+            {
+                Type ityp = ityps[i];
+                string ns = ityp.Namespace;
+                if (ns.Equals("Greatbone.Core") || ns.StartsWith("System") || ns.StartsWith("Microsoft")) continue; // a framework interface
+
+                if (interfs == null) interfs = new List<WebInterface>(4);
+                WebInterface interf = new WebInterface(ityp);
+                foreach (MethodInfo mi in ityp.GetMethods())
+                {
+                    WebAction a;
+                    if (actions.TryGet(mi.Name, out a))
+                    {
+                        interf.Add(a);
+                    }
+                }
+                interfs.Add(interf);
             }
         }
 
@@ -68,6 +93,22 @@ namespace Greatbone.Core
                 return defaction;
             }
             return actions[method];
+        }
+
+        public WebInterface GetInterface(Type itf)
+        {
+            if (interfs != null)
+            {
+                for (int i = 0; i < interfs.Count; i++)
+                {
+                    WebInterface el = interfs[i];
+                    if (el.Type == itf)
+                    {
+                        return el;
+                    }
+                }
+            }
+            return null;
         }
 
         internal virtual void Handle(string relative, WebContext wc)
@@ -140,7 +181,6 @@ namespace Greatbone.Core
             };
             wc.Out(200, sta, true, 5 * 60000);
         }
-
 
         public virtual void @default(WebContext wc, string subscpt)
         {

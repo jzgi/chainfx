@@ -22,7 +22,7 @@ namespace Greatbone.Sample
             throw new NotImplementedException();
         }
 
-        public void search(WebContext wc, string subscpt)
+        public void srch(WebContext wc, string subscpt)
         {
             throw new NotImplementedException();
         }

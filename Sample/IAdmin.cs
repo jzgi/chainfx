@@ -4,7 +4,7 @@ namespace Greatbone.Sample
 {
     public interface IAdmin
     {
-        void search(WebContext wc, string subscpt);
+        void srch(WebContext wc, string subscpt);
 
         void del(WebContext wc, string subscpt);
 

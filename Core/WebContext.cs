@@ -477,17 +477,17 @@ namespace Greatbone.Core
             MaxAge = maxage;
         }
 
-        public void Out<T>(int status, T obj, uint x = 0, bool? pub = null, int maxage = 60000) where T : IPersist
+        public void OutJ<P>(int status, P obj, uint x = 0, bool? pub = null, int maxage = 60000) where P : IPersist
         {
-            Out(status, cont => cont.PutObj(obj, x), pub, maxage);
+            OutJ(status, cont => cont.PutObj(obj, x), pub, maxage);
         }
 
-        public void Out<T>(int status, T[] arr, uint x = 0, bool? pub = null, int maxage = 60000) where T : IPersist
+        public void OutJ<P>(int status, P[] arr, uint x = 0, bool? pub = null, int maxage = 60000) where P : IPersist
         {
-            Out(status, cont => cont.PutArr(arr, x), pub, maxage);
+            OutJ(status, cont => cont.PutArr(arr, x), pub, maxage);
         }
 
-        public void Out(int status, Action<JContent> a, bool? pub = null, int maxage = 60000)
+        public void OutJ(int status, Action<JContent> a, bool? pub = null, int maxage = 60000)
         {
             JContent cont = new JContent(8 * 1024);
             a?.Invoke(cont);

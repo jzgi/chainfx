@@ -35,7 +35,7 @@ namespace Greatbone.Sample
                     string c16 = StrUtility.C16(password);
                     if (c16.Equals(obj.credential))
                     {
-                        wc.Out(200, obj);
+                        wc.OutJ(200, obj);
                     }
                     else
                     {

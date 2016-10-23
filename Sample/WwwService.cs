@@ -31,7 +31,7 @@ namespace Greatbone.Sample
                 if (dc.Query("SELECT * FROM cats WHERE NOT disabled"))
                 {
                     Cat[] arr = dc.ToArr<Cat>();
-                    wc.Out(200, arr);
+                    wc.OutJ(200, arr);
                 }
                 else
                 {
