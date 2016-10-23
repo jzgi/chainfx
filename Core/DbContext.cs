@@ -169,20 +169,20 @@ namespace Greatbone.Core
         // RESULTSET
         //
 
-        public T ToObj<T>(uint x = 0) where T : IPersist, new()
+        public P ToObj<P>(uint x = 0) where P : IPersist, new()
         {
-            T obj = new T();
+            P obj = new P();
             obj.Load(this, x);
             return obj;
         }
 
 
-        public T[] ToArr<T>(uint x = 0) where T : IPersist, new()
+        public P[] ToArr<P>(uint x = 0) where P : IPersist, new()
         {
-            List<T> lst = new List<T>(64);
+            List<P> lst = new List<P>(64);
             while (NextRow())
             {
-                T obj = new T();
+                P obj = new P();
                 obj.Load(this, x);
                 lst.Add(obj);
             }
@@ -337,7 +337,7 @@ namespace Greatbone.Core
             return false;
         }
 
-        public bool Got<V>(string name, ref V v, uint x = 0) where V : IPersist, new()
+        public bool Got<P>(string name, ref P v, uint x = 0) where P : IPersist, new()
         {
             int ord = name == null ? ordinal++ : reader.GetOrdinal(name);
             if (!reader.IsDBNull(ord))
@@ -345,7 +345,7 @@ namespace Greatbone.Core
                 string str = reader.GetString(ord);
                 JTextParse parse = new JTextParse(str);
                 JObj jo = (JObj)parse.Parse();
-                v = new V();
+                v = new P();
                 v.Load(jo, x);
                 return true;
             }
@@ -422,7 +422,7 @@ namespace Greatbone.Core
             return false;
         }
 
-        public bool Got<V>(string name, ref V[] v, uint x = 0) where V : IPersist, new()
+        public bool Got<P>(string name, ref P[] v, uint x = 0) where P : IPersist, new()
         {
             int ord = name == null ? ordinal++ : reader.GetOrdinal(name);
             if (!reader.IsDBNull(ord))
@@ -431,11 +431,11 @@ namespace Greatbone.Core
                 JTextParse parse = new JTextParse(str);
                 JArr ja = (JArr)parse.Parse();
                 int len = ja.Count;
-                v = new V[len];
+                v = new P[len];
                 for (int i = 0; i < len; i++)
                 {
                     JObj jo = (JObj)ja[i];
-                    V obj = new V();
+                    P obj = new P();
                     obj.Load(jo, x);
                     v[i] = obj;
                 }
@@ -463,12 +463,12 @@ namespace Greatbone.Core
             });
         }
 
-        public void Publish<T>(string topic, string part, T obj) where T : IPersist
+        public void Publish<P>(string topic, string part, P obj) where P : IPersist
         {
             Publish(topic, part, jcont => jcont.PutObj(obj));
         }
 
-        public void Publish<T>(string topic, string part, T[] arr) where T : IPersist
+        public void Publish<P>(string topic, string part, P[] arr) where P : IPersist
         {
             Publish(topic, part, jcont => jcont.PutArr(arr));
         }

@@ -21,14 +21,14 @@ namespace Greatbone.Core
         {
         }
 
-        public T AddChild<T>(string key, object state = null) where T : WebControl
+        public C AddChild<C>(string key, object state = null) where C : WebControl
         {
             if (children == null)
             {
                 children = new Roll<WebControl>(16);
             }
             // create instance by reflection
-            Type typ = typeof(T);
+            Type typ = typeof(C);
             ConstructorInfo ci = typ.GetConstructor(new[] { typeof(WebArg) });
             if (ci == null) { throw new WebException(typ + ": the constructor with WebTie"); }
             WebArg arg = new WebArg
@@ -40,7 +40,7 @@ namespace Greatbone.Core
                 Folder = (Parent == null) ? key : Path.Combine(Parent.Folder, key),
                 Service = Service
             };
-            T ctrl = (T)ci.Invoke(new object[] { arg });
+            C ctrl = (C)ci.Invoke(new object[] { arg });
             children.Add(ctrl);
 
             return ctrl;
@@ -50,10 +50,10 @@ namespace Greatbone.Core
 
         public WebMultiple Multiple => multiple;
 
-        public T SetMultiple<T>(object state = null) where T : WebMultiple
+        public C SetMultiple<C>(object state = null) where C : WebMultiple
         {
             // create instance
-            Type typ = typeof(T);
+            Type typ = typeof(C);
             ConstructorInfo ci = typ.GetConstructor(new[] { typeof(WebArg) });
             if (ci == null) { throw new WebException(typ + ": the constructor with WebTie"); }
             WebArg arg = new WebArg
@@ -65,7 +65,7 @@ namespace Greatbone.Core
                 Folder = (Parent == null) ? MultiplexKey : Path.Combine(Parent.Folder, MultiplexKey),
                 Service = Service
             };
-            T mul = (T)ci.Invoke(new object[] { arg });
+            C mul = (C)ci.Invoke(new object[] { arg });
             this.multiple = mul;
 
             return mul;

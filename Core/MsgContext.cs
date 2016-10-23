@@ -1,6 +1,5 @@
 ﻿using System;
-using System.Net.Http;
-using Microsoft.AspNetCore.Http;
+
 
 namespace Greatbone.Core
 {

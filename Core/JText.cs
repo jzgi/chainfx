@@ -75,7 +75,7 @@ namespace Greatbone.Core
         // PUT
         //
 
-        public void PutArr(System.Action a)
+        public void PutArr(Action a)
         {
             if (counts[level]++ > 0) Add(',');
 
@@ -88,13 +88,13 @@ namespace Greatbone.Core
             level--;
         }
 
-        public void PutArr<T>(T[] v, uint x = 0) where T : IPersist
+        public void PutArr<P>(P[] v, uint x = 0) where P : IPersist
         {
             PutArr(delegate
             {
                 for (int i = 0; i < v.Length; i++)
                 {
-                    T obj = v[i];
+                    P obj = v[i];
                     if (obj == null)
                     {
                         PutNull(null);
@@ -107,7 +107,7 @@ namespace Greatbone.Core
             });
         }
 
-        public void PutObj(System.Action a)
+        public void PutObj(Action a)
         {
             if (counts[level]++ > 0) Add(',');
 
@@ -120,7 +120,7 @@ namespace Greatbone.Core
             level--;
         }
 
-        public void PutObj<T>(T v, uint x = 0) where T : IPersist
+        public void PutObj<P>(P v, uint x = 0) where P : IPersist
         {
             PutObj(delegate
             {
@@ -328,7 +328,7 @@ namespace Greatbone.Core
             return this; // ignore ir
         }
 
-        public JText Put<V>(string name, V v, uint x = 0) where V : IPersist
+        public JText Put<P>(string name, P v, uint x = 0) where P : IPersist
         {
             if (counts[level]++ > 0) Add(',');
 
@@ -536,7 +536,7 @@ namespace Greatbone.Core
             return this;
         }
 
-        public JText Put<V>(string name, V[] v, uint x = 0) where V : IPersist
+        public JText Put<P>(string name, P[] v, uint x = 0) where P : IPersist
         {
             if (counts[level]++ > 0) Add(',');
 

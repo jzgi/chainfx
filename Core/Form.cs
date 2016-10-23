@@ -93,12 +93,12 @@ namespace Greatbone.Core
         }
 
 
-        public bool Got<T>(string name, ref T[] v, uint x = 0) where T : IPersist, new()
+        public bool Got<P>(string name, ref P[] v, uint x = 0) where P : IPersist, new()
         {
             throw new NotImplementedException();
         }
 
-        public bool Got<T>(string name, ref T v, uint x = 0) where T : IPersist, new()
+        public bool Got<P>(string name, ref P v, uint x = 0) where P : IPersist, new()
         {
             throw new NotImplementedException();
         }

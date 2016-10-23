@@ -8,7 +8,7 @@ namespace Greatbone.Sample
     {
         public NoticeModule(WebArg arg) : base(arg)
         {
-            SetMultiple<NoticeMultiple>(false);
+            SetMultiple<NoticeMultiple>();
         }
 
         /// <code>

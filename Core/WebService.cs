@@ -302,7 +302,7 @@ namespace Greatbone.Core
             // queue
             string raddr = ci.RemoteIpAddress.ToString() + ":" + ci.RemotePort;
             MsgQueue que = queues[raddr];
-            que.Get();
+            // que.Get();
             MsgMessage msg;
             // headers
 

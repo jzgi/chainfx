@@ -1,8 +1,13 @@
 ﻿namespace Greatbone.Core
 {
-    public class HtmlContent : DynamicContent
+
+    /// <summary>
+    /// A fragment of dynamic generated HyperText ML content.
+    /// </summary>
+    ///
+    public abstract class HtContent<R> : DynamicContent where R : HtContent<R>
     {
-        public HtmlContent(int capacity) : base(capacity)
+        public HtContent(int capacity) : base(capacity)
         {
         }
 
@@ -36,6 +41,12 @@
                 }
             }
 
+        }
+
+        public R T(string str)
+        {
+            Add(str);
+            return (R)this;
         }
 
     }

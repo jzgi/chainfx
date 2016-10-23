@@ -10,8 +10,8 @@ namespace Greatbone.Core
 
         bool NextResult();
 
-        T ToObj<T>(uint x = 0) where T : IPersist, new();
+        P ToObj<P>(uint x = 0) where P : IPersist, new();
 
-        T[] ToArr<T>(uint x = 0) where T : IPersist, new();
+        P[] ToArr<P>(uint x = 0) where P : IPersist, new();
     }
 }

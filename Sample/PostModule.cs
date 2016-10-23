@@ -7,7 +7,7 @@ namespace Greatbone.Sample
     {
         public PostModule(WebArg arg) : base(arg)
         {
-            SetMultiple<PostMultiple>(false);
+            SetMultiple<PostMultiple>();
         }
 
 

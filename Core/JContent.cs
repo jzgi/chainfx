@@ -41,7 +41,7 @@ namespace Greatbone.Core
             level--;
         }
 
-        public void PutArr<T>(T[] v, uint x = 0) where T : IPersist
+        public void PutArr<P>(P[] v, uint x = 0) where P : IPersist
         {
             PutArr(delegate
             {
@@ -65,7 +65,7 @@ namespace Greatbone.Core
             level--;
         }
 
-        public void PutObj<T>(T v, uint x = 0) where T : IPersist
+        public void PutObj<P>(P v, uint x = 0) where P : IPersist
         {
             PutObj(delegate
             {
@@ -295,7 +295,7 @@ namespace Greatbone.Core
             return this; // ignore ir
         }
 
-        public JContent Put<V>(string name, V v, uint x = 0) where V : IPersist
+        public JContent Put<P>(string name, P v, uint x = 0) where P : IPersist
         {
             if (counts[level]++ > 0) Add(',');
 
@@ -506,7 +506,7 @@ namespace Greatbone.Core
         }
 
 
-        public JContent Put<V>(string name, V[] v, uint x = 0) where V : IPersist
+        public JContent Put<P>(string name, P[] v, uint x = 0) where P : IPersist
         {
             if (counts[level]++ > 0) Add(',');
 

@@ -80,7 +80,7 @@ namespace Greatbone.Core
         }
 
 
-        public static bool Got<V>(this ISource src, ref V v, uint x = 0) where V : IPersist, new()
+        public static bool Got<P>(this ISource src, ref P v, uint x = 0) where P : IPersist, new()
         {
             return src.Got(null, ref v, x);
         }
@@ -121,7 +121,7 @@ namespace Greatbone.Core
             return src.Got(null, ref v);
         }
 
-        public static bool Got<V>(this ISource src, ref V[] v, uint x = 0) where V : IPersist, new()
+        public static bool Got<P>(this ISource src, ref P[] v, uint x = 0) where P : IPersist, new()
         {
             return src.Got(null, ref v, x);
         }
@@ -208,9 +208,9 @@ namespace Greatbone.Core
             return v;
         }
 
-        public static V GotObj<V>(this ISource src, uint x = 0, V def = default(V)) where V : IPersist, new()
+        public static P GotObj<P>(this ISource src, uint x = 0, P def = default(P)) where P : IPersist, new()
         {
-            V v = def;
+            P v = def;
             src.Got(null, ref v, x);
             return v;
         }
@@ -258,9 +258,9 @@ namespace Greatbone.Core
             return v;
         }
 
-        public static V[] GotArr<V>(this ISource src, uint x = 0, V[] def = null) where V : IPersist, new()
+        public static P[] GotArr<P>(this ISource src, uint x = 0, P[] def = null) where P : IPersist, new()
         {
-            V[] v = def;
+            P[] v = def;
             src.Got(null, ref v, x);
             return v;
         }
@@ -346,9 +346,9 @@ namespace Greatbone.Core
             return v;
         }
 
-        public static T GotObj<T>(this ISource src, string name, T def = default(T)) where T : IPersist, new()
+        public static P GotObj<P>(this ISource src, string name, P def = default(P)) where P : IPersist, new()
         {
-            T v = def;
+            P v = def;
             src.Got(name, ref v);
             return v;
         }
@@ -396,9 +396,9 @@ namespace Greatbone.Core
             return v;
         }
 
-        public static V[] GotArr<V>(this ISource src, string name, V[] def = null) where V : IPersist, new()
+        public static P[] GotArr<P>(this ISource src, string name, P[] def = null) where P : IPersist, new()
         {
-            V[] v = def;
+            P[] v = def;
             src.Got(name, ref v);
             return v;
         }

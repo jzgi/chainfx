@@ -494,13 +494,6 @@ namespace Greatbone.Core
             Out(status, cont, pub, maxage);
         }
 
-        public void Out(int status, Action<HtmlContent> a, bool? pub = true, int maxage = 60000)
-        {
-            HtmlContent cont = new HtmlContent(8 * 1024);
-            a?.Invoke(cont);
-            Out(status, cont, pub, maxage);
-        }
-
         internal async Task SendAsync()
         {
             if (Pub != null)
