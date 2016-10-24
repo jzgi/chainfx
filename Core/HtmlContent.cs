@@ -5,9 +5,9 @@
     /// A fragment of dynamic generated HyperText ML content.
     /// </summary>
     ///
-    public abstract class HtContent<R> : DynamicContent where R : HtContent<R>
+    public abstract class HtmlContent<R> : DynamicContent where R : HtmlContent<R>
     {
-        public HtContent(int capacity) : base(capacity)
+        public HtmlContent(int capacity) : base(capacity)
         {
         }
 

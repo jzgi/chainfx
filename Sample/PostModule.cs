@@ -81,25 +81,34 @@ namespace Greatbone.Sample
 
         }
 
-        [Button(ShowDialog = "srchdlg")]
+        [Button(Dialog = true)]
         public void srch(WebContext wc, string subscpt)
         {
-            throw new NotImplementedException();
+            string word = null;
+            if (wc.Got(nameof(word), ref word))
+            {
+
+            }
+            else
+            { // return search condition dialog 
+
+            }
         }
 
-        [Dialog(3)]
-        public void srchdlg(WebContext wc, string subscpt)
-        {
-            throw new NotImplementedException();
-        }
-
-        [Button(ShowDialog = ""), Dialog(2)]
+        [Button(Dialog = true)]
         public void del(WebContext wc, string subscpt)
         {
-            throw new NotImplementedException();
+            if (wc.IsGet) // return confirmation dialog
+            { 
+
+            }
+            else //
+            {  
+
+            }
         }
 
-        [Button(ShowDialog = ""), Dialog(2)]
+        [Button(Dialog = true)]
         public void status(WebContext wc, string subscpt)
         {
             throw new NotImplementedException();

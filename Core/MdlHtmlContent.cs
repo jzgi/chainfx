@@ -5,15 +5,14 @@ namespace Greatbone.Core
 
     ///
     /// <summary>
-    /// A fragment of dynamical HyperText content that encapsulate Material-Design-Lite (MDL) components
+    /// A fragment of dynamical HTML content that encapsulates Material-Design-Lite (MDL) components
     /// </summary> 
     ///
-    public abstract class MdlHtContent : HtContent<MdlHtContent>, ISink<MdlHtContent>
+    public abstract class MdlHtmlContent : HtmlContent<MdlHtmlContent>, ISink<MdlHtmlContent>
     {
-        public MdlHtContent(int capacity) : base(capacity)
+        public MdlHtmlContent(int capacity) : base(capacity)
         {
         }
-
 
         public void Tabs(string id = "tab", params Tab[] specs)
         {
@@ -75,6 +74,8 @@ namespace Greatbone.Core
             for (int i = 0; i < wi.Count; i++)
             {
                 WebAction wa = wi[i];
+                ButtonAttribute btn = wa.Button;
+                if (btn == null) continue;
                 T("<button class=\"mdl-button mdl-js-button mdl-button--raised mdl-button--colored\">");
                 T(wa.Key);
                 T("</button>");
@@ -165,102 +166,102 @@ namespace Greatbone.Core
         // ISINK
         //
 
-        public MdlHtContent PutNull(string name)
+        public MdlHtmlContent PutNull(string name)
         {
             throw new NotImplementedException();
         }
 
-        public MdlHtContent Put(string name, bool v)
+        public MdlHtmlContent Put(string name, bool v)
         {
             throw new NotImplementedException();
         }
 
-        public MdlHtContent Put(string name, short v)
+        public MdlHtmlContent Put(string name, short v)
         {
             throw new NotImplementedException();
         }
 
-        public MdlHtContent Put(string name, int v)
+        public MdlHtmlContent Put(string name, int v)
         {
             throw new NotImplementedException();
         }
 
-        public MdlHtContent Put(string name, long v)
+        public MdlHtmlContent Put(string name, long v)
         {
             throw new NotImplementedException();
         }
 
-        public MdlHtContent Put(string name, decimal v)
+        public MdlHtmlContent Put(string name, decimal v)
         {
             throw new NotImplementedException();
         }
 
-        public MdlHtContent Put(string name, Number v)
+        public MdlHtmlContent Put(string name, Number v)
         {
             throw new NotImplementedException();
         }
 
-        public MdlHtContent Put(string name, DateTime v)
+        public MdlHtmlContent Put(string name, DateTime v)
         {
             throw new NotImplementedException();
         }
 
-        public MdlHtContent Put(string name, char[] v)
+        public MdlHtmlContent Put(string name, char[] v)
         {
             throw new NotImplementedException();
         }
 
-        public MdlHtContent Put(string name, string v)
+        public MdlHtmlContent Put(string name, string v)
         {
             throw new NotImplementedException();
         }
 
-        public MdlHtContent Put(string name, byte[] v)
+        public MdlHtmlContent Put(string name, byte[] v)
         {
             throw new NotImplementedException();
         }
 
-        public MdlHtContent Put(string name, ArraySegment<byte> v)
+        public MdlHtmlContent Put(string name, ArraySegment<byte> v)
         {
             throw new NotImplementedException();
         }
 
-        public MdlHtContent Put<V>(string name, V v, uint x = 0) where V : IPersist
+        public MdlHtmlContent Put<V>(string name, V v, uint x = 0) where V : IPersist
         {
             throw new NotImplementedException();
         }
 
-        public MdlHtContent Put(string name, JObj v)
+        public MdlHtmlContent Put(string name, JObj v)
         {
             throw new NotImplementedException();
         }
 
-        public MdlHtContent Put(string name, JArr v)
+        public MdlHtmlContent Put(string name, JArr v)
         {
             throw new NotImplementedException();
         }
 
-        public MdlHtContent Put(string name, short[] v)
+        public MdlHtmlContent Put(string name, short[] v)
         {
             throw new NotImplementedException();
         }
 
-        public MdlHtContent Put(string name, int[] v)
+        public MdlHtmlContent Put(string name, int[] v)
         {
             throw new NotImplementedException();
         }
 
-        public MdlHtContent Put(string name, long[] v)
+        public MdlHtmlContent Put(string name, long[] v)
         {
             throw new NotImplementedException();
         }
 
-        public MdlHtContent Put(string name, string[] v)
+        public MdlHtmlContent Put(string name, string[] v)
         {
             throw new NotImplementedException();
         }
 
-        public MdlHtContent Put<V>(string name, V[] v, uint x = 0) where V : IPersist
+        public MdlHtmlContent Put<V>(string name, V[] v, uint x = 0) where V : IPersist
         {
             throw new NotImplementedException();
         }

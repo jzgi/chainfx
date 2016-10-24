@@ -4,7 +4,7 @@ using Greatbone.Core;
 namespace Greatbone.Sample
 {
 
-    public class AbsHtContent : MdlHtContent
+    public class AbsHtContent : MdlHtmlContent
     {
 
         string header;

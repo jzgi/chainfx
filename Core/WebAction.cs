@@ -8,7 +8,7 @@ namespace Greatbone.Core
 
     ///
     /// <summary>
-    /// The descriptor for an action handling method.
+    /// The descriptor of an action method.
     /// </summary>
     ///
     public class WebAction : IKeyed
@@ -19,9 +19,9 @@ namespace Greatbone.Core
 
         readonly IfAttribute[] ifs;
 
-        public string Key { get; }
+        readonly ButtonAttribute button;
 
-        public bool IsVar => doer != null;
+        public string Key { get; }
 
         internal WebAction(WebControl control, MethodInfo mi)
         {
@@ -38,8 +38,11 @@ namespace Greatbone.Core
             }
             ifs = lst?.ToArray();
 
+            button = mi.GetCustomAttribute<ButtonAttribute>();
+
         }
 
+        public ButtonAttribute Button => button;
 
         internal bool TryDo(WebContext wc, string subscpt)
         {

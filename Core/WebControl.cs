@@ -139,14 +139,14 @@ namespace Greatbone.Core
                     key = rsc.Substring(0, dash);
                     subscpt = rsc.Substring(dash + 1);
                 }
-                WebAction a = string.IsNullOrEmpty(key) ? defaction : GetAction(key);
-                if (a == null)
+                WebAction wa = string.IsNullOrEmpty(key) ? defaction : GetAction(key);
+                if (wa == null)
                 {
                     wc.StatusCode = 404;
                 }
                 else
                 {
-                    a.TryDo(wc, subscpt);
+                    wa.TryDo(wc, subscpt);
                 }
             }
         }
