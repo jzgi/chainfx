@@ -5,7 +5,7 @@ namespace Greatbone.Sample
 
     ///
     /// /fame/
-    public class FameModule : WebModule, IAdmin
+    public class FameModule : WebModule, IMgmt
     {
         public FameModule(WebArg arg) : base(arg)
         {

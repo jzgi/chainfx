@@ -15,7 +15,7 @@ namespace Greatbone.Core
         }
 
 
-        public void TABS(string id = "tab", params Tab[] specs)
+        public void Tabs(string id = "tab", params Tab[] specs)
         {
             T("<div class=\"mdl-tabs mdl-js-tabs\">");
 
@@ -42,7 +42,7 @@ namespace Greatbone.Core
             T("</div>");
         }
 
-        public void FOOTER(string h, Action content)
+        public void Footer(string h, Action content)
         {
             T("<dialog class=\"mdl-dialog\">");
             T("<h4 class=\"mdl-dialog__title\">").T(h).T("</h4>");
@@ -63,25 +63,25 @@ namespace Greatbone.Core
             T("</script>");
         }
 
-        public void BUTTON(string label)
+        public void Button(string label)
         {
             T("<button class=\"mdl-button mdl-js-button mdl-button--raised mdl-button--colored\">");
             T(label);
             T("</button>");
         }
 
-        public void BUTTONS(WebInterface itf)
+        public void Buttons(WebInterface wi)
         {
-            for (int i = 0; i < itf.Count; i++)
+            for (int i = 0; i < wi.Count; i++)
             {
-                WebAction a = itf[i];
+                WebAction wa = wi[i];
                 T("<button class=\"mdl-button mdl-js-button mdl-button--raised mdl-button--colored\">");
-                T(a.Key);
+                T(wa.Key);
                 T("</button>");
             }
         }
 
-        public void DIALOG(string h, Action content)
+        public void Dialog(string h, Action content)
         {
             T("<dialog class=\"mdl-dialog\">");
             T("<h4 class=\"mdl-dialog__title\">").T(h).T("</h4>");
@@ -103,7 +103,7 @@ namespace Greatbone.Core
         }
 
 
-        public void TABLE<M>(M[] arr, uint x = 0) where M : IPersist
+        public void Table<M>(M[] arr, uint x = 0) where M : IPersist
         {
             T("<table class=\"mdl-data-table mdl-js-data-table mdl-shadow--2dp\">");
             T("<thead>");
@@ -135,26 +135,26 @@ namespace Greatbone.Core
         }
 
 
-        public void INPUT_TEXT()
+        public void InputText()
         {
             T("</tbody>");
 
         }
 
-        public void INPUT_TEXTAREA()
+        public void InputTextarea()
         {
             T("</tbody>");
 
         }
 
-        public void FORM<P>(Action a) where P : IParent
+        public void Form<P>(Action a) where P : IParent
         {
             T("<form>");
 
             T("</form>");
         }
 
-        public void FORM<P>(P obj, uint x = 0) where P : IParent
+        public void Form<P>(P obj, uint x = 0) where P : IParent
         {
             T("<form>");
 

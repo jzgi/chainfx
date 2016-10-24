@@ -12,8 +12,6 @@ namespace Greatbone.Core
     }
 
 
-
-
     public interface IListItem
     {
 

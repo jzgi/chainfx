@@ -23,7 +23,7 @@ namespace Greatbone.Core
         readonly WebAction defaction;
 
 
-        List<WebInterface> interfs;
+        List<WebInterface> interfaces;
 
         protected WebControl(WebArg arg)
         {
@@ -37,12 +37,12 @@ namespace Greatbone.Core
                 ParameterInfo[] pis = mi.GetParameters();
                 if (pis.Length == 2 && pis[0].ParameterType == typeof(WebContext) && pis[1].ParameterType == typeof(string))
                 {
-                    WebAction a = new WebAction(this, mi);
-                    if (a.Key.Equals("default"))
+                    WebAction wa = new WebAction(this, mi);
+                    if (wa.Key.Equals("default"))
                     {
-                        defaction = a;
+                        defaction = wa;
                     }
-                    actions.Add(a);
+                    actions.Add(wa);
                 }
             }
 
@@ -52,19 +52,23 @@ namespace Greatbone.Core
             {
                 Type ityp = ityps[i];
                 string ns = ityp.Namespace;
-                if (ns.Equals("Greatbone.Core") || ns.StartsWith("System") || ns.StartsWith("Microsoft")) continue; // a framework interface
+                if (ns.Equals("Greatbone.Core") || ns.StartsWith("System") || ns.StartsWith("Microsoft")) continue; // a system interface
 
-                if (interfs == null) interfs = new List<WebInterface>(4);
-                WebInterface interf = new WebInterface(ityp);
+                if (interfaces == null) interfaces = new List<WebInterface>(4);
+                WebInterface wi = new WebInterface(ityp);
                 foreach (MethodInfo mi in ityp.GetMethods())
                 {
-                    WebAction a;
-                    if (actions.TryGet(mi.Name, out a))
+                    ParameterInfo[] pis = mi.GetParameters();
+                    if (pis.Length == 2 && pis[0].ParameterType == typeof(WebContext) && pis[1].ParameterType == typeof(string))
                     {
-                        interf.Add(a);
+                        WebAction wa;
+                        if (actions.TryGet(mi.Name, out wa))
+                        {
+                            wi.Add(wa);
+                        }
                     }
                 }
-                interfs.Add(interf);
+                interfaces.Add(wi);
             }
         }
 
@@ -95,16 +99,16 @@ namespace Greatbone.Core
             return actions[method];
         }
 
-        public WebInterface GetInterface(Type itf)
+        public WebInterface GetInterface(Type type)
         {
-            if (interfs != null)
+            if (interfaces != null)
             {
-                for (int i = 0; i < interfs.Count; i++)
+                for (int i = 0; i < interfaces.Count; i++)
                 {
-                    WebInterface el = interfs[i];
-                    if (el.Type == itf)
+                    WebInterface wi = interfaces[i];
+                    if (wi.Type == type)
                     {
-                        return el;
+                        return wi;
                     }
                 }
             }

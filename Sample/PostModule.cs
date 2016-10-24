@@ -3,7 +3,7 @@ using System;
 
 namespace Greatbone.Sample
 {
-    public class PostModule : WebModule, IAdmin
+    public class PostModule : WebModule, IMgmt
     {
         public PostModule(WebArg arg) : base(arg)
         {
@@ -70,12 +70,13 @@ namespace Greatbone.Sample
         //
         public override void @default(WebContext wc, string subscpt)
         {
-            WebInterface iadm = GetInterface(typeof(IAdmin));
+            WebInterface iadm = GetInterface(typeof(IMgmt));
 
             // returh first UI
             wc.OutPrimeHt(200, "管理功能", a =>
             {
-                a.BUTTONS(iadm);
+                // a.Form(,,,,, )
+                a.Buttons(iadm);
             });
 
         }

@@ -6,7 +6,7 @@ namespace Greatbone.Sample
     ///
     /// /brand/
     ///
-    public class BrandModule : WebModule, IAdmin
+    public class BrandModule : WebModule, IMgmt
     {
         public BrandModule(WebArg arg) : base(arg)
         {
