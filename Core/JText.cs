@@ -90,21 +90,7 @@ namespace Greatbone.Core
 
         public void PutArr<P>(P[] v, uint x = 0) where P : IPersist
         {
-            PutArr(delegate
-            {
-                for (int i = 0; i < v.Length; i++)
-                {
-                    P obj = v[i];
-                    if (obj == null)
-                    {
-                        PutNull(null);
-                    }
-                    else
-                    {
-                        PutObj(obj, x);
-                    }
-                }
-            });
+            Put(null, v, x);
         }
 
         public void PutObj(Action a)
@@ -122,33 +108,13 @@ namespace Greatbone.Core
 
         public void PutObj<P>(P v, uint x = 0) where P : IPersist
         {
-            PutObj(delegate
-            {
-                v.Save(this, x);
-            });
+            Put(null, v, x);
         }
 
 
         //
         // SINK
         //
-
-        public JText PutNull(string name)
-        {
-            if (counts[level]++ > 0) Add(',');
-
-            if (name != null)
-            {
-                Add('"');
-                Add(name);
-                Add('"');
-                Add(':');
-            }
-
-            Add("null");
-
-            return this;
-        }
 
         public JText Put(string name, bool v)
         {
@@ -346,9 +312,12 @@ namespace Greatbone.Core
             }
             else
             {
-                PutObj(v, x);
+                counts[++level] = 0; // enter
+                Add('{');
+                v.Save(this, x);
+                Add('}');
+                level--; // exit            }
             }
-
             return this;
         }
 
@@ -397,12 +366,12 @@ namespace Greatbone.Core
             }
             else
             {
-                PutArr(delegate
-                {
-                    v.Save(this);
-                });
+                counts[++level] = 0; // enter
+                Add('[');
+                v.Save(this);
+                Add(']');
+                level--; // exit
             }
-
             return this;
         }
 
@@ -554,8 +523,31 @@ namespace Greatbone.Core
             }
             else
             {
-                PutArr(v, x);
+                counts[++level] = 0; // enter
+                Add('[');
+                for (int i = 0; i < v.Length; i++)
+                {
+                    Put(null, v[i], x);
+                }
+                Add(']');
+                level--; // exit
             }
+            return this;
+        }
+
+        public JText PutNull(string name)
+        {
+            if (counts[level]++ > 0) Add(',');
+
+            if (name != null)
+            {
+                Add('"');
+                Add(name);
+                Add('"');
+                Add(':');
+            }
+
+            Add("null");
 
             return this;
         }

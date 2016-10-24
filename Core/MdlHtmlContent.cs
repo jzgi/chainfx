@@ -5,7 +5,7 @@ namespace Greatbone.Core
 
     ///
     /// <summary>
-    /// A fragment of dynamical HTML content that encapsulates Material-Design-Lite (MDL) components
+    /// A dynamical HTML content that encapsulates Material-Design-Lite (MDL) components
     /// </summary> 
     ///
     public abstract class MdlHtmlContent : HtmlContent<MdlHtmlContent>, ISink<MdlHtmlContent>

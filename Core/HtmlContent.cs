@@ -2,7 +2,7 @@
 {
 
     /// <summary>
-    /// A fragment of dynamic generated HyperText ML content.
+    /// A fragment of dynamic generated HTML content.
     /// </summary>
     ///
     public abstract class HtmlContent<R> : DynamicContent where R : HtmlContent<R>

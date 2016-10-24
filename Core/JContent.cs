@@ -28,49 +28,40 @@ namespace Greatbone.Core
         // PUT
         //
 
-        public void PutArr(System.Action a)
+        public void PutArr(Action a)
         {
             if (counts[level]++ > 0) Add(',');
 
-            counts[++level] = 0;
+            counts[++level] = 0; // enter
             Add('[');
 
             if (a != null) a();
 
             Add(']');
-            level--;
+            level--; // exit
         }
 
         public void PutArr<P>(P[] v, uint x = 0) where P : IPersist
         {
-            PutArr(delegate
-            {
-                for (int i = 0; i < v.Length; i++)
-                {
-                    PutObj(v[i], x);
-                }
-            });
+            Put(null, v, x);
         }
 
-        public void PutObj(System.Action a)
+        public void PutObj(Action a)
         {
             if (counts[level]++ > 0) Add(',');
 
-            counts[++level] = 0;
+            counts[++level] = 0; // enter
             Add('{');
 
             if (a != null) a();
 
             Add('}');
-            level--;
+            level--; // exit
         }
 
         public void PutObj<P>(P v, uint x = 0) where P : IPersist
         {
-            PutObj(delegate
-            {
-                v.Save(this, x);
-            });
+            Put(null, v, x);
         }
 
         void AddEsc(string v)
@@ -313,10 +304,11 @@ namespace Greatbone.Core
             }
             else
             {
-                PutObj(delegate
-                {
-                    v.Save(this, x);
-                });
+                counts[++level] = 0; // enter
+                Add('{');
+                v.Save(this, x);
+                Add('}');
+                level--; // exit
             }
 
             return this;
@@ -340,10 +332,11 @@ namespace Greatbone.Core
             }
             else
             {
-                PutObj(delegate
-                {
-                    v.Save(this);
-                });
+                counts[++level] = 0; // enter
+                Add('{');
+                v.Save(this);
+                Add('}');
+                level--; // exit
             }
 
             return this;
@@ -367,10 +360,11 @@ namespace Greatbone.Core
             }
             else
             {
-                PutArr(delegate
-                {
-                    v.Save(this);
-                });
+                counts[++level] = 0; // enter
+                Add('[');
+                v.Save(this);
+                Add(']');
+                level--; // exit
             }
             return this;
         }
@@ -524,15 +518,15 @@ namespace Greatbone.Core
             }
             else
             {
+                counts[++level] = 0; // enter
                 Add('[');
                 for (int i = 0; i < v.Length; i++)
                 {
-                    if (i > 0) Add(',');
-                    Put(null, v[i], x); // output a persist object
+                    Put(null, v[i], x);
                 }
                 Add(']');
+                level--; // exit
             }
-
             return this;
         }
 
