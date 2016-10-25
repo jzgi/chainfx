@@ -183,7 +183,7 @@ namespace Greatbone.Core
                 Buffer = content,
                 LastModified = modified
             };
-            wc.Out(200, sta, true, 5 * 60000);
+            wc.Send(200, sta, true, 5 * 60000);
         }
 
         public virtual void @default(WebContext wc, string subscpt)

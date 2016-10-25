@@ -5,16 +5,52 @@ namespace Greatbone.Core
 
     ///
     /// <summary>
-    /// A dynamical HTML content that encapsulates Material-Design-Lite (MDL) components
+    /// A dynamical HTML5 content that encapsulates Material-Design-Lite (MDL) components
     /// </summary> 
     ///
-    public abstract class MdlHtmlContent : HtmlContent<MdlHtmlContent>, ISink<MdlHtmlContent>
+    public class HtContent : DynamicContent, ISink<HtContent>
     {
 
-        int ctx;
-
-        public MdlHtmlContent(int capacity) : base(capacity)
+        public HtContent(int capacity) : base(capacity)
         {
+        }
+
+        public override string Type => "text/html";
+
+
+        public void AddEsc(string v)
+        {
+            for (int i = 0; i < v.Length; i++)
+            {
+                char c = v[i];
+                if (c == '<')
+                {
+                    Add("&lt;");
+                }
+                else if (c == '>')
+                {
+                    Add("&gt;");
+                }
+                else if (c == '&')
+                {
+                    Add("&amp;");
+                }
+                else if (c == '"')
+                {
+                    Add("&quot;");
+                }
+                else
+                {
+                    Add(c);
+                }
+            }
+
+        }
+
+        public HtContent T(string str)
+        {
+            Add(str);
+            return this;
         }
 
         public void Tabs(string id = "tab", params Tab[] specs)
@@ -60,8 +96,6 @@ namespace Greatbone.Core
             T("</dialog>");
 
             T("<script>");
-
-
             T("</script>");
         }
 
@@ -101,8 +135,6 @@ namespace Greatbone.Core
             T("</dialog>");
 
             T("<script>");
-
-
             T("</script>");
         }
 
@@ -169,12 +201,12 @@ namespace Greatbone.Core
         // ISINK
         //
 
-        public MdlHtmlContent PutNull(string name)
+        public HtContent PutNull(string name)
         {
             throw new NotImplementedException();
         }
 
-        public MdlHtmlContent Put(string name, bool v)
+        public HtContent Put(string name, bool v)
         {
             T("<label for=\"").T(name).T("\" class=\"mdl-checkbox mdl-js-checkbox mdl-js-ripple-effect\">");
             T("<input type=\"checkbox\" id=\"").T(name).T("\" class=\"mdl-checkbox__input\">");
@@ -184,7 +216,7 @@ namespace Greatbone.Core
             return this;
         }
 
-        public MdlHtmlContent Put(string name, short v)
+        public HtContent Put(string name, short v)
         {
             T("<div class=\"mdl-textfield mdl-js-textfield mdl-textfield--floating-label\">");
             T("<input class=\"mdl-textfield__input\" type=\"number\" id=\"").T(name).T("\" value=\""); Add(v); T("\">");
@@ -194,7 +226,7 @@ namespace Greatbone.Core
             return this;
         }
 
-        public MdlHtmlContent Put(string name, int v)
+        public HtContent Put(string name, int v)
         {
             T("<div class=\"mdl-textfield mdl-js-textfield mdl-textfield--floating-label\">");
             T("<input class=\"mdl-textfield__input\" type=\"number\" id=\"").T(name).T("\" value=\""); Add(v); T("\">");
@@ -204,7 +236,7 @@ namespace Greatbone.Core
             return this;
         }
 
-        public MdlHtmlContent Put(string name, long v)
+        public HtContent Put(string name, long v)
         {
             T("<div class=\"mdl-textfield mdl-js-textfield mdl-textfield--floating-label\">");
             T("<input class=\"mdl-textfield__input\" type=\"text\" id=\"").T(name).T("\">");
@@ -214,7 +246,7 @@ namespace Greatbone.Core
             return this;
         }
 
-        public MdlHtmlContent Put(string name, decimal v)
+        public HtContent Put(string name, decimal v)
         {
             T("<div class=\"mdl-textfield mdl-js-textfield mdl-textfield--floating-label\">");
             T("<input class=\"mdl-textfield__input\" type=\"text\" id=\"").T(name).T("\">");
@@ -224,7 +256,7 @@ namespace Greatbone.Core
             return this;
         }
 
-        public MdlHtmlContent Put(string name, Number v)
+        public HtContent Put(string name, Number v)
         {
             T("<div class=\"mdl-textfield mdl-js-textfield mdl-textfield--floating-label\">");
             T("<input class=\"mdl-textfield__input\" type=\"text\" id=\"").T(name).T("\">");
@@ -234,17 +266,17 @@ namespace Greatbone.Core
             return this;
         }
 
-        public MdlHtmlContent Put(string name, DateTime v)
+        public HtContent Put(string name, DateTime v)
         {
             throw new NotImplementedException();
         }
 
-        public MdlHtmlContent Put(string name, char[] v)
+        public HtContent Put(string name, char[] v)
         {
             throw new NotImplementedException();
         }
 
-        public MdlHtmlContent Put(string name, string v, int max = 0)
+        public HtContent Put(string name, string v, int max = 0)
         {
             T("<div class=\"mdl-textfield mdl-js-textfield mdl-textfield--floating-label\">");
             T("<input class=\"mdl-textfield__input\" type=\"text\" id=\"").T(name).T("\"");
@@ -259,52 +291,52 @@ namespace Greatbone.Core
             return this;
         }
 
-        public MdlHtmlContent Put(string name, byte[] v)
+        public HtContent Put(string name, byte[] v)
         {
             throw new NotImplementedException();
         }
 
-        public MdlHtmlContent Put(string name, ArraySegment<byte> v)
+        public HtContent Put(string name, ArraySegment<byte> v)
         {
             throw new NotImplementedException();
         }
 
-        public MdlHtmlContent Put<V>(string name, V v, uint x = 0) where V : IPersist
+        public HtContent Put<V>(string name, V v, uint x = 0) where V : IPersist
         {
             throw new NotImplementedException();
         }
 
-        public MdlHtmlContent Put(string name, JObj v)
+        public HtContent Put(string name, JObj v)
         {
             throw new NotImplementedException();
         }
 
-        public MdlHtmlContent Put(string name, JArr v)
+        public HtContent Put(string name, JArr v)
         {
             throw new NotImplementedException();
         }
 
-        public MdlHtmlContent Put(string name, short[] v)
+        public HtContent Put(string name, short[] v)
         {
             throw new NotImplementedException();
         }
 
-        public MdlHtmlContent Put(string name, int[] v)
+        public HtContent Put(string name, int[] v)
         {
             throw new NotImplementedException();
         }
 
-        public MdlHtmlContent Put(string name, long[] v)
+        public HtContent Put(string name, long[] v)
         {
             throw new NotImplementedException();
         }
 
-        public MdlHtmlContent Put(string name, string[] v)
+        public HtContent Put(string name, string[] v)
         {
             throw new NotImplementedException();
         }
 
-        public MdlHtmlContent Put<V>(string name, V[] v, uint x = 0) where V : IPersist
+        public HtContent Put<V>(string name, V[] v, uint x = 0) where V : IPersist
         {
             throw new NotImplementedException();
         }

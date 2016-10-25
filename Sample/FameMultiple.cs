@@ -19,14 +19,15 @@ namespace Greatbone.Sample
         ///
         public override void @default(WebContext wc, string subscpt)
         {
+            string id = wc.Super;
             using (var dc = Service.NewDbContext())
             {
                 if (wc.IsGet)
                 {
-                    if (dc.QueryA("SELECT * FROM fames WHERE id = @1", p => p.Put(subscpt)))
+                    if (dc.QueryA("SELECT * FROM fames WHERE id = @1", p => p.Put(id)))
                     {
                         Fame obj = dc.ToObj<Fame>();
-                        wc.OutJ(200, obj);
+                        wc.SendJ(200, obj);
                     }
                     else
                     {
@@ -78,7 +79,7 @@ namespace Greatbone.Sample
                 {
                     byte[] v = dc.GotBytes();
                     StaticContent sta = new StaticContent() { Buffer = v };
-                    wc.Out(200, sta, true, 60000);
+                    wc.Send(200, sta, true, 60000);
                 }
                 else
                 {
@@ -134,7 +135,7 @@ namespace Greatbone.Sample
                 {
                     byte[] v = dc.GotBytes();
                     StaticContent sta = new StaticContent() { Buffer = v };
-                    wc.Out(200, sta, true, 60000);
+                    wc.Send(200, sta, true, 60000);
                 }
                 else
                 {

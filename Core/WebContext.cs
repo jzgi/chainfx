@@ -469,7 +469,7 @@ namespace Greatbone.Core
         // the content  is to be considered stale after its age is greater than the specified number of seconds.
         public int MaxAge { get; internal set; }
 
-        public void Out(int status, IContent cont, bool? pub = null, int maxage = 60000)
+        public void Send(int status, IContent cont, bool? pub = null, int maxage = 60000)
         {
             StatusCode = status;
             Content = cont;
@@ -477,21 +477,21 @@ namespace Greatbone.Core
             MaxAge = maxage;
         }
 
-        public void OutJ<P>(int status, P obj, uint x = 0, bool? pub = null, int maxage = 60000) where P : IPersist
+        public void SendJ<P>(int status, P obj, uint x = 0, bool? pub = null, int maxage = 60000) where P : IPersist
         {
-            OutJ(status, cont => cont.PutObj(obj, x), pub, maxage);
+            SendJ(status, cont => cont.PutObj(obj, x), pub, maxage);
         }
 
-        public void OutJ<P>(int status, P[] arr, uint x = 0, bool? pub = null, int maxage = 60000) where P : IPersist
+        public void SendJ<P>(int status, P[] arr, uint x = 0, bool? pub = null, int maxage = 60000) where P : IPersist
         {
-            OutJ(status, cont => cont.PutArr(arr, x), pub, maxage);
+            SendJ(status, cont => cont.PutArr(arr, x), pub, maxage);
         }
 
-        public void OutJ(int status, Action<JContent> a, bool? pub = null, int maxage = 60000)
+        public void SendJ(int status, Action<JContent> a, bool? pub = null, int maxage = 60000)
         {
             JContent cont = new JContent(8 * 1024);
             a?.Invoke(cont);
-            Out(status, cont, pub, maxage);
+            Send(status, cont, pub, maxage);
         }
 
         internal async Task SendAsync()

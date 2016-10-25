@@ -178,7 +178,7 @@ namespace Greatbone.Core
             IContent cont;
             if (wc.IsGet && cache.TryGetContent(targ, out cont)) // check if hit in the cache
             {
-                wc.Out(304, cont, true, 0);
+                wc.Send(304, cont, true, 0);
             }
             else // handling
             {

@@ -27,7 +27,7 @@ namespace Greatbone.Sample
                 if (dc.Query(TopSql, p => p.Put(20 * page)))
                 {
                     Post[] arr = dc.ToArr<Post>();
-                    wc.OutJ(200, arr);
+                    wc.SendJ(200, arr);
                 }
                 else
                 {
@@ -73,7 +73,7 @@ namespace Greatbone.Sample
             WebInterface iadm = GetInterface(typeof(IMgmt));
 
             // returh first UI
-            wc.OutPrimeHt(200, "管理功能", a =>
+            wc.SendMajorLayout(200, "管理功能", a =>
             {
                 // a.Form(,,,,, )
                 a.Buttons(iadm);

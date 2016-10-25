@@ -7,7 +7,7 @@ namespace Greatbone.Core
     {
         public string Caption { get; set; }
 
-        public Action<MdlHtmlContent> Panel { get; set; }
+        public Action<HtContent> Panel { get; set; }
 
     }
 

@@ -27,7 +27,7 @@ namespace Greatbone.Sample
                 if (dc.Query("SELECT * FROM fames ORDER BY rating LIMIT 20 OFFSET @1", p => p.Put(n * 20)))
                 {
                     Fame[] fames = dc.ToArr<Fame>();
-                    wc.OutJ(200, fames);
+                    wc.SendJ(200, fames);
                 }
                 else
                 {
@@ -55,7 +55,7 @@ namespace Greatbone.Sample
                     if (dc.Query("SELECT * FROM fames WHERE name LIKE '%" + name + "%'", null))
                     {
                         Fame[] fames = dc.ToArr<Fame>();
-                        wc.OutJ(200, fames);
+                        wc.SendJ(200, fames);
                     }
                     else
                     {
@@ -73,7 +73,7 @@ namespace Greatbone.Sample
                     if (dc.Query("SELECT * FROM fames WHERE @1 = ANY (skills)", p => p.Put(skill)))
                     {
                         Fame[] fames = dc.ToArr<Fame>();
-                        wc.OutJ(200, fames);
+                        wc.SendJ(200, fames);
                     }
                     else
                     {

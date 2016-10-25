@@ -29,7 +29,7 @@ namespace Greatbone.Sample
                 if (dc.QueryA(DefaultSql, p => p.Put(id)))
                 {
                     Post obj = dc.ToObj<Post>();
-                    wc.OutJ(200, obj);
+                    wc.SendJ(200, obj);
                 }
                 else
                 {
@@ -56,7 +56,7 @@ namespace Greatbone.Sample
                 {
                     byte[] v = dc.GotBytes();
                     StaticContent sta = new StaticContent() { Buffer = v };
-                    wc.Out(200, sta, true, 60000);
+                    wc.Send(200, sta, true, 60000);
                 }
                 else
                 {

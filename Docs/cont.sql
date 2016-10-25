@@ -1,7 +1,7 @@
 /*
 Navicat PGSQL Data Transfer
 
-Source Server         : Aliyun
+Source Server         : 60.205.104.239
 Source Server Version : 90503
 Source Host           : 60.205.104.239:5432
 Source Database       : cont
@@ -11,7 +11,7 @@ Target Server Type    : PGSQL
 Target Server Version : 90503
 File Encoding         : 65001
 
-Date: 2016-10-21 12:37:07
+Date: 2016-10-25 11:37:09
 */
 
 
@@ -74,8 +74,8 @@ CREATE TABLE "public"."notices" (
 "loc" varchar(10) COLLATE "default",
 "authorid" char(11) COLLATE "default",
 "author" varchar(20) COLLATE "default",
-"date" timestamp(0),
-"duedate" timestamp(0),
+"date" timestamp,
+"duedate" timestamp,
 "subject" text COLLATE "default",
 "tel" char(11) COLLATE "default",
 "text" text COLLATE "default",
@@ -111,7 +111,8 @@ CREATE TABLE "public"."posts" (
 "m5" bytea,
 "m6" bytea,
 "m7" bytea,
-"m8" bytea
+"m8" bytea,
+"likes" varbit[]
 )
 WITH (OIDS=FALSE)
 
