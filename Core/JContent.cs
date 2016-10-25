@@ -24,46 +24,6 @@ namespace Greatbone.Core
         public override string Type => "application/json";
 
 
-        //
-        // PUT
-        //
-
-        public void PutArr(Action a)
-        {
-            if (counts[level]++ > 0) Add(',');
-
-            counts[++level] = 0; // enter
-            Add('[');
-
-            if (a != null) a();
-
-            Add(']');
-            level--; // exit
-        }
-
-        public void PutArr<P>(P[] v, uint x = 0) where P : IPersist
-        {
-            Put(null, v, x);
-        }
-
-        public void PutObj(Action a)
-        {
-            if (counts[level]++ > 0) Add(',');
-
-            counts[++level] = 0; // enter
-            Add('{');
-
-            if (a != null) a();
-
-            Add('}');
-            level--; // exit
-        }
-
-        public void PutObj<P>(P v, uint x = 0) where P : IPersist
-        {
-            Put(null, v, x);
-        }
-
         void AddEsc(string v)
         {
             if (v != null)
@@ -97,6 +57,68 @@ namespace Greatbone.Core
                     }
                 }
             }
+        }
+
+        //
+        // PUT
+        //
+
+        public void PutArr(Action a)
+        {
+            if (counts[level]++ > 0) Add(',');
+
+            counts[++level] = 0; // enter
+            Add('[');
+
+            if (a != null) a();
+
+            Add(']');
+            level--; // exit
+        }
+
+        public void PutArr<P>(P[] arr, uint x = 0) where P : IPersist
+        {
+            Put(null, arr, x);
+        }
+
+        public void PutObj(Action a)
+        {
+            if (counts[level]++ > 0) Add(',');
+
+            counts[++level] = 0; // enter
+            Add('{');
+
+            if (a != null) a();
+
+            Add('}');
+            level--; // exit
+        }
+
+        public void PutObj<P>(P obj, uint x = 0) where P : IPersist
+        {
+            Put(null, obj, x);
+        }
+
+
+        //
+        // SINK
+        //
+
+        public JContent PutNull(string name)
+        {
+            if (counts[level]++ > 0) Add(',');
+
+            if (name != null)
+            {
+                Add('"');
+                Add(name);
+                Add('"');
+                Add(':');
+            }
+
+            Add("null");
+
+            return this;
         }
 
         public JContent Put(string name, bool v)
@@ -250,7 +272,7 @@ namespace Greatbone.Core
             return this;
         }
 
-        public JContent Put(string name, string v)
+        public JContent Put(string name, string v, int maxlen = 0)
         {
             if (counts[level]++ > 0) Add(',');
 
@@ -527,23 +549,6 @@ namespace Greatbone.Core
                 Add(']');
                 level--; // exit
             }
-            return this;
-        }
-
-        public JContent PutNull(string name)
-        {
-            if (counts[level]++ > 0) Add(',');
-
-            if (name != null)
-            {
-                Add('"');
-                Add(name);
-                Add('"');
-                Add(':');
-            }
-
-            Add("null");
-
             return this;
         }
 

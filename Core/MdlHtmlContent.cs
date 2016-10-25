@@ -10,6 +10,9 @@ namespace Greatbone.Core
     ///
     public abstract class MdlHtmlContent : HtmlContent<MdlHtmlContent>, ISink<MdlHtmlContent>
     {
+
+        int ctx;
+
         public MdlHtmlContent(int capacity) : base(capacity)
         {
         }
@@ -173,32 +176,62 @@ namespace Greatbone.Core
 
         public MdlHtmlContent Put(string name, bool v)
         {
-            throw new NotImplementedException();
+            T("<label for=\"").T(name).T("\" class=\"mdl-checkbox mdl-js-checkbox mdl-js-ripple-effect\">");
+            T("<input type=\"checkbox\" id=\"").T(name).T("\" class=\"mdl-checkbox__input\">");
+            T("<span class=\"mdl-checkbox__label\">").T(name).T("</span>");
+            T("</label>");
+
+            return this;
         }
 
         public MdlHtmlContent Put(string name, short v)
         {
-            throw new NotImplementedException();
+            T("<div class=\"mdl-textfield mdl-js-textfield mdl-textfield--floating-label\">");
+            T("<input class=\"mdl-textfield__input\" type=\"number\" id=\"").T(name).T("\" value=\""); Add(v); T("\">");
+            T("<label class=\"mdl-textfield__label\" for=\"").T(name).T("\">").T(name).T("</label>");
+            T("</div>");
+
+            return this;
         }
 
         public MdlHtmlContent Put(string name, int v)
         {
-            throw new NotImplementedException();
+            T("<div class=\"mdl-textfield mdl-js-textfield mdl-textfield--floating-label\">");
+            T("<input class=\"mdl-textfield__input\" type=\"number\" id=\"").T(name).T("\" value=\""); Add(v); T("\">");
+            T("<label class=\"mdl-textfield__label\" for=\"").T(name).T("\">").T(name).T("</label>");
+            T("</div>");
+
+            return this;
         }
 
         public MdlHtmlContent Put(string name, long v)
         {
-            throw new NotImplementedException();
+            T("<div class=\"mdl-textfield mdl-js-textfield mdl-textfield--floating-label\">");
+            T("<input class=\"mdl-textfield__input\" type=\"text\" id=\"").T(name).T("\">");
+            T("<label class=\"mdl-textfield__label\" for=\"").T(name).T("\">").T(name).T("</label>");
+            T("</div>");
+
+            return this;
         }
 
         public MdlHtmlContent Put(string name, decimal v)
         {
-            throw new NotImplementedException();
+            T("<div class=\"mdl-textfield mdl-js-textfield mdl-textfield--floating-label\">");
+            T("<input class=\"mdl-textfield__input\" type=\"text\" id=\"").T(name).T("\">");
+            T("<label class=\"mdl-textfield__label\" for=\"").T(name).T("\">").T(name).T("</label>");
+            T("</div>");
+
+            return this;
         }
 
         public MdlHtmlContent Put(string name, Number v)
         {
-            throw new NotImplementedException();
+            T("<div class=\"mdl-textfield mdl-js-textfield mdl-textfield--floating-label\">");
+            T("<input class=\"mdl-textfield__input\" type=\"text\" id=\"").T(name).T("\">");
+            T("<label class=\"mdl-textfield__label\" for=\"").T(name).T("\">").T(name).T("</label>");
+            T("</div>");
+
+            return this;
         }
 
         public MdlHtmlContent Put(string name, DateTime v)
@@ -211,9 +244,19 @@ namespace Greatbone.Core
             throw new NotImplementedException();
         }
 
-        public MdlHtmlContent Put(string name, string v)
+        public MdlHtmlContent Put(string name, string v, int max = 0)
         {
-            throw new NotImplementedException();
+            T("<div class=\"mdl-textfield mdl-js-textfield mdl-textfield--floating-label\">");
+            T("<input class=\"mdl-textfield__input\" type=\"text\" id=\"").T(name).T("\"");
+            if (max > 0)
+            {
+                T(" maxlength=\""); Add(max); T("\">");
+            }
+
+            T("<label class=\"mdl-textfield__label\" for=\"").T(name).T("\">").T(name).T("</label>");
+            T("</div>");
+
+            return this;
         }
 
         public MdlHtmlContent Put(string name, byte[] v)

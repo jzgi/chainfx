@@ -22,5 +22,10 @@ namespace Greatbone.Core
 
     }
 
+    public struct Ref 
+    {
+        
+    }
+
   
 }

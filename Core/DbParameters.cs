@@ -30,6 +30,17 @@ namespace Greatbone.Core
             index = 0;
         }
 
+
+        public DbParameters PutNull(string name)
+        {
+            if (name == null)
+            {
+                name = Defaults[index++];
+            }
+            coll.AddWithValue(name, DBNull.Value);
+            return this;
+        }
+
         public DbParameters Put(string name, bool v)
         {
             if (name == null)
@@ -134,7 +145,7 @@ namespace Greatbone.Core
             return this;
         }
 
-        public DbParameters Put(string name, string v)
+        public DbParameters Put(string name, string v, int maxlen = 0)
         {
             if (name == null)
             {
@@ -317,16 +328,6 @@ namespace Greatbone.Core
                     Value = strv
                 });
             }
-            return this;
-        }
-
-        public DbParameters PutNull(string name)
-        {
-            if (name == null)
-            {
-                name = Defaults[index++];
-            }
-            coll.AddWithValue(name, DBNull.Value);
             return this;
         }
 

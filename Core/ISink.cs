@@ -26,7 +26,7 @@ namespace Greatbone.Core
 
         R Put(string name, char[] v);
 
-        R Put(string name, string v);
+        R Put(string name, string v, int maxlen = 0);
 
         R Put(string name, byte[] v);
 

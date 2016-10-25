@@ -25,51 +25,33 @@ namespace Greatbone.Core
                 for (int i = 0; i < v.Length; i++)
                 {
                     char c = v[i];
-                    if (c < 0x80)
+                    if (c == '\"')
                     {
-                        if (c == '\"')
-                        {
-                            Add('\\'); Add('"');
-                        }
-                        else if (c == '\\')
-                        {
-                            Add('\\'); Add('\\');
-                        }
-                        else if (c == '\n')
-                        {
-                            Add('\\'); Add('n');
-                        }
-                        else if (c == '\r')
-                        {
-                            Add('\\'); Add('r');
-                        }
-                        else if (c == '\t')
-                        {
-                            Add('\\'); Add('t');
-                        }
-                        else
-                        {
-                            Add(c);
-                        }
+                        Add('\\'); Add('"');
                     }
-                    else if (c < 0x800)
+                    else if (c == '\\')
                     {
-                        // 2 char, 11 bits
-                        Add((char)(0xc0 | (c >> 6)));
-                        Add((char)(0x80 | (c & 0x3f)));
+                        Add('\\'); Add('\\');
+                    }
+                    else if (c == '\n')
+                    {
+                        Add('\\'); Add('n');
+                    }
+                    else if (c == '\r')
+                    {
+                        Add('\\'); Add('r');
+                    }
+                    else if (c == '\t')
+                    {
+                        Add('\\'); Add('t');
                     }
                     else
                     {
-                        // 3 char, 16 bits
-                        Add((char)(0xe0 | ((c >> 12))));
-                        Add((char)(0x80 | ((c >> 6) & 0x3f)));
-                        Add((char)(0x80 | (c & 0x3f)));
+                        Add(c);
                     }
                 }
             }
         }
-
-
 
         //
         // PUT
@@ -88,9 +70,9 @@ namespace Greatbone.Core
             level--;
         }
 
-        public void PutArr<P>(P[] v, uint x = 0) where P : IPersist
+        public void PutArr<P>(P[] arr, uint x = 0) where P : IPersist
         {
-            Put(null, v, x);
+            Put(null, arr, x);
         }
 
         public void PutObj(Action a)
@@ -106,15 +88,32 @@ namespace Greatbone.Core
             level--;
         }
 
-        public void PutObj<P>(P v, uint x = 0) where P : IPersist
+        public void PutObj<P>(P obj, uint x = 0) where P : IPersist
         {
-            Put(null, v, x);
+            Put(null, obj, x);
         }
 
 
         //
         // SINK
         //
+
+        public JText PutNull(string name)
+        {
+            if (counts[level]++ > 0) Add(',');
+
+            if (name != null)
+            {
+                Add('"');
+                Add(name);
+                Add('"');
+                Add(':');
+            }
+
+            Add("null");
+
+            return this;
+        }
 
         public JText Put(string name, bool v)
         {
@@ -258,7 +257,7 @@ namespace Greatbone.Core
             return this;
         }
 
-        public JText Put(string name, string v)
+        public JText Put(string name, string v, int maxlen = 0)
         {
             if (counts[level]++ > 0) Add(',');
 
@@ -532,23 +531,6 @@ namespace Greatbone.Core
                 Add(']');
                 level--; // exit
             }
-            return this;
-        }
-
-        public JText PutNull(string name)
-        {
-            if (counts[level]++ > 0) Add(',');
-
-            if (name != null)
-            {
-                Add('"');
-                Add(name);
-                Add('"');
-                Add(':');
-            }
-
-            Add("null");
-
             return this;
         }
 

@@ -204,7 +204,7 @@ namespace Greatbone.Core
             return this;
         }
 
-        public DbSql Put(string name, string v)
+        public DbSql Put(string name, string v, int maxlen = 0)
         {
             if (name != null)
             {
