@@ -11,6 +11,7 @@ namespace Greatbone.Sample
         internal string author;
         internal bool commentable;
         internal Comment[] comments;
+        internal string[] likes;
         internal int shared;
         internal string text;
         // indices of available m fields, such as "2384"
@@ -25,6 +26,7 @@ namespace Greatbone.Sample
             s.Got(nameof(author), ref author);
             s.Got(nameof(commentable), ref commentable);
             s.Got(nameof(comments), ref comments);
+            s.Got(nameof(likes), ref likes);
             s.Got(nameof(shared), ref shared);
             s.Got(nameof(text), ref text);
             s.Got(nameof(mset), ref mset);
@@ -51,6 +53,7 @@ namespace Greatbone.Sample
             s.Put(nameof(author), author);
             s.Put(nameof(commentable), commentable);
             s.Put(nameof(comments), comments);
+            s.Put(nameof(likes), likes);
             s.Put(nameof(shared), shared);
             s.Put(nameof(text), text);
             s.Put(nameof(mset), mset);

@@ -187,5 +187,31 @@ namespace Greatbone.Sample
             }
 
         }
+
+        ///
+        /// <summary>
+        /// Add current user into the likes array.
+        /// </summary>
+        /// <code>
+        /// POST /post/_id_/like
+        /// </code>
+        ///
+        public void like(WebContext wc, string subscpt)
+        {
+            string uid = wc.Token.Key;
+            int id = wc.Super.ToInt();
+            using (var dc = Service.NewDbContext())
+            {
+                if (dc.Execute("UPDATE posts SET likes = likes || @1 WHERE id = @2", p => p.Put(uid).Put(id)) > 0)
+                {
+                    wc.StatusCode = 200;
+                }
+                else
+                {
+                    wc.StatusCode = 404;
+                }
+            }
+
+        }
     }
 }
