@@ -26,19 +26,19 @@ namespace Greatbone.Core
 
         public int Count => count;
 
-        internal void Add(JMember elem)
+        internal void Add(JMember e)
         {
             int len = elements.Length;
             if (count >= len)
             {
-                JMember[] @new = new JMember[len * 4];
-                Array.Copy(elements, @new, len);
-                elements = @new;
+                JMember[] all = new JMember[len * 4];
+                Array.Copy(elements, all, len);
+                elements = all;
             }
-            elements[count++] = elem;
+            elements[count++] = e;
         }
 
-        internal void Save<R>(ISink<R> sk) where R : ISink<R>
+        internal void Save<R>(ISink<R> snk) where R : ISink<R>
         {
             for (int i = 0; i < count; i++)
             {
@@ -46,31 +46,31 @@ namespace Greatbone.Core
                 VT vt = elem.vt;
                 if (vt == VT.Array)
                 {
-                    sk.Put((JArr)elem);
+                    snk.Put((JArr)elem);
                 }
                 else if (vt == VT.Object)
                 {
-                    sk.Put((JObj)elem);
+                    snk.Put((JObj)elem);
                 }
                 else if (vt == VT.String)
                 {
-                    sk.Put((string)elem);
+                    snk.Put((string)elem);
                 }
                 else if (vt == VT.Number)
                 {
-                    sk.Put((Number)elem);
+                    snk.Put((Number)elem);
                 }
                 else if (vt == VT.True)
                 {
-                    sk.Put(true);
+                    snk.Put(true);
                 }
                 else if (vt == VT.False)
                 {
-                    sk.Put(false);
+                    snk.Put(false);
                 }
                 else if (vt == VT.Null)
                 {
-                    sk.PutNull();
+                    snk.PutNull();
                 }
             }
         }

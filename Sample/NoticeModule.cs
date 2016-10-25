@@ -4,7 +4,7 @@ using Greatbone.Core;
 namespace Greatbone.Sample
 {
 
-    public class NoticeModule : WebModule, IMgmt
+    public class NoticeModule : AbstModule, IMgmt
     {
         public NoticeModule(WebArg arg) : base(arg)
         {

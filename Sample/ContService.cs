@@ -5,7 +5,7 @@ namespace Greatbone.Sample
     /// <summary>
     /// The content service controller.
     /// </summary>
-    public class ContService : AbsService
+    public class ContService : AbstService
     {
         public ContService(WebConfig cfg) : base(cfg)
         {

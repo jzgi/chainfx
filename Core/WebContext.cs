@@ -477,6 +477,14 @@ namespace Greatbone.Core
             MaxAge = maxage;
         }
 
+        public void Send(int status, string text, bool? pub = null, int maxage = 60000)
+        {
+            StatusCode = status;
+            Content = new StrContent(text);
+            Pub = pub;
+            MaxAge = maxage;
+        }
+
         public void SendJ<P>(int status, P obj, uint x = 0, bool? pub = null, int maxage = 60000) where P : IPersist
         {
             SendJ(status, cont => cont.PutObj(obj, x), pub, maxage);

@@ -6,7 +6,7 @@ namespace Greatbone.Sample
 {
 	/// <summary>The chat servoce.</summary>
 	///
-	public class ChatService : AbsService
+	public class ChatService : AbstService
 	{
 		// the ongoing chat sessions, keyed by receiver's ID
 		private ConcurrentDictionary<string, Wrap> chats = new ConcurrentDictionary<string, Wrap>();

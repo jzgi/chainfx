@@ -8,7 +8,7 @@ namespace Greatbone.Sample
     /// The website service controller.
     /// </summary>
     ///
-    public class WwwService : AbsService
+    public class WwwService : AbstService
     {
         public WwwService(WebConfig cfg) : base(cfg)
         {

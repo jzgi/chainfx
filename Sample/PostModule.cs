@@ -3,7 +3,7 @@ using System;
 
 namespace Greatbone.Sample
 {
-    public class PostModule : WebModule, IMgmt
+    public class PostModule : AbstModule, IMgmt
     {
         public PostModule(WebArg arg) : base(arg)
         {

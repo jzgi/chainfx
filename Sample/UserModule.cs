@@ -9,7 +9,7 @@ namespace Greatbone.Sample
     /// The user module controller.
     /// </summary>
     ///
-    public class UserModule : WebModule, IMgmt
+    public class UserModule : AbstModule, IMgmt
     {
         ConcurrentDictionary<string, string> vcodes = new ConcurrentDictionary<string, string>(Environment.ProcessorCount * 4, 1024);
 

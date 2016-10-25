@@ -5,7 +5,7 @@ namespace Greatbone.Sample
     /// <summary>
     /// The directory service controller.
     /// </summary>
-    public class DirService : AbsService
+    public class DirService : AbstService
     {
         public DirService(WebConfig cfg) : base(cfg)
         {

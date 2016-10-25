@@ -6,11 +6,15 @@ namespace Greatbone.Sample
     ///
     /// /brand/
     ///
-    public class BrandModule : WebModule, IMgmt
+    public class BrandModule : AbstModule, IMgmt
     {
         public BrandModule(WebArg arg) : base(arg)
         {
             SetMultiple<BrandMultiple>();
+        }
+
+        public override void @default(WebContext wc, string subscpt)
+        {
         }
 
         //
