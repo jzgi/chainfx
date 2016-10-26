@@ -14,11 +14,11 @@ namespace Greatbone.Core
         // UTF-8 string builder
         readonly Str str;
 
-        public JTextParse(string buffer) : this(buffer, buffer.Length) { }
+        public JTextParse(string str) : this(str, str.Length) { }
 
-        public JTextParse(string buffer, int count)
+        public JTextParse(string str, int count)
         {
-            this.buffer = buffer;
+            this.buffer = str;
             this.count = count;
             this.str = new Str();
         }

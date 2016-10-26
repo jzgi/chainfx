@@ -1,9 +1,9 @@
 namespace Greatbone.Core
 {
-    public class StrContent : DynamicContent
+    public class TextContent : DynamicContent
     {
 
-        public StrContent(string text) : base(1024)
+        public TextContent(string text) : base(1024)
         {
             int len = text.Length;
             for (int i = 0; i < len; i++)
@@ -12,7 +12,7 @@ namespace Greatbone.Core
             }
         }
 
-        public override string Type { get; }
+        public override string Type => "text/plain";
 
     }
 

@@ -40,12 +40,16 @@ namespace Greatbone.Sample
             if (h != null)
             {
                 string v = (string)h;
-                v.StartsWith("Bearer "); // Bearer scheme
-                JTextParse parse = new JTextParse(Token.Decrypt(v.Substring(7)));
+                if (!v.StartsWith("Bearer ")) // Bearer scheme
+                {
+                    return false;
+                }
+
+                string tokstr = v.Substring(7);
+                string plain = Token.Decrypt(tokstr, 12, 12);
+                JTextParse parse = new JTextParse(plain);
                 JObj jo = (JObj)parse.Parse();
-                Token tok = new Token();
-                tok.Load(jo);
-                wc.Token = tok;
+                wc.Token = jo.ToObj<Token>();
 
                 return true;
             }

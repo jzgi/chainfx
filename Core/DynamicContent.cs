@@ -388,5 +388,10 @@ namespace Greatbone.Core
             Add(SEX[sec]);
         }
 
+        public void Replace(byte[] buffer, int count)
+        {
+            this.buffer = buffer;
+            this.count = count;
+        }
     }
 }

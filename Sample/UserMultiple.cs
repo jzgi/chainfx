@@ -35,11 +35,10 @@ namespace Greatbone.Sample
                     string c16 = StrUtility.C16(password);
                     if (c16.Equals(obj.credential))
                     {
-                        JText t = new JText();
-                        obj.Save(t);
-                        string tok = Token.Encrypt(t.ToString());
-
-                        wc.Send(200, tok);
+                        JContent cont = new JContent(256);
+                        obj.Save(cont);
+                        Token.Encrypt(cont, 12, 12);
+                        wc.Send(200, cont);
                     }
                     else
                     {

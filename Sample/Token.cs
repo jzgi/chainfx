@@ -1,4 +1,5 @@
-﻿using Greatbone.Core;
+﻿using System;
+using Greatbone.Core;
 
 namespace Greatbone.Sample
 {
@@ -47,26 +48,46 @@ namespace Greatbone.Sample
         static readonly char[] HEX = { '0', '1', '2', '3', '4', '5', '6', '7', '8', '9', 'a', 'b', 'c', 'd', 'e', 'f' };
 
 
-        public static string Encrypt(string json)
+        public static void Encrypt(DynamicContent cont, int mask, int order)
         {
-            int len = json.Length;
-            char[] buf = new char[len * 2];
-            for (int i = 0, j = 0; i < len; i++)
+            int[] masks = { mask >> 24 & 0xff, mask >> 16 & 0xff, mask >> 8 & 0xff, mask & 0xff };
+            byte[] buffer = cont.Buffer;
+            int len = cont.Length;
+            byte[] buf = new byte[len * 2]; // the target bytebuf
+            int p = 0;
+            for (int i = 0; i < len; i++)
             {
-                uint v = json[i];
-                buf[j++] = HEX[(v >> 8) & 0x0f];
-                buf[j++] = HEX[(v) & 0x0f];
+                // masking
+                int b = buffer[i] ^ masks[i % 4];
+
+                //transform
+                buf[p++] = (byte)HEX[(b >> 8) & 0x0f];
+                buf[p++] = (byte)HEX[(b) & 0x0f];
+
+                // reordering
+
             }
-            return new string(buf);
+
+            // replace
+            cont.Replace(buf, p);
         }
 
-        public static string Decrypt(string tok)
+
+        public static string Decrypt(string tokstr, int mask, int order)
         {
-            int len = tok.Length / 2;
-            char[] buf = new char[len];
-            for (int i = 0, j = 0; i < len; i++)
+            int[] masks = { mask >> 24 & 0xff, mask >> 16 & 0xff, mask >> 8 & 0xff, mask & 0xff };
+            int len = tokstr.Length / 2;
+            char[] buf = new char[len]; // the target charbuf
+            int p = 0;
+            for (int i = 0; i < len; i++)
             {
-                buf[i] = (char)(V(tok[j++]) << 8 | V(tok[j++]));
+                // reordering
+
+                // transform
+                int b = V(tokstr[p++]) << 8 | V(tokstr[p++]);
+
+                // masking
+                buf[i] = (char)(b ^ masks[i % 4]);
             }
             return new string(buf);
         }

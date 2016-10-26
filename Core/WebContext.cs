@@ -477,10 +477,10 @@ namespace Greatbone.Core
             MaxAge = maxage;
         }
 
-        public void Send(int status, string text, bool? pub = null, int maxage = 60000)
+        public void SendText(int status, string text, bool? pub = null, int maxage = 60000)
         {
             StatusCode = status;
-            Content = new StrContent(text);
+            Content = new TextContent(text);
             Pub = pub;
             MaxAge = maxage;
         }
