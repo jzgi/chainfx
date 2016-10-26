@@ -202,13 +202,13 @@ namespace Greatbone.Sample
             int id = wc.Super.ToInt();
             using (var dc = Service.NewDbContext())
             {
-                if (dc.Execute("UPDATE posts SET likes = likes || @1 WHERE id = @2", p => p.Put(uid).Put(id)) > 0)
+                if (dc.Execute("UPDATE posts SET likes = array_prepend(@1, likes) WHERE id = @2 AND array_position(likes, @1) ISNULL", p => p.Put(uid).Put(id)) > 0)
                 {
-                    wc.StatusCode = 200;
+                    wc.StatusCode = 200; // ok
                 }
                 else
                 {
-                    wc.StatusCode = 404;
+                    wc.StatusCode = 409; // conflict
                 }
             }
 

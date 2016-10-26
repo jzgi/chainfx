@@ -138,7 +138,7 @@ namespace Greatbone.Core
             {
                 name = Defaults[index++];
             }
-            coll.Add(new NpgsqlParameter(name, NpgsqlDbType.Varchar, v.Length)
+            coll.Add(new NpgsqlParameter(name, NpgsqlDbType.Char, v.Length)
             {
                 Value = v
             });
@@ -151,7 +151,7 @@ namespace Greatbone.Core
             {
                 name = Defaults[index++];
             }
-            coll.Add(new NpgsqlParameter(name, NpgsqlDbType.Text)
+            coll.Add(new NpgsqlParameter(name, (maxlen <= 20) ? NpgsqlDbType.Varchar : NpgsqlDbType.Text)
             {
                 Value = (v != null) ? (object)v : DBNull.Value
             });
