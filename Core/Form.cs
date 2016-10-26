@@ -18,10 +18,8 @@ namespace Greatbone.Core
 
         internal void Add(string name, string v)
         {
-            Pair e = new Pair()
-            {
-            };
-            pairs.Add(e);
+            Pair pair = new Pair(name, v);
+            pairs.Add(pair);
         }
 
         public int Count => pairs.Count;
@@ -137,5 +135,5 @@ namespace Greatbone.Core
             throw new NotImplementedException();
         }
     }
-    
+
 }

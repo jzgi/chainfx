@@ -84,6 +84,8 @@ namespace Greatbone.Sample
         [Button(Dialog = true)]
         public void srch(WebContext wc, string subscpt)
         {
+            Form frm = wc.Form;
+            
             string word = null;
             if (wc.Got(nameof(word), ref word))
             {

@@ -4,9 +4,14 @@ using System;
 namespace Greatbone.Core
 {
 
+    ///
+    /// <summary>
+    /// Parse application/x-www-form-urlencoded octets.
+    /// </summary>
+    ///
     public struct FormParse
     {
-        static readonly JException FormatEx = new JException("form Format");
+        static readonly ParseException FormatEx = new ParseException("wrong form Format");
 
         readonly byte[] buffer;
 
@@ -24,37 +29,89 @@ namespace Greatbone.Core
 
         public Form Parse()
         {
-            return null;
-        }
-
-        byte[] ParseBytes(int start)
-        {
-            return null;
-        }
-
-        bool ParseNull(int start)
-        {
-            int p = start;
-            if (buffer[++p] == 'u' && buffer[++p] == 'l' && buffer[++p] == 'l')
+            Form frm = new Form();
+            int p = -1;
+            for (;;)
             {
-                return true;
+                if (p >= count)
+                {
+                    return frm;
+                }
+                // name value
+                string name = ParseName(ref p);
+                string value = ParseValue(ref p);
+
+                frm.Add(name, value);
             }
-            return false;
         }
 
-        Number ParseNumber(int start)
+        string ParseName(ref int pos)
         {
-            return default(Number);
-        }
-
-        bool ParseBool(int start)
-        {
-            int p = start;
-            if (buffer[++p] == 'u' && buffer[++p] == 'l' && buffer[++p] == 'l')
+            str.Clear();
+            int p = pos;
+            for (;;)
             {
-                return true;
+                byte b = buffer[++p];
+                if (p >= count) throw FormatEx;
+                if (b == '=')
+                {
+                    pos = p;
+                    return str.ToString();
+                }
+                else
+                {
+                    str.Add(b);
+                }
             }
-            return false;
         }
+
+        string ParseValue(ref int pos)
+        {
+            str.Clear();
+            int p = pos;
+            for (;;)
+            {
+                byte b = buffer[++p];
+                if (p >= count || b == '&')
+                {
+                    pos = p;
+                    return str.ToString();
+                }
+                else if (b == '+')
+                {
+                    str.Add((byte)' ');
+                }
+                else if (b == '%') // percent-encoding
+                {
+                    char x = (char)buffer[++p];
+                    if (p >= count) throw FormatEx;
+                    char y = (char)buffer[++p];
+                    if (p >= count) throw FormatEx;
+
+                    str.Add((byte)(Dv(x) << 4 | Dv(y)));
+                }
+                else
+                {
+                    str.Add(b);
+                }
+            }
+        }
+
+        // return digit value
+        static int Dv(char h)
+        {
+            int v = h - '0';
+            if (v >= 0 && v <= 9)
+            {
+                return v;
+            }
+            else
+            {
+                v = h - 'a';
+                if (v >= 0 && v <= 5) return 10 + v;
+            }
+            return 0;
+        }
+
     }
 }

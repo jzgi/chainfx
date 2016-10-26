@@ -13,6 +13,38 @@ namespace Greatbone.Core
 
         public string Key => key;
 
+        internal Pair(string key, string v)
+        {
+            this.key = key;
+            values = v;
+            count = 1;
+        }
+
+        internal void Add(string v)
+        {
+            if (count == 1) // a single string
+            {
+                string old = (string)values;
+                string[] arr = new string[8];
+                arr[0] = old;
+                arr[1] = v;
+                count = 2;
+            }
+            else
+            {
+                // ensure capacity
+                string[] arr = (string[])values;
+                int len = arr.Length;
+                if (count >= len)
+                {
+                    string[] alloc = new string[len * 4];
+                    Array.Copy(arr, 0, alloc, 0, len);
+                    values = arr = alloc;
+                }
+                arr[count++] = v;
+            }
+        }
+
         public string String
         {
             get
@@ -62,38 +94,6 @@ namespace Greatbone.Core
                     }
                 }
                 return null;
-            }
-        }
-
-        internal Pair(string key, string v)
-        {
-            this.key = key;
-            values = v;
-            count = 1;
-        }
-
-        internal void Add(string v)
-        {
-            if (count == 1) // a single string
-            {
-                string old = (string)values;
-                string[] arr = new string[8];
-                arr[0] = old;
-                arr[1] = v;
-                count = 2;
-            }
-            else
-            {
-                // ensure capacity
-                string[] arr = (string[])values;
-                int len = arr.Length;
-                if (count >= len)
-                {
-                    string[] alloc = new string[len * 4];
-                    Array.Copy(arr, 0, alloc, 0, len);
-                    values = arr = alloc;
-                }
-                arr[count++] = v;
             }
         }
 

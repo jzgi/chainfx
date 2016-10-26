@@ -229,7 +229,7 @@ namespace Greatbone.Core
                 // reordering
 
                 // transform to byte
-                int b = (byte)(V(tokstr[p++]) << 4 | V(tokstr[p++]));
+                int b = (byte)(Dv(tokstr[p++]) << 4 | Dv(tokstr[p++]));
 
                 // masking
                 str.Add((byte)(b ^ masks[i % 4]));
@@ -237,7 +237,8 @@ namespace Greatbone.Core
             return str.ToString();
         }
 
-        static int V(char h)
+        // return digit value
+        static int Dv(char h)
         {
             int v = h - '0';
             if (v >= 0 && v <= 9)

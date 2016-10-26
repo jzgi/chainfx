@@ -5,7 +5,7 @@ namespace Greatbone.Core
 
     public struct JTextParse
     {
-        static readonly JException FormatEx = new JException("invalid Format");
+        static readonly ParseException FormatEx = new ParseException("wrong text json Format");
 
         readonly string buffer;
 
