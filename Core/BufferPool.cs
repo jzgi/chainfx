@@ -12,11 +12,11 @@ namespace Greatbone.Core
 
         static readonly Queue[] Queues =
        {
-            new Queue(1024 * 8, Cores * 64),
-            new Queue(1024 * 32, Cores * 32),
-            new Queue(1024 * 128, Cores * 16),
-            new Queue(1024 * 512, Cores * 8),
-            new Queue(1024 * 2048, Cores * 4),
+            new Queue(1024 * 4, Cores * 64),
+            new Queue(1024 * 16, Cores * 32),
+            new Queue(1024 * 64, Cores * 16),
+            new Queue(1024 * 256, Cores * 8),
+            new Queue(1024 * 1024, Cores * 4),
         };
 
         static int Max = Queues[Queues.Length - 1].Spec;

@@ -3,9 +3,11 @@ using System;
 namespace Greatbone.Core
 {
 
+    ///
     /// <summary>
-    /// A character string builder that supports UTF-8 decoding.
+    /// A reusable string builder that supports UTF-8 decoding.
     /// </summary>
+    ///
     class Str
     {
         const int InitialCapacity = 256;

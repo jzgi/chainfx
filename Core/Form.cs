@@ -7,8 +7,42 @@ namespace Greatbone.Core
     /// </summary>
     public class Form : ISource
     {
+        const int InitialCapacity = 16;
+
+        readonly Roll<Pair> pairs;
+
+        public Form(int capacity = InitialCapacity)
+        {
+            pairs = new Roll<Pair>(16);
+        }
+
+        internal void Add(string name, string v)
+        {
+            Pair e = new Pair()
+            {
+            };
+            pairs.Add(e);
+        }
+
+        public int Count => pairs.Count;
+
+        public Pair this[int index] => pairs[index];
+
+        public Pair this[string name] => pairs[name];
+
+
+        //
+        // SOURCE
+        //
+
         public bool Got(string name, ref bool v)
         {
+            Pair p;
+            if (pairs.TryGet(name, out p))
+            {
+                v = false;
+                return false;
+            }
             throw new NotImplementedException();
         }
 
@@ -103,4 +137,5 @@ namespace Greatbone.Core
             throw new NotImplementedException();
         }
     }
+    
 }
