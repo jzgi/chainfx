@@ -393,5 +393,30 @@ namespace Greatbone.Core
             this.buffer = buffer;
             this.count = count;
         }
+
+
+        public void Encrypt(int mask, int order)
+        {
+            int[] masks = { (mask >> 24) & 0xff, (mask >> 16) & 0xff, (mask >> 8) & 0xff, mask & 0xff };
+            byte[] buf = new byte[count * 2]; // the target bytebuf
+            int p = 0;
+            for (int i = 0; i < count; i++)
+            {
+                // masking
+                int b = buffer[i] ^ masks[i % 4];
+
+                //transform
+                buf[p++] = (byte)HEX[(b >> 4) & 0x0f];
+                buf[p++] = (byte)HEX[(b) & 0x0f];
+
+                // reordering
+
+            }
+
+            // replace
+            buffer = buf;
+            count = p;
+        }
+
     }
 }

@@ -36,8 +36,8 @@ namespace Greatbone.Sample
                     if (c16.Equals(obj.credential))
                     {
                         JContent cont = new JContent(256);
-                        obj.Save(cont);
-                        Token.Encrypt(cont, 12, 12);
+                        cont.PutObj(obj);
+                        cont.Encrypt(0x4a78be76, 0x1f0335e2);
                         wc.Send(200, cont);
                     }
                     else

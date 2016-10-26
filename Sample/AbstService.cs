@@ -46,12 +46,18 @@ namespace Greatbone.Sample
                 }
 
                 string tokstr = v.Substring(7);
-                string plain = Token.Decrypt(tokstr, 12, 12);
+                string plain = StrUtility.Decrypt(tokstr, 0x4a78be76, 0x1f0335e2);
                 JTextParse parse = new JTextParse(plain);
-                JObj jo = (JObj)parse.Parse();
-                wc.Token = jo.ToObj<Token>();
+                try
+                {
+                    JObj jo = (JObj)parse.Parse();
+                    wc.Token = jo.ToObj<Token>();
+                    return true;
+                }
+                catch
+                {
 
-                return true;
+                }
             }
             return false;
         }

@@ -218,6 +218,40 @@ namespace Greatbone.Core
         }
 
 
+        public static string Decrypt(string tokstr, int mask, int order)
+        {
+            int[] masks = { (mask >> 24) & 0xff, (mask >> 16) & 0xff, (mask >> 8) & 0xff, mask & 0xff };
+            int len = tokstr.Length / 2;
+            Str str = new Str();
+            int p = 0;
+            for (int i = 0; i < len; i++)
+            {
+                // reordering
+
+                // transform to byte
+                int b = (byte)(V(tokstr[p++]) << 4 | V(tokstr[p++]));
+
+                // masking
+                str.Add((byte)(b ^ masks[i % 4]));
+            }
+            return str.ToString();
+        }
+
+        static int V(char h)
+        {
+            int v = h - '0';
+            if (v <= 9)
+            {
+                return v;
+            }
+            else
+            {
+                v = h - 'a';
+                if (v <= 6) return v + 10;
+            }
+            return 0;
+        }
+
         //
         // CONVERTION
         //
