@@ -81,7 +81,7 @@ namespace Greatbone.Core
                 {
                     str.Add((byte)' ');
                 }
-                else if (b == '%') // percent-encoding
+                else if (b == '%') // percent-encoding %xy
                 {
                     char x = (char)buffer[++p];
                     if (p >= count) throw FormatEx;

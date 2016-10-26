@@ -4,7 +4,7 @@ namespace Greatbone.Core
 {
     public struct Pair : IKeyed
     {
-        string key;
+        readonly string key;
 
         // string or string array
         object values;
@@ -45,57 +45,7 @@ namespace Greatbone.Core
             }
         }
 
-        public string String
-        {
-            get
-            {
-                if (count == 1) return (string)values;
-                return ((string[])values)[0];
-            }
-        }
-
-        public string[] Strings
-        {
-            get
-            {
-                if (count == 1) return new string[] { (string)values };
-                return (string[])values;
-            }
-        }
-
-        public int Int
-        {
-            get
-            {
-                if (count == 1)
-                {
-                    string str = (string)values;
-                    int v;
-                    if (int.TryParse(str, out v))
-                    {
-                        return v;
-                    }
-                }
-                return 0;
-            }
-        }
-
-        public int[] Ints
-        {
-            get
-            {
-                if (count == 1)
-                {
-                    string str = (string)values;
-                    int v;
-                    if (int.TryParse(str, out v))
-                    {
-                        return new int[] { v };
-                    }
-                }
-                return null;
-            }
-        }
+        string First => (count == 1) ? (string)values : ((string[])values)[0];
 
         //
         // CONVERSION
@@ -103,26 +53,67 @@ namespace Greatbone.Core
 
         public static implicit operator bool(Pair v)
         {
+            string str = v.First;
+            if (str != null)
+            {
+                return "true".Equals(str) || "1".Equals(str) || "on".Equals(str);
+            }
             return false;
         }
 
         public static implicit operator short(Pair v)
         {
+            string str = v.First;
+            if (str != null)
+            {
+                short n;
+                if (short.TryParse(str, out n))
+                {
+                    return n;
+                }
+            }
             return 0;
         }
 
         public static implicit operator int(Pair v)
         {
-            return v.Int;
+            string str = v.First;
+            if (str != null)
+            {
+                int n;
+                if (int.TryParse(str, out n))
+                {
+                    return n;
+                }
+            }
+            return 0;
         }
 
         public static implicit operator long(Pair v)
         {
+            string str = v.First;
+            if (str != null)
+            {
+                long n;
+                if (long.TryParse(str, out n))
+                {
+                    return n;
+                }
+            }
             return 0;
         }
 
         public static implicit operator decimal(Pair v)
         {
+            string str = v.First;
+            if (str != null)
+            {
+                decimal n;
+                if (decimal.TryParse(str, out n))
+                {
+                    return n;
+                }
+            }
             return 0;
         }
 
@@ -149,6 +140,96 @@ namespace Greatbone.Core
         public static implicit operator byte[] (Pair v)
         {
             return null;
+        }
+
+        public static implicit operator short[] (Pair v)
+        {
+            int len = v.count;
+            if (len == 0) return null;
+            if (len == 1)
+            {
+                string str = (string)v.values;
+                short n;
+                return new short[] { short.TryParse(str, out n) ? n : (short)0 };
+            }
+            else
+            {
+                string[] strs = (string[])v.values;
+                short[] arr = new short[len];
+                for (int i = 0; i < len; i++)
+                {
+                    short n;
+                    arr[i] = short.TryParse(strs[i], out n) ? n : (short)0;
+                }
+                return arr;
+            }
+        }
+
+        public static implicit operator int[] (Pair v)
+        {
+            int len = v.count;
+            if (len == 0) return null;
+            if (len == 1)
+            {
+                string str = (string)v.values;
+                int n;
+                return new int[] { int.TryParse(str, out n) ? n : 0 };
+            }
+            else
+            {
+                string[] strs = (string[])v.values;
+                int[] arr = new int[len];
+                for (int i = 0; i < len; i++)
+                {
+                    int n;
+                    arr[i] = int.TryParse(strs[i], out n) ? n : 0;
+                }
+                return arr;
+            }
+        }
+
+        public static implicit operator long[] (Pair v)
+        {
+            int len = v.count;
+            if (len == 0) return null;
+            if (len == 1)
+            {
+                string str = (string)v.values;
+                long n;
+                return new long[] { long.TryParse(str, out n) ? n : 0 };
+            }
+            else
+            {
+                string[] strs = (string[])v.values;
+                long[] arr = new long[len];
+                for (int i = 0; i < len; i++)
+                {
+                    long n;
+                    arr[i] = long.TryParse(strs[i], out n) ? n : 0;
+                }
+                return arr;
+            }
+        }
+
+        public static implicit operator string[] (Pair v)
+        {
+            int len = v.count;
+            if (len == 0) return null;
+            if (len == 1)
+            {
+                string str = (string)v.values;
+                return new string[] { str };
+            }
+            else
+            {
+                string[] strs = (string[])v.values;
+                string[] arr = new string[len];
+                for (int i = 0; i < len; i++)
+                {
+                    arr[i] = strs[i];
+                }
+                return arr;
+            }
         }
 
     }

@@ -2,9 +2,12 @@ using System;
 
 namespace Greatbone.Core
 {
+
+    ///
     /// <summary>
-    /// A form object model parsed from www-form-urlencoded.
+    /// A form object model parsed from x-www-form-urlencoded.
     /// </summary>
+    ///
     public class Form : ISource
     {
         const int InitialCapacity = 16;
@@ -35,33 +38,57 @@ namespace Greatbone.Core
 
         public bool Got(string name, ref bool v)
         {
-            Pair p;
-            if (pairs.TryGet(name, out p))
+            Pair pr;
+            if (pairs.TryGet(name, out pr))
             {
-                v = false;
-                return false;
+                v = (bool)pr;
+                return true;
             }
-            throw new NotImplementedException();
+            return false;
         }
 
         public bool Got(string name, ref short v)
         {
-            throw new NotImplementedException();
+            Pair pr;
+            if (pairs.TryGet(name, out pr))
+            {
+                v = (short)pr;
+                return true;
+            }
+            return false;
         }
 
         public bool Got(string name, ref int v)
         {
-            throw new NotImplementedException();
+            Pair pr;
+            if (pairs.TryGet(name, out pr))
+            {
+                v = (int)pr;
+                return true;
+            }
+            return false;
         }
 
         public bool Got(string name, ref long v)
         {
-            throw new NotImplementedException();
+            Pair pr;
+            if (pairs.TryGet(name, out pr))
+            {
+                v = (long)pr;
+                return true;
+            }
+            return false;
         }
 
         public bool Got(string name, ref decimal v)
         {
-            throw new NotImplementedException();
+            Pair pr;
+            if (pairs.TryGet(name, out pr))
+            {
+                v = (decimal)pr;
+                return true;
+            }
+            return false;
         }
 
         public bool Got(string name, ref Number v)
@@ -76,7 +103,13 @@ namespace Greatbone.Core
 
         public bool Got(string name, ref string v)
         {
-            throw new NotImplementedException();
+            Pair pr;
+            if (pairs.TryGet(name, out pr))
+            {
+                v = (string)pr;
+                return true;
+            }
+            return false;
         }
 
         public bool Got(string name, ref byte[] v)
@@ -94,24 +127,48 @@ namespace Greatbone.Core
             throw new NotImplementedException();
         }
 
-        public bool Got(string name, ref int[] v)
+        public bool Got(string name, ref short[] v)
         {
-            throw new NotImplementedException();
+            Pair pr;
+            if (pairs.TryGet(name, out pr))
+            {
+                v = (short[])pr;
+                return true;
+            }
+            return false;
         }
 
-        public bool Got(string name, ref string[] v)
+        public bool Got(string name, ref int[] v)
         {
-            throw new NotImplementedException();
+            Pair pr;
+            if (pairs.TryGet(name, out pr))
+            {
+                v = (int[])pr;
+                return true;
+            }
+            return false;
         }
 
         public bool Got(string name, ref long[] v)
         {
-            throw new NotImplementedException();
+            Pair pr;
+            if (pairs.TryGet(name, out pr))
+            {
+                v = (long[])pr;
+                return true;
+            }
+            return false;
         }
 
-        public bool Got(string name, ref short[] v)
+        public bool Got(string name, ref string[] v)
         {
-            throw new NotImplementedException();
+            Pair pr;
+            if (pairs.TryGet(name, out pr))
+            {
+                v = (string[])pr;
+                return true;
+            }
+            return false;
         }
 
         public bool Got(string name, ref JObj v)
