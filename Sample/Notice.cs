@@ -14,8 +14,11 @@ namespace Greatbone.Sample
         internal string subject;
         internal string tel;
         internal string text;
-        internal int reads;
+        internal int read;
+        internal int shared;
         internal App[] apps;
+        internal bool commentable;
+        internal Comment[] comments;
 
 
         public void Load(ISource s, uint x = 0)
@@ -29,8 +32,11 @@ namespace Greatbone.Sample
             s.Got(nameof(subject), ref subject);
             s.Got(nameof(tel), ref tel);
             s.Got(nameof(text), ref text);
-            s.Got(nameof(reads), ref reads);
+            s.Got(nameof(read), ref read);
+            s.Got(nameof(shared), ref shared);
             s.Got(nameof(apps), ref apps);
+            s.Got(nameof(commentable), ref commentable);
+            s.Got(nameof(comments), ref comments);
         }
 
         public void Save<R>(ISink<R> s, uint x = 0) where R : ISink<R>
@@ -47,8 +53,11 @@ namespace Greatbone.Sample
             s.Put(nameof(subject), subject);
             s.Put(nameof(tel), tel);
             s.Put(nameof(text), text);
-            s.Put(nameof(reads), reads);
+            s.Put(nameof(read), read);
+            s.Put(nameof(shared), shared);
             s.Put(nameof(apps), apps);
+            s.Put(nameof(commentable), commentable);
+            s.Put(nameof(comments), comments);
         }
     }
 

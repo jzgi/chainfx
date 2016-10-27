@@ -11,8 +11,13 @@ namespace Greatbone.Sample
             SetMultiple<NoticeMultiple>();
         }
 
+        public override void @default(WebContext wc, string subscpt)
+        {
+            top(wc, subscpt);
+        }
+
         /// <code>
-        /// GET /notice/top?[page=_num_]
+        /// GET /notice/top
         /// </code>
         public void top(WebContext wc, string subscpt)
         {
@@ -20,7 +25,7 @@ namespace Greatbone.Sample
             wc.Got(nameof(page), ref page);
             using (var dc = Service.NewDbContext())
             {
-                if (dc.Query("SELECT * FROM notices WHERE duedate <= current_date ORDER BY id LIMIT 20 OFFSET @1", p => p.Put(page * 20)))
+                if (dc.Query("SELECT * FROM notices WHERE duedate >= current_date ORDER BY id LIMIT 20 OFFSET @1", p => p.Put(page * 20)))
                 {
                     Notice[] arr = dc.ToArr<Notice>();
                     wc.SendJ(200, arr);

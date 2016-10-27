@@ -10,6 +10,10 @@ namespace Greatbone.Sample
             SetMultiple<PostMultiple>();
         }
 
+        public override void @default(WebContext wc, string subscpt)
+        {
+            top(wc, subscpt);
+        }
 
         static string TopSql = new DbSql("SELECT ").columnlst(new Post())._("FROM posts ORDER BY id DESC LIMIT 20 OFFSET @1").ToString();
 
@@ -68,7 +72,7 @@ namespace Greatbone.Sample
         //
         // ADMIN
         //
-        public override void @default(WebContext wc, string subscpt)
+        public override void mgmt(WebContext wc, string subscpt)
         {
             WebInterface iadm = GetInterface(typeof(IMgmt));
 
