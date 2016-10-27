@@ -1,10 +1,13 @@
 ﻿using System;
 using Greatbone.Core;
+using static Greatbone.Core.XUtility;
 
 namespace Greatbone.Sample
 {
     public class Post : IPersist
     {
+        public static Post Empty = new Post();
+
         internal int id;
         internal DateTime time;
         internal string authorid;
@@ -18,7 +21,7 @@ namespace Greatbone.Sample
         internal string mset;
         internal byte[] m0, m1, m2, m3, m4, m5, m6, m7, m8;
 
-        public void Load(ISource s, uint x = 0)
+        public void Load(ISource s, byte x = 0xff)
         {
             s.Got(nameof(id), ref id);
             s.Got(nameof(time), ref time);
@@ -31,7 +34,7 @@ namespace Greatbone.Sample
             s.Got(nameof(text), ref text);
             s.Got(nameof(mset), ref mset);
 
-            if (x.BinaryOn())
+            if (x.On(BIN))
             {
                 s.Got(nameof(m0), ref m0);
                 s.Got(nameof(m1), ref m1);
@@ -45,7 +48,7 @@ namespace Greatbone.Sample
             }
         }
 
-        public void Save<R>(ISink<R> s, uint x = 0) where R : ISink<R>
+        public void Save<R>(ISink<R> s, byte x = 0xff) where R : ISink<R>
         {
             s.Put(nameof(id), id);
             s.Put(nameof(time), time);
@@ -58,7 +61,7 @@ namespace Greatbone.Sample
             s.Put(nameof(text), text);
             s.Put(nameof(mset), mset);
 
-            if (x.BinaryOn())
+            if (x.On(BIN))
             {
                 s.Put(nameof(m0), m0);
                 s.Put(nameof(m1), m1);

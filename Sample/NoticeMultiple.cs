@@ -24,7 +24,7 @@ namespace Greatbone.Sample
                 if (dc.QueryA("SELECT * FROM notices WHERE id = @1", p => p.Put(id)))
                 {
                     Notice obj = dc.ToObj<Notice>();
-                    wc.SendJ(200, obj, XDefault);
+                    wc.SendJ(200, obj);
                 }
                 else
                 {

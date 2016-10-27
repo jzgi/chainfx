@@ -1,4 +1,5 @@
 ﻿using Greatbone.Core;
+using static Greatbone.Core.XUtility;
 
 namespace Greatbone.Sample
 {
@@ -12,6 +13,15 @@ namespace Greatbone.Sample
             SetMultiple<FameMultiple>();
         }
 
+        public override void @default(WebContext wc, string subscpt)
+        {
+            top(wc, subscpt);
+        }
+
+
+        const byte TopX = 0xff ^ BIN;
+        static string TopSql = new DbSql("SELECT ").columnlst(new Fame(), TopX)._("FROM fames ORDER BY rating LIMIT 20 OFFSET @1").ToString();
+
         /// <summary>
         /// Get the nth page on top.
         /// </summary>
@@ -24,10 +34,10 @@ namespace Greatbone.Sample
             int n = subscpt.ToInt();
             using (var dc = Service.NewDbContext())
             {
-                if (dc.Query("SELECT * FROM fames ORDER BY rating LIMIT 20 OFFSET @1", p => p.Put(n * 20)))
+                if (dc.Query(TopSql, p => p.Put(n * 20)))
                 {
-                    Fame[] fames = dc.ToArr<Fame>();
-                    wc.SendJ(200, fames);
+                    Fame[] fames = dc.ToArr<Fame>(TopX);
+                    wc.SendJ(200, fames, TopX);
                 }
                 else
                 {
@@ -54,7 +64,7 @@ namespace Greatbone.Sample
                 {
                     if (dc.Query("SELECT * FROM fames WHERE name LIKE '%" + name + "%'", null))
                     {
-                        Fame[] fames = dc.ToArr<Fame>();
+                        Fame[] fames = dc.ToArr<Fame>(0xff ^ BIN);
                         wc.SendJ(200, fames);
                     }
                     else
@@ -72,7 +82,7 @@ namespace Greatbone.Sample
                 {
                     if (dc.Query("SELECT * FROM fames WHERE @1 = ANY (skills)", p => p.Put(skill)))
                     {
-                        Fame[] fames = dc.ToArr<Fame>();
+                        Fame[] fames = dc.ToArr<Fame>(0xff ^ BIN);
                         wc.SendJ(200, fames);
                     }
                     else

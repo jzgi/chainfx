@@ -1,5 +1,6 @@
 ﻿using System;
 using Greatbone.Core;
+using static Greatbone.Core.XUtility;
 
 namespace Greatbone.Sample
 {
@@ -29,16 +30,14 @@ namespace Greatbone.Sample
         internal Ref[] sites;
         internal Ref[] friends;
 
-        public void Load(ISource s, uint x = 0)
+        public void Load(ISource s, byte x = 0xff)
         {
             s.Got(nameof(id), ref id);
             s.Got(nameof(name), ref name);
             s.Got(nameof(quote), ref quote);
             s.Got(nameof(sex), ref sex);
-            if (x.BinaryOn())
-            {
+            if (x.On(BIN))
                 s.Got(nameof(icon), ref icon);
-            }
             s.Got(nameof(birthday), ref birthday);
             s.Got(nameof(qq), ref qq);
             s.Got(nameof(wechat), ref wechat);
@@ -54,20 +53,20 @@ namespace Greatbone.Sample
             s.Got(nameof(styles), ref styles);
             s.Got(nameof(skills), ref skills);
             s.Got(nameof(remark), ref remark);
-            s.Got(nameof(sites), ref sites);
-            s.Got(nameof(friends), ref friends);
+            if (x.On(EXTRA))
+                s.Got(nameof(sites), ref sites, x);
+            if (x.On(EXTRA))
+                s.Got(nameof(friends), ref friends, x);
         }
 
-        public void Save<R>(ISink<R> s, uint x = 0) where R : ISink<R>
+        public void Save<R>(ISink<R> s, byte x = 0xff) where R : ISink<R>
         {
             s.Put(nameof(id), id);
             s.Put(nameof(name), name);
             s.Put(nameof(quote), quote);
             s.Put(nameof(sex), sex);
-            if (x.BinaryOn())
-            {
+            if (x.On(BIN))
                 s.Put(nameof(icon), icon);
-            }
             s.Put(nameof(birthday), birthday);
             s.Put(nameof(qq), qq);
             s.Put(nameof(wechat), wechat);
@@ -83,8 +82,10 @@ namespace Greatbone.Sample
             s.Put(nameof(styles), styles);
             s.Put(nameof(skills), skills);
             s.Put(nameof(remark), remark);
-            s.Put(nameof(sites), sites);
-            s.Put(nameof(friends), friends);
+            if (x.On(EXTRA))
+                s.Put(nameof(sites), sites, x);
+            if (x.On(EXTRA))
+                s.Put(nameof(friends), friends, x);
         }
     }
 
@@ -97,14 +98,14 @@ namespace Greatbone.Sample
 
         internal string hint;
 
-        public void Load(ISource s, uint x = 0)
+        public void Load(ISource s, byte x = 0xff)
         {
             s.Got(nameof(name), ref name);
             s.Got(nameof(@ref), ref @ref);
             s.Got(nameof(hint), ref hint);
         }
 
-        public void Save<R>(ISink<R> s, uint x = 0) where R : ISink<R>
+        public void Save<R>(ISink<R> s, byte x = 0xff) where R : ISink<R>
         {
             s.Put(nameof(name), name);
             s.Put(nameof(@ref), @ref);

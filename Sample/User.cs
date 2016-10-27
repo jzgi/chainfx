@@ -15,7 +15,7 @@ namespace Greatbone.Sample
         internal bool admin;
         internal DateTime date;
 
-        public void Load(ISource s, uint x = 0)
+        public void Load(ISource s, byte x = 0xff)
         {
             s.Got(nameof(id), ref id);
             s.Got(nameof(name), ref name);
@@ -26,7 +26,7 @@ namespace Greatbone.Sample
             s.Got(nameof(date), ref date);
         }
 
-        public void Save<R>(ISink<R> s, uint x = 0) where R : ISink<R>
+        public void Save<R>(ISink<R> s, byte x = 0xff) where R : ISink<R>
         {
             s.Put(nameof(id), id);
             s.Put(nameof(name), name);

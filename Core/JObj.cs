@@ -211,7 +211,7 @@ namespace Greatbone.Core
             return false;
         }
 
-        public bool Got<P>(string name, ref P v, uint x = 0) where P : IPersist, new()
+        public bool Got<P>(string name, ref P v, byte x = 0xff) where P : IPersist, new()
         {
             JMember pair;
             if (pairs.TryGet(name, out pair))
@@ -309,7 +309,7 @@ namespace Greatbone.Core
             return false;
         }
 
-        public bool Got<P>(string name, ref P[] v, uint x = 0) where P : IPersist, new()
+        public bool Got<P>(string name, ref P[] v, byte x = 0xff) where P : IPersist, new()
         {
             JMember pair;
             if (pairs.TryGet(name, out pair))

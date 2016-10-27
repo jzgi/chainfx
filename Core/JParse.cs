@@ -16,12 +16,16 @@ namespace Greatbone.Core
         // UTF-8 string builder
         readonly Str str;
 
-        public JParse(ArraySegment<byte> bytes) : this(bytes.Array, bytes.Count) { }
+        // whether json extension for byte array
+        readonly bool jx;
 
-        public JParse(byte[] bytes, int count)
+        public JParse(ArraySegment<byte> bytes, bool jx = false) : this(bytes.Array, bytes.Count, jx) { }
+
+        public JParse(byte[] bytes, int count, bool jx = false)
         {
             this.buffer = bytes;
             this.count = count;
+            this.jx = jx;
             this.str = new Str(256);
         }
 

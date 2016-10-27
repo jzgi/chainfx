@@ -18,7 +18,7 @@ namespace Greatbone.Sample
             // msgs.Add(new Message());
         }
 
-        public void Load(ISource s, uint x = 0)
+        public void Load(ISource s, byte x = 0xff)
         {
             s.Got(nameof(status), ref status);
             s.Got(nameof(partner), ref partner);
@@ -26,7 +26,7 @@ namespace Greatbone.Sample
             s.Got(nameof(lasttime), ref lasttime);
         }
 
-        public void Save<R>(ISink<R> s, uint x = 0) where R : ISink<R>
+        public void Save<R>(ISink<R> s, byte x = 0xff) where R : ISink<R>
         {
             s.Put(nameof(status), status);
             s.Put(nameof(partner), partner);
@@ -41,12 +41,12 @@ namespace Greatbone.Sample
 
         string text;
 
-        public void Load(ISource sc, uint x = 0)
+        public void Load(ISource sc, byte x = 0xff)
         {
             throw new NotImplementedException();
         }
 
-        public void Save<R>(ISink<R> sk, uint x = 0) where R : ISink<R>
+        public void Save<R>(ISink<R> sk, byte x = 0xff) where R : ISink<R>
         {
             throw new NotImplementedException();
         }
@@ -66,7 +66,7 @@ namespace Greatbone.Sample
 
         internal DateTime time;
 
-        public void Load(ISource sc, uint x = 0)
+        public void Load(ISource sc, byte x = 0xff)
         {
             sc.Got(nameof(id), ref id);
             sc.Got(nameof(subtype), ref subtype);
@@ -76,7 +76,7 @@ namespace Greatbone.Sample
             sc.Got(nameof(time), ref time);
         }
 
-        public void Save<R>(ISink<R> sk, uint x = 0) where R : ISink<R>
+        public void Save<R>(ISink<R> sk, byte x = 0xff) where R : ISink<R>
         {
             sk.Put(nameof(id), id);
             sk.Put(nameof(subtype), subtype);

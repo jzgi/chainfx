@@ -70,7 +70,7 @@ namespace Greatbone.Core
             level--;
         }
 
-        public void PutArr<P>(P[] arr, uint x = 0) where P : IPersist
+        public void PutArr<P>(P[] arr, byte x = 0xff) where P : IPersist
         {
             Put(null, arr, x);
         }
@@ -88,7 +88,7 @@ namespace Greatbone.Core
             level--;
         }
 
-        public void PutObj<P>(P obj, uint x = 0) where P : IPersist
+        public void PutObj<P>(P obj, byte x = 0xff) where P : IPersist
         {
             Put(null, obj, x);
         }
@@ -293,7 +293,7 @@ namespace Greatbone.Core
             return this; // ignore ir
         }
 
-        public JText Put<P>(string name, P v, uint x = 0) where P : IPersist
+        public JText Put<P>(string name, P v, byte x = 0xff) where P : IPersist
         {
             if (counts[level]++ > 0) Add(',');
 
@@ -504,7 +504,7 @@ namespace Greatbone.Core
             return this;
         }
 
-        public JText Put<P>(string name, P[] v, uint x = 0) where P : IPersist
+        public JText Put<P>(string name, P[] v, byte x = 0xff) where P : IPersist
         {
             if (counts[level]++ > 0) Add(',');
 

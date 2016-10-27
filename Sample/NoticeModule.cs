@@ -28,7 +28,7 @@ namespace Greatbone.Sample
                 if (dc.Query("SELECT * FROM notices WHERE duedate >= current_date ORDER BY id LIMIT 20 OFFSET @1", p => p.Put(page * 20)))
                 {
                     Notice[] arr = dc.ToArr<Notice>();
-                    wc.SendJ(200, arr, XDefault);
+                    wc.SendJ(200, arr);
                 }
                 else
                 {
@@ -38,7 +38,6 @@ namespace Greatbone.Sample
         }
 
 
-        string NewSql = new DbSql("INSERT INTO notices")._(new Notice())._VALUES_(new Notice())._("RETURNING id").ToString();
 
         ///
         /// <code>
@@ -51,13 +50,16 @@ namespace Greatbone.Sample
         ///
         public void @new(WebContext wc, string subscpt)
         {
+            const byte x = 0xff ^ AUTO;
+
             IToken tok = wc.Token;
-            Notice obj = wc.JObj.ToObj<Notice>();
+            Notice obj = wc.Obj<Notice>();
             obj.authorid = tok.Key;
             obj.author = tok.Name;
             using (var dc = Service.NewDbContext())
             {
-                object id = dc.Scalar(NewSql.ToString(), p => obj.Save(p));
+                DbSql sql = new DbSql("INSERT INTO notices")._(Notice.Empty, x)._VALUES_(Notice.Empty, x)._("RETURNING id");
+                object id = dc.Scalar(sql.ToString(), p => obj.Save(p, x));
                 if (id != null)
                 {
                     wc.StatusCode = 201;

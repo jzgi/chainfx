@@ -8,7 +8,7 @@ namespace Greatbone.Core
     /// A reusable string builder that supports UTF-8 decoding.
     /// </summary>
     ///
-    struct Str
+    class Str
     {
         char[] buffer;
 

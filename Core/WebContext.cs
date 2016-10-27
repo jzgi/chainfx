@@ -110,7 +110,7 @@ namespace Greatbone.Core
             }
         }
 
-        public P Obj<P>(uint x = 0) where P : IPersist, new()
+        public P Obj<P>(byte x = 0xff) where P : IPersist, new()
         {
             ParseEntity();
 
@@ -121,7 +121,7 @@ namespace Greatbone.Core
             return obj;
         }
 
-        public P[] Arr<P>(uint x = 0) where P : IPersist, new()
+        public P[] Arr<P>(byte x = 0xff) where P : IPersist, new()
         {
             ParseEntity();
 
@@ -269,7 +269,7 @@ namespace Greatbone.Core
             throw new NotImplementedException();
         }
 
-        public bool Got<V>(string name, ref V v, uint x = 0) where V : IPersist, new()
+        public bool Got<V>(string name, ref V v, byte x = 0xff) where V : IPersist, new()
         {
             StringValues values;
             if (Request.Query.TryGetValue(name, out values))
@@ -389,7 +389,7 @@ namespace Greatbone.Core
             return false;
         }
 
-        public bool Got<V>(string name, ref V[] v, uint x = 0) where V : IPersist, new()
+        public bool Got<V>(string name, ref V[] v, byte x = 0xff) where V : IPersist, new()
         {
             StringValues values;
             if (Request.Query.TryGetValue(name, out values))
@@ -505,12 +505,12 @@ namespace Greatbone.Core
             MaxAge = maxage;
         }
 
-        public void SendJ<P>(int status, P obj, uint x = 0, bool? pub = null, int maxage = 60000) where P : IPersist
+        public void SendJ<P>(int status, P obj, byte x = 0xff, bool? pub = null, int maxage = 60000) where P : IPersist
         {
             SendJ(status, cont => cont.PutObj(obj, x), pub, maxage);
         }
 
-        public void SendJ<P>(int status, P[] arr, uint x = 0, bool? pub = null, int maxage = 60000) where P : IPersist
+        public void SendJ<P>(int status, P[] arr, byte x = 0xff, bool? pub = null, int maxage = 60000) where P : IPersist
         {
             SendJ(status, cont => cont.PutArr(arr, x), pub, maxage);
         }

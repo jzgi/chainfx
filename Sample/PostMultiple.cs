@@ -1,5 +1,6 @@
 ﻿using System;
 using Greatbone.Core;
+using static Greatbone.Core.XUtility;
 
 namespace Greatbone.Sample
 {
@@ -28,7 +29,7 @@ namespace Greatbone.Sample
             {
                 if (dc.QueryA(DefaultSql, p => p.Put(id)))
                 {
-                    Post obj = dc.ToObj<Post>();
+                    Post obj = dc.ToObj<Post>(0xff ^ BIN);
                     wc.SendJ(200, obj);
                 }
                 else

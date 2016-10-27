@@ -44,7 +44,7 @@ namespace Greatbone.Core
             return this;
         }
 
-        public DbSql setlst<T>(T obj, uint x = 0) where T : IPersist
+        public DbSql setlst<T>(T obj, byte x = 0xff) where T : IPersist
         {
             ctx = SetList;
             ordinal = 1;
@@ -52,7 +52,7 @@ namespace Greatbone.Core
             return this;
         }
 
-        public DbSql columnlst<T>(T obj, uint x = 0) where T : IPersist
+        public DbSql columnlst<T>(T obj, byte x = 0xff) where T : IPersist
         {
             ctx = ColumnList;
             ordinal = 1;
@@ -60,7 +60,7 @@ namespace Greatbone.Core
             return this;
         }
 
-        public DbSql paramlst<T>(T obj, uint x = 0) where T : IPersist
+        public DbSql paramlst<T>(T obj, byte x = 0xff) where T : IPersist
         {
             ctx = ParameterList;
             ordinal = 1;
@@ -68,7 +68,7 @@ namespace Greatbone.Core
             return this;
         }
 
-        public DbSql valuelst<T>(T obj, uint x = 0) where T : IPersist
+        public DbSql valuelst<T>(T obj, byte x = 0xff) where T : IPersist
         {
             ctx = ValueList;
             ordinal = 1;
@@ -76,7 +76,7 @@ namespace Greatbone.Core
             return this;
         }
 
-        public DbSql _<T>(T obj, uint x = 0) where T : IPersist
+        public DbSql _<T>(T obj, byte x = 0xff) where T : IPersist
         {
             Add(" (");
             columnlst(obj, x);
@@ -84,15 +84,15 @@ namespace Greatbone.Core
             return this;
         }
 
-        public DbSql _VALUES_<T>(T obj, uint x = 0) where T : IPersist
+        public DbSql _VALUES_<T>(T obj, byte x = 0xff) where T : IPersist
         {
             Add(" VALUES (");
-            valuelst(obj, x);
+            paramlst(obj, x);
             Add(")");
             return this;
         }
 
-        public DbSql _SET_<T>(T obj, uint x = 0) where T : IPersist
+        public DbSql _SET_<T>(T obj, byte x = 0xff) where T : IPersist
         {
             Add(" SET ");
             setlst(obj, x);
@@ -242,7 +242,7 @@ namespace Greatbone.Core
             return this;
         }
 
-        public DbSql Put<V>(string name, V v, uint x = 0) where V : IPersist
+        public DbSql Put<V>(string name, V v, byte x = 0xff) where V : IPersist
         {
             if (name != null)
             {
@@ -395,7 +395,7 @@ namespace Greatbone.Core
             return this;
         }
 
-        public DbSql Put<V>(string name, V[] v, uint x = 0) where V : IPersist
+        public DbSql Put<V>(string name, V[] v, byte x = 0xff) where V : IPersist
         {
             Build(name);
             return this;

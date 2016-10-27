@@ -1,5 +1,6 @@
 ﻿using Greatbone.Core;
 using System;
+using static Greatbone.Core.XUtility;
 
 namespace Greatbone.Sample
 {
@@ -15,8 +16,6 @@ namespace Greatbone.Sample
             top(wc, subscpt);
         }
 
-        static string TopSql = new DbSql("SELECT ").columnlst(new Post())._("FROM posts ORDER BY id DESC LIMIT 20 OFFSET @1").ToString();
-
         /// <summary>
         /// Get the nth page of records on top.
         /// </summary>
@@ -25,13 +24,16 @@ namespace Greatbone.Sample
         /// </code>
         public void top(WebContext wc, string subscpt)
         {
+            const byte x = 0xff ^ BIN;
+
             int page = subscpt.ToInt();
             using (var dc = Service.NewDbContext())
             {
-                if (dc.Query(TopSql, p => p.Put(20 * page)))
+                DbSql sql = new DbSql("SELECT ").columnlst(Post.Empty, x)._("FROM posts ORDER BY id DESC LIMIT 20 OFFSET @1");
+                if (dc.Query(sql.ToString(), p => p.Put(20 * page)))
                 {
-                    Post[] arr = dc.ToArr<Post>();
-                    wc.SendJ(200, arr);
+                    Post[] arr = dc.ToArr<Post>(x);
+                    wc.SendJ(200, arr, x);
                 }
                 else
                 {
@@ -89,7 +91,7 @@ namespace Greatbone.Sample
         public void srch(WebContext wc, string subscpt)
         {
             Form frm = wc.Form;
-            
+
             string word = null;
             if (wc.Got(nameof(word), ref word))
             {
@@ -105,11 +107,11 @@ namespace Greatbone.Sample
         public void del(WebContext wc, string subscpt)
         {
             if (wc.IsGet) // return confirmation dialog
-            { 
+            {
 
             }
             else //
-            {  
+            {
 
             }
         }

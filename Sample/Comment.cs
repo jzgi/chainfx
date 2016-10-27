@@ -11,7 +11,7 @@ namespace Greatbone.Sample
         internal string author;
         internal string text;
 
-        public void Load(ISource s, uint x = 0)
+        public void Load(ISource s, byte x = 0xff)
         {
             s.Got(nameof(time), ref time);
             s.Got(nameof(emoji), ref emoji);
@@ -20,7 +20,7 @@ namespace Greatbone.Sample
             s.Got(nameof(text), ref text);
         }
 
-        public void Save<R>(ISink<R> s, uint x = 0) where R : ISink<R>
+        public void Save<R>(ISink<R> s, byte x = 0xff) where R : ISink<R>
         {
             s.Put(nameof(time), time);
             s.Put(nameof(emoji), emoji);

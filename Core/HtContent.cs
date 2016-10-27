@@ -139,7 +139,7 @@ namespace Greatbone.Core
         }
 
 
-        public void Table<M>(M[] arr, uint x = 0) where M : IPersist
+        public void Table<M>(M[] arr, byte x = 0xff) where M : IPersist
         {
             T("<table class=\"mdl-data-table mdl-js-data-table mdl-shadow--2dp\">");
             T("<thead>");
@@ -190,7 +190,7 @@ namespace Greatbone.Core
             T("</form>");
         }
 
-        public void Form<P>(P obj, uint x = 0) where P : IParent
+        public void Form<P>(P obj, byte x = 0xff) where P : IParent
         {
             T("<form>");
 
@@ -301,7 +301,7 @@ namespace Greatbone.Core
             throw new NotImplementedException();
         }
 
-        public HtContent Put<V>(string name, V v, uint x = 0) where V : IPersist
+        public HtContent Put<V>(string name, V v, byte x = 0xff) where V : IPersist
         {
             throw new NotImplementedException();
         }
@@ -336,7 +336,7 @@ namespace Greatbone.Core
             throw new NotImplementedException();
         }
 
-        public HtContent Put<V>(string name, V[] v, uint x = 0) where V : IPersist
+        public HtContent Put<V>(string name, V[] v, byte x = 0xff) where V : IPersist
         {
             throw new NotImplementedException();
         }

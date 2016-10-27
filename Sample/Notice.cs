@@ -1,10 +1,13 @@
 ﻿using System;
 using Greatbone.Core;
+using static Greatbone.Core.XUtility;
 
 namespace Greatbone.Sample
 {
     public class Notice : IPersist
     {
+        public static Notice Empty = new Notice();
+
         internal int id;
         internal string loc;
         internal string authorid;
@@ -21,7 +24,7 @@ namespace Greatbone.Sample
         internal Comment[] comments;
 
 
-        public void Load(ISource s, uint x = 0)
+        public void Load(ISource s, byte x = 0xff)
         {
             s.Got(nameof(id), ref id);
             s.Got(nameof(loc), ref loc);
@@ -34,14 +37,19 @@ namespace Greatbone.Sample
             s.Got(nameof(text), ref text);
             s.Got(nameof(read), ref read);
             s.Got(nameof(shared), ref shared);
-            s.Got(nameof(apps), ref apps);
+
+            if (x.On(EXTRA))
+                s.Got(nameof(apps), ref apps);
+
             s.Got(nameof(commentable), ref commentable);
-            s.Got(nameof(comments), ref comments);
+
+            if (x.On(EXTRA))
+                s.Got(nameof(comments), ref comments);
         }
 
-        public void Save<R>(ISink<R> s, uint x = 0) where R : ISink<R>
+        public void Save<R>(ISink<R> s, byte x = 0xff) where R : ISink<R>
         {
-            if (x.DefaultOn())
+            if (x.On(AUTO))
             {
                 s.Put(nameof(id), id);
             }
@@ -55,9 +63,14 @@ namespace Greatbone.Sample
             s.Put(nameof(text), text);
             s.Put(nameof(read), read);
             s.Put(nameof(shared), shared);
-            s.Put(nameof(apps), apps);
+
+            if (x.On(EXTRA))
+                s.Put(nameof(apps), apps, x);
+
             s.Put(nameof(commentable), commentable);
-            s.Put(nameof(comments), comments);
+
+            if (x.On(EXTRA))
+                s.Put(nameof(comments), comments, x);
         }
     }
 
@@ -66,13 +79,13 @@ namespace Greatbone.Sample
         internal string userid;
         internal string user;
 
-        public void Load(ISource s, uint x = 0)
+        public void Load(ISource s, byte x = 0xff)
         {
             s.Got(nameof(userid), ref userid);
             s.Got(nameof(user), ref user);
         }
 
-        public void Save<R>(ISink<R> s, uint x = 0) where R : ISink<R>
+        public void Save<R>(ISink<R> s, byte x = 0xff) where R : ISink<R>
         {
             s.Put(nameof(userid), userid);
             s.Put(nameof(user), user);

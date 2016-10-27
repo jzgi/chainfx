@@ -32,7 +32,7 @@ namespace Greatbone.Core
 
         R Put(string name, ArraySegment<byte> v);
 
-        R Put<V>(string name, V v, uint x = 0) where V : IPersist;
+        R Put<V>(string name, V v, byte x = 0xff) where V : IPersist;
 
         R Put(string name, JObj v);
 
@@ -46,7 +46,7 @@ namespace Greatbone.Core
 
         R Put(string name, string[] v);
 
-        R Put<V>(string name, V[] v, uint x = 0) where V : IPersist;
+        R Put<V>(string name, V[] v, byte x = 0xff) where V : IPersist;
 
     }
 

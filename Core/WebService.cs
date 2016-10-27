@@ -190,7 +190,14 @@ namespace Greatbone.Core
                 catch (Exception e)
                 {
                     Debug.WriteLine(e.Message);
-                    ERR(e.Message);
+                    if (e is ParseException)
+                    {
+                        wc.StatusCode = 304;
+                    }
+                    else
+                    {
+                        ERR(e.Message);
+                    }
                 }
             }
 

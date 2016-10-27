@@ -1,5 +1,5 @@
-﻿using System;
-using Greatbone.Core;
+﻿using Greatbone.Core;
+using static Greatbone.Core.XUtility;
 
 namespace Greatbone.Sample
 {
@@ -20,7 +20,7 @@ namespace Greatbone.Sample
 
         public string Name => name;
 
-        public void Load(ISource s, uint x = 0)
+        public void Load(ISource s, byte x = 0xff)
         {
             s.Got(nameof(id), ref id);
             s.Got(nameof(name), ref name);
@@ -30,18 +30,16 @@ namespace Greatbone.Sample
             s.Got(nameof(admin), ref admin);
         }
 
-        public void Save<R>(ISink<R> s, uint x = 0) where R : ISink<R>
+        public void Save<R>(ISink<R> s, byte x = 0xff) where R : ISink<R>
         {
             s.Put(nameof(id), id);
             s.Put(nameof(name), name);
-            if (x.ExtraOn())
-            {
+            if (x.On(EXTRA))
                 s.Put(nameof(credential), credential);
-            }
             s.Put(nameof(fame), fame);
             s.Put(nameof(brand), brand);
             s.Put(nameof(admin), admin);
         }
-    
+
     }
 }
