@@ -34,7 +34,7 @@ namespace Greatbone.Sample
         {
             s.Put(nameof(id), id);
             s.Put(nameof(name), name);
-            if (x.On(EXTRA))
+            if (x.On(RESV))
                 s.Put(nameof(credential), credential);
             s.Put(nameof(fame), fame);
             s.Put(nameof(brand), brand);

@@ -53,9 +53,9 @@ namespace Greatbone.Sample
             s.Got(nameof(styles), ref styles);
             s.Got(nameof(skills), ref skills);
             s.Got(nameof(remark), ref remark);
-            if (x.On(EXTRA))
+            if (x.On(MANY))
                 s.Got(nameof(sites), ref sites, x);
-            if (x.On(EXTRA))
+            if (x.On(MANY))
                 s.Got(nameof(friends), ref friends, x);
         }
 
@@ -82,9 +82,9 @@ namespace Greatbone.Sample
             s.Put(nameof(styles), styles);
             s.Put(nameof(skills), skills);
             s.Put(nameof(remark), remark);
-            if (x.On(EXTRA))
+            if (x.On(MANY))
                 s.Put(nameof(sites), sites, x);
-            if (x.On(EXTRA))
+            if (x.On(MANY))
                 s.Put(nameof(friends), friends, x);
         }
     }

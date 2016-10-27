@@ -38,12 +38,12 @@ namespace Greatbone.Sample
             s.Got(nameof(read), ref read);
             s.Got(nameof(shared), ref shared);
 
-            if (x.On(EXTRA))
+            if (x.On(MANY))
                 s.Got(nameof(apps), ref apps);
 
             s.Got(nameof(commentable), ref commentable);
 
-            if (x.On(EXTRA))
+            if (x.On(MANY))
                 s.Got(nameof(comments), ref comments);
         }
 
@@ -64,12 +64,12 @@ namespace Greatbone.Sample
             s.Put(nameof(read), read);
             s.Put(nameof(shared), shared);
 
-            if (x.On(EXTRA))
+            if (x.On(MANY))
                 s.Put(nameof(apps), apps, x);
 
             s.Put(nameof(commentable), commentable);
 
-            if (x.On(EXTRA))
+            if (x.On(MANY))
                 s.Put(nameof(comments), comments, x);
         }
     }
