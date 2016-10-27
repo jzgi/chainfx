@@ -37,27 +37,28 @@ namespace Greatbone.Sample
         protected override bool Authenticate(WebContext wc)
         {
             string h = wc.Header("Authorization");
-            if (h != null)
+            if (h == null) return false;
+            string v = (string)h;
+            if (v.StartsWith("Bearer ")) // the Bearer scheme
             {
-                string v = (string)h;
-                if (v.StartsWith("Bearer ")) // Bearer scheme
+                string tokstr = v.Substring(7);
+                string plain = StrUtility.Decrypt(tokstr, 0x4a78be76, 0x1f0335e2);
+                JTextParse parse = new JTextParse(plain);
+                try
                 {
-                    string tokstr = v.Substring(7);
-                    string plain = StrUtility.Decrypt(tokstr, 0x4a78be76, 0x1f0335e2);
-                    JTextParse parse = new JTextParse(plain);
-                    try
-                    {
-                        JObj jo = (JObj)parse.Parse();
-                        wc.Token = jo.ToObj<Token>();
-                        return true;
-                    }
-                    catch
-                    {
-
-                    }
+                    JObj jo = (JObj)parse.Parse();
+                    wc.Token = jo.ToObj<Token>();
+                    return true;
                 }
+                catch
+                {
+                }
+            } 
+            else if (v.StartsWith("Digest ")) // the Digest scheme
+            {
 
             }
+
             return false;
         }
 
