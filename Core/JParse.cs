@@ -16,18 +16,13 @@ namespace Greatbone.Core
         // UTF-8 string builder
         readonly Str str;
 
-        public JParse(ArraySegment<byte> bytes)
-        {
-            this.buffer = bytes.Array;
-            this.count = bytes.Count;
-            this.str = new Str();
-        }
+        public JParse(ArraySegment<byte> bytes) : this(bytes.Array, bytes.Count) { }
 
         public JParse(byte[] bytes, int count)
         {
             this.buffer = bytes;
             this.count = count;
-            this.str = new Str();
+            this.str = new Str(256);
         }
 
         public object Parse()
@@ -59,13 +54,13 @@ namespace Greatbone.Core
                     throw FormatEx;
                 }
 
-                StringBuilder sb = new StringBuilder();
+                str.Clear(); // parse name
                 for (;;)
                 {
                     byte b = buffer[++p];
                     if (p >= count) throw FormatEx;
                     if (b == '"') break; // meet second quote
-                    else sb.Append((char)b);
+                    else str.Add((char)b);
                 }
 
                 for (;;) // till a colon
@@ -76,6 +71,7 @@ namespace Greatbone.Core
                     if (b == ':') break;
                     throw FormatEx;
                 }
+                string name = str.ToString();
 
                 // parse the value part
                 for (;;)
@@ -83,7 +79,6 @@ namespace Greatbone.Core
                     byte b = buffer[++p];
                     if (p >= count) throw FormatEx;
                     if (b == ' ' || b == '\t' || b == '\n' || b == '\r') continue; // skip ws
-                    string name = sb.ToString();
                     if (b == '{')
                     {
                         JObj v = ParseObj(ref p);

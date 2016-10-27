@@ -20,7 +20,7 @@ namespace Greatbone.Core
         {
             this.buffer = str;
             this.count = count;
-            this.str = new Str();
+            this.str = new Str(256);
         }
 
         public object Parse()
@@ -52,13 +52,13 @@ namespace Greatbone.Core
                     throw FormatEx;
                 }
 
-                StringBuilder sb = new StringBuilder();
+                str.Clear(); // parse name                
                 for (;;)
                 {
                     char b = buffer[++p];
                     if (p >= count) throw FormatEx;
                     if (b == '"') break; // meet second quote
-                    else sb.Append((char)b);
+                    else str.Add((char)b);
                 }
 
                 for (;;) // till a colon
@@ -69,6 +69,7 @@ namespace Greatbone.Core
                     if (b == ':') break;
                     throw FormatEx;
                 }
+                string name = str.ToString();
 
                 // parse the value part
                 for (;;)
@@ -76,7 +77,6 @@ namespace Greatbone.Core
                     char b = buffer[++p];
                     if (p >= count) throw FormatEx;
                     if (b == ' ' || b == '\t' || b == '\n' || b == '\r') continue; // skip ws
-                    string name = sb.ToString();
                     if (b == '{')
                     {
                         JObj v = ParseObj(ref p);

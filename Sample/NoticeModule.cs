@@ -1,5 +1,6 @@
 ﻿using System;
 using Greatbone.Core;
+using static Greatbone.Core.XUtility;
 
 namespace Greatbone.Sample
 {
@@ -21,14 +22,13 @@ namespace Greatbone.Sample
         /// </code>
         public void top(WebContext wc, string subscpt)
         {
-            int page = 0;
-            wc.Got(nameof(page), ref page);
+            int page = subscpt.ToInt();
             using (var dc = Service.NewDbContext())
             {
                 if (dc.Query("SELECT * FROM notices WHERE duedate >= current_date ORDER BY id LIMIT 20 OFFSET @1", p => p.Put(page * 20)))
                 {
                     Notice[] arr = dc.ToArr<Notice>();
-                    wc.SendJ(200, arr);
+                    wc.SendJ(200, arr, XDefault);
                 }
                 else
                 {

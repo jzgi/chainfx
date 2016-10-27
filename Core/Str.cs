@@ -8,10 +8,8 @@ namespace Greatbone.Core
     /// A reusable string builder that supports UTF-8 decoding.
     /// </summary>
     ///
-    class Str
+    struct Str
     {
-        const int InitialCapacity = 256;
-
         char[] buffer;
 
         int count;
@@ -20,7 +18,7 @@ namespace Greatbone.Core
 
         int rest; // number of rest octets
 
-        internal Str(int capacity = InitialCapacity)
+        internal Str(int capacity)
         {
             buffer = new char[capacity];
             count = 0;
@@ -42,6 +40,7 @@ namespace Greatbone.Core
             buffer[count++] = c;
         }
 
+        // utf-8 decoding 
         internal void Add(byte b)
         {
             if (rest == 0)
@@ -84,6 +83,11 @@ namespace Greatbone.Core
         public override string ToString()
         {
             return new string(buffer, 0, count);
+        }
+
+        public int ToInt()
+        {
+            return 0;
         }
     }
 }

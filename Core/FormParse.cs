@@ -24,7 +24,7 @@ namespace Greatbone.Core
         {
             this.buffer = bytes.Array;
             this.count = bytes.Count;
-            this.str = new Str();
+            this.str = new Str(256);
         }
 
         public Form Parse()
