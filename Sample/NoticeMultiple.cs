@@ -17,7 +17,7 @@ namespace Greatbone.Sample
         /// 
         public override void @default(WebContext wc, string subscpt)
         {
-            int id = subscpt.ToInt();
+            int id = wc.Super.ToInt();
             using (var dc = Service.NewDbContext())
             {
                 if (dc.QueryA("SELECT * FROM notices WHERE id = @1", p => p.Put(id)))

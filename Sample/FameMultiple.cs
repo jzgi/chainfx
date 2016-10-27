@@ -37,6 +37,10 @@ namespace Greatbone.Sample
             }
         }
 
+
+
+        static string UpdSql = new DbSql("INSERT INTO fames")._(new Fame())._VALUES_(new Fame())._("ON CONFLICT (id) DO UPDATE")._SET_(new Fame())._("WHERE authorid = @1").ToString();
+
         /// <summary>
         /// Update the record.
         /// </summary>
@@ -47,12 +51,13 @@ namespace Greatbone.Sample
         /// </code>
         public void upd(WebContext wc, string subscpt)
         {
-            Fame obj = wc.JObj.ToObj<Fame>();
+            string uid = wc.Token.Key;
+            Fame obj = wc.Obj<Fame>();
+            obj.id = wc.Super;
 
             using (var dc = Service.NewDbContext())
             {
-                DbSql sql = new DbSql("INSERT INTO fames")._(obj)._VALUES_(obj)._("ON CONFLICT (id) DO UPDATE")._SET_(obj);
-                if (dc.Execute(sql.ToString(), p => obj.Save(p)) > 0)
+                if (dc.Execute(UpdSql, p => { obj.Save(p); p.Put(uid); }) > 0)
                 {
                     wc.StatusCode = 200;
                 }
