@@ -5,7 +5,7 @@ namespace Greatbone.Core
 
     ///
     /// <summary>
-    /// A dynamical HTML5 content that encapsulates Material-Design-Lite (MDL) components
+    /// A dynamical HTML5 content Tooled with Material-Design-Lite (MDL) components
     /// </summary> 
     ///
     public class HtContent : DynamicContent, ISink<HtContent>

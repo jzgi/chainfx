@@ -40,27 +40,62 @@ namespace Greatbone.Sample
             if (h != null)
             {
                 string v = (string)h;
-                if (!v.StartsWith("Bearer ")) // Bearer scheme
+                if (v.StartsWith("Bearer ")) // Bearer scheme
                 {
-                    return false;
+                    string tokstr = v.Substring(7);
+                    string plain = StrUtility.Decrypt(tokstr, 0x4a78be76, 0x1f0335e2);
+                    JTextParse parse = new JTextParse(plain);
+                    try
+                    {
+                        JObj jo = (JObj)parse.Parse();
+                        wc.Token = jo.ToObj<Token>();
+                        return true;
+                    }
+                    catch
+                    {
+
+                    }
                 }
 
-                string tokstr = v.Substring(7);
-                string plain = StrUtility.Decrypt(tokstr, 0x4a78be76, 0x1f0335e2);
-                JTextParse parse = new JTextParse(plain);
-                try
-                {
-                    JObj jo = (JObj)parse.Parse();
-                    wc.Token = jo.ToObj<Token>();
-                    return true;
-                }
-                catch
-                {
-
-                }
             }
             return false;
         }
+
+
+//    boolean authenticate(Connection conn) throws IOException {
+//         Principal prin = conn.principal;
+//         if (prin == null && authenticate != null) { // apply authentication only if not yet done
+//             Matcher m = authenticate.matcher(conn.path());
+//             if (m.matches()) { // apply authentication only if the path matches the preset pattern
+//                 Header hau = conn.header(HTTP.H_AUTHORIZATION);
+//                 if (hau != null && hau.match("Digest ")) { // supports only the Digest scheme
+//                     String username = hau.parameter("username");
+//                     String realm = hau.parameter("realm");
+//                     String nonce = hau.parameter("nonce");
+//                     String uri = hau.parameter("uri");
+//                     String response = hau.parameter("response");
+//                     // enforce DIGEST auth
+//                     if (REALM.equals(realm)) {
+//                         prin = find(username);
+//                         String H_A2 = HTTP.MD5(new StringBuilder().append(conn.method()).append(COLON).append(uri).toString()); // A2 = Method ":" digest-uri-value
+//                         String request_digest = HTTP.MD5(prin.credential + COLON + nonce + COLON + H_A2); // request-digest = KD ( H(A1), unq(nonce-value) ":" H(A2) ) >
+//                         if (request_digest.equals(response)) { // matched
+//                             // successfully, attach the authenticated principal object to the connection
+//                             conn.principal = prin;
+//                             // vote to continue processing
+//                             return true;
+//                         }
+//                     }
+//                 }
+//                 // send status
+//                 conn.sendUnauthorized(REALM);
+//                 // vote to cease processing
+//                 return false;
+//             }
+//         }
+//         // vote to continue processing
+//         return true;
+//     }
 
     }
 }

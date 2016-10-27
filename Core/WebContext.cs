@@ -36,7 +36,7 @@ namespace Greatbone.Core
         // received body bytes
         ArraySegment<byte>? bytesSeg;
 
-        // parsed request entity, can be Doc or Form
+        // parsed request entity, can be JObj, Form or null
         object entity;
 
         async void ReceiveAsync()
@@ -108,6 +108,26 @@ namespace Greatbone.Core
                 ParseEntity();
                 return entity as JArr;
             }
+        }
+
+        public P Obj<P>(uint x = 0) where P : IPersist, new()
+        {
+            ParseEntity();
+
+            ISource src = entity as ISource;
+            if (src == null) return default(P);
+            P obj = new P();
+            obj.Load(src, x);
+            return obj;
+        }
+
+        public P[] Arr<P>(uint x = 0) where P : IPersist, new()
+        {
+            ParseEntity();
+
+            JArr ja = entity as JArr;
+            if (ja == null) return null;
+            return ja.ToArr<P>(x);
         }
 
         //
