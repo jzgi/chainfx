@@ -45,7 +45,7 @@ namespace Greatbone.Sample
 
         public void put(WebContext wc, string subscpt)
         {
-            IToken tok = wc.Token;
+            IPrincipal tok = wc.Principal;
             string sender = tok.Key;
             string text = wc.ToString();
 

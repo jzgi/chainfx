@@ -55,7 +55,7 @@ namespace Greatbone.Sample
         ///
         public void @new(WebContext wc, string subscpt)
         {
-            IToken tok = wc.Token;
+            IPrincipal tok = wc.Principal;
             JObj jo = wc.JObj;
             DateTime time = DateTime.Now;
             bool commentable = jo[nameof(commentable)];

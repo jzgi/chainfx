@@ -1,5 +1,4 @@
 ﻿using Greatbone.Core;
-using static Greatbone.Core.XUtility;
 
 namespace Greatbone.Sample
 {
@@ -43,7 +42,7 @@ namespace Greatbone.Sample
         public void del(WebContext wc, string subscpt)
         {
             int id = subscpt.ToInt();
-            string userid = wc.Token.Key;
+            string userid = wc.Principal.Key;
             using (var dc = Service.NewDbContext())
             {
                 if (dc.Execute("DELETE FROM notices WHERE id = @1 AND authorid = @2", p => p.Put(id).Put(userid)) > 0)
@@ -67,7 +66,7 @@ namespace Greatbone.Sample
         public void apply(WebContext wc, string subscpt)
         {
             int id = wc.Super.ToInt();
-            string userid = wc.Token.Key;
+            string userid = wc.Principal.Key;
             App app = new App()
             {
                 userid = userid
@@ -101,7 +100,7 @@ namespace Greatbone.Sample
         public void cmt(WebContext wc, string subscpt)
         {
             int id = wc.Super.ToInt();
-            IToken tok = wc.Token;
+            IPrincipal tok = wc.Principal;
             JObj jo = wc.JObj;
             string text = jo[nameof(text)];
 

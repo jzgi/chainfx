@@ -20,7 +20,7 @@ namespace Greatbone.Core
 
         public WebAction Action { get; internal set; }
 
-        public IToken Token { get; internal set; }
+        public IPrincipal Principal { get; internal set; }
 
         // superscript
         public string Super { get; internal set; }
@@ -28,6 +28,7 @@ namespace Greatbone.Core
         //
         // REQUEST
         //
+        public string Method => Request.Method;
 
         public bool IsGet => "GET".Equals(Request.Method);
 

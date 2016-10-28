@@ -6,8 +6,8 @@ namespace Greatbone.Sample
     {
         public override bool Test(WebContext wc)
         {
-            Token tok = (Token)wc.Token;
-            return tok.admin;
+            Token tok = (Token)wc.Principal;
+            return false;
         }
     }
 }

@@ -49,7 +49,7 @@ namespace Greatbone.Core
             // check ifs
             if (ifs != null)
             {
-                if (wc.Token == null)
+                if (wc.Principal == null)
                 {
                     wc.StatusCode = 401; // unauthorized
                     wc.Response.Headers.Add("WWW-Authenticate", new StringValues("Bearer"));

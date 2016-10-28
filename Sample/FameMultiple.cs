@@ -51,7 +51,7 @@ namespace Greatbone.Sample
         /// </code>
         public void upd(WebContext wc, string subscpt)
         {
-            string uid = wc.Token.Key;
+            string uid = wc.Principal.Key;
             Fame obj = wc.Obj<Fame>();
             obj.id = wc.Super;
 

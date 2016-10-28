@@ -106,7 +106,7 @@ namespace Greatbone.Sample
         ///
         public void del(WebContext wc, string subscpt)
         {
-            IToken tok = wc.Token;
+            IPrincipal tok = wc.Principal;
             using (var dc = Service.NewDbContext())
             {
                 if (dc.Execute("DELETE FROM posts WHERE id = @1 AND authorid = @2", p => p.Put(subscpt).Put(tok.Key)) > 0)
@@ -135,7 +135,7 @@ namespace Greatbone.Sample
         public void cmt(WebContext wc, string subscpt)
         {
             int id = wc.Super.ToInt();
-            IToken tok = wc.Token;
+            IPrincipal tok = wc.Principal;
             JObj jo = wc.JObj;
             string text = jo[nameof(text)];
 
@@ -199,7 +199,7 @@ namespace Greatbone.Sample
         ///
         public void like(WebContext wc, string subscpt)
         {
-            string uid = wc.Token.Key;
+            string uid = wc.Principal.Key;
             int id = wc.Super.ToInt();
             using (var dc = Service.NewDbContext())
             {

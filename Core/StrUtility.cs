@@ -114,33 +114,30 @@ namespace Greatbone.Core
         // DIGEST
         //
 
-        //
-        // custom 8-byte digest
-
         /// <summary>
         /// Returns the central 8 bytes of the hash result of the input string.
         /// </summary>
-        public static string C16(string input)
+        public static string MD5(string input)
         {
             if (input == null) return null;
 
-            // convert the input string to bytea
+            // convert to bytea, assume ascii 
             int len = input.Length;
             byte[] raw = new byte[len];
             for (int i = 0; i < len; i++) { raw[i] = (byte)input[i]; }
 
-            // MD5 digest and centrral 16 chars
-            using (MD5 md5 = MD5.Create())
+            // digest and transform
+            using (MD5 md5 = System.Security.Cryptography.MD5.Create())
             {
                 byte[] hash = md5.ComputeHash(raw);
-                StringBuilder c16 = new StringBuilder(16);
-                for (int i = 0; i < 8; i++)
+                StringBuilder str = new StringBuilder(32);
+                for (int i = 0; i < 16; i++)
                 {
-                    byte b = hash[i + 4];
-                    c16.Append(HEX[b >> 4]);
-                    c16.Append(HEX[b & 0x0f]);
+                    byte b = hash[i];
+                    str.Append(HEX[b >> 4]);
+                    str.Append(HEX[b & 0x0f]);
                 }
-                return c16.ToString();
+                return str.ToString();
             }
         }
 

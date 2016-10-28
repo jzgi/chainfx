@@ -52,7 +52,7 @@ namespace Greatbone.Sample
         {
             const byte x = 0xff ^ AUTO;
 
-            IToken tok = wc.Token;
+            IPrincipal tok = wc.Principal;
             Notice obj = wc.Obj<Notice>();
             obj.authorid = tok.Key;
             obj.author = tok.Name;

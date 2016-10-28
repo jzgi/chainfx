@@ -5,9 +5,9 @@ namespace Greatbone.Sample
 {
 
     /// <summary>
-    /// Used by all services.
+    /// A login internal user.
     /// </summary>
-    public class Token : IPrincipal, IPersist
+    public class Login : IPrincipal, IPersist
     {
         internal string id;
         internal string name;

@@ -32,7 +32,7 @@ namespace Greatbone.Sample
                 {
                     Token obj = new Token();
                     obj.Load(dc);
-                    string c16 = StrUtility.C16(password);
+                    string c16 = StrUtility.MD5(password);
                     if (c16.Equals(obj.credential))
                     {
                         JContent cont = new JContent(256);
