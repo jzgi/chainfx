@@ -36,10 +36,10 @@ namespace Greatbone.Core
 
         public bool Match(String str)
         {
-            int p;
-            if (fvalue.IndexOf(str, pos) != -1)
+            int p = pos;
+            if (fvalue.IndexOf(str, p) != -1)
             {
-                pos += str.Length; // move forward
+                pos = p += str.Length; // move forward
                 return true;
             }
             return false;

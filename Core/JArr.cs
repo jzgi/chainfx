@@ -2,9 +2,12 @@ using System;
 
 namespace Greatbone.Core
 {
+
+    ///
     /// <summary>
-    /// An array JSON data model.
+    /// A JSON array model.
     /// </summary>
+    ///
     public class JArr
     {
         const int InitialCapacity = 16;
@@ -26,39 +29,39 @@ namespace Greatbone.Core
 
         public int Count => count;
 
-        internal void Add(JMember e)
+        internal void Add(JMember mem)
         {
             int len = elements.Length;
             if (count >= len)
             {
-                JMember[] all = new JMember[len * 4];
-                Array.Copy(elements, all, len);
-                elements = all;
+                JMember[] @new = new JMember[len * 4];
+                Array.Copy(elements, 0, @new, 0, len);
+                elements = @new;
             }
-            elements[count++] = e;
+            elements[count++] = mem;
         }
 
         internal void Save<R>(ISink<R> snk) where R : ISink<R>
         {
             for (int i = 0; i < count; i++)
             {
-                JMember elem = elements[i];
-                JType typ = elem.type;
+                JMember mem = elements[i];
+                JType typ = mem.type;
                 if (typ == JType.Array)
                 {
-                    snk.Put((JArr)elem);
+                    snk.Put((JArr)mem);
                 }
                 else if (typ == JType.Object)
                 {
-                    snk.Put((JObj)elem);
+                    snk.Put((JObj)mem);
                 }
                 else if (typ == JType.String)
                 {
-                    snk.Put((string)elem);
+                    snk.Put((string)mem);
                 }
                 else if (typ == JType.Number)
                 {
-                    snk.Put((Number)elem);
+                    snk.Put((Number)mem);
                 }
                 else if (typ == JType.True)
                 {
@@ -75,7 +78,6 @@ namespace Greatbone.Core
             }
         }
 
-
         public P[] ToArr<P>(byte x = 0xff) where P : IPersist, new()
         {
             P[] arr = new P[count];
@@ -89,4 +91,5 @@ namespace Greatbone.Core
         }
 
     }
+
 }

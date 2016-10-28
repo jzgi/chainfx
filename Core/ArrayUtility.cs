@@ -13,10 +13,10 @@ namespace Greatbone.Core
             }
 
             int len = arr.Length;
-            E[] all = new E[len + 1];
-            Array.Copy(arr, all, len);
-            all[len] = v;
-            return all;
+            E[] @new = new E[len + 1];
+            Array.Copy(arr, @new, len);
+            @new[len] = v;
+            return @new;
         }
 
         public static E[] Add<E>(this E[] arr, params E[] v)
@@ -28,10 +28,25 @@ namespace Greatbone.Core
 
             int len = arr.Length;
             int vlen = v.Length;
-            E[] all = new E[len + vlen];
-            Array.Copy(arr, all, len);
-            Array.Copy(v, 0, all, len, vlen);
-            return all;
+            E[] @new = new E[len + vlen];
+            Array.Copy(arr, @new, len);
+            Array.Copy(v, 0, @new, len, vlen);
+            return @new;
+        }
+
+        public static E[] Remove<E>(this E[] arr, int index)
+        {
+            if (arr == null) return null;
+
+            int len = arr.Length;
+
+            if (index >= len || index < 0) return arr;
+
+            E[] @new = new E[len - 1];
+            Array.Copy(arr, 0, @new, 0, index);
+            int next = index + 1;
+            Array.Copy(arr, next, @new, index, len - next);
+            return @new;
         }
 
     }

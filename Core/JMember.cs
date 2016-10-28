@@ -3,11 +3,11 @@ using System;
 namespace Greatbone.Core
 {
 
-  
-
+    ///
     /// <summary>
-    /// A member represents a value or a name/value pair if with the name.
+    /// Represents a value or a name/value pair if with the name.
     /// </summary>
+    ///
     public struct JMember : IKeyed
     {
 

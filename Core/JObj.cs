@@ -3,9 +3,11 @@ using System;
 namespace Greatbone.Core
 {
 
+    ///
     /// <summary>
-    /// An object JSON data model.
+    /// A JSON object model.
     /// </summary>
+    ///
     public class JObj : ISource
     {
         const int InitialCapacity = 16;
@@ -17,67 +19,40 @@ namespace Greatbone.Core
             pairs = new Roll<JMember>(16);
         }
 
+        // add null
         internal void Add(string name)
         {
-            JMember e = new JMember()
-            {
-                Key = name
-            };
-            pairs.Add(e);
+            pairs.Add(new JMember() { Key = name });
         }
 
         internal void Add(string name, JObj v)
         {
-            JMember e = new JMember(v)
-            {
-                Key = name
-            };
-            pairs.Add(e);
+            pairs.Add(new JMember(v) { Key = name });
         }
 
         internal void Add(string name, JArr v)
         {
-            JMember e = new JMember(v)
-            {
-                Key = name
-            };
-            pairs.Add(e);
+            pairs.Add(new JMember(v) { Key = name });
         }
 
         internal void Add(string name, string v)
         {
-            JMember e = new JMember(v)
-            {
-                Key = name
-            };
-            pairs.Add(e);
+            pairs.Add(new JMember(v) { Key = name });
         }
 
         internal void Add(string name, byte[] v)
         {
-            JMember e = new JMember(v)
-            {
-                Key = name
-            };
-            pairs.Add(e);
+            pairs.Add(new JMember(v) { Key = name });
         }
 
         internal void Add(string name, bool v)
         {
-            JMember e = new JMember(v)
-            {
-                Key = name
-            };
-            pairs.Add(e);
+            pairs.Add(new JMember(v) { Key = name });
         }
 
         internal void Add(string name, Number v)
         {
-            JMember e = new JMember(v)
-            {
-                Key = name
-            };
-            pairs.Add(e);
+            pairs.Add(new JMember(v) { Key = name });
         }
 
         public int Count => pairs.Count;
@@ -218,7 +193,11 @@ namespace Greatbone.Core
             if (pairs.TryGet(name, out pair))
             {
                 JObj jo = (JObj)pair;
-                v = new P(); v.Load(jo);
+                if (jo != null)
+                {
+                    v = new P();
+                    v.Load(jo);
+                }
                 return true;
             }
             return false;
@@ -344,42 +323,43 @@ namespace Greatbone.Core
         }
 
 
-        internal void Save<R>(ISink<R> sk) where R : ISink<R>
+        internal void Save<R>(ISink<R> s) where R : ISink<R>
         {
             for (int i = 0; i < pairs.Count; i++)
             {
-                JMember pair = pairs[i];
-                JType typ = pair.type;
+                JMember mem = pairs[i];
+                JType typ = mem.type;
                 if (typ == JType.Array)
                 {
-                    sk.Put(pair.Key, (JArr)pair);
+                    s.Put(mem.Key, (JArr)mem);
                 }
                 else if (typ == JType.Object)
                 {
-                    sk.Put(pair.Key, (JObj)pair);
+                    s.Put(mem.Key, (JObj)mem);
                 }
                 else if (typ == JType.String)
                 {
-                    sk.Put(pair.Key, (string)pair);
+                    s.Put(mem.Key, (string)mem);
                 }
                 else if (typ == JType.Number)
                 {
-                    sk.Put(pair.Key, (Number)pair);
+                    s.Put(mem.Key, (Number)mem);
                 }
                 else if (typ == JType.True)
                 {
-                    sk.Put(pair.Key, true);
+                    s.Put(mem.Key, true);
                 }
                 else if (typ == JType.False)
                 {
-                    sk.Put(pair.Key, false);
+                    s.Put(mem.Key, false);
                 }
                 else if (typ == JType.Null)
                 {
-                    sk.PutNull(pair.Key);
+                    s.PutNull(mem.Key);
                 }
             }
         }
 
     }
+    
 }
