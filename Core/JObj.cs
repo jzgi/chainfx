@@ -348,7 +348,7 @@ namespace Greatbone.Core
             for (int i = 0; i < pairs.Count; i++)
             {
                 JMember pair = pairs[i];
-                sbyte vt = pair.vt;
+                VT vt = pair.vt;
                 if (vt == VT.Array)
                 {
                     sk.Put(pair.Key, (JArr)pair);
