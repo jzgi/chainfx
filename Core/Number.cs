@@ -12,7 +12,7 @@ namespace Greatbone.Core
         internal int fract;
 
         // point & the scaling factor
-        byte pt;
+        sbyte pt;
 
         // negative
         internal bool negat;
@@ -21,7 +21,7 @@ namespace Greatbone.Core
         {
             bigint = 0;
             fract = 0;
-            pt = 0; // without point yet
+            pt = -1; // without point yet
             if (first == '-')
             {
                 negat = true;

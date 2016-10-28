@@ -256,8 +256,8 @@ namespace Greatbone.Core
             int p = pos;
             for (;;)
             {
-                byte b = buffer[p++];
                 if (p >= count) throw FormatEx;
+                byte b = buffer[++p];
                 if (b == '.')
                 {
                     num.Pt = true;

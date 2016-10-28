@@ -10,6 +10,8 @@ namespace Greatbone.Sample
     ///
     public interface IMgmt
     {
+        void mgmt(WebContext wc, string subscpt);
+        
         void srch(WebContext wc, string subscpt);
 
         void del(WebContext wc, string subscpt);

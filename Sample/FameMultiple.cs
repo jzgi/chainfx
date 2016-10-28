@@ -57,7 +57,7 @@ namespace Greatbone.Sample
 
             using (var dc = Service.NewDbContext())
             {
-                DbSql sql = new DbSql("INSERT INTO fames")._(Fame.Empty)._VALUES_(Fame.Empty)._("ON CONFLICT (id) DO UPDATE")._SET_(Fame.Empty)._("WHERE authorid = @1");
+                DbSql sql = new DbSql("INSERT INTO fames")._(Fame.Empty)._VALUES_(Fame.Empty)._("ON CONFLICT (id) DO UPDATE")._SET_(Fame.Empty)._("WHERE fames.id = @1");
                 if (dc.Execute(sql.ToString(), p => { obj.Save(p); p.Put(uid); }) > 0)
                 {
                     wc.StatusCode = 200; // ok

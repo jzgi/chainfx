@@ -6,9 +6,9 @@ namespace Greatbone.Core
     /// <summary>
     /// The enumeration of value types.
     /// </summary>
-    public enum VT : byte
+    public static class VT
     {
-        Null = 0, String, Number, Object, Array, Bytes, True, False
+        public const sbyte Null = 0, String = 1, Number = 2, Object = 3, Array = 4, Bytes = 5, True = 6, False = 7;
     }
 
     /// <summary>
@@ -16,8 +16,9 @@ namespace Greatbone.Core
     /// </summary>
     public struct JMember : IKeyed
     {
+
         // type of the value
-        internal readonly VT vt;
+        internal readonly sbyte vt;
 
         // Obj, Arr, string, byte[]
         internal readonly object refv;

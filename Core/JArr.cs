@@ -43,7 +43,7 @@ namespace Greatbone.Core
             for (int i = 0; i < count; i++)
             {
                 JMember elem = elements[i];
-                VT vt = elem.vt;
+                sbyte vt = elem.vt;
                 if (vt == VT.Array)
                 {
                     snk.Put((JArr)elem);
