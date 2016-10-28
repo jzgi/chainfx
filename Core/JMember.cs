@@ -3,13 +3,7 @@ using System;
 namespace Greatbone.Core
 {
 
-    /// <summary>
-    /// The enumeration of value types.
-    /// </summary>
-    public enum VT : sbyte
-    {
-        Null = 0, String = 1, Number = 2, Object = 3, Array = 4, Bytes = 5, True = 6, False = 7
-    }
+  
 
     /// <summary>
     /// A member represents a value or a name/value pair if with the name.
@@ -18,7 +12,7 @@ namespace Greatbone.Core
     {
 
         // type of the value
-        internal readonly VT vt;
+        internal readonly JType type;
 
         // Obj, Arr, string, byte[]
         internal readonly object refv;
@@ -30,7 +24,7 @@ namespace Greatbone.Core
 
         internal JMember(JObj v)
         {
-            vt = VT.Object;
+            type = JType.Object;
             refv = v;
             numv = default(Number);
             key = null;
@@ -38,7 +32,7 @@ namespace Greatbone.Core
 
         internal JMember(JArr v)
         {
-            vt = VT.Array;
+            type = JType.Array;
             refv = v;
             numv = default(Number);
             key = null;
@@ -46,7 +40,7 @@ namespace Greatbone.Core
 
         internal JMember(string v)
         {
-            vt = VT.String;
+            type = JType.String;
             refv = v;
             numv = default(Number);
             key = null;
@@ -54,7 +48,7 @@ namespace Greatbone.Core
 
         internal JMember(byte[] v)
         {
-            vt = VT.Bytes;
+            type = JType.Bytes;
             refv = v;
             numv = default(Number);
             key = null;
@@ -62,7 +56,7 @@ namespace Greatbone.Core
 
         internal JMember(bool v)
         {
-            vt = v ? VT.True : VT.False;
+            type = v ? JType.True : JType.False;
             refv = null;
             numv = default(Number);
             key = null;
@@ -70,7 +64,7 @@ namespace Greatbone.Core
 
         internal JMember(Number v)
         {
-            vt = VT.Number;
+            type = JType.Number;
             refv = null;
             numv = v;
             key = null;
@@ -87,7 +81,7 @@ namespace Greatbone.Core
 
         public static implicit operator JObj(JMember v)
         {
-            if (v.vt == VT.Object)
+            if (v.type == JType.Object)
             {
                 return (JObj)v.refv;
             }
@@ -96,7 +90,7 @@ namespace Greatbone.Core
 
         public static implicit operator JArr(JMember v)
         {
-            if (v.vt == VT.Array)
+            if (v.type == JType.Array)
             {
                 return (JArr)v.refv;
             }
@@ -105,12 +99,12 @@ namespace Greatbone.Core
 
         public static implicit operator bool(JMember v)
         {
-            return v.vt == VT.True;
+            return v.type == JType.True;
         }
 
         public static implicit operator short(JMember v)
         {
-            if (v.vt == VT.Number)
+            if (v.type == JType.Number)
             {
                 return v.numv.Short;
             }
@@ -119,7 +113,7 @@ namespace Greatbone.Core
 
         public static implicit operator int(JMember v)
         {
-            if (v.vt == VT.Number)
+            if (v.type == JType.Number)
             {
                 return v.numv.Int;
             }
@@ -128,7 +122,7 @@ namespace Greatbone.Core
 
         public static implicit operator long(JMember v)
         {
-            if (v.vt == VT.Number)
+            if (v.type == JType.Number)
             {
                 return v.numv.Long;
             }
@@ -137,7 +131,7 @@ namespace Greatbone.Core
 
         public static implicit operator decimal(JMember v)
         {
-            if (v.vt == VT.Number)
+            if (v.type == JType.Number)
             {
                 return v.numv.Decimal;
             }
@@ -146,7 +140,7 @@ namespace Greatbone.Core
 
         public static implicit operator Number(JMember v)
         {
-            if (v.vt == VT.Number)
+            if (v.type == JType.Number)
             {
                 return v.numv;
             }
@@ -155,7 +149,7 @@ namespace Greatbone.Core
 
         public static implicit operator DateTime(JMember v)
         {
-            if (v.vt == VT.String)
+            if (v.type == JType.String)
             {
                 return default(DateTime);
             }
@@ -164,7 +158,7 @@ namespace Greatbone.Core
 
         public static implicit operator char[] (JMember v)
         {
-            if (v.vt == VT.String)
+            if (v.type == JType.String)
             {
                 return (char[])v.refv;
             }
@@ -173,7 +167,7 @@ namespace Greatbone.Core
 
         public static implicit operator string(JMember v)
         {
-            if (v.vt == VT.String)
+            if (v.type == JType.String)
             {
                 return (string)v.refv;
             }
@@ -182,7 +176,7 @@ namespace Greatbone.Core
 
         public static implicit operator byte[] (JMember v)
         {
-            if (v.vt == VT.String)
+            if (v.type == JType.String)
             {
                 return (byte[])v.refv;
             }

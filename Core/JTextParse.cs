@@ -1,5 +1,3 @@
-using System.Text;
-
 namespace Greatbone.Core
 {
 
@@ -250,8 +248,8 @@ namespace Greatbone.Core
             int p = pos;
             for (;;)
             {
-                char b = buffer[p++];
                 if (p >= count) throw FormatEx;
+                char b = buffer[++p];
                 if (b == '.')
                 {
                     num.Pt = true;
@@ -266,6 +264,7 @@ namespace Greatbone.Core
                     return num;
                 }
             }
+
         }
 
         bool ParseBool(ref int pos, char first)

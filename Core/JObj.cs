@@ -348,32 +348,32 @@ namespace Greatbone.Core
             for (int i = 0; i < pairs.Count; i++)
             {
                 JMember pair = pairs[i];
-                VT vt = pair.vt;
-                if (vt == VT.Array)
+                JType typ = pair.type;
+                if (typ == JType.Array)
                 {
                     sk.Put(pair.Key, (JArr)pair);
                 }
-                else if (vt == VT.Object)
+                else if (typ == JType.Object)
                 {
                     sk.Put(pair.Key, (JObj)pair);
                 }
-                else if (vt == VT.String)
+                else if (typ == JType.String)
                 {
                     sk.Put(pair.Key, (string)pair);
                 }
-                else if (vt == VT.Number)
+                else if (typ == JType.Number)
                 {
                     sk.Put(pair.Key, (Number)pair);
                 }
-                else if (vt == VT.True)
+                else if (typ == JType.True)
                 {
                     sk.Put(pair.Key, true);
                 }
-                else if (vt == VT.False)
+                else if (typ == JType.False)
                 {
                     sk.Put(pair.Key, false);
                 }
-                else if (vt == VT.Null)
+                else if (typ == JType.Null)
                 {
                     sk.PutNull(pair.Key);
                 }

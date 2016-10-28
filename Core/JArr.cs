@@ -43,32 +43,32 @@ namespace Greatbone.Core
             for (int i = 0; i < count; i++)
             {
                 JMember elem = elements[i];
-                VT vt = elem.vt;
-                if (vt == VT.Array)
+                JType typ = elem.type;
+                if (typ == JType.Array)
                 {
                     snk.Put((JArr)elem);
                 }
-                else if (vt == VT.Object)
+                else if (typ == JType.Object)
                 {
                     snk.Put((JObj)elem);
                 }
-                else if (vt == VT.String)
+                else if (typ == JType.String)
                 {
                     snk.Put((string)elem);
                 }
-                else if (vt == VT.Number)
+                else if (typ == JType.Number)
                 {
                     snk.Put((Number)elem);
                 }
-                else if (vt == VT.True)
+                else if (typ == JType.True)
                 {
                     snk.Put(true);
                 }
-                else if (vt == VT.False)
+                else if (typ == JType.False)
                 {
                     snk.Put(false);
                 }
-                else if (vt == VT.Null)
+                else if (typ == JType.Null)
                 {
                     snk.PutNull();
                 }
