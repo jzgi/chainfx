@@ -61,15 +61,27 @@ namespace Greatbone.Core
         public WebService Service => arg.Service;
 
 
-        public Roll<WebAction> Actions => actions;
+        // public Roll<WebAction> Actions => actions;
 
-        public WebAction GetAction(string method)
+        public WebAction Action(string method)
         {
             if (string.IsNullOrEmpty(method))
             {
                 return defaction;
             }
             return actions[method];
+        }
+
+        public WebAction[] Actions(params string[] methods)
+        {
+            int len = methods.Length;
+            WebAction[] was = new WebAction[len];
+            for (int i = 0; i < methods.Length; i++)
+            {
+                string meth = methods[i];
+                was[i] = string.IsNullOrEmpty(meth) ? defaction : actions[meth];
+            }
+            return was;
         }
 
         internal virtual void Handle(string relative, WebContext wc)
@@ -96,7 +108,7 @@ namespace Greatbone.Core
                     key = rsc.Substring(0, dash);
                     subscpt = rsc.Substring(dash + 1);
                 }
-                WebAction wa = string.IsNullOrEmpty(key) ? defaction : GetAction(key);
+                WebAction wa = string.IsNullOrEmpty(key) ? defaction : Action(key);
                 if (wa == null)
                 {
                     wc.StatusCode = 404;

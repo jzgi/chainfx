@@ -38,6 +38,7 @@ namespace Greatbone.Sample
             cont.T("<main class=\"mdl-layout__content\">");
             cont.T("<div>");
 
+            main(cont);
 
             cont.T("</div>");
             cont.T("</main>");

@@ -106,17 +106,16 @@ namespace Greatbone.Core
             T("</button>");
         }
 
-        public void Buttons(params string[] actions)
+        public void Buttons(WebAction[] was)
         {
-            // for (int i = 0; i < actions.Length; i++)
-            // {
-            //     WebAction wa = wi[i];
-            //     ButtonAttribute btn = wa.Button;
-            //     if (btn == null) continue;
-            //     T("<button class=\"mdl-button mdl-js-button mdl-button--raised mdl-button--colored\">");
-            //     T(wa.Key);
-            //     T("</button>");
-            // }
+            for (int i = 0; i < was.Length; i++)
+            {
+                WebAction wa = was[i];
+                ButtonAttribute btn = wa.Button;
+                T("<button class=\"mdl-button mdl-js-button mdl-button--raised mdl-button--colored\">");
+                T(wa.Key);
+                T("</button>");
+            }
         }
 
         public void Dialog(string h, Action content)

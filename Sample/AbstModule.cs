@@ -14,7 +14,6 @@ namespace Greatbone.Sample
         {
         }
 
-        [IfAdmin]
         public virtual void mgmt(WebContext wc, string subscpt)
         {
         }

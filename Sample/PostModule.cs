@@ -6,9 +6,13 @@ namespace Greatbone.Sample
 {
     public class PostModule : AbstModule, IMgmt
     {
+        readonly WebAction[] mgmtWas;
+
         public PostModule(WebArg arg) : base(arg)
         {
             SetMultiple<PostMultiple>();
+
+            mgmtWas = Actions(nameof(mgmt), nameof(srch), nameof(del), nameof(status));
         }
 
         public override void @default(WebContext wc, string subscpt)
@@ -80,7 +84,7 @@ namespace Greatbone.Sample
             wc.SendMajorLayout(200, "管理功能", a =>
             {
                 // a.Form(,,,,, )
-                a.Buttons("");
+                a.Buttons(mgmtWas);
             });
 
         }
