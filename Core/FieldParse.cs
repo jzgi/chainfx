@@ -5,7 +5,7 @@ namespace Greatbone.Core
 
     ///
     /// <summary>
-    /// A HTTP header field value tokenizer.
+    /// Tp parse HTTP header field value;
     /// </summary>
     ///
     struct FieldParse
@@ -58,22 +58,21 @@ namespace Greatbone.Core
             if (start >= fvalue.Length) throw FormatEx;
 
             bool quot = fvalue[start] == '"';
-            int p = quot ? ++start : start;
-            for (;;)
+            if (quot)
             {
-                if (p >= fvalue.Length) throw FormatEx;
-
-                char c = fvalue[p++];
-                if (c == '/') // quoted-pair
+                int p = start + 1;
+                for (;;)
                 {
-                    if (!quot) throw FormatEx;
-                    p++;
-                    str.Add(fvalue[p]); // add the following char
-                }
-                else if (c == '"')
-                {
-                    if (quot)
+                    if (p >= fvalue.Length) throw FormatEx;
+                    char c = fvalue[p++];
+                    if (c == '/') // quoted-pair
                     {
+                        p++;
+                        str.Add(fvalue[p]); // add the following char
+                    }
+                    else if (c == '"')
+                    {
+                        pos = p;
                         return str.ToString();
                     }
                     else
@@ -81,9 +80,27 @@ namespace Greatbone.Core
                         str.Add(c);
                     }
                 }
-                else if (c ==' ') // TODO
+            }
+            else
+            {
+                int p = start;
+                for (;;)
                 {
-                    str.Add(c);
+                    if (p >= fvalue.Length)
+                    {
+                        pos = p;
+                        return str.ToString();
+                    }
+                    char c = fvalue[p++];
+                    if (c == ',' || c == '/' || c == ':' || c == ';') // a delimiter
+                    {
+                        pos = p;
+                        return str.ToString();
+                    }
+                    else
+                    {
+                        str.Add(c);
+                    }
                 }
             }
         }

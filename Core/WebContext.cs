@@ -64,13 +64,14 @@ namespace Greatbone.Core
                 string ctyp = Request.ContentType;
                 if ("application/x-www-form-urlencoded".Equals(ctyp))
                 {
-                    FormParse parse = new FormParse(bytesSeg.Value);
-                    entity = parse.Parse();
+                    FormParse fp = new FormParse(bytesSeg.Value);
+                    entity = fp.Parse();
                 }
                 else
                 {
-                    JParse parse = new JParse(bytesSeg.Value);
-                    entity = parse.Parse();
+                    bool jx = "application/jsonx".Equals(ctyp); // json extention
+                    JParse jp = new JParse(bytesSeg.Value, jx);
+                    entity = jp.Parse();
                 }
             }
         }

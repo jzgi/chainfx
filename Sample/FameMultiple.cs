@@ -45,6 +45,8 @@ namespace Greatbone.Sample
         /// <code>
         /// POST /fame/_id_/upd
         /// {
+        ///   "name" : "michael",
+        ///   "quote" : ""    
         /// }
         /// </code>
         public void upd(WebContext wc, string subscpt)

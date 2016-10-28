@@ -6,7 +6,7 @@ namespace Greatbone.Core
 
     ///
     /// <summary>
-    /// Parse application/x-www-form-urlencoded octets.
+    /// To parse application/x-www-form-urlencoded octets.
     /// </summary>
     ///
     public struct FormParse
