@@ -31,7 +31,7 @@ namespace Greatbone.Sample
             var www = new WwwService(new WebConfig
             {
                 key = "www",
-                @extern = "192.168.1.38:8080",
+                @extern = "127.0.0.1:8080",
                 intern = "127.0.0.1:7070",
                 net = addrs,
                 db = pg

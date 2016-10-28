@@ -1,5 +1,5 @@
-﻿using Greatbone.Core;
-using System;
+﻿using System;
+using Greatbone.Core;
 using static Greatbone.Core.XUtility;
 
 namespace Greatbone.Sample
@@ -76,13 +76,11 @@ namespace Greatbone.Sample
         //
         public override void mgmt(WebContext wc, string subscpt)
         {
-            WebInterface iadm = GetInterface(typeof(IMgmt));
-
             // returh first UI
             wc.SendMajorLayout(200, "管理功能", a =>
             {
                 // a.Form(,,,,, )
-                a.Buttons(iadm);
+                a.Buttons("");
             });
 
         }

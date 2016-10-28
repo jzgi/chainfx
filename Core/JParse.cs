@@ -5,6 +5,7 @@ namespace Greatbone.Core
 
     public struct JParse
     {
+
         static readonly ParseException FormatEx = new ParseException("wrong octet json Format");
 
         // byte buffer content to parse
@@ -54,6 +55,11 @@ namespace Greatbone.Core
                     if (p >= count) throw FormatEx;
                     if (b == ' ' || b == '\t' || b == '\n' || b == '\r') continue;
                     if (b == '"') break; // meet first quote
+                    if (b == '}') // close early empty
+                    {
+                        pos = p;
+                        return obj;
+                    }
                     throw FormatEx;
                 }
 
@@ -127,7 +133,7 @@ namespace Greatbone.Core
                     if (p >= count) throw FormatEx;
                     if (b == ' ' || b == '\t' || b == '\n' || b == '\r') continue;
                     if (b == ',') break;
-                    if (b == '}')
+                    if (b == '}') // close normal
                     {
                         pos = p;
                         return obj;
@@ -135,7 +141,6 @@ namespace Greatbone.Core
                     throw FormatEx;
                 }
             }
-
         }
 
         JArr ParseArr(ref int pos)
@@ -147,6 +152,11 @@ namespace Greatbone.Core
                 byte b = buffer[++p];
                 if (p >= count) throw FormatEx;
                 if (b == ' ' || b == '\t' || b == '\n' || b == '\r') continue; // skip ws
+                if (b == ']') // close early empty
+                {
+                    pos = p;
+                    return arr;
+                }
                 if (b == '{')
                 {
                     JObj v = ParseObj(ref p);
@@ -190,7 +200,7 @@ namespace Greatbone.Core
                     if (p >= count) throw FormatEx;
                     if (b == ' ' || b == '\t' || b == '\n' || b == '\r') continue; // skip ws
                     if (b == ',') break;
-                    if (b == ']')
+                    if (b == ']') // close normal
                     {
                         pos = p;
                         return arr;

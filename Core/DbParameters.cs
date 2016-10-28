@@ -10,8 +10,6 @@ namespace Greatbone.Core
     public class DbParameters : ISink<DbParameters>
     {
 
-        const int VarcharMax = 200;
-
         static string[] Defaults =
         {
             "1", "2", "3", "4", "5", "6", "7", "8", "9", "10", "11", "12", "13", "14", "15", "16", "17", "18", "19", "20", "21", "22", "23", "24", "15", "16", "17", "18", "19", "20"
@@ -154,7 +152,7 @@ namespace Greatbone.Core
             {
                 name = Defaults[index++];
             }
-            coll.Add(new NpgsqlParameter(name, (maxlen <= VarcharMax) ? NpgsqlDbType.Varchar : NpgsqlDbType.Text)
+            coll.Add(new NpgsqlParameter(name, (maxlen >= 0) ? NpgsqlDbType.Varchar : NpgsqlDbType.Text)
             {
                 Value = (v != null) ? (object)v : DBNull.Value
             });

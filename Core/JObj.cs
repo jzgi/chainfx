@@ -2,6 +2,7 @@ using System;
 
 namespace Greatbone.Core
 {
+
     /// <summary>
     /// An object JSON data model.
     /// </summary>

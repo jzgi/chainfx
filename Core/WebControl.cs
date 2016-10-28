@@ -23,8 +23,6 @@ namespace Greatbone.Core
         readonly WebAction defaction;
 
 
-        List<WebInterface> interfaces;
-
         protected WebControl(WebArg arg)
         {
             this.arg = arg;
@@ -44,31 +42,6 @@ namespace Greatbone.Core
                     }
                     actions.Add(wa);
                 }
-            }
-
-            // init interfaces
-            Type[] ityps = typ.GetInterfaces();
-            for (int i = 0; i < ityps.Length; i++)
-            {
-                Type ityp = ityps[i];
-                string ns = ityp.Namespace;
-                if (ns.Equals("Greatbone.Core") || ns.StartsWith("System") || ns.StartsWith("Microsoft")) continue; // a system interface
-
-                if (interfaces == null) interfaces = new List<WebInterface>(4);
-                WebInterface wi = new WebInterface(ityp);
-                foreach (MethodInfo mi in ityp.GetMethods())
-                {
-                    ParameterInfo[] pis = mi.GetParameters();
-                    if (pis.Length == 2 && pis[0].ParameterType == typeof(WebContext) && pis[1].ParameterType == typeof(string))
-                    {
-                        WebAction wa;
-                        if (actions.TryGet(mi.Name, out wa))
-                        {
-                            wi.Add(wa);
-                        }
-                    }
-                }
-                interfaces.Add(wi);
             }
         }
 
@@ -97,22 +70,6 @@ namespace Greatbone.Core
                 return defaction;
             }
             return actions[method];
-        }
-
-        public WebInterface GetInterface(Type type)
-        {
-            if (interfaces != null)
-            {
-                for (int i = 0; i < interfaces.Count; i++)
-                {
-                    WebInterface wi = interfaces[i];
-                    if (wi.Type == type)
-                    {
-                        return wi;
-                    }
-                }
-            }
-            return null;
         }
 
         internal virtual void Handle(string relative, WebContext wc)
