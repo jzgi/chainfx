@@ -7,6 +7,8 @@ namespace Greatbone.Sample
 
     public struct Fame : IPersist
     {
+        public static Fame Empty = new Fame();
+
         internal string id;
         internal string name;
         internal string quote;

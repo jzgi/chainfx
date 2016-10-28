@@ -39,8 +39,6 @@ namespace Greatbone.Sample
 
 
 
-        static string UpdSql = new DbSql("INSERT INTO fames")._(new Fame())._VALUES_(new Fame())._("ON CONFLICT (id) DO UPDATE")._SET_(new Fame())._("WHERE authorid = @1").ToString();
-
         /// <summary>
         /// Update the record.
         /// </summary>
@@ -57,9 +55,10 @@ namespace Greatbone.Sample
 
             using (var dc = Service.NewDbContext())
             {
-                if (dc.Execute(UpdSql, p => { obj.Save(p); p.Put(uid); }) > 0)
+                DbSql sql = new DbSql("INSERT INTO fames")._(Fame.Empty)._VALUES_(Fame.Empty)._("ON CONFLICT (id) DO UPDATE")._SET_(Fame.Empty)._("WHERE authorid = @1");
+                if (dc.Execute(sql.ToString(), p => { obj.Save(p); p.Put(uid); }) > 0)
                 {
-                    wc.StatusCode = 200;
+                    wc.StatusCode = 200; // ok
                 }
                 else
                 {
