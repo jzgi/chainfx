@@ -526,6 +526,8 @@ namespace Greatbone.Core
 
         internal async Task SendAsync()
         {
+            SetHeader("Connection", "keep-alive");
+
             if (Pub != null)
             {
                 string cc = Pub.Value ? "public" : "private" + ", max-age=" + MaxAge;

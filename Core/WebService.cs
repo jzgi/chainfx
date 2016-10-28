@@ -186,6 +186,9 @@ namespace Greatbone.Core
                 {
                     Authenticate(wc);
                     Handle(path.Substring(1), wc);
+                    
+                    // prepare and send
+                    await wc.SendAsync();
                 }
                 catch (Exception e)
                 {
@@ -196,13 +199,10 @@ namespace Greatbone.Core
                     }
                     else
                     {
-                        ERR(e.Message);
+                        ERR(e.Message, e); // stacktrace
                     }
                 }
             }
-
-            // prepare and send
-            await wc.SendAsync();
         }
 
         public void DisposeContext(HttpContext context, Exception exception)
@@ -392,7 +392,7 @@ namespace Greatbone.Core
                 logWriter.WriteLine(state.ToString());
                 if (exception != null)
                 {
-                    logWriter.WriteLine(exception.ToString());
+                    logWriter.WriteLine(exception.StackTrace);
                 }
             }
         }

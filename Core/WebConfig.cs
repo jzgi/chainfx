@@ -22,6 +22,7 @@ namespace Greatbone.Core
     ///
     public class WebConfig : WebArg, IPersist
     {
+
         // partition
         internal string part;
 
@@ -40,8 +41,8 @@ namespace Greatbone.Core
         // database connectivity
         internal DbConfig db;
 
-        // logging level
-        internal int logging;
+        // logging level, default to warning (3)
+        internal int logging = 3;
 
         internal JObj opts;
 
