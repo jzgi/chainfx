@@ -17,7 +17,7 @@ namespace Greatbone.Core
 
         readonly Action<WebContext, string> doer;
 
-        readonly IfAttribute[] ifs;
+        readonly ToAttribute[] tos;
 
         readonly ButtonAttribute button;
 
@@ -30,13 +30,13 @@ namespace Greatbone.Core
             doer = (Action<WebContext, string>)mi.CreateDelegate(typeof(Action<WebContext, string>), control);
 
             // prepare if attributes
-            List<IfAttribute> lst = null;
-            foreach (var @if in mi.GetCustomAttributes<IfAttribute>())
+            List<ToAttribute> lst = null;
+            foreach (var to in mi.GetCustomAttributes<ToAttribute>())
             {
-                if (lst == null) lst = new List<IfAttribute>(8);
-                lst.Add(@if);
+                if (lst == null) lst = new List<ToAttribute>(8);
+                lst.Add(to);
             }
-            ifs = lst?.ToArray();
+            tos = lst?.ToArray();
 
             button = mi.GetCustomAttribute<ButtonAttribute>();
 
@@ -44,21 +44,24 @@ namespace Greatbone.Core
 
         public ButtonAttribute Button => button;
 
+        const string PrivateKey = "3e43a7180";
+
         internal bool TryDo(WebContext wc, string subscpt)
         {
             // check ifs
-            if (ifs != null)
+            if (tos != null)
             {
                 if (wc.Principal == null)
                 {
                     wc.StatusCode = 401; // unauthorized
-                    wc.Response.Headers.Add("WWW-Authenticate", new StringValues("Bearer"));
+                    wc.AddHeader("WWW-Authenticate", "Bearer");
+                    wc.AddHeader("WWW-Authenticate", "Digest realm=\"login\", nonce=\"" + StrUtility.MD5(wc.Connection.RemoteIpAddress.ToString() + ':' + PrivateKey) + "\"");
                     return false;
                 }
 
-                for (int i = 0; i < ifs.Length; i++)
+                for (int i = 0; i < tos.Length; i++)
                 {
-                    if (!ifs[i].Test(wc))
+                    if (!tos[i].Test(wc))
                     {
                         wc.StatusCode = 403; // forbidden
                         return false;

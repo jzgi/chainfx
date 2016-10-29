@@ -78,6 +78,7 @@ namespace Greatbone.Sample
         //
         // ADMIN
         //
+        [ToAdmin]
         public override void mgmt(WebContext wc, string subscpt)
         {
             // returh first UI

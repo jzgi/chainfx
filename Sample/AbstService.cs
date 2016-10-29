@@ -10,11 +10,14 @@ namespace Greatbone.Sample
     ///
     public abstract class AbstService : WebService
     {
+        readonly Login[] logins;
+
         public AbstService(WebConfig cfg) : base(cfg)
         {
+            logins = JUtility.FileToArr<Login>(cfg.key + "-access.json");
         }
 
-        [IfAdmin]
+        [ToAdmin]
         public virtual void mgmt(WebContext wc, string subscpt)
         {
             if (Children != null)
@@ -34,55 +37,32 @@ namespace Greatbone.Sample
             }
         }
 
-        protected override bool Authenticate(WebContext wc)
+
+        protected override IPrincipal GetPrincipal(string scheme, string ident)
         {
-            string h = wc.Header("Authorization");
-            if (h == null) return false;
-            string v = (string)h;
-            if (v.StartsWith("Bearer ")) // the Bearer scheme
+            if ("Bearer".Equals(scheme))
             {
-                string tokstr = v.Substring(7);
-                string plain = StrUtility.Decrypt(tokstr, 0x4a78be76, 0x1f0335e2);
-                JTextParse jtp = new JTextParse(plain);
+                JTextParse jtp = new JTextParse(ident);
                 try
                 {
                     JObj jo = (JObj)jtp.Parse();
-                    wc.Principal = jo.ToObj<Token>();
-                    return true;
+                    return jo.ToObj<Token>();
                 }
                 catch
                 {
                 }
             }
-            else if (v.StartsWith("Digest ")) // the Digest scheme
+            else if ("Digest".Equals(scheme))
             {
-                FieldParse fp = new FieldParse(v);
-                string username = fp.Parameter("username");
-                string realm = fp.Parameter("realm");
-                string nonce = fp.Parameter("nonce");
-                string uri = fp.Parameter("uri");
-                string response = fp.Parameter("response");
-
-                // find prin
-                IPrincipal login = GetLogin(username);
-                if (login != null)
+                if (logins != null)
                 {
-                    string H_A2 = StrUtility.MD5(wc.Method + ':' + uri); // A2 = Method ":" digest-uri-value
-                    string request_digest = StrUtility.MD5(login.Credential + ':' + nonce + ':' + H_A2); // request-digest = KD ( H(A1), unq(nonce-value) ":" H(A2) ) >
-
-                    if (request_digest.Equals(response)) // matched
+                    for (int i = 0; i < logins.Length; i++)
                     {
-                        // success
-                        wc.Principal = login;
-                        return true;
+                        Login lgn = logins[i];
+                        if (lgn.id.Equals(ident)) return lgn;
                     }
                 }
             }
-            return false;
-        }
-
-        protected virtual IPrincipal GetLogin(string username)
-        {
             return null;
         }
 

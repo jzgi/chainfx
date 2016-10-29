@@ -79,21 +79,11 @@ namespace Greatbone.Core
 
         public WebConfig LoadFile(string file)
         {
-            try
-            {
-                byte[] bytes = File.ReadAllBytes(file);
-                JParse parse = new JParse(bytes, bytes.Length);
-                JObj jo = (JObj)parse.Parse();
-
-                Load(jo); // may override
-
-            }
-            catch (Exception ex)
-            {
-                Debug.WriteLine(ex.StackTrace);
-            }
+            JObj jo = JUtility.FileToJObj(file);
+            Load(jo); // may override
             return this;
         }
+        
     }
 
 }

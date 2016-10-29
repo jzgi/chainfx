@@ -65,7 +65,7 @@ namespace Greatbone.Core
                 {
                     if (p >= fvalue.Length) throw FormatEx;
                     char c = fvalue[p++];
-                    if (c == '/') // quoted-pair
+                    if (c == '\\') // quoted-pair
                     {
                         p++;
                         str.Add(fvalue[p]); // add the following char

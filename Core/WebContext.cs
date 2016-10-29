@@ -483,6 +483,11 @@ namespace Greatbone.Core
             Response.Headers.Add(name, new StringValues(str));
         }
 
+        public void AddHeader(string name, string v)
+        {
+            Response.Headers.Append(name, new StringValues(v));
+        }
+
         public IContent Content { get; internal set; }
 
         // public, no-cache or private

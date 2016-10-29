@@ -2,12 +2,11 @@
 
 namespace Greatbone.Sample
 {
-    public class IfAdminAttribute : IfAttribute
+    public class ToAdminAttribute : ToAttribute
     {
         public override bool Test(WebContext wc)
         {
-            Token tok = (Token)wc.Principal;
-            return false;
+            return wc.Principal is Login;
         }
     }
 }

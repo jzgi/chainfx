@@ -185,8 +185,9 @@ namespace Greatbone.Core
                 try
                 {
                     Authenticate(wc);
+
                     Handle(path.Substring(1), wc);
-                    
+
                     // prepare and send
                     await wc.SendAsync();
                 }
@@ -210,7 +211,48 @@ namespace Greatbone.Core
             ((WebContext)context).Dispose();
         }
 
-        protected abstract bool Authenticate(WebContext wc);
+        void Authenticate(WebContext wc)
+        {
+            string hv = wc.Header("Authorization");
+            if (hv == null) return;
+            if (hv.StartsWith("Bearer ")) // the Bearer scheme
+            {
+                string tokstr = hv.Substring(7);
+                string tok = StrUtility.Decrypt(tokstr, 0x4a78be76, 0x1f0335e2); // plain token
+                IPrincipal prin = GetPrincipal("Bearer", tok);
+                if (prin != null)
+                {
+                    wc.Principal = prin; // success
+                }
+            }
+            else if (hv.StartsWith("Digest ")) // the Digest scheme
+            {
+                FieldParse fp = new FieldParse(hv);
+                string username = fp.Parameter("username=");
+                string realm = fp.Parameter("realm=");
+                string nonce = fp.Parameter("nonce=");
+                string uri = fp.Parameter("uri=");
+                string response = fp.Parameter("response=");
+                // obtain principal
+                IPrincipal prin = GetPrincipal("Digest", username);
+                if (prin != null)
+                {
+                    // A2 = Method ":" digest-uri-value
+                    string HA2 = StrUtility.MD5(wc.Method + ':' + uri);
+                    // request-digest = KD ( H(A1), unq(nonce-value) ":" H(A2) ) >
+                    string hrequest = StrUtility.MD5(prin.Credential + ':' + nonce + ':' + HA2);
+                    if (hrequest.Equals(response)) // matched
+                    {
+                        wc.Principal = prin; // success
+                    }
+                }
+            }
+        }
+
+        protected virtual IPrincipal GetPrincipal(string scheme, string ident)
+        {
+            return null;
+        }
 
 
         internal override void Handle(string relative, WebContext wc)

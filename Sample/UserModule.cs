@@ -70,7 +70,7 @@ namespace Greatbone.Sample
             }
         }
 
-        [IfAdmin]
+        [ToAdmin]
         public void create(WebContext wc, string subscpt)
         {
             JObj jo = wc.JObj;
