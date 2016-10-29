@@ -31,8 +31,8 @@ namespace Greatbone.Sample
                 if (dc.QueryA("SELECT * FROM users WHERE id = @1", (p) => p.Put(id)))
                 {
                     Token obj = dc.ToObj<Token>();
-                    string md5 = StrUtility.MD5(password);
-                    if (md5.Equals(obj.credential))
+                    string credential = StrUtility.MD5(id + ':' + ':' + password);
+                    if (credential.Equals(obj.credential))
                     {
                         JContent cont = new JContent(256);
                         cont.PutObj(obj);

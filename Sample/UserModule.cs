@@ -58,7 +58,8 @@ namespace Greatbone.Sample
             {
                 using (var sc = Service.NewDbContext())
                 {
-                    if (sc.Execute("INSERT INTO users (id, credential) VALUES (@1, @2)", p => p.Put(id).Put(StrUtility.MD5(password))) > 0)
+                    string credential = StrUtility.MD5(id + ':' + ':' + password);
+                    if (sc.Execute("INSERT INTO users (id, credential) VALUES (@1, @2)", p => p.Put(id).Put(credential)) > 0)
                     {
                         wc.StatusCode = 200;
                     }

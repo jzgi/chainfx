@@ -44,6 +44,7 @@ namespace Greatbone.Core
 
         public ButtonAttribute Button => button;
 
+        // for generating unique digest nonce
         const string PrivateKey = "3e43a7180";
 
         internal bool TryDo(WebContext wc, string subscpt)
@@ -55,7 +56,8 @@ namespace Greatbone.Core
                 {
                     wc.StatusCode = 401; // unauthorized
                     wc.AddHeader("WWW-Authenticate", "Bearer");
-                    wc.AddHeader("WWW-Authenticate", "Digest realm=\"login\", nonce=\"" + StrUtility.MD5(wc.Connection.RemoteIpAddress.ToString() + ':' + PrivateKey) + "\"");
+                    string nonce = StrUtility.MD5(wc.Connection.RemoteIpAddress.ToString() + ':' + Environment.TickCount + ':' + PrivateKey);
+                    wc.AddHeader("WWW-Authenticate", "Digest realm=\"\", nonce=\"" + nonce + "\"");
                     return false;
                 }
 

@@ -14,7 +14,35 @@ namespace Greatbone.Sample
 
         public AbstService(WebConfig cfg) : base(cfg)
         {
-            logins = JUtility.FileToArr<Login>(cfg.key + "-access.json");
+            logins = JUtility.FileToArr<Login>(cfg.key + "-realm.json");
+        }
+
+
+        protected override IPrincipal GetPrincipal(bool token, string idstr)
+        {
+            if (token) // token
+            {
+                string plain = StrUtility.Decrypt(idstr, 0x4a78be76, 0x1f0335e2); // plain token
+                JTextParse jtp = new JTextParse(plain);
+                try
+                {
+                    JObj jo = (JObj)jtp.Parse();
+                    return jo.ToObj<Token>();
+                }
+                catch { }
+            }
+            else // username
+            {
+                if (logins != null)
+                {
+                    for (int i = 0; i < logins.Length; i++)
+                    {
+                        Login lgn = logins[i];
+                        if (lgn.id.Equals(idstr)) return lgn;
+                    }
+                }
+            }
+            return null;
         }
 
         [ToAdmin]
@@ -37,34 +65,6 @@ namespace Greatbone.Sample
             }
         }
 
-
-        protected override IPrincipal GetPrincipal(string scheme, string ident)
-        {
-            if ("Bearer".Equals(scheme))
-            {
-                JTextParse jtp = new JTextParse(ident);
-                try
-                {
-                    JObj jo = (JObj)jtp.Parse();
-                    return jo.ToObj<Token>();
-                }
-                catch
-                {
-                }
-            }
-            else if ("Digest".Equals(scheme))
-            {
-                if (logins != null)
-                {
-                    for (int i = 0; i < logins.Length; i++)
-                    {
-                        Login lgn = logins[i];
-                        if (lgn.id.Equals(ident)) return lgn;
-                    }
-                }
-            }
-            return null;
-        }
-
     }
+
 }

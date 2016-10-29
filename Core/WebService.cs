@@ -217,9 +217,8 @@ namespace Greatbone.Core
             if (hv == null) return;
             if (hv.StartsWith("Bearer ")) // the Bearer scheme
             {
-                string tokstr = hv.Substring(7);
-                string tok = StrUtility.Decrypt(tokstr, 0x4a78be76, 0x1f0335e2); // plain token
-                IPrincipal prin = GetPrincipal("Bearer", tok);
+                string token = hv.Substring(7);
+                IPrincipal prin = GetPrincipal(true, token);
                 if (prin != null)
                 {
                     wc.Principal = prin; // success
@@ -234,14 +233,14 @@ namespace Greatbone.Core
                 string uri = fp.Parameter("uri=");
                 string response = fp.Parameter("response=");
                 // obtain principal
-                IPrincipal prin = GetPrincipal("Digest", username);
+                IPrincipal prin = GetPrincipal(false, username);
                 if (prin != null)
                 {
                     // A2 = Method ":" digest-uri-value
                     string HA2 = StrUtility.MD5(wc.Method + ':' + uri);
                     // request-digest = KD ( H(A1), unq(nonce-value) ":" H(A2) ) >
-                    string hrequest = StrUtility.MD5(prin.Credential + ':' + nonce + ':' + HA2);
-                    if (hrequest.Equals(response)) // matched
+                    string digest = StrUtility.MD5(prin.Credential + ':' + nonce + ':' + HA2);
+                    if (digest.Equals(response)) // matched
                     {
                         wc.Principal = prin; // success
                     }
@@ -249,7 +248,7 @@ namespace Greatbone.Core
             }
         }
 
-        protected virtual IPrincipal GetPrincipal(string scheme, string ident)
+        protected virtual IPrincipal GetPrincipal(bool token, string idstr)
         {
             return null;
         }
