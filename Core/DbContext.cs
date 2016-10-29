@@ -86,7 +86,11 @@ namespace Greatbone.Core
             Clear();
             command.CommandText = cmdtext;
             command.CommandType = CommandType.Text;
-            p?.Invoke(parameters);
+            if (p != null)
+            {
+                p(parameters);
+                command.Prepare();
+            }
             reader = command.ExecuteReader();
             return reader.Read();
         }
@@ -100,7 +104,11 @@ namespace Greatbone.Core
             Clear();
             command.CommandText = cmdtext;
             command.CommandType = CommandType.Text;
-            p?.Invoke(parameters);
+            if (p != null)
+            {
+                p(parameters);
+                command.Prepare();
+            }
             reader = command.ExecuteReader();
             return reader.HasRows;
         }
@@ -148,7 +156,11 @@ namespace Greatbone.Core
             Clear();
             command.CommandText = cmdtext;
             command.CommandType = CommandType.Text;
-            p?.Invoke(parameters);
+            if (p != null)
+            {
+                p(parameters);
+                command.Prepare();
+            }
             return command.ExecuteNonQuery();
         }
 
@@ -161,7 +173,11 @@ namespace Greatbone.Core
             Clear();
             command.CommandText = cmdtext;
             command.CommandType = CommandType.Text;
-            p?.Invoke(parameters);
+            if (p != null)
+            {
+                p(parameters);
+                command.Prepare();
+            }
             return command.ExecuteScalar();
         }
 

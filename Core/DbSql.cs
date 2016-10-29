@@ -15,10 +15,10 @@ namespace Greatbone.Core
 
 
         // contexts
-        const sbyte ValueList = 0, ColumnList = 1, ParameterList = 2, SetList = 3;
+        const sbyte ColumnList = 1, ParameterList = 2, SetList = 3;
 
         // the putting context
-        internal sbyte ctx;
+        internal sbyte list;
 
         // used when generating a list
         internal int ordinal;
@@ -32,7 +32,7 @@ namespace Greatbone.Core
         internal void Clear()
         {
             count = 0;
-            ctx = 0;
+            list = 0;
             ordinal = 0;
         }
 
@@ -46,7 +46,7 @@ namespace Greatbone.Core
 
         public DbSql setlst<T>(T obj, byte x = 0xff) where T : IPersist
         {
-            ctx = SetList;
+            list = SetList;
             ordinal = 1;
             obj.Save(this, x);
             return this;
@@ -54,23 +54,15 @@ namespace Greatbone.Core
 
         public DbSql columnlst<T>(T obj, byte x = 0xff) where T : IPersist
         {
-            ctx = ColumnList;
+            list = ColumnList;
             ordinal = 1;
             obj.Save(this, x);
             return this;
         }
 
-        public DbSql paramlst<T>(T obj, byte x = 0xff) where T : IPersist
+        public DbSql parameterlst<T>(T obj, byte x = 0xff) where T : IPersist
         {
-            ctx = ParameterList;
-            ordinal = 1;
-            obj.Save(this, x);
-            return this;
-        }
-
-        public DbSql valuelst<T>(T obj, byte x = 0xff) where T : IPersist
-        {
-            ctx = ValueList;
+            list = ParameterList;
             ordinal = 1;
             obj.Save(this, x);
             return this;
@@ -87,7 +79,7 @@ namespace Greatbone.Core
         public DbSql _VALUES_<T>(T obj, byte x = 0xff) where T : IPersist
         {
             Add(" VALUES (");
-            paramlst(obj, x);
+            parameterlst(obj, x);
             Add(")");
             return this;
         }
@@ -103,7 +95,7 @@ namespace Greatbone.Core
         {
             if (ordinal > 1) Add(", ");
 
-            switch (ctx)
+            switch (list)
             {
                 case ColumnList: Add(name); break;
                 case ParameterList: Add("@"); Add(name); break;
@@ -263,13 +255,45 @@ namespace Greatbone.Core
 
         public DbSql Put(string name, JArr v)
         {
-            Build(name);
+            if (name != null)
+            {
+                Build(name);
+            }
+            else
+            {
+                if (v == null)
+                {
+                    Add("NULL");
+                }
+                else
+                {
+                    Add('\'');
+                    v.Save(this);
+                    Add('\'');
+                }
+            }
             return this;
         }
 
         public DbSql Put(string name, JObj v)
         {
-            Build(name);
+            if (name != null)
+            {
+                Build(name);
+            }
+            else
+            {
+                if (v == null)
+                {
+                    Add("NULL");
+                }
+                else
+                {
+                    Add('\'');
+                    v.Save(this);
+                    Add('\'');
+                }
+            }
             return this;
         }
 

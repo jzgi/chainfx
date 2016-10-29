@@ -10,9 +10,6 @@ namespace Greatbone.Sample
         {
         }
 
-
-        static string DefaultSql = new DbSql("SELECT ").columnlst(new Post())._("FROM posts WHERE id = @1").ToString();
-
         ///
         /// <summary>
         /// Get the record.
@@ -27,10 +24,12 @@ namespace Greatbone.Sample
             int n = subscpt.ToInt();
             using (var dc = Service.NewDbContext())
             {
-                if (dc.QueryA(DefaultSql, p => p.Put(id)))
+                const byte x = 0xff ^ BIN;
+                DbSql sql = new DbSql("SELECT ").columnlst(Post.Empty, x)._("FROM posts WHERE id = @1");
+                if (dc.QueryA(sql.ToString(), p => p.Put(id)))
                 {
-                    Post obj = dc.ToObj<Post>(0xff ^ BIN);
-                    wc.SendJ(200, obj);
+                    Post obj = dc.ToObj<Post>(x);
+                    wc.SendJ(200, obj, x);
                 }
                 else
                 {
