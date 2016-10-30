@@ -7,7 +7,7 @@ namespace Greatbone.Core
 {
     ///
     /// <summary>
-    /// The web controller pertaining to a virtual directory, that handles request for static and dynamic contents.
+    /// The web control realizes a virtual directory that contains static and dynamic resources.
     /// </summary>
     ///
     public abstract class WebControl : IKeyed
@@ -86,7 +86,9 @@ namespace Greatbone.Core
         internal virtual void Handle(string relative, WebContext wc)
         {
             wc.Control = this;
+
             Do(relative, wc);
+
             wc.Control = null;
         }
 

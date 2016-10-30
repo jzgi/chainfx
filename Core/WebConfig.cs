@@ -1,6 +1,4 @@
-﻿using System;
-using System.Diagnostics;
-using System.IO;
+﻿using System.IO;
 
 namespace Greatbone.Core
 {
@@ -54,7 +52,6 @@ namespace Greatbone.Core
 
         public void Load(ISource s, byte x = 0xff)
         {
-            s.Got(nameof(key), ref key);
             s.Got(nameof(part), ref part);
             s.Got(nameof(@extern), ref @extern);
             s.Got(nameof(tls), ref tls);
@@ -67,7 +64,6 @@ namespace Greatbone.Core
 
         public void Save<R>(ISink<R> s, byte x = 0xff) where R : ISink<R>
         {
-            s.Put(nameof(key), key);
             s.Put(nameof(part), part);
             s.Put(nameof(@extern), @extern);
             s.Put(nameof(tls), tls);
@@ -77,13 +73,19 @@ namespace Greatbone.Core
             s.Put(nameof(opts), opts);
         }
 
-        public WebConfig LoadFile(string file)
+        public WebConfig Load()
         {
+            if (key == null) throw new WebException("missing key");
+
+            string file = Path.Combine(Folder, "$web.json");
             JObj jo = JUtility.FileToJObj(file);
-            Load(jo); // may override
+            if (jo != null)
+            {
+                Load(jo); // override
+            }
             return this;
         }
-        
+
     }
 
 }

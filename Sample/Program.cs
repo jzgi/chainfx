@@ -37,7 +37,7 @@ namespace Greatbone.Sample
                 db = pg
             }
 #if !DEBUG
-            .LoadFile("www.json")
+            .Load()
 #endif
             );
 
@@ -50,7 +50,7 @@ namespace Greatbone.Sample
                 db = pg
             }
 #if !DEBUG
-            .LoadFile("biz.json")
+            .Load()
 #endif
             );
 
@@ -63,7 +63,7 @@ namespace Greatbone.Sample
                 db = pg
             }
 #if !DEBUG
-            .LoadFile("cont.json")
+            .Load()
 #endif
             );
 
@@ -76,7 +76,7 @@ namespace Greatbone.Sample
                 db = pg
             }
 #if !DEBUG
-            .LoadFile("dir.json")
+            .Load()
 #endif
             );
 
@@ -89,7 +89,7 @@ namespace Greatbone.Sample
                 db = pg
             }
 #if !DEBUG
-            .LoadFile("chat.json")
+            .Load()
 #endif
             );
 

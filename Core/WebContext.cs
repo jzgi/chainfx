@@ -279,8 +279,8 @@ namespace Greatbone.Core
             if (Request.Query.TryGetValue(name, out values))
             {
                 string str = values[0];
-                JTextParse parse = new JTextParse(str);
-                JObj jo = (JObj)parse.Parse();
+                JTextParse par = new JTextParse(str);
+                JObj jo = (JObj)par.Parse();
                 v = new V();
                 v.Load(jo, x);
                 return true;
@@ -294,8 +294,8 @@ namespace Greatbone.Core
             if (Request.Query.TryGetValue(name, out values))
             {
                 string str = values[0];
-                JTextParse parse = new JTextParse(str);
-                v = (JObj)parse.Parse();
+                JTextParse par = new JTextParse(str);
+                v = (JObj)par.Parse();
                 return true;
             }
             return false;
@@ -307,8 +307,8 @@ namespace Greatbone.Core
             if (Request.Query.TryGetValue(name, out values))
             {
                 string str = values[0];
-                JTextParse parse = new JTextParse(str);
-                v = (JArr)parse.Parse();
+                JTextParse par = new JTextParse(str);
+                v = (JArr)par.Parse();
                 return true;
             }
             return false;
@@ -399,8 +399,8 @@ namespace Greatbone.Core
             if (Request.Query.TryGetValue(name, out values))
             {
                 string str = values[0];
-                JTextParse parse = new JTextParse(str);
-                JArr ja = (JArr)parse.Parse();
+                JTextParse par = new JTextParse(str);
+                JArr ja = (JArr)par.Parse();
                 int len = ja.Count;
                 v = new V[len];
                 for (int i = 0; i < len; i++)

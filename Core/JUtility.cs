@@ -4,7 +4,7 @@ using System.IO;
 
 namespace Greatbone.Core
 {
-    
+
     public static class JUtility
     {
 
@@ -15,6 +15,21 @@ namespace Greatbone.Core
                 byte[] bytes = File.ReadAllBytes(file);
                 JParse par = new JParse(bytes, bytes.Length);
                 return (JObj)par.Parse();
+            }
+            catch (Exception ex)
+            {
+                Debug.WriteLine(ex.StackTrace);
+            }
+            return null;
+        }
+
+        public static JArr FileToJArr(string file)
+        {
+            try
+            {
+                byte[] bytes = File.ReadAllBytes(file);
+                JParse par = new JParse(bytes, bytes.Length);
+                return (JArr)par.Parse();
             }
             catch (Exception ex)
             {

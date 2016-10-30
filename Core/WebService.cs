@@ -61,8 +61,8 @@ namespace Greatbone.Core
             // setup logging 
             factory = new LoggerFactory();
             factory.AddProvider(this);
-            string logFile = Key + "-" + DateTime.Now.ToString("yyyyMM") + ".log";
-            FileStream fs = new FileStream(logFile, FileMode.Append, FileAccess.Write);
+            string file = Path.Combine(Folder, DateTime.Now.ToString("yyyyMM") + ".log");
+            FileStream fs = new FileStream(file, FileMode.Append, FileAccess.Write);
             logWriter = new StreamWriter(fs, Encoding.UTF8, 1024 * 4, false)
             {
                 AutoFlush = true
