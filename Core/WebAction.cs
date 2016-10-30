@@ -1,7 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Reflection;
-using Microsoft.Extensions.Primitives;
 
 namespace Greatbone.Core
 {
@@ -55,9 +54,11 @@ namespace Greatbone.Core
                 if (wc.Principal == null)
                 {
                     wc.StatusCode = 401; // unauthorized
-                    wc.AddHeader("WWW-Authenticate", "Bearer");
                     string nonce = StrUtility.MD5(wc.Connection.RemoteIpAddress.ToString() + ':' + Environment.TickCount + ':' + PrivateKey);
-                    wc.AddHeader("WWW-Authenticate", "Digest realm=\"\", nonce=\"" + nonce + "\"");
+                    wc.SetHeader("WWW-Authenticate",
+                        ("Bearer"),
+                        ("Digest realm=\"\", nonce=\"" + nonce + "\"")
+                    );
                     return false;
                 }
 

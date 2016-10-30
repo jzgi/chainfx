@@ -18,7 +18,7 @@ namespace Greatbone.Core
             }
             catch (Exception ex)
             {
-                Debug.WriteLine(ex.StackTrace);
+                Debug.WriteLine(ex.Message);
             }
             return null;
         }
@@ -33,7 +33,7 @@ namespace Greatbone.Core
             }
             catch (Exception ex)
             {
-                Debug.WriteLine(ex.StackTrace);
+                Debug.WriteLine(ex.Message);
             }
             return null;
         }
@@ -52,7 +52,7 @@ namespace Greatbone.Core
             }
             catch (Exception ex)
             {
-                Debug.WriteLine(ex.StackTrace);
+                Debug.WriteLine(ex.Message);
             }
             return default(P);
         }
@@ -71,7 +71,7 @@ namespace Greatbone.Core
             }
             catch (Exception ex)
             {
-                Debug.WriteLine(ex.StackTrace);
+                Debug.WriteLine(ex.Message);
             }
             return null;
         }

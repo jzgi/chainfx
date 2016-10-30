@@ -1,6 +1,4 @@
-﻿using System.IO;
-
-namespace Greatbone.Core
+﻿namespace Greatbone.Core
 {
     /// <summary>
     /// The configurative settings and the establishment of creation context during initialization of the controller hierarchy.
@@ -77,7 +75,7 @@ namespace Greatbone.Core
         {
             if (key == null) throw new WebException("missing key");
 
-            JObj jo = JUtility.FileToJObj(GetPath("$web.json"));
+            JObj jo = JUtility.FileToJObj(GetFilePath("$web.json"));
             if (jo != null)
             {
                 Load(jo); // override

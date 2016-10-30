@@ -485,9 +485,9 @@ namespace Greatbone.Core
             Response.Headers.Add(name, new StringValues(str));
         }
 
-        public void AddHeader(string name, string v)
+        public void SetHeader(string name, params string[] vs)
         {
-            Response.Headers.Append(name, new StringValues(v));
+            Response.Headers.Append(name, vs);
         }
 
         public IContent Content { get; internal set; }

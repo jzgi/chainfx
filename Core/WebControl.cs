@@ -123,6 +123,12 @@ namespace Greatbone.Core
 
         void DoStatic(string file, string ext, WebContext wc)
         {
+            if (file.StartsWith("$")) // private resource
+            {
+                wc.StatusCode = 403;  // forbidden
+                return;
+            }
+
             string ctyp;
             if (!StaticContent.TryGetType(ext, out ctyp))
             {
@@ -138,9 +144,9 @@ namespace Greatbone.Core
 
             DateTime modified = File.GetLastWriteTime(path);
             DateTime? since = wc.HeaderDateTime("If-Modified-Since");
-            if (since != null && modified <= since) // not modified
+            if (since != null && modified <= since)
             {
-                wc.StatusCode = 304;
+                wc.StatusCode = 304; // not modified
                 return;
             }
 

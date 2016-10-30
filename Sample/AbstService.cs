@@ -1,4 +1,3 @@
-using System.IO;
 using Greatbone.Core;
 
 namespace Greatbone.Sample
@@ -15,7 +14,7 @@ namespace Greatbone.Sample
 
         public AbstService(WebConfig cfg) : base(cfg)
         {
-            logins = JUtility.FileToArr<Login>(cfg.GetPath("$realm.json"));
+            logins = JUtility.FileToArr<Login>(cfg.GetFilePath("$realm.json"));
         }
 
 

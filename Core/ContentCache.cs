@@ -25,6 +25,11 @@ namespace Greatbone.Core
             cleaner.Start();
         }
 
+        internal void ToStop()
+        {
+            stop = true;
+        }
+
         internal void Add(string url, int maxage, IContent content)
         {
             Item item = new Item(maxage, content, Environment.TickCount);

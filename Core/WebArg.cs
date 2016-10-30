@@ -20,7 +20,7 @@ namespace Greatbone.Core
         public WebService Service { get; internal set; }
 
 
-        public string GetPath(string file)
+        public string GetFilePath(string file)
         {
             return Path.Combine(Folder, file);
         }
