@@ -12,6 +12,7 @@ namespace Greatbone.Sample
         internal string id;
         internal string name;
         internal string credential;
+        internal string[] roles;
 
         public string Key => id;
 
@@ -24,6 +25,7 @@ namespace Greatbone.Sample
             s.Got(nameof(id), ref id);
             s.Got(nameof(name), ref name);
             s.Got(nameof(credential), ref credential);
+            s.Got(nameof(roles), ref roles);
         }
 
         public void Save<R>(ISink<R> s, byte x = 0xff) where R : ISink<R>
@@ -32,6 +34,7 @@ namespace Greatbone.Sample
             s.Put(nameof(name), name);
             if (x.On(RESV))
                 s.Put(nameof(credential), credential);
+            s.Put(nameof(roles), roles);
         }
 
     }

@@ -11,7 +11,7 @@
     /// {
     ///         public FooService(WebConfig cfg) : base(cfg)
     ///         {
-    ///                 AddControl&lt;BarSub&gt;();
+    ///                 AddChild&lt;BarControl&gt;();
     ///         }
     /// }
     /// </code>

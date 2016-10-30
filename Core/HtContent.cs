@@ -11,11 +11,16 @@ namespace Greatbone.Core
     public class HtContent : DynamicContent, ISink<HtContent>
     {
 
+        const sbyte Caption = 1, Body = 2, FormList = 3;
+
+        sbyte ctx;
+
+
         public HtContent(int capacity) : base(capacity)
         {
         }
 
-        public override string Type => "text/html";
+        public override string Type => "text/html; charset=utf-8";
 
 
         public void AddEsc(string v)
@@ -99,14 +104,14 @@ namespace Greatbone.Core
             T("</script>");
         }
 
-        public void Button(string label)
+        public void BUTTON(string label)
         {
             T("<button class=\"mdl-button mdl-js-button mdl-button--raised mdl-button--colored\">");
             T(label);
             T("</button>");
         }
 
-        public void Buttons(WebAction[] was)
+        public void BUTTONS(WebAction[] was)
         {
             for (int i = 0; i < was.Length; i++)
             {
@@ -118,7 +123,7 @@ namespace Greatbone.Core
             }
         }
 
-        public void Dialog(string h, Action content)
+        public void DIALOG(string h, Action content)
         {
             T("<dialog class=\"mdl-dialog\">");
             T("<h4 class=\"mdl-dialog__title\">").T(h).T("</h4>");
@@ -138,12 +143,15 @@ namespace Greatbone.Core
         }
 
 
-        public void Table<M>(M[] arr, byte x = 0xff) where M : IPersist
+        public void TABLE<M>(M[] arr, byte x = 0xff) where M : IPersist
         {
             T("<table class=\"mdl-data-table mdl-js-data-table mdl-shadow--2dp\">");
             T("<thead>");
 
             M obj = arr[0];
+
+            ctx = Caption;
+            obj.Save(this);
 
 
             T("<th class=\"mdl-data-table__cell--non-numeric\">Material</th>");
@@ -170,26 +178,26 @@ namespace Greatbone.Core
         }
 
 
-        public void InputText()
+        public void INPUT_text()
         {
             T("</tbody>");
 
         }
 
-        public void InputTextarea()
+        public void INPUT_textarea()
         {
             T("</tbody>");
 
         }
 
-        public void Form<P>(Action a) where P : IParent
+        public void FORM<P>(Action a) where P : IParent
         {
             T("<form>");
 
             T("</form>");
         }
 
-        public void Form<P>(P obj, byte x = 0xff) where P : IParent
+        public void FORM<P>(P obj, byte x = 0xff) where P : IParent
         {
             T("<form>");
 

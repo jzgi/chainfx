@@ -4,6 +4,7 @@ using static Greatbone.Core.XUtility;
 
 namespace Greatbone.Sample
 {
+
     public class PostModule : AbstModule, IMgmt
     {
         readonly WebAction[] mgmtWas;
@@ -85,7 +86,7 @@ namespace Greatbone.Sample
             wc.SendMajorLayout(200, "管理功能", a =>
             {
                 // a.Form(,,,,, )
-                a.Buttons(mgmtWas);
+                a.BUTTONS(mgmtWas);
             });
 
         }
@@ -126,4 +127,5 @@ namespace Greatbone.Sample
         }
 
     }
+
 }

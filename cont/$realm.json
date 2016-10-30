@@ -2,6 +2,9 @@
     {
         "id": "michael",
         "name": "michael",
-        "credential": "a7f6cf7f9e1e2f9a44a8233b5c09e97e"
+        "credential": "a7f6cf7f9e1e2f9a44a8233b5c09e97e",
+        "roles": [
+            "admin"
+        ]
     }
 ]
