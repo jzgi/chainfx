@@ -20,10 +20,10 @@ namespace Greatbone.Core
         // UTF-8 string builder
         readonly Str str;
 
-        public FormParse(ArraySegment<byte> bytes)
+        public FormParse(byte[] buffer, int count)
         {
-            this.buffer = bytes.Array;
-            this.count = bytes.Count;
+            this.buffer = buffer;
+            this.count = count;
             this.str = new Str(256);
         }
 

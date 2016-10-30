@@ -54,8 +54,8 @@ namespace Greatbone.Core
             if (response.IsSuccessStatusCode)
             {
                 byte[] bytes = await response.Content.ReadAsByteArrayAsync();
-                JParse parse = new JParse(bytes, bytes.Length);
-                object entity = parse.Parse();
+                JParse par = new JParse(bytes, bytes.Length);
+                object entity = par.Parse();
                 MsgHook a = null;
                 if (service.Hooks.TryGet("", out a))
                 {
@@ -76,8 +76,8 @@ namespace Greatbone.Core
 
             byte[] bytes = await response.Content.ReadAsByteArrayAsync();
 
-            JParse parse = new JParse(bytes, bytes.Length);
-            return parse.Parse();
+            JParse par = new JParse(bytes, bytes.Length);
+            return par.Parse();
         }
 
         public async Task<object> PostAsync(string uri, object content)
@@ -88,8 +88,8 @@ namespace Greatbone.Core
 
             byte[] bytes = await response.Content.ReadAsByteArrayAsync();
 
-            JParse parse = new JParse(bytes, bytes.Length);
-            return parse.Parse();
+            JParse par = new JParse(bytes, bytes.Length);
+            return par.Parse();
         }
 
     }

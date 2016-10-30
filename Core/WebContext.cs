@@ -35,7 +35,7 @@ namespace Greatbone.Core
         public bool IsPost => "POST".Equals(Request.Method);
 
         // received body bytes
-        ArraySegment<byte>? bytesSeg;
+        byte[] buffer; int count;
 
         // parsed request entity, can be JObj, Form or null
         object entity;
@@ -47,9 +47,8 @@ namespace Greatbone.Core
             if (clen > 0)
             {
                 int len = (int)clen;
-                byte[] buffer = BufferPool.Borrow(len);
-                int count = await req.Body.ReadAsync(buffer, 0, len);
-                bytesSeg = new ArraySegment<byte>(buffer, 0, count);
+                buffer = BufferPool.Borrow(len);
+                count = await req.Body.ReadAsync(buffer, 0, len);
             }
         }
 
@@ -57,21 +56,21 @@ namespace Greatbone.Core
         {
             if (entity != null) return;
 
-            if (bytesSeg == null) ReceiveAsync();
+            if (buffer == null) ReceiveAsync();
 
-            if (bytesSeg != null)
+            if (buffer != null)
             {
                 string ctyp = Request.ContentType;
                 if ("application/x-www-form-urlencoded".Equals(ctyp))
                 {
-                    FormParse fp = new FormParse(bytesSeg.Value);
-                    entity = fp.Parse();
+                    FormParse par = new FormParse(buffer, count);
+                    entity = par.Parse();
                 }
                 else
                 {
                     bool jx = "application/jsonx".Equals(ctyp); // json extention
-                    JParse jp = new JParse(bytesSeg.Value, jx);
-                    entity = jp.Parse();
+                    JParse par = new JParse(buffer, count, jx);
+                    entity = par.Parse();
                 }
             }
         }
@@ -80,8 +79,11 @@ namespace Greatbone.Core
         {
             get
             {
-                if (bytesSeg == null) ReceiveAsync();
-                return bytesSeg.Value;
+                if (buffer == null) ReceiveAsync();
+
+                if (buffer == null) return null;
+
+                return new ArraySegment<byte>(buffer, 0, count);
             }
         }
 
@@ -592,9 +594,9 @@ namespace Greatbone.Core
         public void Dispose()
         {
             // return request content buffer
-            if (bytesSeg != null)
+            if (buffer != null)
             {
-                BufferPool.Return(bytesSeg.Value.Array);
+                BufferPool.Return(buffer);
             }
 
             // return response content buffer

@@ -1,5 +1,3 @@
-using System;
-
 namespace Greatbone.Core
 {
 
@@ -18,8 +16,6 @@ namespace Greatbone.Core
 
         // whether json extension for byte array
         readonly bool jx;
-
-        public JParse(ArraySegment<byte> bytes, bool jx = false) : this(bytes.Array, bytes.Count, jx) { }
 
         public JParse(byte[] bytes, int count, bool jx = false)
         {

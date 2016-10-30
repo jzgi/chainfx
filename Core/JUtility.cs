@@ -13,8 +13,8 @@ namespace Greatbone.Core
             try
             {
                 byte[] bytes = File.ReadAllBytes(file);
-                JParse jp = new JParse(bytes, bytes.Length);
-                return (JObj)jp.Parse();
+                JParse par = new JParse(bytes, bytes.Length);
+                return (JObj)par.Parse();
             }
             catch (Exception ex)
             {
@@ -28,8 +28,8 @@ namespace Greatbone.Core
             try
             {
                 byte[] bytes = File.ReadAllBytes(file);
-                JParse jp = new JParse(bytes, bytes.Length);
-                JObj jo = (JObj)jp.Parse();
+                JParse par = new JParse(bytes, bytes.Length);
+                JObj jo = (JObj)par.Parse();
                 if (jo != null)
                 {
                     return jo.ToObj<P>();
@@ -47,8 +47,8 @@ namespace Greatbone.Core
             try
             {
                 byte[] bytes = File.ReadAllBytes(file);
-                JParse jp = new JParse(bytes, bytes.Length);
-                JArr ja = (JArr)jp.Parse();
+                JParse par = new JParse(bytes, bytes.Length);
+                JArr ja = (JArr)par.Parse();
                 if (ja != null)
                 {
                     return ja.ToArr<P>();
