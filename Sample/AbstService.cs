@@ -15,8 +15,7 @@ namespace Greatbone.Sample
 
         public AbstService(WebConfig cfg) : base(cfg)
         {
-            string file = Path.Combine(cfg.Folder, "$realm.json");
-            logins = JUtility.FileToArr<Login>(file);
+            logins = JUtility.FileToArr<Login>(cfg.GetPath("$realm.json"));
         }
 
 

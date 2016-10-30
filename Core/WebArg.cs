@@ -1,4 +1,6 @@
-﻿namespace Greatbone.Core
+﻿using System.IO;
+
+namespace Greatbone.Core
 {
     public class WebArg
     {
@@ -17,5 +19,10 @@
 
         public WebService Service { get; internal set; }
 
+
+        public string GetPath(string file)
+        {
+            return Path.Combine(Folder, file);
+        }
     }
 }

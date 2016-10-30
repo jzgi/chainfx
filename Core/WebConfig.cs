@@ -77,8 +77,7 @@ namespace Greatbone.Core
         {
             if (key == null) throw new WebException("missing key");
 
-            string file = Path.Combine(Folder, "$web.json");
-            JObj jo = JUtility.FileToJObj(file);
+            JObj jo = JUtility.FileToJObj(GetPath("$web.json"));
             if (jo != null)
             {
                 Load(jo); // override
