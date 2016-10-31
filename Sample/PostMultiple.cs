@@ -145,7 +145,7 @@ namespace Greatbone.Sample
                 if (dc.QueryA("SELECT comments FROM posts WHERE id = @1", p => p.Put(id)))
                 {
                     Comment[] arr = dc.GotArr<Comment>().Add(c);
-                    if (dc.Execute("UPDATE posts SET comments = @1 WHERE id = @2 AND authorid = @3", p => p.Put(arr).Put(id).Put(tok.Key)) > 0)
+                    if (dc.Execute("UPDATE posts SET comments = @1 WHERE id = @2", p => p.Put(arr).Put(id)) > 0)
                     {
                         wc.StatusCode = 200;
                     }
@@ -155,7 +155,6 @@ namespace Greatbone.Sample
                     wc.StatusCode = 404;
                 }
             }
-
         }
 
         ///

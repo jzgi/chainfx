@@ -1,4 +1,5 @@
-﻿using Greatbone.Core;
+﻿using System;
+using Greatbone.Core;
 
 namespace Greatbone.Sample
 {
@@ -101,14 +102,10 @@ namespace Greatbone.Sample
         {
             int id = wc.Super.ToInt();
             IPrincipal tok = wc.Principal;
-            JObj jo = wc.JObj;
-            string text = jo[nameof(text)];
+            Comment c = wc.Obj<Comment>();
 
-            Comment c = new Comment
-            {
-                authorid = tok.Key,
-                text = text
-            };
+            c.time = DateTime.Now;
+            c.authorid = tok.Key;
 
             using (var dc = Service.NewDbContext())
             {
@@ -125,7 +122,6 @@ namespace Greatbone.Sample
                     wc.StatusCode = 404;
                 }
             }
-
         }
 
         ///
