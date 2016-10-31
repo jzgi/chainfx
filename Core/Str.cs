@@ -1,5 +1,3 @@
-using System;
-
 namespace Greatbone.Core
 {
 
@@ -8,40 +6,20 @@ namespace Greatbone.Core
     /// A reusable string builder that supports UTF-8 decoding.
     /// </summary>
     ///
-    class Str
+    public class Str : Text
     {
-        char[] buffer;
-
-        int count;
-
         int sum; // combination of bytes
 
         int rest; // number of rest octets
 
-        internal Str(int capacity)
+        internal Str(int capacity) : base(capacity)
         {
-            buffer = new char[capacity];
-            count = 0;
             sum = 0;
             rest = 0;
         }
 
-        internal void Add(char c)
-        {
-            // ensure capacity
-            int olen = buffer.Length;
-            if (count >= olen)
-            {
-                char[] alloc = new char[olen * 4];
-                Array.Copy(buffer, 0, alloc, 0, olen);
-                buffer = alloc;
-            }
-            // append
-            buffer[count++] = c;
-        }
-
         // utf-8 decoding 
-        internal void Add(byte b)
+        public void Add(byte b)
         {
             if (rest == 0)
             {
@@ -80,14 +58,11 @@ namespace Greatbone.Core
             rest = 0;
         }
 
-        public override string ToString()
-        {
-            return new string(buffer, 0, count);
-        }
-
         public int ToInt()
         {
             return 0;
         }
+
     }
+
 }

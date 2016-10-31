@@ -7,7 +7,7 @@ namespace Greatbone.Core
 
     ///
     /// <summary>
-    /// The descriptor of an action method.
+    /// The descriptor for an action method.
     /// </summary>
     ///
     public class WebAction : IKeyed
@@ -83,5 +83,7 @@ namespace Greatbone.Core
         {
             return Key;
         }
+
     }
+
 }

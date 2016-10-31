@@ -2,6 +2,7 @@
 
 namespace Greatbone.Core
 {
+
     public class JText : Text, ISink<JText>
     {
 
@@ -534,9 +535,6 @@ namespace Greatbone.Core
             return this;
         }
 
-        public override string ToString()
-        {
-            return new string(buffer, 0, count);
-        }
     }
+
 }

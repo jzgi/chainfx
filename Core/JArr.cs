@@ -45,23 +45,23 @@ namespace Greatbone.Core
         {
             for (int i = 0; i < count; i++)
             {
-                JMember mem = elements[i];
-                JType typ = mem.type;
+                JMember mbr = elements[i];
+                JType typ = mbr.type;
                 if (typ == JType.Array)
                 {
-                    snk.Put((JArr)mem);
+                    snk.Put((JArr)mbr);
                 }
                 else if (typ == JType.Object)
                 {
-                    snk.Put((JObj)mem);
+                    snk.Put((JObj)mbr);
                 }
                 else if (typ == JType.String)
                 {
-                    snk.Put((string)mem);
+                    snk.Put((string)mbr);
                 }
                 else if (typ == JType.Number)
                 {
-                    snk.Put((Number)mem);
+                    snk.Put((Number)mbr);
                 }
                 else if (typ == JType.True)
                 {

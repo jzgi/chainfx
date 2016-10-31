@@ -3,7 +3,7 @@
 
     ///
     /// <summary>
-    /// A principal can be a token or a login.
+    /// A client principal such as a token or a login identity.
     /// </summary>
     public interface IPrincipal
     {
@@ -12,5 +12,7 @@
         string Name { get; }
 
         string Credential { get; }
+
     }
+
 }

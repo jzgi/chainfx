@@ -4,13 +4,17 @@ namespace Greatbone.Core
 {
 
     /// <summary>
-    /// Test a condition to be true so as conticue the processing.
+    /// Test if the principal meets certain condition.
     /// </summary>
-    [AttributeUsage(AttributeTargets.Method, Inherited = false)]
-    public abstract class ToAttribute : Attribute
+    [AttributeUsage(AttributeTargets.Method, Inherited = true)]
+    public class ToAttribute : Attribute
     {
 
-        public abstract bool Test(WebContext wc);
+        public virtual bool Test(WebContext wc)
+        {
+            return true;
+        }
 
     }
+
 }

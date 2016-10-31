@@ -3,7 +3,7 @@ namespace Greatbone.Core
 
     ///
     ///<summary>
-    /// A resultset returned from query execution. Used to separate data process logic.
+    /// A resultset returned from query, that provides data access mechanisms.
     /// </summary>
     public interface IResultSet : ISource
     {

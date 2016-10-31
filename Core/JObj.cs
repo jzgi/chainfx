@@ -323,43 +323,43 @@ namespace Greatbone.Core
         }
 
 
-        internal void Save<R>(ISink<R> s) where R : ISink<R>
+        internal void Save<R>(ISink<R> snk) where R : ISink<R>
         {
             for (int i = 0; i < pairs.Count; i++)
             {
-                JMember mem = pairs[i];
-                JType typ = mem.type;
+                JMember mbr = pairs[i];
+                JType typ = mbr.type;
                 if (typ == JType.Array)
                 {
-                    s.Put(mem.Key, (JArr)mem);
+                    snk.Put(mbr.Key, (JArr)mbr);
                 }
                 else if (typ == JType.Object)
                 {
-                    s.Put(mem.Key, (JObj)mem);
+                    snk.Put(mbr.Key, (JObj)mbr);
                 }
                 else if (typ == JType.String)
                 {
-                    s.Put(mem.Key, (string)mem);
+                    snk.Put(mbr.Key, (string)mbr);
                 }
                 else if (typ == JType.Number)
                 {
-                    s.Put(mem.Key, (Number)mem);
+                    snk.Put(mbr.Key, (Number)mbr);
                 }
                 else if (typ == JType.True)
                 {
-                    s.Put(mem.Key, true);
+                    snk.Put(mbr.Key, true);
                 }
                 else if (typ == JType.False)
                 {
-                    s.Put(mem.Key, false);
+                    snk.Put(mbr.Key, false);
                 }
                 else if (typ == JType.Null)
                 {
-                    s.PutNull(mem.Key);
+                    snk.PutNull(mbr.Key);
                 }
             }
         }
 
     }
-    
+
 }

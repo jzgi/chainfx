@@ -1,7 +1,8 @@
 ﻿namespace Greatbone.Core
 {
+
     /// <summary>
-    /// Represents a persistable object that provides conventional data exchange mechanisms.
+    /// Represents a persistable object that follows the data input/ouput convention.
     /// </summary>
     public interface IPersist
     {
@@ -9,4 +10,5 @@
 
         void Save<R>(ISink<R> s, byte x = 0xff) where R : ISink<R>;
     }
+
 }
