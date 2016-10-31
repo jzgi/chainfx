@@ -5,13 +5,15 @@ namespace Greatbone.Core
 
     ///
     /// <summary>
-    /// A dynamical HTML5 content Tooled with Pure.CSS
+    /// A dynamical HTML5 content generator Tooled with Pure.CSS
     /// </summary> 
     ///
-    public class HtContent : DynamicContent, ISink<HtContent>
+    public class HtContent : DynamicContent, ISink<HtContent>, IMenu
     {
 
-        const sbyte Caption = 1, Body = 2, FormList = 3;
+        const string SM = "sm", MD = "md", LG = "lg", XL = "xl";
+
+        const sbyte Caption = 1, TableRows = 2, FormList = 3;
 
         sbyte ctx;
 
@@ -58,9 +60,56 @@ namespace Greatbone.Core
             return this;
         }
 
-        public void a()
-        {
 
+        public void grid()
+        {
+            T("<div class=\"pure-g\">");
+
+            T("<div class=\"pure-u-1-2 l-box\"> ... </div>");
+            T("<div class=\"pure-u-1-2 l-box\"> ... </div>");
+
+            T("</div>");
+        }
+
+        public void A_button(int size, int active_primary_diabled, WebAction wa, string subscpt = null)
+        {
+            T("<a class=\"pure-button\">");
+        }
+
+        public void A_link(WebAction wa, string subscpt)
+        {
+            T("<a class=\"mdl-dialog\">");
+        }
+
+        public void MENU(string heading, Action<IMenu> items)
+        {
+            T("<nav class=\"pure-menu\" style=\"display: inline-block;\">");
+            if (heading != null)
+            {
+                T("<span class=\"pure-menu-heading\">").T(heading).T("</span>");
+            }
+            T("<ul class=\"pure-menu-list\">");
+            items(this);
+            T("</ul>");
+            T("</nav>");
+        }
+
+        public void menuitem(string text, string href = "#")
+        {
+            T("<li class=\"pure-menu-item\"><a href=\"").T(href).T("\" class=\"pure-menu-link\">").T(text).T("</a></li>");
+        }
+
+        public void MENU_horizontal(string heading, Action<IMenu> items)
+        {
+            T("<nav class=\"pure-menu pure-menu-horizontal\">");
+            if (heading != null)
+            {
+                T("<span class=\"pure-menu-heading\">").T(heading).T("</span>");
+            }
+            T("<ul class=\"pure-menu-list\">");
+            items(this);
+            T("</ul>");
+            T("</nav>");
         }
 
         public void dialog(string h, Action content)
@@ -82,49 +131,74 @@ namespace Greatbone.Core
             T("</script>");
         }
 
-        public void table<M>(Action<HtContent> ths, Action<HtContent> eachtr) where M : IPersist
+
+        int table_idx;
+
+        public void table(Action<HtContent> ths, Action<HtContent> trs)
         {
+            table_idx = 0;
+
             T("<table class=\"pure-table pure-table-bordered\">");
             T("<thead>");
             T("<tr>");
+            ths(this);
             T("</tr>");
             T("</thead>");
             T("<tbody>");
+
+            trs(this);
+
             T("</tbody>");
             T("</table>");
         }
 
+
+        public void tr(Action<int, HtContent> tds)
+        {
+            table_idx++;
+
+            T("<tr>");
+
+            tds(table_idx, this);
+
+            T("</tr>");
+        }
+
+        public void td(int v)
+        {
+            T("<td>");
+            Put(null, v);
+            T("</td>");
+        }
+
+        public void td(string v)
+        {
+            T("<td>");
+            Put(null, v);
+            T("</td>");
+        }
+
         public void table<M>(M[] arr, byte x = 0xff) where M : IPersist
         {
-            T("<table class=\"pure-table pure-table-bordered\">");
-            T("<thead>");
-
             M obj = arr[0];
 
-            ctx = Caption;
-            obj.Save(this);
+            table(
+                ths =>
+                {
+                    obj.Save(this, x);
+                },
+                trs =>
+                {
+                    for (int i = 0; i < arr.Length; i++)
+                    {
+                        tr((dx, e) =>
+                        {
+                            arr[i].Save(this, x);
+                        });
+                    }
+                }
+            );
 
-            T("<th class=\"mdl-data-table__cell--non-numeric\">Material</th>");
-            T("<th>Quantity</th>>");
-
-            T("</thead>");
-            T("<tbody>");
-
-            for (int i = 0; i < arr.Length; i++)
-            {
-                obj = arr[i];
-                T("<tr>");
-                T("<td class=\"mdl-data-table__cell--non-numeric\">Acrylic (Transparent)</td>");
-                T("<td>25</td>");
-
-                obj.Save(this, x);
-
-                T("</tr>");
-            }
-
-            T("</tbody>");
-
-            T("</table>");
         }
 
 
@@ -455,4 +529,17 @@ namespace Greatbone.Core
             throw new NotImplementedException();
         }
     }
+
+
+
+    public interface IMenu
+    {
+        void menuitem(string text, string href = "#");
+    }
+
+    public interface ITableThead
+    {
+        void thead(string text, string href = "#");
+    }
+
 }
