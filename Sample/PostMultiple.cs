@@ -73,6 +73,7 @@ namespace Greatbone.Sample
         /// [img_bytes]
         /// </code>
         ///
+        [To]
         public void updimg(WebContext wc, string subscpt)
         {
             int id = wc.Super.ToInt();
@@ -103,6 +104,7 @@ namespace Greatbone.Sample
         /// POST /post/_id_/del
         /// </code>
         ///
+        [To]
         public void del(WebContext wc, string subscpt)
         {
             IPrincipal tok = wc.Principal;
@@ -131,6 +133,7 @@ namespace Greatbone.Sample
         /// }            
         /// </code>
         ///
+        [To]
         public void cmt(WebContext wc, string subscpt)
         {
             int id = wc.Super.ToInt();
@@ -165,6 +168,7 @@ namespace Greatbone.Sample
         /// POST /post/_id_/share
         /// </code>
         ///
+        [To]
         public void share(WebContext wc, string subscpt)
         {
             int id = wc.Super.ToInt();
@@ -190,6 +194,7 @@ namespace Greatbone.Sample
         /// POST /post/_id_/like
         /// </code>
         ///
+        [To]
         public void like(WebContext wc, string subscpt)
         {
             string uid = wc.Principal.Key;
@@ -205,7 +210,8 @@ namespace Greatbone.Sample
                     wc.StatusCode = 409; // conflict
                 }
             }
-
         }
+
     }
+
 }

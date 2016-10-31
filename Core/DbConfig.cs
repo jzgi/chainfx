@@ -1,5 +1,6 @@
 ﻿namespace Greatbone.Core
 {
+
     public class DbConfig : IPersist
     {
         internal string host;
@@ -30,6 +31,7 @@
             s.Put(nameof(password), password);
             s.Put(nameof(msg), msg);
         }
+        
     }
 
 }

@@ -16,4 +16,5 @@ namespace Greatbone.Core
         P[] ToArr<P>(byte x = 0xff) where P : IPersist, new();
 
     }
+    
 }

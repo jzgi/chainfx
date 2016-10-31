@@ -2,7 +2,7 @@ namespace Greatbone.Core
 {
 
     /// <summary>
-    /// The enumeration of JSON number types.
+    /// The enumeration of JSON member types.
     /// </summary>
     public enum JType : sbyte
     {

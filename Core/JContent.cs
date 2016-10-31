@@ -2,6 +2,7 @@
 
 namespace Greatbone.Core
 {
+
     /// <summary>
     /// To generate a UTF-8 encoded JSON document. An extension of putting byte array is supported.
     /// </summary>
@@ -553,4 +554,5 @@ namespace Greatbone.Core
         }
 
     }
+
 }

@@ -189,16 +189,13 @@ namespace Greatbone.Core
                 },
                 trs =>
                 {
+                    ctx = TableRows;
                     for (int i = 0; i < arr.Length; i++)
                     {
-                        tr((dx, e) =>
-                        {
-                            arr[i].Save(this, x);
-                        });
+                        arr[i].Save(this, x);
                     }
                 }
             );
-
         }
 
 
@@ -396,61 +393,61 @@ namespace Greatbone.Core
 
         public HtContent Put(string name, bool v)
         {
-            T("<label for=\"").T(name).T("\" class=\"mdl-checkbox mdl-js-checkbox mdl-js-ripple-effect\">");
-            T("<input type=\"checkbox\" id=\"").T(name).T("\" class=\"mdl-checkbox__input\">");
-            T("<span class=\"mdl-checkbox__label\">").T(name).T("</span>");
-            T("</label>");
-
+            switch (ctx)
+            {
+                case FormList: break;
+                case TableRows: break;
+            }
             return this;
         }
 
         public HtContent Put(string name, short v)
         {
-            T("<div class=\"mdl-textfield mdl-js-textfield mdl-textfield--floating-label\">");
-            T("<input class=\"mdl-textfield__input\" type=\"number\" id=\"").T(name).T("\" value=\""); Add(v); T("\">");
-            T("<label class=\"mdl-textfield__label\" for=\"").T(name).T("\">").T(name).T("</label>");
-            T("</div>");
-
+            switch (ctx)
+            {
+                case FormList: break;
+                case TableRows: break;
+            }
             return this;
         }
 
         public HtContent Put(string name, int v)
         {
-            T("<div class=\"mdl-textfield mdl-js-textfield mdl-textfield--floating-label\">");
-            T("<input class=\"mdl-textfield__input\" type=\"number\" id=\"").T(name).T("\" value=\""); Add(v); T("\">");
-            T("<label class=\"mdl-textfield__label\" for=\"").T(name).T("\">").T(name).T("</label>");
-            T("</div>");
-
+            switch (ctx)
+            {
+                case FormList: break;
+                case TableRows: break;
+            }
             return this;
         }
 
         public HtContent Put(string name, long v)
         {
-            T("<div class=\"mdl-textfield mdl-js-textfield mdl-textfield--floating-label\">");
-            T("<input class=\"mdl-textfield__input\" type=\"text\" id=\"").T(name).T("\">");
-            T("<label class=\"mdl-textfield__label\" for=\"").T(name).T("\">").T(name).T("</label>");
-            T("</div>");
-
+            switch (ctx)
+            {
+                case FormList: break;
+                case TableRows: break;
+            }
             return this;
         }
 
         public HtContent Put(string name, decimal v)
         {
-            T("<div class=\"mdl-textfield mdl-js-textfield mdl-textfield--floating-label\">");
-            T("<input class=\"mdl-textfield__input\" type=\"text\" id=\"").T(name).T("\">");
-            T("<label class=\"mdl-textfield__label\" for=\"").T(name).T("\">").T(name).T("</label>");
-            T("</div>");
-
+            switch (ctx)
+            {
+                case FormList: break;
+                case TableRows: break;
+            }
             return this;
         }
 
         public HtContent Put(string name, Number v)
         {
-            T("<div class=\"mdl-textfield mdl-js-textfield mdl-textfield--floating-label\">");
-            T("<input class=\"mdl-textfield__input\" type=\"text\" id=\"").T(name).T("\">");
-            T("<label class=\"mdl-textfield__label\" for=\"").T(name).T("\">").T(name).T("</label>");
-            T("</div>");
-
+            switch (ctx)
+            {
+                case FormList: break;
+                case TableRows: break;
+            }
             return this;
         }
 
@@ -466,16 +463,11 @@ namespace Greatbone.Core
 
         public HtContent Put(string name, string v, int max = 0)
         {
-            T("<div class=\"mdl-textfield mdl-js-textfield mdl-textfield--floating-label\">");
-            T("<input class=\"mdl-textfield__input\" type=\"text\" id=\"").T(name).T("\"");
-            if (max > 0)
+            switch (ctx)
             {
-                T(" maxlength=\""); Add(max); T("\">");
+                case FormList: break;
+                case TableRows: break;
             }
-
-            T("<label class=\"mdl-textfield__label\" for=\"").T(name).T("\">").T(name).T("</label>");
-            T("</div>");
-
             return this;
         }
 

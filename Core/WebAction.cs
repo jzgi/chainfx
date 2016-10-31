@@ -48,7 +48,7 @@ namespace Greatbone.Core
 
         internal bool TryDo(WebContext wc, string subscpt)
         {
-            // check ifs
+            // access check 
             if (tos != null)
             {
                 if (wc.Principal == null)

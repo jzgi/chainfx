@@ -4,7 +4,7 @@ namespace Greatbone.Core
 {
 
     /// <summary>
-    /// To generate extendd JSON document with byte array support.
+    /// To generate extended JSON document that may contain byte arrays.
     /// </summary>
     public class JxContent : JContent
     {
@@ -20,4 +20,5 @@ namespace Greatbone.Core
         }
 
     }
+
 }
