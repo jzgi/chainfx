@@ -86,7 +86,7 @@ namespace Greatbone.Sample
             wc.SendMajorLayout(200, "管理功能", a =>
             {
                 // a.Form(,,,,, )
-                a.BUTTONS(mgmtWas);
+                a.buttonlst(mgmtWas);
             });
 
         }

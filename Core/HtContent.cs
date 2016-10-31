@@ -5,7 +5,7 @@ namespace Greatbone.Core
 
     ///
     /// <summary>
-    /// A dynamical HTML5 content Tooled with Material-Design-Lite (MDL) components
+    /// A dynamical HTML5 content Tooled with Pure.CSS
     /// </summary> 
     ///
     public class HtContent : DynamicContent, ISink<HtContent>
@@ -58,34 +58,12 @@ namespace Greatbone.Core
             return this;
         }
 
-        public void Tabs(string id = "tab", params Tab[] specs)
+        public void a()
         {
-            T("<div class=\"mdl-tabs mdl-js-tabs\">");
 
-            // tab bar
-            T("<div class=\"mdl-tabs__tab-bar\">");
-            for (int i = 0; i < specs.Length; i++)
-            {
-                Tab tab = specs[i];
-                T("<a href=\"#").T(id).T(SEX[i]).T("\" class=\"mdl-tabs__tab\">Tab One</a>");
-            }
-            T("</div>");
-
-            for (int i = 0; i < specs.Length; i++)
-            {
-                Tab tab = specs[i];
-                T("<div class=\"mdl-tabs__panel");
-                if (i == 0) T(" is-active");
-                T("\" id=\"").T(id).T(SEX[i]).T("\">");
-
-                tab.Panel(this);
-                T("</div>");
-            }
-
-            T("</div>");
         }
 
-        public void Footer(string h, Action content)
+        public void dialog(string h, Action content)
         {
             T("<dialog class=\"mdl-dialog\">");
             T("<h4 class=\"mdl-dialog__title\">").T(h).T("</h4>");
@@ -104,55 +82,27 @@ namespace Greatbone.Core
             T("</script>");
         }
 
-        public void BUTTON(string label)
+        public void table<M>(Action<HtContent> ths, Action<HtContent> eachtr) where M : IPersist
         {
-            T("<button class=\"mdl-button mdl-js-button mdl-button--raised mdl-button--colored\">");
-            T(label);
-            T("</button>");
+            T("<table class=\"pure-table pure-table-bordered\">");
+            T("<thead>");
+            T("<tr>");
+            T("</tr>");
+            T("</thead>");
+            T("<tbody>");
+            T("</tbody>");
+            T("</table>");
         }
 
-        public void BUTTONS(WebAction[] was)
+        public void table<M>(M[] arr, byte x = 0xff) where M : IPersist
         {
-            for (int i = 0; i < was.Length; i++)
-            {
-                WebAction wa = was[i];
-                ButtonAttribute btn = wa.Button;
-                T("<button class=\"mdl-button mdl-js-button mdl-button--raised mdl-button--colored\">");
-                T(wa.Key);
-                T("</button>");
-            }
-        }
-
-        public void DIALOG(string h, Action content)
-        {
-            T("<dialog class=\"mdl-dialog\">");
-            T("<h4 class=\"mdl-dialog__title\">").T(h).T("</h4>");
-
-            T("<div class=\"mdl-dialog__content\">");
-
-            T("<div class=\"mdl-dialog__actions\">");
-            T("<button type=\"button\" class=\"mdl-button\">Agree</button>");
-            T("<button type=\"button\" class=\"mdl-button close\">Disagree</button>");
-            T("</div>");
-
-            T("</div>");
-            T("</dialog>");
-
-            T("<script>");
-            T("</script>");
-        }
-
-
-        public void TABLE<M>(M[] arr, byte x = 0xff) where M : IPersist
-        {
-            T("<table class=\"mdl-data-table mdl-js-data-table mdl-shadow--2dp\">");
+            T("<table class=\"pure-table pure-table-bordered\">");
             T("<thead>");
 
             M obj = arr[0];
 
             ctx = Caption;
             obj.Save(this);
-
 
             T("<th class=\"mdl-data-table__cell--non-numeric\">Material</th>");
             T("<th>Quantity</th>>");
@@ -178,28 +128,185 @@ namespace Greatbone.Core
         }
 
 
-        public void INPUT_text()
+        public void input_hidden()
         {
             T("</tbody>");
 
         }
 
-        public void INPUT_textarea()
+        public void input_text()
         {
             T("</tbody>");
 
         }
 
-        public void FORM<P>(Action a) where P : IParent
+        public void input_search()
+        {
+            T("</tbody>");
+
+        }
+
+        public void input_tel()
+        {
+            T("</tbody>");
+
+        }
+
+        public void input_url()
+        {
+            T("</tbody>");
+
+        }
+
+        public void input_email()
+        {
+            T("</tbody>");
+
+        }
+
+
+
+        public void input_password()
+        {
+            T("</tbody>");
+
+        }
+
+        public void input_date()
+        {
+            T("</tbody>");
+
+        }
+
+        public void input_time()
+        {
+            T("</tbody>");
+
+        }
+
+        public void input_number()
+        {
+            T("</tbody>");
+
+        }
+
+        public void input_range()
+        {
+            T("</tbody>");
+
+        }
+
+        public void input_color()
+        {
+            T("</tbody>");
+
+        }
+
+        public void input_checkbox()
+        {
+            T("</tbody>");
+
+        }
+
+        public void input_radio()
+        {
+            T("</tbody>");
+
+        }
+
+        public void input_file()
+        {
+            T("</tbody>");
+
+        }
+
+        public void input_button()
+        {
+            T("</tbody>");
+
+        }
+
+        public void textarea()
+        {
+            T("</tbody>");
+
+        }
+
+        public void button(WebAction wa)
+        {
+            T("<button class=\"mdl-button mdl-js-button mdl-button--raised mdl-button--colored\">");
+            // T(wa);
+            T("</button>");
+        }
+
+        public void buttonlst(WebAction[] was)
+        {
+            for (int i = 0; i < was.Length; i++)
+            {
+                WebAction wa = was[i];
+                ButtonAttribute btn = wa.Button;
+                T("<button class=\"mdl-button mdl-js-button mdl-button--raised mdl-button--colored\">");
+                T(wa.Key);
+                T("</button>");
+            }
+        }
+
+        public void select()
+        {
+            T("</tbody>");
+
+        }
+
+        public void datalist()
+        {
+            T("</tbody>");
+
+        }
+
+        public void progres()
+        {
+            T("</tbody>");
+
+        }
+
+        public void meter()
+        {
+            T("</tbody>");
+
+        }
+
+
+        public void form<P>(WebAction wa, Action<HtContent> inner) where P : IPersist
         {
             T("<form>");
+
+            inner?.Invoke(this);
 
             T("</form>");
         }
 
-        public void FORM<P>(P obj, byte x = 0xff) where P : IParent
+        public void form<M>(WebAction[] was, M[] arr, byte x = 0xff) where M : IPersist
         {
             T("<form>");
+
+            // buttons
+            buttonlst(was);
+
+            table(arr, x);
+
+            T("</form>");
+        }
+
+        public void form<P>(WebAction wa, P obj, byte x = 0xff) where P : IPersist
+        {
+            T("<form>");
+
+            ctx = FormList;
+
+            obj.Save(this);
+
+            // function buttuns
+
 
             T("</form>");
         }

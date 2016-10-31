@@ -321,10 +321,10 @@ namespace Greatbone.Core
             }
             else
             {
-                JText jsb = new JText();
-                jsb.PutArr(v, x);
-                string strv = jsb.ToString();
-                coll.Add(new NpgsqlParameter(Defaults[index++], NpgsqlDbType.Jsonb)
+                JText txt = new JText();
+                txt.PutArr(v, x);
+                string strv = txt.ToString();
+                coll.Add(new NpgsqlParameter(name, NpgsqlDbType.Jsonb)
                 {
                     Value = strv
                 });

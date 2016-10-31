@@ -234,7 +234,9 @@ namespace Greatbone.Core
                 Add(':');
             }
 
+            Add('"');
             Add(v);
+            Add('"');
 
             return this;
         }

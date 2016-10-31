@@ -54,6 +54,7 @@ namespace Greatbone.Core
                 if (wc.Principal == null)
                 {
                     wc.StatusCode = 401; // unauthorized
+                    // support bearer and digest dual schemes
                     string nonce = StrUtility.MD5(wc.Connection.RemoteIpAddress.ToString() + ':' + Environment.TickCount + ':' + PrivateKey);
                     wc.SetHeader("WWW-Authenticate",
                         ("Bearer"),

@@ -135,15 +135,10 @@ namespace Greatbone.Sample
         {
             int id = wc.Super.ToInt();
             IPrincipal tok = wc.Principal;
-            JObj jo = wc.JObj;
-            string text = jo[nameof(text)];
+            Comment c = wc.Obj<Comment>();
 
-            Comment c = new Comment
-            {
-                time = DateTime.Now,
-                authorid = tok.Key,
-                text = text
-            };
+            c.time = DateTime.Now;
+            c.authorid = tok.Key;
 
             using (var dc = Service.NewDbContext())
             {

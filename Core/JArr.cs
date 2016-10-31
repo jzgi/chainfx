@@ -34,9 +34,9 @@ namespace Greatbone.Core
             int len = elements.Length;
             if (count >= len)
             {
-                JMember[] @new = new JMember[len * 4];
-                Array.Copy(elements, 0, @new, 0, len);
-                elements = @new;
+                JMember[] alloc = new JMember[len * 4];
+                Array.Copy(elements, 0, alloc, 0, len);
+                elements = alloc;
             }
             elements[count++] = mem;
         }
