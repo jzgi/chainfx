@@ -83,7 +83,7 @@ namespace Greatbone.Sample
                 ArraySegment<byte>? bytes = wc.BytesSeg;
                 if (bytes == null)
                 {
-                    wc.StatusCode = 301; ;
+                    wc.StatusCode = 301;
                 }
                 else if (dc.Execute("UPDATE posts SET m" + n + " = @1 WHERE id = @2", p => p.Put(bytes.Value).Put(id)) > 0)
                 {
@@ -168,7 +168,6 @@ namespace Greatbone.Sample
         /// POST /post/_id_/share
         /// </code>
         ///
-        [To]
         public void share(WebContext wc, string subscpt)
         {
             int id = wc.Super.ToInt();

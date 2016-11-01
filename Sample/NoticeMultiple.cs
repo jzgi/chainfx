@@ -129,7 +129,6 @@ namespace Greatbone.Sample
 
         ///
         /// POST /notice/_id_/share
-        [To]
         public void share(WebContext wc, string subscpt)
         {
             int id = wc.Super.ToInt();
