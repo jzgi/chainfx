@@ -6,9 +6,12 @@ using Microsoft.Extensions.Primitives;
 
 namespace Greatbone.Core
 {
+
+    ///
     /// <summary>
     /// The encapsulation of a web request/response exchange context.
     /// </summary>
+    ///
     public class WebContext : DefaultHttpContext, ISource, IDisposable
     {
 
@@ -607,4 +610,5 @@ namespace Greatbone.Core
         }
 
     }
+
 }
