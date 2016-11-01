@@ -73,7 +73,7 @@ namespace Greatbone.Sample
         /// [img_bytes]
         /// </code>
         ///
-        [To]
+        [Check]
         public void updimg(WebContext wc, string subscpt)
         {
             int id = wc.Super.ToInt();
@@ -104,7 +104,7 @@ namespace Greatbone.Sample
         /// POST /post/_id_/del
         /// </code>
         ///
-        [To]
+        [Check]
         public void del(WebContext wc, string subscpt)
         {
             IPrincipal tok = wc.Principal;
@@ -133,7 +133,7 @@ namespace Greatbone.Sample
         /// }            
         /// </code>
         ///
-        [To]
+        [Check]
         public void cmt(WebContext wc, string subscpt)
         {
             int id = wc.Super.ToInt();
@@ -193,7 +193,7 @@ namespace Greatbone.Sample
         /// POST /post/_id_/like
         /// </code>
         ///
-        [To]
+        [Check]
         public void like(WebContext wc, string subscpt)
         {
             string uid = wc.Principal.Key;

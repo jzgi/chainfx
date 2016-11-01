@@ -3,9 +3,9 @@
 namespace Greatbone.Sample
 {
 
-    public class ToAdminAttribute : ToAttribute
+    public class CheckAdminAttribute : CheckAttribute
     {
-        public ToAdminAttribute() : base(false) { }
+        public CheckAdminAttribute() : base(false) { }
 
         public override bool Test(WebContext wc)
         {

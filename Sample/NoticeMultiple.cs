@@ -40,7 +40,7 @@ namespace Greatbone.Sample
         /// POST /notice/_id_/del
         /// </code>
         /// 
-        [To]
+        [Check]
         public void del(WebContext wc, string subscpt)
         {
             int id = subscpt.ToInt();
@@ -65,7 +65,7 @@ namespace Greatbone.Sample
         /// POST /notice/_id_/apply
         /// </code>
         /// 
-        [To]
+        [Check]
         public void apply(WebContext wc, string subscpt)
         {
             int id = wc.Super.ToInt();
@@ -100,7 +100,7 @@ namespace Greatbone.Sample
         ///     "text" : "comment text"            
         /// }            
         /// </code>
-        [To]
+        [Check]
         public void cmt(WebContext wc, string subscpt)
         {
             int id = wc.Super.ToInt();

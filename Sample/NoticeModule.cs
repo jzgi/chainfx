@@ -71,7 +71,7 @@ namespace Greatbone.Sample
         /// }
         /// </code>
         ///
-        [To]
+        [Check]
         public void @new(WebContext wc, string subscpt)
         {
             IPrincipal tok = wc.Principal;

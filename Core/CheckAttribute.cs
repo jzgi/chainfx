@@ -7,12 +7,12 @@ namespace Greatbone.Core
     /// Test if the principal meets certain condition.
     /// </summary>
     [AttributeUsage(AttributeTargets.Method, Inherited = true)]
-    public class ToAttribute : Attribute
+    public class CheckAttribute : Attribute
     {
 
         readonly bool bearer;
 
-        public ToAttribute(bool bearer = true)
+        public CheckAttribute(bool bearer = true)
         {
             this.bearer = bearer;
         }

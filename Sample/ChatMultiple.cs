@@ -16,13 +16,13 @@ namespace Greatbone.Sample
         }
 
         ///<summary>Returns the administration UI.</summary>
-        [ToAdmin]
+        [CheckAdmin]
         public override void @default(WebContext wc, string subscript)
         {
             base.@default(wc, subscript);
         }
 
-        [ToSelf]
+        [CheckSelf]
         public void get(WebContext wc, string subscpt)
         {
             List<Chat> chats;

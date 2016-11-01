@@ -45,7 +45,7 @@ namespace Greatbone.Sample
             return null;
         }
 
-        [ToAdmin]
+        [CheckAdmin]
         public virtual void mgmt(WebContext wc, string subscpt)
         {
             if (Children != null)

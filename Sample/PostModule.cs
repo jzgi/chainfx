@@ -99,7 +99,7 @@ namespace Greatbone.Sample
         //
         // ADMIN
         //
-        [ToAdmin]
+        [CheckAdmin]
         public override void mgmt(WebContext wc, string subscpt)
         {
             // returh first UI

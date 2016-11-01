@@ -16,7 +16,7 @@ namespace Greatbone.Core
 
         readonly Action<WebContext, string> doer;
 
-        readonly ToAttribute[] tos;
+        readonly CheckAttribute[] tos;
 
         readonly bool bearer, digest;
 
@@ -31,10 +31,10 @@ namespace Greatbone.Core
             doer = (Action<WebContext, string>)mi.CreateDelegate(typeof(Action<WebContext, string>), control);
 
             // prepare if attributes
-            List<ToAttribute> lst = null;
-            foreach (var to in mi.GetCustomAttributes<ToAttribute>())
+            List<CheckAttribute> lst = null;
+            foreach (var to in mi.GetCustomAttributes<CheckAttribute>())
             {
-                if (lst == null) lst = new List<ToAttribute>(8);
+                if (lst == null) lst = new List<CheckAttribute>(8);
                 lst.Add(to);
                 if (to.IsBearer) bearer = true;
                 else digest = true;

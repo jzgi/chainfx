@@ -3,10 +3,10 @@
 namespace Greatbone
 {
 
-    public class ToSelfAttribute : ToAttribute
+    public class CheckSelfAttribute : CheckAttribute
     {
 
-        public ToSelfAttribute() : base(true) { }
+        public CheckSelfAttribute() : base(true) { }
 
 
         public override bool Test(WebContext wc)
