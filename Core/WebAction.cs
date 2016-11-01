@@ -18,7 +18,9 @@ namespace Greatbone.Core
 
         readonly ToAttribute[] tos;
 
-        readonly DialogAttribute button;
+        readonly bool bearer, digest;
+
+        readonly DialogAttribute dialog;
 
         public string Key { get; }
 
@@ -34,14 +36,15 @@ namespace Greatbone.Core
             {
                 if (lst == null) lst = new List<ToAttribute>(8);
                 lst.Add(to);
+                if (to.IsBearer) bearer = true;
+                else digest = true;
             }
             tos = lst?.ToArray();
 
-            button = mi.GetCustomAttribute<DialogAttribute>();
-
+            dialog = mi.GetCustomAttribute<DialogAttribute>();
         }
 
-        public DialogAttribute Button => button;
+        public DialogAttribute Button => dialog;
 
         // for generating unique digest nonce
         const string PrivateKey = "3e43a7180";
@@ -49,17 +52,16 @@ namespace Greatbone.Core
         internal bool TryDo(WebContext wc, string subscpt)
         {
             // access check 
-            if (tos != null)
+            if (bearer || digest)
             {
                 if (wc.Principal == null)
                 {
                     wc.StatusCode = 401; // unauthorized
-                    // support bearer and digest dual schemes
-                    string nonce = StrUtility.MD5(wc.Connection.RemoteIpAddress.ToString() + ':' + Environment.TickCount + ':' + PrivateKey);
-                    wc.SetHeader("WWW-Authenticate",
-                        ("Bearer"),
-                        ("Digest realm=\"\", nonce=\"" + nonce + "\"")
-                    );
+                    // challenge with bearer and digest dual schemes
+                    string[] chlg = null;
+                    if (bearer) chlg = chlg.Add("Bearer");
+                    if (digest) chlg = chlg.Add("Digest realm=\"\", nonce=\"" + StrUtility.MD5(wc.Connection.RemoteIpAddress.ToString() + ':' + Environment.TickCount + ':' + PrivateKey) + "\"");
+                    wc.SetHeader("WWW-Authenticate", chlg);
                     return false;
                 }
 

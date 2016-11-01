@@ -10,10 +10,19 @@ namespace Greatbone.Core
     public class ToAttribute : Attribute
     {
 
+        readonly bool bearer;
+
+        public ToAttribute(bool bearer = true)
+        {
+            this.bearer = bearer;
+        }
+
         public virtual bool Test(WebContext wc)
         {
             return true;
         }
+
+        public bool IsBearer => bearer;
 
     }
 
