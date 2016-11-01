@@ -5,6 +5,7 @@ using Microsoft.Extensions.Logging;
 
 namespace Greatbone.Core
 {
+
     ///
     /// <summary>
     /// The web control realizes a virtual directory that contains static and dynamic resources.

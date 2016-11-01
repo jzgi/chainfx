@@ -268,7 +268,7 @@ namespace Greatbone.Core
                 else
                 {
                     Add('\'');
-                    v.Save(this);
+                    v.Dump(this);
                     Add('\'');
                 }
             }
@@ -290,7 +290,7 @@ namespace Greatbone.Core
                 else
                 {
                     Add('\'');
-                    v.Save(this);
+                    v.Dump(this);
                     Add('\'');
                 }
             }

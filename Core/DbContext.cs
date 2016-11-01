@@ -5,6 +5,7 @@ using Npgsql;
 
 namespace Greatbone.Core
 {
+
     public class DbContext : IDisposable, IResultSet
     {
         readonly NpgsqlConnection connection;
@@ -503,4 +504,5 @@ namespace Greatbone.Core
         }
 
     }
+    
 }

@@ -69,7 +69,7 @@ namespace Greatbone.Core
             return buf;
         }
 
-        internal class Queue : ConcurrentQueue<byte[]>
+        class Queue : ConcurrentQueue<byte[]>
         {
             readonly int limit;
 
@@ -86,5 +86,7 @@ namespace Greatbone.Core
 
             internal int Limit => limit;
         }
+
     }
+    
 }

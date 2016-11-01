@@ -323,7 +323,7 @@ namespace Greatbone.Core
         }
 
 
-        internal void Save<R>(ISink<R> snk) where R : ISink<R>
+        internal void Dump<R>(ISink<R> snk) where R : ISink<R>
         {
             for (int i = 0; i < pairs.Count; i++)
             {

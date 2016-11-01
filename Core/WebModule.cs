@@ -4,6 +4,7 @@ using System.Reflection;
 
 namespace Greatbone.Core
 {
+
     /// <summary>
     /// A module web directory controller that can contain child- and multiplexer controllers.
     /// </summary>
@@ -101,4 +102,5 @@ namespace Greatbone.Core
         }
 
     }
+
 }

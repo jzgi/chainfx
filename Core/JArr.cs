@@ -41,7 +41,7 @@ namespace Greatbone.Core
             elements[count++] = mem;
         }
 
-        internal void Save<R>(ISink<R> snk) where R : ISink<R>
+        internal void Dump<R>(ISink<R> snk) where R : ISink<R>
         {
             for (int i = 0; i < count; i++)
             {
