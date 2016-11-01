@@ -17,27 +17,46 @@ namespace Greatbone.Sample
             top(wc, subscpt);
         }
 
+        ///
         /// <code>
-        /// GET /notice/top
+        /// GET /notice/top[-_n_][?authorid=_id_]
         /// </code>
+        ///
         public void top(WebContext wc, string subscpt)
         {
             int page = subscpt.ToInt();
-            using (var dc = Service.NewDbContext())
+            string authorid = null;
+            if (wc.Got(nameof(authorid), ref authorid))
             {
-                if (dc.Query("SELECT * FROM notices WHERE duedate >= current_date ORDER BY id LIMIT 20 OFFSET @1", p => p.Put(page * 20)))
+                using (var dc = Service.NewDbContext())
                 {
-                    Notice[] arr = dc.ToArr<Notice>();
-                    wc.SendJ(200, arr);
+                    if (dc.Query("SELECT * FROM notices WHERE authorid = @1 ORDER BY id LIMIT 20 OFFSET @2", p => p.Put(authorid).Put(page * 20)))
+                    {
+                        Notice[] arr = dc.ToArr<Notice>();
+                        wc.SendJ(200, arr);
+                    }
+                    else
+                    {
+                        wc.StatusCode = 204;
+                    }
                 }
-                else
+            }
+            else
+            {
+                using (var dc = Service.NewDbContext())
                 {
-                    wc.StatusCode = 204;
+                    if (dc.Query("SELECT * FROM notices WHERE duedate >= current_date ORDER BY id LIMIT 20 OFFSET @1", p => p.Put(page * 20)))
+                    {
+                        Notice[] arr = dc.ToArr<Notice>();
+                        wc.SendJ(200, arr);
+                    }
+                    else
+                    {
+                        wc.StatusCode = 204;
+                    }
                 }
             }
         }
-
-
 
         ///
         /// <code>

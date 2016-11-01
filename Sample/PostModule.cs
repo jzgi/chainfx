@@ -25,24 +25,44 @@ namespace Greatbone.Sample
         /// Get the nth page of records on top.
         /// </summary>
         /// <code>
-        /// GET /post/top-[_n_]
+        /// GET /post/top-[_n_][?authorid=_id_]
         /// </code>
         public void top(WebContext wc, string subscpt)
         {
             const byte x = 0xff ^ BIN;
 
             int page = subscpt.ToInt();
-            using (var dc = Service.NewDbContext())
+            string authorid = null;
+            if (wc.Got(nameof(authorid), ref authorid))
             {
-                DbSql sql = new DbSql("SELECT ").columnlst(Post.Empty, x)._("FROM posts ORDER BY id DESC LIMIT 20 OFFSET @1");
-                if (dc.Query(sql.ToString(), p => p.Put(20 * page)))
+                using (var dc = Service.NewDbContext())
                 {
-                    Post[] arr = dc.ToArr<Post>(x);
-                    wc.SendJ(200, arr, x);
+                    DbSql sql = new DbSql("SELECT ").columnlst(Post.Empty, x)._("FROM posts WHERE authorid = @1 ORDER BY id DESC LIMIT 20 OFFSET @2");
+                    if (dc.Query(sql.ToString(), p => p.Put(authorid).Put(20 * page)))
+                    {
+                        Post[] arr = dc.ToArr<Post>(x);
+                        wc.SendJ(200, arr, x);
+                    }
+                    else
+                    {
+                        wc.StatusCode = 204; // no content
+                    }
                 }
-                else
+            }
+            else
+            {
+                using (var dc = Service.NewDbContext())
                 {
-                    wc.StatusCode = 204; // no content
+                    DbSql sql = new DbSql("SELECT ").columnlst(Post.Empty, x)._("FROM posts ORDER BY id DESC LIMIT 20 OFFSET @1");
+                    if (dc.Query(sql.ToString(), p => p.Put(20 * page)))
+                    {
+                        Post[] arr = dc.ToArr<Post>(x);
+                        wc.SendJ(200, arr, x);
+                    }
+                    else
+                    {
+                        wc.StatusCode = 204; // no content
+                    }
                 }
             }
         }
