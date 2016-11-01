@@ -1,0 +1,8 @@
+POST http://localhost:8083/user/new
+
+{
+    "id" : "13307083456",            
+    "password" : "123",            
+    "name" : "何东亮",            
+    "vcode" : "123"            
+} 

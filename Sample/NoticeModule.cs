@@ -62,21 +62,27 @@ namespace Greatbone.Sample
         /// <code>
         /// POST /post/new
         /// {
-        ///     "commentable" : true 
-        ///     "text" : "text content" 
+        ///     "loc" : "",            
+        ///     "duedate" : "2016-12-12",            
+        ///     "subject" : "_subject_",
+        ///     "tel" : "_telephone_", 
+        ///     "text" : "_content_", 
+        ///     "commentable" : true
         /// }
         /// </code>
         ///
+        [To]
         public void @new(WebContext wc, string subscpt)
         {
-            const byte x = 0xff ^ AUTO;
-
             IPrincipal tok = wc.Principal;
             Notice obj = wc.Obj<Notice>();
+
             obj.authorid = tok.Key;
             obj.author = tok.Name;
+            obj.date = DateTime.Now;
             using (var dc = Service.NewDbContext())
             {
+                const byte x = 0xff ^ AUTO;
                 DbSql sql = new DbSql("INSERT INTO notices")._(Notice.Empty, x)._VALUES_(Notice.Empty, x)._("RETURNING id");
                 object id = dc.Scalar(sql.ToString(), p => obj.Save(p, x));
                 if (id != null)

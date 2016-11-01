@@ -30,7 +30,7 @@ namespace Greatbone.Sample
             string id = jo[nameof(id)];
             string password = jo[nameof(password)];
             // send vcode through SMS
-            string vcode = "1234";
+            string vcode = "123";
             vcodes.TryAdd(id, vcode);
             INF(vcode);
             wc.StatusCode = 200;
@@ -44,7 +44,8 @@ namespace Greatbone.Sample
         /// {
         ///   "id" : "_user_id_",            
         ///   "password" : "_password_",            
-        ///   "vcode" : "_verification_code_"            
+        ///   "name" : "_name_",            
+        ///   "vcode" : "123"            
         /// }    
         /// </code>
         public void @new(WebContext wc, string subscpt)
@@ -52,16 +53,18 @@ namespace Greatbone.Sample
             JObj jo = wc.JObj;
             string id = jo[nameof(id)];
             string password = jo[nameof(password)];
+            string name = jo[nameof(name)];
             string vcode = jo[nameof(vcode)];
-            string vold;
-            if (vcodes.TryGetValue(id, out vold) && vcode.Equals(vold))
+            // string vold;
+            // if (vcodes.TryGetValue(id, out vold) && vcode.Equals("123"))
+            if (vcode.Equals("123"))
             {
                 using (var sc = Service.NewDbContext())
                 {
                     string credential = StrUtility.MD5(id + ':' + ':' + password);
-                    if (sc.Execute("INSERT INTO users (id, credential) VALUES (@1, @2)", p => p.Put(id).Put(credential)) > 0)
+                    if (sc.Execute("INSERT INTO users (id, credential, name) VALUES (@1, @2, @3)", p => p.Put(id).Put(credential).Put(name)) > 0)
                     {
-                        wc.StatusCode = 200;
+                        wc.StatusCode = 201;
                     }
                 }
             }
