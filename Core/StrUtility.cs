@@ -37,7 +37,33 @@ namespace Greatbone.Core
         static readonly string[] MON = { "Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec" };
 
         // HTTP date format
-        public static string ToUtcDate(DateTime v)
+        public static string FormatDate(DateTime v)
+        {
+            v = v.ToUniversalTime();
+
+            StringBuilder sb = new StringBuilder();
+            int yr = v.Year;
+
+            if (yr < 1000) sb.Append('0');
+            if (yr < 100) sb.Append('0');
+            if (yr < 10) sb.Append('0');
+            sb.Append(v.Year);
+            sb.Append('-');
+            sb.Append(SEX[v.Month]);
+            sb.Append('-');
+            sb.Append(SEX[v.Day]);
+
+            sb.Append(SEX[v.Hour]);
+            sb.Append(':');
+            sb.Append(SEX[v.Minute]);
+            sb.Append(':');
+            sb.Append(SEX[v.Second]);
+
+            return sb.ToString();
+        }
+
+        // HTTP date format
+        public static string FormatUtcDate(DateTime v)
         {
             v = v.ToUniversalTime();
 
@@ -63,14 +89,14 @@ namespace Greatbone.Core
             return gmt.ToString();
         }
 
-        public static bool TryParseLocalDate(string str, out DateTime v)
+        public static bool TryParseDate(string str, out DateTime v)
         {
             int year = ParseNum(str, 0, 4, 1000);
             int month = ParseNum(str, 5, 2, 10);
             int day = ParseNum(str, 8, 2, 10);
             int len = str.Length;
 
-            int hour = 0, minute = 0, second = 0;
+            int hour = 0, minute = 0, second = 0; // optional time part
             if (len >= 19)
             {
                 hour = ParseNum(str, 11, 2, 10);
@@ -79,7 +105,7 @@ namespace Greatbone.Core
             }
             try
             {
-                v = new DateTime(year, month, day, hour, minute, second, DateTimeKind.Local);
+                v = new DateTime(year, month, day, hour, minute, second, DateTimeKind.Unspecified);
                 return true;
             }
             catch

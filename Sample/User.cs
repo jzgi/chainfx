@@ -26,7 +26,7 @@ namespace Greatbone.Sample
             s.Got(nameof(date), ref date);
         }
 
-        public void Save<R>(ISink<R> s, byte x = 0xff) where R : ISink<R>
+        public void Dump<R>(ISink<R> s, byte x = 0xff) where R : ISink<R>
         {
             s.Put(nameof(id), id);
             s.Put(nameof(name), name);
@@ -38,4 +38,5 @@ namespace Greatbone.Sample
         }
 
     }
+
 }

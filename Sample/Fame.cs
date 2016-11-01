@@ -61,7 +61,7 @@ namespace Greatbone.Sample
                 s.Got(nameof(friends), ref friends, x);
         }
 
-        public void Save<R>(ISink<R> s, byte x = 0xff) where R : ISink<R>
+        public void Dump<R>(ISink<R> s, byte x = 0xff) where R : ISink<R>
         {
             s.Put(nameof(id), id);
             s.Put(nameof(name), name);
@@ -89,6 +89,7 @@ namespace Greatbone.Sample
             if (x.On(MANY))
                 s.Put(nameof(friends), friends, x);
         }
+
     }
 
     public struct Ref : IPersist
@@ -107,12 +108,13 @@ namespace Greatbone.Sample
             s.Got(nameof(hint), ref hint);
         }
 
-        public void Save<R>(ISink<R> s, byte x = 0xff) where R : ISink<R>
+        public void Dump<R>(ISink<R> s, byte x = 0xff) where R : ISink<R>
         {
             s.Put(nameof(name), name);
             s.Put(nameof(@ref), @ref);
             s.Put(nameof(hint), hint);
         }
+
     }
 
 }

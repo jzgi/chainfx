@@ -20,7 +20,7 @@ namespace Greatbone.Sample
             s.Got(nameof(text), ref text);
         }
 
-        public void Save<R>(ISink<R> s, byte x = 0xff) where R : ISink<R>
+        public void Dump<R>(ISink<R> s, byte x = 0xff) where R : ISink<R>
         {
             s.Put(nameof(time), time);
             s.Put(nameof(emoji), emoji);
@@ -28,6 +28,7 @@ namespace Greatbone.Sample
             s.Put(nameof(author), author);
             s.Put(nameof(text), text);
         }
+
     }
 
 }

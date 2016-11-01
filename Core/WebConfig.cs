@@ -60,7 +60,7 @@
             s.Got(nameof(opts), ref opts);
         }
 
-        public void Save<R>(ISink<R> s, byte x = 0xff) where R : ISink<R>
+        public void Dump<R>(ISink<R> s, byte x = 0xff) where R : ISink<R>
         {
             s.Put(nameof(part), part);
             s.Put(nameof(@extern), @extern);

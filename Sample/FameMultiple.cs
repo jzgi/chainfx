@@ -58,7 +58,7 @@ namespace Greatbone.Sample
             using (var dc = Service.NewDbContext())
             {
                 DbSql sql = new DbSql("INSERT INTO fames")._(Fame.Empty)._VALUES_(Fame.Empty)._("ON CONFLICT (id) DO UPDATE")._SET_(Fame.Empty)._("WHERE fames.id = @1");
-                if (dc.Execute(sql.ToString(), p => { obj.Save(p); p.Put(uid); }) > 0)
+                if (dc.Execute(sql.ToString(), p => { obj.Dump(p); p.Put(uid); }) > 0)
                 {
                     wc.StatusCode = 200; // ok
                 }
@@ -84,7 +84,10 @@ namespace Greatbone.Sample
                 if (dc.QueryA("SELECT icon FROM fames WHERE id = @1", p => p.Put(id)))
                 {
                     byte[] v = dc.GotBytes();
-                    StaticContent sta = new StaticContent() { Buffer = v };
+                    StaticContent sta = new StaticContent()
+                    {
+                        Buffer = v
+                    };
                     wc.Send(200, sta, true, 60000);
                 }
                 else

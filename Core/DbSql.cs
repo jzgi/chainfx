@@ -48,7 +48,7 @@ namespace Greatbone.Core
         {
             list = SetList;
             ordinal = 1;
-            obj.Save(this, x);
+            obj.Dump(this, x);
             return this;
         }
 
@@ -56,7 +56,7 @@ namespace Greatbone.Core
         {
             list = ColumnList;
             ordinal = 1;
-            obj.Save(this, x);
+            obj.Dump(this, x);
             return this;
         }
 
@@ -64,7 +64,7 @@ namespace Greatbone.Core
         {
             list = ParameterList;
             ordinal = 1;
-            obj.Save(this, x);
+            obj.Dump(this, x);
             return this;
         }
 

@@ -316,7 +316,7 @@ namespace Greatbone.Core
             {
                 counts[++level] = 0; // enter
                 Add('{');
-                v.Save(this, x);
+                v.Dump(this, x);
                 Add('}');
                 level--; // exit            }
             }

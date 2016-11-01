@@ -4,6 +4,7 @@ using static Greatbone.Core.XUtility;
 
 namespace Greatbone.Sample
 {
+
     public class Post : IPersist
     {
         public static Post Empty = new Post();
@@ -48,7 +49,7 @@ namespace Greatbone.Sample
             }
         }
 
-        public void Save<R>(ISink<R> s, byte x = 0xff) where R : ISink<R>
+        public void Dump<R>(ISink<R> s, byte x = 0xff) where R : ISink<R>
         {
             s.Put(nameof(id), id);
             s.Put(nameof(time), time);
@@ -74,6 +75,7 @@ namespace Greatbone.Sample
                 s.Put(nameof(m8), m8);
             }
         }
+
     }
 
 }

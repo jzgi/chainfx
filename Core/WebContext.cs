@@ -481,7 +481,7 @@ namespace Greatbone.Core
 
         public void SetHeader(string name, DateTime v)
         {
-            string str = StrUtility.ToUtcDate(v);
+            string str = StrUtility.FormatUtcDate(v);
             Response.Headers.Add(name, new StringValues(str));
         }
 
@@ -557,7 +557,7 @@ namespace Greatbone.Core
                 else // set last-modified
                 {
                     DateTime v = ((StaticContent)Content).LastModified;
-                    SetHeader("Last-Modified", StrUtility.ToUtcDate(v));
+                    SetHeader("Last-Modified", StrUtility.FormatUtcDate(v));
                 }
 
                 // send async

@@ -23,7 +23,7 @@
             s.Got(nameof(msg), ref msg);
         }
 
-        public void Save<R>(ISink<R> s, byte x = 0xff) where R : ISink<R>
+        public void Dump<R>(ISink<R> s, byte x = 0xff) where R : ISink<R>
         {
             s.Put(nameof(host), host);
             s.Put(nameof(port), port);

@@ -8,7 +8,7 @@
     {
         void Load(ISource s, byte x = 0xff);
 
-        void Save<R>(ISink<R> s, byte x = 0xff) where R : ISink<R>;
+        void Dump<R>(ISink<R> s, byte x = 0xff) where R : ISink<R>;
     }
 
 }

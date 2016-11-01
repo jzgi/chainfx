@@ -47,7 +47,7 @@ namespace Greatbone.Sample
                 s.Got(nameof(comments), ref comments);
         }
 
-        public void Save<R>(ISink<R> s, byte x = 0xff) where R : ISink<R>
+        public void Dump<R>(ISink<R> s, byte x = 0xff) where R : ISink<R>
         {
             if (x.On(AUTO))
             {
@@ -85,7 +85,7 @@ namespace Greatbone.Sample
             s.Got(nameof(user), ref user);
         }
 
-        public void Save<R>(ISink<R> s, byte x = 0xff) where R : ISink<R>
+        public void Dump<R>(ISink<R> s, byte x = 0xff) where R : ISink<R>
         {
             s.Put(nameof(userid), userid);
             s.Put(nameof(user), user);

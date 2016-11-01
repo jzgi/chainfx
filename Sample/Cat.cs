@@ -24,7 +24,7 @@ namespace Greatbone.Sample
             s.Got(nameof(disabled), ref disabled);
         }
 
-        public void Save<R>(ISink<R> s, byte x = 0xff) where R : ISink<R>
+        public void Dump<R>(ISink<R> s, byte x = 0xff) where R : ISink<R>
         {
             s.Put(nameof(id), id);
             s.Put(nameof(title), title);

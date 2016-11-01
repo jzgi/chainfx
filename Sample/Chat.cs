@@ -26,13 +26,14 @@ namespace Greatbone.Sample
             s.Got(nameof(lasttime), ref lasttime);
         }
 
-        public void Save<R>(ISink<R> s, byte x = 0xff) where R : ISink<R>
+        public void Dump<R>(ISink<R> s, byte x = 0xff) where R : ISink<R>
         {
             s.Put(nameof(status), status);
             s.Put(nameof(partner), partner);
             s.Put(nameof(msgs), msgs);
             s.Put(nameof(lasttime), lasttime);
         }
+        
     }
 
     struct Message : IPersist
@@ -46,10 +47,11 @@ namespace Greatbone.Sample
             throw new NotImplementedException();
         }
 
-        public void Save<R>(ISink<R> sk, byte x = 0xff) where R : ISink<R>
+        public void Dump<R>(ISink<R> sk, byte x = 0xff) where R : ISink<R>
         {
             throw new NotImplementedException();
         }
+
     }
 
     public struct Msg : IPersist
@@ -76,7 +78,7 @@ namespace Greatbone.Sample
             sc.Got(nameof(time), ref time);
         }
 
-        public void Save<R>(ISink<R> sk, byte x = 0xff) where R : ISink<R>
+        public void Dump<R>(ISink<R> sk, byte x = 0xff) where R : ISink<R>
         {
             sk.Put(nameof(id), id);
             sk.Put(nameof(subtype), subtype);
@@ -85,5 +87,7 @@ namespace Greatbone.Sample
             sk.Put(nameof(content), content);
             sk.Put(nameof(time), time);
         }
+
     }
+
 }

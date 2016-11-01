@@ -210,14 +210,14 @@ namespace Greatbone.Core
             table(
                 ths =>
                 {
-                    obj.Save(this, x);
+                    obj.Dump(this, x);
                 },
                 trs =>
                 {
                     ctx = TableTrs;
                     for (int i = 0; i < arr.Length; i++)
                     {
-                        arr[i].Save(this, x);
+                        arr[i].Dump(this, x);
                     }
                 }
             );
@@ -399,7 +399,7 @@ namespace Greatbone.Core
 
             ctx = FormFields;
 
-            obj.Save(this);
+            obj.Dump(this);
 
             // function buttuns
 

@@ -1528,7 +1528,7 @@ namespace Greatbone.Core
 
         public string Key { get; internal set; }
 
-        public string Type { get; internal set; }
+        public string Type { get; set; }
 
         public byte[] Buffer { get; internal set; }
 

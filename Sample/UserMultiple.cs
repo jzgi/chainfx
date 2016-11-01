@@ -63,7 +63,7 @@ namespace Greatbone.Sample
             using (var dc = Service.NewDbContext())
             {
                 DbSql sql = new DbSql("UPDATE users")._SET_(obj)._("WHERE id = @1");
-                if (dc.Execute(sql.ToString(), p => { obj.Save(p); p.Put(subscpt); }) > 0)
+                if (dc.Execute(sql.ToString(), p => { obj.Dump(p); p.Put(subscpt); }) > 0)
                 {
                     wc.StatusCode = 200; // ok
                 }

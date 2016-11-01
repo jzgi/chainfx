@@ -2,6 +2,7 @@
 
 namespace Greatbone.Sample
 {
+    
     public class Brand : IPersist
     {
         public string Id;
@@ -15,8 +16,10 @@ namespace Greatbone.Sample
         {
         }
 
-        public void Save<R>(ISink<R> s, byte x = 0xff) where R : ISink<R>
+        public void Dump<R>(ISink<R> s, byte x = 0xff) where R : ISink<R>
         {
         }
+    
     }
+
 }

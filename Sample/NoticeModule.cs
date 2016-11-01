@@ -84,7 +84,7 @@ namespace Greatbone.Sample
             {
                 const byte x = 0xff ^ AUTO;
                 DbSql sql = new DbSql("INSERT INTO notices")._(Notice.Empty, x)._VALUES_(Notice.Empty, x)._("RETURNING id");
-                object id = dc.Scalar(sql.ToString(), p => obj.Save(p, x));
+                object id = dc.Scalar(sql.ToString(), p => obj.Dump(p, x));
                 if (id != null)
                 {
                     wc.StatusCode = 201;
@@ -113,4 +113,5 @@ namespace Greatbone.Sample
         }
 
     }
+    
 }
