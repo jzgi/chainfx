@@ -1,4 +1,5 @@
 using System;
+using System.Collections.Generic;
 
 namespace Greatbone.Core
 {
@@ -13,7 +14,7 @@ namespace Greatbone.Core
 
         const string SM = "sm", MD = "md", LG = "lg", XL = "xl";
 
-        const sbyte Caption = 1, TableRows = 2, FormList = 3;
+        const sbyte TableThs = 1, TableTrs = 2, FormFields = 3;
 
         sbyte ctx;
 
@@ -25,6 +26,30 @@ namespace Greatbone.Core
         public override string Type => "text/html; charset=utf-8";
 
 
+        public Dictionary<string, string> Map { get; set; }
+
+
+        public void AddLabel(string key)
+        {
+            string lbl;
+            if (Map != null && Map.TryGetValue(key, out lbl)) // translate
+            {
+                Add(lbl);
+            }
+            else // uppercase
+            {
+                for (int i = 0; i < key.Length; i++)
+                {
+                    char c = key[i];
+                    if (c >= 'a' && c <= 'z')
+                    {
+                        c = (char)(c - 32);
+                    }
+                    Add(c);
+                }
+            }
+
+        }
         public void AddEsc(string v)
         {
             for (int i = 0; i < v.Length; i++)
@@ -189,7 +214,7 @@ namespace Greatbone.Core
                 },
                 trs =>
                 {
-                    ctx = TableRows;
+                    ctx = TableTrs;
                     for (int i = 0; i < arr.Length; i++)
                     {
                         arr[i].Save(this, x);
@@ -315,7 +340,7 @@ namespace Greatbone.Core
             for (int i = 0; i < was.Length; i++)
             {
                 WebAction wa = was[i];
-                ButtonAttribute btn = wa.Button;
+                DialogAttribute btn = wa.Button;
                 T("<button class=\"mdl-button mdl-js-button mdl-button--raised mdl-button--colored\">");
                 T(wa.Key);
                 T("</button>");
@@ -372,7 +397,7 @@ namespace Greatbone.Core
         {
             T("<form>");
 
-            ctx = FormList;
+            ctx = FormFields;
 
             obj.Save(this);
 
@@ -395,8 +420,8 @@ namespace Greatbone.Core
         {
             switch (ctx)
             {
-                case FormList: break;
-                case TableRows: break;
+                case FormFields: break;
+                case TableTrs: break;
             }
             return this;
         }
@@ -405,8 +430,8 @@ namespace Greatbone.Core
         {
             switch (ctx)
             {
-                case FormList: break;
-                case TableRows: break;
+                case FormFields: break;
+                case TableTrs: break;
             }
             return this;
         }
@@ -415,8 +440,8 @@ namespace Greatbone.Core
         {
             switch (ctx)
             {
-                case FormList: break;
-                case TableRows: break;
+                case FormFields: break;
+                case TableTrs: break;
             }
             return this;
         }
@@ -425,8 +450,8 @@ namespace Greatbone.Core
         {
             switch (ctx)
             {
-                case FormList: break;
-                case TableRows: break;
+                case FormFields: break;
+                case TableTrs: break;
             }
             return this;
         }
@@ -435,8 +460,8 @@ namespace Greatbone.Core
         {
             switch (ctx)
             {
-                case FormList: break;
-                case TableRows: break;
+                case FormFields: break;
+                case TableTrs: break;
             }
             return this;
         }
@@ -445,8 +470,8 @@ namespace Greatbone.Core
         {
             switch (ctx)
             {
-                case FormList: break;
-                case TableRows: break;
+                case FormFields: break;
+                case TableTrs: break;
             }
             return this;
         }
@@ -465,8 +490,8 @@ namespace Greatbone.Core
         {
             switch (ctx)
             {
-                case FormList: break;
-                case TableRows: break;
+                case FormFields: break;
+                case TableTrs: break;
             }
             return this;
         }

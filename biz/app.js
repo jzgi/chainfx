@@ -65,7 +65,7 @@ ajax.post = function (url, data, callback, async) {
 //
 //
 
-function ButtonOnClick(btn, size, doer) {
+function btnclick(btn, size, doer) {
 
     $(btn.form).append('<div id="myModal" class="reveal-modal" data-reveal aria-labelledby="modalTitle" aria-hidden="true" role="dialog"><h2 id="modalTitle">Awesome. I have it.</h2><p id="dialog"></p><a class="button radius" onclick="$(\'#myModal\').foundation(\'reveal\', \'close\');">Close</a></div>');
 
@@ -325,43 +325,3 @@ function FileUpload(img, file) {
     reader.readAsBinaryString(file);
 }
 
-
-//
-// side menu
-//
-
-(function (window, document) {
-
-    var layout = document.getElementById('layout'),
-        menu = document.getElementById('menu'),
-        menuLink = document.getElementById('menuLink');
-
-    function toggleClass(element, className) {
-        var classes = element.className.split(/\s+/),
-            length = classes.length,
-            i = 0;
-
-        for (; i < length; i++) {
-            if (classes[i] === className) {
-                classes.splice(i, 1);
-                break;
-            }
-        }
-        // The className is not found
-        if (length === classes.length) {
-            classes.push(className);
-        }
-
-        element.className = classes.join(' ');
-    }
-
-    menuLink.onclick = function (e) {
-        var active = 'active';
-
-        e.preventDefault();
-        toggleClass(layout, active);
-        toggleClass(menu, active);
-        toggleClass(menuLink, active);
-    };
-
-} (this, this.document));

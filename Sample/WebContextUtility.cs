@@ -1,19 +1,29 @@
 using System;
+using System.Collections.Generic;
 using Greatbone.Core;
 
 namespace Greatbone.Sample
 {
+
     public static class WebContextUtility
     {
 
+        static readonly Dictionary<string, string> Map = new Dictionary<string, string>
+        {
+            ["abc"] = "好的"
+        };
+
         static void Layout()
         {
-            
+
         }
 
         public static void SendMajorLayout(this WebContext wc, int status, string header, Action<HtContent> main, bool? pub = null, int maxage = 60000)
         {
-            HtContent cont = new HtContent(8 * 1024);
+            HtContent cont = new HtContent(8 * 1024)
+            {
+                Map = Map
+            };
 
             cont.T("<!doctype html>");
             cont.T("<html>");

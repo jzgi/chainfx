@@ -151,7 +151,9 @@ namespace Greatbone.Core
         {
             if (v.type == JType.String)
             {
-                return default(DateTime);
+                string str = (string)v.refv;
+                DateTime dt;
+                if (StrUtility.TryParseLocalDate(str, out dt)) return dt;
             }
             return default(DateTime);
         }
@@ -160,7 +162,8 @@ namespace Greatbone.Core
         {
             if (v.type == JType.String)
             {
-                return (char[])v.refv;
+                string str = (string)v.refv;
+                return str.ToCharArray();
             }
             return null;
         }

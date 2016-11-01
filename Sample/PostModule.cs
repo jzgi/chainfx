@@ -91,7 +91,7 @@ namespace Greatbone.Sample
 
         }
 
-        [Button(Dialog = true)]
+        [Dialog]
         public void srch(WebContext wc, string subscpt)
         {
             Form frm = wc.Form;
@@ -107,7 +107,7 @@ namespace Greatbone.Sample
             }
         }
 
-        [Button(Dialog = true)]
+        [Dialog]
         public void del(WebContext wc, string subscpt)
         {
             if (wc.IsGet) // return confirmation dialog
@@ -120,7 +120,7 @@ namespace Greatbone.Sample
             }
         }
 
-        [Button(Dialog = true)]
+        [Dialog]
         public void status(WebContext wc, string subscpt)
         {
             throw new NotImplementedException();

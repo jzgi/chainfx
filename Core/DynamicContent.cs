@@ -371,6 +371,10 @@ namespace Greatbone.Core
             byte mon = (byte)v.Month,
             day = (byte)v.Day;
 
+            // yyyy-mm-dd
+            if (yr < 1000) Add('0');
+            if (yr < 100) Add('0');
+            if (yr < 10) Add('0');
             Add(v.Year);
             Add('-');
             Add(SEX[v.Month]);

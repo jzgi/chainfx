@@ -37,7 +37,7 @@ namespace Greatbone.Core
         static readonly string[] MON = { "Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec" };
 
         // HTTP date format
-        public static string FormatDate(DateTime v)
+        public static string ToUtcDate(DateTime v)
         {
             v = v.ToUniversalTime();
 
@@ -63,14 +63,41 @@ namespace Greatbone.Core
             return gmt.ToString();
         }
 
-        public static bool TryParseDate(string utc, out DateTime v)
+        public static bool TryParseLocalDate(string str, out DateTime v)
         {
-            int day = ParseNum(utc, 5, 2, 10);
-            int month = ParseMonth(utc, 8);
-            int year = ParseNum(utc, 12, 4, 1000);
-            int hour = ParseNum(utc, 17, 2, 10);
-            int minute = ParseNum(utc, 20, 2, 10);
-            int second = ParseNum(utc, 23, 2, 10);
+            int year = ParseNum(str, 0, 4, 1000);
+            int month = ParseNum(str, 5, 2, 10);
+            int day = ParseNum(str, 8, 2, 10);
+            int len = str.Length;
+
+            int hour = 0, minute = 0, second = 0;
+            if (len >= 19)
+            {
+                hour = ParseNum(str, 11, 2, 10);
+                minute = ParseNum(str, 14, 2, 10);
+                second = ParseNum(str, 17, 2, 10);
+            }
+            try
+            {
+                v = new DateTime(year, month, day, hour, minute, second, DateTimeKind.Local);
+                return true;
+            }
+            catch
+            {
+                v = default(DateTime);
+                return false;
+            }
+
+        }
+
+        public static bool TryParseUtcDate(string utcstr, out DateTime v)
+        {
+            int day = ParseNum(utcstr, 5, 2, 10);
+            int month = ParseMonth(utcstr, 8);
+            int year = ParseNum(utcstr, 12, 4, 1000);
+            int hour = ParseNum(utcstr, 17, 2, 10);
+            int minute = ParseNum(utcstr, 20, 2, 10);
+            int second = ParseNum(utcstr, 23, 2, 10);
             try
             {
                 v = new DateTime(year, month, day, hour, minute, second, DateTimeKind.Utc);

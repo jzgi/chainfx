@@ -18,7 +18,7 @@ namespace Greatbone.Core
 
         readonly ToAttribute[] tos;
 
-        readonly ButtonAttribute button;
+        readonly DialogAttribute button;
 
         public string Key { get; }
 
@@ -37,11 +37,11 @@ namespace Greatbone.Core
             }
             tos = lst?.ToArray();
 
-            button = mi.GetCustomAttribute<ButtonAttribute>();
+            button = mi.GetCustomAttribute<DialogAttribute>();
 
         }
 
-        public ButtonAttribute Button => button;
+        public DialogAttribute Button => button;
 
         // for generating unique digest nonce
         const string PrivateKey = "3e43a7180";
