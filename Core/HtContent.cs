@@ -52,6 +52,7 @@ namespace Greatbone.Core
 
         public void AddEsc(string v)
         {
+            if (v == null) return;
             for (int i = 0; i < v.Length; i++)
             {
                 char c = v[i];
@@ -268,54 +269,132 @@ namespace Greatbone.Core
             T("</form>");
         }
 
-        public void input_hidden()
+        public void input_hidden(string name, string value)
         {
-            T("</tbody>");
-
+            Add("<input type=\"hidden\" name=\""); Add(name); Add("\" value=\""); AddEsc(value);
+            Add("\">");
         }
 
-        public void input_text()
+        public void input_text(string name, string value, bool @readonly, bool required = false, string placeholder = null, int maxlength = 0, int minlength = 0, string pattern = null)
         {
-            T("</tbody>");
-
+            Add("<label>"); AddLabel(name);
+            Add("<input type=\"text\" name=\""); Add(name); Add("\" value=\""); AddEsc(value);
+            if (@readonly) Add(" readonly");
+            if (required) Add(" required");
+            if (placeholder != null) { Add(" placedholder=\""); AddLabel(placeholder); Add("\""); }
+            if (maxlength > 0)
+            {
+                Add(" maxlength=\""); Add(maxlength); Add("\"");
+                Add(" size=\""); Add(maxlength); Add("\"");
+            }
+            if (minlength > 0) { Add(" minlength=\""); Add(minlength); Add("\""); }
+            if (pattern != null) { Add(" pattern=\""); AddEsc(pattern); Add("\""); }
+            Add("\">");
+            Add("</label>");
         }
 
-        public void input_search()
+        public void input_search(string name, string value, bool @readonly, bool required = false, string placeholder = null, int maxlength = 0, int minlength = 0, string pattern = null)
         {
-            T("</tbody>");
-
+            Add("<label>"); AddLabel(name);
+            Add("<input type=\"search\" name=\""); Add(name); Add("\" value=\""); AddEsc(value);
+            if (@readonly) Add(" readonly");
+            if (required) Add(" required");
+            if (placeholder != null) { Add(" placedholder=\""); AddLabel(placeholder); Add("\""); }
+            if (maxlength > 0)
+            {
+                Add(" maxlength=\""); Add(maxlength); Add("\"");
+                Add(" size=\""); Add(maxlength); Add("\"");
+            }
+            if (minlength > 0) { Add(" minlength=\""); Add(minlength); Add("\""); }
+            if (pattern != null) { Add(" pattern=\""); AddEsc(pattern); Add("\""); }
+            Add("\">");
+            Add("</label>");
         }
 
-        public void input_tel()
+        public void input_tel(string name, string value, bool @readonly, bool required = false, string placeholder = null, int maxlength = 0, int minlength = 0, string pattern = null)
         {
-            T("</tbody>");
-
+            Add("<label>"); AddLabel(name);
+            Add("<input type=\"search\" name=\""); Add(name); Add("\" value=\""); AddEsc(value);
+            if (@readonly) Add(" readonly");
+            if (required) Add(" required");
+            if (placeholder != null) { Add(" placedholder=\""); AddLabel(placeholder); Add("\""); }
+            if (maxlength > 0)
+            {
+                Add(" maxlength=\""); Add(maxlength); Add("\"");
+                Add(" size=\""); Add(maxlength); Add("\"");
+            }
+            if (minlength > 0) { Add(" minlength=\""); Add(minlength); Add("\""); }
+            if (pattern != null) { Add(" pattern=\""); AddEsc(pattern); Add("\""); }
+            Add("\">");
+            Add("</label>");
         }
 
-        public void input_url()
+        public void input_url(string name, string value, bool @readonly, bool required = false, string placeholder = null, int maxlength = 0, int minlength = 0, string pattern = null)
         {
-            T("</tbody>");
-
+            Add("<label>"); AddLabel(name);
+            Add("<input type=\"url\" name=\""); Add(name); Add("\" value=\""); AddEsc(value);
+            if (@readonly) Add(" readonly");
+            if (required) Add(" required");
+            if (placeholder != null) { Add(" placedholder=\""); AddLabel(placeholder); Add("\""); }
+            if (maxlength > 0)
+            {
+                Add(" maxlength=\""); Add(maxlength); Add("\"");
+                Add(" size=\""); Add(maxlength); Add("\"");
+            }
+            if (minlength > 0) { Add(" minlength=\""); Add(minlength); Add("\""); }
+            if (pattern != null) { Add(" pattern=\""); AddEsc(pattern); Add("\""); }
+            Add("\">");
+            Add("</label>");
         }
 
-        public void input_email()
+        public void input_email(string name, string value, bool @readonly, bool required = false, string placeholder = null, int maxlength = 0, int minlength = 0, string pattern = null)
         {
-            T("</tbody>");
-
+            Add("<label>"); AddLabel(name);
+            Add("<input type=\"email\" name=\""); Add(name); Add("\" value=\""); AddEsc(value);
+            if (@readonly) Add(" readonly");
+            if (required) Add(" required");
+            if (placeholder != null) { Add(" placedholder=\""); AddLabel(placeholder); Add("\""); }
+            if (maxlength > 0)
+            {
+                Add(" maxlength=\""); Add(maxlength); Add("\"");
+                Add(" size=\""); Add(maxlength); Add("\"");
+            }
+            if (minlength > 0) { Add(" minlength=\""); Add(minlength); Add("\""); }
+            if (pattern != null) { Add(" pattern=\""); AddEsc(pattern); Add("\""); }
+            Add("\">");
+            Add("</label>");
         }
 
-
-
-        public void input_password()
+        public void input_password(string name, string value, bool @readonly, bool required = false, string placeholder = null, int maxlength = 0, int minlength = 0, string pattern = null)
         {
-            T("</tbody>");
-
+            Add("<label>"); AddLabel(name);
+            Add("<input type=\"password\" name=\""); Add(name); Add("\" value=\""); AddEsc(value);
+            if (@readonly) Add(" readonly");
+            if (required) Add(" required");
+            if (placeholder != null) { Add(" placedholder=\""); AddLabel(placeholder); Add("\""); }
+            if (maxlength > 0)
+            {
+                Add(" maxlength=\""); Add(maxlength); Add("\"");
+                Add(" size=\""); Add(maxlength); Add("\"");
+            }
+            if (minlength > 0) { Add(" minlength=\""); Add(minlength); Add("\""); }
+            if (pattern != null) { Add(" pattern=\""); AddEsc(pattern); Add("\""); }
+            Add("\">");
+            Add("</label>");
         }
 
-        public void input_date()
+        public void input_date(string name, DateTime value, bool @readonly, bool required = false, string placeholder = null, int max = int.MaxValue, int min = int.MinValue, int step = 0)
         {
-            T("</tbody>");
-
+            Add("<label>"); AddLabel(name);
+            Add("<input type=\"date\" name=\""); Add(name); Add("\" value=\""); Add(value);
+            if (@readonly) Add(" readonly");
+            if (required) Add(" required");
+            if (placeholder != null) { Add(" placedholder=\""); AddLabel(placeholder); Add("\""); }
+            if (max != int.MaxValue) { Add(" max=\""); Add(max); Add("\""); }
+            if (min != int.MinValue) { Add(" min=\""); Add(min); Add("\""); }
+            if (step != 0) { Add(" step=\""); Add(step); Add("\""); }
+            Add("\">");
+            Add("</label>");
         }
 
         public void input_time()
@@ -324,10 +403,32 @@ namespace Greatbone.Core
 
         }
 
-        public void input_number()
+        public void input_number(string name, int value, bool @readonly, bool required = false, string placeholder = null, int max = int.MaxValue, int min = int.MinValue, int step = 0)
         {
-            T("</tbody>");
+            Add("<label>"); AddLabel(name);
+            Add("<input type=\"number\" name=\""); Add(name); Add("\" value=\""); Add(value);
+            if (@readonly) Add(" readonly");
+            if (required) Add(" required");
+            if (placeholder != null) { Add(" placedholder=\""); AddLabel(placeholder); Add("\""); }
+            if (max != int.MaxValue) { Add(" max=\""); Add(max); Add("\""); }
+            if (min != int.MinValue) { Add(" min=\""); Add(min); Add("\""); }
+            if (step != 0) { Add(" step=\""); Add(step); Add("\""); }
+            Add("\">");
+            Add("</label>");
+        }
 
+        public void input_number(string name, long value, bool @readonly, bool required = false, string placeholder = null, long max = long.MaxValue, long min = long.MinValue, long step = 0)
+        {
+            Add("<label>"); AddLabel(name);
+            Add("<input type=\"number\" name=\""); Add(name); Add("\" value=\""); Add(value);
+            if (@readonly) Add(" readonly");
+            if (required) Add(" required");
+            if (placeholder != null) { Add(" placedholder=\""); AddLabel(placeholder); Add("\""); }
+            if (max != long.MaxValue) { Add(" max=\""); Add(max); Add("\""); }
+            if (min != long.MinValue) { Add(" min=\""); Add(min); Add("\""); }
+            if (step != 0) { Add(" step=\""); Add(step); Add("\""); }
+            Add("\">");
+            Add("</label>");
         }
 
         public void input_range()
@@ -459,8 +560,19 @@ namespace Greatbone.Core
         {
             switch (ctx)
             {
-                case FormFields: break;
-                case TableTrs: break;
+                case FormFields:
+                    Add("<div class=\"pure-u-1 pure-u-md-1-2\">");
+                    Add("<label for=\""); Add(name); Add("\">"); AddLabel(name); Add("</label>");
+                    Add("<input id=\""); Add(name); Add("\" type=\"number\" name=\""); Add(name); Add("\" value=\""); Add(v); Add("\">");
+                    Add("</label>");
+                    Add("</div>");
+                    break;
+                case TableThs:
+                    Add("<th>"); AddLabel(name); Add("</th>");
+                    break;
+                case TableTrs:
+                    Add("<td style=\"text-align: right;\">"); Add(v); Add("</td>");
+                    break;
             }
             return this;
         }
@@ -507,12 +619,12 @@ namespace Greatbone.Core
 
         public HtContent Put(string name, byte[] v)
         {
-            throw new NotImplementedException();
+            return this;
         }
 
         public HtContent Put(string name, ArraySegment<byte> v)
         {
-            throw new NotImplementedException();
+            return this;
         }
 
         public HtContent Put<V>(string name, V v, byte x = 0xff) where V : IPersist
