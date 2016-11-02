@@ -36,7 +36,7 @@ namespace Greatbone.Core
             {
                 Add(lbl);
             }
-            else // uppercase
+            else // key to uppercase
             {
                 for (int i = 0; i < key.Length; i++)
                 {
@@ -48,8 +48,8 @@ namespace Greatbone.Core
                     Add(c);
                 }
             }
-
         }
+
         public void AddEsc(string v)
         {
             for (int i = 0; i < v.Length; i++)
@@ -203,6 +203,13 @@ namespace Greatbone.Core
             T("</td>");
         }
 
+        public void td(DateTime v)
+        {
+            T("<td>");
+            Put(null, v);
+            T("</td>");
+        }
+
         public void table<M>(M[] arr, byte x = 0xff) where M : IPersist
         {
             M obj = arr[0];
@@ -223,6 +230,43 @@ namespace Greatbone.Core
             );
         }
 
+
+        public void form<P>(WebAction wa, Action<HtContent> inner) where P : IPersist
+        {
+            T("<form>");
+
+            inner?.Invoke(this);
+
+            T("</form>");
+        }
+
+        public void form<M>(WebAction[] was, M[] arr, byte x = 0xff) where M : IPersist
+        {
+            T("<form>");
+
+            // buttons
+            buttonlst(was);
+
+            table(arr, x);
+
+            T("</form>");
+        }
+
+        public void form<P>(WebAction wa, P obj, byte x = 0xff) where P : IPersist
+        {
+            T("<form>");
+
+            T("<div >");
+
+            ctx = FormFields;
+
+            obj.Dump(this);
+
+            // function buttuns
+
+
+            T("</form>");
+        }
 
         public void input_hidden()
         {
@@ -371,41 +415,6 @@ namespace Greatbone.Core
 
         }
 
-
-        public void form<P>(WebAction wa, Action<HtContent> inner) where P : IPersist
-        {
-            T("<form>");
-
-            inner?.Invoke(this);
-
-            T("</form>");
-        }
-
-        public void form<M>(WebAction[] was, M[] arr, byte x = 0xff) where M : IPersist
-        {
-            T("<form>");
-
-            // buttons
-            buttonlst(was);
-
-            table(arr, x);
-
-            T("</form>");
-        }
-
-        public void form<P>(WebAction wa, P obj, byte x = 0xff) where P : IPersist
-        {
-            T("<form>");
-
-            ctx = FormFields;
-
-            obj.Dump(this);
-
-            // function buttuns
-
-
-            T("</form>");
-        }
 
         //
         // ISINK

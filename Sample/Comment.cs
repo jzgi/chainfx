@@ -13,11 +13,11 @@ namespace Greatbone.Sample
 
         public void Load(ISource s, byte x = 0xff)
         {
-            s.Got(nameof(time), ref time);
-            s.Got(nameof(emoji), ref emoji);
-            s.Got(nameof(authorid), ref authorid);
-            s.Got(nameof(author), ref author);
-            s.Got(nameof(text), ref text);
+            s.Get(nameof(time), ref time);
+            s.Get(nameof(emoji), ref emoji);
+            s.Get(nameof(authorid), ref authorid);
+            s.Get(nameof(author), ref author);
+            s.Get(nameof(text), ref text);
         }
 
         public void Dump<R>(ISink<R> s, byte x = 0xff) where R : ISink<R>

@@ -58,7 +58,7 @@ namespace Greatbone.Sample
         public void find(WebContext wc, string subscpt)
         {
             string name = null;
-            if (wc.Got(nameof(name), ref name))
+            if (wc.Get(nameof(name), ref name))
             {
                 using (var dc = Service.NewDbContext())
                 {
@@ -76,7 +76,7 @@ namespace Greatbone.Sample
             }
 
             string skill = null;
-            if (wc.Got(nameof(skill), ref skill))
+            if (wc.Get(nameof(skill), ref skill))
             {
                 using (var dc = Service.NewDbContext())
                 {
@@ -101,10 +101,10 @@ namespace Greatbone.Sample
         public void srch(WebContext wc, string subscpt)
         {
             int id = 0;
-            wc.Got(nameof(id), ref id);
+            wc.Get(nameof(id), ref id);
 
             string name = null;
-            wc.Got(nameof(name), ref name);
+            wc.Get(nameof(name), ref name);
 
             using (var dc = Service.NewDbContext())
             {
@@ -122,7 +122,7 @@ namespace Greatbone.Sample
         public void del(WebContext wc, string subscpt)
         {
             int id = 0;
-            wc.Got(nameof(id), ref id);
+            wc.Get(nameof(id), ref id);
 
             using (var dc = Service.NewDbContext())
             {
@@ -133,9 +133,9 @@ namespace Greatbone.Sample
         public void status(WebContext wc, string subscpt)
         {
             int id = 0;
-            wc.Got(nameof(id), ref id);
+            wc.Get(nameof(id), ref id);
 
-            JObj jo = wc.JObj;
+            JObj jo = wc.ReadJObj();
             int status = jo[nameof(status)];
 
             using (var dc = Service.NewDbContext())

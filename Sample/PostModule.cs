@@ -33,7 +33,7 @@ namespace Greatbone.Sample
 
             int page = subscpt.ToInt();
             string authorid = null;
-            if (wc.Got(nameof(authorid), ref authorid))
+            if (wc.Get(nameof(authorid), ref authorid))
             {
                 using (var dc = Service.NewDbContext())
                 {
@@ -81,7 +81,7 @@ namespace Greatbone.Sample
         public void @new(WebContext wc, string subscpt)
         {
             IPrincipal tok = wc.Principal;
-            JObj jo = wc.JObj;
+            JObj jo = wc.ReadJObj();
             DateTime time = DateTime.Now;
             bool commentable = jo[nameof(commentable)];
             string text = jo[nameof(text)];
@@ -114,10 +114,10 @@ namespace Greatbone.Sample
         [Dialog]
         public void srch(WebContext wc, string subscpt)
         {
-            Form frm = wc.Form;
+            Form frm = wc.ReadForm();
 
             string word = null;
-            if (wc.Got(nameof(word), ref word))
+            if (wc.Get(nameof(word), ref word))
             {
 
             }
@@ -130,7 +130,7 @@ namespace Greatbone.Sample
         [Dialog]
         public void del(WebContext wc, string subscpt)
         {
-            if (wc.IsGet) // return confirmation dialog
+            if (wc.IsGetMethod) // return confirmation dialog
             {
 
             }

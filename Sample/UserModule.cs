@@ -26,7 +26,7 @@ namespace Greatbone.Sample
         /// </code>
         public void vcode(WebContext wc, string subscpt)
         {
-            JObj jo = wc.JObj;
+            JObj jo = wc.ReadJObj();
             string id = jo[nameof(id)];
             string password = jo[nameof(password)];
             // send vcode through SMS
@@ -50,7 +50,7 @@ namespace Greatbone.Sample
         /// </code>
         public void @new(WebContext wc, string subscpt)
         {
-            JObj jo = wc.JObj;
+            JObj jo = wc.ReadJObj();
             string id = jo[nameof(id)];
             string password = jo[nameof(password)];
             string name = jo[nameof(name)];
@@ -77,7 +77,7 @@ namespace Greatbone.Sample
         [CheckAdmin]
         public void create(WebContext wc, string subscpt)
         {
-            JObj jo = wc.JObj;
+            JObj jo = wc.ReadJObj();
             string id = jo[nameof(id)];
             string password = jo[nameof(password)];
             using (var sc = Service.NewDbContext())

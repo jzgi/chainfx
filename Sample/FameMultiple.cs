@@ -22,7 +22,7 @@ namespace Greatbone.Sample
             string id = wc.Super;
             using (var dc = Service.NewDbContext())
             {
-                if (wc.IsGet)
+                if (wc.IsGetMethod)
                 {
                     if (dc.QueryA("SELECT * FROM fames WHERE id = @1", p => p.Put(id)))
                     {
@@ -52,7 +52,7 @@ namespace Greatbone.Sample
         public void upd(WebContext wc, string subscpt)
         {
             string uid = wc.Principal.Key;
-            Fame obj = wc.Obj<Fame>();
+            Fame obj = wc.ReadObj<Fame>();
             obj.id = wc.Super;
 
             using (var dc = Service.NewDbContext())
@@ -83,7 +83,7 @@ namespace Greatbone.Sample
             {
                 if (dc.QueryA("SELECT icon FROM fames WHERE id = @1", p => p.Put(id)))
                 {
-                    byte[] v = dc.GotBytes();
+                    byte[] v = dc.GetBytes();
                     StaticContent sta = new StaticContent()
                     {
                         Buffer = v
@@ -109,7 +109,7 @@ namespace Greatbone.Sample
         public void updicon(WebContext wc, string subscpt)
         {
             string id = wc.Super;
-            ArraySegment<byte>? bytes = wc.BytesSeg;
+            ArraySegment<byte>? bytes = wc.ReadBytesSeg();
             using (var dc = Service.NewDbContext())
             {
                 if (bytes == null)
@@ -142,7 +142,7 @@ namespace Greatbone.Sample
             {
                 if (dc.QueryA("SELECT m" + n + " FROM fames WHERE id = @1", p => p.Put(id)))
                 {
-                    byte[] v = dc.GotBytes();
+                    byte[] v = dc.GetBytes();
                     StaticContent sta = new StaticContent() { Buffer = v };
                     wc.Send(200, sta, true, 60000);
                 }
@@ -167,7 +167,7 @@ namespace Greatbone.Sample
             int n = subscpt.ToInt();
             using (var dc = Service.NewDbContext())
             {
-                ArraySegment<byte>? bytes = wc.BytesSeg;
+                ArraySegment<byte>? bytes = wc.ReadBytesSeg();
                 if (bytes == null)
                 {
                     wc.StatusCode = 301; ;

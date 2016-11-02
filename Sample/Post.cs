@@ -24,28 +24,28 @@ namespace Greatbone.Sample
 
         public void Load(ISource s, byte x = 0xff)
         {
-            s.Got(nameof(id), ref id);
-            s.Got(nameof(time), ref time);
-            s.Got(nameof(authorid), ref authorid);
-            s.Got(nameof(author), ref author);
-            s.Got(nameof(commentable), ref commentable);
-            s.Got(nameof(comments), ref comments);
-            s.Got(nameof(likes), ref likes);
-            s.Got(nameof(shared), ref shared);
-            s.Got(nameof(text), ref text);
-            s.Got(nameof(mset), ref mset);
+            s.Get(nameof(id), ref id);
+            s.Get(nameof(time), ref time);
+            s.Get(nameof(authorid), ref authorid);
+            s.Get(nameof(author), ref author);
+            s.Get(nameof(commentable), ref commentable);
+            s.Get(nameof(comments), ref comments);
+            s.Get(nameof(likes), ref likes);
+            s.Get(nameof(shared), ref shared);
+            s.Get(nameof(text), ref text);
+            s.Get(nameof(mset), ref mset);
 
             if (x.On(BIN))
             {
-                s.Got(nameof(m0), ref m0);
-                s.Got(nameof(m1), ref m1);
-                s.Got(nameof(m2), ref m2);
-                s.Got(nameof(m3), ref m3);
-                s.Got(nameof(m4), ref m4);
-                s.Got(nameof(m5), ref m5);
-                s.Got(nameof(m6), ref m6);
-                s.Got(nameof(m7), ref m7);
-                s.Got(nameof(m8), ref m8);
+                s.Get(nameof(m0), ref m0);
+                s.Get(nameof(m1), ref m1);
+                s.Get(nameof(m2), ref m2);
+                s.Get(nameof(m3), ref m3);
+                s.Get(nameof(m4), ref m4);
+                s.Get(nameof(m5), ref m5);
+                s.Get(nameof(m6), ref m6);
+                s.Get(nameof(m7), ref m7);
+                s.Get(nameof(m8), ref m8);
             }
         }
 

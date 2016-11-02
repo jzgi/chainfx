@@ -34,31 +34,31 @@ namespace Greatbone.Sample
 
         public void Load(ISource s, byte x = 0xff)
         {
-            s.Got(nameof(id), ref id);
-            s.Got(nameof(name), ref name);
-            s.Got(nameof(quote), ref quote);
-            s.Got(nameof(sex), ref sex);
+            s.Get(nameof(id), ref id);
+            s.Get(nameof(name), ref name);
+            s.Get(nameof(quote), ref quote);
+            s.Get(nameof(sex), ref sex);
             if (x.On(BIN))
-                s.Got(nameof(icon), ref icon);
-            s.Got(nameof(birthday), ref birthday);
-            s.Got(nameof(qq), ref qq);
-            s.Got(nameof(wechat), ref wechat);
-            s.Got(nameof(email), ref email);
-            s.Got(nameof(city), ref city);
-            s.Got(nameof(rating), ref rating);
-            s.Got(nameof(height), ref height);
-            s.Got(nameof(weight), ref weight);
-            s.Got(nameof(bust), ref bust);
-            s.Got(nameof(waist), ref waist);
-            s.Got(nameof(hip), ref hip);
-            s.Got(nameof(cup), ref cup);
-            s.Got(nameof(styles), ref styles);
-            s.Got(nameof(skills), ref skills);
-            s.Got(nameof(remark), ref remark);
+                s.Get(nameof(icon), ref icon);
+            s.Get(nameof(birthday), ref birthday);
+            s.Get(nameof(qq), ref qq);
+            s.Get(nameof(wechat), ref wechat);
+            s.Get(nameof(email), ref email);
+            s.Get(nameof(city), ref city);
+            s.Get(nameof(rating), ref rating);
+            s.Get(nameof(height), ref height);
+            s.Get(nameof(weight), ref weight);
+            s.Get(nameof(bust), ref bust);
+            s.Get(nameof(waist), ref waist);
+            s.Get(nameof(hip), ref hip);
+            s.Get(nameof(cup), ref cup);
+            s.Get(nameof(styles), ref styles);
+            s.Get(nameof(skills), ref skills);
+            s.Get(nameof(remark), ref remark);
             if (x.On(MANY))
-                s.Got(nameof(sites), ref sites, x);
+                s.Get(nameof(sites), ref sites, x);
             if (x.On(MANY))
-                s.Got(nameof(friends), ref friends, x);
+                s.Get(nameof(friends), ref friends, x);
         }
 
         public void Dump<R>(ISink<R> s, byte x = 0xff) where R : ISink<R>
@@ -103,9 +103,9 @@ namespace Greatbone.Sample
 
         public void Load(ISource s, byte x = 0xff)
         {
-            s.Got(nameof(name), ref name);
-            s.Got(nameof(@ref), ref @ref);
-            s.Got(nameof(hint), ref hint);
+            s.Get(nameof(name), ref name);
+            s.Get(nameof(@ref), ref @ref);
+            s.Get(nameof(hint), ref hint);
         }
 
         public void Dump<R>(ISink<R> s, byte x = 0xff) where R : ISink<R>

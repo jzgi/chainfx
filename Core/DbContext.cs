@@ -210,7 +210,7 @@ namespace Greatbone.Core
         // current column ordinal
         int ordinal;
 
-        public bool Got(string name, ref bool v)
+        public bool Get(string name, ref bool v)
         {
             int ord = name == null ? ordinal++ : reader.GetOrdinal(name);
             if (!reader.IsDBNull(ord))
@@ -221,7 +221,7 @@ namespace Greatbone.Core
             return false;
         }
 
-        public bool Got(string name, ref short v)
+        public bool Get(string name, ref short v)
         {
             int ord = name == null ? ordinal++ : reader.GetOrdinal(name);
             if (!reader.IsDBNull(ord))
@@ -232,7 +232,7 @@ namespace Greatbone.Core
             return false;
         }
 
-        public bool Got(string name, ref int v)
+        public bool Get(string name, ref int v)
         {
             int ord = name == null ? ordinal++ : reader.GetOrdinal(name);
             if (!reader.IsDBNull(ord))
@@ -243,7 +243,7 @@ namespace Greatbone.Core
             return false;
         }
 
-        public bool Got(string name, ref long v)
+        public bool Get(string name, ref long v)
         {
             int ord = name == null ? ordinal++ : reader.GetOrdinal(name);
             if (!reader.IsDBNull(ord))
@@ -254,7 +254,7 @@ namespace Greatbone.Core
             return false;
         }
 
-        public bool Got(string name, ref decimal v)
+        public bool Get(string name, ref decimal v)
         {
             int ord = name == null ? ordinal++ : reader.GetOrdinal(name);
             if (!reader.IsDBNull(ord))
@@ -265,7 +265,7 @@ namespace Greatbone.Core
             return false;
         }
 
-        public bool Got(string name, ref Number v)
+        public bool Get(string name, ref Number v)
         {
             int ord = name == null ? ordinal++ : reader.GetOrdinal(name);
             if (!reader.IsDBNull(ord))
@@ -277,7 +277,7 @@ namespace Greatbone.Core
             return false;
         }
 
-        public bool Got(string name, ref DateTime v)
+        public bool Get(string name, ref DateTime v)
         {
             int ord = name == null ? ordinal++ : reader.GetOrdinal(name);
             if (!reader.IsDBNull(ord))
@@ -288,7 +288,7 @@ namespace Greatbone.Core
             return false;
         }
 
-        public bool Got(string name, ref char[] v)
+        public bool Get(string name, ref char[] v)
         {
             int ord = name == null ? ordinal++ : reader.GetOrdinal(name);
             if (!reader.IsDBNull(ord))
@@ -299,7 +299,7 @@ namespace Greatbone.Core
             return false;
         }
 
-        public bool Got(string name, ref string v)
+        public bool Get(string name, ref string v)
         {
             int ord = name == null ? ordinal++ : reader.GetOrdinal(name);
             if (!reader.IsDBNull(ord))
@@ -310,7 +310,7 @@ namespace Greatbone.Core
             return false;
         }
 
-        public bool Got(string name, ref byte[] v)
+        public bool Get(string name, ref byte[] v)
         {
             int ord = name == null ? ordinal++ : reader.GetOrdinal(name);
             try
@@ -332,7 +332,7 @@ namespace Greatbone.Core
             return false;
         }
 
-        public bool Got(string name, ref ArraySegment<byte> v)
+        public bool Get(string name, ref ArraySegment<byte> v)
         {
             int ord = name == null ? ordinal++ : reader.GetOrdinal(name);
             try
@@ -354,7 +354,7 @@ namespace Greatbone.Core
             return false;
         }
 
-        public bool Got<P>(string name, ref P v, byte x = 0xff) where P : IPersist, new()
+        public bool Get<P>(string name, ref P v, byte x = 0xff) where P : IPersist, new()
         {
             int ord = name == null ? ordinal++ : reader.GetOrdinal(name);
             if (!reader.IsDBNull(ord))
@@ -369,7 +369,7 @@ namespace Greatbone.Core
             return false;
         }
 
-        public bool Got(string name, ref JObj v)
+        public bool Get(string name, ref JObj v)
         {
             int ord = name == null ? ordinal++ : reader.GetOrdinal(name);
             if (!reader.IsDBNull(ord))
@@ -382,7 +382,7 @@ namespace Greatbone.Core
             return false;
         }
 
-        public bool Got(string name, ref JArr v)
+        public bool Get(string name, ref JArr v)
         {
             int ord = name == null ? ordinal++ : reader.GetOrdinal(name);
             if (!reader.IsDBNull(ord))
@@ -395,7 +395,7 @@ namespace Greatbone.Core
             return false;
         }
 
-        public bool Got(string name, ref short[] v)
+        public bool Get(string name, ref short[] v)
         {
             int ord = name == null ? ordinal++ : reader.GetOrdinal(name);
             if (!reader.IsDBNull(ord))
@@ -406,7 +406,7 @@ namespace Greatbone.Core
             return false;
         }
 
-        public bool Got(string name, ref int[] v)
+        public bool Get(string name, ref int[] v)
         {
             int ord = name == null ? ordinal++ : reader.GetOrdinal(name);
             if (!reader.IsDBNull(ord))
@@ -417,7 +417,7 @@ namespace Greatbone.Core
             return false;
         }
 
-        public bool Got(string name, ref long[] v)
+        public bool Get(string name, ref long[] v)
         {
             int ord = name == null ? ordinal++ : reader.GetOrdinal(name);
             if (!reader.IsDBNull(ord))
@@ -428,7 +428,7 @@ namespace Greatbone.Core
             return false;
         }
 
-        public bool Got(string name, ref string[] v)
+        public bool Get(string name, ref string[] v)
         {
             int ord = name == null ? ordinal++ : reader.GetOrdinal(name);
             if (!reader.IsDBNull(ord))
@@ -439,7 +439,7 @@ namespace Greatbone.Core
             return false;
         }
 
-        public bool Got<P>(string name, ref P[] v, byte x = 0xff) where P : IPersist, new()
+        public bool Get<P>(string name, ref P[] v, byte x = 0xff) where P : IPersist, new()
         {
             int ord = name == null ? ordinal++ : reader.GetOrdinal(name);
             if (!reader.IsDBNull(ord))

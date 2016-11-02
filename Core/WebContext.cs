@@ -33,17 +33,20 @@ namespace Greatbone.Core
         //
         public string Method => Request.Method;
 
-        public bool IsGet => "GET".Equals(Request.Method);
+        public bool IsGetMethod => "GET".Equals(Request.Method);
 
-        public bool IsPost => "POST".Equals(Request.Method);
+        public bool IsPostMethod => "POST".Equals(Request.Method);
 
-        // received body bytes
-        byte[] buffer; int count;
+        // received request body
+        byte[] buffer;
 
-        // parsed request entity, can be JObj, Form or null
+        // number of received bytes
+        int count;
+
+        // parsed request entity (JObj, JArr, Form, null)
         object entity;
 
-        async void ReceiveAsync()
+        async void ReadAsync()
         {
             HttpRequest req = Request;
             long? clen = req.ContentLength;
@@ -55,11 +58,11 @@ namespace Greatbone.Core
             }
         }
 
-        void ParseEntity()
+        void Parse()
         {
             if (entity != null) return;
 
-            if (buffer == null) ReceiveAsync();
+            if (buffer == null) ReadAsync();
 
             if (buffer != null)
             {
@@ -78,48 +81,36 @@ namespace Greatbone.Core
             }
         }
 
-        public ArraySegment<byte>? BytesSeg
+        public ArraySegment<byte>? ReadBytesSeg()
         {
-            get
-            {
-                if (buffer == null) ReceiveAsync();
+            if (buffer == null) ReadAsync();
 
-                if (buffer == null) return null;
+            if (buffer == null) return null;
 
-                return new ArraySegment<byte>(buffer, 0, count);
-            }
+            return new ArraySegment<byte>(buffer, 0, count);
         }
 
-        public Form Form
+        public Form ReadForm()
         {
-            get
-            {
-                ParseEntity();
-                return entity as Form;
-            }
+            Parse();
+            return entity as Form;
         }
 
-        public JObj JObj
+        public JObj ReadJObj()
         {
-            get
-            {
-                ParseEntity();
-                return entity as JObj;
-            }
+            Parse();
+            return entity as JObj;
         }
 
-        public JArr JArr
+        public JArr ReadJArr()
         {
-            get
-            {
-                ParseEntity();
-                return entity as JArr;
-            }
+            Parse();
+            return entity as JArr;
         }
 
-        public P Obj<P>(byte x = 0xff) where P : IPersist, new()
+        public P ReadObj<P>(byte x = 0xff) where P : IPersist, new()
         {
-            ParseEntity();
+            Parse();
 
             ISource src = entity as ISource;
             if (src == null) return default(P);
@@ -128,9 +119,9 @@ namespace Greatbone.Core
             return obj;
         }
 
-        public P[] Arr<P>(byte x = 0xff) where P : IPersist, new()
+        public P[] ReadArr<P>(byte x = 0xff) where P : IPersist, new()
         {
-            ParseEntity();
+            Parse();
 
             JArr ja = entity as JArr;
             if (ja == null) return null;
@@ -141,7 +132,7 @@ namespace Greatbone.Core
         // SOURCE FOR QUERY STRING
         //
 
-        public bool Got(string name, ref bool v)
+        public bool Get(string name, ref bool v)
         {
             StringValues values;
             if (Request.Query.TryGetValue(name, out values))
@@ -176,7 +167,7 @@ namespace Greatbone.Core
             return false;
         }
 
-        public bool Got(string name, ref short v)
+        public bool Get(string name, ref short v)
         {
             StringValues values;
             if (Request.Query.TryGetValue(name, out values))
@@ -192,7 +183,7 @@ namespace Greatbone.Core
             return false;
         }
 
-        public bool Got(string name, ref int v)
+        public bool Get(string name, ref int v)
         {
             StringValues values;
             if (Request.Query.TryGetValue(name, out values))
@@ -208,7 +199,7 @@ namespace Greatbone.Core
             return false;
         }
 
-        public bool Got(string name, ref long v)
+        public bool Get(string name, ref long v)
         {
             StringValues values;
             if (Request.Query.TryGetValue(name, out values))
@@ -224,7 +215,7 @@ namespace Greatbone.Core
             return false;
         }
 
-        public bool Got(string name, ref decimal v)
+        public bool Get(string name, ref decimal v)
         {
             StringValues values;
             if (Request.Query.TryGetValue(name, out values))
@@ -240,22 +231,22 @@ namespace Greatbone.Core
             return false;
         }
 
-        public bool Got(string name, ref Number v)
+        public bool Get(string name, ref Number v)
         {
             throw new NotImplementedException();
         }
 
-        public bool Got(string name, ref DateTime v)
+        public bool Get(string name, ref DateTime v)
         {
             throw new NotImplementedException();
         }
 
-        public bool Got(string name, ref char[] v)
+        public bool Get(string name, ref char[] v)
         {
             throw new NotImplementedException();
         }
 
-        public bool Got(string name, ref string v)
+        public bool Get(string name, ref string v)
         {
             StringValues values;
             if (Request.Query.TryGetValue(name, out values))
@@ -266,17 +257,17 @@ namespace Greatbone.Core
             return false;
         }
 
-        public bool Got(string name, ref byte[] v)
+        public bool Get(string name, ref byte[] v)
         {
             throw new NotImplementedException();
         }
 
-        public bool Got(string name, ref ArraySegment<byte> v)
+        public bool Get(string name, ref ArraySegment<byte> v)
         {
             throw new NotImplementedException();
         }
 
-        public bool Got<V>(string name, ref V v, byte x = 0xff) where V : IPersist, new()
+        public bool Get<V>(string name, ref V v, byte x = 0xff) where V : IPersist, new()
         {
             StringValues values;
             if (Request.Query.TryGetValue(name, out values))
@@ -291,7 +282,7 @@ namespace Greatbone.Core
             return false;
         }
 
-        public bool Got(string name, ref JObj v)
+        public bool Get(string name, ref JObj v)
         {
             StringValues values;
             if (Request.Query.TryGetValue(name, out values))
@@ -304,7 +295,7 @@ namespace Greatbone.Core
             return false;
         }
 
-        public bool Got(string name, ref JArr v)
+        public bool Get(string name, ref JArr v)
         {
             StringValues values;
             if (Request.Query.TryGetValue(name, out values))
@@ -317,7 +308,7 @@ namespace Greatbone.Core
             return false;
         }
 
-        public bool Got(string name, ref short[] v)
+        public bool Get(string name, ref short[] v)
         {
             StringValues values;
             if (Request.Query.TryGetValue(name, out values))
@@ -338,7 +329,7 @@ namespace Greatbone.Core
             return false;
         }
 
-        public bool Got(string name, ref int[] v)
+        public bool Get(string name, ref int[] v)
         {
             StringValues values;
             if (Request.Query.TryGetValue(name, out values))
@@ -359,7 +350,7 @@ namespace Greatbone.Core
             return false;
         }
 
-        public bool Got(string name, ref long[] v)
+        public bool Get(string name, ref long[] v)
         {
             StringValues values;
             if (Request.Query.TryGetValue(name, out values))
@@ -380,7 +371,7 @@ namespace Greatbone.Core
             return false;
         }
 
-        public bool Got(string name, ref string[] v)
+        public bool Get(string name, ref string[] v)
         {
             StringValues values;
             if (Request.Query.TryGetValue(name, out values))
@@ -396,7 +387,7 @@ namespace Greatbone.Core
             return false;
         }
 
-        public bool Got<V>(string name, ref V[] v, byte x = 0xff) where V : IPersist, new()
+        public bool Get<V>(string name, ref V[] v, byte x = 0xff) where V : IPersist, new()
         {
             StringValues values;
             if (Request.Query.TryGetValue(name, out values))

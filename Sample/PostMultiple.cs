@@ -54,7 +54,7 @@ namespace Greatbone.Sample
             {
                 if (dc.QueryA("SELECT m" + n + " FROM posts WHERE id = @1", p => p.Put(id)))
                 {
-                    byte[] v = dc.GotBytes();
+                    byte[] v = dc.GetBytes();
                     StaticContent sta = new StaticContent() { Buffer = v };
                     wc.Send(200, sta, true, 60000);
                 }
@@ -80,7 +80,7 @@ namespace Greatbone.Sample
             int n = subscpt.ToInt();
             using (var dc = Service.NewDbContext())
             {
-                ArraySegment<byte>? bytes = wc.BytesSeg;
+                ArraySegment<byte>? bytes = wc.ReadBytesSeg();
                 if (bytes == null)
                 {
                     wc.StatusCode = 301;
@@ -138,7 +138,7 @@ namespace Greatbone.Sample
         {
             int id = wc.Super.ToInt();
             IPrincipal tok = wc.Principal;
-            Comment c = wc.Obj<Comment>();
+            Comment c = wc.ReadObj<Comment>();
 
             c.time = DateTime.Now;
             c.authorid = tok.Key;
@@ -147,7 +147,7 @@ namespace Greatbone.Sample
             {
                 if (dc.QueryA("SELECT comments FROM posts WHERE id = @1", p => p.Put(id)))
                 {
-                    Comment[] arr = dc.GotArr<Comment>().Add(c);
+                    Comment[] arr = dc.GetArr<Comment>().Add(c);
                     if (dc.Execute("UPDATE posts SET comments = @1 WHERE id = @2", p => p.Put(arr).Put(id)) > 0)
                     {
                         wc.StatusCode = 200;

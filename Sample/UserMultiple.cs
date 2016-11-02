@@ -22,7 +22,7 @@ namespace Greatbone.Sample
         {
             string id = wc.Super;
             string password = null;
-            if (!wc.Got(nameof(password), ref password))
+            if (!wc.Get(nameof(password), ref password))
             {
                 wc.StatusCode = 400; return;
             }
@@ -59,7 +59,7 @@ namespace Greatbone.Sample
         /// </code>
         public void upd(WebContext wc, string subscpt)
         {
-            User obj = wc.JObj.ToObj<User>();
+            User obj = wc.ReadObj<User>();
             using (var dc = Service.NewDbContext())
             {
                 DbSql sql = new DbSql("UPDATE users")._SET_(obj)._("WHERE id = @1");

@@ -78,7 +78,7 @@ namespace Greatbone.Sample
             {
                 if (dc.QueryA("SELECT apps FROM notices WHERE id = @1", p => p.Put(id)))
                 {
-                    App[] arr = dc.GotArr<App>().Add(app);
+                    App[] arr = dc.GetArr<App>().Add(app);
                     if (dc.Execute("UPDATE notices SET apps = @1", p => p.Put(arr)) > 0)
                     {
                         wc.StatusCode = 201;
@@ -105,7 +105,7 @@ namespace Greatbone.Sample
         {
             int id = wc.Super.ToInt();
             IPrincipal tok = wc.Principal;
-            Comment c = wc.Obj<Comment>();
+            Comment c = wc.ReadObj<Comment>();
 
             c.time = DateTime.Now;
             c.authorid = tok.Key;
@@ -114,7 +114,7 @@ namespace Greatbone.Sample
             {
                 if (dc.QueryA("SELECT comments FROM notices WHERE id = @1", p => p.Put(id)))
                 {
-                    Comment[] arr = dc.GotArr<Comment>().Add(c);
+                    Comment[] arr = dc.GetArr<Comment>().Add(c);
                     if (dc.Execute("UPDATE notices SET comments = @1 WHERE id = @2", p => p.Put(arr).Put(id)) > 0)
                     {
                         wc.StatusCode = 200;

@@ -26,7 +26,7 @@ namespace Greatbone.Sample
         {
             int page = subscpt.ToInt();
             string authorid = null;
-            if (wc.Got(nameof(authorid), ref authorid))
+            if (wc.Get(nameof(authorid), ref authorid))
             {
                 using (var dc = Service.NewDbContext())
                 {
@@ -75,7 +75,7 @@ namespace Greatbone.Sample
         public void @new(WebContext wc, string subscpt)
         {
             IPrincipal tok = wc.Principal;
-            Notice obj = wc.Obj<Notice>();
+            Notice obj = wc.ReadObj<Notice>();
 
             obj.authorid = tok.Key;
             obj.author = tok.Name;

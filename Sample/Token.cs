@@ -23,11 +23,11 @@ namespace Greatbone.Sample
 
         public void Load(ISource s, byte x = 0xff)
         {
-            s.Got(nameof(id), ref id);
-            s.Got(nameof(name), ref name);
-            s.Got(nameof(credential), ref credential);
-            s.Got(nameof(fame), ref fame);
-            s.Got(nameof(brand), ref brand);
+            s.Get(nameof(id), ref id);
+            s.Get(nameof(name), ref name);
+            s.Get(nameof(credential), ref credential);
+            s.Get(nameof(fame), ref fame);
+            s.Get(nameof(brand), ref brand);
         }
 
         public void Dump<R>(ISink<R> s, byte x = 0xff) where R : ISink<R>

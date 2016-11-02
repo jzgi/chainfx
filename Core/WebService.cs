@@ -176,7 +176,7 @@ namespace Greatbone.Core
             string targ = path + req.QueryString.Value;
 
             IContent cont;
-            if (wc.IsGet && cache.TryGetContent(targ, out cont)) // check if hit in the cache
+            if (wc.IsGetMethod && cache.TryGetContent(targ, out cont)) // check if hit in the cache
             {
                 wc.Send(304, cont, true, 0);
             }

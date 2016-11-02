@@ -36,7 +36,7 @@ namespace Greatbone.Core
         // SOURCE
         //
 
-        public bool Got(string name, ref bool v)
+        public bool Get(string name, ref bool v)
         {
             Pair pr;
             if (pairs.TryGet(name, out pr))
@@ -47,7 +47,7 @@ namespace Greatbone.Core
             return false;
         }
 
-        public bool Got(string name, ref short v)
+        public bool Get(string name, ref short v)
         {
             Pair pr;
             if (pairs.TryGet(name, out pr))
@@ -58,7 +58,7 @@ namespace Greatbone.Core
             return false;
         }
 
-        public bool Got(string name, ref int v)
+        public bool Get(string name, ref int v)
         {
             Pair pr;
             if (pairs.TryGet(name, out pr))
@@ -69,7 +69,7 @@ namespace Greatbone.Core
             return false;
         }
 
-        public bool Got(string name, ref long v)
+        public bool Get(string name, ref long v)
         {
             Pair pr;
             if (pairs.TryGet(name, out pr))
@@ -80,7 +80,7 @@ namespace Greatbone.Core
             return false;
         }
 
-        public bool Got(string name, ref decimal v)
+        public bool Get(string name, ref decimal v)
         {
             Pair pr;
             if (pairs.TryGet(name, out pr))
@@ -91,17 +91,17 @@ namespace Greatbone.Core
             return false;
         }
 
-        public bool Got(string name, ref Number v)
+        public bool Get(string name, ref Number v)
         {
             throw new NotImplementedException();
         }
 
-        public bool Got(string name, ref DateTime v)
+        public bool Get(string name, ref DateTime v)
         {
             throw new NotImplementedException();
         }
 
-        public bool Got(string name, ref string v)
+        public bool Get(string name, ref string v)
         {
             Pair pr;
             if (pairs.TryGet(name, out pr))
@@ -112,22 +112,22 @@ namespace Greatbone.Core
             return false;
         }
 
-        public bool Got(string name, ref byte[] v)
+        public bool Get(string name, ref byte[] v)
         {
             throw new NotImplementedException();
         }
 
-        public bool Got(string name, ref ArraySegment<byte> v)
+        public bool Get(string name, ref ArraySegment<byte> v)
         {
             throw new NotImplementedException();
         }
 
-        public bool Got(string name, ref JArr v)
+        public bool Get(string name, ref JArr v)
         {
             throw new NotImplementedException();
         }
 
-        public bool Got(string name, ref short[] v)
+        public bool Get(string name, ref short[] v)
         {
             Pair pr;
             if (pairs.TryGet(name, out pr))
@@ -138,7 +138,7 @@ namespace Greatbone.Core
             return false;
         }
 
-        public bool Got(string name, ref int[] v)
+        public bool Get(string name, ref int[] v)
         {
             Pair pr;
             if (pairs.TryGet(name, out pr))
@@ -149,7 +149,7 @@ namespace Greatbone.Core
             return false;
         }
 
-        public bool Got(string name, ref long[] v)
+        public bool Get(string name, ref long[] v)
         {
             Pair pr;
             if (pairs.TryGet(name, out pr))
@@ -160,7 +160,7 @@ namespace Greatbone.Core
             return false;
         }
 
-        public bool Got(string name, ref string[] v)
+        public bool Get(string name, ref string[] v)
         {
             Pair pr;
             if (pairs.TryGet(name, out pr))
@@ -171,23 +171,23 @@ namespace Greatbone.Core
             return false;
         }
 
-        public bool Got(string name, ref JObj v)
+        public bool Get(string name, ref JObj v)
         {
             throw new NotImplementedException();
         }
 
-        public bool Got(string name, ref char[] v)
+        public bool Get(string name, ref char[] v)
         {
             throw new NotImplementedException();
         }
 
 
-        public bool Got<P>(string name, ref P[] v, byte x = 0xff) where P : IPersist, new()
+        public bool Get<P>(string name, ref P[] v, byte x = 0xff) where P : IPersist, new()
         {
             throw new NotImplementedException();
         }
 
-        public bool Got<P>(string name, ref P v, byte x = 0xff) where P : IPersist, new()
+        public bool Get<P>(string name, ref P v, byte x = 0xff) where P : IPersist, new()
         {
             throw new NotImplementedException();
         }

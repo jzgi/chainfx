@@ -14,14 +14,14 @@ namespace Greatbone.Sample
 
         public void Load(ISource s, byte x = 0xff)
         {
-            s.Got(nameof(id), ref id);
-            s.Got(nameof(title), ref title);
+            s.Get(nameof(id), ref id);
+            s.Get(nameof(title), ref title);
             if (x.On(XUtility.BIN))
             {
-                s.Got(nameof(img), ref img);
+                s.Get(nameof(img), ref img);
             }
-            s.Got(nameof(filter), ref filter);
-            s.Got(nameof(disabled), ref disabled);
+            s.Get(nameof(filter), ref filter);
+            s.Get(nameof(disabled), ref disabled);
         }
 
         public void Dump<R>(ISink<R> s, byte x = 0xff) where R : ISink<R>

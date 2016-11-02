@@ -20,10 +20,10 @@ namespace Greatbone.Sample
 
         public void Load(ISource s, byte x = 0xff)
         {
-            s.Got(nameof(status), ref status);
-            s.Got(nameof(partner), ref partner);
-            s.Got(nameof(msgs), ref msgs);
-            s.Got(nameof(lasttime), ref lasttime);
+            s.Get(nameof(status), ref status);
+            s.Get(nameof(partner), ref partner);
+            s.Get(nameof(msgs), ref msgs);
+            s.Get(nameof(lasttime), ref lasttime);
         }
 
         public void Dump<R>(ISink<R> s, byte x = 0xff) where R : ISink<R>
@@ -70,12 +70,12 @@ namespace Greatbone.Sample
 
         public void Load(ISource sc, byte x = 0xff)
         {
-            sc.Got(nameof(id), ref id);
-            sc.Got(nameof(subtype), ref subtype);
-            sc.Got(nameof(@from), ref @from);
-            sc.Got(nameof(to), ref to);
-            sc.Got(nameof(content), ref content);
-            sc.Got(nameof(time), ref time);
+            sc.Get(nameof(id), ref id);
+            sc.Get(nameof(subtype), ref subtype);
+            sc.Get(nameof(@from), ref @from);
+            sc.Get(nameof(to), ref to);
+            sc.Get(nameof(content), ref content);
+            sc.Get(nameof(time), ref time);
         }
 
         public void Dump<R>(ISink<R> sk, byte x = 0xff) where R : ISink<R>

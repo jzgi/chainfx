@@ -26,25 +26,25 @@ namespace Greatbone.Sample
 
         public void Load(ISource s, byte x = 0xff)
         {
-            s.Got(nameof(id), ref id);
-            s.Got(nameof(loc), ref loc);
-            s.Got(nameof(authorid), ref authorid);
-            s.Got(nameof(author), ref author);
-            s.Got(nameof(date), ref date);
-            s.Got(nameof(duedate), ref duedate);
-            s.Got(nameof(subject), ref subject);
-            s.Got(nameof(tel), ref tel);
-            s.Got(nameof(text), ref text);
-            s.Got(nameof(read), ref read);
-            s.Got(nameof(shared), ref shared);
+            s.Get(nameof(id), ref id);
+            s.Get(nameof(loc), ref loc);
+            s.Get(nameof(authorid), ref authorid);
+            s.Get(nameof(author), ref author);
+            s.Get(nameof(date), ref date);
+            s.Get(nameof(duedate), ref duedate);
+            s.Get(nameof(subject), ref subject);
+            s.Get(nameof(tel), ref tel);
+            s.Get(nameof(text), ref text);
+            s.Get(nameof(read), ref read);
+            s.Get(nameof(shared), ref shared);
 
             if (x.On(MANY))
-                s.Got(nameof(apps), ref apps);
+                s.Get(nameof(apps), ref apps);
 
-            s.Got(nameof(commentable), ref commentable);
+            s.Get(nameof(commentable), ref commentable);
 
             if (x.On(MANY))
-                s.Got(nameof(comments), ref comments);
+                s.Get(nameof(comments), ref comments);
         }
 
         public void Dump<R>(ISink<R> s, byte x = 0xff) where R : ISink<R>
@@ -81,8 +81,8 @@ namespace Greatbone.Sample
 
         public void Load(ISource s, byte x = 0xff)
         {
-            s.Got(nameof(userid), ref userid);
-            s.Got(nameof(user), ref user);
+            s.Get(nameof(userid), ref userid);
+            s.Get(nameof(user), ref user);
         }
 
         public void Dump<R>(ISink<R> s, byte x = 0xff) where R : ISink<R>

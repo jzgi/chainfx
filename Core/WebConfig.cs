@@ -52,14 +52,14 @@
 
         public void Load(ISource s, byte x = 0xff)
         {
-            s.Got(nameof(part), ref part);
-            s.Got(nameof(@extern), ref @extern);
-            s.Got(nameof(tls), ref tls);
-            s.Got(nameof(intern), ref intern);
-            s.Got(nameof(net), ref net);
-            s.Got(nameof(db), ref db);
-            s.Got(nameof(logging), ref logging);
-            s.Got(nameof(opts), ref opts);
+            s.Get(nameof(part), ref part);
+            s.Get(nameof(@extern), ref @extern);
+            s.Get(nameof(tls), ref tls);
+            s.Get(nameof(intern), ref intern);
+            s.Get(nameof(net), ref net);
+            s.Get(nameof(db), ref db);
+            s.Get(nameof(logging), ref logging);
+            s.Get(nameof(opts), ref opts);
         }
 
         public void Dump<R>(ISink<R> s, byte x = 0xff) where R : ISink<R>
