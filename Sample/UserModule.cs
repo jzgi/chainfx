@@ -40,7 +40,7 @@ namespace Greatbone.Sample
                 string id = null;
                 if (!wc.Get(nameof(id), ref id))
                 {
-                    wc.StatusCode = 304; // bad request
+                    wc.StatusCode = 400; // bad request
                     return;
                 }
 
