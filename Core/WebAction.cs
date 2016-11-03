@@ -16,11 +16,11 @@ namespace Greatbone.Core
 
         readonly Action<WebContext, string> doer;
 
-        readonly CheckAttribute[] tos;
+        readonly CheckAttribute[] checks;
 
         readonly bool bearer, digest;
 
-        readonly DialogAttribute dialog;
+        readonly ButtonAttribute button;
 
         public string Key { get; }
 
@@ -39,12 +39,16 @@ namespace Greatbone.Core
                 if (to.IsBearer) bearer = true;
                 else digest = true;
             }
-            tos = lst?.ToArray();
+            checks = lst?.ToArray();
 
-            dialog = mi.GetCustomAttribute<DialogAttribute>();
+            button = mi.GetCustomAttribute<ButtonAttribute>();
         }
 
-        public DialogAttribute Button => dialog;
+        public bool IsGet => button == null ? false : button.IsGet;
+
+        public string Icon => button?.Icon;
+
+        public int Dialog => button == null ? 3 : button.Dialog;
 
         // for generating unique digest nonce
         const string PrivateKey = "3e43a7180";
@@ -65,9 +69,9 @@ namespace Greatbone.Core
                     return false;
                 }
 
-                for (int i = 0; i < tos.Length; i++)
+                for (int i = 0; i < checks.Length; i++)
                 {
-                    if (!tos[i].Test(wc))
+                    if (!checks[i].Test(wc))
                     {
                         wc.StatusCode = 403; // forbidden
                         return false;

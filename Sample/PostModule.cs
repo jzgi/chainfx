@@ -100,6 +100,7 @@ namespace Greatbone.Sample
         // ADMIN
         //
         [CheckAdmin]
+        [Button(IsGet = true, Icon = Icon.chrome)]
         public override void mgmt(WebContext wc, string subscpt)
         {
             // returh first UI
@@ -111,7 +112,7 @@ namespace Greatbone.Sample
 
         }
 
-        [Dialog]
+        [Button(Dialog = 3)]
         public void srch(WebContext wc, string subscpt)
         {
             Form frm = wc.ReadForm();
@@ -127,7 +128,7 @@ namespace Greatbone.Sample
             }
         }
 
-        [Dialog]
+        [Button]
         public void del(WebContext wc, string subscpt)
         {
             if (wc.IsGetMethod) // return confirmation dialog
@@ -140,7 +141,7 @@ namespace Greatbone.Sample
             }
         }
 
-        [Dialog]
+        [Button]
         public void status(WebContext wc, string subscpt)
         {
             throw new NotImplementedException();
