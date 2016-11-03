@@ -262,7 +262,7 @@ namespace Greatbone.Core
             throw new NotImplementedException();
         }
 
-        public bool Get(string name, ref ArraySegment<byte> v)
+        public bool Get(string name, ref ArraySegment<byte>? v)
         {
             throw new NotImplementedException();
         }
@@ -445,7 +445,7 @@ namespace Greatbone.Core
             {
                 string str = (string)vs;
                 DateTime v;
-                if (StrUtility.TryParseUtcDate(str, out v))
+                if (StrUtil.TryParseUtcDate(str, out v))
                 {
                     return v;
                 }
@@ -475,7 +475,7 @@ namespace Greatbone.Core
 
         public void SetHeader(string name, DateTime v)
         {
-            string str = StrUtility.FormatUtcDate(v);
+            string str = StrUtil.FormatUtcDate(v);
             Response.Headers.Add(name, new StringValues(str));
         }
 
@@ -546,12 +546,12 @@ namespace Greatbone.Core
                 if (Content is DynamicContent) // set etag
                 {
                     ulong v = ((DynamicContent)Content).ETag;
-                    SetHeader("ETag", StrUtility.ToHex(v));
+                    SetHeader("ETag", StrUtil.ToHex(v));
                 }
                 else // set last-modified
                 {
                     DateTime v = ((StaticContent)Content).LastModified;
-                    SetHeader("Last-Modified", StrUtility.FormatUtcDate(v));
+                    SetHeader("Last-Modified", StrUtil.FormatUtcDate(v));
                 }
 
                 // send async

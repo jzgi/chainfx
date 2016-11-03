@@ -4,6 +4,7 @@ using Greatbone.Core;
 
 namespace Greatbone.Sample
 {
+
     ///
     /// <summary>
     /// The user module controller.
@@ -19,27 +20,11 @@ namespace Greatbone.Sample
         }
 
         /// <summary>
-        /// Get a verification code through SMS.
-        /// </summary>
-        /// <code>
-        /// GET /user/vcode
-        /// </code>
-        public void vcode(WebContext wc, string subscpt)
-        {
-            JObj jo = wc.ReadJObj();
-            string id = jo[nameof(id)];
-            string password = jo[nameof(password)];
-            // send vcode through SMS
-            string vcode = "123";
-            vcodes.TryAdd(id, vcode);
-            INF(vcode);
-            wc.StatusCode = 200;
-        }
-
-        /// <summary>
         /// Create a new user account.
         /// </summary>
         /// <code>
+        /// GET /user/new?id=_id_
+        ///
         /// POST /user/new
         /// {
         ///   "id" : "_user_id_",            
@@ -50,29 +35,60 @@ namespace Greatbone.Sample
         /// </code>
         public void @new(WebContext wc, string subscpt)
         {
-            JObj jo = wc.ReadJObj();
-            string id = jo[nameof(id)];
-            string password = jo[nameof(password)];
-            string name = jo[nameof(name)];
-            string vcode = jo[nameof(vcode)];
-            // string vold;
-            // if (vcodes.TryGetValue(id, out vold) && vcode.Equals("123"))
-            if (vcode.Equals("123"))
+            if (wc.IsGetMethod)
             {
-                using (var sc = Service.NewDbContext())
+                string id = null;
+                if (!wc.Get(nameof(id), ref id))
                 {
-                    string credential = StrUtility.MD5(id + ':' + ':' + password);
-                    if (sc.Execute("INSERT INTO users (id, credential, name) VALUES (@1, @2, @3)", p => p.Put(id).Put(credential).Put(name)) > 0)
+                    wc.StatusCode = 304; // bad request
+                    return;
+                }
+
+                string vcode = "123";
+                using (var dc = Service.NewDbContext())
+                {
+                    if (dc.QueryA("SELECT id FROM users WHERE id = @1", p => p.Put(id)))
                     {
-                        wc.StatusCode = 201;
+                        wc.StatusCode = 409; // conflict
+                    }
+                    else
+                    {
+                        vcodes.TryAdd(id, vcode);
+                        wc.StatusCode = 200; // ok
                     }
                 }
             }
             else
             {
-                wc.StatusCode = 400; // bad request
+                JObj jo = wc.ReadJObj();
+                string id = jo[nameof(id)];
+                string name = jo[nameof(name)];
+                string password = jo[nameof(password)];
+                string vcode = jo[nameof(vcode)];
+
+                string storedvcode;
+                vcodes.TryRemove(id, out storedvcode);
+
+                if (vcode.Equals(storedvcode))
+                {
+                    using (var dc = Service.NewDbContext())
+                    {
+                        string credential = StrUtil.MD5(id + ':' + ':' + password);
+                        if (dc.Execute("INSERT INTO users (id, credential, name) VALUES (@1, @2, @3)", p => p.Put(id).Put(credential).Put(name)) > 0)
+                        {
+                            wc.StatusCode = 201; // created
+                        }
+                        else
+                            wc.StatusCode = 500; // internal server error
+                    }
+                }
+                else
+                    wc.StatusCode = 400; // bad request
             }
         }
+
+
+
 
         [CheckAdmin]
         public void create(WebContext wc, string subscpt)
@@ -80,9 +96,9 @@ namespace Greatbone.Sample
             JObj jo = wc.ReadJObj();
             string id = jo[nameof(id)];
             string password = jo[nameof(password)];
-            using (var sc = Service.NewDbContext())
+            using (var dc = Service.NewDbContext())
             {
-                if (sc.Execute("INSERT INTO users (id, credential) VALUES (@1, @2)", p => p.Put(id).Put(StrUtility.MD5(password))) > 0)
+                if (dc.Execute("INSERT INTO users (id, credential) VALUES (@1, @2)", p => p.Put(id).Put(StrUtil.MD5(password))) > 0)
                 {
                     wc.StatusCode = 200;
                 }

@@ -77,7 +77,7 @@
         {
             if (key == null) throw new WebException("missing key");
 
-            JObj jo = JUtility.FileToJObj(GetFilePath("$web.json"));
+            JObj jo = JUtil.FileToJObj(GetFilePath("$web.json"));
             if (jo != null)
             {
                 Load(jo); // override

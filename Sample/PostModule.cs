@@ -1,6 +1,6 @@
 ﻿using System;
 using Greatbone.Core;
-using static Greatbone.Core.XUtility;
+using static Greatbone.Core.XUtil;
 
 namespace Greatbone.Sample
 {
@@ -13,7 +13,7 @@ namespace Greatbone.Sample
         {
             SetMultiple<PostMultiple>();
 
-            mgmtWas = Actions(nameof(mgmt), nameof(srch), nameof(del), nameof(status));
+            mgmtWas = Actions(nameof(srch), nameof(del), nameof(status));
         }
 
         public override void @default(WebContext wc, string subscpt)
@@ -29,10 +29,9 @@ namespace Greatbone.Sample
         /// </code>
         public void top(WebContext wc, string subscpt)
         {
-            const byte x = 0xff ^ BIN;
-
             int page = subscpt.ToInt();
             string authorid = null;
+            const byte x = 0xff ^ BIN;
             if (wc.Get(nameof(authorid), ref authorid))
             {
                 using (var dc = Service.NewDbContext())
@@ -100,31 +99,36 @@ namespace Greatbone.Sample
         // ADMIN
         //
         [CheckAdmin]
-        [Button(IsGet = true, Icon = Icon.chrome)]
+        [Button(IsGet = true, Icon = FaUtil.chrome)]
         public override void mgmt(WebContext wc, string subscpt)
         {
             // returh first UI
             wc.SendMajorLayout(200, "管理功能", a =>
             {
-                // a.Form(,,,,, )
-                a.buttonlst(mgmtWas);
+                a.form(mgmtWas, (Post[])null, 0);
             });
-
         }
 
-        [Button(Dialog = 3)]
+        [CheckAdmin]
+        [Button(IsGet = true, Icon = FaUtil.chrome, Dialog = 3)]
         public void srch(WebContext wc, string subscpt)
         {
-            Form frm = wc.ReadForm();
-
-            string word = null;
-            if (wc.Get(nameof(word), ref word))
+            using (var dc = Service.NewDbContext())
             {
-
-            }
-            else
-            { // return search condition dialog 
-
+                const byte x = 0xff ^ BIN;
+                DbSql sql = new DbSql("SELECT ").columnlst(Post.Empty, x)._("FROM posts");
+                if (dc.Query(sql.ToString()))
+                {
+                    Post[] arr = dc.ToArr<Post>(x);
+                    wc.SendMajorLayout(200, "管理功能", a =>
+                    {
+                        a.form(mgmtWas, arr, x);
+                    });
+                }
+                else
+                {
+                    wc.StatusCode = 204; // no content
+                }
             }
         }
 

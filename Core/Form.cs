@@ -117,7 +117,7 @@ namespace Greatbone.Core
             throw new NotImplementedException();
         }
 
-        public bool Get(string name, ref ArraySegment<byte> v)
+        public bool Get(string name, ref ArraySegment<byte>? v)
         {
             throw new NotImplementedException();
         }

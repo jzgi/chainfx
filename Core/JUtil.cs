@@ -5,7 +5,7 @@ using System.IO;
 namespace Greatbone.Core
 {
 
-    public static class JUtility
+    public static class JUtil
     {
 
         public static JObj FileToJObj(string file)

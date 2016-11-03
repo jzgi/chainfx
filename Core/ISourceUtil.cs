@@ -2,7 +2,7 @@
 
 namespace Greatbone.Core
 {
-    public static class ISourceUtility
+    public static class ISourceUtil
     {
 
         public static T ToObj<T>(this ISource sc, byte x = 0xff) where T : IPersist, new()
@@ -74,7 +74,7 @@ namespace Greatbone.Core
         }
 
 
-        public static bool Get(this ISource src, ref ArraySegment<byte> v)
+        public static bool Get(this ISource src, ref ArraySegment<byte>? v)
         {
             return src.Get(null, ref v);
         }
@@ -131,136 +131,136 @@ namespace Greatbone.Core
         // GET SPECIFIC
         //
 
-        public static bool GetBool(this ISource src, bool def = false)
+        public static bool GetBool(this ISource src)
         {
-            bool v = def;
+            bool v = false;
             src.Get(null, ref v);
             return v;
         }
 
-        public static short GetShort(this ISource src, short def = 0)
+        public static short GetShort(this ISource src)
         {
-            short v = def;
+            short v = 0;
             src.Get(null, ref v);
             return v;
         }
 
-        public static int GetInt(this ISource src, int def = 0)
+        public static int GetInt(this ISource src)
         {
-            int v = def;
+            int v = 0;
             src.Get(null, ref v);
             return v;
         }
 
-        public static long GetLong(this ISource src, long def = 0)
+        public static long GetLong(this ISource src)
         {
-            long v = def;
+            long v = 0;
             src.Get(null, ref v);
             return v;
         }
 
-        public static decimal GetDecimal(this ISource src, decimal def = 0)
+        public static decimal GetDecimal(this ISource src)
         {
-            decimal v = def;
+            decimal v = 0;
             src.Get(null, ref v);
             return v;
         }
 
-        public static Number GetNumber(this ISource src, Number def = default(Number))
+        public static Number GetNumber(this ISource src)
         {
-            Number v = def;
+            Number v = default(Number);
             src.Get(null, ref v);
             return v;
         }
 
-        public static DateTime GetDateTime(this ISource src, DateTime def = default(DateTime))
+        public static DateTime GetDateTime(this ISource src)
         {
-            DateTime v = def;
+            DateTime v = default(DateTime);
             src.Get(null, ref v);
             return v;
         }
 
-        public static char[] GetChars(this ISource src, char[] def = null)
+        public static char[] GetChars(this ISource src)
         {
-            char[] v = def;
+            char[] v = null;
             src.Get(null, ref v);
             return v;
         }
 
-        public static string GetString(this ISource src, string def = null)
+        public static string GetString(this ISource src)
         {
-            string v = def;
+            string v = null;
             src.Get(null, ref v);
             return v;
         }
 
-        public static byte[] GetBytes(this ISource src, byte[] def = null)
+        public static byte[] GetBytes(this ISource src)
         {
-            byte[] v = def;
+            byte[] v = null;
             src.Get(null, ref v);
             return v;
         }
 
-        public static ArraySegment<byte> GetBytesSeg(this ISource src, ArraySegment<byte> def = default(ArraySegment<byte>))
+        public static ArraySegment<byte>? GetBytesSeg(this ISource src)
         {
-            ArraySegment<byte> v = def;
+            ArraySegment<byte>? v = null;
             src.Get(null, ref v);
             return v;
         }
 
-        public static P GetObj<P>(this ISource src, byte x = 0xff, P def = default(P)) where P : IPersist, new()
+        public static P GetObj<P>(this ISource src, byte x = 0xff) where P : IPersist, new()
         {
-            P v = def;
+            P v = default(P);
             src.Get(null, ref v, x);
             return v;
         }
 
-        public static JObj GetJObj(this ISource src, JObj def = null)
+        public static JObj GetJObj(this ISource src)
         {
-            JObj v = def;
+            JObj v = null;
             src.Get(null, ref v);
             return v;
         }
 
-        public static JArr GetJArr(this ISource src, JArr def = null)
+        public static JArr GetJArr(this ISource src)
         {
-            JArr v = def;
+            JArr v = null;
             src.Get(null, ref v);
             return v;
         }
 
-        public static short[] GetShorts(this ISource src, short[] def = null)
+        public static short[] GetShorts(this ISource src)
         {
-            short[] v = def;
+            short[] v = null;
             src.Get(null, ref v);
             return v;
         }
 
-        public static int[] GetInts(this ISource src, int[] def = null)
+        public static int[] GetInts(this ISource src)
         {
-            int[] v = def;
+            int[] v = null;
             src.Get(null, ref v);
             return v;
         }
 
-        public static long[] GetLongs(this ISource src, long[] def = null)
+        public static long[] GetLongs(this ISource src)
         {
-            long[] v = def;
+            long[] v = null;
             src.Get(null, ref v);
             return v;
         }
 
 
-        public static string[] GetStrings(this ISource src, string[] def = null)
+        public static string[] GetStrings(this ISource src)
         {
-            string[] v = def;
+            string[] v = null;
             src.Get(null, ref v);
             return v;
         }
 
-        public static P[] GetArr<P>(this ISource src, byte x = 0xff, P[] def = null) where P : IPersist, new()
+        public static P[] GetArr<P>(this ISource src, byte x = 0xff) where P : IPersist, new()
         {
-            P[] v = def;
+            P[] v = null;
             src.Get(null, ref v, x);
             return v;
         }
@@ -269,30 +269,30 @@ namespace Greatbone.Core
         // GET SPECIFIC BY NAME
         //
 
-        public static bool GetBool(this ISource src, string name, bool def = false)
+        public static bool GetBool(this ISource src, string name)
         {
-            bool v = def;
+            bool v = false;
             src.Get(name, ref v);
             return v;
         }
 
-        public static short GetShort(this ISource src, string name, short def = 0)
+        public static short GetShort(this ISource src, string name)
         {
-            short v = def;
+            short v = 0;
             src.Get(name, ref v);
             return v;
         }
 
-        public static int GetInt(this ISource src, string name, int def = 0)
+        public static int GetInt(this ISource src, string name)
         {
-            int v = def;
+            int v = 0;
             src.Get(name, ref v);
             return v;
         }
 
-        public static long GetLong(this ISource src, string name, long def = 0)
+        public static long GetLong(this ISource src, string name)
         {
-            long v = def;
+            long v = 0;
             src.Get(name, ref v);
             return v;
         }
@@ -304,101 +304,101 @@ namespace Greatbone.Core
             return v;
         }
 
-        public static Number GetNumber(this ISource src, string name, Number def = default(Number))
+        public static Number GetNumber(this ISource src, string name)
         {
-            Number v = def;
+            Number v = default(Number);
             src.Get(name, ref v);
             return v;
         }
 
-        public static DateTime GetDateTime(this ISource src, string name, DateTime def = default(DateTime))
+        public static DateTime GetDateTime(this ISource src, string name)
         {
-            DateTime v = def;
+            DateTime v = default(DateTime);
             src.Get(name, ref v);
             return v;
         }
 
-        public static char[] GetChars(this ISource src, string name, char[] def = null)
+        public static char[] GetChars(this ISource src, string name)
         {
-            char[] v = def;
+            char[] v = null;
             src.Get(name, ref v);
             return v;
         }
 
-        public static string GetString(this ISource src, string name, string def = null)
+        public static string GetString(this ISource src, string name)
         {
-            string v = def;
+            string v = null;
             src.Get(name, ref v);
             return v;
         }
 
-        public static byte[] GetBytes(this ISource src, string name, byte[] def = null)
+        public static byte[] GetBytes(this ISource src, string name)
         {
-            byte[] v = def;
+            byte[] v = null;
             src.Get(name, ref v);
             return v;
         }
 
-        public static ArraySegment<byte> GetBytesSeg(this ISource src, string name, ArraySegment<byte> def = default(ArraySegment<byte>))
+        public static ArraySegment<byte>? GetBytesSeg(this ISource src, string name)
         {
-            ArraySegment<byte> v = def;
+            ArraySegment<byte>? v = null;
             src.Get(name, ref v);
             return v;
         }
 
-        public static P GetObj<P>(this ISource src, string name, P def = default(P)) where P : IPersist, new()
+        public static P GetObj<P>(this ISource src, string name) where P : IPersist, new()
         {
-            P v = def;
+            P v = default(P);
             src.Get(name, ref v);
             return v;
         }
 
-        public static JObj GetJObj(this ISource src, string name, JObj def = null)
+        public static JObj GetJObj(this ISource src, string name)
         {
-            JObj v = def;
+            JObj v = null;
             src.Get(name, ref v);
             return v;
         }
 
-        public static JArr GetJArr(this ISource src, string name, JArr def = null)
+        public static JArr GetJArr(this ISource src, string name)
         {
-            JArr v = def;
+            JArr v = null;
             src.Get(name, ref v);
             return v;
         }
 
 
-        public static short[] GetShorts(this ISource src, string name, short[] def = null)
+        public static short[] GetShorts(this ISource src, string name)
         {
-            short[] v = def;
+            short[] v = null;
             src.Get(name, ref v);
             return v;
         }
 
-        public static int[] GetInts(this ISource src, string name, int[] def = null)
+        public static int[] GetInts(this ISource src, string name)
         {
-            int[] v = def;
+            int[] v = null;
             src.Get(name, ref v);
             return v;
         }
 
-        public static long[] GetLongs(this ISource src, string name, long[] def = null)
+        public static long[] GetLongs(this ISource src, string name)
         {
-            long[] v = def;
+            long[] v = null;
             src.Get(name, ref v);
             return v;
         }
 
-        public static string[] GetStrings(this ISource src, string name, string[] def = null)
+        public static string[] GetStrings(this ISource src, string name)
         {
-            string[] v = def;
+            string[] v = null;
             src.Get(name, ref v);
             return v;
         }
 
-        public static P[] GetArr<P>(this ISource src, string name, P[] def = null) where P : IPersist, new()
+        public static P[] GetArr<P>(this ISource src, string name) where P : IPersist, new()
         {
-            P[] v = def;
+            P[] v = null;
             src.Get(name, ref v);
             return v;
         }

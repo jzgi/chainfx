@@ -153,7 +153,7 @@ namespace Greatbone.Core
             {
                 string str = (string)v.refv;
                 DateTime dt;
-                if (StrUtility.TryParseDate(str, out dt)) return dt;
+                if (StrUtil.TryParseDate(str, out dt)) return dt;
             }
             return default(DateTime);
         }

@@ -175,7 +175,7 @@ namespace Greatbone.Core
             return false;
         }
 
-        public bool Get(string name, ref ArraySegment<byte> v)
+        public bool Get(string name, ref ArraySegment<byte>? v)
         {
             JMember pair;
             if (pairs.TryGet(name, out pair))

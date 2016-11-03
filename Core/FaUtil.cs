@@ -1,6 +1,10 @@
 namespace Greatbone.Core
 {
-    public static class Icon
+
+    ///
+    /// Font-Awsome constants.
+    ///
+    public static class FaUtil
     {
         public const string
             chrome = "fa fa-chrome";

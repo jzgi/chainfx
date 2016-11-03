@@ -28,7 +28,7 @@ namespace Greatbone.Core
 
         bool Get(string name, ref byte[] v);
 
-        bool Get(string name, ref ArraySegment<byte> v);
+        bool Get(string name, ref ArraySegment<byte>? v);
 
         bool Get<V>(string name, ref V v, byte x = 0xff) where V : IPersist, new();
 

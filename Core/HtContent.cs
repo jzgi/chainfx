@@ -220,6 +220,7 @@ namespace Greatbone.Core
             table(
                 ths =>
                 {
+                    ctx = TableThs;
                     obj.Dump(this, x);
                 },
                 trs =>
@@ -234,7 +235,7 @@ namespace Greatbone.Core
         }
 
 
-        public void form<P>(WebAction wa, Action<HtContent> inner) where P : IPersist
+        public void form(WebAction wa, Action<HtContent> inner)
         {
             Add("<form class=\"pure-form\">");
 
@@ -250,7 +251,10 @@ namespace Greatbone.Core
             // buttons
             buttonlst(was);
 
-            table(arr, x);
+            if (arr != null)
+            {
+                table(arr, x);
+            }
 
             Add("</form>");
         }
@@ -277,7 +281,7 @@ namespace Greatbone.Core
             Add("\">");
         }
 
-        public void input_text(string name, string value, bool @readonly, bool required = false, string placeholder = null, int maxlength = 0, int minlength = 0, string pattern = null)
+        public void input_text(string name, string value, bool @readonly = false, bool required = false, string placeholder = null, int maxlength = 0, int minlength = 0, string pattern = null)
         {
             Add("<label>"); AddLabel(name);
             Add("<input type=\"text\" name=\""); Add(name); Add("\" value=\""); AddEsc(value);
@@ -433,6 +437,20 @@ namespace Greatbone.Core
             Add("</label>");
         }
 
+        public void input_number(string name, decimal value, bool @readonly = false, bool required = false, string placeholder = null, int max = int.MaxValue, int min = int.MinValue, int step = 0)
+        {
+            Add("<label>"); AddLabel(name);
+            Add("<input type=\"number\" name=\""); Add(name); Add("\" value=\""); Add(value);
+            if (@readonly) Add(" readonly");
+            if (required) Add(" required");
+            if (placeholder != null) { Add(" placedholder=\""); AddLabel(placeholder); Add("\""); }
+            if (max != int.MaxValue) { Add(" max=\""); Add(max); Add("\""); }
+            if (min != int.MinValue) { Add(" min=\""); Add(min); Add("\""); }
+            if (step != 0) { Add(" step=\""); Add(step); Add("\""); }
+            Add("\">");
+            Add("</label>");
+        }
+
         public void input_range()
         {
             T("</tbody>");
@@ -445,11 +463,11 @@ namespace Greatbone.Core
 
         }
 
-        public void input_checkbox(string name, long value, bool @checked = false, bool required = false)
+        public void input_checkbox(string name, bool value, bool required = false)
         {
             Add("<label>"); AddLabel(name);
             Add("<input type=\"checkbox\" name=\""); Add(name); Add("\" value=\""); Add(value);
-            if (@checked) Add(" checked");
+            if (value) Add(" checked");
             if (required) Add(" required");
             Add("\">");
             Add("</label>");
@@ -614,8 +632,17 @@ namespace Greatbone.Core
         {
             switch (ctx)
             {
-                case FormFields: break;
-                case TableTrs: break;
+                case FormFields:
+                    Add("<div class=\"pure-u-1 pure-u-md-1-2\">");
+                    input_checkbox(name, v);
+                    Add("</div>");
+                    break;
+                case TableThs:
+                    Add("<th>"); AddLabel(name); Add("</th>");
+                    break;
+                case TableTrs:
+                    Add("<td>"); Add(v); Add("</td>");
+                    break;
             }
             return this;
         }
@@ -624,8 +651,17 @@ namespace Greatbone.Core
         {
             switch (ctx)
             {
-                case FormFields: break;
-                case TableTrs: break;
+                case FormFields:
+                    Add("<div class=\"pure-u-1 pure-u-md-1-2\">");
+                    input_number(name, v);
+                    Add("</div>");
+                    break;
+                case TableThs:
+                    Add("<th>"); AddLabel(name); Add("</th>");
+                    break;
+                case TableTrs:
+                    Add("<td style=\"text-align: right;\">"); Add(v); Add("</td>");
+                    break;
             }
             return this;
         }
@@ -634,8 +670,17 @@ namespace Greatbone.Core
         {
             switch (ctx)
             {
-                case FormFields: break;
-                case TableTrs: break;
+                case FormFields:
+                    Add("<div class=\"pure-u-1 pure-u-md-1-2\">");
+                    input_number(name, v);
+                    Add("</div>");
+                    break;
+                case TableThs:
+                    Add("<th>"); AddLabel(name); Add("</th>");
+                    break;
+                case TableTrs:
+                    Add("<td style=\"text-align: right;\">"); Add(v); Add("</td>");
+                    break;
             }
             return this;
         }
@@ -663,8 +708,17 @@ namespace Greatbone.Core
         {
             switch (ctx)
             {
-                case FormFields: break;
-                case TableTrs: break;
+                case FormFields:
+                    Add("<div class=\"pure-u-1 pure-u-md-1-2\">");
+                    input_number(name, v);
+                    Add("</div>");
+                    break;
+                case TableThs:
+                    Add("<th>"); AddLabel(name); Add("</th>");
+                    break;
+                case TableTrs:
+                    Add("<td style=\"text-align: right;\">"); Add(v); Add("</td>");
+                    break;
             }
             return this;
         }
@@ -681,20 +735,43 @@ namespace Greatbone.Core
 
         public HtContent Put(string name, DateTime v)
         {
-            throw new NotImplementedException();
+            switch (ctx)
+            {
+                case FormFields:
+                    Add("<div class=\"pure-u-1 pure-u-md-1-2\">");
+                    input_date(name, v);
+                    Add("</div>");
+                    break;
+                case TableThs:
+                    Add("<th>"); AddLabel(name); Add("</th>");
+                    break;
+                case TableTrs:
+                    Add("<td style=\"text-align: right;\">"); Add(v); Add("</td>");
+                    break;
+            }
+            return this;
         }
 
         public HtContent Put(string name, char[] v)
         {
-            throw new NotImplementedException();
+            return this;
         }
 
         public HtContent Put(string name, string v, int max = 0)
         {
             switch (ctx)
             {
-                case FormFields: break;
-                case TableTrs: break;
+                case FormFields:
+                    Add("<div class=\"pure-u-1 pure-u-md-1-2\">");
+                    input_text(name, v);
+                    Add("</div>");
+                    break;
+                case TableThs:
+                    Add("<th>"); AddLabel(name); Add("</th>");
+                    break;
+                case TableTrs:
+                    Add("<td>"); Add(v); Add("</td>");
+                    break;
             }
             return this;
         }
@@ -711,45 +788,45 @@ namespace Greatbone.Core
 
         public HtContent Put<V>(string name, V v, byte x = 0xff) where V : IPersist
         {
-            throw new NotImplementedException();
+            return this;
         }
 
         public HtContent Put(string name, JObj v)
         {
-            throw new NotImplementedException();
+            return this;
         }
 
         public HtContent Put(string name, JArr v)
         {
-            throw new NotImplementedException();
+            return this;
         }
 
         public HtContent Put(string name, short[] v)
         {
-            throw new NotImplementedException();
+            return this;
         }
 
         public HtContent Put(string name, int[] v)
         {
-            throw new NotImplementedException();
+            return this;
         }
 
         public HtContent Put(string name, long[] v)
         {
-            throw new NotImplementedException();
+            return this;
         }
 
         public HtContent Put(string name, string[] v)
         {
-            throw new NotImplementedException();
+            return this;
         }
 
         public HtContent Put<V>(string name, V[] v, byte x = 0xff) where V : IPersist
         {
-            throw new NotImplementedException();
+            return this;
         }
-    }
 
+    }
 
 
     public interface IMenu

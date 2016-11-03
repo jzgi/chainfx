@@ -14,7 +14,7 @@ namespace Greatbone.Sample
 
         public AbstService(WebConfig cfg) : base(cfg)
         {
-            logins = JUtility.FileToArr<Login>(cfg.GetFilePath("$realm.json"));
+            logins = JUtil.FileToArr<Login>(cfg.GetFilePath("$realm.json"));
         }
 
 
@@ -22,7 +22,7 @@ namespace Greatbone.Sample
         {
             if (token) // token
             {
-                string plain = StrUtility.Decrypt(idstr, 0x4a78be76, 0x1f0335e2); // plain token
+                string plain = StrUtil.Decrypt(idstr, 0x4a78be76, 0x1f0335e2); // plain token
                 JTextParse par = new JTextParse(plain);
                 try
                 {

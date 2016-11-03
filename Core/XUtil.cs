@@ -2,7 +2,7 @@
 namespace Greatbone.Core
 {
 
-    public static class XUtility
+    public static class XUtil
     {
 
         public const byte

@@ -332,7 +332,7 @@ namespace Greatbone.Core
             return false;
         }
 
-        public bool Get(string name, ref ArraySegment<byte> v)
+        public bool Get(string name, ref ArraySegment<byte>? v)
         {
             int ord = name == null ? ordinal++ : reader.GetOrdinal(name);
             try
