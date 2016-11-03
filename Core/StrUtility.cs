@@ -4,7 +4,8 @@ using System.Security.Cryptography;
 
 namespace Greatbone.Core
 {
-    public static class StrUtil
+
+    public static class StrUtility
     {
 
         // hexidecimal numbers

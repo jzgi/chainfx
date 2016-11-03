@@ -64,7 +64,7 @@ namespace Greatbone.Core
                     // challenge with bearer and digest dual schemes
                     string[] chlg = null;
                     if (bearer) chlg = chlg.Add("Bearer");
-                    if (digest) chlg = chlg.Add("Digest realm=\"\", nonce=\"" + StrUtil.MD5(wc.Connection.RemoteIpAddress.ToString() + ':' + Environment.TickCount + ':' + PrivateKey) + "\"");
+                    if (digest) chlg = chlg.Add("Digest realm=\"\", nonce=\"" + StrUtility.MD5(wc.Connection.RemoteIpAddress.ToString() + ':' + Environment.TickCount + ':' + PrivateKey) + "\"");
                     wc.SetHeader("WWW-Authenticate", chlg);
                     return false;
                 }

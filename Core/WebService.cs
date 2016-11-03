@@ -237,9 +237,9 @@ namespace Greatbone.Core
                 if (prin != null)
                 {
                     // A2 = Method ":" digest-uri-value
-                    string HA2 = StrUtil.MD5(wc.Method + ':' + uri);
+                    string HA2 = StrUtility.MD5(wc.Method + ':' + uri);
                     // request-digest = KD ( H(A1), unq(nonce-value) ":" H(A2) ) >
-                    string digest = StrUtil.MD5(prin.Credential + ':' + nonce + ':' + HA2);
+                    string digest = StrUtility.MD5(prin.Credential + ':' + nonce + ':' + HA2);
                     if (digest.Equals(response)) // matched
                     {
                         wc.Principal = prin; // success

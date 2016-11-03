@@ -3,7 +3,7 @@ using System;
 namespace Greatbone.Core
 {
 
-    public static class ArrayUtil
+    public static class ArrayUtility
     {
 
         public static E[] Add<E>(this E[] arr, E v)

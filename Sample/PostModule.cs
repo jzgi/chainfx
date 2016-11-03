@@ -1,6 +1,6 @@
 ﻿using System;
 using Greatbone.Core;
-using static Greatbone.Core.XUtil;
+using static Greatbone.Core.XUtility;
 
 namespace Greatbone.Sample
 {
@@ -99,7 +99,7 @@ namespace Greatbone.Sample
         // ADMIN
         //
         [CheckAdmin]
-        [Button(IsGet = true, Icon = FaUtil.chrome)]
+        [Button(IsGet = true, Icon = FaUtility.chrome)]
         public override void mgmt(WebContext wc, string subscpt)
         {
             // returh first UI
@@ -110,7 +110,7 @@ namespace Greatbone.Sample
         }
 
         [CheckAdmin]
-        [Button(IsGet = true, Icon = FaUtil.chrome, Dialog = 3)]
+        [Button(IsGet = true, Icon = FaUtility.chrome, Dialog = 3)]
         public void srch(WebContext wc, string subscpt)
         {
             using (var dc = Service.NewDbContext())

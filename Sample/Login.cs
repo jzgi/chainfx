@@ -1,5 +1,5 @@
 ﻿using Greatbone.Core;
-using static Greatbone.Core.XUtil;
+using static Greatbone.Core.XUtility;
 
 namespace Greatbone.Sample
 {

@@ -2,7 +2,7 @@
 
 namespace Greatbone.Core
 {
-    public static class ISourceUtil
+    public static class ISourceUtility
     {
 
         public static T ToObj<T>(this ISource sc, byte x = 0xff) where T : IPersist, new()

@@ -73,7 +73,7 @@ namespace Greatbone.Sample
                 {
                     using (var dc = Service.NewDbContext())
                     {
-                        string credential = StrUtil.MD5(id + ':' + ':' + password);
+                        string credential = StrUtility.MD5(id + ':' + ':' + password);
                         if (dc.Execute("INSERT INTO users (id, credential, name) VALUES (@1, @2, @3)", p => p.Put(id).Put(credential).Put(name)) > 0)
                         {
                             wc.StatusCode = 201; // created
@@ -98,7 +98,7 @@ namespace Greatbone.Sample
             string password = jo[nameof(password)];
             using (var dc = Service.NewDbContext())
             {
-                if (dc.Execute("INSERT INTO users (id, credential) VALUES (@1, @2)", p => p.Put(id).Put(StrUtil.MD5(password))) > 0)
+                if (dc.Execute("INSERT INTO users (id, credential) VALUES (@1, @2)", p => p.Put(id).Put(StrUtility.MD5(password))) > 0)
                 {
                     wc.StatusCode = 200;
                 }

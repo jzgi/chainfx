@@ -16,7 +16,7 @@ namespace Greatbone.Sample
         {
             s.Get(nameof(id), ref id);
             s.Get(nameof(title), ref title);
-            if (x.On(XUtil.BIN))
+            if (x.On(XUtility.BIN))
             {
                 s.Get(nameof(img), ref img);
             }
@@ -28,7 +28,7 @@ namespace Greatbone.Sample
         {
             s.Put(nameof(id), id);
             s.Put(nameof(title), title);
-            if (x.On(XUtil.BIN))
+            if (x.On(XUtility.BIN))
             {
                 s.Put(nameof(img), img);
             }

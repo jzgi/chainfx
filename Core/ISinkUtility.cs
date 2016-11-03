@@ -2,7 +2,7 @@
 
 namespace Greatbone.Core
 {
-    public static class ISinkUtil
+    public static class ISinkUtility
     {
 
         public static R PutNull<R>(this ISink<R> snk) where R : ISink<R>
