@@ -185,7 +185,7 @@ namespace Greatbone.Core
             return this;
         }
 
-        public DbParameters Put<T>(string name, T v, byte x = 0xff) where T : IPersist
+        public DbParameters Put<T>(string name, T v, byte x = 0) where T : IPersist
         {
             if (name == null)
             {
@@ -306,7 +306,7 @@ namespace Greatbone.Core
             return this;
         }
 
-        public DbParameters Put<T>(string name, T[] v, byte x = 0xff) where T : IPersist
+        public DbParameters Put<T>(string name, T[] v, byte x = 0) where T : IPersist
         {
             if (name == null)
             {

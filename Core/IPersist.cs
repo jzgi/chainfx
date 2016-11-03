@@ -6,9 +6,9 @@
     /// </summary>
     public interface IPersist
     {
-        void Load(ISource s, byte x = 0xff);
+        void Load(ISource s, byte x = 0);
 
-        void Dump<R>(ISink<R> s, byte x = 0xff) where R : ISink<R>;
+        void Dump<R>(ISink<R> s, byte x = 0) where R : ISink<R>;
     }
 
 }

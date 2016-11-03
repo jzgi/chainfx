@@ -11,9 +11,9 @@ namespace Greatbone.Core
 
         bool NextResult();
 
-        P ToObj<P>(byte x = 0xff) where P : IPersist, new();
+        P ToObj<P>(byte x = 0) where P : IPersist, new();
 
-        P[] ToArr<P>(byte x = 0xff) where P : IPersist, new();
+        P[] ToArr<P>(byte x = 0) where P : IPersist, new();
 
     }
     

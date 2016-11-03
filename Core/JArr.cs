@@ -78,7 +78,7 @@ namespace Greatbone.Core
             }
         }
 
-        public P[] ToArr<P>(byte x = 0xff) where P : IPersist, new()
+        public P[] ToArr<P>(byte x = 0) where P : IPersist, new()
         {
             P[] arr = new P[count];
             for (int i = 0; i < arr.Length; i++)

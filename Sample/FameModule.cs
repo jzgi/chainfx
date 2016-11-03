@@ -19,8 +19,6 @@ namespace Greatbone.Sample
         }
 
 
-        const byte TopX = 0xff ^ BIN;
-        static string TopSql = new DbSql("SELECT ").columnlst(new Fame(), TopX)._("FROM fames ORDER BY rating LIMIT 20 OFFSET @1").ToString();
 
         /// <summary>
         /// Get the nth page on top.
@@ -34,15 +32,15 @@ namespace Greatbone.Sample
             int n = subscpt.ToInt();
             using (var dc = Service.NewDbContext())
             {
-                if (dc.Query(TopSql, p => p.Put(n * 20)))
+                const byte x = 0xff ^ BIN;
+                DbSql sql = new DbSql("SELECT ").columnlst(new Fame(), x)._("FROM fames ORDER BY rating LIMIT 20 OFFSET @1");
+                if (dc.Query(sql.ToString(), p => p.Put(n * 20)))
                 {
-                    Fame[] fames = dc.ToArr<Fame>(TopX);
-                    wc.SendJ(200, fames, TopX);
+                    Fame[] fames = dc.ToArr<Fame>(x);
+                    wc.SendJ(200, fames, x);
                 }
                 else
-                {
                     wc.StatusCode = 204;
-                }
             }
         }
 
@@ -57,20 +55,20 @@ namespace Greatbone.Sample
         ///
         public void find(WebContext wc, string subscpt)
         {
+            const byte x = 0xff ^ BIN;
             string name = null;
             if (wc.Get(nameof(name), ref name))
             {
                 using (var dc = Service.NewDbContext())
                 {
-                    if (dc.Query("SELECT * FROM fames WHERE name LIKE '%" + name + "%'", null))
+                    DbSql sql = new DbSql("SELECT ").columnlst(Fame.Empty, x)._("FROM fames WHERE name LIKE '%" + name + "%'");
+                    if (dc.Query(sql.ToString()))
                     {
-                        Fame[] fames = dc.ToArr<Fame>(0xff ^ BIN);
-                        wc.SendJ(200, fames);
+                        Fame[] fames = dc.ToArr<Fame>(x);
+                        wc.SendJ(200, fames, x);
                     }
                     else
-                    {
                         wc.StatusCode = 204;
-                    }
                 }
                 return;
             }
@@ -80,15 +78,14 @@ namespace Greatbone.Sample
             {
                 using (var dc = Service.NewDbContext())
                 {
-                    if (dc.Query("SELECT * FROM fames WHERE @1 = ANY (skills)", p => p.Put(skill)))
+                    DbSql sql = new DbSql("SELECT ").columnlst(Fame.Empty, x)._("FROM fames WHERE @1 = ANY (skills)");
+                    if (dc.Query(sql.ToString(), p => p.Put(skill)))
                     {
-                        Fame[] fames = dc.ToArr<Fame>(0xff ^ BIN);
-                        wc.SendJ(200, fames);
+                        Fame[] fames = dc.ToArr<Fame>(x);
+                        wc.SendJ(200, fames, x);
                     }
                     else
-                    {
                         wc.StatusCode = 204;
-                    }
                 }
                 return;
             }

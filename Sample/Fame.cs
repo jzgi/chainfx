@@ -32,14 +32,13 @@ namespace Greatbone.Sample
         internal Ref[] sites;
         internal Ref[] friends;
 
-        public void Load(ISource s, byte x = 0xff)
+        public void Load(ISource s, byte x = 0)
         {
             s.Get(nameof(id), ref id);
             s.Get(nameof(name), ref name);
             s.Get(nameof(quote), ref quote);
             s.Get(nameof(sex), ref sex);
-            if (x.On(BIN))
-                s.Get(nameof(icon), ref icon);
+            if (x.Ya(BIN)) s.Get(nameof(icon), ref icon);
             s.Get(nameof(birthday), ref birthday);
             s.Get(nameof(qq), ref qq);
             s.Get(nameof(wechat), ref wechat);
@@ -52,23 +51,20 @@ namespace Greatbone.Sample
             s.Get(nameof(waist), ref waist);
             s.Get(nameof(hip), ref hip);
             s.Get(nameof(cup), ref cup);
-            s.Get(nameof(styles), ref styles);
-            s.Get(nameof(skills), ref skills);
+            if (x.Ya(DEEP)) s.Get(nameof(styles), ref styles);
+            if (x.Ya(DEEP)) s.Get(nameof(skills), ref skills);
             s.Get(nameof(remark), ref remark);
-            if (x.On(MANY))
-                s.Get(nameof(sites), ref sites, x);
-            if (x.On(MANY))
-                s.Get(nameof(friends), ref friends, x);
+            if (x.Ya(DEEP)) s.Get(nameof(sites), ref sites, x);
+            if (x.Ya(DEEP)) s.Get(nameof(friends), ref friends, x);
         }
 
-        public void Dump<R>(ISink<R> s, byte x = 0xff) where R : ISink<R>
+        public void Dump<R>(ISink<R> s, byte x = 0) where R : ISink<R>
         {
             s.Put(nameof(id), id);
             s.Put(nameof(name), name);
             s.Put(nameof(quote), quote);
             s.Put(nameof(sex), sex);
-            if (x.On(BIN))
-                s.Put(nameof(icon), icon);
+            if (x.Ya(BIN)) s.Put(nameof(icon), icon);
             s.Put(nameof(birthday), birthday);
             s.Put(nameof(qq), qq);
             s.Put(nameof(wechat), wechat);
@@ -81,13 +77,11 @@ namespace Greatbone.Sample
             s.Put(nameof(waist), waist);
             s.Put(nameof(hip), hip);
             s.Put(nameof(cup), cup);
-            s.Put(nameof(styles), styles);
-            s.Put(nameof(skills), skills);
+            if (x.Ya(DEEP)) s.Put(nameof(styles), styles);
+            if (x.Ya(DEEP)) s.Put(nameof(skills), skills);
             s.Put(nameof(remark), remark);
-            if (x.On(MANY))
-                s.Put(nameof(sites), sites, x);
-            if (x.On(MANY))
-                s.Put(nameof(friends), friends, x);
+            if (x.Ya(DEEP)) s.Put(nameof(sites), sites, x);
+            if (x.Ya(DEEP)) s.Put(nameof(friends), friends, x);
         }
 
     }
@@ -101,14 +95,14 @@ namespace Greatbone.Sample
 
         internal string hint;
 
-        public void Load(ISource s, byte x = 0xff)
+        public void Load(ISource s, byte x = 0)
         {
             s.Get(nameof(name), ref name);
             s.Get(nameof(@ref), ref @ref);
             s.Get(nameof(hint), ref hint);
         }
 
-        public void Dump<R>(ISink<R> s, byte x = 0xff) where R : ISink<R>
+        public void Dump<R>(ISink<R> s, byte x = 0) where R : ISink<R>
         {
             s.Put(nameof(name), name);
             s.Put(nameof(@ref), @ref);

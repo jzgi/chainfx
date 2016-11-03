@@ -182,12 +182,12 @@ namespace Greatbone.Core
         }
 
 
-        public bool Get<P>(string name, ref P[] v, byte x = 0xff) where P : IPersist, new()
+        public bool Get<P>(string name, ref P[] v, byte x = 0) where P : IPersist, new()
         {
             throw new NotImplementedException();
         }
 
-        public bool Get<P>(string name, ref P v, byte x = 0xff) where P : IPersist, new()
+        public bool Get<P>(string name, ref P v, byte x = 0) where P : IPersist, new()
         {
             throw new NotImplementedException();
         }

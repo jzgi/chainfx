@@ -2,24 +2,24 @@
 
 namespace Greatbone.Sample
 {
-    
+
     public class Brand : IPersist
     {
         public string Id;
         public string Name;
-        public char[] Credential { get; set; }
+        public string Credential { get; set; }
         public long ModifiedOn { get; set; }
 
         public string Key => Id;
 
-        public void Load(ISource s, byte x = 0xff)
+        public void Load(ISource s, byte x = 0)
         {
         }
 
-        public void Dump<R>(ISink<R> s, byte x = 0xff) where R : ISink<R>
+        public void Dump<R>(ISink<R> s, byte x = 0) where R : ISink<R>
         {
         }
-    
+
     }
 
 }

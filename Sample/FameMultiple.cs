@@ -1,5 +1,6 @@
 ﻿using System;
 using Greatbone.Core;
+using static Greatbone.Core.XUtility;
 
 namespace Greatbone.Sample
 {
@@ -24,15 +25,15 @@ namespace Greatbone.Sample
             {
                 if (wc.IsGetMethod)
                 {
-                    if (dc.QueryA("SELECT * FROM fames WHERE id = @1", p => p.Put(id)))
+                    const byte x = 0xff ^ BIN;
+                    DbSql sql = new DbSql("SELECT ").columnlst(Fame.Empty, x)._("FROM fames WHERE id = @1");
+                    if (dc.QueryA(sql.ToString(), p => p.Put(id)))
                     {
-                        Fame obj = dc.ToObj<Fame>();
-                        wc.SendJ(200, obj);
+                        Fame obj = dc.ToObj<Fame>(x);
+                        wc.SendJ(200, obj, x);
                     }
                     else
-                    {
                         wc.StatusCode = 404;
-                    }
                 }
             }
         }

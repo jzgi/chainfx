@@ -4,6 +4,7 @@ using static Greatbone.Core.XUtility;
 
 namespace Greatbone.Sample
 {
+
     public class PostMultiple : WebMultiple
     {
         public PostMultiple(WebArg arg) : base(arg)
@@ -24,7 +25,7 @@ namespace Greatbone.Sample
             int n = subscpt.ToInt();
             using (var dc = Service.NewDbContext())
             {
-                const byte x = 0xff ^ BIN;
+                const byte x = 0 ^ BIN;
                 DbSql sql = new DbSql("SELECT ").columnlst(Post.Empty, x)._("FROM posts WHERE id = @1");
                 if (dc.QueryA(sql.ToString(), p => p.Put(id)))
                 {

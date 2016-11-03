@@ -24,7 +24,7 @@ namespace Greatbone.Sample
         internal Comment[] comments;
 
 
-        public void Load(ISource s, byte x = 0xff)
+        public void Load(ISource s, byte x = 0)
         {
             s.Get(nameof(id), ref id);
             s.Get(nameof(loc), ref loc);
@@ -37,22 +37,14 @@ namespace Greatbone.Sample
             s.Get(nameof(text), ref text);
             s.Get(nameof(read), ref read);
             s.Get(nameof(shared), ref shared);
-
-            if (x.On(MANY))
-                s.Get(nameof(apps), ref apps);
-
+            if (x.Ya(DEEP)) s.Get(nameof(apps), ref apps);
             s.Get(nameof(commentable), ref commentable);
-
-            if (x.On(MANY))
-                s.Get(nameof(comments), ref comments);
+            if (x.Ya(DEEP)) s.Get(nameof(comments), ref comments);
         }
 
-        public void Dump<R>(ISink<R> s, byte x = 0xff) where R : ISink<R>
+        public void Dump<R>(ISink<R> s, byte x = 0) where R : ISink<R>
         {
-            if (x.On(AUTO))
-            {
-                s.Put(nameof(id), id);
-            }
+            if (x.Ya(AUTO)) s.Put(nameof(id), id);
             s.Put(nameof(loc), loc);
             s.Put(nameof(authorid), authorid);
             s.Put(nameof(author), author);
@@ -63,14 +55,9 @@ namespace Greatbone.Sample
             s.Put(nameof(text), text);
             s.Put(nameof(read), read);
             s.Put(nameof(shared), shared);
-
-            if (x.On(MANY))
-                s.Put(nameof(apps), apps, x);
-
+            if (x.Ya(DEEP)) s.Put(nameof(apps), apps, x);
             s.Put(nameof(commentable), commentable);
-
-            if (x.On(MANY))
-                s.Put(nameof(comments), comments, x);
+            if (x.Ya(DEEP)) s.Put(nameof(comments), comments, x);
         }
     }
 
@@ -79,13 +66,13 @@ namespace Greatbone.Sample
         internal string userid;
         internal string user;
 
-        public void Load(ISource s, byte x = 0xff)
+        public void Load(ISource s, byte x = 0)
         {
             s.Get(nameof(userid), ref userid);
             s.Get(nameof(user), ref user);
         }
 
-        public void Dump<R>(ISink<R> s, byte x = 0xff) where R : ISink<R>
+        public void Dump<R>(ISink<R> s, byte x = 0) where R : ISink<R>
         {
             s.Put(nameof(userid), userid);
             s.Put(nameof(user), user);

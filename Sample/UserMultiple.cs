@@ -30,7 +30,7 @@ namespace Greatbone.Sample
             {
                 if (dc.QueryA("SELECT * FROM users WHERE id = @1", (p) => p.Put(id)))
                 {
-                    Token obj = dc.ToObj<Token>();
+                    Token obj = dc.ToObj<Token>(0xff);
                     string credential = StrUtility.MD5(id + ':' + ':' + password);
                     if (credential.Equals(obj.credential))
                     {
@@ -40,14 +40,10 @@ namespace Greatbone.Sample
                         wc.Send(200, cont);
                     }
                     else
-                    {
                         wc.StatusCode = 400;
-                    }
                 }
                 else
-                {
                     wc.StatusCode = 404;
-                }
             }
         }
 
@@ -68,9 +64,7 @@ namespace Greatbone.Sample
                     wc.StatusCode = 200; // ok
                 }
                 else
-                {
                     wc.StatusCode = 406; // not acceptable
-                }
             }
         }
 
