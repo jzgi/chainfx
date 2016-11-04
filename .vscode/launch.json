@@ -8,7 +8,7 @@
             "preLaunchTask": "build",
             "program": "${workspaceRoot}/bin/Debug/netcoreapp1.0/Greatbone.dll",
             "args": [],
-            "cwd": "${workspaceRoot}",
+            "cwd": "${workspaceRoot}/RES",
             "stopAtEntry": false,
             "externalConsole": false
         },
@@ -19,7 +19,7 @@
             "preLaunchTask": "build",
             "program": "${workspaceRoot}/bin/Debug/netcoreapp1.0/Greatbone.dll",
             "args": [],
-            "cwd": "${workspaceRoot}",
+            "cwd": "${workspaceRoot}/RES",
             "stopAtEntry": false,
             "launchBrowser": {
                 "enabled": true,
