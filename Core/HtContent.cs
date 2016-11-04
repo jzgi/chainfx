@@ -6,7 +6,7 @@ namespace Greatbone.Core
 
     ///
     /// <summary>
-    /// A dynamical HTML5 content generator Tooled with Pure.CSS
+    /// For dynamical HTML5 content generation Tooled with Pure.CSS
     /// </summary> 
     ///
     public class HtContent : DynamicContent, ISink<HtContent>, IMenu, ISelectOptions
@@ -53,6 +53,7 @@ namespace Greatbone.Core
         public void AddEsc(string v)
         {
             if (v == null) return;
+
             for (int i = 0; i < v.Length; i++)
             {
                 char c = v[i];
@@ -77,7 +78,6 @@ namespace Greatbone.Core
                     Add(c);
                 }
             }
-
         }
 
         public HtContent T(string str)
@@ -237,7 +237,7 @@ namespace Greatbone.Core
 
         public void form(WebAction wa, Action<HtContent> inner)
         {
-            Add("<form class=\"pure-form\">");
+            Add("<form class=\"pure-form pure-g\">");
 
             inner?.Invoke(this);
 
@@ -246,7 +246,7 @@ namespace Greatbone.Core
 
         public void form<M>(WebAction[] was, M[] arr, byte x = 0) where M : IPersist
         {
-            Add("<form class=\"pure-form\">");
+            Add("<form class=\"pure-form pure-g\">");
 
             // buttons
             buttonlst(was);
@@ -261,9 +261,7 @@ namespace Greatbone.Core
 
         public void form<P>(WebAction wa, P obj, byte x = 0) where P : IPersist
         {
-            Add("<form class=\"pure-form\">");
-
-            T("<div >");
+            Add("<form class=\"pure-form pure-g\">");
 
             ctx = FormFields;
 
@@ -513,6 +511,10 @@ namespace Greatbone.Core
             if (!wa.IsGet) Add(" pure-button-primary");
             Add("\" formaction=\""); Add(wa.Key);
             Add("\" formmethod=\""); Add(wa.IsGet ? "get" : "post");
+            if (wa.Dialog > 0)
+            {
+                Add("\" onclick=\"dialog(this,"); Add(wa.Dialog); Add("); return false;");
+            }
             Add("\">");
             string icon = wa.Icon;
             if (icon != null)

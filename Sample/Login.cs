@@ -24,7 +24,7 @@ namespace Greatbone.Sample
         {
             s.Get(nameof(id), ref id);
             s.Get(nameof(name), ref name);
-            if (x.Ya(RESV)) s.Get(nameof(credential), ref credential);
+            s.Get(nameof(credential), ref credential);
             s.Get(nameof(roles), ref roles);
         }
 
@@ -32,7 +32,7 @@ namespace Greatbone.Sample
         {
             s.Put(nameof(id), id);
             s.Put(nameof(name), name);
-            if (x.Ya(RESV)) s.Put(nameof(credential), credential);
+            s.Put(nameof(credential), credential);
             s.Put(nameof(roles), roles);
         }
 

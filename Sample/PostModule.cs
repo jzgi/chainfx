@@ -137,7 +137,7 @@ namespace Greatbone.Sample
         {
             if (wc.IsGetMethod) // return confirmation dialog
             {
-
+                wc.SendDialogLayout(200, a => a.T("delete the selected items?"));
             }
             else //
             {

@@ -3,25 +3,29 @@ using System.Collections.Generic;
 
 namespace Greatbone.Core
 {
+
+    ///
     /// <summary>
     /// An obect that is identified by string key thus can be a number of Roll.
     /// </summary>
+    ///
     public interface IKeyed
     {
         string Key { get; }
     }
 
 
+    ///
     /// <summary>
     /// An addition-only dictionary, where members are placed in the addition order.
     /// </summary>
-    public class Roll<T> : ICollection<T> where T : IKeyed
+    ///
+    public class Roll<E> : ICollection<E> where E : IKeyed
     {
         int[] buckets;
 
         Entry[] entries;
 
-        // number of entries
         int count;
 
         public Roll(int capacity)
@@ -32,11 +36,10 @@ namespace Greatbone.Core
             {
                 size <<= 1;
             }
-
             ReInitialize(size);
         }
 
-        private void ReInitialize(int size)
+        void ReInitialize(int size)
         {
             buckets = new int[size];
             for (int i = 0; i < size; i++)
@@ -47,32 +50,32 @@ namespace Greatbone.Core
             count = 0;
         }
 
-        public T this[int index] => entries[index].member;
+        public E this[int index] => entries[index].element;
 
-        public T this[string key]
+        public E this[string key]
         {
             get
             {
-                T item;
-                if (TryGet(key, out item))
+                E elem;
+                if (TryGet(key, out elem))
                 {
-                    return item;
+                    return elem;
                 }
-                return default(T);
+                return default(E);
             }
         }
 
         public bool Contains(string key)
         {
-            T item;
-            if (TryGet(key, out item))
+            E elem;
+            if (TryGet(key, out elem))
             {
                 return true;
             }
             return false;
         }
 
-        public bool TryGet(string key, out T member)
+        public bool TryGet(string key, out E elem)
         {
             int code = key.GetHashCode() & 0x7fffffff;
             int buck = code % buckets.Length; // target bucket
@@ -82,23 +85,23 @@ namespace Greatbone.Core
                 Entry e = entries[idx];
                 if (e.Match(code, key))
                 {
-                    member = e.member;
+                    elem = e.element;
                     return true;
                 }
                 idx = entries[idx].next; // adjust for next index
             }
-            member = default(T);
+            elem = default(E);
             return false;
         }
 
         public int Count => count;
 
-        public void Add(T member)
+        public void Add(E member)
         {
             Add(member, false);
         }
 
-        public void Add(T member, bool rehash)
+        void Add(E elem, bool rehash)
         {
             // ensure double-than-needed capacity
             if (!rehash && count >= entries.Length / 2)
@@ -109,11 +112,11 @@ namespace Greatbone.Core
                 // re-add old elements
                 for (int i = 0; i < oldcount; i++)
                 {
-                    Add(old[i].member, true);
+                    Add(old[i].element, true);
                 }
             }
 
-            string key = member.Key;
+            string key = elem.Key;
             int code = key.GetHashCode() & 0x7fffffff;
             int buck = code % buckets.Length; // target bucket
             int idx = buckets[buck];
@@ -122,17 +125,15 @@ namespace Greatbone.Core
                 Entry e = entries[idx];
                 if (e.Match(code, key))
                 {
-                    e.member = member;
+                    e.element = elem;
                     return; // replace the old value
                 }
                 idx = entries[idx].next; // adjust for next index
             }
 
-            //
             // add a new entry
-
             idx = count;
-            entries[idx] = new Entry(code, buckets[buck], key, member);
+            entries[idx] = new Entry(code, buckets[buck], key, elem);
             buckets[buck] = idx;
             count++;
         }
@@ -141,49 +142,50 @@ namespace Greatbone.Core
         {
         }
 
-        public bool Contains(T item)
+        public bool Contains(E item)
         {
-            T mbr;
-            return TryGet(item.Key, out mbr);
+            E elem;
+            return TryGet(item.Key, out elem);
         }
 
-        public void CopyTo(T[] array, int arrayIndex)
+        public void CopyTo(E[] array, int arrayIndex)
         {
         }
 
         public bool IsReadOnly => true;
 
-        public bool Remove(T item)
+        public bool Remove(E elem)
         {
             return false;
         }
 
-        public IEnumerator<T> GetEnumerator()
+        public IEnumerator<E> GetEnumerator()
         {
             return null;
         }
+
 
         IEnumerator IEnumerable.GetEnumerator()
         {
             return null;
         }
 
-        public struct Entry
+        struct Entry
         {
             internal int code; // lower 31 bits of hash code
 
             internal string key; // entry key
 
-            internal T member; // entry value
+            internal E element; // entry value
 
             internal int next; // index of next entry, -1 if last
 
-            internal Entry(int code, int next, string key, T member)
+            internal Entry(int code, int next, string key, E elem)
             {
                 this.code = code;
                 this.next = next;
                 this.key = key;
-                this.member = member;
+                this.element = elem;
             }
 
             internal bool Match(int code, string key)
@@ -193,8 +195,10 @@ namespace Greatbone.Core
 
             public override string ToString()
             {
-                return member.ToString();
+                return element.ToString();
             }
         }
+
     }
+
 }
