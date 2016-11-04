@@ -43,9 +43,7 @@ namespace Greatbone.Sample
                         wc.SendJ(200, arr, x);
                     }
                     else
-                    {
                         wc.StatusCode = 204; // no content
-                    }
                 }
             }
             else
@@ -59,9 +57,7 @@ namespace Greatbone.Sample
                         wc.SendJ(200, arr, x);
                     }
                     else
-                    {
                         wc.StatusCode = 204; // no content
-                    }
                 }
             }
         }

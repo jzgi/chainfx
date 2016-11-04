@@ -30,8 +30,8 @@ namespace Greatbone.Sample
 
             cont.T("<head>");
             cont.T("<meta name=\"viewport\" content=\"width=device-width, initial-scale=1.0\">");
-            cont.T("<link href=\"//cdn.bootcss.com/normalize/5.0.0/normalize.min.css\" rel=\"stylesheet\">");
-            cont.T("<link href=\"//cdn.bootcss.com/pure/0.6.0/pure-min.css\" rel=\"stylesheet\">");
+            // cont.T("<link href=\"//cdn.bootcss.com/normalize/5.0.0/normalize.min.css\" rel=\"stylesheet\">");
+            // cont.T("<link href=\"//cdn.bootcss.com/pure/0.6.0/pure-min.css\" rel=\"stylesheet\">");
             cont.T("<link href=\"//cdn.bootcss.com/font-awesome/4.7.0/css/font-awesome.min.css\" rel=\"stylesheet\">");
             cont.T("<link href=\"/app.css\" rel=\"stylesheet\">");
             cont.T("<script src=\"/app.js\"></script>");
@@ -73,8 +73,8 @@ namespace Greatbone.Sample
 
             cont.T("<head>");
             cont.T("<meta name=\"viewport\" content=\"width=device-width, initial-scale=1.0\">");
-            cont.T("<link href=\"//cdn.bootcss.com/normalize/5.0.0/normalize.min.css\" rel=\"stylesheet\">");
-            cont.T("<link href=\"//cdn.bootcss.com/pure/0.6.0/pure-min.css\" rel=\"stylesheet\">");
+            // cont.T("<link href=\"//cdn.bootcss.com/normalize/5.0.0/normalize.min.css\" rel=\"stylesheet\">");
+            // cont.T("<link href=\"//cdn.bootcss.com/pure/0.6.0/pure-min.css\" rel=\"stylesheet\">");
             cont.T("<link href=\"//cdn.bootcss.com/font-awesome/4.7.0/css/font-awesome.min.css\" rel=\"stylesheet\">");
             cont.T("<link href=\"/app.css\" rel=\"stylesheet\">");
             cont.T("<script src=\"/app.js\"></script>");
@@ -95,4 +95,5 @@ namespace Greatbone.Sample
         }
 
     }
+    
 }

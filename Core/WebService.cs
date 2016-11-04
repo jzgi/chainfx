@@ -290,6 +290,13 @@ namespace Greatbone.Core
             }
         }
 
+        ///
+        /// Login user interface and processing
+        ///
+        protected internal virtual void Login(WebContext wc)
+        {
+        }
+
         public void Start()
         {
             // start the server
@@ -484,8 +491,8 @@ namespace Greatbone.Core
                 Lifetime.ApplicationStopping.WaitHandle.WaitOne();
 
             }
-
         }
 
     }
+
 }
