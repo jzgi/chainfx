@@ -1,6 +1,6 @@
 ﻿using System;
 using Greatbone.Core;
-using static Greatbone.Core.XUtility;
+using static Greatbone.Core.ZUtility;
 
 namespace Greatbone.Sample
 {
@@ -25,12 +25,12 @@ namespace Greatbone.Sample
             {
                 if (wc.IsGetMethod)
                 {
-                    const byte x = 0xff ^ BIN;
-                    DbSql sql = new DbSql("SELECT ").columnlst(Fame.Empty, x)._("FROM fames WHERE id = @1");
+                    const byte z = 0xff ^ BIN;
+                    DbSql sql = new DbSql("SELECT ").columnlst(Fame.Empty, z)._("FROM fames WHERE id = @1");
                     if (dc.QueryA(sql.ToString(), p => p.Put(id)))
                     {
-                        Fame obj = dc.ToObj<Fame>(x);
-                        wc.SendJ(200, obj, x);
+                        Fame obj = dc.ToObj<Fame>(z);
+                        wc.SendJ(200, obj, z);
                     }
                     else
                         wc.StatusCode = 404;
@@ -87,7 +87,7 @@ namespace Greatbone.Sample
                     byte[] v = dc.GetBytes();
                     StaticContent sta = new StaticContent()
                     {
-                        Buffer = v
+                        ByteBuffer = v
                     };
                     wc.Send(200, sta, true, 60000);
                 }
@@ -144,7 +144,7 @@ namespace Greatbone.Sample
                 if (dc.QueryA("SELECT m" + n + " FROM fames WHERE id = @1", p => p.Put(id)))
                 {
                     byte[] v = dc.GetBytes();
-                    StaticContent sta = new StaticContent() { Buffer = v };
+                    StaticContent sta = new StaticContent() { ByteBuffer = v };
                     wc.Send(200, sta, true, 60000);
                 }
                 else

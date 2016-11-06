@@ -1,6 +1,6 @@
 ﻿using System;
 using Greatbone.Core;
-using static Greatbone.Core.XUtility;
+using static Greatbone.Core.ZUtility;
 
 namespace Greatbone.Sample
 {
@@ -25,12 +25,12 @@ namespace Greatbone.Sample
             int n = subscpt.ToInt();
             using (var dc = Service.NewDbContext())
             {
-                const byte x = 0 ^ BIN;
-                DbSql sql = new DbSql("SELECT ").columnlst(Post.Empty, x)._("FROM posts WHERE id = @1");
+                const byte z = 0 ^ BIN;
+                DbSql sql = new DbSql("SELECT ").columnlst(Post.Empty, z)._("FROM posts WHERE id = @1");
                 if (dc.QueryA(sql.ToString(), p => p.Put(id)))
                 {
-                    Post obj = dc.ToObj<Post>(x);
-                    wc.SendJ(200, obj, x);
+                    Post obj = dc.ToObj<Post>(z);
+                    wc.SendJ(200, obj, z);
                 }
                 else
                 {
@@ -56,7 +56,7 @@ namespace Greatbone.Sample
                 if (dc.QueryA("SELECT m" + n + " FROM posts WHERE id = @1", p => p.Put(id)))
                 {
                     byte[] v = dc.GetBytes();
-                    StaticContent sta = new StaticContent() { Buffer = v };
+                    StaticContent sta = new StaticContent() { ByteBuffer = v };
                     wc.Send(200, sta, true, 60000);
                 }
                 else

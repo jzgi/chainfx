@@ -5,20 +5,19 @@ using System.Text;
 namespace Greatbone.Core
 {
     ///
-    /// A binary content that is dynamically generated, where strings are UTF-8 encoded.
+    /// A dynamically generated content of either bytes or characters.
     ///
     public abstract class DynamicContent : IContent
     {
+        static readonly char[] DIGIT =
+        {
+            '0',  '1',  '2',  '3',  '4',  '5',  '6',  '7',  '8',  '9'
+        };
+
         // hexidecimal characters
         protected static readonly char[] HEX =
         {
             '0', '1', '2', '3', '4', '5', '6', '7', '8', '9', 'a', 'b', 'c', 'd', 'e', 'f'
-        };
-
-        // possible chars for representing a number as a string
-        protected static readonly byte[] DIGIT =
-        {
-            (byte) '0', (byte) '1', (byte) '2', (byte) '3', (byte) '4', (byte) '5', (byte) '6', (byte) '7', (byte) '8', (byte) '9'
         };
 
         // sexagesimal numbers
@@ -30,8 +29,6 @@ namespace Greatbone.Core
             "40", "41", "42", "43", "44", "45", "46", "47", "48", "49",
             "50", "51", "52", "53", "54", "55", "56", "57", "58", "59"
         };
-
-        const byte Minus = (byte)'-';
 
         static readonly short[] SHORT =
         {
@@ -79,29 +76,39 @@ namespace Greatbone.Core
             1000000000000000000L
         };
 
+        readonly bool binary;
 
-        protected byte[] buffer; // NOTE: HttpResponseStream doesn't have internal buffer
+        protected byte[] bytebuf; // NOTE: HttpResponseStream doesn't have internal buffer
 
-        // number of bytes, not mutable in reading mode
+        // number of bytes or chars
         protected int count;
 
         // byte-wise etag checksum, for text-based output only
-        ulong checksum;
+        protected ulong checksum;
 
-        /// <summary>
-        /// Creates a dynamic content in writing mode.
-        /// </summary>
-        /// <param name="capacity">The initial capacity of the content buffer.</param>
-        protected DynamicContent(int capacity)
+        protected char[] charbuf;
+
+        bool pooled;
+
+        protected DynamicContent(bool binary, int capacity)
         {
-            this.buffer = BufferPool.Borrow(capacity);
+            this.binary = binary;
+            if (binary)
+            {
+                bytebuf = ByteBufferPool.Borrow(capacity);
+            }
+            else
+                charbuf = new char[capacity];
             this.count = 0;
         }
 
-
         public abstract string Type { get; }
 
-        public byte[] Buffer => buffer;
+        public bool IsBinary => binary;
+
+        public byte[] ByteBuffer => bytebuf;
+
+        public char[] CharBuffer => charbuf;
 
         public int Length => count;
 
@@ -113,15 +120,15 @@ namespace Greatbone.Core
         void Write(byte b)
         {
             // ensure capacity
-            int olen = buffer.Length;
+            int olen = bytebuf.Length;
             if (count >= olen)
             {
                 byte[] alloc = new byte[olen * 4];
-                Array.Copy(buffer, 0, alloc, 0, olen);
-                buffer = alloc;
+                Array.Copy(bytebuf, 0, alloc, 0, olen);
+                bytebuf = alloc;
             }
             // append
-            buffer[count++] = b;
+            bytebuf[count++] = b;
 
             // calculate checksum
             ulong cs = checksum;
@@ -129,32 +136,48 @@ namespace Greatbone.Core
             checksum = cs >> 57 | cs << 7; // circular left shift 7 bit
         }
 
-        public void Add(bool v)
-        {
-            Add(v ? "true" : "false");
-        }
-
         public void Add(char c)
         {
-            // UTF-8 encoding but without surrogate support
-            if (c < 0x80)
+            if (binary)
             {
-                // have at most seven bits
-                Write((byte)c);
-            }
-            else if (c < 0x800)
-            {
-                // 2 char, 11 bits
-                Write((byte)(0xc0 | (c >> 6)));
-                Write((byte)(0x80 | (c & 0x3f)));
+                // UTF-8 encoding but without surrogate support
+                if (c < 0x80)
+                {
+                    // have at most seven bits
+                    Write((byte)c);
+                }
+                else if (c < 0x800)
+                {
+                    // 2 char, 11 bits
+                    Write((byte)(0xc0 | (c >> 6)));
+                    Write((byte)(0x80 | (c & 0x3f)));
+                }
+                else
+                {
+                    // 3 char, 16 bits
+                    Write((byte)(0xe0 | ((c >> 12))));
+                    Write((byte)(0x80 | ((c >> 6) & 0x3f)));
+                    Write((byte)(0x80 | (c & 0x3f)));
+                }
             }
             else
             {
-                // 3 char, 16 bits
-                Write((byte)(0xe0 | ((c >> 12))));
-                Write((byte)(0x80 | ((c >> 6) & 0x3f)));
-                Write((byte)(0x80 | (c & 0x3f)));
+                // ensure capacity
+                int olen = charbuf.Length;
+                if (count >= olen)
+                {
+                    char[] alloc = new char[olen * 4];
+                    Array.Copy(charbuf, 0, alloc, 0, olen);
+                    charbuf = alloc;
+                }
+                // append
+                charbuf[count++] = c;
             }
+        }
+
+        public void Add(bool v)
+        {
+            Add(v ? "true" : "false");
         }
 
         public void Add(char[] v)
@@ -215,7 +238,7 @@ namespace Greatbone.Core
             int x = v; // convert to int
             if (v < 0)
             {
-                Write(Minus);
+                Add('-');
                 x = -x;
             }
             bool bgn = false;
@@ -226,11 +249,11 @@ namespace Greatbone.Core
                 x = x % bas;
                 if (q != 0 || bgn)
                 {
-                    Write(DIGIT[q]);
+                    Add(DIGIT[q]);
                     bgn = true;
                 }
             }
-            Write(DIGIT[x]); // last reminder
+            Add(DIGIT[x]); // last reminder
         }
 
         public void Add(int v)
@@ -243,7 +266,7 @@ namespace Greatbone.Core
 
             if (v < 0)
             {
-                Write(Minus);
+                Add('-');
                 v = -v;
             }
             bool bgn = false;
@@ -254,11 +277,11 @@ namespace Greatbone.Core
                 v = v % bas;
                 if (q != 0 || bgn)
                 {
-                    Write(DIGIT[q]);
+                    Add(DIGIT[q]);
                     bgn = true;
                 }
             }
-            Write(DIGIT[v]); // last reminder
+            Add(DIGIT[v]); // last reminder
         }
 
         public void Add(long v)
@@ -271,7 +294,7 @@ namespace Greatbone.Core
 
             if (v < 0)
             {
-                Write(Minus);
+                Add('-');
                 v = -v;
             }
             bool bgn = false;
@@ -282,11 +305,11 @@ namespace Greatbone.Core
                 v = v % bas;
                 if (q != 0 || bgn)
                 {
-                    Write(DIGIT[q]);
+                    Add(DIGIT[q]);
                     bgn = true;
                 }
             }
-            Write(DIGIT[v]); // last reminder
+            Add(DIGIT[v]); // last reminder
         }
 
         public void Add(decimal v)
@@ -294,6 +317,16 @@ namespace Greatbone.Core
             Add(v, true);
         }
 
+        public void Add(Number v)
+        {
+            Add(v.Long);
+            if (v.Pt)
+            {
+                Add('.');
+                Add(v.fract);
+            }
+        }
+        
         // sign mask
         private const int Sign = unchecked((int)0x80000000);
 
@@ -319,7 +352,7 @@ namespace Greatbone.Core
                         x = x % bas;
                         if (q != 0 || bgn)
                         {
-                            Write(DIGIT[q]);
+                            Add(DIGIT[q]);
                             bgn = true;
                         }
                         if (i == 4)
@@ -344,7 +377,7 @@ namespace Greatbone.Core
                         x = x % bas;
                         if (q != 0 || bgn)
                         {
-                            Write(DIGIT[q]);
+                            Add(DIGIT[q]);
                             bgn = true;
                         }
                         if (i == 4)
@@ -394,7 +427,7 @@ namespace Greatbone.Core
 
         public void Replace(byte[] buffer, int count)
         {
-            this.buffer = buffer;
+            this.bytebuf = buffer;
             this.count = count;
         }
 
@@ -407,7 +440,7 @@ namespace Greatbone.Core
             for (int i = 0; i < count; i++)
             {
                 // masking
-                int b = buffer[i] ^ masks[i % 4];
+                int b = bytebuf[i] ^ masks[i % 4];
 
                 //transform
                 buf[p++] = (byte)HEX[(b >> 4) & 0x0f];
@@ -418,7 +451,7 @@ namespace Greatbone.Core
             }
 
             // replace
-            buffer = buf;
+            bytebuf = buf;
             count = p;
         }
 

@@ -6,7 +6,7 @@ namespace Greatbone.Core
     ///
     /// A globally accessible buffer pool that borrow out and returns back byte buffers of certain sizes.
     ///
-    public static class BufferPool
+    public static class ByteBufferPool
     {
         static readonly int Cores = Environment.ProcessorCount;
 

@@ -186,21 +186,21 @@ namespace Greatbone.Core
         // RESULTSET
         //
 
-        public P ToObj<P>(byte x = 0) where P : IPersist, new()
+        public P ToObj<P>(byte z = 0) where P : IPersist, new()
         {
             P obj = new P();
-            obj.Load(this, x);
+            obj.Load(this, z);
             return obj;
         }
 
 
-        public P[] ToArr<P>(byte x = 0) where P : IPersist, new()
+        public P[] ToArr<P>(byte z = 0) where P : IPersist, new()
         {
             List<P> lst = new List<P>(64);
             while (NextRow())
             {
                 P obj = new P();
-                obj.Load(this, x);
+                obj.Load(this, z);
                 lst.Add(obj);
             }
             return lst.ToArray();
@@ -342,7 +342,7 @@ namespace Greatbone.Core
                     int len;
                     if ((len = (int)reader.GetBytes(ord, 0, null, 0, 0)) > 0)
                     {
-                        byte[] arr = BufferPool.Borrow(len);
+                        byte[] arr = ByteBufferPool.Borrow(len);
                         reader.GetBytes(ord, 0, arr, 0, len); // read data into the buffer
                         v = new ArraySegment<byte>(arr, 0, len);
                         return true;
@@ -354,16 +354,16 @@ namespace Greatbone.Core
             return false;
         }
 
-        public bool Get<P>(string name, ref P v, byte x = 0) where P : IPersist, new()
+        public bool Get<P>(string name, ref P v, byte z = 0) where P : IPersist, new()
         {
             int ord = name == null ? ordinal++ : reader.GetOrdinal(name);
             if (!reader.IsDBNull(ord))
             {
                 string str = reader.GetString(ord);
-                JTextParse par = new JTextParse(str);
+                JParse par = new JParse(str);
                 JObj jo = (JObj)par.Parse();
                 v = new P();
-                v.Load(jo, x);
+                v.Load(jo, z);
                 return true;
             }
             return false;
@@ -375,7 +375,7 @@ namespace Greatbone.Core
             if (!reader.IsDBNull(ord))
             {
                 string str = reader.GetString(ord);
-                JTextParse par = new JTextParse(str);
+                JParse par = new JParse(str);
                 v = (JObj)par.Parse();
                 return true;
             }
@@ -388,7 +388,7 @@ namespace Greatbone.Core
             if (!reader.IsDBNull(ord))
             {
                 string str = reader.GetString(ord);
-                JTextParse par = new JTextParse(str);
+                JParse par = new JParse(str);
                 v = (JArr)par.Parse();
                 return true;
             }
@@ -439,13 +439,13 @@ namespace Greatbone.Core
             return false;
         }
 
-        public bool Get<P>(string name, ref P[] v, byte x = 0) where P : IPersist, new()
+        public bool Get<P>(string name, ref P[] v, byte z = 0) where P : IPersist, new()
         {
             int ord = name == null ? ordinal++ : reader.GetOrdinal(name);
             if (!reader.IsDBNull(ord))
             {
                 string str = reader.GetString(ord);
-                JTextParse par = new JTextParse(str);
+                JParse par = new JParse(str);
                 JArr ja = (JArr)par.Parse();
                 int len = ja.Count;
                 v = new P[len];
@@ -453,7 +453,7 @@ namespace Greatbone.Core
                 {
                     JObj jo = (JObj)ja[i];
                     P obj = new P();
-                    obj.Load(jo, x);
+                    obj.Load(jo, z);
                     v[i] = obj;
                 }
                 return true;
@@ -469,7 +469,7 @@ namespace Greatbone.Core
         public void Publish(string topic, string part, Action<JContent> a)
         {
             // convert message to byte buffer
-            JContent jcont = new JContent(8 * 1024);
+            JContent jcont = new JContent(true, 8 * 1024);
             a?.Invoke(jcont);
 
             Execute("INSERT INTO mq (topic, filter, message) VALUES (@topic, @filter, @message)", p =>

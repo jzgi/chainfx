@@ -8,7 +8,7 @@ namespace Greatbone.Core
     /// A helper used to generate SQL commands.
     /// </summary>
     ///
-    public class DbSql : Text, ISink<DbSql>
+    public class DbSql : DynamicContent, ISink<DbSql>
     {
 
         const int InitialCapacity = 1024;
@@ -24,10 +24,12 @@ namespace Greatbone.Core
         internal int ordinal;
 
 
-        public DbSql(string str) : base(InitialCapacity)
+        public DbSql(string str) : base(false, InitialCapacity)
         {
             Add(str);
         }
+
+        public override string Type => null;
 
         internal void Clear()
         {
@@ -44,50 +46,50 @@ namespace Greatbone.Core
             return this;
         }
 
-        public DbSql setlst<T>(T obj, byte x = 0) where T : IPersist
+        public DbSql setlst<T>(T obj, byte z = 0) where T : IPersist
         {
             list = SetList;
             ordinal = 1;
-            obj.Dump(this, x);
+            obj.Dump(this, z);
             return this;
         }
 
-        public DbSql columnlst<T>(T obj, byte x = 0) where T : IPersist
+        public DbSql columnlst<T>(T obj, byte z = 0) where T : IPersist
         {
             list = ColumnList;
             ordinal = 1;
-            obj.Dump(this, x);
+            obj.Dump(this, z);
             return this;
         }
 
-        public DbSql parameterlst<T>(T obj, byte x = 0) where T : IPersist
+        public DbSql parameterlst<T>(T obj, byte z = 0) where T : IPersist
         {
             list = ParameterList;
             ordinal = 1;
-            obj.Dump(this, x);
+            obj.Dump(this, z);
             return this;
         }
 
-        public DbSql _<T>(T obj, byte x = 0) where T : IPersist
+        public DbSql _<T>(T obj, byte z = 0) where T : IPersist
         {
             Add(" (");
-            columnlst(obj, x);
+            columnlst(obj, z);
             Add(")");
             return this;
         }
 
-        public DbSql _VALUES_<T>(T obj, byte x = 0) where T : IPersist
+        public DbSql _VALUES_<T>(T obj, byte z = 0) where T : IPersist
         {
             Add(" VALUES (");
-            parameterlst(obj, x);
+            parameterlst(obj, z);
             Add(")");
             return this;
         }
 
-        public DbSql _SET_<T>(T obj, byte x = 0) where T : IPersist
+        public DbSql _SET_<T>(T obj, byte z = 0) where T : IPersist
         {
             Add(" SET ");
-            setlst(obj, x);
+            setlst(obj, z);
             return this;
         }
 
@@ -234,7 +236,7 @@ namespace Greatbone.Core
             return this;
         }
 
-        public DbSql Put<V>(string name, V v, byte x = 0) where V : IPersist
+        public DbSql Put<V>(string name, V v, byte z = 0) where V : IPersist
         {
             if (name != null)
             {
@@ -419,7 +421,7 @@ namespace Greatbone.Core
             return this;
         }
 
-        public DbSql Put<V>(string name, V[] v, byte x = 0) where V : IPersist
+        public DbSql Put<V>(string name, V[] v, byte z = 0) where V : IPersist
         {
             Build(name);
             return this;

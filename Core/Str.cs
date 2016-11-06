@@ -6,17 +6,19 @@ namespace Greatbone.Core
     /// A reusable string builder that supports UTF-8 decoding.
     /// </summary>
     ///
-    public class Str : Text
+    public class Str : DynamicContent
     {
         int sum; // combination of bytes
 
         int rest; // number of rest octets
 
-        internal Str(int capacity) : base(capacity)
+        internal Str(int capacity) : base(false, capacity)
         {
             sum = 0;
             rest = 0;
         }
+
+        public override string Type => null;
 
         // utf-8 decoding 
         public void Add(byte b)

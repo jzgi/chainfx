@@ -1,6 +1,6 @@
 ﻿using System;
 using Greatbone.Core;
-using static Greatbone.Core.XUtility;
+using static Greatbone.Core.ZUtility;
 
 namespace Greatbone.Sample
 {
@@ -82,9 +82,9 @@ namespace Greatbone.Sample
             obj.date = DateTime.Now;
             using (var dc = Service.NewDbContext())
             {
-                const byte x = 0xff ^ AUTO;
-                DbSql sql = new DbSql("INSERT INTO notices")._(Notice.Empty, x)._VALUES_(Notice.Empty, x)._("RETURNING id");
-                object id = dc.Scalar(sql.ToString(), p => obj.Dump(p, x));
+                const byte z = 0xff ^ AUTO;
+                DbSql sql = new DbSql("INSERT INTO notices")._(Notice.Empty, z)._VALUES_(Notice.Empty, z)._("RETURNING id");
+                object id = dc.Scalar(sql.ToString(), p => obj.Dump(p, z));
                 if (id != null)
                 {
                     wc.StatusCode = 201;

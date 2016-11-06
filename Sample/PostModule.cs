@@ -1,6 +1,6 @@
 ﻿using System;
 using Greatbone.Core;
-using static Greatbone.Core.XUtility;
+using static Greatbone.Core.ZUtility;
 
 namespace Greatbone.Sample
 {
@@ -31,16 +31,16 @@ namespace Greatbone.Sample
         {
             int page = subscpt.ToInt();
             string authorid = null;
-            const byte x = 0xff ^ BIN;
+            const byte z = 0xff ^ BIN;
             if (wc.Get(nameof(authorid), ref authorid))
             {
                 using (var dc = Service.NewDbContext())
                 {
-                    DbSql sql = new DbSql("SELECT ").columnlst(Post.Empty, x)._("FROM posts WHERE authorid = @1 ORDER BY id DESC LIMIT 20 OFFSET @2");
+                    DbSql sql = new DbSql("SELECT ").columnlst(Post.Empty, z)._("FROM posts WHERE authorid = @1 ORDER BY id DESC LIMIT 20 OFFSET @2");
                     if (dc.Query(sql.ToString(), p => p.Put(authorid).Put(20 * page)))
                     {
-                        Post[] arr = dc.ToArr<Post>(x);
-                        wc.SendJ(200, arr, x);
+                        Post[] arr = dc.ToArr<Post>(z);
+                        wc.SendJ(200, arr, z);
                     }
                     else
                         wc.StatusCode = 204; // no content
@@ -50,11 +50,11 @@ namespace Greatbone.Sample
             {
                 using (var dc = Service.NewDbContext())
                 {
-                    DbSql sql = new DbSql("SELECT ").columnlst(Post.Empty, x)._("FROM posts ORDER BY id DESC LIMIT 20 OFFSET @1");
+                    DbSql sql = new DbSql("SELECT ").columnlst(Post.Empty, z)._("FROM posts ORDER BY id DESC LIMIT 20 OFFSET @1");
                     if (dc.Query(sql.ToString(), p => p.Put(20 * page)))
                     {
-                        Post[] arr = dc.ToArr<Post>(x);
-                        wc.SendJ(200, arr, x);
+                        Post[] arr = dc.ToArr<Post>(z);
+                        wc.SendJ(200, arr, z);
                     }
                     else
                         wc.StatusCode = 204; // no content
@@ -95,7 +95,7 @@ namespace Greatbone.Sample
         // ADMIN
         //
         [CheckAdmin]
-        [Button(IsGet = true, Icon = FaUtility.chrome)]
+        [Button(IsGet = true, Icon = "fa fa-chrome")]
         public override void mgmt(WebContext wc, string subscpt)
         {
             // returh first UI
@@ -106,19 +106,19 @@ namespace Greatbone.Sample
         }
 
         [CheckAdmin]
-        [Button(IsGet = true, Icon = FaUtility.chrome, Dialog = 3)]
+        [Button(IsGet = true, Icon = "fa fa-chrome", Dialog = 3)]
         public void srch(WebContext wc, string subscpt)
         {
             using (var dc = Service.NewDbContext())
             {
-                const byte x = 0xff ^ BIN;
-                DbSql sql = new DbSql("SELECT ").columnlst(Post.Empty, x)._("FROM posts");
+                const byte z = 0xff ^ BIN;
+                DbSql sql = new DbSql("SELECT ").columnlst(Post.Empty, z)._("FROM posts");
                 if (dc.Query(sql.ToString()))
                 {
-                    Post[] arr = dc.ToArr<Post>(x);
+                    Post[] arr = dc.ToArr<Post>(z);
                     wc.SendMajorLayout(200, "管理功能", a =>
                     {
-                        a.form(mgmtWas, arr, x);
+                        a.form(mgmtWas, arr, z);
                     });
                 }
                 else

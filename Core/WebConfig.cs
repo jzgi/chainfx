@@ -50,7 +50,7 @@
         public override string Folder => key;
 
 
-        public void Load(ISource s, byte x = 0)
+        public void Load(ISource s, byte z = 0)
         {
             s.Get(nameof(part), ref part);
             s.Get(nameof(@extern), ref @extern);
@@ -62,7 +62,7 @@
             s.Get(nameof(opts), ref opts);
         }
 
-        public void Dump<R>(ISink<R> s, byte x = 0) where R : ISink<R>
+        public void Dump<R>(ISink<R> s, byte z = 0) where R : ISink<R>
         {
             s.Put(nameof(part), part);
             s.Put(nameof(@extern), @extern);

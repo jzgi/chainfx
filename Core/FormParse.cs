@@ -10,16 +10,16 @@ namespace Greatbone.Core
     {
         static readonly ParseException FormatEx = new ParseException("wrong form Format");
 
-        readonly byte[] buffer;
+        readonly byte[] bytebuf;
 
         readonly int count;
 
         // UTF-8 string builder
         readonly Str str;
 
-        public FormParse(byte[] buffer, int count)
+        public FormParse(byte[] bytebuf, int count)
         {
-            this.buffer = buffer;
+            this.bytebuf = bytebuf;
             this.count = count;
             this.str = new Str(256);
         }
@@ -48,7 +48,7 @@ namespace Greatbone.Core
             int p = pos;
             for (;;)
             {
-                byte b = buffer[++p];
+                byte b = bytebuf[++p];
                 if (p >= count) throw FormatEx;
                 if (b == '=')
                 {
@@ -68,7 +68,7 @@ namespace Greatbone.Core
             int p = pos;
             for (;;)
             {
-                byte b = buffer[++p];
+                byte b = bytebuf[++p];
                 if (p >= count || b == '&')
                 {
                     pos = p;
@@ -80,9 +80,9 @@ namespace Greatbone.Core
                 }
                 else if (b == '%') // percent-encoding %xy
                 {
-                    char x = (char)buffer[++p];
+                    char x = (char)bytebuf[++p];
                     if (p >= count) throw FormatEx;
-                    char y = (char)buffer[++p];
+                    char y = (char)bytebuf[++p];
                     if (p >= count) throw FormatEx;
 
                     str.Add((byte)(Dv(x) << 4 | Dv(y)));

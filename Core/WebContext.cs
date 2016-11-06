@@ -53,7 +53,7 @@ namespace Greatbone.Core
             if (clen > 0)
             {
                 int len = (int)clen;
-                buffer = BufferPool.Borrow(len);
+                buffer = ByteBufferPool.Borrow(len);
                 count = await req.Body.ReadAsync(buffer, 0, len);
             }
         }
@@ -108,24 +108,24 @@ namespace Greatbone.Core
             return entity as JArr;
         }
 
-        public P ReadObj<P>(byte x = 0) where P : IPersist, new()
+        public P ReadObj<P>(byte z = 0) where P : IPersist, new()
         {
             Parse();
 
             ISource src = entity as ISource;
             if (src == null) return default(P);
             P obj = new P();
-            obj.Load(src, x);
+            obj.Load(src, z);
             return obj;
         }
 
-        public P[] ReadArr<P>(byte x = 0) where P : IPersist, new()
+        public P[] ReadArr<P>(byte z = 0) where P : IPersist, new()
         {
             Parse();
 
             JArr ja = entity as JArr;
             if (ja == null) return null;
-            return ja.ToArr<P>(x);
+            return ja.ToArr<P>(z);
         }
 
         //
@@ -267,16 +267,16 @@ namespace Greatbone.Core
             throw new NotImplementedException();
         }
 
-        public bool Get<V>(string name, ref V v, byte x = 0) where V : IPersist, new()
+        public bool Get<V>(string name, ref V v, byte z = 0) where V : IPersist, new()
         {
             StringValues values;
             if (Request.Query.TryGetValue(name, out values))
             {
                 string str = values[0];
-                JTextParse par = new JTextParse(str);
+                JParse par = new JParse(str);
                 JObj jo = (JObj)par.Parse();
                 v = new V();
-                v.Load(jo, x);
+                v.Load(jo, z);
                 return true;
             }
             return false;
@@ -288,7 +288,7 @@ namespace Greatbone.Core
             if (Request.Query.TryGetValue(name, out values))
             {
                 string str = values[0];
-                JTextParse par = new JTextParse(str);
+                JParse par = new JParse(str);
                 v = (JObj)par.Parse();
                 return true;
             }
@@ -301,7 +301,7 @@ namespace Greatbone.Core
             if (Request.Query.TryGetValue(name, out values))
             {
                 string str = values[0];
-                JTextParse par = new JTextParse(str);
+                JParse par = new JParse(str);
                 v = (JArr)par.Parse();
                 return true;
             }
@@ -387,13 +387,13 @@ namespace Greatbone.Core
             return false;
         }
 
-        public bool Get<V>(string name, ref V[] v, byte x = 0) where V : IPersist, new()
+        public bool Get<V>(string name, ref V[] v, byte z = 0) where V : IPersist, new()
         {
             StringValues values;
             if (Request.Query.TryGetValue(name, out values))
             {
                 string str = values[0];
-                JTextParse par = new JTextParse(str);
+                JParse par = new JParse(str);
                 JArr ja = (JArr)par.Parse();
                 int len = ja.Count;
                 v = new V[len];
@@ -401,7 +401,7 @@ namespace Greatbone.Core
                 {
                     JObj jo = (JObj)ja[i];
                     V obj = new V();
-                    obj.Load(jo, x);
+                    obj.Load(jo, z);
                     v[i] = obj;
                 }
                 return true;
@@ -508,19 +508,19 @@ namespace Greatbone.Core
             MaxAge = maxage;
         }
 
-        public void SendJ<P>(int status, P obj, byte x = 0, bool? pub = null, int maxage = 60000) where P : IPersist
+        public void SendJ<P>(int status, P obj, byte z = 0, bool? pub = null, int maxage = 60000) where P : IPersist
         {
-            SendJ(status, cont => cont.PutObj(obj, x), pub, maxage);
+            SendJ(status, cont => cont.PutObj(obj, z), pub, maxage);
         }
 
-        public void SendJ<P>(int status, P[] arr, byte x = 0, bool? pub = null, int maxage = 60000) where P : IPersist
+        public void SendJ<P>(int status, P[] arr, byte z = 0, bool? pub = null, int maxage = 60000) where P : IPersist
         {
-            SendJ(status, cont => cont.PutArr(arr, x), pub, maxage);
+            SendJ(status, cont => cont.PutArr(arr, z), pub, maxage);
         }
 
         public void SendJ(int status, Action<JContent> a, bool? pub = null, int maxage = 60000)
         {
-            JContent cont = new JContent(8 * 1024);
+            JContent cont = new JContent(true, 8 * 1024);
             a?.Invoke(cont);
             Send(status, cont, pub, maxage);
         }
@@ -555,7 +555,7 @@ namespace Greatbone.Core
                 }
 
                 // send async
-                await r.Body.WriteAsync(Content.Buffer, 0, Content.Length);
+                await r.Body.WriteAsync(Content.ByteBuffer, 0, Content.Length);
             }
         }
 
@@ -579,7 +579,7 @@ namespace Greatbone.Core
             WebClient cli = Control.Service.FindClient(service, part);
             if (cli != null)
             {
-                JContent jcon = new JContent(8 * 1024);
+                JContent jcon = new JContent(true, 8 * 1024);
                 a?.Invoke(jcon);
             }
         }
@@ -590,13 +590,13 @@ namespace Greatbone.Core
             // return request content buffer
             if (buffer != null)
             {
-                BufferPool.Return(buffer);
+                ByteBufferPool.Return(buffer);
             }
 
             // return response content buffer
             if (Content is DynamicContent)
             {
-                BufferPool.Return(Content.Buffer);
+                ByteBufferPool.Return(Content.ByteBuffer);
             }
         }
 

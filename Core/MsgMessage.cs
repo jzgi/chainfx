@@ -42,5 +42,28 @@ namespace Greatbone.Core
 
         public string Type => "msg/bin";
 
+        public byte[] ByteBuffer
+        {
+            get
+            {
+                throw new NotImplementedException();
+            }
+        }
+
+        public char[] CharBuffer
+        {
+            get
+            {
+                throw new NotImplementedException();
+            }
+        }
+
+        public bool IsBinary
+        {
+            get
+            {
+                throw new NotImplementedException();
+            }
+        }
     }
 }

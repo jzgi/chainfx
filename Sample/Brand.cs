@@ -12,11 +12,11 @@ namespace Greatbone.Sample
 
         public string Key => Id;
 
-        public void Load(ISource s, byte x = 0)
+        public void Load(ISource s, byte z = 0)
         {
         }
 
-        public void Dump<R>(ISink<R> s, byte x = 0) where R : ISink<R>
+        public void Dump<R>(ISink<R> s, byte z = 0) where R : ISink<R>
         {
         }
 

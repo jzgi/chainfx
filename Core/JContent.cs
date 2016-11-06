@@ -16,14 +16,13 @@ namespace Greatbone.Core
         // current level
         int level;
 
-        public JContent(int capacity = InitialCapacity) : base(capacity)
+        public JContent(bool binary, int capacity = InitialCapacity) : base(binary, capacity)
         {
             counts = new int[8];
             level = 0;
         }
 
         public override string Type => "application/json";
-
 
         void AddEsc(string v)
         {
@@ -77,9 +76,9 @@ namespace Greatbone.Core
             level--; // exit
         }
 
-        public void PutArr<P>(P[] arr, byte x = 0) where P : IPersist
+        public void PutArr<P>(P[] arr, byte z = 0) where P : IPersist
         {
-            Put(null, arr, x);
+            Put(null, arr, z);
         }
 
         public void PutObj(Action a)
@@ -95,9 +94,9 @@ namespace Greatbone.Core
             level--; // exit
         }
 
-        public void PutObj<P>(P obj, byte x = 0) where P : IPersist
+        public void PutObj<P>(P obj, byte z = 0) where P : IPersist
         {
-            Put(null, obj, x);
+            Put(null, obj, z);
         }
 
 
@@ -309,7 +308,7 @@ namespace Greatbone.Core
             return this; // ignore ir
         }
 
-        public JContent Put<P>(string name, P v, byte x = 0) where P : IPersist
+        public JContent Put<P>(string name, P v, byte z = 0) where P : IPersist
         {
             if (counts[level]++ > 0) Add(',');
 
@@ -329,7 +328,7 @@ namespace Greatbone.Core
             {
                 counts[++level] = 0; // enter
                 Add('{');
-                v.Dump(this, x);
+                v.Dump(this, z);
                 Add('}');
                 level--; // exit
             }
@@ -523,7 +522,7 @@ namespace Greatbone.Core
         }
 
 
-        public JContent Put<P>(string name, P[] v, byte x = 0) where P : IPersist
+        public JContent Put<P>(string name, P[] v, byte z = 0) where P : IPersist
         {
             if (counts[level]++ > 0) Add(',');
 
@@ -545,7 +544,7 @@ namespace Greatbone.Core
                 Add('[');
                 for (int i = 0; i < v.Length; i++)
                 {
-                    Put(null, v[i], x);
+                    Put(null, v[i], z);
                 }
                 Add(']');
                 level--; // exit

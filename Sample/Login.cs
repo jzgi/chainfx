@@ -19,7 +19,7 @@ namespace Greatbone.Sample
 
         public string Credential => credential;
 
-        public void Load(ISource s, byte x = 0)
+        public void Load(ISource s, byte z = 0)
         {
             s.Get(nameof(id), ref id);
             s.Get(nameof(name), ref name);
@@ -27,7 +27,7 @@ namespace Greatbone.Sample
             s.Get(nameof(roles), ref roles);
         }
 
-        public void Dump<R>(ISink<R> s, byte x = 0) where R : ISink<R>
+        public void Dump<R>(ISink<R> s, byte z = 0) where R : ISink<R>
         {
             s.Put(nameof(id), id);
             s.Put(nameof(name), name);

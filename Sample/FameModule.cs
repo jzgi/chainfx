@@ -1,5 +1,5 @@
 ﻿using Greatbone.Core;
-using static Greatbone.Core.XUtility;
+using static Greatbone.Core.ZUtility;
 
 namespace Greatbone.Sample
 {
@@ -32,12 +32,12 @@ namespace Greatbone.Sample
             int n = subscpt.ToInt();
             using (var dc = Service.NewDbContext())
             {
-                const byte x = 0xff ^ BIN;
-                DbSql sql = new DbSql("SELECT ").columnlst(new Fame(), x)._("FROM fames ORDER BY rating LIMIT 20 OFFSET @1");
+                const byte z = 0xff ^ BIN;
+                DbSql sql = new DbSql("SELECT ").columnlst(new Fame(), z)._("FROM fames ORDER BY rating LIMIT 20 OFFSET @1");
                 if (dc.Query(sql.ToString(), p => p.Put(n * 20)))
                 {
-                    Fame[] fames = dc.ToArr<Fame>(x);
-                    wc.SendJ(200, fames, x);
+                    Fame[] fames = dc.ToArr<Fame>(z);
+                    wc.SendJ(200, fames, z);
                 }
                 else
                     wc.StatusCode = 204;
@@ -55,17 +55,17 @@ namespace Greatbone.Sample
         ///
         public void find(WebContext wc, string subscpt)
         {
-            const byte x = 0xff ^ BIN;
+            const byte z = 0xff ^ BIN;
             string name = null;
             if (wc.Get(nameof(name), ref name))
             {
                 using (var dc = Service.NewDbContext())
                 {
-                    DbSql sql = new DbSql("SELECT ").columnlst(Fame.Empty, x)._("FROM fames WHERE name LIKE '%" + name + "%'");
+                    DbSql sql = new DbSql("SELECT ").columnlst(Fame.Empty, z)._("FROM fames WHERE name LIKE '%" + name + "%'");
                     if (dc.Query(sql.ToString()))
                     {
-                        Fame[] fames = dc.ToArr<Fame>(x);
-                        wc.SendJ(200, fames, x);
+                        Fame[] fames = dc.ToArr<Fame>(z);
+                        wc.SendJ(200, fames, z);
                     }
                     else
                         wc.StatusCode = 204;
@@ -78,11 +78,11 @@ namespace Greatbone.Sample
             {
                 using (var dc = Service.NewDbContext())
                 {
-                    DbSql sql = new DbSql("SELECT ").columnlst(Fame.Empty, x)._("FROM fames WHERE @1 = ANY (skills)");
+                    DbSql sql = new DbSql("SELECT ").columnlst(Fame.Empty, z)._("FROM fames WHERE @1 = ANY (skills)");
                     if (dc.Query(sql.ToString(), p => p.Put(skill)))
                     {
-                        Fame[] fames = dc.ToArr<Fame>(x);
-                        wc.SendJ(200, fames, x);
+                        Fame[] fames = dc.ToArr<Fame>(z);
+                        wc.SendJ(200, fames, z);
                     }
                     else
                         wc.StatusCode = 204;

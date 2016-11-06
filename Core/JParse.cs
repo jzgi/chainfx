@@ -1,15 +1,20 @@
 namespace Greatbone.Core
 {
 
+    ///
+    /// Parse JSON into object model from either bytes or string.
+    ///
     public struct JParse
     {
 
-        static readonly ParseException FormatEx = new ParseException("wrong octet json Format");
+        static readonly ParseException FormatEx = new ParseException("wrong json Format");
 
         // byte buffer content to parse
-        readonly byte[] buffer;
+        readonly byte[] bytebuf;
 
         readonly int count;
+
+        string strbuf;
 
         // UTF-8 string builder
         readonly Str str;
@@ -17,9 +22,19 @@ namespace Greatbone.Core
         // whether json extension for byte array
         readonly bool jx;
 
-        public JParse(byte[] bytes, int count, bool jx = false)
+        public JParse(string strbuf)
         {
-            this.buffer = bytes;
+            this.strbuf = strbuf;
+            this.bytebuf = null;
+            this.count = strbuf.Length;
+            this.jx = false;
+            this.str = new Str(256);
+        }
+
+        public JParse(byte[] bytebuf, int count, bool jx = false)
+        {
+            strbuf = null;
+            this.bytebuf = bytebuf;
             this.count = count;
             this.jx = jx;
             this.str = new Str(256);
@@ -30,7 +45,7 @@ namespace Greatbone.Core
             int p = -1;
             for (;;)
             {
-                byte b = buffer[++p];
+                byte b = bytebuf[++p];
                 if (p >= count) throw FormatEx;
                 if (b == ' ' || b == '\t' || b == '\n' || b == '\r') continue; // skip ws
                 if (b == '{') return ParseObj(ref p);
@@ -47,7 +62,7 @@ namespace Greatbone.Core
             {
                 for (;;)
                 {
-                    byte b = buffer[++p];
+                    byte b = bytebuf[++p];
                     if (p >= count) throw FormatEx;
                     if (b == ' ' || b == '\t' || b == '\n' || b == '\r') continue;
                     if (b == '"') break; // meet first quote
@@ -62,7 +77,7 @@ namespace Greatbone.Core
                 str.Clear(); // parse name
                 for (;;)
                 {
-                    byte b = buffer[++p];
+                    byte b = bytebuf[++p];
                     if (p >= count) throw FormatEx;
                     if (b == '"') break; // meet second quote
                     else str.Add((char)b);
@@ -70,7 +85,7 @@ namespace Greatbone.Core
 
                 for (;;) // till a colon
                 {
-                    byte b = buffer[++p];
+                    byte b = bytebuf[++p];
                     if (p >= count) throw FormatEx;
                     if (b == ' ' || b == '\t' || b == '\n' || b == '\r') continue;
                     if (b == ':') break;
@@ -81,7 +96,7 @@ namespace Greatbone.Core
                 // parse the value part
                 for (;;)
                 {
-                    byte b = buffer[++p];
+                    byte b = bytebuf[++p];
                     if (p >= count) throw FormatEx;
                     if (b == ' ' || b == '\t' || b == '\n' || b == '\r') continue; // skip ws
                     if (b == '{')
@@ -125,7 +140,7 @@ namespace Greatbone.Core
                 // comma or end
                 for (;;)
                 {
-                    byte b = buffer[++p];
+                    byte b = bytebuf[++p];
                     if (p >= count) throw FormatEx;
                     if (b == ' ' || b == '\t' || b == '\n' || b == '\r') continue;
                     if (b == ',') break;
@@ -145,7 +160,7 @@ namespace Greatbone.Core
             int p = pos;
             for (;;)
             {
-                byte b = buffer[++p];
+                byte b = bytebuf[++p];
                 if (p >= count) throw FormatEx;
                 if (b == ' ' || b == '\t' || b == '\n' || b == '\r') continue; // skip ws
                 if (b == ']') // close early empty
@@ -192,7 +207,7 @@ namespace Greatbone.Core
                 // comma or return
                 for (;;)
                 {
-                    b = buffer[++p];
+                    b = bytebuf[++p];
                     if (p >= count) throw FormatEx;
                     if (b == ' ' || b == '\t' || b == '\n' || b == '\r') continue; // skip ws
                     if (b == ',') break;
@@ -213,7 +228,7 @@ namespace Greatbone.Core
             bool esc = false;
             for (;;)
             {
-                byte b = buffer[++p];
+                byte b = bytebuf[++p];
                 if (p >= count) throw FormatEx;
                 if (esc)
                 {
@@ -247,7 +262,7 @@ namespace Greatbone.Core
         bool ParseNull(ref int pos)
         {
             int p = pos;
-            if (buffer[++p] == 'u' && buffer[++p] == 'l' && buffer[++p] == 'l')
+            if (bytebuf[++p] == 'u' && bytebuf[++p] == 'l' && bytebuf[++p] == 'l')
             {
                 pos = p;
                 return true;
@@ -262,7 +277,7 @@ namespace Greatbone.Core
             for (;;)
             {
                 if (p >= count) throw FormatEx;
-                byte b = buffer[++p];
+                byte b = bytebuf[++p];
                 if (b == '.')
                 {
                     num.Pt = true;
@@ -284,7 +299,7 @@ namespace Greatbone.Core
             int p = pos;
             if (first == 't')
             {
-                if (buffer[++p] == 'r' && buffer[++p] == 'u' && buffer[++p] == 'e')
+                if (bytebuf[++p] == 'r' && bytebuf[++p] == 'u' && bytebuf[++p] == 'e')
                 {
                     pos = p;
                     return true;
@@ -292,7 +307,7 @@ namespace Greatbone.Core
             }
             else if (first == 'f')
             {
-                if (buffer[++p] == 'a' && buffer[++p] == 'l' && buffer[++p] == 's' && buffer[++p] == 'e')
+                if (bytebuf[++p] == 'a' && bytebuf[++p] == 'l' && bytebuf[++p] == 's' && bytebuf[++p] == 'e')
                 {
                     pos = p;
                     return false;

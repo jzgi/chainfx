@@ -1530,12 +1530,18 @@ namespace Greatbone.Core
 
         public string Type { get; set; }
 
-        public byte[] Buffer { get; internal set; }
+        public byte[] ByteBuffer { get; internal set; }
 
-        public int Length => Buffer.Length;
+        public char[] CharBuffer => null;
+
+        public int Length => ByteBuffer.Length;
 
         public DateTime LastModified { get; internal set; }
 
-        public long ETag { get; set; }
+        public long ETag => 0;
+
+        public bool IsBinary => true;
+
     }
+
 }

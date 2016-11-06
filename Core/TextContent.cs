@@ -3,7 +3,7 @@ namespace Greatbone.Core
     public class TextContent : DynamicContent
     {
 
-        public TextContent(string text) : base(1024)
+        public TextContent(string text) : base(true, 1024)
         {
             int len = text.Length;
             for (int i = 0; i < len; i++)

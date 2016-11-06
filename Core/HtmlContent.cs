@@ -9,8 +9,10 @@ namespace Greatbone.Core
     /// For dynamical HTML5 content generation Tooled with Pure.CSS
     /// </summary> 
     ///
-    public class HtContent : DynamicContent, ISink<HtContent>, IMenu, ISelectOptions
+    public class HtmlContent : DynamicContent, ISink<HtmlContent>, IMenu, ISelectOptions
     {
+
+        const int InitialCapacity = 8 * 1024;
 
         const string SM = "sm", MD = "md", LG = "lg", XL = "xl";
 
@@ -19,7 +21,7 @@ namespace Greatbone.Core
         sbyte ctx;
 
 
-        public HtContent(int capacity) : base(capacity)
+        public HtmlContent(bool binary, int capacity = InitialCapacity) : base(binary, capacity)
         {
         }
 
@@ -80,7 +82,7 @@ namespace Greatbone.Core
             }
         }
 
-        public HtContent T(string str)
+        public HtmlContent T(string str)
         {
             Add(str);
             return this;
@@ -160,7 +162,7 @@ namespace Greatbone.Core
 
         int table_idx;
 
-        public void table(Action<HtContent> ths, Action<HtContent> trs)
+        public void table(Action<HtmlContent> ths, Action<HtmlContent> trs)
         {
             table_idx = 0;
 
@@ -181,7 +183,7 @@ namespace Greatbone.Core
         }
 
 
-        public void tr(Action<int, HtContent> tds)
+        public void tr(Action<int, HtmlContent> tds)
         {
             table_idx++;
 
@@ -213,7 +215,7 @@ namespace Greatbone.Core
             T("</td>");
         }
 
-        public void table<M>(M[] arr, byte x = 0) where M : IPersist
+        public void table<M>(M[] arr, byte z = 0) where M : IPersist
         {
             M obj = arr[0];
 
@@ -221,21 +223,21 @@ namespace Greatbone.Core
                 ths =>
                 {
                     ctx = TableThs;
-                    obj.Dump(this, x);
+                    obj.Dump(this, z);
                 },
                 trs =>
                 {
                     ctx = TableTrs;
                     for (int i = 0; i < arr.Length; i++)
                     {
-                        arr[i].Dump(this, x);
+                        arr[i].Dump(this, z);
                     }
                 }
             );
         }
 
 
-        public void form(WebAction wa, Action<HtContent> inner)
+        public void form(WebAction wa, Action<HtmlContent> inner)
         {
             Add("<form class=\"pure-form pure-g\">");
 
@@ -244,7 +246,7 @@ namespace Greatbone.Core
             Add("</form>");
         }
 
-        public void form<M>(WebAction[] was, M[] arr, byte x = 0) where M : IPersist
+        public void form<M>(WebAction[] was, M[] arr, byte z = 0) where M : IPersist
         {
             Add("<form class=\"pure-form pure-g\">");
 
@@ -253,13 +255,13 @@ namespace Greatbone.Core
 
             if (arr != null)
             {
-                table(arr, x);
+                table(arr, z);
             }
 
             Add("</form>");
         }
 
-        public void form<P>(WebAction wa, P obj, byte x = 0) where P : IPersist
+        public void form<P>(WebAction wa, P obj, byte z = 0) where P : IPersist
         {
             Add("<form class=\"pure-form pure-g\">");
 
@@ -625,12 +627,12 @@ namespace Greatbone.Core
         // ISINK
         //
 
-        public HtContent PutNull(string name)
+        public HtmlContent PutNull(string name)
         {
             throw new NotImplementedException();
         }
 
-        public HtContent Put(string name, bool v)
+        public HtmlContent Put(string name, bool v)
         {
             switch (ctx)
             {
@@ -649,7 +651,7 @@ namespace Greatbone.Core
             return this;
         }
 
-        public HtContent Put(string name, short v)
+        public HtmlContent Put(string name, short v)
         {
             switch (ctx)
             {
@@ -668,7 +670,7 @@ namespace Greatbone.Core
             return this;
         }
 
-        public HtContent Put(string name, int v)
+        public HtmlContent Put(string name, int v)
         {
             switch (ctx)
             {
@@ -687,7 +689,7 @@ namespace Greatbone.Core
             return this;
         }
 
-        public HtContent Put(string name, long v)
+        public HtmlContent Put(string name, long v)
         {
             switch (ctx)
             {
@@ -706,7 +708,7 @@ namespace Greatbone.Core
             return this;
         }
 
-        public HtContent Put(string name, decimal v)
+        public HtmlContent Put(string name, decimal v)
         {
             switch (ctx)
             {
@@ -725,7 +727,7 @@ namespace Greatbone.Core
             return this;
         }
 
-        public HtContent Put(string name, Number v)
+        public HtmlContent Put(string name, Number v)
         {
             switch (ctx)
             {
@@ -735,7 +737,7 @@ namespace Greatbone.Core
             return this;
         }
 
-        public HtContent Put(string name, DateTime v)
+        public HtmlContent Put(string name, DateTime v)
         {
             switch (ctx)
             {
@@ -754,12 +756,12 @@ namespace Greatbone.Core
             return this;
         }
 
-        public HtContent Put(string name, char[] v)
+        public HtmlContent Put(string name, char[] v)
         {
             return this;
         }
 
-        public HtContent Put(string name, string v, int max = 0)
+        public HtmlContent Put(string name, string v, int max = 0)
         {
             switch (ctx)
             {
@@ -778,52 +780,52 @@ namespace Greatbone.Core
             return this;
         }
 
-        public HtContent Put(string name, byte[] v)
+        public HtmlContent Put(string name, byte[] v)
         {
             return this;
         }
 
-        public HtContent Put(string name, ArraySegment<byte> v)
+        public HtmlContent Put(string name, ArraySegment<byte> v)
         {
             return this;
         }
 
-        public HtContent Put<V>(string name, V v, byte x = 0) where V : IPersist
+        public HtmlContent Put<V>(string name, V v, byte z = 0) where V : IPersist
         {
             return this;
         }
 
-        public HtContent Put(string name, JObj v)
+        public HtmlContent Put(string name, JObj v)
         {
             return this;
         }
 
-        public HtContent Put(string name, JArr v)
+        public HtmlContent Put(string name, JArr v)
         {
             return this;
         }
 
-        public HtContent Put(string name, short[] v)
+        public HtmlContent Put(string name, short[] v)
         {
             return this;
         }
 
-        public HtContent Put(string name, int[] v)
+        public HtmlContent Put(string name, int[] v)
         {
             return this;
         }
 
-        public HtContent Put(string name, long[] v)
+        public HtmlContent Put(string name, long[] v)
         {
             return this;
         }
 
-        public HtContent Put(string name, string[] v)
+        public HtmlContent Put(string name, string[] v)
         {
             return this;
         }
 
-        public HtContent Put<V>(string name, V[] v, byte x = 0) where V : IPersist
+        public HtmlContent Put<V>(string name, V[] v, byte z = 0) where V : IPersist
         {
             return this;
         }

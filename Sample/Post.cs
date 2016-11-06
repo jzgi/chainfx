@@ -1,6 +1,6 @@
 ﻿using System;
 using Greatbone.Core;
-using static Greatbone.Core.XUtility;
+using static Greatbone.Core.ZUtility;
 
 namespace Greatbone.Sample
 {
@@ -21,9 +21,9 @@ namespace Greatbone.Sample
         internal string mset; // available m fields, such as "2384"
         internal byte[] m0, m1, m2, m3, m4, m5, m6, m7, m8;
 
-        public void Load(ISource s, byte x = 0)
+        public void Load(ISource s, byte z = 0)
         {
-            if (x.Ya(AUTO)) s.Get(nameof(id), ref id);
+            if (z.Ya(AUTO)) s.Get(nameof(id), ref id);
             s.Get(nameof(time), ref time);
             s.Get(nameof(authorid), ref authorid);
             s.Get(nameof(author), ref author);
@@ -34,7 +34,7 @@ namespace Greatbone.Sample
             s.Get(nameof(text), ref text);
             s.Get(nameof(mset), ref mset);
 
-            if (x.Ya(BIN))
+            if (z.Ya(BIN))
             {
                 s.Get(nameof(m0), ref m0);
                 s.Get(nameof(m1), ref m1);
@@ -48,9 +48,9 @@ namespace Greatbone.Sample
             }
         }
 
-        public void Dump<R>(ISink<R> s, byte x = 0) where R : ISink<R>
+        public void Dump<R>(ISink<R> s, byte z = 0) where R : ISink<R>
         {
-            if (x.Ya(AUTO)) s.Put(nameof(id), id);
+            if (z.Ya(AUTO)) s.Put(nameof(id), id);
             s.Put(nameof(time), time);
             s.Put(nameof(authorid), authorid);
             s.Put(nameof(author), author);
@@ -61,7 +61,7 @@ namespace Greatbone.Sample
             s.Put(nameof(text), text);
             s.Put(nameof(mset), mset);
 
-            if (x.Ya(BIN))
+            if (z.Ya(BIN))
             {
                 s.Put(nameof(m0), m0);
                 s.Put(nameof(m1), m1);

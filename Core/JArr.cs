@@ -78,13 +78,13 @@ namespace Greatbone.Core
             }
         }
 
-        public P[] ToArr<P>(byte x = 0) where P : IPersist, new()
+        public P[] ToArr<P>(byte z = 0) where P : IPersist, new()
         {
             P[] arr = new P[count];
             for (int i = 0; i < arr.Length; i++)
             {
                 P obj = new P();
-                obj.Load((JObj)this[i], x);
+                obj.Load((JObj)this[i], z);
                 arr[i] = obj;
             }
             return arr;

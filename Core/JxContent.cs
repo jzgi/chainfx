@@ -8,6 +8,11 @@ namespace Greatbone.Core
     /// </summary>
     public class JxContent : JContent
     {
+        const int Initialcapacity = 16 * 1024;
+
+        public JxContent(int capacity = Initialcapacity) : base(true, capacity)
+        {
+        }
 
         public override JContent Put(string name, byte[] v)
         {

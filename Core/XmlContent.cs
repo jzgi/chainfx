@@ -3,52 +3,59 @@
 namespace Greatbone.Core
 {
 
-    public class JText : Text, ISink<JText>
+    /// <summary>
+    /// To generate a UTF-8 encoded JSON document. An extension of putting byte array is supported.
+    /// </summary>
+    public class XmlContent : DynamicContent, ISink<XmlContent>
     {
+        const int InitialCapacity = 4 * 1024;
 
-        const int InitialCapacity = 1024;
+        // starting positions of each level
+        readonly int[] counts;
 
-        // parsing context for levels
-        int[] counts;
-
+        // current level
         int level;
 
-        public JText(int capacity = InitialCapacity) : base(capacity)
+        public XmlContent(bool bin, int capacity = InitialCapacity) : base(bin, capacity)
         {
             counts = new int[8];
             level = 0;
         }
 
+        public override string Type => "application/xml";
+
+
         void AddEsc(string v)
         {
-            if (v == null) return;
-
-            for (int i = 0; i < v.Length; i++)
+            if (v != null)
             {
-                char c = v[i];
-                if (c == '\"')
+                for (int i = 0; i < v.Length; i++)
                 {
-                    Add('\\'); Add('"');
-                }
-                else if (c == '\\')
-                {
-                    Add('\\'); Add('\\');
-                }
-                else if (c == '\n')
-                {
-                    Add('\\'); Add('n');
-                }
-                else if (c == '\r')
-                {
-                    Add('\\'); Add('r');
-                }
-                else if (c == '\t')
-                {
-                    Add('\\'); Add('t');
-                }
-                else
-                {
-                    Add(c);
+                    char c = v[i];
+                    if (c == '\"')
+                    {
+                        Add('\\'); Add('"');
+                    }
+                    else if (c == '\\')
+                    {
+                        Add('\\'); Add('\\');
+                    }
+                    else if (c == '\n')
+                    {
+                        Add('\\'); Add('n');
+                    }
+                    else if (c == '\r')
+                    {
+                        Add('\\'); Add('r');
+                    }
+                    else if (c == '\t')
+                    {
+                        Add('\\'); Add('t');
+                    }
+                    else
+                    {
+                        Add(c);
+                    }
                 }
             }
         }
@@ -61,36 +68,36 @@ namespace Greatbone.Core
         {
             if (counts[level]++ > 0) Add(',');
 
-            counts[++level] = 0;
-            Add('{');
+            counts[++level] = 0; // enter
+            Add('[');
 
             if (a != null) a();
 
-            Add('}');
-            level--;
+            Add(']');
+            level--; // exit
         }
 
-        public void PutArr<P>(P[] arr, byte x = 0) where P : IPersist
+        public void PutArr<P>(P[] arr, byte z = 0) where P : IPersist
         {
-            Put(null, arr, x);
+            Put(null, arr, z);
         }
 
         public void PutObj(Action a)
         {
             if (counts[level]++ > 0) Add(',');
 
-            counts[++level] = 0;
-            Add('[');
+            counts[++level] = 0; // enter
+            Add('{');
 
             if (a != null) a();
 
-            Add(']');
-            level--;
+            Add('}');
+            level--; // exit
         }
 
-        public void PutObj<P>(P obj, byte x = 0) where P : IPersist
+        public void PutObj<P>(P obj, byte z = 0) where P : IPersist
         {
-            Put(null, obj, x);
+            Put(null, obj, z);
         }
 
 
@@ -98,7 +105,7 @@ namespace Greatbone.Core
         // SINK
         //
 
-        public JText PutNull(string name)
+        public XmlContent PutNull(string name)
         {
             if (counts[level]++ > 0) Add(',');
 
@@ -115,7 +122,7 @@ namespace Greatbone.Core
             return this;
         }
 
-        public JText Put(string name, bool v)
+        public XmlContent Put(string name, bool v)
         {
             if (counts[level]++ > 0) Add(',');
 
@@ -132,7 +139,7 @@ namespace Greatbone.Core
             return this;
         }
 
-        public JText Put(string name, short v)
+        public XmlContent Put(string name, short v)
         {
             if (counts[level]++ > 0) Add(',');
 
@@ -149,7 +156,7 @@ namespace Greatbone.Core
             return this;
         }
 
-        public JText Put(string name, int v)
+        public XmlContent Put(string name, int v)
         {
             if (counts[level]++ > 0) Add(',');
 
@@ -166,7 +173,7 @@ namespace Greatbone.Core
             return this;
         }
 
-        public JText Put(string name, long v)
+        public XmlContent Put(string name, long v)
         {
             if (counts[level]++ > 0) Add(',');
 
@@ -183,7 +190,7 @@ namespace Greatbone.Core
             return this;
         }
 
-        public JText Put(string name, decimal v)
+        public XmlContent Put(string name, decimal v)
         {
             if (counts[level]++ > 0) Add(',');
 
@@ -200,9 +207,9 @@ namespace Greatbone.Core
             return this;
         }
 
-        public JText Put(string name, Number v)
+        public XmlContent Put(string name, Number v)
         {
-            if (counts[level]++ > 0) Add((int)',');
+            if (counts[level]++ > 0) Add(',');
 
             if (name != null)
             {
@@ -215,13 +222,13 @@ namespace Greatbone.Core
             Add(v.bigint);
             if (v.Pt)
             {
-                Add((int)'.');
+                Add('.');
                 Add(v.fract);
             }
             return this;
         }
 
-        public JText Put(string name, DateTime v)
+        public XmlContent Put(string name, DateTime v)
         {
             if (counts[level]++ > 0) Add(',');
 
@@ -240,7 +247,7 @@ namespace Greatbone.Core
             return this;
         }
 
-        public JText Put(string name, char[] v)
+        public XmlContent Put(string name, char[] v)
         {
             if (counts[level]++ > 0) Add(',');
 
@@ -252,14 +259,21 @@ namespace Greatbone.Core
                 Add(':');
             }
 
-            Add('"');
-            Add(v);
-            Add('"');
+            if (v == null)
+            {
+                Add("null");
+            }
+            else
+            {
+                Add('"');
+                Add(v);
+                Add('"');
+            }
 
             return this;
         }
 
-        public JText Put(string name, string v, int maxlen = 0)
+        public XmlContent Put(string name, string v, int maxlen = 0)
         {
             if (counts[level]++ > 0) Add(',');
 
@@ -285,17 +299,17 @@ namespace Greatbone.Core
             return this;
         }
 
-        public JText Put(string name, byte[] v)
+        public virtual XmlContent Put(string name, byte[] v)
         {
             return this; // ignore ir
         }
 
-        public JText Put(string name, ArraySegment<byte> v)
+        public virtual XmlContent Put(string name, ArraySegment<byte> v)
         {
             return this; // ignore ir
         }
 
-        public JText Put<P>(string name, P v, byte x = 0) where P : IPersist
+        public XmlContent Put<P>(string name, P v, byte z = 0) where P : IPersist
         {
             if (counts[level]++ > 0) Add(',');
 
@@ -315,14 +329,15 @@ namespace Greatbone.Core
             {
                 counts[++level] = 0; // enter
                 Add('{');
-                v.Dump(this, x);
+                v.Dump(this, z);
                 Add('}');
-                level--; // exit            }
+                level--; // exit
             }
+
             return this;
         }
 
-        public JText Put(string name, JObj v)
+        public XmlContent Put(string name, JObj v)
         {
             if (counts[level]++ > 0) Add(',');
 
@@ -340,16 +355,17 @@ namespace Greatbone.Core
             }
             else
             {
-                PutObj(delegate
-                {
-                    v.Dump(this);
-                });
+                counts[++level] = 0; // enter
+                Add('{');
+                v.Dump(this);
+                Add('}');
+                level--; // exit
             }
 
             return this;
         }
 
-        public JText Put(string name, JArr v)
+        public XmlContent Put(string name, JArr v)
         {
             if (counts[level]++ > 0) Add(',');
 
@@ -376,7 +392,7 @@ namespace Greatbone.Core
             return this;
         }
 
-        public JText Put(string name, short[] v)
+        public XmlContent Put(string name, short[] v)
         {
             if (counts[level]++ > 0) Add(',');
 
@@ -406,7 +422,7 @@ namespace Greatbone.Core
             return this;
         }
 
-        public JText Put(string name, int[] v)
+        public XmlContent Put(string name, int[] v)
         {
             if (counts[level]++ > 0) Add(',');
 
@@ -436,7 +452,7 @@ namespace Greatbone.Core
             return this;
         }
 
-        public JText Put(string name, long[] v)
+        public XmlContent Put(string name, long[] v)
         {
             if (counts[level]++ > 0) Add(',');
 
@@ -466,7 +482,7 @@ namespace Greatbone.Core
             return this;
         }
 
-        public JText Put(string name, string[] v)
+        public XmlContent Put(string name, string[] v)
         {
             if (counts[level]++ > 0) Add(',');
 
@@ -506,7 +522,8 @@ namespace Greatbone.Core
             return this;
         }
 
-        public JText Put<P>(string name, P[] v, byte x = 0) where P : IPersist
+
+        public XmlContent Put<P>(string name, P[] v, byte z = 0) where P : IPersist
         {
             if (counts[level]++ > 0) Add(',');
 
@@ -528,7 +545,7 @@ namespace Greatbone.Core
                 Add('[');
                 for (int i = 0; i < v.Length; i++)
                 {
-                    Put(null, v[i], x);
+                    Put(null, v[i], z);
                 }
                 Add(']');
                 level--; // exit

@@ -12,7 +12,8 @@ namespace Greatbone.Core
     {
         readonly WebService service;
 
-        readonly string addr;
+        // remote address
+        readonly string raddr;
 
         HttpClient client;
 
@@ -21,14 +22,14 @@ namespace Greatbone.Core
         // tick count
         private int lastConnect;
 
-        internal WebClient(WebService service, string addr)
+        internal WebClient(WebService service, string raddr)
         {
             this.service = service;
-            this.addr = addr;
-            client = new HttpClient() { BaseAddress = new Uri("http://" + addr) };
+            this.raddr = raddr;
+            client = new HttpClient() { BaseAddress = new Uri("http://" + raddr) };
         }
 
-        public string Key => addr;
+        public string Key => raddr;
 
         internal void Schedule()
         {
@@ -92,5 +93,26 @@ namespace Greatbone.Core
             return par.Parse();
         }
 
+        public Element GetElemAsync(string uri)
+        {
+            return null;
+        }
+
+        public JObj GetJObjAsync(string uri)
+        {
+            return null;
+        }
+
+        public JArr GetJArrAsync(string uri)
+        {
+            return null;
+        }
+
+        public byte[] GetBytesAsync(string uri)
+        {
+            return null;
+        }
+
     }
+
 }

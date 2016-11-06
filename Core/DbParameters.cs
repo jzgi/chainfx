@@ -185,7 +185,7 @@ namespace Greatbone.Core
             return this;
         }
 
-        public DbParameters Put<T>(string name, T v, byte x = 0) where T : IPersist
+        public DbParameters Put<T>(string name, T v, byte z = 0) where T : IPersist
         {
             if (name == null)
             {
@@ -197,8 +197,8 @@ namespace Greatbone.Core
             }
             else
             {
-                JText txt = new JText();
-                txt.PutObj(v, x);
+                JContent txt = new JContent(false);
+                txt.PutObj(v, z);
                 string str = txt.ToString();
                 coll.Add(new NpgsqlParameter(name, NpgsqlDbType.Jsonb)
                 {
@@ -223,7 +223,7 @@ namespace Greatbone.Core
             }
             else
             {
-                JText txt = new JText();
+                JContent txt = new JContent(false);
                 v.Dump(txt);
                 string str = txt.ToString();
                 coll.Add(new NpgsqlParameter(name, NpgsqlDbType.Jsonb) { Value = str });
@@ -246,7 +246,7 @@ namespace Greatbone.Core
             }
             else
             {
-                JText txt = new JText();
+                JContent txt = new JContent(false);
                 v.Dump(txt);
                 string str = txt.ToString();
                 coll.Add(new NpgsqlParameter(name, NpgsqlDbType.Jsonb) { Value = str });
@@ -306,7 +306,7 @@ namespace Greatbone.Core
             return this;
         }
 
-        public DbParameters Put<T>(string name, T[] v, byte x = 0) where T : IPersist
+        public DbParameters Put<T>(string name, T[] v, byte z = 0) where T : IPersist
         {
             if (name == null)
             {
@@ -321,8 +321,8 @@ namespace Greatbone.Core
             }
             else
             {
-                JText txt = new JText();
-                txt.PutArr(v, x);
+                JContent txt = new JContent(false);
+                txt.PutArr(v, z);
                 string strv = txt.ToString();
                 coll.Add(new NpgsqlParameter(name, NpgsqlDbType.Jsonb)
                 {

@@ -2,7 +2,10 @@
 namespace Greatbone.Core
 {
 
-    public static class XUtility
+    ///
+    /// The z-flags that filter what to load or dump in persistance operations.
+    ///
+    public static class ZUtility
     {
 
         // BASE = 0
@@ -27,14 +30,14 @@ namespace Greatbone.Core
             RESV = 0x08;
 
 
-        public static bool Ya(this byte x, byte v)
+        public static bool Ya(this byte z, byte v)
         {
-            return (x & v) == v;
+            return (z & v) == v;
         }
 
-        public static bool No(this byte x, byte v)
+        public static bool No(this byte z, byte v)
         {
-            return (x & v) != v;
+            return (z & v) != v;
         }
 
     }
