@@ -32,7 +32,7 @@ namespace Greatbone.Core
             }
         }
 
-        public DateTime LastModified
+        public DateTime? Modified
         {
             get
             {
@@ -58,7 +58,23 @@ namespace Greatbone.Core
             }
         }
 
-        public bool IsBinary
+        public int Size
+        {
+            get
+            {
+                throw new NotImplementedException();
+            }
+        }
+
+        public bool IsPooled
+        {
+            get
+            {
+                throw new NotImplementedException();
+            }
+        }
+
+        public bool IsRaw
         {
             get
             {

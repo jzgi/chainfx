@@ -24,7 +24,7 @@ namespace Greatbone.Core
         internal int ordinal;
 
 
-        public DbSql(string str) : base(false, InitialCapacity)
+        public DbSql(string str) : base(false, false, InitialCapacity)
         {
             Add(str);
         }

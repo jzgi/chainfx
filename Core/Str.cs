@@ -12,7 +12,7 @@ namespace Greatbone.Core
 
         int rest; // number of rest octets
 
-        internal Str(int capacity) : base(false, capacity)
+        internal Str(int capacity) : base(false, false, capacity)
         {
             sum = 0;
             rest = 0;

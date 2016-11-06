@@ -34,7 +34,7 @@ namespace Greatbone.Sample
                     string credential = StrUtility.MD5(id + ':' + ':' + password);
                     if (credential.Equals(obj.credential))
                     {
-                        JContent cont = new JContent(true, 256);
+                        JContent cont = new JContent(true, false, 256);
                         cont.PutObj(obj);
                         cont.Encrypt(0x4a78be76, 0x1f0335e2);
                         wc.Send(200, cont);

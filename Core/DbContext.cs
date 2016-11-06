@@ -342,7 +342,7 @@ namespace Greatbone.Core
                     int len;
                     if ((len = (int)reader.GetBytes(ord, 0, null, 0, 0)) > 0)
                     {
-                        byte[] arr = ByteBufferPool.Borrow(len);
+                        byte[] arr = BufferUtility.GetByteBuffer(len);
                         reader.GetBytes(ord, 0, arr, 0, len); // read data into the buffer
                         v = new ArraySegment<byte>(arr, 0, len);
                         return true;
@@ -469,8 +469,8 @@ namespace Greatbone.Core
         public void Publish(string topic, string part, Action<JContent> a)
         {
             // convert message to byte buffer
-            JContent jcont = new JContent(true, 8 * 1024);
-            a?.Invoke(jcont);
+            JContent cont = new JContent(true, true, 8 * 1024);
+            a?.Invoke(cont);
 
             Execute("INSERT INTO mq (topic, filter, message) VALUES (@topic, @filter, @message)", p =>
             {
@@ -478,6 +478,7 @@ namespace Greatbone.Core
                 p.Put("@filter", part);
                 // p.Put("@message", new ArraySegment<byte>(b.Buffer, 0, b.Length));
             });
+            BufferUtility.Return(cont);
         }
 
         public void Publish<P>(string topic, string part, P obj) where P : IPersist
@@ -504,5 +505,5 @@ namespace Greatbone.Core
         }
 
     }
-    
+
 }

@@ -10,7 +10,7 @@ namespace Greatbone.Core
     {
         const int Initialcapacity = 16 * 1024;
 
-        public JxContent(int capacity = Initialcapacity) : base(true, capacity)
+        public JxContent(bool pooled, int capacity = Initialcapacity) : base(true, pooled, capacity)
         {
         }
 

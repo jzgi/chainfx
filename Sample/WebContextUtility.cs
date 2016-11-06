@@ -20,7 +20,7 @@ namespace Greatbone.Sample
 
         public static void SendMajorLayout(this WebContext wc, int status, string header, Action<HtmlContent> main, bool? pub = null, int maxage = 60000)
         {
-            HtmlContent cont = new HtmlContent(true, 8 * 1024)
+            HtmlContent cont = new HtmlContent(true, true, 8 * 1024)
             {
                 Map = Map
             };
@@ -63,7 +63,7 @@ namespace Greatbone.Sample
 
         public static void SendDialogLayout(this WebContext wc, int status, Action<HtmlContent> main, bool? pub = null, int maxage = 60000)
         {
-            HtmlContent cont = new HtmlContent(true, 8 * 1024)
+            HtmlContent cont = new HtmlContent(true, true, 8 * 1024)
             {
                 Map = Map
             };

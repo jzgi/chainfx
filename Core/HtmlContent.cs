@@ -21,7 +21,7 @@ namespace Greatbone.Core
         sbyte ctx;
 
 
-        public HtmlContent(bool binary, int capacity = InitialCapacity) : base(binary, capacity)
+        public HtmlContent(bool raw, bool pooled, int capacity = InitialCapacity) : base(raw, pooled, capacity)
         {
         }
 

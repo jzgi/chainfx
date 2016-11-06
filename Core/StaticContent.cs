@@ -1526,21 +1526,29 @@ namespace Greatbone.Core
             return Types.TryGetValue(ext, out ctype);
         }
 
+        int size;
+
         public string Key { get; internal set; }
 
         public string Type { get; set; }
 
-        public byte[] ByteBuffer { get; internal set; }
+        public byte[] ByteBuffer { get; set; }
 
         public char[] CharBuffer => null;
 
-        public int Length => ByteBuffer.Length;
+        public int Size
+        {
+            get { return (size != 0) ? size : ByteBuffer.Length; }
+            set { size = value; }
+        }
 
-        public DateTime LastModified { get; internal set; }
+        public DateTime? Modified { get; set; } = null;
 
-        public long ETag => 0;
+        public ulong ETag => 0;
 
-        public bool IsBinary => true;
+        public bool IsRaw => true;
+
+        public bool IsPooled { get; set; }
 
     }
 

@@ -16,7 +16,7 @@ namespace Greatbone.Core
         // current level
         int level;
 
-        public XmlContent(bool bin, int capacity = InitialCapacity) : base(bin, capacity)
+        public XmlContent(bool raw, bool pooled, int capacity = InitialCapacity) : base(raw, pooled, capacity)
         {
             counts = new int[8];
             level = 0;

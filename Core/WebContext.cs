@@ -12,7 +12,7 @@ namespace Greatbone.Core
     /// The encapsulation of a web request/response exchange context.
     /// </summary>
     ///
-    public class WebContext : DefaultHttpContext, ISource, IDisposable
+    public class WebContext : DefaultHttpContext, ISource, IPooling, IDisposable
     {
 
         internal WebContext(IFeatureCollection features) : base(features)
@@ -38,7 +38,7 @@ namespace Greatbone.Core
         public bool IsPostMethod => "POST".Equals(Request.Method);
 
         // received request body
-        byte[] buffer;
+        byte[] bytebuf;
 
         // number of received bytes
         int count;
@@ -53,29 +53,31 @@ namespace Greatbone.Core
             if (clen > 0)
             {
                 int len = (int)clen;
-                buffer = ByteBufferPool.Borrow(len);
-                count = await req.Body.ReadAsync(buffer, 0, len);
+                bytebuf = BufferUtility.GetByteBuffer(len);
+                count = await req.Body.ReadAsync(bytebuf, 0, len);
             }
         }
+
+        public bool IsPooled => bytebuf != null;
 
         void Parse()
         {
             if (entity != null) return;
 
-            if (buffer == null) ReadAsync();
+            if (bytebuf == null) ReadAsync();
 
-            if (buffer != null)
+            if (bytebuf != null)
             {
                 string ctyp = Request.ContentType;
                 if ("application/x-www-form-urlencoded".Equals(ctyp))
                 {
-                    FormParse par = new FormParse(buffer, count);
+                    FormParse par = new FormParse(bytebuf, count);
                     entity = par.Parse();
                 }
                 else
                 {
                     bool jx = "application/jsonx".Equals(ctyp); // json extention
-                    JParse par = new JParse(buffer, count, jx);
+                    JParse par = new JParse(bytebuf, count, jx);
                     entity = par.Parse();
                 }
             }
@@ -83,11 +85,11 @@ namespace Greatbone.Core
 
         public ArraySegment<byte>? ReadBytesSeg()
         {
-            if (buffer == null) ReadAsync();
+            if (bytebuf == null) ReadAsync();
 
-            if (buffer == null) return null;
+            if (bytebuf == null) return null;
 
-            return new ArraySegment<byte>(buffer, 0, count);
+            return new ArraySegment<byte>(bytebuf, 0, count);
         }
 
         public Form ReadForm()
@@ -503,7 +505,11 @@ namespace Greatbone.Core
         public void SendText(int status, string text, bool? pub = null, int maxage = 60000)
         {
             StatusCode = status;
-            Content = new TextContent(text);
+            Content = new PlainContent(true, true)
+            {
+                Text = text
+            };
+
             Pub = pub;
             MaxAge = maxage;
         }
@@ -520,7 +526,7 @@ namespace Greatbone.Core
 
         public void SendJ(int status, Action<JContent> a, bool? pub = null, int maxage = 60000)
         {
-            JContent cont = new JContent(true, 8 * 1024);
+            JContent cont = new JContent(true, true, 4 * 1024);
             a?.Invoke(cont);
             Send(status, cont, pub, maxage);
         }
@@ -539,23 +545,25 @@ namespace Greatbone.Core
             if (Content != null)
             {
                 HttpResponse r = Response;
-                r.ContentLength = Content.Length;
+                r.ContentLength = Content.Size;
                 r.ContentType = Content.Type;
 
                 // cache indicators
                 if (Content is DynamicContent) // set etag
                 {
-                    ulong v = ((DynamicContent)Content).ETag;
-                    SetHeader("ETag", StrUtility.ToHex(v));
+                    ulong etag = ((DynamicContent)Content).ETag;
+                    SetHeader("ETag", StrUtility.ToHex(etag));
                 }
-                else // set last-modified
+
+                // set last-modified
+                DateTime? last = ((StaticContent)Content).Modified;
+                if (last != null)
                 {
-                    DateTime v = ((StaticContent)Content).LastModified;
-                    SetHeader("Last-Modified", StrUtility.FormatUtcDate(v));
+                    SetHeader("Last-Modified", StrUtility.FormatUtcDate(last.Value));
                 }
 
                 // send async
-                await r.Body.WriteAsync(Content.ByteBuffer, 0, Content.Length);
+                await r.Body.WriteAsync(Content.ByteBuffer, 0, Content.Size);
             }
         }
 
@@ -579,8 +587,10 @@ namespace Greatbone.Core
             WebClient cli = Control.Service.FindClient(service, part);
             if (cli != null)
             {
-                JContent jcon = new JContent(true, 8 * 1024);
-                a?.Invoke(jcon);
+                JContent cont = new JContent(true, true, 8 * 1024);
+                a?.Invoke(cont);
+                BufferUtility.Return(cont);
+
             }
         }
 
@@ -588,15 +598,15 @@ namespace Greatbone.Core
         public void Dispose()
         {
             // return request content buffer
-            if (buffer != null)
+            if (IsPooled)
             {
-                ByteBufferPool.Return(buffer);
+                BufferUtility.Return(bytebuf);
             }
 
             // return response content buffer
-            if (Content is DynamicContent)
+            if (Content.IsPooled)
             {
-                ByteBufferPool.Return(Content.ByteBuffer);
+                BufferUtility.Return(Content.ByteBuffer);
             }
         }
 

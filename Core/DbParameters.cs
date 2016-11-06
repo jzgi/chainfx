@@ -197,13 +197,14 @@ namespace Greatbone.Core
             }
             else
             {
-                JContent txt = new JContent(false);
-                txt.PutObj(v, z);
-                string str = txt.ToString();
+                JContent cont = new JContent(false, true, 1024);
+                cont.PutObj(v, z);
+                string str = cont.ToString();
                 coll.Add(new NpgsqlParameter(name, NpgsqlDbType.Jsonb)
                 {
                     Value = str
                 });
+                BufferUtility.Return(cont);
             }
             return this;
         }
@@ -223,10 +224,11 @@ namespace Greatbone.Core
             }
             else
             {
-                JContent txt = new JContent(false);
-                v.Dump(txt);
-                string str = txt.ToString();
+                JContent cont = new JContent(false, true, 1024);
+                v.Dump(cont);
+                string str = cont.ToString();
                 coll.Add(new NpgsqlParameter(name, NpgsqlDbType.Jsonb) { Value = str });
+                BufferUtility.Return(cont);
             }
             return this;
         }
@@ -246,10 +248,11 @@ namespace Greatbone.Core
             }
             else
             {
-                JContent txt = new JContent(false);
-                v.Dump(txt);
-                string str = txt.ToString();
+                JContent cont = new JContent(false, true, 1024);
+                v.Dump(cont);
+                string str = cont.ToString();
                 coll.Add(new NpgsqlParameter(name, NpgsqlDbType.Jsonb) { Value = str });
+                BufferUtility.Return(cont);
             }
             return this;
         }
@@ -321,13 +324,14 @@ namespace Greatbone.Core
             }
             else
             {
-                JContent txt = new JContent(false);
-                txt.PutArr(v, z);
-                string strv = txt.ToString();
+                JContent cont = new JContent(false, true, 1024);
+                cont.PutArr(v, z);
+                string strv = cont.ToString();
                 coll.Add(new NpgsqlParameter(name, NpgsqlDbType.Jsonb)
                 {
                     Value = strv
                 });
+                BufferUtility.Return(cont);
             }
             return this;
         }

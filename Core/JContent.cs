@@ -8,7 +8,7 @@ namespace Greatbone.Core
     /// </summary>
     public class JContent : DynamicContent, ISink<JContent>
     {
-        const int InitialCapacity = 16 * 1024;
+        const int InitialCapacity = 4 * 1024;
 
         // starting positions of each level
         readonly int[] counts;
@@ -16,7 +16,7 @@ namespace Greatbone.Core
         // current level
         int level;
 
-        public JContent(bool binary, int capacity = InitialCapacity) : base(binary, capacity)
+        public JContent(bool raw, bool pooled, int capacity = InitialCapacity) : base(raw, pooled, capacity)
         {
             counts = new int[8];
             level = 0;

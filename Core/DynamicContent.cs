@@ -76,9 +76,13 @@ namespace Greatbone.Core
             1000000000000000000L
         };
 
-        readonly bool binary;
+        readonly bool raw;
+
+        readonly bool pooled;
 
         protected byte[] bytebuf; // NOTE: HttpResponseStream doesn't have internal buffer
+
+        protected char[] charbuf;
 
         // number of bytes or chars
         protected int count;
@@ -86,33 +90,34 @@ namespace Greatbone.Core
         // byte-wise etag checksum, for text-based output only
         protected ulong checksum;
 
-        protected char[] charbuf;
-
-        bool pooled;
-
-        protected DynamicContent(bool binary, int capacity)
+        protected DynamicContent(bool raw, bool pooled, int capacity)
         {
-            this.binary = binary;
-            if (binary)
+            this.raw = raw;
+            this.pooled = pooled;
+            if (raw)
             {
-                bytebuf = ByteBufferPool.Borrow(capacity);
+                bytebuf = pooled ? BufferUtility.GetByteBuffer(capacity) : new byte[capacity];
             }
             else
-                charbuf = new char[capacity];
+            {
+                charbuf = pooled ? BufferUtility.GetCharBuffer(capacity) : new char[capacity];
+            }
             this.count = 0;
         }
 
         public abstract string Type { get; }
 
-        public bool IsBinary => binary;
+        public bool IsRaw => raw;
 
         public byte[] ByteBuffer => bytebuf;
 
         public char[] CharBuffer => charbuf;
 
-        public int Length => count;
+        public int Size => count;
 
-        public DateTime LastModified => default(DateTime);
+        public DateTime? Modified { get; set; } = null;
+
+        public bool IsPooled => pooled;
 
         public ulong ETag => checksum;
 
@@ -120,14 +125,15 @@ namespace Greatbone.Core
         void Write(byte b)
         {
             // ensure capacity
-            int olen = bytebuf.Length;
+            int olen = bytebuf.Length; // old length
             if (count >= olen)
             {
-                byte[] alloc = new byte[olen * 4];
-                Array.Copy(bytebuf, 0, alloc, 0, olen);
-                bytebuf = alloc;
+                int nlen = olen * 4; // new length
+                byte[] obuf = bytebuf;
+                bytebuf = pooled ? BufferUtility.GetByteBuffer(nlen) : new byte[nlen];
+                Array.Copy(obuf, 0, bytebuf, 0, olen);
+                if (pooled) BufferUtility.Return(obuf);
             }
-            // append
             bytebuf[count++] = b;
 
             // calculate checksum
@@ -138,7 +144,7 @@ namespace Greatbone.Core
 
         public void Add(char c)
         {
-            if (binary)
+            if (raw) // byte-oriented
             {
                 // UTF-8 encoding but without surrogate support
                 if (c < 0x80)
@@ -160,17 +166,18 @@ namespace Greatbone.Core
                     Write((byte)(0x80 | (c & 0x3f)));
                 }
             }
-            else
+            else // char-oriented
             {
                 // ensure capacity
-                int olen = charbuf.Length;
+                int olen = charbuf.Length; // old length
                 if (count >= olen)
                 {
-                    char[] alloc = new char[olen * 4];
-                    Array.Copy(charbuf, 0, alloc, 0, olen);
-                    charbuf = alloc;
+                    int nlen = olen * 4; // new length
+                    char[] obuf = charbuf;
+                    charbuf = pooled ? BufferUtility.GetCharBuffer(nlen) : new char[nlen];
+                    Array.Copy(obuf, 0, charbuf, 0, olen);
+                    if (pooled) BufferUtility.Return(obuf);
                 }
-                // append
                 charbuf[count++] = c;
             }
         }
@@ -326,7 +333,7 @@ namespace Greatbone.Core
                 Add(v.fract);
             }
         }
-        
+
         // sign mask
         private const int Sign = unchecked((int)0x80000000);
 
