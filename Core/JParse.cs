@@ -82,7 +82,7 @@ namespace Greatbone.Core
                     if (p >= count - 1) throw FormatEx;
                     int b = this[++p];
                     if (b == '"') break; // meet second quote
-                    else str.AddChar((char)b);
+                    else str.Add((char)b);
                 }
 
                 for (;;) // till a colon
@@ -234,7 +234,7 @@ namespace Greatbone.Core
                 int b = this[++p];
                 if (esc)
                 {
-                    str.AddChar(b == '"' ? '"' : b == '\\' ? '\\' : b == 'b' ? '\b' : b == 'f' ? '\f' : b == 'n' ? '\n' : b == 'r' ? '\r' : b == 't' ? '\t' : (char)0);
+                    str.Add(b == '"' ? '"' : b == '\\' ? '\\' : b == 'b' ? '\b' : b == 'f' ? '\f' : b == 'n' ? '\n' : b == 'r' ? '\r' : b == 't' ? '\t' : (char)0);
                     esc = !esc;
                 }
                 else

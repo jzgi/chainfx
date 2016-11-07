@@ -27,7 +27,7 @@ namespace Greatbone.Core
             {
                 if (b < 0x80)
                 {
-                    AddChar((char)b); // single byte 
+                    Add((char)b); // single byte 
                 }
                 else if (b >= 0xc0 && b < 0xe0)
                 {
@@ -44,7 +44,7 @@ namespace Greatbone.Core
             {
                 sum |= (b & 0x3f);
                 rest--;
-                AddChar((char)sum);
+                Add((char)sum);
             }
             else if (rest == 2)
             {

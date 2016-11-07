@@ -33,27 +33,27 @@ namespace Greatbone.Core
                     char c = v[i];
                     if (c == '\"')
                     {
-                        AddChar('\\'); AddChar('"');
+                        Add('\\'); Add('"');
                     }
                     else if (c == '\\')
                     {
-                        AddChar('\\'); AddChar('\\');
+                        Add('\\'); Add('\\');
                     }
                     else if (c == '\n')
                     {
-                        AddChar('\\'); AddChar('n');
+                        Add('\\'); Add('n');
                     }
                     else if (c == '\r')
                     {
-                        AddChar('\\'); AddChar('r');
+                        Add('\\'); Add('r');
                     }
                     else if (c == '\t')
                     {
-                        AddChar('\\'); AddChar('t');
+                        Add('\\'); Add('t');
                     }
                     else
                     {
-                        AddChar(c);
+                        Add(c);
                     }
                 }
             }
@@ -65,14 +65,14 @@ namespace Greatbone.Core
 
         public void PutArr(Action a)
         {
-            if (counts[level]++ > 0) AddChar(',');
+            if (counts[level]++ > 0) Add(',');
 
             counts[++level] = 0; // enter
-            AddChar('[');
+            Add('[');
 
             if (a != null) a();
 
-            AddChar(']');
+            Add(']');
             level--; // exit
         }
 
@@ -83,14 +83,14 @@ namespace Greatbone.Core
 
         public void PutObj(Action a)
         {
-            if (counts[level]++ > 0) AddChar(',');
+            if (counts[level]++ > 0) Add(',');
 
             counts[++level] = 0; // enter
-            AddChar('{');
+            Add('{');
 
             if (a != null) a();
 
-            AddChar('}');
+            Add('}');
             level--; // exit
         }
 
@@ -106,14 +106,14 @@ namespace Greatbone.Core
 
         public JContent PutNull(string name)
         {
-            if (counts[level]++ > 0) AddChar(',');
+            if (counts[level]++ > 0) Add(',');
 
             if (name != null)
             {
-                AddChar('"');
+                Add('"');
                 Add(name);
-                AddChar('"');
-                AddChar(':');
+                Add('"');
+                Add(':');
             }
 
             Add("null");
@@ -123,14 +123,14 @@ namespace Greatbone.Core
 
         public JContent Put(string name, bool v)
         {
-            if (counts[level]++ > 0) AddChar(',');
+            if (counts[level]++ > 0) Add(',');
 
             if (name != null)
             {
-                AddChar('"');
+                Add('"');
                 Add(name);
-                AddChar('"');
-                AddChar(':');
+                Add('"');
+                Add(':');
             }
 
             Add(v ? "true" : "false");
@@ -140,14 +140,14 @@ namespace Greatbone.Core
 
         public JContent Put(string name, short v)
         {
-            if (counts[level]++ > 0) AddChar(',');
+            if (counts[level]++ > 0) Add(',');
 
             if (name != null)
             {
-                AddChar('"');
+                Add('"');
                 Add(name);
-                AddChar('"');
-                AddChar(':');
+                Add('"');
+                Add(':');
             }
 
             Add(v);
@@ -157,14 +157,14 @@ namespace Greatbone.Core
 
         public JContent Put(string name, int v)
         {
-            if (counts[level]++ > 0) AddChar(',');
+            if (counts[level]++ > 0) Add(',');
 
             if (name != null)
             {
-                AddChar('"');
+                Add('"');
                 Add(name);
-                AddChar('"');
-                AddChar(':');
+                Add('"');
+                Add(':');
             }
 
             Add(v);
@@ -174,14 +174,14 @@ namespace Greatbone.Core
 
         public JContent Put(string name, long v)
         {
-            if (counts[level]++ > 0) AddChar(',');
+            if (counts[level]++ > 0) Add(',');
 
             if (name != null)
             {
-                AddChar('"');
+                Add('"');
                 Add(name);
-                AddChar('"');
-                AddChar(':');
+                Add('"');
+                Add(':');
             }
 
             Add(v);
@@ -191,14 +191,14 @@ namespace Greatbone.Core
 
         public JContent Put(string name, decimal v)
         {
-            if (counts[level]++ > 0) AddChar(',');
+            if (counts[level]++ > 0) Add(',');
 
             if (name != null)
             {
-                AddChar('"');
+                Add('"');
                 Add(name);
-                AddChar('"');
-                AddChar(':');
+                Add('"');
+                Add(':');
             }
 
             Add(v);
@@ -208,20 +208,20 @@ namespace Greatbone.Core
 
         public JContent Put(string name, Number v)
         {
-            if (counts[level]++ > 0) AddChar(',');
+            if (counts[level]++ > 0) Add(',');
 
             if (name != null)
             {
-                AddChar('"');
+                Add('"');
                 Add(name);
-                AddChar('"');
-                AddChar(':');
+                Add('"');
+                Add(':');
             }
 
             Add(v.bigint);
             if (v.Pt)
             {
-                AddChar('.');
+                Add('.');
                 Add(v.fract);
             }
             return this;
@@ -229,33 +229,33 @@ namespace Greatbone.Core
 
         public JContent Put(string name, DateTime v)
         {
-            if (counts[level]++ > 0) AddChar(',');
+            if (counts[level]++ > 0) Add(',');
 
             if (name != null)
             {
-                AddChar('"');
+                Add('"');
                 Add(name);
-                AddChar('"');
-                AddChar(':');
+                Add('"');
+                Add(':');
             }
 
-            AddChar('"');
+            Add('"');
             Add(v);
-            AddChar('"');
+            Add('"');
 
             return this;
         }
 
         public JContent Put(string name, char[] v)
         {
-            if (counts[level]++ > 0) AddChar(',');
+            if (counts[level]++ > 0) Add(',');
 
             if (name != null)
             {
-                AddChar('"');
+                Add('"');
                 Add(name);
-                AddChar('"');
-                AddChar(':');
+                Add('"');
+                Add(':');
             }
 
             if (v == null)
@@ -264,9 +264,9 @@ namespace Greatbone.Core
             }
             else
             {
-                AddChar('"');
+                Add('"');
                 Add(v);
-                AddChar('"');
+                Add('"');
             }
 
             return this;
@@ -274,14 +274,14 @@ namespace Greatbone.Core
 
         public JContent Put(string name, string v, int maxlen = 0)
         {
-            if (counts[level]++ > 0) AddChar(',');
+            if (counts[level]++ > 0) Add(',');
 
             if (name != null)
             {
-                AddChar('"');
+                Add('"');
                 Add(name);
-                AddChar('"');
-                AddChar(':');
+                Add('"');
+                Add(':');
             }
 
             if (v == null)
@@ -290,9 +290,9 @@ namespace Greatbone.Core
             }
             else
             {
-                AddChar('"');
+                Add('"');
                 AddEsc(v);
-                AddChar('"');
+                Add('"');
             }
 
             return this;
@@ -310,14 +310,14 @@ namespace Greatbone.Core
 
         public JContent Put<P>(string name, P v, byte z = 0) where P : IPersist
         {
-            if (counts[level]++ > 0) AddChar(',');
+            if (counts[level]++ > 0) Add(',');
 
             if (name != null)
             {
-                AddChar('"');
+                Add('"');
                 Add(name);
-                AddChar('"');
-                AddChar(':');
+                Add('"');
+                Add(':');
             }
 
             if (v == null)
@@ -327,9 +327,9 @@ namespace Greatbone.Core
             else
             {
                 counts[++level] = 0; // enter
-                AddChar('{');
+                Add('{');
                 v.Dump(this, z);
-                AddChar('}');
+                Add('}');
                 level--; // exit
             }
 
@@ -338,14 +338,14 @@ namespace Greatbone.Core
 
         public JContent Put(string name, JObj v)
         {
-            if (counts[level]++ > 0) AddChar(',');
+            if (counts[level]++ > 0) Add(',');
 
             if (name != null)
             {
-                AddChar('"');
+                Add('"');
                 Add(name);
-                AddChar('"');
-                AddChar(':');
+                Add('"');
+                Add(':');
             }
 
             if (v == null)
@@ -355,9 +355,9 @@ namespace Greatbone.Core
             else
             {
                 counts[++level] = 0; // enter
-                AddChar('{');
+                Add('{');
                 v.Dump(this);
-                AddChar('}');
+                Add('}');
                 level--; // exit
             }
 
@@ -366,14 +366,14 @@ namespace Greatbone.Core
 
         public JContent Put(string name, JArr v)
         {
-            if (counts[level]++ > 0) AddChar(',');
+            if (counts[level]++ > 0) Add(',');
 
             if (name != null)
             {
-                AddChar('"');
+                Add('"');
                 Add(name);
-                AddChar('"');
-                AddChar(':');
+                Add('"');
+                Add(':');
             }
 
             if (v == null)
@@ -383,9 +383,9 @@ namespace Greatbone.Core
             else
             {
                 counts[++level] = 0; // enter
-                AddChar('[');
+                Add('[');
                 v.Dump(this);
-                AddChar(']');
+                Add(']');
                 level--; // exit
             }
             return this;
@@ -393,14 +393,14 @@ namespace Greatbone.Core
 
         public JContent Put(string name, short[] v)
         {
-            if (counts[level]++ > 0) AddChar(',');
+            if (counts[level]++ > 0) Add(',');
 
             if (name != null)
             {
-                AddChar('"');
+                Add('"');
                 Add(name);
-                AddChar('"');
-                AddChar(':');
+                Add('"');
+                Add(':');
             }
 
             if (v == null)
@@ -409,13 +409,13 @@ namespace Greatbone.Core
             }
             else
             {
-                AddChar('[');
+                Add('[');
                 for (int i = 0; i < v.Length; i++)
                 {
-                    if (i > 0) AddChar(',');
+                    if (i > 0) Add(',');
                     Add(v[i]);
                 }
-                AddChar(']');
+                Add(']');
             }
 
             return this;
@@ -423,14 +423,14 @@ namespace Greatbone.Core
 
         public JContent Put(string name, int[] v)
         {
-            if (counts[level]++ > 0) AddChar(',');
+            if (counts[level]++ > 0) Add(',');
 
             if (name != null)
             {
-                AddChar('"');
+                Add('"');
                 Add(name);
-                AddChar('"');
-                AddChar(':');
+                Add('"');
+                Add(':');
             }
 
             if (v == null)
@@ -439,13 +439,13 @@ namespace Greatbone.Core
             }
             else
             {
-                AddChar('[');
+                Add('[');
                 for (int i = 0; i < v.Length; i++)
                 {
-                    if (i > 0) AddChar(',');
+                    if (i > 0) Add(',');
                     Add(v[i]);
                 }
-                AddChar(']');
+                Add(']');
             }
 
             return this;
@@ -453,14 +453,14 @@ namespace Greatbone.Core
 
         public JContent Put(string name, long[] v)
         {
-            if (counts[level]++ > 0) AddChar(',');
+            if (counts[level]++ > 0) Add(',');
 
             if (name != null)
             {
-                AddChar('"');
+                Add('"');
                 Add(name);
-                AddChar('"');
-                AddChar(':');
+                Add('"');
+                Add(':');
             }
 
             if (v == null)
@@ -469,13 +469,13 @@ namespace Greatbone.Core
             }
             else
             {
-                AddChar('[');
+                Add('[');
                 for (int i = 0; i < v.Length; i++)
                 {
-                    if (i > 0) AddChar(',');
+                    if (i > 0) Add(',');
                     Add(v[i]);
                 }
-                AddChar(']');
+                Add(']');
             }
 
             return this;
@@ -483,14 +483,14 @@ namespace Greatbone.Core
 
         public JContent Put(string name, string[] v)
         {
-            if (counts[level]++ > 0) AddChar(',');
+            if (counts[level]++ > 0) Add(',');
 
             if (name != null)
             {
-                AddChar('"');
+                Add('"');
                 Add(name);
-                AddChar('"');
-                AddChar(':');
+                Add('"');
+                Add(':');
             }
 
             if (v == null)
@@ -499,10 +499,10 @@ namespace Greatbone.Core
             }
             else
             {
-                AddChar('[');
+                Add('[');
                 for (int i = 0; i < v.Length; i++)
                 {
-                    if (i > 0) AddChar(',');
+                    if (i > 0) Add(',');
                     string str = v[i];
                     if (str == null)
                     {
@@ -510,12 +510,12 @@ namespace Greatbone.Core
                     }
                     else
                     {
-                        AddChar('"');
+                        Add('"');
                         AddEsc(str);
-                        AddChar('"');
+                        Add('"');
                     }
                 }
-                AddChar(']');
+                Add(']');
             }
 
             return this;
@@ -524,14 +524,14 @@ namespace Greatbone.Core
 
         public JContent Put<P>(string name, P[] v, byte z = 0) where P : IPersist
         {
-            if (counts[level]++ > 0) AddChar(',');
+            if (counts[level]++ > 0) Add(',');
 
             if (name != null)
             {
-                AddChar('"');
+                Add('"');
                 Add(name);
-                AddChar('"');
-                AddChar(':');
+                Add('"');
+                Add(':');
             }
 
             if (v == null)
@@ -541,12 +541,12 @@ namespace Greatbone.Core
             else
             {
                 counts[++level] = 0; // enter
-                AddChar('[');
+                Add('[');
                 for (int i = 0; i < v.Length; i++)
                 {
                     Put(null, v[i], z);
                 }
-                AddChar(']');
+                Add(']');
                 level--; // exit
             }
             return this;

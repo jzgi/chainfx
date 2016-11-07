@@ -444,7 +444,7 @@ namespace Greatbone.Core
             }
 
             // return response content buffer
-            if (Content.IsPooled)
+            if (Content != null && Content.IsPooled)
             {
                 BufferUtility.Return(Content.ByteBuffer);
             }

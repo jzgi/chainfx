@@ -73,20 +73,26 @@ namespace Greatbone.Sample
         /// }
         /// </code>
         ///
+        [Check]
         public void @new(WebContext wc, string subscpt)
         {
             IPrincipal tok = wc.Principal;
-            JObj jo = wc.ReadJObj();
-            DateTime time = DateTime.Now;
-            bool commentable = jo[nameof(commentable)];
-            string text = jo[nameof(text)];
+            Post obj = wc.ReadObj<Post>();
+            obj.time = DateTime.Now;
+            obj.authorid = tok.Key;
+            obj.author = tok.Name;
 
             using (var dc = Service.NewDbContext())
             {
-                object id = dc.Scalar("INSERT INTO posts (time, authorid, author, commentable, text) VALUES (@1,@2,@3,@4,@5) RETURNING ID",
-                     p => p.Put(time).Put(tok.Key).Put(tok.Name).Put(commentable).Put(text));
-                wc.SetHeader("Location", id.ToString());
-                wc.StatusCode = 201;
+                DbSql sql = new DbSql("INSERT INTO posts")._(Post.Empty)._VALUES_(Post.Empty)._(" RETURNING ID");
+                object id = dc.Scalar(sql.ToString(), p => obj.Dump(p));
+                if (id != null)
+                {
+                    wc.SetHeader("Location", id.ToString());
+                    wc.StatusCode = 201;
+                }
+                else
+                    wc.StatusCode = 300;
             }
         }
 
