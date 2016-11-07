@@ -8,7 +8,7 @@ namespace Greatbone.Core
     ///
     /// remote service call
     ///
-    class WebClient : IKeyed
+    public class WebClient : IKeyed
     {
         readonly WebService service;
 
@@ -81,16 +81,27 @@ namespace Greatbone.Core
             return par.Parse();
         }
 
-        public async Task<object> PostAsync(string uri, object content)
+        public async Task<HttpResponseMessage> PostXmlAsync(string uri, Action<XmlContent> content)
         {
-            HttpRequestMessage msg = new HttpRequestMessage();
-            HttpResponseMessage response = await client.SendAsync(msg, HttpCompletionOption.ResponseContentRead);
-            response.Headers.GetValues("lastid");
+            XmlContent cont = new XmlContent(true, true);
+            content?.Invoke(cont);
+            HttpRequestMessage req = new HttpRequestMessage(HttpMethod.Post, uri)
+            {
+                Content = new WebCall(cont)
+            };
 
-            byte[] bytes = await response.Content.ReadAsByteArrayAsync();
+            return await client.SendAsync(req, HttpCompletionOption.ResponseContentRead);
+        }
 
-            JParse par = new JParse(bytes, bytes.Length);
-            return par.Parse();
+        public async Task<HttpResponseMessage> PostJAsync(string uri, Action<JContent> content)
+        {
+            JContent cont = new JContent(true, true);
+            content?.Invoke(cont);
+            HttpRequestMessage req = new HttpRequestMessage(HttpMethod.Post, uri)
+            {
+                Content = new WebCall(cont)
+            };
+            return await client.SendAsync(req, HttpCompletionOption.ResponseContentRead);
         }
 
         public Element GetElemAsync(string uri)

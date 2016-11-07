@@ -1,32 +1,42 @@
-using System;
+﻿using System.IO;
+using System.Net;
 using System.Net.Http;
-using System.Net.Http.Headers;
+using System.Threading.Tasks;
 
 namespace Greatbone.Core
-
 {
-    public class WebCall
+    ///
+    /// Web client request/response content wrapper.
+    ///
+    public class WebCall : HttpContent
     {
 
-        // request
         HttpRequestMessage request;
 
-        HttpContent reqcon;
-
-        Uri uri;
-
-        HttpMethod method;
-
-
-        // Get Post,  uri,  
-
-
-        // response
         HttpResponseMessage response;
 
-        HttpContent con;
+        IContent content;
 
-        HttpResponseHeaders readers;
+        public WebCall(IContent content)
+        {
+            this.content = content;
+        }
 
+        protected override Task SerializeToStreamAsync(Stream stream, TransportContext context)
+        {
+            return stream.WriteAsync(content.ByteBuffer, 0, content.Size);
+        }
+
+        protected override bool TryComputeLength(out long length)
+        {
+            length = content.Size;
+            return true;
+        }
+
+        protected override Task<Stream> CreateContentReadStreamAsync()
+        {
+            return Task.FromResult<Stream>((Stream)content);
+        }
     }
+
 }
