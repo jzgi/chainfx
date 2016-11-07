@@ -283,7 +283,7 @@ namespace Greatbone.Core
                 int b = (byte)(Dv(tokstr[p++]) << 4 | Dv(tokstr[p++]));
 
                 // masking
-                str.Add((byte)(b ^ masks[i % 4]));
+                str.Accept((byte)(b ^ masks[i % 4]));
             }
             return str.ToString();
         }

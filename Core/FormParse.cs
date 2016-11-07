@@ -3,7 +3,7 @@ namespace Greatbone.Core
 
     ///
     /// <summary>
-    /// To parse application/x-www-form-urlencoded octets.
+    /// To parse application/x-www-form-urlencoded octets or a character string.
     /// </summary>
     ///
     public struct FormParse
@@ -11,6 +11,8 @@ namespace Greatbone.Core
         static readonly ParseException FormatEx = new ParseException("wrong form Format");
 
         readonly byte[] bytebuf;
+
+        readonly string strbuf;
 
         readonly int count;
 
@@ -20,24 +22,34 @@ namespace Greatbone.Core
         public FormParse(byte[] bytebuf, int count)
         {
             this.bytebuf = bytebuf;
+            this.strbuf = null;
             this.count = count;
             this.str = new Str(256);
         }
 
+        public FormParse(string strbuf)
+        {
+            this.bytebuf = null;
+            this.strbuf = strbuf;
+            this.count = strbuf.Length;
+            this.str = new Str(256);
+        }
+
+        int this[int index] => (bytebuf != null) ? bytebuf[index] : (int)strbuf[index];
+
         public Form Parse()
         {
+            if (string.IsNullOrEmpty(strbuf)) return null;
+
             Form frm = new Form();
-            int p = -1;
+            int p = (this[0] == '?') ? 1 : 0;
             for (;;)
             {
-                if (p >= count)
-                {
-                    return frm;
-                }
+                if (p >= count) return frm;
+
                 // name value
                 string name = ParseName(ref p);
                 string value = ParseValue(ref p);
-
                 frm.Add(name, value);
             }
         }
@@ -48,8 +60,11 @@ namespace Greatbone.Core
             int p = pos;
             for (;;)
             {
-                byte b = bytebuf[++p];
-                if (p >= count) throw FormatEx;
+                int b = this[p++];
+                if (p >= count)
+                {
+                    return null;
+                }
                 if (b == '=')
                 {
                     pos = p;
@@ -57,7 +72,7 @@ namespace Greatbone.Core
                 }
                 else
                 {
-                    str.Add(b);
+                    str.Accept(b);
                 }
             }
         }
@@ -68,34 +83,39 @@ namespace Greatbone.Core
             int p = pos;
             for (;;)
             {
-                byte b = bytebuf[++p];
-                if (p >= count || b == '&')
+                if (p >= count)
+                {
+                    pos = p;
+                    return str.ToString();
+                }
+                int b = this[p++];
+                if (b == '&')
                 {
                     pos = p;
                     return str.ToString();
                 }
                 else if (b == '+')
                 {
-                    str.Add((byte)' ');
+                    str.Accept(' ');
                 }
                 else if (b == '%') // percent-encoding %xy
                 {
-                    char x = (char)bytebuf[++p];
                     if (p >= count) throw FormatEx;
-                    char y = (char)bytebuf[++p];
+                    int x = this[p++];
                     if (p >= count) throw FormatEx;
+                    int y = this[p++];
 
-                    str.Add((byte)(Dv(x) << 4 | Dv(y)));
+                    str.Accept(Dv(x) << 4 | Dv(y));
                 }
                 else
                 {
-                    str.Add(b);
+                    str.Accept(b);
                 }
             }
         }
 
         // return digit value
-        static int Dv(char h)
+        static int Dv(int h)
         {
             int v = h - '0';
             if (v >= 0 && v <= 9)
@@ -104,11 +124,12 @@ namespace Greatbone.Core
             }
             else
             {
-                v = h - 'a';
+                v = h - 'A';
                 if (v >= 0 && v <= 5) return 10 + v;
             }
             return 0;
         }
 
     }
+
 }

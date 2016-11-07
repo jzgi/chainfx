@@ -40,7 +40,7 @@ namespace Greatbone.Core
 
         public DbSql _(string str)
         {
-            Add(' ');
+            AddChar(' ');
             Add(str);
 
             return this;
@@ -206,7 +206,7 @@ namespace Greatbone.Core
             }
             else
             {
-                Add('\''); Add(v); Add('\'');
+                AddChar('\''); Add(v); AddChar('\'');
             }
             return this;
         }
@@ -219,7 +219,7 @@ namespace Greatbone.Core
             }
             else
             {
-                Add('\''); Add(v); Add('\'');
+                AddChar('\''); Add(v); AddChar('\'');
             }
             return this;
         }
@@ -269,9 +269,9 @@ namespace Greatbone.Core
                 }
                 else
                 {
-                    Add('\'');
+                    AddChar('\'');
                     v.Dump(this);
-                    Add('\'');
+                    AddChar('\'');
                 }
             }
             return this;
@@ -291,9 +291,9 @@ namespace Greatbone.Core
                 }
                 else
                 {
-                    Add('\'');
+                    AddChar('\'');
                     v.Dump(this);
-                    Add('\'');
+                    AddChar('\'');
                 }
             }
             return this;
@@ -316,10 +316,10 @@ namespace Greatbone.Core
                     Add("ARRAY[");
                     for (int i = 0; i < v.Length; i++)
                     {
-                        if (i > 0) Add(',');
+                        if (i > 0) AddChar(',');
                         Add(v[i]);
                     }
-                    Add(']');
+                    AddChar(']');
                     if (v.Length == 0)
                     {
                         Add("::smallint[]");
@@ -346,10 +346,10 @@ namespace Greatbone.Core
                     Add("ARRAY[");
                     for (int i = 0; i < v.Length; i++)
                     {
-                        if (i > 0) Add(',');
+                        if (i > 0) AddChar(',');
                         Add(v[i]);
                     }
-                    Add(']');
+                    AddChar(']');
                     if (v.Length == 0)
                     {
                         Add("::integer[]");
@@ -376,12 +376,12 @@ namespace Greatbone.Core
                     Add("ARRAY[");
                     for (int i = 0; i < v.Length; i++)
                     {
-                        if (i > 0) Add(',');
-                        Add('\'');
+                        if (i > 0) AddChar(',');
+                        AddChar('\'');
                         Add(v[i]);
-                        Add('\'');
+                        AddChar('\'');
                     }
-                    Add(']');
+                    AddChar(']');
                     if (v.Length == 0)
                     {
                         Add("::varchar[]");
@@ -408,10 +408,10 @@ namespace Greatbone.Core
                     Add("ARRAY[");
                     for (int i = 0; i < v.Length; i++)
                     {
-                        if (i > 0) Add(',');
+                        if (i > 0) AddChar(',');
                         Add(v[i]);
                     }
-                    Add(']');
+                    AddChar(']');
                     if (v.Length == 0)
                     {
                         Add("::bigint[]");
@@ -431,6 +431,11 @@ namespace Greatbone.Core
         {
             Build(name);
             return this;
+        }
+
+        public override string ToString()
+        {
+            return new string(charbuf, 0, count);
         }
 
     }

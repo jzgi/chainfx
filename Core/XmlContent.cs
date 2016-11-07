@@ -34,27 +34,27 @@ namespace Greatbone.Core
                     char c = v[i];
                     if (c == '\"')
                     {
-                        Add('\\'); Add('"');
+                        AddChar('\\'); AddChar('"');
                     }
                     else if (c == '\\')
                     {
-                        Add('\\'); Add('\\');
+                        AddChar('\\'); AddChar('\\');
                     }
                     else if (c == '\n')
                     {
-                        Add('\\'); Add('n');
+                        AddChar('\\'); AddChar('n');
                     }
                     else if (c == '\r')
                     {
-                        Add('\\'); Add('r');
+                        AddChar('\\'); AddChar('r');
                     }
                     else if (c == '\t')
                     {
-                        Add('\\'); Add('t');
+                        AddChar('\\'); AddChar('t');
                     }
                     else
                     {
-                        Add(c);
+                        AddChar(c);
                     }
                 }
             }
@@ -66,14 +66,14 @@ namespace Greatbone.Core
 
         public void PutArr(Action a)
         {
-            if (counts[level]++ > 0) Add(',');
+            if (counts[level]++ > 0) AddChar(',');
 
             counts[++level] = 0; // enter
-            Add('[');
+            AddChar('[');
 
             if (a != null) a();
 
-            Add(']');
+            AddChar(']');
             level--; // exit
         }
 
@@ -84,14 +84,14 @@ namespace Greatbone.Core
 
         public void PutObj(Action a)
         {
-            if (counts[level]++ > 0) Add(',');
+            if (counts[level]++ > 0) AddChar(',');
 
             counts[++level] = 0; // enter
-            Add('{');
+            AddChar('{');
 
             if (a != null) a();
 
-            Add('}');
+            AddChar('}');
             level--; // exit
         }
 
@@ -107,14 +107,14 @@ namespace Greatbone.Core
 
         public XmlContent PutNull(string name)
         {
-            if (counts[level]++ > 0) Add(',');
+            if (counts[level]++ > 0) AddChar(',');
 
             if (name != null)
             {
-                Add('"');
+                AddChar('"');
                 Add(name);
-                Add('"');
-                Add(':');
+                AddChar('"');
+                AddChar(':');
             }
 
             Add("null");
@@ -124,14 +124,14 @@ namespace Greatbone.Core
 
         public XmlContent Put(string name, bool v)
         {
-            if (counts[level]++ > 0) Add(',');
+            if (counts[level]++ > 0) AddChar(',');
 
             if (name != null)
             {
-                Add('"');
+                AddChar('"');
                 Add(name);
-                Add('"');
-                Add(':');
+                AddChar('"');
+                AddChar(':');
             }
 
             Add(v ? "true" : "false");
@@ -141,14 +141,14 @@ namespace Greatbone.Core
 
         public XmlContent Put(string name, short v)
         {
-            if (counts[level]++ > 0) Add(',');
+            if (counts[level]++ > 0) AddChar(',');
 
             if (name != null)
             {
-                Add('"');
+                AddChar('"');
                 Add(name);
-                Add('"');
-                Add(':');
+                AddChar('"');
+                AddChar(':');
             }
 
             Add(v);
@@ -158,14 +158,14 @@ namespace Greatbone.Core
 
         public XmlContent Put(string name, int v)
         {
-            if (counts[level]++ > 0) Add(',');
+            if (counts[level]++ > 0) AddChar(',');
 
             if (name != null)
             {
-                Add('"');
+                AddChar('"');
                 Add(name);
-                Add('"');
-                Add(':');
+                AddChar('"');
+                AddChar(':');
             }
 
             Add(v);
@@ -175,14 +175,14 @@ namespace Greatbone.Core
 
         public XmlContent Put(string name, long v)
         {
-            if (counts[level]++ > 0) Add(',');
+            if (counts[level]++ > 0) AddChar(',');
 
             if (name != null)
             {
-                Add('"');
+                AddChar('"');
                 Add(name);
-                Add('"');
-                Add(':');
+                AddChar('"');
+                AddChar(':');
             }
 
             Add(v);
@@ -192,14 +192,14 @@ namespace Greatbone.Core
 
         public XmlContent Put(string name, decimal v)
         {
-            if (counts[level]++ > 0) Add(',');
+            if (counts[level]++ > 0) AddChar(',');
 
             if (name != null)
             {
-                Add('"');
+                AddChar('"');
                 Add(name);
-                Add('"');
-                Add(':');
+                AddChar('"');
+                AddChar(':');
             }
 
             Add(v);
@@ -209,20 +209,20 @@ namespace Greatbone.Core
 
         public XmlContent Put(string name, Number v)
         {
-            if (counts[level]++ > 0) Add(',');
+            if (counts[level]++ > 0) AddChar(',');
 
             if (name != null)
             {
-                Add('"');
+                AddChar('"');
                 Add(name);
-                Add('"');
-                Add(':');
+                AddChar('"');
+                AddChar(':');
             }
 
             Add(v.bigint);
             if (v.Pt)
             {
-                Add('.');
+                AddChar('.');
                 Add(v.fract);
             }
             return this;
@@ -230,33 +230,33 @@ namespace Greatbone.Core
 
         public XmlContent Put(string name, DateTime v)
         {
-            if (counts[level]++ > 0) Add(',');
+            if (counts[level]++ > 0) AddChar(',');
 
             if (name != null)
             {
-                Add('"');
+                AddChar('"');
                 Add(name);
-                Add('"');
-                Add(':');
+                AddChar('"');
+                AddChar(':');
             }
 
-            Add('"');
+            AddChar('"');
             Add(v);
-            Add('"');
+            AddChar('"');
 
             return this;
         }
 
         public XmlContent Put(string name, char[] v)
         {
-            if (counts[level]++ > 0) Add(',');
+            if (counts[level]++ > 0) AddChar(',');
 
             if (name != null)
             {
-                Add('"');
+                AddChar('"');
                 Add(name);
-                Add('"');
-                Add(':');
+                AddChar('"');
+                AddChar(':');
             }
 
             if (v == null)
@@ -265,9 +265,9 @@ namespace Greatbone.Core
             }
             else
             {
-                Add('"');
+                AddChar('"');
                 Add(v);
-                Add('"');
+                AddChar('"');
             }
 
             return this;
@@ -275,14 +275,14 @@ namespace Greatbone.Core
 
         public XmlContent Put(string name, string v, int maxlen = 0)
         {
-            if (counts[level]++ > 0) Add(',');
+            if (counts[level]++ > 0) AddChar(',');
 
             if (name != null)
             {
-                Add('"');
+                AddChar('"');
                 Add(name);
-                Add('"');
-                Add(':');
+                AddChar('"');
+                AddChar(':');
             }
 
             if (v == null)
@@ -291,9 +291,9 @@ namespace Greatbone.Core
             }
             else
             {
-                Add('"');
+                AddChar('"');
                 AddEsc(v);
-                Add('"');
+                AddChar('"');
             }
 
             return this;
@@ -311,14 +311,14 @@ namespace Greatbone.Core
 
         public XmlContent Put<P>(string name, P v, byte z = 0) where P : IPersist
         {
-            if (counts[level]++ > 0) Add(',');
+            if (counts[level]++ > 0) AddChar(',');
 
             if (name != null)
             {
-                Add('"');
+                AddChar('"');
                 Add(name);
-                Add('"');
-                Add(':');
+                AddChar('"');
+                AddChar(':');
             }
 
             if (v == null)
@@ -328,9 +328,9 @@ namespace Greatbone.Core
             else
             {
                 counts[++level] = 0; // enter
-                Add('{');
+                AddChar('{');
                 v.Dump(this, z);
-                Add('}');
+                AddChar('}');
                 level--; // exit
             }
 
@@ -339,14 +339,14 @@ namespace Greatbone.Core
 
         public XmlContent Put(string name, JObj v)
         {
-            if (counts[level]++ > 0) Add(',');
+            if (counts[level]++ > 0) AddChar(',');
 
             if (name != null)
             {
-                Add('"');
+                AddChar('"');
                 Add(name);
-                Add('"');
-                Add(':');
+                AddChar('"');
+                AddChar(':');
             }
 
             if (v == null)
@@ -356,9 +356,9 @@ namespace Greatbone.Core
             else
             {
                 counts[++level] = 0; // enter
-                Add('{');
+                AddChar('{');
                 v.Dump(this);
-                Add('}');
+                AddChar('}');
                 level--; // exit
             }
 
@@ -367,14 +367,14 @@ namespace Greatbone.Core
 
         public XmlContent Put(string name, JArr v)
         {
-            if (counts[level]++ > 0) Add(',');
+            if (counts[level]++ > 0) AddChar(',');
 
             if (name != null)
             {
-                Add('"');
+                AddChar('"');
                 Add(name);
-                Add('"');
-                Add(':');
+                AddChar('"');
+                AddChar(':');
             }
 
             if (v == null)
@@ -384,9 +384,9 @@ namespace Greatbone.Core
             else
             {
                 counts[++level] = 0; // enter
-                Add('[');
+                AddChar('[');
                 v.Dump(this);
-                Add(']');
+                AddChar(']');
                 level--; // exit
             }
             return this;
@@ -394,14 +394,14 @@ namespace Greatbone.Core
 
         public XmlContent Put(string name, short[] v)
         {
-            if (counts[level]++ > 0) Add(',');
+            if (counts[level]++ > 0) AddChar(',');
 
             if (name != null)
             {
-                Add('"');
+                AddChar('"');
                 Add(name);
-                Add('"');
-                Add(':');
+                AddChar('"');
+                AddChar(':');
             }
 
             if (v == null)
@@ -410,13 +410,13 @@ namespace Greatbone.Core
             }
             else
             {
-                Add('[');
+                AddChar('[');
                 for (int i = 0; i < v.Length; i++)
                 {
-                    if (i > 0) Add(',');
+                    if (i > 0) AddChar(',');
                     Add(v[i]);
                 }
-                Add(']');
+                AddChar(']');
             }
 
             return this;
@@ -424,14 +424,14 @@ namespace Greatbone.Core
 
         public XmlContent Put(string name, int[] v)
         {
-            if (counts[level]++ > 0) Add(',');
+            if (counts[level]++ > 0) AddChar(',');
 
             if (name != null)
             {
-                Add('"');
+                AddChar('"');
                 Add(name);
-                Add('"');
-                Add(':');
+                AddChar('"');
+                AddChar(':');
             }
 
             if (v == null)
@@ -440,13 +440,13 @@ namespace Greatbone.Core
             }
             else
             {
-                Add('[');
+                AddChar('[');
                 for (int i = 0; i < v.Length; i++)
                 {
-                    if (i > 0) Add(',');
+                    if (i > 0) AddChar(',');
                     Add(v[i]);
                 }
-                Add(']');
+                AddChar(']');
             }
 
             return this;
@@ -454,14 +454,14 @@ namespace Greatbone.Core
 
         public XmlContent Put(string name, long[] v)
         {
-            if (counts[level]++ > 0) Add(',');
+            if (counts[level]++ > 0) AddChar(',');
 
             if (name != null)
             {
-                Add('"');
+                AddChar('"');
                 Add(name);
-                Add('"');
-                Add(':');
+                AddChar('"');
+                AddChar(':');
             }
 
             if (v == null)
@@ -470,13 +470,13 @@ namespace Greatbone.Core
             }
             else
             {
-                Add('[');
+                AddChar('[');
                 for (int i = 0; i < v.Length; i++)
                 {
-                    if (i > 0) Add(',');
+                    if (i > 0) AddChar(',');
                     Add(v[i]);
                 }
-                Add(']');
+                AddChar(']');
             }
 
             return this;
@@ -484,14 +484,14 @@ namespace Greatbone.Core
 
         public XmlContent Put(string name, string[] v)
         {
-            if (counts[level]++ > 0) Add(',');
+            if (counts[level]++ > 0) AddChar(',');
 
             if (name != null)
             {
-                Add('"');
+                AddChar('"');
                 Add(name);
-                Add('"');
-                Add(':');
+                AddChar('"');
+                AddChar(':');
             }
 
             if (v == null)
@@ -500,10 +500,10 @@ namespace Greatbone.Core
             }
             else
             {
-                Add('[');
+                AddChar('[');
                 for (int i = 0; i < v.Length; i++)
                 {
-                    if (i > 0) Add(',');
+                    if (i > 0) AddChar(',');
                     string str = v[i];
                     if (str == null)
                     {
@@ -511,12 +511,12 @@ namespace Greatbone.Core
                     }
                     else
                     {
-                        Add('"');
+                        AddChar('"');
                         AddEsc(str);
-                        Add('"');
+                        AddChar('"');
                     }
                 }
-                Add(']');
+                AddChar(']');
             }
 
             return this;
@@ -525,14 +525,14 @@ namespace Greatbone.Core
 
         public XmlContent Put<P>(string name, P[] v, byte z = 0) where P : IPersist
         {
-            if (counts[level]++ > 0) Add(',');
+            if (counts[level]++ > 0) AddChar(',');
 
             if (name != null)
             {
-                Add('"');
+                AddChar('"');
                 Add(name);
-                Add('"');
-                Add(':');
+                AddChar('"');
+                AddChar(':');
             }
 
             if (v == null)
@@ -542,12 +542,12 @@ namespace Greatbone.Core
             else
             {
                 counts[++level] = 0; // enter
-                Add('[');
+                AddChar('[');
                 for (int i = 0; i < v.Length; i++)
                 {
                     Put(null, v[i], z);
                 }
-                Add(']');
+                AddChar(']');
                 level--; // exit
             }
             return this;

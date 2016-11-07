@@ -12,7 +12,7 @@ namespace Greatbone.Core
     /// The encapsulation of a web request/response exchange context.
     /// </summary>
     ///
-    public class WebContext : DefaultHttpContext, ISource, IPooling, IDisposable
+    public class WebContext : DefaultHttpContext, ISource, IDisposable
     {
 
         internal WebContext(IFeatureCollection features) : base(features)
@@ -37,6 +37,9 @@ namespace Greatbone.Core
 
         public bool IsPostMethod => "POST".Equals(Request.Method);
 
+        Form query;
+
+
         // received request body
         byte[] bytebuf;
 
@@ -60,7 +63,25 @@ namespace Greatbone.Core
 
         public bool IsPooled => bytebuf != null;
 
-        void Parse()
+
+        public Form Query
+        {
+            get
+            {
+                if (query == null)
+                {
+                    string qstr = Request.QueryString.Value;
+                    if (!string.IsNullOrEmpty(qstr))
+                    {
+                        FormParse par = new FormParse(qstr);
+                        query = par.Parse();
+                    }
+                }
+                return query;
+            }
+        }
+
+        void ParseEntity()
         {
             if (entity != null) return;
 
@@ -94,25 +115,25 @@ namespace Greatbone.Core
 
         public Form ReadForm()
         {
-            Parse();
+            ParseEntity();
             return entity as Form;
         }
 
         public JObj ReadJObj()
         {
-            Parse();
+            ParseEntity();
             return entity as JObj;
         }
 
         public JArr ReadJArr()
         {
-            Parse();
+            ParseEntity();
             return entity as JArr;
         }
 
         public P ReadObj<P>(byte z = 0) where P : IPersist, new()
         {
-            Parse();
+            ParseEntity();
 
             ISource src = entity as ISource;
             if (src == null) return default(P);
@@ -123,7 +144,7 @@ namespace Greatbone.Core
 
         public P[] ReadArr<P>(byte z = 0) where P : IPersist, new()
         {
-            Parse();
+            ParseEntity();
 
             JArr ja = entity as JArr;
             if (ja == null) return null;
@@ -136,127 +157,48 @@ namespace Greatbone.Core
 
         public bool Get(string name, ref bool v)
         {
-            StringValues values;
-            if (Request.Query.TryGetValue(name, out values))
-            {
-                string str = values[0];
-                if ("true".Equals(str) || "1".Equals(str))
-                {
-                    v = true;
-                    return true;
-                }
-                if ("false".Equals(str) || "0".Equals(str))
-                {
-                    v = false;
-                    return true;
-                }
-            }
-            return false;
-        }
-
-        public bool Got(string name, ref char v)
-        {
-            StringValues values;
-            if (Request.Query.TryGetValue(name, out values))
-            {
-                string str = values[0];
-                if (!string.IsNullOrEmpty(str))
-                {
-                    v = str[0];
-                    return true;
-                }
-            }
-            return false;
+            return Query == null ? false : Query.Get(name, ref v);
         }
 
         public bool Get(string name, ref short v)
         {
-            StringValues values;
-            if (Request.Query.TryGetValue(name, out values))
-            {
-                string str = values[0];
-                short num;
-                if (short.TryParse(str, out num))
-                {
-                    v = num;
-                    return true;
-                }
-            }
-            return false;
+            return Query == null ? false : Query.Get(name, ref v);
         }
 
         public bool Get(string name, ref int v)
         {
-            StringValues values;
-            if (Request.Query.TryGetValue(name, out values))
-            {
-                string str = values[0];
-                int num;
-                if (int.TryParse(str, out num))
-                {
-                    v = num;
-                    return true;
-                }
-            }
-            return false;
+            return Query == null ? false : Query.Get(name, ref v);
         }
 
         public bool Get(string name, ref long v)
         {
-            StringValues values;
-            if (Request.Query.TryGetValue(name, out values))
-            {
-                string str = values[0];
-                long num;
-                if (long.TryParse(str, out num))
-                {
-                    v = num;
-                    return true;
-                }
-            }
-            return false;
+            return Query == null ? false : Query.Get(name, ref v);
         }
 
         public bool Get(string name, ref decimal v)
         {
-            StringValues values;
-            if (Request.Query.TryGetValue(name, out values))
-            {
-                string str = values[0];
-                decimal num;
-                if (decimal.TryParse(str, out num))
-                {
-                    v = num;
-                    return true;
-                }
-            }
-            return false;
+            return Query == null ? false : Query.Get(name, ref v);
         }
 
         public bool Get(string name, ref Number v)
         {
-            throw new NotImplementedException();
+            return Query == null ? false : Query.Get(name, ref v);
         }
 
         public bool Get(string name, ref DateTime v)
         {
-            throw new NotImplementedException();
+            return Query == null ? false : Query.Get(name, ref v);
         }
 
         public bool Get(string name, ref char[] v)
         {
-            throw new NotImplementedException();
+            return Query == null ? false : Query.Get(name, ref v);
         }
 
         public bool Get(string name, ref string v)
         {
-            StringValues values;
-            if (Request.Query.TryGetValue(name, out values))
-            {
-                v = values[0];
-                return true;
-            }
-            return false;
+
+            return Query == null ? false : Query.Get(name, ref v);
         }
 
         public bool Get(string name, ref byte[] v)
@@ -271,144 +213,42 @@ namespace Greatbone.Core
 
         public bool Get<V>(string name, ref V v, byte z = 0) where V : IPersist, new()
         {
-            StringValues values;
-            if (Request.Query.TryGetValue(name, out values))
-            {
-                string str = values[0];
-                JParse par = new JParse(str);
-                JObj jo = (JObj)par.Parse();
-                v = new V();
-                v.Load(jo, z);
-                return true;
-            }
-            return false;
+            return Query == null ? false : Query.Get(name, ref v, z);
         }
 
         public bool Get(string name, ref JObj v)
         {
-            StringValues values;
-            if (Request.Query.TryGetValue(name, out values))
-            {
-                string str = values[0];
-                JParse par = new JParse(str);
-                v = (JObj)par.Parse();
-                return true;
-            }
-            return false;
+            return Query == null ? false : Query.Get(name, ref v);
         }
 
         public bool Get(string name, ref JArr v)
         {
-            StringValues values;
-            if (Request.Query.TryGetValue(name, out values))
-            {
-                string str = values[0];
-                JParse par = new JParse(str);
-                v = (JArr)par.Parse();
-                return true;
-            }
-            return false;
+            return Query == null ? false : Query.Get(name, ref v);
         }
 
         public bool Get(string name, ref short[] v)
         {
-            StringValues values;
-            if (Request.Query.TryGetValue(name, out values))
-            {
-                int len = values.Count;
-                v = new short[len];
-                for (int i = 0; i < len; i++)
-                {
-                    string str = values[i];
-                    short e = 0;
-                    if (short.TryParse(str, out e))
-                    {
-                        v[i] = e;
-                    }
-                }
-                return true;
-            }
-            return false;
+            return Query == null ? false : Query.Get(name, ref v);
         }
 
         public bool Get(string name, ref int[] v)
         {
-            StringValues values;
-            if (Request.Query.TryGetValue(name, out values))
-            {
-                int len = values.Count;
-                v = new int[len];
-                for (int i = 0; i < len; i++)
-                {
-                    string str = values[i];
-                    int e = 0;
-                    if (int.TryParse(str, out e))
-                    {
-                        v[i] = e;
-                    }
-                }
-                return true;
-            }
-            return false;
+            return Query == null ? false : Query.Get(name, ref v);
         }
 
         public bool Get(string name, ref long[] v)
         {
-            StringValues values;
-            if (Request.Query.TryGetValue(name, out values))
-            {
-                int len = values.Count;
-                v = new long[len];
-                for (int i = 0; i < len; i++)
-                {
-                    string str = values[i];
-                    long e = 0;
-                    if (long.TryParse(str, out e))
-                    {
-                        v[i] = e;
-                    }
-                }
-                return true;
-            }
-            return false;
+            return Query == null ? false : Query.Get(name, ref v);
         }
 
         public bool Get(string name, ref string[] v)
         {
-            StringValues values;
-            if (Request.Query.TryGetValue(name, out values))
-            {
-                int len = values.Count;
-                v = new string[len];
-                for (int i = 0; i < len; i++)
-                {
-                    v[i] = values[i];
-                }
-                return true;
-            }
-            return false;
+            return Query == null ? false : Query.Get(name, ref v);
         }
 
         public bool Get<V>(string name, ref V[] v, byte z = 0) where V : IPersist, new()
         {
-            StringValues values;
-            if (Request.Query.TryGetValue(name, out values))
-            {
-                string str = values[0];
-                JParse par = new JParse(str);
-                JArr ja = (JArr)par.Parse();
-                int len = ja.Count;
-                v = new V[len];
-                for (int i = 0; i < len; i++)
-                {
-                    JObj jo = (JObj)ja[i];
-                    V obj = new V();
-                    obj.Load(jo, z);
-                    v[i] = obj;
-                }
-                return true;
-            }
-            return false;
+            return Query == null ? false : Query.Get(name, ref v, z);
         }
 
         //
@@ -556,7 +396,7 @@ namespace Greatbone.Core
                 }
 
                 // set last-modified
-                DateTime? last = ((StaticContent)Content).Modified;
+                DateTime? last = Content.Modified;
                 if (last != null)
                 {
                     SetHeader("Last-Modified", StrUtility.FormatUtcDate(last.Value));

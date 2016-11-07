@@ -18,20 +18,20 @@ namespace Greatbone.Core
         sbyte pt;
 
         // negative
-        internal bool negat;
+        internal bool negative;
 
-        internal Number(byte first)
+        internal Number(int first)
         {
             bigint = 0;
             fract = 0;
             pt = -1; // without point yet
             if (first == '-')
             {
-                negat = true;
+                negative = true;
             }
             else
             {
-                negat = false;
+                negative = false;
                 Add(first);
             }
         }
@@ -42,7 +42,7 @@ namespace Greatbone.Core
             set { if (value) pt = 0; }
         }
 
-        internal void Add(byte b)
+        internal void Add(int b)
         {
             int n = b - '0';
             if (pt >= 0)
@@ -53,11 +53,11 @@ namespace Greatbone.Core
             else { bigint = bigint * 10 + n; }
         }
 
-        internal long Long => negat ? -bigint : bigint;
+        internal long Long => negative ? -bigint : bigint;
 
-        internal int Int => negat ? (int)-bigint : (int)bigint;
+        internal int Int => negative ? (int)-bigint : (int)bigint;
 
-        internal short Short => negat ? (short)-bigint : (short)bigint;
+        internal short Short => negative ? (short)-bigint : (short)bigint;
 
         internal decimal Decimal
         {
@@ -69,7 +69,7 @@ namespace Greatbone.Core
                 int hi = (int)(bigint >> (64 - bits));
                 byte scale = (byte)(pt - 1);
 
-                return new decimal(lo, mid, hi, negat, scale);
+                return new decimal(lo, mid, hi, negative, scale);
             }
         }
 

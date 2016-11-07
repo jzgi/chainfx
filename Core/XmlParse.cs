@@ -9,7 +9,7 @@ namespace Greatbone.Core
     public struct XmlParse
     {
 
-        static readonly ParseException FormatEx = new ParseException("wrong octet xml Format");
+        static readonly ParseException FormatEx = new ParseException("xml");
 
         // byte buffer content to parse
         readonly byte[] buffer;
@@ -70,7 +70,7 @@ namespace Greatbone.Core
                     byte b = buffer[++p];
                     if (p >= count) throw FormatEx;
                     if (b == '"') break; // meet second quote
-                    else str.Add((char)b);
+                    else str.AddChar((char)b);
                 }
 
                 for (;;) // till a colon
@@ -222,7 +222,7 @@ namespace Greatbone.Core
                 if (p >= count) throw FormatEx;
                 if (esc)
                 {
-                    str.Add(b == '"' ? '"' : b == '\\' ? '\\' : b == 'b' ? '\b' : b == 'f' ? '\f' : b == 'n' ? '\n' : b == 'r' ? '\r' : b == 't' ? '\t' : (char)0);
+                    str.AddChar(b == '"' ? '"' : b == '\\' ? '\\' : b == 'b' ? '\b' : b == 'f' ? '\f' : b == 'n' ? '\n' : b == 'r' ? '\r' : b == 't' ? '\t' : (char)0);
                     esc = !esc;
                 }
                 else
@@ -238,7 +238,7 @@ namespace Greatbone.Core
                     }
                     else
                     {
-                        str.Add(b);
+                        str.Accept(b);
                     }
                 }
             }

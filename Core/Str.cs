@@ -21,13 +21,13 @@ namespace Greatbone.Core
         public override string Type => null;
 
         // utf-8 decoding 
-        public void Add(byte b)
+        public void Accept(int b)
         {
             if (rest == 0)
             {
                 if (b < 0x80)
                 {
-                    Add((char)b); // single byte 
+                    AddChar((char)b); // single byte 
                 }
                 else if (b >= 0xc0 && b < 0xe0)
                 {
@@ -44,7 +44,7 @@ namespace Greatbone.Core
             {
                 sum |= (b & 0x3f);
                 rest--;
-                Add((char)sum);
+                AddChar((char)sum);
             }
             else if (rest == 2)
             {
@@ -63,6 +63,11 @@ namespace Greatbone.Core
         public int ToInt()
         {
             return 0;
+        }
+
+        public override string ToString()
+        {
+            return new string(charbuf, 0, count);
         }
 
     }

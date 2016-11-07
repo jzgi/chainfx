@@ -47,7 +47,7 @@ namespace Greatbone.Core
                     {
                         c = (char)(c - 32);
                     }
-                    Add(c);
+                    AddChar(c);
                 }
             }
         }
@@ -77,7 +77,7 @@ namespace Greatbone.Core
                 }
                 else
                 {
-                    Add(c);
+                    AddChar(c);
                 }
             }
         }

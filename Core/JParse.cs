@@ -25,28 +25,30 @@ namespace Greatbone.Core
         public JParse(string strbuf)
         {
             this.strbuf = strbuf;
-            this.bytebuf = null;
             this.count = strbuf.Length;
+            this.bytebuf = null;
             this.jx = false;
             this.str = new Str(256);
         }
 
         public JParse(byte[] bytebuf, int count, bool jx = false)
         {
-            strbuf = null;
             this.bytebuf = bytebuf;
             this.count = count;
+            this.strbuf = null;
             this.jx = jx;
             this.str = new Str(256);
         }
+
+        int this[int index] => (bytebuf != null) ? bytebuf[index] : (int)strbuf[index];
 
         public object Parse()
         {
             int p = -1;
             for (;;)
             {
-                byte b = bytebuf[++p];
-                if (p >= count) throw FormatEx;
+                if (p >= count - 1) throw FormatEx;
+                int b = this[++p];
                 if (b == ' ' || b == '\t' || b == '\n' || b == '\r') continue; // skip ws
                 if (b == '{') return ParseObj(ref p);
                 if (b == '[') return ParseArr(ref p);
@@ -62,8 +64,8 @@ namespace Greatbone.Core
             {
                 for (;;)
                 {
-                    byte b = bytebuf[++p];
-                    if (p >= count) throw FormatEx;
+                    if (p >= count - 1) throw FormatEx;
+                    int b = this[++p];
                     if (b == ' ' || b == '\t' || b == '\n' || b == '\r') continue;
                     if (b == '"') break; // meet first quote
                     if (b == '}') // close early empty
@@ -77,16 +79,16 @@ namespace Greatbone.Core
                 str.Clear(); // parse name
                 for (;;)
                 {
-                    byte b = bytebuf[++p];
-                    if (p >= count) throw FormatEx;
+                    if (p >= count - 1) throw FormatEx;
+                    int b = this[++p];
                     if (b == '"') break; // meet second quote
-                    else str.Add((char)b);
+                    else str.AddChar((char)b);
                 }
 
                 for (;;) // till a colon
                 {
-                    byte b = bytebuf[++p];
-                    if (p >= count) throw FormatEx;
+                    if (p >= count - 1) throw FormatEx;
+                    int b = this[++p];
                     if (b == ' ' || b == '\t' || b == '\n' || b == '\r') continue;
                     if (b == ':') break;
                     throw FormatEx;
@@ -96,8 +98,8 @@ namespace Greatbone.Core
                 // parse the value part
                 for (;;)
                 {
-                    byte b = bytebuf[++p];
-                    if (p >= count) throw FormatEx;
+                    if (p >= count - 1) throw FormatEx;
+                    int b = this[++p];
                     if (b == ' ' || b == '\t' || b == '\n' || b == '\r') continue; // skip ws
                     if (b == '{')
                     {
@@ -140,8 +142,8 @@ namespace Greatbone.Core
                 // comma or end
                 for (;;)
                 {
-                    byte b = bytebuf[++p];
-                    if (p >= count) throw FormatEx;
+                    if (p >= count - 1) throw FormatEx;
+                    int b = this[++p];
                     if (b == ' ' || b == '\t' || b == '\n' || b == '\r') continue;
                     if (b == ',') break;
                     if (b == '}') // close normal
@@ -160,8 +162,8 @@ namespace Greatbone.Core
             int p = pos;
             for (;;)
             {
-                byte b = bytebuf[++p];
-                if (p >= count) throw FormatEx;
+                if (p >= count - 1) throw FormatEx;
+                int b = this[++p];
                 if (b == ' ' || b == '\t' || b == '\n' || b == '\r') continue; // skip ws
                 if (b == ']') // close early empty
                 {
@@ -207,8 +209,8 @@ namespace Greatbone.Core
                 // comma or return
                 for (;;)
                 {
-                    b = bytebuf[++p];
-                    if (p >= count) throw FormatEx;
+                    if (p >= count - 1) throw FormatEx;
+                    b = this[++p];
                     if (b == ' ' || b == '\t' || b == '\n' || b == '\r') continue; // skip ws
                     if (b == ',') break;
                     if (b == ']') // close normal
@@ -228,11 +230,11 @@ namespace Greatbone.Core
             bool esc = false;
             for (;;)
             {
-                byte b = bytebuf[++p];
-                if (p >= count) throw FormatEx;
+                if (p >= count - 1) throw FormatEx;
+                int b = this[++p];
                 if (esc)
                 {
-                    str.Add(b == '"' ? '"' : b == '\\' ? '\\' : b == 'b' ? '\b' : b == 'f' ? '\f' : b == 'n' ? '\n' : b == 'r' ? '\r' : b == 't' ? '\t' : (char)0);
+                    str.AddChar(b == '"' ? '"' : b == '\\' ? '\\' : b == 'b' ? '\b' : b == 'f' ? '\f' : b == 'n' ? '\n' : b == 'r' ? '\r' : b == 't' ? '\t' : (char)0);
                     esc = !esc;
                 }
                 else
@@ -248,7 +250,7 @@ namespace Greatbone.Core
                     }
                     else
                     {
-                        str.Add(b);
+                        str.Accept(b);
                     }
                 }
             }
@@ -262,7 +264,7 @@ namespace Greatbone.Core
         bool ParseNull(ref int pos)
         {
             int p = pos;
-            if (bytebuf[++p] == 'u' && bytebuf[++p] == 'l' && bytebuf[++p] == 'l')
+            if (this[++p] == 'u' && this[++p] == 'l' && this[++p] == 'l')
             {
                 pos = p;
                 return true;
@@ -270,14 +272,14 @@ namespace Greatbone.Core
             return false;
         }
 
-        Number ParseNumber(ref int pos, byte first)
+        Number ParseNumber(ref int pos, int first)
         {
             Number num = new Number(first);
             int p = pos;
             for (;;)
             {
-                if (p >= count) throw FormatEx;
-                byte b = bytebuf[++p];
+                if (p >= count - 1) throw FormatEx;
+                int b = this[++p];
                 if (b == '.')
                 {
                     num.Pt = true;
@@ -294,12 +296,12 @@ namespace Greatbone.Core
             }
         }
 
-        bool ParseBool(ref int pos, byte first)
+        bool ParseBool(ref int pos, int first)
         {
             int p = pos;
             if (first == 't')
             {
-                if (bytebuf[++p] == 'r' && bytebuf[++p] == 'u' && bytebuf[++p] == 'e')
+                if (this[++p] == 'r' && this[++p] == 'u' && this[++p] == 'e')
                 {
                     pos = p;
                     return true;
@@ -307,7 +309,7 @@ namespace Greatbone.Core
             }
             else if (first == 'f')
             {
-                if (bytebuf[++p] == 'a' && bytebuf[++p] == 'l' && bytebuf[++p] == 's' && bytebuf[++p] == 'e')
+                if (this[++p] == 'a' && this[++p] == 'l' && this[++p] == 's' && this[++p] == 'e')
                 {
                     pos = p;
                     return false;
@@ -315,5 +317,7 @@ namespace Greatbone.Core
             }
             throw FormatEx;
         }
+
     }
+
 }

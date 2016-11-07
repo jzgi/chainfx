@@ -3,7 +3,7 @@
 namespace Greatbone.Core
 {
 
-    public interface IContent : IPooling
+    public interface IContent
     {
 
         /// <summary>
@@ -17,6 +17,9 @@ namespace Greatbone.Core
         /// </summary>
         ///
         bool IsRaw { get; }
+
+
+        bool IsPooled { get; }
 
         /// <summary
         /// >The byte buffer that contains octet content.

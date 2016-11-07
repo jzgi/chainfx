@@ -129,12 +129,13 @@ namespace Greatbone.Core
 
         public static implicit operator char[] (Pair v)
         {
-            return null;
+            string str = v.First;
+            return str?.ToCharArray();
         }
 
         public static implicit operator string(Pair v)
         {
-            return null;
+            return v.First;
         }
 
         public static implicit operator byte[] (Pair v)

@@ -68,7 +68,7 @@ namespace Greatbone.Core
                     if (c == '\\') // quoted-pair
                     {
                         p++;
-                        str.Add(fvalue[p]); // add the following char
+                        str.AddChar(fvalue[p]); // add the following char
                     }
                     else if (c == '"')
                     {
@@ -77,7 +77,7 @@ namespace Greatbone.Core
                     }
                     else
                     {
-                        str.Add(c);
+                        str.AddChar(c);
                     }
                 }
             }
@@ -99,7 +99,7 @@ namespace Greatbone.Core
                     }
                     else
                     {
-                        str.Add(c);
+                        str.AddChar(c);
                     }
                 }
             }

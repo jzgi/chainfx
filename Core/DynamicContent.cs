@@ -76,8 +76,6 @@ namespace Greatbone.Core
             1000000000000000000L
         };
 
-        readonly bool raw;
-
         readonly bool pooled;
 
         protected byte[] bytebuf; // NOTE: HttpResponseStream doesn't have internal buffer
@@ -92,7 +90,6 @@ namespace Greatbone.Core
 
         protected DynamicContent(bool raw, bool pooled, int capacity)
         {
-            this.raw = raw;
             this.pooled = pooled;
             if (raw)
             {
@@ -107,7 +104,7 @@ namespace Greatbone.Core
 
         public abstract string Type { get; }
 
-        public bool IsRaw => raw;
+        public bool IsRaw => bytebuf != null;
 
         public byte[] ByteBuffer => bytebuf;
 
@@ -122,7 +119,7 @@ namespace Greatbone.Core
         public ulong ETag => checksum;
 
 
-        void Write(byte b)
+        void AddByte(byte b)
         {
             // ensure capacity
             int olen = bytebuf.Length; // old length
@@ -142,28 +139,28 @@ namespace Greatbone.Core
             checksum = cs >> 57 | cs << 7; // circular left shift 7 bit
         }
 
-        public void Add(char c)
+        public void AddChar(char c)
         {
-            if (raw) // byte-oriented
+            if (IsRaw) // byte-oriented
             {
                 // UTF-8 encoding but without surrogate support
                 if (c < 0x80)
                 {
                     // have at most seven bits
-                    Write((byte)c);
+                    AddByte((byte)c);
                 }
                 else if (c < 0x800)
                 {
                     // 2 char, 11 bits
-                    Write((byte)(0xc0 | (c >> 6)));
-                    Write((byte)(0x80 | (c & 0x3f)));
+                    AddByte((byte)(0xc0 | (c >> 6)));
+                    AddByte((byte)(0x80 | (c & 0x3f)));
                 }
                 else
                 {
                     // 3 char, 16 bits
-                    Write((byte)(0xe0 | ((c >> 12))));
-                    Write((byte)(0x80 | ((c >> 6) & 0x3f)));
-                    Write((byte)(0x80 | (c & 0x3f)));
+                    AddByte((byte)(0xe0 | ((c >> 12))));
+                    AddByte((byte)(0x80 | ((c >> 6) & 0x3f)));
+                    AddByte((byte)(0x80 | (c & 0x3f)));
                 }
             }
             else // char-oriented
@@ -214,7 +211,7 @@ namespace Greatbone.Core
             {
                 for (int i = offset; i < len; i++)
                 {
-                    Add(v[i]);
+                    AddChar(v[i]);
                 }
             }
         }
@@ -239,13 +236,13 @@ namespace Greatbone.Core
         {
             if (v == 0)
             {
-                Write((byte)'0');
+                AddByte((byte)'0');
                 return;
             }
             int x = v; // convert to int
             if (v < 0)
             {
-                Add('-');
+                AddChar('-');
                 x = -x;
             }
             bool bgn = false;
@@ -256,11 +253,11 @@ namespace Greatbone.Core
                 x = x % bas;
                 if (q != 0 || bgn)
                 {
-                    Add(DIGIT[q]);
+                    AddChar(DIGIT[q]);
                     bgn = true;
                 }
             }
-            Add(DIGIT[x]); // last reminder
+            AddChar(DIGIT[x]); // last reminder
         }
 
         public void Add(int v)
@@ -273,7 +270,7 @@ namespace Greatbone.Core
 
             if (v < 0)
             {
-                Add('-');
+                AddChar('-');
                 v = -v;
             }
             bool bgn = false;
@@ -284,11 +281,11 @@ namespace Greatbone.Core
                 v = v % bas;
                 if (q != 0 || bgn)
                 {
-                    Add(DIGIT[q]);
+                    AddChar(DIGIT[q]);
                     bgn = true;
                 }
             }
-            Add(DIGIT[v]); // last reminder
+            AddChar(DIGIT[v]); // last reminder
         }
 
         public void Add(long v)
@@ -301,7 +298,7 @@ namespace Greatbone.Core
 
             if (v < 0)
             {
-                Add('-');
+                AddChar('-');
                 v = -v;
             }
             bool bgn = false;
@@ -312,11 +309,11 @@ namespace Greatbone.Core
                 v = v % bas;
                 if (q != 0 || bgn)
                 {
-                    Add(DIGIT[q]);
+                    AddChar(DIGIT[q]);
                     bgn = true;
                 }
             }
-            Add(DIGIT[v]); // last reminder
+            AddChar(DIGIT[v]); // last reminder
         }
 
         public void Add(decimal v)
@@ -329,7 +326,7 @@ namespace Greatbone.Core
             Add(v.Long);
             if (v.Pt)
             {
-                Add('.');
+                AddChar('.');
                 Add(v.fract);
             }
         }
@@ -346,7 +343,7 @@ namespace Greatbone.Core
 
                 if ((flags & Sign) != 0) // negative
                 {
-                    Add('-');
+                    AddChar('-');
                 }
                 if (mid != 0) // money
                 {
@@ -359,17 +356,17 @@ namespace Greatbone.Core
                         x = x % bas;
                         if (q != 0 || bgn)
                         {
-                            Add(DIGIT[q]);
+                            AddChar(DIGIT[q]);
                             bgn = true;
                         }
                         if (i == 4)
                         {
                             if (!bgn)
                             {
-                                Add('0');
+                                AddChar('0');
                                 bgn = true;
                             }
-                            Add('.');
+                            AddChar('.');
                         }
                     }
                 }
@@ -384,17 +381,17 @@ namespace Greatbone.Core
                         x = x % bas;
                         if (q != 0 || bgn)
                         {
-                            Add(DIGIT[q]);
+                            AddChar(DIGIT[q]);
                             bgn = true;
                         }
                         if (i == 4)
                         {
                             if (!bgn)
                             {
-                                Add('0');
+                                AddChar('0');
                                 bgn = true;
                             }
-                            Add('.');
+                            AddChar('.');
                         }
                     }
                 }
@@ -412,23 +409,23 @@ namespace Greatbone.Core
             day = (byte)v.Day;
 
             // yyyy-mm-dd
-            if (yr < 1000) Add('0');
-            if (yr < 100) Add('0');
-            if (yr < 10) Add('0');
+            if (yr < 1000) AddChar('0');
+            if (yr < 100) AddChar('0');
+            if (yr < 10) AddChar('0');
             Add(v.Year);
-            Add('-');
+            AddChar('-');
             Add(SEX[v.Month]);
-            Add('-');
+            AddChar('-');
             Add(SEX[v.Day]);
 
             int hr = v.Hour, min = v.Minute, sec = v.Second, mil = v.Millisecond;
             if (hr == 0 && min == 0 && sec == 0 && mil == 0) return;
 
-            Add(' '); // a space for separation
+            AddChar(' '); // a space for separation
             Add(SEX[hr]);
-            Add(':');
+            AddChar(':');
             Add(SEX[min]);
-            Add(':');
+            AddChar(':');
             Add(SEX[sec]);
         }
 
