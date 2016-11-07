@@ -10,7 +10,7 @@ namespace Greatbone.Core
     ///
     public class WebClient : IKeyed
     {
-        readonly WebService service;
+        readonly WebServiceDo service;
 
         // remote address
         readonly string raddr;
@@ -22,7 +22,7 @@ namespace Greatbone.Core
         // tick count
         private int lastConnect;
 
-        internal WebClient(WebService service, string raddr)
+        internal WebClient(WebServiceDo service, string raddr)
         {
             this.service = service;
             this.raddr = raddr;

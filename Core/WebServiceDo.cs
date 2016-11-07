@@ -19,10 +19,10 @@ using Npgsql;
 namespace Greatbone.Core
 {
     /// <summary>
-    /// A service controller that is a module implementation of a microservice.
+    /// A service doer/controller implements a microservice.
     /// </summary>
     ///
-    public abstract class WebService : WebModule, IHttpApplication<HttpContext>, ILoggerProvider, ILogger, IDisposable
+    public abstract class WebServiceDo : WebModuleDo, IHttpApplication<HttpContext>, ILoggerProvider, ILogger, IDisposable
     {
         // SERVER
         //
@@ -53,7 +53,7 @@ namespace Greatbone.Core
         readonly Thread scheduler;
 
 
-        protected WebService(WebConfig cfg) : base(cfg)
+        protected WebServiceDo(WebConfig cfg) : base(cfg)
         {
             // adjust configuration
             cfg.Service = this;
@@ -266,26 +266,26 @@ namespace Greatbone.Core
                 else
                 {
                     wc.Control = this;
-                    Do(relative, wc);
+                    DoRsc(relative, wc);
                     wc.Control = null;
                 }
             }
             else // dispatch to child or multiplexer
             {
                 string dir = relative.Substring(0, slash);
-                WebControl child;
+                WebDo child;
                 if (children != null && children.TryGet(dir, out child)) // seek sub first
                 {
                     child.Handle(relative.Substring(slash + 1), wc);
                 }
-                else if (multiple == null)
+                else if (mux == null)
                 {
                     wc.StatusCode = 404; // not found
                 }
                 else
                 {
-                    wc.Super = dir;
-                    multiple.Handle(relative.Substring(slash + 1), wc);
+                    wc.SuperVar = dir;
+                    mux.Handle(relative.Substring(slash + 1), wc);
                 }
             }
         }
@@ -454,7 +454,7 @@ namespace Greatbone.Core
         /// <summary>
         /// Runs a number of web services and block until shutdown.
         /// </summary>
-        public static void Run(params WebService[] services)
+        public static void Run(params WebServiceDo[] services)
         {
             using (var cts = new CancellationTokenSource())
             {
@@ -467,7 +467,7 @@ namespace Greatbone.Core
                 };
 
                 // start services
-                foreach (WebService svc in services)
+                foreach (WebServiceDo svc in services)
                 {
                     svc.Start();
                 }
@@ -478,7 +478,7 @@ namespace Greatbone.Core
                 {
                     ((IApplicationLifetime)state).StopApplication();
                     // dispose services
-                    foreach (WebService svc in services)
+                    foreach (WebServiceDo svc in services)
                     {
                         svc.OnStop();
 

@@ -6,14 +6,14 @@ namespace Greatbone.Sample
 {
     /// <summary>The chat servoce.</summary>
     ///
-    public class ChatService : AbstService
+    public class ChatServiceDo : AbstServiceDo
     {
         // the ongoing chat sessions, keyed by receiver's ID
         private ConcurrentDictionary<string, Wrap> chats = new ConcurrentDictionary<string, Wrap>();
 
-        public ChatService(WebConfig cfg) : base(cfg)
+        public ChatServiceDo(WebConfig cfg) : base(cfg)
         {
-            SetMultiple<ChatMultiple>();
+            SetMux<ChatVarDo>();
         }
 
         public void Get(WebContext wc)

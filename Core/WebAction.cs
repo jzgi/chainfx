@@ -12,7 +12,7 @@ namespace Greatbone.Core
     ///
     public class WebAction : IKeyed
     {
-        public WebControl Control { get; }
+        public WebDo Control { get; }
 
         readonly Action<WebContext, string> doer;
 
@@ -24,7 +24,7 @@ namespace Greatbone.Core
 
         public string Key { get; }
 
-        internal WebAction(WebControl control, MethodInfo mi)
+        internal WebAction(WebDo control, MethodInfo mi)
         {
             Control = control;
             Key = mi.Name; // NOTE: strict method name as key here to avoid the default base url trap
@@ -53,7 +53,7 @@ namespace Greatbone.Core
         // for generating unique digest nonce
         const string PrivateKey = "3e43a7180";
 
-        internal bool TryDo(WebContext wc, string subscpt)
+        internal bool TryInvoke(WebContext wc, string subscpt)
         {
             // access check 
             if (bearer || digest)

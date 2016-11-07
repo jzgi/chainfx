@@ -8,13 +8,13 @@ namespace Greatbone.Core
     /// <summary>
     public class MsgHook : IKeyed
     {
-        public WebService Service { get; }
+        public WebServiceDo Service { get; }
 
         public string Key { get; }
 
         readonly Action<MsgContext> doer;
 
-        internal MsgHook(WebService service, MethodInfo mi)
+        internal MsgHook(WebServiceDo service, MethodInfo mi)
         {
             Key = mi.Name;
             doer = (Action<MsgContext>)mi.CreateDelegate(typeof(Action<MsgContext>), service);

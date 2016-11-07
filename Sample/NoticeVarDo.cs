@@ -3,9 +3,9 @@ using Greatbone.Core;
 
 namespace Greatbone.Sample
 {
-    public class NoticeMultiple : WebMultiple
+    public class NoticeVarDo : WebVarDo
     {
-        public NoticeMultiple(WebArg arg) : base(arg)
+        public NoticeVarDo(WebArg arg) : base(arg)
         {
         }
 
@@ -18,7 +18,7 @@ namespace Greatbone.Sample
         /// 
         public override void @default(WebContext wc, string subscpt)
         {
-            int id = wc.Super.ToInt();
+            int id = wc.SuperVar.ToInt();
             using (var dc = Service.NewDbContext())
             {
                 if (dc.QueryA("SELECT * FROM notices WHERE id = @1", p => p.Put(id)))
@@ -68,7 +68,7 @@ namespace Greatbone.Sample
         [Check]
         public void apply(WebContext wc, string subscpt)
         {
-            int id = wc.Super.ToInt();
+            int id = wc.SuperVar.ToInt();
             string userid = wc.Principal.Key;
             App app = new App()
             {
@@ -103,7 +103,7 @@ namespace Greatbone.Sample
         [Check]
         public void cmt(WebContext wc, string subscpt)
         {
-            int id = wc.Super.ToInt();
+            int id = wc.SuperVar.ToInt();
             IPrincipal tok = wc.Principal;
             Comment c = wc.ReadObj<Comment>();
 
@@ -131,7 +131,7 @@ namespace Greatbone.Sample
         /// POST /notice/_id_/share
         public void share(WebContext wc, string subscpt)
         {
-            int id = wc.Super.ToInt();
+            int id = wc.SuperVar.ToInt();
             using (var dc = Service.NewDbContext())
             {
                 if (dc.Execute("UPDATE notices SET shared = shared + 1 WHERE id = @1", p => p.Put(id)) > 0)

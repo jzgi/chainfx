@@ -19,14 +19,14 @@ namespace Greatbone.Core
         {
         }
 
-        public WebControl Control { get; internal set; }
+        public WebDo Control { get; internal set; }
 
         public WebAction Action { get; internal set; }
 
         public IPrincipal Principal { get; internal set; }
 
         // superscript
-        public string Super { get; internal set; }
+        public string SuperVar { get; internal set; }
 
         //
         // REQUEST

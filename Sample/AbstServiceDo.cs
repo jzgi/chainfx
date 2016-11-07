@@ -8,11 +8,11 @@ namespace Greatbone.Sample
     /// The common base class for all service controllers.
     /// </summary>
     ///
-    public abstract class AbstService : WebService
+    public abstract class AbstServiceDo : WebServiceDo
     {
         readonly Login[] logins;
 
-        public AbstService(WebConfig cfg) : base(cfg)
+        public AbstServiceDo(WebConfig cfg) : base(cfg)
         {
             logins = JUtility.FileToArr<Login>(cfg.GetFilePath("$realm.json"));
         }
@@ -54,8 +54,8 @@ namespace Greatbone.Sample
                 {
                     for (int i = 0; i < Children.Count; i++)
                     {
-                        WebControl child = Children[i];
-                        AbstModule mdl = child as AbstModule;
+                        WebDo child = Children[i];
+                        AbstModuleDo mdl = child as AbstModuleDo;
                         if (mdl == null) continue;
 
                         a.T("<li><a href=\"").T(mdl.Key).T("/mgmt\">").T(mdl.Key).T("</a></li>");

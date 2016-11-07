@@ -2,9 +2,9 @@
 
 namespace Greatbone.Sample
 {
-    public class BrandMultiple : WebMultiple
+    public class BrandVarDo : WebVarDo
     {
-        public BrandMultiple(WebArg arg) : base(arg)
+        public BrandVarDo(WebArg arg) : base(arg)
         {
         }
 

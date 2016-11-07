@@ -6,28 +6,26 @@ namespace Greatbone.Core
 {
     ///
     /// <summary>
-    /// A multiplexer that process many variable-keys. 
+    /// A variable-key doer/controller handles requests that are targeted variable-keys. 
     /// </summary>
     ///
-    public abstract class WebMultiple : WebControl, IParent
+    public abstract class WebVarDo : WebDo, IParent
     {
         // child controls
-        private Roll<WebControl> children;
+        private Roll<WebDo> children;
 
-        protected WebMultiple(WebArg arg) : base(arg)
-        {
-        }
+        protected WebVarDo(WebArg arg) : base(arg) { }
 
-        public Roll<WebControl> Children => children;
+        public Roll<WebDo> Children => children;
 
-        public T AddChild<T>(string key, object state = null) where T : WebControl
+        public D AddChild<D>(string key, object state = null) where D : WebDo
         {
             if (children == null)
             {
-                children = new Roll<WebControl>(16);
+                children = new Roll<WebDo>(16);
             }
             // create instance by reflection
-            Type typ = typeof(T);
+            Type typ = typeof(D);
             ConstructorInfo ci = typ.GetConstructor(new[] { typeof(WebArg) });
             if (ci == null) { throw new WebException(typ + ": the constructor with WebTie"); }
             WebArg arg = new WebArg
@@ -35,15 +33,15 @@ namespace Greatbone.Core
                 key = key,
                 State = state,
                 Parent = this,
-                IsMultiplex = true,
+                IsVar = true,
                 Folder = (Parent == null) ? key : Path.Combine(Parent.Folder, key),
                 Service = Service
             };
             // call the initialization and add
-            T sub = (T)ci.Invoke(new object[] { arg });
-            children.Add(sub);
+            D child = (D)ci.Invoke(new object[] { arg });
+            children.Add(child);
 
-            return sub;
+            return child;
         }
 
         internal override void Handle(string relative, WebContext wc)
@@ -51,19 +49,19 @@ namespace Greatbone.Core
             int slash = relative.IndexOf('/');
             if (slash == -1) // handle it locally
             {
-                wc.Control = this;
-                Do(relative, wc);
-                wc.Control = null;
+                DoRsc(relative, wc);
             }
             else // dispatch to child control
             {
                 string dir = relative.Substring(0, slash);
-                WebControl child;
+                WebDo child;
                 if (children != null && children.TryGet(relative, out child))
                 {
                     child.Handle(relative.Substring(slash), wc);
                 }
             }
         }
+
     }
+    
 }

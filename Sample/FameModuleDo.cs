@@ -6,11 +6,11 @@ namespace Greatbone.Sample
 
     ///
     /// /fame/
-    public class FameModule : AbstModule, IMgmt
+    public class FameModuleDo : AbstModuleDo, IMgmt
     {
-        public FameModule(WebArg arg) : base(arg)
+        public FameModuleDo(WebArg arg) : base(arg)
         {
-            SetMultiple<FameMultiple>();
+            SetMux<FameVarDo>();
         }
 
         public override void @default(WebContext wc, string subscpt)
@@ -28,7 +28,7 @@ namespace Greatbone.Sample
         /// </code>
         public void top(WebContext wc, string subscpt)
         {
-            string id = wc.Super;
+            string id = wc.SuperVar;
             int n = subscpt.ToInt();
             using (var dc = Service.NewDbContext())
             {

@@ -7,11 +7,11 @@ namespace Greatbone.Sample
 {
     /// /123/Get
     /// /123/Put
-    public class ChatMultiple : WebMultiple
+    public class ChatVarDo : WebVarDo
     {
         private ConcurrentDictionary<string, List<Chat>> online;
 
-        public ChatMultiple(WebArg arg) : base(arg)
+        public ChatVarDo(WebArg arg) : base(arg)
         {
         }
 

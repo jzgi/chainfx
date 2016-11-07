@@ -8,10 +8,10 @@ namespace Greatbone.Core
 
     ///
     /// <summary>
-    /// The web control realizes a virtual directory that contains static and dynamic resources.
+    /// A web doer/controller realizes a virtual directory that contains static/dynamic resources.
     /// </summary>
     ///
-    public abstract class WebControl : IKeyed
+    public abstract class WebDo : IKeyed
     {
         // makes state-passing convenient
         internal readonly WebArg arg;
@@ -23,7 +23,7 @@ namespace Greatbone.Core
         readonly WebAction defaction;
 
 
-        protected WebControl(WebArg arg)
+        protected WebDo(WebArg arg)
         {
             this.arg = arg;
 
@@ -52,13 +52,13 @@ namespace Greatbone.Core
 
         public object State => arg.State;
 
-        public bool IsMultiplex => arg.IsMultiplex;
+        public bool IsMux => arg.IsVar;
 
         public string Folder => arg.Folder;
 
         public IParent Parent => arg.Parent;
 
-        public WebService Service => arg.Service;
+        public WebServiceDo Service => arg.Service;
 
 
         // public Roll<WebAction> Actions => actions;
@@ -86,15 +86,13 @@ namespace Greatbone.Core
 
         internal virtual void Handle(string relative, WebContext wc)
         {
-            wc.Control = this;
-
-            Do(relative, wc);
-
-            wc.Control = null;
+            DoRsc(relative, wc);
         }
 
-        protected internal virtual void Do(string rsc, WebContext wc)
+        internal void DoRsc(string rsc, WebContext wc)
         {
+            wc.Control = this;
+
             int dot = rsc.LastIndexOf('.');
             if (dot != -1) // static
             {
@@ -117,9 +115,11 @@ namespace Greatbone.Core
                 }
                 else
                 {
-                    wa.TryDo(wc, subscpt);
+                    wa.TryInvoke(wc, subscpt);
                 }
             }
+
+            wc.Control = null;
         }
 
         void DoStatic(string file, string ext, WebContext wc)

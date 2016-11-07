@@ -8,9 +8,9 @@ namespace Greatbone.Sample
     /// The common base class for all module controllers.
     /// </summary>
     ///
-    public abstract class AbstModule : WebModule
+    public abstract class AbstModuleDo : WebModuleDo
     {
-        public AbstModule(WebArg arg) : base(arg)
+        public AbstModuleDo(WebArg arg) : base(arg)
         {
         }
 

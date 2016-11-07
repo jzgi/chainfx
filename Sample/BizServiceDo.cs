@@ -5,13 +5,13 @@ namespace Greatbone.Sample
     /// <summary>
     /// The business service controller.
     /// </summary>
-    public class BizService : AbstService
+    public class BizServiceDo : AbstServiceDo
     {
-        public BizService(WebConfig cfg) : base(cfg)
+        public BizServiceDo(WebConfig cfg) : base(cfg)
         {
-            AddChild<FameModule>("fame");
+            AddChild<FameModuleDo>("fame");
 
-            AddChild<BrandModule>("brand");
+            AddChild<BrandModuleDo>("brand");
         }
 
         public override void @default(WebContext wc, string subscpt)

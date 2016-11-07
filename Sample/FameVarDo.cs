@@ -5,9 +5,9 @@ using static Greatbone.Core.ZUtility;
 namespace Greatbone.Sample
 {
 
-    public class FameMultiple : WebMultiple
+    public class FameVarDo : WebVarDo
     {
-        public FameMultiple(WebArg arg) : base(arg)
+        public FameVarDo(WebArg arg) : base(arg)
         {
         }
 
@@ -20,7 +20,7 @@ namespace Greatbone.Sample
         ///
         public override void @default(WebContext wc, string subscpt)
         {
-            string id = wc.Super;
+            string id = wc.SuperVar;
             using (var dc = Service.NewDbContext())
             {
                 if (wc.IsGetMethod)
@@ -54,7 +54,7 @@ namespace Greatbone.Sample
         {
             string uid = wc.Principal.Key;
             Fame obj = wc.ReadObj<Fame>();
-            obj.id = wc.Super;
+            obj.id = wc.SuperVar;
 
             using (var dc = Service.NewDbContext())
             {
@@ -79,7 +79,7 @@ namespace Greatbone.Sample
         ///
         public void icon(WebContext wc, string subscpt)
         {
-            string id = wc.Super;
+            string id = wc.SuperVar;
             using (var dc = Service.NewDbContext())
             {
                 if (dc.QueryA("SELECT icon FROM fames WHERE id = @1", p => p.Put(id)))
@@ -109,7 +109,7 @@ namespace Greatbone.Sample
         ///
         public void updicon(WebContext wc, string subscpt)
         {
-            string id = wc.Super;
+            string id = wc.SuperVar;
             ArraySegment<byte>? bytes = wc.ReadBytesSeg();
             using (var dc = Service.NewDbContext())
             {
@@ -137,7 +137,7 @@ namespace Greatbone.Sample
         ///
         public void img(WebContext wc, string subscpt)
         {
-            string id = wc.Super;
+            string id = wc.SuperVar;
             int n = subscpt.ToInt();
             using (var dc = Service.NewDbContext())
             {
@@ -164,7 +164,7 @@ namespace Greatbone.Sample
         ///
         public void updimg(WebContext wc, string subscpt)
         {
-            string id = wc.Super;
+            string id = wc.SuperVar;
             int n = subscpt.ToInt();
             using (var dc = Service.NewDbContext())
             {
