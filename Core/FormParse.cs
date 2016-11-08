@@ -31,7 +31,7 @@ namespace Greatbone.Core
         {
             this.bytebuf = null;
             this.strbuf = strbuf;
-            this.count = strbuf.Length;
+            this.count = (strbuf != null) ? strbuf.Length : 0;
             this.str = new Str(256);
         }
 
@@ -39,10 +39,13 @@ namespace Greatbone.Core
 
         public Form Parse()
         {
-            if (string.IsNullOrEmpty(strbuf)) return null;
+            if (count == 0) return Form.Empty;
+
+            int p = (this[0] == '?') ? 1 : 0;
+
+            if (p >= count - 1) return Form.Empty;
 
             Form frm = new Form();
-            int p = (this[0] == '?') ? 1 : 0;
             for (;;)
             {
                 if (p >= count) return frm;

@@ -91,7 +91,7 @@ namespace Greatbone.Core
 
         internal void DoRsc(string rsc, WebContext wc)
         {
-            wc.Control = this;
+            wc.Doer = this;
 
             int dot = rsc.LastIndexOf('.');
             if (dot != -1) // static
@@ -119,7 +119,7 @@ namespace Greatbone.Core
                 }
             }
 
-            wc.Control = null;
+            wc.Doer = null;
         }
 
         void DoStatic(string file, string ext, WebContext wc)

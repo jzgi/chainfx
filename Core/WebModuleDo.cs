@@ -15,8 +15,8 @@ namespace Greatbone.Core
         // child controls, if any
         internal Roll<WebDo> children;
 
-        // the attached multiplexer, if any
-        internal WebVarDo mux;
+        // the attached multiplexer doer/controller, if any
+        internal WebMuxDo mux;
 
         protected WebModuleDo(WebArg arg) : base(arg)
         {
@@ -49,9 +49,9 @@ namespace Greatbone.Core
 
         public Roll<WebDo> Children => children;
 
-        public WebVarDo Multiple => mux;
+        public WebMuxDo Mux => mux;
 
-        public D SetMux<D>(object state = null) where D : WebVarDo
+        public D SetMux<D>(object state = null) where D : WebMuxDo
         {
             // create instance
             Type typ = typeof(D);
@@ -66,10 +66,10 @@ namespace Greatbone.Core
                 Folder = (Parent == null) ? VarKey : Path.Combine(Parent.Folder, VarKey),
                 Service = Service
             };
-            D var = (D)ci.Invoke(new object[] { arg });
-            this.mux = var;
+            D mux = (D)ci.Invoke(new object[] { arg });
+            this.mux = mux;
 
-            return var;
+            return mux;
         }
 
         internal override void Handle(string relative, WebContext wc)
@@ -93,7 +93,7 @@ namespace Greatbone.Core
                 }
                 else
                 {
-                    wc.SuperVar = dir;
+                    wc.Var = dir;
                     mux.Handle(relative.Substring(slash + 1), wc);
                 }
             }

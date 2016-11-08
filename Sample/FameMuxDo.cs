@@ -5,9 +5,9 @@ using static Greatbone.Core.ZUtility;
 namespace Greatbone.Sample
 {
 
-    public class FameVarDo : WebVarDo
+    public class FameMuxDo : WebMuxDo
     {
-        public FameVarDo(WebArg arg) : base(arg)
+        public FameMuxDo(WebArg arg) : base(arg)
         {
         }
 
@@ -20,7 +20,7 @@ namespace Greatbone.Sample
         ///
         public override void @default(WebContext wc, string subscpt)
         {
-            string id = wc.SuperVar;
+            string id = wc.Var;
             using (var dc = Service.NewDbContext())
             {
                 if (wc.IsGetMethod)
@@ -54,7 +54,7 @@ namespace Greatbone.Sample
         {
             string uid = wc.Principal.Key;
             Fame obj = wc.ReadObj<Fame>();
-            obj.id = wc.SuperVar;
+            obj.id = wc.Var;
 
             using (var dc = Service.NewDbContext())
             {
@@ -79,7 +79,7 @@ namespace Greatbone.Sample
         ///
         public void icon(WebContext wc, string subscpt)
         {
-            string id = wc.SuperVar;
+            string id = wc.Var;
             using (var dc = Service.NewDbContext())
             {
                 if (dc.QueryA("SELECT icon FROM fames WHERE id = @1", p => p.Put(id)))
@@ -109,8 +109,8 @@ namespace Greatbone.Sample
         ///
         public void updicon(WebContext wc, string subscpt)
         {
-            string id = wc.SuperVar;
-            ArraySegment<byte>? bytes = wc.ReadBytesSeg();
+            string id = wc.Var;
+            ArraySegment<byte>? bytes = wc.ReadByteAs();
             using (var dc = Service.NewDbContext())
             {
                 if (bytes == null)
@@ -137,7 +137,7 @@ namespace Greatbone.Sample
         ///
         public void img(WebContext wc, string subscpt)
         {
-            string id = wc.SuperVar;
+            string id = wc.Var;
             int n = subscpt.ToInt();
             using (var dc = Service.NewDbContext())
             {
@@ -164,11 +164,11 @@ namespace Greatbone.Sample
         ///
         public void updimg(WebContext wc, string subscpt)
         {
-            string id = wc.SuperVar;
+            string id = wc.Var;
             int n = subscpt.ToInt();
             using (var dc = Service.NewDbContext())
             {
-                ArraySegment<byte>? bytes = wc.ReadBytesSeg();
+                ArraySegment<byte>? bytes = wc.ReadByteAs();
                 if (bytes == null)
                 {
                     wc.StatusCode = 301; ;

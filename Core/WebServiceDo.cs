@@ -265,9 +265,9 @@ namespace Greatbone.Core
                 }
                 else
                 {
-                    wc.Control = this;
+                    wc.Doer = this;
                     DoRsc(relative, wc);
-                    wc.Control = null;
+                    wc.Doer = null;
                 }
             }
             else // dispatch to child or multiplexer
@@ -284,7 +284,7 @@ namespace Greatbone.Core
                 }
                 else
                 {
-                    wc.SuperVar = dir;
+                    wc.Var = dir;
                     mux.Handle(relative.Substring(slash + 1), wc);
                 }
             }

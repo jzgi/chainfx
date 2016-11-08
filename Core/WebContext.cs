@@ -19,14 +19,14 @@ namespace Greatbone.Core
         {
         }
 
-        public WebDo Control { get; internal set; }
+        public WebDo Doer { get; internal set; }
 
         public WebAction Action { get; internal set; }
 
         public IPrincipal Principal { get; internal set; }
 
-        // superscript
-        public string SuperVar { get; internal set; }
+        /// The variable-key encountered
+        public string Var { get; internal set; }
 
         //
         // REQUEST
@@ -39,18 +39,31 @@ namespace Greatbone.Core
 
         Form query;
 
-
         // received request body
         byte[] bytebuf;
-
-        // number of received bytes
-        int count;
+        int count; // number of received bytes
 
         // parsed request entity (JObj, JArr, Form, null)
         object entity;
 
-        async void ReadAsync()
+        public Form Query
         {
+            get
+            {
+                if (query == null)
+                {
+                    string qstr = Request.QueryString.Value;
+                    FormParse p = new FormParse(qstr);
+                    query = p.Parse(); // non-null
+                }
+                return query;
+            }
+        }
+
+        async void EnsureReadAsync()
+        {
+            if (count > 0) return;
+
             HttpRequest req = Request;
             long? clen = req.ContentLength;
             if (clen > 0)
@@ -63,77 +76,64 @@ namespace Greatbone.Core
 
         public bool IsPooled => bytebuf != null;
 
-
-        public Form Query
-        {
-            get
-            {
-                if (query == null)
-                {
-                    string qstr = Request.QueryString.Value;
-                    if (!string.IsNullOrEmpty(qstr))
-                    {
-                        FormParse par = new FormParse(qstr);
-                        query = par.Parse();
-                    }
-                }
-                return query;
-            }
-        }
-
-        void ParseEntity()
+        void EnsureParse()
         {
             if (entity != null) return;
 
-            if (bytebuf == null) ReadAsync();
+            EnsureReadAsync();
 
-            if (bytebuf != null)
+            if (count > 0)
             {
                 string ctyp = Request.ContentType;
                 if ("application/x-www-form-urlencoded".Equals(ctyp))
                 {
-                    FormParse par = new FormParse(bytebuf, count);
-                    entity = par.Parse();
+                    FormParse p = new FormParse(bytebuf, count);
+                    entity = p.Parse();
+                }
+                else if ("application/xml".Equals(ctyp))
+                {
+                    XmlParse p = new XmlParse(bytebuf, count);
+                    entity = p.Parse();
                 }
                 else
                 {
                     bool jx = "application/jsonx".Equals(ctyp); // json extention
-                    JParse par = new JParse(bytebuf, count, jx);
-                    entity = par.Parse();
+                    JParse p = new JParse(bytebuf, count, jx);
+                    entity = p.Parse();
                 }
             }
         }
 
-        public ArraySegment<byte>? ReadBytesSeg()
+        public ArraySegment<byte>? ReadByteAs()
         {
-            if (bytebuf == null) ReadAsync();
+            EnsureReadAsync();
 
-            if (bytebuf == null) return null;
+            if (count == 0) return null;
 
             return new ArraySegment<byte>(bytebuf, 0, count);
         }
 
         public Form ReadForm()
         {
-            ParseEntity();
+            EnsureParse();
             return entity as Form;
         }
 
         public JObj ReadJObj()
         {
-            ParseEntity();
+            EnsureParse();
             return entity as JObj;
         }
 
         public JArr ReadJArr()
         {
-            ParseEntity();
+            EnsureParse();
             return entity as JArr;
         }
 
         public P ReadObj<P>(byte z = 0) where P : IPersist, new()
         {
-            ParseEntity();
+            EnsureParse();
 
             ISource src = entity as ISource;
             if (src == null) return default(P);
@@ -144,7 +144,7 @@ namespace Greatbone.Core
 
         public P[] ReadArr<P>(byte z = 0) where P : IPersist, new()
         {
-            ParseEntity();
+            EnsureParse();
 
             JArr ja = entity as JArr;
             if (ja == null) return null;
@@ -157,48 +157,48 @@ namespace Greatbone.Core
 
         public bool Get(string name, ref bool v)
         {
-            return Query == null ? false : Query.Get(name, ref v);
+            return Query.Get(name, ref v);
         }
 
         public bool Get(string name, ref short v)
         {
-            return Query == null ? false : Query.Get(name, ref v);
+            return Query.Get(name, ref v);
         }
 
         public bool Get(string name, ref int v)
         {
-            return Query == null ? false : Query.Get(name, ref v);
+            return Query.Get(name, ref v);
         }
 
         public bool Get(string name, ref long v)
         {
-            return Query == null ? false : Query.Get(name, ref v);
+            return Query.Get(name, ref v);
         }
 
         public bool Get(string name, ref decimal v)
         {
-            return Query == null ? false : Query.Get(name, ref v);
+            return Query.Get(name, ref v);
         }
 
         public bool Get(string name, ref Number v)
         {
-            return Query == null ? false : Query.Get(name, ref v);
+            return Query.Get(name, ref v);
         }
 
         public bool Get(string name, ref DateTime v)
         {
-            return Query == null ? false : Query.Get(name, ref v);
+            return Query.Get(name, ref v);
         }
 
         public bool Get(string name, ref char[] v)
         {
-            return Query == null ? false : Query.Get(name, ref v);
+            return Query.Get(name, ref v);
         }
 
         public bool Get(string name, ref string v)
         {
 
-            return Query == null ? false : Query.Get(name, ref v);
+            return Query.Get(name, ref v);
         }
 
         public bool Get(string name, ref byte[] v)
@@ -213,42 +213,42 @@ namespace Greatbone.Core
 
         public bool Get<V>(string name, ref V v, byte z = 0) where V : IPersist, new()
         {
-            return Query == null ? false : Query.Get(name, ref v, z);
+            return Query.Get(name, ref v, z);
         }
 
         public bool Get(string name, ref JObj v)
         {
-            return Query == null ? false : Query.Get(name, ref v);
+            return Query.Get(name, ref v);
         }
 
         public bool Get(string name, ref JArr v)
         {
-            return Query == null ? false : Query.Get(name, ref v);
+            return Query.Get(name, ref v);
         }
 
         public bool Get(string name, ref short[] v)
         {
-            return Query == null ? false : Query.Get(name, ref v);
+            return Query.Get(name, ref v);
         }
 
         public bool Get(string name, ref int[] v)
         {
-            return Query == null ? false : Query.Get(name, ref v);
+            return Query.Get(name, ref v);
         }
 
         public bool Get(string name, ref long[] v)
         {
-            return Query == null ? false : Query.Get(name, ref v);
+            return Query.Get(name, ref v);
         }
 
         public bool Get(string name, ref string[] v)
         {
-            return Query == null ? false : Query.Get(name, ref v);
+            return Query.Get(name, ref v);
         }
 
         public bool Get<V>(string name, ref V[] v, byte z = 0) where V : IPersist, new()
         {
-            return Query == null ? false : Query.Get(name, ref v, z);
+            return Query.Get(name, ref v, z);
         }
 
         //
@@ -414,7 +414,7 @@ namespace Greatbone.Core
         public async void CallByGet(string service, string part, string uri)
         {
             // token impersonate
-            WebClient cli = Control.Service.FindClient(service, part);
+            WebClient cli = Doer.Service.FindClient(service, part);
             if (cli != null)
             {
                 object obj = await cli.GetAsync(uri);
@@ -424,7 +424,7 @@ namespace Greatbone.Core
         public void CallByPost(string service, string part, Action<JContent> a)
         {
             // token impersonate
-            WebClient cli = Control.Service.FindClient(service, part);
+            WebClient cli = Doer.Service.FindClient(service, part);
             if (cli != null)
             {
                 JContent cont = new JContent(true, true, 8 * 1024);

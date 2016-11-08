@@ -14,7 +14,7 @@ namespace Greatbone.Core
     {
         public WebDo Control { get; }
 
-        readonly Action<WebContext, string> doer;
+        readonly Action<WebContext, string> call;
 
         readonly CheckAttribute[] checks;
 
@@ -28,7 +28,7 @@ namespace Greatbone.Core
         {
             Control = control;
             Key = mi.Name; // NOTE: strict method name as key here to avoid the default base url trap
-            doer = (Action<WebContext, string>)mi.CreateDelegate(typeof(Action<WebContext, string>), control);
+            call = (Action<WebContext, string>)mi.CreateDelegate(typeof(Action<WebContext, string>), control);
 
             // prepare if attributes
             List<CheckAttribute> lst = null;
@@ -81,7 +81,7 @@ namespace Greatbone.Core
 
             // invoke the action method
             wc.Action = this;
-            doer(wc, subscpt);
+            call(wc, subscpt);
             wc.Action = null;
             return true;
         }

@@ -12,6 +12,8 @@ namespace Greatbone.Core
     {
         const int InitialCapacity = 16;
 
+        public static readonly Form Empty = new Form();
+
         readonly Roll<Pair> pairs;
 
         public Form(int capacity = InitialCapacity)
@@ -191,7 +193,7 @@ namespace Greatbone.Core
         {
             throw new NotImplementedException();
         }
-        
+
     }
 
 }

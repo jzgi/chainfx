@@ -6,9 +6,9 @@ namespace Greatbone.Sample
     /// <summary>
     /// The user variable-hub controller.
     ///
-    public class UserVarDo : WebVarDo
+    public class UserMuxDo : WebMuxDo
     {
-        public UserVarDo(WebArg arg) : base(arg)
+        public UserMuxDo(WebArg arg) : base(arg)
         {
         }
 
@@ -20,7 +20,7 @@ namespace Greatbone.Sample
         /// </code>
         public override void @default(WebContext wc, string sub)
         {
-            string id = wc.SuperVar;
+            string id = wc.Var;
             string password = null;
             if (!wc.Get(nameof(password), ref password))
             {

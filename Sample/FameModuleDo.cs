@@ -10,7 +10,7 @@ namespace Greatbone.Sample
     {
         public FameModuleDo(WebArg arg) : base(arg)
         {
-            SetMux<FameVarDo>();
+            SetMux<FameMuxDo>();
         }
 
         public override void @default(WebContext wc, string subscpt)
@@ -28,7 +28,7 @@ namespace Greatbone.Sample
         /// </code>
         public void top(WebContext wc, string subscpt)
         {
-            string id = wc.SuperVar;
+            string id = wc.Var;
             int n = subscpt.ToInt();
             using (var dc = Service.NewDbContext())
             {

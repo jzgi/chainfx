@@ -16,7 +16,7 @@ namespace Greatbone.Sample
 
         public UserModuleDo(WebArg arg) : base(arg)
         {
-            SetMux<UserVarDo>();
+            SetMux<UserMuxDo>();
         }
 
         /// <summary>

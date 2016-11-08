@@ -9,7 +9,7 @@ namespace Greatbone.Sample
     {
         public NoticeModuleDo(WebArg arg) : base(arg)
         {
-            SetMux<NoticeVarDo>();
+            SetMux<NoticeMuxDo>();
         }
 
         public override void @default(WebContext wc, string subscpt)

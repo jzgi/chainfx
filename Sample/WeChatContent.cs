@@ -2,7 +2,7 @@ using System;
 using System.Collections.Generic;
 using Greatbone.Core;
 
-namespace Ministry.Diet
+namespace Ministry.Dietary
 {
 
     ///

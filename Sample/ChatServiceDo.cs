@@ -13,7 +13,7 @@ namespace Greatbone.Sample
 
         public ChatServiceDo(WebConfig cfg) : base(cfg)
         {
-            SetMux<ChatVarDo>();
+            SetMux<ChatMuxDo>();
         }
 
         public void Get(WebContext wc)

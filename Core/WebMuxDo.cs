@@ -6,15 +6,15 @@ namespace Greatbone.Core
 {
     ///
     /// <summary>
-    /// A variable-key doer/controller handles requests that are targeted variable-keys. 
+    /// A multiplexer doer/controller handles requests that are targeted variable-keys. 
     /// </summary>
     ///
-    public abstract class WebVarDo : WebDo, IParent
+    public abstract class WebMuxDo : WebDo, IParent
     {
         // child controls
         private Roll<WebDo> children;
 
-        protected WebVarDo(WebArg arg) : base(arg) { }
+        protected WebMuxDo(WebArg arg) : base(arg) { }
 
         public Roll<WebDo> Children => children;
 

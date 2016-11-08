@@ -11,7 +11,7 @@ namespace Greatbone.Sample
 
         public PostModuleDo(WebArg arg) : base(arg)
         {
-            SetMux<PostVarDo>();
+            SetMux<PostMuxDo>();
 
             mgmtWas = Actions(nameof(srch), nameof(del), nameof(status));
         }

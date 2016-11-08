@@ -10,7 +10,7 @@ namespace Greatbone.Sample
     {
         public BrandModuleDo(WebArg arg) : base(arg)
         {
-            SetMux<BrandVarDo>();
+            SetMux<BrandMuxDo>();
         }
 
         public override void @default(WebContext wc, string subscpt)
