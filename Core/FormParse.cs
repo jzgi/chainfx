@@ -8,7 +8,7 @@ namespace Greatbone.Core
     ///
     public struct FormParse
     {
-        static readonly ParseException FormatEx = new ParseException("wrong form Format");
+        static readonly ParseException ParseEx = new ParseException("form");
 
         readonly byte[] bytebuf;
 
@@ -103,9 +103,9 @@ namespace Greatbone.Core
                 }
                 else if (b == '%') // percent-encoding %xy
                 {
-                    if (p >= count) throw FormatEx;
+                    if (p >= count) throw ParseEx;
                     int x = this[p++];
-                    if (p >= count) throw FormatEx;
+                    if (p >= count) throw ParseEx;
                     int y = this[p++];
 
                     str.Accept(Dv(x) << 4 | Dv(y));

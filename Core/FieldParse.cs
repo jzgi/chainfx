@@ -10,7 +10,7 @@ namespace Greatbone.Core
     ///
     struct FieldParse
     {
-        static readonly ParseException FormatEx = new ParseException("wrong field value Format");
+        static readonly ParseException ParseEx = new ParseException("field value");
 
         // field value
         readonly string fvalue;
@@ -55,7 +55,7 @@ namespace Greatbone.Core
             if (loc == -1) return null;
 
             int start = loc + nameEq.Length; // beginning of value
-            if (start >= fvalue.Length) throw FormatEx;
+            if (start >= fvalue.Length) throw ParseEx;
 
             bool quot = fvalue[start] == '"';
             if (quot)
@@ -63,7 +63,7 @@ namespace Greatbone.Core
                 int p = start + 1;
                 for (;;)
                 {
-                    if (p >= fvalue.Length) throw FormatEx;
+                    if (p >= fvalue.Length) throw ParseEx;
                     char c = fvalue[p++];
                     if (c == '\\') // quoted-pair
                     {
