@@ -8,7 +8,7 @@ namespace Greatbone.Sample
     ///
     public class UserMux : WebMux
     {
-        public UserMux(WebHierarchyContext whc) : base(whc)
+        public UserMux(WebNodeContext wnc) : base(wnc)
         {
         }
 

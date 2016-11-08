@@ -7,7 +7,7 @@ namespace Greatbone.Sample
 
     public class PostMux : WebMux
     {
-        public PostMux(WebHierarchyContext whc) : base(whc)
+        public PostMux(WebNodeContext wnc) : base(wnc)
         {
         }
 

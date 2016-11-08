@@ -12,7 +12,7 @@ namespace Greatbone.Sample
     {
         public WwwService(WebConfig cfg) : base(cfg)
         {
-            AddChild<MyRun>("my");
+            AddChild<MyWork>("my");
         }
 
 

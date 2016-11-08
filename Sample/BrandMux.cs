@@ -4,7 +4,7 @@ namespace Greatbone.Sample
 {
     public class BrandMux : WebMux
     {
-        public BrandMux(WebHierarchyContext whc) : base(whc)
+        public BrandMux(WebNodeContext wnc) : base(wnc)
         {
         }
 

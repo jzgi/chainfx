@@ -8,13 +8,13 @@ namespace Greatbone.Core
 
     ///
     /// <summary>
-    /// A web work is a server-side /controller that realizes a virtual directory containing static/dynamic resources.
+    /// A web work is a server-side controller that realizes a virtual directory containing static/dynamic resources.
     /// </summary>
     ///
     public abstract class WebWork : IKeyed
     {
-        // makes state-passing convenient
-        internal readonly WebHierarchyContext ctx;
+        // state-passing
+        internal readonly WebNodeContext ctx;
 
         // declared actions 
         readonly Roll<WebAction> actions;
@@ -23,7 +23,7 @@ namespace Greatbone.Core
         readonly WebAction defaction;
 
 
-        protected WebWork(WebHierarchyContext whc)
+        protected WebWork(WebNodeContext whc)
         {
             this.ctx = whc;
 
@@ -52,7 +52,7 @@ namespace Greatbone.Core
 
         public object State => ctx.State;
 
-        public bool IsMux => ctx.IsVar;
+        public bool HasVar => ctx.HasVar;
 
         public string Folder => ctx.Folder;
 

@@ -2,7 +2,11 @@
 
 namespace Greatbone.Core
 {
-    public class WebHierarchyContext
+
+    ///
+    /// The context for a node in the controlling hierarchy.
+    ///
+    public class WebNodeContext
     {
         internal string key;
 
@@ -11,7 +15,7 @@ namespace Greatbone.Core
 
         public object State { get; internal set; }
 
-        public bool IsVar { get; internal set; }
+        public bool HasVar { get; internal set; }
 
         public IParent Parent { get; internal set; }
 

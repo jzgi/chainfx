@@ -7,7 +7,7 @@ namespace Greatbone.Sample
 
     public class NoticeModule : AbstModule, IMgmt
     {
-        public NoticeModule(WebHierarchyContext whc) : base(whc)
+        public NoticeModule(WebNodeContext wnc) : base(wnc)
         {
             SetMux<NoticeMux>();
         }

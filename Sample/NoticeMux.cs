@@ -5,7 +5,7 @@ namespace Greatbone.Sample
 {
     public class NoticeMux : WebMux
     {
-        public NoticeMux(WebHierarchyContext whc) : base(whc)
+        public NoticeMux(WebNodeContext wnc) : base(wnc)
         {
         }
 

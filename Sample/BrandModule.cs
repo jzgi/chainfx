@@ -8,7 +8,7 @@ namespace Greatbone.Sample
     ///
     public class BrandModule : AbstModule, IMgmt
     {
-        public BrandModule(WebHierarchyContext whc) : base(whc)
+        public BrandModule(WebNodeContext wnc) : base(wnc)
         {
             SetMux<BrandMux>();
         }

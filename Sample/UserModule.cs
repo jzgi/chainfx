@@ -14,7 +14,7 @@ namespace Greatbone.Sample
     {
         ConcurrentDictionary<string, string> vcodes = new ConcurrentDictionary<string, string>(Environment.ProcessorCount * 4, 1024);
 
-        public UserModule(WebHierarchyContext whc) : base(whc)
+        public UserModule(WebNodeContext wnc) : base(wnc)
         {
             SetMux<UserMux>();
         }

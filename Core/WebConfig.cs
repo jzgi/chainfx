@@ -18,7 +18,7 @@
     /// }
     /// </code>
     ///
-    public class WebConfig : WebHierarchyContext, IPersist
+    public class WebConfig : WebNodeContext, IPersist
     {
 
         // partition

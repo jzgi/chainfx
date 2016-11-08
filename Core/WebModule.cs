@@ -18,7 +18,7 @@ namespace Greatbone.Core
         // the attached multiplexer doer/controller, if any
         internal WebMux mux;
 
-        protected WebModule(WebHierarchyContext whc) : base(whc)
+        protected WebModule(WebNodeContext wnc) : base(wnc)
         {
         }
 
@@ -30,14 +30,14 @@ namespace Greatbone.Core
             }
             // create instance by reflection
             Type typ = typeof(W);
-            ConstructorInfo ci = typ.GetConstructor(new[] { typeof(WebHierarchyContext) });
+            ConstructorInfo ci = typ.GetConstructor(new[] { typeof(WebNodeContext) });
             if (ci == null) { throw new WebException(typ + ": the constructor with WebTie"); }
-            WebHierarchyContext arg = new WebHierarchyContext
+            WebNodeContext arg = new WebNodeContext
             {
                 key = key,
                 State = state,
                 Parent = this,
-                IsVar = false,
+                HasVar = false,
                 Folder = (Parent == null) ? key : Path.Combine(Parent.Folder, key),
                 Service = Service
             };
@@ -55,14 +55,14 @@ namespace Greatbone.Core
         {
             // create instance
             Type typ = typeof(M);
-            ConstructorInfo ci = typ.GetConstructor(new[] { typeof(WebHierarchyContext) });
+            ConstructorInfo ci = typ.GetConstructor(new[] { typeof(WebNodeContext) });
             if (ci == null) { throw new WebException(typ + ": the constructor with WebTie"); }
-            WebHierarchyContext arg = new WebHierarchyContext
+            WebNodeContext arg = new WebNodeContext
             {
                 key = VarKey,
                 State = state,
                 Parent = this,
-                IsVar = true,
+                HasVar = true,
                 Folder = (Parent == null) ? VarKey : Path.Combine(Parent.Folder, VarKey),
                 Service = Service
             };

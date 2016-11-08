@@ -8,7 +8,7 @@ namespace Greatbone.Sample
     /// /fame/
     public class FameModule : AbstModule, IMgmt
     {
-        public FameModule(WebHierarchyContext whc) : base(whc)
+        public FameModule(WebNodeContext wnc) : base(wnc)
         {
             SetMux<FameMux>();
         }

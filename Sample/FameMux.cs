@@ -7,7 +7,7 @@ namespace Greatbone.Sample
 
     public class FameMux : WebMux
     {
-        public FameMux(WebHierarchyContext whc) : base(whc)
+        public FameMux(WebNodeContext wnc) : base(wnc)
         {
         }
 

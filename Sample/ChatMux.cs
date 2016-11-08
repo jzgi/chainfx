@@ -11,7 +11,7 @@ namespace Greatbone.Sample
     {
         private ConcurrentDictionary<string, List<Chat>> online;
 
-        public ChatMux(WebHierarchyContext whc) : base(whc)
+        public ChatMux(WebNodeContext wnc) : base(wnc)
         {
         }
 

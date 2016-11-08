@@ -10,7 +10,7 @@ namespace Greatbone.Sample
     ///
     public abstract class AbstModule : WebModule
     {
-        public AbstModule(WebHierarchyContext whc) : base(whc)
+        public AbstModule(WebNodeContext wnc) : base(wnc)
         {
         }
 

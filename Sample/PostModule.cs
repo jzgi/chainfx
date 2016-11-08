@@ -9,7 +9,7 @@ namespace Greatbone.Sample
     {
         readonly WebAction[] mgmtWas;
 
-        public PostModule(WebHierarchyContext whc) : base(whc)
+        public PostModule(WebNodeContext wnc) : base(wnc)
         {
             SetMux<PostMux>();
 

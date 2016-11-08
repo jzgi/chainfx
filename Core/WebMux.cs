@@ -14,7 +14,7 @@ namespace Greatbone.Core
         // child controls
         private Roll<WebWork> children;
 
-        protected WebMux(WebHierarchyContext whc) : base(whc) { }
+        protected WebMux(WebNodeContext wnc) : base(wnc) { }
 
         public Roll<WebWork> Children => children;
 
@@ -26,14 +26,14 @@ namespace Greatbone.Core
             }
             // create instance by reflection
             Type typ = typeof(D);
-            ConstructorInfo ci = typ.GetConstructor(new[] { typeof(WebHierarchyContext) });
+            ConstructorInfo ci = typ.GetConstructor(new[] { typeof(WebNodeContext) });
             if (ci == null) { throw new WebException(typ + ": the constructor with WebTie"); }
-            WebHierarchyContext arg = new WebHierarchyContext
+            WebNodeContext arg = new WebNodeContext
             {
                 key = key,
                 State = state,
                 Parent = this,
-                IsVar = true,
+                HasVar = true,
                 Folder = (Parent == null) ? key : Path.Combine(Parent.Folder, key),
                 Service = Service
             };
