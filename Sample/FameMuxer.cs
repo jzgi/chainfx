@@ -5,9 +5,9 @@ using static Greatbone.Core.ZUtility;
 namespace Greatbone.Sample
 {
 
-    public class FameMuxDo : WebMuxDo
+    public class FameMuxer : WebMuxer
     {
-        public FameMuxDo(WebArg arg) : base(arg)
+        public FameMuxer(WebArg arg) : base(arg)
         {
         }
 

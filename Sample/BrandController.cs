@@ -6,11 +6,11 @@ namespace Greatbone.Sample
     ///
     /// /brand/
     ///
-    public class BrandModuleDo : AbstModuleDo, IMgmt
+    public class BrandController : AbstController, IMgmt
     {
-        public BrandModuleDo(WebArg arg) : base(arg)
+        public BrandController(WebArg arg) : base(arg)
         {
-            SetMux<BrandMuxDo>();
+            SetMuxer<BrandMuxer>();
         }
 
         public override void @default(WebContext wc, string subscpt)

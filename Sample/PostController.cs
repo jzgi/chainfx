@@ -5,13 +5,13 @@ using static Greatbone.Core.ZUtility;
 namespace Greatbone.Sample
 {
 
-    public class PostModuleDo : AbstModuleDo, IMgmt
+    public class PostController : AbstController, IMgmt
     {
         readonly WebAction[] mgmtWas;
 
-        public PostModuleDo(WebArg arg) : base(arg)
+        public PostController(WebArg arg) : base(arg)
         {
-            SetMux<PostMuxDo>();
+            SetMuxer<PostMuxer>();
 
             mgmtWas = Actions(nameof(srch), nameof(del), nameof(status));
         }

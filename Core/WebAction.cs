@@ -12,7 +12,7 @@ namespace Greatbone.Core
     ///
     public class WebAction : IKeyed
     {
-        public WebDo Control { get; }
+        public WebDoer Control { get; }
 
         readonly Action<WebContext, string> call;
 
@@ -24,7 +24,7 @@ namespace Greatbone.Core
 
         public string Key { get; }
 
-        internal WebAction(WebDo control, MethodInfo mi)
+        internal WebAction(WebDoer control, MethodInfo mi)
         {
             Control = control;
             Key = mi.Name; // NOTE: strict method name as key here to avoid the default base url trap

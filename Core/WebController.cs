@@ -8,25 +8,25 @@ namespace Greatbone.Core
     /// <summary>
     /// A module web directory controller that can contain child- and multiplexer controllers.
     /// </summary>
-    public abstract class WebModuleDo : WebDo, IParent
+    public abstract class WebController : WebDoer, IParent
     {
         const string VarKey = "-var-";
 
         // child controls, if any
-        internal Roll<WebDo> children;
+        internal Roll<WebDoer> children;
 
         // the attached multiplexer doer/controller, if any
-        internal WebMuxDo mux;
+        internal WebMuxer mux;
 
-        protected WebModuleDo(WebArg arg) : base(arg)
+        protected WebController(WebArg arg) : base(arg)
         {
         }
 
-        public D AddChild<D>(string key, object state = null) where D : WebDo
+        public D AddChild<D>(string key, object state = null) where D : WebDoer
         {
             if (children == null)
             {
-                children = new Roll<WebDo>(16);
+                children = new Roll<WebDoer>(16);
             }
             // create instance by reflection
             Type typ = typeof(D);
@@ -47,11 +47,11 @@ namespace Greatbone.Core
             return child;
         }
 
-        public Roll<WebDo> Children => children;
+        public Roll<WebDoer> Children => children;
 
-        public WebMuxDo Mux => mux;
+        public WebMuxer Mux => mux;
 
-        public D SetMux<D>(object state = null) where D : WebMuxDo
+        public D SetMuxer<D>(object state = null) where D : WebMuxer
         {
             // create instance
             Type typ = typeof(D);
@@ -82,7 +82,7 @@ namespace Greatbone.Core
             else // dispatch to child or multiplexer
             {
                 string dir = relative.Substring(0, slash);
-                WebDo child;
+                WebDoer child;
                 if (children != null && children.TryGet(dir, out child)) // seek sub first
                 {
                     child.Handle(relative.Substring(slash + 1), wc);

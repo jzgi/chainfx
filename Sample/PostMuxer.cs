@@ -5,9 +5,9 @@ using static Greatbone.Core.ZUtility;
 namespace Greatbone.Sample
 {
 
-    public class PostMuxDo : WebMuxDo
+    public class PostMuxer : WebMuxer
     {
-        public PostMuxDo(WebArg arg) : base(arg)
+        public PostMuxer(WebArg arg) : base(arg)
         {
         }
 

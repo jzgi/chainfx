@@ -2,9 +2,9 @@
 
 namespace Greatbone.Sample
 {
-    public class BrandMuxDo : WebMuxDo
+    public class BrandMuxer : WebMuxer
     {
-        public BrandMuxDo(WebArg arg) : base(arg)
+        public BrandMuxer(WebArg arg) : base(arg)
         {
         }
 

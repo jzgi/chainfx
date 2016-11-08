@@ -4,9 +4,9 @@
     {
         string Key { get; }
 
-        Roll<WebDo> Children { get; }
+        Roll<WebDoer> Children { get; }
 
-        T AddChild<T>(string key, object state = null) where T : WebDo;
+        T AddChild<T>(string key, object state = null) where T : WebDoer;
 
         string Folder { get; }
 

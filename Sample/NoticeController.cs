@@ -5,11 +5,11 @@ using static Greatbone.Core.ZUtility;
 namespace Greatbone.Sample
 {
 
-    public class NoticeModuleDo : AbstModuleDo, IMgmt
+    public class NoticeController : AbstController, IMgmt
     {
-        public NoticeModuleDo(WebArg arg) : base(arg)
+        public NoticeController(WebArg arg) : base(arg)
         {
-            SetMux<NoticeMuxDo>();
+            SetMuxer<NoticeMuxer>();
         }
 
         public override void @default(WebContext wc, string subscpt)

@@ -10,13 +10,13 @@ namespace Greatbone.Sample
     /// The user module controller.
     /// </summary>
     ///
-    public class UserModuleDo : AbstModuleDo, IMgmt
+    public class UserController : AbstController, IMgmt
     {
         ConcurrentDictionary<string, string> vcodes = new ConcurrentDictionary<string, string>(Environment.ProcessorCount * 4, 1024);
 
-        public UserModuleDo(WebArg arg) : base(arg)
+        public UserController(WebArg arg) : base(arg)
         {
-            SetMux<UserMuxDo>();
+            SetMuxer<UserMuxer>();
         }
 
         /// <summary>

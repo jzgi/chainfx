@@ -4,7 +4,7 @@ namespace Greatbone.Core
 {
     public class MsgQueue : IKeyed
     {
-        readonly WebServiceDo service;
+        readonly WebServicer service;
 
         readonly string addr;
 
@@ -16,7 +16,7 @@ namespace Greatbone.Core
 
         Roll<MsgHook> hooks;
 
-        internal MsgQueue(WebServiceDo service, string addr)
+        internal MsgQueue(WebServicer service, string addr)
         {
             this.service = service;
             this.addr = addr;

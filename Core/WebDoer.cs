@@ -11,7 +11,7 @@ namespace Greatbone.Core
     /// A web doer/controller realizes a virtual directory that contains static/dynamic resources.
     /// </summary>
     ///
-    public abstract class WebDo : IKeyed
+    public abstract class WebDoer : IKeyed
     {
         // makes state-passing convenient
         internal readonly WebArg arg;
@@ -23,7 +23,7 @@ namespace Greatbone.Core
         readonly WebAction defaction;
 
 
-        protected WebDo(WebArg arg)
+        protected WebDoer(WebArg arg)
         {
             this.arg = arg;
 
@@ -58,7 +58,7 @@ namespace Greatbone.Core
 
         public IParent Parent => arg.Parent;
 
-        public WebServiceDo Service => arg.Service;
+        public WebServicer Service => arg.Service;
 
 
         // public Roll<WebAction> Actions => actions;

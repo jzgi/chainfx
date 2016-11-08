@@ -22,7 +22,7 @@ namespace Greatbone.Core
     /// A service doer/controller implements a microservice.
     /// </summary>
     ///
-    public abstract class WebServiceDo : WebModuleDo, IHttpApplication<HttpContext>, ILoggerProvider, ILogger, IDisposable
+    public abstract class WebServicer : WebController, IHttpApplication<HttpContext>, ILoggerProvider, ILogger, IDisposable
     {
         // SERVER
         //
@@ -53,7 +53,7 @@ namespace Greatbone.Core
         readonly Thread scheduler;
 
 
-        protected WebServiceDo(WebConfig cfg) : base(cfg)
+        protected WebServicer(WebConfig cfg) : base(cfg)
         {
             // adjust configuration
             cfg.Service = this;
@@ -273,7 +273,7 @@ namespace Greatbone.Core
             else // dispatch to child or multiplexer
             {
                 string dir = relative.Substring(0, slash);
-                WebDo child;
+                WebDoer child;
                 if (children != null && children.TryGet(dir, out child)) // seek sub first
                 {
                     child.Handle(relative.Substring(slash + 1), wc);
@@ -454,7 +454,7 @@ namespace Greatbone.Core
         /// <summary>
         /// Runs a number of web services and block until shutdown.
         /// </summary>
-        public static void Run(params WebServiceDo[] services)
+        public static void Run(params WebServicer[] services)
         {
             using (var cts = new CancellationTokenSource())
             {
@@ -467,7 +467,7 @@ namespace Greatbone.Core
                 };
 
                 // start services
-                foreach (WebServiceDo svc in services)
+                foreach (WebServicer svc in services)
                 {
                     svc.Start();
                 }
@@ -478,7 +478,7 @@ namespace Greatbone.Core
                 {
                     ((IApplicationLifetime)state).StopApplication();
                     // dispose services
-                    foreach (WebServiceDo svc in services)
+                    foreach (WebServicer svc in services)
                     {
                         svc.OnStop();
 

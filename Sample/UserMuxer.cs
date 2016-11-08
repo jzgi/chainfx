@@ -6,9 +6,9 @@ namespace Greatbone.Sample
     /// <summary>
     /// The user variable-hub controller.
     ///
-    public class UserMuxDo : WebMuxDo
+    public class UserMuxer : WebMuxer
     {
-        public UserMuxDo(WebArg arg) : base(arg)
+        public UserMuxer(WebArg arg) : base(arg)
         {
         }
 

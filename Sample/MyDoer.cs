@@ -2,9 +2,9 @@
 
 namespace Greatbone.Sample
 {
-    public class MyDo : WebDo
+    public class MyDoer : WebDoer
     {
-        public MyDo(WebArg arg) : base(arg)
+        public MyDoer(WebArg arg) : base(arg)
         {
         }
     }

@@ -3,9 +3,9 @@ using Greatbone.Core;
 
 namespace Greatbone.Sample
 {
-    public class NoticeMuxDo : WebMuxDo
+    public class NoticeMuxer : WebMuxer
     {
-        public NoticeMuxDo(WebArg arg) : base(arg)
+        public NoticeMuxer(WebArg arg) : base(arg)
         {
         }
 

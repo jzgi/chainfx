@@ -17,7 +17,7 @@ namespace Greatbone.Core
 
         public virtual string Folder { get; internal set; }
 
-        public WebServiceDo Service { get; internal set; }
+        public WebServicer Service { get; internal set; }
 
 
         public string GetFilePath(string file)

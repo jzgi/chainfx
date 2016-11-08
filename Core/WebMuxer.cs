@@ -9,20 +9,20 @@ namespace Greatbone.Core
     /// A multiplexer doer/controller handles requests that are targeted variable-keys. 
     /// </summary>
     ///
-    public abstract class WebMuxDo : WebDo, IParent
+    public abstract class WebMuxer : WebDoer, IParent
     {
         // child controls
-        private Roll<WebDo> children;
+        private Roll<WebDoer> children;
 
-        protected WebMuxDo(WebArg arg) : base(arg) { }
+        protected WebMuxer(WebArg arg) : base(arg) { }
 
-        public Roll<WebDo> Children => children;
+        public Roll<WebDoer> Children => children;
 
-        public D AddChild<D>(string key, object state = null) where D : WebDo
+        public D AddChild<D>(string key, object state = null) where D : WebDoer
         {
             if (children == null)
             {
-                children = new Roll<WebDo>(16);
+                children = new Roll<WebDoer>(16);
             }
             // create instance by reflection
             Type typ = typeof(D);
@@ -54,7 +54,7 @@ namespace Greatbone.Core
             else // dispatch to child control
             {
                 string dir = relative.Substring(0, slash);
-                WebDo child;
+                WebDoer child;
                 if (children != null && children.TryGet(relative, out child))
                 {
                     child.Handle(relative.Substring(slash), wc);
