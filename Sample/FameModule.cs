@@ -6,11 +6,11 @@ namespace Greatbone.Sample
 
     ///
     /// /fame/
-    public class FameController : AbstController, IMgmt
+    public class FameModule : AbstModule, IMgmt
     {
-        public FameController(WebArg arg) : base(arg)
+        public FameModule(WebHierarchyContext whc) : base(whc)
         {
-            SetMuxer<FameMuxer>();
+            SetMux<FameMux>();
         }
 
         public override void @default(WebContext wc, string subscpt)

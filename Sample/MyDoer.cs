@@ -2,9 +2,9 @@
 
 namespace Greatbone.Sample
 {
-    public class MyDoer : WebDoer
+    public class MyRun : WebWork
     {
-        public MyDoer(WebArg arg) : base(arg)
+        public MyRun(WebHierarchyContext whc) : base(whc)
         {
         }
     }

@@ -6,33 +6,33 @@ namespace Greatbone.Core
 {
 
     /// <summary>
-    /// A module web directory controller that can contain child- and multiplexer controllers.
+    /// A web module is a controller that can contain child- and multiplexer works.
     /// </summary>
-    public abstract class WebController : WebDoer, IParent
+    public abstract class WebModule : WebWork, IParent
     {
         const string VarKey = "-var-";
 
         // child controls, if any
-        internal Roll<WebDoer> children;
+        internal Roll<WebWork> children;
 
         // the attached multiplexer doer/controller, if any
-        internal WebMuxer mux;
+        internal WebMux mux;
 
-        protected WebController(WebArg arg) : base(arg)
+        protected WebModule(WebHierarchyContext whc) : base(whc)
         {
         }
 
-        public D AddChild<D>(string key, object state = null) where D : WebDoer
+        public W AddChild<W>(string key, object state = null) where W : WebWork
         {
             if (children == null)
             {
-                children = new Roll<WebDoer>(16);
+                children = new Roll<WebWork>(16);
             }
             // create instance by reflection
-            Type typ = typeof(D);
-            ConstructorInfo ci = typ.GetConstructor(new[] { typeof(WebArg) });
+            Type typ = typeof(W);
+            ConstructorInfo ci = typ.GetConstructor(new[] { typeof(WebHierarchyContext) });
             if (ci == null) { throw new WebException(typ + ": the constructor with WebTie"); }
-            WebArg arg = new WebArg
+            WebHierarchyContext arg = new WebHierarchyContext
             {
                 key = key,
                 State = state,
@@ -41,23 +41,23 @@ namespace Greatbone.Core
                 Folder = (Parent == null) ? key : Path.Combine(Parent.Folder, key),
                 Service = Service
             };
-            D child = (D)ci.Invoke(new object[] { arg });
-            children.Add(child);
+            W work = (W)ci.Invoke(new object[] { arg });
+            children.Add(work);
 
-            return child;
+            return work;
         }
 
-        public Roll<WebDoer> Children => children;
+        public Roll<WebWork> Children => children;
 
-        public WebMuxer Mux => mux;
+        public WebMux Mux => mux;
 
-        public D SetMuxer<D>(object state = null) where D : WebMuxer
+        public M SetMux<M>(object state = null) where M : WebMux
         {
             // create instance
-            Type typ = typeof(D);
-            ConstructorInfo ci = typ.GetConstructor(new[] { typeof(WebArg) });
+            Type typ = typeof(M);
+            ConstructorInfo ci = typ.GetConstructor(new[] { typeof(WebHierarchyContext) });
             if (ci == null) { throw new WebException(typ + ": the constructor with WebTie"); }
-            WebArg arg = new WebArg
+            WebHierarchyContext arg = new WebHierarchyContext
             {
                 key = VarKey,
                 State = state,
@@ -66,7 +66,7 @@ namespace Greatbone.Core
                 Folder = (Parent == null) ? VarKey : Path.Combine(Parent.Folder, VarKey),
                 Service = Service
             };
-            D mux = (D)ci.Invoke(new object[] { arg });
+            M mux = (M)ci.Invoke(new object[] { arg });
             this.mux = mux;
 
             return mux;
@@ -82,7 +82,7 @@ namespace Greatbone.Core
             else // dispatch to child or multiplexer
             {
                 string dir = relative.Substring(0, slash);
-                WebDoer child;
+                WebWork child;
                 if (children != null && children.TryGet(dir, out child)) // seek sub first
                 {
                     child.Handle(relative.Substring(slash + 1), wc);

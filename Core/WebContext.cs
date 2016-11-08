@@ -19,7 +19,7 @@ namespace Greatbone.Core
         {
         }
 
-        public WebDoer Doer { get; internal set; }
+        public WebWork Doer { get; internal set; }
 
         public WebAction Action { get; internal set; }
 

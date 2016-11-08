@@ -7,11 +7,11 @@ namespace Greatbone.Sample
 {
     /// /123/Get
     /// /123/Put
-    public class ChatMuxer : WebMuxer
+    public class ChatMux : WebMux
     {
         private ConcurrentDictionary<string, List<Chat>> online;
 
-        public ChatMuxer(WebArg arg) : base(arg)
+        public ChatMux(WebHierarchyContext whc) : base(whc)
         {
         }
 

@@ -2,7 +2,7 @@
 
 namespace Greatbone.Core
 {
-    public class WebArg
+    public class WebHierarchyContext
     {
         internal string key;
 
@@ -17,7 +17,7 @@ namespace Greatbone.Core
 
         public virtual string Folder { get; internal set; }
 
-        public WebServicer Service { get; internal set; }
+        public WebService Service { get; internal set; }
 
 
         public string GetFilePath(string file)

@@ -19,10 +19,10 @@ using Npgsql;
 namespace Greatbone.Core
 {
     /// <summary>
-    /// A service doer/controller implements a microservice.
+    /// A service work implements a microservice.
     /// </summary>
     ///
-    public abstract class WebServicer : WebController, IHttpApplication<HttpContext>, ILoggerProvider, ILogger, IDisposable
+    public abstract class WebService : WebModule, IHttpApplication<HttpContext>, ILoggerProvider, ILogger, IDisposable
     {
         // SERVER
         //
@@ -53,7 +53,7 @@ namespace Greatbone.Core
         readonly Thread scheduler;
 
 
-        protected WebServicer(WebConfig cfg) : base(cfg)
+        protected WebService(WebConfig cfg) : base(cfg)
         {
             // adjust configuration
             cfg.Service = this;
@@ -109,7 +109,7 @@ namespace Greatbone.Core
 
         }
 
-        public WebConfig Config => (WebConfig)arg;
+        public WebConfig Config => (WebConfig)ctx;
 
         internal Roll<MsgQueue> Queues => queues;
 
@@ -273,7 +273,7 @@ namespace Greatbone.Core
             else // dispatch to child or multiplexer
             {
                 string dir = relative.Substring(0, slash);
-                WebDoer child;
+                WebWork child;
                 if (children != null && children.TryGet(dir, out child)) // seek sub first
                 {
                     child.Handle(relative.Substring(slash + 1), wc);
@@ -454,7 +454,7 @@ namespace Greatbone.Core
         /// <summary>
         /// Runs a number of web services and block until shutdown.
         /// </summary>
-        public static void Run(params WebServicer[] services)
+        public static void Run(params WebService[] services)
         {
             using (var cts = new CancellationTokenSource())
             {
@@ -467,7 +467,7 @@ namespace Greatbone.Core
                 };
 
                 // start services
-                foreach (WebServicer svc in services)
+                foreach (WebService svc in services)
                 {
                     svc.Start();
                 }
@@ -478,7 +478,7 @@ namespace Greatbone.Core
                 {
                     ((IApplicationLifetime)state).StopApplication();
                     // dispose services
-                    foreach (WebServicer svc in services)
+                    foreach (WebService svc in services)
                     {
                         svc.OnStop();
 

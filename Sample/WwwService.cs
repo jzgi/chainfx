@@ -8,11 +8,11 @@ namespace Greatbone.Sample
     /// The website service controller.
     /// </summary>
     ///
-    public class WwwServicer : AbstServicer
+    public class WwwService : AbstService
     {
-        public WwwServicer(WebConfig cfg) : base(cfg)
+        public WwwService(WebConfig cfg) : base(cfg)
         {
-            AddChild<MyDoer>("my");
+            AddChild<MyRun>("my");
         }
 
 

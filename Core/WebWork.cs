@@ -8,13 +8,13 @@ namespace Greatbone.Core
 
     ///
     /// <summary>
-    /// A web doer/controller realizes a virtual directory that contains static/dynamic resources.
+    /// A web work is a server-side /controller that realizes a virtual directory containing static/dynamic resources.
     /// </summary>
     ///
-    public abstract class WebDoer : IKeyed
+    public abstract class WebWork : IKeyed
     {
         // makes state-passing convenient
-        internal readonly WebArg arg;
+        internal readonly WebHierarchyContext ctx;
 
         // declared actions 
         readonly Roll<WebAction> actions;
@@ -23,9 +23,9 @@ namespace Greatbone.Core
         readonly WebAction defaction;
 
 
-        protected WebDoer(WebArg arg)
+        protected WebWork(WebHierarchyContext whc)
         {
-            this.arg = arg;
+            this.ctx = whc;
 
             // init actions
             actions = new Roll<WebAction>(32);
@@ -48,17 +48,17 @@ namespace Greatbone.Core
         ///
         /// The key by which this sub-controller is added to its parent
         ///
-        public string Key => arg.Key;
+        public string Key => ctx.Key;
 
-        public object State => arg.State;
+        public object State => ctx.State;
 
-        public bool IsMux => arg.IsVar;
+        public bool IsMux => ctx.IsVar;
 
-        public string Folder => arg.Folder;
+        public string Folder => ctx.Folder;
 
-        public IParent Parent => arg.Parent;
+        public IParent Parent => ctx.Parent;
 
-        public WebServicer Service => arg.Service;
+        public WebService Service => ctx.Service;
 
 
         // public Roll<WebAction> Actions => actions;

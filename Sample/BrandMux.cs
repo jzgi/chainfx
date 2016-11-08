@@ -2,9 +2,9 @@
 
 namespace Greatbone.Sample
 {
-    public class BrandMuxer : WebMuxer
+    public class BrandMux : WebMux
     {
-        public BrandMuxer(WebArg arg) : base(arg)
+        public BrandMux(WebHierarchyContext whc) : base(whc)
         {
         }
 

@@ -6,29 +6,29 @@ namespace Greatbone.Core
 {
     ///
     /// <summary>
-    /// A multiplexer doer/controller handles requests that are targeted variable-keys. 
+    /// A multiplexer controller that handles requests targeting variable-keys. 
     /// </summary>
     ///
-    public abstract class WebMuxer : WebDoer, IParent
+    public abstract class WebMux : WebWork, IParent
     {
         // child controls
-        private Roll<WebDoer> children;
+        private Roll<WebWork> children;
 
-        protected WebMuxer(WebArg arg) : base(arg) { }
+        protected WebMux(WebHierarchyContext whc) : base(whc) { }
 
-        public Roll<WebDoer> Children => children;
+        public Roll<WebWork> Children => children;
 
-        public D AddChild<D>(string key, object state = null) where D : WebDoer
+        public D AddChild<D>(string key, object state = null) where D : WebWork
         {
             if (children == null)
             {
-                children = new Roll<WebDoer>(16);
+                children = new Roll<WebWork>(16);
             }
             // create instance by reflection
             Type typ = typeof(D);
-            ConstructorInfo ci = typ.GetConstructor(new[] { typeof(WebArg) });
+            ConstructorInfo ci = typ.GetConstructor(new[] { typeof(WebHierarchyContext) });
             if (ci == null) { throw new WebException(typ + ": the constructor with WebTie"); }
-            WebArg arg = new WebArg
+            WebHierarchyContext arg = new WebHierarchyContext
             {
                 key = key,
                 State = state,
@@ -54,7 +54,7 @@ namespace Greatbone.Core
             else // dispatch to child control
             {
                 string dir = relative.Substring(0, slash);
-                WebDoer child;
+                WebWork child;
                 if (children != null && children.TryGet(relative, out child))
                 {
                     child.Handle(relative.Substring(slash), wc);
