@@ -104,7 +104,7 @@ namespace Greatbone.Core
             }
         }
 
-        public ArraySegment<byte>? ReadByteAs()
+        public ArraySegment<byte>? ReadByteA()
         {
             EnsureReadAsync();
 
@@ -116,18 +116,21 @@ namespace Greatbone.Core
         public Form ReadForm()
         {
             EnsureParse();
+
             return entity as Form;
         }
 
         public Obj ReadObj()
         {
             EnsureParse();
+
             return entity as Obj;
         }
 
         public Arr ReadArr()
         {
             EnsureParse();
+
             return entity as Arr;
         }
 
@@ -154,7 +157,8 @@ namespace Greatbone.Core
         public Elem ReadElem()
         {
             EnsureParse();
-            return null;
+
+            return entity as Elem;
         }
 
         //

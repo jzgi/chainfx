@@ -110,7 +110,7 @@ namespace Greatbone.Sample
         public void updicon(WebContext wc, string subscpt)
         {
             string id = wc.Var;
-            ArraySegment<byte>? bytes = wc.ReadByteAs();
+            ArraySegment<byte>? bytes = wc.ReadByteA();
             using (var dc = Service.NewDbContext())
             {
                 if (bytes == null)
@@ -168,7 +168,7 @@ namespace Greatbone.Sample
             int n = subscpt.ToInt();
             using (var dc = Service.NewDbContext())
             {
-                ArraySegment<byte>? bytes = wc.ReadByteAs();
+                ArraySegment<byte>? bytes = wc.ReadByteA();
                 if (bytes == null)
                 {
                     wc.StatusCode = 301; ;

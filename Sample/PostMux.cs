@@ -81,7 +81,7 @@ namespace Greatbone.Sample
             int n = subscpt.ToInt();
             using (var dc = Service.NewDbContext())
             {
-                ArraySegment<byte>? bytes = wc.ReadByteAs();
+                ArraySegment<byte>? bytes = wc.ReadByteA();
                 if (bytes == null)
                 {
                     wc.StatusCode = 301;
