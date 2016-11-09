@@ -25,8 +25,21 @@ namespace Greatbone.Core
 
         public IPrincipal Principal { get; internal set; }
 
-        /// The variable-key encountered
-        public string Var { get; internal set; }
+
+        // the chain of keys
+        string[] chain;
+        int vars;
+
+        internal void ChainVar(string key)
+        {
+            if (chain == null)
+            {
+                chain = new string[8];
+            }
+            chain[vars++] = key;
+        }
+
+        public string this[int index] => (index >= 0 && index < vars) ? chain[index] : null;
 
         //
         // REQUEST

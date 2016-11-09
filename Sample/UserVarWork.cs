@@ -20,7 +20,7 @@ namespace Greatbone.Sample
         /// </code>
         public override void @default(WebContext wc, string sub)
         {
-            string id = wc.Var;
+            string id = wc[0];
             string password = null;
             if (!wc.Get(nameof(password), ref password))
             {

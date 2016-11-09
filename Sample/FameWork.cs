@@ -29,7 +29,7 @@ namespace Greatbone.Sample
         /// </code>
         public void top(WebContext wc, string subscpt)
         {
-            string id = wc.Var;
+            string id = wc[0];
             int n = subscpt.ToInt();
             using (var dc = Service.NewDbContext())
             {

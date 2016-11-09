@@ -70,7 +70,7 @@ namespace Greatbone.Core
                 key = key,
                 State = state,
                 Parent = this,
-                HasVar = false,
+                IsVar = false,
                 Folder = (Parent == null) ? key : Path.Combine(Parent.Folder, key),
                 Service = Service
             };
@@ -96,7 +96,7 @@ namespace Greatbone.Core
                 key = VarKey,
                 State = state,
                 Parent = this,
-                HasVar = true,
+                IsVar = true,
                 Folder = (Parent == null) ? VarKey : Path.Combine(Parent.Folder, VarKey),
                 Service = Service
             };
@@ -113,7 +113,7 @@ namespace Greatbone.Core
 
         public object State => ctx.State;
 
-        public bool HasVar => ctx.HasVar;
+        public bool IsVar => ctx.IsVar;
 
         public string Folder => ctx.Folder;
 
@@ -167,7 +167,7 @@ namespace Greatbone.Core
                 }
                 else
                 {
-                    wc.Var = dir;
+                    wc.ChainVar(dir);
                     var.Handle(relative.Substring(slash + 1), wc);
                 }
             }
