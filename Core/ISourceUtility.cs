@@ -5,10 +5,10 @@ namespace Greatbone.Core
     public static class ISourceUtility
     {
 
-        public static B ToBean<B>(this ISource sc, byte z = 0) where B : IBean, new()
+        public static B ToBean<B>(this ISource src, byte z = 0) where B : IBean, new()
         {
             B bean = new B();
-            bean.Load(sc, z);
+            bean.Load(src, z);
             return bean;
         }
 

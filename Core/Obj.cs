@@ -230,13 +230,13 @@ namespace Greatbone.Core
             Member pair;
             if (pairs.TryGet(name, out pair))
             {
-                Arr ja = pair;
-                if (ja != null)
+                Arr arr = pair;
+                if (arr != null)
                 {
-                    v = new short[ja.Count];
-                    for (int i = 0; i < ja.Count; i++)
+                    v = new short[arr.Count];
+                    for (int i = 0; i < arr.Count; i++)
                     {
-                        v[i] = ja[i];
+                        v[i] = arr[i];
                     }
                 }
                 return true;
@@ -249,13 +249,13 @@ namespace Greatbone.Core
             Member pair;
             if (pairs.TryGet(name, out pair))
             {
-                Arr ja = pair;
-                if (ja != null)
+                Arr arr = pair;
+                if (arr != null)
                 {
-                    v = new int[ja.Count];
-                    for (int i = 0; i < ja.Count; i++)
+                    v = new int[arr.Count];
+                    for (int i = 0; i < arr.Count; i++)
                     {
-                        v[i] = ja[i];
+                        v[i] = arr[i];
                     }
                 }
                 return true;
@@ -268,13 +268,13 @@ namespace Greatbone.Core
             Member pair;
             if (pairs.TryGet(name, out pair))
             {
-                Arr ja = pair;
-                if (ja != null)
+                Arr arr = pair;
+                if (arr != null)
                 {
-                    v = new long[ja.Count];
-                    for (int i = 0; i < ja.Count; i++)
+                    v = new long[arr.Count];
+                    for (int i = 0; i < arr.Count; i++)
                     {
-                        v[i] = ja[i];
+                        v[i] = arr[i];
                     }
                 }
                 return true;
@@ -287,13 +287,13 @@ namespace Greatbone.Core
             Member pair;
             if (pairs.TryGet(name, out pair))
             {
-                Arr ja = pair;
-                if (ja != null)
+                Arr arr = pair;
+                if (arr != null)
                 {
-                    v = new string[ja.Count];
-                    for (int i = 0; i < ja.Count; i++)
+                    v = new string[arr.Count];
+                    for (int i = 0; i < arr.Count; i++)
                     {
-                        v[i] = ja[i];
+                        v[i] = arr[i];
                     }
                 }
                 return true;
@@ -301,7 +301,7 @@ namespace Greatbone.Core
             return false;
         }
 
-        public bool Get<D>(string name, ref D[] v, byte z = 0) where D : IBean, new()
+        public bool Get<B>(string name, ref B[] v, byte z = 0) where B : IBean, new()
         {
             Member pair;
             if (pairs.TryGet(name, out pair))
@@ -309,12 +309,12 @@ namespace Greatbone.Core
                 Arr arr = pair;
                 if (arr != null)
                 {
-                    v = new D[arr.Count];
+                    v = new B[arr.Count];
                     for (int i = 0; i < arr.Count; i++)
                     {
                         Obj obj = arr[i];
-                        D dat = new D(); dat.Load(obj);
-                        v[i] = dat;
+                        B bean = new B(); bean.Load(obj);
+                        v[i] = bean;
                     }
                 }
                 return true;

@@ -790,7 +790,7 @@ namespace Greatbone.Core
             return this;
         }
 
-        public HtmlContent Put<V>(string name, V v, byte z = 0) where V : IBean
+        public HtmlContent Put<B>(string name, B v, byte z = 0) where B : IBean
         {
             return this;
         }
@@ -825,7 +825,7 @@ namespace Greatbone.Core
             return this;
         }
 
-        public HtmlContent Put<V>(string name, V[] v, byte z = 0) where V : IBean
+        public HtmlContent Put<B>(string name, B[] v, byte z = 0) where B : IBean
         {
             return this;
         }

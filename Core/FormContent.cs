@@ -309,7 +309,7 @@ namespace Greatbone.Core
             return this; // ignore ir
         }
 
-        public FormContent Put<P>(string name, P v, byte z = 0) where P : IBean
+        public FormContent Put<B>(string name, B v, byte z = 0) where B : IBean
         {
             if (counts[level]++ > 0) Add(',');
 
@@ -523,7 +523,7 @@ namespace Greatbone.Core
         }
 
 
-        public FormContent Put<P>(string name, P[] v, byte z = 0) where P : IBean
+        public FormContent Put<B>(string name, B[] v, byte z = 0) where B : IBean
         {
             if (counts[level]++ > 0) Add(',');
 
