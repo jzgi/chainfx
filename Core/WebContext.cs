@@ -19,7 +19,7 @@ namespace Greatbone.Core
         {
         }
 
-        public WebWork Doer { get; internal set; }
+        public WebWork Work { get; internal set; }
 
         public WebAction Action { get; internal set; }
 
@@ -142,13 +142,13 @@ namespace Greatbone.Core
             return bean;
         }
 
-        public D[] ReadBeans<D>(byte z = 0) where D : IBean, new()
+        public B[] ReadBeans<B>(byte z = 0) where B : IBean, new()
         {
             EnsureParse();
 
             Arr arr = entity as Arr;
             if (arr == null) return null;
-            return arr.ToBeans<D>(z);
+            return arr.ToBeans<B>(z);
         }
 
         public Elem ReadElem()
@@ -360,14 +360,14 @@ namespace Greatbone.Core
             MaxAge = maxage;
         }
 
-        public void SendJson<M>(int status, M model, byte z = 0, bool? pub = null, int maxage = 60000) where M : IBean
+        public void SendJson<B>(int status, B bean, byte z = 0, bool? pub = null, int maxage = 60000) where B : IBean
         {
-            SendJson(status, cont => cont.PutObj(model, z), pub, maxage);
+            SendJson(status, cont => cont.PutObj(bean, z), pub, maxage);
         }
 
-        public void SendJson<M>(int status, M[] models, byte z = 0, bool? pub = null, int maxage = 60000) where M : IBean
+        public void SendJson<B>(int status, B[] beans, byte z = 0, bool? pub = null, int maxage = 60000) where B : IBean
         {
-            SendJson(status, cont => cont.PutArr(models, z), pub, maxage);
+            SendJson(status, cont => cont.PutArr(beans, z), pub, maxage);
         }
 
         public void SendJson(int status, Action<JsonContent> a, bool? pub = null, int maxage = 60000)
@@ -420,7 +420,7 @@ namespace Greatbone.Core
         public async void CallByGet(string service, string part, string uri)
         {
             // token impersonate
-            WebClient cli = Doer.Service.FindClient(service, part);
+            WebClient cli = Work.Service.FindClient(service, part);
             if (cli != null)
             {
                 object obj = await cli.GetAsync(uri);
@@ -430,7 +430,7 @@ namespace Greatbone.Core
         public void CallByPost(string service, string part, Action<JsonContent> a)
         {
             // token impersonate
-            WebClient cli = Doer.Service.FindClient(service, part);
+            WebClient cli = Work.Service.FindClient(service, part);
             if (cli != null)
             {
                 JsonContent cont = new JsonContent(true, true, 8 * 1024);

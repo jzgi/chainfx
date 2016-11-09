@@ -481,12 +481,12 @@ namespace Greatbone.Core
             BufferUtility.Return(cont);
         }
 
-        public void Publish<P>(string topic, string part, P obj) where P : IBean
+        public void Publish<B>(string topic, string part, B obj) where B : IBean
         {
             Publish(topic, part, jcont => jcont.PutObj(obj));
         }
 
-        public void Publish<P>(string topic, string part, P[] arr) where P : IBean
+        public void Publish<B>(string topic, string part, B[] arr) where B : IBean
         {
             Publish(topic, part, jcont => jcont.PutArr(arr));
         }

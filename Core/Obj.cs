@@ -187,7 +187,7 @@ namespace Greatbone.Core
             return false;
         }
 
-        public bool Get<D>(string name, ref D v, byte z = 0) where D : IBean, new()
+        public bool Get<B>(string name, ref B v, byte z = 0) where B : IBean, new()
         {
             Member pair;
             if (pairs.TryGet(name, out pair))
@@ -195,7 +195,7 @@ namespace Greatbone.Core
                 Obj obj = (Obj)pair;
                 if (obj != null)
                 {
-                    v = new D();
+                    v = new B();
                     v.Load(obj);
                 }
                 return true;

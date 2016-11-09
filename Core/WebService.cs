@@ -265,9 +265,9 @@ namespace Greatbone.Core
                 }
                 else
                 {
-                    wc.Doer = this;
+                    wc.Work = this;
                     DoRsc(relative, wc);
-                    wc.Doer = null;
+                    wc.Work = null;
                 }
             }
             else // dispatch to child or multiplexer

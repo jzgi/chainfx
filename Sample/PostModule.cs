@@ -39,8 +39,8 @@ namespace Greatbone.Sample
                     DbSql sql = new DbSql("SELECT ").columnlst(Post.Empty, z)._("FROM posts WHERE authorid = @1 ORDER BY id DESC LIMIT 20 OFFSET @2");
                     if (dc.Query(sql.ToString(), p => p.Put(authorid).Put(20 * page)))
                     {
-                        Post[] arr = dc.ToBeans<Post>(z);
-                        wc.SendJson(200, arr, z);
+                        Post[] posts = dc.ToBeans<Post>(z);
+                        wc.SendJson(200, posts, z);
                     }
                     else
                         wc.StatusCode = 204; // no content
@@ -53,8 +53,8 @@ namespace Greatbone.Sample
                     DbSql sql = new DbSql("SELECT ").columnlst(Post.Empty, z)._("FROM posts ORDER BY id DESC LIMIT 20 OFFSET @1");
                     if (dc.Query(sql.ToString(), p => p.Put(20 * page)))
                     {
-                        Post[] arr = dc.ToBeans<Post>(z);
-                        wc.SendJson(200, arr, z);
+                        Post[] posts = dc.ToBeans<Post>(z);
+                        wc.SendJson(200, posts, z);
                     }
                     else
                         wc.StatusCode = 204; // no content
@@ -77,15 +77,15 @@ namespace Greatbone.Sample
         public void @new(WebContext wc, string subscpt)
         {
             IPrincipal tok = wc.Principal;
-            Post bean = wc.ReadBean<Post>();
-            bean.time = DateTime.Now;
-            bean.authorid = tok.Key;
-            bean.author = tok.Name;
+            Post post = wc.ReadBean<Post>();
+            post.time = DateTime.Now;
+            post.authorid = tok.Key;
+            post.author = tok.Name;
 
             using (var dc = Service.NewDbContext())
             {
                 DbSql sql = new DbSql("INSERT INTO posts")._(Post.Empty)._VALUES_(Post.Empty)._(" RETURNING ID");
-                object id = dc.Scalar(sql.ToString(), p => bean.Dump(p));
+                object id = dc.Scalar(sql.ToString(), p => post.Dump(p));
                 if (id != null)
                 {
                     wc.SetHeader("Location", id.ToString());

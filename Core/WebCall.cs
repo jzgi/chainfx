@@ -90,12 +90,12 @@ namespace Greatbone.Core
             return null;
         }
 
-        public P ReadObj<P>(byte z = 0) where P : IBean, new()
+        public B ReadObj<B>(byte z = 0) where B : IBean, new()
         {
-            return default(P);
+            return default(B);
         }
 
-        public P[] ReadArr<P>(byte z = 0) where P : IBean, new()
+        public B[] ReadArr<B>(byte z = 0) where B : IBean, new()
         {
             return null;
         }

@@ -77,9 +77,9 @@ namespace Greatbone.Core
             level--; // exit
         }
 
-        public void PutArr<P>(P[] arr, byte z = 0) where P : IBean
+        public void PutArr<B>(B[] beans, byte z = 0) where B : IBean
         {
-            Put(null, arr, z);
+            Put(null, beans, z);
         }
 
         public void PutObj(Action a)
@@ -95,9 +95,9 @@ namespace Greatbone.Core
             level--; // exit
         }
 
-        public void PutObj<P>(P obj, byte z = 0) where P : IBean
+        public void PutObj<B>(B bean, byte z = 0) where B : IBean
         {
-            Put(null, obj, z);
+            Put(null, bean, z);
         }
 
 
@@ -309,7 +309,7 @@ namespace Greatbone.Core
             return this; // ignore ir
         }
 
-        public XmlContent Put<P>(string name, P v, byte z = 0) where P : IBean
+        public XmlContent Put<B>(string name, B v, byte z = 0) where B : IBean
         {
             if (counts[level]++ > 0) Add(',');
 
@@ -523,7 +523,7 @@ namespace Greatbone.Core
         }
 
 
-        public XmlContent Put<P>(string name, P[] v, byte z = 0) where P : IBean
+        public XmlContent Put<B>(string name, B[] v, byte z = 0) where B : IBean
         {
             if (counts[level]++ > 0) Add(',');
 

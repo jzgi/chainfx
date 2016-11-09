@@ -184,12 +184,12 @@ namespace Greatbone.Core
         }
 
 
-        public bool Get<M>(string name, ref M[] v, byte z = 0) where M : IBean, new()
+        public bool Get<B>(string name, ref B[] v, byte z = 0) where B : IBean, new()
         {
             throw new NotImplementedException();
         }
 
-        public bool Get<M>(string name, ref M v, byte z = 0) where M : IBean, new()
+        public bool Get<B>(string name, ref B v, byte z = 0) where B : IBean, new()
         {
             throw new NotImplementedException();
         }

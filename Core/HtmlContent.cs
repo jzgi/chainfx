@@ -215,9 +215,9 @@ namespace Greatbone.Core
             T("</td>");
         }
 
-        public void table<M>(M[] arr, byte z = 0) where M : IBean
+        public void table<B>(B[] arr, byte z = 0) where B : IBean
         {
-            M obj = arr[0];
+            B obj = arr[0];
 
             table(
                 ths =>
@@ -246,28 +246,28 @@ namespace Greatbone.Core
             Add("</form>");
         }
 
-        public void form<M>(WebAction[] was, M[] arr, byte z = 0) where M : IBean
+        public void form<B>(WebAction[] was, B[] beans, byte z = 0) where B : IBean
         {
             Add("<form class=\"pure-form pure-g\">");
 
             // buttons
             buttonlst(was);
 
-            if (arr != null)
+            if (beans != null)
             {
-                table(arr, z);
+                table(beans, z);
             }
 
             Add("</form>");
         }
 
-        public void form<P>(WebAction wa, P obj, byte z = 0) where P : IBean
+        public void form<B>(WebAction wa, B bean, byte z = 0) where B : IBean
         {
             Add("<form class=\"pure-form pure-g\">");
 
             ctx = FormFields;
 
-            obj.Dump(this);
+            bean.Dump(this);
 
             // function buttuns
 

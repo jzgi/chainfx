@@ -18,14 +18,14 @@ namespace Greatbone.Core
 
         public Roll<WebWork> Children => children;
 
-        public D AddChild<D>(string key, object state = null) where D : WebWork
+        public W AddChild<W>(string key, object state = null) where W : WebWork
         {
             if (children == null)
             {
                 children = new Roll<WebWork>(16);
             }
             // create instance by reflection
-            Type typ = typeof(D);
+            Type typ = typeof(W);
             ConstructorInfo ci = typ.GetConstructor(new[] { typeof(WebNodeContext) });
             if (ci == null) { throw new WebException(typ + ": the constructor with WebTie"); }
             WebNodeContext ctx = new WebNodeContext
@@ -38,7 +38,7 @@ namespace Greatbone.Core
                 Service = Service
             };
             // call the initialization and add
-            D child = (D)ci.Invoke(new object[] { ctx });
+            W child = (W)ci.Invoke(new object[] { ctx });
             children.Add(child);
 
             return child;

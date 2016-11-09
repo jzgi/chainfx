@@ -77,7 +77,7 @@ namespace Greatbone.Core
             level--; // exit
         }
 
-        public void PutArr<P>(P[] arr, byte z = 0) where P : IBean
+        public void PutArr<B>(B[] arr, byte z = 0) where B : IBean
         {
             Put(null, arr, z);
         }
@@ -95,7 +95,7 @@ namespace Greatbone.Core
             level--; // exit
         }
 
-        public void PutObj<P>(P obj, byte z = 0) where P : IBean
+        public void PutObj<B>(B obj, byte z = 0) where B : IBean
         {
             Put(null, obj, z);
         }
