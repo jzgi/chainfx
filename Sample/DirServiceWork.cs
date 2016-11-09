@@ -5,11 +5,11 @@ namespace Greatbone.Sample
     /// <summary>
     /// The directory service controller.
     /// </summary>
-    public class DirService : AbstService
+    public class DirServiceWork : AbstServiceWork
     {
-        public DirService(WebConfig cfg) : base(cfg)
+        public DirServiceWork(WebConfig cfg) : base(cfg)
         {
-            AddChild<UserModule>("user");
+            AddChild<UserWork>("user");
         }
 
     }

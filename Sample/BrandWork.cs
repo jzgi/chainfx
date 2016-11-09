@@ -6,11 +6,11 @@ namespace Greatbone.Sample
     ///
     /// /brand/
     ///
-    public class BrandModule : AbstModule, IMgmt
+    public class BrandWork : WebWork, IMgmt
     {
-        public BrandModule(WebNodeContext wnc) : base(wnc)
+        public BrandWork(WebWorkContext wnc) : base(wnc)
         {
-            SetMux<BrandMux>();
+            SetVar<BrandVarWork>();
         }
 
         public override void @default(WebContext wc, string subscpt)
@@ -22,6 +22,11 @@ namespace Greatbone.Sample
         //
 
         public void del(WebContext wc, string subscpt)
+        {
+            throw new NotImplementedException();
+        }
+
+        public void mgmt(WebContext wc, string subscpt)
         {
             throw new NotImplementedException();
         }

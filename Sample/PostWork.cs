@@ -5,13 +5,13 @@ using static Greatbone.Core.ZUtility;
 namespace Greatbone.Sample
 {
 
-    public class PostModule : AbstModule, IMgmt
+    public class PostWork : WebWork, IMgmt
     {
         readonly WebAction[] mgmtWas;
 
-        public PostModule(WebNodeContext wnc) : base(wnc)
+        public PostWork(WebWorkContext wnc) : base(wnc)
         {
-            SetMux<PostMux>();
+            SetVar<PostVarWork>();
 
             mgmtWas = Actions(nameof(srch), nameof(del), nameof(status));
         }
@@ -102,7 +102,7 @@ namespace Greatbone.Sample
         //
         [CheckAdmin]
         [Button(IsGet = true, Icon = "fa fa-chrome")]
-        public override void mgmt(WebContext wc, string subscpt)
+        public void mgmt(WebContext wc, string subscpt)
         {
             // returh first UI
             wc.SendMajorLayout(200, "管理功能", a =>

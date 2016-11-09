@@ -5,9 +5,9 @@ using static Greatbone.Core.ZUtility;
 namespace Greatbone.Sample
 {
 
-    public class FameMux : WebMux
+    public class FameMuxWork : WebWork
     {
-        public FameMux(WebNodeContext wnc) : base(wnc)
+        public FameMuxWork(WebWorkContext wwc) : base(wwc)
         {
         }
 

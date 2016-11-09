@@ -10,13 +10,13 @@ namespace Greatbone.Sample
     /// The user module controller.
     /// </summary>
     ///
-    public class UserModule : AbstModule, IMgmt
+    public class UserWork : WebWork, IMgmt
     {
         ConcurrentDictionary<string, string> vcodes = new ConcurrentDictionary<string, string>(Environment.ProcessorCount * 4, 1024);
 
-        public UserModule(WebNodeContext wnc) : base(wnc)
+        public UserWork(WebWorkContext wnc) : base(wnc)
         {
-            SetMux<UserMux>();
+            SetVar<UserVarWork>();
         }
 
         /// <summary>
@@ -127,5 +127,9 @@ namespace Greatbone.Sample
             throw new NotImplementedException();
         }
 
+        public void mgmt(WebContext wc, string subscpt)
+        {
+            throw new NotImplementedException();
+        }
     }
 }

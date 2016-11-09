@@ -18,7 +18,7 @@
     /// }
     /// </code>
     ///
-    public class WebConfig : WebNodeContext, IBean
+    public class WebConfig : WebWorkContext, IBean
     {
 
         // partition

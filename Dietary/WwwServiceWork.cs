@@ -1,6 +1,6 @@
 ﻿using Greatbone.Core;
 
-namespace Greatbone.Sample
+namespace Ministry.Dietary
 {
 
     ///
@@ -8,11 +8,11 @@ namespace Greatbone.Sample
     /// The website service controller.
     /// </summary>
     ///
-    public class WwwService : AbstService
+    public class WwwServiceWork : WebServiceWork
     {
-        public WwwService(WebConfig cfg) : base(cfg)
+
+        public WwwServiceWork(WebConfig cfg) : base(cfg)
         {
-            AddChild<MyWork>("my");
         }
 
 
@@ -26,19 +26,7 @@ namespace Greatbone.Sample
         ///
         public void cats(WebContext wc, string subscpt)
         {
-            using (var dc = NewDbContext())
-            {
-                if (dc.Query("SELECT * FROM cats WHERE NOT disabled"))
-                {
-                    Cat[] arr = dc.ToBeans<Cat>();
-                    wc.SendJson(200, arr);
-                }
-                else
-                {
-                    wc.StatusCode = 204;
-                }
 
-            }
         }
 
         public void search(WebContext wc, string subscpt)
@@ -61,4 +49,5 @@ namespace Greatbone.Sample
         }
 
     }
+    
 }

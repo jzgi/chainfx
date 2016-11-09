@@ -8,7 +8,7 @@ namespace Ministry.Dietary
     ///
     public class MyWork : WebWork
     {
-        public MyWork(WebNodeContext wnc) : base(wnc)
+        public MyWork(WebWorkContext wnc) : base(wnc)
         {
         }
 

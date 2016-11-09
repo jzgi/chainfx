@@ -14,7 +14,7 @@ namespace Greatbone.Core
     public abstract class WebWork : IKeyed
     {
         // state-passing
-        internal readonly WebNodeContext ctx;
+        internal readonly WebWorkContext ctx;
 
         // declared actions 
         readonly Roll<WebAction> actions;
@@ -23,9 +23,18 @@ namespace Greatbone.Core
         readonly WebAction defaction;
 
 
-        protected WebWork(WebNodeContext whc)
+        const string VarKey = "-var-";
+
+        // child controls, if any
+        internal Roll<WebWork> children;
+
+        // the attached multiplexer doer/controller, if any
+        internal WebWork var;
+
+
+        protected WebWork(WebWorkContext wwc)
         {
-            this.ctx = whc;
+            this.ctx = wwc;
 
             // init actions
             actions = new Roll<WebAction>(32);
@@ -45,6 +54,58 @@ namespace Greatbone.Core
             }
         }
 
+        public W AddChild<W>(string key, object state = null) where W : WebWork
+        {
+            if (children == null)
+            {
+                children = new Roll<WebWork>(16);
+            }
+            // create instance by reflection
+            Type typ = typeof(W);
+            ConstructorInfo ci = typ.GetConstructor(new[] { typeof(WebWorkContext) });
+            if (ci == null)
+                throw new WebException(typ + " missing WebWorkContext");
+            WebWorkContext ctx = new WebWorkContext
+            {
+                key = key,
+                State = state,
+                Parent = this,
+                HasVar = false,
+                Folder = (Parent == null) ? key : Path.Combine(Parent.Folder, key),
+                Service = Service
+            };
+            W work = (W)ci.Invoke(new object[] { ctx });
+            children.Add(work);
+
+            return work;
+        }
+
+        public Roll<WebWork> Children => children;
+
+        public WebWork Var => var;
+
+        public W SetVar<W>(object state = null) where W : WebWork
+        {
+            // create instance
+            Type typ = typeof(W);
+            ConstructorInfo ci = typ.GetConstructor(new[] { typeof(WebWorkContext) });
+            if (ci == null)
+                throw new WebException(typ + " missing WebWorkContext");
+            WebWorkContext ctx = new WebWorkContext
+            {
+                key = VarKey,
+                State = state,
+                Parent = this,
+                HasVar = true,
+                Folder = (Parent == null) ? VarKey : Path.Combine(Parent.Folder, VarKey),
+                Service = Service
+            };
+            W work = (W)ci.Invoke(new object[] { ctx });
+            this.var = work;
+
+            return work;
+        }
+
         ///
         /// The key by which this sub-controller is added to its parent
         ///
@@ -56,9 +117,9 @@ namespace Greatbone.Core
 
         public string Folder => ctx.Folder;
 
-        public IParent Parent => ctx.Parent;
+        public WebWork Parent => ctx.Parent;
 
-        public WebService Service => ctx.Service;
+        public WebServiceWork Service => ctx.Service;
 
 
         // public Roll<WebAction> Actions => actions;
@@ -84,9 +145,32 @@ namespace Greatbone.Core
             return was;
         }
 
+
         internal virtual void Handle(string relative, WebContext wc)
         {
-            DoRsc(relative, wc);
+            int slash = relative.IndexOf('/');
+            if (slash == -1) // handle it locally
+            {
+                DoRsc(relative, wc);
+            }
+            else // dispatch to child or multiplexer
+            {
+                string dir = relative.Substring(0, slash);
+                WebWork child;
+                if (children != null && children.TryGet(dir, out child)) // seek sub first
+                {
+                    child.Handle(relative.Substring(slash + 1), wc);
+                }
+                else if (var == null)
+                {
+                    wc.StatusCode = 404; // not found
+                }
+                else
+                {
+                    wc.Var = dir;
+                    var.Handle(relative.Substring(slash + 1), wc);
+                }
+            }
         }
 
         internal void DoRsc(string rsc, WebContext wc)

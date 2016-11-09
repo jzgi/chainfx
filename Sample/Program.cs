@@ -28,7 +28,7 @@ namespace Greatbone.Sample
                 "127.0.0.1:7074",
             };
 
-            var www = new WwwService(new WebConfig
+            var www = new WwwServiceWork(new WebConfig
             {
                 key = "www",
                 @extern = "127.0.0.1:8080",
@@ -41,7 +41,7 @@ namespace Greatbone.Sample
 #endif
             );
 
-            var biz = new BizService(new WebConfig
+            var biz = new BizServiceWork(new WebConfig
             {
                 key = "biz",
                 @extern = "127.0.0.1:8081",
@@ -54,7 +54,7 @@ namespace Greatbone.Sample
 #endif
             );
 
-            var cont = new ContService(new WebConfig
+            var cont = new ContServiceWork(new WebConfig
             {
                 key = "cont",
                 @extern = "127.0.0.1:8082",
@@ -67,7 +67,7 @@ namespace Greatbone.Sample
 #endif
             );
 
-            var dir = new DirService(new WebConfig
+            var dir = new DirServiceWork(new WebConfig
             {
                 key = "dir",
                 @extern = "127.0.0.1:8083",
@@ -80,7 +80,7 @@ namespace Greatbone.Sample
 #endif
             );
 
-            var chat = new ChatService(new WebConfig
+            var chat = new ChatServiceWork(new WebConfig
             {
                 key = "chat",
                 @extern = "127.0.0.1:8084",
@@ -93,7 +93,7 @@ namespace Greatbone.Sample
 #endif
             );
 
-            WebService.Run(www, biz, cont, dir, chat);
+            WebServiceWork.Run(www, biz, cont, dir, chat);
         }
     }
 }

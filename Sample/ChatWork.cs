@@ -5,13 +5,14 @@ using Greatbone.Core;
 
 namespace Greatbone.Sample
 {
+
     /// /123/Get
     /// /123/Put
-    public class ChatMux : WebMux
+    public class ChatWork : WebWork
     {
         private ConcurrentDictionary<string, List<Chat>> online;
 
-        public ChatMux(WebNodeContext wnc) : base(wnc)
+        public ChatWork(WebWorkContext wwc) : base(wwc)
         {
         }
 
@@ -63,5 +64,7 @@ namespace Greatbone.Sample
                 }
             }
         }
+
     }
+
 }

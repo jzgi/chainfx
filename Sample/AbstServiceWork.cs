@@ -8,11 +8,11 @@ namespace Greatbone.Sample
     /// The common base class for all service controllers.
     /// </summary>
     ///
-    public abstract class AbstService : WebService
+    public abstract class AbstServiceWork : WebServiceWork
     {
         readonly Login[] logins;
 
-        public AbstService(WebConfig cfg) : base(cfg)
+        public AbstServiceWork(WebConfig cfg) : base(cfg)
         {
             logins = JsonUtility.FileToBeans<Login>(cfg.GetFilePath("$realm.json"));
         }
@@ -55,10 +55,6 @@ namespace Greatbone.Sample
                     for (int i = 0; i < Children.Count; i++)
                     {
                         WebWork child = Children[i];
-                        AbstModule mdl = child as AbstModule;
-                        if (mdl == null) continue;
-
-                        a.T("<li><a href=\"").T(mdl.Key).T("/mgmt\">").T(mdl.Key).T("</a></li>");
                     }
                 },
                 true);

@@ -2,9 +2,9 @@
 
 namespace Greatbone.Sample
 {
-    public class BrandMux : WebMux
+    public class BrandVarWork : WebWork
     {
-        public BrandMux(WebNodeContext wnc) : base(wnc)
+        public BrandVarWork(WebWorkContext wwc) : base(wwc)
         {
         }
 

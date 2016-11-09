@@ -8,11 +8,11 @@ namespace Ministry.Dietary
     /// The operation service controller.
     /// </summary>
     ///
-    public class OpService : WebService
+    public class OpService : WebServiceWork
     {
         public OpService(WebConfig cfg) : base(cfg)
         {
-            SetMux<ShopMux>();
+            SetVar<ShopVarWork>();
         }
 
         ///

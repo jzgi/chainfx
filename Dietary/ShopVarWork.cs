@@ -8,10 +8,10 @@ namespace Ministry.Dietary
     /// The shop multiplex controller.
     /// </summary>
     ///
-    public abstract class ShopMux : WebMux
+    public abstract class ShopVarWork : WebWork
     {
 
-        public ShopMux(WebConfig cfg) : base(cfg)
+        public ShopVarWork(WebConfig cfg) : base(cfg)
         {
             // customer personal
             AddChild<MyWork>("my");

@@ -22,7 +22,7 @@ namespace Greatbone.Core
     /// A service work implements a microservice.
     /// </summary>
     ///
-    public abstract class WebService : WebModule, IHttpApplication<HttpContext>, ILoggerProvider, ILogger, IDisposable
+    public abstract class WebServiceWork : WebWork, IHttpApplication<HttpContext>, ILoggerProvider, ILogger, IDisposable
     {
         // SERVER
         //
@@ -53,7 +53,7 @@ namespace Greatbone.Core
         readonly Thread scheduler;
 
 
-        protected WebService(WebConfig cfg) : base(cfg)
+        protected WebServiceWork(WebConfig cfg) : base(cfg)
         {
             // adjust configuration
             cfg.Service = this;
@@ -256,46 +256,17 @@ namespace Greatbone.Core
 
         internal override void Handle(string relative, WebContext wc)
         {
-            int slash = relative.IndexOf('/');
-            if (slash == -1) // handle it locally
+            if ("*".Equals(relative))
             {
-                if ("*".Equals(relative))
-                {
-                    Peek(wc); // obtain a message
-                }
-                else
-                {
-                    wc.Work = this;
-                    DoRsc(relative, wc);
-                    wc.Work = null;
-                }
+                // handle messaging
+                Peek(wc);
             }
-            else // dispatch to child or multiplexer
+            else
             {
-                string dir = relative.Substring(0, slash);
-                WebWork child;
-                if (children != null && children.TryGet(dir, out child)) // seek sub first
-                {
-                    child.Handle(relative.Substring(slash + 1), wc);
-                }
-                else if (mux == null)
-                {
-                    wc.StatusCode = 404; // not found
-                }
-                else
-                {
-                    wc.Var = dir;
-                    mux.Handle(relative.Substring(slash + 1), wc);
-                }
+                base.Handle(relative, wc);
             }
         }
 
-        ///
-        /// Login user interface and processing
-        ///
-        protected internal virtual void Login(WebContext wc)
-        {
-        }
 
         public void Start()
         {
@@ -454,7 +425,7 @@ namespace Greatbone.Core
         /// <summary>
         /// Runs a number of web services and block until shutdown.
         /// </summary>
-        public static void Run(params WebService[] services)
+        public static void Run(params WebServiceWork[] services)
         {
             using (var cts = new CancellationTokenSource())
             {
@@ -467,7 +438,7 @@ namespace Greatbone.Core
                 };
 
                 // start services
-                foreach (WebService svc in services)
+                foreach (WebServiceWork svc in services)
                 {
                     svc.Start();
                 }
@@ -478,7 +449,7 @@ namespace Greatbone.Core
                 {
                     ((IApplicationLifetime)state).StopApplication();
                     // dispose services
-                    foreach (WebService svc in services)
+                    foreach (WebServiceWork svc in services)
                     {
                         svc.OnStop();
 

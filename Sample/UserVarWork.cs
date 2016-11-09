@@ -6,9 +6,9 @@ namespace Greatbone.Sample
     /// <summary>
     /// The user variable-hub controller.
     ///
-    public class UserMux : WebMux
+    public class UserVarWork : WebWork
     {
-        public UserMux(WebNodeContext wnc) : base(wnc)
+        public UserVarWork(WebWorkContext wnc) : base(wnc)
         {
         }
 

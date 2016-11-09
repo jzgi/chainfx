@@ -3,9 +3,9 @@ using Greatbone.Core;
 
 namespace Greatbone.Sample
 {
-    public class NoticeMux : WebMux
+    public class NoticeVarWork : WebWork
     {
-        public NoticeMux(WebNodeContext wnc) : base(wnc)
+        public NoticeVarWork(WebWorkContext wnc) : base(wnc)
         {
         }
 

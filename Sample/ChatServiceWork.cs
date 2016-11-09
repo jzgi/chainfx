@@ -4,16 +4,17 @@ using Greatbone.Core;
 
 namespace Greatbone.Sample
 {
+
     /// <summary>The chat servoce.</summary>
     ///
-    public class ChatService : AbstService
+    public class ChatServiceWork : AbstServiceWork
     {
         // the ongoing chat sessions, keyed by receiver's ID
         private ConcurrentDictionary<string, Wrap> chats = new ConcurrentDictionary<string, Wrap>();
 
-        public ChatService(WebConfig cfg) : base(cfg)
+        public ChatServiceWork(WebConfig cfg) : base(cfg)
         {
-            SetMux<ChatMux>();
+            SetVar<ChatWork>();
         }
 
         public void Get(WebContext wc)

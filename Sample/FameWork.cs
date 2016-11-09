@@ -1,4 +1,5 @@
-﻿using Greatbone.Core;
+﻿using System;
+using Greatbone.Core;
 using static Greatbone.Core.ZUtility;
 
 namespace Greatbone.Sample
@@ -6,11 +7,11 @@ namespace Greatbone.Sample
 
     ///
     /// /fame/
-    public class FameModule : AbstModule, IMgmt
+    public class FameWork : WebWork, IMgmt
     {
-        public FameModule(WebNodeContext wnc) : base(wnc)
+        public FameWork(WebWorkContext wwwc) : base(wwwc)
         {
-            SetMux<FameMux>();
+            SetVar<FameMuxWork>();
         }
 
         public override void @default(WebContext wc, string subscpt)
@@ -139,6 +140,11 @@ namespace Greatbone.Sample
             {
                 dc.Execute("UPDATE fames SET status = @1 WHERE id = @2", p => p.Put(status));
             }
+        }
+
+        public void mgmt(WebContext wc, string subscpt)
+        {
+            throw new NotImplementedException();
         }
     }
 }

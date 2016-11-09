@@ -5,11 +5,11 @@ using static Greatbone.Core.ZUtility;
 namespace Greatbone.Sample
 {
 
-    public class NoticeModule : AbstModule, IMgmt
+    public class NoticeWork : WebWork, IMgmt
     {
-        public NoticeModule(WebNodeContext wnc) : base(wnc)
+        public NoticeWork(WebWorkContext wnc) : base(wnc)
         {
-            SetMux<NoticeMux>();
+            SetVar<NoticeVarWork>();
         }
 
         public override void @default(WebContext wc, string subscpt)
@@ -112,6 +112,10 @@ namespace Greatbone.Sample
             throw new NotImplementedException();
         }
 
+        public void mgmt(WebContext wc, string subscpt)
+        {
+            throw new NotImplementedException();
+        }
     }
 
 }

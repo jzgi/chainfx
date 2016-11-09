@@ -5,9 +5,9 @@ using static Greatbone.Core.ZUtility;
 namespace Greatbone.Sample
 {
 
-    public class PostMux : WebMux
+    public class PostVarWork : WebWork
     {
-        public PostMux(WebNodeContext wnc) : base(wnc)
+        public PostVarWork(WebWorkContext wwc) : base(wwc)
         {
         }
 
