@@ -5,7 +5,7 @@ using static Greatbone.Core.ZUtility;
 namespace Greatbone.Sample
 {
 
-    public struct Fame : IPersist
+    public struct Fame : IBean
     {
         public static Fame Empty = new Fame();
 
@@ -86,7 +86,7 @@ namespace Greatbone.Sample
 
     }
 
-    public struct Ref : IPersist
+    public struct Ref : IBean
     {
         internal string name;
 

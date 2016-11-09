@@ -2,9 +2,9 @@
 {
 
     /// <summary>
-    /// Represents a persistable object that follows the data input/ouput convention.
+    /// Represents a data object that follows certain input/ouput conventions.
     /// </summary>
-    public interface IPersist
+    public interface IBean
     {
         void Load(ISource s, byte z = 0);
 

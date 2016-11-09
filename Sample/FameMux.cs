@@ -29,8 +29,8 @@ namespace Greatbone.Sample
                     DbSql sql = new DbSql("SELECT ").columnlst(Fame.Empty, z)._("FROM fames WHERE id = @1");
                     if (dc.QueryA(sql.ToString(), p => p.Put(id)))
                     {
-                        Fame obj = dc.ToObj<Fame>(z);
-                        wc.SendJ(200, obj, z);
+                        Fame obj = dc.ToBean<Fame>(z);
+                        wc.SendJson(200, obj, z);
                     }
                     else
                         wc.StatusCode = 404;
@@ -53,13 +53,13 @@ namespace Greatbone.Sample
         public void upd(WebContext wc, string subscpt)
         {
             string uid = wc.Principal.Key;
-            Fame obj = wc.ReadObj<Fame>();
-            obj.id = wc.Var;
+            Fame fame = wc.ReadBean<Fame>();
+            fame.id = wc.Var;
 
             using (var dc = Service.NewDbContext())
             {
                 DbSql sql = new DbSql("INSERT INTO fames")._(Fame.Empty)._VALUES_(Fame.Empty)._("ON CONFLICT (id) DO UPDATE")._SET_(Fame.Empty)._("WHERE fames.id = @1");
-                if (dc.Execute(sql.ToString(), p => { obj.Dump(p); p.Put(uid); }) > 0)
+                if (dc.Execute(sql.ToString(), p => { fame.Dump(p); p.Put(uid); }) > 0)
                 {
                     wc.StatusCode = 200; // ok
                 }

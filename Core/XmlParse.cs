@@ -44,9 +44,9 @@ namespace Greatbone.Core
             }
         }
 
-        JObj ParseObj(ref int pos)
+        Obj ParseObj(ref int pos)
         {
-            JObj obj = new JObj();
+            Obj obj = new Obj();
             int p = pos;
             for (;;)
             {
@@ -91,12 +91,12 @@ namespace Greatbone.Core
                     if (b == ' ' || b == '\t' || b == '\n' || b == '\r') continue; // skip ws
                     if (b == '{')
                     {
-                        JObj v = ParseObj(ref p);
+                        Obj v = ParseObj(ref p);
                         obj.Add(name, v);
                     }
                     else if (b == '[')
                     {
-                        JArr v = ParseArr(ref p);
+                        Arr v = ParseArr(ref p);
                         obj.Add(name, v);
                     }
                     else if (b == '"')
@@ -144,9 +144,9 @@ namespace Greatbone.Core
             }
         }
 
-        JArr ParseArr(ref int pos)
+        Arr ParseArr(ref int pos)
         {
-            JArr arr = new JArr(16);
+            Arr arr = new Arr(16);
             int p = pos;
             for (;;)
             {
@@ -160,37 +160,37 @@ namespace Greatbone.Core
                 }
                 if (b == '{')
                 {
-                    JObj v = ParseObj(ref p);
-                    arr.Add(new JMember(v));
+                    Obj v = ParseObj(ref p);
+                    arr.Add(new Member(v));
                 }
                 else if (b == '[')
                 {
-                    JArr v = ParseArr(ref p);
-                    arr.Add(new JMember(v));
+                    Arr v = ParseArr(ref p);
+                    arr.Add(new Member(v));
                 }
                 else if (b == '"')
                 {
                     string v = ParseString(ref p);
-                    arr.Add(new JMember(v));
+                    arr.Add(new Member(v));
                 }
                 else if (b == 'n')
                 {
-                    if (ParseNull(ref p)) arr.Add(new JMember());
+                    if (ParseNull(ref p)) arr.Add(new Member());
                 }
                 else if (b == 't' || b == 'f')
                 {
                     bool v = ParseBool(ref p, b);
-                    arr.Add(new JMember(v));
+                    arr.Add(new Member(v));
                 }
                 else if (b == '-' || b >= '0' && b <= '9')
                 {
                     Number v = ParseNumber(ref p, b);
-                    arr.Add(new JMember(v));
+                    arr.Add(new Member(v));
                 }
                 else if (b == '&') // bytes extension
                 {
                     byte[] v = ParseBytes(p);
-                    arr.Add(new JMember(v));
+                    arr.Add(new Member(v));
                 }
                 else throw ParseEx;
 

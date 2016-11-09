@@ -32,7 +32,7 @@ namespace Greatbone.Core
             Type typ = typeof(W);
             ConstructorInfo ci = typ.GetConstructor(new[] { typeof(WebNodeContext) });
             if (ci == null) { throw new WebException(typ + ": the constructor with WebTie"); }
-            WebNodeContext arg = new WebNodeContext
+            WebNodeContext ctx = new WebNodeContext
             {
                 key = key,
                 State = state,
@@ -41,7 +41,7 @@ namespace Greatbone.Core
                 Folder = (Parent == null) ? key : Path.Combine(Parent.Folder, key),
                 Service = Service
             };
-            W work = (W)ci.Invoke(new object[] { arg });
+            W work = (W)ci.Invoke(new object[] { ctx });
             children.Add(work);
 
             return work;

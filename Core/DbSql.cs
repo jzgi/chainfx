@@ -46,7 +46,7 @@ namespace Greatbone.Core
             return this;
         }
 
-        public DbSql setlst<T>(T obj, byte z = 0) where T : IPersist
+        public DbSql setlst<T>(T obj, byte z = 0) where T : IBean
         {
             list = SetList;
             ordinal = 1;
@@ -54,7 +54,7 @@ namespace Greatbone.Core
             return this;
         }
 
-        public DbSql columnlst<T>(T obj, byte z = 0) where T : IPersist
+        public DbSql columnlst<T>(T obj, byte z = 0) where T : IBean
         {
             list = ColumnList;
             ordinal = 1;
@@ -62,7 +62,7 @@ namespace Greatbone.Core
             return this;
         }
 
-        public DbSql parameterlst<T>(T obj, byte z = 0) where T : IPersist
+        public DbSql parameterlst<T>(T obj, byte z = 0) where T : IBean
         {
             list = ParameterList;
             ordinal = 1;
@@ -70,7 +70,7 @@ namespace Greatbone.Core
             return this;
         }
 
-        public DbSql _<T>(T obj, byte z = 0) where T : IPersist
+        public DbSql _<T>(T obj, byte z = 0) where T : IBean
         {
             Add(" (");
             columnlst(obj, z);
@@ -78,7 +78,7 @@ namespace Greatbone.Core
             return this;
         }
 
-        public DbSql _VALUES_<T>(T obj, byte z = 0) where T : IPersist
+        public DbSql _VALUES_<T>(T obj, byte z = 0) where T : IBean
         {
             Add(" VALUES (");
             parameterlst(obj, z);
@@ -86,7 +86,7 @@ namespace Greatbone.Core
             return this;
         }
 
-        public DbSql _SET_<T>(T obj, byte z = 0) where T : IPersist
+        public DbSql _SET_<T>(T obj, byte z = 0) where T : IBean
         {
             Add(" SET ");
             setlst(obj, z);
@@ -236,7 +236,7 @@ namespace Greatbone.Core
             return this;
         }
 
-        public DbSql Put<V>(string name, V v, byte z = 0) where V : IPersist
+        public DbSql Put<B>(string name, B v, byte z = 0) where B : IBean
         {
             if (name != null)
             {
@@ -255,7 +255,7 @@ namespace Greatbone.Core
             return this;
         }
 
-        public DbSql Put(string name, JArr v)
+        public DbSql Put(string name, Arr v)
         {
             if (name != null)
             {
@@ -277,7 +277,7 @@ namespace Greatbone.Core
             return this;
         }
 
-        public DbSql Put(string name, JObj v)
+        public DbSql Put(string name, Obj v)
         {
             if (name != null)
             {
@@ -421,7 +421,7 @@ namespace Greatbone.Core
             return this;
         }
 
-        public DbSql Put<V>(string name, V[] v, byte z = 0) where V : IPersist
+        public DbSql Put<B>(string name, B[] v, byte z = 0) where B : IBean
         {
             Build(name);
             return this;

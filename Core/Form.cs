@@ -124,7 +124,7 @@ namespace Greatbone.Core
             throw new NotImplementedException();
         }
 
-        public bool Get(string name, ref JArr v)
+        public bool Get(string name, ref Arr v)
         {
             throw new NotImplementedException();
         }
@@ -173,7 +173,7 @@ namespace Greatbone.Core
             return false;
         }
 
-        public bool Get(string name, ref JObj v)
+        public bool Get(string name, ref Obj v)
         {
             throw new NotImplementedException();
         }
@@ -184,12 +184,12 @@ namespace Greatbone.Core
         }
 
 
-        public bool Get<P>(string name, ref P[] v, byte z = 0) where P : IPersist, new()
+        public bool Get<M>(string name, ref M[] v, byte z = 0) where M : IBean, new()
         {
             throw new NotImplementedException();
         }
 
-        public bool Get<P>(string name, ref P v, byte z = 0) where P : IPersist, new()
+        public bool Get<M>(string name, ref M v, byte z = 0) where M : IBean, new()
         {
             throw new NotImplementedException();
         }

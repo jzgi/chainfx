@@ -5,16 +5,16 @@ using System.IO;
 namespace Greatbone.Core
 {
 
-    public static class JUtility
+    public static class JsonUtility
     {
 
-        public static JObj FileToJObj(string file)
+        public static Obj FileToObj(string file)
         {
             try
             {
                 byte[] bytes = File.ReadAllBytes(file);
-                JParse par = new JParse(bytes, bytes.Length);
-                return (JObj)par.Parse();
+                JsonParse p = new JsonParse(bytes, bytes.Length);
+                return (Obj)p.Parse();
             }
             catch (Exception ex)
             {
@@ -23,13 +23,13 @@ namespace Greatbone.Core
             return null;
         }
 
-        public static JArr FileToJArr(string file)
+        public static Arr FileToArr(string file)
         {
             try
             {
                 byte[] bytes = File.ReadAllBytes(file);
-                JParse par = new JParse(bytes, bytes.Length);
-                return (JArr)par.Parse();
+                JsonParse p = new JsonParse(bytes, bytes.Length);
+                return (Arr)p.Parse();
             }
             catch (Exception ex)
             {
@@ -38,35 +38,35 @@ namespace Greatbone.Core
             return null;
         }
 
-        public static P FileToObj<P>(string file) where P : IPersist, new()
+        public static B FileToBean<B>(string file) where B : IBean, new()
         {
             try
             {
                 byte[] bytes = File.ReadAllBytes(file);
-                JParse par = new JParse(bytes, bytes.Length);
-                JObj jo = (JObj)par.Parse();
-                if (jo != null)
+                JsonParse p = new JsonParse(bytes, bytes.Length);
+                Obj obj = (Obj)p.Parse();
+                if (obj != null)
                 {
-                    return jo.ToObj<P>();
+                    return obj.ToBean<B>();
                 }
             }
             catch (Exception ex)
             {
                 Debug.WriteLine(ex.Message);
             }
-            return default(P);
+            return default(B);
         }
 
-        public static P[] FileToArr<P>(string file) where P : IPersist, new()
+        public static B[] FileToBeans<B>(string file) where B : IBean, new()
         {
             try
             {
                 byte[] bytes = File.ReadAllBytes(file);
-                JParse par = new JParse(bytes, bytes.Length);
-                JArr ja = (JArr)par.Parse();
-                if (ja != null)
+                JsonParse p = new JsonParse(bytes, bytes.Length);
+                Arr arr = (Arr)p.Parse();
+                if (arr != null)
                 {
-                    return ja.ToArr<P>();
+                    return arr.ToBeans<B>();
                 }
             }
             catch (Exception ex)

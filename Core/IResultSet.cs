@@ -11,9 +11,9 @@ namespace Greatbone.Core
 
         bool NextResult();
 
-        P ToObj<P>(byte z = 0) where P : IPersist, new();
+        B ToBean<B>(byte z = 0) where B : IBean, new();
 
-        P[] ToArr<P>(byte z = 0) where P : IPersist, new();
+        B[] ToBeans<B>(byte z = 0) where B : IBean, new();
 
     }
     

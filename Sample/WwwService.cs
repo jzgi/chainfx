@@ -30,8 +30,8 @@ namespace Greatbone.Sample
             {
                 if (dc.Query("SELECT * FROM cats WHERE NOT disabled"))
                 {
-                    Cat[] arr = dc.ToArr<Cat>();
-                    wc.SendJ(200, arr);
+                    Cat[] arr = dc.ToBeans<Cat>();
+                    wc.SendJson(200, arr);
                 }
                 else
                 {

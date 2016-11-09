@@ -3,7 +3,7 @@ using System;
 
 namespace Greatbone.Sample
 {
-    public struct Comment : IPersist
+    public struct Comment : IBean
     {
         internal DateTime time;
         internal bool emoji;

@@ -1,7 +1,7 @@
 ﻿namespace Greatbone.Core
 {
 
-    public class DbConfig : IPersist
+    public class DbConfig : IBean
     {
         internal string host;
 

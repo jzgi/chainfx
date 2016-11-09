@@ -60,11 +60,11 @@ namespace Greatbone.Sample
             }
             else
             {
-                JObj jo = wc.ReadJObj();
-                string id = jo[nameof(id)];
-                string name = jo[nameof(name)];
-                string password = jo[nameof(password)];
-                string vcode = jo[nameof(vcode)];
+                Obj obj = wc.ReadObj();
+                string id = obj[nameof(id)];
+                string name = obj[nameof(name)];
+                string password = obj[nameof(password)];
+                string vcode = obj[nameof(vcode)];
 
                 string storedvcode;
                 vcodes.TryRemove(id, out storedvcode);
@@ -93,9 +93,9 @@ namespace Greatbone.Sample
         [CheckAdmin]
         public void create(WebContext wc, string subscpt)
         {
-            JObj jo = wc.ReadJObj();
-            string id = jo[nameof(id)];
-            string password = jo[nameof(password)];
+            Obj o = wc.ReadObj();
+            string id = o[nameof(id)];
+            string password = o[nameof(password)];
             using (var dc = Service.NewDbContext())
             {
                 if (dc.Execute("INSERT INTO users (id, credential) VALUES (@1, @2)", p => p.Put(id).Put(StrUtility.MD5(password))) > 0)

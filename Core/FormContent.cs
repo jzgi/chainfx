@@ -77,7 +77,7 @@ namespace Greatbone.Core
             level--; // exit
         }
 
-        public void PutArr<P>(P[] arr, byte z = 0) where P : IPersist
+        public void PutArr<P>(P[] arr, byte z = 0) where P : IBean
         {
             Put(null, arr, z);
         }
@@ -95,7 +95,7 @@ namespace Greatbone.Core
             level--; // exit
         }
 
-        public void PutObj<P>(P obj, byte z = 0) where P : IPersist
+        public void PutObj<P>(P obj, byte z = 0) where P : IBean
         {
             Put(null, obj, z);
         }
@@ -309,7 +309,7 @@ namespace Greatbone.Core
             return this; // ignore ir
         }
 
-        public FormContent Put<P>(string name, P v, byte z = 0) where P : IPersist
+        public FormContent Put<P>(string name, P v, byte z = 0) where P : IBean
         {
             if (counts[level]++ > 0) Add(',');
 
@@ -337,7 +337,7 @@ namespace Greatbone.Core
             return this;
         }
 
-        public FormContent Put(string name, JObj v)
+        public FormContent Put(string name, Obj v)
         {
             if (counts[level]++ > 0) Add(',');
 
@@ -365,7 +365,7 @@ namespace Greatbone.Core
             return this;
         }
 
-        public FormContent Put(string name, JArr v)
+        public FormContent Put(string name, Arr v)
         {
             if (counts[level]++ > 0) Add(',');
 
@@ -523,7 +523,7 @@ namespace Greatbone.Core
         }
 
 
-        public FormContent Put<P>(string name, P[] v, byte z = 0) where P : IPersist
+        public FormContent Put<P>(string name, P[] v, byte z = 0) where P : IBean
         {
             if (counts[level]++ > 0) Add(',');
 

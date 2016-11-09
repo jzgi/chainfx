@@ -186,22 +186,22 @@ namespace Greatbone.Core
         // RESULTSET
         //
 
-        public P ToObj<P>(byte z = 0) where P : IPersist, new()
+        public B ToBean<B>(byte z = 0) where B : IBean, new()
         {
-            P obj = new P();
-            obj.Load(this, z);
-            return obj;
+            B bean = new B();
+            bean.Load(this, z);
+            return bean;
         }
 
 
-        public P[] ToArr<P>(byte z = 0) where P : IPersist, new()
+        public B[] ToBeans<B>(byte z = 0) where B : IBean, new()
         {
-            List<P> lst = new List<P>(64);
+            List<B> lst = new List<B>(64);
             while (NextRow())
             {
-                P obj = new P();
-                obj.Load(this, z);
-                lst.Add(obj);
+                B bean = new B();
+                bean.Load(this, z);
+                lst.Add(bean);
             }
             return lst.ToArray();
         }
@@ -354,42 +354,42 @@ namespace Greatbone.Core
             return false;
         }
 
-        public bool Get<P>(string name, ref P v, byte z = 0) where P : IPersist, new()
+        public bool Get<B>(string name, ref B v, byte z = 0) where B : IBean, new()
         {
             int ord = name == null ? ordinal++ : reader.GetOrdinal(name);
             if (!reader.IsDBNull(ord))
             {
                 string str = reader.GetString(ord);
-                JParse par = new JParse(str);
-                JObj jo = (JObj)par.Parse();
-                v = new P();
-                v.Load(jo, z);
+                JsonParse p = new JsonParse(str);
+                Obj obj = (Obj)p.Parse();
+                v = new B();
+                v.Load(obj, z);
                 return true;
             }
             return false;
         }
 
-        public bool Get(string name, ref JObj v)
+        public bool Get(string name, ref Obj v)
         {
             int ord = name == null ? ordinal++ : reader.GetOrdinal(name);
             if (!reader.IsDBNull(ord))
             {
                 string str = reader.GetString(ord);
-                JParse par = new JParse(str);
-                v = (JObj)par.Parse();
+                JsonParse p = new JsonParse(str);
+                v = (Obj)p.Parse();
                 return true;
             }
             return false;
         }
 
-        public bool Get(string name, ref JArr v)
+        public bool Get(string name, ref Arr v)
         {
             int ord = name == null ? ordinal++ : reader.GetOrdinal(name);
             if (!reader.IsDBNull(ord))
             {
                 string str = reader.GetString(ord);
-                JParse par = new JParse(str);
-                v = (JArr)par.Parse();
+                JsonParse p = new JsonParse(str);
+                v = (Arr)p.Parse();
                 return true;
             }
             return false;
@@ -439,22 +439,22 @@ namespace Greatbone.Core
             return false;
         }
 
-        public bool Get<P>(string name, ref P[] v, byte z = 0) where P : IPersist, new()
+        public bool Get<B>(string name, ref B[] v, byte z = 0) where B : IBean, new()
         {
             int ord = name == null ? ordinal++ : reader.GetOrdinal(name);
             if (!reader.IsDBNull(ord))
             {
                 string str = reader.GetString(ord);
-                JParse par = new JParse(str);
-                JArr ja = (JArr)par.Parse();
-                int len = ja.Count;
-                v = new P[len];
+                JsonParse p = new JsonParse(str);
+                Arr arr = (Arr)p.Parse();
+                int len = arr.Count;
+                v = new B[len];
                 for (int i = 0; i < len; i++)
                 {
-                    JObj jo = (JObj)ja[i];
-                    P obj = new P();
-                    obj.Load(jo, z);
-                    v[i] = obj;
+                    Obj obj = (Obj)arr[i];
+                    B bean = new B();
+                    bean.Load(obj, z);
+                    v[i] = bean;
                 }
                 return true;
             }
@@ -466,10 +466,10 @@ namespace Greatbone.Core
         // MESSAGING
         //
 
-        public void Publish(string topic, string part, Action<JContent> a)
+        public void Publish(string topic, string part, Action<JsonContent> a)
         {
             // convert message to byte buffer
-            JContent cont = new JContent(true, true, 8 * 1024);
+            JsonContent cont = new JsonContent(true, true, 8 * 1024);
             a?.Invoke(cont);
 
             Execute("INSERT INTO mq (topic, filter, message) VALUES (@topic, @filter, @message)", p =>
@@ -481,12 +481,12 @@ namespace Greatbone.Core
             BufferUtility.Return(cont);
         }
 
-        public void Publish<P>(string topic, string part, P obj) where P : IPersist
+        public void Publish<P>(string topic, string part, P obj) where P : IBean
         {
             Publish(topic, part, jcont => jcont.PutObj(obj));
         }
 
-        public void Publish<P>(string topic, string part, P[] arr) where P : IPersist
+        public void Publish<P>(string topic, string part, P[] arr) where P : IBean
         {
             Publish(topic, part, jcont => jcont.PutArr(arr));
         }

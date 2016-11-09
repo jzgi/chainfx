@@ -23,8 +23,8 @@ namespace Greatbone.Sample
             {
                 if (dc.QueryA("SELECT * FROM notices WHERE id = @1", p => p.Put(id)))
                 {
-                    Notice obj = dc.ToObj<Notice>();
-                    wc.SendJ(200, obj);
+                    Notice obj = dc.ToBean<Notice>();
+                    wc.SendJson(200, obj);
                 }
                 else
                 {
@@ -78,7 +78,7 @@ namespace Greatbone.Sample
             {
                 if (dc.QueryA("SELECT apps FROM notices WHERE id = @1", p => p.Put(id)))
                 {
-                    App[] arr = dc.GetArr<App>().Add(app);
+                    App[] arr = dc.GetBeans<App>().Add(app);
                     if (dc.Execute("UPDATE notices SET apps = @1", p => p.Put(arr)) > 0)
                     {
                         wc.StatusCode = 201;
@@ -105,7 +105,7 @@ namespace Greatbone.Sample
         {
             int id = wc.Var.ToInt();
             IPrincipal tok = wc.Principal;
-            Comment c = wc.ReadObj<Comment>();
+            Comment c = wc.ReadBean<Comment>();
 
             c.time = DateTime.Now;
             c.authorid = tok.Key;
@@ -114,8 +114,8 @@ namespace Greatbone.Sample
             {
                 if (dc.QueryA("SELECT comments FROM notices WHERE id = @1", p => p.Put(id)))
                 {
-                    Comment[] arr = dc.GetArr<Comment>().Add(c);
-                    if (dc.Execute("UPDATE notices SET comments = @1 WHERE id = @2", p => p.Put(arr).Put(id)) > 0)
+                    Comment[] cmts = dc.GetBeans<Comment>().Add(c);
+                    if (dc.Execute("UPDATE notices SET comments = @1 WHERE id = @2", p => p.Put(cmts).Put(id)) > 0)
                     {
                         wc.StatusCode = 200;
                     }

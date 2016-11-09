@@ -4,7 +4,7 @@ using static Greatbone.Core.ZUtility;
 namespace Greatbone.Sample
 {
     ///
-    public class Cat : IPersist
+    public class Cat : IBean
     {
 
         internal int id;

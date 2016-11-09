@@ -6,7 +6,7 @@ namespace Greatbone.Core
     /// <summary>
     /// To generate a UTF-8 encoded JSON document. An extension of putting byte array is supported.
     /// </summary>
-    public class JContent : DynamicContent, ISink<JContent>
+    public class JsonContent : DynamicContent, ISink<JsonContent>
     {
         const int InitialCapacity = 4 * 1024;
 
@@ -16,7 +16,7 @@ namespace Greatbone.Core
         // current level
         int level;
 
-        public JContent(bool raw, bool pooled, int capacity = InitialCapacity) : base(raw, pooled, capacity)
+        public JsonContent(bool raw, bool pooled, int capacity = InitialCapacity) : base(raw, pooled, capacity)
         {
             counts = new int[8];
             level = 0;
@@ -76,7 +76,7 @@ namespace Greatbone.Core
             level--; // exit
         }
 
-        public void PutArr<P>(P[] arr, byte z = 0) where P : IPersist
+        public void PutArr<B>(B[] arr, byte z = 0) where B : IBean
         {
             Put(null, arr, z);
         }
@@ -94,7 +94,7 @@ namespace Greatbone.Core
             level--; // exit
         }
 
-        public void PutObj<P>(P obj, byte z = 0) where P : IPersist
+        public void PutObj<B>(B obj, byte z = 0) where B : IBean
         {
             Put(null, obj, z);
         }
@@ -104,7 +104,7 @@ namespace Greatbone.Core
         // SINK
         //
 
-        public JContent PutNull(string name)
+        public JsonContent PutNull(string name)
         {
             if (counts[level]++ > 0) Add(',');
 
@@ -121,7 +121,7 @@ namespace Greatbone.Core
             return this;
         }
 
-        public JContent Put(string name, bool v)
+        public JsonContent Put(string name, bool v)
         {
             if (counts[level]++ > 0) Add(',');
 
@@ -138,7 +138,7 @@ namespace Greatbone.Core
             return this;
         }
 
-        public JContent Put(string name, short v)
+        public JsonContent Put(string name, short v)
         {
             if (counts[level]++ > 0) Add(',');
 
@@ -155,7 +155,7 @@ namespace Greatbone.Core
             return this;
         }
 
-        public JContent Put(string name, int v)
+        public JsonContent Put(string name, int v)
         {
             if (counts[level]++ > 0) Add(',');
 
@@ -172,7 +172,7 @@ namespace Greatbone.Core
             return this;
         }
 
-        public JContent Put(string name, long v)
+        public JsonContent Put(string name, long v)
         {
             if (counts[level]++ > 0) Add(',');
 
@@ -189,7 +189,7 @@ namespace Greatbone.Core
             return this;
         }
 
-        public JContent Put(string name, decimal v)
+        public JsonContent Put(string name, decimal v)
         {
             if (counts[level]++ > 0) Add(',');
 
@@ -206,7 +206,7 @@ namespace Greatbone.Core
             return this;
         }
 
-        public JContent Put(string name, Number v)
+        public JsonContent Put(string name, Number v)
         {
             if (counts[level]++ > 0) Add(',');
 
@@ -227,7 +227,7 @@ namespace Greatbone.Core
             return this;
         }
 
-        public JContent Put(string name, DateTime v)
+        public JsonContent Put(string name, DateTime v)
         {
             if (counts[level]++ > 0) Add(',');
 
@@ -246,7 +246,7 @@ namespace Greatbone.Core
             return this;
         }
 
-        public JContent Put(string name, char[] v)
+        public JsonContent Put(string name, char[] v)
         {
             if (counts[level]++ > 0) Add(',');
 
@@ -272,7 +272,7 @@ namespace Greatbone.Core
             return this;
         }
 
-        public JContent Put(string name, string v, int maxlen = 0)
+        public JsonContent Put(string name, string v, int maxlen = 0)
         {
             if (counts[level]++ > 0) Add(',');
 
@@ -298,17 +298,17 @@ namespace Greatbone.Core
             return this;
         }
 
-        public virtual JContent Put(string name, byte[] v)
+        public virtual JsonContent Put(string name, byte[] v)
         {
             return this; // ignore ir
         }
 
-        public virtual JContent Put(string name, ArraySegment<byte> v)
+        public virtual JsonContent Put(string name, ArraySegment<byte> v)
         {
             return this; // ignore ir
         }
 
-        public JContent Put<P>(string name, P v, byte z = 0) where P : IPersist
+        public JsonContent Put<B>(string name, B v, byte z = 0) where B : IBean
         {
             if (counts[level]++ > 0) Add(',');
 
@@ -336,7 +336,7 @@ namespace Greatbone.Core
             return this;
         }
 
-        public JContent Put(string name, JObj v)
+        public JsonContent Put(string name, Obj v)
         {
             if (counts[level]++ > 0) Add(',');
 
@@ -364,7 +364,7 @@ namespace Greatbone.Core
             return this;
         }
 
-        public JContent Put(string name, JArr v)
+        public JsonContent Put(string name, Arr v)
         {
             if (counts[level]++ > 0) Add(',');
 
@@ -391,7 +391,7 @@ namespace Greatbone.Core
             return this;
         }
 
-        public JContent Put(string name, short[] v)
+        public JsonContent Put(string name, short[] v)
         {
             if (counts[level]++ > 0) Add(',');
 
@@ -421,7 +421,7 @@ namespace Greatbone.Core
             return this;
         }
 
-        public JContent Put(string name, int[] v)
+        public JsonContent Put(string name, int[] v)
         {
             if (counts[level]++ > 0) Add(',');
 
@@ -451,7 +451,7 @@ namespace Greatbone.Core
             return this;
         }
 
-        public JContent Put(string name, long[] v)
+        public JsonContent Put(string name, long[] v)
         {
             if (counts[level]++ > 0) Add(',');
 
@@ -481,7 +481,7 @@ namespace Greatbone.Core
             return this;
         }
 
-        public JContent Put(string name, string[] v)
+        public JsonContent Put(string name, string[] v)
         {
             if (counts[level]++ > 0) Add(',');
 
@@ -522,7 +522,7 @@ namespace Greatbone.Core
         }
 
 
-        public JContent Put<P>(string name, P[] v, byte z = 0) where P : IPersist
+        public JsonContent Put<B>(string name, B[] v, byte z = 0) where B : IBean
         {
             if (counts[level]++ > 0) Add(',');
 

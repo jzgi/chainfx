@@ -34,7 +34,7 @@ namespace Greatbone.Core
 
         }
 
-        public void GetJ(string url, Action<JContent> cont)
+        public void GetJ(string url, Action<JsonContent> cont)
         {
 
         }
@@ -44,7 +44,7 @@ namespace Greatbone.Core
 
         }
 
-        public void PostJ(string url, Action<JContent> cont)
+        public void PostJ(string url, Action<JsonContent> cont)
         {
 
         }
@@ -80,22 +80,22 @@ namespace Greatbone.Core
         // RESPONSE
         //
 
-        public JObj ReadJObj()
+        public Obj ReadJObj()
         {
             return null;
         }
 
-        public JArr ReadJArr()
+        public Arr ReadJArr()
         {
             return null;
         }
 
-        public P ReadObj<P>(byte z = 0) where P : IPersist, new()
+        public P ReadObj<P>(byte z = 0) where P : IBean, new()
         {
             return default(P);
         }
 
-        public P[] ReadArr<P>(byte z = 0) where P : IPersist, new()
+        public P[] ReadArr<P>(byte z = 0) where P : IBean, new()
         {
             return null;
         }

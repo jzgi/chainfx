@@ -36,8 +36,8 @@ namespace Greatbone.Sample
                 DbSql sql = new DbSql("SELECT ").columnlst(new Fame(), z)._("FROM fames ORDER BY rating LIMIT 20 OFFSET @1");
                 if (dc.Query(sql.ToString(), p => p.Put(n * 20)))
                 {
-                    Fame[] fames = dc.ToArr<Fame>(z);
-                    wc.SendJ(200, fames, z);
+                    Fame[] fames = dc.ToBeans<Fame>(z);
+                    wc.SendJson(200, fames, z);
                 }
                 else
                     wc.StatusCode = 204;
@@ -64,8 +64,8 @@ namespace Greatbone.Sample
                     DbSql sql = new DbSql("SELECT ").columnlst(Fame.Empty, z)._("FROM fames WHERE name LIKE '%" + name + "%'");
                     if (dc.Query(sql.ToString()))
                     {
-                        Fame[] fames = dc.ToArr<Fame>(z);
-                        wc.SendJ(200, fames, z);
+                        Fame[] fames = dc.ToBeans<Fame>(z);
+                        wc.SendJson(200, fames, z);
                     }
                     else
                         wc.StatusCode = 204;
@@ -81,8 +81,8 @@ namespace Greatbone.Sample
                     DbSql sql = new DbSql("SELECT ").columnlst(Fame.Empty, z)._("FROM fames WHERE @1 = ANY (skills)");
                     if (dc.Query(sql.ToString(), p => p.Put(skill)))
                     {
-                        Fame[] fames = dc.ToArr<Fame>(z);
-                        wc.SendJ(200, fames, z);
+                        Fame[] fames = dc.ToBeans<Fame>(z);
+                        wc.SendJson(200, fames, z);
                     }
                     else
                         wc.StatusCode = 204;
@@ -132,7 +132,7 @@ namespace Greatbone.Sample
             int id = 0;
             wc.Get(nameof(id), ref id);
 
-            JObj jo = wc.ReadJObj();
+            Obj jo = wc.ReadObj();
             int status = jo[nameof(status)];
 
             using (var dc = Service.NewDbContext())

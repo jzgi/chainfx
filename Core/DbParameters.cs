@@ -185,7 +185,7 @@ namespace Greatbone.Core
             return this;
         }
 
-        public DbParameters Put<T>(string name, T v, byte z = 0) where T : IPersist
+        public DbParameters Put<M>(string name, M v, byte z = 0) where M : IBean
         {
             if (name == null)
             {
@@ -197,7 +197,7 @@ namespace Greatbone.Core
             }
             else
             {
-                JContent cont = new JContent(false, true, 1024);
+                JsonContent cont = new JsonContent(false, true, 1024);
                 cont.PutObj(v, z);
                 string str = cont.ToString();
                 coll.Add(new NpgsqlParameter(name, NpgsqlDbType.Jsonb)
@@ -209,7 +209,7 @@ namespace Greatbone.Core
             return this;
         }
 
-        public DbParameters Put(string name, JObj v)
+        public DbParameters Put(string name, Obj v)
         {
             if (name == null)
             {
@@ -224,7 +224,7 @@ namespace Greatbone.Core
             }
             else
             {
-                JContent cont = new JContent(false, true, 1024);
+                JsonContent cont = new JsonContent(false, true, 1024);
                 v.Dump(cont);
                 string str = cont.ToString();
                 coll.Add(new NpgsqlParameter(name, NpgsqlDbType.Jsonb) { Value = str });
@@ -233,7 +233,7 @@ namespace Greatbone.Core
             return this;
         }
 
-        public DbParameters Put(string name, JArr v)
+        public DbParameters Put(string name, Arr v)
         {
             if (name == null)
             {
@@ -248,7 +248,7 @@ namespace Greatbone.Core
             }
             else
             {
-                JContent cont = new JContent(false, true, 1024);
+                JsonContent cont = new JsonContent(false, true, 1024);
                 v.Dump(cont);
                 string str = cont.ToString();
                 coll.Add(new NpgsqlParameter(name, NpgsqlDbType.Jsonb) { Value = str });
@@ -309,7 +309,7 @@ namespace Greatbone.Core
             return this;
         }
 
-        public DbParameters Put<T>(string name, T[] v, byte z = 0) where T : IPersist
+        public DbParameters Put<M>(string name, M[] v, byte z = 0) where M : IBean
         {
             if (name == null)
             {
@@ -324,7 +324,7 @@ namespace Greatbone.Core
             }
             else
             {
-                JContent cont = new JContent(false, true, 1024);
+                JsonContent cont = new JsonContent(false, true, 1024);
                 cont.PutArr(v, z);
                 string strv = cont.ToString();
                 coll.Add(new NpgsqlParameter(name, NpgsqlDbType.Jsonb)

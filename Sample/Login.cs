@@ -6,7 +6,7 @@ namespace Greatbone.Sample
     /// <summary>
     /// A login internal user.
     /// </summary>
-    public class Login : IPrincipal, IPersist
+    public class Login : IPrincipal, IBean
     {
         internal string id;
         internal string name;

@@ -28,7 +28,7 @@ namespace Greatbone.Core
             Type typ = typeof(D);
             ConstructorInfo ci = typ.GetConstructor(new[] { typeof(WebNodeContext) });
             if (ci == null) { throw new WebException(typ + ": the constructor with WebTie"); }
-            WebNodeContext arg = new WebNodeContext
+            WebNodeContext ctx = new WebNodeContext
             {
                 key = key,
                 State = state,
@@ -38,7 +38,7 @@ namespace Greatbone.Core
                 Service = Service
             };
             // call the initialization and add
-            D child = (D)ci.Invoke(new object[] { arg });
+            D child = (D)ci.Invoke(new object[] { ctx });
             children.Add(child);
 
             return child;
@@ -63,5 +63,5 @@ namespace Greatbone.Core
         }
 
     }
-    
+
 }

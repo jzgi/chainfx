@@ -18,7 +18,7 @@
     /// }
     /// </code>
     ///
-    public class WebConfig : WebNodeContext, IPersist
+    public class WebConfig : WebNodeContext, IBean
     {
 
         // partition
@@ -42,9 +42,9 @@
         // logging level, default to warning (3)
         internal int logging = 3;
 
-        internal JObj opts;
+        internal Obj opts;
 
-        public JObj Opts => opts;
+        public Obj Opts => opts;
 
         // ovveride to provide a decent folder service name
         public override string Folder => key;
@@ -77,7 +77,7 @@
         {
             if (key == null) throw new WebException("missing key");
 
-            JObj jo = JUtility.FileToJObj(GetFilePath("$web.json"));
+            Obj jo = JsonUtility.FileToObj(GetFilePath("$web.json"));
             if (jo != null)
             {
                 Load(jo); // override

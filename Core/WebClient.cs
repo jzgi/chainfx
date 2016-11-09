@@ -55,7 +55,7 @@ namespace Greatbone.Core
             if (response.IsSuccessStatusCode)
             {
                 byte[] bytes = await response.Content.ReadAsByteArrayAsync();
-                JParse par = new JParse(bytes, bytes.Length);
+                JsonParse par = new JsonParse(bytes, bytes.Length);
                 object entity = par.Parse();
                 MsgHook a = null;
                 if (service.Hooks.TryGet("", out a))
@@ -77,7 +77,7 @@ namespace Greatbone.Core
 
             byte[] bytes = await response.Content.ReadAsByteArrayAsync();
 
-            JParse par = new JParse(bytes, bytes.Length);
+            JsonParse par = new JsonParse(bytes, bytes.Length);
             return par.Parse();
         }
 
@@ -93,9 +93,9 @@ namespace Greatbone.Core
             return await client.SendAsync(req, HttpCompletionOption.ResponseContentRead);
         }
 
-        public async Task<HttpResponseMessage> PostJAsync(string uri, Action<JContent> content)
+        public async Task<HttpResponseMessage> PostJAsync(string uri, Action<JsonContent> content)
         {
-            JContent cont = new JContent(true, true);
+            JsonContent cont = new JsonContent(true, true);
             content?.Invoke(cont);
             HttpRequestMessage req = new HttpRequestMessage(HttpMethod.Post, uri)
             {
@@ -104,17 +104,17 @@ namespace Greatbone.Core
             return await client.SendAsync(req, HttpCompletionOption.ResponseContentRead);
         }
 
-        public Element GetElemAsync(string uri)
+        public Elem GetElemAsync(string uri)
         {
             return null;
         }
 
-        public JObj GetJObjAsync(string uri)
+        public Obj GetJObjAsync(string uri)
         {
             return null;
         }
 
-        public JArr GetJArrAsync(string uri)
+        public Arr GetJArrAsync(string uri)
         {
             return null;
         }

@@ -5,7 +5,7 @@ using static Greatbone.Core.ZUtility;
 namespace Greatbone.Sample
 {
 
-    public class Post : IPersist
+    public class Post : IBean
     {
         public static Post Empty = new Post();
 

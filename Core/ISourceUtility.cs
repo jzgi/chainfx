@@ -5,11 +5,11 @@ namespace Greatbone.Core
     public static class ISourceUtility
     {
 
-        public static T ToObj<T>(this ISource sc, byte z = 0) where T : IPersist, new()
+        public static B ToBean<B>(this ISource sc, byte z = 0) where B : IBean, new()
         {
-            T obj = new T();
-            obj.Load(sc, z);
-            return obj;
+            B bean = new B();
+            bean.Load(sc, z);
+            return bean;
         }
 
         //
@@ -80,19 +80,19 @@ namespace Greatbone.Core
         }
 
 
-        public static bool Get<P>(this ISource src, ref P v, byte z = 0) where P : IPersist, new()
+        public static bool Get<B>(this ISource src, ref B v, byte z = 0) where B : IBean, new()
         {
             return src.Get(null, ref v, z);
         }
 
 
-        public static bool Get(this ISource src, ref JObj v)
+        public static bool Get(this ISource src, ref Obj v)
         {
             return src.Get(null, ref v);
         }
 
 
-        public static bool Get(this ISource src, ref JArr v)
+        public static bool Get(this ISource src, ref Arr v)
         {
             return src.Get(null, ref v);
         }
@@ -121,7 +121,7 @@ namespace Greatbone.Core
             return src.Get(null, ref v);
         }
 
-        public static bool Get<P>(this ISource src, ref P[] v, byte z = 0) where P : IPersist, new()
+        public static bool Get<B>(this ISource src, ref B[] v, byte z = 0) where B : IBean, new()
         {
             return src.Get(null, ref v, z);
         }
@@ -208,23 +208,23 @@ namespace Greatbone.Core
             return v;
         }
 
-        public static P GetObj<P>(this ISource src, byte z = 0) where P : IPersist, new()
+        public static B GetBean<B>(this ISource src, byte z = 0) where B : IBean, new()
         {
-            P v = default(P);
+            B v = default(B);
             src.Get(null, ref v, z);
             return v;
         }
 
-        public static JObj GetJObj(this ISource src)
+        public static Obj GetObj(this ISource src)
         {
-            JObj v = null;
+            Obj v = null;
             src.Get(null, ref v);
             return v;
         }
 
-        public static JArr GetJArr(this ISource src)
+        public static Arr GetArr(this ISource src)
         {
-            JArr v = null;
+            Arr v = null;
             src.Get(null, ref v);
             return v;
         }
@@ -258,9 +258,9 @@ namespace Greatbone.Core
             return v;
         }
 
-        public static P[] GetArr<P>(this ISource src, byte z = 0) where P : IPersist, new()
+        public static B[] GetBeans<B>(this ISource src, byte z = 0) where B : IBean, new()
         {
-            P[] v = null;
+            B[] v = null;
             src.Get(null, ref v, z);
             return v;
         }
@@ -297,9 +297,9 @@ namespace Greatbone.Core
             return v;
         }
 
-        public static decimal GetDecimal(this ISource src, string name, decimal def = 0)
+        public static decimal GetDecimal(this ISource src, string name)
         {
-            decimal v = def;
+            decimal v = 0;
             src.Get(name, ref v);
             return v;
         }
@@ -346,23 +346,23 @@ namespace Greatbone.Core
             return v;
         }
 
-        public static P GetObj<P>(this ISource src, string name) where P : IPersist, new()
+        public static B GetBean<B>(this ISource src, string name) where B : IBean, new()
         {
-            P v = default(P);
+            B v = default(B);
             src.Get(name, ref v);
             return v;
         }
 
-        public static JObj GetJObj(this ISource src, string name)
+        public static Obj GetObj(this ISource src, string name)
         {
-            JObj v = null;
+            Obj v = null;
             src.Get(name, ref v);
             return v;
         }
 
-        public static JArr GetJArr(this ISource src, string name)
+        public static Arr GetArr(this ISource src, string name)
         {
-            JArr v = null;
+            Arr v = null;
             src.Get(name, ref v);
             return v;
         }
@@ -396,9 +396,9 @@ namespace Greatbone.Core
             return v;
         }
 
-        public static P[] GetArr<P>(this ISource src, string name) where P : IPersist, new()
+        public static B[] GetBeans<B>(this ISource src, string name) where B : IBean, new()
         {
-            P[] v = null;
+            B[] v = null;
             src.Get(name, ref v);
             return v;
         }

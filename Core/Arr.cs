@@ -8,33 +8,33 @@ namespace Greatbone.Core
     /// A JSON array model.
     /// </summary>
     ///
-    public class JArr
+    public class Arr
     {
         const int InitialCapacity = 16;
 
-        JMember[] elements;
+        Member[] elements;
 
         int count;
 
-        internal JArr(int capacity = InitialCapacity)
+        internal Arr(int capacity = InitialCapacity)
         {
-            elements = new JMember[capacity];
+            elements = new Member[capacity];
             count = 0;
         }
 
-        public JMember this[int index]
+        public Member this[int index]
         {
             get { return elements[index]; }
         }
 
         public int Count => count;
 
-        internal void Add(JMember mem)
+        internal void Add(Member mem)
         {
             int len = elements.Length;
             if (count >= len)
             {
-                JMember[] alloc = new JMember[len * 4];
+                Member[] alloc = new Member[len * 4];
                 Array.Copy(elements, 0, alloc, 0, len);
                 elements = alloc;
             }
@@ -45,49 +45,49 @@ namespace Greatbone.Core
         {
             for (int i = 0; i < count; i++)
             {
-                JMember mbr = elements[i];
-                JType typ = mbr.type;
-                if (typ == JType.Array)
+                Member mbr = elements[i];
+                MemberType typ = mbr.type;
+                if (typ == MemberType.Array)
                 {
-                    snk.Put((JArr)mbr);
+                    snk.Put((Arr)mbr);
                 }
-                else if (typ == JType.Object)
+                else if (typ == MemberType.Object)
                 {
-                    snk.Put((JObj)mbr);
+                    snk.Put((Obj)mbr);
                 }
-                else if (typ == JType.String)
+                else if (typ == MemberType.String)
                 {
                     snk.Put((string)mbr);
                 }
-                else if (typ == JType.Number)
+                else if (typ == MemberType.Number)
                 {
                     snk.Put((Number)mbr);
                 }
-                else if (typ == JType.True)
+                else if (typ == MemberType.True)
                 {
                     snk.Put(true);
                 }
-                else if (typ == JType.False)
+                else if (typ == MemberType.False)
                 {
                     snk.Put(false);
                 }
-                else if (typ == JType.Null)
+                else if (typ == MemberType.Null)
                 {
                     snk.PutNull();
                 }
             }
         }
 
-        public P[] ToArr<P>(byte z = 0) where P : IPersist, new()
+        public B[] ToBeans<B>(byte z = 0) where B : IBean, new()
         {
-            P[] arr = new P[count];
-            for (int i = 0; i < arr.Length; i++)
+            B[] beans = new B[count];
+            for (int i = 0; i < beans.Length; i++)
             {
-                P obj = new P();
-                obj.Load((JObj)this[i], z);
-                arr[i] = obj;
+                B bean = new B();
+                bean.Load((Obj)this[i], z);
+                beans[i] = bean;
             }
-            return arr;
+            return beans;
         }
 
     }

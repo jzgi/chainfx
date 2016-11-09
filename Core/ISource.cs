@@ -30,11 +30,11 @@ namespace Greatbone.Core
 
         bool Get(string name, ref ArraySegment<byte>? v);
 
-        bool Get<V>(string name, ref V v, byte z = 0) where V : IPersist, new();
+        bool Get<B>(string name, ref B v, byte z = 0) where B : IBean, new();
 
-        bool Get(string name, ref JObj v);
+        bool Get(string name, ref Obj v);
 
-        bool Get(string name, ref JArr v);
+        bool Get(string name, ref Arr v);
 
         bool Get(string name, ref short[] v);
 
@@ -44,7 +44,7 @@ namespace Greatbone.Core
 
         bool Get(string name, ref string[] v);
 
-        bool Get<V>(string name, ref V[] v, byte z = 0) where V : IPersist, new();
+        bool Get<B>(string name, ref B[] v, byte z = 0) where B : IBean, new();
 
     }
 

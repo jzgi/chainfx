@@ -3,7 +3,7 @@
 namespace Greatbone.Sample
 {
 
-    public class Brand : IPersist
+    public class Brand : IBean
     {
         public string Id;
         public string Name;

@@ -30,11 +30,11 @@ namespace Greatbone.Sample
             {
                 if (dc.QueryA("SELECT * FROM users WHERE id = @1", (p) => p.Put(id)))
                 {
-                    Token obj = dc.ToObj<Token>(0xff);
+                    Token obj = dc.ToBean<Token>(0xff);
                     string credential = StrUtility.MD5(id + ':' + ':' + password);
                     if (credential.Equals(obj.credential))
                     {
-                        JContent cont = new JContent(true, false, 256);
+                        JsonContent cont = new JsonContent(true, false, 256);
                         cont.PutObj(obj);
                         cont.Encrypt(0x4a78be76, 0x1f0335e2);
                         wc.Send(200, cont);
@@ -55,11 +55,11 @@ namespace Greatbone.Sample
         /// </code>
         public void upd(WebContext wc, string subscpt)
         {
-            User obj = wc.ReadObj<User>();
+            User m = wc.ReadBean<User>();
             using (var dc = Service.NewDbContext())
             {
-                DbSql sql = new DbSql("UPDATE users")._SET_(obj)._("WHERE id = @1");
-                if (dc.Execute(sql.ToString(), p => { obj.Dump(p); p.Put(subscpt); }) > 0)
+                DbSql sql = new DbSql("UPDATE users")._SET_(m)._("WHERE id = @1");
+                if (dc.Execute(sql.ToString(), p => { m.Dump(p); p.Put(subscpt); }) > 0)
                 {
                     wc.StatusCode = 200; // ok
                 }

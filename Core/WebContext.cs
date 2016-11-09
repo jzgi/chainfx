@@ -98,7 +98,7 @@ namespace Greatbone.Core
                 else
                 {
                     bool jx = "application/jsonx".Equals(ctyp); // json extention
-                    JParse p = new JParse(bytebuf, count, jx);
+                    JsonParse p = new JsonParse(bytebuf, count, jx);
                     entity = p.Parse();
                 }
             }
@@ -119,36 +119,42 @@ namespace Greatbone.Core
             return entity as Form;
         }
 
-        public JObj ReadJObj()
+        public Obj ReadObj()
         {
             EnsureParse();
-            return entity as JObj;
+            return entity as Obj;
         }
 
-        public JArr ReadJArr()
+        public Arr ReadArr()
         {
             EnsureParse();
-            return entity as JArr;
+            return entity as Arr;
         }
 
-        public P ReadObj<P>(byte z = 0) where P : IPersist, new()
+        public B ReadBean<B>(byte z = 0) where B : IBean, new()
         {
             EnsureParse();
 
             ISource src = entity as ISource;
-            if (src == null) return default(P);
-            P obj = new P();
-            obj.Load(src, z);
-            return obj;
+            if (src == null) return default(B);
+            B bean = new B();
+            bean.Load(src, z);
+            return bean;
         }
 
-        public P[] ReadArr<P>(byte z = 0) where P : IPersist, new()
+        public D[] ReadBeans<D>(byte z = 0) where D : IBean, new()
         {
             EnsureParse();
 
-            JArr ja = entity as JArr;
-            if (ja == null) return null;
-            return ja.ToArr<P>(z);
+            Arr arr = entity as Arr;
+            if (arr == null) return null;
+            return arr.ToBeans<D>(z);
+        }
+
+        public Elem ReadElem()
+        {
+            EnsureParse();
+            return null;
         }
 
         //
@@ -211,17 +217,17 @@ namespace Greatbone.Core
             throw new NotImplementedException();
         }
 
-        public bool Get<V>(string name, ref V v, byte z = 0) where V : IPersist, new()
+        public bool Get<E>(string name, ref E v, byte z = 0) where E : IBean, new()
         {
             return Query.Get(name, ref v, z);
         }
 
-        public bool Get(string name, ref JObj v)
+        public bool Get(string name, ref Obj v)
         {
             return Query.Get(name, ref v);
         }
 
-        public bool Get(string name, ref JArr v)
+        public bool Get(string name, ref Arr v)
         {
             return Query.Get(name, ref v);
         }
@@ -246,7 +252,7 @@ namespace Greatbone.Core
             return Query.Get(name, ref v);
         }
 
-        public bool Get<V>(string name, ref V[] v, byte z = 0) where V : IPersist, new()
+        public bool Get<E>(string name, ref E[] v, byte z = 0) where E : IBean, new()
         {
             return Query.Get(name, ref v, z);
         }
@@ -354,19 +360,19 @@ namespace Greatbone.Core
             MaxAge = maxage;
         }
 
-        public void SendJ<P>(int status, P obj, byte z = 0, bool? pub = null, int maxage = 60000) where P : IPersist
+        public void SendJson<M>(int status, M model, byte z = 0, bool? pub = null, int maxage = 60000) where M : IBean
         {
-            SendJ(status, cont => cont.PutObj(obj, z), pub, maxage);
+            SendJson(status, cont => cont.PutObj(model, z), pub, maxage);
         }
 
-        public void SendJ<P>(int status, P[] arr, byte z = 0, bool? pub = null, int maxage = 60000) where P : IPersist
+        public void SendJson<M>(int status, M[] models, byte z = 0, bool? pub = null, int maxage = 60000) where M : IBean
         {
-            SendJ(status, cont => cont.PutArr(arr, z), pub, maxage);
+            SendJson(status, cont => cont.PutArr(models, z), pub, maxage);
         }
 
-        public void SendJ(int status, Action<JContent> a, bool? pub = null, int maxage = 60000)
+        public void SendJson(int status, Action<JsonContent> a, bool? pub = null, int maxage = 60000)
         {
-            JContent cont = new JContent(true, true, 4 * 1024);
+            JsonContent cont = new JsonContent(true, true, 4 * 1024);
             a?.Invoke(cont);
             Send(status, cont, pub, maxage);
         }
@@ -421,13 +427,13 @@ namespace Greatbone.Core
             }
         }
 
-        public void CallByPost(string service, string part, Action<JContent> a)
+        public void CallByPost(string service, string part, Action<JsonContent> a)
         {
             // token impersonate
             WebClient cli = Doer.Service.FindClient(service, part);
             if (cli != null)
             {
-                JContent cont = new JContent(true, true, 8 * 1024);
+                JsonContent cont = new JsonContent(true, true, 8 * 1024);
                 a?.Invoke(cont);
                 BufferUtility.Return(cont);
 
