@@ -17,7 +17,7 @@
     /// }
     /// </code>
     ///
-    public class WebConfig : WebWorkContext, IData
+    public class WebConfig : WebDirContext, IData
     {
         // partition
         internal string part;

@@ -2,9 +2,9 @@
 
 namespace Greatbone.Sample
 {
-    public class MyWork : WebWork
+    public class MyDir : WebDir
     {
-        public MyWork(WebWorkContext wnc) : base(wnc)
+        public MyDir(WebDirContext wnc) : base(wnc)
         {
         }
     }

@@ -2,15 +2,13 @@
 
 namespace Greatbone.Sample
 {
-
     public class Program
     {
-        /// <summary>
+        ///
         /// The entry point of the application.
-        /// </summary>
+        ///
         public static void Main(string[] args)
         {
-
             DbConfig pg = new DbConfig
             {
                 host = "60.205.104.239",
@@ -20,7 +18,8 @@ namespace Greatbone.Sample
                 msg = false
             };
 
-            string[] addrs = {
+            string[] addrs =
+            {
                 "127.0.0.1:7070",
                 "127.0.0.1:7071",
                 "127.0.0.1:7072",
@@ -28,72 +27,72 @@ namespace Greatbone.Sample
                 "127.0.0.1:7074",
             };
 
-            var www = new WwwServiceWork(new WebConfig
-            {
-                key = "www",
-                @extern = "127.0.0.1:8080",
-                intern = "127.0.0.1:7070",
-                net = addrs,
-                db = pg
-            }
+            var www = new WwwService(new WebConfig
+                {
+                    key = "www",
+                    @extern = "127.0.0.1:8080",
+                    intern = "127.0.0.1:7070",
+                    net = addrs,
+                    db = pg
+                }
 #if !DEBUG
-            .Load()
+                .Load()
 #endif
             );
 
-            var biz = new BizServiceWork(new WebConfig
-            {
-                key = "biz",
-                @extern = "127.0.0.1:8081",
-                intern = "127.0.0.1:7071",
-                net = addrs,
-                db = pg
-            }
+            var biz = new BizService(new WebConfig
+                {
+                    key = "biz",
+                    @extern = "127.0.0.1:8081",
+                    intern = "127.0.0.1:7071",
+                    net = addrs,
+                    db = pg
+                }
 #if !DEBUG
-            .Load()
+                .Load()
 #endif
             );
 
-            var cont = new ContServiceWork(new WebConfig
-            {
-                key = "cont",
-                @extern = "127.0.0.1:8082",
-                intern = "127.0.0.1:7072",
-                net = addrs,
-                db = pg
-            }
+            var cont = new ContService(new WebConfig
+                {
+                    key = "cont",
+                    @extern = "127.0.0.1:8082",
+                    intern = "127.0.0.1:7072",
+                    net = addrs,
+                    db = pg
+                }
 #if !DEBUG
-            .Load()
+                .Load()
 #endif
             );
 
-            var dir = new DirServiceWork(new WebConfig
-            {
-                key = "dir",
-                @extern = "127.0.0.1:8083",
-                intern = "127.0.0.1:7073",
-                net = addrs,
-                db = pg
-            }
+            var dir = new DirService(new WebConfig
+                {
+                    key = "dir",
+                    @extern = "127.0.0.1:8083",
+                    intern = "127.0.0.1:7073",
+                    net = addrs,
+                    db = pg
+                }
 #if !DEBUG
-            .Load()
+                .Load()
 #endif
             );
 
-            var chat = new ChatServiceWork(new WebConfig
-            {
-                key = "chat",
-                @extern = "127.0.0.1:8084",
-                intern = "127.0.0.1:7074",
-                net = addrs,
-                db = pg
-            }
+            var chat = new ChatService(new WebConfig
+                {
+                    key = "chat",
+                    @extern = "127.0.0.1:8084",
+                    intern = "127.0.0.1:7074",
+                    net = addrs,
+                    db = pg
+                }
 #if !DEBUG
-            .Load()
+                .Load()
 #endif
             );
 
-            WebServiceWork.Run(www, biz, cont, dir, chat);
+            WebService.Run(www, biz, cont, dir, chat);
         }
     }
 }

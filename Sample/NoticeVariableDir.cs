@@ -3,22 +3,22 @@ using Greatbone.Core;
 
 namespace Greatbone.Sample
 {
-    public class NoticeVarWork : WebWork
+    public class NoticeVariableDir : WebDir, IVariable
     {
-        public NoticeVarWork(WebWorkContext wnc) : base(wnc)
+        public NoticeVariableDir(WebDirContext wnc) : base(wnc)
         {
         }
 
-        /// <summary>
+        ///
         /// Get the record.
-        /// </summary>
+        ///
         /// <code>
         /// GET /notice/_id_/
         /// </code>
         /// 
-        public override void @default(WebContext wc, string subscpt)
+        public void @default(WebContext wc, string subscpt)
         {
-            int id = wc[0].ToInt();
+            int id = wc.GetVar(this);
             using (var dc = Service.NewDbContext())
             {
                 if (dc.QueryA("SELECT * FROM notices WHERE id = @1", p => p.Put(id)))
@@ -33,9 +33,9 @@ namespace Greatbone.Sample
             }
         }
 
-        /// <summary>
+        ///
         /// Delete the record.
-        /// </summary>
+        ///
         /// <code>
         /// POST /notice/_id_/del
         /// </code>
@@ -58,9 +58,9 @@ namespace Greatbone.Sample
             }
         }
 
-        /// <summary>
+        ///
         /// Apply for this opportunity.
-        /// </summary>
+        ///
         /// <code>
         /// POST /notice/_id_/apply
         /// </code>
@@ -68,7 +68,7 @@ namespace Greatbone.Sample
         [Check]
         public void apply(WebContext wc, string subscpt)
         {
-            int id = wc[0].ToInt();
+            int id = wc.GetVar(this);
             string userid = wc.Principal.Key;
             App app = new App()
             {
@@ -91,9 +91,9 @@ namespace Greatbone.Sample
             }
         }
 
-        /// <summary>
+        ///
         /// Add a comment to this notice.
-        /// </summary>
+        /// 
         /// <code>
         /// POST /notice/_id_/cmt
         /// {
@@ -103,7 +103,7 @@ namespace Greatbone.Sample
         [Check]
         public void cmt(WebContext wc, string subscpt)
         {
-            int id = wc[0].ToInt();
+            int id = wc.GetVar(this);
             IPrincipal tok = wc.Principal;
             Comment c = wc.ReadData<Comment>();
 
@@ -131,7 +131,7 @@ namespace Greatbone.Sample
         /// POST /notice/_id_/share
         public void share(WebContext wc, string subscpt)
         {
-            int id = wc[0].ToInt();
+            int id = wc.GetVar(this);
             using (var dc = Service.NewDbContext())
             {
                 if (dc.Execute("UPDATE notices SET shared = shared + 1 WHERE id = @1", p => p.Put(id)) > 0)
@@ -144,7 +144,5 @@ namespace Greatbone.Sample
                 }
             }
         }
-
     }
-
 }

@@ -21,7 +21,7 @@ namespace Greatbone.Core
     ///
     /// A service work implements a microservice.
     ///
-    public abstract class WebServiceWork : WebWork, IHttpApplication<HttpContext>, ILoggerProvider, ILogger
+    public abstract class WebService : WebDir, IHttpApplication<HttpContext>, ILoggerProvider, ILogger
     {
         // SERVER
         //
@@ -52,7 +52,7 @@ namespace Greatbone.Core
         readonly Thread scheduler;
 
 
-        protected WebServiceWork(WebConfig cfg) : base(cfg)
+        protected WebService(WebConfig cfg) : base(cfg)
         {
             // adjust configuration
             cfg.Service = this;
@@ -424,7 +424,7 @@ namespace Greatbone.Core
         /// <summary>
         /// Runs a number of web services and block until shutdown.
         /// </summary>
-        public static void Run(params WebServiceWork[] services)
+        public static void Run(params WebService[] services)
         {
             using (var cts = new CancellationTokenSource())
             {
@@ -437,7 +437,7 @@ namespace Greatbone.Core
                 };
 
                 // start services
-                foreach (WebServiceWork svc in services)
+                foreach (WebService svc in services)
                 {
                     svc.Start();
                 }
@@ -448,7 +448,7 @@ namespace Greatbone.Core
                     {
                         ((IApplicationLifetime) state).StopApplication();
                         // dispose services
-                        foreach (WebServiceWork svc in services)
+                        foreach (WebService svc in services)
                         {
                             svc.OnStop();
 

@@ -5,18 +5,18 @@ using static Greatbone.Core.ZUtility;
 namespace Greatbone.Sample
 {
 
-    public class PostWork : WebWork, IMgmt
+    public class PostDir : WebDir
     {
         readonly WebAction[] mgmtWas;
 
-        public PostWork(WebWorkContext wnc) : base(wnc)
+        public PostDir(WebDirContext wnc) : base(wnc)
         {
-            SetVar<PostVarWork>();
+            SetVariable<PostVariableDir>();
 
-            mgmtWas = Actions(nameof(srch), nameof(del), nameof(status));
+            mgmtWas = GetActions(nameof(srch), nameof(del), nameof(status));
         }
 
-        public override void @default(WebContext wc, string subscpt)
+        public void @default(WebContext wc, string subscpt)
         {
             top(wc, subscpt);
         }

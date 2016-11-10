@@ -6,12 +6,15 @@ using Microsoft.Extensions.Logging;
 namespace Greatbone.Core
 {
     ///
-    /// A web work is a server-side controller that realizes a virtual directory containing static/dynamic resources.
+    /// A web directory is a server-side controller that realizes a virtual directory containing static/dynamic resources.
     ///
-    public abstract class WebWork : IKeyed
+    public abstract class WebDir : IKeyed
     {
+        const string VarKey = "-var-";
+
+
         // state-passing
-        internal readonly WebWorkContext ctx;
+        internal readonly WebDirContext ctx;
 
         // declared actions 
         readonly Roll<WebAction> actions;
@@ -19,19 +22,16 @@ namespace Greatbone.Core
         // the default action
         readonly WebAction defaction;
 
+        // child directories, if any
+        internal Roll<WebDir> children;
 
-        const string VarKey = "-var-";
-
-        // child controls, if any
-        internal Roll<WebWork> children;
-
-        // the attached multiplexer doer/controller, if any
-        internal WebWork var;
+        // with variable keys, if any
+        internal WebDir variable;
 
 
-        protected WebWork(WebWorkContext wwc)
+        protected WebDir(WebDirContext ctx)
         {
-            this.ctx = wwc;
+            this.ctx = ctx;
 
             // init actions
             actions = new Roll<WebAction>(32);
@@ -42,7 +42,16 @@ namespace Greatbone.Core
                 if (pis.Length == 2 && pis[0].ParameterType == typeof(WebContext) &&
                     pis[1].ParameterType == typeof(string))
                 {
-                    WebAction wa = new WebAction(this, mi);
+                    WebAction wa = new WebAction(this, mi, true);
+                    if (wa.Key.Equals("default"))
+                    {
+                        defaction = wa;
+                    }
+                    actions.Add(wa);
+                }
+                else if (pis.Length == 1 && pis[0].ParameterType == typeof(WebContext))
+                {
+                    WebAction wa = new WebAction(this, mi, false);
                     if (wa.Key.Equals("default"))
                     {
                         defaction = wa;
@@ -52,18 +61,18 @@ namespace Greatbone.Core
             }
         }
 
-        public W AddChild<W>(string key, object state = null) where W : WebWork
+        public D AddChild<D>(string key, object state = null) where D : WebDir
         {
             if (children == null)
             {
-                children = new Roll<WebWork>(16);
+                children = new Roll<WebDir>(16);
             }
             // create instance by reflection
-            Type typ = typeof(W);
-            ConstructorInfo ci = typ.GetConstructor(new[] {typeof(WebWorkContext)});
+            Type typ = typeof(D);
+            ConstructorInfo ci = typ.GetConstructor(new[] {typeof(WebDirContext)});
             if (ci == null)
-                throw new WebException(typ + " missing WebWorkContext");
-            WebWorkContext wwc = new WebWorkContext
+                throw new WebException(typ + " missing WebDirContext");
+            WebDirContext wdc = new WebDirContext
             {
                 key = key,
                 State = state,
@@ -72,24 +81,24 @@ namespace Greatbone.Core
                 Folder = (Parent == null) ? key : Path.Combine(Parent.Folder, key),
                 Service = Service
             };
-            W work = (W) ci.Invoke(new object[] {wwc});
-            children.Add(work);
+            D dir = (D) ci.Invoke(new object[] {wdc});
+            children.Add(dir);
 
-            return work;
+            return dir;
         }
 
-        public Roll<WebWork> Children => children;
+        public Roll<WebDir> Children => children;
 
-        public WebWork Var => var;
+        public WebDir Variable => variable;
 
-        public W SetVar<W>(object state = null) where W : WebWork
+        public D SetVariable<D>(object state = null) where D : WebDir, IVariable
         {
             // create instance
-            Type typ = typeof(W);
-            ConstructorInfo ci = typ.GetConstructor(new[] {typeof(WebWorkContext)});
+            Type typ = typeof(D);
+            ConstructorInfo ci = typ.GetConstructor(new[] {typeof(WebDirContext)});
             if (ci == null)
-                throw new WebException(typ + " missing WebWorkContext");
-            WebWorkContext wwc = new WebWorkContext
+                throw new WebException(typ + " missing WebDirContext");
+            WebDirContext wdc = new WebDirContext
             {
                 key = VarKey,
                 State = state,
@@ -98,10 +107,10 @@ namespace Greatbone.Core
                 Folder = (Parent == null) ? VarKey : Path.Combine(Parent.Folder, VarKey),
                 Service = Service
             };
-            W work = (W) ci.Invoke(new object[] {wwc});
-            this.var = work;
+            D dir = (D) ci.Invoke(new object[] {wdc});
+            variable = dir;
 
-            return work;
+            return dir;
         }
 
         ///
@@ -115,14 +124,14 @@ namespace Greatbone.Core
 
         public string Folder => ctx.Folder;
 
-        public WebWork Parent => ctx.Parent;
+        public WebDir Parent => ctx.Parent;
 
-        public WebServiceWork Service => ctx.Service;
+        public WebService Service => ctx.Service;
 
 
         // public Roll<WebAction> Actions => actions;
 
-        public WebAction Action(string method)
+        public WebAction GetAction(string method)
         {
             if (string.IsNullOrEmpty(method))
             {
@@ -131,7 +140,7 @@ namespace Greatbone.Core
             return actions[method];
         }
 
-        public WebAction[] Actions(params string[] methods)
+        public WebAction[] GetActions(params string[] methods)
         {
             int len = methods.Length;
             WebAction[] was = new WebAction[len];
@@ -153,27 +162,27 @@ namespace Greatbone.Core
             }
             else // dispatch to child or multiplexer
             {
-                string dir = relative.Substring(0, slash);
-                WebWork child;
-                if (children != null && children.TryGet(dir, out child)) // seek sub first
+                string key = relative.Substring(0, slash);
+                WebDir child;
+                if (children != null && children.TryGet(key, out child)) // seek sub first
                 {
                     child.Handle(relative.Substring(slash + 1), wc);
                 }
-                else if (var == null)
+                else if (variable == null)
                 {
                     wc.StatusCode = 404; // not found
                 }
                 else
                 {
-                    wc.ChainVar(dir);
-                    var.Handle(relative.Substring(slash + 1), wc);
+                    wc.ChainVar(variable, key);
+                    variable.Handle(relative.Substring(slash + 1), wc);
                 }
             }
         }
 
         internal void DoRsc(string rsc, WebContext wc)
         {
-            wc.Work = this;
+            wc.Dir = this;
 
             int dot = rsc.LastIndexOf('.');
             if (dot != -1) // static
@@ -190,7 +199,7 @@ namespace Greatbone.Core
                     key = rsc.Substring(0, dash);
                     subscpt = rsc.Substring(dash + 1);
                 }
-                WebAction wa = string.IsNullOrEmpty(key) ? defaction : Action(key);
+                WebAction wa = string.IsNullOrEmpty(key) ? defaction : GetAction(key);
                 if (wa == null)
                 {
                     wc.StatusCode = 404;
@@ -201,7 +210,7 @@ namespace Greatbone.Core
                 }
             }
 
-            wc.Work = null;
+            wc.Dir = null;
         }
 
         void DoStatic(string file, string ext, WebContext wc)
@@ -243,10 +252,6 @@ namespace Greatbone.Core
                 Modified = modified
             };
             wc.Send(200, sta, true, 5 * 60000);
-        }
-
-        public virtual void @default(WebContext wc, string subscpt)
-        {
         }
 
         //

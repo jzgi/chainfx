@@ -8,19 +8,18 @@ namespace Greatbone.Sample
 
     /// /123/Get
     /// /123/Put
-    public class ChatWork : WebWork
+    public class ChatVariableDir : WebDir, IVariable
     {
         private ConcurrentDictionary<string, List<Chat>> online;
 
-        public ChatWork(WebWorkContext wwc) : base(wwc)
+        public ChatVariableDir(WebDirContext ctx) : base(ctx)
         {
         }
 
         ///<summary>Returns the administration UI.</summary>
         [CheckAdmin]
-        public override void @default(WebContext wc, string subscript)
+        public void @default(WebContext wc, string subscript)
         {
-            base.@default(wc, subscript);
         }
 
         [CheckSelf]

@@ -2,10 +2,9 @@
 
 namespace Greatbone.Sample
 {
-
-    /// <summary>
+    ///
     /// A login internal user.
-    /// </summary>
+    ///
     public class Login : IPrincipal, IData
     {
         internal string id;
@@ -34,7 +33,5 @@ namespace Greatbone.Sample
             s.Put(nameof(credential), credential);
             s.Put(nameof(roles), roles);
         }
-
     }
-
 }

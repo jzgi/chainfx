@@ -2,31 +2,26 @@ using Greatbone.Core;
 
 namespace Ministry.Dietary
 {
-
     ///
-    /// <summary>
-    /// The shop multiplex controller.
-    /// </summary>
+    /// The shop multiplex directory.
     ///
-    public abstract class ShopVarWork : WebWork
+    public class ShopVariableDir : WebDir, IVariable
     {
-
-        public ShopVarWork(WebConfig cfg) : base(cfg)
+        public ShopVariableDir(WebDirContext ctx) : base(ctx)
         {
             // customer personal
-            AddChild<MyWork>("my");
+            AddChild<MyDir>("my");
 
             // order functions
-            AddChild<OrderWork>("order");
+            AddChild<OrderDir>("order");
         }
 
         //
         // user actions
         //
 
-        public override void @default(WebContext wc, string subscpt)
+        public void @default(WebContext wc, string subscpt)
         {
-
         }
 
 
@@ -36,15 +31,11 @@ namespace Ministry.Dietary
 
         public void place(WebContext wc, string subscpt)
         {
-
         }
 
 
         //
         // wechat callbacks
         //
-
-
     }
-
 }

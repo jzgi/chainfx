@@ -5,14 +5,14 @@ using static Greatbone.Core.ZUtility;
 namespace Greatbone.Sample
 {
 
-    public class NoticeWork : WebWork, IMgmt
+    public class NoticeDir : WebDir
     {
-        public NoticeWork(WebWorkContext wnc) : base(wnc)
+        public NoticeDir(WebDirContext wnc) : base(wnc)
         {
-            SetVar<NoticeVarWork>();
+            SetVariable<NoticeVariableDir>();
         }
 
-        public override void @default(WebContext wc, string subscpt)
+        public void @default(WebContext wc, string subscpt)
         {
             top(wc, subscpt);
         }

@@ -6,13 +6,13 @@ namespace Ministry.Dietary
     ///
     /// The my work controller.
     ///
-    public class MyWork : WebWork
+    public class MyDir : WebDir
     {
-        public MyWork(WebWorkContext wnc) : base(wnc)
+        public MyDir(WebDirContext wnc) : base(wnc)
         {
         }
 
-        public override void @default(WebContext wc, string subscpt)
+        public void @default(WebContext wc, string subscpt)
         {
 
         }

@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Threading.Tasks;
+using System.Xml.Linq;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Http.Features;
 using Microsoft.Extensions.Primitives;
@@ -15,7 +16,7 @@ namespace Greatbone.Core
         {
         }
 
-        public WebWork Work { get; internal set; }
+        public WebDir Dir { get; internal set; }
 
         public WebAction Action { get; internal set; }
 
@@ -23,19 +24,22 @@ namespace Greatbone.Core
 
 
         // the chain of keys
-        string[] chain;
+        WebVar[] chain;
         int vars;
 
-        internal void ChainVar(string key)
+        internal void ChainVar(WebDir dir, string key)
         {
             if (chain == null)
             {
-                chain = new string[8];
+                chain = new WebVar[4];
             }
-            chain[vars++] = key;
+            chain[vars++] = new WebVar(dir, key);
         }
 
-        public string this[int index] => (index >= 0 && index < vars) ? chain[index] : null;
+        public WebVar GetVar<V>(V dir) where V : WebDir, IVariable
+        {
+            return default(WebVar);
+        }
 
         //
         // REQUEST
@@ -431,7 +435,7 @@ namespace Greatbone.Core
         public async void CallByGet(string service, string part, string uri)
         {
             // token impersonate
-            WebClient cli = Work.Service.FindClient(service, part);
+            WebClient cli = Dir.Service.FindClient(service, part);
             if (cli != null)
             {
                 object obj = await cli.GetAsync(uri);
@@ -441,7 +445,7 @@ namespace Greatbone.Core
         public void CallByPost(string service, string part, Action<JsonContent> a)
         {
             // token impersonate
-            WebClient cli = Work.Service.FindClient(service, part);
+            WebClient cli = Dir.Service.FindClient(service, part);
             if (cli != null)
             {
                 JsonContent cont = new JsonContent(true, true, 8 * 1024);

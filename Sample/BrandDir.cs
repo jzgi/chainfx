@@ -6,14 +6,14 @@ namespace Greatbone.Sample
     ///
     /// /brand/
     ///
-    public class BrandWork : WebWork, IMgmt
+    public class BrandDir : WebDir
     {
-        public BrandWork(WebWorkContext wnc) : base(wnc)
+        public BrandDir(WebDirContext wnc) : base(wnc)
         {
-            SetVar<BrandVarWork>();
+            SetVariable<BrandVariableDir>();
         }
 
-        public override void @default(WebContext wc, string subscpt)
+        public void @default(WebContext wc, string subscpt)
         {
         }
 

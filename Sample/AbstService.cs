@@ -2,17 +2,14 @@ using Greatbone.Core;
 
 namespace Greatbone.Sample
 {
-
     ///
-    /// <summary>
     /// The common base class for all service controllers.
-    /// </summary>
     ///
-    public abstract class AbstServiceWork : WebServiceWork
+    public abstract class AbstService : WebService
     {
         readonly Login[] logins;
 
-        public AbstServiceWork(WebConfig cfg) : base(cfg)
+        protected AbstService(WebConfig cfg) : base(cfg)
         {
             logins = JsonUtility.FileToDatas<Login>(cfg.GetFilePath("$realm.json"));
         }
@@ -26,10 +23,12 @@ namespace Greatbone.Sample
                 JsonParse par = new JsonParse(plain);
                 try
                 {
-                    Obj jo = (Obj)par.Parse();
+                    Obj jo = (Obj) par.Parse();
                     return jo.ToData<Token>();
                 }
-                catch { }
+                catch
+                {
+                }
             }
             else // username
             {
@@ -51,16 +50,14 @@ namespace Greatbone.Sample
             if (Children != null)
             {
                 wc.SendMajorLayout(200, "模块管理", a =>
-                {
-                    for (int i = 0; i < Children.Count; i++)
                     {
-                        WebWork child = Children[i];
-                    }
-                },
-                true);
+                        for (int i = 0; i < Children.Count; i++)
+                        {
+                            WebDir child = Children[i];
+                        }
+                    },
+                    true);
             }
         }
-
     }
-
 }

@@ -5,15 +5,17 @@ using System.Reflection;
 namespace Greatbone.Core
 {
     ///
-    /// <summary>
     /// The descriptor for an action method.
-    /// </summary>
     ///
     public class WebAction : IKeyed
     {
-        public WebWork Control { get; }
+        public WebDir Dir { get; }
 
-        readonly Action<WebContext, string> call;
+        // one of the tow signatures
+        readonly Delegate call;
+
+        // if the method has a subscript parameter
+        readonly bool subscript;
 
         readonly CheckAttribute[] checks;
 
@@ -23,13 +25,16 @@ namespace Greatbone.Core
 
         public string Key { get; }
 
-        internal WebAction(WebWork control, MethodInfo mi)
+        internal WebAction(WebDir dir, MethodInfo mi, bool subscpt)
         {
-            Control = control;
+            Dir = dir;
             Key = mi.Name; // NOTE: strict method name as key here to avoid the default base url trap
-            call = (Action<WebContext, string>) mi.CreateDelegate(typeof(Action<WebContext, string>), control);
+            subscript = subscpt;
+            call = subscpt
+                ? mi.CreateDelegate(typeof(Action<WebContext, string>), dir)
+                : mi.CreateDelegate(typeof(Action<WebContext>), dir);
 
-            // prepare if attributes
+            // prepare checks
             List<CheckAttribute> lst = null;
             foreach (var to in mi.GetCustomAttributes<CheckAttribute>())
             {
@@ -52,7 +57,7 @@ namespace Greatbone.Core
         // for generating unique digest nonce
         const string PrivateKey = "3e43a7180";
 
-        internal bool TryInvoke(WebContext wc, string subscpt)
+        internal bool TryInvoke(WebContext wc, string subscpt = null)
         {
             // access check 
             if (bearer || digest)
@@ -84,7 +89,11 @@ namespace Greatbone.Core
 
             // invoke the action method
             wc.Action = this;
-            call(wc, subscpt);
+            if (this.subscript)
+                ((Action<WebContext, string>) call)(wc, subscpt);
+            else
+                ((Action<WebContext>) call)(wc);
+
             wc.Action = null;
             return true;
         }

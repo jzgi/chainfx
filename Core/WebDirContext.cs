@@ -5,7 +5,7 @@ namespace Greatbone.Core
     ///
     /// The context for a particular node in the web work hierarchy.
     ///
-    public class WebWorkContext
+    public class WebDirContext
     {
         internal string key;
 
@@ -16,11 +16,11 @@ namespace Greatbone.Core
 
         public bool IsVar { get; internal set; }
 
-        public WebWork Parent { get; internal set; }
+        public WebDir Parent { get; internal set; }
 
         public virtual string Folder { get; internal set; }
 
-        public WebServiceWork Service { get; internal set; }
+        public WebService Service { get; internal set; }
 
 
         public string GetFilePath(string file)

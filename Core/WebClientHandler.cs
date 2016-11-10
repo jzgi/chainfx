@@ -11,7 +11,7 @@ namespace Greatbone.Core
     ///
     public class WebClientHandler : HttpClientHandler
     {
-        readonly WebServiceWork service;
+        readonly WebService service;
 
         // remote address
         readonly string raddr;
@@ -23,7 +23,7 @@ namespace Greatbone.Core
         // tick count
         private int lastConnect;
 
-        internal WebClientHandler(WebServiceWork service, string raddr)
+        internal WebClientHandler(WebService service, string raddr)
         {
             this.service = service;
             this.raddr = raddr;

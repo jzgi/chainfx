@@ -4,37 +4,35 @@ using static Greatbone.Core.ZUtility;
 
 namespace Greatbone.Sample
 {
-
     ///
     /// /fame/
-    public class FameWork : WebWork, IMgmt
+    ///
+    public class FameDir : WebDir
     {
-        public FameWork(WebWorkContext wwwc) : base(wwwc)
+        public FameDir(WebDirContext ctx) : base(ctx)
         {
-            SetVar<FameMuxWork>();
+            SetVariable<FameVariableDir>();
         }
 
-        public override void @default(WebContext wc, string subscpt)
+        public void @default(WebContext wc, string subscpt)
         {
             top(wc, subscpt);
         }
 
-
-
-        /// <summary>
+        ///
         /// Get the nth page on top.
-        /// </summary>
+        ///
         /// <code>
         /// GET /fame/top[-_n_]
         /// </code>
         public void top(WebContext wc, string subscpt)
         {
-            string id = wc[0];
             int n = subscpt.ToInt();
             using (var dc = Service.NewDbContext())
             {
                 const byte z = 0xff ^ BIN;
-                DbSql sql = new DbSql("SELECT ").columnlst(new Fame(), z)._("FROM fames ORDER BY rating LIMIT 20 OFFSET @1");
+                DbSql sql =
+                    new DbSql("SELECT ").columnlst(new Fame(), z)._("FROM fames ORDER BY rating LIMIT 20 OFFSET @1");
                 if (dc.Query(sql.ToString(), p => p.Put(n * 20)))
                 {
                     Fame[] fames = dc.ToDatas<Fame>(z);
@@ -46,15 +44,14 @@ namespace Greatbone.Sample
         }
 
         ///
-        /// <summary>
         /// Find records by name matching, or by career.
-        /// </summary>
+        ///
         /// <code> 
         /// GET /fame/find?name=_name_pattern_ OR
         /// GET /fame/find?skill=_skill_
         /// </code>
         ///
-        public void find(WebContext wc, string subscpt)
+        public void find(WebContext wc)
         {
             const byte z = 0xff ^ BIN;
             string name = null;
@@ -62,7 +59,8 @@ namespace Greatbone.Sample
             {
                 using (var dc = Service.NewDbContext())
                 {
-                    DbSql sql = new DbSql("SELECT ").columnlst(Fame.Empty, z)._("FROM fames WHERE name LIKE '%" + name + "%'");
+                    DbSql sql =
+                        new DbSql("SELECT ").columnlst(Fame.Empty, z)._("FROM fames WHERE name LIKE '%" + name + "%'");
                     if (dc.Query(sql.ToString()))
                     {
                         Fame[] fames = dc.ToDatas<Fame>(z);
@@ -96,7 +94,7 @@ namespace Greatbone.Sample
         // ADMIN
         //
 
-        public void srch(WebContext wc, string subscpt)
+        public void srch(WebContext wc)
         {
             int id = 0;
             wc.Get(nameof(id), ref id);
@@ -114,7 +112,6 @@ namespace Greatbone.Sample
                     wc.StatusCode = 204;
                 }
             }
-
         }
 
         public void del(WebContext wc, string subscpt)

@@ -4,23 +4,22 @@ using static Greatbone.Core.ZUtility;
 
 namespace Greatbone.Sample
 {
-
-    public class FameMuxWork : WebWork
+    public class FameVariableDir : WebDir, IVariable
     {
-        public FameMuxWork(WebWorkContext wwc) : base(wwc)
+        public FameVariableDir(WebDirContext ctx) : base(ctx)
         {
         }
 
-        /// <summary>
+        ///
         /// Get the record.
-        /// </summary>
+        ///
         /// <code>
         /// GET /fame/_id_/
         /// </code>
         ///
-        public override void @default(WebContext wc, string subscpt)
+        public void @default(WebContext wc, string subscpt)
         {
-            string id = wc[0];
+            string id = wc.GetVar(this);
             using (var dc = Service.NewDbContext())
             {
                 if (wc.IsGetMethod)
@@ -39,10 +38,9 @@ namespace Greatbone.Sample
         }
 
 
-
-        /// <summary>
+        ///
         /// Update the record.
-        /// </summary>
+        ///
         /// <code>
         /// POST /fame/_id_/upd
         /// {
@@ -54,12 +52,21 @@ namespace Greatbone.Sample
         {
             string uid = wc.Principal.Key;
             Fame fame = wc.ReadData<Fame>();
-            fame.id = wc[0];
+            fame.id = wc.GetVar(this);
 
             using (var dc = Service.NewDbContext())
             {
-                DbSql sql = new DbSql("INSERT INTO fames")._(Fame.Empty)._VALUES_(Fame.Empty)._("ON CONFLICT (id) DO UPDATE")._SET_(Fame.Empty)._("WHERE fames.id = @1");
-                if (dc.Execute(sql.ToString(), p => { fame.Dump(p); p.Put(uid); }) > 0)
+                DbSql sql =
+                    new DbSql("INSERT INTO fames")._(Fame.Empty)
+                        ._VALUES_(Fame.Empty)
+                        ._("ON CONFLICT (id) DO UPDATE")
+                        ._SET_(Fame.Empty)
+                        ._("WHERE fames.id = @1");
+                if (dc.Execute(sql.ToString(), p =>
+                    {
+                        fame.Dump(p);
+                        p.Put(uid);
+                    }) > 0)
                 {
                     wc.StatusCode = 200; // ok
                 }
@@ -70,16 +77,16 @@ namespace Greatbone.Sample
             }
         }
 
-        /// <summary>
+        ///
         /// Get the icon.
-        /// </summary>
+        ///
         /// <code>
         /// GET /fame/_id_/icon
         /// </code>
         ///
         public void icon(WebContext wc, string subscpt)
         {
-            string id = wc[0];
+            string id = wc.GetVar(this);
             using (var dc = Service.NewDbContext())
             {
                 if (dc.QueryA("SELECT icon FROM fames WHERE id = @1", p => p.Put(id)))
@@ -99,9 +106,8 @@ namespace Greatbone.Sample
         }
 
         ///
-        /// <summary>
         /// Update the icon.
-        /// </summary>
+        ///
         /// <code>
         /// POST /fame/_id_/updicon
         /// .....
@@ -109,7 +115,7 @@ namespace Greatbone.Sample
         ///
         public void updicon(WebContext wc, string subscpt)
         {
-            string id = wc[0];
+            string id = wc.GetVar(this);
             ArraySegment<byte>? bytes = wc.ReadByteA();
             using (var dc = Service.NewDbContext())
             {
@@ -128,23 +134,23 @@ namespace Greatbone.Sample
             }
         }
 
-        /// <summary>
+        ///
         /// Get the nth image.
-        /// </summary>
+        ///
         /// <code>
         /// GET /fame/_id_/img?idx=_n_
         /// </code>
         ///
         public void img(WebContext wc, string subscpt)
         {
-            string id = wc[0];
+            string id = wc.GetVar(this);
             int n = subscpt.ToInt();
             using (var dc = Service.NewDbContext())
             {
                 if (dc.QueryA("SELECT m" + n + " FROM fames WHERE id = @1", p => p.Put(id)))
                 {
                     byte[] v = dc.GetBytes();
-                    StaticContent sta = new StaticContent() { ByteBuffer = v };
+                    StaticContent sta = new StaticContent() {ByteBuffer = v};
                     wc.Send(200, sta, true, 60000);
                 }
                 else
@@ -154,9 +160,9 @@ namespace Greatbone.Sample
             }
         }
 
-        /// <summary>
+        ///
         /// Update the nth image.
-        /// </summary>
+        ///
         /// <code>
         /// POST /fame/_id_/updimg[-_n_]
         /// [img_bytes]
@@ -164,14 +170,15 @@ namespace Greatbone.Sample
         ///
         public void updimg(WebContext wc, string subscpt)
         {
-            string id = wc[0];
+            string id = wc.GetVar(this);
             int n = subscpt.ToInt();
             using (var dc = Service.NewDbContext())
             {
                 ArraySegment<byte>? bytes = wc.ReadByteA();
                 if (bytes == null)
                 {
-                    wc.StatusCode = 301; ;
+                    wc.StatusCode = 301;
+                    ;
                 }
                 else if (dc.Execute("UPDATE posts SET m" + n + " = @1 WHERE id = @2", p => p.Put(bytes.Value).Put(id)) > 0)
                 {

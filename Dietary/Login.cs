@@ -2,10 +2,9 @@
 
 namespace Ministry.Dietary
 {
-
-    /// <summary>
+    ///
     /// An administrator's login.
-    /// </summary>
+    ///
     public class Login : IPrincipal, IData
     {
         internal string id;
@@ -34,7 +33,5 @@ namespace Ministry.Dietary
             s.Put(nameof(credential), credential);
             s.Put(nameof(roles), roles);
         }
-
     }
-
 }

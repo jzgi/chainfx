@@ -3,24 +3,23 @@
 namespace Greatbone.Sample
 {
     ///
-    /// <summary>
     /// The user variable-hub controller.
     ///
-    public class UserVarWork : WebWork
+    public class UserVariableDir : WebDir, IVariable
     {
-        public UserVarWork(WebWorkContext wnc) : base(wnc)
+        public UserVariableDir(WebDirContext wnc) : base(wnc)
         {
         }
 
-        /// <summary>
+        ///
         /// Get a user token.
-        /// </summary>
+        ///
         /// <code>
         /// GET /user/_id_/?password=_password_
         /// </code>
-        public override void @default(WebContext wc, string sub)
+        public void @default(WebContext wc, string sub)
         {
-            string id = wc[0];
+            string id = wc.GetVar(this);
             string password = null;
             if (!wc.Get(nameof(password), ref password))
             {

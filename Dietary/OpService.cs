@@ -2,30 +2,25 @@
 
 namespace Ministry.Dietary
 {
-
     ///
-    /// <summary>
     /// The operation service controller.
-    /// </summary>
     ///
-    public class OpService : WebServiceWork
+    public class OpService : WebService
     {
         public OpService(WebConfig cfg) : base(cfg)
         {
-            SetVar<ShopVarWork>();
+            SetVariable<ShopVariableDir>();
         }
 
         ///
-        /// <summary>
         /// Get all fame categories.
-        /// </summary>
+        ///
         /// <code>
         /// GET /cats
         /// </code>
         ///
         public void cats(WebContext wc, string subscpt)
         {
-
         }
 
         public void search(WebContext wc, string subscpt)
@@ -44,13 +39,10 @@ namespace Ministry.Dietary
 
         public void USER_UPD(MsgContext mc)
         {
-
-
         }
 
         public void RPT_OK(MsgContext mc)
         {
-
         }
 
 
@@ -62,10 +54,12 @@ namespace Ministry.Dietary
                 JsonParse par = new JsonParse(plain);
                 try
                 {
-                    Obj jo = (Obj)par.Parse();
+                    Obj jo = (Obj) par.Parse();
                     // return jo.ToObj<Token>();
                 }
-                catch { }
+                catch
+                {
+                }
             }
             else // username
             {
@@ -87,17 +81,14 @@ namespace Ministry.Dietary
             if (Children != null)
             {
                 wc.SendMajorLayout(200, "模块管理", a =>
-                {
-                    for (int i = 0; i < Children.Count; i++)
                     {
-                        WebWork child = Children[i];
-
-                    }
-                },
-                true);
+                        for (int i = 0; i < Children.Count; i++)
+                        {
+                            WebDir child = Children[i];
+                        }
+                    },
+                    true);
             }
         }
-
-
     }
 }
