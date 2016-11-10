@@ -9,10 +9,12 @@ namespace Greatbone.Core
     ///
     public class WebAction : IKeyed
     {
-        public WebDir Dir { get; }
+        readonly WebDir dir;
+
+        readonly string key;
 
         // one of the tow signatures
-        readonly Delegate call;
+        readonly Delegate method;
 
         // if the method has a subscript parameter
         readonly Type subtype;
@@ -23,16 +25,14 @@ namespace Greatbone.Core
 
         readonly ButtonAttribute button;
 
-        public string Key { get; }
-
         internal WebAction(WebDir dir, MethodInfo mi, Type subtype)
         {
-            Dir = dir;
-            Key = mi.Name; // NOTE: strict method name as key here to avoid the default base url trap
+            this.dir = dir;
+            this.key = mi.Name; // NOTE: strict method name as key here to avoid the default base url trap
             this.subtype = subtype;
-            call =
+            method =
                 subtype == null ? mi.CreateDelegate(typeof(Action<WebContext>), dir) :
-                subtype == typeof(string) ? mi.CreateDelegate(typeof(Action<WebContext, string>), dir) :
+                subtype == typeof(string) ? mi.CreateDelegate(typeof(Action<string, WebContext>), dir) :
                 subtype == typeof(short) ? mi.CreateDelegate(typeof(Action<short, WebContext>), dir) :
                 subtype == typeof(int) ? mi.CreateDelegate(typeof(Action<int, WebContext>), dir) :
                 subtype == typeof(long) ? mi.CreateDelegate(typeof(Action<long, WebContext>), dir) :
@@ -52,6 +52,10 @@ namespace Greatbone.Core
 
             button = mi.GetCustomAttribute<ButtonAttribute>();
         }
+
+        public WebDir Dir => dir;
+
+        public string Key => key;
 
         public bool IsGet => button?.IsGet ?? false;
 
@@ -91,12 +95,12 @@ namespace Greatbone.Core
             // invoke the action method
             wc.Action = this;
 
-            if (subtype == null) ((Action<WebContext>)call)(wc);
-            else if (subtype == typeof(string)) ((Action<string, WebContext>)call)(subscpt, wc);
-            else if (subtype == typeof(short)) ((Action<short, WebContext>)call)(subscpt.ToShort(), wc);
-            else if (subtype == typeof(int)) ((Action<int, WebContext>)call)(subscpt.ToInt(), wc);
-            else if (subtype == typeof(long)) ((Action<long, WebContext>)call)(subscpt.ToLong(), wc);
-            else if (subtype == typeof(DateTime)) ((Action<DateTime, WebContext>)call)(subscpt.ToDateTime(), wc);
+            if (subtype == null) ((Action<WebContext>)method)(wc);
+            else if (subtype == typeof(string)) ((Action<string, WebContext>)method)(subscpt, wc);
+            else if (subtype == typeof(short)) ((Action<short, WebContext>)method)(subscpt.ToShort(), wc);
+            else if (subtype == typeof(int)) ((Action<int, WebContext>)method)(subscpt.ToInt(), wc);
+            else if (subtype == typeof(long)) ((Action<long, WebContext>)method)(subscpt.ToLong(), wc);
+            else if (subtype == typeof(DateTime)) ((Action<DateTime, WebContext>)method)(subscpt.ToDateTime(), wc);
 
             wc.Action = null;
             return true;

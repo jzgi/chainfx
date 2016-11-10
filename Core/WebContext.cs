@@ -37,6 +37,10 @@ namespace Greatbone.Core
 
         public WebVar Var<V>(V dir) where V : WebDir, IVariable
         {
+            for (int i = vars - 1; i >= 0; i--)
+            {
+                if (chain[i].Dir == dir) return chain[i];
+            }
             return default(WebVar);
         }
 
@@ -85,7 +89,7 @@ namespace Greatbone.Core
             StringValues vs;
             if (Request.Headers.TryGetValue(name, out vs))
             {
-                return (string) vs;
+                return (string)vs;
             }
             return null;
         }
@@ -95,7 +99,7 @@ namespace Greatbone.Core
             StringValues vs;
             if (Request.Headers.TryGetValue(name, out vs))
             {
-                string str = (string) vs;
+                string str = (string)vs;
                 int v;
                 if (int.TryParse(str, out v))
                 {
@@ -110,7 +114,7 @@ namespace Greatbone.Core
             StringValues vs;
             if (Request.Headers.TryGetValue(name, out vs))
             {
-                string str = (string) vs;
+                string str = (string)vs;
                 DateTime v;
                 if (StrUtility.TryParseUtcDate(str, out v))
                 {
@@ -128,7 +132,7 @@ namespace Greatbone.Core
             long? clen = req.ContentLength;
             if (clen > 0)
             {
-                int len = (int) clen;
+                int len = (int)clen;
                 bytebuf = BufferUtility.GetByteBuffer(len);
                 count = await req.Body.ReadAsync(bytebuf, 0, len);
             }
@@ -316,7 +320,7 @@ namespace Greatbone.Core
                 // cache indicators
                 if (Content is DynamicContent) // set etag
                 {
-                    ulong etag = ((DynamicContent) Content).ETag;
+                    ulong etag = ((DynamicContent)Content).ETag;
                     SetHeader("ETag", StrUtility.ToHex(etag));
                 }
 

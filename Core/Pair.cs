@@ -45,7 +45,7 @@ namespace Greatbone.Core
             }
         }
 
-        string First => (count == 1) ? (string)values : ((string[])values)[0];
+        string First => (count == 0) ? null : (count == 1) ? (string)values : ((string[])values)[0];
 
         //
         // CONVERSION

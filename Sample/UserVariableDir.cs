@@ -30,12 +30,12 @@ namespace Greatbone.Sample
             {
                 if (dc.QueryA("SELECT * FROM users WHERE id = @1", (p) => p.Put(id)))
                 {
-                    Token obj = dc.ToData<Token>(0xff);
+                    Token tok = dc.ToData<Token>(0xff);
                     string credential = StrUtility.MD5(id + ':' + ':' + password);
-                    if (credential.Equals(obj.credential))
+                    if (credential.Equals(tok.credential))
                     {
                         JsonContent cont = new JsonContent(true, false, 256);
-                        cont.PutObj(obj);
+                        cont.PutObj(tok);
                         cont.Encrypt(0x4a78be76, 0x1f0335e2);
                         wc.Send(200, cont);
                     }
