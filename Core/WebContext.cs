@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Threading.Tasks;
-using System.Xml.Linq;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Http.Features;
 using Microsoft.Extensions.Primitives;
@@ -10,7 +9,7 @@ namespace Greatbone.Core
     ///
     /// The encapsulation of a web request/response exchange context.
     ///
-    public class WebContext : DefaultHttpContext, ISource, IDisposable
+    public class WebContext : DefaultHttpContext, IDisposable
     {
         internal WebContext(IFeatureCollection features) : base(features)
         {
@@ -27,7 +26,7 @@ namespace Greatbone.Core
         WebVar[] chain;
         int vars;
 
-        internal void ChainVar(WebDir dir, string key)
+        internal void Chain(WebDir dir, string key)
         {
             if (chain == null)
             {
@@ -36,7 +35,7 @@ namespace Greatbone.Core
             chain[vars++] = new WebVar(dir, key);
         }
 
-        public WebVar GetVar<V>(V dir) where V : WebDir, IVariable
+        public WebVar Var<V>(V dir) where V : WebDir, IVariable
         {
             return default(WebVar);
         }
@@ -71,6 +70,54 @@ namespace Greatbone.Core
                 }
                 return query;
             }
+        }
+
+        public Pair this[int index] => Query[index];
+
+        public Pair this[string name] => Query[name];
+
+        //
+        // HEADER
+        //
+
+        public string Header(string name)
+        {
+            StringValues vs;
+            if (Request.Headers.TryGetValue(name, out vs))
+            {
+                return (string) vs;
+            }
+            return null;
+        }
+
+        public int? HeaderInt(string name)
+        {
+            StringValues vs;
+            if (Request.Headers.TryGetValue(name, out vs))
+            {
+                string str = (string) vs;
+                int v;
+                if (int.TryParse(str, out v))
+                {
+                    return v;
+                }
+            }
+            return null;
+        }
+
+        public DateTime? HeaderDateTime(string name)
+        {
+            StringValues vs;
+            if (Request.Headers.TryGetValue(name, out vs))
+            {
+                string str = (string) vs;
+                DateTime v;
+                if (StrUtility.TryParseUtcDate(str, out v))
+                {
+                    return v;
+                }
+            }
+            return null;
         }
 
         async void EnsureReadAsync()
@@ -171,149 +218,6 @@ namespace Greatbone.Core
             EnsureParse();
 
             return entity as Elem;
-        }
-
-        //
-        // SOURCE FOR QUERY STRING
-        //
-
-        public bool Get(string name, ref bool v)
-        {
-            return Query.Get(name, ref v);
-        }
-
-        public bool Get(string name, ref short v)
-        {
-            return Query.Get(name, ref v);
-        }
-
-        public bool Get(string name, ref int v)
-        {
-            return Query.Get(name, ref v);
-        }
-
-        public bool Get(string name, ref long v)
-        {
-            return Query.Get(name, ref v);
-        }
-
-        public bool Get(string name, ref decimal v)
-        {
-            return Query.Get(name, ref v);
-        }
-
-        public bool Get(string name, ref Number v)
-        {
-            return Query.Get(name, ref v);
-        }
-
-        public bool Get(string name, ref DateTime v)
-        {
-            return Query.Get(name, ref v);
-        }
-
-        public bool Get(string name, ref char[] v)
-        {
-            return Query.Get(name, ref v);
-        }
-
-        public bool Get(string name, ref string v)
-        {
-            return Query.Get(name, ref v);
-        }
-
-        public bool Get(string name, ref byte[] v)
-        {
-            throw new NotImplementedException();
-        }
-
-        public bool Get(string name, ref ArraySegment<byte>? v)
-        {
-            throw new NotImplementedException();
-        }
-
-        public bool Get<D>(string name, ref D v, byte z = 0) where D : IData, new()
-        {
-            return Query.Get(name, ref v, z);
-        }
-
-        public bool Get(string name, ref Obj v)
-        {
-            return Query.Get(name, ref v);
-        }
-
-        public bool Get(string name, ref Arr v)
-        {
-            return Query.Get(name, ref v);
-        }
-
-        public bool Get(string name, ref short[] v)
-        {
-            return Query.Get(name, ref v);
-        }
-
-        public bool Get(string name, ref int[] v)
-        {
-            return Query.Get(name, ref v);
-        }
-
-        public bool Get(string name, ref long[] v)
-        {
-            return Query.Get(name, ref v);
-        }
-
-        public bool Get(string name, ref string[] v)
-        {
-            return Query.Get(name, ref v);
-        }
-
-        public bool Get<D>(string name, ref D[] v, byte z = 0) where D : IData, new()
-        {
-            return Query.Get(name, ref v, z);
-        }
-
-        //
-        // HEADER
-        //
-
-        public string Header(string name)
-        {
-            StringValues vs;
-            if (Request.Headers.TryGetValue(name, out vs))
-            {
-                return (string) vs;
-            }
-            return null;
-        }
-
-        public int? HeaderInt(string name)
-        {
-            StringValues vs;
-            if (Request.Headers.TryGetValue(name, out vs))
-            {
-                string str = (string) vs;
-                int v;
-                if (int.TryParse(str, out v))
-                {
-                    return v;
-                }
-            }
-            return null;
-        }
-
-        public DateTime? HeaderDateTime(string name)
-        {
-            StringValues vs;
-            if (Request.Headers.TryGetValue(name, out vs))
-            {
-                string str = (string) vs;
-                DateTime v;
-                if (StrUtility.TryParseUtcDate(str, out v))
-                {
-                    return v;
-                }
-            }
-            return null;
         }
 
         //

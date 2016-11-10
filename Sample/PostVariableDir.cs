@@ -19,7 +19,7 @@ namespace Greatbone.Sample
         ///
         public void @default(WebContext wc, string subscpt)
         {
-            int id = wc.GetVar(this);
+            int id = wc.Var(this);
             int n = subscpt.ToInt();
             using (var dc = Service.NewDbContext())
             {
@@ -46,7 +46,7 @@ namespace Greatbone.Sample
         ///
         public void img(WebContext wc, string subscpt)
         {
-            int id = wc.GetVar(this);
+            int id = wc.Var(this);
             int n = subscpt.ToInt();
             using (var dc = Service.NewDbContext())
             {
@@ -74,7 +74,7 @@ namespace Greatbone.Sample
         [Check]
         public void updimg(WebContext wc, string subscpt)
         {
-            int id = wc.GetVar(this);
+            int id = wc.Var(this);
             int n = subscpt.ToInt();
             using (var dc = Service.NewDbContext())
             {
@@ -133,7 +133,7 @@ namespace Greatbone.Sample
         [Check]
         public void cmt(WebContext wc, string subscpt)
         {
-            int id = wc.GetVar(this);
+            int id = wc.Var(this);
             IPrincipal tok = wc.Principal;
             Comment m = wc.ReadData<Comment>();
 
@@ -166,7 +166,7 @@ namespace Greatbone.Sample
         ///
         public void share(WebContext wc, string subscpt)
         {
-            int id = wc.GetVar(this);
+            int id = wc.Var(this);
             using (var dc = Service.NewDbContext())
             {
                 if (dc.Execute("UPDATE posts SET shared = shared + 1 WHERE id = @1", p => p.Put(id)) > 0)
@@ -191,7 +191,7 @@ namespace Greatbone.Sample
         public void like(WebContext wc, string subscpt)
         {
             string uid = wc.Principal.Key;
-            int id = wc.GetVar(this);
+            int id = wc.Var(this);
             using (var dc = Service.NewDbContext())
             {
                 if (

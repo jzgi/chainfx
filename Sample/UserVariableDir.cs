@@ -19,11 +19,12 @@ namespace Greatbone.Sample
         /// </code>
         public void @default(WebContext wc, string sub)
         {
-            string id = wc.GetVar(this);
-            string password = null;
-            if (!wc.Get(nameof(password), ref password))
+            string id = wc.Var(this);
+            string password = wc[nameof(password)];
+            if (password == null)
             {
-                wc.StatusCode = 400; return;
+                wc.StatusCode = 400;
+                return;
             }
             using (var dc = Service.NewDbContext())
             {
@@ -58,7 +59,11 @@ namespace Greatbone.Sample
             using (var dc = Service.NewDbContext())
             {
                 DbSql sql = new DbSql("UPDATE users")._SET_(m)._("WHERE id = @1");
-                if (dc.Execute(sql.ToString(), p => { m.Dump(p); p.Put(subscpt); }) > 0)
+                if (dc.Execute(sql.ToString(), p =>
+                    {
+                        m.Dump(p);
+                        p.Put(subscpt);
+                    }) > 0)
                 {
                     wc.StatusCode = 200; // ok
                 }
@@ -66,6 +71,5 @@ namespace Greatbone.Sample
                     wc.StatusCode = 406; // not acceptable
             }
         }
-
     }
 }

@@ -35,8 +35,8 @@ namespace Greatbone.Sample
         {
             if (wc.IsGetMethod)
             {
-                string id = null;
-                if (!wc.Get(nameof(id), ref id))
+                string id = wc[nameof(id)];
+                if (id == null)
                 {
                     wc.StatusCode = 400; // bad request
                     return;

@@ -25,14 +25,14 @@ namespace Greatbone.Sample
         public void top(WebContext wc, string subscpt)
         {
             int page = subscpt.ToInt();
-            string authorid = null;
-            if (wc.Get(nameof(authorid), ref authorid))
+            string authorid = wc[nameof(authorid)];
+            if (authorid !=null)
             {
                 using (var dc = Service.NewDbContext())
                 {
                     if (dc.Query("SELECT * FROM notices WHERE authorid = @1 ORDER BY id LIMIT 20 OFFSET @2", p => p.Put(authorid).Put(page * 20)))
                     {
-                        Notice[] notices = dc.ToDatas<Notice>(0xff);
+                        var notices = dc.ToDatas<Notice>(0xff);
                         wc.SendJson(200, notices, 0xff);
                     }
                     else
@@ -47,7 +47,7 @@ namespace Greatbone.Sample
                 {
                     if (dc.Query("SELECT * FROM notices WHERE duedate >= current_date ORDER BY id LIMIT 20 OFFSET @1", p => p.Put(page * 20)))
                     {
-                        Notice[] notices = dc.ToDatas<Notice>(0xff);
+                        var notices = dc.ToDatas<Notice>(0xff);
                         wc.SendJson(200, notices, 0xff);
                     }
                     else
@@ -72,19 +72,19 @@ namespace Greatbone.Sample
         /// </code>
         ///
         [Check]
-        public void @new(WebContext wc, string subscpt)
+        public void @new(WebContext wc)
         {
             IPrincipal tok = wc.Principal;
-            Notice m = wc.ReadData<Notice>();
+            Notice notice = wc.ReadData<Notice>();
 
-            m.authorid = tok.Key;
-            m.author = tok.Name;
-            m.date = DateTime.Now;
+            notice.authorid = tok.Key;
+            notice.author = tok.Name;
+            notice.date = DateTime.Now;
             using (var dc = Service.NewDbContext())
             {
                 const byte z = 0xff ^ AUTO;
                 DbSql sql = new DbSql("INSERT INTO notices")._(Notice.Empty, z)._VALUES_(Notice.Empty, z)._("RETURNING id");
-                object id = dc.Scalar(sql.ToString(), p => m.Dump(p, z));
+                object id = dc.Scalar(sql.ToString(), p => notice.Dump(p, z));
                 if (id != null)
                 {
                     wc.StatusCode = 201;

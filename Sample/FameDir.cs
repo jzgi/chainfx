@@ -54,16 +54,15 @@ namespace Greatbone.Sample
         public void find(WebContext wc)
         {
             const byte z = 0xff ^ BIN;
-            string name = null;
-            if (wc.Get(nameof(name), ref name))
+            string name = wc[nameof(name)];
+            if (name != null)
             {
                 using (var dc = Service.NewDbContext())
                 {
-                    DbSql sql =
-                        new DbSql("SELECT ").columnlst(Fame.Empty, z)._("FROM fames WHERE name LIKE '%" + name + "%'");
+                    DbSql sql =new DbSql("SELECT ").columnlst(Fame.Empty, z)._("FROM fames WHERE name LIKE '%" + name + "%'");
                     if (dc.Query(sql.ToString()))
                     {
-                        Fame[] fames = dc.ToDatas<Fame>(z);
+                        var fames = dc.ToDatas<Fame>(z);
                         wc.SendJson(200, fames, z);
                     }
                     else
@@ -72,21 +71,20 @@ namespace Greatbone.Sample
                 return;
             }
 
-            string skill = null;
-            if (wc.Get(nameof(skill), ref skill))
+            string skill = wc[nameof(skill)];
+            if (skill != null)
             {
                 using (var dc = Service.NewDbContext())
                 {
                     DbSql sql = new DbSql("SELECT ").columnlst(Fame.Empty, z)._("FROM fames WHERE @1 = ANY (skills)");
                     if (dc.Query(sql.ToString(), p => p.Put(skill)))
                     {
-                        Fame[] fames = dc.ToDatas<Fame>(z);
+                        var fames = dc.ToDatas<Fame>(z);
                         wc.SendJson(200, fames, z);
                     }
                     else
                         wc.StatusCode = 204;
                 }
-                return;
             }
         }
 
@@ -96,11 +94,8 @@ namespace Greatbone.Sample
 
         public void srch(WebContext wc)
         {
-            int id = 0;
-            wc.Get(nameof(id), ref id);
-
-            string name = null;
-            wc.Get(nameof(name), ref name);
+            int id = wc[nameof(id)];
+            string name = wc[nameof(name)];
 
             using (var dc = Service.NewDbContext())
             {
@@ -116,9 +111,7 @@ namespace Greatbone.Sample
 
         public void del(WebContext wc, string subscpt)
         {
-            int id = 0;
-            wc.Get(nameof(id), ref id);
-
+            int id = wc[nameof(id)];
             using (var dc = Service.NewDbContext())
             {
                 dc.Execute("DELETE fames WHERE id = @2", p => p.Put(id));
@@ -127,9 +120,7 @@ namespace Greatbone.Sample
 
         public void status(WebContext wc, string subscpt)
         {
-            int id = 0;
-            wc.Get(nameof(id), ref id);
-
+            int id = wc[nameof(id)];
             Obj jo = wc.ReadObj();
             int status = jo[nameof(status)];
 

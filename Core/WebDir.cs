@@ -174,7 +174,7 @@ namespace Greatbone.Core
                 }
                 else
                 {
-                    wc.ChainVar(variable, key);
+                    wc.Chain(variable, key);
                     variable.Handle(relative.Substring(slash + 1), wc);
                 }
             }
