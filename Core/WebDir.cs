@@ -10,7 +10,7 @@ namespace Greatbone.Core
     ///
     public abstract class WebDir : IKeyed
     {
-        const string VarKey = "-var-";
+        const string VariableKey = "_var_";
 
 
         // state-passing
@@ -25,7 +25,7 @@ namespace Greatbone.Core
         // child directories, if any
         internal Roll<WebDir> children;
 
-        // with variable keys, if any
+        // dir with variable keys, if any
         internal WebDir variable;
 
 
@@ -74,7 +74,7 @@ namespace Greatbone.Core
                 key = key,
                 State = state,
                 Parent = this,
-                IsVar = false,
+                IsVariable = false,
                 Folder = (Parent == null) ? key : Path.Combine(Parent.Folder, key),
                 Service = Service
             };
@@ -97,11 +97,11 @@ namespace Greatbone.Core
                 throw new WebException(typ + " missing WebDirContext");
             WebDirContext wdc = new WebDirContext
             {
-                key = VarKey,
+                key = VariableKey,
                 State = state,
                 Parent = this,
-                IsVar = true,
-                Folder = (Parent == null) ? VarKey : Path.Combine(Parent.Folder, VarKey),
+                IsVariable = true,
+                Folder = (Parent == null) ? VariableKey : Path.Combine(Parent.Folder, VariableKey),
                 Service = Service
             };
             D dir = (D)ci.Invoke(new object[] { wdc });
@@ -117,7 +117,7 @@ namespace Greatbone.Core
 
         public object State => ctx.State;
 
-        public bool IsVar => ctx.IsVar;
+        public bool IsVariable => ctx.IsVariable;
 
         public string Folder => ctx.Folder;
 

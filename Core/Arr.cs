@@ -23,7 +23,7 @@ namespace Greatbone.Core
 
         public int Count => count;
 
-        internal void Add(Member mem)
+        internal void Add(Member mbr)
         {
             int len = elements.Length;
             if (count >= len)
@@ -32,7 +32,7 @@ namespace Greatbone.Core
                 Array.Copy(elements, 0, alloc, 0, len);
                 elements = alloc;
             }
-            elements[count++] = mem;
+            elements[count++] = mbr;
         }
 
         internal void Dump<R>(ISink<R> snk) where R : ISink<R>

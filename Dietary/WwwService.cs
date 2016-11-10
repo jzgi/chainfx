@@ -2,11 +2,8 @@
 
 namespace Ministry.Dietary
 {
-
     ///
-    /// <summary>
-    /// The website service controller.
-    /// </summary>
+    /// The website service.
     ///
     public class WwwService : WebService
     {
@@ -17,9 +14,8 @@ namespace Ministry.Dietary
 
 
         ///
-        /// <summary>
         /// Get all fame categories.
-        /// </summary>
+        ///
         /// <code>
         /// GET /cats
         /// </code>

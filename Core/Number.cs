@@ -1,10 +1,7 @@
 namespace Greatbone.Core
 {
-
     ///
-    /// <summary>
     /// Used to build a number during a parsing process.
-    /// </summary>
     ///
     public struct Number
     {
@@ -84,6 +81,5 @@ namespace Greatbone.Core
             }
             return i;
         }
-
     }
 }

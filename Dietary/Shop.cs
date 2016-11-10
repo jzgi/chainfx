@@ -2,10 +2,9 @@
 
 namespace Ministry.Dietary
 {
-
-    /// <summary>
+    ///
     /// A login internal user.
-    /// </summary>
+    ///
     public class Shop : IPrincipal, IData
     {
         internal string id;
@@ -37,7 +36,5 @@ namespace Ministry.Dietary
             s.Put(nameof(tel), tel);
             s.Put(nameof(addr), addr);
         }
-
     }
-
 }

@@ -14,7 +14,7 @@ namespace Greatbone.Core
 
         public object State { get; internal set; }
 
-        public bool IsVar { get; internal set; }
+        public bool IsVariable { get; internal set; }
 
         public WebDir Parent { get; internal set; }
 
