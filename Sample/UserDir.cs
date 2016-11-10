@@ -9,8 +9,7 @@ namespace Greatbone.Sample
     ///
     public class UserDir : WebDir
     {
-        readonly ConcurrentDictionary<string, string> vcodes =
-            new ConcurrentDictionary<string, string>(Environment.ProcessorCount * 4, 1024);
+        readonly ConcurrentDictionary<string, string> vcodes = new ConcurrentDictionary<string, string>(Environment.ProcessorCount * 4, 1024);
 
         public UserDir(WebDirContext ctx) : base(ctx)
         {
@@ -31,7 +30,7 @@ namespace Greatbone.Sample
         ///   "vcode" : "123"            
         /// }    
         /// </code>
-        public void @new(WebContext wc, string subscpt)
+        public void @new(WebContext wc)
         {
             if (wc.IsGetMethod)
             {
@@ -72,9 +71,7 @@ namespace Greatbone.Sample
                     using (var dc = Service.NewDbContext())
                     {
                         string credential = StrUtility.MD5(id + ':' + ':' + password);
-                        if (
-                            dc.Execute("INSERT INTO users (id, credential, name) VALUES (@1, @2, @3)",
-                                p => p.Put(id).Put(credential).Put(name)) > 0)
+                        if (dc.Execute("INSERT INTO users (id, credential, name) VALUES (@1, @2, @3)", p => p.Put(id).Put(credential).Put(name)) > 0)
                         {
                             wc.StatusCode = 201; // created
                         }
@@ -89,16 +86,14 @@ namespace Greatbone.Sample
 
 
         [CheckAdmin]
-        public void create(WebContext wc, string subscpt)
+        public void create(WebContext wc)
         {
             Obj o = wc.ReadObj();
             string id = o[nameof(id)];
             string password = o[nameof(password)];
             using (var dc = Service.NewDbContext())
             {
-                if (
-                    dc.Execute("INSERT INTO users (id, credential) VALUES (@1, @2)",
-                        p => p.Put(id).Put(StrUtility.MD5(password))) > 0)
+                if (dc.Execute("INSERT INTO users (id, credential) VALUES (@1, @2)", p => p.Put(id).Put(StrUtility.MD5(password))) > 0)
                 {
                     wc.StatusCode = 200;
                 }

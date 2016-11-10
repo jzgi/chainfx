@@ -39,25 +39,22 @@ namespace Greatbone.Core
             foreach (MethodInfo mi in typ.GetMethods(BindingFlags.Public | BindingFlags.Instance))
             {
                 ParameterInfo[] pis = mi.GetParameters();
-                if (pis.Length == 2 && pis[0].ParameterType == typeof(WebContext) &&
-                    pis[1].ParameterType == typeof(string))
+                WebAction wa = null;
+                if (pis.Length == 1 && pis[0].ParameterType == typeof(WebContext))
                 {
-                    WebAction wa = new WebAction(this, mi, true);
-                    if (wa.Key.Equals("default"))
-                    {
-                        defaction = wa;
-                    }
-                    actions.Add(wa);
+                    wa = new WebAction(this, mi, null);
                 }
-                else if (pis.Length == 1 && pis[0].ParameterType == typeof(WebContext))
+                else if (pis.Length == 2 && pis[1].ParameterType == typeof(WebContext))
                 {
-                    WebAction wa = new WebAction(this, mi, false);
-                    if (wa.Key.Equals("default"))
-                    {
-                        defaction = wa;
-                    }
-                    actions.Add(wa);
+                    Type subtyp = pis[0].ParameterType; // subscript as first parameter
+                    wa = new WebAction(this, mi, subtyp);
                 }
+                if (wa == null) continue;
+                if (wa.Key.Equals("default"))
+                {
+                    defaction = wa;
+                }
+                actions.Add(wa);
             }
         }
 
@@ -69,7 +66,7 @@ namespace Greatbone.Core
             }
             // create instance by reflection
             Type typ = typeof(D);
-            ConstructorInfo ci = typ.GetConstructor(new[] {typeof(WebDirContext)});
+            ConstructorInfo ci = typ.GetConstructor(new[] { typeof(WebDirContext) });
             if (ci == null)
                 throw new WebException(typ + " missing WebDirContext");
             WebDirContext wdc = new WebDirContext
@@ -81,7 +78,7 @@ namespace Greatbone.Core
                 Folder = (Parent == null) ? key : Path.Combine(Parent.Folder, key),
                 Service = Service
             };
-            D dir = (D) ci.Invoke(new object[] {wdc});
+            D dir = (D)ci.Invoke(new object[] { wdc });
             children.Add(dir);
 
             return dir;
@@ -95,7 +92,7 @@ namespace Greatbone.Core
         {
             // create instance
             Type typ = typeof(D);
-            ConstructorInfo ci = typ.GetConstructor(new[] {typeof(WebDirContext)});
+            ConstructorInfo ci = typ.GetConstructor(new[] { typeof(WebDirContext) });
             if (ci == null)
                 throw new WebException(typ + " missing WebDirContext");
             WebDirContext wdc = new WebDirContext
@@ -107,7 +104,7 @@ namespace Greatbone.Core
                 Folder = (Parent == null) ? VarKey : Path.Combine(Parent.Folder, VarKey),
                 Service = Service
             };
-            D dir = (D) ci.Invoke(new object[] {wdc});
+            D dir = (D)ci.Invoke(new object[] { wdc });
             variable = dir;
 
             return dir;

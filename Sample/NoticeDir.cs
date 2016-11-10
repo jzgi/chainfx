@@ -12,21 +12,20 @@ namespace Greatbone.Sample
             SetVariable<NoticeVariableDir>();
         }
 
-        public void @default(WebContext wc, string subscpt)
+        public void @default(int page, WebContext wc)
         {
-            top(wc, subscpt);
+            top(page, wc);
         }
 
         ///
         /// <code>
-        /// GET /notice/top[-_n_][?authorid=_id_]
+        /// GET /notice/top[-_page_][?authorid=_id_]
         /// </code>
         ///
-        public void top(WebContext wc, string subscpt)
+        public void top(int page, WebContext wc)
         {
-            int page = subscpt.ToInt();
             string authorid = wc[nameof(authorid)];
-            if (authorid !=null)
+            if (authorid != null)
             {
                 using (var dc = Service.NewDbContext())
                 {

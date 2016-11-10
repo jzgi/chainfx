@@ -17,7 +17,7 @@ namespace Greatbone.Sample
         /// <code>
         /// GET /user/_id_/?password=_password_
         /// </code>
-        public void @default(WebContext wc, string sub)
+        public void @default(WebContext wc)
         {
             string id = wc.Var(this);
             string password = wc[nameof(password)];
@@ -53,17 +53,14 @@ namespace Greatbone.Sample
         /// <code>
         /// POST /user/_id_/upd
         /// </code>
-        public void upd(WebContext wc, string subscpt)
+        public void upd(WebContext wc)
         {
-            User m = wc.ReadData<User>();
+            string id = wc.Var(this);
+            var user = wc.ReadData<User>();
             using (var dc = Service.NewDbContext())
             {
-                DbSql sql = new DbSql("UPDATE users")._SET_(m)._("WHERE id = @1");
-                if (dc.Execute(sql.ToString(), p =>
-                    {
-                        m.Dump(p);
-                        p.Put(subscpt);
-                    }) > 0)
+                DbSql sql = new DbSql("UPDATE users")._SET_(user)._("WHERE id = @1");
+                if (dc.Execute(sql.ToString(), p => { user.Dump(p); p.Put(id); }) > 0)
                 {
                     wc.StatusCode = 200; // ok
                 }

@@ -7,7 +7,7 @@ namespace Greatbone.Core
     public static class StrUtility
     {
         // hexidecimal numbers
-        static readonly char[] HEX = {'0', '1', '2', '3', '4', '5', '6', '7', '8', '9', 'a', 'b', 'c', 'd', 'e', 'f'};
+        static readonly char[] HEX = { '0', '1', '2', '3', '4', '5', '6', '7', '8', '9', 'a', 'b', 'c', 'd', 'e', 'f' };
 
         public static string ToHex(ulong v)
         {
@@ -20,7 +20,7 @@ namespace Greatbone.Core
         }
 
         // days of week
-        static readonly string[] DOW = {"Mon", "Tue", "Wed", "Thu", "Fri", "Sat", "Sun"};
+        static readonly string[] DOW = { "Mon", "Tue", "Wed", "Thu", "Fri", "Sat", "Sun" };
 
         // sexagesimal numbers
         static readonly string[] SEX =
@@ -72,7 +72,7 @@ namespace Greatbone.Core
             v = v.ToUniversalTime();
 
             StringBuilder gmt = new StringBuilder();
-            gmt.Append(DOW[(int) v.DayOfWeek]);
+            gmt.Append(DOW[(int)v.DayOfWeek]);
             gmt.Append(", ");
 
             gmt.Append(SEX[v.Day]);
@@ -182,7 +182,7 @@ namespace Greatbone.Core
             byte[] raw = new byte[len];
             for (int i = 0; i < len; i++)
             {
-                raw[i] = (byte) input[i];
+                raw[i] = (byte)input[i];
             }
 
             // digest and transform
@@ -223,7 +223,7 @@ namespace Greatbone.Core
             while (i < vlen)
             {
                 int m = i / 4;
-                char c = (char) ((ToNum(v[i++]) << 12) + (ToNum(v[i++]) << 8) + (ToNum(v[i++]) << 4) + ToNum(v[i++]));
+                char c = (char)((ToNum(v[i++]) << 12) + (ToNum(v[i++]) << 8) + (ToNum(v[i++]) << 4) + ToNum(v[i++]));
                 buf[m] = c;
             }
             return new string(buf);
@@ -257,20 +257,20 @@ namespace Greatbone.Core
                 if (c < 0x80)
                 {
                     // have at most seven bits
-                    buf[p++] = ((byte) c);
+                    buf[p++] = ((byte)c);
                 }
                 else if (c < 0x800)
                 {
                     // 2 text, 11 bits
-                    buf[p++] = (byte) (0xc0 | (c >> 6));
-                    buf[p++] = (byte) (0x80 | (c & 0x3f));
+                    buf[p++] = (byte)(0xc0 | (c >> 6));
+                    buf[p++] = (byte)(0x80 | (c & 0x3f));
                 }
                 else
                 {
                     // 3 text, 16 bits
-                    buf[p++] = (byte) (0xe0 | (c >> 12));
-                    buf[p++] = (byte) (0x80 | (c >> 6) & 0x3f);
-                    buf[p++] = (byte) (0x80 | (c & 0x3f));
+                    buf[p++] = (byte)(0xe0 | (c >> 12));
+                    buf[p++] = (byte)(0x80 | (c >> 6) & 0x3f);
+                    buf[p++] = (byte)(0x80 | (c & 0x3f));
                 }
             }
             return new ArraySegment<byte>(buf, 0, p);
@@ -279,7 +279,7 @@ namespace Greatbone.Core
 
         public static string Decrypt(string tokstr, int mask, int order)
         {
-            int[] masks = {(mask >> 24) & 0xff, (mask >> 16) & 0xff, (mask >> 8) & 0xff, mask & 0xff};
+            int[] masks = { (mask >> 24) & 0xff, (mask >> 16) & 0xff, (mask >> 8) & 0xff, mask & 0xff };
             int len = tokstr.Length / 2;
             Str str = new Str(256);
             int p = 0;
@@ -288,10 +288,10 @@ namespace Greatbone.Core
                 // reordering
 
                 // transform to byte
-                int b = (byte) (Dv(tokstr[p++]) << 4 | Dv(tokstr[p++]));
+                int b = (byte)(Dv(tokstr[p++]) << 4 | Dv(tokstr[p++]));
 
                 // masking
-                str.Accept((byte) (b ^ masks[i % 4]));
+                str.Accept((byte)(b ^ masks[i % 4]));
             }
             return str.ToString();
         }
@@ -344,6 +344,13 @@ namespace Greatbone.Core
                 return v;
             }
             return def;
+        }
+
+        public static DateTime ToDateTime(this string str, DateTime def = default(DateTime))
+        {
+            DateTime v = def;
+            StrUtility.TryParseDate(str, out v);
+            return v;
         }
     }
 }

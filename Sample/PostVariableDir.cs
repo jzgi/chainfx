@@ -17,10 +17,9 @@ namespace Greatbone.Sample
         /// GET /post/_id_/
         /// </code>
         ///
-        public void @default(WebContext wc, string subscpt)
+        public void @default(WebContext wc)
         {
             int id = wc.Var(this);
-            int n = subscpt.ToInt();
             using (var dc = Service.NewDbContext())
             {
                 const byte z = 0 ^ BIN;
@@ -41,19 +40,18 @@ namespace Greatbone.Sample
         /// Get the nth image.
         ///
         /// <code>
-        /// GET /post/_id_/img[-_n_]
+        /// GET /post/_id_/img[-_idx_]
         /// </code>
         ///
-        public void img(WebContext wc, string subscpt)
+        public void img(int idx, WebContext wc)
         {
             int id = wc.Var(this);
-            int n = subscpt.ToInt();
             using (var dc = Service.NewDbContext())
             {
-                if (dc.QueryA("SELECT m" + n + " FROM posts WHERE id = @1", p => p.Put(id)))
+                if (dc.QueryA("SELECT m" + idx + " FROM posts WHERE id = @1", p => p.Put(id)))
                 {
                     byte[] v = dc.GetBytes();
-                    StaticContent sta = new StaticContent() {ByteBuffer = v};
+                    StaticContent sta = new StaticContent() { ByteBuffer = v };
                     wc.Send(200, sta, true, 60000);
                 }
                 else
@@ -67,15 +65,14 @@ namespace Greatbone.Sample
         /// Update the nth image.
         ///
         /// <code>
-        /// POST /post/_id_/updimg-[_n_]
+        /// POST /post/_id_/updimg-[_idx_]
         /// [img_bytes]
         /// </code>
         ///
         [Check]
-        public void updimg(WebContext wc, string subscpt)
+        public void updimg(int idx, WebContext wc)
         {
             int id = wc.Var(this);
-            int n = subscpt.ToInt();
             using (var dc = Service.NewDbContext())
             {
                 ArraySegment<byte>? bytes = wc.ReadByteA();
@@ -83,7 +80,7 @@ namespace Greatbone.Sample
                 {
                     wc.StatusCode = 301;
                 }
-                else if (dc.Execute("UPDATE posts SET m" + n + " = @1 WHERE id = @2", p => p.Put(bytes.Value).Put(id)) > 0)
+                else if (dc.Execute("UPDATE posts SET m" + idx + " = @1 WHERE id = @2", p => p.Put(bytes.Value).Put(id)) > 0)
                 {
                     wc.StatusCode = 200;
                 }
@@ -102,12 +99,13 @@ namespace Greatbone.Sample
         /// </code>
         ///
         [Check]
-        public void del(WebContext wc, string subscpt)
+        public void del(WebContext wc)
         {
+            int id = wc.Var(this);
             IPrincipal tok = wc.Principal;
             using (var dc = Service.NewDbContext())
             {
-                if (dc.Execute("DELETE FROM posts WHERE id = @1 AND authorid = @2", p => p.Put(subscpt).Put(tok.Key)) >
+                if (dc.Execute("DELETE FROM posts WHERE id = @1 AND authorid = @2", p => p.Put(id).Put(tok.Key)) >
                     0)
                 {
                     wc.StatusCode = 200;
@@ -131,20 +129,20 @@ namespace Greatbone.Sample
         /// </code>
         ///
         [Check]
-        public void cmt(WebContext wc, string subscpt)
+        public void cmt(WebContext wc)
         {
             int id = wc.Var(this);
             IPrincipal tok = wc.Principal;
-            Comment m = wc.ReadData<Comment>();
+            var comment = wc.ReadData<Comment>();
 
-            m.time = DateTime.Now;
-            m.authorid = tok.Key;
+            comment.time = DateTime.Now;
+            comment.authorid = tok.Key;
 
             using (var dc = Service.NewDbContext())
             {
                 if (dc.QueryA("SELECT comments FROM posts WHERE id = @1", p => p.Put(id)))
                 {
-                    Comment[] cmts = dc.GetDatas<Comment>().Add(m);
+                    Comment[] cmts = dc.GetDatas<Comment>().Add(comment);
                     if (dc.Execute("UPDATE posts SET comments = @1 WHERE id = @2", p => p.Put(cmts).Put(id)) > 0)
                     {
                         wc.StatusCode = 200;
@@ -164,7 +162,7 @@ namespace Greatbone.Sample
         /// POST /post/_id_/share
         /// </code>
         ///
-        public void share(WebContext wc, string subscpt)
+        public void share(WebContext wc)
         {
             int id = wc.Var(this);
             using (var dc = Service.NewDbContext())
@@ -188,16 +186,13 @@ namespace Greatbone.Sample
         /// </code>
         ///
         [Check]
-        public void like(WebContext wc, string subscpt)
+        public void like(WebContext wc)
         {
             string uid = wc.Principal.Key;
             int id = wc.Var(this);
             using (var dc = Service.NewDbContext())
             {
-                if (
-                    dc.Execute(
-                        "UPDATE posts SET likes = array_prepend(@1, likes) WHERE id = @2 AND array_position(likes, @1) ISNULL",
-                        p => p.Put(uid).Put(id)) > 0)
+                if (dc.Execute("UPDATE posts SET likes = array_prepend(@1, likes) WHERE id = @2 AND array_position(likes, @1) ISNULL", p => p.Put(uid).Put(id)) > 0)
                 {
                     wc.StatusCode = 200; // ok
                 }

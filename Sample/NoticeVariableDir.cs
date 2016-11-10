@@ -16,7 +16,7 @@ namespace Greatbone.Sample
         /// GET /notice/_id_/
         /// </code>
         /// 
-        public void @default(WebContext wc, string subscpt)
+        public void @default(WebContext wc)
         {
             int id = wc.Var(this);
             using (var dc = Service.NewDbContext())
@@ -41,9 +41,8 @@ namespace Greatbone.Sample
         /// </code>
         /// 
         [Check]
-        public void del(WebContext wc, string subscpt)
+        public void del(int id, WebContext wc)
         {
-            int id = subscpt.ToInt();
             string userid = wc.Principal.Key;
             using (var dc = Service.NewDbContext())
             {
@@ -101,21 +100,21 @@ namespace Greatbone.Sample
         /// }            
         /// </code>
         [Check]
-        public void cmt(WebContext wc, string subscpt)
+        public void cmt(WebContext wc)
         {
             int id = wc.Var(this);
             IPrincipal tok = wc.Principal;
-            Comment c = wc.ReadData<Comment>();
+            var comment = wc.ReadData<Comment>();
 
-            c.time = DateTime.Now;
-            c.authorid = tok.Key;
+            comment.time = DateTime.Now;
+            comment.authorid = tok.Key;
 
             using (var dc = Service.NewDbContext())
             {
                 if (dc.QueryA("SELECT comments FROM notices WHERE id = @1", p => p.Put(id)))
                 {
-                    Comment[] cmts = dc.GetDatas<Comment>().Add(c);
-                    if (dc.Execute("UPDATE notices SET comments = @1 WHERE id = @2", p => p.Put(cmts).Put(id)) > 0)
+                    var comments = dc.GetDatas<Comment>().Add(comment);
+                    if (dc.Execute("UPDATE notices SET comments = @1 WHERE id = @2", p => p.Put(comments).Put(id)) > 0)
                     {
                         wc.StatusCode = 200;
                     }
@@ -129,7 +128,7 @@ namespace Greatbone.Sample
 
         ///
         /// POST /notice/_id_/share
-        public void share(WebContext wc, string subscpt)
+        public void share(WebContext wc)
         {
             int id = wc.Var(this);
             using (var dc = Service.NewDbContext())

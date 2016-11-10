@@ -15,29 +15,26 @@ namespace Greatbone.Sample
             mgmtWas = GetActions(nameof(srch), nameof(del), nameof(status));
         }
 
-        public void @default(WebContext wc, string subscpt)
+        public void @default(int page, WebContext wc)
         {
-            top(wc, subscpt);
+            top(page, wc);
         }
 
         ///
         /// Get the nth page of records on top.
         ///
         /// <code>
-        /// GET /post/top-[_n_][?authorid=_id_]
+        /// GET /post/top-[_page_][?authorid=_id_]
         /// </code>
-        public void top(WebContext wc, string subscpt)
+        public void top(int page, WebContext wc)
         {
-            int page = subscpt.ToInt();
             const byte z = 0xff ^ BIN;
             string authorid = wc[nameof(authorid)];
             if (authorid != null)
             {
                 using (var dc = Service.NewDbContext())
                 {
-                    DbSql sql =
-                        new DbSql("SELECT ").columnlst(Post.Empty, z)
-                            ._("FROM posts WHERE authorid = @1 ORDER BY id DESC LIMIT 20 OFFSET @2");
+                    DbSql sql = new DbSql("SELECT ").columnlst(Post.Empty, z)._("FROM posts WHERE authorid = @1 ORDER BY id DESC LIMIT 20 OFFSET @2");
                     if (dc.Query(sql.ToString(), p => p.Put(authorid).Put(20 * page)))
                     {
                         var posts = dc.ToDatas<Post>(z);
@@ -51,9 +48,7 @@ namespace Greatbone.Sample
             {
                 using (var dc = Service.NewDbContext())
                 {
-                    DbSql sql =
-                        new DbSql("SELECT ").columnlst(Post.Empty, z)
-                            ._("FROM posts ORDER BY id DESC LIMIT 20 OFFSET @1");
+                    DbSql sql = new DbSql("SELECT ").columnlst(Post.Empty, z)._("FROM posts ORDER BY id DESC LIMIT 20 OFFSET @1");
                     if (dc.Query(sql.ToString(), p => p.Put(20 * page)))
                     {
                         var posts = dc.ToDatas<Post>(z);
@@ -77,10 +72,10 @@ namespace Greatbone.Sample
         /// </code>
         ///
         [Check]
-        public void @new(WebContext wc, string subscpt)
+        public void @new(WebContext wc)
         {
             IPrincipal tok = wc.Principal;
-            Post post = wc.ReadData<Post>();
+            var post = wc.ReadData<Post>();
             post.time = DateTime.Now;
             post.authorid = tok.Key;
             post.author = tok.Name;
@@ -108,7 +103,7 @@ namespace Greatbone.Sample
         public void mgmt(WebContext wc, string subscpt)
         {
             // returh first UI
-            wc.SendMajorLayout(200, "管理功能", a => { a.form(mgmtWas, (Post[]) null, 0); });
+            wc.SendMajorLayout(200, "管理功能", a => { a.form(mgmtWas, (Post[])null, 0); });
         }
 
         [CheckAdmin]

@@ -14,26 +14,25 @@ namespace Greatbone.Sample
             SetVariable<FameVariableDir>();
         }
 
-        public void @default(WebContext wc, string subscpt)
+        public void @default(int page, WebContext wc)
         {
-            top(wc, subscpt);
+            top(page, wc);
         }
 
         ///
         /// Get the nth page on top.
         ///
         /// <code>
-        /// GET /fame/top[-_n_]
+        /// GET /fame/top[-_page_]
         /// </code>
-        public void top(WebContext wc, string subscpt)
+        public void top(int page, WebContext wc)
         {
-            int n = subscpt.ToInt();
             using (var dc = Service.NewDbContext())
             {
                 const byte z = 0xff ^ BIN;
                 DbSql sql =
                     new DbSql("SELECT ").columnlst(new Fame(), z)._("FROM fames ORDER BY rating LIMIT 20 OFFSET @1");
-                if (dc.Query(sql.ToString(), p => p.Put(n * 20)))
+                if (dc.Query(sql.ToString(), p => p.Put(page * 20)))
                 {
                     Fame[] fames = dc.ToDatas<Fame>(z);
                     wc.SendJson(200, fames, z);
@@ -59,7 +58,7 @@ namespace Greatbone.Sample
             {
                 using (var dc = Service.NewDbContext())
                 {
-                    DbSql sql =new DbSql("SELECT ").columnlst(Fame.Empty, z)._("FROM fames WHERE name LIKE '%" + name + "%'");
+                    DbSql sql = new DbSql("SELECT ").columnlst(Fame.Empty, z)._("FROM fames WHERE name LIKE '%" + name + "%'");
                     if (dc.Query(sql.ToString()))
                     {
                         var fames = dc.ToDatas<Fame>(z);
@@ -121,8 +120,8 @@ namespace Greatbone.Sample
         public void status(WebContext wc, string subscpt)
         {
             int id = wc[nameof(id)];
-            Obj jo = wc.ReadObj();
-            int status = jo[nameof(status)];
+            Obj obj = wc.ReadObj();
+            int status = obj[nameof(status)];
 
             using (var dc = Service.NewDbContext())
             {

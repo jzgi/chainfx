@@ -17,7 +17,7 @@ namespace Greatbone.Sample
         /// GET /fame/_id_/
         /// </code>
         ///
-        public void @default(WebContext wc, string subscpt)
+        public void @default(WebContext wc)
         {
             string id = wc.Var(this);
             using (var dc = Service.NewDbContext())
@@ -48,7 +48,7 @@ namespace Greatbone.Sample
         ///   "quote" : ""    
         /// }
         /// </code>
-        public void upd(WebContext wc, string subscpt)
+        public void upd(WebContext wc)
         {
             string uid = wc.Principal.Key;
             Fame fame = wc.ReadData<Fame>();
@@ -56,17 +56,8 @@ namespace Greatbone.Sample
 
             using (var dc = Service.NewDbContext())
             {
-                DbSql sql =
-                    new DbSql("INSERT INTO fames")._(Fame.Empty)
-                        ._VALUES_(Fame.Empty)
-                        ._("ON CONFLICT (id) DO UPDATE")
-                        ._SET_(Fame.Empty)
-                        ._("WHERE fames.id = @1");
-                if (dc.Execute(sql.ToString(), p =>
-                    {
-                        fame.Dump(p);
-                        p.Put(uid);
-                    }) > 0)
+                DbSql sql = new DbSql("INSERT INTO fames")._(Fame.Empty)._VALUES_(Fame.Empty)._("ON CONFLICT (id) DO UPDATE")._SET_(Fame.Empty)._("WHERE fames.id = @1");
+                if (dc.Execute(sql.ToString(), p => { fame.Dump(p); p.Put(uid); }) > 0)
                 {
                     wc.StatusCode = 200; // ok
                 }
@@ -84,7 +75,7 @@ namespace Greatbone.Sample
         /// GET /fame/_id_/icon
         /// </code>
         ///
-        public void icon(WebContext wc, string subscpt)
+        public void icon(WebContext wc)
         {
             string id = wc.Var(this);
             using (var dc = Service.NewDbContext())
@@ -113,7 +104,7 @@ namespace Greatbone.Sample
         /// .....
         /// </code>
         ///
-        public void updicon(WebContext wc, string subscpt)
+        public void updicon(WebContext wc)
         {
             string id = wc.Var(this);
             ArraySegment<byte>? bytes = wc.ReadByteA();
@@ -138,19 +129,18 @@ namespace Greatbone.Sample
         /// Get the nth image.
         ///
         /// <code>
-        /// GET /fame/_id_/img?idx=_n_
+        /// GET /fame/_id_/img[-_idx_]
         /// </code>
         ///
-        public void img(WebContext wc, string subscpt)
+        public void img(int idx, WebContext wc)
         {
             string id = wc.Var(this);
-            int n = subscpt.ToInt();
             using (var dc = Service.NewDbContext())
             {
-                if (dc.QueryA("SELECT m" + n + " FROM fames WHERE id = @1", p => p.Put(id)))
+                if (dc.QueryA("SELECT m" + idx + " FROM fames WHERE id = @1", p => p.Put(id)))
                 {
                     byte[] v = dc.GetBytes();
-                    StaticContent sta = new StaticContent() {ByteBuffer = v};
+                    StaticContent sta = new StaticContent() { ByteBuffer = v };
                     wc.Send(200, sta, true, 60000);
                 }
                 else
@@ -164,23 +154,21 @@ namespace Greatbone.Sample
         /// Update the nth image.
         ///
         /// <code>
-        /// POST /fame/_id_/updimg[-_n_]
+        /// POST /fame/_id_/updimg[-_idx_]
         /// [img_bytes]
         /// </code>
         ///
-        public void updimg(WebContext wc, string subscpt)
+        public void updimg(int idx, WebContext wc)
         {
             string id = wc.Var(this);
-            int n = subscpt.ToInt();
             using (var dc = Service.NewDbContext())
             {
                 ArraySegment<byte>? bytes = wc.ReadByteA();
                 if (bytes == null)
                 {
                     wc.StatusCode = 301;
-                    ;
                 }
-                else if (dc.Execute("UPDATE posts SET m" + n + " = @1 WHERE id = @2", p => p.Put(bytes.Value).Put(id)) > 0)
+                else if (dc.Execute("UPDATE posts SET m" + idx + " = @1 WHERE id = @2", p => p.Put(bytes.Value).Put(id)) > 0)
                 {
                     wc.StatusCode = 200;
                 }
