@@ -1549,7 +1549,5 @@ namespace Greatbone.Core
         public bool IsRaw => true;
 
         public bool IsPooled { get; set; }
-
     }
-
 }

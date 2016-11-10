@@ -4,8 +4,7 @@ using static Greatbone.Core.ZUtility;
 
 namespace Greatbone.Sample
 {
-
-    public class Post : IBean
+    public class Post : IData
     {
         public static Post Empty = new Post();
 
@@ -74,7 +73,5 @@ namespace Greatbone.Sample
                 s.Put(nameof(m8), m8);
             }
         }
-
     }
-
 }

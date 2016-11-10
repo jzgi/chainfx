@@ -14,7 +14,7 @@ namespace Greatbone.Sample
 
         public AbstServiceWork(WebConfig cfg) : base(cfg)
         {
-            logins = JsonUtility.FileToBeans<Login>(cfg.GetFilePath("$realm.json"));
+            logins = JsonUtility.FileToDatas<Login>(cfg.GetFilePath("$realm.json"));
         }
 
 
@@ -27,7 +27,7 @@ namespace Greatbone.Sample
                 try
                 {
                     Obj jo = (Obj)par.Parse();
-                    return jo.ToBean<Token>();
+                    return jo.ToData<Token>();
                 }
                 catch { }
             }

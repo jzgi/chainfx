@@ -4,7 +4,7 @@ using static Greatbone.Core.ZUtility;
 
 namespace Greatbone.Sample
 {
-    public class Notice : IBean
+    public class Notice : IData
     {
         public static Notice Empty = new Notice();
 
@@ -61,7 +61,7 @@ namespace Greatbone.Sample
         }
     }
 
-    internal struct App : IBean
+    internal struct App : IData
     {
         internal string userid;
         internal string user;

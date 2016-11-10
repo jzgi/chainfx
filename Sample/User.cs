@@ -6,7 +6,7 @@ namespace Greatbone.Sample
 {
 
     ///
-    public class User : IBean
+    public class User : IData
     {
         internal string id;
         internal string name;

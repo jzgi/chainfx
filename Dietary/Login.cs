@@ -6,7 +6,7 @@ namespace Ministry.Dietary
     /// <summary>
     /// An administrator's login.
     /// </summary>
-    public class Login : IPrincipal, IBean
+    public class Login : IPrincipal, IData
     {
         internal string id;
         internal string name;

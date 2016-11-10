@@ -1,9 +1,8 @@
 namespace Greatbone.Core
 {
-
-    /// <summary>
+    ///
     /// The enumeration of JSON member types.
-    /// </summary>
+    ///
     public enum MemberType : sbyte
     {
         Null = 0,
@@ -22,5 +21,4 @@ namespace Greatbone.Core
 
         False = 7
     }
-
 }

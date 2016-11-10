@@ -4,8 +4,7 @@ using static Greatbone.Core.ZUtility;
 
 namespace Greatbone.Sample
 {
-
-    public struct Fame : IBean
+    public struct Fame : IData
     {
         public static Fame Empty = new Fame();
 
@@ -83,10 +82,9 @@ namespace Greatbone.Sample
             if (z.Ya(DEEP)) s.Put(nameof(sites), sites, z);
             if (z.Ya(DEEP)) s.Put(nameof(friends), friends, z);
         }
-
     }
 
-    public struct Ref : IBean
+    public struct Ref : IData
     {
         internal string name;
 
@@ -108,7 +106,5 @@ namespace Greatbone.Sample
             s.Put(nameof(@ref), @ref);
             s.Put(nameof(hint), hint);
         }
-
     }
-
 }

@@ -5,7 +5,6 @@ using Npgsql;
 
 namespace Greatbone.Core
 {
-
     public class DbContext : IDisposable, IResultSet
     {
         readonly NpgsqlConnection connection;
@@ -186,22 +185,22 @@ namespace Greatbone.Core
         // RESULTSET
         //
 
-        public B ToBean<B>(byte z = 0) where B : IBean, new()
+        public D ToData<D>(byte z = 0) where D : IData, new()
         {
-            B bean = new B();
-            bean.Load(this, z);
-            return bean;
+            D dat = new D();
+            dat.Load(this, z);
+            return dat;
         }
 
 
-        public B[] ToBeans<B>(byte z = 0) where B : IBean, new()
+        public D[] ToDatas<D>(byte z = 0) where D : IData, new()
         {
-            List<B> lst = new List<B>(64);
+            List<D> lst = new List<D>(64);
             while (NextRow())
             {
-                B bean = new B();
-                bean.Load(this, z);
-                lst.Add(bean);
+                D dat = new D();
+                dat.Load(this, z);
+                lst.Add(dat);
             }
             return lst.ToArray();
         }
@@ -318,7 +317,7 @@ namespace Greatbone.Core
                 if (!reader.IsDBNull(ord))
                 {
                     int len;
-                    if ((len = (int)reader.GetBytes(ord, 0, null, 0, 0)) > 0)
+                    if ((len = (int) reader.GetBytes(ord, 0, null, 0, 0)) > 0)
                     {
                         // get the number of bytes that are available to read.
                         v = new byte[len];
@@ -327,7 +326,9 @@ namespace Greatbone.Core
                     }
                 }
             }
-            catch { }
+            catch
+            {
+            }
 
             return false;
         }
@@ -340,7 +341,7 @@ namespace Greatbone.Core
                 if (!reader.IsDBNull(ord))
                 {
                     int len;
-                    if ((len = (int)reader.GetBytes(ord, 0, null, 0, 0)) > 0)
+                    if ((len = (int) reader.GetBytes(ord, 0, null, 0, 0)) > 0)
                     {
                         byte[] arr = BufferUtility.GetByteBuffer(len);
                         reader.GetBytes(ord, 0, arr, 0, len); // read data into the buffer
@@ -349,19 +350,21 @@ namespace Greatbone.Core
                     }
                 }
             }
-            catch { }
+            catch
+            {
+            }
 
             return false;
         }
 
-        public bool Get<B>(string name, ref B v, byte z = 0) where B : IBean, new()
+        public bool Get<B>(string name, ref B v, byte z = 0) where B : IData, new()
         {
             int ord = name == null ? ordinal++ : reader.GetOrdinal(name);
             if (!reader.IsDBNull(ord))
             {
                 string str = reader.GetString(ord);
                 JsonParse p = new JsonParse(str);
-                Obj obj = (Obj)p.Parse();
+                Obj obj = (Obj) p.Parse();
                 v = new B();
                 v.Load(obj, z);
                 return true;
@@ -376,7 +379,7 @@ namespace Greatbone.Core
             {
                 string str = reader.GetString(ord);
                 JsonParse p = new JsonParse(str);
-                v = (Obj)p.Parse();
+                v = (Obj) p.Parse();
                 return true;
             }
             return false;
@@ -389,7 +392,7 @@ namespace Greatbone.Core
             {
                 string str = reader.GetString(ord);
                 JsonParse p = new JsonParse(str);
-                v = (Arr)p.Parse();
+                v = (Arr) p.Parse();
                 return true;
             }
             return false;
@@ -439,22 +442,22 @@ namespace Greatbone.Core
             return false;
         }
 
-        public bool Get<B>(string name, ref B[] v, byte z = 0) where B : IBean, new()
+        public bool Get<D>(string name, ref D[] v, byte z = 0) where D : IData, new()
         {
             int ord = name == null ? ordinal++ : reader.GetOrdinal(name);
             if (!reader.IsDBNull(ord))
             {
                 string str = reader.GetString(ord);
                 JsonParse p = new JsonParse(str);
-                Arr arr = (Arr)p.Parse();
+                Arr arr = (Arr) p.Parse();
                 int len = arr.Count;
-                v = new B[len];
+                v = new D[len];
                 for (int i = 0; i < len; i++)
                 {
-                    Obj obj = (Obj)arr[i];
-                    B bean = new B();
-                    bean.Load(obj, z);
-                    v[i] = bean;
+                    Obj obj = (Obj) arr[i];
+                    D dat = new D();
+                    dat.Load(obj, z);
+                    v[i] = dat;
                 }
                 return true;
             }
@@ -481,12 +484,12 @@ namespace Greatbone.Core
             BufferUtility.Return(cont);
         }
 
-        public void Publish<B>(string topic, string part, B obj) where B : IBean
+        public void Publish<B>(string topic, string part, B obj) where B : IData
         {
             Publish(topic, part, jcont => jcont.PutObj(obj));
         }
 
-        public void Publish<B>(string topic, string part, B[] arr) where B : IBean
+        public void Publish<B>(string topic, string part, B[] arr) where B : IData
         {
             Publish(topic, part, jcont => jcont.PutArr(arr));
         }
@@ -503,7 +506,5 @@ namespace Greatbone.Core
                 disposed = true;
             }
         }
-
     }
-
 }

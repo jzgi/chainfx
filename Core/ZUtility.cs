@@ -1,13 +1,10 @@
-﻿
-namespace Greatbone.Core
+﻿namespace Greatbone.Core
 {
-
     ///
     /// The z-flags that filter what to load or dump in persistance operations.
     ///
     public static class ZUtility
     {
-
         // BASE = 0
 
         // ALL = 0xff
@@ -39,7 +36,5 @@ namespace Greatbone.Core
         {
             return (z & v) != v;
         }
-
     }
-
 }

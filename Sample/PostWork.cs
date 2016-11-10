@@ -39,7 +39,7 @@ namespace Greatbone.Sample
                     DbSql sql = new DbSql("SELECT ").columnlst(Post.Empty, z)._("FROM posts WHERE authorid = @1 ORDER BY id DESC LIMIT 20 OFFSET @2");
                     if (dc.Query(sql.ToString(), p => p.Put(authorid).Put(20 * page)))
                     {
-                        Post[] posts = dc.ToBeans<Post>(z);
+                        Post[] posts = dc.ToDatas<Post>(z);
                         wc.SendJson(200, posts, z);
                     }
                     else
@@ -53,7 +53,7 @@ namespace Greatbone.Sample
                     DbSql sql = new DbSql("SELECT ").columnlst(Post.Empty, z)._("FROM posts ORDER BY id DESC LIMIT 20 OFFSET @1");
                     if (dc.Query(sql.ToString(), p => p.Put(20 * page)))
                     {
-                        Post[] posts = dc.ToBeans<Post>(z);
+                        Post[] posts = dc.ToDatas<Post>(z);
                         wc.SendJson(200, posts, z);
                     }
                     else
@@ -77,7 +77,7 @@ namespace Greatbone.Sample
         public void @new(WebContext wc, string subscpt)
         {
             IPrincipal tok = wc.Principal;
-            Post post = wc.ReadBean<Post>();
+            Post post = wc.ReadData<Post>();
             post.time = DateTime.Now;
             post.authorid = tok.Key;
             post.author = tok.Name;
@@ -121,7 +121,7 @@ namespace Greatbone.Sample
                 DbSql sql = new DbSql("SELECT ").columnlst(Post.Empty, z)._("FROM posts");
                 if (dc.Query(sql.ToString()))
                 {
-                    Post[] arr = dc.ToBeans<Post>(z);
+                    Post[] arr = dc.ToDatas<Post>(z);
                     wc.SendMajorLayout(200, "管理功能", a =>
                     {
                         a.form(mgmtWas, arr, z);

@@ -4,7 +4,6 @@ namespace Greatbone.Core
 {
     public static class ISinkUtility
     {
-
         public static R PutNull<R>(this ISink<R> snk) where R : ISink<R>
         {
             return snk.PutNull(null);
@@ -74,7 +73,7 @@ namespace Greatbone.Core
             return snk.Put(null, v);
         }
 
-        public static R Put<B, R>(this ISink<R> snk, B v, byte z = 0) where B : IBean where R : ISink<R>
+        public static R Put<D, R>(this ISink<R> snk, D v, byte z = 0) where D : IData where R : ISink<R>
         {
             return snk.Put(null, v, z);
         }
@@ -110,11 +109,9 @@ namespace Greatbone.Core
         }
 
 
-        public static R Put<B, R>(this ISink<R> snk, B[] v, byte z = 0) where B : IBean where R : ISink<R>
+        public static R Put<D, R>(this ISink<R> snk, D[] v, byte z = 0) where D : IData where R : ISink<R>
         {
             return snk.Put(null, v, z);
         }
-
     }
-
 }

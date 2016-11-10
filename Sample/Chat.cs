@@ -5,7 +5,7 @@ namespace Greatbone.Sample
 {
     /// <summary>Represent a chat session.</summary>
     ///
-    public struct Chat : IBean
+    public struct Chat : IData
     {
         private int status;
         public string partner;
@@ -36,7 +36,7 @@ namespace Greatbone.Sample
         
     }
 
-    struct Message : IBean
+    struct Message : IData
     {
         DateTime time;
 
@@ -54,7 +54,7 @@ namespace Greatbone.Sample
 
     }
 
-    public struct Msg : IBean
+    public struct Msg : IData
     {
         internal int id;
 

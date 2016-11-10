@@ -2,12 +2,11 @@
 
 namespace Greatbone.Core
 {
-    /// <summary>
+    ///
     /// Represents an destination for object persistence.
-    /// </summary>
+    ///
     public interface ISink<R> where R : ISink<R>
     {
-
         R PutNull(string name);
 
         R Put(string name, bool v);
@@ -32,7 +31,7 @@ namespace Greatbone.Core
 
         R Put(string name, ArraySegment<byte> v);
 
-        R Put<B>(string name, B v, byte z = 0) where B : IBean;
+        R Put<D>(string name, D v, byte z = 0) where D : IData;
 
         R Put(string name, Obj v);
 
@@ -46,8 +45,6 @@ namespace Greatbone.Core
 
         R Put(string name, string[] v);
 
-        R Put<B>(string name, B[] v, byte z = 0) where B : IBean;
-
+        R Put<D>(string name, D[] v, byte z = 0) where D : IData;
     }
-
 }

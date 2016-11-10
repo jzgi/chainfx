@@ -6,15 +6,11 @@ using Microsoft.Extensions.Primitives;
 
 namespace Greatbone.Core
 {
-
     ///
-    /// <summary>
     /// The encapsulation of a web request/response exchange context.
-    /// </summary>
     ///
     public class WebContext : DefaultHttpContext, ISource, IDisposable
     {
-
         internal WebContext(IFeatureCollection features) : base(features)
         {
         }
@@ -81,7 +77,7 @@ namespace Greatbone.Core
             long? clen = req.ContentLength;
             if (clen > 0)
             {
-                int len = (int)clen;
+                int len = (int) clen;
                 bytebuf = BufferUtility.GetByteBuffer(len);
                 count = await req.Body.ReadAsync(bytebuf, 0, len);
             }
@@ -147,24 +143,23 @@ namespace Greatbone.Core
             return entity as Arr;
         }
 
-        public B ReadBean<B>(byte z = 0) where B : IBean, new()
+        public D ReadData<D>(byte z = 0) where D : IData, new()
         {
             EnsureParse();
 
             ISource src = entity as ISource;
-            if (src == null) return default(B);
-            B bean = new B();
-            bean.Load(src, z);
-            return bean;
+            if (src == null) return default(D);
+            D dat = new D();
+            dat.Load(src, z);
+            return dat;
         }
 
-        public B[] ReadBeans<B>(byte z = 0) where B : IBean, new()
+        public D[] ReadDatas<D>(byte z = 0) where D : IData, new()
         {
             EnsureParse();
 
             Arr arr = entity as Arr;
-            if (arr == null) return null;
-            return arr.ToBeans<B>(z);
+            return arr?.ToDatas<D>(z);
         }
 
         public Elem ReadElem()
@@ -220,7 +215,6 @@ namespace Greatbone.Core
 
         public bool Get(string name, ref string v)
         {
-
             return Query.Get(name, ref v);
         }
 
@@ -234,7 +228,7 @@ namespace Greatbone.Core
             throw new NotImplementedException();
         }
 
-        public bool Get<E>(string name, ref E v, byte z = 0) where E : IBean, new()
+        public bool Get<D>(string name, ref D v, byte z = 0) where D : IData, new()
         {
             return Query.Get(name, ref v, z);
         }
@@ -269,7 +263,7 @@ namespace Greatbone.Core
             return Query.Get(name, ref v);
         }
 
-        public bool Get<E>(string name, ref E[] v, byte z = 0) where E : IBean, new()
+        public bool Get<D>(string name, ref D[] v, byte z = 0) where D : IData, new()
         {
             return Query.Get(name, ref v, z);
         }
@@ -283,7 +277,7 @@ namespace Greatbone.Core
             StringValues vs;
             if (Request.Headers.TryGetValue(name, out vs))
             {
-                return (string)vs;
+                return (string) vs;
             }
             return null;
         }
@@ -293,7 +287,7 @@ namespace Greatbone.Core
             StringValues vs;
             if (Request.Headers.TryGetValue(name, out vs))
             {
-                string str = (string)vs;
+                string str = (string) vs;
                 int v;
                 if (int.TryParse(str, out v))
                 {
@@ -308,7 +302,7 @@ namespace Greatbone.Core
             StringValues vs;
             if (Request.Headers.TryGetValue(name, out vs))
             {
-                string str = (string)vs;
+                string str = (string) vs;
                 DateTime v;
                 if (StrUtility.TryParseUtcDate(str, out v))
                 {
@@ -377,14 +371,14 @@ namespace Greatbone.Core
             MaxAge = maxage;
         }
 
-        public void SendJson<B>(int status, B bean, byte z = 0, bool? pub = null, int maxage = 60000) where B : IBean
+        public void SendJson<D>(int status, D dat, byte z = 0, bool? pub = null, int maxage = 60000) where D : IData
         {
-            SendJson(status, cont => cont.PutObj(bean, z), pub, maxage);
+            SendJson(status, cont => cont.PutObj(dat, z), pub, maxage);
         }
 
-        public void SendJson<B>(int status, B[] beans, byte z = 0, bool? pub = null, int maxage = 60000) where B : IBean
+        public void SendJson<D>(int status, D[] dats, byte z = 0, bool? pub = null, int maxage = 60000) where D : IData
         {
-            SendJson(status, cont => cont.PutArr(beans, z), pub, maxage);
+            SendJson(status, cont => cont.PutArr(dats, z), pub, maxage);
         }
 
         public void SendJson(int status, Action<JsonContent> a, bool? pub = null, int maxage = 60000)
@@ -414,7 +408,7 @@ namespace Greatbone.Core
                 // cache indicators
                 if (Content is DynamicContent) // set etag
                 {
-                    ulong etag = ((DynamicContent)Content).ETag;
+                    ulong etag = ((DynamicContent) Content).ETag;
                     SetHeader("ETag", StrUtility.ToHex(etag));
                 }
 
@@ -453,7 +447,6 @@ namespace Greatbone.Core
                 JsonContent cont = new JsonContent(true, true, 8 * 1024);
                 a?.Invoke(cont);
                 BufferUtility.Return(cont);
-
             }
         }
 
@@ -472,7 +465,5 @@ namespace Greatbone.Core
                 BufferUtility.Return(Content.ByteBuffer);
             }
         }
-
     }
-
 }

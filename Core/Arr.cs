@@ -2,11 +2,8 @@ using System;
 
 namespace Greatbone.Core
 {
-
     ///
-    /// <summary>
     /// A JSON array model.
-    /// </summary>
     ///
     public class Arr
     {
@@ -22,10 +19,7 @@ namespace Greatbone.Core
             count = 0;
         }
 
-        public Member this[int index]
-        {
-            get { return elements[index]; }
-        }
+        public Member this[int index] => elements[index];
 
         public int Count => count;
 
@@ -49,19 +43,19 @@ namespace Greatbone.Core
                 MemberType typ = mbr.type;
                 if (typ == MemberType.Array)
                 {
-                    snk.Put((Arr)mbr);
+                    snk.Put((Arr) mbr);
                 }
                 else if (typ == MemberType.Object)
                 {
-                    snk.Put((Obj)mbr);
+                    snk.Put((Obj) mbr);
                 }
                 else if (typ == MemberType.String)
                 {
-                    snk.Put((string)mbr);
+                    snk.Put((string) mbr);
                 }
                 else if (typ == MemberType.Number)
                 {
-                    snk.Put((Number)mbr);
+                    snk.Put((Number) mbr);
                 }
                 else if (typ == MemberType.True)
                 {
@@ -78,18 +72,16 @@ namespace Greatbone.Core
             }
         }
 
-        public B[] ToBeans<B>(byte z = 0) where B : IBean, new()
+        public D[] ToDatas<D>(byte z = 0) where D : IData, new()
         {
-            B[] beans = new B[count];
-            for (int i = 0; i < beans.Length; i++)
+            D[] dats = new D[count];
+            for (int i = 0; i < dats.Length; i++)
             {
-                B bean = new B();
-                bean.Load((Obj)this[i], z);
-                beans[i] = bean;
+                D dat = new D();
+                dat.Load((Obj) this[i], z);
+                dats[i] = dat;
             }
-            return beans;
+            return dats;
         }
-
     }
-
 }

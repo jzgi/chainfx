@@ -1,10 +1,7 @@
 namespace Greatbone.Core
 {
-
     ///
-    /// <summary>
     /// A reusable string builder that supports UTF-8 decoding.
-    /// </summary>
     ///
     public class Str : DynamicContent
     {
@@ -27,7 +24,7 @@ namespace Greatbone.Core
             {
                 if (b < 0x80)
                 {
-                    Add((char)b); // single byte 
+                    Add((char) b); // single byte
                 }
                 else if (b >= 0xc0 && b < 0xe0)
                 {
@@ -44,7 +41,7 @@ namespace Greatbone.Core
             {
                 sum |= (b & 0x3f);
                 rest--;
-                Add((char)sum);
+                Add((char) sum);
             }
             else if (rest == 2)
             {
@@ -69,7 +66,5 @@ namespace Greatbone.Core
         {
             return new string(charbuf, 0, count);
         }
-
     }
-
 }

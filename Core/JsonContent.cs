@@ -2,10 +2,9 @@
 
 namespace Greatbone.Core
 {
-
-    /// <summary>
+    ///
     /// To generate a UTF-8 encoded JSON document. An extension of putting byte array is supported.
-    /// </summary>
+    ///
     public class JsonContent : DynamicContent, ISink<JsonContent>
     {
         const int InitialCapacity = 4 * 1024;
@@ -26,35 +25,39 @@ namespace Greatbone.Core
 
         void AddEsc(string v)
         {
-            if (v != null)
+            if (v == null) return;
+
+            for (int i = 0; i < v.Length; i++)
             {
-                for (int i = 0; i < v.Length; i++)
+                char c = v[i];
+                if (c == '\"')
                 {
-                    char c = v[i];
-                    if (c == '\"')
-                    {
-                        Add('\\'); Add('"');
-                    }
-                    else if (c == '\\')
-                    {
-                        Add('\\'); Add('\\');
-                    }
-                    else if (c == '\n')
-                    {
-                        Add('\\'); Add('n');
-                    }
-                    else if (c == '\r')
-                    {
-                        Add('\\'); Add('r');
-                    }
-                    else if (c == '\t')
-                    {
-                        Add('\\'); Add('t');
-                    }
-                    else
-                    {
-                        Add(c);
-                    }
+                    Add('\\');
+                    Add('"');
+                }
+                else if (c == '\\')
+                {
+                    Add('\\');
+                    Add('\\');
+                }
+                else if (c == '\n')
+                {
+                    Add('\\');
+                    Add('n');
+                }
+                else if (c == '\r')
+                {
+                    Add('\\');
+                    Add('r');
+                }
+                else if (c == '\t')
+                {
+                    Add('\\');
+                    Add('t');
+                }
+                else
+                {
+                    Add(c);
                 }
             }
         }
@@ -70,13 +73,13 @@ namespace Greatbone.Core
             counts[++level] = 0; // enter
             Add('[');
 
-            if (a != null) a();
+            a?.Invoke();
 
             Add(']');
             level--; // exit
         }
 
-        public void PutArr<B>(B[] arr, byte z = 0) where B : IBean
+        public void PutArr<B>(B[] arr, byte z = 0) where B : IData
         {
             Put(null, arr, z);
         }
@@ -88,13 +91,13 @@ namespace Greatbone.Core
             counts[++level] = 0; // enter
             Add('{');
 
-            if (a != null) a();
+            a?.Invoke();
 
             Add('}');
             level--; // exit
         }
 
-        public void PutObj<B>(B obj, byte z = 0) where B : IBean
+        public void PutObj<B>(B obj, byte z = 0) where B : IData
         {
             Put(null, obj, z);
         }
@@ -308,7 +311,7 @@ namespace Greatbone.Core
             return this; // ignore ir
         }
 
-        public JsonContent Put<B>(string name, B v, byte z = 0) where B : IBean
+        public JsonContent Put<D>(string name, D v, byte z = 0) where D : IData
         {
             if (counts[level]++ > 0) Add(',');
 
@@ -522,7 +525,7 @@ namespace Greatbone.Core
         }
 
 
-        public JsonContent Put<B>(string name, B[] v, byte z = 0) where B : IBean
+        public JsonContent Put<D>(string name, D[] v, byte z = 0) where D : IData
         {
             if (counts[level]++ > 0) Add(',');
 
@@ -551,7 +554,5 @@ namespace Greatbone.Core
             }
             return this;
         }
-
     }
-
 }

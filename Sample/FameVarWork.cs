@@ -29,7 +29,7 @@ namespace Greatbone.Sample
                     DbSql sql = new DbSql("SELECT ").columnlst(Fame.Empty, z)._("FROM fames WHERE id = @1");
                     if (dc.QueryA(sql.ToString(), p => p.Put(id)))
                     {
-                        Fame obj = dc.ToBean<Fame>(z);
+                        Fame obj = dc.ToData<Fame>(z);
                         wc.SendJson(200, obj, z);
                     }
                     else
@@ -53,7 +53,7 @@ namespace Greatbone.Sample
         public void upd(WebContext wc, string subscpt)
         {
             string uid = wc.Principal.Key;
-            Fame fame = wc.ReadBean<Fame>();
+            Fame fame = wc.ReadData<Fame>();
             fame.id = wc[0];
 
             using (var dc = Service.NewDbContext())

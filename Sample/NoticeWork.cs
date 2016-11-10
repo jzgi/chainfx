@@ -32,7 +32,7 @@ namespace Greatbone.Sample
                 {
                     if (dc.Query("SELECT * FROM notices WHERE authorid = @1 ORDER BY id LIMIT 20 OFFSET @2", p => p.Put(authorid).Put(page * 20)))
                     {
-                        Notice[] notices = dc.ToBeans<Notice>(0xff);
+                        Notice[] notices = dc.ToDatas<Notice>(0xff);
                         wc.SendJson(200, notices, 0xff);
                     }
                     else
@@ -47,7 +47,7 @@ namespace Greatbone.Sample
                 {
                     if (dc.Query("SELECT * FROM notices WHERE duedate >= current_date ORDER BY id LIMIT 20 OFFSET @1", p => p.Put(page * 20)))
                     {
-                        Notice[] notices = dc.ToBeans<Notice>(0xff);
+                        Notice[] notices = dc.ToDatas<Notice>(0xff);
                         wc.SendJson(200, notices, 0xff);
                     }
                     else
@@ -75,7 +75,7 @@ namespace Greatbone.Sample
         public void @new(WebContext wc, string subscpt)
         {
             IPrincipal tok = wc.Principal;
-            Notice m = wc.ReadBean<Notice>();
+            Notice m = wc.ReadData<Notice>();
 
             m.authorid = tok.Key;
             m.author = tok.Name;

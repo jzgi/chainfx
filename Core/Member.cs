@@ -2,15 +2,11 @@ using System;
 
 namespace Greatbone.Core
 {
-
     ///
-    /// <summary>
     /// Represents a value or a name/value pair if with the name.
-    /// </summary>
     ///
     public struct Member : IKeyed
     {
-
         // type of the value
         internal readonly MemberType type;
 
@@ -83,7 +79,7 @@ namespace Greatbone.Core
         {
             if (v.type == MemberType.Object)
             {
-                return (Obj)v.refv;
+                return (Obj) v.refv;
             }
             return null;
         }
@@ -92,7 +88,7 @@ namespace Greatbone.Core
         {
             if (v.type == MemberType.Array)
             {
-                return (Arr)v.refv;
+                return (Arr) v.refv;
             }
             return null;
         }
@@ -151,18 +147,18 @@ namespace Greatbone.Core
         {
             if (v.type == MemberType.String)
             {
-                string str = (string)v.refv;
+                string str = (string) v.refv;
                 DateTime dt;
                 if (StrUtility.TryParseDate(str, out dt)) return dt;
             }
             return default(DateTime);
         }
 
-        public static implicit operator char[] (Member v)
+        public static implicit operator char[](Member v)
         {
             if (v.type == MemberType.String)
             {
-                string str = (string)v.refv;
+                string str = (string) v.refv;
                 return str.ToCharArray();
             }
             return null;
@@ -172,19 +168,18 @@ namespace Greatbone.Core
         {
             if (v.type == MemberType.String)
             {
-                return (string)v.refv;
+                return (string) v.refv;
             }
             return null;
         }
 
-        public static implicit operator byte[] (Member v)
+        public static implicit operator byte[](Member v)
         {
             if (v.type == MemberType.String)
             {
-                return (byte[])v.refv;
+                return (byte[]) v.refv;
             }
             return null;
         }
-
     }
 }

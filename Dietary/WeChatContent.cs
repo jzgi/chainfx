@@ -4,15 +4,13 @@ using Greatbone.Core;
 
 namespace Ministry.Dietary
 {
-
     ///
     /// <summary>
     /// For dynamical HTML5 content generation Tooled with WeUI
-    /// </summary> 
+    /// </summary>
     ///
     public class WeChatContent : DynamicContent, ISink<WeChatContent>, IMenu, ISelectOptions
     {
-
         const int InitialCapacity = 8 * 1024;
 
         const string SM = "sm", MD = "md", LG = "lg", XL = "xl";
@@ -46,7 +44,7 @@ namespace Ministry.Dietary
                     char c = key[i];
                     if (c >= 'a' && c <= 'z')
                     {
-                        c = (char)(c - 32);
+                        c = (char) (c - 32);
                     }
                     Add(c);
                 }
@@ -125,7 +123,11 @@ namespace Ministry.Dietary
 
         public void menuitem(string text, string href = "#")
         {
-            T("<li class=\"pure-menu-item\"><a href=\"").T(href).T("\" class=\"pure-menu-link\">").T(text).T("</a></li>");
+            T("<li class=\"pure-menu-item\"><a href=\"")
+                .T(href)
+                .T("\" class=\"pure-menu-link\">")
+                .T(text)
+                .T("</a></li>");
         }
 
         public void MENU_horizontal(string heading, Action<IMenu> items)
@@ -216,22 +218,22 @@ namespace Ministry.Dietary
             T("</td>");
         }
 
-        public void table<B>(B[] beans, byte z = 0) where B : IBean
+        public void table<D>(D[] dats, byte z = 0) where D : IData
         {
-            B bean = beans[0];
+            D dat = dats[0];
 
             table(
                 ths =>
                 {
                     ctx = TableThs;
-                    bean.Dump(this, z);
+                    dat.Dump(this, z);
                 },
                 trs =>
                 {
                     ctx = TableTrs;
-                    for (int i = 0; i < beans.Length; i++)
+                    for (int i = 0; i < dats.Length; i++)
                     {
-                        beans[i].Dump(this, z);
+                        dats[i].Dump(this, z);
                     }
                 }
             );
@@ -247,28 +249,28 @@ namespace Ministry.Dietary
             Add("</form>");
         }
 
-        public void form<B>(WebAction[] was, B[] beans, byte z = 0) where B : IBean
+        public void form<D>(WebAction[] was, D[] dats, byte z = 0) where D : IData
         {
             Add("<form class=\"pure-form pure-g\">");
 
             // buttons
             buttonlst(was);
 
-            if (beans != null)
+            if (dats != null)
             {
-                table(beans, z);
+                table(dats, z);
             }
 
             Add("</form>");
         }
 
-        public void form<B>(WebAction wa, B bean, byte z = 0) where B : IBean
+        public void form<D>(WebAction wa, D dat, byte z = 0) where D : IData
         {
             Add("<form class=\"pure-form pure-g\">");
 
             ctx = FormFields;
 
-            bean.Dump(this);
+            dat.Dump(this);
 
             // function buttuns
 
@@ -278,128 +280,300 @@ namespace Ministry.Dietary
 
         public void input_hidden(string name, string value)
         {
-            Add("<input type=\"hidden\" name=\""); Add(name); Add("\" value=\""); AddEsc(value);
+            Add("<input type=\"hidden\" name=\"");
+            Add(name);
+            Add("\" value=\"");
+            AddEsc(value);
             Add("\">");
         }
 
-        public void input_text(string name, string value, bool @readonly = false, bool required = false, string placeholder = null, int maxlength = 0, int minlength = 0, string pattern = null)
+        public void input_text(string name, string value, bool @readonly = false, bool required = false,
+            string placeholder = null, int maxlength = 0, int minlength = 0, string pattern = null)
         {
-            Add("<label>"); AddLabel(name);
-            Add("<input type=\"text\" name=\""); Add(name); Add("\" value=\""); AddEsc(value);
+            Add("<label>");
+            AddLabel(name);
+            Add("<input type=\"text\" name=\"");
+            Add(name);
+            Add("\" value=\"");
+            AddEsc(value);
             if (@readonly) Add(" readonly");
             if (required) Add(" required");
-            if (placeholder != null) { Add(" placedholder=\""); AddLabel(placeholder); Add("\""); }
+            if (placeholder != null)
+            {
+                Add(" placedholder=\"");
+                AddLabel(placeholder);
+                Add("\"");
+            }
             if (maxlength > 0)
             {
-                Add(" maxlength=\""); Add(maxlength); Add("\"");
-                Add(" size=\""); Add(maxlength); Add("\"");
+                Add(" maxlength=\"");
+                Add(maxlength);
+                Add("\"");
+                Add(" size=\"");
+                Add(maxlength);
+                Add("\"");
             }
-            if (minlength > 0) { Add(" minlength=\""); Add(minlength); Add("\""); }
-            if (pattern != null) { Add(" pattern=\""); AddEsc(pattern); Add("\""); }
+            if (minlength > 0)
+            {
+                Add(" minlength=\"");
+                Add(minlength);
+                Add("\"");
+            }
+            if (pattern != null)
+            {
+                Add(" pattern=\"");
+                AddEsc(pattern);
+                Add("\"");
+            }
             Add("\">");
             Add("</label>");
         }
 
-        public void input_search(string name, string value, bool @readonly = false, bool required = false, string placeholder = null, int maxlength = 0, int minlength = 0, string pattern = null)
+        public void input_search(string name, string value, bool @readonly = false, bool required = false,
+            string placeholder = null, int maxlength = 0, int minlength = 0, string pattern = null)
         {
-            Add("<label>"); AddLabel(name);
-            Add("<input type=\"search\" name=\""); Add(name); Add("\" value=\""); AddEsc(value);
+            Add("<label>");
+            AddLabel(name);
+            Add("<input type=\"search\" name=\"");
+            Add(name);
+            Add("\" value=\"");
+            AddEsc(value);
             if (@readonly) Add(" readonly");
             if (required) Add(" required");
-            if (placeholder != null) { Add(" placedholder=\""); AddLabel(placeholder); Add("\""); }
+            if (placeholder != null)
+            {
+                Add(" placedholder=\"");
+                AddLabel(placeholder);
+                Add("\"");
+            }
             if (maxlength > 0)
             {
-                Add(" maxlength=\""); Add(maxlength); Add("\"");
-                Add(" size=\""); Add(maxlength); Add("\"");
+                Add(" maxlength=\"");
+                Add(maxlength);
+                Add("\"");
+                Add(" size=\"");
+                Add(maxlength);
+                Add("\"");
             }
-            if (minlength > 0) { Add(" minlength=\""); Add(minlength); Add("\""); }
-            if (pattern != null) { Add(" pattern=\""); AddEsc(pattern); Add("\""); }
+            if (minlength > 0)
+            {
+                Add(" minlength=\"");
+                Add(minlength);
+                Add("\"");
+            }
+            if (pattern != null)
+            {
+                Add(" pattern=\"");
+                AddEsc(pattern);
+                Add("\"");
+            }
             Add("\">");
             Add("</label>");
         }
 
-        public void input_tel(string name, string value, bool @readonly = false, bool required = false, string placeholder = null, int maxlength = 0, int minlength = 0, string pattern = null)
+        public void input_tel(string name, string value, bool @readonly = false, bool required = false,
+            string placeholder = null, int maxlength = 0, int minlength = 0, string pattern = null)
         {
-            Add("<label>"); AddLabel(name);
-            Add("<input type=\"search\" name=\""); Add(name); Add("\" value=\""); AddEsc(value);
+            Add("<label>");
+            AddLabel(name);
+            Add("<input type=\"search\" name=\"");
+            Add(name);
+            Add("\" value=\"");
+            AddEsc(value);
             if (@readonly) Add(" readonly");
             if (required) Add(" required");
-            if (placeholder != null) { Add(" placedholder=\""); AddLabel(placeholder); Add("\""); }
+            if (placeholder != null)
+            {
+                Add(" placedholder=\"");
+                AddLabel(placeholder);
+                Add("\"");
+            }
             if (maxlength > 0)
             {
-                Add(" maxlength=\""); Add(maxlength); Add("\"");
-                Add(" size=\""); Add(maxlength); Add("\"");
+                Add(" maxlength=\"");
+                Add(maxlength);
+                Add("\"");
+                Add(" size=\"");
+                Add(maxlength);
+                Add("\"");
             }
-            if (minlength > 0) { Add(" minlength=\""); Add(minlength); Add("\""); }
-            if (pattern != null) { Add(" pattern=\""); AddEsc(pattern); Add("\""); }
+            if (minlength > 0)
+            {
+                Add(" minlength=\"");
+                Add(minlength);
+                Add("\"");
+            }
+            if (pattern != null)
+            {
+                Add(" pattern=\"");
+                AddEsc(pattern);
+                Add("\"");
+            }
             Add("\">");
             Add("</label>");
         }
 
-        public void input_url(string name, string value, bool @readonly = false, bool required = false, string placeholder = null, int maxlength = 0, int minlength = 0, string pattern = null)
+        public void input_url(string name, string value, bool @readonly = false, bool required = false,
+            string placeholder = null, int maxlength = 0, int minlength = 0, string pattern = null)
         {
-            Add("<label>"); AddLabel(name);
-            Add("<input type=\"url\" name=\""); Add(name); Add("\" value=\""); AddEsc(value);
+            Add("<label>");
+            AddLabel(name);
+            Add("<input type=\"url\" name=\"");
+            Add(name);
+            Add("\" value=\"");
+            AddEsc(value);
             if (@readonly) Add(" readonly");
             if (required) Add(" required");
-            if (placeholder != null) { Add(" placedholder=\""); AddLabel(placeholder); Add("\""); }
+            if (placeholder != null)
+            {
+                Add(" placedholder=\"");
+                AddLabel(placeholder);
+                Add("\"");
+            }
             if (maxlength > 0)
             {
-                Add(" maxlength=\""); Add(maxlength); Add("\"");
-                Add(" size=\""); Add(maxlength); Add("\"");
+                Add(" maxlength=\"");
+                Add(maxlength);
+                Add("\"");
+                Add(" size=\"");
+                Add(maxlength);
+                Add("\"");
             }
-            if (minlength > 0) { Add(" minlength=\""); Add(minlength); Add("\""); }
-            if (pattern != null) { Add(" pattern=\""); AddEsc(pattern); Add("\""); }
+            if (minlength > 0)
+            {
+                Add(" minlength=\"");
+                Add(minlength);
+                Add("\"");
+            }
+            if (pattern != null)
+            {
+                Add(" pattern=\"");
+                AddEsc(pattern);
+                Add("\"");
+            }
             Add("\">");
             Add("</label>");
         }
 
-        public void input_email(string name, string value, bool @readonly = false, bool required = false, string placeholder = null, int maxlength = 0, int minlength = 0, string pattern = null)
+        public void input_email(string name, string value, bool @readonly = false, bool required = false,
+            string placeholder = null, int maxlength = 0, int minlength = 0, string pattern = null)
         {
-            Add("<label>"); AddLabel(name);
-            Add("<input type=\"email\" name=\""); Add(name); Add("\" value=\""); AddEsc(value);
+            Add("<label>");
+            AddLabel(name);
+            Add("<input type=\"email\" name=\"");
+            Add(name);
+            Add("\" value=\"");
+            AddEsc(value);
             if (@readonly) Add(" readonly");
             if (required) Add(" required");
-            if (placeholder != null) { Add(" placedholder=\""); AddLabel(placeholder); Add("\""); }
+            if (placeholder != null)
+            {
+                Add(" placedholder=\"");
+                AddLabel(placeholder);
+                Add("\"");
+            }
             if (maxlength > 0)
             {
-                Add(" maxlength=\""); Add(maxlength); Add("\"");
-                Add(" size=\""); Add(maxlength); Add("\"");
+                Add(" maxlength=\"");
+                Add(maxlength);
+                Add("\"");
+                Add(" size=\"");
+                Add(maxlength);
+                Add("\"");
             }
-            if (minlength > 0) { Add(" minlength=\""); Add(minlength); Add("\""); }
-            if (pattern != null) { Add(" pattern=\""); AddEsc(pattern); Add("\""); }
+            if (minlength > 0)
+            {
+                Add(" minlength=\"");
+                Add(minlength);
+                Add("\"");
+            }
+            if (pattern != null)
+            {
+                Add(" pattern=\"");
+                AddEsc(pattern);
+                Add("\"");
+            }
             Add("\">");
             Add("</label>");
         }
 
-        public void input_password(string name, string value, bool @readonly = false, bool required = false, string placeholder = null, int maxlength = 0, int minlength = 0, string pattern = null)
+        public void input_password(string name, string value, bool @readonly = false, bool required = false,
+            string placeholder = null, int maxlength = 0, int minlength = 0, string pattern = null)
         {
-            Add("<label>"); AddLabel(name);
-            Add("<input type=\"password\" name=\""); Add(name); Add("\" value=\""); AddEsc(value);
+            Add("<label>");
+            AddLabel(name);
+            Add("<input type=\"password\" name=\"");
+            Add(name);
+            Add("\" value=\"");
+            AddEsc(value);
             if (@readonly) Add(" readonly");
             if (required) Add(" required");
-            if (placeholder != null) { Add(" placedholder=\""); AddLabel(placeholder); Add("\""); }
+            if (placeholder != null)
+            {
+                Add(" placedholder=\"");
+                AddLabel(placeholder);
+                Add("\"");
+            }
             if (maxlength > 0)
             {
-                Add(" maxlength=\""); Add(maxlength); Add("\"");
-                Add(" size=\""); Add(maxlength); Add("\"");
+                Add(" maxlength=\"");
+                Add(maxlength);
+                Add("\"");
+                Add(" size=\"");
+                Add(maxlength);
+                Add("\"");
             }
-            if (minlength > 0) { Add(" minlength=\""); Add(minlength); Add("\""); }
-            if (pattern != null) { Add(" pattern=\""); AddEsc(pattern); Add("\""); }
+            if (minlength > 0)
+            {
+                Add(" minlength=\"");
+                Add(minlength);
+                Add("\"");
+            }
+            if (pattern != null)
+            {
+                Add(" pattern=\"");
+                AddEsc(pattern);
+                Add("\"");
+            }
             Add("\">");
             Add("</label>");
         }
 
-        public void input_date(string name, DateTime value, bool @readonly = false, bool required = false, string placeholder = null, int max = int.MaxValue, int min = int.MinValue, int step = 0)
+        public void input_date(string name, DateTime value, bool @readonly = false, bool required = false,
+            string placeholder = null, int max = int.MaxValue, int min = int.MinValue, int step = 0)
         {
-            Add("<label>"); AddLabel(name);
-            Add("<input type=\"date\" name=\""); Add(name); Add("\" value=\""); Add(value);
+            Add("<label>");
+            AddLabel(name);
+            Add("<input type=\"date\" name=\"");
+            Add(name);
+            Add("\" value=\"");
+            Add(value);
             if (@readonly) Add(" readonly");
             if (required) Add(" required");
-            if (placeholder != null) { Add(" placedholder=\""); AddLabel(placeholder); Add("\""); }
-            if (max != int.MaxValue) { Add(" max=\""); Add(max); Add("\""); }
-            if (min != int.MinValue) { Add(" min=\""); Add(min); Add("\""); }
-            if (step != 0) { Add(" step=\""); Add(step); Add("\""); }
+            if (placeholder != null)
+            {
+                Add(" placedholder=\"");
+                AddLabel(placeholder);
+                Add("\"");
+            }
+            if (max != int.MaxValue)
+            {
+                Add(" max=\"");
+                Add(max);
+                Add("\"");
+            }
+            if (min != int.MinValue)
+            {
+                Add(" min=\"");
+                Add(min);
+                Add("\"");
+            }
+            if (step != 0)
+            {
+                Add(" step=\"");
+                Add(step);
+                Add("\"");
+            }
             Add("\">");
             Add("</label>");
         }
@@ -407,47 +581,121 @@ namespace Ministry.Dietary
         public void input_time()
         {
             T("</tbody>");
-
         }
 
-        public void input_number(string name, int value, bool @readonly = false, bool required = false, string placeholder = null, int max = int.MaxValue, int min = int.MinValue, int step = 0)
+        public void input_number(string name, int value, bool @readonly = false, bool required = false,
+            string placeholder = null, int max = int.MaxValue, int min = int.MinValue, int step = 0)
         {
-            Add("<label>"); AddLabel(name);
-            Add("<input type=\"number\" name=\""); Add(name); Add("\" value=\""); Add(value);
+            Add("<label>");
+            AddLabel(name);
+            Add("<input type=\"number\" name=\"");
+            Add(name);
+            Add("\" value=\"");
+            Add(value);
             if (@readonly) Add(" readonly");
             if (required) Add(" required");
-            if (placeholder != null) { Add(" placedholder=\""); AddLabel(placeholder); Add("\""); }
-            if (max != int.MaxValue) { Add(" max=\""); Add(max); Add("\""); }
-            if (min != int.MinValue) { Add(" min=\""); Add(min); Add("\""); }
-            if (step != 0) { Add(" step=\""); Add(step); Add("\""); }
+            if (placeholder != null)
+            {
+                Add(" placedholder=\"");
+                AddLabel(placeholder);
+                Add("\"");
+            }
+            if (max != int.MaxValue)
+            {
+                Add(" max=\"");
+                Add(max);
+                Add("\"");
+            }
+            if (min != int.MinValue)
+            {
+                Add(" min=\"");
+                Add(min);
+                Add("\"");
+            }
+            if (step != 0)
+            {
+                Add(" step=\"");
+                Add(step);
+                Add("\"");
+            }
             Add("\">");
             Add("</label>");
         }
 
-        public void input_number(string name, long value, bool @readonly = false, bool required = false, string placeholder = null, long max = long.MaxValue, long min = long.MinValue, long step = 0)
+        public void input_number(string name, long value, bool @readonly = false, bool required = false,
+            string placeholder = null, long max = long.MaxValue, long min = long.MinValue, long step = 0)
         {
-            Add("<label>"); AddLabel(name);
-            Add("<input type=\"number\" name=\""); Add(name); Add("\" value=\""); Add(value);
+            Add("<label>");
+            AddLabel(name);
+            Add("<input type=\"number\" name=\"");
+            Add(name);
+            Add("\" value=\"");
+            Add(value);
             if (@readonly) Add(" readonly");
             if (required) Add(" required");
-            if (placeholder != null) { Add(" placedholder=\""); AddLabel(placeholder); Add("\""); }
-            if (max != long.MaxValue) { Add(" max=\""); Add(max); Add("\""); }
-            if (min != long.MinValue) { Add(" min=\""); Add(min); Add("\""); }
-            if (step != 0) { Add(" step=\""); Add(step); Add("\""); }
+            if (placeholder != null)
+            {
+                Add(" placedholder=\"");
+                AddLabel(placeholder);
+                Add("\"");
+            }
+            if (max != long.MaxValue)
+            {
+                Add(" max=\"");
+                Add(max);
+                Add("\"");
+            }
+            if (min != long.MinValue)
+            {
+                Add(" min=\"");
+                Add(min);
+                Add("\"");
+            }
+            if (step != 0)
+            {
+                Add(" step=\"");
+                Add(step);
+                Add("\"");
+            }
             Add("\">");
             Add("</label>");
         }
 
-        public void input_number(string name, decimal value, bool @readonly = false, bool required = false, string placeholder = null, int max = int.MaxValue, int min = int.MinValue, int step = 0)
+        public void input_number(string name, decimal value, bool @readonly = false, bool required = false,
+            string placeholder = null, int max = int.MaxValue, int min = int.MinValue, int step = 0)
         {
-            Add("<label>"); AddLabel(name);
-            Add("<input type=\"number\" name=\""); Add(name); Add("\" value=\""); Add(value);
+            Add("<label>");
+            AddLabel(name);
+            Add("<input type=\"number\" name=\"");
+            Add(name);
+            Add("\" value=\"");
+            Add(value);
             if (@readonly) Add(" readonly");
             if (required) Add(" required");
-            if (placeholder != null) { Add(" placedholder=\""); AddLabel(placeholder); Add("\""); }
-            if (max != int.MaxValue) { Add(" max=\""); Add(max); Add("\""); }
-            if (min != int.MinValue) { Add(" min=\""); Add(min); Add("\""); }
-            if (step != 0) { Add(" step=\""); Add(step); Add("\""); }
+            if (placeholder != null)
+            {
+                Add(" placedholder=\"");
+                AddLabel(placeholder);
+                Add("\"");
+            }
+            if (max != int.MaxValue)
+            {
+                Add(" max=\"");
+                Add(max);
+                Add("\"");
+            }
+            if (min != int.MinValue)
+            {
+                Add(" min=\"");
+                Add(min);
+                Add("\"");
+            }
+            if (step != 0)
+            {
+                Add(" step=\"");
+                Add(step);
+                Add("\"");
+            }
             Add("\">");
             Add("</label>");
         }
@@ -455,19 +703,21 @@ namespace Ministry.Dietary
         public void input_range()
         {
             T("</tbody>");
-
         }
 
         public void input_color()
         {
             T("</tbody>");
-
         }
 
         public void input_checkbox(string name, bool value, bool required = false)
         {
-            Add("<label>"); AddLabel(name);
-            Add("<input type=\"checkbox\" name=\""); Add(name); Add("\" value=\""); Add(value);
+            Add("<label>");
+            AddLabel(name);
+            Add("<input type=\"checkbox\" name=\"");
+            Add(name);
+            Add("\" value=\"");
+            Add(value);
             if (value) Add(" checked");
             if (required) Add(" required");
             Add("\">");
@@ -477,14 +727,20 @@ namespace Ministry.Dietary
         public void input_radio(string name, string[] values, int @checked = 0, bool required = false)
         {
             Add("<fieldset>");
-            Add("<legend>"); AddLabel(name); Add("</legend>");
+            Add("<legend>");
+            AddLabel(name);
+            Add("</legend>");
             for (int i = 0; i < values.Length; i++)
             {
                 Add("<label>");
-                Add("<input type=\"radio\" name=\""); Add(name); Add("\" value=\""); Add(i);
+                Add("<input type=\"radio\" name=\"");
+                Add(name);
+                Add("\" value=\"");
+                Add(i);
                 if (@checked == i) Add(" checked");
                 if (required) Add(" required");
-                Add("\">"); Add(values[i]);
+                Add("\">");
+                Add(values[i]);
                 Add("</label>");
             }
             Add("</fieldset>");
@@ -493,36 +749,39 @@ namespace Ministry.Dietary
         public void input_file()
         {
             T("</tbody>");
-
         }
 
         public void input_button()
         {
             T("</tbody>");
-
         }
 
         public void textarea()
         {
             T("</tbody>");
-
         }
 
         public void button(WebAction wa)
         {
             Add("<button class=\"pure-button");
             if (!wa.IsGet) Add(" pure-button-primary");
-            Add("\" formaction=\""); Add(wa.Key);
-            Add("\" formmethod=\""); Add(wa.IsGet ? "get" : "post");
+            Add("\" formaction=\"");
+            Add(wa.Key);
+            Add("\" formmethod=\"");
+            Add(wa.IsGet ? "get" : "post");
             if (wa.Dialog > 0)
             {
-                Add("\" onclick=\"dialog(this,"); Add(wa.Dialog); Add("); return false;");
+                Add("\" onclick=\"dialog(this,");
+                Add(wa.Dialog);
+                Add("); return false;");
             }
             Add("\">");
             string icon = wa.Icon;
             if (icon != null)
             {
-                Add("<i class=\""); Add(icon); Add("\"></i>");
+                Add("<i class=\"");
+                Add(icon);
+                Add("\"></i>");
             }
             Add(" ");
             AddLabel(wa.Key);
@@ -554,17 +813,23 @@ namespace Ministry.Dietary
 
         public void select(string name, string[] options, int selected = -1, bool required = false)
         {
-            Add("<label>"); AddLabel(name);
-            Add("<select name=\""); Add(name); Add("\"");
+            Add("<label>");
+            AddLabel(name);
+            Add("<select name=\"");
+            Add(name);
+            Add("\"");
             if (required) Add(" required");
             Add("\">");
 
             for (int i = 0; i < options.Length; i++)
             {
                 string opt = options[i];
-                Add("<option value=\""); Add(opt); Add("\"");
+                Add("<option value=\"");
+                Add(opt);
+                Add("\"");
                 if (selected == i) Add(" selected");
-                Add("\">"); AddLabel(opt);
+                Add("\">");
+                AddLabel(opt);
                 Add("</option>");
             }
             Add("</label>");
@@ -572,17 +837,23 @@ namespace Ministry.Dietary
 
         public void select<V>(string name, IOption<V>[] options, bool required = false)
         {
-            Add("<label>"); AddLabel(name);
-            Add("<select name=\""); Add(name); Add("\"");
+            Add("<label>");
+            AddLabel(name);
+            Add("<select name=\"");
+            Add(name);
+            Add("\"");
             if (required) Add(" required");
             Add("\">");
 
             for (int i = 0; i < options.Length; i++)
             {
                 IOption<V> opt = options[i];
-                Add("<option value=\""); Add(opt.ToString()); Add("\"");
+                Add("<option value=\"");
+                Add(opt.ToString());
+                Add("\"");
                 if (opt.IsOn) Add(" selected");
-                Add("\">"); AddLabel(opt.Label);
+                Add("\">");
+                AddLabel(opt.Label);
                 Add("</option>");
             }
             Add("</label>");
@@ -590,8 +861,11 @@ namespace Ministry.Dietary
 
         public void select(string name, Action<ISelectOptions> options, bool required = false)
         {
-            Add("<label>"); AddLabel(name);
-            Add("<select name=\""); Add(name); Add("\"");
+            Add("<label>");
+            AddLabel(name);
+            Add("<select name=\"");
+            Add(name);
+            Add("\"");
             if (required) Add(" required");
             Add("\">");
             options(this);
@@ -600,7 +874,9 @@ namespace Ministry.Dietary
 
         public void option(string text, string value, bool selected = false)
         {
-            Add("<option value=\""); Add(value); Add("\"");
+            Add("<option value=\"");
+            Add(value);
+            Add("\"");
             if (selected) Add(" selected");
             Add("\">");
         }
@@ -608,19 +884,16 @@ namespace Ministry.Dietary
         public void datalist()
         {
             T("</tbody>");
-
         }
 
         public void progres()
         {
             T("</tbody>");
-
         }
 
         public void meter()
         {
             T("</tbody>");
-
         }
 
 
@@ -643,10 +916,14 @@ namespace Ministry.Dietary
                     Add("</div>");
                     break;
                 case TableThs:
-                    Add("<th>"); AddLabel(name); Add("</th>");
+                    Add("<th>");
+                    AddLabel(name);
+                    Add("</th>");
                     break;
                 case TableTrs:
-                    Add("<td>"); Add(v); Add("</td>");
+                    Add("<td>");
+                    Add(v);
+                    Add("</td>");
                     break;
             }
             return this;
@@ -662,10 +939,14 @@ namespace Ministry.Dietary
                     Add("</div>");
                     break;
                 case TableThs:
-                    Add("<th>"); AddLabel(name); Add("</th>");
+                    Add("<th>");
+                    AddLabel(name);
+                    Add("</th>");
                     break;
                 case TableTrs:
-                    Add("<td style=\"text-align: right;\">"); Add(v); Add("</td>");
+                    Add("<td style=\"text-align: right;\">");
+                    Add(v);
+                    Add("</td>");
                     break;
             }
             return this;
@@ -681,10 +962,14 @@ namespace Ministry.Dietary
                     Add("</div>");
                     break;
                 case TableThs:
-                    Add("<th>"); AddLabel(name); Add("</th>");
+                    Add("<th>");
+                    AddLabel(name);
+                    Add("</th>");
                     break;
                 case TableTrs:
-                    Add("<td style=\"text-align: right;\">"); Add(v); Add("</td>");
+                    Add("<td style=\"text-align: right;\">");
+                    Add(v);
+                    Add("</td>");
                     break;
             }
             return this;
@@ -700,10 +985,14 @@ namespace Ministry.Dietary
                     Add("</div>");
                     break;
                 case TableThs:
-                    Add("<th>"); AddLabel(name); Add("</th>");
+                    Add("<th>");
+                    AddLabel(name);
+                    Add("</th>");
                     break;
                 case TableTrs:
-                    Add("<td style=\"text-align: right;\">"); Add(v); Add("</td>");
+                    Add("<td style=\"text-align: right;\">");
+                    Add(v);
+                    Add("</td>");
                     break;
             }
             return this;
@@ -719,10 +1008,14 @@ namespace Ministry.Dietary
                     Add("</div>");
                     break;
                 case TableThs:
-                    Add("<th>"); AddLabel(name); Add("</th>");
+                    Add("<th>");
+                    AddLabel(name);
+                    Add("</th>");
                     break;
                 case TableTrs:
-                    Add("<td style=\"text-align: right;\">"); Add(v); Add("</td>");
+                    Add("<td style=\"text-align: right;\">");
+                    Add(v);
+                    Add("</td>");
                     break;
             }
             return this;
@@ -732,8 +1025,10 @@ namespace Ministry.Dietary
         {
             switch (ctx)
             {
-                case FormFields: break;
-                case TableTrs: break;
+                case FormFields:
+                    break;
+                case TableTrs:
+                    break;
             }
             return this;
         }
@@ -748,10 +1043,14 @@ namespace Ministry.Dietary
                     Add("</div>");
                     break;
                 case TableThs:
-                    Add("<th>"); AddLabel(name); Add("</th>");
+                    Add("<th>");
+                    AddLabel(name);
+                    Add("</th>");
                     break;
                 case TableTrs:
-                    Add("<td style=\"text-align: right;\">"); Add(v); Add("</td>");
+                    Add("<td style=\"text-align: right;\">");
+                    Add(v);
+                    Add("</td>");
                     break;
             }
             return this;
@@ -772,10 +1071,14 @@ namespace Ministry.Dietary
                     Add("</div>");
                     break;
                 case TableThs:
-                    Add("<th>"); AddLabel(name); Add("</th>");
+                    Add("<th>");
+                    AddLabel(name);
+                    Add("</th>");
                     break;
                 case TableTrs:
-                    Add("<td>"); Add(v); Add("</td>");
+                    Add("<td>");
+                    Add(v);
+                    Add("</td>");
                     break;
             }
             return this;
@@ -791,7 +1094,7 @@ namespace Ministry.Dietary
             return this;
         }
 
-        public WeChatContent Put<V>(string name, V v, byte z = 0) where V : IBean
+        public WeChatContent Put<V>(string name, V v, byte z = 0) where V : IData
         {
             return this;
         }
@@ -826,11 +1129,10 @@ namespace Ministry.Dietary
             return this;
         }
 
-        public WeChatContent Put<V>(string name, V[] v, byte z = 0) where V : IBean
+        public WeChatContent Put<V>(string name, V[] v, byte z = 0) where V : IData
         {
             return this;
         }
-
     }
 
 
@@ -851,13 +1153,10 @@ namespace Ministry.Dietary
 
     public interface IOption<V>
     {
-
         string Label { get; }
 
         V Value { get; }
 
         bool IsOn { get; }
-
     }
-
 }

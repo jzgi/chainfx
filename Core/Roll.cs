@@ -3,7 +3,6 @@ using System.Collections.Generic;
 
 namespace Greatbone.Core
 {
-
     ///
     /// <summary>
     /// An obect that is identified by string key thus can be a number of Roll.
@@ -172,9 +171,9 @@ namespace Greatbone.Core
 
         struct Entry
         {
-            internal int code; // lower 31 bits of hash code
+            readonly int code; // lower 31 bits of hash code
 
-            internal string key; // entry key
+            readonly string key; // entry key
 
             internal E element; // entry value
 
@@ -198,7 +197,5 @@ namespace Greatbone.Core
                 return element.ToString();
             }
         }
-
     }
-
 }

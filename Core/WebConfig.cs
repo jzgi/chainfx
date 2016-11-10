@@ -1,6 +1,5 @@
 ﻿namespace Greatbone.Core
 {
-
     ///
     /// <summary>
     /// The configurative settings for a web service.
@@ -18,9 +17,8 @@
     /// }
     /// </code>
     ///
-    public class WebConfig : WebWorkContext, IBean
+    public class WebConfig : WebWorkContext, IData
     {
-
         // partition
         internal string part;
 
@@ -84,7 +82,5 @@
             }
             return this;
         }
-
     }
-
 }

@@ -4,7 +4,6 @@ using System.Reflection;
 
 namespace Greatbone.Core
 {
-
     ///
     /// <summary>
     /// The descriptor for an action method.
@@ -28,7 +27,7 @@ namespace Greatbone.Core
         {
             Control = control;
             Key = mi.Name; // NOTE: strict method name as key here to avoid the default base url trap
-            call = (Action<WebContext, string>)mi.CreateDelegate(typeof(Action<WebContext, string>), control);
+            call = (Action<WebContext, string>) mi.CreateDelegate(typeof(Action<WebContext, string>), control);
 
             // prepare if attributes
             List<CheckAttribute> lst = null;
@@ -44,11 +43,11 @@ namespace Greatbone.Core
             button = mi.GetCustomAttribute<ButtonAttribute>();
         }
 
-        public bool IsGet => button == null ? false : button.IsGet;
+        public bool IsGet => button?.IsGet ?? false;
 
         public string Icon => button?.Icon;
 
-        public int Dialog => button == null ? 3 : button.Dialog;
+        public int Dialog => button?.Dialog ?? 3;
 
         // for generating unique digest nonce
         const string PrivateKey = "3e43a7180";
@@ -64,7 +63,11 @@ namespace Greatbone.Core
                     // challenge with bearer and digest dual schemes
                     string[] chlg = null;
                     if (bearer) chlg = chlg.Add("Bearer");
-                    if (digest) chlg = chlg.Add("Digest realm=\"\", nonce=\"" + StrUtility.MD5(wc.Connection.RemoteIpAddress.ToString() + ':' + Environment.TickCount + ':' + PrivateKey) + "\"");
+                    if (digest)
+                        chlg =
+                            chlg.Add("Digest realm=\"\", nonce=\"" +
+                                     StrUtility.MD5(wc.Connection.RemoteIpAddress.ToString() + ':' +
+                                                    Environment.TickCount + ':' + PrivateKey) + "\"");
                     wc.SetHeader("WWW-Authenticate", chlg);
                     return false;
                 }
@@ -90,7 +93,5 @@ namespace Greatbone.Core
         {
             return Key;
         }
-
     }
-
 }

@@ -30,7 +30,7 @@ namespace Greatbone.Sample
             {
                 if (dc.QueryA("SELECT * FROM users WHERE id = @1", (p) => p.Put(id)))
                 {
-                    Token obj = dc.ToBean<Token>(0xff);
+                    Token obj = dc.ToData<Token>(0xff);
                     string credential = StrUtility.MD5(id + ':' + ':' + password);
                     if (credential.Equals(obj.credential))
                     {
@@ -55,7 +55,7 @@ namespace Greatbone.Sample
         /// </code>
         public void upd(WebContext wc, string subscpt)
         {
-            User m = wc.ReadBean<User>();
+            User m = wc.ReadData<User>();
             using (var dc = Service.NewDbContext())
             {
                 DbSql sql = new DbSql("UPDATE users")._SET_(m)._("WHERE id = @1");

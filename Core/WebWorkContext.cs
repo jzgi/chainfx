@@ -2,7 +2,6 @@
 
 namespace Greatbone.Core
 {
-
     ///
     /// The context for a particular node in the web work hierarchy.
     ///

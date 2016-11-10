@@ -7,7 +7,7 @@ namespace Greatbone.Sample
     /// <summary>
     /// Used by all services.
     /// </summary>
-    public class Token : IPrincipal, IBean
+    public class Token : IPrincipal, IData
     {
         internal string id;
         internal string name;

@@ -6,7 +6,7 @@ namespace Ministry.Dietary
 
     /// <summary>
     /// </summary>
-    public class Pay : IBean
+    public class Pay : IData
     {
         internal string id;
         internal string shopid;

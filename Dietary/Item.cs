@@ -6,7 +6,7 @@ namespace Ministry.Dietary
 
     /// <summary>
     /// </summary>
-    public class Item : IBean
+    public class Item : IData
     {
         internal int id;
         internal string shopid;

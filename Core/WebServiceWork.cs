@@ -18,11 +18,10 @@ using Npgsql;
 
 namespace Greatbone.Core
 {
-    /// <summary>
-    /// A service work implements a microservice.
-    /// </summary>
     ///
-    public abstract class WebServiceWork : WebWork, IHttpApplication<HttpContext>, ILoggerProvider, ILogger, IDisposable
+    /// A service work implements a microservice.
+    ///
+    public abstract class WebServiceWork : WebWork, IHttpApplication<HttpContext>, ILoggerProvider, ILogger
     {
         // SERVER
         //
@@ -36,7 +35,7 @@ namespace Greatbone.Core
         readonly KestrelServer server;
 
         // shared content cache
-        ContentCache cache;
+        readonly ContentCache cache;
 
         // MESSAGING
         //
@@ -106,10 +105,9 @@ namespace Greatbone.Core
 
             // init content cache
             cache = new ContentCache(Environment.ProcessorCount * 2, 4096);
-
         }
 
-        public WebConfig Config => (WebConfig)ctx;
+        public WebConfig Config => (WebConfig) ctx;
 
         internal Roll<MsgQueue> Queues => queues;
 
@@ -170,7 +168,7 @@ namespace Greatbone.Core
         /// </summary>
         public async Task ProcessRequestAsync(HttpContext context)
         {
-            WebContext wc = (WebContext)context;
+            WebContext wc = (WebContext) context;
             HttpRequest req = wc.Request;
             string path = req.Path.Value;
             string targ = path + req.QueryString.Value;
@@ -208,7 +206,7 @@ namespace Greatbone.Core
 
         public void DisposeContext(HttpContext context, Exception exception)
         {
-            ((WebContext)context).Dispose();
+            ((WebContext) context).Dispose();
         }
 
         void Authenticate(WebContext wc)
@@ -368,7 +366,7 @@ namespace Greatbone.Core
 
         public bool IsEnabled(LogLevel level)
         {
-            return (int)level >= Config.logging;
+            return (int) level >= Config.logging;
         }
 
 
@@ -383,16 +381,17 @@ namespace Greatbone.Core
             Console.WriteLine(".");
         }
 
-        static readonly string[] LVL = { "TRC: ", "DBG: ", "INF: ", "WAR: ", "ERR: " };
+        static readonly string[] LVL = {"TRC: ", "DBG: ", "INF: ", "WAR: ", "ERR: "};
 
-        public void Log<T>(LogLevel level, EventId eid, T state, Exception exception, Func<T, Exception, string> formatter)
+        public void Log<T>(LogLevel level, EventId eid, T state, Exception exception,
+            Func<T, Exception, string> formatter)
         {
             if (!IsEnabled(level))
             {
                 return;
             }
 
-            logWriter.Write(LVL[(int)level]);
+            logWriter.Write(LVL[(int) level]);
 
             if (eid.Id != 0)
             {
@@ -446,24 +445,20 @@ namespace Greatbone.Core
                 Console.WriteLine("ctrl_c to shut down");
 
                 cts.Token.Register(state =>
-                {
-                    ((IApplicationLifetime)state).StopApplication();
-                    // dispose services
-                    foreach (WebServiceWork svc in services)
                     {
-                        svc.OnStop();
+                        ((IApplicationLifetime) state).StopApplication();
+                        // dispose services
+                        foreach (WebServiceWork svc in services)
+                        {
+                            svc.OnStop();
 
-                        svc.Dispose();
-                    }
-
-                },
-                Lifetime);
+                            svc.Dispose();
+                        }
+                    },
+                    Lifetime);
 
                 Lifetime.ApplicationStopping.WaitHandle.WaitOne();
-
             }
         }
-
     }
-
 }

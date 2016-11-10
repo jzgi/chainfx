@@ -5,11 +5,8 @@ using Microsoft.Extensions.Logging;
 
 namespace Greatbone.Core
 {
-
     ///
-    /// <summary>
     /// A web work is a server-side controller that realizes a virtual directory containing static/dynamic resources.
-    /// </summary>
     ///
     public abstract class WebWork : IKeyed
     {
@@ -42,7 +39,8 @@ namespace Greatbone.Core
             foreach (MethodInfo mi in typ.GetMethods(BindingFlags.Public | BindingFlags.Instance))
             {
                 ParameterInfo[] pis = mi.GetParameters();
-                if (pis.Length == 2 && pis[0].ParameterType == typeof(WebContext) && pis[1].ParameterType == typeof(string))
+                if (pis.Length == 2 && pis[0].ParameterType == typeof(WebContext) &&
+                    pis[1].ParameterType == typeof(string))
                 {
                     WebAction wa = new WebAction(this, mi);
                     if (wa.Key.Equals("default"))
@@ -62,10 +60,10 @@ namespace Greatbone.Core
             }
             // create instance by reflection
             Type typ = typeof(W);
-            ConstructorInfo ci = typ.GetConstructor(new[] { typeof(WebWorkContext) });
+            ConstructorInfo ci = typ.GetConstructor(new[] {typeof(WebWorkContext)});
             if (ci == null)
                 throw new WebException(typ + " missing WebWorkContext");
-            WebWorkContext ctx = new WebWorkContext
+            WebWorkContext wwc = new WebWorkContext
             {
                 key = key,
                 State = state,
@@ -74,7 +72,7 @@ namespace Greatbone.Core
                 Folder = (Parent == null) ? key : Path.Combine(Parent.Folder, key),
                 Service = Service
             };
-            W work = (W)ci.Invoke(new object[] { ctx });
+            W work = (W) ci.Invoke(new object[] {wwc});
             children.Add(work);
 
             return work;
@@ -88,10 +86,10 @@ namespace Greatbone.Core
         {
             // create instance
             Type typ = typeof(W);
-            ConstructorInfo ci = typ.GetConstructor(new[] { typeof(WebWorkContext) });
+            ConstructorInfo ci = typ.GetConstructor(new[] {typeof(WebWorkContext)});
             if (ci == null)
                 throw new WebException(typ + " missing WebWorkContext");
-            WebWorkContext ctx = new WebWorkContext
+            WebWorkContext wwc = new WebWorkContext
             {
                 key = VarKey,
                 State = state,
@@ -100,7 +98,7 @@ namespace Greatbone.Core
                 Folder = (Parent == null) ? VarKey : Path.Combine(Parent.Folder, VarKey),
                 Service = Service
             };
-            W work = (W)ci.Invoke(new object[] { ctx });
+            W work = (W) ci.Invoke(new object[] {wwc});
             this.var = work;
 
             return work;
@@ -210,14 +208,14 @@ namespace Greatbone.Core
         {
             if (file.StartsWith("$")) // private resource
             {
-                wc.StatusCode = 403;  // forbidden
+                wc.StatusCode = 403; // forbidden
                 return;
             }
 
             string ctyp;
             if (!StaticContent.TryGetType(ext, out ctyp))
             {
-                wc.StatusCode = 415;  // unsupported media type
+                wc.StatusCode = 415; // unsupported media type
                 return;
             }
 
@@ -247,7 +245,9 @@ namespace Greatbone.Core
             wc.Send(200, sta, true, 5 * 60000);
         }
 
-        public virtual void @default(WebContext wc, string subscpt) { }
+        public virtual void @default(WebContext wc, string subscpt)
+        {
+        }
 
         //
         // LOGGING METHODS
@@ -277,7 +277,5 @@ namespace Greatbone.Core
         {
             Service.Log(LogLevel.Error, 0, message, exception, null);
         }
-
     }
-
 }

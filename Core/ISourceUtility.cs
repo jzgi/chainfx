@@ -4,16 +4,15 @@ namespace Greatbone.Core
 {
     public static class ISourceUtility
     {
-
-        public static B ToBean<B>(this ISource src, byte z = 0) where B : IBean, new()
+        public static D ToData<D>(this ISource src, byte z = 0) where D : IData, new()
         {
-            B bean = new B();
-            bean.Load(src, z);
-            return bean;
+            D dat = new D();
+            dat.Load(src, z);
+            return dat;
         }
 
         //
-        // GOT
+        // GET
         //
 
         public static bool Get(this ISource src, ref bool v)
@@ -80,7 +79,7 @@ namespace Greatbone.Core
         }
 
 
-        public static bool Get<B>(this ISource src, ref B v, byte z = 0) where B : IBean, new()
+        public static bool Get<D>(this ISource src, ref D v, byte z = 0) where D : IData, new()
         {
             return src.Get(null, ref v, z);
         }
@@ -121,7 +120,7 @@ namespace Greatbone.Core
             return src.Get(null, ref v);
         }
 
-        public static bool Get<B>(this ISource src, ref B[] v, byte z = 0) where B : IBean, new()
+        public static bool Get<D>(this ISource src, ref D[] v, byte z = 0) where D : IData, new()
         {
             return src.Get(null, ref v, z);
         }
@@ -208,9 +207,9 @@ namespace Greatbone.Core
             return v;
         }
 
-        public static B GetBean<B>(this ISource src, byte z = 0) where B : IBean, new()
+        public static D GetData<D>(this ISource src, byte z = 0) where D : IData, new()
         {
-            B v = default(B);
+            D v = default(D);
             src.Get(null, ref v, z);
             return v;
         }
@@ -258,9 +257,9 @@ namespace Greatbone.Core
             return v;
         }
 
-        public static B[] GetBeans<B>(this ISource src, byte z = 0) where B : IBean, new()
+        public static D[] GetDatas<D>(this ISource src, byte z = 0) where D : IData, new()
         {
-            B[] v = null;
+            D[] v = null;
             src.Get(null, ref v, z);
             return v;
         }
@@ -346,9 +345,9 @@ namespace Greatbone.Core
             return v;
         }
 
-        public static B GetBean<B>(this ISource src, string name) where B : IBean, new()
+        public static D GetData<D>(this ISource src, string name) where D : IData, new()
         {
-            B v = default(B);
+            D v = default(D);
             src.Get(name, ref v);
             return v;
         }
@@ -396,13 +395,11 @@ namespace Greatbone.Core
             return v;
         }
 
-        public static B[] GetBeans<B>(this ISource src, string name) where B : IBean, new()
+        public static D[] GetDatas<D>(this ISource src, string name) where D : IData, new()
         {
-            B[] v = null;
+            D[] v = null;
             src.Get(name, ref v);
             return v;
         }
-
     }
-
 }

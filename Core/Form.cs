@@ -2,11 +2,8 @@ using System;
 
 namespace Greatbone.Core
 {
-
     ///
-    /// <summary>
     /// A form object model parsed from x-www-form-urlencoded.
-    /// </summary>
     ///
     public class Form : ISource
     {
@@ -43,7 +40,7 @@ namespace Greatbone.Core
             Pair pr;
             if (pairs.TryGet(name, out pr))
             {
-                v = (bool)pr;
+                v = pr;
                 return true;
             }
             return false;
@@ -54,7 +51,7 @@ namespace Greatbone.Core
             Pair pr;
             if (pairs.TryGet(name, out pr))
             {
-                v = (short)pr;
+                v = pr;
                 return true;
             }
             return false;
@@ -65,7 +62,7 @@ namespace Greatbone.Core
             Pair pr;
             if (pairs.TryGet(name, out pr))
             {
-                v = (int)pr;
+                v = pr;
                 return true;
             }
             return false;
@@ -76,7 +73,7 @@ namespace Greatbone.Core
             Pair pr;
             if (pairs.TryGet(name, out pr))
             {
-                v = (long)pr;
+                v = pr;
                 return true;
             }
             return false;
@@ -87,7 +84,7 @@ namespace Greatbone.Core
             Pair pr;
             if (pairs.TryGet(name, out pr))
             {
-                v = (decimal)pr;
+                v = pr;
                 return true;
             }
             return false;
@@ -108,7 +105,7 @@ namespace Greatbone.Core
             Pair pr;
             if (pairs.TryGet(name, out pr))
             {
-                v = (string)pr;
+                v = pr;
                 return true;
             }
             return false;
@@ -134,7 +131,7 @@ namespace Greatbone.Core
             Pair pr;
             if (pairs.TryGet(name, out pr))
             {
-                v = (short[])pr;
+                v = pr;
                 return true;
             }
             return false;
@@ -145,7 +142,7 @@ namespace Greatbone.Core
             Pair pr;
             if (pairs.TryGet(name, out pr))
             {
-                v = (int[])pr;
+                v = pr;
                 return true;
             }
             return false;
@@ -156,7 +153,7 @@ namespace Greatbone.Core
             Pair pr;
             if (pairs.TryGet(name, out pr))
             {
-                v = (long[])pr;
+                v = pr;
                 return true;
             }
             return false;
@@ -167,7 +164,7 @@ namespace Greatbone.Core
             Pair pr;
             if (pairs.TryGet(name, out pr))
             {
-                v = (string[])pr;
+                v = pr;
                 return true;
             }
             return false;
@@ -184,16 +181,14 @@ namespace Greatbone.Core
         }
 
 
-        public bool Get<B>(string name, ref B[] v, byte z = 0) where B : IBean, new()
+        public bool Get<D>(string name, ref D[] v, byte z = 0) where D : IData, new()
         {
             throw new NotImplementedException();
         }
 
-        public bool Get<B>(string name, ref B v, byte z = 0) where B : IBean, new()
+        public bool Get<D>(string name, ref D v, byte z = 0) where D : IData, new()
         {
             throw new NotImplementedException();
         }
-
     }
-
 }

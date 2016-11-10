@@ -46,7 +46,7 @@ namespace Greatbone.Core
             return this;
         }
 
-        public DbSql setlst<T>(T obj, byte z = 0) where T : IBean
+        public DbSql setlst<T>(T obj, byte z = 0) where T : IData
         {
             list = SetList;
             ordinal = 1;
@@ -54,7 +54,7 @@ namespace Greatbone.Core
             return this;
         }
 
-        public DbSql columnlst<T>(T obj, byte z = 0) where T : IBean
+        public DbSql columnlst<T>(T obj, byte z = 0) where T : IData
         {
             list = ColumnList;
             ordinal = 1;
@@ -62,7 +62,7 @@ namespace Greatbone.Core
             return this;
         }
 
-        public DbSql parameterlst<T>(T obj, byte z = 0) where T : IBean
+        public DbSql parameterlst<T>(T obj, byte z = 0) where T : IData
         {
             list = ParameterList;
             ordinal = 1;
@@ -70,7 +70,7 @@ namespace Greatbone.Core
             return this;
         }
 
-        public DbSql _<T>(T obj, byte z = 0) where T : IBean
+        public DbSql _<T>(T obj, byte z = 0) where T : IData
         {
             Add(" (");
             columnlst(obj, z);
@@ -78,7 +78,7 @@ namespace Greatbone.Core
             return this;
         }
 
-        public DbSql _VALUES_<T>(T obj, byte z = 0) where T : IBean
+        public DbSql _VALUES_<T>(T obj, byte z = 0) where T : IData
         {
             Add(" VALUES (");
             parameterlst(obj, z);
@@ -86,7 +86,7 @@ namespace Greatbone.Core
             return this;
         }
 
-        public DbSql _SET_<T>(T obj, byte z = 0) where T : IBean
+        public DbSql _SET_<T>(T obj, byte z = 0) where T : IData
         {
             Add(" SET ");
             setlst(obj, z);
@@ -236,7 +236,7 @@ namespace Greatbone.Core
             return this;
         }
 
-        public DbSql Put<B>(string name, B v, byte z = 0) where B : IBean
+        public DbSql Put<B>(string name, B v, byte z = 0) where B : IData
         {
             if (name != null)
             {
@@ -421,7 +421,7 @@ namespace Greatbone.Core
             return this;
         }
 
-        public DbSql Put<B>(string name, B[] v, byte z = 0) where B : IBean
+        public DbSql Put<B>(string name, B[] v, byte z = 0) where B : IData
         {
             Build(name);
             return this;

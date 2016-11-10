@@ -2,7 +2,6 @@
 
 namespace Greatbone.Core
 {
-
     /// <summary>
     /// To generate a UTF-8 encoded JSON document. An extension of putting byte array is supported.
     /// </summary>
@@ -34,23 +33,28 @@ namespace Greatbone.Core
                     char c = v[i];
                     if (c == '\"')
                     {
-                        Add('\\'); Add('"');
+                        Add('\\');
+                        Add('"');
                     }
                     else if (c == '\\')
                     {
-                        Add('\\'); Add('\\');
+                        Add('\\');
+                        Add('\\');
                     }
                     else if (c == '\n')
                     {
-                        Add('\\'); Add('n');
+                        Add('\\');
+                        Add('n');
                     }
                     else if (c == '\r')
                     {
-                        Add('\\'); Add('r');
+                        Add('\\');
+                        Add('r');
                     }
                     else if (c == '\t')
                     {
-                        Add('\\'); Add('t');
+                        Add('\\');
+                        Add('t');
                     }
                     else
                     {
@@ -77,9 +81,9 @@ namespace Greatbone.Core
             level--; // exit
         }
 
-        public void PutArr<B>(B[] beans, byte z = 0) where B : IBean
+        public void PutArr<D>(D[] dats, byte z = 0) where D : IData
         {
-            Put(null, beans, z);
+            Put(null, dats, z);
         }
 
         public void PutObj(Action a)
@@ -95,9 +99,9 @@ namespace Greatbone.Core
             level--; // exit
         }
 
-        public void PutObj<B>(B bean, byte z = 0) where B : IBean
+        public void PutObj<D>(D dat, byte z = 0) where D : IData
         {
-            Put(null, bean, z);
+            Put(null, dat, z);
         }
 
 
@@ -309,7 +313,7 @@ namespace Greatbone.Core
             return this; // ignore ir
         }
 
-        public XmlContent Put<B>(string name, B v, byte z = 0) where B : IBean
+        public XmlContent Put<B>(string name, B v, byte z = 0) where B : IData
         {
             if (counts[level]++ > 0) Add(',');
 
@@ -523,7 +527,7 @@ namespace Greatbone.Core
         }
 
 
-        public XmlContent Put<B>(string name, B[] v, byte z = 0) where B : IBean
+        public XmlContent Put<B>(string name, B[] v, byte z = 0) where B : IData
         {
             if (counts[level]++ > 0) Add(',');
 
@@ -552,7 +556,5 @@ namespace Greatbone.Core
             }
             return this;
         }
-
     }
-
 }

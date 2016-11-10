@@ -6,7 +6,7 @@ namespace Ministry.Dietary
 
     /// <summary>
     /// </summary>
-    public class Buyer : IBean
+    public class Buyer : IData
     {
         internal string id; // wechat id
         internal string shopid;

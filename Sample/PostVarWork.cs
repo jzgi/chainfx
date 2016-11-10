@@ -29,7 +29,7 @@ namespace Greatbone.Sample
                 DbSql sql = new DbSql("SELECT ").columnlst(Post.Empty, z)._("FROM posts WHERE id = @1");
                 if (dc.QueryA(sql.ToString(), p => p.Put(id)))
                 {
-                    Post obj = dc.ToBean<Post>(z);
+                    Post obj = dc.ToData<Post>(z);
                     wc.SendJson(200, obj, z);
                 }
                 else
@@ -139,7 +139,7 @@ namespace Greatbone.Sample
         {
             int id = wc[0].ToInt();
             IPrincipal tok = wc.Principal;
-            Comment m = wc.ReadBean<Comment>();
+            Comment m = wc.ReadData<Comment>();
 
             m.time = DateTime.Now;
             m.authorid = tok.Key;
@@ -148,7 +148,7 @@ namespace Greatbone.Sample
             {
                 if (dc.QueryA("SELECT comments FROM posts WHERE id = @1", p => p.Put(id)))
                 {
-                    Comment[] cmts = dc.GetBeans<Comment>().Add(m);
+                    Comment[] cmts = dc.GetDatas<Comment>().Add(m);
                     if (dc.Execute("UPDATE posts SET comments = @1 WHERE id = @2", p => p.Put(cmts).Put(id)) > 0)
                     {
                         wc.StatusCode = 200;
