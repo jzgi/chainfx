@@ -14,9 +14,9 @@ namespace Greatbone.Sample
             SetVariable<FameVariableDir>();
         }
 
-        public void @default(int page, WebContext wc)
+        public void @default(WebContext wc, int page)
         {
-            top(page, wc);
+            top(wc, page);
         }
 
         ///
@@ -25,7 +25,7 @@ namespace Greatbone.Sample
         /// <code>
         /// GET /fame/top[-_page_]
         /// </code>
-        public void top(int page, WebContext wc)
+        public void top(WebContext wc, int page)
         {
             using (var dc = Service.NewDbContext())
             {

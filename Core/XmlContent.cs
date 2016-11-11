@@ -2,9 +2,9 @@
 
 namespace Greatbone.Core
 {
-    /// <summary>
-    /// To generate a UTF-8 encoded JSON document. An extension of putting byte array is supported.
-    /// </summary>
+    /// 
+    /// To generate a UTF-8 encoded XML document. 
+    /// 
     public class XmlContent : DynamicContent, ISink<XmlContent>
     {
         const int InitialCapacity = 4 * 1024;

@@ -132,7 +132,7 @@ namespace Greatbone.Sample
         /// GET /fame/_id_/img[-_idx_]
         /// </code>
         ///
-        public void img(int idx, WebContext wc)
+        public void img(WebContext wc, int idx)
         {
             string id = wc.Var(this);
             using (var dc = Service.NewDbContext())
@@ -158,7 +158,7 @@ namespace Greatbone.Sample
         /// [img_bytes]
         /// </code>
         ///
-        public void updimg(int idx, WebContext wc)
+        public void updimg(WebContext wc, int idx)
         {
             string id = wc.Var(this);
             using (var dc = Service.NewDbContext())

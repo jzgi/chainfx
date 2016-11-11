@@ -2,13 +2,13 @@
 
 namespace Greatbone.Core
 {
-    public struct WebVar
+    public struct Var
     {
         readonly WebDir dir;
 
         readonly string key;
 
-        internal WebVar(WebDir dir, string key)
+        internal Var(WebDir dir, string key)
         {
             this.dir = dir;
             this.key = key;
@@ -22,7 +22,7 @@ namespace Greatbone.Core
         // CONVERSION
         //
 
-        public static implicit operator bool(WebVar v)
+        public static implicit operator bool(Var v)
         {
             string str = v.key;
             if (str != null)
@@ -32,7 +32,7 @@ namespace Greatbone.Core
             return false;
         }
 
-        public static implicit operator short(WebVar v)
+        public static implicit operator short(Var v)
         {
             string str = v.key;
             if (str != null)
@@ -46,7 +46,7 @@ namespace Greatbone.Core
             return 0;
         }
 
-        public static implicit operator int(WebVar v)
+        public static implicit operator int(Var v)
         {
             string str = v.key;
             if (str != null)
@@ -60,7 +60,7 @@ namespace Greatbone.Core
             return 0;
         }
 
-        public static implicit operator long(WebVar v)
+        public static implicit operator long(Var v)
         {
             string str = v.key;
             if (str != null)
@@ -74,7 +74,7 @@ namespace Greatbone.Core
             return 0;
         }
 
-        public static implicit operator decimal(WebVar v)
+        public static implicit operator decimal(Var v)
         {
             string str = v.key;
             if (str != null)
@@ -88,23 +88,23 @@ namespace Greatbone.Core
             return 0;
         }
 
-        public static implicit operator Number(WebVar v)
+        public static implicit operator Number(Var v)
         {
             return default(Number);
         }
 
-        public static implicit operator DateTime(WebVar v)
+        public static implicit operator DateTime(Var v)
         {
             return default(DateTime);
         }
 
-        public static implicit operator char[](WebVar v)
+        public static implicit operator char[](Var v)
         {
             string str = v.key;
             return str?.ToCharArray();
         }
 
-        public static implicit operator string(WebVar v)
+        public static implicit operator string(Var v)
         {
             return v.key;
         }

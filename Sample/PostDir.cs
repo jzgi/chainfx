@@ -15,9 +15,9 @@ namespace Greatbone.Sample
             mgmtWas = GetActions(nameof(srch), nameof(del), nameof(status));
         }
 
-        public void @default(int page, WebContext wc)
+        public void @default(WebContext wc, int page)
         {
-            top(page, wc);
+            top(wc, page);
         }
 
         ///
@@ -26,7 +26,7 @@ namespace Greatbone.Sample
         /// <code>
         /// GET /post/top-[_page_][?authorid=_id_]
         /// </code>
-        public void top(int page, WebContext wc)
+        public void top(WebContext wc, int page)
         {
             const byte z = 0xff ^ BIN;
             string authorid = wc[nameof(authorid)];

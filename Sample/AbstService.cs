@@ -15,7 +15,7 @@ namespace Greatbone.Sample
         }
 
 
-        protected override IPrincipal GetPrincipal(bool token, string idstr)
+        protected override IPrincipal Fetch(bool token, string idstr)
         {
             if (token) // token
             {

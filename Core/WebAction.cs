@@ -25,19 +25,20 @@ namespace Greatbone.Core
 
         readonly ButtonAttribute button;
 
-        internal WebAction(WebDir dir, MethodInfo mi, Type subtype)
+        internal WebAction(WebDir dir, MethodInfo mi, Type subtyp)
         {
             this.dir = dir;
             this.key = mi.Name; // NOTE: strict method name as key here to avoid the default base url trap
-            this.subtype = subtype;
-            method =
-                subtype == null ? mi.CreateDelegate(typeof(Action<WebContext>), dir) :
-                subtype == typeof(string) ? mi.CreateDelegate(typeof(Action<string, WebContext>), dir) :
-                subtype == typeof(short) ? mi.CreateDelegate(typeof(Action<short, WebContext>), dir) :
-                subtype == typeof(int) ? mi.CreateDelegate(typeof(Action<int, WebContext>), dir) :
-                subtype == typeof(long) ? mi.CreateDelegate(typeof(Action<long, WebContext>), dir) :
-                subtype == typeof(DateTime) ? mi.CreateDelegate(typeof(Action<DateTime, WebContext>), dir) :
-                null;
+            this.subtype = subtyp;
+
+            // create delegate accordingly
+            if (subtyp == null) method = mi.CreateDelegate(typeof(Action<WebContext>), dir);
+            else if (subtyp == typeof(string)) method = mi.CreateDelegate(typeof(Action<WebContext, string>), dir);
+            else if (subtyp == typeof(short)) method = mi.CreateDelegate(typeof(Action<WebContext, short>), dir);
+            else if (subtyp == typeof(int)) method = mi.CreateDelegate(typeof(Action<WebContext, int>), dir);
+            else if (subtyp == typeof(long)) method = mi.CreateDelegate(typeof(Action<WebContext, long>), dir);
+            else if (subtyp == typeof(DateTime)) method = mi.CreateDelegate(typeof(Action<WebContext, DateTime>), dir);
+            else throw new WebException(key + "(...) wrong subscript type");
 
             // prepare checks
             List<CheckAttribute> lst = null;
@@ -96,11 +97,11 @@ namespace Greatbone.Core
             wc.Action = this;
 
             if (subtype == null) ((Action<WebContext>)method)(wc);
-            else if (subtype == typeof(string)) ((Action<string, WebContext>)method)(subscpt, wc);
-            else if (subtype == typeof(short)) ((Action<short, WebContext>)method)(subscpt.ToShort(), wc);
-            else if (subtype == typeof(int)) ((Action<int, WebContext>)method)(subscpt.ToInt(), wc);
-            else if (subtype == typeof(long)) ((Action<long, WebContext>)method)(subscpt.ToLong(), wc);
-            else if (subtype == typeof(DateTime)) ((Action<DateTime, WebContext>)method)(subscpt.ToDateTime(), wc);
+            else if (subtype == typeof(string)) ((Action<WebContext, string>)method)(wc, subscpt);
+            else if (subtype == typeof(short)) ((Action<WebContext, short>)method)(wc, subscpt.ToShort());
+            else if (subtype == typeof(int)) ((Action<WebContext, int>)method)(wc, subscpt.ToInt());
+            else if (subtype == typeof(long)) ((Action<WebContext, long>)method)(wc, subscpt.ToLong());
+            else if (subtype == typeof(DateTime)) ((Action<WebContext, DateTime>)method)(wc, subscpt.ToDateTime());
 
             wc.Action = null;
             return true;
@@ -110,5 +111,8 @@ namespace Greatbone.Core
         {
             return Key;
         }
+
+        public static bool IsSubscriptType(Type t) =>
+            t == typeof(string) || t == typeof(short) || t == typeof(int) || t == typeof(long) || t == typeof(DateTime);
     }
 }

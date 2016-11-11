@@ -43,7 +43,7 @@ namespace Greatbone.Sample
         /// GET /post/_id_/img[-_idx_]
         /// </code>
         ///
-        public void img(int idx, WebContext wc)
+        public void img(WebContext wc, int idx)
         {
             int id = wc.Var(this);
             using (var dc = Service.NewDbContext())
@@ -70,7 +70,7 @@ namespace Greatbone.Sample
         /// </code>
         ///
         [Check]
-        public void updimg(int idx, WebContext wc)
+        public void updimg(WebContext wc, int idx)
         {
             int id = wc.Var(this);
             using (var dc = Service.NewDbContext())

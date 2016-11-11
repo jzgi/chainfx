@@ -1,6 +1,5 @@
 namespace Greatbone.Core
 {
-
     ///
     /// Parse JSON into object model from either bytes or string.
     ///
@@ -9,12 +8,13 @@ namespace Greatbone.Core
 
         static readonly ParseException ParseEx = new ParseException("json");
 
-        // byte buffer content to parse
+        // byte content to parse
         readonly byte[] bytebuf;
 
-        readonly int count;
+        // char content to parse
+        readonly string strbuf;
 
-        string strbuf;
+        readonly int count;
 
         // UTF-8 string builder
         readonly Str str;
@@ -22,21 +22,21 @@ namespace Greatbone.Core
         // whether json extension for byte array
         readonly bool jx;
 
-        public JsonParse(string strbuf)
-        {
-            this.strbuf = strbuf;
-            this.count = strbuf.Length;
-            this.bytebuf = null;
-            this.jx = false;
-            this.str = new Str(256);
-        }
-
         public JsonParse(byte[] bytebuf, int count, bool jx = false)
         {
             this.bytebuf = bytebuf;
             this.count = count;
             this.strbuf = null;
             this.jx = jx;
+            this.str = new Str(256);
+        }
+
+        public JsonParse(string strbuf)
+        {
+            this.strbuf = strbuf;
+            this.count = strbuf.Length;
+            this.bytebuf = null;
+            this.jx = false;
             this.str = new Str(256);
         }
 
@@ -317,7 +317,5 @@ namespace Greatbone.Core
             }
             throw ParseEx;
         }
-
     }
-
 }

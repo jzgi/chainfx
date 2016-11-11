@@ -44,17 +44,22 @@ namespace Greatbone.Core
                 {
                     wa = new WebAction(this, mi, null);
                 }
-                else if (pis.Length == 2 && pis[1].ParameterType == typeof(WebContext))
+                else if (pis.Length == 2 && pis[0].ParameterType == typeof(WebContext))
                 {
-                    Type subtyp = pis[0].ParameterType; // subscript as first parameter
-                    wa = new WebAction(this, mi, subtyp);
+                    Type pt = pis[1].ParameterType; // second parameter's type
+                    if (WebAction.IsSubscriptType(pt))
+                    {
+                        wa = new WebAction(this, mi, pt);
+                    }
                 }
+
                 if (wa == null) continue;
+
+                actions.Add(wa);
                 if (wa.Key.Equals("default"))
                 {
                     defaction = wa;
                 }
-                actions.Add(wa);
             }
         }
 

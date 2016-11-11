@@ -23,25 +23,25 @@ namespace Greatbone.Core
 
 
         // the chain of keys
-        WebVar[] chain;
+        Var[] chain;
         int vars;
 
         internal void Chain(WebDir dir, string key)
         {
             if (chain == null)
             {
-                chain = new WebVar[4];
+                chain = new Var[4];
             }
-            chain[vars++] = new WebVar(dir, key);
+            chain[vars++] = new Var(dir, key);
         }
 
-        public WebVar Var<V>(V dir) where V : WebDir, IVariable
+        public Var Var<V>(V dir) where V : WebDir, IVariable
         {
             for (int i = vars - 1; i >= 0; i--)
             {
                 if (chain[i].Dir == dir) return chain[i];
             }
-            return default(WebVar);
+            return default(Var);
         }
 
         //

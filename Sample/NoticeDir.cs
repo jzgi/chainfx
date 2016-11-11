@@ -4,7 +4,6 @@ using static Greatbone.Core.ZUtility;
 
 namespace Greatbone.Sample
 {
-
     public class NoticeDir : WebDir
     {
         public NoticeDir(WebDirContext wnc) : base(wnc)
@@ -12,9 +11,9 @@ namespace Greatbone.Sample
             SetVariable<NoticeVariableDir>();
         }
 
-        public void @default(int page, WebContext wc)
+        public void @default(WebContext wc, int page)
         {
-            top(page, wc);
+            top(wc, page);
         }
 
         ///
@@ -22,7 +21,7 @@ namespace Greatbone.Sample
         /// GET /notice/top[-_page_][?authorid=_id_]
         /// </code>
         ///
-        public void top(int page, WebContext wc)
+        public void top(WebContext wc, int page)
         {
             string authorid = wc[nameof(authorid)];
             if (authorid != null)

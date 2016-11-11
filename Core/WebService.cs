@@ -216,7 +216,7 @@ namespace Greatbone.Core
             if (hv.StartsWith("Bearer ")) // the Bearer scheme
             {
                 string token = hv.Substring(7);
-                IPrincipal prin = GetPrincipal(true, token);
+                IPrincipal prin = Fetch(true, token);
                 if (prin != null)
                 {
                     wc.Principal = prin; // success
@@ -231,7 +231,7 @@ namespace Greatbone.Core
                 string uri = fp.Parameter("uri=");
                 string response = fp.Parameter("response=");
                 // obtain principal
-                IPrincipal prin = GetPrincipal(false, username);
+                IPrincipal prin = Fetch(false, username);
                 if (prin != null)
                 {
                     // A2 = Method ":" digest-uri-value
@@ -246,7 +246,7 @@ namespace Greatbone.Core
             }
         }
 
-        protected virtual IPrincipal GetPrincipal(bool token, string idstr)
+        protected virtual IPrincipal Fetch(bool token, string idstr)
         {
             return null;
         }

@@ -41,8 +41,9 @@ namespace Greatbone.Sample
         /// </code>
         /// 
         [Check]
-        public void del(int id, WebContext wc)
+        public void del(WebContext wc)
         {
+            int id = wc.Var(this);
             string userid = wc.Principal.Key;
             using (var dc = Service.NewDbContext())
             {

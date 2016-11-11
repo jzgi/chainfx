@@ -13,28 +13,24 @@ namespace Greatbone.Core
 
         readonly CancellationTokenSource stopped = new CancellationTokenSource();
 
-        /// <summary>
-        /// Triggered when the application host has fully started and is about to wait
-        /// for a graceful shutdown.
-        /// </summary>
+        /// 
+        /// Triggered when the application host has fully started and is about to wait for a graceful shutdown.
+        /// 
         public CancellationToken ApplicationStarted => started.Token;
 
-        /// <summary>
-        /// Triggered when the application host is performing a graceful shutdown.
-        /// Request may still be in flight. Shutdown will block until this event completes.
-        /// </summary>
+        /// 
+        /// Triggered when the application host is performing a graceful shutdown. Request may still be in flight. Shutdown will block until this event completes.
+        /// 
         public CancellationToken ApplicationStopping => stopping.Token;
 
-        /// <summary>
-        /// Triggered when the application host is performing a graceful shutdown.
-        /// All requests should be complete at this point. Shutdown will block
-        /// until this event completes.
-        /// </summary>
+        /// 
+        /// Triggered when the application host is performing a graceful shutdown. All requests should be complete at this point. Shutdown will block until this event completes.
+        /// 
         public CancellationToken ApplicationStopped => stopped.Token;
 
-        /// <summary>
+        /// 
         /// Signals the ApplicationStopping event and blocks until it completes.
-        /// </summary>
+        /// 
         public void StopApplication()
         {
             // Lock on CTS to synchronize multiple calls to StopApplication. This guarantees that the first call 
@@ -53,9 +49,9 @@ namespace Greatbone.Core
             }
         }
 
-        /// <summary>
+        ///
         /// Signals the ApplicationStarted event and blocks until it completes.
-        /// </summary>
+        ///
         public void NotifyStarted()
         {
             try
@@ -68,9 +64,9 @@ namespace Greatbone.Core
             }
         }
 
-        /// <summary>
+        /// 
         /// Signals the ApplicationStopped event and blocks until it completes.
-        /// </summary>
+        /// 
         public void NotifyStopped()
         {
             try
@@ -82,6 +78,5 @@ namespace Greatbone.Core
                 // TODO: LOG
             }
         }
-
     }
 }
