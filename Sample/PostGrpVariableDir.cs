@@ -23,7 +23,7 @@ namespace Greatbone.Sample
             using (var dc = Service.NewDbContext())
             {
                 const byte z = 0 ^ BIN;
-                DbSql sql = new DbSql("SELECT ").columnlst(Post.Empty, z)._("FROM postgrps WHERE id = @1");
+                DbSql sql = new DbSql("SELECT ").columnlst(PostGrp.Empty, z)._("FROM postgrps WHERE id = @1");
                 if (dc.QueryA(sql.ToString(), p => p.Put(id)))
                 {
                     var postgrp = dc.ToData<PostGrp>(z);

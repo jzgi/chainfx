@@ -1,5 +1,4 @@
-﻿using System;
-using Greatbone.Core;
+﻿using Greatbone.Core;
 using static Greatbone.Core.ZUtility;
 
 namespace Greatbone.Sample
