@@ -24,13 +24,31 @@ namespace Greatbone.Sample
         /// Get the nth page of records on top.
         ///
         /// <code>
-        /// GET /post/top-[_page_][?authorid=_id_]
+        /// GET /post/top-[_page_][?authorid=_id_] OR
+        /// GET /post/top-[_page_][?grp=_post_group_]
         /// </code>
         public void top(WebContext wc, int page)
         {
             const byte z = 0xff ^ BIN;
+
             string authorid = wc[nameof(authorid)];
-            if (authorid != null)
+            string grp = wc[nameof(grp)];
+
+            if (grp != null)
+            {
+                using (var dc = Service.NewDbContext())
+                {
+                    DbSql sql = new DbSql("SELECT ").columnlst(Post.Empty, z)._("FROM posts WHERE grp = @1 ORDER BY id DESC LIMIT 20 OFFSET @2");
+                    if (dc.Query(sql.ToString(), p => p.Put(grp).Put(20 * page)))
+                    {
+                        var posts = dc.ToDatas<Post>(z);
+                        wc.SendJson(200, posts, z);
+                    }
+                    else
+                        wc.StatusCode = 204; // no content
+                }
+            }
+            else if (authorid != null)
             {
                 using (var dc = Service.NewDbContext())
                 {
@@ -93,7 +111,6 @@ namespace Greatbone.Sample
                     wc.StatusCode = 300;
             }
         }
-
 
         //
         // ADMIN

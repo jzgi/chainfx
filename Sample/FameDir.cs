@@ -30,11 +30,10 @@ namespace Greatbone.Sample
             using (var dc = Service.NewDbContext())
             {
                 const byte z = 0xff ^ BIN;
-                DbSql sql =
-                    new DbSql("SELECT ").columnlst(new Fame(), z)._("FROM fames ORDER BY rating LIMIT 20 OFFSET @1");
+                DbSql sql = new DbSql("SELECT ").columnlst(new Fame(), z)._("FROM fames ORDER BY rating LIMIT 20 OFFSET @1");
                 if (dc.Query(sql.ToString(), p => p.Put(page * 20)))
                 {
-                    Fame[] fames = dc.ToDatas<Fame>(z);
+                    var fames = dc.ToDatas<Fame>(z);
                     wc.SendJson(200, fames, z);
                 }
                 else

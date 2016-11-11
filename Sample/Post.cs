@@ -12,6 +12,7 @@ namespace Greatbone.Sample
         internal DateTime time;
         internal string authorid;
         internal string author;
+        internal string grp;
         internal bool commentable;
         internal Comment[] comments;
         internal string[] likes;
@@ -26,6 +27,7 @@ namespace Greatbone.Sample
             s.Get(nameof(time), ref time);
             s.Get(nameof(authorid), ref authorid);
             s.Get(nameof(author), ref author);
+            s.Get(nameof(grp), ref grp);
             s.Get(nameof(commentable), ref commentable);
             s.Get(nameof(comments), ref comments);
             s.Get(nameof(likes), ref likes);
@@ -53,6 +55,7 @@ namespace Greatbone.Sample
             s.Put(nameof(time), time);
             s.Put(nameof(authorid), authorid);
             s.Put(nameof(author), author);
+            s.Put(nameof(grp), grp);
             s.Put(nameof(commentable), commentable);
             s.Put(nameof(comments), comments);
             s.Put(nameof(likes), likes);
