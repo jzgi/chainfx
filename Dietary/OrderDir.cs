@@ -9,6 +9,7 @@ namespace Ministry.Dietary
     {
         public OrderDir(WebDirContext ctx) : base(ctx)
         {
+            SetVariable<OrderVariableDir>();
         }
 
         public void lst(WebContext wc, string subscpt)

@@ -10,7 +10,7 @@ namespace Ministry.Dietary
         internal string id;
         internal string name;
         internal string credential;
-        internal string[] roles;
+        internal short level;
 
         public string Key => id;
 
@@ -23,7 +23,7 @@ namespace Ministry.Dietary
             s.Get(nameof(id), ref id);
             s.Get(nameof(name), ref name);
             s.Get(nameof(credential), ref credential);
-            s.Get(nameof(roles), ref roles);
+            s.Get(nameof(level), ref level);
         }
 
         public void Dump<R>(ISink<R> s, byte z = 0) where R : ISink<R>
@@ -31,7 +31,7 @@ namespace Ministry.Dietary
             s.Put(nameof(id), id);
             s.Put(nameof(name), name);
             s.Put(nameof(credential), credential);
-            s.Put(nameof(roles), roles);
+            s.Put(nameof(level), level);
         }
     }
 }

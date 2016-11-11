@@ -1,9 +1,10 @@
 ﻿using Greatbone.Core;
+using static Greatbone.Core.ZUtility;
 
 namespace Ministry.Dietary
 {
     ///
-    /// The operation service controller.
+    /// The operation service.
     ///
     public class OpService : WebService
     {
@@ -13,22 +14,36 @@ namespace Ministry.Dietary
         }
 
         ///
-        /// Get all fame categories.
+        /// Get shop list.
         ///
         /// <code>
-        /// GET /cats
+        /// GET /[-page]
         /// </code>
         ///
-        public void cats(WebContext wc, string subscpt)
+        public void @default(WebContext wc, int page)
         {
-        }
+            const byte z = 0xff ^ BIN;
 
-        public void search(WebContext wc, string subscpt)
-        {
+            using (var dc = Service.NewDbContext())
+            {
+                DbSql sql = new DbSql("SELECT ").columnlst(Shop.Empty, z)._("FROM shops WHERE NOT disabled ORDER BY id LIMIT 20 OFFSET @1");
+                if (dc.Query(sql.ToString(), p => p.Put(20 * page)))
+                {
+                    var shops = dc.ToDatas<Shop>(z);
+                    wc.SendMajorLayout(200, "", main => { });
+                }
+                else
+                    wc.SendMajorLayout(200, "没有记录", main => { });
+            }
         }
 
         /// Create a new shop
         ///
+        /// <code>
+        /// GET /[-page]
+        /// </code>
+        ///
+        [CheckAdmin]
         public void @new(WebContext wc, string subscpt)
         {
         }
@@ -54,7 +69,7 @@ namespace Ministry.Dietary
                 JsonParse par = new JsonParse(plain);
                 try
                 {
-                    Obj jo = (Obj) par.Parse();
+                    Obj jo = (Obj)par.Parse();
                     // return jo.ToObj<Token>();
                 }
                 catch

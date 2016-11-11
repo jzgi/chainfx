@@ -2,13 +2,12 @@
 
 namespace Ministry.Dietary
 {
-
     ///
-    /// The my work controller.
+    /// The visitor's personal functions.
     ///
     public class MyDir : WebDir
     {
-        public MyDir(WebDirContext wnc) : base(wnc)
+        public MyDir(WebDirContext ctx) : base(ctx)
         {
         }
 
@@ -21,7 +20,5 @@ namespace Ministry.Dietary
         {
 
         }
-
     }
-
 }

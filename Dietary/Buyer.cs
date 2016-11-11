@@ -3,16 +3,16 @@ using Greatbone.Core;
 
 namespace Ministry.Dietary
 {
-
-    /// <summary>
-    /// </summary>
+    /// 
+    /// A buyer data object.
+    ///
     public class Buyer : IData
     {
-        internal string id; // wechat id
         internal string shopid;
+        internal string id; // wechat id
+        internal string name; // wechat name
         internal DateTime time;
-        internal string custid; // wechat id
-        internal string cust; // wechat name
+        internal string buyerid; // wechat id
         internal string tel;
         internal int status;
 
@@ -21,8 +21,8 @@ namespace Ministry.Dietary
             s.Get(nameof(id), ref id);
             s.Get(nameof(shopid), ref shopid);
             s.Get(nameof(time), ref time);
-            s.Get(nameof(custid), ref custid);
-            s.Get(nameof(cust), ref cust);
+            s.Get(nameof(buyerid), ref buyerid);
+            s.Get(nameof(name), ref name);
             s.Get(nameof(tel), ref tel);
             s.Get(nameof(status), ref status);
         }
@@ -32,11 +32,9 @@ namespace Ministry.Dietary
             s.Put(nameof(id), id);
             s.Put(nameof(shopid), shopid);
             s.Put(nameof(time), time);
-            s.Put(nameof(custid), custid);
+            s.Put(nameof(buyerid), buyerid);
             s.Put(nameof(tel), tel);
             s.Put(nameof(status), status);
         }
-
     }
-
 }
