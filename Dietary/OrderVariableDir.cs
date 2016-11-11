@@ -11,26 +11,23 @@ namespace Ministry.Dietary
         {
         }
 
-        //
-        // user actions
-        //
-
-        public void @default(WebContext wc, string subscpt)
+        ///
+        /// Get order's detail.
+        ///
+        public void @default(WebContext wc)
         {
         }
 
-
-        public void menu(WebContext wc, string subscpt)
+        public void cannel(WebContext wc)
         {
         }
 
-        public void place(WebContext wc, string subscpt)
+        public void pend(WebContext wc)
         {
         }
 
-
-        //
-        // wechat callbacks
-        //
+        public void close(WebContext wc)
+        {
+        }
     }
 }

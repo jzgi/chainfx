@@ -8,9 +8,13 @@ namespace Ministry.Dietary
     ///
     public class OpService : WebService
     {
+        readonly WebAction[] _new;
+
         public OpService(WebConfig cfg) : base(cfg)
         {
             SetVariable<ShopVariableDir>();
+
+            _new = GetActions(nameof(@new));
         }
 
         ///
@@ -20,6 +24,7 @@ namespace Ministry.Dietary
         /// GET /[-page]
         /// </code>
         ///
+        [CheckAdmin]
         public void @default(WebContext wc, int page)
         {
             const byte z = 0xff ^ BIN;
@@ -30,7 +35,10 @@ namespace Ministry.Dietary
                 if (dc.Query(sql.ToString(), p => p.Put(20 * page)))
                 {
                     var shops = dc.ToDatas<Shop>(z);
-                    wc.SendMajorLayout(200, "", main => { });
+                    wc.SendMajorLayout(200, "", main =>
+                    {
+                        main.form(_new, shops);
+                    });
                 }
                 else
                     wc.SendMajorLayout(200, "没有记录", main => { });

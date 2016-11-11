@@ -8,6 +8,8 @@ namespace Ministry.Dietary
     ///
     public class Item : IData
     {
+        public static readonly Item Empty = new Item();
+
         internal string shopid;
         internal string item;
         internal byte[] icon;

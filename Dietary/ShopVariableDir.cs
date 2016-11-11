@@ -7,6 +7,8 @@ namespace Ministry.Dietary
     ///
     public class ShopVariableDir : WebDir, IVariable
     {
+        readonly WebAction _add;
+
         public ShopVariableDir(WebDirContext ctx) : base(ctx)
         {
             // customer personal
@@ -14,28 +16,50 @@ namespace Ministry.Dietary
 
             // order functions
             AddChild<OrderDir>("order");
+
+            _add = GetAction(nameof(add));
         }
 
-        //
-        // user actions
-        //
+        ///
+        /// Get products and submit to basket.
+        ///
+        /// <code>
+        /// GET /330001/
+        /// </code>
+        ///
+        public void @default(WebContext wc)
+        {
+            string shopid = wc.Var(this);
+            using (var dc = Service.NewDbContext())
+            {
+                DbSql sql = new DbSql("SELECT ").columnlst(Item.Empty)._("FROM items WHERE shopid = @1 AND NOT disabled");
+                if (dc.Query(sql.ToString(), p => p.Put(shopid)))
+                {
+                    var items = dc.ToDatas<Item>();
+                    wc.SendMajorLayout(200, "", main =>
+                    {
+                        main.form(_add, p =>
+                        {
 
-        public void @default(WebContext wc, string subscpt)
+                        });
+                    });
+                }
+                else
+                    wc.SendMajorLayout(200, "没有记录", main => { });
+            }
+        }
+
+        public void add(WebContext wc)
         {
         }
 
 
-        public void menu(WebContext wc, string subscpt)
+        public void basket(WebContext wc)
         {
         }
 
-        public void place(WebContext wc, string subscpt)
+        public void invoice(WebContext wc)
         {
         }
-
-
-        //
-        // wechat callbacks
-        //
     }
 }
