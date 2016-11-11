@@ -16,6 +16,8 @@ namespace Greatbone.Core
 
         public bool IsVariable { get; internal set; }
 
+        public int Level { get; internal set; }
+
         public WebDir Parent { get; internal set; }
 
         public virtual string Folder { get; internal set; }

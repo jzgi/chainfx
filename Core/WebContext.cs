@@ -22,27 +22,17 @@ namespace Greatbone.Core
         public IPrincipal Principal { get; internal set; }
 
 
-        // the chain of keys
-        Var[] chain;
-        int vars;
+        Var var, var2;
 
         internal void Chain(WebDir dir, string key)
         {
-            if (chain == null)
-            {
-                chain = new Var[4];
-            }
-            chain[vars++] = new Var(dir, key);
+            if (var.Dir == null) var = new Var(dir, key);
+            else if (var2.Dir == null) var2 = new Var(dir, key);
         }
 
-        public Var Var<V>(V dir) where V : WebDir, IVariable
-        {
-            for (int i = vars - 1; i >= 0; i--)
-            {
-                if (chain[i].Dir == dir) return chain[i];
-            }
-            return default(Var);
-        }
+        public Var Var => var;
+
+        public Var Var2 => var2;
 
         //
         // REQUEST

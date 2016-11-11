@@ -19,7 +19,7 @@ namespace Greatbone.Sample
         ///
         public void @default(WebContext wc)
         {
-            string id = wc.Var(this);
+            string id = wc.Var;
             using (var dc = Service.NewDbContext())
             {
                 if (wc.IsGetMethod)
@@ -52,7 +52,7 @@ namespace Greatbone.Sample
         {
             string uid = wc.Principal.Key;
             Fame fame = wc.ReadData<Fame>();
-            fame.id = wc.Var(this);
+            fame.id = wc.Var;
 
             using (var dc = Service.NewDbContext())
             {
@@ -77,7 +77,7 @@ namespace Greatbone.Sample
         ///
         public void icon(WebContext wc)
         {
-            string id = wc.Var(this);
+            string id = wc.Var;
             using (var dc = Service.NewDbContext())
             {
                 if (dc.QueryA("SELECT icon FROM fames WHERE id = @1", p => p.Put(id)))
@@ -106,7 +106,7 @@ namespace Greatbone.Sample
         ///
         public void updicon(WebContext wc)
         {
-            string id = wc.Var(this);
+            string id = wc.Var;
             ArraySegment<byte>? bytes = wc.ReadByteA();
             using (var dc = Service.NewDbContext())
             {
@@ -134,7 +134,7 @@ namespace Greatbone.Sample
         ///
         public void img(WebContext wc, int idx)
         {
-            string id = wc.Var(this);
+            string id = wc.Var;
             using (var dc = Service.NewDbContext())
             {
                 if (dc.QueryA("SELECT m" + idx + " FROM fames WHERE id = @1", p => p.Put(id)))
@@ -160,7 +160,7 @@ namespace Greatbone.Sample
         ///
         public void updimg(WebContext wc, int idx)
         {
-            string id = wc.Var(this);
+            string id = wc.Var;
             using (var dc = Service.NewDbContext())
             {
                 ArraySegment<byte>? bytes = wc.ReadByteA();

@@ -29,7 +29,7 @@ namespace Ministry.Dietary
         ///
         public void @default(WebContext wc)
         {
-            string shopid = wc.Var(this);
+            string shopid = wc.Var;
             using (var dc = Service.NewDbContext())
             {
                 DbSql sql = new DbSql("SELECT ").columnlst(Item.Empty)._("FROM items WHERE shopid = @1 AND NOT disabled");

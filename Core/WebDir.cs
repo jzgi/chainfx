@@ -10,6 +10,9 @@ namespace Greatbone.Core
     ///
     public abstract class WebDir : IKeyed
     {
+        // max nesting level
+        const int NestingLevel = 3;
+
         const string VariableKey = "_var_";
 
 
@@ -65,6 +68,9 @@ namespace Greatbone.Core
 
         public D AddChild<D>(string key, object state = null) where D : WebDir
         {
+            if (Level == NestingLevel)
+                throw new WebException("nesting levels");
+
             if (children == null)
             {
                 children = new Roll<WebDir>(16);
@@ -78,8 +84,9 @@ namespace Greatbone.Core
             {
                 key = key,
                 State = state,
-                Parent = this,
                 IsVariable = false,
+                Parent = this,
+                Level = Level + 1,
                 Folder = (Parent == null) ? key : Path.Combine(Parent.Folder, key),
                 Service = Service
             };
@@ -95,6 +102,9 @@ namespace Greatbone.Core
 
         public D SetVariable<D>(object state = null) where D : WebDir, IVariable
         {
+            if (Level == NestingLevel)
+                throw new WebException("nesting levels");
+
             // create instance
             Type typ = typeof(D);
             ConstructorInfo ci = typ.GetConstructor(new[] { typeof(WebDirContext) });
@@ -104,8 +114,9 @@ namespace Greatbone.Core
             {
                 key = VariableKey,
                 State = state,
-                Parent = this,
                 IsVariable = true,
+                Parent = this,
+                Level = Level + 1,
                 Folder = (Parent == null) ? VariableKey : Path.Combine(Parent.Folder, VariableKey),
                 Service = Service
             };
@@ -127,6 +138,8 @@ namespace Greatbone.Core
         public string Folder => ctx.Folder;
 
         public WebDir Parent => ctx.Parent;
+
+        public int Level => ctx.Level;
 
         public WebService Service => ctx.Service;
 

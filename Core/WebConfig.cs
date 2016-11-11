@@ -75,10 +75,10 @@
         {
             if (key == null) throw new WebException("missing key");
 
-            Obj jo = JsonUtility.FileToObj(GetFilePath("$web.json"));
-            if (jo != null)
+            Obj obj = JsonUtility.FileToObj(GetFilePath("$web.json"));
+            if (obj != null)
             {
-                Load(jo); // override
+                Load(obj); // override
             }
             return this;
         }
