@@ -36,7 +36,7 @@ namespace Ministry.Dietary
                 if (dc.Query(sql.ToString(), p => p.Put(shopid)))
                 {
                     var items = dc.ToDatas<Item>();
-                    wc.SendMajorLayout(200, "", main =>
+                    wc.SendHtmlMajor(200, "", main =>
                     {
                         main.form(_add, p =>
                         {
@@ -45,7 +45,7 @@ namespace Ministry.Dietary
                     });
                 }
                 else
-                    wc.SendMajorLayout(200, "没有记录", main => { });
+                    wc.SendHtmlMajor(200, "没有记录", main => { });
             }
         }
 

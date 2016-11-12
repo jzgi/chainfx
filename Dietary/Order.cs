@@ -8,6 +8,8 @@ namespace Ministry.Dietary
     ///
     public class Order : IData
     {
+        public static readonly Order Empty = new Order();
+
         internal int id;
         internal string shopid;
         internal DateTime time;

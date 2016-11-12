@@ -35,13 +35,13 @@ namespace Ministry.Dietary
                 if (dc.Query(sql.ToString(), p => p.Put(20 * page)))
                 {
                     var shops = dc.ToDatas<Shop>(z);
-                    wc.SendMajorLayout(200, "", main =>
+                    wc.SendHtmlMajor(200, "", main =>
                     {
                         main.form(_new, shops);
                     });
                 }
                 else
-                    wc.SendMajorLayout(200, "没有记录", main => { });
+                    wc.SendHtmlMajor(200, "没有记录", main => { });
             }
         }
 
@@ -103,7 +103,7 @@ namespace Ministry.Dietary
         {
             if (Children != null)
             {
-                wc.SendMajorLayout(200, "模块管理", a =>
+                wc.SendHtmlMajor(200, "模块管理", a =>
                     {
                         for (int i = 0; i < Children.Count; i++)
                         {
