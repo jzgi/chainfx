@@ -3,7 +3,7 @@ using Greatbone.Core;
 namespace Ministry.Dietary
 {
     ///
-    /// The shop multiplex directory.
+    /// The shop multiplexer directory.
     ///
     public class ShopMuxDir : WebDir, IMux
     {
@@ -17,7 +17,7 @@ namespace Ministry.Dietary
             // order functions
             Add<OrderDir>("order");
 
-            _add = GetAction(nameof(add));
+            _add = GetAction(nameof(register));
         }
 
         ///
@@ -49,7 +49,10 @@ namespace Ministry.Dietary
             }
         }
 
-        public void add(WebContext wc)
+        ///
+        /// recreate menu for this shop with WeChat.
+        ///
+        public void remenu(WebContext wc)
         {
         }
 

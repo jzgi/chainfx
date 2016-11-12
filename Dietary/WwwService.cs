@@ -7,6 +7,7 @@ namespace Ministry.Dietary
     ///
     public class WwwService : WebService
     {
+        const string api = "sh.api.weixin.qq.com";
 
         public WwwService(WebConfig cfg) : base(cfg)
         {
@@ -14,13 +15,13 @@ namespace Ministry.Dietary
 
 
         ///
-        /// Get all fame categories.
+        /// Get access token for WeChat.
         ///
         /// <code>
         /// GET /cats
         /// </code>
         ///
-        public void cats(WebContext wc, string subscpt)
+        public void accestoken(WebContext wc, string subscpt)
         {
 
         }
@@ -45,5 +46,5 @@ namespace Ministry.Dietary
         }
 
     }
-    
+
 }

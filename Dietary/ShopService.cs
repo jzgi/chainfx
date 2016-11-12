@@ -6,11 +6,11 @@ namespace Ministry.Dietary
     ///
     /// The operation service.
     ///
-    public class OpService : WebService
+    public class ShopService : WebService
     {
         readonly WebAction[] _new;
 
-        public OpService(WebConfig cfg) : base(cfg)
+        public ShopService(WebConfig cfg) : base(cfg)
         {
             SetMux<ShopMuxDir>();
 
@@ -48,12 +48,38 @@ namespace Ministry.Dietary
         /// Create a new shop
         ///
         /// <code>
-        /// GET /[-page]
+        /// GET /new
+        /// </code>
+        ///
+        /// <code>
+        /// POST /new
+        ///
+        /// id=_shopid_&amp;password=_password_&amp;name=_name_
         /// </code>
         ///
         [CheckAdmin]
-        public void @new(WebContext wc, string subscpt)
+        public void @new(WebContext wc)
         {
+            if (wc.IsGetMethod)
+            {
+
+            }
+            else // post
+            {
+                var shop = wc.ReadData<Shop>(); // read form
+                using (var dc = Service.NewDbContext())
+                {
+                    shop.credential = StrUtility.MD5(shop.id + ':' + ':' + shop.credential);
+                    DbSql sql = new DbSql("INSERT INTO users")._(Shop.Empty)._VALUES_(Shop.Empty)._("");
+                    if (dc.Execute(sql.ToString(), p => p.Put(shop)) > 0)
+                    {
+                        wc.StatusCode = 201; // created
+                    }
+                    else
+                        wc.StatusCode = 500; // internal server error
+                }
+
+            }
         }
 
         //

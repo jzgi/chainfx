@@ -13,8 +13,11 @@ namespace Ministry.Dietary
         internal string id;
         internal string name;
         internal string credential;
+        internal string appid;
+        internal string appsecret;
         internal string tel;
         internal string addr;
+        internal bool wepay; // wepay enabled
         internal bool disabled;
 
         public string Key => id;

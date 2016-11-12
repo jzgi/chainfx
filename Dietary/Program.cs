@@ -36,9 +36,9 @@ namespace Ministry.Dietary
 #endif
             );
 
-            var op = new OpService(new WebConfig
+            var shop = new ShopService(new WebConfig
             {
-                key = "op",
+                key = "shop",
                 @extern = "127.0.0.1:8081",
                 intern = "127.0.0.1:7071",
                 net = addrs,
@@ -49,7 +49,7 @@ namespace Ministry.Dietary
 #endif
             );
 
-            WebService.Run(www, op);
+            WebService.Run(www, shop);
         }
     }
 }
