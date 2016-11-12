@@ -13,7 +13,7 @@ namespace Greatbone.Sample
 
         public UserDir(WebDirContext ctx) : base(ctx)
         {
-            SetVariable<UserVariableDir>();
+            SetMux<UserMuxDir>();
         }
 
         ///

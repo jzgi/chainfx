@@ -7,7 +7,7 @@ namespace Greatbone.Sample
     {
         public PostGrpDir(WebDirContext ctx) : base(ctx)
         {
-            SetVariable<PostGrpVariableDir>();
+            SetMux<PostGrpMuxDir>();
         }
 
         public void @default(WebContext wc, int page)

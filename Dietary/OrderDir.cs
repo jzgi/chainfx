@@ -9,7 +9,7 @@ namespace Ministry.Dietary
     {
         public OrderDir(WebDirContext ctx) : base(ctx)
         {
-            SetVariable<OrderVariableDir>();
+            SetMux<OrderMuxDir>();
         }
 
         ///

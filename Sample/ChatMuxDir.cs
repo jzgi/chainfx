@@ -8,11 +8,11 @@ namespace Greatbone.Sample
 
     /// /123/Get
     /// /123/Put
-    public class ChatVariableDir : WebDir, IVariable
+    public class ChatMuxDir : WebDir, IMux
     {
         private ConcurrentDictionary<string, List<Chat>> online;
 
-        public ChatVariableDir(WebDirContext ctx) : base(ctx)
+        public ChatMuxDir(WebDirContext ctx) : base(ctx)
         {
         }
 

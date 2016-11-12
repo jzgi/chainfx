@@ -14,7 +14,7 @@ namespace Greatbone.Sample
 
         public ChatService(WebConfig cfg) : base(cfg)
         {
-            SetVariable<ChatVariableDir>();
+            SetMux<ChatMuxDir>();
         }
 
         public void Get(WebContext wc)

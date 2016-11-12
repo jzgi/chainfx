@@ -5,17 +5,17 @@ namespace Ministry.Dietary
     ///
     /// The shop multiplex directory.
     ///
-    public class ShopVariableDir : WebDir, IVariable
+    public class ShopMuxDir : WebDir, IMux
     {
         readonly WebAction _add;
 
-        public ShopVariableDir(WebDirContext ctx) : base(ctx)
+        public ShopMuxDir(WebDirContext ctx) : base(ctx)
         {
             // customer personal
-            AddChild<MyDir>("my");
+            Add<MyDir>("my");
 
             // order functions
-            AddChild<OrderDir>("order");
+            Add<OrderDir>("order");
 
             _add = GetAction(nameof(add));
         }

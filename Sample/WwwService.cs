@@ -9,7 +9,7 @@ namespace Greatbone.Sample
     {
         public WwwService(WebConfig cfg) : base(cfg)
         {
-            AddChild<MyDir>("my");
+            Add<MyDir>("my");
         }
 
 

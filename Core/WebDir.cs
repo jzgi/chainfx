@@ -28,8 +28,8 @@ namespace Greatbone.Core
         // child directories, if any
         internal Roll<WebDir> children;
 
-        // dir with variable keys, if any
-        internal WebDir variable;
+        // multiplexer dealing with variable keys
+        internal WebDir mux;
 
 
         protected WebDir(WebDirContext ctx)
@@ -66,7 +66,7 @@ namespace Greatbone.Core
             }
         }
 
-        public D AddChild<D>(string key, object state = null) where D : WebDir
+        public D Add<D>(string key, object state = null) where D : WebDir
         {
             if (Level == NestingLevel)
                 throw new WebException("nesting levels");
@@ -98,9 +98,9 @@ namespace Greatbone.Core
 
         public Roll<WebDir> Children => children;
 
-        public WebDir Variable => variable;
+        public WebDir Variable => mux;
 
-        public D SetVariable<D>(object state = null) where D : WebDir, IVariable
+        public D SetMux<D>(object state = null) where D : WebDir, IMux
         {
             if (Level == NestingLevel)
                 throw new WebException("nesting levels");
@@ -121,7 +121,7 @@ namespace Greatbone.Core
                 Service = Service
             };
             D dir = (D)ci.Invoke(new object[] { wdc });
-            variable = dir;
+            mux = dir;
 
             return dir;
         }
@@ -183,14 +183,14 @@ namespace Greatbone.Core
                 {
                     child.Handle(relative.Substring(slash + 1), wc);
                 }
-                else if (variable == null)
+                else if (mux == null)
                 {
                     wc.StatusCode = 404; // not found
                 }
                 else
                 {
-                    wc.Chain(variable, key);
-                    variable.Handle(relative.Substring(slash + 1), wc);
+                    wc.Chain(mux, key);
+                    mux.Handle(relative.Substring(slash + 1), wc);
                 }
             }
         }

@@ -10,7 +10,7 @@ namespace Greatbone.Sample
 
         public PostDir(WebDirContext wnc) : base(wnc)
         {
-            SetVariable<PostVariableDir>();
+            SetMux<PostMuxDir>();
 
             mgmtWas = GetActions(nameof(srch), nameof(del), nameof(status));
         }

@@ -5,9 +5,9 @@ namespace Ministry.Dietary
     ///
     /// The order multiplex directory under shop.
     ///
-    public class OrderVariableDir : WebDir, IVariable
+    public class OrderMuxDir : WebDir, IMux
     {
-        public OrderVariableDir(WebDirContext ctx) : base(ctx)
+        public OrderMuxDir(WebDirContext ctx) : base(ctx)
         {
         }
 
@@ -17,7 +17,7 @@ namespace Ministry.Dietary
         public void @default(WebContext wc)
         {
             string shopid = wc.Var;
-            int id = wc.VarSub;
+            int id = wc.Var2;
 
             using (var dc = Service.NewDbContext())
             {
@@ -38,7 +38,7 @@ namespace Ministry.Dietary
         public void cannel(WebContext wc)
         {
             string shopid = wc.Var;
-            int orderid = wc.VarSub;
+            int orderid = wc.Var2;
 
             using (var dc = Service.NewDbContext())
             {

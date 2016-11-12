@@ -12,7 +12,7 @@ namespace Ministry.Dietary
 
         public OpService(WebConfig cfg) : base(cfg)
         {
-            SetVariable<ShopVariableDir>();
+            SetMux<ShopMuxDir>();
 
             _new = GetActions(nameof(@new));
         }

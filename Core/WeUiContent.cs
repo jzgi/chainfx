@@ -1,15 +1,14 @@
 using System;
 using System.Collections.Generic;
-using Greatbone.Core;
 
-namespace Ministry.Dietary
+namespace Greatbone.Core
 {
     ///
     /// <summary>
     /// For dynamical HTML5 content generation Tooled with WeUI
     /// </summary>
     ///
-    public class WeChatContent : DynamicContent, ISink<WeChatContent>, IMenu, ISelectOptions
+    public class WeUiContent : DynamicContent, ISink<WeUiContent>, IMenu, ISelectOptions
     {
         const int InitialCapacity = 8 * 1024;
 
@@ -20,7 +19,7 @@ namespace Ministry.Dietary
         sbyte ctx;
 
 
-        public WeChatContent(bool raw, bool pooled, int capacity = InitialCapacity) : base(raw, pooled, capacity)
+        public WeUiContent(bool raw, bool pooled, int capacity = InitialCapacity) : base(raw, pooled, capacity)
         {
         }
 
@@ -81,7 +80,7 @@ namespace Ministry.Dietary
             }
         }
 
-        public WeChatContent T(string str)
+        public WeUiContent T(string str)
         {
             Add(str);
             return this;
@@ -165,7 +164,7 @@ namespace Ministry.Dietary
 
         int table_idx;
 
-        public void table(Action<WeChatContent> ths, Action<WeChatContent> trs)
+        public void table(Action<WeUiContent> ths, Action<WeUiContent> trs)
         {
             table_idx = 0;
 
@@ -186,7 +185,7 @@ namespace Ministry.Dietary
         }
 
 
-        public void tr(Action<int, WeChatContent> tds)
+        public void tr(Action<int, WeUiContent> tds)
         {
             table_idx++;
 
@@ -240,7 +239,7 @@ namespace Ministry.Dietary
         }
 
 
-        public void form(WebAction wa, Action<WeChatContent> inner)
+        public void form(WebAction wa, Action<WeUiContent> inner)
         {
             Add("<form class=\"pure-form pure-g\">");
 
@@ -901,12 +900,12 @@ namespace Ministry.Dietary
         // ISINK
         //
 
-        public WeChatContent PutNull(string name)
+        public WeUiContent PutNull(string name)
         {
             throw new NotImplementedException();
         }
 
-        public WeChatContent Put(string name, bool v)
+        public WeUiContent Put(string name, bool v)
         {
             switch (ctx)
             {
@@ -929,7 +928,7 @@ namespace Ministry.Dietary
             return this;
         }
 
-        public WeChatContent Put(string name, short v)
+        public WeUiContent Put(string name, short v)
         {
             switch (ctx)
             {
@@ -952,7 +951,7 @@ namespace Ministry.Dietary
             return this;
         }
 
-        public WeChatContent Put(string name, int v)
+        public WeUiContent Put(string name, int v)
         {
             switch (ctx)
             {
@@ -975,7 +974,7 @@ namespace Ministry.Dietary
             return this;
         }
 
-        public WeChatContent Put(string name, long v)
+        public WeUiContent Put(string name, long v)
         {
             switch (ctx)
             {
@@ -998,7 +997,7 @@ namespace Ministry.Dietary
             return this;
         }
 
-        public WeChatContent Put(string name, decimal v)
+        public WeUiContent Put(string name, decimal v)
         {
             switch (ctx)
             {
@@ -1021,7 +1020,7 @@ namespace Ministry.Dietary
             return this;
         }
 
-        public WeChatContent Put(string name, Number v)
+        public WeUiContent Put(string name, Number v)
         {
             switch (ctx)
             {
@@ -1033,7 +1032,7 @@ namespace Ministry.Dietary
             return this;
         }
 
-        public WeChatContent Put(string name, DateTime v)
+        public WeUiContent Put(string name, DateTime v)
         {
             switch (ctx)
             {
@@ -1056,12 +1055,12 @@ namespace Ministry.Dietary
             return this;
         }
 
-        public WeChatContent Put(string name, char[] v)
+        public WeUiContent Put(string name, char[] v)
         {
             return this;
         }
 
-        public WeChatContent Put(string name, string v, int max = 0)
+        public WeUiContent Put(string name, string v, int max = 0)
         {
             switch (ctx)
             {
@@ -1084,79 +1083,54 @@ namespace Ministry.Dietary
             return this;
         }
 
-        public WeChatContent Put(string name, byte[] v)
+        public WeUiContent Put(string name, byte[] v)
         {
             return this;
         }
 
-        public WeChatContent Put(string name, ArraySegment<byte> v)
+        public WeUiContent Put(string name, ArraySegment<byte> v)
         {
             return this;
         }
 
-        public WeChatContent Put<V>(string name, V v, byte z = 0) where V : IData
+        public WeUiContent Put<V>(string name, V v, byte z = 0) where V : IData
         {
             return this;
         }
 
-        public WeChatContent Put(string name, Obj v)
+        public WeUiContent Put(string name, Obj v)
         {
             return this;
         }
 
-        public WeChatContent Put(string name, Arr v)
+        public WeUiContent Put(string name, Arr v)
         {
             return this;
         }
 
-        public WeChatContent Put(string name, short[] v)
+        public WeUiContent Put(string name, short[] v)
         {
             return this;
         }
 
-        public WeChatContent Put(string name, int[] v)
+        public WeUiContent Put(string name, int[] v)
         {
             return this;
         }
 
-        public WeChatContent Put(string name, long[] v)
+        public WeUiContent Put(string name, long[] v)
         {
             return this;
         }
 
-        public WeChatContent Put(string name, string[] v)
+        public WeUiContent Put(string name, string[] v)
         {
             return this;
         }
 
-        public WeChatContent Put<V>(string name, V[] v, byte z = 0) where V : IData
+        public WeUiContent Put<V>(string name, V[] v, byte z = 0) where V : IData
         {
             return this;
         }
-    }
-
-
-    public interface IMenu
-    {
-        void menuitem(string text, string href = "#");
-    }
-
-    public interface ITableThead
-    {
-        void thead(string text, string href = "#");
-    }
-
-    public interface ISelectOptions
-    {
-        void option(string label, string value, bool selected = false);
-    }
-
-    public interface IOption<V>
-    {
-        string Label { get; }
-
-        V Value { get; }
-
-        bool IsOn { get; }
     }
 }

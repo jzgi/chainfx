@@ -9,9 +9,9 @@ namespace Greatbone.Sample
     {
         public BizService(WebConfig cfg) : base(cfg)
         {
-            AddChild<FameDir>("fame");
+            Add<FameDir>("fame");
 
-            AddChild<BrandDir>("brand");
+            Add<BrandDir>("brand");
         }
 
         public void @default(WebContext wc, string subscpt)

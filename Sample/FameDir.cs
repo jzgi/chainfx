@@ -11,7 +11,7 @@ namespace Greatbone.Sample
     {
         public FameDir(WebDirContext ctx) : base(ctx)
         {
-            SetVariable<FameVariableDir>();
+            SetMux<FameMuxDir>();
         }
 
         public void @default(WebContext wc, int page)

@@ -2,9 +2,9 @@
 
 namespace Greatbone.Sample
 {
-    public class BrandVariableDir : WebDir, IVariable
+    public class BrandMuxDir : WebDir, IMux
     {
-        public BrandVariableDir(WebDirContext ctx) : base(ctx)
+        public BrandMuxDir(WebDirContext ctx) : base(ctx)
         {
         }
 

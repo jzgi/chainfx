@@ -9,11 +9,11 @@ namespace Greatbone.Sample
     {
         public ContService(WebConfig cfg) : base(cfg)
         {
-            AddChild<PostDir>("post");
+            Add<PostDir>("post");
 
-            AddChild<PostGrpDir>("postgrp");
+            Add<PostGrpDir>("postgrp");
 
-            AddChild<NoticeDir>("notice");
+            Add<NoticeDir>("notice");
         }
     }
 }

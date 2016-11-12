@@ -9,7 +9,7 @@ namespace Greatbone.Sample
     {
         public DirService(WebConfig cfg) : base(cfg)
         {
-            AddChild<UserDir>("user");
+            Add<UserDir>("user");
         }
     }
 }

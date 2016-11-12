@@ -3,9 +3,9 @@ using Greatbone.Core;
 
 namespace Greatbone.Sample
 {
-    public class NoticeVariableDir : WebDir, IVariable
+    public class NoticeMuxDir : WebDir, IMux
     {
-        public NoticeVariableDir(WebDirContext wnc) : base(wnc)
+        public NoticeMuxDir(WebDirContext wnc) : base(wnc)
         {
         }
 

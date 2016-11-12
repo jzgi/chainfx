@@ -2,6 +2,9 @@
 
 namespace Greatbone.Core
 {
+    ///
+    /// A variable key.
+    ///
     public struct Var
     {
         readonly WebDir dir;

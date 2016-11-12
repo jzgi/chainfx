@@ -4,9 +4,9 @@ using static Greatbone.Core.ZUtility;
 
 namespace Greatbone.Sample
 {
-    public class PostGrpVariableDir : WebDir, IVariable
+    public class PostGrpMuxDir : WebDir, IMux
     {
-        public PostGrpVariableDir(WebDirContext ctx) : base(ctx)
+        public PostGrpMuxDir(WebDirContext ctx) : base(ctx)
         {
         }
 

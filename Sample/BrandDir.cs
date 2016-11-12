@@ -10,7 +10,7 @@ namespace Greatbone.Sample
     {
         public BrandDir(WebDirContext wnc) : base(wnc)
         {
-            SetVariable<BrandVariableDir>();
+            SetMux<BrandMuxDir>();
         }
 
         public void @default(WebContext wc, string subscpt)

@@ -4,9 +4,9 @@ using static Greatbone.Core.ZUtility;
 
 namespace Greatbone.Sample
 {
-    public class PostVariableDir : WebDir, IVariable
+    public class PostMuxDir : WebDir, IMux
     {
-        public PostVariableDir(WebDirContext ctx) : base(ctx)
+        public PostMuxDir(WebDirContext ctx) : base(ctx)
         {
         }
 

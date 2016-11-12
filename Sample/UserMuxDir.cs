@@ -5,9 +5,9 @@ namespace Greatbone.Sample
     ///
     /// The user variable-hub controller.
     ///
-    public class UserVariableDir : WebDir, IVariable
+    public class UserMuxDir : WebDir, IMux
     {
-        public UserVariableDir(WebDirContext wnc) : base(wnc)
+        public UserMuxDir(WebDirContext wnc) : base(wnc)
         {
         }
 

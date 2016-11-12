@@ -8,7 +8,7 @@ namespace Greatbone.Sample
     {
         public NoticeDir(WebDirContext wnc) : base(wnc)
         {
-            SetVariable<NoticeVariableDir>();
+            SetMux<NoticeMuxDir>();
         }
 
         public void @default(WebContext wc, int page)
