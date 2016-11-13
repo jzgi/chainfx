@@ -95,7 +95,7 @@ namespace Greatbone.Core
                 if (addr.Equals(cfg.intern)) continue;
 
                 if (clients == null) clients = new Roll<WebClient>(net.Length * 2);
-                clients.Add(new WebClient(this, addr));
+                clients.Add(new WebClient(addr));
 
                 if (queues == null) queues = new Roll<MsgQueue>(net.Length * 2);
                 queues.Add(new MsgQueue(this, addr));

@@ -1,4 +1,5 @@
-﻿using Greatbone.Core;
+﻿using System.Collections.Concurrent;
+using Greatbone.Core;
 using static Greatbone.Core.ZUtility;
 
 namespace Ministry.Dietary
@@ -8,13 +9,46 @@ namespace Ministry.Dietary
     ///
     public class ShopService : WebService
     {
+        // cache of shops
+        readonly ConcurrentDictionary<string, Shop> shops;
+
         readonly WebAction[] _new;
 
         public ShopService(WebConfig cfg) : base(cfg)
         {
             SetMux<ShopMuxDir>();
 
+            shops = new ConcurrentDictionary<string, Shop>();
+
             _new = GetActions(nameof(@new));
+        }
+
+        //
+        // CACHE
+        //
+
+        public Shop Obtain(string shopid)
+        {
+            Shop v;
+            if (!shops.TryGetValue(shopid, out v))
+            {
+                v = Reload(shopid);
+                shops.TryAdd(shopid, v);
+            }
+            return v;
+        }
+
+        internal Shop Reload(string shopid)
+        {
+            using (var dc = NewDbContext())
+            {
+                DbSql sql = new DbSql("SELECT ").columnlst(Shop.Empty)._("WHERE id = @1");
+                if (dc.QueryA(sql.ToString(), p => p.Put(shopid)))
+                {
+                    return dc.ToData<Shop>();
+                }
+            }
+            return null;
         }
 
         ///

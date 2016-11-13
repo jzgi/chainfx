@@ -10,8 +10,6 @@ namespace Greatbone.Core
     ///
     public class WebClient : IKeyed
     {
-        readonly WebService service;
-
         // remote address
         readonly string raddr;
 
@@ -22,9 +20,8 @@ namespace Greatbone.Core
         // tick count
         private int lastConnect;
 
-        internal WebClient(WebService service, string raddr)
+        internal WebClient(string raddr)
         {
-            this.service = service;
             this.raddr = raddr;
             client = new HttpClient() { BaseAddress = new Uri("http://" + raddr) };
         }
@@ -58,14 +55,14 @@ namespace Greatbone.Core
                 JsonParse par = new JsonParse(bytes, bytes.Length);
                 object entity = par.Parse();
                 MsgHook a = null;
-                if (service.Hooks.TryGet("", out a))
-                {
-                    MsgContext evt = new MsgContext
-                    {
-                        msg = entity
-                    };
-                    a.Do(evt);
-                }
+                // if (service.Hooks.TryGet("", out a))
+                // {
+                //     MsgContext evt = new MsgContext
+                //     {
+                //         msg = entity
+                //     };
+                //     a.Do(evt);
+                // }
             }
         }
 

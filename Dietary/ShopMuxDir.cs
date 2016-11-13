@@ -7,7 +7,7 @@ namespace Ministry.Dietary
     ///
     public class ShopMuxDir : WebDir, IMux
     {
-        readonly WebAction _add;
+        readonly WebAction _re_menu_;
 
         public ShopMuxDir(WebDirContext ctx) : base(ctx)
         {
@@ -17,7 +17,7 @@ namespace Ministry.Dietary
             // order functions
             Add<OrderDir>("order");
 
-            _add = GetAction(nameof(register));
+            _re_menu_ = GetAction(nameof(remenu));
         }
 
         ///
@@ -38,7 +38,7 @@ namespace Ministry.Dietary
                     var items = dc.ToDatas<Item>();
                     wc.SendHtmlMajor(200, "", main =>
                     {
-                        main.form(_add, p =>
+                        main.form(_re_menu_, p =>
                         {
 
                         });

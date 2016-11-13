@@ -1,4 +1,5 @@
-﻿using Greatbone.Core;
+﻿using System;
+using Greatbone.Core;
 using static Greatbone.Core.ZUtility;
 
 namespace Ministry.Dietary
@@ -45,5 +46,34 @@ namespace Ministry.Dietary
             s.Put(nameof(addr), addr);
             s.Put(nameof(disabled), disabled);
         }
+
+        //
+        // ACCESS_TOKEN
+        //
+
+        int expiry;
+        int last;
+        string accessToken; // cached access token
+
+        public string AccessToken
+        {
+            get
+            {
+                int ticks = Environment.TickCount;
+                if ((ticks - last) / 1000 > expiry) // if expired
+                {
+                    // update access token
+
+                    accessToken = WeChatUtility.GetAccessToken(appid, appsecret);
+                }
+                return accessToken;
+            }
+        }
+
+        public void CreateMenu()
+        {
+
+        }
+
     }
 }
