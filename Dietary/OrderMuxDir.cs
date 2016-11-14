@@ -16,8 +16,8 @@ namespace Ministry.Dietary
         ///
         public void @default(WebContext wc)
         {
-            string shopid = wc.Var;
-            int id = wc.Var2;
+            string shopid = wc.VarKey;
+            int id = wc.VarKey2;
 
             using (var dc = Service.NewDbContext())
             {
@@ -37,8 +37,8 @@ namespace Ministry.Dietary
 
         public void cannel(WebContext wc)
         {
-            string shopid = wc.Var;
-            int orderid = wc.Var2;
+            string shopid = wc.VarKey;
+            int orderid = wc.VarKey2;
 
             using (var dc = Service.NewDbContext())
             {

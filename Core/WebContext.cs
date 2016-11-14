@@ -30,9 +30,9 @@ namespace Greatbone.Core
             else if (var2.Dir == null) var2 = new Var(dir, key);
         }
 
-        public Var Var => var;
+        public Var VarKey => var;
 
-        public Var Var2 => var2;
+        public Var VarKey2 => var2;
 
         //
         // REQUEST

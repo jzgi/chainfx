@@ -14,10 +14,10 @@ namespace Ministry.Dietary
         internal string id;
         internal string name;
         internal string credential;
-        internal string appid;
-        internal string appsecret;
         internal string tel;
         internal string addr;
+        internal string appid;
+        internal string appsecret;
         internal bool wepay; // wepay enabled
         internal bool disabled;
 
@@ -34,6 +34,9 @@ namespace Ministry.Dietary
             if (z.Ya(RESV)) s.Get(nameof(credential), ref credential);
             s.Get(nameof(tel), ref tel);
             s.Get(nameof(addr), ref addr);
+            s.Get(nameof(appid), ref appid);
+            s.Get(nameof(appsecret), ref appsecret);
+            s.Get(nameof(wepay), ref wepay);
             s.Get(nameof(disabled), ref disabled);
         }
 
@@ -44,6 +47,9 @@ namespace Ministry.Dietary
             if (z.Ya(RESV)) s.Put(nameof(credential), credential);
             s.Put(nameof(tel), tel);
             s.Put(nameof(addr), addr);
+            s.Put(nameof(appid), appid);
+            s.Put(nameof(appsecret), appsecret);
+            s.Put(nameof(wepay), wepay);
             s.Put(nameof(disabled), disabled);
         }
 
@@ -59,14 +65,17 @@ namespace Ministry.Dietary
         {
             get
             {
-                int ticks = Environment.TickCount;
-                if ((ticks - last) / 1000 > expiry) // if expired
+                lock (this)
                 {
-                    // update access token
+                    int ticks = Environment.TickCount;
+                    if ((ticks - last) / 1000 > expiry) // if expired
+                    {
+                        // update access token
 
-                    accessToken = WeChatUtility.GetAccessToken(appid, appsecret);
+                        accessToken = WeChatUtility.GetAccessToken(appid, appsecret);
+                    }
+                    return accessToken;
                 }
-                return accessToken;
             }
         }
 

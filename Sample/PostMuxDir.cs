@@ -19,7 +19,7 @@ namespace Greatbone.Sample
         ///
         public void @default(WebContext wc)
         {
-            int id = wc.Var;
+            int id = wc.VarKey;
             using (var dc = Service.NewDbContext())
             {
                 const byte z = 0 ^ BIN;
@@ -45,7 +45,7 @@ namespace Greatbone.Sample
         ///
         public void img(WebContext wc, int idx)
         {
-            int id = wc.Var;
+            int id = wc.VarKey;
             using (var dc = Service.NewDbContext())
             {
                 if (dc.QueryA("SELECT m" + idx + " FROM posts WHERE id = @1", p => p.Put(id)))
@@ -72,7 +72,7 @@ namespace Greatbone.Sample
         [Check]
         public void updimg(WebContext wc, int idx)
         {
-            int id = wc.Var;
+            int id = wc.VarKey;
             using (var dc = Service.NewDbContext())
             {
                 ArraySegment<byte>? bytes = wc.ReadByteA();
@@ -101,7 +101,7 @@ namespace Greatbone.Sample
         [Check]
         public void del(WebContext wc)
         {
-            int id = wc.Var;
+            int id = wc.VarKey;
             IPrincipal tok = wc.Principal;
             using (var dc = Service.NewDbContext())
             {
@@ -131,7 +131,7 @@ namespace Greatbone.Sample
         [Check]
         public void cmt(WebContext wc)
         {
-            int id = wc.Var;
+            int id = wc.VarKey;
             IPrincipal tok = wc.Principal;
             var comment = wc.ReadData<Comment>();
 
@@ -164,7 +164,7 @@ namespace Greatbone.Sample
         ///
         public void share(WebContext wc)
         {
-            int id = wc.Var;
+            int id = wc.VarKey;
             using (var dc = Service.NewDbContext())
             {
                 if (dc.Execute("UPDATE posts SET shared = shared + 1 WHERE id = @1", p => p.Put(id)) > 0)
@@ -189,7 +189,7 @@ namespace Greatbone.Sample
         public void like(WebContext wc)
         {
             string uid = wc.Principal.Key;
-            int id = wc.Var;
+            int id = wc.VarKey;
             using (var dc = Service.NewDbContext())
             {
                 if (dc.Execute("UPDATE posts SET likes = array_prepend(@1, likes) WHERE id = @2 AND array_position(likes, @1) ISNULL", p => p.Put(uid).Put(id)) > 0)
