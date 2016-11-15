@@ -7,7 +7,7 @@ namespace Greatbone.Core
     ///
     public class WebDirContext
     {
-        internal string key;
+        public string key;
 
 
         public string Key => key;

@@ -20,27 +20,27 @@
     public class WebConfig : WebDirContext, IData
     {
         // partition
-        internal string part;
+        public string part;
 
         // socket address for external access
-        internal string @extern;
+        public string @extern;
 
         // TLS or not
-        internal bool tls;
+        public bool tls;
 
         // socket address for internal access
-        internal string intern;
+        public string intern;
 
         // intranet socket addresses
-        internal string[] net;
+        public string[] net;
 
         // database connectivity
-        internal DbConfig db;
+        public DbConfig db;
 
         // logging level, default to warning (3)
-        internal int logging = 3;
+        public int logging = 3;
 
-        internal Obj opts;
+        public Obj opts;
 
         public Obj Opts => opts;
 

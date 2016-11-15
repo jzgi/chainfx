@@ -3,16 +3,16 @@
 
     public class DbConfig : IData
     {
-        internal string host;
+        public string host;
 
-        internal int port;
+        public int port;
 
-        internal string username;
+        public string username;
 
-        internal string password;
+        public string password;
 
         // whether to create message tables
-        internal bool msg;
+        public bool msg;
 
         public void Load(ISource s, byte z = 0)
         {

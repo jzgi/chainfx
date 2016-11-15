@@ -20,7 +20,7 @@ namespace Greatbone.Core
         // tick count
         private int lastConnect;
 
-        internal WebClient(string raddr)
+        public WebClient(string raddr)
         {
             this.raddr = raddr;
             client = new HttpClient() { BaseAddress = new Uri("http://" + raddr) };
