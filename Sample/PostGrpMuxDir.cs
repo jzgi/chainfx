@@ -19,7 +19,7 @@ namespace Greatbone.Sample
         ///
         public void @default(WebContext wc)
         {
-            string id = wc.VarKey;
+            string id = wc.Foo;
             using (var dc = Service.NewDbContext())
             {
                 const byte z = 0 ^ BIN;
@@ -45,7 +45,7 @@ namespace Greatbone.Sample
         ///
         public void icon(WebContext wc)
         {
-            string id = wc.VarKey;
+            string id = wc.Foo;
             using (var dc = Service.NewDbContext())
             {
                 if (dc.QueryA("SELECT icon FROM postgrps WHERE id = @1", p => p.Put(id)))
@@ -72,7 +72,7 @@ namespace Greatbone.Sample
         [Check]
         public void updicon(WebContext wc)
         {
-            string id = wc.VarKey;
+            string id = wc.Foo;
             using (var dc = Service.NewDbContext())
             {
                 ArraySegment<byte>? bytes = wc.ReadByteA();

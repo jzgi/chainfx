@@ -22,17 +22,17 @@ namespace Greatbone.Core
         public IPrincipal Principal { get; internal set; }
 
         // two levels of variable keys
-        Var var, var2;
+        Var foo, bar;
 
-        internal void Chain(WebDir dir, string key)
+        internal void ChainVar(WebDir dir, string key)
         {
-            if (var.Dir == null) var = new Var(dir, key);
-            else if (var2.Dir == null) var2 = new Var(dir, key);
+            if (foo.Dir == null) foo = new Var(dir, key);
+            else if (bar.Dir == null) bar = new Var(dir, key);
         }
 
-        public Var VarKey => var;
+        public Var Foo => foo;
 
-        public Var VarKey2 => var2;
+        public Var Bar => bar;
 
         //
         // REQUEST

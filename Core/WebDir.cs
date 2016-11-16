@@ -189,7 +189,7 @@ namespace Greatbone.Core
                 }
                 else
                 {
-                    wc.Chain(mux, key);
+                    wc.ChainVar(mux, key);
                     mux.Handle(relative.Substring(slash + 1), wc);
                 }
             }

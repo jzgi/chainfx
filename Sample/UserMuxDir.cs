@@ -19,7 +19,7 @@ namespace Greatbone.Sample
         /// </code>
         public void @default(WebContext wc)
         {
-            string id = wc.VarKey;
+            string id = wc.Foo;
             string password = wc[nameof(password)];
             if (password == null)
             {
@@ -55,7 +55,7 @@ namespace Greatbone.Sample
         /// </code>
         public void upd(WebContext wc)
         {
-            string id = wc.VarKey;
+            string id = wc.Foo;
             var user = wc.ReadData<User>();
             using (var dc = Service.NewDbContext())
             {

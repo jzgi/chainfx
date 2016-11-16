@@ -18,7 +18,7 @@ namespace Greatbone.Sample
         /// 
         public void @default(WebContext wc)
         {
-            int id = wc.VarKey;
+            int id = wc.Foo;
             using (var dc = Service.NewDbContext())
             {
                 if (dc.QueryA("SELECT * FROM notices WHERE id = @1", p => p.Put(id)))
@@ -43,7 +43,7 @@ namespace Greatbone.Sample
         [Check]
         public void del(WebContext wc)
         {
-            int id = wc.VarKey;
+            int id = wc.Foo;
             string userid = wc.Principal.Key;
             using (var dc = Service.NewDbContext())
             {
@@ -68,7 +68,7 @@ namespace Greatbone.Sample
         [Check]
         public void apply(WebContext wc, string subscpt)
         {
-            int id = wc.VarKey;
+            int id = wc.Foo;
             string userid = wc.Principal.Key;
             App app = new App()
             {
@@ -103,7 +103,7 @@ namespace Greatbone.Sample
         [Check]
         public void cmt(WebContext wc)
         {
-            int id = wc.VarKey;
+            int id = wc.Foo;
             IPrincipal tok = wc.Principal;
             var comment = wc.ReadData<Comment>();
 
@@ -131,7 +131,7 @@ namespace Greatbone.Sample
         /// POST /notice/_id_/share
         public void share(WebContext wc)
         {
-            int id = wc.VarKey;
+            int id = wc.Foo;
             using (var dc = Service.NewDbContext())
             {
                 if (dc.Execute("UPDATE notices SET shared = shared + 1 WHERE id = @1", p => p.Put(id)) > 0)
