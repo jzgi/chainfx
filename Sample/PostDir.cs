@@ -120,7 +120,7 @@ namespace Greatbone.Sample
         public void mgmt(WebContext wc, string subscpt)
         {
             // returh first UI
-            wc.SendMajorLayout(200, "管理功能", a => { a.form(mgmtWas, (Post[])null, 0); });
+            wc.SendMajorLayout(200, "管理功能", a => { a.form(mgmtWas, (Post[])null); });
         }
 
         [CheckAdmin]

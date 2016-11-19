@@ -7,7 +7,7 @@
 
   <Import Project="$(VSToolsPath)\DotNet\Microsoft.DotNet.Props" Condition="'$(VSToolsPath)' != ''"  />
   <PropertyGroup Label="Globals">
-    <ProjectGuid>{F08BBDC8-D3ED-4EAA-BAAF-64E71506CFA4}</ProjectGuid>
+    <ProjectGuid>{7826C646-1563-4017-B4F8-247C84DD08A7}</ProjectGuid>
     <ProjectTypeGuids>{8BB2217D-0F2D-49D1-97BC-3654ED321F3B}</ProjectTypeGuids>
     <RootNamespace>Greatbone</RootNamespace>
     <BaseIntermediateOutputPath Condition="'$(BaseIntermediateOutputPath)'=='' ">obj\$(MSBuildProjectName)</BaseIntermediateOutputPath>

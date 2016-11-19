@@ -23,7 +23,7 @@ namespace Greatbone.Sample
             {
                 if (dc.QueryA("SELECT * FROM notices WHERE id = @1", p => p.Put(id)))
                 {
-                    Notice obj = dc.ToData<Notice>();
+                    var obj = dc.ToData<Notice>();
                     wc.SendJson(200, obj);
                 }
                 else

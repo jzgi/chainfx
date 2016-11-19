@@ -1,6 +1,6 @@
 ﻿using Greatbone.Core;
 
-namespace Greatbone
+namespace Greatbone.Sample
 {
 
     public class CheckSelfAttribute : CheckAttribute
