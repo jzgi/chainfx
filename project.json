@@ -1,6 +1,6 @@
 ﻿{
-  "version": "1.0.0",
-  "description": "Sample",
+  "version": "1.1.0",
+  "description": "Greatbone Core Library for Microservices",
   "buildOptions": {
     "emitEntryPoint": true,
     "debugType": "portable",
@@ -9,12 +9,12 @@
   "dependencies": {
     "Microsoft.NETCore.App": {
       "type": "platform",
-      "version": "1.0"
+      "version": "1.1"
     },
-    "Microsoft.AspNetCore.Server.Kestrel": "1.0.1",
+    "Microsoft.AspNetCore.Server.Kestrel": "1.1.0",
     "Npgsql": "3.1.8"
   },
   "frameworks": {
-    "netcoreapp1.0": {}
+    "netcoreapp1.1": {}
   }
 }

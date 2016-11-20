@@ -3,37 +3,27 @@
 namespace Greatbone.Sample
 {
     ///
-    /// The website service controller.
+    /// The website service.
     ///
-    public class WwwService : AbstService
+    public class WwwService : WebService
     {
+        const string api = "sh.api.weixin.qq.com";
+
         public WwwService(WebConfig cfg) : base(cfg)
         {
-            Add<MyDir>("my");
         }
 
 
         ///
-        /// Get all fame categories.
+        /// Get access token for WeChat.
         ///
         /// <code>
         /// GET /cats
         /// </code>
         ///
-        public void cats(WebContext wc, string subscpt)
+        public void accestoken(WebContext wc, string subscpt)
         {
-            using (var dc = NewDbContext())
-            {
-                if (dc.Query("SELECT * FROM cats WHERE NOT disabled"))
-                {
-                    Cat[] arr = dc.ToDatas<Cat>();
-                    wc.SendJson(200, arr);
-                }
-                else
-                {
-                    wc.StatusCode = 204;
-                }
-            }
+
         }
 
         public void search(WebContext wc, string subscpt)
@@ -46,10 +36,15 @@ namespace Greatbone.Sample
 
         public void USER_UPD(MsgContext mc)
         {
+
+
         }
 
         public void RPT_OK(MsgContext mc)
         {
+
         }
+
     }
+
 }

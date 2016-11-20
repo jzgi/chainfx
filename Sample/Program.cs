@@ -9,90 +9,47 @@ namespace Greatbone.Sample
         ///
         public static void Main(string[] args)
         {
-            DbConfig pg = new DbConfig
+            var pg = new DbConfig
             {
-                host = "60.205.104.239",
+                host = "106.14.45.109",
                 port = 5432,
                 username = "postgres",
-                password = "Zou###1989",
+                password = "GangShang721004",
                 msg = false
             };
 
             string[] addrs =
             {
-                "127.0.0.1:7070",
-                "127.0.0.1:7071",
-                "127.0.0.1:7072",
-                "127.0.0.1:7073",
-                "127.0.0.1:7074",
+                "127.0.0.1:7070", "127.0.0.1:7071"
             };
 
             var www = new WwwService(new WebConfig
-                {
-                    key = "www",
-                    @extern = "127.0.0.1:8080",
-                    intern = "127.0.0.1:7070",
-                    net = addrs,
-                    db = pg
-                }
+            {
+                key = "www",
+                @extern = "127.0.0.1:8080",
+                intern = "127.0.0.1:7070",
+                net = addrs,
+                db = pg
+            }
 #if !DEBUG
                 .Load()
 #endif
             );
 
-            var biz = new BizService(new WebConfig
-                {
-                    key = "biz",
-                    @extern = "127.0.0.1:8081",
-                    intern = "127.0.0.1:7071",
-                    net = addrs,
-                    db = pg
-                }
+            var shop = new ShopService(new WebConfig
+            {
+                key = "shop",
+                @extern = "127.0.0.1:8081",
+                intern = "127.0.0.1:7071",
+                net = addrs,
+                db = pg
+            }
 #if !DEBUG
                 .Load()
 #endif
             );
 
-            var cont = new ContService(new WebConfig
-                {
-                    key = "cont",
-                    @extern = "127.0.0.1:8082",
-                    intern = "127.0.0.1:7072",
-                    net = addrs,
-                    db = pg
-                }
-#if !DEBUG
-                .Load()
-#endif
-            );
-
-            var dir = new DirService(new WebConfig
-                {
-                    key = "dir",
-                    @extern = "127.0.0.1:8083",
-                    intern = "127.0.0.1:7073",
-                    net = addrs,
-                    db = pg
-                }
-#if !DEBUG
-                .Load()
-#endif
-            );
-
-            var chat = new ChatService(new WebConfig
-                {
-                    key = "chat",
-                    @extern = "127.0.0.1:8084",
-                    intern = "127.0.0.1:7074",
-                    net = addrs,
-                    db = pg
-                }
-#if !DEBUG
-                .Load()
-#endif
-            );
-
-            WebService.Run(www, biz, cont, dir, chat);
+            WebService.Run(www, shop);
         }
     }
 }
