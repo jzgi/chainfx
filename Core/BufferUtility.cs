@@ -10,7 +10,7 @@ namespace Greatbone.Core
     {
         static readonly int Cores = Environment.ProcessorCount;
 
-        static readonly Queue<byte[]>[] ByteBufQueues =
+        static readonly Queue<byte[]>[] bytebufs =
         {
             new Queue<byte[]>(1024 * 4, Cores * 64),
             new Queue<byte[]>(1024 * 16, Cores * 32),
@@ -19,7 +19,7 @@ namespace Greatbone.Core
             new Queue<byte[]>(1024 * 1024, Cores * 4),
         };
 
-        static readonly Queue<char[]>[] CharBufQueues =
+        static readonly Queue<char[]>[] charbufs =
         {
             new Queue<char[]>(1024 * 1, Cores * 64),
             new Queue<char[]>(1024 * 4, Cores * 32),
@@ -33,11 +33,11 @@ namespace Greatbone.Core
         {
             // locate the appropriate queue
             int i = 0;
-            while (ByteBufQueues[i].Spec < demand)
+            while (bytebufs[i].Spec < demand)
             {
                 i++;
             }
-            Queue<byte[]> q = ByteBufQueues[i];
+            Queue<byte[]> q = bytebufs[i];
             // get or create a buffer
             byte[] buf;
             if (!q.TryDequeue(out buf))
@@ -50,9 +50,9 @@ namespace Greatbone.Core
         public static void Return(byte[] buf)
         {
             int blen = buf.Length;
-            for (int i = 0; i < ByteBufQueues.Length; i++)
+            for (int i = 0; i < bytebufs.Length; i++)
             {
-                Queue<byte[]> q = ByteBufQueues[i];
+                Queue<byte[]> q = bytebufs[i];
                 if (q.Spec == blen) // the right queue to add
                 {
                     if (q.Count < q.Limit)
@@ -72,11 +72,11 @@ namespace Greatbone.Core
         {
             // locate the appropriate queue
             int i = 0;
-            while (CharBufQueues[i].Spec < demand)
+            while (charbufs[i].Spec < demand)
             {
                 i++;
             }
-            Queue<char[]> q = CharBufQueues[i];
+            Queue<char[]> q = charbufs[i];
             // get or create a buffer
             char[] buf;
             if (!q.TryDequeue(out buf))
@@ -89,9 +89,9 @@ namespace Greatbone.Core
         public static void Return(char[] buf)
         {
             int blen = buf.Length;
-            for (int i = 0; i < ByteBufQueues.Length; i++)
+            for (int i = 0; i < bytebufs.Length; i++)
             {
-                Queue<char[]> q = CharBufQueues[i];
+                Queue<char[]> q = charbufs[i];
                 if (q.Spec == blen) // the right queue to add
                 {
                     if (q.Count < q.Limit)

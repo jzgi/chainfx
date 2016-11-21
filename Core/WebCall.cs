@@ -108,5 +108,4 @@ namespace Greatbone.Core
 
         public int StatusCode => (int)response.StatusCode;
     }
-
 }

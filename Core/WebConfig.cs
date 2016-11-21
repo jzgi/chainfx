@@ -1,12 +1,11 @@
 ﻿namespace Greatbone.Core
 {
     ///
-    /// <summary>
     /// The configurative settings for a web service.
-    /// </summary>
-    /// <remarks>
+    /// 
+    /// <remark>
     /// It provides a strong semantic that enables the whole controller hierarchy to be established during object initialization.
-    /// </remarks>
+    /// </remark>
     /// <code>
     /// public class FooService : WebService
     /// {

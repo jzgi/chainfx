@@ -2,10 +2,8 @@ using System;
 
 namespace Greatbone.Core
 {
-
     public static class ArrayUtility
     {
-
         public static E[] Add<E>(this E[] arr, E v)
         {
             if (arr == null || arr.Length == 0)
@@ -49,7 +47,5 @@ namespace Greatbone.Core
             Array.Copy(arr, next, alloc, index, len - next);
             return alloc;
         }
-
     }
-
 }

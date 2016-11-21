@@ -23,7 +23,7 @@ namespace Greatbone.Core
 
         readonly bool bearer, digest;
 
-        readonly ButtonAttribute button;
+        readonly UiAttribute button;
 
         internal WebAction(WebDir dir, MethodInfo mi, Type subtyp)
         {
@@ -51,7 +51,7 @@ namespace Greatbone.Core
             }
             checks = lst?.ToArray();
 
-            button = mi.GetCustomAttribute<ButtonAttribute>();
+            button = mi.GetCustomAttribute<UiAttribute>();
         }
 
         public WebDir Dir => dir;
