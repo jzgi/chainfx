@@ -18,17 +18,14 @@ namespace Greatbone.Sample
                 msg = false
             };
 
-            string[] addrs =
-            {
-                "127.0.0.1:7070", "127.0.0.1:7071"
-            };
+            Arr addrs = null;
 
             var www = new WwwService(new WebConfig
             {
                 key = "www",
                 @extern = "127.0.0.1:8080",
                 intern = "127.0.0.1:7070",
-                net = addrs,
+                peers = addrs,
                 db = pg
             }
 #if !DEBUG
@@ -41,7 +38,7 @@ namespace Greatbone.Sample
                 key = "shop",
                 @extern = "127.0.0.1:8081",
                 intern = "127.0.0.1:7071",
-                net = addrs,
+                peers = addrs,
                 db = pg
             }
 #if !DEBUG

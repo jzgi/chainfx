@@ -88,16 +88,16 @@ namespace Greatbone.Core
             }
 
             // init clients and message queues
-            string[] net = cfg.net;
-            for (int i = 0; i < net.Length; i++)
+            Arr net = cfg.peers;
+            for (int i = 0; i < net.Count; i++)
             {
                 string addr = net[i];
                 if (addr.Equals(cfg.intern)) continue;
 
-                if (clients == null) clients = new Roll<WebClient>(net.Length * 2);
+                if (clients == null) clients = new Roll<WebClient>(net.Count * 2);
                 clients.Add(new WebClient(addr));
 
-                if (queues == null) queues = new Roll<MsgQueue>(net.Length * 2);
+                if (queues == null) queues = new Roll<MsgQueue>(net.Count * 2);
                 queues.Add(new MsgQueue(this, addr));
             }
 
