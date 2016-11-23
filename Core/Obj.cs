@@ -1,11 +1,13 @@
 using System;
+using System.Collections;
+using System.Collections.Generic;
 
 namespace Greatbone.Core
 {
     ///
     /// A JSON object model.
     ///
-    public class Obj : ISource
+    public class Obj : ISource, IEnumerable<Member>
     {
         const int InitialCapacity = 16;
 
@@ -16,40 +18,45 @@ namespace Greatbone.Core
             pairs = new Roll<Member>(16);
         }
 
-        // add null
+        public void Add(Member pair)
+        {
+            pairs.Add(pair);
+        }
+
+        /// To add null value
         internal void Add(string name)
         {
-            pairs.Add(new Member() {Key = name});
+            pairs.Add(new Member() { Key = name });
         }
 
         internal void Add(string name, Obj v)
         {
-            pairs.Add(new Member(v) {Key = name});
+            pairs.Add(new Member(v) { Key = name });
         }
 
         internal void Add(string name, Arr v)
         {
-            pairs.Add(new Member(v) {Key = name});
+            pairs.Add(new Member(v) { Key = name });
         }
 
         internal void Add(string name, string v)
         {
-            pairs.Add(new Member(v) {Key = name});
+            pairs.Add(new Member(v) { Key = name });
         }
 
         internal void Add(string name, byte[] v)
         {
-            pairs.Add(new Member(v) {Key = name});
+            pairs.Add(new Member(v) { Key = name });
         }
 
         internal void Add(string name, bool v)
         {
-            pairs.Add(new Member(v) {Key = name});
+            pairs.Add(new Member(v) { Key = name });
         }
 
         internal void Add(string name, Number v)
         {
-            pairs.Add(new Member(v) {Key = name});
+            pairs.Add(new Member(v) { Key = name });
         }
 
         public int Count => pairs.Count;
@@ -329,19 +336,19 @@ namespace Greatbone.Core
                 MemberType typ = mbr.type;
                 if (typ == MemberType.Array)
                 {
-                    snk.Put(mbr.Key, (Arr) mbr);
+                    snk.Put(mbr.Key, (Arr)mbr);
                 }
                 else if (typ == MemberType.Object)
                 {
-                    snk.Put(mbr.Key, (Obj) mbr);
+                    snk.Put(mbr.Key, (Obj)mbr);
                 }
                 else if (typ == MemberType.String)
                 {
-                    snk.Put(mbr.Key, (string) mbr);
+                    snk.Put(mbr.Key, (string)mbr);
                 }
                 else if (typ == MemberType.Number)
                 {
-                    snk.Put(mbr.Key, (Number) mbr);
+                    snk.Put(mbr.Key, (Number)mbr);
                 }
                 else if (typ == MemberType.True)
                 {
@@ -356,6 +363,16 @@ namespace Greatbone.Core
                     snk.PutNull(mbr.Key);
                 }
             }
+        }
+
+        public IEnumerator<Member> GetEnumerator()
+        {
+            return null;
+        }
+
+        IEnumerator IEnumerable.GetEnumerator()
+        {
+            return null;
         }
     }
 }

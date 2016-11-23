@@ -88,7 +88,7 @@ namespace Greatbone.Core
             }
 
             // init clients and message queues
-            Arr net = cfg.peers;
+            Obj net = cfg.peers;
             for (int i = 0; i < net.Count; i++)
             {
                 string addr = net[i];

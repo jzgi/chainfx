@@ -5,7 +5,7 @@ namespace Greatbone.Sample
     public class Program
     {
         ///
-        /// The entry point of the application.
+        /// The program's entry point.
         ///
         public static void Main(string[] args)
         {
@@ -18,14 +18,18 @@ namespace Greatbone.Sample
                 msg = false
             };
 
-            Arr addrs = null;
+            Obj peers = new Obj{
+                new Member("shop-02", "127.0.0.1:7772"),
+                new Member("shop-03", "127.0.0.1:7773"),
+                new Member("shop-04", "127.0.0.1:7774")
+            };
 
             var www = new WwwService(new WebConfig
             {
                 key = "www",
                 @extern = "127.0.0.1:8080",
-                intern = "127.0.0.1:7070",
-                peers = addrs,
+                intern = "127.0.0.1:7770",
+                peers = peers,
                 db = pg
             }
 #if !DEBUG
@@ -37,8 +41,8 @@ namespace Greatbone.Sample
             {
                 key = "shop",
                 @extern = "127.0.0.1:8081",
-                intern = "127.0.0.1:7071",
-                peers = addrs,
+                intern = "127.0.0.1:7771",
+                peers = peers,
                 db = pg
             }
 #if !DEBUG

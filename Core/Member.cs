@@ -18,7 +18,37 @@ namespace Greatbone.Core
         // key as in an object member
         string key;
 
-        internal Member(Obj v)
+        public Member(string key, Obj v) : this(v)
+        {
+            this.key = key;
+        }
+
+        public Member(string key, Arr v) : this(v)
+        {
+            this.key = key;
+        }
+
+        public Member(string key, string v) : this(v)
+        {
+            this.key = key;
+        }
+
+        public Member(string key, byte[] v) : this(v)
+        {
+            this.key = key;
+        }
+
+        public Member(string key, bool v) : this(v)
+        {
+            this.key = key;
+        }
+
+        public Member(string key, Number v) : this(v)
+        {
+            this.key = key;
+        }
+
+        public Member(Obj v)
         {
             type = MemberType.Object;
             refv = v;
@@ -26,7 +56,7 @@ namespace Greatbone.Core
             key = null;
         }
 
-        internal Member(Arr v)
+        public Member(Arr v)
         {
             type = MemberType.Array;
             refv = v;
@@ -34,7 +64,7 @@ namespace Greatbone.Core
             key = null;
         }
 
-        internal Member(string v)
+        public Member(string v)
         {
             type = MemberType.String;
             refv = v;
@@ -42,7 +72,7 @@ namespace Greatbone.Core
             key = null;
         }
 
-        internal Member(byte[] v)
+        public Member(byte[] v)
         {
             type = MemberType.Bytes;
             refv = v;
@@ -50,7 +80,7 @@ namespace Greatbone.Core
             key = null;
         }
 
-        internal Member(bool v)
+        public Member(bool v)
         {
             type = v ? MemberType.True : MemberType.False;
             refv = null;
@@ -58,7 +88,7 @@ namespace Greatbone.Core
             key = null;
         }
 
-        internal Member(Number v)
+        public Member(Number v)
         {
             type = MemberType.Number;
             refv = null;
@@ -79,7 +109,7 @@ namespace Greatbone.Core
         {
             if (v.type == MemberType.Object)
             {
-                return (Obj) v.refv;
+                return (Obj)v.refv;
             }
             return null;
         }
@@ -88,7 +118,7 @@ namespace Greatbone.Core
         {
             if (v.type == MemberType.Array)
             {
-                return (Arr) v.refv;
+                return (Arr)v.refv;
             }
             return null;
         }
@@ -147,18 +177,18 @@ namespace Greatbone.Core
         {
             if (v.type == MemberType.String)
             {
-                string str = (string) v.refv;
+                string str = (string)v.refv;
                 DateTime dt;
                 if (StrUtility.TryParseDate(str, out dt)) return dt;
             }
             return default(DateTime);
         }
 
-        public static implicit operator char[](Member v)
+        public static implicit operator char[] (Member v)
         {
             if (v.type == MemberType.String)
             {
-                string str = (string) v.refv;
+                string str = (string)v.refv;
                 return str.ToCharArray();
             }
             return null;
@@ -168,16 +198,16 @@ namespace Greatbone.Core
         {
             if (v.type == MemberType.String)
             {
-                return (string) v.refv;
+                return (string)v.refv;
             }
             return null;
         }
 
-        public static implicit operator byte[](Member v)
+        public static implicit operator byte[] (Member v)
         {
             if (v.type == MemberType.String)
             {
-                return (byte[]) v.refv;
+                return (byte[])v.refv;
             }
             return null;
         }

@@ -31,7 +31,7 @@
         public string intern;
 
         // intranet socket addresses
-        public Arr peers;
+        public Obj peers;
 
         // database connectivity
         public DbConfig db;

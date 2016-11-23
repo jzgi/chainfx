@@ -5,11 +5,11 @@ using static Greatbone.Core.ZUtility;
 namespace Greatbone.Sample
 {
     ///
-    /// The operation service.
+    /// The shop operation service.
     ///
     public class ShopService : WebService
     {
-        // cache of shops
+        // in-memory cache of the shops
         readonly ConcurrentDictionary<string, Shop> shops;
 
         readonly WebAction[] _new;
@@ -112,7 +112,6 @@ namespace Greatbone.Sample
                     else
                         wc.StatusCode = 500; // internal server error
                 }
-
             }
         }
 

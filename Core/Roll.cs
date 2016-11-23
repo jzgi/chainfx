@@ -4,20 +4,7 @@ using System.Collections.Generic;
 namespace Greatbone.Core
 {
     ///
-    /// <summary>
-    /// An obect that is identified by string key thus can be a number of Roll.
-    /// </summary>
-    ///
-    public interface IKeyed
-    {
-        string Key { get; }
-    }
-
-
-    ///
-    /// <summary>
     /// An addition-only dictionary, where members are placed in the addition order.
-    /// </summary>
     ///
     public class Roll<E> : ICollection<E> where E : IKeyed
     {
@@ -62,6 +49,10 @@ namespace Greatbone.Core
                 }
                 return default(E);
             }
+            set
+            {
+                Add(value);
+            }
         }
 
         public bool Contains(string key)
@@ -95,9 +86,9 @@ namespace Greatbone.Core
 
         public int Count => count;
 
-        public void Add(E member)
+        public void Add(E elem)
         {
-            Add(member, false);
+            Add(elem, false);
         }
 
         void Add(E elem, bool rehash)
