@@ -5,6 +5,9 @@ using Npgsql;
 
 namespace Greatbone.Core
 {
+    ///
+    /// An environment for database operations based on current service.
+    ///
     public class DbContext : IDisposable, IResultSet
     {
         readonly NpgsqlConnection connection;
@@ -117,10 +120,7 @@ namespace Greatbone.Core
         {
             ordinal = 0; // reset column ordinal
 
-            if (reader == null)
-            {
-                return false;
-            }
+            if (reader == null) { return false; }
             return reader.Read();
         }
 
@@ -128,10 +128,7 @@ namespace Greatbone.Core
         {
             get
             {
-                if (reader == null)
-                {
-                    return false;
-                }
+                if (reader == null) { return false; }
                 return reader.HasRows;
             }
         }
@@ -140,10 +137,7 @@ namespace Greatbone.Core
         {
             ordinal = 0; // reset column ordinal
 
-            if (reader == null)
-            {
-                return false;
-            }
+            if (reader == null) { return false; }
             return reader.NextResult();
         }
 
@@ -317,7 +311,7 @@ namespace Greatbone.Core
                 if (!reader.IsDBNull(ord))
                 {
                     int len;
-                    if ((len = (int) reader.GetBytes(ord, 0, null, 0, 0)) > 0)
+                    if ((len = (int)reader.GetBytes(ord, 0, null, 0, 0)) > 0)
                     {
                         // get the number of bytes that are available to read.
                         v = new byte[len];
@@ -341,7 +335,7 @@ namespace Greatbone.Core
                 if (!reader.IsDBNull(ord))
                 {
                     int len;
-                    if ((len = (int) reader.GetBytes(ord, 0, null, 0, 0)) > 0)
+                    if ((len = (int)reader.GetBytes(ord, 0, null, 0, 0)) > 0)
                     {
                         byte[] arr = BufferUtility.GetByteBuffer(len);
                         reader.GetBytes(ord, 0, arr, 0, len); // read data into the buffer
@@ -364,7 +358,7 @@ namespace Greatbone.Core
             {
                 string str = reader.GetString(ord);
                 JsonParse p = new JsonParse(str);
-                Obj obj = (Obj) p.Parse();
+                Obj obj = (Obj)p.Parse();
                 v = new B();
                 v.Load(obj, z);
                 return true;
@@ -379,7 +373,7 @@ namespace Greatbone.Core
             {
                 string str = reader.GetString(ord);
                 JsonParse p = new JsonParse(str);
-                v = (Obj) p.Parse();
+                v = (Obj)p.Parse();
                 return true;
             }
             return false;
@@ -392,7 +386,7 @@ namespace Greatbone.Core
             {
                 string str = reader.GetString(ord);
                 JsonParse p = new JsonParse(str);
-                v = (Arr) p.Parse();
+                v = (Arr)p.Parse();
                 return true;
             }
             return false;
@@ -449,12 +443,12 @@ namespace Greatbone.Core
             {
                 string str = reader.GetString(ord);
                 JsonParse p = new JsonParse(str);
-                Arr arr = (Arr) p.Parse();
+                Arr arr = (Arr)p.Parse();
                 int len = arr.Count;
                 v = new D[len];
                 for (int i = 0; i < len; i++)
                 {
-                    Obj obj = (Obj) arr[i];
+                    Obj obj = (Obj)arr[i];
                     D dat = new D();
                     dat.Load(obj, z);
                     v[i] = dat;

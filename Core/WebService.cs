@@ -21,7 +21,7 @@ namespace Greatbone.Core
     ///
     /// A service work implements a microservice.
     ///
-    public abstract class WebService : WebDir, IHttpApplication<HttpContext>, ILoggerProvider, ILogger
+    public abstract class WebService : WebDirectory, IHttpApplication<HttpContext>, ILoggerProvider, ILogger
     {
         // SERVER
         //

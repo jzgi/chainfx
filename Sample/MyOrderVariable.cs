@@ -3,11 +3,11 @@ using Greatbone.Core;
 namespace Greatbone.Sample
 {
     ///
-    /// The order multiplex directory under shop.
+    /// /-shopid-/myorder/-orderid-/
     ///
-    public class OrderMuxDir : WebDir, IMux
+    public class MyOrderVariable : WebDirectory, IVariable
     {
-        public OrderMuxDir(WebDirContext ctx) : base(ctx)
+        public MyOrderVariable(WebDirectoryContext ctx) : base(ctx)
         {
         }
 

@@ -9,7 +9,7 @@ namespace Greatbone.Core
     ///
     public class WebAction : IKeyed
     {
-        readonly WebDir dir;
+        readonly WebDirectory dir;
 
         readonly string key;
 
@@ -25,7 +25,7 @@ namespace Greatbone.Core
 
         readonly UiAttribute button;
 
-        internal WebAction(WebDir dir, MethodInfo mi, Type subtyp)
+        internal WebAction(WebDirectory dir, MethodInfo mi, Type subtyp)
         {
             this.dir = dir;
             this.key = mi.Name; // NOTE: strict method name as key here to avoid the default base url trap
@@ -54,7 +54,7 @@ namespace Greatbone.Core
             button = mi.GetCustomAttribute<UiAttribute>();
         }
 
-        public WebDir Dir => dir;
+        public WebDirectory Dir => dir;
 
         public string Key => key;
 

@@ -8,16 +8,16 @@ namespace Greatbone.Core
     ///
     /// A web directory is a server-side controller that realizes a virtual directory containing static/dynamic resources.
     ///
-    public abstract class WebDir : IKeyed
+    public abstract class WebDirectory : IKeyed
     {
         // max nesting level
-        const int NestingLevel = 3;
+        const int Nesting = 3;
 
-        const string VariableKey = "_var_";
+        const string VariableKey = "-var-";
 
 
         // state-passing
-        internal readonly WebDirContext ctx;
+        internal readonly WebDirectoryContext ctx;
 
         // declared actions 
         readonly Roll<WebAction> actions;
@@ -25,14 +25,14 @@ namespace Greatbone.Core
         // the default action
         readonly WebAction defaction;
 
-        // child directories, if any
-        internal Roll<WebDir> children;
+        // sub directories, if any
+        internal Roll<WebDirectory> children;
 
-        // multiplexer dealing with variable keys
-        internal WebDir mux;
+        // dealing with variable keys
+        internal WebDirectory variable;
 
 
-        protected WebDir(WebDirContext ctx)
+        protected WebDirectory(WebDirectoryContext ctx)
         {
             this.ctx = ctx;
 
@@ -66,21 +66,21 @@ namespace Greatbone.Core
             }
         }
 
-        public D Add<D>(string key, object state = null) where D : WebDir
+        public D AddChild<D>(string key, object state = null) where D : WebDirectory
         {
-            if (Level == NestingLevel)
+            if (Level == Nesting)
                 throw new WebException("nesting levels");
 
             if (children == null)
             {
-                children = new Roll<WebDir>(16);
+                children = new Roll<WebDirectory>(16);
             }
             // create instance by reflection
             Type typ = typeof(D);
-            ConstructorInfo ci = typ.GetConstructor(new[] { typeof(WebDirContext) });
+            ConstructorInfo ci = typ.GetConstructor(new[] { typeof(WebDirectoryContext) });
             if (ci == null)
                 throw new WebException(typ + " missing WebDirContext");
-            WebDirContext wdc = new WebDirContext
+            WebDirectoryContext wdc = new WebDirectoryContext
             {
                 key = key,
                 State = state,
@@ -96,21 +96,21 @@ namespace Greatbone.Core
             return dir;
         }
 
-        public Roll<WebDir> Children => children;
+        public Roll<WebDirectory> Children => children;
 
-        public WebDir Variable => mux;
+        public WebDirectory Variable => variable;
 
-        public D SetMux<D>(object state = null) where D : WebDir, IMux
+        public D SetVariable<D>(object state = null) where D : WebDirectory, IVariable
         {
-            if (Level == NestingLevel)
+            if (Level == Nesting)
                 throw new WebException("nesting levels");
 
             // create instance
             Type typ = typeof(D);
-            ConstructorInfo ci = typ.GetConstructor(new[] { typeof(WebDirContext) });
+            ConstructorInfo ci = typ.GetConstructor(new[] { typeof(WebDirectoryContext) });
             if (ci == null)
                 throw new WebException(typ + " missing WebDirContext");
-            WebDirContext wdc = new WebDirContext
+            WebDirectoryContext wdc = new WebDirectoryContext
             {
                 key = VariableKey,
                 State = state,
@@ -121,7 +121,7 @@ namespace Greatbone.Core
                 Service = Service
             };
             D dir = (D)ci.Invoke(new object[] { wdc });
-            mux = dir;
+            variable = dir;
 
             return dir;
         }
@@ -137,7 +137,7 @@ namespace Greatbone.Core
 
         public string Folder => ctx.Folder;
 
-        public WebDir Parent => ctx.Parent;
+        public WebDirectory Parent => ctx.Parent;
 
         public int Level => ctx.Level;
 
@@ -178,19 +178,19 @@ namespace Greatbone.Core
             else // dispatch to child or multiplexer
             {
                 string key = relative.Substring(0, slash);
-                WebDir child;
+                WebDirectory child;
                 if (children != null && children.TryGet(key, out child)) // seek sub first
                 {
                     child.Handle(relative.Substring(slash + 1), wc);
                 }
-                else if (mux == null)
+                else if (variable == null)
                 {
                     wc.StatusCode = 404; // not found
                 }
                 else
                 {
-                    wc.ChainVar(mux, key);
-                    mux.Handle(relative.Substring(slash + 1), wc);
+                    wc.ChainVar(variable, key);
+                    variable.Handle(relative.Substring(slash + 1), wc);
                 }
             }
         }

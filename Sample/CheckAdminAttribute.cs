@@ -2,7 +2,6 @@
 
 namespace Greatbone.Sample
 {
-
     public class CheckAdminAttribute : CheckAttribute
     {
         public CheckAdminAttribute() : base(false) { }

@@ -15,7 +15,7 @@ namespace Greatbone.Core
         {
         }
 
-        public WebDir Dir { get; internal set; }
+        public WebDirectory Dir { get; internal set; }
 
         public WebAction Action { get; internal set; }
 
@@ -24,7 +24,7 @@ namespace Greatbone.Core
         // two levels of variable keys
         Var foo, bar;
 
-        internal void ChainVar(WebDir dir, string key)
+        internal void ChainVar(WebDirectory dir, string key)
         {
             if (foo.Dir == null) foo = new Var(dir, key);
             else if (bar.Dir == null) bar = new Var(dir, key);

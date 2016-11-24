@@ -7,17 +7,17 @@ namespace Greatbone.Core
     ///
     public struct Var
     {
-        readonly WebDir dir;
+        readonly WebDirectory dir;
 
         readonly string key;
 
-        internal Var(WebDir dir, string key)
+        internal Var(WebDirectory dir, string key)
         {
             this.dir = dir;
             this.key = key;
         }
 
-        public WebDir Dir => dir;
+        public WebDirectory Dir => dir;
 
         public string Key => key;
 

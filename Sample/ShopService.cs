@@ -16,7 +16,7 @@ namespace Greatbone.Sample
 
         public ShopService(WebConfig cfg) : base(cfg)
         {
-            SetMux<ShopMuxDir>();
+            SetVariable<ShopVariable>();
 
             shops = new ConcurrentDictionary<string, Shop>();
 
@@ -166,7 +166,7 @@ namespace Greatbone.Sample
                     {
                         for (int i = 0; i < Children.Count; i++)
                         {
-                            WebDir child = Children[i];
+                            WebDirectory child = Children[i];
                         }
                     },
                     true);

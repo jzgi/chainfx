@@ -3,19 +3,21 @@ using Greatbone.Core;
 namespace Greatbone.Sample
 {
     ///
-    /// The shop multiplexer directory.
+    /// The shop variable directory.
     ///
-    public class ShopMuxDir : WebDir, IMux
+    public class ShopVariable : WebDirectory, IVariable
     {
         readonly WebAction _re_menu_;
 
-        public ShopMuxDir(WebDirContext ctx) : base(ctx)
+        public ShopVariable(WebDirectoryContext ctx) : base(ctx)
         {
             // customer personal
-            Add<MyDir>("my");
+            AddChild<MyDir>("my");
+
+            AddChild<MyCartDirectory>("mycart");
 
             // order functions
-            Add<OrderDir>("order");
+            AddChild<MyOrderDirectory>("order");
 
             _re_menu_ = GetAction(nameof(remenu));
         }

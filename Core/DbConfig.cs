@@ -1,6 +1,8 @@
 ﻿namespace Greatbone.Core
 {
-
+    ///
+    /// DB configuration embedded in WebConfig.
+    ///
     public class DbConfig : IData
     {
         public string host;
@@ -31,7 +33,5 @@
             s.Put(nameof(password), password);
             s.Put(nameof(msg), msg);
         }
-
     }
-
 }

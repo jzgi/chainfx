@@ -5,9 +5,9 @@ namespace Greatbone.Sample
     ///
     /// The visitor's personal functions.
     ///
-    public class MyDir : WebDir
+    public class MyDir : WebDirectory
     {
-        public MyDir(WebDirContext ctx) : base(ctx)
+        public MyDir(WebDirectoryContext ctx) : base(ctx)
         {
         }
 

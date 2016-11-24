@@ -3,19 +3,19 @@
 namespace Greatbone.Sample
 {
     ///
-    /// /-shopid-/order/
+    /// /-shopid-/myorder/
     ///
-    public class OrderDir : WebDir
+    public class MyOrderDirectory : WebDirectory
     {
-        public OrderDir(WebDirContext ctx) : base(ctx)
+        public MyOrderDirectory(WebDirectoryContext ctx) : base(ctx)
         {
-            SetMux<OrderMuxDir>();
+            SetVariable<MyOrderVariable>();
         }
 
         ///
         /// Get buyer's personal order list
         ///
-        public void my(WebContext wc, string subscpt)
+        public void all(WebContext wc, string subscpt)
         {
 
         }
@@ -32,7 +32,7 @@ namespace Greatbone.Sample
         ///
         /// find in shop's order list
         ///
-        public void find(WebContext wc, string subscpt)
+        public void clear(WebContext wc, string subscpt)
         {
             // string shopid = wc.Var(null);
 

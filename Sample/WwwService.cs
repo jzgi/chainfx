@@ -44,7 +44,5 @@ namespace Greatbone.Sample
         {
 
         }
-
     }
-
 }
