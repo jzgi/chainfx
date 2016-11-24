@@ -15,7 +15,7 @@ namespace Greatbone.Core
         {
         }
 
-        public WebDirectory Dir { get; internal set; }
+        public WebDirectory Directory { get; internal set; }
 
         public WebAction Action { get; internal set; }
 
@@ -24,10 +24,10 @@ namespace Greatbone.Core
         // two levels of variable keys
         Var foo, bar;
 
-        internal void ChainVar(WebDirectory dir, string key)
+        internal void ChainVar(WebDirectory directory, string key)
         {
-            if (foo.Dir == null) foo = new Var(dir, key);
-            else if (bar.Dir == null) bar = new Var(dir, key);
+            if (foo.Directory == null) foo = new Var(directory, key);
+            else if (bar.Directory == null) bar = new Var(directory, key);
         }
 
         public Var Foo => foo;
@@ -333,7 +333,7 @@ namespace Greatbone.Core
         public async void CallByGet(string service, string part, string uri)
         {
             // token impersonate
-            WebClient cli = Dir.Service.FindClient(service, part);
+            WebClient cli = Directory.Service.FindClient(service, part);
             if (cli != null)
             {
                 object obj = await cli.GetAsync(uri);
@@ -343,7 +343,7 @@ namespace Greatbone.Core
         public void CallByPost(string service, string part, Action<JsonContent> a)
         {
             // token impersonate
-            WebClient cli = Dir.Service.FindClient(service, part);
+            WebClient cli = Directory.Service.FindClient(service, part);
             if (cli != null)
             {
                 JsonContent cont = new JsonContent(true, true, 8 * 1024);

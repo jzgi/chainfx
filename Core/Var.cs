@@ -7,17 +7,17 @@ namespace Greatbone.Core
     ///
     public struct Var
     {
-        readonly WebDirectory dir;
+        readonly WebDirectory directory;
 
         readonly string key;
 
-        internal Var(WebDirectory dir, string key)
+        internal Var(WebDirectory directory, string key)
         {
-            this.dir = dir;
+            this.directory = directory;
             this.key = key;
         }
 
-        public WebDirectory Dir => dir;
+        public WebDirectory Directory => directory;
 
         public string Key => key;
 
@@ -101,7 +101,7 @@ namespace Greatbone.Core
             return default(DateTime);
         }
 
-        public static implicit operator char[](Var v)
+        public static implicit operator char[] (Var v)
         {
             string str = v.key;
             return str?.ToCharArray();

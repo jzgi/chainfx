@@ -9,7 +9,7 @@ namespace Greatbone.Sample
     {
         public MyOrderDirectory(WebDirectoryContext ctx) : base(ctx)
         {
-            SetVariable<MyOrderVariable>();
+            SetVariable<MyOrderVariableDirectory>();
         }
 
         ///

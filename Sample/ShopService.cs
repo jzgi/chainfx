@@ -16,7 +16,7 @@ namespace Greatbone.Sample
 
         public ShopService(WebConfig cfg) : base(cfg)
         {
-            SetVariable<ShopVariable>();
+            SetVariable<ShopVariableDirectory>();
 
             shops = new ConcurrentDictionary<string, Shop>();
 

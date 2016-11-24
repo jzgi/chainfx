@@ -5,11 +5,11 @@ namespace Greatbone.Sample
     ///
     /// The shop variable directory.
     ///
-    public class ShopVariable : WebDirectory, IVariable
+    public class ShopVariableDirectory : WebDirectory, IVariable
     {
         readonly WebAction _re_menu_;
 
-        public ShopVariable(WebDirectoryContext ctx) : base(ctx)
+        public ShopVariableDirectory(WebDirectoryContext ctx) : base(ctx)
         {
             // customer personal
             AddChild<MyDir>("my");
@@ -17,7 +17,7 @@ namespace Greatbone.Sample
             AddChild<MyCartDirectory>("mycart");
 
             // order functions
-            AddChild<MyOrderDirectory>("order");
+            AddChild<MyOrderDirectory>("myorder");
 
             _re_menu_ = GetAction(nameof(remenu));
         }

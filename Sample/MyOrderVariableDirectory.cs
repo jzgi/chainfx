@@ -5,9 +5,9 @@ namespace Greatbone.Sample
     ///
     /// /-shopid-/myorder/-orderid-/
     ///
-    public class MyOrderVariable : WebDirectory, IVariable
+    public class MyOrderVariableDirectory : WebDirectory, IVariable
     {
-        public MyOrderVariable(WebDirectoryContext ctx) : base(ctx)
+        public MyOrderVariableDirectory(WebDirectoryContext ctx) : base(ctx)
         {
         }
 
