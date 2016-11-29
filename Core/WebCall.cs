@@ -7,15 +7,15 @@ using System.Threading.Tasks;
 namespace Greatbone.Core
 {
     ///
-    /// Web client request/response content wrapper.
+    /// A remote Web call.
     ///
     public class WebCall : HttpContent, IDisposable
     {
+        WebCaller caller;
 
         HttpRequestMessage request;
 
         IContent content;
-
 
         HttpResponseMessage response;
 
@@ -29,14 +29,17 @@ namespace Greatbone.Core
             request.Headers.Add(name, v);
         }
 
-        public void Send(string url, IContent cont)
+        public void Send(string uri, IContent cont)
         {
 
         }
 
-        public void GetJ(string url, Action<JsonContent> cont)
+        public void SendGetJson(string uri, Action<JsonContent> a)
         {
-
+            // JsonContent cont = new JsonContent();
+            // a(cont);
+            // caller
+            
         }
 
         public void GetXml(string url, Action<XmlContent> cont)
@@ -44,7 +47,7 @@ namespace Greatbone.Core
 
         }
 
-        public void PostJ(string url, Action<JsonContent> cont)
+        public void PostJson(string url, Action<JsonContent> cont)
         {
 
         }

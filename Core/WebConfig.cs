@@ -18,19 +18,19 @@
     ///
     public class WebConfig : WebDirectoryContext, IData
     {
-        // partition
-        public string part;
+        // partition key
+        public string subkey;
 
-        // socket address for external access
-        public string @extern;
+        // outer  socket address
+        public string outer;
 
         // TLS or not
         public bool tls;
 
-        // socket address for internal access
-        public string intern;
+        // inner socket address
+        public string inner;
 
-        // intranet socket addresses
+        // peer services this service connects to
         public Obj peers;
 
         // database connectivity
@@ -49,10 +49,10 @@
 
         public void Load(ISource s, byte z = 0)
         {
-            s.Get(nameof(part), ref part);
-            s.Get(nameof(@extern), ref @extern);
+            s.Get(nameof(subkey), ref subkey);
+            s.Get(nameof(outer), ref outer);
             s.Get(nameof(tls), ref tls);
-            s.Get(nameof(intern), ref intern);
+            s.Get(nameof(inner), ref inner);
             s.Get(nameof(peers), ref peers);
             s.Get(nameof(db), ref db);
             s.Get(nameof(logging), ref logging);
@@ -61,10 +61,10 @@
 
         public void Dump<R>(ISink<R> s, byte z = 0) where R : ISink<R>
         {
-            s.Put(nameof(part), part);
-            s.Put(nameof(@extern), @extern);
+            s.Put(nameof(subkey), subkey);
+            s.Put(nameof(outer), outer);
             s.Put(nameof(tls), tls);
-            s.Put(nameof(intern), intern);
+            s.Put(nameof(inner), inner);
             s.Put(nameof(peers), peers);
             s.Put(nameof(logging), logging);
             s.Put(nameof(extra), extra);

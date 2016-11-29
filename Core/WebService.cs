@@ -41,13 +41,10 @@ namespace Greatbone.Core
         //
 
         // connectivity to the remote peers, for remote call as well as messaging
-        readonly Roll<WebClient> clients;
-
-        // local message queues, each for a peer        
-        readonly Roll<MsgQueue> queues;
+        readonly Roll<WebPeer> peers;
 
         // hooks of received messages
-        readonly Roll<MsgHook> hooks;
+        readonly Roll<WebHook> hooks;
 
         readonly Thread scheduler;
 
@@ -71,34 +68,35 @@ namespace Greatbone.Core
             options = new KestrelServerOptions();
             server = new KestrelServer(Options.Create(options), Lifetime, factory);
             ICollection<string> addrs = server.Features.Get<IServerAddressesFeature>().Addresses;
-            addrs.Add(cfg.tls ? "https://" : "http://" + cfg.@extern);
-            addrs.Add("http://" + cfg.intern);
+            addrs.Add(cfg.tls ? "https://" : "http://" + cfg.outer);
+            addrs.Add("http://" + cfg.inner);
 
             // init message hooks
             Type typ = GetType();
             foreach (MethodInfo mi in typ.GetMethods(BindingFlags.Public | BindingFlags.Instance))
             {
                 ParameterInfo[] pis = mi.GetParameters();
-                if (pis.Length == 1 && pis[0].ParameterType == typeof(MsgContext))
+                if (pis.Length == 1 && pis[0].ParameterType == typeof(WebEvent))
                 {
-                    MsgHook h = new MsgHook(this, mi);
-                    if (hooks == null) hooks = new Roll<MsgHook>(16);
+                    WebHook h = new WebHook(this, mi);
+                    if (hooks == null) hooks = new Roll<WebHook>(16);
                     hooks.Add(h);
                 }
             }
 
-            // init clients and message queues
-            Obj net = cfg.peers;
-            for (int i = 0; i < net.Count; i++)
+            // init peer connections and message queues
+            Obj ps = cfg.peers;
+            for (int i = 0; i < ps.Count; i++)
             {
-                string addr = net[i];
-                if (addr.Equals(cfg.intern)) continue;
+                Member mbr = ps[i];
 
-                if (clients == null) clients = new Roll<WebClient>(net.Count * 2);
-                clients.Add(new WebClient(addr));
-
-                if (queues == null) queues = new Roll<MsgQueue>(net.Count * 2);
-                queues.Add(new MsgQueue(this, addr));
+                string name = mbr.Key;
+                string addr = mbr;
+                if (peers == null)
+                {
+                    peers = new Roll<WebPeer>(ps.Count * 2);
+                }
+                peers.Add(new WebPeer(name, addr));
             }
 
             MsgSetup();
@@ -107,13 +105,11 @@ namespace Greatbone.Core
             cache = new ContentCache(Environment.ProcessorCount * 2, 4096);
         }
 
-        public WebConfig Config => (WebConfig) ctx;
+        public WebConfig Config => (WebConfig)ctx;
 
-        internal Roll<MsgQueue> Queues => queues;
+        internal Roll<WebHook> Hooks => hooks;
 
-        internal Roll<MsgHook> Hooks => hooks;
-
-        internal Roll<WebClient> Clients => clients;
+        internal Roll<WebPeer> Peers => peers;
 
         bool MsgSetup()
         {
@@ -168,7 +164,7 @@ namespace Greatbone.Core
         /// </summary>
         public async Task ProcessRequestAsync(HttpContext context)
         {
-            WebContext wc = (WebContext) context;
+            WebContext wc = (WebContext)context;
             HttpRequest req = wc.Request;
             string path = req.Path.Value;
             string targ = path + req.QueryString.Value;
@@ -206,7 +202,7 @@ namespace Greatbone.Core
 
         public void DisposeContext(HttpContext context, Exception exception)
         {
-            ((WebContext) context).Dispose();
+            ((WebContext)context).Dispose();
         }
 
         void Authenticate(WebContext wc)
@@ -276,9 +272,9 @@ namespace Greatbone.Core
 
             Console.Write(Key);
             Console.Write(" -> ");
-            Console.Write(Config.@extern);
+            Console.Write(Config.outer);
             Console.Write(", ");
-            Console.Write(Config.intern);
+            Console.Write(Config.inner);
             Console.WriteLine();
 
             INF("started");
@@ -301,11 +297,11 @@ namespace Greatbone.Core
         // MESSAGING
         //
 
-        internal WebClient FindClient(string service, string part)
+        internal WebPeer FindClient(string service, string part)
         {
-            for (int i = 0; i < clients.Count; i++)
+            for (int i = 0; i < peers.Count; i++)
             {
-                WebClient cli = clients[i];
+                WebPeer cli = peers[i];
                 if (cli.Key.Equals(service)) return cli;
             }
             return null;
@@ -317,7 +313,7 @@ namespace Greatbone.Core
             // ensure internally target
             ConnectionInfo ci = wc.Connection;
             string laddr = ci.LocalIpAddress.ToString() + ":" + ci.LocalPort;
-            if (laddr.Equals(Config.intern)) // must target the internal address
+            if (laddr.Equals(Config.inner)) // must target the internal address
             {
                 wc.StatusCode = 403; // forbidden
                 return;
@@ -325,10 +321,17 @@ namespace Greatbone.Core
 
             // queue
             string raddr = ci.RemoteIpAddress.ToString() + ":" + ci.RemotePort;
-            MsgQueue que = queues[raddr];
-            // que.Get();
-            MsgMessage msg;
-            // headers
+            // if (cache.Count > 0)
+            // {
+            //     item = cache.Dequeue();
+            // }
+            // else
+            // {
+            //     using (var dc = service.NewDbContext())
+            //     {
+            //         dc.Query("SELECT * FROM mqueue WHERE id > @lastid AND ", p=>p.Put(last));
+            //     }
+            // }
 
             // wc.Respond(200, msg);
         }
@@ -337,9 +340,9 @@ namespace Greatbone.Core
         {
             while (true)
             {
-                for (int i = 0; i < Clients.Count; i++)
+                for (int i = 0; i < Peers.Count; i++)
                 {
-                    WebClient conn = Clients[i];
+                    WebPeer conn = Peers[i];
 
                     // schedule
                 }
@@ -366,7 +369,7 @@ namespace Greatbone.Core
 
         public bool IsEnabled(LogLevel level)
         {
-            return (int) level >= Config.logging;
+            return (int)level >= Config.logging;
         }
 
 
@@ -381,7 +384,7 @@ namespace Greatbone.Core
             Console.WriteLine(".");
         }
 
-        static readonly string[] LVL = {"TRC: ", "DBG: ", "INF: ", "WAR: ", "ERR: "};
+        static readonly string[] LVL = { "TRC: ", "DBG: ", "INF: ", "WAR: ", "ERR: " };
 
         public void Log<T>(LogLevel level, EventId eid, T state, Exception exception,
             Func<T, Exception, string> formatter)
@@ -391,7 +394,7 @@ namespace Greatbone.Core
                 return;
             }
 
-            logWriter.Write(LVL[(int) level]);
+            logWriter.Write(LVL[(int)level]);
 
             if (eid.Id != 0)
             {
@@ -446,7 +449,7 @@ namespace Greatbone.Core
 
                 cts.Token.Register(state =>
                     {
-                        ((IApplicationLifetime) state).StopApplication();
+                        ((IApplicationLifetime)state).StopApplication();
                         // dispose services
                         foreach (WebService svc in services)
                         {

@@ -34,13 +34,13 @@ namespace Greatbone.Sample
         // MESSAGES
         // 
 
-        public void USER_UPD(MsgContext mc)
+        public void USER_UPD(WebEvent mc)
         {
 
 
         }
 
-        public void RPT_OK(MsgContext mc)
+        public void RPT_OK(WebEvent mc)
         {
 
         }

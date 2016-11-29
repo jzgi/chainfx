@@ -333,7 +333,7 @@ namespace Greatbone.Core
         public async void CallByGet(string service, string part, string uri)
         {
             // token impersonate
-            WebClient cli = Directory.Service.FindClient(service, part);
+            WebPeer cli = Directory.Service.FindClient(service, part);
             if (cli != null)
             {
                 object obj = await cli.GetAsync(uri);
@@ -343,7 +343,7 @@ namespace Greatbone.Core
         public void CallByPost(string service, string part, Action<JsonContent> a)
         {
             // token impersonate
-            WebClient cli = Directory.Service.FindClient(service, part);
+            WebPeer cli = Directory.Service.FindClient(service, part);
             if (cli != null)
             {
                 JsonContent cont = new JsonContent(true, true, 8 * 1024);

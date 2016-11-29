@@ -27,8 +27,8 @@ namespace Greatbone.Sample
             var www = new WwwService(new WebConfig
             {
                 key = "www",
-                @extern = "127.0.0.1:8080",
-                intern = "127.0.0.1:7770",
+                outer = "127.0.0.1:8080",
+                inner = "127.0.0.1:7770",
                 peers = peers,
                 db = pg
             }
@@ -40,8 +40,8 @@ namespace Greatbone.Sample
             var shop = new ShopService(new WebConfig
             {
                 key = "shop",
-                @extern = "127.0.0.1:8081",
-                intern = "127.0.0.1:7771",
+                outer = "127.0.0.1:8081",
+                inner = "127.0.0.1:7771",
                 peers = peers,
                 db = pg
             }
