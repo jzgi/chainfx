@@ -1,28 +1,17 @@
 ﻿using System;
 using System.Net.Http;
 using System.Net.Http.Headers;
-using System.Threading.Tasks;
 
 namespace Greatbone.Core
 {
     ///
-    /// A connector to a remote web server.
+    /// A connector to a remote web server, that can send requests and receive responses.
     ///
     public class WebRemote : IDisposable
     {
-        // remote address
-        readonly string raddr;
-
-        HttpClient client;
-
-        private bool status;
-
-        // tick count
-        private int lastConnect;
+        readonly HttpClient client;
 
         HttpRequestMessage request;
-
-        IContent content;
 
         HttpResponseMessage response;
 
@@ -66,7 +55,7 @@ namespace Greatbone.Core
             response = await client.SendAsync(request, HttpCompletionOption.ResponseContentRead);
         }
 
-        public async void Post(string uri, Action<FormContent> body)
+        public async void PostForm(string uri, Action<FormContent> body)
         {
             FormContent cont = null;
             if (body != null)
@@ -82,7 +71,7 @@ namespace Greatbone.Core
         }
 
 
-        public async void Post(string uri, Action<JsonContent> body)
+        public async void PostJson(string uri, Action<JsonContent> body)
         {
             JsonContent cont = null;
             if (body != null)
@@ -98,9 +87,20 @@ namespace Greatbone.Core
             BufferUtility.Return(cont);
         }
 
-        public void Post(string url, Action<XmlContent> cont)
+        public async void PostXml(string uri, Action<XmlContent> body)
         {
-
+            XmlContent cont = null;
+            if (body != null)
+            {
+                cont = new XmlContent(true, true, 8192);
+                body(cont);
+            }
+            request = new HttpRequestMessage(HttpMethod.Post, uri)
+            {
+                Content = cont
+            };
+            response = await client.SendAsync(request, HttpCompletionOption.ResponseContentRead);
+            BufferUtility.Return(cont);
         }
 
         //
