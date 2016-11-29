@@ -1,14 +1,17 @@
 ﻿using System;
 using System.Globalization;
 using System.IO;
+using System.Net;
+using System.Net.Http;
 using System.Text;
+using System.Threading.Tasks;
 
 namespace Greatbone.Core
 {
     ///
     /// A dynamically generated content of either bytes or characters.
     ///
-    public abstract class DynamicContent : Stream, IContent
+    public abstract class DynamicContent : HttpContent, IContent
     {
         static readonly char[] DIGIT =
         {
@@ -459,80 +462,24 @@ namespace Greatbone.Core
             count = p;
         }
 
-
         //
-        // STREAM
+        // CLIENT CONTENT
         //
 
-        public override bool CanRead
+        protected override Task SerializeToStreamAsync(Stream stream, TransportContext context)
         {
-            get
-            {
-                throw new NotImplementedException();
-            }
+            return stream.WriteAsync(bytebuf, 0, count);
         }
 
-        public override bool CanSeek
+        protected override bool TryComputeLength(out long length)
         {
-            get
-            {
-                throw new NotImplementedException();
-            }
+            length = count;
+            return true;
         }
 
-        public override bool CanWrite
+        protected override Task<Stream> CreateContentReadStreamAsync()
         {
-            get
-            {
-                throw new NotImplementedException();
-            }
-        }
-
-        public override long Length
-        {
-            get
-            {
-                throw new NotImplementedException();
-            }
-        }
-
-        public override long Position
-        {
-            get
-            {
-                throw new NotImplementedException();
-            }
-
-            set
-            {
-                throw new NotImplementedException();
-            }
-        }
-
-        public override void Flush()
-        {
-            throw new NotImplementedException();
-        }
-
-        public override int Read(byte[] buffer, int offset, int count)
-        {
-            throw new NotImplementedException();
-        }
-
-        public override long Seek(long offset, SeekOrigin origin)
-        {
-            throw new NotImplementedException();
-        }
-
-        public override void SetLength(long value)
-        {
-            throw new NotImplementedException();
-        }
-
-        public override void Write(byte[] buffer, int offset, int count)
-        {
-            throw new NotImplementedException();
+            return null;
         }
     }
-
 }

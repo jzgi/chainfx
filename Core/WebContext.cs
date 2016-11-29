@@ -330,27 +330,6 @@ namespace Greatbone.Core
         // RPC
         //
 
-        public async void CallByGet(string service, string part, string uri)
-        {
-            // token impersonate
-            WebPeer cli = Directory.Service.FindClient(service, part);
-            if (cli != null)
-            {
-                object obj = await cli.GetAsync(uri);
-            }
-        }
-
-        public void CallByPost(string service, string part, Action<JsonContent> a)
-        {
-            // token impersonate
-            WebPeer cli = Directory.Service.FindClient(service, part);
-            if (cli != null)
-            {
-                JsonContent cont = new JsonContent(true, true, 8 * 1024);
-                a?.Invoke(cont);
-                BufferUtility.Return(cont);
-            }
-        }
 
 
         public void Dispose()

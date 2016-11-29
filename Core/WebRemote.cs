@@ -8,7 +8,7 @@ namespace Greatbone.Core
     ///
     /// A connector to a remote web server.
     ///
-    public class WebRemote: IDisposable
+    public class WebRemote : IDisposable
     {
         // remote address
         readonly string raddr;
@@ -26,10 +26,12 @@ namespace Greatbone.Core
 
         HttpResponseMessage response;
 
+        byte[] bytes;
+
         public WebRemote(string raddr)
         {
-            this.raddr = raddr;
-            client = new HttpClient() { BaseAddress = new Uri("http://" + raddr) };
+            string addr = raddr.StartsWith("http") ? raddr : "http://" + raddr;
+            client = new HttpClient() { BaseAddress = new Uri(addr) };
             client.DefaultRequestHeaders.Accept.Add(new MediaTypeWithQualityHeaderValue("application/json"));
         }
 
@@ -43,55 +45,98 @@ namespace Greatbone.Core
 
         }
 
-        public void SendJsonGet(string uri, Action<JsonContent> a)
+        public async void Get(string uri, Action<FormContent> a)
         {
-            // JsonContent cont = new JsonContent();
-            // a(cont);
-            // caller
-            
+            if (a != null)
+            {
+                FormContent cont = new FormContent(false, false, 512);
+                a(cont);
+                uri = uri + "?" + cont.ToString();
+            }
+            request = new HttpRequestMessage(HttpMethod.Post, uri);
+            response = await client.SendAsync(request, HttpCompletionOption.ResponseContentRead);
         }
 
-        public void GetXml(string url, Action<XmlContent> cont)
+        public async void Post<T>(string uri, T cont) where T : HttpContent, IContent
+        {
+            request = new HttpRequestMessage(HttpMethod.Post, uri)
+            {
+                Content = cont
+            };
+            response = await client.SendAsync(request, HttpCompletionOption.ResponseContentRead);
+        }
+
+        public async void Post(string uri, Action<FormContent> body)
+        {
+            FormContent cont = null;
+            if (body != null)
+            {
+                cont = new FormContent(true, false, 512);
+                body(cont);
+            }
+            request = new HttpRequestMessage(HttpMethod.Post, uri)
+            {
+                Content = cont
+            };
+            response = await client.SendAsync(request, HttpCompletionOption.ResponseContentRead);
+        }
+
+
+        public async void Post(string uri, Action<JsonContent> body)
+        {
+            JsonContent cont = null;
+            if (body != null)
+            {
+                cont = new JsonContent(true, true, 8192);
+                body(cont);
+            }
+            request = new HttpRequestMessage(HttpMethod.Post, uri)
+            {
+                Content = cont
+            };
+            response = await client.SendAsync(request, HttpCompletionOption.ResponseContentRead);
+            BufferUtility.Return(cont);
+        }
+
+        public void Post(string url, Action<XmlContent> cont)
         {
 
         }
-
-        public void PostJson(string url, Action<JsonContent> cont)
-        {
-
-        }
-
-        public void PostXml(string url, Action<XmlContent> cont)
-        {
-
-        }
-
-        public void PostForm(string url, Action<FormContent> cont)
-        {
-
-        }
-
 
         //
         // RESPONSE
         //
 
-        public Obj ReadJObj()
+        async void ReadBytes()
+        {
+            bytes = await response.Content.ReadAsByteArrayAsync();
+        }
+
+        public Obj ReadObj()
+        {
+            ReadBytes();
+
+            if (bytes == null) return null;
+            JsonParse p = new JsonParse(bytes, bytes.Length);
+            return (Obj)p.Parse();
+        }
+
+        public Arr ReadArr()
         {
             return null;
         }
 
-        public Arr ReadJArr()
+        public Elem ReadElem()
         {
             return null;
         }
 
-        public B ReadObj<B>(byte z = 0) where B : IData, new()
+        public D ReadData<D>(byte z = 0) where D : IData, new()
         {
-            return default(B);
+            return default(D);
         }
 
-        public B[] ReadArr<B>(byte z = 0) where B : IData, new()
+        public D[] ReadDatas<D>(byte z = 0) where D : IData, new()
         {
             return null;
         }
@@ -103,61 +148,6 @@ namespace Greatbone.Core
         }
 
         public int StatusCode => (int)response.StatusCode;
-
-        public async Task<object> GetAsync(string uri)
-        {
-            HttpRequestMessage msg = new HttpRequestMessage();
-            HttpResponseMessage response = await client.SendAsync(msg, HttpCompletionOption.ResponseContentRead);
-            response.Headers.GetValues("lastid");
-
-            byte[] bytes = await response.Content.ReadAsByteArrayAsync();
-
-            JsonParse par = new JsonParse(bytes, bytes.Length);
-            return par.Parse();
-        }
-
-        public async Task<HttpResponseMessage> PostXmlAsync(string uri, Action<XmlContent> content)
-        {
-            XmlContent cont = new XmlContent(true, true);
-            content?.Invoke(cont);
-            HttpRequestMessage req = new HttpRequestMessage(HttpMethod.Post, uri)
-            {
-                // Content = new WebRemote(cont)
-            };
-
-            return await client.SendAsync(req, HttpCompletionOption.ResponseContentRead);
-        }
-
-        public async Task<HttpResponseMessage> PostJAsync(string uri, Action<JsonContent> content)
-        {
-            JsonContent cont = new JsonContent(true, true);
-            content?.Invoke(cont);
-            HttpRequestMessage req = new HttpRequestMessage(HttpMethod.Post, uri)
-            {
-                // Content = new WebCall(cont)
-            };
-            return await client.SendAsync(req, HttpCompletionOption.ResponseContentRead);
-        }
-
-        public Elem GetElemAsync(string uri)
-        {
-            return null;
-        }
-
-        public Obj GetJObjAsync(string uri)
-        {
-            return null;
-        }
-
-        public Arr GetJArrAsync(string uri)
-        {
-            return null;
-        }
-
-        public byte[] GetBytesAsync(string uri)
-        {
-            return null;
-        }
 
         public void Dispose()
         {

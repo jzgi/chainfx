@@ -296,7 +296,7 @@ namespace Greatbone.Core
         // MESSAGING
         //
 
-        internal WebPeer FindClient(string service, string part)
+        internal WebPeer FindClient(string service)
         {
             for (int i = 0; i < peers.Count; i++)
             {
