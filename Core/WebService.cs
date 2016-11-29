@@ -98,7 +98,6 @@ namespace Greatbone.Core
                 }
                 peers.Add(new WebPeer(name, addr));
             }
-
             MsgSetup();
 
             // init content cache
