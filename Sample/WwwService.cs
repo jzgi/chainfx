@@ -31,17 +31,12 @@ namespace Greatbone.Sample
         }
 
         //
-        // MESSAGES
+        // EVENTS
         // 
 
-        public void USER_UPD(WebEvent mc)
+        public void DAILY_RPT(WebEvent we)
         {
 
-
-        }
-
-        public void RPT_OK(WebEvent mc)
-        {
 
         }
     }

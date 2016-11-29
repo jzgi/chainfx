@@ -7,7 +7,7 @@ namespace Greatbone.Core
     ///
     /// The connect to a remote peer service that the current service depends on.
     ///
-    public class WebPeer : WebCaller, IKeyed
+    public class WebPeer : WebRemote, IKeyed
     {
         // subdomain name or a reference name
         readonly string name;

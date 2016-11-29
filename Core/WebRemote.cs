@@ -1,13 +1,14 @@
 ﻿using System;
 using System.Net.Http;
+using System.Net.Http.Headers;
 using System.Threading.Tasks;
 
 namespace Greatbone.Core
 {
     ///
-    /// A connector to remote web server.
+    /// A connector to a remote web server.
     ///
-    public class WebCaller
+    public class WebRemote: IDisposable
     {
         // remote address
         readonly string raddr;
@@ -19,11 +20,89 @@ namespace Greatbone.Core
         // tick count
         private int lastConnect;
 
-        public WebCaller(string raddr)
+        HttpRequestMessage request;
+
+        IContent content;
+
+        HttpResponseMessage response;
+
+        public WebRemote(string raddr)
         {
             this.raddr = raddr;
             client = new HttpClient() { BaseAddress = new Uri("http://" + raddr) };
+            client.DefaultRequestHeaders.Accept.Add(new MediaTypeWithQualityHeaderValue("application/json"));
         }
+
+        public void SetHeader(string name, string v)
+        {
+            request.Headers.Add(name, v);
+        }
+
+        public void Send(string uri, IContent cont)
+        {
+
+        }
+
+        public void SendJsonGet(string uri, Action<JsonContent> a)
+        {
+            // JsonContent cont = new JsonContent();
+            // a(cont);
+            // caller
+            
+        }
+
+        public void GetXml(string url, Action<XmlContent> cont)
+        {
+
+        }
+
+        public void PostJson(string url, Action<JsonContent> cont)
+        {
+
+        }
+
+        public void PostXml(string url, Action<XmlContent> cont)
+        {
+
+        }
+
+        public void PostForm(string url, Action<FormContent> cont)
+        {
+
+        }
+
+
+        //
+        // RESPONSE
+        //
+
+        public Obj ReadJObj()
+        {
+            return null;
+        }
+
+        public Arr ReadJArr()
+        {
+            return null;
+        }
+
+        public B ReadObj<B>(byte z = 0) where B : IData, new()
+        {
+            return default(B);
+        }
+
+        public B[] ReadArr<B>(byte z = 0) where B : IData, new()
+        {
+            return null;
+        }
+
+        public string Header(string name)
+        {
+            // return response.Headers.TryGetValues
+            return null;
+        }
+
+        public int StatusCode => (int)response.StatusCode;
 
         public async Task<object> GetAsync(string uri)
         {
@@ -43,7 +122,7 @@ namespace Greatbone.Core
             content?.Invoke(cont);
             HttpRequestMessage req = new HttpRequestMessage(HttpMethod.Post, uri)
             {
-                Content = new WebCall(cont)
+                // Content = new WebRemote(cont)
             };
 
             return await client.SendAsync(req, HttpCompletionOption.ResponseContentRead);
@@ -55,7 +134,7 @@ namespace Greatbone.Core
             content?.Invoke(cont);
             HttpRequestMessage req = new HttpRequestMessage(HttpMethod.Post, uri)
             {
-                Content = new WebCall(cont)
+                // Content = new WebCall(cont)
             };
             return await client.SendAsync(req, HttpCompletionOption.ResponseContentRead);
         }
@@ -80,6 +159,9 @@ namespace Greatbone.Core
             return null;
         }
 
+        public void Dispose()
+        {
+            throw new NotImplementedException();
+        }
     }
-
 }
