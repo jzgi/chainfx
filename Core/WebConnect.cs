@@ -1,13 +1,11 @@
-﻿using System;
-using System.Net.Http;
-using System.Threading.Tasks;
+﻿using System.Threading.Tasks;
 
 namespace Greatbone.Core
 {
     ///
     /// The connect to a remote peer service that the current service depends on.
     ///
-    public class WebPeer : WebRemote, IKeyed
+    public class WebConnect : WebClient, IKeyed
     {
         // subdomain name or a reference name
         readonly string name;
@@ -17,7 +15,7 @@ namespace Greatbone.Core
         // tick count
         private int lastConnect;
 
-        public WebPeer(string name, string raddr) : base(raddr)
+        public WebConnect(string name, string raddr) : base(raddr)
         {
             this.name = name;
         }

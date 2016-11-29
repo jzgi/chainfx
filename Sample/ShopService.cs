@@ -115,18 +115,6 @@ namespace Greatbone.Sample
             }
         }
 
-        //
-        // MESSAGES
-        // 
-
-        public void USER_UPD(WebEvent mc)
-        {
-        }
-
-        public void RPT_OK(WebEvent mc)
-        {
-        }
-
 
         protected override IPrincipal Fetch(bool token, string idstr)
         {
@@ -170,6 +158,15 @@ namespace Greatbone.Sample
                         }
                     },
                     true);
+            }
+        }
+
+
+        public void report(WebContext wc, string subscpt)
+        {
+            using (var call = wc.NewWebCall())
+            {
+
             }
         }
     }

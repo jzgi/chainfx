@@ -1,15 +1,14 @@
 ﻿using System;
 using System.Net.Http;
-using System.Net.Http.Headers;
 
 namespace Greatbone.Core
 {
     ///
-    /// A connector to a remote web server, that can send requests and receive responses.
+    /// An eachange of requests and receive responses.
     ///
-    public class WebRemote : IDisposable
+    public class WebCall : IDisposable
     {
-        readonly HttpClient client;
+        readonly WebClient client;
 
         HttpRequestMessage request;
 
@@ -17,12 +16,12 @@ namespace Greatbone.Core
 
         byte[] bytes;
 
-        public WebRemote(string raddr)
+        public WebCall(WebClient client)
         {
-            string addr = raddr.StartsWith("http") ? raddr : "http://" + raddr;
-            client = new HttpClient() { BaseAddress = new Uri(addr) };
-            client.DefaultRequestHeaders.Accept.Add(new MediaTypeWithQualityHeaderValue("application/json"));
+            this.client = client;
         }
+
+        internal WebContext Context { get; set; }
 
         public void SetHeader(string name, string v)
         {

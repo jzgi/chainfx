@@ -330,7 +330,10 @@ namespace Greatbone.Core
         // RPC
         //
 
-
+        public WebCall NewWebCall()
+        {
+            return new WebCall(null) { Context = this };
+        }
 
         public void Dispose()
         {

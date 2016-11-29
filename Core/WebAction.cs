@@ -14,7 +14,7 @@ namespace Greatbone.Core
         readonly string key;
 
         // one of the tow signatures
-        readonly Delegate method;
+        readonly Delegate doer;
 
         // if the method has a subscript parameter
         readonly Type subtype;
@@ -32,12 +32,12 @@ namespace Greatbone.Core
             this.subtype = subtyp;
 
             // create delegate accordingly
-            if (subtyp == null) method = mi.CreateDelegate(typeof(Action<WebContext>), dir);
-            else if (subtyp == typeof(string)) method = mi.CreateDelegate(typeof(Action<WebContext, string>), dir);
-            else if (subtyp == typeof(short)) method = mi.CreateDelegate(typeof(Action<WebContext, short>), dir);
-            else if (subtyp == typeof(int)) method = mi.CreateDelegate(typeof(Action<WebContext, int>), dir);
-            else if (subtyp == typeof(long)) method = mi.CreateDelegate(typeof(Action<WebContext, long>), dir);
-            else if (subtyp == typeof(DateTime)) method = mi.CreateDelegate(typeof(Action<WebContext, DateTime>), dir);
+            if (subtyp == null) doer = mi.CreateDelegate(typeof(Action<WebContext>), dir);
+            else if (subtyp == typeof(string)) doer = mi.CreateDelegate(typeof(Action<WebContext, string>), dir);
+            else if (subtyp == typeof(short)) doer = mi.CreateDelegate(typeof(Action<WebContext, short>), dir);
+            else if (subtyp == typeof(int)) doer = mi.CreateDelegate(typeof(Action<WebContext, int>), dir);
+            else if (subtyp == typeof(long)) doer = mi.CreateDelegate(typeof(Action<WebContext, long>), dir);
+            else if (subtyp == typeof(DateTime)) doer = mi.CreateDelegate(typeof(Action<WebContext, DateTime>), dir);
             else throw new WebException(key + "(...) wrong subscript type");
 
             // prepare checks
@@ -67,7 +67,7 @@ namespace Greatbone.Core
         // for generating unique digest nonce
         const string PrivateKey = "3e43a7180";
 
-        internal bool TryInvoke(WebContext wc, string subscpt = null)
+        internal bool TryDo(WebContext wc, string subscpt = null)
         {
             // access check 
             if (bearer || digest)
@@ -96,12 +96,12 @@ namespace Greatbone.Core
             // invoke the action method
             wc.Action = this;
 
-            if (subtype == null) ((Action<WebContext>)method)(wc);
-            else if (subtype == typeof(string)) ((Action<WebContext, string>)method)(wc, subscpt);
-            else if (subtype == typeof(short)) ((Action<WebContext, short>)method)(wc, subscpt.ToShort());
-            else if (subtype == typeof(int)) ((Action<WebContext, int>)method)(wc, subscpt.ToInt());
-            else if (subtype == typeof(long)) ((Action<WebContext, long>)method)(wc, subscpt.ToLong());
-            else if (subtype == typeof(DateTime)) ((Action<WebContext, DateTime>)method)(wc, subscpt.ToDateTime());
+            if (subtype == null) ((Action<WebContext>)doer)(wc);
+            else if (subtype == typeof(string)) ((Action<WebContext, string>)doer)(wc, subscpt);
+            else if (subtype == typeof(short)) ((Action<WebContext, short>)doer)(wc, subscpt.ToShort());
+            else if (subtype == typeof(int)) ((Action<WebContext, int>)doer)(wc, subscpt.ToInt());
+            else if (subtype == typeof(long)) ((Action<WebContext, long>)doer)(wc, subscpt.ToLong());
+            else if (subtype == typeof(DateTime)) ((Action<WebContext, DateTime>)doer)(wc, subscpt.ToDateTime());
 
             wc.Action = null;
             return true;

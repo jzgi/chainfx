@@ -221,7 +221,7 @@ namespace Greatbone.Core
                 }
                 else
                 {
-                    wa.TryInvoke(wc, subscpt);
+                    wa.TryDo(wc, subscpt);
                 }
             }
 
