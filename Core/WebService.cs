@@ -41,7 +41,7 @@ namespace Greatbone.Core
         //
 
         // connectivity to the remote peers, for remote call as well as messaging
-        readonly Roll<WebConnect> peers;
+        readonly Roll<WebClient> clients;
 
         // hooks of received messages
         readonly Roll<WebHook> hooks;
@@ -92,11 +92,11 @@ namespace Greatbone.Core
 
                 string name = mbr.Key;
                 string addr = mbr;
-                if (peers == null)
+                if (clients == null)
                 {
-                    peers = new Roll<WebConnect>(ps.Count * 2);
+                    clients = new Roll<WebClient>(ps.Count * 2);
                 }
-                peers.Add(new WebConnect(name, addr));
+                clients.Add(new WebClient(name, addr));
             }
             MsgSetup();
 
@@ -108,7 +108,7 @@ namespace Greatbone.Core
 
         internal Roll<WebHook> Hooks => hooks;
 
-        internal Roll<WebConnect> Peers => peers;
+        internal Roll<WebClient> Peers => clients;
 
         bool MsgSetup()
         {
@@ -296,11 +296,11 @@ namespace Greatbone.Core
         // MESSAGING
         //
 
-        internal WebConnect FindClient(string service)
+        internal WebClient FindClient(string service)
         {
-            for (int i = 0; i < peers.Count; i++)
+            for (int i = 0; i < clients.Count; i++)
             {
-                WebConnect cli = peers[i];
+                WebClient cli = clients[i];
                 if (cli.Key.Equals(service)) return cli;
             }
             return null;
@@ -341,7 +341,7 @@ namespace Greatbone.Core
             {
                 for (int i = 0; i < Peers.Count; i++)
                 {
-                    WebConnect conn = Peers[i];
+                    WebClient conn = Peers[i];
 
                     // schedule
                 }

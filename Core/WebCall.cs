@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Net.Http;
+using System.Threading.Tasks;
 
 namespace Greatbone.Core
 {
@@ -13,6 +14,8 @@ namespace Greatbone.Core
         HttpRequestMessage request;
 
         HttpResponseMessage response;
+
+        internal Task<byte[]> task;
 
         byte[] bytes;
 

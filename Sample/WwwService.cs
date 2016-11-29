@@ -28,6 +28,12 @@ namespace Greatbone.Sample
 
         public void search(WebContext wc, string subscpt)
         {
+
+        }
+
+        void All(params WebCall[] calls)
+        {
+            
         }
 
         //
