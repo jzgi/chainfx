@@ -337,7 +337,7 @@ namespace Greatbone.Core
                     int len;
                     if ((len = (int)reader.GetBytes(ord, 0, null, 0, 0)) > 0)
                     {
-                        byte[] arr = BufferUtility.GetByteBuffer(len);
+                        byte[] arr = BufferUtility.GetByteBuf(len);
                         reader.GetBytes(ord, 0, arr, 0, len); // read data into the buffer
                         v = new ArraySegment<byte>(arr, 0, len);
                         return true;

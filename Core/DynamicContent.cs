@@ -97,11 +97,11 @@ namespace Greatbone.Core
             this.pooled = pooled;
             if (raw)
             {
-                bytebuf = pooled ? BufferUtility.GetByteBuffer(capacity) : new byte[capacity];
+                bytebuf = (pooled) ? BufferUtility.GetByteBuf(capacity) : new byte[capacity];
             }
             else
             {
-                charbuf = pooled ? BufferUtility.GetCharBuffer(capacity) : new char[capacity];
+                charbuf = (pooled) ? BufferUtility.GetCharBuf(capacity) : new char[capacity];
             }
             this.count = 0;
         }
@@ -110,9 +110,9 @@ namespace Greatbone.Core
 
         public bool IsRaw => bytebuf != null;
 
-        public byte[] ByteBuffer => bytebuf;
+        public byte[] ByteBuf => bytebuf;
 
-        public char[] CharBuffer => charbuf;
+        public char[] CharBuf => charbuf;
 
         public int Size => count;
 
@@ -130,7 +130,7 @@ namespace Greatbone.Core
             {
                 int nlen = olen * 4; // new length
                 byte[] obuf = bytebuf;
-                bytebuf = pooled ? BufferUtility.GetByteBuffer(nlen) : new byte[nlen];
+                bytebuf = (pooled) ? BufferUtility.GetByteBuf(nlen) : new byte[nlen];
                 Array.Copy(obuf, 0, bytebuf, 0, olen);
                 if (pooled) BufferUtility.Return(obuf);
             }
@@ -174,7 +174,7 @@ namespace Greatbone.Core
                 {
                     int nlen = olen * 4; // new length
                     char[] obuf = charbuf;
-                    charbuf = pooled ? BufferUtility.GetCharBuffer(nlen) : new char[nlen];
+                    charbuf = (pooled) ? BufferUtility.GetCharBuf(nlen) : new char[nlen];
                     Array.Copy(obuf, 0, charbuf, 0, olen);
                     if (pooled) BufferUtility.Return(obuf);
                 }

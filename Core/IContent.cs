@@ -25,13 +25,13 @@ namespace Greatbone.Core
         /// >The byte buffer that contains octet content.
         /// </summary>
         ///
-        byte[] ByteBuffer { get; }
+        byte[] ByteBuf { get; }
 
         /// <summary
         /// >The char buffer that contains text content.
         /// </summary>
         ///
-        char[] CharBuffer { get; }
+        char[] CharBuf { get; }
 
         /// <summary>
         /// The actual number of bytes/chars.

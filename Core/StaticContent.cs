@@ -1532,13 +1532,13 @@ namespace Greatbone.Core
 
         public string Type { get; set; }
 
-        public byte[] ByteBuffer { get; set; }
+        public byte[] ByteBuf { get; set; }
 
-        public char[] CharBuffer => null;
+        public char[] CharBuf => null;
 
         public int Size
         {
-            get { return (size != 0) ? size : ByteBuffer.Length; }
+            get { return (size != 0) ? size : ByteBuf.Length; }
             set { size = value; }
         }
 

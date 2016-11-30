@@ -123,7 +123,7 @@ namespace Greatbone.Core
             if (clen > 0)
             {
                 int len = (int)clen;
-                bytebuf = BufferUtility.GetByteBuffer(len);
+                bytebuf = BufferUtility.GetByteBuf(len);
                 count = await req.Body.ReadAsync(bytebuf, 0, len);
             }
         }
@@ -322,7 +322,7 @@ namespace Greatbone.Core
                 }
 
                 // send async
-                await r.Body.WriteAsync(Content.ByteBuffer, 0, Content.Size);
+                await r.Body.WriteAsync(Content.ByteBuf, 0, Content.Size);
             }
         }
 
@@ -331,6 +331,11 @@ namespace Greatbone.Core
         //
 
         public WebCall NewWebCall()
+        {
+            return new WebCall(null) { Context = this };
+        }
+
+        public WebCall NewWebCalls()
         {
             return new WebCall(null) { Context = this };
         }
@@ -346,7 +351,7 @@ namespace Greatbone.Core
             // return response content buffer
             if (Content != null && Content.IsPooled)
             {
-                BufferUtility.Return(Content.ByteBuffer);
+                BufferUtility.Return(Content.ByteBuf);
             }
         }
     }

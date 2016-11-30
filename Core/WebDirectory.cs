@@ -263,7 +263,7 @@ namespace Greatbone.Core
             {
                 Key = file.ToLower(),
                 Type = ctyp,
-                ByteBuffer = content,
+                ByteBuf = content,
                 Modified = modified
             };
             wc.Send(200, sta, true, 5 * 60000);
