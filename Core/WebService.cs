@@ -98,7 +98,8 @@ namespace Greatbone.Core
                 }
                 clients.Add(new WebClient(name, addr));
             }
-            MsgSetup();
+
+            Install();
 
             // init content cache
             cache = new ContentCache(Environment.ProcessorCount * 2, 4096);
@@ -110,7 +111,7 @@ namespace Greatbone.Core
 
         internal Roll<WebClient> Peers => clients;
 
-        bool MsgSetup()
+        bool Install()
         {
             if (!Config.db.msg)
             {
@@ -120,18 +121,19 @@ namespace Greatbone.Core
             // check db
             using (var dc = Service.NewDbContext())
             {
-                dc.Execute(@"CREATE TABLE IF NOT EXISTS msgq (
+                dc.Execute(@"CREATE TABLE IF NOT EXISTS eq (
                                 id serial4 NOT NULL,
                                 time timestamp without time zone,
-                                topic character varying(20),
-                                shard character varying(10),
+                                service character varying(20),
+                                sub character varying(10),
                                 body bytea,
                                 CONSTRAINT msgq_pkey PRIMARY KEY (id)
                             ) WITH (OIDS=FALSE)",
                     null
                 );
-                dc.Execute(@"CREATE TABLE IF NOT EXISTS msgu (
-                                addr character varying(45) NOT NULL,
+                dc.Execute(@"CREATE TABLE IF NOT EXISTS eu (
+                                service character varying(20),
+                                sub character varying(10),
                                 lastid int4,
                                 CONSTRAINT msgu_pkey PRIMARY KEY (addr)
                             ) WITH (OIDS=FALSE)",
@@ -251,8 +253,8 @@ namespace Greatbone.Core
         {
             if ("*".Equals(relative))
             {
-                // handle messaging
-                Peek(wc);
+                // handle as event
+                ForEvents(wc);
             }
             else
             {
@@ -307,32 +309,23 @@ namespace Greatbone.Core
         }
 
 
-        void Peek(WebContext wc)
+        void ForEvents(WebContext wc)
         {
-            // ensure internally target
-            ConnectionInfo ci = wc.Connection;
-            string laddr = ci.LocalIpAddress.ToString() + ":" + ci.LocalPort;
-            if (laddr.Equals(Config.inner)) // must target the internal address
+            string svc = wc.Header("service");
+            string sub = "";
+            int? lastid = wc.HeaderInt("Range");
+
+            using (var dc = NewDbContext())
             {
-                wc.StatusCode = 403; // forbidden
-                return;
+                if (dc.Query("SELECT * FROM eq WHERE id > @1 AND service = @2 AND sub = @3 LIMIT 120", p => p.Put(lastid.Value)))
+                {
+
+                }
+                else
+                {
+                    wc.StatusCode = 204; // no content
+                }
             }
-
-            // queue
-            string raddr = ci.RemoteIpAddress.ToString() + ":" + ci.RemotePort;
-            // if (cache.Count > 0)
-            // {
-            //     item = cache.Dequeue();
-            // }
-            // else
-            // {
-            //     using (var dc = service.NewDbContext())
-            //     {
-            //         dc.Query("SELECT * FROM mqueue WHERE id > @lastid AND ", p=>p.Put(last));
-            //     }
-            // }
-
-            // wc.Respond(200, msg);
         }
 
         internal void Schedule()

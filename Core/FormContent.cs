@@ -22,7 +22,7 @@ namespace Greatbone.Core
             level = 0;
         }
 
-        public override string Type => "application/xml";
+        public override string CType => "application/xml";
 
 
         void AddEsc(string v)

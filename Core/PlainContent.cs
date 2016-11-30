@@ -21,7 +21,7 @@ namespace Greatbone.Core
             }
 
         }
-        public override string Type => "text/plain";
+        public override string CType => "text/plain";
 
     }
 

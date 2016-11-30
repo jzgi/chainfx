@@ -1,12 +1,16 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.IO;
+using System.Net;
+using System.Net.Http;
+using System.Threading.Tasks;
 
 namespace Greatbone.Core
 {
     ///
-    /// Represents a static file.
+    /// A binary-only static content of certain mime type.
     ///
-    public class StaticContent : IKeyed, IContent
+    public class StaticContent : HttpContent, IKeyed, IContent
     {
         static readonly Dictionary<string, string> Types = new Dictionary<string, string>
         {
@@ -1521,33 +1525,56 @@ namespace Greatbone.Core
         };
 
 
-        public static bool TryGetType(string ext, out string ctype)
+        readonly string key;
+
+        readonly bool pooled;
+
+        readonly byte[] bytebuf;
+
+        readonly int size;
+
+
+        public StaticContent(string key, byte[] bytebuf) : this(key, false, bytebuf, bytebuf.Length) { }
+
+        public StaticContent(string key, bool pooled, byte[] bytebuf, int size)
         {
-            return Types.TryGetValue(ext, out ctype);
+            this.key = key;
+            this.pooled = pooled;
+            this.bytebuf = bytebuf;
+            this.size = size;
         }
 
-        int size;
+        public string Key => key;
 
-        public string Key { get; internal set; }
+        public string CType { get; set; }
 
-        public string Type { get; set; }
+        public bool IsBinary => true;
 
-        public byte[] ByteBuf { get; set; }
+        public bool IsPooled => pooled;
+
+        public byte[] ByteBuf => bytebuf;
 
         public char[] CharBuf => null;
 
-        public int Size
-        {
-            get { return (size != 0) ? size : ByteBuf.Length; }
-            set { size = value; }
-        }
+        public int Size => size;
 
         public DateTime? Modified { get; set; } = null;
 
         public ulong ETag => 0;
 
-        public bool IsRaw => true;
+        protected override Task SerializeToStreamAsync(Stream stream, TransportContext context)
+        {
+            throw new NotImplementedException();
+        }
 
-        public bool IsPooled { get; set; }
+        protected override bool TryComputeLength(out long length)
+        {
+            throw new NotImplementedException();
+        }
+
+        public static bool TryGetCType(string ext, out string ctype)
+        {
+            return Types.TryGetValue(ext, out ctype);
+        }
     }
 }

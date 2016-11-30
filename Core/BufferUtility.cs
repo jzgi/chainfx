@@ -120,7 +120,7 @@ namespace Greatbone.Core
             {
                 return false;
             }
-            if (cont.IsRaw)
+            if (cont.IsBinary)
             {
                 Return(cont.ByteBuf);
             }

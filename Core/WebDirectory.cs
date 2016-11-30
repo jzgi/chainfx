@@ -50,7 +50,7 @@ namespace Greatbone.Core
                 else if (pis.Length == 2 && pis[0].ParameterType == typeof(WebContext))
                 {
                     Type pt = pis[1].ParameterType; // second parameter's type
-                    if (WebAction.IsSubscriptType(pt))
+                    if (WebAction.IsSubtype(pt))
                     {
                         wa = new WebAction(this, mi, pt);
                     }
@@ -237,7 +237,7 @@ namespace Greatbone.Core
             }
 
             string ctyp;
-            if (!StaticContent.TryGetType(ext, out ctyp))
+            if (!StaticContent.TryGetCType(ext, out ctyp))
             {
                 wc.StatusCode = 415; // unsupported media type
                 return;
@@ -258,12 +258,10 @@ namespace Greatbone.Core
             }
 
             // load file content
-            byte[] content = File.ReadAllBytes(path);
-            StaticContent sta = new StaticContent
+            byte[] cont = File.ReadAllBytes(path);
+            StaticContent sta = new StaticContent(file.ToLower(), cont)
             {
-                Key = file.ToLower(),
-                Type = ctyp,
-                ByteBuf = content,
+                CType = ctyp,
                 Modified = modified
             };
             wc.Send(200, sta, true, 5 * 60000);

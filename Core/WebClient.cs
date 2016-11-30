@@ -9,6 +9,8 @@ namespace Greatbone.Core
     ///
     public class WebClient : HttpClient, IKeyed
     {
+        WebService service;
+
         // subdomain name or a reference name
         readonly string name;
 
@@ -17,7 +19,7 @@ namespace Greatbone.Core
         // tick count
         private int lastConnect;
 
-        public WebClient(string name, string raddr) 
+        public WebClient(string name, string raddr)
         {
             this.name = name;
             string addr = raddr.StartsWith("http") ? raddr : "http://" + raddr;
@@ -30,38 +32,57 @@ namespace Greatbone.Core
         {
             // check the status
 
-
-            // create and run task
-            Task.Run(() =>
+            if (lastConnect < 100)
             {
-                PollAsync();
-            });
+                // create and run task
+                Task.Run(() =>
+                {
+                    PollEventsAsync();
+                });
+            }
         }
 
 
-        public async void PollAsync()
+        ///
+        /// A single round of polling for remote events.
+        ///
+        internal async void PollEventsAsync()
         {
+            // schedule
+
+            WebCall call = new WebCall(this);
 
             // HttpRequestMessage pollRequest = new HttpRequestMessage();
             // client.DefaultRequestHeaders.Add("Range", "");
             // HttpResponseMessage response = await client.SendAsync(pollRequest, HttpCompletionOption.ResponseContentRead);
             // response.Headers.GetValues("lastid");
 
+            byte[] body;
+
             // if (response.IsSuccessStatusCode)
             // {
             //     byte[] bytes = await response.Content.ReadAsByteArrayAsync();
             //     JsonParse par = new JsonParse(bytes, bytes.Length);
             //     object entity = par.Parse();
-            //     WebHook a = null;
-            //     // if (service.Hooks.TryGet("", out a))
-            //     // {
-            //     //     MsgContext evt = new MsgContext
-            //     //     {
-            //     //         msg = entity
-            //     //     };
-            //     //     a.Do(evt);
-            //     // }
-            // }
+
+
+            // parse and process evetns
+            for (;;)
+            {
+                long evtid;
+                string topic = "";
+                DateTime time;
+
+                WebHook hook = null;
+                if (service.Hooks.TryGet(topic, out hook))
+                {
+                    WebEvent evt = new WebEvent
+                    {
+                        msg = null
+                    };
+                    hook.Do(evt);
+                }
+            }
         }
     }
 }

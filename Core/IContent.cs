@@ -2,45 +2,41 @@
 
 namespace Greatbone.Core
 {
-
     public interface IContent
     {
-
-        /// <summary>
-        /// Content-Type
-        /// </summary>
         ///
-        string Type { get; }
-
-        /// <summary>
-        /// The content is in raw bytes.
-        /// </summary>
+        /// The Content-Type.
         ///
-        bool IsRaw { get; }
+        string CType { get; }
 
+        ///
+        /// If the content is in binary form (bytes)
+        ///
+        bool IsBinary { get; }
 
+        ///
+        /// If the buffer is rented from pool so as to return back lately.
+        ///
         bool IsPooled { get; }
 
-        /// <summary
-        /// >The byte buffer that contains octet content.
-        /// </summary>
+        /// 
+        /// The byte buffer that contains binary content.
         ///
         byte[] ByteBuf { get; }
 
-        /// <summary
-        /// >The char buffer that contains text content.
-        /// </summary>
+        ///
+        /// The char buffer that contains text content.
         ///
         char[] CharBuf { get; }
 
-        /// <summary>
+        /// 
         /// The actual number of bytes/chars.
-        /// </summary>
         ///
         int Size { get; }
 
+        ///
+        /// If any, the last modified time.
+        ///
         DateTime? Modified { get; }
-
     }
-
 }

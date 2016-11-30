@@ -9,7 +9,7 @@ namespace Greatbone.Core
     ///
     public class WebAction : IKeyed
     {
-        readonly WebDirectory dir;
+        readonly WebDirectory directory;
 
         readonly string key;
 
@@ -23,46 +23,57 @@ namespace Greatbone.Core
 
         readonly bool bearer, digest;
 
-        readonly UiAttribute button;
+        readonly UiAttribute ui;
 
-        internal WebAction(WebDirectory dir, MethodInfo mi, Type subtyp)
+        internal WebAction(WebDirectory dir, MethodInfo mi, Type sub)
         {
-            this.dir = dir;
+            this.directory = dir;
             this.key = mi.Name; // NOTE: strict method name as key here to avoid the default base url trap
-            this.subtype = subtyp;
+            this.subtype = sub;
 
-            // create delegate accordingly
-            if (subtyp == null) doer = mi.CreateDelegate(typeof(Action<WebContext>), dir);
-            else if (subtyp == typeof(string)) doer = mi.CreateDelegate(typeof(Action<WebContext, string>), dir);
-            else if (subtyp == typeof(short)) doer = mi.CreateDelegate(typeof(Action<WebContext, short>), dir);
-            else if (subtyp == typeof(int)) doer = mi.CreateDelegate(typeof(Action<WebContext, int>), dir);
-            else if (subtyp == typeof(long)) doer = mi.CreateDelegate(typeof(Action<WebContext, long>), dir);
-            else if (subtyp == typeof(DateTime)) doer = mi.CreateDelegate(typeof(Action<WebContext, DateTime>), dir);
-            else throw new WebException(key + "(...) wrong subscript type");
+            // create the doer delegate
+            if (sub == null)
+                doer = mi.CreateDelegate(typeof(Action<WebContext>), dir);
+            else if (sub == typeof(string))
+                doer = mi.CreateDelegate(typeof(Action<WebContext, string>), dir);
+            else if (sub == typeof(short))
+                doer = mi.CreateDelegate(typeof(Action<WebContext, short>), dir);
+            else if (sub == typeof(int))
+                doer = mi.CreateDelegate(typeof(Action<WebContext, int>), dir);
+            else if (sub == typeof(long))
+                doer = mi.CreateDelegate(typeof(Action<WebContext, long>), dir);
+            else if (sub == typeof(DateTime))
+                doer = mi.CreateDelegate(typeof(Action<WebContext, DateTime>), dir);
+            else
+                throw new WebException(key + "(...) wrong subscript type");
 
             // prepare checks
             List<CheckAttribute> lst = null;
-            foreach (var to in mi.GetCustomAttributes<CheckAttribute>())
+            foreach (var chk in mi.GetCustomAttributes<CheckAttribute>())
             {
-                if (lst == null) lst = new List<CheckAttribute>(8);
-                lst.Add(to);
-                if (to.IsBearer) bearer = true;
-                else digest = true;
+                if (lst == null)
+                    lst = new List<CheckAttribute>(8);
+                lst.Add(chk);
+
+                if (chk.IsBearer)
+                    bearer = true;
+                else
+                    digest = true;
             }
             checks = lst?.ToArray();
 
-            button = mi.GetCustomAttribute<UiAttribute>();
+            ui = mi.GetCustomAttribute<UiAttribute>();
         }
 
-        public WebDirectory Dir => dir;
+        public WebDirectory Directory => directory;
 
         public string Key => key;
 
-        public bool IsGet => button?.IsGet ?? false;
+        public bool IsGet => ui?.IsGet ?? false;
 
-        public string Icon => button?.Icon;
+        public string Icon => ui?.Icon;
 
-        public int Dialog => button?.Dialog ?? 3;
+        public int Dialog => ui?.Dialog ?? 3;
 
         // for generating unique digest nonce
         const string PrivateKey = "3e43a7180";
@@ -112,7 +123,6 @@ namespace Greatbone.Core
             return Key;
         }
 
-        public static bool IsSubscriptType(Type t) =>
-            t == typeof(string) || t == typeof(short) || t == typeof(int) || t == typeof(long) || t == typeof(DateTime);
+        public static bool IsSubtype(Type typ) => typ == typeof(string) || typ == typeof(short) || typ == typeof(int) || typ == typeof(long) || typ == typeof(DateTime);
     }
 }
