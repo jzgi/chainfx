@@ -1,5 +1,4 @@
-﻿using System.Collections.Concurrent;
-using Greatbone.Core;
+﻿using Greatbone.Core;
 using static Greatbone.Core.ZUtility;
 
 namespace Greatbone.Sample
@@ -9,46 +8,76 @@ namespace Greatbone.Sample
     ///
     public class ShopService : WebService
     {
-        // in-memory cache of the shops
-        readonly ConcurrentDictionary<string, Shop> shops;
-
         readonly WebAction[] _new;
 
         public ShopService(WebConfig cfg) : base(cfg)
         {
             SetVariable<ShopVariableDirectory>();
 
-            shops = new ConcurrentDictionary<string, Shop>();
-
             _new = GetActions(nameof(@new));
         }
 
-        //
-        // CACHE
-        //
-
-        public Shop Obtain(string shopid)
+        ///
+        /// Get the singon form or perform a signon action.
+        ///
+        /// <code>
+        /// GET /signon[id=_id_&amp;password=_password_&amp;orig=_orig_]
+        /// </code>
+        ///
+        /// <code>
+        /// POST /signon
+        ///  
+        /// id=_id_&amp;password=_password_[&amp;orig=_orig_]
+        /// </code>
+        ///
+        public override void signon(WebContext wc)
         {
-            Shop v;
-            if (!shops.TryGetValue(shopid, out v))
+            if (wc.IsGetMethod) // return the login form
             {
-                v = Reload(shopid);
-                shops.TryAdd(shopid, v);
+                Form frm = wc.Query;
+                string id = frm[nameof(id)];
+                string password = frm[nameof(password)];
+                string orig = frm[nameof(orig)];
             }
-            return v;
-        }
-
-        internal Shop Reload(string shopid)
-        {
-            using (var dc = NewDbContext())
+            else // login
             {
-                DbSql sql = new DbSql("SELECT ").columnlst(Shop.Empty)._("WHERE id = @1");
-                if (dc.QueryA(sql.ToString(), p => p.Put(shopid)))
+                Form frm = wc.ReadForm();
+                string id = frm[nameof(id)];
+                string password = frm[nameof(password)];
+                string orig = frm[nameof(orig)];
+                if (string.IsNullOrEmpty(id) || string.IsNullOrEmpty(password))
                 {
-                    return dc.ToData<Shop>();
+                    wc.StatusCode = 400; return; // bad request
+                }
+                using (var dc = Service.NewDbContext())
+                {
+                    if (dc.QueryA("SELECT * FROM shops WHERE id = @1", (p) => p.Put(id)))
+                    {
+                        var tok = dc.ToData<ShopToken>();
+                        string credential = StrUtility.MD5(id + ':' + password);
+                        if (credential.Equals(tok.credential))
+                        {
+                            // set cookie
+
+                            JsonContent cont = new JsonContent(true, false, 256);
+                            cont.PutObj(tok);
+                            cont.Encrypt(0x4a78be76, 0x1f0335e2);
+
+                            wc.SetHeader("Set-Cookie", "");
+                            wc.SetHeader("Location", "");
+                            wc.StatusCode = 303; // see other (redirect)
+                        }
+                        else
+                        {
+                            wc.StatusCode = 400;
+                        }
+                    }
+                    else
+                    {
+                        wc.StatusCode = 404;
+                    }
                 }
             }
-            return null;
         }
 
         ///
@@ -123,7 +152,7 @@ namespace Greatbone.Sample
             try
             {
                 Obj obj = (Obj)par.Parse();
-                return obj.ToData<Login>();
+                return obj.ToData<ShopToken>();
             }
             catch
             {

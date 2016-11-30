@@ -237,6 +237,11 @@ namespace Greatbone.Core
         }
 
 
+        public virtual void signon(WebContext wc)
+        {
+            wc.StatusCode = 501; //not implements
+        }
+
         public void Start()
         {
             // start the server
@@ -352,8 +357,7 @@ namespace Greatbone.Core
 
         static readonly string[] LVL = { "TRC: ", "DBG: ", "INF: ", "WAR: ", "ERR: " };
 
-        public void Log<T>(LogLevel level, EventId eid, T state, Exception exception,
-            Func<T, Exception, string> formatter)
+        public void Log<T>(LogLevel level, EventId eid, T state, Exception exception, Func<T, Exception, string> formatter)
         {
             if (!IsEnabled(level))
             {

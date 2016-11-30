@@ -8,7 +8,7 @@ namespace Greatbone.Sample
 
         public override bool Test(WebContext wc)
         {
-            return wc.Principal is Login;
+            return wc.Principal is ShopToken;
         }
     }
 
