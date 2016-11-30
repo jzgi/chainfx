@@ -3,18 +3,18 @@
 namespace Greatbone.Core
 {
 
-    /// <summary>
-    /// Test if the principal meets certain condition.
-    /// </summary>
+    ///
+    /// Test if the request meets certain condition.
+    ///
     [AttributeUsage(AttributeTargets.Method, Inherited = true)]
     public class CheckAttribute : Attribute
     {
+        // whether auth through cookie
+        readonly bool cookie;
 
-        readonly bool bearer;
-
-        public CheckAttribute(bool bearer = true)
+        public CheckAttribute(bool cookie = true)
         {
-            this.bearer = bearer;
+            this.cookie = cookie;
         }
 
         public virtual bool Test(WebContext wc)
@@ -22,7 +22,7 @@ namespace Greatbone.Core
             return true;
         }
 
-        public bool IsBearer => bearer;
+        public bool IsCookie => cookie;
 
     }
 

@@ -9,7 +9,7 @@ namespace Greatbone.Core
     ///
     public class WebCall : IDisposable
     {
-        readonly WebClient client;
+        readonly WebPeer client;
 
         HttpRequestMessage request;
 
@@ -19,7 +19,7 @@ namespace Greatbone.Core
 
         byte[] bytes;
 
-        public WebCall(WebClient client)
+        public WebCall(WebPeer client)
         {
             this.client = client;
         }

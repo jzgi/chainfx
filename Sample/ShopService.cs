@@ -116,31 +116,17 @@ namespace Greatbone.Sample
         }
 
 
-        protected override IPrincipal Fetch(bool token, string idstr)
+        protected override IPrincipal Principalize(string token)
         {
-            if (token) // token
+            string plain = StrUtility.Decrypt(token, 0x4a78be76, 0x1f0335e2); // plain token
+            JsonParse par = new JsonParse(plain);
+            try
             {
-                string plain = StrUtility.Decrypt(idstr, 0x4a78be76, 0x1f0335e2); // plain token
-                JsonParse par = new JsonParse(plain);
-                try
-                {
-                    Obj jo = (Obj)par.Parse();
-                    // return jo.ToObj<Token>();
-                }
-                catch
-                {
-                }
+                Obj obj = (Obj)par.Parse();
+                return obj.ToData<Login>();
             }
-            else // username
+            catch
             {
-                // if (logins != null)
-                // {
-                //     for (int i = 0; i < logins.Length; i++)
-                //     {
-                //         Login lgn = logins[i];
-                //         if (lgn.id.Equals(idstr)) return lgn;
-                //     }
-                // }
             }
             return null;
         }

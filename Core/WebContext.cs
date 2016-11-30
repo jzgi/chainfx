@@ -11,9 +11,7 @@ namespace Greatbone.Core
     ///
     public class WebContext : DefaultHttpContext, IDisposable
     {
-        internal WebContext(IFeatureCollection features) : base(features)
-        {
-        }
+        internal WebContext(IFeatureCollection features) : base(features) { }
 
         public WebDirectory Directory { get; internal set; }
 
@@ -22,17 +20,19 @@ namespace Greatbone.Core
         public IPrincipal Principal { get; internal set; }
 
         // two levels of variable keys
-        Var foo, bar;
+        Var major, minor;
 
         internal void ChainVar(WebDirectory directory, string key)
         {
-            if (foo.Directory == null) foo = new Var(directory, key);
-            else if (bar.Directory == null) bar = new Var(directory, key);
+            if (major.Directory == null)
+                major = new Var(directory, key);
+            else if (minor.Directory == null)
+                minor = new Var(directory, key);
         }
 
-        public Var Foo => foo;
+        public Var Major => major;
 
-        public Var Bar => bar;
+        public Var Minor => minor;
 
         //
         // REQUEST
@@ -113,6 +113,8 @@ namespace Greatbone.Core
             }
             return null;
         }
+
+        public IRequestCookieCollection Cookies => Request.Cookies;
 
         async void EnsureReadAsync()
         {

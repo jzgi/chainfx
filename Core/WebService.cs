@@ -41,7 +41,7 @@ namespace Greatbone.Core
         //
 
         // connectivity to the remote peers, for remote call as well as messaging
-        readonly Roll<WebClient> clients;
+        readonly Roll<WebPeer> peers;
 
         // hooks of received messages
         readonly Roll<WebHook> hooks;
@@ -78,9 +78,9 @@ namespace Greatbone.Core
                 ParameterInfo[] pis = mi.GetParameters();
                 if (pis.Length == 1 && pis[0].ParameterType == typeof(WebEvent))
                 {
-                    WebHook h = new WebHook(this, mi);
+                    WebHook hk = new WebHook(this, mi);
                     if (hooks == null) hooks = new Roll<WebHook>(16);
-                    hooks.Add(h);
+                    hooks.Add(hk);
                 }
             }
 
@@ -92,14 +92,14 @@ namespace Greatbone.Core
 
                 string name = mbr.Key;
                 string addr = mbr;
-                if (clients == null)
+                if (peers == null)
                 {
-                    clients = new Roll<WebClient>(ps.Count * 2);
+                    peers = new Roll<WebPeer>(ps.Count * 2);
                 }
-                clients.Add(new WebClient(name, addr));
+                peers.Add(new WebPeer(name, addr));
             }
 
-            Install();
+            InstallEq();
 
             // init content cache
             cache = new ContentCache(Environment.ProcessorCount * 2, 4096);
@@ -109,9 +109,9 @@ namespace Greatbone.Core
 
         internal Roll<WebHook> Hooks => hooks;
 
-        internal Roll<WebClient> Peers => clients;
+        internal Roll<WebPeer> Peers => peers;
 
-        bool Install()
+        bool InstallEq()
         {
             if (!Config.db.msg)
             {
@@ -179,7 +179,18 @@ namespace Greatbone.Core
             {
                 try
                 {
-                    Authenticate(wc);
+                    // authentication
+                    string token = null;
+                    string hv = wc.Header("Authorization");
+                    if (hv != null && hv.StartsWith("Bearer ")) // the Bearer scheme
+                    {
+                        token = hv.Substring(7);
+                        wc.Principal = Principalize(token);
+                    }
+                    else if (wc.Cookies.TryGetValue("Bearer", out token))
+                    {
+                        wc.Principal = Principalize(token);
+                    }
 
                     Handle(path.Substring(1), wc);
 
@@ -206,44 +217,7 @@ namespace Greatbone.Core
             ((WebContext)context).Dispose();
         }
 
-        void Authenticate(WebContext wc)
-        {
-            string hv = wc.Header("Authorization");
-            if (hv == null) return;
-            if (hv.StartsWith("Bearer ")) // the Bearer scheme
-            {
-                string token = hv.Substring(7);
-                IPrincipal prin = Fetch(true, token);
-                if (prin != null)
-                {
-                    wc.Principal = prin; // success
-                }
-            }
-            else if (hv.StartsWith("Digest ")) // the Digest scheme
-            {
-                FieldParse fp = new FieldParse(hv);
-                string username = fp.Parameter("username=");
-                string realm = fp.Parameter("realm=");
-                string nonce = fp.Parameter("nonce=");
-                string uri = fp.Parameter("uri=");
-                string response = fp.Parameter("response=");
-                // obtain principal
-                IPrincipal prin = Fetch(false, username);
-                if (prin != null)
-                {
-                    // A2 = Method ":" digest-uri-value
-                    string HA2 = StrUtility.MD5(wc.Method + ':' + uri);
-                    // request-digest = KD ( H(A1), unq(nonce-value) ":" H(A2) ) >
-                    string digest = StrUtility.MD5(prin.Credential + ':' + nonce + ':' + HA2);
-                    if (digest.Equals(response)) // matched
-                    {
-                        wc.Principal = prin; // success
-                    }
-                }
-            }
-        }
-
-        protected virtual IPrincipal Fetch(bool token, string idstr)
+        protected virtual IPrincipal Principalize(string token)
         {
             return null;
         }
@@ -298,11 +272,11 @@ namespace Greatbone.Core
         // MESSAGING
         //
 
-        internal WebClient FindClient(string service)
+        internal WebPeer FindPeer(string service)
         {
-            for (int i = 0; i < clients.Count; i++)
+            for (int i = 0; i < peers.Count; i++)
             {
-                WebClient cli = clients[i];
+                WebPeer cli = peers[i];
                 if (cli.Key.Equals(service)) return cli;
             }
             return null;
@@ -334,7 +308,7 @@ namespace Greatbone.Core
             {
                 for (int i = 0; i < Peers.Count; i++)
                 {
-                    WebClient conn = Peers[i];
+                    WebPeer conn = Peers[i];
 
                     // schedule
                 }

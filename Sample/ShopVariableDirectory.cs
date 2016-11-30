@@ -31,7 +31,7 @@ namespace Greatbone.Sample
         ///
         public void @default(WebContext wc)
         {
-            string shopid = wc.Foo;
+            string shopid = wc.Major;
             using (var dc = Service.NewDbContext())
             {
                 DbSql sql = new DbSql("SELECT ").columnlst(Item.Empty)._("FROM items WHERE shopid = @1 AND NOT disabled");
