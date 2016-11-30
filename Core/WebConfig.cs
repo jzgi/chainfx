@@ -18,20 +18,17 @@
     ///
     public class WebConfig : WebDirectoryContext, IData
     {
-        // partition key
+        // service subkey, can be null
         public string subkey;
 
         // outer  socket address
         public string outer;
 
-        // TLS or not
-        public bool tls;
-
         // inner socket address
         public string inner;
 
-        // peer services this service connects to
-        public Obj peers;
+        // peer services this service references
+        public Obj refs;
 
         // database connectivity
         public DbConfig db;
@@ -41,8 +38,6 @@
 
         public Obj extra;
 
-        public Obj Extra => extra;
-
         // ovveride to provide a decent folder service name
         public override string Folder => key;
 
@@ -51,9 +46,8 @@
         {
             s.Get(nameof(subkey), ref subkey);
             s.Get(nameof(outer), ref outer);
-            s.Get(nameof(tls), ref tls);
             s.Get(nameof(inner), ref inner);
-            s.Get(nameof(peers), ref peers);
+            s.Get(nameof(refs), ref refs);
             s.Get(nameof(db), ref db);
             s.Get(nameof(logging), ref logging);
             s.Get(nameof(extra), ref extra);
@@ -63,9 +57,8 @@
         {
             s.Put(nameof(subkey), subkey);
             s.Put(nameof(outer), outer);
-            s.Put(nameof(tls), tls);
             s.Put(nameof(inner), inner);
-            s.Put(nameof(peers), peers);
+            s.Put(nameof(refs), refs);
             s.Put(nameof(logging), logging);
             s.Put(nameof(extra), extra);
         }

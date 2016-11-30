@@ -15,7 +15,6 @@ namespace Greatbone.Core
 
         const string VariableKey = "-var-";
 
-
         // state-passing
         internal readonly WebDirectoryContext ctx;
 

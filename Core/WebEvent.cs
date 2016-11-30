@@ -6,13 +6,37 @@ namespace Greatbone.Core
     ///
     /// The processing of an queued message. 
     ///
-    public class WebEvent : IDisposable
+    public struct WebEvent : IDisposable
     {
-        private string topic;
+        readonly WebPeer peer;
 
-        private string key;
+        readonly long id;
 
-        internal object msg;
+        readonly string topic;
+
+        readonly string subkey;
+
+        // either Obj or Arr
+        readonly object body;
+
+        internal WebEvent(WebPeer peer, long id, string topic, string subkey, object body)
+        {
+            this.peer = peer;
+            this.id = id;
+            this.topic = topic;
+            this.subkey = subkey;
+            this.body = body;
+        }
+
+        public long Id => id;
+
+        public string Topic => Topic;
+
+        public string Subkey => subkey;
+
+        public Obj BodyObj => (Obj)body;
+
+        public Arr BodyArr => (Arr)body;
 
         public void Dispose()
         {

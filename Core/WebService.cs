@@ -23,8 +23,8 @@ namespace Greatbone.Core
     ///
     public abstract class WebService : WebDirectory, IHttpApplication<HttpContext>, ILoggerProvider, ILogger
     {
-        // SERVER
-        //
+        // the globally unique service instance id
+        readonly string id;
 
         readonly KestrelServerOptions options;
 
@@ -36,9 +36,6 @@ namespace Greatbone.Core
 
         // shared content cache
         readonly ContentCache cache;
-
-        // MESSAGING
-        //
 
         // connectivity to the remote peers, for remote call as well as messaging
         readonly Roll<WebPeer> peers;
@@ -54,6 +51,8 @@ namespace Greatbone.Core
             // adjust configuration
             cfg.Service = this;
 
+            id = (cfg.subkey == null) ? cfg.key : cfg.key + "-" + cfg.subkey;
+
             // setup logging 
             factory = new LoggerFactory();
             factory.AddProvider(this);
@@ -68,10 +67,10 @@ namespace Greatbone.Core
             options = new KestrelServerOptions();
             server = new KestrelServer(Options.Create(options), Lifetime, factory);
             ICollection<string> addrs = server.Features.Get<IServerAddressesFeature>().Addresses;
-            addrs.Add(cfg.tls ? "https://" : "http://" + cfg.outer);
-            addrs.Add("http://" + cfg.inner);
+            addrs.Add(cfg.outer);
+            addrs.Add(cfg.inner);
 
-            // init message hooks
+            // init event hooks
             Type typ = GetType();
             foreach (MethodInfo mi in typ.GetMethods(BindingFlags.Public | BindingFlags.Instance))
             {
@@ -79,24 +78,26 @@ namespace Greatbone.Core
                 if (pis.Length == 1 && pis[0].ParameterType == typeof(WebEvent))
                 {
                     WebHook hk = new WebHook(this, mi);
-                    if (hooks == null) hooks = new Roll<WebHook>(16);
+                    if (hooks == null)
+                    {
+                        hooks = new Roll<WebHook>(16);
+                    }
                     hooks.Add(hk);
                 }
             }
 
             // init peer connections and message queues
-            Obj ps = cfg.peers;
+            Obj ps = cfg.refs;
             for (int i = 0; i < ps.Count; i++)
             {
                 Member mbr = ps[i];
-
-                string name = mbr.Key;
+                string svcid = mbr.Key; // service instance id
                 string addr = mbr;
                 if (peers == null)
                 {
                     peers = new Roll<WebPeer>(ps.Count * 2);
                 }
-                peers.Add(new WebPeer(name, addr));
+                peers.Add(new WebPeer(svcid, addr));
             }
 
             InstallEq();
@@ -107,13 +108,18 @@ namespace Greatbone.Core
 
         public WebConfig Config => (WebConfig)ctx;
 
+        ///
+        /// The service instance id.
+        ///
+        public string Id => id;
+
         internal Roll<WebHook> Hooks => hooks;
 
         internal Roll<WebPeer> Peers => peers;
 
         bool InstallEq()
         {
-            if (!Config.db.msg)
+            if (!Config.db.queue)
             {
                 return false;
             }
@@ -122,20 +128,19 @@ namespace Greatbone.Core
             using (var dc = Service.NewDbContext())
             {
                 dc.Execute(@"CREATE TABLE IF NOT EXISTS eq (
-                                id serial4 NOT NULL,
+                                id serial8 NOT NULL,
                                 time timestamp without time zone,
-                                service character varying(20),
-                                sub character varying(10),
+                                topic character varying(20),
+                                subkey character varying(10),
                                 body bytea,
-                                CONSTRAINT msgq_pkey PRIMARY KEY (id)
+                                CONSTRAINT eq_pkey PRIMARY KEY (id)
                             ) WITH (OIDS=FALSE)",
                     null
                 );
                 dc.Execute(@"CREATE TABLE IF NOT EXISTS eu (
-                                service character varying(20),
-                                sub character varying(10),
-                                lastid int4,
-                                CONSTRAINT msgu_pkey PRIMARY KEY (addr)
+                                svcid character varying(20),
+                                lastid int8,
+                                CONSTRAINT eu_pkey PRIMARY KEY (addr)
                             ) WITH (OIDS=FALSE)",
                     null
                 );

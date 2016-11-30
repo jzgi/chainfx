@@ -78,7 +78,7 @@ namespace Greatbone.Core
                 {
                     WebEvent evt = new WebEvent
                     {
-                        msg = null
+                        // body = null
                     };
                     hook.Do(evt);
                 }

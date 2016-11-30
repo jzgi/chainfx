@@ -33,7 +33,7 @@ namespace Greatbone.Sample
 
         void All(params WebCall[] calls)
         {
-            
+
         }
 
         //
@@ -42,8 +42,16 @@ namespace Greatbone.Sample
 
         public void DAILY_RPT(WebEvent we)
         {
+            using (var dc = NewDbContext())
+            {
+                dc.Begin();
 
+                // insert
 
+                // update lastid
+
+                dc.Commit();
+            }
         }
     }
 }
