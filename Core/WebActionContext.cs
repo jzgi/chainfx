@@ -11,7 +11,9 @@ namespace Greatbone.Core
     ///
     public class WebActionContext : DefaultHttpContext, IAutoContext, IDisposable
     {
-        internal WebActionContext(IFeatureCollection features) : base(features) { }
+        internal WebActionContext(IFeatureCollection features) : base(features)
+        {
+        }
 
         public WebDirectory Directory { get; internal set; }
 
@@ -20,43 +22,46 @@ namespace Greatbone.Core
         public IPrincipal Principal { get; internal set; }
 
         // two levels of variable keys
-        Var major, minor;
+        Var var1, var2;
 
-        Var subscript;
+        Var sub;
 
         internal void ChainVar(string key, WebDirectory dir)
         {
             if (dir != null)
             {
-                if (major.Key == null)
+                if (var1.Key == null)
                 {
-                    major = new Var(key, dir);
+                    var1 = new Var(key, dir);
                 }
-                else if (minor.Key == null)
+                else if (var2.Key == null)
                 {
-                    minor = new Var(key, dir);
+                    var2 = new Var(key, dir);
                 }
             }
-            else if (subscript.Key == null)
+            else if (sub.Key == null)
             {
-                subscript = new Var(key, null);
+                sub = new Var(key, null);
             }
         }
 
-        public Var Major => major;
+        public Var Var1 => var1;
 
-        public Var Minor => minor;
+        public Var Var2 => var2;
 
-        public Var Sub => subscript;
+        public Var Sub => sub;
 
         //
         // REQUEST
         //
+
         public string Method => Request.Method;
 
         public bool IsGetMethod => "GET".Equals(Request.Method);
 
         public bool IsPostMethod => "POST".Equals(Request.Method);
+
+        public string Url => Request.Path.Value + "?" + Request.QueryString.Value;
 
         Form query;
 
@@ -145,7 +150,7 @@ namespace Greatbone.Core
             }
         }
 
-        public bool IsPooled => bytebuf != null;
+        public bool IsPoolable => bytebuf != null;
 
         void EnsureParse()
         {
@@ -357,18 +362,26 @@ namespace Greatbone.Core
             return new WebCall(null) { Context = this };
         }
 
+
+        internal bool IsCacheable
+        {
+            get
+            {
+                int sc = StatusCode;
+                if (IsGetMethod && Pub == true)
+                {
+                    return sc == 200 || sc == 203 || sc == 204 || sc == 206 || sc == 300 || sc == 301 || sc == 404 || sc == 405 || sc == 410 || sc == 414 || sc == 501;
+                }
+                return false;
+            }
+        }
+
         public void Dispose()
         {
             // return request content buffer
-            if (IsPooled)
+            if (IsPoolable)
             {
                 BufferUtility.Return(bytebuf);
-            }
-
-            // return response content buffer
-            if (Content != null && Content.IsPooled)
-            {
-                BufferUtility.Return(Content.ByteBuf);
             }
         }
     }

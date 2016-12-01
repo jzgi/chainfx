@@ -1550,7 +1550,7 @@ namespace Greatbone.Core
 
         public bool IsBinary => true;
 
-        public bool IsPooled => pooled;
+        public bool IsPoolable => pooled;
 
         public byte[] ByteBuf => bytebuf;
 

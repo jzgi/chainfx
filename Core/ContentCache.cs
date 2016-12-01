@@ -4,9 +4,9 @@ using System.Threading;
 
 namespace Greatbone.Core
 {
-    /// <summary>
-    /// The server-side content cache for a particular service.
-    /// </summary>
+    /// 
+    /// The server-side response content cache within particular service.
+    /// 
     class ContentCache
     {
         readonly ConcurrentDictionary<string, Item> items;
@@ -40,7 +40,7 @@ namespace Greatbone.Core
         {
             while (!stop)
             {
-                Thread.Sleep(1000 * 12);
+                Thread.Sleep(1000);
 
                 int now = Environment.TickCount;
 
@@ -58,7 +58,6 @@ namespace Greatbone.Core
                     }
                 }
             }
-
         }
 
         internal bool TryGetContent(string target, out IContent v)

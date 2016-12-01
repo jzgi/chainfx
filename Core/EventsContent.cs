@@ -19,7 +19,7 @@ namespace Greatbone.Core
 
         public char[] CharBuf => null;
 
-        public bool IsPooled => true;
+        public bool IsPoolable => true;
 
         public bool IsBinary => true;
 

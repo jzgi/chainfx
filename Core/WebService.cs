@@ -40,7 +40,7 @@ namespace Greatbone.Core
         // connectivity to the remote peers, for remote call as well as messaging
         readonly Roll<WebReference> references;
 
-        // hooks of received messages
+        // event hooks
         readonly Roll<WebEvent> events;
 
         readonly Thread scheduler;
@@ -86,18 +86,21 @@ namespace Greatbone.Core
                 }
             }
 
-            // init peer connections and message queues
+            // init refers
             Obj refs = cfg.refs;
-            for (int i = 0; i < refs.Count; i++)
+            if (refs != null)
             {
-                Member mbr = refs[i];
-                string svcid = mbr.Key; // service instance id
-                string addr = mbr;
-                if (references == null)
+                for (int i = 0; i < refs.Count; i++)
                 {
-                    references = new Roll<WebReference>(refs.Count * 2);
+                    Member mbr = refs[i];
+                    string svcid = mbr.Key; // service instance id
+                    string addr = mbr;
+                    if (references == null)
+                    {
+                        references = new Roll<WebReference>(refs.Count * 2);
+                    }
+                    references.Add(new WebReference(svcid, addr));
                 }
-                references.Add(new WebReference(svcid, addr));
             }
 
             InstallEq();
@@ -115,7 +118,7 @@ namespace Greatbone.Core
 
         internal Roll<WebEvent> Events => events;
 
-        internal Roll<WebReference> Peers => references;
+        internal Roll<WebReference> References => references;
 
         bool InstallEq()
         {
@@ -157,28 +160,28 @@ namespace Greatbone.Core
         }
 
 
-        /// <summary> 
+        ///  
         /// Returns a framework custom context.
-        /// </summary>
+        /// 
         public HttpContext CreateContext(IFeatureCollection features)
         {
             return new WebActionContext(features);
         }
 
-        /// <summary>
+        /// 
         /// To asynchronously process the request.
-        /// </summary>
+        /// 
         public async Task ProcessRequestAsync(HttpContext context)
         {
-            WebActionContext wc = (WebActionContext)context;
-            HttpRequest req = wc.Request;
+            WebActionContext ac = (WebActionContext)context;
+            HttpRequest req = ac.Request;
             string path = req.Path.Value;
             string targ = path + req.QueryString.Value;
 
             IContent cont;
-            if (wc.IsGetMethod && cache.TryGetContent(targ, out cont)) // check if hit in the cache
+            if (ac.IsGetMethod && cache.TryGetContent(targ, out cont)) // check if hit in the cache
             {
-                wc.Send(304, cont, true, 0);
+                ac.Send(304, cont, true, 0);
             }
             else // handling
             {
@@ -186,28 +189,28 @@ namespace Greatbone.Core
                 {
                     // authentication
                     string token = null;
-                    string hv = wc.Header("Authorization");
+                    string hv = ac.Header("Authorization");
                     if (hv != null && hv.StartsWith("Bearer ")) // the Bearer scheme
                     {
                         token = hv.Substring(7);
-                        wc.Principal = Principalize(token);
+                        ac.Principal = Principalize(token);
                     }
-                    else if (wc.Cookies.TryGetValue("Bearer", out token))
+                    else if (ac.Cookies.TryGetValue("Bearer", out token))
                     {
-                        wc.Principal = Principalize(token);
+                        ac.Principal = Principalize(token);
                     }
 
-                    Handle(path.Substring(1), wc);
+                    Handle(path.Substring(1), ac);
 
                     // prepare and send
-                    await wc.SendAsync();
+                    await ac.SendAsync();
                 }
                 catch (Exception e)
                 {
                     Debug.WriteLine(e.Message);
                     if (e is ParseException)
                     {
-                        wc.StatusCode = 304;
+                        ac.StatusCode = 304;
                     }
                     else
                     {
@@ -219,7 +222,20 @@ namespace Greatbone.Core
 
         public void DisposeContext(HttpContext context, Exception exception)
         {
-            ((WebActionContext)context).Dispose();
+            var ac = (WebActionContext)context;
+
+            // public cache
+            IContent cont = ac.Content;
+            if (ac.IsCacheable)
+            {
+                cache.Add(ac.Url, ac.MaxAge, cont);
+            }
+            else if (cont != null && cont.IsPoolable)
+            {
+                BufferUtility.Return(cont.ByteBuf); // return response content buffer
+            }
+
+           ((WebActionContext)context).Dispose();
         }
 
         protected virtual IPrincipal Principalize(string token)
@@ -227,24 +243,17 @@ namespace Greatbone.Core
             return null;
         }
 
-
-        internal override void Handle(string relative, WebActionContext wc)
+        internal override void Handle(string relative, WebActionContext ac)
         {
             if ("*".Equals(relative))
             {
                 // handle as event
-                ForEvents(wc);
+                ForEvents(ac);
             }
             else
             {
-                base.Handle(relative, wc);
+                base.Handle(relative, ac);
             }
-        }
-
-
-        public virtual void signon(WebActionContext wc)
-        {
-            wc.StatusCode = 501; //not implements
         }
 
         public void Start()
@@ -282,22 +291,22 @@ namespace Greatbone.Core
         // MESSAGING
         //
 
-        internal WebReference FindPeer(string service)
+        internal WebReference GetReference(string svcid)
         {
             for (int i = 0; i < references.Count; i++)
             {
-                WebReference cli = references[i];
-                if (cli.Key.Equals(service)) return cli;
+                WebReference @ref = references[i];
+                if (@ref.Key.Equals(svcid)) return @ref;
             }
             return null;
         }
 
 
-        void ForEvents(WebActionContext wc)
+        void ForEvents(WebActionContext ac)
         {
-            string svc = wc.Header("service");
+            string svc = ac.Header("service");
             string sub = "";
-            int? lastid = wc.HeaderInt("Range");
+            int? lastid = ac.HeaderInt("Range");
 
             using (var dc = NewDbContext())
             {
@@ -307,7 +316,7 @@ namespace Greatbone.Core
                 }
                 else
                 {
-                    wc.StatusCode = 204; // no content
+                    ac.StatusCode = 204; // no content
                 }
             }
         }
@@ -316,9 +325,9 @@ namespace Greatbone.Core
         {
             while (true)
             {
-                for (int i = 0; i < Peers.Count; i++)
+                for (int i = 0; i < References.Count; i++)
                 {
-                    WebReference conn = Peers[i];
+                    WebReference conn = References[i];
 
                     // schedule
                 }
@@ -399,9 +408,9 @@ namespace Greatbone.Core
         static readonly WebLifetime Lifetime = new WebLifetime();
 
 
-        /// <summary>
+        /// 
         /// Runs a number of web services and block until shutdown.
-        /// </summary>
+        /// 
         public static void Run(params WebService[] services)
         {
             using (var cts = new CancellationTokenSource())

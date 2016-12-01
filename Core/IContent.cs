@@ -17,7 +17,7 @@ namespace Greatbone.Core
         ///
         /// If the buffer is rented from pool so as to return back lately.
         ///
-        bool IsPooled { get; }
+        bool IsPoolable { get; }
 
         /// 
         /// The byte buffer that contains binary content.

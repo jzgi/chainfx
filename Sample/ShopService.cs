@@ -30,7 +30,7 @@ namespace Greatbone.Sample
         /// id=_id_&amp;password=_password_[&amp;orig=_orig_]
         /// </code>
         ///
-        public override void signon(WebActionContext ac)
+        public void signon(WebActionContext ac)
         {
             if (ac.IsGetMethod) // return the login form
             {

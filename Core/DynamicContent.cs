@@ -118,7 +118,7 @@ namespace Greatbone.Core
 
         public DateTime? Modified { get; set; } = null;
 
-        public bool IsPooled => pooled;
+        public bool IsPoolable => pooled;
 
         public ulong ETag => checksum;
 

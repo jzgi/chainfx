@@ -116,7 +116,7 @@ namespace Greatbone.Core
 
         public static bool Return(IContent cont)
         {
-            if (!cont.IsPooled)
+            if (!cont.IsPoolable)
             {
                 return false;
             }

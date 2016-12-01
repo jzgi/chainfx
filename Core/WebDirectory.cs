@@ -217,32 +217,33 @@ namespace Greatbone.Core
             wc.Directory = null;
         }
 
-        void DoStatic(string file, string ext, WebActionContext wc)
+        void DoStatic(string file, string ext, WebActionContext ac)
         {
             if (file.StartsWith("$")) // private resource
             {
-                wc.StatusCode = 403; // forbidden
+                ac.StatusCode = 403; // forbidden
                 return;
             }
 
             string ctyp;
             if (!StaticContent.TryGetCType(ext, out ctyp))
             {
-                wc.StatusCode = 415; // unsupported media type
+                ac.StatusCode = 415; // unsupported media type
                 return;
             }
 
             string path = Path.Combine(Folder, file);
             if (!File.Exists(path))
             {
-                wc.StatusCode = 404; // not found
+                ac.StatusCode = 404; // not found
+                return;
             }
 
             DateTime modified = File.GetLastWriteTime(path);
-            DateTime? since = wc.HeaderDateTime("If-Modified-Since");
+            DateTime? since = ac.HeaderDateTime("If-Modified-Since");
             if (since != null && modified <= since)
             {
-                wc.StatusCode = 304; // not modified
+                ac.StatusCode = 304; // not modified
                 return;
             }
 
@@ -253,7 +254,7 @@ namespace Greatbone.Core
                 CType = ctyp,
                 Modified = modified
             };
-            wc.Send(200, sta, true, 5 * 60000);
+            ac.Send(200, sta, true, 5 * 60000);
         }
 
         //
