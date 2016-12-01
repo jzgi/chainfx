@@ -9,7 +9,7 @@ namespace Greatbone.Core
     /// 
     class ContentCache
     {
-        readonly ConcurrentDictionary<string, Item> items;
+        readonly ConcurrentDictionary<string, Entry> entries;
 
         readonly Thread cleaner;
 
@@ -18,22 +18,22 @@ namespace Greatbone.Core
         internal ContentCache(int concurrency, int capcity)
         {
             // create the url-to-item dictionary
-            items = new ConcurrentDictionary<string, Item>(concurrency, capcity);
+            entries = new ConcurrentDictionary<string, Entry>(concurrency, capcity);
 
             // create and start the cleaner thread
             cleaner = new Thread(Clean);
             cleaner.Start();
         }
 
-        internal void ToStop()
+        internal void Stop()
         {
             stop = true;
         }
 
-        internal void Add(string url, int maxage, IContent content)
+        internal void Add(string target, int maxage, IContent content)
         {
-            Item item = new Item(maxage, content, Environment.TickCount);
-            items.TryAdd(url, item);
+            Entry e = new Entry(maxage, content, Environment.TickCount);
+            entries.AddOrUpdate(target, e, (k, v) => e.Merge(v));
         }
 
         internal void Clean()
@@ -45,15 +45,15 @@ namespace Greatbone.Core
                 int now = Environment.TickCount;
 
                 // a single loop to clean up expired items
-                using (var e = items.GetEnumerator())
+                using (var enm = entries.GetEnumerator())
                 {
-                    while (e.MoveNext())
+                    while (enm.MoveNext())
                     {
-                        Item item = e.Current.Value;
-                        if (item.Expired(now))
+                        Entry e = enm.Current.Value;
+                        if (e.IfExpired(now))
                         {
-                            Item old;
-                            items.TryRemove(e.Current.Key, out old);
+                            Entry old;
+                            entries.TryRemove(enm.Current.Key, out old);
                         }
                     }
                 }
@@ -62,36 +62,54 @@ namespace Greatbone.Core
 
         internal bool TryGetContent(string target, out IContent v)
         {
-            Item itm;
-            if (items.TryGetValue(target, out itm))
+            Entry e;
+            if (entries.TryGetValue(target, out e))
             {
-                v = itm.Content;
+                e.Inc();
+                v = e.content;
                 return true;
             }
             v = null;
             return false;
         }
 
-        struct Item
+        class Entry
         {
             // ticks of expiration
-            internal readonly int expiry;
+            internal int expiry;
 
             // can be null
-            internal IContent Content { get; }
+            internal IContent content;
 
-            internal int Ticks { get; }
+            internal int ticks;
 
-            internal Item(int expiry, IContent content, int ticks)
+            internal int counter;
+
+            internal Entry(int expiry, IContent content, int ticks)
             {
                 this.expiry = expiry;
-                Content = content;
-                Ticks = ticks;
+                this.content = content;
+                this.ticks = ticks;
             }
 
-            internal bool Expired(int now)
+            internal void Inc()
             {
-                return (Ticks + expiry * 60000) < now;
+                Interlocked.Increment(ref counter);
+            }
+
+            internal int Counter => counter;
+
+            internal bool IfExpired(int now)
+            {
+                return (ticks + expiry * 60000) < now;
+            }
+
+            internal Entry Merge(Entry e)
+            {
+                expiry = e.expiry;
+                counter += e.counter;
+                content = e.content;
+                return this;
             }
         }
     }
