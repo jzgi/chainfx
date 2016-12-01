@@ -7,14 +7,14 @@ namespace Greatbone.Sample
     ///
     public class MyCartDirectory : WebDirectory
     {
-        public MyCartDirectory(WebDirectoryContext ctx) : base(ctx)
+        public MyCartDirectory(WebMake mk) : base(mk)
         {
         }
 
         ///
         /// Get buyer's personal order list
         ///
-        public void Add(WebContext wc, string subscpt)
+        public void Add(WebExchange wc, string subscpt)
         {
 
         }
@@ -22,7 +22,7 @@ namespace Greatbone.Sample
         ///
         /// Get shop's order list
         ///
-        public void Remove(WebContext wc, string subscpt)
+        public void Remove(WebExchange wc, string subscpt)
         {
             // string shopid = wc.Var(null);
         }
@@ -30,7 +30,7 @@ namespace Greatbone.Sample
         ///
         /// find in shop's order list
         ///
-        public void Checkout(WebContext wc, string subscpt)
+        public void Checkout(WebExchange wc, string subscpt)
         {
             // string shopid = wc.Var(null);
 

@@ -106,7 +106,7 @@ namespace Greatbone.Core
             cache = new ContentCache(Environment.ProcessorCount * 2, 4096);
         }
 
-        public WebConfig Config => (WebConfig)ctx;
+        public WebConfig Config => (WebConfig)make;
 
         ///
         /// The service instance id.
@@ -162,7 +162,7 @@ namespace Greatbone.Core
         /// </summary>
         public HttpContext CreateContext(IFeatureCollection features)
         {
-            return new WebContext(features);
+            return new WebExchange(features);
         }
 
         /// <summary>
@@ -170,7 +170,7 @@ namespace Greatbone.Core
         /// </summary>
         public async Task ProcessRequestAsync(HttpContext context)
         {
-            WebContext wc = (WebContext)context;
+            WebExchange wc = (WebExchange)context;
             HttpRequest req = wc.Request;
             string path = req.Path.Value;
             string targ = path + req.QueryString.Value;
@@ -219,7 +219,7 @@ namespace Greatbone.Core
 
         public void DisposeContext(HttpContext context, Exception exception)
         {
-            ((WebContext)context).Dispose();
+            ((WebExchange)context).Dispose();
         }
 
         protected virtual IPrincipal Principalize(string token)
@@ -228,7 +228,7 @@ namespace Greatbone.Core
         }
 
 
-        internal override void Handle(string relative, WebContext wc)
+        internal override void Handle(string relative, WebExchange wc)
         {
             if ("*".Equals(relative))
             {
@@ -242,7 +242,7 @@ namespace Greatbone.Core
         }
 
 
-        public virtual void signon(WebContext wc)
+        public virtual void signon(WebExchange wc)
         {
             wc.StatusCode = 501; //not implements
         }
@@ -293,7 +293,7 @@ namespace Greatbone.Core
         }
 
 
-        void ForEvents(WebContext wc)
+        void ForEvents(WebExchange wc)
         {
             string svc = wc.Header("service");
             string sub = "";

@@ -9,15 +9,12 @@ namespace Greatbone.Sample
     {
         readonly WebAction _re_menu_;
 
-        public ShopVariableDirectory(WebDirectoryContext ctx) : base(ctx)
+        public ShopVariableDirectory(WebMake mk) : base(mk)
         {
-            // customer personal
-            AddChild<MyDir>("my");
-
-            AddChild<MyCartDirectory>("mycart");
+            Make<MyCartDirectory>("mycart");
 
             // order functions
-            AddChild<MyOrderDirectory>("myorder");
+            Make<MyOrderDirectory>("myorder");
 
             _re_menu_ = GetAction(nameof(remenu));
         }
@@ -29,7 +26,7 @@ namespace Greatbone.Sample
         /// GET /330001/
         /// </code>
         ///
-        public void @default(WebContext wc)
+        public void @default(WebExchange wc)
         {
             string shopid = wc.Major;
             using (var dc = Service.NewDbContext())
@@ -54,16 +51,16 @@ namespace Greatbone.Sample
         ///
         /// recreate menu for this shop with WeChat.
         ///
-        public void remenu(WebContext wc)
+        public void remenu(WebExchange wc)
         {
         }
 
 
-        public void basket(WebContext wc)
+        public void basket(WebExchange wc)
         {
         }
 
-        public void invoice(WebContext wc)
+        public void invoice(WebExchange wc)
         {
         }
     }

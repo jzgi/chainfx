@@ -12,7 +12,7 @@ namespace Greatbone.Sample
 
         public ShopService(WebConfig cfg) : base(cfg)
         {
-            SetVariable<ShopVariableDirectory>();
+            MakeVariable<ShopVariableDirectory>();
 
             _new = GetActions(nameof(@new));
         }
@@ -30,7 +30,7 @@ namespace Greatbone.Sample
         /// id=_id_&amp;password=_password_[&amp;orig=_orig_]
         /// </code>
         ///
-        public override void signon(WebContext wc)
+        public override void signon(WebExchange wc)
         {
             if (wc.IsGetMethod) // return the login form
             {
@@ -88,7 +88,7 @@ namespace Greatbone.Sample
         /// </code>
         ///
         [CheckAdmin]
-        public void @default(WebContext wc, int page)
+        public void @default(WebExchange wc, int page)
         {
             const byte z = 0xff ^ BIN;
 
@@ -121,7 +121,7 @@ namespace Greatbone.Sample
         /// </code>
         ///
         [CheckAdmin]
-        public void @new(WebContext wc)
+        public void @new(WebExchange wc)
         {
             if (wc.IsGetMethod)
             {
@@ -161,7 +161,7 @@ namespace Greatbone.Sample
         }
 
         [CheckAdmin]
-        public virtual void mgmt(WebContext wc, string subscpt)
+        public virtual void mgmt(WebExchange wc, string subscpt)
         {
             if (Children != null)
             {
@@ -177,7 +177,7 @@ namespace Greatbone.Sample
         }
 
 
-        public void report(WebContext wc, string subscpt)
+        public void report(WebExchange wc, string subscpt)
         {
             using (var call = wc.NewWebCall())
             {

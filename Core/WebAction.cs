@@ -13,11 +13,7 @@ namespace Greatbone.Core
 
         readonly string key;
 
-        // one of the tow signatures
-        readonly Delegate doer;
-
-        // if the method has a subscript parameter
-        readonly Type subtype;
+        readonly Action<WebExchange> doer;
 
         readonly CheckAttribute[] checks;
 
@@ -26,38 +22,11 @@ namespace Greatbone.Core
 
         readonly UiAttribute ui;
 
-        internal WebAction(WebDirectory dir, MethodInfo mi, Type subtype)
+        internal WebAction(WebDirectory dir, MethodInfo mi)
         {
-            this.directory = dir;
-            this.key = mi.Name;
-            this.subtype = subtype;
-
-            // create the doer delegate
-            if (subtype == null)
-            {
-                doer = mi.CreateDelegate(typeof(Action<WebContext>), dir);
-            }
-            else if (subtype == typeof(string))
-            {
-                doer = mi.CreateDelegate(typeof(Action<WebContext, string>), dir);
-            }
-            else if (subtype == typeof(short))
-            {
-                doer = mi.CreateDelegate(typeof(Action<WebContext, short>), dir);
-            }
-            else if (subtype == typeof(int))
-            {
-                doer = mi.CreateDelegate(typeof(Action<WebContext, int>), dir);
-            }
-            else if (subtype == typeof(long))
-            {
-                doer = mi.CreateDelegate(typeof(Action<WebContext, long>), dir);
-            }
-            else if (subtype == typeof(DateTime))
-            {
-                doer = mi.CreateDelegate(typeof(Action<WebContext, DateTime>), dir);
-            }
-            else throw new WebException(key + "(...) wrong subscript type");
+            directory = dir;
+            key = mi.Name;
+            doer = (Action<WebExchange>)mi.CreateDelegate(typeof(Action<WebExchange>), dir);
 
             // prepare checks
             List<CheckAttribute> lst = null;
@@ -90,56 +59,33 @@ namespace Greatbone.Core
         // for generating unique digest nonce
         const string PrivateKey = "3e43a7180";
 
-        internal bool TryDo(WebContext wc, string subscpt = null)
+        internal bool TryDo(WebExchange we)
         {
             // access check 
-            if (header && wc.Principal == null)
+            if (header && we.Principal == null)
             {
-                wc.StatusCode = 401; // unauthorized
-                wc.SetHeader("WWW-Authenticate", "Bearer");
+                we.StatusCode = 401; // unauthorized
+                we.SetHeader("WWW-Authenticate", "Bearer");
                 return false;
             }
-            else if (cookie && wc.Principal == null)
+            else if (cookie && we.Principal == null)
             {
 
             }
 
             for (int i = 0; i < checks.Length; i++)
             {
-                if (!checks[i].Test(wc))
+                if (!checks[i].Test(we))
                 {
-                    wc.StatusCode = 403; // forbidden
+                    we.StatusCode = 403; // forbidden
                     return false;
                 }
             }
 
             // invoke the method
-            wc.Action = this;
-            if (subtype == null)
-            {
-                ((Action<WebContext>)doer)(wc);
-            }
-            else if (subtype == typeof(string))
-            {
-                ((Action<WebContext, string>)doer)(wc, subscpt);
-            }
-            else if (subtype == typeof(short))
-            {
-                ((Action<WebContext, short>)doer)(wc, subscpt.ToShort());
-            }
-            else if (subtype == typeof(int))
-            {
-                ((Action<WebContext, int>)doer)(wc, subscpt.ToInt());
-            }
-            else if (subtype == typeof(long))
-            {
-                ((Action<WebContext, long>)doer)(wc, subscpt.ToLong());
-            }
-            else if (subtype == typeof(DateTime))
-            {
-                ((Action<WebContext, DateTime>)doer)(wc, subscpt.ToDateTime());
-            }
-            wc.Action = null;
+            we.Action = this;
+            doer(we);
+            we.Action = null;
             return true;
         }
 
@@ -147,7 +93,5 @@ namespace Greatbone.Core
         {
             return Key;
         }
-
-        public static bool IsSubtype(Type typ) => typ == typeof(string) || typ == typeof(short) || typ == typeof(int) || typ == typeof(long) || typ == typeof(DateTime);
     }
 }

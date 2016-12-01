@@ -6,7 +6,7 @@ namespace Greatbone.Core
     ///
     /// The processing of an queued message. 
     ///
-    public struct WebEvent : IDisposable
+    public struct WebEvent : IContext, IDisposable
     {
         readonly WebPeer peer;
 

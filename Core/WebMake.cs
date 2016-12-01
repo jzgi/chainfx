@@ -3,12 +3,11 @@
 namespace Greatbone.Core
 {
     ///
-    /// The context for a particular node in the web work hierarchy.
+    /// The context for a particular node in the web controller hierarchy.
     ///
-    public class WebDirectoryContext
+    public class WebMake : IContext
     {
         public string key;
-
 
         public string Key => key;
 

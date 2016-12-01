@@ -16,7 +16,7 @@
     /// }
     /// </code>
     ///
-    public class WebConfig : WebDirectoryContext, IData
+    public class WebConfig : WebMake, IData
     {
         // service subkey, can be null
         public string subkey;

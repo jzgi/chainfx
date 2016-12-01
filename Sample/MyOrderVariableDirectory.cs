@@ -7,14 +7,14 @@ namespace Greatbone.Sample
     ///
     public class MyOrderVariableDirectory : WebDirectory, IVariable
     {
-        public MyOrderVariableDirectory(WebDirectoryContext ctx) : base(ctx)
+        public MyOrderVariableDirectory(WebMake mk) : base(mk)
         {
         }
 
         ///
         /// Get order's detail.
         ///
-        public void @default(WebContext wc)
+        public void @default(WebExchange wc)
         {
             string shopid = wc.Major;
             int id = wc.Minor;
@@ -35,7 +35,7 @@ namespace Greatbone.Sample
             }
         }
 
-        public void cannel(WebContext wc)
+        public void cannel(WebExchange wc)
         {
             string shopid = wc.Major;
             int orderid = wc.Minor;
@@ -56,11 +56,11 @@ namespace Greatbone.Sample
             }
         }
 
-        public void pend(WebContext wc)
+        public void pend(WebExchange wc)
         {
         }
 
-        public void close(WebContext wc)
+        public void close(WebExchange wc)
         {
         }
     }

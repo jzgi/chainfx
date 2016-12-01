@@ -21,12 +21,12 @@ namespace Greatbone.Sample
         /// GET /cats
         /// </code>
         ///
-        public void accestoken(WebContext wc, string subscpt)
+        public void accestoken(WebExchange wc, string subscpt)
         {
 
         }
 
-        public void search(WebContext wc, string subscpt)
+        public void search(WebExchange wc, string subscpt)
         {
 
         }

@@ -7,7 +7,7 @@ namespace Greatbone.Core
     ///
     /// An eachange of requests and receive responses.
     ///
-    public class WebCall : IDisposable
+    public class WebCall : IContext, IDisposable
     {
         readonly WebPeer client;
 
@@ -24,7 +24,7 @@ namespace Greatbone.Core
             this.client = client;
         }
 
-        internal WebContext Context { get; set; }
+        internal WebExchange Context { get; set; }
 
         public void SetHeader(string name, string v)
         {

@@ -17,7 +17,7 @@ namespace Greatbone.Core
             this.cookie = cookie;
         }
 
-        public virtual bool Test(WebContext wc)
+        public virtual bool Test(WebExchange wc)
         {
             return true;
         }

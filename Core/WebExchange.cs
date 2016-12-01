@@ -9,9 +9,9 @@ namespace Greatbone.Core
     ///
     /// The encapsulation of a web request/response exchange context.
     ///
-    public class WebContext : DefaultHttpContext, IDisposable
+    public class WebExchange : DefaultHttpContext, IContext, IDisposable
     {
-        internal WebContext(IFeatureCollection features) : base(features) { }
+        internal WebExchange(IFeatureCollection features) : base(features) { }
 
         public WebDirectory Directory { get; internal set; }
 
@@ -22,17 +22,32 @@ namespace Greatbone.Core
         // two levels of variable keys
         Var major, minor;
 
-        internal void ChainVar(WebDirectory directory, string key)
+        Var subscript;
+
+        internal void ChainVar(string key, WebDirectory dir)
         {
-            if (major.Directory == null)
-                major = new Var(directory, key);
-            else if (minor.Directory == null)
-                minor = new Var(directory, key);
+            if (dir != null)
+            {
+                if (major.Key == null)
+                {
+                    major = new Var(key, dir);
+                }
+                else if (minor.Key == null)
+                {
+                    minor = new Var(key, dir);
+                }
+            }
+            else if (subscript.Key == null)
+            {
+                subscript = new Var(key, null);
+            }
         }
 
         public Var Major => major;
 
         public Var Minor => minor;
+
+        public Var Subscript => subscript;
 
         //
         // REQUEST
