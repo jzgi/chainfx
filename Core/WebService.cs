@@ -133,7 +133,7 @@ namespace Greatbone.Core
                 dc.Execute(@"CREATE TABLE IF NOT EXISTS eq (
                                 id serial8 NOT NULL,
                                 time timestamp without time zone,
-                                topic character varying(20),
+                                event character varying(20),
                                 subkey character varying(10),
                                 body bytea,
                                 CONSTRAINT eq_pkey PRIMARY KEY (id)

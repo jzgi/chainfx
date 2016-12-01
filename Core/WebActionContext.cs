@@ -11,11 +11,8 @@ namespace Greatbone.Core
     ///
     public class WebActionContext : DefaultHttpContext, IAutoContext, IDisposable
     {
-        readonly string url;
-
         internal WebActionContext(IFeatureCollection features) : base(features)
         {
-            url = features.Get<IHttpRequestFeature>().RawTarget;
         }
 
         public WebDirectory Directory { get; internal set; }
@@ -27,7 +24,7 @@ namespace Greatbone.Core
         // two levels of variable keys
         Var var1, var2;
 
-        Var sub;
+        Var subscript;
 
         internal void SetVar(string key, WebDirectory dir)
         {
@@ -36,9 +33,9 @@ namespace Greatbone.Core
                 if (var1.Key == null) var1 = new Var(key, dir);
                 else if (var2.Key == null) var2 = new Var(key, dir);
             }
-            else if (sub.Key == null)
+            else if (subscript.Key == null)
             {
-                sub = new Var(key, null);
+                subscript = new Var(key, null);
             }
         }
 
@@ -46,7 +43,7 @@ namespace Greatbone.Core
 
         public Var Var2 => var2;
 
-        public Var Sub => sub;
+        public Var Subscript => subscript;
 
         //
         // REQUEST
@@ -58,7 +55,7 @@ namespace Greatbone.Core
 
         public bool IsPostMethod => "POST".Equals(Request.Method);
 
-        public string Url => url;
+        public string Url => Features.Get<IHttpRequestFeature>().RawTarget;
 
         Form query;
 

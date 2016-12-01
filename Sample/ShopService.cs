@@ -90,7 +90,7 @@ namespace Greatbone.Sample
         [CheckAdmin]
         public void @default(WebActionContext ac)
         {
-            int page = ac.Sub;
+            int page = ac.Subscript;
             const byte z = 0xff ^ BIN;
 
             using (var dc = Service.NewDbContext())
