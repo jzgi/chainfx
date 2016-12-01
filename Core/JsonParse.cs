@@ -19,15 +19,11 @@ namespace Greatbone.Core
         // UTF-8 string builder
         readonly Str str;
 
-        // whether json extension for byte array
-        readonly bool jx;
-
-        public JsonParse(byte[] bytebuf, int count, bool jx = false)
+        public JsonParse(byte[] bytebuf, int count)
         {
             this.bytebuf = bytebuf;
             this.count = count;
             this.strbuf = null;
-            this.jx = jx;
             this.str = new Str(256);
         }
 
@@ -36,7 +32,6 @@ namespace Greatbone.Core
             this.strbuf = strbuf;
             this.count = strbuf.Length;
             this.bytebuf = null;
-            this.jx = false;
             this.str = new Str(256);
         }
 

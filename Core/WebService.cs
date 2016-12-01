@@ -159,7 +159,6 @@ namespace Greatbone.Core
         {
         }
 
-
         ///  
         /// Returns a framework custom context.
         /// 

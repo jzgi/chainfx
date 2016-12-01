@@ -178,7 +178,7 @@ namespace Greatbone.Core
                 }
                 else
                 {
-                    wc.ChainVar(key, variable);
+                    wc.SetVar(key, variable);
                     variable.Handle(relative.Substring(slash + 1), wc);
                 }
             }

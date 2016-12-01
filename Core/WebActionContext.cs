@@ -11,8 +11,11 @@ namespace Greatbone.Core
     ///
     public class WebActionContext : DefaultHttpContext, IAutoContext, IDisposable
     {
+        readonly string url;
+
         internal WebActionContext(IFeatureCollection features) : base(features)
         {
+            url = features.Get<IHttpRequestFeature>().RawTarget;
         }
 
         public WebDirectory Directory { get; internal set; }
@@ -26,18 +29,12 @@ namespace Greatbone.Core
 
         Var sub;
 
-        internal void ChainVar(string key, WebDirectory dir)
+        internal void SetVar(string key, WebDirectory dir)
         {
             if (dir != null)
             {
-                if (var1.Key == null)
-                {
-                    var1 = new Var(key, dir);
-                }
-                else if (var2.Key == null)
-                {
-                    var2 = new Var(key, dir);
-                }
+                if (var1.Key == null) var1 = new Var(key, dir);
+                else if (var2.Key == null) var2 = new Var(key, dir);
             }
             else if (sub.Key == null)
             {
@@ -61,7 +58,7 @@ namespace Greatbone.Core
 
         public bool IsPostMethod => "POST".Equals(Request.Method);
 
-        public string Url => Request.Path.Value + "?" + Request.QueryString.Value;
+        public string Url => url;
 
         Form query;
 
@@ -158,29 +155,27 @@ namespace Greatbone.Core
 
             EnsureReadAsync();
 
-            if (count > 0)
+            if (count == 0) return;
+
+            string ctyp = Request.ContentType;
+            if ("application/x-www-form-urlencoded".Equals(ctyp))
             {
-                string ctyp = Request.ContentType;
-                if ("application/x-www-form-urlencoded".Equals(ctyp))
-                {
-                    FormParse p = new FormParse(bytebuf, count);
-                    entity = p.Parse();
-                }
-                else if ("application/xml".Equals(ctyp))
-                {
-                    XmlParse p = new XmlParse(bytebuf, count);
-                    entity = p.Parse();
-                }
-                else
-                {
-                    bool jx = "application/jsonx".Equals(ctyp); // json extention
-                    JsonParse p = new JsonParse(bytebuf, count, jx);
-                    entity = p.Parse();
-                }
+                FormParse p = new FormParse(bytebuf, count);
+                entity = p.Parse();
+            }
+            else if ("application/json".Equals(ctyp))
+            {
+                JsonParse p = new JsonParse(bytebuf, count);
+                entity = p.Parse();
+            }
+            else if ("application/xml".Equals(ctyp))
+            {
+                XmlParse p = new XmlParse(bytebuf, count);
+                entity = p.Parse();
             }
         }
 
-        public ArraySegment<byte>? ReadByteA()
+        public ArraySegment<byte>? ReadByteAs()
         {
             EnsureReadAsync();
 
