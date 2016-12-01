@@ -7,17 +7,17 @@ namespace Greatbone.Sample
     ///
     public class MyOrderVariableDirectory : WebDirectory, IVariable
     {
-        public MyOrderVariableDirectory(WebMake mk) : base(mk)
+        public MyOrderVariableDirectory(WebMakeContext mc) : base(mc)
         {
         }
 
         ///
         /// Get order's detail.
         ///
-        public void @default(WebExchange wc)
+        public void @default(WebActionContext ac)
         {
-            string shopid = wc.Major;
-            int id = wc.Minor;
+            string shopid = ac.Major;
+            int id = ac.Minor;
 
             using (var dc = Service.NewDbContext())
             {
@@ -25,20 +25,20 @@ namespace Greatbone.Sample
                 if (dc.Query(sql.ToString(), p => p.Put(id).Put(shopid)))
                 {
                     var order = dc.ToData<Order>();
-                    wc.SendHtmlMajor(200, "", main =>
+                    ac.SendHtmlMajor(200, "", main =>
                     {
 
                     });
                 }
                 else
-                    wc.SendHtmlMajor(200, "没有记录", main => { });
+                    ac.SendHtmlMajor(200, "没有记录", main => { });
             }
         }
 
-        public void cannel(WebExchange wc)
+        public void cannel(WebActionContext ac)
         {
-            string shopid = wc.Major;
-            int orderid = wc.Minor;
+            string shopid = ac.Major;
+            int orderid = ac.Minor;
 
             using (var dc = Service.NewDbContext())
             {
@@ -46,21 +46,21 @@ namespace Greatbone.Sample
                 if (dc.Query(sql.ToString(), p => p.Put(orderid).Put(shopid)))
                 {
                     var order = dc.ToData<Order>();
-                    wc.SendHtmlMajor(200, "", main =>
+                    ac.SendHtmlMajor(200, "", main =>
                     {
 
                     });
                 }
                 else
-                    wc.SendHtmlMajor(200, "没有记录", main => { });
+                    ac.SendHtmlMajor(200, "没有记录", main => { });
             }
         }
 
-        public void pend(WebExchange wc)
+        public void pend(WebActionContext ac)
         {
         }
 
-        public void close(WebExchange wc)
+        public void close(WebActionContext ac)
         {
         }
     }

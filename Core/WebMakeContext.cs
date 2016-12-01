@@ -5,7 +5,7 @@ namespace Greatbone.Core
     ///
     /// The context for a particular node in the web controller hierarchy.
     ///
-    public class WebMake : IContext
+    public class WebMakeContext : IAutoContext
     {
         public string key;
 

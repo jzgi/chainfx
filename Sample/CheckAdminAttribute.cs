@@ -6,7 +6,7 @@ namespace Greatbone.Sample
     {
         public CheckAdminAttribute() : base(false) { }
 
-        public override bool Test(WebExchange wc)
+        public override bool Test(WebActionContext wc)
         {
             return wc.Principal is ShopToken;
         }

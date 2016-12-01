@@ -9,9 +9,9 @@ namespace Greatbone.Core
     ///
     /// The encapsulation of a web request/response exchange context.
     ///
-    public class WebExchange : DefaultHttpContext, IContext, IDisposable
+    public class WebActionContext : DefaultHttpContext, IAutoContext, IDisposable
     {
-        internal WebExchange(IFeatureCollection features) : base(features) { }
+        internal WebActionContext(IFeatureCollection features) : base(features) { }
 
         public WebDirectory Directory { get; internal set; }
 
@@ -47,7 +47,7 @@ namespace Greatbone.Core
 
         public Var Minor => minor;
 
-        public Var Subscript => subscript;
+        public Var Sub => subscript;
 
         //
         // REQUEST

@@ -13,7 +13,7 @@ namespace Greatbone.Core
 
         readonly string key;
 
-        readonly Action<WebExchange> doer;
+        readonly Action<WebActionContext> doer;
 
         readonly CheckAttribute[] checks;
 
@@ -26,7 +26,7 @@ namespace Greatbone.Core
         {
             directory = dir;
             key = mi.Name;
-            doer = (Action<WebExchange>)mi.CreateDelegate(typeof(Action<WebExchange>), dir);
+            doer = (Action<WebActionContext>)mi.CreateDelegate(typeof(Action<WebActionContext>), dir);
 
             // prepare checks
             List<CheckAttribute> lst = null;
@@ -59,7 +59,7 @@ namespace Greatbone.Core
         // for generating unique digest nonce
         const string PrivateKey = "3e43a7180";
 
-        internal bool TryDo(WebExchange we)
+        internal bool TryDo(WebActionContext we)
         {
             // access check 
             if (header && we.Principal == null)

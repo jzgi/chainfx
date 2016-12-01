@@ -1,46 +1,33 @@
 ﻿using System;
-
+using System.Reflection;
 
 namespace Greatbone.Core
 {
-    ///
-    /// The processing of an queued message. 
-    ///
-    public struct WebEvent : IContext, IDisposable
+    /// <summary>
+    /// The descriptor of a message hook.
+    /// <summary>
+    public class WebEvent : IKeyed
     {
-        readonly WebPeer peer;
+        public WebService Service { get; }
 
-        readonly long id;
+        public string Key { get; }
 
-        readonly string topic;
+        readonly Action<WebEventContext> doer;
 
-        readonly string subkey;
-
-        // either Obj or Arr
-        readonly object body;
-
-        internal WebEvent(WebPeer peer, long id, string topic, string subkey, object body)
+        internal WebEvent(WebService service, MethodInfo mi)
         {
-            this.peer = peer;
-            this.id = id;
-            this.topic = topic;
-            this.subkey = subkey;
-            this.body = body;
+            Key = mi.Name;
+            doer = (Action<WebEventContext>)mi.CreateDelegate(typeof(Action<WebEventContext>), service);
         }
 
-        public long Id => id;
-
-        public string Topic => Topic;
-
-        public string Subkey => subkey;
-
-        public Obj BodyObj => (Obj)body;
-
-        public Arr BodyArr => (Arr)body;
-
-        public void Dispose()
+        internal void Do(WebEventContext mc)
         {
-            throw new NotImplementedException();
+            doer(mc);
+        }
+
+        public override string ToString()
+        {
+            return Key;
         }
     }
 }

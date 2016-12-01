@@ -16,7 +16,7 @@ namespace Greatbone.Core
         const string VariableKey = "-var-";
 
         // state-passing
-        internal readonly WebMake make;
+        internal readonly WebMakeContext makectx;
 
         // declared actions 
         readonly Roll<WebAction> actions;
@@ -31,9 +31,9 @@ namespace Greatbone.Core
         internal WebDirectory variable;
 
 
-        protected WebDirectory(WebMake make)
+        protected WebDirectory(WebMakeContext makectx)
         {
-            this.make = make;
+            this.makectx = makectx;
 
             // init actions
             actions = new Roll<WebAction>(32);
@@ -41,7 +41,7 @@ namespace Greatbone.Core
             foreach (MethodInfo mi in typ.GetMethods(BindingFlags.Public | BindingFlags.Instance))
             {
                 ParameterInfo[] pis = mi.GetParameters();
-                if (pis.Length == 1 && pis[0].ParameterType == typeof(WebExchange))
+                if (pis.Length == 1 && pis[0].ParameterType == typeof(WebActionContext))
                 {
                     WebAction wa = new WebAction(this, mi);
                     actions.Add(wa);
@@ -63,12 +63,12 @@ namespace Greatbone.Core
             }
             // create instance by reflection
             Type typ = typeof(D);
-            ConstructorInfo ci = typ.GetConstructor(new[] { typeof(WebMake) });
+            ConstructorInfo ci = typ.GetConstructor(new[] { typeof(WebMakeContext) });
             if (ci == null)
             {
                 throw new WebException(typ + " missing WebDirContext");
             }
-            WebMake make = new WebMake
+            WebMakeContext mc = new WebMakeContext
             {
                 key = key,
                 State = state,
@@ -78,7 +78,7 @@ namespace Greatbone.Core
                 Folder = (Parent == null) ? key : Path.Combine(Parent.Folder, key),
                 Service = Service
             };
-            D dir = (D)ci.Invoke(new object[] { make });
+            D dir = (D)ci.Invoke(new object[] { mc });
             children.Add(dir);
 
             return dir;
@@ -94,12 +94,12 @@ namespace Greatbone.Core
 
             // create instance
             Type typ = typeof(D);
-            ConstructorInfo ci = typ.GetConstructor(new[] { typeof(WebMake) });
+            ConstructorInfo ci = typ.GetConstructor(new[] { typeof(WebMakeContext) });
             if (ci == null)
             {
                 throw new WebException(typ + " missing WebDirContext");
             }
-            WebMake make = new WebMake
+            WebMakeContext mc = new WebMakeContext
             {
                 key = VariableKey,
                 State = state,
@@ -109,7 +109,7 @@ namespace Greatbone.Core
                 Folder = (Parent == null) ? VariableKey : Path.Combine(Parent.Folder, VariableKey),
                 Service = Service
             };
-            D dir = (D)ci.Invoke(new object[] { make });
+            D dir = (D)ci.Invoke(new object[] { mc });
             variable = dir;
 
             return dir;
@@ -118,19 +118,19 @@ namespace Greatbone.Core
         ///
         /// The key by which this sub-controller is added to its parent
         ///
-        public string Key => make.Key;
+        public string Key => makectx.Key;
 
-        public object State => make.State;
+        public object State => makectx.State;
 
-        public bool IsVariable => make.IsVariable;
+        public bool IsVariable => makectx.IsVariable;
 
-        public string Folder => make.Folder;
+        public string Folder => makectx.Folder;
 
-        public WebDirectory Parent => make.Parent;
+        public WebDirectory Parent => makectx.Parent;
 
-        public int Level => make.Level;
+        public int Level => makectx.Level;
 
-        public WebService Service => make.Service;
+        public WebService Service => makectx.Service;
 
 
         // public Roll<WebAction> Actions => actions;
@@ -157,7 +157,7 @@ namespace Greatbone.Core
         }
 
 
-        internal virtual void Handle(string relative, WebExchange wc)
+        internal virtual void Handle(string relative, WebActionContext wc)
         {
             int slash = relative.IndexOf('/');
             if (slash == -1) // handle it locally
@@ -184,7 +184,7 @@ namespace Greatbone.Core
             }
         }
 
-        internal void DoRsc(string rsc, WebExchange wc)
+        internal void DoRsc(string rsc, WebActionContext wc)
         {
             wc.Directory = this;
 
@@ -217,7 +217,7 @@ namespace Greatbone.Core
             wc.Directory = null;
         }
 
-        void DoStatic(string file, string ext, WebExchange wc)
+        void DoStatic(string file, string ext, WebActionContext wc)
         {
             if (file.StartsWith("$")) // private resource
             {

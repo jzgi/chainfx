@@ -13,7 +13,6 @@ namespace Greatbone.Sample
         {
         }
 
-
         ///
         /// Get access token for WeChat.
         ///
@@ -21,12 +20,12 @@ namespace Greatbone.Sample
         /// GET /cats
         /// </code>
         ///
-        public void accestoken(WebExchange wc, string subscpt)
+        public void accestoken(WebActionContext ac)
         {
 
         }
 
-        public void search(WebExchange wc, string subscpt)
+        public void search(WebActionContext e)
         {
 
         }
@@ -40,9 +39,9 @@ namespace Greatbone.Sample
         // EVENTS
         // 
 
-        public void DAILY_RPT(WebEvent we)
+        public void DAILY_RPT(WebEventContext ec)
         {
-            using (var dc = NewDbContext())
+            using (var dc = ec.NewDbContext())
             {
                 dc.Begin();
 

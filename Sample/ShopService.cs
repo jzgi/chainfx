@@ -30,24 +30,24 @@ namespace Greatbone.Sample
         /// id=_id_&amp;password=_password_[&amp;orig=_orig_]
         /// </code>
         ///
-        public override void signon(WebExchange wc)
+        public override void signon(WebActionContext ac)
         {
-            if (wc.IsGetMethod) // return the login form
+            if (ac.IsGetMethod) // return the login form
             {
-                Form frm = wc.Query;
+                Form frm = ac.Query;
                 string id = frm[nameof(id)];
                 string password = frm[nameof(password)];
                 string orig = frm[nameof(orig)];
             }
             else // login
             {
-                Form frm = wc.ReadForm();
+                Form frm = ac.ReadForm();
                 string id = frm[nameof(id)];
                 string password = frm[nameof(password)];
                 string orig = frm[nameof(orig)];
                 if (string.IsNullOrEmpty(id) || string.IsNullOrEmpty(password))
                 {
-                    wc.StatusCode = 400; return; // bad request
+                    ac.StatusCode = 400; return; // bad request
                 }
                 using (var dc = Service.NewDbContext())
                 {
@@ -63,18 +63,18 @@ namespace Greatbone.Sample
                             cont.PutObj(tok);
                             cont.Encrypt(0x4a78be76, 0x1f0335e2);
 
-                            wc.SetHeader("Set-Cookie", "");
-                            wc.SetHeader("Location", "");
-                            wc.StatusCode = 303; // see other (redirect)
+                            ac.SetHeader("Set-Cookie", "");
+                            ac.SetHeader("Location", "");
+                            ac.StatusCode = 303; // see other (redirect)
                         }
                         else
                         {
-                            wc.StatusCode = 400;
+                            ac.StatusCode = 400;
                         }
                     }
                     else
                     {
-                        wc.StatusCode = 404;
+                        ac.StatusCode = 404;
                     }
                 }
             }
@@ -88,8 +88,9 @@ namespace Greatbone.Sample
         /// </code>
         ///
         [CheckAdmin]
-        public void @default(WebExchange wc, int page)
+        public void @default(WebActionContext ac)
         {
+            int page = ac.Sub;
             const byte z = 0xff ^ BIN;
 
             using (var dc = Service.NewDbContext())
@@ -98,13 +99,13 @@ namespace Greatbone.Sample
                 if (dc.Query(sql.ToString(), p => p.Put(20 * page)))
                 {
                     var shops = dc.ToDatas<Shop>(z);
-                    wc.SendHtmlMajor(200, "", main =>
+                    ac.SendHtmlMajor(200, "", main =>
                     {
                         main.form(_new, shops);
                     });
                 }
                 else
-                    wc.SendHtmlMajor(200, "没有记录", main => { });
+                    ac.SendHtmlMajor(200, "没有记录", main => { });
             }
         }
 
@@ -121,25 +122,25 @@ namespace Greatbone.Sample
         /// </code>
         ///
         [CheckAdmin]
-        public void @new(WebExchange wc)
+        public void @new(WebActionContext ac)
         {
-            if (wc.IsGetMethod)
+            if (ac.IsGetMethod)
             {
 
             }
             else // post
             {
-                var shop = wc.ReadData<Shop>(); // read form
+                var shop = ac.ReadData<Shop>(); // read form
                 using (var dc = Service.NewDbContext())
                 {
                     shop.credential = StrUtility.MD5(shop.id + ':' + ':' + shop.credential);
                     DbSql sql = new DbSql("INSERT INTO users")._(Shop.Empty)._VALUES_(Shop.Empty)._("");
                     if (dc.Execute(sql.ToString(), p => p.Put(shop)) > 0)
                     {
-                        wc.StatusCode = 201; // created
+                        ac.StatusCode = 201; // created
                     }
                     else
-                        wc.StatusCode = 500; // internal server error
+                        ac.StatusCode = 500; // internal server error
                 }
             }
         }
@@ -161,11 +162,11 @@ namespace Greatbone.Sample
         }
 
         [CheckAdmin]
-        public virtual void mgmt(WebExchange wc, string subscpt)
+        public virtual void mgmt(WebActionContext ac)
         {
             if (Children != null)
             {
-                wc.SendHtmlMajor(200, "模块管理", a =>
+                ac.SendHtmlMajor(200, "模块管理", a =>
                     {
                         for (int i = 0; i < Children.Count; i++)
                         {
@@ -177,9 +178,9 @@ namespace Greatbone.Sample
         }
 
 
-        public void report(WebExchange wc, string subscpt)
+        public void report(WebActionContext ac)
         {
-            using (var call = wc.NewWebCall())
+            using (var call = ac.NewWebCall())
             {
 
             }

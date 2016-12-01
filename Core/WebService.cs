@@ -38,10 +38,10 @@ namespace Greatbone.Core
         readonly ContentCache cache;
 
         // connectivity to the remote peers, for remote call as well as messaging
-        readonly Roll<WebPeer> peers;
+        readonly Roll<WebReference> references;
 
         // hooks of received messages
-        readonly Roll<WebHook> hooks;
+        readonly Roll<WebEvent> events;
 
         readonly Thread scheduler;
 
@@ -75,29 +75,29 @@ namespace Greatbone.Core
             foreach (MethodInfo mi in typ.GetMethods(BindingFlags.Public | BindingFlags.Instance))
             {
                 ParameterInfo[] pis = mi.GetParameters();
-                if (pis.Length == 1 && pis[0].ParameterType == typeof(WebEvent))
+                if (pis.Length == 1 && pis[0].ParameterType == typeof(WebEventContext))
                 {
-                    WebHook hk = new WebHook(this, mi);
-                    if (hooks == null)
+                    WebEvent evt = new WebEvent(this, mi);
+                    if (events == null)
                     {
-                        hooks = new Roll<WebHook>(16);
+                        events = new Roll<WebEvent>(16);
                     }
-                    hooks.Add(hk);
+                    events.Add(evt);
                 }
             }
 
             // init peer connections and message queues
-            Obj ps = cfg.refs;
-            for (int i = 0; i < ps.Count; i++)
+            Obj refs = cfg.refs;
+            for (int i = 0; i < refs.Count; i++)
             {
-                Member mbr = ps[i];
+                Member mbr = refs[i];
                 string svcid = mbr.Key; // service instance id
                 string addr = mbr;
-                if (peers == null)
+                if (references == null)
                 {
-                    peers = new Roll<WebPeer>(ps.Count * 2);
+                    references = new Roll<WebReference>(refs.Count * 2);
                 }
-                peers.Add(new WebPeer(svcid, addr));
+                references.Add(new WebReference(svcid, addr));
             }
 
             InstallEq();
@@ -106,16 +106,16 @@ namespace Greatbone.Core
             cache = new ContentCache(Environment.ProcessorCount * 2, 4096);
         }
 
-        public WebConfig Config => (WebConfig)make;
+        public WebConfig Config => (WebConfig)makectx;
 
         ///
         /// The service instance id.
         ///
         public string Id => id;
 
-        internal Roll<WebHook> Hooks => hooks;
+        internal Roll<WebEvent> Events => events;
 
-        internal Roll<WebPeer> Peers => peers;
+        internal Roll<WebReference> Peers => references;
 
         bool InstallEq()
         {
@@ -162,7 +162,7 @@ namespace Greatbone.Core
         /// </summary>
         public HttpContext CreateContext(IFeatureCollection features)
         {
-            return new WebExchange(features);
+            return new WebActionContext(features);
         }
 
         /// <summary>
@@ -170,7 +170,7 @@ namespace Greatbone.Core
         /// </summary>
         public async Task ProcessRequestAsync(HttpContext context)
         {
-            WebExchange wc = (WebExchange)context;
+            WebActionContext wc = (WebActionContext)context;
             HttpRequest req = wc.Request;
             string path = req.Path.Value;
             string targ = path + req.QueryString.Value;
@@ -219,7 +219,7 @@ namespace Greatbone.Core
 
         public void DisposeContext(HttpContext context, Exception exception)
         {
-            ((WebExchange)context).Dispose();
+            ((WebActionContext)context).Dispose();
         }
 
         protected virtual IPrincipal Principalize(string token)
@@ -228,7 +228,7 @@ namespace Greatbone.Core
         }
 
 
-        internal override void Handle(string relative, WebExchange wc)
+        internal override void Handle(string relative, WebActionContext wc)
         {
             if ("*".Equals(relative))
             {
@@ -242,7 +242,7 @@ namespace Greatbone.Core
         }
 
 
-        public virtual void signon(WebExchange wc)
+        public virtual void signon(WebActionContext wc)
         {
             wc.StatusCode = 501; //not implements
         }
@@ -282,18 +282,18 @@ namespace Greatbone.Core
         // MESSAGING
         //
 
-        internal WebPeer FindPeer(string service)
+        internal WebReference FindPeer(string service)
         {
-            for (int i = 0; i < peers.Count; i++)
+            for (int i = 0; i < references.Count; i++)
             {
-                WebPeer cli = peers[i];
+                WebReference cli = references[i];
                 if (cli.Key.Equals(service)) return cli;
             }
             return null;
         }
 
 
-        void ForEvents(WebExchange wc)
+        void ForEvents(WebActionContext wc)
         {
             string svc = wc.Header("service");
             string sub = "";
@@ -318,7 +318,7 @@ namespace Greatbone.Core
             {
                 for (int i = 0; i < Peers.Count; i++)
                 {
-                    WebPeer conn = Peers[i];
+                    WebReference conn = Peers[i];
 
                     // schedule
                 }

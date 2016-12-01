@@ -7,7 +7,7 @@ namespace Greatbone.Core
     ///
     /// The connect to a remote peer service that the current service depends on.
     ///
-    public class WebPeer : HttpClient, IKeyed
+    public class WebReference : HttpClient, IKeyed
     {
         WebService service;
 
@@ -19,7 +19,7 @@ namespace Greatbone.Core
         // tick count
         private int lastConnect;
 
-        public WebPeer(string name, string raddr)
+        public WebReference(string name, string raddr)
         {
             this.name = name;
             string addr = raddr.StartsWith("http") ? raddr : "http://" + raddr;
@@ -73,10 +73,10 @@ namespace Greatbone.Core
                 string topic = "";
                 DateTime time;
 
-                WebHook hook = null;
-                if (service.Hooks.TryGet(topic, out hook))
+                WebEvent hook = null;
+                if (service.Events.TryGet(topic, out hook))
                 {
-                    WebEvent evt = new WebEvent
+                    WebEventContext evt = new WebEventContext
                     {
                         // body = null
                     };
