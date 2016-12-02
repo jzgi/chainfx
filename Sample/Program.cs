@@ -20,7 +20,7 @@ namespace Greatbone.Sample
 
             var www = new WwwService(new WebConfig
             {
-                key = "www",
+                name = "www",
                 outer = "http://127.0.0.1:8080",
                 inner = "http://127.0.0.1:7770",
                 refs = new Obj{
@@ -35,8 +35,8 @@ namespace Greatbone.Sample
 
             var shop = new ShopService(new WebConfig
             {
-                key = "shop",
-                subkey = "01",
+                name = "shop",
+                partition = "01",
                 outer = "http://127.0.0.1:8081",
                 inner = "http://127.0.0.1:7771",
                 refs = new Obj{

@@ -6,7 +6,7 @@ namespace Greatbone.Core
     ///
     /// An addition-only dictionary, where members are placed in the addition order.
     ///
-    public class Roll<E> : ICollection<E> where E : IKeyed
+    public class Roll<E> : ICollection<E> where E : IRollable
     {
         int[] buckets;
 
@@ -106,7 +106,7 @@ namespace Greatbone.Core
                 }
             }
 
-            string key = elem.Key;
+            string key = elem.Name;
             int code = key.GetHashCode() & 0x7fffffff;
             int buck = code % buckets.Length; // target bucket
             int idx = buckets[buck];
@@ -135,7 +135,7 @@ namespace Greatbone.Core
         public bool Contains(E item)
         {
             E elem;
-            return TryGet(item.Key, out elem);
+            return TryGet(item.Name, out elem);
         }
 
         public void CopyTo(E[] array, int arrayIndex)

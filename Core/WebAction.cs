@@ -7,11 +7,11 @@ namespace Greatbone.Core
     ///
     /// The descriptor for an action method.
     ///
-    public class WebAction : IKeyed
+    public class WebAction : IRollable
     {
         readonly WebDirectory directory;
 
-        readonly string key;
+        readonly string name;
 
         readonly Action<WebActionContext> doer;
 
@@ -25,7 +25,7 @@ namespace Greatbone.Core
         internal WebAction(WebDirectory dir, MethodInfo mi)
         {
             directory = dir;
-            key = mi.Name;
+            name = mi.Name;
             doer = (Action<WebActionContext>)mi.CreateDelegate(typeof(Action<WebActionContext>), dir);
 
             // prepare checks
@@ -48,7 +48,7 @@ namespace Greatbone.Core
 
         public WebDirectory Directory => directory;
 
-        public string Key => key;
+        public string Name => name;
 
         public bool IsGet => ui?.IsGet ?? false;
 
@@ -91,7 +91,7 @@ namespace Greatbone.Core
 
         public override string ToString()
         {
-            return Key;
+            return Name;
         }
     }
 }

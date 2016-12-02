@@ -5,8 +5,11 @@ namespace Greatbone.Core
     ///
     /// Represents a value or a name/value pair if with the name.
     ///
-    public struct Member : IKeyed
+    public struct Member : IRollable
     {
+        // property name, if not null
+        readonly string name;
+
         // type of the value
         internal readonly MemberType type;
 
@@ -15,95 +18,101 @@ namespace Greatbone.Core
 
         internal readonly Number numv;
 
-        // key as in an object member
-        string key;
-
-        public Member(string key, Obj v) : this(v)
+        public Member(string name, Member? v) : this(v)
         {
-            this.key = key;
+            this.name = name;
         }
 
-        public Member(string key, Arr v) : this(v)
+        public Member(string name, Obj v) : this(v)
         {
-            this.key = key;
+            this.name = name;
         }
 
-        public Member(string key, string v) : this(v)
+        public Member(string name, Arr v) : this(v)
         {
-            this.key = key;
+            this.name = name;
         }
 
-        public Member(string key, byte[] v) : this(v)
+        public Member(string name, string v) : this(v)
         {
-            this.key = key;
+            this.name = name;
         }
 
-        public Member(string key, bool v) : this(v)
+        public Member(string name, byte[] v) : this(v)
         {
-            this.key = key;
+            this.name = name;
         }
 
-        public Member(string key, Number v) : this(v)
+        public Member(string name, bool v) : this(v)
         {
-            this.key = key;
+            this.name = name;
+        }
+
+        public Member(string name, Number v) : this(v)
+        {
+            this.name = name;
+        }
+
+        public Member(Member? v)
+        {
+            name = null;
+            type = MemberType.Null;
+            refv = null;
+            numv = default(Number);
         }
 
         public Member(Obj v)
         {
+            name = null;
             type = MemberType.Object;
             refv = v;
             numv = default(Number);
-            key = null;
         }
 
         public Member(Arr v)
         {
+            name = null;
             type = MemberType.Array;
             refv = v;
             numv = default(Number);
-            key = null;
         }
 
         public Member(string v)
         {
+            name = null;
             type = MemberType.String;
             refv = v;
             numv = default(Number);
-            key = null;
         }
 
         public Member(byte[] v)
         {
+            name = null;
             type = MemberType.Bytes;
             refv = v;
             numv = default(Number);
-            key = null;
         }
 
         public Member(bool v)
         {
+            name = null;
             type = v ? MemberType.True : MemberType.False;
             refv = null;
             numv = default(Number);
-            key = null;
         }
 
         public Member(Number v)
         {
+            name = null;
             type = MemberType.Number;
             refv = null;
             numv = v;
-            key = null;
         }
 
 
-        public string Key
-        {
-            get { return key; }
-            internal set { key = value; }
-        }
+        public string Name => name;
 
-        public bool IsPair => key != null;
+        public bool IsPair => name != null;
 
         public static implicit operator Obj(Member v)
         {

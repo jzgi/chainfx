@@ -8,12 +8,12 @@ namespace Greatbone.Core
     ///
     /// A web directory is a server-side controller that realizes a virtual directory containing static/dynamic resources.
     ///
-    public abstract class WebDirectory : IKeyed
+    public abstract class WebDirectory : IRollable
     {
         // max nesting levels
         const int Nesting = 4;
 
-        const string VAR_KEY = "-var-";
+        const string _VAR_ = "-var-";
 
         // state-passing
         internal readonly WebMakeContext makectx;
@@ -43,17 +43,20 @@ namespace Greatbone.Core
                 ParameterInfo[] pis = mi.GetParameters();
                 if (pis.Length == 1 && pis[0].ParameterType == typeof(WebActionContext))
                 {
-                    WebAction wa = new WebAction(this, mi);
-                    actions.Add(wa);
-                    if (wa.Key.Equals("default"))
+                    WebAction atn = new WebAction(this, mi);
+                    actions.Add(atn);
+                    if (atn.Name.Equals("default"))
                     {
-                        defaction = wa;
+                        defaction = atn;
                     }
                 }
             }
         }
 
-        public D Make<D>(string key, object state = null) where D : WebDirectory
+        ///
+        /// Make a child directory.
+        ///
+        public D Make<D>(string name, object state = null) where D : WebDirectory
         {
             if (Level >= Nesting) throw new WebException("nesting levels");
 
@@ -68,17 +71,17 @@ namespace Greatbone.Core
             {
                 throw new WebException(typ + " missing WebMakeContext");
             }
-            WebMakeContext mc = new WebMakeContext
+            WebMakeContext ctx = new WebMakeContext
             {
-                key = key,
+                name = name,
                 State = state,
                 IsVar = false,
                 Parent = this,
                 Level = Level + 1,
-                Folder = (Parent == null) ? key : Path.Combine(Parent.Folder, key),
+                Folder = (Parent == null) ? name : Path.Combine(Parent.Folder, name),
                 Service = Service
             };
-            D dir = (D)ci.Invoke(new object[] { mc });
+            D dir = (D)ci.Invoke(new object[] { ctx });
             children.Add(dir);
 
             return dir;
@@ -88,6 +91,9 @@ namespace Greatbone.Core
 
         public WebDirectory Var => var;
 
+        ///
+        /// Make a variable-key subdirectory.
+        ///
         public D MakeVar<D>(object state = null) where D : WebDirectory, IVar
         {
             if (Level >= Nesting) throw new WebException("nesting levels");
@@ -99,26 +105,23 @@ namespace Greatbone.Core
             {
                 throw new WebException(typ + " missing WebMakeContext");
             }
-            WebMakeContext mc = new WebMakeContext
+            WebMakeContext ctx = new WebMakeContext
             {
-                key = VAR_KEY,
+                name = _VAR_,
                 State = state,
                 IsVar = true,
                 Parent = this,
                 Level = Level + 1,
-                Folder = (Parent == null) ? VAR_KEY : Path.Combine(Parent.Folder, VAR_KEY),
+                Folder = (Parent == null) ? _VAR_ : Path.Combine(Parent.Folder, _VAR_),
                 Service = Service
             };
-            D dir = (D)ci.Invoke(new object[] { mc });
+            D dir = (D)ci.Invoke(new object[] { ctx });
             var = dir;
 
             return dir;
         }
 
-        ///
-        /// The key by which this sub-controller is added to its parent
-        ///
-        public string Key => makectx.Key;
+        public string Name => makectx.Name;
 
         public object State => makectx.State;
 
@@ -147,13 +150,13 @@ namespace Greatbone.Core
         public WebAction[] GetActions(params string[] methods)
         {
             int len = methods.Length;
-            WebAction[] was = new WebAction[len];
+            WebAction[] atn = new WebAction[len];
             for (int i = 0; i < methods.Length; i++)
             {
                 string mthd = methods[i];
-                was[i] = string.IsNullOrEmpty(mthd) ? defaction : actions[mthd];
+                atn[i] = string.IsNullOrEmpty(mthd) ? defaction : actions[mthd];
             }
-            return was;
+            return atn;
         }
 
         internal virtual void Handle(string relative, WebActionContext wc)
@@ -202,14 +205,14 @@ namespace Greatbone.Core
                     key = rsc.Substring(0, dash);
                     subscpt = rsc.Substring(dash + 1);
                 }
-                WebAction wa = string.IsNullOrEmpty(key) ? defaction : GetAction(key);
-                if (wa == null)
+                WebAction atn = string.IsNullOrEmpty(key) ? defaction : GetAction(key);
+                if (atn == null)
                 {
                     wc.StatusCode = 404;
                 }
                 else
                 {
-                    wa.TryDo(wc);
+                    atn.TryDo(wc);
                 }
             }
 

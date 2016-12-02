@@ -18,8 +18,8 @@
     ///
     public class WebConfig : WebMakeContext, IData
     {
-        // service subkey, can be null
-        public string subkey;
+        // can be null
+        public string partition;
 
         // outer  socket address
         public string outer;
@@ -39,12 +39,12 @@
         public Obj extra;
 
         // ovveride to provide a decent folder service name
-        public override string Folder => key;
+        public override string Folder => name;
 
 
         public void Load(ISource s, byte z = 0)
         {
-            s.Get(nameof(subkey), ref subkey);
+            s.Get(nameof(partition), ref partition);
             s.Get(nameof(outer), ref outer);
             s.Get(nameof(inner), ref inner);
             s.Get(nameof(refs), ref refs);
@@ -55,7 +55,7 @@
 
         public void Dump<R>(ISink<R> s, byte z = 0) where R : ISink<R>
         {
-            s.Put(nameof(subkey), subkey);
+            s.Put(nameof(partition), partition);
             s.Put(nameof(outer), outer);
             s.Put(nameof(inner), inner);
             s.Put(nameof(refs), refs);
@@ -65,7 +65,7 @@
 
         public WebConfig Load()
         {
-            if (key == null) throw new WebException("missing key");
+            if (name == null) throw new WebException("missing key");
 
             Obj obj = JsonUtility.FileToObj(GetFilePath("$web.json"));
             if (obj != null)

@@ -26,37 +26,37 @@ namespace Greatbone.Core
         /// To add null value
         internal void Add(string name)
         {
-            pairs.Add(new Member() { Key = name });
+            pairs.Add(new Member(name, (Member?)null));
         }
 
         internal void Add(string name, Obj v)
         {
-            pairs.Add(new Member(v) { Key = name });
+            pairs.Add(new Member(name, v));
         }
 
         internal void Add(string name, Arr v)
         {
-            pairs.Add(new Member(v) { Key = name });
+            pairs.Add(new Member(name, v));
         }
 
         internal void Add(string name, string v)
         {
-            pairs.Add(new Member(v) { Key = name });
+            pairs.Add(new Member(name, v));
         }
 
         internal void Add(string name, byte[] v)
         {
-            pairs.Add(new Member(v) { Key = name });
+            pairs.Add(new Member(name, v));
         }
 
         internal void Add(string name, bool v)
         {
-            pairs.Add(new Member(v) { Key = name });
+            pairs.Add(new Member(name, v));
         }
 
         internal void Add(string name, Number v)
         {
-            pairs.Add(new Member(v) { Key = name });
+            pairs.Add(new Member(name, v));
         }
 
         public int Count => pairs.Count;
@@ -336,31 +336,31 @@ namespace Greatbone.Core
                 MemberType typ = mbr.type;
                 if (typ == MemberType.Array)
                 {
-                    snk.Put(mbr.Key, (Arr)mbr);
+                    snk.Put(mbr.Name, (Arr)mbr);
                 }
                 else if (typ == MemberType.Object)
                 {
-                    snk.Put(mbr.Key, (Obj)mbr);
+                    snk.Put(mbr.Name, (Obj)mbr);
                 }
                 else if (typ == MemberType.String)
                 {
-                    snk.Put(mbr.Key, (string)mbr);
+                    snk.Put(mbr.Name, (string)mbr);
                 }
                 else if (typ == MemberType.Number)
                 {
-                    snk.Put(mbr.Key, (Number)mbr);
+                    snk.Put(mbr.Name, (Number)mbr);
                 }
                 else if (typ == MemberType.True)
                 {
-                    snk.Put(mbr.Key, true);
+                    snk.Put(mbr.Name, true);
                 }
                 else if (typ == MemberType.False)
                 {
-                    snk.Put(mbr.Key, false);
+                    snk.Put(mbr.Name, false);
                 }
                 else if (typ == MemberType.Null)
                 {
-                    snk.PutNull(mbr.Key);
+                    snk.PutNull(mbr.Name);
                 }
             }
         }

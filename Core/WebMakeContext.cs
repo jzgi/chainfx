@@ -7,9 +7,9 @@ namespace Greatbone.Core
     ///
     public class WebMakeContext : IAutoContext
     {
-        public string key;
+        public string name;
 
-        public string Key => key;
+        public string Name => name;
 
         public object State { get; internal set; }
 

@@ -7,7 +7,7 @@ namespace Greatbone.Core
     ///
     /// The connect to a remote peer service that the current service depends on.
     ///
-    public class WebReference : HttpClient, IKeyed
+    public class WebReference : HttpClient, IRollable
     {
         WebService service;
 
@@ -26,7 +26,7 @@ namespace Greatbone.Core
             BaseAddress = new Uri(addr);
         }
 
-        public string Key => name;
+        public string Name => name;
 
         internal void Schedule()
         {

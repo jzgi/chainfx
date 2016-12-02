@@ -2,20 +2,20 @@ using System;
 
 namespace Greatbone.Core
 {
-    public struct Pair : IKeyed
+    public struct Pair : IRollable
     {
-        readonly string key;
+        readonly string name;
 
         // string or string array
         object values;
 
         int count;
 
-        public string Key => key;
+        public string Name => name;
 
         internal Pair(string key, string v)
         {
-            this.key = key;
+            this.name = key;
             values = v;
             count = 1;
         }
@@ -232,7 +232,5 @@ namespace Greatbone.Core
                 return arr;
             }
         }
-
     }
-
 }

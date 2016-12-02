@@ -23,7 +23,7 @@ namespace Greatbone.Core
     ///
     public abstract class WebService : WebDirectory, IHttpApplication<HttpContext>, ILoggerProvider, ILogger
     {
-        // the globally unique service instance id
+        // the service instance id
         readonly string id;
 
         readonly KestrelServerOptions options;
@@ -51,7 +51,7 @@ namespace Greatbone.Core
             // adjust configuration
             cfg.Service = this;
 
-            id = (cfg.subkey == null) ? cfg.key : cfg.key + "-" + cfg.subkey;
+            id = (cfg.partition == null) ? cfg.name : cfg.name + "-" + cfg.partition;
 
             // setup logging 
             factory = new LoggerFactory();
@@ -93,7 +93,7 @@ namespace Greatbone.Core
                 for (int i = 0; i < refs.Count; i++)
                 {
                     Member mbr = refs[i];
-                    string svcid = mbr.Key; // service instance id
+                    string svcid = mbr.Name; // service instance id
                     string addr = mbr;
                     if (references == null)
                     {
@@ -263,7 +263,7 @@ namespace Greatbone.Core
 
             OnStart();
 
-            Console.Write(Key);
+            Console.Write(Name);
             Console.Write(" -> ");
             Console.Write(Config.outer);
             Console.Write(", ");
@@ -279,7 +279,7 @@ namespace Greatbone.Core
             NpgsqlConnectionStringBuilder builder = new NpgsqlConnectionStringBuilder()
             {
                 Host = cfg.host,
-                Database = Key,
+                Database = Name,
                 Username = cfg.username,
                 Password = cfg.password
             };
@@ -295,7 +295,7 @@ namespace Greatbone.Core
             for (int i = 0; i < references.Count; i++)
             {
                 WebReference @ref = references[i];
-                if (@ref.Key.Equals(svcid)) return @ref;
+                if (@ref.Name.Equals(svcid)) return @ref;
             }
             return null;
         }
@@ -364,7 +364,7 @@ namespace Greatbone.Core
             logWriter.Flush();
             logWriter.Dispose();
 
-            Console.Write(Key);
+            Console.Write(Name);
             Console.WriteLine(".");
         }
 

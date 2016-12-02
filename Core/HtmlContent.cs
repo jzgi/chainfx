@@ -763,7 +763,7 @@ namespace Greatbone.Core
             Add("<button class=\"pure-button");
             if (!wa.IsGet) Add(" pure-button-primary");
             Add("\" formaction=\"");
-            Add(wa.Key);
+            Add(wa.Name);
             Add("\" formmethod=\"");
             Add(wa.IsGet ? "get" : "post");
             if (wa.Dialog > 0)
@@ -781,7 +781,7 @@ namespace Greatbone.Core
                 Add("\"></i>");
             }
             Add(" ");
-            AddLabel(wa.Key);
+            AddLabel(wa.Name);
             Add(" </button>");
         }
 

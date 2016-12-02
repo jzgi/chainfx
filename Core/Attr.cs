@@ -2,17 +2,17 @@ using System;
 
 namespace Greatbone.Core
 {
-    public struct Attr : IKeyed
+    public struct Attr : IRollable
     {
-        readonly string key;
+        readonly string name;
 
         string value;
 
-        public string Key => key;
+        public string Name => name;
 
         internal Attr(string key, string v)
         {
-            this.key = key;
+            this.name = key;
             value = v;
         }
 

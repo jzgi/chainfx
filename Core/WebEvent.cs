@@ -6,17 +6,17 @@ namespace Greatbone.Core
     /// <summary>
     /// The descriptor of a message hook.
     /// <summary>
-    public class WebEvent : IKeyed
+    public class WebEvent : IRollable
     {
         public WebService Service { get; }
 
-        public string Key { get; }
+        public string Name { get; }
 
         readonly Action<WebEventContext> doer;
 
         internal WebEvent(WebService service, MethodInfo mi)
         {
-            Key = mi.Name;
+            Name = mi.Name;
             doer = (Action<WebEventContext>)mi.CreateDelegate(typeof(Action<WebEventContext>), service);
         }
 
@@ -27,7 +27,7 @@ namespace Greatbone.Core
 
         public override string ToString()
         {
-            return Key;
+            return Name;
         }
     }
 }
