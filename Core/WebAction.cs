@@ -59,33 +59,33 @@ namespace Greatbone.Core
         // for generating unique digest nonce
         const string PrivateKey = "3e43a7180";
 
-        internal bool TryDo(WebActionContext we)
+        internal bool TryDo(WebActionContext ac)
         {
             // access check 
-            if (header && we.Principal == null)
+            if (header && ac.Principal == null)
             {
-                we.StatusCode = 401; // unauthorized
-                we.SetHeader("WWW-Authenticate", "Bearer");
+                ac.StatusCode = 401; // unauthorized
+                ac.SetHeader("WWW-Authenticate", "Bearer");
                 return false;
             }
-            else if (cookie && we.Principal == null)
+            else if (cookie && ac.Principal == null)
             {
 
             }
 
             for (int i = 0; i < checks.Length; i++)
             {
-                if (!checks[i].Test(we))
+                if (!checks[i].Test(ac))
                 {
-                    we.StatusCode = 403; // forbidden
+                    ac.StatusCode = 403; // forbidden
                     return false;
                 }
             }
 
             // invoke the method
-            we.Action = this;
-            doer(we);
-            we.Action = null;
+            ac.Action = this;
+            doer(ac);
+            ac.Action = null;
             return true;
         }
 

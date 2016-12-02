@@ -159,12 +159,12 @@ namespace Greatbone.Core
             return atn;
         }
 
-        internal virtual void Handle(string relative, WebActionContext wc)
+        internal virtual void Handle(string relative, WebActionContext ac)
         {
             int slash = relative.IndexOf('/');
             if (slash == -1) // handle it locally
             {
-                DoRsc(relative, wc);
+                DoRsc(relative, ac);
             }
             else // dispatch to child or multiplexer
             {
@@ -172,51 +172,52 @@ namespace Greatbone.Core
                 WebDirectory child;
                 if (children != null && children.TryGet(key, out child)) // seek sub first
                 {
-                    child.Handle(relative.Substring(slash + 1), wc);
+                    child.Handle(relative.Substring(slash + 1), ac);
                 }
                 else if (var == null)
                 {
-                    wc.StatusCode = 404; // not found
+                    ac.StatusCode = 404; // not found
                 }
                 else
                 {
-                    wc.SetVar(key, var);
-                    var.Handle(relative.Substring(slash + 1), wc);
+                    ac.SetVar(key, var);
+                    var.Handle(relative.Substring(slash + 1), ac);
                 }
             }
         }
 
-        internal void DoRsc(string rsc, WebActionContext wc)
+        internal void DoRsc(string rsc, WebActionContext ac)
         {
-            wc.Directory = this;
+            ac.Directory = this;
 
             int dot = rsc.LastIndexOf('.');
             if (dot != -1) // static
             {
-                DoStatic(rsc, rsc.Substring(dot), wc);
+                DoStatic(rsc, rsc.Substring(dot), ac);
             }
             else // dynamic
             {
-                string key = rsc;
-                string subscpt = null;
+                string name = rsc;
+                string sub = null;
                 int dash = rsc.LastIndexOf('-');
                 if (dash != -1)
                 {
-                    key = rsc.Substring(0, dash);
-                    subscpt = rsc.Substring(dash + 1);
+                    name = rsc.Substring(0, dash);
+                    sub = rsc.Substring(dash + 1);
                 }
-                WebAction atn = string.IsNullOrEmpty(key) ? defaction : GetAction(key);
+                WebAction atn = string.IsNullOrEmpty(name) ? defaction : GetAction(name);
                 if (atn == null)
                 {
-                    wc.StatusCode = 404;
+                    ac.StatusCode = 404;
                 }
                 else
                 {
-                    atn.TryDo(wc);
+                    ac.SetVar(sub, null);
+                    atn.TryDo(ac);
                 }
             }
 
-            wc.Directory = null;
+            ac.Directory = null;
         }
 
         void DoStatic(string file, string ext, WebActionContext ac)

@@ -4,41 +4,41 @@
     /// The configurative settings for a web service.
     /// 
     /// <remark>
-    /// It provides a strong semantic that enables the whole directory hierarchy to be established during object initialization.
+    /// The strong semantic allows the entire directory hierarchy to be established during object initialization.
     /// </remark>
     /// <code>
     /// public class FooService : WebService
     /// {
-    ///         public FooService(WebConfig cfg) : base(cfg)
-    ///         {
-    ///                 Make&lt;BarDirectory&gt;();
-    ///         }
+    ///     public FooService(WebConfig cfg) : base(cfg)
+    ///     {
+    ///         Make&lt;BarDirectory&gt;("bar");
+    ///     }
     /// }
     /// </code>
     ///
     public class WebConfig : WebMakeContext, IData
     {
-        // when one service is divided into many shards
+        /// The shard name when one service is divided into many shards
         public string shard;
 
-        // outer  socket address
+        /// The outer socket address for external communication
         public string outer;
 
-        // inner socket address
+        /// The inner socket address for internal communication
         public string inner;
 
-        // peer services this service references
+        /// All services (id-addres pairs) that this service referencesor depends on.
         public Obj refs;
 
-        // database connectivity
+        /// The database connectivity attributes.
         public DbConfig db;
 
-        // logging level, default to warning (3)
+        /// The logging level, default to warning (3)
         public int logging = 3;
 
         public Obj extra;
 
-        // ovveride to provide a decent folder service name
+        /// Let the folder name same ascthe service name.
         public override string Folder => name;
 
 
