@@ -1,6 +1,5 @@
 ﻿using System;
 
-
 namespace Greatbone.Core
 {
     ///
@@ -8,35 +7,35 @@ namespace Greatbone.Core
     ///
     public struct WebEventContext : IAutoContext, IDisposable
     {
-        readonly WebReference peer;
+        readonly WebReference reference;
 
         readonly long id;
 
-        readonly string topic;
+        readonly string name;
 
-        readonly string subkey;
+        readonly string shard;
 
         // either Obj or Arr
         readonly object body;
 
-        internal WebEventContext(WebReference peer, long id, string topic, string subkey, object body)
+        internal WebEventContext(WebReference reference, long id, string @event, string shard, object body)
         {
-            this.peer = peer;
+            this.reference = reference;
             this.id = id;
-            this.topic = topic;
-            this.subkey = subkey;
+            this.name = @event;
+            this.shard = shard;
             this.body = body;
         }
 
         public long Id => id;
 
-        public string Topic => Topic;
+        public string Name => name;
 
-        public string Subkey => subkey;
+        public string Shard => shard;
 
-        public Obj BodyObj => (Obj)body;
+        public Obj ToObj => (Obj)body;
 
-        public Arr BodyArr => (Arr)body;
+        public Arr ToArr => (Arr)body;
 
 
         public DbContext NewDbContext()
