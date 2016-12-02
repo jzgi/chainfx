@@ -4,22 +4,22 @@
     /// The configurative settings for a web service.
     /// 
     /// <remark>
-    /// It provides a strong semantic that enables the whole controller hierarchy to be established during object initialization.
+    /// It provides a strong semantic that enables the whole directory hierarchy to be established during object initialization.
     /// </remark>
     /// <code>
     /// public class FooService : WebService
     /// {
     ///         public FooService(WebConfig cfg) : base(cfg)
     ///         {
-    ///                 AddChild&lt;BarControl&gt;();
+    ///                 Make&lt;BarDirectory&gt;();
     ///         }
     /// }
     /// </code>
     ///
     public class WebConfig : WebMakeContext, IData
     {
-        // can be null
-        public string partition;
+        // when one service is divided into many shards
+        public string shard;
 
         // outer  socket address
         public string outer;
@@ -44,7 +44,7 @@
 
         public void Load(ISource s, byte z = 0)
         {
-            s.Get(nameof(partition), ref partition);
+            s.Get(nameof(shard), ref shard);
             s.Get(nameof(outer), ref outer);
             s.Get(nameof(inner), ref inner);
             s.Get(nameof(refs), ref refs);
@@ -55,7 +55,7 @@
 
         public void Dump<R>(ISink<R> s, byte z = 0) where R : ISink<R>
         {
-            s.Put(nameof(partition), partition);
+            s.Put(nameof(shard), shard);
             s.Put(nameof(outer), outer);
             s.Put(nameof(inner), inner);
             s.Put(nameof(refs), refs);

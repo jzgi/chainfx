@@ -1,5 +1,5 @@
 {
-    "partition": "01",
+    "shard": "01",
     "outer": "http://106.14.45.109:8081",
     "inner": "http://10.27.157.64:7771",
     "logging": 3,

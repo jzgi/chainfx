@@ -51,7 +51,7 @@ namespace Greatbone.Core
             // adjust configuration
             cfg.Service = this;
 
-            id = (cfg.partition == null) ? cfg.name : cfg.name + "-" + cfg.partition;
+            id = (cfg.shard == null) ? cfg.name : cfg.name + "-" + cfg.shard;
 
             // setup logging 
             factory = new LoggerFactory();

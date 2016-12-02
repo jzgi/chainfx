@@ -36,7 +36,7 @@ namespace Greatbone.Sample
             var shop = new ShopService(new WebConfig
             {
                 name = "shop",
-                partition = "01",
+                shard = "01",
                 outer = "http://127.0.0.1:8081",
                 inner = "http://127.0.0.1:7771",
                 refs = new Obj{
