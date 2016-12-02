@@ -9,7 +9,7 @@ namespace Greatbone.Sample
     {
         public MyOrderDirectory(WebMakeContext mc) : base(mc)
         {
-            MakeVariable<MyOrderVariableDirectory>();
+            MakeVar<MyOrderVarDirectory>();
         }
 
         ///

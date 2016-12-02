@@ -5,11 +5,11 @@ namespace Greatbone.Sample
     ///
     /// The shop variable directory.
     ///
-    public class ShopVariableDirectory : WebDirectory, IVariable
+    public class ShopVarDirectory : WebDirectory, IVar
     {
         readonly WebAction _re_menu_;
 
-        public ShopVariableDirectory(WebMakeContext mc) : base(mc)
+        public ShopVarDirectory(WebMakeContext mc) : base(mc)
         {
             Make<MyCartDirectory>("mycart");
 
@@ -28,7 +28,7 @@ namespace Greatbone.Sample
         ///
         public void @default(WebActionContext ac)
         {
-            string shopid = ac.Var1;
+            string shopid = ac.Var;
             using (var dc = Service.NewDbContext())
             {
                 DbSql sql = new DbSql("SELECT ").columnlst(Item.Empty)._("FROM items WHERE shopid = @1 AND NOT disabled");

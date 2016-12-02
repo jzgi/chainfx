@@ -5,9 +5,9 @@ namespace Greatbone.Sample
     ///
     /// /-shopid-/myorder/-orderid-/
     ///
-    public class MyOrderVariableDirectory : WebDirectory, IVariable
+    public class MyOrderVarDirectory : WebDirectory, IVar
     {
-        public MyOrderVariableDirectory(WebMakeContext mc) : base(mc)
+        public MyOrderVarDirectory(WebMakeContext mc) : base(mc)
         {
         }
 
@@ -16,7 +16,7 @@ namespace Greatbone.Sample
         ///
         public void @default(WebActionContext ac)
         {
-            string shopid = ac.Var1;
+            string shopid = ac.Var;
             int id = ac.Var2;
 
             using (var dc = Service.NewDbContext())
@@ -37,7 +37,7 @@ namespace Greatbone.Sample
 
         public void cannel(WebActionContext ac)
         {
-            string shopid = ac.Var1;
+            string shopid = ac.Var;
             int orderid = ac.Var2;
 
             using (var dc = Service.NewDbContext())

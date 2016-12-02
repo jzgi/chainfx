@@ -22,28 +22,28 @@ namespace Greatbone.Core
         public IPrincipal Principal { get; internal set; }
 
         // two levels of variable keys
-        Var var1, var2;
+        Var var, var2;
 
-        Var subscript;
+        Var sub;
 
         internal void SetVar(string key, WebDirectory dir)
         {
             if (dir != null)
             {
-                if (var1.Key == null) var1 = new Var(key, dir);
+                if (var.Key == null) var = new Var(key, dir);
                 else if (var2.Key == null) var2 = new Var(key, dir);
             }
-            else if (subscript.Key == null)
+            else if (sub.Key == null)
             {
-                subscript = new Var(key, null);
+                sub = new Var(key, null);
             }
         }
 
-        public Var Var1 => var1;
+        public Var Var => var;
 
         public Var Var2 => var2;
 
-        public Var Subscript => subscript;
+        public Var Sub => sub;
 
         //
         // REQUEST

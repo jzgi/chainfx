@@ -3,7 +3,7 @@
 namespace Greatbone.Core
 {
     ///
-    /// A resolved variable directory key in the URI path.
+    /// A resolved variable key in the URI path.
     ///
     public struct Var
     {

@@ -10,10 +10,10 @@ namespace Greatbone.Core
     ///
     public abstract class WebDirectory : IKeyed
     {
-        // max nesting level
-        const int Nesting = 3;
+        // max nesting levels
+        const int Nesting = 4;
 
-        const string VariableKey = "-var-";
+        const string VAR_KEY = "-var-";
 
         // state-passing
         internal readonly WebMakeContext makectx;
@@ -27,8 +27,8 @@ namespace Greatbone.Core
         // sub directories, if any
         internal Roll<WebDirectory> children;
 
-        // dealing with variable keys
-        internal WebDirectory variable;
+        // variable-key subdirectory
+        internal WebDirectory var;
 
 
         protected WebDirectory(WebMakeContext makectx)
@@ -66,13 +66,13 @@ namespace Greatbone.Core
             ConstructorInfo ci = typ.GetConstructor(new[] { typeof(WebMakeContext) });
             if (ci == null)
             {
-                throw new WebException(typ + " missing WebDirContext");
+                throw new WebException(typ + " missing WebMakeContext");
             }
             WebMakeContext mc = new WebMakeContext
             {
                 key = key,
                 State = state,
-                IsVariable = false,
+                IsVar = false,
                 Parent = this,
                 Level = Level + 1,
                 Folder = (Parent == null) ? key : Path.Combine(Parent.Folder, key),
@@ -86,9 +86,9 @@ namespace Greatbone.Core
 
         public Roll<WebDirectory> Children => children;
 
-        public WebDirectory Variable => variable;
+        public WebDirectory Var => var;
 
-        public D MakeVariable<D>(object state = null) where D : WebDirectory, IVariable
+        public D MakeVar<D>(object state = null) where D : WebDirectory, IVar
         {
             if (Level >= Nesting) throw new WebException("nesting levels");
 
@@ -97,20 +97,20 @@ namespace Greatbone.Core
             ConstructorInfo ci = typ.GetConstructor(new[] { typeof(WebMakeContext) });
             if (ci == null)
             {
-                throw new WebException(typ + " missing WebDirContext");
+                throw new WebException(typ + " missing WebMakeContext");
             }
             WebMakeContext mc = new WebMakeContext
             {
-                key = VariableKey,
+                key = VAR_KEY,
                 State = state,
-                IsVariable = true,
+                IsVar = true,
                 Parent = this,
                 Level = Level + 1,
-                Folder = (Parent == null) ? VariableKey : Path.Combine(Parent.Folder, VariableKey),
+                Folder = (Parent == null) ? VAR_KEY : Path.Combine(Parent.Folder, VAR_KEY),
                 Service = Service
             };
             D dir = (D)ci.Invoke(new object[] { mc });
-            variable = dir;
+            var = dir;
 
             return dir;
         }
@@ -122,7 +122,7 @@ namespace Greatbone.Core
 
         public object State => makectx.State;
 
-        public bool IsVariable => makectx.IsVariable;
+        public bool IsVar => makectx.IsVar;
 
         public string Folder => makectx.Folder;
 
@@ -150,12 +150,11 @@ namespace Greatbone.Core
             WebAction[] was = new WebAction[len];
             for (int i = 0; i < methods.Length; i++)
             {
-                string meth = methods[i];
-                was[i] = string.IsNullOrEmpty(meth) ? defaction : actions[meth];
+                string mthd = methods[i];
+                was[i] = string.IsNullOrEmpty(mthd) ? defaction : actions[mthd];
             }
             return was;
         }
-
 
         internal virtual void Handle(string relative, WebActionContext wc)
         {
@@ -172,14 +171,14 @@ namespace Greatbone.Core
                 {
                     child.Handle(relative.Substring(slash + 1), wc);
                 }
-                else if (variable == null)
+                else if (var == null)
                 {
                     wc.StatusCode = 404; // not found
                 }
                 else
                 {
-                    wc.SetVar(key, variable);
-                    variable.Handle(relative.Substring(slash + 1), wc);
+                    wc.SetVar(key, var);
+                    var.Handle(relative.Substring(slash + 1), wc);
                 }
             }
         }

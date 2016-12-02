@@ -12,7 +12,7 @@ namespace Greatbone.Sample
 
         public ShopService(WebConfig cfg) : base(cfg)
         {
-            MakeVariable<ShopVariableDirectory>();
+            MakeVar<ShopVarDirectory>();
 
             _new = GetActions(nameof(@new));
         }
@@ -90,7 +90,7 @@ namespace Greatbone.Sample
         [CheckAdmin]
         public void @default(WebActionContext ac)
         {
-            int page = ac.Subscript;
+            int page = ac.Sub;
             const byte z = 0xff ^ BIN;
 
             using (var dc = Service.NewDbContext())
