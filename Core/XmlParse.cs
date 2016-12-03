@@ -1,7 +1,7 @@
 namespace Greatbone.Core
 {
     ///
-    /// A simple XML parser structure that deals with most common usages.
+    /// A simple XML parsing structure that deals with most common usages.
     ///
     public struct XmlParse
     {

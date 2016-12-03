@@ -3,9 +3,9 @@ using System.Reflection;
 
 namespace Greatbone.Core
 {
-    /// <summary>
-    /// The descriptor of a message hook.
-    /// <summary>
+    /// 
+    /// The descriptor of a event hook.
+    /// 
     public class WebEvent : IRollable
     {
         public WebService Service { get; }
@@ -20,9 +20,9 @@ namespace Greatbone.Core
             doer = (Action<WebEventContext>)mi.CreateDelegate(typeof(Action<WebEventContext>), service);
         }
 
-        internal void Do(WebEventContext mc)
+        internal void Do(WebEventContext ec)
         {
-            doer(mc);
+            doer(ec);
         }
 
         public override string ToString()

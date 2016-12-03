@@ -62,25 +62,29 @@ namespace Greatbone.Core
         internal bool TryDo(WebActionContext ac)
         {
             // access check 
-            if (header && ac.Principal == null)
+            if (checks != null)
             {
-                ac.StatusCode = 401; // unauthorized
-                ac.SetHeader("WWW-Authenticate", "Bearer");
-                return false;
-            }
-            else if (cookie && ac.Principal == null)
-            {
-                string loc = directory.Service.SignOn + "?orig=" + ac.Url;
-                ac.SetHeader("Location", loc);
-                ac.StatusCode = 303; // see other - redirect to signon url
-            }
-
-            for (int i = 0; i < checks.Length; i++)
-            {
-                if (!checks[i].Test(ac))
+                if (header && ac.Principal == null)
                 {
-                    ac.StatusCode = 403; // forbidden
+                    ac.StatusCode = 401; // unauthorized
+                    ac.SetHeader("WWW-Authenticate", "Bearer");
                     return false;
+                }
+                else if (cookie && ac.Principal == null)
+                {
+                    string loc = directory.Service.SignOn + "?orig=" + ac.Url;
+                    ac.SetHeader("Location", loc);
+                    ac.StatusCode = 303; // see other - redirect to signon url
+                    return false;
+                }
+
+                for (int i = 0; i < checks.Length; i++)
+                {
+                    if (!checks[i].Test(ac))
+                    {
+                        ac.StatusCode = 403; // forbidden
+                        return false;
+                    }
                 }
             }
 
@@ -93,7 +97,7 @@ namespace Greatbone.Core
 
         public override string ToString()
         {
-            return Name;
+            return name;
         }
     }
 }

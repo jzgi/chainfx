@@ -7,7 +7,7 @@ namespace Greatbone.Sample
     ///
     public class MyOrderDirectory : WebDirectory
     {
-        public MyOrderDirectory(WebDirectoryContext sc) : base(sc)
+        public MyOrderDirectory(WebDirectoryContext dc) : base(dc)
         {
             MakeVar<MyOrderVarDirectory>();
         }

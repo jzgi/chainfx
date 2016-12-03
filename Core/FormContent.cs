@@ -2,10 +2,9 @@
 
 namespace Greatbone.Core
 {
-
-    /// <summary>
+    /// 
     /// To generate a UTF-8 encoded JSON document. An extension of putting byte array is supported.
-    /// </summary>
+    /// 
     public class FormContent : DynamicContent, ISink<FormContent>
     {
         const int InitialCapacity = 4 * 1024;
@@ -552,7 +551,5 @@ namespace Greatbone.Core
             }
             return this;
         }
-
     }
-
 }
