@@ -113,7 +113,7 @@ namespace Greatbone.Core
                     }
                     else if (b == 'n')
                     {
-                        if (ParseNull(ref p)) obj.Add(name);
+                        if (ParseNull(ref p)) obj.AddNull(name);
                     }
                     else if (b == 't' || b == 'f')
                     {

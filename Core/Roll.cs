@@ -1,18 +1,21 @@
 ﻿using System.Collections;
-using System.Collections.Generic;
 
 namespace Greatbone.Core
 {
     ///
     /// An addition-only addition-order dictionary.
     ///
-    public class Roll<E> : ICollection<E> where E : IRollable
+    public class Roll<E> : IEnumerable where E : IRollable
     {
         int[] buckets;
 
         Entry[] entries;
 
         int count;
+
+        public Roll()
+        {
+        }
 
         public Roll(int capacity)
         {
@@ -22,10 +25,10 @@ namespace Greatbone.Core
             {
                 size <<= 1;
             }
-            ReInitialize(size);
+            ReInit(size);
         }
 
-        void ReInitialize(int size)
+        void ReInit(int size)
         {
             buckets = new int[size];
             for (int i = 0; i < size; i++)
@@ -88,6 +91,10 @@ namespace Greatbone.Core
 
         public void Add(E elem)
         {
+            if (entries == null)
+            {
+                ReInit(8);
+            }
             Add(elem, false);
         }
 
@@ -98,7 +105,7 @@ namespace Greatbone.Core
             {
                 Entry[] old = entries;
                 int oldcount = count;
-                ReInitialize(entries.Length * 2);
+                ReInit(entries.Length * 2);
                 // re-add old elements
                 for (int i = 0; i < oldcount; i++)
                 {
@@ -128,37 +135,8 @@ namespace Greatbone.Core
             count++;
         }
 
-        public void Clear()
-        {
-        }
+        public IEnumerator GetEnumerator() => null;
 
-        public bool Contains(E item)
-        {
-            E elem;
-            return TryGet(item.Name, out elem);
-        }
-
-        public void CopyTo(E[] array, int arrayIndex)
-        {
-        }
-
-        public bool IsReadOnly => true;
-
-        public bool Remove(E elem)
-        {
-            return false;
-        }
-
-        public IEnumerator<E> GetEnumerator()
-        {
-            return null;
-        }
-
-
-        IEnumerator IEnumerable.GetEnumerator()
-        {
-            return null;
-        }
 
         struct Entry
         {
