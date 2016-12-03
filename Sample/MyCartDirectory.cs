@@ -7,7 +7,7 @@ namespace Greatbone.Sample
     ///
     public class MyCartDirectory : WebDirectory
     {
-        public MyCartDirectory(WebMakeContext mc) : base(mc)
+        public MyCartDirectory(WebDirectoryContext dc) : base(dc)
         {
         }
 

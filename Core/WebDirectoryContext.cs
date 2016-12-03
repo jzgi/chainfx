@@ -3,9 +3,9 @@
 namespace Greatbone.Core
 {
     ///
-    /// The context for a particular node in the web controller hierarchy.
+    /// The context for a particular node in the web directory hierarchy.
     ///
-    public class WebMakeContext : IAutoContext
+    public class WebDirectoryContext : IAutoContext
     {
         public string name;
 

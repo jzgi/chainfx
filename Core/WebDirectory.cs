@@ -16,7 +16,7 @@ namespace Greatbone.Core
         const string _VAR_ = "-var-";
 
         // state-passing
-        internal readonly WebMakeContext makectx;
+        internal readonly WebDirectoryContext makectx;
 
         // declared actions 
         readonly Roll<WebAction> actions;
@@ -31,7 +31,7 @@ namespace Greatbone.Core
         internal WebDirectory var;
 
 
-        protected WebDirectory(WebMakeContext makectx)
+        protected WebDirectory(WebDirectoryContext makectx)
         {
             this.makectx = makectx;
 
@@ -66,12 +66,12 @@ namespace Greatbone.Core
             }
             // create instance by reflection
             Type typ = typeof(D);
-            ConstructorInfo ci = typ.GetConstructor(new[] { typeof(WebMakeContext) });
+            ConstructorInfo ci = typ.GetConstructor(new[] { typeof(WebDirectoryContext) });
             if (ci == null)
             {
                 throw new WebException(typ + " missing WebMakeContext");
             }
-            WebMakeContext ctx = new WebMakeContext
+            WebDirectoryContext ctx = new WebDirectoryContext
             {
                 name = name,
                 State = state,
@@ -100,12 +100,12 @@ namespace Greatbone.Core
 
             // create instance
             Type typ = typeof(D);
-            ConstructorInfo ci = typ.GetConstructor(new[] { typeof(WebMakeContext) });
+            ConstructorInfo ci = typ.GetConstructor(new[] { typeof(WebDirectoryContext) });
             if (ci == null)
             {
                 throw new WebException(typ + " missing WebMakeContext");
             }
-            WebMakeContext ctx = new WebMakeContext
+            WebDirectoryContext ctx = new WebDirectoryContext
             {
                 name = _VAR_,
                 State = state,
@@ -180,7 +180,7 @@ namespace Greatbone.Core
                 }
                 else
                 {
-                    ac.SetVar(key, var);
+                    ac.ChainVar(key, var);
                     var.Handle(relative.Substring(slash + 1), ac);
                 }
             }
@@ -212,7 +212,7 @@ namespace Greatbone.Core
                 }
                 else
                 {
-                    ac.SetVar(sub, null);
+                    ac.ChainVar(sub, null);
                     atn.TryDo(ac);
                 }
             }

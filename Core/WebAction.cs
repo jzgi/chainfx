@@ -70,7 +70,9 @@ namespace Greatbone.Core
             }
             else if (cookie && ac.Principal == null)
             {
-
+                string loc = directory.Service.SignOn + "?orig=" + ac.Url;
+                ac.SetHeader("Location", loc);
+                ac.StatusCode = 303; // see other - redirect to signon url
             }
 
             for (int i = 0; i < checks.Length; i++)

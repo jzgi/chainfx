@@ -9,7 +9,7 @@ namespace Greatbone.Sample
     {
         readonly WebAction _re_menu_;
 
-        public ShopVarDirectory(WebMakeContext mc) : base(mc)
+        public ShopVarDirectory(WebDirectoryContext dc) : base(dc)
         {
             Make<MyCartDirectory>("mycart");
 

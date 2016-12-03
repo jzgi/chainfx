@@ -37,6 +37,8 @@ namespace Greatbone.Core
         // shared content cache
         readonly ContentCache cache;
 
+        readonly string signon;
+
         // connectivity to the remote peers, for remote call as well as messaging
         readonly Roll<WebReference> references;
 
@@ -69,6 +71,8 @@ namespace Greatbone.Core
             ICollection<string> addrs = server.Features.Get<IServerAddressesFeature>().Addresses;
             addrs.Add(cfg.outer);
             addrs.Add(cfg.inner);
+
+            signon = cfg.signon ?? "/signon";
 
             // init event hooks
             Type typ = GetType();
@@ -115,6 +119,8 @@ namespace Greatbone.Core
         /// The service instance id.
         ///
         public string Id => id;
+
+        public string SignOn => signon;
 
         internal Roll<WebEvent> Events => events;
 

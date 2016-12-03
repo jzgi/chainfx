@@ -26,7 +26,7 @@ namespace Greatbone.Core
 
         Var sub;
 
-        internal void SetVar(string key, WebDirectory dir)
+        internal void ChainVar(string key, WebDirectory dir)
         {
             if (dir != null)
             {

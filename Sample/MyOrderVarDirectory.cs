@@ -7,7 +7,7 @@ namespace Greatbone.Sample
     ///
     public class MyOrderVarDirectory : WebDirectory, IVar
     {
-        public MyOrderVarDirectory(WebMakeContext mc) : base(mc)
+        public MyOrderVarDirectory(WebDirectoryContext dc) : base(dc)
         {
         }
 

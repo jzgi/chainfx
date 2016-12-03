@@ -16,7 +16,7 @@
     /// }
     /// </code>
     ///
-    public class WebConfig : WebMakeContext, IData
+    public class WebConfig : WebDirectoryContext, IData
     {
         /// The shard name when one service is divided into many shards
         public string shard;
@@ -35,6 +35,9 @@
 
         /// The logging level, default to warning (3)
         public int logging = 3;
+
+        /// The URL of the signon interface.
+        public string signon;
 
         public Obj extra;
 
