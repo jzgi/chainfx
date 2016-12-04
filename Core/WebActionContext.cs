@@ -346,12 +346,12 @@ namespace Greatbone.Core
 
         public WebClientContext NewWebCall()
         {
-            return new WebClientContext(null) { Context = this };
+            return new WebClientContext(null) { Action = this };
         }
 
         public WebClientContext NewWebCalls()
         {
-            return new WebClientContext(null) { Context = this };
+            return new WebClientContext(null) { Action = this };
         }
 
 

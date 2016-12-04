@@ -39,7 +39,7 @@ namespace Greatbone.Core
 
         readonly string signon;
 
-        // connectivity to the remote peers, for remote call as well as messaging
+        // client connectivity to the remote peers
         readonly Roll<WebClient> clients;
 
         // event hooks
@@ -293,17 +293,43 @@ namespace Greatbone.Core
         }
 
         //
-        // MESSAGING
+        // CLUSTER
         //
 
-        internal WebClient GetReference(string svcid)
+        internal WebClient GetClient(string svcid)
         {
             for (int i = 0; i < clients.Count; i++)
             {
-                WebClient @ref = clients[i];
-                if (@ref.Name.Equals(svcid)) return @ref;
+                WebClient cli = clients[i];
+                if (cli.Name.Equals(svcid)) return cli;
             }
             return null;
+        }
+
+        internal WebClient CallByGet(string svcid, Action<WebClientContext> a)
+        {
+            for (int i = 0; i < clients.Count; i++)
+            {
+                WebClient cli = clients[i];
+                if (cli.Name.Equals(svcid)) return cli;
+            }
+            return null;
+        }
+
+        public WebClientContext NewClientContext(string prefix)
+        {
+            return null;
+        }
+
+        internal async void CallByGet(params WebClientContext[] ccs)
+        {
+            int len = ccs.Length;
+            Task[] tasks = new Task[len];
+            for (int i = 0; i < len; i++)
+            {
+                tasks[i] = ccs[i].task;
+            }
+            await Task.WhenAll(tasks);
         }
 
 
