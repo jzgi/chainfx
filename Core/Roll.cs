@@ -13,9 +13,6 @@ namespace Greatbone.Core
 
         int count;
 
-        public Roll()
-        {
-        }
 
         public Roll(int capacity)
         {
@@ -91,10 +88,6 @@ namespace Greatbone.Core
 
         public void Add(E elem)
         {
-            if (entries == null)
-            {
-                ReInit(8);
-            }
             Add(elem, false);
         }
 
@@ -104,10 +97,10 @@ namespace Greatbone.Core
             if (!rehash && count >= entries.Length / 2)
             {
                 Entry[] old = entries;
-                int oldcount = count;
+                int oldc = count;
                 ReInit(entries.Length * 2);
                 // re-add old elements
-                for (int i = 0; i < oldcount; i++)
+                for (int i = 0; i < oldc; i++)
                 {
                     Add(old[i].element, true);
                 }

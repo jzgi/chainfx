@@ -13,9 +13,9 @@ namespace Greatbone.Core
 
         public string Name => name;
 
-        internal Pair(string key, string v)
+        internal Pair(string name, string v)
         {
-            this.name = key;
+            this.name = name;
             values = v;
             count = 1;
         }

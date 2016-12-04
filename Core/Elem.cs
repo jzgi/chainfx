@@ -15,7 +15,7 @@ namespace Greatbone.Core
 
         int count;
 
-        public Elem() : base() { }
+        public Elem() : base(InitialCapacity) { }
 
         internal void Add(string name, string v)
         {
@@ -156,7 +156,7 @@ namespace Greatbone.Core
             throw new NotImplementedException();
         }
 
-        public bool Get<V>(string name, ref V v, byte z = 0) where V : IData, new()
+        public bool Get<D>(string name, ref D v, byte z = 0) where D : IData, new()
         {
             throw new NotImplementedException();
         }
@@ -191,7 +191,7 @@ namespace Greatbone.Core
             throw new NotImplementedException();
         }
 
-        public bool Get<V>(string name, ref V[] v, byte z = 0) where V : IData, new()
+        public bool Get<D>(string name, ref D[] v, byte z = 0) where D : IData, new()
         {
             throw new NotImplementedException();
         }
