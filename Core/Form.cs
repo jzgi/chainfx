@@ -7,7 +7,7 @@ namespace Greatbone.Core
     ///
     public class Form : Roll<Pair>, ISource
     {
-        const int InitialCapacity = 16;
+        const int InitialCapacity = 8;
 
         public static readonly Form Empty = new Form();
 
