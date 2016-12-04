@@ -59,11 +59,7 @@ namespace Greatbone.Core
 
         Form query;
 
-        // received request body
-        byte[] bytebuf;
-        int count; // number of received bytes
-
-        // parsed request entity (JObj, JArr, Form, null)
+        // request entity (ArraySegment<byte>, Obj, Arr, Form, Elem, null)
         object entity;
 
         public Form Query
@@ -130,100 +126,82 @@ namespace Greatbone.Core
 
         public IRequestCookieCollection Cookies => Request.Cookies;
 
-        async void EnsureReadAsync()
+        // read and parse
+        async Task<object> ReadAsync()
         {
-            if (count > 0) return;
+            if (entity != null) return null;
 
-            HttpRequest req = Request;
-            long? clen = req.ContentLength;
-            if (clen > 0)
-            {
-                int len = (int)clen;
-                bytebuf = BufferUtility.GetByteBuf(len);
-                count = await req.Body.ReadAsync(bytebuf, 0, len);
-            }
-        }
+            long? clen = Request.ContentLength;
+            if (clen <= 0) return null;
 
-        public bool IsPoolable => bytebuf != null;
-
-        void EnsureParse()
-        {
-            if (entity != null) return;
-
-            EnsureReadAsync();
-
-            if (count == 0) return;
+            int len = (int)clen;
+            byte[] bytebuf = BufferUtility.GetByteBuf(len); // borrow from the pool
+            int count = await Request.Body.ReadAsync(bytebuf, 0, len);
 
             string ctyp = Request.ContentType;
             if ("application/x-www-form-urlencoded".Equals(ctyp))
             {
                 FormParse p = new FormParse(bytebuf, count);
                 entity = p.Parse();
+                BufferUtility.Return(bytebuf); // return to the pool
             }
             else if ("application/json".Equals(ctyp))
             {
                 JsonParse p = new JsonParse(bytebuf, count);
                 entity = p.Parse();
+                BufferUtility.Return(bytebuf); // return to the pool
             }
             else if ("application/xml".Equals(ctyp))
             {
                 XmlParse p = new XmlParse(bytebuf, count);
                 entity = p.Parse();
+                BufferUtility.Return(bytebuf); // return to the pool
             }
+            else
+            {
+                entity = new ArraySegment<byte>(bytebuf, 0, count);
+            }
+            return entity;
         }
 
-        public ArraySegment<byte>? ReadByteAs()
+        public async Task<ArraySegment<byte>?> ReadByteAs()
         {
-            EnsureReadAsync();
-
-            if (count == 0) return null;
-
-            return new ArraySegment<byte>(bytebuf, 0, count);
+            return (entity = await ReadAsync()) as ArraySegment<byte>?;
+        }
+        public async Task<Form> ReadForm()
+        {
+            return (entity = await ReadAsync()) as Form;
         }
 
-        public Form ReadForm()
+        public async Task<Obj> ReadObj()
         {
-            EnsureParse();
-
-            return entity as Form;
+            return (entity = await ReadAsync()) as Obj;
         }
 
-        public Obj ReadObj()
+        public async Task<Arr> ReadArr()
         {
-            EnsureParse();
-
-            return entity as Obj;
+            return (entity = await ReadAsync()) as Arr;
         }
 
-        public Arr ReadArr()
+        public async Task<D> ReadData<D>(byte z = 0) where D : IData, new()
         {
-            EnsureParse();
-
-            return entity as Arr;
+            ISource src = (entity = await ReadAsync()) as ISource;
+            if (src == null)
+            {
+                return default(D);
+            }
+            return src.ToData<D>(z);
         }
 
-        public D ReadData<D>(byte z = 0) where D : IData, new()
+        public async Task<D[]> ReadDatas<D>(byte z = 0) where D : IData, new()
         {
-            EnsureParse();
-
-            ISource src = entity as ISource;
-            if (src == null) return default(D);
-            D dat = new D();
-            dat.Load(src, z);
-            return dat;
-        }
-
-        public D[] ReadDatas<D>(byte z = 0) where D : IData, new()
-        {
-            EnsureParse();
-
-            Arr arr = entity as Arr;
+            Arr arr = (entity = await ReadAsync()) as Arr;
             return arr?.ToDatas<D>(z);
         }
 
-        public Elem ReadElem()
+        public async Task<Elem> ReadElem()
         {
-            EnsureParse();
+            object entity = await ReadAsync();
 
             return entity as Elem;
         }
@@ -346,12 +324,12 @@ namespace Greatbone.Core
 
         public WebClientContext NewWebCall()
         {
-            return new WebClientContext(null) { Action = this };
+            return new WebClientContext(null) { ActionContext = this };
         }
 
         public WebClientContext NewWebCalls()
         {
-            return new WebClientContext(null) { Action = this };
+            return new WebClientContext(null) { ActionContext = this };
         }
 
 
@@ -371,9 +349,10 @@ namespace Greatbone.Core
         public void Dispose()
         {
             // return request content buffer
-            if (IsPoolable)
+            ArraySegment<byte>? byteas = entity as ArraySegment<byte>?;
+            if (byteas != null)
             {
-                BufferUtility.Return(bytebuf);
+                BufferUtility.Return(byteas.Value.Array);
             }
         }
     }

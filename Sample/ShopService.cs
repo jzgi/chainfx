@@ -30,7 +30,7 @@ namespace Greatbone.Sample
         /// id=_id_&amp;password=_password_[&amp;orig=_orig_]
         /// </code>
         ///
-        public void signon(WebActionContext ac)
+        public async void signon(WebActionContext ac)
         {
             if (ac.IsGetMethod) // return the login form
             {
@@ -41,7 +41,7 @@ namespace Greatbone.Sample
             }
             else // login
             {
-                Form frm = ac.ReadForm();
+                Form frm = await ac.ReadForm();
                 string id = frm[nameof(id)];
                 string password = frm[nameof(password)];
                 string orig = frm[nameof(orig)];
@@ -122,7 +122,7 @@ namespace Greatbone.Sample
         /// </code>
         ///
         [CheckAdmin]
-        public void @new(WebActionContext ac)
+        public async void @new(WebActionContext ac)
         {
             if (ac.IsGetMethod)
             {
@@ -130,7 +130,7 @@ namespace Greatbone.Sample
             }
             else // post
             {
-                var shop = ac.ReadData<Shop>(); // read form
+                var shop = await ac.ReadData<Shop>(); // read form
                 using (var dc = Service.NewDbContext())
                 {
                     shop.credential = StrUtility.MD5(shop.id + ':' + ':' + shop.credential);

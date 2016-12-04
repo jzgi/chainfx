@@ -9,8 +9,6 @@ namespace Greatbone.Core
     ///
     public class WebClientContext : IDisposable
     {
-        public WebActionContext Action { get; set; }
-
         readonly WebClient client;
 
         HttpRequestMessage request;
@@ -24,6 +22,8 @@ namespace Greatbone.Core
         {
             this.client = client;
         }
+
+        public WebActionContext ActionContext { get; set; }
 
         void Reset()
         {
@@ -45,6 +45,17 @@ namespace Greatbone.Core
             }
         }
 
+        void InitRequest()
+        {
+            if (ActionContext != null)
+            {
+                // bearer
+
+                // cookie 
+            }
+
+        }
+
         public void Get(string uri)
         {
             Get(uri, null);
@@ -63,6 +74,7 @@ namespace Greatbone.Core
             }
 
             request = new HttpRequestMessage(HttpMethod.Get, uri);
+            InitRequest();
 
             task = client.SendAsync(request, HttpCompletionOption.ResponseContentRead);
         }
@@ -82,6 +94,8 @@ namespace Greatbone.Core
             {
                 Content = cont
             };
+            InitRequest();
+
             task = client.SendAsync(request, HttpCompletionOption.ResponseContentRead);
         }
 
