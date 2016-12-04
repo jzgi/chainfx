@@ -1,7 +1,7 @@
 ﻿namespace Greatbone.Core
 {
     ///
-    /// Represents a context that is passed as argument.
+    /// To mark a context as being created by the framework.
     ///
     public interface IAutoContext
     {

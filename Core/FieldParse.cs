@@ -2,11 +2,8 @@ using System;
 
 namespace Greatbone.Core
 {
-
     ///
-    /// <summary>
     /// Tp parse HTTP header field value;
-    /// </summary>
     ///
     struct FieldParse
     {
