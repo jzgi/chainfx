@@ -30,7 +30,7 @@ namespace Greatbone.Sample
 
         }
 
-        void All(params WebCall[] calls)
+        void All(params WebClientContext[] calls)
         {
 
         }

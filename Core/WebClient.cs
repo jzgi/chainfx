@@ -7,7 +7,7 @@ namespace Greatbone.Core
     ///
     /// The connect to a remote peer service that the current service depends on.
     ///
-    public class WebReference : HttpClient, IRollable
+    public class WebClient : HttpClient, IRollable
     {
         WebService service;
 
@@ -19,7 +19,11 @@ namespace Greatbone.Core
         // tick count
         private int lastConnect;
 
-        public WebReference(string name, string raddr)
+
+        // the event polling context for this remote 
+        WebClientContext pollctx;
+
+        public WebClient(string name, string raddr)
         {
             this.name = name;
             string addr = raddr.StartsWith("http") ? raddr : "http://" + raddr;
@@ -37,52 +41,36 @@ namespace Greatbone.Core
                 // create and run task
                 Task.Run(() =>
                 {
-                    PollEventsAsync();
+                    PollAsync();
                 });
             }
         }
 
 
-        ///
-        /// A single round of polling for remote events.
-        ///
-        internal async void PollEventsAsync()
+        internal async void PollAsync()
         {
-            // schedule
-
-            WebCall call = new WebCall(this);
-
-            // HttpRequestMessage pollRequest = new HttpRequestMessage();
-            // client.DefaultRequestHeaders.Add("Range", "");
-            // HttpResponseMessage response = await client.SendAsync(pollRequest, HttpCompletionOption.ResponseContentRead);
-            // response.Headers.GetValues("lastid");
-
-            byte[] body;
-
-            // if (response.IsSuccessStatusCode)
-            // {
-            //     byte[] bytes = await response.Content.ReadAsByteArrayAsync();
-            //     JsonParse par = new JsonParse(bytes, bytes.Length);
-            //     object entity = par.Parse();
-
-
             // parse and process evetns
             for (;;)
             {
-                long evtid;
-                string topic = "";
+                long id;
+                string name = "";
                 DateTime time;
-
                 WebEvent hook = null;
-                if (service.Events.TryGet(topic, out hook))
+                if (service.Events.TryGet(name, out hook))
                 {
-                    WebEventContext evt = new WebEventContext
+                    WebEventContext ec = new WebEventContext
                     {
                         // body = null
                     };
-                    hook.Do(evt);
+                    hook.Do(ec);
                 }
             }
         }
+
+        public WebClientContext NewContext()
+        {
+            return null;
+        }
+
     }
 }

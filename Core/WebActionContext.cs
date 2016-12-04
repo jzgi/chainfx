@@ -344,14 +344,14 @@ namespace Greatbone.Core
         // RPC
         //
 
-        public WebCall NewWebCall()
+        public WebClientContext NewWebCall()
         {
-            return new WebCall(null) { Context = this };
+            return new WebClientContext(null) { Context = this };
         }
 
-        public WebCall NewWebCalls()
+        public WebClientContext NewWebCalls()
         {
-            return new WebCall(null) { Context = this };
+            return new WebClientContext(null) { Context = this };
         }
 
 

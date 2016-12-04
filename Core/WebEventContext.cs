@@ -7,7 +7,7 @@ namespace Greatbone.Core
     ///
     public struct WebEventContext : IAutoContext, IDisposable
     {
-        readonly WebReference reference;
+        readonly WebClient reference;
 
         readonly long id;
 
@@ -18,7 +18,7 @@ namespace Greatbone.Core
         // either Obj or Arr
         readonly object body;
 
-        internal WebEventContext(WebReference reference, long id, string @event, string shard, object body)
+        internal WebEventContext(WebClient reference, long id, string @event, string shard, object body)
         {
             this.reference = reference;
             this.id = id;

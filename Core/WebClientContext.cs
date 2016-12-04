@@ -5,23 +5,29 @@ using System.Threading.Tasks;
 namespace Greatbone.Core
 {
     ///
-    /// An eachange of requests and receive responses.
+    /// A single request/response eachange or a seris of them.
     ///
-    public class WebCall : IAutoContext, IDisposable
+    public class WebClientContext : IAutoContext, IDisposable
     {
-        readonly WebReference client;
+        readonly WebClient client;
 
         HttpRequestMessage request;
 
+        internal Task<HttpResponseMessage> task;
+
         HttpResponseMessage response;
 
-        internal Task<byte[]> task;
+        // accumulated no-content cycles
+        int nothings;
+
+        // last tick count
+        int last;
 
         byte[] bytes;
 
-        public WebCall(WebReference client)
+        public WebClientContext(WebClient remote)
         {
-            this.client = client;
+            this.client = remote;
         }
 
         internal WebActionContext Context { get; set; }
@@ -36,12 +42,12 @@ namespace Greatbone.Core
 
         }
 
-        public async void Get(string uri, Action<FormContent> a)
+        public async void Get(string uri, Action<FormContent> query)
         {
-            if (a != null)
+            if (query != null)
             {
                 FormContent cont = new FormContent(false, false, 512);
-                a(cont);
+                query(cont);
                 uri = uri + "?" + cont.ToString();
             }
             request = new HttpRequestMessage(HttpMethod.Post, uri);

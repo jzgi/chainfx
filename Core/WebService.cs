@@ -40,7 +40,7 @@ namespace Greatbone.Core
         readonly string signon;
 
         // connectivity to the remote peers, for remote call as well as messaging
-        readonly Roll<WebReference> references;
+        readonly Roll<WebClient> clients;
 
         // event hooks
         readonly Roll<WebEvent> events;
@@ -97,13 +97,13 @@ namespace Greatbone.Core
                 for (int i = 0; i < refs.Count; i++)
                 {
                     Member mbr = refs[i];
-                    string svcid = mbr.Name; // service instance id
+                    string name = mbr.Name; // service instance id
                     string addr = mbr;
-                    if (references == null)
+                    if (clients == null)
                     {
-                        references = new Roll<WebReference>(refs.Count * 2);
+                        clients = new Roll<WebClient>(refs.Count * 2);
                     }
-                    references.Add(new WebReference(svcid, addr));
+                    clients.Add(new WebClient(name, addr));
                 }
             }
 
@@ -124,7 +124,7 @@ namespace Greatbone.Core
 
         internal Roll<WebEvent> Events => events;
 
-        internal Roll<WebReference> References => references;
+        internal Roll<WebClient> Clients => clients;
 
         bool InstallEq()
         {
@@ -296,11 +296,11 @@ namespace Greatbone.Core
         // MESSAGING
         //
 
-        internal WebReference GetReference(string svcid)
+        internal WebClient GetReference(string svcid)
         {
-            for (int i = 0; i < references.Count; i++)
+            for (int i = 0; i < clients.Count; i++)
             {
-                WebReference @ref = references[i];
+                WebClient @ref = clients[i];
                 if (@ref.Name.Equals(svcid)) return @ref;
             }
             return null;
@@ -330,9 +330,9 @@ namespace Greatbone.Core
         {
             while (true)
             {
-                for (int i = 0; i < References.Count; i++)
+                for (int i = 0; i < Clients.Count; i++)
                 {
-                    WebReference conn = References[i];
+                    WebClient conn = Clients[i];
 
                     // schedule
                 }
