@@ -1,13 +1,13 @@
 namespace Greatbone.Core
 {
 
-    public class PlainContent : DynamicContent
+    public class StrContent : DynamicContent
     {
         const int InitialCapacity = 256;
 
         string text;
 
-        public PlainContent(bool raw, bool pooled, int capacity = InitialCapacity) : base(raw, pooled, capacity)
+        public StrContent(bool binary, bool pooled, int capacity = InitialCapacity) : base(binary, pooled, capacity)
         {
         }
 
@@ -21,6 +21,7 @@ namespace Greatbone.Core
             }
 
         }
+        
         public override string CType => "text/plain";
 
     }

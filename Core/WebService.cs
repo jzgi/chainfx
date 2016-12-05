@@ -253,7 +253,7 @@ namespace Greatbone.Core
             if ("*".Equals(relative))
             {
                 // handle as event
-                ForEvents(ac);
+                LoadEvents(ac);
             }
             else
             {
@@ -333,17 +333,36 @@ namespace Greatbone.Core
         }
 
 
-        void ForEvents(WebActionContext ac)
+        void LoadEvents(WebActionContext ac)
         {
-            string svc = ac.Header("service");
-            string sub = "";
+            string[] events = ac[nameof(events)];
+            string shard = ac.Header("shard"); // can be null
             int? lastid = ac.HeaderInt("Range");
 
             using (var dc = NewDbContext())
             {
-                if (dc.Query("SELECT * FROM eq WHERE id > @1 AND service = @2 AND sub = @3 LIMIT 120", p => p.Put(lastid.Value)))
+                DbSql sql = new DbSql("SELECT * FROM eq WHERE id > @1 AND event IN [");
+                for (int i = 0; i < events.Length; i++)
                 {
+                    if (i > 0) sql.Add(',');
+                    sql.Put(events[i]);
+                }
+                sql.Add(']');
+                if (shard != null)
+                {
+                    sql._("AND (shard IS NULL OR shard = ").Put(shard).Add(')');
+                }
+                sql._("LIMIT 120");
 
+                if (dc.Query(sql.ToString(), p => p.Put(lastid.Value)))
+                {
+                    EventsContent cont = new EventsContent(true, 1024 * 1024);
+                    while (dc.NextRow())
+                    {
+                        long id = dc.GetLong();
+                        ArraySegment<byte>? byteas = dc.GetBytesSeg();
+                    }
+                    ac.Send(200, cont);
                 }
                 else
                 {

@@ -256,7 +256,7 @@ namespace Greatbone.Core
         public void SendText(int status, string text, bool? pub = null, int maxage = 60000)
         {
             StatusCode = status;
-            Content = new PlainContent(true, true)
+            Content = new StrContent(true, true)
             {
                 Text = text
             };
