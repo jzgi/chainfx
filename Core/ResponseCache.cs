@@ -5,9 +5,9 @@ using System.Threading;
 namespace Greatbone.Core
 {
     /// 
-    /// The server-side response content cache within particular service.
+    /// The server-side response cache in particular service.
     /// 
-    class ContentCache
+    class ResponseCache
     {
         readonly ConcurrentDictionary<string, Entry> entries;
 
@@ -15,7 +15,7 @@ namespace Greatbone.Core
 
         volatile bool stop;
 
-        internal ContentCache(int concurrency, int capcity)
+        internal ResponseCache(int concurrency, int capcity)
         {
             // create the url-to-item dictionary
             entries = new ConcurrentDictionary<string, Entry>(concurrency, capcity);

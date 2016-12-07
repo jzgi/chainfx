@@ -36,7 +36,7 @@ namespace Greatbone.Core
         readonly KestrelServer server;
 
         // shared content cache
-        readonly ContentCache cache;
+        readonly ResponseCache cache;
 
         readonly string signon;
 
@@ -111,7 +111,7 @@ namespace Greatbone.Core
             InstallEq();
 
             // init content cache
-            cache = new ContentCache(Environment.ProcessorCount * 2, 4096);
+            cache = new ResponseCache(Environment.ProcessorCount * 2, 4096);
         }
 
         public WebConfig Config => (WebConfig)makectx;

@@ -2,7 +2,6 @@ using System;
 
 namespace Greatbone.Core
 {
-
     /// 
     /// To specify user interface related attributes.
     ///

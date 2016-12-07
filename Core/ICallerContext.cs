@@ -1,7 +1,7 @@
 ﻿namespace Greatbone.Core
 {
     ///
-    /// To initiate remote call.
+    /// A context that can initiate remote call.
     ///
     public interface ICallerContext
     {

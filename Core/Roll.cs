@@ -5,7 +5,7 @@ using System.Collections.Generic;
 namespace Greatbone.Core
 {
     ///
-    /// An addition-only addition-order dictionary.
+    /// An addition-only and -ordered dictionary.
     ///
     public class Roll<E> : IEnumerable where E : IRollable
     {
