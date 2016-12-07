@@ -138,7 +138,7 @@ namespace Greatbone.Core
 
         // public Roll<WebAction> Actions => actions;
 
-        public WebAction GetAction(string method)
+        public WebAction Action(string method)
         {
             if (string.IsNullOrEmpty(method))
             {
@@ -147,7 +147,7 @@ namespace Greatbone.Core
             return actions[method];
         }
 
-        public WebAction[] GetActions(params string[] methods)
+        public WebAction[] Actions(params string[] methods)
         {
             int len = methods.Length;
             WebAction[] atn = new WebAction[len];
@@ -205,7 +205,7 @@ namespace Greatbone.Core
                     name = rsc.Substring(0, dash);
                     sub = rsc.Substring(dash + 1);
                 }
-                WebAction atn = string.IsNullOrEmpty(name) ? defaction : GetAction(name);
+                WebAction atn = string.IsNullOrEmpty(name) ? defaction : Action(name);
                 if (atn == null)
                 {
                     ac.StatusCode = 404;

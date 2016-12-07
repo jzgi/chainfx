@@ -5,7 +5,7 @@ namespace Greatbone.Core
     ///
     /// The processing of an queued message. 
     ///
-    public struct WebEventContext : IAutoContext, IDisposable
+    public struct WebEventContext : IDisposable
     {
         readonly WebClient client;
 

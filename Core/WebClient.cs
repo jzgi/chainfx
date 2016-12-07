@@ -86,8 +86,10 @@ namespace Greatbone.Core
             byte[] cont = await resp.Content.ReadAsByteArrayAsync();
 
             // parse and process evetns
+            int pos;
             for (;;)
             {
+                
                 long id;
                 string name = "";
                 DateTime time;

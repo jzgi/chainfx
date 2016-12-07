@@ -14,7 +14,7 @@ namespace Greatbone.Sample
         {
             MakeVar<ShopVarDirectory>();
 
-            _new = GetActions(nameof(@new));
+            _new = Actions(nameof(@new));
         }
 
         ///

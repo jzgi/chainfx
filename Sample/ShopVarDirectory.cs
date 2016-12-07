@@ -16,7 +16,7 @@ namespace Greatbone.Sample
             // order functions
             Make<MyOrderDirectory>("myorder");
 
-            _re_menu_ = GetAction(nameof(remenu));
+            _re_menu_ = Action(nameof(remenu));
         }
 
         ///
