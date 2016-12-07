@@ -200,7 +200,7 @@ namespace Greatbone.Core
             return v;
         }
 
-        public static ArraySegment<byte>? GetBytesSeg(this ISource src)
+        public static ArraySegment<byte>? GetByteAs(this ISource src)
         {
             ArraySegment<byte>? v = null;
             src.Get(null, ref v);

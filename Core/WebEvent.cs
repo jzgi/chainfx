@@ -4,7 +4,7 @@ using System.Reflection;
 namespace Greatbone.Core
 {
     /// 
-    /// The descriptor of a event hook.
+    /// The descriptor of a event handler method in a service.
     /// 
     public class WebEvent : IRollable
     {

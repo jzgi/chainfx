@@ -180,10 +180,7 @@ namespace Greatbone.Sample
 
         public void report(WebActionContext ac)
         {
-            using (var call = ac.NewWebCall())
-            {
-
-            }
+            
         }
     }
 }

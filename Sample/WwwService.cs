@@ -9,8 +9,11 @@ namespace Greatbone.Sample
     {
         const string api = "sh.api.weixin.qq.com";
 
+        readonly WebClient[] shops;
+
         public WwwService(WebConfig cfg) : base(cfg)
         {
+            shops = Clients.All("shop-");
         }
 
         ///
@@ -25,12 +28,7 @@ namespace Greatbone.Sample
 
         }
 
-        public void search(WebActionContext e)
-        {
-
-        }
-
-        void All(params WebClientContext[] calls)
+        public void search(WebActionContext ac)
         {
 
         }

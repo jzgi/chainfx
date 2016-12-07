@@ -7,9 +7,11 @@ namespace Greatbone.Core
     ///
     public struct WebEventContext : IAutoContext, IDisposable
     {
-        readonly WebClient reference;
+        readonly WebClient client;
 
         readonly long id;
+
+        readonly DateTime time;
 
         readonly string name;
 
@@ -18,12 +20,13 @@ namespace Greatbone.Core
         // either Obj or Arr
         readonly object body;
 
-        internal WebEventContext(WebClient reference, long id, string @event, string shard, object body)
+        internal WebEventContext(WebClient client, long id, string name, string shard, DateTime time, object body)
         {
-            this.reference = reference;
+            this.client = client;
             this.id = id;
-            this.name = @event;
+            this.name = name;
             this.shard = shard;
+            this.time = time;
             this.body = body;
         }
 

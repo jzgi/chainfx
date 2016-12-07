@@ -1,4 +1,6 @@
-﻿using System.Collections;
+﻿using System;
+using System.Collections;
+using System.Collections.Generic;
 
 namespace Greatbone.Core
 {
@@ -38,6 +40,8 @@ namespace Greatbone.Core
 
         public E this[int index] => entries[index].element;
 
+        public int Count => count;
+
         public E this[string key]
         {
             get
@@ -52,6 +56,89 @@ namespace Greatbone.Core
             set
             {
                 Add(value);
+            }
+        }
+
+        public E Any(string prefix)
+        {
+            for (int i = 0; i < count; i++)
+            {
+                E elem = entries[i].element;
+                if (elem.Name.StartsWith(prefix)) return elem;
+            }
+            return default(E);
+        }
+
+        public E Any(Predicate<E> match)
+        {
+            for (int i = 0; i < count; i++)
+            {
+                E elem = entries[i].element;
+                if (match(elem)) return elem;
+            }
+            return default(E);
+        }
+
+        public E[] All(string prefix)
+        {
+            List<E> lst = null;
+            for (int i = 0; i < count; i++)
+            {
+                E elem = entries[i].element;
+                if (elem.Name.StartsWith(prefix))
+                {
+                    if (lst == null) lst = new List<E>(8);
+                    lst.Add(elem);
+                }
+            }
+            return lst?.ToArray();
+        }
+
+        public E[] All(Predicate<E> match)
+        {
+            List<E> lst = null;
+            for (int i = 0; i < count; i++)
+            {
+                E elem = entries[i].element;
+                if (match(elem))
+                {
+                    if (lst == null) lst = new List<E>(8);
+                    lst.Add(elem);
+                }
+            }
+            return lst?.ToArray();
+        }
+
+        public void ForEach(Action<E> a)
+        {
+            for (int i = 0; i < count; i++)
+            {
+                E elem = entries[i].element;
+                a(elem);
+            }
+        }
+
+        public void ForEach(string prefix, Action<E> a)
+        {
+            for (int i = 0; i < count; i++)
+            {
+                E elem = entries[i].element;
+                if (elem.Name.StartsWith(prefix))
+                {
+                    a(elem);
+                }
+            }
+        }
+
+        public void ForEach(Predicate<E> match, Action<E> a)
+        {
+            for (int i = 0; i < count; i++)
+            {
+                E elem = entries[i].element;
+                if (match(elem))
+                {
+                    a(elem);
+                }
             }
         }
 
@@ -83,8 +170,6 @@ namespace Greatbone.Core
             elem = default(E);
             return false;
         }
-
-        public int Count => count;
 
         public void Add(E elem)
         {

@@ -9,7 +9,7 @@ namespace Greatbone.Core
     ///
     /// The encapsulation of a web request/response exchange context.
     ///
-    public class WebActionContext : DefaultHttpContext, IAutoContext, IDisposable
+    public class WebActionContext : DefaultHttpContext, ICallerContext, IDisposable
     {
         internal WebActionContext(IFeatureCollection features) : base(features)
         {
@@ -20,6 +20,8 @@ namespace Greatbone.Core
         public WebAction Action { get; internal set; }
 
         public IPrincipal Principal { get; internal set; }
+
+        public bool IsBearer { get; internal set; }
 
         // two levels of variable keys
         Var var, var2;
@@ -55,7 +57,7 @@ namespace Greatbone.Core
 
         public bool IsPostMethod => "POST".Equals(Request.Method);
 
-        public string Url => Features.Get<IHttpRequestFeature>().RawTarget;
+        public string Uri => Features.Get<IHttpRequestFeature>().RawTarget;
 
         Form query;
 
@@ -135,7 +137,7 @@ namespace Greatbone.Core
             if (clen <= 0) return null;
 
             int len = (int)clen;
-            byte[] bytebuf = BufferUtility.GetByteBuf(len); // borrow from the pool
+            byte[] bytebuf = BufferUtility.BorrowByteBuf(len); // borrow from the pool
             int count = await Request.Body.ReadAsync(bytebuf, 0, len);
 
             string ctyp = Request.ContentType;
@@ -321,16 +323,6 @@ namespace Greatbone.Core
         //
         // RPC
         //
-
-        public WebClientContext NewWebCall()
-        {
-            return new WebClientContext(null) { ActionContext = this };
-        }
-
-        public WebClientContext NewWebCalls()
-        {
-            return new WebClientContext(null) { ActionContext = this };
-        }
 
 
         internal bool IsCacheable

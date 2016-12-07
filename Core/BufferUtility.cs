@@ -29,7 +29,7 @@ namespace Greatbone.Core
         };
 
 
-        public static byte[] GetByteBuf(int demand)
+        public static byte[] BorrowByteBuf(int demand)
         {
             // locate the appropriate queue
             int i = 0;
@@ -71,7 +71,7 @@ namespace Greatbone.Core
             }
         }
 
-        public static char[] GetCharBuf(int demand)
+        public static char[] BorrowCharBuf(int demand)
         {
             // locate the appropriate queue
             int i = 0;

@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.IO;
+using System.Net.Http;
 using System.Reflection;
 using System.Text;
 using System.Threading;
@@ -40,7 +41,7 @@ namespace Greatbone.Core
         readonly string signon;
 
         // client connectivity to the remote peers
-        readonly Roll<WebClient> clients;
+        readonly Roll<WebClient> refs;
 
         // event hooks
         readonly Roll<WebEvent> events;
@@ -99,11 +100,11 @@ namespace Greatbone.Core
                     Member mbr = refs[i];
                     string name = mbr.Name; // service instance id
                     string addr = mbr;
-                    if (clients == null)
+                    if (this.refs == null)
                     {
-                        clients = new Roll<WebClient>(refs.Count * 2);
+                        this.refs = new Roll<WebClient>(refs.Count * 2);
                     }
-                    clients.Add(new WebClient(name, addr));
+                    this.refs.Add(new WebClient(name, addr));
                 }
             }
 
@@ -122,9 +123,9 @@ namespace Greatbone.Core
 
         public string SignOn => signon;
 
-        internal Roll<WebEvent> Events => events;
+        public Roll<WebEvent> Events => events;
 
-        internal Roll<WebClient> Clients => clients;
+        public Roll<WebClient> Clients => refs;
 
         bool InstallEq()
         {
@@ -233,7 +234,7 @@ namespace Greatbone.Core
             IContent cont = ac.Content;
             if (ac.IsCacheable)
             {
-                cache.Add(ac.Url, ac.MaxAge, cont);
+                cache.Add(ac.Uri, ac.MaxAge, cont);
             }
             else if (cont != null && cont.IsPoolable)
             {
@@ -298,38 +299,12 @@ namespace Greatbone.Core
 
         internal WebClient GetClient(string svcid)
         {
-            for (int i = 0; i < clients.Count; i++)
+            for (int i = 0; i < refs.Count; i++)
             {
-                WebClient cli = clients[i];
+                WebClient cli = refs[i];
                 if (cli.Name.Equals(svcid)) return cli;
             }
             return null;
-        }
-
-        internal WebClient CallByGet(string svcid, Action<WebClientContext> a)
-        {
-            for (int i = 0; i < clients.Count; i++)
-            {
-                WebClient cli = clients[i];
-                if (cli.Name.Equals(svcid)) return cli;
-            }
-            return null;
-        }
-
-        public WebClientContext NewClientContext(string prefix)
-        {
-            return null;
-        }
-
-        internal async void CallByGet(params WebClientContext[] ccs)
-        {
-            int len = ccs.Length;
-            Task[] tasks = new Task[len];
-            for (int i = 0; i < len; i++)
-            {
-                tasks[i] = ccs[i].task;
-            }
-            await Task.WhenAll(tasks);
         }
 
 
@@ -360,7 +335,11 @@ namespace Greatbone.Core
                     while (dc.NextRow())
                     {
                         long id = dc.GetLong();
-                        ArraySegment<byte>? byteas = dc.GetBytesSeg();
+                        string name = dc.GetString();
+                        DateTime time = dc.GetDateTime();
+                        ArraySegment<byte>? body = dc.GetByteAs();
+
+                        cont.Add(id, name, time, body);
                     }
                     ac.Send(200, cont);
                 }
