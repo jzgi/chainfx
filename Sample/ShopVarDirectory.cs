@@ -34,7 +34,7 @@ namespace Greatbone.Sample
                 DbSql sql = new DbSql("SELECT ").columnlst(Item.Empty)._("FROM items WHERE shopid = @1 AND NOT disabled");
                 if (dc.Query(sql.ToString(), p => p.Put(shopid)))
                 {
-                    var items = dc.ToDatas<Item>();
+                    var items = dc.ToDats<Item>();
                     ac.SendHtmlMajor(200, "", main =>
                     {
                         main.form(_re_menu_, p =>

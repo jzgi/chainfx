@@ -185,20 +185,20 @@ namespace Greatbone.Core
             return (entity = await ReadAsync()) as Arr;
         }
 
-        public async Task<D> ReadData<D>(byte z = 0) where D : IData, new()
+        public async Task<D> ReadDat<D>(byte z = 0) where D : IDat, new()
         {
             ISource src = (entity = await ReadAsync()) as ISource;
             if (src == null)
             {
                 return default(D);
             }
-            return src.ToData<D>(z);
+            return src.ToDat<D>(z);
         }
 
-        public async Task<D[]> ReadDatas<D>(byte z = 0) where D : IData, new()
+        public async Task<D[]> ReadDats<D>(byte z = 0) where D : IDat, new()
         {
             Arr arr = (entity = await ReadAsync()) as Arr;
-            return arr?.ToDatas<D>(z);
+            return arr?.ToDats<D>(z);
         }
 
         public async Task<Elem> ReadElem()
@@ -267,12 +267,12 @@ namespace Greatbone.Core
             MaxAge = maxage;
         }
 
-        public void SendJson<D>(int status, D dat, byte z = 0, bool? pub = null, int maxage = 60000) where D : IData
+        public void SendJson<D>(int status, D dat, byte z = 0, bool? pub = null, int maxage = 60000) where D : IDat
         {
             SendJson(status, cont => cont.PutObj(dat, z), pub, maxage);
         }
 
-        public void SendJson<D>(int status, D[] dats, byte z = 0, bool? pub = null, int maxage = 60000) where D : IData
+        public void SendJson<D>(int status, D[] dats, byte z = 0, bool? pub = null, int maxage = 60000) where D : IDat
         {
             SendJson(status, cont => cont.PutArr(dats, z), pub, maxage);
         }

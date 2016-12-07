@@ -31,7 +31,7 @@ namespace Greatbone.Core
 
         R Put(string name, ArraySegment<byte> v);
 
-        R Put<D>(string name, D v, byte z = 0) where D : IData;
+        R Put<D>(string name, D v, byte z = 0) where D : IDat;
 
         R Put(string name, Obj v);
 
@@ -45,6 +45,6 @@ namespace Greatbone.Core
 
         R Put(string name, string[] v);
 
-        R Put<D>(string name, D[] v, byte z = 0) where D : IData;
+        R Put<D>(string name, D[] v, byte z = 0) where D : IDat;
     }
 }

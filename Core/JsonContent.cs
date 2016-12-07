@@ -79,7 +79,7 @@ namespace Greatbone.Core
             level--; // exit
         }
 
-        public void PutArr<B>(B[] arr, byte z = 0) where B : IData
+        public void PutArr<B>(B[] arr, byte z = 0) where B : IDat
         {
             Put(null, arr, z);
         }
@@ -97,7 +97,7 @@ namespace Greatbone.Core
             level--; // exit
         }
 
-        public void PutObj<B>(B obj, byte z = 0) where B : IData
+        public void PutObj<B>(B obj, byte z = 0) where B : IDat
         {
             Put(null, obj, z);
         }
@@ -311,7 +311,7 @@ namespace Greatbone.Core
             return this; // ignore ir
         }
 
-        public JsonContent Put<D>(string name, D v, byte z = 0) where D : IData
+        public JsonContent Put<D>(string name, D v, byte z = 0) where D : IDat
         {
             if (counts[level]++ > 0) Add(',');
 
@@ -525,7 +525,7 @@ namespace Greatbone.Core
         }
 
 
-        public JsonContent Put<D>(string name, D[] v, byte z = 0) where D : IData
+        public JsonContent Put<D>(string name, D[] v, byte z = 0) where D : IDat
         {
             if (counts[level]++ > 0) Add(',');
 

@@ -61,7 +61,7 @@ namespace Greatbone.Core
             return SendAsync(req, HttpCompletionOption.ResponseContentRead);
         }
 
-        public Task<HttpResponseMessage> CallPostJson<D>(ICallerContext ctx, string uri, D dat) where D : IData
+        public Task<HttpResponseMessage> CallPostJson<D>(ICallerContext ctx, string uri, D dat) where D : IDat
         {
             HttpRequestMessage req = new HttpRequestMessage(HttpMethod.Post, uri);
             if (ctx.IsBearer)

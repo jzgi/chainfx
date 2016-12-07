@@ -24,7 +24,7 @@ namespace Greatbone.Sample
                 DbSql sql = new DbSql("SELECT ").columnlst(Order.Empty)._("FROM orders WHERE id = @1 AND shopid = @2");
                 if (dc.Query(sql.ToString(), p => p.Put(id).Put(shopid)))
                 {
-                    var order = dc.ToData<Order>();
+                    var order = dc.ToDat<Order>();
                     ac.SendHtmlMajor(200, "", main =>
                     {
 
@@ -45,7 +45,7 @@ namespace Greatbone.Sample
                 DbSql sql = new DbSql("SELECT ").columnlst(Order.Empty)._("FROM orders WHERE id = @1 AND shopid = @2");
                 if (dc.Query(sql.ToString(), p => p.Put(orderid).Put(shopid)))
                 {
-                    var order = dc.ToData<Order>();
+                    var order = dc.ToDat<Order>();
                     ac.SendHtmlMajor(200, "", main =>
                     {
 

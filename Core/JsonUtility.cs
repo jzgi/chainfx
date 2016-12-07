@@ -48,7 +48,7 @@ namespace Greatbone.Core
             return null;
         }
 
-        public static D FileToData<D>(string file) where D : IData, new()
+        public static D FileToDat<D>(string file) where D : IDat, new()
         {
             try
             {
@@ -57,7 +57,7 @@ namespace Greatbone.Core
                 Obj obj = (Obj)p.Parse();
                 if (obj != null)
                 {
-                    return obj.ToData<D>();
+                    return obj.ToDat<D>();
                 }
             }
             catch (Exception ex)
@@ -67,7 +67,7 @@ namespace Greatbone.Core
             return default(D);
         }
 
-        public static D[] FileToDatas<D>(string file) where D : IData, new()
+        public static D[] FileToDats<D>(string file) where D : IDat, new()
         {
             try
             {
@@ -76,7 +76,7 @@ namespace Greatbone.Core
                 Arr arr = (Arr)p.Parse();
                 if (arr != null)
                 {
-                    return arr.ToDatas<D>();
+                    return arr.ToDats<D>();
                 }
             }
             catch (Exception ex)

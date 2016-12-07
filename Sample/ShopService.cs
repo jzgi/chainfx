@@ -53,7 +53,7 @@ namespace Greatbone.Sample
                 {
                     if (dc.QueryA("SELECT * FROM shops WHERE id = @1", (p) => p.Put(id)))
                     {
-                        var tok = dc.ToData<ShopToken>();
+                        var tok = dc.ToDat<ShopToken>();
                         string credential = StrUtility.MD5(id + ':' + password);
                         if (credential.Equals(tok.credential))
                         {
@@ -98,7 +98,7 @@ namespace Greatbone.Sample
                 DbSql sql = new DbSql("SELECT ").columnlst(Shop.Empty, z)._("FROM shops WHERE NOT disabled ORDER BY id LIMIT 20 OFFSET @1");
                 if (dc.Query(sql.ToString(), p => p.Put(20 * page)))
                 {
-                    var shops = dc.ToDatas<Shop>(z);
+                    var shops = dc.ToDats<Shop>(z);
                     ac.SendHtmlMajor(200, "", main =>
                     {
                         main.form(_new, shops);
@@ -130,7 +130,7 @@ namespace Greatbone.Sample
             }
             else // post
             {
-                var shop = await ac.ReadData<Shop>(); // read form
+                var shop = await ac.ReadDat<Shop>(); // read form
                 using (var dc = Service.NewDbContext())
                 {
                     shop.credential = StrUtility.MD5(shop.id + ':' + ':' + shop.credential);
@@ -153,7 +153,7 @@ namespace Greatbone.Sample
             try
             {
                 Obj obj = (Obj)par.Parse();
-                return obj.ToData<ShopToken>();
+                return obj.ToDat<ShopToken>();
             }
             catch
             {

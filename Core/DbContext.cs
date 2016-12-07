@@ -179,7 +179,7 @@ namespace Greatbone.Core
         // RESULTSET
         //
 
-        public D ToData<D>(byte z = 0) where D : IData, new()
+        public D ToDat<D>(byte z = 0) where D : IDat, new()
         {
             D dat = new D();
             dat.Load(this, z);
@@ -187,7 +187,7 @@ namespace Greatbone.Core
         }
 
 
-        public D[] ToDatas<D>(byte z = 0) where D : IData, new()
+        public D[] ToDats<D>(byte z = 0) where D : IDat, new()
         {
             List<D> lst = new List<D>(64);
             while (NextRow())
@@ -351,7 +351,7 @@ namespace Greatbone.Core
             return false;
         }
 
-        public bool Get<B>(string name, ref B v, byte z = 0) where B : IData, new()
+        public bool Get<B>(string name, ref B v, byte z = 0) where B : IDat, new()
         {
             int ord = name == null ? ordinal++ : reader.GetOrdinal(name);
             if (!reader.IsDBNull(ord))
@@ -436,7 +436,7 @@ namespace Greatbone.Core
             return false;
         }
 
-        public bool Get<D>(string name, ref D[] v, byte z = 0) where D : IData, new()
+        public bool Get<D>(string name, ref D[] v, byte z = 0) where D : IDat, new()
         {
             int ord = name == null ? ordinal++ : reader.GetOrdinal(name);
             if (!reader.IsDBNull(ord))
@@ -478,12 +478,12 @@ namespace Greatbone.Core
             BufferUtility.Return(cont);
         }
 
-        public void Publish<B>(string topic, string part, B obj) where B : IData
+        public void Publish<B>(string topic, string part, B obj) where B : IDat
         {
             Publish(topic, part, jcont => jcont.PutObj(obj));
         }
 
-        public void Publish<B>(string topic, string part, B[] arr) where B : IData
+        public void Publish<B>(string topic, string part, B[] arr) where B : IDat
         {
             Publish(topic, part, jcont => jcont.PutArr(arr));
         }
