@@ -26,14 +26,14 @@ namespace Greatbone.Core
         public static void Set<D>(this HttpRequestMessage msg, D dat) where D : IDat
         {
             JsonContent cont = new JsonContent(true, true);
-            cont.PutObj(dat);
+            cont.Put(null, dat);
             msg.Content = cont;
         }
 
         public static void Set<D>(this HttpRequestMessage msg, D[] dats) where D : IDat
         {
             JsonContent cont = new JsonContent(true, true);
-            cont.PutArr(dats);
+            cont.Put(null, dats);
             msg.Content = cont;
         }
 

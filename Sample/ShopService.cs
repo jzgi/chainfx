@@ -60,7 +60,7 @@ namespace Greatbone.Sample
                             // set cookie
 
                             JsonContent cont = new JsonContent(true, false, 256);
-                            cont.PutObj(tok);
+                            cont.Put(null, tok);
                             cont.Encrypt(0x4a78be76, 0x1f0335e2);
 
                             ac.SetHeader("Set-Cookie", "");
@@ -180,7 +180,7 @@ namespace Greatbone.Sample
 
         public void report(WebActionContext ac)
         {
-            
+
         }
     }
 }

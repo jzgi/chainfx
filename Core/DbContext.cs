@@ -480,12 +480,12 @@ namespace Greatbone.Core
 
         public void Publish<B>(string topic, string part, B obj) where B : IDat
         {
-            Publish(topic, part, jcont => jcont.PutObj(obj));
+            Publish(topic, part, jcont => jcont.Put(null, obj));
         }
 
         public void Publish<B>(string topic, string part, B[] arr) where B : IDat
         {
-            Publish(topic, part, jcont => jcont.PutArr(arr));
+            Publish(topic, part, jcont => jcont.Put(null, arr));
         }
 
 

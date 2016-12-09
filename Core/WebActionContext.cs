@@ -269,12 +269,12 @@ namespace Greatbone.Core
 
         public void SendJson<D>(int status, D dat, byte z = 0, bool? pub = null, int maxage = 60000) where D : IDat
         {
-            SendJson(status, cont => cont.PutObj(dat, z), pub, maxage);
+            SendJson(status, cont => cont.Put(null, dat, z), pub, maxage);
         }
 
         public void SendJson<D>(int status, D[] dats, byte z = 0, bool? pub = null, int maxage = 60000) where D : IDat
         {
-            SendJson(status, cont => cont.PutArr(dats, z), pub, maxage);
+            SendJson(status, cont => cont.Put(null, dats, z), pub, maxage);
         }
 
         public void SendJson(int status, Action<JsonContent> a, bool? pub = null, int maxage = 60000)

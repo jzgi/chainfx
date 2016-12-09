@@ -39,23 +39,23 @@ namespace Greatbone.Core
         {
             for (int i = 0; i < count; i++)
             {
-                Member mbr = elements[i];
-                MemberType typ = mbr.type;
+                Member elem = elements[i];
+                MemberType typ = elem.type;
                 if (typ == MemberType.Array)
                 {
-                    snk.Put((Arr) mbr);
+                    snk.Put((Arr)elem);
                 }
                 else if (typ == MemberType.Object)
                 {
-                    snk.Put((Obj) mbr);
+                    snk.Put((Obj)elem);
                 }
                 else if (typ == MemberType.String)
                 {
-                    snk.Put((string) mbr);
+                    snk.Put((string)elem);
                 }
                 else if (typ == MemberType.Number)
                 {
-                    snk.Put((Number) mbr);
+                    snk.Put((Number)elem);
                 }
                 else if (typ == MemberType.True)
                 {
@@ -78,7 +78,7 @@ namespace Greatbone.Core
             for (int i = 0; i < dats.Length; i++)
             {
                 D dat = new D();
-                dat.Load((Obj) this[i], z);
+                dat.Load((Obj)this[i], z);
                 dats[i] = dat;
             }
             return dats;

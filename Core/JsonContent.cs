@@ -7,7 +7,7 @@ namespace Greatbone.Core
     ///
     public class JsonContent : DynamicContent, ISink<JsonContent>
     {
-        const int InitialCapacity = 4 * 1024;
+        const int InitialCapacity = 8 * 1024;
 
         // starting positions of each level
         readonly int[] counts;
@@ -15,7 +15,7 @@ namespace Greatbone.Core
         // current level
         int level;
 
-        public JsonContent(bool raw, bool pooled, int capacity = InitialCapacity) : base(raw, pooled, capacity)
+        public JsonContent(bool binary, bool pooled, int capacity = InitialCapacity) : base(binary, pooled, capacity)
         {
             counts = new int[8];
             level = 0;
@@ -79,9 +79,9 @@ namespace Greatbone.Core
             level--; // exit
         }
 
-        public void PutArr<B>(B[] arr, byte z = 0) where B : IDat
+        public void PutArr(Arr v)
         {
-            Put(null, arr, z);
+            Put(null, v);
         }
 
         public void PutObj(Action a)
@@ -96,12 +96,6 @@ namespace Greatbone.Core
             Add('}');
             level--; // exit
         }
-
-        public void PutObj<B>(B obj, byte z = 0) where B : IDat
-        {
-            Put(null, obj, z);
-        }
-
 
         //
         // SINK

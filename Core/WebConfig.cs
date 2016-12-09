@@ -45,10 +45,10 @@
         /// Turn on/off the response cache.
         public bool cache = true;
 
-        public Obj extra;
-
         /// Let the folder name same ascthe service name.
         public override string Folder => name;
+
+        public Obj Obj { get; private set; }
 
 
         public void Load(ISource s, byte z = 0)
@@ -62,7 +62,6 @@
             s.Get(nameof(db), ref db);
             s.Get(nameof(logging), ref logging);
             s.Get(nameof(cache), ref cache);
-            s.Get(nameof(extra), ref extra);
         }
 
         public void Dump<R>(ISink<R> s, byte z = 0) where R : ISink<R>
@@ -76,7 +75,6 @@
             s.Put(nameof(db), db);
             s.Put(nameof(logging), logging);
             s.Put(nameof(cache), cache);
-            s.Put(nameof(extra), extra);
         }
 
         public WebConfig Load()
@@ -86,6 +84,7 @@
             Obj obj = JsonUtility.FileToObj(GetFilePath("$web.json"));
             if (obj != null)
             {
+                this.Obj = obj;
                 Load(obj); // override
             }
             return this;
