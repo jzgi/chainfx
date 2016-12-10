@@ -481,5 +481,10 @@ namespace Greatbone.Core
         {
             return null;
         }
+
+        public override string ToString()
+        {
+            return new string(charbuf, 0, count);
+        }
     }
 }

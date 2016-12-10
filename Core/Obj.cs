@@ -348,5 +348,16 @@ namespace Greatbone.Core
                 }
             }
         }
+
+        public override string ToString()
+        {
+            JsonContent cont = new JsonContent(false, true, 4 * 1024);
+            cont.Add('{');
+            Dump(cont);
+            cont.Add('}');
+            string str = cont.ToString();
+            BufferUtility.Return(cont);
+            return str;
+        }
     }
 }

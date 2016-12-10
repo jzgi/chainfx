@@ -37,7 +37,7 @@ namespace Greatbone.Sample
                     var items = dc.ToDats<Item>();
                     ac.SendHtmlMajor(200, "", main =>
                     {
-                        main.form(_re_menu_, p =>
+                        main.Form(_re_menu_, p =>
                         {
 
                         });

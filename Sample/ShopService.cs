@@ -101,7 +101,7 @@ namespace Greatbone.Sample
                     var shops = dc.ToDats<Shop>(z);
                     ac.SendHtmlMajor(200, "", main =>
                     {
-                        main.form(_new, shops);
+                        main.Form(_new, shops);
                     });
                 }
                 else

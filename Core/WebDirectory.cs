@@ -213,11 +213,31 @@ namespace Greatbone.Core
                 else
                 {
                     ac.ChainVar(sub, null);
-                    atn.TryDo(ac);
+                    if (atn.Check(ac))
+                    {
+                        // pre-doing process
+                        ac.Action = atn;
+                        Before(ac);
+                        // invoke the action handler method
+                        atn.Do(ac);
+                        // post-doing process
+                        After(ac);
+                        ac.Action = null;
+                    }
                 }
             }
 
             ac.Directory = null;
+        }
+
+        protected virtual void Before(WebActionContext ac)
+        {
+
+        }
+
+        protected virtual void After(WebActionContext ac)
+        {
+
         }
 
         void DoStatic(string file, string ext, WebActionContext ac)

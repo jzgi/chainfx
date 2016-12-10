@@ -23,7 +23,7 @@ namespace Greatbone.Core
 
         public int Count => count;
 
-        internal void Add(Member mbr)
+        internal void Add(Member elem)
         {
             int len = elements.Length;
             if (count >= len)
@@ -32,7 +32,7 @@ namespace Greatbone.Core
                 Array.Copy(elements, 0, alloc, 0, len);
                 elements = alloc;
             }
-            elements[count++] = mbr;
+            elements[count++] = elem;
         }
 
         internal void Dump<R>(ISink<R> snk) where R : ISink<R>
@@ -82,6 +82,17 @@ namespace Greatbone.Core
                 dats[i] = dat;
             }
             return dats;
+        }
+
+        public override string ToString()
+        {
+            JsonContent cont = new JsonContent(false, true, 8 * 1024);
+            cont.Add('[');
+            Dump(cont);
+            cont.Add(']');
+            string str = cont.ToString();
+            BufferUtility.Return(cont);
+            return str;
         }
     }
 }

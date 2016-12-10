@@ -140,7 +140,7 @@ namespace Greatbone.Core
             T("</nav>");
         }
 
-        public void dialog(string h, Action content)
+        public void Dialog(string h, Action content)
         {
             T("<dialog class=\"mdl-dialog\">");
             T("<h4 class=\"mdl-dialog__title\">").T(h).T("</h4>");
@@ -162,7 +162,7 @@ namespace Greatbone.Core
 
         int table_idx;
 
-        public void table(Action<HtmlContent> ths, Action<HtmlContent> trs)
+        public void Table(Action<HtmlContent> ths, Action<HtmlContent> trs)
         {
             table_idx = 0;
 
@@ -183,7 +183,7 @@ namespace Greatbone.Core
         }
 
 
-        public void tr(Action<int, HtmlContent> tds)
+        public void Tr(Action<int, HtmlContent> tds)
         {
             table_idx++;
 
@@ -194,32 +194,32 @@ namespace Greatbone.Core
             T("</tr>");
         }
 
-        public void td(int v)
+        public void Td(int v)
         {
             T("<td>");
             Put(null, v);
             T("</td>");
         }
 
-        public void td(string v)
+        public void Td(string v)
         {
             T("<td>");
             Put(null, v);
             T("</td>");
         }
 
-        public void td(DateTime v)
+        public void Td(DateTime v)
         {
             T("<td>");
             Put(null, v);
             T("</td>");
         }
 
-        public void table<B>(B[] arr, byte z = 0) where B : IDat
+        public void Table<B>(B[] arr, byte z = 0) where B : IDat
         {
             B obj = arr[0];
 
-            table(
+            Table(
                 ths =>
                 {
                     ctx = TableThs;
@@ -237,7 +237,7 @@ namespace Greatbone.Core
         }
 
 
-        public void form(WebAction wa, Action<HtmlContent> inner)
+        public void Form(WebAction wa, Action<HtmlContent> inner)
         {
             Add("<form class=\"pure-form pure-g\">");
 
@@ -246,22 +246,22 @@ namespace Greatbone.Core
             Add("</form>");
         }
 
-        public void form<D>(WebAction[] was, D[] dats, byte z = 0) where D : IDat
+        public void Form<D>(WebAction[] acts, D[] dats, byte z = 0) where D : IDat
         {
             Add("<form class=\"pure-form pure-g\">");
 
             // buttons
-            buttonlst(was);
+            buttonlst(acts);
 
             if (dats != null)
             {
-                table(dats, z);
+                Table(dats, z);
             }
 
             Add("</form>");
         }
 
-        public void form<D>(WebAction wa, D dat, byte z = 0) where D : IDat
+        public void Form<D>(WebAction wa, D dat, byte z = 0) where D : IDat
         {
             Add("<form class=\"pure-form pure-g\">");
 
@@ -275,7 +275,7 @@ namespace Greatbone.Core
             Add("</form>");
         }
 
-        public void input_hidden(string name, string value)
+        public void Hidden(string name, string value)
         {
             Add("<input type=\"hidden\" name=\"");
             Add(name);
@@ -284,7 +284,7 @@ namespace Greatbone.Core
             Add("\">");
         }
 
-        public void input_text(string name, string value, bool @readonly = false, bool required = false,
+        public void Text(string name, string value, bool @readonly = false, bool required = false,
             string placeholder = null, int maxlength = 0, int minlength = 0, string pattern = null)
         {
             Add("<label>");
@@ -326,7 +326,7 @@ namespace Greatbone.Core
             Add("</label>");
         }
 
-        public void input_search(string name, string value, bool @readonly = false, bool required = false,
+        public void Search(string name, string value, bool @readonly = false, bool required = false,
             string placeholder = null, int maxlength = 0, int minlength = 0, string pattern = null)
         {
             Add("<label>");
@@ -368,7 +368,7 @@ namespace Greatbone.Core
             Add("</label>");
         }
 
-        public void input_tel(string name, string value, bool @readonly = false, bool required = false,
+        public void Tel(string name, string value, bool @readonly = false, bool required = false,
             string placeholder = null, int maxlength = 0, int minlength = 0, string pattern = null)
         {
             Add("<label>");
@@ -410,7 +410,7 @@ namespace Greatbone.Core
             Add("</label>");
         }
 
-        public void input_url(string name, string value, bool @readonly = false, bool required = false,
+        public void Url(string name, string value, bool @readonly = false, bool required = false,
             string placeholder = null, int maxlength = 0, int minlength = 0, string pattern = null)
         {
             Add("<label>");
@@ -452,7 +452,7 @@ namespace Greatbone.Core
             Add("</label>");
         }
 
-        public void input_email(string name, string value, bool @readonly = false, bool required = false,
+        public void Email(string name, string value, bool @readonly = false, bool required = false,
             string placeholder = null, int maxlength = 0, int minlength = 0, string pattern = null)
         {
             Add("<label>");
@@ -494,7 +494,7 @@ namespace Greatbone.Core
             Add("</label>");
         }
 
-        public void input_password(string name, string value, bool @readonly = false, bool required = false,
+        public void Password(string name, string value, bool @readonly = false, bool required = false,
             string placeholder = null, int maxlength = 0, int minlength = 0, string pattern = null)
         {
             Add("<label>");
@@ -536,7 +536,7 @@ namespace Greatbone.Core
             Add("</label>");
         }
 
-        public void input_date(string name, DateTime value, bool @readonly = false, bool required = false,
+        public void Date(string name, DateTime value, bool @readonly = false, bool required = false,
             string placeholder = null, int max = int.MaxValue, int min = int.MinValue, int step = 0)
         {
             Add("<label>");
@@ -580,7 +580,7 @@ namespace Greatbone.Core
             T("</tbody>");
         }
 
-        public void input_number(string name, int value, bool @readonly = false, bool required = false,
+        public void Number(string name, int value, bool @readonly = false, bool required = false,
             string placeholder = null, int max = int.MaxValue, int min = int.MinValue, int step = 0)
         {
             Add("<label>");
@@ -619,7 +619,7 @@ namespace Greatbone.Core
             Add("</label>");
         }
 
-        public void input_number(string name, long value, bool @readonly = false, bool required = false,
+        public void Number(string name, long value, bool @readonly = false, bool required = false,
             string placeholder = null, long max = long.MaxValue, long min = long.MinValue, long step = 0)
         {
             Add("<label>");
@@ -658,7 +658,7 @@ namespace Greatbone.Core
             Add("</label>");
         }
 
-        public void input_number(string name, decimal value, bool @readonly = false, bool required = false,
+        public void Number(string name, decimal value, bool @readonly = false, bool required = false,
             string placeholder = null, int max = int.MaxValue, int min = int.MinValue, int step = 0)
         {
             Add("<label>");
@@ -707,7 +707,7 @@ namespace Greatbone.Core
             T("</tbody>");
         }
 
-        public void input_checkbox(string name, bool value, bool required = false)
+        public void Checkbox(string name, bool value, bool required = false)
         {
             Add("<label>");
             AddLabel(name);
@@ -721,7 +721,7 @@ namespace Greatbone.Core
             Add("</label>");
         }
 
-        public void input_radio(string name, string[] values, int @checked = 0, bool required = false)
+        public void Radio(string name, string[] values, int @checked = 0, bool required = false)
         {
             Add("<fieldset>");
             Add("<legend>");
@@ -753,12 +753,12 @@ namespace Greatbone.Core
             T("</tbody>");
         }
 
-        public void textarea()
+        public void TextArea()
         {
             T("</tbody>");
         }
 
-        public void button(WebAction wa)
+        public void Button(WebAction wa)
         {
             Add("<button class=\"pure-button");
             if (!wa.IsGet) Add(" pure-button-primary");
@@ -790,7 +790,7 @@ namespace Greatbone.Core
             for (int i = 0; i < was.Length; i++)
             {
                 WebAction wa = was[i];
-                button(wa);
+                Button(wa);
             }
         }
 
@@ -808,7 +808,7 @@ namespace Greatbone.Core
             Add("</button>");
         }
 
-        public void select(string name, string[] options, int selected = -1, bool required = false)
+        public void Select(string name, string[] options, int selected = -1, bool required = false)
         {
             Add("<label>");
             AddLabel(name);
@@ -832,7 +832,7 @@ namespace Greatbone.Core
             Add("</label>");
         }
 
-        public void select<V>(string name, IOption<V>[] options, bool required = false)
+        public void Select<V>(string name, IOption<V>[] options, bool required = false)
         {
             Add("<label>");
             AddLabel(name);
@@ -856,7 +856,7 @@ namespace Greatbone.Core
             Add("</label>");
         }
 
-        public void select(string name, Action<ISelectOptions> options, bool required = false)
+        public void Select(string name, Action<ISelectOptions> options, bool required = false)
         {
             Add("<label>");
             AddLabel(name);
@@ -869,7 +869,7 @@ namespace Greatbone.Core
             Add("</label>");
         }
 
-        public void option(string text, string value, bool selected = false)
+        public void Option(string text, string value, bool selected = false)
         {
             Add("<option value=\"");
             Add(value);
@@ -878,17 +878,17 @@ namespace Greatbone.Core
             Add("\">");
         }
 
-        public void datalist()
+        public void DataList()
         {
             T("</tbody>");
         }
 
-        public void progres()
+        public void Progres()
         {
             T("</tbody>");
         }
 
-        public void meter()
+        public void Meter()
         {
             T("</tbody>");
         }
@@ -909,7 +909,7 @@ namespace Greatbone.Core
             {
                 case FormFields:
                     Add("<div class=\"pure-u-1 pure-u-md-1-2\">");
-                    input_checkbox(name, v);
+                    Checkbox(name, v);
                     Add("</div>");
                     break;
                 case TableThs:
@@ -932,7 +932,7 @@ namespace Greatbone.Core
             {
                 case FormFields:
                     Add("<div class=\"pure-u-1 pure-u-md-1-2\">");
-                    input_number(name, v);
+                    Number(name, v);
                     Add("</div>");
                     break;
                 case TableThs:
@@ -955,7 +955,7 @@ namespace Greatbone.Core
             {
                 case FormFields:
                     Add("<div class=\"pure-u-1 pure-u-md-1-2\">");
-                    input_number(name, v);
+                    Number(name, v);
                     Add("</div>");
                     break;
                 case TableThs:
@@ -978,7 +978,7 @@ namespace Greatbone.Core
             {
                 case FormFields:
                     Add("<div class=\"pure-u-1 pure-u-md-1-2\">");
-                    input_number(name, v);
+                    Number(name, v);
                     Add("</div>");
                     break;
                 case TableThs:
@@ -1001,7 +1001,7 @@ namespace Greatbone.Core
             {
                 case FormFields:
                     Add("<div class=\"pure-u-1 pure-u-md-1-2\">");
-                    input_number(name, v);
+                    Number(name, v);
                     Add("</div>");
                     break;
                 case TableThs:
@@ -1036,7 +1036,7 @@ namespace Greatbone.Core
             {
                 case FormFields:
                     Add("<div class=\"pure-u-1 pure-u-md-1-2\">");
-                    input_date(name, v);
+                    Date(name, v);
                     Add("</div>");
                     break;
                 case TableThs:
@@ -1064,7 +1064,7 @@ namespace Greatbone.Core
             {
                 case FormFields:
                     Add("<div class=\"pure-u-1 pure-u-md-1-2\">");
-                    input_text(name, v);
+                    Text(name, v);
                     Add("</div>");
                     break;
                 case TableThs:
@@ -1145,7 +1145,7 @@ namespace Greatbone.Core
 
     public interface ISelectOptions
     {
-        void option(string label, string value, bool selected = false);
+        void Option(string label, string value, bool selected = false);
     }
 
     public interface IOption<V>

@@ -59,7 +59,7 @@ namespace Greatbone.Core
         // for generating unique digest nonce
         const string PrivateKey = "3e43a7180";
 
-        internal bool TryDo(WebActionContext ac)
+        internal bool Check(WebActionContext ac)
         {
             // access check 
             if (checks != null)
@@ -87,12 +87,12 @@ namespace Greatbone.Core
                     }
                 }
             }
-
-            // invoke the method
-            ac.Action = this;
-            doer(ac);
-            ac.Action = null;
             return true;
+        }
+
+        internal void Do(WebActionContext ac)
+        {
+            doer(ac);
         }
 
         public override string ToString()
