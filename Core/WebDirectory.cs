@@ -8,7 +8,7 @@ namespace Greatbone.Core
     ///
     /// A web directory is a server-side controller that realizes a virtual directory containing static/dynamic resources.
     ///
-    public abstract class WebDirectory : IRollable
+    public abstract class WebDirectory : WebControl, IRollable
     {
         // max nesting levels
         const int Nesting = 4;
@@ -16,7 +16,7 @@ namespace Greatbone.Core
         const string _VAR_ = "-var-";
 
         // state-passing
-        internal readonly WebDirectoryContext makectx;
+        internal readonly WebDirectoryContext context;
 
         // declared actions 
         readonly Roll<WebAction> actions;
@@ -31,9 +31,9 @@ namespace Greatbone.Core
         internal WebDirectory var;
 
 
-        protected WebDirectory(WebDirectoryContext makectx)
+        protected WebDirectory(WebDirectoryContext context)
         {
-            this.makectx = makectx;
+            this.context = context;
 
             // init actions
             actions = new Roll<WebAction>(32);
@@ -121,19 +121,19 @@ namespace Greatbone.Core
             return dir;
         }
 
-        public string Name => makectx.Name;
+        public string Name => context.Name;
 
-        public object State => makectx.State;
+        public object State => context.State;
 
-        public bool IsVar => makectx.IsVar;
+        public bool IsVar => context.IsVar;
 
-        public string Folder => makectx.Folder;
+        public string Folder => context.Folder;
 
-        public WebDirectory Parent => makectx.Parent;
+        public WebDirectory Parent => context.Parent;
 
-        public int Level => makectx.Level;
+        public int Level => context.Level;
 
-        public WebService Service => makectx.Service;
+        public WebService Service => context.Service;
 
 
         // public Roll<WebAction> Actions => actions;
@@ -217,11 +217,11 @@ namespace Greatbone.Core
                     {
                         // pre-doing process
                         ac.Action = atn;
-                        Before(ac);
+                        FilterBefore(ac);
                         // invoke the action handler method
                         atn.Do(ac);
                         // post-doing process
-                        After(ac);
+                        FilterAfter(ac);
                         ac.Action = null;
                     }
                 }
@@ -230,15 +230,6 @@ namespace Greatbone.Core
             ac.Directory = null;
         }
 
-        protected virtual void Before(WebActionContext ac)
-        {
-
-        }
-
-        protected virtual void After(WebActionContext ac)
-        {
-
-        }
 
         void DoStatic(string file, string ext, WebActionContext ac)
         {

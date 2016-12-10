@@ -113,7 +113,7 @@ namespace Greatbone.Core
             cache = new ResponseCache(Environment.ProcessorCount * 2, 4096);
         }
 
-        public WebConfig Config => (WebConfig)makectx;
+        public WebConfig Config => (WebConfig)context;
 
         ///
         /// The service instance id.
