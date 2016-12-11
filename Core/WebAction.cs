@@ -80,7 +80,7 @@ namespace Greatbone.Core
 
                 for (int i = 0; i < checks.Length; i++)
                 {
-                    if (!checks[i].Test(ac))
+                    if (!checks[i].Check(ac))
                     {
                         ac.StatusCode = 403; // forbidden
                         return false;

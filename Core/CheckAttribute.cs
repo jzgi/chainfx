@@ -4,20 +4,20 @@ namespace Greatbone.Core
 {
 
     ///
-    /// Test if the request meets certain condition.
+    /// An authorization check.
     ///
-    [AttributeUsage(AttributeTargets.Method, Inherited = true)]
+    [AttributeUsage(AttributeTargets.Class | AttributeTargets.Method, Inherited = false)]
     public class CheckAttribute : Attribute
     {
-        // whether auth through cookie
+        // if authenticated through cookie
         readonly bool cookie;
 
-        public CheckAttribute(bool cookie = true)
+        public CheckAttribute(bool cookie = false)
         {
             this.cookie = cookie;
         }
 
-        public virtual bool Test(WebActionContext wc)
+        public virtual bool Check(WebActionContext wc)
         {
             return true;
         }
