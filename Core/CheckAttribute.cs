@@ -2,7 +2,6 @@
 
 namespace Greatbone.Core
 {
-
     ///
     /// An authorization check.
     ///
@@ -10,11 +9,11 @@ namespace Greatbone.Core
     public class CheckAttribute : Attribute
     {
         // if authenticated through cookie
-        readonly bool cookie;
+        readonly bool cookied;
 
-        public CheckAttribute(bool cookie = false)
+        public CheckAttribute(bool cookied = false)
         {
-            this.cookie = cookie;
+            this.cookied = cookied;
         }
 
         public virtual bool Check(WebActionContext wc)
@@ -22,7 +21,12 @@ namespace Greatbone.Core
             return true;
         }
 
-        public bool IsCookie => cookie;
+        public bool IsCookied => cookied;
+
+        ///
+        /// If applied to sub-directories as well.
+        ///
+        public bool ToSub { get; set; }
 
     }
 

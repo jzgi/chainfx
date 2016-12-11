@@ -217,11 +217,11 @@ namespace Greatbone.Core
                     {
                         // pre-doing process
                         ac.Action = atn;
-                        FilterBefore(ac);
+                        AlterBefore(ac);
                         // invoke the action handler method
                         atn.Do(ac);
                         // post-doing process
-                        FilterAfter(ac);
+                        AlterAfter(ac);
                         ac.Action = null;
                     }
                 }

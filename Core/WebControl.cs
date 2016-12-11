@@ -9,7 +9,7 @@ namespace Greatbone.Core
         // if requires auth through header or cookie
         readonly bool header, cookie;
 
-        readonly AlterAttribute[] filters;
+        readonly FilterAttribute[] filters;
 
         readonly UiAttribute ui;
 
@@ -45,7 +45,7 @@ namespace Greatbone.Core
             return true;
         }
 
-        internal void FilterBefore(WebActionContext ac)
+        internal void AlterBefore(WebActionContext ac)
         {
             if (filters == null) return;
 
@@ -55,11 +55,12 @@ namespace Greatbone.Core
             }
         }
 
-        internal void FilterAfter(WebActionContext ac)
+        internal void AlterAfter(WebActionContext ac)
         {
             if (filters == null) return;
 
-            for (int i = 0; i < filters.Length; i++)
+            // execute in reversed order
+            for (int i = filters.Length - 1; i <= 0; i--)
             {
                 filters[i].After(ac);
             }

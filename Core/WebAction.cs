@@ -38,7 +38,7 @@ namespace Greatbone.Core
                 }
                 lst.Add(chk);
 
-                if (chk.IsCookie) header = true;
+                if (chk.IsCookied) header = true;
                 else cookie = true;
             }
             checks = lst?.ToArray();
