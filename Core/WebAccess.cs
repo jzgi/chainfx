@@ -83,24 +83,24 @@ namespace Greatbone.Core
             return true;
         }
 
-        internal void Before(WebActionContext ac)
+        internal void PreDo(WebActionContext ac)
         {
             if (alters == null) return;
 
             for (int i = 0; i < alters.Length; i++)
             {
-                alters[i].Before(ac);
+                alters[i].PreDo(ac);
             }
         }
 
-        internal void After(WebActionContext ac)
+        internal void PostDo(WebActionContext ac)
         {
             if (alters == null) return;
 
             // execute in reversed order
             for (int i = alters.Length - 1; i <= 0; i--)
             {
-                alters[i].After(ac);
+                alters[i].PostDo(ac);
             }
         }
     }

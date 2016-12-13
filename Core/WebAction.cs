@@ -43,7 +43,17 @@ namespace Greatbone.Core
 
         internal void Do(WebActionContext ac)
         {
-            doer(ac);
+            ac.Action = this;
+            if (Check(ac)) // authorize check
+            {
+                // pre-
+                PreDo(ac);
+                // invoke the action method
+                doer(ac);
+                // post-
+                PostDo(ac);
+            }
+            ac.Action = null;
         }
 
         public override string ToString()

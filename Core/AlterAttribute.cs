@@ -10,13 +10,8 @@ namespace Greatbone.Core
     public abstract class AlterAttribute : Attribute
     {
 
-        public abstract void Before(WebActionContext ac);
+        public abstract void PreDo(WebActionContext ac);
 
-        public abstract void After(WebActionContext ac);
-
-        ///
-        /// If applied to sub-directories as well.
-        ///
-        public bool Global { get; set; } = false;
+        public abstract void PostDo(WebActionContext ac);
     }
 }

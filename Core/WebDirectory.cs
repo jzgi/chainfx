@@ -161,29 +161,36 @@ namespace Greatbone.Core
 
         internal virtual void Handle(string relative, WebActionContext ac)
         {
+            if (!Check(ac)) return;
+            // pre-
+            PreDo(ac);
+
             int slash = relative.IndexOf('/');
             if (slash == -1) // handle it locally
             {
                 DoRsc(relative, ac);
             }
-            else // dispatch to child or multiplexer
+            else // dispatch to child or var
             {
                 string key = relative.Substring(0, slash);
                 WebDirectory child;
-                if (children != null && children.TryGet(key, out child)) // seek sub first
+                if (children != null && children.TryGet(key, out child)) // chiled
                 {
                     child.Handle(relative.Substring(slash + 1), ac);
                 }
-                else if (var == null)
-                {
-                    ac.StatusCode = 404; // not found
-                }
-                else
+                else if (var != null) // variable-key
                 {
                     ac.ChainVar(key, var);
                     var.Handle(relative.Substring(slash + 1), ac);
                 }
+                else
+                {
+                    ac.StatusCode = 404; // not found
+                }
             }
+
+            // post-
+            PostDo(ac);
         }
 
         internal void DoRsc(string rsc, WebActionContext ac)
@@ -206,24 +213,14 @@ namespace Greatbone.Core
                     sub = rsc.Substring(dash + 1);
                 }
                 WebAction atn = string.IsNullOrEmpty(name) ? defaction : Action(name);
-                if (atn == null)
+                if (atn != null)
                 {
-                    ac.StatusCode = 404;
+                    ac.ChainVar(sub, null);
+                    atn.Do(ac);
                 }
                 else
                 {
-                    ac.ChainVar(sub, null);
-                    if (atn.Check(ac))
-                    {
-                        // pre-doing process
-                        ac.Action = atn;
-                        Before(ac);
-                        // invoke the action handler method
-                        atn.Do(ac);
-                        // post-doing process
-                        After(ac);
-                        ac.Action = null;
-                    }
+                    ac.StatusCode = 404;
                 }
             }
 
