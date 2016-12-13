@@ -1,5 +1,4 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.Reflection;
 
 namespace Greatbone.Core
@@ -7,7 +6,7 @@ namespace Greatbone.Core
     ///
     /// The descriptor for an action method.
     ///
-    public class WebAction : WebControl, IRollable
+    public class WebAction : WebAccess, IRollable
     {
         readonly WebDirectory directory;
 
@@ -22,28 +21,11 @@ namespace Greatbone.Core
 
         readonly UiAttribute ui;
 
-        internal WebAction(WebDirectory dir, MethodInfo mi)
+        internal WebAction(WebDirectory dir, MethodInfo mi) : base(mi)
         {
             directory = dir;
             name = mi.Name;
             doer = (Action<WebActionContext>)mi.CreateDelegate(typeof(Action<WebActionContext>), dir);
-
-            // prepare checks
-            List<CheckAttribute> lst = null;
-            foreach (var chk in mi.GetCustomAttributes<CheckAttribute>())
-            {
-                if (lst == null)
-                {
-                    lst = new List<CheckAttribute>(8);
-                }
-                lst.Add(chk);
-
-                if (chk.IsCookied) header = true;
-                else cookie = true;
-            }
-            checks = lst?.ToArray();
-
-            ui = mi.GetCustomAttribute<UiAttribute>();
         }
 
         public WebDirectory Directory => directory;
@@ -58,37 +40,6 @@ namespace Greatbone.Core
 
         // for generating unique digest nonce
         const string PrivateKey = "3e43a7180";
-
-        internal bool Check(WebActionContext ac)
-        {
-            // access check 
-            if (checks != null)
-            {
-                if (header && ac.Principal == null)
-                {
-                    ac.StatusCode = 401; // unauthorized
-                    ac.SetHeader("WWW-Authenticate", "Bearer");
-                    return false;
-                }
-                else if (cookie && ac.Principal == null)
-                {
-                    string loc = directory.Service.SignOn + "?orig=" + ac.Uri;
-                    ac.SetHeader("Location", loc);
-                    ac.StatusCode = 303; // see other - redirect to signon url
-                    return false;
-                }
-
-                for (int i = 0; i < checks.Length; i++)
-                {
-                    if (!checks[i].Check(ac))
-                    {
-                        ac.StatusCode = 403; // forbidden
-                        return false;
-                    }
-                }
-            }
-            return true;
-        }
 
         internal void Do(WebActionContext ac)
         {
