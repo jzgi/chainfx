@@ -26,8 +26,6 @@ namespace Greatbone.Core
         ///
         /// If applied to sub-directories as well.
         ///
-        public bool ToSub { get; set; }
-
+        public bool IsGlobal { get; set; } = false;
     }
-
 }

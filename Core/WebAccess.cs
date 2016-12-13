@@ -22,31 +22,31 @@ namespace Greatbone.Core
             if (attrs == null) attrs = GetType().GetTypeInfo();
 
             // initialize checks
-            List<CheckAttribute> chklst = null;
+            List<CheckAttribute> chks = null;
             foreach (var chk in (CheckAttribute[])attrs.GetCustomAttributes(typeof(CheckAttribute), false))
             {
-                if (chklst == null)
+                if (chks == null)
                 {
-                    chklst = new List<CheckAttribute>(8);
+                    chks = new List<CheckAttribute>(8);
                 }
-                chklst.Add(chk);
+                chks.Add(chk);
 
                 if (chk.IsCookied) header = true;
                 else cookie = true;
             }
-            checks = chklst?.ToArray();
+            checks = chks?.ToArray();
 
             // initialize checks
-            List<AlterAttribute> altlst = null;
+            List<AlterAttribute> alts = null;
             foreach (var alt in (AlterAttribute[])attrs.GetCustomAttributes(typeof(AlterAttribute), false))
             {
-                if (altlst == null)
+                if (alts == null)
                 {
-                    altlst = new List<AlterAttribute>(8);
+                    alts = new List<AlterAttribute>(8);
                 }
-                altlst.Add(alt);
+                alts.Add(alt);
             }
-            alters = altlst?.ToArray();
+            alters = alts?.ToArray();
 
             // initialize ui
             var uis = (UiAttribute[])attrs.GetCustomAttributes(typeof(UiAttribute), false);
