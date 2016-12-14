@@ -32,7 +32,9 @@ namespace Greatbone.Core
 
         public string Name => name;
 
-        public bool IsGet => ui?.IsGet ?? false;
+        public bool GET => ui?.GET ?? false;
+
+        public string Label => ui?.Label ?? name;
 
         public string Icon => ui?.Icon;
 

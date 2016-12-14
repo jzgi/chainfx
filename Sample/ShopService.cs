@@ -32,7 +32,7 @@ namespace Greatbone.Sample
         ///
         public async void signon(WebActionContext ac)
         {
-            if (ac.IsGetMethod) // return the login form
+            if (ac.GET) // return the login form
             {
                 Form frm = ac.Query;
                 string id = frm[nameof(id)];
@@ -124,7 +124,7 @@ namespace Greatbone.Sample
         [CheckAdmin]
         public async void @new(WebActionContext ac)
         {
-            if (ac.IsGetMethod)
+            if (ac.GET)
             {
 
             }

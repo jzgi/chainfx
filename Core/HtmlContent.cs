@@ -761,11 +761,11 @@ namespace Greatbone.Core
         public void Button(WebAction wa)
         {
             Add("<button class=\"pure-button");
-            if (!wa.IsGet) Add(" pure-button-primary");
+            if (!wa.GET) Add(" pure-button-primary");
             Add("\" formaction=\"");
             Add(wa.Name);
             Add("\" formmethod=\"");
-            Add(wa.IsGet ? "get" : "post");
+            Add(wa.GET ? "get" : "post");
             if (wa.Dialog > 0)
             {
                 Add("\" onclick=\"dialog(this,");

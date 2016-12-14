@@ -55,9 +55,9 @@ namespace Greatbone.Core
 
         public string Method => Request.Method;
 
-        public bool IsGetMethod => "GET".Equals(Request.Method);
+        public bool GET => "GET".Equals(Request.Method);
 
-        public bool IsPostMethod => "POST".Equals(Request.Method);
+        public bool POST => "POST".Equals(Request.Method);
 
         public string Uri => Features.Get<IHttpRequestFeature>().RawTarget;
 
@@ -168,7 +168,7 @@ namespace Greatbone.Core
             return entity;
         }
 
-        public async Task<ArraySegment<byte>?> GetByteAsAsync()
+        public async Task<ArraySegment<byte>?> GetArraySegAsync()
         {
             return (entity = await ReadAsync()) as ArraySegment<byte>?;
         }
@@ -332,7 +332,7 @@ namespace Greatbone.Core
             get
             {
                 int sc = Status;
-                if (IsGetMethod && Pub == true)
+                if (GET && Pub == true)
                 {
                     return sc == 200 || sc == 203 || sc == 204 || sc == 206 || sc == 300 || sc == 301 || sc == 404 || sc == 405 || sc == 410 || sc == 414 || sc == 501;
                 }
@@ -343,10 +343,10 @@ namespace Greatbone.Core
         public void Dispose()
         {
             // return request content buffer
-            ArraySegment<byte>? byteas = entity as ArraySegment<byte>?;
-            if (byteas != null)
+            ArraySegment<byte>? arrayseg = entity as ArraySegment<byte>?;
+            if (arrayseg != null)
             {
-                BufferUtility.Return(byteas.Value.Array);
+                BufferUtility.Return(arrayseg.Value.Array);
             }
         }
     }

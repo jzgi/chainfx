@@ -482,6 +482,11 @@ namespace Greatbone.Core
             return null;
         }
 
+        public ArraySegment<byte> ToArraySeg()
+        {
+            return new ArraySegment<byte>(bytebuf, 0, count);
+        }
+
         public override string ToString()
         {
             return new string(charbuf, 0, count);

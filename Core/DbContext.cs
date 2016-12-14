@@ -483,7 +483,7 @@ namespace Greatbone.Core
             {
                 p.Put(name);
                 p.Put(shard);
-                // p.Put("@message", new ArraySegment<byte>(b.Buffer, 0, b.Length));
+                p.Put(cont.ToArraySeg());
             });
             BufferUtility.Return(cont);
         }

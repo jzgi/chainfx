@@ -184,7 +184,7 @@ namespace Greatbone.Core
             string targ = path + req.QueryString.Value;
 
             IContent cont;
-            if (ac.IsGetMethod && cache.TryGetContent(targ, out cont)) // check if hit in the cache
+            if (ac.GET && cache.TryGetContent(targ, out cont)) // check if hit in the cache
             {
                 ac.Set(304, cont, true, 0);
             }
@@ -336,7 +336,7 @@ namespace Greatbone.Core
                         long id = dc.GetLong();
                         string name = dc.GetString();
                         DateTime time = dc.GetDateTime();
-                        ArraySegment<byte>? body = dc.GetByteAs();
+                        ArraySegment<byte>? body = dc.GetArraySeg();
 
                         cont.Add(id, name, time, body);
                     }
