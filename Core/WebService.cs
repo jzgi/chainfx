@@ -439,7 +439,7 @@ namespace Greatbone.Core
         /// 
         /// Runs a number of web services and block until shutdown.
         /// 
-        public static void Run(params WebService[] services)
+        public static void Run(IEnumerable<WebService> services)
         {
             using (var cts = new CancellationTokenSource())
             {

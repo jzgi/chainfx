@@ -5,9 +5,9 @@ namespace Greatbone.Core
     ///
     /// The context for a particular node in the web directory hierarchy.
     ///
-    public class WebDirectoryContext 
+    public class WebDirectoryContext
     {
-        public string name;
+        internal string name;
 
         public string Name => name;
 
