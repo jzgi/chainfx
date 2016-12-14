@@ -1,4 +1,5 @@
-﻿using System.Net.Http;
+﻿using System.Net;
+using System.Net.Http;
 using System.Threading.Tasks;
 
 namespace Greatbone.Core
@@ -41,28 +42,31 @@ namespace Greatbone.Core
         // response
         //
 
-        public static async Task<Obj> ReadObj(this HttpResponseMessage msg)
+        public static int Status(this HttpResponseMessage msg) => (int)msg.StatusCode;
+
+
+        public static async Task<Obj> ToObjAsync(this HttpResponseMessage msg)
         {
             byte[] bytes = await msg.Content.ReadAsByteArrayAsync();
             JsonParse p = new JsonParse(bytes, bytes.Length);
             return (Obj)p.Parse();
         }
 
-        public static async Task<Arr> ReadArr(this HttpResponseMessage msg)
+        public static async Task<Arr> ToArrAsync(this HttpResponseMessage msg)
         {
             byte[] bytes = await msg.Content.ReadAsByteArrayAsync();
             JsonParse p = new JsonParse(bytes, bytes.Length);
             return (Arr)p.Parse();
         }
 
-        public static async Task<Elem> ReadElem<D>(this HttpResponseMessage msg) where D : IDat, new()
+        public static async Task<Elem> ToElemAsync(this HttpResponseMessage msg)
         {
             byte[] bytes = await msg.Content.ReadAsByteArrayAsync();
             XmlParse p = new XmlParse(bytes, bytes.Length);
             return (Elem)p.Parse();
         }
 
-        public static async Task<D> ReadDat<D>(this HttpResponseMessage msg, byte z = 0) where D : IDat, new()
+        public static async Task<D> ToDatAsync<D>(this HttpResponseMessage msg, byte z = 0) where D : IDat, new()
         {
             byte[] bytes = await msg.Content.ReadAsByteArrayAsync();
             JsonParse p = new JsonParse(bytes, bytes.Length);
@@ -70,12 +74,17 @@ namespace Greatbone.Core
             return obj.ToDat<D>(z);
         }
 
-        public static async Task<D[]> ReadDats<D>(this HttpResponseMessage msg, byte z = 0) where D : IDat, new()
+        public static async Task<D[]> ToDatsAsync<D>(this HttpResponseMessage msg, byte z = 0) where D : IDat, new()
         {
             byte[] bytes = await msg.Content.ReadAsByteArrayAsync();
             JsonParse p = new JsonParse(bytes, bytes.Length);
             Arr arr = (Arr)p.Parse();
             return arr.ToDats<D>(z);
+        }
+
+        public static async Task<byte[]> ToBytesAsync(this HttpResponseMessage msg)
+        {
+            return await msg.Content.ReadAsByteArrayAsync();
         }
     }
 }

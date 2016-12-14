@@ -7,7 +7,7 @@ namespace Greatbone.Sample
     ///
     public class WwwService : WebService
     {
-        const string api = "sh.api.weixin.qq.com";
+        static readonly WebClient WeChat = new WebClient("wechat", "http://sh.api.weixin.qq.com");
 
         readonly WebClient[] shops;
 
@@ -25,11 +25,13 @@ namespace Greatbone.Sample
         ///
         public void accestoken(WebActionContext ac)
         {
-
         }
 
-        public void search(WebActionContext ac)
+        public async void search(WebActionContext ac)
         {
+            Arr arr = await WeChat.GetArrAync(ac, "/");
+
+            // shops.CallAll()
 
         }
 

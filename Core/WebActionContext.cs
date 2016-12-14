@@ -21,7 +21,9 @@ namespace Greatbone.Core
 
         public IPrincipal Principal { get; internal set; }
 
-        public bool IsBearer { get; internal set; }
+        public string Token { get; internal set; }
+
+        public bool IsCookied { get; internal set; }
 
         // two levels of variable keys
         Var var, var2;
@@ -166,26 +168,26 @@ namespace Greatbone.Core
             return entity;
         }
 
-        public async Task<ArraySegment<byte>?> ReadByteAs()
+        public async Task<ArraySegment<byte>?> ToByteAsAsync()
         {
             return (entity = await ReadAsync()) as ArraySegment<byte>?;
         }
-        public async Task<Form> ReadForm()
+        public async Task<Form> ToFormAsync()
         {
             return (entity = await ReadAsync()) as Form;
         }
 
-        public async Task<Obj> ReadObj()
+        public async Task<Obj> ToObjAsync()
         {
             return (entity = await ReadAsync()) as Obj;
         }
 
-        public async Task<Arr> ReadArr()
+        public async Task<Arr> ToArrAsync()
         {
             return (entity = await ReadAsync()) as Arr;
         }
 
-        public async Task<D> ReadDat<D>(byte z = 0) where D : IDat, new()
+        public async Task<D> ToDatAsync<D>(byte z = 0) where D : IDat, new()
         {
             ISource src = (entity = await ReadAsync()) as ISource;
             if (src == null)
@@ -195,13 +197,13 @@ namespace Greatbone.Core
             return src.ToDat<D>(z);
         }
 
-        public async Task<D[]> ReadDats<D>(byte z = 0) where D : IDat, new()
+        public async Task<D[]> ToDatsAsync<D>(byte z = 0) where D : IDat, new()
         {
             Arr arr = (entity = await ReadAsync()) as Arr;
             return arr?.ToDats<D>(z);
         }
 
-        public async Task<Elem> ReadElem()
+        public async Task<Elem> ToElemAsync()
         {
             object entity = await ReadAsync();
 
@@ -212,7 +214,7 @@ namespace Greatbone.Core
         // RESPONSE
         //
 
-        public int StatusCode
+        public int Status
         {
             get { return Response.StatusCode; }
             set { Response.StatusCode = value; }
@@ -249,7 +251,7 @@ namespace Greatbone.Core
 
         public void Send(int status, IContent cont, bool? pub = null, int maxage = 60000)
         {
-            StatusCode = status;
+            Status = status;
             Content = cont;
             Pub = pub;
             MaxAge = maxage;
@@ -257,7 +259,7 @@ namespace Greatbone.Core
 
         public void SendText(int status, string text, bool? pub = null, int maxage = 60000)
         {
-            StatusCode = status;
+            Status = status;
             Content = new StrContent(true, true)
             {
                 Text = text
@@ -329,7 +331,7 @@ namespace Greatbone.Core
         {
             get
             {
-                int sc = StatusCode;
+                int sc = Status;
                 if (IsGetMethod && Pub == true)
                 {
                     return sc == 200 || sc == 203 || sc == 204 || sc == 206 || sc == 300 || sc == 301 || sc == 404 || sc == 405 || sc == 410 || sc == 414 || sc == 501;

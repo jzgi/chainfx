@@ -47,24 +47,101 @@ namespace Greatbone.Core
             }
         }
 
-        public Task<HttpResponseMessage> CallGet(ICallerContext ctx, string uri)
+        public async Task<HttpResponseMessage> SendAsync(ICallerContext ctx, Action<HttpRequestMessage> areq)
         {
-            HttpRequestMessage req = new HttpRequestMessage(HttpMethod.Get, uri);
-            if (ctx.IsBearer)
+            HttpRequestMessage req = new HttpRequestMessage();
+            areq(req);
+
+            if (ctx.IsCookied)
             {
-                req.Headers.Add("Authorization", "Bearer " + "");
+                req.Headers.Add("Cookie", ctx.Token);
             }
             else
             {
-                req.Headers.Add("Cookie", "");
+                req.Headers.Add("Authorization", "Bearer " + ctx.Token);
             }
-            return SendAsync(req, HttpCompletionOption.ResponseContentRead);
+            return await SendAsync(req, HttpCompletionOption.ResponseContentRead);
         }
 
-        public Task<HttpResponseMessage> CallPostJson<D>(ICallerContext ctx, string uri, D dat) where D : IDat
+        public async Task<Arr> GetArrAync(ICallerContext ctx, string uri)
+        {
+            HttpRequestMessage req = new HttpRequestMessage(HttpMethod.Get, uri);
+            if (ctx.IsCookied)
+            {
+                req.Headers.Add("Cookie", ctx.Token);
+            }
+            else
+            {
+                req.Headers.Add("Authorization", "Bearer " + ctx.Token);
+            }
+            HttpResponseMessage resp = await SendAsync(req, HttpCompletionOption.ResponseContentRead);
+            return await resp.ToArrAsync();
+        }
+
+        public async Task<D> GetDatAync<D>(ICallerContext ctx, string uri, byte z = 0) where D : IDat, new()
+        {
+            HttpRequestMessage req = new HttpRequestMessage(HttpMethod.Get, uri);
+            if (ctx.IsCookied)
+            {
+                req.Headers.Add("Cookie", ctx.Token);
+            }
+            else
+            {
+                req.Headers.Add("Authorization", "Bearer " + ctx.Token);
+            }
+            HttpResponseMessage resp = await SendAsync(req, HttpCompletionOption.ResponseContentRead);
+            return await resp.ToDatAsync<D>(z);
+        }
+
+        public async Task<D[]> GetDatsAync<D>(ICallerContext ctx, string uri, byte z = 0) where D : IDat, new()
+        {
+            HttpRequestMessage req = new HttpRequestMessage(HttpMethod.Get, uri);
+            if (ctx.IsCookied)
+            {
+                req.Headers.Add("Cookie", ctx.Token);
+            }
+            else
+            {
+                req.Headers.Add("Authorization", "Bearer " + ctx.Token);
+            }
+            HttpResponseMessage resp = await SendAsync(req, HttpCompletionOption.ResponseContentRead);
+            return await resp.ToDatsAsync<D>(z);
+        }
+
+        public async Task<Elem> GetElemAync(ICallerContext ctx, string uri)
+        {
+            HttpRequestMessage req = new HttpRequestMessage(HttpMethod.Get, uri);
+            if (ctx.IsCookied)
+            {
+                req.Headers.Add("Cookie", ctx.Token);
+            }
+            else
+            {
+                req.Headers.Add("Authorization", "Bearer " + ctx.Token);
+            }
+            HttpResponseMessage resp = await SendAsync(req, HttpCompletionOption.ResponseContentRead);
+            return await resp.ToElemAsync();
+        }
+
+        public async Task<byte[]> GetBytesAync(ICallerContext ctx, string uri)
+        {
+            HttpRequestMessage req = new HttpRequestMessage(HttpMethod.Get, uri);
+            if (ctx.IsCookied)
+            {
+                req.Headers.Add("Cookie", ctx.Token);
+            }
+            else
+            {
+                req.Headers.Add("Authorization", "Bearer " + ctx.Token);
+            }
+            HttpResponseMessage resp = await SendAsync(req, HttpCompletionOption.ResponseContentRead);
+            return await resp.ToBytesAsync();
+        }
+
+        public Task<HttpResponseMessage> PostAsync<D>(ICallerContext ctx, string uri, D dat) where D : IDat
         {
             HttpRequestMessage req = new HttpRequestMessage(HttpMethod.Post, uri);
-            if (ctx.IsBearer)
+            if (ctx.IsCookied)
             {
                 req.Headers.Add("Authorization", "Bearer " + "");
             }
@@ -74,6 +151,38 @@ namespace Greatbone.Core
             }
             JsonContent cont = new JsonContent(true, true);
             dat.Dump(cont);
+            req.Content = cont;
+            return SendAsync(req, HttpCompletionOption.ResponseContentRead);
+        }
+
+        public Task<HttpResponseMessage> PostAsync<D>(ICallerContext ctx, string uri, D[] dat) where D : IDat
+        {
+            HttpRequestMessage req = new HttpRequestMessage(HttpMethod.Post, uri);
+            if (ctx.IsCookied)
+            {
+                req.Headers.Add("Authorization", "Bearer " + "");
+            }
+            else
+            {
+                req.Headers.Add("Cookie", "");
+            }
+            JsonContent cont = new JsonContent(true, true);
+            req.Content = cont;
+            return SendAsync(req, HttpCompletionOption.ResponseContentRead);
+        }
+
+        public Task<HttpResponseMessage> POST(ICallerContext ctx, string uri, byte[] dat)
+        {
+            HttpRequestMessage req = new HttpRequestMessage(HttpMethod.Post, uri);
+            if (ctx.IsCookied)
+            {
+                req.Headers.Add("Authorization", "Bearer " + "");
+            }
+            else
+            {
+                req.Headers.Add("Cookie", "");
+            }
+            JsonContent cont = new JsonContent(true, true);
             req.Content = cont;
             return SendAsync(req, HttpCompletionOption.ResponseContentRead);
         }
@@ -89,7 +198,7 @@ namespace Greatbone.Core
             int pos;
             for (;;)
             {
-                
+
                 long id;
                 string name = "";
                 DateTime time;

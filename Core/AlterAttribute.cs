@@ -10,8 +10,8 @@ namespace Greatbone.Core
     public abstract class AlterAttribute : Attribute
     {
 
-        public abstract void PreDo(WebActionContext ac);
+        public abstract void Before(WebActionContext ac);
 
-        public abstract void PostDo(WebActionContext ac);
+        public abstract void After(WebActionContext ac);
     }
 }

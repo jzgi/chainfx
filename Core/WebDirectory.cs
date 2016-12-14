@@ -163,7 +163,7 @@ namespace Greatbone.Core
         {
             if (!Check(ac)) return;
             // pre-
-            PreDo(ac);
+            BeforeDo(ac);
 
             int slash = relative.IndexOf('/');
             if (slash == -1) // handle it locally
@@ -185,12 +185,12 @@ namespace Greatbone.Core
                 }
                 else
                 {
-                    ac.StatusCode = 404; // not found
+                    ac.Status = 404; // not found
                 }
             }
 
             // post-
-            PostDo(ac);
+            AfterDo(ac);
         }
 
         internal void DoRsc(string rsc, WebActionContext ac)
@@ -220,7 +220,7 @@ namespace Greatbone.Core
                 }
                 else
                 {
-                    ac.StatusCode = 404;
+                    ac.Status = 404;
                 }
             }
 
@@ -232,21 +232,21 @@ namespace Greatbone.Core
         {
             if (file.StartsWith("$")) // private resource
             {
-                ac.StatusCode = 403; // forbidden
+                ac.Status = 403; // forbidden
                 return;
             }
 
             string ctyp;
             if (!StaticContent.TryGetCType(ext, out ctyp))
             {
-                ac.StatusCode = 415; // unsupported media type
+                ac.Status = 415; // unsupported media type
                 return;
             }
 
             string path = Path.Combine(Folder, file);
             if (!File.Exists(path))
             {
-                ac.StatusCode = 404; // not found
+                ac.Status = 404; // not found
                 return;
             }
 
@@ -254,7 +254,7 @@ namespace Greatbone.Core
             DateTime? since = ac.HeaderDateTime("If-Modified-Since");
             if (since != null && modified <= since)
             {
-                ac.StatusCode = 304; // not modified
+                ac.Status = 304; // not modified
                 return;
             }
 

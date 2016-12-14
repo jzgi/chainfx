@@ -7,6 +7,8 @@
     {
         IPrincipal Principal { get; }
 
-        bool IsBearer { get; }
+        string Token { get; }
+
+        bool IsCookied { get; }
     }
 }

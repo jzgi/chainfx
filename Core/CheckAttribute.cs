@@ -22,10 +22,5 @@ namespace Greatbone.Core
         }
 
         public bool IsCookied => cookied;
-
-        ///
-        /// If applied to sub-directories as well.
-        ///
-        public bool IsGlobal { get; set; } = false;
     }
 }

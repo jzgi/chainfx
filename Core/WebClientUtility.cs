@@ -7,11 +7,11 @@ namespace Greatbone.Core
     public static class WebClientUtility
     {
 
-        public static void CallAny(WebClient[] df)
+        public static void CallAny(this WebClient[] df)
         {
 
         }
-        public static void CallAll(WebClient[] df)
+        public static void CallAll(this WebClient[] df)
         {
 
         }

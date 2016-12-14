@@ -41,13 +41,13 @@ namespace Greatbone.Sample
             }
             else // login
             {
-                Form frm = await ac.ReadForm();
+                Form frm = await ac.ToFormAsync();
                 string id = frm[nameof(id)];
                 string password = frm[nameof(password)];
                 string orig = frm[nameof(orig)];
                 if (string.IsNullOrEmpty(id) || string.IsNullOrEmpty(password))
                 {
-                    ac.StatusCode = 400; return; // bad request
+                    ac.Status = 400; return; // bad request
                 }
                 using (var dc = Service.NewDbContext())
                 {
@@ -65,16 +65,16 @@ namespace Greatbone.Sample
 
                             ac.SetHeader("Set-Cookie", "");
                             ac.SetHeader("Location", "");
-                            ac.StatusCode = 303; // see other (redirect)
+                            ac.Status = 303; // see other (redirect)
                         }
                         else
                         {
-                            ac.StatusCode = 400;
+                            ac.Status = 400;
                         }
                     }
                     else
                     {
-                        ac.StatusCode = 404;
+                        ac.Status = 404;
                     }
                 }
             }
@@ -130,17 +130,17 @@ namespace Greatbone.Sample
             }
             else // post
             {
-                var shop = await ac.ReadDat<Shop>(); // read form
+                var shop = await ac.ToDatAsync<Shop>(); // read form
                 using (var dc = Service.NewDbContext())
                 {
                     shop.credential = StrUtility.MD5(shop.id + ':' + ':' + shop.credential);
                     DbSql sql = new DbSql("INSERT INTO users")._(Shop.Empty)._VALUES_(Shop.Empty)._("");
                     if (dc.Execute(sql.ToString(), p => p.Put(shop)) > 0)
                     {
-                        ac.StatusCode = 201; // created
+                        ac.Status = 201; // created
                     }
                     else
-                        ac.StatusCode = 500; // internal server error
+                        ac.Status = 500; // internal server error
                 }
             }
         }

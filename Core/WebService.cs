@@ -215,7 +215,7 @@ namespace Greatbone.Core
                     Debug.WriteLine(e.Message);
                     if (e is ParseException)
                     {
-                        ac.StatusCode = 304;
+                        ac.Status = 304;
                     }
                     else
                     {
@@ -344,7 +344,7 @@ namespace Greatbone.Core
                 }
                 else
                 {
-                    ac.StatusCode = 204; // no content
+                    ac.Status = 204; // no content
                 }
             }
         }

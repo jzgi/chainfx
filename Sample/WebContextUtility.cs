@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using System.Net;
 using Greatbone.Core;
 
 namespace Greatbone.Sample
@@ -89,5 +90,5 @@ namespace Greatbone.Sample
         }
 
     }
-    
+
 }

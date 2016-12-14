@@ -47,11 +47,11 @@ namespace Greatbone.Core
             if (Check(ac)) // authorize check
             {
                 // pre-
-                PreDo(ac);
+                BeforeDo(ac);
                 // invoke the action method
                 doer(ac);
                 // post-
-                PostDo(ac);
+                AfterDo(ac);
             }
             ac.Action = null;
         }

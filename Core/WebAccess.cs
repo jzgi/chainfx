@@ -59,7 +59,7 @@ namespace Greatbone.Core
             {
                 if (header && ac.Principal == null)
                 {
-                    ac.StatusCode = 401; // unauthorized
+                    ac.Status = 401; // unauthorized
                     ac.SetHeader("WWW-Authenticate", "Bearer");
                     return false;
                 }
@@ -67,7 +67,7 @@ namespace Greatbone.Core
                 {
                     string loc = service.SignOn + "?orig=" + ac.Uri;
                     ac.SetHeader("Location", loc);
-                    ac.StatusCode = 303; // see other - redirect to signon url
+                    ac.Status = 303; // see other - redirect to signon url
                     return false;
                 }
 
@@ -75,7 +75,7 @@ namespace Greatbone.Core
                 {
                     if (!checks[i].Check(ac))
                     {
-                        ac.StatusCode = 403; // forbidden
+                        ac.Status = 403; // forbidden
                         return false;
                     }
                 }
@@ -83,24 +83,24 @@ namespace Greatbone.Core
             return true;
         }
 
-        internal void PreDo(WebActionContext ac)
+        internal void BeforeDo(WebActionContext ac)
         {
             if (alters == null) return;
 
             for (int i = 0; i < alters.Length; i++)
             {
-                alters[i].PreDo(ac);
+                alters[i].Before(ac);
             }
         }
 
-        internal void PostDo(WebActionContext ac)
+        internal void AfterDo(WebActionContext ac)
         {
             if (alters == null) return;
 
             // execute in reversed order
             for (int i = alters.Length - 1; i <= 0; i--)
             {
-                alters[i].PostDo(ac);
+                alters[i].After(ac);
             }
         }
     }
