@@ -463,29 +463,29 @@ namespace Greatbone.Core
         // MESSAGING
         //
 
-        public void Publish(string topic, string part, Action<JsonContent> a)
+        public void QueueEvent<D>(string name, string shard, D dat) where D : IDat
+        {
+            QueueEvent(name, shard, jcont => jcont.Put(null, dat));
+        }
+
+        public void QueueEvent<D>(string name, string shard, D[] dats) where D : IDat
+        {
+            QueueEvent(name, shard, jcont => jcont.Put(null, dats));
+        }
+
+        public void QueueEvent(string name, string shard, Action<JsonContent> a)
         {
             // convert message to byte buffer
             JsonContent cont = new JsonContent(true, true, 8 * 1024);
             a?.Invoke(cont);
 
-            Execute("INSERT INTO mq (topic, filter, message) VALUES (@topic, @filter, @message)", p =>
+            Execute("INSERT INTO eq (name, shard, body) VALUES (@1, @2, @3)", p =>
             {
-                p.Put("@topic", topic);
-                p.Put("@filter", part);
+                p.Put(name);
+                p.Put(shard);
                 // p.Put("@message", new ArraySegment<byte>(b.Buffer, 0, b.Length));
             });
             BufferUtility.Return(cont);
-        }
-
-        public void Publish<B>(string topic, string part, B obj) where B : IDat
-        {
-            Publish(topic, part, jcont => jcont.Put(null, obj));
-        }
-
-        public void Publish<B>(string topic, string part, B[] arr) where B : IDat
-        {
-            Publish(topic, part, jcont => jcont.Put(null, arr));
         }
 
 

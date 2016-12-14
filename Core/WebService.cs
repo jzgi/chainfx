@@ -186,7 +186,7 @@ namespace Greatbone.Core
             IContent cont;
             if (ac.IsGetMethod && cache.TryGetContent(targ, out cont)) // check if hit in the cache
             {
-                ac.Send(304, cont, true, 0);
+                ac.Set(304, cont, true, 0);
             }
             else // handling
             {
@@ -340,7 +340,7 @@ namespace Greatbone.Core
 
                         cont.Add(id, name, time, body);
                     }
-                    ac.Send(200, cont);
+                    ac.Set(200, cont);
                 }
                 else
                 {

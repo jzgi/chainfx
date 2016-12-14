@@ -265,7 +265,7 @@ namespace Greatbone.Core
                 CType = ctyp,
                 Modified = modified
             };
-            ac.Send(200, sta, true, 5 * 60000);
+            ac.Set(200, sta, true, 5 * 60000);
         }
 
         //

@@ -168,26 +168,26 @@ namespace Greatbone.Core
             return entity;
         }
 
-        public async Task<ArraySegment<byte>?> ToByteAsAsync()
+        public async Task<ArraySegment<byte>?> GetByteAsAsync()
         {
             return (entity = await ReadAsync()) as ArraySegment<byte>?;
         }
-        public async Task<Form> ToFormAsync()
+        public async Task<Form> GetFormAsync()
         {
             return (entity = await ReadAsync()) as Form;
         }
 
-        public async Task<Obj> ToObjAsync()
+        public async Task<Obj> GetObjAsync()
         {
             return (entity = await ReadAsync()) as Obj;
         }
 
-        public async Task<Arr> ToArrAsync()
+        public async Task<Arr> GetArrAsync()
         {
             return (entity = await ReadAsync()) as Arr;
         }
 
-        public async Task<D> ToDatAsync<D>(byte z = 0) where D : IDat, new()
+        public async Task<D> GetDatAsync<D>(byte z = 0) where D : IDat, new()
         {
             ISource src = (entity = await ReadAsync()) as ISource;
             if (src == null)
@@ -197,13 +197,13 @@ namespace Greatbone.Core
             return src.ToDat<D>(z);
         }
 
-        public async Task<D[]> ToDatsAsync<D>(byte z = 0) where D : IDat, new()
+        public async Task<D[]> GetDatsAsync<D>(byte z = 0) where D : IDat, new()
         {
             Arr arr = (entity = await ReadAsync()) as Arr;
             return arr?.ToDats<D>(z);
         }
 
-        public async Task<Elem> ToElemAsync()
+        public async Task<Elem> GetElemAsync()
         {
             object entity = await ReadAsync();
 
@@ -249,7 +249,7 @@ namespace Greatbone.Core
         // the content  is to be considered stale after its age is greater than the specified number of seconds.
         public int MaxAge { get; internal set; }
 
-        public void Send(int status, IContent cont, bool? pub = null, int maxage = 60000)
+        public void Set(int status, IContent cont, bool? pub = null, int maxage = 60000)
         {
             Status = status;
             Content = cont;
@@ -257,7 +257,7 @@ namespace Greatbone.Core
             MaxAge = maxage;
         }
 
-        public void SendText(int status, string text, bool? pub = null, int maxage = 60000)
+        public void SetText(int status, string text, bool? pub = null, int maxage = 60000)
         {
             Status = status;
             Content = new StrContent(true, true)
@@ -269,21 +269,21 @@ namespace Greatbone.Core
             MaxAge = maxage;
         }
 
-        public void SendJson<D>(int status, D dat, byte z = 0, bool? pub = null, int maxage = 60000) where D : IDat
+        public void SetJson<D>(int status, D dat, byte z = 0, bool? pub = null, int maxage = 60000) where D : IDat
         {
-            SendJson(status, cont => cont.Put(null, dat, z), pub, maxage);
+            SetJson(status, cont => cont.Put(null, dat, z), pub, maxage);
         }
 
-        public void SendJson<D>(int status, D[] dats, byte z = 0, bool? pub = null, int maxage = 60000) where D : IDat
+        public void SetJson<D>(int status, D[] dats, byte z = 0, bool? pub = null, int maxage = 60000) where D : IDat
         {
-            SendJson(status, cont => cont.Put(null, dats, z), pub, maxage);
+            SetJson(status, cont => cont.Put(null, dats, z), pub, maxage);
         }
 
-        public void SendJson(int status, Action<JsonContent> a, bool? pub = null, int maxage = 60000)
+        public void SetJson(int status, Action<JsonContent> a, bool? pub = null, int maxage = 60000)
         {
             JsonContent cont = new JsonContent(true, true, 4 * 1024);
             a?.Invoke(cont);
-            Send(status, cont, pub, maxage);
+            Set(status, cont, pub, maxage);
         }
 
         internal async Task SendAsync()

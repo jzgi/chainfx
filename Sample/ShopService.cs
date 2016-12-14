@@ -41,7 +41,7 @@ namespace Greatbone.Sample
             }
             else // login
             {
-                Form frm = await ac.ToFormAsync();
+                Form frm = await ac.GetFormAsync();
                 string id = frm[nameof(id)];
                 string password = frm[nameof(password)];
                 string orig = frm[nameof(orig)];
@@ -130,7 +130,7 @@ namespace Greatbone.Sample
             }
             else // post
             {
-                var shop = await ac.ToDatAsync<Shop>(); // read form
+                var shop = await ac.GetDatAsync<Shop>(); // read form
                 using (var dc = Service.NewDbContext())
                 {
                     shop.credential = StrUtility.MD5(shop.id + ':' + ':' + shop.credential);

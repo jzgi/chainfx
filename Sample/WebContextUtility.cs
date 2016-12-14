@@ -49,7 +49,7 @@ namespace Greatbone.Sample
             cont.T("</html>");
 
             // cont.Render(main);
-            wc.Send(status, cont, pub, maxage);
+            wc.Set(status, cont, pub, maxage);
         }
 
         public static void SendHtmlMinor(this WebActionContext wc, int status, string header, Action<HtmlContent> main, bool? pub = null, int maxage = 60000)
@@ -86,7 +86,7 @@ namespace Greatbone.Sample
             cont.T("</html>");
 
             // cont.Render(main);
-            wc.Send(status, cont, pub, maxage);
+            wc.Set(status, cont, pub, maxage);
         }
 
     }
