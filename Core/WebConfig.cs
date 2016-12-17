@@ -57,33 +57,33 @@ namespace Greatbone.Core
             this.name = name;
         }
 
-        public void Load(ISource s, byte z = 0)
+        public void Load(ISource src, byte z = 0)
         {
-            s.Get(nameof(shard), ref shard);
-            s.Get(nameof(outer), ref outer);
-            s.Get(nameof(inner), ref inner);
-            s.Get(nameof(domain), ref domain);
-            s.Get(nameof(signon), ref signon);
-            s.Get(nameof(refs), ref refs);
-            s.Get(nameof(db), ref db);
-            s.Get(nameof(logging), ref logging);
-            s.Get(nameof(cache), ref cache);
+            src.Get(nameof(shard), ref shard);
+            src.Get(nameof(outer), ref outer);
+            src.Get(nameof(inner), ref inner);
+            src.Get(nameof(domain), ref domain);
+            src.Get(nameof(signon), ref signon);
+            src.Get(nameof(refs), ref refs);
+            src.Get(nameof(db), ref db);
+            src.Get(nameof(logging), ref logging);
+            src.Get(nameof(cache), ref cache);
         }
 
-        public void Dump<R>(ISink<R> s, byte z = 0) where R : ISink<R>
+        public void Dump<R>(ISink<R> snk, byte z = 0) where R : ISink<R>
         {
-            s.Put(nameof(shard), shard);
-            s.Put(nameof(outer), outer);
-            s.Put(nameof(inner), inner);
-            s.Put(nameof(domain), domain);
-            s.Put(nameof(signon), signon);
-            s.Put(nameof(refs), refs);
-            s.Put(nameof(db), db);
-            s.Put(nameof(logging), logging);
-            s.Put(nameof(cache), cache);
+            snk.Put(nameof(shard), shard);
+            snk.Put(nameof(outer), outer);
+            snk.Put(nameof(inner), inner);
+            snk.Put(nameof(domain), domain);
+            snk.Put(nameof(signon), signon);
+            snk.Put(nameof(refs), refs);
+            snk.Put(nameof(db), db);
+            snk.Put(nameof(logging), logging);
+            snk.Put(nameof(cache), cache);
         }
 
-        public WebConfig LoadWebJson()
+        public bool LoadWebJson()
         {
             string path = GetFilePath("$web.json");
             if (System.IO.File.Exists(path))
@@ -93,9 +93,10 @@ namespace Greatbone.Core
                 {
                     WebJson = obj;
                     Load(obj); // override
+                    return true;
                 }
             }
-            return this;
+            return false;
         }
     }
 }

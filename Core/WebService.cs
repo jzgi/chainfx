@@ -34,9 +34,6 @@ namespace Greatbone.Core
         // the embedded server
         readonly KestrelServer server;
 
-        // shared content cache
-        readonly ResponseCache cache;
-
         readonly string signon;
 
         // client connectivity to the remote peers
@@ -46,6 +43,8 @@ namespace Greatbone.Core
         readonly Roll<WebEvent> events;
 
         readonly Thread scheduler;
+
+        readonly Thread cleaner;
 
 
         protected WebService(WebConfig cfg) : base(cfg)
@@ -110,7 +109,6 @@ namespace Greatbone.Core
             InstallEq();
 
             // init content cache
-            cache = new ResponseCache(Environment.ProcessorCount * 2, 4096);
         }
 
         public WebConfig Config => (WebConfig)context;
@@ -183,44 +181,36 @@ namespace Greatbone.Core
             string path = req.Path.Value;
             string targ = path + req.QueryString.Value;
 
-            IContent cont;
-            if (ac.GET && cache.TryGetContent(targ, out cont)) // check if hit in the cache
+            try
             {
-                ac.Set(304, cont, true, 0);
-            }
-            else // handling
-            {
-                try
+                // authentication
+                string token = null;
+                string hv = ac.Header("Authorization");
+                if (hv != null && hv.StartsWith("Bearer ")) // the Bearer scheme
                 {
-                    // authentication
-                    string token = null;
-                    string hv = ac.Header("Authorization");
-                    if (hv != null && hv.StartsWith("Bearer ")) // the Bearer scheme
-                    {
-                        token = hv.Substring(7);
-                        ac.Principal = Principalize(token);
-                    }
-                    else if (ac.Cookies.TryGetValue("Bearer", out token))
-                    {
-                        ac.Principal = Principalize(token);
-                    }
-
-                    Handle(path.Substring(1), ac);
-
-                    // prepare and send
-                    await ac.SendAsync();
+                    token = hv.Substring(7);
+                    ac.Principal = Principalize(token);
                 }
-                catch (Exception e)
+                else if (ac.Cookies.TryGetValue("Bearer", out token))
                 {
-                    Debug.WriteLine(e.Message);
-                    if (e is ParseException)
-                    {
-                        ac.Status = 304;
-                    }
-                    else
-                    {
-                        ERR(e.Message, e); // stacktrace
-                    }
+                    ac.Principal = Principalize(token);
+                }
+
+                Handle(path.Substring(1), ac);
+
+                // prepare and send
+                await ac.SendAsync();
+            }
+            catch (Exception e)
+            {
+                Debug.WriteLine(e.Message);
+                if (e is ParseException)
+                {
+                    ac.Status = 304;
+                }
+                else
+                {
+                    ERR(e.Message, e); // stacktrace
                 }
             }
         }
@@ -231,11 +221,7 @@ namespace Greatbone.Core
 
             // public cache
             IContent cont = ac.Content;
-            if (ac.IsCacheable)
-            {
-                cache.Add(ac.Uri, ac.MaxAge, cont);
-            }
-            else if (cont != null && cont.IsPoolable)
+            if (cont != null && cont.IsPoolable)
             {
                 BufferUtility.Return(cont.ByteBuf); // return response content buffer
             }
@@ -362,6 +348,19 @@ namespace Greatbone.Core
             }
         }
 
+        bool stop;
+
+        internal void Clean()
+        {
+            while (!stop)
+            {
+                Thread.Sleep(1000);
+
+                int now = Environment.TickCount;
+
+
+            }
+        }
         //
         // LOGGING
         //
