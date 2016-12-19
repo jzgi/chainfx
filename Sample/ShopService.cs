@@ -12,7 +12,7 @@ namespace Greatbone.Sample
 
         public ShopService(WebConfig cfg) : base(cfg)
         {
-            CreateVar<ShopVarFolder>();
+            MakeVar<ShopVarFolder>();
 
             _new = Actions(nameof(@new));
         }

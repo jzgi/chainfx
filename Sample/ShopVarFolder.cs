@@ -11,10 +11,10 @@ namespace Greatbone.Sample
 
         public ShopVarFolder(WebFolderContext dc) : base(dc)
         {
-            Create<MyCartFolder>("mycart");
+            Make<MyCartFolder>("mycart");
 
             // order functions
-            Create<MyOrderFolder>("myorder");
+            Make<MyOrderFolder>("myorder");
 
             _re_menu_ = Action(nameof(remenu));
         }

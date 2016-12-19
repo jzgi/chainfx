@@ -65,7 +65,7 @@ namespace Greatbone.Core
         ///
         /// Create a child folder.
         ///
-        public F Create<F>(string name, object state = null) where F : WebFolder
+        public F Make<F>(string name, object state = null) where F : WebFolder
         {
             if (Level >= Nesting) throw new WebException("nesting levels");
 
@@ -103,7 +103,7 @@ namespace Greatbone.Core
         ///
         /// Make a variable-key subdirectory.
         ///
-        public F CreateVar<F>(object state = null) where F : WebFolder, IVar
+        public F MakeVar<F>(object state = null) where F : WebFolder, IVar
         {
             if (Level >= Nesting) throw new WebException("nesting levels");
 
