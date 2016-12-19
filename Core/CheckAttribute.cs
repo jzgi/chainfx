@@ -16,11 +16,10 @@ namespace Greatbone.Core
             this.cookied = cookied;
         }
 
-        public virtual bool Check(WebActionContext wc)
-        {
-            return true;
-        }
+        public WebConstruct Construct { get; internal set; }
 
         public bool IsCookied => cookied;
+
+        public virtual bool Check(WebActionContext ac) => true;
     }
 }

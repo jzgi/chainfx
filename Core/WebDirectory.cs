@@ -8,7 +8,7 @@ namespace Greatbone.Core
     ///
     /// A web directory is a server-side controller that realizes a virtual directory containing static/dynamic resources.
     ///
-    public abstract class WebDirectory : WebAccess, IRollable
+    public abstract class WebDirectory : WebConstruct, IRollable
     {
         // max nesting levels
         const int Nesting = 4;

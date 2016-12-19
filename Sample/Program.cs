@@ -31,7 +31,7 @@ namespace Greatbone.Sample
                     new Member("shop-01", "http://127.0.0.1:7772"),
                 },
                 db = pg
-            }).LoadWebJson())
+            }).LoadJson())
             {
                 services.Add(new WwwService(cfg));
             }
@@ -45,7 +45,7 @@ namespace Greatbone.Sample
                     new Member("shop-01", "http://127.0.0.1:7772"),
                 },
                 db = pg
-            }).LoadWebJson())
+            }).LoadJson())
             {
                 services.Add(new ShopService(cfg));
             }

@@ -6,7 +6,7 @@ namespace Greatbone.Core
     ///
     /// The descriptor for an action method.
     ///
-    public class WebAction : WebAccess, IRollable
+    public class WebAction : WebConstruct, IRollable
     {
         readonly WebDirectory directory;
 

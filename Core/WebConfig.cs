@@ -1,6 +1,4 @@
-﻿using System.IO;
-
-namespace Greatbone.Core
+﻿namespace Greatbone.Core
 {
     ///
     /// The configurative settings for a web service.
@@ -50,7 +48,7 @@ namespace Greatbone.Core
         /// Let the folder name same ascthe service name.
         public override string Folder => name;
 
-        public Obj WebJson { get; private set; }
+        public Obj Json { get; private set; }
 
         public WebConfig(string name)
         {
@@ -83,7 +81,7 @@ namespace Greatbone.Core
             snk.Put(nameof(cache), cache);
         }
 
-        public bool LoadWebJson()
+        public bool LoadJson()
         {
             string path = GetFilePath("$web.json");
             if (System.IO.File.Exists(path))
@@ -91,7 +89,7 @@ namespace Greatbone.Core
                 Obj obj = JsonUtility.FileToObj(path);
                 if (obj != null)
                 {
-                    WebJson = obj;
+                    Json = obj;
                     Load(obj); // override
                     return true;
                 }

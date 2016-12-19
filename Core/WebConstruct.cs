@@ -3,7 +3,7 @@ using System.Reflection;
 
 namespace Greatbone.Core
 {
-    public abstract class WebAccess
+    public abstract class WebConstruct
     {
         WebService service;
 
@@ -16,7 +16,7 @@ namespace Greatbone.Core
 
         readonly UiAttribute ui;
 
-        internal WebAccess(ICustomAttributeProvider attrs)
+        internal WebConstruct(ICustomAttributeProvider attrs)
         {
             // either methodinfo or typeinfo
             if (attrs == null) attrs = GetType().GetTypeInfo();
