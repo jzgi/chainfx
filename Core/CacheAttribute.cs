@@ -5,19 +5,20 @@ using System.Threading;
 namespace Greatbone.Core
 {
     ///
+    /// To add response cache to a directory.!--
     ///
     [AttributeUsage(AttributeTargets.Class, Inherited = false)]
     public abstract class CacheAttribute : Attribute
     {
-
         readonly ConcurrentDictionary<string, Entry> entries;
-
 
         CacheAttribute(int concurrency, int capcity)
         {
             // create the url-to-item dictionary
             entries = new ConcurrentDictionary<string, Entry>(concurrency, capcity);
         }
+
+        public WebDirectory Directory { get; internal set; }
 
         internal void Add(string target, int maxage, IContent content)
         {
@@ -57,6 +58,7 @@ namespace Greatbone.Core
             v = null;
             return false;
         }
+
         class Entry
         {
             // ticks of expiration

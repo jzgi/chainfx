@@ -8,7 +8,7 @@ namespace Greatbone.Core
     [AttributeUsage(AttributeTargets.Class | AttributeTargets.Method, Inherited = false)]
     public abstract class AlterAttribute : Attribute
     {
-        public WebConstruct Construct { get; internal set; }
+        public WebControl Control { get; internal set; }
 
         public abstract void Before(WebActionContext ac);
 

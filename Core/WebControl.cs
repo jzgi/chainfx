@@ -3,10 +3,8 @@ using System.Reflection;
 
 namespace Greatbone.Core
 {
-    public abstract class WebConstruct
+    public abstract class WebControl
     {
-        WebService service;
-
         readonly CheckAttribute[] checks;
 
         // if auth through header or cookie
@@ -14,12 +12,13 @@ namespace Greatbone.Core
 
         readonly AlterAttribute[] alters;
 
-        readonly UiAttribute ui;
-
-        internal WebConstruct(ICustomAttributeProvider attrs)
+        internal WebControl(ICustomAttributeProvider attrs)
         {
             // either methodinfo or typeinfo
-            if (attrs == null) attrs = GetType().GetTypeInfo();
+            if (attrs == null)
+            {
+                attrs = GetType().GetTypeInfo();
+            }
 
             // initialize checks
             List<CheckAttribute> chks = null;
@@ -29,6 +28,7 @@ namespace Greatbone.Core
                 {
                     chks = new List<CheckAttribute>(8);
                 }
+                chk.Control = this;
                 chks.Add(chk);
 
                 if (chk.IsCookied) header = true;
@@ -44,14 +44,13 @@ namespace Greatbone.Core
                 {
                     alts = new List<AlterAttribute>(8);
                 }
+                alt.Control = this;
                 alts.Add(alt);
             }
             alters = alts?.ToArray();
-
-            // initialize ui
-            var uis = (UiAttribute[])attrs.GetCustomAttributes(typeof(UiAttribute), false);
-            if (uis.Length > 0) ui = uis[0];
         }
+
+        public abstract WebService Service { get; }
 
         internal bool Check(WebActionContext ac)
         {

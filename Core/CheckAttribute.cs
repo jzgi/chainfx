@@ -16,7 +16,7 @@ namespace Greatbone.Core
             this.cookied = cookied;
         }
 
-        public WebConstruct Construct { get; internal set; }
+        public WebControl Control { get; internal set; }
 
         public bool IsCookied => cookied;
 

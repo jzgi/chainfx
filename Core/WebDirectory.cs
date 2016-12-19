@@ -8,7 +8,7 @@ namespace Greatbone.Core
     ///
     /// A web directory is a server-side controller that realizes a virtual directory containing static/dynamic resources.
     ///
-    public abstract class WebDirectory : WebConstruct, IRollable
+    public abstract class WebDirectory : WebControl, IRollable
     {
         // max nesting levels
         const int Nesting = 4;
@@ -30,6 +30,7 @@ namespace Greatbone.Core
         // variable-key subdirectory
         internal WebDirectory var;
 
+        readonly CacheAttribute cache;
 
         protected WebDirectory(WebDirectoryContext context) : base(null)
         {
@@ -50,6 +51,14 @@ namespace Greatbone.Core
                         defaction = atn;
                     }
                 }
+            }
+
+            // initialize cache
+            var caches = (CacheAttribute[])typ.GetTypeInfo().GetCustomAttributes(typeof(CacheAttribute), false);
+            if (caches.Length > 0)
+            {
+                cache = caches[0];
+                cache.Directory = this;
             }
         }
 
@@ -133,7 +142,7 @@ namespace Greatbone.Core
 
         public int Level => context.Level;
 
-        public WebService Service => context.Service;
+        public override WebService Service => context.Service;
 
 
         // public Roll<WebAction> Actions => actions;

@@ -6,18 +6,13 @@ namespace Greatbone.Core
     ///
     /// The descriptor for an action method.
     ///
-    public class WebAction : WebConstruct, IRollable
+    public class WebAction : WebControl, IRollable
     {
         readonly WebDirectory directory;
 
         readonly string name;
 
         readonly Action<WebActionContext> doer;
-
-        readonly CheckAttribute[] checks;
-
-        // if requires auth through header or cookie
-        readonly bool header, cookie;
 
         readonly UiAttribute ui;
 
@@ -26,6 +21,10 @@ namespace Greatbone.Core
             directory = dir;
             name = mi.Name;
             doer = (Action<WebActionContext>)mi.CreateDelegate(typeof(Action<WebActionContext>), dir);
+
+            // initialize ui
+            var uis = (UiAttribute[])mi.GetCustomAttributes(typeof(UiAttribute), false);
+            if (uis.Length > 0) ui = uis[0];
         }
 
         public WebDirectory Directory => directory;
@@ -39,6 +38,8 @@ namespace Greatbone.Core
         public string Icon => ui?.Icon;
 
         public int Dialog => ui?.Dialog ?? 3;
+
+        public override WebService Service => directory.Service;
 
         // for generating unique digest nonce
         const string PrivateKey = "3e43a7180";
