@@ -5,9 +5,9 @@ namespace Greatbone.Sample
     ///
     /// /-shopid-/mycart/
     ///
-    public class MyCartDirectory : WebDirectory
+    public class MyCartFolder : WebFolder
     {
-        public MyCartDirectory(WebDirectoryContext dc) : base(dc)
+        public MyCartFolder(WebFolderContext dc) : base(dc)
         {
         }
 

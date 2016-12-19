@@ -4,19 +4,19 @@
     /// The configurative settings for a web service.
     /// 
     /// <remark>
-    /// The strong semantic allows the entire directory hierarchy to be established during object initialization.
+    /// The strong semantic allows the web folder hierarchy to be established during object initialization.
     /// </remark>
     /// <code>
     /// public class FooService : WebService
     /// {
     ///     public FooService(WebConfig cfg) : base(cfg)
     ///     {
-    ///         Make&lt;BarDirectory&gt;("bar");
+    ///         Make&lt;BarFolder&gt;("bar");
     ///     }
     /// }
     /// </code>
     ///
-    public class WebConfig : WebDirectoryContext, IDat
+    public class WebConfig : WebFolderContext, IDat
     {
         /// The shard name when one service is divided into many shards
         public string shard;
@@ -45,8 +45,8 @@
         /// Turn on/off the response cache.
         public bool cache = true;
 
-        /// Let the folder name same ascthe service name.
-        public override string Folder => name;
+        /// Let the file directory name same as the service name.
+        public override string Directory => name;
 
         public Obj Json { get; private set; }
 

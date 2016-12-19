@@ -5,11 +5,11 @@ namespace Greatbone.Sample
     ///
     /// /-shopid-/myorder/
     ///
-    public class MyOrderDirectory : WebDirectory
+    public class MyOrderFolder : WebFolder
     {
-        public MyOrderDirectory(WebDirectoryContext dc) : base(dc)
+        public MyOrderFolder(WebFolderContext dc) : base(dc)
         {
-            MakeVar<MyOrderVarDirectory>();
+            CreateVar<MyOrderVarFolder>();
         }
 
         ///

@@ -8,7 +8,7 @@ namespace Greatbone.Core
     ///
     public class WebAction : WebControl, IRollable
     {
-        readonly WebDirectory directory;
+        readonly WebFolder folder;
 
         readonly string name;
 
@@ -16,18 +16,18 @@ namespace Greatbone.Core
 
         readonly UiAttribute ui;
 
-        internal WebAction(WebDirectory dir, MethodInfo mi) : base(mi)
+        internal WebAction(WebFolder folder, MethodInfo mi) : base(mi)
         {
-            directory = dir;
+            this.folder = folder;
             name = mi.Name;
-            doer = (Action<WebActionContext>)mi.CreateDelegate(typeof(Action<WebActionContext>), dir);
+            doer = (Action<WebActionContext>)mi.CreateDelegate(typeof(Action<WebActionContext>), folder);
 
             // initialize ui
             var uis = (UiAttribute[])mi.GetCustomAttributes(typeof(UiAttribute), false);
             if (uis.Length > 0) ui = uis[0];
         }
 
-        public WebDirectory Directory => directory;
+        public WebFolder Folder => folder;
 
         public string Name => name;
 
@@ -39,7 +39,7 @@ namespace Greatbone.Core
 
         public int Dialog => ui?.Dialog ?? 3;
 
-        public override WebService Service => directory.Service;
+        public override WebService Service => folder.Service;
 
         // for generating unique digest nonce
         const string PrivateKey = "3e43a7180";

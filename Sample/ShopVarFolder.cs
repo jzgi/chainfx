@@ -3,18 +3,18 @@ using Greatbone.Core;
 namespace Greatbone.Sample
 {
     ///
-    /// The shop variable directory.
+    /// The shop variable folder.
     ///
-    public class ShopVarDirectory : WebDirectory, IVar
+    public class ShopVarFolder : WebFolder, IVar
     {
         readonly WebAction _re_menu_;
 
-        public ShopVarDirectory(WebDirectoryContext dc) : base(dc)
+        public ShopVarFolder(WebFolderContext dc) : base(dc)
         {
-            Make<MyCartDirectory>("mycart");
+            Create<MyCartFolder>("mycart");
 
             // order functions
-            Make<MyOrderDirectory>("myorder");
+            Create<MyOrderFolder>("myorder");
 
             _re_menu_ = Action(nameof(remenu));
         }

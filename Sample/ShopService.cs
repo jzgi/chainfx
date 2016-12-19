@@ -12,7 +12,7 @@ namespace Greatbone.Sample
 
         public ShopService(WebConfig cfg) : base(cfg)
         {
-            MakeVar<ShopVarDirectory>();
+            CreateVar<ShopVarFolder>();
 
             _new = Actions(nameof(@new));
         }
@@ -170,7 +170,7 @@ namespace Greatbone.Sample
                     {
                         for (int i = 0; i < Children.Count; i++)
                         {
-                            WebDirectory child = Children[i];
+                            WebFolder child = Children[i];
                         }
                     },
                     true);

@@ -9,17 +9,17 @@ namespace Greatbone.Core
     {
         readonly string key;
 
-        readonly WebDirectory directory;
+        readonly WebFolder folder;
 
-        internal Var(string key, WebDirectory dir)
+        internal Var(string key, WebFolder folder)
         {
             this.key = key;
-            this.directory = dir;
+            this.folder = folder;
         }
 
         public string Key => key;
 
-        public WebDirectory Directory => directory;
+        public WebFolder Folder => folder;
 
         //
         // CONVERSION

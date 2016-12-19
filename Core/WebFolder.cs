@@ -6,9 +6,9 @@ using Microsoft.Extensions.Logging;
 namespace Greatbone.Core
 {
     ///
-    /// A web directory is a server-side controller that realizes a virtual directory containing static/dynamic resources.
+    /// A web folder is a server-side controller that realizes a virtual folder containing static/dynamic resources.
     ///
-    public abstract class WebDirectory : WebControl, IRollable
+    public abstract class WebFolder : WebControl, IRollable
     {
         // max nesting levels
         const int Nesting = 4;
@@ -16,7 +16,7 @@ namespace Greatbone.Core
         const string _VAR_ = "-var-";
 
         // state-passing
-        internal readonly WebDirectoryContext context;
+        internal readonly WebFolderContext context;
 
         // declared actions 
         readonly Roll<WebAction> actions;
@@ -24,15 +24,15 @@ namespace Greatbone.Core
         // the default action
         readonly WebAction defaction;
 
-        // sub directories, if any
-        internal Roll<WebDirectory> children;
+        // sub folders, if any
+        internal Roll<WebFolder> children;
 
-        // variable-key subdirectory
-        internal WebDirectory var;
+        // variable-key subfolder
+        internal WebFolder var;
 
         readonly CacheAttribute cache;
 
-        protected WebDirectory(WebDirectoryContext context) : base(null)
+        protected WebFolder(WebFolderContext context) : base(null)
         {
             this.context = context;
 
@@ -58,76 +58,76 @@ namespace Greatbone.Core
             if (caches.Length > 0)
             {
                 cache = caches[0];
-                cache.Directory = this;
+                cache.Folder = this;
             }
         }
 
         ///
-        /// Make a child directory.
+        /// Create a child folder.
         ///
-        public D Make<D>(string name, object state = null) where D : WebDirectory
+        public F Create<F>(string name, object state = null) where F : WebFolder
         {
             if (Level >= Nesting) throw new WebException("nesting levels");
 
             if (children == null)
             {
-                children = new Roll<WebDirectory>(16);
+                children = new Roll<WebFolder>(16);
             }
             // create instance by reflection
-            Type typ = typeof(D);
-            ConstructorInfo ci = typ.GetConstructor(new[] { typeof(WebDirectoryContext) });
+            Type typ = typeof(F);
+            ConstructorInfo ci = typ.GetConstructor(new[] { typeof(WebFolderContext) });
             if (ci == null)
             {
                 throw new WebException(typ + " missing WebMakeContext");
             }
-            WebDirectoryContext ctx = new WebDirectoryContext
+            WebFolderContext ctx = new WebFolderContext
             {
                 name = name,
                 State = state,
                 IsVar = false,
                 Parent = this,
                 Level = Level + 1,
-                Folder = (Parent == null) ? name : Path.Combine(Parent.Folder, name),
+                Directory = (Parent == null) ? name : Path.Combine(Parent.Directory, name),
                 Service = Service
             };
-            D dir = (D)ci.Invoke(new object[] { ctx });
-            children.Add(dir);
+            F folder = (F)ci.Invoke(new object[] { ctx });
+            children.Add(folder);
 
-            return dir;
+            return folder;
         }
 
-        public Roll<WebDirectory> Children => children;
+        public Roll<WebFolder> Children => children;
 
-        public WebDirectory Var => var;
+        public WebFolder Var => var;
 
         ///
         /// Make a variable-key subdirectory.
         ///
-        public D MakeVar<D>(object state = null) where D : WebDirectory, IVar
+        public F CreateVar<F>(object state = null) where F : WebFolder, IVar
         {
             if (Level >= Nesting) throw new WebException("nesting levels");
 
             // create instance
-            Type typ = typeof(D);
-            ConstructorInfo ci = typ.GetConstructor(new[] { typeof(WebDirectoryContext) });
+            Type typ = typeof(F);
+            ConstructorInfo ci = typ.GetConstructor(new[] { typeof(WebFolderContext) });
             if (ci == null)
             {
                 throw new WebException(typ + " missing WebMakeContext");
             }
-            WebDirectoryContext ctx = new WebDirectoryContext
+            WebFolderContext ctx = new WebFolderContext
             {
                 name = _VAR_,
                 State = state,
                 IsVar = true,
                 Parent = this,
                 Level = Level + 1,
-                Folder = (Parent == null) ? _VAR_ : Path.Combine(Parent.Folder, _VAR_),
+                Directory = (Parent == null) ? _VAR_ : Path.Combine(Parent.Directory, _VAR_),
                 Service = Service
             };
-            D dir = (D)ci.Invoke(new object[] { ctx });
-            var = dir;
+            F folder = (F)ci.Invoke(new object[] { ctx });
+            var = folder;
 
-            return dir;
+            return folder;
         }
 
         public string Name => context.Name;
@@ -136,9 +136,9 @@ namespace Greatbone.Core
 
         public bool IsVar => context.IsVar;
 
-        public string Folder => context.Folder;
+        public string Directory => context.Directory;
 
-        public WebDirectory Parent => context.Parent;
+        public WebFolder Parent => context.Parent;
 
         public int Level => context.Level;
 
@@ -182,7 +182,7 @@ namespace Greatbone.Core
             else // dispatch to child or var
             {
                 string key = relative.Substring(0, slash);
-                WebDirectory child;
+                WebFolder child;
                 if (children != null && children.TryGet(key, out child)) // chiled
                 {
                     child.Handle(relative.Substring(slash + 1), ac);
@@ -204,7 +204,7 @@ namespace Greatbone.Core
 
         internal void DoRsc(string rsc, WebActionContext ac)
         {
-            ac.Directory = this;
+            ac.Folder = this;
 
             int dot = rsc.LastIndexOf('.');
             if (dot != -1) // static
@@ -233,7 +233,7 @@ namespace Greatbone.Core
                 }
             }
 
-            ac.Directory = null;
+            ac.Folder = null;
         }
 
 
@@ -252,7 +252,7 @@ namespace Greatbone.Core
                 return;
             }
 
-            string path = Path.Combine(Folder, file);
+            string path = Path.Combine(Directory, file);
             if (!File.Exists(path))
             {
                 ac.Status = 404; // not found

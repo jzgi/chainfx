@@ -5,7 +5,7 @@ using System.Threading;
 namespace Greatbone.Core
 {
     ///
-    /// To add response cache to a directory.!--
+    /// To add response cache to a web folder.
     ///
     [AttributeUsage(AttributeTargets.Class, Inherited = false)]
     public abstract class CacheAttribute : Attribute
@@ -18,7 +18,7 @@ namespace Greatbone.Core
             entries = new ConcurrentDictionary<string, Entry>(concurrency, capcity);
         }
 
-        public WebDirectory Directory { get; internal set; }
+        public WebFolder Folder { get; internal set; }
 
         internal void Add(string target, int maxage, IContent content)
         {

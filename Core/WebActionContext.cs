@@ -15,7 +15,7 @@ namespace Greatbone.Core
         {
         }
 
-        public WebDirectory Directory { get; internal set; }
+        public WebFolder Folder { get; internal set; }
 
         public WebAction Action { get; internal set; }
 
@@ -30,12 +30,12 @@ namespace Greatbone.Core
 
         Var sub;
 
-        internal void ChainVar(string key, WebDirectory dir)
+        internal void ChainVar(string key, WebFolder folder)
         {
-            if (dir != null)
+            if (folder != null)
             {
-                if (var.Key == null) var = new Var(key, dir);
-                else if (var2.Key == null) var2 = new Var(key, dir);
+                if (var.Key == null) var = new Var(key, folder);
+                else if (var2.Key == null) var2 = new Var(key, folder);
             }
             else if (sub.Key == null)
             {

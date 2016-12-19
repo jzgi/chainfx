@@ -5,9 +5,9 @@ namespace Greatbone.Sample
     ///
     /// /-shopid-/myorder/-orderid-/
     ///
-    public class MyOrderVarDirectory : WebDirectory, IVar
+    public class MyOrderVarFolder : WebFolder, IVar
     {
-        public MyOrderVarDirectory(WebDirectoryContext dc) : base(dc)
+        public MyOrderVarFolder(WebFolderContext dc) : base(dc)
         {
         }
 
