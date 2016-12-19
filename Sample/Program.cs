@@ -25,10 +25,10 @@ namespace Greatbone.Sample
 
             if ((cfg = new WebConfig("www")
             {
-                outer = "http://127.0.0.1:8080",
-                inner = "http://127.0.0.1:7770",
+                outer = "http://127.0.0.1:8000",
+                inner = "http://127.0.0.1:7000",
                 refs = new Obj{
-                    new Member("shop-01", "http://127.0.0.1:7772"),
+                    new Member("shop-01", "http://127.0.0.1:7002"),
                 },
                 db = pg
             }).LoadJson())
@@ -39,10 +39,10 @@ namespace Greatbone.Sample
             if ((cfg = new WebConfig("shop")
             {
                 shard = "01",
-                outer = "http://127.0.0.1:8081",
-                inner = "http://127.0.0.1:7771",
+                outer = "http://127.0.0.1:8001",
+                inner = "http://127.0.0.1:7001",
                 refs = new Obj{
-                    new Member("shop-01", "http://127.0.0.1:7772"),
+                    new Member("shop-01", "http://127.0.0.1:7002"),
                 },
                 db = pg
             }).LoadJson())
