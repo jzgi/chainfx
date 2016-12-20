@@ -179,7 +179,7 @@ namespace Greatbone.Core
         // RESULTSET
         //
 
-        public D ToDat<D>(byte z = 0) where D : IDat, new()
+        public D ToDat<D>(byte z = 0) where D : IData, new()
         {
             D dat = new D();
             dat.Load(this, z);
@@ -187,7 +187,7 @@ namespace Greatbone.Core
         }
 
 
-        public D[] ToDats<D>(byte z = 0) where D : IDat, new()
+        public D[] ToDats<D>(byte z = 0) where D : IData, new()
         {
             List<D> lst = new List<D>(64);
             while (NextRow())
@@ -351,7 +351,7 @@ namespace Greatbone.Core
             return false;
         }
 
-        public bool Get<B>(string name, ref B v, byte z = 0) where B : IDat, new()
+        public bool Get<B>(string name, ref B v, byte z = 0) where B : IData, new()
         {
             int ord = name == null ? ordinal++ : reader.GetOrdinal(name);
             if (!reader.IsDBNull(ord))
@@ -436,7 +436,7 @@ namespace Greatbone.Core
             return false;
         }
 
-        public bool Get<D>(string name, ref D[] v, byte z = 0) where D : IDat, new()
+        public bool Get<D>(string name, ref D[] v, byte z = 0) where D : IData, new()
         {
             int ord = name == null ? ordinal++ : reader.GetOrdinal(name);
             if (!reader.IsDBNull(ord))
@@ -463,12 +463,12 @@ namespace Greatbone.Core
         // MESSAGING
         //
 
-        public void QueueEvent<D>(string name, string shard, D dat) where D : IDat
+        public void QueueEvent<D>(string name, string shard, D dat) where D : IData
         {
             QueueEvent(name, shard, jcont => jcont.Put(null, dat));
         }
 
-        public void QueueEvent<D>(string name, string shard, D[] dats) where D : IDat
+        public void QueueEvent<D>(string name, string shard, D[] dats) where D : IData
         {
             QueueEvent(name, shard, jcont => jcont.Put(null, dats));
         }

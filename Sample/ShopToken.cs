@@ -5,7 +5,7 @@ namespace Greatbone.Sample
     ///
     /// An administrator's login.
     ///
-    public class ShopToken : IPrincipal, IDat
+    public class ShopToken : IPrincipal, IData
     {
         internal string id;
         internal string name;

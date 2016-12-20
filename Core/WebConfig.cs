@@ -16,7 +16,7 @@
     /// }
     /// </code>
     ///
-    public class WebConfig : WebFolderContext, IDat
+    public class WebConfig : WebFolderContext, IData
     {
         /// The shard name when one service is divided into many shards
         public string shard;

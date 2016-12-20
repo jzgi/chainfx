@@ -215,7 +215,7 @@ namespace Greatbone.Core
             T("</td>");
         }
 
-        public void Table<B>(B[] arr, byte z = 0) where B : IDat
+        public void Table<B>(B[] arr, byte z = 0) where B : IData
         {
             B obj = arr[0];
 
@@ -246,7 +246,7 @@ namespace Greatbone.Core
             Add("</form>");
         }
 
-        public void Form<D>(WebAction[] acts, D[] dats, byte z = 0) where D : IDat
+        public void Form<D>(WebAction[] acts, D[] dats, byte z = 0) where D : IData
         {
             Add("<form class=\"pure-form pure-g\">");
 
@@ -261,7 +261,7 @@ namespace Greatbone.Core
             Add("</form>");
         }
 
-        public void Form<D>(WebAction wa, D dat, byte z = 0) where D : IDat
+        public void Form<D>(WebAction wa, D dat, byte z = 0) where D : IData
         {
             Add("<form class=\"pure-form pure-g\">");
 
@@ -1091,7 +1091,7 @@ namespace Greatbone.Core
             return this;
         }
 
-        public HtmlContent Put<B>(string name, B v, byte z = 0) where B : IDat
+        public HtmlContent Put<B>(string name, B v, byte z = 0) where B : IData
         {
             return this;
         }
@@ -1126,7 +1126,7 @@ namespace Greatbone.Core
             return this;
         }
 
-        public HtmlContent Put<B>(string name, B[] v, byte z = 0) where B : IDat
+        public HtmlContent Put<B>(string name, B[] v, byte z = 0) where B : IData
         {
             return this;
         }

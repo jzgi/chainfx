@@ -7,7 +7,7 @@ namespace Greatbone.Sample
     ///
     /// A shop data object.
     ///
-    public class Shop : IPrincipal, IDat
+    public class Shop : IPrincipal, IData
     {
         public static readonly Shop Empty = new Shop();
 

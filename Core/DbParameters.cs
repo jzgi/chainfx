@@ -185,7 +185,7 @@ namespace Greatbone.Core
             return this;
         }
 
-        public DbParameters Put<D>(string name, D v, byte z = 0) where D : IDat
+        public DbParameters Put<D>(string name, D v, byte z = 0) where D : IData
         {
             if (name == null)
             {
@@ -303,7 +303,7 @@ namespace Greatbone.Core
             return this;
         }
 
-        public DbParameters Put<D>(string name, D[] v, byte z = 0) where D : IDat
+        public DbParameters Put<D>(string name, D[] v, byte z = 0) where D : IData
         {
             if (name == null)
             {

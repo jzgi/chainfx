@@ -6,7 +6,7 @@ namespace Greatbone.Sample
 
     /// <summary>
     /// </summary>
-    public class Pay : IDat
+    public class Pay : IData
     {
         internal string id;
         internal string shopid;

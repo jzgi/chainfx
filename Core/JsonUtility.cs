@@ -18,14 +18,14 @@ namespace Greatbone.Core
             return (Obj)p.Parse();
         }
 
-        public static D[] StringToDats<D>(string v, byte z = 0) where D : IDat, new()
+        public static D[] StringToDats<D>(string v, byte z = 0) where D : IData, new()
         {
             JsonParse p = new JsonParse(v);
             Arr arr = (Arr)p.Parse();
             return arr.ToDats<D>(z);
         }
 
-        public static D StringToDat<D>(string v, byte z = 0) where D : IDat, new()
+        public static D StringToDat<D>(string v, byte z = 0) where D : IData, new()
         {
             JsonParse p = new JsonParse(v);
             Obj obj = (Obj)p.Parse();
@@ -50,7 +50,7 @@ namespace Greatbone.Core
             return str;
         }
 
-        public static string DatsToString<D>(D[] v, byte z = 0) where D : IDat
+        public static string DatsToString<D>(D[] v, byte z = 0) where D : IData
         {
             JsonContent cont = new JsonContent(false, true, 8 * 1024);
             cont.Put(null, v);
@@ -59,7 +59,7 @@ namespace Greatbone.Core
             return str;
         }
 
-        public static string DatToString<D>(D v, byte z = 0) where D : IDat
+        public static string DatToString<D>(D v, byte z = 0) where D : IData
         {
             JsonContent cont = new JsonContent(false, true, 8 * 1024);
             cont.Put(null, v);
@@ -98,7 +98,7 @@ namespace Greatbone.Core
             return null;
         }
 
-        public static D FileToDat<D>(string file) where D : IDat, new()
+        public static D FileToDat<D>(string file) where D : IData, new()
         {
             try
             {
@@ -117,7 +117,7 @@ namespace Greatbone.Core
             return default(D);
         }
 
-        public static D[] FileToDats<D>(string file) where D : IDat, new()
+        public static D[] FileToDats<D>(string file) where D : IData, new()
         {
             try
             {

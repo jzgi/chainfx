@@ -93,7 +93,7 @@ namespace Greatbone.Core
         ///
         /// Make a variable-key subdirectory.
         ///
-        public F MakeX<F>(object state = null) where F : WebFolder, IXable
+        public F MakeXable<F>(object state = null) where F : WebFolder, IXable
         {
             if (Level >= Nesting) throw new WebException("nesting levels");
 

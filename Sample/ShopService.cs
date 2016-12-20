@@ -12,7 +12,7 @@ namespace Greatbone.Sample
 
         public ShopService(WebConfig cfg) : base(cfg)
         {
-            MakeX<ShopXFolder>();
+            MakeXable<ShopXFolder>();
 
             _new = Actions(nameof(@new));
         }
@@ -130,7 +130,7 @@ namespace Greatbone.Sample
             }
             else // post
             {
-                var shop = await ac.GetDatAsync<Shop>(); // read form
+                var shop = await ac.GetDataAsync<Shop>(); // read form
                 using (var dc = Service.NewDbContext())
                 {
                     shop.credential = StrUtility.MD5(shop.id + ':' + ':' + shop.credential);
