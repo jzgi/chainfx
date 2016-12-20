@@ -7,7 +7,7 @@ namespace Greatbone.Sample
     ///
     public class MyOrderFolder : WebFolder
     {
-        public MyOrderFolder(WebFolderContext dc) : base(dc)
+        public MyOrderFolder(WebFolderContext fc) : base(fc)
         {
             MakeVar<MyOrderVarFolder>();
         }

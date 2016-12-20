@@ -30,8 +30,6 @@ namespace Greatbone.Core
         // variable-key subfolder
         internal WebFolder var;
 
-        readonly CacheAttribute cache;
-
         protected WebFolder(WebFolderContext context) : base(null)
         {
             this.context = context;
@@ -51,14 +49,6 @@ namespace Greatbone.Core
                         defaction = atn;
                     }
                 }
-            }
-
-            // initialize cache
-            var caches = (CacheAttribute[])typ.GetTypeInfo().GetCustomAttributes(typeof(CacheAttribute), false);
-            if (caches.Length > 0)
-            {
-                cache = caches[0];
-                cache.Folder = this;
             }
         }
 

@@ -42,6 +42,8 @@ namespace Greatbone.Core
         // event hooks
         readonly Roll<WebEvent> events;
 
+        readonly ResponseCache cache;
+
         readonly Thread scheduler;
 
         readonly Thread cleaner;
@@ -108,7 +110,11 @@ namespace Greatbone.Core
 
             InstallEq();
 
-            // init content cache
+            // init response cache
+            if (cfg.cache)
+            {
+                cache = new ResponseCache(Environment.ProcessorCount * 2, 4096);
+            }
         }
 
         public WebConfig Config => (WebConfig)context;
