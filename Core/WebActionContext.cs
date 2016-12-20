@@ -26,26 +26,26 @@ namespace Greatbone.Core
         public bool IsCookied { get; internal set; }
 
         // two levels of variable keys
-        Var var, var2;
+        Var x, x2;
 
         Var sub;
 
-        internal void ChainVar(string key, WebFolder folder)
+        internal void ChainVar(string value, WebFolder folder)
         {
             if (folder != null)
             {
-                if (var.Key == null) var = new Var(key, folder);
-                else if (var2.Key == null) var2 = new Var(key, folder);
+                if (x.Key == null) x = new Var(value, folder);
+                else if (x2.Key == null) x2 = new Var(value, folder);
             }
             else if (sub.Key == null)
             {
-                sub = new Var(key, null);
+                sub = new Var(value, null);
             }
         }
 
-        public Var Var => var;
+        public Var X => x;
 
-        public Var Var2 => var2;
+        public Var X2 => x2;
 
         public Var Sub => sub;
 
