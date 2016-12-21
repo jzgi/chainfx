@@ -116,11 +116,11 @@ namespace Greatbone.Core
 
         public static bool Return(IContent cont)
         {
-            if (!cont.IsPoolable)
+            if (!cont.Poolable)
             {
                 return false;
             }
-            if (cont.IsBinary)
+            if (cont.Binary)
             {
                 Return(cont.ByteBuffer);
             }

@@ -12,12 +12,12 @@ namespace Greatbone.Core
         ///
         /// If the content is in binary form (bytes)
         ///
-        bool IsBinary { get; }
+        bool Binary { get; }
 
         ///
         /// If the buffer is rented from pool so as to return back lately.
         ///
-        bool IsPoolable { get; }
+        bool Poolable { get; }
 
         /// 
         /// The byte buffer that contains binary content.

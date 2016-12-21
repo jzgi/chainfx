@@ -213,7 +213,7 @@ namespace Greatbone.Core
 
             // public cache
             IContent cont = ac.Content;
-            if (cont != null && cont.IsPoolable)
+            if (cont != null && cont.Poolable)
             {
                 BufferUtility.Return(cont.ByteBuffer); // return response content buffer
             }

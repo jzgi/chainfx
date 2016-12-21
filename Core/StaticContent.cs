@@ -1548,9 +1548,9 @@ namespace Greatbone.Core
 
         public string CType { get; set; }
 
-        public bool IsBinary => true;
+        public bool Binary => true;
 
-        public bool IsPoolable => pooled;
+        public bool Poolable => pooled;
 
         public byte[] ByteBuffer => bytebuf;
 

@@ -108,7 +108,7 @@ namespace Greatbone.Core
 
         public abstract string CType { get; }
 
-        public bool IsBinary => bytebuf != null;
+        public bool Binary => bytebuf != null;
 
         public byte[] ByteBuffer => bytebuf;
 
@@ -118,7 +118,7 @@ namespace Greatbone.Core
 
         public DateTime? Modified { get; set; } = null;
 
-        public bool IsPoolable => pooled;
+        public bool Poolable => pooled;
 
         public ulong ETag => checksum;
 
@@ -144,7 +144,7 @@ namespace Greatbone.Core
 
         public void Add(char c)
         {
-            if (IsBinary) // byte-oriented
+            if (Binary) // byte-oriented
             {
                 // UTF-8 encoding but without surrogate support
                 if (c < 0x80)
