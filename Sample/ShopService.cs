@@ -64,12 +64,8 @@ namespace Greatbone.Sample
                         if (credential.Equals(tok.credential))
                         {
                             // set cookie
-
-                            JsonContent cont = new JsonContent(true, false, 256);
-                            cont.Put(null, tok);
-                            cont.Encrypt(0x4a78be76, 0x1f0335e2);
-
-                            ac.SetHeader("Set-Cookie", "");
+                            string tokstr = Service.Auth.Encrypt(tok);
+                            ac.SetHeader("Set-Cookie", tokstr);
                             ac.SetHeader("Location", "");
                             ac.Status = 303; // see other (redirect)
                         }

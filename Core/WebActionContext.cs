@@ -318,7 +318,7 @@ namespace Greatbone.Core
                 }
 
                 // send async
-                await r.Body.WriteAsync(Content.ByteBuf, 0, Content.Size);
+                await r.Body.WriteAsync(Content.ByteBuffer, 0, Content.Size);
             }
         }
 

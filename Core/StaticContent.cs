@@ -1552,9 +1552,9 @@ namespace Greatbone.Core
 
         public bool IsPoolable => pooled;
 
-        public byte[] ByteBuf => bytebuf;
+        public byte[] ByteBuffer => bytebuf;
 
-        public char[] CharBuf => null;
+        public char[] CharBuffer => null;
 
         public int Size => size;
 

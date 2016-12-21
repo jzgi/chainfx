@@ -22,12 +22,12 @@ namespace Greatbone.Core
         /// 
         /// The byte buffer that contains binary content.
         ///
-        byte[] ByteBuf { get; }
+        byte[] ByteBuffer { get; }
 
         ///
         /// The char buffer that contains text content.
         ///
-        char[] CharBuf { get; }
+        char[] CharBuffer { get; }
 
         /// 
         /// The actual number of bytes/chars.

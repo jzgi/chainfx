@@ -215,7 +215,7 @@ namespace Greatbone.Core
             IContent cont = ac.Content;
             if (cont != null && cont.IsPoolable)
             {
-                BufferUtility.Return(cont.ByteBuf); // return response content buffer
+                BufferUtility.Return(cont.ByteBuffer); // return response content buffer
             }
 
            ((WebActionContext)context).Dispose();

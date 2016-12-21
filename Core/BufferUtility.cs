@@ -122,11 +122,11 @@ namespace Greatbone.Core
             }
             if (cont.IsBinary)
             {
-                Return(cont.ByteBuf);
+                Return(cont.ByteBuffer);
             }
             else
             {
-                Return(cont.CharBuf);
+                Return(cont.CharBuffer);
             }
             return true;
         }

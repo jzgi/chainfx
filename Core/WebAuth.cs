@@ -1,6 +1,5 @@
 ﻿namespace Greatbone.Core
 {
-
     public abstract class WebAuth
     {
         // mask for token encoding/decoding
@@ -29,7 +28,42 @@
 
         public abstract void Authenticate(WebActionContext ac);
 
-        public string Decode(string tokstr)
+
+        // hexidecimal characters
+        protected static readonly char[] HEX =
+        {
+            '0', '1', '2', '3', '4', '5', '6', '7', '8', '9', 'a', 'b', 'c', 'd', 'e', 'f'
+        };
+
+        public string Encrypt(IToken tok)
+        {
+            JsonContent cont = new JsonContent(true, false);
+            tok.Dump(cont);
+            char[] jsonbuf = cont.CharBuffer;
+            int count = cont.Size;
+
+
+            int[] masks = { (mask >> 24) & 0xff, (mask >> 16) & 0xff, (mask >> 8) & 0xff, mask & 0xff };
+            char[] buf = new char[count * 2]; // the target bytebuf
+            int p = 0;
+            for (int i = 0; i < count; i++)
+            {
+                // masking
+                int b = jsonbuf[i] ^ masks[i % 4];
+
+                //transform
+                buf[p++] = HEX[(b >> 4) & 0x0f];
+                buf[p++] = HEX[(b) & 0x0f];
+
+                // reordering
+
+            }
+
+            // replace
+            return new string(buf, 0, count);
+        }
+
+        public string Decrypt(string tokstr)
         {
             int[] masks = { (mask >> 24) & 0xff, (mask >> 16) & 0xff, (mask >> 8) & 0xff, mask & 0xff };
             int len = tokstr.Length / 2;
@@ -84,7 +118,7 @@
                 tokstr = hv.Substring(7);
                 try
                 {
-                    string jsonstr = Decode(tokstr);
+                    string jsonstr = Decrypt(tokstr);
                     ac.Principal = JsonUtility.StringToData<TH>(jsonstr);
                 }
                 catch { }
@@ -93,7 +127,7 @@
             {
                 try
                 {
-                    string jsonstr = Decode(tokstr);
+                    string jsonstr = Decrypt(tokstr);
                     ac.Principal = JsonUtility.StringToData<TC>(tokstr);
                 }
                 catch { }

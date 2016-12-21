@@ -110,9 +110,9 @@ namespace Greatbone.Core
 
         public bool IsBinary => bytebuf != null;
 
-        public byte[] ByteBuf => bytebuf;
+        public byte[] ByteBuffer => bytebuf;
 
-        public char[] CharBuf => charbuf;
+        public char[] CharBuffer => charbuf;
 
         public int Size => count;
 
@@ -438,29 +438,6 @@ namespace Greatbone.Core
             this.count = count;
         }
 
-
-        public void Encrypt(int mask, int order)
-        {
-            int[] masks = { (mask >> 24) & 0xff, (mask >> 16) & 0xff, (mask >> 8) & 0xff, mask & 0xff };
-            byte[] buf = new byte[count * 2]; // the target bytebuf
-            int p = 0;
-            for (int i = 0; i < count; i++)
-            {
-                // masking
-                int b = bytebuf[i] ^ masks[i % 4];
-
-                //transform
-                buf[p++] = (byte)HEX[(b >> 4) & 0x0f];
-                buf[p++] = (byte)HEX[(b) & 0x0f];
-
-                // reordering
-
-            }
-
-            // replace
-            bytebuf = buf;
-            count = p;
-        }
 
         //
         // CLIENT CONTENT
