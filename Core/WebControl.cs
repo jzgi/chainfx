@@ -64,7 +64,7 @@ namespace Greatbone.Core
                 }
                 else if (cookie && ac.Principal == null)
                 {
-                    string loc = Service.SignOn + "?orig=" + ac.Uri;
+                    string loc = Service.Auth.SignOn + "?orig=" + ac.Uri;
                     ac.SetHeader("Location", loc);
                     ac.Status = 303; // see other - redirect to signon url
                     return false;

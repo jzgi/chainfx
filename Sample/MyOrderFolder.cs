@@ -9,7 +9,7 @@ namespace Greatbone.Sample
     {
         public MyOrderFolder(WebFolderContext fc) : base(fc)
         {
-            MakeXable<MyOrderXFolder>();
+            MakeXable<MyOrderXableFolder>();
         }
 
         ///

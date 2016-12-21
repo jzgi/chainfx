@@ -215,9 +215,9 @@ namespace Greatbone.Core
             T("</td>");
         }
 
-        public void Table<B>(B[] arr, byte z = 0) where B : IData
+        public void Table<D>(D[] datas, byte z = 0) where D : IData
         {
-            B obj = arr[0];
+            D obj = datas[0];
 
             Table(
                 ths =>
@@ -228,9 +228,9 @@ namespace Greatbone.Core
                 trs =>
                 {
                     ctx = TableTrs;
-                    for (int i = 0; i < arr.Length; i++)
+                    for (int i = 0; i < datas.Length; i++)
                     {
-                        arr[i].Dump(this, z);
+                        datas[i].Dump(this, z);
                     }
                 }
             );
@@ -246,16 +246,16 @@ namespace Greatbone.Core
             Add("</form>");
         }
 
-        public void Form<D>(WebAction[] acts, D[] dats, byte z = 0) where D : IData
+        public void Form<D>(WebAction[] acts, D[] datas, byte z = 0) where D : IData
         {
             Add("<form class=\"pure-form pure-g\">");
 
             // buttons
             buttonlst(acts);
 
-            if (dats != null)
+            if (datas != null)
             {
-                Table(dats, z);
+                Table(datas, z);
             }
 
             Add("</form>");

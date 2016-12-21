@@ -5,7 +5,7 @@
     ///
     public interface ICallerContext
     {
-        IPrincipal Principal { get; }
+        IToken Principal { get; }
 
         string Token { get; }
 

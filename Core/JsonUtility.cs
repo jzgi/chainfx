@@ -18,18 +18,18 @@ namespace Greatbone.Core
             return (Obj)p.Parse();
         }
 
-        public static D[] StringToDats<D>(string v, byte z = 0) where D : IData, new()
+        public static D[] StringToDatas<D>(string v, byte z = 0) where D : IData, new()
         {
             JsonParse p = new JsonParse(v);
             Arr arr = (Arr)p.Parse();
             return arr.ToDats<D>(z);
         }
 
-        public static D StringToDat<D>(string v, byte z = 0) where D : IData, new()
+        public static D StringToData<D>(string v, byte z = 0) where D : IData, new()
         {
             JsonParse p = new JsonParse(v);
             Obj obj = (Obj)p.Parse();
-            return obj.ToDat<D>(z);
+            return obj.ToData<D>(z);
         }
 
         public static string ArrToString(Arr v)
@@ -50,7 +50,7 @@ namespace Greatbone.Core
             return str;
         }
 
-        public static string DatsToString<D>(D[] v, byte z = 0) where D : IData
+        public static string DatasToString<D>(D[] v, byte z = 0) where D : IData
         {
             JsonContent cont = new JsonContent(false, true, 8 * 1024);
             cont.Put(null, v);
@@ -59,7 +59,7 @@ namespace Greatbone.Core
             return str;
         }
 
-        public static string DatToString<D>(D v, byte z = 0) where D : IData
+        public static string DataToString<D>(D v, byte z = 0) where D : IData
         {
             JsonContent cont = new JsonContent(false, true, 8 * 1024);
             cont.Put(null, v);
@@ -98,7 +98,7 @@ namespace Greatbone.Core
             return null;
         }
 
-        public static D FileToDat<D>(string file) where D : IData, new()
+        public static D FileToData<D>(string file) where D : IData, new()
         {
             try
             {
@@ -107,7 +107,7 @@ namespace Greatbone.Core
                 Obj obj = (Obj)p.Parse();
                 if (obj != null)
                 {
-                    return obj.ToDat<D>();
+                    return obj.ToData<D>();
                 }
             }
             catch (Exception ex)
@@ -117,7 +117,7 @@ namespace Greatbone.Core
             return default(D);
         }
 
-        public static D[] FileToDats<D>(string file) where D : IData, new()
+        public static D[] FileToDatas<D>(string file) where D : IData, new()
         {
             try
             {

@@ -34,8 +34,6 @@ namespace Greatbone.Core
         // the embedded server
         readonly KestrelServer server;
 
-        readonly string signon;
-
         // client connectivity to the remote peers
         readonly Roll<WebClient> refs;
 
@@ -72,8 +70,6 @@ namespace Greatbone.Core
             ICollection<string> addrs = server.Features.Get<IServerAddressesFeature>().Addresses;
             addrs.Add(cfg.outer);
             addrs.Add(cfg.inner);
-
-            signon = cfg.signon ?? "/signon";
 
             // init event hooks
             Type typ = GetType();
@@ -117,18 +113,18 @@ namespace Greatbone.Core
             }
         }
 
-        public WebConfig Config => (WebConfig)context;
-
         ///
         /// The service instance id.
         ///
         public string Id => id;
 
-        public string SignOn => signon;
-
         public Roll<WebEvent> Events => events;
 
         public Roll<WebClient> Clients => refs;
+
+        public WebConfig Config => (WebConfig)context;
+
+        public WebAuth Auth { get; set; }
 
         bool InstallEq()
         {
@@ -190,17 +186,7 @@ namespace Greatbone.Core
             try
             {
                 // authentication
-                string token = null;
-                string hv = ac.Header("Authorization");
-                if (hv != null && hv.StartsWith("Bearer ")) // the Bearer scheme
-                {
-                    token = hv.Substring(7);
-                    ac.Principal = Principalize(token);
-                }
-                else if (ac.Cookies.TryGetValue("Bearer", out token))
-                {
-                    ac.Principal = Principalize(token);
-                }
+                if (Auth != null) Auth.Authenticate(ac);
 
                 Handle(path.Substring(1), ac);
 
@@ -233,11 +219,6 @@ namespace Greatbone.Core
             }
 
            ((WebActionContext)context).Dispose();
-        }
-
-        protected virtual IPrincipal Principalize(string token)
-        {
-            return null;
         }
 
         internal override void Handle(string relative, WebActionContext ac)

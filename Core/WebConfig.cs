@@ -27,12 +27,6 @@
         /// The inner socket address for internal communication
         public string inner;
 
-        /// The cookie domain to apply
-        public string domain;
-
-        /// The absolute or relative URL of the signon user interface.
-        public string signon;
-
         /// The services/addresses that this service references or depends on.
         public Obj refs;
 
@@ -60,8 +54,6 @@
             src.Get(nameof(shard), ref shard);
             src.Get(nameof(outer), ref outer);
             src.Get(nameof(inner), ref inner);
-            src.Get(nameof(domain), ref domain);
-            src.Get(nameof(signon), ref signon);
             src.Get(nameof(refs), ref refs);
             src.Get(nameof(db), ref db);
             src.Get(nameof(logging), ref logging);
@@ -73,8 +65,6 @@
             snk.Put(nameof(shard), shard);
             snk.Put(nameof(outer), outer);
             snk.Put(nameof(inner), inner);
-            snk.Put(nameof(domain), domain);
-            snk.Put(nameof(signon), signon);
             snk.Put(nameof(refs), refs);
             snk.Put(nameof(db), db);
             snk.Put(nameof(logging), logging);

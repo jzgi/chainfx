@@ -199,7 +199,7 @@ namespace Greatbone.Core
             {
                 coll.Add(new NpgsqlParameter(name, NpgsqlDbType.Jsonb)
                 {
-                    Value = JsonUtility.DatToString(v, z)
+                    Value = JsonUtility.DataToString(v, z)
                 });
             }
             return this;
@@ -320,7 +320,7 @@ namespace Greatbone.Core
             {
                 coll.Add(new NpgsqlParameter(name, NpgsqlDbType.Jsonb)
                 {
-                    Value = JsonUtility.DatsToString(v, z)
+                    Value = JsonUtility.DatasToString(v, z)
                 });
             }
             return this;

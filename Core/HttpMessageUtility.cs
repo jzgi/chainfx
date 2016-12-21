@@ -70,7 +70,7 @@ namespace Greatbone.Core
             byte[] bytes = await msg.Content.ReadAsByteArrayAsync();
             JsonParse p = new JsonParse(bytes, bytes.Length);
             Obj obj = (Obj)p.Parse();
-            return obj.ToDat<D>(z);
+            return obj.ToData<D>(z);
         }
 
         public static async Task<D[]> GetDatsAsync<D>(this HttpResponseMessage msg, byte z = 0) where D : IData, new()

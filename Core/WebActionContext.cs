@@ -19,7 +19,7 @@ namespace Greatbone.Core
 
         public WebAction Action { get; internal set; }
 
-        public IPrincipal Principal { get; internal set; }
+        public IToken Principal { get; internal set; }
 
         public string Token { get; internal set; }
 
@@ -194,7 +194,7 @@ namespace Greatbone.Core
             {
                 return default(D);
             }
-            return src.ToDat<D>(z);
+            return src.ToData<D>(z);
         }
 
         public async Task<D[]> GetDatasAsync<D>(byte z = 0) where D : IData, new()

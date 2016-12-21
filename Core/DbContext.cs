@@ -179,7 +179,7 @@ namespace Greatbone.Core
         // RESULTSET
         //
 
-        public D ToDat<D>(byte z = 0) where D : IData, new()
+        public D ToData<D>(byte z = 0) where D : IData, new()
         {
             D dat = new D();
             dat.Load(this, z);
@@ -187,7 +187,7 @@ namespace Greatbone.Core
         }
 
 
-        public D[] ToDats<D>(byte z = 0) where D : IData, new()
+        public D[] ToDatas<D>(byte z = 0) where D : IData, new()
         {
             List<D> lst = new List<D>(64);
             while (NextRow())

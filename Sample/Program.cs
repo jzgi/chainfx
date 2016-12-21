@@ -19,6 +19,8 @@ namespace Greatbone.Sample
                 queue = false
             };
 
+            WebAuth<Shop, Shop> auth = new WebAuth<Shop, Shop>(0x4a78be76, 0x1f0335e2);
+
             List<WebService> services = new List<WebService>(4);
 
             WebConfig cfg;

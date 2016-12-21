@@ -4,7 +4,7 @@ namespace Greatbone.Core
 {
     public static class ISourceUtility
     {
-        public static D ToDat<D>(this ISource src, byte z = 0) where D : IData, new()
+        public static D ToData<D>(this ISource src, byte z = 0) where D : IData, new()
         {
             D dat = new D();
             dat.Load(src, z);

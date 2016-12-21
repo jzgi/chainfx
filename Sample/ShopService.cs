@@ -12,7 +12,7 @@ namespace Greatbone.Sample
 
         public ShopService(WebConfig cfg) : base(cfg)
         {
-            MakeXable<ShopXFolder>();
+            MakeXable<ShopXableFolder>();
 
             _new = Actions(nameof(@new));
         }
@@ -38,6 +38,12 @@ namespace Greatbone.Sample
                 string id = frm[nameof(id)];
                 string password = frm[nameof(password)];
                 string orig = frm[nameof(orig)];
+
+                ac.SendHtmlMajor(200, "", main =>
+                {
+                    main.Form(null, x => x.input_button());
+                });
+
             }
             else // login
             {
@@ -53,7 +59,7 @@ namespace Greatbone.Sample
                 {
                     if (dc.QueryA("SELECT * FROM shops WHERE id = @1", (p) => p.Put(id)))
                     {
-                        var tok = dc.ToDat<ShopToken>();
+                        var tok = dc.ToData<ShopToken>();
                         string credential = StrUtility.MD5(id + ':' + password);
                         if (credential.Equals(tok.credential))
                         {
@@ -80,6 +86,8 @@ namespace Greatbone.Sample
             }
         }
 
+        #region MANAGEMENT
+
         ///
         /// Get shop list.
         ///
@@ -95,10 +103,10 @@ namespace Greatbone.Sample
 
             using (var dc = Service.NewDbContext())
             {
-                DbSql sql = new DbSql("SELECT ").columnlst(Shop.Empty, z)._("FROM shops WHERE NOT disabled ORDER BY id LIMIT 20 OFFSET @1");
+                DbSql sql = new DbSql("SELECT ").columnlst(Shop.Empty, z)._("FROM shops WHERE ORDER BY id LIMIT 20 OFFSET @1");
                 if (dc.Query(sql.ToString(), p => p.Put(20 * page)))
                 {
-                    var shops = dc.ToDats<Shop>(z);
+                    var shops = dc.ToDatas<Shop>(z);
                     ac.SendHtmlMajor(200, "", main =>
                     {
                         main.Form(_new, shops);
@@ -133,7 +141,7 @@ namespace Greatbone.Sample
                 var shop = await ac.GetDataAsync<Shop>(); // read form
                 using (var dc = Service.NewDbContext())
                 {
-                    shop.credential = StrUtility.MD5(shop.id + ':' + ':' + shop.credential);
+                    shop.credential = StrUtility.MD5(shop.id + ':' + shop.credential);
                     DbSql sql = new DbSql("INSERT INTO users")._(Shop.Empty)._VALUES_(Shop.Empty)._("");
                     if (dc.Execute(sql.ToString(), p => p.Put(shop)) > 0)
                     {
@@ -145,21 +153,6 @@ namespace Greatbone.Sample
             }
         }
 
-
-        protected override IPrincipal Principalize(string token)
-        {
-            string plain = StrUtility.Decrypt(token, 0x4a78be76, 0x1f0335e2); // plain token
-            JsonParse par = new JsonParse(plain);
-            try
-            {
-                Obj obj = (Obj)par.Parse();
-                return obj.ToDat<ShopToken>();
-            }
-            catch
-            {
-            }
-            return null;
-        }
 
         [CheckAdmin]
         public virtual void mgmt(WebActionContext ac)
@@ -182,5 +175,7 @@ namespace Greatbone.Sample
         {
 
         }
+
+        #endregion
     }
 }

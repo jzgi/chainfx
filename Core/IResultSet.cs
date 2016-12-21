@@ -9,8 +9,8 @@ namespace Greatbone.Core
 
         bool NextResult();
 
-        D ToDat<D>(byte z = 0) where D : IData, new();
+        D ToData<D>(byte z = 0) where D : IData, new();
 
-        D[] ToDats<D>(byte z = 0) where D : IData, new();
+        D[] ToDatas<D>(byte z = 0) where D : IData, new();
     }
 }
