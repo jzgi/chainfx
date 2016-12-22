@@ -10,7 +10,7 @@ namespace Greatbone.Core
         static readonly ParseException ParseEx = new ParseException("field value");
 
         // field value
-        readonly string fvalue;
+        readonly string value;
 
         // parsing position
         int pos;
@@ -20,7 +20,7 @@ namespace Greatbone.Core
 
         internal FieldParse(string v)
         {
-            fvalue = v;
+            value = v;
             pos = 0;
             str = new Str(256);
         }
@@ -31,41 +31,41 @@ namespace Greatbone.Core
             str.Clear();
         }
 
-        public bool Match(String str)
+        public bool Match(string str)
         {
             int p = pos;
-            if (fvalue.IndexOf(str, p) != -1)
+            if (value.IndexOf(str, p, StringComparison.Ordinal) != -1)
             {
-                pos = p += str.Length; // move forward
+                pos = p + str.Length; // move forward
                 return true;
             }
             return false;
         }
 
-        public String Parameter(String nameEq)
+        public string Parameter(string nameEq)
         {
             str.Clear();
 
             // parameter location
-            int loc = fvalue.IndexOf(nameEq, pos);
-            if (loc == -1) loc = fvalue.LastIndexOf(nameEq, pos);
+            int loc = value.IndexOf(nameEq, pos, StringComparison.Ordinal);
+            if (loc == -1) loc = value.LastIndexOf(nameEq, pos, StringComparison.Ordinal);
             if (loc == -1) return null;
 
             int start = loc + nameEq.Length; // beginning of value
-            if (start >= fvalue.Length) throw ParseEx;
+            if (start >= value.Length) throw ParseEx;
 
-            bool quot = fvalue[start] == '"';
+            bool quot = value[start] == '"';
             if (quot)
             {
                 int p = start + 1;
                 for (;;)
                 {
-                    if (p >= fvalue.Length) throw ParseEx;
-                    char c = fvalue[p++];
+                    if (p >= value.Length) throw ParseEx;
+                    char c = value[p++];
                     if (c == '\\') // quoted-pair
                     {
                         p++;
-                        str.Add(fvalue[p]); // add the following char
+                        str.Add(value[p]); // add the following char
                     }
                     else if (c == '"')
                     {
@@ -83,12 +83,12 @@ namespace Greatbone.Core
                 int p = start;
                 for (;;)
                 {
-                    if (p >= fvalue.Length)
+                    if (p >= value.Length)
                     {
                         pos = p;
                         return str.ToString();
                     }
-                    char c = fvalue[p++];
+                    char c = value[p++];
                     if (c == ',' || c == '/' || c == ':' || c == ';') // a delimiter
                     {
                         pos = p;

@@ -76,14 +76,14 @@ namespace Greatbone.Core
         class Entry
         {
             // ticks of expiration
-            internal int expiry;
+            int expiry;
 
             // can be null
-            internal IContent content;
+            IContent content;
 
-            internal int ticks;
+            int ticks;
 
-            internal int counter;
+            int counter;
 
             internal Entry(int expiry, IContent content, int ticks)
             {

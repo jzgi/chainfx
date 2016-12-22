@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.IO;
+using System.Linq;
 using System.Reflection;
 using System.Text;
 using System.Threading;
@@ -25,11 +26,6 @@ namespace Greatbone.Core
     {
         // the service instance id
         readonly string id;
-
-        readonly KestrelServerOptions options;
-
-        // file logger factory
-        readonly LoggerFactory factory;
 
         // the embedded server
         readonly KestrelServer server;
@@ -55,7 +51,7 @@ namespace Greatbone.Core
             id = (cfg.shard == null) ? cfg.name : cfg.name + "-" + cfg.shard;
 
             // setup logging 
-            factory = new LoggerFactory();
+            LoggerFactory factory = new LoggerFactory();
             factory.AddProvider(this);
             string file = cfg.GetFilePath('$' + DateTime.Now.ToString("yyyyMM") + ".log");
             FileStream fs = new FileStream(file, FileMode.Append, FileAccess.Write);
@@ -65,7 +61,7 @@ namespace Greatbone.Core
             };
 
             // create embedded server instance
-            options = new KestrelServerOptions();
+            KestrelServerOptions options = new KestrelServerOptions();
             server = new KestrelServer(Options.Create(options), Lifetime, factory);
             ICollection<string> addrs = server.Features.Get<IServerAddressesFeature>().Addresses;
             addrs.Add(cfg.outer);
@@ -111,6 +107,10 @@ namespace Greatbone.Core
             {
                 cache = new ResponseCache(Environment.ProcessorCount * 2, 4096);
             }
+
+            cleaner = new Thread(Clean);
+
+            scheduler = new Thread(Schedule);
         }
 
         ///
@@ -125,6 +125,8 @@ namespace Greatbone.Core
         public WebConfig Config => (WebConfig)context;
 
         public WebAuth Auth { get; set; }
+
+        internal ResponseCache Cache => cache;
 
         bool InstallEq()
         {
@@ -150,8 +152,7 @@ namespace Greatbone.Core
                                 svcid character varying(20),
                                 lastid int8,
                                 CONSTRAINT eu_pkey PRIMARY KEY (addr)
-                            ) WITH (OIDS=FALSE)",
-                    null
+                            ) WITH (OIDS=FALSE)"
                 );
             }
             return true;
@@ -181,7 +182,6 @@ namespace Greatbone.Core
             WebActionContext ac = (WebActionContext)context;
             HttpRequest req = ac.Request;
             string path = req.Path.Value;
-            string targ = path + req.QueryString.Value;
 
             try
             {
@@ -260,6 +260,10 @@ namespace Greatbone.Core
             Console.WriteLine();
 
             INF("started");
+
+            cleaner.Start();
+
+            scheduler.Start();
         }
 
         public DbContext NewDbContext()
@@ -334,7 +338,7 @@ namespace Greatbone.Core
 
         internal void Schedule()
         {
-            while (true)
+            while (!stop)
             {
                 for (int i = 0; i < Clients.Count; i++)
                 {
@@ -380,7 +384,6 @@ namespace Greatbone.Core
         {
             return (int)level >= Config.logging;
         }
-
 
         public void Dispose()
         {
@@ -448,7 +451,8 @@ namespace Greatbone.Core
                 };
 
                 // start services
-                foreach (WebService svc in services)
+                var svcs = services as WebService[] ?? services.ToArray();
+                foreach (WebService svc in svcs)
                 {
                     svc.Start();
                 }
@@ -459,7 +463,7 @@ namespace Greatbone.Core
                     {
                         ((IApplicationLifetime)state).StopApplication();
                         // dispose services
-                        foreach (WebService svc in services)
+                        foreach (WebService svc in svcs)
                         {
                             svc.OnStop();
 

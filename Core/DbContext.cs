@@ -16,9 +16,9 @@ namespace Greatbone.Core
 
         readonly DbParameters parameters;
 
-        private NpgsqlTransaction transact;
+        NpgsqlTransaction transact;
 
-        private NpgsqlDataReader reader;
+        NpgsqlDataReader reader;
 
         bool disposed;
 
@@ -448,7 +448,7 @@ namespace Greatbone.Core
                 v = new D[len];
                 for (int i = 0; i < len; i++)
                 {
-                    Obj obj = (Obj)arr[i];
+                    Obj obj = arr[i];
                     D dat = new D();
                     dat.Load(obj, z);
                     v[i] = dat;
@@ -476,7 +476,7 @@ namespace Greatbone.Core
         public void QueueEvent(string name, string shard, Action<JsonContent> a)
         {
             // convert message to byte buffer
-            JsonContent cont = new JsonContent(true, true, 8 * 1024);
+            JsonContent cont = new JsonContent(true, true);
             a?.Invoke(cont);
 
             Execute("INSERT INTO eq (name, shard, body) VALUES (@1, @2, @3)", p =>

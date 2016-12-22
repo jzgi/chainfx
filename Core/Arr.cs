@@ -86,7 +86,7 @@ namespace Greatbone.Core
 
         public override string ToString()
         {
-            JsonContent cont = new JsonContent(false, true, 8 * 1024);
+            JsonContent cont = new JsonContent(false, true);
             cont.Add('[');
             Dump(cont);
             cont.Add(']');
