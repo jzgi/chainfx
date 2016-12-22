@@ -15,7 +15,7 @@ namespace Greatbone.Core
             rest = 0;
         }
 
-        public override string CType => null;
+        public override string MimeType => null;
 
         // utf-8 decoding 
         public void Accept(int b)

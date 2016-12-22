@@ -13,7 +13,7 @@ namespace Greatbone.Core
         {
         }
 
-        public override string CType => "application/events";
+        public override string MimeType => "application/events";
 
         public void Add(long id, string name, DateTime time, object body)
         {

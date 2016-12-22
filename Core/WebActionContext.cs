@@ -19,9 +19,9 @@ namespace Greatbone.Core
 
         public WebAction Action { get; internal set; }
 
-        public IToken Principal { get; internal set; }
+        public IToken Token { get; internal set; }
 
-        public string Token { get; internal set; }
+        public string TokenString { get; internal set; }
 
         public bool IsCookied { get; internal set; }
 
@@ -200,7 +200,7 @@ namespace Greatbone.Core
         public async Task<D[]> GetDatasAsync<D>(byte z = 0) where D : IData, new()
         {
             Arr arr = (entity = await ReadAsync()) as Arr;
-            return arr?.ToDats<D>(z);
+            return arr?.ToDatas<D>(z);
         }
 
         public async Task<Elem> GetElemAsync()
@@ -260,11 +260,9 @@ namespace Greatbone.Core
         public void SetText(int status, string text, bool? pub = null, int maxage = 60000)
         {
             Status = status;
-            Content = new StrContent(true, true)
-            {
-                Text = text
-            };
-
+            StrContent cont = new StrContent(true, true);
+            cont.Add(text);
+            Content = cont;
             Pub = pub;
             MaxAge = maxage;
         }
@@ -301,7 +299,7 @@ namespace Greatbone.Core
             {
                 HttpResponse r = Response;
                 r.ContentLength = Content.Size;
-                r.ContentType = Content.CType;
+                r.ContentType = Content.MimeType;
 
                 // cache indicators
                 if (Content is DynamicContent) // set etag
@@ -327,7 +325,7 @@ namespace Greatbone.Core
         //
 
 
-        internal bool IsCacheable
+        internal bool Cacheable
         {
             get
             {

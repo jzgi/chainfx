@@ -78,7 +78,7 @@ namespace Greatbone.Core
             byte[] bytes = await msg.Content.ReadAsByteArrayAsync();
             JsonParse p = new JsonParse(bytes, bytes.Length);
             Arr arr = (Arr)p.Parse();
-            return arr.ToDats<D>(z);
+            return arr.ToDatas<D>(z);
         }
 
         public static async Task<byte[]> GetBytesAsync(this HttpResponseMessage msg)

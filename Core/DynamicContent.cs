@@ -97,16 +97,16 @@ namespace Greatbone.Core
             this.pooled = pooled;
             if (binary)
             {
-                bytebuf = (pooled) ? BufferUtility.BorrowByteBuf(capacity) : new byte[capacity];
+                bytebuf = pooled ? BufferUtility.BorrowByteBuf(capacity) : new byte[capacity];
             }
             else
             {
-                charbuf = (pooled) ? BufferUtility.BorrowCharBuf(capacity) : new char[capacity];
+                charbuf = pooled ? BufferUtility.BorrowCharBuf(capacity) : new char[capacity];
             }
-            this.count = 0;
+            count = 0;
         }
 
-        public abstract string CType { get; }
+        public abstract string MimeType { get; }
 
         public bool Binary => bytebuf != null;
 

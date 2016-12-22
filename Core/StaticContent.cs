@@ -1546,7 +1546,7 @@ namespace Greatbone.Core
 
         public string Name => name;
 
-        public string CType { get; set; }
+        public string MimeType { get; set; }
 
         public bool Binary => true;
 

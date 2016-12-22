@@ -13,7 +13,7 @@ namespace Greatbone.Core
         // max nesting levels
         const int Nesting = 4;
 
-        const string _VAR_ = "-var-";
+        const string _X_ = "X";
 
         // state-passing
         internal readonly WebFolderContext context;
@@ -28,7 +28,7 @@ namespace Greatbone.Core
         internal Roll<WebFolder> children;
 
         // variable-key subfolder
-        internal WebFolder var;
+        internal WebFolder xable;
 
         protected WebFolder(WebFolderContext context) : base(null)
         {
@@ -68,7 +68,7 @@ namespace Greatbone.Core
             ConstructorInfo ci = typ.GetConstructor(new[] { typeof(WebFolderContext) });
             if (ci == null)
             {
-                throw new WebException(typ + " missing WebMakeContext");
+                throw new WebException(typ + " missing WebFolderContext");
             }
             WebFolderContext ctx = new WebFolderContext
             {
@@ -88,7 +88,7 @@ namespace Greatbone.Core
 
         public Roll<WebFolder> Children => children;
 
-        public WebFolder Var => var;
+        public WebFolder Xable => xable;
 
         ///
         /// Make a variable-key subdirectory.
@@ -102,20 +102,20 @@ namespace Greatbone.Core
             ConstructorInfo ci = typ.GetConstructor(new[] { typeof(WebFolderContext) });
             if (ci == null)
             {
-                throw new WebException(typ + " missing WebMakeContext");
+                throw new WebException(typ + " missing WebFolderContext");
             }
             WebFolderContext ctx = new WebFolderContext
             {
-                name = _VAR_,
+                name = _X_,
                 State = state,
                 IsVar = true,
                 Parent = this,
                 Level = Level + 1,
-                Directory = (Parent == null) ? _VAR_ : Path.Combine(Parent.Directory, _VAR_),
+                Directory = (Parent == null) ? _X_ : Path.Combine(Parent.Directory, _X_),
                 Service = Service
             };
             F folder = (F)ci.Invoke(new object[] { ctx });
-            var = folder;
+            xable = folder;
 
             return folder;
         }
@@ -177,10 +177,10 @@ namespace Greatbone.Core
                 {
                     child.Handle(relative.Substring(slash + 1), ac);
                 }
-                else if (var != null) // variable-key
+                else if (xable != null) // variable-key
                 {
-                    ac.ChainVar(key, var);
-                    var.Handle(relative.Substring(slash + 1), ac);
+                    ac.ChainVar(key, xable);
+                    xable.Handle(relative.Substring(slash + 1), ac);
                 }
                 else
                 {
@@ -261,7 +261,7 @@ namespace Greatbone.Core
             byte[] cont = File.ReadAllBytes(path);
             StaticContent sta = new StaticContent(file.ToLower(), cont)
             {
-                CType = ctyp,
+                MimeType = ctyp,
                 Modified = modified
             };
             ac.Set(200, sta, true, 5 * 60000);

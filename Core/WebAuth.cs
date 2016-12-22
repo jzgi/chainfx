@@ -14,7 +14,7 @@
         /// The absolute or relative URL of the signon user interface.
         readonly string signon;
 
-        public WebAuth(int mask, int order, string domain = null, string signon = "/signon")
+        protected WebAuth(int mask, int order, string domain = null, string signon = "/signon")
         {
             this.mask = mask;
             this.order = order;
@@ -37,30 +37,26 @@
 
         public string Encrypt(IToken tok)
         {
-            JsonContent cont = new JsonContent(true, false);
-            tok.Dump(cont);
-            char[] jsonbuf = cont.CharBuffer;
+            JsonContent cont = new JsonContent(true, false, 4096);
+            cont.Put(tok);
+            byte[] bytebuf = cont.ByteBuffer;
             int count = cont.Size;
 
-
             int[] masks = { (mask >> 24) & 0xff, (mask >> 16) & 0xff, (mask >> 8) & 0xff, mask & 0xff };
-            char[] buf = new char[count * 2]; // the target bytebuf
+            char[] charbuf = new char[count * 2]; // the target 
             int p = 0;
             for (int i = 0; i < count; i++)
             {
                 // masking
-                int b = jsonbuf[i] ^ masks[i % 4];
+                int b = bytebuf[i] ^ masks[i % 4];
 
                 //transform
-                buf[p++] = HEX[(b >> 4) & 0x0f];
-                buf[p++] = HEX[(b) & 0x0f];
+                charbuf[p++] = HEX[(b >> 4) & 0x0f];
+                charbuf[p++] = HEX[(b) & 0x0f];
 
                 // reordering
-
             }
-
-            // replace
-            return new string(buf, 0, count);
+            return new string(charbuf, 0, charbuf.Length);
         }
 
         public string Decrypt(string tokstr)
@@ -91,11 +87,8 @@
             {
                 return v;
             }
-            else
-            {
-                v = h - 'a';
-                if (v >= 0 && v <= 5) return 10 + v;
-            }
+            v = h - 'a';
+            if (v >= 0 && v <= 5) return 10 + v;
             return 0;
         }
     }
@@ -111,26 +104,18 @@
 
         public override void Authenticate(WebActionContext ac)
         {
-            string tokstr = null;
+            string tokstr;
             string hv = ac.Header("Authorization");
             if (hv != null && hv.StartsWith("Bearer ")) // the Bearer scheme
             {
                 tokstr = hv.Substring(7);
-                try
-                {
-                    string jsonstr = Decrypt(tokstr);
-                    ac.Principal = JsonUtility.StringToData<TH>(jsonstr);
-                }
-                catch { }
+                string jsonstr = Decrypt(tokstr);
+                ac.Token = JsonUtility.StringToData<TH>(jsonstr);
             }
             else if (ac.Cookies.TryGetValue("Bearer", out tokstr))
             {
-                try
-                {
-                    string jsonstr = Decrypt(tokstr);
-                    ac.Principal = JsonUtility.StringToData<TC>(tokstr);
-                }
-                catch { }
+                string jsonstr = Decrypt(tokstr);
+                ac.Token = JsonUtility.StringToData<TC>(jsonstr);
             }
         }
     }

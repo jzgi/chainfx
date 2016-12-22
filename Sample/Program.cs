@@ -27,29 +27,29 @@ namespace Greatbone.Sample
 
             if ((cfg = new WebConfig("www")
             {
-                outer = "http://127.0.0.1:8000",
-                inner = "http://127.0.0.1:7000",
+                outer = "http://127.0.0.1:8080",
+                inner = "http://127.0.0.1:7070",
                 refs = new Obj{
-                    new Member("shop-01", "http://127.0.0.1:7002"),
+                    new Member("shop-01", "http://127.0.0.1:7072"),
                 },
                 db = pg
             }).LoadJson())
             {
-                services.Add(new WwwService(cfg));
+                services.Add(new WwwService(cfg) { Auth = auth });
             }
 
             if ((cfg = new WebConfig("shop")
             {
                 shard = "01",
-                outer = "http://127.0.0.1:8001",
-                inner = "http://127.0.0.1:7001",
+                outer = "http://127.0.0.1:8081",
+                inner = "http://127.0.0.1:7071",
                 refs = new Obj{
-                    new Member("shop-01", "http://127.0.0.1:7002"),
+                    new Member("shop-01", "http://127.0.0.1:7072"),
                 },
                 db = pg
             }).LoadJson())
             {
-                services.Add(new ShopService(cfg));
+                services.Add(new ShopService(cfg) { Auth = auth });
             }
 
             WebService.Run(services);

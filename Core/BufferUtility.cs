@@ -10,22 +10,22 @@ namespace Greatbone.Core
     {
         static readonly int Cores = Environment.ProcessorCount;
 
-        static readonly Queue<byte[]>[] BQueues =
+        static readonly Que<byte[]>[] BQues =
         {
-            new Queue<byte[]>(1024 * 4, Cores * 64),
-            new Queue<byte[]>(1024 * 16, Cores * 32),
-            new Queue<byte[]>(1024 * 64, Cores * 16),
-            new Queue<byte[]>(1024 * 256, Cores * 8),
-            new Queue<byte[]>(1024 * 1024, Cores * 4),
+            new Que<byte[]>(1024 * 4, Cores * 64),
+            new Que<byte[]>(1024 * 16, Cores * 32),
+            new Que<byte[]>(1024 * 64, Cores * 16),
+            new Que<byte[]>(1024 * 256, Cores * 8),
+            new Que<byte[]>(1024 * 1024, Cores * 4),
         };
 
-        static readonly Queue<char[]>[] CQueues =
+        static readonly Que<char[]>[] CQues =
         {
-            new Queue<char[]>(1024 * 1, Cores * 64),
-            new Queue<char[]>(1024 * 4, Cores * 32),
-            new Queue<char[]>(1024 * 16, Cores * 16),
-            new Queue<char[]>(1024 * 64, Cores * 8),
-            new Queue<char[]>(1024 * 256, Cores * 4),
+            new Que<char[]>(1024 * 1, Cores * 64),
+            new Que<char[]>(1024 * 4, Cores * 32),
+            new Que<char[]>(1024 * 16, Cores * 16),
+            new Que<char[]>(1024 * 64, Cores * 8),
+            new Que<char[]>(1024 * 256, Cores * 4),
         };
 
 
@@ -33,11 +33,11 @@ namespace Greatbone.Core
         {
             // locate the appropriate queue
             int i = 0;
-            while (BQueues[i].Spec < demand) i++;
+            while (BQues[i].Spec < demand) i++;
 
-            if (i < BQueues.Length)
+            if (i < BQues.Length)
             {
-                Queue<byte[]> que = BQueues[i];
+                Que<byte[]> que = BQues[i];
                 byte[] buf;
                 if (!que.TryDequeue(out buf))
                 {
@@ -54,9 +54,9 @@ namespace Greatbone.Core
         public static void Return(byte[] buf)
         {
             int blen = buf.Length;
-            for (int i = 0; i < BQueues.Length; i++)
+            for (int i = 0; i < BQues.Length; i++)
             {
-                Queue<byte[]> q = BQueues[i];
+                Que<byte[]> q = BQues[i];
                 if (q.Spec == blen) // the right queue to add
                 {
                     if (q.Count < q.Limit)
@@ -75,11 +75,11 @@ namespace Greatbone.Core
         {
             // locate the appropriate queue
             int i = 0;
-            while (CQueues[i].Spec < demand) i++;
+            while (CQues[i].Spec < demand) i++;
 
-            if (i < CQueues.Length)
+            if (i < CQues.Length)
             {
-                Queue<char[]> que = CQueues[i];
+                Que<char[]> que = CQues[i];
                 char[] buf;
                 if (!que.TryDequeue(out buf))
                 {
@@ -96,9 +96,9 @@ namespace Greatbone.Core
         public static void Return(char[] buf)
         {
             int blen = buf.Length;
-            for (int i = 0; i < BQueues.Length; i++)
+            for (int i = 0; i < BQues.Length; i++)
             {
-                Queue<char[]> q = CQueues[i];
+                Que<char[]> q = CQues[i];
                 if (q.Spec == blen) // the right queue to add
                 {
                     if (q.Count < q.Limit)
@@ -131,14 +131,14 @@ namespace Greatbone.Core
             return true;
         }
 
-        class Queue<T> : ConcurrentQueue<T>
+        class Que<T> : ConcurrentQueue<T>
         {
             readonly int limit;
 
             // buffer size in bytes
             readonly int spec;
 
-            internal Queue(int spec, int limit)
+            internal Que(int spec, int limit)
             {
                 this.spec = spec;
                 this.limit = limit;

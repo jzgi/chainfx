@@ -186,7 +186,17 @@ namespace Greatbone.Core
             try
             {
                 // authentication
-                if (Auth != null) Auth.Authenticate(ac);
+                if (Auth != null)
+                {
+                    try
+                    {
+                        Auth.Authenticate(ac);
+                    }
+                    catch (Exception e)
+                    {
+                        WAR(e.Message);
+                    }
+                }
 
                 Handle(path.Substring(1), ac);
 
@@ -198,7 +208,7 @@ namespace Greatbone.Core
                 Debug.WriteLine(e.Message);
                 if (e is ParseException)
                 {
-                    ac.Status = 304;
+                    ac.Status = 400;
                 }
                 else
                 {

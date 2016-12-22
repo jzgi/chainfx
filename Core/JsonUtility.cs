@@ -22,7 +22,7 @@ namespace Greatbone.Core
         {
             JsonParse p = new JsonParse(v);
             Arr arr = (Arr)p.Parse();
-            return arr.ToDats<D>(z);
+            return arr.ToDatas<D>(z);
         }
 
         public static D StringToData<D>(string v, byte z = 0) where D : IData, new()
@@ -126,7 +126,7 @@ namespace Greatbone.Core
                 Arr arr = (Arr)p.Parse();
                 if (arr != null)
                 {
-                    return arr.ToDats<D>();
+                    return arr.ToDatas<D>();
                 }
             }
             catch (Exception ex)

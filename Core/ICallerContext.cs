@@ -5,9 +5,9 @@
     ///
     public interface ICallerContext
     {
-        IToken Principal { get; }
+        IToken Token { get; }
 
-        string Token { get; }
+        string TokenString { get; }
 
         bool IsCookied { get; }
     }

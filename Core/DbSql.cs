@@ -29,7 +29,7 @@ namespace Greatbone.Core
             Add(str);
         }
 
-        public override string CType => null;
+        public override string MimeType => null;
 
         internal void Clear()
         {

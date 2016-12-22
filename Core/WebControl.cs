@@ -56,13 +56,13 @@ namespace Greatbone.Core
         {
             if (checks != null)
             {
-                if (header && ac.Principal == null)
+                if (header && ac.Token == null)
                 {
                     ac.Status = 401; // unauthorized
                     ac.SetHeader("WWW-Authenticate", "Bearer");
                     return false;
                 }
-                else if (cookie && ac.Principal == null)
+                else if (cookie && ac.Token == null)
                 {
                     string loc = Service.Auth.SignOn + "?orig=" + ac.Uri;
                     ac.SetHeader("Location", loc);
@@ -97,7 +97,7 @@ namespace Greatbone.Core
             if (alters == null) return;
 
             // execute in reversed order
-            for (int i = alters.Length - 1; i <= 0; i--)
+            for (int i = alters.Length - 1; i >= 0; i--)
             {
                 alters[i].After(ac);
             }

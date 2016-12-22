@@ -7,7 +7,7 @@ namespace Greatbone.Core
         ///
         /// The Content-Type.
         ///
-        string CType { get; }
+        string MimeType { get; }
 
         ///
         /// If the content is in binary form (bytes)
