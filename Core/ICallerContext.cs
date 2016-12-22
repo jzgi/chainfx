@@ -9,6 +9,6 @@
 
         string TokenString { get; }
 
-        bool IsCookied { get; }
+        bool Cookied { get; }
     }
 }

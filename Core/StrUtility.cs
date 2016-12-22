@@ -7,7 +7,7 @@ namespace Greatbone.Core
     public static class StrUtility
     {
         // hexidecimal numbers
-        static readonly char[] HEX = { '0', '1', '2', '3', '4', '5', '6', '7', '8', '9', 'a', 'b', 'c', 'd', 'e', 'f' };
+        static readonly char[] HEX = {'0', '1', '2', '3', '4', '5', '6', '7', '8', '9', 'A', 'B', 'C', 'D', 'E', 'F'};
 
         public static string ToHex(ulong v)
         {
@@ -20,7 +20,7 @@ namespace Greatbone.Core
         }
 
         // days of week
-        static readonly string[] DOW = { "Mon", "Tue", "Wed", "Thu", "Fri", "Sat", "Sun" };
+        static readonly string[] DOW = {"Mon", "Tue", "Wed", "Thu", "Fri", "Sat", "Sun"};
 
         // sexagesimal numbers
         static readonly string[] SEX =
@@ -36,8 +36,7 @@ namespace Greatbone.Core
         // months
         static readonly string[] MON =
         {
-            "Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov",
-            "Dec"
+            "Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"
         };
 
         // HTTP date format
@@ -72,7 +71,7 @@ namespace Greatbone.Core
             v = v.ToUniversalTime();
 
             StringBuilder gmt = new StringBuilder();
-            gmt.Append(DOW[(int)v.DayOfWeek]);
+            gmt.Append(DOW[(int) v.DayOfWeek]);
             gmt.Append(", ");
 
             gmt.Append(SEX[v.Day]);
@@ -182,7 +181,7 @@ namespace Greatbone.Core
             byte[] raw = new byte[len];
             for (int i = 0; i < len; i++)
             {
-                raw[i] = (byte)input[i];
+                raw[i] = (byte) input[i];
             }
 
             // digest and transform
@@ -223,15 +222,15 @@ namespace Greatbone.Core
             while (i < vlen)
             {
                 int m = i / 4;
-                char c = (char)((ToNum(v[i++]) << 12) + (ToNum(v[i++]) << 8) + (ToNum(v[i++]) << 4) + ToNum(v[i++]));
+                char c = (char) ((Dv(v[i++]) << 12) + (Dv(v[i++]) << 8) + (Dv(v[i++]) << 4) + Dv(v[i++]));
                 buf[m] = c;
             }
             return new string(buf);
         }
 
-        static int ToNum(char hex)
+        static int Dv(char hex)
         {
-            int num = hex - 'a';
+            int num = hex - 'A';
             if (num >= 0 && num <= 5)
             {
                 return num + 10;
@@ -257,20 +256,20 @@ namespace Greatbone.Core
                 if (c < 0x80)
                 {
                     // have at most seven bits
-                    buf[p++] = ((byte)c);
+                    buf[p++] = ((byte) c);
                 }
                 else if (c < 0x800)
                 {
                     // 2 text, 11 bits
-                    buf[p++] = (byte)(0xc0 | (c >> 6));
-                    buf[p++] = (byte)(0x80 | (c & 0x3f));
+                    buf[p++] = (byte) (0xc0 | (c >> 6));
+                    buf[p++] = (byte) (0x80 | (c & 0x3f));
                 }
                 else
                 {
                     // 3 text, 16 bits
-                    buf[p++] = (byte)(0xe0 | (c >> 12));
-                    buf[p++] = (byte)(0x80 | (c >> 6) & 0x3f);
-                    buf[p++] = (byte)(0x80 | (c & 0x3f));
+                    buf[p++] = (byte) (0xe0 | (c >> 12));
+                    buf[p++] = (byte) (0x80 | (c >> 6) & 0x3f);
+                    buf[p++] = (byte) (0x80 | (c & 0x3f));
                 }
             }
             return new ArraySegment<byte>(buf, 0, p);
@@ -314,7 +313,7 @@ namespace Greatbone.Core
         public static DateTime ToDateTime(this string str, DateTime def = default(DateTime))
         {
             DateTime v = def;
-            StrUtility.TryParseDate(str, out v);
+            TryParseDate(str, out v);
             return v;
         }
     }

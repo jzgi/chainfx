@@ -23,7 +23,7 @@ namespace Greatbone.Core
 
         public string TokenString { get; internal set; }
 
-        public bool IsCookied { get; internal set; }
+        public bool Cookied { get; internal set; }
 
         // two levels of variable keys
         Var x, x2;
@@ -93,7 +93,7 @@ namespace Greatbone.Core
             StringValues vs;
             if (Request.Headers.TryGetValue(name, out vs))
             {
-                return (string)vs;
+                return vs;
             }
             return null;
         }
@@ -103,7 +103,7 @@ namespace Greatbone.Core
             StringValues vs;
             if (Request.Headers.TryGetValue(name, out vs))
             {
-                string str = (string)vs;
+                string str = vs;
                 int v;
                 if (int.TryParse(str, out v))
                 {
@@ -118,7 +118,7 @@ namespace Greatbone.Core
             StringValues vs;
             if (Request.Headers.TryGetValue(name, out vs))
             {
-                string str = (string)vs;
+                string str = vs;
                 DateTime v;
                 if (StrUtility.TryParseUtcDate(str, out v))
                 {
@@ -138,7 +138,7 @@ namespace Greatbone.Core
             long? clen = Request.ContentLength;
             if (clen <= 0) return null;
 
-            int len = (int)clen;
+            int len = (int) clen;
             byte[] bytebuf = BufferUtility.BorrowByteBuf(len); // borrow from the pool
             int count = await Request.Body.ReadAsync(bytebuf, 0, len);
 
@@ -172,6 +172,7 @@ namespace Greatbone.Core
         {
             return (entity = await ReadAsync()) as ArraySegment<byte>?;
         }
+
         public async Task<Form> GetFormAsync()
         {
             return (entity = await ReadAsync()) as Form;
@@ -267,14 +268,14 @@ namespace Greatbone.Core
             MaxAge = maxage;
         }
 
-        public void SetJson<D>(int status, D dat, byte z = 0, bool? pub = null, int maxage = 60000) where D : IData
+        public void SetJson<D>(int status, D data, byte z = 0, bool? pub = null, int maxage = 60000) where D : IData
         {
-            SetJson(status, cont => cont.Put(null, dat, z), pub, maxage);
+            SetJson(status, cont => cont.Put(null, data, z), pub, maxage);
         }
 
-        public void SetJson<D>(int status, D[] dats, byte z = 0, bool? pub = null, int maxage = 60000) where D : IData
+        public void SetJson<D>(int status, D[] datas, byte z = 0, bool? pub = null, int maxage = 60000) where D : IData
         {
-            SetJson(status, cont => cont.Put(null, dats, z), pub, maxage);
+            SetJson(status, cont => cont.Put(null, datas, z), pub, maxage);
         }
 
         public void SetJson(int status, Action<JsonContent> a, bool? pub = null, int maxage = 60000)
@@ -304,7 +305,7 @@ namespace Greatbone.Core
                 // cache indicators
                 if (Content is DynamicContent) // set etag
                 {
-                    ulong etag = ((DynamicContent)Content).ETag;
+                    ulong etag = ((DynamicContent) Content).ETag;
                     SetHeader("ETag", StrUtility.ToHex(etag));
                 }
 
@@ -332,7 +333,8 @@ namespace Greatbone.Core
                 int sc = Status;
                 if (GET && Pub == true)
                 {
-                    return sc == 200 || sc == 203 || sc == 204 || sc == 206 || sc == 300 || sc == 301 || sc == 404 || sc == 405 || sc == 410 || sc == 414 || sc == 501;
+                    return sc == 200 || sc == 203 || sc == 204 || sc == 206 || sc == 300 || sc == 301 || sc == 404 ||
+                           sc == 405 || sc == 410 || sc == 414 || sc == 501;
                 }
                 return false;
             }

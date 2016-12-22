@@ -52,7 +52,7 @@ namespace Greatbone.Core
             HttpRequestMessage req = new HttpRequestMessage();
             areq(req);
 
-            if (ctx.IsCookied)
+            if (ctx.Cookied)
             {
                 req.Headers.Add("Cookie", ctx.TokenString);
             }
@@ -66,7 +66,7 @@ namespace Greatbone.Core
         public async Task<Arr> GetArrAync(ICallerContext ctx, string uri)
         {
             HttpRequestMessage req = new HttpRequestMessage(HttpMethod.Get, uri);
-            if (ctx.IsCookied)
+            if (ctx.Cookied)
             {
                 req.Headers.Add("Cookie", ctx.TokenString);
             }
@@ -81,7 +81,7 @@ namespace Greatbone.Core
         public async Task<D> GetDataAync<D>(ICallerContext ctx, string uri, byte z = 0) where D : IData, new()
         {
             HttpRequestMessage req = new HttpRequestMessage(HttpMethod.Get, uri);
-            if (ctx.IsCookied)
+            if (ctx.Cookied)
             {
                 req.Headers.Add("Cookie", ctx.TokenString);
             }
@@ -96,7 +96,7 @@ namespace Greatbone.Core
         public async Task<D[]> GetDatasAync<D>(ICallerContext ctx, string uri, byte z = 0) where D : IData, new()
         {
             HttpRequestMessage req = new HttpRequestMessage(HttpMethod.Get, uri);
-            if (ctx.IsCookied)
+            if (ctx.Cookied)
             {
                 req.Headers.Add("Cookie", ctx.TokenString);
             }
@@ -111,7 +111,7 @@ namespace Greatbone.Core
         public async Task<Elem> GetElemAync(ICallerContext ctx, string uri)
         {
             HttpRequestMessage req = new HttpRequestMessage(HttpMethod.Get, uri);
-            if (ctx.IsCookied)
+            if (ctx.Cookied)
             {
                 req.Headers.Add("Cookie", ctx.TokenString);
             }
@@ -126,7 +126,7 @@ namespace Greatbone.Core
         public async Task<byte[]> GetBytesAync(ICallerContext ctx, string uri)
         {
             HttpRequestMessage req = new HttpRequestMessage(HttpMethod.Get, uri);
-            if (ctx.IsCookied)
+            if (ctx.Cookied)
             {
                 req.Headers.Add("Cookie", ctx.TokenString);
             }
@@ -141,7 +141,7 @@ namespace Greatbone.Core
         public Task<HttpResponseMessage> PostAsync<D>(ICallerContext ctx, string uri, D dat) where D : IData
         {
             HttpRequestMessage req = new HttpRequestMessage(HttpMethod.Post, uri);
-            if (ctx.IsCookied)
+            if (ctx.Cookied)
             {
                 req.Headers.Add("Authorization", "Bearer " + "");
             }
@@ -158,7 +158,7 @@ namespace Greatbone.Core
         public Task<HttpResponseMessage> PostAsync<D>(ICallerContext ctx, string uri, D[] dat) where D : IData
         {
             HttpRequestMessage req = new HttpRequestMessage(HttpMethod.Post, uri);
-            if (ctx.IsCookied)
+            if (ctx.Cookied)
             {
                 req.Headers.Add("Authorization", "Bearer " + "");
             }
@@ -174,7 +174,7 @@ namespace Greatbone.Core
         public Task<HttpResponseMessage> POST(ICallerContext ctx, string uri, byte[] dat)
         {
             HttpRequestMessage req = new HttpRequestMessage(HttpMethod.Post, uri);
-            if (ctx.IsCookied)
+            if (ctx.Cookied)
             {
                 req.Headers.Add("Authorization", "Bearer " + "");
             }

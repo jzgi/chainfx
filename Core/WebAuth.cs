@@ -32,7 +32,7 @@
         // hexidecimal characters
         protected static readonly char[] HEX =
         {
-            '0', '1', '2', '3', '4', '5', '6', '7', '8', '9', 'a', 'b', 'c', 'd', 'e', 'f'
+            '0', '1', '2', '3', '4', '5', '6', '7', '8', '9', 'A', 'B', 'C', 'D', 'E', 'F'
         };
 
         public string Encrypt(IToken tok)
@@ -42,7 +42,7 @@
             byte[] bytebuf = cont.ByteBuffer;
             int count = cont.Size;
 
-            int[] masks = { (mask >> 24) & 0xff, (mask >> 16) & 0xff, (mask >> 8) & 0xff, mask & 0xff };
+            int[] masks = {(mask >> 24) & 0xff, (mask >> 16) & 0xff, (mask >> 8) & 0xff, mask & 0xff};
             char[] charbuf = new char[count * 2]; // the target 
             int p = 0;
             for (int i = 0; i < count; i++)
@@ -61,7 +61,7 @@
 
         public string Decrypt(string tokstr)
         {
-            int[] masks = { (mask >> 24) & 0xff, (mask >> 16) & 0xff, (mask >> 8) & 0xff, mask & 0xff };
+            int[] masks = {(mask >> 24) & 0xff, (mask >> 16) & 0xff, (mask >> 8) & 0xff, mask & 0xff};
             int len = tokstr.Length / 2;
             Str str = new Str(256);
             int p = 0;
@@ -70,24 +70,24 @@
                 // reordering
 
                 // transform to byte
-                int b = (byte)(Dv(tokstr[p++]) << 4 | Dv(tokstr[p++]));
+                int b = (byte) (Dv(tokstr[p++]) << 4 | Dv(tokstr[p++]));
 
                 // masking
-                str.Accept((byte)(b ^ masks[i % 4]));
+                str.Accept((byte) (b ^ masks[i % 4]));
             }
             return str.ToString();
         }
 
 
         // return digit value
-        static int Dv(char h)
+        static int Dv(char hex)
         {
-            int v = h - '0';
+            int v = hex - '0';
             if (v >= 0 && v <= 9)
             {
                 return v;
             }
-            v = h - 'a';
+            v = hex - 'A';
             if (v >= 0 && v <= 5) return 10 + v;
             return 0;
         }
@@ -98,7 +98,8 @@
     ///
     public class WebAuth<TH, TC> : WebAuth where TH : IToken, new() where TC : IToken, new()
     {
-        public WebAuth(int mask, int order, string domain = null, string signon = "/signon") : base(mask, order, domain, signon)
+        public WebAuth(int mask, int order, string domain = null, string signon = "/signon") : base(mask, order, domain,
+            signon)
         {
         }
 

@@ -41,9 +41,6 @@ namespace Greatbone.Core
 
         public override WebService Service => folder.Service;
 
-        // for generating unique digest nonce
-        const string PrivateKey = "3e43a7180";
-
         internal void Do(WebActionContext ac)
         {
             ac.Action = this;
