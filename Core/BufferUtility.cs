@@ -131,7 +131,7 @@ namespace Greatbone.Core
             return true;
         }
 
-        class Que<T> : ConcurrentQueue<T>
+        class Que<B> : ConcurrentQueue<B>
         {
             readonly int limit;
 

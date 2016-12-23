@@ -2,11 +2,8 @@ using System;
 
 namespace Greatbone.Core
 {
-
     ///
-    /// <summary>
     /// A helper used to generate SQL commands.
-    /// </summary>
     ///
     public class DbSql : DynamicContent, ISink<DbSql>
     {
@@ -236,7 +233,7 @@ namespace Greatbone.Core
             return this;
         }
 
-        public DbSql Put<B>(string name, B v, byte z = 0) where B : IData
+        public DbSql Put<D>(string name, D v, byte z = 0) where D : IData
         {
             if (name != null)
             {
@@ -421,7 +418,7 @@ namespace Greatbone.Core
             return this;
         }
 
-        public DbSql Put<B>(string name, B[] v, byte z = 0) where B : IData
+        public DbSql Put<D>(string name, D[] v, byte z = 0) where D : IData
         {
             Build(name);
             return this;

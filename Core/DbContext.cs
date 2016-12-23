@@ -188,10 +188,14 @@ namespace Greatbone.Core
         {
             D dat = new D();
             dat.Load(this, z);
-            if (dat is IShardable)
+
+            // add shard if any
+            IShardable shardable = dat as IShardable;
+            if (shardable != null)
             {
-                ((IShardable)dat).Shard = shard;
+                shardable.Shard = shard;
             }
+
             return dat;
         }
 
@@ -203,11 +207,15 @@ namespace Greatbone.Core
             {
                 D dat = new D();
                 dat.Load(this, z);
-                lst.Add(dat);
-                if (dat is IShardable)
+
+                // add shard if any
+                IShardable shardable = dat as IShardable;
+                if (shardable != null)
                 {
-                    ((IShardable)dat).Shard = shard;
+                    shardable.Shard = shard;
                 }
+
+                lst.Add(dat);
             }
             return lst.ToArray();
         }
@@ -364,7 +372,7 @@ namespace Greatbone.Core
             return false;
         }
 
-        public bool Get<B>(string name, ref B v, byte z = 0) where B : IData, new()
+        public bool Get<D>(string name, ref D v, byte z = 0) where D : IData, new()
         {
             int ord = name == null ? ordinal++ : reader.GetOrdinal(name);
             if (!reader.IsDBNull(ord))
@@ -372,8 +380,15 @@ namespace Greatbone.Core
                 string str = reader.GetString(ord);
                 JsonParse p = new JsonParse(str);
                 Obj obj = (Obj)p.Parse();
-                v = new B();
+                v = new D();
                 v.Load(obj, z);
+
+                // add shard if any
+                IShardable shardable = v as IShardable;
+                if (shardable != null)
+                {
+                    shardable.Shard = shard;
+                }
                 return true;
             }
             return false;
@@ -464,6 +479,14 @@ namespace Greatbone.Core
                     Obj obj = arr[i];
                     D dat = new D();
                     dat.Load(obj, z);
+
+                    // add shard if any
+                    IShardable shardable = dat as IShardable;
+                    if (shardable != null)
+                    {
+                        shardable.Shard = shard;
+                    }
+
                     v[i] = dat;
                 }
                 return true;
