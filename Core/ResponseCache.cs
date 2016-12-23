@@ -79,7 +79,7 @@ namespace Greatbone.Core
             int expiry;
 
             // can be null
-            IContent content;
+            internal IContent content;
 
             int ticks;
 
