@@ -10,6 +10,8 @@ namespace Greatbone.Core
     ///
     public class DbContext : IDisposable, IResultSet
     {
+        readonly string shard;
+
         readonly NpgsqlConnection connection;
 
         readonly NpgsqlCommand command;
@@ -23,13 +25,16 @@ namespace Greatbone.Core
         bool disposed;
 
 
-        internal DbContext(NpgsqlConnectionStringBuilder builder)
+        internal DbContext(string shard, NpgsqlConnectionStringBuilder builder)
         {
+            this.shard = shard;
             connection = new NpgsqlConnection(builder);
             command = new NpgsqlCommand();
             parameters = new DbParameters(command.Parameters);
             command.Connection = connection;
         }
+
+        public string Shard => shard;
 
         public void Begin()
         {
@@ -183,6 +188,10 @@ namespace Greatbone.Core
         {
             D dat = new D();
             dat.Load(this, z);
+            if (dat is IShardable)
+            {
+                ((IShardable)dat).Shard = shard;
+            }
             return dat;
         }
 
@@ -195,6 +204,10 @@ namespace Greatbone.Core
                 D dat = new D();
                 dat.Load(this, z);
                 lst.Add(dat);
+                if (dat is IShardable)
+                {
+                    ((IShardable)dat).Shard = shard;
+                }
             }
             return lst.ToArray();
         }

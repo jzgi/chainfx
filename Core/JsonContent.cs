@@ -325,6 +325,14 @@ namespace Greatbone.Core
             {
                 counts[++level] = 0; // enter
                 Add('{');
+                
+                // put shard property if any
+                string shard = (v as IShardable)?.Shard;
+                if (shard != null)
+                {
+                    Put("#", shard);
+                }
+
                 v.Dump(this, z);
                 Add('}');
                 level--; // exit
@@ -353,7 +361,9 @@ namespace Greatbone.Core
             {
                 counts[++level] = 0; // enter
                 Add('{');
+
                 v.Dump(this);
+                
                 Add('}');
                 level--; // exit
             }
@@ -381,7 +391,9 @@ namespace Greatbone.Core
             {
                 counts[++level] = 0; // enter
                 Add('[');
+
                 v.Dump(this);
+                
                 Add(']');
                 level--; // exit
             }

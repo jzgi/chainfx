@@ -276,7 +276,7 @@ namespace Greatbone.Core
                 Username = cfg.username,
                 Password = cfg.password
             };
-            return new DbContext(builder);
+            return new DbContext(Config.shard, builder);
         }
 
         //
