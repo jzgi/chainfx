@@ -26,7 +26,7 @@ namespace Greatbone.Core
         public bool Cookied { get; internal set; }
 
         // two levels of variable keys
-        Var varname, varname2;
+        Var var, var2;
 
         Var sub;
 
@@ -34,8 +34,8 @@ namespace Greatbone.Core
         {
             if (folder != null)
             {
-                if (varname.Key == null) varname = new Var(value, folder);
-                else if (varname2.Key == null) varname2 = new Var(value, folder);
+                if (var.Key == null) var = new Var(value, folder);
+                else if (var2.Key == null) var2 = new Var(value, folder);
             }
             else if (sub.Key == null)
             {
@@ -43,9 +43,9 @@ namespace Greatbone.Core
             }
         }
 
-        public Var VarName => varname;
+        public Var Var => var;
 
-        public Var VarName2 => varname2;
+        public Var Var2 => var2;
 
         public Var Sub => sub;
 
