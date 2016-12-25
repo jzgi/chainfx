@@ -1,4 +1,5 @@
 using System;
+using NpgsqlTypes;
 
 namespace Greatbone.Core
 {
@@ -108,6 +109,17 @@ namespace Greatbone.Core
         }
 
         public bool Get(string name, ref DateTime v)
+        {
+            Attr attr;
+            if (TryGet(name, out attr))
+            {
+                v = attr;
+                return true;
+            }
+            return false;
+        }
+
+        public bool Get(string name, ref NpgsqlPoint v)
         {
             Attr attr;
             if (TryGet(name, out attr))

@@ -168,7 +168,7 @@ namespace Greatbone.Core
             return entity;
         }
 
-        public async Task<ArraySegment<byte>?> GetArraySegAsync()
+        public async Task<ArraySegment<byte>?> GetBytesSegAsync()
         {
             return (entity = await ReadAsync()) as ArraySegment<byte>?;
         }
@@ -343,10 +343,10 @@ namespace Greatbone.Core
         public void Dispose()
         {
             // return request content buffer
-            ArraySegment<byte>? arrayseg = entity as ArraySegment<byte>?;
-            if (arrayseg != null)
+            ArraySegment<byte>? bytesseg = entity as ArraySegment<byte>?;
+            if (bytesseg != null)
             {
-                BufferUtility.Return(arrayseg.Value.Array);
+                BufferUtility.Return(bytesseg.Value.Array);
             }
         }
     }

@@ -1,4 +1,5 @@
 ﻿using System;
+using NpgsqlTypes;
 
 namespace Greatbone.Core
 {
@@ -50,6 +51,12 @@ namespace Greatbone.Core
 
 
         public static bool Get(this ISource src, ref DateTime v)
+        {
+            return src.Get(null, ref v);
+        }
+
+
+        public static bool Get(this ISource src, ref NpgsqlPoint v)
         {
             return src.Get(null, ref v);
         }
@@ -179,6 +186,13 @@ namespace Greatbone.Core
             return v;
         }
 
+        public static NpgsqlPoint GetPoint(this ISource src)
+        {
+            NpgsqlPoint v = default(NpgsqlPoint);
+            src.Get(null, ref v);
+            return v;
+        }
+
         public static char[] GetChars(this ISource src)
         {
             char[] v = null;
@@ -200,7 +214,7 @@ namespace Greatbone.Core
             return v;
         }
 
-        public static ArraySegment<byte>? GetArraySeg(this ISource src)
+        public static ArraySegment<byte>? GetBytesSeg(this ISource src)
         {
             ArraySegment<byte>? v = null;
             src.Get(null, ref v);
@@ -317,6 +331,13 @@ namespace Greatbone.Core
             return v;
         }
 
+        public static NpgsqlPoint GetPoint(this ISource src, string name)
+        {
+            NpgsqlPoint v = default(NpgsqlPoint);
+            src.Get(name, ref v);
+            return v;
+        }
+
         public static char[] GetChars(this ISource src, string name)
         {
             char[] v = null;
@@ -345,7 +366,7 @@ namespace Greatbone.Core
             return v;
         }
 
-        public static D GetDat<D>(this ISource src, string name) where D : IData, new()
+        public static D GetData<D>(this ISource src, string name) where D : IData, new()
         {
             D v = default(D);
             src.Get(name, ref v);
@@ -395,7 +416,7 @@ namespace Greatbone.Core
             return v;
         }
 
-        public static D[] GetDats<D>(this ISource src, string name) where D : IData, new()
+        public static D[] GetDatas<D>(this ISource src, string name) where D : IData, new()
         {
             D[] v = null;
             src.Get(name, ref v);

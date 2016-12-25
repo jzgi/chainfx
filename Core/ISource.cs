@@ -1,4 +1,5 @@
 ﻿using System;
+using NpgsqlTypes;
 
 namespace Greatbone.Core
 {
@@ -20,6 +21,8 @@ namespace Greatbone.Core
         bool Get(string name, ref Number v);
 
         bool Get(string name, ref DateTime v);
+
+        bool Get(string name, ref NpgsqlPoint v);
 
         bool Get(string name, ref char[] v);
 

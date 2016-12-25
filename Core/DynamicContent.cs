@@ -5,6 +5,7 @@ using System.Net;
 using System.Net.Http;
 using System.Text;
 using System.Threading.Tasks;
+using NpgsqlTypes;
 
 namespace Greatbone.Core
 {
@@ -319,6 +320,11 @@ namespace Greatbone.Core
             Add(DIGIT[v]); // last reminder
         }
 
+        public void Add(double v)
+        {
+            //todo
+        }
+
         public void Add(decimal v)
         {
             Add(v, true);
@@ -332,6 +338,15 @@ namespace Greatbone.Core
                 Add('.');
                 Add(v.fract);
             }
+        }
+
+        public void Add(NpgsqlPoint v)
+        {
+            Add('"');
+            Add(v.X);
+            Add(':');
+            Add(v.Y);
+            Add('"');
         }
 
         // sign mask
@@ -459,7 +474,7 @@ namespace Greatbone.Core
             return null;
         }
 
-        public ArraySegment<byte> ToArraySeg()
+        public ArraySegment<byte> ToBytesSeg()
         {
             return new ArraySegment<byte>(bytebuf, 0, count);
         }

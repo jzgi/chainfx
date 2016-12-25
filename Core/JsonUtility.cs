@@ -18,18 +18,18 @@ namespace Greatbone.Core
             return (Obj)p.Parse();
         }
 
-        public static D[] StringToDatas<D>(string v, byte z = 0) where D : IData, new()
-        {
-            JsonParse p = new JsonParse(v);
-            Arr arr = (Arr)p.Parse();
-            return arr.ToDatas<D>(z);
-        }
-
         public static D StringToData<D>(string v, byte z = 0) where D : IData, new()
         {
             JsonParse p = new JsonParse(v);
             Obj obj = (Obj)p.Parse();
             return obj.ToData<D>(z);
+        }
+
+        public static D[] StringToDatas<D>(string v, byte z = 0) where D : IData, new()
+        {
+            JsonParse p = new JsonParse(v);
+            Arr arr = (Arr)p.Parse();
+            return arr.ToDatas<D>(z);
         }
 
         public static string ArrToString(Arr v)
@@ -50,7 +50,7 @@ namespace Greatbone.Core
             return str;
         }
 
-        public static string DatasToString<D>(D[] v, byte z = 0) where D : IData
+        public static string DataToString<D>(D v, byte z = 0) where D : IData
         {
             JsonContent cont = new JsonContent(false, true, 4 * 1024);
             cont.Put(null, v);
@@ -59,7 +59,7 @@ namespace Greatbone.Core
             return str;
         }
 
-        public static string DataToString<D>(D v, byte z = 0) where D : IData
+        public static string DatasToString<D>(D[] v, byte z = 0) where D : IData
         {
             JsonContent cont = new JsonContent(false, true, 4 * 1024);
             cont.Put(null, v);

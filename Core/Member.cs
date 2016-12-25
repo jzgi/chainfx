@@ -1,4 +1,5 @@
 using System;
+using NpgsqlTypes;
 
 namespace Greatbone.Core
 {
@@ -191,6 +192,17 @@ namespace Greatbone.Core
                 if (StrUtility.TryParseDate(str, out dt)) return dt;
             }
             return default(DateTime);
+        }
+
+        public static implicit operator NpgsqlPoint(Member v)
+        {
+            if (v.type == MemberType.String)
+            {
+                string str = (string)v.refv;
+                NpgsqlPoint dt;
+                // if (StrUtility.TryParseDate(str, out dt)) return dt;
+            }
+            return default(NpgsqlPoint);
         }
 
         public static implicit operator char[] (Member v)

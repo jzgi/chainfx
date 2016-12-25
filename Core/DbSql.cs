@@ -1,4 +1,5 @@
 using System;
+using NpgsqlTypes;
 
 namespace Greatbone.Core
 {
@@ -170,6 +171,19 @@ namespace Greatbone.Core
         }
 
         public DbSql Put(string name, DateTime v)
+        {
+            if (name != null)
+            {
+                Build(name);
+            }
+            else
+            {
+                Add(v);
+            }
+            return this;
+        }
+
+        public DbSql Put(string name, NpgsqlPoint v)
         {
             if (name != null)
             {

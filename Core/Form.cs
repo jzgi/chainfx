@@ -1,4 +1,5 @@
 using System;
+using NpgsqlTypes;
 
 namespace Greatbone.Core
 {
@@ -85,6 +86,11 @@ namespace Greatbone.Core
         }
 
         public bool Get(string name, ref DateTime v)
+        {
+            throw new NotImplementedException();
+        }
+
+        public bool Get(string name, ref NpgsqlPoint v)
         {
             throw new NotImplementedException();
         }

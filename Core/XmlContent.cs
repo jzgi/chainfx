@@ -1,4 +1,5 @@
 ﻿using System;
+using NpgsqlTypes;
 
 namespace Greatbone.Core
 {
@@ -140,6 +141,17 @@ namespace Greatbone.Core
         }
 
         public XmlContent Put(string name, DateTime v)
+        {
+            Add(' ');
+            Add(name);
+            Add('=');
+            Add('"');
+            Add(v);
+            Add('"');
+            return this;
+        }
+
+        public XmlContent Put(string name, NpgsqlPoint v)
         {
             Add(' ');
             Add(name);

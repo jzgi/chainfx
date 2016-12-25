@@ -1,4 +1,5 @@
 ﻿using System;
+using NpgsqlTypes;
 
 namespace Greatbone.Core
 {
@@ -49,6 +50,11 @@ namespace Greatbone.Core
             return snk.Put(null, v);
         }
 
+
+        public static R Put<R>(this ISink<R> snk, NpgsqlPoint v) where R : ISink<R>
+        {
+            return snk.Put(null, v);
+        }
 
         public static R Put<R>(this ISink<R> snk, char[] v) where R : ISink<R>
         {

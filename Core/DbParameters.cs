@@ -133,6 +133,19 @@ namespace Greatbone.Core
             return this;
         }
 
+        public DbParameters Put(string name, NpgsqlPoint v)
+        {
+            if (name == null)
+            {
+                name = Defaults[index++];
+            }
+            coll.Add(new NpgsqlParameter(name, NpgsqlDbType.Point)
+            {
+                Value = v
+            });
+            return this;
+        }
+
         public DbParameters Put(string name, char[] v)
         {
             if (name == null)

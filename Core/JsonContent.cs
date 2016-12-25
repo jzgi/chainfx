@@ -1,4 +1,5 @@
 ﻿using System;
+using NpgsqlTypes;
 
 namespace Greatbone.Core
 {
@@ -243,6 +244,28 @@ namespace Greatbone.Core
             return this;
         }
 
+        public JsonContent Put(string name, NpgsqlPoint v)
+        {
+            if (counts[level]++ > 0) Add(',');
+
+            if (name != null)
+            {
+                Add('"');
+                Add(name);
+                Add('"');
+                Add(':');
+            }
+
+            Add('{');
+            Add("\"x\":");
+            Add(v.X);
+            Add(",\"x\":");
+            Add(v.Y);
+            Add('}');
+
+            return this;
+        }
+
         public JsonContent Put(string name, char[] v)
         {
             if (counts[level]++ > 0) Add(',');
@@ -325,7 +348,7 @@ namespace Greatbone.Core
             {
                 counts[++level] = 0; // enter
                 Add('{');
-                
+
                 // put shard property if any
                 string shard = (v as IShardable)?.Shard;
                 if (shard != null)
@@ -363,7 +386,7 @@ namespace Greatbone.Core
                 Add('{');
 
                 v.Dump(this);
-                
+
                 Add('}');
                 level--; // exit
             }
@@ -393,7 +416,7 @@ namespace Greatbone.Core
                 Add('[');
 
                 v.Dump(this);
-                
+
                 Add(']');
                 level--; // exit
             }

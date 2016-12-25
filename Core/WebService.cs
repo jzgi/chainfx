@@ -323,7 +323,7 @@ namespace Greatbone.Core
                         long id = dc.GetLong();
                         string name = dc.GetString();
                         DateTime time = dc.GetDateTime();
-                        ArraySegment<byte>? body = dc.GetArraySeg();
+                        ArraySegment<byte>? body = dc.GetBytesSeg();
 
                         cont.Add(id, name, time, body);
                     }

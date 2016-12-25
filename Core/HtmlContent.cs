@@ -6,7 +6,7 @@ namespace Greatbone.Core
     ///
     /// For dynamical HTML5 content generation Tooled with Pure.CSS
     ///
-    public class HtmlContent : DynamicContent, ISink<HtmlContent>, IMenu, ISelectOptions
+    public class HtmlContent : DynamicContent, IMenu, ISelectOptions
     {
         const int InitialCapacity = 8 * 1024;
 
@@ -215,28 +215,6 @@ namespace Greatbone.Core
             T("</td>");
         }
 
-        public void Table<D>(D[] datas, byte z = 0) where D : IData
-        {
-            D obj = datas[0];
-
-            Table(
-                ths =>
-                {
-                    ctx = TableThs;
-                    obj.Dump(this, z);
-                },
-                trs =>
-                {
-                    ctx = TableTrs;
-                    for (int i = 0; i < datas.Length; i++)
-                    {
-                        datas[i].Dump(this, z);
-                    }
-                }
-            );
-        }
-
-
         public void Form(WebAction wa, Action<HtmlContent> inner)
         {
             Add("<form class=\"pure-form pure-g\">");
@@ -255,7 +233,6 @@ namespace Greatbone.Core
 
             if (datas != null)
             {
-                Table(datas, z);
             }
 
             Add("</form>");
@@ -266,8 +243,6 @@ namespace Greatbone.Core
             Add("<form class=\"pure-form pure-g\">");
 
             ctx = FormFields;
-
-            dat.Dump(this);
 
             // function buttuns
 

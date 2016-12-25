@@ -1,4 +1,5 @@
 ﻿using Greatbone.Core;
+using NpgsqlTypes;
 using static Greatbone.Core.ZUtility;
 
 namespace Greatbone.Sample
@@ -79,6 +80,33 @@ namespace Greatbone.Sample
                         ac.Status = 404;
                     }
                 }
+            }
+        }
+
+        ///
+        /// Get nearest shops
+        ///
+        /// <code>
+        /// GET /nearest?pt=x,y
+        /// </code>
+        ///
+        public void nearest(WebActionContext ac)
+        {
+            NpgsqlPoint pt = ac[nameof(pt)];
+
+            using (var dc = Service.NewDbContext())
+            {
+                DbSql sql = new DbSql("SELECT ").columnlst(Shop.Empty)._("FROM shops WHERE location <-> @1");
+                if (dc.Query(sql.ToString(), p => p.Put(pt)))
+                {
+                    var shops = dc.ToDatas<Shop>();
+                    ac.SendHtmlMajor(200, "", main =>
+                    {
+                        main.Form(_new, shops);
+                    });
+                }
+                else
+                    ac.SendHtmlMajor(200, "没有记录", main => { });
             }
         }
 

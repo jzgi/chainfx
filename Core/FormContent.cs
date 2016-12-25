@@ -1,4 +1,5 @@
 ﻿using System;
+using NpgsqlTypes;
 
 namespace Greatbone.Core
 {
@@ -175,6 +176,25 @@ namespace Greatbone.Core
 
             Add('"');
             Add(v);
+            Add('"');
+
+            return this;
+        }
+
+        public FormContent Put(string name, NpgsqlPoint v)
+        {
+            if (name != null)
+            {
+                Add('"');
+                Add(name);
+                Add('"');
+                Add(':');
+            }
+
+            Add('"');
+            Add(v.X);
+            Add(':');
+            Add(v.Y);
             Add('"');
 
             return this;

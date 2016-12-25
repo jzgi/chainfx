@@ -1,4 +1,5 @@
 using System;
+using NpgsqlTypes;
 
 namespace Greatbone.Core
 {
@@ -90,6 +91,11 @@ namespace Greatbone.Core
         public static implicit operator DateTime(Attr v)
         {
             return default(DateTime);
+        }
+
+        public static implicit operator NpgsqlPoint(Attr v)
+        {
+            return default(NpgsqlPoint);
         }
 
         public static implicit operator char[] (Attr v)

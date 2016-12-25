@@ -19,6 +19,34 @@ namespace Greatbone.Sample
             _re_menu_ = Action(nameof(remenu));
         }
 
+
+        ///
+        /// Get shop items
+        ///
+        /// <code>
+        /// GET /-shopid-/items
+        /// </code>
+        ///
+        public void items(WebActionContext ac)
+        {
+            string shopid = ac.X;
+
+            using (var dc = Service.NewDbContext())
+            {
+                DbSql sql = new DbSql("SELECT ").columnlst(Shop.Empty)._("FROM items WHERE @shopid = @1 AND NOT disabled");
+                if (dc.Query(sql.ToString(), p => p.Put(shopid)))
+                {
+                    var items = dc.ToDatas<Item>();
+                    ac.SendHtmlMajor(200, "", main =>
+                    {
+                    });
+                }
+                else
+                    ac.SendHtmlMajor(200, "没有记录", main => { });
+            }
+        }
+
+
         ///
         /// Get products and submit to basket.
         ///

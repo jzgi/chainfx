@@ -15,7 +15,7 @@ namespace Greatbone.Sample
         internal string name;
         internal string credential;
         internal string tel;
-        internal string addr;
+        internal string district;
         internal string appid;
         internal string appsecret;
         internal bool wepay; // wepay enabled
@@ -33,7 +33,7 @@ namespace Greatbone.Sample
             s.Get(nameof(name), ref name);
             if (z.Ya(RESV)) s.Get(nameof(credential), ref credential);
             s.Get(nameof(tel), ref tel);
-            s.Get(nameof(addr), ref addr);
+            s.Get(nameof(district), ref district);
             s.Get(nameof(appid), ref appid);
             s.Get(nameof(appsecret), ref appsecret);
             s.Get(nameof(wepay), ref wepay);
@@ -46,7 +46,7 @@ namespace Greatbone.Sample
             s.Put(nameof(name), name);
             if (z.Ya(RESV)) s.Put(nameof(credential), credential);
             s.Put(nameof(tel), tel);
-            s.Put(nameof(addr), addr);
+            s.Put(nameof(district), district);
             s.Put(nameof(appid), appid);
             s.Put(nameof(appsecret), appsecret);
             s.Put(nameof(wepay), wepay);

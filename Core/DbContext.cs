@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Data;
 using Npgsql;
+using NpgsqlTypes;
 
 namespace Greatbone.Core
 {
@@ -302,6 +303,17 @@ namespace Greatbone.Core
             return false;
         }
 
+        public bool Get(string name, ref NpgsqlPoint v)
+        {
+            int ord = name == null ? ordinal++ : reader.GetOrdinal(name);
+            if (!reader.IsDBNull(ord))
+            {
+                v = reader.GetFieldValue<NpgsqlPoint>(ord);
+                return true;
+            }
+            return false;
+        }
+
         public bool Get(string name, ref char[] v)
         {
             int ord = name == null ? ordinal++ : reader.GetOrdinal(name);
@@ -519,7 +531,7 @@ namespace Greatbone.Core
             {
                 p.Put(name);
                 p.Put(shard);
-                p.Put(cont.ToArraySeg());
+                p.Put(cont.ToBytesSeg());
             });
             BufferUtility.Return(cont);
         }

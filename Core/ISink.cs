@@ -1,4 +1,5 @@
 ﻿using System;
+using NpgsqlTypes;
 
 namespace Greatbone.Core
 {
@@ -22,6 +23,8 @@ namespace Greatbone.Core
         R Put(string name, Number v);
 
         R Put(string name, DateTime v);
+
+        R Put(string name, NpgsqlPoint v);
 
         R Put(string name, char[] v);
 
