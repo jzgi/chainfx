@@ -3,5 +3,5 @@
     ///
     /// To mark a variable-key web folder.
     ///
-    public interface IXable { }
+    public interface IVariable { }
 }

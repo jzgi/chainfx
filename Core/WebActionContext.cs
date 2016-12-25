@@ -26,7 +26,7 @@ namespace Greatbone.Core
         public bool Cookied { get; internal set; }
 
         // two levels of variable keys
-        Var x, x2;
+        Var varname, varname2;
 
         Var sub;
 
@@ -34,8 +34,8 @@ namespace Greatbone.Core
         {
             if (folder != null)
             {
-                if (x.Key == null) x = new Var(value, folder);
-                else if (x2.Key == null) x2 = new Var(value, folder);
+                if (varname.Key == null) varname = new Var(value, folder);
+                else if (varname2.Key == null) varname2 = new Var(value, folder);
             }
             else if (sub.Key == null)
             {
@@ -43,9 +43,9 @@ namespace Greatbone.Core
             }
         }
 
-        public Var X => x;
+        public Var VarName => varname;
 
-        public Var X2 => x2;
+        public Var VarName2 => varname2;
 
         public Var Sub => sub;
 
@@ -138,7 +138,7 @@ namespace Greatbone.Core
             long? clen = Request.ContentLength;
             if (clen <= 0) return null;
 
-            int len = (int) clen;
+            int len = (int)clen;
             byte[] bytebuf = BufferUtility.BorrowByteBuf(len); // borrow from the pool
             int count = await Request.Body.ReadAsync(bytebuf, 0, len);
 
@@ -305,7 +305,7 @@ namespace Greatbone.Core
                 // cache indicators
                 if (Content is DynamicContent) // set etag
                 {
-                    ulong etag = ((DynamicContent) Content).ETag;
+                    ulong etag = ((DynamicContent)Content).ETag;
                     SetHeader("ETag", StrUtility.ToHex(etag));
                 }
 

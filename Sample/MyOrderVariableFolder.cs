@@ -5,9 +5,9 @@ namespace Greatbone.Sample
     ///
     /// /-shopid-/myorder/-orderid-/
     ///
-    public class MyOrderXableFolder : WebFolder, IXable
+    public class MyOrderVariableFolder : WebFolder, IVariable
     {
-        public MyOrderXableFolder(WebFolderContext dc) : base(dc)
+        public MyOrderVariableFolder(WebFolderContext dc) : base(dc)
         {
         }
 
@@ -16,8 +16,8 @@ namespace Greatbone.Sample
         ///
         public void @default(WebActionContext ac)
         {
-            string shopid = ac.X;
-            int id = ac.X2;
+            string shopid = ac.VarName;
+            int id = ac.VarName2;
 
             using (var dc = Service.NewDbContext())
             {
@@ -37,8 +37,8 @@ namespace Greatbone.Sample
 
         public void cannel(WebActionContext ac)
         {
-            string shopid = ac.X;
-            int orderid = ac.X2;
+            string shopid = ac.VarName;
+            int orderid = ac.VarName2;
 
             using (var dc = Service.NewDbContext())
             {

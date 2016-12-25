@@ -13,7 +13,7 @@ namespace Greatbone.Sample
 
         public ShopService(WebConfig cfg) : base(cfg)
         {
-            MakeXable<ShopXableFolder>();
+            MakeVariable<ShopVariableFolder>();
 
             _new = Actions(nameof(@new));
         }

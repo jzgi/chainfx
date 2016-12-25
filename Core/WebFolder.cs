@@ -13,7 +13,7 @@ namespace Greatbone.Core
         // max nesting levels
         const int Nesting = 4;
 
-        const string _X_ = "X";
+        const string _VAR_ = "-var-";
 
         // state-passing
         internal readonly WebFolderContext context;
@@ -28,7 +28,7 @@ namespace Greatbone.Core
         internal Roll<WebFolder> children;
 
         // variable-key subfolder
-        internal WebFolder xable;
+        internal WebFolder variable;
 
         protected WebFolder(WebFolderContext context) : base(null)
         {
@@ -88,12 +88,12 @@ namespace Greatbone.Core
 
         public Roll<WebFolder> Children => children;
 
-        public WebFolder Xable => xable;
+        public WebFolder Variable => variable;
 
         ///
         /// Make a variable-key subdirectory.
         ///
-        public F MakeXable<F>(object state = null) where F : WebFolder, IXable
+        public F MakeVariable<F>(object state = null) where F : WebFolder, IVariable
         {
             if (Level >= Nesting) throw new WebException("nesting levels");
 
@@ -106,16 +106,16 @@ namespace Greatbone.Core
             }
             WebFolderContext ctx = new WebFolderContext
             {
-                name = _X_,
+                name = _VAR_,
                 State = state,
                 IsVar = true,
                 Parent = this,
                 Level = Level + 1,
-                Directory = (Parent == null) ? _X_ : Path.Combine(Parent.Directory, _X_),
+                Directory = (Parent == null) ? _VAR_ : Path.Combine(Parent.Directory, _VAR_),
                 Service = Service
             };
             F folder = (F)ci.Invoke(new object[] { ctx });
-            xable = folder;
+            variable = folder;
 
             return folder;
         }
@@ -177,10 +177,10 @@ namespace Greatbone.Core
                 {
                     child.Handle(relative.Substring(slash + 1), ac);
                 }
-                else if (xable != null) // variable-key
+                else if (variable != null) // variable-key
                 {
-                    ac.ChainVar(key, xable);
-                    xable.Handle(relative.Substring(slash + 1), ac);
+                    ac.ChainVar(key, variable);
+                    variable.Handle(relative.Substring(slash + 1), ac);
                 }
                 else
                 {

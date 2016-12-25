@@ -5,11 +5,11 @@ namespace Greatbone.Sample
     ///
     /// The shop variable folder.
     ///
-    public class ShopXableFolder : WebFolder, IXable
+    public class ShopVariableFolder : WebFolder, IVariable
     {
         readonly WebAction _re_menu_;
 
-        public ShopXableFolder(WebFolderContext dc) : base(dc)
+        public ShopVariableFolder(WebFolderContext dc) : base(dc)
         {
             Make<MyCartFolder>("mycart");
 
@@ -29,7 +29,7 @@ namespace Greatbone.Sample
         ///
         public void items(WebActionContext ac)
         {
-            string shopid = ac.X;
+            string shopid = ac.VarName;
 
             using (var dc = Service.NewDbContext())
             {
@@ -56,7 +56,7 @@ namespace Greatbone.Sample
         ///
         public void @default(WebActionContext ac)
         {
-            string shopid = ac.X;
+            string shopid = ac.VarName;
             using (var dc = Service.NewDbContext())
             {
                 DbSql sql = new DbSql("SELECT ").columnlst(Item.Empty)._("FROM items WHERE shopid = @1 AND NOT disabled");
