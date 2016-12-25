@@ -27,30 +27,30 @@ namespace Greatbone.Sample
 
         public string Credential => credential;
 
-        public void Load(ISource s, byte z = 0)
+        public void Load(ISource src, byte z = 0)
         {
-            s.Get(nameof(id), ref id);
-            s.Get(nameof(name), ref name);
-            if (z.Ya(RESV)) s.Get(nameof(credential), ref credential);
-            s.Get(nameof(tel), ref tel);
-            s.Get(nameof(district), ref district);
-            s.Get(nameof(appid), ref appid);
-            s.Get(nameof(appsecret), ref appsecret);
-            s.Get(nameof(wepay), ref wepay);
-            s.Get(nameof(disabled), ref disabled);
+            src.Get(nameof(id), ref id);
+            src.Get(nameof(name), ref name);
+            if (z.Ya(RESV)) src.Get(nameof(credential), ref credential);
+            src.Get(nameof(tel), ref tel);
+            src.Get(nameof(district), ref district);
+            src.Get(nameof(appid), ref appid);
+            src.Get(nameof(appsecret), ref appsecret);
+            src.Get(nameof(wepay), ref wepay);
+            src.Get(nameof(disabled), ref disabled);
         }
 
-        public void Dump<R>(ISink<R> s, byte z = 0) where R : ISink<R>
+        public void Dump<R>(ISink<R> snk, byte z = 0) where R : ISink<R>
         {
-            s.Put(nameof(id), id);
-            s.Put(nameof(name), name);
-            if (z.Ya(RESV)) s.Put(nameof(credential), credential);
-            s.Put(nameof(tel), tel);
-            s.Put(nameof(district), district);
-            s.Put(nameof(appid), appid);
-            s.Put(nameof(appsecret), appsecret);
-            s.Put(nameof(wepay), wepay);
-            s.Put(nameof(disabled), disabled);
+            snk.Put(nameof(id), id);
+            snk.Put(nameof(name), name);
+            if (z.Ya(RESV)) snk.Put(nameof(credential), credential);
+            snk.Put(nameof(tel), tel);
+            snk.Put(nameof(district), district);
+            snk.Put(nameof(appid), appid);
+            snk.Put(nameof(appsecret), appsecret);
+            snk.Put(nameof(wepay), wepay);
+            snk.Put(nameof(disabled), disabled);
         }
 
         //

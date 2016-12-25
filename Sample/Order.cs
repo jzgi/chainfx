@@ -11,37 +11,45 @@ namespace Greatbone.Sample
         public static readonly Order Empty = new Order();
 
         internal int id;
-        internal string shopid;
+
         internal DateTime time;
+
+        internal string shopid;
+
         internal string buyerid; // wechat id
+
         internal string buyer; // wechat name
+
         internal string tel;
+
         decimal total;
 
+        Line[] lines;
+
         internal string payid; // payment id
+
         internal int status;
 
-        public void Load(ISource s, byte z = 0)
+        public void Load(ISource src, byte z = 0)
         {
-            s.Get(nameof(id), ref id);
-            s.Get(nameof(shopid), ref shopid);
-            s.Get(nameof(time), ref time);
-            s.Get(nameof(buyerid), ref buyerid);
-            s.Get(nameof(buyer), ref buyer);
-            s.Get(nameof(tel), ref tel);
-            s.Get(nameof(status), ref status);
+            src.Get(nameof(id), ref id);
+            src.Get(nameof(shopid), ref shopid);
+            src.Get(nameof(time), ref time);
+            src.Get(nameof(buyerid), ref buyerid);
+            src.Get(nameof(buyer), ref buyer);
+            src.Get(nameof(tel), ref tel);
+            src.Get(nameof(status), ref status);
         }
 
-        public void Dump<R>(ISink<R> s, byte z = 0) where R : ISink<R>
+        public void Dump<R>(ISink<R> snk, byte z = 0) where R : ISink<R>
         {
-            s.Put(nameof(id), id);
-            s.Put(nameof(shopid), shopid);
-            s.Put(nameof(time), time);
-            s.Put(nameof(buyerid), buyerid);
-            s.Put(nameof(tel), tel);
-            s.Put(nameof(status), status);
+            snk.Put(nameof(id), id);
+            snk.Put(nameof(shopid), shopid);
+            snk.Put(nameof(time), time);
+            snk.Put(nameof(buyerid), buyerid);
+            snk.Put(nameof(tel), tel);
+            snk.Put(nameof(status), status);
         }
-
     }
 
     public struct Line
