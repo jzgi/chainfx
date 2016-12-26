@@ -194,26 +194,26 @@ namespace Greatbone.Core
             IShardable shardable = dat as IShardable;
             if (shardable != null)
             {
-                shardable.Shard = shard;
+                shardable.ShardId = shard;
             }
 
             return dat;
         }
 
 
-        public D[] ToDatas<D>(byte z = 0) where D : IData, new()
+        public D[] ToDatas<D>(byte bits = 0) where D : IData, new()
         {
             List<D> lst = new List<D>(64);
             while (NextRow())
             {
                 D dat = new D();
-                dat.Load(this, z);
+                dat.Load(this, bits);
 
                 // add shard if any
                 IShardable shardable = dat as IShardable;
                 if (shardable != null)
                 {
-                    shardable.Shard = shard;
+                    shardable.ShardId = shard;
                 }
 
                 lst.Add(dat);
@@ -264,6 +264,17 @@ namespace Greatbone.Core
             if (!reader.IsDBNull(ord))
             {
                 v = reader.GetInt64(ord);
+                return true;
+            }
+            return false;
+        }
+
+        public bool Get(string name, ref double v)
+        {
+            int ord = name == null ? ordinal++ : reader.GetOrdinal(name);
+            if (!reader.IsDBNull(ord))
+            {
+                v = reader.GetDouble(ord);
                 return true;
             }
             return false;
@@ -384,7 +395,7 @@ namespace Greatbone.Core
             return false;
         }
 
-        public bool Get<D>(string name, ref D v, byte z = 0) where D : IData, new()
+        public bool Get<D>(string name, ref D v, byte bits = 0) where D : IData, new()
         {
             int ord = name == null ? ordinal++ : reader.GetOrdinal(name);
             if (!reader.IsDBNull(ord))
@@ -393,13 +404,13 @@ namespace Greatbone.Core
                 JsonParse p = new JsonParse(str);
                 Obj obj = (Obj)p.Parse();
                 v = new D();
-                v.Load(obj, z);
+                v.Load(obj, bits);
 
                 // add shard if any
                 IShardable shardable = v as IShardable;
                 if (shardable != null)
                 {
-                    shardable.Shard = shard;
+                    shardable.ShardId = shard;
                 }
                 return true;
             }
@@ -476,7 +487,7 @@ namespace Greatbone.Core
             return false;
         }
 
-        public bool Get<D>(string name, ref D[] v, byte z = 0) where D : IData, new()
+        public bool Get<D>(string name, ref D[] v, byte bits = 0) where D : IData, new()
         {
             int ord = name == null ? ordinal++ : reader.GetOrdinal(name);
             if (!reader.IsDBNull(ord))
@@ -490,13 +501,13 @@ namespace Greatbone.Core
                 {
                     Obj obj = arr[i];
                     D dat = new D();
-                    dat.Load(obj, z);
+                    dat.Load(obj, bits);
 
                     // add shard if any
                     IShardable shardable = dat as IShardable;
                     if (shardable != null)
                     {
-                        shardable.Shard = shard;
+                        shardable.ShardId = shard;
                     }
 
                     v[i] = dat;

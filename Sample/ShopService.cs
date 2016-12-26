@@ -1,6 +1,6 @@
 ﻿using Greatbone.Core;
 using NpgsqlTypes;
-using static Greatbone.Core.ZUtility;
+using static Greatbone.Core.BitsUtility;
 
 namespace Greatbone.Sample
 {

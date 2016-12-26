@@ -1,6 +1,6 @@
 ﻿using System;
 using Greatbone.Core;
-using static Greatbone.Core.ZUtility;
+using static Greatbone.Core.BitsUtility;
 
 namespace Greatbone.Sample
 {
@@ -27,11 +27,11 @@ namespace Greatbone.Sample
 
         public string Credential => credential;
 
-        public void Load(ISource src, byte z = 0)
+        public void Load(ISource src, byte bits = 0)
         {
             src.Get(nameof(id), ref id);
             src.Get(nameof(name), ref name);
-            if (z.Ya(RESV)) src.Get(nameof(credential), ref credential);
+            if (bits.Has(RESV)) src.Get(nameof(credential), ref credential);
             src.Get(nameof(tel), ref tel);
             src.Get(nameof(district), ref district);
             src.Get(nameof(appid), ref appid);
@@ -40,11 +40,11 @@ namespace Greatbone.Sample
             src.Get(nameof(disabled), ref disabled);
         }
 
-        public void Dump<R>(ISink<R> snk, byte z = 0) where R : ISink<R>
+        public void Dump<R>(ISink<R> snk, byte bits = 0) where R : ISink<R>
         {
             snk.Put(nameof(id), id);
             snk.Put(nameof(name), name);
-            if (z.Ya(RESV)) snk.Put(nameof(credential), credential);
+            if (bits.Has(RESV)) snk.Put(nameof(credential), credential);
             snk.Put(nameof(tel), tel);
             snk.Put(nameof(district), district);
             snk.Put(nameof(appid), appid);

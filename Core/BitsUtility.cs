@@ -3,7 +3,7 @@
     ///
     /// The z-flags that filter what to load or dump in persistance operations.
     ///
-    public static class ZUtility
+    public static class BitsUtility
     {
         // BASE = 0
 
@@ -27,14 +27,14 @@
             RESV = 0x08;
 
 
-        public static bool Ya(this byte z, byte v)
+        public static bool Has(this byte bits, byte v)
         {
-            return (z & v) == v;
+            return (bits & v) == v;
         }
 
-        public static bool No(this byte z, byte v)
+        public static bool No(this byte bits, byte v)
         {
-            return (z & v) != v;
+            return (bits & v) != v;
         }
     }
 }

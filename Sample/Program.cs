@@ -29,7 +29,7 @@ namespace Greatbone.Sample
             {
                 outer = "http://127.0.0.1:8080",
                 inner = "http://127.0.0.1:7070",
-                refs = new Obj{
+                references = new Obj{
                     new Member("shop-01", "http://127.0.0.1:7072"),
                 },
                 db = pg
@@ -40,10 +40,10 @@ namespace Greatbone.Sample
 
             if ((cfg = new WebConfig("shop")
             {
-                shard = "01",
+                shardid = "01",
                 outer = "http://127.0.0.1:8081",
                 inner = "http://127.0.0.1:7071",
-                refs = new Obj{
+                references = new Obj{
                     new Member("shop-01", "http://127.0.0.1:7072"),
                 },
                 db = pg

@@ -50,6 +50,8 @@ namespace Greatbone.Core
             else { bigint = bigint * 10 + n; }
         }
 
+        internal long Double => negative ? -bigint : bigint;
+
         internal long Long => negative ? -bigint : bigint;
 
         internal int Int => negative ? (int)-bigint : (int)bigint;

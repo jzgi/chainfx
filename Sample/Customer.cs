@@ -16,7 +16,7 @@ namespace Greatbone.Sample
         internal string tel;
         internal int status;
 
-        public void Load(ISource s, byte z = 0)
+        public void Load(ISource s, byte bits = 0)
         {
             s.Get(nameof(id), ref id);
             s.Get(nameof(shopid), ref shopid);
@@ -27,7 +27,7 @@ namespace Greatbone.Sample
             s.Get(nameof(status), ref status);
         }
 
-        public void Dump<R>(ISink<R> s, byte z = 0) where R : ISink<R>
+        public void Dump<R>(ISink<R> s, byte bits = 0) where R : ISink<R>
         {
             s.Put(nameof(id), id);
             s.Put(nameof(shopid), shopid);

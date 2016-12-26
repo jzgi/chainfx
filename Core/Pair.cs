@@ -25,7 +25,7 @@ namespace Greatbone.Core
         {
             if (count == 1) // a single string
             {
-                string old = (string)values;
+                string old = (string) values;
                 string[] arr = new string[8];
                 arr[0] = old;
                 arr[1] = v;
@@ -34,7 +34,7 @@ namespace Greatbone.Core
             else
             {
                 // ensure capacity
-                string[] arr = (string[])values;
+                string[] arr = (string[]) values;
                 int len = arr.Length;
                 if (count >= len)
                 {
@@ -46,7 +46,7 @@ namespace Greatbone.Core
             }
         }
 
-        string First => (count == 0) ? null : (count == 1) ? (string)values : ((string[])values)[0];
+        string First => (count == 0) ? null : (count == 1) ? (string) values : ((string[]) values)[0];
 
         //
         // CONVERSION
@@ -104,6 +104,20 @@ namespace Greatbone.Core
             return 0;
         }
 
+        public static implicit operator double(Pair v)
+        {
+            string str = v.First;
+            if (str != null)
+            {
+                double n;
+                if (Double.TryParse(str, out n))
+                {
+                    return n;
+                }
+            }
+            return 0;
+        }
+
         public static implicit operator decimal(Pair v)
         {
             string str = v.First;
@@ -133,7 +147,7 @@ namespace Greatbone.Core
             return default(NpgsqlPoint);
         }
 
-        public static implicit operator char[] (Pair v)
+        public static implicit operator char[](Pair v)
         {
             string str = v.First;
             return str?.ToCharArray();
@@ -144,44 +158,44 @@ namespace Greatbone.Core
             return v.First;
         }
 
-        public static implicit operator byte[] (Pair v)
+        public static implicit operator byte[](Pair v)
         {
             return null;
         }
 
-        public static implicit operator short[] (Pair v)
+        public static implicit operator short[](Pair v)
         {
             int len = v.count;
             if (len == 0) return null;
             if (len == 1)
             {
-                string str = (string)v.values;
+                string str = (string) v.values;
                 short n;
-                return new[] { short.TryParse(str, out n) ? n : (short)0 };
+                return new[] {short.TryParse(str, out n) ? n : (short) 0};
             }
 
-            string[] strs = (string[])v.values;
+            string[] strs = (string[]) v.values;
             short[] arr = new short[len];
             for (int i = 0; i < len; i++)
             {
                 short n;
-                arr[i] = short.TryParse(strs[i], out n) ? n : (short)0;
+                arr[i] = short.TryParse(strs[i], out n) ? n : (short) 0;
             }
             return arr;
         }
 
-        public static implicit operator int[] (Pair v)
+        public static implicit operator int[](Pair v)
         {
             int len = v.count;
             if (len == 0) return null;
             if (len == 1)
             {
-                string str = (string)v.values;
+                string str = (string) v.values;
                 int n;
-                return new[] { int.TryParse(str, out n) ? n : 0 };
+                return new[] {int.TryParse(str, out n) ? n : 0};
             }
 
-            string[] strs = (string[])v.values;
+            string[] strs = (string[]) v.values;
             int[] arr = new int[len];
             for (int i = 0; i < len; i++)
             {
@@ -191,17 +205,17 @@ namespace Greatbone.Core
             return arr;
         }
 
-        public static implicit operator long[] (Pair v)
+        public static implicit operator long[](Pair v)
         {
             int len = v.count;
             if (len == 0) return null;
             if (len == 1)
             {
-                string str = (string)v.values;
+                string str = (string) v.values;
                 long n;
-                return new[] { long.TryParse(str, out n) ? n : 0 };
+                return new[] {long.TryParse(str, out n) ? n : 0};
             }
-            string[] strs = (string[])v.values;
+            string[] strs = (string[]) v.values;
             long[] arr = new long[len];
             for (int i = 0; i < len; i++)
             {
@@ -211,17 +225,17 @@ namespace Greatbone.Core
             return arr;
         }
 
-        public static implicit operator string[] (Pair v)
+        public static implicit operator string[](Pair v)
         {
             int len = v.count;
             if (len == 0) return null;
             if (len == 1)
             {
-                string str = (string)v.values;
-                return new[] { str };
+                string str = (string) v.values;
+                return new[] {str};
             }
 
-            string[] strs = (string[])v.values;
+            string[] strs = (string[]) v.values;
             string[] arr = new string[len];
             for (int i = 0; i < len; i++)
             {

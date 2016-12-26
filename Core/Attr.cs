@@ -69,6 +69,20 @@ namespace Greatbone.Core
             return 0;
         }
 
+        public static implicit operator double(Attr v)
+        {
+            string str = v.value;
+            if (str != null)
+            {
+                double n;
+                if (double.TryParse(str, out n))
+                {
+                    return n;
+                }
+            }
+            return 0;
+        }
+
         public static implicit operator decimal(Attr v)
         {
             string str = v.value;
@@ -98,7 +112,7 @@ namespace Greatbone.Core
             return default(NpgsqlPoint);
         }
 
-        public static implicit operator char[] (Attr v)
+        public static implicit operator char[](Attr v)
         {
             string str = v.value;
             return str?.ToCharArray();
@@ -109,31 +123,29 @@ namespace Greatbone.Core
             return v.value;
         }
 
-        public static implicit operator byte[] (Attr v)
+        public static implicit operator byte[](Attr v)
         {
             return null;
         }
 
-        public static implicit operator short[] (Attr v)
+        public static implicit operator short[](Attr v)
         {
             return null;
         }
 
-        public static implicit operator int[] (Attr v)
+        public static implicit operator int[](Attr v)
         {
             return null;
         }
 
-        public static implicit operator long[] (Attr v)
+        public static implicit operator long[](Attr v)
         {
             return null;
         }
 
-        public static implicit operator string[] (Attr v)
+        public static implicit operator string[](Attr v)
         {
             return null;
         }
-
     }
-
 }

@@ -105,7 +105,6 @@ namespace Greatbone.Core
         public JsonContent PutNull(string name)
         {
             if (counts[level]++ > 0) Add(',');
-
             if (name != null)
             {
                 Add('"');
@@ -113,16 +112,13 @@ namespace Greatbone.Core
                 Add('"');
                 Add(':');
             }
-
             Add("null");
-
             return this;
         }
 
         public JsonContent Put(string name, bool v)
         {
             if (counts[level]++ > 0) Add(',');
-
             if (name != null)
             {
                 Add('"');
@@ -130,16 +126,13 @@ namespace Greatbone.Core
                 Add('"');
                 Add(':');
             }
-
             Add(v ? "true" : "false");
-
             return this;
         }
 
         public JsonContent Put(string name, short v)
         {
             if (counts[level]++ > 0) Add(',');
-
             if (name != null)
             {
                 Add('"');
@@ -147,16 +140,13 @@ namespace Greatbone.Core
                 Add('"');
                 Add(':');
             }
-
             Add(v);
-
             return this;
         }
 
         public JsonContent Put(string name, int v)
         {
             if (counts[level]++ > 0) Add(',');
-
             if (name != null)
             {
                 Add('"');
@@ -164,16 +154,13 @@ namespace Greatbone.Core
                 Add('"');
                 Add(':');
             }
-
             Add(v);
-
             return this;
         }
 
         public JsonContent Put(string name, long v)
         {
             if (counts[level]++ > 0) Add(',');
-
             if (name != null)
             {
                 Add('"');
@@ -181,16 +168,27 @@ namespace Greatbone.Core
                 Add('"');
                 Add(':');
             }
-
             Add(v);
+            return this;
+        }
 
+        public JsonContent Put(string name, double v)
+        {
+            if (counts[level]++ > 0) Add(',');
+            if (name != null)
+            {
+                Add('"');
+                Add(name);
+                Add('"');
+                Add(':');
+            }
+            Add(v);
             return this;
         }
 
         public JsonContent Put(string name, decimal v)
         {
             if (counts[level]++ > 0) Add(',');
-
             if (name != null)
             {
                 Add('"');
@@ -198,16 +196,13 @@ namespace Greatbone.Core
                 Add('"');
                 Add(':');
             }
-
             Add(v);
-
             return this;
         }
 
         public JsonContent Put(string name, Number v)
         {
             if (counts[level]++ > 0) Add(',');
-
             if (name != null)
             {
                 Add('"');
@@ -228,7 +223,6 @@ namespace Greatbone.Core
         public JsonContent Put(string name, DateTime v)
         {
             if (counts[level]++ > 0) Add(',');
-
             if (name != null)
             {
                 Add('"');
@@ -240,14 +234,12 @@ namespace Greatbone.Core
             Add('"');
             Add(v);
             Add('"');
-
             return this;
         }
 
         public JsonContent Put(string name, NpgsqlPoint v)
         {
             if (counts[level]++ > 0) Add(',');
-
             if (name != null)
             {
                 Add('"');
@@ -262,14 +254,12 @@ namespace Greatbone.Core
             Add(",\"x\":");
             Add(v.Y);
             Add('}');
-
             return this;
         }
 
         public JsonContent Put(string name, char[] v)
         {
             if (counts[level]++ > 0) Add(',');
-
             if (name != null)
             {
                 Add('"');
@@ -288,14 +278,12 @@ namespace Greatbone.Core
                 Add(v);
                 Add('"');
             }
-
             return this;
         }
 
-        public JsonContent Put(string name, string v, int maxlen = 0)
+        public JsonContent Put(string name, string v, bool? anylen = null)
         {
             if (counts[level]++ > 0) Add(',');
-
             if (name != null)
             {
                 Add('"');
@@ -314,7 +302,6 @@ namespace Greatbone.Core
                 AddEsc(v);
                 Add('"');
             }
-
             return this;
         }
 
@@ -328,10 +315,9 @@ namespace Greatbone.Core
             return this; // ignore ir
         }
 
-        public JsonContent Put<D>(string name, D v, byte z = 0) where D : IData
+        public JsonContent Put<D>(string name, D v, byte bits = 0) where D : IData
         {
             if (counts[level]++ > 0) Add(',');
-
             if (name != null)
             {
                 Add('"');
@@ -350,24 +336,22 @@ namespace Greatbone.Core
                 Add('{');
 
                 // put shard property if any
-                string shard = (v as IShardable)?.Shard;
+                string shard = (v as IShardable)?.ShardId;
                 if (shard != null)
                 {
                     Put("#", shard);
                 }
 
-                v.Dump(this, z);
+                v.Dump(this, bits);
                 Add('}');
                 level--; // exit
             }
-
             return this;
         }
 
         public JsonContent Put(string name, Obj v)
         {
             if (counts[level]++ > 0) Add(',');
-
             if (name != null)
             {
                 Add('"');
@@ -390,14 +374,12 @@ namespace Greatbone.Core
                 Add('}');
                 level--; // exit
             }
-
             return this;
         }
 
         public JsonContent Put(string name, Arr v)
         {
             if (counts[level]++ > 0) Add(',');
-
             if (name != null)
             {
                 Add('"');
@@ -449,14 +431,12 @@ namespace Greatbone.Core
                 }
                 Add(']');
             }
-
             return this;
         }
 
         public JsonContent Put(string name, int[] v)
         {
             if (counts[level]++ > 0) Add(',');
-
             if (name != null)
             {
                 Add('"');
@@ -479,14 +459,12 @@ namespace Greatbone.Core
                 }
                 Add(']');
             }
-
             return this;
         }
 
         public JsonContent Put(string name, long[] v)
         {
             if (counts[level]++ > 0) Add(',');
-
             if (name != null)
             {
                 Add('"');
@@ -509,14 +487,12 @@ namespace Greatbone.Core
                 }
                 Add(']');
             }
-
             return this;
         }
 
         public JsonContent Put(string name, string[] v)
         {
             if (counts[level]++ > 0) Add(',');
-
             if (name != null)
             {
                 Add('"');
@@ -549,12 +525,11 @@ namespace Greatbone.Core
                 }
                 Add(']');
             }
-
             return this;
         }
 
 
-        public JsonContent Put<D>(string name, D[] v, byte z = 0) where D : IData
+        public JsonContent Put<D>(string name, D[] v, byte bits = 0) where D : IData
         {
             if (counts[level]++ > 0) Add(',');
 
@@ -576,7 +551,7 @@ namespace Greatbone.Core
                 Add('[');
                 for (int i = 0; i < v.Length; i++)
                 {
-                    Put(null, v[i], z);
+                    Put(null, v[i], bits);
                 }
                 Add(']');
                 level--; // exit

@@ -16,7 +16,7 @@
         // whether to create message tables
         public bool queue;
 
-        public void Load(ISource s, byte z = 0)
+        public void Load(ISource s, byte bits = 0)
         {
             s.Get(nameof(host), ref host);
             s.Get(nameof(port), ref port);
@@ -25,7 +25,7 @@
             s.Get(nameof(queue), ref queue);
         }
 
-        public void Dump<R>(ISink<R> s, byte z = 0) where R : ISink<R>
+        public void Dump<R>(ISink<R> s, byte bits = 0) where R : ISink<R>
         {
             s.Put(nameof(host), host);
             s.Put(nameof(port), port);

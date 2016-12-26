@@ -9,7 +9,6 @@ namespace Greatbone.Core
     ///
     public class DbParameters : ISink<DbParameters>
     {
-
         static readonly string[] Defaults =
         {
             "1", "2", "3", "4", "5", "6", "7", "8", "9", "10", "11", "12", "13", "14", "15", "16", "17", "18", "19", "20", "21", "22", "23", "24", "15", "16", "17", "18", "19", "20"
@@ -94,6 +93,19 @@ namespace Greatbone.Core
             return this;
         }
 
+        public DbParameters Put(string name, double v)
+        {
+            if (name == null)
+            {
+                name = Defaults[index++];
+            }
+            coll.Add(new NpgsqlParameter(name, NpgsqlDbType.Double)
+            {
+                Value = v
+            });
+            return this;
+        }
+
         public DbParameters Put(string name, decimal v)
         {
             if (name == null)
@@ -159,15 +171,15 @@ namespace Greatbone.Core
             return this;
         }
 
-        public DbParameters Put(string name, string v, int maxlen = 0)
+        public DbParameters Put(string name, string v, bool? anylen = null)
         {
             if (name == null)
             {
                 name = Defaults[index++];
             }
-            coll.Add(new NpgsqlParameter(name, (maxlen >= 0) ? NpgsqlDbType.Varchar : NpgsqlDbType.Text)
+            coll.Add(new NpgsqlParameter(name, !anylen.HasValue ? NpgsqlDbType.Varchar : anylen.Value ? NpgsqlDbType.Text : NpgsqlDbType.Char)
             {
-                Value = (v != null) ? (object)v : DBNull.Value
+                Value = (v != null) ? (object) v : DBNull.Value
             });
             return this;
         }
@@ -180,7 +192,7 @@ namespace Greatbone.Core
             }
             coll.Add(new NpgsqlParameter(name, NpgsqlDbType.Bytea)
             {
-                Value = (v != null) ? (object)v : DBNull.Value
+                Value = (v != null) ? (object) v : DBNull.Value
             });
             return this;
         }
@@ -198,7 +210,7 @@ namespace Greatbone.Core
             return this;
         }
 
-        public DbParameters Put<D>(string name, D v, byte z = 0) where D : IData
+        public DbParameters Put<D>(string name, D v, byte bits = 0) where D : IData
         {
             if (name == null)
             {
@@ -206,13 +218,13 @@ namespace Greatbone.Core
             }
             if (v == null)
             {
-                coll.Add(new NpgsqlParameter(name, NpgsqlDbType.Jsonb) { Value = DBNull.Value });
+                coll.Add(new NpgsqlParameter(name, NpgsqlDbType.Jsonb) {Value = DBNull.Value});
             }
             else
             {
                 coll.Add(new NpgsqlParameter(name, NpgsqlDbType.Jsonb)
                 {
-                    Value = JsonUtility.DataToString(v, z)
+                    Value = JsonUtility.DataToString(v, bits)
                 });
             }
             return this;
@@ -272,7 +284,7 @@ namespace Greatbone.Core
             }
             coll.Add(new NpgsqlParameter(name, NpgsqlDbType.Array | NpgsqlDbType.Smallint)
             {
-                Value = (v != null) ? (object)v : DBNull.Value
+                Value = (v != null) ? (object) v : DBNull.Value
             });
             return this;
         }
@@ -285,7 +297,7 @@ namespace Greatbone.Core
             }
             coll.Add(new NpgsqlParameter(name, NpgsqlDbType.Array | NpgsqlDbType.Integer)
             {
-                Value = (v != null) ? (object)v : DBNull.Value
+                Value = (v != null) ? (object) v : DBNull.Value
             });
             return this;
         }
@@ -298,7 +310,7 @@ namespace Greatbone.Core
             }
             coll.Add(new NpgsqlParameter(name, NpgsqlDbType.Array | NpgsqlDbType.Bigint)
             {
-                Value = (v != null) ? (object)v : DBNull.Value
+                Value = (v != null) ? (object) v : DBNull.Value
             });
             return this;
         }
@@ -311,12 +323,12 @@ namespace Greatbone.Core
             }
             coll.Add(new NpgsqlParameter(name, NpgsqlDbType.Array | NpgsqlDbType.Text)
             {
-                Value = (v != null) ? (object)v : DBNull.Value
+                Value = (v != null) ? (object) v : DBNull.Value
             });
             return this;
         }
 
-        public DbParameters Put<D>(string name, D[] v, byte z = 0) where D : IData
+        public DbParameters Put<D>(string name, D[] v, byte bits = 0) where D : IData
         {
             if (name == null)
             {
@@ -333,7 +345,7 @@ namespace Greatbone.Core
             {
                 coll.Add(new NpgsqlParameter(name, NpgsqlDbType.Jsonb)
                 {
-                    Value = JsonUtility.DatasToString(v, z)
+                    Value = JsonUtility.DatasToString(v, bits)
                 });
             }
             return this;

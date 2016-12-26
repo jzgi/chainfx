@@ -86,6 +86,17 @@ namespace Greatbone.Core
             return false;
         }
 
+        public bool Get(string name, ref double v)
+        {
+            Attr attr;
+            if (TryGet(name, out attr))
+            {
+                v = attr;
+                return true;
+            }
+            return false;
+        }
+
         public bool Get(string name, ref decimal v)
         {
             Attr attr;
@@ -168,7 +179,7 @@ namespace Greatbone.Core
             throw new NotImplementedException();
         }
 
-        public bool Get<D>(string name, ref D v, byte z = 0) where D : IData, new()
+        public bool Get<D>(string name, ref D v, byte bits = 0) where D : IData, new()
         {
             throw new NotImplementedException();
         }
@@ -203,7 +214,7 @@ namespace Greatbone.Core
             throw new NotImplementedException();
         }
 
-        public bool Get<D>(string name, ref D[] v, byte z = 0) where D : IData, new()
+        public bool Get<D>(string name, ref D[] v, byte bits = 0) where D : IData, new()
         {
             throw new NotImplementedException();
         }

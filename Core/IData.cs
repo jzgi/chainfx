@@ -5,8 +5,8 @@
     ///
     public interface IData
     {
-        void Load(ISource src, byte z = 0);
+        void Load(ISource src, byte bits = 0);
 
-        void Dump<R>(ISink<R> snk, byte z = 0) where R : ISink<R>;
+        void Dump<R>(ISink<R> snk, byte bits = 0) where R : ISink<R>;
     }
 }

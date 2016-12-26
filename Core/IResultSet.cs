@@ -11,6 +11,6 @@ namespace Greatbone.Core
 
         D ToData<D>(byte z = 0) where D : IData, new();
 
-        D[] ToDatas<D>(byte z = 0) where D : IData, new();
+        D[] ToDatas<D>(byte bits = 0) where D : IData, new();
     }
 }

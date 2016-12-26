@@ -118,6 +118,17 @@ namespace Greatbone.Core
             return this;
         }
 
+        public XmlContent Put(string name, double v)
+        {
+            Add(' ');
+            Add(name);
+            Add('=');
+            Add('"');
+            Add(v);
+            Add('"');
+            return this;
+        }
+
         public XmlContent Put(string name, decimal v)
         {
             Add(' ');
@@ -173,7 +184,7 @@ namespace Greatbone.Core
             return this;
         }
 
-        public XmlContent Put(string name, string v, int maxlen = 0)
+        public XmlContent Put(string name, string v, bool? anylen = null)
         {
             Add(' ');
             Add(name);
@@ -194,7 +205,7 @@ namespace Greatbone.Core
             throw new NotImplementedException();
         }
 
-        public XmlContent Put<D>(string name, D v, byte z = 0) where D : IData
+        public XmlContent Put<D>(string name, D v, byte bits = 0) where D : IData
         {
             throw new NotImplementedException();
         }
@@ -277,7 +288,7 @@ namespace Greatbone.Core
             return this;
         }
 
-        public XmlContent Put<D>(string name, D[] v, byte z = 0) where D : IData
+        public XmlContent Put<D>(string name, D[] v, byte bits = 0) where D : IData
         {
             throw new NotImplementedException();
         }

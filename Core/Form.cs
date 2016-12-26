@@ -69,6 +69,17 @@ namespace Greatbone.Core
             return false;
         }
 
+        public bool Get(string name, ref double v)
+        {
+            Pair pr;
+            if (TryGet(name, out pr))
+            {
+                v = pr;
+                return true;
+            }
+            return false;
+        }
+
         public bool Get(string name, ref decimal v)
         {
             Pair pr;
@@ -176,12 +187,12 @@ namespace Greatbone.Core
         }
 
 
-        public bool Get<D>(string name, ref D[] v, byte z = 0) where D : IData, new()
+        public bool Get<D>(string name, ref D[] v, byte bits = 0) where D : IData, new()
         {
             throw new NotImplementedException();
         }
 
-        public bool Get<D>(string name, ref D v, byte z = 0) where D : IData, new()
+        public bool Get<D>(string name, ref D v, byte bits = 0) where D : IData, new()
         {
             throw new NotImplementedException();
         }

@@ -18,8 +18,8 @@
     ///
     public class WebConfig : WebFolderContext, IData
     {
-        /// The shard name when one service is divided into many shards
-        public string shard;
+        /// The shard id when one service is divided into many shards
+        public string shardid;
 
         /// The outer socket address for external communication
         public string outer;
@@ -28,7 +28,7 @@
         public string inner;
 
         /// The services/addresses that this service references or depends on.
-        public Obj refs;
+        public Obj references;
 
         /// The database connectivity attributes.
         public DbConfig db;
@@ -49,23 +49,23 @@
             this.name = name;
         }
 
-        public void Load(ISource src, byte z = 0)
+        public void Load(ISource src, byte bits = 0)
         {
-            src.Get(nameof(shard), ref shard);
+            src.Get(nameof(shardid), ref shardid);
             src.Get(nameof(outer), ref outer);
             src.Get(nameof(inner), ref inner);
-            src.Get(nameof(refs), ref refs);
+            src.Get(nameof(references), ref references);
             src.Get(nameof(db), ref db);
             src.Get(nameof(logging), ref logging);
             src.Get(nameof(cache), ref cache);
         }
 
-        public void Dump<R>(ISink<R> snk, byte z = 0) where R : ISink<R>
+        public void Dump<R>(ISink<R> snk, byte bits = 0) where R : ISink<R>
         {
-            snk.Put(nameof(shard), shard);
+            snk.Put(nameof(shardid), shardid);
             snk.Put(nameof(outer), outer);
             snk.Put(nameof(inner), inner);
-            snk.Put(nameof(refs), refs);
+            snk.Put(nameof(references), references);
             snk.Put(nameof(db), db);
             snk.Put(nameof(logging), logging);
             snk.Put(nameof(cache), cache);

@@ -165,6 +165,15 @@ namespace Greatbone.Core
             return 0;
         }
 
+        public static implicit operator double(Member v)
+        {
+            if (v.type == MemberType.Number)
+            {
+                return v.numv.Double;
+            }
+            return 0;
+        }
+
         public static implicit operator decimal(Member v)
         {
             if (v.type == MemberType.Number)

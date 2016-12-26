@@ -25,23 +25,28 @@ namespace Greatbone.Core
                     char c = v[i];
                     if (c == '\"')
                     {
-                        Add('\\'); Add('"');
+                        Add('\\');
+                        Add('"');
                     }
                     else if (c == '\\')
                     {
-                        Add('\\'); Add('\\');
+                        Add('\\');
+                        Add('\\');
                     }
                     else if (c == '\n')
                     {
-                        Add('\\'); Add('n');
+                        Add('\\');
+                        Add('n');
                     }
                     else if (c == '\r')
                     {
-                        Add('\\'); Add('r');
+                        Add('\\');
+                        Add('r');
                     }
                     else if (c == '\t')
                     {
-                        Add('\\'); Add('t');
+                        Add('\\');
+                        Add('t');
                     }
                     else
                     {
@@ -79,9 +84,7 @@ namespace Greatbone.Core
                 Add('"');
                 Add(':');
             }
-
             Add(v ? "true" : "false");
-
             return this;
         }
 
@@ -94,9 +97,7 @@ namespace Greatbone.Core
                 Add('"');
                 Add(':');
             }
-
             Add(v);
-
             return this;
         }
 
@@ -109,9 +110,7 @@ namespace Greatbone.Core
                 Add('"');
                 Add(':');
             }
-
             Add(v);
-
             return this;
         }
 
@@ -124,9 +123,20 @@ namespace Greatbone.Core
                 Add('"');
                 Add(':');
             }
-
             Add(v);
+            return this;
+        }
 
+        public FormContent Put(string name, double v)
+        {
+            if (name != null)
+            {
+                Add('"');
+                Add(name);
+                Add('"');
+                Add(':');
+            }
+            Add(v);
             return this;
         }
 
@@ -139,9 +149,7 @@ namespace Greatbone.Core
                 Add('"');
                 Add(':');
             }
-
             Add(v);
-
             return this;
         }
 
@@ -224,7 +232,7 @@ namespace Greatbone.Core
             return this;
         }
 
-        public FormContent Put(string name, string v, int maxlen = 0)
+        public FormContent Put(string name, string v, bool? anylen = null)
         {
             if (name != null)
             {
@@ -258,7 +266,7 @@ namespace Greatbone.Core
             return this; // ignore ir
         }
 
-        public FormContent Put<B>(string name, B v, byte z = 0) where B : IData
+        public FormContent Put<B>(string name, B v, byte bits = 0) where B : IData
         {
             if (name != null)
             {
@@ -275,7 +283,7 @@ namespace Greatbone.Core
             else
             {
                 Add('{');
-                v.Dump(this, z);
+                v.Dump(this, bits);
                 Add('}');
             }
 
@@ -452,7 +460,7 @@ namespace Greatbone.Core
         }
 
 
-        public FormContent Put<B>(string name, B[] v, byte z = 0) where B : IData
+        public FormContent Put<B>(string name, B[] v, byte bits = 0) where B : IData
         {
             if (name != null)
             {
@@ -471,7 +479,7 @@ namespace Greatbone.Core
                 Add('[');
                 for (int i = 0; i < v.Length; i++)
                 {
-                    Put(null, v[i], z);
+                    Put(null, v[i], bits);
                 }
                 Add(']');
             }

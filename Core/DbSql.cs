@@ -8,7 +8,6 @@ namespace Greatbone.Core
     ///
     public class DbSql : DynamicContent, ISink<DbSql>
     {
-
         const int InitialCapacity = 1024;
 
 
@@ -44,34 +43,34 @@ namespace Greatbone.Core
             return this;
         }
 
-        public DbSql setlst<T>(T obj, byte z = 0) where T : IData
+        public DbSql setlst<T>(T obj, byte bits = 0) where T : IData
         {
             list = SetList;
             ordinal = 1;
-            obj.Dump(this, z);
+            obj.Dump(this, bits);
             return this;
         }
 
-        public DbSql columnlst<T>(T obj, byte z = 0) where T : IData
+        public DbSql columnlst<T>(T obj, byte bits = 0) where T : IData
         {
             list = ColumnList;
             ordinal = 1;
-            obj.Dump(this, z);
+            obj.Dump(this, bits);
             return this;
         }
 
-        public DbSql parameterlst<T>(T obj, byte z = 0) where T : IData
+        public DbSql parameterlst<T>(T obj, byte bits = 0) where T : IData
         {
             list = ParameterList;
             ordinal = 1;
-            obj.Dump(this, z);
+            obj.Dump(this, bits);
             return this;
         }
 
-        public DbSql _<T>(T obj, byte z = 0) where T : IData
+        public DbSql _<T>(T obj, byte bits = 0) where T : IData
         {
             Add(" (");
-            columnlst(obj, z);
+            columnlst(obj, bits);
             Add(")");
             return this;
         }
@@ -84,10 +83,10 @@ namespace Greatbone.Core
             return this;
         }
 
-        public DbSql _SET_<T>(T obj, byte z = 0) where T : IData
+        public DbSql _SET_<T>(T obj, byte bits = 0) where T : IData
         {
             Add(" SET ");
-            setlst(obj, z);
+            setlst(obj, bits);
             return this;
         }
 
@@ -97,9 +96,22 @@ namespace Greatbone.Core
 
             switch (list)
             {
-                case ColumnList: Add('"'); Add(name); Add('"'); break;
-                case ParameterList: Add("@"); Add(name); break;
-                case SetList: Add('"'); Add(name); Add('"'); Add("=@"); Add(name); break;
+                case ColumnList:
+                    Add('"');
+                    Add(name);
+                    Add('"');
+                    break;
+                case ParameterList:
+                    Add("@");
+                    Add(name);
+                    break;
+                case SetList:
+                    Add('"');
+                    Add(name);
+                    Add('"');
+                    Add("=@");
+                    Add(name);
+                    break;
             }
 
             ordinal++;
@@ -145,6 +157,19 @@ namespace Greatbone.Core
         }
 
         public DbSql Put(string name, long v)
+        {
+            if (name != null)
+            {
+                Build(name);
+            }
+            else
+            {
+                Add(v);
+            }
+            return this;
+        }
+
+        public DbSql Put(string name, double v)
         {
             if (name != null)
             {
@@ -209,7 +234,7 @@ namespace Greatbone.Core
             return this;
         }
 
-        public DbSql Put(string name, string v, int maxlen = 0)
+        public DbSql Put(string name, string v, bool? anylen = null)
         {
             if (name != null)
             {
@@ -217,7 +242,9 @@ namespace Greatbone.Core
             }
             else
             {
-                Add('\''); Add(v); Add('\'');
+                Add('\'');
+                Add(v);
+                Add('\'');
             }
             return this;
         }
@@ -230,7 +257,9 @@ namespace Greatbone.Core
             }
             else
             {
-                Add('\''); Add(v); Add('\'');
+                Add('\'');
+                Add(v);
+                Add('\'');
             }
             return this;
         }
@@ -247,7 +276,7 @@ namespace Greatbone.Core
             return this;
         }
 
-        public DbSql Put<D>(string name, D v, byte z = 0) where D : IData
+        public DbSql Put<D>(string name, D v, byte bits = 0) where D : IData
         {
             if (name != null)
             {
@@ -432,7 +461,7 @@ namespace Greatbone.Core
             return this;
         }
 
-        public DbSql Put<D>(string name, D[] v, byte z = 0) where D : IData
+        public DbSql Put<D>(string name, D[] v, byte bits = 0) where D : IData
         {
             Build(name);
             return this;
@@ -448,7 +477,5 @@ namespace Greatbone.Core
         {
             return new string(charbuf, 0, count);
         }
-
     }
-
 }

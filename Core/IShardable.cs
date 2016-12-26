@@ -2,6 +2,6 @@
 {
     public interface IShardable
     {
-        string Shard { get; set; }
+        string ShardId { get; set; }
     }
 }
