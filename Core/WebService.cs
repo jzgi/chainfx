@@ -30,8 +30,8 @@ namespace Greatbone.Core
         // the embedded server
         readonly KestrelServer server;
 
-        // client connectivity to the remote peers
-        readonly Roll<WebClient> refs;
+        // client connectivity to the related peers
+        readonly Roll<WebClient> references;
 
         // event hooks
         readonly Roll<WebEvent> events;
@@ -64,8 +64,8 @@ namespace Greatbone.Core
             KestrelServerOptions options = new KestrelServerOptions();
             server = new KestrelServer(Options.Create(options), Lifetime, factory);
             ICollection<string> addrs = server.Features.Get<IServerAddressesFeature>().Addresses;
-            addrs.Add(cfg.outer);
-            addrs.Add(cfg.inner);
+            addrs.Add(cfg.addr);
+            addrs.Add(cfg.secret);
 
             // init event hooks
             Type typ = GetType();
@@ -92,11 +92,11 @@ namespace Greatbone.Core
                     Member mbr = refs[i];
                     string name = mbr.Name; // service instance id
                     string addr = mbr;
-                    if (this.refs == null)
+                    if (this.references == null)
                     {
-                        this.refs = new Roll<WebClient>(refs.Count * 2);
+                        this.references = new Roll<WebClient>(refs.Count * 2);
                     }
-                    this.refs.Add(new WebClient(name, addr));
+                    this.references.Add(new WebClient(name, addr));
                 }
             }
 
@@ -120,7 +120,7 @@ namespace Greatbone.Core
 
         public Roll<WebEvent> Events => events;
 
-        public Roll<WebClient> Clients => refs;
+        public Roll<WebClient> References => references;
 
         public WebConfig Config => (WebConfig)context;
 
@@ -130,7 +130,7 @@ namespace Greatbone.Core
 
         bool InstallEq()
         {
-            if (!Config.db.queue)
+            if (!Config.db.eq)
             {
                 return false;
             }
@@ -254,9 +254,9 @@ namespace Greatbone.Core
 
             Console.Write(Name);
             Console.Write(" -> ");
-            Console.Write(Config.outer);
+            Console.Write(Config.addr);
             Console.Write(", ");
-            Console.Write(Config.inner);
+            Console.Write(Config.secret);
             Console.WriteLine();
 
             INF("started");
@@ -285,9 +285,9 @@ namespace Greatbone.Core
 
         internal WebClient GetClient(string svcid)
         {
-            for (int i = 0; i < refs.Count; i++)
+            for (int i = 0; i < references.Count; i++)
             {
-                WebClient cli = refs[i];
+                WebClient cli = references[i];
                 if (cli.Name.Equals(svcid)) return cli;
             }
             return null;
@@ -340,9 +340,9 @@ namespace Greatbone.Core
         {
             while (!stop)
             {
-                for (int i = 0; i < Clients.Count; i++)
+                for (int i = 0; i < References.Count; i++)
                 {
-                    WebClient conn = Clients[i];
+                    WebClient conn = References[i];
 
                     // schedule
                 }

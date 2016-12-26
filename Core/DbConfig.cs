@@ -13,25 +13,25 @@
 
         public string password;
 
-        // whether to create message tables
-        public bool queue;
+        // whether to create event-queue tables/indexes
+        public bool eq;
 
-        public void Load(ISource s, byte bits = 0)
+        public void Load(ISource src, byte bits = 0)
         {
-            s.Get(nameof(host), ref host);
-            s.Get(nameof(port), ref port);
-            s.Get(nameof(username), ref username);
-            s.Get(nameof(password), ref password);
-            s.Get(nameof(queue), ref queue);
+            src.Get(nameof(host), ref host);
+            src.Get(nameof(port), ref port);
+            src.Get(nameof(username), ref username);
+            src.Get(nameof(password), ref password);
+            src.Get(nameof(eq), ref eq);
         }
 
-        public void Dump<R>(ISink<R> s, byte bits = 0) where R : ISink<R>
+        public void Dump<R>(ISink<R> snk, byte bits = 0) where R : ISink<R>
         {
-            s.Put(nameof(host), host);
-            s.Put(nameof(port), port);
-            s.Put(nameof(username), username);
-            s.Put(nameof(password), password);
-            s.Put(nameof(queue), queue);
+            snk.Put(nameof(host), host);
+            snk.Put(nameof(port), port);
+            snk.Put(nameof(username), username);
+            snk.Put(nameof(password), password);
+            snk.Put(nameof(eq), eq);
         }
     }
 }

@@ -4,7 +4,7 @@ using NpgsqlTypes;
 namespace Greatbone.Core
 {
     ///
-    /// Represents a value or a name/value pair if with the name.
+    /// Represents a value or a property if with the name.
     ///
     public struct Member : IRollable
     {
@@ -19,97 +19,61 @@ namespace Greatbone.Core
 
         internal readonly Number numv;
 
-        public Member(string name, Member? v) : this(v)
+        public Member(string name)
         {
             this.name = name;
-        }
-
-        public Member(string name, Obj v) : this(v)
-        {
-            this.name = name;
-        }
-
-        public Member(string name, Arr v) : this(v)
-        {
-            this.name = name;
-        }
-
-        public Member(string name, string v) : this(v)
-        {
-            this.name = name;
-        }
-
-        public Member(string name, byte[] v) : this(v)
-        {
-            this.name = name;
-        }
-
-        public Member(string name, bool v) : this(v)
-        {
-            this.name = name;
-        }
-
-        public Member(string name, Number v) : this(v)
-        {
-            this.name = name;
-        }
-
-        public Member(Member? v)
-        {
-            name = null;
             type = MemberType.Null;
             refv = null;
             numv = default(Number);
         }
 
-        public Member(Obj v)
+        public Member(string name, Obj v)
         {
-            name = null;
+            this.name = name;
             type = MemberType.Object;
             refv = v;
             numv = default(Number);
         }
 
-        public Member(Arr v)
+        public Member(string name, Arr v)
         {
-            name = null;
+            this.name = name;
             type = MemberType.Array;
             refv = v;
             numv = default(Number);
         }
 
-        public Member(string v)
+        public Member(string name, string v)
         {
-            name = null;
+            this.name = name;
             type = MemberType.String;
             refv = v;
             numv = default(Number);
         }
 
-        public Member(byte[] v)
+        public Member(string name, byte[] v)
         {
-            name = null;
+            this.name = name;
             type = MemberType.Bytes;
             refv = v;
             numv = default(Number);
         }
 
-        public Member(bool v)
+        public Member(string name, bool v)
         {
-            name = null;
+            this.name = name;
             type = v ? MemberType.True : MemberType.False;
             refv = null;
             numv = default(Number);
         }
 
-        public Member(Number v)
+        public Member(string name, Number v)
         {
-            name = null;
+            this.name = name;
             type = MemberType.Number;
             refv = null;
             numv = v;
         }
-
 
         public string Name => name;
 
@@ -119,7 +83,7 @@ namespace Greatbone.Core
         {
             if (v.type == MemberType.Object)
             {
-                return (Obj)v.refv;
+                return (Obj) v.refv;
             }
             return null;
         }
@@ -128,7 +92,7 @@ namespace Greatbone.Core
         {
             if (v.type == MemberType.Array)
             {
-                return (Arr)v.refv;
+                return (Arr) v.refv;
             }
             return null;
         }
@@ -196,7 +160,7 @@ namespace Greatbone.Core
         {
             if (v.type == MemberType.String)
             {
-                string str = (string)v.refv;
+                string str = (string) v.refv;
                 DateTime dt;
                 if (StrUtility.TryParseDate(str, out dt)) return dt;
             }
@@ -207,18 +171,30 @@ namespace Greatbone.Core
         {
             if (v.type == MemberType.String)
             {
-                string str = (string)v.refv;
-                NpgsqlPoint dt;
-                // if (StrUtility.TryParseDate(str, out dt)) return dt;
+                string str = (string) v.refv;
+                if (str != null)
+                {
+                    int comma = str.IndexOf(',');
+                    if (comma != -1)
+                    {
+                        string xstr = str.Substring(comma);
+                        string ystr = str.Substring(comma + 1);
+                        double x, y;
+                        if (double.TryParse(xstr, out x) && double.TryParse(ystr, out y))
+                        {
+                            return new NpgsqlPoint(x, y);
+                        }
+                    }
+                }
             }
             return default(NpgsqlPoint);
         }
 
-        public static implicit operator char[] (Member v)
+        public static implicit operator char[](Member v)
         {
             if (v.type == MemberType.String)
             {
-                string str = (string)v.refv;
+                string str = (string) v.refv;
                 return str.ToCharArray();
             }
             return null;
@@ -228,16 +204,16 @@ namespace Greatbone.Core
         {
             if (v.type == MemberType.String)
             {
-                return (string)v.refv;
+                return (string) v.refv;
             }
             return null;
         }
 
-        public static implicit operator byte[] (Member v)
+        public static implicit operator byte[](Member v)
         {
             if (v.type == MemberType.String)
             {
-                return (byte[])v.refv;
+                return (byte[]) v.refv;
             }
             return null;
         }

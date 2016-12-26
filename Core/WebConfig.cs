@@ -21,11 +21,11 @@
         /// The shard id when one service is divided into many shards
         public string shardid;
 
-        /// The outer socket address for external communication
-        public string outer;
+        /// The open socket address for external communication
+        public string addr;
 
-        /// The inner socket address for internal communication
-        public string inner;
+        /// The internal socket address for internal communication
+        public string secret;
 
         /// The services/addresses that this service references or depends on.
         public Obj references;
@@ -52,8 +52,8 @@
         public void Load(ISource src, byte bits = 0)
         {
             src.Get(nameof(shardid), ref shardid);
-            src.Get(nameof(outer), ref outer);
-            src.Get(nameof(inner), ref inner);
+            src.Get(nameof(addr), ref addr);
+            src.Get(nameof(secret), ref secret);
             src.Get(nameof(references), ref references);
             src.Get(nameof(db), ref db);
             src.Get(nameof(logging), ref logging);
@@ -63,8 +63,8 @@
         public void Dump<R>(ISink<R> snk, byte bits = 0) where R : ISink<R>
         {
             snk.Put(nameof(shardid), shardid);
-            snk.Put(nameof(outer), outer);
-            snk.Put(nameof(inner), inner);
+            snk.Put(nameof(addr), addr);
+            snk.Put(nameof(secret), secret);
             snk.Put(nameof(references), references);
             snk.Put(nameof(db), db);
             snk.Put(nameof(logging), logging);

@@ -13,7 +13,7 @@ namespace Greatbone.Sample
 
         public WwwService(WebConfig cfg) : base(cfg)
         {
-            shops = Clients.All("shop-");
+            shops = References.All("shop-");
         }
 
         ///

@@ -16,7 +16,7 @@ namespace Greatbone.Sample
                 port = 5432,
                 username = "postgres",
                 password = "GangShang721004",
-                queue = false
+                eq = false
             };
 
             WebAuth<Shop, Shop> auth = new WebAuth<Shop, Shop>(0x4a78be76, 0x1f0335e2);
@@ -27,8 +27,8 @@ namespace Greatbone.Sample
 
             if ((cfg = new WebConfig("www")
             {
-                outer = "http://127.0.0.1:8080",
-                inner = "http://127.0.0.1:7070",
+                addr = "http://127.0.0.1:8080",
+                secret = "http://127.0.0.1:7070",
                 references = new Obj{
                     new Member("shop-01", "http://127.0.0.1:7072"),
                 },
@@ -41,8 +41,8 @@ namespace Greatbone.Sample
             if ((cfg = new WebConfig("shop")
             {
                 shardid = "01",
-                outer = "http://127.0.0.1:8081",
-                inner = "http://127.0.0.1:7071",
+                addr = "http://127.0.0.1:8081",
+                secret = "http://127.0.0.1:7071",
                 references = new Obj{
                     new Member("shop-01", "http://127.0.0.1:7072"),
                 },

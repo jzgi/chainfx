@@ -14,10 +14,10 @@ namespace Greatbone.Core
         {
         }
 
-        /// To add null value
+        /// To add null property
         internal void AddNull(string name)
         {
-            Add(new Member(name, (Member?)null));
+            Add(new Member(name));
         }
 
         internal void Add(string name, Obj v)
@@ -343,19 +343,19 @@ namespace Greatbone.Core
                 MemberType typ = mbr.type;
                 if (typ == MemberType.Array)
                 {
-                    snk.Put(mbr.Name, (Arr)mbr);
+                    snk.Put(mbr.Name, (Arr) mbr);
                 }
                 else if (typ == MemberType.Object)
                 {
-                    snk.Put(mbr.Name, (Obj)mbr);
+                    snk.Put(mbr.Name, (Obj) mbr);
                 }
                 else if (typ == MemberType.String)
                 {
-                    snk.Put(mbr.Name, (string)mbr);
+                    snk.Put(mbr.Name, (string) mbr);
                 }
                 else if (typ == MemberType.Number)
                 {
-                    snk.Put(mbr.Name, (Number)mbr);
+                    snk.Put(mbr.Name, (Number) mbr);
                 }
                 else if (typ == MemberType.True)
                 {

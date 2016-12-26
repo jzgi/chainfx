@@ -5,8 +5,7 @@ namespace Greatbone.Core
     ///
     public struct JsonParse
     {
-
-        static readonly ParseException ParseEx = new ParseException("json");
+        static readonly ParseException ParseEx = new ParseException("invalid json format");
 
         // byte content to parse
         readonly byte[] bytebuf;
@@ -35,7 +34,7 @@ namespace Greatbone.Core
             this.str = new Str(256);
         }
 
-        int this[int index] => (bytebuf != null) ? bytebuf[index] : (int)strbuf[index];
+        int this[int index] => (bytebuf != null) ? bytebuf[index] : (int) strbuf[index];
 
         public object Parse()
         {
@@ -77,7 +76,7 @@ namespace Greatbone.Core
                     if (p >= count - 1) throw ParseEx;
                     int b = this[++p];
                     if (b == '"') break; // meet second quote
-                    else str.Add((char)b);
+                    else str.Add((char) b);
                 }
 
                 for (;;) // till a colon
@@ -168,12 +167,12 @@ namespace Greatbone.Core
                 if (b == '{')
                 {
                     Obj v = ParseObj(ref p);
-                    arr.Add(new Member(v));
+                    arr.Add(new Member(null, v));
                 }
                 else if (b == '[')
                 {
                     Arr v = ParseArr(ref p);
-                    arr.Add(new Member(v));
+                    arr.Add(new Member(null, v));
                 }
                 else if (b == '"')
                 {
@@ -187,17 +186,17 @@ namespace Greatbone.Core
                 else if (b == 't' || b == 'f')
                 {
                     bool v = ParseBool(ref p, b);
-                    arr.Add(new Member(v));
+                    arr.Add(new Member(null, v));
                 }
                 else if (b == '-' || b >= '0' && b <= '9')
                 {
                     Number v = ParseNumber(ref p, b);
-                    arr.Add(new Member(v));
+                    arr.Add(new Member(null, v));
                 }
                 else if (b == '&') // bytes extension
                 {
                     byte[] v = ParseBytes(p);
-                    arr.Add(new Member(v));
+                    arr.Add(new Member(null, v));
                 }
                 else throw ParseEx;
 
@@ -229,7 +228,7 @@ namespace Greatbone.Core
                 int b = this[++p];
                 if (esc)
                 {
-                    str.Add(b == '"' ? '"' : b == '\\' ? '\\' : b == 'b' ? '\b' : b == 'f' ? '\f' : b == 'n' ? '\n' : b == 'r' ? '\r' : b == 't' ? '\t' : (char)0);
+                    str.Add(b == '"' ? '"' : b == '\\' ? '\\' : b == 'b' ? '\b' : b == 'f' ? '\f' : b == 'n' ? '\n' : b == 'r' ? '\r' : b == 't' ? '\t' : (char) 0);
                     esc = !esc;
                 }
                 else
