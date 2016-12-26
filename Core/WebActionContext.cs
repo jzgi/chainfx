@@ -34,10 +34,10 @@ namespace Greatbone.Core
         {
             if (folder != null)
             {
-                if (var.Key == null) var = new Var(value, folder);
-                else if (var2.Key == null) var2 = new Var(value, folder);
+                if (var.Value == null) var = new Var(value, folder);
+                else if (var2.Value == null) var2 = new Var(value, folder);
             }
-            else if (sub.Key == null)
+            else if (sub.Value == null)
             {
                 sub = new Var(value, null);
             }

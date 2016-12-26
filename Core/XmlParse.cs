@@ -5,7 +5,7 @@ namespace Greatbone.Core
     ///
     public struct XmlParse
     {
-        static readonly ParseException ParseEx = new ParseException("xml");
+        static readonly ParseException ParseEx = new ParseException("error during xml parse");
 
         // byte content to parse
         readonly byte[] bytebuf;

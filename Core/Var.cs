@@ -3,21 +3,21 @@
 namespace Greatbone.Core
 {
     ///
-    /// A resolved variable key in the URI path.
+    /// A resolved variable part in the URI path.
     ///
     public struct Var
     {
-        readonly string key;
+        readonly string value;
 
         readonly WebFolder folder;
 
-        internal Var(string key, WebFolder folder)
+        internal Var(string value, WebFolder folder)
         {
-            this.key = key;
+            this.value = value;
             this.folder = folder;
         }
 
-        public string Key => key;
+        public string Value => value;
 
         public WebFolder Folder => folder;
 
@@ -27,7 +27,7 @@ namespace Greatbone.Core
 
         public static implicit operator bool(Var v)
         {
-            string str = v.key;
+            string str = v.value;
             if (str != null)
             {
                 return "true".Equals(str) || "1".Equals(str) || "on".Equals(str);
@@ -37,7 +37,7 @@ namespace Greatbone.Core
 
         public static implicit operator short(Var v)
         {
-            string str = v.key;
+            string str = v.value;
             if (str != null)
             {
                 short n;
@@ -51,7 +51,7 @@ namespace Greatbone.Core
 
         public static implicit operator int(Var v)
         {
-            string str = v.key;
+            string str = v.value;
             if (str != null)
             {
                 int n;
@@ -65,7 +65,7 @@ namespace Greatbone.Core
 
         public static implicit operator long(Var v)
         {
-            string str = v.key;
+            string str = v.value;
             if (str != null)
             {
                 long n;
@@ -79,7 +79,7 @@ namespace Greatbone.Core
 
         public static implicit operator decimal(Var v)
         {
-            string str = v.key;
+            string str = v.value;
             if (str != null)
             {
                 decimal n;
@@ -101,15 +101,15 @@ namespace Greatbone.Core
             return default(DateTime);
         }
 
-        public static implicit operator char[] (Var v)
+        public static implicit operator char[](Var v)
         {
-            string str = v.key;
+            string str = v.value;
             return str?.ToCharArray();
         }
 
         public static implicit operator string(Var v)
         {
-            return v.key;
+            return v.value;
         }
     }
 }
