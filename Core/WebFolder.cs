@@ -65,7 +65,7 @@ namespace Greatbone.Core
             }
             // create instance by reflection
             Type typ = typeof(F);
-            ConstructorInfo ci = typ.GetConstructor(new[] { typeof(WebFolderContext) });
+            ConstructorInfo ci = typ.GetConstructor(new[] {typeof(WebFolderContext)});
             if (ci == null)
             {
                 throw new WebException(typ + " missing WebFolderContext");
@@ -80,7 +80,7 @@ namespace Greatbone.Core
                 Directory = (Parent == null) ? name : Path.Combine(Parent.Directory, name),
                 Service = Service
             };
-            F folder = (F)ci.Invoke(new object[] { ctx });
+            F folder = (F) ci.Invoke(new object[] {ctx});
             children.Add(folder);
 
             return folder;
@@ -99,7 +99,7 @@ namespace Greatbone.Core
 
             // create instance
             Type typ = typeof(F);
-            ConstructorInfo ci = typ.GetConstructor(new[] { typeof(WebFolderContext) });
+            ConstructorInfo ci = typ.GetConstructor(new[] {typeof(WebFolderContext)});
             if (ci == null)
             {
                 throw new WebException(typ + " missing WebFolderContext");
@@ -114,7 +114,7 @@ namespace Greatbone.Core
                 Directory = (Parent == null) ? _VAR_ : Path.Combine(Parent.Directory, _VAR_),
                 Service = Service
             };
-            F folder = (F)ci.Invoke(new object[] { ctx });
+            F folder = (F) ci.Invoke(new object[] {ctx});
             variable = folder;
 
             return folder;
@@ -184,7 +184,7 @@ namespace Greatbone.Core
                 }
                 else
                 {
-                    ac.Status = 404; // not found
+                    ac.Reply(404); // not found
                 }
             }
 
@@ -219,7 +219,7 @@ namespace Greatbone.Core
                 }
                 else
                 {
-                    ac.Status = 404;
+                    ac.Reply(404);
                 }
             }
 
@@ -231,21 +231,21 @@ namespace Greatbone.Core
         {
             if (file.StartsWith("$")) // private resource
             {
-                ac.Status = 403; // forbidden
+                ac.Reply(403); // forbidden
                 return;
             }
 
             string ctyp;
             if (!StaticContent.TryGetCType(ext, out ctyp))
             {
-                ac.Status = 415; // unsupported media type
+                ac.Reply(415); // unsupported media type
                 return;
             }
 
             string path = Path.Combine(Directory, file);
             if (!File.Exists(path))
             {
-                ac.Status = 404; // not found
+                ac.Reply(404); // not found
                 return;
             }
 
@@ -253,7 +253,7 @@ namespace Greatbone.Core
             DateTime? since = ac.HeaderDateTime("If-Modified-Since");
             if (since != null && modified <= since)
             {
-                ac.Status = 304; // not modified
+                ac.Reply(304); // not modified
                 return;
             }
 
@@ -264,7 +264,7 @@ namespace Greatbone.Core
                 MimeType = ctyp,
                 Modified = modified
             };
-            ac.Set(200, sta, true, 5 * 60000);
+            ac.Reply(200, sta, true, 5 * 60000);
         }
 
         //

@@ -58,15 +58,15 @@ namespace Greatbone.Core
             {
                 if (header && ac.Token == null)
                 {
-                    ac.Status = 401; // unauthorized
+                    ac.Reply(401); // unauthorized
                     ac.SetHeader("WWW-Authenticate", "Bearer");
                     return false;
                 }
                 else if (cookie && ac.Token == null)
                 {
                     string loc = Service.Auth.SignOn + "?orig=" + ac.Uri;
+                    ac.Reply(303); // see other - redirect to signon url
                     ac.SetHeader("Location", loc);
-                    ac.Status = 303; // see other - redirect to signon url
                     return false;
                 }
 
@@ -74,7 +74,7 @@ namespace Greatbone.Core
                 {
                     if (!checks[i].Check(ac))
                     {
-                        ac.Status = 403; // forbidden
+                        ac.Reply(403); // forbidden
                         return false;
                     }
                 }

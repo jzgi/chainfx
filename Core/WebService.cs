@@ -208,7 +208,7 @@ namespace Greatbone.Core
                 Debug.WriteLine(e.Message);
                 if (e is ParseException)
                 {
-                    ac.Status = 400;
+                    ac.Reply(400);
                 }
                 else
                 {
@@ -327,11 +327,11 @@ namespace Greatbone.Core
 
                         cont.Add(id, name, time, body);
                     }
-                    ac.Set(200, cont);
+                    ac.Reply(200, cont);
                 }
                 else
                 {
-                    ac.Status = 204; // no content
+                    ac.Reply(204); // no content
                 }
             }
         }

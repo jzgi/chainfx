@@ -54,7 +54,7 @@ namespace Greatbone.Sample
                 string orig = frm[nameof(orig)];
                 if (string.IsNullOrEmpty(id) || string.IsNullOrEmpty(password))
                 {
-                    ac.Status = 400; return; // bad request
+                    ac.Reply(400); return; // bad request
                 }
                 using (var dc = Service.NewDbContext())
                 {
@@ -68,16 +68,16 @@ namespace Greatbone.Sample
                             string tokstr = Service.Auth.Encrypt(tok);
                             ac.SetHeader("Set-Cookie", tokstr);
                             ac.SetHeader("Location", "");
-                            ac.Status = 303; // see other (redirect)
+                            ac.Reply(303); // see other (redirect)
                         }
                         else
                         {
-                            ac.Status = 400;
+                            ac.Reply(400);
                         }
                     }
                     else
                     {
-                        ac.Status = 404;
+                        ac.Reply(404);
                     }
                 }
             }
@@ -169,10 +169,10 @@ namespace Greatbone.Sample
                     DbSql sql = new DbSql("INSERT INTO users")._(Shop.Empty)._VALUES_(Shop.Empty)._("");
                     if (dc.Execute(sql.ToString(), p => p.Put(shop)) > 0)
                     {
-                        ac.Status = 201; // created
+                        ac.Reply(201); // created
                     }
                     else
-                        ac.Status = 500; // internal server error
+                        ac.Reply(500); // internal server error
                 }
             }
         }
