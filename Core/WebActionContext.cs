@@ -28,7 +28,7 @@ namespace Greatbone.Core
         // two levels of variable keys
         Var var, var2;
 
-        Var sub;
+        Var arg;
 
         internal void ChainVar(string value, WebFolder folder)
         {
@@ -37,9 +37,9 @@ namespace Greatbone.Core
                 if (var.Value == null) var = new Var(value, folder);
                 else if (var2.Value == null) var2 = new Var(value, folder);
             }
-            else if (sub.Value == null)
+            else if (arg.Value == null)
             {
-                sub = new Var(value, null);
+                arg = new Var(value, null);
             }
         }
 
@@ -47,7 +47,7 @@ namespace Greatbone.Core
 
         public Var Var2 => var2;
 
-        public Var Sub => sub;
+        public Var Arg => arg;
 
         //
         // REQUEST

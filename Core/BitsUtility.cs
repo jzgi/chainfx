@@ -21,7 +21,7 @@
             LATE = 0x20,
 
             // many
-            DEEP = 0x10,
+            SUB = 0x10,
 
             // reserved
             RESV = 0x08;
