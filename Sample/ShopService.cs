@@ -9,6 +9,8 @@ namespace Greatbone.Sample
     ///
     public class ShopService : WebService
     {
+        static readonly WebClient WeChat = new WebClient("wechat", "http://sh.api.weixin.qq.com");
+
         readonly WebAction[] _new;
 
         public ShopService(WebConfig cfg) : base(cfg)
@@ -119,7 +121,6 @@ namespace Greatbone.Sample
         /// GET /[-page]
         /// </code>
         ///
-        [CheckAdmin]
         public void @default(WebActionContext ac)
         {
             int page = ac.Arg;
@@ -127,7 +128,7 @@ namespace Greatbone.Sample
 
             using (var dc = Service.NewDbContext())
             {
-                DbSql sql = new DbSql("SELECT ").columnlst(Shop.Empty, z)._("FROM shops WHERE ORDER BY id LIMIT 20 OFFSET @1");
+                DbSql sql = new DbSql("SELECT ").columnlst(Shop.Empty, z)._("FROM shops");
                 if (dc.Query(sql.ToString(), p => p.Put(20 * page)))
                 {
                     var shops = dc.ToDatas<Shop>(z);

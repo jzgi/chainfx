@@ -263,7 +263,8 @@ namespace Greatbone.Core
 
             cleaner.Start();
 
-            scheduler.Start();
+            if (references != null)
+                scheduler.Start();
         }
 
         public DbContext NewDbContext()

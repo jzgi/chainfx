@@ -15,7 +15,7 @@ namespace Greatbone.Sample
                 host = "106.14.45.109",
                 port = 5432,
                 username = "postgres",
-                password = "GangShang721004",
+                password = "721004",
                 eq = false
             };
 
@@ -25,31 +25,25 @@ namespace Greatbone.Sample
 
             WebConfig cfg;
 
-            if ((cfg = new WebConfig("www")
+            if ((cfg = new WebConfig("shop")
             {
                 addr = "http://127.0.0.1:8080",
                 secret = "http://127.0.0.1:7070",
-                references = new Obj{
-                    new Member("shop-01", "http://127.0.0.1:7072"),
-                },
-                db = pg
-            }).LoadJson())
-            {
-                services.Add(new WwwService(cfg) { Auth = auth });
-            }
-
-            if ((cfg = new WebConfig("shop")
-            {
-                shardid = "01",
-                addr = "http://127.0.0.1:8081",
-                secret = "http://127.0.0.1:7071",
-                references = new Obj{
-                    new Member("shop-01", "http://127.0.0.1:7072"),
-                },
                 db = pg
             }).LoadJson())
             {
                 services.Add(new ShopService(cfg) { Auth = auth });
+            }
+
+            if ((cfg = new WebConfig("chat")
+            {
+                shardid = "01",
+                addr = "http://127.0.0.1:8081",
+                secret = "http://127.0.0.1:7071",
+                db = pg
+            }).LoadJson())
+            {
+                services.Add(new ChatService(cfg) { Auth = auth });
             }
 
             WebService.Run(services);

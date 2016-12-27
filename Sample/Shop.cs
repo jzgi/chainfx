@@ -1,5 +1,6 @@
 ﻿using System;
 using Greatbone.Core;
+using NpgsqlTypes;
 using static Greatbone.Core.BitsUtility;
 
 namespace Greatbone.Sample
@@ -15,11 +16,10 @@ namespace Greatbone.Sample
         internal string name;
         internal string credential;
         internal string tel;
-        internal string district;
-        internal string appid;
-        internal string appsecret;
-        internal bool wepay; // wepay enabled
-        internal bool disabled;
+        internal NpgsqlPoint loc;
+        internal string prov;
+        internal string city;
+        internal short status;
 
         public string Key => id;
 
@@ -33,11 +33,10 @@ namespace Greatbone.Sample
             src.Get(nameof(name), ref name);
             if (bits.Has(RESV)) src.Get(nameof(credential), ref credential);
             src.Get(nameof(tel), ref tel);
-            src.Get(nameof(district), ref district);
-            src.Get(nameof(appid), ref appid);
-            src.Get(nameof(appsecret), ref appsecret);
-            src.Get(nameof(wepay), ref wepay);
-            src.Get(nameof(disabled), ref disabled);
+            src.Get(nameof(loc), ref loc);
+            src.Get(nameof(prov), ref prov);
+            src.Get(nameof(city), ref city);
+            src.Get(nameof(status), ref status);
         }
 
         public void Dump<R>(ISink<R> snk, byte bits = 0) where R : ISink<R>
@@ -46,11 +45,10 @@ namespace Greatbone.Sample
             snk.Put(nameof(name), name);
             if (bits.Has(RESV)) snk.Put(nameof(credential), credential);
             snk.Put(nameof(tel), tel);
-            snk.Put(nameof(district), district);
-            snk.Put(nameof(appid), appid);
-            snk.Put(nameof(appsecret), appsecret);
-            snk.Put(nameof(wepay), wepay);
-            snk.Put(nameof(disabled), disabled);
+            snk.Put(nameof(loc), loc);
+            snk.Put(nameof(prov), prov);
+            snk.Put(nameof(city), city);
+            snk.Put(nameof(status), status);
         }
 
         //
@@ -72,7 +70,7 @@ namespace Greatbone.Sample
                     {
                         // update access token
 
-                        accessToken = WeChatUtility.GetAccessToken(appid, appsecret);
+                        // accessToken = WeChatUtility.GetAccessToken(city, appsecret);
                     }
                     return accessToken;
                 }
