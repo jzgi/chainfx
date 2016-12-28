@@ -86,6 +86,11 @@ namespace Greatbone.Core
             ordinal = 0;
         }
 
+        public bool QueryA(DbSql sql, Action<DbParameters> p = null)
+        {
+            return QueryA(sql, p);
+        }
+
         public bool QueryA(string cmdtext, Action<DbParameters> p = null)
         {
             if (connection.State != ConnectionState.Open)
@@ -102,6 +107,11 @@ namespace Greatbone.Core
             }
             reader = command.ExecuteReader();
             return reader.Read();
+        }
+
+        public bool Query(DbSql sql, Action<DbParameters> p = null)
+        {
+            return Query(sql, p);
         }
 
         public bool Query(string cmdtext, Action<DbParameters> p = null)

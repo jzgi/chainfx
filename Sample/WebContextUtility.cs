@@ -18,7 +18,7 @@ namespace Greatbone.Sample
 
         }
 
-        public static void SendHtmlMajor(this WebActionContext wc, int status, string title, Action<HtmlContent> main, bool? pub = null, int maxage = 60000)
+        public static void ReplyHtmlMajor(this WebActionContext wc, int status, string title, Action<HtmlContent> main, bool? pub = null, int maxage = 60000)
         {
             HtmlContent cont = new HtmlContent(true, true, 8 * 1024)
             {
@@ -51,11 +51,11 @@ namespace Greatbone.Sample
             wc.Reply(status, cont, pub, maxage);
         }
 
-        public static void SendHtmlMinor(this WebActionContext wc, int status, string header, Action<HtmlContent> main, bool? pub = null, int maxage = 60000)
+        public static void ReplyHtmlMinor(this WebActionContext wc, int status, string header, Action<HtmlContent> main, bool? pub = null, int maxage = 60000)
         {
         }
 
-        public static void SendHtmlDialog(this WebActionContext wc, int status, Action<HtmlContent> main, bool? pub = null, int maxage = 60000)
+        public static void ReplyHtmlDialog(this WebActionContext wc, int status, Action<HtmlContent> main, bool? pub = null, int maxage = 60000)
         {
             HtmlContent cont = new HtmlContent(true, true, 8 * 1024)
             {

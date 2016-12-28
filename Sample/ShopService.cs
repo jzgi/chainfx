@@ -42,7 +42,7 @@ namespace Greatbone.Sample
                 string password = frm[nameof(password)];
                 string orig = frm[nameof(orig)];
 
-                ac.SendHtmlMajor(200, "", main =>
+                ac.ReplyHtmlMajor(200, "", main =>
                 {
                     main.Form(null, x => x.input_button());
                 });
@@ -62,7 +62,7 @@ namespace Greatbone.Sample
                 {
                     if (dc.QueryA("SELECT * FROM shops WHERE id = @1", (p) => p.Put(id)))
                     {
-                        var tok = dc.ToData<ShopToken>();
+                        var tok = dc.ToData<Token>();
                         string credential = StrUtility.MD5(id + ':' + password);
                         if (credential.Equals(tok.credential))
                         {
@@ -86,6 +86,34 @@ namespace Greatbone.Sample
         }
 
         ///
+        /// Get shop list.
+        ///
+        /// <code>
+        /// GET /[-page]
+        /// </code>
+        ///
+        public void @default(WebActionContext ac)
+        {
+            int page = ac.Arg;
+            const byte z = 0xff ^ BIN;
+
+            using (var dc = Service.NewDbContext())
+            {
+                DbSql sql = new DbSql("SELECT ").columnlst(Shop.Empty, z)._("FROM shops");
+                if (dc.Query(sql, p => p.Put(20 * page)))
+                {
+                    var shops = dc.ToDatas<Shop>(z);
+                    ac.ReplyHtmlMajor(200, "", main =>
+                    {
+                        main.Form(_new, shops);
+                    });
+                }
+                else
+                    ac.ReplyHtmlMajor(200, "没有记录", main => { });
+            }
+        }
+
+        ///
         /// Get nearest shops
         ///
         /// <code>
@@ -102,13 +130,13 @@ namespace Greatbone.Sample
                 if (dc.Query(sql.ToString(), p => p.Put(pt)))
                 {
                     var shops = dc.ToDatas<Shop>();
-                    ac.SendHtmlMajor(200, "", main =>
+                    ac.ReplyHtmlMajor(200, "", main =>
                     {
                         main.Form(_new, shops);
                     });
                 }
                 else
-                    ac.SendHtmlMajor(200, "没有记录", main => { });
+                    ac.ReplyHtmlMajor(200, "没有记录", main => { });
             }
         }
 
@@ -121,7 +149,7 @@ namespace Greatbone.Sample
         /// GET /[-page]
         /// </code>
         ///
-        public void @default(WebActionContext ac)
+        public void mgmt(WebActionContext ac)
         {
             int page = ac.Arg;
             const byte z = 0xff ^ BIN;
@@ -132,13 +160,13 @@ namespace Greatbone.Sample
                 if (dc.Query(sql.ToString(), p => p.Put(20 * page)))
                 {
                     var shops = dc.ToDatas<Shop>(z);
-                    ac.SendHtmlMajor(200, "", main =>
+                    ac.ReplyHtmlMajor(200, "", main =>
                     {
                         main.Form(_new, shops);
                     });
                 }
                 else
-                    ac.SendHtmlMajor(200, "没有记录", main => { });
+                    ac.ReplyHtmlMajor(200, "没有记录", main => { });
             }
         }
 
@@ -184,7 +212,7 @@ namespace Greatbone.Sample
         {
             if (Children != null)
             {
-                ac.SendHtmlMajor(200, "模块管理", a =>
+                ac.ReplyHtmlMajor(200, "模块管理", a =>
                     {
                         for (int i = 0; i < Children.Count; i++)
                         {

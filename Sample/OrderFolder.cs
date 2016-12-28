@@ -3,11 +3,11 @@
 namespace Greatbone.Sample
 {
     ///
-    /// /-shopid-/myorder/
+    /// /order/
     ///
-    public class MyOrderFolder : WebFolder
+    public class OrderFolder : WebFolder
     {
-        public MyOrderFolder(WebFolderContext fc) : base(fc)
+        public OrderFolder(WebFolderContext fc) : base(fc)
         {
             MakeVariable<MyOrderVariableFolder>();
         }

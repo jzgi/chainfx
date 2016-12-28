@@ -11,10 +11,10 @@ namespace Greatbone.Sample
 
         public ShopVariableFolder(WebFolderContext dc) : base(dc)
         {
-            Make<MyCartFolder>("mycart");
+            Make<BasketFolder>("mycart");
 
             // order functions
-            Make<MyOrderFolder>("myorder");
+            Make<OrderFolder>("myorder");
 
             _re_menu_ = Action(nameof(remenu));
         }
@@ -37,12 +37,12 @@ namespace Greatbone.Sample
                 if (dc.Query(sql.ToString(), p => p.Put(shopid)))
                 {
                     var items = dc.ToDatas<Item>();
-                    ac.SendHtmlMajor(200, "", main =>
+                    ac.ReplyHtmlMajor(200, "", main =>
                     {
                     });
                 }
                 else
-                    ac.SendHtmlMajor(200, "没有记录", main => { });
+                    ac.ReplyHtmlMajor(200, "没有记录", main => { });
             }
         }
 
@@ -63,7 +63,7 @@ namespace Greatbone.Sample
                 if (dc.Query(sql.ToString(), p => p.Put(shopid)))
                 {
                     var items = dc.ToDatas<Item>();
-                    ac.SendHtmlMajor(200, "", main =>
+                    ac.ReplyHtmlMajor(200, "", main =>
                     {
                         main.Form(_re_menu_, p =>
                         {
@@ -72,7 +72,7 @@ namespace Greatbone.Sample
                     });
                 }
                 else
-                    ac.SendHtmlMajor(200, "没有记录", main => { });
+                    ac.ReplyHtmlMajor(200, "没有记录", main => { });
             }
         }
 

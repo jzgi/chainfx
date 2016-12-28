@@ -3,11 +3,11 @@
 namespace Greatbone.Sample
 {
     ///
-    /// /-shopid-/mycart/
+    /// /basket/
     ///
-    public class MyCartFolder : WebFolder
+    public class BasketFolder : WebFolder
     {
-        public MyCartFolder(WebFolderContext dc) : base(dc)
+        public BasketFolder(WebFolderContext dc) : base(dc)
         {
         }
 
