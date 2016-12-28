@@ -27,19 +27,29 @@ namespace Greatbone.Sample
 
             if ((cfg = new WebConfig("shop")
             {
-                addr = "http://127.0.0.1:8080",
-                secret = "http://127.0.0.1:7070",
+                pub = "http://127.0.0.1:8080",
+                intern = "http://127.0.0.1:7070",
                 db = pg
             }).LoadJson())
             {
                 services.Add(new ShopService(cfg) { Auth = auth });
             }
 
+            if ((cfg = new WebConfig("tran")
+            {
+                pub = "http://127.0.0.1:8081",
+                intern = "http://127.0.0.1:7071",
+                db = pg
+            }).LoadJson())
+            {
+                services.Add(new TransactService(cfg) { Auth = auth });
+            }
+
             if ((cfg = new WebConfig("chat")
             {
                 shardid = "01",
-                addr = "http://127.0.0.1:8081",
-                secret = "http://127.0.0.1:7071",
+                pub = "http://127.0.0.1:8081",
+                intern = "http://127.0.0.1:7071",
                 db = pg
             }).LoadJson())
             {

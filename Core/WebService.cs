@@ -64,8 +64,8 @@ namespace Greatbone.Core
             KestrelServerOptions options = new KestrelServerOptions();
             server = new KestrelServer(Options.Create(options), Lifetime, factory);
             ICollection<string> addrs = server.Features.Get<IServerAddressesFeature>().Addresses;
-            addrs.Add(cfg.addr);
-            addrs.Add(cfg.secret);
+            addrs.Add(cfg.pub);
+            addrs.Add(cfg.intern);
 
             // init event hooks
             Type typ = GetType();
@@ -84,7 +84,7 @@ namespace Greatbone.Core
             }
 
             // init refers
-            Obj refs = cfg.references;
+            Obj refs = cfg.cluster;
             if (refs != null)
             {
                 for (int i = 0; i < refs.Count; i++)
@@ -254,9 +254,9 @@ namespace Greatbone.Core
 
             Console.Write(Name);
             Console.Write(" -> ");
-            Console.Write(Config.addr);
+            Console.Write(Config.pub);
             Console.Write(", ");
-            Console.Write(Config.secret);
+            Console.Write(Config.intern);
             Console.WriteLine();
 
             INF("started");

@@ -22,13 +22,13 @@
         public string shardid;
 
         /// The open socket address for external communication
-        public string addr;
+        public string pub;
 
         /// The internal socket address for internal communication
-        public string secret;
+        public string intern;
 
         /// The services/addresses that this service references or depends on.
-        public Obj references;
+        public Obj cluster;
 
         /// The database connectivity attributes.
         public DbConfig db;
@@ -52,9 +52,9 @@
         public void Load(ISource src, byte bits = 0)
         {
             src.Get(nameof(shardid), ref shardid);
-            src.Get(nameof(addr), ref addr);
-            src.Get(nameof(secret), ref secret);
-            src.Get(nameof(references), ref references);
+            src.Get(nameof(pub), ref pub);
+            src.Get(nameof(intern), ref intern);
+            src.Get(nameof(cluster), ref cluster);
             src.Get(nameof(db), ref db);
             src.Get(nameof(logging), ref logging);
             src.Get(nameof(cache), ref cache);
@@ -63,9 +63,9 @@
         public void Dump<R>(ISink<R> snk, byte bits = 0) where R : ISink<R>
         {
             snk.Put(nameof(shardid), shardid);
-            snk.Put(nameof(addr), addr);
-            snk.Put(nameof(secret), secret);
-            snk.Put(nameof(references), references);
+            snk.Put(nameof(pub), pub);
+            snk.Put(nameof(intern), intern);
+            snk.Put(nameof(cluster), cluster);
             snk.Put(nameof(db), db);
             snk.Put(nameof(logging), logging);
             snk.Put(nameof(cache), cache);

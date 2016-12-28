@@ -138,7 +138,7 @@ namespace Greatbone.Core
             long? clen = Request.ContentLength;
             if (clen <= 0) return null;
 
-            int len = (int) clen;
+            int len = (int)clen;
             byte[] bytebuf = BufferUtility.BorrowByteBuf(len); // borrow from the pool
             int count = await Request.Body.ReadAsync(bytebuf, 0, len);
 
@@ -242,39 +242,36 @@ namespace Greatbone.Core
         public bool? Pub { get; internal set; }
 
         // the content  is to be considered stale after its age is greater than the specified number of seconds.
-        public int MaxAge { get; internal set; }
+        public int Seconds { get; internal set; }
 
-        public void Reply(int status, IContent cont = null, bool? pub = null, int maxage = 60000)
+        public void Reply(int status, IContent cont = null, bool? pub = null, int seconds = 5)
         {
             Response.StatusCode = status;
             Content = cont;
             Pub = pub;
-            MaxAge = maxage;
+            Seconds = seconds;
         }
 
-        public void ReplyString(int status, string text, bool? pub = null, int maxage = 60000)
+        public void Reply(int status, string str, bool? pub = null, int seconds = 30)
         {
             StrContent cont = new StrContent(true, true);
-            cont.Add(text);
+            cont.Add(str);
 
-            Reply(status, cont, pub, maxage);
+            Reply(status, cont, pub, seconds);
         }
 
-        public void ReplyJson<D>(int status, D data, byte z = 0, bool? pub = null, int maxage = 60000) where D : IData
-        {
-            ReplyJson(status, cont => cont.Put(null, data, z), pub, maxage);
-        }
-
-        public void ReplyJson<D>(int status, D[] datas, byte z = 0, bool? pub = null, int maxage = 60000) where D : IData
-        {
-            ReplyJson(status, cont => cont.Put(null, datas, z), pub, maxage);
-        }
-
-        public void ReplyJson(int status, Action<JsonContent> a, bool? pub = null, int maxage = 60000)
+        public void Reply(int status, IData data, byte bits = 0, bool? pub = null, int seconds = 30)
         {
             JsonContent cont = new JsonContent(true, true, 4 * 1024);
-            a?.Invoke(cont);
-            Reply(status, cont, pub, maxage);
+            cont.Put(null, data, bits);
+            Reply(status, cont, pub, seconds);
+        }
+
+        public void Reply(int status, IData[] datas, byte bits = 0, bool? pub = null, int seconds = 30)
+        {
+            JsonContent cont = new JsonContent(true, true, 4 * 1024);
+            cont.Put(null, datas, bits);
+            Reply(status, cont, pub, seconds);
         }
 
         internal async Task SendAsync()
@@ -283,7 +280,7 @@ namespace Greatbone.Core
 
             if (Pub != null)
             {
-                string cc = Pub.Value ? "public" : "private" + ", max-age=" + MaxAge;
+                string cc = Pub.Value ? "public" : "private" + ", max-age=" + Seconds * 1000;
                 SetHeader("Cache-Control", cc);
             }
 
@@ -297,7 +294,7 @@ namespace Greatbone.Core
                 // cache indicators
                 if (Content is DynamicContent) // set etag
                 {
-                    ulong etag = ((DynamicContent) Content).ETag;
+                    ulong etag = ((DynamicContent)Content).ETag;
                     SetHeader("ETag", StrUtility.ToHex(etag));
                 }
 

@@ -7,13 +7,13 @@ namespace Greatbone.Sample
     ///
     /// The shop operation service.
     ///
-    public class ShopService : WebService
+    public class TransactService : WebService
     {
         static readonly WebClient WeChat = new WebClient("wechat", "http://sh.api.weixin.qq.com");
 
         readonly WebAction[] _new;
 
-        public ShopService(WebConfig cfg) : base(cfg)
+        public TransactService(WebConfig cfg) : base(cfg)
         {
             MakeVariable<ShopVariableFolder>();
 
@@ -142,33 +142,6 @@ namespace Greatbone.Sample
 
         #region MANAGEMENT
 
-        ///
-        /// Get shop list.
-        ///
-        /// <code>
-        /// GET /[-page]
-        /// </code>
-        ///
-        public void mgmtz(WebActionContext ac)
-        {
-            int page = ac.Arg;
-            const byte z = 0xff ^ BIN;
-
-            using (var dc = Service.NewDbContext())
-            {
-                DbSql sql = new DbSql("SELECT ").columnlst(Shop.Empty, z)._("FROM shops");
-                if (dc.Query(sql.ToString(), p => p.Put(20 * page)))
-                {
-                    var shops = dc.ToDatas<Shop>(z);
-                    ac.ReplyHtmlMajor(200, "", main =>
-                    {
-                        main.Form(_new, shops);
-                    });
-                }
-                else
-                    ac.ReplyHtmlMajor(200, "没有记录", main => { });
-            }
-        }
 
         /// Create a new shop
         ///
