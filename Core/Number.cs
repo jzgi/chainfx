@@ -36,7 +36,10 @@ namespace Greatbone.Core
         internal bool Pt
         {
             get { return pt >= 0; }
-            set { if (value) pt = 0; }
+            set
+            {
+                if (value) pt = 0;
+            }
         }
 
         internal void Add(int b)
@@ -47,29 +50,44 @@ namespace Greatbone.Core
                 fract = fract * 10 + n;
                 pt++;
             }
-            else { bigint = bigint * 10 + n; }
+            else
+            {
+                bigint = bigint * 10 + n;
+            }
         }
 
-        internal long Double => negative ? -bigint : bigint;
+        internal double Double => (double) Decimal;
 
         internal long Long => negative ? -bigint : bigint;
 
-        internal int Int => negative ? (int)-bigint : (int)bigint;
+        internal int Int => negative ? (int) -bigint : (int) bigint;
 
-        internal short Short => negative ? (short)-bigint : (short)bigint;
+        internal short Short => negative ? (short) -bigint : (short) bigint;
 
         internal decimal Decimal
         {
             get
             {
-                int bits = Bits(fract);
-                int lo = (int)(bigint << bits) | fract;
-                int mid = (int)(bigint >> (32 - bits));
-                int hi = (int)(bigint >> (64 - bits));
-                byte scale = (byte)(pt - 1);
+                int bits = Pow(fract);
+                int lo = (int) ((bigint << bits) + fract);
+                int mid = (int) (bigint >> (32 - bits));
+                int hi = (int) (bigint >> (64 - bits));
+                byte scale = (byte) (pt - 1);
 
                 return new decimal(lo, mid, hi, negative, scale);
             }
+        }
+
+        static int Pow(int n)
+        {
+            int i = 0;
+            int sum = 1;
+            while (sum < n)
+            {
+                sum <<= 1;
+                i++;
+            }
+            return i;
         }
 
         // sparse bit count
