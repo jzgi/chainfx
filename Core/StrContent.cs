@@ -5,7 +5,7 @@ namespace Greatbone.Core
     {
         const int InitialCapacity = 256;
 
-        public StrContent(bool binary, bool pooled, int capacity = InitialCapacity) : base(binary, pooled, capacity)
+        public StrContent(bool sendable, bool pooled, int capacity = InitialCapacity) : base(sendable, pooled, capacity)
         {
         }
 

@@ -16,7 +16,7 @@ namespace Greatbone.Core
         // current level
         int level;
 
-        public JsonContent(bool binary, bool pooled, int capacity = InitialCapacity) : base(binary, pooled, capacity)
+        public JsonContent(bool sendable, bool pooled, int capacity = InitialCapacity) : base(sendable, pooled, capacity)
         {
             counts = new int[8];
             level = 0;

@@ -138,7 +138,7 @@ namespace Greatbone.Core
             long? clen = Request.ContentLength;
             if (clen <= 0) return null;
 
-            int len = (int)clen;
+            int len = (int) clen;
             byte[] bytebuf = BufferUtility.BorrowByteBuf(len); // borrow from the pool
             int count = await Request.Body.ReadAsync(bytebuf, 0, len);
 
@@ -244,12 +244,17 @@ namespace Greatbone.Core
         // the content  is to be considered stale after its age is greater than the specified number of seconds.
         public int Seconds { get; internal set; }
 
-        public void Reply(int status, IContent cont = null, bool? pub = null, int seconds = 5)
+        public void Reply(int status, IContent content, bool? pub = null, int seconds = 5)
         {
             Response.StatusCode = status;
-            Content = cont;
+            Content = content;
             Pub = pub;
             Seconds = seconds;
+        }
+
+        public void Reply(int status, bool? pub = null, int seconds = 5)
+        {
+            Reply(status, (IContent) null, pub, seconds);
         }
 
         public void Reply(int status, string str, bool? pub = null, int seconds = 30)
@@ -267,7 +272,7 @@ namespace Greatbone.Core
             Reply(status, cont, pub, seconds);
         }
 
-        public void Reply(int status, IData[] datas, byte bits = 0, bool? pub = null, int seconds = 30)
+        public void Reply<D>(int status, D[] datas, byte bits = 0, bool? pub = null, int seconds = 30) where D : IData
         {
             JsonContent cont = new JsonContent(true, true, 4 * 1024);
             cont.Put(null, datas, bits);
@@ -294,7 +299,7 @@ namespace Greatbone.Core
                 // cache indicators
                 if (Content is DynamicContent) // set etag
                 {
-                    ulong etag = ((DynamicContent)Content).ETag;
+                    ulong etag = ((DynamicContent) Content).ETag;
                     SetHeader("ETag", StrUtility.ToHex(etag));
                 }
 

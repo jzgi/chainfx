@@ -1548,7 +1548,7 @@ namespace Greatbone.Core
 
         public string MimeType { get; set; }
 
-        public bool Binary => true;
+        public bool Senable => true;
 
         public bool Poolable => pooled;
 

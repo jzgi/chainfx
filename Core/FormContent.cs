@@ -10,7 +10,7 @@ namespace Greatbone.Core
     {
         const int InitialCapacity = 512;
 
-        public FormContent(bool binary, bool pooled, int capacity = InitialCapacity) : base(binary, pooled, capacity)
+        public FormContent(bool sendable, bool pooled, int capacity = InitialCapacity) : base(sendable, pooled, capacity)
         {
         }
 

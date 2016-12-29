@@ -120,7 +120,7 @@ namespace Greatbone.Core
             {
                 return false;
             }
-            if (cont.Binary)
+            if (cont.Senable)
             {
                 Return(cont.ByteBuffer);
             }

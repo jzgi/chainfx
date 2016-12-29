@@ -16,7 +16,7 @@ namespace Greatbone.Core
     {
         static readonly char[] DIGIT =
         {
-            '0',  '1',  '2',  '3',  '4',  '5',  '6',  '7',  '8',  '9'
+            '0', '1', '2', '3', '4', '5', '6', '7', '8', '9'
         };
 
         // hexidecimal characters
@@ -26,7 +26,8 @@ namespace Greatbone.Core
         };
 
         // sexagesimal numbers
-        protected static readonly string[] SEX = {
+        protected static readonly string[] SEX =
+        {
             "00", "01", "02", "03", "04", "05", "06", "07", "08", "09",
             "10", "11", "12", "13", "14", "15", "16", "17", "18", "19",
             "20", "21", "22", "23", "24", "25", "26", "27", "28", "29",
@@ -93,10 +94,10 @@ namespace Greatbone.Core
         // byte-wise etag checksum, for text-based output only
         protected ulong checksum;
 
-        protected DynamicContent(bool binary, bool pooled, int capacity)
+        protected DynamicContent(bool sendable, bool pooled, int capacity)
         {
             this.pooled = pooled;
-            if (binary)
+            if (sendable)
             {
                 bytebuf = pooled ? BufferUtility.BorrowByteBuf(capacity) : new byte[capacity];
             }
@@ -109,7 +110,7 @@ namespace Greatbone.Core
 
         public abstract string MimeType { get; }
 
-        public bool Binary => bytebuf != null;
+        public bool Senable => bytebuf != null;
 
         public byte[] ByteBuffer => bytebuf;
 
@@ -145,26 +146,26 @@ namespace Greatbone.Core
 
         public void Add(char c)
         {
-            if (Binary) // byte-oriented
+            if (Senable) // byte-oriented
             {
                 // UTF-8 encoding but without surrogate support
                 if (c < 0x80)
                 {
                     // have at most seven bits
-                    AddByte((byte)c);
+                    AddByte((byte) c);
                 }
                 else if (c < 0x800)
                 {
                     // 2 char, 11 bits
-                    AddByte((byte)(0xc0 | (c >> 6)));
-                    AddByte((byte)(0x80 | (c & 0x3f)));
+                    AddByte((byte) (0xc0 | (c >> 6)));
+                    AddByte((byte) (0x80 | (c & 0x3f)));
                 }
                 else
                 {
                     // 3 char, 16 bits
-                    AddByte((byte)(0xe0 | ((c >> 12))));
-                    AddByte((byte)(0x80 | ((c >> 6) & 0x3f)));
-                    AddByte((byte)(0x80 | (c & 0x3f)));
+                    AddByte((byte) (0xe0 | ((c >> 12))));
+                    AddByte((byte) (0x80 | ((c >> 6) & 0x3f)));
+                    AddByte((byte) (0x80 | (c & 0x3f)));
                 }
             }
             else // char-oriented
@@ -240,7 +241,7 @@ namespace Greatbone.Core
         {
             if (v == 0)
             {
-                AddByte((byte)'0');
+                AddByte((byte) '0');
                 return;
             }
             int x = v; // convert to int
@@ -268,7 +269,7 @@ namespace Greatbone.Core
         {
             if (v >= short.MinValue && v <= short.MaxValue)
             {
-                Add((short)v);
+                Add((short) v);
                 return;
             }
 
@@ -296,7 +297,7 @@ namespace Greatbone.Core
         {
             if (v >= int.MinValue && v <= int.MaxValue)
             {
-                Add((int)v);
+                Add((int) v);
                 return;
             }
 
@@ -350,7 +351,7 @@ namespace Greatbone.Core
         }
 
         // sign mask
-        private const int Sign = unchecked((int)0x80000000);
+        private const int Sign = unchecked((int) 0x80000000);
 
         public void Add(decimal dec, bool money)
         {
@@ -365,7 +366,7 @@ namespace Greatbone.Core
                 }
                 if (mid != 0) // money
                 {
-                    long x = (low & 0x00ffffff) + ((long)(byte)(low >> 24) << 24) + ((long)mid << 32);
+                    long x = (low & 0x00ffffff) + ((long) (byte) (low >> 24) << 24) + ((long) mid << 32);
                     bool bgn = false;
                     for (int i = LONG.Length - 1; i >= 2; i--)
                     {
@@ -422,9 +423,9 @@ namespace Greatbone.Core
 
         public void Add(DateTime v)
         {
-            short yr = (short)v.Year;
-            byte mon = (byte)v.Month,
-            day = (byte)v.Day;
+            short yr = (short) v.Year;
+            byte mon = (byte) v.Month,
+                day = (byte) v.Day;
 
             // yyyy-mm-dd
             if (yr < 1000) Add('0');

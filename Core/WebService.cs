@@ -318,7 +318,7 @@ namespace Greatbone.Core
 
                 if (dc.Query(sql.ToString(), p => p.Put(lastid.Value)))
                 {
-                    EventsContent cont = new EventsContent(true, 1024 * 1024);
+                    EventBagContent cont = new EventBagContent(true, 1024 * 1024);
                     while (dc.NextRow())
                     {
                         long id = dc.GetLong();
