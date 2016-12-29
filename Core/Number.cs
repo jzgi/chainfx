@@ -5,6 +5,20 @@ namespace Greatbone.Core
     ///
     public struct Number
     {
+        static readonly int[] INT =
+        {
+            1,
+            10,
+            100,
+            1000,
+            10000,
+            100000,
+            1000000,
+            10000000,
+            100000000,
+            1000000000
+        };
+
         // the integral part
         internal long bigint;
 
@@ -56,25 +70,27 @@ namespace Greatbone.Core
             }
         }
 
-        internal double Double => (double) Decimal;
+        internal double Double => (double)Decimal;
 
         internal long Long => negative ? -bigint : bigint;
 
-        internal int Int => negative ? (int) -bigint : (int) bigint;
+        internal int Int => negative ? (int)-bigint : (int)bigint;
 
-        internal short Short => negative ? (short) -bigint : (short) bigint;
+        internal short Short => negative ? (short)-bigint : (short)bigint;
 
         internal decimal Decimal
         {
             get
             {
-                int bits = Pow(fract);
-                int lo = (int) ((bigint << bits) + fract);
-                int mid = (int) (bigint >> (32 - bits));
-                int hi = (int) (bigint >> (64 - bits));
-                byte scale = (byte) (pt - 1);
+                if (pt <= 0) return new decimal(bigint);
 
-                return new decimal(lo, mid, hi, negative, scale);
+                int bits = Pow(fract);
+                long v = bigint * INT[pt] + fract;
+                int lo = (int)v;
+                int mid = (int)(v >> 32);
+                byte scale = (byte)pt;
+
+                return new decimal(lo, mid, 0, negative, scale);
             }
         }
 

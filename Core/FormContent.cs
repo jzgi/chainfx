@@ -8,9 +8,7 @@ namespace Greatbone.Core
     /// 
     public class FormContent : DynamicContent, ISink<FormContent>
     {
-        const int InitialCapacity = 512;
-
-        public FormContent(bool sendable, bool pooled, int capacity = InitialCapacity) : base(sendable, pooled, capacity)
+        public FormContent(bool sendable, bool pooled, int capacity = 4092) : base(sendable, pooled, capacity)
         {
         }
 
