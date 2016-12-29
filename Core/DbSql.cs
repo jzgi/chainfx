@@ -8,9 +8,6 @@ namespace Greatbone.Core
     ///
     public class DbSql : DynamicContent, ISink<DbSql>
     {
-        const int InitialCapacity = 1024;
-
-
         // contexts
         const sbyte ColumnList = 1, ParameterList = 2, SetList = 3;
 
@@ -20,8 +17,11 @@ namespace Greatbone.Core
         // used when generating a list
         internal int ordinal;
 
+        public DbSql(bool sendable, bool poolable, int capacity = 1024) : base(sendable, poolable, capacity)
+        {
+        }
 
-        public DbSql(string str) : base(false, false, InitialCapacity)
+        public DbSql(string str) : base(false, true, 1024)
         {
             Add(str);
         }

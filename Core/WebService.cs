@@ -31,7 +31,7 @@ namespace Greatbone.Core
         readonly KestrelServer server;
 
         // client connectivity to the related peers
-        readonly Roll<WebClient> references;
+        readonly Roll<WebClient> cluster;
 
         // event hooks
         readonly Roll<WebEvent> events;
@@ -92,11 +92,11 @@ namespace Greatbone.Core
                     Member mbr = refs[i];
                     string name = mbr.Name; // service instance id
                     string addr = mbr;
-                    if (this.references == null)
+                    if (this.cluster == null)
                     {
-                        this.references = new Roll<WebClient>(refs.Count * 2);
+                        this.cluster = new Roll<WebClient>(refs.Count * 2);
                     }
-                    this.references.Add(new WebClient(name, addr));
+                    this.cluster.Add(new WebClient(name, addr));
                 }
             }
 
@@ -120,7 +120,7 @@ namespace Greatbone.Core
 
         public Roll<WebEvent> Events => events;
 
-        public Roll<WebClient> References => references;
+        public Roll<WebClient> Cluster => cluster;
 
         public WebConfig Config => (WebConfig)context;
 
@@ -261,10 +261,10 @@ namespace Greatbone.Core
 
             INF("started");
 
-            cleaner.Start();
+//            cleaner.Start();
 
-            if (references != null)
-                scheduler.Start();
+            // if (cluster != null)
+            //     scheduler.Start();
         }
 
         public DbContext NewDbContext()
@@ -286,9 +286,9 @@ namespace Greatbone.Core
 
         internal WebClient GetClient(string svcid)
         {
-            for (int i = 0; i < references.Count; i++)
+            for (int i = 0; i < cluster.Count; i++)
             {
-                WebClient cli = references[i];
+                WebClient cli = cluster[i];
                 if (cli.Name.Equals(svcid)) return cli;
             }
             return null;
@@ -341,9 +341,9 @@ namespace Greatbone.Core
         {
             while (!stop)
             {
-                for (int i = 0; i < References.Count; i++)
+                for (int i = 0; i < Cluster.Count; i++)
                 {
-                    WebClient conn = References[i];
+                    WebClient conn = Cluster[i];
 
                     // schedule
                 }

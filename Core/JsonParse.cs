@@ -34,7 +34,7 @@ namespace Greatbone.Core
             this.str = new Str(256);
         }
 
-        int this[int index] => (bytebuf != null) ? bytebuf[index] : (int) strbuf[index];
+        int this[int index] => bytebuf?[index] ?? (int) strbuf[index];
 
         public object Parse()
         {
@@ -76,7 +76,7 @@ namespace Greatbone.Core
                     if (p >= count - 1) throw ParseEx;
                     int b = this[++p];
                     if (b == '"') break; // meet second quote
-                    else str.Add((char) b);
+                    str.Add((char) b);
                 }
 
                 for (;;) // till a colon

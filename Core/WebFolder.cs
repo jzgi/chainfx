@@ -167,7 +167,7 @@ namespace Greatbone.Core
             int slash = relative.IndexOf('/');
             if (slash == -1) // handle it locally
             {
-                DoRsc(relative, ac);
+                Do(relative, ac);
             }
             else // dispatch to child or var
             {
@@ -192,7 +192,7 @@ namespace Greatbone.Core
             AfterDo(ac);
         }
 
-        internal void DoRsc(string rsc, WebActionContext ac)
+        internal void Do(string rsc, WebActionContext ac)
         {
             ac.Folder = this;
 

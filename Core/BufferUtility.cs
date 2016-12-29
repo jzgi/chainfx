@@ -12,20 +12,19 @@ namespace Greatbone.Core
 
         static readonly Que<byte[]>[] BQues =
         {
-            new Que<byte[]>(1024 * 4, Cores * 64),
-            new Que<byte[]>(1024 * 16, Cores * 32),
-            new Que<byte[]>(1024 * 64, Cores * 16),
-            new Que<byte[]>(1024 * 256, Cores * 8),
-            new Que<byte[]>(1024 * 1024, Cores * 4),
+            new Que<byte[]>(1024 * 4, Cores * 32),
+            new Que<byte[]>(1024 * 16, Cores * 16),
+            new Que<byte[]>(1024 * 64, Cores * 8),
+            new Que<byte[]>(1024 * 256, Cores * 4),
+            new Que<byte[]>(1024 * 1024, Cores * 2),
         };
 
         static readonly Que<char[]>[] CQues =
         {
-            new Que<char[]>(1024 * 1, Cores * 64),
-            new Que<char[]>(1024 * 4, Cores * 32),
-            new Que<char[]>(1024 * 16, Cores * 16),
-            new Que<char[]>(1024 * 64, Cores * 8),
-            new Que<char[]>(1024 * 256, Cores * 4),
+            new Que<char[]>(1024 * 1, Cores * 16),
+            new Que<char[]>(1024 * 4, Cores * 8),
+            new Que<char[]>(1024 * 16, Cores * 4),
+            new Que<char[]>(1024 * 64, Cores * 2)
         };
 
 

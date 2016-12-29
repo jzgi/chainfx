@@ -88,7 +88,9 @@ namespace Greatbone.Core
 
         public bool QueryA(DbSql sql, Action<DbParameters> p = null)
         {
-            return QueryA(sql, p);
+            bool v = QueryA(sql.ToString(), p);
+            BufferUtility.Return(sql);
+            return v;
         }
 
         public bool QueryA(string cmdtext, Action<DbParameters> p = null)
@@ -111,7 +113,9 @@ namespace Greatbone.Core
 
         public bool Query(DbSql sql, Action<DbParameters> p = null)
         {
-            return Query(sql, p);
+            bool v = Query(sql.ToString(), p);
+            BufferUtility.Return(sql);
+            return v;
         }
 
         public bool Query(string cmdtext, Action<DbParameters> p = null)
@@ -136,7 +140,10 @@ namespace Greatbone.Core
         {
             ordinal = 0; // reset column ordinal
 
-            if (reader == null) { return false; }
+            if (reader == null)
+            {
+                return false;
+            }
             return reader.Read();
         }
 
@@ -144,7 +151,10 @@ namespace Greatbone.Core
         {
             get
             {
-                if (reader == null) { return false; }
+                if (reader == null)
+                {
+                    return false;
+                }
                 return reader.HasRows;
             }
         }
@@ -153,8 +163,18 @@ namespace Greatbone.Core
         {
             ordinal = 0; // reset column ordinal
 
-            if (reader == null) { return false; }
+            if (reader == null)
+            {
+                return false;
+            }
             return reader.NextResult();
+        }
+
+        public int Execute(DbSql sql, Action<DbParameters> p = null)
+        {
+            int v = Execute(sql.ToString(), p);
+            BufferUtility.Return(sql);
+            return v;
         }
 
         public int Execute(string cmdtext, Action<DbParameters> p = null)
@@ -172,6 +192,13 @@ namespace Greatbone.Core
                 command.Prepare();
             }
             return command.ExecuteNonQuery();
+        }
+
+        public object Scalar(DbSql sql, Action<DbParameters> p = null)
+        {
+            object v = Scalar(sql.ToString(), p);
+            BufferUtility.Return(sql);
+            return v;
         }
 
         public object Scalar(string cmdtext, Action<DbParameters> p = null)
@@ -365,7 +392,7 @@ namespace Greatbone.Core
                 if (!reader.IsDBNull(ord))
                 {
                     int len;
-                    if ((len = (int)reader.GetBytes(ord, 0, null, 0, 0)) > 0)
+                    if ((len = (int) reader.GetBytes(ord, 0, null, 0, 0)) > 0)
                     {
                         // get the number of bytes that are available to read.
                         v = new byte[len];
@@ -389,7 +416,7 @@ namespace Greatbone.Core
                 if (!reader.IsDBNull(ord))
                 {
                     int len;
-                    if ((len = (int)reader.GetBytes(ord, 0, null, 0, 0)) > 0)
+                    if ((len = (int) reader.GetBytes(ord, 0, null, 0, 0)) > 0)
                     {
                         byte[] arr = BufferUtility.BorrowByteBuf(len);
                         reader.GetBytes(ord, 0, arr, 0, len); // read data into the buffer
@@ -412,7 +439,7 @@ namespace Greatbone.Core
             {
                 string str = reader.GetString(ord);
                 JsonParse p = new JsonParse(str);
-                Obj obj = (Obj)p.Parse();
+                Obj obj = (Obj) p.Parse();
                 v = new D();
                 v.Load(obj, bits);
 
@@ -434,7 +461,7 @@ namespace Greatbone.Core
             {
                 string str = reader.GetString(ord);
                 JsonParse p = new JsonParse(str);
-                v = (Obj)p.Parse();
+                v = (Obj) p.Parse();
                 return true;
             }
             return false;
@@ -447,7 +474,7 @@ namespace Greatbone.Core
             {
                 string str = reader.GetString(ord);
                 JsonParse p = new JsonParse(str);
-                v = (Arr)p.Parse();
+                v = (Arr) p.Parse();
                 return true;
             }
             return false;
@@ -504,7 +531,7 @@ namespace Greatbone.Core
             {
                 string str = reader.GetString(ord);
                 JsonParse p = new JsonParse(str);
-                Arr arr = (Arr)p.Parse();
+                Arr arr = (Arr) p.Parse();
                 int len = arr.Count;
                 v = new D[len];
                 for (int i = 0; i < len; i++)
