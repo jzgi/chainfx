@@ -42,7 +42,9 @@
         /// Let the file directory name same as the service name.
         public override string Directory => name;
 
-        public Obj Json { get; private set; }
+        public Obj Obj { get; private set; }
+
+        public bool? Backed { get; private set; }
 
         public WebConfig(string name)
         {
@@ -71,7 +73,7 @@
             snk.Put(nameof(cache), cache);
         }
 
-        public bool LoadJson()
+        public void LoadJson()
         {
             string path = GetFilePath("$web.json");
             if (System.IO.File.Exists(path))
@@ -79,12 +81,12 @@
                 Obj obj = JsonUtility.FileToObj(path);
                 if (obj != null)
                 {
-                    Json = obj;
+                    Obj = obj;
                     Load(obj); // override
-                    return true;
+                    Backed = true;
                 }
             }
-            return false;
+            Backed = false;
         }
     }
 }

@@ -21,42 +21,45 @@ namespace Greatbone.Sample
 
             WebAuth<Shop, Shop> auth = new WebAuth<Shop, Shop>(0x4a78be76, 0x1f0335e2);
 
-            List<WebService> services = new List<WebService>(4);
+            List<WebService> svclst = new List<WebService>(4);
 
             WebConfig cfg;
 
-            if ((cfg = new WebConfig("shop")
+            cfg = new WebConfig("shop")
             {
                 pub = "http://127.0.0.1:8080",
                 intern = "http://127.0.0.1:7070",
                 db = pg
-            }).LoadJson())
-            {
-                services.Add(new ShopService(cfg) { Auth = auth });
-            }
+            };
+#if !DEBUG
+            cfg.LoadJson();
+#endif
+            if (cfg.Backed != false) svclst.Add(new ShopService(cfg) {Auth = auth});
 
-            if ((cfg = new WebConfig("tran")
+            cfg = new WebConfig("tran")
             {
                 pub = "http://127.0.0.1:8081",
                 intern = "http://127.0.0.1:7071",
                 db = pg
-            }).LoadJson())
-            {
-                services.Add(new TransactService(cfg) { Auth = auth });
-            }
+            };
+#if !DEBUG
+            cfg.LoadJson();
+#endif
+            if (cfg.Backed != false) svclst.Add(new TransactService(cfg) {Auth = auth});
 
-            if ((cfg = new WebConfig("chat")
+            cfg = new WebConfig("chat")
             {
                 shard = "01",
                 pub = "http://127.0.0.1:8081",
                 intern = "http://127.0.0.1:7071",
                 db = pg
-            }).LoadJson())
-            {
-                services.Add(new ChatService(cfg) { Auth = auth });
-            }
+            };
+#if !DEBUG
+            cfg.LoadJson();
+#endif
+            if (cfg.Backed != false) svclst.Add(new ChatService(cfg) {Auth = auth});
 
-            WebService.Run(services);
+            WebService.Run(svclst);
         }
     }
 }
