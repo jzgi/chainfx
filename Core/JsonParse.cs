@@ -52,7 +52,7 @@ namespace Greatbone.Core
 
         JObj ParseObj(ref int pos)
         {
-            JObj obj = new JObj();
+            JObj jobj = new JObj();
             int p = pos;
             for (;;)
             {
@@ -65,7 +65,7 @@ namespace Greatbone.Core
                     if (b == '}') // close early empty
                     {
                         pos = p;
-                        return obj;
+                        return jobj;
                     }
                     throw ParseEx;
                 }
@@ -98,36 +98,36 @@ namespace Greatbone.Core
                     if (b == '{')
                     {
                         JObj v = ParseObj(ref p);
-                        obj.Add(name, v);
+                        jobj.Add(name, v);
                     }
                     else if (b == '[')
                     {
                         JArr v = ParseArr(ref p);
-                        obj.Add(name, v);
+                        jobj.Add(name, v);
                     }
                     else if (b == '"')
                     {
                         string v = ParseString(ref p);
-                        obj.Add(name, v);
+                        jobj.Add(name, v);
                     }
                     else if (b == 'n')
                     {
-                        if (ParseNull(ref p)) obj.AddNull(name);
+                        if (ParseNull(ref p)) jobj.AddNull(name);
                     }
                     else if (b == 't' || b == 'f')
                     {
                         bool v = ParseBool(ref p, b);
-                        obj.Add(name, v);
+                        jobj.Add(name, v);
                     }
                     else if (b == '-' || b >= '0' && b <= '9')
                     {
                         JNumber v = ParseNumber(ref p, b);
-                        obj.Add(name, v);
+                        jobj.Add(name, v);
                     }
                     else if (b == '&') // bytes extension
                     {
                         byte[] v = ParseBytes(p);
-                        obj.Add(name, v);
+                        jobj.Add(name, v);
                     }
                     else throw ParseEx;
                     break;
@@ -143,7 +143,7 @@ namespace Greatbone.Core
                     if (b == '}') // close normal
                     {
                         pos = p;
-                        return obj;
+                        return jobj;
                     }
                     throw ParseEx;
                 }
@@ -152,7 +152,7 @@ namespace Greatbone.Core
 
         JArr ParseArr(ref int pos)
         {
-            JArr arr = new JArr(16);
+            JArr jarr = new JArr(16);
             int p = pos;
             for (;;)
             {
@@ -162,41 +162,41 @@ namespace Greatbone.Core
                 if (b == ']') // close early empty
                 {
                     pos = p;
-                    return arr;
+                    return jarr;
                 }
                 if (b == '{')
                 {
                     JObj v = ParseObj(ref p);
-                    arr.Add(new JMember(null, v));
+                    jarr.Add(new JMember(null, v));
                 }
                 else if (b == '[')
                 {
                     JArr v = ParseArr(ref p);
-                    arr.Add(new JMember(null, v));
+                    jarr.Add(new JMember(null, v));
                 }
                 else if (b == '"')
                 {
                     string v = ParseString(ref p);
-                    arr.Add(new JMember(v));
+                    jarr.Add(new JMember(v));
                 }
                 else if (b == 'n')
                 {
-                    if (ParseNull(ref p)) arr.Add(new JMember());
+                    if (ParseNull(ref p)) jarr.Add(new JMember());
                 }
                 else if (b == 't' || b == 'f')
                 {
                     bool v = ParseBool(ref p, b);
-                    arr.Add(new JMember(null, v));
+                    jarr.Add(new JMember(null, v));
                 }
                 else if (b == '-' || b >= '0' && b <= '9')
                 {
                     JNumber v = ParseNumber(ref p, b);
-                    arr.Add(new JMember(null, v));
+                    jarr.Add(new JMember(null, v));
                 }
                 else if (b == '&') // bytes extension
                 {
                     byte[] v = ParseBytes(p);
-                    arr.Add(new JMember(null, v));
+                    jarr.Add(new JMember(null, v));
                 }
                 else throw ParseEx;
 
@@ -210,7 +210,7 @@ namespace Greatbone.Core
                     if (b == ']') // close normal
                     {
                         pos = p;
-                        return arr;
+                        return jarr;
                     }
                     throw ParseEx;
                 }

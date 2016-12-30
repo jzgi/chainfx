@@ -179,7 +179,7 @@ namespace Greatbone.Core
             }
             coll.Add(new NpgsqlParameter(name, !anylen.HasValue ? NpgsqlDbType.Varchar : anylen.Value ? NpgsqlDbType.Text : NpgsqlDbType.Char)
             {
-                Value = (v != null) ? (object) v : DBNull.Value
+                Value = (v != null) ? (object)v : DBNull.Value
             });
             return this;
         }
@@ -192,7 +192,7 @@ namespace Greatbone.Core
             }
             coll.Add(new NpgsqlParameter(name, NpgsqlDbType.Bytea)
             {
-                Value = (v != null) ? (object) v : DBNull.Value
+                Value = (v != null) ? (object)v : DBNull.Value
             });
             return this;
         }
@@ -218,7 +218,7 @@ namespace Greatbone.Core
             }
             if (v == null)
             {
-                coll.Add(new NpgsqlParameter(name, NpgsqlDbType.Jsonb) {Value = DBNull.Value});
+                coll.Add(new NpgsqlParameter(name, NpgsqlDbType.Jsonb) { Value = DBNull.Value });
             }
             else
             {
@@ -284,7 +284,7 @@ namespace Greatbone.Core
             }
             coll.Add(new NpgsqlParameter(name, NpgsqlDbType.Array | NpgsqlDbType.Smallint)
             {
-                Value = (v != null) ? (object) v : DBNull.Value
+                Value = (v != null) ? (object)v : DBNull.Value
             });
             return this;
         }
@@ -297,7 +297,7 @@ namespace Greatbone.Core
             }
             coll.Add(new NpgsqlParameter(name, NpgsqlDbType.Array | NpgsqlDbType.Integer)
             {
-                Value = (v != null) ? (object) v : DBNull.Value
+                Value = (v != null) ? (object)v : DBNull.Value
             });
             return this;
         }
@@ -310,7 +310,7 @@ namespace Greatbone.Core
             }
             coll.Add(new NpgsqlParameter(name, NpgsqlDbType.Array | NpgsqlDbType.Bigint)
             {
-                Value = (v != null) ? (object) v : DBNull.Value
+                Value = (v != null) ? (object)v : DBNull.Value
             });
             return this;
         }
@@ -323,7 +323,7 @@ namespace Greatbone.Core
             }
             coll.Add(new NpgsqlParameter(name, NpgsqlDbType.Array | NpgsqlDbType.Text)
             {
-                Value = (v != null) ? (object) v : DBNull.Value
+                Value = (v != null) ? (object)v : DBNull.Value
             });
             return this;
         }

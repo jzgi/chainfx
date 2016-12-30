@@ -42,7 +42,7 @@
         /// Let the file directory name same as the service name.
         public override string Directory => name;
 
-        public JObj Obj { get; private set; }
+        public JObj JObj { get; private set; }
 
         public bool? Backed { get; private set; }
 
@@ -78,11 +78,11 @@
             string path = GetFilePath("$web.json");
             if (System.IO.File.Exists(path))
             {
-                JObj obj = JsonUtility.FileToJObj(path);
-                if (obj != null)
+                JObj jobj = JsonUtility.FileToJObj(path);
+                if (jobj != null)
                 {
-                    Obj = obj;
-                    Load(obj); // override
+                    JObj = jobj;
+                    Load(jobj); // override
                     Backed = true;
                 }
             }

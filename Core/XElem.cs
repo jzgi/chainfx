@@ -108,17 +108,6 @@ namespace Greatbone.Core
             return false;
         }
 
-        public bool Get(string name, ref JNumber v)
-        {
-            XAttr attr;
-            if (TryGet(name, out attr))
-            {
-                v = attr;
-                return true;
-            }
-            return false;
-        }
-
         public bool Get(string name, ref DateTime v)
         {
             XAttr attr;

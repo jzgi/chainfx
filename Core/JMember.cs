@@ -14,7 +14,7 @@ namespace Greatbone.Core
         // type of the value
         internal readonly JType type;
 
-        // Obj, Arr, string, byte[]
+        // JObj, JArr, string, byte[]
         internal readonly object refv;
 
         internal readonly JNumber numv;

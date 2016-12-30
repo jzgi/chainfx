@@ -20,8 +20,6 @@ namespace Greatbone.Core
 
         bool Get(string name, ref decimal v);
 
-        bool Get(string name, ref JNumber v);
-
         bool Get(string name, ref DateTime v);
 
         bool Get(string name, ref NpgsqlPoint v);

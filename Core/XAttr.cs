@@ -97,11 +97,6 @@ namespace Greatbone.Core
             return 0;
         }
 
-        public static implicit operator JNumber(XAttr v)
-        {
-            return default(JNumber);
-        }
-
         public static implicit operator DateTime(XAttr v)
         {
             return default(DateTime);

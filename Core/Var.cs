@@ -91,11 +91,6 @@ namespace Greatbone.Core
             return 0;
         }
 
-        public static implicit operator JNumber(Var v)
-        {
-            return default(JNumber);
-        }
-
         public static implicit operator DateTime(Var v)
         {
             return default(DateTime);

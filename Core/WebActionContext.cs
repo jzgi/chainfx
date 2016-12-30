@@ -63,7 +63,7 @@ namespace Greatbone.Core
 
         Form query;
 
-        // request entity (ArraySegment<byte>, Obj, Arr, Form, Elem, null)
+        // request entity (ArraySegment<byte>, JObj, JArr, Form, XElem, null)
         object entity;
 
         public Form Query
@@ -200,8 +200,8 @@ namespace Greatbone.Core
 
         public async Task<D[]> GetDatasAsync<D>(byte z = 0) where D : IData, new()
         {
-            JArr arr = (entity = await ReadAsync()) as JArr;
-            return arr?.ToDatas<D>(z);
+            JArr jarr = (entity = await ReadAsync()) as JArr;
+            return jarr?.ToDatas<D>(z);
         }
 
         public async Task<XElem> GetElemAsync()

@@ -5,11 +5,11 @@ namespace Greatbone.Core
 {
     public static class ISourceUtility
     {
-        public static D ToData<D>(this ISource src, byte z = 0) where D : IData, new()
+        public static D ToData<D>(this ISource src, byte bits = 0) where D : IData, new()
         {
-            D dat = new D();
-            dat.Load(src, z);
-            return dat;
+            D data = new D();
+            data.Load(src, bits);
+            return data;
         }
 
         //
@@ -39,12 +39,6 @@ namespace Greatbone.Core
 
 
         public static bool Get(this ISource src, ref decimal v)
-        {
-            return src.Get(null, ref v);
-        }
-
-
-        public static bool Get(this ISource src, ref JNumber v)
         {
             return src.Get(null, ref v);
         }
@@ -86,9 +80,9 @@ namespace Greatbone.Core
         }
 
 
-        public static bool Get<D>(this ISource src, ref D v, byte z = 0) where D : IData, new()
+        public static bool Get<D>(this ISource src, ref D v, byte bits = 0) where D : IData, new()
         {
-            return src.Get(null, ref v, z);
+            return src.Get(null, ref v, bits);
         }
 
 
@@ -127,9 +121,9 @@ namespace Greatbone.Core
             return src.Get(null, ref v);
         }
 
-        public static bool Get<D>(this ISource src, ref D[] v, byte z = 0) where D : IData, new()
+        public static bool Get<D>(this ISource src, ref D[] v, byte bits = 0) where D : IData, new()
         {
-            return src.Get(null, ref v, z);
+            return src.Get(null, ref v, bits);
         }
 
 
@@ -168,13 +162,6 @@ namespace Greatbone.Core
         public static decimal GetDecimal(this ISource src)
         {
             decimal v = 0;
-            src.Get(null, ref v);
-            return v;
-        }
-
-        public static JNumber GetNumber(this ISource src)
-        {
-            JNumber v = default(JNumber);
             src.Get(null, ref v);
             return v;
         }
@@ -221,21 +208,21 @@ namespace Greatbone.Core
             return v;
         }
 
-        public static D GetDat<D>(this ISource src, byte z = 0) where D : IData, new()
+        public static D GetData<D>(this ISource src, byte bits = 0) where D : IData, new()
         {
             D v = default(D);
-            src.Get(null, ref v, z);
+            src.Get(null, ref v, bits);
             return v;
         }
 
-        public static JObj GetObj(this ISource src)
+        public static JObj GetJObj(this ISource src)
         {
             JObj v = null;
             src.Get(null, ref v);
             return v;
         }
 
-        public static JArr GetArr(this ISource src)
+        public static JArr GetJArr(this ISource src)
         {
             JArr v = null;
             src.Get(null, ref v);
@@ -271,10 +258,10 @@ namespace Greatbone.Core
             return v;
         }
 
-        public static D[] GetDats<D>(this ISource src, byte z = 0) where D : IData, new()
+        public static D[] GetDatas<D>(this ISource src, byte bits = 0) where D : IData, new()
         {
             D[] v = null;
-            src.Get(null, ref v, z);
+            src.Get(null, ref v, bits);
             return v;
         }
 
@@ -313,13 +300,6 @@ namespace Greatbone.Core
         public static decimal GetDecimal(this ISource src, string name)
         {
             decimal v = 0;
-            src.Get(name, ref v);
-            return v;
-        }
-
-        public static JNumber GetNumber(this ISource src, string name)
-        {
-            JNumber v = default(JNumber);
             src.Get(name, ref v);
             return v;
         }
@@ -373,14 +353,14 @@ namespace Greatbone.Core
             return v;
         }
 
-        public static JObj GetObj(this ISource src, string name)
+        public static JObj GetJObj(this ISource src, string name)
         {
             JObj v = null;
             src.Get(name, ref v);
             return v;
         }
 
-        public static JArr GetArr(this ISource src, string name)
+        public static JArr GetJArr(this ISource src, string name)
         {
             JArr v = null;
             src.Get(name, ref v);

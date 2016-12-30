@@ -328,18 +328,6 @@ namespace Greatbone.Core
             return false;
         }
 
-        public bool Get(string name, ref JNumber v)
-        {
-            int ord = name == null ? ordinal++ : reader.GetOrdinal(name);
-            if (!reader.IsDBNull(ord))
-            {
-                decimal decv = reader.GetDecimal(ord);
-                // TODO
-                return true;
-            }
-            return false;
-        }
-
         public bool Get(string name, ref DateTime v)
         {
             int ord = name == null ? ordinal++ : reader.GetOrdinal(name);
@@ -418,9 +406,9 @@ namespace Greatbone.Core
                     int len;
                     if ((len = (int) reader.GetBytes(ord, 0, null, 0, 0)) > 0)
                     {
-                        byte[] arr = BufferUtility.BorrowByteBuf(len);
-                        reader.GetBytes(ord, 0, arr, 0, len); // read data into the buffer
-                        v = new ArraySegment<byte>(arr, 0, len);
+                        byte[] buf = BufferUtility.BorrowByteBuf(len);
+                        reader.GetBytes(ord, 0, buf, 0, len); // read data into the buffer
+                        v = new ArraySegment<byte>(buf, 0, len);
                         return true;
                     }
                 }
@@ -439,9 +427,9 @@ namespace Greatbone.Core
             {
                 string str = reader.GetString(ord);
                 JsonParse p = new JsonParse(str);
-                JObj obj = (JObj) p.Parse();
+                JObj jobj = (JObj) p.Parse();
                 v = new D();
-                v.Load(obj, bits);
+                v.Load(jobj, bits);
 
                 // add shard if any
                 IShardable shardable = v as IShardable;
@@ -531,14 +519,14 @@ namespace Greatbone.Core
             {
                 string str = reader.GetString(ord);
                 JsonParse p = new JsonParse(str);
-                JArr arr = (JArr) p.Parse();
-                int len = arr.Count;
+                JArr jarr = (JArr) p.Parse();
+                int len = jarr.Count;
                 v = new D[len];
                 for (int i = 0; i < len; i++)
                 {
-                    JObj obj = arr[i];
+                    JObj jobj = jarr[i];
                     D dat = new D();
-                    dat.Load(obj, bits);
+                    dat.Load(jobj, bits);
 
                     // add shard if any
                     IShardable shardable = dat as IShardable;

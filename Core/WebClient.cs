@@ -75,7 +75,7 @@ namespace Greatbone.Core
                 req.Headers.Add("Authorization", "Bearer " + ctx.TokenString);
             }
             HttpResponseMessage resp = await SendAsync(req, HttpCompletionOption.ResponseContentRead);
-            return await resp.GetArrAsync();
+            return await resp.GetJArrAsync();
         }
 
         public async Task<D> GetDataAync<D>(ICallerContext ctx, string uri, byte z = 0) where D : IData, new()
@@ -90,7 +90,7 @@ namespace Greatbone.Core
                 req.Headers.Add("Authorization", "Bearer " + ctx.TokenString);
             }
             HttpResponseMessage resp = await SendAsync(req, HttpCompletionOption.ResponseContentRead);
-            return await resp.GetDatAsync<D>(z);
+            return await resp.GetDataAsync<D>(z);
         }
 
         public async Task<D[]> GetDatasAync<D>(ICallerContext ctx, string uri, byte z = 0) where D : IData, new()
@@ -105,7 +105,7 @@ namespace Greatbone.Core
                 req.Headers.Add("Authorization", "Bearer " + ctx.TokenString);
             }
             HttpResponseMessage resp = await SendAsync(req, HttpCompletionOption.ResponseContentRead);
-            return await resp.GetDatsAsync<D>(z);
+            return await resp.GetDatasAsync<D>(z);
         }
 
         public async Task<XElem> GetElemAync(ICallerContext ctx, string uri)
@@ -120,7 +120,7 @@ namespace Greatbone.Core
                 req.Headers.Add("Authorization", "Bearer " + ctx.TokenString);
             }
             HttpResponseMessage resp = await SendAsync(req, HttpCompletionOption.ResponseContentRead);
-            return await resp.GetElemAsync();
+            return await resp.GetXElemAsync();
         }
 
         public async Task<byte[]> GetBytesAync(ICallerContext ctx, string uri)
@@ -135,7 +135,7 @@ namespace Greatbone.Core
                 req.Headers.Add("Authorization", "Bearer " + ctx.TokenString);
             }
             HttpResponseMessage resp = await SendAsync(req, HttpCompletionOption.ResponseContentRead);
-            return await resp.GetBytesAsync();
+            return await resp.GetBytesSegAsync();
         }
 
         public Task<HttpResponseMessage> PostAsync<D>(ICallerContext ctx, string uri, D dat) where D : IData

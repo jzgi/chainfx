@@ -43,31 +43,31 @@ namespace Greatbone.Core
                 JType typ = elem.type;
                 if (typ == JType.Array)
                 {
-                    snk.Put((JArr)elem);
+                    snk.Put(null, (JArr)elem);
                 }
                 else if (typ == JType.Object)
                 {
-                    snk.Put((JObj)elem);
+                    snk.Put(null, (JObj)elem);
                 }
                 else if (typ == JType.String)
                 {
-                    snk.Put((string)elem);
+                    snk.Put(null, (string)elem);
                 }
                 else if (typ == JType.Number)
                 {
-                    snk.Put((JNumber)elem);
+                    snk.Put(null, (JNumber)elem);
                 }
                 else if (typ == JType.True)
                 {
-                    snk.Put(true);
+                    snk.Put(null, true);
                 }
                 else if (typ == JType.False)
                 {
-                    snk.Put(false);
+                    snk.Put(null, false);
                 }
                 else if (typ == JType.Null)
                 {
-                    snk.PutNull();
+                    snk.PutNull(null);
                 }
             }
         }

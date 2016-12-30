@@ -120,17 +120,6 @@ namespace Greatbone.Core
             return false;
         }
 
-        public bool Get(string name, ref JNumber v)
-        {
-            JMember pair;
-            if (TryGet(name, out pair))
-            {
-                v = pair;
-                return true;
-            }
-            return false;
-        }
-
         public bool Get(string name, ref DateTime v)
         {
             JMember pair;
@@ -203,11 +192,11 @@ namespace Greatbone.Core
             JMember pair;
             if (TryGet(name, out pair))
             {
-                JObj obj = pair;
-                if (obj != null)
+                JObj jobj = pair;
+                if (jobj != null)
                 {
                     v = new D();
-                    v.Load(obj);
+                    v.Load(jobj);
                 }
                 return true;
             }
@@ -241,13 +230,13 @@ namespace Greatbone.Core
             JMember pair;
             if (TryGet(name, out pair))
             {
-                JArr arr = pair;
-                if (arr != null)
+                JArr jarr = pair;
+                if (jarr != null)
                 {
-                    v = new short[arr.Count];
-                    for (int i = 0; i < arr.Count; i++)
+                    v = new short[jarr.Count];
+                    for (int i = 0; i < jarr.Count; i++)
                     {
-                        v[i] = arr[i];
+                        v[i] = jarr[i];
                     }
                 }
                 return true;
@@ -260,13 +249,13 @@ namespace Greatbone.Core
             JMember pair;
             if (TryGet(name, out pair))
             {
-                JArr arr = pair;
-                if (arr != null)
+                JArr jarr = pair;
+                if (jarr != null)
                 {
-                    v = new int[arr.Count];
-                    for (int i = 0; i < arr.Count; i++)
+                    v = new int[jarr.Count];
+                    for (int i = 0; i < jarr.Count; i++)
                     {
-                        v[i] = arr[i];
+                        v[i] = jarr[i];
                     }
                 }
                 return true;
@@ -279,13 +268,13 @@ namespace Greatbone.Core
             JMember pair;
             if (TryGet(name, out pair))
             {
-                JArr arr = pair;
-                if (arr != null)
+                JArr jarr = pair;
+                if (jarr != null)
                 {
-                    v = new long[arr.Count];
-                    for (int i = 0; i < arr.Count; i++)
+                    v = new long[jarr.Count];
+                    for (int i = 0; i < jarr.Count; i++)
                     {
-                        v[i] = arr[i];
+                        v[i] = jarr[i];
                     }
                 }
                 return true;
@@ -298,13 +287,13 @@ namespace Greatbone.Core
             JMember pair;
             if (TryGet(name, out pair))
             {
-                JArr arr = pair;
-                if (arr != null)
+                JArr jarr = pair;
+                if (jarr != null)
                 {
-                    v = new string[arr.Count];
-                    for (int i = 0; i < arr.Count; i++)
+                    v = new string[jarr.Count];
+                    for (int i = 0; i < jarr.Count; i++)
                     {
-                        v[i] = arr[i];
+                        v[i] = jarr[i];
                     }
                 }
                 return true;
@@ -317,15 +306,15 @@ namespace Greatbone.Core
             JMember pair;
             if (TryGet(name, out pair))
             {
-                JArr arr = pair;
-                if (arr != null)
+                JArr jarr = pair;
+                if (jarr != null)
                 {
-                    v = new D[arr.Count];
-                    for (int i = 0; i < arr.Count; i++)
+                    v = new D[jarr.Count];
+                    for (int i = 0; i < jarr.Count; i++)
                     {
-                        JObj obj = arr[i];
+                        JObj jobj = jarr[i];
                         D dat = new D();
-                        dat.Load(obj);
+                        dat.Load(jobj);
                         v[i] = dat;
                     }
                 }

@@ -993,18 +993,6 @@ namespace Greatbone.Core
             return this;
         }
 
-        public HtmlContent Put(string name, JNumber v)
-        {
-            switch (ctx)
-            {
-                case FormFields:
-                    break;
-                case TableTrs:
-                    break;
-            }
-            return this;
-        }
-
         public HtmlContent Put(string name, DateTime v)
         {
             switch (ctx)

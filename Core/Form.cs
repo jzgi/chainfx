@@ -91,11 +91,6 @@ namespace Greatbone.Core
             return false;
         }
 
-        public bool Get(string name, ref JNumber v)
-        {
-            throw new NotImplementedException();
-        }
-
         public bool Get(string name, ref DateTime v)
         {
             throw new NotImplementedException();

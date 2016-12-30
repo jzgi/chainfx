@@ -9,31 +9,31 @@ namespace Greatbone.Core
     public static class HttpMessageUtility
     {
 
-        public static void Set(this HttpRequestMessage msg, JObj obj)
+        public static void Set(this HttpRequestMessage msg, JObj jobj)
         {
             JsonContent cont = new JsonContent(true, true);
-            obj.Dump(cont);
+            jobj.Dump(cont);
             msg.Content = cont;
         }
 
-        public static void Set(this HttpRequestMessage msg, JArr obj)
+        public static void Set(this HttpRequestMessage msg, JArr jobj)
         {
             JsonContent cont = new JsonContent(true, true);
-            obj.Dump(cont);
+            jobj.Dump(cont);
             msg.Content = cont;
         }
 
-        public static void Set<D>(this HttpRequestMessage msg, D dat) where D : IData
+        public static void Set<D>(this HttpRequestMessage msg, D data) where D : IData
         {
             JsonContent cont = new JsonContent(true, true);
-            cont.Put(null, dat);
+            cont.Put(null, data);
             msg.Content = cont;
         }
 
-        public static void Set<D>(this HttpRequestMessage msg, D[] dats) where D : IData
+        public static void Set<D>(this HttpRequestMessage msg, D[] datas) where D : IData
         {
             JsonContent cont = new JsonContent(true, true);
-            cont.Put(null, dats);
+            cont.Put(null, datas);
             msg.Content = cont;
         }
 
@@ -44,44 +44,44 @@ namespace Greatbone.Core
         public static int GetStatus(this HttpResponseMessage msg) => (int)msg.StatusCode;
 
 
-        public static async Task<JObj> GetObjAsync(this HttpResponseMessage msg)
+        public static async Task<JObj> GetJObjAsync(this HttpResponseMessage msg)
         {
             byte[] bytes = await msg.Content.ReadAsByteArrayAsync();
             JsonParse p = new JsonParse(bytes, bytes.Length);
             return (JObj)p.Parse();
         }
 
-        public static async Task<JArr> GetArrAsync(this HttpResponseMessage msg)
+        public static async Task<JArr> GetJArrAsync(this HttpResponseMessage msg)
         {
             byte[] bytes = await msg.Content.ReadAsByteArrayAsync();
             JsonParse p = new JsonParse(bytes, bytes.Length);
             return (JArr)p.Parse();
         }
 
-        public static async Task<XElem> GetElemAsync(this HttpResponseMessage msg)
+        public static async Task<XElem> GetXElemAsync(this HttpResponseMessage msg)
         {
             byte[] bytes = await msg.Content.ReadAsByteArrayAsync();
             XmlParse p = new XmlParse(bytes, bytes.Length);
             return (XElem)p.Parse();
         }
 
-        public static async Task<D> GetDatAsync<D>(this HttpResponseMessage msg, byte z = 0) where D : IData, new()
+        public static async Task<D> GetDataAsync<D>(this HttpResponseMessage msg, byte z = 0) where D : IData, new()
         {
             byte[] bytes = await msg.Content.ReadAsByteArrayAsync();
             JsonParse p = new JsonParse(bytes, bytes.Length);
-            JObj obj = (JObj)p.Parse();
-            return obj.ToData<D>(z);
+            JObj jobj = (JObj)p.Parse();
+            return jobj.ToData<D>(z);
         }
 
-        public static async Task<D[]> GetDatsAsync<D>(this HttpResponseMessage msg, byte z = 0) where D : IData, new()
+        public static async Task<D[]> GetDatasAsync<D>(this HttpResponseMessage msg, byte z = 0) where D : IData, new()
         {
             byte[] bytes = await msg.Content.ReadAsByteArrayAsync();
             JsonParse p = new JsonParse(bytes, bytes.Length);
-            JArr arr = (JArr)p.Parse();
-            return arr.ToDatas<D>(z);
+            JArr jarr = (JArr)p.Parse();
+            return jarr.ToDatas<D>(z);
         }
 
-        public static async Task<byte[]> GetBytesAsync(this HttpResponseMessage msg)
+        public static async Task<byte[]> GetBytesSegAsync(this HttpResponseMessage msg)
         {
             return await msg.Content.ReadAsByteArrayAsync();
         }

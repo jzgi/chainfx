@@ -17,7 +17,7 @@ namespace Greatbone.Core
 
         readonly string shard;
 
-        // either Obj or Arr
+        // either JObj or JArr
         readonly object body;
 
         internal WebEventContext(WebClient client, long id, string name, string shard, DateTime time, object body)
@@ -36,9 +36,9 @@ namespace Greatbone.Core
 
         public string Shard => shard;
 
-        public JObj ToObj => (JObj)body;
+        public JObj ToJObj => (JObj)body;
 
-        public JArr ToArr => (JArr)body;
+        public JArr ToJArr => (JArr)body;
 
 
         public DbContext NewDbContext()
