@@ -222,10 +222,10 @@ namespace Greatbone.Core
         // RESULTSET
         //
 
-        public D ToData<D>(byte z = 0) where D : IData, new()
+        public D ToData<D>(byte bits = 0) where D : IData, new()
         {
             D dat = new D();
-            dat.Load(this, z);
+            dat.Load(this, bits);
 
             // add shard if any
             IShardable shardable = dat as IShardable;
@@ -328,7 +328,7 @@ namespace Greatbone.Core
             return false;
         }
 
-        public bool Get(string name, ref Number v)
+        public bool Get(string name, ref JNumber v)
         {
             int ord = name == null ? ordinal++ : reader.GetOrdinal(name);
             if (!reader.IsDBNull(ord))
@@ -439,7 +439,7 @@ namespace Greatbone.Core
             {
                 string str = reader.GetString(ord);
                 JsonParse p = new JsonParse(str);
-                Obj obj = (Obj) p.Parse();
+                JObj obj = (JObj) p.Parse();
                 v = new D();
                 v.Load(obj, bits);
 
@@ -454,27 +454,27 @@ namespace Greatbone.Core
             return false;
         }
 
-        public bool Get(string name, ref Obj v)
+        public bool Get(string name, ref JObj v)
         {
             int ord = name == null ? ordinal++ : reader.GetOrdinal(name);
             if (!reader.IsDBNull(ord))
             {
                 string str = reader.GetString(ord);
                 JsonParse p = new JsonParse(str);
-                v = (Obj) p.Parse();
+                v = (JObj) p.Parse();
                 return true;
             }
             return false;
         }
 
-        public bool Get(string name, ref Arr v)
+        public bool Get(string name, ref JArr v)
         {
             int ord = name == null ? ordinal++ : reader.GetOrdinal(name);
             if (!reader.IsDBNull(ord))
             {
                 string str = reader.GetString(ord);
                 JsonParse p = new JsonParse(str);
-                v = (Arr) p.Parse();
+                v = (JArr) p.Parse();
                 return true;
             }
             return false;
@@ -531,12 +531,12 @@ namespace Greatbone.Core
             {
                 string str = reader.GetString(ord);
                 JsonParse p = new JsonParse(str);
-                Arr arr = (Arr) p.Parse();
+                JArr arr = (JArr) p.Parse();
                 int len = arr.Count;
                 v = new D[len];
                 for (int i = 0; i < len; i++)
                 {
-                    Obj obj = arr[i];
+                    JObj obj = arr[i];
                     D dat = new D();
                     dat.Load(obj, bits);
 

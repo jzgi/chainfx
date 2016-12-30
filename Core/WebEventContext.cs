@@ -36,9 +36,9 @@ namespace Greatbone.Core
 
         public string Shard => shard;
 
-        public Obj ToObj => (Obj)body;
+        public JObj ToObj => (JObj)body;
 
-        public Arr ToArr => (Arr)body;
+        public JArr ToArr => (JArr)body;
 
 
         public DbContext NewDbContext()

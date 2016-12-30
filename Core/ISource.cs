@@ -20,7 +20,7 @@ namespace Greatbone.Core
 
         bool Get(string name, ref decimal v);
 
-        bool Get(string name, ref Number v);
+        bool Get(string name, ref JNumber v);
 
         bool Get(string name, ref DateTime v);
 
@@ -36,9 +36,9 @@ namespace Greatbone.Core
 
         bool Get<D>(string name, ref D v, byte bits = 0) where D : IData, new();
 
-        bool Get(string name, ref Obj v);
+        bool Get(string name, ref JObj v);
 
-        bool Get(string name, ref Arr v);
+        bool Get(string name, ref JArr v);
 
         bool Get(string name, ref short[] v);
 

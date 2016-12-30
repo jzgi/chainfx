@@ -132,9 +132,9 @@ namespace Greatbone.Core
             return 0;
         }
 
-        public static implicit operator Number(Pair v)
+        public static implicit operator JNumber(Pair v)
         {
-            return default(Number);
+            return default(JNumber);
         }
 
         public static implicit operator DateTime(Pair v)

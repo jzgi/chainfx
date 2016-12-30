@@ -5,30 +5,30 @@ namespace Greatbone.Core
     ///
     /// A JSON array model.
     ///
-    public class Arr
+    public class JArr
     {
         const int InitialCapacity = 16;
 
-        Member[] elements;
+        JMember[] elements;
 
         int count;
 
-        internal Arr(int capacity = InitialCapacity)
+        internal JArr(int capacity = InitialCapacity)
         {
-            elements = new Member[capacity];
+            elements = new JMember[capacity];
             count = 0;
         }
 
-        public Member this[int index] => elements[index];
+        public JMember this[int index] => elements[index];
 
         public int Count => count;
 
-        internal void Add(Member elem)
+        internal void Add(JMember elem)
         {
             int len = elements.Length;
             if (count >= len)
             {
-                Member[] alloc = new Member[len * 4];
+                JMember[] alloc = new JMember[len * 4];
                 Array.Copy(elements, 0, alloc, 0, len);
                 elements = alloc;
             }
@@ -39,33 +39,33 @@ namespace Greatbone.Core
         {
             for (int i = 0; i < count; i++)
             {
-                Member elem = elements[i];
-                MemberType typ = elem.type;
-                if (typ == MemberType.Array)
+                JMember elem = elements[i];
+                JType typ = elem.type;
+                if (typ == JType.Array)
                 {
-                    snk.Put((Arr)elem);
+                    snk.Put((JArr)elem);
                 }
-                else if (typ == MemberType.Object)
+                else if (typ == JType.Object)
                 {
-                    snk.Put((Obj)elem);
+                    snk.Put((JObj)elem);
                 }
-                else if (typ == MemberType.String)
+                else if (typ == JType.String)
                 {
                     snk.Put((string)elem);
                 }
-                else if (typ == MemberType.Number)
+                else if (typ == JType.Number)
                 {
-                    snk.Put((Number)elem);
+                    snk.Put((JNumber)elem);
                 }
-                else if (typ == MemberType.True)
+                else if (typ == JType.True)
                 {
                     snk.Put(true);
                 }
-                else if (typ == MemberType.False)
+                else if (typ == JType.False)
                 {
                     snk.Put(false);
                 }
-                else if (typ == MemberType.Null)
+                else if (typ == JType.Null)
                 {
                     snk.PutNull();
                 }
@@ -78,7 +78,7 @@ namespace Greatbone.Core
             for (int i = 0; i < dats.Length; i++)
             {
                 D dat = new D();
-                dat.Load((Obj)this[i], z);
+                dat.Load((JObj)this[i], z);
                 dats[i] = dat;
             }
             return dats;

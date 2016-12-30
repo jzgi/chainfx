@@ -178,14 +178,14 @@ namespace Greatbone.Core
             return (entity = await ReadAsync()) as Form;
         }
 
-        public async Task<Obj> GetObjAsync()
+        public async Task<JObj> GetJObjAsync()
         {
-            return (entity = await ReadAsync()) as Obj;
+            return (entity = await ReadAsync()) as JObj;
         }
 
-        public async Task<Arr> GetArrAsync()
+        public async Task<JArr> GetJArrAsync()
         {
-            return (entity = await ReadAsync()) as Arr;
+            return (entity = await ReadAsync()) as JArr;
         }
 
         public async Task<D> GetDataAsync<D>(byte z = 0) where D : IData, new()
@@ -200,15 +200,15 @@ namespace Greatbone.Core
 
         public async Task<D[]> GetDatasAsync<D>(byte z = 0) where D : IData, new()
         {
-            Arr arr = (entity = await ReadAsync()) as Arr;
+            JArr arr = (entity = await ReadAsync()) as JArr;
             return arr?.ToDatas<D>(z);
         }
 
-        public async Task<Elem> GetElemAsync()
+        public async Task<XElem> GetElemAsync()
         {
             object entity = await ReadAsync();
 
-            return entity as Elem;
+            return entity as XElem;
         }
 
         //

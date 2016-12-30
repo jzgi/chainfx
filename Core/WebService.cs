@@ -84,12 +84,12 @@ namespace Greatbone.Core
             }
 
             // init refers
-            Obj refs = cfg.cluster;
+            JObj refs = cfg.cluster;
             if (refs != null)
             {
                 for (int i = 0; i < refs.Count; i++)
                 {
-                    Member mbr = refs[i];
+                    JMember mbr = refs[i];
                     string name = mbr.Name; // service instance id
                     string addr = mbr;
                     if (this.cluster == null)

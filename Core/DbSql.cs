@@ -182,7 +182,7 @@ namespace Greatbone.Core
             return this;
         }
 
-        public DbSql Put(string name, Number v)
+        public DbSql Put(string name, JNumber v)
         {
             if (name != null)
             {
@@ -295,7 +295,7 @@ namespace Greatbone.Core
             return this;
         }
 
-        public DbSql Put(string name, Arr v)
+        public DbSql Put(string name, JArr v)
         {
             if (name != null)
             {
@@ -317,7 +317,7 @@ namespace Greatbone.Core
             return this;
         }
 
-        public DbSql Put(string name, Obj v)
+        public DbSql Put(string name, JObj v)
         {
             if (name != null)
             {

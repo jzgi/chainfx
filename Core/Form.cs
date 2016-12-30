@@ -91,7 +91,7 @@ namespace Greatbone.Core
             return false;
         }
 
-        public bool Get(string name, ref Number v)
+        public bool Get(string name, ref JNumber v)
         {
             throw new NotImplementedException();
         }
@@ -127,7 +127,7 @@ namespace Greatbone.Core
             throw new NotImplementedException();
         }
 
-        public bool Get(string name, ref Arr v)
+        public bool Get(string name, ref JArr v)
         {
             throw new NotImplementedException();
         }
@@ -176,7 +176,7 @@ namespace Greatbone.Core
             return false;
         }
 
-        public bool Get(string name, ref Obj v)
+        public bool Get(string name, ref JObj v)
         {
             throw new NotImplementedException();
         }

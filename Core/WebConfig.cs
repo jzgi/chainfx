@@ -28,7 +28,7 @@
         public string intern;
 
         /// The services/addresses that this service references or depends on.
-        public Obj cluster;
+        public JObj cluster;
 
         /// The database connectivity attributes.
         public DbConfig db;
@@ -42,7 +42,7 @@
         /// Let the file directory name same as the service name.
         public override string Directory => name;
 
-        public Obj Obj { get; private set; }
+        public JObj Obj { get; private set; }
 
         public bool? Backed { get; private set; }
 
@@ -78,7 +78,7 @@
             string path = GetFilePath("$web.json");
             if (System.IO.File.Exists(path))
             {
-                Obj obj = JsonUtility.FileToObj(path);
+                JObj obj = JsonUtility.FileToJObj(path);
                 if (obj != null)
                 {
                     Obj = obj;

@@ -63,7 +63,7 @@ namespace Greatbone.Core
             return await SendAsync(req, HttpCompletionOption.ResponseContentRead);
         }
 
-        public async Task<Arr> GetArrAync(ICallerContext ctx, string uri)
+        public async Task<JArr> GetArrAync(ICallerContext ctx, string uri)
         {
             HttpRequestMessage req = new HttpRequestMessage(HttpMethod.Get, uri);
             if (ctx.Cookied)
@@ -108,7 +108,7 @@ namespace Greatbone.Core
             return await resp.GetDatsAsync<D>(z);
         }
 
-        public async Task<Elem> GetElemAync(ICallerContext ctx, string uri)
+        public async Task<XElem> GetElemAync(ICallerContext ctx, string uri)
         {
             HttpRequestMessage req = new HttpRequestMessage(HttpMethod.Get, uri);
             if (ctx.Cookied)

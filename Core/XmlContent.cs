@@ -140,7 +140,7 @@ namespace Greatbone.Core
             return this;
         }
 
-        public XmlContent Put(string name, Number v)
+        public XmlContent Put(string name, JNumber v)
         {
             Add(' ');
             Add(name);
@@ -210,12 +210,12 @@ namespace Greatbone.Core
             throw new NotImplementedException();
         }
 
-        public XmlContent Put(string name, Obj v)
+        public XmlContent Put(string name, JObj v)
         {
             throw new NotImplementedException();
         }
 
-        public XmlContent Put(string name, Arr v)
+        public XmlContent Put(string name, JArr v)
         {
             throw new NotImplementedException();
         }

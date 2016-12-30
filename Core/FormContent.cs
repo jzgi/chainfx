@@ -151,7 +151,7 @@ namespace Greatbone.Core
             return this;
         }
 
-        public FormContent Put(string name, Number v)
+        public FormContent Put(string name, JNumber v)
         {
             if (name != null)
             {
@@ -288,7 +288,7 @@ namespace Greatbone.Core
             return this;
         }
 
-        public FormContent Put(string name, Obj v)
+        public FormContent Put(string name, JObj v)
         {
             if (name != null)
             {
@@ -312,7 +312,7 @@ namespace Greatbone.Core
             return this;
         }
 
-        public FormContent Put(string name, Arr v)
+        public FormContent Put(string name, JArr v)
         {
             if (name != null)
             {

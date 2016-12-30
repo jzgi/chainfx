@@ -44,7 +44,7 @@ namespace Greatbone.Core
         }
 
 
-        public static bool Get(this ISource src, ref Number v)
+        public static bool Get(this ISource src, ref JNumber v)
         {
             return src.Get(null, ref v);
         }
@@ -92,13 +92,13 @@ namespace Greatbone.Core
         }
 
 
-        public static bool Get(this ISource src, ref Obj v)
+        public static bool Get(this ISource src, ref JObj v)
         {
             return src.Get(null, ref v);
         }
 
 
-        public static bool Get(this ISource src, ref Arr v)
+        public static bool Get(this ISource src, ref JArr v)
         {
             return src.Get(null, ref v);
         }
@@ -172,9 +172,9 @@ namespace Greatbone.Core
             return v;
         }
 
-        public static Number GetNumber(this ISource src)
+        public static JNumber GetNumber(this ISource src)
         {
-            Number v = default(Number);
+            JNumber v = default(JNumber);
             src.Get(null, ref v);
             return v;
         }
@@ -228,16 +228,16 @@ namespace Greatbone.Core
             return v;
         }
 
-        public static Obj GetObj(this ISource src)
+        public static JObj GetObj(this ISource src)
         {
-            Obj v = null;
+            JObj v = null;
             src.Get(null, ref v);
             return v;
         }
 
-        public static Arr GetArr(this ISource src)
+        public static JArr GetArr(this ISource src)
         {
-            Arr v = null;
+            JArr v = null;
             src.Get(null, ref v);
             return v;
         }
@@ -317,9 +317,9 @@ namespace Greatbone.Core
             return v;
         }
 
-        public static Number GetNumber(this ISource src, string name)
+        public static JNumber GetNumber(this ISource src, string name)
         {
-            Number v = default(Number);
+            JNumber v = default(JNumber);
             src.Get(name, ref v);
             return v;
         }
@@ -373,16 +373,16 @@ namespace Greatbone.Core
             return v;
         }
 
-        public static Obj GetObj(this ISource src, string name)
+        public static JObj GetObj(this ISource src, string name)
         {
-            Obj v = null;
+            JObj v = null;
             src.Get(name, ref v);
             return v;
         }
 
-        public static Arr GetArr(this ISource src, string name)
+        public static JArr GetArr(this ISource src, string name)
         {
-            Arr v = null;
+            JArr v = null;
             src.Get(name, ref v);
             return v;
         }

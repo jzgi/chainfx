@@ -22,7 +22,7 @@ namespace Greatbone.Core
 
         R Put(string name, decimal v);
 
-        R Put(string name, Number v);
+        R Put(string name, JNumber v);
 
         R Put(string name, DateTime v);
 
@@ -38,9 +38,9 @@ namespace Greatbone.Core
 
         R Put<D>(string name, D v, byte bits = 0) where D : IData;
 
-        R Put(string name, Obj v);
+        R Put(string name, JObj v);
 
-        R Put(string name, Arr v);
+        R Put(string name, JArr v);
 
         R Put(string name, short[] v);
 

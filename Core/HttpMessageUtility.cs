@@ -9,14 +9,14 @@ namespace Greatbone.Core
     public static class HttpMessageUtility
     {
 
-        public static void Set(this HttpRequestMessage msg, Obj obj)
+        public static void Set(this HttpRequestMessage msg, JObj obj)
         {
             JsonContent cont = new JsonContent(true, true);
             obj.Dump(cont);
             msg.Content = cont;
         }
 
-        public static void Set(this HttpRequestMessage msg, Arr obj)
+        public static void Set(this HttpRequestMessage msg, JArr obj)
         {
             JsonContent cont = new JsonContent(true, true);
             obj.Dump(cont);
@@ -44,32 +44,32 @@ namespace Greatbone.Core
         public static int GetStatus(this HttpResponseMessage msg) => (int)msg.StatusCode;
 
 
-        public static async Task<Obj> GetObjAsync(this HttpResponseMessage msg)
+        public static async Task<JObj> GetObjAsync(this HttpResponseMessage msg)
         {
             byte[] bytes = await msg.Content.ReadAsByteArrayAsync();
             JsonParse p = new JsonParse(bytes, bytes.Length);
-            return (Obj)p.Parse();
+            return (JObj)p.Parse();
         }
 
-        public static async Task<Arr> GetArrAsync(this HttpResponseMessage msg)
+        public static async Task<JArr> GetArrAsync(this HttpResponseMessage msg)
         {
             byte[] bytes = await msg.Content.ReadAsByteArrayAsync();
             JsonParse p = new JsonParse(bytes, bytes.Length);
-            return (Arr)p.Parse();
+            return (JArr)p.Parse();
         }
 
-        public static async Task<Elem> GetElemAsync(this HttpResponseMessage msg)
+        public static async Task<XElem> GetElemAsync(this HttpResponseMessage msg)
         {
             byte[] bytes = await msg.Content.ReadAsByteArrayAsync();
             XmlParse p = new XmlParse(bytes, bytes.Length);
-            return (Elem)p.Parse();
+            return (XElem)p.Parse();
         }
 
         public static async Task<D> GetDatAsync<D>(this HttpResponseMessage msg, byte z = 0) where D : IData, new()
         {
             byte[] bytes = await msg.Content.ReadAsByteArrayAsync();
             JsonParse p = new JsonParse(bytes, bytes.Length);
-            Obj obj = (Obj)p.Parse();
+            JObj obj = (JObj)p.Parse();
             return obj.ToData<D>(z);
         }
 
@@ -77,7 +77,7 @@ namespace Greatbone.Core
         {
             byte[] bytes = await msg.Content.ReadAsByteArrayAsync();
             JsonParse p = new JsonParse(bytes, bytes.Length);
-            Arr arr = (Arr)p.Parse();
+            JArr arr = (JArr)p.Parse();
             return arr.ToDatas<D>(z);
         }
 

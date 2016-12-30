@@ -993,7 +993,7 @@ namespace Greatbone.Core
             return this;
         }
 
-        public HtmlContent Put(string name, Number v)
+        public HtmlContent Put(string name, JNumber v)
         {
             switch (ctx)
             {
@@ -1071,12 +1071,12 @@ namespace Greatbone.Core
             return this;
         }
 
-        public HtmlContent Put(string name, Obj v)
+        public HtmlContent Put(string name, JObj v)
         {
             return this;
         }
 
-        public HtmlContent Put(string name, Arr v)
+        public HtmlContent Put(string name, JArr v)
         {
             return this;
         }

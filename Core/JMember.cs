@@ -6,71 +6,71 @@ namespace Greatbone.Core
     ///
     /// Represents a value or a property if with the name.
     ///
-    public struct Member : IRollable
+    public struct JMember : IRollable
     {
         // property name, if not null
         readonly string name;
 
         // type of the value
-        internal readonly MemberType type;
+        internal readonly JType type;
 
         // Obj, Arr, string, byte[]
         internal readonly object refv;
 
-        internal readonly Number numv;
+        internal readonly JNumber numv;
 
-        public Member(string name)
+        public JMember(string name)
         {
             this.name = name;
-            type = MemberType.Null;
+            type = JType.Null;
             refv = null;
-            numv = default(Number);
+            numv = default(JNumber);
         }
 
-        public Member(string name, Obj v)
+        public JMember(string name, JObj v)
         {
             this.name = name;
-            type = MemberType.Object;
+            type = JType.Object;
             refv = v;
-            numv = default(Number);
+            numv = default(JNumber);
         }
 
-        public Member(string name, Arr v)
+        public JMember(string name, JArr v)
         {
             this.name = name;
-            type = MemberType.Array;
+            type = JType.Array;
             refv = v;
-            numv = default(Number);
+            numv = default(JNumber);
         }
 
-        public Member(string name, string v)
+        public JMember(string name, string v)
         {
             this.name = name;
-            type = MemberType.String;
+            type = JType.String;
             refv = v;
-            numv = default(Number);
+            numv = default(JNumber);
         }
 
-        public Member(string name, byte[] v)
+        public JMember(string name, byte[] v)
         {
             this.name = name;
-            type = MemberType.Bytes;
+            type = JType.Bytes;
             refv = v;
-            numv = default(Number);
+            numv = default(JNumber);
         }
 
-        public Member(string name, bool v)
+        public JMember(string name, bool v)
         {
             this.name = name;
-            type = v ? MemberType.True : MemberType.False;
+            type = v ? JType.True : JType.False;
             refv = null;
-            numv = default(Number);
+            numv = default(JNumber);
         }
 
-        public Member(string name, Number v)
+        public JMember(string name, JNumber v)
         {
             this.name = name;
-            type = MemberType.Number;
+            type = JType.Number;
             refv = null;
             numv = v;
         }
@@ -79,86 +79,86 @@ namespace Greatbone.Core
 
         public bool IsPair => name != null;
 
-        public static implicit operator Obj(Member v)
+        public static implicit operator JObj(JMember v)
         {
-            if (v.type == MemberType.Object)
+            if (v.type == JType.Object)
             {
-                return (Obj) v.refv;
+                return (JObj) v.refv;
             }
             return null;
         }
 
-        public static implicit operator Arr(Member v)
+        public static implicit operator JArr(JMember v)
         {
-            if (v.type == MemberType.Array)
+            if (v.type == JType.Array)
             {
-                return (Arr) v.refv;
+                return (JArr) v.refv;
             }
             return null;
         }
 
-        public static implicit operator bool(Member v)
+        public static implicit operator bool(JMember v)
         {
-            return v.type == MemberType.True;
+            return v.type == JType.True;
         }
 
-        public static implicit operator short(Member v)
+        public static implicit operator short(JMember v)
         {
-            if (v.type == MemberType.Number)
+            if (v.type == JType.Number)
             {
                 return v.numv.Short;
             }
             return 0;
         }
 
-        public static implicit operator int(Member v)
+        public static implicit operator int(JMember v)
         {
-            if (v.type == MemberType.Number)
+            if (v.type == JType.Number)
             {
                 return v.numv.Int;
             }
             return 0;
         }
 
-        public static implicit operator long(Member v)
+        public static implicit operator long(JMember v)
         {
-            if (v.type == MemberType.Number)
+            if (v.type == JType.Number)
             {
                 return v.numv.Long;
             }
             return 0;
         }
 
-        public static implicit operator double(Member v)
+        public static implicit operator double(JMember v)
         {
-            if (v.type == MemberType.Number)
+            if (v.type == JType.Number)
             {
                 return v.numv.Double;
             }
             return 0;
         }
 
-        public static implicit operator decimal(Member v)
+        public static implicit operator decimal(JMember v)
         {
-            if (v.type == MemberType.Number)
+            if (v.type == JType.Number)
             {
                 return v.numv.Decimal;
             }
             return 0;
         }
 
-        public static implicit operator Number(Member v)
+        public static implicit operator JNumber(JMember v)
         {
-            if (v.type == MemberType.Number)
+            if (v.type == JType.Number)
             {
                 return v.numv;
             }
-            return default(Number);
+            return default(JNumber);
         }
 
-        public static implicit operator DateTime(Member v)
+        public static implicit operator DateTime(JMember v)
         {
-            if (v.type == MemberType.String)
+            if (v.type == JType.String)
             {
                 string str = (string) v.refv;
                 DateTime dt;
@@ -167,9 +167,9 @@ namespace Greatbone.Core
             return default(DateTime);
         }
 
-        public static implicit operator NpgsqlPoint(Member v)
+        public static implicit operator NpgsqlPoint(JMember v)
         {
-            if (v.type == MemberType.String)
+            if (v.type == JType.String)
             {
                 string str = (string) v.refv;
                 if (str != null)
@@ -190,9 +190,9 @@ namespace Greatbone.Core
             return default(NpgsqlPoint);
         }
 
-        public static implicit operator char[](Member v)
+        public static implicit operator char[](JMember v)
         {
-            if (v.type == MemberType.String)
+            if (v.type == JType.String)
             {
                 string str = (string) v.refv;
                 return str.ToCharArray();
@@ -200,18 +200,18 @@ namespace Greatbone.Core
             return null;
         }
 
-        public static implicit operator string(Member v)
+        public static implicit operator string(JMember v)
         {
-            if (v.type == MemberType.String)
+            if (v.type == JType.String)
             {
                 return (string) v.refv;
             }
             return null;
         }
 
-        public static implicit operator byte[](Member v)
+        public static implicit operator byte[](JMember v)
         {
-            if (v.type == MemberType.String)
+            if (v.type == JType.String)
             {
                 return (byte[]) v.refv;
             }

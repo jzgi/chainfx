@@ -3,7 +3,7 @@ using NpgsqlTypes;
 
 namespace Greatbone.Core
 {
-    public struct Attr : IRollable
+    public struct XAttr : IRollable
     {
         readonly string name;
 
@@ -11,13 +11,13 @@ namespace Greatbone.Core
 
         public string Name => name;
 
-        internal Attr(string key, string v)
+        internal XAttr(string key, string v)
         {
             this.name = key;
             value = v;
         }
 
-        public static implicit operator bool(Attr v)
+        public static implicit operator bool(XAttr v)
         {
             string str = v.value;
             if (v.value != null)
@@ -27,7 +27,7 @@ namespace Greatbone.Core
             return false;
         }
 
-        public static implicit operator short(Attr v)
+        public static implicit operator short(XAttr v)
         {
             string str = v.value;
             if (v.value != null)
@@ -41,7 +41,7 @@ namespace Greatbone.Core
             return 0;
         }
 
-        public static implicit operator int(Attr v)
+        public static implicit operator int(XAttr v)
         {
             string str = v.value;
             if (str != null)
@@ -55,7 +55,7 @@ namespace Greatbone.Core
             return 0;
         }
 
-        public static implicit operator long(Attr v)
+        public static implicit operator long(XAttr v)
         {
             string str = v.value;
             if (str != null)
@@ -69,7 +69,7 @@ namespace Greatbone.Core
             return 0;
         }
 
-        public static implicit operator double(Attr v)
+        public static implicit operator double(XAttr v)
         {
             string str = v.value;
             if (str != null)
@@ -83,7 +83,7 @@ namespace Greatbone.Core
             return 0;
         }
 
-        public static implicit operator decimal(Attr v)
+        public static implicit operator decimal(XAttr v)
         {
             string str = v.value;
             if (str != null)
@@ -97,53 +97,53 @@ namespace Greatbone.Core
             return 0;
         }
 
-        public static implicit operator Number(Attr v)
+        public static implicit operator JNumber(XAttr v)
         {
-            return default(Number);
+            return default(JNumber);
         }
 
-        public static implicit operator DateTime(Attr v)
+        public static implicit operator DateTime(XAttr v)
         {
             return default(DateTime);
         }
 
-        public static implicit operator NpgsqlPoint(Attr v)
+        public static implicit operator NpgsqlPoint(XAttr v)
         {
             return default(NpgsqlPoint);
         }
 
-        public static implicit operator char[](Attr v)
+        public static implicit operator char[](XAttr v)
         {
             string str = v.value;
             return str?.ToCharArray();
         }
 
-        public static implicit operator string(Attr v)
+        public static implicit operator string(XAttr v)
         {
             return v.value;
         }
 
-        public static implicit operator byte[](Attr v)
+        public static implicit operator byte[](XAttr v)
         {
             return null;
         }
 
-        public static implicit operator short[](Attr v)
+        public static implicit operator short[](XAttr v)
         {
             return null;
         }
 
-        public static implicit operator int[](Attr v)
+        public static implicit operator int[](XAttr v)
         {
             return null;
         }
 
-        public static implicit operator long[](Attr v)
+        public static implicit operator long[](XAttr v)
         {
             return null;
         }
 
-        public static implicit operator string[](Attr v)
+        public static implicit operator string[](XAttr v)
         {
             return null;
         }

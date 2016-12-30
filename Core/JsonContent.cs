@@ -80,7 +80,7 @@ namespace Greatbone.Core
             level--; // exit
         }
 
-        public void PutArr(Arr v)
+        public void PutArr(JArr v)
         {
             Put(null, v);
         }
@@ -200,7 +200,7 @@ namespace Greatbone.Core
             return this;
         }
 
-        public JsonContent Put(string name, Number v)
+        public JsonContent Put(string name, JNumber v)
         {
             if (counts[level]++ > 0) Add(',');
             if (name != null)
@@ -349,7 +349,7 @@ namespace Greatbone.Core
             return this;
         }
 
-        public JsonContent Put(string name, Obj v)
+        public JsonContent Put(string name, JObj v)
         {
             if (counts[level]++ > 0) Add(',');
             if (name != null)
@@ -377,7 +377,7 @@ namespace Greatbone.Core
             return this;
         }
 
-        public JsonContent Put(string name, Arr v)
+        public JsonContent Put(string name, JArr v)
         {
             if (counts[level]++ > 0) Add(',');
             if (name != null)
