@@ -48,7 +48,7 @@ namespace Greatbone.Core
             // adjust configuration
             cfg.Service = this;
 
-            id = (cfg.shardid == null) ? cfg.name : cfg.name + "-" + cfg.shardid;
+            id = (cfg.shard == null) ? cfg.name : cfg.name + "-" + cfg.shard;
 
             // setup logging 
             LoggerFactory factory = new LoggerFactory();
@@ -277,7 +277,7 @@ namespace Greatbone.Core
                 Username = cfg.username,
                 Password = cfg.password
             };
-            return new DbContext(Config.shardid, builder);
+            return new DbContext(Config.shard, builder);
         }
 
         //

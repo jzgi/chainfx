@@ -5,7 +5,7 @@ namespace Greatbone.Core
     ///
     public struct Number
     {
-        static readonly int[] INT =
+        static readonly int[] BASE =
         {
             1,
             10,
@@ -84,8 +84,7 @@ namespace Greatbone.Core
             {
                 if (pt <= 0) return new decimal(bigint);
 
-                int bits = Pow(fract);
-                long v = bigint * INT[pt] + fract;
+                long v = bigint * BASE[pt] + fract;
                 int lo = (int)v;
                 int mid = (int)(v >> 32);
                 byte scale = (byte)pt;

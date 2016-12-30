@@ -47,7 +47,7 @@ namespace Greatbone.Sample
 
             if ((cfg = new WebConfig("chat")
             {
-                shardid = "01",
+                shard = "01",
                 pub = "http://127.0.0.1:8081",
                 intern = "http://127.0.0.1:7071",
                 db = pg

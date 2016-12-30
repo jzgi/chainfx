@@ -231,7 +231,7 @@ namespace Greatbone.Core
             IShardable shardable = dat as IShardable;
             if (shardable != null)
             {
-                shardable.ShardId = shard;
+                shardable.Shard = shard;
             }
 
             return dat;
@@ -250,7 +250,7 @@ namespace Greatbone.Core
                 IShardable shardable = dat as IShardable;
                 if (shardable != null)
                 {
-                    shardable.ShardId = shard;
+                    shardable.Shard = shard;
                 }
 
                 lst.Add(dat);
@@ -447,7 +447,7 @@ namespace Greatbone.Core
                 IShardable shardable = v as IShardable;
                 if (shardable != null)
                 {
-                    shardable.ShardId = shard;
+                    shardable.Shard = shard;
                 }
                 return true;
             }
@@ -544,7 +544,7 @@ namespace Greatbone.Core
                     IShardable shardable = dat as IShardable;
                     if (shardable != null)
                     {
-                        shardable.ShardId = shard;
+                        shardable.Shard = shard;
                     }
 
                     v[i] = dat;

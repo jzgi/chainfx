@@ -18,8 +18,8 @@
     ///
     public class WebConfig : WebFolderContext, IData
     {
-        /// The shard id when one service is divided into many shards
-        public string shardid;
+        /// The shard identifier when one service is divided into many shards
+        public string shard;
 
         /// The open socket address for external communication
         public string pub;
@@ -51,7 +51,7 @@
 
         public void Load(ISource src, byte bits = 0)
         {
-            src.Get(nameof(shardid), ref shardid);
+            src.Get(nameof(shard), ref shard);
             src.Get(nameof(pub), ref pub);
             src.Get(nameof(intern), ref intern);
             src.Get(nameof(cluster), ref cluster);
@@ -62,7 +62,7 @@
 
         public void Dump<R>(ISink<R> snk, byte bits = 0) where R : ISink<R>
         {
-            snk.Put(nameof(shardid), shardid);
+            snk.Put(nameof(shard), shard);
             snk.Put(nameof(pub), pub);
             snk.Put(nameof(intern), intern);
             snk.Put(nameof(cluster), cluster);

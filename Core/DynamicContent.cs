@@ -323,7 +323,7 @@ namespace Greatbone.Core
 
         public void Add(double v)
         {
-            //todo
+            Add(v.ToString(CultureInfo.CurrentCulture));
         }
 
         public void Add(decimal v)
