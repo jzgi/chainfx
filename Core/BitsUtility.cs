@@ -15,16 +15,16 @@
             AUTO = 0x80,
 
             // binary
-            BIN = 0x40,
+            BINARY = 0x40,
 
             // late-handled
-            LATE = 0x20,
+            LATER = 0x20,
 
             // many
-            SUB = 0x10,
+            SUBLEVEL = 0x10,
 
             // reserved
-            RESV = 0x08;
+            HIDDEN = 0x08;
 
 
         public static bool Has(this byte bits, byte v)

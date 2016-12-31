@@ -95,7 +95,7 @@ namespace Greatbone.Sample
         public void @default(WebActionContext ac)
         {
             int page = ac.Arg;
-            const byte z = 0xff ^ BIN;
+            const byte z = 0xff ^ BINARY;
 
             using (var dc = Service.NewDbContext())
             {
@@ -152,7 +152,7 @@ namespace Greatbone.Sample
         public void mgmtz(WebActionContext ac)
         {
             int page = ac.Arg;
-            const byte z = 0xff ^ BIN;
+            const byte z = 0xff ^ BINARY;
 
             using (var dc = Service.NewDbContext())
             {

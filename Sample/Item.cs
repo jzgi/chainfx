@@ -22,7 +22,7 @@ namespace Greatbone.Sample
         {
             s.Get(nameof(item), ref item);
             s.Get(nameof(shopid), ref shopid);
-            if (bits.Has(BIN)) s.Get(nameof(icon), ref icon);
+            if (bits.Has(BINARY)) s.Get(nameof(icon), ref icon);
             s.Get(nameof(price), ref price);
             s.Get(nameof(remark), ref remark);
             s.Get(nameof(tel), ref tel);
@@ -33,7 +33,7 @@ namespace Greatbone.Sample
         {
             s.Put(nameof(item), item);
             s.Put(nameof(shopid), shopid);
-            if (bits.Has(BIN)) s.Put(nameof(icon), icon);
+            if (bits.Has(BINARY)) s.Put(nameof(icon), icon);
             s.Put(nameof(price), price);
             s.Put(nameof(tel), tel);
             s.Put(nameof(sold), sold);
