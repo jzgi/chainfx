@@ -1,4 +1,6 @@
-﻿namespace Greatbone.Core
+﻿using System.IO;
+
+namespace Greatbone.Core
 {
     ///
     /// The configurative settings for a web service.
@@ -44,7 +46,7 @@
 
         public JObj JObj { get; private set; }
 
-        public bool? Backed { get; private set; }
+        public bool? Loaded { get; private set; }
 
         public WebConfig(string name)
         {
@@ -73,20 +75,20 @@
             snk.Put(nameof(cache), cache);
         }
 
-        public void LoadJson()
+        public bool TryLoadFile()
         {
             string path = GetFilePath("$web.json");
-            if (System.IO.File.Exists(path))
+            if (File.Exists(path))
             {
                 JObj jobj = JsonUtility.FileToJObj(path);
                 if (jobj != null)
                 {
                     JObj = jobj;
                     Load(jobj); // override
-                    Backed = true;
+                    return (Loaded = true).Value;
                 }
             }
-            Backed = false;
+            return (Loaded = false).Value;
         }
     }
 }
