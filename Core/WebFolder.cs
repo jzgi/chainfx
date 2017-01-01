@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.IO;
 using System.Reflection;
 using Microsoft.Extensions.Logging;
@@ -65,7 +66,7 @@ namespace Greatbone.Core
             }
             // create instance by reflection
             Type typ = typeof(F);
-            ConstructorInfo ci = typ.GetConstructor(new[] {typeof(WebFolderContext)});
+            ConstructorInfo ci = typ.GetConstructor(new[] { typeof(WebFolderContext) });
             if (ci == null)
             {
                 throw new WebException(typ + " missing WebFolderContext");
@@ -80,7 +81,7 @@ namespace Greatbone.Core
                 Directory = (Parent == null) ? name : Path.Combine(Parent.Directory, name),
                 Service = Service
             };
-            F folder = (F) ci.Invoke(new object[] {ctx});
+            F folder = (F)ci.Invoke(new object[] { ctx });
             children.Add(folder);
 
             return folder;
@@ -99,7 +100,7 @@ namespace Greatbone.Core
 
             // create instance
             Type typ = typeof(F);
-            ConstructorInfo ci = typ.GetConstructor(new[] {typeof(WebFolderContext)});
+            ConstructorInfo ci = typ.GetConstructor(new[] { typeof(WebFolderContext) });
             if (ci == null)
             {
                 throw new WebException(typ + " missing WebFolderContext");
@@ -114,7 +115,7 @@ namespace Greatbone.Core
                 Directory = (Parent == null) ? _VAR_ : Path.Combine(Parent.Directory, _VAR_),
                 Service = Service
             };
-            F folder = (F) ci.Invoke(new object[] {ctx});
+            F folder = (F)ci.Invoke(new object[] { ctx });
             variable = folder;
 
             return folder;
@@ -137,7 +138,7 @@ namespace Greatbone.Core
 
         // public Roll<WebAction> Actions => actions;
 
-        public WebAction Action(string method)
+        public WebAction GetAction(string method)
         {
             if (string.IsNullOrEmpty(method))
             {
@@ -146,7 +147,7 @@ namespace Greatbone.Core
             return actions[method];
         }
 
-        public WebAction[] Actions(params string[] methods)
+        public WebAction[] GetActions(params string[] methods)
         {
             int len = methods.Length;
             WebAction[] atn = new WebAction[len];
@@ -156,6 +157,21 @@ namespace Greatbone.Core
                 atn[i] = string.IsNullOrEmpty(mthd) ? defaction : actions[mthd];
             }
             return atn;
+        }
+
+        public List<WebAction> GetUiActions(RoleAttribute role)
+        {
+            List<WebAction> lst = null;
+            for (int i = 0; i < actions.Count; i++)
+            {
+                WebAction a = actions[i];
+                if (a.Ui != null && a.HasRole(role))
+                {
+                    if (lst == null) lst = new List<WebAction>();
+                    lst.Add(a);
+                }
+            }
+            return lst;
         }
 
         internal virtual void Handle(string relative, WebActionContext ac)
@@ -211,7 +227,7 @@ namespace Greatbone.Core
                     name = rsc.Substring(0, dash);
                     sub = rsc.Substring(dash + 1);
                 }
-                WebAction atn = string.IsNullOrEmpty(name) ? defaction : Action(name);
+                WebAction atn = string.IsNullOrEmpty(name) ? defaction : GetAction(name);
                 if (atn != null)
                 {
                     ac.ChainVar(sub, null);

@@ -3,15 +3,15 @@
 namespace Greatbone.Core
 {
     ///
-    /// An authorization check.
+    /// An authorization role check.
     ///
     [AttributeUsage(AttributeTargets.Class | AttributeTargets.Method, Inherited = false)]
-    public class CheckAttribute : Attribute
+    public class RoleAttribute : Attribute
     {
         // if authenticated through cookie
         readonly bool cookied;
 
-        public CheckAttribute(bool cookied = false)
+        public RoleAttribute(bool cookied = false)
         {
             this.cookied = cookied;
         }

@@ -672,12 +672,12 @@ namespace Greatbone.Core
             Add("</label>");
         }
 
-        public void input_range()
+        public void Range()
         {
             T("</tbody>");
         }
 
-        public void input_color()
+        public void Color()
         {
             T("</tbody>");
         }
@@ -718,7 +718,7 @@ namespace Greatbone.Core
             Add("</fieldset>");
         }
 
-        public void input_file()
+        public void File()
         {
             T("</tbody>");
         }
@@ -736,15 +736,14 @@ namespace Greatbone.Core
         public void Button(WebAction wa)
         {
             Add("<button class=\"pure-button");
-            if (!wa.GET) Add(" pure-button-primary");
+            if (wa.FormPost == true) Add(" pure-button-primary");
             Add("\" formaction=\"");
             Add(wa.Name);
             Add("\" formmethod=\"");
-            Add(wa.GET ? "get" : "post");
-            if (wa.Dialog > 0)
+            Add(wa.FormPost == true ? "get" : "post");
+            if (wa.DialogPost != null)
             {
                 Add("\" onclick=\"dialog(this,");
-                Add(wa.Dialog);
                 Add("); return false;");
             }
             Add("\">");

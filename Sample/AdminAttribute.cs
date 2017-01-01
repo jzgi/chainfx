@@ -2,9 +2,9 @@
 
 namespace Greatbone.Sample
 {
-    public class CheckAdminAttribute : CheckAttribute
+    public class AdminAttribute : RoleAttribute
     {
-        public CheckAdminAttribute() : base(false) { }
+        public AdminAttribute() : base(false) { }
 
         public override bool Check(WebActionContext wc)
         {

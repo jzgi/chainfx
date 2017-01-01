@@ -3,22 +3,25 @@ using NpgsqlTypes;
 
 namespace Greatbone.Core
 {
-    public struct Pair : IRollable
+    public struct Field : IRollable
     {
         readonly string name;
 
-        // string or string array
+        // can be string, string[], or byte[]
         object values;
 
         int count;
 
+        string err;
+
         public string Name => name;
 
-        internal Pair(string name, string v)
+        internal Field(string name, string v)
         {
             this.name = name;
             values = v;
             count = 1;
+            err = null;
         }
 
         internal void Add(string v)
@@ -52,7 +55,7 @@ namespace Greatbone.Core
         // CONVERSION
         //
 
-        public static implicit operator bool(Pair v)
+        public static implicit operator bool(Field v)
         {
             string str = v.First;
             if (str != null)
@@ -62,7 +65,7 @@ namespace Greatbone.Core
             return false;
         }
 
-        public static implicit operator short(Pair v)
+        public static implicit operator short(Field v)
         {
             string str = v.First;
             if (str != null)
@@ -76,7 +79,7 @@ namespace Greatbone.Core
             return 0;
         }
 
-        public static implicit operator int(Pair v)
+        public static implicit operator int(Field v)
         {
             string str = v.First;
             if (str != null)
@@ -90,7 +93,7 @@ namespace Greatbone.Core
             return 0;
         }
 
-        public static implicit operator long(Pair v)
+        public static implicit operator long(Field v)
         {
             string str = v.First;
             if (str != null)
@@ -104,7 +107,7 @@ namespace Greatbone.Core
             return 0;
         }
 
-        public static implicit operator double(Pair v)
+        public static implicit operator double(Field v)
         {
             string str = v.First;
             if (str != null)
@@ -118,7 +121,7 @@ namespace Greatbone.Core
             return 0;
         }
 
-        public static implicit operator decimal(Pair v)
+        public static implicit operator decimal(Field v)
         {
             string str = v.First;
             if (str != null)
@@ -132,33 +135,33 @@ namespace Greatbone.Core
             return 0;
         }
 
-        public static implicit operator DateTime(Pair v)
+        public static implicit operator DateTime(Field v)
         {
             return default(DateTime);
         }
 
-        public static implicit operator NpgsqlPoint(Pair v)
+        public static implicit operator NpgsqlPoint(Field v)
         {
             return default(NpgsqlPoint);
         }
 
-        public static implicit operator char[](Pair v)
+        public static implicit operator char[](Field v)
         {
             string str = v.First;
             return str?.ToCharArray();
         }
 
-        public static implicit operator string(Pair v)
+        public static implicit operator string(Field v)
         {
             return v.First;
         }
 
-        public static implicit operator byte[](Pair v)
+        public static implicit operator byte[](Field v)
         {
             return null;
         }
 
-        public static implicit operator short[](Pair v)
+        public static implicit operator short[](Field v)
         {
             int len = v.count;
             if (len == 0) return null;
@@ -179,7 +182,7 @@ namespace Greatbone.Core
             return arr;
         }
 
-        public static implicit operator int[](Pair v)
+        public static implicit operator int[](Field v)
         {
             int len = v.count;
             if (len == 0) return null;
@@ -200,7 +203,7 @@ namespace Greatbone.Core
             return arr;
         }
 
-        public static implicit operator long[](Pair v)
+        public static implicit operator long[](Field v)
         {
             int len = v.count;
             if (len == 0) return null;
@@ -220,7 +223,7 @@ namespace Greatbone.Core
             return arr;
         }
 
-        public static implicit operator string[](Pair v)
+        public static implicit operator string[](Field v)
         {
             int len = v.count;
             if (len == 0) return null;

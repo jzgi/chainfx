@@ -31,15 +31,17 @@ namespace Greatbone.Core
 
         public string Name => name;
 
-        public bool GET => ui?.GET ?? false;
+        public bool? FormPost => ui?.FormPost;
 
         public string Label => ui?.Label ?? name;
 
         public string Icon => ui?.Icon;
 
-        public int Dialog => ui?.Dialog ?? 3;
+        public bool? DialogPost => ui?.DialogPost;
 
         public override WebService Service => folder.Service;
+
+        public UiAttribute Ui => ui;
 
         internal void Do(WebActionContext ac)
         {

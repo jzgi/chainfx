@@ -7,7 +7,7 @@
     {
         IToken Token { get; }
 
-        string TokenString { get; }
+        string TokenStr { get; }
 
         bool Cookied { get; }
     }

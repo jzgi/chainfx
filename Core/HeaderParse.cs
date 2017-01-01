@@ -5,9 +5,9 @@ namespace Greatbone.Core
     ///
     /// Tp parse HTTP header field value;
     ///
-    struct FieldParse
+    struct HeaderParse
     {
-        static readonly ParseException ParseEx = new ParseException("field value");
+        static readonly ParseException ParseEx = new ParseException("error during header field parse");
 
         // field value
         readonly string value;
@@ -18,7 +18,7 @@ namespace Greatbone.Core
         // string builder
         readonly Str str;
 
-        internal FieldParse(string v)
+        internal HeaderParse(string v)
         {
             value = v;
             pos = 0;

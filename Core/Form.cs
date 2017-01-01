@@ -6,7 +6,7 @@ namespace Greatbone.Core
     ///
     /// A form object model parsed from x-www-form-urlencoded.
     ///
-    public class Form : Roll<Pair>, ISource
+    public class Form : Roll<Field>, ISource
     {
         const int InitialCapacity = 8;
 
@@ -18,7 +18,7 @@ namespace Greatbone.Core
 
         internal void Add(string name, string v)
         {
-            Add(new Pair(name, v));
+            Add(new Field(name, v));
         }
 
         //
@@ -27,7 +27,7 @@ namespace Greatbone.Core
 
         public bool Get(string name, ref bool v)
         {
-            Pair pr;
+            Field pr;
             if (TryGet(name, out pr))
             {
                 v = pr;
@@ -38,7 +38,7 @@ namespace Greatbone.Core
 
         public bool Get(string name, ref short v)
         {
-            Pair pr;
+            Field pr;
             if (TryGet(name, out pr))
             {
                 v = pr;
@@ -49,7 +49,7 @@ namespace Greatbone.Core
 
         public bool Get(string name, ref int v)
         {
-            Pair pr;
+            Field pr;
             if (TryGet(name, out pr))
             {
                 v = pr;
@@ -60,7 +60,7 @@ namespace Greatbone.Core
 
         public bool Get(string name, ref long v)
         {
-            Pair pr;
+            Field pr;
             if (TryGet(name, out pr))
             {
                 v = pr;
@@ -71,7 +71,7 @@ namespace Greatbone.Core
 
         public bool Get(string name, ref double v)
         {
-            Pair pr;
+            Field pr;
             if (TryGet(name, out pr))
             {
                 v = pr;
@@ -82,7 +82,7 @@ namespace Greatbone.Core
 
         public bool Get(string name, ref decimal v)
         {
-            Pair pr;
+            Field pr;
             if (TryGet(name, out pr))
             {
                 v = pr;
@@ -103,7 +103,7 @@ namespace Greatbone.Core
 
         public bool Get(string name, ref string v)
         {
-            Pair pr;
+            Field pr;
             if (TryGet(name, out pr))
             {
                 v = pr;
@@ -129,7 +129,7 @@ namespace Greatbone.Core
 
         public bool Get(string name, ref short[] v)
         {
-            Pair pr;
+            Field pr;
             if (TryGet(name, out pr))
             {
                 v = pr;
@@ -140,7 +140,7 @@ namespace Greatbone.Core
 
         public bool Get(string name, ref int[] v)
         {
-            Pair pr;
+            Field pr;
             if (TryGet(name, out pr))
             {
                 v = pr;
@@ -151,7 +151,7 @@ namespace Greatbone.Core
 
         public bool Get(string name, ref long[] v)
         {
-            Pair pr;
+            Field pr;
             if (TryGet(name, out pr))
             {
                 v = pr;
@@ -162,7 +162,7 @@ namespace Greatbone.Core
 
         public bool Get(string name, ref string[] v)
         {
-            Pair pr;
+            Field pr;
             if (TryGet(name, out pr))
             {
                 v = pr;

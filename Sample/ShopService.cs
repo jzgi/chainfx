@@ -17,7 +17,7 @@ namespace Greatbone.Sample
         {
             MakeVariable<ShopVariableFolder>();
 
-            _new = Actions(nameof(@new));
+            _new = GetActions(nameof(@new));
         }
 
         ///
@@ -182,7 +182,7 @@ namespace Greatbone.Sample
         /// id=_shopid_&amp;password=_password_&amp;name=_name_
         /// </code>
         ///
-        [CheckAdmin]
+        [Admin]
         public async void @new(WebActionContext ac)
         {
             if (ac.GET)
@@ -207,7 +207,7 @@ namespace Greatbone.Sample
         }
 
 
-        [CheckAdmin]
+        [Admin]
         public virtual void mgmt(WebActionContext ac)
         {
             if (Children != null)

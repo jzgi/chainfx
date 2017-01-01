@@ -5,12 +5,12 @@ namespace Greatbone.Core
 {
     public abstract class WebControl
     {
-        readonly CheckAttribute[] checks;
+        readonly RoleAttribute[] roles;
 
         // if auth through header or cookie
         readonly bool header, cookie;
 
-        readonly AlterAttribute[] alters;
+        readonly FilterAttribute[] filters;
 
         internal WebControl(ICustomAttributeProvider attrs)
         {
@@ -21,40 +21,52 @@ namespace Greatbone.Core
             }
 
             // initialize checks
-            List<CheckAttribute> chks = null;
-            foreach (var chk in (CheckAttribute[])attrs.GetCustomAttributes(typeof(CheckAttribute), false))
+            List<RoleAttribute> roles = null;
+            foreach (var role in (RoleAttribute[])attrs.GetCustomAttributes(typeof(RoleAttribute), false))
             {
-                if (chks == null)
+                if (roles == null)
                 {
-                    chks = new List<CheckAttribute>(8);
+                    roles = new List<RoleAttribute>(8);
                 }
-                chk.Control = this;
-                chks.Add(chk);
+                role.Control = this;
+                roles.Add(role);
 
-                if (chk.IsCookied) header = true;
+                if (role.IsCookied) header = true;
                 else cookie = true;
             }
-            checks = chks?.ToArray();
+            this.roles = roles?.ToArray();
 
             // initialize checks
-            List<AlterAttribute> alts = null;
-            foreach (var alt in (AlterAttribute[])attrs.GetCustomAttributes(typeof(AlterAttribute), false))
+            List<FilterAttribute> filters = null;
+            foreach (var filter in (FilterAttribute[])attrs.GetCustomAttributes(typeof(FilterAttribute), false))
             {
-                if (alts == null)
+                if (filters == null)
                 {
-                    alts = new List<AlterAttribute>(8);
+                    filters = new List<FilterAttribute>(8);
                 }
-                alt.Control = this;
-                alts.Add(alt);
+                filter.Control = this;
+                filters.Add(filter);
             }
-            alters = alts?.ToArray();
+            this.filters = filters?.ToArray();
         }
 
         public abstract WebService Service { get; }
 
+        public bool HasRole(RoleAttribute role)
+        {
+            if (roles != null)
+            {
+                for (int i = 0; i < roles.Length; i++)
+                {
+                    if (roles[i] == role) return true;
+                }
+            }
+            return false;
+        }
+
         internal bool Check(WebActionContext ac)
         {
-            if (checks != null)
+            if (roles != null)
             {
                 if (header && ac.Token == null)
                 {
@@ -70,9 +82,9 @@ namespace Greatbone.Core
                     return false;
                 }
 
-                for (int i = 0; i < checks.Length; i++)
+                for (int i = 0; i < roles.Length; i++)
                 {
-                    if (!checks[i].Check(ac))
+                    if (!roles[i].Check(ac))
                     {
                         ac.Reply(403); // forbidden
                         return false;
@@ -84,22 +96,22 @@ namespace Greatbone.Core
 
         internal void BeforeDo(WebActionContext ac)
         {
-            if (alters == null) return;
+            if (filters == null) return;
 
-            for (int i = 0; i < alters.Length; i++)
+            for (int i = 0; i < filters.Length; i++)
             {
-                alters[i].Before(ac);
+                filters[i].Before(ac);
             }
         }
 
         internal void AfterDo(WebActionContext ac)
         {
-            if (alters == null) return;
+            if (filters == null) return;
 
             // execute in reversed order
-            for (int i = alters.Length - 1; i >= 0; i--)
+            for (int i = filters.Length - 1; i >= 0; i--)
             {
-                alters[i].After(ac);
+                filters[i].After(ac);
             }
         }
     }

@@ -21,7 +21,7 @@ namespace Greatbone.Core
 
         public IToken Token { get; internal set; }
 
-        public string TokenString { get; internal set; }
+        public string TokenStr { get; internal set; }
 
         public bool Cookied { get; internal set; }
 
@@ -80,9 +80,9 @@ namespace Greatbone.Core
             }
         }
 
-        public Pair this[int index] => Query[index];
+        public Field this[int index] => Query[index];
 
-        public Pair this[string name] => Query[name];
+        public Field this[string name] => Query[name];
 
         //
         // HEADER
@@ -138,7 +138,7 @@ namespace Greatbone.Core
             long? clen = Request.ContentLength;
             if (clen <= 0) return null;
 
-            int len = (int) clen;
+            int len = (int)clen;
             byte[] bytebuf = BufferUtility.BorrowByteBuf(len); // borrow from the pool
             int count = await Request.Body.ReadAsync(bytebuf, 0, len);
 
@@ -146,6 +146,12 @@ namespace Greatbone.Core
             if ("application/x-www-form-urlencoded".Equals(ctyp))
             {
                 FormParse p = new FormParse(bytebuf, count);
+                entity = p.Parse();
+                BufferUtility.Return(bytebuf); // return to the pool
+            }
+            else if ("multipart/form-data".Equals(ctyp))
+            {
+                MpFormParse p = new MpFormParse(bytebuf, count);
                 entity = p.Parse();
                 BufferUtility.Return(bytebuf); // return to the pool
             }
@@ -188,23 +194,23 @@ namespace Greatbone.Core
             return (entity = await ReadAsync()) as JArr;
         }
 
-        public async Task<D> GetDataAsync<D>(byte z = 0) where D : IData, new()
+        public async Task<D> GetDataAsync<D>(byte bits = 0) where D : IData, new()
         {
             ISource src = (entity = await ReadAsync()) as ISource;
             if (src == null)
             {
                 return default(D);
             }
-            return src.ToData<D>(z);
+            return src.ToData<D>(bits);
         }
 
-        public async Task<D[]> GetDatasAsync<D>(byte z = 0) where D : IData, new()
+        public async Task<D[]> GetDatasAsync<D>(byte bits = 0) where D : IData, new()
         {
             JArr jarr = (entity = await ReadAsync()) as JArr;
-            return jarr?.ToDatas<D>(z);
+            return jarr?.ToDatas<D>(bits);
         }
 
-        public async Task<XElem> GetElemAsync()
+        public async Task<XElem> GetXElemAsync()
         {
             object entity = await ReadAsync();
 
@@ -254,7 +260,7 @@ namespace Greatbone.Core
 
         public void Reply(int status, bool? pub = null, int seconds = 5)
         {
-            Reply(status, (IContent) null, pub, seconds);
+            Reply(status, (IContent)null, pub, seconds);
         }
 
         public void Reply(int status, string str, bool? pub = null, int seconds = 30)
@@ -299,7 +305,7 @@ namespace Greatbone.Core
                 // cache indicators
                 if (Content is DynamicContent) // set etag
                 {
-                    ulong etag = ((DynamicContent) Content).ETag;
+                    ulong etag = ((DynamicContent)Content).ETag;
                     SetHeader("ETag", StrUtility.ToHex(etag));
                 }
 

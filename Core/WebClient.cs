@@ -54,11 +54,11 @@ namespace Greatbone.Core
 
             if (ctx.Cookied)
             {
-                req.Headers.Add("Cookie", ctx.TokenString);
+                req.Headers.Add("Cookie", ctx.TokenStr);
             }
             else
             {
-                req.Headers.Add("Authorization", "Bearer " + ctx.TokenString);
+                req.Headers.Add("Authorization", "Bearer " + ctx.TokenStr);
             }
             return await SendAsync(req, HttpCompletionOption.ResponseContentRead);
         }
@@ -68,11 +68,11 @@ namespace Greatbone.Core
             HttpRequestMessage req = new HttpRequestMessage(HttpMethod.Get, uri);
             if (ctx.Cookied)
             {
-                req.Headers.Add("Cookie", ctx.TokenString);
+                req.Headers.Add("Cookie", ctx.TokenStr);
             }
             else
             {
-                req.Headers.Add("Authorization", "Bearer " + ctx.TokenString);
+                req.Headers.Add("Authorization", "Bearer " + ctx.TokenStr);
             }
             HttpResponseMessage resp = await SendAsync(req, HttpCompletionOption.ResponseContentRead);
             return await resp.GetJArrAsync();
@@ -83,11 +83,11 @@ namespace Greatbone.Core
             HttpRequestMessage req = new HttpRequestMessage(HttpMethod.Get, uri);
             if (ctx.Cookied)
             {
-                req.Headers.Add("Cookie", ctx.TokenString);
+                req.Headers.Add("Cookie", ctx.TokenStr);
             }
             else
             {
-                req.Headers.Add("Authorization", "Bearer " + ctx.TokenString);
+                req.Headers.Add("Authorization", "Bearer " + ctx.TokenStr);
             }
             HttpResponseMessage resp = await SendAsync(req, HttpCompletionOption.ResponseContentRead);
             return await resp.GetDataAsync<D>(z);
@@ -98,11 +98,11 @@ namespace Greatbone.Core
             HttpRequestMessage req = new HttpRequestMessage(HttpMethod.Get, uri);
             if (ctx.Cookied)
             {
-                req.Headers.Add("Cookie", ctx.TokenString);
+                req.Headers.Add("Cookie", ctx.TokenStr);
             }
             else
             {
-                req.Headers.Add("Authorization", "Bearer " + ctx.TokenString);
+                req.Headers.Add("Authorization", "Bearer " + ctx.TokenStr);
             }
             HttpResponseMessage resp = await SendAsync(req, HttpCompletionOption.ResponseContentRead);
             return await resp.GetDatasAsync<D>(z);
@@ -113,11 +113,11 @@ namespace Greatbone.Core
             HttpRequestMessage req = new HttpRequestMessage(HttpMethod.Get, uri);
             if (ctx.Cookied)
             {
-                req.Headers.Add("Cookie", ctx.TokenString);
+                req.Headers.Add("Cookie", ctx.TokenStr);
             }
             else
             {
-                req.Headers.Add("Authorization", "Bearer " + ctx.TokenString);
+                req.Headers.Add("Authorization", "Bearer " + ctx.TokenStr);
             }
             HttpResponseMessage resp = await SendAsync(req, HttpCompletionOption.ResponseContentRead);
             return await resp.GetXElemAsync();
@@ -128,11 +128,11 @@ namespace Greatbone.Core
             HttpRequestMessage req = new HttpRequestMessage(HttpMethod.Get, uri);
             if (ctx.Cookied)
             {
-                req.Headers.Add("Cookie", ctx.TokenString);
+                req.Headers.Add("Cookie", ctx.TokenStr);
             }
             else
             {
-                req.Headers.Add("Authorization", "Bearer " + ctx.TokenString);
+                req.Headers.Add("Authorization", "Bearer " + ctx.TokenStr);
             }
             HttpResponseMessage resp = await SendAsync(req, HttpCompletionOption.ResponseContentRead);
             return await resp.GetBytesSegAsync();
