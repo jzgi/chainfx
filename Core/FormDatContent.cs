@@ -8,11 +8,15 @@ namespace Greatbone.Core
     /// 
     public class FormDatContent : DynamicContent, ISink<FormDatContent>
     {
+        const string Boundary = "0!A#4X";
+
+        const string Mime = "multipart/form-data; boundary=" + Boundary;
+
         public FormDatContent(bool pooled, int capacity = 4092) : base(true, pooled, capacity)
         {
         }
 
-        public override string MimeType => "multipart/form-data; boundary=0!A#4X";
+        public override string MimeType => Mime;
 
         void AddEsc(string v)
         {

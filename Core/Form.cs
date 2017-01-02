@@ -131,24 +131,69 @@ namespace Greatbone.Core
             return false;
         }
 
+        public bool Get(string name, ref char[] v)
+        {
+            Field fld;
+            if (TryGet(name, out fld))
+            {
+                v = fld;
+                return true;
+            }
+            return false;
+        }
+
         public bool Get(string name, ref byte[] v)
         {
-            throw new NotImplementedException();
+            Field fld;
+            if (TryGet(name, out fld))
+            {
+                v = fld;
+                return true;
+            }
+            return false;
         }
 
         public bool Get(string name, ref ArraySegment<byte>? v)
         {
-            throw new NotImplementedException();
+            Field fld;
+            if (TryGet(name, out fld))
+            {
+                v = fld;
+                return true;
+            }
+            return false;
         }
 
         public bool Get(string name, ref JArr v)
         {
-            throw new NotImplementedException();
+            Field fld;
+            if (TryGet(name, out fld))
+            {
+                string strv = fld;
+                if (strv != null)
+                {
+                    JsonParse p = new JsonParse(strv);
+                    v = p.Parse() as JArr;
+                    return true;
+                }
+            }
+            return false;
         }
 
         public bool Get(string name, ref JObj v)
         {
-            throw new NotImplementedException();
+            Field fld;
+            if (TryGet(name, out fld))
+            {
+                string strv = fld;
+                if (strv != null)
+                {
+                    JsonParse p = new JsonParse(strv);
+                    v = p.Parse() as JObj;
+                    return true;
+                }
+            }
+            return false;
         }
 
         public bool Get(string name, ref short[] v)
@@ -194,12 +239,6 @@ namespace Greatbone.Core
             }
             return false;
         }
-
-        public bool Get(string name, ref char[] v)
-        {
-            throw new NotImplementedException();
-        }
-
 
         public bool Get<D>(string name, ref D[] v, byte bits = 0) where D : IDat, new()
         {

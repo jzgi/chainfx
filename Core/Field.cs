@@ -171,6 +171,14 @@ namespace Greatbone.Core
 
         public static implicit operator byte[] (Field v)
         {
+            byte[] buf = v.bytebuf;
+            if (buf != null)
+            {
+                if (v.count == buf.Length)
+                {
+                    return buf;
+                }
+            }
             return null;
         }
 

@@ -261,7 +261,7 @@ namespace Greatbone.Core
 
             INF("started");
 
-//            cleaner.Start();
+            //            cleaner.Start();
 
             // if (cluster != null)
             //     scheduler.Start();
@@ -316,9 +316,9 @@ namespace Greatbone.Core
                 }
                 sql._("LIMIT 120");
 
-                if (dc.Query(sql.ToString(), p => p.Put(lastid.Value)))
+                if (dc.Query(sql, p => p.Put(lastid.Value)))
                 {
-                    EventBagContent cont = new EventBagContent(true, 1024 * 1024);
+                    FormDatContent cont = new FormDatContent(true, 1024 * 1024);
                     while (dc.NextRow())
                     {
                         long id = dc.GetLong();
@@ -326,7 +326,7 @@ namespace Greatbone.Core
                         DateTime time = dc.GetDateTime();
                         ArraySegment<byte>? body = dc.GetBytesSeg();
 
-                        cont.Add(id, name, time, body);
+                        // cont.Add(id, name, time, body);
                     }
                     ac.Reply(200, cont);
                 }
