@@ -196,9 +196,10 @@ namespace Greatbone.Core
 
             // parse and process evetns
             int pos;
-            for (;;)
-            {
 
+            FormDatParse p = new FormDatParse();
+            p.ParseEvents(x =>
+            {
                 long id;
                 string name = "";
                 DateTime time;
@@ -208,7 +209,7 @@ namespace Greatbone.Core
                     WebEventContext ec = new WebEventContext();
                     handler.Do(ec);
                 }
-            }
+            });
         }
     }
 }

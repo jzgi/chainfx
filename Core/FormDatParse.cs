@@ -1,3 +1,5 @@
+using System;
+
 namespace Greatbone.Core
 {
     ///
@@ -46,6 +48,11 @@ namespace Greatbone.Core
                 string value = ParseValue(ref p);
                 frm.Add(name, value);
             }
+        }
+
+        public void ParseEvents(Action<WebEventContext> e)
+        {
+
         }
 
         string ParseName(ref int pos)
