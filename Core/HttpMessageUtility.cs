@@ -23,17 +23,17 @@ namespace Greatbone.Core
             msg.Content = cont;
         }
 
-        public static void Set<D>(this HttpRequestMessage msg, D dat) where D : IDat
+        public static void Set<D>(this HttpRequestMessage msg, D obj) where D : IData
         {
             JsonContent cont = new JsonContent(true, true);
-            cont.Put(null, dat);
+            cont.Put(null, obj);
             msg.Content = cont;
         }
 
-        public static void Set<D>(this HttpRequestMessage msg, D[] dats) where D : IDat
+        public static void Set<D>(this HttpRequestMessage msg, D[] arr) where D : IData
         {
             JsonContent cont = new JsonContent(true, true);
-            cont.Put(null, dats);
+            cont.Put(null, arr);
             msg.Content = cont;
         }
 
@@ -65,20 +65,20 @@ namespace Greatbone.Core
             return (XElem)p.Parse();
         }
 
-        public static async Task<D> GetDatAsync<D>(this HttpResponseMessage msg, byte bits = 0) where D : IDat, new()
+        public static async Task<D> GetObjectAsync<D>(this HttpResponseMessage msg, byte bits = 0) where D : IData, new()
         {
             byte[] bytes = await msg.Content.ReadAsByteArrayAsync();
             JsonParse p = new JsonParse(bytes, bytes.Length);
             JObj jobj = (JObj)p.Parse();
-            return jobj.ToDat<D>(bits);
+            return jobj.ToObject<D>(bits);
         }
 
-        public static async Task<D[]> GetDatsAsync<D>(this HttpResponseMessage msg, byte bits = 0) where D : IDat, new()
+        public static async Task<D[]> GetArrayAsync<D>(this HttpResponseMessage msg, byte bits = 0) where D : IData, new()
         {
             byte[] bytes = await msg.Content.ReadAsByteArrayAsync();
             JsonParse p = new JsonParse(bytes, bytes.Length);
             JArr jarr = (JArr)p.Parse();
-            return jarr.ToDats<D>(bits);
+            return jarr.ToArray<D>(bits);
         }
 
         public static async Task<byte[]> GetBytesSegAsync(this HttpResponseMessage msg)

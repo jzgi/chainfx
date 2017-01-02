@@ -222,7 +222,7 @@ namespace Greatbone.Core
         // RESULTSET
         //
 
-        public D ToDat<D>(byte bits = 0) where D : IDat, new()
+        public D ToObject<D>(byte bits = 0) where D : IData, new()
         {
             D dat = new D();
             dat.Load(this, bits);
@@ -238,22 +238,22 @@ namespace Greatbone.Core
         }
 
 
-        public D[] ToDats<D>(byte bits = 0) where D : IDat, new()
+        public D[] ToArray<D>(byte bits = 0) where D : IData, new()
         {
             List<D> lst = new List<D>(64);
             while (NextRow())
             {
-                D dat = new D();
-                dat.Load(this, bits);
+                D obj = new D();
+                obj.Load(this, bits);
 
                 // add shard if any
-                IShardable shardable = dat as IShardable;
+                IShardable shardable = obj as IShardable;
                 if (shardable != null)
                 {
                     shardable.Shard = shard;
                 }
 
-                lst.Add(dat);
+                lst.Add(obj);
             }
             return lst.ToArray();
         }
@@ -380,7 +380,7 @@ namespace Greatbone.Core
                 if (!reader.IsDBNull(ord))
                 {
                     int len;
-                    if ((len = (int) reader.GetBytes(ord, 0, null, 0, 0)) > 0)
+                    if ((len = (int)reader.GetBytes(ord, 0, null, 0, 0)) > 0)
                     {
                         // get the number of bytes that are available to read.
                         v = new byte[len];
@@ -404,7 +404,7 @@ namespace Greatbone.Core
                 if (!reader.IsDBNull(ord))
                 {
                     int len;
-                    if ((len = (int) reader.GetBytes(ord, 0, null, 0, 0)) > 0)
+                    if ((len = (int)reader.GetBytes(ord, 0, null, 0, 0)) > 0)
                     {
                         byte[] buf = BufferUtility.BorrowByteBuf(len);
                         reader.GetBytes(ord, 0, buf, 0, len); // read data into the buffer
@@ -420,14 +420,14 @@ namespace Greatbone.Core
             return false;
         }
 
-        public bool Get<D>(string name, ref D v, byte bits = 0) where D : IDat, new()
+        public bool Get<D>(string name, ref D v, byte bits = 0) where D : IData, new()
         {
             int ord = name == null ? ordinal++ : reader.GetOrdinal(name);
             if (!reader.IsDBNull(ord))
             {
                 string str = reader.GetString(ord);
                 JsonParse p = new JsonParse(str);
-                JObj jobj = (JObj) p.Parse();
+                JObj jobj = (JObj)p.Parse();
                 v = new D();
                 v.Load(jobj, bits);
 
@@ -449,7 +449,7 @@ namespace Greatbone.Core
             {
                 string str = reader.GetString(ord);
                 JsonParse p = new JsonParse(str);
-                v = (JObj) p.Parse();
+                v = (JObj)p.Parse();
                 return true;
             }
             return false;
@@ -462,7 +462,7 @@ namespace Greatbone.Core
             {
                 string str = reader.GetString(ord);
                 JsonParse p = new JsonParse(str);
-                v = (JArr) p.Parse();
+                v = (JArr)p.Parse();
                 return true;
             }
             return false;
@@ -512,14 +512,14 @@ namespace Greatbone.Core
             return false;
         }
 
-        public bool Get<D>(string name, ref D[] v, byte bits = 0) where D : IDat, new()
+        public bool Get<D>(string name, ref D[] v, byte bits = 0) where D : IData, new()
         {
             int ord = name == null ? ordinal++ : reader.GetOrdinal(name);
             if (!reader.IsDBNull(ord))
             {
                 string str = reader.GetString(ord);
                 JsonParse p = new JsonParse(str);
-                JArr jarr = (JArr) p.Parse();
+                JArr jarr = (JArr)p.Parse();
                 int len = jarr.Count;
                 v = new D[len];
                 for (int i = 0; i < len; i++)
@@ -547,17 +547,37 @@ namespace Greatbone.Core
         // MESSAGING
         //
 
-        public void QueueEvent<D>(string name, string shard, D dat) where D : IDat
+        public void EnQueue<D>(string name, string shard, D obj) where D : IData
         {
-            QueueEvent(name, shard, jcont => jcont.Put(null, dat));
+            EnQueue(name, shard, jcont => jcont.Put(null, obj));
         }
 
-        public void QueueEvent<D>(string name, string shard, D[] dats) where D : IDat
+        public void EnQueue<D>(string name, string shard, D[] arr) where D : IData
         {
-            QueueEvent(name, shard, jcont => jcont.Put(null, dats));
+            EnQueue(name, shard, jcont => jcont.Put(null, arr));
         }
 
-        public void QueueEvent(string name, string shard, Action<JsonContent> a)
+        public void EnQueue(string name, string shard, Form form)
+        {
+        }
+
+        public void EnQueue(string name, string shard, JArr jarr)
+        {
+        }
+
+        public void EnQueue(string name, string shard, JObj jobj)
+        {
+        }
+
+        public void EnQueue(string name, string shard, XElem xelem)
+        {
+        }
+
+        public void EnQueue(string name, string shard, ArraySegment<byte> bytesseg)
+        {
+        }
+
+        public void EnQueue(string name, string shard, Action<JsonContent> a)
         {
             // convert message to byte buffer
             JsonContent cont = new JsonContent(true, true);

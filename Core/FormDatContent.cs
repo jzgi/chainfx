@@ -20,40 +20,39 @@ namespace Greatbone.Core
 
         void AddEsc(string v)
         {
-            if (v != null)
+            if (v == null) return;
+
+            for (int i = 0; i < v.Length; i++)
             {
-                for (int i = 0; i < v.Length; i++)
+                char c = v[i];
+                if (c == '\"')
                 {
-                    char c = v[i];
-                    if (c == '\"')
-                    {
-                        Add('\\');
-                        Add('"');
-                    }
-                    else if (c == '\\')
-                    {
-                        Add('\\');
-                        Add('\\');
-                    }
-                    else if (c == '\n')
-                    {
-                        Add('\\');
-                        Add('n');
-                    }
-                    else if (c == '\r')
-                    {
-                        Add('\\');
-                        Add('r');
-                    }
-                    else if (c == '\t')
-                    {
-                        Add('\\');
-                        Add('t');
-                    }
-                    else
-                    {
-                        Add(c);
-                    }
+                    Add('\\');
+                    Add('"');
+                }
+                else if (c == '\\')
+                {
+                    Add('\\');
+                    Add('\\');
+                }
+                else if (c == '\n')
+                {
+                    Add('\\');
+                    Add('n');
+                }
+                else if (c == '\r')
+                {
+                    Add('\\');
+                    Add('r');
+                }
+                else if (c == '\t')
+                {
+                    Add('\\');
+                    Add('t');
+                }
+                else
+                {
+                    Add(c);
                 }
             }
         }
@@ -203,7 +202,7 @@ namespace Greatbone.Core
 
             Add('"');
             Add(v.X);
-            Add(':');
+            Add(',');
             Add(v.Y);
             Add('"');
 
@@ -268,7 +267,7 @@ namespace Greatbone.Core
             return this; // ignore ir
         }
 
-        public FormDatContent Put<B>(string name, B v, byte bits = 0) where B : IDat
+        public FormDatContent Put<D>(string name, D v, byte bits = 0) where D : IData
         {
             if (name != null)
             {
@@ -462,7 +461,7 @@ namespace Greatbone.Core
         }
 
 
-        public FormDatContent Put<B>(string name, B[] v, byte bits = 0) where B : IDat
+        public FormDatContent Put<D>(string name, D[] v, byte bits = 0) where D : IData
         {
             if (name != null)
             {

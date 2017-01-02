@@ -18,7 +18,7 @@ namespace Greatbone.Core
     /// }
     /// </code>
     ///
-    public class WebConfig : WebFolderContext, IDat
+    public class WebConfig : WebFolderContext, IData
     {
         /// The shard identifier when one service is divided into many shards
         public string shard;

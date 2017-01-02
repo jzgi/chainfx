@@ -3,7 +3,7 @@ using Greatbone.Core;
 
 namespace Greatbone.Sample
 {
-     public class Inbox : TaskCompletionSource<WebActionContext>, IDat
+     public class Inbox : TaskCompletionSource<WebActionContext>, IData
     {
         internal string userid;
 

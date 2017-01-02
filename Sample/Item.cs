@@ -6,7 +6,7 @@ namespace Greatbone.Sample
     /// 
     /// An item that is sold. 
     ///
-    public class Item : IDat
+    public class Item : IData
     {
         public static readonly Item Empty = new Item();
 

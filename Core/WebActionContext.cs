@@ -196,20 +196,20 @@ namespace Greatbone.Core
             return (entity = await ReadAsync()) as JArr;
         }
 
-        public async Task<D> GetDatAsync<D>(byte bits = 0) where D : IDat, new()
+        public async Task<D> GetObjectAsync<D>(byte bits = 0) where D : IData, new()
         {
             ISource src = (entity = await ReadAsync()) as ISource;
             if (src == null)
             {
                 return default(D);
             }
-            return src.ToDat<D>(bits);
+            return src.ToObject<D>(bits);
         }
 
-        public async Task<D[]> GetDatsAsync<D>(byte bits = 0) where D : IDat, new()
+        public async Task<D[]> GetArrayAsync<D>(byte bits = 0) where D : IData, new()
         {
             JArr jarr = (entity = await ReadAsync()) as JArr;
-            return jarr?.ToDats<D>(bits);
+            return jarr?.ToArray<D>(bits);
         }
 
         public async Task<XElem> GetXElemAsync()
@@ -273,18 +273,38 @@ namespace Greatbone.Core
             Reply(status, cont, pub, seconds);
         }
 
-        public void Reply(int status, IDat obj, byte bits = 0, bool? pub = null, int seconds = 30)
+        public void Reply(int status, IData obj, byte bits = 0, bool? pub = null, int seconds = 30)
         {
             JsonContent cont = new JsonContent(true, true, 4 * 1024);
             cont.Put(null, obj, bits);
             Reply(status, cont, pub, seconds);
         }
 
-        public void Reply<D>(int status, D[] arr, byte bits = 0, bool? pub = null, int seconds = 30) where D : IDat
+        public void Reply<D>(int status, D[] arr, byte bits = 0, bool? pub = null, int seconds = 30) where D : IData
         {
             JsonContent cont = new JsonContent(true, true, 4 * 1024);
             cont.Put(null, arr, bits);
             Reply(status, cont, pub, seconds);
+        }
+
+        public void Reply(int status, Form form, bool? pub = null, int seconds = 30)
+        {
+        }
+
+        public void Reply(int status, JObj jobj, bool? pub = null, int seconds = 30)
+        {
+        }
+
+        public void Reply(int status, JArr jarr, bool? pub = null, int seconds = 30)
+        {
+        }
+
+        public void Reply(int status, XElem xelem, bool? pub = null, int seconds = 30)
+        {
+        }
+
+        public void Reply(int status, ArraySegment<byte> bytesseg, bool? pub = null, int seconds = 30)
+        {
         }
 
         internal async Task SendAsync()

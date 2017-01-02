@@ -62,7 +62,7 @@ namespace Greatbone.Sample
                 {
                     if (dc.QueryA("SELECT * FROM shops WHERE id = @1", (p) => p.Put(id)))
                     {
-                        var tok = dc.ToDat<Token>();
+                        var tok = dc.ToObject<Token>();
                         string credential = StrUtility.MD5(id + ':' + password);
                         if (credential.Equals(tok.credential))
                         {
@@ -101,7 +101,7 @@ namespace Greatbone.Sample
                 DbSql sql = new DbSql("SELECT ").columnlst(Shop.Empty)._("FROM shops WHERE location <-> @1");
                 if (dc.Query(sql.ToString(), p => p.Put(pt)))
                 {
-                    var shops = dc.ToDats<Shop>();
+                    var shops = dc.ToArray<Shop>();
                     ac.ReplyPage(200, "", main =>
                     {
                         main.FORM(_new, shops);
@@ -126,9 +126,10 @@ namespace Greatbone.Sample
         {
             GetUiActions(typeof(AdminAttribute));
 
-            ac.ReplyPage(200, "", x => {
+            ac.ReplyPage(200, "", x =>
+            {
                 // x.Form();
-             });
+            });
         }
 
         ///
@@ -148,7 +149,7 @@ namespace Greatbone.Sample
                 DbSql sql = new DbSql("SELECT ").columnlst(Shop.Empty, z)._("FROM shops");
                 if (dc.Query(sql.ToString(), p => p.Put(20 * page)))
                 {
-                    var shops = dc.ToDats<Shop>(z);
+                    var shops = dc.ToArray<Shop>(z);
                     ac.ReplyPage(200, "", main =>
                     {
                         main.FORM(_new, shops);
@@ -180,7 +181,7 @@ namespace Greatbone.Sample
             }
             else // post
             {
-                var shop = await ac.GetDatAsync<Shop>(); // read form
+                var shop = await ac.GetObjectAsync<Shop>(); // read form
                 using (var dc = Service.NewDbContext())
                 {
                     shop.credential = StrUtility.MD5(shop.id + ':' + shop.credential);

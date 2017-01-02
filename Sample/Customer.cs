@@ -6,7 +6,7 @@ namespace Greatbone.Sample
     /// 
     /// A buyer data object.
     ///
-    public class Customer : IDat
+    public class Customer : IData
     {
         internal string shopid;
         internal string id; // wechat id

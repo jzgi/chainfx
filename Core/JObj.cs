@@ -187,7 +187,7 @@ namespace Greatbone.Core
             return false;
         }
 
-        public bool Get<D>(string name, ref D v, byte bits = 0) where D : IDat, new()
+        public bool Get<D>(string name, ref D v, byte bits = 0) where D : IData, new()
         {
             JMem pair;
             if (TryGet(name, out pair))
@@ -301,7 +301,7 @@ namespace Greatbone.Core
             return false;
         }
 
-        public bool Get<D>(string name, ref D[] v, byte bits = 0) where D : IDat, new()
+        public bool Get<D>(string name, ref D[] v, byte bits = 0) where D : IData, new()
         {
             JMem pair;
             if (TryGet(name, out pair))
