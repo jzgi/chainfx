@@ -206,7 +206,7 @@ namespace Greatbone.Core
             return src.ToDataObj<D>(bits);
         }
 
-        public async Task<D[]> GetDataObjsAsync<D>(byte bits = 0) where D : IData, new()
+        public async Task<D[]> GetDataArrAsync<D>(byte bits = 0) where D : IData, new()
         {
             JArr jarr = (entity = await ReadAsync()) as JArr;
             return jarr?.ToDataArr<D>(bits);
@@ -273,17 +273,17 @@ namespace Greatbone.Core
             Reply(status, cont, pub, seconds);
         }
 
-        public void Reply(int status, IData data, byte bits = 0, bool? pub = null, int seconds = 30)
+        public void Reply(int status, IData obj, byte bits = 0, bool? pub = null, int seconds = 30)
         {
             JsonContent cont = new JsonContent(true, true, 4 * 1024);
-            cont.Put(null, data, bits);
+            cont.Put(null, obj, bits);
             Reply(status, cont, pub, seconds);
         }
 
-        public void Reply<D>(int status, D[] datas, byte bits = 0, bool? pub = null, int seconds = 30) where D : IData
+        public void Reply<D>(int status, D[] arr, byte bits = 0, bool? pub = null, int seconds = 30) where D : IData
         {
             JsonContent cont = new JsonContent(true, true, 4 * 1024);
-            cont.Put(null, datas, bits);
+            cont.Put(null, arr, bits);
             Reply(status, cont, pub, seconds);
         }
 
@@ -349,6 +349,10 @@ namespace Greatbone.Core
             if (bytesseg != null)
             {
                 BufferUtility.Return(bytesseg.Value.Array);
+            }
+            else
+            {
+                (entity as IReturnable)?.Return();
             }
         }
     }
