@@ -8,14 +8,14 @@ namespace Greatbone.Core
     [AttributeUsage(AttributeTargets.Method, Inherited = false)]
     public class UiAttribute : Attribute
     {
-        public bool? FormPost { get; set; } = false;
+        public UiAttribute() { }
 
         public string Label { get; set; } = null;
 
         public string Icon { get; set; } = null;
 
-        public bool? DialogPost { get; set; } = false;
+        public int Form { get; set; } = 0;
 
-        public UiAttribute() { }
+        public int Dialog { get; set; } = 0;
     }
 }

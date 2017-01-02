@@ -734,21 +734,21 @@ namespace Greatbone.Core
             T("</tbody>");
         }
 
-        public void BUTTON(WebAction wa)
+        public void BUTTON(WebAction act)
         {
             Add("<button class=\"pure-button");
-            if (wa.FormPost == true) Add(" pure-button-primary");
+            if (act.Form == 0) Add(" pure-button-primary");
             Add("\" formaction=\"");
-            Add(wa.Name);
+            Add(act.Name);
             Add("\" formmethod=\"");
-            Add(wa.FormPost == true ? "get" : "post");
-            if (wa.DialogPost != null)
+            Add(act.Form == 0 ? "get" : "post");
+            if (act.Dialog != 0)
             {
                 Add("\" onclick=\"dialog(this,");
                 Add("); return false;");
             }
             Add("\">");
-            string icon = wa.Icon;
+            string icon = act.Icon;
             if (icon != null)
             {
                 Add("<i class=\"");
@@ -756,7 +756,7 @@ namespace Greatbone.Core
                 Add("\"></i>");
             }
             Add(" ");
-            AddLabel(wa.Name);
+            AddLabel(act.Name);
             Add(" </button>");
         }
 

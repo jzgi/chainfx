@@ -31,13 +31,13 @@ namespace Greatbone.Core
 
         public string Name => name;
 
-        public bool? FormPost => ui?.FormPost;
+        public int Form => ui == null ? 0 : ui.Form;
 
         public string Label => ui?.Label ?? name;
 
         public string Icon => ui?.Icon;
 
-        public bool? DialogPost => ui?.DialogPost;
+        public int Dialog => ui == null ? 0 : ui.Dialog;
 
         public override WebService Service => folder.Service;
 
