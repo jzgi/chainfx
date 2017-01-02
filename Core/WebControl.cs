@@ -72,14 +72,14 @@ namespace Greatbone.Core
                 if (header && ac.Token == null)
                 {
                     ac.Reply(401); // unauthorized
-                    ac.SetHeader("WWW-Authenticate", "Bearer");
+                    ac.Header("WWW-Authenticate", "Bearer");
                     return false;
                 }
                 else if (cookie && ac.Token == null)
                 {
                     string loc = Service.Auth.SignOn + "?orig=" + ac.Uri;
                     ac.Reply(303); // see other - redirect to signon url
-                    ac.SetHeader("Location", loc);
+                    ac.Header("Location", loc);
                     return false;
                 }
 

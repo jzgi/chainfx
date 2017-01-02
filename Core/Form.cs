@@ -10,13 +10,34 @@ namespace Greatbone.Core
     {
         public static readonly Form Empty = new Form();
 
-        public Form(int capacity = 16) : base(capacity)
+        // binary data
+        readonly bool dat;
+
+        public Form(bool dat = false, int capacity = 16) : base(capacity)
         {
+            this.dat = dat;
         }
+
+        public bool Dat => dat;
 
         internal void Add(string name, string v)
         {
             Add(new Field(name, v));
+        }
+
+        public void Return()
+        {
+            if (dat)
+            {
+                for (int i = 0; i < Count; i++)
+                {
+                    byte[] buf = this[i].bytebuf;
+                    if (buf != null)
+                    {
+                        BufferUtility.Return(buf);
+                    }
+                }
+            }
         }
 
         //
@@ -186,11 +207,6 @@ namespace Greatbone.Core
         }
 
         public bool Get<D>(string name, ref D v, byte bits = 0) where D : IData, new()
-        {
-            throw new NotImplementedException();
-        }
-
-        public void Return()
         {
             throw new NotImplementedException();
         }

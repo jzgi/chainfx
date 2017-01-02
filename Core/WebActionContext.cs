@@ -153,7 +153,7 @@ namespace Greatbone.Core
             {
                 int beq = ctyp.IndexOf("boundary=", 19);
                 string boundary = "--" + ctyp.Substring(beq + 9);
-                FormUploadParse p = new FormUploadParse(boundary, bytebuf, count);
+                FormDatParse p = new FormDatParse(boundary, bytebuf, count);
                 entity = p.Parse();
                 BufferUtility.Return(bytebuf); // return to the pool
             }
@@ -223,23 +223,23 @@ namespace Greatbone.Core
         // RESPONSE
         //
 
-        public void SetHeader(string name, int v)
+        public void Header(string name, int v)
         {
             Response.Headers.Add(name, new StringValues(v.ToString()));
         }
 
-        public void SetHeader(string name, string v)
+        public void Header(string name, string v)
         {
             Response.Headers.Add(name, new StringValues(v));
         }
 
-        public void SetHeader(string name, DateTime v)
+        public void Header(string name, DateTime v)
         {
             string str = StrUtility.FormatUtcDate(v);
             Response.Headers.Add(name, new StringValues(str));
         }
 
-        public void SetHeader(string name, params string[] values)
+        public void Header(string name, params string[] values)
         {
             Response.Headers.Add(name, new StringValues(values));
         }
@@ -289,12 +289,12 @@ namespace Greatbone.Core
 
         internal async Task SendAsync()
         {
-            SetHeader("Connection", "keep-alive");
+            Header("Connection", "keep-alive");
 
             if (Pub != null)
             {
                 string cc = Pub.Value ? "public" : "private" + ", max-age=" + Seconds * 1000;
-                SetHeader("Cache-Control", cc);
+                Header("Cache-Control", cc);
             }
 
             // setup appropriate headers
@@ -308,14 +308,14 @@ namespace Greatbone.Core
                 if (Content is DynamicContent) // set etag
                 {
                     ulong etag = ((DynamicContent)Content).ETag;
-                    SetHeader("ETag", StrUtility.ToHex(etag));
+                    Header("ETag", StrUtility.ToHex(etag));
                 }
 
                 // set last-modified
                 DateTime? last = Content.Modified;
                 if (last != null)
                 {
-                    SetHeader("Last-Modified", StrUtility.FormatUtcDate(last.Value));
+                    Header("Last-Modified", StrUtility.FormatUtcDate(last.Value));
                 }
 
                 // send async

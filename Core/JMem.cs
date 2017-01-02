@@ -4,7 +4,7 @@ using NpgsqlTypes;
 namespace Greatbone.Core
 {
     ///
-    /// A JSON member that is a value or property if with the name.
+    /// A JSON member that is either a value, or a property if with the name.
     ///
     public struct JMem : IRollable
     {

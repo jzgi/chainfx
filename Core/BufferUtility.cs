@@ -10,18 +10,18 @@ namespace Greatbone.Core
     {
         static readonly int Cores = Environment.ProcessorCount;
 
-        static readonly Que<byte[]>[] BQues =
+        static readonly Que<byte[]>[] BytesQues =
         {
-            new Que<byte[]>(1024 * 4, Cores * 32),
-            new Que<byte[]>(1024 * 16, Cores * 16),
+            new Que<byte[]>(1024 * 4, Cores * 16),
+            new Que<byte[]>(1024 * 16, Cores *16),
             new Que<byte[]>(1024 * 64, Cores * 8),
-            new Que<byte[]>(1024 * 256, Cores * 4),
-            new Que<byte[]>(1024 * 1024, Cores * 2),
+            new Que<byte[]>(1024 * 256, Cores * 8),
+            new Que<byte[]>(1024 * 1024, Cores * 4),
         };
 
-        static readonly Que<char[]>[] CQues =
+        static readonly Que<char[]>[] CharsQues =
         {
-            new Que<char[]>(1024 * 1, Cores * 16),
+            new Que<char[]>(1024 * 1, Cores * 8),
             new Que<char[]>(1024 * 4, Cores * 8),
             new Que<char[]>(1024 * 16, Cores * 4),
             new Que<char[]>(1024 * 64, Cores * 2)
@@ -32,11 +32,11 @@ namespace Greatbone.Core
         {
             // locate the appropriate queue
             int i = 0;
-            while (BQues[i].Spec < demand) i++;
+            while (BytesQues[i].Spec < demand) i++;
 
-            if (i < BQues.Length)
+            if (i < BytesQues.Length)
             {
-                Que<byte[]> que = BQues[i];
+                Que<byte[]> que = BytesQues[i];
                 byte[] buf;
                 if (!que.TryDequeue(out buf))
                 {
@@ -53,9 +53,9 @@ namespace Greatbone.Core
         public static void Return(byte[] buf)
         {
             int blen = buf.Length;
-            for (int i = 0; i < BQues.Length; i++)
+            for (int i = 0; i < BytesQues.Length; i++)
             {
-                Que<byte[]> q = BQues[i];
+                Que<byte[]> q = BytesQues[i];
                 if (q.Spec == blen) // the right queue to add
                 {
                     if (q.Count < q.Limit)
@@ -74,11 +74,11 @@ namespace Greatbone.Core
         {
             // locate the appropriate queue
             int i = 0;
-            while (CQues[i].Spec < demand) i++;
+            while (CharsQues[i].Spec < demand) i++;
 
-            if (i < CQues.Length)
+            if (i < CharsQues.Length)
             {
-                Que<char[]> que = CQues[i];
+                Que<char[]> que = CharsQues[i];
                 char[] buf;
                 if (!que.TryDequeue(out buf))
                 {
@@ -95,9 +95,9 @@ namespace Greatbone.Core
         public static void Return(char[] buf)
         {
             int blen = buf.Length;
-            for (int i = 0; i < BQues.Length; i++)
+            for (int i = 0; i < BytesQues.Length; i++)
             {
-                Que<char[]> q = CQues[i];
+                Que<char[]> q = CharsQues[i];
                 if (q.Spec == blen) // the right queue to add
                 {
                     if (q.Count < q.Limit)

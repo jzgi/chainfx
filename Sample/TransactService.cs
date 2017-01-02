@@ -68,8 +68,8 @@ namespace Greatbone.Sample
                         {
                             // set cookie
                             string tokstr = Service.Auth.Encrypt(tok);
-                            ac.SetHeader("Set-Cookie", tokstr);
-                            ac.SetHeader("Location", "");
+                            ac.Header("Set-Cookie", tokstr);
+                            ac.Header("Location", "");
                             ac.Reply(303); // see other (redirect)
                         }
                         else
