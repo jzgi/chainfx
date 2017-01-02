@@ -25,11 +25,11 @@ namespace Greatbone.Core
             return jobj.ToDataObj<D>(bits);
         }
 
-        public static D[] StringToDataArr<D>(string v, byte z = 0) where D : IData, new()
+        public static D[] StringToDataArr<D>(string v, byte bits = 0) where D : IData, new()
         {
             JsonParse p = new JsonParse(v);
             JArr jarr = (JArr)p.Parse();
-            return jarr.ToDataArr<D>(z);
+            return jarr.ToDataArr<D>(bits);
         }
 
         public static string JArrToString(JArr v)

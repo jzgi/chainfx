@@ -17,14 +17,14 @@ namespace Greatbone.Core
         // JObj, JArr, string, byte[]
         internal readonly object refv;
 
-        internal readonly JNum numv;
+        internal readonly JNumber numv;
 
         public JMem(string name)
         {
             this.name = name;
             type = JType.Null;
             refv = null;
-            numv = default(JNum);
+            numv = default(JNumber);
         }
 
         public JMem(string name, JObj v)
@@ -32,7 +32,7 @@ namespace Greatbone.Core
             this.name = name;
             type = JType.Object;
             refv = v;
-            numv = default(JNum);
+            numv = default(JNumber);
         }
 
         public JMem(string name, JArr v)
@@ -40,7 +40,7 @@ namespace Greatbone.Core
             this.name = name;
             type = JType.Array;
             refv = v;
-            numv = default(JNum);
+            numv = default(JNumber);
         }
 
         public JMem(string name, string v)
@@ -48,7 +48,7 @@ namespace Greatbone.Core
             this.name = name;
             type = JType.String;
             refv = v;
-            numv = default(JNum);
+            numv = default(JNumber);
         }
 
         public JMem(string name, byte[] v)
@@ -56,7 +56,7 @@ namespace Greatbone.Core
             this.name = name;
             type = JType.Bytes;
             refv = v;
-            numv = default(JNum);
+            numv = default(JNumber);
         }
 
         public JMem(string name, bool v)
@@ -64,10 +64,10 @@ namespace Greatbone.Core
             this.name = name;
             type = v ? JType.True : JType.False;
             refv = null;
-            numv = default(JNum);
+            numv = default(JNumber);
         }
 
-        public JMem(string name, JNum v)
+        public JMem(string name, JNumber v)
         {
             this.name = name;
             type = JType.Number;
@@ -147,13 +147,13 @@ namespace Greatbone.Core
             return 0;
         }
 
-        public static implicit operator JNum(JMem v)
+        public static implicit operator JNumber(JMem v)
         {
             if (v.type == JType.Number)
             {
                 return v.numv;
             }
-            return default(JNum);
+            return default(JNumber);
         }
 
         public static implicit operator DateTime(JMem v)

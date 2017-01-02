@@ -75,10 +75,10 @@ namespace Greatbone.Core
             return this;
         }
 
-        public DbSql _VALUES_<T>(T obj, byte z = 0) where T : IData
+        public DbSql _VALUES_<T>(T obj, byte bits = 0) where T : IData
         {
             Add(" VALUES (");
-            parameterlst(obj, z);
+            parameterlst(obj, bits);
             Add(")");
             return this;
         }
@@ -182,7 +182,7 @@ namespace Greatbone.Core
             return this;
         }
 
-        public DbSql Put(string name, JNum v)
+        public DbSql Put(string name, JNumber v)
         {
             if (name != null)
             {

@@ -119,7 +119,7 @@ namespace Greatbone.Core
             return this;
         }
 
-        public DbParameters Put(string name, JNum v)
+        public DbParameters Put(string name, JNumber v)
         {
             if (name == null)
             {

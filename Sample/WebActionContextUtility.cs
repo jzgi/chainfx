@@ -5,7 +5,7 @@ using Greatbone.Core;
 namespace Greatbone.Sample
 {
 
-    public static class WebContextUtility
+    public static class WebActionContextUtility
     {
 
         static readonly Dictionary<string, string> Map = new Dictionary<string, string>
@@ -18,7 +18,7 @@ namespace Greatbone.Sample
 
         }
 
-        public static void ReplyHtmlMajor(this WebActionContext wc, int status, string title, Action<HtmlContent> main, bool? pub = null, int maxage = 60000)
+        public static void ReplyPage(this WebActionContext wc, int status, string title, Action<HtmlContent> main, bool? pub = null, int maxage = 60000)
         {
             HtmlContent cont = new HtmlContent(true, true, 8 * 1024)
             {

@@ -140,7 +140,7 @@ namespace Greatbone.Core
             return this;
         }
 
-        public XmlContent Put(string name, JNum v)
+        public XmlContent Put(string name, JNumber v)
         {
             Add(' ');
             Add(name);

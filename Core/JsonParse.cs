@@ -121,7 +121,7 @@ namespace Greatbone.Core
                     }
                     else if (b == '-' || b >= '0' && b <= '9')
                     {
-                        JNum v = ParseNumber(ref p, b);
+                        JNumber v = ParseNumber(ref p, b);
                         jobj.Add(name, v);
                     }
                     else if (b == '&') // bytes extension
@@ -190,7 +190,7 @@ namespace Greatbone.Core
                 }
                 else if (b == '-' || b >= '0' && b <= '9')
                 {
-                    JNum v = ParseNumber(ref p, b);
+                    JNumber v = ParseNumber(ref p, b);
                     jarr.Add(new JMem(null, v));
                 }
                 else if (b == '&') // bytes extension
@@ -266,9 +266,9 @@ namespace Greatbone.Core
             return false;
         }
 
-        JNum ParseNumber(ref int pos, int first)
+        JNumber ParseNumber(ref int pos, int first)
         {
-            JNum num = new JNum(first);
+            JNumber num = new JNumber(first);
             int p = pos;
             for (;;)
             {

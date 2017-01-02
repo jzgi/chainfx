@@ -55,7 +55,7 @@ namespace Greatbone.Core
                 }
                 else if (typ == JType.Number)
                 {
-                    snk.Put(null, (JNum)elem);
+                    snk.Put(null, (JNumber)elem);
                 }
                 else if (typ == JType.True)
                 {

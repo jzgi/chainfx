@@ -159,7 +159,7 @@ namespace Greatbone.Core
             return atn;
         }
 
-        public List<WebAction> GetUiActions(RoleAttribute role)
+        public List<WebAction> GetUiActions(Type role)
         {
             List<WebAction> lst = null;
             for (int i = 0; i < actions.Count; i++)

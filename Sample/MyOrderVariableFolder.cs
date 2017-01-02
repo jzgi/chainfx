@@ -25,13 +25,13 @@ namespace Greatbone.Sample
                 if (dc.Query(sql.ToString(), p => p.Put(id).Put(shopid)))
                 {
                     var order = dc.ToDataObj<Order>();
-                    ac.ReplyHtmlMajor(200, "", main =>
+                    ac.ReplyPage(200, "", main =>
                     {
 
                     });
                 }
                 else
-                    ac.ReplyHtmlMajor(200, "没有记录", main => { });
+                    ac.ReplyPage(200, "没有记录", main => { });
             }
         }
 
@@ -46,13 +46,13 @@ namespace Greatbone.Sample
                 if (dc.Query(sql.ToString(), p => p.Put(orderid).Put(shopid)))
                 {
                     var order = dc.ToDataObj<Order>();
-                    ac.ReplyHtmlMajor(200, "", main =>
+                    ac.ReplyPage(200, "", main =>
                     {
 
                     });
                 }
                 else
-                    ac.ReplyHtmlMajor(200, "没有记录", main => { });
+                    ac.ReplyPage(200, "没有记录", main => { });
             }
         }
 

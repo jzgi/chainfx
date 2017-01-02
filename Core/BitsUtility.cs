@@ -1,7 +1,7 @@
 ﻿namespace Greatbone.Core
 {
     ///
-    /// The z-flags that filter what to load or dump in persistance operations.
+    /// The bits-flags that filter what to load or dump in persistance operations.
     ///
     public static class BitsUtility
     {

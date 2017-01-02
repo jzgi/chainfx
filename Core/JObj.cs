@@ -45,7 +45,7 @@ namespace Greatbone.Core
             Add(new JMem(name, v));
         }
 
-        internal void Add(string name, JNum v)
+        internal void Add(string name, JNumber v)
         {
             Add(new JMem(name, v));
         }
@@ -344,7 +344,7 @@ namespace Greatbone.Core
                 }
                 else if (typ == JType.Number)
                 {
-                    snk.Put(mbr.Name, (JNum) mbr);
+                    snk.Put(mbr.Name, (JNumber) mbr);
                 }
                 else if (typ == JType.True)
                 {

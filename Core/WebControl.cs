@@ -1,3 +1,4 @@
+using System;
 using System.Collections.Generic;
 using System.Reflection;
 
@@ -52,13 +53,13 @@ namespace Greatbone.Core
 
         public abstract WebService Service { get; }
 
-        public bool HasRole(RoleAttribute role)
+        public bool HasRole(Type role)
         {
             if (roles != null)
             {
                 for (int i = 0; i < roles.Length; i++)
                 {
-                    if (roles[i] == role) return true;
+                    if (roles[i].GetType() == role) return true;
                 }
             }
             return false;

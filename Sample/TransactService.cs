@@ -42,9 +42,9 @@ namespace Greatbone.Sample
                 string password = frm[nameof(password)];
                 string orig = frm[nameof(orig)];
 
-                ac.ReplyHtmlMajor(200, "", main =>
+                ac.ReplyPage(200, "", main =>
                 {
-                    main.Form(null, x => x.input_button());
+                    main.FORM(null, x => x.INPUT_button());
                 });
 
             }
@@ -103,13 +103,13 @@ namespace Greatbone.Sample
                 if (dc.Query(sql, p => p.Put(20 * page)))
                 {
                     var shops = dc.ToDataArr<Shop>(z);
-                    ac.ReplyHtmlMajor(200, "", main =>
+                    ac.ReplyPage(200, "", main =>
                     {
-                        main.Form(_new, shops);
+                        main.FORM(_new, shops);
                     });
                 }
                 else
-                    ac.ReplyHtmlMajor(200, "没有记录", main => { });
+                    ac.ReplyPage(200, "没有记录", main => { });
             }
         }
 
@@ -130,13 +130,13 @@ namespace Greatbone.Sample
                 if (dc.Query(sql.ToString(), p => p.Put(pt)))
                 {
                     var shops = dc.ToDataArr<Shop>();
-                    ac.ReplyHtmlMajor(200, "", main =>
+                    ac.ReplyPage(200, "", main =>
                     {
-                        main.Form(_new, shops);
+                        main.FORM(_new, shops);
                     });
                 }
                 else
-                    ac.ReplyHtmlMajor(200, "没有记录", main => { });
+                    ac.ReplyPage(200, "没有记录", main => { });
             }
         }
 
@@ -185,7 +185,7 @@ namespace Greatbone.Sample
         {
             if (Children != null)
             {
-                ac.ReplyHtmlMajor(200, "模块管理", a =>
+                ac.ReplyPage(200, "模块管理", a =>
                     {
                         for (int i = 0; i < Children.Count; i++)
                         {

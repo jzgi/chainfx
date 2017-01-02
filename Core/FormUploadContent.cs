@@ -151,7 +151,7 @@ namespace Greatbone.Core
             return this;
         }
 
-        public FormUploadContent Put(string name, JNum v)
+        public FormUploadContent Put(string name, JNumber v)
         {
             if (name != null)
             {

@@ -50,8 +50,8 @@ namespace Greatbone.Sample
             cfg = new WebConfig("chat")
             {
                 shard = "01",
-                pub = "http://127.0.0.1:8081",
-                intern = "http://127.0.0.1:7071",
+                pub = "http://127.0.0.1:8082",
+                intern = "http://127.0.0.1:7072",
                 db = pg
             };
 #if !DEBUG
