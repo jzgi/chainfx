@@ -3,10 +3,7 @@ using Greatbone.Core;
 
 namespace Greatbone.Sample
 {
-
-    /// <summary>
-    /// </summary>
-    public class Pay : IData
+    public class Pay : IDat
     {
         internal string id;
         internal string shopid;
@@ -19,25 +16,25 @@ namespace Greatbone.Sample
         internal string payid; // payment id
         internal int status;
 
-        public void Load(ISource s, byte bits = 0)
+        public void Load(ISource src, byte bits = 0)
         {
-            s.Get(nameof(id), ref id);
-            s.Get(nameof(shopid), ref shopid);
-            s.Get(nameof(time), ref time);
-            s.Get(nameof(custid), ref custid);
-            s.Get(nameof(cust), ref cust);
-            s.Get(nameof(tel), ref tel);
-            s.Get(nameof(status), ref status);
+            src.Get(nameof(id), ref id);
+            src.Get(nameof(shopid), ref shopid);
+            src.Get(nameof(time), ref time);
+            src.Get(nameof(custid), ref custid);
+            src.Get(nameof(cust), ref cust);
+            src.Get(nameof(tel), ref tel);
+            src.Get(nameof(status), ref status);
         }
 
-        public void Dump<R>(ISink<R> s, byte bits = 0) where R : ISink<R>
+        public void Dump<R>(ISink<R> snk, byte bits = 0) where R : ISink<R>
         {
-            s.Put(nameof(id), id);
-            s.Put(nameof(shopid), shopid);
-            s.Put(nameof(time), time);
-            s.Put(nameof(custid), custid);
-            s.Put(nameof(tel), tel);
-            s.Put(nameof(status), status);
+            snk.Put(nameof(id), id);
+            snk.Put(nameof(shopid), shopid);
+            snk.Put(nameof(time), time);
+            snk.Put(nameof(custid), custid);
+            snk.Put(nameof(tel), tel);
+            snk.Put(nameof(status), status);
         }
 
     }

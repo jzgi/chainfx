@@ -210,7 +210,7 @@ namespace Greatbone.Core
             return this;
         }
 
-        public DbParameters Put<D>(string name, D v, byte bits = 0) where D : IData
+        public DbParameters Put<D>(string name, D v, byte bits = 0) where D : IDat
         {
             if (name == null)
             {
@@ -224,7 +224,7 @@ namespace Greatbone.Core
             {
                 coll.Add(new NpgsqlParameter(name, NpgsqlDbType.Jsonb)
                 {
-                    Value = JsonUtility.DataObjToString(v, bits)
+                    Value = JsonUtility.DatToString(v, bits)
                 });
             }
             return this;
@@ -328,7 +328,7 @@ namespace Greatbone.Core
             return this;
         }
 
-        public DbParameters Put<D>(string name, D[] v, byte bits = 0) where D : IData
+        public DbParameters Put<D>(string name, D[] v, byte bits = 0) where D : IDat
         {
             if (name == null)
             {
@@ -345,7 +345,7 @@ namespace Greatbone.Core
             {
                 coll.Add(new NpgsqlParameter(name, NpgsqlDbType.Jsonb)
                 {
-                    Value = JsonUtility.DataArrToString(v, bits)
+                    Value = JsonUtility.DatsToString(v, bits)
                 });
             }
             return this;

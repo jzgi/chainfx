@@ -32,7 +32,7 @@ namespace Greatbone.Core
 
         bool Get(string name, ref ArraySegment<byte>? v);
 
-        bool Get<D>(string name, ref D v, byte bits = 0) where D : IData, new();
+        bool Get<D>(string name, ref D v, byte bits = 0) where D : IDat, new();
 
         bool Get(string name, ref JObj v);
 
@@ -46,6 +46,6 @@ namespace Greatbone.Core
 
         bool Get(string name, ref string[] v);
 
-        bool Get<D>(string name, ref D[] v, byte bits = 0) where D : IData, new();
+        bool Get<D>(string name, ref D[] v, byte bits = 0) where D : IDat, new();
     }
 }

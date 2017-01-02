@@ -3,7 +3,7 @@
     ///
     /// A data object that follows certain input/ouput conventions.
     ///
-    public interface IData
+    public interface IDat
     {
         void Load(ISource src, byte bits = 0);
 

@@ -72,7 +72,7 @@ namespace Greatbone.Core
             }
         }
 
-        public D[] ToDataArr<D>(byte bits = 0) where D : IData, new()
+        public D[] ToDats<D>(byte bits = 0) where D : IDat, new()
         {
             D[] arr = new D[count];
             for (int i = 0; i < arr.Length; i++)

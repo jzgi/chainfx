@@ -18,18 +18,18 @@ namespace Greatbone.Core
             return (JObj)p.Parse();
         }
 
-        public static D StringToDataObj<D>(string v, byte bits = 0) where D : IData, new()
+        public static D StringToDat<D>(string v, byte bits = 0) where D : IDat, new()
         {
             JsonParse p = new JsonParse(v);
             JObj jobj = (JObj)p.Parse();
-            return jobj.ToDataObj<D>(bits);
+            return jobj.ToDat<D>(bits);
         }
 
-        public static D[] StringToDataArr<D>(string v, byte bits = 0) where D : IData, new()
+        public static D[] StringToDats<D>(string v, byte bits = 0) where D : IDat, new()
         {
             JsonParse p = new JsonParse(v);
             JArr jarr = (JArr)p.Parse();
-            return jarr.ToDataArr<D>(bits);
+            return jarr.ToDats<D>(bits);
         }
 
         public static string JArrToString(JArr v)
@@ -50,7 +50,7 @@ namespace Greatbone.Core
             return str;
         }
 
-        public static string DataObjToString<D>(D v, byte bits = 0) where D : IData
+        public static string DatToString<D>(D v, byte bits = 0) where D : IDat
         {
             JsonContent cont = new JsonContent(false, true, 4 * 1024);
             cont.Put(null, v);
@@ -59,7 +59,7 @@ namespace Greatbone.Core
             return str;
         }
 
-        public static string DataArrToString<D>(D[] v, byte bits = 0) where D : IData
+        public static string DatsToString<D>(D[] v, byte bits = 0) where D : IDat
         {
             JsonContent cont = new JsonContent(false, true, 4 * 1024);
             cont.Put(null, v);
@@ -98,7 +98,7 @@ namespace Greatbone.Core
             return null;
         }
 
-        public static D FileToDataObj<D>(string file) where D : IData, new()
+        public static D FileToDat<D>(string file) where D : IDat, new()
         {
             try
             {
@@ -107,7 +107,7 @@ namespace Greatbone.Core
                 JObj jobj = (JObj)p.Parse();
                 if (jobj != null)
                 {
-                    return jobj.ToDataObj<D>();
+                    return jobj.ToDat<D>();
                 }
             }
             catch (Exception ex)
@@ -117,7 +117,7 @@ namespace Greatbone.Core
             return default(D);
         }
 
-        public static D[] FileToDataArr<D>(string file) where D : IData, new()
+        public static D[] FileToDats<D>(string file) where D : IDat, new()
         {
             try
             {
@@ -126,7 +126,7 @@ namespace Greatbone.Core
                 JArr jarr = (JArr)p.Parse();
                 if (jarr != null)
                 {
-                    return jarr.ToDataArr<D>();
+                    return jarr.ToDats<D>();
                 }
             }
             catch (Exception ex)

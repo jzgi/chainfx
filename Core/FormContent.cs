@@ -264,7 +264,7 @@ namespace Greatbone.Core
             return this; // ignore ir
         }
 
-        public FormContent Put<B>(string name, B v, byte bits = 0) where B : IData
+        public FormContent Put<B>(string name, B v, byte bits = 0) where B : IDat
         {
             if (name != null)
             {
@@ -458,7 +458,7 @@ namespace Greatbone.Core
         }
 
 
-        public FormContent Put<B>(string name, B[] v, byte bits = 0) where B : IData
+        public FormContent Put<B>(string name, B[] v, byte bits = 0) where B : IDat
         {
             if (name != null)
             {

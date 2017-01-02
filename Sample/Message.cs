@@ -3,7 +3,7 @@ using Greatbone.Core;
 
 namespace Greatbone.Sample
 {
-    public struct Message : IData
+    public struct Message : IDat
     {
         internal int senderid;
 

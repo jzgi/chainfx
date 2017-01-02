@@ -196,20 +196,20 @@ namespace Greatbone.Core
             return (entity = await ReadAsync()) as JArr;
         }
 
-        public async Task<D> GetDataObjAsync<D>(byte bits = 0) where D : IData, new()
+        public async Task<D> GetDatAsync<D>(byte bits = 0) where D : IDat, new()
         {
             ISource src = (entity = await ReadAsync()) as ISource;
             if (src == null)
             {
                 return default(D);
             }
-            return src.ToDataObj<D>(bits);
+            return src.ToDat<D>(bits);
         }
 
-        public async Task<D[]> GetDataArrAsync<D>(byte bits = 0) where D : IData, new()
+        public async Task<D[]> GetDatsAsync<D>(byte bits = 0) where D : IDat, new()
         {
             JArr jarr = (entity = await ReadAsync()) as JArr;
-            return jarr?.ToDataArr<D>(bits);
+            return jarr?.ToDats<D>(bits);
         }
 
         public async Task<XElem> GetXElemAsync()
@@ -273,14 +273,14 @@ namespace Greatbone.Core
             Reply(status, cont, pub, seconds);
         }
 
-        public void Reply(int status, IData obj, byte bits = 0, bool? pub = null, int seconds = 30)
+        public void Reply(int status, IDat obj, byte bits = 0, bool? pub = null, int seconds = 30)
         {
             JsonContent cont = new JsonContent(true, true, 4 * 1024);
             cont.Put(null, obj, bits);
             Reply(status, cont, pub, seconds);
         }
 
-        public void Reply<D>(int status, D[] arr, byte bits = 0, bool? pub = null, int seconds = 30) where D : IData
+        public void Reply<D>(int status, D[] arr, byte bits = 0, bool? pub = null, int seconds = 30) where D : IDat
         {
             JsonContent cont = new JsonContent(true, true, 4 * 1024);
             cont.Put(null, arr, bits);

@@ -222,7 +222,7 @@ namespace Greatbone.Core
         // RESULTSET
         //
 
-        public D ToDataObj<D>(byte bits = 0) where D : IData, new()
+        public D ToDat<D>(byte bits = 0) where D : IDat, new()
         {
             D dat = new D();
             dat.Load(this, bits);
@@ -238,22 +238,22 @@ namespace Greatbone.Core
         }
 
 
-        public D[] ToDataArr<D>(byte bits = 0) where D : IData, new()
+        public D[] ToDats<D>(byte bits = 0) where D : IDat, new()
         {
             List<D> lst = new List<D>(64);
             while (NextRow())
             {
-                D obj = new D();
-                obj.Load(this, bits);
+                D dat = new D();
+                dat.Load(this, bits);
 
                 // add shard if any
-                IShardable shardable = obj as IShardable;
+                IShardable shardable = dat as IShardable;
                 if (shardable != null)
                 {
                     shardable.Shard = shard;
                 }
 
-                lst.Add(obj);
+                lst.Add(dat);
             }
             return lst.ToArray();
         }
@@ -420,7 +420,7 @@ namespace Greatbone.Core
             return false;
         }
 
-        public bool Get<D>(string name, ref D v, byte bits = 0) where D : IData, new()
+        public bool Get<D>(string name, ref D v, byte bits = 0) where D : IDat, new()
         {
             int ord = name == null ? ordinal++ : reader.GetOrdinal(name);
             if (!reader.IsDBNull(ord))
@@ -512,7 +512,7 @@ namespace Greatbone.Core
             return false;
         }
 
-        public bool Get<D>(string name, ref D[] v, byte bits = 0) where D : IData, new()
+        public bool Get<D>(string name, ref D[] v, byte bits = 0) where D : IDat, new()
         {
             int ord = name == null ? ordinal++ : reader.GetOrdinal(name);
             if (!reader.IsDBNull(ord))
@@ -547,12 +547,12 @@ namespace Greatbone.Core
         // MESSAGING
         //
 
-        public void QueueEvent<D>(string name, string shard, D dat) where D : IData
+        public void QueueEvent<D>(string name, string shard, D dat) where D : IDat
         {
             QueueEvent(name, shard, jcont => jcont.Put(null, dat));
         }
 
-        public void QueueEvent<D>(string name, string shard, D[] dats) where D : IData
+        public void QueueEvent<D>(string name, string shard, D[] dats) where D : IDat
         {
             QueueEvent(name, shard, jcont => jcont.Put(null, dats));
         }

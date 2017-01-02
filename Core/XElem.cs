@@ -168,7 +168,7 @@ namespace Greatbone.Core
             throw new NotImplementedException();
         }
 
-        public bool Get<D>(string name, ref D v, byte bits = 0) where D : IData, new()
+        public bool Get<D>(string name, ref D v, byte bits = 0) where D : IDat, new()
         {
             throw new NotImplementedException();
         }
@@ -203,7 +203,7 @@ namespace Greatbone.Core
             throw new NotImplementedException();
         }
 
-        public bool Get<D>(string name, ref D[] v, byte bits = 0) where D : IData, new()
+        public bool Get<D>(string name, ref D[] v, byte bits = 0) where D : IDat, new()
         {
             throw new NotImplementedException();
         }

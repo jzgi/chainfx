@@ -5,7 +5,7 @@ namespace Greatbone.Sample
     ///
     /// An administrator's login.
     ///
-    public class Token : IToken, IData
+    public class Token : IToken
     {
         internal string id;
 

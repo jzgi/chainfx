@@ -23,17 +23,17 @@ namespace Greatbone.Core
             msg.Content = cont;
         }
 
-        public static void Set<D>(this HttpRequestMessage msg, D data) where D : IData
+        public static void Set<D>(this HttpRequestMessage msg, D dat) where D : IDat
         {
             JsonContent cont = new JsonContent(true, true);
-            cont.Put(null, data);
+            cont.Put(null, dat);
             msg.Content = cont;
         }
 
-        public static void Set<D>(this HttpRequestMessage msg, D[] datas) where D : IData
+        public static void Set<D>(this HttpRequestMessage msg, D[] dats) where D : IDat
         {
             JsonContent cont = new JsonContent(true, true);
-            cont.Put(null, datas);
+            cont.Put(null, dats);
             msg.Content = cont;
         }
 
@@ -65,20 +65,20 @@ namespace Greatbone.Core
             return (XElem)p.Parse();
         }
 
-        public static async Task<D> GetDataObjAsync<D>(this HttpResponseMessage msg, byte bits = 0) where D : IData, new()
+        public static async Task<D> GetDatAsync<D>(this HttpResponseMessage msg, byte bits = 0) where D : IDat, new()
         {
             byte[] bytes = await msg.Content.ReadAsByteArrayAsync();
             JsonParse p = new JsonParse(bytes, bytes.Length);
             JObj jobj = (JObj)p.Parse();
-            return jobj.ToDataObj<D>(bits);
+            return jobj.ToDat<D>(bits);
         }
 
-        public static async Task<D[]> GetDataArrAsync<D>(this HttpResponseMessage msg, byte bits = 0) where D : IData, new()
+        public static async Task<D[]> GetDatsAsync<D>(this HttpResponseMessage msg, byte bits = 0) where D : IDat, new()
         {
             byte[] bytes = await msg.Content.ReadAsByteArrayAsync();
             JsonParse p = new JsonParse(bytes, bytes.Length);
             JArr jarr = (JArr)p.Parse();
-            return jarr.ToDataArr<D>(bits);
+            return jarr.ToDats<D>(bits);
         }
 
         public static async Task<byte[]> GetBytesSegAsync(this HttpResponseMessage msg)
