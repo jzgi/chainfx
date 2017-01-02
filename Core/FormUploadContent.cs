@@ -6,9 +6,9 @@ namespace Greatbone.Core
     /// 
     /// To generate a multipart-form-data byte string.
     /// 
-    public class MpFormContent : DynamicContent, ISink<MpFormContent>
+    public class FormUploadContent : DynamicContent, ISink<FormUploadContent>
     {
-        public MpFormContent(bool pooled, int capacity = 4092) : base(true, pooled, capacity)
+        public FormUploadContent(bool pooled, int capacity = 4092) : base(true, pooled, capacity)
         {
         }
 
@@ -58,7 +58,7 @@ namespace Greatbone.Core
         // SINK
         //
 
-        public MpFormContent PutNull(string name)
+        public FormUploadContent PutNull(string name)
         {
             if (name != null)
             {
@@ -73,7 +73,7 @@ namespace Greatbone.Core
             return this;
         }
 
-        public MpFormContent Put(string name, bool v)
+        public FormUploadContent Put(string name, bool v)
         {
             if (name != null)
             {
@@ -86,7 +86,7 @@ namespace Greatbone.Core
             return this;
         }
 
-        public MpFormContent Put(string name, short v)
+        public FormUploadContent Put(string name, short v)
         {
             if (name != null)
             {
@@ -99,7 +99,7 @@ namespace Greatbone.Core
             return this;
         }
 
-        public MpFormContent Put(string name, int v)
+        public FormUploadContent Put(string name, int v)
         {
             if (name != null)
             {
@@ -112,7 +112,7 @@ namespace Greatbone.Core
             return this;
         }
 
-        public MpFormContent Put(string name, long v)
+        public FormUploadContent Put(string name, long v)
         {
             if (name != null)
             {
@@ -125,7 +125,7 @@ namespace Greatbone.Core
             return this;
         }
 
-        public MpFormContent Put(string name, double v)
+        public FormUploadContent Put(string name, double v)
         {
             if (name != null)
             {
@@ -138,7 +138,7 @@ namespace Greatbone.Core
             return this;
         }
 
-        public MpFormContent Put(string name, decimal v)
+        public FormUploadContent Put(string name, decimal v)
         {
             if (name != null)
             {
@@ -151,7 +151,7 @@ namespace Greatbone.Core
             return this;
         }
 
-        public MpFormContent Put(string name, JNumber v)
+        public FormUploadContent Put(string name, JNum v)
         {
             if (name != null)
             {
@@ -170,7 +170,7 @@ namespace Greatbone.Core
             return this;
         }
 
-        public MpFormContent Put(string name, DateTime v)
+        public FormUploadContent Put(string name, DateTime v)
         {
             if (name != null)
             {
@@ -187,7 +187,7 @@ namespace Greatbone.Core
             return this;
         }
 
-        public MpFormContent Put(string name, NpgsqlPoint v)
+        public FormUploadContent Put(string name, NpgsqlPoint v)
         {
             if (name != null)
             {
@@ -206,7 +206,7 @@ namespace Greatbone.Core
             return this;
         }
 
-        public MpFormContent Put(string name, char[] v)
+        public FormUploadContent Put(string name, char[] v)
         {
             if (name != null)
             {
@@ -230,7 +230,7 @@ namespace Greatbone.Core
             return this;
         }
 
-        public MpFormContent Put(string name, string v, bool? anylen = null)
+        public FormUploadContent Put(string name, string v, bool? anylen = null)
         {
             if (name != null)
             {
@@ -254,17 +254,17 @@ namespace Greatbone.Core
             return this;
         }
 
-        public virtual MpFormContent Put(string name, byte[] v)
+        public virtual FormUploadContent Put(string name, byte[] v)
         {
             return this; // ignore ir
         }
 
-        public virtual MpFormContent Put(string name, ArraySegment<byte> v)
+        public virtual FormUploadContent Put(string name, ArraySegment<byte> v)
         {
             return this; // ignore ir
         }
 
-        public MpFormContent Put<B>(string name, B v, byte bits = 0) where B : IData
+        public FormUploadContent Put<B>(string name, B v, byte bits = 0) where B : IData
         {
             if (name != null)
             {
@@ -288,7 +288,7 @@ namespace Greatbone.Core
             return this;
         }
 
-        public MpFormContent Put(string name, JObj v)
+        public FormUploadContent Put(string name, JObj v)
         {
             if (name != null)
             {
@@ -312,7 +312,7 @@ namespace Greatbone.Core
             return this;
         }
 
-        public MpFormContent Put(string name, JArr v)
+        public FormUploadContent Put(string name, JArr v)
         {
             if (name != null)
             {
@@ -335,7 +335,7 @@ namespace Greatbone.Core
             return this;
         }
 
-        public MpFormContent Put(string name, short[] v)
+        public FormUploadContent Put(string name, short[] v)
         {
             if (name != null)
             {
@@ -363,7 +363,7 @@ namespace Greatbone.Core
             return this;
         }
 
-        public MpFormContent Put(string name, int[] v)
+        public FormUploadContent Put(string name, int[] v)
         {
             if (name != null)
             {
@@ -391,7 +391,7 @@ namespace Greatbone.Core
             return this;
         }
 
-        public MpFormContent Put(string name, long[] v)
+        public FormUploadContent Put(string name, long[] v)
         {
             if (name != null)
             {
@@ -419,7 +419,7 @@ namespace Greatbone.Core
             return this;
         }
 
-        public MpFormContent Put(string name, string[] v)
+        public FormUploadContent Put(string name, string[] v)
         {
             if (name != null)
             {
@@ -458,7 +458,7 @@ namespace Greatbone.Core
         }
 
 
-        public MpFormContent Put<B>(string name, B[] v, byte bits = 0) where B : IData
+        public FormUploadContent Put<B>(string name, B[] v, byte bits = 0) where B : IData
         {
             if (name != null)
             {

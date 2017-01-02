@@ -6,7 +6,7 @@ namespace Greatbone.Core
     ///
     /// A JSON object model.
     ///
-    public class JObj : Roll<JMember>, ISource
+    public class JObj : Roll<JMem>, ISource
     {
         const int InitialCapacity = 16;
 
@@ -17,37 +17,37 @@ namespace Greatbone.Core
         /// To add null property
         internal void AddNull(string name)
         {
-            Add(new JMember(name));
+            Add(new JMem(name));
         }
 
         internal void Add(string name, JObj v)
         {
-            Add(new JMember(name, v));
+            Add(new JMem(name, v));
         }
 
         internal void Add(string name, JArr v)
         {
-            Add(new JMember(name, v));
+            Add(new JMem(name, v));
         }
 
         internal void Add(string name, string v)
         {
-            Add(new JMember(name, v));
+            Add(new JMem(name, v));
         }
 
         internal void Add(string name, byte[] v)
         {
-            Add(new JMember(name, v));
+            Add(new JMem(name, v));
         }
 
         internal void Add(string name, bool v)
         {
-            Add(new JMember(name, v));
+            Add(new JMem(name, v));
         }
 
-        internal void Add(string name, JNumber v)
+        internal void Add(string name, JNum v)
         {
-            Add(new JMember(name, v));
+            Add(new JMem(name, v));
         }
 
         //
@@ -56,7 +56,7 @@ namespace Greatbone.Core
 
         public bool Get(string name, ref bool v)
         {
-            JMember pair;
+            JMem pair;
             if (TryGet(name, out pair))
             {
                 v = pair;
@@ -67,7 +67,7 @@ namespace Greatbone.Core
 
         public bool Get(string name, ref short v)
         {
-            JMember pair;
+            JMem pair;
             if (TryGet(name, out pair))
             {
                 v = pair;
@@ -78,7 +78,7 @@ namespace Greatbone.Core
 
         public bool Get(string name, ref int v)
         {
-            JMember pair;
+            JMem pair;
             if (TryGet(name, out pair))
             {
                 v = pair;
@@ -89,7 +89,7 @@ namespace Greatbone.Core
 
         public bool Get(string name, ref long v)
         {
-            JMember pair;
+            JMem pair;
             if (TryGet(name, out pair))
             {
                 v = pair;
@@ -100,7 +100,7 @@ namespace Greatbone.Core
 
         public bool Get(string name, ref double v)
         {
-            JMember pair;
+            JMem pair;
             if (TryGet(name, out pair))
             {
                 v = pair;
@@ -111,7 +111,7 @@ namespace Greatbone.Core
 
         public bool Get(string name, ref decimal v)
         {
-            JMember pair;
+            JMem pair;
             if (TryGet(name, out pair))
             {
                 v = pair;
@@ -122,7 +122,7 @@ namespace Greatbone.Core
 
         public bool Get(string name, ref DateTime v)
         {
-            JMember pair;
+            JMem pair;
             if (TryGet(name, out pair))
             {
                 v = pair;
@@ -133,7 +133,7 @@ namespace Greatbone.Core
 
         public bool Get(string name, ref NpgsqlPoint v)
         {
-            JMember pair;
+            JMem pair;
             if (TryGet(name, out pair))
             {
                 v = pair;
@@ -144,7 +144,7 @@ namespace Greatbone.Core
 
         public bool Get(string name, ref char[] v)
         {
-            JMember pair;
+            JMem pair;
             if (TryGet(name, out pair))
             {
                 v = pair;
@@ -155,7 +155,7 @@ namespace Greatbone.Core
 
         public bool Get(string name, ref string v)
         {
-            JMember pair;
+            JMem pair;
             if (TryGet(name, out pair))
             {
                 v = pair;
@@ -166,7 +166,7 @@ namespace Greatbone.Core
 
         public bool Get(string name, ref byte[] v)
         {
-            JMember pair;
+            JMem pair;
             if (TryGet(name, out pair))
             {
                 v = pair;
@@ -177,7 +177,7 @@ namespace Greatbone.Core
 
         public bool Get(string name, ref ArraySegment<byte>? v)
         {
-            JMember pair;
+            JMem pair;
             if (TryGet(name, out pair))
             {
                 byte[] bv = pair;
@@ -189,7 +189,7 @@ namespace Greatbone.Core
 
         public bool Get<D>(string name, ref D v, byte bits = 0) where D : IData, new()
         {
-            JMember pair;
+            JMem pair;
             if (TryGet(name, out pair))
             {
                 JObj jobj = pair;
@@ -205,7 +205,7 @@ namespace Greatbone.Core
 
         public bool Get(string name, ref JObj v)
         {
-            JMember pair;
+            JMem pair;
             if (TryGet(name, out pair))
             {
                 v = pair;
@@ -216,7 +216,7 @@ namespace Greatbone.Core
 
         public bool Get(string name, ref JArr v)
         {
-            JMember pair;
+            JMem pair;
             if (TryGet(name, out pair))
             {
                 v = pair;
@@ -227,7 +227,7 @@ namespace Greatbone.Core
 
         public bool Get(string name, ref short[] v)
         {
-            JMember pair;
+            JMem pair;
             if (TryGet(name, out pair))
             {
                 JArr jarr = pair;
@@ -246,7 +246,7 @@ namespace Greatbone.Core
 
         public bool Get(string name, ref int[] v)
         {
-            JMember pair;
+            JMem pair;
             if (TryGet(name, out pair))
             {
                 JArr jarr = pair;
@@ -265,7 +265,7 @@ namespace Greatbone.Core
 
         public bool Get(string name, ref long[] v)
         {
-            JMember pair;
+            JMem pair;
             if (TryGet(name, out pair))
             {
                 JArr jarr = pair;
@@ -284,7 +284,7 @@ namespace Greatbone.Core
 
         public bool Get(string name, ref string[] v)
         {
-            JMember pair;
+            JMem pair;
             if (TryGet(name, out pair))
             {
                 JArr jarr = pair;
@@ -303,7 +303,7 @@ namespace Greatbone.Core
 
         public bool Get<D>(string name, ref D[] v, byte bits = 0) where D : IData, new()
         {
-            JMember pair;
+            JMem pair;
             if (TryGet(name, out pair))
             {
                 JArr jarr = pair;
@@ -328,7 +328,7 @@ namespace Greatbone.Core
         {
             for (int i = 0; i < Count; i++)
             {
-                JMember mbr = this[i];
+                JMem mbr = this[i];
                 JType typ = mbr.type;
                 if (typ == JType.Array)
                 {
@@ -344,7 +344,7 @@ namespace Greatbone.Core
                 }
                 else if (typ == JType.Number)
                 {
-                    snk.Put(mbr.Name, (JNumber) mbr);
+                    snk.Put(mbr.Name, (JNum) mbr);
                 }
                 else if (typ == JType.True)
                 {

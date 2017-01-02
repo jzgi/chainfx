@@ -5,11 +5,11 @@ namespace Greatbone.Core
 {
     public static class ISourceUtility
     {
-        public static D ToData<D>(this ISource src, byte bits = 0) where D : IData, new()
+        public static D ToDataObj<D>(this ISource src, byte bits = 0) where D : IData, new()
         {
-            D data = new D();
-            data.Load(src, bits);
-            return data;
+            D obj = new D();
+            obj.Load(src, bits);
+            return obj;
         }
 
         //

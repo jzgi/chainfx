@@ -3,7 +3,7 @@ namespace Greatbone.Core
     ///
     /// Used to build a number during a parsing process.
     ///
-    public struct JNumber
+    public struct JNum
     {
         static readonly int[] BASE =
         {
@@ -31,7 +31,7 @@ namespace Greatbone.Core
         // negative
         internal bool negative;
 
-        internal JNumber(int first)
+        internal JNum(int first)
         {
             bigint = 0;
             fract = 0;

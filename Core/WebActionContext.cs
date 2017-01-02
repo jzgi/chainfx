@@ -149,19 +149,21 @@ namespace Greatbone.Core
                 entity = p.Parse();
                 BufferUtility.Return(bytebuf); // return to the pool
             }
-            else if ("multipart/form-data".Equals(ctyp))
+            else if (ctyp.StartsWith("multipart/form-data"))
             {
-                MpFormParse p = new MpFormParse(bytebuf, count);
+                int beq = ctyp.IndexOf("boundary=", 19);
+                string boundary = "--" + ctyp.Substring(beq + 9);
+                FormUploadParse p = new FormUploadParse(boundary, bytebuf, count);
                 entity = p.Parse();
                 BufferUtility.Return(bytebuf); // return to the pool
             }
-            else if ("application/json".Equals(ctyp))
+            else if (ctyp.StartsWith("application/json"))
             {
                 JsonParse p = new JsonParse(bytebuf, count);
                 entity = p.Parse();
                 BufferUtility.Return(bytebuf); // return to the pool
             }
-            else if ("application/xml".Equals(ctyp))
+            else if (ctyp.StartsWith("application/xml"))
             {
                 XmlParse p = new XmlParse(bytebuf, count);
                 entity = p.Parse();
@@ -194,20 +196,20 @@ namespace Greatbone.Core
             return (entity = await ReadAsync()) as JArr;
         }
 
-        public async Task<D> GetDataAsync<D>(byte bits = 0) where D : IData, new()
+        public async Task<D> GetDataObjAsync<D>(byte bits = 0) where D : IData, new()
         {
             ISource src = (entity = await ReadAsync()) as ISource;
             if (src == null)
             {
                 return default(D);
             }
-            return src.ToData<D>(bits);
+            return src.ToDataObj<D>(bits);
         }
 
-        public async Task<D[]> GetDatasAsync<D>(byte bits = 0) where D : IData, new()
+        public async Task<D[]> GetDataObjsAsync<D>(byte bits = 0) where D : IData, new()
         {
             JArr jarr = (entity = await ReadAsync()) as JArr;
-            return jarr?.ToDatas<D>(bits);
+            return jarr?.ToDataArr<D>(bits);
         }
 
         public async Task<XElem> GetXElemAsync()

@@ -331,7 +331,7 @@ namespace Greatbone.Core
             Add(v, true);
         }
 
-        public void Add(JNumber v)
+        public void Add(JNum v)
         {
             Add(v.Long);
             if (v.Pt)

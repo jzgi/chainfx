@@ -182,7 +182,7 @@ namespace Greatbone.Core
             return this;
         }
 
-        public DbSql Put(string name, JNumber v)
+        public DbSql Put(string name, JNum v)
         {
             if (name != null)
             {

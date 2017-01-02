@@ -1,36 +1,38 @@
 namespace Greatbone.Core
 {
     ///
-    /// To parse application/x-www-form-urlencoded octets or a character string.
+    /// To parse multipart/form-data parts.
     ///
-    public struct MpFormParse
+    public struct FormUploadParse
     {
-        static readonly ParseException ParseEx = new ParseException("form");
+        const string ContentDisposition = "Content-Disposition:";
+
+        static readonly ParseException ParseEx = new ParseException("multipart form exception");
+
+        readonly string boundary;
 
         readonly byte[] bytebuf;
-
-        readonly string strbuf;
 
         readonly int count;
 
         // UTF-8 string builder
         readonly Str str;
 
-        public MpFormParse(byte[] bytebuf, int count)
+        public FormUploadParse(string boundary, byte[] bytebuf, int count)
         {
+            this.boundary = boundary;
             this.bytebuf = bytebuf;
-            this.strbuf = null;
             this.count = count;
             this.str = new Str(256);
         }
 
-        int this[int index] => (bytebuf != null) ? bytebuf[index] : (int)strbuf[index];
+        int this[int index] => bytebuf[index];
 
         public Form Parse()
         {
             if (count == 0) return Form.Empty;
 
-            int p = (this[0] == '?') ? 1 : 0;
+            int p = (bytebuf[0] == '?') ? 1 : 0;
 
             if (p >= count - 1) return Form.Empty;
 

@@ -22,7 +22,7 @@ namespace Greatbone.Core
 
         R Put(string name, decimal v);
 
-        R Put(string name, JNumber v);
+        R Put(string name, JNum v);
 
         R Put(string name, DateTime v);
 

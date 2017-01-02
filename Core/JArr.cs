@@ -9,26 +9,26 @@ namespace Greatbone.Core
     {
         const int InitialCapacity = 16;
 
-        JMember[] elements;
+        JMem[] elements;
 
         int count;
 
         internal JArr(int capacity = InitialCapacity)
         {
-            elements = new JMember[capacity];
+            elements = new JMem[capacity];
             count = 0;
         }
 
-        public JMember this[int index] => elements[index];
+        public JMem this[int index] => elements[index];
 
         public int Count => count;
 
-        internal void Add(JMember elem)
+        internal void Add(JMem elem)
         {
             int len = elements.Length;
             if (count >= len)
             {
-                JMember[] alloc = new JMember[len * 4];
+                JMem[] alloc = new JMem[len * 4];
                 Array.Copy(elements, 0, alloc, 0, len);
                 elements = alloc;
             }
@@ -39,7 +39,7 @@ namespace Greatbone.Core
         {
             for (int i = 0; i < count; i++)
             {
-                JMember elem = elements[i];
+                JMem elem = elements[i];
                 JType typ = elem.type;
                 if (typ == JType.Array)
                 {
@@ -55,7 +55,7 @@ namespace Greatbone.Core
                 }
                 else if (typ == JType.Number)
                 {
-                    snk.Put(null, (JNumber)elem);
+                    snk.Put(null, (JNum)elem);
                 }
                 else if (typ == JType.True)
                 {
@@ -72,16 +72,16 @@ namespace Greatbone.Core
             }
         }
 
-        public D[] ToDatas<D>(byte z = 0) where D : IData, new()
+        public D[] ToDataArr<D>(byte bits = 0) where D : IData, new()
         {
-            D[] dats = new D[count];
-            for (int i = 0; i < dats.Length; i++)
+            D[] arr = new D[count];
+            for (int i = 0; i < arr.Length; i++)
             {
-                D dat = new D();
-                dat.Load((JObj)this[i], z);
-                dats[i] = dat;
+                D obj = new D();
+                obj.Load((JObj)this[i], bits);
+                arr[i] = obj;
             }
-            return dats;
+            return arr;
         }
 
         public override string ToString()

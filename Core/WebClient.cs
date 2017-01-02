@@ -90,7 +90,7 @@ namespace Greatbone.Core
                 req.Headers.Add("Authorization", "Bearer " + ctx.TokenStr);
             }
             HttpResponseMessage resp = await SendAsync(req, HttpCompletionOption.ResponseContentRead);
-            return await resp.GetDataAsync<D>(z);
+            return await resp.GetDataObjAsync<D>(z);
         }
 
         public async Task<D[]> GetDatasAync<D>(ICallerContext ctx, string uri, byte z = 0) where D : IData, new()
@@ -105,7 +105,7 @@ namespace Greatbone.Core
                 req.Headers.Add("Authorization", "Bearer " + ctx.TokenStr);
             }
             HttpResponseMessage resp = await SendAsync(req, HttpCompletionOption.ResponseContentRead);
-            return await resp.GetDatasAsync<D>(z);
+            return await resp.GetDataArrAsync<D>(z);
         }
 
         public async Task<XElem> GetElemAync(ICallerContext ctx, string uri)

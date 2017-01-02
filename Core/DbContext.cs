@@ -222,7 +222,7 @@ namespace Greatbone.Core
         // RESULTSET
         //
 
-        public D ToData<D>(byte bits = 0) where D : IData, new()
+        public D ToDataObj<D>(byte bits = 0) where D : IData, new()
         {
             D dat = new D();
             dat.Load(this, bits);
@@ -238,22 +238,22 @@ namespace Greatbone.Core
         }
 
 
-        public D[] ToDatas<D>(byte bits = 0) where D : IData, new()
+        public D[] ToDataArr<D>(byte bits = 0) where D : IData, new()
         {
             List<D> lst = new List<D>(64);
             while (NextRow())
             {
-                D dat = new D();
-                dat.Load(this, bits);
+                D obj = new D();
+                obj.Load(this, bits);
 
                 // add shard if any
-                IShardable shardable = dat as IShardable;
+                IShardable shardable = obj as IShardable;
                 if (shardable != null)
                 {
                     shardable.Shard = shard;
                 }
 
-                lst.Add(dat);
+                lst.Add(obj);
             }
             return lst.ToArray();
         }

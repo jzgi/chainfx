@@ -4,9 +4,9 @@ using NpgsqlTypes;
 namespace Greatbone.Core
 {
     ///
-    /// Represents a value or a property if with the name.
+    /// A JSON member that is a value or property if with the name.
     ///
-    public struct JMember : IRollable
+    public struct JMem : IRollable
     {
         // property name, if not null
         readonly string name;
@@ -17,57 +17,57 @@ namespace Greatbone.Core
         // JObj, JArr, string, byte[]
         internal readonly object refv;
 
-        internal readonly JNumber numv;
+        internal readonly JNum numv;
 
-        public JMember(string name)
+        public JMem(string name)
         {
             this.name = name;
             type = JType.Null;
             refv = null;
-            numv = default(JNumber);
+            numv = default(JNum);
         }
 
-        public JMember(string name, JObj v)
+        public JMem(string name, JObj v)
         {
             this.name = name;
             type = JType.Object;
             refv = v;
-            numv = default(JNumber);
+            numv = default(JNum);
         }
 
-        public JMember(string name, JArr v)
+        public JMem(string name, JArr v)
         {
             this.name = name;
             type = JType.Array;
             refv = v;
-            numv = default(JNumber);
+            numv = default(JNum);
         }
 
-        public JMember(string name, string v)
+        public JMem(string name, string v)
         {
             this.name = name;
             type = JType.String;
             refv = v;
-            numv = default(JNumber);
+            numv = default(JNum);
         }
 
-        public JMember(string name, byte[] v)
+        public JMem(string name, byte[] v)
         {
             this.name = name;
             type = JType.Bytes;
             refv = v;
-            numv = default(JNumber);
+            numv = default(JNum);
         }
 
-        public JMember(string name, bool v)
+        public JMem(string name, bool v)
         {
             this.name = name;
             type = v ? JType.True : JType.False;
             refv = null;
-            numv = default(JNumber);
+            numv = default(JNum);
         }
 
-        public JMember(string name, JNumber v)
+        public JMem(string name, JNum v)
         {
             this.name = name;
             type = JType.Number;
@@ -79,7 +79,7 @@ namespace Greatbone.Core
 
         public bool IsPair => name != null;
 
-        public static implicit operator JObj(JMember v)
+        public static implicit operator JObj(JMem v)
         {
             if (v.type == JType.Object)
             {
@@ -88,7 +88,7 @@ namespace Greatbone.Core
             return null;
         }
 
-        public static implicit operator JArr(JMember v)
+        public static implicit operator JArr(JMem v)
         {
             if (v.type == JType.Array)
             {
@@ -97,12 +97,12 @@ namespace Greatbone.Core
             return null;
         }
 
-        public static implicit operator bool(JMember v)
+        public static implicit operator bool(JMem v)
         {
             return v.type == JType.True;
         }
 
-        public static implicit operator short(JMember v)
+        public static implicit operator short(JMem v)
         {
             if (v.type == JType.Number)
             {
@@ -111,7 +111,7 @@ namespace Greatbone.Core
             return 0;
         }
 
-        public static implicit operator int(JMember v)
+        public static implicit operator int(JMem v)
         {
             if (v.type == JType.Number)
             {
@@ -120,7 +120,7 @@ namespace Greatbone.Core
             return 0;
         }
 
-        public static implicit operator long(JMember v)
+        public static implicit operator long(JMem v)
         {
             if (v.type == JType.Number)
             {
@@ -129,7 +129,7 @@ namespace Greatbone.Core
             return 0;
         }
 
-        public static implicit operator double(JMember v)
+        public static implicit operator double(JMem v)
         {
             if (v.type == JType.Number)
             {
@@ -138,7 +138,7 @@ namespace Greatbone.Core
             return 0;
         }
 
-        public static implicit operator decimal(JMember v)
+        public static implicit operator decimal(JMem v)
         {
             if (v.type == JType.Number)
             {
@@ -147,16 +147,16 @@ namespace Greatbone.Core
             return 0;
         }
 
-        public static implicit operator JNumber(JMember v)
+        public static implicit operator JNum(JMem v)
         {
             if (v.type == JType.Number)
             {
                 return v.numv;
             }
-            return default(JNumber);
+            return default(JNum);
         }
 
-        public static implicit operator DateTime(JMember v)
+        public static implicit operator DateTime(JMem v)
         {
             if (v.type == JType.String)
             {
@@ -167,7 +167,7 @@ namespace Greatbone.Core
             return default(DateTime);
         }
 
-        public static implicit operator NpgsqlPoint(JMember v)
+        public static implicit operator NpgsqlPoint(JMem v)
         {
             if (v.type == JType.String)
             {
@@ -190,7 +190,7 @@ namespace Greatbone.Core
             return default(NpgsqlPoint);
         }
 
-        public static implicit operator char[](JMember v)
+        public static implicit operator char[](JMem v)
         {
             if (v.type == JType.String)
             {
@@ -200,7 +200,7 @@ namespace Greatbone.Core
             return null;
         }
 
-        public static implicit operator string(JMember v)
+        public static implicit operator string(JMem v)
         {
             if (v.type == JType.String)
             {
@@ -209,7 +209,7 @@ namespace Greatbone.Core
             return null;
         }
 
-        public static implicit operator byte[](JMember v)
+        public static implicit operator byte[](JMem v)
         {
             if (v.type == JType.String)
             {

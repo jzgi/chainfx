@@ -89,7 +89,7 @@ namespace Greatbone.Core
             {
                 for (int i = 0; i < refs.Count; i++)
                 {
-                    JMember mbr = refs[i];
+                    JMem mbr = refs[i];
                     string name = mbr.Name; // service instance id
                     string addr = mbr;
                     if (this.cluster == null)

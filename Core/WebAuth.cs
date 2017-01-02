@@ -111,12 +111,12 @@
             {
                 tokstr = hv.Substring(7);
                 string jsonstr = Decrypt(tokstr);
-                ac.Token = JsonUtility.StringToData<TH>(jsonstr);
+                ac.Token = JsonUtility.StringToDataObj<TH>(jsonstr);
             }
             else if (ac.Cookies.TryGetValue("Bearer", out tokstr))
             {
                 string jsonstr = Decrypt(tokstr);
-                ac.Token = JsonUtility.StringToData<TC>(jsonstr);
+                ac.Token = JsonUtility.StringToDataObj<TC>(jsonstr);
             }
         }
     }
