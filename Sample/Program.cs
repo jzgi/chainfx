@@ -32,32 +32,21 @@ namespace Greatbone.Sample
                 db = pg
             };
 #if !DEBUG
-            cfg.TryLoadFile();
+            cfg.TryImport();
 #endif
-            if (cfg.Loaded != false) svclst.Add(new ShopService(cfg) { Auth = auth });
+            if (cfg.Import != false) svclst.Add(new ShopService(cfg) { Auth = auth });
 
-            cfg = new WebConfig("tran")
+            cfg = new WebConfig("chat")
             {
                 pub = "http://127.0.0.1:8081",
                 intern = "http://127.0.0.1:7071",
                 db = pg
             };
 #if !DEBUG
-            cfg.LoadFile();
+            cfg.TryImport();
 #endif
-            if (cfg.Loaded != false) svclst.Add(new TransactService(cfg) { Auth = auth });
 
-            cfg = new WebConfig("chat")
-            {
-                shard = "01",
-                pub = "http://127.0.0.1:8082",
-                intern = "http://127.0.0.1:7072",
-                db = pg
-            };
-#if !DEBUG
-            cfg.TryLoadFile();
-#endif
-            if (cfg.Loaded != false) svclst.Add(new ChatService(cfg) { Auth = auth });
+            if (cfg.Import != false) svclst.Add(new ChatService(cfg) { Auth = auth });
 
             WebService.Run(svclst);
         }

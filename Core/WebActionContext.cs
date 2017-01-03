@@ -176,7 +176,7 @@ namespace Greatbone.Core
             return entity;
         }
 
-        public async Task<ArraySegment<byte>?> GetBytesSegAsync()
+        public async Task<ArraySegment<byte>?> AsBytesSegAsync()
         {
             return (entity = await ReadAsync()) as ArraySegment<byte>?;
         }
@@ -186,17 +186,17 @@ namespace Greatbone.Core
             return (entity = await ReadAsync()) as Form;
         }
 
-        public async Task<JObj> GetJObjAsync()
+        public async Task<JObj> AsJObjAsync()
         {
             return (entity = await ReadAsync()) as JObj;
         }
 
-        public async Task<JArr> GetJArrAsync()
+        public async Task<JArr> AsJArrAsync()
         {
             return (entity = await ReadAsync()) as JArr;
         }
 
-        public async Task<D> GetObjectAsync<D>(byte bits = 0) where D : IData, new()
+        public async Task<D> AsObjectAsync<D>(byte bits = 0) where D : IData, new()
         {
             ISource src = (entity = await ReadAsync()) as ISource;
             if (src == null)
@@ -206,13 +206,13 @@ namespace Greatbone.Core
             return src.ToObject<D>(bits);
         }
 
-        public async Task<D[]> GetArrayAsync<D>(byte bits = 0) where D : IData, new()
+        public async Task<D[]> AsArrayAsync<D>(byte bits = 0) where D : IData, new()
         {
             JArr jarr = (entity = await ReadAsync()) as JArr;
             return jarr?.ToArray<D>(bits);
         }
 
-        public async Task<XElem> GetXElemAsync()
+        public async Task<XElem> AsXElemAsync()
         {
             object entity = await ReadAsync();
 

@@ -46,7 +46,7 @@ namespace Greatbone.Core
 
         public JObj JObj { get; private set; }
 
-        public bool? Loaded { get; private set; }
+        public bool? Import { get; private set; }
 
         public WebConfig(string name)
         {
@@ -75,7 +75,7 @@ namespace Greatbone.Core
             snk.Put(nameof(cache), cache);
         }
 
-        public bool TryLoadFile()
+        public bool TryImport()
         {
             string path = GetFilePath("$web.json");
             if (File.Exists(path))
@@ -85,10 +85,10 @@ namespace Greatbone.Core
                 {
                     JObj = jobj;
                     Load(jobj); // override
-                    return (Loaded = true).Value;
+                    return (Import = true).Value;
                 }
             }
-            return (Loaded = false).Value;
+            return (Import = false).Value;
         }
     }
 }

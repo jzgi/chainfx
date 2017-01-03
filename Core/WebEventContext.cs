@@ -46,17 +46,17 @@ namespace Greatbone.Core
             return entity as Form;
         }
 
-        public JObj GetJObj()
+        public JObj AsJObj()
         {
             return entity as JObj;
         }
 
-        public JArr GetJArr()
+        public JArr AsJArr()
         {
             return entity as JArr;
         }
 
-        public D GetObject<D>(byte bits = 0) where D : IData, new()
+        public D AsObject<D>(byte bits = 0) where D : IData, new()
         {
             ISource src = entity as ISource;
             if (src == null)
@@ -66,13 +66,13 @@ namespace Greatbone.Core
             return src.ToObject<D>(bits);
         }
 
-        public D[] GetArray<D>(byte bits = 0) where D : IData, new()
+        public D[] AsArray<D>(byte bits = 0) where D : IData, new()
         {
             JArr jarr = entity as JArr;
             return jarr?.ToArray<D>(bits);
         }
 
-        public XElem GetXElem()
+        public XElem AsXElem()
         {
             return entity as XElem;
         }

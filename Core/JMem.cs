@@ -77,7 +77,7 @@ namespace Greatbone.Core
 
         public string Name => name;
 
-        public bool IsPair => name != null;
+        public bool IsProperty => name != null;
 
         public static implicit operator JObj(JMem v)
         {
