@@ -32,9 +32,9 @@ namespace Greatbone.Sample
                 db = pg
             };
 #if !DEBUG
-            cfg.TryImport();
+            cfg.TryLoadFile();
 #endif
-            if (cfg.Import != false) svclst.Add(new ShopService(cfg) { Auth = auth });
+            if (cfg.File != false) svclst.Add(new ShopService(cfg) { Auth = auth });
 
             cfg = new WebConfig("chat")
             {
@@ -43,10 +43,10 @@ namespace Greatbone.Sample
                 db = pg
             };
 #if !DEBUG
-            cfg.TryImport();
+            cfg.TryLoadFile();
 #endif
 
-            if (cfg.Import != false) svclst.Add(new ChatService(cfg) { Auth = auth });
+            if (cfg.File != false) svclst.Add(new ChatService(cfg) { Auth = auth });
 
             WebService.Run(svclst);
         }

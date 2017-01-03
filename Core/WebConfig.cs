@@ -46,7 +46,7 @@ namespace Greatbone.Core
 
         public JObj JObj { get; private set; }
 
-        public bool? Import { get; private set; }
+        public bool? File { get; private set; }
 
         public WebConfig(string name)
         {
@@ -75,20 +75,20 @@ namespace Greatbone.Core
             snk.Put(nameof(cache), cache);
         }
 
-        public bool TryImport()
+        public bool TryLoadFile()
         {
             string path = GetFilePath("$web.json");
-            if (File.Exists(path))
+            if (System.IO.File.Exists(path))
             {
                 JObj jobj = JsonUtility.FileToJObj(path);
                 if (jobj != null)
                 {
                     JObj = jobj;
                     Load(jobj); // override
-                    return (Import = true).Value;
+                    return (File = true).Value;
                 }
             }
-            return (Import = false).Value;
+            return (File = false).Value;
         }
     }
 }
