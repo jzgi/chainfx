@@ -5,10 +5,6 @@
     ///
     public static class BitsUtility
     {
-        // BASE = 0
-
-        // ALL = 0xff
-
         public const byte
 
             // auto generated or with default
@@ -18,13 +14,13 @@
             BINARY = 0x40,
 
             // late-handled
-            LATER = 0x20,
+            LATER = 0x40,
 
             // many
-            SUBLEVEL = 0x10,
+            SUB = 0x18,
 
-            // reserved
-            HIDDEN = 0x08;
+            // hidden or reserved
+            KEPT = 0x04;
 
 
         public static bool Has(this byte bits, byte v)

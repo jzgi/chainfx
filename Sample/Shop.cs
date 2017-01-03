@@ -31,7 +31,8 @@ namespace Greatbone.Sample
         {
             src.Get(nameof(id), ref id);
             src.Get(nameof(name), ref name);
-            if (bits.Has(HIDDEN)) src.Get(nameof(credential), ref credential);
+            if (bits.Has(KEPT))
+                src.Get(nameof(credential), ref credential);
             src.Get(nameof(tel), ref tel);
             src.Get(nameof(loc), ref loc);
             src.Get(nameof(prov), ref prov);
@@ -43,7 +44,8 @@ namespace Greatbone.Sample
         {
             snk.Put(nameof(id), id);
             snk.Put(nameof(name), name);
-            if (bits.Has(HIDDEN)) snk.Put(nameof(credential), credential);
+            if (bits.Has(KEPT))
+                snk.Put(nameof(credential), credential);
             snk.Put(nameof(tel), tel);
             snk.Put(nameof(loc), loc);
             snk.Put(nameof(prov), prov);
