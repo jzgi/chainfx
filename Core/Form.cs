@@ -8,26 +8,29 @@ namespace Greatbone.Core
     ///
     public class Form : Roll<Field>, ISource, IReturnable
     {
-        public static readonly Form Empty = new Form();
-
-        // contains partipart form data
+        // if multipart
         readonly bool data;
 
-        public Form(bool data = false, int capacity = 16) : base(capacity)
+        public Form(bool data, int capacity = 16) : base(capacity)
         {
             this.data = data;
         }
 
         public bool Data => data;
 
-        internal void Add(string name, string v)
+        public void Add(string name, string v)
         {
             Add(new Field(name, v));
         }
 
+        public void Add(string name, string filename, byte[] databuf, int count)
+        {
+            Add(new Field(name, filename, databuf, count));
+        }
+
         public void Return()
         {
-            if (data)
+            if (Data)
             {
                 for (int i = 0; i < Count; i++)
                 {

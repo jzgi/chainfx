@@ -7,13 +7,11 @@ namespace Greatbone.Core
     ///
     public class JArr
     {
-        const int InitialCapacity = 16;
-
         JMem[] elements;
 
         int count;
 
-        internal JArr(int capacity = InitialCapacity)
+        internal JArr(int capacity = 16)
         {
             elements = new JMem[capacity];
             count = 0;

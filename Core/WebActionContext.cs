@@ -9,7 +9,7 @@ namespace Greatbone.Core
     ///
     /// The encapsulation of a web request/response exchange context.
     ///
-    public class WebActionContext : DefaultHttpContext, ICallerContext, IDisposable
+    public class WebActionContext : DefaultHttpContext, ICaller, IDisposable
     {
         internal WebActionContext(IFeatureCollection features) : base(features)
         {
@@ -139,7 +139,7 @@ namespace Greatbone.Core
             if (clen <= 0) return null;
 
             int len = (int) clen;
-            byte[] bytebuf = BufferUtility.BorrowByteBuf(len); // borrow from the pool
+            byte[] bytebuf = BufferUtility.ByteBuffer(len); // borrow from the pool
             int count = await Request.Body.ReadAsync(bytebuf, 0, len);
 
             string ctyp = Request.ContentType;
@@ -153,7 +153,7 @@ namespace Greatbone.Core
             {
                 int beq = ctyp.IndexOf("boundary=", 19, StringComparison.Ordinal);
                 string boundary = "--" + ctyp.Substring(beq + 9);
-                FormDataParse p = new FormDataParse(boundary, bytebuf, count);
+                FormMpParse p = new FormMpParse(boundary, bytebuf, count);
                 entity = p.Parse();
                 BufferUtility.Return(bytebuf); // return to the pool
             }

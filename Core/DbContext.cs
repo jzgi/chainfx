@@ -380,7 +380,7 @@ namespace Greatbone.Core
                 if (!reader.IsDBNull(ord))
                 {
                     int len;
-                    if ((len = (int)reader.GetBytes(ord, 0, null, 0, 0)) > 0)
+                    if ((len = (int) reader.GetBytes(ord, 0, null, 0, 0)) > 0)
                     {
                         // get the number of bytes that are available to read.
                         v = new byte[len];
@@ -404,9 +404,9 @@ namespace Greatbone.Core
                 if (!reader.IsDBNull(ord))
                 {
                     int len;
-                    if ((len = (int)reader.GetBytes(ord, 0, null, 0, 0)) > 0)
+                    if ((len = (int) reader.GetBytes(ord, 0, null, 0, 0)) > 0)
                     {
-                        byte[] buf = BufferUtility.BorrowByteBuf(len);
+                        byte[] buf = BufferUtility.ByteBuffer(len);
                         reader.GetBytes(ord, 0, buf, 0, len); // read data into the buffer
                         v = new ArraySegment<byte>(buf, 0, len);
                         return true;
@@ -427,7 +427,7 @@ namespace Greatbone.Core
             {
                 string str = reader.GetString(ord);
                 JsonParse p = new JsonParse(str);
-                JObj jobj = (JObj)p.Parse();
+                JObj jobj = (JObj) p.Parse();
                 v = new D();
                 v.Load(jobj, bits);
 
@@ -449,7 +449,7 @@ namespace Greatbone.Core
             {
                 string str = reader.GetString(ord);
                 JsonParse p = new JsonParse(str);
-                v = (JObj)p.Parse();
+                v = (JObj) p.Parse();
                 return true;
             }
             return false;
@@ -462,7 +462,7 @@ namespace Greatbone.Core
             {
                 string str = reader.GetString(ord);
                 JsonParse p = new JsonParse(str);
-                v = (JArr)p.Parse();
+                v = (JArr) p.Parse();
                 return true;
             }
             return false;
@@ -519,7 +519,7 @@ namespace Greatbone.Core
             {
                 string str = reader.GetString(ord);
                 JsonParse p = new JsonParse(str);
-                JArr jarr = (JArr)p.Parse();
+                JArr jarr = (JArr) p.Parse();
                 int len = jarr.Count;
                 v = new D[len];
                 for (int i = 0; i < len; i++)
@@ -547,18 +547,18 @@ namespace Greatbone.Core
         // MESSAGING
         //
 
-        public void EnQueue<D>(string name, string shard, D obj) where D : IData
+        public void EnQueue(string name, string shard, IData obj, byte bits = 0)
         {
-            EnQueue(name, shard, jcont => jcont.Put(null, obj));
+            JsonContent cont = new JsonContent(true, true);
+            cont.Put(null, obj, bits);
+            EnQueue(name, shard, cont);
         }
 
-        public void EnQueue<D>(string name, string shard, D[] arr) where D : IData
+        public void EnQueue<D>(string name, string shard, D[] arr, byte bits = 0) where D : IData
         {
-            EnQueue(name, shard, jcont => jcont.Put(null, arr));
-        }
-
-        public void EnQueue(string name, string shard, Form form)
-        {
+            JsonContent cont = new JsonContent(true);
+            cont.Put(null, arr, bits);
+            EnQueue(name, shard, cont);
         }
 
         public void EnQueue(string name, string shard, JArr jarr)
@@ -573,23 +573,27 @@ namespace Greatbone.Core
         {
         }
 
+        public void EnQueue(string name, string shard, Form form)
+        {
+            FormContent cont = new FormContent(true, true);
+            EnQueue(name, shard, cont);
+        }
+
         public void EnQueue(string name, string shard, ArraySegment<byte> bytesseg)
         {
         }
 
-        public void EnQueue(string name, string shard, Action<JsonContent> a)
+        public void EnQueue<C>(string name, string shard, C content) where C : IContent
         {
             // convert message to byte buffer
-            JsonContent cont = new JsonContent(true, true);
-            a?.Invoke(cont);
-
+            ArraySegment<byte> byteseg = new ArraySegment<byte>(content.ByteBuffer, 0, content.Size);
             Execute("INSERT INTO eq (name, shard, body) VALUES (@1, @2, @3)", p =>
             {
                 p.Put(name);
                 p.Put(shard);
-                p.Put(cont.ToBytesSeg());
+                p.Put(byteseg);
             });
-            BufferUtility.Return(cont);
+            BufferUtility.Return(content); // back to pool
         }
 
 

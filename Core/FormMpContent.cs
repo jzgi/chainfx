@@ -4,15 +4,15 @@ using NpgsqlTypes;
 namespace Greatbone.Core
 {
     /// 
-    /// To generate multipart/form-data binary content.
+    /// To generate multipart/form-data binary content, with the part Content-Length extension.
     /// 
-    public class FormDataContent : DynamicContent, ISink<FormDataContent>
+    public class FormMpContent : DynamicContent, ISink<FormMpContent>
     {
         const string Boundary = "0!A#4X";
 
         const string Mime = "multipart/form-data; boundary=" + Boundary;
 
-        public FormDataContent(bool pooled, int capacity = 4092) : base(true, pooled, capacity)
+        public FormMpContent(bool pooled, int capacity = 4092) : base(true, pooled, capacity)
         {
         }
 
@@ -30,54 +30,54 @@ namespace Greatbone.Core
             Add(name);
             Add("\"\r\n\r\n");
         }
-        public FormDataContent PutNull(string name)
+        public FormMpContent PutNull(string name)
         {
             return this;
         }
 
-        public FormDataContent Put(string name, bool v)
+        public FormMpContent Put(string name, bool v)
         {
             Part(name);
             Add(v ? "true" : "false");
             return this;
         }
 
-        public FormDataContent Put(string name, short v)
+        public FormMpContent Put(string name, short v)
         {
             Part(name);
             Add(v);
             return this;
         }
 
-        public FormDataContent Put(string name, int v)
+        public FormMpContent Put(string name, int v)
         {
             Part(name);
             Add(v);
             return this;
         }
 
-        public FormDataContent Put(string name, long v)
+        public FormMpContent Put(string name, long v)
         {
             Part(name);
             Add(v);
             return this;
         }
 
-        public FormDataContent Put(string name, double v)
+        public FormMpContent Put(string name, double v)
         {
             Part(name);
             Add(v);
             return this;
         }
 
-        public FormDataContent Put(string name, decimal v)
+        public FormMpContent Put(string name, decimal v)
         {
             Part(name);
             Add(v);
             return this;
         }
 
-        public FormDataContent Put(string name, JNumber v)
+        public FormMpContent Put(string name, JNumber v)
         {
             Part(name);
             Add(v.bigint);
@@ -89,14 +89,14 @@ namespace Greatbone.Core
             return this;
         }
 
-        public FormDataContent Put(string name, DateTime v)
+        public FormMpContent Put(string name, DateTime v)
         {
             Part(name);
             Add(v);
             return this;
         }
 
-        public FormDataContent Put(string name, NpgsqlPoint v)
+        public FormMpContent Put(string name, NpgsqlPoint v)
         {
             Part(name);
             Add(v.X);
@@ -105,7 +105,7 @@ namespace Greatbone.Core
             return this;
         }
 
-        public FormDataContent Put(string name, char[] v)
+        public FormMpContent Put(string name, char[] v)
         {
             Part(name);
             if (v == null)
@@ -119,7 +119,7 @@ namespace Greatbone.Core
             return this;
         }
 
-        public FormDataContent Put(string name, string v, bool? anylen = null)
+        public FormMpContent Put(string name, string v, bool? anylen = null)
         {
             Part(name);
             if (v == null)
@@ -133,17 +133,17 @@ namespace Greatbone.Core
             return this;
         }
 
-        public virtual FormDataContent Put(string name, byte[] v)
+        public virtual FormMpContent Put(string name, byte[] v)
         {
             return this; // ignore ir
         }
 
-        public virtual FormDataContent Put(string name, ArraySegment<byte> v)
+        public virtual FormMpContent Put(string name, ArraySegment<byte> v)
         {
             return this; // ignore ir
         }
 
-        public FormDataContent Put<D>(string name, D v, byte bits = 0) where D : IData
+        public FormMpContent Put<D>(string name, D v, byte bits = 0) where D : IData
         {
             Part(name);
             if (v == null)
@@ -159,7 +159,7 @@ namespace Greatbone.Core
             return this;
         }
 
-        public FormDataContent Put(string name, JObj v)
+        public FormMpContent Put(string name, JObj v)
         {
             Part(name);
             if (v == null)
@@ -175,7 +175,7 @@ namespace Greatbone.Core
             return this;
         }
 
-        public FormDataContent Put(string name, JArr v)
+        public FormMpContent Put(string name, JArr v)
         {
             Part(name);
             if (v == null)
@@ -191,7 +191,7 @@ namespace Greatbone.Core
             return this;
         }
 
-        public FormDataContent Put(string name, short[] v)
+        public FormMpContent Put(string name, short[] v)
         {
             Part(name);
             if (v == null)
@@ -212,7 +212,7 @@ namespace Greatbone.Core
             return this;
         }
 
-        public FormDataContent Put(string name, int[] v)
+        public FormMpContent Put(string name, int[] v)
         {
             Part(name);
             if (v == null)
@@ -232,7 +232,7 @@ namespace Greatbone.Core
             return this;
         }
 
-        public FormDataContent Put(string name, long[] v)
+        public FormMpContent Put(string name, long[] v)
         {
             if (v == null)
             {
@@ -251,7 +251,7 @@ namespace Greatbone.Core
             return this;
         }
 
-        public FormDataContent Put(string name, string[] v)
+        public FormMpContent Put(string name, string[] v)
         {
             Part(name);
             if (v == null)
@@ -281,7 +281,7 @@ namespace Greatbone.Core
         }
 
 
-        public FormDataContent Put<D>(string name, D[] v, byte bits = 0) where D : IData
+        public FormMpContent Put<D>(string name, D[] v, byte bits = 0) where D : IData
         {
             Part(name);
             if (v == null)

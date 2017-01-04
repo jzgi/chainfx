@@ -5,6 +5,8 @@ namespace Greatbone.Core
     ///
     public struct FormParse
     {
+        static readonly Form Empty = new Form(false);
+
         static readonly ParseException ParseEx = new ParseException("form");
 
         readonly byte[] bytebuf;
@@ -36,13 +38,13 @@ namespace Greatbone.Core
 
         public Form Parse()
         {
-            if (count == 0) return Form.Empty;
+            if (count == 0) return Empty;
 
             int p = (this[0] == '?') ? 1 : 0;
 
-            if (p >= count - 1) return Form.Empty;
+            if (p >= count - 1) return Empty;
 
-            Form frm = new Form();
+            Form frm = new Form(false);
             for (;;)
             {
                 if (p >= count) return frm;

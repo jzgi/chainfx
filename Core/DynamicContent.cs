@@ -99,11 +99,11 @@ namespace Greatbone.Core
             this.pooled = pooled;
             if (sendable)
             {
-                bytebuf = pooled ? BufferUtility.BorrowByteBuf(capacity) : new byte[capacity];
+                bytebuf = pooled ? BufferUtility.ByteBuffer(capacity) : new byte[capacity];
             }
             else
             {
-                charbuf = pooled ? BufferUtility.BorrowCharBuf(capacity) : new char[capacity];
+                charbuf = pooled ? BufferUtility.CharBuffer(capacity) : new char[capacity];
             }
             count = 0;
         }
@@ -132,7 +132,7 @@ namespace Greatbone.Core
             {
                 int nlen = olen * 4; // new length
                 byte[] obuf = bytebuf;
-                bytebuf = (pooled) ? BufferUtility.BorrowByteBuf(nlen) : new byte[nlen];
+                bytebuf = (pooled) ? BufferUtility.ByteBuffer(nlen) : new byte[nlen];
                 Array.Copy(obuf, 0, bytebuf, 0, olen);
                 if (pooled) BufferUtility.Return(obuf);
             }
@@ -176,7 +176,7 @@ namespace Greatbone.Core
                 {
                     int nlen = olen * 4; // new length
                     char[] obuf = charbuf;
-                    charbuf = (pooled) ? BufferUtility.BorrowCharBuf(nlen) : new char[nlen];
+                    charbuf = (pooled) ? BufferUtility.CharBuffer(nlen) : new char[nlen];
                     Array.Copy(obuf, 0, charbuf, 0, olen);
                     if (pooled) BufferUtility.Return(obuf);
                 }
@@ -351,7 +351,7 @@ namespace Greatbone.Core
         }
 
         // sign mask
-        private const int Sign = unchecked((int) 0x80000000);
+        const int Sign = unchecked((int) 0x80000000);
 
         public void Add(decimal dec, bool money)
         {
@@ -424,8 +424,6 @@ namespace Greatbone.Core
         public void Add(DateTime v)
         {
             short yr = (short) v.Year;
-            byte mon = (byte) v.Month,
-                day = (byte) v.Day;
 
             // yyyy-mm-dd
             if (yr < 1000) Add('0');
@@ -447,13 +445,6 @@ namespace Greatbone.Core
             Add(':');
             Add(SEX[sec]);
         }
-
-        public void Replace(byte[] buffer, int count)
-        {
-            this.bytebuf = buffer;
-            this.count = count;
-        }
-
 
         //
         // CLIENT CONTENT
@@ -482,7 +473,7 @@ namespace Greatbone.Core
 
         public override string ToString()
         {
-            return new string(charbuf, 0, count);
+            return charbuf == null ? null : new string(charbuf, 0, count);
         }
     }
 }

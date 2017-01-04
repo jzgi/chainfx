@@ -3,7 +3,7 @@
     ///
     /// A context that can initiate remote call.
     ///
-    public interface ICallerContext
+    public interface ICaller
     {
         IToken Token { get; }
 

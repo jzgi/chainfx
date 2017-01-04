@@ -13,7 +13,7 @@ namespace Greatbone.Core
         static readonly Que<byte[]>[] BytesQues =
         {
             new Que<byte[]>(1024 * 4, Cores * 16),
-            new Que<byte[]>(1024 * 16, Cores *16),
+            new Que<byte[]>(1024 * 16, Cores * 16),
             new Que<byte[]>(1024 * 64, Cores * 8),
             new Que<byte[]>(1024 * 256, Cores * 8),
             new Que<byte[]>(1024 * 1024, Cores * 4),
@@ -27,8 +27,7 @@ namespace Greatbone.Core
             new Que<char[]>(1024 * 64, Cores * 2)
         };
 
-
-        public static byte[] BorrowByteBuf(int demand)
+        public static byte[] ByteBuffer(int demand)
         {
             // locate the appropriate queue
             int i = 0;
@@ -44,10 +43,8 @@ namespace Greatbone.Core
                 }
                 return buf;
             }
-            else
-            {
-                return new byte[demand];
-            }
+            // out of queues scope
+            return new byte[demand];
         }
 
         public static void Return(byte[] buf)
@@ -55,22 +52,22 @@ namespace Greatbone.Core
             int blen = buf.Length;
             for (int i = 0; i < BytesQues.Length; i++)
             {
-                Que<byte[]> q = BytesQues[i];
-                if (q.Spec == blen) // the right queue to add
+                Que<byte[]> que = BytesQues[i];
+                if (que.Spec == blen) // the right queue to add
                 {
-                    if (q.Count < q.Limit)
+                    if (que.Count < que.Limit)
                     {
-                        q.Enqueue(buf);
+                        que.Enqueue(buf);
                     }
                 }
-                else if (q.Spec > blen)
+                else if (que.Spec > blen)
                 {
                     break;
                 }
             }
         }
 
-        public static char[] BorrowCharBuf(int demand)
+        public static char[] CharBuffer(int demand)
         {
             // locate the appropriate queue
             int i = 0;
@@ -86,46 +83,41 @@ namespace Greatbone.Core
                 }
                 return buf;
             }
-            else
-            {
-                return new char[demand];
-            }
+            // out of queues scope
+            return new char[demand];
         }
 
         public static void Return(char[] buf)
         {
             int blen = buf.Length;
-            for (int i = 0; i < BytesQues.Length; i++)
+            for (int i = 0; i < CharsQues.Length; i++)
             {
-                Que<char[]> q = CharsQues[i];
-                if (q.Spec == blen) // the right queue to add
+                Que<char[]> que = CharsQues[i];
+                if (que.Spec == blen) // the right queue to add
                 {
-                    if (q.Count < q.Limit)
+                    if (que.Count < que.Limit)
                     {
-                        q.Enqueue(buf);
+                        que.Enqueue(buf);
                     }
                 }
-                else if (q.Spec > blen)
+                else if (que.Spec > blen)
                 {
                     break;
                 }
             }
         }
 
-
-        public static bool Return(IContent cont)
+        public static bool Return(IContent content)
         {
-            if (!cont.Poolable)
+            if (!content.Poolable) return false;
+
+            if (content.Senable) // is a byte buffer
             {
-                return false;
-            }
-            if (cont.Senable)
-            {
-                Return(cont.ByteBuffer);
+                Return(content.ByteBuffer);
             }
             else
             {
-                Return(cont.CharBuffer);
+                Return(content.CharBuffer);
             }
             return true;
         }

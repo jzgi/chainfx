@@ -8,9 +8,7 @@ namespace Greatbone.Core
     ///
     public class JObj : Roll<JMem>, ISource
     {
-        const int InitialCapacity = 16;
-
-        public JObj(int capacity = InitialCapacity) : base(capacity)
+        public JObj(int capacity = 16) : base(capacity)
         {
         }
 

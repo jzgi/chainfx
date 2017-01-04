@@ -318,7 +318,7 @@ namespace Greatbone.Core
 
                 if (dc.Query(sql, p => p.Put(lastid.Value)))
                 {
-                    FormDataContent cont = new FormDataContent(true, 1024 * 1024);
+                    FormMpContent cont = new FormMpContent(true, 1024 * 1024);
                     while (dc.NextRow())
                     {
                         long id = dc.GetLong();

@@ -9,7 +9,7 @@ namespace Greatbone.Core
 
         int rest; // number of rest octets
 
-        internal Str(int capacity) : base(false, false, capacity)
+        public Str(int capacity) : base(false, false, capacity)
         {
             sum = 0;
             rest = 0;
@@ -55,6 +55,11 @@ namespace Greatbone.Core
             count = 0;
             sum = 0;
             rest = 0;
+        }
+
+        public bool Match(string v)
+        {
+            return false;
         }
 
         public int ToInt()
