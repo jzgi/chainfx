@@ -20,14 +20,14 @@ namespace Greatbone.Core
         readonly int count;
 
         // UTF-8 string builder
-        readonly Str str;
+        readonly Header str;
 
         public FormMpParse(string boundary, byte[] bytebuf, int count)
         {
             this.bound = "--" + boundary;
             this.bytebuf = bytebuf;
             this.count = count;
-            this.str = new Str(256);
+            this.str = new Header(256);
         }
 
         public Form Parse()
@@ -47,7 +47,7 @@ namespace Greatbone.Core
                     str.Accept(b);
                 }
 
-                str.Match(bound);
+                str.CheckName(bound);
 
                 str.Clear(); // parse name
 
@@ -56,7 +56,7 @@ namespace Greatbone.Core
                     if (p >= count - 1) throw ParseEx;
                     int b = bytebuf[++p];
                     if (b == '"') break; // meet second quote
-                    str.Add((char) b);
+                    str.Add((char)b);
                 }
 
                 string name = ParseName(ref p);
@@ -71,6 +71,7 @@ namespace Greatbone.Core
         {
 
         }
+
         string ParseName(ref int pos)
         {
             str.Clear();

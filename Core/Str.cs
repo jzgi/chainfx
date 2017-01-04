@@ -1,21 +1,45 @@
+using System;
+
 namespace Greatbone.Core
 {
     ///
     /// A reusable string builder that supports UTF-8 decoding.
     ///
-    public class Str : DynamicContent
+    public class Str
     {
-        int sum; // combination of bytes
+        protected char[] charbuf;
 
-        int rest; // number of rest octets
+        // number of chars
+        protected int count;
 
-        public Str(int capacity) : base(false, false, capacity)
+        // combination of bytes
+        int sum;
+
+        // number of rest octets
+        int rest;
+
+        public Str(int capacity = 256)
         {
+            charbuf = new char[capacity];
             sum = 0;
             rest = 0;
         }
 
-        public override string MimeType => null;
+        public int Count => count;
+
+        public void Add(char c)
+        {
+            // ensure capacity
+            int len = charbuf.Length; // old length
+            if (count >= len)
+            {
+                int newlen = len * 4; // new length
+                char[] buf = charbuf;
+                charbuf = new char[newlen];
+                Array.Copy(buf, 0, charbuf, 0, len);
+            }
+            charbuf[count++] = c;
+        }
 
         // utf-8 decoding 
         public void Accept(int b)
@@ -24,7 +48,7 @@ namespace Greatbone.Core
             {
                 if (b < 0x80)
                 {
-                    Add((char) b); // single byte
+                    Add((char)b); // single byte
                 }
                 else if (b >= 0xc0 && b < 0xe0)
                 {
@@ -41,7 +65,7 @@ namespace Greatbone.Core
             {
                 sum |= (b & 0x3f);
                 rest--;
-                Add((char) sum);
+                Add((char)sum);
             }
             else if (rest == 2)
             {
@@ -50,21 +74,11 @@ namespace Greatbone.Core
             }
         }
 
-        public void Clear()
+        public virtual void Clear()
         {
             count = 0;
             sum = 0;
             rest = 0;
-        }
-
-        public bool Match(string v)
-        {
-            return false;
-        }
-
-        public int ToInt()
-        {
-            return 0;
         }
 
         public override string ToString()
