@@ -1524,27 +1524,28 @@ namespace Greatbone.Core
             }
         };
 
-
-        readonly string name;
-
         readonly bool pooled;
 
         readonly byte[] bytebuf;
 
         readonly int size;
 
-
-        public StaticContent(string key, byte[] bytebuf) : this(key, false, bytebuf, bytebuf.Length) { }
-
-        public StaticContent(string key, bool pooled, byte[] bytebuf, int size)
+        public StaticContent(byte[] bytebuf) : this(false, bytebuf, bytebuf.Length)
         {
-            this.name = key;
+        }
+
+        public StaticContent(ArraySegment<byte> bytesseg) : this(true, bytesseg.Array, bytesseg.Count)
+        {
+        }
+
+        public StaticContent(bool pooled, byte[] bytebuf, int size)
+        {
             this.pooled = pooled;
             this.bytebuf = bytebuf;
             this.size = size;
         }
 
-        public string Name => name;
+        public string Name { get; set; }
 
         public string MimeType { get; set; }
 
@@ -1564,17 +1565,18 @@ namespace Greatbone.Core
 
         protected override Task SerializeToStreamAsync(Stream stream, TransportContext context)
         {
-            throw new NotImplementedException();
+            return stream.WriteAsync(bytebuf, 0, size);
         }
 
         protected override bool TryComputeLength(out long length)
         {
-            throw new NotImplementedException();
+            length = size;
+            return true;
         }
 
-        public static bool TryGetCType(string ext, out string ctype)
+        public static bool TryGetMimeType(string ext, out string ctyp)
         {
-            return Types.TryGetValue(ext, out ctype);
+            return Types.TryGetValue(ext, out ctyp);
         }
     }
 }

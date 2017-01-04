@@ -152,7 +152,7 @@ namespace Greatbone.Core
 
         JArr ParseArr(ref int pos)
         {
-            JArr jarr = new JArr(16);
+            JArr jarr = new JArr();
             int p = pos;
             for (;;)
             {

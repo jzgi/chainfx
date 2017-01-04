@@ -304,7 +304,7 @@ namespace Greatbone.Core
         {
         }
 
-        public void Reply(int status, XElem xelem, bool? pub = null, int seconds = 30)
+        public void Reply(int status, XElem elem, bool? pub = null, int seconds = 30)
         {
         }
 

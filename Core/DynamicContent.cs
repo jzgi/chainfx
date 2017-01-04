@@ -196,12 +196,10 @@ namespace Greatbone.Core
 
         public void Add(char[] v, int offset, int len)
         {
-            if (v != null)
+            if (v == null) return;
+            for (int i = offset; i < len; i++)
             {
-                for (int i = offset; i < len; i++)
-                {
-                    Add(v[i], false);
-                }
+                Add(v[i]);
             }
         }
 
@@ -212,12 +210,10 @@ namespace Greatbone.Core
 
         public void Add(string v, int offset, int len)
         {
-            if (v != null)
+            if (v == null) return;
+            for (int i = offset; i < len; i++)
             {
-                for (int i = offset; i < len; i++)
-                {
-                    Add(v[i]);
-                }
+                Add(v[i]);
             }
         }
 
@@ -228,12 +224,10 @@ namespace Greatbone.Core
 
         public void Add(StringBuilder v, int offset, int len)
         {
-            if (v != null)
+            if (v == null) return;
+            for (int i = offset; i < len; i++)
             {
-                for (int i = offset; i < len; i++)
-                {
-                    Add(v[i], false);
-                }
+                Add(v[i]);
             }
         }
 
@@ -328,7 +322,7 @@ namespace Greatbone.Core
 
         public void Add(decimal v)
         {
-            Add(v, true);
+            Add(v.ToString(CultureInfo.CurrentCulture));
         }
 
         public void Add(JNumber v)
@@ -348,77 +342,6 @@ namespace Greatbone.Core
             Add(':');
             Add(v.Y);
             Add('"');
-        }
-
-        // sign mask
-        const int Sign = unchecked((int) 0x80000000);
-
-        public void Add(decimal dec, bool money)
-        {
-            if (money)
-            {
-                int[] bits = decimal.GetBits(dec); // get the binary representation
-                int low = bits[0], mid = bits[1], flags = bits[3];
-
-                if ((flags & Sign) != 0) // negative
-                {
-                    Add('-');
-                }
-                if (mid != 0) // money
-                {
-                    long x = (low & 0x00ffffff) + ((long) (byte) (low >> 24) << 24) + ((long) mid << 32);
-                    bool bgn = false;
-                    for (int i = LONG.Length - 1; i >= 2; i--)
-                    {
-                        long bas = INT[i];
-                        long q = x / bas;
-                        x = x % bas;
-                        if (q != 0 || bgn)
-                        {
-                            Add(DIGIT[q]);
-                            bgn = true;
-                        }
-                        if (i == 4)
-                        {
-                            if (!bgn)
-                            {
-                                Add('0');
-                                bgn = true;
-                            }
-                            Add('.');
-                        }
-                    }
-                }
-                else // smallmoney
-                {
-                    int x = low;
-                    bool bgn = false;
-                    for (int i = INT.Length - 1; i >= 2; i--)
-                    {
-                        int bas = INT[i];
-                        int q = x / bas;
-                        x = x % bas;
-                        if (q != 0 || bgn)
-                        {
-                            Add(DIGIT[q]);
-                            bgn = true;
-                        }
-                        if (i == 4)
-                        {
-                            if (!bgn)
-                            {
-                                Add('0');
-                                bgn = true;
-                            }
-                            Add('.');
-                        }
-                    }
-                }
-            }
-            else // ordinal decimal number
-            {
-                Add(dec.ToString(NumberFormatInfo.CurrentInfo));
-            }
         }
 
         public void Add(DateTime v)
@@ -459,11 +382,6 @@ namespace Greatbone.Core
         {
             length = count;
             return true;
-        }
-
-        protected override Task<Stream> CreateContentReadStreamAsync()
-        {
-            return null;
         }
 
         public ArraySegment<byte> ToBytesSeg()

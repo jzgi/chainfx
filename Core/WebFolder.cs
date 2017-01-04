@@ -66,7 +66,7 @@ namespace Greatbone.Core
             }
             // create instance by reflection
             Type typ = typeof(F);
-            ConstructorInfo ci = typ.GetConstructor(new[] { typeof(WebFolderContext) });
+            ConstructorInfo ci = typ.GetConstructor(new[] {typeof(WebFolderContext)});
             if (ci == null)
             {
                 throw new WebException(typ + " missing WebFolderContext");
@@ -81,7 +81,7 @@ namespace Greatbone.Core
                 Directory = (Parent == null) ? name : Path.Combine(Parent.Directory, name),
                 Service = Service
             };
-            F folder = (F)ci.Invoke(new object[] { ctx });
+            F folder = (F) ci.Invoke(new object[] {ctx});
             children.Add(folder);
 
             return folder;
@@ -100,7 +100,7 @@ namespace Greatbone.Core
 
             // create instance
             Type typ = typeof(F);
-            ConstructorInfo ci = typ.GetConstructor(new[] { typeof(WebFolderContext) });
+            ConstructorInfo ci = typ.GetConstructor(new[] {typeof(WebFolderContext)});
             if (ci == null)
             {
                 throw new WebException(typ + " missing WebFolderContext");
@@ -115,7 +115,7 @@ namespace Greatbone.Core
                 Directory = (Parent == null) ? _VAR_ : Path.Combine(Parent.Directory, _VAR_),
                 Service = Service
             };
-            F folder = (F)ci.Invoke(new object[] { ctx });
+            F folder = (F) ci.Invoke(new object[] {ctx});
             variable = folder;
 
             return folder;
@@ -243,22 +243,22 @@ namespace Greatbone.Core
         }
 
 
-        void DoStatic(string file, string ext, WebActionContext ac)
+        void DoStatic(string filename, string ext, WebActionContext ac)
         {
-            if (file.StartsWith("$")) // private resource
+            if (filename.StartsWith("$")) // private resource
             {
                 ac.Reply(403); // forbidden
                 return;
             }
 
             string ctyp;
-            if (!StaticContent.TryGetCType(ext, out ctyp))
+            if (!StaticContent.TryGetMimeType(ext, out ctyp))
             {
                 ac.Reply(415); // unsupported media type
                 return;
             }
 
-            string path = Path.Combine(Directory, file);
+            string path = Path.Combine(Directory, filename);
             if (!File.Exists(path))
             {
                 ac.Reply(404); // not found
@@ -274,13 +274,14 @@ namespace Greatbone.Core
             }
 
             // load file content
-            byte[] cont = File.ReadAllBytes(path);
-            StaticContent sta = new StaticContent(file.ToLower(), cont)
+            byte[] bytes = File.ReadAllBytes(path);
+            StaticContent cont = new StaticContent(bytes)
             {
+                Name = filename,
                 MimeType = ctyp,
                 Modified = modified
             };
-            ac.Reply(200, sta, true, 5 * 60000);
+            ac.Reply(200, cont, true, 5 * 60000);
         }
 
         //
