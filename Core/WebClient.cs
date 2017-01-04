@@ -197,7 +197,7 @@ namespace Greatbone.Core
             // parse and process evetns
             int pos;
 
-            FormDatParse p = new FormDatParse();
+            FormDataParse p = new FormDataParse();
             p.ParseEvents(x =>
             {
                 long id;

@@ -5,7 +5,7 @@ namespace Greatbone.Core
     ///
     /// To parse multipart/form-data content.
     ///
-    public struct FormDatParse
+    public struct FormDataParse
     {
         const string ContentDisposition = "Content-Disposition:";
 
@@ -20,7 +20,7 @@ namespace Greatbone.Core
         // UTF-8 string builder
         readonly Str str;
 
-        public FormDatParse(string boundary, byte[] bytebuf, int count)
+        public FormDataParse(string boundary, byte[] bytebuf, int count)
         {
             this.boundary = boundary;
             this.bytebuf = bytebuf;

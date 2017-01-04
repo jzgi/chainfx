@@ -4,21 +4,21 @@ using NpgsqlTypes;
 namespace Greatbone.Core
 {
     ///
-    /// A form object model parsed from x-www-form-urlencoded.
+    /// A form object model parsed from either x-www-form-urlencoded or multipart/form-data.
     ///
     public class Form : Roll<Field>, ISource, IReturnable
     {
         public static readonly Form Empty = new Form();
 
-        // binary data
-        readonly bool dat;
+        // contains partipart form data
+        readonly bool data;
 
-        public Form(bool dat = false, int capacity = 16) : base(capacity)
+        public Form(bool data = false, int capacity = 16) : base(capacity)
         {
-            this.dat = dat;
+            this.data = data;
         }
 
-        public bool Dat => dat;
+        public bool Data => data;
 
         internal void Add(string name, string v)
         {
@@ -27,11 +27,11 @@ namespace Greatbone.Core
 
         public void Return()
         {
-            if (dat)
+            if (data)
             {
                 for (int i = 0; i < Count; i++)
                 {
-                    byte[] buf = this[i].bytebuf;
+                    byte[] buf = this[i].databuf;
                     if (buf != null)
                     {
                         BufferUtility.Return(buf);

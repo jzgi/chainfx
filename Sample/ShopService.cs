@@ -50,7 +50,7 @@ namespace Greatbone.Sample
             }
             else // login
             {
-                Form frm = await ac.GetFormAsync();
+                Form frm = await ac.AsFormAsync();
                 string id = frm[nameof(id)];
                 string password = frm[nameof(password)];
                 string orig = frm[nameof(orig)];

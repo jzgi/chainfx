@@ -28,11 +28,11 @@ namespace Greatbone.Core
         {
             this.bytebuf = null;
             this.strbuf = strbuf;
-            this.count = (strbuf != null) ? strbuf.Length : 0;
+            this.count = strbuf?.Length ?? 0;
             this.str = new Str(256);
         }
 
-        int this[int index] => (bytebuf != null) ? bytebuf[index] : (int)strbuf[index];
+        int this[int index] => bytebuf?[index] ?? (int) strbuf[index];
 
         public Form Parse()
         {
