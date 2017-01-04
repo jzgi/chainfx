@@ -26,7 +26,7 @@ namespace Greatbone.Core
             Add(str);
         }
 
-        public override string MimeType => null;
+        public override string MimeType => "text/plain";
 
         internal void Clear()
         {

@@ -8,7 +8,7 @@ namespace Greatbone.Core
         {
             if (arr == null || arr.Length == 0)
             {
-                return new E[] { v };
+                return new[] {v};
             }
 
             int len = arr.Length;
