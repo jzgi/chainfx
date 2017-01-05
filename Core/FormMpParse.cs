@@ -32,10 +32,10 @@ namespace Greatbone.Core
 
             this.buf = buf;
             this.count = count;
-            Event = null;
+            EventContext = null;
         }
 
-        public WebEventContext Event { get; internal set; }
+        public WebEventContext EventContext { get; internal set; }
 
         public Form Parse()
         {
@@ -62,7 +62,6 @@ namespace Greatbone.Core
             {
                 string name = null;
                 string filename = null;
-                string time;
                 string typ = null;
                 string length = null;
 
@@ -84,7 +83,6 @@ namespace Greatbone.Core
                     {
                         name = hdr.SeekParam("name");
                         filename = hdr.SeekParam("filename");
-                        time = hdr.SeekParam("time");
                     }
                     else if (typ == null && hdr.NameIs("Content-Type"))
                     {
@@ -123,15 +121,15 @@ namespace Greatbone.Core
                         }
                     }
                 }
-                else if (Event != null && handler != null) // it is event context
+                else if (EventContext != null && handler != null) // it is event context
                 {
                     int len;
                     if (int.TryParse(length, out len))
                     {
-                        object cont = Contentize(typ, buf, start, p - 1);
+                        object cont = Contentize(typ, buf, start, len);
                         // handle the event context
-                        Event.Reset(234, name, "", DateTime.Now, cont);
-                        handler(Event);
+                        EventContext.Reset(234, name, cont);
+                        handler(EventContext);
                     }
                     // skip bound
                     p += boundlen;

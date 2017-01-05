@@ -9,14 +9,14 @@ namespace Greatbone.Core
     public class Form : Roll<Field>, ISource, IReturnable
     {
         // if multipart
-        readonly bool data;
+        readonly bool mp;
 
-        public Form(bool data, int capacity = 16) : base(capacity)
+        public Form(bool mp, int capacity = 16) : base(capacity)
         {
-            this.data = data;
+            this.mp = mp;
         }
 
-        public bool Data => data;
+        public bool Data => mp;
 
         public void Add(string name, string v)
         {

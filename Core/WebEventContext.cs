@@ -11,11 +11,7 @@ namespace Greatbone.Core
 
         long id;
 
-        DateTime time;
-
         string name;
-
-        string shard;
 
         // either JObj or JArr
         object entity;
@@ -25,20 +21,16 @@ namespace Greatbone.Core
             this.client = client;
         }
 
-        internal void Reset(long id, string name, string shard, DateTime time, object body)
+        internal void Reset(long id, string name, object body)
         {
             this.id = id;
             this.name = name;
-            this.shard = shard;
-            this.time = time;
             this.entity = body;
         }
 
         public long Id => id;
 
         public string Name => name;
-
-        public string Shard => shard;
 
         public ArraySegment<byte>? AsBytesSeg()
         {
