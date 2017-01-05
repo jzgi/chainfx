@@ -296,11 +296,11 @@ namespace Greatbone.Core
         {
         }
 
-        public void Reply(int status, JObj jobj, bool? pub = null, int seconds = 30)
+        public void Reply(int status, JObj obj, bool? pub = null, int seconds = 30)
         {
         }
 
-        public void Reply(int status, JArr jarr, bool? pub = null, int seconds = 30)
+        public void Reply(int status, JArr arr, bool? pub = null, int seconds = 30)
         {
         }
 

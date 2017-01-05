@@ -44,6 +44,11 @@ namespace Greatbone.Core
             }
         }
 
+        internal void SetCancel()
+        {
+            status = false;
+        }
+
         public async Task<HttpResponseMessage> SendAsync(ICaller ctx, Action<HttpRequestMessage> areq)
         {
             HttpRequestMessage req = new HttpRequestMessage();
@@ -191,11 +196,12 @@ namespace Greatbone.Core
 
             byte[] cont = await resp.Content.ReadAsByteArrayAsync();
 
-            // parse and process evetns
-            int pos;
-
-            FormMpParse p = new FormMpParse();
-            p.ParseEvents(x =>
+            WebEventContext ec = new WebEventContext(this);
+            FormMpParse p = new FormMpParse("", cont, cont.Length)
+            {
+                Context = ec
+            };
+            p.Parse(x =>
             {
                 long id;
                 string name = "";
@@ -203,7 +209,6 @@ namespace Greatbone.Core
                 WebEvent handler = null;
                 if (service.Events.TryGet(name, out handler))
                 {
-                    WebEventContext ec = new WebEventContext();
                     handler.Do(ec);
                 }
             });

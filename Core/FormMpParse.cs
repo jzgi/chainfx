@@ -9,8 +9,6 @@ namespace Greatbone.Core
     {
         static readonly Form Empty = new Form(true);
 
-        const string ContentDisposition = "Content-Disposition:";
-
         static readonly ParseException ParseEx = new ParseException("multipart parse error");
 
         readonly string bound;
@@ -19,78 +17,95 @@ namespace Greatbone.Core
 
         readonly int count;
 
-        // UTF-8 string builder
-        readonly Header str;
+        // UTF-8 header builder
+        readonly Header hdr;
 
         public FormMpParse(string boundary, byte[] bytebuf, int count)
         {
             this.bound = "--" + boundary;
             this.bytebuf = bytebuf;
             this.count = count;
-            this.str = new Header(256);
+            this.hdr = new Header(256);
+            Context = null;
         }
 
         public Form Parse()
         {
+            return Parse(null);
+        }
+
+        public WebEventContext Context { get; set; }
+
+        public Form Parse(Action<WebEventContext> a)
+        {
+            byte[] buf = this.bytebuf;
+
             if (count == 0) return Empty;
 
             Form frm = new Form(true);
             int p = 0;
+
+            // first bound
+
+            // parts
             for (;;)
             {
-                // bound
-                for (;;)
-                {
-                    if (p >= count - 1) throw ParseEx;
-                    byte b = bytebuf[++p];
-                    if (b == '\r' && bytebuf[++p] == '\n') break;
-                    str.Accept(b);
-                }
+                string name = null;
+                string filename;
+                string typ = null;
+                string length = null;
 
-                str.CheckName(bound);
-
-                str.Clear(); // parse name
-
-                for (;;)
-                {
-                    if (p >= count - 1) throw ParseEx;
-                    int b = bytebuf[++p];
-                    if (b == '"') break; // meet second quote
-                    str.Add((char)b);
-                }
-
-                string name = ParseName(ref p);
+                int partstart;
                 string value = null;
-                frm.Add(name, value);
 
-                frm.Add(name, "", null, 0);
-            }
-        }
-
-        public void ParseEvents(Action<WebActionContext> a)
-        {
-
-        }
-
-        string ParseName(ref int pos)
-        {
-            str.Clear();
-            int p = pos;
-            for (;;)
-            {
-                int b = bytebuf[p++];
-                if (p >= count)
+                // parse headers
+                for (;;)
                 {
-                    return null;
+                    hdr.Clear();
+
+                    // parse a header
+                    for (;;)
+                    {
+                        if (p >= count - 1) throw ParseEx;
+
+                        int b = buf[++p];
+                        if (b == '\r' && buf[++p] == '\n') break;
+                        hdr.Accept(b);
+                    }
+
+                    if (name == null && hdr.NameIs("Content-Disposition"))
+                    {
+                        // name, filename, time
+                        name = "";
+                    }
+                    else if (typ == null && hdr.NameIs("Content-Type"))
+                    {
+                        typ = "";
+                    }
+                    else if (length == null && hdr.NameIs("Content-Length"))
+                    {
+                        length = "";
+                    }
+                    else if (hdr.Count == 0) // if empty line
+                    {
+                        break;
+                    }
                 }
-                if (b == '=')
+
+                // body and bound
+                if (length == null) // standard behavior
                 {
-                    pos = p;
-                    return str.ToString();
+                    frm.Add(name, value);
+                    frm.Add(name, "", null, 0);
                 }
-                else
+                else // directly
                 {
-                    str.Accept(b);
+                    int len;
+                    if (int.TryParse(length, out len))
+                    {
+                        a(Context);
+                    }
+                    // bound
                 }
             }
         }

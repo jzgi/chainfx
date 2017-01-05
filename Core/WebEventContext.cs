@@ -3,26 +3,30 @@
 namespace Greatbone.Core
 {
     ///
-    /// The processing of an queued message. 
+    /// The processing of an queued message.
     ///
-    public struct WebEventContext : IDisposable
+    public class WebEventContext : IDisposable
     {
         readonly WebClient client;
 
-        readonly long id;
+        long id;
 
-        readonly DateTime time;
+        DateTime time;
 
-        readonly string name;
+        string name;
 
-        readonly string shard;
+        string shard;
 
         // either JObj or JArr
-        readonly object entity;
+        object entity;
 
-        internal WebEventContext(WebClient client, long id, string name, string shard, DateTime time, object body)
+        internal WebEventContext(WebClient client)
         {
             this.client = client;
+        }
+
+        internal void reset(long id, string name, string shard, DateTime time, object body)
+        {
             this.id = id;
             this.name = name;
             this.shard = shard;
@@ -36,12 +40,12 @@ namespace Greatbone.Core
 
         public string Shard => shard;
 
-        public ArraySegment<byte>? GetBytesSegAsync()
+        public ArraySegment<byte>? AsBytesSeg()
         {
             return entity as ArraySegment<byte>?;
         }
 
-        public Form GetForm()
+        public Form AsForm()
         {
             return entity as Form;
         }
@@ -77,6 +81,11 @@ namespace Greatbone.Core
             return entity as XElem;
         }
 
+        public void Cancel()
+        {
+            client.SetCancel();
+        }
+
         public DbContext NewDbContext()
         {
             return null;
@@ -84,7 +93,6 @@ namespace Greatbone.Core
 
         public void Dispose()
         {
-            throw new NotImplementedException();
         }
     }
 }

@@ -23,7 +23,7 @@ namespace Greatbone.Core
             mark = 0;
         }
 
-        public bool CheckName(string hdrname)
+        public bool NameIs(string hdrname)
         {
             int len = hdrname.Length;
 
@@ -42,74 +42,53 @@ namespace Greatbone.Core
             return true;
         }
 
-        static bool IsNameChar(char c)
+        static bool IsNamePart(char c)
         {
             return (c >= 'a' && c <= 'z') || (c >= '0' && c <= '9');
         }
+
         public string SeekParam(string param)
         {
             int len = param.Length;
-            int p = mark;
 
+            int pos = mark;
             for (;;)
             {
-                if (p >= count) return null;
-                char c = charbuf[p];
-                if (c == '=')
+                // seek for an eq
+                for (;;)
                 {
-                    int f = p - len; // first char position
-                    if (f < vstart || charbuf[f] != param[0] || (f > vstart && IsNameChar(charbuf[f - 1]))) continue;
+                    if (++pos >= count) return null;
+                    if (charbuf[pos] == '=') break;
+                }
 
-                    // match rest chars
-                    for (int i = 1; i < len; i++) {
-                        if (charbuf[f+i] != param[i]) {
+                int f = pos - len; // first char position
+                if (IsNamePart(charbuf[f - 1])) continue;
 
+                bool found = true;
+                for (int i = 0; i < len; i++)
+                {
+                    if (charbuf[f + i] != param[i])
+                    {
+                        found = false;
+                        break;
+                    }
+                }
+                if (!found) continue;
+
+                // get value after eq
+
+                int start = pos + 1;
+                bool quot = charbuf[start] == '"';
+                if (quot)
+                {
+                    int p = start;
+                    for (;;)
+                    {
+                        if (charbuf[p] == '"')
+                        {
+                            mark = p;
+                            return new string(charbuf, start, p - start);
                         }
-                    }
-
-                    break;
-                }
-            }
-
-            int start = mark;
-
-            bool quot = charbuf[p] == '"';
-            if (quot)
-            {
-                p = mark + 1;
-                for (;;)
-                {
-                    if (p >= charbuf.Length) throw ParseEx;
-                    char c = charbuf[p++];
-                    if (c == '\\') // quoted-pair
-                    {
-                        p++;
-                    }
-                    else if (c == '"')
-                    {
-                        mark = p;
-                    }
-                    else
-                    {
-                    }
-                }
-            }
-            else
-            {
-                p = start;
-                for (;;)
-                {
-                    if (p >= charbuf.Length)
-                    {
-                        mark = p;
-                    }
-                    char c = charbuf[p++];
-                    if (c == ',' || c == '/' || c == ':' || c == ';') // a delimiter
-                    {
-                        mark = p;
-                    }
-                    else
-                    {
                     }
                 }
             }
