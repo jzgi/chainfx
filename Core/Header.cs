@@ -7,22 +7,20 @@ namespace Greatbone.Core
     {
         static readonly ParseException ParseEx = new ParseException("error in header parsing");
 
-        // position
-        int pos;
+        // start index of the value field
+        int vstart;
 
-        // builder
-        readonly Str str;
+        // current settled position
+        int mark;
 
         public Header(int capacity = 256) : base(capacity)
         {
-            pos = 0;
-            str = new Str(64);
         }
 
         public override void Clear()
         {
-            pos = 0;
-            str.Clear();
+            vstart = 0;
+            mark = 0;
         }
 
         public bool CheckName(string hdrname)
@@ -39,32 +37,46 @@ namespace Greatbone.Core
                 }
             }
             if (charbuf[len] != ':') return false;
-            pos = len + 1;
+
+            vstart = mark = len + 1;
             return true;
         }
 
+        static bool IsNameChar(char c)
+        {
+            return (c >= 'a' && c <= 'z') || (c >= '0' && c <= '9');
+        }
         public string SeekParam(string param)
         {
-            str.Clear();
-
-            int p = pos;
+            int len = param.Length;
+            int p = mark;
 
             for (;;)
             {
                 if (p >= count) return null;
-                char c = charbuf[p++];
+                char c = charbuf[p];
                 if (c == '=')
                 {
+                    int f = p - len; // first char position
+                    if (f < vstart || charbuf[f] != param[0] || (f > vstart && IsNameChar(charbuf[f - 1]))) continue;
+
+                    // match rest chars
+                    for (int i = 1; i < len; i++) {
+                        if (charbuf[f+i] != param[i]) {
+
+                        }
+                    }
+
                     break;
                 }
             }
 
-            int start = pos;
+            int start = mark;
 
-            bool quot = charbuf[pos] == '"';
+            bool quot = charbuf[p] == '"';
             if (quot)
             {
-                p = pos + 1;
+                p = mark + 1;
                 for (;;)
                 {
                     if (p >= charbuf.Length) throw ParseEx;
@@ -72,16 +84,13 @@ namespace Greatbone.Core
                     if (c == '\\') // quoted-pair
                     {
                         p++;
-                        str.Add(charbuf[p]); // add the following char
                     }
                     else if (c == '"')
                     {
-                        pos = p;
-                        return str.ToString();
+                        mark = p;
                     }
                     else
                     {
-                        str.Add(c);
                     }
                 }
             }
@@ -92,18 +101,15 @@ namespace Greatbone.Core
                 {
                     if (p >= charbuf.Length)
                     {
-                        pos = p;
-                        return str.ToString();
+                        mark = p;
                     }
                     char c = charbuf[p++];
                     if (c == ',' || c == '/' || c == ':' || c == ';') // a delimiter
                     {
-                        pos = p;
-                        return str.ToString();
+                        mark = p;
                     }
                     else
                     {
-                        str.Add(c);
                     }
                 }
             }
