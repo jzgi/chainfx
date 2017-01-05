@@ -11,80 +11,88 @@ namespace Greatbone.Core
 
         static readonly ParseException ParseEx = new ParseException("multipart parse error");
 
-        readonly string bound;
+        readonly byte[] bound;
 
-        readonly byte[] bytebuf;
+        readonly byte[] buf;
 
         readonly int count;
 
-        // UTF-8 header builder
-        readonly Header hdr;
-
-        public FormMpParse(string boundary, byte[] bytebuf, int count)
+        public FormMpParse(string boundary, byte[] buf, int count)
         {
-            this.bound = "--" + boundary;
-            this.bytebuf = bytebuf;
+            // init byte array
+            int len = boundary.Length;
+            byte[] a = new byte[4 + len];
+            int i = 0;
+            a[i++] = (byte)'\r'; a[i++] = (byte)'\n'; a[i++] = (byte)'-'; a[i++] = (byte)'-';
+            for (int k = 0; k < len; k++, i++)
+            {
+                a[i] = (byte)boundary[k];
+            }
+            this.bound = a;
+
+            this.buf = buf;
             this.count = count;
-            this.hdr = new Header(256);
-            Context = null;
+            Event = null;
         }
+
+        public WebEventContext Event { get; internal set; }
 
         public Form Parse()
         {
             return Parse(null);
         }
 
-        public WebEventContext Context { get; set; }
-
-        public Form Parse(Action<WebEventContext> a)
+        public Form Parse(Action<WebEventContext> handler)
         {
-            byte[] buf = this.bytebuf;
+            // UTF-8 header builder
+            Header hdr = new Header(256);
 
-            if (count == 0) return Empty;
+            // keep local for speed
+            int boundlen = bound.Length;
 
-            Form frm = new Form(true);
+            // shall init lately
+            Form frm = null;
             int p = 0;
 
-            // first bound
+            // skip first bound line whatever
+            for (;;) { if (buf[p++] == '\r' && buf[p++] == '\n') break; }
 
-            // parts
+            // parse parts
             for (;;)
             {
                 string name = null;
-                string filename;
+                string filename = null;
+                string time;
                 string typ = null;
                 string length = null;
-
-                int partstart;
-                string value = null;
 
                 // parse headers
                 for (;;)
                 {
                     hdr.Clear();
 
-                    // parse a header
+                    // parse a header line
                     for (;;)
                     {
-                        if (p >= count - 1) throw ParseEx;
-
-                        int b = buf[++p];
-                        if (b == '\r' && buf[++p] == '\n') break;
-                        hdr.Accept(b);
+                        if (p >= count - 2) throw ParseEx;
+                        byte b;
+                        if ((b = buf[p++]) == '\r' && buf[p++] == '\n') break;
+                        hdr.Accept(b); // lineup the byte
                     }
 
                     if (name == null && hdr.NameIs("Content-Disposition"))
                     {
-                        // name, filename, time
-                        name = "";
+                        name = hdr.SeekParam("name");
+                        filename = hdr.SeekParam("filename");
+                        time = hdr.SeekParam("time");
                     }
                     else if (typ == null && hdr.NameIs("Content-Type"))
                     {
-                        typ = "";
+                        typ = hdr.GetVvalue();
                     }
                     else if (length == null && hdr.NameIs("Content-Length"))
                     {
-                        length = "";
+                        length = hdr.GetVvalue();
                     }
                     else if (hdr.Count == 0) // if empty line
                     {
@@ -92,22 +100,56 @@ namespace Greatbone.Core
                     }
                 }
 
-                // body and bound
-                if (length == null) // standard behavior
+                int start = p; // mark down content start
+                // get content of the part
+                if (length == null) // no Content-Length, parse till bound to get content
                 {
-                    frm.Add(name, value);
-                    frm.Add(name, "", null, 0);
+                    int idx = 0; // index on bound 
+                    for (;;)
+                    {
+                        byte b = buf[p++];
+                        if (b == bound[idx])
+                        {
+                            idx++;
+                            if (idx >= boundlen) // fully matched the bound accumulatively
+                            {
+                                if (frm == null) frm = new Form(true);
+                                frm.Add(name, filename, buf, start);
+                            }
+                        }
+                        else
+                        {
+                            idx = 0; // reset
+                        }
+                    }
                 }
-                else // directly
+                else if (Event != null && handler != null) // it is event context
                 {
                     int len;
                     if (int.TryParse(length, out len))
                     {
-                        a(Context);
+                        object cont = Contentize(typ, buf, start, p - 1);
+                        // handle the event context
+                        Event.Reset(234, name, "", DateTime.Now, cont);
+                        handler(Event);
                     }
-                    // bound
+                    // skip bound
+                    p += boundlen;
                 }
-            }
+
+                // check if any more part
+                if (buf[p++] == '\r' && buf[p++] == '\n')
+                {
+                    continue;
+                }
+                break;
+            } // parts
+            return frm;
+        }
+
+        object Contentize(string typ, byte[] buf, int offset, int count)
+        {
+            return null;
         }
     }
 }

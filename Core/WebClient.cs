@@ -199,7 +199,7 @@ namespace Greatbone.Core
             WebEventContext ec = new WebEventContext(this);
             FormMpParse p = new FormMpParse("", cont, cont.Length)
             {
-                Context = ec
+                Event = ec
             };
             p.Parse(x =>
             {

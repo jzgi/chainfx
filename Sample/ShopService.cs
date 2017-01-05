@@ -85,6 +85,13 @@ namespace Greatbone.Sample
             }
         }
 
+        public async void test(WebActionContext ac)
+        {
+            Form frm = await ac.AsFormAsync();
+            var shop = frm.ToObject<Shop>();
+            
+        }
+
         ///
         /// Get nearest shops
         ///

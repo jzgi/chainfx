@@ -42,6 +42,8 @@ namespace Greatbone.Core
             return true;
         }
 
+        public string GetVvalue() => new string(charbuf, vstart, 0);
+
         static bool IsNamePart(char c)
         {
             return (c >= 'a' && c <= 'z') || (c >= '0' && c <= '9');

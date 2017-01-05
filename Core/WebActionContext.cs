@@ -138,7 +138,7 @@ namespace Greatbone.Core
             long? clen = Request.ContentLength;
             if (clen <= 0) return null;
 
-            int len = (int) clen;
+            int len = (int)clen;
             byte[] bytebuf = BufferUtility.ByteBuffer(len); // borrow from the pool
             int count = await Request.Body.ReadAsync(bytebuf, 0, len);
 
@@ -152,7 +152,7 @@ namespace Greatbone.Core
             else if (ctyp.StartsWith("multipart/form-data"))
             {
                 int beq = ctyp.IndexOf("boundary=", 19, StringComparison.Ordinal);
-                string boundary = "--" + ctyp.Substring(beq + 9);
+                string boundary = ctyp.Substring(beq + 9);
                 FormMpParse p = new FormMpParse(boundary, bytebuf, count);
                 entity = p.Parse();
                 BufferUtility.Return(bytebuf); // return to the pool
@@ -267,7 +267,7 @@ namespace Greatbone.Core
 
         public void Reply(int status, bool? pub = null, int seconds = 5)
         {
-            Reply(status, (IContent) null, pub, seconds);
+            Reply(status, (IContent)null, pub, seconds);
         }
 
         public void Reply(int status, string str, bool? pub = null, int seconds = 30)
@@ -332,7 +332,7 @@ namespace Greatbone.Core
                 // cache indicators
                 if (Content is DynamicContent) // set etag
                 {
-                    ulong etag = ((DynamicContent) Content).ETag;
+                    ulong etag = ((DynamicContent)Content).ETag;
                     Header("ETag", StrUtility.ToHex(etag));
                 }
 
