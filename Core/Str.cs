@@ -7,7 +7,7 @@ namespace Greatbone.Core
     ///
     public class Str
     {
-        protected char[] charbuf;
+        protected char[] buf;
 
         // number of chars
         protected int count;
@@ -20,7 +20,7 @@ namespace Greatbone.Core
 
         public Str(int capacity = 256)
         {
-            charbuf = new char[capacity];
+            buf = new char[capacity];
             sum = 0;
             rest = 0;
         }
@@ -30,15 +30,15 @@ namespace Greatbone.Core
         public void Add(char c)
         {
             // ensure capacity
-            int len = charbuf.Length; // old length
+            int len = buf.Length; // old length
             if (count >= len)
             {
                 int newlen = len * 4; // new length
-                char[] buf = charbuf;
-                charbuf = new char[newlen];
-                Array.Copy(buf, 0, charbuf, 0, len);
+                char[] buf = this.buf;
+                this.buf = new char[newlen];
+                Array.Copy(buf, 0, this.buf, 0, len);
             }
-            charbuf[count++] = c;
+            buf[count++] = c;
         }
 
         // utf-8 decoding 
@@ -83,7 +83,7 @@ namespace Greatbone.Core
 
         public override string ToString()
         {
-            return new string(charbuf, 0, count);
+            return new string(buf, 0, count);
         }
     }
 }

@@ -155,7 +155,7 @@ namespace Greatbone.Core
                 string boundary = ctyp.Substring(beq + 9);
                 FormMpParse p = new FormMpParse(boundary, bytebuf, count);
                 entity = p.Parse();
-                BufferUtility.Return(bytebuf); // return to the pool
+                // NOTE: the form's backing buffer shall reutrn pool during Dispose()
             }
             else if (ctyp.StartsWith("application/json"))
             {

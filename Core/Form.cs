@@ -16,30 +16,28 @@ namespace Greatbone.Core
             this.mp = mp;
         }
 
-        public bool Data => mp;
+        public bool Mp => mp;
+
+        ///
+        /// The backing buffer.
+        ///
+        public byte[] Buffer { get; internal set; }
 
         public void Add(string name, string v)
         {
             Add(new Field(name, v));
         }
 
-        public void Add(string name, string filename, byte[] databuf, int count)
+        public void Add(string name, string filename, int offset, int count)
         {
-            Add(new Field(name, filename, databuf, count));
+            Add(new Field(name, filename, Buffer, offset, count));
         }
 
         public void Return()
         {
-            if (Data)
+            if (Buffer != null)
             {
-                for (int i = 0; i < Count; i++)
-                {
-                    byte[] buf = this[i].databuf;
-                    if (buf != null)
-                    {
-                        BufferUtility.Return(buf);
-                    }
-                }
+                BufferUtility.Return(Buffer);
             }
         }
 

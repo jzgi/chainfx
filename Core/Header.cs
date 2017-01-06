@@ -10,88 +10,96 @@ namespace Greatbone.Core
         // start index of the value field
         int vstart;
 
-        // current settled position
-        int mark;
-
         public Header(int capacity = 256) : base(capacity)
         {
         }
 
         public override void Clear()
         {
+            base.Clear();
             vstart = 0;
-            mark = 0;
         }
 
-        public bool NameIs(string hdrname)
+        /// Check if it is valid with the given header name.
+        ///
+        public bool Check(string hdrname)
         {
             int len = hdrname.Length;
 
-            if (count < len + 2) return false;
+            if (count < len + 2) return false; // name + :SP
 
             for (int i = 0; i < len; i++)
             {
-                if (charbuf[i] != hdrname[i])
+                if (buf[i] != hdrname[i])
                 {
                     return false;
                 }
             }
-            if (charbuf[len] != ':') return false;
+            if (buf[len] != ':') return false;
 
-            vstart = mark = len + 1;
+            // markdown the value start
+            int p = len + 1;
+            if (buf[p] == ' ') p++;
+            vstart = p;
+
             return true;
         }
 
-        public string GetVvalue() => new string(charbuf, vstart, 0);
+        public string GetVvalue() => new string(buf, vstart, count - vstart);
 
-        static bool IsNamePart(char c)
+        static bool IsEdge(char c)
         {
-            return (c >= 'a' && c <= 'z') || (c >= '0' && c <= '9');
+            return c == ' ' || c == ',' || c == ';';
         }
 
         public string SeekParam(string param)
         {
             int len = param.Length;
 
-            int pos = mark;
+            int p = vstart;
             for (;;)
             {
                 // seek for an eq
                 for (;;)
                 {
-                    if (++pos >= count) return null;
-                    if (charbuf[pos] == '=') break;
+                    if (p >= count) return null;
+                    if (buf[p] == '=') break;
+                    p++;
                 }
 
-                int f = pos - len; // first char position
-                if (IsNamePart(charbuf[f - 1])) continue;
-
-                bool found = true;
+                int eq = p;
+                int first = eq - len; // first char
+                bool match = true;
                 for (int i = 0; i < len; i++)
                 {
-                    if (charbuf[f + i] != param[i])
+                    if (buf[first + i] != param[i])
                     {
-                        found = false;
+                        match = false;
                         break;
                     }
                 }
-                if (!found) continue;
+                if (!match || !IsEdge(buf[first - 1]))
+                {
+                    p = eq + 2; // adjust position
+                    continue;
+                }
 
-                // get value after eq
-
-                int start = pos + 1;
-                bool quot = charbuf[start] == '"';
+                // get param-value after eq
+                int v0 = ++p;
+                bool quot = buf[p] == '"';
                 if (quot)
                 {
-                    int p = start;
                     for (;;)
                     {
-                        if (charbuf[p] == '"')
+                        if (buf[++p] == '"')
                         {
-                            mark = p;
-                            return new string(charbuf, start, p - start);
+                            return new string(buf, v0 + 1, p - v0 - 1);
                         }
                     }
+                }
+                else // parse till sep for non-quoted
+                {
+
                 }
             }
         }

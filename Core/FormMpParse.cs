@@ -46,6 +46,7 @@ namespace Greatbone.Core
         {
             // UTF-8 header builder
             Header hdr = new Header(256);
+            Str str = new Str(256);
 
             // keep local for speed
             int boundlen = bound.Length;
@@ -78,29 +79,30 @@ namespace Greatbone.Core
                         if ((b = buf[p++]) == '\r' && buf[p++] == '\n') break;
                         hdr.Accept(b); // lineup the byte
                     }
-
-                    if (name == null && hdr.NameIs("Content-Disposition"))
+                    if (hdr.Count == 0) // if empty line then quit header section
+                    {
+                        break;
+                    }
+                    else if (name == null && hdr.Check("Content-Disposition"))
                     {
                         name = hdr.SeekParam("name");
                         filename = hdr.SeekParam("filename");
                     }
-                    else if (typ == null && hdr.NameIs("Content-Type"))
+                    else if (typ == null && hdr.Check("Content-Type"))
                     {
                         typ = hdr.GetVvalue();
                     }
-                    else if (length == null && hdr.NameIs("Content-Length"))
+                    else if (length == null && hdr.Check("Content-Length"))
                     {
                         length = hdr.GetVvalue();
                     }
-                    else if (hdr.Count == 0) // if empty line
-                    {
-                        break;
-                    }
                 }
 
+                // get part's content
+                str.Clear();
+                bool plain = typ == null || "text/plain".Equals(typ);
                 int start = p; // mark down content start
-                // get content of the part
-                if (length == null) // no Content-Length, parse till bound to get content
+                if (EventContext == null) // parse till bound to get content
                 {
                     int idx = 0; // index on bound 
                     for (;;)
@@ -111,17 +113,33 @@ namespace Greatbone.Core
                             idx++;
                             if (idx >= boundlen) // fully matched the bound accumulatively
                             {
-                                if (frm == null) frm = new Form(true);
-                                frm.Add(name, filename, buf, start);
+                                if (frm == null) frm = new Form(true) { Buffer = buf };
+                                if (plain)
+                                    frm.Add(name, str.ToString());
+                                else
+                                    frm.Add(name, filename, start, p - start - boundlen);
+                                // goto the ending CRLF/-- check
+                                break;
                             }
+                        }
+                        else if (idx > 0) // if fail-match
+                        {
+                            if (plain) // re-add
+                            {
+                                for (int i = 0; i < idx; i++)
+                                {
+                                    str.Accept(bound[i]);
+                                }
+                            }
+                            idx = 0; // reset
                         }
                         else
                         {
-                            idx = 0; // reset
+                            if (plain) str.Accept(b);
                         }
                     }
                 }
-                else if (EventContext != null && handler != null) // it is event context
+                else // it is event context
                 {
                     int len;
                     if (int.TryParse(length, out len))
