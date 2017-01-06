@@ -5,8 +5,6 @@ namespace Greatbone.Core
     ///
     public class Header : Str
     {
-        static readonly ParseException ParseEx = new ParseException("error in header parsing");
-
         // start index of the value field
         int vstart;
 
