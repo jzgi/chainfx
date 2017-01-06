@@ -25,7 +25,7 @@ namespace Greatbone.Core
     public abstract class WebService : WebFolder, IHttpApplication<HttpContext>, ILoggerProvider, ILogger
     {
         // the service instance id
-        readonly string id;
+        readonly string moniker;
 
         // the embedded server
         readonly KestrelServer server;
@@ -48,7 +48,7 @@ namespace Greatbone.Core
             // adjust configuration
             cfg.Service = this;
 
-            id = (cfg.shard == null) ? cfg.name : cfg.name + "-" + cfg.shard;
+            moniker = (cfg.shard == null) ? cfg.name : cfg.name + "-" + cfg.shard;
 
             // setup logging 
             LoggerFactory factory = new LoggerFactory();
@@ -114,9 +114,9 @@ namespace Greatbone.Core
         }
 
         ///
-        /// The service instance id.
+        /// Uniquely identify a service instance.
         ///
-        public string Id => id;
+        public string Moniker => moniker;
 
         public Roll<WebEvent> Events => events;
 
@@ -263,8 +263,10 @@ namespace Greatbone.Core
 
             //            cleaner.Start();
 
-            // if (cluster != null)
-            //     scheduler.Start();
+            if (cluster != null)
+            {
+                scheduler.Start();
+            }
         }
 
         public DbContext NewDbContext()
@@ -341,11 +343,12 @@ namespace Greatbone.Core
         {
             while (!stop)
             {
+                Thread.Sleep(50);
+
                 for (int i = 0; i < Cluster.Count; i++)
                 {
-                    WebClient conn = Cluster[i];
-
-                    // schedule
+                    WebClient client = Cluster[i];
+                    client.Schedule();
                 }
             }
         }

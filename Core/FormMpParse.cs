@@ -1,5 +1,4 @@
 using System;
-using System.Diagnostics;
 
 namespace Greatbone.Core
 {
@@ -10,15 +9,15 @@ namespace Greatbone.Core
     {
         static readonly Form Empty = new Form(true);
 
-        static readonly ParseException ParseEx = new ParseException("multipart parse error");
+        static readonly ParseException ParseEx = new ParseException("multipart error");
 
         readonly byte[] bound;
 
-        readonly byte[] buf;
+        readonly byte[] buffer;
 
-        readonly int count;
+        readonly int length;
 
-        public FormMpParse(string boundary, byte[] buf, int count)
+        public FormMpParse(string boundary, byte[] buffer, int length)
         {
             // init byte array
             int len = boundary.Length;
@@ -34,8 +33,8 @@ namespace Greatbone.Core
             }
             this.bound = a;
 
-            this.buf = buf;
-            this.count = count;
+            this.buffer = buffer;
+            this.length = length;
             EventContext = null;
         }
 
@@ -48,6 +47,11 @@ namespace Greatbone.Core
 
         public Form Parse(Action<WebEventContext> handler)
         {
+            // locality
+            byte[] bound = this.bound;
+            byte[] buffer = this.buffer;
+            int length = this.length;
+
             // UTF-8 header builder
             Header hdr = new Header(128);
             Str str = new Str(128);
@@ -62,7 +66,7 @@ namespace Greatbone.Core
             // skip first bound line whatever
             for (;;)
             {
-                if (buf[p++] == '\r' && buf[p++] == '\n') break;
+                if (buffer[p++] == '\r' && buffer[p++] == '\n') break;
             }
 
             // parse parts
@@ -70,8 +74,8 @@ namespace Greatbone.Core
             {
                 string name = null;
                 string filename = null;
-                string typ = null;
-                string length = null;
+                string ctyp = null;
+                string clen = null;
 
                 // parse headers
                 for (;;)
@@ -81,9 +85,9 @@ namespace Greatbone.Core
                     // parse a header line
                     for (;;)
                     {
-                        if (p >= count - 2) throw ParseEx;
+                        if (p >= this.length - 2) throw ParseEx;
                         byte b;
-                        if ((b = buf[p++]) == '\r' && buf[p++] == '\n') break;
+                        if ((b = buffer[p++]) == '\r' && buffer[p++] == '\n') break;
                         hdr.Accept(b); // lineup the byte
                     }
                     if (hdr.Count == 0) // if empty line then quit header section
@@ -95,32 +99,32 @@ namespace Greatbone.Core
                         name = hdr.SeekParam("name");
                         filename = hdr.SeekParam("filename");
                     }
-                    else if (typ == null && hdr.Check("Content-Type"))
+                    else if (ctyp == null && hdr.Check("Content-Type"))
                     {
-                        typ = hdr.GetVvalue();
+                        ctyp = hdr.GetVvalue();
                     }
-                    else if (length == null && hdr.Check("Content-Length"))
+                    else if (clen == null && hdr.Check("Content-Length"))
                     {
-                        length = hdr.GetVvalue();
+                        clen = hdr.GetVvalue();
                     }
                 }
 
                 // get part's content
                 str.Clear();
-                bool plain = typ == null || "text/plain".Equals(typ);
+                bool plain = ctyp == null || "text/plain".Equals(ctyp);
                 int start = p; // mark down content start
                 if (EventContext == null) // parse till bound to get content
                 {
                     int idx = 0; // index on bound 
                     for (;;)
                     {
-                        byte b = buf[p++];
+                        byte b = buffer[p++];
                         if (b == bound[idx])
                         {
                             idx++;
                             if (idx >= boundlen) // fully matched the bound accumulatively
                             {
-                                if (frm == null) frm = new Form(true) { Buffer = buf };
+                                if (frm == null) frm = new Form(true) { Buffer = buffer };
                                 if (plain)
                                     frm.Add(name, str.ToString());
                                 else
@@ -149,9 +153,9 @@ namespace Greatbone.Core
                 else // it is event context
                 {
                     int len;
-                    if (int.TryParse(length, out len))
+                    if (int.TryParse(clen, out len))
                     {
-                        object cont = Contentize(typ, buf, start, len);
+                        object cont = Contentize(ctyp, buffer, start, len);
                         // handle the event context
                         EventContext.Reset(234, name, cont);
                         handler(EventContext);
@@ -161,7 +165,7 @@ namespace Greatbone.Core
                 }
 
                 // check if any more part
-                if (buf[p++] == '\r' && buf[p++] == '\n')
+                if (buffer[p++] == '\r' && buffer[p++] == '\n')
                 {
                     continue;
                 }

@@ -7,22 +7,22 @@ namespace Greatbone.Core
     {
         static readonly Form Empty = new Form(false);
 
-        static readonly ParseException ParseEx = new ParseException("form");
+        static readonly ParseException ParseEx = new ParseException("error parsing form");
 
         readonly byte[] bytebuf;
 
         readonly string strbuf;
 
-        readonly int count;
+        readonly int length;
 
         // UTF-8 string builder
         readonly Str str;
 
-        public FormParse(byte[] bytebuf, int count)
+        public FormParse(byte[] bytebuf, int length)
         {
             this.bytebuf = bytebuf;
             this.strbuf = null;
-            this.count = count;
+            this.length = length;
             this.str = new Str(256);
         }
 
@@ -30,7 +30,7 @@ namespace Greatbone.Core
         {
             this.bytebuf = null;
             this.strbuf = strbuf;
-            this.count = strbuf?.Length ?? 0;
+            this.length = strbuf?.Length ?? 0;
             this.str = new Str(256);
         }
 
@@ -38,16 +38,16 @@ namespace Greatbone.Core
 
         public Form Parse()
         {
-            if (count == 0) return Empty;
+            if (length == 0) return Empty;
 
             int p = (this[0] == '?') ? 1 : 0;
 
-            if (p >= count - 1) return Empty;
+            if (p >= length - 1) return Empty;
 
             Form frm = new Form(false);
             for (;;)
             {
-                if (p >= count) return frm;
+                if (p >= length) return frm;
 
                 // name value
                 string name = ParseName(ref p);
@@ -63,7 +63,7 @@ namespace Greatbone.Core
             for (;;)
             {
                 int b = this[p++];
-                if (p >= count)
+                if (p >= length)
                 {
                     return null;
                 }
@@ -85,7 +85,7 @@ namespace Greatbone.Core
             int p = pos;
             for (;;)
             {
-                if (p >= count)
+                if (p >= length)
                 {
                     pos = p;
                     return str.ToString();
@@ -102,9 +102,9 @@ namespace Greatbone.Core
                 }
                 else if (b == '%') // percent-encoding %xy
                 {
-                    if (p >= count) throw ParseEx;
+                    if (p >= length) throw ParseEx;
                     int x = this[p++];
-                    if (p >= count) throw ParseEx;
+                    if (p >= length) throw ParseEx;
                     int y = this[p++];
 
                     str.Accept(Dv(x) << 4 | Dv(y));

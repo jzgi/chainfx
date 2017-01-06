@@ -140,58 +140,42 @@ namespace Greatbone.Core
             if (clen <= 0) return null;
 
             int len = (int)clen;
-            byte[] bytebuf = BufferUtility.ByteBuffer(len); // borrow from the pool
+            byte[] buf = BufferUtility.ByteBuffer(len); // borrow from the pool
+            int count = len;
             int offset = 0;
-            for (;;)
+            int num;
+            while ((num = await Request.Body.ReadAsync(buf, offset, count)) < count)
             {
-                int num;
-                int count = len - offset;
-                if ((num = await Request.Body.ReadAsync(bytebuf, offset, count)) < count)
-                {
-                    offset += num;
-                    continue;
-                }
-                break;
+                offset += num;
+                count -= num;
             }
 
             string ctyp = Request.ContentType;
             if ("application/x-www-form-urlencoded".Equals(ctyp))
             {
-                FormParse p = new FormParse(bytebuf, len);
-                entity = p.Parse();
-                BufferUtility.Return(bytebuf); // return to the pool
+                entity = new FormParse(buf, len).Parse();
+                BufferUtility.Return(buf); // return to the pool
             }
             else if (ctyp.StartsWith("multipart/form-data"))
             {
-                int beq = ctyp.IndexOf("boundary=", 19, StringComparison.Ordinal);
-                string boundary = ctyp.Substring(beq + 9);
-                FormMpParse p = new FormMpParse(boundary, bytebuf, len);
-                try
-                {
-                    entity = p.Parse();
-                }
-                catch (Exception e)
-                {
-                    Debug.WriteLine(e);
-                    Console.WriteLine(e.ToString());
-                }
+                int bdy = ctyp.IndexOf("boundary=", 19, StringComparison.Ordinal);
+                string boundary = ctyp.Substring(bdy + 9);
+                entity = new FormMpParse(boundary, buf, len).Parse();
                 // NOTE: the form's backing buffer shall reutrn pool during Dispose()
             }
             else if (ctyp.StartsWith("application/json"))
             {
-                JsonParse p = new JsonParse(bytebuf, len);
-                entity = p.Parse();
-                BufferUtility.Return(bytebuf); // return to the pool
+                entity = new JsonParse(buf, len).Parse();
+                BufferUtility.Return(buf); // return to the pool
             }
             else if (ctyp.StartsWith("application/xml"))
             {
-                XmlParse p = new XmlParse(bytebuf, len);
-                entity = p.Parse();
-                BufferUtility.Return(bytebuf); // return to the pool
+                entity = new XmlParse(buf, len).Parse();
+                BufferUtility.Return(buf); // return to the pool
             }
             else
             {
-                entity = new ArraySegment<byte>(bytebuf, 0, len);
+                entity = new ArraySegment<byte>(buf, 0, len);
             }
             return entity;
         }
