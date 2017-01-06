@@ -205,7 +205,7 @@ namespace Greatbone.Core
             throw new NotImplementedException();
         }
 
-        public XmlContent Put<D>(string name, D v, byte bits = 0) where D : IData
+        public XmlContent Put<D>(string name, D v, byte flags = 0) where D : IData
         {
             throw new NotImplementedException();
         }
@@ -288,7 +288,7 @@ namespace Greatbone.Core
             return this;
         }
 
-        public XmlContent Put<D>(string name, D[] v, byte bits = 0) where D : IData
+        public XmlContent Put<D>(string name, D[] v, byte flags = 0) where D : IData
         {
             throw new NotImplementedException();
         }

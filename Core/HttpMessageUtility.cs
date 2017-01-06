@@ -65,20 +65,20 @@ namespace Greatbone.Core
             return (XElem)p.Parse();
         }
 
-        public static async Task<D> GetObjectAsync<D>(this HttpResponseMessage msg, byte bits = 0) where D : IData, new()
+        public static async Task<D> GetObjectAsync<D>(this HttpResponseMessage msg, byte flags = 0) where D : IData, new()
         {
             byte[] bytes = await msg.Content.ReadAsByteArrayAsync();
             JsonParse p = new JsonParse(bytes, bytes.Length);
             JObj jobj = (JObj)p.Parse();
-            return jobj.ToObject<D>(bits);
+            return jobj.ToObject<D>(flags);
         }
 
-        public static async Task<D[]> GetArrayAsync<D>(this HttpResponseMessage msg, byte bits = 0) where D : IData, new()
+        public static async Task<D[]> GetArrayAsync<D>(this HttpResponseMessage msg, byte flags = 0) where D : IData, new()
         {
             byte[] bytes = await msg.Content.ReadAsByteArrayAsync();
             JsonParse p = new JsonParse(bytes, bytes.Length);
             JArr jarr = (JArr)p.Parse();
-            return jarr.ToArray<D>(bits);
+            return jarr.ToArray<D>(flags);
         }
 
         public static async Task<byte[]> GetBytesSegAsync(this HttpResponseMessage msg)

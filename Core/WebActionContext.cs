@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Threading.Tasks;
+using System.Diagnostics;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Http.Features;
 using Microsoft.Extensions.Primitives;
@@ -140,12 +141,23 @@ namespace Greatbone.Core
 
             int len = (int)clen;
             byte[] bytebuf = BufferUtility.ByteBuffer(len); // borrow from the pool
-            int count = await Request.Body.ReadAsync(bytebuf, 0, len);
+            int offset = 0;
+            for (;;)
+            {
+                int num;
+                int count = len - offset;
+                if ((num = await Request.Body.ReadAsync(bytebuf, offset, count)) < count)
+                {
+                    offset += num;
+                    continue;
+                }
+                break;
+            }
 
             string ctyp = Request.ContentType;
             if ("application/x-www-form-urlencoded".Equals(ctyp))
             {
-                FormParse p = new FormParse(bytebuf, count);
+                FormParse p = new FormParse(bytebuf, len);
                 entity = p.Parse();
                 BufferUtility.Return(bytebuf); // return to the pool
             }
@@ -153,25 +165,33 @@ namespace Greatbone.Core
             {
                 int beq = ctyp.IndexOf("boundary=", 19, StringComparison.Ordinal);
                 string boundary = ctyp.Substring(beq + 9);
-                FormMpParse p = new FormMpParse(boundary, bytebuf, count);
-                entity = p.Parse();
+                FormMpParse p = new FormMpParse(boundary, bytebuf, len);
+                try
+                {
+                    entity = p.Parse();
+                }
+                catch (Exception e)
+                {
+                    Debug.WriteLine(e);
+                    Console.WriteLine(e.ToString());
+                }
                 // NOTE: the form's backing buffer shall reutrn pool during Dispose()
             }
             else if (ctyp.StartsWith("application/json"))
             {
-                JsonParse p = new JsonParse(bytebuf, count);
+                JsonParse p = new JsonParse(bytebuf, len);
                 entity = p.Parse();
                 BufferUtility.Return(bytebuf); // return to the pool
             }
             else if (ctyp.StartsWith("application/xml"))
             {
-                XmlParse p = new XmlParse(bytebuf, count);
+                XmlParse p = new XmlParse(bytebuf, len);
                 entity = p.Parse();
                 BufferUtility.Return(bytebuf); // return to the pool
             }
             else
             {
-                entity = new ArraySegment<byte>(bytebuf, 0, count);
+                entity = new ArraySegment<byte>(bytebuf, 0, len);
             }
             return entity;
         }
@@ -201,20 +221,20 @@ namespace Greatbone.Core
             return (entity = await ReadAsync()) as JArr;
         }
 
-        public async Task<D> AsObjectAsync<D>(byte bits = 0) where D : IData, new()
+        public async Task<D> AsObjectAsync<D>(byte flags = 0) where D : IData, new()
         {
             ISource src = (entity = await ReadAsync()) as ISource;
             if (src == null)
             {
                 return default(D);
             }
-            return src.ToObject<D>(bits);
+            return src.ToObject<D>(flags);
         }
 
-        public async Task<D[]> AsArrayAsync<D>(byte bits = 0) where D : IData, new()
+        public async Task<D[]> AsArrayAsync<D>(byte flags = 0) where D : IData, new()
         {
             JArr jarr = (entity = await ReadAsync()) as JArr;
-            return jarr?.ToArray<D>(bits);
+            return jarr?.ToArray<D>(flags);
         }
 
         public async Task<XElem> AsXElemAsync()
@@ -278,17 +298,17 @@ namespace Greatbone.Core
             Reply(status, cont, pub, seconds);
         }
 
-        public void Reply(int status, IData obj, byte bits = 0, bool? pub = null, int seconds = 30)
+        public void Reply(int status, IData obj, byte flags = 0, bool? pub = null, int seconds = 30)
         {
             JsonContent cont = new JsonContent(true, true, 4 * 1024);
-            cont.Put(null, obj, bits);
+            cont.Put(null, obj, flags);
             Reply(status, cont, pub, seconds);
         }
 
-        public void Reply<D>(int status, D[] arr, byte bits = 0, bool? pub = null, int seconds = 30) where D : IData
+        public void Reply<D>(int status, D[] arr, byte flags = 0, bool? pub = null, int seconds = 30) where D : IData
         {
             JsonContent cont = new JsonContent(true, true, 4 * 1024);
-            cont.Put(null, arr, bits);
+            cont.Put(null, arr, flags);
             Reply(status, cont, pub, seconds);
         }
 

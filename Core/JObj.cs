@@ -173,7 +173,7 @@ namespace Greatbone.Core
             return false;
         }
 
-        public bool Get(string name, ref ArraySegment<byte>? v)
+        public bool Get(string name, ref ArraySegment<byte> v)
         {
             JMem pair;
             if (TryGet(name, out pair))
@@ -185,7 +185,7 @@ namespace Greatbone.Core
             return false;
         }
 
-        public bool Get<D>(string name, ref D v, byte bits = 0) where D : IData, new()
+        public bool Get<D>(string name, ref D v, byte flags = 0) where D : IData, new()
         {
             JMem pair;
             if (TryGet(name, out pair))
@@ -299,7 +299,7 @@ namespace Greatbone.Core
             return false;
         }
 
-        public bool Get<D>(string name, ref D[] v, byte bits = 0) where D : IData, new()
+        public bool Get<D>(string name, ref D[] v, byte flags = 0) where D : IData, new()
         {
             JMem pair;
             if (TryGet(name, out pair))

@@ -1,5 +1,5 @@
 ﻿using Greatbone.Core;
-using static Greatbone.Core.BitsUtility;
+using static Greatbone.Core.FlagsUtility;
 
 namespace Greatbone.Sample
 {
@@ -18,22 +18,22 @@ namespace Greatbone.Sample
         internal string tel;
         internal int sold;
 
-        public void Load(ISource s, byte bits = 0)
+        public void Load(ISource s, byte flags = 0)
         {
             s.Get(nameof(item), ref item);
             s.Get(nameof(shopid), ref shopid);
-            if (bits.Has(BINARY)) s.Get(nameof(icon), ref icon);
+            if (flags.Has(BINARY)) s.Get(nameof(icon), ref icon);
             s.Get(nameof(price), ref price);
             s.Get(nameof(remark), ref remark);
             s.Get(nameof(tel), ref tel);
             s.Get(nameof(sold), ref sold);
         }
 
-        public void Dump<R>(ISink<R> s, byte bits = 0) where R : ISink<R>
+        public void Dump<R>(ISink<R> s, byte flags = 0) where R : ISink<R>
         {
             s.Put(nameof(item), item);
             s.Put(nameof(shopid), shopid);
-            if (bits.Has(BINARY)) s.Put(nameof(icon), icon);
+            if (flags.Has(BINARY)) s.Put(nameof(icon), icon);
             s.Put(nameof(price), price);
             s.Put(nameof(tel), tel);
             s.Put(nameof(sold), sold);

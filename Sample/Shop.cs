@@ -1,7 +1,7 @@
 ﻿using System;
 using Greatbone.Core;
 using NpgsqlTypes;
-using static Greatbone.Core.BitsUtility;
+using static Greatbone.Core.FlagsUtility;
 
 namespace Greatbone.Sample
 {
@@ -27,11 +27,11 @@ namespace Greatbone.Sample
 
         public string Credential => credential;
 
-        public void Load(ISource src, byte bits = 0)
+        public void Load(ISource src, byte flags = 0)
         {
             src.Get(nameof(id), ref id);
             src.Get(nameof(name), ref name);
-            if (bits.Has(KEPT))
+            if (flags.Has(KEPT))
                 src.Get(nameof(credential), ref credential);
             src.Get(nameof(tel), ref tel);
             src.Get(nameof(loc), ref loc);
@@ -40,11 +40,11 @@ namespace Greatbone.Sample
             src.Get(nameof(status), ref status);
         }
 
-        public void Dump<R>(ISink<R> snk, byte bits = 0) where R : ISink<R>
+        public void Dump<R>(ISink<R> snk, byte flags = 0) where R : ISink<R>
         {
             snk.Put(nameof(id), id);
             snk.Put(nameof(name), name);
-            if (bits.Has(KEPT))
+            if (flags.Has(KEPT))
                 snk.Put(nameof(credential), credential);
             snk.Put(nameof(tel), tel);
             snk.Put(nameof(loc), loc);

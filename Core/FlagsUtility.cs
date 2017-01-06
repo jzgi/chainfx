@@ -3,7 +3,7 @@
     ///
     /// The bits-flags that filter what to load or dump in persistance operations.
     ///
-    public static class BitsUtility
+    public static class FlagsUtility
     {
         public const byte
 
@@ -23,14 +23,14 @@
             KEPT = 0x04;
 
 
-        public static bool Has(this byte bits, byte v)
+        public static bool Has(this byte flags, byte v)
         {
-            return (bits & v) == v;
+            return (flags & v) == v;
         }
 
-        public static bool No(this byte bits, byte v)
+        public static bool No(this byte flags, byte v)
         {
-            return (bits & v) != v;
+            return (flags & v) != v;
         }
     }
 }

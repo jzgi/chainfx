@@ -113,7 +113,13 @@ namespace Greatbone.Core
 
         public bool Get(string name, ref DateTime v)
         {
-            throw new NotImplementedException();
+            Field fld;
+            if (TryGet(name, out fld))
+            {
+                v = fld;
+                return true;
+            }
+            return false;
         }
 
         public bool Get(string name, ref NpgsqlPoint v)
@@ -154,7 +160,7 @@ namespace Greatbone.Core
             return false;
         }
 
-        public bool Get(string name, ref ArraySegment<byte>? v)
+        public bool Get(string name, ref ArraySegment<byte> v)
         {
             Field fld;
             if (TryGet(name, out fld))
@@ -241,12 +247,12 @@ namespace Greatbone.Core
             return false;
         }
 
-        public bool Get<D>(string name, ref D[] v, byte bits = 0) where D : IData, new()
+        public bool Get<D>(string name, ref D[] v, byte flags = 0) where D : IData, new()
         {
             throw new NotImplementedException();
         }
 
-        public bool Get<D>(string name, ref D v, byte bits = 0) where D : IData, new()
+        public bool Get<D>(string name, ref D v, byte flags = 0) where D : IData, new()
         {
             throw new NotImplementedException();
         }

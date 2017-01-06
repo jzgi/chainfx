@@ -25,14 +25,14 @@ namespace Greatbone.Sample
             // msgs.Add(new Message());
         }
 
-        public void Load(ISource src, byte bits = 0)
+        public void Load(ISource src, byte flags = 0)
         {
             src.Get(nameof(userid), ref userid);
             src.Get(nameof(status), ref status);
             src.Get(nameof(msgs), ref msgs);
         }
 
-        public void Dump<R>(ISink<R> snk, byte bits = 0) where R : ISink<R>
+        public void Dump<R>(ISink<R> snk, byte flags = 0) where R : ISink<R>
         {
             snk.Put(nameof(userid), userid);
             snk.Put(nameof(status), status);

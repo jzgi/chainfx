@@ -97,7 +97,6 @@ namespace Greatbone.Core
                 }
                 else // parse till sep for non-quoted
                 {
-
                 }
             }
         }

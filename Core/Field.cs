@@ -13,27 +13,29 @@ namespace Greatbone.Core
         // actual items in the value
         int items;
 
-        internal readonly byte[] databuf;
+        internal readonly byte[] contentbuf;
 
-        readonly int offset; readonly int count;
+        readonly int offset;
+
+        readonly int count;
 
         internal Field(string name, string v)
         {
             this.name = name;
             value = v;
             items = 1;
-            this.databuf = null;
+            this.contentbuf = null;
             offset = 0;
             count = 0;
             Err = null;
         }
 
-        internal Field(string name, string filename, byte[] databuf, int offset, int count)
+        internal Field(string name, string filename, byte[] contentbuf, int offset, int count)
         {
             this.name = name;
             value = filename;
             items = 1;
-            this.databuf = databuf;
+            this.contentbuf = contentbuf;
             this.offset = offset;
             this.count = count;
             Err = null;
@@ -156,6 +158,12 @@ namespace Greatbone.Core
 
         public static implicit operator DateTime(Field v)
         {
+            string str = v.First;
+            DateTime dt;
+            if (StrUtility.TryParseDate(str, out dt))
+            {
+                return dt;
+            }
             return default(DateTime);
         }
 
@@ -177,7 +185,7 @@ namespace Greatbone.Core
 
         public static implicit operator byte[] (Field v)
         {
-            byte[] buf = v.databuf;
+            byte[] buf = v.contentbuf;
             if (buf != null)
             {
                 if (v.count == buf.Length)
@@ -190,7 +198,8 @@ namespace Greatbone.Core
 
         public static implicit operator ArraySegment<byte>(Field v)
         {
-            return new ArraySegment<byte>(v.databuf, 0, v.count);
+            if (v.count == 0) return default(ArraySegment<byte>);
+            return new ArraySegment<byte>(v.contentbuf, v.offset, v.count);
         }
 
         public static implicit operator short[] (Field v)

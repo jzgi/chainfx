@@ -18,18 +18,18 @@ namespace Greatbone.Core
             return (JObj)p.Parse();
         }
 
-        public static D StringToObject<D>(string v, byte bits = 0) where D : IData, new()
+        public static D StringToObject<D>(string v, byte flags = 0) where D : IData, new()
         {
             JsonParse p = new JsonParse(v);
             JObj jobj = (JObj)p.Parse();
-            return jobj.ToObject<D>(bits);
+            return jobj.ToObject<D>(flags);
         }
 
-        public static D[] StringToArray<D>(string v, byte bits = 0) where D : IData, new()
+        public static D[] StringToArray<D>(string v, byte flags = 0) where D : IData, new()
         {
             JsonParse p = new JsonParse(v);
             JArr jarr = (JArr)p.Parse();
-            return jarr.ToArray<D>(bits);
+            return jarr.ToArray<D>(flags);
         }
 
         public static string JArrToString(JArr v)
@@ -50,7 +50,7 @@ namespace Greatbone.Core
             return str;
         }
 
-        public static string ObjectToString<D>(D v, byte bits = 0) where D : IData
+        public static string ObjectToString<D>(D v, byte flags = 0) where D : IData
         {
             JsonContent cont = new JsonContent(false, true, 4 * 1024);
             cont.Put(null, v);
@@ -59,7 +59,7 @@ namespace Greatbone.Core
             return str;
         }
 
-        public static string ArrayToString<D>(D[] v, byte bits = 0) where D : IData
+        public static string ArrayToString<D>(D[] v, byte flags = 0) where D : IData
         {
             JsonContent cont = new JsonContent(false, true, 4 * 1024);
             cont.Put(null, v);

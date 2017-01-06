@@ -315,7 +315,7 @@ namespace Greatbone.Core
             return this; // ignore ir
         }
 
-        public JsonContent Put<D>(string name, D v, byte bits = 0) where D : IData
+        public JsonContent Put<D>(string name, D v, byte flags = 0) where D : IData
         {
             if (counts[level]++ > 0) Add(',');
             if (name != null)
@@ -342,7 +342,7 @@ namespace Greatbone.Core
                     Put("#", shard);
                 }
 
-                v.Dump(this, bits);
+                v.Dump(this, flags);
                 Add('}');
                 level--; // exit
             }
@@ -529,7 +529,7 @@ namespace Greatbone.Core
         }
 
 
-        public JsonContent Put<D>(string name, D[] v, byte bits = 0) where D : IData
+        public JsonContent Put<D>(string name, D[] v, byte flags = 0) where D : IData
         {
             if (counts[level]++ > 0) Add(',');
 
@@ -551,7 +551,7 @@ namespace Greatbone.Core
                 Add('[');
                 for (int i = 0; i < v.Length; i++)
                 {
-                    Put(null, v[i], bits);
+                    Put(null, v[i], flags);
                 }
                 Add(']');
                 level--; // exit

@@ -52,20 +52,20 @@ namespace Greatbone.Core
             return entity as JArr;
         }
 
-        public D AsObject<D>(byte bits = 0) where D : IData, new()
+        public D AsObject<D>(byte flags = 0) where D : IData, new()
         {
             ISource src = entity as ISource;
             if (src == null)
             {
                 return default(D);
             }
-            return src.ToObject<D>(bits);
+            return src.ToObject<D>(flags);
         }
 
-        public D[] AsArray<D>(byte bits = 0) where D : IData, new()
+        public D[] AsArray<D>(byte flags = 0) where D : IData, new()
         {
             JArr jarr = entity as JArr;
-            return jarr?.ToArray<D>(bits);
+            return jarr?.ToArray<D>(flags);
         }
 
         public XElem AsXElem()

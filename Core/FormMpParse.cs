@@ -1,4 +1,5 @@
 using System;
+using System.Diagnostics;
 
 namespace Greatbone.Core
 {
@@ -23,7 +24,10 @@ namespace Greatbone.Core
             int len = boundary.Length;
             byte[] a = new byte[4 + len];
             int i = 0;
-            a[i++] = (byte)'\r'; a[i++] = (byte)'\n'; a[i++] = (byte)'-'; a[i++] = (byte)'-';
+            a[i++] = (byte)'\r';
+            a[i++] = (byte)'\n';
+            a[i++] = (byte)'-';
+            a[i++] = (byte)'-';
             for (int k = 0; k < len; k++, i++)
             {
                 a[i] = (byte)boundary[k];
@@ -45,8 +49,8 @@ namespace Greatbone.Core
         public Form Parse(Action<WebEventContext> handler)
         {
             // UTF-8 header builder
-            Header hdr = new Header(256);
-            Str str = new Str(256);
+            Header hdr = new Header(128);
+            Str str = new Str(128);
 
             // keep local for speed
             int boundlen = bound.Length;
@@ -56,7 +60,10 @@ namespace Greatbone.Core
             int p = 0;
 
             // skip first bound line whatever
-            for (;;) { if (buf[p++] == '\r' && buf[p++] == '\n') break; }
+            for (;;)
+            {
+                if (buf[p++] == '\r' && buf[p++] == '\n') break;
+            }
 
             // parse parts
             for (;;)
@@ -83,7 +90,7 @@ namespace Greatbone.Core
                     {
                         break;
                     }
-                    else if (name == null && hdr.Check("Content-Disposition"))
+                    if (name == null && hdr.Check("Content-Disposition"))
                     {
                         name = hdr.SeekParam("name");
                         filename = hdr.SeekParam("filename");
@@ -160,7 +167,7 @@ namespace Greatbone.Core
                 }
                 break;
             } // parts
-            return frm;
+            return frm ?? Empty;
         }
 
         object Contentize(string typ, byte[] buf, int offset, int count)

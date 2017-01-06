@@ -222,10 +222,10 @@ namespace Greatbone.Core
         // RESULTSET
         //
 
-        public D ToObject<D>(byte bits = 0) where D : IData, new()
+        public D ToObject<D>(byte flags = 0) where D : IData, new()
         {
             D dat = new D();
-            dat.Load(this, bits);
+            dat.Load(this, flags);
 
             // add shard if any
             IShardable shardable = dat as IShardable;
@@ -396,7 +396,7 @@ namespace Greatbone.Core
             return false;
         }
 
-        public bool Get(string name, ref ArraySegment<byte>? v)
+        public bool Get(string name, ref ArraySegment<byte> v)
         {
             int ord = name == null ? ordinal++ : reader.GetOrdinal(name);
             try
@@ -420,7 +420,7 @@ namespace Greatbone.Core
             return false;
         }
 
-        public bool Get<D>(string name, ref D v, byte bits = 0) where D : IData, new()
+        public bool Get<D>(string name, ref D v, byte flags = 0) where D : IData, new()
         {
             int ord = name == null ? ordinal++ : reader.GetOrdinal(name);
             if (!reader.IsDBNull(ord))
@@ -429,7 +429,7 @@ namespace Greatbone.Core
                 JsonParse p = new JsonParse(str);
                 JObj jobj = (JObj) p.Parse();
                 v = new D();
-                v.Load(jobj, bits);
+                v.Load(jobj, flags);
 
                 // add shard if any
                 IShardable shardable = v as IShardable;
@@ -512,7 +512,7 @@ namespace Greatbone.Core
             return false;
         }
 
-        public bool Get<D>(string name, ref D[] v, byte bits = 0) where D : IData, new()
+        public bool Get<D>(string name, ref D[] v, byte flags = 0) where D : IData, new()
         {
             int ord = name == null ? ordinal++ : reader.GetOrdinal(name);
             if (!reader.IsDBNull(ord))
@@ -526,7 +526,7 @@ namespace Greatbone.Core
                 {
                     JObj jobj = jarr[i];
                     D dat = new D();
-                    dat.Load(jobj, bits);
+                    dat.Load(jobj, flags);
 
                     // add shard if any
                     IShardable shardable = dat as IShardable;

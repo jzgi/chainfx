@@ -30,7 +30,7 @@ namespace Greatbone.Sample
 
         internal int status;
 
-        public void Load(ISource src, byte bits = 0)
+        public void Load(ISource src, byte flags = 0)
         {
             src.Get(nameof(id), ref id);
             src.Get(nameof(shopid), ref shopid);
@@ -41,7 +41,7 @@ namespace Greatbone.Sample
             src.Get(nameof(status), ref status);
         }
 
-        public void Dump<R>(ISink<R> snk, byte bits = 0) where R : ISink<R>
+        public void Dump<R>(ISink<R> snk, byte flags = 0) where R : ISink<R>
         {
             snk.Put(nameof(id), id);
             snk.Put(nameof(shopid), shopid);

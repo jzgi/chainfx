@@ -16,7 +16,7 @@
         // whether to create event-queue tables/indexes
         public bool eq;
 
-        public void Load(ISource src, byte bits = 0)
+        public void Load(ISource src, byte flags = 0)
         {
             src.Get(nameof(host), ref host);
             src.Get(nameof(port), ref port);
@@ -25,7 +25,7 @@
             src.Get(nameof(eq), ref eq);
         }
 
-        public void Dump<R>(ISink<R> snk, byte bits = 0) where R : ISink<R>
+        public void Dump<R>(ISink<R> snk, byte flags = 0) where R : ISink<R>
         {
             snk.Put(nameof(host), host);
             snk.Put(nameof(port), port);

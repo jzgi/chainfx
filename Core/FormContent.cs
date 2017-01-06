@@ -263,7 +263,7 @@ namespace Greatbone.Core
             return this; // ignore ir
         }
 
-        public FormContent Put<D>(string name, D v, byte bits = 0) where D : IData
+        public FormContent Put<D>(string name, D v, byte flags = 0) where D : IData
         {
             if (name != null)
             {
@@ -280,7 +280,7 @@ namespace Greatbone.Core
             else
             {
                 Add('{');
-                v.Dump(this, bits);
+                v.Dump(this, flags);
                 Add('}');
             }
 
@@ -457,7 +457,7 @@ namespace Greatbone.Core
         }
 
 
-        public FormContent Put<D>(string name, D[] v, byte bits = 0) where D : IData
+        public FormContent Put<D>(string name, D[] v, byte flags = 0) where D : IData
         {
             if (name != null)
             {
@@ -476,7 +476,7 @@ namespace Greatbone.Core
                 Add('[');
                 for (int i = 0; i < v.Length; i++)
                 {
-                    Put(null, v[i], bits);
+                    Put(null, v[i], flags);
                 }
                 Add(']');
             }

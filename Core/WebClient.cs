@@ -80,7 +80,7 @@ namespace Greatbone.Core
             return await resp.GetJArrAsync();
         }
 
-        public async Task<D> GetObjectAync<D>(ICaller ctx, string uri, byte bits = 0) where D : IData, new()
+        public async Task<D> GetObjectAync<D>(ICaller ctx, string uri, byte flags = 0) where D : IData, new()
         {
             HttpRequestMessage req = new HttpRequestMessage(HttpMethod.Get, uri);
             if (ctx.Cookied)
@@ -92,10 +92,10 @@ namespace Greatbone.Core
                 req.Headers.Add("Authorization", "Bearer " + ctx.TokenStr);
             }
             HttpResponseMessage resp = await SendAsync(req, HttpCompletionOption.ResponseContentRead);
-            return await resp.GetObjectAsync<D>(bits);
+            return await resp.GetObjectAsync<D>(flags);
         }
 
-        public async Task<D[]> GetArrayAync<D>(ICaller ctx, string uri, byte bits = 0) where D : IData, new()
+        public async Task<D[]> GetArrayAync<D>(ICaller ctx, string uri, byte flags = 0) where D : IData, new()
         {
             HttpRequestMessage req = new HttpRequestMessage(HttpMethod.Get, uri);
             if (ctx.Cookied)
@@ -107,7 +107,7 @@ namespace Greatbone.Core
                 req.Headers.Add("Authorization", "Bearer " + ctx.TokenStr);
             }
             HttpResponseMessage resp = await SendAsync(req, HttpCompletionOption.ResponseContentRead);
-            return await resp.GetArrayAsync<D>(bits);
+            return await resp.GetArrayAsync<D>(flags);
         }
 
         public async Task<XElem> GetXElemAync(ICaller ctx, string uri)

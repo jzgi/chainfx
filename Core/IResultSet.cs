@@ -9,7 +9,7 @@ namespace Greatbone.Core
 
         bool NextResult();
 
-        D ToObject<D>(byte bits = 0) where D : IData, new();
+        D ToObject<D>(byte flags = 0) where D : IData, new();
 
         D[] ToArray<D>(byte bits = 0) where D : IData, new();
     }

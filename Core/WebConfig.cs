@@ -53,7 +53,7 @@ namespace Greatbone.Core
             this.name = name;
         }
 
-        public void Load(ISource src, byte bits = 0)
+        public void Load(ISource src, byte flags = 0)
         {
             src.Get(nameof(shard), ref shard);
             src.Get(nameof(pub), ref pub);
@@ -64,7 +64,7 @@ namespace Greatbone.Core
             src.Get(nameof(cache), ref cache);
         }
 
-        public void Dump<R>(ISink<R> snk, byte bits = 0) where R : ISink<R>
+        public void Dump<R>(ISink<R> snk, byte flags = 0) where R : ISink<R>
         {
             snk.Put(nameof(shard), shard);
             snk.Put(nameof(pub), pub);

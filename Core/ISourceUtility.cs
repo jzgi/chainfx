@@ -5,10 +5,10 @@ namespace Greatbone.Core
 {
     public static class ISourceUtility
     {
-        public static D ToObject<D>(this ISource src, byte bits = 0) where D : IData, new()
+        public static D ToObject<D>(this ISource src, byte flags = 0) where D : IData, new()
         {
             D obj = new D();
-            obj.Load(src, bits);
+            obj.Load(src, flags);
             return obj;
         }
 
@@ -74,15 +74,15 @@ namespace Greatbone.Core
         }
 
 
-        public static bool Get(this ISource src, ref ArraySegment<byte>? v)
+        public static bool Get(this ISource src, ref ArraySegment<byte> v)
         {
             return src.Get(null, ref v);
         }
 
 
-        public static bool Get<D>(this ISource src, ref D v, byte bits = 0) where D : IData, new()
+        public static bool Get<D>(this ISource src, ref D v, byte flags = 0) where D : IData, new()
         {
-            return src.Get(null, ref v, bits);
+            return src.Get(null, ref v, flags);
         }
 
 
@@ -121,9 +121,9 @@ namespace Greatbone.Core
             return src.Get(null, ref v);
         }
 
-        public static bool Get<D>(this ISource src, ref D[] v, byte bits = 0) where D : IData, new()
+        public static bool Get<D>(this ISource src, ref D[] v, byte flags = 0) where D : IData, new()
         {
-            return src.Get(null, ref v, bits);
+            return src.Get(null, ref v, flags);
         }
 
 
@@ -201,17 +201,17 @@ namespace Greatbone.Core
             return v;
         }
 
-        public static ArraySegment<byte>? GetBytesSeg(this ISource src)
+        public static ArraySegment<byte> GetBytesSeg(this ISource src)
         {
-            ArraySegment<byte>? v = null;
+            ArraySegment<byte> v;
             src.Get(null, ref v);
             return v;
         }
 
-        public static D GetObject<D>(this ISource src, byte bits = 0) where D : IData, new()
+        public static D GetObject<D>(this ISource src, byte flags = 0) where D : IData, new()
         {
             D v = default(D);
-            src.Get(null, ref v, bits);
+            src.Get(null, ref v, flags);
             return v;
         }
 
@@ -258,10 +258,10 @@ namespace Greatbone.Core
             return v;
         }
 
-        public static D[] GetObjects<D>(this ISource src, byte bits = 0) where D : IData, new()
+        public static D[] GetObjects<D>(this ISource src, byte flags = 0) where D : IData, new()
         {
             D[] v = null;
-            src.Get(null, ref v, bits);
+            src.Get(null, ref v, flags);
             return v;
         }
 
@@ -341,7 +341,7 @@ namespace Greatbone.Core
 
         public static ArraySegment<byte>? GetBytesSeg(this ISource src, string name)
         {
-            ArraySegment<byte>? v = null;
+            ArraySegment<byte> v;
             src.Get(name, ref v);
             return v;
         }

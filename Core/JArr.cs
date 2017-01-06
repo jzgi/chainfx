@@ -70,13 +70,13 @@ namespace Greatbone.Core
             }
         }
 
-        public D[] ToArray<D>(byte bits = 0) where D : IData, new()
+        public D[] ToArray<D>(byte flags = 0) where D : IData, new()
         {
             D[] arr = new D[count];
             for (int i = 0; i < arr.Length; i++)
             {
                 D obj = new D();
-                obj.Load((JObj)this[i], bits);
+                obj.Load((JObj)this[i], flags);
                 arr[i] = obj;
             }
             return arr;
