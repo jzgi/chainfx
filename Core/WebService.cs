@@ -111,6 +111,27 @@ namespace Greatbone.Core
             cleaner = new Thread(Clean);
 
             scheduler = new Thread(Schedule);
+
+        }
+
+
+        public void Tree()
+        {
+            Debug.Write("service");
+            Debug.Write(Name);
+            if (children != null)
+            {
+                for (int i = 0; i < children.Count; i++)
+                {
+                    WebFolder child = children[i];
+                    Debug.Write("SUB " + child.Name);
+                }
+            }
+            for (int i = 0; i < Actions.Count; i++)
+            {
+                WebAction action = Actions[i];
+                Debug.Write("ACT " + action.Name);
+            }
         }
 
         ///
@@ -252,16 +273,14 @@ namespace Greatbone.Core
 
             OnStart();
 
-            Console.Write(Name);
-            Console.Write(" -> ");
-            Console.Write(Config.pub);
-            Console.Write(", ");
-            Console.Write(Config.intern);
-            Console.WriteLine();
+            Debug.WriteLine(Name + " -> " + Config.pub + "," + Config.intern + " started");
 
-            INF("started");
+            // start helper threads
 
-            //            cleaner.Start();
+            if (cache != null)
+            {
+                cleaner.Start();
+            }
 
             if (cluster != null)
             {
@@ -339,6 +358,8 @@ namespace Greatbone.Core
             }
         }
 
+        ///
+        /// Run in the scheduler thread to repeatedly check and initiate event polling activities.
         internal void Schedule()
         {
             while (!stop)
@@ -355,6 +376,8 @@ namespace Greatbone.Core
 
         bool stop;
 
+        ///
+        /// Run in the cleaner thread to repeatedly check and relinguish cache entries.
         internal void Clean()
         {
             while (!stop)

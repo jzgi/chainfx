@@ -19,6 +19,8 @@ namespace Greatbone.Core
 
         public string Value => value;
 
+        public bool Empty => value == null;
+
         public WebFolder Folder => folder;
 
         //
@@ -96,7 +98,7 @@ namespace Greatbone.Core
             return default(DateTime);
         }
 
-        public static implicit operator char[](Var v)
+        public static implicit operator char[] (Var v)
         {
             string str = v.value;
             return str?.ToCharArray();

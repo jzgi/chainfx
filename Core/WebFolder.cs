@@ -14,7 +14,8 @@ namespace Greatbone.Core
         // max nesting levels
         const int Nesting = 4;
 
-        const string _VAR_ = "-var-";
+        // underlying file directory name
+        const string _VAR_ = "VAR";
 
         // state-passing
         internal readonly WebFolderContext context;
@@ -50,6 +51,15 @@ namespace Greatbone.Core
                         defaction = atn;
                     }
                 }
+                else if (pis.Length == 2 && pis[0].ParameterType == typeof(WebActionContext) && pis[1].ParameterType == typeof(Var))
+                {
+                    WebAction atn = new WebAction(this, mi, true);
+                    actions.Add(atn);
+                    if (atn.Name.Equals("default"))
+                    {
+                        defaction = atn;
+                    }
+                }
             }
         }
 
@@ -66,7 +76,7 @@ namespace Greatbone.Core
             }
             // create instance by reflection
             Type typ = typeof(F);
-            ConstructorInfo ci = typ.GetConstructor(new[] {typeof(WebFolderContext)});
+            ConstructorInfo ci = typ.GetConstructor(new[] { typeof(WebFolderContext) });
             if (ci == null)
             {
                 throw new WebException(typ + " missing WebFolderContext");
@@ -75,17 +85,19 @@ namespace Greatbone.Core
             {
                 name = name,
                 State = state,
-                IsVar = false,
+                Var = false,
                 Parent = this,
                 Level = Level + 1,
                 Directory = (Parent == null) ? name : Path.Combine(Parent.Directory, name),
                 Service = Service
             };
-            F folder = (F) ci.Invoke(new object[] {ctx});
+            F folder = (F)ci.Invoke(new object[] { ctx });
             children.Add(folder);
 
             return folder;
         }
+
+        public Roll<WebAction> Actions => actions;
 
         public Roll<WebFolder> Children => children;
 
@@ -100,7 +112,7 @@ namespace Greatbone.Core
 
             // create instance
             Type typ = typeof(F);
-            ConstructorInfo ci = typ.GetConstructor(new[] {typeof(WebFolderContext)});
+            ConstructorInfo ci = typ.GetConstructor(new[] { typeof(WebFolderContext) });
             if (ci == null)
             {
                 throw new WebException(typ + " missing WebFolderContext");
@@ -109,13 +121,13 @@ namespace Greatbone.Core
             {
                 name = _VAR_,
                 State = state,
-                IsVar = true,
+                Var = true,
                 Parent = this,
                 Level = Level + 1,
                 Directory = (Parent == null) ? _VAR_ : Path.Combine(Parent.Directory, _VAR_),
                 Service = Service
             };
-            F folder = (F) ci.Invoke(new object[] {ctx});
+            F folder = (F)ci.Invoke(new object[] { ctx });
             variable = folder;
 
             return folder;
@@ -125,7 +137,7 @@ namespace Greatbone.Core
 
         public object State => context.State;
 
-        public bool IsVar => context.IsVar;
+        public bool IsVar => context.Var;
 
         public string Directory => context.Directory;
 
@@ -195,7 +207,7 @@ namespace Greatbone.Core
                 }
                 else if (variable != null) // variable-key
                 {
-                    ac.ChainVar(key, variable);
+                    ac.ChainKey(key, variable);
                     variable.Handle(relative.Substring(slash + 1), ac);
                 }
                 else
@@ -220,18 +232,17 @@ namespace Greatbone.Core
             else // dynamic
             {
                 string name = rsc;
-                string sub = null;
+                string arg = null;
                 int dash = rsc.LastIndexOf('-');
                 if (dash != -1)
                 {
                     name = rsc.Substring(0, dash);
-                    sub = rsc.Substring(dash + 1);
+                    arg = rsc.Substring(dash + 1);
                 }
                 WebAction atn = string.IsNullOrEmpty(name) ? defaction : GetAction(name);
                 if (atn != null)
                 {
-                    ac.ChainVar(sub, null);
-                    atn.Do(ac);
+                    atn.Do(ac, new Var(arg, null));
                 }
                 else
                 {

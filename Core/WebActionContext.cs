@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Threading.Tasks;
-using System.Diagnostics;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Http.Features;
 using Microsoft.Extensions.Primitives;
@@ -27,26 +26,25 @@ namespace Greatbone.Core
         public bool Cookied { get; internal set; }
 
         // two levels of variable keys
-        Var var, var2;
+        Var key, key2;
 
         Var arg;
 
-        internal void ChainVar(string value, WebFolder folder)
+        internal void ChainKey(string value, WebFolder folder)
         {
-            if (folder != null)
+            if (key.Empty)
             {
-                if (var.Value == null) var = new Var(value, folder);
-                else if (var2.Value == null) var2 = new Var(value, folder);
+                key = new Var(value, folder);
             }
-            else if (arg.Value == null)
+            else if (key2.Empty)
             {
-                arg = new Var(value, null);
+                key2 = new Var(value, folder);
             }
         }
 
-        public Var Var => var;
+        public Var Key => key;
 
-        public Var Var2 => var2;
+        public Var Key2 => key2;
 
         public Var Arg => arg;
 
@@ -132,14 +130,8 @@ namespace Greatbone.Core
         public IRequestCookieCollection Cookies => Request.Cookies;
 
         // read and parse
-        async Task<object> ReadAsync()
+        async Task<object> ReadAsync(int len)
         {
-            if (entity != null) return null;
-
-            long? clen = Request.ContentLength;
-            if (clen <= 0) return null;
-
-            int len = (int)clen;
             byte[] buf = BufferUtility.ByteBuffer(len); // borrow from the pool
             int count = len;
             int offset = 0;
@@ -182,32 +174,80 @@ namespace Greatbone.Core
 
         public async Task<ArraySegment<byte>?> AsBytesSegAsync()
         {
-            return (entity = await ReadAsync()) as ArraySegment<byte>?;
+            if (entity == null)
+            {
+                long? clen = Request.ContentLength;
+                if (clen > 0)
+                {
+                    entity = await ReadAsync((int)clen);
+                }
+            }
+            return entity as ArraySegment<byte>?;
         }
 
         public async Task<ISource> AsSourceAsync()
         {
-            return (entity = await ReadAsync()) as ISource;
+            if (entity == null)
+            {
+                long? clen = Request.ContentLength;
+                if (clen > 0)
+                {
+                    entity = await ReadAsync((int)clen);
+                }
+            }
+            return entity as ISource;
         }
 
         public async Task<Form> AsFormAsync()
         {
-            return (entity = await ReadAsync()) as Form;
+            if (entity == null)
+            {
+                long? clen = Request.ContentLength;
+                if (clen > 0)
+                {
+                    entity = await ReadAsync((int)clen);
+                }
+            }
+            return entity as Form;
         }
 
         public async Task<JObj> AsJObjAsync()
         {
-            return (entity = await ReadAsync()) as JObj;
+            if (entity == null)
+            {
+                long? clen = Request.ContentLength;
+                if (clen > 0)
+                {
+                    entity = await ReadAsync((int)clen);
+                }
+            }
+            return entity as JObj;
         }
 
         public async Task<JArr> AsJArrAsync()
         {
-            return (entity = await ReadAsync()) as JArr;
+            if (entity == null)
+            {
+                long? clen = Request.ContentLength;
+                if (clen > 0)
+                {
+                    entity = await ReadAsync((int)clen);
+                }
+            }
+            return entity as JArr;
         }
 
         public async Task<D> AsObjectAsync<D>(byte flags = 0) where D : IData, new()
         {
-            ISource src = (entity = await ReadAsync()) as ISource;
+            if (entity == null)
+            {
+                long? clen = Request.ContentLength;
+                if (clen > 0)
+                {
+                    entity = await ReadAsync((int)clen);
+                }
+            }
+            ISource src = entity as ISource;
             if (src == null)
             {
                 return default(D);
@@ -217,14 +257,28 @@ namespace Greatbone.Core
 
         public async Task<D[]> AsArrayAsync<D>(byte flags = 0) where D : IData, new()
         {
-            JArr jarr = (entity = await ReadAsync()) as JArr;
+            if (entity == null)
+            {
+                long? clen = Request.ContentLength;
+                if (clen > 0)
+                {
+                    entity = await ReadAsync((int)clen);
+                }
+            }
+            JArr jarr = entity as JArr;
             return jarr?.ToArray<D>(flags);
         }
 
         public async Task<XElem> AsXElemAsync()
         {
-            object entity = await ReadAsync();
-
+            if (entity == null)
+            {
+                long? clen = Request.ContentLength;
+                if (clen > 0)
+                {
+                    entity = await ReadAsync((int)clen);
+                }
+            }
             return entity as XElem;
         }
 
