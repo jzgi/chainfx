@@ -22,7 +22,7 @@ namespace Greatbone.Core
             level = 0;
         }
 
-        public override string MimeType => "application/json";
+        public override string MType => "application/json";
 
         void AddEsc(string v)
         {

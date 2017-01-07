@@ -8,15 +8,15 @@ namespace Greatbone.Core
     /// 
     public class FormMpContent : DynamicContent, ISink<FormMpContent>
     {
-        const string Boundary = "0!A#4X";
+        public const string Boundary = "0!Z#4X~W1";
 
         const string Mime = "multipart/form-data; boundary=" + Boundary;
 
-        public FormMpContent(bool pooled, int capacity = 4092) : base(true, pooled, capacity)
+        public FormMpContent(bool pooled, int capacity = 1024 * 256) : base(true, pooled, capacity)
         {
         }
 
-        public override string MimeType => Mime;
+        public override string MType => Mime;
 
         //
         // SINK
@@ -25,8 +25,7 @@ namespace Greatbone.Core
         void Part(string name)
         {
             Add(Boundary);
-            Add("Content-Disposition: ");
-            Add("form-data=\"");
+            Add("Content-Disposition: form-data; name=\"");
             Add(name);
             Add("\"\r\n\r\n");
         }
@@ -298,6 +297,12 @@ namespace Greatbone.Core
                 Add(']');
             }
             return this;
+        }
+
+
+        public void PutEvent(long id, string name, DateTime time, string mtype, ArraySegment<byte> body)
+        {
+
         }
     }
 }

@@ -21,7 +21,7 @@ namespace Greatbone.Core
             this.client = client;
         }
 
-        internal void Reset(long id, string name, object body)
+        internal void Reset(long id, string name, DateTime time, string mtype, object body)
         {
             this.id = id;
             this.name = name;

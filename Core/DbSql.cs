@@ -26,7 +26,7 @@ namespace Greatbone.Core
             Add(str);
         }
 
-        public override string MimeType => "text/plain";
+        public override string MType => "text/plain";
 
         internal void Clear()
         {
@@ -43,7 +43,7 @@ namespace Greatbone.Core
             return this;
         }
 
-        public DbSql setlst<T>(T obj, byte flags = 0) where T : IData
+        public DbSql setlst<D>(D obj, byte flags = 0) where D : IData
         {
             list = SetList;
             ordinal = 1;
@@ -51,7 +51,7 @@ namespace Greatbone.Core
             return this;
         }
 
-        public DbSql columnlst<T>(T obj, byte flags = 0) where T : IData
+        public DbSql columnlst<D>(D obj, byte flags = 0) where D : IData
         {
             list = ColumnList;
             ordinal = 1;
@@ -59,7 +59,7 @@ namespace Greatbone.Core
             return this;
         }
 
-        public DbSql parameterlst<T>(T obj, byte flags = 0) where T : IData
+        public DbSql parameterlst<D>(D obj, byte flags = 0) where D : IData
         {
             list = ParameterList;
             ordinal = 1;
@@ -67,7 +67,7 @@ namespace Greatbone.Core
             return this;
         }
 
-        public DbSql _<T>(T obj, byte flags = 0) where T : IData
+        public DbSql _<D>(D obj, byte flags = 0) where D : IData
         {
             Add(" (");
             columnlst(obj, flags);
@@ -75,7 +75,7 @@ namespace Greatbone.Core
             return this;
         }
 
-        public DbSql _VALUES_<T>(T obj, byte flags = 0) where T : IData
+        public DbSql _VALUES_<D>(D obj, byte flags = 0) where D : IData
         {
             Add(" VALUES (");
             parameterlst(obj, flags);
@@ -83,7 +83,7 @@ namespace Greatbone.Core
             return this;
         }
 
-        public DbSql _SET_<T>(T obj, byte flags = 0) where T : IData
+        public DbSql _SET_<D>(D obj, byte flags = 0) where D : IData
         {
             Add(" SET ");
             setlst(obj, flags);

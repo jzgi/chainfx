@@ -30,7 +30,7 @@ namespace Greatbone.Core
         public static implicit operator bool(Var v)
         {
             string str = v.value;
-            if (str != null)
+            if (!string.IsNullOrEmpty(str))
             {
                 return "true".Equals(str) || "1".Equals(str) || "on".Equals(str);
             }
@@ -40,7 +40,7 @@ namespace Greatbone.Core
         public static implicit operator short(Var v)
         {
             string str = v.value;
-            if (str != null)
+            if (!string.IsNullOrEmpty(str))
             {
                 short n;
                 if (short.TryParse(str, out n))
@@ -54,7 +54,7 @@ namespace Greatbone.Core
         public static implicit operator int(Var v)
         {
             string str = v.value;
-            if (str != null)
+            if (!string.IsNullOrEmpty(str))
             {
                 int n;
                 if (int.TryParse(str, out n))
@@ -68,7 +68,7 @@ namespace Greatbone.Core
         public static implicit operator long(Var v)
         {
             string str = v.value;
-            if (str != null)
+            if (!string.IsNullOrEmpty(str))
             {
                 long n;
                 if (long.TryParse(str, out n))
@@ -82,7 +82,7 @@ namespace Greatbone.Core
         public static implicit operator decimal(Var v)
         {
             string str = v.value;
-            if (str != null)
+            if (!string.IsNullOrEmpty(str))
             {
                 decimal n;
                 if (decimal.TryParse(str, out n))

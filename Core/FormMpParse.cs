@@ -74,7 +74,8 @@ namespace Greatbone.Core
             {
                 string name = null;
                 string filename = null;
-                string ctyp = null;
+                string date = null;
+                string ctype = null;
                 string clen = null;
 
                 // parse headers
@@ -99,9 +100,13 @@ namespace Greatbone.Core
                         name = hdr.SeekParam("name");
                         filename = hdr.SeekParam("filename");
                     }
-                    else if (ctyp == null && hdr.Check("Content-Type"))
+                    else if (clen == null && hdr.Check("Date"))
                     {
-                        ctyp = hdr.GetVvalue();
+                        date = hdr.GetVvalue();
+                    }
+                    else if (ctype == null && hdr.Check("Content-Type"))
+                    {
+                        ctype = hdr.GetVvalue();
                     }
                     else if (clen == null && hdr.Check("Content-Length"))
                     {
@@ -111,7 +116,7 @@ namespace Greatbone.Core
 
                 // get part's content
                 str.Clear();
-                bool plain = ctyp == null || "text/plain".Equals(ctyp);
+                bool plain = ctype == null || "text/plain".Equals(ctype);
                 int start = p; // mark down content start
                 if (EventContext == null) // parse till bound to get content
                 {
@@ -155,9 +160,10 @@ namespace Greatbone.Core
                     int len;
                     if (int.TryParse(clen, out len))
                     {
-                        object cont = Contentize(ctyp, buffer, start, len);
+                        object cont = Contentize(ctype, buffer, start, len);
                         // handle the event context
-                        EventContext.Reset(234, name, cont);
+                        DateTime time; StrUtility.TryParseDate(date, out time);
+                        EventContext.Reset(234, name, time, ctype, cont);
                         handler(EventContext);
                     }
                     // skip bound

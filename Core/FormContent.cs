@@ -12,7 +12,7 @@ namespace Greatbone.Core
         {
         }
 
-        public override string MimeType => "application/x-www-form-urlencoded";
+        public override string MType => "application/x-www-form-urlencoded";
 
         void AddEsc(string v)
         {

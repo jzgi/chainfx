@@ -385,7 +385,7 @@ namespace Greatbone.Core
             {
                 HttpResponse r = Response;
                 r.ContentLength = Content.Size;
-                r.ContentType = Content.MimeType;
+                r.ContentType = Content.MType;
 
                 // cache indicators
                 if (Content is DynamicContent) // set etag

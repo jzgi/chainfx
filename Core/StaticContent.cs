@@ -12,7 +12,7 @@ namespace Greatbone.Core
     ///
     public class StaticContent : HttpContent, IRollable, IContent
     {
-        static readonly Dictionary<string, string> Types = new Dictionary<string, string>
+        static readonly Dictionary<string, string> mtypes = new Dictionary<string, string>
         {
             {
                 ".323",
@@ -1547,7 +1547,7 @@ namespace Greatbone.Core
 
         public string Name { get; set; }
 
-        public string MimeType { get; set; }
+        public string MType { get; set; }
 
         public bool Senable => true;
 
@@ -1574,9 +1574,9 @@ namespace Greatbone.Core
             return true;
         }
 
-        public static bool TryGetMimeType(string ext, out string ctyp)
+        public static bool TryGetMType(string ext, out string ctyp)
         {
-            return Types.TryGetValue(ext, out ctyp);
+            return mtypes.TryGetValue(ext, out ctyp);
         }
     }
 }

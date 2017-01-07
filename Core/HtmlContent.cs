@@ -22,7 +22,7 @@ namespace Greatbone.Core
         {
         }
 
-        public override string MimeType => "text/html; charset=utf-8";
+        public override string MType => "text/html; charset=utf-8";
 
 
         public Dictionary<string, string> Map { get; set; }

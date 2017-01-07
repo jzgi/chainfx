@@ -108,7 +108,7 @@ namespace Greatbone.Core
             count = 0;
         }
 
-        public abstract string MimeType { get; }
+        public abstract string MType { get; }
 
         public bool Senable => bytebuf != null;
 

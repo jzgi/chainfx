@@ -38,10 +38,9 @@ namespace Greatbone.Core
 
         readonly ResponseCache cache;
 
-        readonly Thread scheduler;
+        Thread scheduler;
 
-        readonly Thread cleaner;
-
+        Thread cleaner;
 
         protected WebService(WebConfig cfg) : base(cfg)
         {
@@ -108,10 +107,6 @@ namespace Greatbone.Core
                 cache = new ResponseCache(Environment.ProcessorCount * 2, 4096);
             }
 
-            cleaner = new Thread(Clean);
-
-            scheduler = new Thread(Schedule);
-
         }
 
 
@@ -159,18 +154,21 @@ namespace Greatbone.Core
             // check db
             using (var dc = Service.NewDbContext())
             {
+                // todo create in separate tablespace
+
                 dc.Execute(@"CREATE TABLE IF NOT EXISTS eq (
                                 id serial8 NOT NULL,
-                                time timestamp without time zone,
-                                event character varying(20),
-                                subkey character varying(10),
+                                name varchar(40),
+                                shard varchar(20),
+                                time timestamp,
+                                mtype varchar(40),
                                 body bytea,
                                 CONSTRAINT eq_pkey PRIMARY KEY (id)
                             ) WITH (OIDS=FALSE)",
                     null
                 );
                 dc.Execute(@"CREATE TABLE IF NOT EXISTS eu (
-                                svcid character varying(20),
+                                moniker varchar(20),
                                 lastid int8,
                                 CONSTRAINT eu_pkey PRIMARY KEY (addr)
                             ) WITH (OIDS=FALSE)"
@@ -257,34 +255,11 @@ namespace Greatbone.Core
             if ("*".Equals(relative))
             {
                 // handle as event
-                LoadEvents(ac);
+                PeekQueue(ac);
             }
             else
             {
                 base.Handle(relative, ac);
-            }
-        }
-
-        public void Start()
-        {
-            // start the server
-            //
-            server.Start(this);
-
-            OnStart();
-
-            Debug.WriteLine(Name + " -> " + Config.pub + "," + Config.intern + " started");
-
-            // start helper threads
-
-            if (cache != null)
-            {
-                cleaner.Start();
-            }
-
-            if (cluster != null)
-            {
-                scheduler.Start();
             }
         }
 
@@ -316,24 +291,28 @@ namespace Greatbone.Core
         }
 
 
-        void LoadEvents(WebActionContext ac)
+        ///
+        /// Peek and load events from the event queue (DB)
+        ///
+        void PeekQueue(WebActionContext ac)
         {
-            string[] events = ac[nameof(events)];
+            string[] names = ac[nameof(names)];
             string shard = ac.Header("shard"); // can be null
             int? lastid = ac.HeaderInt("Range");
 
             using (var dc = NewDbContext())
             {
-                DbSql sql = new DbSql("SELECT * FROM eq WHERE id > @1 AND event IN [");
-                for (int i = 0; i < events.Length; i++)
+                DbSql sql = new DbSql("SELECT id, name, time, mtype, body FROM eq WHERE id > @1 AND event IN [");
+                for (int i = 0; i < names.Length; i++)
                 {
                     if (i > 0) sql.Add(',');
-                    sql.Put(events[i]);
+                    sql.Put(names[i]);
                 }
                 sql.Add(']');
                 if (shard != null)
                 {
-                    sql._("AND (shard IS NULL OR shard = ").Put(shard).Add(')');
+                    // the IN clause with shard is normally fixed, don't need to be parameters
+                    sql._("AND (shard IS NULL OR shard =")._(shard)._(")");
                 }
                 sql._("LIMIT 120");
 
@@ -345,16 +324,44 @@ namespace Greatbone.Core
                         long id = dc.GetLong();
                         string name = dc.GetString();
                         DateTime time = dc.GetDateTime();
-                        ArraySegment<byte>? body = dc.GetBytesSeg();
+                        string mtype = dc.GetString();
+                        ArraySegment<byte> body = dc.GetBytesSeg();
 
-                        // cont.Add(id, name, time, body);
+                        // add an extension part
+                        cont.PutEvent(id, name, time, mtype, body);
                     }
-                    ac.Reply(200, cont);
+                    ac.Reply(200, cont, pub: null);
                 }
                 else
                 {
                     ac.Reply(204); // no content
                 }
+            }
+        }
+
+        public void Start()
+        {
+            // start the server
+            //
+            server.Start(this);
+
+            OnStart();
+
+            Debug.WriteLine(Name + " -> " + Config.pub + "," + Config.intern + " started");
+
+            // start helper threads
+
+            if (cache != null)
+            {
+                cleaner = new Thread(Clean);
+                cleaner.Start();
+            }
+
+
+            if (cluster != null)
+            {
+                scheduler = new Thread(Schedule);
+                scheduler.Start();
             }
         }
 
@@ -374,7 +381,7 @@ namespace Greatbone.Core
             }
         }
 
-        bool stop;
+        volatile bool stop;
 
         ///
         /// Run in the cleaner thread to repeatedly check and relinguish cache entries.

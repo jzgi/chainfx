@@ -5,9 +5,9 @@ namespace Greatbone.Core
     public interface IContent
     {
         ///
-        /// The Content-Type.
+        /// The Internet Media Type (MIME) type.
         ///
-        string MimeType { get; }
+        string MType { get; }
 
         ///
         /// If the content is in binary form (bytes)
@@ -30,7 +30,7 @@ namespace Greatbone.Core
         char[] CharBuffer { get; }
 
         /// 
-        /// The actual number of bytes/chars.
+        /// The actual number of bytes/chars, that is either a count or length of the content.
         ///
         int Size { get; }
 
