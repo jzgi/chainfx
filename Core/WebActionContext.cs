@@ -112,6 +112,21 @@ namespace Greatbone.Core
             return null;
         }
 
+        public long? HeaderLong(string name)
+        {
+            StringValues vs;
+            if (Request.Headers.TryGetValue(name, out vs))
+            {
+                string str = vs;
+                long v;
+                if (long.TryParse(str, out v))
+                {
+                    return v;
+                }
+            }
+            return null;
+        }
+
         public DateTime? HeaderDateTime(string name)
         {
             StringValues vs;
@@ -385,7 +400,7 @@ namespace Greatbone.Core
             {
                 HttpResponse r = Response;
                 r.ContentLength = Content.Size;
-                r.ContentType = Content.MType;
+                r.ContentType = Content.Type;
 
                 // cache indicators
                 if (Content is DynamicContent) // set etag

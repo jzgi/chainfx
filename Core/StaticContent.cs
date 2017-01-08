@@ -12,7 +12,7 @@ namespace Greatbone.Core
     ///
     public class StaticContent : HttpContent, IRollable, IContent
     {
-        static readonly Dictionary<string, string> mtypes = new Dictionary<string, string>
+        static readonly Dictionary<string, string> Types = new Dictionary<string, string>
         {
             {
                 ".323",
@@ -1547,9 +1547,9 @@ namespace Greatbone.Core
 
         public string Name { get; set; }
 
-        public string MType { get; set; }
+        public string Type { get; set; }
 
-        public bool Senable => true;
+        public bool Sendable => true;
 
         public bool Poolable => pooled;
 
@@ -1574,9 +1574,9 @@ namespace Greatbone.Core
             return true;
         }
 
-        public static bool TryGetMType(string ext, out string ctyp)
+        public static bool TryGetType(string extension, out string type)
         {
-            return mtypes.TryGetValue(ext, out ctyp);
+            return Types.TryGetValue(extension, out type);
         }
     }
 }

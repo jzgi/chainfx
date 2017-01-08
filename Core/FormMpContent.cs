@@ -8,15 +8,16 @@ namespace Greatbone.Core
     /// 
     public class FormMpContent : DynamicContent, ISink<FormMpContent>
     {
-        public const string Boundary = "0!Z#4X~W1";
+        public const string Boundary = "~7^E!3#A&W";
 
+        // deliberately not longer than 40 characters
         const string Mime = "multipart/form-data; boundary=" + Boundary;
 
         public FormMpContent(bool pooled, int capacity = 1024 * 256) : base(true, pooled, capacity)
         {
         }
 
-        public override string MType => Mime;
+        public override string Type => Mime;
 
         //
         // SINK

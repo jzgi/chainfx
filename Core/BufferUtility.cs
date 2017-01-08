@@ -107,7 +107,7 @@ namespace Greatbone.Core
         {
             if (!content.Poolable) return false;
 
-            if (content.Senable) // is a byte buffer
+            if (content.Sendable) // is a byte buffer
             {
                 Return(content.ByteBuffer);
             }

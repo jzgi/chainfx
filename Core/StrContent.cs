@@ -6,6 +6,6 @@ namespace Greatbone.Core
         {
         }
 
-        public override string MType => "text/plain";
+        public override string Type => "text/plain";
     }
 }

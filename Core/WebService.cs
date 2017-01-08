@@ -99,14 +99,14 @@ namespace Greatbone.Core
                 }
             }
 
-            InstallEq();
-
             // init response cache
             if (cfg.cache)
             {
                 cache = new ResponseCache(Environment.ProcessorCount * 2, 4096);
             }
 
+            // create database structures for event queue
+            CreateEq();
         }
 
 
@@ -144,7 +144,7 @@ namespace Greatbone.Core
 
         internal ResponseCache Cache => cache;
 
-        bool InstallEq()
+        bool CreateEq()
         {
             if (!Config.db.eq)
             {
@@ -156,17 +156,25 @@ namespace Greatbone.Core
             {
                 // todo create in separate tablespace
 
+                dc.Execute(@"CREATE SEQUENCE IF NOT EXISTS eq_id_seq 
+                                INCREMENT 1 
+                                MINVALUE 1 MAXVALUE 9223372036854775807 
+                                START 1 CACHE 32 NO CYCLE
+                                OWNED BY eq.id"
+
+                );
+
                 dc.Execute(@"CREATE TABLE IF NOT EXISTS eq (
-                                id serial8 NOT NULL,
+                                id int8 DEFAULT nextval('eq_id_seq'::regclass) NOT NULL,
                                 name varchar(40),
                                 shard varchar(20),
                                 time timestamp,
-                                mtype varchar(40),
+                                type varchar(40),
                                 body bytea,
                                 CONSTRAINT eq_pkey PRIMARY KEY (id)
-                            ) WITH (OIDS=FALSE)",
-                    null
+                            ) WITH (OIDS=FALSE)"
                 );
+
                 dc.Execute(@"CREATE TABLE IF NOT EXISTS eu (
                                 moniker varchar(20),
                                 lastid int8,
@@ -297,12 +305,12 @@ namespace Greatbone.Core
         void PeekQueue(WebActionContext ac)
         {
             string[] names = ac[nameof(names)];
-            string shard = ac.Header("shard"); // can be null
-            int? lastid = ac.HeaderInt("Range");
+            string shard = ac.Header("Shard"); // can be null
+            long? lastid = ac.HeaderLong("Range");
 
             using (var dc = NewDbContext())
             {
-                DbSql sql = new DbSql("SELECT id, name, time, mtype, body FROM eq WHERE id > @1 AND event IN [");
+                DbSql sql = new DbSql("SELECT id, name, time, type, body FROM eq WHERE id > @1 AND event IN [");
                 for (int i = 0; i < names.Length; i++)
                 {
                     if (i > 0) sql.Add(',');
@@ -324,11 +332,11 @@ namespace Greatbone.Core
                         long id = dc.GetLong();
                         string name = dc.GetString();
                         DateTime time = dc.GetDateTime();
-                        string mtype = dc.GetString();
+                        string type = dc.GetString();
                         ArraySegment<byte> body = dc.GetBytesSeg();
 
                         // add an extension part
-                        cont.PutEvent(id, name, time, mtype, body);
+                        cont.PutEvent(id, name, time, type, body);
                     }
                     ac.Reply(200, cont, pub: null);
                 }

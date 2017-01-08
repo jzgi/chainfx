@@ -5,32 +5,32 @@ namespace Greatbone.Core
     public interface IContent
     {
         ///
-        /// The Internet Media Type (MIME) type.
+        /// The Internet Media Type (MIME) type, as the value of Content-Type header.
         ///
-        string MType { get; }
+        string Type { get; }
 
         ///
-        /// If the content is in binary form (bytes)
+        /// If the content is in binary form hence able to send asynchronously.
         ///
-        bool Senable { get; }
+        bool Sendable { get; }
 
         ///
-        /// If the buffer is rented from pool so as to return back lately.
+        /// Can the content buffer be rented from pool so as to returned back lately.
         ///
         bool Poolable { get; }
 
         /// 
-        /// The byte buffer that contains binary content.
+        /// The byte buffer that contains binary content. Can be null.
         ///
         byte[] ByteBuffer { get; }
 
         ///
-        /// The char buffer that contains text content.
+        /// The char buffer that contains text content. Can be null.
         ///
         char[] CharBuffer { get; }
 
         /// 
-        /// The actual number of bytes/chars, that is either a count or length of the content.
+        /// This is either the count or length of the content.
         ///
         int Size { get; }
 

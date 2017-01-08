@@ -263,7 +263,7 @@ namespace Greatbone.Core
             }
 
             string ctyp;
-            if (!StaticContent.TryGetMType(ext, out ctyp))
+            if (!StaticContent.TryGetType(ext, out ctyp))
             {
                 ac.Reply(415); // unsupported media type
                 return;
@@ -289,7 +289,7 @@ namespace Greatbone.Core
             StaticContent cont = new StaticContent(bytes)
             {
                 Name = filename,
-                MType = ctyp,
+                Type = ctyp,
                 Modified = modified
             };
             ac.Reply(200, cont, true, 5 * 60000);

@@ -47,7 +47,7 @@ namespace Greatbone.Core
 
         public Form Parse(Action<WebEventContext> handler)
         {
-            // locality
+            // locality for performance
             byte[] bound = this.bound;
             byte[] buffer = this.buffer;
             int length = this.length;
@@ -76,7 +76,7 @@ namespace Greatbone.Core
                 string filename = null;
                 string date = null;
                 string ctype = null;
-                string clen = null;
+                string clength = null;
 
                 // parse headers
                 for (;;)
@@ -100,7 +100,7 @@ namespace Greatbone.Core
                         name = hdr.SeekParam("name");
                         filename = hdr.SeekParam("filename");
                     }
-                    else if (clen == null && hdr.Check("Date"))
+                    else if (clength == null && hdr.Check("Date"))
                     {
                         date = hdr.GetVvalue();
                     }
@@ -108,9 +108,9 @@ namespace Greatbone.Core
                     {
                         ctype = hdr.GetVvalue();
                     }
-                    else if (clen == null && hdr.Check("Content-Length"))
+                    else if (clength == null && hdr.Check("Content-Length"))
                     {
-                        clen = hdr.GetVvalue();
+                        clength = hdr.GetVvalue();
                     }
                 }
 
@@ -158,7 +158,7 @@ namespace Greatbone.Core
                 else // it is event context
                 {
                     int len;
-                    if (int.TryParse(clen, out len))
+                    if (int.TryParse(clength, out len))
                     {
                         object cont = Contentize(ctype, buffer, start, len);
                         // handle the event context

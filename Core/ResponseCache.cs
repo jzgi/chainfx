@@ -5,29 +5,16 @@ using System.Threading;
 namespace Greatbone.Core
 {
     /// 
-    /// The server-side response cache in particular service.
+    /// A response cache in service.
     /// 
     class ResponseCache
     {
+        // keyed by target uri
         readonly ConcurrentDictionary<string, Entry> entries;
-
-        readonly Thread cleaner;
-
-        volatile bool stop;
 
         internal ResponseCache(int concurrency, int capcity)
         {
-            // create the url-to-item dictionary
             entries = new ConcurrentDictionary<string, Entry>(concurrency, capcity);
-
-            // create and start the cleaner thread
-            cleaner = new Thread(Clean);
-            cleaner.Start();
-        }
-
-        internal void Stop()
-        {
-            stop = true;
         }
 
         internal void Add(string target, int maxage, IContent content)
@@ -38,23 +25,18 @@ namespace Greatbone.Core
 
         internal void Clean()
         {
-            while (!stop)
+            int now = Environment.TickCount;
+
+            // a single loop to clean up expired items
+            using (var enm = entries.GetEnumerator())
             {
-                Thread.Sleep(1000);
-
-                int now = Environment.TickCount;
-
-                // a single loop to clean up expired items
-                using (var enm = entries.GetEnumerator())
+                while (enm.MoveNext())
                 {
-                    while (enm.MoveNext())
+                    Entry e = enm.Current.Value;
+                    if (e.IfExpired(now))
                     {
-                        Entry e = enm.Current.Value;
-                        if (e.IfExpired(now))
-                        {
-                            Entry old;
-                            entries.TryRemove(enm.Current.Key, out old);
-                        }
+                        Entry old;
+                        entries.TryRemove(enm.Current.Key, out old);
                     }
                 }
             }
@@ -65,7 +47,7 @@ namespace Greatbone.Core
             Entry e;
             if (entries.TryGetValue(target, out e))
             {
-                e.Inc();
+                e.Increment();
                 v = e.content;
                 return true;
             }
@@ -92,7 +74,7 @@ namespace Greatbone.Core
                 this.ticks = ticks;
             }
 
-            internal void Inc()
+            internal void Increment()
             {
                 Interlocked.Increment(ref counter);
             }

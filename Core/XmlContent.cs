@@ -16,7 +16,7 @@ namespace Greatbone.Core
         {
         }
 
-        public override string MType => "application/xml";
+        public override string Type => "application/xml";
 
 
         void AddEsc(string v)

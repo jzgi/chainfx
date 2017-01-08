@@ -108,9 +108,9 @@ namespace Greatbone.Core
             count = 0;
         }
 
-        public abstract string MType { get; }
+        public abstract string Type { get; }
 
-        public bool Senable => bytebuf != null;
+        public bool Sendable => bytebuf != null;
 
         public byte[] ByteBuffer => bytebuf;
 
@@ -146,7 +146,7 @@ namespace Greatbone.Core
 
         public void Add(char c)
         {
-            if (Senable) // byte-oriented
+            if (Sendable) // byte-oriented
             {
                 // UTF-8 encoding but without surrogate support
                 if (c < 0x80)
