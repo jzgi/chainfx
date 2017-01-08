@@ -27,7 +27,7 @@ namespace Greatbone.Sample
 
             cfg = new WebConfig("shop")
             {
-                addresses = "http://127.0.0.1:8080, http://127.0.0.1:7070",
+                addresses = "http://127.0.0.1:8080",
                 db = pg
             };
 #if !DEBUG
@@ -37,7 +37,7 @@ namespace Greatbone.Sample
 
             cfg = new WebConfig("chat")
             {
-                addresses = "http://127.0.0.1:8081, http://127.0.0.1:7071",
+                addresses = "http://127.0.0.1:8081",
                 db = pg
             };
 #if !DEBUG

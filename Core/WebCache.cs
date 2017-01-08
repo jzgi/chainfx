@@ -7,20 +7,38 @@ namespace Greatbone.Core
     /// 
     /// A response cache in service.
     /// 
-    class ResponseCache
+    public class WebCache
     {
         // keyed by target uri
         readonly ConcurrentDictionary<string, Entry> entries;
 
-        internal ResponseCache(int concurrency, int capcity)
+        Action<int>[] handlers;
+
+        internal WebCache(int concurrency, int capcity)
         {
             entries = new ConcurrentDictionary<string, Entry>(concurrency, capcity);
+            handlers = new Action<int>[8];
         }
 
-        internal void Add(string target, int maxage, IContent content)
+        public void SetHandler(int ordinal, Action<int> a)
         {
-            Entry e = new Entry(maxage, content, Environment.TickCount);
+            handlers[ordinal] = a;
+        }
+
+        public void Add(string target, int seconds, IContent content)
+        {
+            Entry e = new Entry(seconds, content, Environment.TickCount);
             entries.AddOrUpdate(target, e, (k, v) => e.Merge(v));
+        }
+
+        public void Remove(string target)
+        {
+            return;
+        }
+
+        public void Clear()
+        {
+            return;
         }
 
         internal void Clean()
@@ -65,7 +83,7 @@ namespace Greatbone.Core
 
             int ticks;
 
-            int counter;
+            int hits;
 
             internal Entry(int expiry, IContent content, int ticks)
             {
@@ -76,10 +94,10 @@ namespace Greatbone.Core
 
             internal void Increment()
             {
-                Interlocked.Increment(ref counter);
+                Interlocked.Increment(ref hits);
             }
 
-            internal int Counter => counter;
+            internal int Counter => hits;
 
             internal bool IfExpired(int now)
             {
@@ -89,7 +107,7 @@ namespace Greatbone.Core
             internal Entry Merge(Entry e)
             {
                 expiry = e.expiry;
-                counter += e.counter;
+                hits += e.hits;
                 content = e.content;
                 return this;
             }

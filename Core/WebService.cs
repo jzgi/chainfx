@@ -36,7 +36,7 @@ namespace Greatbone.Core
         // event hooks
         readonly Roll<WebEvent> events;
 
-        readonly ResponseCache cache;
+        readonly WebCache cache;
 
         Thread scheduler;
 
@@ -94,22 +94,19 @@ namespace Greatbone.Core
             {
                 for (int i = 0; i < refs.Count; i++)
                 {
-                    JMem mbr = refs[i];
-                    string name = mbr.Name; // service instance id
-                    string addr = mbr;
-                    if (this.cluster == null)
+                    JMem jmem = refs[i];
+                    string name = jmem.Name; // name is a service moniker
+                    string addr = jmem;
+                    if (cluster == null)
                     {
-                        this.cluster = new Roll<WebClient>(refs.Count * 2);
+                        cluster = new Roll<WebClient>(refs.Count * 2);
                     }
-                    this.cluster.Add(new WebClient(name, addr));
+                    cluster.Add(new WebClient(name, addr));
                 }
             }
 
             // init response cache
-            if (cfg.cache)
-            {
-                cache = new ResponseCache(Environment.ProcessorCount * 2, 4096);
-            }
+            cache = new WebCache(Environment.ProcessorCount * 2, 4096);
 
             // create database structures for event queue
             CreateEq();
@@ -148,7 +145,7 @@ namespace Greatbone.Core
 
         public WebAuth Auth { get; set; }
 
-        internal ResponseCache Cache => cache;
+        internal WebCache Cache => cache;
 
         bool CreateEq()
         {
@@ -365,12 +362,8 @@ namespace Greatbone.Core
 
             // start helper threads
 
-            if (cache != null)
-            {
-                cleaner = new Thread(Clean);
-                cleaner.Start();
-            }
-
+            cleaner = new Thread(Clean);
+            cleaner.Start();
 
             if (cluster != null)
             {

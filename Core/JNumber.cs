@@ -116,5 +116,15 @@ namespace Greatbone.Core
             }
             return i;
         }
+
+        public static implicit operator JNumber(int v)
+        {
+            JNumber num;
+            num.bigint = (long)v;
+            num.fract = 0;
+            num.pt = 0;
+            num.negative = v < 0;
+            return num;
+        }
     }
 }

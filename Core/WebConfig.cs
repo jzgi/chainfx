@@ -35,8 +35,8 @@ namespace Greatbone.Core
         /// The logging level, default to warning (3)
         public int logging = 3;
 
-        /// Turn on/off the response cache.
-        public bool cache = true;
+        /// Application-defined properties.
+        public JObj extra;
 
         /// Let the file directory name same as the service name.
         public override string Directory => name;
@@ -57,7 +57,7 @@ namespace Greatbone.Core
             src.Get(nameof(cluster), ref cluster);
             src.Get(nameof(db), ref db);
             src.Get(nameof(logging), ref logging);
-            src.Get(nameof(cache), ref cache);
+            src.Get(nameof(extra), ref extra);
         }
 
         public void Dump<R>(ISink<R> snk, byte flags = 0) where R : ISink<R>
@@ -67,7 +67,7 @@ namespace Greatbone.Core
             snk.Put(nameof(cluster), cluster);
             snk.Put(nameof(db), db);
             snk.Put(nameof(logging), logging);
-            snk.Put(nameof(cache), cache);
+            snk.Put(nameof(extra), extra);
         }
 
         public bool TryLoadFile()
