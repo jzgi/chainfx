@@ -343,10 +343,8 @@ namespace Greatbone.Core
         {
             StringValues strvs;
             IHeaderDictionary headers = Response.Headers;
-            if (headers.TryGetValue(name, out strvs))
-            {
-                headers.Add(name, new StringValues(v));
-            }
+            if (headers.TryGetValue(name, out strvs)) return;
+            headers.Add(name, new StringValues(v));
         }
 
         public void Header(string name, DateTime v)
