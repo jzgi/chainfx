@@ -213,52 +213,52 @@ namespace Greatbone.Core
             HttpRequest req = ac.Request;
             string path = req.Path.Value;
 
+            // authentication
+            if (Auth != null)
+            {
+                try
+                {
+                    Auth.Authenticate(ac);
+                }
+                catch (Exception e)
+                {
+                    DBG(e.Message);
+                }
+            }
+
             try
             {
-                // authentication
-                if (Auth != null)
-                {
-                    try
-                    {
-                        Auth.Authenticate(ac);
-                    }
-                    catch (Exception e)
-                    {
-                        WAR(e.Message);
-                    }
-                }
-
                 Handle(path.Substring(1), ac);
+            }
+            catch (Exception e)
+            {
+                if (e is ParseException)
+                {
+                    ac.Reply(400, e.Message); // bad request
+                }
+                else
+                {
+                    DBG(e.Message, e);
+                    ac.Reply(500, e.Message);
+                }
+            }
 
-                // prepare and send
+            // prepare and send
+            try
+            {
                 await ac.SendAsync();
             }
             catch (Exception e)
             {
-                Debug.WriteLine(e.Message);
-                if (e is ParseException)
-                {
-                    ac.Reply(400);
-                }
-                else
-                {
-                    ERR(e.Message, e); // stacktrace
-                }
+                ERR(e.Message, e);
+                ac.Reply(500, e.Message);
             }
         }
 
         public void DisposeContext(HttpContext context, Exception exception)
         {
-            var ac = (WebActionContext)context;
-
-            // public cache
-            IContent cont = ac.Content;
-            if (cont != null && cont.Poolable)
-            {
-                BufferUtility.Return(cont.ByteBuffer); // return response content buffer
-            }
-
-           ((WebActionContext)context).Dispose();
+            // dispose the action context
+            ((WebActionContext)context).Dispose();
         }
 
         internal override void Handle(string relative, WebActionContext ac)
@@ -363,12 +363,12 @@ namespace Greatbone.Core
             // start helper threads
 
             cleaner = new Thread(Clean);
-            cleaner.Start();
+            // cleaner.Start();
 
             if (cluster != null)
             {
                 scheduler = new Thread(Schedule);
-                scheduler.Start();
+                // scheduler.Start();
             }
         }
 

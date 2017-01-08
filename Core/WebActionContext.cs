@@ -60,7 +60,11 @@ namespace Greatbone.Core
 
         public string Uri => Features.Get<IHttpRequestFeature>().RawTarget;
 
+        // URL query 
         Form query;
+
+        // request body
+        byte[] buffer; int count;
 
         // request entity (ArraySegment<byte>, JObj, JArr, Form, XElem, null)
         object entity;
@@ -144,122 +148,140 @@ namespace Greatbone.Core
 
         public IRequestCookieCollection Cookies => Request.Cookies;
 
-        // read and parse
-        async Task<object> ReadAsync(int len)
-        {
-            byte[] buf = BufferUtility.ByteBuffer(len); // borrow from the pool
-            int count = len;
-            int offset = 0;
-            int num;
-            while ((num = await Request.Body.ReadAsync(buf, offset, count)) < count)
-            {
-                offset += num;
-                count -= num;
-            }
+        static readonly WebException ReadEx = new WebException("error reading request body");
 
-            string ctyp = Request.ContentType;
-            if ("application/x-www-form-urlencoded".Equals(ctyp))
+        // read and parse
+        async void ReadAsync(int len)
+        {
+            try
             {
-                entity = new FormParse(buf, len).Parse();
-                BufferUtility.Return(buf); // return to the pool
+                buffer = BufferUtility.ByteBuffer(len); // borrow from the pool
+                while ((count += await Request.Body.ReadAsync(buffer, count, (len - count))) < len) { }
+
+                string ctyp = Request.ContentType;
+                object enty;
+                if ("application/x-www-form-urlencoded".Equals(ctyp))
+                {
+                    enty = new FormParse(buffer, len).Parse();
+                }
+                else if (ctyp.StartsWith("multipart/form-data"))
+                {
+                    int bdy = ctyp.IndexOf("boundary=", 19, StringComparison.Ordinal);
+                    string boundary = ctyp.Substring(bdy + 9);
+                    enty = new FormMpParse(boundary, buffer, len).Parse();
+                }
+                else if (ctyp.StartsWith("application/json"))
+                {
+                    enty = new JsonParse(buffer, len).Parse();
+                }
+                else if (ctyp.StartsWith("application/xml"))
+                {
+                    enty = new XmlParse(buffer, len).Parse();
+                }
+                else
+                {
+                    enty = new ArraySegment<byte>(buffer, 0, len);
+                }
+                entity = enty;
             }
-            else if (ctyp.StartsWith("multipart/form-data"))
+            catch (Exception e) // handle exception within this async method
             {
-                int bdy = ctyp.IndexOf("boundary=", 19, StringComparison.Ordinal);
-                string boundary = ctyp.Substring(bdy + 9);
-                entity = new FormMpParse(boundary, buf, len).Parse();
-                // NOTE: the form's backing buffer shall reutrn pool during Dispose()
             }
-            else if (ctyp.StartsWith("application/json"))
-            {
-                entity = new JsonParse(buf, len).Parse();
-                BufferUtility.Return(buf); // return to the pool
-            }
-            else if (ctyp.StartsWith("application/xml"))
-            {
-                entity = new XmlParse(buf, len).Parse();
-                BufferUtility.Return(buf); // return to the pool
-            }
-            else
-            {
-                entity = new ArraySegment<byte>(buf, 0, len);
-            }
-            return entity;
         }
 
-        public async Task<ArraySegment<byte>?> AsBytesSegAsync()
+        static readonly ParseException ParseEx = new ParseException("error parsing request body");
+
+        public ArraySegment<byte>? ReadBytesSeg()
         {
             if (entity == null)
             {
                 long? clen = Request.ContentLength;
                 if (clen > 0)
                 {
-                    entity = await ReadAsync((int)clen);
+                    int len = (int)clen;
+                    ReadAsync(len);
+                    if (count != len) throw ReadEx;
+                    if (entity == null) throw ParseEx;
                 }
             }
             return entity as ArraySegment<byte>?;
         }
 
-        public async Task<ISource> AsSourceAsync()
+        public ISource ReadSource()
         {
             if (entity == null)
             {
                 long? clen = Request.ContentLength;
                 if (clen > 0)
                 {
-                    entity = await ReadAsync((int)clen);
+                    int len = (int)clen;
+                    ReadAsync(len);
+                    if (count != len) throw ReadEx;
+                    if (entity == null) throw ParseEx;
                 }
             }
             return entity as ISource;
         }
 
-        public async Task<Form> AsFormAsync()
+        public Form ReadForm()
         {
             if (entity == null)
             {
                 long? clen = Request.ContentLength;
                 if (clen > 0)
                 {
-                    entity = await ReadAsync((int)clen);
+                    int len = (int)clen;
+                    ReadAsync(len);
+                    if (count != len) throw ReadEx;
+                    if (entity == null) throw ParseEx;
                 }
             }
             return entity as Form;
         }
 
-        public async Task<JObj> AsJObjAsync()
+        public JObj ReadJObj()
         {
             if (entity == null)
             {
                 long? clen = Request.ContentLength;
                 if (clen > 0)
                 {
-                    entity = await ReadAsync((int)clen);
+                    int len = (int)clen;
+                    ReadAsync(len);
+                    if (count != len) throw ReadEx;
+                    if (entity == null) throw ParseEx;
                 }
             }
             return entity as JObj;
         }
 
-        public async Task<JArr> AsJArrAsync()
+        public JArr ReadJArr()
         {
             if (entity == null)
             {
                 long? clen = Request.ContentLength;
                 if (clen > 0)
                 {
-                    entity = await ReadAsync((int)clen);
+                    int len = (int)clen;
+                    ReadAsync(len);
+                    if (count != len) throw ReadEx;
+                    if (entity == null) throw ParseEx;
                 }
             }
             return entity as JArr;
         }
 
-        public async Task<D> AsObjectAsync<D>(byte flags = 0) where D : IData, new()
+        public D ReadObject<D>(byte flags = 0) where D : IData, new()
         {
             if (entity == null)
             {
                 long? clen = Request.ContentLength;
                 if (clen > 0)
                 {
-                    entity = await ReadAsync((int)clen);
+                    int len = (int)clen;
+                    ReadAsync(len);
+                    if (count != len) throw ReadEx;
+                    if (entity == null) throw ParseEx;
                 }
             }
             ISource src = entity as ISource;
@@ -270,28 +292,34 @@ namespace Greatbone.Core
             return src.ToObject<D>(flags);
         }
 
-        public async Task<D[]> AsArrayAsync<D>(byte flags = 0) where D : IData, new()
+        public D[] ReadArray<D>(byte flags = 0) where D : IData, new()
         {
             if (entity == null)
             {
                 long? clen = Request.ContentLength;
                 if (clen > 0)
                 {
-                    entity = await ReadAsync((int)clen);
+                    int len = (int)clen;
+                    ReadAsync(len);
+                    if (count != len) throw ReadEx;
+                    if (entity == null) throw ParseEx;
                 }
             }
             JArr jarr = entity as JArr;
             return jarr?.ToArray<D>(flags);
         }
 
-        public async Task<XElem> AsXElemAsync()
+        public XElem ReadXElem()
         {
             if (entity == null)
             {
                 long? clen = Request.ContentLength;
                 if (clen > 0)
                 {
-                    entity = await ReadAsync((int)clen);
+                    int len = (int)clen;
+                    ReadAsync(len);
+                    if (count != len) throw ReadEx;
+                    if (entity == null) throw ParseEx;
                 }
             }
             return entity as XElem;
@@ -347,7 +375,6 @@ namespace Greatbone.Core
         {
             StrContent cont = new StrContent(true, true);
             cont.Add(str);
-
             Reply(status, cont, pub, seconds);
         }
 
@@ -387,12 +414,16 @@ namespace Greatbone.Core
 
         internal async Task SendAsync()
         {
-            Header("Connection", "keep-alive");
+            // set connection header if absent
+            if (Header("Connection") == null)
+            {
+                Header("Connection", "keep-alive");
+            }
 
             if (Pub != null)
             {
-                string cc = Pub.Value ? "public" : "private" + ", max-age=" + Seconds * 1000;
-                Header("Cache-Control", cc);
+                string cachectrl = Pub.Value ? "public" : "private" + ", max-age=" + Seconds * 1000;
+                Header("Cache-Control", cachectrl);
             }
 
             // setup appropriate headers
@@ -442,15 +473,17 @@ namespace Greatbone.Core
 
         public void Dispose()
         {
-            // return request content buffer
-            ArraySegment<byte>? bytesseg = entity as ArraySegment<byte>?;
-            if (bytesseg != null)
+            // request content buffer
+            if (buffer != null)
             {
-                BufferUtility.Return(bytesseg.Value.Array);
+                BufferUtility.Return(buffer);
             }
-            else
+
+            // response content buffer
+            IContent cont = Content;
+            if (cont != null && cont.Poolable)
             {
-                (entity as IReturnable)?.Return();
+                BufferUtility.Return(cont.ByteBuffer);
             }
         }
     }

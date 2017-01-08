@@ -6,7 +6,7 @@ namespace Greatbone.Core
     ///
     /// A form object model parsed from either x-www-form-urlencoded or multipart/form-data.
     ///
-    public class Form : Roll<Field>, ISource, IReturnable
+    public class Form : Roll<Field>, ISource
     {
         // if multipart
         readonly bool mp;
@@ -31,14 +31,6 @@ namespace Greatbone.Core
         public void Add(string name, string filename, int offset, int count)
         {
             Add(new Field(name, filename, Buffer, offset, count));
-        }
-
-        public void Return()
-        {
-            if (Buffer != null)
-            {
-                BufferUtility.Return(Buffer);
-            }
         }
 
         //
