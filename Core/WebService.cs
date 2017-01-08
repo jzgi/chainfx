@@ -62,9 +62,15 @@ namespace Greatbone.Core
             // create embedded server instance
             KestrelServerOptions options = new KestrelServerOptions();
             server = new KestrelServer(Options.Create(options), Lifetime, factory);
-            ICollection<string> addrs = server.Features.Get<IServerAddressesFeature>().Addresses;
-            addrs.Add(cfg.pub);
-            addrs.Add(cfg.intern);
+            ICollection<string> addrcoll = server.Features.Get<IServerAddressesFeature>().Addresses;
+            if (string.IsNullOrEmpty(cfg.addresses))
+            {
+                throw new WebServiceException("'addresss' in webconfig");
+            }
+            foreach (string a in cfg.addresses.Split(',', ';'))
+            {
+                addrcoll.Add(a.Trim());
+            }
 
             // init event hooks
             Type typ = GetType();
@@ -355,7 +361,7 @@ namespace Greatbone.Core
 
             OnStart();
 
-            Debug.WriteLine(Name + " -> " + Config.pub + "," + Config.intern + " started");
+            Debug.WriteLine(Name + " -> " + Config.addresses + " started");
 
             // start helper threads
 

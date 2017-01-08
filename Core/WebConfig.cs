@@ -23,11 +23,8 @@ namespace Greatbone.Core
         /// The shard identifier when one service is divided into many shards
         public string shard;
 
-        /// The open socket address for external communication
-        public string pub;
-
-        /// The internal socket address for internal communication
-        public string intern;
+        /// The bind addresses in URI (scheme://host:port) format.
+        public string addresses;
 
         /// The services/addresses that this service references or depends on.
         public JObj cluster;
@@ -56,8 +53,7 @@ namespace Greatbone.Core
         public void Load(ISource src, byte flags = 0)
         {
             src.Get(nameof(shard), ref shard);
-            src.Get(nameof(pub), ref pub);
-            src.Get(nameof(intern), ref intern);
+            src.Get(nameof(addresses), ref addresses);
             src.Get(nameof(cluster), ref cluster);
             src.Get(nameof(db), ref db);
             src.Get(nameof(logging), ref logging);
@@ -67,8 +63,7 @@ namespace Greatbone.Core
         public void Dump<R>(ISink<R> snk, byte flags = 0) where R : ISink<R>
         {
             snk.Put(nameof(shard), shard);
-            snk.Put(nameof(pub), pub);
-            snk.Put(nameof(intern), intern);
+            snk.Put(nameof(addresses), addresses);
             snk.Put(nameof(cluster), cluster);
             snk.Put(nameof(db), db);
             snk.Put(nameof(logging), logging);
