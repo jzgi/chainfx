@@ -101,7 +101,7 @@ namespace Greatbone.Core
             return null;
         }
 
-        public int? HeaderInt(string name)
+        public int? HeaderAsInt(string name)
         {
             StringValues vs;
             if (Request.Headers.TryGetValue(name, out vs))
@@ -116,7 +116,7 @@ namespace Greatbone.Core
             return null;
         }
 
-        public long? HeaderLong(string name)
+        public long? HeaderAsLong(string name)
         {
             StringValues vs;
             if (Request.Headers.TryGetValue(name, out vs))
@@ -131,7 +131,7 @@ namespace Greatbone.Core
             return null;
         }
 
-        public DateTime? HeaderDateTime(string name)
+        public DateTime? HeaderAsDateTime(string name)
         {
             StringValues vs;
             if (Request.Headers.TryGetValue(name, out vs))
@@ -339,6 +339,16 @@ namespace Greatbone.Core
             Response.Headers.Add(name, new StringValues(v));
         }
 
+        public void HeaderAbsent(string name, string v)
+        {
+            StringValues strvs;
+            IHeaderDictionary headers = Response.Headers;
+            if (headers.TryGetValue(name, out strvs))
+            {
+                headers.Add(name, new StringValues(v));
+            }
+        }
+
         public void Header(string name, DateTime v)
         {
             string str = StrUtility.FormatUtcDate(v);
@@ -415,10 +425,7 @@ namespace Greatbone.Core
         internal async Task SendAsync()
         {
             // set connection header if absent
-            if (Header("Connection") == null)
-            {
-                Header("Connection", "keep-alive");
-            }
+            HeaderAbsent("Connection", "keep-alive");
 
             if (Pub != null)
             {

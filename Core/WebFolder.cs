@@ -277,7 +277,7 @@ namespace Greatbone.Core
             }
 
             DateTime modified = File.GetLastWriteTime(path);
-            DateTime? since = ac.HeaderDateTime("If-Modified-Since");
+            DateTime? since = ac.HeaderAsDateTime("If-Modified-Since");
             if (since != null && modified <= since)
             {
                 ac.Reply(304); // not modified

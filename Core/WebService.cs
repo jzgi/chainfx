@@ -309,7 +309,7 @@ namespace Greatbone.Core
         {
             string[] names = ac[nameof(names)];
             string shard = ac.Header("Shard"); // can be null
-            long? lastid = ac.HeaderLong("Range");
+            long? lastid = ac.HeaderAsLong("Range");
 
             using (var dc = NewDbContext())
             {
