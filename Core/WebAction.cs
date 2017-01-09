@@ -14,7 +14,7 @@ namespace Greatbone.Core
 
         readonly Action<WebActionContext> doer;
 
-        readonly Action<WebActionContext, Var> doer2;
+        readonly Action<WebActionContext, string> doer2;
 
         readonly UiAttribute ui;
 
@@ -24,15 +24,15 @@ namespace Greatbone.Core
             name = mi.Name;
             if (arg)
             {
-                doer2 = (Action<WebActionContext, Var>)mi.CreateDelegate(typeof(Action<WebActionContext, Var>), folder);
+                doer2 = (Action<WebActionContext, string>) mi.CreateDelegate(typeof(Action<WebActionContext, string>), folder);
             }
             else
             {
-                doer = (Action<WebActionContext>)mi.CreateDelegate(typeof(Action<WebActionContext>), folder);
+                doer = (Action<WebActionContext>) mi.CreateDelegate(typeof(Action<WebActionContext>), folder);
             }
 
             // initialize ui
-            var uis = (UiAttribute[])mi.GetCustomAttributes(typeof(UiAttribute), false);
+            var uis = (UiAttribute[]) mi.GetCustomAttributes(typeof(UiAttribute), false);
             if (uis.Length > 0) ui = uis[0];
         }
 
@@ -42,19 +42,19 @@ namespace Greatbone.Core
 
         public string Name => name;
 
-        public int Form => ui == null ? 0 : ui.Form;
+        public int Form => ui?.Form ?? 0;
 
         public string Label => ui?.Label ?? name;
 
         public string Icon => ui?.Icon;
 
-        public int Dialog => ui == null ? 0 : ui.Dialog;
+        public int Dialog => ui?.Dialog ?? 0;
 
         public override WebService Service => folder.Service;
 
         public UiAttribute Ui => ui;
 
-        internal void Do(WebActionContext ac, Var arg)
+        internal void Do(WebActionContext ac, string arg)
         {
             ac.Action = this;
             if (Check(ac)) // authorize check

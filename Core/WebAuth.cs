@@ -2,10 +2,10 @@
 {
     public abstract class WebAuth
     {
-        // mask for token encoding/decoding
+        // mask for encoding/decoding token
         readonly int mask;
 
-        // order for token encoding/decoding
+        // order for encoding/decoding token
         readonly int order;
 
         /// The cookie domain to apply

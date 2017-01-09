@@ -51,7 +51,7 @@ namespace Greatbone.Core
                         defaction = atn;
                     }
                 }
-                else if (pis.Length == 2 && pis[0].ParameterType == typeof(WebActionContext) && pis[1].ParameterType == typeof(Var))
+                else if (pis.Length == 2 && pis[0].ParameterType == typeof(WebActionContext) && pis[1].ParameterType == typeof(string))
                 {
                     WebAction atn = new WebAction(this, mi, true);
                     actions.Add(atn);
@@ -76,7 +76,7 @@ namespace Greatbone.Core
             }
             // create instance by reflection
             Type typ = typeof(F);
-            ConstructorInfo ci = typ.GetConstructor(new[] { typeof(WebFolderContext) });
+            ConstructorInfo ci = typ.GetConstructor(new[] {typeof(WebFolderContext)});
             if (ci == null)
             {
                 throw new WebException(typ + " missing WebFolderContext");
@@ -91,7 +91,7 @@ namespace Greatbone.Core
                 Directory = (Parent == null) ? name : Path.Combine(Parent.Directory, name),
                 Service = Service
             };
-            F folder = (F)ci.Invoke(new object[] { ctx });
+            F folder = (F) ci.Invoke(new object[] {ctx});
             children.Add(folder);
 
             return folder;
@@ -112,7 +112,7 @@ namespace Greatbone.Core
 
             // create instance
             Type typ = typeof(F);
-            ConstructorInfo ci = typ.GetConstructor(new[] { typeof(WebFolderContext) });
+            ConstructorInfo ci = typ.GetConstructor(new[] {typeof(WebFolderContext)});
             if (ci == null)
             {
                 throw new WebException(typ + " missing WebFolderContext");
@@ -127,7 +127,7 @@ namespace Greatbone.Core
                 Directory = (Parent == null) ? _VAR_ : Path.Combine(Parent.Directory, _VAR_),
                 Service = Service
             };
-            F folder = (F)ci.Invoke(new object[] { ctx });
+            F folder = (F) ci.Invoke(new object[] {ctx});
             variable = folder;
 
             return folder;
@@ -242,7 +242,7 @@ namespace Greatbone.Core
                 WebAction atn = string.IsNullOrEmpty(name) ? defaction : GetAction(name);
                 if (atn != null)
                 {
-                    atn.Do(ac, new Var(arg, null));
+                    atn.Do(ac, arg);
                 }
                 else
                 {

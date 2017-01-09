@@ -146,9 +146,9 @@ namespace Greatbone.Sample
         /// GET /[-page]
         /// </code>
         ///
-        public void mgmtz(WebActionContext ac, Var arg)
+        public void mgmtz(WebActionContext ac, string arg)
         {
-            int page = arg;
+            int page = arg.ToInt();
             const byte z = 0xff ^ BINARY;
 
             using (var dc = Service.NewDbContext())
