@@ -68,8 +68,8 @@ namespace Greatbone.Sample
                         {
                             // set cookie
                             string tokstr = Service.Auth.Encrypt(tok);
-                            ac.Header("Set-Cookie", tokstr);
-                            ac.Header("Location", "");
+                            ac.SetHeader("Set-Cookie", tokstr);
+                            ac.SetHeader("Location", "");
                             ac.Reply(303); // see other (redirect)
                         }
                         else
@@ -146,9 +146,9 @@ namespace Greatbone.Sample
         /// GET /[-page]
         /// </code>
         ///
-        public void mgmtz(WebActionContext ac)
+        public void mgmtz(WebActionContext ac, Var arg)
         {
-            int page = ac.Arg;
+            int page = arg;
             const byte z = 0xff ^ BINARY;
 
             using (var dc = Service.NewDbContext())

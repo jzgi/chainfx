@@ -141,7 +141,7 @@ namespace Greatbone.Core
 
         public Roll<WebClient> Cluster => cluster;
 
-        public WebConfig Config => (WebConfig)context;
+        public WebConfig Config => (WebConfig) context;
 
         public WebAuth Auth { get; set; }
 
@@ -164,7 +164,6 @@ namespace Greatbone.Core
                                 MINVALUE 1 MAXVALUE 9223372036854775807 
                                 START 1 CACHE 32 NO CYCLE
                                 OWNED BY eq.id"
-
                 );
 
                 dc.Execute(@"CREATE TABLE IF NOT EXISTS eq (
@@ -209,7 +208,7 @@ namespace Greatbone.Core
         /// 
         public async Task ProcessRequestAsync(HttpContext context)
         {
-            WebActionContext ac = (WebActionContext)context;
+            WebActionContext ac = (WebActionContext) context;
             HttpRequest req = ac.Request;
             string path = req.Path.Value;
 
@@ -258,7 +257,7 @@ namespace Greatbone.Core
         public void DisposeContext(HttpContext context, Exception exception)
         {
             // dispose the action context
-            ((WebActionContext)context).Dispose();
+            ((WebActionContext) context).Dispose();
         }
 
         internal override void Handle(string relative, WebActionContext ac)
@@ -309,7 +308,7 @@ namespace Greatbone.Core
         {
             string[] names = ac[nameof(names)];
             string shard = ac.Header("Shard"); // can be null
-            long? lastid = ac.HeaderAsLong("Range");
+            long? lastid = ac.HeaderLong("Range");
 
             using (var dc = NewDbContext())
             {
@@ -341,7 +340,7 @@ namespace Greatbone.Core
                         // add an extension part
                         cont.PutEvent(id, name, time, type, body);
                     }
-                    ac.Reply(200, cont, pub: null);
+                    ac.Reply(200, cont);
                 }
                 else
                 {
@@ -399,8 +398,6 @@ namespace Greatbone.Core
                 Thread.Sleep(1000);
 
                 int now = Environment.TickCount;
-
-
             }
         }
         //
@@ -423,7 +420,7 @@ namespace Greatbone.Core
 
         public bool IsEnabled(LogLevel level)
         {
-            return (int)level >= Config.logging;
+            return (int) level >= Config.logging;
         }
 
         public void Dispose()
@@ -437,7 +434,7 @@ namespace Greatbone.Core
             Console.WriteLine(".");
         }
 
-        static readonly string[] LVL = { "TRC: ", "DBG: ", "INF: ", "WAR: ", "ERR: ", "CRL: ", "NON: " };
+        static readonly string[] LVL = {"TRC: ", "DBG: ", "INF: ", "WAR: ", "ERR: ", "CRL: ", "NON: "};
 
         public void Log<T>(LogLevel level, EventId eid, T state, Exception exception, Func<T, Exception, string> formatter)
         {
@@ -446,7 +443,7 @@ namespace Greatbone.Core
                 return;
             }
 
-            logWriter.Write(LVL[(int)level]);
+            logWriter.Write(LVL[(int) level]);
 
             if (eid.Id != 0)
             {
@@ -502,7 +499,7 @@ namespace Greatbone.Core
 
                 cts.Token.Register(state =>
                     {
-                        ((IApplicationLifetime)state).StopApplication();
+                        ((IApplicationLifetime) state).StopApplication();
                         // dispose services
                         foreach (WebService svc in svcs)
                         {

@@ -28,8 +28,6 @@ namespace Greatbone.Core
         // two levels of variable keys
         Var key, key2;
 
-        Var arg;
-
         internal void ChainKey(string value, WebFolder folder)
         {
             if (key.Empty)
@@ -45,8 +43,6 @@ namespace Greatbone.Core
         public Var Key => key;
 
         public Var Key2 => key2;
-
-        public Var Arg => arg;
 
         //
         // REQUEST
@@ -64,7 +60,9 @@ namespace Greatbone.Core
         Form query;
 
         // request body
-        byte[] buffer; int count;
+        byte[] buffer;
+
+        int count;
 
         // request entity (ArraySegment<byte>, JObj, JArr, Form, XElem, null)
         object entity;
@@ -101,7 +99,7 @@ namespace Greatbone.Core
             return null;
         }
 
-        public int? HeaderAsInt(string name)
+        public int? HeaderInt(string name)
         {
             StringValues vs;
             if (Request.Headers.TryGetValue(name, out vs))
@@ -116,7 +114,7 @@ namespace Greatbone.Core
             return null;
         }
 
-        public long? HeaderAsLong(string name)
+        public long? HeaderLong(string name)
         {
             StringValues vs;
             if (Request.Headers.TryGetValue(name, out vs))
@@ -131,7 +129,7 @@ namespace Greatbone.Core
             return null;
         }
 
-        public DateTime? HeaderAsDateTime(string name)
+        public DateTime? HeaderDateTime(string name)
         {
             StringValues vs;
             if (Request.Headers.TryGetValue(name, out vs))
@@ -156,7 +154,9 @@ namespace Greatbone.Core
             try
             {
                 buffer = BufferUtility.ByteBuffer(len); // borrow from the pool
-                while ((count += await Request.Body.ReadAsync(buffer, count, (len - count))) < len) { }
+                while ((count += await Request.Body.ReadAsync(buffer, count, (len - count))) < len)
+                {
+                }
 
                 string ctyp = Request.ContentType;
                 object enty;
@@ -164,10 +164,9 @@ namespace Greatbone.Core
                 {
                     enty = new FormParse(buffer, len).Parse();
                 }
-                else if (ctyp.StartsWith("multipart/form-data"))
+                else if (ctyp.StartsWith("multipart/form-data; boundary="))
                 {
-                    int bdy = ctyp.IndexOf("boundary=", 19, StringComparison.Ordinal);
-                    string boundary = ctyp.Substring(bdy + 9);
+                    string boundary = ctyp.Substring(30);
                     enty = new FormMpParse(boundary, buffer, len).Parse();
                 }
                 else if (ctyp.StartsWith("application/json"))
@@ -198,7 +197,7 @@ namespace Greatbone.Core
                 long? clen = Request.ContentLength;
                 if (clen > 0)
                 {
-                    int len = (int)clen;
+                    int len = (int) clen;
                     ReadAsync(len);
                     if (count != len) throw ReadEx;
                     if (entity == null) throw ParseEx;
@@ -214,7 +213,7 @@ namespace Greatbone.Core
                 long? clen = Request.ContentLength;
                 if (clen > 0)
                 {
-                    int len = (int)clen;
+                    int len = (int) clen;
                     ReadAsync(len);
                     if (count != len) throw ReadEx;
                     if (entity == null) throw ParseEx;
@@ -230,7 +229,7 @@ namespace Greatbone.Core
                 long? clen = Request.ContentLength;
                 if (clen > 0)
                 {
-                    int len = (int)clen;
+                    int len = (int) clen;
                     ReadAsync(len);
                     if (count != len) throw ReadEx;
                     if (entity == null) throw ParseEx;
@@ -246,7 +245,7 @@ namespace Greatbone.Core
                 long? clen = Request.ContentLength;
                 if (clen > 0)
                 {
-                    int len = (int)clen;
+                    int len = (int) clen;
                     ReadAsync(len);
                     if (count != len) throw ReadEx;
                     if (entity == null) throw ParseEx;
@@ -262,7 +261,7 @@ namespace Greatbone.Core
                 long? clen = Request.ContentLength;
                 if (clen > 0)
                 {
-                    int len = (int)clen;
+                    int len = (int) clen;
                     ReadAsync(len);
                     if (count != len) throw ReadEx;
                     if (entity == null) throw ParseEx;
@@ -278,7 +277,7 @@ namespace Greatbone.Core
                 long? clen = Request.ContentLength;
                 if (clen > 0)
                 {
-                    int len = (int)clen;
+                    int len = (int) clen;
                     ReadAsync(len);
                     if (count != len) throw ReadEx;
                     if (entity == null) throw ParseEx;
@@ -299,7 +298,7 @@ namespace Greatbone.Core
                 long? clen = Request.ContentLength;
                 if (clen > 0)
                 {
-                    int len = (int)clen;
+                    int len = (int) clen;
                     ReadAsync(len);
                     if (count != len) throw ReadEx;
                     if (entity == null) throw ParseEx;
@@ -316,7 +315,7 @@ namespace Greatbone.Core
                 long? clen = Request.ContentLength;
                 if (clen > 0)
                 {
-                    int len = (int)clen;
+                    int len = (int) clen;
                     ReadAsync(len);
                     if (count != len) throw ReadEx;
                     if (entity == null) throw ParseEx;
@@ -329,31 +328,33 @@ namespace Greatbone.Core
         // RESPONSE
         //
 
-        public void Header(string name, int v)
+        public void SetHeader(string name, int v)
         {
             Response.Headers.Add(name, new StringValues(v.ToString()));
         }
 
-        public void Header(string name, string v)
+        public void SetHeader(string name, string v)
         {
             Response.Headers.Add(name, new StringValues(v));
         }
 
-        public void HeaderAbsent(string name, string v)
+        public void SetHeaderNon(string name, string v)
         {
             StringValues strvs;
             IHeaderDictionary headers = Response.Headers;
-            if (headers.TryGetValue(name, out strvs)) return;
-            headers.Add(name, new StringValues(v));
+            if (!headers.TryGetValue(name, out strvs))
+            {
+                headers.Add(name, new StringValues(v));
+            }
         }
 
-        public void Header(string name, DateTime v)
+        public void SetHeader(string name, DateTime v)
         {
             string str = StrUtility.FormatUtcDate(v);
             Response.Headers.Add(name, new StringValues(str));
         }
 
-        public void Header(string name, params string[] values)
+        public void SetHeader(string name, params string[] values)
         {
             Response.Headers.Add(name, new StringValues(values));
         }
@@ -376,7 +377,7 @@ namespace Greatbone.Core
 
         public void Reply(int status, bool? pub = null, int seconds = 5)
         {
-            Reply(status, (IContent)null, pub, seconds);
+            Reply(status, (IContent) null, pub, seconds);
         }
 
         public void Reply(int status, string str, bool? pub = null, int seconds = 30)
@@ -423,12 +424,12 @@ namespace Greatbone.Core
         internal async Task SendAsync()
         {
             // set connection header if absent
-            HeaderAbsent("Connection", "keep-alive");
+            SetHeaderNon("Connection", "keep-alive");
 
             if (Pub != null)
             {
                 string cachectrl = Pub.Value ? "public" : "private" + ", max-age=" + Seconds * 1000;
-                Header("Cache-Control", cachectrl);
+                SetHeader("Cache-Control", cachectrl);
             }
 
             // setup appropriate headers
@@ -441,15 +442,15 @@ namespace Greatbone.Core
                 // cache indicators
                 if (Content is DynamicContent) // set etag
                 {
-                    ulong etag = ((DynamicContent)Content).ETag;
-                    Header("ETag", StrUtility.ToHex(etag));
+                    ulong etag = ((DynamicContent) Content).ETag;
+                    SetHeader("ETag", StrUtility.ToHex(etag));
                 }
 
                 // set last-modified
                 DateTime? last = Content.Modified;
                 if (last != null)
                 {
-                    Header("Last-Modified", StrUtility.FormatUtcDate(last.Value));
+                    SetHeader("Last-Modified", StrUtility.FormatUtcDate(last.Value));
                 }
 
                 // send async
