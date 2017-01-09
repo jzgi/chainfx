@@ -60,7 +60,7 @@ namespace Greatbone.Sample
                 }
                 using (var dc = Service.NewDbContext())
                 {
-                    if (dc.QueryA("SELECT * FROM shops WHERE id = @1", (p) => p.Put(id)))
+                    if (dc.QueryOne("SELECT * FROM shops WHERE id = @1", (p) => p.Put(id)))
                     {
                         var tok = dc.ToObject<Token>();
                         string credential = StrUtility.MD5(id + ':' + password);

@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Data;
+using System.Threading.Tasks;
 using Npgsql;
 using NpgsqlTypes;
 
@@ -86,14 +87,14 @@ namespace Greatbone.Core
             ordinal = 0;
         }
 
-        public bool QueryA(DbSql sql, Action<DbParameters> p = null)
+        public bool QueryOne(DbSql sql, Action<DbParameters> p = null, bool prepare = true)
         {
-            bool v = QueryA(sql.ToString(), p);
+            bool v = QueryOne(sql.ToString(), p, prepare);
             BufferUtility.Return(sql);
             return v;
         }
 
-        public bool QueryA(string cmdtext, Action<DbParameters> p = null)
+        public bool QueryOne(string cmdtext, Action<DbParameters> p = null, bool prepare = true)
         {
             if (connection.State != ConnectionState.Open)
             {
@@ -105,20 +106,20 @@ namespace Greatbone.Core
             if (p != null)
             {
                 p(parameters);
-                command.Prepare();
+                if (prepare) command.Prepare();
             }
             reader = command.ExecuteReader();
             return reader.Read();
         }
 
-        public bool Query(DbSql sql, Action<DbParameters> p = null)
+        public bool Query(DbSql sql, Action<DbParameters> p = null, bool prepare = true)
         {
-            bool v = Query(sql.ToString(), p);
+            bool v = Query(sql.ToString(), p, prepare);
             BufferUtility.Return(sql);
             return v;
         }
 
-        public bool Query(string cmdtext, Action<DbParameters> p = null)
+        public bool Query(string cmdtext, Action<DbParameters> p = null, bool prepare = true)
         {
             if (connection.State != ConnectionState.Open)
             {
@@ -130,9 +131,27 @@ namespace Greatbone.Core
             if (p != null)
             {
                 p(parameters);
-                command.Prepare();
+                if (prepare) command.Prepare();
             }
             reader = command.ExecuteReader();
+            return reader.HasRows;
+        }
+
+        public async Task<bool> QueryAsync(string cmdtext, Action<DbParameters> p = null, bool prepare = true)
+        {
+            if (connection.State != ConnectionState.Open)
+            {
+                connection.Open();
+            }
+            Clear();
+            command.CommandText = cmdtext;
+            command.CommandType = CommandType.Text;
+            if (p != null)
+            {
+                p(parameters);
+                if (prepare) command.Prepare();
+            }
+            reader = (NpgsqlDataReader)await command.ExecuteReaderAsync();
             return reader.HasRows;
         }
 
@@ -170,14 +189,14 @@ namespace Greatbone.Core
             return reader.NextResult();
         }
 
-        public int Execute(DbSql sql, Action<DbParameters> p = null)
+        public int Execute(DbSql sql, Action<DbParameters> p = null, bool prepare = true)
         {
-            int v = Execute(sql.ToString(), p);
+            int v = Execute(sql.ToString(), p, prepare);
             BufferUtility.Return(sql);
             return v;
         }
 
-        public int Execute(string cmdtext, Action<DbParameters> p = null)
+        public int Execute(string cmdtext, Action<DbParameters> p = null, bool prepare = true)
         {
             if (connection.State != ConnectionState.Open)
             {
@@ -189,19 +208,19 @@ namespace Greatbone.Core
             if (p != null)
             {
                 p(parameters);
-                command.Prepare();
+                if (prepare) command.Prepare();
             }
             return command.ExecuteNonQuery();
         }
 
-        public object Scalar(DbSql sql, Action<DbParameters> p = null)
+        public async Task<int> ExecuteAsync(DbSql sql, Action<DbParameters> p = null, bool prepare = true)
         {
-            object v = Scalar(sql.ToString(), p);
+            int v = await ExecuteAsync(sql.ToString(), p, prepare);
             BufferUtility.Return(sql);
             return v;
         }
 
-        public object Scalar(string cmdtext, Action<DbParameters> p = null)
+        public async Task<int> ExecuteAsync(string cmdtext, Action<DbParameters> p = null, bool prepare = true)
         {
             if (connection.State != ConnectionState.Open)
             {
@@ -213,9 +232,75 @@ namespace Greatbone.Core
             if (p != null)
             {
                 p(parameters);
-                command.Prepare();
+                if (prepare) command.Prepare();
+            }
+            return await command.ExecuteNonQueryAsync();
+        }
+
+        public object Scalar(DbSql sql, Action<DbParameters> p = null, bool prepare = true)
+        {
+            object v = Scalar(sql.ToString(), p, prepare);
+            BufferUtility.Return(sql);
+            return v;
+        }
+
+        public object Scalar(string cmdtext, Action<DbParameters> p = null, bool prepare = true)
+        {
+            if (connection.State != ConnectionState.Open)
+            {
+                connection.Open();
+            }
+            Clear();
+            command.CommandText = cmdtext;
+            command.CommandType = CommandType.Text;
+            if (p != null)
+            {
+                p(parameters);
+                if (prepare) command.Prepare();
             }
             return command.ExecuteScalar();
+        }
+
+        public async Task<object> ScalarAsync(DbSql sql, Action<DbParameters> p = null, bool prepare = true)
+        {
+            object v = await ScalarAsync(sql.ToString(), p, prepare);
+            BufferUtility.Return(sql);
+            return v;
+        }
+
+        public async Task<object> ScalarAsync(string cmdtext, Action<DbParameters> p = null, bool prepare = true)
+        {
+            if (connection.State != ConnectionState.Open)
+            {
+                connection.Open();
+            }
+            Clear();
+            command.CommandText = cmdtext;
+            command.CommandType = CommandType.Text;
+            if (p != null)
+            {
+                p(parameters);
+                if (prepare) command.Prepare();
+            }
+            return await command.ExecuteScalarAsync();
+        }
+
+        // TODO
+        public async Task<object> CallAsync(string storedproc, Action<DbParameters> p = null, bool prepare = true)
+        {
+            if (connection.State != ConnectionState.Open)
+            {
+                connection.Open();
+            }
+            Clear();
+            command.CommandText = storedproc;
+            command.CommandType = CommandType.StoredProcedure;
+            if (p != null)
+            {
+                p(parameters);
+                if (prepare) command.Prepare();
+            }
+            return await command.ExecuteScalarAsync();
         }
 
         //
@@ -380,7 +465,7 @@ namespace Greatbone.Core
                 if (!reader.IsDBNull(ord))
                 {
                     int len;
-                    if ((len = (int) reader.GetBytes(ord, 0, null, 0, 0)) > 0)
+                    if ((len = (int)reader.GetBytes(ord, 0, null, 0, 0)) > 0)
                     {
                         // get the number of bytes that are available to read.
                         v = new byte[len];
@@ -404,7 +489,7 @@ namespace Greatbone.Core
                 if (!reader.IsDBNull(ord))
                 {
                     int len;
-                    if ((len = (int) reader.GetBytes(ord, 0, null, 0, 0)) > 0)
+                    if ((len = (int)reader.GetBytes(ord, 0, null, 0, 0)) > 0)
                     {
                         byte[] buf = BufferUtility.ByteBuffer(len);
                         reader.GetBytes(ord, 0, buf, 0, len); // read data into the buffer
@@ -427,7 +512,7 @@ namespace Greatbone.Core
             {
                 string str = reader.GetString(ord);
                 JsonParse p = new JsonParse(str);
-                JObj jobj = (JObj) p.Parse();
+                JObj jobj = (JObj)p.Parse();
                 v = new D();
                 v.Load(jobj, flags);
 
@@ -449,7 +534,7 @@ namespace Greatbone.Core
             {
                 string str = reader.GetString(ord);
                 JsonParse p = new JsonParse(str);
-                v = (JObj) p.Parse();
+                v = (JObj)p.Parse();
                 return true;
             }
             return false;
@@ -462,7 +547,7 @@ namespace Greatbone.Core
             {
                 string str = reader.GetString(ord);
                 JsonParse p = new JsonParse(str);
-                v = (JArr) p.Parse();
+                v = (JArr)p.Parse();
                 return true;
             }
             return false;
@@ -519,7 +604,7 @@ namespace Greatbone.Core
             {
                 string str = reader.GetString(ord);
                 JsonParse p = new JsonParse(str);
-                JArr jarr = (JArr) p.Parse();
+                JArr jarr = (JArr)p.Parse();
                 int len = jarr.Count;
                 v = new D[len];
                 for (int i = 0; i < len; i++)
