@@ -42,7 +42,7 @@
             byte[] bytebuf = cont.ByteBuffer;
             int count = cont.Size;
 
-            int[] masks = {(mask >> 24) & 0xff, (mask >> 16) & 0xff, (mask >> 8) & 0xff, mask & 0xff};
+            int[] masks = { (mask >> 24) & 0xff, (mask >> 16) & 0xff, (mask >> 8) & 0xff, mask & 0xff };
             char[] charbuf = new char[count * 2]; // the target 
             int p = 0;
             for (int i = 0; i < count; i++)
@@ -61,7 +61,7 @@
 
         public string Decrypt(string tokstr)
         {
-            int[] masks = {(mask >> 24) & 0xff, (mask >> 16) & 0xff, (mask >> 8) & 0xff, mask & 0xff};
+            int[] masks = { (mask >> 24) & 0xff, (mask >> 16) & 0xff, (mask >> 8) & 0xff, mask & 0xff };
             int len = tokstr.Length / 2;
             Str str = new Str(256);
             int p = 0;
@@ -70,10 +70,10 @@
                 // reordering
 
                 // transform to byte
-                int b = (byte) (Dv(tokstr[p++]) << 4 | Dv(tokstr[p++]));
+                int b = (byte)(Dv(tokstr[p++]) << 4 | Dv(tokstr[p++]));
 
                 // masking
-                str.Accept((byte) (b ^ masks[i % 4]));
+                str.Accept((byte)(b ^ masks[i % 4]));
             }
             return str.ToString();
         }
@@ -96,12 +96,9 @@
     ///
     /// An authenticator for web service(s)
     ///
-    public class WebAuth<TH, TC> : WebAuth where TH : IToken, new() where TC : IToken, new()
+    public class WebAuth<T> : WebAuth where T : IToken, new()
     {
-        public WebAuth(int mask, int order, string domain = null, string signon = "/signon") : base(mask, order, domain,
-            signon)
-        {
-        }
+        public WebAuth(int mask, int order, string domain = null, string signon = "/signon") : base(mask, order, domain, signon) { }
 
         public override void Authenticate(WebActionContext ac)
         {
@@ -111,12 +108,12 @@
             {
                 tokstr = hv.Substring(7);
                 string jsonstr = Decrypt(tokstr);
-                ac.Token = JsonUtility.StringToObject<TH>(jsonstr);
+                ac.Token = JsonUtility.StringToObject<T>(jsonstr);
             }
             else if (ac.Cookies.TryGetValue("Bearer", out tokstr))
             {
                 string jsonstr = Decrypt(tokstr);
-                ac.Token = JsonUtility.StringToObject<TC>(jsonstr);
+                ac.Token = JsonUtility.StringToObject<T>(jsonstr);
             }
         }
     }

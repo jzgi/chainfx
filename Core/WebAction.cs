@@ -24,15 +24,15 @@ namespace Greatbone.Core
             name = mi.Name;
             if (arg)
             {
-                doer2 = (Action<WebActionContext, string>) mi.CreateDelegate(typeof(Action<WebActionContext, string>), folder);
+                doer2 = (Action<WebActionContext, string>)mi.CreateDelegate(typeof(Action<WebActionContext, string>), folder);
             }
             else
             {
-                doer = (Action<WebActionContext>) mi.CreateDelegate(typeof(Action<WebActionContext>), folder);
+                doer = (Action<WebActionContext>)mi.CreateDelegate(typeof(Action<WebActionContext>), folder);
             }
 
             // initialize ui
-            var uis = (UiAttribute[]) mi.GetCustomAttributes(typeof(UiAttribute), false);
+            var uis = (UiAttribute[])mi.GetCustomAttributes(typeof(UiAttribute), false);
             if (uis.Length > 0) ui = uis[0];
         }
 
@@ -57,17 +57,17 @@ namespace Greatbone.Core
         internal void Do(WebActionContext ac, string arg)
         {
             ac.Action = this;
-            if (Check(ac)) // authorize check
+            if (Authorize(ac)) // authorize check
             {
                 // pre-
-                BeforeDo(ac);
+                DoBefore(ac);
 
                 // invoke the right action method
                 if (Arg) doer2(ac, arg);
                 else doer(ac);
 
                 // post-
-                AfterDo(ac);
+                DoAfter(ac);
             }
             ac.Action = null;
         }

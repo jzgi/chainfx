@@ -19,7 +19,7 @@ namespace Greatbone.Sample
                 eq = false
             };
 
-            WebAuth<Shop, Shop> auth = new WebAuth<Shop, Shop>(0x4a78be76, 0x1f0335e2);
+            WebAuth<Token> auth = new WebAuth<Token>(0x4a78be76, 0x1f0335e2);
 
             List<WebService> svclst = new List<WebService>(4);
 

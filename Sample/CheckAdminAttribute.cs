@@ -2,14 +2,13 @@
 
 namespace Greatbone.Sample
 {
-    public class AdminAttribute : RoleAttribute
+    public class CheckAdminAttribute : CheckAttribute
     {
-        public AdminAttribute() : base(false) { }
+        public CheckAdminAttribute() : base() { }
 
         public override bool Check(WebActionContext wc)
         {
             return wc.Token is Token;
         }
     }
-
 }

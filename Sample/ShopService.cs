@@ -60,7 +60,7 @@ namespace Greatbone.Sample
                 }
                 using (var dc = Service.NewDbContext())
                 {
-                    if (dc.QueryOne("SELECT * FROM shops WHERE id = @1", (p) => p.Put(id)))
+                    if (dc.QueryUn("SELECT * FROM shops WHERE id = @1", (p) => p.Put(id)))
                     {
                         var tok = dc.ToObject<Token>();
                         string credential = StrUtility.MD5(id + ':' + password);
@@ -128,10 +128,10 @@ namespace Greatbone.Sample
         /// GET /[-page]
         /// </code>
         ///
-        [Admin]
+        [CheckAdmin]
         public void @default(WebActionContext ac)
         {
-            GetUiActions(typeof(AdminAttribute));
+            GetUiActions(typeof(CheckAdminAttribute));
 
             ac.ReplyPage(200, "", x =>
             {
@@ -179,7 +179,7 @@ namespace Greatbone.Sample
         /// id=_shopid_&amp;password=_password_&amp;name=_name_
         /// </code>
         ///
-        [Admin]
+        [CheckAdmin]
         public void @new(WebActionContext ac)
         {
             if (ac.GET)
@@ -204,7 +204,7 @@ namespace Greatbone.Sample
         }
 
 
-        [Admin]
+        [CheckAdmin]
         public virtual void mgmt(WebActionContext ac)
         {
             if (Children != null)

@@ -76,7 +76,7 @@ namespace Greatbone.Core
             }
             // create instance by reflection
             Type typ = typeof(F);
-            ConstructorInfo ci = typ.GetConstructor(new[] {typeof(WebFolderContext)});
+            ConstructorInfo ci = typ.GetConstructor(new[] { typeof(WebFolderContext) });
             if (ci == null)
             {
                 throw new WebException(typ + " missing WebFolderContext");
@@ -91,7 +91,7 @@ namespace Greatbone.Core
                 Directory = (Parent == null) ? name : Path.Combine(Parent.Directory, name),
                 Service = Service
             };
-            F folder = (F) ci.Invoke(new object[] {ctx});
+            F folder = (F)ci.Invoke(new object[] { ctx });
             children.Add(folder);
 
             return folder;
@@ -112,7 +112,7 @@ namespace Greatbone.Core
 
             // create instance
             Type typ = typeof(F);
-            ConstructorInfo ci = typ.GetConstructor(new[] {typeof(WebFolderContext)});
+            ConstructorInfo ci = typ.GetConstructor(new[] { typeof(WebFolderContext) });
             if (ci == null)
             {
                 throw new WebException(typ + " missing WebFolderContext");
@@ -127,7 +127,7 @@ namespace Greatbone.Core
                 Directory = (Parent == null) ? _VAR_ : Path.Combine(Parent.Directory, _VAR_),
                 Service = Service
             };
-            F folder = (F) ci.Invoke(new object[] {ctx});
+            F folder = (F)ci.Invoke(new object[] { ctx });
             variable = folder;
 
             return folder;
@@ -177,7 +177,7 @@ namespace Greatbone.Core
             for (int i = 0; i < actions.Count; i++)
             {
                 WebAction a = actions[i];
-                if (a.Ui != null && a.HasRole(role))
+                if (a.Ui != null && a.HasCheck(role))
                 {
                     if (lst == null) lst = new List<WebAction>();
                     lst.Add(a);
@@ -188,9 +188,9 @@ namespace Greatbone.Core
 
         internal virtual void Handle(string relative, WebActionContext ac)
         {
-            if (!Check(ac)) return;
+            if (!Authorize(ac)) return;
             // pre-
-            BeforeDo(ac);
+            DoBefore(ac);
 
             int slash = relative.IndexOf('/');
             if (slash == -1) // handle it locally
@@ -217,7 +217,7 @@ namespace Greatbone.Core
             }
 
             // post-
-            AfterDo(ac);
+            DoAfter(ac);
         }
 
         internal void Do(string rsc, WebActionContext ac)

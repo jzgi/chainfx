@@ -6,10 +6,7 @@ namespace Greatbone.Core
 {
     public abstract class WebControl
     {
-        readonly RoleAttribute[] roles;
-
-        // if auth through header or cookie
-        readonly bool header, cookie;
+        readonly CheckAttribute[] checks;
 
         readonly FilterAttribute[] filters;
 
@@ -22,72 +19,78 @@ namespace Greatbone.Core
             }
 
             // initialize checks
-            List<RoleAttribute> roles = null;
-            foreach (var role in (RoleAttribute[])attrs.GetCustomAttributes(typeof(RoleAttribute), false))
+            List<CheckAttribute> chklst = null;
+            foreach (var chk in (CheckAttribute[])attrs.GetCustomAttributes(typeof(CheckAttribute), false))
             {
-                if (roles == null)
+                if (chklst == null)
                 {
-                    roles = new List<RoleAttribute>(8);
+                    chklst = new List<CheckAttribute>(8);
                 }
-                role.Control = this;
-                roles.Add(role);
-
-                if (role.IsCookied) header = true;
-                else cookie = true;
+                chk.Control = this;
+                chklst.Add(chk);
             }
-            this.roles = roles?.ToArray();
+            this.checks = chklst?.ToArray();
 
             // initialize checks
-            List<FilterAttribute> filters = null;
-            foreach (var filter in (FilterAttribute[])attrs.GetCustomAttributes(typeof(FilterAttribute), false))
+            List<FilterAttribute> fltlst = null;
+            foreach (var flt in (FilterAttribute[])attrs.GetCustomAttributes(typeof(FilterAttribute), false))
             {
-                if (filters == null)
+                if (fltlst == null)
                 {
-                    filters = new List<FilterAttribute>(8);
+                    fltlst = new List<FilterAttribute>(8);
                 }
-                filter.Control = this;
-                filters.Add(filter);
+                flt.Control = this;
+                fltlst.Add(flt);
             }
-            this.filters = filters?.ToArray();
+            this.filters = fltlst?.ToArray();
         }
 
         public abstract WebService Service { get; }
 
-        public bool HasRole(Type role)
+        public bool HasCheck(Type checktyp)
         {
-            if (roles != null)
+            if (checks != null)
             {
-                for (int i = 0; i < roles.Length; i++)
+                for (int i = 0; i < checks.Length; i++)
                 {
-                    if (roles[i].GetType() == role) return true;
+                    if (checks[i].GetType() == checktyp) return true;
                 }
             }
             return false;
         }
 
-        internal bool Check(WebActionContext ac)
+        internal bool Authorize(WebActionContext ac, bool reply = true)
         {
-            if (roles != null)
+            if (checks != null)
             {
-                if (header && ac.Token == null)
+                if (ac.Token == null)
                 {
-                    ac.Reply(401); // unauthorized
-                    ac.SetHeader("WWW-Authenticate", "Bearer");
-                    return false;
-                }
-                else if (cookie && ac.Token == null)
-                {
-                    string loc = Service.Auth.SignOn + "?orig=" + ac.Uri;
-                    ac.Reply(303); // see other - redirect to signon url
-                    ac.SetHeader("Location", loc);
+                    if (reply)
+                    {
+                        if (ac.Header("Accept") != null) // if from browsing
+                        {
+                            string loc = Service.Auth?.SignOn + "?orig=" + ac.Uri;
+                            ac.SetHeader("Location", loc);
+                            ac.Reply(303); // see other - redirect to signon url
+                        }
+                        else // from non-browsing 
+                        {
+                            ac.Reply(401); // unauthorized
+                            ac.SetHeader("WWW-Authenticate", "Bearer");
+                        }
+                    }
                     return false;
                 }
 
-                for (int i = 0; i < roles.Length; i++)
+                // run checks
+                for (int i = 0; i < checks.Length; i++)
                 {
-                    if (!roles[i].Check(ac))
+                    if (!checks[i].Check(ac))
                     {
-                        ac.Reply(403); // forbidden
+                        if (reply)
+                        {
+                            ac.Reply(403); // forbidden
+                        }
                         return false;
                     }
                 }
@@ -95,7 +98,7 @@ namespace Greatbone.Core
             return true;
         }
 
-        internal void BeforeDo(WebActionContext ac)
+        internal void DoBefore(WebActionContext ac)
         {
             if (filters == null) return;
 
@@ -105,7 +108,7 @@ namespace Greatbone.Core
             }
         }
 
-        internal void AfterDo(WebActionContext ac)
+        internal void DoAfter(WebActionContext ac)
         {
             if (filters == null) return;
 

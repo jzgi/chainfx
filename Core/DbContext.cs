@@ -87,14 +87,14 @@ namespace Greatbone.Core
             ordinal = 0;
         }
 
-        public bool QueryOne(DbSql sql, Action<DbParameters> p = null, bool prepare = true)
+        public bool QueryUn(DbSql sql, Action<DbParameters> p = null, bool prepare = true)
         {
-            bool v = QueryOne(sql.ToString(), p, prepare);
+            bool v = QueryUn(sql.ToString(), p, prepare);
             BufferUtility.Return(sql);
             return v;
         }
 
-        public bool QueryOne(string cmdtext, Action<DbParameters> p = null, bool prepare = true)
+        public bool QueryUn(string cmdtext, Action<DbParameters> p = null, bool prepare = true)
         {
             if (connection.State != ConnectionState.Open)
             {
