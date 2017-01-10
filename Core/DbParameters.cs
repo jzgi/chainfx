@@ -205,7 +205,7 @@ namespace Greatbone.Core
             }
             coll.Add(new NpgsqlParameter(name, NpgsqlDbType.Bytea, v.Count)
             {
-                Value = v
+                Value = (v.Array != null) ? (object) v : DBNull.Value
             });
             return this;
         }

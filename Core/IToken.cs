@@ -8,7 +8,5 @@
         string Key { get; }
 
         string Name { get; }
-
-        string Credential { get; }
     }
 }

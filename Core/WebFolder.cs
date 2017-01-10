@@ -171,13 +171,13 @@ namespace Greatbone.Core
             return atn;
         }
 
-        public List<WebAction> GetUiActions(Type role)
+        public List<WebAction> GetUiActions(Type checktyp)
         {
             List<WebAction> lst = null;
             for (int i = 0; i < actions.Count; i++)
             {
                 WebAction a = actions[i];
-                if (a.Ui != null && a.HasCheck(role))
+                if (a.Ui != null && a.HasCheck(checktyp))
                 {
                     if (lst == null) lst = new List<WebAction>();
                     lst.Add(a);

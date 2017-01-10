@@ -94,7 +94,7 @@
     }
 
     ///
-    /// An authenticator for web service(s)
+    /// The authentication logic for web service.
     ///
     public class WebAuth<T> : WebAuth where T : IToken, new()
     {
