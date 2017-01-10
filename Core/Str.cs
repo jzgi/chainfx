@@ -44,16 +44,14 @@ namespace Greatbone.Core
         // utf-8 decoding 
         public void Accept(int b)
         {
-            // detect if a char already
-            if (b > 0xff)
-            {
-                Add((char)b);
-                return;
-            }
-
             // process a byte
             if (rest == 0)
             {
+                if (b > 0xff) // if a char already
+                {
+                    Add((char)b);
+                    return;
+                }
                 if (b < 0x80)
                 {
                     Add((char)b); // single byte
