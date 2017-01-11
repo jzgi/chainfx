@@ -5,7 +5,7 @@ namespace Greatbone.Core
     ///
     public struct XmlParse
     {
-        static readonly ParseException ParseEx = new ParseException("error during xml parse");
+        static readonly ParseException ParseEx = new ParseException("error parsing xml");
 
         // byte content to parse
         readonly byte[] bytebuf;
@@ -13,15 +13,18 @@ namespace Greatbone.Core
         // char content to parse
         readonly string strbuf;
 
+        readonly int offset;
+
         readonly int length;
 
         // UTF-8 string builder
         readonly Str str;
 
-        public XmlParse(byte[] bytebuf, int length)
+        public XmlParse(byte[] bytebuf, int offset, int length)
         {
             this.bytebuf = bytebuf;
             this.strbuf = null;
+            this.offset = offset;
             this.length = length;
             this.str = new Str(256);
         }
@@ -30,6 +33,7 @@ namespace Greatbone.Core
         {
             this.bytebuf = null;
             this.strbuf = strbuf;
+            this.offset = 0;
             this.length = strbuf.Length;
             this.str = new Str(256);
         }
@@ -48,7 +52,7 @@ namespace Greatbone.Core
             }
         }
 
-        string ParseString(ref int pos)
+        string ParseElem(ref int pos)
         {
             str.Clear();
             int p = pos;

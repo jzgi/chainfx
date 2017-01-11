@@ -61,7 +61,7 @@ namespace Greatbone.Core
         public static async Task<XElem> GetXElemAsync(this HttpResponseMessage msg)
         {
             byte[] bytes = await msg.Content.ReadAsByteArrayAsync();
-            XmlParse p = new XmlParse(bytes, bytes.Length);
+            XmlParse p = new XmlParse(bytes, 0, bytes.Length);
             return (XElem)p.Parse();
         }
 

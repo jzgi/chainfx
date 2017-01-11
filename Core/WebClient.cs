@@ -9,6 +9,14 @@ namespace Greatbone.Core
     ///
     public class WebClient : HttpClient, IRollable
     {
+
+        const int
+            INITIAL = -1,
+            TIME_OUT = 60,
+            TIME_OUT_2 = 120,
+            NO_CONTENT = 12,
+            NOT_IMPLEMENTED = 720;
+
         WebService service;
 
         // subdomain name or a reference name
@@ -42,6 +50,30 @@ namespace Greatbone.Core
                 // create and run task
                 Task.Run(() => { PollAsync(); });
             }
+        }
+
+        internal async void PollAsync()
+        {
+            HttpResponseMessage resp = await GetAsync("*");
+
+            byte[] cont = await resp.Content.ReadAsByteArrayAsync();
+
+            WebEventContext ec = new WebEventContext(this);
+            FormMpParse p = new FormMpParse("", cont, cont.Length)
+            {
+                EventContext = ec
+            };
+            p.Parse(x =>
+            {
+                long id;
+                string name = "";
+                DateTime time;
+                WebEvent handler = null;
+                if (service.Events.TryGet(name, out handler))
+                {
+                    handler.Do(ec);
+                }
+            });
         }
 
         internal void SetCancel()
@@ -189,29 +221,5 @@ namespace Greatbone.Core
             return SendAsync(req, HttpCompletionOption.ResponseContentRead);
         }
 
-
-        internal async void PollAsync()
-        {
-            HttpResponseMessage resp = await GetAsync("*");
-
-            byte[] cont = await resp.Content.ReadAsByteArrayAsync();
-
-            WebEventContext ec = new WebEventContext(this);
-            FormMpParse p = new FormMpParse("", cont, cont.Length)
-            {
-                EventContext = ec
-            };
-            p.Parse(x =>
-            {
-                long id;
-                string name = "";
-                DateTime time;
-                WebEvent handler = null;
-                if (service.Events.TryGet(name, out handler))
-                {
-                    handler.Do(ec);
-                }
-            });
-        }
     }
 }

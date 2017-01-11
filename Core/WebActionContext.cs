@@ -175,7 +175,7 @@ namespace Greatbone.Core
                 }
                 else if (ctyp.StartsWith("application/xml"))
                 {
-                    enty = new XmlParse(buffer, len).Parse();
+                    enty = new XmlParse(buffer, 0, len).Parse();
                 }
                 else
                 {
