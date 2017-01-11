@@ -7,7 +7,7 @@ namespace Greatbone.Core
     public static class StrUtility
     {
         // hexidecimal numbers
-        static readonly char[] HEX = {'0', '1', '2', '3', '4', '5', '6', '7', '8', '9', 'A', 'B', 'C', 'D', 'E', 'F'};
+        static readonly char[] HEX = { '0', '1', '2', '3', '4', '5', '6', '7', '8', '9', 'A', 'B', 'C', 'D', 'E', 'F' };
 
         public static string ToHex(ulong v)
         {
@@ -20,7 +20,7 @@ namespace Greatbone.Core
         }
 
         // days of week
-        static readonly string[] DOW = {"Mon", "Tue", "Wed", "Thu", "Fri", "Sat", "Sun"};
+        static readonly string[] DOW = { "Mon", "Tue", "Wed", "Thu", "Fri", "Sat", "Sun" };
 
         // sexagesimal numbers
         static readonly string[] SEX =
@@ -71,7 +71,7 @@ namespace Greatbone.Core
             v = v.ToUniversalTime();
 
             StringBuilder gmt = new StringBuilder();
-            gmt.Append(DOW[(int) v.DayOfWeek]);
+            gmt.Append(DOW[(int)v.DayOfWeek]);
             gmt.Append(", ");
 
             gmt.Append(SEX[v.Day]);
@@ -181,7 +181,7 @@ namespace Greatbone.Core
             byte[] raw = new byte[len];
             for (int i = 0; i < len; i++)
             {
-                raw[i] = (byte) input[i];
+                raw[i] = (byte)input[i];
             }
 
             // digest and transform
@@ -222,7 +222,7 @@ namespace Greatbone.Core
             while (i < vlen)
             {
                 int m = i / 4;
-                char c = (char) ((Dv(v[i++]) << 12) + (Dv(v[i++]) << 8) + (Dv(v[i++]) << 4) + Dv(v[i++]));
+                char c = (char)((Dv(v[i++]) << 12) + (Dv(v[i++]) << 8) + (Dv(v[i++]) << 4) + Dv(v[i++]));
                 buf[m] = c;
             }
             return new string(buf);
@@ -256,20 +256,20 @@ namespace Greatbone.Core
                 if (c < 0x80)
                 {
                     // have at most seven bits
-                    buf[p++] = ((byte) c);
+                    buf[p++] = ((byte)c);
                 }
                 else if (c < 0x800)
                 {
                     // 2 text, 11 bits
-                    buf[p++] = (byte) (0xc0 | (c >> 6));
-                    buf[p++] = (byte) (0x80 | (c & 0x3f));
+                    buf[p++] = (byte)(0xc0 | (c >> 6));
+                    buf[p++] = (byte)(0x80 | (c & 0x3f));
                 }
                 else
                 {
                     // 3 text, 16 bits
-                    buf[p++] = (byte) (0xe0 | (c >> 12));
-                    buf[p++] = (byte) (0x80 | (c >> 6) & 0x3f);
-                    buf[p++] = (byte) (0x80 | (c & 0x3f));
+                    buf[p++] = (byte)(0xe0 | (c >> 12));
+                    buf[p++] = (byte)(0x80 | (c >> 6) & 0x3f);
+                    buf[p++] = (byte)(0x80 | (c & 0x3f));
                 }
             }
             return new ArraySegment<byte>(buf, 0, p);
@@ -280,10 +280,23 @@ namespace Greatbone.Core
         // CONVERTION
         //
 
+        public static bool ToBool(this string str, bool def = false)
+        {
+            if ("true".Equals(str))
+            {
+                return true;
+            }
+            if ("false".Equals(str))
+            {
+                return false;
+            }
+            return def;
+        }
+
         public static short ToShort(this string str, short def = 0)
         {
             short v;
-            if (short.TryParse(str, out v))
+            if (str != null && short.TryParse(str, out v))
             {
                 return v;
             }
@@ -293,7 +306,7 @@ namespace Greatbone.Core
         public static int ToInt(this string str, int def = 0)
         {
             int v;
-            if (int.TryParse(str, out v))
+            if (str != null && int.TryParse(str, out v))
             {
                 return v;
             }
@@ -303,7 +316,7 @@ namespace Greatbone.Core
         public static long ToLong(this string str, long def = 0)
         {
             long v;
-            if (long.TryParse(str, out v))
+            if (str != null && long.TryParse(str, out v))
             {
                 return v;
             }
