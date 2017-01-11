@@ -1,4 +1,6 @@
-﻿namespace Greatbone.Core
+﻿using System.Text;
+
+namespace Greatbone.Core
 {
     public abstract class WebAuth
     {
@@ -8,21 +10,21 @@
         // order for encoding/decoding token
         readonly int order;
 
-        /// The cookie domain to apply
-        readonly string domain;
+        /// The cookie max-age to apply
+        readonly int maxage;
 
         /// The absolute or relative URL of the signon user interface.
         readonly string signon;
 
-        protected WebAuth(int mask, int order, string domain = null, string signon = "/signon")
+        protected WebAuth(int mask, int order, int maxage = 0, string signon = "/signon")
         {
             this.mask = mask;
             this.order = order;
-            this.domain = domain;
+            this.maxage = maxage;
             this.signon = signon;
         }
 
-        public string Domain => domain;
+        public int MaxAge => maxage;
 
         public string SignOn => signon;
 
@@ -91,6 +93,36 @@
             if (v >= 0 && v <= 5) return 10 + v;
             return 0;
         }
+
+        public void SetCookieHeader(WebActionContext ac, IToken tok)
+        {
+            StringBuilder sb = new StringBuilder("Bearer=");
+            string tokstr = Encrypt(tok);
+            sb.Append(tokstr);
+            sb.Append("; HttpOnly");
+            if (maxage != 0)
+            {
+                sb.Append("; Max-Age=").Append(maxage);
+            }
+            // detect domain from the Host header
+            string host = ac.Header("Host");
+            if (!string.IsNullOrEmpty(host))
+            {
+                // if the last part is not numeric
+                int lastdot = host.LastIndexOf('.');
+                if (!char.IsDigit(host[lastdot + 1])) // a domain name is given
+                {
+                    int dot = host.LastIndexOf('.', lastdot - 1);
+                    if (dot != -1)
+                    {
+                        string domain = host.Substring(dot + 1);
+                        sb.Append("; Domain=").Append(domain);
+                    }
+                }
+            }
+            // set header
+            ac.SetHeader("Set-Cookie", sb.ToString());
+        }
     }
 
     ///
@@ -98,7 +130,7 @@
     ///
     public class WebAuth<T> : WebAuth where T : IToken, new()
     {
-        public WebAuth(int mask, int order, string domain = null, string signon = "/signon") : base(mask, order, domain, signon) { }
+        public WebAuth(int mask, int order, int maxage = 0, string signon = "/signon") : base(mask, order, maxage, signon) { }
 
         public override void Authenticate(WebActionContext ac)
         {

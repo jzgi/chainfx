@@ -141,7 +141,7 @@ namespace Greatbone.Core
 
         public Roll<WebClient> Cluster => cluster;
 
-        public WebConfig Config => (WebConfig) context;
+        public WebConfig Config => (WebConfig)context;
 
         public WebAuth Auth { get; set; }
 
@@ -208,7 +208,7 @@ namespace Greatbone.Core
         /// 
         public async Task ProcessRequestAsync(HttpContext context)
         {
-            WebActionContext ac = (WebActionContext) context;
+            WebActionContext ac = (WebActionContext)context;
             HttpRequest req = ac.Request;
             string path = req.Path.Value;
 
@@ -257,7 +257,7 @@ namespace Greatbone.Core
         public void DisposeContext(HttpContext context, Exception exception)
         {
             // dispose the action context
-            ((WebActionContext) context).Dispose();
+            ((WebActionContext)context).Dispose();
         }
 
         internal override void Handle(string relative, WebActionContext ac)
@@ -420,7 +420,7 @@ namespace Greatbone.Core
 
         public bool IsEnabled(LogLevel level)
         {
-            return (int) level >= Config.logging;
+            return (int)level >= Config.logging;
         }
 
         public void Dispose()
@@ -434,7 +434,7 @@ namespace Greatbone.Core
             Console.WriteLine(".");
         }
 
-        static readonly string[] LVL = {"TRC: ", "DBG: ", "INF: ", "WAR: ", "ERR: ", "CRL: ", "NON: "};
+        static readonly string[] LVL = { "TRC: ", "DBG: ", "INF: ", "WAR: ", "ERR: ", "CRL: ", "NON: " };
 
         public void Log<T>(LogLevel level, EventId eid, T state, Exception exception, Func<T, Exception, string> formatter)
         {
@@ -443,7 +443,7 @@ namespace Greatbone.Core
                 return;
             }
 
-            logWriter.Write(LVL[(int) level]);
+            logWriter.Write(LVL[(int)level]);
 
             if (eid.Id != 0)
             {
@@ -499,7 +499,7 @@ namespace Greatbone.Core
 
                 cts.Token.Register(state =>
                     {
-                        ((IApplicationLifetime) state).StopApplication();
+                        ((IApplicationLifetime)state).StopApplication();
                         // dispose services
                         foreach (WebService svc in svcs)
                         {

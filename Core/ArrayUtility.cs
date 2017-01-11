@@ -8,7 +8,7 @@ namespace Greatbone.Core
         {
             if (arr == null || arr.Length == 0)
             {
-                return new[] {v};
+                return new[] { v };
             }
 
             int len = arr.Length;
@@ -46,6 +46,20 @@ namespace Greatbone.Core
             int next = index + 1;
             Array.Copy(arr, next, alloc, index, len - next);
             return alloc;
+        }
+
+        public static E Find<E>(this E[] arr, Predicate<E> cond)
+        {
+            if (arr != null)
+            {
+                int len = arr.Length;
+                for (int i = 0; i < len; i++)
+                {
+                    E e = arr[i];
+                    if (cond(e)) return e;
+                }
+            }
+            return default(E);
         }
     }
 }
