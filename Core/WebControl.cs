@@ -59,7 +59,7 @@ namespace Greatbone.Core
             return false;
         }
 
-        internal bool Authorize(WebActionContext ac, bool reply = true)
+        internal bool Allows(WebActionContext ac, bool reply = true)
         {
             if (checks != null)
             {

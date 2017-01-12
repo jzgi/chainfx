@@ -6,7 +6,7 @@ namespace Greatbone.Sample
     /// 
     /// An order data object.
     ///
-    public class Order : IData
+    public class Order : IDat
     {
         public static readonly Order Empty = new Order();
 

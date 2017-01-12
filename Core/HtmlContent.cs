@@ -225,7 +225,7 @@ namespace Greatbone.Core
             Add("</form>");
         }
 
-        public void FORM<D>(WebAction[] acts, D[] arr, byte flags = 0) where D : IData
+        public void FORM<D>(WebAction[] acts, D[] arr, byte flags = 0) where D : IDat
         {
             Add("<form class=\"pure-form pure-g\">");
 
@@ -239,7 +239,7 @@ namespace Greatbone.Core
             Add("</form>");
         }
 
-        public void FORM<D>(WebAction act, D obj, byte flags = 0) where D : IData
+        public void FORM<D>(WebAction act, D dat, byte flags = 0) where D : IDat
         {
             Add("<form class=\"pure-form pure-g\">");
 
@@ -1122,7 +1122,7 @@ namespace Greatbone.Core
             return this;
         }
 
-        public HtmlContent Put<D>(string name, D v, byte flags = 0) where D : IData
+        public HtmlContent Put<D>(string name, D v, byte flags = 0) where D : IDat
         {
             return this;
         }
@@ -1157,7 +1157,7 @@ namespace Greatbone.Core
             return this;
         }
 
-        public HtmlContent Put<D>(string name, D[] v, byte flags = 0) where D : IData
+        public HtmlContent Put<D>(string name, D[] v, byte flags = 0) where D : IDat
         {
             return this;
         }

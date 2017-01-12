@@ -9,27 +9,27 @@ namespace Greatbone.Core
         public static JArr StringToJArr(string v)
         {
             JsonParse p = new JsonParse(v);
-            return (JArr)p.Parse();
+            return (JArr) p.Parse();
         }
 
         public static JObj StringToJObj(string v)
         {
             JsonParse p = new JsonParse(v);
-            return (JObj)p.Parse();
+            return (JObj) p.Parse();
         }
 
-        public static D StringToObject<D>(string v, byte flags = 0) where D : IData, new()
+        public static D StringToDat<D>(string v, byte flags = 0) where D : IDat, new()
         {
             JsonParse p = new JsonParse(v);
-            JObj jobj = (JObj)p.Parse();
-            return jobj.ToObject<D>(flags);
+            JObj jobj = (JObj) p.Parse();
+            return jobj.ToDat<D>(flags);
         }
 
-        public static D[] StringToArray<D>(string v, byte flags = 0) where D : IData, new()
+        public static D[] StringToDats<D>(string v, byte flags = 0) where D : IDat, new()
         {
             JsonParse p = new JsonParse(v);
-            JArr jarr = (JArr)p.Parse();
-            return jarr.ToArray<D>(flags);
+            JArr jarr = (JArr) p.Parse();
+            return jarr.ToDats<D>(flags);
         }
 
         public static string JArrToString(JArr v)
@@ -50,7 +50,7 @@ namespace Greatbone.Core
             return str;
         }
 
-        public static string ObjectToString<D>(D v, byte flags = 0) where D : IData
+        public static string DatToString<D>(D v, byte flags = 0) where D : IDat
         {
             JsonContent cont = new JsonContent(false, true, 4 * 1024);
             cont.Put(null, v);
@@ -59,7 +59,7 @@ namespace Greatbone.Core
             return str;
         }
 
-        public static string ArrayToString<D>(D[] v, byte flags = 0) where D : IData
+        public static string DatsToString<D>(D[] v, byte flags = 0) where D : IDat
         {
             JsonContent cont = new JsonContent(false, true, 4 * 1024);
             cont.Put(null, v);
@@ -74,7 +74,7 @@ namespace Greatbone.Core
             {
                 byte[] bytes = File.ReadAllBytes(file);
                 JsonParse p = new JsonParse(bytes, bytes.Length);
-                return (JObj)p.Parse();
+                return (JObj) p.Parse();
             }
             catch (Exception ex)
             {
@@ -89,7 +89,7 @@ namespace Greatbone.Core
             {
                 byte[] bytes = File.ReadAllBytes(file);
                 JsonParse p = new JsonParse(bytes, bytes.Length);
-                return (JArr)p.Parse();
+                return (JArr) p.Parse();
             }
             catch (Exception ex)
             {
@@ -98,16 +98,16 @@ namespace Greatbone.Core
             return null;
         }
 
-        public static D FileToObject<D>(string file) where D : IData, new()
+        public static D FileToDat<D>(string file) where D : IDat, new()
         {
             try
             {
                 byte[] bytes = File.ReadAllBytes(file);
                 JsonParse p = new JsonParse(bytes, bytes.Length);
-                JObj jobj = (JObj)p.Parse();
+                JObj jobj = (JObj) p.Parse();
                 if (jobj != null)
                 {
-                    return jobj.ToObject<D>();
+                    return jobj.ToDat<D>();
                 }
             }
             catch (Exception ex)
@@ -117,16 +117,16 @@ namespace Greatbone.Core
             return default(D);
         }
 
-        public static D[] FileToArray<D>(string file) where D : IData, new()
+        public static D[] FileToDats<D>(string file) where D : IDat, new()
         {
             try
             {
                 byte[] bytes = File.ReadAllBytes(file);
                 JsonParse p = new JsonParse(bytes, bytes.Length);
-                JArr jarr = (JArr)p.Parse();
+                JArr jarr = (JArr) p.Parse();
                 if (jarr != null)
                 {
-                    return jarr.ToArray<D>();
+                    return jarr.ToDats<D>();
                 }
             }
             catch (Exception ex)

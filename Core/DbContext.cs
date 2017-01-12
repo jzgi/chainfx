@@ -151,7 +151,7 @@ namespace Greatbone.Core
                 p(parameters);
                 if (prepare) command.Prepare();
             }
-            reader = (NpgsqlDataReader)await command.ExecuteReaderAsync();
+            reader = (NpgsqlDataReader) await command.ExecuteReaderAsync();
             return reader.HasRows;
         }
 
@@ -307,7 +307,7 @@ namespace Greatbone.Core
         // RESULTSET
         //
 
-        public D ToObject<D>(byte flags = 0) where D : IData, new()
+        public D ToDat<D>(byte flags = 0) where D : IDat, new()
         {
             D dat = new D();
             dat.Load(this, flags);
@@ -323,22 +323,22 @@ namespace Greatbone.Core
         }
 
 
-        public D[] ToArray<D>(byte bits = 0) where D : IData, new()
+        public D[] ToDats<D>(byte bits = 0) where D : IDat, new()
         {
             List<D> lst = new List<D>(64);
             while (NextRow())
             {
-                D obj = new D();
-                obj.Load(this, bits);
+                D dat = new D();
+                dat.Load(this, bits);
 
                 // add shard if any
-                IShardable shardable = obj as IShardable;
+                IShardable shardable = dat as IShardable;
                 if (shardable != null)
                 {
                     shardable.Shard = shard;
                 }
 
-                lst.Add(obj);
+                lst.Add(dat);
             }
             return lst.ToArray();
         }
@@ -465,7 +465,7 @@ namespace Greatbone.Core
                 if (!reader.IsDBNull(ord))
                 {
                     int len;
-                    if ((len = (int)reader.GetBytes(ord, 0, null, 0, 0)) > 0)
+                    if ((len = (int) reader.GetBytes(ord, 0, null, 0, 0)) > 0)
                     {
                         // get the number of bytes that are available to read.
                         v = new byte[len];
@@ -489,7 +489,7 @@ namespace Greatbone.Core
                 if (!reader.IsDBNull(ord))
                 {
                     int len;
-                    if ((len = (int)reader.GetBytes(ord, 0, null, 0, 0)) > 0)
+                    if ((len = (int) reader.GetBytes(ord, 0, null, 0, 0)) > 0)
                     {
                         byte[] buf = BufferUtility.ByteBuffer(len);
                         reader.GetBytes(ord, 0, buf, 0, len); // read data into the buffer
@@ -505,14 +505,14 @@ namespace Greatbone.Core
             return false;
         }
 
-        public bool Get<D>(string name, ref D v, byte flags = 0) where D : IData, new()
+        public bool Get<D>(string name, ref D v, byte flags = 0) where D : IDat, new()
         {
             int ord = name == null ? ordinal++ : reader.GetOrdinal(name);
             if (!reader.IsDBNull(ord))
             {
                 string str = reader.GetString(ord);
                 JsonParse p = new JsonParse(str);
-                JObj jobj = (JObj)p.Parse();
+                JObj jobj = (JObj) p.Parse();
                 v = new D();
                 v.Load(jobj, flags);
 
@@ -534,7 +534,7 @@ namespace Greatbone.Core
             {
                 string str = reader.GetString(ord);
                 JsonParse p = new JsonParse(str);
-                v = (JObj)p.Parse();
+                v = (JObj) p.Parse();
                 return true;
             }
             return false;
@@ -547,7 +547,7 @@ namespace Greatbone.Core
             {
                 string str = reader.GetString(ord);
                 JsonParse p = new JsonParse(str);
-                v = (JArr)p.Parse();
+                v = (JArr) p.Parse();
                 return true;
             }
             return false;
@@ -597,14 +597,14 @@ namespace Greatbone.Core
             return false;
         }
 
-        public bool Get<D>(string name, ref D[] v, byte flags = 0) where D : IData, new()
+        public bool Get<D>(string name, ref D[] v, byte flags = 0) where D : IDat, new()
         {
             int ord = name == null ? ordinal++ : reader.GetOrdinal(name);
             if (!reader.IsDBNull(ord))
             {
                 string str = reader.GetString(ord);
                 JsonParse p = new JsonParse(str);
-                JArr jarr = (JArr)p.Parse();
+                JArr jarr = (JArr) p.Parse();
                 int len = jarr.Count;
                 v = new D[len];
                 for (int i = 0; i < len; i++)
@@ -632,43 +632,43 @@ namespace Greatbone.Core
         // MESSAGING
         //
 
-        public void EnQueue(string name, string shard, IData obj, byte bits = 0)
+        public void Event(string name, string shard, IDat dat, byte bits = 0)
         {
             JsonContent cont = new JsonContent(true, true);
-            cont.Put(null, obj, bits);
-            EnQueue(name, shard, cont);
+            cont.Put(null, dat, bits);
+            Event(name, shard, cont);
         }
 
-        public void EnQueue<D>(string name, string shard, D[] arr, byte bits = 0) where D : IData
+        public void Event<D>(string name, string shard, D[] dats, byte bits = 0) where D : IDat
         {
             JsonContent cont = new JsonContent(true);
-            cont.Put(null, arr, bits);
-            EnQueue(name, shard, cont);
+            cont.Put(null, dats, bits);
+            Event(name, shard, cont);
         }
 
-        public void EnQueue(string name, string shard, JArr jarr)
+        public void Event(string name, string shard, JArr jarr)
         {
         }
 
-        public void EnQueue(string name, string shard, JObj jobj)
+        public void Event(string name, string shard, JObj jobj)
         {
         }
 
-        public void EnQueue(string name, string shard, XElem xelem)
+        public void Event(string name, string shard, XElem xelem)
         {
         }
 
-        public void EnQueue(string name, string shard, Form form)
+        public void Event(string name, string shard, Form form)
         {
             FormContent cont = new FormContent(true, true);
-            EnQueue(name, shard, cont);
+            Event(name, shard, cont);
         }
 
-        public void EnQueue(string name, string shard, ArraySegment<byte> bytesseg)
+        public void Event(string name, string shard, ArraySegment<byte> bytesseg)
         {
         }
 
-        public void EnQueue<C>(string name, string shard, C content) where C : IContent
+        public void Event<C>(string name, string shard, C content) where C : IContent
         {
             // convert message to byte buffer
             ArraySegment<byte> byteseg = new ArraySegment<byte>(content.ByteBuffer, 0, content.Size);

@@ -188,7 +188,7 @@ namespace Greatbone.Core
 
         internal virtual void Handle(string relative, WebActionContext ac)
         {
-            if (!Authorize(ac)) return;
+            if (!Allows(ac)) return;
             // pre-
             DoBefore(ac);
 

@@ -3,7 +3,7 @@
     ///
     /// A client principal such as a token or a login identity.
     ///
-    public interface IToken : IData
+    public interface IToken : IDat
     {
         string Key { get; }
 

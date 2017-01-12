@@ -5,11 +5,11 @@ namespace Greatbone.Core
 {
     public static class ISourceUtility
     {
-        public static D ToObject<D>(this ISource src, byte flags = 0) where D : IData, new()
+        public static D ToDat<D>(this ISource src, byte flags = 0) where D : IDat, new()
         {
-            D obj = new D();
-            obj.Load(src, flags);
-            return obj;
+            D dat = new D();
+            dat.Load(src, flags);
+            return dat;
         }
 
         //
@@ -80,7 +80,7 @@ namespace Greatbone.Core
         }
 
 
-        public static bool Get<D>(this ISource src, ref D v, byte flags = 0) where D : IData, new()
+        public static bool Get<D>(this ISource src, ref D v, byte flags = 0) where D : IDat, new()
         {
             return src.Get(null, ref v, flags);
         }
@@ -121,7 +121,7 @@ namespace Greatbone.Core
             return src.Get(null, ref v);
         }
 
-        public static bool Get<D>(this ISource src, ref D[] v, byte flags = 0) where D : IData, new()
+        public static bool Get<D>(this ISource src, ref D[] v, byte flags = 0) where D : IDat, new()
         {
             return src.Get(null, ref v, flags);
         }
@@ -208,7 +208,7 @@ namespace Greatbone.Core
             return v;
         }
 
-        public static D GetObject<D>(this ISource src, byte flags = 0) where D : IData, new()
+        public static D GetDat<D>(this ISource src, byte flags = 0) where D : IDat, new()
         {
             D v = default(D);
             src.Get(null, ref v, flags);
@@ -258,7 +258,7 @@ namespace Greatbone.Core
             return v;
         }
 
-        public static D[] GetObjects<D>(this ISource src, byte flags = 0) where D : IData, new()
+        public static D[] GetDats<D>(this ISource src, byte flags = 0) where D : IDat, new()
         {
             D[] v = null;
             src.Get(null, ref v, flags);
@@ -346,7 +346,7 @@ namespace Greatbone.Core
             return v;
         }
 
-        public static D GetObject<D>(this ISource src, string name) where D : IData, new()
+        public static D GetDat<D>(this ISource src, string name) where D : IDat, new()
         {
             D v = default(D);
             src.Get(name, ref v);
@@ -396,7 +396,7 @@ namespace Greatbone.Core
             return v;
         }
 
-        public static D[] GetObjects<D>(this ISource src, string name) where D : IData, new()
+        public static D[] GetDats<D>(this ISource src, string name) where D : IDat, new()
         {
             D[] v = null;
             src.Get(name, ref v);

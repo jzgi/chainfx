@@ -23,14 +23,14 @@ namespace Greatbone.Core
             msg.Content = cont;
         }
 
-        public static void Set<D>(this HttpRequestMessage msg, D obj) where D : IData
+        public static void Set<D>(this HttpRequestMessage msg, D dat) where D : IDat
         {
             JsonContent cont = new JsonContent(true, true);
-            cont.Put(null, obj);
+            cont.Put(null, dat);
             msg.Content = cont;
         }
 
-        public static void Set<D>(this HttpRequestMessage msg, D[] arr) where D : IData
+        public static void Set<D>(this HttpRequestMessage msg, D[] arr) where D : IDat
         {
             JsonContent cont = new JsonContent(true, true);
             cont.Put(null, arr);
@@ -65,20 +65,20 @@ namespace Greatbone.Core
             return (XElem)p.Parse();
         }
 
-        public static async Task<D> GetObjectAsync<D>(this HttpResponseMessage msg, byte flags = 0) where D : IData, new()
+        public static async Task<D> GetObjectAsync<D>(this HttpResponseMessage msg, byte flags = 0) where D : IDat, new()
         {
             byte[] bytes = await msg.Content.ReadAsByteArrayAsync();
             JsonParse p = new JsonParse(bytes, bytes.Length);
             JObj jobj = (JObj)p.Parse();
-            return jobj.ToObject<D>(flags);
+            return jobj.ToDat<D>(flags);
         }
 
-        public static async Task<D[]> GetArrayAsync<D>(this HttpResponseMessage msg, byte flags = 0) where D : IData, new()
+        public static async Task<D[]> GetArrayAsync<D>(this HttpResponseMessage msg, byte flags = 0) where D : IDat, new()
         {
             byte[] bytes = await msg.Content.ReadAsByteArrayAsync();
             JsonParse p = new JsonParse(bytes, bytes.Length);
             JArr jarr = (JArr)p.Parse();
-            return jarr.ToArray<D>(flags);
+            return jarr.ToDats<D>(flags);
         }
 
         public static async Task<byte[]> GetBytesSegAsync(this HttpResponseMessage msg)

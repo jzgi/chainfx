@@ -3,7 +3,7 @@ using Greatbone.Core;
 
 namespace Greatbone.Sample
 {
-    public class Pay : IData
+    public class Pay : IDat
     {
         internal string id;
         internal string shopid;

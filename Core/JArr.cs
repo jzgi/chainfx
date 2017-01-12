@@ -41,19 +41,19 @@ namespace Greatbone.Core
                 JType typ = elem.type;
                 if (typ == JType.Array)
                 {
-                    snk.Put(null, (JArr)elem);
+                    snk.Put(null, (JArr) elem);
                 }
                 else if (typ == JType.Object)
                 {
-                    snk.Put(null, (JObj)elem);
+                    snk.Put(null, (JObj) elem);
                 }
                 else if (typ == JType.String)
                 {
-                    snk.Put(null, (string)elem);
+                    snk.Put(null, (string) elem);
                 }
                 else if (typ == JType.Number)
                 {
-                    snk.Put(null, (JNumber)elem);
+                    snk.Put(null, (JNumber) elem);
                 }
                 else if (typ == JType.True)
                 {
@@ -70,14 +70,14 @@ namespace Greatbone.Core
             }
         }
 
-        public D[] ToArray<D>(byte flags = 0) where D : IData, new()
+        public D[] ToDats<D>(byte flags = 0) where D : IDat, new()
         {
             D[] arr = new D[count];
             for (int i = 0; i < arr.Length; i++)
             {
-                D obj = new D();
-                obj.Load((JObj)this[i], flags);
-                arr[i] = obj;
+                D dat = new D();
+                dat.Load((JObj) this[i], flags);
+                arr[i] = dat;
             }
             return arr;
         }

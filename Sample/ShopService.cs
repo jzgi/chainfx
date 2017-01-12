@@ -62,7 +62,7 @@ namespace Greatbone.Sample
                 {
                     if (dc.QueryUn("SELECT * FROM shops WHERE id = @1", (p) => p.Put(id)))
                     {
-                        var tok = dc.ToObject<Token>();
+                        var tok = dc.ToDat<Token>();
                         string credential = StrUtility.MD5(id + ':' + password);
                         if (credential.Equals(tok.credential))
                         {
@@ -105,7 +105,7 @@ namespace Greatbone.Sample
                 DbSql sql = new DbSql("SELECT ").columnlst(Shop.Empty)._("FROM shops WHERE location <-> @1");
                 if (dc.Query(sql.ToString(), p => p.Put(pt)))
                 {
-                    var shops = dc.ToArray<Shop>();
+                    var shops = dc.ToDats<Shop>();
                     ac.ReplyPage(200, "", main =>
                     {
                         main.FORM(_new, shops);
@@ -153,7 +153,7 @@ namespace Greatbone.Sample
                 DbSql sql = new DbSql("SELECT ").columnlst(Shop.Empty, z)._("FROM shops");
                 if (dc.Query(sql.ToString(), p => p.Put(20 * page)))
                 {
-                    var shops = dc.ToArray<Shop>(z);
+                    var shops = dc.ToDats<Shop>(z);
                     ac.ReplyPage(200, "", main =>
                     {
                         main.FORM(_new, shops);
@@ -185,7 +185,7 @@ namespace Greatbone.Sample
             }
             else // post
             {
-                var shop = await ac.ReadObjectAsync<Shop>(); // read form
+                var shop = await ac.ReadDatAsync<Shop>(); // read form
                 using (var dc = Service.NewDbContext())
                 {
                     shop.credential = StrUtility.MD5(shop.id + ':' + shop.credential);

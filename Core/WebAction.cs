@@ -57,7 +57,7 @@ namespace Greatbone.Core
         internal void Do(WebActionContext ac, string arg)
         {
             ac.Action = this;
-            if (Authorize(ac)) // authorize check
+            if (Allows(ac)) // authorize check
             {
                 // pre-
                 DoBefore(ac);

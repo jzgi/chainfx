@@ -112,7 +112,7 @@ namespace Greatbone.Core
             return await resp.GetJArrAsync();
         }
 
-        public async Task<D> GetObjectAync<D>(ICaller ctx, string uri, byte flags = 0) where D : IData, new()
+        public async Task<D> GetDatAync<D>(ICaller ctx, string uri, byte flags = 0) where D : IDat, new()
         {
             HttpRequestMessage req = new HttpRequestMessage(HttpMethod.Get, uri);
             if (ctx.Cookied)
@@ -127,7 +127,7 @@ namespace Greatbone.Core
             return await resp.GetObjectAsync<D>(flags);
         }
 
-        public async Task<D[]> GetArrayAync<D>(ICaller ctx, string uri, byte flags = 0) where D : IData, new()
+        public async Task<D[]> GetDatsAync<D>(ICaller ctx, string uri, byte flags = 0) where D : IDat, new()
         {
             HttpRequestMessage req = new HttpRequestMessage(HttpMethod.Get, uri);
             if (ctx.Cookied)
@@ -172,7 +172,7 @@ namespace Greatbone.Core
             return await resp.GetBytesSegAsync();
         }
 
-        public Task<HttpResponseMessage> PostAsync<D>(ICaller ctx, string uri, D dat) where D : IData
+        public Task<HttpResponseMessage> PostAsync<D>(ICaller ctx, string uri, D dat) where D : IDat
         {
             HttpRequestMessage req = new HttpRequestMessage(HttpMethod.Post, uri);
             if (ctx.Cookied)
@@ -189,7 +189,7 @@ namespace Greatbone.Core
             return SendAsync(req, HttpCompletionOption.ResponseContentRead);
         }
 
-        public Task<HttpResponseMessage> PostAsync<D>(ICaller ctx, string uri, D[] dat) where D : IData
+        public Task<HttpResponseMessage> PostAsync<D>(ICaller ctx, string uri, D[] dat) where D : IDat
         {
             HttpRequestMessage req = new HttpRequestMessage(HttpMethod.Post, uri);
             if (ctx.Cookied)

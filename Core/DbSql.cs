@@ -43,50 +43,50 @@ namespace Greatbone.Core
             return this;
         }
 
-        public DbSql setlst<D>(D obj, byte flags = 0) where D : IData
+        public DbSql setlst<D>(D dat, byte flags = 0) where D : IDat
         {
             list = SetList;
             ordinal = 1;
-            obj.Dump(this, flags);
+            dat.Dump(this, flags);
             return this;
         }
 
-        public DbSql columnlst<D>(D obj, byte flags = 0) where D : IData
+        public DbSql columnlst<D>(D dat, byte flags = 0) where D : IDat
         {
             list = ColumnList;
             ordinal = 1;
-            obj.Dump(this, flags);
+            dat.Dump(this, flags);
             return this;
         }
 
-        public DbSql parameterlst<D>(D obj, byte flags = 0) where D : IData
+        public DbSql parameterlst<D>(D dat, byte flags = 0) where D : IDat
         {
             list = ParameterList;
             ordinal = 1;
-            obj.Dump(this, flags);
+            dat.Dump(this, flags);
             return this;
         }
 
-        public DbSql _<D>(D obj, byte flags = 0) where D : IData
+        public DbSql _<D>(D dat, byte flags = 0) where D : IDat
         {
             Add(" (");
-            columnlst(obj, flags);
+            columnlst(dat, flags);
             Add(")");
             return this;
         }
 
-        public DbSql _VALUES_<D>(D obj, byte flags = 0) where D : IData
+        public DbSql _VALUES_<D>(D dat, byte flags = 0) where D : IDat
         {
             Add(" VALUES (");
-            parameterlst(obj, flags);
+            parameterlst(dat, flags);
             Add(")");
             return this;
         }
 
-        public DbSql _SET_<D>(D obj, byte flags = 0) where D : IData
+        public DbSql _SET_<D>(D dat, byte flags = 0) where D : IDat
         {
             Add(" SET ");
-            setlst(obj, flags);
+            setlst(dat, flags);
             return this;
         }
 
@@ -276,7 +276,7 @@ namespace Greatbone.Core
             return this;
         }
 
-        public DbSql Put<D>(string name, D v, byte flags = 0) where D : IData
+        public DbSql Put<D>(string name, D v, byte flags = 0) where D : IDat
         {
             if (name != null)
             {
@@ -461,7 +461,7 @@ namespace Greatbone.Core
             return this;
         }
 
-        public DbSql Put<D>(string name, D[] v, byte flags = 0) where D : IData
+        public DbSql Put<D>(string name, D[] v, byte flags = 0) where D : IDat
         {
             Build(name);
             return this;

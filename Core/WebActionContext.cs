@@ -28,15 +28,15 @@ namespace Greatbone.Core
         // two levels of variable keys
         Var key, key2;
 
-        internal void ChainKey(string value, WebFolder folder)
+        internal void ChainKey(string key, WebFolder folder)
         {
-            if (key.Empty)
+            if (this.key.Empty)
             {
-                key = new Var(value, folder);
+                this.key = new Var(key, folder);
             }
             else if (key2.Empty)
             {
-                key2 = new Var(value, folder);
+                key2 = new Var(key, folder);
             }
         }
 
@@ -265,7 +265,7 @@ namespace Greatbone.Core
             return entity as JArr;
         }
 
-        public async Task<D> ReadObjectAsync<D>(byte flags = 0) where D : IData, new()
+        public async Task<D> ReadDatAsync<D>(byte flags = 0) where D : IDat, new()
         {
             if (entity == null)
             {
@@ -285,10 +285,10 @@ namespace Greatbone.Core
             {
                 return default(D);
             }
-            return src.ToObject<D>(flags);
+            return src.ToDat<D>(flags);
         }
 
-        public async Task<D[]> ReadArrayAsync<D>(byte flags = 0) where D : IData, new()
+        public async Task<D[]> ReadDatsAsync<D>(byte flags = 0) where D : IDat, new()
         {
             if (entity == null)
             {
@@ -304,7 +304,7 @@ namespace Greatbone.Core
                 }
             }
             JArr jarr = entity as JArr;
-            return jarr?.ToArray<D>(flags);
+            return jarr?.ToDats<D>(flags);
         }
 
         public async Task<XElem> ReadXElemAsync()
@@ -388,17 +388,17 @@ namespace Greatbone.Core
             Reply(status, cont, pub, seconds);
         }
 
-        public void Reply(int status, IData obj, byte flags = 0, bool? pub = null, int seconds = 30)
+        public void Reply(int status, IDat dat, byte flags = 0, bool? pub = null, int seconds = 30)
         {
             JsonContent cont = new JsonContent(true, true, 4 * 1024);
-            cont.Put(null, obj, flags);
+            cont.Put(null, dat, flags);
             Reply(status, cont, pub, seconds);
         }
 
-        public void Reply<D>(int status, D[] arr, byte flags = 0, bool? pub = null, int seconds = 30) where D : IData
+        public void Reply<D>(int status, D[] dats, byte flags = 0, bool? pub = null, int seconds = 30) where D : IDat
         {
             JsonContent cont = new JsonContent(true, true, 4 * 1024);
-            cont.Put(null, arr, flags);
+            cont.Put(null, dats, flags);
             Reply(status, cont, pub, seconds);
         }
 
