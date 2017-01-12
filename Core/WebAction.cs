@@ -54,21 +54,18 @@ namespace Greatbone.Core
 
         public UiAttribute Ui => ui;
 
-        internal void Do(WebActionContext ac, string arg)
+        internal void Do(WebActionContext ac, String arg)
         {
             ac.Action = this;
-            if (Allows(ac)) // authorize check
-            {
-                // pre-
-                DoBefore(ac);
+            // pre-
+            DoBefore(ac);
 
-                // invoke the right action method
-                if (Arg) doer2(ac, arg);
-                else doer(ac);
+            // invoke the right action method
+            if (Arg) doer2(ac, arg);
+            else doer(ac);
 
-                // post-
-                DoAfter(ac);
-            }
+            // post-
+            DoAfter(ac);
             ac.Action = null;
         }
 

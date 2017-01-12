@@ -146,9 +146,13 @@ namespace Greatbone.Core
 
         public IRequestCookieCollection Cookies => Request.Cookies;
 
-        // read and parse
-        void ParseEntity(int len)
+        internal async Task ReadAsync(int len)
         {
+            buffer = BufferUtility.ByteBuffer(len); // borrow from the pool
+            while ((count += await Request.Body.ReadAsync(buffer, count, (len - count))) < len)
+            {
+            }
+            // parse the request content
             string ctyp = Request.ContentType;
             object enty;
             if ("application/x-www-form-urlencoded".Equals(ctyp))
@@ -175,111 +179,33 @@ namespace Greatbone.Core
             entity = enty;
         }
 
-        public async Task<ArraySegment<byte>?> ReadBytesSegAsync()
+        public ArraySegment<byte>? AsBytesSeg()
         {
-            if (entity == null)
-            {
-                long? clen = Request.ContentLength;
-                if (clen > 0)
-                {
-                    int len = (int) clen;
-                    buffer = BufferUtility.ByteBuffer(len); // borrow from the pool
-                    while ((count += await Request.Body.ReadAsync(buffer, count, (len - count))) < len)
-                    {
-                    }
-                    ParseEntity(len);
-                }
-            }
             return entity as ArraySegment<byte>?;
         }
 
-        public async Task<ISource> ReadSourceAsync()
+        public ISource AsSource()
         {
-            if (entity == null)
-            {
-                long? clen = Request.ContentLength;
-                if (clen > 0)
-                {
-                    int len = (int) clen;
-                    buffer = BufferUtility.ByteBuffer(len); // borrow from the pool
-                    while ((count += await Request.Body.ReadAsync(buffer, count, (len - count))) < len)
-                    {
-                    }
-                    ParseEntity(len);
-                }
-            }
             return entity as ISource;
         }
 
-        public async Task<Form> ReadFormAsync()
+        public Form AsForm()
         {
-            if (entity == null)
-            {
-                long? clen = Request.ContentLength;
-                if (clen > 0)
-                {
-                    int len = (int) clen;
-                    buffer = BufferUtility.ByteBuffer(len); // borrow from the pool
-                    while ((count += await Request.Body.ReadAsync(buffer, count, (len - count))) < len)
-                    {
-                    }
-                    ParseEntity(len);
-                }
-            }
             return entity as Form;
         }
 
-        public async Task<JObj> ReadJObjAsync()
+        public JObj AsJObj()
         {
-            if (entity == null)
-            {
-                long? clen = Request.ContentLength;
-                if (clen > 0)
-                {
-                    int len = (int) clen;
-                    buffer = BufferUtility.ByteBuffer(len); // borrow from the pool
-                    while ((count += await Request.Body.ReadAsync(buffer, count, (len - count))) < len)
-                    {
-                    }
-                    ParseEntity(len);
-                }
-            }
             return entity as JObj;
         }
 
-        public async Task<JArr> ReadJArrAsync()
+        public JArr AsJArr()
         {
-            if (entity == null)
-            {
-                long? clen = Request.ContentLength;
-                if (clen > 0)
-                {
-                    int len = (int) clen;
-                    buffer = BufferUtility.ByteBuffer(len); // borrow from the pool
-                    while ((count += await Request.Body.ReadAsync(buffer, count, (len - count))) < len)
-                    {
-                    }
-                    ParseEntity(len);
-                }
-            }
             return entity as JArr;
         }
 
-        public async Task<D> ReadDatAsync<D>(byte flags = 0) where D : IDat, new()
+        public D AsDat<D>(byte flags = 0) where D : IDat, new()
         {
-            if (entity == null)
-            {
-                long? clen = Request.ContentLength;
-                if (clen > 0)
-                {
-                    int len = (int) clen;
-                    buffer = BufferUtility.ByteBuffer(len); // borrow from the pool
-                    while ((count += await Request.Body.ReadAsync(buffer, count, (len - count))) < len)
-                    {
-                    }
-                    ParseEntity(len);
-                }
-            }
             ISource src = entity as ISource;
             if (src == null)
             {
@@ -288,40 +214,14 @@ namespace Greatbone.Core
             return src.ToDat<D>(flags);
         }
 
-        public async Task<D[]> ReadDatsAsync<D>(byte flags = 0) where D : IDat, new()
+        public D[] AsDats<D>(byte flags = 0) where D : IDat, new()
         {
-            if (entity == null)
-            {
-                long? clen = Request.ContentLength;
-                if (clen > 0)
-                {
-                    int len = (int) clen;
-                    buffer = BufferUtility.ByteBuffer(len); // borrow from the pool
-                    while ((count += await Request.Body.ReadAsync(buffer, count, (len - count))) < len)
-                    {
-                    }
-                    ParseEntity(len);
-                }
-            }
             JArr jarr = entity as JArr;
             return jarr?.ToDats<D>(flags);
         }
 
-        public async Task<XElem> ReadXElemAsync()
+        public XElem AsXElem()
         {
-            if (entity == null)
-            {
-                long? clen = Request.ContentLength;
-                if (clen > 0)
-                {
-                    int len = (int) clen;
-                    buffer = BufferUtility.ByteBuffer(len); // borrow from the pool
-                    while ((count += await Request.Body.ReadAsync(buffer, count, (len - count))) < len)
-                    {
-                    }
-                    ParseEntity(len);
-                }
-            }
             return entity as XElem;
         }
 

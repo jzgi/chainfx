@@ -186,50 +186,53 @@ namespace Greatbone.Core
             return lst;
         }
 
-        internal virtual void Handle(string relative, WebActionContext ac)
+        internal WebFolder GetFolder(ref string relative, WebActionContext ac)
         {
-            if (!Allows(ac)) return;
-            // pre-
-            DoBefore(ac);
+            if (!Allows(ac))
+            {
+                ac.Reply(403); // forbidden
+                return null;
+            }
 
             int slash = relative.IndexOf('/');
-            if (slash == -1) // handle it locally
+            if (slash == -1)
             {
-                Do(relative, ac);
-            }
-            else // dispatch to child or var
-            {
-                string key = relative.Substring(0, slash);
-                WebFolder child;
-                if (children != null && children.TryGet(key, out child)) // chiled
-                {
-                    child.Handle(relative.Substring(slash + 1), ac);
-                }
-                else if (variable != null) // variable-key
-                {
-                    ac.ChainKey(key, variable);
-                    variable.Handle(relative.Substring(slash + 1), ac);
-                }
-                else
-                {
-                    ac.Reply(404); // not found
-                }
+                return this;
             }
 
-            // post-
-            DoAfter(ac);
+            // sub folder
+            string key = relative.Substring(0, slash);
+            relative = relative.Substring(slash + 1); // adjust relative
+            WebFolder child;
+            if (children != null && children.TryGet(key, out child)) // chiled
+            {
+                return child.GetFolder(ref relative, ac);
+            }
+            if (variable != null) // variable-key
+            {
+                ac.ChainKey(key, variable);
+                return variable.GetFolder(ref relative, ac);
+            }
+
+            ac.Reply(404); // not found
+            return null;
         }
 
-        internal void Do(string rsc, WebActionContext ac)
+        internal void Handle(string rsc, WebActionContext ac)
         {
             ac.Folder = this;
 
+            // pre-
+            DoBefore(ac);
+
             int dot = rsc.LastIndexOf('.');
-            if (dot != -1) // static
+            if (dot != -1) // file
             {
-                DoStatic(rsc, rsc.Substring(dot), ac);
+                // try in cache 
+
+                DoFile(rsc, rsc.Substring(dot), ac);
             }
-            else // dynamic
+            else // action
             {
                 string name = rsc;
                 string arg = null;
@@ -240,21 +243,30 @@ namespace Greatbone.Core
                     arg = rsc.Substring(dash + 1);
                 }
                 WebAction atn = string.IsNullOrEmpty(name) ? defaction : GetAction(name);
-                if (atn != null)
+                if (atn == null)
                 {
-                    atn.Do(ac, arg);
+                    ac.Reply(404); // not found
+                }
+                else if (!atn.Allows(ac))
+                {
+                    ac.Reply(403); // forbidden
                 }
                 else
                 {
-                    ac.Reply(404);
+                    // try in cache
+
+                    atn.Do(ac, arg);
                 }
             }
+
+            // post-
+            DoAfter(ac);
 
             ac.Folder = null;
         }
 
 
-        void DoStatic(string filename, string ext, WebActionContext ac)
+        void DoFile(string filename, string ext, WebActionContext ac)
         {
             if (filename.StartsWith("$")) // private resource
             {

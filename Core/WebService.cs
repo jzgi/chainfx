@@ -141,7 +141,7 @@ namespace Greatbone.Core
 
         public Roll<WebClient> Cluster => cluster;
 
-        public WebConfig Config => (WebConfig)context;
+        public WebConfig Config => (WebConfig) context;
 
         public WebAuth Auth { get; set; }
 
@@ -208,7 +208,7 @@ namespace Greatbone.Core
         /// 
         public async Task ProcessRequestAsync(HttpContext context)
         {
-            WebActionContext ac = (WebActionContext)context;
+            WebActionContext ac = (WebActionContext) context;
             HttpRequest req = ac.Request;
             string path = req.Path.Value;
 
@@ -227,7 +227,24 @@ namespace Greatbone.Core
 
             try
             {
-                Handle(path.Substring(1), ac);
+                if ("/*".Equals(path)) // handle an event queue request
+                {
+                    PeekQueue(ac);
+                }
+                else // handle a regular request
+                {
+                    string relative = path.Substring(1);
+                    WebFolder folder = GetFolder(ref relative, ac);
+                    if (folder != null)
+                    {
+                        long? clen = ac.Request.ContentLength;
+                        if (clen > 0)
+                        {
+                            await ac.ReadAsync((int) clen);
+                        }
+                        folder.Handle(relative, ac);
+                    }
+                }
             }
             catch (Exception e)
             {
@@ -257,20 +274,7 @@ namespace Greatbone.Core
         public void DisposeContext(HttpContext context, Exception exception)
         {
             // dispose the action context
-            ((WebActionContext)context).Dispose();
-        }
-
-        internal override void Handle(string relative, WebActionContext ac)
-        {
-            if ("*".Equals(relative))
-            {
-                // handle as event
-                PeekQueue(ac);
-            }
-            else
-            {
-                base.Handle(relative, ac);
-            }
+            ((WebActionContext) context).Dispose();
         }
 
         public DbContext NewDbContext()
@@ -420,7 +424,7 @@ namespace Greatbone.Core
 
         public bool IsEnabled(LogLevel level)
         {
-            return (int)level >= Config.logging;
+            return (int) level >= Config.logging;
         }
 
         public void Dispose()
@@ -434,7 +438,7 @@ namespace Greatbone.Core
             Console.WriteLine(".");
         }
 
-        static readonly string[] LVL = { "TRC: ", "DBG: ", "INF: ", "WAR: ", "ERR: ", "CRL: ", "NON: " };
+        static readonly string[] LVL = {"TRC: ", "DBG: ", "INF: ", "WAR: ", "ERR: ", "CRL: ", "NON: "};
 
         public void Log<T>(LogLevel level, EventId eid, T state, Exception exception, Func<T, Exception, string> formatter)
         {
@@ -443,7 +447,7 @@ namespace Greatbone.Core
                 return;
             }
 
-            logWriter.Write(LVL[(int)level]);
+            logWriter.Write(LVL[(int) level]);
 
             if (eid.Id != 0)
             {
@@ -499,7 +503,7 @@ namespace Greatbone.Core
 
                 cts.Token.Register(state =>
                     {
-                        ((IApplicationLifetime)state).StopApplication();
+                        ((IApplicationLifetime) state).StopApplication();
                         // dispose services
                         foreach (WebService svc in svcs)
                         {
