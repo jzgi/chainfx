@@ -304,7 +304,7 @@ namespace Greatbone.Core
                 Type = ctyp,
                 Modified = modified
             };
-            ac.Reply(200, cont, true, 5 * 60000);
+            ac.Reply(200, cont, true, 3600 * 12);
         }
 
         //

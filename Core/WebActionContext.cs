@@ -266,59 +266,59 @@ namespace Greatbone.Core
         public bool? Pub { get; internal set; }
 
         // the content  is to be considered stale after its age is greater than the specified number of seconds.
-        public int Seconds { get; internal set; }
+        public int MaxAge { get; internal set; }
 
-        public void Reply(int status, IContent content, bool? pub = null, int seconds = 5)
+        public void Reply(int status, IContent content, bool? pub = null, int maxage = 60)
         {
             Response.StatusCode = status;
             Content = content;
             Pub = pub;
-            Seconds = seconds;
+            MaxAge = maxage;
         }
 
-        public void Reply(int status, bool? pub = null, int seconds = 5)
+        public void Reply(int status, bool? pub = null, int seconds = 60)
         {
-            Reply(status, (IContent) null, pub, seconds);
+            Reply(status, (IContent)null, pub, seconds);
         }
 
-        public void Reply(int status, string str, bool? pub = null, int seconds = 30)
+        public void Reply(int status, string str, bool? pub = null, int seconds = 60)
         {
             StrContent cont = new StrContent(true, true);
             cont.Add(str);
             Reply(status, cont, pub, seconds);
         }
 
-        public void Reply(int status, IDat dat, byte flags = 0, bool? pub = null, int seconds = 30)
+        public void Reply(int status, IDat dat, byte flags = 0, bool? pub = null, int maxage = 60)
         {
             JsonContent cont = new JsonContent(true, true, 4 * 1024);
             cont.Put(null, dat, flags);
-            Reply(status, cont, pub, seconds);
+            Reply(status, cont, pub, maxage);
         }
 
-        public void Reply<D>(int status, D[] dats, byte flags = 0, bool? pub = null, int seconds = 30) where D : IDat
+        public void Reply<D>(int status, D[] dats, byte flags = 0, bool? pub = null, int maxage = 60) where D : IDat
         {
             JsonContent cont = new JsonContent(true, true, 4 * 1024);
             cont.Put(null, dats, flags);
-            Reply(status, cont, pub, seconds);
+            Reply(status, cont, pub, maxage);
         }
 
-        public void Reply(int status, Form form, bool? pub = null, int seconds = 30)
+        public void Reply(int status, Form form, bool? pub = null, int maxage = 60)
         {
         }
 
-        public void Reply(int status, JObj obj, bool? pub = null, int seconds = 30)
+        public void Reply(int status, JObj obj, bool? pub = null, int maxage = 60)
         {
         }
 
-        public void Reply(int status, JArr arr, bool? pub = null, int seconds = 30)
+        public void Reply(int status, JArr arr, bool? pub = null, int maxage = 60)
         {
         }
 
-        public void Reply(int status, XElem elem, bool? pub = null, int seconds = 30)
+        public void Reply(int status, XElem elem, bool? pub = null, int maxage = 60)
         {
         }
 
-        public void Reply(int status, ArraySegment<byte> bytesseg, bool? pub = null, int seconds = 30)
+        public void Reply(int status, ArraySegment<byte> bytesseg, bool? pub = null, int maxage = 60)
         {
         }
 
@@ -329,8 +329,11 @@ namespace Greatbone.Core
 
             if (Pub != null)
             {
-                string cachectrl = Pub.Value ? "public" : "private" + ", max-age=" + Seconds * 1000;
-                SetHeader("Cache-Control", cachectrl);
+                if (Pub.HasValue)
+                {
+                    string hv = (Pub.Value ? "public" : "private") + ", max-age=" + MaxAge;
+                    SetHeader("Cache-Control", hv);
+                }
             }
 
             // setup appropriate headers
@@ -343,7 +346,7 @@ namespace Greatbone.Core
                 // cache indicators
                 if (Content is DynamicContent) // set etag
                 {
-                    ulong etag = ((DynamicContent) Content).ETag;
+                    ulong etag = ((DynamicContent)Content).ETag;
                     SetHeader("ETag", StrUtility.ToHex(etag));
                 }
 
