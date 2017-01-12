@@ -186,7 +186,7 @@ namespace Greatbone.Core
             return lst;
         }
 
-        internal WebFolder GetFolder(ref string relative, WebActionContext ac)
+        internal WebFolder FindFolder(ref string relative, WebActionContext ac)
         {
             if (!Allows(ac))
             {
@@ -206,12 +206,12 @@ namespace Greatbone.Core
             WebFolder child;
             if (children != null && children.TryGet(key, out child)) // chiled
             {
-                return child.GetFolder(ref relative, ac);
+                return child.FindFolder(ref relative, ac);
             }
             if (variable != null) // variable-key
             {
                 ac.ChainKey(key, variable);
-                return variable.GetFolder(ref relative, ac);
+                return variable.FindFolder(ref relative, ac);
             }
 
             ac.Reply(404); // not found

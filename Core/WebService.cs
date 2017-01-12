@@ -229,12 +229,12 @@ namespace Greatbone.Core
             {
                 if ("/*".Equals(path)) // handle an event queue request
                 {
-                    PeekQueue(ac);
+                    PeekEq(ac);
                 }
                 else // handle a regular request
                 {
                     string relative = path.Substring(1);
-                    WebFolder folder = GetFolder(ref relative, ac);
+                    WebFolder folder = FindFolder(ref relative, ac);
                     if (folder != null)
                     {
                         long? clen = ac.Request.ContentLength;
@@ -308,7 +308,7 @@ namespace Greatbone.Core
         ///
         /// Peek and load events from the event queue (DB)
         ///
-        void PeekQueue(WebActionContext ac)
+        void PeekEq(WebActionContext ac)
         {
             string[] names = ac[nameof(names)];
             string shard = ac.Header("Shard"); // can be null
@@ -386,7 +386,7 @@ namespace Greatbone.Core
                 for (int i = 0; i < Cluster.Count; i++)
                 {
                     WebClient client = Cluster[i];
-                    client.Schedule();
+                    client.PollAsync();
                 }
             }
         }

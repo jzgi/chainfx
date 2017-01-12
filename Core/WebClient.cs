@@ -9,7 +9,6 @@ namespace Greatbone.Core
     ///
     public class WebClient : HttpClient, IRollable
     {
-
         const int
             INITIAL = -1,
             TIME_OUT = 60,
@@ -41,19 +40,13 @@ namespace Greatbone.Core
 
         public string Name => name;
 
-        internal void Schedule()
-        {
-            // check the status
-
-            if (lastConnect < 100)
-            {
-                // create and run task
-                Task.Run(() => { PollAsync(); });
-            }
-        }
-
         internal async void PollAsync()
         {
+            if (lastConnect < 100)
+            {
+                return;
+            }
+
             HttpResponseMessage resp = await GetAsync("*");
 
             byte[] cont = await resp.Content.ReadAsByteArrayAsync();
@@ -220,6 +213,5 @@ namespace Greatbone.Core
             req.Content = cont;
             return SendAsync(req, HttpCompletionOption.ResponseContentRead);
         }
-
     }
 }
