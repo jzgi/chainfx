@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Reflection;
+using System.Threading.Tasks;
 
 namespace Greatbone.Core
 {
@@ -12,7 +13,11 @@ namespace Greatbone.Core
 
         public string Name { get; }
 
+        // void event(WebEventContext)
         readonly Action<WebEventContext> doer;
+
+        // async Task event(WebEventContext)
+        readonly Func<WebEventContext, Task> func;
 
         internal WebEvent(WebService service, MethodInfo mi)
         {
@@ -23,6 +28,11 @@ namespace Greatbone.Core
         internal void Do(WebEventContext ec)
         {
             doer(ec);
+        }
+
+        internal async Task DoAsync(WebEventContext ec)
+        {
+            await func(ec);
         }
 
         public override string ToString()

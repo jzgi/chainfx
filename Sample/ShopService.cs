@@ -1,4 +1,5 @@
-﻿using Greatbone.Core;
+﻿using System.Threading.Tasks;
+using Greatbone.Core;
 using NpgsqlTypes;
 using static Greatbone.Core.FlagsUtility;
 
@@ -218,9 +219,9 @@ namespace Greatbone.Sample
         }
 
 
-        public void report(WebActionContext ac)
+        public async Task report(WebActionContext ac)
         {
-
+            await Task.CompletedTask;
         }
 
         #endregion
