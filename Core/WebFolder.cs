@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.IO;
 using System.Reflection;
+using System.Threading.Tasks;
 using Microsoft.Extensions.Logging;
 
 namespace Greatbone.Core
@@ -41,24 +42,29 @@ namespace Greatbone.Core
             Type typ = GetType();
             foreach (MethodInfo mi in typ.GetMethods(BindingFlags.Public | BindingFlags.Instance))
             {
+                // verify the return type
+                Type ret = mi.ReturnType;
+                bool async;
+                if (ret == typeof(Task)) async = true;
+                else if (ret == typeof(void)) async = false;
+                else continue;
+
                 ParameterInfo[] pis = mi.GetParameters();
+                WebAction atn = null;
                 if (pis.Length == 1 && pis[0].ParameterType == typeof(WebActionContext))
                 {
-                    WebAction atn = new WebAction(this, mi);
-                    actions.Add(atn);
-                    if (atn.Name.Equals("default"))
-                    {
-                        defaction = atn;
-                    }
+                    atn = new WebAction(this, mi, async, false);
                 }
                 else if (pis.Length == 2 && pis[0].ParameterType == typeof(WebActionContext) && pis[1].ParameterType == typeof(string))
                 {
-                    WebAction atn = new WebAction(this, mi, true);
-                    actions.Add(atn);
-                    if (atn.Name.Equals("default"))
-                    {
-                        defaction = atn;
-                    }
+                    atn = new WebAction(this, mi, async, true);
+                }
+                else continue;
+
+                actions.Add(atn);
+                if (atn.Name.Equals("default"))
+                {
+                    defaction = atn;
                 }
             }
         }

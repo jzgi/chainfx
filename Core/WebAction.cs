@@ -16,44 +16,44 @@ namespace Greatbone.Core
         readonly bool async;
 
         // void action(WebActionContext)
-        readonly Action<WebActionContext> doer;
+        readonly Action<WebActionContext> @do;
 
         // async Task action(WebActionContext)
-        readonly Func<WebActionContext, Task> func;
+        readonly Func<WebActionContext, Task> doasync;
 
         // void action(WebActionContext, string)
-        readonly Action<WebActionContext, string> doer2;
+        readonly Action<WebActionContext, string> do2;
 
         // async Task action(WebActionContext, string)
-        readonly Func<WebActionContext, string, Task> func2;
+        readonly Func<WebActionContext, string, Task> do2async;
 
         readonly UiAttribute ui;
 
-        internal WebAction(WebFolder folder, MethodInfo mi, bool arg = false) : base(mi)
+        internal WebAction(WebFolder folder, MethodInfo mi, bool async, bool arg) : base(mi)
         {
             this.folder = folder;
-            name = mi.Name;
-            async = mi.ReturnType == typeof(Task);
-            if (arg)
+            this.name = mi.Name;
+            this.async = async;
+            if (async)
             {
-                if (async)
+                if (arg)
                 {
-                    func2 = (Func<WebActionContext, string, Task>)mi.CreateDelegate(typeof(Func<WebActionContext, string, Task>), folder);
+                    do2async = (Func<WebActionContext, string, Task>)mi.CreateDelegate(typeof(Func<WebActionContext, string, Task>), folder);
                 }
                 else
                 {
-                    doer2 = (Action<WebActionContext, string>)mi.CreateDelegate(typeof(Action<WebActionContext, string>), folder);
+                    doasync = (Func<WebActionContext, Task>)mi.CreateDelegate(typeof(Func<WebActionContext, Task>), folder);
                 }
             }
             else
             {
-                if (async)
+                if (arg)
                 {
-                    func = (Func<WebActionContext, Task>)mi.CreateDelegate(typeof(Func<WebActionContext, Task>), folder);
+                    do2 = (Action<WebActionContext, string>)mi.CreateDelegate(typeof(Action<WebActionContext, string>), folder);
                 }
                 else
                 {
-                    doer = (Action<WebActionContext>)mi.CreateDelegate(typeof(Action<WebActionContext>), folder);
+                    @do = (Action<WebActionContext>)mi.CreateDelegate(typeof(Action<WebActionContext>), folder);
                 }
             }
 
@@ -68,7 +68,7 @@ namespace Greatbone.Core
 
         public bool Async => async;
 
-        public bool Arg => doer2 != null;
+        public bool Arg => do2 != null;
 
         public int Form => ui?.Form ?? 0;
 
@@ -91,11 +91,11 @@ namespace Greatbone.Core
             // invoke the right action method
             if (Arg)
             {
-                doer2(ac, arg);
+                do2(ac, arg);
             }
             else
             {
-                doer(ac);
+                @do(ac);
             }
 
             // post-
@@ -112,11 +112,11 @@ namespace Greatbone.Core
             // invoke the right action method
             if (Arg)
             {
-                await func2(ac, arg);
+                await do2async(ac, arg);
             }
             else
             {
-                await func(ac);
+                await doasync(ac);
             }
 
             // post-

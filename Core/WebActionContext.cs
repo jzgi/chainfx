@@ -62,7 +62,7 @@ namespace Greatbone.Core
         // request body
         byte[] buffer;
 
-        int count;
+        int count = -1;
 
         // request entity (ArraySegment<byte>, JObj, JArr, Form, XElem, null)
         object entity;
@@ -146,51 +146,75 @@ namespace Greatbone.Core
 
         public IRequestCookieCollection Cookies => Request.Cookies;
 
-        internal async Task ReadAsync(int len)
+        public async Task<ArraySegment<byte>> ReadAsync()
         {
-            buffer = BufferUtility.ByteBuffer(len); // borrow from the pool
-            while ((count += await Request.Body.ReadAsync(buffer, count, (len - count))) < len)
+            if (count == -1) // if not yet read
             {
+                count = 0;
+                int? clen = HeaderInt("Content-Length");
+                if (clen > 0)
+                {
+                    // reading
+                    int len = (int)clen;
+                    buffer = BufferUtility.ByteBuffer(len); // borrow from the pool
+                    while ((count += await Request.Body.ReadAsync(buffer, count, (len - count))) < len) { }
+                }
             }
-            // parse the request content
-            string ctyp = Request.ContentType;
-            object enty;
-            if ("application/x-www-form-urlencoded".Equals(ctyp))
-            {
-                enty = new FormParse(buffer, len).Parse();
-            }
-            else if (ctyp.StartsWith("multipart/form-data; boundary="))
-            {
-                string boundary = ctyp.Substring(30);
-                enty = new FormMpParse(boundary, buffer, len).Parse();
-            }
-            else if (ctyp.StartsWith("application/json"))
-            {
-                enty = new JsonParse(buffer, len).Parse();
-            }
-            else if (ctyp.StartsWith("application/xml"))
-            {
-                enty = new XmlParse(buffer, 0, len).Parse();
-            }
-            else
-            {
-                enty = new ArraySegment<byte>(buffer, 0, len);
-            }
-            entity = enty;
+            return new ArraySegment<byte>(buffer, 0, count);
         }
 
-        public ArraySegment<byte>? AsBytesSeg()
+        public async Task<T> ReadAsync<T>()
         {
-            return entity as ArraySegment<byte>?;
-        }
+            if (entity == null)
+            {
+                if (count == -1) // if not yet read
+                {
+                    count = 0;
+                    int? clen = HeaderInt("Content-Length");
+                    if (clen > 0)
+                    {
+                        // reading
+                        int len = (int)clen;
+                        buffer = BufferUtility.ByteBuffer(len); // borrow from the pool
+                        while ((count += await Request.Body.ReadAsync(buffer, count, (len - count))) < len) { }
+                    }
+                    else return default(T);
+                }
 
-        public ISource AsSource()
-        {
+                // parse into entity if content type is known
+                string ctyp = Header("Content-Type");
+                if ("application/x-www-form-urlencoded".Equals(ctyp))
+                {
+                    entity = new FormParse(buffer, count).Parse();
+                }
+                else if (ctyp.StartsWith("multipart/form-data; boundary="))
+                {
+                    string boundary = ctyp.Substring(30);
+                    entity = new FormMpParse(boundary, buffer, count).Parse();
+                }
+                else if (ctyp.StartsWith("application/json"))
+                {
+                    entity = new JsonParse(buffer, count).Parse();
+                }
+                else if (ctyp.StartsWith("application/xml"))
+                {
+                    entity = new XmlParse(buffer, 0, count).Parse();
+                }
+            }
+            if (entity == null) return default(T);
+
+            if (typeof(T) == typeof(Form)) {
+            return (T)(entity as Form);
+            }
             return entity as ISource;
         }
 
-        public Form AsForm()
+        public async Task<Form> ReadFormAsync()
         {
+            if (entity == null)
+            {
+                await ReadAsync();
+            }
             return entity as Form;
         }
 

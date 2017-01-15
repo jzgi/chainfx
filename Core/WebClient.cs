@@ -40,7 +40,13 @@ namespace Greatbone.Core
 
         public string Name => name;
 
-        internal async void PollAsync()
+        public bool ToPoll(int ticks) {
+            return false;
+        }
+
+        /// Poll events and do event handle methods
+        /// NOTE: We make it async void because the scheduler doesn't need to await this method
+        internal async Task PollAsync()
         {
             if (lastConnect < 100)
             {
@@ -56,15 +62,23 @@ namespace Greatbone.Core
             {
                 EventContext = ec
             };
-            p.Parse(x =>
+            // parse and process one by one
+            p.Parse(async x =>
             {
                 long id;
                 string name = "";
                 DateTime time;
-                WebEvent handler = null;
-                if (service.Events.TryGet(name, out handler))
+                WebEvent evt = null;
+                if (service.Events.TryGet(name, out evt))
                 {
-                    handler.Do(ec);
+                    if (evt.Async)
+                    {
+                        await evt.DoAsync(ec);
+                    }
+                    else
+                    {
+                        evt.Do(ec);
+                    }
                 }
             });
         }

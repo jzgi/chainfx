@@ -51,7 +51,7 @@ namespace Greatbone.Sample
             }
             else // login
             {
-                Form frm = ac.AsForm();
+                Form frm = ac.ReadFormAsync();
                 string id = frm[nameof(id)];
                 string password = frm[nameof(password)];
                 string orig = frm[nameof(orig)];
