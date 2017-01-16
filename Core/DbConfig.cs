@@ -3,7 +3,7 @@
     ///
     /// DB configuration embedded in WebConfig.
     ///
-    public class DbConfig : IDat
+    public class DbConfig : IData
     {
         public string host;
 

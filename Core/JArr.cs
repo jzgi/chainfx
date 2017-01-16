@@ -146,7 +146,7 @@ namespace Greatbone.Core
             return jobj != null && jobj.Get(name, ref v);
         }
 
-        public bool Get<D>(string name, ref D v, byte flags = 0) where D : IDat, new()
+        public bool Get<D>(string name, ref D v, byte flags = 0) where D : IData, new()
         {
             JObj jobj = elements[current];
             return jobj != null && jobj.Get(name, ref v);
@@ -188,7 +188,7 @@ namespace Greatbone.Core
             return jobj != null && jobj.Get(name, ref v);
         }
 
-        public bool Get<D>(string name, ref D[] v, byte flags = 0) where D : IDat, new()
+        public bool Get<D>(string name, ref D[] v, byte flags = 0) where D : IData, new()
         {
             JObj jobj = elements[current];
             return jobj != null && jobj.Get(name, ref v);
@@ -210,14 +210,14 @@ namespace Greatbone.Core
             return str;
         }
 
-        public D ToDat<D>(byte flags = 0) where D : IDat, new()
+        public D ToData<D>(byte flags = 0) where D : IData, new()
         {
             D dat = new D();
             dat.Load(this, flags);
             return dat;
         }
 
-        public D[] ToDats<D>(byte flags = 0) where D : IDat, new()
+        public D[] ToDatas<D>(byte flags = 0) where D : IData, new()
         {
             D[] dats = new D[count];
             for (int i = 0; i < dats.Length; i++)

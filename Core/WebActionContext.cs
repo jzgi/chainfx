@@ -208,7 +208,7 @@ namespace Greatbone.Core
             return entity as M;
         }
 
-        public async Task<D> ReadDatAsync<D>(byte flags = 0) where D : IDat, new()
+        public async Task<D> ReadDataAsync<D>(byte flags = 0) where D : IData, new()
         {
             if (entity == null && count == -1) // if not yet parse and read
             {
@@ -232,10 +232,10 @@ namespace Greatbone.Core
             {
                 return default(D);
             }
-            return src.ToDat<D>(flags);
+            return src.ToData<D>(flags);
         }
 
-        public async Task<D[]> ReadDatsAsync<D>(byte flags = 0) where D : IDat, new()
+        public async Task<D[]> ReadDatasAsync<D>(byte flags = 0) where D : IData, new()
         {
             if (entity == null && count == -1) // if not yet parse and read
             {
@@ -252,7 +252,7 @@ namespace Greatbone.Core
                 }
                 Parse();
             }
-            return (entity as ISourceSet)?.ToDats<D>(flags);
+            return (entity as ISourceSet)?.ToDatas<D>(flags);
         }
 
         //
@@ -318,14 +318,14 @@ namespace Greatbone.Core
             Reply(status, cont, pub, seconds);
         }
 
-        public void Reply(int status, IDat dat, byte flags = 0, bool? pub = null, int maxage = 60)
+        public void Reply(int status, IData dat, byte flags = 0, bool? pub = null, int maxage = 60)
         {
             JsonContent cont = new JsonContent(true, true, 4 * 1024);
             cont.Put(null, dat, flags);
             Reply(status, cont, pub, maxage);
         }
 
-        public void Reply<D>(int status, D[] dats, byte flags = 0, bool? pub = null, int maxage = 60) where D : IDat
+        public void Reply<D>(int status, D[] dats, byte flags = 0, bool? pub = null, int maxage = 60) where D : IData
         {
             JsonContent cont = new JsonContent(true, true, 4 * 1024);
             cont.Put(null, dats, flags);

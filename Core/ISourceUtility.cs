@@ -73,7 +73,7 @@ namespace Greatbone.Core
         }
 
 
-        public static bool Get<D>(this ISource src, ref D v, byte flags = 0) where D : IDat, new()
+        public static bool Get<D>(this ISource src, ref D v, byte flags = 0) where D : IData, new()
         {
             return src.Get(null, ref v, flags);
         }
@@ -114,7 +114,7 @@ namespace Greatbone.Core
             return src.Get(null, ref v);
         }
 
-        public static bool Get<D>(this ISource src, ref D[] v, byte flags = 0) where D : IDat, new()
+        public static bool Get<D>(this ISource src, ref D[] v, byte flags = 0) where D : IData, new()
         {
             return src.Get(null, ref v, flags);
         }
@@ -201,7 +201,7 @@ namespace Greatbone.Core
             return v;
         }
 
-        public static D GetDat<D>(this ISource src, byte flags = 0) where D : IDat, new()
+        public static D GetData<D>(this ISource src, byte flags = 0) where D : IData, new()
         {
             D v = default(D);
             src.Get(null, ref v, flags);
@@ -251,7 +251,7 @@ namespace Greatbone.Core
             return v;
         }
 
-        public static D[] GetDats<D>(this ISource src, byte flags = 0) where D : IDat, new()
+        public static D[] GetDatas<D>(this ISource src, byte flags = 0) where D : IData, new()
         {
             D[] v = null;
             src.Get(null, ref v, flags);
@@ -339,7 +339,7 @@ namespace Greatbone.Core
             return v;
         }
 
-        public static D GetDat<D>(this ISource src, string name) where D : IDat, new()
+        public static D GetData<D>(this ISource src, string name) where D : IData, new()
         {
             D v = default(D);
             src.Get(name, ref v);
@@ -389,7 +389,7 @@ namespace Greatbone.Core
             return v;
         }
 
-        public static D[] GetDats<D>(this ISource src, string name) where D : IDat, new()
+        public static D[] GetDatas<D>(this ISource src, string name) where D : IData, new()
         {
             D[] v = null;
             src.Get(name, ref v);

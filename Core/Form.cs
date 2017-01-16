@@ -239,17 +239,17 @@ namespace Greatbone.Core
             return false;
         }
 
-        public bool Get<D>(string name, ref D[] v, byte flags = 0) where D : IDat, new()
+        public bool Get<D>(string name, ref D[] v, byte flags = 0) where D : IData, new()
         {
             throw new NotImplementedException();
         }
 
-        public bool Get<D>(string name, ref D v, byte flags = 0) where D : IDat, new()
+        public bool Get<D>(string name, ref D v, byte flags = 0) where D : IData, new()
         {
             throw new NotImplementedException();
         }
 
-        public D ToDat<D>(byte flags = 0) where D : IDat, new()
+        public D ToData<D>(byte flags = 0) where D : IData, new()
         {
             D dat = new D();
             dat.Load(this, flags);

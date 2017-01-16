@@ -307,7 +307,7 @@ namespace Greatbone.Core
         // RESULTSET
         //
 
-        public D ToDat<D>(byte flags = 0) where D : IDat, new()
+        public D ToData<D>(byte flags = 0) where D : IData, new()
         {
             D dat = new D();
             dat.Load(this, flags);
@@ -322,7 +322,7 @@ namespace Greatbone.Core
             return dat;
         }
 
-        public D[] ToDats<D>(byte bits = 0) where D : IDat, new()
+        public D[] ToDatas<D>(byte bits = 0) where D : IData, new()
         {
             List<D> lst = new List<D>(64);
             while (Next())
@@ -504,7 +504,7 @@ namespace Greatbone.Core
             return false;
         }
 
-        public bool Get<D>(string name, ref D v, byte flags = 0) where D : IDat, new()
+        public bool Get<D>(string name, ref D v, byte flags = 0) where D : IData, new()
         {
             int ord = name == null ? ordinal++ : reader.GetOrdinal(name);
             if (!reader.IsDBNull(ord))
@@ -596,7 +596,7 @@ namespace Greatbone.Core
             return false;
         }
 
-        public bool Get<D>(string name, ref D[] v, byte flags = 0) where D : IDat, new()
+        public bool Get<D>(string name, ref D[] v, byte flags = 0) where D : IData, new()
         {
             int ord = name == null ? ordinal++ : reader.GetOrdinal(name);
             if (!reader.IsDBNull(ord))
@@ -631,14 +631,14 @@ namespace Greatbone.Core
         // MESSAGING
         //
 
-        public void Event(string name, string shard, IDat dat, byte bits = 0)
+        public void Event(string name, string shard, IData dat, byte bits = 0)
         {
             JsonContent cont = new JsonContent(true, true);
             cont.Put(null, dat, bits);
             Event(name, shard, cont);
         }
 
-        public void Event<D>(string name, string shard, D[] dats, byte bits = 0) where D : IDat
+        public void Event<D>(string name, string shard, D[] dats, byte bits = 0) where D : IData
         {
             JsonContent cont = new JsonContent(true);
             cont.Put(null, dats, bits);
