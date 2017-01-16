@@ -116,7 +116,11 @@ namespace Greatbone.Core
             cache = new WebCache(Environment.ProcessorCount * 2, 4096);
 
             // create database structures for event queue
-            CreateEq();
+            if (Config.db.eq)
+            {
+                CreateEq();
+            }
+
         }
 
 
@@ -148,7 +152,7 @@ namespace Greatbone.Core
 
         public Roll<WebClient> Cluster => cluster;
 
-        public WebConfig Config => (WebConfig) context;
+        public WebConfig Config => (WebConfig)context;
 
         public WebAuth Auth { get; set; }
 
@@ -156,15 +160,15 @@ namespace Greatbone.Core
 
         bool CreateEq()
         {
-            if (!Config.db.eq)
-            {
-                return false;
-            }
-
             // check db
             using (var dc = Service.NewDbContext())
             {
-                // todo create in separate tablespace
+                dc.Execute(@"CREATE TABLE IF NOT EXISTS eu (
+                                moniker varchar(20),
+                                lastid int8,
+                                CONSTRAINT eu_pkey PRIMARY KEY (moniker)
+                            ) WITH (OIDS=FALSE)"
+                );
 
                 dc.Execute(@"CREATE SEQUENCE IF NOT EXISTS eq_id_seq 
                                 INCREMENT 1 
@@ -184,12 +188,6 @@ namespace Greatbone.Core
                             ) WITH (OIDS=FALSE)"
                 );
 
-                dc.Execute(@"CREATE TABLE IF NOT EXISTS eu (
-                                moniker varchar(20),
-                                lastid int8,
-                                CONSTRAINT eu_pkey PRIMARY KEY (addr)
-                            ) WITH (OIDS=FALSE)"
-                );
             }
             return true;
         }
@@ -215,7 +213,7 @@ namespace Greatbone.Core
         /// 
         public async Task ProcessRequestAsync(HttpContext context)
         {
-            WebActionContext ac = (WebActionContext) context;
+            WebActionContext ac = (WebActionContext)context;
             HttpRequest req = ac.Request;
             string path = req.Path.Value;
 
@@ -276,7 +274,7 @@ namespace Greatbone.Core
         public void DisposeContext(HttpContext context, Exception exception)
         {
             // dispose the action context
-            ((WebActionContext) context).Dispose();
+            ((WebActionContext)context).Dispose();
         }
 
         public DbContext NewDbContext()
@@ -385,10 +383,11 @@ namespace Greatbone.Core
             {
                 Thread.Sleep(50);
 
+                int tick = Environment.TickCount;
                 for (int i = 0; i < Cluster.Count; i++)
                 {
                     WebClient client = Cluster[i];
-                    client.PollAsync();
+                    client.ToPoll(tick);
                 }
             }
         }
@@ -426,7 +425,7 @@ namespace Greatbone.Core
 
         public bool IsEnabled(LogLevel level)
         {
-            return (int) level >= Config.logging;
+            return (int)level >= Config.logging;
         }
 
         public void Dispose()
@@ -440,7 +439,7 @@ namespace Greatbone.Core
             Console.WriteLine(".");
         }
 
-        static readonly string[] LVL = {"TRC: ", "DBG: ", "INF: ", "WAR: ", "ERR: ", "CRL: ", "NON: "};
+        static readonly string[] LVL = { "TRC: ", "DBG: ", "INF: ", "WAR: ", "ERR: ", "CRL: ", "NON: " };
 
         public void Log<T>(LogLevel level, EventId eid, T state, Exception exception, Func<T, Exception, string> formatter)
         {
@@ -449,7 +448,7 @@ namespace Greatbone.Core
                 return;
             }
 
-            logWriter.Write(LVL[(int) level]);
+            logWriter.Write(LVL[(int)level]);
 
             if (eid.Id != 0)
             {
@@ -505,7 +504,7 @@ namespace Greatbone.Core
 
                 cts.Token.Register(state =>
                     {
-                        ((IApplicationLifetime) state).StopApplication();
+                        ((IApplicationLifetime)state).StopApplication();
                         // dispose services
                         foreach (WebService svc in svcs)
                         {

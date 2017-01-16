@@ -25,6 +25,9 @@ namespace Greatbone.Core
         // event polling & processing
         //
 
+        bool connect;
+
+        // last status
         bool status;
 
         // tick count
@@ -40,18 +43,19 @@ namespace Greatbone.Core
 
         public string Name => name;
 
-        public bool ToPoll(int ticks) {
-            return false;
-        }
-
-        /// Poll events and do event handle methods
-        /// NOTE: We make it async void because the scheduler doesn't need to await this method
-        internal async Task PollAsync()
+        public void ToPoll(int ticks)
         {
             if (lastConnect < 100)
             {
                 return;
             }
+
+            PollAsync();
+        }
+
+        /// NOTE: We make it async void because the scheduler doesn't need to await this method
+        internal async void PollAsync()
+        {
 
             HttpResponseMessage resp = await GetAsync("*");
 
