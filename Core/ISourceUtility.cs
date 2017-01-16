@@ -5,13 +5,6 @@ namespace Greatbone.Core
 {
     public static class ISourceUtility
     {
-        public static D ToDat<D>(this ISource src, byte flags = 0) where D : IDat, new()
-        {
-            D dat = new D();
-            dat.Load(src, flags);
-            return dat;
-        }
-
         //
         // GET
         //

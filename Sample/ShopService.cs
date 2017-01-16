@@ -34,7 +34,7 @@ namespace Greatbone.Sample
         /// id=_id_&amp;password=_password_[&amp;orig=_orig_]
         /// </code>
         ///
-        public void signon(WebActionContext ac)
+        public async Task signon(WebActionContext ac)
         {
             if (ac.GET) // return the login form
             {
@@ -43,21 +43,18 @@ namespace Greatbone.Sample
                 string password = frm[nameof(password)];
                 string orig = frm[nameof(orig)];
 
-                ac.ReplyPage(200, "", main =>
-                {
-                    main.FORM(null, x => x.INPUT_button());
-                });
-
+                ac.ReplyPage(200, "", main => { main.FORM(null, x => x.INPUT_button()); });
             }
             else // login
             {
-                Form frm = ac.ReadFormAsync();
+                Form frm = await ac.ReadAsync<Form>();
                 string id = frm[nameof(id)];
                 string password = frm[nameof(password)];
                 string orig = frm[nameof(orig)];
                 if (string.IsNullOrEmpty(id) || string.IsNullOrEmpty(password))
                 {
-                    ac.Reply(400); return; // bad request
+                    ac.Reply(400);
+                    return; // bad request
                 }
                 using (var dc = Service.NewDbContext())
                 {
@@ -107,10 +104,7 @@ namespace Greatbone.Sample
                 if (dc.Query(sql.ToString(), p => p.Put(pt)))
                 {
                     var shops = dc.ToDats<Shop>();
-                    ac.ReplyPage(200, "", main =>
-                    {
-                        main.FORM(_new, shops);
-                    });
+                    ac.ReplyPage(200, "", main => { main.FORM(_new, shops); });
                 }
                 else
                     ac.ReplyPage(200, "没有记录", main => { });
@@ -155,10 +149,7 @@ namespace Greatbone.Sample
                 if (dc.Query(sql.ToString(), p => p.Put(20 * page)))
                 {
                     var shops = dc.ToDats<Shop>(z);
-                    ac.ReplyPage(200, "", main =>
-                    {
-                        main.FORM(_new, shops);
-                    });
+                    ac.ReplyPage(200, "", main => { main.FORM(_new, shops); });
                 }
                 else
                     ac.ReplyPage(200, "没有记录", main => { });
@@ -178,15 +169,14 @@ namespace Greatbone.Sample
         /// </code>
         ///
         [CheckAdmin]
-        public void @new(WebActionContext ac)
+        public async Task @new(WebActionContext ac)
         {
             if (ac.GET)
             {
-
             }
             else // post
             {
-                var shop = ac.AsDat<Shop>(); // read form
+                var shop = await ac.ReadDatAsync<Shop>(); // read form
                 using (var dc = Service.NewDbContext())
                 {
                     shop.credential = StrUtility.MD5(shop.id + ':' + shop.credential);

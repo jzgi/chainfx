@@ -47,5 +47,8 @@ namespace Greatbone.Core
         bool Get(string name, ref string[] v);
 
         bool Get<D>(string name, ref D[] v, byte flags = 0) where D : IDat, new();
+
+
+        D ToDat<D>(byte flags = 0) where D : IDat, new();
     }
 }

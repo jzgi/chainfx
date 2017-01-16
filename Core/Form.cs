@@ -6,7 +6,7 @@ namespace Greatbone.Core
     ///
     /// A form object model parsed from either x-www-form-urlencoded or multipart/form-data.
     ///
-    public class Form : Roll<Field>, ISource
+    public class Form : Roll<Field>, IContentModel, ISource
     {
         // if multipart
         readonly bool mp;
@@ -245,6 +245,18 @@ namespace Greatbone.Core
         }
 
         public bool Get<D>(string name, ref D v, byte flags = 0) where D : IDat, new()
+        {
+            throw new NotImplementedException();
+        }
+
+        public D ToDat<D>(byte flags = 0) where D : IDat, new()
+        {
+            D dat = new D();
+            dat.Load(this, flags);
+            return dat;
+        }
+
+        public void Dump<R>(ISink<R> snk) where R : ISink<R>
         {
             throw new NotImplementedException();
         }

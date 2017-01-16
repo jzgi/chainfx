@@ -1,4 +1,6 @@
 ﻿using System;
+using System.Collections.Generic;
+using System.Reflection;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Http.Features;
@@ -155,81 +157,78 @@ namespace Greatbone.Core
                 if (clen > 0)
                 {
                     // reading
-                    int len = (int)clen;
+                    int len = (int) clen;
                     buffer = BufferUtility.ByteBuffer(len); // borrow from the pool
-                    while ((count += await Request.Body.ReadAsync(buffer, count, (len - count))) < len) { }
+                    while ((count += await Request.Body.ReadAsync(buffer, count, (len - count))) < len)
+                    {
+                    }
                 }
             }
             return new ArraySegment<byte>(buffer, 0, count);
         }
 
-        public async Task<T> ReadAsync<T>()
+        void Parse()
         {
-            if (entity == null)
+            // parse into entity if content type is known
+            string ctyp = Header("Content-Type");
+            if ("application/x-www-form-urlencoded".Equals(ctyp))
             {
-                if (count == -1) // if not yet read
+                entity = new FormParse(buffer, count).Parse();
+            }
+            else if (ctyp.StartsWith("multipart/form-data; boundary="))
+            {
+                string boundary = ctyp.Substring(30);
+                entity = new FormMpParse(boundary, buffer, count).Parse();
+            }
+            else if (ctyp.StartsWith("application/json"))
+            {
+                entity = new JsonParse(buffer, count).Parse();
+            }
+            else if (ctyp.StartsWith("application/xml"))
+            {
+                entity = new XmlParse(buffer, 0, count).Parse();
+            }
+        }
+
+        public async Task<M> ReadAsync<M>() where M : class, IContentModel, ISource
+        {
+            if (entity == null && count == -1) // if not yet parse and read
+            {
+                count = 0;
+                int? clen = HeaderInt("Content-Length");
+                if (clen > 0)
                 {
-                    count = 0;
-                    int? clen = HeaderInt("Content-Length");
-                    if (clen > 0)
+                    // reading
+                    int len = (int) clen;
+                    buffer = BufferUtility.ByteBuffer(len); // borrow from the pool
+                    while ((count += await Request.Body.ReadAsync(buffer, count, (len - count))) < len)
                     {
-                        // reading
-                        int len = (int)clen;
-                        buffer = BufferUtility.ByteBuffer(len); // borrow from the pool
-                        while ((count += await Request.Body.ReadAsync(buffer, count, (len - count))) < len) { }
                     }
-                    else return default(T);
                 }
-
-                // parse into entity if content type is known
-                string ctyp = Header("Content-Type");
-                if ("application/x-www-form-urlencoded".Equals(ctyp))
-                {
-                    entity = new FormParse(buffer, count).Parse();
-                }
-                else if (ctyp.StartsWith("multipart/form-data; boundary="))
-                {
-                    string boundary = ctyp.Substring(30);
-                    entity = new FormMpParse(boundary, buffer, count).Parse();
-                }
-                else if (ctyp.StartsWith("application/json"))
-                {
-                    entity = new JsonParse(buffer, count).Parse();
-                }
-                else if (ctyp.StartsWith("application/xml"))
-                {
-                    entity = new XmlParse(buffer, 0, count).Parse();
-                }
+                Parse();
             }
-            if (entity == null) return default(T);
-
-            if (typeof(T) == typeof(Form)) {
-            return (T)(entity as Form);
-            }
-            return entity as ISource;
+            return entity as M;
         }
 
-        public async Task<Form> ReadFormAsync()
+        public async Task<D> ReadDatAsync<D>(byte flags = 0) where D : IDat, new()
         {
-            if (entity == null)
+            if (entity == null && count == -1) // if not yet parse and read
             {
-                await ReadAsync();
+                // read
+                count = 0;
+                int? clen = HeaderInt("Content-Length");
+                if (clen > 0)
+                {
+                    // reading
+                    int len = (int) clen;
+                    buffer = BufferUtility.ByteBuffer(len); // borrow from the pool
+                    while ((count += await Request.Body.ReadAsync(buffer, count, (len - count))) < len)
+                    {
+                    }
+                }
+                // parse
+                Parse();
             }
-            return entity as Form;
-        }
-
-        public JObj AsJObj()
-        {
-            return entity as JObj;
-        }
-
-        public JArr AsJArr()
-        {
-            return entity as JArr;
-        }
-
-        public D AsDat<D>(byte flags = 0) where D : IDat, new()
-        {
             ISource src = entity as ISource;
             if (src == null)
             {
@@ -238,15 +237,24 @@ namespace Greatbone.Core
             return src.ToDat<D>(flags);
         }
 
-        public D[] AsDats<D>(byte flags = 0) where D : IDat, new()
+        public async Task<D[]> ReadDatsAsync<D>(byte flags = 0) where D : IDat, new()
         {
-            JArr jarr = entity as JArr;
-            return jarr?.ToDats<D>(flags);
-        }
-
-        public XElem AsXElem()
-        {
-            return entity as XElem;
+            if (entity == null && count == -1) // if not yet parse and read
+            {
+                count = 0;
+                int? clen = HeaderInt("Content-Length");
+                if (clen > 0)
+                {
+                    // reading
+                    int len = (int) clen;
+                    buffer = BufferUtility.ByteBuffer(len); // borrow from the pool
+                    while ((count += await Request.Body.ReadAsync(buffer, count, (len - count))) < len)
+                    {
+                    }
+                }
+                Parse();
+            }
+            return (entity as ISourceSet)?.ToDats<D>(flags);
         }
 
         //
@@ -302,7 +310,7 @@ namespace Greatbone.Core
 
         public void Reply(int status, bool? pub = null, int seconds = 60)
         {
-            Reply(status, (IContent)null, pub, seconds);
+            Reply(status, (IContent) null, pub, seconds);
         }
 
         public void Reply(int status, string str, bool? pub = null, int seconds = 60)
@@ -370,7 +378,7 @@ namespace Greatbone.Core
                 // cache indicators
                 if (Content is DynamicContent) // set etag
                 {
-                    ulong etag = ((DynamicContent)Content).ETag;
+                    ulong etag = ((DynamicContent) Content).ETag;
                     SetHeader("ETag", StrUtility.ToHex(etag));
                 }
 

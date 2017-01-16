@@ -6,7 +6,7 @@ namespace Greatbone.Core
     ///
     /// A JSON object model.
     ///
-    public class JObj : Roll<JMem>, ISource
+    public class JObj : Roll<JMem>, IContentModel, ISource
     {
         public JObj(int capacity = 16) : base(capacity)
         {
@@ -54,10 +54,10 @@ namespace Greatbone.Core
 
         public bool Get(string name, ref bool v)
         {
-            JMem pair;
-            if (TryGet(name, out pair))
+            JMem prop;
+            if (TryGet(name, out prop))
             {
-                v = pair;
+                v = prop;
                 return true;
             }
             return false;
@@ -65,10 +65,10 @@ namespace Greatbone.Core
 
         public bool Get(string name, ref short v)
         {
-            JMem pair;
-            if (TryGet(name, out pair))
+            JMem prop;
+            if (TryGet(name, out prop))
             {
-                v = pair;
+                v = prop;
                 return true;
             }
             return false;
@@ -76,10 +76,10 @@ namespace Greatbone.Core
 
         public bool Get(string name, ref int v)
         {
-            JMem pair;
-            if (TryGet(name, out pair))
+            JMem prop;
+            if (TryGet(name, out prop))
             {
-                v = pair;
+                v = prop;
                 return true;
             }
             return false;
@@ -87,10 +87,10 @@ namespace Greatbone.Core
 
         public bool Get(string name, ref long v)
         {
-            JMem pair;
-            if (TryGet(name, out pair))
+            JMem prop;
+            if (TryGet(name, out prop))
             {
-                v = pair;
+                v = prop;
                 return true;
             }
             return false;
@@ -98,10 +98,10 @@ namespace Greatbone.Core
 
         public bool Get(string name, ref double v)
         {
-            JMem pair;
-            if (TryGet(name, out pair))
+            JMem prop;
+            if (TryGet(name, out prop))
             {
-                v = pair;
+                v = prop;
                 return true;
             }
             return false;
@@ -109,10 +109,10 @@ namespace Greatbone.Core
 
         public bool Get(string name, ref decimal v)
         {
-            JMem pair;
-            if (TryGet(name, out pair))
+            JMem prop;
+            if (TryGet(name, out prop))
             {
-                v = pair;
+                v = prop;
                 return true;
             }
             return false;
@@ -120,10 +120,10 @@ namespace Greatbone.Core
 
         public bool Get(string name, ref DateTime v)
         {
-            JMem pair;
-            if (TryGet(name, out pair))
+            JMem prop;
+            if (TryGet(name, out prop))
             {
-                v = pair;
+                v = prop;
                 return true;
             }
             return false;
@@ -131,10 +131,10 @@ namespace Greatbone.Core
 
         public bool Get(string name, ref NpgsqlPoint v)
         {
-            JMem pair;
-            if (TryGet(name, out pair))
+            JMem prop;
+            if (TryGet(name, out prop))
             {
-                v = pair;
+                v = prop;
                 return true;
             }
             return false;
@@ -142,10 +142,10 @@ namespace Greatbone.Core
 
         public bool Get(string name, ref char[] v)
         {
-            JMem pair;
-            if (TryGet(name, out pair))
+            JMem prop;
+            if (TryGet(name, out prop))
             {
-                v = pair;
+                v = prop;
                 return true;
             }
             return false;
@@ -153,10 +153,10 @@ namespace Greatbone.Core
 
         public bool Get(string name, ref string v)
         {
-            JMem pair;
-            if (TryGet(name, out pair))
+            JMem prop;
+            if (TryGet(name, out prop))
             {
-                v = pair;
+                v = prop;
                 return true;
             }
             return false;
@@ -164,10 +164,10 @@ namespace Greatbone.Core
 
         public bool Get(string name, ref byte[] v)
         {
-            JMem pair;
-            if (TryGet(name, out pair))
+            JMem prop;
+            if (TryGet(name, out prop))
             {
-                v = pair;
+                v = prop;
                 return true;
             }
             return false;
@@ -175,10 +175,10 @@ namespace Greatbone.Core
 
         public bool Get(string name, ref ArraySegment<byte> v)
         {
-            JMem pair;
-            if (TryGet(name, out pair))
+            JMem prop;
+            if (TryGet(name, out prop))
             {
-                byte[] bv = pair;
+                byte[] bv = prop;
                 v = new ArraySegment<byte>(bv);
                 return true;
             }
@@ -187,10 +187,10 @@ namespace Greatbone.Core
 
         public bool Get<D>(string name, ref D v, byte flags = 0) where D : IDat, new()
         {
-            JMem pair;
-            if (TryGet(name, out pair))
+            JMem prop;
+            if (TryGet(name, out prop))
             {
-                JObj jobj = pair;
+                JObj jobj = prop;
                 if (jobj != null)
                 {
                     v = new D();
@@ -203,10 +203,10 @@ namespace Greatbone.Core
 
         public bool Get(string name, ref JObj v)
         {
-            JMem pair;
-            if (TryGet(name, out pair))
+            JMem prop;
+            if (TryGet(name, out prop))
             {
-                v = pair;
+                v = prop;
                 return true;
             }
             return false;
@@ -214,10 +214,10 @@ namespace Greatbone.Core
 
         public bool Get(string name, ref JArr v)
         {
-            JMem pair;
-            if (TryGet(name, out pair))
+            JMem prop;
+            if (TryGet(name, out prop))
             {
-                v = pair;
+                v = prop;
                 return true;
             }
             return false;
@@ -225,10 +225,10 @@ namespace Greatbone.Core
 
         public bool Get(string name, ref short[] v)
         {
-            JMem pair;
-            if (TryGet(name, out pair))
+            JMem prop;
+            if (TryGet(name, out prop))
             {
-                JArr jarr = pair;
+                JArr jarr = prop;
                 if (jarr != null)
                 {
                     v = new short[jarr.Count];
@@ -244,10 +244,10 @@ namespace Greatbone.Core
 
         public bool Get(string name, ref int[] v)
         {
-            JMem pair;
-            if (TryGet(name, out pair))
+            JMem prop;
+            if (TryGet(name, out prop))
             {
-                JArr jarr = pair;
+                JArr jarr = prop;
                 if (jarr != null)
                 {
                     v = new int[jarr.Count];
@@ -263,10 +263,10 @@ namespace Greatbone.Core
 
         public bool Get(string name, ref long[] v)
         {
-            JMem pair;
-            if (TryGet(name, out pair))
+            JMem prop;
+            if (TryGet(name, out prop))
             {
-                JArr jarr = pair;
+                JArr jarr = prop;
                 if (jarr != null)
                 {
                     v = new long[jarr.Count];
@@ -282,10 +282,10 @@ namespace Greatbone.Core
 
         public bool Get(string name, ref string[] v)
         {
-            JMem pair;
-            if (TryGet(name, out pair))
+            JMem prop;
+            if (TryGet(name, out prop))
             {
-                JArr jarr = pair;
+                JArr jarr = prop;
                 if (jarr != null)
                 {
                     v = new string[jarr.Count];
@@ -301,10 +301,10 @@ namespace Greatbone.Core
 
         public bool Get<D>(string name, ref D[] v, byte flags = 0) where D : IDat, new()
         {
-            JMem pair;
-            if (TryGet(name, out pair))
+            JMem prop;
+            if (TryGet(name, out prop))
             {
-                JArr jarr = pair;
+                JArr jarr = prop;
                 if (jarr != null)
                 {
                     v = new D[jarr.Count];
@@ -322,39 +322,39 @@ namespace Greatbone.Core
         }
 
 
-        internal void Dump<R>(ISink<R> snk) where R : ISink<R>
+        public void Dump<R>(ISink<R> snk) where R : ISink<R>
         {
             for (int i = 0; i < Count; i++)
             {
-                JMem mbr = this[i];
-                JType typ = mbr.type;
+                JMem prop = this[i];
+                JType typ = prop.type;
                 if (typ == JType.Array)
                 {
-                    snk.Put(mbr.Name, (JArr) mbr);
+                    snk.Put(prop.Name, (JArr) prop);
                 }
                 else if (typ == JType.Object)
                 {
-                    snk.Put(mbr.Name, (JObj) mbr);
+                    snk.Put(prop.Name, (JObj) prop);
                 }
                 else if (typ == JType.String)
                 {
-                    snk.Put(mbr.Name, (string) mbr);
+                    snk.Put(prop.Name, (string) prop);
                 }
                 else if (typ == JType.Number)
                 {
-                    snk.Put(mbr.Name, (JNumber) mbr);
+                    snk.Put(prop.Name, (JNumber) prop);
                 }
                 else if (typ == JType.True)
                 {
-                    snk.Put(mbr.Name, true);
+                    snk.Put(prop.Name, true);
                 }
                 else if (typ == JType.False)
                 {
-                    snk.Put(mbr.Name, false);
+                    snk.Put(prop.Name, false);
                 }
                 else if (typ == JType.Null)
                 {
-                    snk.PutNull(mbr.Name);
+                    snk.PutNull(prop.Name);
                 }
             }
         }
@@ -368,6 +368,13 @@ namespace Greatbone.Core
             string str = cont.ToString();
             BufferUtility.Return(cont);
             return str;
+        }
+
+        public D ToDat<D>(byte flags = 0) where D : IDat, new()
+        {
+            D dat = new D();
+            dat.Load(this, flags);
+            return dat;
         }
     }
 }

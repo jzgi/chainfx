@@ -10,7 +10,7 @@ namespace Greatbone.Core
     ///
     /// An environment for database operations based on current service.
     ///
-    public class DbContext : IDisposable, IResultSet
+    public class DbContext : IDisposable, ISourceSet
     {
         readonly string shard;
 
@@ -155,7 +155,7 @@ namespace Greatbone.Core
             return reader.HasRows;
         }
 
-        public bool NextRow()
+        public bool Next()
         {
             ordinal = 0; // reset column ordinal
 
@@ -322,11 +322,10 @@ namespace Greatbone.Core
             return dat;
         }
 
-
         public D[] ToDats<D>(byte bits = 0) where D : IDat, new()
         {
             List<D> lst = new List<D>(64);
-            while (NextRow())
+            while (Next())
             {
                 D dat = new D();
                 dat.Load(this, bits);

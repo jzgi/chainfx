@@ -245,6 +245,9 @@ namespace Greatbone.Core
             throw new NotImplementedException();
         }
 
-
+        public D ToDat<D>(byte flags = 0) where D : IDat, new()
+        {
+            throw new NotImplementedException();
+        }
     }
 }

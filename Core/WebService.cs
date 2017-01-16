@@ -247,7 +247,7 @@ namespace Greatbone.Core
                         long? clen = ac.Request.ContentLength;
                         if (clen > 0)
                         {
-                            await ac.ReadAsync((int)clen);
+                            await ac.ReadAsync();
                         }
                         folder.Handle(relative, ac);
                     }
@@ -340,7 +340,7 @@ namespace Greatbone.Core
                 if (dc.Query(sql, p => p.Put(lastid.Value)))
                 {
                     FormMpContent cont = new FormMpContent(true, 1024 * 1024);
-                    while (dc.NextRow())
+                    while (dc.Next())
                     {
                         long id = dc.GetLong();
                         string name = dc.GetString();
