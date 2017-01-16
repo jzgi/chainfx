@@ -82,7 +82,7 @@ namespace Greatbone.Core
             }
             // create instance by reflection
             Type typ = typeof(F);
-            ConstructorInfo ci = typ.GetConstructor(new[] { typeof(WebFolderContext) });
+            ConstructorInfo ci = typ.GetConstructor(new[] {typeof(WebFolderContext)});
             if (ci == null)
             {
                 throw new WebException(typ + " missing WebFolderContext");
@@ -97,7 +97,7 @@ namespace Greatbone.Core
                 Directory = (Parent == null) ? name : Path.Combine(Parent.Directory, name),
                 Service = Service
             };
-            F folder = (F)ci.Invoke(new object[] { ctx });
+            F folder = (F) ci.Invoke(new object[] {ctx});
             children.Add(folder);
 
             return folder;
@@ -118,7 +118,7 @@ namespace Greatbone.Core
 
             // create instance
             Type typ = typeof(F);
-            ConstructorInfo ci = typ.GetConstructor(new[] { typeof(WebFolderContext) });
+            ConstructorInfo ci = typ.GetConstructor(new[] {typeof(WebFolderContext)});
             if (ci == null)
             {
                 throw new WebException(typ + " missing WebFolderContext");
@@ -133,7 +133,7 @@ namespace Greatbone.Core
                 Directory = (Parent == null) ? _VAR_ : Path.Combine(Parent.Directory, _VAR_),
                 Service = Service
             };
-            F folder = (F)ci.Invoke(new object[] { ctx });
+            F folder = (F) ci.Invoke(new object[] {ctx});
             variable = folder;
 
             return folder;
@@ -224,7 +224,7 @@ namespace Greatbone.Core
             return null;
         }
 
-        internal void Handle(string rsc, WebActionContext ac)
+        internal async Task HandleAsync(string rsc, WebActionContext ac)
         {
             ac.Folder = this;
 
@@ -261,7 +261,14 @@ namespace Greatbone.Core
                 {
                     // try in cache
 
-                    atn.Do(ac, arg);
+                    if (atn.Async)
+                    {
+                        await atn.DoAsync(ac, arg);
+                    }
+                    else
+                    {
+                        atn.Do(ac, arg);
+                    }
                 }
             }
 

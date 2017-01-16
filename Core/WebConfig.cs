@@ -1,6 +1,4 @@
-﻿using System.IO;
-
-namespace Greatbone.Core
+﻿namespace Greatbone.Core
 {
     ///
     /// The configurative settings for a web service.

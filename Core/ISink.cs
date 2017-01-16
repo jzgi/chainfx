@@ -4,7 +4,7 @@ using NpgsqlTypes;
 namespace Greatbone.Core
 {
     ///
-    /// Represents an destination for object persistence.
+    /// Represents a DAT sink for dump.
     ///
     public interface ISink<out R> where R : ISink<R>
     {

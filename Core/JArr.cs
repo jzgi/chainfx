@@ -18,12 +18,7 @@ namespace Greatbone.Core
         {
             elements = new JMem[capacity];
             count = 0;
-            current = 0;
-        }
-
-        public ISource SourceItem(int index)
-        {
-            return (JObj) elements[index];
+            current = -1;
         }
 
         public JMem this[int index] => elements[index];
@@ -81,107 +76,127 @@ namespace Greatbone.Core
 
         public bool Get(string name, ref bool v)
         {
-            throw new NotImplementedException();
+            JObj jobj = elements[current];
+            return jobj != null && jobj.Get(name, ref v);
         }
 
         public bool Get(string name, ref short v)
         {
-            throw new NotImplementedException();
+            JObj jobj = elements[current];
+            return jobj != null && jobj.Get(name, ref v);
         }
 
         public bool Get(string name, ref int v)
         {
-            throw new NotImplementedException();
+            JObj jobj = elements[current];
+            return jobj != null && jobj.Get(name, ref v);
         }
 
         public bool Get(string name, ref long v)
         {
-            throw new NotImplementedException();
+            JObj jobj = elements[current];
+            return jobj != null && jobj.Get(name, ref v);
         }
 
         public bool Get(string name, ref double v)
         {
-            throw new NotImplementedException();
+            JObj jobj = elements[current];
+            return jobj != null && jobj.Get(name, ref v);
         }
 
         public bool Get(string name, ref decimal v)
         {
-            throw new NotImplementedException();
+            JObj jobj = elements[current];
+            return jobj != null && jobj.Get(name, ref v);
         }
 
         public bool Get(string name, ref DateTime v)
         {
-            throw new NotImplementedException();
+            JObj jobj = elements[current];
+            return jobj != null && jobj.Get(name, ref v);
         }
 
         public bool Get(string name, ref NpgsqlPoint v)
         {
-            throw new NotImplementedException();
+            JObj jobj = elements[current];
+            return jobj != null && jobj.Get(name, ref v);
         }
 
         public bool Get(string name, ref char[] v)
         {
-            throw new NotImplementedException();
+            JObj jobj = elements[current];
+            return jobj != null && jobj.Get(name, ref v);
         }
 
         public bool Get(string name, ref string v)
         {
-            throw new NotImplementedException();
+            JObj jobj = elements[current];
+            return jobj != null && jobj.Get(name, ref v);
         }
 
         public bool Get(string name, ref byte[] v)
         {
-            throw new NotImplementedException();
+            JObj jobj = elements[current];
+            return jobj != null && jobj.Get(name, ref v);
         }
 
         public bool Get(string name, ref ArraySegment<byte> v)
         {
-            throw new NotImplementedException();
+            JObj jobj = elements[current];
+            return jobj != null && jobj.Get(name, ref v);
         }
 
         public bool Get<D>(string name, ref D v, byte flags = 0) where D : IDat, new()
         {
-            throw new NotImplementedException();
+            JObj jobj = elements[current];
+            return jobj != null && jobj.Get(name, ref v);
         }
 
         public bool Get(string name, ref JObj v)
         {
-            throw new NotImplementedException();
+            JObj jobj = elements[current];
+            return jobj != null && jobj.Get(name, ref v);
         }
 
         public bool Get(string name, ref JArr v)
         {
-            throw new NotImplementedException();
+            JObj jobj = elements[current];
+            return jobj != null && jobj.Get(name, ref v);
         }
 
         public bool Get(string name, ref short[] v)
         {
-            throw new NotImplementedException();
+            JObj jobj = elements[current];
+            return jobj != null && jobj.Get(name, ref v);
         }
 
         public bool Get(string name, ref int[] v)
         {
-            throw new NotImplementedException();
+            JObj jobj = elements[current];
+            return jobj != null && jobj.Get(name, ref v);
         }
 
         public bool Get(string name, ref long[] v)
         {
-            throw new NotImplementedException();
+            JObj jobj = elements[current];
+            return jobj != null && jobj.Get(name, ref v);
         }
 
         public bool Get(string name, ref string[] v)
         {
-            throw new NotImplementedException();
+            JObj jobj = elements[current];
+            return jobj != null && jobj.Get(name, ref v);
         }
 
         public bool Get<D>(string name, ref D[] v, byte flags = 0) where D : IDat, new()
         {
-            throw new NotImplementedException();
+            JObj jobj = elements[current];
+            return jobj != null && jobj.Get(name, ref v);
         }
 
         public bool Next()
         {
-            throw new NotImplementedException();
+            return ++current < count;
         }
 
         public override string ToString()
@@ -204,14 +219,14 @@ namespace Greatbone.Core
 
         public D[] ToDats<D>(byte flags = 0) where D : IDat, new()
         {
-            D[] arr = new D[count];
-            for (int i = 0; i < arr.Length; i++)
+            D[] dats = new D[count];
+            for (int i = 0; i < dats.Length; i++)
             {
                 D dat = new D();
                 dat.Load((JObj) this[i], flags);
-                arr[i] = dat;
+                dats[i] = dat;
             }
-            return arr;
+            return dats;
         }
     }
 }

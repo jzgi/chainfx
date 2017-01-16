@@ -8,6 +8,6 @@ namespace Greatbone.Core
 
         public WebException(string message) : base(message) { }
         
-        public WebException(string message, System.Exception inner) : base(message, inner) { }
+        public WebException(string message, Exception inner) : base(message, inner) { }
     }
 }

@@ -6,7 +6,7 @@ namespace Greatbone.Core
     ///
     /// An XML element.
     ///
-    public class XElem : ISource
+    public class XElem : IContentModel, ISource
     {
         readonly string name;
 
@@ -246,6 +246,11 @@ namespace Greatbone.Core
         }
 
         public D ToDat<D>(byte flags = 0) where D : IDat, new()
+        {
+            throw new NotImplementedException();
+        }
+
+        public void Dump<R>(ISink<R> snk) where R : ISink<R>
         {
             throw new NotImplementedException();
         }

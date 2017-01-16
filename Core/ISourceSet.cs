@@ -1,7 +1,7 @@
 namespace Greatbone.Core
 {
     ///
-    /// A resultset returned from query, that provides data access mechanisms.
+    /// A DAT source or result set consisting of many source objects.
     ///
     public interface ISourceSet : ISource
     {

@@ -4,7 +4,7 @@ using NpgsqlTypes;
 namespace Greatbone.Core
 {
     ///
-    /// Represents A source for object persistence.
+    /// Represents A DAT source for load.
     ///
     public interface ISource
     {
