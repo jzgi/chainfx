@@ -187,7 +187,7 @@ namespace Greatbone.Core
             {
                 entity = new XmlParse(buffer, 0, count).Parse();
             }
-            else if (ctyp.StartsWith("text/"))
+            else if (ctyp.StartsWith("text/plain"))
             {
                 Text str = new Text();
                 byte[] buf = buffer;
