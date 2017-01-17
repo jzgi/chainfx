@@ -34,9 +34,9 @@ namespace Greatbone.Sample
             using (var dc = Service.NewDbContext())
             {
                 DbSql sql = new DbSql("SELECT ").columnlst(Shop.Empty)._("FROM items WHERE @shopid = @1 AND NOT disabled");
-                if (dc.Query(sql.ToString(), p => p.Put(shopid)))
+                if (dc.Query(sql.ToString(), p => p.Set(shopid)))
                 {
-                    var items = dc.ToDatas<Item>();
+                    var items = dc.ToArray<Item>();
                     ac.ReplyPage(200, "", main =>
                     {
                     });
@@ -60,9 +60,9 @@ namespace Greatbone.Sample
             using (var dc = Service.NewDbContext())
             {
                 DbSql sql = new DbSql("SELECT ").columnlst(Item.Empty)._("FROM items WHERE shopid = @1 AND NOT disabled");
-                if (dc.Query(sql.ToString(), p => p.Put(shopid)))
+                if (dc.Query(sql.ToString(), p => p.Set(shopid)))
                 {
-                    var items = dc.ToDatas<Item>();
+                    var items = dc.ToArray<Item>();
                     ac.ReplyPage(200, "", main =>
                     {
                         main.FORM(_re_menu_, p =>

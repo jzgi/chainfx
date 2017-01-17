@@ -1,4 +1,5 @@
 using System;
+using System.Collections.Generic;
 using NpgsqlTypes;
 
 namespace Greatbone.Core
@@ -245,7 +246,12 @@ namespace Greatbone.Core
             throw new NotImplementedException();
         }
 
-        public D ToData<D>(byte flags = 0) where D : IData, new()
+        public bool Get<D>(string name, ref List<D> v, byte flags = 0) where D : IData, new()
+        {
+            throw new NotImplementedException();
+        }
+
+        public D ToObject<D>(byte flags = 0) where D : IData, new()
         {
             throw new NotImplementedException();
         }

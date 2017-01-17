@@ -1,4 +1,5 @@
 using System;
+using System.Collections.Generic;
 using NpgsqlTypes;
 
 namespace Greatbone.Core
@@ -163,6 +164,11 @@ namespace Greatbone.Core
             return false;
         }
 
+        public bool Get<D>(string name, ref D v, byte flags = 0) where D : IData, new()
+        {
+            throw new NotImplementedException();
+        }
+
         public bool Get(string name, ref JArr v)
         {
             Field fld;
@@ -244,12 +250,12 @@ namespace Greatbone.Core
             throw new NotImplementedException();
         }
 
-        public bool Get<D>(string name, ref D v, byte flags = 0) where D : IData, new()
+        public bool Get<D>(string name, ref List<D> v, byte flags = 0) where D : IData, new()
         {
             throw new NotImplementedException();
         }
 
-        public D ToData<D>(byte flags = 0) where D : IData, new()
+        public D ToObject<D>(byte flags = 0) where D : IData, new()
         {
             D dat = new D();
             dat.Load(this, flags);

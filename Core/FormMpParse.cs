@@ -54,7 +54,7 @@ namespace Greatbone.Core
 
             // UTF-8 header builder
             Header hdr = new Header(128);
-            Str str = new Str(128);
+            Text str = new Text(128);
 
             // keep local for speed
             int boundlen = bound.Length;
@@ -162,7 +162,7 @@ namespace Greatbone.Core
                     {
                         object cont = Contentize(ctype, buffer, start, len);
                         // handle the event context
-                        DateTime time; StrUtility.TryParseDate(date, out time);
+                        DateTime time; TextUtility.TryParseDate(date, out time);
                         EventContext.Reset(234, name, time, ctype, cont);
                         handler(EventContext);
                     }

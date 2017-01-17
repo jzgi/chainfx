@@ -1,4 +1,5 @@
 using System;
+using System.Collections.Generic;
 using NpgsqlTypes;
 
 namespace Greatbone.Core
@@ -194,6 +195,12 @@ namespace Greatbone.Core
             return jobj != null && jobj.Get(name, ref v);
         }
 
+        public bool Get<D>(string name, ref List<D> v, byte flags = 0) where D : IData, new()
+        {
+            JObj jobj = elements[current];
+            return jobj != null && jobj.Get(name, ref v);
+        }
+
         public bool Next()
         {
             return ++current < count;
@@ -210,23 +217,35 @@ namespace Greatbone.Core
             return str;
         }
 
-        public D ToData<D>(byte flags = 0) where D : IData, new()
+        public D ToObject<D>(byte flags = 0) where D : IData, new()
         {
             D dat = new D();
             dat.Load(this, flags);
             return dat;
         }
 
-        public D[] ToDatas<D>(byte flags = 0) where D : IData, new()
+        public D[] ToArray<D>(byte flags = 0) where D : IData, new()
         {
-            D[] dats = new D[count];
-            for (int i = 0; i < dats.Length; i++)
+            D[] arr = new D[count];
+            for (int i = 0; i < arr.Length; i++)
             {
-                D dat = new D();
-                dat.Load((JObj) this[i], flags);
-                dats[i] = dat;
+                D obj = new D();
+                obj.Load((JObj) elements[i], flags);
+                arr[i] = obj;
             }
-            return dats;
+            return arr;
+        }
+
+        public List<D> ToList<D>(byte flags = 0) where D : IData, new()
+        {
+            List<D> lst = new List<D>(count + 8);
+            for (int i = 0; i < count; i++)
+            {
+                D obj = new D();
+                obj.Load((JObj) elements[i], flags);
+                lst.Add(obj);
+            }
+            return lst;
         }
     }
 }

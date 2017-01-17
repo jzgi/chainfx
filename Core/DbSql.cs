@@ -1,4 +1,5 @@
 using System;
+using System.Collections.Generic;
 using NpgsqlTypes;
 
 namespace Greatbone.Core
@@ -462,6 +463,12 @@ namespace Greatbone.Core
         }
 
         public DbSql Put<D>(string name, D[] v, byte flags = 0) where D : IData
+        {
+            Build(name);
+            return this;
+        }
+
+        public DbSql Put<D>(string name, List<D> v, byte flags = 0) where D : IData
         {
             Build(name);
             return this;

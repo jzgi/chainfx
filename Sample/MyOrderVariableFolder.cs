@@ -22,9 +22,9 @@ namespace Greatbone.Sample
             using (var dc = Service.NewDbContext())
             {
                 DbSql sql = new DbSql("SELECT ").columnlst(Order.Empty)._("FROM orders WHERE id = @1 AND shopid = @2");
-                if (dc.Query(sql.ToString(), p => p.Put(id).Put(shopid)))
+                if (dc.Query(sql.ToString(), p => p.Set(id).Set(shopid)))
                 {
-                    var order = dc.ToDatas<Order>();
+                    var order = dc.ToArray<Order>();
                     ac.ReplyPage(200, "", main =>
                     {
 
@@ -43,9 +43,9 @@ namespace Greatbone.Sample
             using (var dc = Service.NewDbContext())
             {
                 DbSql sql = new DbSql("SELECT ").columnlst(Order.Empty)._("FROM orders WHERE id = @1 AND shopid = @2");
-                if (dc.Query(sql.ToString(), p => p.Put(orderid).Put(shopid)))
+                if (dc.Query(sql.ToString(), p => p.Set(orderid).Set(shopid)))
                 {
-                    var order = dc.ToDatas<Order>();
+                    var order = dc.ToArray<Order>();
                     ac.ReplyPage(200, "", main =>
                     {
 

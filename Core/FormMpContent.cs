@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using NpgsqlTypes;
 
 namespace Greatbone.Core
@@ -280,7 +281,6 @@ namespace Greatbone.Core
             return this;
         }
 
-
         public FormMpContent Put<D>(string name, D[] v, byte flags = 0) where D : IData
         {
             Part(name);
@@ -300,6 +300,24 @@ namespace Greatbone.Core
             return this;
         }
 
+        public FormMpContent Put<D>(string name, List<D> v, byte flags = 0) where D : IData
+        {
+            Part(name);
+            if (v == null)
+            {
+                Add("null");
+            }
+            else
+            {
+                Add('[');
+                for (int i = 0; i < v.Count; i++)
+                {
+                    Put(null, v[i], flags);
+                }
+                Add(']');
+            }
+            return this;
+        }
 
         public void PutEvent(long id, string name, DateTime time, string mtype, ArraySegment<byte> body)
         {

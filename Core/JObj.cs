@@ -1,4 +1,5 @@
 using System;
+using System.Collections.Generic;
 using NpgsqlTypes;
 
 namespace Greatbone.Core
@@ -321,6 +322,27 @@ namespace Greatbone.Core
             return false;
         }
 
+        public bool Get<D>(string name, ref List<D> v, byte flags = 0) where D : IData, new()
+        {
+            JMem prop;
+            if (TryGet(name, out prop))
+            {
+                JArr jarr = prop;
+                if (jarr != null)
+                {
+                    v = new List<D>(jarr.Count + 8);
+                    for (int i = 0; i < jarr.Count; i++)
+                    {
+                        JObj jobj = jarr[i];
+                        D dat = new D();
+                        dat.Load(jobj);
+                        v.Add(dat);
+                    }
+                }
+                return true;
+            }
+            return false;
+        }
 
         public void Dump<R>(ISink<R> snk) where R : ISink<R>
         {
@@ -370,7 +392,7 @@ namespace Greatbone.Core
             return str;
         }
 
-        public D ToData<D>(byte flags = 0) where D : IData, new()
+        public D ToObject<D>(byte flags = 0) where D : IData, new()
         {
             D dat = new D();
             dat.Load(this, flags);

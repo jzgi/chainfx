@@ -59,13 +59,13 @@ namespace Greatbone.Core
             {
                 return default(D);
             }
-            return src.ToData<D>(flags);
+            return src.ToObject<D>(flags);
         }
 
         public D[] AsDatas<D>(byte flags = 0) where D : IData, new()
         {
             JArr jarr = entity as JArr;
-            return jarr?.ToDatas<D>(flags);
+            return jarr?.ToArray<D>(flags);
         }
 
         public XElem AsXElem()

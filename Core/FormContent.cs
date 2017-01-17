@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using NpgsqlTypes;
 
 namespace Greatbone.Core
@@ -475,6 +476,32 @@ namespace Greatbone.Core
             {
                 Add('[');
                 for (int i = 0; i < v.Length; i++)
+                {
+                    Put(null, v[i], flags);
+                }
+                Add(']');
+            }
+            return this;
+        }
+
+        public FormContent Put<D>(string name, List<D> v, byte flags = 0) where D : IData
+        {
+            if (name != null)
+            {
+                Add('"');
+                Add(name);
+                Add('"');
+                Add(':');
+            }
+
+            if (v == null)
+            {
+                Add("null");
+            }
+            else
+            {
+                Add('[');
+                for (int i = 0; i < v.Count; i++)
                 {
                     Put(null, v[i], flags);
                 }

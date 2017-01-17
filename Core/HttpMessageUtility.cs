@@ -70,7 +70,7 @@ namespace Greatbone.Core
             byte[] bytes = await msg.Content.ReadAsByteArrayAsync();
             JsonParse p = new JsonParse(bytes, bytes.Length);
             JObj jobj = (JObj)p.Parse();
-            return jobj.ToData<D>(flags);
+            return jobj.ToObject<D>(flags);
         }
 
         public static async Task<D[]> GetArrayAsync<D>(this HttpResponseMessage msg, byte flags = 0) where D : IData, new()
@@ -78,7 +78,7 @@ namespace Greatbone.Core
             byte[] bytes = await msg.Content.ReadAsByteArrayAsync();
             JsonParse p = new JsonParse(bytes, bytes.Length);
             JArr jarr = (JArr)p.Parse();
-            return jarr.ToDatas<D>(flags);
+            return jarr.ToArray<D>(flags);
         }
 
         public static async Task<byte[]> GetBytesSegAsync(this HttpResponseMessage msg)

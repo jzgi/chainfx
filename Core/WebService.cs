@@ -320,7 +320,7 @@ namespace Greatbone.Core
                 for (int i = 0; i < names.Length; i++)
                 {
                     if (i > 0) sql.Add(',');
-                    sql.Put(names[i]);
+                    sql.Put(null, names[i]);
                 }
                 sql.Add(']');
                 if (shard != null)
@@ -330,7 +330,7 @@ namespace Greatbone.Core
                 }
                 sql._("LIMIT 120");
 
-                if (dc.Query(sql, p => p.Put(lastid.Value)))
+                if (dc.Query(sql, p => p.Set(lastid.Value)))
                 {
                     FormMpContent cont = new FormMpContent(true, 1024 * 1024);
                     while (dc.Next())

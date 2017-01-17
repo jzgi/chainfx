@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Http.Features;
@@ -136,7 +137,7 @@ namespace Greatbone.Core
             {
                 string str = vs;
                 DateTime v;
-                if (StrUtility.TryParseUtcDate(str, out v))
+                if (TextUtility.TryParseUtcDate(str, out v))
                 {
                     return v;
                 }
@@ -186,9 +187,19 @@ namespace Greatbone.Core
             {
                 entity = new XmlParse(buffer, 0, count).Parse();
             }
+            else if (ctyp.StartsWith("text/"))
+            {
+                Text str = new Text();
+                byte[] buf = buffer;
+                for (int i = 0; i < count; i++)
+                {
+                    str.Accept(buf[i]);
+                }
+                entity = str;
+            }
         }
 
-        public async Task<M> ReadAsync<M>() where M : class, IContentModel, ISource
+        public async Task<M> ReadAsync<M>() where M : class, IContentModel
         {
             if (entity == null && count == -1) // if not yet parse and read
             {
@@ -208,7 +219,7 @@ namespace Greatbone.Core
             return entity as M;
         }
 
-        public async Task<D> ReadDataAsync<D>(byte flags = 0) where D : IData, new()
+        public async Task<D> ReadObjectAsync<D>(byte flags = 0) where D : IData, new()
         {
             if (entity == null && count == -1) // if not yet parse and read
             {
@@ -232,10 +243,10 @@ namespace Greatbone.Core
             {
                 return default(D);
             }
-            return src.ToData<D>(flags);
+            return src.ToObject<D>(flags);
         }
 
-        public async Task<D[]> ReadDatasAsync<D>(byte flags = 0) where D : IData, new()
+        public async Task<D[]> ReadArrayAsync<D>(byte flags = 0) where D : IData, new()
         {
             if (entity == null && count == -1) // if not yet parse and read
             {
@@ -252,7 +263,27 @@ namespace Greatbone.Core
                 }
                 Parse();
             }
-            return (entity as ISourceSet)?.ToDatas<D>(flags);
+            return (entity as ISourceSet)?.ToArray<D>(flags);
+        }
+
+        public async Task<List<D>> ReadListAsync<D>(byte flags = 0) where D : IData, new()
+        {
+            if (entity == null && count == -1) // if not yet parse and read
+            {
+                count = 0;
+                int? clen = HeaderInt("Content-Length");
+                if (clen > 0)
+                {
+                    // reading
+                    int len = (int) clen;
+                    buffer = BufferUtility.ByteBuffer(len); // borrow from the pool
+                    while ((count += await Request.Body.ReadAsync(buffer, count, (len - count))) < len)
+                    {
+                    }
+                }
+                Parse();
+            }
+            return (entity as ISourceSet)?.ToList<D>(flags);
         }
 
         //
@@ -281,7 +312,7 @@ namespace Greatbone.Core
 
         public void SetHeader(string name, DateTime v)
         {
-            string str = StrUtility.FormatUtcDate(v);
+            string str = TextUtility.FormatUtcDate(v);
             Response.Headers.Add(name, new StringValues(str));
         }
 
@@ -313,7 +344,7 @@ namespace Greatbone.Core
 
         public void Reply(int status, string str, bool? pub = null, int seconds = 60)
         {
-            StrContent cont = new StrContent(true, true);
+            TextContent cont = new TextContent(true, true);
             cont.Add(str);
             Reply(status, cont, pub, seconds);
         }
@@ -326,6 +357,13 @@ namespace Greatbone.Core
         }
 
         public void Reply<D>(int status, D[] dats, byte flags = 0, bool? pub = null, int maxage = 60) where D : IData
+        {
+            JsonContent cont = new JsonContent(true, true, 4 * 1024);
+            cont.Put(null, dats, flags);
+            Reply(status, cont, pub, maxage);
+        }
+
+        public void Reply<D>(int status, List<D> dats, byte flags = 0, bool? pub = null, int maxage = 60) where D : IData
         {
             JsonContent cont = new JsonContent(true, true, 4 * 1024);
             cont.Put(null, dats, flags);
@@ -377,14 +415,14 @@ namespace Greatbone.Core
                 if (Content is DynamicContent) // set etag
                 {
                     ulong etag = ((DynamicContent) Content).ETag;
-                    SetHeader("ETag", StrUtility.ToHex(etag));
+                    SetHeader("ETag", TextUtility.ToHex(etag));
                 }
 
                 // set last-modified
                 DateTime? last = Content.Modified;
                 if (last != null)
                 {
-                    SetHeader("Last-Modified", StrUtility.FormatUtcDate(last.Value));
+                    SetHeader("Last-Modified", TextUtility.FormatUtcDate(last.Value));
                 }
 
                 // send async

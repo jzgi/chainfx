@@ -307,7 +307,7 @@ namespace Greatbone.Core
         // RESULTSET
         //
 
-        public D ToData<D>(byte flags = 0) where D : IData, new()
+        public D ToObject<D>(byte flags = 0) where D : IData, new()
         {
             D dat = new D();
             dat.Load(this, flags);
@@ -322,13 +322,18 @@ namespace Greatbone.Core
             return dat;
         }
 
-        public D[] ToDatas<D>(byte bits = 0) where D : IData, new()
+        public D[] ToArray<D>(byte flags = 0) where D : IData, new()
+        {
+            return ToList<D>(flags).ToArray();
+        }
+
+        public List<D> ToList<D>(byte flags = 0) where D : IData, new()
         {
             List<D> lst = new List<D>(64);
             while (Next())
             {
                 D dat = new D();
-                dat.Load(this, bits);
+                dat.Load(this, flags);
 
                 // add shard if any
                 IShardable shardable = dat as IShardable;
@@ -339,9 +344,8 @@ namespace Greatbone.Core
 
                 lst.Add(dat);
             }
-            return lst.ToArray();
+            return lst;
         }
-
 
         // current column ordinal
         int ordinal;
@@ -626,6 +630,35 @@ namespace Greatbone.Core
             return false;
         }
 
+        public bool Get<D>(string name, ref List<D> v, byte flags = 0) where D : IData, new()
+        {
+            int ord = name == null ? ordinal++ : reader.GetOrdinal(name);
+            if (!reader.IsDBNull(ord))
+            {
+                string str = reader.GetString(ord);
+                JsonParse p = new JsonParse(str);
+                JArr jarr = (JArr) p.Parse();
+                int len = jarr.Count;
+                v = new List<D>(len + 8);
+                for (int i = 0; i < len; i++)
+                {
+                    JObj jobj = jarr[i];
+                    D dat = new D();
+                    dat.Load(jobj, flags);
+
+                    // add shard if any
+                    IShardable shardable = dat as IShardable;
+                    if (shardable != null)
+                    {
+                        shardable.Shard = shard;
+                    }
+
+                    v.Add(dat);
+                }
+                return true;
+            }
+            return false;
+        }
 
         //
         // MESSAGING
@@ -673,9 +706,9 @@ namespace Greatbone.Core
             ArraySegment<byte> byteseg = new ArraySegment<byte>(content.ByteBuffer, 0, content.Size);
             Execute("INSERT INTO eq (name, shard, body) VALUES (@1, @2, @3)", p =>
             {
-                p.Put(name);
-                p.Put(shard);
-                p.Put(byteseg);
+                p.Set(name);
+                p.Set(shard);
+                p.Set(byteseg);
             });
             BufferUtility.Return(content); // back to pool
         }

@@ -3,7 +3,7 @@ namespace Greatbone.Core
     ///
     /// To parse HTTP header.
     ///
-    public class Header : Str
+    public class Header : Text
     {
         // start index of the value field
         int vstart;

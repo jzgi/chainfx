@@ -58,10 +58,10 @@ namespace Greatbone.Sample
                 }
                 using (var dc = Service.NewDbContext())
                 {
-                    if (dc.QueryUn("SELECT * FROM shops WHERE id = @1", (p) => p.Put(id)))
+                    if (dc.QueryUn("SELECT * FROM shops WHERE id = @1", (p) => p.Set(id)))
                     {
-                        var tok = dc.ToData<Token>();
-                        string credential = StrUtility.MD5(id + ':' + password);
+                        var tok = dc.ToObject<Token>();
+                        string credential = TextUtility.MD5(id + ':' + password);
                         if (credential.Equals(tok.credential))
                         {
                             // set cookie
@@ -101,9 +101,9 @@ namespace Greatbone.Sample
             using (var dc = Service.NewDbContext())
             {
                 DbSql sql = new DbSql("SELECT ").columnlst(Shop.Empty)._("FROM shops WHERE location <-> @1");
-                if (dc.Query(sql.ToString(), p => p.Put(pt)))
+                if (dc.Query(sql.ToString(), p => p.Set(pt)))
                 {
-                    var shops = dc.ToDatas<Shop>();
+                    var shops = dc.ToArray<Shop>();
                     ac.ReplyPage(200, "", main => { main.FORM(_new, shops); });
                 }
                 else
@@ -146,9 +146,9 @@ namespace Greatbone.Sample
             using (var dc = Service.NewDbContext())
             {
                 DbSql sql = new DbSql("SELECT ").columnlst(Shop.Empty, z)._("FROM shops");
-                if (dc.Query(sql.ToString(), p => p.Put(20 * page)))
+                if (dc.Query(sql.ToString(), p => p.Set(20 * page)))
                 {
-                    var shops = dc.ToDatas<Shop>(z);
+                    var shops = dc.ToArray<Shop>(z);
                     ac.ReplyPage(200, "", main => { main.FORM(_new, shops); });
                 }
                 else
@@ -176,12 +176,12 @@ namespace Greatbone.Sample
             }
             else // post
             {
-                var shop = await ac.ReadDataAsync<Shop>(); // read form
+                var shop = await ac.ReadObjectAsync<Shop>(); // read form
                 using (var dc = Service.NewDbContext())
                 {
-                    shop.credential = StrUtility.MD5(shop.id + ':' + shop.credential);
+                    shop.credential = TextUtility.MD5(shop.id + ':' + shop.credential);
                     DbSql sql = new DbSql("INSERT INTO users")._(Shop.Empty)._VALUES_(Shop.Empty)._("");
-                    if (dc.Execute(sql.ToString(), p => p.Put(shop)) > 0)
+                    if (dc.Execute(sql.ToString(), p => p.Set(shop)) > 0)
                     {
                         ac.Reply(201); // created
                     }

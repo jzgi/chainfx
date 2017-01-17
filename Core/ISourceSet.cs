@@ -1,3 +1,5 @@
+using System.Collections.Generic;
+
 namespace Greatbone.Core
 {
     ///
@@ -7,6 +9,8 @@ namespace Greatbone.Core
     {
         bool Next();
 
-        D[] ToDatas<D>(byte flags = 0) where D : IData, new();
+        D[] ToArray<D>(byte flags = 0) where D : IData, new();
+
+        List<D> ToList<D>(byte flags = 0) where D : IData, new();
     }
 }

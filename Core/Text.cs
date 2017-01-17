@@ -5,7 +5,7 @@ namespace Greatbone.Core
     ///
     /// A reusable string builder that supports UTF-8 decoding.
     ///
-    public class Str
+    public class Text : IContentModel
     {
         protected char[] buf;
 
@@ -18,7 +18,7 @@ namespace Greatbone.Core
         // number of rest octets
         int rest;
 
-        public Str(int capacity = 256)
+        public Text(int capacity = 256)
         {
             buf = new char[capacity];
             sum = 0;
@@ -49,12 +49,12 @@ namespace Greatbone.Core
             {
                 if (b > 0xff) // if a char already
                 {
-                    Add((char)b);
+                    Add((char) b);
                     return;
                 }
                 if (b < 0x80)
                 {
-                    Add((char)b); // single byte
+                    Add((char) b); // single byte
                 }
                 else if (b >= 0xc0 && b < 0xe0)
                 {
@@ -71,7 +71,7 @@ namespace Greatbone.Core
             {
                 sum |= (b & 0x3f);
                 rest--;
-                Add((char)sum);
+                Add((char) sum);
             }
             else if (rest == 2)
             {
@@ -90,6 +90,10 @@ namespace Greatbone.Core
         public override string ToString()
         {
             return new string(buf, 0, count);
+        }
+
+        public void Dump<R>(ISink<R> snk) where R : ISink<R>
+        {
         }
     }
 }

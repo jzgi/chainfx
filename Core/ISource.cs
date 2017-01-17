@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using NpgsqlTypes;
 
 namespace Greatbone.Core
@@ -48,7 +49,8 @@ namespace Greatbone.Core
 
         bool Get<D>(string name, ref D[] v, byte flags = 0) where D : IData, new();
 
+        bool Get<D>(string name, ref List<D> v, byte flags = 0) where D : IData, new();
 
-        D ToData<D>(byte flags = 0) where D : IData, new();
+        D ToObject<D>(byte flags = 0) where D : IData, new();
     }
 }

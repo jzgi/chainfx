@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using NpgsqlTypes;
 
 namespace Greatbone.Core
@@ -51,5 +52,7 @@ namespace Greatbone.Core
         R Put(string name, string[] v);
 
         R Put<D>(string name, D[] v, byte flags = 0) where D : IData;
+
+        R Put<D>(string name, List<D> v, byte flags = 0) where D : IData;
     }
 }

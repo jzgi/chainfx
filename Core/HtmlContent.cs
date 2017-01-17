@@ -1161,6 +1161,11 @@ namespace Greatbone.Core
         {
             return this;
         }
+
+        public HtmlContent Put<D>(string name, List<D> v, byte flags = 0) where D : IData
+        {
+            throw new NotImplementedException();
+        }
     }
 
 

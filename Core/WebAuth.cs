@@ -40,7 +40,7 @@ namespace Greatbone.Core
         public string Encrypt(IToken tok)
         {
             JsonContent cont = new JsonContent(true, false, 4096);
-            cont.Put(tok);
+            cont.Put(null, tok);
             byte[] bytebuf = cont.ByteBuffer;
             int count = cont.Size;
 
@@ -65,7 +65,7 @@ namespace Greatbone.Core
         {
             int[] masks = { (mask >> 24) & 0xff, (mask >> 16) & 0xff, (mask >> 8) & 0xff, mask & 0xff };
             int len = tokstr.Length / 2;
-            Str str = new Str(256);
+            Text str = new Text(256);
             int p = 0;
             for (int i = 0; i < len; i++)
             {

@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using NpgsqlTypes;
 
 namespace Greatbone.Core
@@ -550,6 +551,36 @@ namespace Greatbone.Core
                 counts[++level] = 0; // enter
                 Add('[');
                 for (int i = 0; i < v.Length; i++)
+                {
+                    Put(null, v[i], flags);
+                }
+                Add(']');
+                level--; // exit
+            }
+            return this;
+        }
+
+        public JsonContent Put<D>(string name, List<D> v, byte flags = 0) where D : IData
+        {
+            if (counts[level]++ > 0) Add(',');
+
+            if (name != null)
+            {
+                Add('"');
+                Add(name);
+                Add('"');
+                Add(':');
+            }
+
+            if (v == null)
+            {
+                Add("null");
+            }
+            else
+            {
+                counts[++level] = 0; // enter
+                Add('[');
+                for (int i = 0; i < v.Count; i++)
                 {
                     Put(null, v[i], flags);
                 }

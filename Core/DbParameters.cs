@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using Npgsql;
 using NpgsqlTypes;
 
@@ -177,7 +178,8 @@ namespace Greatbone.Core
             {
                 name = Defaults[index++];
             }
-            coll.Add(new NpgsqlParameter(name, !anylen.HasValue ? NpgsqlDbType.Varchar : anylen.Value ? NpgsqlDbType.Text : NpgsqlDbType.Char)
+            int len = v?.Length ?? 0;
+            coll.Add(new NpgsqlParameter(name, !anylen.HasValue ? NpgsqlDbType.Varchar : anylen.Value ? NpgsqlDbType.Text : NpgsqlDbType.Char, len)
             {
                 Value = (v != null) ? (object) v : DBNull.Value
             });
@@ -349,6 +351,145 @@ namespace Greatbone.Core
                 });
             }
             return this;
+        }
+
+        public DbParameters Put<D>(string name, List<D> v, byte flags = 0) where D : IData
+        {
+            if (name == null)
+            {
+                name = Defaults[index++];
+            }
+            if (v == null)
+            {
+                coll.Add(new NpgsqlParameter(name, NpgsqlDbType.Jsonb)
+                {
+                    Value = DBNull.Value
+                });
+            }
+            else
+            {
+                coll.Add(new NpgsqlParameter(name, NpgsqlDbType.Jsonb)
+                {
+                    Value = JsonUtility.DataListToString(v, flags)
+                });
+            }
+            return this;
+        }
+
+
+        public DbParameters SetNull()
+        {
+            return PutNull(null);
+        }
+
+        public DbParameters Set(bool v)
+        {
+            return Put(null, v);
+        }
+
+        public DbParameters Set(short v)
+        {
+            return Put(null, v);
+        }
+
+        public DbParameters Set(int v)
+        {
+            return Put(null, v);
+        }
+
+        public DbParameters Set(long v)
+        {
+            return Put(null, v);
+        }
+
+        public DbParameters Set(double v)
+        {
+            return Put(null, v);
+        }
+
+        public DbParameters Set(decimal v)
+        {
+            return Put(null, v);
+        }
+
+        public DbParameters Set(JNumber v)
+        {
+            return Put(null, v);
+        }
+
+        public DbParameters Set(DateTime v)
+        {
+            return Put(null, v);
+        }
+
+        public DbParameters Set(NpgsqlPoint v)
+        {
+            return Put(null, v);
+        }
+
+        public DbParameters Set(char[] v)
+        {
+            return Put(null, v);
+        }
+
+        public DbParameters Set(string v, bool? anylen = null)
+        {
+            return Put(null, v);
+        }
+
+        public DbParameters Set(byte[] v)
+        {
+            return Put(null, v);
+        }
+
+        public DbParameters Set(ArraySegment<byte> v)
+        {
+            return Put(null, v);
+        }
+
+        public DbParameters Set<D>(D v, byte flags = 0) where D : IData
+        {
+            return Put(null, v);
+        }
+
+        public DbParameters Set(JObj v)
+        {
+            return Put(null, v);
+        }
+
+        public DbParameters Set(JArr v)
+        {
+            return Put(null, v);
+        }
+
+        public DbParameters Set(short[] v)
+        {
+            return Put(null, v);
+        }
+
+        public DbParameters Set(int[] v)
+        {
+            return Put(null, v);
+        }
+
+        public DbParameters Set(long[] v)
+        {
+            return Put(null, v);
+        }
+
+        public DbParameters Set(string[] v)
+        {
+            return Put(null, v);
+        }
+
+        public DbParameters Set<D>(D[] v, byte flags = 0) where D : IData
+        {
+            return Put(null, v);
+        }
+
+        public DbParameters Set<D>(List<D> v, byte flags = 0) where D : IData
+        {
+            return Put(null, v);
         }
     }
 }
