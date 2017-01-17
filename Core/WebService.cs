@@ -239,7 +239,7 @@ namespace Greatbone.Core
                 else // handle a regular request
                 {
                     string relative = path.Substring(1);
-                    WebFolder folder = FindFolder(ref relative, ac);
+                    WebFolder folder = Locate(ref relative, ac);
                     if (folder != null)
                     {
                         await folder.HandleAsync(relative, ac);

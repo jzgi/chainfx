@@ -38,27 +38,27 @@ namespace Greatbone.Core
             {
                 if (arg)
                 {
-                    do2async = (Func<WebActionContext, string, Task>)mi.CreateDelegate(typeof(Func<WebActionContext, string, Task>), folder);
+                    do2async = (Func<WebActionContext, string, Task>) mi.CreateDelegate(typeof(Func<WebActionContext, string, Task>), folder);
                 }
                 else
                 {
-                    doasync = (Func<WebActionContext, Task>)mi.CreateDelegate(typeof(Func<WebActionContext, Task>), folder);
+                    doasync = (Func<WebActionContext, Task>) mi.CreateDelegate(typeof(Func<WebActionContext, Task>), folder);
                 }
             }
             else
             {
                 if (arg)
                 {
-                    do2 = (Action<WebActionContext, string>)mi.CreateDelegate(typeof(Action<WebActionContext, string>), folder);
+                    do2 = (Action<WebActionContext, string>) mi.CreateDelegate(typeof(Action<WebActionContext, string>), folder);
                 }
                 else
                 {
-                    @do = (Action<WebActionContext>)mi.CreateDelegate(typeof(Action<WebActionContext>), folder);
+                    @do = (Action<WebActionContext>) mi.CreateDelegate(typeof(Action<WebActionContext>), folder);
                 }
             }
 
             // initialize ui
-            var uis = (UiAttribute[])mi.GetCustomAttributes(typeof(UiAttribute), false);
+            var uis = (UiAttribute[]) mi.GetCustomAttributes(typeof(UiAttribute), false);
             if (uis.Length > 0) ui = uis[0];
         }
 
@@ -103,7 +103,7 @@ namespace Greatbone.Core
             ac.Action = null;
         }
 
-        internal async Task DoAsync(WebActionContext ac, String arg)
+        internal async Task DoAsync(WebActionContext ac, string arg)
         {
             ac.Action = this;
             // pre-
