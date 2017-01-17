@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Net.Http;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Http.Features;
@@ -156,7 +157,7 @@ namespace Greatbone.Core
                 if (clen > 0)
                 {
                     // reading
-                    int len = (int) clen;
+                    int len = (int)clen;
                     buffer = BufferUtility.ByteBuffer(len); // borrow from the pool
                     while ((count += await Request.Body.ReadAsync(buffer, count, (len - count))) < len)
                     {
@@ -208,7 +209,7 @@ namespace Greatbone.Core
                 if (clen > 0)
                 {
                     // reading
-                    int len = (int) clen;
+                    int len = (int)clen;
                     buffer = BufferUtility.ByteBuffer(len); // borrow from the pool
                     while ((count += await Request.Body.ReadAsync(buffer, count, (len - count))) < len)
                     {
@@ -229,7 +230,7 @@ namespace Greatbone.Core
                 if (clen > 0)
                 {
                     // reading
-                    int len = (int) clen;
+                    int len = (int)clen;
                     buffer = BufferUtility.ByteBuffer(len); // borrow from the pool
                     while ((count += await Request.Body.ReadAsync(buffer, count, (len - count))) < len)
                     {
@@ -255,7 +256,7 @@ namespace Greatbone.Core
                 if (clen > 0)
                 {
                     // reading
-                    int len = (int) clen;
+                    int len = (int)clen;
                     buffer = BufferUtility.ByteBuffer(len); // borrow from the pool
                     while ((count += await Request.Body.ReadAsync(buffer, count, (len - count))) < len)
                     {
@@ -275,7 +276,7 @@ namespace Greatbone.Core
                 if (clen > 0)
                 {
                     // reading
-                    int len = (int) clen;
+                    int len = (int)clen;
                     buffer = BufferUtility.ByteBuffer(len); // borrow from the pool
                     while ((count += await Request.Body.ReadAsync(buffer, count, (len - count))) < len)
                     {
@@ -329,7 +330,7 @@ namespace Greatbone.Core
         // the content  is to be considered stale after its age is greater than the specified number of seconds.
         public int MaxAge { get; internal set; }
 
-        public void Reply(int status, IContent content, bool? pub = null, int maxage = 60)
+        public void Reply<C>(int status, C content, bool? pub = null, int maxage = 60) where C : HttpContent, IContent
         {
             Response.StatusCode = status;
             Content = content;
@@ -339,7 +340,7 @@ namespace Greatbone.Core
 
         public void Reply(int status, bool? pub = null, int seconds = 60)
         {
-            Reply(status, (IContent) null, pub, seconds);
+            Reply(status, (string)null, pub, seconds);
         }
 
         public void Reply(int status, string str, bool? pub = null, int seconds = 60)
@@ -370,23 +371,7 @@ namespace Greatbone.Core
             Reply(status, cont, pub, maxage);
         }
 
-        public void Reply(int status, Form form, bool? pub = null, int maxage = 60)
-        {
-        }
-
-        public void Reply(int status, JObj obj, bool? pub = null, int maxage = 60)
-        {
-        }
-
-        public void Reply(int status, JArr arr, bool? pub = null, int maxage = 60)
-        {
-        }
-
-        public void Reply(int status, XElem elem, bool? pub = null, int maxage = 60)
-        {
-        }
-
-        public void Reply(int status, ArraySegment<byte> bytesseg, bool? pub = null, int maxage = 60)
+        public void Replya<M>(int status, M model, bool? pub = null, int maxage = 60) where M : IContentModel
         {
         }
 
@@ -414,7 +399,7 @@ namespace Greatbone.Core
                 // cache indicators
                 if (Content is DynamicContent) // set etag
                 {
-                    ulong etag = ((DynamicContent) Content).ETag;
+                    ulong etag = ((DynamicContent)Content).ETag;
                     SetHeader("ETag", TextUtility.ToHex(etag));
                 }
 
