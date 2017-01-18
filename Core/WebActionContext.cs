@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Net.Http;
 using System.Reflection;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Http;
@@ -158,7 +157,7 @@ namespace Greatbone.Core
                 if (clen > 0)
                 {
                     // reading
-                    int len = (int)clen;
+                    int len = (int) clen;
                     buffer = BufferUtility.ByteBuffer(len); // borrow from the pool
                     while ((count += await Request.Body.ReadAsync(buffer, count, (len - count))) < len)
                     {
@@ -168,35 +167,31 @@ namespace Greatbone.Core
             return new ArraySegment<byte>(buffer, 0, count);
         }
 
-        bool TryParse()
+        // parse into entity if content type is supported
+        void TryParse()
         {
-            // parse into entity if content type is known
             string ctyp = Header("Content-Type");
 
-            if (string.IsNullOrEmpty(ctyp)) return false;
+            if (string.IsNullOrEmpty(ctyp)) return;
 
             if ("application/x-www-form-urlencoded".Equals(ctyp))
             {
                 entity = new FormParse(buffer, count).Parse();
-                return true;
             }
-            if (ctyp.StartsWith("multipart/form-data; boundary="))
+            else if (ctyp.StartsWith("multipart/form-data; boundary="))
             {
                 string boundary = ctyp.Substring(30);
                 entity = new FormMpParse(boundary, buffer, count).Parse();
-                return true;
             }
-            if (ctyp.StartsWith("application/json"))
+            else if (ctyp.StartsWith("application/json"))
             {
                 entity = new JsonParse(buffer, count).Parse();
-                return true;
             }
-            if (ctyp.StartsWith("application/xml"))
+            else if (ctyp.StartsWith("application/xml"))
             {
                 entity = new XmlParse(buffer, 0, count).Parse();
-                return true;
             }
-            if (ctyp.StartsWith("text/plain"))
+            else if (ctyp.StartsWith("text/plain"))
             {
                 Text txt = new Text();
                 byte[] buffer = this.buffer;
@@ -205,9 +200,7 @@ namespace Greatbone.Core
                     txt.Accept(buffer[i]);
                 }
                 entity = txt;
-                return true;
             }
-            return false;
         }
 
         public async Task<M> ReadAsync<M>() where M : class, IContentModel
@@ -219,7 +212,7 @@ namespace Greatbone.Core
                 if (clen > 0)
                 {
                     // reading
-                    int len = (int)clen;
+                    int len = (int) clen;
                     buffer = BufferUtility.ByteBuffer(len); // borrow from the pool
                     while ((count += await Request.Body.ReadAsync(buffer, count, (len - count))) < len)
                     {
@@ -240,7 +233,7 @@ namespace Greatbone.Core
                 if (clen > 0)
                 {
                     // reading
-                    int len = (int)clen;
+                    int len = (int) clen;
                     buffer = BufferUtility.ByteBuffer(len); // borrow from the pool
                     while ((count += await Request.Body.ReadAsync(buffer, count, (len - count))) < len)
                     {
@@ -266,7 +259,7 @@ namespace Greatbone.Core
                 if (clen > 0)
                 {
                     // reading
-                    int len = (int)clen;
+                    int len = (int) clen;
                     buffer = BufferUtility.ByteBuffer(len); // borrow from the pool
                     while ((count += await Request.Body.ReadAsync(buffer, count, (len - count))) < len)
                     {
@@ -286,7 +279,7 @@ namespace Greatbone.Core
                 if (clen > 0)
                 {
                     // reading
-                    int len = (int)clen;
+                    int len = (int) clen;
                     buffer = BufferUtility.ByteBuffer(len); // borrow from the pool
                     while ((count += await Request.Body.ReadAsync(buffer, count, (len - count))) < len)
                     {
@@ -364,7 +357,7 @@ namespace Greatbone.Core
 
         public void Reply(int status, string str, bool? pub = null, int maxage = 60)
         {
-            TextContent cont = new TextContent(true, false, 256);
+            TextContent cont = new TextContent(true);
             cont.Add(str);
 
             // set response states
@@ -374,24 +367,29 @@ namespace Greatbone.Core
             MaxAge = maxage;
         }
 
-        public void ReplyJson(int status, object dat, byte flags = 0, bool? pub = null, int maxage = 60)
+        static readonly TypeInfo UnType = typeof(IData).GetTypeInfo();
+
+        static readonly TypeInfo ArrayType = typeof(IData[]).GetTypeInfo();
+
+        static readonly TypeInfo ListType = typeof(List<IData>).GetTypeInfo();
+
+        public void ReplyJson(int status, object data, byte flags = 0, bool? pub = null, int maxage = 60)
         {
-            TypeInfo typ = dat.GetType().GetTypeInfo();
+            TypeInfo typ = data.GetType().GetTypeInfo();
 
-            JsonContent cont = new JsonContent(true, true, 4 * 1024);
+            JsonContent cont = new JsonContent();
 
-            if (typeof(IData).GetTypeInfo().IsAssignableFrom(typ))
+            if (UnType.IsAssignableFrom(typ))
             {
-                cont.Put(null, (IData)dat, flags);
+                cont.Put(null, (IData) data, flags);
             }
-            else if (typeof(IData[]).GetTypeInfo().IsAssignableFrom(typ))
+            else if (ArrayType.IsAssignableFrom(typ))
             {
-                cont.Put(null, (IData[])dat, flags);
-
+                cont.Put(null, (IData[]) data, flags);
             }
-            else if (typeof(List<IData>).GetTypeInfo().IsAssignableFrom(typ))
+            else if (ListType.IsAssignableFrom(typ))
             {
-                cont.Put(null, (List<IData>)dat, flags);
+                cont.Put(null, (List<IData>) data, flags);
             }
 
             // set response states
@@ -411,13 +409,10 @@ namespace Greatbone.Core
             // set connection header if absent
             SetHeaderNon("Connection", "keep-alive");
 
-            if (Pub != null)
+            if (Pub.HasValue)
             {
-                if (Pub.HasValue)
-                {
-                    string hv = (Pub.Value ? "public" : "private") + ", max-age=" + MaxAge;
-                    SetHeader("Cache-Control", hv);
-                }
+                string hv = (Pub.Value ? "public" : "private") + ", max-age=" + MaxAge;
+                SetHeader("Cache-Control", hv);
             }
 
             // setup appropriate headers
@@ -428,9 +423,10 @@ namespace Greatbone.Core
                 r.ContentType = Content.Type;
 
                 // cache indicators
-                if (Content is DynamicContent) // set etag
+                var dyna = Content as DynamicContent;
+                if (dyna != null) // set etag
                 {
-                    ulong etag = ((DynamicContent)Content).ETag;
+                    ulong etag = dyna.ETag;
                     SetHeader("ETag", TextUtility.ToHex(etag));
                 }
 

@@ -9,15 +9,13 @@ namespace Greatbone.Core
     ///
     public class JsonContent : DynamicContent, ISink<JsonContent>
     {
-        const int InitialCapacity = 8 * 1024;
-
         // starting positions of each level
         readonly int[] counts;
 
         // current level
         int level;
 
-        public JsonContent(bool sendable, bool pooled = true, int capacity = InitialCapacity) : base(sendable, pooled, capacity)
+        public JsonContent(bool sendable = true, bool pooled = true, int capacity = 8 * 1024) : base(sendable, pooled, capacity)
         {
             counts = new int[8];
             level = 0;
