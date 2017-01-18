@@ -10,7 +10,7 @@ namespace Greatbone.Sample
     ///
     public class ShopService : WebService
     {
-        static readonly WebClient WeChat = new WebClient("wechat", "http://sh.api.weixin.qq.com");
+        static readonly WebClient WeiXin = new WebClient("wechat", "http://sh.api.weixin.qq.com");
 
         readonly WebAction[] _new;
 
@@ -20,6 +20,38 @@ namespace Greatbone.Sample
 
             _new = GetActions(nameof(@new));
         }
+
+        ///
+        /// redirect_uri/?code=CODE&amp;state=STATE
+        public async Task weixin(WebActionContext ac)
+        {
+            string code = ac[nameof(code)];
+            if (code == null)
+            {
+                // redirect the user to weixin authorization page
+                ac.SetHeader("Location", "https://open.weixin.qq.com/connect/oauth2/authorize?appid=APPID&redirect_uri=REDIRECT_URI&response_type=code&scope=SCOPE&state=STATE#wechat_redirect");
+                ac.Reply(302);
+            }
+            else
+            {
+                // get access token by the code
+                JObj jo = await WeiXin.GetAsync<JObj>(null, "https://api.weixin.qq.com/sns/oauth2/access_token?appid=APPID&secret=SECRET&code=CODE&grant_type=authorization_code");
+
+                string access_token = jo[nameof(access_token)];
+                string openid = jo[nameof(openid)];
+
+                // get user info
+
+                jo = await WeiXin.GetAsync<JObj>(null, "https://api.weixin.qq.com/sns/userinfo?access_token=" + access_token + "&openid=" + openid);
+                string nickname = jo[nameof(nickname)];
+
+                // display shop list form
+                
+            }
+
+
+        }
+
 
         ///
         /// Get the singon form or perform a signon action.

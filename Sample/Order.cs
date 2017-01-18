@@ -8,6 +8,11 @@ namespace Greatbone.Sample
     ///
     public class Order : IData
     {
+        public const short
+            Open = 0,
+            Cancelled = 2,
+            Closed = 9;
+
         public static readonly Order Empty = new Order();
 
         internal int id;
@@ -16,9 +21,9 @@ namespace Greatbone.Sample
 
         internal string shopid;
 
-        internal string buyerid; // wechat id
+        internal string buyerid; // openid
 
-        internal string buyer; // wechat name
+        internal string buyer; // nickname or name
 
         internal string tel;
 
