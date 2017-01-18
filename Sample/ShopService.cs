@@ -60,7 +60,7 @@ namespace Greatbone.Sample
                 {
                     if (dc.QueryUn("SELECT * FROM shops WHERE id = @1", (p) => p.Set(id)))
                     {
-                        var tok = dc.ToObject<Token>();
+                        var tok = dc.ToUn<Token>();
                         string credential = TextUtility.MD5(id + ':' + password);
                         if (credential.Equals(tok.credential))
                         {
@@ -176,7 +176,7 @@ namespace Greatbone.Sample
             }
             else // post
             {
-                var shop = await ac.ReadObjectAsync<Shop>(); // read form
+                var shop = await ac.ReadUnAsync<Shop>(); // read form
                 using (var dc = Service.NewDbContext())
                 {
                     shop.credential = TextUtility.MD5(shop.id + ':' + shop.credential);

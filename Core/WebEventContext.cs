@@ -59,7 +59,7 @@ namespace Greatbone.Core
             {
                 return default(D);
             }
-            return src.ToObject<D>(flags);
+            return src.ToUn<D>(flags);
         }
 
         public D[] AsDatas<D>(byte flags = 0) where D : IData, new()

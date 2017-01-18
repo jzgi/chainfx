@@ -51,6 +51,6 @@ namespace Greatbone.Core
 
         bool Get<D>(string name, ref List<D> v, byte flags = 0) where D : IData, new();
 
-        D ToObject<D>(byte flags = 0) where D : IData, new();
+        D ToUn<D>(byte flags = 0) where D : IData, new();
     }
 }

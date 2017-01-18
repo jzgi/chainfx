@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Net.Http;
 using System.Threading.Tasks;
 
@@ -134,7 +135,7 @@ namespace Greatbone.Core
             return entity as M;
         }
 
-        public async Task<D> GetObjectAsync<D>(ICaller ctx, string uri, byte flags = 0) where D : IData, new()
+        public async Task<D> GetUnAsync<D>(ICaller ctx, string uri, byte flags = 0) where D : IData, new()
         {
             HttpRequestMessage req = new HttpRequestMessage(HttpMethod.Get, uri);
             if (ctx.Cookied)
@@ -147,7 +148,7 @@ namespace Greatbone.Core
             }
             HttpResponseMessage resp = await SendAsync(req, HttpCompletionOption.ResponseContentRead);
             ISource src = null;
-            return src.ToObject<D>(flags);
+            return src.ToUn<D>(flags);
         }
 
         public async Task<D[]> GetArrayAsync<D>(ICaller ctx, string uri, byte flags = 0) where D : IData, new()
@@ -167,6 +168,23 @@ namespace Greatbone.Core
             return srcset.ToArray<D>(flags);
         }
 
+        public async Task<List<D>> GetListAsync<D>(ICaller ctx, string uri, byte flags = 0) where D : IData, new()
+        {
+            HttpRequestMessage req = new HttpRequestMessage(HttpMethod.Get, uri);
+            if (ctx.Cookied)
+            {
+                req.Headers.Add("Cookie", ctx.TokenStr);
+            }
+            else
+            {
+                req.Headers.Add("Authorization", "Bearer " + ctx.TokenStr);
+            }
+            HttpResponseMessage resp = await SendAsync(req, HttpCompletionOption.ResponseContentRead);
+
+            ISourceSet srcset = null;
+            return srcset.ToList<D>(flags);
+        }
+
         public Task<HttpResponseMessage> PostAsync<C>(ICaller ctx, string uri, C content) where C : HttpContent, IContent
         {
             HttpRequestMessage req = new HttpRequestMessage(HttpMethod.Post, uri);
@@ -184,7 +202,40 @@ namespace Greatbone.Core
 
             return SendAsync(req, HttpCompletionOption.ResponseContentRead);
         }
-        public Task<HttpResponseMessage> PostAsync(ICaller ctx, string uri, object model)
+
+        public Task<HttpResponseMessage> PostAsync(ICaller ctx, string uri, IContentModel model)
+        {
+            HttpRequestMessage req = new HttpRequestMessage(HttpMethod.Post, uri);
+            if (ctx.Cookied)
+            {
+                req.Headers.Add("Authorization", "Bearer " + "");
+            }
+            else
+            {
+                req.Headers.Add("Cookie", "");
+            }
+
+            if (model is Form)
+            {
+
+            }
+            else if (model is JObj)
+            {
+                JsonContent cont = new JsonContent(true, true);
+                ((JObj)model).Dump(cont);
+                req.Content = cont;
+            }
+            else if (model is IData)
+            {
+                JsonContent cont = new JsonContent(true, true);
+                ((JObj)model).Dump(cont);
+                req.Content = cont;
+            }
+            return SendAsync(req, HttpCompletionOption.ResponseContentRead);
+        }
+
+
+        public Task<HttpResponseMessage> PostJsonAsync(ICaller ctx, string uri, object model)
         {
             HttpRequestMessage req = new HttpRequestMessage(HttpMethod.Post, uri);
             if (ctx.Cookied)

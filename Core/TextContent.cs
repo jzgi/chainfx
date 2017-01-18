@@ -7,5 +7,6 @@ namespace Greatbone.Core
         }
 
         public override string Type => "text/plain";
+
     }
 }

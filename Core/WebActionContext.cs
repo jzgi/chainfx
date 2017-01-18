@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Net.Http;
+using System.Reflection;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Http.Features;
@@ -167,37 +168,46 @@ namespace Greatbone.Core
             return new ArraySegment<byte>(buffer, 0, count);
         }
 
-        void Parse()
+        bool TryParse()
         {
             // parse into entity if content type is known
             string ctyp = Header("Content-Type");
+
+            if (string.IsNullOrEmpty(ctyp)) return false;
+
             if ("application/x-www-form-urlencoded".Equals(ctyp))
             {
                 entity = new FormParse(buffer, count).Parse();
+                return true;
             }
-            else if (ctyp.StartsWith("multipart/form-data; boundary="))
+            if (ctyp.StartsWith("multipart/form-data; boundary="))
             {
                 string boundary = ctyp.Substring(30);
                 entity = new FormMpParse(boundary, buffer, count).Parse();
+                return true;
             }
-            else if (ctyp.StartsWith("application/json"))
+            if (ctyp.StartsWith("application/json"))
             {
                 entity = new JsonParse(buffer, count).Parse();
+                return true;
             }
-            else if (ctyp.StartsWith("application/xml"))
+            if (ctyp.StartsWith("application/xml"))
             {
                 entity = new XmlParse(buffer, 0, count).Parse();
+                return true;
             }
-            else if (ctyp.StartsWith("text/plain"))
+            if (ctyp.StartsWith("text/plain"))
             {
-                Text str = new Text();
-                byte[] buf = buffer;
+                Text txt = new Text();
+                byte[] buffer = this.buffer;
                 for (int i = 0; i < count; i++)
                 {
-                    str.Accept(buf[i]);
+                    txt.Accept(buffer[i]);
                 }
-                entity = str;
+                entity = txt;
+                return true;
             }
+            return false;
         }
 
         public async Task<M> ReadAsync<M>() where M : class, IContentModel
@@ -215,12 +225,12 @@ namespace Greatbone.Core
                     {
                     }
                 }
-                Parse();
+                TryParse();
             }
             return entity as M;
         }
 
-        public async Task<D> ReadObjectAsync<D>(byte flags = 0) where D : IData, new()
+        public async Task<D> ReadUnAsync<D>(byte flags = 0) where D : IData, new()
         {
             if (entity == null && count == -1) // if not yet parse and read
             {
@@ -237,14 +247,14 @@ namespace Greatbone.Core
                     }
                 }
                 // parse
-                Parse();
+                TryParse();
             }
             ISource src = entity as ISource;
             if (src == null)
             {
                 return default(D);
             }
-            return src.ToObject<D>(flags);
+            return src.ToUn<D>(flags);
         }
 
         public async Task<D[]> ReadArrayAsync<D>(byte flags = 0) where D : IData, new()
@@ -262,7 +272,7 @@ namespace Greatbone.Core
                     {
                     }
                 }
-                Parse();
+                TryParse();
             }
             return (entity as ISourceSet)?.ToArray<D>(flags);
         }
@@ -282,7 +292,7 @@ namespace Greatbone.Core
                     {
                     }
                 }
-                Parse();
+                TryParse();
             }
             return (entity as ISourceSet)?.ToList<D>(flags);
         }
@@ -322,58 +332,79 @@ namespace Greatbone.Core
             Response.Headers.Add(name, new StringValues(values));
         }
 
+        public int Status
+        {
+            get { return Response.StatusCode; }
+            set { Response.StatusCode = value; }
+        }
+
         public IContent Content { get; internal set; }
 
         // public, no-cache or private
         public bool? Pub { get; internal set; }
 
-        // the content  is to be considered stale after its age is greater than the specified number of seconds.
+        /// the cached response is to be considered stale after its age is greater than the specified number of seconds.
         public int MaxAge { get; internal set; }
 
-        public void Reply<C>(int status, C content, bool? pub = null, int maxage = 60) where C : HttpContent, IContent
+        public void Reply(int status, IContent cont = null, bool? pub = null, int maxage = 60)
         {
-            Response.StatusCode = status;
-            Content = content;
+            Status = status;
+            Content = cont;
             Pub = pub;
             MaxAge = maxage;
         }
 
-        public void Reply(int status, bool? pub = null, int seconds = 60)
+        public void Reply(int status, IContentModel model, bool? pub = null, int maxage = 60)
         {
-            Reply(status, (string)null, pub, seconds);
+            Response.StatusCode = status;
+            // Content = content;
+            Pub = pub;
+            MaxAge = maxage;
         }
 
-        public void Reply(int status, string str, bool? pub = null, int seconds = 60)
+        public void Reply(int status, string str, bool? pub = null, int maxage = 60)
         {
-            TextContent cont = new TextContent(true, true);
+            TextContent cont = new TextContent(true, false, 256);
             cont.Add(str);
-            Reply(status, cont, pub, seconds);
+
+            // set response states
+            Status = status;
+            Content = cont;
+            Pub = pub;
+            MaxAge = maxage;
         }
 
-        public void Reply(int status, IData dat, byte flags = 0, bool? pub = null, int maxage = 60)
+        public void ReplyJson(int status, object dat, byte flags = 0, bool? pub = null, int maxage = 60)
         {
+            TypeInfo typ = dat.GetType().GetTypeInfo();
+
             JsonContent cont = new JsonContent(true, true, 4 * 1024);
-            cont.Put(null, dat, flags);
-            Reply(status, cont, pub, maxage);
+
+            if (typeof(IData).GetTypeInfo().IsAssignableFrom(typ))
+            {
+                cont.Put(null, (IData)dat, flags);
+            }
+            else if (typeof(IData[]).GetTypeInfo().IsAssignableFrom(typ))
+            {
+                cont.Put(null, (IData[])dat, flags);
+
+            }
+            else if (typeof(List<IData>).GetTypeInfo().IsAssignableFrom(typ))
+            {
+                cont.Put(null, (List<IData>)dat, flags);
+            }
+
+            // set response states
+            Status = status;
+            Content = cont;
+            Pub = pub;
+            MaxAge = maxage;
         }
 
-        public void Reply<D>(int status, D[] dats, byte flags = 0, bool? pub = null, int maxage = 60) where D : IData
+        public void ReplyXml(int status, object dat, byte flags = 0, bool? pub = null, int maxage = 60)
         {
-            JsonContent cont = new JsonContent(true, true, 4 * 1024);
-            cont.Put(null, dats, flags);
-            Reply(status, cont, pub, maxage);
         }
 
-        public void Reply<D>(int status, List<D> dats, byte flags = 0, bool? pub = null, int maxage = 60) where D : IData
-        {
-            JsonContent cont = new JsonContent(true, true, 4 * 1024);
-            cont.Put(null, dats, flags);
-            Reply(status, cont, pub, maxage);
-        }
-
-        public void Replya<M>(int status, M model, bool? pub = null, int maxage = 60) where M : IContentModel
-        {
-        }
 
         internal async Task SendAsync()
         {

@@ -392,7 +392,7 @@ namespace Greatbone.Core
             return str;
         }
 
-        public D ToObject<D>(byte flags = 0) where D : IData, new()
+        public D ToUn<D>(byte flags = 0) where D : IData, new()
         {
             D dat = new D();
             dat.Load(this, flags);

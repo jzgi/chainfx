@@ -23,7 +23,7 @@ namespace Greatbone.Core
         {
             JsonParse p = new JsonParse(v);
             JObj jobj = (JObj) p.Parse();
-            return jobj.ToObject<D>(flags);
+            return jobj.ToUn<D>(flags);
         }
 
         public static D[] StringToDatas<D>(string v, byte flags = 0) where D : IData, new()
@@ -117,7 +117,7 @@ namespace Greatbone.Core
                 JObj jobj = (JObj) p.Parse();
                 if (jobj != null)
                 {
-                    return jobj.ToObject<D>();
+                    return jobj.ToUn<D>();
                 }
             }
             catch (Exception ex)
