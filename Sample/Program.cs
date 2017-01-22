@@ -21,7 +21,7 @@ namespace Greatbone.Sample
 
             WebAuth<Token> auth = new WebAuth<Token>(0x4a78be76, 0x1f0335e2);
 
-            List<WebService> svclst = new List<WebService>(4);
+            List<WebService> svcs = new List<WebService>(4);
 
             WebConfig cfg;
 
@@ -31,22 +31,22 @@ namespace Greatbone.Sample
                 db = pg
             };
 #if !DEBUG
-            cfg.TryLoadFile();
+            cfg.TryLoad();
 #endif
-            if (cfg.File != false) svclst.Add(new ShopService(cfg) { Auth = auth });
+            if (cfg.File != false) svcs.Add(new ShopService(cfg) { Auth = auth });
 
-            cfg = new WebConfig("chat")
+            cfg = new WebConfig("comm")
             {
                 addresses = "http://127.0.0.1:8081",
                 db = pg
             };
 #if !DEBUG
-            cfg.TryLoadFile();
+            cfg.TryLoad();
 #endif
 
-            if (cfg.File != false) svclst.Add(new ChatService(cfg) { Auth = auth });
+            if (cfg.File != false) svcs.Add(new CommService(cfg) { Auth = auth });
 
-            WebService.Run(svclst);
+            WebService.Run(svcs);
         }
     }
 }

@@ -68,16 +68,19 @@
             snk.Put(nameof(extra), extra);
         }
 
-        public bool TryLoadFile()
+        ///
+        /// Try to load from the $web.json file.
+        ///
+        public bool TryLoad()
         {
             string path = GetFilePath("$web.json");
             if (System.IO.File.Exists(path))
             {
-                JObj jobj = JsonUtility.FileToJObj(path);
-                if (jobj != null)
+                JObj jo = JsonUtility.FileToJObj(path);
+                if (jo != null)
                 {
-                    JObj = jobj;
-                    Load(jobj); // override
+                    JObj = jo;
+                    Load(jo); // override
                     return (File = true).Value;
                 }
             }

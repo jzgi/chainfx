@@ -157,7 +157,7 @@ namespace Greatbone.Core
                 if (clen > 0)
                 {
                     // reading
-                    int len = (int) clen;
+                    int len = (int)clen;
                     buffer = BufferUtility.ByteBuffer(len); // borrow from the pool
                     while ((count += await Request.Body.ReadAsync(buffer, count, (len - count))) < len)
                     {
@@ -212,7 +212,7 @@ namespace Greatbone.Core
                 if (clen > 0)
                 {
                     // reading
-                    int len = (int) clen;
+                    int len = (int)clen;
                     buffer = BufferUtility.ByteBuffer(len); // borrow from the pool
                     while ((count += await Request.Body.ReadAsync(buffer, count, (len - count))) < len)
                     {
@@ -233,7 +233,7 @@ namespace Greatbone.Core
                 if (clen > 0)
                 {
                     // reading
-                    int len = (int) clen;
+                    int len = (int)clen;
                     buffer = BufferUtility.ByteBuffer(len); // borrow from the pool
                     while ((count += await Request.Body.ReadAsync(buffer, count, (len - count))) < len)
                     {
@@ -259,7 +259,7 @@ namespace Greatbone.Core
                 if (clen > 0)
                 {
                     // reading
-                    int len = (int) clen;
+                    int len = (int)clen;
                     buffer = BufferUtility.ByteBuffer(len); // borrow from the pool
                     while ((count += await Request.Body.ReadAsync(buffer, count, (len - count))) < len)
                     {
@@ -279,7 +279,7 @@ namespace Greatbone.Core
                 if (clen > 0)
                 {
                     // reading
-                    int len = (int) clen;
+                    int len = (int)clen;
                     buffer = BufferUtility.ByteBuffer(len); // borrow from the pool
                     while ((count += await Request.Body.ReadAsync(buffer, count, (len - count))) < len)
                     {
@@ -367,6 +367,10 @@ namespace Greatbone.Core
             MaxAge = maxage;
         }
 
+        public void ReplyFile(int status, string file, bool? pub = true, int maxage = 3600)
+        {
+        }
+
         static readonly TypeInfo UnType = typeof(IData).GetTypeInfo();
 
         static readonly TypeInfo ArrayType = typeof(IData[]).GetTypeInfo();
@@ -381,15 +385,15 @@ namespace Greatbone.Core
 
             if (UnType.IsAssignableFrom(typ))
             {
-                cont.Put(null, (IData) data, flags);
+                cont.Put(null, (IData)data, flags);
             }
             else if (ArrayType.IsAssignableFrom(typ))
             {
-                cont.Put(null, (IData[]) data, flags);
+                cont.Put(null, (IData[])data, flags);
             }
             else if (ListType.IsAssignableFrom(typ))
             {
-                cont.Put(null, (List<IData>) data, flags);
+                cont.Put(null, (List<IData>)data, flags);
             }
 
             // set response states

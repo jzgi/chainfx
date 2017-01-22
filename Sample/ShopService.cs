@@ -1,4 +1,5 @@
-﻿using System.Threading.Tasks;
+﻿using System.Collections.Concurrent;
+using System.Threading.Tasks;
 using Greatbone.Core;
 using NpgsqlTypes;
 using static Greatbone.Core.FlagsUtility;
@@ -12,11 +13,17 @@ namespace Greatbone.Sample
     {
         static readonly WebClient WeiXin = new WebClient("wechat", "http://sh.api.weixin.qq.com");
 
+        static readonly WebClient WCPay = new WebClient("wcpay", "https://api.mch.weixin.qq.com");
+
+        readonly ConcurrentDictionary<string, Order> baskets;
+
         readonly WebAction[] _new;
 
         public ShopService(WebConfig cfg) : base(cfg)
         {
             MakeVariable<ShopVariableFolder>();
+
+            baskets = new ConcurrentDictionary<string, Order>();
 
             _new = GetActions(nameof(@new));
         }
@@ -34,24 +41,62 @@ namespace Greatbone.Sample
             }
             else
             {
-                // get access token by the code
-                JObj jo = await WeiXin.GetAsync<JObj>(null, "https://api.weixin.qq.com/sns/oauth2/access_token?appid=APPID&secret=SECRET&code=CODE&grant_type=authorization_code");
+                string openid = ac.Cookies[nameof(openid)];
+                string nickname = ac.Cookies[nameof(nickname)];
+                if (openid == null || nickname == null)
+                {
+                    // get access token by the code
+                    JObj jo = await WeiXin.GetAsync<JObj>(null, "/sns/oauth2/access_token?appid=APPID&secret=SECRET&code=CODE&grant_type=authorization_code");
 
-                string access_token = jo[nameof(access_token)];
-                string openid = jo[nameof(openid)];
+                    string access_token = jo[nameof(access_token)];
+                    openid = jo[nameof(openid)];
 
-                // get user info
+                    // get user info
+                    jo = await WeiXin.GetAsync<JObj>(null, "/sns/userinfo?access_token=" + access_token + "&openid=" + openid);
+                    nickname = jo[nameof(nickname)];
 
-                jo = await WeiXin.GetAsync<JObj>(null, "https://api.weixin.qq.com/sns/userinfo?access_token=" + access_token + "&openid=" + openid);
-                string nickname = jo[nameof(nickname)];
+                    ac.SetHeader("Set-Cookie", "openid=" + openid);
+                }
 
-                // display shop list form
-                
+                // display index.html
+                ac.ReplyFile(200, "index.html");
+            }
+        }
+
+
+        public async Task pay(WebActionContext ac)
+        {
+            // store backet to db
+            string openid = ac.Cookies[nameof(openid)];
+
+            Order ord;
+            if (baskets.TryRemove(openid, out ord))
+            {
+                using (var dc = NewDbContext())
+                {
+                    dc.Execute("INSERT INFO ");
+                }
             }
 
+            //  call weixin to prepay
+            XmlContent cont = new XmlContent()
+                .Put("out_trade_no", "")
+                .Put("total_fee", 0);
+            await WCPay.PostAsync(null, "/pay/unifiedorder", cont);
 
         }
 
+        public async Task paynotify(WebActionContext ac)
+        {
+            XElem xe = await ac.ReadAsync<XElem>();
+            string mch_id = xe[nameof(mch_id)];
+            string openid = xe[nameof(openid)];
+            string bank_type = xe[nameof(bank_type)];
+            string total_fee = xe[nameof(total_fee)];
+            string transaction_id = xe[nameof(transaction_id)]; // 微信支付订单号
+            string out_trade_no = xe[nameof(out_trade_no)]; // 商户订单号
+
+        }
 
         ///
         /// Get the singon form or perform a signon action.

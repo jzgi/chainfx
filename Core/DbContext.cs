@@ -151,7 +151,7 @@ namespace Greatbone.Core
                 p(parameters);
                 if (prepare) command.Prepare();
             }
-            reader = (NpgsqlDataReader) await command.ExecuteReaderAsync();
+            reader = (NpgsqlDataReader)await command.ExecuteReaderAsync();
             return reader.HasRows;
         }
 
@@ -468,7 +468,7 @@ namespace Greatbone.Core
                 if (!reader.IsDBNull(ord))
                 {
                     int len;
-                    if ((len = (int) reader.GetBytes(ord, 0, null, 0, 0)) > 0)
+                    if ((len = (int)reader.GetBytes(ord, 0, null, 0, 0)) > 0)
                     {
                         // get the number of bytes that are available to read.
                         v = new byte[len];
@@ -492,7 +492,7 @@ namespace Greatbone.Core
                 if (!reader.IsDBNull(ord))
                 {
                     int len;
-                    if ((len = (int) reader.GetBytes(ord, 0, null, 0, 0)) > 0)
+                    if ((len = (int)reader.GetBytes(ord, 0, null, 0, 0)) > 0)
                     {
                         byte[] buf = BufferUtility.ByteBuffer(len);
                         reader.GetBytes(ord, 0, buf, 0, len); // read data into the buffer
@@ -515,7 +515,7 @@ namespace Greatbone.Core
             {
                 string str = reader.GetString(ord);
                 JsonParse p = new JsonParse(str);
-                JObj jobj = (JObj) p.Parse();
+                JObj jobj = (JObj)p.Parse();
                 v = new D();
                 v.Load(jobj, flags);
 
@@ -537,7 +537,7 @@ namespace Greatbone.Core
             {
                 string str = reader.GetString(ord);
                 JsonParse p = new JsonParse(str);
-                v = (JObj) p.Parse();
+                v = (JObj)p.Parse();
                 return true;
             }
             return false;
@@ -550,7 +550,7 @@ namespace Greatbone.Core
             {
                 string str = reader.GetString(ord);
                 JsonParse p = new JsonParse(str);
-                v = (JArr) p.Parse();
+                v = (JArr)p.Parse();
                 return true;
             }
             return false;
@@ -607,7 +607,7 @@ namespace Greatbone.Core
             {
                 string str = reader.GetString(ord);
                 JsonParse p = new JsonParse(str);
-                JArr jarr = (JArr) p.Parse();
+                JArr jarr = (JArr)p.Parse();
                 int len = jarr.Count;
                 v = new D[len];
                 for (int i = 0; i < len; i++)
@@ -637,7 +637,7 @@ namespace Greatbone.Core
             {
                 string str = reader.GetString(ord);
                 JsonParse p = new JsonParse(str);
-                JArr jarr = (JArr) p.Parse();
+                JArr jarr = (JArr)p.Parse();
                 int len = jarr.Count;
                 v = new List<D>(len + 8);
                 for (int i = 0; i < len; i++)
@@ -678,22 +678,8 @@ namespace Greatbone.Core
             Event(name, shard, cont);
         }
 
-        public void Event(string name, string shard, JArr jarr)
+        public void Event(string name, string shard, IContentModel model)
         {
-        }
-
-        public void Event(string name, string shard, JObj jobj)
-        {
-        }
-
-        public void Event(string name, string shard, XElem xelem)
-        {
-        }
-
-        public void Event(string name, string shard, Form form)
-        {
-            FormContent cont = new FormContent(true, true);
-            Event(name, shard, cont);
         }
 
         public void Event(string name, string shard, ArraySegment<byte> bytesseg)

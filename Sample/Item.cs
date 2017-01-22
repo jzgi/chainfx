@@ -11,32 +11,53 @@ namespace Greatbone.Sample
         public static readonly Item Empty = new Item();
 
         internal string shopid;
-        internal string item;
-        internal byte[] icon;
-        internal decimal price;
-        internal string remark;
-        internal string tel;
-        internal int sold;
 
-        public void Load(ISource s, byte flags = 0)
+        internal string item;
+
+        internal string unit;
+
+        internal byte[] icon;
+
+        internal decimal oprice; // original price
+
+        internal string price; // actual price, may be discounted
+
+        internal int min; // minimal quantity ordered
+
+        internal int step;
+
+        internal int sold; // total sold 
+
+        public void Load(ISource src, byte flags = 0)
         {
-            s.Get(nameof(item), ref item);
-            s.Get(nameof(shopid), ref shopid);
-            if (flags.Has(BINARY)) s.Get(nameof(icon), ref icon);
-            s.Get(nameof(price), ref price);
-            s.Get(nameof(remark), ref remark);
-            s.Get(nameof(tel), ref tel);
-            s.Get(nameof(sold), ref sold);
+            src.Get(nameof(shopid), ref shopid);
+            src.Get(nameof(item), ref item);
+            src.Get(nameof(unit), ref unit);
+            if (flags.Has(BINARY))
+            {
+                src.Get(nameof(icon), ref icon);
+            }
+            src.Get(nameof(oprice), ref oprice);
+            src.Get(nameof(price), ref price);
+            src.Get(nameof(min), ref min);
+            src.Get(nameof(step), ref step);
+            src.Get(nameof(sold), ref sold);
         }
 
-        public void Dump<R>(ISink<R> s, byte flags = 0) where R : ISink<R>
+        public void Dump<R>(ISink<R> snk, byte flags = 0) where R : ISink<R>
         {
-            s.Put(nameof(item), item);
-            s.Put(nameof(shopid), shopid);
-            if (flags.Has(BINARY)) s.Put(nameof(icon), icon);
-            s.Put(nameof(price), price);
-            s.Put(nameof(tel), tel);
-            s.Put(nameof(sold), sold);
+            snk.Put(nameof(shopid), shopid);
+            snk.Put(nameof(item), item);
+            snk.Put(nameof(unit), unit);
+            if (flags.Has(BINARY))
+            {
+                snk.Put(nameof(icon), icon);
+            }
+            snk.Put(nameof(oprice), oprice);
+            snk.Put(nameof(price), price);
+            snk.Put(nameof(min), min);
+            snk.Put(nameof(step), step);
+            snk.Put(nameof(sold), sold);
         }
     }
 }

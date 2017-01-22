@@ -13,7 +13,7 @@ namespace Greatbone.Core
 
         bool start;
 
-        public XmlContent(bool sendable, bool pooled, int capacity = InitialCapacity) : base(sendable, pooled, capacity)
+        public XmlContent(bool sendable = true, bool pooled = true, int capacity = InitialCapacity) : base(sendable, pooled, capacity)
         {
         }
 

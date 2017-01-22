@@ -24,6 +24,8 @@ namespace Greatbone.Core
             this.name = name;
         }
 
+        public XElem this[string name] => null;
+
         public bool Flat { get; set; } = true;
 
         internal void AddAttribute(string name, string v)
@@ -259,6 +261,11 @@ namespace Greatbone.Core
         public void Dump<R>(ISink<R> snk) where R : ISink<R>
         {
             throw new NotImplementedException();
+        }
+
+        public static implicit operator string(XElem v)
+        {
+            return v.text;
         }
     }
 }
