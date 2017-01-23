@@ -167,58 +167,24 @@ namespace Greatbone.Core
             return new ArraySegment<byte>(buffer, 0, count);
         }
 
-        // parse into entity if content type is supported
-        void TryParse()
-        {
-            string ctyp = Header("Content-Type");
-
-            if (string.IsNullOrEmpty(ctyp)) return;
-
-            if ("application/x-www-form-urlencoded".Equals(ctyp))
-            {
-                entity = new FormParse(buffer, count).Parse();
-            }
-            else if (ctyp.StartsWith("multipart/form-data; boundary="))
-            {
-                string boundary = ctyp.Substring(30);
-                entity = new FormMpParse(boundary, buffer, count).Parse();
-            }
-            else if (ctyp.StartsWith("application/json"))
-            {
-                entity = new JsonParse(buffer, count).Parse();
-            }
-            else if (ctyp.StartsWith("application/xml"))
-            {
-                entity = new XmlParse(buffer, 0, count).Parse();
-            }
-            else if (ctyp.StartsWith("text/plain"))
-            {
-                Text txt = new Text();
-                byte[] buffer = this.buffer;
-                for (int i = 0; i < count; i++)
-                {
-                    txt.Accept(buffer[i]);
-                }
-                entity = txt;
-            }
-        }
-
         public async Task<M> ReadAsync<M>() where M : class, IModel
         {
             if (entity == null && count == -1) // if not yet parse and read
             {
+                // read
                 count = 0;
                 int? clen = HeaderInt("Content-Length");
                 if (clen > 0)
                 {
-                    // reading
                     int len = (int)clen;
                     buffer = BufferUtility.ByteBuffer(len); // borrow from the pool
                     while ((count += await Request.Body.ReadAsync(buffer, count, (len - count))) < len)
                     {
                     }
                 }
-                TryParse();
+                // parse
+                string ctyp = Header("Content-Type");
+                entity = WebUtility.ParseContent(ctyp, buffer, 0, count);
             }
             return entity as M;
         }
@@ -232,7 +198,6 @@ namespace Greatbone.Core
                 int? clen = HeaderInt("Content-Length");
                 if (clen > 0)
                 {
-                    // reading
                     int len = (int)clen;
                     buffer = BufferUtility.ByteBuffer(len); // borrow from the pool
                     while ((count += await Request.Body.ReadAsync(buffer, count, (len - count))) < len)
@@ -240,7 +205,8 @@ namespace Greatbone.Core
                     }
                 }
                 // parse
-                TryParse();
+                string ctyp = Header("Content-Type");
+                entity = WebUtility.ParseContent(ctyp, buffer, 0, count);
             }
             ISource src = entity as ISource;
             if (src == null)
@@ -254,18 +220,20 @@ namespace Greatbone.Core
         {
             if (entity == null && count == -1) // if not yet parse and read
             {
+                // read
                 count = 0;
                 int? clen = HeaderInt("Content-Length");
                 if (clen > 0)
                 {
-                    // reading
                     int len = (int)clen;
                     buffer = BufferUtility.ByteBuffer(len); // borrow from the pool
                     while ((count += await Request.Body.ReadAsync(buffer, count, (len - count))) < len)
                     {
                     }
                 }
-                TryParse();
+                // parse
+                string ctyp = Header("Content-Type");
+                entity = WebUtility.ParseContent(ctyp, buffer, 0, count);
             }
             return (entity as ISourceSet)?.ToArray<D>(flags);
         }
@@ -274,18 +242,20 @@ namespace Greatbone.Core
         {
             if (entity == null && count == -1) // if not yet parse and read
             {
+                // read
                 count = 0;
                 int? clen = HeaderInt("Content-Length");
                 if (clen > 0)
                 {
-                    // reading
                     int len = (int)clen;
                     buffer = BufferUtility.ByteBuffer(len); // borrow from the pool
                     while ((count += await Request.Body.ReadAsync(buffer, count, (len - count))) < len)
                     {
                     }
                 }
-                TryParse();
+                // parse
+                string ctyp = Header("Content-Type");
+                entity = WebUtility.ParseContent(ctyp, buffer, 0, count);
             }
             return (entity as ISourceSet)?.ToList<D>(flags);
         }

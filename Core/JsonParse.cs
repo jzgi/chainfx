@@ -36,7 +36,7 @@ namespace Greatbone.Core
 
         int this[int index] => bytebuf?[index] ?? (int)strbuf[index];
 
-        public object Parse()
+        public IModel Parse()
         {
             int p = -1;
             for (;;)

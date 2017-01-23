@@ -25,6 +25,14 @@ namespace Greatbone.Sample
                 if (jo == null) return;
 
                 access_token = jo[nameof(access_token)];
+                if (access_token == null)
+                {
+                    ERR("error getting access token");
+                    string errmsg = jo[nameof(errmsg)];
+                    ERR(errmsg);
+                    return;
+                }
+
                 int expires_in = jo[nameof(expires_in)]; // in seconds
 
                 int millis = (expires_in - 60) * 1000;

@@ -115,36 +115,36 @@ namespace Greatbone.Core
         public async Task<M> GetAsync<M>(ICaller ctx, string uri) where M : class, IModel
         {
             HttpRequestMessage req = new HttpRequestMessage(HttpMethod.Get, uri);
-            if (ctx.Cookied)
+            if (ctx != null)
             {
-                req.Headers.Add("Cookie", ctx.TokenStr);
-            }
-            else
-            {
-                req.Headers.Add("Authorization", "Bearer " + ctx.TokenStr);
+                if (ctx.Cookied)
+                {
+                    req.Headers.Add("Cookie", ctx.TokenStr);
+                }
+                else
+                {
+                    req.Headers.Add("Authorization", "Bearer " + ctx.TokenStr);
+                }
             }
             HttpResponseMessage resp = await SendAsync(req, HttpCompletionOption.ResponseContentRead);
-            byte[] bytes = await resp.Content.ReadAsByteArrayAsync();
-            string ctyp = null;
-            object entity = null;
-            if (ctyp.StartsWith("application/xml"))
-            {
-                JsonParse p = new JsonParse(bytes, bytes.Length);
-                entity = p.Parse();
-            }
-            return entity as M;
+            byte[] bytea = await resp.Content.ReadAsByteArrayAsync();
+            string ctyp = resp.Content.Headers.GetValue("Content-Type");
+            return (M)WebUtility.ParseContent(ctyp, bytea, 0, bytea.Length);
         }
 
         public async Task<D> GetUnAsync<D>(ICaller ctx, string uri, byte flags = 0) where D : IData, new()
         {
             HttpRequestMessage req = new HttpRequestMessage(HttpMethod.Get, uri);
-            if (ctx.Cookied)
+            if (ctx != null)
             {
-                req.Headers.Add("Cookie", ctx.TokenStr);
-            }
-            else
-            {
-                req.Headers.Add("Authorization", "Bearer " + ctx.TokenStr);
+                if (ctx.Cookied)
+                {
+                    req.Headers.Add("Cookie", ctx.TokenStr);
+                }
+                else
+                {
+                    req.Headers.Add("Authorization", "Bearer " + ctx.TokenStr);
+                }
             }
             HttpResponseMessage resp = await SendAsync(req, HttpCompletionOption.ResponseContentRead);
             ISource src = null;
@@ -154,13 +154,16 @@ namespace Greatbone.Core
         public async Task<D[]> GetArrayAsync<D>(ICaller ctx, string uri, byte flags = 0) where D : IData, new()
         {
             HttpRequestMessage req = new HttpRequestMessage(HttpMethod.Get, uri);
-            if (ctx.Cookied)
+            if (ctx != null)
             {
-                req.Headers.Add("Cookie", ctx.TokenStr);
-            }
-            else
-            {
-                req.Headers.Add("Authorization", "Bearer " + ctx.TokenStr);
+                if (ctx.Cookied)
+                {
+                    req.Headers.Add("Cookie", ctx.TokenStr);
+                }
+                else
+                {
+                    req.Headers.Add("Authorization", "Bearer " + ctx.TokenStr);
+                }
             }
             HttpResponseMessage resp = await SendAsync(req, HttpCompletionOption.ResponseContentRead);
 
@@ -171,13 +174,16 @@ namespace Greatbone.Core
         public async Task<List<D>> GetListAsync<D>(ICaller ctx, string uri, byte flags = 0) where D : IData, new()
         {
             HttpRequestMessage req = new HttpRequestMessage(HttpMethod.Get, uri);
-            if (ctx.Cookied)
+            if (ctx != null)
             {
-                req.Headers.Add("Cookie", ctx.TokenStr);
-            }
-            else
-            {
-                req.Headers.Add("Authorization", "Bearer " + ctx.TokenStr);
+                if (ctx.Cookied)
+                {
+                    req.Headers.Add("Cookie", ctx.TokenStr);
+                }
+                else
+                {
+                    req.Headers.Add("Authorization", "Bearer " + ctx.TokenStr);
+                }
             }
             HttpResponseMessage resp = await SendAsync(req, HttpCompletionOption.ResponseContentRead);
 
@@ -188,13 +194,16 @@ namespace Greatbone.Core
         public Task<HttpResponseMessage> PostAsync<C>(ICaller ctx, string uri, C content) where C : HttpContent, IContent
         {
             HttpRequestMessage req = new HttpRequestMessage(HttpMethod.Post, uri);
-            if (ctx.Cookied)
+            if (ctx != null)
             {
-                req.Headers.Add("Authorization", "Bearer " + "");
-            }
-            else
-            {
-                req.Headers.Add("Cookie", "");
+                if (ctx.Cookied)
+                {
+                    req.Headers.Add("Authorization", "Bearer " + "");
+                }
+                else
+                {
+                    req.Headers.Add("Cookie", "");
+                }
             }
             req.Content = content;
             req.Headers.Add("Content-Type", content.Type);
@@ -206,31 +215,22 @@ namespace Greatbone.Core
         public Task<HttpResponseMessage> PostAsync(ICaller ctx, string uri, IModel model)
         {
             HttpRequestMessage req = new HttpRequestMessage(HttpMethod.Post, uri);
-            if (ctx.Cookied)
+            if (ctx != null)
             {
-                req.Headers.Add("Authorization", "Bearer " + "");
+                if (ctx.Cookied)
+                {
+                    req.Headers.Add("Authorization", "Bearer " + "");
+                }
+                else
+                {
+                    req.Headers.Add("Cookie", "");
+                }
             }
-            else
-            {
-                req.Headers.Add("Cookie", "");
-            }
+            IContent cont = model.Dump();
+            req.Content = (HttpContent)cont;
+            req.Content.Headers.ContentType.MediaType = cont.Type;
+            req.Content.Headers.ContentLength = cont.Size;
 
-            if (model is Form)
-            {
-
-            }
-            else if (model is JObj)
-            {
-                JsonContent cont = new JsonContent(true, true);
-                ((JObj)model).Dump(cont);
-                req.Content = cont;
-            }
-            else if (model is IData)
-            {
-                JsonContent cont = new JsonContent(true, true);
-                ((JObj)model).Dump(cont);
-                req.Content = cont;
-            }
             return SendAsync(req, HttpCompletionOption.ResponseContentRead);
         }
 

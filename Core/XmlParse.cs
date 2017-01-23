@@ -40,7 +40,7 @@ namespace Greatbone.Core
 
         int this[int index] => (bytebuf != null) ? bytebuf[index] : (int)strbuf[index];
 
-        public object Parse()
+        public XElem Parse()
         {
             int p = -1;
             for (;;)
