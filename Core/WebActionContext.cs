@@ -189,7 +189,7 @@ namespace Greatbone.Core
             return entity as M;
         }
 
-        public async Task<D> ReadUnAsync<D>(byte flags = 0) where D : IData, new()
+        public async Task<D> ReadObjectAsync<D>(byte flags = 0) where D : IData, new()
         {
             if (entity == null && count == -1) // if not yet parse and read
             {
@@ -213,7 +213,7 @@ namespace Greatbone.Core
             {
                 return default(D);
             }
-            return src.ToUn<D>(flags);
+            return src.ToObject<D>(flags);
         }
 
         public async Task<D[]> ReadArrayAsync<D>(byte flags = 0) where D : IData, new()

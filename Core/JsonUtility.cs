@@ -19,14 +19,14 @@ namespace Greatbone.Core
             return (JObj) p.Parse();
         }
 
-        public static D StringToData<D>(string v, byte flags = 0) where D : IData, new()
+        public static D StringToObject<D>(string v, byte flags = 0) where D : IData, new()
         {
             JsonParse p = new JsonParse(v);
             JObj jobj = (JObj) p.Parse();
-            return jobj.ToUn<D>(flags);
+            return jobj.ToObject<D>(flags);
         }
 
-        public static D[] StringToDatas<D>(string v, byte flags = 0) where D : IData, new()
+        public static D[] StringToArray<D>(string v, byte flags = 0) where D : IData, new()
         {
             JsonParse p = new JsonParse(v);
             JArr jarr = (JArr) p.Parse();
@@ -51,7 +51,7 @@ namespace Greatbone.Core
             return str;
         }
 
-        public static string DataToString<D>(D v, byte flags = 0) where D : IData
+        public static string ObjectToString<D>(D v, byte flags = 0) where D : IData
         {
             JsonContent cont = new JsonContent(false, true, 4 * 1024);
             cont.Put(null, v);
@@ -60,7 +60,7 @@ namespace Greatbone.Core
             return str;
         }
 
-        public static string DatasToString<D>(D[] v, byte flags = 0) where D : IData
+        public static string ArrayToString<D>(D[] v, byte flags = 0) where D : IData
         {
             JsonContent cont = new JsonContent(false, true, 4 * 1024);
             cont.Put(null, v);
@@ -69,7 +69,7 @@ namespace Greatbone.Core
             return str;
         }
 
-        public static string DataListToString<D>(List<D> v, byte flags = 0) where D : IData
+        public static string ListToString<D>(List<D> v, byte flags = 0) where D : IData
         {
             JsonContent cont = new JsonContent(false, true, 4 * 1024);
             cont.Put(null, v);
@@ -108,7 +108,7 @@ namespace Greatbone.Core
             return null;
         }
 
-        public static D FileToData<D>(string file) where D : IData, new()
+        public static D FileToObject<D>(string file) where D : IData, new()
         {
             try
             {
@@ -117,7 +117,7 @@ namespace Greatbone.Core
                 JObj jobj = (JObj) p.Parse();
                 if (jobj != null)
                 {
-                    return jobj.ToUn<D>();
+                    return jobj.ToObject<D>();
                 }
             }
             catch (Exception ex)
@@ -127,7 +127,7 @@ namespace Greatbone.Core
             return default(D);
         }
 
-        public static D[] FileToDatas<D>(string file) where D : IData, new()
+        public static D[] FileToArray<D>(string file) where D : IData, new()
         {
             try
             {

@@ -42,7 +42,7 @@ namespace Greatbone.Sample
                     {
                         if (dc.QueryUn("SELECT * FROM inboxes WHERE userid = @1", p => p.Set(userid, false)))
                         {
-                            inbox = dc.ToUn<Inbox>();
+                            inbox = dc.ToObject<Inbox>();
                         }
                         else
                         {

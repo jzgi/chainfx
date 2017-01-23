@@ -140,12 +140,12 @@ namespace Greatbone.Core
             {
                 tokstr = hv.Substring(7);
                 string jsonstr = Decrypt(tokstr);
-                ac.Token = JsonUtility.StringToData<T>(jsonstr);
+                ac.Token = JsonUtility.StringToObject<T>(jsonstr);
             }
             else if (ac.Cookies.TryGetValue("Bearer", out tokstr))
             {
                 string jsonstr = Decrypt(tokstr);
-                ac.Token = JsonUtility.StringToData<T>(jsonstr);
+                ac.Token = JsonUtility.StringToObject<T>(jsonstr);
             }
         }
     }

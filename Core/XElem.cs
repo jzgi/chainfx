@@ -253,7 +253,7 @@ namespace Greatbone.Core
             throw new NotImplementedException();
         }
 
-        public D ToUn<D>(byte flags = 0) where D : IData, new()
+        public D ToObject<D>(byte flags = 0) where D : IData, new()
         {
             throw new NotImplementedException();
         }

@@ -132,7 +132,7 @@ namespace Greatbone.Core
             return (M)WebUtility.ParseContent(ctyp, bytea, 0, bytea.Length);
         }
 
-        public async Task<D> GetUnAsync<D>(ICaller ctx, string uri, byte flags = 0) where D : IData, new()
+        public async Task<D> GetObjectAsync<D>(ICaller ctx, string uri, byte flags = 0) where D : IData, new()
         {
             HttpRequestMessage req = new HttpRequestMessage(HttpMethod.Get, uri);
             if (ctx != null)
@@ -148,7 +148,7 @@ namespace Greatbone.Core
             }
             HttpResponseMessage resp = await SendAsync(req, HttpCompletionOption.ResponseContentRead);
             ISource src = null;
-            return src.ToUn<D>(flags);
+            return src.ToObject<D>(flags);
         }
 
         public async Task<D[]> GetArrayAsync<D>(ICaller ctx, string uri, byte flags = 0) where D : IData, new()
