@@ -7,7 +7,7 @@ namespace Greatbone.Core
     ///
     /// A form object model parsed from either x-www-form-urlencoded or multipart/form-data.
     ///
-    public class Form : Roll<Field>, IContentModel, ISource
+    public class Form : Roll<Field>, IModel, ISource
     {
         // if multipart
         readonly bool mp;
@@ -265,6 +265,13 @@ namespace Greatbone.Core
         public void Dump<R>(ISink<R> snk) where R : ISink<R>
         {
             throw new NotImplementedException();
+        }
+
+        public IContent Dump()
+        {
+            FormContent cont = new FormContent();
+            Dump(cont);
+            return cont;
         }
     }
 }

@@ -678,7 +678,7 @@ namespace Greatbone.Core
             Event(name, shard, cont);
         }
 
-        public void Event(string name, string shard, IContentModel model)
+        public void Event(string name, string shard, IModel model)
         {
         }
 

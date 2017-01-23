@@ -32,7 +32,7 @@ namespace Greatbone.Sample
 
         internal DateTime opened;
 
-        OrderItem[] items;
+        OrderLine[] lines;
 
         decimal total;
 
@@ -57,7 +57,7 @@ namespace Greatbone.Sample
             src.Get(nameof(opened), ref opened);
             if (flags.Has(SUB))
             {
-                src.Get(nameof(items), ref items);
+                src.Get(nameof(lines), ref lines);
             }
             src.Get(nameof(total), ref total);
 
@@ -80,7 +80,7 @@ namespace Greatbone.Sample
             snk.Put(nameof(opened), opened);
             if (flags.Has(SUB))
             {
-                snk.Put(nameof(items), items);
+                snk.Put(nameof(lines), lines);
             }
             snk.Put(nameof(total), total);
 
@@ -88,42 +88,4 @@ namespace Greatbone.Sample
             snk.Put(nameof(status), status);
         }
     }
-
-    public struct OrderItem : IData
-    {
-        string item;
-
-        short qty;
-
-        string unit;
-
-        decimal oprice;
-
-        decimal price;
-
-        string note;
-
-        public decimal Subtotal => price * qty;
-
-        public void Load(ISource src, byte flags = 0)
-        {
-            src.Get(nameof(item), ref item);
-            src.Get(nameof(qty), ref qty);
-            src.Get(nameof(unit), ref unit);
-            src.Get(nameof(oprice), ref oprice);
-            src.Get(nameof(price), ref price);
-            src.Get(nameof(note), ref note);
-        }
-
-        public void Dump<R>(ISink<R> snk, byte flags = 0) where R : ISink<R>
-        {
-            snk.Put(nameof(item), item);
-            snk.Put(nameof(qty), qty);
-            snk.Put(nameof(unit), unit);
-            snk.Put(nameof(oprice), oprice);
-            snk.Put(nameof(price), price);
-            snk.Put(nameof(note), note);
-        }
-    }
-
 }

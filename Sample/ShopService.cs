@@ -1,4 +1,5 @@
 ﻿using System.Collections.Concurrent;
+using System.Collections.Generic;
 using System.Threading.Tasks;
 using Greatbone.Core;
 using NpgsqlTypes;
@@ -15,15 +16,16 @@ namespace Greatbone.Sample
 
         static readonly WebClient WCPay = new WebClient("wcpay", "https://api.mch.weixin.qq.com");
 
-        readonly ConcurrentDictionary<string, Order> baskets;
+        readonly ConcurrentDictionary<string, List<OrderLine>> baskets;
 
         readonly WebAction[] _new;
 
         public ShopService(WebConfig cfg) : base(cfg)
         {
+            Make<BasketFolder>("my");
             MakeVariable<ShopVariableFolder>();
 
-            baskets = new ConcurrentDictionary<string, Order>();
+            baskets = new ConcurrentDictionary<string, List<OrderLine>>();
 
             _new = GetActions(nameof(@new));
         }
@@ -64,13 +66,44 @@ namespace Greatbone.Sample
         }
 
 
+        ///
+        /// Get items grouped by shop
+        ///
+        /// <code>
+        /// GET /items
+        /// </code>
+        ///
+        public void shopdetails(WebActionContext ac)
+        {
+            string shopid = ac.Key;
+
+            using (var dc = Service.NewDbContext())
+            {
+                // shops
+
+
+                // items
+
+                DbSql sql = new DbSql("SELECT ").columnlst(Item.Empty)._("FROM items WHERE @shopid = @1 AND NOT disabled");
+                if (dc.Query(sql.ToString(), p => p.Set(shopid)))
+                {
+                    var items = dc.ToArray<Item>();
+                    ac.ReplyPage(200, "", main =>
+                    {
+                    });
+                }
+                else
+                    ac.ReplyPage(200, "没有记录", main => { });
+            }
+        }
+
         public async Task pay(WebActionContext ac)
         {
             // store backet to db
             string openid = ac.Cookies[nameof(openid)];
 
-            Order ord;
-            if (baskets.TryRemove(openid, out ord))
+            List<OrderLine> basket;
+            if (baskets.TryRemove(openid, out basket))
             {
                 using (var dc = NewDbContext())
                 {

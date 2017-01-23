@@ -7,7 +7,7 @@ namespace Greatbone.Core
     ///
     /// A JSON object model.
     ///
-    public class JObj : Roll<JMem>, IContentModel, ISource
+    public class JObj : Roll<JMem>, IModel, ISource
     {
         public JObj(int capacity = 16) : base(capacity)
         {
@@ -352,19 +352,19 @@ namespace Greatbone.Core
                 JType typ = prop.type;
                 if (typ == JType.Array)
                 {
-                    snk.Put(prop.Name, (JArr) prop);
+                    snk.Put(prop.Name, (JArr)prop);
                 }
                 else if (typ == JType.Object)
                 {
-                    snk.Put(prop.Name, (JObj) prop);
+                    snk.Put(prop.Name, (JObj)prop);
                 }
                 else if (typ == JType.String)
                 {
-                    snk.Put(prop.Name, (string) prop);
+                    snk.Put(prop.Name, (string)prop);
                 }
                 else if (typ == JType.Number)
                 {
-                    snk.Put(prop.Name, (JNumber) prop);
+                    snk.Put(prop.Name, (JNumber)prop);
                 }
                 else if (typ == JType.True)
                 {
@@ -397,6 +397,13 @@ namespace Greatbone.Core
             D dat = new D();
             dat.Load(this, flags);
             return dat;
+        }
+
+        public IContent Dump()
+        {
+            JsonContent cont = new JsonContent();
+            Dump(cont);
+            return cont;
         }
     }
 }

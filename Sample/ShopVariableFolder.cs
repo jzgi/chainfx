@@ -11,8 +11,6 @@ namespace Greatbone.Sample
 
         public ShopVariableFolder(WebFolderContext dc) : base(dc)
         {
-            Make<BasketFolder>("mycart");
-
             // order functions
             Make<OrderFolder>("myorder");
 

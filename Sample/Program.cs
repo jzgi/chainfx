@@ -16,7 +16,7 @@ namespace Greatbone.Sample
                 port = 5432,
                 username = "postgres",
                 password = "721004",
-                eq = false
+                queue = false
             };
 
             WebAuth<Token> auth = new WebAuth<Token>(0x4a78be76, 0x1f0335e2);

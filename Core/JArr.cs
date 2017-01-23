@@ -7,7 +7,7 @@ namespace Greatbone.Core
     ///
     /// A JSON array model.
     ///
-    public class JArr : IContentModel, ISourceSet
+    public class JArr : IModel, ISourceSet
     {
         JMem[] elements;
 
@@ -46,19 +46,19 @@ namespace Greatbone.Core
                 JType typ = elem.type;
                 if (typ == JType.Array)
                 {
-                    snk.Put(null, (JArr) elem);
+                    snk.Put(null, (JArr)elem);
                 }
                 else if (typ == JType.Object)
                 {
-                    snk.Put(null, (JObj) elem);
+                    snk.Put(null, (JObj)elem);
                 }
                 else if (typ == JType.String)
                 {
-                    snk.Put(null, (string) elem);
+                    snk.Put(null, (string)elem);
                 }
                 else if (typ == JType.Number)
                 {
-                    snk.Put(null, (JNumber) elem);
+                    snk.Put(null, (JNumber)elem);
                 }
                 else if (typ == JType.True)
                 {
@@ -73,6 +73,13 @@ namespace Greatbone.Core
                     snk.PutNull(null);
                 }
             }
+        }
+
+        public IContent Dump()
+        {
+            JsonContent cont = new JsonContent();
+            Dump(cont);
+            return cont;
         }
 
         public bool Get(string name, ref bool v)
@@ -230,7 +237,7 @@ namespace Greatbone.Core
             for (int i = 0; i < arr.Length; i++)
             {
                 D obj = new D();
-                obj.Load((JObj) elements[i], flags);
+                obj.Load((JObj)elements[i], flags);
                 arr[i] = obj;
             }
             return arr;
@@ -242,7 +249,7 @@ namespace Greatbone.Core
             for (int i = 0; i < count; i++)
             {
                 D obj = new D();
-                obj.Load((JObj) elements[i], flags);
+                obj.Load((JObj)elements[i], flags);
                 lst.Add(obj);
             }
             return lst;

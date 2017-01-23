@@ -203,7 +203,7 @@ namespace Greatbone.Core
             }
         }
 
-        public async Task<M> ReadAsync<M>() where M : class, IContentModel
+        public async Task<M> ReadAsync<M>() where M : class, IModel
         {
             if (entity == null && count == -1) // if not yet parse and read
             {
@@ -347,7 +347,7 @@ namespace Greatbone.Core
             MaxAge = maxage;
         }
 
-        public void Reply(int status, IContentModel model, bool? pub = null, int maxage = 60)
+        public void Reply(int status, IModel model, bool? pub = null, int maxage = 60)
         {
             Response.StatusCode = status;
             // Content = content;

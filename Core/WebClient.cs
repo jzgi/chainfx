@@ -112,7 +112,7 @@ namespace Greatbone.Core
             return await resp.Content.ReadAsByteArrayAsync();
         }
 
-        public async Task<M> GetAsync<M>(ICaller ctx, string uri) where M : class, IContentModel
+        public async Task<M> GetAsync<M>(ICaller ctx, string uri) where M : class, IModel
         {
             HttpRequestMessage req = new HttpRequestMessage(HttpMethod.Get, uri);
             if (ctx.Cookied)
@@ -203,7 +203,7 @@ namespace Greatbone.Core
             return SendAsync(req, HttpCompletionOption.ResponseContentRead);
         }
 
-        public Task<HttpResponseMessage> PostAsync(ICaller ctx, string uri, IContentModel model)
+        public Task<HttpResponseMessage> PostAsync(ICaller ctx, string uri, IModel model)
         {
             HttpRequestMessage req = new HttpRequestMessage(HttpMethod.Post, uri);
             if (ctx.Cookied)

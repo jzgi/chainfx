@@ -9,29 +9,33 @@
 
         public int port;
 
+        public string database;
+
         public string username;
 
         public string password;
 
         // whether to create event-queue tables/indexes
-        public bool eq;
+        public bool queue;
 
         public void Load(ISource src, byte flags = 0)
         {
             src.Get(nameof(host), ref host);
             src.Get(nameof(port), ref port);
+            src.Get(nameof(database), ref database);
             src.Get(nameof(username), ref username);
             src.Get(nameof(password), ref password);
-            src.Get(nameof(eq), ref eq);
+            src.Get(nameof(queue), ref queue);
         }
 
         public void Dump<R>(ISink<R> snk, byte flags = 0) where R : ISink<R>
         {
             snk.Put(nameof(host), host);
             snk.Put(nameof(port), port);
+            snk.Put(nameof(database), database);
             snk.Put(nameof(username), username);
             snk.Put(nameof(password), password);
-            snk.Put(nameof(eq), eq);
+            snk.Put(nameof(queue), queue);
         }
     }
 }

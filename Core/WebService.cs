@@ -116,7 +116,7 @@ namespace Greatbone.Core
             cache = new WebCache(Environment.ProcessorCount * 2, 4096);
 
             // create database structures for event queue
-            if (Config.db.eq)
+            if (Config.db.queue)
             {
                 CreateEq();
             }
@@ -283,10 +283,14 @@ namespace Greatbone.Core
             NpgsqlConnectionStringBuilder builder = new NpgsqlConnectionStringBuilder()
             {
                 Host = cfg.host,
-                Database = Name,
+                Port = cfg.port,
+                Database = cfg.database ?? Name,
                 Username = cfg.username,
-                Password = cfg.password
+                Password = cfg.password,
             };
+            builder.Add("Read Buffer Size", 1024 * 32);
+            builder.Add("Write Buffer Size", 1024 * 32);
+            builder.Add("No Reset On Close", true); // increase performance
             return new DbContext(Config.shard, builder);
         }
 
