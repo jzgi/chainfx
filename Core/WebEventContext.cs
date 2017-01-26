@@ -37,22 +37,12 @@ namespace Greatbone.Core
             return entity as ArraySegment<byte>?;
         }
 
-        public Form AsForm()
+        public M As<M>() where M : class, IModel
         {
-            return entity as Form;
+            return entity as M;
         }
 
-        public JObj AsJObj()
-        {
-            return entity as JObj;
-        }
-
-        public JArr AsJArr()
-        {
-            return entity as JArr;
-        }
-
-        public D AsData<D>(byte flags = 0) where D : IData, new()
+        public D AsObject<D>(byte flags = 0) where D : IData, new()
         {
             ISource src = entity as ISource;
             if (src == null)
@@ -62,15 +52,10 @@ namespace Greatbone.Core
             return src.ToObject<D>(flags);
         }
 
-        public D[] AsDatas<D>(byte flags = 0) where D : IData, new()
+        public D[] AsArray<D>(byte flags = 0) where D : IData, new()
         {
-            JArr jarr = entity as JArr;
-            return jarr?.ToArray<D>(flags);
-        }
-
-        public XElem AsXElem()
-        {
-            return entity as XElem;
+            ISourceSet srcs = entity as ISourceSet;
+            return srcs?.ToArray<D>(flags);
         }
 
         public void Cancel()

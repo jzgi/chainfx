@@ -1526,22 +1526,22 @@ namespace Greatbone.Core
 
         readonly bool pooled;
 
-        readonly byte[] bytebuf;
+        readonly byte[] buffer;
 
         readonly int size;
 
-        public StaticContent(byte[] bytebuf) : this(false, bytebuf, bytebuf.Length)
+        public StaticContent(byte[] bytes) : this(false, bytes, bytes.Length)
         {
         }
 
-        public StaticContent(ArraySegment<byte> bytesseg) : this(true, bytesseg.Array, bytesseg.Count)
+        public StaticContent(ArraySegment<byte> byteas) : this(true, byteas.Array, byteas.Count)
         {
         }
 
-        public StaticContent(bool pooled, byte[] bytebuf, int size)
+        public StaticContent(bool pooled, byte[] buffer, int size)
         {
             this.pooled = pooled;
-            this.bytebuf = bytebuf;
+            this.buffer = buffer;
             this.size = size;
         }
 
@@ -1553,7 +1553,7 @@ namespace Greatbone.Core
 
         public bool Poolable => pooled;
 
-        public byte[] ByteBuffer => bytebuf;
+        public byte[] ByteBuffer => buffer;
 
         public char[] CharBuffer => null;
 
@@ -1565,7 +1565,7 @@ namespace Greatbone.Core
 
         protected override Task SerializeToStreamAsync(Stream stream, TransportContext context)
         {
-            return stream.WriteAsync(bytebuf, 0, size);
+            return stream.WriteAsync(buffer, 0, size);
         }
 
         protected override bool TryComputeLength(out long length)

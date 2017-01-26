@@ -1,7 +1,7 @@
 ﻿namespace Greatbone.Core
 {
     ///
-    /// Represents a content object model.
+    /// Represents a content model object.
     ///
     public interface IModel
     {

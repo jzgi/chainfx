@@ -4,13 +4,15 @@ using System.Reflection;
 
 namespace Greatbone.Core
 {
-    public abstract class WebControl
+    public abstract class WebController
     {
+        // access checking routines
         readonly CheckAttribute[] checks;
 
+        // access filtering routines
         readonly FilterAttribute[] filters;
 
-        internal WebControl(ICustomAttributeProvider attrs)
+        internal WebController(ICustomAttributeProvider attrs)
         {
             // either methodinfo or typeinfo
             if (attrs == null)
@@ -26,7 +28,7 @@ namespace Greatbone.Core
                 {
                     chklst = new List<CheckAttribute>(8);
                 }
-                chk.Control = this;
+                chk.Controller = this;
                 chklst.Add(chk);
             }
             this.checks = chklst?.ToArray();
@@ -59,7 +61,7 @@ namespace Greatbone.Core
             return false;
         }
 
-        internal bool Allows(WebActionContext ac, bool reply = true)
+        internal bool Allow(WebActionContext ac, bool reply = true)
         {
             if (checks != null)
             {

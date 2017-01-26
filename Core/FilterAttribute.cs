@@ -8,7 +8,7 @@ namespace Greatbone.Core
     [AttributeUsage(AttributeTargets.Class | AttributeTargets.Method, Inherited = false)]
     public abstract class FilterAttribute : Attribute
     {
-        public WebControl Control { get; internal set; }
+        public WebController Control { get; internal set; }
 
         public abstract void Before(WebActionContext ac);
 

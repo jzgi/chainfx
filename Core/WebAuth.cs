@@ -139,8 +139,8 @@ namespace Greatbone.Core
             if (hv != null && hv.StartsWith("Bearer ")) // the Bearer scheme
             {
                 tokstr = hv.Substring(7);
-                string jsonstr = Decrypt(tokstr);
-                ac.Token = JsonUtility.StringToObject<T>(jsonstr);
+                string jstr = Decrypt(tokstr);
+                ac.Token = JsonUtility.StringToObject<T>(jstr);
             }
             else if (ac.Cookies.TryGetValue("Bearer", out tokstr))
             {

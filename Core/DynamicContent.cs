@@ -445,7 +445,6 @@ namespace Greatbone.Core
         //
         // CLIENT CONTENT
         //
-
         protected override Task SerializeToStreamAsync(Stream stream, TransportContext context)
         {
             return stream.WriteAsync(bytebuf, 0, count);

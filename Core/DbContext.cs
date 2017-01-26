@@ -38,16 +38,7 @@ namespace Greatbone.Core
 
         public string Shard => shard;
 
-        public void Begin()
-        {
-            if (transact == null)
-            {
-                transact = connection.BeginTransaction();
-                command.Transaction = transact;
-            }
-        }
-
-        public void Begin(IsolationLevel level)
+        public void Begin(IsolationLevel level = IsolationLevel.ReadCommitted)
         {
             if (transact == null)
             {
@@ -329,7 +320,7 @@ namespace Greatbone.Core
 
         public List<D> ToList<D>(byte flags = 0) where D : IData, new()
         {
-            List<D> lst = new List<D>(64);
+            List<D> lst = new List<D>(32);
             while (Next())
             {
                 D dat = new D();
@@ -549,8 +540,8 @@ namespace Greatbone.Core
             if (!reader.IsDBNull(ord))
             {
                 string str = reader.GetString(ord);
-                JsonParse p = new JsonParse(str);
-                v = (JArr)p.Parse();
+                JsonParse parse = new JsonParse(str);
+                v = (JArr)parse.Parse();
                 return true;
             }
             return false;
@@ -606,24 +597,24 @@ namespace Greatbone.Core
             if (!reader.IsDBNull(ord))
             {
                 string str = reader.GetString(ord);
-                JsonParse p = new JsonParse(str);
-                JArr jarr = (JArr)p.Parse();
-                int len = jarr.Count;
+                JsonParse parse = new JsonParse(str);
+                JArr ja = (JArr)parse.Parse();
+                int len = ja.Count;
                 v = new D[len];
                 for (int i = 0; i < len; i++)
                 {
-                    JObj jobj = jarr[i];
-                    D dat = new D();
-                    dat.Load(jobj, flags);
+                    JObj jo = ja[i];
+                    D obj = new D();
+                    obj.Load(jo, flags);
 
                     // add shard if any
-                    IShardable shardable = dat as IShardable;
+                    IShardable shardable = obj as IShardable;
                     if (shardable != null)
                     {
                         shardable.Shard = shard;
                     }
 
-                    v[i] = dat;
+                    v[i] = obj;
                 }
                 return true;
             }
@@ -642,18 +633,18 @@ namespace Greatbone.Core
                 v = new List<D>(len + 8);
                 for (int i = 0; i < len; i++)
                 {
-                    JObj jobj = jarr[i];
-                    D dat = new D();
-                    dat.Load(jobj, flags);
+                    JObj jo = jarr[i];
+                    D obj = new D();
+                    obj.Load(jo, flags);
 
                     // add shard if any
-                    IShardable shardable = dat as IShardable;
+                    IShardable shardable = obj as IShardable;
                     if (shardable != null)
                     {
                         shardable.Shard = shard;
                     }
 
-                    v.Add(dat);
+                    v.Add(obj);
                 }
                 return true;
             }

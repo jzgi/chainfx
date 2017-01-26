@@ -12,9 +12,11 @@ namespace Greatbone.Sample
 
         internal string shopid;
 
-        internal string item;
+        internal string name;
 
         internal string unit;
+
+        internal string descript;
 
         internal byte[] icon;
 
@@ -31,7 +33,7 @@ namespace Greatbone.Sample
         public void Load(ISource src, byte flags = 0)
         {
             src.Get(nameof(shopid), ref shopid);
-            src.Get(nameof(item), ref item);
+            src.Get(nameof(name), ref name);
             src.Get(nameof(unit), ref unit);
             if (flags.Has(BINARY))
             {
@@ -47,7 +49,7 @@ namespace Greatbone.Sample
         public void Dump<R>(ISink<R> snk, byte flags = 0) where R : ISink<R>
         {
             snk.Put(nameof(shopid), shopid);
-            snk.Put(nameof(item), item);
+            snk.Put(nameof(name), name);
             snk.Put(nameof(unit), unit);
             if (flags.Has(BINARY))
             {

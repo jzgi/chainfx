@@ -78,11 +78,11 @@ namespace Greatbone.Core
                 {
                     if (evt.Async)
                     {
-                        await evt.DoAsync(ec);
+                        await evt.DoAsync(ec, null);
                     }
                     else
                     {
-                        evt.Do(ec);
+                        evt.Do(ec, null);
                     }
                 }
             });

@@ -1,6 +1,4 @@
-﻿using System;
-using Greatbone.Core;
-using NpgsqlTypes;
+﻿using Greatbone.Core;
 using static Greatbone.Core.FlagsUtility;
 
 namespace Greatbone.Sample
@@ -12,14 +10,16 @@ namespace Greatbone.Sample
     {
         public static readonly Shop Empty = new Shop();
 
-        internal string id;
+        internal string id; // platform shop id
         internal string name;
         internal string credential;
         internal string tel;
-        internal NpgsqlPoint loc;
+        internal double x, y;
         internal string prov;
         internal string city;
-        internal short status;
+        internal string wx;
+        internal string notice;
+        internal short status; // -1 dismissed, 0 closed, 1 open
 
         public string Key => id;
 
@@ -32,11 +32,16 @@ namespace Greatbone.Sample
             src.Get(nameof(id), ref id);
             src.Get(nameof(name), ref name);
             if (flags.Has(KEPT))
+            {
                 src.Get(nameof(credential), ref credential);
+            }
             src.Get(nameof(tel), ref tel);
-            src.Get(nameof(loc), ref loc);
+            src.Get(nameof(x), ref x);
+            src.Get(nameof(y), ref y);
             src.Get(nameof(prov), ref prov);
             src.Get(nameof(city), ref city);
+            src.Get(nameof(wx), ref wx);
+            src.Get(nameof(notice), ref notice);
             src.Get(nameof(status), ref status);
         }
 
@@ -45,44 +50,17 @@ namespace Greatbone.Sample
             snk.Put(nameof(id), id);
             snk.Put(nameof(name), name);
             if (flags.Has(KEPT))
+            {
                 snk.Put(nameof(credential), credential);
+            }
             snk.Put(nameof(tel), tel);
-            snk.Put(nameof(loc), loc);
+            snk.Put(nameof(x), x);
+            snk.Put(nameof(y), y);
             snk.Put(nameof(prov), prov);
             snk.Put(nameof(city), city);
+            snk.Put(nameof(wx), wx);
+            snk.Put(nameof(notice), notice);
             snk.Put(nameof(status), status);
         }
-
-        //
-        // ACCESS_TOKEN
-        //
-
-        int expiry;
-        int last;
-        string accessToken; // cached access token
-
-        public string AccessToken
-        {
-            get
-            {
-                lock (this)
-                {
-                    int ticks = Environment.TickCount;
-                    if ((ticks - last) / 1000 > expiry) // if expired
-                    {
-                        // update access token
-
-                        // accessToken = WeChatUtility.GetAccessToken(city, appsecret);
-                    }
-                    return accessToken;
-                }
-            }
-        }
-
-        public void CreateMenu()
-        {
-
-        }
-
     }
 }

@@ -18,7 +18,8 @@ namespace Greatbone.Core
         sbyte ctx;
 
 
-        public HtmlContent(bool sendable, bool pooled, int capacity = InitialCapacity) : base(sendable, pooled, capacity)
+        public HtmlContent(bool sendable, bool pooled, int capacity = InitialCapacity) : base(sendable, pooled,
+            capacity)
         {
         }
 
@@ -42,7 +43,7 @@ namespace Greatbone.Core
                     char c = key[i];
                     if (c >= 'a' && c <= 'z')
                     {
-                        c = (char)(c - 32);
+                        c = (char) (c - 32);
                     }
                     Add(c);
                 }

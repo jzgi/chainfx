@@ -10,7 +10,7 @@ namespace Greatbone.Core
     ///
     /// A web folder is a server-side controller that realizes a virtual folder containing static/dynamic resources.
     ///
-    public abstract class WebFolder : WebControl, IRollable
+    public abstract class WebFolder : WebController, IRollable
     {
         // max nesting levels
         const int Nesting = 4;
@@ -194,7 +194,7 @@ namespace Greatbone.Core
 
         internal WebFolder Locate(ref string relative, WebActionContext ac)
         {
-            if (!Allows(ac))
+            if (!Allow(ac))
             {
                 ac.Reply(403); // forbidden
                 return null;
@@ -253,7 +253,7 @@ namespace Greatbone.Core
                 {
                     ac.Reply(404); // not found
                 }
-                else if (!atn.Allows(ac))
+                else if (!atn.Allow(ac))
                 {
                     ac.Reply(403); // forbidden
                 }

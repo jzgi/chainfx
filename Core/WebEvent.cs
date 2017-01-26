@@ -5,15 +5,17 @@ using System.Threading.Tasks;
 namespace Greatbone.Core
 {
     /// 
-    /// The descriptor of a event handler method that handles a loosely-coupled event.
+    /// The descriptor of an event handler method.
     /// 
-    public class WebEvent : IRollable
+    public class WebEvent : IHandler
     {
-        public WebService Service { get; }
+        readonly WebService service;
 
         readonly string name;
 
         readonly bool async;
+
+        readonly bool arg;
 
         // void event(WebEventContext)
         readonly Action<WebEventContext> @do;
@@ -21,33 +23,74 @@ namespace Greatbone.Core
         // async Task event(WebEventContext)
         readonly Func<WebEventContext, Task> doasync;
 
-        internal WebEvent(WebService service, MethodInfo mi, bool async)
+        // void action(WebActionContext, string)
+        readonly Action<WebEventContext, string> do2;
+
+        // async Task action(WebActionContext, string)
+        readonly Func<WebEventContext, string, Task> do2async;
+
+        internal WebEvent(WebService service, MethodInfo mi, bool async, bool arg)
         {
             this.name = mi.Name;
             this.async = async;
+            this.arg = arg;
+
             if (async)
             {
-                doasync = (Func<WebEventContext, Task>)mi.CreateDelegate(typeof(Func<WebEventContext, Task>), service);
-
+                if (arg)
+                {
+                    do2async = (Func<WebEventContext, string, Task>)mi.CreateDelegate(typeof(Func<WebEventContext, string, Task>), service);
+                }
+                else
+                {
+                    doasync = (Func<WebEventContext, Task>)mi.CreateDelegate(typeof(Func<WebEventContext, Task>), service);
+                }
             }
             else
             {
-                @do = (Action<WebEventContext>)mi.CreateDelegate(typeof(Action<WebEventContext>), service);
+                if (arg)
+                {
+                    do2 = (Action<WebEventContext, string>)mi.CreateDelegate(typeof(Action<WebEventContext, string>), service);
+                }
+                else
+                {
+                    @do = (Action<WebEventContext>)mi.CreateDelegate(typeof(Action<WebEventContext>), service);
+                }
             }
         }
+
+        public WebService Service => service;
 
         public string Name => name;
 
         public bool Async => async;
 
-        internal void Do(WebEventContext ec)
+        public bool Arg => arg;
+
+        // invoke the right event method
+        internal void Do(WebEventContext ec, string arg)
         {
-            @do(ec);
+            if (Arg)
+            {
+                do2(ec, arg);
+            }
+            else
+            {
+                @do(ec);
+            }
         }
 
-        internal async Task DoAsync(WebEventContext ec)
+        // invoke the right event method
+        internal async Task DoAsync(WebEventContext ec, string arg)
         {
-            await doasync(ec);
+            if (Arg)
+            {
+                await do2async(ec, arg);
+            }
+            else
+            {
+                await doasync(ec);
+            }
         }
 
         public override string ToString()

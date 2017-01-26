@@ -6,11 +6,11 @@ using Greatbone.Core;
 namespace Greatbone.Sample
 {
     ///
-    /// An in-memory message inbox for a particular user.
+    /// An in-memory cache of personal chatting logs.
     ///
-    public class Inbox : IData
+    public class Chat : IData
     {
-        internal string userid;
+        internal string userwx; // openid of the owner
 
         internal List<Message> messages;
 
@@ -71,14 +71,14 @@ namespace Greatbone.Sample
 
         public void Load(ISource src, byte flags = 0)
         {
-            src.Get(nameof(userid), ref userid);
+            src.Get(nameof(userwx), ref userwx);
             src.Get(nameof(messages), ref messages);
             src.Get(nameof(status), ref status);
         }
 
         public void Dump<R>(ISink<R> snk, byte flags = 0) where R : ISink<R>
         {
-            snk.Put(nameof(userid), userid);
+            snk.Put(nameof(userwx), userwx);
             snk.Put(nameof(messages), messages);
             snk.Put(nameof(status), status);
         }

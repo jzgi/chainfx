@@ -1,2 +1,11 @@
 {
+    "addresses": "http://106.14.45.109:8080, http://10.27.157.64:8080",
+    "cluster": {
+        "shop": "http://10.27.157.64:8081",
+        "comm": "http://10.27.157.64:8080"
+    },
+    "extra": {
+        "appid": "wxf2820fd58bf8745f",
+        "appsecret": "85912d26f108b6a3d9fd2fa4aa8f0b83"
+    }
 }

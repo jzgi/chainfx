@@ -84,15 +84,22 @@ namespace Greatbone.Core
                 else continue;
 
                 ParameterInfo[] pis = mi.GetParameters();
+                WebEvent evt = null;
                 if (pis.Length == 1 && pis[0].ParameterType == typeof(WebEventContext))
                 {
-                    WebEvent evt = new WebEvent(this, mi, async);
-                    if (events == null)
-                    {
-                        events = new Roll<WebEvent>(16);
-                    }
-                    events.Add(evt);
+                    evt = new WebEvent(this, mi, async, false);
                 }
+                else if (pis.Length == 2 && pis[0].ParameterType == typeof(WebEventContext) && pis[1].ParameterType == typeof(string))
+                {
+                    evt = new WebEvent(this, mi, async, true);
+                }
+                else continue;
+
+                if (events == null)
+                {
+                    events = new Roll<WebEvent>(16);
+                }
+                events.Add(evt);
             }
 
             // init refers

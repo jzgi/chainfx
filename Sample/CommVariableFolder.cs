@@ -10,7 +10,7 @@ namespace Greatbone.Sample
     public class CommVariableFolder : WebFolder, IVariable
     {
 
-        readonly ConcurrentDictionary<string, Inbox> inboxes;
+        readonly ConcurrentDictionary<string, Chat> chats;
 
         public CommVariableFolder(WebFolderContext fc) : base(fc)
         {
@@ -31,28 +31,28 @@ namespace Greatbone.Sample
         {
             IToken tok = ac.Token;
             string userid = ac.Key;
-            Inbox inbox = null;
+            Chat chat = null;
 
             if (ac.GET)
             {
-                if (!inboxes.TryGetValue(userid, out inbox)) // put in session
+                if (!chats.TryGetValue(userid, out chat)) // put in session
                 {
                     // retrieve from database
                     using (var dc = Service.NewDbContext())
                     {
                         if (dc.QueryUn("SELECT * FROM inboxes WHERE userid = @1", p => p.Set(userid, false)))
                         {
-                            inbox = dc.ToObject<Inbox>();
+                            chat = dc.ToObject<Chat>();
                         }
                         else
                         {
-                            inbox = new Inbox();
+                            chat = new Chat();
                         }
                     }
-                    inboxes.AddOrUpdate(userid, inbox, (k, v) => v);
+                    chats.AddOrUpdate(userid, chat, (k, v) => v);
                 }
                 // can wait (long polling)
-                var messages = await inbox.GetAsync("wait".Equals(arg));
+                var messages = await chat.GetAsync("wait".Equals(arg));
                 if (messages == null)
                 {
                     ac.Reply(204); // no content
@@ -73,15 +73,15 @@ namespace Greatbone.Sample
                     time = DateTime.Now
                 };
 
-                if (inboxes.TryGetValue(userid, out inbox)) // if the user is active
+                if (chats.TryGetValue(userid, out chat)) // if the user is active
                 {
-                    await inbox.Put(msg);
+                    await chat.Put(msg);
                 }
                 else // put in database
                 {
                     using (var sc = Service.NewDbContext())
                     {
-                        sc.Execute("INSERT INTO inboxes (from, to, ) VALUES () ON CONFLICT DO UPDATE", p => { });
+                        sc.Execute("INSERT INTO chats (from, to, ) VALUES () ON CONFLICT DO UPDATE", p => { });
                     }
                 }
             }
