@@ -97,34 +97,20 @@ namespace Greatbone.Core
         // RPC
         //
 
-        public async Task<byte[]> GetAsync(ICaller ctx, string uri)
+        public async Task<byte[]> GetAsync(WebActionContext ctx, string uri)
         {
             HttpRequestMessage req = new HttpRequestMessage(HttpMethod.Get, uri);
-            if (ctx.Cookied)
-            {
-                req.Headers.Add("Cookie", ctx.TokenStr);
-            }
-            else
-            {
-                req.Headers.Add("Authorization", "Bearer " + ctx.TokenStr);
-            }
+            req.Headers.Add("Authorization", "Bearer " + ctx.TokenText);
             HttpResponseMessage resp = await SendAsync(req, HttpCompletionOption.ResponseContentRead);
             return await resp.Content.ReadAsByteArrayAsync();
         }
 
-        public async Task<M> GetAsync<M>(ICaller ctx, string uri) where M : class, IModel
+        public async Task<M> GetAsync<M>(WebActionContext ctx, string uri) where M : class, IModel
         {
             HttpRequestMessage req = new HttpRequestMessage(HttpMethod.Get, uri);
             if (ctx != null)
             {
-                if (ctx.Cookied)
-                {
-                    req.Headers.Add("Cookie", ctx.TokenStr);
-                }
-                else
-                {
-                    req.Headers.Add("Authorization", "Bearer " + ctx.TokenStr);
-                }
+                req.Headers.Add("Authorization", "Bearer " + ctx.TokenText);
             }
             HttpResponseMessage resp = await SendAsync(req, HttpCompletionOption.ResponseContentRead);
             byte[] bytea = await resp.Content.ReadAsByteArrayAsync();
@@ -132,38 +118,24 @@ namespace Greatbone.Core
             return (M)WebUtility.ParseContent(ctyp, bytea, 0, bytea.Length);
         }
 
-        public async Task<D> GetObjectAsync<D>(ICaller ctx, string uri, byte flags = 0) where D : IData, new()
+        public async Task<D> GetObjectAsync<D>(WebActionContext ctx, string uri, byte flags = 0) where D : IData, new()
         {
             HttpRequestMessage req = new HttpRequestMessage(HttpMethod.Get, uri);
             if (ctx != null)
             {
-                if (ctx.Cookied)
-                {
-                    req.Headers.Add("Cookie", ctx.TokenStr);
-                }
-                else
-                {
-                    req.Headers.Add("Authorization", "Bearer " + ctx.TokenStr);
-                }
+                req.Headers.Add("Authorization", "Bearer " + ctx.TokenText);
             }
             HttpResponseMessage resp = await SendAsync(req, HttpCompletionOption.ResponseContentRead);
             ISource src = null;
             return src.ToObject<D>(flags);
         }
 
-        public async Task<D[]> GetArrayAsync<D>(ICaller ctx, string uri, byte flags = 0) where D : IData, new()
+        public async Task<D[]> GetArrayAsync<D>(WebActionContext ctx, string uri, byte flags = 0) where D : IData, new()
         {
             HttpRequestMessage req = new HttpRequestMessage(HttpMethod.Get, uri);
             if (ctx != null)
             {
-                if (ctx.Cookied)
-                {
-                    req.Headers.Add("Cookie", ctx.TokenStr);
-                }
-                else
-                {
-                    req.Headers.Add("Authorization", "Bearer " + ctx.TokenStr);
-                }
+                req.Headers.Add("Authorization", "Bearer " + ctx.TokenText);
             }
             HttpResponseMessage resp = await SendAsync(req, HttpCompletionOption.ResponseContentRead);
 
@@ -171,19 +143,12 @@ namespace Greatbone.Core
             return srcset.ToArray<D>(flags);
         }
 
-        public async Task<List<D>> GetListAsync<D>(ICaller ctx, string uri, byte flags = 0) where D : IData, new()
+        public async Task<List<D>> GetListAsync<D>(WebActionContext ctx, string uri, byte flags = 0) where D : IData, new()
         {
             HttpRequestMessage req = new HttpRequestMessage(HttpMethod.Get, uri);
             if (ctx != null)
             {
-                if (ctx.Cookied)
-                {
-                    req.Headers.Add("Cookie", ctx.TokenStr);
-                }
-                else
-                {
-                    req.Headers.Add("Authorization", "Bearer " + ctx.TokenStr);
-                }
+                req.Headers.Add("Authorization", "Bearer " + ctx.TokenText);
             }
             HttpResponseMessage resp = await SendAsync(req, HttpCompletionOption.ResponseContentRead);
 
@@ -191,19 +156,12 @@ namespace Greatbone.Core
             return srcset.ToList<D>(flags);
         }
 
-        public Task<HttpResponseMessage> PostAsync<C>(ICaller ctx, string uri, C content) where C : HttpContent, IContent
+        public Task<HttpResponseMessage> PostAsync<C>(WebActionContext ctx, string uri, C content) where C : HttpContent, IContent
         {
             HttpRequestMessage req = new HttpRequestMessage(HttpMethod.Post, uri);
             if (ctx != null)
             {
-                if (ctx.Cookied)
-                {
-                    req.Headers.Add("Authorization", "Bearer " + "");
-                }
-                else
-                {
-                    req.Headers.Add("Cookie", "");
-                }
+                req.Headers.Add("Authorization", "Bearer " + ctx.TokenText);
             }
             req.Content = content;
             req.Headers.Add("Content-Type", content.Type);
@@ -212,19 +170,12 @@ namespace Greatbone.Core
             return SendAsync(req, HttpCompletionOption.ResponseContentRead);
         }
 
-        public Task<HttpResponseMessage> PostAsync(ICaller ctx, string uri, IModel model)
+        public Task<HttpResponseMessage> PostAsync(WebActionContext ctx, string uri, IModel model)
         {
             HttpRequestMessage req = new HttpRequestMessage(HttpMethod.Post, uri);
             if (ctx != null)
             {
-                if (ctx.Cookied)
-                {
-                    req.Headers.Add("Authorization", "Bearer " + "");
-                }
-                else
-                {
-                    req.Headers.Add("Cookie", "");
-                }
+                req.Headers.Add("Authorization", "Bearer " + ctx.TokenText);
             }
             IContent cont = model.Dump();
             req.Content = (HttpContent)cont;
@@ -235,16 +186,12 @@ namespace Greatbone.Core
         }
 
 
-        public Task<HttpResponseMessage> PostJsonAsync(ICaller ctx, string uri, object model)
+        public Task<HttpResponseMessage> PostJsonAsync(WebActionContext ctx, string uri, object model)
         {
             HttpRequestMessage req = new HttpRequestMessage(HttpMethod.Post, uri);
-            if (ctx.Cookied)
+            if (ctx != null)
             {
-                req.Headers.Add("Authorization", "Bearer " + "");
-            }
-            else
-            {
-                req.Headers.Add("Cookie", "");
+                req.Headers.Add("Authorization", "Bearer " + ctx.TokenText);
             }
 
             if (model is Form)

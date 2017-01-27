@@ -11,7 +11,7 @@ namespace Greatbone.Core
     ///
     /// The encapsulation of a web request/response exchange context.
     ///
-    public class WebActionContext : DefaultHttpContext, ICaller, IDisposable
+    public class WebActionContext : DefaultHttpContext, IDisposable
     {
         internal WebActionContext(IFeatureCollection features) : base(features)
         {
@@ -23,9 +23,7 @@ namespace Greatbone.Core
 
         public IData Token { get; internal set; }
 
-        public string TokenStr { get; internal set; }
-
-        public bool Cookied { get; internal set; }
+        public string TokenText { get; internal set; }
 
         // two levels of variable keys
         Var key, key2;
