@@ -7,34 +7,35 @@ namespace Greatbone.Sample
     ///
     public class Token : IToken
     {
-        internal string id;
+        // roles
+        const short marketing = 1, accounting = 2, customer_service = 4;
+
+        internal string key;
 
         internal string name;
-        
-        internal string credential;
-        
-        internal short level;
 
-        public string Key => id;
+        internal short subtype; // worker, shop, buyer
+
+        internal short roles;
+
+        public string Key => key;
 
         public string Name => name;
 
-        public string Credential => credential;
-
         public void Load(ISource s, byte flags = 0)
         {
-            s.Get(nameof(id), ref id);
+            s.Get(nameof(key), ref key);
             s.Get(nameof(name), ref name);
-            s.Get(nameof(credential), ref credential);
-            s.Get(nameof(level), ref level);
+            s.Get(nameof(subtype), ref subtype);
+            s.Get(nameof(roles), ref roles);
         }
 
         public void Dump<R>(ISink<R> s, byte flags = 0) where R : ISink<R>
         {
-            s.Put(nameof(id), id);
+            s.Put(nameof(key), key);
             s.Put(nameof(name), name);
-            s.Put(nameof(credential), credential);
-            s.Put(nameof(level), level);
+            s.Put(nameof(subtype), subtype);
+            s.Put(nameof(roles), roles);
         }
     }
 }

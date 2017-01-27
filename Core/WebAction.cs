@@ -7,7 +7,7 @@ namespace Greatbone.Core
     ///
     /// The descriptor for an action method.
     ///
-    public class WebAction : WebController, IHandler
+    public class WebAction : WebScope, IHandler
     {
         readonly WebFolder folder;
 

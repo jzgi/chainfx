@@ -4,7 +4,10 @@ using System.Reflection;
 
 namespace Greatbone.Core
 {
-    public abstract class WebController
+    ///
+    /// A certain set of resources.
+    ///
+    public abstract class WebScope
     {
         // access checking routines
         readonly CheckAttribute[] checks;
@@ -12,7 +15,7 @@ namespace Greatbone.Core
         // access filtering routines
         readonly FilterAttribute[] filters;
 
-        internal WebController(ICustomAttributeProvider attrs)
+        internal WebScope(ICustomAttributeProvider attrs)
         {
             // either methodinfo or typeinfo
             if (attrs == null)

@@ -6,7 +6,7 @@ namespace Greatbone.Sample
     ///
     /// A shop data object.
     ///
-    public class Shop : IToken
+    public class Shop : IData
     {
         public static readonly Shop Empty = new Shop();
 
@@ -61,6 +61,16 @@ namespace Greatbone.Sample
             snk.Put(nameof(wx), wx);
             snk.Put(nameof(notice), notice);
             snk.Put(nameof(status), status);
+        }
+
+        public Token ToToken()
+        {
+            return new Token()
+            {
+                key = wx,
+                name = name,
+                subtype = 2
+            };
         }
     }
 }

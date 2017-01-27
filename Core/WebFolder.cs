@@ -8,9 +8,9 @@ using Microsoft.Extensions.Logging;
 namespace Greatbone.Core
 {
     ///
-    /// A web folder is a server-side controller that realizes a virtual folder containing static/dynamic resources.
+    /// A web folder realizes a virtual folder containing static/dynamic resources.
     ///
-    public abstract class WebFolder : WebController, IRollable
+    public abstract class WebFolder : WebScope, IRollable
     {
         // max nesting levels
         const int Nesting = 4;

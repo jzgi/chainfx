@@ -172,7 +172,7 @@ namespace Greatbone.Sample
                     {
                         var tok = dc.ToObject<Token>();
                         string credential = TextUtility.MD5(id + ':' + password);
-                        if (credential.Equals(tok.credential))
+                        if (credential.Equals(tok.subtype))
                         {
                             // set cookie
                             string tokstr = Service.Auth.Encrypt(tok);
