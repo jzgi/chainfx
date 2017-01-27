@@ -1,0 +1,29 @@
+<?xml version="1.0"?>
+<svg width="640" height="480" xmlns="http://www.w3.org/2000/svg" xmlns:svg="http://www.w3.org/2000/svg">
+ <!-- Created with SVG-edit - http://svg-edit.googlecode.com/ -->
+ <g>
+  <title>Layer 1</title>
+  <circle id="svg_21" r="196.010193" cy="226" cx="311" stroke-linecap="null" stroke-linejoin="null" stroke-dasharray="null" stroke-width="null" stroke="#000000" fill="#ffffff"/>
+  <g id="svg_5">
+   <circle id="svg_3" r="11.18277" cy="186.279286" cx="213.999999" stroke-linecap="null" stroke-linejoin="null" stroke-dasharray="null" stroke-width="null" stroke="#000000" fill="#ffffff"/>
+   <rect id="svg_4" height="25.569846" width="42" y="198.333643" x="194.000001" stroke-linecap="null" stroke-linejoin="null" stroke-dasharray="null" stroke-width="null" stroke="#000000" fill="#ffffff"/>
+  </g>
+  <g id="svg_6">
+   <circle id="svg_7" r="10.953644" cy="186.550169" cx="309.999999" stroke-linecap="null" stroke-linejoin="null" stroke-dasharray="null" stroke-width="null" stroke="#000000" fill="#ffffff"/>
+   <rect id="svg_8" height="25.04595" width="42" y="198.357546" x="290.000001" stroke-linecap="null" stroke-linejoin="null" stroke-dasharray="null" stroke-width="null" stroke="#000000" fill="#ffffff"/>
+  </g>
+  <g id="svg_9">
+   <circle id="svg_10" r="11.18277" cy="186.279286" cx="418.999999" stroke-linecap="null" stroke-linejoin="null" stroke-dasharray="null" stroke-width="null" stroke="#000000" fill="#ffffff"/>
+   <rect id="svg_11" height="25.569846" width="42" y="198.333643" x="399.000001" stroke-linecap="null" stroke-linejoin="null" stroke-dasharray="null" stroke-width="null" stroke="#000000" fill="#ffffff"/>
+  </g>
+  <text transform="matrix(1, 0, 0, 1, 0, 0)" xml:space="preserve" text-anchor="middle" font-family="serif" font-size="24" id="svg_12" y="248" x="213" stroke-linecap="null" stroke-linejoin="null" stroke-dasharray="null" stroke-width="0" stroke="#000000" fill="#000000">workers</text>
+  <text transform="matrix(1, 0, 0, 1, 0, 0)" style="cursor: move;" xml:space="preserve" text-anchor="middle" font-family="serif" font-size="24" id="svg_13" y="248" x="419" stroke-linecap="null" stroke-linejoin="null" stroke-dasharray="null" stroke-width="0" stroke="#000000" fill="#000000">users</text>
+  <text transform="matrix(1, 0, 0, 1, 0, 0)" xml:space="preserve" text-anchor="middle" font-family="serif" font-size="24" id="svg_14" y="248" x="317" stroke-linecap="null" stroke-linejoin="null" stroke-dasharray="null" stroke-width="0" stroke="#000000" fill="#000000">shops</text>
+  <g id="svg_18">
+   <circle id="svg_15" r="50.990173" cy="324" cx="314" stroke-linecap="null" stroke-linejoin="null" stroke-dasharray="null" stroke-width="null" stroke="#000000" fill="#bfbfbf"/>
+   <text xml:space="preserve" text-anchor="middle" font-family="serif" font-size="24" id="svg_17" y="330" x="315" stroke-linecap="null" stroke-linejoin="null" stroke-dasharray="null" stroke-width="0" stroke="#000000" fill="#000000">products</text>
+  </g>
+  <path id="svg_19" d="m296.464417,94.548096l15.913361,-15.913414l15.916016,15.913414l-15.916016,15.913277l-15.913361,-15.913277zm-17.919617,18.02298l15.915863,-15.913368l15.913727,15.913368l-15.913727,15.916229l-15.915863,-15.916229zm36.177979,0.325401l15.915283,-15.911148l15.910858,15.911148l-15.910858,15.915596l-15.915283,-15.915596zm-17.914764,18.025459l15.909546,-15.913521l15.917633,15.913521l-15.917633,15.913498l-15.909546,-15.913498z" stroke-linecap="null" stroke-linejoin="null" stroke-dasharray="null" stroke-width="null" stroke="#000000" fill="#bfbfbf"/>
+  <text xml:space="preserve" text-anchor="middle" font-family="serif" font-size="24" id="svg_20" y="73" x="316" stroke-linecap="null" stroke-linejoin="null" stroke-dasharray="null" stroke-width="0" stroke="#000000" fill="#000000">money</text>
+ </g>
+</svg>

@@ -100,11 +100,11 @@ namespace Greatbone.Core
             return 0;
         }
 
-        public void SetCookieHeader(WebActionContext ac, IData tok)
+        public void SetCookieHeader(WebActionContext ac, IData token)
         {
             StringBuilder sb = new StringBuilder("Bearer=");
-            string tokstr = Encrypt(tok);
-            sb.Append(tokstr);
+            string tokenstr = Encrypt(token);
+            sb.Append(tokenstr);
             sb.Append("; HttpOnly");
             if (maxage != 0)
             {

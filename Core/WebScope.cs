@@ -5,7 +5,7 @@ using System.Reflection;
 namespace Greatbone.Core
 {
     ///
-    /// A certain set of resources.
+    /// A certain level of resources management.
     ///
     public abstract class WebScope
     {
