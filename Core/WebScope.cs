@@ -74,7 +74,7 @@ namespace Greatbone.Core
                     {
                         if (ac.Header("Accept") != null) // if from browsing
                         {
-                            string loc = Service.Auth?.SignOn + "?orig=" + ac.Uri;
+                            string loc = Service.Authent?.SignOn + "?orig=" + ac.Uri;
                             ac.SetHeader("Location", loc);
                             ac.Reply(303); // see other - redirect to signon url
                         }

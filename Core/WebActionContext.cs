@@ -21,7 +21,7 @@ namespace Greatbone.Core
 
         public WebAction Action { get; internal set; }
 
-        public IToken Token { get; internal set; }
+        public IData Token { get; internal set; }
 
         public string TokenStr { get; internal set; }
 

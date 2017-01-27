@@ -2,7 +2,10 @@
 
 namespace Greatbone.Core
 {
-    public abstract class WebAuth
+    ///
+    /// To authenticate user tokens
+    ///
+    public abstract class WebAuthent
     {
         // mask for encoding/decoding token
         readonly int mask;
@@ -16,7 +19,7 @@ namespace Greatbone.Core
         /// The absolute or relative URL of the signon user interface.
         readonly string signon;
 
-        protected WebAuth(int mask, int order, int maxage = 0, string signon = "/signon")
+        protected WebAuthent(int mask, int order, int maxage = 0, string signon = "/signon")
         {
             this.mask = mask;
             this.order = order;
@@ -37,10 +40,10 @@ namespace Greatbone.Core
             '0', '1', '2', '3', '4', '5', '6', '7', '8', '9', 'A', 'B', 'C', 'D', 'E', 'F'
         };
 
-        public string Encrypt(IToken tok)
+        public string Encrypt(IData token)
         {
-            JsonContent cont = new JsonContent(true, false, 4096);
-            cont.Put(null, tok);
+            JsonContent cont = new JsonContent(true, true, 4096); // borrow
+            cont.Put(null, token);
             byte[] bytebuf = cont.ByteBuffer;
             int count = cont.Size;
 
@@ -58,13 +61,16 @@ namespace Greatbone.Core
 
                 // reordering
             }
+            // return pool
+            BufferUtility.Return(bytebuf);
+
             return new string(charbuf, 0, charbuf.Length);
         }
 
-        public string Decrypt(string tokstr)
+        public string Decrypt(string tokenstr)
         {
             int[] masks = { (mask >> 24) & 0xff, (mask >> 16) & 0xff, (mask >> 8) & 0xff, mask & 0xff };
-            int len = tokstr.Length / 2;
+            int len = tokenstr.Length / 2;
             Text str = new Text(256);
             int p = 0;
             for (int i = 0; i < len; i++)
@@ -72,7 +78,7 @@ namespace Greatbone.Core
                 // reordering
 
                 // transform to byte
-                int b = (byte)(Dv(tokstr[p++]) << 4 | Dv(tokstr[p++]));
+                int b = (byte)(Dv(tokenstr[p++]) << 4 | Dv(tokenstr[p++]));
 
                 // masking
                 str.Accept((byte)(b ^ masks[i % 4]));
@@ -94,7 +100,7 @@ namespace Greatbone.Core
             return 0;
         }
 
-        public void SetCookieHeader(WebActionContext ac, IToken tok)
+        public void SetCookieHeader(WebActionContext ac, IData tok)
         {
             StringBuilder sb = new StringBuilder("Bearer=");
             string tokstr = Encrypt(tok);
@@ -128,9 +134,9 @@ namespace Greatbone.Core
     ///
     /// The authentication logic for web service.
     ///
-    public class WebAuth<T> : WebAuth where T : IToken, new()
+    public class WebAuthent<T> : WebAuthent where T : IData, new()
     {
-        public WebAuth(int mask, int order, int maxage = 0, string signon = "/signon") : base(mask, order, maxage, signon) { }
+        public WebAuthent(int mask, int order, int maxage = 0, string signon = "/signon") : base(mask, order, maxage, signon) { }
 
         public override void Authenticate(WebActionContext ac)
         {
@@ -139,8 +145,8 @@ namespace Greatbone.Core
             if (hv != null && hv.StartsWith("Bearer ")) // the Bearer scheme
             {
                 tokstr = hv.Substring(7);
-                string jstr = Decrypt(tokstr);
-                ac.Token = JsonUtility.StringToObject<T>(jstr);
+                string jsonstr = Decrypt(tokstr);
+                ac.Token = JsonUtility.StringToObject<T>(jsonstr);
             }
             else if (ac.Cookies.TryGetValue("Bearer", out tokstr))
             {

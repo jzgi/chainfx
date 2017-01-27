@@ -19,7 +19,7 @@ namespace Greatbone.Sample
                 queue = false
             };
 
-            WebAuth<Token> auth = new WebAuth<Token>(0x4a78be76, 0x1f0335e2);
+            WebAuthent<Token> auth = new WebAuthent<Token>(0x4a78be76, 0x1f0335e2);
 
             List<WebService> svcs = new List<WebService>(4);
 
@@ -33,7 +33,7 @@ namespace Greatbone.Sample
 #if !DEBUG
             cfg.TryLoad();
 #endif
-            if (cfg.File != false) svcs.Add(new ShopService(cfg) { Auth = auth });
+            if (cfg.File != false) svcs.Add(new ShopService(cfg) { Authent = auth });
 
             cfg = new WebConfig("comm")
             {
@@ -44,7 +44,7 @@ namespace Greatbone.Sample
             cfg.TryLoad();
 #endif
 
-            if (cfg.File != false) svcs.Add(new CommService(cfg) { Auth = auth });
+            if (cfg.File != false) svcs.Add(new CommService(cfg) { Authent = auth });
 
             WebService.Run(svcs);
         }

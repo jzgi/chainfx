@@ -5,7 +5,7 @@ namespace Greatbone.Sample
     ///
     /// An administrator's login.
     ///
-    public class Token : IToken
+    public class Token : IData
     {
         // roles
         const short marketing = 1, accounting = 2, customer_service = 4;

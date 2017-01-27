@@ -3,7 +3,7 @@ using Greatbone.Core;
 
 namespace Greatbone.Sample
 {
-    public class CommService : WebService
+    public class CommService : AbstService
     {
         readonly WebClient WeiXin = new WebClient("weixin", "https://api.weixin.qq.com");
 

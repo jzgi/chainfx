@@ -29,7 +29,7 @@ namespace Greatbone.Sample
         [Check]
         public async Task inbox(WebActionContext ac, string arg)
         {
-            IToken tok = ac.Token;
+            Token tok = (Token)ac.Token;
             string userid = ac.Key;
             Chat chat = null;
 

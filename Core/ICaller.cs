@@ -5,7 +5,7 @@
     ///
     public interface ICaller
     {
-        IToken Token { get; }
+        IData Token { get; }
 
         string TokenStr { get; }
 

@@ -161,7 +161,7 @@ namespace Greatbone.Core
 
         public WebConfig Config => (WebConfig)context;
 
-        public WebAuth Auth { get; set; }
+        public WebAuthent Authent { get; set; }
 
         internal WebCache Cache => cache;
 
@@ -225,11 +225,11 @@ namespace Greatbone.Core
             string path = req.Path.Value;
 
             // authentication
-            if (Auth != null)
+            if (Authent != null)
             {
                 try
                 {
-                    Auth.Authenticate(ac);
+                    Authent.Authenticate(ac);
                 }
                 catch (Exception e)
                 {

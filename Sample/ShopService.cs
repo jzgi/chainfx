@@ -10,7 +10,7 @@ namespace Greatbone.Sample
     ///
     /// The shop operation service.
     ///
-    public class ShopService : WebService
+    public class ShopService : AbstService
     {
         static readonly WebClient WeiXin = new WebClient("wechat", "http://sh.api.weixin.qq.com");
 
@@ -175,7 +175,7 @@ namespace Greatbone.Sample
                         if (credential.Equals(tok.subtype))
                         {
                             // set cookie
-                            string tokstr = Service.Auth.Encrypt(tok);
+                            string tokstr = Service.Authent.Encrypt(tok);
                             ac.SetHeader("Set-Cookie", tokstr);
                             ac.SetHeader("Location", "");
                             ac.Reply(303); // see other (redirect)
