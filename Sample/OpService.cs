@@ -71,37 +71,6 @@ namespace Greatbone.Sample
         }
 
 
-        ///
-        /// Get items grouped by shop
-        ///
-        /// <code>
-        /// GET /items
-        /// </code>
-        ///
-        public void shopdetails(WebActionContext ac)
-        {
-            string shopid = ac.Key;
-
-            using (var dc = Service.NewDbContext())
-            {
-                // shops
-
-
-                // items
-
-                DbSql sql = new DbSql("SELECT ").columnlst(Item.Empty)._("FROM items WHERE @shopid = @1 AND NOT disabled");
-                if (dc.Query(sql.ToString(), p => p.Set(shopid)))
-                {
-                    var items = dc.ToArray<Item>();
-                    ac.ReplyPage(200, "", main =>
-                    {
-                    });
-                }
-                else
-                    ac.ReplyPage(200, "没有记录", main => { });
-            }
-        }
-
         public async Task pay(WebActionContext ac)
         {
             // store backet to db

@@ -307,39 +307,35 @@ namespace Greatbone.Core
         /// the cached response is to be considered stale after its age is greater than the specified number of seconds.
         public int MaxAge { get; internal set; }
 
-        public void Reply(int status, IContent cont = null, bool? pub = null, int maxage = 60)
+        public void Reply(int status, IContent content = null, bool? pub = null, int maxage = 60)
         {
             Status = status;
-            Content = cont;
+            Content = content;
             Pub = pub;
             MaxAge = maxage;
         }
 
         public void Reply(int status, IModel model, bool? pub = null, int maxage = 60)
         {
-            Response.StatusCode = status;
-            // Content = content;
+            Status = status;
+            Content = model.Dump();
             Pub = pub;
             MaxAge = maxage;
         }
 
-        public void Reply(int status, string str, bool? pub = null, int maxage = 60)
+        public void Reply(int status, string text, bool? pub = null, int maxage = 60)
         {
-            TextContent cont = new TextContent(true);
-            cont.Add(str);
+            TextContent content = new TextContent(true);
+            content.Add(text);
 
             // set response states
             Status = status;
-            Content = cont;
+            Content = content;
             Pub = pub;
             MaxAge = maxage;
         }
 
-        public void ReplyFile(int status, string file, bool? pub = true, int maxage = 3600)
-        {
-        }
-
-        static readonly TypeInfo UnType = typeof(IData).GetTypeInfo();
+        static readonly TypeInfo ObjectType = typeof(IData).GetTypeInfo();
 
         static readonly TypeInfo ArrayType = typeof(IData[]).GetTypeInfo();
 
@@ -351,7 +347,7 @@ namespace Greatbone.Core
 
             JsonContent cont = new JsonContent();
 
-            if (UnType.IsAssignableFrom(typ))
+            if (ObjectType.IsAssignableFrom(typ))
             {
                 cont.Put(null, (IData)data, flags);
             }

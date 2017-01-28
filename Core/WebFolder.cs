@@ -30,8 +30,8 @@ namespace Greatbone.Core
         // sub folders, if any
         internal Roll<WebFolder> subs;
 
-        // variable-key hub folder
-        internal WebFolder variablehub;
+        // the variable-key hub folder, if any
+        internal WebFolder varsub;
 
         protected WebFolder(WebFolderContext context) : base(null)
         {
@@ -82,7 +82,7 @@ namespace Greatbone.Core
             }
             // create instance by reflection
             Type typ = typeof(F);
-            ConstructorInfo ci = typ.GetConstructor(new[] {typeof(WebFolderContext)});
+            ConstructorInfo ci = typ.GetConstructor(new[] { typeof(WebFolderContext) });
             if (ci == null)
             {
                 throw new WebException(typ + " missing WebFolderContext");
@@ -91,13 +91,13 @@ namespace Greatbone.Core
             {
                 name = name,
                 State = state,
-                Variable = false,
+                Var = false,
                 Parent = this,
                 Level = Level + 1,
                 Directory = (Parent == null) ? name : Path.Combine(Parent.Directory, name),
                 Service = Service
             };
-            F folder = (F) ci.Invoke(new object[] {ctx});
+            F folder = (F)ci.Invoke(new object[] { ctx });
             subs.Add(folder);
 
             return folder;
@@ -107,7 +107,7 @@ namespace Greatbone.Core
 
         public Roll<WebFolder> Subs => subs;
 
-        public WebFolder VariableHub => variablehub;
+        public WebFolder VarSub => varsub;
 
         ///
         /// Make a variable-key subdirectory.
@@ -118,7 +118,7 @@ namespace Greatbone.Core
 
             // create instance
             Type typ = typeof(F);
-            ConstructorInfo ci = typ.GetConstructor(new[] {typeof(WebFolderContext)});
+            ConstructorInfo ci = typ.GetConstructor(new[] { typeof(WebFolderContext) });
             if (ci == null)
             {
                 throw new WebException(typ + " missing WebFolderContext");
@@ -127,14 +127,14 @@ namespace Greatbone.Core
             {
                 name = _VAR_,
                 State = state,
-                Variable = true,
+                Var = true,
                 Parent = this,
                 Level = Level + 1,
                 Directory = (Parent == null) ? _VAR_ : Path.Combine(Parent.Directory, _VAR_),
                 Service = Service
             };
-            F folder = (F) ci.Invoke(new object[] {ctx});
-            variablehub = folder;
+            F folder = (F)ci.Invoke(new object[] { ctx });
+            varsub = folder;
 
             return folder;
         }
@@ -143,7 +143,7 @@ namespace Greatbone.Core
 
         public object State => context.State;
 
-        public bool Variable => context.Variable;
+        public bool Var => context.Var;
 
         public string Directory => context.Directory;
 
@@ -214,10 +214,10 @@ namespace Greatbone.Core
             {
                 return child.Locate(ref relative, ac);
             }
-            if (variablehub != null) // variable-key
+            if (varsub != null) // variable-key
             {
-                ac.ChainKey(key, variablehub);
-                return variablehub.Locate(ref relative, ac);
+                ac.ChainKey(key, varsub);
+                return varsub.Locate(ref relative, ac);
             }
 
             ac.Reply(404); // not found

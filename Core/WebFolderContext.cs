@@ -13,7 +13,7 @@ namespace Greatbone.Core
 
         public object State { get; internal set; }
 
-        public bool Variable { get; internal set; }
+        public bool Var { get; internal set; }
 
         public int Level { get; internal set; }
 
