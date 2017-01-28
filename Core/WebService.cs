@@ -135,11 +135,11 @@ namespace Greatbone.Core
         {
             Debug.Write("service");
             Debug.Write(Name);
-            if (children != null)
+            if (subs != null)
             {
-                for (int i = 0; i < children.Count; i++)
+                for (int i = 0; i < subs.Count; i++)
                 {
-                    WebFolder child = children[i];
+                    WebFolder child = subs[i];
                     Debug.Write("SUB " + child.Name);
                 }
             }

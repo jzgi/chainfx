@@ -8,9 +8,9 @@ using static Greatbone.Core.FlagsUtility;
 namespace Greatbone.Sample
 {
     ///
-    /// The shop operation service.
+    /// The business operation service.
     ///
-    public class ShopService : AbstService
+    public class OpService : AbstService
     {
         static readonly WebClient WeiXin = new WebClient("wechat", "http://sh.api.weixin.qq.com");
 
@@ -20,13 +20,15 @@ namespace Greatbone.Sample
 
         readonly WebAction[] _new;
 
-        public ShopService(WebConfig cfg) : base(cfg)
+        public OpService(WebConfig cfg) : base(cfg)
         {
-            Make<CustomerFolder>("customer");
+            Make<ShopFolder>("shop");
+
+            Make<BuyerFolder>("buyer");
 
             Make<OrderFolder>("order");
-            
-            MakeVariable<ShopVariableFolder>();
+
+            MakeVar<ShopVarFolder>();
 
             baskets = new ConcurrentDictionary<string, List<OrderLine>>();
 
@@ -308,13 +310,13 @@ namespace Greatbone.Sample
         [CheckAdmin]
         public virtual void mgmt(WebActionContext ac)
         {
-            if (Children != null)
+            if (Subs != null)
             {
                 ac.ReplyPage(200, "模块管理", a =>
                     {
-                        for (int i = 0; i < Children.Count; i++)
+                        for (int i = 0; i < Subs.Count; i++)
                         {
-                            WebFolder child = Children[i];
+                            WebFolder child = Subs[i];
                         }
                     },
                     true);

@@ -25,7 +25,7 @@ namespace Greatbone.Sample
 
             WebConfig cfg;
 
-            cfg = new WebConfig("shop")
+            cfg = new WebConfig("op")
             {
                 addresses = "http://127.0.0.1:8080",
                 db = pg
@@ -33,7 +33,7 @@ namespace Greatbone.Sample
 #if !DEBUG
             cfg.TryLoad();
 #endif
-            if (cfg.File != false) svcs.Add(new ShopService(cfg) { Authent = auth });
+            if (cfg.File != false) svcs.Add(new OpService(cfg) { Authent = auth });
 
             cfg = new WebConfig("comm")
             {

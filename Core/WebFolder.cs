@@ -28,10 +28,10 @@ namespace Greatbone.Core
         readonly WebAction defaction;
 
         // sub folders, if any
-        internal Roll<WebFolder> children;
+        internal Roll<WebFolder> subs;
 
-        // variable-key subfolder
-        internal WebFolder variable;
+        // variable-key hub folder
+        internal WebFolder variablehub;
 
         protected WebFolder(WebFolderContext context) : base(null)
         {
@@ -76,9 +76,9 @@ namespace Greatbone.Core
         {
             if (Level >= Nesting) throw new WebException("nesting levels");
 
-            if (children == null)
+            if (subs == null)
             {
-                children = new Roll<WebFolder>(16);
+                subs = new Roll<WebFolder>(16);
             }
             // create instance by reflection
             Type typ = typeof(F);
@@ -91,28 +91,28 @@ namespace Greatbone.Core
             {
                 name = name,
                 State = state,
-                Var = false,
+                Variable = false,
                 Parent = this,
                 Level = Level + 1,
                 Directory = (Parent == null) ? name : Path.Combine(Parent.Directory, name),
                 Service = Service
             };
             F folder = (F) ci.Invoke(new object[] {ctx});
-            children.Add(folder);
+            subs.Add(folder);
 
             return folder;
         }
 
         public Roll<WebAction> Actions => actions;
 
-        public Roll<WebFolder> Children => children;
+        public Roll<WebFolder> Subs => subs;
 
-        public WebFolder Variable => variable;
+        public WebFolder VariableHub => variablehub;
 
         ///
         /// Make a variable-key subdirectory.
         ///
-        public F MakeVariable<F>(object state = null) where F : WebFolder, IVariable
+        public F MakeVar<F>(object state = null) where F : WebFolder, IVar
         {
             if (Level >= Nesting) throw new WebException("nesting levels");
 
@@ -127,14 +127,14 @@ namespace Greatbone.Core
             {
                 name = _VAR_,
                 State = state,
-                Var = true,
+                Variable = true,
                 Parent = this,
                 Level = Level + 1,
                 Directory = (Parent == null) ? _VAR_ : Path.Combine(Parent.Directory, _VAR_),
                 Service = Service
             };
             F folder = (F) ci.Invoke(new object[] {ctx});
-            variable = folder;
+            variablehub = folder;
 
             return folder;
         }
@@ -143,7 +143,7 @@ namespace Greatbone.Core
 
         public object State => context.State;
 
-        public bool IsVar => context.Var;
+        public bool Variable => context.Variable;
 
         public string Directory => context.Directory;
 
@@ -210,14 +210,14 @@ namespace Greatbone.Core
             string key = relative.Substring(0, slash);
             relative = relative.Substring(slash + 1); // adjust relative
             WebFolder child;
-            if (children != null && children.TryGet(key, out child)) // chiled
+            if (subs != null && subs.TryGet(key, out child)) // chiled
             {
                 return child.Locate(ref relative, ac);
             }
-            if (variable != null) // variable-key
+            if (variablehub != null) // variable-key
             {
-                ac.ChainKey(key, variable);
-                return variable.Locate(ref relative, ac);
+                ac.ChainKey(key, variablehub);
+                return variablehub.Locate(ref relative, ac);
             }
 
             ac.Reply(404); // not found

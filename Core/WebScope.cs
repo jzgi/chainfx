@@ -31,7 +31,7 @@ namespace Greatbone.Core
                 {
                     chklst = new List<CheckAttribute>(8);
                 }
-                chk.Controller = this;
+                chk.Scope = this;
                 chklst.Add(chk);
             }
             this.checks = chklst?.ToArray();

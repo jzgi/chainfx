@@ -5,9 +5,9 @@ namespace Greatbone.Sample
     ///
     /// /customer/-id-/
     ///
-    public class CustomerVariableFolder : WebFolder, IVariable
+    public class BuyerVarFolder : WebFolder, IVar
     {
-        public CustomerVariableFolder(WebFolderContext dc) : base(dc)
+        public BuyerVarFolder(WebFolderContext dc) : base(dc)
         {
         }
 

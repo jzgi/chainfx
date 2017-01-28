@@ -7,12 +7,12 @@ namespace Greatbone.Sample
 {
     /// Each key is tne openid for a buyer or shop
     ///
-    public class CommVariableFolder : WebFolder, IVariable
+    public class CommVarFolder : WebFolder, IVar
     {
 
         readonly ConcurrentDictionary<string, Chat> chats;
 
-        public CommVariableFolder(WebFolderContext fc) : base(fc)
+        public CommVarFolder(WebFolderContext fc) : base(fc)
         {
         }
 

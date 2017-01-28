@@ -3,13 +3,13 @@
 namespace Greatbone.Sample
 {
     ///
-    /// /order/
+    /// /customer/
     ///
-    public class OrderFolder : WebFolder
+    public class BuyerFolder : WebFolder
     {
-        public OrderFolder(WebFolderContext fc) : base(fc)
+        public BuyerFolder(WebFolderContext fc) : base(fc)
         {
-            MakeVar<OrderVarFolder>();
+            MakeVar<BuyerVarFolder>();
         }
 
         ///

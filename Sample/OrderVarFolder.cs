@@ -5,9 +5,9 @@ namespace Greatbone.Sample
     ///
     /// /order/-id-/
     ///
-    public class OrderVariableFolder : WebFolder, IVariable
+    public class OrderVarFolder : WebFolder, IVar
     {
-        public OrderVariableFolder(WebFolderContext dc) : base(dc)
+        public OrderVarFolder(WebFolderContext dc) : base(dc)
         {
         }
 

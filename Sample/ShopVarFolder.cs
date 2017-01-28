@@ -3,13 +3,13 @@ using Greatbone.Core;
 namespace Greatbone.Sample
 {
     ///
-    /// The shop variable folder.
+    /// /shop/-id-/
     ///
-    public class ShopVariableFolder : WebFolder, IVariable
+    public class ShopVarFolder : WebFolder, IVar
     {
         readonly WebAction _re_menu_;
 
-        public ShopVariableFolder(WebFolderContext dc) : base(dc)
+        public ShopVarFolder(WebFolderContext dc) : base(dc)
         {
             // order functions
             Make<OrderFolder>("myorder");
