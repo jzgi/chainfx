@@ -29,10 +29,7 @@ namespace Greatbone.Sample
                 DbSql sql = new DbSql("SELECT ").columnlst(Item.Empty)._("FROM shops WHERE x = @1 AND NOT disabled");
                 if (dc.Query(sql, p => p.Set(shopid)))
                 {
-                    var items = dc.ToArray<Item>();
-                    ac.ReplyPage(200, "", main =>
-                    {
-                    });
+                    ac.Reply(200, dc.Dump());
                 }
                 else
                     ac.ReplyPage(200, "没有记录", main => { });

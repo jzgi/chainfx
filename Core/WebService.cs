@@ -15,7 +15,6 @@ using Microsoft.AspNetCore.Http.Features;
 using Microsoft.AspNetCore.Server.Kestrel;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
-using Npgsql;
 
 namespace Greatbone.Core
 {
@@ -129,7 +128,6 @@ namespace Greatbone.Core
             }
 
         }
-
 
         public void Tree()
         {
@@ -284,21 +282,10 @@ namespace Greatbone.Core
             ((WebActionContext)context).Dispose();
         }
 
+
         public DbContext NewDbContext()
         {
-            DbConfig cfg = Config.db;
-            NpgsqlConnectionStringBuilder builder = new NpgsqlConnectionStringBuilder()
-            {
-                Host = cfg.host,
-                Port = cfg.port,
-                Database = cfg.database ?? Name,
-                Username = cfg.username,
-                Password = cfg.password,
-            };
-            builder.Add("Read Buffer Size", 1024 * 32);
-            builder.Add("Write Buffer Size", 1024 * 32);
-            builder.Add("No Reset On Close", true); // increase performance
-            return new DbContext(Config.shard, builder);
+            return new DbContext(Config.shard, Config.ConnectionString);
         }
 
         //

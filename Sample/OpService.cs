@@ -66,7 +66,6 @@ namespace Greatbone.Sample
                 }
 
                 // display index.html
-                ac.ReplyFile(200, "index.html");
             }
         }
 

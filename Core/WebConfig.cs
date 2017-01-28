@@ -1,4 +1,6 @@
-﻿namespace Greatbone.Core
+﻿using System.Text;
+
+namespace Greatbone.Core
 {
     ///
     /// The configurative settings for a web service.
@@ -35,6 +37,9 @@
 
         /// Application-defined properties.
         public JObj extra;
+
+        // connection string
+        volatile string connstr;
 
         /// Let the file directory name same as the service name.
         public override string Directory => name;
@@ -85,6 +90,28 @@
                 }
             }
             return (File = false).Value;
+        }
+
+        public string ConnectionString
+        {
+            get
+            {
+                if (connstr == null)
+                {
+                    StringBuilder sb = new StringBuilder();
+                    sb.Append("Host=").Append(db.host);
+                    sb.Append(";Port=").Append(db.port);
+                    sb.Append(";Database=").Append(db.database ?? Name);
+                    sb.Append(";Username=").Append(db.username);
+                    sb.Append(";Password=").Append(db.password);
+                    sb.Append(";Read Buffer Size=").Append(1024 * 32);
+                    sb.Append(";Write Buffer Size=").Append(1024 * 32);
+                    sb.Append(";No Reset On Close=").Append(true);
+
+                    connstr = sb.ToString();
+                }
+                return connstr;
+            }
         }
     }
 }

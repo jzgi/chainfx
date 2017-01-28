@@ -394,9 +394,9 @@ namespace Greatbone.Core
 
         public D ToObject<D>(byte flags = 0) where D : IData, new()
         {
-            D dat = new D();
-            dat.Load(this, flags);
-            return dat;
+            D obj = new D();
+            obj.Load(this, flags);
+            return obj;
         }
 
         public IContent Dump()

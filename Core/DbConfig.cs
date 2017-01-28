@@ -1,4 +1,6 @@
-﻿namespace Greatbone.Core
+﻿using System.Text;
+
+namespace Greatbone.Core
 {
     ///
     /// DB configuration embedded in WebConfig.

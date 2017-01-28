@@ -10,7 +10,7 @@ namespace Greatbone.Core
     ///
     /// An environment for database operations based on current service.
     ///
-    public class DbContext : IDisposable, ISourceSet
+    public class DbContext : IDisposable, IModel, ISourceSet
     {
         readonly string shard;
 
@@ -24,13 +24,15 @@ namespace Greatbone.Core
 
         NpgsqlDataReader reader;
 
+        bool un;
+
         bool disposed;
 
 
-        internal DbContext(string shard, NpgsqlConnectionStringBuilder builder)
+        internal DbContext(string shard, string connstr)
         {
             this.shard = shard;
-            connection = new NpgsqlConnection(builder);
+            connection = new NpgsqlConnection(connstr);
             command = new NpgsqlCommand();
             parameters = new DbParameters(command.Parameters);
             command.Connection = connection;
@@ -690,6 +692,25 @@ namespace Greatbone.Core
             BufferUtility.Return(content); // back to pool
         }
 
+        public void Dump<R>(ISink<R> snk) where R : ISink<R>
+        {
+            if (un)
+            {
+                ColumnDesc[] cols = new ColumnDesc[reader.FieldCount];
+                for (int i = 0; i < cols.Length; i++)
+                {
+                    cols[i].name = reader.GetName(i);
+                    cols[i].type = reader.GetFieldType(i);
+                }
+            }
+        }
+
+        public IContent Dump()
+        {
+            JsonContent cont = new JsonContent();
+            Dump(cont);
+            return cont;
+        }
 
         public void Dispose()
         {
@@ -701,6 +722,13 @@ namespace Greatbone.Core
                 // indicate that the instance has been disposed.
                 disposed = true;
             }
+        }
+
+        struct ColumnDesc
+        {
+            internal string name;
+
+            internal Type type;
         }
     }
 }
