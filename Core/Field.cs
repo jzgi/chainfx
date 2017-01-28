@@ -24,7 +24,7 @@ namespace Greatbone.Core
             this.name = name;
             value = v;
             items = 1;
-            this.contentbuf = null;
+            contentbuf = null;
             offset = 0;
             count = 0;
             Err = null;

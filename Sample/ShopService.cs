@@ -22,7 +22,10 @@ namespace Greatbone.Sample
 
         public ShopService(WebConfig cfg) : base(cfg)
         {
-            Make<BasketFolder>("my");
+            Make<CustomerFolder>("customer");
+
+            Make<OrderFolder>("order");
+            
             MakeVariable<ShopVariableFolder>();
 
             baskets = new ConcurrentDictionary<string, List<OrderLine>>();

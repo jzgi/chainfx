@@ -3,11 +3,11 @@ using Greatbone.Core;
 namespace Greatbone.Sample
 {
     ///
-    /// /-shopid-/myorder/-orderid-/
+    /// /order/-id-/
     ///
-    public class MyOrderVariableFolder : WebFolder, IVariable
+    public class OrderVariableFolder : WebFolder, IVariable
     {
-        public MyOrderVariableFolder(WebFolderContext dc) : base(dc)
+        public OrderVariableFolder(WebFolderContext dc) : base(dc)
         {
         }
 

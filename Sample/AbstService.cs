@@ -10,10 +10,5 @@ namespace Greatbone.Sample
         {
             workers = JsonUtility.FileToArray<Worker>(cfg.GetFilePath("$workers.json"));
         }
-
-        public void @default(WebActionContext ac)
-        {
-
-        }
     }
 }
