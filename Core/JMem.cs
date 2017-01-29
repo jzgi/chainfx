@@ -6,7 +6,7 @@ namespace Greatbone.Core
     ///
     /// A JSON member that is either a value, or a property if with the name.
     ///
-    public struct JMem : IRollable
+    public struct JMem : IKeyed<string>
     {
         // property name, if not null
         readonly string name;
@@ -75,7 +75,7 @@ namespace Greatbone.Core
             numv = v;
         }
 
-        public string Name => name;
+        public string Key => name;
 
         public bool IsProperty => name != null;
 
@@ -83,7 +83,7 @@ namespace Greatbone.Core
         {
             if (v.type == JType.Object)
             {
-                return (JObj) v.refv;
+                return (JObj)v.refv;
             }
             return null;
         }
@@ -92,7 +92,7 @@ namespace Greatbone.Core
         {
             if (v.type == JType.Array)
             {
-                return (JArr) v.refv;
+                return (JArr)v.refv;
             }
             return null;
         }
@@ -160,7 +160,7 @@ namespace Greatbone.Core
         {
             if (v.type == JType.String)
             {
-                string str = (string) v.refv;
+                string str = (string)v.refv;
                 DateTime dt;
                 if (TextUtility.TryParseDate(str, out dt)) return dt;
             }
@@ -171,7 +171,7 @@ namespace Greatbone.Core
         {
             if (v.type == JType.String)
             {
-                string str = (string) v.refv;
+                string str = (string)v.refv;
                 if (str != null)
                 {
                     int comma = str.IndexOf(',');
@@ -190,11 +190,11 @@ namespace Greatbone.Core
             return default(NpgsqlPoint);
         }
 
-        public static implicit operator char[](JMem v)
+        public static implicit operator char[] (JMem v)
         {
             if (v.type == JType.String)
             {
-                string str = (string) v.refv;
+                string str = (string)v.refv;
                 return str.ToCharArray();
             }
             return null;
@@ -204,16 +204,16 @@ namespace Greatbone.Core
         {
             if (v.type == JType.String)
             {
-                return (string) v.refv;
+                return (string)v.refv;
             }
             return null;
         }
 
-        public static implicit operator byte[](JMem v)
+        public static implicit operator byte[] (JMem v)
         {
             if (v.type == JType.String)
             {
-                return (byte[]) v.refv;
+                return (byte[])v.refv;
             }
             return null;
         }

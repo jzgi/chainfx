@@ -11,7 +11,7 @@ namespace Greatbone.Core
     {
         readonly WebService service;
 
-        readonly string name;
+        readonly string key;
 
         readonly bool async;
 
@@ -31,7 +31,7 @@ namespace Greatbone.Core
 
         internal WebEvent(WebService service, MethodInfo mi, bool async, bool arg)
         {
-            this.name = mi.Name;
+            this.key = mi.Name;
             this.async = async;
             this.arg = arg;
 
@@ -61,7 +61,7 @@ namespace Greatbone.Core
 
         public WebService Service => service;
 
-        public string Name => name;
+        public string Key => key;
 
         public bool Async => async;
 
@@ -95,7 +95,7 @@ namespace Greatbone.Core
 
         public override string ToString()
         {
-            return Name;
+            return Key;
         }
     }
 }

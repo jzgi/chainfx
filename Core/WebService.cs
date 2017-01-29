@@ -46,7 +46,7 @@ namespace Greatbone.Core
             // adjust configuration
             cfg.Service = this;
 
-            moniker = (cfg.shard == null) ? cfg.name : cfg.name + "-" + cfg.shard;
+            moniker = (cfg.shard == null) ? cfg.key : cfg.key + "-" + cfg.shard;
 
             // setup logging 
             LoggerFactory factory = new LoggerFactory();
@@ -108,7 +108,7 @@ namespace Greatbone.Core
                 for (int i = 0; i < refs.Count; i++)
                 {
                     JMem jmem = refs[i];
-                    string name = jmem.Name; // name is a service moniker
+                    string name = jmem.Key; // name is a service moniker
                     string addr = jmem;
                     if (cluster == null)
                     {
@@ -132,19 +132,19 @@ namespace Greatbone.Core
         public void Tree()
         {
             Debug.Write("service");
-            Debug.Write(Name);
+            Debug.Write(Key);
             if (subs != null)
             {
                 for (int i = 0; i < subs.Count; i++)
                 {
                     WebFolder child = subs[i];
-                    Debug.Write("SUB " + child.Name);
+                    Debug.Write("SUB " + child.Key);
                 }
             }
             for (int i = 0; i < Actions.Count; i++)
             {
                 WebAction action = Actions[i];
-                Debug.Write("ACT " + action.Name);
+                Debug.Write("ACT " + action.Key);
             }
         }
 
@@ -297,7 +297,7 @@ namespace Greatbone.Core
             for (int i = 0; i < cluster.Count; i++)
             {
                 WebClient cli = cluster[i];
-                if (cli.Name.Equals(svcid)) return cli;
+                if (cli.Key.Equals(svcid)) return cli;
             }
             return null;
         }
@@ -359,7 +359,7 @@ namespace Greatbone.Core
 
             OnStart();
 
-            Debug.WriteLine(Name + " -> " + Config.addresses + " started");
+            Debug.WriteLine(Key + " -> " + Config.addresses + " started");
 
             // start helper threads
 
@@ -433,7 +433,7 @@ namespace Greatbone.Core
             logWriter.Flush();
             logWriter.Dispose();
 
-            Console.Write(Name);
+            Console.Write(Key);
             Console.WriteLine(".");
         }
 

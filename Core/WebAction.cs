@@ -68,7 +68,7 @@ namespace Greatbone.Core
 
         public WebFolder Folder => folder;
 
-        public string Name => name;
+        public string Key => name;
 
         public bool Async => async;
 

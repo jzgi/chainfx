@@ -12,8 +12,6 @@ namespace Greatbone.Core
         // if multipart
         readonly bool mp;
 
-        bool one;
-
         public Form(bool mp, int capacity = 16) : base(capacity)
         {
             this.mp = mp;
@@ -26,7 +24,7 @@ namespace Greatbone.Core
         ///
         public byte[] Buffer { get; internal set; }
 
-        public bool One => one;
+        public bool One => true;
 
         public void Add(string name, string v)
         {

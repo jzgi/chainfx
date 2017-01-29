@@ -16,8 +16,8 @@ namespace Greatbone.Sample
         ///
         public void @default(WebActionContext ac)
         {
-            string shopid = ac.Key;
-            int id = ac.Key;
+            string shopid = ac.Var;
+            int id = ac.Var;
 
             using (var dc = Service.NewDbContext())
             {
@@ -37,8 +37,8 @@ namespace Greatbone.Sample
 
         public void cannel(WebActionContext ac)
         {
-            string shopid = ac.Key;
-            int orderid = ac.Key;
+            string shopid = ac.Var;
+            int orderid = ac.Var;
 
             using (var dc = Service.NewDbContext())
             {

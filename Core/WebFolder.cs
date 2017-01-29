@@ -10,7 +10,7 @@ namespace Greatbone.Core
     ///
     /// A web folder realizes a virtual folder containing static/dynamic resources.
     ///
-    public abstract class WebFolder : WebScope, IRollable
+    public abstract class WebFolder : WebScope, IKeyed<string>
     {
         // max nesting levels
         const int Nesting = 4;
@@ -62,7 +62,7 @@ namespace Greatbone.Core
                 else continue;
 
                 actions.Add(atn);
-                if (atn.Name.Equals("default"))
+                if (atn.Key.Equals("default"))
                 {
                     defaction = atn;
                 }
@@ -89,7 +89,7 @@ namespace Greatbone.Core
             }
             WebFolderContext ctx = new WebFolderContext
             {
-                name = name,
+                key = name,
                 State = state,
                 Var = false,
                 Parent = this,
@@ -125,7 +125,7 @@ namespace Greatbone.Core
             }
             WebFolderContext ctx = new WebFolderContext
             {
-                name = _VAR_,
+                key = _VAR_,
                 State = state,
                 Var = true,
                 Parent = this,
@@ -139,7 +139,7 @@ namespace Greatbone.Core
             return folder;
         }
 
-        public string Name => context.Name;
+        public string Key => context.Key;
 
         public object State => context.State;
 
@@ -313,7 +313,7 @@ namespace Greatbone.Core
             byte[] bytes = File.ReadAllBytes(path);
             StaticContent cont = new StaticContent(bytes)
             {
-                Name = filename,
+                Key = filename,
                 Type = ctyp,
                 Modified = modified
             };

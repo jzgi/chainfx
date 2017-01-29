@@ -7,9 +7,9 @@ namespace Greatbone.Core
     ///
     public class WebFolderContext
     {
-        internal string name;
+        internal string key;
 
-        public string Name => name;
+        public string Key => key;
 
         public object State { get; internal set; }
 

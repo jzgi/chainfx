@@ -27,7 +27,7 @@ namespace Greatbone.Sample
 
             cfg = new WebConfig("op")
             {
-                addresses = "http://127.0.0.1:8080",
+                addresses = "http://localhost:8080",
                 db = pg
             };
 #if !DEBUG
@@ -37,7 +37,7 @@ namespace Greatbone.Sample
 
             cfg = new WebConfig("comm")
             {
-                addresses = "http://127.0.0.1:8081",
+                addresses = "http://localhost:8081",
                 db = pg
             };
 #if !DEBUG

@@ -354,31 +354,31 @@ namespace Greatbone.Core
                 JType t = mem.type;
                 if (t == JType.Array)
                 {
-                    snk.Put(mem.Name, (JArr)mem);
+                    snk.Put(mem.Key, (JArr)mem);
                 }
                 else if (t == JType.Object)
                 {
-                    snk.Put(mem.Name, (JObj)mem);
+                    snk.Put(mem.Key, (JObj)mem);
                 }
                 else if (t == JType.String)
                 {
-                    snk.Put(mem.Name, (string)mem);
+                    snk.Put(mem.Key, (string)mem);
                 }
                 else if (t == JType.Number)
                 {
-                    snk.Put(mem.Name, (JNumber)mem);
+                    snk.Put(mem.Key, (JNumber)mem);
                 }
                 else if (t == JType.True)
                 {
-                    snk.Put(mem.Name, true);
+                    snk.Put(mem.Key, true);
                 }
                 else if (t == JType.False)
                 {
-                    snk.Put(mem.Name, false);
+                    snk.Put(mem.Key, false);
                 }
                 else if (t == JType.Null)
                 {
-                    snk.PutNull(mem.Name);
+                    snk.PutNull(mem.Key);
                 }
             }
         }

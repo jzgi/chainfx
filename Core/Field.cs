@@ -3,9 +3,9 @@ using NpgsqlTypes;
 
 namespace Greatbone.Core
 {
-    public struct Field : IRollable
+    public struct Field : IKeyed<string>
     {
-        readonly string name;
+        readonly string key;
 
         // can be string or string[]
         object value;
@@ -19,9 +19,9 @@ namespace Greatbone.Core
 
         readonly int count;
 
-        internal Field(string name, string v)
+        internal Field(string key, string v)
         {
-            this.name = name;
+            this.key = key;
             value = v;
             items = 1;
             contentbuf = null;
@@ -30,9 +30,9 @@ namespace Greatbone.Core
             Err = null;
         }
 
-        internal Field(string name, string filename, byte[] contentbuf, int offset, int count)
+        internal Field(string key, string filename, byte[] contentbuf, int offset, int count)
         {
-            this.name = name;
+            this.key = key;
             value = filename;
             items = 1;
             this.contentbuf = contentbuf;
@@ -41,7 +41,7 @@ namespace Greatbone.Core
             Err = null;
         }
 
-        public string Name => name;
+        public string Key => key;
 
         public string Err { get; set; }
 

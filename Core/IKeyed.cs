@@ -1,10 +1,12 @@
+using System;
+
 namespace Greatbone.Core
 {
     ///
     /// An object capable of being a roll structure member.
     ///
-    public interface IRollable
+    public interface IKeyed<K> where K : IComparable<K>
     {
-        string Name { get; }
+        K Key { get; }
     }
 }

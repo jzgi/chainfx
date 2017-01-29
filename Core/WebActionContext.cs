@@ -26,23 +26,23 @@ namespace Greatbone.Core
         public string TokenText { get; internal set; }
 
         // two levels of variable keys
-        Var key, key2;
+        Var var, var2;
 
         internal void ChainKey(string key, WebFolder folder)
         {
-            if (this.key.Empty)
+            if (this.var.Empty)
             {
-                this.key = new Var(key, folder);
+                this.var = new Var(key, folder);
             }
-            else if (key2.Empty)
+            else if (var2.Empty)
             {
-                key2 = new Var(key, folder);
+                var2 = new Var(key, folder);
             }
         }
 
-        public Var Key => key;
+        public Var Var => var;
 
-        public Var Key2 => key2;
+        public Var Var2 => var2;
 
         //
         // REQUEST
