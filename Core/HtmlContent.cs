@@ -1123,7 +1123,7 @@ namespace Greatbone.Core
             return this;
         }
 
-        public HtmlContent Put<D>(string name, D v, byte flags = 0) where D : IData
+        public HtmlContent Put(string name, IData v, byte flags = 0)
         {
             return this;
         }
@@ -1164,6 +1164,11 @@ namespace Greatbone.Core
         }
 
         public HtmlContent Put<D>(string name, List<D> v, byte flags = 0) where D : IData
+        {
+            throw new NotImplementedException();
+        }
+
+        public HtmlContent Put(string name, IModel v)
         {
             throw new NotImplementedException();
         }

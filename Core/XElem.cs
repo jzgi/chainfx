@@ -28,6 +28,14 @@ namespace Greatbone.Core
 
         public bool Flat { get; set; } = true;
 
+        public bool One
+        {
+            get
+            {
+                throw new NotImplementedException();
+            }
+        }
+
         internal void AddAttribute(string name, string v)
         {
             if (attributes == null)

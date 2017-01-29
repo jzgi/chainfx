@@ -44,50 +44,50 @@ namespace Greatbone.Core
             return this;
         }
 
-        public DbSql setlst<D>(D dat, byte flags = 0) where D : IData
+        public DbSql setlst(IData obj, byte flags = 0)
         {
             list = SetList;
             ordinal = 1;
-            dat.Dump(this, flags);
+            obj.Dump(this, flags);
             return this;
         }
 
-        public DbSql columnlst<D>(D dat, byte flags = 0) where D : IData
+        public DbSql columnlst(IData obj, byte flags = 0)
         {
             list = ColumnList;
             ordinal = 1;
-            dat.Dump(this, flags);
+            obj.Dump(this, flags);
             return this;
         }
 
-        public DbSql parameterlst<D>(D dat, byte flags = 0) where D : IData
+        public DbSql parameterlst(IData obj, byte flags = 0)
         {
             list = ParameterList;
             ordinal = 1;
-            dat.Dump(this, flags);
+            obj.Dump(this, flags);
             return this;
         }
 
-        public DbSql _<D>(D dat, byte flags = 0) where D : IData
+        public DbSql _(IData obj, byte flags = 0)
         {
             Add(" (");
-            columnlst(dat, flags);
+            columnlst(obj, flags);
             Add(")");
             return this;
         }
 
-        public DbSql _VALUES_<D>(D dat, byte flags = 0) where D : IData
+        public DbSql _VALUES_(IData obj, byte flags = 0)
         {
             Add(" VALUES (");
-            parameterlst(dat, flags);
+            parameterlst(obj, flags);
             Add(")");
             return this;
         }
 
-        public DbSql _SET_<D>(D dat, byte flags = 0) where D : IData
+        public DbSql _SET_(IData obj, byte flags = 0)
         {
             Add(" SET ");
-            setlst(dat, flags);
+            setlst(obj, flags);
             return this;
         }
 
@@ -277,7 +277,7 @@ namespace Greatbone.Core
             return this;
         }
 
-        public DbSql Put<D>(string name, D v, byte flags = 0) where D : IData
+        public DbSql Put(string name, IData v, byte flags = 0)
         {
             if (name != null)
             {
@@ -483,6 +483,11 @@ namespace Greatbone.Core
         public override string ToString()
         {
             return new string(charbuf, 0, count);
+        }
+
+        public DbSql Put(string name, IModel v)
+        {
+            throw new NotImplementedException();
         }
     }
 }

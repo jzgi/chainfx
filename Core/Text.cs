@@ -18,6 +18,8 @@ namespace Greatbone.Core
         // number of rest octets
         int rest;
 
+        bool one;
+
         public Text(int capacity = 256)
         {
             buf = new char[capacity];
@@ -26,6 +28,8 @@ namespace Greatbone.Core
         }
 
         public int Count => count;
+
+        public bool One => one;
 
         public void Add(char c)
         {

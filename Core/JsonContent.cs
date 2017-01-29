@@ -19,7 +19,7 @@ namespace Greatbone.Core
         {
         }
 
-        public JsonContent(bool sendable = true, bool pooled = true, int capacity = 8 * 1024) : base(sendable, pooled, capacity)
+        public JsonContent(bool sendable, bool pooled, int capacity = 8 * 1024) : base(sendable, pooled, capacity)
         {
             counts = new int[8];
             level = 0;
@@ -64,41 +64,6 @@ namespace Greatbone.Core
                     Add(c);
                 }
             }
-        }
-
-        //
-        // PUT
-        //
-
-        public void PutArr(Action a)
-        {
-            if (counts[level]++ > 0) Add(',');
-
-            counts[++level] = 0; // enter
-            Add('[');
-
-            a?.Invoke();
-
-            Add(']');
-            level--; // exit
-        }
-
-        public void PutArr(JArr v)
-        {
-            Put(null, v);
-        }
-
-        public void PutObj(Action a)
-        {
-            if (counts[level]++ > 0) Add(',');
-
-            counts[++level] = 0; // enter
-            Add('{');
-
-            a?.Invoke();
-
-            Add('}');
-            level--; // exit
         }
 
         //
@@ -318,7 +283,7 @@ namespace Greatbone.Core
             return this; // ignore ir
         }
 
-        public JsonContent Put<D>(string name, D v, byte flags = 0) where D : IData
+        public JsonContent Put(string name, IData v, byte flags = 0)
         {
             if (counts[level]++ > 0) Add(',');
             if (name != null)
@@ -352,7 +317,7 @@ namespace Greatbone.Core
             return this;
         }
 
-        public JsonContent Put(string name, JObj v)
+        public JsonContent Put(string name, IModel v)
         {
             if (counts[level]++ > 0) Add(',');
             if (name != null)
@@ -370,39 +335,13 @@ namespace Greatbone.Core
             else
             {
                 counts[++level] = 0; // enter
-                Add('{');
+
+                Add(v.One ? '{' : '[');
 
                 v.Dump(this);
 
-                Add('}');
-                level--; // exit
-            }
-            return this;
-        }
+                Add(v.One ? '}' : ']');
 
-        public JsonContent Put(string name, JArr v)
-        {
-            if (counts[level]++ > 0) Add(',');
-            if (name != null)
-            {
-                Add('"');
-                Add(name);
-                Add('"');
-                Add(':');
-            }
-
-            if (v == null)
-            {
-                Add("null");
-            }
-            else
-            {
-                counts[++level] = 0; // enter
-                Add('[');
-
-                v.Dump(this);
-
-                Add(']');
                 level--; // exit
             }
             return this;

@@ -24,7 +24,7 @@ namespace Greatbone.Core
 
         NpgsqlDataReader reader;
 
-        bool un;
+        bool one;
 
         bool disposed;
 
@@ -80,20 +80,21 @@ namespace Greatbone.Core
             ordinal = 0;
         }
 
-        public bool QueryUn(DbSql sql, Action<DbParameters> p = null, bool prepare = true)
+        public bool QueryOne(DbSql sql, Action<DbParameters> p = null, bool prepare = true)
         {
-            bool v = QueryUn(sql.ToString(), p, prepare);
+            bool v = QueryOne(sql.ToString(), p, prepare);
             BufferUtility.Return(sql);
             return v;
         }
 
-        public bool QueryUn(string cmdtext, Action<DbParameters> p = null, bool prepare = true)
+        public bool QueryOne(string cmdtext, Action<DbParameters> p = null, bool prepare = true)
         {
             if (connection.State != ConnectionState.Open)
             {
                 connection.Open();
             }
             Clear();
+            one = true;
             command.CommandText = cmdtext;
             command.CommandType = CommandType.Text;
             if (p != null)
@@ -119,6 +120,7 @@ namespace Greatbone.Core
                 connection.Open();
             }
             Clear();
+            one = false;
             command.CommandText = cmdtext;
             command.CommandType = CommandType.Text;
             if (p != null)
@@ -137,6 +139,7 @@ namespace Greatbone.Core
                 connection.Open();
             }
             Clear();
+            one = false;
             command.CommandText = cmdtext;
             command.CommandType = CommandType.Text;
             if (p != null)
@@ -170,6 +173,8 @@ namespace Greatbone.Core
                 return reader.HasRows;
             }
         }
+
+        public bool One => one;
 
         public bool NextResult()
         {
@@ -666,7 +671,7 @@ namespace Greatbone.Core
 
         public void Event<D>(string name, string shard, D[] dats, byte bits = 0) where D : IData
         {
-            JsonContent cont = new JsonContent(true);
+            JsonContent cont = new JsonContent();
             cont.Put(null, dats, bits);
             Event(name, shard, cont);
         }
@@ -694,7 +699,7 @@ namespace Greatbone.Core
 
         public void Dump<R>(ISink<R> snk) where R : ISink<R>
         {
-            if (un)
+            if (one)
             {
                 ColumnDesc[] cols = new ColumnDesc[reader.FieldCount];
                 for (int i = 0; i < cols.Length; i++)

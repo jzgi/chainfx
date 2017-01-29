@@ -144,7 +144,7 @@ namespace Greatbone.Core
             return this; // ignore ir
         }
 
-        public FormMpContent Put<D>(string name, D v, byte flags = 0) where D : IData
+        public FormMpContent Put(string name, IData v, byte flags = 0)
         {
             Part(name);
             if (v == null)
@@ -322,6 +322,11 @@ namespace Greatbone.Core
         public void PutEvent(long id, string name, DateTime time, string mtype, ArraySegment<byte> body)
         {
 
+        }
+
+        public FormMpContent Put(string name, IModel v)
+        {
+            throw new NotImplementedException();
         }
     }
 }

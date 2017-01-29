@@ -6,6 +6,11 @@
     public interface IModel
     {
         ///
+        /// This is single object.
+        ///
+        bool One { get; }
+
+        ///
         /// Dump to the given sink.
         ///
         void Dump<R>(ISink<R> snk) where R : ISink<R>;

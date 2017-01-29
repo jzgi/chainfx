@@ -53,9 +53,9 @@ namespace Greatbone.Core
         public bool? File { get; private set; }
 
         /// The services/addresses that this service references or depends on.
-        public JObj Cluster => Model["cluster"];
+        public JObj Cluster => Model?["cluster"];
 
-        public JObj Extra => Model["extra"];
+        public JObj Extra => Model?["extra"];
 
         public void Load(ISource src, byte flags = 0)
         {

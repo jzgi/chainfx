@@ -9,6 +9,7 @@ namespace Greatbone.Core
     ///
     public class JArr : IModel, ISourceSet
     {
+        // array elements
         JMem[] elements;
 
         int count;
@@ -26,7 +27,7 @@ namespace Greatbone.Core
 
         public int Count => count;
 
-        internal void Add(JMem elem)
+        internal void Add(JMem mem)
         {
             int len = elements.Length;
             if (count >= len)
@@ -35,32 +36,32 @@ namespace Greatbone.Core
                 Array.Copy(elements, 0, alloc, 0, len);
                 elements = alloc;
             }
-            elements[count++] = elem;
+            elements[count++] = mem;
         }
+
+        public bool One => false;
 
         public void Dump<R>(ISink<R> snk) where R : ISink<R>
         {
             for (int i = 0; i < count; i++)
             {
-                JMem e = elements[i];
-                JType t = e.type;
+                JMem mem = elements[i];
+                JType t = mem.type;
                 if (t == JType.Array)
                 {
-                    ((JArr)e).Dump(snk);
-                    // snk.Put(null, (JArr)e);
+                    snk.Put(null, (JArr)mem);
                 }
                 else if (t == JType.Object)
                 {
-                    ((JObj)e).Dump(snk);
-                    // snk.Put(null, (JObj)e);
+                    snk.Put(null, (JObj)mem);
                 }
                 else if (t == JType.String)
                 {
-                    snk.Put(null, (string)e);
+                    snk.Put(null, (string)mem);
                 }
                 else if (t == JType.Number)
                 {
-                    snk.Put(null, (JNumber)e);
+                    snk.Put(null, (JNumber)mem);
                 }
                 else if (t == JType.True)
                 {
@@ -93,122 +94,122 @@ namespace Greatbone.Core
 
         public bool Get(string name, ref short v)
         {
-            JObj jobj = elements[current];
-            return jobj != null && jobj.Get(name, ref v);
+            JObj jo = elements[current];
+            return jo != null && jo.Get(name, ref v);
         }
 
         public bool Get(string name, ref int v)
         {
-            JObj jobj = elements[current];
-            return jobj != null && jobj.Get(name, ref v);
+            JObj jo = elements[current];
+            return jo != null && jo.Get(name, ref v);
         }
 
         public bool Get(string name, ref long v)
         {
-            JObj jobj = elements[current];
-            return jobj != null && jobj.Get(name, ref v);
+            JObj jo = elements[current];
+            return jo != null && jo.Get(name, ref v);
         }
 
         public bool Get(string name, ref double v)
         {
-            JObj jobj = elements[current];
-            return jobj != null && jobj.Get(name, ref v);
+            JObj jo = elements[current];
+            return jo != null && jo.Get(name, ref v);
         }
 
         public bool Get(string name, ref decimal v)
         {
-            JObj jobj = elements[current];
-            return jobj != null && jobj.Get(name, ref v);
+            JObj jo = elements[current];
+            return jo != null && jo.Get(name, ref v);
         }
 
         public bool Get(string name, ref DateTime v)
         {
-            JObj jobj = elements[current];
-            return jobj != null && jobj.Get(name, ref v);
+            JObj jo = elements[current];
+            return jo != null && jo.Get(name, ref v);
         }
 
         public bool Get(string name, ref NpgsqlPoint v)
         {
-            JObj jobj = elements[current];
-            return jobj != null && jobj.Get(name, ref v);
+            JObj jo = elements[current];
+            return jo != null && jo.Get(name, ref v);
         }
 
         public bool Get(string name, ref char[] v)
         {
-            JObj jobj = elements[current];
-            return jobj != null && jobj.Get(name, ref v);
+            JObj jo = elements[current];
+            return jo != null && jo.Get(name, ref v);
         }
 
         public bool Get(string name, ref string v)
         {
-            JObj jobj = elements[current];
-            return jobj != null && jobj.Get(name, ref v);
+            JObj jo = elements[current];
+            return jo != null && jo.Get(name, ref v);
         }
 
         public bool Get(string name, ref byte[] v)
         {
-            JObj jobj = elements[current];
-            return jobj != null && jobj.Get(name, ref v);
+            JObj jo = elements[current];
+            return jo != null && jo.Get(name, ref v);
         }
 
         public bool Get(string name, ref ArraySegment<byte> v)
         {
-            JObj jobj = elements[current];
-            return jobj != null && jobj.Get(name, ref v);
+            JObj jo = elements[current];
+            return jo != null && jo.Get(name, ref v);
         }
 
         public bool Get<D>(string name, ref D v, byte flags = 0) where D : IData, new()
         {
-            JObj jobj = elements[current];
-            return jobj != null && jobj.Get(name, ref v);
+            JObj jo = elements[current];
+            return jo != null && jo.Get(name, ref v);
         }
 
         public bool Get(string name, ref JObj v)
         {
-            JObj jobj = elements[current];
-            return jobj != null && jobj.Get(name, ref v);
+            JObj jo = elements[current];
+            return jo != null && jo.Get(name, ref v);
         }
 
         public bool Get(string name, ref JArr v)
         {
-            JObj jobj = elements[current];
-            return jobj != null && jobj.Get(name, ref v);
+            JObj jo = elements[current];
+            return jo != null && jo.Get(name, ref v);
         }
 
         public bool Get(string name, ref short[] v)
         {
-            JObj jobj = elements[current];
-            return jobj != null && jobj.Get(name, ref v);
+            JObj jo = elements[current];
+            return jo != null && jo.Get(name, ref v);
         }
 
         public bool Get(string name, ref int[] v)
         {
-            JObj jobj = elements[current];
-            return jobj != null && jobj.Get(name, ref v);
+            JObj jo = elements[current];
+            return jo != null && jo.Get(name, ref v);
         }
 
         public bool Get(string name, ref long[] v)
         {
-            JObj jobj = elements[current];
-            return jobj != null && jobj.Get(name, ref v);
+            JObj jo = elements[current];
+            return jo != null && jo.Get(name, ref v);
         }
 
         public bool Get(string name, ref string[] v)
         {
-            JObj jobj = elements[current];
-            return jobj != null && jobj.Get(name, ref v);
+            JObj jo = elements[current];
+            return jo != null && jo.Get(name, ref v);
         }
 
         public bool Get<D>(string name, ref D[] v, byte flags = 0) where D : IData, new()
         {
-            JObj jobj = elements[current];
-            return jobj != null && jobj.Get(name, ref v);
+            JObj jo = elements[current];
+            return jo != null && jo.Get(name, ref v);
         }
 
         public bool Get<D>(string name, ref List<D> v, byte flags = 0) where D : IData, new()
         {
-            JObj jobj = elements[current];
-            return jobj != null && jobj.Get(name, ref v);
+            JObj jo = elements[current];
+            return jo != null && jo.Get(name, ref v);
         }
 
         public bool Next()
@@ -219,9 +220,7 @@ namespace Greatbone.Core
         public override string ToString()
         {
             JsonContent cont = new JsonContent(false, true);
-            cont.Add('[');
-            Dump(cont);
-            cont.Add(']');
+            cont.Put(null, this);
             string str = cont.ToString();
             BufferUtility.Return(cont);
             return str;
@@ -229,9 +228,9 @@ namespace Greatbone.Core
 
         public D ToObject<D>(byte flags = 0) where D : IData, new()
         {
-            D dat = new D();
-            dat.Load(this, flags);
-            return dat;
+            D obj = new D();
+            obj.Load(this, flags);
+            return obj;
         }
 
         public D[] ToArray<D>(byte flags = 0) where D : IData, new()

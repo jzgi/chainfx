@@ -264,7 +264,7 @@ namespace Greatbone.Core
             return this; // ignore ir
         }
 
-        public FormContent Put<D>(string name, D v, byte flags = 0) where D : IData
+        public FormContent Put(string name, IData v, byte flags = 0)
         {
             if (name != null)
             {
@@ -508,6 +508,11 @@ namespace Greatbone.Core
                 Add(']');
             }
             return this;
+        }
+
+        public FormContent Put(string name, IModel v)
+        {
+            throw new NotImplementedException();
         }
     }
 }
