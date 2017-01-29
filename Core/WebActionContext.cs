@@ -318,7 +318,7 @@ namespace Greatbone.Core
         public void Reply(int status, IModel model, bool? pub = null, int maxage = 60)
         {
             Status = status;
-            Content = model.Dump();
+            // Content = model.Dump();
             Pub = pub;
             MaxAge = maxage;
         }

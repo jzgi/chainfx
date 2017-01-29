@@ -42,45 +42,48 @@ namespace Greatbone.Core
         {
             for (int i = 0; i < count; i++)
             {
-                JMem elem = elements[i];
-                JType typ = elem.type;
-                if (typ == JType.Array)
+                JMem e = elements[i];
+                JType t = e.type;
+                if (t == JType.Array)
                 {
-                    snk.Put(null, (JArr)elem);
+                    ((JArr)e).Dump(snk);
+                    // snk.Put(null, (JArr)e);
                 }
-                else if (typ == JType.Object)
+                else if (t == JType.Object)
                 {
-                    snk.Put(null, (JObj)elem);
+                    ((JObj)e).Dump(snk);
+                    // snk.Put(null, (JObj)e);
                 }
-                else if (typ == JType.String)
+                else if (t == JType.String)
                 {
-                    snk.Put(null, (string)elem);
+                    snk.Put(null, (string)e);
                 }
-                else if (typ == JType.Number)
+                else if (t == JType.Number)
                 {
-                    snk.Put(null, (JNumber)elem);
+                    snk.Put(null, (JNumber)e);
                 }
-                else if (typ == JType.True)
+                else if (t == JType.True)
                 {
                     snk.Put(null, true);
                 }
-                else if (typ == JType.False)
+                else if (t == JType.False)
                 {
                     snk.Put(null, false);
                 }
-                else if (typ == JType.Null)
+                else if (t == JType.Null)
                 {
                     snk.PutNull(null);
                 }
             }
         }
 
-        public IContent Dump()
+        public C Dump<C>() where C : IContent, ISink<C>, new()
         {
-            JsonContent cont = new JsonContent();
+            C cont = new C();
             Dump(cont);
             return cont;
         }
+
 
         public bool Get(string name, ref bool v)
         {

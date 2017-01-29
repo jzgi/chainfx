@@ -35,10 +35,6 @@ namespace Greatbone.Core
 
         bool Get<D>(string name, ref D v, byte flags = 0) where D : IData, new();
 
-        bool Get(string name, ref JObj v);
-
-        bool Get(string name, ref JArr v);
-
         bool Get(string name, ref short[] v);
 
         bool Get(string name, ref int[] v);

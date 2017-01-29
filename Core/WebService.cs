@@ -102,7 +102,7 @@ namespace Greatbone.Core
             }
 
             // init refers
-            JObj refs = cfg.cluster;
+            JObj refs = cfg.Cluster;
             if (refs != null)
             {
                 for (int i = 0; i < refs.Count; i++)

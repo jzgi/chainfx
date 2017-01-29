@@ -267,9 +267,9 @@ namespace Greatbone.Core
             throw new NotImplementedException();
         }
 
-        public IContent Dump()
+        public C Dump<C>() where C : IContent, ISink<C>, new()
         {
-            FormContent cont = new FormContent();
+            C cont = new C();
             Dump(cont);
             return cont;
         }

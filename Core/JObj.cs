@@ -352,11 +352,12 @@ namespace Greatbone.Core
                 JType typ = prop.type;
                 if (typ == JType.Array)
                 {
-                    snk.Put(prop.Name, (JArr)prop);
+
+                    // snk.Put(prop.Name, (JArr)prop);
                 }
                 else if (typ == JType.Object)
                 {
-                    snk.Put(prop.Name, (JObj)prop);
+                    // snk.Put(prop.Name, (JObj)prop);
                 }
                 else if (typ == JType.String)
                 {
@@ -399,11 +400,12 @@ namespace Greatbone.Core
             return obj;
         }
 
-        public IContent Dump()
+        public C Dump<C>() where C : IContent, ISink<C>, new()
         {
-            JsonContent cont = new JsonContent();
+            C cont = new C();
             Dump(cont);
             return cont;
         }
+
     }
 }

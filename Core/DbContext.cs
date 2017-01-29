@@ -705,9 +705,9 @@ namespace Greatbone.Core
             }
         }
 
-        public IContent Dump()
+        public C Dump<C>() where C : IContent, ISink<C>, new()
         {
-            JsonContent cont = new JsonContent();
+            C cont = new C();
             Dump(cont);
             return cont;
         }

@@ -96,10 +96,12 @@ namespace Greatbone.Core
         {
         }
 
-        public IContent Dump()
+        public C Dump<C>() where C : IContent, ISink<C>, new()
         {
-            TextContent cont = new TextContent(true);
+            C cont = new C();
+            Dump(cont);
             return cont;
         }
+
     }
 }

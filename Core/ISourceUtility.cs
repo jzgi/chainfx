@@ -86,24 +86,10 @@ namespace Greatbone.Core
             return v;
         }
 
-        public static D GetData<D>(this ISource src, byte flags = 0) where D : IData, new()
+        public static D GetObject<D>(this ISource src, byte flags = 0) where D : IData, new()
         {
             D v = default(D);
             src.Get(null, ref v, flags);
-            return v;
-        }
-
-        public static JObj GetJObj(this ISource src)
-        {
-            JObj v = null;
-            src.Get(null, ref v);
-            return v;
-        }
-
-        public static JArr GetJArr(this ISource src)
-        {
-            JArr v = null;
-            src.Get(null, ref v);
             return v;
         }
 
@@ -136,7 +122,7 @@ namespace Greatbone.Core
             return v;
         }
 
-        public static D[] GetDatas<D>(this ISource src, byte flags = 0) where D : IData, new()
+        public static D[] GetArray<D>(this ISource src, byte flags = 0) where D : IData, new()
         {
             D[] v = null;
             src.Get(null, ref v, flags);
@@ -224,27 +210,12 @@ namespace Greatbone.Core
             return v;
         }
 
-        public static D GetData<D>(this ISource src, string name) where D : IData, new()
+        public static D GetObject<D>(this ISource src, string name) where D : IData, new()
         {
             D v = default(D);
             src.Get(name, ref v);
             return v;
         }
-
-        public static JObj GetJObj(this ISource src, string name)
-        {
-            JObj v = null;
-            src.Get(name, ref v);
-            return v;
-        }
-
-        public static JArr GetJArr(this ISource src, string name)
-        {
-            JArr v = null;
-            src.Get(name, ref v);
-            return v;
-        }
-
 
         public static short[] GetShorts(this ISource src, string name)
         {
@@ -274,7 +245,7 @@ namespace Greatbone.Core
             return v;
         }
 
-        public static D[] GetDatas<D>(this ISource src, string name) where D : IData, new()
+        public static D[] GetArray<D>(this ISource src, string name) where D : IData, new()
         {
             D[] v = null;
             src.Get(name, ref v);

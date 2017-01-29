@@ -263,9 +263,11 @@ namespace Greatbone.Core
             throw new NotImplementedException();
         }
 
-        public IContent Dump()
+        public C Dump<C>() where C : IContent, ISink<C>, new()
         {
-            throw new NotImplementedException();
+            C cont = new C();
+            Dump(cont);
+            return cont;
         }
 
         public static implicit operator string(XElem v)

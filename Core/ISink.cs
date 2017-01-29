@@ -5,7 +5,7 @@ using NpgsqlTypes;
 namespace Greatbone.Core
 {
     ///
-    /// Represents a DAT sink for dump.
+    /// Represents a sink for dump output.
     ///
     public interface ISink<out R> where R : ISink<R>
     {
@@ -38,10 +38,6 @@ namespace Greatbone.Core
         R Put(string name, ArraySegment<byte> v);
 
         R Put<D>(string name, D v, byte flags = 0) where D : IData;
-
-        R Put(string name, JObj v);
-
-        R Put(string name, JArr v);
 
         R Put(string name, short[] v);
 
