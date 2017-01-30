@@ -42,50 +42,50 @@ namespace Greatbone.Sample
 
         internal int status;
 
-        public void Load(ISource src, byte flags = 0)
+        public void ReadData(IDataInput i, byte flags = 0)
         {
-            src.Get(nameof(id), ref id);
+            i.Get(nameof(id), ref id);
 
-            src.Get(nameof(shopid), ref shopid);
-            src.Get(nameof(shop), ref shop);
-            src.Get(nameof(shopwx), ref shopwx);
+            i.Get(nameof(shopid), ref shopid);
+            i.Get(nameof(shop), ref shop);
+            i.Get(nameof(shopwx), ref shopwx);
 
-            src.Get(nameof(buyerid), ref buyerid);
-            src.Get(nameof(buyer), ref buyer);
-            src.Get(nameof(buyerwx), ref buyerwx);
+            i.Get(nameof(buyerid), ref buyerid);
+            i.Get(nameof(buyer), ref buyer);
+            i.Get(nameof(buyerwx), ref buyerwx);
 
-            src.Get(nameof(opened), ref opened);
+            i.Get(nameof(opened), ref opened);
             if (flags.Has(SUB))
             {
-                src.Get(nameof(lines), ref lines);
+                i.Get(nameof(lines), ref lines);
             }
-            src.Get(nameof(total), ref total);
+            i.Get(nameof(total), ref total);
 
-            src.Get(nameof(delivered), ref delivered);
-            src.Get(nameof(status), ref status);
+            i.Get(nameof(delivered), ref delivered);
+            i.Get(nameof(status), ref status);
         }
 
-        public void Dump<R>(ISink<R> snk, byte flags = 0) where R : ISink<R>
+        public void WriteData<R>(IDataOutput<R> o, byte flags = 0) where R : IDataOutput<R>
         {
-            snk.Put(nameof(id), id);
+            o.Put(nameof(id), id);
 
-            snk.Put(nameof(shopid), shopid);
-            snk.Put(nameof(shop), shop);
-            snk.Put(nameof(shopwx), shopwx);
+            o.Put(nameof(shopid), shopid);
+            o.Put(nameof(shop), shop);
+            o.Put(nameof(shopwx), shopwx);
 
-            snk.Put(nameof(buyerid), buyerid);
-            snk.Put(nameof(buyer), buyer);
-            snk.Put(nameof(buyerwx), buyerwx);
+            o.Put(nameof(buyerid), buyerid);
+            o.Put(nameof(buyer), buyer);
+            o.Put(nameof(buyerwx), buyerwx);
 
-            snk.Put(nameof(opened), opened);
+            o.Put(nameof(opened), opened);
             if (flags.Has(SUB))
             {
-                snk.Put(nameof(lines), lines);
+                o.Put(nameof(lines), lines);
             }
-            snk.Put(nameof(total), total);
+            o.Put(nameof(total), total);
 
-            snk.Put(nameof(delivered), delivered);
-            snk.Put(nameof(status), status);
+            o.Put(nameof(delivered), delivered);
+            o.Put(nameof(status), status);
         }
     }
 }

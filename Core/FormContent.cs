@@ -7,7 +7,7 @@ namespace Greatbone.Core
     /// 
     /// To generate a urlencoded byte or char string.
     /// 
-    public class FormContent : DynamicContent, ISink<FormContent>
+    public class FormContent : DynamicContent, IDataOutput<FormContent>
     {
         public FormContent(bool sendable = true, bool pooled = true, int capacity = 4092) : base(sendable, pooled, capacity)
         {
@@ -281,7 +281,7 @@ namespace Greatbone.Core
             else
             {
                 Add('{');
-                v.Dump(this, flags);
+                v.WriteData(this, flags);
                 Add('}');
             }
 
@@ -305,7 +305,7 @@ namespace Greatbone.Core
             else
             {
                 Add('{');
-                v.Dump(this);
+                v.WriteData(this);
                 Add('}');
             }
 
@@ -329,7 +329,7 @@ namespace Greatbone.Core
             else
             {
                 Add('[');
-                v.Dump(this);
+                v.WriteData(this);
                 Add(']');
             }
             return this;

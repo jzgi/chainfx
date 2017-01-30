@@ -7,7 +7,7 @@ namespace Greatbone.Core
     /// 
     /// To generate a UTF-8 encoded XML document. 
     /// 
-    public class XmlContent : DynamicContent, ISink<XmlContent>
+    public class XmlContent : DynamicContent, IDataOutput<XmlContent>
     {
         const int InitialCapacity = 4 * 1024;
 

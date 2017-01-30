@@ -7,7 +7,7 @@ namespace Greatbone.Core
     ///
     /// A helper used to generate SQL commands.
     ///
-    public class DbSql : DynamicContent, ISink<DbSql>
+    public class DbSql : DynamicContent, IDataOutput<DbSql>
     {
         // contexts
         const sbyte ColumnList = 1, ParameterList = 2, SetList = 3;
@@ -48,7 +48,7 @@ namespace Greatbone.Core
         {
             list = SetList;
             ordinal = 1;
-            obj.Dump(this, flags);
+            obj.WriteData(this, flags);
             return this;
         }
 
@@ -56,7 +56,7 @@ namespace Greatbone.Core
         {
             list = ColumnList;
             ordinal = 1;
-            obj.Dump(this, flags);
+            obj.WriteData(this, flags);
             return this;
         }
 
@@ -64,7 +64,7 @@ namespace Greatbone.Core
         {
             list = ParameterList;
             ordinal = 1;
-            obj.Dump(this, flags);
+            obj.WriteData(this, flags);
             return this;
         }
 
@@ -311,7 +311,7 @@ namespace Greatbone.Core
                 else
                 {
                     Add('\'');
-                    v.Dump(this);
+                    v.WriteData(this);
                     Add('\'');
                 }
             }
@@ -333,7 +333,7 @@ namespace Greatbone.Core
                 else
                 {
                     Add('\'');
-                    v.Dump(this);
+                    v.WriteData(this);
                     Add('\'');
                 }
             }

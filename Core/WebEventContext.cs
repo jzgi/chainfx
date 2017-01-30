@@ -44,7 +44,7 @@ namespace Greatbone.Core
 
         public D AsObject<D>(byte flags = 0) where D : IData, new()
         {
-            ISource src = entity as ISource;
+            IDataInput src = entity as IDataInput;
             if (src == null)
             {
                 return default(D);
@@ -54,7 +54,7 @@ namespace Greatbone.Core
 
         public D[] AsArray<D>(byte flags = 0) where D : IData, new()
         {
-            ISourceSet srcs = entity as ISourceSet;
+            IDataSetInput srcs = entity as IDataSetInput;
             return srcs?.ToArray<D>(flags);
         }
 

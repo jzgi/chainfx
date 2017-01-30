@@ -96,14 +96,14 @@ namespace Greatbone.Core
             return new string(buf, 0, count);
         }
 
-        public void Dump<R>(ISink<R> snk) where R : ISink<R>
+        public void WriteData<R>(IDataOutput<R> snk) where R : IDataOutput<R>
         {
         }
 
-        public C Dump<C>() where C : IContent, ISink<C>, new()
+        public C Dump<C>() where C : IContent, IDataOutput<C>, new()
         {
             C cont = new C();
-            Dump(cont);
+            WriteData(cont);
             return cont;
         }
 

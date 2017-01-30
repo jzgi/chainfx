@@ -20,24 +20,24 @@ namespace Greatbone.Sample
 
         internal decimal orderup; // accumulative addup
 
-        public void Load(ISource src, byte flags = 0)
+        public void ReadData(IDataInput i, byte flags = 0)
         {
-            src.Get(nameof(wx), ref wx);
-            src.Get(nameof(nickname), ref nickname);
-            src.Get(nameof(name), ref name);
-            src.Get(nameof(tel), ref tel);
-            src.Get(nameof(orderon), ref orderon);
-            src.Get(nameof(orderup), ref orderup);
+            i.Get(nameof(wx), ref wx);
+            i.Get(nameof(nickname), ref nickname);
+            i.Get(nameof(name), ref name);
+            i.Get(nameof(tel), ref tel);
+            i.Get(nameof(orderon), ref orderon);
+            i.Get(nameof(orderup), ref orderup);
         }
 
-        public void Dump<R>(ISink<R> snk, byte flags = 0) where R : ISink<R>
+        public void WriteData<R>(IDataOutput<R> o, byte flags = 0) where R : IDataOutput<R>
         {
-            snk.Put(nameof(wx), wx);
-            snk.Put(nameof(nickname), nickname);
-            snk.Put(nameof(name), name);
-            snk.Put(nameof(tel), tel);
-            snk.Put(nameof(orderon), orderon);
-            snk.Put(nameof(orderup), orderup);
+            o.Put(nameof(wx), wx);
+            o.Put(nameof(nickname), nickname);
+            o.Put(nameof(name), name);
+            o.Put(nameof(tel), tel);
+            o.Put(nameof(orderon), orderon);
+            o.Put(nameof(orderup), orderup);
         }
 
         public Token ToToken()

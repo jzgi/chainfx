@@ -8,7 +8,7 @@ namespace Greatbone.Core
     ///
     /// A wrapper of db parameter collection.
     ///
-    public class DbParameters : ISink<DbParameters>
+    public class DbParameters : IDataOutput<DbParameters>
     {
         static readonly string[] Defaults =
         {

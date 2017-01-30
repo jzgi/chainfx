@@ -7,7 +7,7 @@ namespace Greatbone.Core
     ///
     /// A JSON object model.
     ///
-    public class JObj : Roll<JMem>, IModel, ISource
+    public class JObj : Roll<JMem>, IModel, IDataInput
     {
         public JObj(int capacity = 16) : base(capacity)
         {
@@ -195,7 +195,7 @@ namespace Greatbone.Core
                 if (jobj != null)
                 {
                     v = new D();
-                    v.Load(jobj);
+                    v.ReadData(jobj);
                 }
                 return true;
             }
@@ -313,7 +313,7 @@ namespace Greatbone.Core
                     {
                         JObj jo = ja[i];
                         D dat = new D();
-                        dat.Load(jo);
+                        dat.ReadData(jo);
                         v[i] = dat;
                     }
                 }
@@ -335,7 +335,7 @@ namespace Greatbone.Core
                     {
                         JObj jo = jarr[i];
                         D obj = new D();
-                        obj.Load(jo);
+                        obj.ReadData(jo);
                         v.Add(obj);
                     }
                 }
@@ -346,7 +346,7 @@ namespace Greatbone.Core
 
         public bool Single => true;
 
-        public void Dump<R>(ISink<R> snk) where R : ISink<R>
+        public void WriteData<R>(IDataOutput<R> dout) where R : IDataOutput<R>
         {
             for (int i = 0; i < Count; i++)
             {
@@ -354,31 +354,31 @@ namespace Greatbone.Core
                 JType t = mem.type;
                 if (t == JType.Array)
                 {
-                    snk.Put(mem.Key, (JArr)mem);
+                    dout.Put(mem.Key, (JArr)mem);
                 }
                 else if (t == JType.Object)
                 {
-                    snk.Put(mem.Key, (JObj)mem);
+                    dout.Put(mem.Key, (JObj)mem);
                 }
                 else if (t == JType.String)
                 {
-                    snk.Put(mem.Key, (string)mem);
+                    dout.Put(mem.Key, (string)mem);
                 }
                 else if (t == JType.Number)
                 {
-                    snk.Put(mem.Key, (JNumber)mem);
+                    dout.Put(mem.Key, (JNumber)mem);
                 }
                 else if (t == JType.True)
                 {
-                    snk.Put(mem.Key, true);
+                    dout.Put(mem.Key, true);
                 }
                 else if (t == JType.False)
                 {
-                    snk.Put(mem.Key, false);
+                    dout.Put(mem.Key, false);
                 }
                 else if (t == JType.Null)
                 {
-                    snk.PutNull(mem.Key);
+                    dout.PutNull(mem.Key);
                 }
             }
         }
@@ -395,14 +395,14 @@ namespace Greatbone.Core
         public D ToObject<D>(byte flags = 0) where D : IData, new()
         {
             D obj = new D();
-            obj.Load(this, flags);
+            obj.ReadData(this, flags);
             return obj;
         }
 
-        public C Dump<C>() where C : IContent, ISink<C>, new()
+        public C Dump<C>() where C : IContent, IDataOutput<C>, new()
         {
             C cont = new C();
-            Dump(cont);
+            WriteData(cont);
             return cont;
         }
 

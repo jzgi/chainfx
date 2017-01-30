@@ -13,11 +13,11 @@
         ///
         /// Dump to the given sink.
         ///
-        void Dump<R>(ISink<R> snk) where R : ISink<R>;
+        void WriteData<R>(IDataOutput<R> snk) where R : IDataOutput<R>;
 
         ///
         /// Dump as specified content.
         ///
-        C Dump<C>() where C : IContent, ISink<C>, new();
+        C Dump<C>() where C : IContent, IDataOutput<C>, new();
     }
 }

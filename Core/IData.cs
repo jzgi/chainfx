@@ -1,12 +1,12 @@
 ﻿namespace Greatbone.Core
 {
     ///
-    /// A data object that follows certain input/ouput conventions.
+    /// A data object that follows certain input/ouput paradigm.
     ///
     public interface IData
     {
-        void Load(ISource src, byte flags = 0);
+        void ReadData(IDataInput i, byte flags = 0);
 
-        void Dump<R>(ISink<R> snk, byte flags = 0) where R : ISink<R>;
+        void WriteData<R>(IDataOutput<R> o, byte flags = 0) where R : IDataOutput<R>;
     }
 }

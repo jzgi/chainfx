@@ -7,7 +7,7 @@ namespace Greatbone.Core
     ///
     /// Represents a sink for dump output.
     ///
-    public interface ISink<out R> where R : ISink<R>
+    public interface IDataOutput<out R> where R : IDataOutput<R>
     {
         R PutEnter();
 

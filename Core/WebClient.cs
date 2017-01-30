@@ -126,7 +126,7 @@ namespace Greatbone.Core
                 req.Headers.Add("Authorization", "Bearer " + ctx.TokenText);
             }
             HttpResponseMessage resp = await SendAsync(req, HttpCompletionOption.ResponseContentRead);
-            ISource src = null;
+            IDataInput src = null;
             return src.ToObject<D>(flags);
         }
 
@@ -139,7 +139,7 @@ namespace Greatbone.Core
             }
             HttpResponseMessage resp = await SendAsync(req, HttpCompletionOption.ResponseContentRead);
 
-            ISourceSet srcset = null;
+            IDataSetInput srcset = null;
             return srcset.ToArray<D>(flags);
         }
 
@@ -152,7 +152,7 @@ namespace Greatbone.Core
             }
             HttpResponseMessage resp = await SendAsync(req, HttpCompletionOption.ResponseContentRead);
 
-            ISourceSet srcset = null;
+            IDataSetInput srcset = null;
             return srcset.ToList<D>(flags);
         }
 
@@ -170,7 +170,7 @@ namespace Greatbone.Core
             return SendAsync(req, HttpCompletionOption.ResponseContentRead);
         }
 
-        public Task<HttpResponseMessage> PostAsync<C>(WebActionContext ctx, string uri, IModel model) where C : IContent, ISink<C>, new()
+        public Task<HttpResponseMessage> PostAsync<C>(WebActionContext ctx, string uri, IModel model) where C : IContent, IDataOutput<C>, new()
         {
             HttpRequestMessage req = new HttpRequestMessage(HttpMethod.Post, uri);
             if (ctx != null)
@@ -201,13 +201,13 @@ namespace Greatbone.Core
             else if (model is JObj)
             {
                 JsonContent cont = new JsonContent(true, true);
-                ((JObj)model).Dump(cont);
+                ((JObj)model).WriteData(cont);
                 req.Content = cont;
             }
             else if (model is IData)
             {
                 JsonContent cont = new JsonContent(true, true);
-                ((JObj)model).Dump(cont);
+                ((JObj)model).WriteData(cont);
                 req.Content = cont;
             }
             return SendAsync(req, HttpCompletionOption.ResponseContentRead);

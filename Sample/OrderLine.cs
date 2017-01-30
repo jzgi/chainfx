@@ -21,32 +21,32 @@ namespace Greatbone.Sample
 
         public decimal Subtotal => price * qty;
 
-        public void Load(ISource src, byte flags = 0)
+        public void ReadData(IDataInput i, byte flags = 0)
         {
             if (flags.Has(KEPT))
             {
-                src.Get(nameof(shopid), ref shopid);
+                i.Get(nameof(shopid), ref shopid);
             }
-            src.Get(nameof(item), ref item);
-            src.Get(nameof(qty), ref qty);
-            src.Get(nameof(unit), ref unit);
-            src.Get(nameof(oprice), ref oprice);
-            src.Get(nameof(price), ref price);
-            src.Get(nameof(note), ref note);
+            i.Get(nameof(item), ref item);
+            i.Get(nameof(qty), ref qty);
+            i.Get(nameof(unit), ref unit);
+            i.Get(nameof(oprice), ref oprice);
+            i.Get(nameof(price), ref price);
+            i.Get(nameof(note), ref note);
         }
 
-        public void Dump<R>(ISink<R> snk, byte flags = 0) where R : ISink<R>
+        public void WriteData<R>(IDataOutput<R> o, byte flags = 0) where R : IDataOutput<R>
         {
             if (flags.Has(KEPT))
             {
-                snk.Put(nameof(shopid), shopid);
+                o.Put(nameof(shopid), shopid);
             }
-            snk.Put(nameof(item), item);
-            snk.Put(nameof(qty), qty);
-            snk.Put(nameof(unit), unit);
-            snk.Put(nameof(oprice), oprice);
-            snk.Put(nameof(price), price);
-            snk.Put(nameof(note), note);
+            o.Put(nameof(item), item);
+            o.Put(nameof(qty), qty);
+            o.Put(nameof(unit), unit);
+            o.Put(nameof(oprice), oprice);
+            o.Put(nameof(price), price);
+            o.Put(nameof(note), note);
         }
     }
 }

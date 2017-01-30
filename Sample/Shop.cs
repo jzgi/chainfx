@@ -27,40 +27,40 @@ namespace Greatbone.Sample
 
         public string Credential => credential;
 
-        public void Load(ISource src, byte flags = 0)
+        public void ReadData(IDataInput i, byte flags = 0)
         {
-            src.Get(nameof(id), ref id);
-            src.Get(nameof(name), ref name);
+            i.Get(nameof(id), ref id);
+            i.Get(nameof(name), ref name);
             if (flags.Has(KEPT))
             {
-                src.Get(nameof(credential), ref credential);
+                i.Get(nameof(credential), ref credential);
             }
-            src.Get(nameof(tel), ref tel);
-            src.Get(nameof(x), ref x);
-            src.Get(nameof(y), ref y);
-            src.Get(nameof(prov), ref prov);
-            src.Get(nameof(city), ref city);
-            src.Get(nameof(wx), ref wx);
-            src.Get(nameof(notice), ref notice);
-            src.Get(nameof(status), ref status);
+            i.Get(nameof(tel), ref tel);
+            i.Get(nameof(x), ref x);
+            i.Get(nameof(y), ref y);
+            i.Get(nameof(prov), ref prov);
+            i.Get(nameof(city), ref city);
+            i.Get(nameof(wx), ref wx);
+            i.Get(nameof(notice), ref notice);
+            i.Get(nameof(status), ref status);
         }
 
-        public void Dump<R>(ISink<R> snk, byte flags = 0) where R : ISink<R>
+        public void WriteData<R>(IDataOutput<R> o, byte flags = 0) where R : IDataOutput<R>
         {
-            snk.Put(nameof(id), id);
-            snk.Put(nameof(name), name);
+            o.Put(nameof(id), id);
+            o.Put(nameof(name), name);
             if (flags.Has(KEPT))
             {
-                snk.Put(nameof(credential), credential);
+                o.Put(nameof(credential), credential);
             }
-            snk.Put(nameof(tel), tel);
-            snk.Put(nameof(x), x);
-            snk.Put(nameof(y), y);
-            snk.Put(nameof(prov), prov);
-            snk.Put(nameof(city), city);
-            snk.Put(nameof(wx), wx);
-            snk.Put(nameof(notice), notice);
-            snk.Put(nameof(status), status);
+            o.Put(nameof(tel), tel);
+            o.Put(nameof(x), x);
+            o.Put(nameof(y), y);
+            o.Put(nameof(prov), prov);
+            o.Put(nameof(city), city);
+            o.Put(nameof(wx), wx);
+            o.Put(nameof(notice), notice);
+            o.Put(nameof(status), status);
         }
 
         public Token ToToken()

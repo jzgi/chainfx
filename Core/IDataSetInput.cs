@@ -5,7 +5,7 @@ namespace Greatbone.Core
     ///
     /// A data source or result set consisting of many source objects.
     ///
-    public interface ISourceSet : ISource
+    public interface IDataSetInput : IDataInput
     {
         bool Next();
 

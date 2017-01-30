@@ -22,20 +22,20 @@ namespace Greatbone.Sample
 
         public string Name => name;
 
-        public void Load(ISource s, byte flags = 0)
+        public void ReadData(IDataInput i, byte flags = 0)
         {
-            s.Get(nameof(key), ref key);
-            s.Get(nameof(name), ref name);
-            s.Get(nameof(subtype), ref subtype);
-            s.Get(nameof(roles), ref roles);
+            i.Get(nameof(key), ref key);
+            i.Get(nameof(name), ref name);
+            i.Get(nameof(subtype), ref subtype);
+            i.Get(nameof(roles), ref roles);
         }
 
-        public void Dump<R>(ISink<R> s, byte flags = 0) where R : ISink<R>
+        public void WriteData<R>(IDataOutput<R> o, byte flags = 0) where R : IDataOutput<R>
         {
-            s.Put(nameof(key), key);
-            s.Put(nameof(name), name);
-            s.Put(nameof(subtype), subtype);
-            s.Put(nameof(roles), roles);
+            o.Put(nameof(key), key);
+            o.Put(nameof(name), name);
+            o.Put(nameof(subtype), subtype);
+            o.Put(nameof(roles), roles);
         }
     }
 }

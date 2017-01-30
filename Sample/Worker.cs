@@ -1,5 +1,4 @@
-﻿using System;
-using Greatbone.Core;
+﻿using Greatbone.Core;
 
 namespace Greatbone.Sample
 {
@@ -16,20 +15,20 @@ namespace Greatbone.Sample
 
         internal string tel;
 
-        public void Load(ISource src, byte flags = 0)
+        public void ReadData(IDataInput i, byte flags = 0)
         {
-            src.Get(nameof(id), ref id);
-            src.Get(nameof(name), ref name);
-            src.Get(nameof(roles), ref roles);
-            src.Get(nameof(tel), ref tel);
+            i.Get(nameof(id), ref id);
+            i.Get(nameof(name), ref name);
+            i.Get(nameof(roles), ref roles);
+            i.Get(nameof(tel), ref tel);
         }
 
-        public void Dump<R>(ISink<R> snk, byte flags = 0) where R : ISink<R>
+        public void WriteData<R>(IDataOutput<R> o, byte flags = 0) where R : IDataOutput<R>
         {
-            snk.Put(nameof(id), id);
-            snk.Put(nameof(name), name);
-            snk.Put(nameof(roles), roles);
-            snk.Put(nameof(tel), tel);
+            o.Put(nameof(id), id);
+            o.Put(nameof(name), name);
+            o.Put(nameof(roles), roles);
+            o.Put(nameof(tel), tel);
         }
 
         public Token ToToken()

@@ -10,7 +10,7 @@ namespace Greatbone.Core
     ///
     /// An environment for database operations based on current service.
     ///
-    public class DbContext : IDisposable, IModel, ISourceSet
+    public class DbContext : IDisposable, IModel, IDataSetInput
     {
         readonly string shard;
 
@@ -308,7 +308,7 @@ namespace Greatbone.Core
         public D ToObject<D>(byte flags = 0) where D : IData, new()
         {
             D obj = new D();
-            obj.Load(this, flags);
+            obj.ReadData(this, flags);
 
             // add shard if any
             IShardable shardable = obj as IShardable;
@@ -331,7 +331,7 @@ namespace Greatbone.Core
             while (Next())
             {
                 D obj = new D();
-                obj.Load(this, flags);
+                obj.ReadData(this, flags);
 
                 // add shard if any
                 IShardable shardable = obj as IShardable;
@@ -515,7 +515,7 @@ namespace Greatbone.Core
                 JsonParse p = new JsonParse(str);
                 JObj jobj = (JObj)p.Parse();
                 v = new D();
-                v.Load(jobj, flags);
+                v.ReadData(jobj, flags);
 
                 // add shard if any
                 IShardable shardable = v as IShardable;
@@ -612,7 +612,7 @@ namespace Greatbone.Core
                 {
                     JObj jo = ja[i];
                     D obj = new D();
-                    obj.Load(jo, flags);
+                    obj.ReadData(jo, flags);
 
                     // add shard if any
                     IShardable shardable = obj as IShardable;
@@ -642,7 +642,7 @@ namespace Greatbone.Core
                 {
                     JObj jo = jarr[i];
                     D obj = new D();
-                    obj.Load(jo, flags);
+                    obj.ReadData(jo, flags);
 
                     // add shard if any
                     IShardable shardable = obj as IShardable;
@@ -697,7 +697,7 @@ namespace Greatbone.Core
             BufferUtility.Return(content); // back to pool
         }
 
-        public void Dump<R>(ISink<R> snk) where R : ISink<R>
+        public void WriteData<R>(IDataOutput<R> dout) where R : IDataOutput<R>
         {
             if (one)
             {
@@ -720,22 +720,22 @@ namespace Greatbone.Core
 
                 while (Next())
                 {
-                    snk.PutEnter();
+                    dout.PutEnter();
                     for (int i = 0; i < cols.Length; i++)
                     {
                         if (reader.IsDBNull(i)) continue;
 
                         if (cols[i].type == typeof(string))
                         {
-                            snk.Put(cols[i].name, reader.GetString(i));
+                            dout.Put(cols[i].name, reader.GetString(i));
                         }
                     }
-                    snk.PutExit();
+                    dout.PutExit();
                 }
             }
         }
 
-        public C Dump<C>() where C : IContent, ISink<C>, new()
+        public C Dump<C>() where C : IContent, IDataOutput<C>, new()
         {
             C cont = new C();
             cont.Put(null, this);

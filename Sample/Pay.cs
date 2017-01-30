@@ -16,25 +16,25 @@ namespace Greatbone.Sample
         internal string payid; // payment id
         internal int status;
 
-        public void Load(ISource src, byte flags = 0)
+        public void ReadData(IDataInput i, byte flags = 0)
         {
-            src.Get(nameof(id), ref id);
-            src.Get(nameof(shopid), ref shopid);
-            src.Get(nameof(time), ref time);
-            src.Get(nameof(custid), ref custid);
-            src.Get(nameof(cust), ref cust);
-            src.Get(nameof(tel), ref tel);
-            src.Get(nameof(status), ref status);
+            i.Get(nameof(id), ref id);
+            i.Get(nameof(shopid), ref shopid);
+            i.Get(nameof(time), ref time);
+            i.Get(nameof(custid), ref custid);
+            i.Get(nameof(cust), ref cust);
+            i.Get(nameof(tel), ref tel);
+            i.Get(nameof(status), ref status);
         }
 
-        public void Dump<R>(ISink<R> snk, byte flags = 0) where R : ISink<R>
+        public void WriteData<R>(IDataOutput<R> o, byte flags = 0) where R : IDataOutput<R>
         {
-            snk.Put(nameof(id), id);
-            snk.Put(nameof(shopid), shopid);
-            snk.Put(nameof(time), time);
-            snk.Put(nameof(custid), custid);
-            snk.Put(nameof(tel), tel);
-            snk.Put(nameof(status), status);
+            o.Put(nameof(id), id);
+            o.Put(nameof(shopid), shopid);
+            o.Put(nameof(time), time);
+            o.Put(nameof(custid), custid);
+            o.Put(nameof(tel), tel);
+            o.Put(nameof(status), status);
         }
 
     }

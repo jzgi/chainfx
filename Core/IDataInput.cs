@@ -7,7 +7,7 @@ namespace Greatbone.Core
     ///
     /// Represents A DAT source for load.
     ///
-    public interface ISource
+    public interface IDataInput
     {
         bool Get(string name, ref bool v);
 

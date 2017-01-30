@@ -7,7 +7,7 @@ namespace Greatbone.Core
     ///
     /// To generate a UTF-8 encoded JSON document. An extension of putting byte array is supported.
     ///
-    public class JsonContent : DynamicContent, ISink<JsonContent>
+    public class JsonContent : DynamicContent, IDataOutput<JsonContent>
     {
         // starting positions of each level
         readonly int[] counts;
@@ -324,7 +324,7 @@ namespace Greatbone.Core
                     Put("#", shard);
                 }
 
-                v.Dump(this, flags);
+                v.WriteData(this, flags);
                 Add('}');
                 level--; // exit
             }
@@ -352,7 +352,7 @@ namespace Greatbone.Core
 
                 Add(v.Single ? '{' : '[');
 
-                v.Dump(this);
+                v.WriteData(this);
 
                 Add(v.Single ? '}' : ']');
 

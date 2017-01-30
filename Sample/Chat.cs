@@ -69,18 +69,18 @@ namespace Greatbone.Sample
             }
         }
 
-        public void Load(ISource src, byte flags = 0)
+        public void ReadData(IDataInput i, byte flags = 0)
         {
-            src.Get(nameof(userwx), ref userwx);
-            src.Get(nameof(messages), ref messages);
-            src.Get(nameof(status), ref status);
+            i.Get(nameof(userwx), ref userwx);
+            i.Get(nameof(messages), ref messages);
+            i.Get(nameof(status), ref status);
         }
 
-        public void Dump<R>(ISink<R> snk, byte flags = 0) where R : ISink<R>
+        public void WriteData<R>(IDataOutput<R> o, byte flags = 0) where R : IDataOutput<R>
         {
-            snk.Put(nameof(userwx), userwx);
-            snk.Put(nameof(messages), messages);
-            snk.Put(nameof(status), status);
+            o.Put(nameof(userwx), userwx);
+            o.Put(nameof(messages), messages);
+            o.Put(nameof(status), status);
         }
     }
 }

@@ -206,7 +206,7 @@ namespace Greatbone.Core
                 string ctyp = Header("Content-Type");
                 entity = WebUtility.ParseContent(ctyp, buffer, 0, count);
             }
-            ISource src = entity as ISource;
+            IDataInput src = entity as IDataInput;
             if (src == null)
             {
                 return default(D);
@@ -233,7 +233,7 @@ namespace Greatbone.Core
                 string ctyp = Header("Content-Type");
                 entity = WebUtility.ParseContent(ctyp, buffer, 0, count);
             }
-            return (entity as ISourceSet)?.ToArray<D>(flags);
+            return (entity as IDataSetInput)?.ToArray<D>(flags);
         }
 
         public async Task<List<D>> ReadListAsync<D>(byte flags = 0) where D : IData, new()
@@ -255,7 +255,7 @@ namespace Greatbone.Core
                 string ctyp = Header("Content-Type");
                 entity = WebUtility.ParseContent(ctyp, buffer, 0, count);
             }
-            return (entity as ISourceSet)?.ToList<D>(flags);
+            return (entity as IDataSetInput)?.ToList<D>(flags);
         }
 
         //

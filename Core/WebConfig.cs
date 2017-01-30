@@ -57,7 +57,7 @@ namespace Greatbone.Core
 
         public JObj Extra => Model?["extra"];
 
-        public void Load(ISource src, byte flags = 0)
+        public void ReadData(IDataInput src, byte flags = 0)
         {
             src.Get(nameof(shard), ref shard);
             src.Get(nameof(addresses), ref addresses);
@@ -65,7 +65,7 @@ namespace Greatbone.Core
             src.Get(nameof(logging), ref logging);
         }
 
-        public void Dump<R>(ISink<R> snk, byte flags = 0) where R : ISink<R>
+        public void WriteData<R>(IDataOutput<R> snk, byte flags = 0) where R : IDataOutput<R>
         {
             snk.Put(nameof(shard), shard);
             snk.Put(nameof(addresses), addresses);
@@ -85,7 +85,7 @@ namespace Greatbone.Core
                 if (jo != null)
                 {
                     Model = jo;
-                    Load(jo); // override
+                    ReadData(jo); // override
                     return (File = true).Value;
                 }
             }

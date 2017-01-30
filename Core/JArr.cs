@@ -7,7 +7,7 @@ namespace Greatbone.Core
     ///
     /// A JSON array model.
     ///
-    public class JArr : IModel, ISourceSet
+    public class JArr : IModel, IDataSetInput
     {
         // array elements
         JMem[] elements;
@@ -41,7 +41,7 @@ namespace Greatbone.Core
 
         public bool Single => false;
 
-        public void Dump<R>(ISink<R> snk) where R : ISink<R>
+        public void WriteData<R>(IDataOutput<R> dout) where R : IDataOutput<R>
         {
             for (int i = 0; i < count; i++)
             {
@@ -49,39 +49,39 @@ namespace Greatbone.Core
                 JType t = mem.type;
                 if (t == JType.Array)
                 {
-                    snk.Put(null, (JArr)mem);
+                    dout.Put(null, (JArr)mem);
                 }
                 else if (t == JType.Object)
                 {
-                    snk.Put(null, (JObj)mem);
+                    dout.Put(null, (JObj)mem);
                 }
                 else if (t == JType.String)
                 {
-                    snk.Put(null, (string)mem);
+                    dout.Put(null, (string)mem);
                 }
                 else if (t == JType.Number)
                 {
-                    snk.Put(null, (JNumber)mem);
+                    dout.Put(null, (JNumber)mem);
                 }
                 else if (t == JType.True)
                 {
-                    snk.Put(null, true);
+                    dout.Put(null, true);
                 }
                 else if (t == JType.False)
                 {
-                    snk.Put(null, false);
+                    dout.Put(null, false);
                 }
                 else if (t == JType.Null)
                 {
-                    snk.PutNull(null);
+                    dout.PutNull(null);
                 }
             }
         }
 
-        public C Dump<C>() where C : IContent, ISink<C>, new()
+        public C Dump<C>() where C : IContent, IDataOutput<C>, new()
         {
             C cont = new C();
-            Dump(cont);
+            WriteData(cont);
             return cont;
         }
 
@@ -229,7 +229,7 @@ namespace Greatbone.Core
         public D ToObject<D>(byte flags = 0) where D : IData, new()
         {
             D obj = new D();
-            obj.Load(this, flags);
+            obj.ReadData(this, flags);
             return obj;
         }
 
@@ -239,7 +239,7 @@ namespace Greatbone.Core
             for (int i = 0; i < arr.Length; i++)
             {
                 D obj = new D();
-                obj.Load((JObj)elements[i], flags);
+                obj.ReadData((JObj)elements[i], flags);
                 arr[i] = obj;
             }
             return arr;
@@ -251,7 +251,7 @@ namespace Greatbone.Core
             for (int i = 0; i < count; i++)
             {
                 D obj = new D();
-                obj.Load((JObj)elements[i], flags);
+                obj.ReadData((JObj)elements[i], flags);
                 lst.Add(obj);
             }
             return lst;

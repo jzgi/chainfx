@@ -7,7 +7,7 @@ namespace Greatbone.Core
     ///
     /// For dynamical HTML5 content generation Tooled with Pure.CSS
     ///
-    public class HtmlContent : DynamicContent, ISink<HtmlContent>, IMenu, ISelectOptions
+    public class HtmlContent : DynamicContent, IDataOutput<HtmlContent>, IMenu, ISelectOptions
     {
         const int InitialCapacity = 8 * 1024;
 

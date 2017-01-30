@@ -30,36 +30,36 @@ namespace Greatbone.Sample
 
         internal int sold; // total sold 
 
-        public void Load(ISource src, byte flags = 0)
+        public void ReadData(IDataInput i, byte flags = 0)
         {
-            src.Get(nameof(shopid), ref shopid);
-            src.Get(nameof(name), ref name);
-            src.Get(nameof(unit), ref unit);
+            i.Get(nameof(shopid), ref shopid);
+            i.Get(nameof(name), ref name);
+            i.Get(nameof(unit), ref unit);
             if (flags.Has(BINARY))
             {
-                src.Get(nameof(icon), ref icon);
+                i.Get(nameof(icon), ref icon);
             }
-            src.Get(nameof(oprice), ref oprice);
-            src.Get(nameof(price), ref price);
-            src.Get(nameof(min), ref min);
-            src.Get(nameof(step), ref step);
-            src.Get(nameof(sold), ref sold);
+            i.Get(nameof(oprice), ref oprice);
+            i.Get(nameof(price), ref price);
+            i.Get(nameof(min), ref min);
+            i.Get(nameof(step), ref step);
+            i.Get(nameof(sold), ref sold);
         }
 
-        public void Dump<R>(ISink<R> snk, byte flags = 0) where R : ISink<R>
+        public void WriteData<R>(IDataOutput<R> o, byte flags = 0) where R : IDataOutput<R>
         {
-            snk.Put(nameof(shopid), shopid);
-            snk.Put(nameof(name), name);
-            snk.Put(nameof(unit), unit);
+            o.Put(nameof(shopid), shopid);
+            o.Put(nameof(name), name);
+            o.Put(nameof(unit), unit);
             if (flags.Has(BINARY))
             {
-                snk.Put(nameof(icon), icon);
+                o.Put(nameof(icon), icon);
             }
-            snk.Put(nameof(oprice), oprice);
-            snk.Put(nameof(price), price);
-            snk.Put(nameof(min), min);
-            snk.Put(nameof(step), step);
-            snk.Put(nameof(sold), sold);
+            o.Put(nameof(oprice), oprice);
+            o.Put(nameof(price), price);
+            o.Put(nameof(min), min);
+            o.Put(nameof(step), step);
+            o.Put(nameof(sold), sold);
         }
     }
 }

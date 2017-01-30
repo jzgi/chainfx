@@ -1,6 +1,4 @@
-﻿using System.Text;
-
-namespace Greatbone.Core
+﻿namespace Greatbone.Core
 {
     ///
     /// DB configuration embedded in WebConfig.
@@ -20,7 +18,7 @@ namespace Greatbone.Core
         // whether to create event-queue tables/indexes
         public bool queue;
 
-        public void Load(ISource src, byte flags = 0)
+        public void ReadData(IDataInput src, byte flags = 0)
         {
             src.Get(nameof(host), ref host);
             src.Get(nameof(port), ref port);
@@ -30,7 +28,7 @@ namespace Greatbone.Core
             src.Get(nameof(queue), ref queue);
         }
 
-        public void Dump<R>(ISink<R> snk, byte flags = 0) where R : ISink<R>
+        public void WriteData<R>(IDataOutput<R> snk, byte flags = 0) where R : IDataOutput<R>
         {
             snk.Put(nameof(host), host);
             snk.Put(nameof(port), port);
