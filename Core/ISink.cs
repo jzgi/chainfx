@@ -9,6 +9,10 @@ namespace Greatbone.Core
     ///
     public interface ISink<out R> where R : ISink<R>
     {
+        R PutEnter();
+
+        R PutExit();
+
         R PutNull(string name);
 
         R Put(string name, bool v);

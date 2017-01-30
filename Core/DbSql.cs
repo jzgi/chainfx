@@ -489,5 +489,15 @@ namespace Greatbone.Core
         {
             throw new NotImplementedException();
         }
+
+        public DbSql PutEnter()
+        {
+            throw new NotImplementedException();
+        }
+
+        public DbSql PutExit()
+        {
+            throw new NotImplementedException();
+        }
     }
 }

@@ -6,9 +6,9 @@
     public interface IModel
     {
         ///
-        /// This is single object.
+        /// This includes multiple objects.
         ///
-        bool One { get; }
+        bool Single { get; }
 
         ///
         /// Dump to the given sink.

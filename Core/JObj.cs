@@ -344,7 +344,7 @@ namespace Greatbone.Core
             return false;
         }
 
-        public bool One => true;
+        public bool Single => true;
 
         public void Dump<R>(ISink<R> snk) where R : ISink<R>
         {

@@ -39,7 +39,7 @@ namespace Greatbone.Core
             elements[count++] = mem;
         }
 
-        public bool One => false;
+        public bool Single => false;
 
         public void Dump<R>(ISink<R> snk) where R : ISink<R>
         {

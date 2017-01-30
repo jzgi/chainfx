@@ -303,5 +303,15 @@ namespace Greatbone.Core
         {
             throw new NotImplementedException();
         }
+
+        public XmlContent PutEnter()
+        {
+            throw new NotImplementedException();
+        }
+
+        public XmlContent PutExit()
+        {
+            throw new NotImplementedException();
+        }
     }
 }

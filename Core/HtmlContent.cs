@@ -1172,6 +1172,16 @@ namespace Greatbone.Core
         {
             throw new NotImplementedException();
         }
+
+        public HtmlContent PutEnter()
+        {
+            throw new NotImplementedException();
+        }
+
+        public HtmlContent PutExit()
+        {
+            throw new NotImplementedException();
+        }
     }
 
 

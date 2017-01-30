@@ -328,5 +328,15 @@ namespace Greatbone.Core
         {
             throw new NotImplementedException();
         }
+
+        public FormMpContent PutEnter()
+        {
+            throw new NotImplementedException();
+        }
+
+        public FormMpContent PutExit()
+        {
+            throw new NotImplementedException();
+        }
     }
 }

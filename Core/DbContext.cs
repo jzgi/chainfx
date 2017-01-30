@@ -174,7 +174,7 @@ namespace Greatbone.Core
             }
         }
 
-        public bool One => one;
+        public bool Single => one;
 
         public bool NextResult()
         {
@@ -307,17 +307,17 @@ namespace Greatbone.Core
 
         public D ToObject<D>(byte flags = 0) where D : IData, new()
         {
-            D dat = new D();
-            dat.Load(this, flags);
+            D obj = new D();
+            obj.Load(this, flags);
 
             // add shard if any
-            IShardable shardable = dat as IShardable;
+            IShardable shardable = obj as IShardable;
             if (shardable != null)
             {
                 shardable.Shard = shard;
             }
 
-            return dat;
+            return obj;
         }
 
         public D[] ToArray<D>(byte flags = 0) where D : IData, new()
@@ -330,17 +330,17 @@ namespace Greatbone.Core
             List<D> lst = new List<D>(32);
             while (Next())
             {
-                D dat = new D();
-                dat.Load(this, flags);
+                D obj = new D();
+                obj.Load(this, flags);
 
                 // add shard if any
-                IShardable shardable = dat as IShardable;
+                IShardable shardable = obj as IShardable;
                 if (shardable != null)
                 {
                     shardable.Shard = shard;
                 }
 
-                lst.Add(dat);
+                lst.Add(obj);
             }
             return lst;
         }
@@ -708,12 +708,37 @@ namespace Greatbone.Core
                     cols[i].type = reader.GetFieldType(i);
                 }
             }
+            else
+            {
+                ColumnDesc[] cols = new ColumnDesc[reader.FieldCount];
+                for (int i = 0; i < cols.Length; i++)
+                {
+                    cols[i].name = reader.GetName(i);
+                    cols[i].type = reader.GetFieldType(i);
+                    cols[i].type2 = reader.GetDataTypeName(i);
+                }
+
+                while (Next())
+                {
+                    snk.PutEnter();
+                    for (int i = 0; i < cols.Length; i++)
+                    {
+                        if (reader.IsDBNull(i)) continue;
+
+                        if (cols[i].type == typeof(string))
+                        {
+                            snk.Put(cols[i].name, reader.GetString(i));
+                        }
+                    }
+                    snk.PutExit();
+                }
+            }
         }
 
         public C Dump<C>() where C : IContent, ISink<C>, new()
         {
             C cont = new C();
-            Dump(cont);
+            cont.Put(null, this);
             return cont;
         }
 
@@ -734,6 +759,8 @@ namespace Greatbone.Core
             internal string name;
 
             internal Type type;
+
+            internal string type2;
         }
     }
 }

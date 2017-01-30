@@ -24,7 +24,7 @@ namespace Greatbone.Core
         ///
         public byte[] Buffer { get; internal set; }
 
-        public bool One => true;
+        public bool Single => true;
 
         public void Add(string name, string v)
         {
