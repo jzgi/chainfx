@@ -3,7 +3,7 @@ using System;
 namespace Greatbone.Core
 {
     ///
-    /// An object capable of being a roll structure member.
+    /// An object having an identifying key.
     ///
     public interface IKeyed<K> where K : IComparable<K>
     {

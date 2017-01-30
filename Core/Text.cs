@@ -29,7 +29,7 @@ namespace Greatbone.Core
 
         public int Count => count;
 
-        public bool Single => one;
+        public bool Multi => one;
 
         public void Add(char c)
         {

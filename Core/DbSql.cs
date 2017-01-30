@@ -118,6 +118,22 @@ namespace Greatbone.Core
             ordinal++;
         }
 
+
+        public DbSql PutEnter(bool multi)
+        {
+            throw new NotImplementedException();
+        }
+
+        public DbSql PutExit(bool multi)
+        {
+            throw new NotImplementedException();
+        }
+
+        public DbSql PutRaw(string name, string raw)
+        {
+            throw new NotImplementedException();
+        }
+
         public DbSql Put(string name, bool v)
         {
             if (name != null)
@@ -490,14 +506,5 @@ namespace Greatbone.Core
             throw new NotImplementedException();
         }
 
-        public DbSql PutEnter()
-        {
-            throw new NotImplementedException();
-        }
-
-        public DbSql PutExit()
-        {
-            throw new NotImplementedException();
-        }
     }
 }

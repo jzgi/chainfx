@@ -70,17 +70,17 @@ namespace Greatbone.Core
         // SINK
         //
 
-        public JsonContent PutEnter()
+        public JsonContent PutEnter(bool multi)
         {
             counts[++level] = 0; // enter
-            Add('[');
-            Add('{');
+            Add(multi ? '[' : '{');
             return this;
         }
 
-        public JsonContent PutExit()
+        public JsonContent PutExit(bool multi)
         {
-            Add('}');
+            Add(multi ? ']' : '}');
+            level--; // exit
             return this;
         }
 
@@ -95,6 +95,20 @@ namespace Greatbone.Core
                 Add(':');
             }
             Add("null");
+            return this;
+        }
+
+        public JsonContent PutRaw(string name, string raw)
+        {
+            if (counts[level]++ > 0) Add(',');
+            if (name != null)
+            {
+                Add('"');
+                Add(name);
+                Add('"');
+                Add(':');
+            }
+            Add(raw ?? "null");
             return this;
         }
 
@@ -348,15 +362,7 @@ namespace Greatbone.Core
             }
             else
             {
-                counts[++level] = 0; // enter
-
-                Add(v.Single ? '{' : '[');
-
                 v.WriteData(this);
-
-                Add(v.Single ? '}' : ']');
-
-                level--; // exit
             }
             return this;
         }

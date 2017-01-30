@@ -31,9 +31,25 @@ namespace Greatbone.Core
             Add(name);
             Add("\"\r\n\r\n");
         }
+
+        public FormMpContent PutEnter(bool multi)
+        {
+            throw new NotImplementedException();
+        }
+
+        public FormMpContent PutExit(bool multi)
+        {
+            throw new NotImplementedException();
+        }
+
         public FormMpContent PutNull(string name)
         {
             return this;
+        }
+
+        public FormMpContent PutRaw(string name, string raw)
+        {
+            throw new NotImplementedException();
         }
 
         public FormMpContent Put(string name, bool v)
@@ -325,16 +341,6 @@ namespace Greatbone.Core
         }
 
         public FormMpContent Put(string name, IModel v)
-        {
-            throw new NotImplementedException();
-        }
-
-        public FormMpContent PutEnter()
-        {
-            throw new NotImplementedException();
-        }
-
-        public FormMpContent PutExit()
         {
             throw new NotImplementedException();
         }

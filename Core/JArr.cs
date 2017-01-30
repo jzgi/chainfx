@@ -39,7 +39,7 @@ namespace Greatbone.Core
             elements[count++] = mem;
         }
 
-        public bool Single => false;
+        public bool Multi => false;
 
         public void WriteData<R>(IDataOutput<R> dout) where R : IDataOutput<R>
         {

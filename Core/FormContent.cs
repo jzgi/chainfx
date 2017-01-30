@@ -58,6 +58,22 @@ namespace Greatbone.Core
         // SINK
         //
 
+
+        public FormContent PutEnter(bool multi)
+        {
+            throw new NotImplementedException();
+        }
+
+        public FormContent PutExit(bool multi)
+        {
+            throw new NotImplementedException();
+        }
+
+        public FormContent PutRaw(string name, string raw)
+        {
+            throw new NotImplementedException();
+        }
+
         public FormContent PutNull(string name)
         {
             if (name != null)
@@ -511,16 +527,6 @@ namespace Greatbone.Core
         }
 
         public FormContent Put(string name, IModel v)
-        {
-            throw new NotImplementedException();
-        }
-
-        public FormContent PutEnter()
-        {
-            throw new NotImplementedException();
-        }
-
-        public FormContent PutExit()
         {
             throw new NotImplementedException();
         }

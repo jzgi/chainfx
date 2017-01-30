@@ -43,7 +43,7 @@ namespace Greatbone.Core
                     char c = key[i];
                     if (c >= 'a' && c <= 'z')
                     {
-                        c = (char) (c - 32);
+                        c = (char)(c - 32);
                     }
                     Add(c);
                 }
@@ -874,7 +874,23 @@ namespace Greatbone.Core
         // ISINK
         //
 
+
+        public HtmlContent PutEnter(bool multi)
+        {
+            throw new NotImplementedException();
+        }
+
+        public HtmlContent PutExit(bool multi)
+        {
+            throw new NotImplementedException();
+        }
+
         public HtmlContent PutNull(string name)
+        {
+            throw new NotImplementedException();
+        }
+
+        public HtmlContent PutRaw(string name, string raw)
         {
             throw new NotImplementedException();
         }

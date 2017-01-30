@@ -32,6 +32,21 @@ namespace Greatbone.Core
         }
 
 
+        public DbParameters PutEnter(bool multi)
+        {
+            throw new NotImplementedException();
+        }
+
+        public DbParameters PutExit(bool multi)
+        {
+            throw new NotImplementedException();
+        }
+
+        public DbParameters PutRaw(string name, string raw)
+        {
+            throw new NotImplementedException();
+        }
+
         public DbParameters PutNull(string name)
         {
             if (name == null)
@@ -493,16 +508,6 @@ namespace Greatbone.Core
         }
 
         public DbParameters Put(string name, IModel v)
-        {
-            throw new NotImplementedException();
-        }
-
-        public DbParameters PutEnter()
-        {
-            throw new NotImplementedException();
-        }
-
-        public DbParameters PutExit()
         {
             throw new NotImplementedException();
         }

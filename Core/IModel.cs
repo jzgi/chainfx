@@ -6,14 +6,14 @@
     public interface IModel
     {
         ///
-        /// This includes multiple objects.
+        /// This model includes multiple data items.
         ///
-        bool Single { get; }
+        bool Multi { get; }
 
         ///
-        /// Dump to the given sink.
+        /// Write data into the given output object.
         ///
-        void WriteData<R>(IDataOutput<R> snk) where R : IDataOutput<R>;
+        void WriteData<R>(IDataOutput<R> o) where R : IDataOutput<R>;
 
         ///
         /// Dump as specified content.

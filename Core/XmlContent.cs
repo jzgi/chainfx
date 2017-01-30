@@ -70,7 +70,22 @@ namespace Greatbone.Core
             Add('>');
         }
 
+        public XmlContent PutEnter(bool multi)
+        {
+            throw new NotImplementedException();
+        }
+
+        public XmlContent PutExit(bool multi)
+        {
+            throw new NotImplementedException();
+        }
+
         public XmlContent PutNull(string name)
+        {
+            throw new NotImplementedException();
+        }
+
+        public XmlContent PutRaw(string name, string raw)
         {
             throw new NotImplementedException();
         }
@@ -304,14 +319,5 @@ namespace Greatbone.Core
             throw new NotImplementedException();
         }
 
-        public XmlContent PutEnter()
-        {
-            throw new NotImplementedException();
-        }
-
-        public XmlContent PutExit()
-        {
-            throw new NotImplementedException();
-        }
     }
 }

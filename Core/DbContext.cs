@@ -24,7 +24,7 @@ namespace Greatbone.Core
 
         NpgsqlDataReader reader;
 
-        bool one;
+        bool multi;
 
         bool disposed;
 
@@ -80,21 +80,21 @@ namespace Greatbone.Core
             ordinal = 0;
         }
 
-        public bool QueryOne(DbSql sql, Action<DbParameters> p = null, bool prepare = true)
+        public bool QueryUn(DbSql sql, Action<DbParameters> p = null, bool prepare = true)
         {
-            bool v = QueryOne(sql.ToString(), p, prepare);
+            bool v = QueryUn(sql.ToString(), p, prepare);
             BufferUtility.Return(sql);
             return v;
         }
 
-        public bool QueryOne(string cmdtext, Action<DbParameters> p = null, bool prepare = true)
+        public bool QueryUn(string cmdtext, Action<DbParameters> p = null, bool prepare = true)
         {
             if (connection.State != ConnectionState.Open)
             {
                 connection.Open();
             }
             Clear();
-            one = true;
+            multi = false;
             command.CommandText = cmdtext;
             command.CommandType = CommandType.Text;
             if (p != null)
@@ -120,7 +120,7 @@ namespace Greatbone.Core
                 connection.Open();
             }
             Clear();
-            one = false;
+            multi = true;
             command.CommandText = cmdtext;
             command.CommandType = CommandType.Text;
             if (p != null)
@@ -139,7 +139,7 @@ namespace Greatbone.Core
                 connection.Open();
             }
             Clear();
-            one = false;
+            multi = true;
             command.CommandText = cmdtext;
             command.CommandType = CommandType.Text;
             if (p != null)
@@ -174,7 +174,7 @@ namespace Greatbone.Core
             }
         }
 
-        public bool Single => one;
+        public bool Multi => multi;
 
         public bool NextResult()
         {
@@ -513,9 +513,9 @@ namespace Greatbone.Core
             {
                 string str = reader.GetString(ord);
                 JsonParse p = new JsonParse(str);
-                JObj jobj = (JObj)p.Parse();
+                JObj jo = (JObj)p.Parse();
                 v = new D();
-                v.ReadData(jobj, flags);
+                v.ReadData(jo, flags);
 
                 // add shard if any
                 IShardable shardable = v as IShardable;
@@ -635,12 +635,12 @@ namespace Greatbone.Core
             {
                 string str = reader.GetString(ord);
                 JsonParse p = new JsonParse(str);
-                JArr jarr = (JArr)p.Parse();
-                int len = jarr.Count;
+                JArr ja = (JArr)p.Parse();
+                int len = ja.Count;
                 v = new List<D>(len + 8);
                 for (int i = 0; i < len; i++)
                 {
-                    JObj jo = jarr[i];
+                    JObj jo = ja[i];
                     D obj = new D();
                     obj.ReadData(jo, flags);
 
@@ -697,9 +697,9 @@ namespace Greatbone.Core
             BufferUtility.Return(content); // back to pool
         }
 
-        public void WriteData<R>(IDataOutput<R> dout) where R : IDataOutput<R>
+        public void WriteData<R>(IDataOutput<R> o) where R : IDataOutput<R>
         {
-            if (one)
+            if (!multi)
             {
                 ColumnDesc[] cols = new ColumnDesc[reader.FieldCount];
                 for (int i = 0; i < cols.Length; i++)
@@ -715,23 +715,34 @@ namespace Greatbone.Core
                 {
                     cols[i].name = reader.GetName(i);
                     cols[i].type = reader.GetFieldType(i);
-                    cols[i].type2 = reader.GetDataTypeName(i);
+                    cols[i].oid = reader.GetDataTypeOID(i);
                 }
 
+                o.PutEnter(true);
                 while (Next())
                 {
-                    dout.PutEnter();
+                    o.PutEnter(false);
                     for (int i = 0; i < cols.Length; i++)
                     {
-                        if (reader.IsDBNull(i)) continue;
-
-                        if (cols[i].type == typeof(string))
+                        if (reader.IsDBNull(i))
                         {
-                            dout.Put(cols[i].name, reader.GetString(i));
+                            o.PutNull(cols[i].name);
+                            continue;
+                        };
+
+                        uint oid = cols[i].oid;
+                        if (oid == 1043 || oid == 1042)
+                        {
+                            o.Put(cols[i].name, reader.GetString(i));
+                        }
+                        else if (oid == 790) // money
+                        {
+                            o.Put(cols[i].name, reader.GetDecimal(i));
                         }
                     }
-                    dout.PutExit();
+                    o.PutExit(false);
                 }
+                o.PutExit(true);
             }
         }
 
@@ -760,7 +771,7 @@ namespace Greatbone.Core
 
             internal Type type;
 
-            internal string type2;
+            internal uint oid;
         }
     }
 }

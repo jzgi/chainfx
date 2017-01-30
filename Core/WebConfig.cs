@@ -57,20 +57,20 @@ namespace Greatbone.Core
 
         public JObj Extra => Model?["extra"];
 
-        public void ReadData(IDataInput src, byte flags = 0)
+        public void ReadData(IDataInput i, byte flags = 0)
         {
-            src.Get(nameof(shard), ref shard);
-            src.Get(nameof(addresses), ref addresses);
-            src.Get(nameof(db), ref db);
-            src.Get(nameof(logging), ref logging);
+            i.Get(nameof(shard), ref shard);
+            i.Get(nameof(addresses), ref addresses);
+            i.Get(nameof(db), ref db);
+            i.Get(nameof(logging), ref logging);
         }
 
-        public void WriteData<R>(IDataOutput<R> snk, byte flags = 0) where R : IDataOutput<R>
+        public void WriteData<R>(IDataOutput<R> o, byte flags = 0) where R : IDataOutput<R>
         {
-            snk.Put(nameof(shard), shard);
-            snk.Put(nameof(addresses), addresses);
-            snk.Put(nameof(db), db);
-            snk.Put(nameof(logging), logging);
+            o.Put(nameof(shard), shard);
+            o.Put(nameof(addresses), addresses);
+            o.Put(nameof(db), db);
+            o.Put(nameof(logging), logging);
         }
 
         ///

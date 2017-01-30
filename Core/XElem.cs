@@ -28,7 +28,7 @@ namespace Greatbone.Core
 
         public bool Flat { get; set; } = true;
 
-        public bool Single
+        public bool Multi
         {
             get
             {

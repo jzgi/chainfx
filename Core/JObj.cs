@@ -344,7 +344,7 @@ namespace Greatbone.Core
             return false;
         }
 
-        public bool Single => true;
+        public bool Multi => true;
 
         public void WriteData<R>(IDataOutput<R> dout) where R : IDataOutput<R>
         {
