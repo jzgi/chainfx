@@ -7,7 +7,7 @@ namespace Greatbone.Core
     ///
     /// A JSON array model.
     ///
-    public class JArr : IModel, IDataInput
+    public class JArr : IDataInput
     {
         // array elements
         JMem[] elements;

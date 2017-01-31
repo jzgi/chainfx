@@ -501,7 +501,7 @@ namespace Greatbone.Core
             return new string(charbuf, 0, count);
         }
 
-        public DbSql Put(string name, IModel v)
+        public DbSql Put(string name, IDataInput v)
         {
             throw new NotImplementedException();
         }

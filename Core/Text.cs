@@ -1,11 +1,13 @@
 using System;
+using System.Collections.Generic;
+using NpgsqlTypes;
 
 namespace Greatbone.Core
 {
     ///
     /// A reusable string builder that supports UTF-8 decoding.
     ///
-    public class Text : IModel
+    public class Text : IDataInput
     {
         protected char[] buf;
 
@@ -108,6 +110,116 @@ namespace Greatbone.Core
         }
 
         public bool Next()
+        {
+            throw new NotImplementedException();
+        }
+
+        public bool Get(string name, ref bool v)
+        {
+            throw new NotImplementedException();
+        }
+
+        public bool Get(string name, ref short v)
+        {
+            throw new NotImplementedException();
+        }
+
+        public bool Get(string name, ref int v)
+        {
+            throw new NotImplementedException();
+        }
+
+        public bool Get(string name, ref long v)
+        {
+            throw new NotImplementedException();
+        }
+
+        public bool Get(string name, ref double v)
+        {
+            throw new NotImplementedException();
+        }
+
+        public bool Get(string name, ref decimal v)
+        {
+            throw new NotImplementedException();
+        }
+
+        public bool Get(string name, ref DateTime v)
+        {
+            throw new NotImplementedException();
+        }
+
+        public bool Get(string name, ref NpgsqlPoint v)
+        {
+            throw new NotImplementedException();
+        }
+
+        public bool Get(string name, ref char[] v)
+        {
+            throw new NotImplementedException();
+        }
+
+        public bool Get(string name, ref string v)
+        {
+            throw new NotImplementedException();
+        }
+
+        public bool Get(string name, ref byte[] v)
+        {
+            throw new NotImplementedException();
+        }
+
+        public bool Get(string name, ref ArraySegment<byte> v)
+        {
+            throw new NotImplementedException();
+        }
+
+        public bool Get<D>(string name, ref D v, byte flags = 0) where D : IData, new()
+        {
+            throw new NotImplementedException();
+        }
+
+        public bool Get(string name, ref short[] v)
+        {
+            throw new NotImplementedException();
+        }
+
+        public bool Get(string name, ref int[] v)
+        {
+            throw new NotImplementedException();
+        }
+
+        public bool Get(string name, ref long[] v)
+        {
+            throw new NotImplementedException();
+        }
+
+        public bool Get(string name, ref string[] v)
+        {
+            throw new NotImplementedException();
+        }
+
+        public bool Get<D>(string name, ref D[] v, byte flags = 0) where D : IData, new()
+        {
+            throw new NotImplementedException();
+        }
+
+        public bool Get<D>(string name, ref List<D> v, byte flags = 0) where D : IData, new()
+        {
+            throw new NotImplementedException();
+        }
+
+        public D ToObject<D>(byte flags = 0) where D : IData, new()
+        {
+            throw new NotImplementedException();
+        }
+
+        public D[] ToArray<D>(byte flags = 0) where D : IData, new()
+        {
+            throw new NotImplementedException();
+        }
+
+        public List<D> ToList<D>(byte flags = 0) where D : IData, new()
         {
             throw new NotImplementedException();
         }

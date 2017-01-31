@@ -19,7 +19,7 @@ namespace Greatbone.Core
         ///
         /// Used in both client and server to parse received content into model.
         ///
-        public static IModel ParseContent(string ctyp, byte[] buffer, int start, int count)
+        public static IDataInput ParseContent(string ctyp, byte[] buffer, int start, int count)
         {
             if (string.IsNullOrEmpty(ctyp)) return null;
 

@@ -41,7 +41,7 @@ namespace Greatbone.Core
 
         R Put(string name, IData v, byte flags = 0);
 
-        R Put(string name, IModel v);
+        R Put(string name, IDataInput v);
 
         R Put(string name, short[] v);
 

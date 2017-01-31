@@ -105,7 +105,7 @@ namespace Greatbone.Core
             return await resp.Content.ReadAsByteArrayAsync();
         }
 
-        public async Task<M> GetAsync<M>(WebActionContext ctx, string uri) where M : class, IModel
+        public async Task<M> GetAsync<M>(WebActionContext ctx, string uri) where M : class, IDataInput
         {
             HttpRequestMessage req = new HttpRequestMessage(HttpMethod.Get, uri);
             if (ctx != null)
@@ -170,14 +170,14 @@ namespace Greatbone.Core
             return SendAsync(req, HttpCompletionOption.ResponseContentRead);
         }
 
-        public Task<HttpResponseMessage> PostAsync<C>(WebActionContext ctx, string uri, IModel model) where C : IContent, IDataOutput<C>, new()
+        public Task<HttpResponseMessage> PostAsync<C>(WebActionContext ctx, string uri, IDataInput inp) where C : IContent, IDataOutput<C>, new()
         {
             HttpRequestMessage req = new HttpRequestMessage(HttpMethod.Post, uri);
             if (ctx != null)
             {
                 req.Headers.Add("Authorization", "Bearer " + ctx.TokenText);
             }
-            IContent cont = model.Dump<C>();
+            IContent cont = inp.Dump<C>();
             req.Content = (HttpContent)cont;
             req.Content.Headers.ContentType.MediaType = cont.Type;
             req.Content.Headers.ContentLength = cont.Size;

@@ -37,7 +37,7 @@ namespace Greatbone.Core
             return entity as ArraySegment<byte>?;
         }
 
-        public M As<M>() where M : class, IModel
+        public M As<M>() where M : class, IDataInput
         {
             return entity as M;
         }

@@ -507,7 +507,7 @@ namespace Greatbone.Core
             return Put(null, v);
         }
 
-        public DbParameters Put(string name, IModel v)
+        public DbParameters Put(string name, IDataInput v)
         {
             throw new NotImplementedException();
         }

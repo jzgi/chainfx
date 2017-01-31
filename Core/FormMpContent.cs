@@ -340,7 +340,7 @@ namespace Greatbone.Core
 
         }
 
-        public FormMpContent Put(string name, IModel v)
+        public FormMpContent Put(string name, IDataInput v)
         {
             throw new NotImplementedException();
         }

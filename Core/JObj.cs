@@ -7,7 +7,7 @@ namespace Greatbone.Core
     ///
     /// A JSON object model.
     ///
-    public class JObj : Roll<JMem>, IModel, IDataInput
+    public class JObj : Roll<JMem>, IDataInput
     {
         public JObj(int capacity = 16) : base(capacity)
         {

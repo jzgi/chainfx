@@ -331,7 +331,7 @@ namespace Greatbone.Core
             return this;
         }
 
-        public JsonContent Put(string name, IModel v)
+        public JsonContent Put(string name, IDataInput v)
         {
             if (counts[level]++ > 0) Add(',');
             if (name != null)
@@ -359,11 +359,11 @@ namespace Greatbone.Core
                         counts[++level] = 0; // enter an data entry
 
                         if (bgn) Add(',');
-                        
+
                         Add('{');
                         v.WriteData(this);
                         Add('}');
-                        
+
                         level--;
                         bgn = true;
                     }

@@ -7,7 +7,7 @@ namespace Greatbone.Core
     ///
     /// An XML element.
     ///
-    public class XElem : IModel, IDataInput
+    public class XElem : IDataInput
     {
         readonly string name;
 

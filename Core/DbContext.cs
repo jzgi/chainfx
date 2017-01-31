@@ -10,7 +10,7 @@ namespace Greatbone.Core
     ///
     /// An environment for database operations based on current service.
     ///
-    public class DbContext : IDisposable, IModel, IDataInput
+    public class DbContext : IDisposable, IDataInput
     {
         readonly string shard;
 
@@ -676,7 +676,7 @@ namespace Greatbone.Core
             Event(name, shard, cont);
         }
 
-        public void Event(string name, string shard, IModel model)
+        public void Event(string name, string shard, IDataInput inp)
         {
         }
 

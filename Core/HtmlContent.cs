@@ -1184,7 +1184,7 @@ namespace Greatbone.Core
             throw new NotImplementedException();
         }
 
-        public HtmlContent Put(string name, IModel v)
+        public HtmlContent Put(string name, IDataInput v)
         {
             throw new NotImplementedException();
         }

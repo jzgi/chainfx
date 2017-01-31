@@ -165,7 +165,7 @@ namespace Greatbone.Core
             return new ArraySegment<byte>(buffer, 0, count);
         }
 
-        public async Task<M> ReadAsync<M>() where M : class, IModel
+        public async Task<M> ReadAsync<M>() where M : class, IDataInput
         {
             if (entity == null && count == -1) // if not yet parse and read
             {
@@ -315,7 +315,7 @@ namespace Greatbone.Core
             MaxAge = maxage;
         }
 
-        public void Reply(int status, IModel model, bool? pub = null, int maxage = 60)
+        public void Reply(int status, IDataInput inp, bool? pub = null, int maxage = 60)
         {
             Status = status;
             // Content = model.Dump();

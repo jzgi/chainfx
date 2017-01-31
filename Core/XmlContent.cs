@@ -314,7 +314,7 @@ namespace Greatbone.Core
             throw new NotImplementedException();
         }
 
-        public XmlContent Put(string name, IModel v)
+        public XmlContent Put(string name, IDataInput v)
         {
             throw new NotImplementedException();
         }

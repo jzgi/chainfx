@@ -526,7 +526,7 @@ namespace Greatbone.Core
             return this;
         }
 
-        public FormContent Put(string name, IModel v)
+        public FormContent Put(string name, IDataInput v)
         {
             throw new NotImplementedException();
         }
