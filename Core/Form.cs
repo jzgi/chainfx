@@ -290,5 +290,15 @@ namespace Greatbone.Core
         {
             throw new NotImplementedException();
         }
+
+        public bool Get(string name, ref IDataInput v)
+        {
+            throw new NotImplementedException();
+        }
+
+        public bool Get(string name, ref Dictionary<string, string> v)
+        {
+            throw new NotImplementedException();
+        }
     }
 }

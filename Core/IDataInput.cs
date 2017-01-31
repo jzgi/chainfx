@@ -5,7 +5,7 @@ using NpgsqlTypes;
 namespace Greatbone.Core
 {
     ///
-    /// Represents A DAT source for load.
+    /// Represents a provider of data entry or entries.
     ///
     public interface IDataInput
     {
@@ -33,8 +33,6 @@ namespace Greatbone.Core
 
         bool Get(string name, ref ArraySegment<byte> v);
 
-        bool Get<D>(string name, ref D v, byte flags = 0) where D : IData, new();
-
         bool Get(string name, ref short[] v);
 
         bool Get(string name, ref int[] v);
@@ -43,11 +41,19 @@ namespace Greatbone.Core
 
         bool Get(string name, ref string[] v);
 
+        bool Get(string name, ref Dictionary<string, string> v);
+
+        bool Get<D>(string name, ref D v, byte flags = 0) where D : IData, new();
+
         bool Get<D>(string name, ref D[] v, byte flags = 0) where D : IData, new();
 
         bool Get<D>(string name, ref List<D> v, byte flags = 0) where D : IData, new();
 
         D ToObject<D>(byte flags = 0) where D : IData, new();
+
+        D[] ToArray<D>(byte flags = 0) where D : IData, new();
+
+        List<D> ToList<D>(byte flags = 0) where D : IData, new();
 
         ///
         /// Write a single (or current) data entry into the given output object.
@@ -60,7 +66,7 @@ namespace Greatbone.Core
         C Dump<C>() where C : IContent, IDataOutput<C>, new();
 
         ///
-        /// If this model includes multiple data entries.
+        /// If this includes multiple data entries.
         ///
         bool DataSet { get; }
 
@@ -68,9 +74,5 @@ namespace Greatbone.Core
         /// Move to next data entry.
         ///
         bool Next();
-
-        D[] ToArray<D>(byte flags = 0) where D : IData, new();
-
-        List<D> ToList<D>(byte flags = 0) where D : IData, new();
     }
 }

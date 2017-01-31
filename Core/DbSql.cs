@@ -506,5 +506,9 @@ namespace Greatbone.Core
             throw new NotImplementedException();
         }
 
+        public DbSql Put(string name, Dictionary<string, string> v)
+        {
+            throw new NotImplementedException();
+        }
     }
 }

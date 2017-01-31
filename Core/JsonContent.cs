@@ -566,5 +566,10 @@ namespace Greatbone.Core
             }
             return this;
         }
+
+        public JsonContent Put(string name, Dictionary<string, string> v)
+        {
+            throw new NotImplementedException();
+        }
     }
 }

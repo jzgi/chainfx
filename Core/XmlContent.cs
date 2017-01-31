@@ -319,5 +319,9 @@ namespace Greatbone.Core
             throw new NotImplementedException();
         }
 
+        public XmlContent Put(string name, Dictionary<string, string> v)
+        {
+            throw new NotImplementedException();
+        }
     }
 }

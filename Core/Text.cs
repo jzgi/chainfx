@@ -20,7 +20,8 @@ namespace Greatbone.Core
         // number of rest octets
         int rest;
 
-        bool one;
+        // comma-separated values (CSV)
+        bool csv;
 
         public Text(int capacity = 256)
         {
@@ -30,8 +31,6 @@ namespace Greatbone.Core
         }
 
         public int Count => count;
-
-        public bool DataSet => one;
 
         public void Add(char c)
         {
@@ -96,22 +95,6 @@ namespace Greatbone.Core
         public override string ToString()
         {
             return new string(buf, 0, count);
-        }
-
-        public void WriteData<R>(IDataOutput<R> snk) where R : IDataOutput<R>
-        {
-        }
-
-        public C Dump<C>() where C : IContent, IDataOutput<C>, new()
-        {
-            C cont = new C();
-            cont.Put(null, this);
-            return cont;
-        }
-
-        public bool Next()
-        {
-            throw new NotImplementedException();
         }
 
         public bool Get(string name, ref bool v)
@@ -220,6 +203,35 @@ namespace Greatbone.Core
         }
 
         public List<D> ToList<D>(byte flags = 0) where D : IData, new()
+        {
+            throw new NotImplementedException();
+        }
+
+
+        public void WriteData<R>(IDataOutput<R> snk) where R : IDataOutput<R>
+        {
+        }
+
+        public C Dump<C>() where C : IContent, IDataOutput<C>, new()
+        {
+            C cont = new C();
+            cont.Put(null, this);
+            return cont;
+        }
+
+        public bool DataSet => csv;
+
+        public bool Next()
+        {
+            throw new NotImplementedException();
+        }
+
+        public bool Get(string name, ref IDataInput v)
+        {
+            throw new NotImplementedException();
+        }
+
+        public bool Get(string name, ref Dictionary<string, string> v)
         {
             throw new NotImplementedException();
         }

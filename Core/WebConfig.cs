@@ -1,4 +1,5 @@
-﻿using System.Text;
+﻿using System.Collections.Generic;
+using System.Text;
 
 namespace Greatbone.Core
 {
@@ -32,6 +33,8 @@ namespace Greatbone.Core
         /// The logging level, default to warning (3)
         public int logging = 3;
 
+        public Dictionary<string, string> cluster;
+
         // connection string
         volatile string connstr;
 
@@ -52,9 +55,6 @@ namespace Greatbone.Core
 
         public bool? File { get; private set; }
 
-        /// The services/addresses that this service references or depends on.
-        public JObj Cluster => Model?["cluster"];
-
         public JObj Extra => Model?["extra"];
 
         public void ReadData(IDataInput i, byte flags = 0)
@@ -63,6 +63,7 @@ namespace Greatbone.Core
             i.Get(nameof(addresses), ref addresses);
             i.Get(nameof(db), ref db);
             i.Get(nameof(logging), ref logging);
+            i.Get(nameof(cluster), ref cluster);
         }
 
         public void WriteData<R>(IDataOutput<R> o, byte flags = 0) where R : IDataOutput<R>
@@ -71,6 +72,7 @@ namespace Greatbone.Core
             o.Put(nameof(addresses), addresses);
             o.Put(nameof(db), db);
             o.Put(nameof(logging), logging);
+            o.Put(nameof(cluster), cluster);
         }
 
         ///

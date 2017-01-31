@@ -1198,6 +1198,11 @@ namespace Greatbone.Core
         {
             throw new NotImplementedException();
         }
+
+        public HtmlContent Put(string name, Dictionary<string, string> v)
+        {
+            throw new NotImplementedException();
+        }
     }
 
 

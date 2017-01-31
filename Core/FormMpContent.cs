@@ -344,5 +344,10 @@ namespace Greatbone.Core
         {
             throw new NotImplementedException();
         }
+
+        public FormMpContent Put(string name, Dictionary<string, string> v)
+        {
+            throw new NotImplementedException();
+        }
     }
 }

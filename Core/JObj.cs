@@ -186,44 +186,6 @@ namespace Greatbone.Core
             return false;
         }
 
-        public bool Get<D>(string name, ref D v, byte flags = 0) where D : IData, new()
-        {
-            JMem mem;
-            if (TryGet(name, out mem))
-            {
-                JObj jobj = mem;
-                if (jobj != null)
-                {
-                    v = new D();
-                    v.ReadData(jobj);
-                }
-                return true;
-            }
-            return false;
-        }
-
-        public bool Get(string name, ref JObj v)
-        {
-            JMem mem;
-            if (TryGet(name, out mem))
-            {
-                v = mem;
-                return true;
-            }
-            return false;
-        }
-
-        public bool Get(string name, ref JArr v)
-        {
-            JMem mem;
-            if (TryGet(name, out mem))
-            {
-                v = mem;
-                return true;
-            }
-            return false;
-        }
-
         public bool Get(string name, ref short[] v)
         {
             JMem mem;
@@ -300,6 +262,44 @@ namespace Greatbone.Core
             return false;
         }
 
+        public bool Get(string name, ref Dictionary<string, string> v)
+        {
+            JMem mem;
+            if (TryGet(name, out mem))
+            {
+                if (mem.type == JType.Object)
+                {
+                    JObj jo = mem;
+                    int count = jo.Count;
+                    Dictionary<string, string> dict = new Dictionary<string, string>(count);
+                    for (int i = 0; i < count; i++)
+                    {
+                        JMem e = jo[i];
+                        dict.Add(e.Key, (string)e);
+                    }
+                    v = dict;
+                    return true;
+                }
+            }
+            return false;
+        }
+
+        public bool Get<D>(string name, ref D v, byte flags = 0) where D : IData, new()
+        {
+            JMem mem;
+            if (TryGet(name, out mem))
+            {
+                JObj jobj = mem;
+                if (jobj != null)
+                {
+                    v = new D();
+                    v.ReadData(jobj);
+                }
+                return true;
+            }
+            return false;
+        }
+
         public bool Get<D>(string name, ref D[] v, byte flags = 0) where D : IData, new()
         {
             JMem mem;
@@ -344,7 +344,22 @@ namespace Greatbone.Core
             return false;
         }
 
-        public bool DataSet => true;
+        public D ToObject<D>(byte flags = 0) where D : IData, new()
+        {
+            D obj = new D();
+            obj.ReadData(this, flags);
+            return obj;
+        }
+
+        public D[] ToArray<D>(byte flags = 0) where D : IData, new()
+        {
+            throw new NotImplementedException();
+        }
+
+        public List<D> ToList<D>(byte flags = 0) where D : IData, new()
+        {
+            throw new NotImplementedException();
+        }
 
         public void WriteData<R>(IDataOutput<R> dout) where R : IDataOutput<R>
         {
@@ -383,22 +398,6 @@ namespace Greatbone.Core
             }
         }
 
-        public override string ToString()
-        {
-            JsonContent cont = new JsonContent(false, true, 4 * 1024);
-            cont.Put(null, this);
-            string str = cont.ToString();
-            BufferUtility.Return(cont);
-            return str;
-        }
-
-        public D ToObject<D>(byte flags = 0) where D : IData, new()
-        {
-            D obj = new D();
-            obj.ReadData(this, flags);
-            return obj;
-        }
-
         public C Dump<C>() where C : IContent, IDataOutput<C>, new()
         {
             C cont = new C();
@@ -406,19 +405,20 @@ namespace Greatbone.Core
             return cont;
         }
 
+        public bool DataSet => false;
+
         public bool Next()
         {
             throw new NotImplementedException();
         }
 
-        public D[] ToArray<D>(byte flags = 0) where D : IData, new()
+        public override string ToString()
         {
-            throw new NotImplementedException();
-        }
-
-        public List<D> ToList<D>(byte flags = 0) where D : IData, new()
-        {
-            throw new NotImplementedException();
+            JsonContent cont = new JsonContent(false, true, 4 * 1024);
+            cont.Put(null, this);
+            string str = cont.ToString();
+            BufferUtility.Return(cont);
+            return str;
         }
     }
 }

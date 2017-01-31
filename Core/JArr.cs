@@ -39,53 +39,6 @@ namespace Greatbone.Core
             elements[count++] = mem;
         }
 
-        public bool DataSet => false;
-
-        public void WriteData<R>(IDataOutput<R> dout) where R : IDataOutput<R>
-        {
-            for (int i = 0; i < count; i++)
-            {
-                JMem mem = elements[i];
-                JType t = mem.type;
-                if (t == JType.Array)
-                {
-                    dout.Put(null, (JArr)mem);
-                }
-                else if (t == JType.Object)
-                {
-                    dout.Put(null, (JObj)mem);
-                }
-                else if (t == JType.String)
-                {
-                    dout.Put(null, (string)mem);
-                }
-                else if (t == JType.Number)
-                {
-                    dout.Put(null, (JNumber)mem);
-                }
-                else if (t == JType.True)
-                {
-                    dout.Put(null, true);
-                }
-                else if (t == JType.False)
-                {
-                    dout.Put(null, false);
-                }
-                else if (t == JType.Null)
-                {
-                    dout.PutNull(null);
-                }
-            }
-        }
-
-        public C Dump<C>() where C : IContent, IDataOutput<C>, new()
-        {
-            C cont = new C();
-            WriteData(cont);
-            return cont;
-        }
-
-
         public bool Get(string name, ref bool v)
         {
             JObj jobj = elements[current];
@@ -164,13 +117,7 @@ namespace Greatbone.Core
             return jo != null && jo.Get(name, ref v);
         }
 
-        public bool Get(string name, ref JObj v)
-        {
-            JObj jo = elements[current];
-            return jo != null && jo.Get(name, ref v);
-        }
-
-        public bool Get(string name, ref JArr v)
+        public bool Get(string name, ref Dictionary<string, string> v)
         {
             JObj jo = elements[current];
             return jo != null && jo.Get(name, ref v);
@@ -212,20 +159,6 @@ namespace Greatbone.Core
             return jo != null && jo.Get(name, ref v);
         }
 
-        public bool Next()
-        {
-            return ++current < count;
-        }
-
-        public override string ToString()
-        {
-            JsonContent cont = new JsonContent(false, true);
-            cont.Put(null, this);
-            string str = cont.ToString();
-            BufferUtility.Return(cont);
-            return str;
-        }
-
         public D ToObject<D>(byte flags = 0) where D : IData, new()
         {
             D obj = new D();
@@ -255,6 +188,71 @@ namespace Greatbone.Core
                 lst.Add(obj);
             }
             return lst;
+        }
+
+        public void WriteData<R>(IDataOutput<R> o) where R : IDataOutput<R>
+        {
+            for (int i = 0; i < count; i++)
+            {
+                JMem mem = elements[i];
+                JType t = mem.type;
+                if (t == JType.Array)
+                {
+                    o.Put(null, (JArr)mem);
+                }
+                else if (t == JType.Object)
+                {
+                    o.Put(null, (JObj)mem);
+                }
+                else if (t == JType.String)
+                {
+                    o.Put(null, (string)mem);
+                }
+                else if (t == JType.Number)
+                {
+                    o.Put(null, (JNumber)mem);
+                }
+                else if (t == JType.True)
+                {
+                    o.Put(null, true);
+                }
+                else if (t == JType.False)
+                {
+                    o.Put(null, false);
+                }
+                else if (t == JType.Null)
+                {
+                    o.PutNull(null);
+                }
+            }
+        }
+
+        public C Dump<C>() where C : IContent, IDataOutput<C>, new()
+        {
+            C cont = new C();
+            WriteData(cont);
+            return cont;
+        }
+
+        public bool DataSet => true;
+
+        public bool Next()
+        {
+            return ++current < count;
+        }
+
+        public override string ToString()
+        {
+            JsonContent cont = new JsonContent(false, true);
+            cont.Put(null, this);
+            string str = cont.ToString();
+            BufferUtility.Return(cont);
+            return str;
+        }
+
+        public bool Get(string name, ref IDataInput v)
+        {
+            throw new NotImplementedException();
         }
     }
 }

@@ -102,19 +102,16 @@ namespace Greatbone.Core
             }
 
             // init refers
-            JObj refs = cfg.Cluster;
+            Dictionary<string, string> refs = cfg.cluster;
             if (refs != null)
             {
-                for (int i = 0; i < refs.Count; i++)
+                foreach (KeyValuePair<string, string> e in refs)
                 {
-                    JMem jmem = refs[i];
-                    string name = jmem.Key; // name is a service moniker
-                    string addr = jmem;
                     if (cluster == null)
                     {
                         cluster = new Roll<WebClient>(refs.Count * 2);
                     }
-                    cluster.Add(new WebClient(name, addr));
+                    cluster.Add(new WebClient(e.Key, e.Value));
                 }
             }
 

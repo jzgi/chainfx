@@ -741,6 +741,16 @@ namespace Greatbone.Core
             }
         }
 
+        public bool Get(string name, ref IDataInput v)
+        {
+            throw new NotImplementedException();
+        }
+
+        public bool Get(string name, ref Dictionary<string, string> v)
+        {
+            throw new NotImplementedException();
+        }
+
         struct ColumnDesc
         {
             internal string name;
