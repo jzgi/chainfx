@@ -30,7 +30,7 @@ namespace Greatbone.Core
         // sub folders, if any
         internal Roll<WebFolder> subs;
 
-        // the variable-key hub folder, if any
+        // the varied folder, if any
         internal WebFolder varsub;
 
         protected WebFolder(WebFolderContext context) : base(null)
@@ -72,7 +72,7 @@ namespace Greatbone.Core
         ///
         /// Create a child folder.
         ///
-        public F Make<F>(string name, object state = null) where F : WebFolder
+        public F Create<F>(string key, object state = null) where F : WebFolder
         {
             if (Level >= Nesting) throw new WebException("nesting levels");
 
@@ -89,12 +89,12 @@ namespace Greatbone.Core
             }
             WebFolderContext ctx = new WebFolderContext
             {
-                key = name,
+                key = key,
                 State = state,
                 Var = false,
                 Parent = this,
                 Level = Level + 1,
-                Directory = (Parent == null) ? name : Path.Combine(Parent.Directory, name),
+                Directory = (Parent == null) ? key : Path.Combine(Parent.Directory, key),
                 Service = Service
             };
             F folder = (F)ci.Invoke(new object[] { ctx });
@@ -112,7 +112,7 @@ namespace Greatbone.Core
         ///
         /// Make a variable-key subdirectory.
         ///
-        public F MakeVar<F>(object state = null) where F : WebFolder, IVar
+        public F CreateVar<F>(object state = null) where F : WebFolder, IVar
         {
             if (Level >= Nesting) throw new WebException("nesting levels");
 

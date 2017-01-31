@@ -5,6 +5,5 @@
     ///
     public interface IVar
     {
-
     }
 }

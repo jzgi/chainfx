@@ -9,7 +9,7 @@ namespace Greatbone.Sample
     {
         public ShopFolder(WebFolderContext fc) : base(fc)
         {
-            MakeVar<ShopVarFolder>();
+            CreateVar<ShopVarFolder>();
         }
 
         // whether an aligned floating point

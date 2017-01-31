@@ -9,7 +9,7 @@ namespace Greatbone.Sample
     {
         public BuyerFolder(WebFolderContext fc) : base(fc)
         {
-            MakeVar<BuyerVarFolder>();
+            CreateVar<BuyerVarFolder>();
         }
 
         ///

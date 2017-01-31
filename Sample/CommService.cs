@@ -15,7 +15,7 @@ namespace Greatbone.Sample
         public CommService(WebConfig cfg) : base(cfg)
         {
             // add sub folder
-            MakeVar<CommVarFolder>();
+            CreateVar<CommVarFolder>();
 
             // timer obtaining access_token from weixin
             timer = new Timer(async state =>
