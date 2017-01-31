@@ -344,7 +344,7 @@ namespace Greatbone.Core
             return false;
         }
 
-        public bool Multi => true;
+        public bool DataSet => true;
 
         public void WriteData<R>(IDataOutput<R> dout) where R : IDataOutput<R>
         {
@@ -406,5 +406,19 @@ namespace Greatbone.Core
             return cont;
         }
 
+        public bool Next()
+        {
+            throw new NotImplementedException();
+        }
+
+        public D[] ToArray<D>(byte flags = 0) where D : IData, new()
+        {
+            throw new NotImplementedException();
+        }
+
+        public List<D> ToList<D>(byte flags = 0) where D : IData, new()
+        {
+            throw new NotImplementedException();
+        }
     }
 }

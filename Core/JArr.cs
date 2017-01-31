@@ -7,7 +7,7 @@ namespace Greatbone.Core
     ///
     /// A JSON array model.
     ///
-    public class JArr : IModel, IDataSetInput
+    public class JArr : IModel, IDataInput
     {
         // array elements
         JMem[] elements;
@@ -39,7 +39,7 @@ namespace Greatbone.Core
             elements[count++] = mem;
         }
 
-        public bool Multi => false;
+        public bool DataSet => false;
 
         public void WriteData<R>(IDataOutput<R> dout) where R : IDataOutput<R>
         {

@@ -28,7 +28,7 @@ namespace Greatbone.Core
 
         public bool Flat { get; set; } = true;
 
-        public bool Multi
+        public bool DataSet
         {
             get
             {
@@ -276,6 +276,21 @@ namespace Greatbone.Core
             C cont = new C();
             WriteData(cont);
             return cont;
+        }
+
+        public bool Next()
+        {
+            throw new NotImplementedException();
+        }
+
+        public D[] ToArray<D>(byte flags = 0) where D : IData, new()
+        {
+            throw new NotImplementedException();
+        }
+
+        public List<D> ToList<D>(byte flags = 0) where D : IData, new()
+        {
+            throw new NotImplementedException();
         }
 
         public static implicit operator string(XElem v)

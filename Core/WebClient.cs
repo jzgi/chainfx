@@ -139,7 +139,7 @@ namespace Greatbone.Core
             }
             HttpResponseMessage resp = await SendAsync(req, HttpCompletionOption.ResponseContentRead);
 
-            IDataSetInput srcset = null;
+            IDataInput srcset = null;
             return srcset.ToArray<D>(flags);
         }
 
@@ -152,7 +152,7 @@ namespace Greatbone.Core
             }
             HttpResponseMessage resp = await SendAsync(req, HttpCompletionOption.ResponseContentRead);
 
-            IDataSetInput srcset = null;
+            IDataInput srcset = null;
             return srcset.ToList<D>(flags);
         }
 

@@ -29,7 +29,7 @@ namespace Greatbone.Core
 
         public int Count => count;
 
-        public bool Multi => one;
+        public bool DataSet => one;
 
         public void Add(char c)
         {
@@ -103,9 +103,13 @@ namespace Greatbone.Core
         public C Dump<C>() where C : IContent, IDataOutput<C>, new()
         {
             C cont = new C();
-            WriteData(cont);
+            cont.Put(null, this);
             return cont;
         }
 
+        public bool Next()
+        {
+            throw new NotImplementedException();
+        }
     }
 }

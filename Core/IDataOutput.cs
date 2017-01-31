@@ -9,10 +9,6 @@ namespace Greatbone.Core
     ///
     public interface IDataOutput<out R> where R : IDataOutput<R>
     {
-        R PutEnter(bool multi);
-
-        R PutExit(bool multi);
-
         R PutNull(string name);
 
         R PutRaw(string name, string raw);

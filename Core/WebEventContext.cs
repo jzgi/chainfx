@@ -54,7 +54,7 @@ namespace Greatbone.Core
 
         public D[] AsArray<D>(byte flags = 0) where D : IData, new()
         {
-            IDataSetInput srcs = entity as IDataSetInput;
+            IDataInput srcs = entity as IDataInput;
             return srcs?.ToArray<D>(flags);
         }
 

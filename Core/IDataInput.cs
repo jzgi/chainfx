@@ -48,5 +48,17 @@ namespace Greatbone.Core
         bool Get<D>(string name, ref List<D> v, byte flags = 0) where D : IData, new();
 
         D ToObject<D>(byte flags = 0) where D : IData, new();
+
+        ///
+        /// dataset support
+        ///
+
+        bool DataSet { get; }
+
+        bool Next();
+
+        D[] ToArray<D>(byte flags = 0) where D : IData, new();
+
+        List<D> ToList<D>(byte flags = 0) where D : IData, new();
     }
 }

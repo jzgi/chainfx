@@ -70,20 +70,6 @@ namespace Greatbone.Core
         // SINK
         //
 
-        public JsonContent PutEnter(bool multi)
-        {
-            counts[++level] = 0; // enter
-            Add(multi ? '[' : '{');
-            return this;
-        }
-
-        public JsonContent PutExit(bool multi)
-        {
-            Add(multi ? ']' : '}');
-            level--; // exit
-            return this;
-        }
-
         public JsonContent PutNull(string name)
         {
             if (counts[level]++ > 0) Add(',');
@@ -362,7 +348,37 @@ namespace Greatbone.Core
             }
             else
             {
-                v.WriteData(this);
+                counts[++level] = 0; // enter
+
+                if (v.DataSet)
+                {
+                    Add('[');
+                    bool bgn = false;
+                    while (v.Next())
+                    {
+                        counts[++level] = 0; // enter an data entry
+
+                        if (bgn) Add(',');
+                        
+                        Add('{');
+                        v.WriteData(this);
+                        Add('}');
+                        
+                        level--;
+                        bgn = true;
+                    }
+                    Add(']');
+                }
+                else
+                {
+                    Add('{');
+
+                    v.WriteData(this);
+
+                    Add('}');
+                }
+
+                level--; // exit
             }
             return this;
         }

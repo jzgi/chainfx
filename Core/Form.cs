@@ -24,8 +24,6 @@ namespace Greatbone.Core
         ///
         public byte[] Buffer { get; internal set; }
 
-        public bool Multi => true;
-
         public void Add(string name, string v)
         {
             Add(new Field(name, v));
@@ -272,8 +270,25 @@ namespace Greatbone.Core
         public C Dump<C>() where C : IContent, IDataOutput<C>, new()
         {
             C cont = new C();
-            WriteData(cont);
+            cont.Put(null, this);
             return cont;
+        }
+
+        public bool DataSet => false;
+
+        public bool Next()
+        {
+            throw new NotImplementedException();
+        }
+
+        public D[] ToArray<D>(byte flags = 0) where D : IData, new()
+        {
+            throw new NotImplementedException();
+        }
+
+        public List<D> ToList<D>(byte flags = 0) where D : IData, new()
+        {
+            throw new NotImplementedException();
         }
     }
 }

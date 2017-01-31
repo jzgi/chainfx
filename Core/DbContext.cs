@@ -10,7 +10,7 @@ namespace Greatbone.Core
     ///
     /// An environment for database operations based on current service.
     ///
-    public class DbContext : IDisposable, IModel, IDataSetInput
+    public class DbContext : IDisposable, IModel, IDataInput
     {
         readonly string shard;
 
@@ -174,7 +174,7 @@ namespace Greatbone.Core
             }
         }
 
-        public bool Multi => multi;
+        public bool DataSet => multi;
 
         public bool NextResult()
         {
@@ -699,50 +699,26 @@ namespace Greatbone.Core
 
         public void WriteData<R>(IDataOutput<R> o) where R : IDataOutput<R>
         {
-            if (!multi)
+            int count = reader.FieldCount;
+            for (int i = 0; i < count; i++)
             {
-                ColumnDesc[] cols = new ColumnDesc[reader.FieldCount];
-                for (int i = 0; i < cols.Length; i++)
-                {
-                    cols[i].name = reader.GetName(i);
-                    cols[i].type = reader.GetFieldType(i);
-                }
-            }
-            else
-            {
-                ColumnDesc[] cols = new ColumnDesc[reader.FieldCount];
-                for (int i = 0; i < cols.Length; i++)
-                {
-                    cols[i].name = reader.GetName(i);
-                    cols[i].type = reader.GetFieldType(i);
-                    cols[i].oid = reader.GetDataTypeOID(i);
-                }
+                string name = reader.GetName(i);
+                uint oid = reader.GetDataTypeOID(i);
 
-                o.PutEnter(true);
-                while (Next())
+                if (reader.IsDBNull(i))
                 {
-                    o.PutEnter(false);
-                    for (int i = 0; i < cols.Length; i++)
-                    {
-                        if (reader.IsDBNull(i))
-                        {
-                            o.PutNull(cols[i].name);
-                            continue;
-                        };
+                    o.PutNull(name);
+                    continue;
+                };
 
-                        uint oid = cols[i].oid;
-                        if (oid == 1043 || oid == 1042)
-                        {
-                            o.Put(cols[i].name, reader.GetString(i));
-                        }
-                        else if (oid == 790) // money
-                        {
-                            o.Put(cols[i].name, reader.GetDecimal(i));
-                        }
-                    }
-                    o.PutExit(false);
+                if (oid == 1043 || oid == 1042)
+                {
+                    o.Put(name, reader.GetString(i));
                 }
-                o.PutExit(true);
+                else if (oid == 790) // money
+                {
+                    o.Put(name, reader.GetDecimal(i));
+                }
             }
         }
 
