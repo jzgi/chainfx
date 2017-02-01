@@ -40,7 +40,7 @@ namespace Greatbone.Sample
                     // retrieve from database
                     using (var dc = Service.NewDbContext())
                     {
-                        if (dc.QueryUn("SELECT * FROM inboxes WHERE userid = @1", p => p.Set(userid, false)))
+                        if (dc.Query1("SELECT * FROM inboxes WHERE userid = @1", p => p.Set(userid, false)))
                         {
                             chat = dc.ToObject<Chat>();
                         }

@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.Threading.Tasks;
 using Greatbone.Core;
 using NpgsqlTypes;
-using static Greatbone.Core.FlagsUtility;
+using static Greatbone.Core.Flags;
 
 namespace Greatbone.Sample
 {
@@ -16,7 +16,6 @@ namespace Greatbone.Sample
 
         static readonly WebClient WCPay = new WebClient("wcpay", "https://api.mch.weixin.qq.com");
 
-        readonly ConcurrentDictionary<string, List<OrderLine>> baskets;
 
         readonly WebAction[] _new;
 
@@ -30,7 +29,6 @@ namespace Greatbone.Sample
 
             CreateVar<ShopVarFolder>();
 
-            baskets = new ConcurrentDictionary<string, List<OrderLine>>();
 
             _new = GetActions(nameof(@new));
         }
@@ -69,28 +67,6 @@ namespace Greatbone.Sample
             }
         }
 
-
-        public async Task pay(WebActionContext ac)
-        {
-            // store backet to db
-            string openid = ac.Cookies[nameof(openid)];
-
-            List<OrderLine> basket;
-            if (baskets.TryRemove(openid, out basket))
-            {
-                using (var dc = NewDbContext())
-                {
-                    dc.Execute("INSERT INFO ");
-                }
-            }
-
-            //  call weixin to prepay
-            XmlContent cont = new XmlContent()
-                .Put("out_trade_no", "")
-                .Put("total_fee", 0);
-            await WCPay.PostAsync(null, "/pay/unifiedorder", cont);
-
-        }
 
         public async Task paynotify(WebActionContext ac)
         {
@@ -141,7 +117,7 @@ namespace Greatbone.Sample
                 }
                 using (var dc = Service.NewDbContext())
                 {
-                    if (dc.QueryUn("SELECT * FROM shops WHERE id = @1", (p) => p.Set(id)))
+                    if (dc.Query1("SELECT * FROM shops WHERE id = @1", (p) => p.Set(id)))
                     {
                         var tok = dc.ToObject<Token>();
                         string credential = TextUtility.MD5(id + ':' + password);

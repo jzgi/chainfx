@@ -1,6 +1,6 @@
 ﻿using System;
 using Greatbone.Core;
-using static Greatbone.Core.FlagsUtility;
+using static Greatbone.Core.Flags;
 
 namespace Greatbone.Sample
 {

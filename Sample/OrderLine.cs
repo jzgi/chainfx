@@ -1,21 +1,17 @@
 ﻿using Greatbone.Core;
-using static Greatbone.Core.FlagsUtility;
+using static Greatbone.Core.Flags;
 
 namespace Greatbone.Sample
 {
     public struct OrderLine : IData
     {
-        string shopid;
+        internal string shopid;
 
-        string item;
+        internal string item;
 
-        short qty;
+        internal short qty;
 
-        string unit;
-
-        decimal oprice;
-
-        decimal price;
+        internal decimal price;
 
         string note;
 
@@ -23,30 +19,25 @@ namespace Greatbone.Sample
 
         public void ReadData(IDataInput i, byte flags = 0)
         {
-            if (flags.Has(KEPT))
-            {
-                i.Get(nameof(shopid), ref shopid);
-            }
+            i.Get(nameof(shopid), ref shopid);
             i.Get(nameof(item), ref item);
             i.Get(nameof(qty), ref qty);
-            i.Get(nameof(unit), ref unit);
-            i.Get(nameof(oprice), ref oprice);
             i.Get(nameof(price), ref price);
             i.Get(nameof(note), ref note);
         }
 
         public void WriteData<R>(IDataOutput<R> o, byte flags = 0) where R : IDataOutput<R>
         {
-            if (flags.Has(KEPT))
-            {
-                o.Put(nameof(shopid), shopid);
-            }
+            o.Put(nameof(shopid), shopid);
             o.Put(nameof(item), item);
             o.Put(nameof(qty), qty);
-            o.Put(nameof(unit), unit);
-            o.Put(nameof(oprice), oprice);
             o.Put(nameof(price), price);
             o.Put(nameof(note), note);
+        }
+
+        public void AddQty(short qty)
+        {
+            this.qty += qty;
         }
     }
 }

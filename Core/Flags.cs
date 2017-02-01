@@ -3,7 +3,7 @@
     ///
     /// The bits-flags that filter what to load or dump in persistance operations.
     ///
-    public static class FlagsUtility
+    public static class Flags
     {
         public const byte
 
@@ -14,7 +14,7 @@
             BINARY = 0x40,
 
             // late-handled
-            LATER = 0x40,
+            LATE = 0x40,
 
             // many
             SUB = 0x18,

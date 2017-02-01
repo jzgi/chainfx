@@ -3,7 +3,7 @@
 namespace Greatbone.Sample
 {
     ///
-    /// /customer/
+    /// /buyer/
     ///
     public class BuyerFolder : WebFolder
     {
