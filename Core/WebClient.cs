@@ -8,7 +8,7 @@ namespace Greatbone.Core
     ///
     /// The connect to a remote peer service that the current service depends on.
     ///
-    public class WebClient : HttpClient, IKeyed<string>
+    public class WebClient : HttpClient, IRolled
     {
         const int
             INITIAL = -1,
@@ -20,7 +20,7 @@ namespace Greatbone.Core
         WebService service;
 
         // subdomain name or a reference name
-        readonly string key;
+        readonly string name;
 
         //
         // event polling & processing
@@ -37,12 +37,12 @@ namespace Greatbone.Core
 
         public WebClient(string name, string raddr)
         {
-            this.key = name;
+            this.name = name;
             string addr = raddr.StartsWith("http") ? raddr : "http://" + raddr;
             BaseAddress = new Uri(addr);
         }
 
-        public string Key => key;
+        public string Name => name;
 
         public void ToPoll(int ticks)
         {

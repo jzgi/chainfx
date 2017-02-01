@@ -22,15 +22,15 @@ namespace Greatbone.Core
         public static D StringToObject<D>(string v, byte flags = 0) where D : IData, new()
         {
             JsonParse p = new JsonParse(v);
-            JObj jobj = (JObj) p.Parse();
-            return jobj.ToObject<D>(flags);
+            JObj jo = (JObj) p.Parse();
+            return jo.ToObject<D>(flags);
         }
 
         public static D[] StringToArray<D>(string v, byte flags = 0) where D : IData, new()
         {
             JsonParse p = new JsonParse(v);
-            JArr jarr = (JArr) p.Parse();
-            return jarr.ToArray<D>(flags);
+            JArr ja = (JArr) p.Parse();
+            return ja.ToArray<D>(flags);
         }
 
         public static string JArrToString(JArr v)
@@ -114,10 +114,10 @@ namespace Greatbone.Core
             {
                 byte[] bytes = File.ReadAllBytes(file);
                 JsonParse p = new JsonParse(bytes, bytes.Length);
-                JObj jobj = (JObj) p.Parse();
-                if (jobj != null)
+                JObj jo = (JObj) p.Parse();
+                if (jo != null)
                 {
-                    return jobj.ToObject<D>();
+                    return jo.ToObject<D>();
                 }
             }
             catch (Exception ex)
@@ -133,10 +133,10 @@ namespace Greatbone.Core
             {
                 byte[] bytes = File.ReadAllBytes(file);
                 JsonParse p = new JsonParse(bytes, bytes.Length);
-                JArr jarr = (JArr) p.Parse();
-                if (jarr != null)
+                JArr ja = (JArr) p.Parse();
+                if (ja != null)
                 {
-                    return jarr.ToArray<D>();
+                    return ja.ToArray<D>();
                 }
             }
             catch (Exception ex)

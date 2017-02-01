@@ -40,13 +40,13 @@ namespace Greatbone.Core
 
         public WebConfig(string name)
         {
-            this.key = name;
+            this.name = name;
         }
 
         ///
         /// Let the file directory name same as the service name.
         ///
-        public override string Directory => key;
+        public override string Directory => name;
 
         ///
         /// The json object model.
@@ -103,7 +103,7 @@ namespace Greatbone.Core
                     StringBuilder sb = new StringBuilder();
                     sb.Append("Host=").Append(db.host);
                     sb.Append(";Port=").Append(db.port);
-                    sb.Append(";Database=").Append(db.database ?? Key);
+                    sb.Append(";Database=").Append(db.database ?? Name);
                     sb.Append(";Username=").Append(db.username);
                     sb.Append(";Password=").Append(db.password);
                     sb.Append(";Read Buffer Size=").Append(1024 * 32);

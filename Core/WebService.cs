@@ -46,7 +46,7 @@ namespace Greatbone.Core
             // adjust configuration
             cfg.Service = this;
 
-            moniker = (cfg.shard == null) ? cfg.key : cfg.key + "-" + cfg.shard;
+            moniker = (cfg.shard == null) ? cfg.name : cfg.name + "-" + cfg.shard;
 
             // setup logging 
             LoggerFactory factory = new LoggerFactory();
@@ -129,19 +129,19 @@ namespace Greatbone.Core
         public void Tree()
         {
             Debug.Write("service");
-            Debug.Write(Key);
+            Debug.Write(Name);
             if (subs != null)
             {
                 for (int i = 0; i < subs.Count; i++)
                 {
                     WebFolder child = subs[i];
-                    Debug.Write("SUB " + child.Key);
+                    Debug.Write("SUB " + child.Name);
                 }
             }
             for (int i = 0; i < Actions.Count; i++)
             {
                 WebAction action = Actions[i];
-                Debug.Write("ACT " + action.Key);
+                Debug.Write("ACT " + action.Name);
             }
         }
 
@@ -294,7 +294,7 @@ namespace Greatbone.Core
             for (int i = 0; i < cluster.Count; i++)
             {
                 WebClient cli = cluster[i];
-                if (cli.Key.Equals(svcid)) return cli;
+                if (cli.Name.Equals(svcid)) return cli;
             }
             return null;
         }
@@ -356,7 +356,7 @@ namespace Greatbone.Core
 
             OnStart();
 
-            Debug.WriteLine(Key + " -> " + Config.addresses + " started");
+            Debug.WriteLine(Name + " -> " + Config.addresses + " started");
 
             // start helper threads
 
@@ -430,7 +430,7 @@ namespace Greatbone.Core
             logWriter.Flush();
             logWriter.Dispose();
 
-            Console.Write(Key);
+            Console.Write(Name);
             Console.WriteLine(".");
         }
 

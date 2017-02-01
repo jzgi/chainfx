@@ -3,17 +3,17 @@ using NpgsqlTypes;
 
 namespace Greatbone.Core
 {
-    public struct XAttr : IKeyed<string>
+    public struct XAttr : IRolled
     {
-        readonly string key;
+        readonly string name;
 
         string value;
 
-        public string Key => key;
+        public string Name => name;
 
-        internal XAttr(string key, string v)
+        internal XAttr(string name, string v)
         {
-            this.key = key;
+            this.name = name;
             value = v;
         }
 
