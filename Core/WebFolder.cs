@@ -10,7 +10,7 @@ namespace Greatbone.Core
     ///
     /// A web folder realizes a virtual folder containing static/dynamic resources.
     ///
-    public abstract class WebFolder : WebScope, IRolled
+    public abstract class WebFolder : WebScope, INamed
     {
         // max nesting levels
         const int Nesting = 4;
@@ -91,7 +91,7 @@ namespace Greatbone.Core
             {
                 name = key,
                 State = state,
-                Var = false,
+                IsVar = false,
                 Parent = this,
                 Level = Level + 1,
                 Directory = (Parent == null) ? key : Path.Combine(Parent.Directory, key),
@@ -127,7 +127,7 @@ namespace Greatbone.Core
             {
                 name = _VAR_,
                 State = state,
-                Var = true,
+                IsVar = true,
                 Parent = this,
                 Level = Level + 1,
                 Directory = (Parent == null) ? _VAR_ : Path.Combine(Parent.Directory, _VAR_),
@@ -143,7 +143,7 @@ namespace Greatbone.Core
 
         public object State => context.State;
 
-        public bool Var => context.Var;
+        public bool IsVar => context.IsVar;
 
         public string Directory => context.Directory;
 

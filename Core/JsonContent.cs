@@ -318,7 +318,7 @@ namespace Greatbone.Core
                 Add('{');
 
                 // put shard property if any
-                string shard = (v as IShardable)?.Shard;
+                string shard = (v as ISharded)?.Shard;
                 if (shard != null)
                 {
                     Put("#", shard);

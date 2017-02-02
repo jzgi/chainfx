@@ -200,7 +200,7 @@ namespace Greatbone.Sample
         public void mgmtz(WebActionContext ac, string arg)
         {
             int page = arg.ToInt();
-            const byte z = 0xff ^ BINARY;
+            const ushort z = ALL ^ BINARY;
 
             using (var dc = Service.NewDbContext())
             {
@@ -211,7 +211,9 @@ namespace Greatbone.Sample
                     ac.ReplyPage(200, "", main => { main.FORM(_new, shops); });
                 }
                 else
+                {
                     ac.ReplyPage(200, "没有记录", main => { });
+                }
             }
         }
 

@@ -10,7 +10,7 @@ namespace Greatbone.Core
     public class JArr : IDataInput
     {
         // array elements
-        JMem[] elements;
+        JMember[] elements;
 
         int count;
 
@@ -18,21 +18,21 @@ namespace Greatbone.Core
 
         internal JArr(int capacity = 16)
         {
-            elements = new JMem[capacity];
+            elements = new JMember[capacity];
             count = 0;
             current = -1;
         }
 
-        public JMem this[int index] => elements[index];
+        public JMember this[int index] => elements[index];
 
         public int Count => count;
 
-        internal void Add(JMem mem)
+        internal void Add(JMember mem)
         {
             int len = elements.Length;
             if (count >= len)
             {
-                JMem[] alloc = new JMem[len * 4];
+                JMember[] alloc = new JMember[len * 4];
                 Array.Copy(elements, 0, alloc, 0, len);
                 elements = alloc;
             }
@@ -194,7 +194,7 @@ namespace Greatbone.Core
         {
             for (int i = 0; i < count; i++)
             {
-                JMem mem = elements[i];
+                JMember mem = elements[i];
                 JType t = mem.type;
                 if (t == JType.Array)
                 {

@@ -1,6 +1,6 @@
 ﻿namespace Greatbone.Core
 {
-    public interface IShardable
+    public interface ISharded
     {
         string Shard { get; set; }
     }

@@ -167,36 +167,36 @@ namespace Greatbone.Core
                 if (b == '{')
                 {
                     JObj v = ParseObj(ref p);
-                    jarr.Add(new JMem(null, v));
+                    jarr.Add(new JMember(null, v));
                 }
                 else if (b == '[')
                 {
                     JArr v = ParseArr(ref p);
-                    jarr.Add(new JMem(null, v));
+                    jarr.Add(new JMember(null, v));
                 }
                 else if (b == '"')
                 {
                     string v = ParseString(ref p);
-                    jarr.Add(new JMem(v));
+                    jarr.Add(new JMember(v));
                 }
                 else if (b == 'n')
                 {
-                    if (ParseNull(ref p)) jarr.Add(new JMem());
+                    if (ParseNull(ref p)) jarr.Add(new JMember());
                 }
                 else if (b == 't' || b == 'f')
                 {
                     bool v = ParseBool(ref p, b);
-                    jarr.Add(new JMem(null, v));
+                    jarr.Add(new JMember(null, v));
                 }
                 else if (b == '-' || b >= '0' && b <= '9')
                 {
                     JNumber v = ParseNumber(ref p, b);
-                    jarr.Add(new JMem(null, v));
+                    jarr.Add(new JMember(null, v));
                 }
                 else if (b == '&') // bytes extension
                 {
                     byte[] v = ParseBytes(p);
-                    jarr.Add(new JMem(null, v));
+                    jarr.Add(new JMember(null, v));
                 }
                 else throw ParseEx;
 

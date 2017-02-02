@@ -1,9 +1,9 @@
 namespace Greatbone.Core
 {
     ///
-    /// An object having an identifying key.
+    /// An object having an identifying name.
     ///
-    public interface IRolled
+    public interface INamed
     {
         string Name { get; }
     }

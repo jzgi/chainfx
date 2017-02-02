@@ -311,10 +311,10 @@ namespace Greatbone.Core
             obj.ReadData(this, flags);
 
             // add shard if any
-            IShardable shardable = obj as IShardable;
-            if (shardable != null)
+            ISharded sharded = obj as ISharded;
+            if (sharded != null)
             {
-                shardable.Shard = shard;
+                sharded.Shard = shard;
             }
 
             return obj;
@@ -334,10 +334,10 @@ namespace Greatbone.Core
                 obj.ReadData(this, flags);
 
                 // add shard if any
-                IShardable shardable = obj as IShardable;
-                if (shardable != null)
+                ISharded sharded = obj as ISharded;
+                if (sharded != null)
                 {
-                    shardable.Shard = shard;
+                    sharded.Shard = shard;
                 }
 
                 lst.Add(obj);
@@ -518,10 +518,10 @@ namespace Greatbone.Core
                 v.ReadData(jo, flags);
 
                 // add shard if any
-                IShardable shardable = v as IShardable;
-                if (shardable != null)
+                ISharded sharded = v as ISharded;
+                if (sharded != null)
                 {
-                    shardable.Shard = shard;
+                    sharded.Shard = shard;
                 }
                 return true;
             }
@@ -615,10 +615,10 @@ namespace Greatbone.Core
                     obj.ReadData(jo, flags);
 
                     // add shard if any
-                    IShardable shardable = obj as IShardable;
-                    if (shardable != null)
+                    ISharded sharded = obj as ISharded;
+                    if (sharded != null)
                     {
-                        shardable.Shard = shard;
+                        sharded.Shard = shard;
                     }
 
                     v[i] = obj;
@@ -645,10 +645,10 @@ namespace Greatbone.Core
                     obj.ReadData(jo, flags);
 
                     // add shard if any
-                    IShardable shardable = obj as IShardable;
-                    if (shardable != null)
+                    ISharded sharded = obj as ISharded;
+                    if (sharded != null)
                     {
-                        shardable.Shard = shard;
+                        sharded.Shard = shard;
                     }
 
                     v.Add(obj);
