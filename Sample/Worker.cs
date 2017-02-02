@@ -15,7 +15,7 @@ namespace Greatbone.Sample
 
         internal string tel;
 
-        public void ReadData(IDataInput i, ushort sel = 0)
+        public void ReadData(IDataInput i, ushort proj = 0)
         {
             i.Get(nameof(id), ref id);
             i.Get(nameof(name), ref name);
@@ -23,7 +23,7 @@ namespace Greatbone.Sample
             i.Get(nameof(tel), ref tel);
         }
 
-        public void WriteData<R>(IDataOutput<R> o, ushort sel = 0) where R : IDataOutput<R>
+        public void WriteData<R>(IDataOutput<R> o, ushort proj = 0) where R : IDataOutput<R>
         {
             o.Put(nameof(id), id);
             o.Put(nameof(name), name);

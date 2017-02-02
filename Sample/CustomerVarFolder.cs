@@ -8,11 +8,11 @@ namespace Greatbone.Sample
     ///
     /// /buyer/-id-/
     ///
-    public class BuyerVarFolder : WebFolder, IVar
+    public class CustomerVarFolder : WebFolder, IVar
     {
         readonly ConcurrentDictionary<string, List<OrderLine>> carts;
 
-        public BuyerVarFolder(WebFolderContext dc) : base(dc)
+        public CustomerVarFolder(WebFolderContext dc) : base(dc)
         {
             carts = new ConcurrentDictionary<string, List<OrderLine>>(8, 1024);
         }

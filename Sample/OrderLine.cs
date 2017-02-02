@@ -1,5 +1,5 @@
 ﻿using Greatbone.Core;
-using static Greatbone.Core.Selector;
+using static Greatbone.Core.Projection;
 
 namespace Greatbone.Sample
 {
@@ -17,7 +17,7 @@ namespace Greatbone.Sample
 
         public decimal Subtotal => price * qty;
 
-        public void ReadData(IDataInput i, ushort sel = 0)
+        public void ReadData(IDataInput i, ushort proj = 0)
         {
             i.Get(nameof(shopid), ref shopid);
             i.Get(nameof(item), ref item);
@@ -26,7 +26,7 @@ namespace Greatbone.Sample
             i.Get(nameof(note), ref note);
         }
 
-        public void WriteData<R>(IDataOutput<R> o, ushort sel = 0) where R : IDataOutput<R>
+        public void WriteData<R>(IDataOutput<R> o, ushort proj = 0) where R : IDataOutput<R>
         {
             o.Put(nameof(shopid), shopid);
             o.Put(nameof(item), item);

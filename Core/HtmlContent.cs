@@ -226,7 +226,7 @@ namespace Greatbone.Core
             Add("</form>");
         }
 
-        public void FORM<D>(WebAction[] acts, D[] arr, ushort sel = 0) where D : IData
+        public void FORM<D>(WebAction[] acts, D[] arr, ushort proj = 0) where D : IData
         {
             Add("<form class=\"pure-form pure-g\">");
 
@@ -240,7 +240,7 @@ namespace Greatbone.Core
             Add("</form>");
         }
 
-        public void FORM<D>(WebAction act, D dat, ushort sel = 0) where D : IData
+        public void FORM<D>(WebAction act, D dat, ushort proj = 0) where D : IData
         {
             Add("<form class=\"pure-form pure-g\">");
 
@@ -1139,7 +1139,7 @@ namespace Greatbone.Core
             return this;
         }
 
-        public HtmlContent Put(string name, IData v, ushort sel = 0)
+        public HtmlContent Put(string name, IData v, ushort proj = 0)
         {
             return this;
         }
@@ -1174,12 +1174,12 @@ namespace Greatbone.Core
             return this;
         }
 
-        public HtmlContent Put<D>(string name, D[] v, ushort sel = 0) where D : IData
+        public HtmlContent Put<D>(string name, D[] v, ushort proj = 0) where D : IData
         {
             return this;
         }
 
-        public HtmlContent Put<D>(string name, List<D> v, ushort sel = 0) where D : IData
+        public HtmlContent Put<D>(string name, List<D> v, ushort proj = 0) where D : IData
         {
             throw new NotImplementedException();
         }

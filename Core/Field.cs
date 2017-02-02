@@ -3,7 +3,7 @@ using NpgsqlTypes;
 
 namespace Greatbone.Core
 {
-    public struct Field : INamed
+    public struct Field : IRolled
     {
         readonly string name;
 

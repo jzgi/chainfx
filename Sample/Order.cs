@@ -1,6 +1,6 @@
 ﻿using System;
 using Greatbone.Core;
-using static Greatbone.Core.Selector;
+using static Greatbone.Core.Projection;
 
 namespace Greatbone.Sample
 {
@@ -42,7 +42,7 @@ namespace Greatbone.Sample
 
         internal int status;
 
-        public void ReadData(IDataInput i, ushort sel = 0)
+        public void ReadData(IDataInput i, ushort proj = 0)
         {
             i.Get(nameof(id), ref id);
 
@@ -55,7 +55,7 @@ namespace Greatbone.Sample
             i.Get(nameof(buyerwx), ref buyerwx);
 
             i.Get(nameof(opened), ref opened);
-            if (sel.Sub())
+            if (proj.Sub())
             {
                 i.Get(nameof(lines), ref lines);
             }
@@ -65,7 +65,7 @@ namespace Greatbone.Sample
             i.Get(nameof(status), ref status);
         }
 
-        public void WriteData<R>(IDataOutput<R> o, ushort sel = 0) where R : IDataOutput<R>
+        public void WriteData<R>(IDataOutput<R> o, ushort proj = 0) where R : IDataOutput<R>
         {
             o.Put(nameof(id), id);
 
@@ -78,7 +78,7 @@ namespace Greatbone.Sample
             o.Put(nameof(buyerwx), buyerwx);
 
             o.Put(nameof(opened), opened);
-            if (sel.Sub())
+            if (proj.Sub())
             {
                 o.Put(nameof(lines), lines);
             }

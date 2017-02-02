@@ -227,7 +227,7 @@ namespace Greatbone.Core
             return this;
         }
 
-        public DbParameters Put(string name, IData v, ushort sel = 0)
+        public DbParameters Put(string name, IData v, ushort proj = 0)
         {
             if (name == null)
             {
@@ -241,7 +241,7 @@ namespace Greatbone.Core
             {
                 coll.Add(new NpgsqlParameter(name, NpgsqlDbType.Jsonb)
                 {
-                    Value = JsonUtility.ObjectToString(v, sel)
+                    Value = JsonUtility.ObjectToString(v, proj)
                 });
             }
             return this;
@@ -345,7 +345,7 @@ namespace Greatbone.Core
             return this;
         }
 
-        public DbParameters Put<D>(string name, D[] v, ushort sel = 0) where D : IData
+        public DbParameters Put<D>(string name, D[] v, ushort proj = 0) where D : IData
         {
             if (name == null)
             {
@@ -362,13 +362,13 @@ namespace Greatbone.Core
             {
                 coll.Add(new NpgsqlParameter(name, NpgsqlDbType.Jsonb)
                 {
-                    Value = JsonUtility.ArrayToString(v, sel)
+                    Value = JsonUtility.ArrayToString(v, proj)
                 });
             }
             return this;
         }
 
-        public DbParameters Put<D>(string name, List<D> v, ushort sel = 0) where D : IData
+        public DbParameters Put<D>(string name, List<D> v, ushort proj = 0) where D : IData
         {
             if (name == null)
             {
@@ -385,7 +385,7 @@ namespace Greatbone.Core
             {
                 coll.Add(new NpgsqlParameter(name, NpgsqlDbType.Jsonb)
                 {
-                    Value = JsonUtility.ListToString(v, sel)
+                    Value = JsonUtility.ListToString(v, proj)
                 });
             }
             return this;
@@ -500,17 +500,17 @@ namespace Greatbone.Core
             return Put(null, v);
         }
 
-        public DbParameters Set(IData v, ushort sel = 0)
+        public DbParameters Set(IData v, ushort proj = 0)
         {
             return Put(null, v);
         }
 
-        public DbParameters Set<D>(D[] v, ushort sel = 0) where D : IData
+        public DbParameters Set<D>(D[] v, ushort proj = 0) where D : IData
         {
             return Put(null, v);
         }
 
-        public DbParameters Set<D>(List<D> v, ushort sel = 0) where D : IData
+        public DbParameters Set<D>(List<D> v, ushort proj = 0) where D : IData
         {
             return Put(null, v);
         }

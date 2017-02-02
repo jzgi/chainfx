@@ -305,10 +305,10 @@ namespace Greatbone.Core
         // RESULTSET
         //
 
-        public D ToObject<D>(ushort sel = 0) where D : IData, new()
+        public D ToObject<D>(ushort proj = 0) where D : IData, new()
         {
             D obj = new D();
-            obj.ReadData(this, sel);
+            obj.ReadData(this, proj);
 
             // add shard if any
             ISharded sharded = obj as ISharded;
@@ -320,18 +320,18 @@ namespace Greatbone.Core
             return obj;
         }
 
-        public D[] ToArray<D>(ushort sel = 0) where D : IData, new()
+        public D[] ToArray<D>(ushort proj = 0) where D : IData, new()
         {
-            return ToList<D>(sel).ToArray();
+            return ToList<D>(proj).ToArray();
         }
 
-        public List<D> ToList<D>(ushort sel = 0) where D : IData, new()
+        public List<D> ToList<D>(ushort proj = 0) where D : IData, new()
         {
             List<D> lst = new List<D>(32);
             while (Next())
             {
                 D obj = new D();
-                obj.ReadData(this, sel);
+                obj.ReadData(this, proj);
 
                 // add shard if any
                 ISharded sharded = obj as ISharded;
@@ -506,7 +506,7 @@ namespace Greatbone.Core
             return false;
         }
 
-        public bool Get<D>(string name, ref D v, ushort sel = 0) where D : IData, new()
+        public bool Get<D>(string name, ref D v, ushort proj = 0) where D : IData, new()
         {
             int ord = name == null ? ordinal++ : reader.GetOrdinal(name);
             if (!reader.IsDBNull(ord))
@@ -515,7 +515,7 @@ namespace Greatbone.Core
                 JsonParse p = new JsonParse(str);
                 JObj jo = (JObj)p.Parse();
                 v = new D();
-                v.ReadData(jo, sel);
+                v.ReadData(jo, proj);
 
                 // add shard if any
                 ISharded sharded = v as ISharded;
@@ -598,7 +598,7 @@ namespace Greatbone.Core
             return false;
         }
 
-        public bool Get<D>(string name, ref D[] v, ushort sel = 0) where D : IData, new()
+        public bool Get<D>(string name, ref D[] v, ushort proj = 0) where D : IData, new()
         {
             int ord = name == null ? ordinal++ : reader.GetOrdinal(name);
             if (!reader.IsDBNull(ord))
@@ -612,7 +612,7 @@ namespace Greatbone.Core
                 {
                     JObj jo = ja[i];
                     D obj = new D();
-                    obj.ReadData(jo, sel);
+                    obj.ReadData(jo, proj);
 
                     // add shard if any
                     ISharded sharded = obj as ISharded;
@@ -628,7 +628,7 @@ namespace Greatbone.Core
             return false;
         }
 
-        public bool Get<D>(string name, ref List<D> v, ushort sel = 0) where D : IData, new()
+        public bool Get<D>(string name, ref List<D> v, ushort proj = 0) where D : IData, new()
         {
             int ord = name == null ? ordinal++ : reader.GetOrdinal(name);
             if (!reader.IsDBNull(ord))
@@ -642,7 +642,7 @@ namespace Greatbone.Core
                 {
                     JObj jo = ja[i];
                     D obj = new D();
-                    obj.ReadData(jo, sel);
+                    obj.ReadData(jo, proj);
 
                     // add shard if any
                     ISharded sharded = obj as ISharded;

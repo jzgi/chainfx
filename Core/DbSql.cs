@@ -44,50 +44,50 @@ namespace Greatbone.Core
             return this;
         }
 
-        public DbSql setlst(IData obj, ushort sel = 0)
+        public DbSql setlst(IData obj, ushort proj = 0)
         {
             list = SetList;
             ordinal = 1;
-            obj.WriteData(this, sel);
+            obj.WriteData(this, proj);
             return this;
         }
 
-        public DbSql columnlst(IData obj, ushort sel = 0)
+        public DbSql columnlst(IData obj, ushort proj = 0)
         {
             list = ColumnList;
             ordinal = 1;
-            obj.WriteData(this, sel);
+            obj.WriteData(this, proj);
             return this;
         }
 
-        public DbSql parameterlst(IData obj, ushort sel = 0)
+        public DbSql parameterlst(IData obj, ushort proj = 0)
         {
             list = ParameterList;
             ordinal = 1;
-            obj.WriteData(this, sel);
+            obj.WriteData(this, proj);
             return this;
         }
 
-        public DbSql _(IData obj, ushort sel = 0)
+        public DbSql _(IData obj, ushort proj = 0)
         {
             Add(" (");
-            columnlst(obj, sel);
+            columnlst(obj, proj);
             Add(")");
             return this;
         }
 
-        public DbSql _VALUES_(IData obj, ushort sel = 0)
+        public DbSql _VALUES_(IData obj, ushort proj = 0)
         {
             Add(" VALUES (");
-            parameterlst(obj, sel);
+            parameterlst(obj, proj);
             Add(")");
             return this;
         }
 
-        public DbSql _SET_(IData obj, ushort sel = 0)
+        public DbSql _SET_(IData obj, ushort proj = 0)
         {
             Add(" SET ");
-            setlst(obj, sel);
+            setlst(obj, proj);
             return this;
         }
 
@@ -293,7 +293,7 @@ namespace Greatbone.Core
             return this;
         }
 
-        public DbSql Put(string name, IData v, ushort sel = 0)
+        public DbSql Put(string name, IData v, ushort proj = 0)
         {
             if (name != null)
             {
@@ -478,13 +478,13 @@ namespace Greatbone.Core
             return this;
         }
 
-        public DbSql Put<D>(string name, D[] v, ushort sel = 0) where D : IData
+        public DbSql Put<D>(string name, D[] v, ushort proj = 0) where D : IData
         {
             Build(name);
             return this;
         }
 
-        public DbSql Put<D>(string name, List<D> v, ushort sel = 0) where D : IData
+        public DbSql Put<D>(string name, List<D> v, ushort proj = 0) where D : IData
         {
             Build(name);
             return this;

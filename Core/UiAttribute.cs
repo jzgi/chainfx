@@ -3,7 +3,7 @@ using System;
 namespace Greatbone.Core
 {
     /// 
-    /// To specify user interface related attributes.
+    /// To specify user interaction related attributes and behaviors.
     ///
     [AttributeUsage(AttributeTargets.Method, Inherited = false)]
     public class UiAttribute : Attribute

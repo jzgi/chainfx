@@ -1,9 +1,7 @@
-﻿using System.Collections.Concurrent;
-using System.Collections.Generic;
-using System.Threading.Tasks;
+﻿using System.Threading.Tasks;
 using Greatbone.Core;
 using NpgsqlTypes;
-using static Greatbone.Core.Selector;
+using static Greatbone.Core.Projection;
 
 namespace Greatbone.Sample
 {
@@ -23,7 +21,7 @@ namespace Greatbone.Sample
         {
             Create<ShopFolder>("shop");
 
-            Create<BuyerFolder>("buyer");
+            Create<CustomerFolder>("cust");
 
             Create<OrderFolder>("order");
 

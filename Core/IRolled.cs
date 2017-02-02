@@ -1,9 +1,9 @@
 namespace Greatbone.Core
 {
     ///
-    /// An object having an identifying name.
+    /// An object can be a roll element.
     ///
-    public interface INamed
+    public interface IRolled
     {
         string Name { get; }
     }

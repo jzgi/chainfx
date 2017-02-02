@@ -16,7 +16,7 @@ namespace Greatbone.Sample
         internal string payid; // payment id
         internal int status;
 
-        public void ReadData(IDataInput i, ushort sel = 0)
+        public void ReadData(IDataInput i, ushort proj = 0)
         {
             i.Get(nameof(id), ref id);
             i.Get(nameof(shopid), ref shopid);
@@ -27,7 +27,7 @@ namespace Greatbone.Sample
             i.Get(nameof(status), ref status);
         }
 
-        public void WriteData<R>(IDataOutput<R> o, ushort sel = 0) where R : IDataOutput<R>
+        public void WriteData<R>(IDataOutput<R> o, ushort proj = 0) where R : IDataOutput<R>
         {
             o.Put(nameof(id), id);
             o.Put(nameof(shopid), shopid);
