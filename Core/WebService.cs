@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Data;
 using System.Diagnostics;
 using System.IO;
 using System.Linq;
@@ -24,7 +25,7 @@ namespace Greatbone.Core
     public abstract class WebService : WebFolder, IHttpApplication<HttpContext>, ILoggerProvider, ILogger
     {
         // the service instance id
-        readonly string moniker;
+        readonly string key;
 
         // the embedded server
         readonly KestrelServer server;
@@ -41,17 +42,17 @@ namespace Greatbone.Core
 
         Thread cleaner;
 
-        protected WebService(WebConfig cfg) : base(cfg)
+        protected WebService(WebServiceContext sc) : base(sc)
         {
             // adjust configuration
-            cfg.Service = this;
+            sc.Service = this;
 
-            moniker = (cfg.shard == null) ? cfg.name : cfg.name + "-" + cfg.shard;
+            key = (sc.shard == null) ? sc.name : sc.name + "-" + sc.shard;
 
             // setup logging 
             LoggerFactory factory = new LoggerFactory();
             factory.AddProvider(this);
-            string file = cfg.GetFilePath('$' + DateTime.Now.ToString("yyyyMM") + ".log");
+            string file = sc.GetFilePath('$' + DateTime.Now.ToString("yyyyMM") + ".log");
             FileStream fs = new FileStream(file, FileMode.Append, FileAccess.Write);
             logWriter = new StreamWriter(fs, Encoding.UTF8, 1024 * 4, false)
             {
@@ -62,11 +63,11 @@ namespace Greatbone.Core
             KestrelServerOptions options = new KestrelServerOptions();
             server = new KestrelServer(Options.Create(options), Lifetime, factory);
             ICollection<string> addrcoll = server.Features.Get<IServerAddressesFeature>().Addresses;
-            if (string.IsNullOrEmpty(cfg.addresses))
+            if (string.IsNullOrEmpty(sc.addresses))
             {
                 throw new WebServiceException("'addresss' in webconfig");
             }
-            foreach (string a in cfg.addresses.Split(',', ';'))
+            foreach (string a in sc.addresses.Split(',', ';'))
             {
                 addrcoll.Add(a.Trim());
             }
@@ -102,7 +103,7 @@ namespace Greatbone.Core
             }
 
             // init refers
-            Dictionary<string, string> refs = cfg.cluster;
+            Dictionary<string, string> refs = sc.cluster;
             if (refs != null)
             {
                 foreach (KeyValuePair<string, string> e in refs)
@@ -119,7 +120,7 @@ namespace Greatbone.Core
             cache = new WebCache(Environment.ProcessorCount * 2, 4096);
 
             // create database structures for event queue
-            if (Config.db.queue)
+            if (Context.db.queue)
             {
                 CreateEq();
             }
@@ -148,13 +149,13 @@ namespace Greatbone.Core
         ///
         /// Uniquely identify a service instance.
         ///
-        public string Moniker => moniker;
+        public string Key => key;
 
         public Roll<WebEvent> Events => events;
 
         public Roll<WebClient> Cluster => cluster;
 
-        public WebConfig Config => (WebConfig)context;
+        public new WebServiceContext Context => (WebServiceContext)context;
 
         public WebAuthent Authent { get; set; }
 
@@ -280,9 +281,12 @@ namespace Greatbone.Core
         }
 
 
-        public DbContext NewDbContext()
+        public DbContext NewDbContext(IsolationLevel level = IsolationLevel.Unspecified)
         {
-            return new DbContext(Config.shard, Config.ConnectionString);
+            return new DbContext(Context)
+            {
+                Transact = level
+            };
         }
 
         //
@@ -356,7 +360,7 @@ namespace Greatbone.Core
 
             OnStart();
 
-            Debug.WriteLine(Name + " -> " + Config.addresses + " started");
+            Debug.WriteLine(Name + " -> " + Context.addresses + " started");
 
             // start helper threads
 
@@ -420,7 +424,7 @@ namespace Greatbone.Core
 
         public bool IsEnabled(LogLevel level)
         {
-            return (int)level >= Config.logging;
+            return (int)level >= Context.logging;
         }
 
         public void Dispose()

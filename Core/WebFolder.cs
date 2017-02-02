@@ -139,6 +139,8 @@ namespace Greatbone.Core
             return folder;
         }
 
+        public WebFolderContext Context => context;
+
         public string Name => context.Name;
 
         public object State => context.State;

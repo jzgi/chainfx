@@ -10,9 +10,11 @@ namespace Greatbone.Core
     ///
     /// An environment for database operations based on current service.
     ///
-    public class DbContext : IDisposable, IDataInput
+    public class DbContext : IDataInput, IDisposable
     {
-        readonly string shard;
+        readonly IHandleContext<IHandle> handlectx;
+
+        readonly WebServiceContext servicectx;
 
         readonly NpgsqlConnection connection;
 
@@ -28,17 +30,33 @@ namespace Greatbone.Core
 
         bool disposed;
 
-
-        internal DbContext(string shard, string connstr)
+        internal DbContext(WebServiceContext servicectx) : this(servicectx, null)
         {
-            this.shard = shard;
-            connection = new NpgsqlConnection(connstr);
+        }
+
+        internal DbContext(WebServiceContext servicectx, IHandleContext<IHandle> handlectx)
+        {
+            this.servicectx = servicectx;
+            this.handlectx = handlectx;
+
+            connection = new NpgsqlConnection(servicectx.ConnectionString);
             command = new NpgsqlCommand();
             parameters = new DbParameters(command.Parameters);
             command.Connection = connection;
         }
 
-        public string Shard => shard;
+        public IsolationLevel Transact
+        {
+            get { return transact?.IsolationLevel ?? IsolationLevel.Unspecified; }
+            set
+            {
+                if (transact == null && value > IsolationLevel.Unspecified)
+                {
+                    transact = connection.BeginTransaction(value);
+                    command.Transaction = transact;
+                }
+            }
+        }
 
         public void Begin(IsolationLevel level = IsolationLevel.ReadCommitted)
         {
@@ -314,7 +332,7 @@ namespace Greatbone.Core
             ISharded sharded = obj as ISharded;
             if (sharded != null)
             {
-                sharded.Shard = shard;
+                sharded.Shard = servicectx.shard;
             }
 
             return obj;
@@ -337,7 +355,7 @@ namespace Greatbone.Core
                 ISharded sharded = obj as ISharded;
                 if (sharded != null)
                 {
-                    sharded.Shard = shard;
+                    sharded.Shard = servicectx.shard;
                 }
 
                 lst.Add(obj);
@@ -521,7 +539,7 @@ namespace Greatbone.Core
                 ISharded sharded = v as ISharded;
                 if (sharded != null)
                 {
-                    sharded.Shard = shard;
+                    sharded.Shard = servicectx.shard;
                 }
                 return true;
             }
@@ -618,7 +636,7 @@ namespace Greatbone.Core
                     ISharded sharded = obj as ISharded;
                     if (sharded != null)
                     {
-                        sharded.Shard = shard;
+                        sharded.Shard = servicectx.shard;
                     }
 
                     v[i] = obj;
@@ -648,7 +666,7 @@ namespace Greatbone.Core
                     ISharded sharded = obj as ISharded;
                     if (sharded != null)
                     {
-                        sharded.Shard = shard;
+                        sharded.Shard = servicectx.shard;
                     }
 
                     v.Add(obj);

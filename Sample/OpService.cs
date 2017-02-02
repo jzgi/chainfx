@@ -17,7 +17,7 @@ namespace Greatbone.Sample
 
         readonly WebAction[] _new;
 
-        public OpService(WebConfig cfg) : base(cfg)
+        public OpService(WebServiceContext cfg) : base(cfg)
         {
             Create<ShopFolder>("shop");
 

@@ -23,9 +23,9 @@ namespace Greatbone.Sample
 
             List<WebService> svcs = new List<WebService>(4);
 
-            WebConfig cfg;
+            WebServiceContext sc;
 
-            cfg = new WebConfig("op")
+            sc = new WebServiceContext("op")
             {
                 addresses = "http://localhost:8080",
                 db = pg
@@ -33,9 +33,9 @@ namespace Greatbone.Sample
 #if !DEBUG
             cfg.TryLoad();
 #endif
-            if (cfg.File != false) svcs.Add(new OpService(cfg) { Authent = auth });
+            if (sc.Configured != false) svcs.Add(new OpService(sc) { Authent = auth });
 
-            cfg = new WebConfig("comm")
+            sc = new WebServiceContext("comm")
             {
                 addresses = "http://localhost:8081",
                 db = pg
@@ -44,7 +44,7 @@ namespace Greatbone.Sample
             cfg.TryLoad();
 #endif
 
-            if (cfg.File != false) svcs.Add(new CommService(cfg) { Authent = auth });
+            if (sc.Configured != false) svcs.Add(new CommService(sc) { Authent = auth });
 
             WebService.Run(svcs);
         }

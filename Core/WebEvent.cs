@@ -7,7 +7,7 @@ namespace Greatbone.Core
     /// 
     /// The descriptor of an event handler method.
     /// 
-    public class WebEvent : IHandler
+    public class WebEvent : IHandle
     {
         readonly WebService service;
 

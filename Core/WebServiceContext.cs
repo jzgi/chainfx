@@ -19,7 +19,7 @@ namespace Greatbone.Core
     /// }
     /// </code>
     ///
-    public class WebConfig : WebFolderContext, IData
+    public class WebServiceContext : WebFolderContext, IData
     {
         /// The shard identifier when one service is divided into many shards
         public string shard;
@@ -38,7 +38,7 @@ namespace Greatbone.Core
         // connection string
         volatile string connstr;
 
-        public WebConfig(string name)
+        public WebServiceContext(string name)
         {
             this.name = name;
         }
@@ -51,11 +51,11 @@ namespace Greatbone.Core
         ///
         /// The json object model.
         ///
-        public JObj Model { get; private set; }
+        public JObj Json { get; private set; }
 
-        public bool? File { get; private set; }
+        public bool? Configured { get; private set; }
 
-        public JObj Extra => Model?["extra"];
+        public JObj Extra => Json?["extra"];
 
         public void ReadData(IDataInput i, ushort proj = 0)
         {
@@ -86,12 +86,12 @@ namespace Greatbone.Core
                 JObj jo = JsonUtility.FileToJObj(path);
                 if (jo != null)
                 {
-                    Model = jo;
+                    Json = jo;
                     ReadData(jo); // override
-                    return (File = true).Value;
+                    return (Configured = true).Value;
                 }
             }
-            return (File = false).Value;
+            return (Configured = false).Value;
         }
 
         public string ConnectionString

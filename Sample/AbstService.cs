@@ -6,7 +6,7 @@ namespace Greatbone.Sample
     {
         readonly Worker[] workers;
 
-        public AbstService(WebConfig cfg) : base(cfg)
+        public AbstService(WebServiceContext cfg) : base(cfg)
         {
             workers = JsonUtility.FileToArray<Worker>(cfg.GetFilePath("$workers.json"));
         }

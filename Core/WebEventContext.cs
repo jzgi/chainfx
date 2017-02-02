@@ -1,11 +1,12 @@
 ﻿using System;
+using System.Data;
 
 namespace Greatbone.Core
 {
     ///
     /// The processing of an queued message.
     ///
-    public class WebEventContext : IDisposable
+    public class WebEventContext : IHandleContext<WebEvent>, IDisposable
     {
         readonly WebClient client;
 
@@ -31,6 +32,30 @@ namespace Greatbone.Core
         public long Id => id;
 
         public string Name => name;
+
+        public WebFolder Folder
+        {
+            get
+            {
+                throw new NotImplementedException();
+            }
+        }
+
+        public WebEvent Handle
+        {
+            get
+            {
+                throw new NotImplementedException();
+            }
+        }
+
+        public WebServiceContext ServiceContext
+        {
+            get
+            {
+                throw new NotImplementedException();
+            }
+        }
 
         public ArraySegment<byte>? AsBytesSeg()
         {
@@ -63,7 +88,7 @@ namespace Greatbone.Core
             client.SetCancel();
         }
 
-        public DbContext NewDbContext()
+        public DbContext NewDbContext(IsolationLevel level = IsolationLevel.Unspecified)
         {
             return null;
         }

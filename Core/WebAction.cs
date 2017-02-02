@@ -7,7 +7,7 @@ namespace Greatbone.Core
     ///
     /// The descriptor for an action method.
     ///
-    public class WebAction : WebScope, IHandler
+    public class WebAction : WebScope, IHandle
     {
         readonly WebFolder folder;
 
@@ -88,7 +88,7 @@ namespace Greatbone.Core
 
         internal void Do(WebActionContext ac, String arg)
         {
-            ac.Action = this;
+            ac.Handle = this;
             // pre-
             DoBefore(ac);
 
@@ -104,12 +104,12 @@ namespace Greatbone.Core
 
             // post-
             DoAfter(ac);
-            ac.Action = null;
+            ac.Handle = null;
         }
 
         internal async Task DoAsync(WebActionContext ac, string arg)
         {
-            ac.Action = this;
+            ac.Handle = this;
             // pre-
             DoBefore(ac);
 
@@ -125,7 +125,7 @@ namespace Greatbone.Core
 
             // post-
             DoAfter(ac);
-            ac.Action = null;
+            ac.Handle = null;
         }
 
         public override string ToString()

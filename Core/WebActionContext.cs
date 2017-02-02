@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Data;
 using System.Reflection;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Http;
@@ -11,15 +12,17 @@ namespace Greatbone.Core
     ///
     /// The encapsulation of a web request/response exchange context.
     ///
-    public class WebActionContext : DefaultHttpContext, IDisposable
+    public class WebActionContext : DefaultHttpContext, IHandleContext<WebAction>, IDisposable
     {
         internal WebActionContext(IFeatureCollection features) : base(features)
         {
         }
 
+        public WebServiceContext ServiceContext { get; set; }
+
         public WebFolder Folder { get; internal set; }
 
-        public WebAction Action { get; internal set; }
+        public WebAction Handle { get; internal set; }
 
         public IData Token { get; internal set; }
 
@@ -429,6 +432,7 @@ namespace Greatbone.Core
             }
         }
 
+
         public void Dispose()
         {
             // request content buffer
@@ -443,6 +447,14 @@ namespace Greatbone.Core
             {
                 BufferUtility.Return(cont.ByteBuffer);
             }
+        }
+
+        public DbContext NewDbContext(IsolationLevel level = IsolationLevel.Unspecified)
+        {
+            return new DbContext(ServiceContext, this)
+            {
+                Transact = level
+            };
         }
     }
 }
