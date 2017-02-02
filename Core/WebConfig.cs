@@ -57,7 +57,7 @@ namespace Greatbone.Core
 
         public JObj Extra => Model?["extra"];
 
-        public void ReadData(IDataInput i, ushort flags = 0)
+        public void ReadData(IDataInput i, ushort sel = 0)
         {
             i.Get(nameof(shard), ref shard);
             i.Get(nameof(addresses), ref addresses);
@@ -66,7 +66,7 @@ namespace Greatbone.Core
             i.Get(nameof(cluster), ref cluster);
         }
 
-        public void WriteData<R>(IDataOutput<R> o, ushort flags = 0) where R : IDataOutput<R>
+        public void WriteData<R>(IDataOutput<R> o, ushort sel = 0) where R : IDataOutput<R>
         {
             o.Put(nameof(shard), shard);
             o.Put(nameof(addresses), addresses);

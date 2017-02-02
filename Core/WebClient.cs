@@ -118,7 +118,7 @@ namespace Greatbone.Core
             return (M)WebUtility.ParseContent(ctyp, bytea, 0, bytea.Length);
         }
 
-        public async Task<D> GetObjectAsync<D>(WebActionContext ctx, string uri, ushort flags = 0) where D : IData, new()
+        public async Task<D> GetObjectAsync<D>(WebActionContext ctx, string uri, ushort sel = 0) where D : IData, new()
         {
             HttpRequestMessage req = new HttpRequestMessage(HttpMethod.Get, uri);
             if (ctx != null)
@@ -127,10 +127,10 @@ namespace Greatbone.Core
             }
             HttpResponseMessage resp = await SendAsync(req, HttpCompletionOption.ResponseContentRead);
             IDataInput src = null;
-            return src.ToObject<D>(flags);
+            return src.ToObject<D>(sel);
         }
 
-        public async Task<D[]> GetArrayAsync<D>(WebActionContext ctx, string uri, ushort flags = 0) where D : IData, new()
+        public async Task<D[]> GetArrayAsync<D>(WebActionContext ctx, string uri, ushort sel = 0) where D : IData, new()
         {
             HttpRequestMessage req = new HttpRequestMessage(HttpMethod.Get, uri);
             if (ctx != null)
@@ -140,10 +140,10 @@ namespace Greatbone.Core
             HttpResponseMessage resp = await SendAsync(req, HttpCompletionOption.ResponseContentRead);
 
             IDataInput srcset = null;
-            return srcset.ToArray<D>(flags);
+            return srcset.ToArray<D>(sel);
         }
 
-        public async Task<List<D>> GetListAsync<D>(WebActionContext ctx, string uri, ushort flags = 0) where D : IData, new()
+        public async Task<List<D>> GetListAsync<D>(WebActionContext ctx, string uri, ushort sel = 0) where D : IData, new()
         {
             HttpRequestMessage req = new HttpRequestMessage(HttpMethod.Get, uri);
             if (ctx != null)
@@ -153,7 +153,7 @@ namespace Greatbone.Core
             HttpResponseMessage resp = await SendAsync(req, HttpCompletionOption.ResponseContentRead);
 
             IDataInput srcset = null;
-            return srcset.ToList<D>(flags);
+            return srcset.ToList<D>(sel);
         }
 
         public Task<HttpResponseMessage> PostAsync<C>(WebActionContext ctx, string uri, C content) where C : HttpContent, IContent

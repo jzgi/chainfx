@@ -187,7 +187,7 @@ namespace Greatbone.Core
             return entity as M;
         }
 
-        public async Task<D> ReadObjectAsync<D>(ushort flags = 0) where D : IData, new()
+        public async Task<D> ReadObjectAsync<D>(ushort sel = 0) where D : IData, new()
         {
             if (entity == null && count == -1) // if not yet parse and read
             {
@@ -211,10 +211,10 @@ namespace Greatbone.Core
             {
                 return default(D);
             }
-            return src.ToObject<D>(flags);
+            return src.ToObject<D>(sel);
         }
 
-        public async Task<D[]> ReadArrayAsync<D>(ushort flags = 0) where D : IData, new()
+        public async Task<D[]> ReadArrayAsync<D>(ushort sel = 0) where D : IData, new()
         {
             if (entity == null && count == -1) // if not yet parse and read
             {
@@ -233,10 +233,10 @@ namespace Greatbone.Core
                 string ctyp = Header("Content-Type");
                 entity = WebUtility.ParseContent(ctyp, buffer, 0, count);
             }
-            return (entity as IDataInput)?.ToArray<D>(flags);
+            return (entity as IDataInput)?.ToArray<D>(sel);
         }
 
-        public async Task<List<D>> ReadListAsync<D>(ushort flags = 0) where D : IData, new()
+        public async Task<List<D>> ReadListAsync<D>(ushort sel = 0) where D : IData, new()
         {
             if (entity == null && count == -1) // if not yet parse and read
             {
@@ -255,7 +255,7 @@ namespace Greatbone.Core
                 string ctyp = Header("Content-Type");
                 entity = WebUtility.ParseContent(ctyp, buffer, 0, count);
             }
-            return (entity as IDataInput)?.ToList<D>(flags);
+            return (entity as IDataInput)?.ToList<D>(sel);
         }
 
         //
@@ -341,7 +341,7 @@ namespace Greatbone.Core
 
         static readonly TypeInfo ListType = typeof(List<IData>).GetTypeInfo();
 
-        public void ReplyJson(int status, object data, ushort flags = 0, bool? pub = null, int maxage = 60)
+        public void ReplyJson(int status, object data, ushort sel = 0, bool? pub = null, int maxage = 60)
         {
             TypeInfo typ = data.GetType().GetTypeInfo();
 
@@ -349,15 +349,15 @@ namespace Greatbone.Core
 
             if (ObjectType.IsAssignableFrom(typ))
             {
-                cont.Put(null, (IData)data, flags);
+                cont.Put(null, (IData)data, sel);
             }
             else if (ArrayType.IsAssignableFrom(typ))
             {
-                cont.Put(null, (IData[])data, flags);
+                cont.Put(null, (IData[])data, sel);
             }
             else if (ListType.IsAssignableFrom(typ))
             {
-                cont.Put(null, (List<IData>)data, flags);
+                cont.Put(null, (List<IData>)data, sel);
             }
 
             // set response states
@@ -367,7 +367,7 @@ namespace Greatbone.Core
             MaxAge = maxage;
         }
 
-        public void ReplyXml(int status, object dat, ushort flags = 0, bool? pub = null, int maxage = 60)
+        public void ReplyXml(int status, object dat, ushort sel = 0, bool? pub = null, int maxage = 60)
         {
         }
 

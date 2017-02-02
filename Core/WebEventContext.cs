@@ -42,20 +42,20 @@ namespace Greatbone.Core
             return entity as M;
         }
 
-        public D AsObject<D>(ushort flags = 0) where D : IData, new()
+        public D AsObject<D>(ushort sel = 0) where D : IData, new()
         {
             IDataInput src = entity as IDataInput;
             if (src == null)
             {
                 return default(D);
             }
-            return src.ToObject<D>(flags);
+            return src.ToObject<D>(sel);
         }
 
-        public D[] AsArray<D>(ushort flags = 0) where D : IData, new()
+        public D[] AsArray<D>(ushort sel = 0) where D : IData, new()
         {
             IDataInput srcs = entity as IDataInput;
-            return srcs?.ToArray<D>(flags);
+            return srcs?.ToArray<D>(sel);
         }
 
         public void Cancel()

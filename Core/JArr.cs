@@ -111,7 +111,7 @@ namespace Greatbone.Core
             return jo != null && jo.Get(name, ref v);
         }
 
-        public bool Get<D>(string name, ref D v, ushort flags = 0) where D : IData, new()
+        public bool Get<D>(string name, ref D v, ushort sel = 0) where D : IData, new()
         {
             JObj jo = elements[current];
             return jo != null && jo.Get(name, ref v);
@@ -147,44 +147,44 @@ namespace Greatbone.Core
             return jo != null && jo.Get(name, ref v);
         }
 
-        public bool Get<D>(string name, ref D[] v, ushort flags = 0) where D : IData, new()
+        public bool Get<D>(string name, ref D[] v, ushort sel = 0) where D : IData, new()
         {
             JObj jo = elements[current];
             return jo != null && jo.Get(name, ref v);
         }
 
-        public bool Get<D>(string name, ref List<D> v, ushort flags = 0) where D : IData, new()
+        public bool Get<D>(string name, ref List<D> v, ushort sel = 0) where D : IData, new()
         {
             JObj jo = elements[current];
             return jo != null && jo.Get(name, ref v);
         }
 
-        public D ToObject<D>(ushort flags = 0) where D : IData, new()
+        public D ToObject<D>(ushort sel = 0) where D : IData, new()
         {
             D obj = new D();
-            obj.ReadData(this, flags);
+            obj.ReadData(this, sel);
             return obj;
         }
 
-        public D[] ToArray<D>(ushort flags = 0) where D : IData, new()
+        public D[] ToArray<D>(ushort sel = 0) where D : IData, new()
         {
             D[] arr = new D[count];
             for (int i = 0; i < arr.Length; i++)
             {
                 D obj = new D();
-                obj.ReadData((JObj)elements[i], flags);
+                obj.ReadData((JObj)elements[i], sel);
                 arr[i] = obj;
             }
             return arr;
         }
 
-        public List<D> ToList<D>(ushort flags = 0) where D : IData, new()
+        public List<D> ToList<D>(ushort sel = 0) where D : IData, new()
         {
             List<D> lst = new List<D>(count + 8);
             for (int i = 0; i < count; i++)
             {
                 D obj = new D();
-                obj.ReadData((JObj)elements[i], flags);
+                obj.ReadData((JObj)elements[i], sel);
                 lst.Add(obj);
             }
             return lst;

@@ -69,14 +69,14 @@ namespace Greatbone.Sample
             }
         }
 
-        public void ReadData(IDataInput i, ushort flags = 0)
+        public void ReadData(IDataInput i, ushort sel = 0)
         {
             i.Get(nameof(userwx), ref userwx);
             i.Get(nameof(messages), ref messages);
             i.Get(nameof(status), ref status);
         }
 
-        public void WriteData<R>(IDataOutput<R> o, ushort flags = 0) where R : IDataOutput<R>
+        public void WriteData<R>(IDataOutput<R> o, ushort sel = 0) where R : IDataOutput<R>
         {
             o.Put(nameof(userwx), userwx);
             o.Put(nameof(messages), messages);

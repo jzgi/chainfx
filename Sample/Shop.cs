@@ -1,5 +1,5 @@
 ﻿using Greatbone.Core;
-using static Greatbone.Core.Flags;
+using static Greatbone.Core.Selector;
 
 namespace Greatbone.Sample
 {
@@ -27,11 +27,11 @@ namespace Greatbone.Sample
 
         public string Credential => credential;
 
-        public void ReadData(IDataInput i, ushort flags = 0)
+        public void ReadData(IDataInput i, ushort sel = 0)
         {
             i.Get(nameof(id), ref id);
             i.Get(nameof(name), ref name);
-            if (flags.Y(KEPT))
+            if (sel.Kept())
             {
                 i.Get(nameof(credential), ref credential);
             }
@@ -45,11 +45,11 @@ namespace Greatbone.Sample
             i.Get(nameof(status), ref status);
         }
 
-        public void WriteData<R>(IDataOutput<R> o, ushort flags = 0) where R : IDataOutput<R>
+        public void WriteData<R>(IDataOutput<R> o, ushort sel = 0) where R : IDataOutput<R>
         {
             o.Put(nameof(id), id);
             o.Put(nameof(name), name);
-            if (flags.Y(KEPT))
+            if (sel.Kept())
             {
                 o.Put(nameof(credential), credential);
             }

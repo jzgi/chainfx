@@ -280,7 +280,7 @@ namespace Greatbone.Core
             return this; // ignore ir
         }
 
-        public FormContent Put(string name, IData v, ushort flags = 0)
+        public FormContent Put(string name, IData v, ushort sel = 0)
         {
             if (name != null)
             {
@@ -297,7 +297,7 @@ namespace Greatbone.Core
             else
             {
                 Add('{');
-                v.WriteData(this, flags);
+                v.WriteData(this, sel);
                 Add('}');
             }
 
@@ -474,7 +474,7 @@ namespace Greatbone.Core
         }
 
 
-        public FormContent Put<D>(string name, D[] v, ushort flags = 0) where D : IData
+        public FormContent Put<D>(string name, D[] v, ushort sel = 0) where D : IData
         {
             if (name != null)
             {
@@ -493,14 +493,14 @@ namespace Greatbone.Core
                 Add('[');
                 for (int i = 0; i < v.Length; i++)
                 {
-                    Put(null, v[i], flags);
+                    Put(null, v[i], sel);
                 }
                 Add(']');
             }
             return this;
         }
 
-        public FormContent Put<D>(string name, List<D> v, ushort flags = 0) where D : IData
+        public FormContent Put<D>(string name, List<D> v, ushort sel = 0) where D : IData
         {
             if (name != null)
             {
@@ -519,7 +519,7 @@ namespace Greatbone.Core
                 Add('[');
                 for (int i = 0; i < v.Count; i++)
                 {
-                    Put(null, v[i], flags);
+                    Put(null, v[i], sel);
                 }
                 Add(']');
             }

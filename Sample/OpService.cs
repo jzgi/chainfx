@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.Threading.Tasks;
 using Greatbone.Core;
 using NpgsqlTypes;
-using static Greatbone.Core.Flags;
+using static Greatbone.Core.Selector;
 
 namespace Greatbone.Sample
 {
@@ -200,7 +200,7 @@ namespace Greatbone.Sample
         public void mgmtz(WebActionContext ac, string arg)
         {
             int page = arg.ToInt();
-            const ushort z = ALL ^ BINARY;
+            const ushort z = ALL ^ BIN;
 
             using (var dc = Service.NewDbContext())
             {

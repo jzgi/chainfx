@@ -18,24 +18,24 @@
         // whether to create event-queue tables/indexes
         public bool queue;
 
-        public void ReadData(IDataInput src, ushort flags = 0)
+        public void ReadData(IDataInput i, ushort sel = 0)
         {
-            src.Get(nameof(host), ref host);
-            src.Get(nameof(port), ref port);
-            src.Get(nameof(database), ref database);
-            src.Get(nameof(username), ref username);
-            src.Get(nameof(password), ref password);
-            src.Get(nameof(queue), ref queue);
+            i.Get(nameof(host), ref host);
+            i.Get(nameof(port), ref port);
+            i.Get(nameof(database), ref database);
+            i.Get(nameof(username), ref username);
+            i.Get(nameof(password), ref password);
+            i.Get(nameof(queue), ref queue);
         }
 
-        public void WriteData<R>(IDataOutput<R> snk, ushort flags = 0) where R : IDataOutput<R>
+        public void WriteData<R>(IDataOutput<R> o, ushort sel = 0) where R : IDataOutput<R>
         {
-            snk.Put(nameof(host), host);
-            snk.Put(nameof(port), port);
-            snk.Put(nameof(database), database);
-            snk.Put(nameof(username), username);
-            snk.Put(nameof(password), password);
-            snk.Put(nameof(queue), queue);
+            o.Put(nameof(host), host);
+            o.Put(nameof(port), port);
+            o.Put(nameof(database), database);
+            o.Put(nameof(username), username);
+            o.Put(nameof(password), password);
+            o.Put(nameof(queue), queue);
         }
     }
 }
