@@ -164,7 +164,7 @@ namespace Greatbone.Core
             return false;
         }
 
-        public bool Get<D>(string name, ref D v, byte flags = 0) where D : IData, new()
+        public bool Get<D>(string name, ref D v, ushort flags = 0) where D : IData, new()
         {
             throw new NotImplementedException();
         }
@@ -245,17 +245,17 @@ namespace Greatbone.Core
             return false;
         }
 
-        public bool Get<D>(string name, ref D[] v, byte flags = 0) where D : IData, new()
+        public bool Get<D>(string name, ref D[] v, ushort flags = 0) where D : IData, new()
         {
             throw new NotImplementedException();
         }
 
-        public bool Get<D>(string name, ref List<D> v, byte flags = 0) where D : IData, new()
+        public bool Get<D>(string name, ref List<D> v, ushort flags = 0) where D : IData, new()
         {
             throw new NotImplementedException();
         }
 
-        public D ToObject<D>(byte flags = 0) where D : IData, new()
+        public D ToObject<D>(ushort flags = 0) where D : IData, new()
         {
             D dat = new D();
             dat.ReadData(this, flags);
@@ -281,12 +281,12 @@ namespace Greatbone.Core
             throw new NotImplementedException();
         }
 
-        public D[] ToArray<D>(byte flags = 0) where D : IData, new()
+        public D[] ToArray<D>(ushort flags = 0) where D : IData, new()
         {
             throw new NotImplementedException();
         }
 
-        public List<D> ToList<D>(byte flags = 0) where D : IData, new()
+        public List<D> ToList<D>(ushort flags = 0) where D : IData, new()
         {
             throw new NotImplementedException();
         }

@@ -227,7 +227,7 @@ namespace Greatbone.Core
             return this;
         }
 
-        public DbParameters Put(string name, IData v, byte flags = 0)
+        public DbParameters Put(string name, IData v, ushort flags = 0)
         {
             if (name == null)
             {
@@ -345,7 +345,7 @@ namespace Greatbone.Core
             return this;
         }
 
-        public DbParameters Put<D>(string name, D[] v, byte flags = 0) where D : IData
+        public DbParameters Put<D>(string name, D[] v, ushort flags = 0) where D : IData
         {
             if (name == null)
             {
@@ -368,7 +368,7 @@ namespace Greatbone.Core
             return this;
         }
 
-        public DbParameters Put<D>(string name, List<D> v, byte flags = 0) where D : IData
+        public DbParameters Put<D>(string name, List<D> v, ushort flags = 0) where D : IData
         {
             if (name == null)
             {
@@ -462,7 +462,7 @@ namespace Greatbone.Core
             return Put(null, v);
         }
 
-        public DbParameters Set<D>(D v, byte flags = 0) where D : IData
+        public DbParameters Set<D>(D v, ushort flags = 0) where D : IData
         {
             return Put(null, v);
         }
@@ -497,12 +497,12 @@ namespace Greatbone.Core
             return Put(null, v);
         }
 
-        public DbParameters Set<D>(D[] v, byte flags = 0) where D : IData
+        public DbParameters Set<D>(D[] v, ushort flags = 0) where D : IData
         {
             return Put(null, v);
         }
 
-        public DbParameters Set<D>(List<D> v, byte flags = 0) where D : IData
+        public DbParameters Set<D>(List<D> v, ushort flags = 0) where D : IData
         {
             return Put(null, v);
         }

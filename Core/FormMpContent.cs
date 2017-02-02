@@ -160,7 +160,7 @@ namespace Greatbone.Core
             return this; // ignore ir
         }
 
-        public FormMpContent Put(string name, IData v, byte flags = 0)
+        public FormMpContent Put(string name, IData v, ushort flags = 0)
         {
             Part(name);
             if (v == null)
@@ -297,7 +297,7 @@ namespace Greatbone.Core
             return this;
         }
 
-        public FormMpContent Put<D>(string name, D[] v, byte flags = 0) where D : IData
+        public FormMpContent Put<D>(string name, D[] v, ushort flags = 0) where D : IData
         {
             Part(name);
             if (v == null)
@@ -316,7 +316,7 @@ namespace Greatbone.Core
             return this;
         }
 
-        public FormMpContent Put<D>(string name, List<D> v, byte flags = 0) where D : IData
+        public FormMpContent Put<D>(string name, List<D> v, ushort flags = 0) where D : IData
         {
             Part(name);
             if (v == null)

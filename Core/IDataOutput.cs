@@ -51,10 +51,10 @@ namespace Greatbone.Core
 
         R Put(string name, Dictionary<string, string> v);
 
-        R Put(string name, IData v, byte flags = 0);
+        R Put(string name, IData v, ushort flags = 0);
 
-        R Put<D>(string name, D[] v, byte flags = 0) where D : IData;
+        R Put<D>(string name, D[] v, ushort flags = 0) where D : IData;
 
-        R Put<D>(string name, List<D> v, byte flags = 0) where D : IData;
+        R Put<D>(string name, List<D> v, ushort flags = 0) where D : IData;
     }
 }

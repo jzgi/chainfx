@@ -187,7 +187,7 @@ namespace Greatbone.Core
             return entity as M;
         }
 
-        public async Task<D> ReadObjectAsync<D>(byte flags = 0) where D : IData, new()
+        public async Task<D> ReadObjectAsync<D>(ushort flags = 0) where D : IData, new()
         {
             if (entity == null && count == -1) // if not yet parse and read
             {
@@ -214,7 +214,7 @@ namespace Greatbone.Core
             return src.ToObject<D>(flags);
         }
 
-        public async Task<D[]> ReadArrayAsync<D>(byte flags = 0) where D : IData, new()
+        public async Task<D[]> ReadArrayAsync<D>(ushort flags = 0) where D : IData, new()
         {
             if (entity == null && count == -1) // if not yet parse and read
             {
@@ -236,7 +236,7 @@ namespace Greatbone.Core
             return (entity as IDataInput)?.ToArray<D>(flags);
         }
 
-        public async Task<List<D>> ReadListAsync<D>(byte flags = 0) where D : IData, new()
+        public async Task<List<D>> ReadListAsync<D>(ushort flags = 0) where D : IData, new()
         {
             if (entity == null && count == -1) // if not yet parse and read
             {
@@ -341,7 +341,7 @@ namespace Greatbone.Core
 
         static readonly TypeInfo ListType = typeof(List<IData>).GetTypeInfo();
 
-        public void ReplyJson(int status, object data, byte flags = 0, bool? pub = null, int maxage = 60)
+        public void ReplyJson(int status, object data, ushort flags = 0, bool? pub = null, int maxage = 60)
         {
             TypeInfo typ = data.GetType().GetTypeInfo();
 
@@ -367,7 +367,7 @@ namespace Greatbone.Core
             MaxAge = maxage;
         }
 
-        public void ReplyXml(int status, object dat, byte flags = 0, bool? pub = null, int maxage = 60)
+        public void ReplyXml(int status, object dat, ushort flags = 0, bool? pub = null, int maxage = 60)
         {
         }
 

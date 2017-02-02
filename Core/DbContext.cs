@@ -305,7 +305,7 @@ namespace Greatbone.Core
         // RESULTSET
         //
 
-        public D ToObject<D>(byte flags = 0) where D : IData, new()
+        public D ToObject<D>(ushort flags = 0) where D : IData, new()
         {
             D obj = new D();
             obj.ReadData(this, flags);
@@ -320,12 +320,12 @@ namespace Greatbone.Core
             return obj;
         }
 
-        public D[] ToArray<D>(byte flags = 0) where D : IData, new()
+        public D[] ToArray<D>(ushort flags = 0) where D : IData, new()
         {
             return ToList<D>(flags).ToArray();
         }
 
-        public List<D> ToList<D>(byte flags = 0) where D : IData, new()
+        public List<D> ToList<D>(ushort flags = 0) where D : IData, new()
         {
             List<D> lst = new List<D>(32);
             while (Next())
@@ -506,7 +506,7 @@ namespace Greatbone.Core
             return false;
         }
 
-        public bool Get<D>(string name, ref D v, byte flags = 0) where D : IData, new()
+        public bool Get<D>(string name, ref D v, ushort flags = 0) where D : IData, new()
         {
             int ord = name == null ? ordinal++ : reader.GetOrdinal(name);
             if (!reader.IsDBNull(ord))
@@ -598,7 +598,7 @@ namespace Greatbone.Core
             return false;
         }
 
-        public bool Get<D>(string name, ref D[] v, byte flags = 0) where D : IData, new()
+        public bool Get<D>(string name, ref D[] v, ushort flags = 0) where D : IData, new()
         {
             int ord = name == null ? ordinal++ : reader.GetOrdinal(name);
             if (!reader.IsDBNull(ord))
@@ -628,7 +628,7 @@ namespace Greatbone.Core
             return false;
         }
 
-        public bool Get<D>(string name, ref List<D> v, byte flags = 0) where D : IData, new()
+        public bool Get<D>(string name, ref List<D> v, ushort flags = 0) where D : IData, new()
         {
             int ord = name == null ? ordinal++ : reader.GetOrdinal(name);
             if (!reader.IsDBNull(ord))

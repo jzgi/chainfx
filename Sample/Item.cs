@@ -30,12 +30,12 @@ namespace Greatbone.Sample
 
         internal int sold; // total sold 
 
-        public void ReadData(IDataInput i, byte flags = 0)
+        public void ReadData(IDataInput i, ushort flags = 0)
         {
             i.Get(nameof(shopid), ref shopid);
             i.Get(nameof(name), ref name);
             i.Get(nameof(unit), ref unit);
-            if (flags.Has(BINARY))
+            if (flags.Y(BINARY))
             {
                 i.Get(nameof(icon), ref icon);
             }
@@ -46,12 +46,12 @@ namespace Greatbone.Sample
             i.Get(nameof(sold), ref sold);
         }
 
-        public void WriteData<R>(IDataOutput<R> o, byte flags = 0) where R : IDataOutput<R>
+        public void WriteData<R>(IDataOutput<R> o, ushort flags = 0) where R : IDataOutput<R>
         {
             o.Put(nameof(shopid), shopid);
             o.Put(nameof(name), name);
             o.Put(nameof(unit), unit);
-            if (flags.Has(BINARY))
+            if (flags.Y(BINARY))
             {
                 o.Put(nameof(icon), icon);
             }

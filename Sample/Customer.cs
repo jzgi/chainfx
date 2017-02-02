@@ -20,7 +20,7 @@ namespace Greatbone.Sample
 
         internal decimal orderup; // accumulative addup
 
-        public void ReadData(IDataInput i, byte flags = 0)
+        public void ReadData(IDataInput i, ushort flags = 0)
         {
             i.Get(nameof(wx), ref wx);
             i.Get(nameof(nickname), ref nickname);
@@ -30,7 +30,7 @@ namespace Greatbone.Sample
             i.Get(nameof(orderup), ref orderup);
         }
 
-        public void WriteData<R>(IDataOutput<R> o, byte flags = 0) where R : IDataOutput<R>
+        public void WriteData<R>(IDataOutput<R> o, ushort flags = 0) where R : IDataOutput<R>
         {
             o.Put(nameof(wx), wx);
             o.Put(nameof(nickname), nickname);

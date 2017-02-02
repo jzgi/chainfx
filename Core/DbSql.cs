@@ -44,7 +44,7 @@ namespace Greatbone.Core
             return this;
         }
 
-        public DbSql setlst(IData obj, byte flags = 0)
+        public DbSql setlst(IData obj, ushort flags = 0)
         {
             list = SetList;
             ordinal = 1;
@@ -52,7 +52,7 @@ namespace Greatbone.Core
             return this;
         }
 
-        public DbSql columnlst(IData obj, byte flags = 0)
+        public DbSql columnlst(IData obj, ushort flags = 0)
         {
             list = ColumnList;
             ordinal = 1;
@@ -60,7 +60,7 @@ namespace Greatbone.Core
             return this;
         }
 
-        public DbSql parameterlst(IData obj, byte flags = 0)
+        public DbSql parameterlst(IData obj, ushort flags = 0)
         {
             list = ParameterList;
             ordinal = 1;
@@ -68,7 +68,7 @@ namespace Greatbone.Core
             return this;
         }
 
-        public DbSql _(IData obj, byte flags = 0)
+        public DbSql _(IData obj, ushort flags = 0)
         {
             Add(" (");
             columnlst(obj, flags);
@@ -76,7 +76,7 @@ namespace Greatbone.Core
             return this;
         }
 
-        public DbSql _VALUES_(IData obj, byte flags = 0)
+        public DbSql _VALUES_(IData obj, ushort flags = 0)
         {
             Add(" VALUES (");
             parameterlst(obj, flags);
@@ -84,7 +84,7 @@ namespace Greatbone.Core
             return this;
         }
 
-        public DbSql _SET_(IData obj, byte flags = 0)
+        public DbSql _SET_(IData obj, ushort flags = 0)
         {
             Add(" SET ");
             setlst(obj, flags);
@@ -293,7 +293,7 @@ namespace Greatbone.Core
             return this;
         }
 
-        public DbSql Put(string name, IData v, byte flags = 0)
+        public DbSql Put(string name, IData v, ushort flags = 0)
         {
             if (name != null)
             {
@@ -478,13 +478,13 @@ namespace Greatbone.Core
             return this;
         }
 
-        public DbSql Put<D>(string name, D[] v, byte flags = 0) where D : IData
+        public DbSql Put<D>(string name, D[] v, ushort flags = 0) where D : IData
         {
             Build(name);
             return this;
         }
 
-        public DbSql Put<D>(string name, List<D> v, byte flags = 0) where D : IData
+        public DbSql Put<D>(string name, List<D> v, ushort flags = 0) where D : IData
         {
             Build(name);
             return this;

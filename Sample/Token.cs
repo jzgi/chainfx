@@ -22,7 +22,7 @@ namespace Greatbone.Sample
 
         public string Name => name;
 
-        public void ReadData(IDataInput i, byte flags = 0)
+        public void ReadData(IDataInput i, ushort flags = 0)
         {
             i.Get(nameof(key), ref key);
             i.Get(nameof(name), ref name);
@@ -30,7 +30,7 @@ namespace Greatbone.Sample
             i.Get(nameof(roles), ref roles);
         }
 
-        public void WriteData<R>(IDataOutput<R> o, byte flags = 0) where R : IDataOutput<R>
+        public void WriteData<R>(IDataOutput<R> o, ushort flags = 0) where R : IDataOutput<R>
         {
             o.Put(nameof(key), key);
             o.Put(nameof(name), name);

@@ -18,7 +18,7 @@
         // whether to create event-queue tables/indexes
         public bool queue;
 
-        public void ReadData(IDataInput src, byte flags = 0)
+        public void ReadData(IDataInput src, ushort flags = 0)
         {
             src.Get(nameof(host), ref host);
             src.Get(nameof(port), ref port);
@@ -28,7 +28,7 @@
             src.Get(nameof(queue), ref queue);
         }
 
-        public void WriteData<R>(IDataOutput<R> snk, byte flags = 0) where R : IDataOutput<R>
+        public void WriteData<R>(IDataOutput<R> snk, ushort flags = 0) where R : IDataOutput<R>
         {
             snk.Put(nameof(host), host);
             snk.Put(nameof(port), port);

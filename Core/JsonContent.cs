@@ -297,7 +297,7 @@ namespace Greatbone.Core
             return this; // ignore ir
         }
 
-        public JsonContent Put(string name, IData v, byte flags = 0)
+        public JsonContent Put(string name, IData v, ushort flags = 0)
         {
             if (counts[level]++ > 0) Add(',');
             if (name != null)
@@ -507,7 +507,7 @@ namespace Greatbone.Core
         }
 
 
-        public JsonContent Put<D>(string name, D[] v, byte flags = 0) where D : IData
+        public JsonContent Put<D>(string name, D[] v, ushort flags = 0) where D : IData
         {
             if (counts[level]++ > 0) Add(',');
 
@@ -537,7 +537,7 @@ namespace Greatbone.Core
             return this;
         }
 
-        public JsonContent Put<D>(string name, List<D> v, byte flags = 0) where D : IData
+        public JsonContent Put<D>(string name, List<D> v, ushort flags = 0) where D : IData
         {
             if (counts[level]++ > 0) Add(',');
 

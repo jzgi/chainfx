@@ -42,7 +42,7 @@ namespace Greatbone.Sample
 
         internal int status;
 
-        public void ReadData(IDataInput i, byte flags = 0)
+        public void ReadData(IDataInput i, ushort flags = 0)
         {
             i.Get(nameof(id), ref id);
 
@@ -55,7 +55,7 @@ namespace Greatbone.Sample
             i.Get(nameof(buyerwx), ref buyerwx);
 
             i.Get(nameof(opened), ref opened);
-            if (flags.Has(SUB))
+            if (flags.Y(SUB))
             {
                 i.Get(nameof(lines), ref lines);
             }
@@ -65,7 +65,7 @@ namespace Greatbone.Sample
             i.Get(nameof(status), ref status);
         }
 
-        public void WriteData<R>(IDataOutput<R> o, byte flags = 0) where R : IDataOutput<R>
+        public void WriteData<R>(IDataOutput<R> o, ushort flags = 0) where R : IDataOutput<R>
         {
             o.Put(nameof(id), id);
 
@@ -78,7 +78,7 @@ namespace Greatbone.Sample
             o.Put(nameof(buyerwx), buyerwx);
 
             o.Put(nameof(opened), opened);
-            if (flags.Has(SUB))
+            if (flags.Y(SUB))
             {
                 o.Put(nameof(lines), lines);
             }

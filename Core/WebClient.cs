@@ -118,7 +118,7 @@ namespace Greatbone.Core
             return (M)WebUtility.ParseContent(ctyp, bytea, 0, bytea.Length);
         }
 
-        public async Task<D> GetObjectAsync<D>(WebActionContext ctx, string uri, byte flags = 0) where D : IData, new()
+        public async Task<D> GetObjectAsync<D>(WebActionContext ctx, string uri, ushort flags = 0) where D : IData, new()
         {
             HttpRequestMessage req = new HttpRequestMessage(HttpMethod.Get, uri);
             if (ctx != null)
@@ -130,7 +130,7 @@ namespace Greatbone.Core
             return src.ToObject<D>(flags);
         }
 
-        public async Task<D[]> GetArrayAsync<D>(WebActionContext ctx, string uri, byte flags = 0) where D : IData, new()
+        public async Task<D[]> GetArrayAsync<D>(WebActionContext ctx, string uri, ushort flags = 0) where D : IData, new()
         {
             HttpRequestMessage req = new HttpRequestMessage(HttpMethod.Get, uri);
             if (ctx != null)
@@ -143,7 +143,7 @@ namespace Greatbone.Core
             return srcset.ToArray<D>(flags);
         }
 
-        public async Task<List<D>> GetListAsync<D>(WebActionContext ctx, string uri, byte flags = 0) where D : IData, new()
+        public async Task<List<D>> GetListAsync<D>(WebActionContext ctx, string uri, ushort flags = 0) where D : IData, new()
         {
             HttpRequestMessage req = new HttpRequestMessage(HttpMethod.Get, uri);
             if (ctx != null)

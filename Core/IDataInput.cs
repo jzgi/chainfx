@@ -43,17 +43,17 @@ namespace Greatbone.Core
 
         bool Get(string name, ref Dictionary<string, string> v);
 
-        bool Get<D>(string name, ref D v, byte flags = 0) where D : IData, new();
+        bool Get<D>(string name, ref D v, ushort flags = 0) where D : IData, new();
 
-        bool Get<D>(string name, ref D[] v, byte flags = 0) where D : IData, new();
+        bool Get<D>(string name, ref D[] v, ushort flags = 0) where D : IData, new();
 
-        bool Get<D>(string name, ref List<D> v, byte flags = 0) where D : IData, new();
+        bool Get<D>(string name, ref List<D> v, ushort flags = 0) where D : IData, new();
 
-        D ToObject<D>(byte flags = 0) where D : IData, new();
+        D ToObject<D>(ushort flags = 0) where D : IData, new();
 
-        D[] ToArray<D>(byte flags = 0) where D : IData, new();
+        D[] ToArray<D>(ushort flags = 0) where D : IData, new();
 
-        List<D> ToList<D>(byte flags = 0) where D : IData, new();
+        List<D> ToList<D>(ushort flags = 0) where D : IData, new();
 
         ///
         /// Write a single (or current) data entry into the given output object.

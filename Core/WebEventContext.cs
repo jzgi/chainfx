@@ -42,7 +42,7 @@ namespace Greatbone.Core
             return entity as M;
         }
 
-        public D AsObject<D>(byte flags = 0) where D : IData, new()
+        public D AsObject<D>(ushort flags = 0) where D : IData, new()
         {
             IDataInput src = entity as IDataInput;
             if (src == null)
@@ -52,7 +52,7 @@ namespace Greatbone.Core
             return src.ToObject<D>(flags);
         }
 
-        public D[] AsArray<D>(byte flags = 0) where D : IData, new()
+        public D[] AsArray<D>(ushort flags = 0) where D : IData, new()
         {
             IDataInput srcs = entity as IDataInput;
             return srcs?.ToArray<D>(flags);

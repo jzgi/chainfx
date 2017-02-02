@@ -92,33 +92,79 @@ namespace Greatbone.Sample
             ac.Reply(200);
         }
 
+        ///
+        ///
+        /// GET /buyer/-wx-/checkout
+        ///
+        /// POST /buyer/-wx-/checkout
+        ///
         public void checkout(WebActionContext ac)
         {
             string wx = ac.Var;
 
-            // // store backet to db
-            // string openid = ac.Cookies[nameof(openid)];
+            if (ac.GET)
+            { // give change to review the orders
 
-            List<OrderLine> cart;
-            if (carts.TryGetValue(wx, out cart))
+                List<Order> orders = GetOrderList();
+                ac.ReplyJson(200, orders);
+            }
+            else
             {
+                // // store backet to db
+                // string openid = ac.Cookies[nameof(openid)];
+
+                List<Order> orders = GetOrderList();
+
+                // save the orders to db
                 using (var dc = Service.NewDbContext())
                 {
-                    DbSql sql = new DbSql("INSERT INFO orders ")._VALUES_(Order.Empty);
-                    dc.Execute(sql);
+                    DbSql sql = new DbSql("INSERT INFO orders ")._(Order.Empty)._VALUES_(Order.Empty);
 
-                    // remove cart
+                    foreach (var order in orders)
+                    {
+                        dc.Execute(sql, p => order.WriteData(p));
+                    }
+
+                    // remove cart 
+                    List<OrderLine> cart;
                     carts.TryRemove(wx, out cart);
                 }
+
+                //  call weixin to prepay
+                XmlContent cont = new XmlContent()
+                    .Put("out_trade_no", "")
+                    .Put("total_fee", 0);
+                // await WCPay.PostAsync(null, "/pay/unifiedorder", cont);
+
             }
-
-            //  call weixin to prepay
-            XmlContent cont = new XmlContent()
-                .Put("out_trade_no", "")
-                .Put("total_fee", 0);
-            // await WCPay.PostAsync(null, "/pay/unifiedorder", cont);
-
         }
 
+        List<Order> GetOrderList()
+        {
+            return null;
+        }
+
+        ///
+        ///
+        /// GET /buyer/-wx-/my
+        ///
+        public void my(WebActionContext ac)
+        {
+            string wx = ac.Var;
+
+            // TODO check access
+
+            using (var dc = Service.NewDbContext())
+            {
+                if (dc.Query("SELECT * FROM orders WHERE buyerwx = @1 AND status > 0", p => p.Set(wx)))
+                {
+                    ac.Reply(200, dc.Dump<JsonContent>());
+                }
+                else
+                {
+                    ac.Reply(204);
+                }
+            }
+        }
     }
 }

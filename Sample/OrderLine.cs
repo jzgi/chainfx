@@ -17,7 +17,7 @@ namespace Greatbone.Sample
 
         public decimal Subtotal => price * qty;
 
-        public void ReadData(IDataInput i, byte flags = 0)
+        public void ReadData(IDataInput i, ushort flags = 0)
         {
             i.Get(nameof(shopid), ref shopid);
             i.Get(nameof(item), ref item);
@@ -26,7 +26,7 @@ namespace Greatbone.Sample
             i.Get(nameof(note), ref note);
         }
 
-        public void WriteData<R>(IDataOutput<R> o, byte flags = 0) where R : IDataOutput<R>
+        public void WriteData<R>(IDataOutput<R> o, ushort flags = 0) where R : IDataOutput<R>
         {
             o.Put(nameof(shopid), shopid);
             o.Put(nameof(item), item);

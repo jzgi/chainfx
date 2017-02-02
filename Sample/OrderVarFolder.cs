@@ -3,7 +3,7 @@ using Greatbone.Core;
 namespace Greatbone.Sample
 {
     ///
-    /// /order/-id-/
+    /// /shop/-shopid-/-orderid-/
     ///
     public class OrderVarFolder : WebFolder, IVar
     {
