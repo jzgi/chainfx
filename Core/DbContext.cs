@@ -12,13 +12,16 @@ namespace Greatbone.Core
     ///
     public class DbContext : IDataInput, IDisposable
     {
-        readonly IHandleContext<IHandle> handlectx;
-
         readonly WebServiceContext servicectx;
+
+        readonly IHandleContext<IHandle> handlectx;
 
         readonly NpgsqlConnection connection;
 
         readonly NpgsqlCommand command;
+
+        // can be null
+        DbSql sql;
 
         readonly DbParameters parameters;
 
@@ -58,15 +61,6 @@ namespace Greatbone.Core
             }
         }
 
-        public void Begin(IsolationLevel level = IsolationLevel.ReadCommitted)
-        {
-            if (transact == null)
-            {
-                transact = connection.BeginTransaction(level);
-                command.Transaction = transact;
-            }
-        }
-
         public void Commit()
         {
             if (transact != null)
@@ -96,6 +90,20 @@ namespace Greatbone.Core
             }
             parameters.Clear();
             ordinal = 0;
+        }
+
+        public DbSql Sql(string str)
+        {
+            if (sql == null)
+            {
+                sql = new DbSql(str);
+            }
+            else
+            {
+                sql.Clear(); // reset
+                sql.Add(str);
+            }
+            return sql;
         }
 
         public bool Query1(DbSql sql, Action<DbParameters> p = null, bool prepare = true)
@@ -572,6 +580,16 @@ namespace Greatbone.Core
             return false;
         }
 
+        public bool Get(string name, ref IDataInput v)
+        {
+            throw new NotImplementedException();
+        }
+
+        public bool Get(string name, ref Dictionary<string, string> v)
+        {
+            throw new NotImplementedException();
+        }
+
         public bool Get(string name, ref short[] v)
         {
             int ord = name == null ? ordinal++ : reader.GetOrdinal(name);
@@ -680,17 +698,17 @@ namespace Greatbone.Core
         // MESSAGING
         //
 
-        public void Event(string name, string shard, IData dat, byte bits = 0)
+        public void Event(string name, string shard, IData obj, ushort proj = 0)
         {
             JsonContent cont = new JsonContent(true, true);
-            cont.Put(null, dat, bits);
+            cont.Put(null, obj, proj);
             Event(name, shard, cont);
         }
 
-        public void Event<D>(string name, string shard, D[] dats, byte bits = 0) where D : IData
+        public void Event<D>(string name, string shard, D[] objs, ushort proj = 0) where D : IData
         {
             JsonContent cont = new JsonContent();
-            cont.Put(null, dats, bits);
+            cont.Put(null, objs, proj);
             Event(name, shard, cont);
         }
 
@@ -757,25 +775,6 @@ namespace Greatbone.Core
                 // indicate that the instance has been disposed.
                 disposed = true;
             }
-        }
-
-        public bool Get(string name, ref IDataInput v)
-        {
-            throw new NotImplementedException();
-        }
-
-        public bool Get(string name, ref Dictionary<string, string> v)
-        {
-            throw new NotImplementedException();
-        }
-
-        struct ColumnDesc
-        {
-            internal string name;
-
-            internal Type type;
-
-            internal uint oid;
         }
     }
 }

@@ -12,9 +12,9 @@ namespace Greatbone.Core
     /// <code>
     /// public class FooService : WebService
     /// {
-    ///     public FooService(WebConfig cfg) : base(cfg)
+    ///     public FooService(WebServiceContext sc) : base(sc)
     ///     {
-    ///         Make&lt;BarFolder&gt;("bar");
+    ///         Create&lt;BarFolder&gt;("bar");
     ///     }
     /// }
     /// </code>
@@ -53,7 +53,7 @@ namespace Greatbone.Core
         ///
         public JObj Json { get; private set; }
 
-        public bool? Configured { get; private set; }
+        public bool? LoadedOk { get; private set; }
 
         public JObj Extra => Json?["extra"];
 
@@ -88,10 +88,10 @@ namespace Greatbone.Core
                 {
                     Json = jo;
                     ReadData(jo); // override
-                    return (Configured = true).Value;
+                    return (LoadedOk = true).Value;
                 }
             }
-            return (Configured = false).Value;
+            return (LoadedOk = false).Value;
         }
 
         public string ConnectionString

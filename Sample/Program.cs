@@ -33,7 +33,7 @@ namespace Greatbone.Sample
 #if !DEBUG
             cfg.TryLoad();
 #endif
-            if (sc.Configured != false) svcs.Add(new OpService(sc) { Authent = auth });
+            if (sc.LoadedOk != false) svcs.Add(new OpService(sc) { Authent = auth });
 
             sc = new WebServiceContext("comm")
             {
@@ -44,7 +44,7 @@ namespace Greatbone.Sample
             cfg.TryLoad();
 #endif
 
-            if (sc.Configured != false) svcs.Add(new CommService(sc) { Authent = auth });
+            if (sc.LoadedOk != false) svcs.Add(new CommService(sc) { Authent = auth });
 
             WebService.Run(svcs);
         }
