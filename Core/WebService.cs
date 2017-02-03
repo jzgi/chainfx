@@ -281,12 +281,14 @@ namespace Greatbone.Core
         }
 
 
-        public DbContext NewDbContext(IsolationLevel level = IsolationLevel.Unspecified)
+        public DbContext NewDbContext(IsolationLevel? level = null)
         {
-            return new DbContext(Context)
+            DbContext dc = new DbContext(Context);
+            if (level != null)
             {
-                Transact = level
-            };
+                dc.Begin(level.Value);
+            }
+            return dc;
         }
 
         //

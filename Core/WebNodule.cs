@@ -5,9 +5,9 @@ using System.Reflection;
 namespace Greatbone.Core
 {
     ///
-    /// A certain level of resources management.
+    /// A certain node of resources along the URi path.
     ///
-    public abstract class WebScope
+    public abstract class WebNodule
     {
         // access checking routines
         readonly CheckAttribute[] checks;
@@ -15,7 +15,7 @@ namespace Greatbone.Core
         // access filtering routines
         readonly FilterAttribute[] filters;
 
-        internal WebScope(ICustomAttributeProvider attrs)
+        internal WebNodule(ICustomAttributeProvider attrs)
         {
             // either methodinfo or typeinfo
             if (attrs == null)
@@ -31,7 +31,7 @@ namespace Greatbone.Core
                 {
                     chklst = new List<CheckAttribute>(8);
                 }
-                chk.Scope = this;
+                chk.Nodule = this;
                 chklst.Add(chk);
             }
             this.checks = chklst?.ToArray();
@@ -44,7 +44,7 @@ namespace Greatbone.Core
                 {
                     fltlst = new List<FilterAttribute>(8);
                 }
-                flt.Control = this;
+                flt.Nodule = this;
                 fltlst.Add(flt);
             }
             this.filters = fltlst?.ToArray();

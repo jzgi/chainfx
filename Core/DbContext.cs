@@ -48,16 +48,12 @@ namespace Greatbone.Core
             command.Connection = connection;
         }
 
-        public IsolationLevel Transact
+        public void Begin(IsolationLevel level)
         {
-            get { return transact?.IsolationLevel ?? IsolationLevel.Unspecified; }
-            set
+            if (transact == null)
             {
-                if (transact == null && value > IsolationLevel.Unspecified)
-                {
-                    transact = connection.BeginTransaction(value);
-                    command.Transaction = transact;
-                }
+                transact = connection.BeginTransaction(level);
+                command.Transaction = transact;
             }
         }
 
@@ -769,6 +765,11 @@ namespace Greatbone.Core
         {
             if (!disposed)
             {
+                // commit ongoing transaction
+                if (transact != null && !transact.IsCompleted) {
+                    transact.Commit();
+                }
+
                 reader?.Dispose();
                 command.Dispose();
                 connection.Dispose();

@@ -13,6 +13,6 @@ namespace Greatbone.Core
 
         H Handle { get; }
 
-        DbContext NewDbContext(IsolationLevel level = IsolationLevel.Unspecified);
+        DbContext NewDbContext(IsolationLevel? level = null);
     }
 }

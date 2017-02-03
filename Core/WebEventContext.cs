@@ -88,7 +88,7 @@ namespace Greatbone.Core
             client.SetCancel();
         }
 
-        public DbContext NewDbContext(IsolationLevel level = IsolationLevel.Unspecified)
+        public DbContext NewDbContext(IsolationLevel? level = null)
         {
             return null;
         }
