@@ -6,9 +6,9 @@ namespace Greatbone.Sample
     {
         readonly Worker[] workers;
 
-        public AbstService(WebServiceContext cfg) : base(cfg)
+        public AbstService(WebServiceContext sc) : base(sc)
         {
-            workers = JsonUtility.FileToArray<Worker>(cfg.GetFilePath("$workers.json"));
+            workers = JsonUtility.FileToArray<Worker>(sc.GetFilePath("$workers.json"));
         }
     }
 }

@@ -8,12 +8,14 @@ namespace Greatbone.Sample
     ///
     /// /buyer/-id-/
     ///
-    public class CustomerVarFolder : WebFolder, IVar
+    public class UserVarFolder : WebFolder, IVar
     {
         readonly ConcurrentDictionary<string, List<OrderLine>> carts;
 
-        public CustomerVarFolder(WebFolderContext dc) : base(dc)
+        public UserVarFolder(WebFolderContext dc) : base(dc)
         {
+            Create<OrderFolder>("order");
+
             carts = new ConcurrentDictionary<string, List<OrderLine>>(8, 1024);
         }
 
@@ -24,7 +26,7 @@ namespace Greatbone.Sample
         ///
         public async Task cart(WebActionContext ac)
         {
-            string wx = ac.Var;
+            string wx = ac[0];
             var ln = await ac.ReadObjectAsync<OrderLine>();
 
             using (var dc = Service.NewDbContext())
@@ -77,7 +79,7 @@ namespace Greatbone.Sample
         ///
         public void empty(WebActionContext ac)
         {
-            string wx = ac.Var;
+            string wx = ac[0];
 
             // TODO access check 
 
@@ -100,7 +102,7 @@ namespace Greatbone.Sample
         ///
         public void checkout(WebActionContext ac)
         {
-            string wx = ac.Var;
+            string wx = ac[0];
 
             if (ac.GET)
             { // give change to review the orders
@@ -150,7 +152,7 @@ namespace Greatbone.Sample
         ///
         public void my(WebActionContext ac)
         {
-            string wx = ac.Var;
+            string wx = ac[0];
 
             // TODO check access
 

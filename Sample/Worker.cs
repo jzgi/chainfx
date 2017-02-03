@@ -37,8 +37,8 @@ namespace Greatbone.Sample
             {
                 key = id,
                 name = name,
-                subtype = 1,
-                roles = roles
+                role = 1,
+                extra = null
             };
         }
     }

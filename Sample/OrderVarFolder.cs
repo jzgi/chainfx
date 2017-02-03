@@ -3,26 +3,34 @@ using Greatbone.Core;
 namespace Greatbone.Sample
 {
     ///
-    /// /shop/-shopid-/-orderid-/
     ///
     public class OrderVarFolder : WebFolder, IVar
     {
-        public OrderVarFolder(WebFolderContext dc) : base(dc)
+        public OrderVarFolder(WebFolderContext fc) : base(fc)
         {
         }
 
-        ///
-        /// Get order's detail.
-        ///
+        #region /user/-userid-/order/-orderid-/
+
+        public void my(WebActionContext ac)
+        {
+
+        }
+
+        #endregion
+
+        #region /shop/-userid-/order/-orderid-/
+
+        [CheckShop]
         public void @default(WebActionContext ac)
         {
-            string shopid = ac.Var;
-            int id = ac.Var;
+            string shopid = ac[0];
+            int id = ac[this];
 
             using (var dc = Service.NewDbContext())
             {
-                DbSql sql = new DbSql("SELECT ").columnlst(Order.Empty)._("FROM orders WHERE id = @1 AND shopid = @2");
-                if (dc.Query(sql.ToString(), p => p.Set(id).Set(shopid)))
+                dc.Sql("SELECT ").columnlst(Order.Empty)._("FROM orders WHERE id = @1 AND shopid = @2");
+                if (dc.Query(p => p.Set(id).Set(shopid)))
                 {
                     var order = dc.ToArray<Order>();
                     ac.ReplyPage(200, "", main =>
@@ -42,8 +50,8 @@ namespace Greatbone.Sample
 
         public void cannel(WebActionContext ac)
         {
-            string shopid = ac.Var;
-            int orderid = ac.Var;
+            string shopid = ac[0];
+            int orderid = ac[this];
 
             using (var dc = Service.NewDbContext())
             {
@@ -64,5 +72,7 @@ namespace Greatbone.Sample
         public void close(WebActionContext ac)
         {
         }
+
+        #endregion
     }
 }

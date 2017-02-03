@@ -28,24 +28,47 @@ namespace Greatbone.Core
 
         public string TokenText { get; internal set; }
 
-        // two levels of variable keys
-        Var var, var2;
+        // levels of variable keys
+        Var[] vars;
 
-        internal void ChainKey(string key, WebFolder folder)
+        int varlen;
+
+        internal void ChainVar(string key, WebFolder folder)
         {
-            if (this.var.Empty)
+            if (vars == null)
             {
-                this.var = new Var(key, folder);
+                vars = new Var[4];
             }
-            else if (var2.Empty)
+            vars[varlen++] = new Var(key, folder);
+        }
+
+        public Var this[int level] => vars[level];
+
+        public Var this[Type folderType]
+        {
+            get
             {
-                var2 = new Var(key, folder);
+                for (int i = 0; i < varlen; i++)
+                {
+                    Var v = vars[i];
+                    if (v.Type == folderType) return v;
+                }
+                return default(Var);
             }
         }
 
-        public Var Var => var;
-
-        public Var Var2 => var2;
+        public Var this[IVar folder]
+        {
+            get
+            {
+                for (int i = 0; i < varlen; i++)
+                {
+                    Var v = vars[i];
+                    if (v.Folder == folder) return v;
+                }
+                return default(Var);
+            }
+        }
 
         //
         // REQUEST
@@ -83,10 +106,6 @@ namespace Greatbone.Core
                 return query;
             }
         }
-
-        public Field this[int index] => Query[index];
-
-        public Field this[string name] => Query[name];
 
         //
         // HEADER

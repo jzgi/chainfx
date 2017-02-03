@@ -30,7 +30,7 @@ namespace Greatbone.Sample
         public async Task inbox(WebActionContext ac, string arg)
         {
             Token tok = (Token)ac.Token;
-            string userid = ac.Var;
+            string userid = ac[0];
             Chat chat = null;
 
             if (ac.GET)
@@ -67,8 +67,8 @@ namespace Greatbone.Sample
                 var txt = await ac.ReadAsync<Text>();
                 Message msg = new Message()
                 {
-                    fromid = tok.Key,
-                    from = tok.Name,
+                    fromid = tok.key,
+                    from = tok.name,
                     text = txt.ToString(),
                     time = DateTime.Now
                 };

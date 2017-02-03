@@ -311,7 +311,7 @@ namespace Greatbone.Core
         ///
         void PeekEq(WebActionContext ac)
         {
-            string[] names = ac[nameof(names)];
+            string[] names = ac.Query[nameof(names)];
             string shard = ac.Header("Shard"); // can be null
             long? lastid = ac.HeaderLong("Range");
 

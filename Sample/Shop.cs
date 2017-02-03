@@ -69,7 +69,7 @@ namespace Greatbone.Sample
             {
                 key = wx,
                 name = name,
-                subtype = 2
+                role = 2
             };
         }
     }

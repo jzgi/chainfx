@@ -14,28 +14,24 @@ namespace Greatbone.Sample
 
         internal string name;
 
-        internal short subtype; // worker, shop, buyer
+        internal short role; // worker, shop, user
 
-        internal short roles;
-
-        public string Key => key;
-
-        public string Name => name;
+        internal string extra;
 
         public void ReadData(IDataInput i, ushort proj = 0)
         {
             i.Get(nameof(key), ref key);
             i.Get(nameof(name), ref name);
-            i.Get(nameof(subtype), ref subtype);
-            i.Get(nameof(roles), ref roles);
+            i.Get(nameof(role), ref role);
+            i.Get(nameof(extra), ref extra);
         }
 
         public void WriteData<R>(IDataOutput<R> o, ushort proj = 0) where R : IDataOutput<R>
         {
             o.Put(nameof(key), key);
             o.Put(nameof(name), name);
-            o.Put(nameof(subtype), subtype);
-            o.Put(nameof(roles), roles);
+            o.Put(nameof(role), role);
+            o.Put(nameof(extra), extra);
         }
     }
 }

@@ -5,11 +5,11 @@ namespace Greatbone.Sample
     ///
     /// /buyer/
     ///
-    public class CustomerFolder : WebFolder
+    public class UserFolder : WebFolder
     {
-        public CustomerFolder(WebFolderContext fc) : base(fc)
+        public UserFolder(WebFolderContext fc) : base(fc)
         {
-            CreateVar<CustomerVarFolder>();
+            CreateVar<UserVarFolder>();
         }
 
         ///

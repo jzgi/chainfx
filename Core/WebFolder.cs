@@ -218,7 +218,7 @@ namespace Greatbone.Core
             }
             if (varsub != null) // variable-key
             {
-                ac.ChainKey(key, varsub);
+                ac.ChainVar(key, varsub);
                 return varsub.Locate(ref relative, ac);
             }
 

@@ -28,8 +28,8 @@ namespace Greatbone.Sample
         ///
         public void lst(WebActionContext ac)
         {
-            string x = ac[nameof(x)];
-            string y = ac[nameof(y)];
+            string x = ac.Query[nameof(x)];
+            string y = ac.Query[nameof(y)];
             if (!IsAligned(x) || !IsAligned(y))
             {
                 ac.Reply(400, "x or y not aligned");

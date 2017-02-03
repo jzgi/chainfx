@@ -6,7 +6,7 @@ namespace Greatbone.Sample
     /// 
     /// A buyer data object.
     ///
-    public class Customer : IData
+    public class User : IData
     {
         internal string wx; // weixin openid
 
@@ -46,7 +46,7 @@ namespace Greatbone.Sample
             {
                 key = wx,
                 name = name,
-                subtype = 3
+                role = 3
             };
         }
     }

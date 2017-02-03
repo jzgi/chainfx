@@ -17,16 +17,11 @@ namespace Greatbone.Sample
 
         readonly WebAction[] _new;
 
-        public OpService(WebServiceContext cfg) : base(cfg)
+        public OpService(WebServiceContext sc) : base(sc)
         {
             Create<ShopFolder>("shop");
 
-            Create<CustomerFolder>("cust");
-
-            Create<OrderFolder>("order");
-
-            CreateVar<ShopVarFolder>();
-
+            Create<UserFolder>("user");
 
             _new = GetActions(nameof(@new));
         }
@@ -35,7 +30,7 @@ namespace Greatbone.Sample
         /// redirect_uri/?code=CODE&amp;state=STATE
         public async Task weixin(WebActionContext ac)
         {
-            string code = ac[nameof(code)];
+            string code = ac.Query[nameof(code)];
             if (code == null)
             {
                 // redirect the user to weixin authorization page
@@ -119,7 +114,7 @@ namespace Greatbone.Sample
                     {
                         var tok = dc.ToObject<Token>();
                         string credential = TextUtility.MD5(id + ':' + password);
-                        if (credential.Equals(tok.subtype))
+                        if (credential.Equals(tok.role))
                         {
                             // set cookie
                             string tokstr = Service.Authent.Encrypt(tok);
@@ -153,7 +148,7 @@ namespace Greatbone.Sample
         ///
         public void nearest(WebActionContext ac)
         {
-            NpgsqlPoint pt = ac[nameof(pt)];
+            NpgsqlPoint pt = ac.Query[nameof(pt)];
 
             using (var dc = Service.NewDbContext())
             {

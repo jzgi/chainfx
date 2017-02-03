@@ -11,8 +11,7 @@ namespace Greatbone.Sample
 
         public ShopVarFolder(WebFolderContext dc) : base(dc)
         {
-            // order functions
-            CreateVar<OrderVarFolder>();
+            Create<OrderFolder>("order");
 
             _re_menu_ = GetAction(nameof(remenu));
         }
@@ -27,7 +26,7 @@ namespace Greatbone.Sample
         ///
         public void items(WebActionContext ac)
         {
-            string shopid = ac.Var;
+            string shopid = ac[0];
 
             using (var dc = Service.NewDbContext())
             {
@@ -54,7 +53,7 @@ namespace Greatbone.Sample
         ///
         public void @default(WebActionContext ac)
         {
-            string shopid = ac.Var;
+            string shopid = ac[0];
             using (var dc = Service.NewDbContext())
             {
                 DbSql sql = new DbSql("SELECT ").columnlst(Item.Empty)._("FROM items WHERE shopid = @1 AND NOT disabled");

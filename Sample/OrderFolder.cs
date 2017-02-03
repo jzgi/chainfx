@@ -3,7 +3,9 @@
 namespace Greatbone.Sample
 {
     ///
-    /// /order/
+    /// /shop/-id-/order/
+    /// or
+    /// /user/-id-/order/
     ///
     public class OrderFolder : WebFolder
     {
@@ -12,30 +14,47 @@ namespace Greatbone.Sample
             CreateVar<OrderVarFolder>();
         }
 
-        ///
-        /// Get buyer's personal order list
-        ///
+        #region /user/-userwx-/order/
+
+        public void my(WebActionContext ac)
+        {
+
+        }
+
+        #endregion
+
+        #region /shop/-shopid-/order/
+
+        [CheckShop]
+        [Ui]
+        public void @default(WebActionContext ac)
+        {
+
+        }
+
+        [CheckShop]
+        [Ui]
         public void all(WebActionContext ac)
         {
 
         }
 
-        ///
-        /// Get shop's order list
-        ///
+        [CheckShop]
+        [Ui]
         public void list(WebActionContext ac)
         {
             // string shopid = wc.Var(null);
 
         }
 
-        ///
-        /// find in shop's order list
-        ///
+        [CheckShop]
+        [Ui]
         public void clear(WebActionContext ac)
         {
             // string shopid = wc.Var(null);
 
         }
+
+        #endregion
     }
 }
