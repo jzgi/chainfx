@@ -3,8 +3,8 @@ namespace Greatbone.Core
     ///
     /// An object can be a roll element.
     ///
-    public interface IRolled
+    public interface IStatable
     {
-        string Name { get; }
+        short State();
     }
 }

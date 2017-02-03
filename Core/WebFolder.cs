@@ -10,7 +10,7 @@ namespace Greatbone.Core
     ///
     /// A web folder realizes a virtual folder containing static/dynamic resources.
     ///
-    public abstract class WebFolder : WebNodule, IRolled
+    public abstract class WebFolder : WebNodule, IRollable
     {
         // max nesting levels
         const int Nesting = 4;

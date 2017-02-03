@@ -18,10 +18,6 @@ namespace Greatbone.Core
         // used when generating a list
         internal int ordinal;
 
-        public DbSql(bool sendable, bool poolable, int capacity = 1024) : base(sendable, poolable, capacity)
-        {
-        }
-
         public DbSql(string str) : base(false, true, 1024)
         {
             Add(str);

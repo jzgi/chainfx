@@ -317,7 +317,7 @@ namespace Greatbone.Core
 
             using (var dc = NewDbContext())
             {
-                DbSql sql = new DbSql("SELECT id, name, time, type, body FROM eq WHERE id > @1 AND event IN [");
+                DbSql sql = dc.Sql("SELECT id, name, time, type, body FROM eq WHERE id > @1 AND event IN [");
                 for (int i = 0; i < names.Length; i++)
                 {
                     if (i > 0) sql.Add(',');
@@ -331,7 +331,7 @@ namespace Greatbone.Core
                 }
                 sql._("LIMIT 120");
 
-                if (dc.Query(sql, p => p.Set(lastid.Value)))
+                if (dc.Query(p => p.Set(lastid.Value)))
                 {
                     FormMpContent cont = new FormMpContent(true, 1024 * 1024);
                     while (dc.Next())

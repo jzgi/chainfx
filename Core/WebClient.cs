@@ -8,7 +8,7 @@ namespace Greatbone.Core
     ///
     /// The connect to a remote peer service that the current service depends on.
     ///
-    public class WebClient : HttpClient, IRolled
+    public class WebClient : HttpClient, IRollable
     {
         const int
             INITIAL = -1,

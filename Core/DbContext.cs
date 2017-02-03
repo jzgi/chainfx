@@ -102,11 +102,9 @@ namespace Greatbone.Core
             return sql;
         }
 
-        public bool Query1(DbSql sql, Action<DbParameters> p = null, bool prepare = true)
+        public bool Query1(Action<DbParameters> p = null, bool prepare = true)
         {
-            bool v = Query1(sql.ToString(), p, prepare);
-            BufferUtility.Return(sql);
-            return v;
+            return Query1(sql.ToString(), p, prepare);
         }
 
         public bool Query1(string cmdtext, Action<DbParameters> p = null, bool prepare = true)
@@ -128,11 +126,9 @@ namespace Greatbone.Core
             return reader.Read();
         }
 
-        public bool Query(DbSql sql, Action<DbParameters> p = null, bool prepare = true)
+        public bool Query(Action<DbParameters> p = null, bool prepare = true)
         {
-            bool v = Query(sql.ToString(), p, prepare);
-            BufferUtility.Return(sql);
-            return v;
+            return Query(sql.ToString(), p, prepare);
         }
 
         public bool Query(string cmdtext, Action<DbParameters> p = null, bool prepare = true)
@@ -209,11 +205,9 @@ namespace Greatbone.Core
             return reader.NextResult();
         }
 
-        public int Execute(DbSql sql, Action<DbParameters> p = null, bool prepare = true)
+        public int Execute(Action<DbParameters> p = null, bool prepare = true)
         {
-            int v = Execute(sql.ToString(), p, prepare);
-            BufferUtility.Return(sql);
-            return v;
+            return Execute(sql.ToString(), p, prepare);
         }
 
         public int Execute(string cmdtext, Action<DbParameters> p = null, bool prepare = true)
@@ -233,11 +227,9 @@ namespace Greatbone.Core
             return command.ExecuteNonQuery();
         }
 
-        public async Task<int> ExecuteAsync(DbSql sql, Action<DbParameters> p = null, bool prepare = true)
+        public async Task<int> ExecuteAsync(Action<DbParameters> p = null, bool prepare = true)
         {
-            int v = await ExecuteAsync(sql.ToString(), p, prepare);
-            BufferUtility.Return(sql);
-            return v;
+            return await ExecuteAsync(sql.ToString(), p, prepare);
         }
 
         public async Task<int> ExecuteAsync(string cmdtext, Action<DbParameters> p = null, bool prepare = true)
@@ -257,11 +249,9 @@ namespace Greatbone.Core
             return await command.ExecuteNonQueryAsync();
         }
 
-        public object Scalar(DbSql sql, Action<DbParameters> p = null, bool prepare = true)
+        public object Scalar(Action<DbParameters> p = null, bool prepare = true)
         {
-            object v = Scalar(sql.ToString(), p, prepare);
-            BufferUtility.Return(sql);
-            return v;
+            return Scalar(sql.ToString(), p, prepare);
         }
 
         public object Scalar(string cmdtext, Action<DbParameters> p = null, bool prepare = true)
@@ -281,11 +271,9 @@ namespace Greatbone.Core
             return command.ExecuteScalar();
         }
 
-        public async Task<object> ScalarAsync(DbSql sql, Action<DbParameters> p = null, bool prepare = true)
+        public async Task<object> ScalarAsync(Action<DbParameters> p = null, bool prepare = true)
         {
-            object v = await ScalarAsync(sql.ToString(), p, prepare);
-            BufferUtility.Return(sql);
-            return v;
+            return await ScalarAsync(sql.ToString(), p, prepare);
         }
 
         public async Task<object> ScalarAsync(string cmdtext, Action<DbParameters> p = null, bool prepare = true)
@@ -333,7 +321,7 @@ namespace Greatbone.Core
             obj.ReadData(this, proj);
 
             // add shard if any
-            ISharded sharded = obj as ISharded;
+            IShardable sharded = obj as IShardable;
             if (sharded != null)
             {
                 sharded.Shard = servicectx.shard;
@@ -356,7 +344,7 @@ namespace Greatbone.Core
                 obj.ReadData(this, proj);
 
                 // add shard if any
-                ISharded sharded = obj as ISharded;
+                IShardable sharded = obj as IShardable;
                 if (sharded != null)
                 {
                     sharded.Shard = servicectx.shard;
@@ -540,7 +528,7 @@ namespace Greatbone.Core
                 v.ReadData(jo, proj);
 
                 // add shard if any
-                ISharded sharded = v as ISharded;
+                IShardable sharded = v as IShardable;
                 if (sharded != null)
                 {
                     sharded.Shard = servicectx.shard;
@@ -647,7 +635,7 @@ namespace Greatbone.Core
                     obj.ReadData(jo, proj);
 
                     // add shard if any
-                    ISharded sharded = obj as ISharded;
+                    IShardable sharded = obj as IShardable;
                     if (sharded != null)
                     {
                         sharded.Shard = servicectx.shard;
@@ -677,7 +665,7 @@ namespace Greatbone.Core
                     obj.ReadData(jo, proj);
 
                     // add shard if any
-                    ISharded sharded = obj as ISharded;
+                    IShardable sharded = obj as IShardable;
                     if (sharded != null)
                     {
                         sharded.Shard = servicectx.shard;
@@ -765,8 +753,12 @@ namespace Greatbone.Core
         {
             if (!disposed)
             {
+                // return to pool
+                if (sql != null) BufferUtility.Return(sql);
+
                 // commit ongoing transaction
-                if (transact != null && !transact.IsCompleted) {
+                if (transact != null && !transact.IsCompleted)
+                {
                     transact.Commit();
                 }
 

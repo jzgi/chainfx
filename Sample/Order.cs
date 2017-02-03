@@ -9,6 +9,9 @@ namespace Greatbone.Sample
     ///
     public class Order : IData
     {
+        public const int
+            STATE_check = 0;
+
         public const short
             Open = 0,
             Cancelled = 2,
@@ -86,6 +89,11 @@ namespace Greatbone.Sample
 
             o.Put(nameof(delivered), delivered);
             o.Put(nameof(status), status);
+        }
+
+        public int EvalState
+        {
+            get { return 1; }
         }
     }
 }

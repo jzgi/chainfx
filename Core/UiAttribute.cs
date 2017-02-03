@@ -15,5 +15,7 @@ namespace Greatbone.Core
         public int Form { get; set; } = 0;
 
         public int Dialog { get; set; } = 0;
+ 
     }
+
 }

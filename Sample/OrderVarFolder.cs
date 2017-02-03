@@ -35,6 +35,11 @@ namespace Greatbone.Sample
             }
         }
 
+        [State()]
+        public void pend(WebActionContext ac)
+        {
+        }
+
         public void cannel(WebActionContext ac)
         {
             string shopid = ac.Var;
@@ -42,8 +47,8 @@ namespace Greatbone.Sample
 
             using (var dc = Service.NewDbContext())
             {
-                DbSql sql = new DbSql("SELECT ").columnlst(Order.Empty)._("FROM orders WHERE id = @1 AND shopid = @2");
-                if (dc.Query(sql.ToString(), p => p.Set(orderid).Set(shopid)))
+                dc.Sql("SELECT ").columnlst(Order.Empty)._("FROM orders WHERE id = @1 AND shopid = @2");
+                if (dc.Query(p => p.Set(orderid).Set(shopid)))
                 {
                     var order = dc.ToArray<Order>();
                     ac.ReplyPage(200, "", main =>
@@ -54,10 +59,6 @@ namespace Greatbone.Sample
                 else
                     ac.ReplyPage(200, "没有记录", main => { });
             }
-        }
-
-        public void pend(WebActionContext ac)
-        {
         }
 
         public void close(WebActionContext ac)

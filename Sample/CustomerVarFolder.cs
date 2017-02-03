@@ -118,11 +118,11 @@ namespace Greatbone.Sample
                 // save the orders to db
                 using (var dc = Service.NewDbContext())
                 {
-                    DbSql sql = new DbSql("INSERT INFO orders ")._(Order.Empty)._VALUES_(Order.Empty);
+                    dc.Sql("INSERT INFO orders ")._(Order.Empty)._VALUES_(Order.Empty);
 
                     foreach (var order in orders)
                     {
-                        dc.Execute(sql, p => order.WriteData(p));
+                        dc.Execute(p => order.WriteData(p));
                     }
 
                     // remove cart 
