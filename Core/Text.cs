@@ -5,7 +5,7 @@ using NpgsqlTypes;
 namespace Greatbone.Core
 {
     ///
-    /// A reusable string builder that supports UTF-8 decoding.
+    /// A text/plain model or comma-separate values. It can be used as UTF-8 string builder.
     ///
     public class Text : IDataInput
     {

@@ -42,46 +42,76 @@ namespace Greatbone.Core
 
         public XElem Parse()
         {
-            int p = -1;
+            int p = offset;
+
+            // seek to a less-than (<)
+            int b;
             for (;;)
             {
-                byte b = bytebuf[++p];
-                if (p >= length) throw ParseEx;
+                b = this[p++];
                 if (b == ' ' || b == '\t' || b == '\n' || b == '\r') continue; // skip ws
+                if (b == '<') break;
                 throw ParseEx;
             }
+
+            b = this[p++];
+            if (b == '?') // skip prolog
+            {
+                while (this[p] != '>') { p++; } // skip prolog
+                // seek to a <
+                for (;;)
+                {
+                    b = this[p++];
+                    if (b == ' ' || b == '\t' || b == '\n' || b == '\r') continue; // skip ws
+                    if (b == '<') break;
+                    throw ParseEx;
+                }
+            }
+
+            return ParseElem(ref p, b);
         }
 
-        string ParseElem(ref int pos)
+        static bool Ws(int c)
+        {
+            return c == ' ' || c == '\t' || c == '\n' || c == '\r';
+        }
+
+        static bool Name(int c)
+        {
+            return c >= '0' && c <= '9' || c >= 'a' && c <= 'z' || c >= 'A' && c <= 'Z' || c == '_' || c == '-';
+        }
+
+        XElem ParseElem(ref int pos, int first)
         {
             str.Clear();
+
+            str.Accept(first);
+
+            // parse tag name
+            string tag = null;
             int p = pos;
-            bool esc = false;
             for (;;)
             {
-                byte b = bytebuf[++p];
+                int b = this[p++];
+                if (b == ' ' || b == '\t' || b == '\n' || b == '\r')
+                {
+                    tag = str.ToString();
+                    continue; // skip ws
+                }
+                if (b == '<') break;
+                throw ParseEx;
+            }
+
+            for (;;)
+            {
+                int b = this[++p];
                 if (p >= length) throw ParseEx;
-                if (esc)
-                {
-                    str.Add(b == '"' ? '"' : b == '\\' ? '\\' : b == 'b' ? '\b' : b == 'f' ? '\f' : b == 'n' ? '\n' : b == 'r' ? '\r' : b == 't' ? '\t' : (char)0);
-                    esc = !esc;
-                }
-                else
-                {
-                    if (b == '\\')
-                    {
-                        esc = !esc;
-                    }
-                    else if (b == '"')
-                    {
-                        pos = p;
-                        return str.ToString();
-                    }
-                    else
-                    {
-                        str.Accept(b);
-                    }
-                }
+
+                if (b == ' ') continue; // 
+
+                if (b == '>') continue; // 
+
+                if (b == '/') continue; // 
             }
         }
     }

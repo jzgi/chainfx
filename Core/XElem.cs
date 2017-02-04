@@ -5,7 +5,7 @@ using NpgsqlTypes;
 namespace Greatbone.Core
 {
     ///
-    /// An XML element.
+    /// An XML element tag.
     ///
     public class XElem : IDataInput
     {
