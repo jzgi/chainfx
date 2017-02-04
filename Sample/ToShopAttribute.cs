@@ -2,7 +2,7 @@
 
 namespace Greatbone.Sample
 {
-    public class CheckShopAttribute : CheckAttribute
+    public class ToShopAttribute : ToAttribute
     {
         public override bool Check(WebActionContext ac)
         {

@@ -5,7 +5,7 @@ namespace Greatbone.Sample
     /// 
     /// A user that is a platform internal worker.
     ///
-    public class Worker : IData
+    public class Admin : IData
     {
         internal string id; // weixin openid
 

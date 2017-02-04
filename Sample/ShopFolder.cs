@@ -85,5 +85,17 @@ namespace Greatbone.Sample
             // string shopid = wc.Var(null);
 
         }
+
+        #region ADMIN
+
+        [ToAdmin]
+        [Ui]
+        public void exam(WebActionContext ac)
+        {
+
+        }
+
+        #endregion
+
     }
 }

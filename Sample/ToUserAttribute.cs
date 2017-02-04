@@ -2,10 +2,8 @@
 
 namespace Greatbone.Sample
 {
-    public class CheckAdminAttribute : CheckAttribute
+    public class ToUserAttribute : ToAttribute
     {
-        public CheckAdminAttribute() : base() { }
-
         public override bool Check(WebActionContext wc)
         {
             return wc.Token is Token;

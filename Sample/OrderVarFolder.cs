@@ -10,7 +10,7 @@ namespace Greatbone.Sample
         {
         }
 
-        #region /user/-userid-/order/-orderid-/
+        #region /user/-id-/order/-id-/
 
         public void my(WebActionContext ac)
         {
@@ -19,9 +19,9 @@ namespace Greatbone.Sample
 
         #endregion
 
-        #region /shop/-userid-/order/-orderid-/
+        #region /shop/-id-/order/-id-/
 
-        [CheckShop]
+        [ToShop]
         public void @default(WebActionContext ac)
         {
             string shopid = ac[0];
@@ -74,5 +74,17 @@ namespace Greatbone.Sample
         }
 
         #endregion
+
+        #region /order/-id-/
+
+        [ToAdmin, ToShop]
+        [Ui]
+        public void exam(WebActionContext ac)
+        {
+
+        }
+
+        #endregion
+
     }
 }

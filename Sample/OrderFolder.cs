@@ -25,21 +25,21 @@ namespace Greatbone.Sample
 
         #region /shop/-shopid-/order/
 
-        [CheckShop]
+        [ToShop]
         [Ui]
         public void @default(WebActionContext ac)
         {
 
         }
 
-        [CheckShop]
+        [ToShop]
         [Ui]
         public void all(WebActionContext ac)
         {
 
         }
 
-        [CheckShop]
+        [ToShop]
         [Ui]
         public void list(WebActionContext ac)
         {
@@ -47,11 +47,22 @@ namespace Greatbone.Sample
 
         }
 
-        [CheckShop]
+        [ToShop]
         [Ui]
         public void clear(WebActionContext ac)
         {
             // string shopid = wc.Var(null);
+
+        }
+
+        #endregion
+
+        #region /order/
+
+        [ToAdmin]
+        [Ui]
+        public void exam(WebActionContext ac)
+        {
 
         }
 

@@ -4,11 +4,11 @@ namespace Greatbone.Sample
 {
     public abstract class AbstService : WebService
     {
-        readonly Worker[] workers;
+        readonly Admin[] admins;
 
         public AbstService(WebServiceContext sc) : base(sc)
         {
-            workers = JsonUtility.FileToArray<Worker>(sc.GetFilePath("$workers.json"));
+            admins = JsonUtility.FileToArray<Admin>(sc.GetFilePath("$admins.json"));
         }
     }
 }

@@ -66,13 +66,18 @@ namespace Greatbone.Core
                 {
                     defaction = atn;
                 }
+
+                if (context.Grants != null)
+                {
+                    grants = context.Grants;
+                }
             }
         }
 
         ///
         /// Create a child folder.
         ///
-        public F Create<F>(string key, object state = null) where F : WebFolder
+        public F Create<F>(string key, ToAttribute[] grants = null) where F : WebFolder
         {
             if (Level >= Nesting) throw new WebException("nesting levels");
 
@@ -90,7 +95,7 @@ namespace Greatbone.Core
             WebFolderContext ctx = new WebFolderContext
             {
                 name = key,
-                State = state,
+                Grants = grants,
                 IsVar = false,
                 Parent = this,
                 Level = Level + 1,
@@ -112,7 +117,7 @@ namespace Greatbone.Core
         ///
         /// Make a variable-key subdirectory.
         ///
-        public F CreateVar<F>(object state = null) where F : WebFolder, IVar
+        public F CreateVar<F>(ToAttribute[] grants = null) where F : WebFolder, IVar
         {
             if (Level >= Nesting) throw new WebException("nesting levels");
 
@@ -126,7 +131,7 @@ namespace Greatbone.Core
             WebFolderContext ctx = new WebFolderContext
             {
                 name = _VAR_,
-                State = state,
+                Grants = grants,
                 IsVar = true,
                 Parent = this,
                 Level = Level + 1,
@@ -143,7 +148,7 @@ namespace Greatbone.Core
 
         public string Name => context.Name;
 
-        public object State => context.State;
+        public ToAttribute[] Grants => context.Grants;
 
         public bool IsVar => context.IsVar;
 
@@ -185,7 +190,7 @@ namespace Greatbone.Core
             for (int i = 0; i < actions.Count; i++)
             {
                 WebAction a = actions[i];
-                if (a.Ui != null && a.HasCheck(checktyp))
+                if (a.Ui != null && a.HasGrant(checktyp))
                 {
                     if (lst == null) lst = new List<WebAction>();
                     lst.Add(a);
@@ -196,7 +201,7 @@ namespace Greatbone.Core
 
         internal WebFolder Locate(ref string relative, WebActionContext ac)
         {
-            if (!Allow(ac))
+            if (!Check(ac))
             {
                 ac.Reply(403); // forbidden
                 return null;
@@ -255,7 +260,7 @@ namespace Greatbone.Core
                 {
                     ac.Reply(404); // not found
                 }
-                else if (!atn.Allow(ac))
+                else if (!atn.Check(ac))
                 {
                     ac.Reply(403); // forbidden
                 }

@@ -11,7 +11,7 @@ namespace Greatbone.Core
 
         public string Name => name;
 
-        public object State { get; internal set; }
+        public ToAttribute[] Grants { get; internal set; }
 
         public bool IsVar { get; internal set; }
 

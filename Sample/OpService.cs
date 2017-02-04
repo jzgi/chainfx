@@ -23,6 +23,8 @@ namespace Greatbone.Sample
 
             Create<UserFolder>("user");
 
+            Create<OrderFolder>("order");
+
             _new = GetActions(nameof(@new));
         }
 
@@ -152,8 +154,8 @@ namespace Greatbone.Sample
 
             using (var dc = Service.NewDbContext())
             {
-                DbSql sql = new DbSql("SELECT ").columnlst(Shop.Empty)._("FROM shops WHERE location <-> @1");
-                if (dc.Query(sql.ToString(), p => p.Set(pt)))
+                dc.Sql("SELECT ").columnlst(Shop.Empty)._("FROM shops WHERE location <-> @1");
+                if (dc.Query(p => p.Set(pt)))
                 {
                     var shops = dc.ToArray<Shop>();
                     ac.ReplyPage(200, "", main => { main.FORM(_new, shops); });
@@ -172,10 +174,10 @@ namespace Greatbone.Sample
         /// GET /[-page]
         /// </code>
         ///
-        [CheckAdmin]
+        [ToAdmin]
         public void @default(WebActionContext ac)
         {
-            GetUiActions(typeof(CheckAdminAttribute));
+            GetUiActions(typeof(ToAdminAttribute));
 
             ac.ReplyPage(200, "", x =>
             {
@@ -197,8 +199,8 @@ namespace Greatbone.Sample
 
             using (var dc = Service.NewDbContext())
             {
-                DbSql sql = new DbSql("SELECT ").columnlst(Shop.Empty, z)._("FROM shops");
-                if (dc.Query(sql.ToString(), p => p.Set(20 * page)))
+                dc.Sql("SELECT ").columnlst(Shop.Empty, z)._("FROM shops");
+                if (dc.Query(p => p.Set(20 * page)))
                 {
                     var shops = dc.ToArray<Shop>(z);
                     ac.ReplyPage(200, "", main => { main.FORM(_new, shops); });
@@ -222,7 +224,7 @@ namespace Greatbone.Sample
         /// id=_shopid_&amp;password=_password_&amp;name=_name_
         /// </code>
         ///
-        [CheckAdmin]
+        [ToAdmin]
         public async Task @new(WebActionContext ac)
         {
             if (ac.GET)
@@ -234,8 +236,8 @@ namespace Greatbone.Sample
                 using (var dc = Service.NewDbContext())
                 {
                     shop.credential = TextUtility.MD5(shop.id + ':' + shop.credential);
-                    DbSql sql = new DbSql("INSERT INTO users")._(Shop.Empty)._VALUES_(Shop.Empty)._("");
-                    if (dc.Execute(sql.ToString(), p => p.Set(shop)) > 0)
+                    dc.Sql("INSERT INTO users")._(Shop.Empty)._VALUES_(Shop.Empty)._("");
+                    if (dc.Execute(p => p.Set(shop)) > 0)
                     {
                         ac.Reply(201); // created
                     }
@@ -246,7 +248,7 @@ namespace Greatbone.Sample
         }
 
 
-        [CheckAdmin]
+        [ToAdmin]
         public virtual void mgmt(WebActionContext ac)
         {
             if (Subs != null)

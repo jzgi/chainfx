@@ -3,18 +3,23 @@
 namespace Greatbone.Sample
 {
     ///
-    /// An administrator's login.
+    /// An authorization token.
     ///
     public class Token : IData
     {
         // roles
-        const short marketing = 1, accounting = 2, customer_service = 4;
+        const short
+            Marketing = 0x11,
+            Accounting = 0x12,
+            CustomerService = 0x14,
+            Shop = 0x20,
+            User = 0x40;
 
         internal string key;
 
         internal string name;
 
-        internal short role; // worker, shop, user
+        internal short role;
 
         internal string extra;
 

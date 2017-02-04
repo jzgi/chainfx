@@ -87,6 +87,6 @@ namespace Greatbone.Sample
 
         public void invoice(WebActionContext ac)
         {
-        }
+        }          
     }
 }

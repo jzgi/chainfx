@@ -9,11 +9,11 @@ namespace Greatbone.Core
     ///
     public abstract class WebNodule
     {
-        // access checking routines
-        readonly CheckAttribute[] checks;
-
         // access filtering routines
         readonly FilterAttribute[] filters;
+
+        // access checking routines
+        internal ToAttribute[] grants;
 
         internal WebNodule(ICustomAttributeProvider attrs)
         {
@@ -23,20 +23,7 @@ namespace Greatbone.Core
                 attrs = GetType().GetTypeInfo();
             }
 
-            // initialize checks
-            List<CheckAttribute> chklst = null;
-            foreach (var chk in (CheckAttribute[])attrs.GetCustomAttributes(typeof(CheckAttribute), false))
-            {
-                if (chklst == null)
-                {
-                    chklst = new List<CheckAttribute>(8);
-                }
-                chk.Nodule = this;
-                chklst.Add(chk);
-            }
-            this.checks = chklst?.ToArray();
-
-            // initialize checks
+            // filters
             List<FilterAttribute> fltlst = null;
             foreach (var flt in (FilterAttribute[])attrs.GetCustomAttributes(typeof(FilterAttribute), false))
             {
@@ -48,25 +35,38 @@ namespace Greatbone.Core
                 fltlst.Add(flt);
             }
             this.filters = fltlst?.ToArray();
+
+            // grants
+            List<ToAttribute> grtlst = null;
+            foreach (var grt in (ToAttribute[])attrs.GetCustomAttributes(typeof(ToAttribute), false))
+            {
+                if (grtlst == null)
+                {
+                    grtlst = new List<ToAttribute>(8);
+                }
+                grt.Nodule = this;
+                grtlst.Add(grt);
+            }
+            this.grants = grtlst?.ToArray();
         }
 
         public abstract WebService Service { get; }
 
-        public bool HasCheck(Type checktyp)
+        public bool HasGrant(Type granttype)
         {
-            if (checks != null)
+            if (grants != null)
             {
-                for (int i = 0; i < checks.Length; i++)
+                for (int i = 0; i < grants.Length; i++)
                 {
-                    if (checks[i].GetType() == checktyp) return true;
+                    if (grants[i].GetType() == granttype) return true;
                 }
             }
             return false;
         }
 
-        internal bool Allow(WebActionContext ac, bool reply = true)
+        internal bool Check(WebActionContext ac, bool reply = true)
         {
-            if (checks != null)
+            if (grants != null)
             {
                 if (ac.Token == null)
                 {
@@ -88,9 +88,9 @@ namespace Greatbone.Core
                 }
 
                 // run checks
-                for (int i = 0; i < checks.Length; i++)
+                for (int i = 0; i < grants.Length; i++)
                 {
-                    if (!checks[i].Check(ac))
+                    if (!grants[i].Check(ac))
                     {
                         if (reply)
                         {
