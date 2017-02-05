@@ -84,7 +84,7 @@ namespace Greatbone.Core
                 else continue;
 
                 ParameterInfo[] pis = mi.GetParameters();
-                WebEvent evt = null;
+                WebEvent evt;
                 if (pis.Length == 1 && pis[0].ParameterType == typeof(WebEventContext))
                 {
                     evt = new WebEvent(this, mi, async, false);

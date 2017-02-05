@@ -275,7 +275,7 @@ namespace Greatbone.Core
                     for (int i = 0; i < count; i++)
                     {
                         JMember e = jo[i];
-                        dict.Add(e.Name, (string)e);
+                        dict.Add(e.Name, e);
                     }
                     v = dict;
                     return true;
@@ -369,19 +369,19 @@ namespace Greatbone.Core
                 JType t = mem.type;
                 if (t == JType.Array)
                 {
-                    dout.Put(mem.Name, (JArr)mem);
+                    dout.Put(mem.Name, (JArr) mem);
                 }
                 else if (t == JType.Object)
                 {
-                    dout.Put(mem.Name, (JObj)mem);
+                    dout.Put(mem.Name, (JObj) mem);
                 }
                 else if (t == JType.String)
                 {
-                    dout.Put(mem.Name, (string)mem);
+                    dout.Put(mem.Name, (string) mem);
                 }
                 else if (t == JType.Number)
                 {
-                    dout.Put(mem.Name, (JNumber)mem);
+                    dout.Put(mem.Name, (JNumber) mem);
                 }
                 else if (t == JType.True)
                 {

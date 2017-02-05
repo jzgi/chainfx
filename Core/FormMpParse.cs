@@ -86,7 +86,7 @@ namespace Greatbone.Core
                     // parse a header line
                     for (;;)
                     {
-                        if (p >= this.length - 2) throw ParseEx;
+                        if (p >= length - 2) throw ParseEx;
                         byte b;
                         if ((b = buffer[p++]) == '\r' && buffer[p++] == '\n') break;
                         hdr.Accept(b); // lineup the byte

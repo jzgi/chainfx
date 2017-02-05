@@ -1,4 +1,5 @@
 ﻿using System.Collections.Generic;
+using System.IO;
 using System.Text;
 
 namespace Greatbone.Core
@@ -81,7 +82,7 @@ namespace Greatbone.Core
         public bool TryLoad()
         {
             string path = GetFilePath("$web.json");
-            if (System.IO.File.Exists(path))
+            if (File.Exists(path))
             {
                 JObj jo = JsonUtility.FileToJObj(path);
                 if (jo != null)

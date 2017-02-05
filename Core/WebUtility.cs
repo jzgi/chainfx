@@ -11,7 +11,7 @@ namespace Greatbone.Core
             if (headers.TryGetValues(name, out values))
             {
                 string[] strs = values as string[];
-                return strs?[0] ?? null;
+                return strs?[0];
             }
             return null;
         }

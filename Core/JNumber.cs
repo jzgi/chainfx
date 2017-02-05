@@ -70,13 +70,13 @@ namespace Greatbone.Core
             }
         }
 
-        internal double Double => (double)Decimal;
+        internal double Double => (double) Decimal;
 
         internal long Long => negative ? -bigint : bigint;
 
-        internal int Int => negative ? (int)-bigint : (int)bigint;
+        internal int Int => negative ? (int) -bigint : (int) bigint;
 
-        internal short Short => negative ? (short)-bigint : (short)bigint;
+        internal short Short => negative ? (short) -bigint : (short) bigint;
 
         internal decimal Decimal
         {
@@ -85,42 +85,18 @@ namespace Greatbone.Core
                 if (pt <= 0) return new decimal(bigint);
 
                 long v = bigint * BASE[pt] + fract;
-                int lo = (int)v;
-                int mid = (int)(v >> 32);
-                byte scale = (byte)pt;
+                int lo = (int) v;
+                int mid = (int) (v >> 32);
+                byte scale = (byte) pt;
 
                 return new decimal(lo, mid, 0, negative, scale);
             }
         }
 
-        static int Pow(int n)
-        {
-            int i = 0;
-            int sum = 1;
-            while (sum < n)
-            {
-                sum <<= 1;
-                i++;
-            }
-            return i;
-        }
-
-        // sparse bit count
-        static int Bits(int n)
-        {
-            int i = 0;
-            while (n != 0)
-            {
-                i++;
-                n &= (n - 1);
-            }
-            return i;
-        }
-
         public static implicit operator JNumber(int v)
         {
             JNumber num;
-            num.bigint = (long)v;
+            num.bigint = v;
             num.fract = 0;
             num.pt = 0;
             num.negative = v < 0;

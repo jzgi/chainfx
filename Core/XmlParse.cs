@@ -38,7 +38,7 @@ namespace Greatbone.Core
             this.str = new Text(256);
         }
 
-        int this[int index] => (bytebuf != null) ? bytebuf[index] : (int)strbuf[index];
+        int this[int index] => bytebuf?[index] ?? (int)strbuf[index];
 
         public XElem Parse()
         {
