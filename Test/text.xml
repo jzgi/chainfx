@@ -1,0 +1,6 @@
+<xml>
+    <log file=\"abc.log\" level=\"3\">
+        <reserve/>
+    </log>
+    <display>CRT</display>
+</xml>

@@ -1,7 +1,7 @@
 namespace Greatbone.Core
 {
     ///
-    /// A lightweight structure that parses well-formed XML documents.
+    /// An XML parsing structure that deals with well-formed XML documents.
     ///
     public struct XmlParse
     {
@@ -26,7 +26,7 @@ namespace Greatbone.Core
             this.strbuf = null;
             this.offset = offset;
             this.length = length;
-            this.str = new Text(256);
+            this.str = new Text(1024);
         }
 
         public XmlParse(string strbuf)
@@ -35,7 +35,7 @@ namespace Greatbone.Core
             this.strbuf = strbuf;
             this.offset = 0;
             this.length = strbuf.Length;
-            this.str = new Text(256);
+            this.str = new Text(1024);
         }
 
         int this[int index] => bytebuf?[index] ?? (int)strbuf[index];
@@ -49,23 +49,20 @@ namespace Greatbone.Core
             for (;;)
             {
                 b = this[p++];
-                if (b == ' ' || b == '\t' || b == '\n' || b == '\r') continue; // skip ws
+                if (IsWs(b)) continue; // skip ws
                 if (b == '<') break;
                 throw ParseEx;
             }
 
             b = this[p++];
-            if (b == '?') // skip prolog
+            if (b == '?') // skip the prolog line
             {
-                while (this[p] != '>')
-                {
-                    p++;
-                }
+                while (this[p] != '>') { p++; }
                 // seek to a <
                 for (;;)
                 {
                     b = this[p++];
-                    if (b == ' ' || b == '\t' || b == '\n' || b == '\r') continue; // skip ws
+                    if (IsWs(b)) continue; // skip ws
                     if (b == '<') break;
                     throw ParseEx;
                 }
@@ -74,73 +71,106 @@ namespace Greatbone.Core
             return ParseElem(ref p, b);
         }
 
-        static bool Ws(int c)
+        static bool IsWs(int c)
         {
             return c == ' ' || c == '\t' || c == '\n' || c == '\r';
         }
 
-        static bool Name(int c)
+        static bool IsNameStartChar(int c)
         {
-            return c >= '0' && c <= '9' || c >= 'a' && c <= 'z' || c >= 'A' && c <= 'Z' || c == '_' || c == '-';
+            return c >= 'a' && c <= 'z' || c >= 'A' && c <= 'Z' || c == '_';
         }
 
-        XElem ParseElem(ref int pos, int firstchar)
+        static bool IsNameChar(int c)
         {
-            str.Clear();
+            return c >= 'a' && c <= 'z' || c >= 'A' && c <= 'Z' || c == '_' || c == '-' || c >= '0' && c <= '9';
+        }
 
-            str.Accept(firstchar);
-
-            // parse tag name
-            string name = null;
+        XElem ParseElem(ref int pos, int startchar)
+        {
             int p = pos;
-            for (;;)
+            int b;
+
+            // parse element tag name
+            str.Clear();
+            str.Accept(startchar);
+            while (IsNameChar(b = this[p++]))
             {
-                int b = this[p++];
-                if (b == ' ' || b == '\t' || b == '\n' || b == '\r')
-                {
-                    name = str.ToString();
-                    continue; // skip ws
-                }
-                if (b == '>')
-                {
-                    name = str.ToString();
-                    XElem e = new XElem(name);
-
-                    break;
-                }
-                if (b == '/' && this[p++] == '>') // empty-element
-                {
-                    break;
-                }
-
-                str.Accept(b); // to comprise a tag name
+                str.Accept(b); // to comprise start tag
             }
+            string tag = str.ToString();
+            XElem elem = new XElem(tag);
 
-            // optional attributes
-
-
-
-            // closing or start-close
-            
-
-
-            XElem elem = new XElem(name);
-
-            for (;;)
+            // optionally parse attributes
+            while (IsWs(b))
             {
-                int b = this[++p];
-                if (p >= length) throw ParseEx;
+                while (IsWs(b = this[p++])) { } // skip ws
 
-                if (b == ' ') continue; // 
+                if (IsNameStartChar(b))
+                {
+                    // attribute name
+                    str.Clear();
+                    str.Accept(b);
+                    while ((b = this[p++]) != '=')
+                    {
+                        str.Accept(b);
+                    }
+                    string name = str.ToString();
 
-                if (b == '>') continue; // 
+                    // attribute value
+                    if (this[p++] != '"') throw ParseEx; // left quote
+                    str.Clear();
+                    while ((b = this[p++]) != '"') // till right quote
+                    {
+                        str.Accept(b);
+                    }
+                    string value = str.ToString();
 
-                if (b == '/') continue; // 
+                    elem.AddAttr(name, value);
+
+                    b = this[p++];
+                }
+            } // end of attributes
+
+            if (b == '>') // a start tag just finished, expecting the ending-tag
+            {
+            NextChild:
+                while (IsWs(b = this[p++])) { } // skip ws and forward
+
+                if (b == '<')
+                {
+                    b = this[p++];
+                    if (b == '/') // the ending tag
+                    {
+                        while ((b = this[p++]) != '>') { } // consume the tag
+                        return elem;
+                    }
+
+                    if (IsNameStartChar(b))
+                    {
+                        elem.AddChild(ParseElem(ref p, b));
+
+                        // if (this[p] == '<')
+                        goto NextChild;
+                    }
+                }
+                else // text node
+                {
+                    str.Clear();
+                    while ((b = this[p++]) != '<')
+                    {
+                        str.Accept(b);
+                    }
+                    if (str.Count > 0)
+                    {
+                        elem.Text = str.ToString();
+                    }
+                }
             }
-        }
-
-        void ParseAttrs(XElem elem) {
-
+            else if (b == '/' && this[p++] == '>') // empty-element
+            {
+            }
+            return elem;
         }
     }
 }

@@ -61,6 +61,12 @@ namespace Greatbone.Core
 
         int current;
 
+        public string Text
+        {
+            get { return text; }
+            internal set { text = value; }
+        }
+
         XElem FindSub(string name)
         {
             if (children != null)
