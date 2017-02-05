@@ -27,20 +27,20 @@ namespace Greatbone.Core
             {
                 return new FormParse(buffer, count).Parse();
             }
-            else if (ctyp.StartsWith("multipart/form-data; boundary="))
+            if (ctyp.StartsWith("multipart/form-data; boundary="))
             {
                 string boundary = ctyp.Substring(30);
                 return new FormMpParse(boundary, buffer, count).Parse();
             }
-            else if (ctyp.StartsWith("application/json"))
+            if (ctyp.StartsWith("application/json"))
             {
                 return new JsonParse(buffer, count).Parse();
             }
-            else if (ctyp.StartsWith("application/xml"))
+            if (ctyp.StartsWith("application/xml"))
             {
                 return new XmlParse(buffer, 0, count).Parse();
             }
-            else if (ctyp.StartsWith("text/plain"))
+            if (ctyp.StartsWith("text/plain"))
             {
                 Text txt = new Text();
                 for (int i = 0; i < count; i++)

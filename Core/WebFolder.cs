@@ -216,10 +216,10 @@ namespace Greatbone.Core
             // sub folder
             string key = relative.Substring(0, slash);
             relative = relative.Substring(slash + 1); // adjust relative
-            WebFolder child;
-            if (subs != null && subs.TryGet(key, out child)) // chiled
+            WebFolder sub;
+            if (subs != null && subs.TryGet(key, out sub)) // chiled
             {
-                return child.Locate(ref relative, ac);
+                return sub.Locate(ref relative, ac);
             }
             if (varsub != null) // variable-key
             {

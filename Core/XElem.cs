@@ -11,7 +11,7 @@ namespace Greatbone.Core
     {
         readonly string name;
 
-        Roll<XAttr> attributes;
+        Roll<XAttr> attrs;
 
         string text;
 
@@ -26,23 +26,18 @@ namespace Greatbone.Core
 
         public XElem this[string name] => null;
 
-        public bool Flat { get; set; } = true;
-
         public bool DataSet
         {
-            get
-            {
-                throw new NotImplementedException();
-            }
+            get { throw new NotImplementedException(); }
         }
 
-        internal void AddAttribute(string name, string v)
+        internal void AddAttr(string name, string v)
         {
-            if (attributes == null)
+            if (attrs == null)
             {
-                attributes = new Roll<XAttr>(8);
+                attrs = new Roll<XAttr>(8);
             }
-            attributes.Add(new XAttr(name, v));
+            attrs.Add(new XAttr(name, v));
         }
 
         internal void AddChild(XElem e)
@@ -64,7 +59,9 @@ namespace Greatbone.Core
             children[count++] = e;
         }
 
-        XElem FindChild(string name)
+        int current;
+
+        XElem FindSub(string name)
         {
             if (children != null)
             {
@@ -82,21 +79,20 @@ namespace Greatbone.Core
 
         public bool Get(string name, ref bool v)
         {
-            if (Flat)
+            // try attribute
+            XAttr attr;
+            if (attrs != null && attrs.TryGet(name, out attr))
             {
-                XAttr attr;
-                if (attributes != null && attributes.TryGet(name, out attr))
-                {
-                    v = attr; return true;
-                }
+                v = attr;
+                return true;
             }
-            else
+
+            // try sub
+            XElem e = FindSub(name);
+            if (e != null)
             {
-                XElem e = FindChild(name);
-                if (e != null)
-                {
-                    v = e.text.ToBool(); return true;
-                }
+                v = e.text.ToBool();
+                return true;
             }
             return false;
         }
@@ -104,7 +100,7 @@ namespace Greatbone.Core
         public bool Get(string name, ref short v)
         {
             XAttr attr;
-            if (attributes.TryGet(name, out attr))
+            if (attrs.TryGet(name, out attr))
             {
                 v = attr;
                 return true;
@@ -115,7 +111,7 @@ namespace Greatbone.Core
         public bool Get(string name, ref int v)
         {
             XAttr attr;
-            if (attributes.TryGet(name, out attr))
+            if (attrs.TryGet(name, out attr))
             {
                 v = attr;
                 return true;
@@ -126,7 +122,7 @@ namespace Greatbone.Core
         public bool Get(string name, ref long v)
         {
             XAttr attr;
-            if (attributes.TryGet(name, out attr))
+            if (attrs.TryGet(name, out attr))
             {
                 v = attr;
                 return true;
@@ -137,7 +133,7 @@ namespace Greatbone.Core
         public bool Get(string name, ref double v)
         {
             XAttr attr;
-            if (attributes.TryGet(name, out attr))
+            if (attrs.TryGet(name, out attr))
             {
                 v = attr;
                 return true;
@@ -148,7 +144,7 @@ namespace Greatbone.Core
         public bool Get(string name, ref decimal v)
         {
             XAttr attr;
-            if (attributes.TryGet(name, out attr))
+            if (attrs.TryGet(name, out attr))
             {
                 v = attr;
                 return true;
@@ -159,7 +155,7 @@ namespace Greatbone.Core
         public bool Get(string name, ref DateTime v)
         {
             XAttr attr;
-            if (attributes.TryGet(name, out attr))
+            if (attrs.TryGet(name, out attr))
             {
                 v = attr;
                 return true;
@@ -170,7 +166,7 @@ namespace Greatbone.Core
         public bool Get(string name, ref NpgsqlPoint v)
         {
             XAttr attr;
-            if (attributes.TryGet(name, out attr))
+            if (attrs.TryGet(name, out attr))
             {
                 v = attr;
                 return true;
@@ -181,7 +177,7 @@ namespace Greatbone.Core
         public bool Get(string name, ref char[] v)
         {
             XAttr attr;
-            if (attributes.TryGet(name, out attr))
+            if (attrs.TryGet(name, out attr))
             {
                 v = attr;
                 return true;
@@ -192,7 +188,7 @@ namespace Greatbone.Core
         public bool Get(string name, ref string v)
         {
             XAttr attr;
-            if (attributes.TryGet(name, out attr))
+            if (attrs.TryGet(name, out attr))
             {
                 v = attr;
                 return true;
@@ -203,7 +199,7 @@ namespace Greatbone.Core
         public bool Get(string name, ref byte[] v)
         {
             XAttr attr;
-            if (attributes.TryGet(name, out attr))
+            if (attrs.TryGet(name, out attr))
             {
                 v = attr;
                 return true;

@@ -1,7 +1,7 @@
 namespace Greatbone.Core
 {
     ///
-    /// A simple XML parsing structure that deals with most common usages.
+    /// A lightweight structure that parses well-formed XML documents.
     ///
     public struct XmlParse
     {
@@ -57,7 +57,10 @@ namespace Greatbone.Core
             b = this[p++];
             if (b == '?') // skip prolog
             {
-                while (this[p] != '>') { p++; } // skip prolog
+                while (this[p] != '>')
+                {
+                    p++;
+                }
                 // seek to a <
                 for (;;)
                 {
@@ -81,26 +84,47 @@ namespace Greatbone.Core
             return c >= '0' && c <= '9' || c >= 'a' && c <= 'z' || c >= 'A' && c <= 'Z' || c == '_' || c == '-';
         }
 
-        XElem ParseElem(ref int pos, int first)
+        XElem ParseElem(ref int pos, int firstchar)
         {
             str.Clear();
 
-            str.Accept(first);
+            str.Accept(firstchar);
 
             // parse tag name
-            string tag = null;
+            string name = null;
             int p = pos;
             for (;;)
             {
                 int b = this[p++];
                 if (b == ' ' || b == '\t' || b == '\n' || b == '\r')
                 {
-                    tag = str.ToString();
+                    name = str.ToString();
                     continue; // skip ws
                 }
-                if (b == '<') break;
-                throw ParseEx;
+                if (b == '>')
+                {
+                    name = str.ToString();
+                    XElem e = new XElem(name);
+
+                    break;
+                }
+                if (b == '/' && this[p++] == '>') // empty-element
+                {
+                    break;
+                }
+
+                str.Accept(b); // to comprise a tag name
             }
+
+            // optional attributes
+
+
+
+            // closing or start-close
+            
+
+
+            XElem elem = new XElem(name);
 
             for (;;)
             {
@@ -113,6 +137,10 @@ namespace Greatbone.Core
 
                 if (b == '/') continue; // 
             }
+        }
+
+        void ParseAttrs(XElem elem) {
+
         }
     }
 }

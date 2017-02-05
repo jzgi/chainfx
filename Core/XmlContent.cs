@@ -9,11 +9,11 @@ namespace Greatbone.Core
     /// 
     public class XmlContent : DynamicContent, IDataOutput<XmlContent>
     {
-        const int InitialCapacity = 4 * 1024;
+        public XmlContent() : base(true, true, 4096)
+        {
+        }
 
-        bool start;
-
-        public XmlContent(bool sendable = true, bool pooled = true, int capacity = InitialCapacity) : base(sendable, pooled, capacity)
+        public XmlContent(bool sendable, bool pooled, int capacity = 4096) : base(sendable, pooled, capacity)
         {
         }
 
@@ -54,40 +54,98 @@ namespace Greatbone.Core
         // PUT
         //
 
-        public void PutElem(string name, Action a)
+        public XmlContent Add(string name, Action attrs, Action children)
         {
-            if (start) { Add('>'); start = false; }
-
             Add('<');
             Add(name);
-            start = true;
 
-            if (a != null) a();
+            attrs?.Invoke();
 
-            if (start) { Add('>'); start = false; }
+            Add('>');
+
+            children?.Invoke();
+
             Add("</");
             Add(name);
             Add('>');
+
+            return this;
         }
 
-        public XmlContent PutEnter(bool multi)
+        public XmlContent Add(string name, bool v)
         {
-            throw new NotImplementedException();
+            Add('<');
+            Add(name);
+            Add('>');
+            Add(v);
+            Add('<');
+            Add('/');
+            Add(name);
+            Add('>');
+            return this;
         }
 
-        public XmlContent PutExit(bool multi)
+        public XmlContent Add(string name, short v)
         {
-            throw new NotImplementedException();
+            Add('<');
+            Add(name);
+            Add('>');
+            Add(v);
+            Add('<');
+            Add('/');
+            Add(name);
+            Add('>');
+            return this;
         }
+
+        public XmlContent Add(string name, int v)
+        {
+            Add('<');
+            Add(name);
+            Add('>');
+            Add(v);
+            Add('<');
+            Add('/');
+            Add(name);
+            Add('>');
+            return this;
+        }
+
+        public XmlContent Add(string name, decimal v)
+        {
+            Add('<');
+            Add(name);
+            Add('>');
+            Add(v);
+            Add('<');
+            Add('/');
+            Add(name);
+            Add('>');
+            return this;
+        }
+
+        public XmlContent Add(string name, string v)
+        {
+            Add('<');
+            Add(name);
+            Add('>');
+            AddEsc(v);
+            Add('<');
+            Add('/');
+            Add(name);
+            Add('>');
+            return this;
+        }
+
 
         public XmlContent PutNull(string name)
         {
-            throw new NotImplementedException();
+            return this;
         }
 
         public XmlContent PutRaw(string name, string raw)
         {
-            throw new NotImplementedException();
+            return this;
         }
 
         public XmlContent Put(string name, bool v)
@@ -213,27 +271,12 @@ namespace Greatbone.Core
 
         public XmlContent Put(string name, byte[] v)
         {
-            throw new NotImplementedException();
+            return this;
         }
 
         public XmlContent Put(string name, ArraySegment<byte> v)
         {
-            throw new NotImplementedException();
-        }
-
-        public XmlContent Put(string name, IData v, ushort proj = 0)
-        {
-            throw new NotImplementedException();
-        }
-
-        public XmlContent Put(string name, JObj v)
-        {
-            throw new NotImplementedException();
-        }
-
-        public XmlContent Put(string name, JArr v)
-        {
-            throw new NotImplementedException();
+            return this;
         }
 
         public XmlContent Put(string name, short[] v)
@@ -269,6 +312,7 @@ namespace Greatbone.Core
             Add('"');
             return this;
         }
+
         public XmlContent Put(string name, long[] v)
         {
             Add(' ');
@@ -285,7 +329,6 @@ namespace Greatbone.Core
             Add('"');
             return this;
         }
-
 
         public XmlContent Put(string name, string[] v)
         {
@@ -304,24 +347,29 @@ namespace Greatbone.Core
             return this;
         }
 
+        public XmlContent Put(string name, IData v, ushort proj = 0)
+        {
+            return this;
+        }
+
         public XmlContent Put<D>(string name, D[] v, ushort proj = 0) where D : IData
         {
-            throw new NotImplementedException();
+            return this;
         }
 
         public XmlContent Put<D>(string name, List<D> v, ushort proj = 0) where D : IData
         {
-            throw new NotImplementedException();
+            return this;
         }
 
         public XmlContent Put(string name, IDataInput v)
         {
-            throw new NotImplementedException();
+            return this;
         }
 
         public XmlContent Put(string name, Dictionary<string, string> v)
         {
-            throw new NotImplementedException();
+            return this;
         }
     }
 }

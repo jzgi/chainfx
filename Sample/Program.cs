@@ -1,4 +1,5 @@
 ﻿using System.Collections.Generic;
+using System.Text;
 using Greatbone.Core;
 
 namespace Greatbone.Sample
@@ -10,6 +11,10 @@ namespace Greatbone.Sample
         ///
         public static void Main(string[] args)
         {
+            string xml = "<xml><log file=\"abc.log\" level=\"3\"><reserve/></log><display>CRT</display></xml>";
+            byte[] bytes = Encoding.UTF8.GetBytes(xml);
+            XElem e = new XmlParse(bytes, 0, bytes.Length).Parse();
+
             DbConfig pg = new DbConfig
             {
                 host = "106.14.45.109",
