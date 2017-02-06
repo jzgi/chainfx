@@ -7,10 +7,10 @@ namespace Greatbone.Core
     {
         static readonly ParseException ParseEx = new ParseException("error parsing xml");
 
-        // byte content to parse
+        // bytes to parse
         readonly byte[] bytebuf;
 
-        // char content to parse
+        // chars to parse
         readonly string strbuf;
 
         readonly int offset;
@@ -46,10 +46,7 @@ namespace Greatbone.Core
 
             // seek to a less-than (<)
             int b;
-            while (IsWs(b = this[p]))
-            {
-                p++;
-            } // skip ws
+            while (IsWs(b = this[p])) { p++; } // skip ws
             if (b != '<') throw ParseEx;
 
             // the first char
@@ -57,9 +54,7 @@ namespace Greatbone.Core
 
             if (b == '?') // skip the prolog line
             {
-                while (this[++p] != '>')
-                {
-                }
+                while (this[++p] != '>') { }
 
                 // seek to a <
                 for (;;)
@@ -111,9 +106,7 @@ namespace Greatbone.Core
             // optionally parse attributes
             while (IsWs(b))
             {
-                while (IsWs(b = this[++p]))
-                {
-                } // skip ws
+                while (IsWs(b = this[++p])) { } // skip ws
 
                 if (IsNameStartChar(b))
                 {
@@ -167,9 +160,7 @@ namespace Greatbone.Core
             {
                 for (;;) // child nodes iteration
                 {
-                    while (IsWs(b = this[++p]))
-                    {
-                    } // skip ws
+                    while (IsWs(b = this[++p])) { } // skip ws
 
                     if (b == '<')
                     {
@@ -196,7 +187,7 @@ namespace Greatbone.Core
                     else // text node
                     {
                         str.Clear();
-                        while ((b = this[p]) != '<') // from the start char
+                        while ((b = this[p]) != '<') // NOTE from the first char
                         {
                             if (b == '&') // escape &lt; &gt; &amp; &quot;
                             {
@@ -227,7 +218,7 @@ namespace Greatbone.Core
                         {
                             elem.Text = str.ToString();
                         }
-                        // decrease in position to behave as other child nodes
+                        // NOTE decrease in position to behave as other child nodes
                         --p;
                     }
                 } // child nodes iteration

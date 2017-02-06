@@ -13,6 +13,8 @@ namespace Greatbone.Sample
         {
             Create<OrderFolder>("order");
 
+            Create<ItemFolder>("item");
+
             _re_menu_ = GetAction(nameof(remenu));
         }
 
@@ -73,9 +75,9 @@ namespace Greatbone.Sample
             }
         }
 
-        ///
-        /// recreate menu for this shop with WeChat.
-        ///
+        #region -shop-management-
+
+        [ToShop]
         public void remenu(WebActionContext ac)
         {
         }
@@ -87,6 +89,8 @@ namespace Greatbone.Sample
 
         public void invoice(WebActionContext ac)
         {
-        }          
+        }
+
+        #endregion
     }
 }

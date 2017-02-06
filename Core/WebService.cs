@@ -129,22 +129,12 @@ namespace Greatbone.Core
 
         public void Tree()
         {
-            Debug.Write("service");
-            Debug.Write(Name);
-            if (subs != null)
-            {
-                for (int i = 0; i < subs.Count; i++)
-                {
-                    WebFolder child = subs[i];
-                    Debug.Write("SUB " + child.Name);
-                }
-            }
-            for (int i = 0; i < Actions.Count; i++)
-            {
-                WebAction action = Actions[i];
-                Debug.Write("ACT " + action.Name);
-            }
+            XmlContent xml = new XmlContent(false, false);
+            Describe(xml);
+
         }
+
+
 
         ///
         /// Uniquely identify a service instance.

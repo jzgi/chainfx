@@ -92,19 +92,19 @@ namespace Greatbone.Sample
         {
             if (ac.GET) // return the login form
             {
-                Form frm = ac.Query;
-                string id = frm[nameof(id)];
-                string password = frm[nameof(password)];
-                string orig = frm[nameof(orig)];
+                Form q = ac.Query;
+                string id = q[nameof(id)];
+                string password = q[nameof(password)];
+                string orig = q[nameof(orig)];
 
                 ac.ReplyPage(200, "", main => { main.FORM(null, x => x.INPUT_button()); });
             }
             else // login
             {
-                Form frm = await ac.ReadAsync<Form>();
-                string id = frm[nameof(id)];
-                string password = frm[nameof(password)];
-                string orig = frm[nameof(orig)];
+                Form f = await ac.ReadAsync<Form>();
+                string id = f[nameof(id)];
+                string password = f[nameof(password)];
+                string orig = f[nameof(orig)];
                 if (string.IsNullOrEmpty(id) || string.IsNullOrEmpty(password))
                 {
                     ac.Reply(400);

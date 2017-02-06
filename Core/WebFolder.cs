@@ -161,6 +161,31 @@ namespace Greatbone.Core
         public override WebService Service => context.Service;
 
 
+        public void Describe(XmlContent xml)
+        {
+            xml.ELEM(Name,
+            delegate
+            {
+                for (int i = 0; i < Actions.Count; i++)
+                {
+                    WebAction action = Actions[i];
+                    xml.Put(action.Name, "");
+                }
+            },
+            delegate
+            {
+                if (subs != null)
+                {
+                    for (int i = 0; i < subs.Count; i++)
+                    {
+                        WebFolder child = subs[i];
+                        child.Describe(xml);
+                    }
+                }
+            });
+        }
+
+
         // public Roll<WebAction> Actions => actions;
 
         public WebAction GetAction(string method)

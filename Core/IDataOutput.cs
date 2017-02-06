@@ -5,7 +5,7 @@ using NpgsqlTypes;
 namespace Greatbone.Core
 {
     ///
-    /// Represents a sink for dump output.
+    /// Represents a sink for data output.
     ///
     public interface IDataOutput<out R> where R : IDataOutput<R>
     {
