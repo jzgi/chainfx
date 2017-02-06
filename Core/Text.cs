@@ -230,5 +230,17 @@ namespace Greatbone.Core
         {
             throw new NotImplementedException();
         }
+
+        public override bool Equals(object v)
+        {
+            string str = v as string;
+            if (str == null || str.Length != count) return false;
+
+            for (int i = 0; i < count; i++)
+            {
+                if (buf[i] != str[i]) return false;
+            }
+            return true;
+        }
     }
 }

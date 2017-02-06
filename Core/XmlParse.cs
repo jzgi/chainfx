@@ -46,29 +46,31 @@ namespace Greatbone.Core
 
             // seek to a less-than (<)
             int b;
-            for (;;)
-            {
-                b = this[p++];
-                if (IsWs(b)) continue; // skip ws
-                if (b == '<') break;
-                throw ParseEx;
-            }
+            while (IsWs(b = this[p])) { p++; } // skip ws
+            if (b != '<') throw ParseEx;
 
-            b = this[p++];
+            // the first char
+            b = this[++p];
+
             if (b == '?') // skip the prolog line
             {
-                while (this[p] != '>') { p++; }
+                while (this[++p] != '>') { }
+
                 // seek to a <
                 for (;;)
                 {
-                    b = this[p++];
+                    b = this[++p];
                     if (IsWs(b)) continue; // skip ws
                     if (b == '<') break;
                     throw ParseEx;
                 }
             }
 
-            return ParseElem(ref p, b);
+            if (IsNameStartChar(b))
+            {
+                return ParseElem(ref p, b);
+            }
+            throw ParseEx;
         }
 
         static bool IsWs(int c)
@@ -94,7 +96,7 @@ namespace Greatbone.Core
             // parse element tag name
             str.Clear();
             str.Accept(startchar);
-            while (IsNameChar(b = this[p++]))
+            while (IsNameChar(b = this[++p]))
             {
                 str.Accept(b); // to comprise start tag
             }
@@ -104,23 +106,23 @@ namespace Greatbone.Core
             // optionally parse attributes
             while (IsWs(b))
             {
-                while (IsWs(b = this[p++])) { } // skip ws
+                while (IsWs(b = this[++p])) { } // skip ws
 
                 if (IsNameStartChar(b))
                 {
                     // attribute name
                     str.Clear();
                     str.Accept(b);
-                    while ((b = this[p++]) != '=')
+                    while ((b = this[++p]) != '=')
                     {
                         str.Accept(b);
                     }
                     string name = str.ToString();
 
                     // attribute value
-                    if (this[p++] != '"') throw ParseEx; // left quote
+                    if (this[++p] != '"') throw ParseEx; // left quote
                     str.Clear();
-                    while ((b = this[p++]) != '"') // till right quote
+                    while ((b = this[++p]) != '"') // till right quote
                     {
                         str.Accept(b);
                     }
@@ -128,49 +130,61 @@ namespace Greatbone.Core
 
                     elem.AddAttr(name, value);
 
-                    b = this[p++];
+                    b = this[++p]; // step
                 }
             } // end of attributes
 
             if (b == '>') // a start tag just finished, expecting the ending-tag
             {
-            NextChild:
-                while (IsWs(b = this[p++])) { } // skip ws and forward
-
-                if (b == '<')
+                for (;;) // child nodes iteration
                 {
-                    b = this[p++];
-                    if (b == '/') // the ending tag
-                    {
-                        while ((b = this[p++]) != '>') { } // consume the tag
-                        return elem;
-                    }
+                    while (IsWs(b = this[++p])) { } // skip ws
 
-                    if (IsNameStartChar(b))
+                    if (b == '<')
                     {
-                        elem.AddChild(ParseElem(ref p, b));
+                        b = this[++p];
+                        if (b == '/') // the ending tag
+                        {
+                            // consume
+                            str.Clear();
+                            while ((b = this[++p]) != '>')
+                            {
+                                str.Accept(b);
+                            }
+                            if (!str.Equals(tag)) throw ParseEx;
 
-                        // if (this[p] == '<')
-                        goto NextChild;
+                            pos = p; // adjust current position
+                            return elem;
+                        }
+
+                        if (IsNameStartChar(b))
+                        {
+                            elem.AddChild(ParseElem(ref p, b));
+                        }
                     }
-                }
-                else // text node
-                {
-                    str.Clear();
-                    while ((b = this[p++]) != '<')
+                    else // text node
                     {
+                        str.Clear();
                         str.Accept(b);
+                        while ((b = this[++p]) != '<')
+                        {
+                            str.Accept(b);
+                        }
+                        if (str.Count > 0)
+                        {
+                            elem.Text = str.ToString();
+                        }
+                        // decrease in position to behave as other child nodes
+                        --p;
                     }
-                    if (str.Count > 0)
-                    {
-                        elem.Text = str.ToString();
-                    }
-                }
+                } // child nodes iteration
             }
-            else if (b == '/' && this[p++] == '>') // empty-element
+            else if (b == '/' && this[++p] == '>') // empty-element
             {
+                pos = p; // adjust current position
+                return elem;
             }
-            return elem;
+            throw ParseEx;
         }
     }
 }
