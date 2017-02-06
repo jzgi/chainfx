@@ -7,7 +7,7 @@ namespace Greatbone.Core
     {
         readonly string name;
 
-        string value;
+        readonly string value;
 
         public string Name => name;
 

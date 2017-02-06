@@ -38,7 +38,7 @@ namespace Greatbone.Core
             this.str = new Text(1024);
         }
 
-        int this[int index] => bytebuf?[index] ?? (int)strbuf[index];
+        int this[int index] => bytebuf?[index] ?? (int) strbuf[index];
 
         public XElem Parse()
         {
@@ -46,7 +46,10 @@ namespace Greatbone.Core
 
             // seek to a less-than (<)
             int b;
-            while (IsWs(b = this[p])) { p++; } // skip ws
+            while (IsWs(b = this[p]))
+            {
+                p++;
+            } // skip ws
             if (b != '<') throw ParseEx;
 
             // the first char
@@ -54,7 +57,9 @@ namespace Greatbone.Core
 
             if (b == '?') // skip the prolog line
             {
-                while (this[++p] != '>') { }
+                while (this[++p] != '>')
+                {
+                }
 
                 // seek to a <
                 for (;;)
@@ -106,7 +111,9 @@ namespace Greatbone.Core
             // optionally parse attributes
             while (IsWs(b))
             {
-                while (IsWs(b = this[++p])) { } // skip ws
+                while (IsWs(b = this[++p]))
+                {
+                } // skip ws
 
                 if (IsNameStartChar(b))
                 {
@@ -138,7 +145,9 @@ namespace Greatbone.Core
             {
                 for (;;) // child nodes iteration
                 {
-                    while (IsWs(b = this[++p])) { } // skip ws
+                    while (IsWs(b = this[++p]))
+                    {
+                    } // skip ws
 
                     if (b == '<')
                     {
@@ -159,7 +168,7 @@ namespace Greatbone.Core
 
                         if (IsNameStartChar(b))
                         {
-                            elem.AddChild(ParseElem(ref p, b));
+                            elem.AddSub(ParseElem(ref p, b));
                         }
                     }
                     else // text node
@@ -179,7 +188,7 @@ namespace Greatbone.Core
                     }
                 } // child nodes iteration
             }
-            else if (b == '/' && this[++p] == '>') // empty-element
+            if (b == '/' && this[++p] == '>') // empty-element
             {
                 pos = p; // adjust current position
                 return elem;

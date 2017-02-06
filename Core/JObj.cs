@@ -361,7 +361,7 @@ namespace Greatbone.Core
             throw new NotImplementedException();
         }
 
-        public void WriteData<R>(IDataOutput<R> dout) where R : IDataOutput<R>
+        public void WriteData<R>(IDataOutput<R> o) where R : IDataOutput<R>
         {
             for (int i = 0; i < Count; i++)
             {
@@ -369,31 +369,31 @@ namespace Greatbone.Core
                 JType t = mem.type;
                 if (t == JType.Array)
                 {
-                    dout.Put(mem.Name, (JArr) mem);
+                    o.Put(mem.Name, (JArr) mem);
                 }
                 else if (t == JType.Object)
                 {
-                    dout.Put(mem.Name, (JObj) mem);
+                    o.Put(mem.Name, (JObj) mem);
                 }
                 else if (t == JType.String)
                 {
-                    dout.Put(mem.Name, (string) mem);
+                    o.Put(mem.Name, (string) mem);
                 }
                 else if (t == JType.Number)
                 {
-                    dout.Put(mem.Name, (JNumber) mem);
+                    o.Put(mem.Name, (JNumber) mem);
                 }
                 else if (t == JType.True)
                 {
-                    dout.Put(mem.Name, true);
+                    o.Put(mem.Name, true);
                 }
                 else if (t == JType.False)
                 {
-                    dout.Put(mem.Name, false);
+                    o.Put(mem.Name, false);
                 }
                 else if (t == JType.Null)
                 {
-                    dout.PutNull(mem.Name);
+                    o.PutNull(mem.Name);
                 }
             }
         }
@@ -401,7 +401,7 @@ namespace Greatbone.Core
         public C Dump<C>() where C : IContent, IDataOutput<C>, new()
         {
             C cont = new C();
-            WriteData(cont);
+            cont.Put(null, this);
             return cont;
         }
 

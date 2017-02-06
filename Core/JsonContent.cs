@@ -66,6 +66,33 @@ namespace Greatbone.Core
             }
         }
 
+
+        public void ARR(Action a)
+        {
+            if (counts[level]++ > 0) Add(',');
+
+            counts[++level] = 0; // enter
+            Add('[');
+
+            a?.Invoke();
+
+            Add(']');
+            level--; // exit
+        }
+
+        public void OBJ(Action a)
+        {
+            if (counts[level]++ > 0) Add(',');
+
+            counts[++level] = 0; // enter
+            Add('{');
+
+            a?.Invoke();
+
+            Add('}');
+            level--; // exit
+        }
+
         //
         // SINK
         //

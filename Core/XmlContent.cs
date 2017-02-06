@@ -54,7 +54,7 @@ namespace Greatbone.Core
         // PUT
         //
 
-        public XmlContent Add(string name, Action attrs, Action children)
+        public XmlContent ELEM(string name, Action attrs, Action children)
         {
             Add('<');
             Add(name);
@@ -72,7 +72,7 @@ namespace Greatbone.Core
             return this;
         }
 
-        public XmlContent Add(string name, bool v)
+        public XmlContent ELEM(string name, bool v)
         {
             Add('<');
             Add(name);
@@ -85,7 +85,7 @@ namespace Greatbone.Core
             return this;
         }
 
-        public XmlContent Add(string name, short v)
+        public XmlContent ELEM(string name, short v)
         {
             Add('<');
             Add(name);
@@ -98,7 +98,7 @@ namespace Greatbone.Core
             return this;
         }
 
-        public XmlContent Add(string name, int v)
+        public XmlContent ELEM(string name, int v)
         {
             Add('<');
             Add(name);
@@ -111,7 +111,7 @@ namespace Greatbone.Core
             return this;
         }
 
-        public XmlContent Add(string name, decimal v)
+        public XmlContent ELEM(string name, decimal v)
         {
             Add('<');
             Add(name);
@@ -124,7 +124,7 @@ namespace Greatbone.Core
             return this;
         }
 
-        public XmlContent Add(string name, string v)
+        public XmlContent ELEM(string name, string v)
         {
             Add('<');
             Add(name);

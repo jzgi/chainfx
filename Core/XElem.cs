@@ -11,13 +11,16 @@ namespace Greatbone.Core
     {
         readonly string name;
 
+        // attributes, can be null
         Roll<XAttr> attrs;
 
+        // child text node, can be null
         string text;
 
-        XElem[] children;
+        // child element nodes. can be null
+        XElem[] elems;
 
-        int count;
+        int count; // number of subs
 
         public XElem(string name)
         {
@@ -40,26 +43,25 @@ namespace Greatbone.Core
             attrs.Add(new XAttr(name, v));
         }
 
-        internal void AddChild(XElem e)
+        internal void AddSub(XElem e)
         {
-            if (children == null)
+            if (elems == null)
             {
-                children = new XElem[16];
+                elems = new XElem[16];
             }
             else
             {
-                int len = children.Length;
+                int len = elems.Length;
                 if (count >= len)
                 {
-                    XElem[] temp = children;
-                    children = new XElem[len * 4];
-                    Array.Copy(temp, 0, children, 0, len);
+                    XElem[] temp = elems;
+                    elems = new XElem[len * 4];
+                    Array.Copy(temp, 0, elems, 0, len);
                 }
             }
-            children[count++] = e;
+            elems[count++] = e;
         }
 
-        int current;
 
         public string Text
         {
@@ -67,21 +69,46 @@ namespace Greatbone.Core
             internal set { text = value; }
         }
 
-        XElem FindSub(string name)
+        int current;
+
+        XElem Sub(string name)
         {
-            if (children != null)
+            if (elems != null)
             {
-                for (int i = 0; i < count; i++)
+                for (int i = current; i < count; i++)
                 {
-                    XElem elem = children[i];
+                    XElem elem = elems[i];
                     if (elem.name.Equals(name))
                     {
+                        current = i;
+                        return elem;
+                    }
+                }
+                for (int i = 0; i < current; i++)
+                {
+                    XElem elem = elems[i];
+                    if (elem.name.Equals(name))
+                    {
+                        current = i;
                         return elem;
                     }
                 }
             }
             return null;
         }
+
+        public bool Sub(string name, ref bool v)
+        {
+            // try sub
+            XElem e = Sub(name);
+            if (e != null)
+            {
+                v = e.text.ToBool();
+                return true;
+            }
+            return false;
+        }
+
 
         public bool Get(string name, ref bool v)
         {
@@ -92,16 +119,9 @@ namespace Greatbone.Core
                 v = attr;
                 return true;
             }
-
-            // try sub
-            XElem e = FindSub(name);
-            if (e != null)
-            {
-                v = e.text.ToBool();
-                return true;
-            }
             return false;
         }
+
 
         public bool Get(string name, ref short v)
         {
@@ -305,9 +325,14 @@ namespace Greatbone.Core
             throw new NotImplementedException();
         }
 
+        public static implicit operator int(XElem v)
+        {
+            return v?.text.ToInt() ?? 0;
+        }
+
         public static implicit operator string(XElem v)
         {
-            return v.text;
+            return v?.text;
         }
     }
 }
