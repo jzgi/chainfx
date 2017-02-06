@@ -9,3 +9,12 @@ We're aiming similar goals to create a framework for building microservices, tha
 * data handling and operation are unified and direct -- no extra layers
 * much less coding -- a couple of guys may cope with large applications 
 * versatile -- good for from small management systems to large-scale e-commerce.
+
+# Dependencies
+
+The framework specifically uses the following open-source libraries. Many thanks to the great teams respectively!
+
+| ![kestrel](https://dotnetfoundation.org/Themes/DotNetFoundation.Theme/Images/logo-small.png) | ![npgsql](http://www.npgsql.org/img/logo.svg) |
+| ---- | ----- |
+| [kestrel](https://github.com/aspnet/KestrelHttpServer) | [npgsql](http://www.npgsql.org/img/logo.svg) |
+| ASP.NET Core's built-in web server | .NET Access to PostgreSQL |
