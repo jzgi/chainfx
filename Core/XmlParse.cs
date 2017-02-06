@@ -38,7 +38,7 @@ namespace Greatbone.Core
             this.str = new Text(1024);
         }
 
-        int this[int index] => bytebuf?[index] ?? (int) strbuf[index];
+        int this[int index] => bytebuf?[index] ?? (int)strbuf[index];
 
         public XElem Parse()
         {
@@ -131,6 +131,28 @@ namespace Greatbone.Core
                     str.Clear();
                     while ((b = this[++p]) != '"') // till right quote
                     {
+                        if (b == '&') // escape &lt; &gt; &amp; &quot;
+                        {
+                            int b1 = this[p + 1];
+                            int b2 = this[p + 2];
+                            int b3 = this[p + 3];
+                            if (b1 == 'l' && b2 == 't' && b3 == ';')
+                            {
+                                b = '<'; p += 3;
+                            }
+                            else if (b1 == 'g' && b2 == 't' && b3 == ';')
+                            {
+                                b = '>'; p += 3;
+                            }
+                            else if (b1 == 'a' && b2 == 'm' && b3 == 'p' && this[p + 4] == ';')
+                            {
+                                b = '&'; p += 4;
+                            }
+                            else if (b1 == 'q' && b2 == 'u' && b3 == 'o' && this[p + 4] == 't' && this[p + 5] == ';')
+                            {
+                                b = '"'; p += 5;
+                            }
+                        }
                         str.Accept(b);
                     }
                     string value = str.ToString();
@@ -174,10 +196,32 @@ namespace Greatbone.Core
                     else // text node
                     {
                         str.Clear();
-                        str.Accept(b);
-                        while ((b = this[++p]) != '<')
+                        while ((b = this[p]) != '<') // from the start char
                         {
+                            if (b == '&') // escape &lt; &gt; &amp; &quot;
+                            {
+                                int b1 = this[p + 1];
+                                int b2 = this[p + 2];
+                                int b3 = this[p + 3];
+                                if (b1 == 'l' && b2 == 't' && b3 == ';')
+                                {
+                                    b = '<'; p += 3;
+                                }
+                                else if (b1 == 'g' && b2 == 't' && b3 == ';')
+                                {
+                                    b = '>'; p += 3;
+                                }
+                                else if (b1 == 'a' && b2 == 'm' && b3 == 'p' && this[p + 4] == ';')
+                                {
+                                    b = '&'; p += 4;
+                                }
+                                else if (b1 == 'q' && b2 == 'u' && b3 == 'o' && this[p + 4] == 't' && this[p + 5] == ';')
+                                {
+                                    b = '"'; p += 5;
+                                }
+                            }
                             str.Accept(b);
+                            ++p;
                         }
                         if (str.Count > 0)
                         {

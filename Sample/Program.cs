@@ -11,7 +11,7 @@ namespace Greatbone.Sample
         ///
         public static void Main(string[] args)
         {
-            string xml = "<xml><log file=\"abc.log\" level=\"3\"><reserve/></log><display>CRT</display></xml>";
+            string xml = "<xml><log file=\"abc.log\" level=\"&lt;3&gt;\"><reserve/></log><display>CRT-&amp;</display></xml>";
             byte[] bytes = Encoding.UTF8.GetBytes(xml);
             XElem e = new XmlParse(bytes, 0, bytes.Length).Parse();
 
