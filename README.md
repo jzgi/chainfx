@@ -1,7 +1,8 @@
 # core
-A core library for building SOA web applications in C#.
 
-It provides the following functionalities:
+As in 1990's, dBase had let many people become highly productive programmers, by its simple working environment and strong data operability.
+
+We're aiming similar goals to create a framework that we can handle and operate on data with much less code, so that a couple of guys may cope with large clustered applications 
 
 quickly build and deploy services
 support single or multiple service instances per host
