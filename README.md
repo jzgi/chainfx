@@ -1,6 +1,6 @@
 # core
 
-As in 1990's, dBase had let many people become highly productive programmers, by its simple working environment and strong data operability.
+As in 1990's, dBase had let many people become highly productive programmers, by its simple working environment and powerful data operability.
 
 We're aiming similar goals to create a framework for building microservices, that is
 * reliable -- based on [.NET Core](https://github.com/dotnet/core) and [PostgresSQL](https://www.postgresql.org/)
