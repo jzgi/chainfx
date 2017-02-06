@@ -6,6 +6,6 @@ We're aiming similar goals to create a framework for building microservices, tha
 * reliable -- based on [.NET Core](https://github.com/dotnet/core) and [PostgresSQL](https://www.postgresql.org/)
 * lightweight while battery-included -- live well without thridparties such as Radis or Kafka
 * high-performance -- esp on multi-core boxes
-* data handling and operation are unified and direct
+* data handling and operation are unified and direct -- no extra layer
 * much less coding -- a couple of guys may cope with large applications 
 * versatile -- from small management systems to large-scale e-commerce.
