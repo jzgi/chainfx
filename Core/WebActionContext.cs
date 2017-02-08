@@ -57,7 +57,7 @@ namespace Greatbone.Core
             }
         }
 
-        public WebKnot this[IVar folder]
+        public WebKnot this[WebFolder folder]
         {
             get
             {

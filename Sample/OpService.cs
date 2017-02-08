@@ -158,7 +158,7 @@ namespace Greatbone.Sample
                 if (dc.Query(p => p.Set(pt)))
                 {
                     var shops = dc.ToArray<Shop>();
-                    ac.ReplyPage(200, "", main => { main.FORM(_new, shops); });
+                    ac.ReplyPage(200, "", main => { main.FORM_grid(_new, shops); });
                 }
                 else
                     ac.ReplyPage(200, "没有记录", main => { });
@@ -203,7 +203,7 @@ namespace Greatbone.Sample
                 if (dc.Query(p => p.Set(20 * page)))
                 {
                     var shops = dc.ToArray<Shop>(z);
-                    ac.ReplyPage(200, "", main => { main.FORM(_new, shops); });
+                    ac.ReplyPage(200, "", main => { main.FORM_grid(_new, shops); });
                 }
                 else
                 {

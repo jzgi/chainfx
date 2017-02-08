@@ -5,12 +5,10 @@ using NpgsqlTypes;
 namespace Greatbone.Core
 {
     ///
-    /// For dynamical HTML5 content generation Tooled with Pure.CSS
+    /// For dynamical HTML5 content tooled with Zurb Foundation
     ///
     public class HtmlContent : DynamicContent, IDataOutput<HtmlContent>, IMenu, ISelectOptions
     {
-        const int InitialCapacity = 8 * 1024;
-
         const string SM = "sm", MD = "md", LG = "lg", XL = "xl";
 
         const sbyte TableThs = 1, TableTrs = 2, FormFields = 3;
@@ -18,8 +16,7 @@ namespace Greatbone.Core
         sbyte ctx;
 
 
-        public HtmlContent(bool sendable, bool pooled, int capacity = InitialCapacity) : base(sendable, pooled,
-            capacity)
+        public HtmlContent(bool sendable, bool pooled, int capacity = 16 * 1024) : base(sendable, pooled, capacity)
         {
         }
 
@@ -226,21 +223,50 @@ namespace Greatbone.Core
             Add("</form>");
         }
 
-        public void FORM<D>(WebAction[] acts, D[] arr, ushort proj = 0) where D : IData
+        public void FORM_grid<D>(WebAction[] actions, D[] arr, ushort proj = 0) where D : IData
         {
-            Add("<form class=\"pure-form pure-g\">");
+            Add("<form>");
 
             // buttons
-            BUTTONS(acts);
+            BUTTONS(actions);
 
             if (arr != null)
             {
+                Add("<table>");
+
+                ctx = TableThs;
+                Add("<thead>");
+                Add("<tr>");
+
+                for (int i = 0; i < arr.Length; i++)
+                {
+                    Add("<th>");
+                    D obj = arr[i];
+
+                    obj.WriteData(this, proj);
+                    Add("</th>");
+                }
+                Add("</tr>");
+                Add("</thead>");
+
+                ctx = TableTrs;
+                Add("<tbody>");
+
+                for (int i = 0; i < arr.Length; i++)
+                {
+                    Add("<tr>");
+                    D obj = arr[i];
+
+                    obj.WriteData(this, proj);
+                    Add("</tr>");
+                }
+                Add("</tbody>");
             }
 
             Add("</form>");
         }
 
-        public void FORM<D>(WebAction act, D dat, ushort proj = 0) where D : IData
+        public void FORM(WebAction action, IData obj, ushort proj = 0)
         {
             Add("<form class=\"pure-form pure-g\">");
 
@@ -261,8 +287,7 @@ namespace Greatbone.Core
             Add("\">");
         }
 
-        public void INPUT_text(string name, string value, bool @readonly = false, bool required = false,
-            string placeholder = null, int maxlength = 0, int minlength = 0, string pattern = null)
+        public void INPUT_text(string name, string value, bool @readonly = false, bool required = false, string placeholder = null, int maxlength = 0, int minlength = 0, string pattern = null)
         {
             Add("<label>");
             AddLabel(name);
@@ -303,8 +328,7 @@ namespace Greatbone.Core
             Add("</label>");
         }
 
-        public void INPUT_search(string name, string value, bool @readonly = false, bool required = false,
-            string placeholder = null, int maxlength = 0, int minlength = 0, string pattern = null)
+        public void INPUT_search(string name, string value, bool @readonly = false, bool required = false, string placeholder = null, int maxlength = 0, int minlength = 0, string pattern = null)
         {
             Add("<label>");
             AddLabel(name);
@@ -345,8 +369,7 @@ namespace Greatbone.Core
             Add("</label>");
         }
 
-        public void INPUT_tel(string name, string value, bool @readonly = false, bool required = false,
-            string placeholder = null, int maxlength = 0, int minlength = 0, string pattern = null)
+        public void INPUT_tel(string name, string value, bool @readonly = false, bool required = false, string placeholder = null, int maxlength = 0, int minlength = 0, string pattern = null)
         {
             Add("<label>");
             AddLabel(name);
@@ -429,8 +452,7 @@ namespace Greatbone.Core
             Add("</label>");
         }
 
-        public void INPUT_email(string name, string value, bool @readonly = false, bool required = false,
-            string placeholder = null, int maxlength = 0, int minlength = 0, string pattern = null)
+        public void INPUT_email(string name, string value, bool @readonly = false, bool required = false, string placeholder = null, int maxlength = 0, int minlength = 0, string pattern = null)
         {
             Add("<label>");
             AddLabel(name);
@@ -471,8 +493,7 @@ namespace Greatbone.Core
             Add("</label>");
         }
 
-        public void INPUT_password(string name, string value, bool @readonly = false, bool required = false,
-            string placeholder = null, int maxlength = 0, int minlength = 0, string pattern = null)
+        public void INPUT_password(string name, string value, bool @readonly = false, bool required = false, string placeholder = null, int maxlength = 0, int minlength = 0, string pattern = null)
         {
             Add("<label>");
             AddLabel(name);
@@ -513,8 +534,7 @@ namespace Greatbone.Core
             Add("</label>");
         }
 
-        public void INPUT_date(string name, DateTime value, bool @readonly = false, bool required = false,
-            string placeholder = null, int max = int.MaxValue, int min = int.MinValue, int step = 0)
+        public void INPUT_date(string name, DateTime value, bool @readonly = false, bool required = false, string placeholder = null, int max = int.MaxValue, int min = int.MinValue, int step = 0)
         {
             Add("<label>");
             AddLabel(name);
@@ -557,8 +577,7 @@ namespace Greatbone.Core
             T("</tbody>");
         }
 
-        public void INPUT_number(string name, int value, bool @readonly = false, bool required = false,
-            string placeholder = null, int max = int.MaxValue, int min = int.MinValue, int step = 0)
+        public void INPUT_number(string name, int value, bool @readonly = false, bool required = false, string placeholder = null, int max = int.MaxValue, int min = int.MinValue, int step = 0)
         {
             Add("<label>");
             AddLabel(name);
@@ -596,8 +615,7 @@ namespace Greatbone.Core
             Add("</label>");
         }
 
-        public void INPUT_number(string name, long value, bool @readonly = false, bool required = false,
-            string placeholder = null, long max = long.MaxValue, long min = long.MinValue, long step = 0)
+        public void INPUT_number(string name, long value, bool @readonly = false, bool required = false, string placeholder = null, long max = long.MaxValue, long min = long.MinValue, long step = 0)
         {
             Add("<label>");
             AddLabel(name);
@@ -635,8 +653,7 @@ namespace Greatbone.Core
             Add("</label>");
         }
 
-        public void INPUT_number(string name, decimal value, bool @readonly = false, bool required = false,
-            string placeholder = null, int max = int.MaxValue, int min = int.MinValue, int step = 0)
+        public void INPUT_number(string name, decimal value, bool @readonly = false, bool required = false, string placeholder = null, int max = int.MaxValue, int min = int.MinValue, int step = 0)
         {
             Add("<label>");
             AddLabel(name);

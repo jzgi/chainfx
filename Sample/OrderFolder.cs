@@ -34,33 +34,56 @@ namespace Greatbone.Sample
 
         #endregion
 
-        #region /shop/-shopid-/orderin/
+        #region /shop/-shopid-/orderi/ OR /shop/-shopid-/ordero/
 
         [Shop]
         [Ui]
         public void @default(WebActionContext ac, string page)
         {
             string shopid = ac[0];
-            using (var dc = ac.NewDbContext())
+            string key = ac[this];
+            if (key.EndsWith("i")) // orderi
             {
-                if (dc.Query("SELECT * FROM orders WHERE userid = @1 ORDER BY id LIMIT 20 OFFSET @2", p => p.Set(shopid).Set(page.ToInt() * 20)))
+                using (var dc = ac.NewDbContext())
                 {
-                    var order = dc.ToArray<Order>();
-                    ac.ReplyPage(200, "", main =>
+                    if (dc.Query("SELECT * FROM orders WHERE shopid = @1 AND status < 4", p => p.Set(shopid)))
                     {
+                        var order = dc.ToArray<Order>();
+                        ac.ReplyPage(200, "", main =>
+                        {
 
-                    });
-                }
-                else
-                {
-                    ac.ReplyPage(200, "没有记录", main => { });
+                        });
+                    }
+                    else
+                    {
+                        ac.ReplyPage(200, "没有记录", main => { });
+                    }
                 }
             }
+            else // ordero
+            {
+                using (var dc = ac.NewDbContext())
+                {
+                    if (dc.Query("SELECT * FROM orders WHERE shopid = @1 AND status >= 4 ORDER BY id LIMIT 20 OFFSET @2", p => p.Set(shopid).Set(page.ToInt() * 20)))
+                    {
+                        var order = dc.ToArray<Order>();
+                        ac.ReplyPage(200, "", main =>
+                        {
+
+                        });
+                    }
+                    else
+                    {
+                        ac.ReplyPage(200, "没有记录", main => { });
+                    }
+                }
+            }
+
         }
 
         [Ui(Label = "取消")]
         [State(ASKED, FIXED | CANCELLED, CANCELLED)]
-        public async Task cannel(WebActionContext ac)
+        public async Task canncel(WebActionContext ac)
         {
             string shopid = ac[0];
             Form frm = await ac.ReadAsync<Form>();
@@ -141,7 +164,7 @@ namespace Greatbone.Sample
 
 
         #region /shop/-shopid-/orderout/
-        
+
 
         #endregion
 

@@ -6,7 +6,6 @@ using Greatbone.Core;
 namespace Greatbone.Sample
 {
     ///
-    /// /buyer/-id-/
     ///
     public class UserVarFolder : WebFolder, IVar
     {

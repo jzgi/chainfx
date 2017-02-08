@@ -1,218 +1,104 @@
 <!DOCTYPE html>
-<html lang="en">
+<html class="no-js" lang="en">
 
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width,initial-scale=1,user-scalable=0">
-    <title>WeUI</title>
-    <link rel="stylesheet" href="http://res.wx.qq.com/open/libs/weui/1.1.1/weui.min.css" />
+    <meta charset="utf-8" />
+    <meta http-equiv="x-ua-compatible" content="ie=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Foundation Starter Template</title>
+    <link rel="stylesheet" href="http://cdn.bootcss.com/foundation/6.3.0/css/foundation.min.css" />
 </head>
 
 <body>
+    <h1>Hello, world!</h1>
 
-    <ul>
-        <li class="js_show">
-            <div class="weui-flex js_category">
-                <p class="weui-flex__item">表单</p>
-                <img src="./images/icon_nav_form.png" alt="">
+    <form>
+        <label>Input Label
+    <input type="text" placeholder=".small-12.columns" aria-describedby="exampleHelpText">
+  </label>
+        <p class="help-text" id="exampleHelpText">Here's how you use this input field!</p>
+        <label>
+    How many puppies?
+    <input type="number" value="100">
+  </label>
+        <label>
+    What books did you read over summer break?
+    <textarea placeholder="None"></textarea>
+  </label>
+        <label>Select Menu
+    <select>
+      <option value="husker">Husker</option>
+      <option value="starbuck">Starbuck</option>
+      <option value="hotdog">Hot Dog</option>
+      <option value="apollo">Apollo</option>
+    </select>
+  </label>
+        <div class="row">
+            <fieldset class="large-6 columns">
+                <legend>Choose Your Favorite</legend>
+                <input type="radio" name="pokemon" value="Red" id="pokemonRed" required><label for="pokemonRed">Red</label>
+                <input type="radio" name="pokemon" value="Blue" id="pokemonBlue"><label for="pokemonBlue">Blue</label>
+                <input type="radio" name="pokemon" value="Yellow" id="pokemonYellow"><label for="pokemonYellow">Yellow</label>
+            </fieldset>
+            <fieldset class="large-6 columns">
+                <legend>Check these out</legend>
+                <input id="checkbox1" type="checkbox"><label for="checkbox1">Checkbox 1</label>
+                <input id="checkbox2" type="checkbox"><label for="checkbox2">Checkbox 2</label>
+                <input id="checkbox3" type="checkbox"><label for="checkbox3">Checkbox 3</label>
+            </fieldset>
+        </div>
+        <div class="row">
+            <div class="small-3 columns">
+                <label for="middle-label" class="text-right middle">Label</label>
             </div>
-            <div class="page__category js_categoryInner" data-height="220">
-                <div class="weui-cells page__category-content">
-                    <a class="weui-cell weui-cell_access js_item" data-id="button" href="javascript:;">
-                        <div class="weui-cell__bd">
-                            <p>Button</p>
-                        </div>
-                        <div class="weui-cell__ft"></div>
-                    </a>
-                    <a class="weui-cell weui-cell_access js_item" data-id="input" href="javascript:;">
-                        <div class="weui-cell__bd">
-                            <p>Input</p>
-                        </div>
-                        <div class="weui-cell__ft"></div>
-                    </a>
-                    <a class="weui-cell weui-cell_access js_item" data-id="list" href="javascript:;">
-                        <div class="weui-cell__bd">
-                            <p>List</p>
-                        </div>
-                        <div class="weui-cell__ft"></div>
-                    </a>
-                    <a class="weui-cell weui-cell_access js_item" data-id="slider" href="javascript:;">
-                        <div class="weui-cell__bd">
-                            <p>Slider</p>
-                        </div>
-                        <div class="weui-cell__ft"></div>
-                    </a>
-                    <a class="weui-cell weui-cell_access js_item" data-id="uploader" href="javascript:;">
-                        <div class="weui-cell__bd">
-                            <p>Uploader</p>
-                        </div>
-                        <div class="weui-cell__ft"></div>
-                    </a>
-                </div>
+            <div class="small-9 columns">
+                <input type="text" id="middle-label" placeholder="Right- and middle-aligned text input">
             </div>
-        </li>
-        <li class="">
-            <div class="weui-flex js_category">
-                <p class="weui-flex__item">基础组件</p>
-                <img src="./images/icon_nav_layout.png" alt="">
-            </div>
-            <div class="page__category js_categoryInner" data-height="484">
-                <div class="weui-cells page__category-content">
-                    <a class="weui-cell weui-cell_access js_item" data-id="article" href="javascript:;">
-                        <div class="weui-cell__bd">
-                            <p>Article</p>
-                        </div>
-                        <div class="weui-cell__ft"></div>
-                    </a>
-                    <a class="weui-cell weui-cell_access js_item" data-id="badge" href="javascript:;">
-                        <div class="weui-cell__bd">
-                            <p>Badge</p>
-                        </div>
-                        <div class="weui-cell__ft"></div>
-                    </a>
-                    <a class="weui-cell weui-cell_access js_item" data-id="flex" href="javascript:;">
-                        <div class="weui-cell__bd">
-                            <p>Flex</p>
-                        </div>
-                        <div class="weui-cell__ft"></div>
-                    </a>
-                    <a class="weui-cell weui-cell_access js_item" data-id="footer" href="javascript:;">
-                        <div class="weui-cell__bd">
-                            <p>Footer</p>
-                        </div>
-                        <div class="weui-cell__ft"></div>
-                    </a>
-                    <a class="weui-cell weui-cell_access js_item" data-id="gallery" href="javascript:;">
-                        <div class="weui-cell__bd">
-                            <p>Gallery</p>
-                        </div>
-                        <div class="weui-cell__ft"></div>
-                    </a>
-                    <a class="weui-cell weui-cell_access js_item" data-id="grid" href="javascript:;">
-                        <div class="weui-cell__bd">
-                            <p>Grid</p>
-                        </div>
-                        <div class="weui-cell__ft"></div>
-                    </a>
-                    <a class="weui-cell weui-cell_access js_item" data-id="icons" href="javascript:;">
-                        <div class="weui-cell__bd">
-                            <p>Icons</p>
-                        </div>
-                        <div class="weui-cell__ft"></div>
-                    </a>
-                    <a class="weui-cell weui-cell_access js_item" data-id="loadmore" href="javascript:;">
-                        <div class="weui-cell__bd">
-                            <p>Loadmore</p>
-                        </div>
-                        <div class="weui-cell__ft"></div>
-                    </a>
-                    <a class="weui-cell weui-cell_access js_item" data-id="panel" href="javascript:;">
-                        <div class="weui-cell__bd">
-                            <p>Panel</p>
-                        </div>
-                        <div class="weui-cell__ft"></div>
-                    </a>
-                    <a class="weui-cell weui-cell_access js_item" data-id="preview" href="javascript:;">
-                        <div class="weui-cell__bd">
-                            <p>Preview</p>
-                        </div>
-                        <div class="weui-cell__ft"></div>
-                    </a>
-                    <a class="weui-cell weui-cell_access js_item" data-id="progress" href="javascript:;">
-                        <div class="weui-cell__bd">
-                            <p>Progress</p>
-                        </div>
-                        <div class="weui-cell__ft"></div>
-                    </a>
-                </div>
-            </div>
-        </li>
-        <li class="">
-            <div class="weui-flex js_category">
-                <p class="weui-flex__item">操作反馈</p>
-                <img src="./images/icon_nav_feedback.png" alt="">
-            </div>
-            <div class="page__category js_categoryInner">
-                <div class="weui-cells page__category-content">
-                    <a class="weui-cell weui-cell_access js_item" data-id="actionsheet" href="javascript:;">
-                        <div class="weui-cell__bd">
-                            <p>Actionsheet</p>
-                        </div>
-                        <div class="weui-cell__ft"></div>
-                    </a>
-                    <a class="weui-cell weui-cell_access js_item" data-id="dialog" href="javascript:;">
-                        <div class="weui-cell__bd">
-                            <p>Dialog</p>
-                        </div>
-                        <div class="weui-cell__ft"></div>
-                    </a>
-                    <a class="weui-cell weui-cell_access js_item" data-id="msg" href="javascript:;">
-                        <div class="weui-cell__bd">
-                            <p>Msg</p>
-                        </div>
-                        <div class="weui-cell__ft"></div>
-                    </a>
-                    <a class="weui-cell weui-cell_access js_item" data-id="picker" href="javascript:;">
-                        <div class="weui-cell__bd">
-                            <p>Picker</p>
-                        </div>
-                        <div class="weui-cell__ft"></div>
-                    </a>
-                    <a class="weui-cell weui-cell_access js_item" data-id="toast" href="javascript:;">
-                        <div class="weui-cell__bd">
-                            <p>Toast</p>
-                        </div>
-                        <div class="weui-cell__ft"></div>
-                    </a>
-                </div>
-            </div>
-        </li>
-        <li class="">
-            <div class="weui-flex js_category">
-                <p class="weui-flex__item">导航相关</p>
-                <img src="./images/icon_nav_nav.png" alt="">
-            </div>
-            <div class="page__category js_categoryInner" data-height="88">
-                <div class="weui-cells page__category-content">
-                    <a class="weui-cell weui-cell_access js_item" data-id="navbar" href="javascript:;">
-                        <div class="weui-cell__bd">
-                            <p>Navbar</p>
-                        </div>
-                        <div class="weui-cell__ft"></div>
-                    </a>
-                    <a class="weui-cell weui-cell_access js_item" data-id="tabbar" href="javascript:;">
-                        <div class="weui-cell__bd">
-                            <p>Tabbar</p>
-                        </div>
-                        <div class="weui-cell__ft"></div>
-                    </a>
-                </div>
-            </div>
-        </li>
-        <li class="">
-            <div class="weui-flex js_category">
-                <p class="weui-flex__item">搜索相关</p>
-                <img src="./images/icon_nav_search.png" alt="">
-            </div>
-            <div class="page__category js_categoryInner">
-                <div class="weui-cells page__category-content">
-                    <a class="weui-cell weui-cell_access js_item" data-id="searchbar" href="javascript:;">
-                        <div class="weui-cell__bd">
-                            <p>Search Bar</p>
-                        </div>
-                        <div class="weui-cell__ft"></div>
-                    </a>
-                </div>
-            </div>
-        </li>
-        <li class="">
-            <div class="weui-flex js_item" data-id="layers">
-                <p class="weui-flex__item">层级规范</p>
-                <img src="./images/icon_nav_z-index.png" alt="">
-            </div>
-        </li>
-    </ul>
-    <a href="javascript:;" class="weui-btn weui-btn_primary">绿色按钮</a>
+        </div>
+        <div class="input-group">
+            <span class="input-group-label">$</span>
+            <input class="input-group-field" type="url">
+            <a class="input-group-button button">Submit</a>
+        </div>
+    </form>
+
+<table>
+  <thead>
+    <tr>
+      <th width="200">Table Header</th>
+      <th>Table Header</th>
+      <th width="150">Table Header</th>
+      <th width="150">Table Header</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td>Content Goes Here</td>
+      <td>This is longer content Donec id elit non mi porta gravida at eget metus.</td>
+      <td>Content Goes Here</td>
+      <td>Content Goes Here</td>
+    </tr>
+    <tr>
+      <td>Content Goes Here</td>
+      <td>This is longer Content Goes Here Donec id elit non mi porta gravida at eget metus.</td>
+      <td>Content Goes Here</td>
+      <td>Content Goes Here</td>
+    </tr>
+    <tr>
+      <td>Content Goes Here</td>
+      <td>This is longer Content Goes Here Donec id elit non mi porta gravida at eget metus.</td>
+      <td>Content Goes Here</td>
+      <td>Content Goes Here</td>
+    </tr>
+  </tbody>
+</table>
+
+    <script src="http://cdn.bootcss.com/jquery/3.1.1/jquery.min.js"></script>
+    <script src="http://cdn.bootcss.com/foundation/6.3.0/js/foundation.min.js"></script>
+    <script>
+        $(document).foundatio
+    </script>
+
 </body>
 
 </html>
