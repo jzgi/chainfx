@@ -11,7 +11,9 @@ namespace Greatbone.Sample
 
         public ShopVarFolder(WebFolderContext dc) : base(dc)
         {
-            Create<OrderFolder>("order");
+            Create<OrderFolder>("orderi"); // order inbox
+
+            Create<OrderFolder>("ordero"); // order old history
 
             Create<ItemFolder>("item");
 

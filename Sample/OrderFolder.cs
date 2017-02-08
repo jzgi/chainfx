@@ -21,8 +21,7 @@ namespace Greatbone.Sample
 
             using (var dc = ac.NewDbContext())
             {
-                dc.Sql("SELECT * FROM orders WHERE userid = @1 ORDER BY id LIMIT 20 OFFSET @2");
-                if (dc.Query(p => p.Set(userid).Set(page.ToInt() * 20)))
+                if (dc.Query("SELECT * FROM orders WHERE userid = @1 ORDER BY id LIMIT 20 OFFSET @2", p => p.Set(userid).Set(page.ToInt() * 20)))
                 {
                     ac.Reply(200, dc.Dump<JsonContent>());
                 }
@@ -35,12 +34,28 @@ namespace Greatbone.Sample
 
         #endregion
 
-        #region /shop/-shopid-/order/
+        #region /shop/-shopid-/orderin/
 
         [Shop]
         [Ui]
-        public void @default(WebActionContext ac)
+        public void @default(WebActionContext ac, string page)
         {
+            string shopid = ac[0];
+            using (var dc = ac.NewDbContext())
+            {
+                if (dc.Query("SELECT * FROM orders WHERE userid = @1 ORDER BY id LIMIT 20 OFFSET @2", p => p.Set(shopid).Set(page.ToInt() * 20)))
+                {
+                    var order = dc.ToArray<Order>();
+                    ac.ReplyPage(200, "", main =>
+                    {
+
+                    });
+                }
+                else
+                {
+                    ac.ReplyPage(200, "没有记录", main => { });
+                }
+            }
         }
 
         [Ui(Label = "取消")]
@@ -123,6 +138,13 @@ namespace Greatbone.Sample
         }
 
         #endregion
+
+
+        #region /shop/-shopid-/orderout/
+        
+
+        #endregion
+
 
         #region /order/
 

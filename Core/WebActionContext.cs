@@ -28,45 +28,45 @@ namespace Greatbone.Core
 
         public string TokenText { get; internal set; }
 
-        // levels of variable keys
-        Var[] vars;
+        // levels of keys along the URI path
+        WebKnot[] knots;
 
-        int varlen;
+        int knotnum; // actual number of knots
 
-        internal void ChainVar(string key, WebFolder folder)
+        internal void Chain(string key, WebFolder folder)
         {
-            if (vars == null)
+            if (knots == null)
             {
-                vars = new Var[4];
+                knots = new WebKnot[4];
             }
-            vars[varlen++] = new Var(key, folder);
+            knots[knotnum++] = new WebKnot(key, folder);
         }
 
-        public Var this[int level] => vars[level];
+        public WebKnot this[int level] => knots[level];
 
-        public Var this[Type folderType]
+        public WebKnot this[Type folderType]
         {
             get
             {
-                for (int i = 0; i < varlen; i++)
+                for (int i = 0; i < knotnum; i++)
                 {
-                    Var v = vars[i];
+                    WebKnot v = knots[i];
                     if (v.Type == folderType) return v;
                 }
-                return default(Var);
+                return default(WebKnot);
             }
         }
 
-        public Var this[IVar folder]
+        public WebKnot this[IVar folder]
         {
             get
             {
-                for (int i = 0; i < varlen; i++)
+                for (int i = 0; i < knotnum; i++)
                 {
-                    Var v = vars[i];
+                    WebKnot v = knots[i];
                     if (v.Folder == folder) return v;
                 }
-                return default(Var);
+                return default(WebKnot);
             }
         }
 

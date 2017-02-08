@@ -5,13 +5,13 @@ namespace Greatbone.Core
     ///
     /// A resolved variable part in the URI path.
     ///
-    public struct Var
+    public struct WebKnot
     {
         readonly string key;
 
         readonly WebFolder folder;
 
-        internal Var(string key, WebFolder folder)
+        internal WebKnot(string key, WebFolder folder)
         {
             this.key = key;
             this.folder = folder;
@@ -23,11 +23,13 @@ namespace Greatbone.Core
 
         public WebFolder Folder => folder;
 
+        public bool IsVar => folder is IVar;
+
         //
         // CONVERSION
         //
 
-        public static implicit operator bool(Var v)
+        public static implicit operator bool(WebKnot v)
         {
             string str = v.key;
             if (!string.IsNullOrEmpty(str))
@@ -37,7 +39,7 @@ namespace Greatbone.Core
             return false;
         }
 
-        public static implicit operator short(Var v)
+        public static implicit operator short(WebKnot v)
         {
             string str = v.key;
             if (!string.IsNullOrEmpty(str))
@@ -51,7 +53,7 @@ namespace Greatbone.Core
             return 0;
         }
 
-        public static implicit operator int(Var v)
+        public static implicit operator int(WebKnot v)
         {
             string str = v.key;
             if (!string.IsNullOrEmpty(str))
@@ -65,7 +67,7 @@ namespace Greatbone.Core
             return 0;
         }
 
-        public static implicit operator long(Var v)
+        public static implicit operator long(WebKnot v)
         {
             string str = v.key;
             if (!string.IsNullOrEmpty(str))
@@ -79,7 +81,7 @@ namespace Greatbone.Core
             return 0;
         }
 
-        public static implicit operator decimal(Var v)
+        public static implicit operator decimal(WebKnot v)
         {
             string str = v.key;
             if (!string.IsNullOrEmpty(str))
@@ -93,18 +95,18 @@ namespace Greatbone.Core
             return 0;
         }
 
-        public static implicit operator DateTime(Var v)
+        public static implicit operator DateTime(WebKnot v)
         {
             return default(DateTime);
         }
 
-        public static implicit operator char[] (Var v)
+        public static implicit operator char[] (WebKnot v)
         {
             string str = v.key;
             return str?.ToCharArray();
         }
 
-        public static implicit operator string(Var v)
+        public static implicit operator string(WebKnot v)
         {
             return v.key;
         }

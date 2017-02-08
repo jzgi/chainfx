@@ -248,11 +248,12 @@ namespace Greatbone.Core
             WebFolder sub;
             if (subs != null && subs.TryGet(key, out sub)) // chiled
             {
+                ac.Chain(key, sub);
                 return sub.Locate(ref relative, ac);
             }
             if (varsub != null) // variable-key
             {
-                ac.ChainVar(key, varsub);
+                ac.Chain(key, varsub);
                 return varsub.Locate(ref relative, ac);
             }
 
