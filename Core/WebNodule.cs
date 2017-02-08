@@ -9,11 +9,11 @@ namespace Greatbone.Core
     ///
     public abstract class WebNodule
     {
+        // access checking routines
+        internal RoleAttribute[] roles;
+
         // access filtering routines
         readonly FilterAttribute[] filters;
-
-        // access checking routines
-        internal ToAttribute[] grants;
 
         internal WebNodule(ICustomAttributeProvider attrs)
         {
@@ -23,42 +23,42 @@ namespace Greatbone.Core
                 attrs = GetType().GetTypeInfo();
             }
 
-            // filters
-            List<FilterAttribute> fltlst = null;
-            foreach (var flt in (FilterAttribute[])attrs.GetCustomAttributes(typeof(FilterAttribute), false))
-            {
-                if (fltlst == null)
-                {
-                    fltlst = new List<FilterAttribute>(8);
-                }
-                flt.Nodule = this;
-                fltlst.Add(flt);
-            }
-            this.filters = fltlst?.ToArray();
-
             // grants
-            List<ToAttribute> grtlst = null;
-            foreach (var grt in (ToAttribute[])attrs.GetCustomAttributes(typeof(ToAttribute), false))
+            List<RoleAttribute> rlst = null;
+            foreach (var role in (RoleAttribute[])attrs.GetCustomAttributes(typeof(RoleAttribute), false))
             {
-                if (grtlst == null)
+                if (rlst == null)
                 {
-                    grtlst = new List<ToAttribute>(8);
+                    rlst = new List<RoleAttribute>(8);
                 }
-                grt.Nodule = this;
-                grtlst.Add(grt);
+                role.Nodule = this;
+                rlst.Add(role);
             }
-            this.grants = grtlst?.ToArray();
+            this.roles = rlst?.ToArray();
+
+            // filters
+            List<FilterAttribute> flst = null;
+            foreach (var filter in (FilterAttribute[])attrs.GetCustomAttributes(typeof(FilterAttribute), false))
+            {
+                if (flst == null)
+                {
+                    flst = new List<FilterAttribute>(8);
+                }
+                filter.Nodule = this;
+                flst.Add(filter);
+            }
+            this.filters = flst?.ToArray();
         }
 
         public abstract WebService Service { get; }
 
-        public bool HasGrant(Type granttype)
+        public bool HasRole(Type roletyp)
         {
-            if (grants != null)
+            if (roles != null)
             {
-                for (int i = 0; i < grants.Length; i++)
+                for (int i = 0; i < roles.Length; i++)
                 {
-                    if (grants[i].GetType() == granttype) return true;
+                    if (roles[i].GetType() == roletyp) return true;
                 }
             }
             return false;
@@ -66,7 +66,7 @@ namespace Greatbone.Core
 
         internal bool Check(WebActionContext ac, bool reply = true)
         {
-            if (grants != null)
+            if (roles != null)
             {
                 if (ac.Token == null)
                 {
@@ -88,9 +88,9 @@ namespace Greatbone.Core
                 }
 
                 // run checks
-                for (int i = 0; i < grants.Length; i++)
+                for (int i = 0; i < roles.Length; i++)
                 {
-                    if (!grants[i].Check(ac))
+                    if (!roles[i].Check(ac))
                     {
                         if (reply)
                         {

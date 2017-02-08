@@ -23,21 +23,21 @@ namespace Greatbone.Sample
 
         #region /shop/-shopid-/order/
 
-        [ToShop]
+        [Shop]
         [Ui]
         public void @default(WebActionContext ac)
         {
 
         }
 
-        [ToShop]
+        [Shop]
         [Ui]
         public void all(WebActionContext ac)
         {
 
         }
 
-        [ToShop]
+        [Shop]
         [Ui]
         public void list(WebActionContext ac)
         {
@@ -45,7 +45,7 @@ namespace Greatbone.Sample
 
         }
 
-        [ToShop]
+        [Shop]
         [Ui]
         public void clear(WebActionContext ac)
         {
@@ -57,7 +57,7 @@ namespace Greatbone.Sample
 
         #region /order/
 
-        [ToAdmin]
+        [Admin]
         [Ui]
         public void exam(WebActionContext ac)
         {

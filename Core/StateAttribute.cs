@@ -3,16 +3,23 @@ using System;
 namespace Greatbone.Core
 {
     /// 
-    /// To assure the validity of an action on UI and in the internal.
     ///
     [AttributeUsage(AttributeTargets.Method, Inherited = false)]
     public class StateAttribute : Attribute
     {
-        readonly short[] specs;
-
-        public StateAttribute(params short[] specs)
+        public StateAttribute(int with, int without, int set)
         {
-            this.specs = specs;
+            Without = without;
+            With = with;
+            Set = set;
         }
+
+        public int With { get; set; } = 0;
+
+        public int Without { get; set; } = 0;
+
+        public int Set { get; set; }
+
+        public int Unset { get; set; }
     }
 }

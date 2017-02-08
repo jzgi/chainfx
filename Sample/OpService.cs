@@ -174,10 +174,10 @@ namespace Greatbone.Sample
         /// GET /[-page]
         /// </code>
         ///
-        [ToAdmin]
+        [Admin]
         public void @default(WebActionContext ac)
         {
-            GetUiActions(typeof(ToAdminAttribute));
+            GetUiActions(typeof(AdminAttribute));
 
             ac.ReplyPage(200, "", x =>
             {
@@ -224,7 +224,7 @@ namespace Greatbone.Sample
         /// id=_shopid_&amp;password=_password_&amp;name=_name_
         /// </code>
         ///
-        [ToAdmin]
+        [Admin]
         public async Task @new(WebActionContext ac)
         {
             if (ac.GET)
@@ -248,7 +248,7 @@ namespace Greatbone.Sample
         }
 
 
-        [ToAdmin]
+        [Admin]
         public virtual void mgmt(WebActionContext ac)
         {
             if (Subs != null)

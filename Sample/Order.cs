@@ -6,14 +6,21 @@ namespace Greatbone.Sample
     /// 
     /// An order data object.
     ///
-    public class Order : IData
+    public class Order : IData, IStatable
     {
+        // state
         public const int
-            STATE_check = 0;
+            Prepared = 0,
+            PAID = 1,
+            ASKED = 2,
+            FIXED = 4,
+            CLOSED = 4,
+            CANCELLED = 8;
 
+        // status
         public const short
-            Open = 0,
-            Cancelled = 2,
+            OPEN = 0,
+            CANCELLEDed = 2,
             Closed = 9;
 
         public static readonly Order Empty = new Order();
@@ -26,13 +33,17 @@ namespace Greatbone.Sample
 
         internal string shopwx; // shop weixin openid
 
-        internal string buyerid; // RESERVED
+        internal string buyerwx; // buyer weixin openid
 
         internal string buyer; // buyer nickname or name
 
-        internal string buyerwx; // buyer weixin openid
+        internal DateTime created; // time created
 
-        internal DateTime opened;
+        internal string pend; // reason
+
+        internal DateTime @fixed; // time fixed
+
+        internal DateTime closed; // time closed
 
         OrderLine[] lines;
 
@@ -42,7 +53,8 @@ namespace Greatbone.Sample
 
         internal DateTime delivered;
 
-        internal int status;
+        internal int state;
+        internal short status;
 
         public void ReadData(IDataInput i, ushort proj = 0)
         {
@@ -52,11 +64,10 @@ namespace Greatbone.Sample
             i.Get(nameof(shop), ref shop);
             i.Get(nameof(shopwx), ref shopwx);
 
-            i.Get(nameof(buyerid), ref buyerid);
             i.Get(nameof(buyer), ref buyer);
             i.Get(nameof(buyerwx), ref buyerwx);
 
-            i.Get(nameof(opened), ref opened);
+            i.Get(nameof(created), ref created);
             if (proj.Sub())
             {
                 i.Get(nameof(lines), ref lines);
@@ -64,6 +75,7 @@ namespace Greatbone.Sample
             i.Get(nameof(total), ref total);
 
             i.Get(nameof(delivered), ref delivered);
+            i.Get(nameof(state), ref state);
             i.Get(nameof(status), ref status);
         }
 
@@ -75,11 +87,10 @@ namespace Greatbone.Sample
             o.Put(nameof(shop), shop);
             o.Put(nameof(shopwx), shopwx);
 
-            o.Put(nameof(buyerid), buyerid);
             o.Put(nameof(buyer), buyer);
             o.Put(nameof(buyerwx), buyerwx);
 
-            o.Put(nameof(opened), opened);
+            o.Put(nameof(created), created);
             if (proj.Sub())
             {
                 o.Put(nameof(lines), lines);
@@ -87,12 +98,10 @@ namespace Greatbone.Sample
             o.Put(nameof(total), total);
 
             o.Put(nameof(delivered), delivered);
+            o.Put(nameof(state), state);
             o.Put(nameof(status), status);
         }
 
-        public int EvalState
-        {
-            get { return 1; }
-        }
+        public int State => state;
     }
 }

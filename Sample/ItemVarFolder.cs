@@ -22,7 +22,7 @@ namespace Greatbone.Sample
 
         #region /shop/-id-/order/-id-/
 
-        [ToShop]
+        [Shop]
         public void @default(WebActionContext ac)
         {
             string shopid = ac[0];
@@ -44,7 +44,6 @@ namespace Greatbone.Sample
             }
         }
 
-        [State()]
         public void pend(WebActionContext ac)
         {
         }

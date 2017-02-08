@@ -48,6 +48,17 @@ namespace Greatbone.Core
             return this;
         }
 
+        public DbSql setstate()
+        {
+            return this;
+        }
+
+        public DbSql statecond()
+        {
+            // 
+            return this;
+        }
+
         public DbSql columnlst(IData obj, ushort proj = 0)
         {
             list = ColumnList;

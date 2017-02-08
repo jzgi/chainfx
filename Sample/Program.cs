@@ -1,5 +1,5 @@
 ﻿using System.Collections.Generic;
-using System.Text;
+using System.Diagnostics;
 using Greatbone.Core;
 
 namespace Greatbone.Sample
@@ -11,9 +11,9 @@ namespace Greatbone.Sample
         ///
         public static void Main(string[] args)
         {
-            string xml = "<xml><log file=\"abc.log\" level=\"&lt;3&gt;\"><reserve/></log><display>CRT-&amp;</display></xml>";
-            byte[] bytes = Encoding.UTF8.GetBytes(xml);
-            XElem e = new XmlParse(bytes, 0, bytes.Length).Parse();
+            // string xml = "<xml><log file=\"abc.log\" level=\"&lt;3&gt;\"><reserve/></log><display>CRT-&amp;</display></xml>";
+            // byte[] bytes = Encoding.UTF8.GetBytes(xml);
+            // XElem e = new XmlParse(bytes, 0, bytes.Length).Parse();
 
             DbConfig pg = new DbConfig
             {
@@ -26,7 +26,7 @@ namespace Greatbone.Sample
 
             WebAuthent<Token> auth = new WebAuthent<Token>(0x4a78be76, 0x1f0335e2);
 
-            List<WebService> svcs = new List<WebService>(4);
+            List<WebService> svclst = new List<WebService>(4);
 
             WebServiceContext sc;
 
@@ -36,9 +36,12 @@ namespace Greatbone.Sample
                 db = pg
             };
 #if !DEBUG
-            cfg.TryLoad();
+            sc.TryLoad();
 #endif
-            if (sc.LoadedOk != false) svcs.Add(new OpService(sc) { Authent = auth });
+            if (sc.LoadedOk != false) svclst.Add(new OpService(sc) { Authent = auth });
+
+            string tree = svclst[0].Describe();
+            Debug.WriteLine(tree);
 
             sc = new WebServiceContext("comm")
             {
@@ -46,12 +49,12 @@ namespace Greatbone.Sample
                 db = pg
             };
 #if !DEBUG
-            cfg.TryLoad();
+            sc.TryLoad();
 #endif
 
-            if (sc.LoadedOk != false) svcs.Add(new CommService(sc) { Authent = auth });
+            if (sc.LoadedOk != false) svclst.Add(new CommService(sc) { Authent = auth });
 
-            WebService.Run(svcs);
+            WebService.Run(svclst);
         }
     }
 }

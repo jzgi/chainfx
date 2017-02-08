@@ -15,7 +15,11 @@ namespace Greatbone.Core
         public int Form { get; set; } = 0;
 
         public int Dialog { get; set; } = 0;
- 
+
+        /// To activate/deactivate the action according to state specifications.
+        ///
+        public int State { get; set; }
+
     }
 
 }

@@ -88,7 +88,7 @@ namespace Greatbone.Sample
 
         #region ADMIN
 
-        [ToAdmin]
+        [Admin]
         [Ui]
         public void exam(WebActionContext ac)
         {

@@ -1,4 +1,5 @@
 using Greatbone.Core;
+using static Greatbone.Sample.Order;
 
 namespace Greatbone.Sample
 {
@@ -10,18 +11,45 @@ namespace Greatbone.Sample
         {
         }
 
-        #region /user/-id-/order/-id-/
+        #region /user/-userid-/order/-orderid-/
 
         public void my(WebActionContext ac)
         {
 
         }
 
+        [State(PAID, FIXED, ASKED)]
+        public void ask(WebActionContext ac)
+        {
+            string userid = ac[0];
+            int orderid = ac[this];
+            string reason = null;
+
+            using (var dc = Service.NewDbContext())
+            {
+                dc.Sql("UPDATE orders SET reason = @1, ").setstate()._(" WHERE id = @2 AND userid = @3 AND ").statecond();
+                if (dc.Query(p => p.Set(reason).Set(orderid).Set(userid)))
+                {
+                    var order = dc.ToArray<Order>();
+                    ac.ReplyPage(200, "", main =>
+                    {
+
+                    });
+                }
+                else
+                {
+                    ac.ReplyPage(200, "没有记录", main => { });
+                }
+            }
+        }
+
         #endregion
+
+
 
         #region /shop/-id-/order/-id-/
 
-        [ToShop]
+        [Shop]
         public void @default(WebActionContext ac)
         {
             string shopid = ac[0];
@@ -39,21 +67,20 @@ namespace Greatbone.Sample
                     });
                 }
                 else
+                {
                     ac.ReplyPage(200, "没有记录", main => { });
+                }
             }
         }
 
-        [State()]
-        public void pend(WebActionContext ac)
-        {
-        }
-
+        [Ui(Label = "取消")]
+        [State(ASKED, FIXED | CANCELLED, CANCELLED)]
         public void cannel(WebActionContext ac)
         {
             string shopid = ac[0];
             int orderid = ac[this];
 
-            using (var dc = Service.NewDbContext())
+            using (var dc = ac.NewDbContext())
             {
                 dc.Sql("SELECT ").columnlst(Order.Empty)._("FROM orders WHERE id = @1 AND shopid = @2");
                 if (dc.Query(p => p.Set(orderid).Set(shopid)))
@@ -65,7 +92,31 @@ namespace Greatbone.Sample
                     });
                 }
                 else
+                {
                     ac.ReplyPage(200, "没有记录", main => { });
+                }
+            }
+        }
+
+        [Ui(Label = "已备货")]
+        [State(ASKED, FIXED | CANCELLED, CANCELLED)]
+        public void fix(WebActionContext ac)
+        {
+            string shopid = ac[0];
+            int id = ac[this];
+
+            using (var dc = ac.NewDbContext())
+            {
+                dc.Sql("UPDATE orders SET ").setstate()._(" WHERE id = @1 AND shopid = @2 AND ").statecond();
+                if (dc.Query(p => p.Set(id).Set(shopid)))
+                {
+                    var order = dc.ToArray<Order>();
+                    ac.ReplyPage(200, "", main => { });
+                }
+                else
+                {
+                    ac.ReplyPage(200, "没有记录", main => { });
+                }
             }
         }
 
@@ -77,7 +128,7 @@ namespace Greatbone.Sample
 
         #region /order/-id-/
 
-        [ToAdmin, ToShop]
+        [Admin, Shop]
         [Ui]
         public void exam(WebActionContext ac)
         {

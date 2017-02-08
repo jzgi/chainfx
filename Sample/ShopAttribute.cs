@@ -2,8 +2,15 @@
 
 namespace Greatbone.Sample
 {
-    public class ToShopAttribute : ToAttribute
+    public class ShopAttribute : RoleAttribute
     {
+        readonly bool owner;
+
+        public ShopAttribute(bool owner = true)
+        {
+            this.owner = owner;
+        }
+
         public override bool Check(WebActionContext ac)
         {
             string shopid = ac[typeof(ShopVarFolder)];

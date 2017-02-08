@@ -127,11 +127,11 @@ namespace Greatbone.Core
 
         }
 
-        public void Tree()
+        public string Describe()
         {
-            XmlContent xml = new XmlContent(false, false);
-            Describe(xml);
-
+            XmlContent cont = new XmlContent(false, false);
+            Describe(cont);
+            return cont.ToString();
         }
 
 

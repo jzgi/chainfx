@@ -2,7 +2,7 @@
 
 namespace Greatbone.Sample
 {
-    public class ToUserAttribute : ToAttribute
+    public class AdminAttribute : RoleAttribute
     {
         public override bool Check(WebActionContext wc)
         {

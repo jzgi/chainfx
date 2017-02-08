@@ -67,9 +67,9 @@ namespace Greatbone.Core
                     defaction = atn;
                 }
 
-                if (context.Grants != null)
+                if (context.Roles != null)
                 {
-                    grants = context.Grants;
+                    roles = context.Roles;
                 }
             }
         }
@@ -77,7 +77,7 @@ namespace Greatbone.Core
         ///
         /// Create a child folder.
         ///
-        public F Create<F>(string key, ToAttribute[] grants = null) where F : WebFolder
+        public F Create<F>(string key, RoleAttribute[] grants = null) where F : WebFolder
         {
             if (Level >= Nesting) throw new WebException("nesting levels");
 
@@ -95,7 +95,7 @@ namespace Greatbone.Core
             WebFolderContext ctx = new WebFolderContext
             {
                 name = key,
-                Grants = grants,
+                Roles = grants,
                 IsVar = false,
                 Parent = this,
                 Level = Level + 1,
@@ -117,7 +117,7 @@ namespace Greatbone.Core
         ///
         /// Make a variable-key subdirectory.
         ///
-        public F CreateVar<F>(ToAttribute[] grants = null) where F : WebFolder, IVar
+        public F CreateVar<F>(RoleAttribute[] grants = null) where F : WebFolder, IVar
         {
             if (Level >= Nesting) throw new WebException("nesting levels");
 
@@ -131,7 +131,7 @@ namespace Greatbone.Core
             WebFolderContext ctx = new WebFolderContext
             {
                 name = _VAR_,
-                Grants = grants,
+                Roles = grants,
                 IsVar = true,
                 Parent = this,
                 Level = Level + 1,
@@ -148,7 +148,7 @@ namespace Greatbone.Core
 
         public string Name => context.Name;
 
-        public ToAttribute[] Grants => context.Grants;
+        public RoleAttribute[] Grants => context.Roles;
 
         public bool IsVar => context.IsVar;
 
@@ -161,15 +161,15 @@ namespace Greatbone.Core
         public override WebService Service => context.Service;
 
 
-        public void Describe(XmlContent xml)
+        internal void Describe(XmlContent cont)
         {
-            xml.ELEM(Name,
+            cont.ELEM(Name,
             delegate
             {
                 for (int i = 0; i < Actions.Count; i++)
                 {
                     WebAction action = Actions[i];
-                    xml.Put(action.Name, "");
+                    cont.Put(action.Name, "");
                 }
             },
             delegate
@@ -179,8 +179,12 @@ namespace Greatbone.Core
                     for (int i = 0; i < subs.Count; i++)
                     {
                         WebFolder child = subs[i];
-                        child.Describe(xml);
+                        child.Describe(cont);
                     }
+                }
+                if (varsub != null)
+                {
+                    varsub.Describe(cont);
                 }
             });
         }
@@ -215,7 +219,7 @@ namespace Greatbone.Core
             for (int i = 0; i < actions.Count; i++)
             {
                 WebAction a = actions[i];
-                if (a.Ui != null && a.HasGrant(checktyp))
+                if (a.Ui != null && a.HasRole(checktyp))
                 {
                     if (lst == null) lst = new List<WebAction>();
                     lst.Add(a);

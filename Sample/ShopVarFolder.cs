@@ -32,8 +32,8 @@ namespace Greatbone.Sample
 
             using (var dc = Service.NewDbContext())
             {
-                DbSql sql = new DbSql("SELECT ").columnlst(Shop.Empty)._("FROM items WHERE @shopid = @1 AND NOT disabled");
-                if (dc.Query(sql.ToString(), p => p.Set(shopid)))
+                dc.Sql("SELECT ").columnlst(Shop.Empty)._("FROM items WHERE @shopid = @1 AND NOT disabled");
+                if (dc.Query(p => p.Set(shopid)))
                 {
                     var items = dc.ToArray<Item>();
                     ac.ReplyPage(200, "", main =>
@@ -41,7 +41,9 @@ namespace Greatbone.Sample
                     });
                 }
                 else
+                {
                     ac.ReplyPage(200, "没有记录", main => { });
+                }
             }
         }
 
@@ -77,7 +79,7 @@ namespace Greatbone.Sample
 
         #region -shop-management-
 
-        [ToShop]
+        [Shop]
         public void remenu(WebActionContext ac)
         {
         }

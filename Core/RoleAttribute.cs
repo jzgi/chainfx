@@ -6,7 +6,7 @@ namespace Greatbone.Core
     /// An access check before the target construct is invoked.
     ///
     [AttributeUsage(AttributeTargets.Class | AttributeTargets.Method, Inherited = false)]
-    public class ToAttribute : Attribute
+    public class RoleAttribute : Attribute
     {
         public WebNodule Nodule { get; internal set; }
 
