@@ -33,9 +33,9 @@ namespace Greatbone.Core
         // the varied folder, if any
         internal WebFolder varsub;
 
-        protected WebFolder(WebFolderContext context) : base(null)
+        protected WebFolder(WebFolderContext fc) : base(fc.Name, null)
         {
-            this.context = context;
+            this.context = fc;
 
             // init actions
             actions = new Roll<WebAction>(32);
@@ -67,35 +67,44 @@ namespace Greatbone.Core
                     defaction = atn;
                 }
 
-                if (context.Roles != null)
+                // to override annotated attributes
+                if (fc.Roles != null)
                 {
-                    roles = context.Roles;
+                    roles = fc.Roles;
+                }
+                if (fc.Ui != null)
+                {
+                    ui = fc.Ui;
                 }
             }
         }
 
         ///
-        /// Create a child folder.
+        /// Create a subfolder.
         ///
-        public F Create<F>(string key, RoleAttribute[] grants = null) where F : WebFolder
+        public F Create<F>(string key, RoleAttribute[] roles = null, UiAttribute ui = null) where F : WebFolder
         {
-            if (Level >= Nesting) throw new WebException("nesting levels");
+            if (Level >= Nesting)
+            {
+                throw new WebServiceException("folder nesting more than " + Nesting);
+            }
 
             if (subs == null)
             {
-                subs = new Roll<WebFolder>(16);
+                subs = new Roll<WebFolder>(32);
             }
             // create instance by reflection
             Type typ = typeof(F);
             ConstructorInfo ci = typ.GetConstructor(new[] { typeof(WebFolderContext) });
             if (ci == null)
             {
-                throw new WebException(typ + " missing WebFolderContext");
+                throw new WebServiceException(typ + " missing WebFolderContext");
             }
             WebFolderContext ctx = new WebFolderContext
             {
                 name = key,
-                Roles = grants,
+                Roles = roles,
+                Ui = ui,
                 IsVar = false,
                 Parent = this,
                 Level = Level + 1,
@@ -108,30 +117,27 @@ namespace Greatbone.Core
             return folder;
         }
 
-        public Roll<WebAction> Actions => actions;
-
-        public Roll<WebFolder> Subs => subs;
-
-        public WebFolder VarSub => varsub;
-
         ///
-        /// Make a variable-key subdirectory.
+        /// Create a variable-key subfolder.
         ///
-        public F CreateVar<F>(RoleAttribute[] grants = null) where F : WebFolder, IVar
+        public F CreateVar<F>(RoleAttribute[] roles = null) where F : WebFolder, IVar
         {
-            if (Level >= Nesting) throw new WebException("nesting levels");
+            if (Level >= Nesting)
+            {
+                throw new WebServiceException("nesting levels");
+            }
 
             // create instance
             Type typ = typeof(F);
             ConstructorInfo ci = typ.GetConstructor(new[] { typeof(WebFolderContext) });
             if (ci == null)
             {
-                throw new WebException(typ + " missing WebFolderContext");
+                throw new WebServiceException(typ + " missing WebFolderContext");
             }
             WebFolderContext ctx = new WebFolderContext
             {
                 name = _VAR_,
-                Roles = grants,
+                Roles = roles,
                 IsVar = true,
                 Parent = this,
                 Level = Level + 1,
@@ -144,11 +150,13 @@ namespace Greatbone.Core
             return folder;
         }
 
+        public Roll<WebAction> Actions => actions;
+
+        public Roll<WebFolder> Subs => subs;
+
+        public WebFolder VarSub => varsub;
+
         public WebFolderContext Context => context;
-
-        public string Name => context.Name;
-
-        public RoleAttribute[] Grants => context.Roles;
 
         public bool IsVar => context.IsVar;
 

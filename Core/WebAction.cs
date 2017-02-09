@@ -11,8 +11,6 @@ namespace Greatbone.Core
     {
         readonly WebFolder folder;
 
-        readonly string name;
-
         readonly bool async;
 
         readonly bool arg;
@@ -29,12 +27,9 @@ namespace Greatbone.Core
         // async Task action(WebActionContext, string)
         readonly Func<WebActionContext, string, Task> do2async;
 
-        readonly UiAttribute ui;
-
-        internal WebAction(WebFolder folder, MethodInfo mi, bool async, bool arg) : base(mi)
+        internal WebAction(WebFolder folder, MethodInfo mi, bool async, bool arg) : base(mi.Name,mi)
         {
             this.folder = folder;
-            this.name = mi.Name;
             this.async = async;
             this.arg = arg;
 
@@ -60,25 +55,15 @@ namespace Greatbone.Core
                     @do = (Action<WebActionContext>)mi.CreateDelegate(typeof(Action<WebActionContext>), folder);
                 }
             }
-
-            // initialize ui
-            var uis = (UiAttribute[])mi.GetCustomAttributes(typeof(UiAttribute), false);
-            if (uis.Length > 0) ui = uis[0];
         }
 
         public WebFolder Folder => folder;
-
-        public string Name => name;
 
         public bool Async => async;
 
         public bool Arg => arg;
 
         public int Form => ui?.Form ?? 0;
-
-        public string Label => ui?.Label ?? name;
-
-        public string Icon => ui?.Icon;
 
         public int Dialog => ui?.Dialog ?? 0;
 
@@ -126,11 +111,6 @@ namespace Greatbone.Core
             // post-
             DoAfter(ac);
             ac.Handle = null;
-        }
-
-        public override string ToString()
-        {
-            return name;
         }
     }
 }

@@ -7,23 +7,30 @@ namespace Greatbone.Core
     ///
     /// A certain node of resources along the URi path.
     ///
-    public abstract class WebNodule
+    public abstract class WebNodule : IRollable
     {
-        // access checking routines
+        // name as appeared in the uri path
+        readonly string name;
+
+        // access checks
         internal RoleAttribute[] roles;
 
-        // access filtering routines
+        // filtering
         readonly FilterAttribute[] filters;
 
-        internal WebNodule(ICustomAttributeProvider attrs)
+        internal UiAttribute ui;
+
+        internal WebNodule(string name, ICustomAttributeProvider attrs)
         {
+            this.name = name;
+
             // either methodinfo or typeinfo
             if (attrs == null)
             {
                 attrs = GetType().GetTypeInfo();
             }
 
-            // grants
+            // roles
             List<RoleAttribute> rlst = null;
             foreach (var role in (RoleAttribute[])attrs.GetCustomAttributes(typeof(RoleAttribute), false))
             {
@@ -48,9 +55,22 @@ namespace Greatbone.Core
                 flst.Add(filter);
             }
             this.filters = flst?.ToArray();
+
+            // ui
+            var uis = (UiAttribute[])attrs.GetCustomAttributes(typeof(UiAttribute), false);
+            if (uis.Length > 0)
+            {
+                ui = uis[0];
+            }
         }
 
         public abstract WebService Service { get; }
+
+        public string Name => name;
+
+        public string Label => ui?.Label ?? name;
+
+        public string Icon => ui?.Icon;
 
         public bool HasRole(Type roletyp)
         {
@@ -122,6 +142,11 @@ namespace Greatbone.Core
             {
                 filters[i].After(ac);
             }
+        }
+
+        public override string ToString()
+        {
+            return name;
         }
     }
 }

@@ -5,7 +5,7 @@ namespace Greatbone.Core
     /// 
     /// To specify user interaction related attributes and behaviors.
     ///
-    [AttributeUsage(AttributeTargets.Method, Inherited = false)]
+    [AttributeUsage(AttributeTargets.Class | AttributeTargets.Method, Inherited = false)]
     public class UiAttribute : Attribute
     {
         public string Label { get; set; } = null;

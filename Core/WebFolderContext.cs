@@ -13,6 +13,8 @@ namespace Greatbone.Core
 
         public RoleAttribute[] Roles { get; internal set; }
 
+        public UiAttribute Ui { get; internal set; }
+
         public bool IsVar { get; internal set; }
 
         public int Level { get; internal set; }
