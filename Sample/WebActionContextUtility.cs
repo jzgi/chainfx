@@ -13,9 +13,9 @@ namespace Greatbone.Sample
             ["abc"] = "好的"
         };
 
-        public static void ReplyPage(this WebActionContext ac, int status, Action<HtmlContent> main, bool? pub = null, int maxage = 60)
+        public static void ReplyPage(this WebActionContext ac, int status, Action<HtmlContent> inner, bool? pub = null, int maxage = 60)
         {
-            HtmlContent cont = new HtmlContent(true, true, 8 * 1024)
+            HtmlContent cont = new HtmlContent(true, true, 16 * 1024)
             {
                 Map = Map
             };
@@ -26,17 +26,12 @@ namespace Greatbone.Sample
             cont.T("<head>");
             cont.T("<title>粗粮达人</title>");
             cont.T("<meta name=\"viewport\" content=\"width=device-width, initial-scale=1.0\">");
-            cont.T("<link href=\"//cdn.bootcss.com/foundation/6.3.0/css/foundation.min.css\">");
-            cont.T("<link href=\"/app.css\" rel=\"stylesheet\">");
-            cont.T("<script src=\"/app.js\"></script>");
+            cont.T("<link rel=\"stylesheet\" href=\"//cdn.bootcss.com/foundation/6.3.0/css/foundation.min.css\">");
             cont.T("</head>");
 
             cont.T("<body>");
-            cont.T("<main class=\"pure-g\">");
 
-            main(cont);
-
-            cont.T("</main>");
+            inner(cont);
 
             cont.T("<script src=\"//cdn.bootcss.com/jquery/3.1.1/jquery.min.js\"></script>");
             cont.T("<script src=\"//cdn.bootcss.com/foundation/6.3.0/js/foundation.min.js\"></script>");
@@ -47,41 +42,19 @@ namespace Greatbone.Sample
             ac.Reply(status, cont, pub, maxage);
         }
 
-        public static void ReplyPane(this WebActionContext wc, int status, string header, Action<HtmlContent> main, bool? pub = null, int maxage = 60000)
+        public static void ReplyPane(this WebActionContext ac, int status, string header, Action<HtmlContent> main, bool? pub = null, int maxage = 60000)
         {
         }
 
-        public static void ReplyDialog(this WebActionContext wc, int status, Action<HtmlContent> main, bool? pub = null, int maxage = 60000)
+        public static void ReplyDlg(this WebActionContext ac, int status, Action<HtmlContent> inner, bool? pub = null, int maxage = 60)
         {
-            HtmlContent cont = new HtmlContent(true, true, 8 * 1024)
+            ac.ReplyPage(status, cont =>
             {
-                Map = Map
-            };
-
-            cont.T("<!doctype html>");
-            cont.T("<html>");
-
-            cont.T("<head>");
-            cont.T("<meta name=\"viewport\" content=\"width=device-width, initial-scale=1.0\">");
-            // cont.T("<link href=\"//cdn.bootcss.com/normalize/5.0.0/normalize.min.css\" rel=\"stylesheet\">");
-            // cont.T("<link href=\"//cdn.bootcss.com/pure/0.6.0/pure-min.css\" rel=\"stylesheet\">");
-            cont.T("<link href=\"//cdn.bootcss.com/font-awesome/4.7.0/css/font-awesome.min.css\" rel=\"stylesheet\">");
-            cont.T("<link href=\"/app.css\" rel=\"stylesheet\">");
-            cont.T("<script src=\"/app.js\"></script>");
-            cont.T("</head>");
-
-            cont.T("<body>");
-            cont.T("<main class=\"pure-g\">");
-
-            main(cont);
-
-            cont.T("</main>");
-
-            cont.T("</body>");
-            cont.T("</html>");
-
-            // cont.Render(main);
-            wc.Reply(status, cont, pub, maxage);
+                cont.T("<form>");
+                inner(cont);
+                cont.T("</form>");
+            },
+            pub, maxage);
         }
 
     }

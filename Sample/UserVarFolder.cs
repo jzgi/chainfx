@@ -106,7 +106,7 @@ namespace Greatbone.Sample
             if (ac.GET)
             { // give change to review the orders
 
-                List<Order> orders = GetOrderList();
+                List<WfOrder> orders = GetOrderList();
                 ac.ReplyJson(200, orders);
             }
             else
@@ -114,12 +114,12 @@ namespace Greatbone.Sample
                 // // store backet to db
                 // string openid = ac.Cookies[nameof(openid)];
 
-                List<Order> orders = GetOrderList();
+                List<WfOrder> orders = GetOrderList();
 
                 // save the orders to db
                 using (var dc = Service.NewDbContext())
                 {
-                    dc.Sql("INSERT INFO orders ")._(Order.Empty)._VALUES_(Order.Empty);
+                    dc.Sql("INSERT INFO orders ")._(WfOrder.Empty)._VALUES_(WfOrder.Empty);
 
                     foreach (var order in orders)
                     {
@@ -140,7 +140,7 @@ namespace Greatbone.Sample
             }
         }
 
-        List<Order> GetOrderList()
+        List<WfOrder> GetOrderList()
         {
             return null;
         }

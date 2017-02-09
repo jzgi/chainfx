@@ -1,30 +1,25 @@
-﻿using Greatbone.Core;
+﻿using System;
+using Greatbone.Core;
 
 namespace Greatbone.Sample
 {
     ///
     /// A shop data object.
     ///
-    public class Shop : IData
+    public class Shop : IForm
     {
         public static readonly Shop Empty = new Shop();
 
         internal string id; // platform shop id
         internal string name;
-        internal string credential;
+        internal string credential, password;
         internal string tel;
         internal double x, y;
         internal string prov;
         internal string city;
         internal string wx;
-        internal string notice;
+        internal string note;
         internal short status; // -1 dismissed, 0 closed, 1 open
-
-        public string Key => id;
-
-        public string Name => name;
-
-        public string Credential => credential;
 
         public void ReadData(IDataInput i, ushort proj = 0)
         {
@@ -40,7 +35,7 @@ namespace Greatbone.Sample
             i.Get(nameof(prov), ref prov);
             i.Get(nameof(city), ref city);
             i.Get(nameof(wx), ref wx);
-            i.Get(nameof(notice), ref notice);
+            i.Get(nameof(note), ref note);
             i.Get(nameof(status), ref status);
         }
 
@@ -58,8 +53,13 @@ namespace Greatbone.Sample
             o.Put(nameof(prov), prov);
             o.Put(nameof(city), city);
             o.Put(nameof(wx), wx);
-            o.Put(nameof(notice), notice);
+            o.Put(nameof(note), note);
             o.Put(nameof(status), status);
+        }
+
+        public void WriteForm(HtmlContent h, ushort proj = 0)
+        {
+            throw new NotImplementedException();
         }
 
         public Token ToToken()

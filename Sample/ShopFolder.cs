@@ -72,17 +72,31 @@ namespace Greatbone.Sample
 
         }
 
-        [Admin]
+        // [Admin]
         [Ui("新建")]
         public async Task @new(WebActionContext ac)
         {
             if (ac.GET)
             {
-                ac.ReplyPage(200, a => { });
+                Shop o = Shop.Empty;
+                ac.ReplyDlg(200, a =>
+                {
+                    a.FIELDSET_("新建服务点");
+                    a.TEXT(nameof(o.id), o.id, required: true, maxlength: 6);
+                    a.TEXT(nameof(o.name), o.name, required: true, maxlength: 10);
+                    a.PASSWORD("password", "", required: true, maxlength: 6);
+                    a.TEL(nameof(o.tel), o.tel, required: true, maxlength: 11, pattern: "[0-9]");
+                    a.CHECKBOX("ok", true);
+                    a._FIELDSET();
+                });
             }
             else // post
             {
                 var shop = await ac.ReadObjectAsync<Shop>();
+
+                // validate
+
+                
                 using (var dc = Service.NewDbContext())
                 {
                     shop.credential = TextUtility.MD5(shop.id + ':' + shop.credential);
@@ -92,7 +106,9 @@ namespace Greatbone.Sample
                         ac.Reply(201); // created
                     }
                     else
+                    {
                         ac.Reply(500); // internal server error
+                    }
                 }
             }
         }

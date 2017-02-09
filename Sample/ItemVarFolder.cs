@@ -30,10 +30,10 @@ namespace Greatbone.Sample
 
             using (var dc = Service.NewDbContext())
             {
-                dc.Sql("SELECT ").columnlst(Order.Empty)._("FROM orders WHERE id = @1 AND shopid = @2");
+                dc.Sql("SELECT ").columnlst(WfOrder.Empty)._("FROM orders WHERE id = @1 AND shopid = @2");
                 if (dc.Query(p => p.Set(id).Set(shopid)))
                 {
-                    var order = dc.ToArray<Order>();
+                    var order = dc.ToArray<WfOrder>();
                     ac.ReplyPage(200, main =>
                     {
 
@@ -55,10 +55,10 @@ namespace Greatbone.Sample
 
             using (var dc = Service.NewDbContext())
             {
-                dc.Sql("SELECT ").columnlst(Order.Empty)._("FROM orders WHERE id = @1 AND shopid = @2");
+                dc.Sql("SELECT ").columnlst(WfOrder.Empty)._("FROM orders WHERE id = @1 AND shopid = @2");
                 if (dc.Query(p => p.Set(orderid).Set(shopid)))
                 {
-                    var order = dc.ToArray<Order>();
+                    var order = dc.ToArray<WfOrder>();
                     ac.ReplyPage(200, main =>
                     {
 

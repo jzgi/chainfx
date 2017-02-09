@@ -4,9 +4,9 @@ using Greatbone.Core;
 namespace Greatbone.Sample
 {
     /// 
-    /// An order data object.
+    /// An order processing workflow.
     ///
-    public class Order : IData, IStatable
+    public class WfOrder : IData, IStatable
     {
         // state
         public const int
@@ -23,7 +23,7 @@ namespace Greatbone.Sample
             CANCELLEDed = 2,
             Closed = 9;
 
-        public static readonly Order Empty = new Order();
+        public static readonly WfOrder Empty = new WfOrder();
 
         internal int id;
 

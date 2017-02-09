@@ -214,6 +214,32 @@ namespace Greatbone.Core
             T("</td>");
         }
 
+        public void ROW_()
+        {
+            Add("<div class=\"row\">");
+        }
+
+        public void _ROW()
+        {
+            Add("</div>");
+        }
+
+        public void FIELDSET_(string legend = null)
+        {
+            Add("<fieldset class=\"fieldset\">");
+            if (legend != null)
+            {
+                Add("<legend>");
+                AddEsc(legend);
+                Add("</legend>");
+            }
+        }
+
+        public void _FIELDSET()
+        {
+            Add("</fieldset>");
+        }
+
         public void FORM(WebAction action, Action<HtmlContent> inner)
         {
             Add("<form class=\"pure-form pure-g\">");
@@ -278,7 +304,7 @@ namespace Greatbone.Core
             Add("</form>");
         }
 
-        public void INPUT_hidden(string name, string value)
+        public void HIDDEN(string name, string value)
         {
             Add("<input type=\"hidden\" name=\"");
             Add(name);
@@ -287,7 +313,7 @@ namespace Greatbone.Core
             Add("\">");
         }
 
-        public void INPUT_text(string name, string value, bool @readonly = false, bool required = false, string placeholder = null, int maxlength = 0, int minlength = 0, string pattern = null)
+        public void TEXT(string name, string value, bool @readonly = false, bool required = false, string placeholder = null, int maxlength = 0, int minlength = 0, string pattern = null)
         {
             Add("<label>");
             AddLabel(name);
@@ -295,6 +321,7 @@ namespace Greatbone.Core
             Add(name);
             Add("\" value=\"");
             AddEsc(value);
+            Add("\"");
             if (@readonly) Add(" readonly");
             if (required) Add(" required");
             if (placeholder != null)
@@ -324,11 +351,11 @@ namespace Greatbone.Core
                 AddEsc(pattern);
                 Add("\"");
             }
-            Add("\">");
+            Add(">");
             Add("</label>");
         }
 
-        public void INPUT_search(string name, string value, bool @readonly = false, bool required = false, string placeholder = null, int maxlength = 0, int minlength = 0, string pattern = null)
+        public void SEARCH(string name, string value, bool @readonly = false, bool required = false, string placeholder = null, int maxlength = 0, int minlength = 0, string pattern = null)
         {
             Add("<label>");
             AddLabel(name);
@@ -336,6 +363,7 @@ namespace Greatbone.Core
             Add(name);
             Add("\" value=\"");
             AddEsc(value);
+            Add("\"");
             if (@readonly) Add(" readonly");
             if (required) Add(" required");
             if (placeholder != null)
@@ -365,18 +393,19 @@ namespace Greatbone.Core
                 AddEsc(pattern);
                 Add("\"");
             }
-            Add("\">");
+            Add(">");
             Add("</label>");
         }
 
-        public void INPUT_tel(string name, string value, bool @readonly = false, bool required = false, string placeholder = null, int maxlength = 0, int minlength = 0, string pattern = null)
+        public void TEL(string name, string value, bool @readonly = false, bool required = false, string placeholder = null, int maxlength = 0, int minlength = 0, string pattern = null)
         {
             Add("<label>");
             AddLabel(name);
-            Add("<input type=\"search\" name=\"");
+            Add("<input type=\"tel\" name=\"");
             Add(name);
             Add("\" value=\"");
             AddEsc(value);
+            Add("\"");
             if (@readonly) Add(" readonly");
             if (required) Add(" required");
             if (placeholder != null)
@@ -406,12 +435,11 @@ namespace Greatbone.Core
                 AddEsc(pattern);
                 Add("\"");
             }
-            Add("\">");
+            Add(">");
             Add("</label>");
         }
 
-        public void INPUT_url(string name, string value, bool @readonly = false, bool required = false,
-            string placeholder = null, int maxlength = 0, int minlength = 0, string pattern = null)
+        public void URL(string name, string value, bool @readonly = false, bool required = false, string placeholder = null, int maxlength = 0, int minlength = 0, string pattern = null)
         {
             Add("<label>");
             AddLabel(name);
@@ -448,11 +476,11 @@ namespace Greatbone.Core
                 AddEsc(pattern);
                 Add("\"");
             }
-            Add("\">");
+            Add(">");
             Add("</label>");
         }
 
-        public void INPUT_email(string name, string value, bool @readonly = false, bool required = false, string placeholder = null, int maxlength = 0, int minlength = 0, string pattern = null)
+        public void EMAIL(string name, string value, bool @readonly = false, bool required = false, string placeholder = null, int maxlength = 0, int minlength = 0, string pattern = null)
         {
             Add("<label>");
             AddLabel(name);
@@ -460,6 +488,7 @@ namespace Greatbone.Core
             Add(name);
             Add("\" value=\"");
             AddEsc(value);
+            Add("\"");
             if (@readonly) Add(" readonly");
             if (required) Add(" required");
             if (placeholder != null)
@@ -489,11 +518,11 @@ namespace Greatbone.Core
                 AddEsc(pattern);
                 Add("\"");
             }
-            Add("\">");
+            Add(">");
             Add("</label>");
         }
 
-        public void INPUT_password(string name, string value, bool @readonly = false, bool required = false, string placeholder = null, int maxlength = 0, int minlength = 0, string pattern = null)
+        public void PASSWORD(string name, string value, bool @readonly = false, bool required = false, string placeholder = null, int maxlength = 0, int minlength = 0, string pattern = null)
         {
             Add("<label>");
             AddLabel(name);
@@ -501,6 +530,7 @@ namespace Greatbone.Core
             Add(name);
             Add("\" value=\"");
             AddEsc(value);
+            Add("\"");
             if (@readonly) Add(" readonly");
             if (required) Add(" required");
             if (placeholder != null)
@@ -530,11 +560,11 @@ namespace Greatbone.Core
                 AddEsc(pattern);
                 Add("\"");
             }
-            Add("\">");
+            Add(">");
             Add("</label>");
         }
 
-        public void INPUT_date(string name, DateTime value, bool @readonly = false, bool required = false, string placeholder = null, int max = int.MaxValue, int min = int.MinValue, int step = 0)
+        public void DATE(string name, DateTime value, bool @readonly = false, bool required = false, string placeholder = null, int max = int.MaxValue, int min = int.MinValue, int step = 0)
         {
             Add("<label>");
             AddLabel(name);
@@ -542,6 +572,7 @@ namespace Greatbone.Core
             Add(name);
             Add("\" value=\"");
             Add(value);
+            Add("\"");
             if (@readonly) Add(" readonly");
             if (required) Add(" required");
             if (placeholder != null)
@@ -572,12 +603,12 @@ namespace Greatbone.Core
             Add("</label>");
         }
 
-        public void INPUT_time()
+        public void TIME()
         {
             T("</tbody>");
         }
 
-        public void INPUT_number(string name, int value, bool @readonly = false, bool required = false, string placeholder = null, int max = int.MaxValue, int min = int.MinValue, int step = 0)
+        public void NUMBER(string name, int value, bool @readonly = false, bool required = false, string placeholder = null, int max = int.MaxValue, int min = int.MinValue, int step = 0)
         {
             Add("<label>");
             AddLabel(name);
@@ -585,6 +616,7 @@ namespace Greatbone.Core
             Add(name);
             Add("\" value=\"");
             Add(value);
+            Add("\"");
             if (@readonly) Add(" readonly");
             if (required) Add(" required");
             if (placeholder != null)
@@ -611,11 +643,11 @@ namespace Greatbone.Core
                 Add(step);
                 Add("\"");
             }
-            Add("\">");
+            Add(">");
             Add("</label>");
         }
 
-        public void INPUT_number(string name, long value, bool @readonly = false, bool required = false, string placeholder = null, long max = long.MaxValue, long min = long.MinValue, long step = 0)
+        public void NUMBER(string name, long value, bool @readonly = false, bool required = false, string placeholder = null, long max = long.MaxValue, long min = long.MinValue, long step = 0)
         {
             Add("<label>");
             AddLabel(name);
@@ -623,6 +655,7 @@ namespace Greatbone.Core
             Add(name);
             Add("\" value=\"");
             Add(value);
+            Add("\"");
             if (@readonly) Add(" readonly");
             if (required) Add(" required");
             if (placeholder != null)
@@ -649,11 +682,11 @@ namespace Greatbone.Core
                 Add(step);
                 Add("\"");
             }
-            Add("\">");
+            Add(">");
             Add("</label>");
         }
 
-        public void INPUT_number(string name, decimal value, bool @readonly = false, bool required = false, string placeholder = null, int max = int.MaxValue, int min = int.MinValue, int step = 0)
+        public void NUMBER(string name, decimal value, bool @readonly = false, bool required = false, string placeholder = null, int max = int.MaxValue, int min = int.MinValue, int step = 0)
         {
             Add("<label>");
             AddLabel(name);
@@ -661,6 +694,7 @@ namespace Greatbone.Core
             Add(name);
             Add("\" value=\"");
             Add(value);
+            Add("\"");
             if (@readonly) Add(" readonly");
             if (required) Add(" required");
             if (placeholder != null)
@@ -687,35 +721,34 @@ namespace Greatbone.Core
                 Add(step);
                 Add("\"");
             }
-            Add("\">");
+            Add(">");
             Add("</label>");
         }
 
-        public void INPUT_range()
+        public void RANGE()
         {
             T("</tbody>");
         }
 
-        public void INPUT_color()
+        public void COLOR()
         {
             T("</tbody>");
         }
 
-        public void INPUT_checkbox(string name, bool value, bool required = false)
+        public void CHECKBOX(string name, bool value, bool required = false)
         {
             Add("<label>");
             AddLabel(name);
             Add("<input type=\"checkbox\" name=\"");
             Add(name);
-            Add("\" value=\"");
-            Add(value);
+            Add("\"");
             if (value) Add(" checked");
             if (required) Add(" required");
-            Add("\">");
+            Add(">");
             Add("</label>");
         }
 
-        public void INPUT_radio(string name, string[] values, int @checked = 0, bool required = false)
+        public void RADIO(string name, string[] values, int @checked = 0, bool required = false)
         {
             Add("<fieldset>");
             Add("<legend>");
@@ -728,6 +761,7 @@ namespace Greatbone.Core
                 Add(name);
                 Add("\" value=\"");
                 Add(i);
+                Add("\"");
                 if (@checked == i) Add(" checked");
                 if (required) Add(" required");
                 Add("\">");
@@ -737,7 +771,7 @@ namespace Greatbone.Core
             Add("</fieldset>");
         }
 
-        public void INPUT_File()
+        public void FILE()
         {
             T("</tbody>");
         }
@@ -918,7 +952,7 @@ namespace Greatbone.Core
             {
                 case FormFields:
                     Add("<div class=\"pure-u-1 pure-u-md-1-2\">");
-                    INPUT_checkbox(name, v);
+                    CHECKBOX(name, v);
                     Add("</div>");
                     break;
                 case TableThs:
@@ -941,7 +975,7 @@ namespace Greatbone.Core
             {
                 case FormFields:
                     Add("<div class=\"pure-u-1 pure-u-md-1-2\">");
-                    INPUT_number(name, v);
+                    NUMBER(name, v);
                     Add("</div>");
                     break;
                 case TableThs:
@@ -964,7 +998,7 @@ namespace Greatbone.Core
             {
                 case FormFields:
                     Add("<div class=\"pure-u-1 pure-u-md-1-2\">");
-                    INPUT_number(name, v);
+                    NUMBER(name, v);
                     Add("</div>");
                     break;
                 case TableThs:
@@ -987,7 +1021,7 @@ namespace Greatbone.Core
             {
                 case FormFields:
                     Add("<div class=\"pure-u-1 pure-u-md-1-2\">");
-                    INPUT_number(name, v);
+                    NUMBER(name, v);
                     Add("</div>");
                     break;
                 case TableThs:
@@ -1032,7 +1066,7 @@ namespace Greatbone.Core
             {
                 case FormFields:
                     Add("<div class=\"pure-u-1 pure-u-md-1-2\">");
-                    INPUT_number(name, v);
+                    NUMBER(name, v);
                     Add("</div>");
                     break;
                 case TableThs:
@@ -1078,7 +1112,7 @@ namespace Greatbone.Core
             {
                 case FormFields:
                     Add("<div class=\"pure-u-1 pure-u-md-1-2\">");
-                    INPUT_date(name, v);
+                    DATE(name, v);
                     Add("</div>");
                     break;
                 case TableThs:
@@ -1129,7 +1163,7 @@ namespace Greatbone.Core
             {
                 case FormFields:
                     Add("<div class=\"pure-u-1 pure-u-md-1-2\">");
-                    INPUT_text(name, v);
+                    TEXT(name, v);
                     Add("</div>");
                     break;
                 case TableThs:
