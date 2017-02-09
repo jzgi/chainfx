@@ -1,4 +1,5 @@
-﻿using Greatbone.Core;
+﻿using System.Threading.Tasks;
+using Greatbone.Core;
 
 namespace Greatbone.Sample
 {
@@ -60,6 +61,42 @@ namespace Greatbone.Sample
             }
         }
 
+        //
+        // administrative actions
+        //
+
+        [Admin]
+        [Ui]
+        public void @default(WebActionContext ac)
+        {
+
+        }
+
+        [Admin]
+        [Ui("新建")]
+        public async Task @new(WebActionContext ac)
+        {
+            if (ac.GET)
+            {
+                ac.ReplyPage(200, a => { });
+            }
+            else // post
+            {
+                var shop = await ac.ReadObjectAsync<Shop>();
+                using (var dc = Service.NewDbContext())
+                {
+                    shop.credential = TextUtility.MD5(shop.id + ':' + shop.credential);
+                    dc.Sql("INSERT INTO shops")._(Shop.Empty)._VALUES_(Shop.Empty)._("");
+                    if (dc.Execute(p => p.Set(shop)) > 0)
+                    {
+                        ac.Reply(201); // created
+                    }
+                    else
+                        ac.Reply(500); // internal server error
+                }
+            }
+        }
+
         ///
         /// Get buyer's personal order list
         ///
@@ -85,17 +122,6 @@ namespace Greatbone.Sample
             // string shopid = wc.Var(null);
 
         }
-
-        #region ADMIN
-
-        [Admin]
-        [Ui]
-        public void exam(WebActionContext ac)
-        {
-
-        }
-
-        #endregion
 
     }
 }

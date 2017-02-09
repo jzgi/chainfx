@@ -20,9 +20,6 @@ namespace Greatbone.Core
         // number of rest octets
         int rest;
 
-        // comma-separated values (CSV)
-        bool csv;
-
         public Text(int capacity = 256)
         {
             buf = new char[capacity];
@@ -219,7 +216,7 @@ namespace Greatbone.Core
             return cont;
         }
 
-        public bool DataSet => csv;
+        public bool DataSet => false;
 
         public bool Next()
         {

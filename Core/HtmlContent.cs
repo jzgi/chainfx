@@ -214,7 +214,7 @@ namespace Greatbone.Core
             T("</td>");
         }
 
-        public void FORM(WebAction act, Action<HtmlContent> inner)
+        public void FORM(WebAction action, Action<HtmlContent> inner)
         {
             Add("<form class=\"pure-form pure-g\">");
 

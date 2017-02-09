@@ -15,8 +15,6 @@ namespace Greatbone.Sample
         static readonly WebClient WCPay = new WebClient("wcpay", "https://api.mch.weixin.qq.com");
 
 
-        readonly WebAction[] _new;
-
         public OpService(WebServiceContext sc) : base(sc)
         {
             Create<ShopFolder>("shop");
@@ -24,8 +22,6 @@ namespace Greatbone.Sample
             Create<UserFolder>("user");
 
             Create<OrderFolder>("order");
-
-            _new = GetActions(nameof(@new));
         }
 
         ///
@@ -97,7 +93,7 @@ namespace Greatbone.Sample
                 string password = q[nameof(password)];
                 string orig = q[nameof(orig)];
 
-                ac.ReplyPage(200, "", main => { main.FORM(null, x => x.INPUT_button()); });
+                ac.ReplyPage(200, main => { main.FORM(null, x => x.INPUT_button()); });
             }
             else // login
             {
@@ -137,10 +133,6 @@ namespace Greatbone.Sample
             }
         }
 
-        public void test(WebActionContext ac)
-        {
-        }
-
         ///
         /// Get nearest shops
         ///
@@ -158,10 +150,12 @@ namespace Greatbone.Sample
                 if (dc.Query(p => p.Set(pt)))
                 {
                     var shops = dc.ToArray<Shop>();
-                    ac.ReplyPage(200, "", main => { main.FORM_grid(_new, shops); });
+                    ac.ReplyPage(200, main => { main.FORM_grid(null, shops); });
                 }
                 else
-                    ac.ReplyPage(200, "没有记录", main => { });
+                {
+                    ac.ReplyPage(200, main => { });
+                }
             }
         }
 
@@ -179,72 +173,10 @@ namespace Greatbone.Sample
         {
             GetUiActions(typeof(AdminAttribute));
 
-            ac.ReplyPage(200, "", x =>
+            ac.ReplyPage(200, x =>
             {
                 // x.Form();
             });
-        }
-
-        ///
-        /// Get shop list.
-        ///
-        /// <code>
-        /// GET /[-page]
-        /// </code>
-        ///
-        public void mgmtz(WebActionContext ac, string arg)
-        {
-            int page = arg.ToInt();
-            const ushort z = ALL ^ BIN;
-
-            using (var dc = Service.NewDbContext())
-            {
-                dc.Sql("SELECT ").columnlst(Shop.Empty, z)._("FROM shops");
-                if (dc.Query(p => p.Set(20 * page)))
-                {
-                    var shops = dc.ToArray<Shop>(z);
-                    ac.ReplyPage(200, "", main => { main.FORM_grid(_new, shops); });
-                }
-                else
-                {
-                    ac.ReplyPage(200, "没有记录", main => { });
-                }
-            }
-        }
-
-        /// Create a new shop
-        ///
-        /// <code>
-        /// GET /new
-        /// </code>
-        ///
-        /// <code>
-        /// POST /new
-        ///
-        /// id=_shopid_&amp;password=_password_&amp;name=_name_
-        /// </code>
-        ///
-        [Admin]
-        public async Task @new(WebActionContext ac)
-        {
-            if (ac.GET)
-            {
-            }
-            else // post
-            {
-                var shop = await ac.ReadObjectAsync<Shop>(); // read form
-                using (var dc = Service.NewDbContext())
-                {
-                    shop.credential = TextUtility.MD5(shop.id + ':' + shop.credential);
-                    dc.Sql("INSERT INTO users")._(Shop.Empty)._VALUES_(Shop.Empty)._("");
-                    if (dc.Execute(p => p.Set(shop)) > 0)
-                    {
-                        ac.Reply(201); // created
-                    }
-                    else
-                        ac.Reply(500); // internal server error
-                }
-            }
         }
 
 
@@ -253,14 +185,14 @@ namespace Greatbone.Sample
         {
             if (Subs != null)
             {
-                ac.ReplyPage(200, "模块管理", a =>
+                ac.ReplyPage(200, a =>
+                {
+                    for (int i = 0; i < Subs.Count; i++)
                     {
-                        for (int i = 0; i < Subs.Count; i++)
-                        {
-                            WebFolder child = Subs[i];
-                        }
-                    },
-                    true);
+                        WebFolder child = Subs[i];
+                    }
+                },
+                true);
             }
         }
 

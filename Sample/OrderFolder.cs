@@ -49,14 +49,14 @@ namespace Greatbone.Sample
                     if (dc.Query("SELECT * FROM orders WHERE shopid = @1 AND status < 4", p => p.Set(shopid)))
                     {
                         var order = dc.ToArray<Order>();
-                        ac.ReplyPage(200, "", main =>
+                        ac.ReplyPage(200, main =>
                         {
 
                         });
                     }
                     else
                     {
-                        ac.ReplyPage(200, "没有记录", main => { });
+                        ac.ReplyPage(200, main => { });
                     }
                 }
             }
@@ -67,14 +67,14 @@ namespace Greatbone.Sample
                     if (dc.Query("SELECT * FROM orders WHERE shopid = @1 AND status >= 4 ORDER BY id LIMIT 20 OFFSET @2", p => p.Set(shopid).Set(page.ToInt() * 20)))
                     {
                         var order = dc.ToArray<Order>();
-                        ac.ReplyPage(200, "", main =>
+                        ac.ReplyPage(200, main =>
                         {
 
                         });
                     }
                     else
                     {
-                        ac.ReplyPage(200, "没有记录", main => { });
+                        ac.ReplyPage(200, main => { });
                     }
                 }
             }
@@ -97,14 +97,14 @@ namespace Greatbone.Sample
                     if (dc.Query(p => p.Set(pk).Set(shopid)))
                     {
                         var order = dc.ToArray<Order>();
-                        ac.ReplyPage(200, "", main =>
+                        ac.ReplyPage(200, main =>
                         {
 
                         });
                     }
                     else
                     {
-                        ac.ReplyPage(200, "没有记录", main => { });
+                        ac.ReplyPage(200, main => { });
                     }
                 }
             }
@@ -139,11 +139,11 @@ namespace Greatbone.Sample
                 if (dc.Query(p => p.Set(pk).Set(shopid)))
                 {
                     var order = dc.ToArray<Order>();
-                    ac.ReplyPage(200, "", main => { });
+                    ac.ReplyPage(200, main => { });
                 }
                 else
                 {
-                    ac.ReplyPage(200, "没有记录", main => { });
+                    ac.ReplyPage(200, main => { });
                 }
             }
         }

@@ -34,13 +34,13 @@ namespace Greatbone.Sample
                 if (dc.Query(p => p.Set(id).Set(shopid)))
                 {
                     var order = dc.ToArray<Order>();
-                    ac.ReplyPage(200, "", main =>
+                    ac.ReplyPage(200, main =>
                     {
 
                     });
                 }
                 else
-                    ac.ReplyPage(200, "没有记录", main => { });
+                    ac.ReplyPage(200, main => { });
             }
         }
 
@@ -59,13 +59,13 @@ namespace Greatbone.Sample
                 if (dc.Query(p => p.Set(orderid).Set(shopid)))
                 {
                     var order = dc.ToArray<Order>();
-                    ac.ReplyPage(200, "", main =>
+                    ac.ReplyPage(200, main =>
                     {
 
                     });
                 }
                 else
-                    ac.ReplyPage(200, "没有记录", main => { });
+                    ac.ReplyPage(200, main => { });
             }
         }
 

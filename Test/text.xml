@@ -1,22 +1,25 @@
 <op weixin="" paynotify="" signon="" test="" nearest="" default="" mgmtz="" new="" mgmt="" report="">
     <shop lst="" all="" list="" clear="" exam="">
         <VAR items="" default="" remenu="" basket="" invoice="">
-            <order my="" default="" all="" list="" clear="" exam="">
-                <VAR my="" default="" pend="" cannel="" close="" exam=""></VAR>
-            </order>
+            <orderi my="" default="" canncel="" fix="" close="" clear="" exam="">
+                <VAR my="" ask="" default="" cannel="" fix="" close="" exam=""></VAR>
+            </orderi>
+            <ordero my="" default="" canncel="" fix="" close="" clear="" exam="">
+                <VAR my="" ask="" default="" cannel="" fix="" close="" exam=""></VAR>
+            </ordero>
             <item my="" default="" all="" list="" clear="" exam="">
                 <VAR my="" default="" pend="" cannel="" close=""></VAR>
             </item>
         </VAR>
     </shop>
-    <user all="" list="" clear="">
+    <user srch="" aggr="">
         <VAR cart="" empty="" checkout="" my="">
-            <order my="" default="" all="" list="" clear="" exam="">
-                <VAR my="" default="" pend="" cannel="" close="" exam=""></VAR>
+            <order my="" default="" canncel="" fix="" close="" clear="" exam="">
+                <VAR my="" ask="" default="" cannel="" fix="" close="" exam=""></VAR>
             </order>
         </VAR>
     </user>
-    <order my="" default="" all="" list="" clear="" exam="">
-        <VAR my="" default="" pend="" cannel="" close="" exam=""></VAR>
+    <order my="" default="" canncel="" fix="" close="" clear="" exam="">
+        <VAR my="" ask="" default="" cannel="" fix="" close="" exam=""></VAR>
     </order>
 </op>

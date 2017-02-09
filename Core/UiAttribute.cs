@@ -8,6 +8,13 @@ namespace Greatbone.Core
     [AttributeUsage(AttributeTargets.Class | AttributeTargets.Method, Inherited = false)]
     public class UiAttribute : Attribute
     {
+        public UiAttribute() { }
+
+        public UiAttribute(string label)
+        {
+            Label = label;
+        }
+
         public string Label { get; set; } = null;
 
         public string Icon { get; set; } = null;
