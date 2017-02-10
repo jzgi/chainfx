@@ -66,7 +66,6 @@ namespace Greatbone.Sample
         //
 
         [Admin]
-        [Ui]
         public void @default(WebActionContext ac)
         {
 
@@ -79,16 +78,17 @@ namespace Greatbone.Sample
             if (ac.GET)
             {
                 Shop o = Shop.Empty;
-                ac.ReplyDlg(200, a =>
-                {
-                    a.FIELDSET_("新建服务点");
-                    a.TEXT(nameof(o.id), o.id, new Ui<sbyte> { });
-                    a.TEXT(nameof(o.name), o.name);
-                    a.PASSWORD("password", "");
-                    a.TEL(nameof(o.tel), o.tel);
-                    a.CHECKBOX("ok", true);
-                    a._FIELDSET();
-                });
+                ac.ReplyDlgForm(200, o);
+                // ac.ReplyDlg(200, a =>
+                // {
+                //     a.FIELDSET_("新建服务点");
+                //     a.TEXT(nameof(o.id), o.id, Pick: true);
+                //     a.TEXT(nameof(o.name), o.name);
+                //     a.PASSWORD("password", "");
+                //     a.TEL(nameof(o.tel), o.tel);
+                //     a.CHECKBOX("ok", true);
+                //     a._FIELDSET();
+                // });
             }
             else // post
             {

@@ -93,7 +93,7 @@ namespace Greatbone.Sample
                 string password = q[nameof(password)];
                 string orig = q[nameof(orig)];
 
-                ac.ReplyPage(200, main => { main.FORM(null, x => x.INPUT_button()); });
+                ac.ReplyPage(200, main => { main.FORM(null, x => x.BUTTON(null)); });
             }
             else // login
             {

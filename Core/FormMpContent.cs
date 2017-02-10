@@ -52,42 +52,42 @@ namespace Greatbone.Core
             throw new NotImplementedException();
         }
 
-        public FormMpContent Put(string name, bool v)
+        public FormMpContent Put(string name, bool v, string Label = null, bool Required = false)
         {
             Part(name);
             Add(v ? "true" : "false");
             return this;
         }
 
-        public FormMpContent Put(string name, short v)
+        public FormMpContent Put(string name, short v, string Label = null, bool Pick = false, string Placeholder = null, short Max = 0, short Min = 0, short Step = 0, bool ReadOnly = false, bool Required = false)
         {
             Part(name);
             Add(v);
             return this;
         }
 
-        public FormMpContent Put(string name, int v)
+        public FormMpContent Put(string name, int v, string Label = null, bool Pick = false, string Placeholder = null, int Max = 0, int Min = 0, int Step = 0, bool ReadOnly = false, bool Required = false)
         {
             Part(name);
             Add(v);
             return this;
         }
 
-        public FormMpContent Put(string name, long v)
+        public FormMpContent Put(string name, long v, string Label = null, bool Pick = false, string Placeholder = null, long Max = 0, long Min = 0, long Step = 0, bool ReadOnly = false, bool Required = false)
         {
             Part(name);
             Add(v);
             return this;
         }
 
-        public FormMpContent Put(string name, double v)
+        public FormMpContent Put(string name, double v, string Label = null, string Placeholder = null, double Max = 0, double Min = 0, double Step = 0, bool ReadOnly = false, bool Required = false)
         {
             Part(name);
             Add(v);
             return this;
         }
 
-        public FormMpContent Put(string name, decimal v)
+        public FormMpContent Put(string name, decimal v, string Label = null, string Placeholder = null, decimal Max = 0, decimal Min = 0, decimal Step = 0, bool ReadOnly = false, bool Required = false)
         {
             Part(name);
             Add(v);
@@ -106,7 +106,7 @@ namespace Greatbone.Core
             return this;
         }
 
-        public FormMpContent Put(string name, DateTime v)
+        public FormMpContent Put(string name, DateTime v, string Label = null, DateTime Max = default(DateTime), DateTime Min = default(DateTime), int Step = 0, bool ReadOnly = false, bool Required = false)
         {
             Part(name);
             Add(v);
@@ -136,7 +136,7 @@ namespace Greatbone.Core
             return this;
         }
 
-        public FormMpContent Put(string name, string v, Ui<short>? ui = null)
+        public FormMpContent Put(string name, string v, string Label = null, bool Pick = false, string Placeholder = null, string Pattern = null, short Max = 0, short Min = 0, bool ReadOnly = false, bool Required = false)
         {
             Part(name);
             if (v == null)
