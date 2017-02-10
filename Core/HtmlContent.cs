@@ -7,11 +7,15 @@ namespace Greatbone.Core
     ///
     /// For dynamical HTML5 content tooled with Zurb Foundation
     ///
-    public class HtmlContent : DynamicContent, IDataOutput<HtmlContent>, IMenu, ISelectOptions
+    public class HtmlContent : DynamicContent, IDataOutput<HtmlContent>, ISelectOptions
     {
         const string SM = "sm", MD = "md", LG = "lg", XL = "xl";
 
-        const sbyte TableThs = 1, TableTrs = 2, FormFields = 3;
+        const sbyte
+            GridThs = 1,
+            GridTrs = 2, // grid
+            SheetTrs = 2, // property sheet
+            FormFields = 3;
 
         sbyte ctx;
 
@@ -23,21 +27,17 @@ namespace Greatbone.Core
         public override string Type => "text/html; charset=utf-8";
 
 
-        public Dictionary<string, string> Map { get; set; }
-
-
-        public void AddLabel(string key)
+        void AddLabel(string label, string alt)
         {
-            string label;
-            if (Map != null && Map.TryGetValue(key, out label)) // translate
+            if (label != null)
             {
                 Add(label);
             }
-            else // key to uppercase
+            else // alt uppercase
             {
-                for (int i = 0; i < key.Length; i++)
+                for (int i = 0; i < alt.Length; i++)
                 {
-                    char c = key[i];
+                    char c = alt[i];
                     if (c >= 'a' && c <= 'z')
                     {
                         c = (char)(c - 32);
@@ -82,82 +82,6 @@ namespace Greatbone.Core
             Add(str);
             return this;
         }
-
-
-        public void Grid()
-        {
-            T("<div class=\"pure-g\">");
-
-            T("<div class=\"pure-u-1-2 l-box\"> ... </div>");
-            T("<div class=\"pure-u-1-2 l-box\"> ... </div>");
-
-            T("</div>");
-        }
-
-        public void A_button(int size, int active_primary_diabled, WebAction wa, string subscpt = null)
-        {
-            T("<a class=\"pure-button\">");
-        }
-
-        public void A_link(WebAction wa, string subscpt)
-        {
-            T("<a class=\"mdl-dialog\">");
-        }
-
-        public void NAV_menu(string heading, Action<IMenu> items)
-        {
-            T("<nav class=\"pure-menu\" style=\"display: inline-block;\">");
-            if (heading != null)
-            {
-                T("<span class=\"pure-menu-heading\">").T(heading).T("</span>");
-            }
-            T("<ul class=\"pure-menu-list\">");
-            items(this);
-            T("</ul>");
-            T("</nav>");
-        }
-
-        public void menuitem(string text, string href = "#")
-        {
-            T("<li class=\"pure-menu-item\"><a href=\"")
-                .T(href)
-                .T("\" class=\"pure-menu-link\">")
-                .T(text)
-                .T("</a></li>");
-        }
-
-        public void MENU_horizontal(string heading, Action<IMenu> items)
-        {
-            T("<nav class=\"pure-menu pure-menu-horizontal\">");
-            if (heading != null)
-            {
-                T("<span class=\"pure-menu-heading\">").T(heading).T("</span>");
-            }
-            T("<ul class=\"pure-menu-list\">");
-            items(this);
-            T("</ul>");
-            T("</nav>");
-        }
-
-        public void Dialog(string h, Action content)
-        {
-            T("<dialog class=\"mdl-dialog\">");
-            T("<h4 class=\"mdl-dialog__title\">").T(h).T("</h4>");
-
-            T("<div class=\"mdl-dialog__content\">");
-
-            T("<div class=\"mdl-dialog__actions\">");
-            T("<button type=\"button\" class=\"mdl-button\">Agree</button>");
-            T("<button type=\"button\" class=\"mdl-button close\">Disagree</button>");
-            T("</div>");
-
-            T("</div>");
-            T("</dialog>");
-
-            T("<script>");
-            T("</script>");
-        }
-
 
         int table_idx;
 
@@ -260,7 +184,7 @@ namespace Greatbone.Core
             {
                 Add("<table>");
 
-                ctx = TableThs;
+                ctx = GridThs;
                 Add("<thead>");
                 Add("<tr>");
 
@@ -275,7 +199,7 @@ namespace Greatbone.Core
                 Add("</tr>");
                 Add("</thead>");
 
-                ctx = TableTrs;
+                ctx = GridTrs;
                 Add("<tbody>");
 
                 for (int i = 0; i < arr.Length; i++)
@@ -313,293 +237,130 @@ namespace Greatbone.Core
             Add("\">");
         }
 
-        public void TEXT(string name, string value, bool @readonly = false, bool required = false, string placeholder = null, int maxlength = 0, int minlength = 0, string pattern = null)
+        public void TEXT(string name, string value, Ui<sbyte>? ui = null)
+        {
+            Textual("text", name, value, ui);
+        }
+
+        public void SEARCH(string name, string value, Ui<sbyte>? ui = null)
+        {
+            Textual("search", name, value, ui);
+        }
+
+        public void TEL(string name, string value, Ui<sbyte>? ui = null)
+        {
+            Textual("tel", name, value, ui);
+        }
+
+        public void URL(string name, string value, Ui<sbyte>? ui = null)
+        {
+            Textual("url", name, value, ui);
+        }
+
+        public void EMAIL(string name, string value, Ui<sbyte>? ui = null)
+        {
+            Textual("email", name, value, ui);
+        }
+
+        public void PASSWORD(string name, string value, Ui<sbyte>? ui = null)
+        {
+            Textual("password", name, value, ui);
+        }
+
+        void Textual(string type, string name, string value, Ui<sbyte>? ui = null)
         {
             Add("<label>");
-            AddLabel(name);
-            Add("<input type=\"text\" name=\"");
+            AddLabel(ui?.Label, name);
+            Add("<input type=\"");
+            Add(type);
+            Add("\" name=\"");
             Add(name);
             Add("\" value=\"");
             AddEsc(value);
             Add("\"");
-            if (@readonly) Add(" readonly");
-            if (required) Add(" required");
-            if (placeholder != null)
+            if (ui != null)
             {
-                Add(" placedholder=\"");
-                AddLabel(placeholder);
-                Add("\"");
-            }
-            if (maxlength > 0)
-            {
-                Add(" maxlength=\"");
-                Add(maxlength);
-                Add("\"");
-                Add(" size=\"");
-                Add(maxlength);
-                Add("\"");
-            }
-            if (minlength > 0)
-            {
-                Add(" minlength=\"");
-                Add(minlength);
-                Add("\"");
-            }
-            if (pattern != null)
-            {
-                Add(" pattern=\"");
-                AddEsc(pattern);
-                Add("\"");
-            }
-            Add(">");
-            Add("</label>");
-        }
-
-        public void SEARCH(string name, string value, bool @readonly = false, bool required = false, string placeholder = null, int maxlength = 0, int minlength = 0, string pattern = null)
-        {
-            Add("<label>");
-            AddLabel(name);
-            Add("<input type=\"search\" name=\"");
-            Add(name);
-            Add("\" value=\"");
-            AddEsc(value);
-            Add("\"");
-            if (@readonly) Add(" readonly");
-            if (required) Add(" required");
-            if (placeholder != null)
-            {
-                Add(" placedholder=\"");
-                AddLabel(placeholder);
-                Add("\"");
-            }
-            if (maxlength > 0)
-            {
-                Add(" maxlength=\"");
-                Add(maxlength);
-                Add("\"");
-                Add(" size=\"");
-                Add(maxlength);
-                Add("\"");
-            }
-            if (minlength > 0)
-            {
-                Add(" minlength=\"");
-                Add(minlength);
-                Add("\"");
-            }
-            if (pattern != null)
-            {
-                Add(" pattern=\"");
-                AddEsc(pattern);
-                Add("\"");
+                if (ui.Value.ReadOnly) Add(" readonly");
+                if (ui.Value.Required) Add(" required");
+                string ph = ui.Value.Placeholder;
+                if (ph != null)
+                {
+                    Add(" placedholder=\"");
+                    Add(ph);
+                    Add("\"");
+                }
+                sbyte max = ui.Value.Max;
+                if (max > 0)
+                {
+                    Add(" maxlength=\"");
+                    Add(max);
+                    Add("\"");
+                    Add(" size=\"");
+                    Add(max);
+                    Add("\"");
+                }
+                sbyte min = ui.Value.Max;
+                if (min > 0)
+                {
+                    Add(" minlength=\"");
+                    Add(min);
+                    Add("\"");
+                }
+                string pat = ui.Value.Pattern;
+                if (pat != null)
+                {
+                    Add(" pattern=\"");
+                    AddEsc(pat);
+                    Add("\"");
+                }
             }
             Add(">");
             Add("</label>");
         }
 
-        public void TEL(string name, string value, bool @readonly = false, bool required = false, string placeholder = null, int maxlength = 0, int minlength = 0, string pattern = null)
+        public void DATE(string name, DateTime v, Ui<DateTime>? ui = null)
         {
             Add("<label>");
-            AddLabel(name);
-            Add("<input type=\"tel\" name=\"");
-            Add(name);
-            Add("\" value=\"");
-            AddEsc(value);
-            Add("\"");
-            if (@readonly) Add(" readonly");
-            if (required) Add(" required");
-            if (placeholder != null)
-            {
-                Add(" placedholder=\"");
-                AddLabel(placeholder);
-                Add("\"");
-            }
-            if (maxlength > 0)
-            {
-                Add(" maxlength=\"");
-                Add(maxlength);
-                Add("\"");
-                Add(" size=\"");
-                Add(maxlength);
-                Add("\"");
-            }
-            if (minlength > 0)
-            {
-                Add(" minlength=\"");
-                Add(minlength);
-                Add("\"");
-            }
-            if (pattern != null)
-            {
-                Add(" pattern=\"");
-                AddEsc(pattern);
-                Add("\"");
-            }
-            Add(">");
-            Add("</label>");
-        }
-
-        public void URL(string name, string value, bool @readonly = false, bool required = false, string placeholder = null, int maxlength = 0, int minlength = 0, string pattern = null)
-        {
-            Add("<label>");
-            AddLabel(name);
-            Add("<input type=\"url\" name=\"");
-            Add(name);
-            Add("\" value=\"");
-            AddEsc(value);
-            if (@readonly) Add(" readonly");
-            if (required) Add(" required");
-            if (placeholder != null)
-            {
-                Add(" placedholder=\"");
-                AddLabel(placeholder);
-                Add("\"");
-            }
-            if (maxlength > 0)
-            {
-                Add(" maxlength=\"");
-                Add(maxlength);
-                Add("\"");
-                Add(" size=\"");
-                Add(maxlength);
-                Add("\"");
-            }
-            if (minlength > 0)
-            {
-                Add(" minlength=\"");
-                Add(minlength);
-                Add("\"");
-            }
-            if (pattern != null)
-            {
-                Add(" pattern=\"");
-                AddEsc(pattern);
-                Add("\"");
-            }
-            Add(">");
-            Add("</label>");
-        }
-
-        public void EMAIL(string name, string value, bool @readonly = false, bool required = false, string placeholder = null, int maxlength = 0, int minlength = 0, string pattern = null)
-        {
-            Add("<label>");
-            AddLabel(name);
-            Add("<input type=\"email\" name=\"");
-            Add(name);
-            Add("\" value=\"");
-            AddEsc(value);
-            Add("\"");
-            if (@readonly) Add(" readonly");
-            if (required) Add(" required");
-            if (placeholder != null)
-            {
-                Add(" placedholder=\"");
-                AddLabel(placeholder);
-                Add("\"");
-            }
-            if (maxlength > 0)
-            {
-                Add(" maxlength=\"");
-                Add(maxlength);
-                Add("\"");
-                Add(" size=\"");
-                Add(maxlength);
-                Add("\"");
-            }
-            if (minlength > 0)
-            {
-                Add(" minlength=\"");
-                Add(minlength);
-                Add("\"");
-            }
-            if (pattern != null)
-            {
-                Add(" pattern=\"");
-                AddEsc(pattern);
-                Add("\"");
-            }
-            Add(">");
-            Add("</label>");
-        }
-
-        public void PASSWORD(string name, string value, bool @readonly = false, bool required = false, string placeholder = null, int maxlength = 0, int minlength = 0, string pattern = null)
-        {
-            Add("<label>");
-            AddLabel(name);
-            Add("<input type=\"password\" name=\"");
-            Add(name);
-            Add("\" value=\"");
-            AddEsc(value);
-            Add("\"");
-            if (@readonly) Add(" readonly");
-            if (required) Add(" required");
-            if (placeholder != null)
-            {
-                Add(" placedholder=\"");
-                AddLabel(placeholder);
-                Add("\"");
-            }
-            if (maxlength > 0)
-            {
-                Add(" maxlength=\"");
-                Add(maxlength);
-                Add("\"");
-                Add(" size=\"");
-                Add(maxlength);
-                Add("\"");
-            }
-            if (minlength > 0)
-            {
-                Add(" minlength=\"");
-                Add(minlength);
-                Add("\"");
-            }
-            if (pattern != null)
-            {
-                Add(" pattern=\"");
-                AddEsc(pattern);
-                Add("\"");
-            }
-            Add(">");
-            Add("</label>");
-        }
-
-        public void DATE(string name, DateTime value, bool @readonly = false, bool required = false, string placeholder = null, int max = int.MaxValue, int min = int.MinValue, int step = 0)
-        {
-            Add("<label>");
-            AddLabel(name);
+            AddLabel(ui?.Label, name);
             Add("<input type=\"date\" name=\"");
             Add(name);
             Add("\" value=\"");
-            Add(value);
+            Add(v);
             Add("\"");
-            if (@readonly) Add(" readonly");
-            if (required) Add(" required");
-            if (placeholder != null)
+            if (ui != null)
             {
-                Add(" placedholder=\"");
-                AddLabel(placeholder);
-                Add("\"");
+                if (ui.Value.ReadOnly) Add(" readonly");
+                if (ui.Value.Required) Add(" required");
+                string ph = ui.Value.Placeholder;
+                if (ph != null)
+                {
+                    Add(" placedholder=\"");
+                    Add(ph);
+                    Add("\"");
+                }
+                DateTime max = ui.Value.Max;
+                if (max != default(DateTime))
+                {
+                    Add(" max=\"");
+                    Add(max);
+                    Add("\"");
+                }
+                DateTime min = ui.Value.Max;
+                if (min != default(DateTime))
+                {
+                    Add(" min=\"");
+                    Add(min);
+                    Add("\"");
+                }
+                int step = ui.Value.Step;
+                if (step != 0)
+                {
+                    Add(" step=\"");
+                    Add(step);
+                    Add("\"");
+                }
             }
-            if (max != int.MaxValue)
-            {
-                Add(" max=\"");
-                Add(max);
-                Add("\"");
-            }
-            if (min != int.MinValue)
-            {
-                Add(" min=\"");
-                Add(min);
-                Add("\"");
-            }
-            if (step != 0)
-            {
-                Add(" step=\"");
-                Add(step);
-                Add("\"");
-            }
-            Add("\">");
+            Add(">");
             Add("</label>");
         }
 
@@ -608,118 +369,185 @@ namespace Greatbone.Core
             T("</tbody>");
         }
 
-        public void NUMBER(string name, int value, bool @readonly = false, bool required = false, string placeholder = null, int max = int.MaxValue, int min = int.MinValue, int step = 0)
+        public void NUMBER(string name, int v, Ui<int>? ui = null)
         {
             Add("<label>");
-            AddLabel(name);
+            AddLabel(null, name);
             Add("<input type=\"number\" name=\"");
             Add(name);
             Add("\" value=\"");
-            Add(value);
+            Add(v);
             Add("\"");
-            if (@readonly) Add(" readonly");
-            if (required) Add(" required");
-            if (placeholder != null)
+            if (ui != null)
             {
-                Add(" placedholder=\"");
-                AddLabel(placeholder);
-                Add("\"");
-            }
-            if (max != int.MaxValue)
-            {
-                Add(" max=\"");
-                Add(max);
-                Add("\"");
-            }
-            if (min != int.MinValue)
-            {
-                Add(" min=\"");
-                Add(min);
-                Add("\"");
-            }
-            if (step != 0)
-            {
-                Add(" step=\"");
-                Add(step);
-                Add("\"");
+                if (ui.Value.ReadOnly) Add(" readonly");
+                if (ui.Value.Required) Add(" required");
+                string ph = ui.Value.Placeholder;
+                if (ph != null)
+                {
+                    Add(" placedholder=\"");
+                    Add(ph);
+                    Add("\"");
+                }
+                int max = ui.Value.Max;
+                if (max != 0)
+                {
+                    Add(" max=\"");
+                    Add(max);
+                    Add("\"");
+                }
+                int min = ui.Value.Min;
+                if (min != 0)
+                {
+                    Add(" min=\"");
+                    Add(min);
+                    Add("\"");
+                }
+                int step = ui.Value.Step;
+                if (step != 0)
+                {
+                    Add(" step=\"");
+                    Add(step);
+                    Add("\"");
+                }
             }
             Add(">");
             Add("</label>");
         }
 
-        public void NUMBER(string name, long value, bool @readonly = false, bool required = false, string placeholder = null, long max = long.MaxValue, long min = long.MinValue, long step = 0)
+        public void NUMBER(string name, long v, Ui<long>? ui = null)
         {
             Add("<label>");
-            AddLabel(name);
+            AddLabel(null, name);
             Add("<input type=\"number\" name=\"");
             Add(name);
             Add("\" value=\"");
-            Add(value);
+            Add(v);
             Add("\"");
-            if (@readonly) Add(" readonly");
-            if (required) Add(" required");
-            if (placeholder != null)
+            if (ui != null)
             {
-                Add(" placedholder=\"");
-                AddLabel(placeholder);
-                Add("\"");
-            }
-            if (max != long.MaxValue)
-            {
-                Add(" max=\"");
-                Add(max);
-                Add("\"");
-            }
-            if (min != long.MinValue)
-            {
-                Add(" min=\"");
-                Add(min);
-                Add("\"");
-            }
-            if (step != 0)
-            {
-                Add(" step=\"");
-                Add(step);
-                Add("\"");
+                if (ui.Value.ReadOnly) Add(" readonly");
+                if (ui.Value.Required) Add(" required");
+                string ph = ui.Value.Placeholder;
+                if (ph != null)
+                {
+                    Add(" placedholder=\"");
+                    Add(ph);
+                    Add("\"");
+                }
+                long max = ui.Value.Max;
+                if (max != 0)
+                {
+                    Add(" max=\"");
+                    Add(max);
+                    Add("\"");
+                }
+                long min = ui.Value.Min;
+                if (min != 0)
+                {
+                    Add(" min=\"");
+                    Add(min);
+                    Add("\"");
+                }
+                int step = ui.Value.Step;
+                if (step != 0)
+                {
+                    Add(" step=\"");
+                    Add(step);
+                    Add("\"");
+                }
             }
             Add(">");
             Add("</label>");
         }
 
-        public void NUMBER(string name, decimal value, bool @readonly = false, bool required = false, string placeholder = null, int max = int.MaxValue, int min = int.MinValue, int step = 0)
+        public void NUMBER(string name, decimal v, Ui<decimal>? ui = null)
         {
             Add("<label>");
-            AddLabel(name);
+            AddLabel(null, name);
             Add("<input type=\"number\" name=\"");
             Add(name);
             Add("\" value=\"");
-            Add(value);
+            Add(v);
             Add("\"");
-            if (@readonly) Add(" readonly");
-            if (required) Add(" required");
-            if (placeholder != null)
+            if (ui != null)
             {
-                Add(" placedholder=\"");
-                AddLabel(placeholder);
-                Add("\"");
+                if (ui.Value.ReadOnly) Add(" readonly");
+                if (ui.Value.Required) Add(" required");
+                string ph = ui.Value.Placeholder;
+                if (ph != null)
+                {
+                    Add(" placedholder=\"");
+                    Add(ph);
+                    Add("\"");
+                }
+                decimal max = ui.Value.Max;
+                if (max != 0)
+                {
+                    Add(" max=\"");
+                    Add(max);
+                    Add("\"");
+                }
+                decimal min = ui.Value.Min;
+                if (min != 0)
+                {
+                    Add(" min=\"");
+                    Add(min);
+                    Add("\"");
+                }
+                decimal step = ui.Value.Step;
+                if (step != 0)
+                {
+                    Add(" step=\"");
+                    Add(step);
+                    Add("\"");
+                }
             }
-            if (max != int.MaxValue)
+            Add(">");
+            Add("</label>");
+        }
+
+        public void NUMBER(string name, double v, Ui<double>? ui = null)
+        {
+            Add("<label>");
+            AddLabel(null, name);
+            Add("<input type=\"number\" name=\"");
+            Add(name);
+            Add("\" value=\"");
+            Add(v);
+            Add("\"");
+            if (ui != null)
             {
-                Add(" max=\"");
-                Add(max);
-                Add("\"");
-            }
-            if (min != int.MinValue)
-            {
-                Add(" min=\"");
-                Add(min);
-                Add("\"");
-            }
-            if (step != 0)
-            {
-                Add(" step=\"");
-                Add(step);
-                Add("\"");
+                if (ui.Value.ReadOnly) Add(" readonly");
+                if (ui.Value.Required) Add(" required");
+                string ph = ui.Value.Placeholder;
+                if (ph != null)
+                {
+                    Add(" placedholder=\"");
+                    Add(ph);
+                    Add("\"");
+                }
+                double max = ui.Value.Max;
+                if (max != 0)
+                {
+                    Add(" max=\"");
+                    Add(max);
+                    Add("\"");
+                }
+                double min = ui.Value.Min;
+                if (min != 0)
+                {
+                    Add(" min=\"");
+                    Add(min);
+                    Add("\"");
+                }
+                int step = ui.Value.Step;
+                if (step != 0)
+                {
+                    Add(" step=\"");
+                    Add(step);
+                    Add("\"");
+                }
             }
             Add(">");
             Add("</label>");
@@ -735,24 +563,24 @@ namespace Greatbone.Core
             T("</tbody>");
         }
 
-        public void CHECKBOX(string name, bool value, bool required = false)
+        public void CHECKBOX(string name, bool v, string Label = null, bool Required = false)
         {
             Add("<label>");
-            AddLabel(name);
+            AddLabel(Label, name);
             Add("<input type=\"checkbox\" name=\"");
             Add(name);
             Add("\"");
-            if (value) Add(" checked");
-            if (required) Add(" required");
+            if (v) Add(" checked");
+            if (Required) Add(" required");
             Add(">");
             Add("</label>");
         }
 
-        public void RADIO(string name, string[] values, int @checked = 0, bool required = false)
+        public void RADIO(string name, string[] values, int Checked = 0, string Label = null, bool Required = false)
         {
             Add("<fieldset>");
             Add("<legend>");
-            AddLabel(name);
+            AddLabel(Label, name);
             Add("</legend>");
             for (int i = 0; i < values.Length; i++)
             {
@@ -762,8 +590,8 @@ namespace Greatbone.Core
                 Add("\" value=\"");
                 Add(i);
                 Add("\"");
-                if (@checked == i) Add(" checked");
-                if (required) Add(" required");
+                if (Checked == i) Add(" checked");
+                if (Required) Add(" required");
                 Add("\">");
                 Add(values[i]);
                 Add("</label>");
@@ -771,9 +599,16 @@ namespace Greatbone.Core
             Add("</fieldset>");
         }
 
-        public void FILE()
+        public void FILE(string name, string Label = null, bool Required = false)
         {
-            T("</tbody>");
+            Add("<label>");
+            AddLabel(Label, name);
+            Add("<input type=\"checkbox\" name=\"");
+            Add(name);
+            Add("\"");
+            if (Required) Add(" required");
+            Add(">");
+            Add("</label>");
         }
 
         public void INPUT_button()
@@ -786,21 +621,21 @@ namespace Greatbone.Core
             T("</tbody>");
         }
 
-        public void BUTTON(WebAction act)
+        public void BUTTON(WebAction atn)
         {
             Add("<button class=\"pure-button");
-            if (act.Form == 0) Add(" pure-button-primary");
+            if (atn.Form == 0) Add(" pure-button-primary");
             Add("\" formaction=\"");
-            Add(act.Name);
+            Add(atn.Name);
             Add("\" formmethod=\"");
-            Add(act.Form == 0 ? "get" : "post");
-            if (act.Dialog != 0)
+            Add(atn.Form == 0 ? "get" : "post");
+            if (atn.Dialog != 0)
             {
                 Add("\" onclick=\"dialog(this,");
                 Add("); return false;");
             }
             Add("\">");
-            string icon = act.Icon;
+            string icon = atn.Icon;
             if (icon != null)
             {
                 Add("<i class=\"");
@@ -808,7 +643,7 @@ namespace Greatbone.Core
                 Add("\"></i>");
             }
             Add(" ");
-            AddLabel(act.Name);
+            AddLabel(atn.Label, atn.Name);
             Add(" </button>");
         }
 
@@ -821,28 +656,14 @@ namespace Greatbone.Core
             }
         }
 
-        public void BUTTON_submit(string value)
-        {
-            Add("<button type=\"submit\">");
-            AddLabel(value);
-            Add("</button>");
-        }
-
-        public void BUTTON_reset(string value)
-        {
-            Add("<button type=\"reset\" class=\"pure-button pure-button-secondary\">");
-            AddLabel(value);
-            Add("</button>");
-        }
-
-        public void SELECT(string name, string[] options, int selected = -1, bool required = false)
+        public void SELECT(string name, string[] options, int selected = -1, string Label = null, bool Required = false)
         {
             Add("<label>");
-            AddLabel(name);
+            AddLabel(Label, name);
             Add("<select name=\"");
             Add(name);
             Add("\"");
-            if (required) Add(" required");
+            if (Required) Add(" required");
             Add("\">");
 
             for (int i = 0; i < options.Length; i++)
@@ -853,20 +674,20 @@ namespace Greatbone.Core
                 Add("\"");
                 if (selected == i) Add(" selected");
                 Add("\">");
-                AddLabel(opt);
+                Add(opt);
                 Add("</option>");
             }
             Add("</label>");
         }
 
-        public void SELECT<V>(string name, IOption<V>[] options, bool required = false)
+        public void SELECT<V>(string name, IOption<V>[] options, string Label = null, bool Required = false)
         {
             Add("<label>");
-            AddLabel(name);
+            AddLabel(Label, name);
             Add("<select name=\"");
             Add(name);
             Add("\"");
-            if (required) Add(" required");
+            if (Required) Add(" required");
             Add("\">");
 
             for (int i = 0; i < options.Length; i++)
@@ -877,20 +698,20 @@ namespace Greatbone.Core
                 Add("\"");
                 if (opt.IsOn) Add(" selected");
                 Add("\">");
-                AddLabel(opt.Label);
+                Add(opt.Label);
                 Add("</option>");
             }
             Add("</label>");
         }
 
-        public void SELECT(string name, Action<ISelectOptions> options, bool required = false)
+        public void SELECT(string name, Action<ISelectOptions> options, string Label = null, bool Required = false)
         {
             Add("<label>");
-            AddLabel(name);
+            AddLabel(Label, name);
             Add("<select name=\"");
             Add(name);
             Add("\"");
-            if (required) Add(" required");
+            if (Required) Add(" required");
             Add("\">");
             options(this);
             Add("</label>");
@@ -955,12 +776,12 @@ namespace Greatbone.Core
                     CHECKBOX(name, v);
                     Add("</div>");
                     break;
-                case TableThs:
+                case GridThs:
                     Add("<th>");
-                    AddLabel(name);
+                    AddLabel(null, name);
                     Add("</th>");
                     break;
-                case TableTrs:
+                case GridTrs:
                     Add("<td>");
                     Add(v);
                     Add("</td>");
@@ -978,12 +799,12 @@ namespace Greatbone.Core
                     NUMBER(name, v);
                     Add("</div>");
                     break;
-                case TableThs:
+                case GridThs:
                     Add("<th>");
-                    AddLabel(name);
+                    AddLabel(null, name);
                     Add("</th>");
                     break;
-                case TableTrs:
+                case GridTrs:
                     Add("<td style=\"text-align: right;\">");
                     Add(v);
                     Add("</td>");
@@ -1001,12 +822,12 @@ namespace Greatbone.Core
                     NUMBER(name, v);
                     Add("</div>");
                     break;
-                case TableThs:
+                case GridThs:
                     Add("<th>");
-                    AddLabel(name);
+                    AddLabel(null, name);
                     Add("</th>");
                     break;
-                case TableTrs:
+                case GridTrs:
                     Add("<td style=\"text-align: right;\">");
                     Add(v);
                     Add("</td>");
@@ -1024,12 +845,12 @@ namespace Greatbone.Core
                     NUMBER(name, v);
                     Add("</div>");
                     break;
-                case TableThs:
+                case GridThs:
                     Add("<th>");
-                    AddLabel(name);
+                    AddLabel(null, name);
                     Add("</th>");
                     break;
-                case TableTrs:
+                case GridTrs:
                     Add("<td style=\"text-align: right;\">");
                     Add(v);
                     Add("</td>");
@@ -1046,12 +867,12 @@ namespace Greatbone.Core
                     Add("<div class=\"pure-u-1 pure-u-md-1-2\">");
                     Add("</div>");
                     break;
-                case TableThs:
+                case GridThs:
                     Add("<th>");
-                    AddLabel(name);
+                    AddLabel(null, name);
                     Add("</th>");
                     break;
-                case TableTrs:
+                case GridTrs:
                     Add("<td style=\"text-align: right;\">");
                     Add(v);
                     Add("</td>");
@@ -1069,12 +890,12 @@ namespace Greatbone.Core
                     NUMBER(name, v);
                     Add("</div>");
                     break;
-                case TableThs:
+                case GridThs:
                     Add("<th>");
-                    AddLabel(name);
+                    AddLabel(null, name);
                     Add("</th>");
                     break;
-                case TableTrs:
+                case GridTrs:
                     Add("<td style=\"text-align: right;\">");
                     Add(v);
                     Add("</td>");
@@ -1092,12 +913,12 @@ namespace Greatbone.Core
                     // Number(name, v);
                     Add("</div>");
                     break;
-                case TableThs:
+                case GridThs:
                     Add("<th>");
-                    AddLabel(name);
+                    AddLabel(null, name);
                     Add("</th>");
                     break;
-                case TableTrs:
+                case GridTrs:
                     Add("<td style=\"text-align: right;\">");
                     Add(v);
                     Add("</td>");
@@ -1115,12 +936,12 @@ namespace Greatbone.Core
                     DATE(name, v);
                     Add("</div>");
                     break;
-                case TableThs:
+                case GridThs:
                     Add("<th>");
-                    AddLabel(name);
+                    AddLabel(null, name);
                     Add("</th>");
                     break;
-                case TableTrs:
+                case GridTrs:
                     Add("<td style=\"text-align: right;\">");
                     Add(v);
                     Add("</td>");
@@ -1138,12 +959,12 @@ namespace Greatbone.Core
                     // Date(name, v);
                     Add("</div>");
                     break;
-                case TableThs:
+                case GridThs:
                     Add("<th>");
-                    AddLabel(name);
+                    AddLabel(null, name);
                     Add("</th>");
                     break;
-                case TableTrs:
+                case GridTrs:
                     Add("<td style=\"text-align: right;\">");
                     Add(v);
                     Add("</td>");
@@ -1157,21 +978,22 @@ namespace Greatbone.Core
             return this;
         }
 
-        public HtmlContent Put(string name, string v, bool? anylen = null)
+        public HtmlContent Put(string name, string v, Ui<short>? ctl = null)
         {
             switch (ctx)
             {
                 case FormFields:
-                    Add("<div class=\"pure-u-1 pure-u-md-1-2\">");
+                    Add("<label>");
+                    AddLabel(ctl?.Label, name);
                     TEXT(name, v);
-                    Add("</div>");
+                    Add("</label>");
                     break;
-                case TableThs:
+                case GridThs:
                     Add("<th>");
-                    AddLabel(name);
+                    AddLabel(ctl?.Label, name);
                     Add("</th>");
                     break;
-                case TableTrs:
+                case GridTrs:
                     Add("<td>");
                     Add(v);
                     Add("</td>");
@@ -1186,11 +1008,6 @@ namespace Greatbone.Core
         }
 
         public HtmlContent Put(string name, ArraySegment<byte> v)
-        {
-            return this;
-        }
-
-        public HtmlContent Put(string name, IData v, ushort proj = 0)
         {
             return this;
         }
@@ -1221,6 +1038,11 @@ namespace Greatbone.Core
         }
 
         public HtmlContent Put(string name, string[] v)
+        {
+            return this;
+        }
+
+        public HtmlContent Put(string name, IData v, ushort proj = 0)
         {
             return this;
         }
@@ -1256,11 +1078,6 @@ namespace Greatbone.Core
         }
     }
 
-
-    public interface IMenu
-    {
-        void menuitem(string text, string href = "#");
-    }
 
     public interface ITableThead
     {

@@ -246,7 +246,7 @@ namespace Greatbone.Core
             return this;
         }
 
-        public FormContent Put(string name, string v, bool? anylen = null)
+        public FormContent Put(string name, string v, Ui<short>? ui = null)
         {
             if (name != null)
             {

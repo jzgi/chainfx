@@ -258,7 +258,7 @@ namespace Greatbone.Core
             return this;
         }
 
-        public XmlContent Put(string name, string v, bool? anylen = null)
+        public XmlContent Put(string name, string v, Ui<short>? ui = null)
         {
             Add(' ');
             Add(name);

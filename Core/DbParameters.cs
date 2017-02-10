@@ -187,14 +187,14 @@ namespace Greatbone.Core
             return this;
         }
 
-        public DbParameters Put(string name, string v, bool? anylen = null)
+        public DbParameters Put(string name, string v, Ui<short>? ui = null)
         {
             if (name == null)
             {
                 name = Defaults[position++];
             }
             int len = v?.Length ?? 0;
-            coll.Add(new NpgsqlParameter(name, !anylen.HasValue ? NpgsqlDbType.Varchar : anylen.Value ? NpgsqlDbType.Text : NpgsqlDbType.Char, len)
+            coll.Add(new NpgsqlParameter(name, ui == null ? NpgsqlDbType.Varchar : ui.Value.Max == -1 ? NpgsqlDbType.Text : NpgsqlDbType.Char, len)
             {
                 Value = (v != null) ? (object)v : DBNull.Value
             });

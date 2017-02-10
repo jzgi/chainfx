@@ -33,7 +33,7 @@ namespace Greatbone.Core
 
         R Put(string name, char[] v);
 
-        R Put(string name, string v, bool? anylen = null);
+        R Put(string name, string v, Ui<short>? ctl = null);
 
         R Put(string name, byte[] v);
 

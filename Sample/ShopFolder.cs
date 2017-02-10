@@ -82,10 +82,10 @@ namespace Greatbone.Sample
                 ac.ReplyDlg(200, a =>
                 {
                     a.FIELDSET_("新建服务点");
-                    a.TEXT(nameof(o.id), o.id, required: true, maxlength: 6);
-                    a.TEXT(nameof(o.name), o.name, required: true, maxlength: 10);
-                    a.PASSWORD("password", "", required: true, maxlength: 6);
-                    a.TEL(nameof(o.tel), o.tel, required: true, maxlength: 11, pattern: "[0-9]");
+                    a.TEXT(nameof(o.id), o.id, new Ui<sbyte> { });
+                    a.TEXT(nameof(o.name), o.name);
+                    a.PASSWORD("password", "");
+                    a.TEL(nameof(o.tel), o.tel);
                     a.CHECKBOX("ok", true);
                     a._FIELDSET();
                 });
@@ -96,7 +96,7 @@ namespace Greatbone.Sample
 
                 // validate
 
-                
+
                 using (var dc = Service.NewDbContext())
                 {
                     shop.credential = TextUtility.MD5(shop.id + ':' + shop.credential);

@@ -6,7 +6,7 @@ namespace Greatbone.Sample
     ///
     /// A shop data object.
     ///
-    public class Shop : IForm
+    public class Shop : IData
     {
         public static readonly Shop Empty = new Shop();
 
@@ -55,11 +55,6 @@ namespace Greatbone.Sample
             o.Put(nameof(wx), wx);
             o.Put(nameof(note), note);
             o.Put(nameof(status), status);
-        }
-
-        public void WriteForm(HtmlContent h, ushort proj = 0)
-        {
-            throw new NotImplementedException();
         }
 
         public Token ToToken()

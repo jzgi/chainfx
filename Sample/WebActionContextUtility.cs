@@ -8,17 +8,9 @@ namespace Greatbone.Sample
     public static class WebActionContextUtility
     {
 
-        static readonly Dictionary<string, string> Map = new Dictionary<string, string>
-        {
-            ["abc"] = "好的"
-        };
-
         public static void ReplyPage(this WebActionContext ac, int status, Action<HtmlContent> inner, bool? pub = null, int maxage = 60)
         {
-            HtmlContent cont = new HtmlContent(true, true, 16 * 1024)
-            {
-                Map = Map
-            };
+            HtmlContent cont = new HtmlContent(true, true, 16 * 1024);
 
             cont.T("<!DOCTYPE html>");
             cont.T("<html>");
