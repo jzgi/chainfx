@@ -12,12 +12,14 @@ namespace Greatbone.Core
         const string Primary = "primary", Secondary = "secondary", Success = "success", Alert = "alert", Warning = "warning";
 
         public const sbyte
-            GridThCtx = 1,
-            GridTrCtx = 2, // grid
+            GridTheadCtx = 1,
+            GridTbodyCtx = 2, // grid
             SheetTrs = 2, // property sheet
             FormCtx = 3;
 
         internal sbyte ctx;
+
+        internal int ordinal;
 
 
         public HtmlContent(bool sendable, bool pooled, int capacity = 16 * 1024) : base(sendable, pooled, capacity)
@@ -173,44 +175,46 @@ namespace Greatbone.Core
             Add("</form>");
         }
 
-        public void FORM_grid<D>(WebAction[] actions, D[] arr, ushort proj = 0) where D : IData
+        public void FORM_grid<D>(List<WebAction> actions, List<D> list, ushort proj = 0) where D : IData
         {
             Add("<form>");
 
             // buttons
             BUTTONS(actions);
 
-            if (arr != null)
+            if (list != null)
             {
                 Add("<table>");
 
-                ctx = GridThCtx;
+                ctx = GridTheadCtx;
                 Add("<thead>");
                 Add("<tr>");
-
-                for (int i = 0; i < arr.Length; i++)
+                for (int i = 0; i < list.Count; i++)
                 {
-                    Add("<th>");
-                    D obj = arr[i];
-
+                    IData obj = list[i];
                     obj.WriteData(this, proj);
-                    Add("</th>");
                 }
                 Add("</tr>");
                 Add("</thead>");
 
-                ctx = GridTrCtx;
+                ctx = GridTbodyCtx;
                 Add("<tbody>");
 
-                for (int i = 0; i < arr.Length; i++)
+                for (int i = 0; i < list.Count; i++)
                 {
                     Add("<tr>");
-                    D obj = arr[i];
-
+                    D obj = list[i];
+                    ordinal = 0; // reset ordical
                     obj.WriteData(this, proj);
                     Add("</tr>");
                 }
                 Add("</tbody>");
+            }
+            else
+            {
+                Add("<div class=\"row\">");
+                Add("<span>没有记录</span>");
+                Add("</div>");
             }
 
             Add("</form>");
@@ -709,8 +713,8 @@ namespace Greatbone.Core
 
         public void BUTTON(WebAction atn)
         {
-            Add("<button");
-            if (atn.Form == 0) Add(" class=\"primary");
+            Add("<button type=\"button\"");
+            if (atn.Form == 0) Add(" class=\"button secondary");
             Add("\" formaction=\"");
             Add(atn.Name);
             Add("\" formmethod=\"");
@@ -733,13 +737,24 @@ namespace Greatbone.Core
             Add(" </button>");
         }
 
-        public void BUTTONS(WebAction[] was)
+        public void BUTTONS(params WebAction[] atns)
         {
-            for (int i = 0; i < was.Length; i++)
+            for (int i = 0; i < atns.Length; i++)
             {
-                WebAction wa = was[i];
-                BUTTON(wa);
+                WebAction atn = atns[i];
+                BUTTON(atn);
             }
+        }
+
+        public void BUTTONS(List<WebAction> atns)
+        {
+            Add("<div class=\"row\">");
+            for (int i = 0; i < atns.Count; i++)
+            {
+                WebAction atn = atns[i];
+                BUTTON(atn);
+            }
+            Add("</div>");
         }
 
         public void SELECT(string name, string[] options, int selected = -1, string Label = null, bool Required = false)
@@ -832,25 +847,16 @@ namespace Greatbone.Core
         // ISINK
         //
 
-
-        public HtmlContent PutEnter(bool multi)
-        {
-            throw new NotImplementedException();
-        }
-
-        public HtmlContent PutExit(bool multi)
-        {
-            throw new NotImplementedException();
-        }
-
         public HtmlContent PutNull(string name)
         {
-            throw new NotImplementedException();
+            ordinal++;
+            return this;
         }
 
         public HtmlContent PutRaw(string name, string raw)
         {
-            throw new NotImplementedException();
+            ordinal++;
+            return this;
         }
 
         public HtmlContent Put(string name, bool v, string Label = null, bool Required = false)
@@ -862,17 +868,18 @@ namespace Greatbone.Core
                     CHECKBOX(name, v);
                     Add("</div>");
                     break;
-                case GridThCtx:
+                case GridTheadCtx:
                     Add("<th>");
                     AddLabel(null, name);
                     Add("</th>");
                     break;
-                case GridTrCtx:
+                case GridTbodyCtx:
                     Add("<td>");
                     Add(v);
                     Add("</td>");
                     break;
             }
+            ordinal++;
             return this;
         }
 
@@ -885,17 +892,22 @@ namespace Greatbone.Core
                     NUMBER(name, v);
                     Add("</div>");
                     break;
-                case GridThCtx:
+                case GridTheadCtx:
                     Add("<th>");
                     AddLabel(null, name);
                     Add("</th>");
                     break;
-                case GridTrCtx:
+                case GridTbodyCtx:
                     Add("<td style=\"text-align: right;\">");
+                    if (ordinal == 0)
+                    {
+                        Add("<input type=\"checkbox\" name=\"pk\">");
+                    }
                     Add(v);
                     Add("</td>");
                     break;
             }
+            ordinal++;
             return this;
         }
 
@@ -908,17 +920,22 @@ namespace Greatbone.Core
                     NUMBER(name, v);
                     Add("</div>");
                     break;
-                case GridThCtx:
+                case GridTheadCtx:
                     Add("<th>");
                     AddLabel(null, name);
                     Add("</th>");
                     break;
-                case GridTrCtx:
+                case GridTbodyCtx:
                     Add("<td style=\"text-align: right;\">");
+                    if (ordinal == 0)
+                    {
+                        Add("<input type=\"checkbox\" name=\"pk\">");
+                    }
                     Add(v);
                     Add("</td>");
                     break;
             }
+            ordinal++;
             return this;
         }
 
@@ -931,17 +948,22 @@ namespace Greatbone.Core
                     NUMBER(name, v);
                     Add("</div>");
                     break;
-                case GridThCtx:
+                case GridTheadCtx:
                     Add("<th>");
                     AddLabel(null, name);
                     Add("</th>");
                     break;
-                case GridTrCtx:
+                case GridTbodyCtx:
                     Add("<td style=\"text-align: right;\">");
+                    if (ordinal == 0)
+                    {
+                        Add("<input type=\"checkbox\" name=\"pk\">");
+                    }
                     Add(v);
                     Add("</td>");
                     break;
             }
+            ordinal++;
             return this;
         }
 
@@ -953,17 +975,18 @@ namespace Greatbone.Core
                     Add("<div class=\"pure-u-1 pure-u-md-1-2\">");
                     Add("</div>");
                     break;
-                case GridThCtx:
+                case GridTheadCtx:
                     Add("<th>");
                     AddLabel(null, name);
                     Add("</th>");
                     break;
-                case GridTrCtx:
+                case GridTbodyCtx:
                     Add("<td style=\"text-align: right;\">");
                     Add(v);
                     Add("</td>");
                     break;
             }
+            ordinal++;
             return this;
         }
 
@@ -974,17 +997,18 @@ namespace Greatbone.Core
                 case FormCtx:
                     NUMBER(name, v);
                     break;
-                case GridThCtx:
+                case GridTheadCtx:
                     Add("<th>");
                     AddLabel(null, name);
                     Add("</th>");
                     break;
-                case GridTrCtx:
+                case GridTbodyCtx:
                     Add("<td style=\"text-align: right;\">");
                     Add(v);
                     Add("</td>");
                     break;
             }
+            ordinal++;
             return this;
         }
 
@@ -997,17 +1021,18 @@ namespace Greatbone.Core
                     // Number(name, v);
                     Add("</div>");
                     break;
-                case GridThCtx:
+                case GridTheadCtx:
                     Add("<th>");
                     AddLabel(null, name);
                     Add("</th>");
                     break;
-                case GridTrCtx:
+                case GridTbodyCtx:
                     Add("<td style=\"text-align: right;\">");
                     Add(v);
                     Add("</td>");
                     break;
             }
+            ordinal++;
             return this;
         }
 
@@ -1018,17 +1043,18 @@ namespace Greatbone.Core
                 case FormCtx:
                     DATE(name, v);
                     break;
-                case GridThCtx:
+                case GridTheadCtx:
                     Add("<th>");
                     AddLabel(null, name);
                     Add("</th>");
                     break;
-                case GridTrCtx:
+                case GridTbodyCtx:
                     Add("<td style=\"text-align: right;\">");
                     Add(v);
                     Add("</td>");
                     break;
             }
+            ordinal++;
             return this;
         }
 
@@ -1041,22 +1067,24 @@ namespace Greatbone.Core
                     // Date(name, v);
                     Add("</div>");
                     break;
-                case GridThCtx:
+                case GridTheadCtx:
                     Add("<th>");
                     AddLabel(null, name);
                     Add("</th>");
                     break;
-                case GridTrCtx:
+                case GridTbodyCtx:
                     Add("<td style=\"text-align: right;\">");
                     Add(v);
                     Add("</td>");
                     break;
             }
+            ordinal++;
             return this;
         }
 
         public HtmlContent Put(string name, char[] v)
         {
+            ordinal++;
             return this;
         }
 
@@ -1078,93 +1106,101 @@ namespace Greatbone.Core
                         TEXTAREA(name, v, Label, Placeholder, Max, Min, ReadOnly, Required);
                     }
                     break;
-                case GridThCtx:
+                case GridTheadCtx:
                     Add("<th>");
                     AddLabel(Label, name);
                     Add("</th>");
                     break;
-                case GridTrCtx:
+                case GridTbodyCtx:
                     Add("<td>");
+                    if (ordinal == 0)
+                    {
+                        Add("<input type=\"checkbox\" name=\"pk\">");
+                    }
                     Add(v);
                     Add("</td>");
                     break;
             }
+            ordinal++;
             return this;
         }
 
         public HtmlContent Put(string name, byte[] v)
         {
+            ordinal++;
             return this;
         }
 
         public HtmlContent Put(string name, ArraySegment<byte> v)
         {
+            ordinal++;
             return this;
         }
 
         public HtmlContent Put(string name, JObj v)
         {
+            ordinal++;
             return this;
         }
 
         public HtmlContent Put(string name, JArr v)
         {
+            ordinal++;
             return this;
         }
 
         public HtmlContent Put(string name, short[] v)
         {
+            ordinal++;
             return this;
         }
 
         public HtmlContent Put(string name, int[] v)
         {
+            ordinal++;
             return this;
         }
 
         public HtmlContent Put(string name, long[] v)
         {
+            ordinal++;
             return this;
         }
 
         public HtmlContent Put(string name, string[] v)
         {
+            ordinal++;
             return this;
         }
 
         public HtmlContent Put(string name, IData v, ushort proj = 0)
         {
+            ordinal++;
             return this;
         }
 
         public HtmlContent Put<D>(string name, D[] v, ushort proj = 0) where D : IData
         {
+            ordinal++;
             return this;
         }
 
         public HtmlContent Put<D>(string name, List<D> v, ushort proj = 0) where D : IData
         {
-            throw new NotImplementedException();
+            ordinal++;
+            return this;
         }
 
         public HtmlContent Put(string name, IDataInput v)
         {
-            throw new NotImplementedException();
-        }
-
-        public HtmlContent PutEnter()
-        {
-            throw new NotImplementedException();
-        }
-
-        public HtmlContent PutExit()
-        {
-            throw new NotImplementedException();
+            ordinal++;
+            return this;
         }
 
         public HtmlContent Put(string name, Dictionary<string, string> v)
         {
-            throw new NotImplementedException();
+            ordinal++;
+            return this;
         }
     }
 

@@ -6,7 +6,7 @@ namespace Greatbone.Sample
     ///
     /// A workflow that repays collected money to shops.
     ///
-    public class WfRepay : IData, IStatable
+    public class Repay : IData, IStatable
     {
         // state
         public const int
@@ -23,7 +23,7 @@ namespace Greatbone.Sample
             CANCELLEDed = 2,
             Closed = 9;
 
-        public static readonly WfRepay Empty = new WfRepay();
+        public static readonly Repay Empty = new Repay();
 
         internal int id; // platform shop id
         internal string shopid;

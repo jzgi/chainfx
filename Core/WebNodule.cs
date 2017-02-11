@@ -84,7 +84,9 @@ namespace Greatbone.Core
             return false;
         }
 
-        internal bool Check(WebActionContext ac, bool reply = true)
+        public bool HasUi => ui != null;
+
+        public bool Check(WebActionContext ac, bool reply = true)
         {
             if (roles != null)
             {

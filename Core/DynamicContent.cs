@@ -191,6 +191,7 @@ namespace Greatbone.Core
 
         public void Add(char[] v)
         {
+            if (v == null) return;
             Add(v, 0, v.Length);
         }
 
@@ -205,6 +206,7 @@ namespace Greatbone.Core
 
         public void Add(string v)
         {
+            if (v == null) return;
             Add(v, 0, v.Length);
         }
 
@@ -219,6 +221,7 @@ namespace Greatbone.Core
 
         public void Add(StringBuilder v)
         {
+            if (v == null) return;
             Add(v, 0, v.Length);
         }
 

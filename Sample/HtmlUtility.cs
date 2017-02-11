@@ -1,4 +1,5 @@
 using System;
+using System.Collections.Generic;
 using Greatbone.Core;
 
 namespace Greatbone.Sample
@@ -56,6 +57,16 @@ namespace Greatbone.Sample
                 cont.ctx = HtmlContent.FormCtx;
                 obj.WriteData(cont, proj);
                 cont.T("</form>");
+            },
+            pub, maxage);
+        }
+
+        public static void ReplyGrid<D>(this WebActionContext ac, int status, List<D> lst, ushort proj = 0, bool? pub = null, int maxage = 60) where D: IData
+        {
+            ac.ReplyPage(status, cont =>
+            {
+                List<WebAction> actions = ac.Folder.GetUiActions(ac);
+                cont.FORM_grid(actions, lst);
             },
             pub, maxage);
         }

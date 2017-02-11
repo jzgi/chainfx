@@ -198,8 +198,12 @@ namespace Greatbone.Core
         /// 
         public HttpContext CreateContext(IFeatureCollection features)
         {
-            return new WebActionContext(features);
+            return new WebActionContext(features)
+            {
+                ServiceContext = Context
+            };
         }
+
 
         /// 
         /// To asynchronously process the request.

@@ -236,6 +236,21 @@ namespace Greatbone.Core
             return lst;
         }
 
+        public List<WebAction> GetUiActions(WebActionContext ac)
+        {
+            List<WebAction> lst = null;
+            for (int i = 0; i < actions.Count; i++)
+            {
+                WebAction a = actions[i];
+                if (a.HasUi && a.Check(ac, false))
+                {
+                    if (lst == null) lst = new List<WebAction>();
+                    lst.Add(a);
+                }
+            }
+            return lst;
+        }
+
         internal WebFolder Locate(ref string relative, WebActionContext ac)
         {
             if (!Check(ac))

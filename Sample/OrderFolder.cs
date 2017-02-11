@@ -1,6 +1,7 @@
-﻿using System.Threading.Tasks;
+﻿using System.Collections.Generic;
+using System.Threading.Tasks;
 using Greatbone.Core;
-using static Greatbone.Sample.WfOrder;
+using static Greatbone.Sample.Order;
 
 namespace Greatbone.Sample
 {
@@ -36,11 +37,11 @@ namespace Greatbone.Sample
 
         #region /shop/-shopid-/orderi/ OR /shop/-shopid-/ordero/
 
-        [Shop]
+        // [Shop]
         [Ui]
         public void @default(WebActionContext ac, string page)
         {
-            string shopid = ac[0];
+            string shopid = ac[1];
             string key = ac[this];
             if (key.EndsWith("i")) // orderi
             {
@@ -48,15 +49,11 @@ namespace Greatbone.Sample
                 {
                     if (dc.Query("SELECT * FROM orders WHERE shopid = @1 AND status < 4", p => p.Set(shopid)))
                     {
-                        var order = dc.ToArray<WfOrder>();
-                        ac.ReplyPage(200, main =>
-                        {
-
-                        });
+                        ac.ReplyGrid(200, dc.ToList<Order>());
                     }
                     else
                     {
-                        ac.ReplyPage(200, main => { });
+                        ac.ReplyGrid(200, (List<Order>)null);
                     }
                 }
             }
@@ -66,19 +63,12 @@ namespace Greatbone.Sample
                 {
                     if (dc.Query("SELECT * FROM orders WHERE shopid = @1 AND status >= 4 ORDER BY id LIMIT 20 OFFSET @2", p => p.Set(shopid).Set(page.ToInt() * 20)))
                     {
-                        var order = dc.ToArray<WfOrder>();
-                        ac.ReplyPage(200, main =>
-                        {
-
-                        });
                     }
                     else
                     {
-                        ac.ReplyPage(200, main => { });
                     }
                 }
             }
-
         }
 
         [Ui(Label = "取消")]
@@ -93,10 +83,10 @@ namespace Greatbone.Sample
             {
                 using (var dc = ac.NewDbContext())
                 {
-                    dc.Sql("SELECT ").columnlst(WfOrder.Empty)._("FROM orders WHERE id = @1 AND shopid = @2");
+                    dc.Sql("SELECT ").columnlst(Order.Empty)._("FROM orders WHERE id = @1 AND shopid = @2");
                     if (dc.Query(p => p.Set(pk).Set(shopid)))
                     {
-                        var order = dc.ToArray<WfOrder>();
+                        var order = dc.ToArray<Order>();
                         ac.ReplyPage(200, main =>
                         {
 
@@ -138,7 +128,7 @@ namespace Greatbone.Sample
                 dc.Sql("UPDATE orders SET ").setstate()._(" WHERE id = @1 AND shopid = @2 AND ").statecond();
                 if (dc.Query(p => p.Set(pk).Set(shopid)))
                 {
-                    var order = dc.ToArray<WfOrder>();
+                    var order = dc.ToArray<Order>();
                     ac.ReplyPage(200, main => { });
                 }
                 else

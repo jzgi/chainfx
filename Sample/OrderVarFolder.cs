@@ -1,5 +1,5 @@
 using Greatbone.Core;
-using static Greatbone.Sample.WfOrder;
+using static Greatbone.Sample.Order;
 
 namespace Greatbone.Sample
 {
@@ -30,7 +30,7 @@ namespace Greatbone.Sample
                 dc.Sql("UPDATE orders SET reason = @1, ").setstate()._(" WHERE id = @2 AND userid = @3 AND ").statecond();
                 if (dc.Query(p => p.Set(reason).Set(orderid).Set(userid)))
                 {
-                    var order = dc.ToArray<WfOrder>();
+                    var order = dc.ToArray<Order>();
                     ac.ReplyPage(200, main =>
                     {
 
@@ -57,10 +57,10 @@ namespace Greatbone.Sample
 
             using (var dc = Service.NewDbContext())
             {
-                dc.Sql("SELECT ").columnlst(WfOrder.Empty)._("FROM orders WHERE id = @1 AND shopid = @2");
+                dc.Sql("SELECT ").columnlst(Order.Empty)._("FROM orders WHERE id = @1 AND shopid = @2");
                 if (dc.Query(p => p.Set(id).Set(shopid)))
                 {
-                    var order = dc.ToArray<WfOrder>();
+                    var order = dc.ToArray<Order>();
                     ac.ReplyPage(200, main =>
                     {
 
@@ -82,10 +82,10 @@ namespace Greatbone.Sample
 
             using (var dc = ac.NewDbContext())
             {
-                dc.Sql("SELECT ").columnlst(WfOrder.Empty)._("FROM orders WHERE id = @1 AND shopid = @2");
+                dc.Sql("SELECT ").columnlst(Order.Empty)._("FROM orders WHERE id = @1 AND shopid = @2");
                 if (dc.Query(p => p.Set(orderid).Set(shopid)))
                 {
-                    var order = dc.ToArray<WfOrder>();
+                    var order = dc.ToArray<Order>();
                     ac.ReplyPage(200, main =>
                     {
 
@@ -110,7 +110,7 @@ namespace Greatbone.Sample
                 dc.Sql("UPDATE orders SET ").setstate()._(" WHERE id = @1 AND shopid = @2 AND ").statecond();
                 if (dc.Query(p => p.Set(id).Set(shopid)))
                 {
-                    var order = dc.ToArray<WfOrder>();
+                    var order = dc.ToArray<Order>();
                     ac.ReplyPage(200, main => { });
                 }
                 else

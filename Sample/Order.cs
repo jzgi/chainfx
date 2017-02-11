@@ -6,7 +6,7 @@ namespace Greatbone.Sample
     /// 
     /// An order processing workflow.
     ///
-    public class WfOrder : IData, IStatable
+    public class Order : IData, IStatable
     {
         // state
         public const int
@@ -23,7 +23,7 @@ namespace Greatbone.Sample
             CANCELLEDed = 2,
             Closed = 9;
 
-        public static readonly WfOrder Empty = new WfOrder();
+        public static readonly Order Empty = new Order();
 
         internal int id;
 
@@ -33,9 +33,9 @@ namespace Greatbone.Sample
 
         internal string shopwx; // shop weixin openid
 
-        internal string buyerwx; // buyer weixin openid
+        internal string userwx; // buyer weixin openid
 
-        internal string buyer; // buyer nickname or name
+        internal string user; // buyer nickname or name
 
         internal DateTime created; // time created
 
@@ -45,7 +45,7 @@ namespace Greatbone.Sample
 
         internal DateTime closed; // time closed
 
-        OrderLine[] lines;
+        OrderLine[] detail;
 
         decimal total;
 
@@ -64,13 +64,13 @@ namespace Greatbone.Sample
             i.Get(nameof(shop), ref shop);
             i.Get(nameof(shopwx), ref shopwx);
 
-            i.Get(nameof(buyer), ref buyer);
-            i.Get(nameof(buyerwx), ref buyerwx);
+            i.Get(nameof(user), ref user);
+            i.Get(nameof(userwx), ref userwx);
 
             i.Get(nameof(created), ref created);
             if (proj.Sub())
             {
-                i.Get(nameof(lines), ref lines);
+                i.Get(nameof(detail), ref detail);
             }
             i.Get(nameof(total), ref total);
 
@@ -87,13 +87,13 @@ namespace Greatbone.Sample
             o.Put(nameof(shop), shop);
             o.Put(nameof(shopwx), shopwx);
 
-            o.Put(nameof(buyer), buyer);
-            o.Put(nameof(buyerwx), buyerwx);
+            o.Put(nameof(user), user);
+            o.Put(nameof(userwx), userwx);
 
             o.Put(nameof(created), created);
             if (proj.Sub())
             {
-                o.Put(nameof(lines), lines);
+                o.Put(nameof(detail), detail);
             }
             o.Put(nameof(total), total);
 

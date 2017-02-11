@@ -149,8 +149,7 @@ namespace Greatbone.Sample
                 dc.Sql("SELECT ").columnlst(Shop.Empty)._("FROM shops WHERE location <-> @1");
                 if (dc.Query(p => p.Set(pt)))
                 {
-                    var shops = dc.ToArray<Shop>();
-                    ac.ReplyPage(200, main => { main.FORM_grid(null, shops); });
+                    var shops = dc.ToList<Shop>();
                 }
                 else
                 {

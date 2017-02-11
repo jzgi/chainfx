@@ -65,10 +65,20 @@ namespace Greatbone.Sample
         // administrative actions
         //
 
-        [Admin]
+        // [Admin]
         public void @default(WebActionContext ac)
         {
-
+            using (var dc = ac.NewDbContext())
+            {
+                if (dc.Query("SELECT * FROM shops"))
+                {
+                    ac.ReplyGrid(200, dc.ToList<Shop>()); // ok
+                }
+                else
+                {
+                    ac.Reply(204); // no content
+                }
+            }
         }
 
         // [Admin]
@@ -113,31 +123,28 @@ namespace Greatbone.Sample
             }
         }
 
-        ///
-        /// Get buyer's personal order list
-        ///
-        public void all(WebActionContext ac)
+        [Ui("删除")]
+        public void del(WebActionContext ac)
         {
 
         }
 
-        ///
-        /// Get shop's order list
-        ///
-        public void list(WebActionContext ac)
+        [Ui("禁用")]
+        public void disable(WebActionContext ac)
         {
-            // string shopid = wc.Var(null);
 
         }
 
-        ///
-        /// find in shop's order list
-        ///
-        public void clear(WebActionContext ac)
+        [Ui("启用")]
+        public void enable(WebActionContext ac)
         {
-            // string shopid = wc.Var(null);
 
         }
 
+        [Ui("分布报告")]
+        public void rpt(WebActionContext ac)
+        {
+
+        }
     }
 }

@@ -12,9 +12,11 @@ namespace Greatbone.Sample
 
         internal string id; // platform shop id
         internal string name;
-        internal string credential, password;
+        internal string password;
+        internal string credential;
         internal string tel;
-        internal double x, y;
+        internal double x;
+        internal double y;
         internal string prov;
         internal string city;
         internal string wx;
