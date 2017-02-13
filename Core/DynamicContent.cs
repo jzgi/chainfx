@@ -234,6 +234,26 @@ namespace Greatbone.Core
             }
         }
 
+        public void AddConvert<V>(V v) where V : IConvertible
+        {
+            if (v is short)
+            {
+                Add(v.ToInt16(null));
+            }
+            else if (v is int)
+            {
+                Add(v.ToInt32(null));
+            }
+            else if (v is long)
+            {
+                Add(v.ToInt64(null));
+            }
+            else
+            {
+                Add(v.ToString());
+            }
+        }
+
         public void Add(short v)
         {
             if (v == 0)
@@ -317,6 +337,7 @@ namespace Greatbone.Core
             }
             Add(DIGIT[v]); // last reminder
         }
+
 
         public void Add(double v)
         {

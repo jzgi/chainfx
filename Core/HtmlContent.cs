@@ -7,7 +7,7 @@ namespace Greatbone.Core
     ///
     /// For dynamical HTML5 content tooled with Zurb Foundation
     ///
-    public class HtmlContent : DynamicContent, IDataOutput<HtmlContent>, ISelectOptions
+    public class HtmlContent : DynamicContent, IDataOutput<HtmlContent>
     {
         public const sbyte
 
@@ -292,101 +292,11 @@ namespace Greatbone.Core
             Add("</label>");
         }
 
-        public void TEL(string name, string v, string Label = null, string Placeholder = null, string Pattern = null, sbyte Max = 0, sbyte Min = 0, bool ReadOnly = false, bool Required = false)
+        public void TEXTPicker(string name, string v, string Label = null, string Placeholder = null, string Pattern = null, sbyte Max = 0, sbyte Min = 0, bool ReadOnly = false, bool Required = false)
         {
             Add("<label>");
             AddLabel(Label, name);
-            Add("<input type=\"tel\" name=\"");
-            Add(name);
-            Add("\" value=\"");
-            AddEsc(v);
-            Add("\"");
-
-            if (Placeholder != null)
-            {
-                Add(" placedholder=\"");
-                Add(Placeholder);
-                Add("\"");
-            }
-            if (Pattern != null)
-            {
-                Add(" pattern=\"");
-                AddEsc(Pattern);
-                Add("\"");
-            }
-            if (Max > 0)
-            {
-                Add(" maxlength=\"");
-                Add(Max);
-                Add("\"");
-                Add(" size=\"");
-                Add(Max);
-                Add("\"");
-            }
-            if (Min > 0)
-            {
-                Add(" minlength=\"");
-                Add(Min);
-                Add("\"");
-            }
-            if (ReadOnly) Add(" readonly");
-            if (Required) Add(" required");
-
-            Add(">");
-
-            Add("</label>");
-        }
-
-        public void URL(string name, string v, string Label = null, string Placeholder = null, string Pattern = null, sbyte Max = 0, sbyte Min = 0, bool ReadOnly = false, bool Required = false)
-        {
-            Add("<label>");
-            AddLabel(Label, name);
-            Add("<input type=\"url\" name=\"");
-            Add(name);
-            Add("\" value=\"");
-            AddEsc(v);
-            Add("\"");
-
-            if (Placeholder != null)
-            {
-                Add(" placedholder=\"");
-                Add(Placeholder);
-                Add("\"");
-            }
-            if (Pattern != null)
-            {
-                Add(" pattern=\"");
-                AddEsc(Pattern);
-                Add("\"");
-            }
-            if (Max > 0)
-            {
-                Add(" maxlength=\"");
-                Add(Max);
-                Add("\"");
-                Add(" size=\"");
-                Add(Max);
-                Add("\"");
-            }
-            if (Min > 0)
-            {
-                Add(" minlength=\"");
-                Add(Min);
-                Add("\"");
-            }
-            if (ReadOnly) Add(" readonly");
-            if (Required) Add(" required");
-
-            Add(">");
-
-            Add("</label>");
-        }
-
-        public void EMAIL(string name, string v, string Label = null, string Placeholder = null, string Pattern = null, sbyte Max = 0, sbyte Min = 0, bool ReadOnly = false, bool Required = false)
-        {
-            Add("<label>");
-            AddLabel(Label, name);
-            Add("<input type=\"email\" name=\"");
+            Add("<input type=\"text\" name=\"");
             Add(name);
             Add("\" value=\"");
             AddEsc(v);
@@ -512,14 +422,14 @@ namespace Greatbone.Core
             T("</tbody>");
         }
 
-        public void NUMBER(string name, int v, string Label = null, bool Pick = false, string Placeholder = null, int Max = 0, int Min = 0, int Step = 0, bool ReadOnly = false, bool Required = false)
+        public void NUMBER<V>(string name, V v, string Label = null, string Placeholder = null, V Max = default(V), V Min = default(V), V Step = default(V), bool ReadOnly = false, bool Required = false) where V : IEquatable<V>, IConvertible
         {
             Add("<label>");
             AddLabel(null, name);
             Add("<input type=\"number\" name=\"");
             Add(name);
             Add("\" value=\"");
-            Add(v);
+            AddConvert(v);
             Add("\"");
 
             if (Placeholder != null)
@@ -528,22 +438,22 @@ namespace Greatbone.Core
                 Add(Placeholder);
                 Add("\"");
             }
-            if (Max != 0)
+            if (Max.Equals(default(V)))
             {
                 Add(" max=\"");
-                Add(Max);
+                AddConvert(Max);
                 Add("\"");
             }
-            if (Min != 0)
+            if (Min.Equals(default(V)))
             {
                 Add(" min=\"");
-                Add(Min);
+                AddConvert(Min);
                 Add("\"");
             }
-            if (Step != 0)
+            if (Step.Equals(default(V)))
             {
                 Add(" step=\"");
-                Add(Step);
+                AddConvert(Step);
                 Add("\"");
             }
             if (ReadOnly) Add(" readonly");
@@ -552,53 +462,6 @@ namespace Greatbone.Core
             Add(">");
             Add("</label>");
         }
-
-
-        public void NUMBER(string name, long v, string Label = null, bool Pick = false, string Placeholder = null, long Max = 0, long Min = 0, long Step = 0, bool ReadOnly = false, bool Required = false)
-        {
-            Add("<label>");
-            AddLabel(null, name);
-            Add("<input type=\"number\" name=\"");
-            Add(name);
-            Add("\" value=\"");
-            Add(v);
-            Add("\"");
-
-            if (Placeholder != null)
-            {
-                Add(" placedholder=\"");
-                Add(Placeholder);
-                Add("\"");
-            }
-            if (Max != 0)
-            {
-                Add(" max=\"");
-                Add(Max);
-                Add("\"");
-            }
-            if (Min != 0)
-            {
-                Add(" min=\"");
-                Add(Min);
-                Add("\"");
-            }
-            if (Step != 0)
-            {
-                Add(" step=\"");
-                Add(Step);
-                Add("\"");
-            }
-            if (ReadOnly) Add(" readonly");
-            if (Required) Add(" required");
-
-            Add(">");
-            Add("</label>");
-        }
-
-        public void NUMBER(string name, decimal v, string Label = null, bool Pick = false, string Placeholder = null, int Max = 0, int Min = 0, int Step = 0, bool ReadOnly = false, bool Required = false)
-        {
-        }
-
 
         public void RANGE()
         {
@@ -623,24 +486,73 @@ namespace Greatbone.Core
             Add("</label>");
         }
 
-        public void RADIO(string name, string[] values, int Checked = 0, string Label = null, bool Required = false)
+        public void CHECKBOX<V>(V[] v, IDictionary<V, string> options, string Label = null, bool Required = false) where V : IEquatable<V>, IConvertible
         {
             Add("<fieldset>");
+
+            Add("<legend>");
+            AddLabel(Label, null);
+            Add("</legend>");
+
+            foreach (var pair in options)
+            {
+                V key = pair.Key;
+
+                Add("<input type=\"checkbox\" name=\"");
+                AddConvert(key);
+                Add("\"");
+
+                Add("\" id=\"");
+                AddConvert(key);
+                Add("\"");
+
+                Add("\" value=\"");
+                AddConvert(key);
+                Add("\"");
+
+                if (key.Equals(v)) Add(" checked");
+                if (Required) Add(" required");
+                Add(">");
+
+                Add("<label for=\"");
+                AddConvert(key);
+                Add("\">");
+                Add(pair.Value);
+                Add("</label>");
+            }
+            Add("</fieldset>");
+        }
+
+        public void RADIO<V>(string name, V v, IDictionary<V, string> options, string Label = null, bool Required = false) where V : IEquatable<V>, IConvertible
+        {
+            Add("<fieldset>");
+
             Add("<legend>");
             AddLabel(Label, name);
             Add("</legend>");
-            for (int i = 0; i < values.Length; i++)
+
+            foreach (var pair in options)
             {
-                Add("<label>");
                 Add("<input type=\"radio\" name=\"");
                 Add(name);
-                Add("\" value=\"");
-                Add(i);
+                V key = pair.Key;
+
+                Add("\" id=\""); Add(name);
+                AddConvert(key);
                 Add("\"");
-                if (Checked == i) Add(" checked");
+
+                Add("\" value=\"");
+                AddConvert(key);
+                Add("\"");
+
+                if (key.Equals(v)) Add(" checked");
                 if (Required) Add(" required");
+                Add(">");
+
+                Add("<label for=\""); Add(name);
+                AddConvert(key);
                 Add("\">");
-                Add(values[i]);
+                Add(pair.Value);
                 Add("</label>");
             }
             Add("</fieldset>");
@@ -743,7 +655,7 @@ namespace Greatbone.Core
             Add("</div>");
         }
 
-        public void SELECT(string name, string[] options, int selected = -1, string Label = null, bool Required = false)
+        public void SELECT<V>(string name, V v, IDictionary<V, string> options, string Label = null, bool Required = false) where V : IEquatable<V>, IConvertible
         {
             Add("<label>");
             AddLabel(Label, name);
@@ -751,66 +663,22 @@ namespace Greatbone.Core
             Add(name);
             Add("\"");
             if (Required) Add(" required");
-            Add("\">");
+            Add(">");
 
-            for (int i = 0; i < options.Length; i++)
+            foreach (var pair in options)
             {
-                string opt = options[i];
+                V key = pair.Key;
                 Add("<option value=\"");
-                Add(opt);
+                AddConvert(key);
                 Add("\"");
-                if (selected == i) Add(" selected");
-                Add("\">");
-                Add(opt);
+                if (key.Equals(v)) Add(" selected");
+                Add(">");
+
+                Add(pair.Value);
                 Add("</option>");
             }
+            Add("</select>");
             Add("</label>");
-        }
-
-        public void SELECT<V>(string name, IOption<V>[] options, string Label = null, bool Required = false)
-        {
-            Add("<label>");
-            AddLabel(Label, name);
-            Add("<select name=\"");
-            Add(name);
-            Add("\"");
-            if (Required) Add(" required");
-            Add("\">");
-
-            for (int i = 0; i < options.Length; i++)
-            {
-                IOption<V> opt = options[i];
-                Add("<option value=\"");
-                Add(opt.ToString());
-                Add("\"");
-                if (opt.IsOn) Add(" selected");
-                Add("\">");
-                Add(opt.Label);
-                Add("</option>");
-            }
-            Add("</label>");
-        }
-
-        public void SELECT(string name, Action<ISelectOptions> options, string Label = null, bool Required = false)
-        {
-            Add("<label>");
-            AddLabel(Label, name);
-            Add("<select name=\"");
-            Add(name);
-            Add("\"");
-            if (Required) Add(" required");
-            Add("\">");
-            options(this);
-            Add("</label>");
-        }
-
-        public void OPTION(string text, string value, bool selected = false)
-        {
-            Add("<option value=\"");
-            Add(value);
-            Add("\"");
-            if (selected) Add(" selected");
-            Add("\">");
         }
 
         public void DATALIST()
@@ -1190,23 +1058,4 @@ namespace Greatbone.Core
         }
     }
 
-
-    public interface ITableThead
-    {
-        void thead(string text, string href = "#");
-    }
-
-    public interface ISelectOptions
-    {
-        void OPTION(string label, string value, bool selected = false);
-    }
-
-    public interface IOption<V>
-    {
-        string Label { get; }
-
-        V Value { get; }
-
-        bool IsOn { get; }
-    }
 }
