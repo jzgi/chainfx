@@ -4,11 +4,9 @@ using Greatbone.Core;
 
 namespace Greatbone.Sample
 {
-
     public static class HtmlUtility
     {
-
-        public static void ReplyPage(this WebActionContext ac, int status, Action<HtmlContent> inner, bool? pub = null, int maxage = 60)
+        public static void ReplyHtml(this WebActionContext ac, int status, Action<HtmlContent> inner, bool? pub = null, int maxage = 60)
         {
             HtmlContent cont = new HtmlContent(true, true, 16 * 1024);
 
@@ -25,8 +23,11 @@ namespace Greatbone.Sample
 
             inner(cont);
 
+            // zurb foundation
             cont.T("<script src=\"//cdn.bootcss.com/jquery/3.1.1/jquery.min.js\"></script>");
             cont.T("<script src=\"//cdn.bootcss.com/foundation/6.3.0/js/foundation.min.js\"></script>");
+            cont.T("<script>$(document).foundation();</script>");
+
             cont.T("</body>");
             cont.T("</html>");
 
@@ -34,13 +35,9 @@ namespace Greatbone.Sample
             ac.Reply(status, cont, pub, maxage);
         }
 
-        public static void ReplyPane(this WebActionContext ac, int status, string header, Action<HtmlContent> main, bool? pub = null, int maxage = 60000)
+        public static void ReplySheet(this WebActionContext ac, int status, Action<HtmlContent> inner, bool? pub = null, int maxage = 60)
         {
-        }
-
-        public static void ReplyDlg(this WebActionContext ac, int status, Action<HtmlContent> inner, bool? pub = null, int maxage = 60)
-        {
-            ac.ReplyPage(status, cont =>
+            ac.ReplyHtml(status, cont =>
             {
                 cont.T("<form>");
                 inner(cont);
@@ -49,9 +46,9 @@ namespace Greatbone.Sample
             pub, maxage);
         }
 
-        public static void ReplyDlgForm(this WebActionContext ac, int status, IData obj, ushort proj = 0, bool? pub = null, int maxage = 60)
+        public static void ReplyForm(this WebActionContext ac, int status, IData obj, ushort proj = 0, bool? pub = null, int maxage = 60)
         {
-            ac.ReplyPage(status, cont =>
+            ac.ReplyHtml(status, cont =>
             {
                 cont.T("<form>");
                 cont.ctx = HtmlContent.FormCtx;
@@ -61,16 +58,14 @@ namespace Greatbone.Sample
             pub, maxage);
         }
 
-        public static void ReplyGrid<D>(this WebActionContext ac, int status, List<D> lst, ushort proj = 0, bool? pub = null, int maxage = 60) where D: IData
+        public static void ReplyGrid<D>(this WebActionContext ac, int status, List<D> lst, ushort proj = 0, bool? pub = null, int maxage = 60) where D : IData
         {
-            ac.ReplyPage(status, cont =>
+            List<WebAction> actions = ac.Folder.GetUiActions(ac);
+            ac.ReplyHtml(status, cont =>
             {
-                List<WebAction> actions = ac.Folder.GetUiActions(ac);
                 cont.FORM_grid(actions, lst);
             },
             pub, maxage);
         }
-
     }
-
 }

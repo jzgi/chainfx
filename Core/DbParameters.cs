@@ -57,7 +57,7 @@ namespace Greatbone.Core
             return this;
         }
 
-        public DbParameters Put(string name, bool v, string Label = null, bool Required = false)
+        public DbParameters Put(string name, bool v, string Label = null, bool Required = false, Func<bool, string> Options = null)
         {
             if (name == null)
             {
@@ -70,7 +70,7 @@ namespace Greatbone.Core
             return this;
         }
 
-        public DbParameters Put(string name, short v, string Label = null, bool Pick = false, string Placeholder = null, short Max = 0, short Min = 0, short Step = 0, bool ReadOnly = false, bool Required = false)
+        public DbParameters Put(string name, short v, string Label = null, string Placeholder = null, short Max = 0, short Min = 0, short Step = 0, bool ReadOnly = false, bool Required = false, IDictionary<short, string> Options = null)
         {
             if (name == null)
             {
@@ -83,7 +83,7 @@ namespace Greatbone.Core
             return this;
         }
 
-        public DbParameters Put(string name, int v, string Label = null, bool Pick = false, string Placeholder = null, int Max = 0, int Min = 0, int Step = 0, bool ReadOnly = false, bool Required = false)
+        public DbParameters Put(string name, int v, string Label = null, string Placeholder = null, int Max = 0, int Min = 0, int Step = 0, bool ReadOnly = false, bool Required = false, IDictionary<int, string> Options = null)
         {
             if (name == null)
             {
@@ -96,7 +96,7 @@ namespace Greatbone.Core
             return this;
         }
 
-        public DbParameters Put(string name, long v, string Label = null, bool Pick = false, string Placeholder = null, long Max = 0, long Min = 0, long Step = 0, bool ReadOnly = false, bool Required = false)
+        public DbParameters Put(string name, long v, string Label = null, string Placeholder = null, long Max = 0, long Min = 0, long Step = 0, bool ReadOnly = false, bool Required = false, IDictionary<long, string> Options = null)
         {
             if (name == null)
             {
@@ -187,7 +187,7 @@ namespace Greatbone.Core
             return this;
         }
 
-        public DbParameters Put(string name, string v, string Label = null, bool Pick = false, string Placeholder = null, string Pattern = null, short Max = 0, short Min = 0, bool ReadOnly = false, bool Required = false)
+        public DbParameters Put(string name, string v, string Label = null, string Placeholder = null, string Pattern = null, short Max = 0, short Min = 0, bool ReadOnly = false, bool Required = false, IDictionary<string, string> Options = null)
         {
             if (name == null)
             {
@@ -224,26 +224,6 @@ namespace Greatbone.Core
             {
                 Value = (v.Array != null) ? (object)v : DBNull.Value
             });
-            return this;
-        }
-
-        public DbParameters Put(string name, IData v, ushort proj = 0)
-        {
-            if (name == null)
-            {
-                name = Defaults[position++];
-            }
-            if (v == null)
-            {
-                coll.Add(new NpgsqlParameter(name, NpgsqlDbType.Jsonb) { Value = DBNull.Value });
-            }
-            else
-            {
-                coll.Add(new NpgsqlParameter(name, NpgsqlDbType.Jsonb)
-                {
-                    Value = JsonUtility.ObjectToString(v, proj)
-                });
-            }
             return this;
         }
 
@@ -293,7 +273,7 @@ namespace Greatbone.Core
             return this;
         }
 
-        public DbParameters Put(string name, short[] v)
+        public DbParameters Put(string name, short[] v, string Label = null, string Placeholder = null, bool ReadOnly = false, bool Required = false, IDictionary<short, string> Options = null)
         {
             if (name == null)
             {
@@ -306,7 +286,7 @@ namespace Greatbone.Core
             return this;
         }
 
-        public DbParameters Put(string name, int[] v)
+        public DbParameters Put(string name, int[] v, string Label = null, string Placeholder = null, bool ReadOnly = false, bool Required = false, IDictionary<int, string> Options = null)
         {
             if (name == null)
             {
@@ -319,7 +299,7 @@ namespace Greatbone.Core
             return this;
         }
 
-        public DbParameters Put(string name, long[] v)
+        public DbParameters Put(string name, long[] v, string Label = null, string Placeholder = null, bool ReadOnly = false, bool Required = false, IDictionary<long, string> Options = null)
         {
             if (name == null)
             {
@@ -332,7 +312,7 @@ namespace Greatbone.Core
             return this;
         }
 
-        public DbParameters Put(string name, string[] v)
+        public DbParameters Put(string name, string[] v, string Label = null, string Placeholder = null, bool ReadOnly = false, bool Required = false, IDictionary<string, string> Options = null)
         {
             if (name == null)
             {
@@ -345,7 +325,27 @@ namespace Greatbone.Core
             return this;
         }
 
-        public DbParameters Put<D>(string name, D[] v, ushort proj = 0) where D : IData
+        public DbParameters Put(string name, IData v, ushort proj = 0, string Label = null, string Placeholder = null, bool ReadOnly = false, bool Required = false)
+        {
+            if (name == null)
+            {
+                name = Defaults[position++];
+            }
+            if (v == null)
+            {
+                coll.Add(new NpgsqlParameter(name, NpgsqlDbType.Jsonb) { Value = DBNull.Value });
+            }
+            else
+            {
+                coll.Add(new NpgsqlParameter(name, NpgsqlDbType.Jsonb)
+                {
+                    Value = JsonUtility.ObjectToString(v, proj)
+                });
+            }
+            return this;
+        }
+
+        public DbParameters Put<D>(string name, D[] v, ushort proj = 0, string Label = null, string Placeholder = null, bool ReadOnly = false, bool Required = false) where D : IData
         {
             if (name == null)
             {
@@ -368,7 +368,7 @@ namespace Greatbone.Core
             return this;
         }
 
-        public DbParameters Put<D>(string name, List<D> v, ushort proj = 0) where D : IData
+        public DbParameters Put<D>(string name, List<D> v, ushort proj = 0, string Label = null, string Placeholder = null, bool ReadOnly = false, bool Required = false) where D : IData
         {
             if (name == null)
             {
@@ -396,7 +396,7 @@ namespace Greatbone.Core
             return this;
         }
 
-        public DbParameters Put(string name, Dictionary<string, string> v)
+        public DbParameters Put(string name, Dictionary<string, string> v, string Label = null, string Placeholder = null, bool ReadOnly = false, bool Required = false)
         {
             return this;
         }

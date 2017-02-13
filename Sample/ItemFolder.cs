@@ -1,9 +1,10 @@
-﻿using Greatbone.Core;
+﻿using System.Collections.Generic;
+using System.Threading.Tasks;
+using Greatbone.Core;
 
 namespace Greatbone.Sample
 {
     ///
-    /// /shop/-id-/item/
     ///
     public class ItemFolder : WebFolder
     {
@@ -12,11 +13,22 @@ namespace Greatbone.Sample
             CreateVar<ItemVarFolder>();
         }
 
-        #region /user/-userwx-/order/
+        #region /shop/-shopid-/item/
 
-        public void my(WebActionContext ac)
+        public void lst(WebActionContext ac)
         {
-
+            string shopid = ac[1];
+            using (var dc = ac.NewDbContext())
+            {
+                if (dc.Query("SELECT * FROM items WHERE shopid = @1 AND enabled", p => p.Set(shopid)))
+                {
+                    ac.Reply(200, dc.Dump<JsonContent>());
+                }
+                else
+                {
+                    ac.Reply(204);
+                }
+            }
         }
 
         #endregion
@@ -27,41 +39,54 @@ namespace Greatbone.Sample
         [Ui]
         public void @default(WebActionContext ac)
         {
-
+            string shopid = ac[1];
+            using (var dc = ac.NewDbContext())
+            {
+                if (dc.Query("SELECT * FROM orders WHERE shopid = @1 AND status < 4", p => p.Set(shopid)))
+                {
+                    ac.ReplyGrid(200, dc.ToList<Item>());
+                }
+                else
+                {
+                    ac.ReplyGrid(200, (List<Item>)null);
+                }
+            }
         }
 
         [Shop]
         [Ui]
-        public void all(WebActionContext ac)
+        public void toggle(WebActionContext ac)
         {
-
+            string shopid = ac[1];
+            using (var dc = ac.NewDbContext())
+            {
+                dc.Execute("UPDATE items SET enabled = NOT enabled WHERE shopid = @1", p => p.Set(shopid));
+                // ac.SetHeader();
+                ac.Reply(303); // see other
+            }
         }
 
         [Shop]
         [Ui]
-        public void list(WebActionContext ac)
+        public async Task modify(WebActionContext ac)
         {
-            // string shopid = wc.Var(null);
+            string shopid = ac[1];
 
-        }
-
-        [Shop]
-        [Ui]
-        public void clear(WebActionContext ac)
-        {
-            // string shopid = wc.Var(null);
-
-        }
-
-        #endregion
-
-        #region /order/
-
-        [Admin]
-        [Ui]
-        public void exam(WebActionContext ac)
-        {
-
+            if (ac.GET)
+            {
+                var item = new Item() { };
+                ac.ReplyForm(200, item);
+            }
+            else
+            {
+                var item = await ac.ReadObjectAsync<Item>();
+                using (var dc = ac.NewDbContext())
+                {
+                    dc.Execute("UPDATE items SET enabled = NOT enabled WHERE shopid = @1", p => p.Set(shopid));
+                    // ac.SetHeader();
+                    ac.Reply(303); // see other
+                }
+            }
         }
 
         #endregion

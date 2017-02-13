@@ -9,13 +9,19 @@ namespace Greatbone.Core
     ///
     public class HtmlContent : DynamicContent, IDataOutput<HtmlContent>, ISelectOptions
     {
-        const string Primary = "primary", Secondary = "secondary", Success = "success", Alert = "alert", Warning = "warning";
-
         public const sbyte
-            GridTheadCtx = 1,
-            GridTbodyCtx = 2, // grid
-            SheetTrs = 2, // property sheet
-            FormCtx = 3;
+
+            THeadCtx = 1,
+
+            TBodyCtx = 2,
+
+            GridTHeadCtx = 3,
+
+            GridTBodyCtx = 4,
+
+            SheetCtx = 5,
+
+            FormCtx = 7;
 
         internal sbyte ctx;
 
@@ -186,7 +192,7 @@ namespace Greatbone.Core
             {
                 Add("<table>");
 
-                ctx = GridTheadCtx;
+                ctx = GridTHeadCtx;
                 Add("<thead>");
                 Add("<tr>");
                 for (int i = 0; i < list.Count; i++)
@@ -197,7 +203,7 @@ namespace Greatbone.Core
                 Add("</tr>");
                 Add("</thead>");
 
-                ctx = GridTbodyCtx;
+                ctx = GridTBodyCtx;
                 Add("<tbody>");
 
                 for (int i = 0; i < list.Count; i++)
@@ -241,7 +247,7 @@ namespace Greatbone.Core
             Add("\">");
         }
 
-        public void TEXT(string name, string v, string Label = null, bool Pick = false, string Placeholder = null, string Pattern = null, sbyte Max = 0, sbyte Min = 0, bool ReadOnly = false, bool Required = false)
+        public void TEXT(string name, string v, string Label = null, string Placeholder = null, string Pattern = null, sbyte Max = 0, sbyte Min = 0, bool ReadOnly = false, bool Required = false)
         {
             Add("<label>");
             AddLabel(Label, name);
@@ -283,14 +289,10 @@ namespace Greatbone.Core
 
             Add(">");
 
-            if (Pick)
-            {
-                Add("<input type=\"button\" onclick=\"\"");
-            }
             Add("</label>");
         }
 
-        public void TEL(string name, string v, string Label = null, bool Pick = false, string Placeholder = null, string Pattern = null, sbyte Max = 0, sbyte Min = 0, bool ReadOnly = false, bool Required = false)
+        public void TEL(string name, string v, string Label = null, string Placeholder = null, string Pattern = null, sbyte Max = 0, sbyte Min = 0, bool ReadOnly = false, bool Required = false)
         {
             Add("<label>");
             AddLabel(Label, name);
@@ -332,14 +334,10 @@ namespace Greatbone.Core
 
             Add(">");
 
-            if (Pick)
-            {
-                Add("<input type=\"button\" onclick=\"\"");
-            }
             Add("</label>");
         }
 
-        public void URL(string name, string v, string Label = null, bool Pick = false, string Placeholder = null, string Pattern = null, sbyte Max = 0, sbyte Min = 0, bool ReadOnly = false, bool Required = false)
+        public void URL(string name, string v, string Label = null, string Placeholder = null, string Pattern = null, sbyte Max = 0, sbyte Min = 0, bool ReadOnly = false, bool Required = false)
         {
             Add("<label>");
             AddLabel(Label, name);
@@ -381,14 +379,10 @@ namespace Greatbone.Core
 
             Add(">");
 
-            if (Pick)
-            {
-                Add("<input type=\"button\" onclick=\"\"");
-            }
             Add("</label>");
         }
 
-        public void EMAIL(string name, string v, string Label = null, bool Pick = false, string Placeholder = null, string Pattern = null, sbyte Max = 0, sbyte Min = 0, bool ReadOnly = false, bool Required = false)
+        public void EMAIL(string name, string v, string Label = null, string Placeholder = null, string Pattern = null, sbyte Max = 0, sbyte Min = 0, bool ReadOnly = false, bool Required = false)
         {
             Add("<label>");
             AddLabel(Label, name);
@@ -430,14 +424,10 @@ namespace Greatbone.Core
 
             Add(">");
 
-            if (Pick)
-            {
-                Add("<input type=\"button\" onclick=\"\"");
-            }
             Add("</label>");
         }
 
-        public void PASSWORD(string name, string v, string Label = null, bool Pick = false, string Placeholder = null, string Pattern = null, sbyte Max = 0, sbyte Min = 0, bool ReadOnly = false, bool Required = false)
+        public void PASSWORD(string name, string v, string Label = null, string Placeholder = null, string Pattern = null, sbyte Max = 0, sbyte Min = 0, bool ReadOnly = false, bool Required = false)
         {
             Add("<label>");
             AddLabel(Label, name);
@@ -479,10 +469,6 @@ namespace Greatbone.Core
 
             Add(">");
 
-            if (Pick)
-            {
-                Add("<input type=\"button\" onclick=\"\"");
-            }
             Add("</label>");
         }
 
@@ -859,7 +845,7 @@ namespace Greatbone.Core
             return this;
         }
 
-        public HtmlContent Put(string name, bool v, string Label = null, bool Required = false)
+        public HtmlContent Put(string name, bool v, string Label = null, bool Required = false, Func<bool, string> Options = null)
         {
             switch (ctx)
             {
@@ -868,12 +854,12 @@ namespace Greatbone.Core
                     CHECKBOX(name, v);
                     Add("</div>");
                     break;
-                case GridTheadCtx:
+                case GridTHeadCtx:
                     Add("<th>");
                     AddLabel(null, name);
                     Add("</th>");
                     break;
-                case GridTbodyCtx:
+                case GridTBodyCtx:
                     Add("<td>");
                     Add(v);
                     Add("</td>");
@@ -883,7 +869,7 @@ namespace Greatbone.Core
             return this;
         }
 
-        public HtmlContent Put(string name, short v, string Label = null, bool Pick = false, string Placeholder = null, short Max = 0, short Min = 0, short Step = 0, bool ReadOnly = false, bool Required = false)
+        public HtmlContent Put(string name, short v, string Label = null, string Placeholder = null, short Max = 0, short Min = 0, short Step = 0, bool ReadOnly = false, bool Required = false, IDictionary<short, string> Options = null)
         {
             switch (ctx)
             {
@@ -892,12 +878,12 @@ namespace Greatbone.Core
                     NUMBER(name, v);
                     Add("</div>");
                     break;
-                case GridTheadCtx:
+                case GridTHeadCtx:
                     Add("<th>");
                     AddLabel(null, name);
                     Add("</th>");
                     break;
-                case GridTbodyCtx:
+                case GridTBodyCtx:
                     Add("<td style=\"text-align: right;\">");
                     if (ordinal == 0)
                     {
@@ -911,7 +897,7 @@ namespace Greatbone.Core
             return this;
         }
 
-        public HtmlContent Put(string name, int v, string Label = null, bool Pick = false, string Placeholder = null, int Max = 0, int Min = 0, int Step = 0, bool ReadOnly = false, bool Required = false)
+        public HtmlContent Put(string name, int v, string Label = null, string Placeholder = null, int Max = 0, int Min = 0, int Step = 0, bool ReadOnly = false, bool Required = false, IDictionary<int, string> Options = null)
         {
             switch (ctx)
             {
@@ -920,12 +906,12 @@ namespace Greatbone.Core
                     NUMBER(name, v);
                     Add("</div>");
                     break;
-                case GridTheadCtx:
+                case GridTHeadCtx:
                     Add("<th>");
                     AddLabel(null, name);
                     Add("</th>");
                     break;
-                case GridTbodyCtx:
+                case GridTBodyCtx:
                     Add("<td style=\"text-align: right;\">");
                     if (ordinal == 0)
                     {
@@ -939,7 +925,7 @@ namespace Greatbone.Core
             return this;
         }
 
-        public HtmlContent Put(string name, long v, string Label = null, bool Pick = false, string Placeholder = null, long Max = 0, long Min = 0, long Step = 0, bool ReadOnly = false, bool Required = false)
+        public HtmlContent Put(string name, long v, string Label = null, string Placeholder = null, long Max = 0, long Min = 0, long Step = 0, bool ReadOnly = false, bool Required = false, IDictionary<long, string> Options = null)
         {
             switch (ctx)
             {
@@ -948,12 +934,12 @@ namespace Greatbone.Core
                     NUMBER(name, v);
                     Add("</div>");
                     break;
-                case GridTheadCtx:
+                case GridTHeadCtx:
                     Add("<th>");
                     AddLabel(null, name);
                     Add("</th>");
                     break;
-                case GridTbodyCtx:
+                case GridTBodyCtx:
                     Add("<td style=\"text-align: right;\">");
                     if (ordinal == 0)
                     {
@@ -975,12 +961,12 @@ namespace Greatbone.Core
                     Add("<div class=\"pure-u-1 pure-u-md-1-2\">");
                     Add("</div>");
                     break;
-                case GridTheadCtx:
+                case GridTHeadCtx:
                     Add("<th>");
                     AddLabel(null, name);
                     Add("</th>");
                     break;
-                case GridTbodyCtx:
+                case GridTBodyCtx:
                     Add("<td style=\"text-align: right;\">");
                     Add(v);
                     Add("</td>");
@@ -997,12 +983,12 @@ namespace Greatbone.Core
                 case FormCtx:
                     NUMBER(name, v);
                     break;
-                case GridTheadCtx:
+                case GridTHeadCtx:
                     Add("<th>");
                     AddLabel(null, name);
                     Add("</th>");
                     break;
-                case GridTbodyCtx:
+                case GridTBodyCtx:
                     Add("<td style=\"text-align: right;\">");
                     Add(v);
                     Add("</td>");
@@ -1021,12 +1007,12 @@ namespace Greatbone.Core
                     // Number(name, v);
                     Add("</div>");
                     break;
-                case GridTheadCtx:
+                case GridTHeadCtx:
                     Add("<th>");
                     AddLabel(null, name);
                     Add("</th>");
                     break;
-                case GridTbodyCtx:
+                case GridTBodyCtx:
                     Add("<td style=\"text-align: right;\">");
                     Add(v);
                     Add("</td>");
@@ -1043,12 +1029,12 @@ namespace Greatbone.Core
                 case FormCtx:
                     DATE(name, v);
                     break;
-                case GridTheadCtx:
+                case GridTHeadCtx:
                     Add("<th>");
                     AddLabel(null, name);
                     Add("</th>");
                     break;
-                case GridTbodyCtx:
+                case GridTBodyCtx:
                     Add("<td style=\"text-align: right;\">");
                     Add(v);
                     Add("</td>");
@@ -1067,12 +1053,12 @@ namespace Greatbone.Core
                     // Date(name, v);
                     Add("</div>");
                     break;
-                case GridTheadCtx:
+                case GridTHeadCtx:
                     Add("<th>");
                     AddLabel(null, name);
                     Add("</th>");
                     break;
-                case GridTbodyCtx:
+                case GridTBodyCtx:
                     Add("<td style=\"text-align: right;\">");
                     Add(v);
                     Add("</td>");
@@ -1088,30 +1074,30 @@ namespace Greatbone.Core
             return this;
         }
 
-        public HtmlContent Put(string name, string v, string Label = null, bool Pick = false, string Placeholder = null, string Pattern = null, short Max = 0, short Min = 0, bool ReadOnly = false, bool Required = false)
+        public HtmlContent Put(string name, string v, string Label = null, string Placeholder = null, string Pattern = null, short Max = 0, short Min = 0, bool ReadOnly = false, bool Required = false, IDictionary<string, string> Options = null)
         {
             switch (ctx)
             {
                 case FormCtx:
                     if (name.EndsWith("password"))
                     {
-                        PASSWORD(name, v, Label, Pick, Placeholder, Pattern, (sbyte)Max, (sbyte)Min, ReadOnly, Required);
+                        PASSWORD(name, v, Label, Placeholder, Pattern, (sbyte)Max, (sbyte)Min, ReadOnly, Required);
                     }
                     else if (Max < 128)
                     {
-                        TEXT(name, v, Label, Pick, Placeholder, Pattern, (sbyte)Max, (sbyte)Min, ReadOnly, Required);
+                        TEXT(name, v, Label, Placeholder, Pattern, (sbyte)Max, (sbyte)Min, ReadOnly, Required);
                     }
                     else
                     {
                         TEXTAREA(name, v, Label, Placeholder, Max, Min, ReadOnly, Required);
                     }
                     break;
-                case GridTheadCtx:
+                case GridTHeadCtx:
                     Add("<th>");
                     AddLabel(Label, name);
                     Add("</th>");
                     break;
-                case GridTbodyCtx:
+                case GridTBodyCtx:
                     Add("<td>");
                     if (ordinal == 0)
                     {
@@ -1149,55 +1135,55 @@ namespace Greatbone.Core
             return this;
         }
 
-        public HtmlContent Put(string name, short[] v)
+        public HtmlContent Put(string name, short[] v, string Label = null, string Placeholder = null, bool ReadOnly = false, bool Required = false, IDictionary<short, string> Options = null)
         {
             ordinal++;
             return this;
         }
 
-        public HtmlContent Put(string name, int[] v)
+        public HtmlContent Put(string name, int[] v, string Label = null, string Placeholder = null, bool ReadOnly = false, bool Required = false, IDictionary<int, string> Options = null)
         {
             ordinal++;
             return this;
         }
 
-        public HtmlContent Put(string name, long[] v)
+        public HtmlContent Put(string name, long[] v, string Label = null, string Placeholder = null, bool ReadOnly = false, bool Required = false, IDictionary<long, string> Options = null)
         {
             ordinal++;
             return this;
         }
 
-        public HtmlContent Put(string name, string[] v)
+        public HtmlContent Put(string name, string[] v, string Label = null, string Placeholder = null, bool ReadOnly = false, bool Required = false, IDictionary<string, string> Options = null)
         {
             ordinal++;
             return this;
         }
 
-        public HtmlContent Put(string name, IData v, ushort proj = 0)
+        public HtmlContent Put(string name, Dictionary<string, string> v, string Label = null, string Placeholder = null, bool ReadOnly = false, bool Required = false)
         {
             ordinal++;
             return this;
         }
 
-        public HtmlContent Put<D>(string name, D[] v, ushort proj = 0) where D : IData
+        public HtmlContent Put(string name, IData v, ushort proj = 0, string Label = null, string Placeholder = null, bool ReadOnly = false, bool Required = false)
         {
             ordinal++;
             return this;
         }
 
-        public HtmlContent Put<D>(string name, List<D> v, ushort proj = 0) where D : IData
+        public HtmlContent Put<D>(string name, D[] v, ushort proj = 0, string Label = null, string Placeholder = null, bool ReadOnly = false, bool Required = false) where D : IData
+        {
+            ordinal++;
+            return this;
+        }
+
+        public HtmlContent Put<D>(string name, List<D> v, ushort proj = 0, string Label = null, string Placeholder = null, bool ReadOnly = false, bool Required = false) where D : IData
         {
             ordinal++;
             return this;
         }
 
         public HtmlContent Put(string name, IDataInput v)
-        {
-            ordinal++;
-            return this;
-        }
-
-        public HtmlContent Put(string name, Dictionary<string, string> v)
         {
             ordinal++;
             return this;

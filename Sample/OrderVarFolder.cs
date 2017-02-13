@@ -31,14 +31,14 @@ namespace Greatbone.Sample
                 if (dc.Query(p => p.Set(reason).Set(orderid).Set(userid)))
                 {
                     var order = dc.ToArray<Order>();
-                    ac.ReplyPage(200, main =>
+                    ac.ReplyHtml(200, main =>
                     {
 
                     });
                 }
                 else
                 {
-                    ac.ReplyPage(200, main => { });
+                    ac.ReplyHtml(200, main => { });
                 }
             }
         }
@@ -61,14 +61,14 @@ namespace Greatbone.Sample
                 if (dc.Query(p => p.Set(id).Set(shopid)))
                 {
                     var order = dc.ToArray<Order>();
-                    ac.ReplyPage(200, main =>
+                    ac.ReplyHtml(200, main =>
                     {
 
                     });
                 }
                 else
                 {
-                    ac.ReplyPage(200, main => { });
+                    ac.ReplyHtml(200, main => { });
                 }
             }
         }
@@ -86,14 +86,14 @@ namespace Greatbone.Sample
                 if (dc.Query(p => p.Set(orderid).Set(shopid)))
                 {
                     var order = dc.ToArray<Order>();
-                    ac.ReplyPage(200, main =>
+                    ac.ReplyHtml(200, main =>
                     {
 
                     });
                 }
                 else
                 {
-                    ac.ReplyPage(200, main => { });
+                    ac.ReplyHtml(200, main => { });
                 }
             }
         }
@@ -111,11 +111,11 @@ namespace Greatbone.Sample
                 if (dc.Query(p => p.Set(id).Set(shopid)))
                 {
                     var order = dc.ToArray<Order>();
-                    ac.ReplyPage(200, main => { });
+                    ac.ReplyHtml(200, main => { });
                 }
                 else
                 {
-                    ac.ReplyPage(200, main => { });
+                    ac.ReplyHtml(200, main => { });
                 }
             }
         }

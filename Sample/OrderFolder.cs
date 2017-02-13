@@ -63,9 +63,11 @@ namespace Greatbone.Sample
                 {
                     if (dc.Query("SELECT * FROM orders WHERE shopid = @1 AND status >= 4 ORDER BY id LIMIT 20 OFFSET @2", p => p.Set(shopid).Set(page.ToInt() * 20)))
                     {
+                        ac.ReplyGrid(200, dc.ToList<Order>());
                     }
                     else
                     {
+                        ac.ReplyGrid(200, (List<Order>)null);
                     }
                 }
             }
@@ -73,7 +75,7 @@ namespace Greatbone.Sample
 
         [Ui(Label = "取消")]
         [State(ASKED, FIXED | CANCELLED, CANCELLED)]
-        public async Task canncel(WebActionContext ac)
+        public async Task cancel(WebActionContext ac)
         {
             string shopid = ac[0];
             Form frm = await ac.ReadAsync<Form>();
@@ -87,14 +89,14 @@ namespace Greatbone.Sample
                     if (dc.Query(p => p.Set(pk).Set(shopid)))
                     {
                         var order = dc.ToArray<Order>();
-                        ac.ReplyPage(200, main =>
+                        ac.ReplyHtml(200, main =>
                         {
 
                         });
                     }
                     else
                     {
-                        ac.ReplyPage(200, main => { });
+                        ac.ReplyHtml(200, main => { });
                     }
                 }
             }
@@ -129,11 +131,11 @@ namespace Greatbone.Sample
                 if (dc.Query(p => p.Set(pk).Set(shopid)))
                 {
                     var order = dc.ToArray<Order>();
-                    ac.ReplyPage(200, main => { });
+                    ac.ReplyHtml(200, main => { });
                 }
                 else
                 {
-                    ac.ReplyPage(200, main => { });
+                    ac.ReplyHtml(200, main => { });
                 }
             }
         }

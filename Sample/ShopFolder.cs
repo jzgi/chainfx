@@ -88,7 +88,7 @@ namespace Greatbone.Sample
             if (ac.GET)
             {
                 Shop o = Shop.Empty;
-                ac.ReplyDlgForm(200, o);
+                ac.ReplyForm(200, o);
                 // ac.ReplyDlg(200, a =>
                 // {
                 //     a.FIELDSET_("新建服务点");

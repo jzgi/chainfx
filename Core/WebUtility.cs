@@ -5,6 +5,12 @@ namespace Greatbone.Core
 {
     public static class WebUtility
     {
+        public static readonly IDictionary<short, string> OptionsByShort = new Dictionary<short, string>();
+
+        public static readonly IDictionary<int, string> OptionsByInt = new Dictionary<int, string>();
+
+        public static readonly IDictionary<string, string> OptionsByString = new Dictionary<string, string>();
+
         public static string GetValue(this HttpHeaders headers, string name)
         {
             IEnumerable<string> values;

@@ -93,7 +93,7 @@ namespace Greatbone.Sample
                 string password = q[nameof(password)];
                 string orig = q[nameof(orig)];
 
-                ac.ReplyPage(200, main => { main.FORM(null, x => x.BUTTON(null)); });
+                ac.ReplyHtml(200, main => { main.FORM(null, x => x.BUTTON(null)); });
             }
             else // login
             {
@@ -153,7 +153,7 @@ namespace Greatbone.Sample
                 }
                 else
                 {
-                    ac.ReplyPage(200, main => { });
+                    ac.ReplyHtml(200, main => { });
                 }
             }
         }
@@ -172,7 +172,7 @@ namespace Greatbone.Sample
         {
             GetUiActions(typeof(AdminAttribute));
 
-            ac.ReplyPage(200, x =>
+            ac.ReplyHtml(200, x =>
             {
                 // x.Form();
             });
@@ -184,7 +184,7 @@ namespace Greatbone.Sample
         {
             if (Subs != null)
             {
-                ac.ReplyPage(200, a =>
+                ac.ReplyHtml(200, a =>
                 {
                     for (int i = 0; i < Subs.Count; i++)
                     {
