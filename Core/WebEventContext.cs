@@ -67,7 +67,7 @@ namespace Greatbone.Core
             return entity as M;
         }
 
-        public D AsObject<D>(ushort proj = 0) where D : IData, new()
+        public D AsObject<D>(int proj = 0) where D : IData, new()
         {
             IDataInput src = entity as IDataInput;
             if (src == null)
@@ -77,7 +77,7 @@ namespace Greatbone.Core
             return src.ToObject<D>(proj);
         }
 
-        public D[] AsArray<D>(ushort proj = 0) where D : IData, new()
+        public D[] AsArray<D>(int proj = 0) where D : IData, new()
         {
             IDataInput srcs = entity as IDataInput;
             return srcs?.ToArray<D>(proj);

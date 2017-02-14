@@ -315,7 +315,7 @@ namespace Greatbone.Core
         // RESULTSET
         //
 
-        public D ToObject<D>(ushort proj = 0) where D : IData, new()
+        public D ToObject<D>(int proj = 0) where D : IData, new()
         {
             D obj = new D();
             obj.ReadData(this, proj);
@@ -330,12 +330,12 @@ namespace Greatbone.Core
             return obj;
         }
 
-        public D[] ToArray<D>(ushort proj = 0) where D : IData, new()
+        public D[] ToArray<D>(int proj = 0) where D : IData, new()
         {
             return ToList<D>(proj).ToArray();
         }
 
-        public List<D> ToList<D>(ushort proj = 0) where D : IData, new()
+        public List<D> ToList<D>(int proj = 0) where D : IData, new()
         {
             List<D> lst = new List<D>(32);
             while (Next())
@@ -516,7 +516,7 @@ namespace Greatbone.Core
             return false;
         }
 
-        public bool Get<D>(string name, ref D v, ushort proj = 0) where D : IData, new()
+        public bool Get<D>(string name, ref D v, int proj = 0) where D : IData, new()
         {
             int ord = name == null ? ordinal++ : reader.GetOrdinal(name);
             if (!reader.IsDBNull(ord))
@@ -618,7 +618,7 @@ namespace Greatbone.Core
             return false;
         }
 
-        public bool Get<D>(string name, ref D[] v, ushort proj = 0) where D : IData, new()
+        public bool Get<D>(string name, ref D[] v, int proj = 0) where D : IData, new()
         {
             int ord = name == null ? ordinal++ : reader.GetOrdinal(name);
             if (!reader.IsDBNull(ord))
@@ -648,7 +648,7 @@ namespace Greatbone.Core
             return false;
         }
 
-        public bool Get<D>(string name, ref List<D> v, ushort proj = 0) where D : IData, new()
+        public bool Get<D>(string name, ref List<D> v, int proj = 0) where D : IData, new()
         {
             int ord = name == null ? ordinal++ : reader.GetOrdinal(name);
             if (!reader.IsDBNull(ord))
@@ -682,14 +682,14 @@ namespace Greatbone.Core
         // MESSAGING
         //
 
-        public void Event(string name, string shard, IData obj, ushort proj = 0)
+        public void Event(string name, string shard, IData obj, int proj = 0)
         {
             JsonContent cont = new JsonContent(true, true);
             cont.Put(null, obj, proj);
             Event(name, shard, cont);
         }
 
-        public void Event<D>(string name, string shard, D[] objs, ushort proj = 0) where D : IData
+        public void Event<D>(string name, string shard, D[] objs, int proj = 0) where D : IData
         {
             JsonContent cont = new JsonContent();
             cont.Put(null, objs, proj);

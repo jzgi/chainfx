@@ -29,7 +29,7 @@ namespace Greatbone.Sample
 
         internal int sold; // total sold 
 
-        public void ReadData(IDataInput i, ushort proj = 0)
+        public void ReadData(IDataInput i, int proj = 0)
         {
             i.Get(nameof(shopid), ref shopid);
             i.Get(nameof(item), ref item);
@@ -45,7 +45,7 @@ namespace Greatbone.Sample
             i.Get(nameof(sold), ref sold);
         }
 
-        public void WriteData<R>(IDataOutput<R> o, ushort proj = 0) where R : IDataOutput<R>
+        public void WriteData<R>(IDataOutput<R> o, int proj = 0) where R : IDataOutput<R>
         {
             o.Put(nameof(shopid), shopid);
             o.Put(nameof(item), item);

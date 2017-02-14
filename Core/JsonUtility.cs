@@ -19,14 +19,14 @@ namespace Greatbone.Core
             return (JObj) p.Parse();
         }
 
-        public static D StringToObject<D>(string v, ushort proj = 0) where D : IData, new()
+        public static D StringToObject<D>(string v, int proj = 0) where D : IData, new()
         {
             JsonParse p = new JsonParse(v);
             JObj jo = (JObj) p.Parse();
             return jo.ToObject<D>(proj);
         }
 
-        public static D[] StringToArray<D>(string v, ushort proj = 0) where D : IData, new()
+        public static D[] StringToArray<D>(string v, int proj = 0) where D : IData, new()
         {
             JsonParse p = new JsonParse(v);
             JArr ja = (JArr) p.Parse();
@@ -51,7 +51,7 @@ namespace Greatbone.Core
             return str;
         }
 
-        public static string ObjectToString<D>(D v, ushort proj = 0) where D : IData
+        public static string ObjectToString<D>(D v, int proj = 0) where D : IData
         {
             JsonContent cont = new JsonContent(false, true, 4 * 1024);
             cont.Put(null, v, proj);
@@ -60,7 +60,7 @@ namespace Greatbone.Core
             return str;
         }
 
-        public static string ArrayToString<D>(D[] v, ushort proj = 0) where D : IData
+        public static string ArrayToString<D>(D[] v, int proj = 0) where D : IData
         {
             JsonContent cont = new JsonContent(false, true, 4 * 1024);
             cont.Put(null, v, proj);
@@ -69,7 +69,7 @@ namespace Greatbone.Core
             return str;
         }
 
-        public static string ListToString<D>(List<D> v, ushort proj = 0) where D : IData
+        public static string ListToString<D>(List<D> v, int proj = 0) where D : IData
         {
             JsonContent cont = new JsonContent(false, true, 4 * 1024);
             cont.Put(null, v, proj);

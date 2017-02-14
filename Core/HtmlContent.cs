@@ -181,7 +181,7 @@ namespace Greatbone.Core
             Add("</form>");
         }
 
-        public void FORM_grid<D>(List<WebAction> actions, List<D> list, ushort proj = 0) where D : IData
+        public void FORM_grid<D>(List<WebAction> actions, List<D> list, int proj = 0) where D : IData
         {
             Add("<form>");
 
@@ -226,7 +226,7 @@ namespace Greatbone.Core
             Add("</form>");
         }
 
-        public void FORM(WebAction action, IData obj, ushort proj = 0)
+        public void FORM(WebAction action, IData obj, int proj = 0)
         {
             Add("<form class=\"pure-form pure-g\">");
 
@@ -757,7 +757,14 @@ namespace Greatbone.Core
                     {
                         Add("<input type=\"checkbox\" name=\"pk\">");
                     }
-                    Add(v);
+                    if (Options != null)
+                    {
+                        Add(Options[v]);
+                    }
+                    else
+                    {
+                        Add(v);
+                    }
                     Add("</td>");
                     break;
             }
@@ -1005,6 +1012,7 @@ namespace Greatbone.Core
 
         public HtmlContent Put(string name, short[] v, string Label = null, string Placeholder = null, bool ReadOnly = false, bool Required = false, IDictionary<short, string> Options = null)
         {
+
             ordinal++;
             return this;
         }
@@ -1033,19 +1041,19 @@ namespace Greatbone.Core
             return this;
         }
 
-        public HtmlContent Put(string name, IData v, ushort proj = 0, string Label = null, string Placeholder = null, bool ReadOnly = false, bool Required = false)
+        public HtmlContent Put(string name, IData v, int proj = 0, string Label = null, string Placeholder = null, bool ReadOnly = false, bool Required = false)
         {
             ordinal++;
             return this;
         }
 
-        public HtmlContent Put<D>(string name, D[] v, ushort proj = 0, string Label = null, string Placeholder = null, bool ReadOnly = false, bool Required = false) where D : IData
+        public HtmlContent Put<D>(string name, D[] v, int proj = 0, string Label = null, string Placeholder = null, bool ReadOnly = false, bool Required = false) where D : IData
         {
             ordinal++;
             return this;
         }
 
-        public HtmlContent Put<D>(string name, List<D> v, ushort proj = 0, string Label = null, string Placeholder = null, bool ReadOnly = false, bool Required = false) where D : IData
+        public HtmlContent Put<D>(string name, List<D> v, int proj = 0, string Label = null, string Placeholder = null, bool ReadOnly = false, bool Required = false) where D : IData
         {
             ordinal++;
             return this;

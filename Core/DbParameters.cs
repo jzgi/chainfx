@@ -325,7 +325,7 @@ namespace Greatbone.Core
             return this;
         }
 
-        public DbParameters Put(string name, IData v, ushort proj = 0, string Label = null, string Placeholder = null, bool ReadOnly = false, bool Required = false)
+        public DbParameters Put(string name, IData v, int proj = 0, string Label = null, string Placeholder = null, bool ReadOnly = false, bool Required = false)
         {
             if (name == null)
             {
@@ -345,7 +345,7 @@ namespace Greatbone.Core
             return this;
         }
 
-        public DbParameters Put<D>(string name, D[] v, ushort proj = 0, string Label = null, string Placeholder = null, bool ReadOnly = false, bool Required = false) where D : IData
+        public DbParameters Put<D>(string name, D[] v, int proj = 0, string Label = null, string Placeholder = null, bool ReadOnly = false, bool Required = false) where D : IData
         {
             if (name == null)
             {
@@ -368,7 +368,7 @@ namespace Greatbone.Core
             return this;
         }
 
-        public DbParameters Put<D>(string name, List<D> v, ushort proj = 0, string Label = null, string Placeholder = null, bool ReadOnly = false, bool Required = false) where D : IData
+        public DbParameters Put<D>(string name, List<D> v, int proj = 0, string Label = null, string Placeholder = null, bool ReadOnly = false, bool Required = false) where D : IData
         {
             if (name == null)
             {
@@ -500,17 +500,17 @@ namespace Greatbone.Core
             return Put(null, v);
         }
 
-        public DbParameters Set(IData v, ushort proj = 0)
+        public DbParameters Set(IData v, int proj = 0)
         {
             return Put(null, v);
         }
 
-        public DbParameters Set<D>(D[] v, ushort proj = 0) where D : IData
+        public DbParameters Set<D>(D[] v, int proj = 0) where D : IData
         {
             return Put(null, v);
         }
 
-        public DbParameters Set<D>(List<D> v, ushort proj = 0) where D : IData
+        public DbParameters Set<D>(List<D> v, int proj = 0) where D : IData
         {
             return Put(null, v);
         }

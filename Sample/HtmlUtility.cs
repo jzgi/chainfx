@@ -46,7 +46,7 @@ namespace Greatbone.Sample
             pub, maxage);
         }
 
-        public static void ReplyForm(this WebActionContext ac, int status, IData obj, ushort proj = 0, bool? pub = null, int maxage = 60)
+        public static void ReplyForm(this WebActionContext ac, int status, IData obj, int proj = 0, bool? pub = null, int maxage = 60)
         {
             ac.ReplyHtml(status, cont =>
             {
@@ -58,7 +58,7 @@ namespace Greatbone.Sample
             pub, maxage);
         }
 
-        public static void ReplyGrid<D>(this WebActionContext ac, int status, List<D> lst, ushort proj = 0, bool? pub = null, int maxage = 60) where D : IData
+        public static void ReplyGrid<D>(this WebActionContext ac, int status, List<D> lst, int proj = 0, bool? pub = null, int maxage = 60) where D : IData
         {
             List<WebAction> actions = ac.Folder.GetUiActions(ac);
             ac.ReplyHtml(status, cont =>
