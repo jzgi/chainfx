@@ -96,37 +96,6 @@ namespace Greatbone.Core
 
         int table_idx;
 
-        public void TABLE<D>(List<D> lst, int proj = 0) where D : IData
-        {
-            table_idx = 0;
-
-            Add("<table>");
-            Add("<thead>");
-            Add("<tr>");
-
-            Add("</tr>");
-            Add("</thead>");
-            Add("<tbody>");
-
-            Add("</tbody>");
-            Add("</table>");
-        }
-
-        public void SHEET(IData obj, int proj = 0) 
-        {
-            table_idx = 0;
-
-            Add("<table class=\"pure-table pure-table-bordered\">");
-            Add("<thead>");
-            Add("<tr>");
-
-            Add("</tr>");
-            Add("</thead>");
-            Add("<tbody>");
-
-            Add("</tbody>");
-            Add("</table>");
-        }
 
         public void ROW_()
         {
@@ -154,6 +123,14 @@ namespace Greatbone.Core
             Add("</fieldset>");
         }
 
+        public void SHEET(IData obj, int proj = 0)
+        {
+        }
+
+        public void SHEET(Action<HtmlContent> inner)
+        {
+        }
+
         public void FORM(WebAction action, Action<HtmlContent> inner)
         {
             Add("<form class=\"pure-form pure-g\">");
@@ -163,7 +140,17 @@ namespace Greatbone.Core
             Add("</form>");
         }
 
-        public void FORM_grid<D>(List<WebAction> actions, List<D> lst, int proj = 0) where D : IData
+        public void FORM(WebAction action, IData obj, int proj = 0)
+        {
+            Add("<form class=\"pure-form pure-g\">");
+
+            ctx = CTX_FORM;
+
+            // function buttuns
+            Add("</form>");
+        }
+
+        public void GRID<D>(List<WebAction> actions, List<D> lst, int proj = 0) where D : IData
         {
             Add("<form>");
 
@@ -208,16 +195,99 @@ namespace Greatbone.Core
             Add("</form>");
         }
 
-        public void FORM(WebAction action, IData obj, int proj = 0)
+        public void GRID(List<WebAction> actions, IDataInput input, Action<IDataInput, HtmlContent> valve)
         {
-            Add("<form class=\"pure-form pure-g\">");
+            Add("<form>");
 
-            ctx = CTX_FORM;
+            // buttons
+            BUTTONS(actions);
 
-            // function buttuns
+            if (input != null)
+            {
+                Add("<table class=\"hover\">");
 
+                ctx = CTX_GRIDTHEAD;
+                Add("<thead>");
+                Add("<tr>");
+                valve(input, this);
+                Add("</tr>");
+                Add("</thead>");
+
+                ctx = CTX_GRIDTBODY;
+                Add("<tbody>");
+                while (input.Next())
+                {
+                    Add("<tr>");
+                    valve(input, this);
+                    Add("</tr>");
+                }
+                Add("</tbody>");
+            }
+            else
+            {
+                Add("<div class=\"row\">");
+                Add("<span>没有记录</span>");
+                Add("</div>");
+            }
 
             Add("</form>");
+        }
+
+        public void TABLE<D>(List<D> lst, int proj = 0) where D : IData
+        {
+            if (lst != null)
+            {
+                Add("<table class=\"hover\">");
+
+                ctx = CTX_GRIDTHEAD;
+                Add("<thead>");
+                Add("<tr>");
+                for (int i = 0; i < lst.Count; i++)
+                {
+                    IData obj = lst[i];
+                    obj.WriteData(this, proj);
+                }
+                Add("</tr>");
+                Add("</thead>");
+
+                ctx = CTX_GRIDTBODY;
+                Add("<tbody>");
+
+                for (int i = 0; i < lst.Count; i++)
+                {
+                    Add("<tr>");
+                    D obj = lst[i];
+                    ordinal = 0; // reset ordical
+                    obj.WriteData(this, proj);
+                    Add("</tr>");
+                }
+                Add("</tbody>");
+            }
+        }
+
+        public void TABLE(IDataInput input, Action<IDataInput, HtmlContent> valve)
+        {
+            if (input != null)
+            {
+                Add("<table class=\"hover\">");
+
+                ctx = CTX_GRIDTHEAD;
+                Add("<thead>");
+                Add("<tr>");
+                valve(input, this);
+                Add("</tr>");
+                Add("</thead>");
+
+                ctx = CTX_GRIDTBODY;
+                Add("<tbody>");
+                while (input.Next())
+                {
+                    Add("<tr>");
+                    valve(input, this);
+                    Add("</tr>");
+                }
+                Add("</tbody>");
+            }
         }
 
         public void HIDDEN(string name, string value)

@@ -63,7 +63,17 @@ namespace Greatbone.Sample
             List<WebAction> actions = ac.Folder.GetUiActions(ac);
             ac.ReplyHtml(status, cont =>
             {
-                cont.FORM_grid(actions, lst);
+                cont.GRID(actions, lst);
+            },
+            pub, maxage);
+        }
+
+        public static void ReplyPane(this WebActionContext ac, int status, IDataInput input, Action<IDataInput, HtmlContent> valve, bool? pub = null, int maxage = 60)
+        {
+            List<WebAction> actions = ac.Folder.GetUiActions(ac);
+            ac.ReplyHtml(status, cont =>
+            {
+                cont.GRID(actions, input, valve);
             },
             pub, maxage);
         }

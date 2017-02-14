@@ -54,6 +54,24 @@ namespace Greatbone.Sample
         }
 
         [Shop]
+        public void _cat_(WebActionContext ac)
+        {
+            string shopid = ac[1];
+            using (var dc = ac.NewDbContext())
+            {
+                string name;
+                int age;
+                dc.Execute("UPDATE items SET enabled = NOT enabled WHERE shopid = @1", p => p.Set(shopid));
+                // ac.SetHeader();
+                ac.ReplyPane(303, dc, (i, o) =>
+                {
+                    o.Put(nameof(name), name = i.GetString());
+                    o.Put(nameof(age), age = i.GetInt());
+                }); // see other
+            }
+        }
+
+        [Shop]
         [Ui]
         public void toggle(WebActionContext ac)
         {
