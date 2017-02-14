@@ -11,22 +11,25 @@ namespace Greatbone.Core
     {
         public const sbyte
 
-            THeadCtx = 1,
+            CTX_THREAD = 1,
 
-            TBodyCtx = 2,
+            CTX_TBODY = 2,
 
-            GridTHeadCtx = 3,
+            CTX_GRIDTHEAD = 3,
 
-            GridTBodyCtx = 4,
+            CTX_GRIDTBODY = 4,
 
-            SheetCtx = 5,
+            CTX_SHEET = 5,
 
-            FormCtx = 7;
+            CTX_FORM = 7;
 
         internal sbyte ctx;
 
         internal int ordinal;
 
+        // during data output
+        int[] counts;
+        int level; // current level
 
         public HtmlContent(bool sendable, bool pooled, int capacity = 16 * 1024) : base(sendable, pooled, capacity)
         {
@@ -93,7 +96,23 @@ namespace Greatbone.Core
 
         int table_idx;
 
-        public void TABLE(Action<HtmlContent> ths, Action<HtmlContent> trs)
+        public void TABLE<D>(List<D> lst, int proj = 0) where D : IData
+        {
+            table_idx = 0;
+
+            Add("<table>");
+            Add("<thead>");
+            Add("<tr>");
+
+            Add("</tr>");
+            Add("</thead>");
+            Add("<tbody>");
+
+            Add("</tbody>");
+            Add("</table>");
+        }
+
+        public void SHEET(IData obj, int proj = 0) 
         {
             table_idx = 0;
 
@@ -101,49 +120,12 @@ namespace Greatbone.Core
             Add("<thead>");
             Add("<tr>");
 
-            ths(this);
-
             Add("</tr>");
             Add("</thead>");
             Add("<tbody>");
 
-            trs(this);
-
             Add("</tbody>");
             Add("</table>");
-        }
-
-
-        public void TR(Action<int, HtmlContent> tds)
-        {
-            table_idx++;
-
-            T("<tr>");
-
-            tds(table_idx, this);
-
-            T("</tr>");
-        }
-
-        public void TD(int v)
-        {
-            T("<td>");
-            Put(null, v);
-            T("</td>");
-        }
-
-        public void TD(string v)
-        {
-            T("<td>");
-            Put(null, v);
-            T("</td>");
-        }
-
-        public void TD(DateTime v)
-        {
-            T("<td>");
-            Put(null, v);
-            T("</td>");
         }
 
         public void ROW_()
@@ -181,35 +163,35 @@ namespace Greatbone.Core
             Add("</form>");
         }
 
-        public void FORM_grid<D>(List<WebAction> actions, List<D> list, int proj = 0) where D : IData
+        public void FORM_grid<D>(List<WebAction> actions, List<D> lst, int proj = 0) where D : IData
         {
             Add("<form>");
 
             // buttons
             BUTTONS(actions);
 
-            if (list != null)
+            if (lst != null)
             {
-                Add("<table>");
+                Add("<table class=\"hover\">");
 
-                ctx = GridTHeadCtx;
+                ctx = CTX_GRIDTHEAD;
                 Add("<thead>");
                 Add("<tr>");
-                for (int i = 0; i < list.Count; i++)
+                for (int i = 0; i < lst.Count; i++)
                 {
-                    IData obj = list[i];
+                    IData obj = lst[i];
                     obj.WriteData(this, proj);
                 }
                 Add("</tr>");
                 Add("</thead>");
 
-                ctx = GridTBodyCtx;
+                ctx = CTX_GRIDTBODY;
                 Add("<tbody>");
 
-                for (int i = 0; i < list.Count; i++)
+                for (int i = 0; i < lst.Count; i++)
                 {
                     Add("<tr>");
-                    D obj = list[i];
+                    D obj = lst[i];
                     ordinal = 0; // reset ordical
                     obj.WriteData(this, proj);
                     Add("</tr>");
@@ -230,7 +212,7 @@ namespace Greatbone.Core
         {
             Add("<form class=\"pure-form pure-g\">");
 
-            ctx = FormCtx;
+            ctx = CTX_FORM;
 
             // function buttuns
 
@@ -717,17 +699,17 @@ namespace Greatbone.Core
         {
             switch (ctx)
             {
-                case FormCtx:
+                case CTX_FORM:
                     Add("<div class=\"pure-u-1 pure-u-md-1-2\">");
                     CHECKBOX(name, v);
                     Add("</div>");
                     break;
-                case GridTHeadCtx:
+                case CTX_GRIDTHEAD:
                     Add("<th>");
                     AddLabel(null, name);
                     Add("</th>");
                     break;
-                case GridTBodyCtx:
+                case CTX_GRIDTBODY:
                     Add("<td>");
                     Add(v);
                     Add("</td>");
@@ -741,17 +723,17 @@ namespace Greatbone.Core
         {
             switch (ctx)
             {
-                case FormCtx:
+                case CTX_FORM:
                     Add("<div class=\"pure-u-1 pure-u-md-1-2\">");
                     NUMBER(name, v);
                     Add("</div>");
                     break;
-                case GridTHeadCtx:
+                case CTX_GRIDTHEAD:
                     Add("<th>");
                     AddLabel(null, name);
                     Add("</th>");
                     break;
-                case GridTBodyCtx:
+                case CTX_GRIDTBODY:
                     Add("<td style=\"text-align: right;\">");
                     if (ordinal == 0)
                     {
@@ -776,17 +758,17 @@ namespace Greatbone.Core
         {
             switch (ctx)
             {
-                case FormCtx:
+                case CTX_FORM:
                     Add("<div class=\"pure-u-1 pure-u-md-1-2\">");
                     NUMBER(name, v);
                     Add("</div>");
                     break;
-                case GridTHeadCtx:
+                case CTX_GRIDTHEAD:
                     Add("<th>");
                     AddLabel(null, name);
                     Add("</th>");
                     break;
-                case GridTBodyCtx:
+                case CTX_GRIDTBODY:
                     Add("<td style=\"text-align: right;\">");
                     if (ordinal == 0)
                     {
@@ -804,17 +786,17 @@ namespace Greatbone.Core
         {
             switch (ctx)
             {
-                case FormCtx:
+                case CTX_FORM:
                     Add("<div class=\"pure-u-1 pure-u-md-1-2\">");
                     NUMBER(name, v);
                     Add("</div>");
                     break;
-                case GridTHeadCtx:
+                case CTX_GRIDTHEAD:
                     Add("<th>");
                     AddLabel(null, name);
                     Add("</th>");
                     break;
-                case GridTBodyCtx:
+                case CTX_GRIDTBODY:
                     Add("<td style=\"text-align: right;\">");
                     if (ordinal == 0)
                     {
@@ -832,16 +814,16 @@ namespace Greatbone.Core
         {
             switch (ctx)
             {
-                case FormCtx:
+                case CTX_FORM:
                     Add("<div class=\"pure-u-1 pure-u-md-1-2\">");
                     Add("</div>");
                     break;
-                case GridTHeadCtx:
+                case CTX_GRIDTHEAD:
                     Add("<th>");
                     AddLabel(null, name);
                     Add("</th>");
                     break;
-                case GridTBodyCtx:
+                case CTX_GRIDTBODY:
                     Add("<td style=\"text-align: right;\">");
                     Add(v);
                     Add("</td>");
@@ -855,15 +837,15 @@ namespace Greatbone.Core
         {
             switch (ctx)
             {
-                case FormCtx:
+                case CTX_FORM:
                     NUMBER(name, v);
                     break;
-                case GridTHeadCtx:
+                case CTX_GRIDTHEAD:
                     Add("<th>");
                     AddLabel(null, name);
                     Add("</th>");
                     break;
-                case GridTBodyCtx:
+                case CTX_GRIDTBODY:
                     Add("<td style=\"text-align: right;\">");
                     Add(v);
                     Add("</td>");
@@ -877,17 +859,17 @@ namespace Greatbone.Core
         {
             switch (ctx)
             {
-                case FormCtx:
+                case CTX_FORM:
                     Add("<div class=\"pure-u-1 pure-u-md-1-2\">");
                     // Number(name, v);
                     Add("</div>");
                     break;
-                case GridTHeadCtx:
+                case CTX_GRIDTHEAD:
                     Add("<th>");
                     AddLabel(null, name);
                     Add("</th>");
                     break;
-                case GridTBodyCtx:
+                case CTX_GRIDTBODY:
                     Add("<td style=\"text-align: right;\">");
                     Add(v);
                     Add("</td>");
@@ -901,15 +883,15 @@ namespace Greatbone.Core
         {
             switch (ctx)
             {
-                case FormCtx:
+                case CTX_FORM:
                     DATE(name, v);
                     break;
-                case GridTHeadCtx:
+                case CTX_GRIDTHEAD:
                     Add("<th>");
                     AddLabel(null, name);
                     Add("</th>");
                     break;
-                case GridTBodyCtx:
+                case CTX_GRIDTBODY:
                     Add("<td style=\"text-align: right;\">");
                     Add(v);
                     Add("</td>");
@@ -923,17 +905,17 @@ namespace Greatbone.Core
         {
             switch (ctx)
             {
-                case FormCtx:
+                case CTX_FORM:
                     Add("<div class=\"pure-u-1 pure-u-md-1-2\">");
                     // Date(name, v);
                     Add("</div>");
                     break;
-                case GridTHeadCtx:
+                case CTX_GRIDTHEAD:
                     Add("<th>");
                     AddLabel(null, name);
                     Add("</th>");
                     break;
-                case GridTBodyCtx:
+                case CTX_GRIDTBODY:
                     Add("<td style=\"text-align: right;\">");
                     Add(v);
                     Add("</td>");
@@ -953,7 +935,7 @@ namespace Greatbone.Core
         {
             switch (ctx)
             {
-                case FormCtx:
+                case CTX_FORM:
                     if (name.EndsWith("password"))
                     {
                         PASSWORD(name, v, Label, Placeholder, Pattern, (sbyte)Max, (sbyte)Min, ReadOnly, Required);
@@ -967,12 +949,12 @@ namespace Greatbone.Core
                         TEXTAREA(name, v, Label, Placeholder, Max, Min, ReadOnly, Required);
                     }
                     break;
-                case GridTHeadCtx:
+                case CTX_GRIDTHEAD:
                     Add("<th>");
                     AddLabel(Label, name);
                     Add("</th>");
                     break;
-                case GridTBodyCtx:
+                case CTX_GRIDTBODY:
                     Add("<td>");
                     if (ordinal == 0)
                     {

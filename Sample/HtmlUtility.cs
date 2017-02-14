@@ -51,7 +51,7 @@ namespace Greatbone.Sample
             ac.ReplyHtml(status, cont =>
             {
                 cont.T("<form>");
-                cont.ctx = HtmlContent.FormCtx;
+                cont.ctx = HtmlContent.CTX_FORM;
                 obj.WriteData(cont, proj);
                 cont.T("</form>");
             },

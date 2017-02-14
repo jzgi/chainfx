@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using Greatbone.Core;
 
 namespace Greatbone.Sample
@@ -18,10 +19,15 @@ namespace Greatbone.Sample
             CANCELLED = 8;
 
         // status
-        public const short
-            OPEN = 0,
-            CANCELLEDed = 2,
-            Closed = 9;
+        static readonly Dictionary<short, string> STATUS = new Dictionary<short, string>
+        {
+            [0] = null,
+            [1] = "已付款",
+            [2] = "已锁定",
+            [3] = "已结束",
+            [7] = "已取消",
+        };
+
 
         public static readonly Repay Empty = new Repay();
 
