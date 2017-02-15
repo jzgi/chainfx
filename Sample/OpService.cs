@@ -21,7 +21,7 @@ namespace Greatbone.Sample
 
             Create<UserFolder>("user");
 
-            Create<OrderFolder>("order");
+            Create<RepayFolder>("repay");
         }
 
         ///

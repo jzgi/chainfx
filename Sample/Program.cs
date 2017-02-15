@@ -11,10 +11,6 @@ namespace Greatbone.Sample
         ///
         public static void Main(string[] args)
         {
-            // string xml = "<xml><log file=\"abc.log\" level=\"&lt;3&gt;\"><reserve/></log><display>CRT-&amp;</display></xml>";
-            // byte[] bytes = Encoding.UTF8.GetBytes(xml);
-            // XElem e = new XmlParse(bytes, 0, bytes.Length).Parse();
-
             DbConfig pg = new DbConfig
             {
                 host = "106.14.45.109",

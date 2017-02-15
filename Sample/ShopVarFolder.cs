@@ -17,6 +17,8 @@ namespace Greatbone.Sample
 
             Create<ItemFolder>("item");
 
+            Create<RepayFolder>("repay");
+
             _re_menu_ = GetAction(nameof(remenu));
         }
 
