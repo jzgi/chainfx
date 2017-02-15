@@ -116,7 +116,7 @@ namespace Greatbone.Core
             {
                 // if the last part is not numeric
                 int lastdot = host.LastIndexOf('.');
-                if (!char.IsDigit(host[lastdot + 1])) // a domain name is given
+                if (lastdot > -1 && !char.IsDigit(host[lastdot + 1])) // a domain name is given
                 {
                     int dot = host.LastIndexOf('.', lastdot - 1);
                     if (dot != -1)

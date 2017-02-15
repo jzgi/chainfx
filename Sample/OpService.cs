@@ -107,12 +107,12 @@ namespace Greatbone.Sample
                 string password = q[nameof(password)];
                 string orig = q[nameof(orig)];
                 bool remember = q[nameof(remember)];
-                ac.ReplyForm(200, form =>
+                ac.ReplyForm(200, h =>
                 {
-                    form.TEXT(nameof(id), id, Required: true, Max : 11, Placeholder : "用户手机号，或者商户编号");
-                    form.PASSWORD(nameof(password), password);
-                    form.HIDDEN(nameof(orig), orig);
-                    form.CHECKBOX(nameof(remember), remember);
+                    h.TEXT(nameof(id), id, Required: true, Max: 11, Placeholder: "用户手机号，或者商户编号");
+                    h.PASSWORD(nameof(password), password);
+                    h.HIDDEN(nameof(orig), orig);
+                    h.CHECKBOX(nameof(remember), remember);
                 });
 
             }
@@ -167,14 +167,20 @@ namespace Greatbone.Sample
                 }
                 else // is admin id
                 {
-
+                    var admin = admins.Find(a => a.id == id);
+                    if (admin != null)
+                    {
+                        Service.Authent.SetCookieHeader(ac, admin.ToToken());
+                        goto Redirect;
+                    }
+                    else { ac.Reply(404); }
                 }
-                ac.ReplyForm(200, form =>
+                ac.ReplyForm(200, h =>
                 {
-                    form.TEXT(nameof(id), id);
-                    form.PASSWORD(nameof(password), password);
-                    form.HIDDEN(nameof(orig), orig);
-                    form.CHECKBOX(nameof(remember), remember);
+                    h.TEXT(nameof(id), id);
+                    h.PASSWORD(nameof(password), password);
+                    h.HIDDEN(nameof(orig), orig);
+                    h.CHECKBOX(nameof(remember), remember);
                 });
 
                 return;

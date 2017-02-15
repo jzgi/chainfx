@@ -4,7 +4,7 @@ namespace Greatbone.Sample
 {
     public abstract class AbstService : WebService
     {
-        readonly Admin[] admins;
+        internal readonly Admin[] admins;
 
         public AbstService(WebServiceContext sc) : base(sc)
         {

@@ -11,7 +11,7 @@ namespace Greatbone.Sample
 
         internal string name; // user name or weixin nickname
 
-        internal short roles;
+        internal int roles;
 
         internal string tel;
 
@@ -37,7 +37,7 @@ namespace Greatbone.Sample
             {
                 key = id,
                 name = name,
-                roles = 1,
+                roles = Token.ACCTG | Token.MKTG,
                 extra = null
             };
         }
