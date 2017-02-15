@@ -72,7 +72,7 @@ namespace Greatbone.Sample
             {
                 if (dc.Query("SELECT * FROM shops"))
                 {
-                    ac.ReplyGrid(200, dc.ToList<Shop>()); // ok
+                    ac.ReplyGridPage(200, dc.ToList<Shop>()); // ok
                 }
                 else
                 {

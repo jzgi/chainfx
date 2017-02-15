@@ -10,9 +10,11 @@ namespace Greatbone.Sample
     {
         internal string wx; // weixin openid
 
+        internal string credential;
+
         internal string name; // user name or weixin nickname
 
-        internal string nickname; // weixin nickname
+        internal string wxname; // weixin nickname
 
         internal string tel;
 
@@ -23,7 +25,7 @@ namespace Greatbone.Sample
         public void ReadData(IDataInput i, int proj = 0)
         {
             i.Get(nameof(wx), ref wx);
-            i.Get(nameof(nickname), ref nickname);
+            i.Get(nameof(wxname), ref wxname);
             i.Get(nameof(name), ref name);
             i.Get(nameof(tel), ref tel);
             i.Get(nameof(orderon), ref orderon);
@@ -33,7 +35,7 @@ namespace Greatbone.Sample
         public void WriteData<R>(IDataOutput<R> o, int proj = 0) where R : IDataOutput<R>
         {
             o.Put(nameof(wx), wx);
-            o.Put(nameof(nickname), nickname);
+            o.Put(nameof(wxname), wxname);
             o.Put(nameof(name), name);
             o.Put(nameof(tel), tel);
             o.Put(nameof(orderon), orderon);

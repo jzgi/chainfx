@@ -1,6 +1,8 @@
-﻿using System.Threading.Tasks;
+﻿using System.Collections.Generic;
+using System.Threading.Tasks;
 using Greatbone.Core;
 using NpgsqlTypes;
+using System;
 
 namespace Greatbone.Sample
 {
@@ -30,7 +32,7 @@ namespace Greatbone.Sample
             if (tok.IsAdmin)
             {
                 // display the folder's index page for admin
-                // ac.ReplyPage(200, null);
+                ac.ReplyGridPage(200, (List<Shop>)null);
             }
             else if (tok.IsShop)
             {
@@ -95,19 +97,7 @@ namespace Greatbone.Sample
 
         }
 
-        ///
-        /// Get the singon form or perform a signon action.
-        ///
-        /// <code>
-        /// GET /signon[id=_id_&amp;password=_password_&amp;orig=_orig_]
-        /// </code>
-        ///
-        /// <code>
-        /// POST /signon
-        ///  
-        /// id=_id_&amp;password=_password_[&amp;orig=_orig_]
-        /// </code>
-        ///
+
         public async Task signon(WebActionContext ac)
         {
             if (ac.GET) // return the login form
@@ -116,43 +106,82 @@ namespace Greatbone.Sample
                 string id = q[nameof(id)];
                 string password = q[nameof(password)];
                 string orig = q[nameof(orig)];
+                bool remember = q[nameof(remember)];
+                ac.ReplyForm(200, form =>
+                {
+                    form.TEXT(nameof(id), id, Required: true, Max : 11, Placeholder : "用户手机号，或者商户编号");
+                    form.PASSWORD(nameof(password), password);
+                    form.HIDDEN(nameof(orig), orig);
+                    form.CHECKBOX(nameof(remember), remember);
+                });
 
             }
-            else // login
+            else // POST
             {
                 Form f = await ac.ReadAsync<Form>();
                 string id = f[nameof(id)];
                 string password = f[nameof(password)];
                 string orig = f[nameof(orig)];
+                bool remember = f[nameof(remember)];
                 if (string.IsNullOrEmpty(id) || string.IsNullOrEmpty(password))
                 {
-                    ac.Reply(400);
-                    return; // bad request
+                    ac.Reply(400); // bad request
+                    return;
                 }
-                using (var dc = Service.NewDbContext())
+
+                if (id.Length == 6 && char.IsDigit(id[0])) // is shopid
                 {
-                    if (dc.Query1("SELECT * FROM shops WHERE id = @1", (p) => p.Set(id)))
+                    using (var dc = Service.NewDbContext())
                     {
-                        var tok = dc.ToObject<Token>();
-                        string credential = TextUtility.MD5(id + ':' + password);
-                        if (credential.Equals(tok.roles))
+                        if (dc.Query1("SELECT * FROM shops WHERE id = @1", (p) => p.Set(id)))
                         {
-                            // set cookie
-                            string tokstr = Service.Authent.Encrypt(tok);
-                            ac.SetHeader("Set-Cookie", tokstr);
-                            ac.SetHeader("Location", "");
-                            ac.Reply(303); // see other (redirect)
+                            var shop = dc.ToObject<Shop>();
+                            string credential = TextUtility.MD5(id + ':' + password);
+                            if (credential.Equals(shop.credential))
+                            {
+                                Service.Authent.SetCookieHeader(ac, shop.ToToken());
+                                goto Redirect;
+                            }
+                            else { ac.Reply(400); }
                         }
-                        else
-                        {
-                            ac.Reply(400);
-                        }
-                    }
-                    else
-                    {
-                        ac.Reply(404);
+                        else { ac.Reply(404); }
                     }
                 }
+                else if (id.Length == 11 && char.IsDigit(id[0])) // is userid
+                {
+                    using (var dc = Service.NewDbContext())
+                    {
+                        if (dc.Query1("SELECT * FROM users WHERE id = @1", (p) => p.Set(id)))
+                        {
+                            var user = dc.ToObject<User>();
+                            string credential = TextUtility.MD5(id + ':' + password);
+                            if (credential.Equals(user.credential))
+                            {
+                                Service.Authent.SetCookieHeader(ac, user.ToToken());
+                                goto Redirect;
+                            }
+                            else { ac.Reply(400); }
+                        }
+                        else { ac.Reply(404); }
+                    }
+                }
+                else // is admin id
+                {
+
+                }
+                ac.ReplyForm(200, form =>
+                {
+                    form.TEXT(nameof(id), id);
+                    form.PASSWORD(nameof(password), password);
+                    form.HIDDEN(nameof(orig), orig);
+                    form.CHECKBOX(nameof(remember), remember);
+                });
+
+                return;
+
+            Redirect:
+                ac.SetHeader("Location", orig);
+                ac.Reply(303); // see other (redirect)
             }
         }
 

@@ -311,7 +311,7 @@ namespace Greatbone.Core
 
             if (Placeholder != null)
             {
-                Add(" placedholder=\"");
+                Add(" placeholder=\"");
                 Add(Placeholder);
                 Add("\"");
             }
@@ -356,7 +356,7 @@ namespace Greatbone.Core
 
             if (Placeholder != null)
             {
-                Add(" placedholder=\"");
+                Add(" placeholder=\"");
                 Add(Placeholder);
                 Add("\"");
             }
@@ -401,7 +401,7 @@ namespace Greatbone.Core
 
             if (Placeholder != null)
             {
-                Add(" placedholder=\"");
+                Add(" placeholder=\"");
                 Add(Placeholder);
                 Add("\"");
             }
@@ -486,7 +486,7 @@ namespace Greatbone.Core
 
             if (Placeholder != null)
             {
-                Add(" placedholder=\"");
+                Add(" placeholder=\"");
                 Add(Placeholder);
                 Add("\"");
             }
@@ -634,7 +634,7 @@ namespace Greatbone.Core
 
             if (Placeholder != null)
             {
-                Add(" placedholder=\"");
+                Add(" placeholder=\"");
                 Add(Placeholder);
                 Add("\"");
             }
@@ -663,18 +663,17 @@ namespace Greatbone.Core
 
         public void BUTTON(WebAction atn)
         {
-            Add("<button type=\"button\"");
-            if (atn.Form == 0) Add(" class=\"button secondary");
+            Add("<button");
+            if (atn.Form == 0) Add(" class=\"button primary");
             Add("\" formaction=\"");
             Add(atn.Name);
-            Add("\" formmethod=\"");
-            Add(atn.Form == 0 ? "get" : "post");
-            if (atn.Dialog != 0)
-            {
-                Add("\" onclick=\"dialog(this,");
-                Add("); return false;");
-            }
-            Add("\">");
+            Add("\" formmethod=\"post\"");
+            // if (atn.Dialog != 0)
+            // {
+            //     Add("\" onclick=\"dialog(this,");
+            //     Add("); return false;");
+            // }
+            Add(">");
             string icon = atn.Icon;
             if (icon != null)
             {
@@ -682,9 +681,8 @@ namespace Greatbone.Core
                 Add(icon);
                 Add("\"></i>");
             }
-            Add(" ");
             AddLabel(atn.Label, atn.Name);
-            Add(" </button>");
+            Add("</button>");
         }
 
         public void BUTTONS(params WebAction[] atns)

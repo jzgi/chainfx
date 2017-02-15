@@ -242,7 +242,7 @@ namespace Greatbone.Core
             for (int i = 0; i < actions.Count; i++)
             {
                 WebAction a = actions[i];
-                if (a.HasUi && a.Check(ac, false))
+                if (a.HasUi && a.Check(ac, false) == true)
                 {
                     if (lst == null) lst = new List<WebAction>();
                     lst.Add(a);
@@ -253,11 +253,8 @@ namespace Greatbone.Core
 
         internal WebFolder Locate(ref string relative, WebActionContext ac)
         {
-            if (!Check(ac))
-            {
-                ac.Reply(403); // forbidden
-                return null;
-            }
+            // access check and set reply
+            if (!Check(ac, true)) { return null; }
 
             int slash = relative.IndexOf('/');
             if (slash == -1)
@@ -312,23 +309,19 @@ namespace Greatbone.Core
                 if (atn == null)
                 {
                     ac.Reply(404); // not found
+                    return;
                 }
-                else if (!atn.Check(ac))
+                if (!atn.Check(ac, true)) { return; }
+                
+                // try in cache
+
+                if (atn.Async)
                 {
-                    ac.Reply(403); // forbidden
+                    await atn.DoAsync(ac, arg);
                 }
                 else
                 {
-                    // try in cache
-
-                    if (atn.Async)
-                    {
-                        await atn.DoAsync(ac, arg);
-                    }
-                    else
-                    {
-                        atn.Do(ac, arg);
-                    }
+                    atn.Do(ac, arg);
                 }
             }
 

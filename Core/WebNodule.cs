@@ -68,7 +68,7 @@ namespace Greatbone.Core
 
         public string Name => name;
 
-        public string Label => ui?.Label ?? name;
+        public string Label => ui?.Label;
 
         public string Icon => ui?.Icon;
 
@@ -86,7 +86,7 @@ namespace Greatbone.Core
 
         public bool HasUi => ui != null;
 
-        public bool Check(WebActionContext ac, bool reply = true)
+        public bool Check(WebActionContext ac, bool reply)
         {
             if (roles != null)
             {
@@ -100,10 +100,10 @@ namespace Greatbone.Core
                             ac.SetHeader("Location", loc);
                             ac.Reply(303); // see other - redirect to signon url
                         }
-                        else // from non-browsing 
+                        else // from non-browser
                         {
-                            ac.Reply(401); // unauthorized
                             ac.SetHeader("WWW-Authenticate", "Bearer");
+                            ac.Reply(401); // unauthorized
                         }
                     }
                     return false;

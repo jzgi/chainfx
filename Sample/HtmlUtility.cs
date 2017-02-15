@@ -80,17 +80,50 @@ namespace Greatbone.Sample
             pub, maxage);
         }
 
-        public static void ReplyGrid<D>(this WebActionContext ac, int status, List<D> lst, int proj = 0, bool? pub = null, int maxage = 60) where D : IData
+        public static void ReplyForm(this WebActionContext ac, int status, Action<HtmlContent> form, bool? pub = null, int maxage = 60)
         {
-            List<WebAction> actions = ac.Folder.GetUiActions(ac);
+            ac.ReplyHtml(status,
+            null,
+            main =>
+            {
+                main.Add("<form>");
+                main.ctx = HtmlContent.CTX_FORM;
+                form(main);
+                main.BUTTON(ac.Handle);
+                main.T("</form>");
+            },
+            null,
+            pub, maxage);
+        }
+
+        public static void ReplyGridPage<D>(this WebActionContext ac, int status, List<D> lst, int proj = 0, bool? pub = null, int maxage = 60) where D : IData
+        {
+            WebFolder folder = ac.Folder;
 
             ac.ReplyHtml(status,
-            Header =>
+            header =>
             {
-
+                if (folder.Parent != null)
+                {
+                    header.Add("<a href=\"../\" class=\"button\">");
+                }
+                Roll<WebFolder> subs = folder.subs;
+                if (subs != null)
+                {
+                    header.Add(" <ul class=\"menu\">");
+                    for (int i = 0; i < subs.Count; i++)
+                    {
+                        WebFolder sub = subs[i];
+                        header.Add("<li class=\"active\"><a href=\"../\">");
+                        header.Add(sub.Name);
+                        header.Add(" </li>");
+                    }
+                    header.Add(" </ul>");
+                }
             },
             main =>
             {
+                List<WebAction> actions = folder.GetUiActions(ac);
                 main.GRID(actions, lst);
             },
             null,
