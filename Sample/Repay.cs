@@ -77,7 +77,7 @@ namespace Greatbone.Sample
             {
                 key = wx,
                 name = shopid,
-                role = 2
+                roles = 2
             };
         }
     }

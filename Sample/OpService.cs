@@ -1,7 +1,6 @@
 ﻿using System.Threading.Tasks;
 using Greatbone.Core;
 using NpgsqlTypes;
-using static Greatbone.Core.Projection;
 
 namespace Greatbone.Sample
 {
@@ -22,6 +21,31 @@ namespace Greatbone.Sample
             Create<UserFolder>("user");
 
             Create<RepayFolder>("repay");
+        }
+
+        [Role]
+        public void @default(WebActionContext ac)
+        {
+            Token tok = (Token)ac.Token;
+            if (tok.IsAdmin)
+            {
+                // display the folder's index page for admin
+                // ac.ReplyPage(200, null);
+            }
+            else if (tok.IsShop)
+            {
+                // redirect to the shop's home page
+                string shopid = tok.extra;
+                ac.SetHeader("Location", "shop/" + shopid + "/");
+                ac.Reply(303);
+            }
+            else if (tok.IsUser)
+            {
+                // redirect to user's home page
+                string userwx = tok.wx;
+                ac.SetHeader("Location", "user/" + userwx + "/");
+                ac.Reply(303);
+            }
         }
 
         ///
@@ -93,7 +117,6 @@ namespace Greatbone.Sample
                 string password = q[nameof(password)];
                 string orig = q[nameof(orig)];
 
-                ac.ReplyHtml(200, main => { main.FORM(null, x => x.BUTTON(null)); });
             }
             else // login
             {
@@ -112,7 +135,7 @@ namespace Greatbone.Sample
                     {
                         var tok = dc.ToObject<Token>();
                         string credential = TextUtility.MD5(id + ':' + password);
-                        if (credential.Equals(tok.role))
+                        if (credential.Equals(tok.roles))
                         {
                             // set cookie
                             string tokstr = Service.Authent.Encrypt(tok);
@@ -153,30 +176,14 @@ namespace Greatbone.Sample
                 }
                 else
                 {
-                    ac.ReplyHtml(200, main => { });
                 }
             }
         }
 
-        #region MANAGEMENT
 
-        ///
-        /// Get shop list.
-        ///
-        /// <code>
-        /// GET /[-page]
-        /// </code>
-        ///
-        [Admin]
-        public void @default(WebActionContext ac)
-        {
-            GetUiActions(typeof(AdminAttribute));
-
-            ac.ReplyHtml(200, x =>
-            {
-                // x.Form();
-            });
-        }
+        //
+        // management
+        //
 
 
         [Admin]
@@ -184,14 +191,6 @@ namespace Greatbone.Sample
         {
             if (Subs != null)
             {
-                ac.ReplyHtml(200, a =>
-                {
-                    for (int i = 0; i < Subs.Count; i++)
-                    {
-                        WebFolder child = Subs[i];
-                    }
-                },
-                true);
             }
         }
 
@@ -200,7 +199,5 @@ namespace Greatbone.Sample
         {
             await Task.CompletedTask;
         }
-
-        #endregion
     }
 }

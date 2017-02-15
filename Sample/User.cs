@@ -46,7 +46,7 @@ namespace Greatbone.Sample
             {
                 key = wx,
                 name = name,
-                role = 3
+                roles = 3
             };
         }
     }

@@ -17,7 +17,7 @@ namespace Greatbone.Sample
 
             Token tok = (Token)ac.Token;
 
-            return tok.role == 2 && shopid.Equals(tok.extra);
+            return tok.roles == 2 && shopid.Equals(tok.extra);
         }
     }
 }

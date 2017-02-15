@@ -6,7 +6,7 @@ namespace Greatbone.Sample
 {
     public static class HtmlUtility
     {
-        public static void ReplyHtml(this WebActionContext ac, int status, Action<HtmlContent> inner, bool? pub = null, int maxage = 60)
+        public static void ReplyHtml(this WebActionContext ac, int status, Action<HtmlContent> header, Action<HtmlContent> main, Action<HtmlContent> footer, bool? pub = null, int maxage = 60)
         {
             HtmlContent cont = new HtmlContent(true, true, 16 * 1024);
 
@@ -21,7 +21,23 @@ namespace Greatbone.Sample
 
             cont.T("<body>");
 
-            inner(cont);
+            if (header != null)
+            {
+                cont.T("<div class\"row\">");
+                header(cont);
+                cont.T("</div>");
+            }
+
+            cont.T("<div class\"row\">");
+            main(cont);
+            cont.T("</div>");
+
+            if (footer != null)
+            {
+                cont.T("<div class\"row\">");
+                footer(cont);
+                cont.T("</div>");
+            }
 
             // zurb foundation
             cont.T("<script src=\"//cdn.bootcss.com/jquery/3.1.1/jquery.min.js\"></script>");
@@ -37,44 +53,60 @@ namespace Greatbone.Sample
 
         public static void ReplySheet(this WebActionContext ac, int status, Action<HtmlContent> inner, bool? pub = null, int maxage = 60)
         {
-            ac.ReplyHtml(status, cont =>
+            ac.ReplyHtml(status,
+            null,
+            main =>
             {
-                cont.T("<form>");
-                inner(cont);
-                cont.T("</form>");
+                main.T("<form>");
+                inner(main);
+                main.T("</form>");
             },
+            null,
             pub, maxage);
         }
 
         public static void ReplyForm(this WebActionContext ac, int status, IData obj, int proj = 0, bool? pub = null, int maxage = 60)
         {
-            ac.ReplyHtml(status, cont =>
+            ac.ReplyHtml(status,
+            null,
+            main =>
             {
-                cont.T("<form>");
-                cont.ctx = HtmlContent.CTX_FORM;
-                obj.WriteData(cont, proj);
-                cont.T("</form>");
+                main.T("<form>");
+                main.ctx = HtmlContent.CTX_FORM;
+                obj.WriteData(main, proj);
+                main.T("</form>");
             },
+            null,
             pub, maxage);
         }
 
         public static void ReplyGrid<D>(this WebActionContext ac, int status, List<D> lst, int proj = 0, bool? pub = null, int maxage = 60) where D : IData
         {
             List<WebAction> actions = ac.Folder.GetUiActions(ac);
-            ac.ReplyHtml(status, cont =>
+
+            ac.ReplyHtml(status,
+            Header =>
             {
-                cont.GRID(actions, lst);
+
             },
+            main =>
+            {
+                main.GRID(actions, lst);
+            },
+            null,
             pub, maxage);
         }
 
         public static void ReplyPane(this WebActionContext ac, int status, IDataInput input, Action<IDataInput, HtmlContent> valve, bool? pub = null, int maxage = 60)
         {
             List<WebAction> actions = ac.Folder.GetUiActions(ac);
-            ac.ReplyHtml(status, cont =>
+            ac.ReplyHtml(status,
+            null,
+            main =>
             {
-                cont.GRID(actions, input, valve);
+                main.GRID(actions, input, valve);
             },
+            null,
             pub, maxage);
         }
     }

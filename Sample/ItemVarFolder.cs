@@ -34,13 +34,11 @@ namespace Greatbone.Sample
                 if (dc.Query(p => p.Set(id).Set(shopid)))
                 {
                     var order = dc.ToArray<Order>();
-                    ac.ReplyHtml(200, main =>
-                    {
-
-                    });
                 }
                 else
-                    ac.ReplyHtml(200, main => { });
+                {
+
+                }
             }
         }
 
@@ -59,18 +57,12 @@ namespace Greatbone.Sample
                 if (dc.Query(p => p.Set(orderid).Set(shopid)))
                 {
                     var order = dc.ToArray<Order>();
-                    ac.ReplyHtml(200, main =>
-                    {
-
-                    });
                 }
                 else
-                    ac.ReplyHtml(200, main => { });
-            }
-        }
+                {
 
-        public void close(WebActionContext ac)
-        {
+                }
+            }
         }
 
         #endregion

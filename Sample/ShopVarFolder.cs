@@ -40,13 +40,9 @@ namespace Greatbone.Sample
                 if (dc.Query(p => p.Set(shopid)))
                 {
                     var items = dc.ToArray<Item>();
-                    ac.ReplyHtml(200, main =>
-                    {
-                    });
                 }
                 else
                 {
-                    ac.ReplyHtml(200, main => { });
                 }
             }
         }
@@ -68,16 +64,12 @@ namespace Greatbone.Sample
                 if (dc.Query(sql.ToString(), p => p.Set(shopid)))
                 {
                     var items = dc.ToArray<Item>();
-                    ac.ReplyHtml(200, main =>
-                    {
-                        main.FORM(_re_menu_, p =>
-                        {
-
-                        });
-                    });
                 }
                 else
-                    ac.ReplyHtml(200, main => { });
+                {
+
+                }
+
             }
         }
 

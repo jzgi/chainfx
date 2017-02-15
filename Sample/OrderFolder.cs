@@ -89,14 +89,9 @@ namespace Greatbone.Sample
                     if (dc.Query(p => p.Set(pk).Set(shopid)))
                     {
                         var order = dc.ToArray<Order>();
-                        ac.ReplyHtml(200, main =>
-                        {
-
-                        });
                     }
                     else
                     {
-                        ac.ReplyHtml(200, main => { });
                     }
                 }
             }
@@ -131,11 +126,9 @@ namespace Greatbone.Sample
                 if (dc.Query(p => p.Set(pk).Set(shopid)))
                 {
                     var order = dc.ToArray<Order>();
-                    ac.ReplyHtml(200, main => { });
                 }
                 else
                 {
-                    ac.ReplyHtml(200, main => { });
                 }
             }
         }
