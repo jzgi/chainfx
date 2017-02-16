@@ -9,7 +9,9 @@ namespace Greatbone.Sample
     {
         internal string id; // weixin openid
 
-        internal string name; // user name or weixin nickname
+        internal string name;
+
+        internal string credential;
 
         internal int roles;
 
@@ -19,6 +21,7 @@ namespace Greatbone.Sample
         {
             i.Get(nameof(id), ref id);
             i.Get(nameof(name), ref name);
+            i.Get(nameof(credential), ref credential);
             i.Get(nameof(roles), ref roles);
             i.Get(nameof(tel), ref tel);
         }
@@ -27,6 +30,7 @@ namespace Greatbone.Sample
         {
             o.Put(nameof(id), id);
             o.Put(nameof(name), name);
+            o.Put(nameof(credential), credential);
             o.Put(nameof(roles), roles);
             o.Put(nameof(tel), tel);
         }

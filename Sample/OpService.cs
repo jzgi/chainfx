@@ -1,7 +1,6 @@
 ﻿using System.Collections.Generic;
 using System.Threading.Tasks;
 using Greatbone.Core;
-using NpgsqlTypes;
 
 namespace Greatbone.Sample
 {
@@ -93,50 +92,29 @@ namespace Greatbone.Sample
 
         }
 
-
         public async Task signon(WebActionContext ac)
         {
             if (ac.GET) // return the login form
             {
-                Form q = ac.Query;
-                string id = q[nameof(id)];
-                string password = q[nameof(password)];
-                string orig = q[nameof(orig)];
-                bool remember = q[nameof(remember)];
-                ac.ReplyForm(200, h =>
-                {
-                    h.TEXT(nameof(id), id, Required: true, Max: 11, Placeholder: "用户手机号，或者商户编号");
-                    h.PASSWORD(nameof(password), password);
-                    h.HIDDEN(nameof(orig), orig);
-                    h.CHECKBOX(nameof(remember), remember);
-                });
-
+                var login = new Login();
+                ac.ReplyForm(200, login);
             }
             else // POST
             {
-                Form f = await ac.ReadAsync<Form>();
-                string id = f[nameof(id)];
-                string password = f[nameof(password)];
-                string orig = f[nameof(orig)];
-                bool remember = f[nameof(remember)];
-                if (string.IsNullOrEmpty(id) || string.IsNullOrEmpty(password))
-                {
-                    ac.Reply(400); // bad request
-                    return;
-                }
+                var login = await ac.ReadObjectAsync<Login>();
+                string credential = login.CalcCredential();
 
-                if (id.Length == 6 && char.IsDigit(id[0])) // is shopid
+                if (login.IsShop)
                 {
                     using (var dc = Service.NewDbContext())
                     {
-                        if (dc.Query1("SELECT * FROM shops WHERE id = @1", (p) => p.Set(id)))
+                        if (dc.Query1("SELECT * FROM shops WHERE id = @1", (p) => p.Set(login.id)))
                         {
                             var shop = dc.ToObject<Shop>();
-                            string credential = TextUtility.MD5(id + ':' + password);
                             if (credential.Equals(shop.credential))
                             {
-                                Service.Authent.SetCookieHeader(ac, shop.ToToken());
-                                ac.ReplyRedirect(orig);
+                                Service.Authent.SetCookie(ac, shop.ToToken());
+                                ac.ReplyRedirect(login.orig);
                                 return;
                             }
                             else { ac.Reply(400); }
@@ -144,18 +122,17 @@ namespace Greatbone.Sample
                         else { ac.Reply(404); }
                     }
                 }
-                else if (id.Length == 11 && char.IsDigit(id[0])) // is userid
+                else if (login.IsUser)
                 {
                     using (var dc = Service.NewDbContext())
                     {
-                        if (dc.Query1("SELECT * FROM users WHERE id = @1", (p) => p.Set(id)))
+                        if (dc.Query1("SELECT * FROM users WHERE id = @1", (p) => p.Set(login.id)))
                         {
                             var user = dc.ToObject<User>();
-                            string credential = TextUtility.MD5(id + ':' + password);
                             if (credential.Equals(user.credential))
                             {
-                                Service.Authent.SetCookieHeader(ac, user.ToToken());
-                                ac.ReplyRedirect(orig);
+                                Service.Authent.SetCookie(ac, user.ToToken());
+                                ac.ReplyRedirect(login.orig);
                                 return;
                             }
                             else { ac.Reply(400); }
@@ -165,24 +142,18 @@ namespace Greatbone.Sample
                 }
                 else // is admin id
                 {
-                    var admin = admins.Find(a => a.id == id);
+                    var admin = admins.Find(a => a.id == login.id && credential.Equals(a.credential));
                     if (admin != null)
                     {
-                        Service.Authent.SetCookieHeader(ac, admin.ToToken());
-                        ac.ReplyRedirect(orig);
+                        Service.Authent.SetCookie(ac, admin.ToToken());
+                        ac.ReplyRedirect(login.orig);
                         return;
                     }
                     else { ac.Reply(404); }
                 }
 
                 // error
-                ac.ReplyForm(200, h =>
-                {
-                    h.TEXT(nameof(id), id);
-                    h.PASSWORD(nameof(password), password);
-                    h.HIDDEN(nameof(orig), orig);
-                    h.CHECKBOX(nameof(remember), remember);
-                });
+                ac.ReplyForm(200, login);
             }
         }
     }

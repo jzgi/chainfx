@@ -27,7 +27,7 @@ namespace Greatbone.Sample
         public void WriteData<R>(IDataOutput<R> o, int proj = 0) where R : IDataOutput<R>
         {
             o.Put(nameof(fromid), fromid);
-            o.Put(nameof(from), from);
+            o.Put(nameof(@from), @from);
             o.Put(nameof(type), type);
             o.Put(nameof(text), text);
             o.Put(nameof(time), time);
