@@ -13,6 +13,22 @@ namespace Greatbone.Sample
             CreateVar<ShopVarFolder>();
         }
 
+        [Admin]
+        public void @default(WebActionContext ac)
+        {
+            using (var dc = ac.NewDbContext())
+            {
+                if (dc.Query("SELECT * FROM shops"))
+                {
+                    ac.ReplyGridPage(200, dc.ToList<Shop>()); // ok
+                }
+                else
+                {
+                    ac.Reply(204); // no content
+                }
+            }
+        }
+
         // whether an aligned floating point
         bool IsAligned(string v)
         {
@@ -64,22 +80,6 @@ namespace Greatbone.Sample
         //
         // administrative actions
         //
-
-        // [Admin]
-        public void @default(WebActionContext ac)
-        {
-            using (var dc = ac.NewDbContext())
-            {
-                if (dc.Query("SELECT * FROM shops"))
-                {
-                    ac.ReplyGridPage(200, dc.ToList<Shop>()); // ok
-                }
-                else
-                {
-                    ac.Reply(204); // no content
-                }
-            }
-        }
 
         // [Admin]
         [Ui("新建")]

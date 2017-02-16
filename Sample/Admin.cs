@@ -37,7 +37,7 @@ namespace Greatbone.Sample
             {
                 key = id,
                 name = name,
-                roles = Token.ACCTG | Token.MKTG,
+                roles = roles,
                 extra = null
             };
         }

@@ -155,7 +155,10 @@ namespace Greatbone.Core
             Add("<form>");
 
             // buttons
-            BUTTONS(actions);
+            if (actions != null)
+            {
+                BUTTONS(actions);
+            }
 
             if (lst != null)
             {
@@ -691,9 +694,9 @@ namespace Greatbone.Core
             {
                 WebAction atn = atns[i];
                 BUTTON(atn);
+
             }
         }
-
         public void BUTTONS(List<WebAction> atns)
         {
             Add("<div class=\"row\">");

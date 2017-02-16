@@ -10,42 +10,42 @@ namespace Greatbone.Sample
         {
             HtmlContent cont = new HtmlContent(true, true, 16 * 1024);
 
-            cont.T("<!DOCTYPE html>");
-            cont.T("<html>");
+            cont.Add("<!DOCTYPE html>");
+            cont.Add("<html>");
 
-            cont.T("<head>");
-            cont.T("<title>粗粮达人</title>");
-            cont.T("<meta name=\"viewport\" content=\"width=device-width, initial-scale=1.0\">");
-            cont.T("<link rel=\"stylesheet\" href=\"//cdn.bootcss.com/foundation/6.3.0/css/foundation.min.css\">");
-            cont.T("</head>");
+            cont.Add("<head>");
+            cont.Add("<title>粗粮达人</title>");
+            cont.Add("<meta name=\"viewport\" content=\"width=device-width, initial-scale=1.0\">");
+            cont.Add("<link rel=\"stylesheet\" href=\"//cdn.bootcss.com/foundation/6.3.0/css/foundation.min.css\">");
+            cont.Add("</head>");
 
-            cont.T("<body>");
+            cont.Add("<body>");
 
             if (header != null)
             {
-                cont.T("<div class\"row\">");
+                cont.Add("<div class\"row\">");
                 header(cont);
-                cont.T("</div>");
+                cont.Add("</div>");
             }
 
-            cont.T("<div class\"row\">");
+            cont.Add("<div class\"row\">");
             main(cont);
-            cont.T("</div>");
+            cont.Add("</div>");
 
             if (footer != null)
             {
-                cont.T("<div class\"row\">");
+                cont.Add("<div class\"row\">");
                 footer(cont);
-                cont.T("</div>");
+                cont.Add("</div>");
             }
 
             // zurb foundation
-            cont.T("<script src=\"//cdn.bootcss.com/jquery/3.1.1/jquery.min.js\"></script>");
-            cont.T("<script src=\"//cdn.bootcss.com/foundation/6.3.0/js/foundation.min.js\"></script>");
-            cont.T("<script>$(document).foundation();</script>");
+            cont.Add("<script src=\"//cdn.bootcss.com/jquery/3.1.1/jquery.min.js\"></script>");
+            cont.Add("<script src=\"//cdn.bootcss.com/foundation/6.3.0/js/foundation.min.js\"></script>");
+            cont.Add("<script>$(document).foundation();</script>");
 
-            cont.T("</body>");
-            cont.T("</html>");
+            cont.Add("</body>");
+            cont.Add("</html>");
 
             // cont.Render(main);
             ac.Reply(status, cont, pub, maxage);
@@ -57,9 +57,9 @@ namespace Greatbone.Sample
             null,
             main =>
             {
-                main.T("<form>");
+                main.Add("<form>");
                 inner(main);
-                main.T("</form>");
+                main.Add("</form>");
             },
             null,
             pub, maxage);
@@ -71,10 +71,10 @@ namespace Greatbone.Sample
             null,
             main =>
             {
-                main.T("<form>");
+                main.Add("<form>");
                 main.ctx = HtmlContent.CTX_FORM;
                 obj.WriteData(main, proj);
-                main.T("</form>");
+                main.Add("</form>");
             },
             null,
             pub, maxage);
@@ -90,7 +90,7 @@ namespace Greatbone.Sample
                 main.ctx = HtmlContent.CTX_FORM;
                 form(main);
                 main.BUTTON(ac.Handle);
-                main.T("</form>");
+                main.Add("</form>");
             },
             null,
             pub, maxage);
@@ -105,7 +105,7 @@ namespace Greatbone.Sample
             {
                 if (folder.Parent != null)
                 {
-                    header.Add("<a href=\"../\" class=\"button\">");
+                    header.Add("<a href=\"../\" class=\"button\">上层</a>");
                 }
                 Roll<WebFolder> subs = folder.subs;
                 if (subs != null)
@@ -114,9 +114,11 @@ namespace Greatbone.Sample
                     for (int i = 0; i < subs.Count; i++)
                     {
                         WebFolder sub = subs[i];
-                        header.Add("<li class=\"active\"><a href=\"../\">");
+                        header.Add("<li class=\"\"><a href=\"");
                         header.Add(sub.Name);
-                        header.Add(" </li>");
+                        header.Add("/\">");
+                        header.Add(sub.Name);
+                        header.Add("</a></li>");
                     }
                     header.Add(" </ul>");
                 }
