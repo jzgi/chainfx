@@ -671,11 +671,6 @@ namespace Greatbone.Core
             Add("\" formaction=\"");
             Add(atn.Name);
             Add("\" formmethod=\"post\"");
-            // if (atn.Dialog != 0)
-            // {
-            //     Add("\" onclick=\"dialog(this,");
-            //     Add("); return false;");
-            // }
             Add(">");
             string icon = atn.Icon;
             if (icon != null)
@@ -688,24 +683,31 @@ namespace Greatbone.Core
             Add("</button>");
         }
 
-        public void BUTTONS(params WebAction[] atns)
+        public void BUTTONS(List<WebAction> actions)
         {
-            for (int i = 0; i < atns.Length; i++)
+            Add("<ul class=\"menu\">");
+            for (int i = 0; i < actions.Count; i++)
             {
-                WebAction atn = atns[i];
-                BUTTON(atn);
-
+                WebAction atn = actions[i];
+                Add("<li>");
+                Add("<button");
+                if (atn.Form == 0) Add(" class=\"button primary");
+                Add("\" formaction=\"");
+                Add(atn.Name);
+                Add("\" formmethod=\"post\" onclick=\"dialog(); return false;\"");
+                Add(">");
+                string icon = atn.Icon;
+                if (icon != null)
+                {
+                    Add("<i class=\"");
+                    Add(icon);
+                    Add("\"></i>");
+                }
+                AddLabel(atn.Label, atn.Name);
+                Add("</button>");
+                Add("</li>");
             }
-        }
-        public void BUTTONS(List<WebAction> atns)
-        {
-            Add("<div class=\"row\">");
-            for (int i = 0; i < atns.Count; i++)
-            {
-                WebAction atn = atns[i];
-                BUTTON(atn);
-            }
-            Add("</div>");
+            Add("</ul>");
         }
 
         public void SELECT<V>(string name, V v, IDictionary<V, string> options, string Label = null, bool Required = false) where V : IEquatable<V>, IConvertible

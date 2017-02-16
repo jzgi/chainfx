@@ -8,18 +8,56 @@
 </head>
 
 <body>
+  <div class "row"><a href="../" class="button">上层</a></div>
   <div class "row">
-    <form>
-      <label>ID<input type="text" name="id" value=""></label><label>PASSWORD<input type="password" name="password" value=""></label><input
-        type="hidden" name="orig" value="/"><label>REM<input type="checkbox" name="rem"></label>
-      <button class="button primary" formaction="http://baidu.com" formmethod="post">SIGNON</button>
+    <form><button class="button primary" formaction="new" formmethod="post" onclick="dialog(); return false;">新建</button><button
+        class="button primary" formaction="del" formmethod="post" onclick="dialog(); return false;">删除</button>
+      <button class="button primary"
+        formaction="disable" formmethod="post" onclick="dialog(); return false;">禁用</button><button class="button primary" formaction="enable" formmethod="post" onclick="dialog(); return false;">启用</button><button
+          class="button primary" formaction="rpt" formmethod="post" onclick="dialog(); return false;">分布报告</button>
+        <table class="hover">
+          <thead>
+            <tr>
+              <th>ID</th>
+              <th>NAME</th>
+              <th>CREDENTIAL</th>
+              <th>TEL</th>
+              <th>X</th>
+              <th>Y</th>
+              <th>PROV</th>
+              <th>CITY</th>
+              <th>WX</th>
+              <th>NOTE</th>
+              <th>STATUS</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td><input type="checkbox" name="pk">360001</td>
+              <td>黄田</td>
+              <td></td>
+              <td></td>
+              <td style="text-align: right;">125.4</td>
+              <td style="text-align: right;">42.4</td>
+              <td>江西</td>
+              <td>南昌</td>
+              <td></td>
+              <td></td>
+              <td style="text-align: right;">禁用</td>
+            </tr>
+          </tbody>
     </form>
   </div>
-  <script src="//cdn.bootcss.com/jquery/3.1.1/jquery.min.js"></script>
-  <script src="//cdn.bootcss.com/foundation/6.3.0/js/foundation.min.js"></script>
-  <script>
-    $(document).foundation();
-  </script>
+  <div class="full reveal" id="dialog" data-reveal data-close-on-click="false">
+    <h3></h3><button class="close-button" data-close aria-label="Close modal" type="button"><span aria-hidden="true">&times;</span></button>
+    <iframe
+      style="width: 100%; height: 80%"></iframe>
+    <script src="//cdn.bootcss.com/jquery/3.1.1/jquery.min.js"></script>
+    <script src="//cdn.bootcss.com/foundation/6.3.0/js/foundation.min.js"></script>
+    <script src="/app.js"></script>
+    <script>
+                                                                             $(document).foundation();
+    </script>
 </body>
 
 </html>

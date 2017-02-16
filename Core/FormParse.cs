@@ -34,7 +34,7 @@ namespace Greatbone.Core
             this.str = new Text(256);
         }
 
-        int this[int index] => bytebuf?[index] ?? (int) strbuf[index];
+        int this[int index] => bytebuf?[index] ?? (int)strbuf[index];
 
         public Form Parse()
         {
@@ -62,11 +62,8 @@ namespace Greatbone.Core
             int p = pos;
             for (;;)
             {
+                if (p >= length) { throw ParseEx; }
                 int b = this[p++];
-                if (p >= length)
-                {
-                    return null;
-                }
                 if (b == '=')
                 {
                     pos = p;

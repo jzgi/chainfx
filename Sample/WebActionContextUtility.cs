@@ -8,7 +8,7 @@ namespace Greatbone.Sample
     {
         public static void ReplyRedirect(this WebActionContext ac, string uri, bool? pub = null, int maxage = 60)
         {
-            ac.SetHeader("Location", uri);
+            ac.SetHeader("Location", string.IsNullOrEmpty(uri) ? "/" : uri);
             ac.Reply(303);
         }
 
@@ -48,6 +48,7 @@ namespace Greatbone.Sample
             // zurb foundation
             cont.Add("<script src=\"//cdn.bootcss.com/jquery/3.1.1/jquery.min.js\"></script>");
             cont.Add("<script src=\"//cdn.bootcss.com/foundation/6.3.0/js/foundation.min.js\"></script>");
+            cont.Add("<script src=\"/app.js\"></script>");
             cont.Add("<script>$(document).foundation();</script>");
 
             cont.Add("</body>");
@@ -80,6 +81,7 @@ namespace Greatbone.Sample
                 main.Add("<form>");
                 main.ctx = HtmlContent.CTX_FORM;
                 obj.WriteData(main, proj);
+                main.BUTTON(ac.Handle);
                 main.Add("</form>");
             },
             null,
