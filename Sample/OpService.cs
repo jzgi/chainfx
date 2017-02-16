@@ -2,7 +2,6 @@
 using System.Threading.Tasks;
 using Greatbone.Core;
 using NpgsqlTypes;
-using System;
 
 namespace Greatbone.Sample
 {
@@ -32,21 +31,19 @@ namespace Greatbone.Sample
             if (tok.IsAdmin)
             {
                 // display the folder's index page for admin
-                ac.ReplyGridPage(200, (List<Shop>)null);
+                ac.ReplyFolderPage(200, (List<Shop>)null);
             }
             else if (tok.IsShop)
             {
                 // redirect to the shop's home page
                 string shopid = tok.extra;
-                ac.SetHeader("Location", "shop/" + shopid + "/");
-                ac.Reply(303);
+                ac.ReplyRedirect("shop/" + shopid + "/");
             }
             else if (tok.IsUser)
             {
                 // redirect to user's home page
                 string userwx = tok.wx;
-                ac.SetHeader("Location", "user/" + userwx + "/");
-                ac.Reply(303);
+                ac.ReplyRedirect("user/" + userwx + "/");
             }
         }
 
@@ -58,8 +55,7 @@ namespace Greatbone.Sample
             if (code == null)
             {
                 // redirect the user to weixin authorization page
-                ac.SetHeader("Location", "https://open.weixin.qq.com/connect/oauth2/authorize?appid=APPID&redirect_uri=REDIRECT_URI&response_type=code&scope=SCOPE&state=STATE#wechat_redirect");
-                ac.Reply(302);
+                ac.ReplyRedirect("https://open.weixin.qq.com/connect/oauth2/authorize?appid=APPID&redirect_uri=REDIRECT_URI&response_type=code&scope=SCOPE&state=STATE#wechat_redirect");
             }
             else
             {
@@ -140,7 +136,8 @@ namespace Greatbone.Sample
                             if (credential.Equals(shop.credential))
                             {
                                 Service.Authent.SetCookieHeader(ac, shop.ToToken());
-                                goto Redirect;
+                                ac.ReplyRedirect(orig);
+                                return;
                             }
                             else { ac.Reply(400); }
                         }
@@ -158,7 +155,8 @@ namespace Greatbone.Sample
                             if (credential.Equals(user.credential))
                             {
                                 Service.Authent.SetCookieHeader(ac, user.ToToken());
-                                goto Redirect;
+                                ac.ReplyRedirect(orig);
+                                return;
                             }
                             else { ac.Reply(400); }
                         }
@@ -171,10 +169,13 @@ namespace Greatbone.Sample
                     if (admin != null)
                     {
                         Service.Authent.SetCookieHeader(ac, admin.ToToken());
-                        goto Redirect;
+                        ac.ReplyRedirect(orig);
+                        return;
                     }
                     else { ac.Reply(404); }
                 }
+
+                // error
                 ac.ReplyForm(200, h =>
                 {
                     h.TEXT(nameof(id), id);
@@ -182,57 +183,7 @@ namespace Greatbone.Sample
                     h.HIDDEN(nameof(orig), orig);
                     h.CHECKBOX(nameof(remember), remember);
                 });
-
-                return;
-
-            Redirect:
-                ac.SetHeader("Location", orig);
-                ac.Reply(303); // see other (redirect)
             }
-        }
-
-        ///
-        /// Get nearest shops
-        ///
-        /// <code>
-        /// GET /nearest?pt=x,y
-        /// </code>
-        ///
-        public void nearest(WebActionContext ac)
-        {
-            NpgsqlPoint pt = ac.Query[nameof(pt)];
-
-            using (var dc = Service.NewDbContext())
-            {
-                dc.Sql("SELECT ").columnlst(Shop.Empty)._("FROM shops WHERE location <-> @1");
-                if (dc.Query(p => p.Set(pt)))
-                {
-                    var shops = dc.ToList<Shop>();
-                }
-                else
-                {
-                }
-            }
-        }
-
-
-        //
-        // management
-        //
-
-
-        [Admin]
-        public virtual void mgmt(WebActionContext ac)
-        {
-            if (Subs != null)
-            {
-            }
-        }
-
-
-        public async Task report(WebActionContext ac)
-        {
-            await Task.CompletedTask;
         }
     }
 }

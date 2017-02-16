@@ -49,11 +49,11 @@ namespace Greatbone.Sample
                 {
                     if (dc.Query("SELECT * FROM orders WHERE shopid = @1 AND status < 4", p => p.Set(shopid)))
                     {
-                        ac.ReplyGridPage(200, dc.ToList<Order>());
+                        ac.ReplyFolderPage(200, dc.ToList<Order>());
                     }
                     else
                     {
-                        ac.ReplyGridPage(200, (List<Order>)null);
+                        ac.ReplyFolderPage(200, (List<Order>)null);
                     }
                 }
             }
@@ -63,11 +63,11 @@ namespace Greatbone.Sample
                 {
                     if (dc.Query("SELECT * FROM orders WHERE shopid = @1 AND status >= 4 ORDER BY id LIMIT 20 OFFSET @2", p => p.Set(shopid).Set(page.ToInt() * 20)))
                     {
-                        ac.ReplyGridPage(200, dc.ToList<Order>());
+                        ac.ReplyFolderPage(200, dc.ToList<Order>());
                     }
                     else
                     {
-                        ac.ReplyGridPage(200, (List<Order>)null);
+                        ac.ReplyFolderPage(200, (List<Order>)null);
                     }
                 }
             }

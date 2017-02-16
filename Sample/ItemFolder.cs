@@ -44,11 +44,11 @@ namespace Greatbone.Sample
             {
                 if (dc.Query("SELECT * FROM orders WHERE shopid = @1 AND status < 4", p => p.Set(shopid)))
                 {
-                    ac.ReplyGridPage(200, dc.ToList<Item>());
+                    ac.ReplyFolderPage(200, dc.ToList<Item>());
                 }
                 else
                 {
-                    ac.ReplyGridPage(200, (List<Item>)null);
+                    ac.ReplyFolderPage(200, (List<Item>)null);
                 }
             }
         }

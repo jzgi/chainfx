@@ -4,8 +4,14 @@ using Greatbone.Core;
 
 namespace Greatbone.Sample
 {
-    public static class HtmlUtility
+    public static class WebActionContextUtility
     {
+        public static void ReplyRedirect(this WebActionContext ac, string uri, bool? pub = null, int maxage = 60)
+        {
+            ac.SetHeader("Location", uri);
+            ac.Reply(303);
+        }
+
         public static void ReplyHtml(this WebActionContext ac, int status, Action<HtmlContent> header, Action<HtmlContent> main, Action<HtmlContent> footer, bool? pub = null, int maxage = 60)
         {
             HtmlContent cont = new HtmlContent(true, true, 16 * 1024);
@@ -96,7 +102,7 @@ namespace Greatbone.Sample
             pub, maxage);
         }
 
-        public static void ReplyGridPage<D>(this WebActionContext ac, int status, List<D> lst, int proj = 0, bool? pub = null, int maxage = 60) where D : IData
+        public static void ReplyFolderPage<D>(this WebActionContext ac, int status, List<D> lst, int proj = 0, bool? pub = null, int maxage = 60) where D : IData
         {
             WebFolder folder = ac.Folder;
 
