@@ -692,9 +692,15 @@ namespace Greatbone.Core
                 Add("<li>");
                 Add("<button");
                 if (atn.Form == 0) Add(" class=\"button primary");
-                Add("\" formaction=\"");
-                Add(atn.Name);
+                Add("\" formaction=\""); Add(atn.Name);
                 Add("\" formmethod=\"post\" onclick=\"dialog(); return false;\"");
+
+                StateAttribute sta = atn.State;
+                if (sta != null)
+                {
+                    Add(" data-if=\""); Add(sta.If); Add("\"");
+                    Add(" data-unif=\""); Add(sta.Unif); Add("\"");
+                }
                 Add(">");
                 string icon = atn.Icon;
                 if (icon != null)

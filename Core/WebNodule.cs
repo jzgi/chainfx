@@ -31,30 +31,30 @@ namespace Greatbone.Core
             }
 
             // roles
-            List<RoleAttribute> rlst = null;
+            List<RoleAttribute> rolelst = null;
             foreach (var role in (RoleAttribute[])attrs.GetCustomAttributes(typeof(RoleAttribute), false))
             {
-                if (rlst == null)
+                if (rolelst == null)
                 {
-                    rlst = new List<RoleAttribute>(8);
+                    rolelst = new List<RoleAttribute>(8);
                 }
                 role.Nodule = this;
-                rlst.Add(role);
+                rolelst.Add(role);
             }
-            this.roles = rlst?.ToArray();
+            this.roles = rolelst?.ToArray();
 
             // filters
-            List<FilterAttribute> flst = null;
-            foreach (var filter in (FilterAttribute[])attrs.GetCustomAttributes(typeof(FilterAttribute), false))
+            List<FilterAttribute> fltlst = null;
+            foreach (var flt in (FilterAttribute[])attrs.GetCustomAttributes(typeof(FilterAttribute), false))
             {
-                if (flst == null)
+                if (fltlst == null)
                 {
-                    flst = new List<FilterAttribute>(8);
+                    fltlst = new List<FilterAttribute>(8);
                 }
-                filter.Nodule = this;
-                flst.Add(filter);
+                flt.Nodule = this;
+                fltlst.Add(flt);
             }
-            this.filters = flst?.ToArray();
+            this.filters = fltlst?.ToArray();
 
             // ui
             var uis = (UiAttribute[])attrs.GetCustomAttributes(typeof(UiAttribute), false);
@@ -71,6 +71,8 @@ namespace Greatbone.Core
         public string Label => ui?.Label;
 
         public string Icon => ui?.Icon;
+
+        public UiAttribute Ui => ui;
 
         public bool HasRole(Type roletyp)
         {

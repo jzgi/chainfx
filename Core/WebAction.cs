@@ -27,7 +27,9 @@ namespace Greatbone.Core
         // async Task action(WebActionContext, string)
         readonly Func<WebActionContext, string, Task> do2async;
 
-        internal WebAction(WebFolder folder, MethodInfo mi, bool async, bool arg) : base(mi.Name,mi)
+        readonly StateAttribute state;
+
+        internal WebAction(WebFolder folder, MethodInfo mi, bool async, bool arg) : base(mi.Name, mi)
         {
             this.folder = folder;
             this.async = async;
@@ -55,6 +57,13 @@ namespace Greatbone.Core
                     @do = (Action<WebActionContext>)mi.CreateDelegate(typeof(Action<WebActionContext>), folder);
                 }
             }
+
+            // state
+            var states = (StateAttribute[])mi.GetCustomAttributes(typeof(StateAttribute), false);
+            if (states.Length > 0)
+            {
+                state = states[0];
+            }
         }
 
         public WebFolder Folder => folder;
@@ -69,7 +78,7 @@ namespace Greatbone.Core
 
         public override WebService Service => folder.Service;
 
-        public UiAttribute Ui => ui;
+        public StateAttribute State => state;
 
         internal void Do(WebActionContext ac, String arg)
         {

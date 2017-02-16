@@ -7,19 +7,20 @@ namespace Greatbone.Core
     [AttributeUsage(AttributeTargets.Method, Inherited = false)]
     public class StateAttribute : Attribute
     {
-        public StateAttribute(int with, int without, int set)
+        public StateAttribute(int @if = 0, int unif = 0, int def = 0, int undef = 0)
         {
-            Without = without;
-            With = with;
-            Set = set;
+            Unif = unif;
+            If = @if;
+            Def = def;
+            Undef = undef;
         }
 
-        public int With { get; set; } = 0;
+        public int If { get; set; } = 0;
 
-        public int Without { get; set; } = 0;
+        public int Unif { get; set; } = 0;
 
-        public int Set { get; set; }
+        public int Def { get; set; }
 
-        public int Unset { get; set; }
+        public int Undef { get; set; }
     }
 }
