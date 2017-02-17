@@ -10,23 +10,23 @@ namespace Greatbone.Core
     {
         public UiAttribute() { }
 
-        public UiAttribute(string label)
+        public UiAttribute(string label, string icon = null)
         {
             Label = label;
+            Icon = icon;
         }
 
         public string Label { get; set; } = null;
 
         public string Icon { get; set; } = null;
 
-        public int Form { get; set; } = 0;
-
-        public int Dialog { get; set; } = 0;
-
-        /// To activate/deactivate the action according to state specifications.
         ///
-        public int State { get; set; }
-
+        /// <remarks>
+        /// 0 No Dialog
+        /// 1 Small Dialog
+        /// 2 Large Dialog
+        /// 3 Full Standalone
+        /// </remarks>
+        public int Dialog { get; set; } = 1;
     }
-
 }

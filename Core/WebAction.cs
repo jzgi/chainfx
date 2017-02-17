@@ -72,10 +72,6 @@ namespace Greatbone.Core
 
         public bool Arg => arg;
 
-        public int Form => ui?.Form ?? 0;
-
-        public int Dialog => ui?.Dialog ?? 0;
-
         public override WebService Service => folder.Service;
 
         public StateAttribute State => state;

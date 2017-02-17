@@ -664,56 +664,47 @@ namespace Greatbone.Core
             Add("</label>");
         }
 
-        public void BUTTON(WebAction atn)
+        public void BUTTON(WebAction actn)
         {
-            Add("<button");
-            if (atn.Form == 0) Add(" class=\"button primary");
-            Add("\" formaction=\"");
-            Add(atn.Name);
-            Add("\" formmethod=\"post\"");
+            Add("<button class=\"button primary\"");
+            Add(" formaction=\""); Add(actn.Name); Add("\"");
+            Add(" formmethod=\"post\" onclick=\"dialog(); return false;\"");
+
+            UiAttribute ui = actn.Ui;
+
+            int dialog = ui?.Dialog ?? 0;
+            if (dialog > 0)
+            {
+                Add(" onclick=\"dialog(this,"); Add(dialog); Add("); return false;\"");
+            }
+
+            StateAttribute state = actn.State;
+            if (state != null)
+            {
+                Add(" data-if=\""); Add(state.If); Add("\"");
+                Add(" data-unif=\""); Add(state.Unif); Add("\"");
+            }
             Add(">");
-            string icon = atn.Icon;
+            // label and ison
+            string icon = ui?.Icon;
             if (icon != null)
             {
                 Add("<i class=\"");
                 Add(icon);
                 Add("\"></i>");
             }
-            AddLabel(atn.Label, atn.Name);
+            AddLabel(ui?.Label, actn.Name);
+
             Add("</button>");
         }
 
-        public void BUTTONS(List<WebAction> actions)
+        public void BUTTONS(List<WebAction> actns)
         {
-            Add("<ul class=\"menu\">");
-            for (int i = 0; i < actions.Count; i++)
+            for (int i = 0; i < actns.Count; i++)
             {
-                WebAction atn = actions[i];
-                Add("<li>");
-                Add("<button");
-                if (atn.Form == 0) Add(" class=\"button primary");
-                Add("\" formaction=\""); Add(atn.Name);
-                Add("\" formmethod=\"post\" onclick=\"dialog(); return false;\"");
-
-                StateAttribute sta = atn.State;
-                if (sta != null)
-                {
-                    Add(" data-if=\""); Add(sta.If); Add("\"");
-                    Add(" data-unif=\""); Add(sta.Unif); Add("\"");
-                }
-                Add(">");
-                string icon = atn.Icon;
-                if (icon != null)
-                {
-                    Add("<i class=\"");
-                    Add(icon);
-                    Add("\"></i>");
-                }
-                AddLabel(atn.Label, atn.Name);
-                Add("</button>");
-                Add("</li>");
+                WebAction act = actns[i];
+                BUTTON(act);
             }
-            Add("</ul>");
         }
 
         public void SELECT<V>(string name, V v, IDictionary<V, string> options, string Label = null, bool Required = false) where V : IEquatable<V>, IConvertible

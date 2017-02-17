@@ -68,10 +68,6 @@ namespace Greatbone.Core
 
         public string Name => name;
 
-        public string Label => ui?.Label;
-
-        public string Icon => ui?.Icon;
-
         public UiAttribute Ui => ui;
 
         public bool HasRole(Type roletyp)

@@ -23,6 +23,7 @@ namespace Greatbone.Sample
             cont.Add("<title>粗粮达人</title>");
             cont.Add("<meta name=\"viewport\" content=\"width=device-width, initial-scale=1.0\">");
             cont.Add("<link rel=\"stylesheet\" href=\"//cdn.bootcss.com/foundation/6.3.0/css/foundation.min.css\">");
+            cont.Add("<link rel=\"stylesheet\" href=\"//cdn.bootcss.com/font-awesome/4.7.0/css/font-awesome.min.css\">");
             cont.Add("</head>");
 
             cont.Add("<body>");
