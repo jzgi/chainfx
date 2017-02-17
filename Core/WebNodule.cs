@@ -84,6 +84,8 @@ namespace Greatbone.Core
 
         public bool HasUi => ui != null;
 
+        public bool IsModal => ui != null && ui.Modal > 0;
+
         public bool Check(WebActionContext ac, bool reply)
         {
             if (roles != null)

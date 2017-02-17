@@ -1,16 +1,16 @@
 
-function dialog(btn, mode, src) {
+function dialog(btn, modal) {
 
-    var size = mode == 1 ? 'small' : mode == 2 ? 'large' : 'full';
+    var sizg = modal == 1 ? 'small' : modal == 2 ? 'large' : 'full';
 
-    var okbtn = mode <= 2 ? '<button onclick="btn.submit()">OK</botton>' : '';
+    var okbtn = modal <= 2 ? '<button onclick="btn.submit()">OK</botton>' : '';
 
     var html =
-        '<div class="' + size + ' reveal" id="dialog" data-reveal data-close-on-click="false">' +
+        '<div class="' + sizg + ' reveal" id="dialog" data-reveal data-close-on-click="false">' +
         '<h3></h3>' +
         '<button class="close-button" data-close aria-label="Close modal" type="button"><span aria-hidden="true">&times;</span></button>' +
         okbtn +
-        '<iframe src="' + src + '" style="width: 100%; height: 80%"></iframe>' +
+        '<iframe src="' + btn.name + '" style="width: 100%; height: 80%"></iframe>' +
         '</div>';
 
     var div = $(html);

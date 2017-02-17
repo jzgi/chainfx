@@ -6,7 +6,7 @@ namespace Greatbone.Sample
     {
         public override bool Check(WebActionContext wc)
         {
-            return wc.Token is Token;
+            return ((Token)wc.Token).IsAdmin;
         }
     }
 }

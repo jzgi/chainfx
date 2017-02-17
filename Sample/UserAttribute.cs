@@ -10,10 +10,10 @@ namespace Greatbone.Sample
         {
             this.owner = owner;
         }
-        
+
         public override bool Check(WebActionContext wc)
         {
-            return wc.Token is Token;
+            return ((Token)wc.Token).IsUser;
         }
     }
 }

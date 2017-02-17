@@ -131,7 +131,7 @@ namespace Greatbone.Core
         {
         }
 
-        public void FORM(WebAction action, Action<HtmlContent> inner)
+        public void FORM(WebAction actn, Action<HtmlContent> inner)
         {
             Add("<form class=\"pure-form pure-g\">");
 
@@ -140,7 +140,7 @@ namespace Greatbone.Core
             Add("</form>");
         }
 
-        public void FORM(WebAction action, IData obj, int proj = 0)
+        public void FORM(WebAction actn, IData obj, int proj = 0)
         {
             Add("<form class=\"pure-form pure-g\">");
 
@@ -150,14 +150,14 @@ namespace Greatbone.Core
             Add("</form>");
         }
 
-        public void GRID<D>(List<WebAction> actions, List<D> lst, int proj = 0) where D : IData
+        public void GRID<D>(List<WebAction> actns, List<D> lst, int proj = 0) where D : IData
         {
             Add("<form>");
 
             // buttons
-            if (actions != null)
+            if (actns != null)
             {
-                BUTTONS(actions);
+                BUTTONS(actns);
             }
 
             if (lst != null)
@@ -198,12 +198,12 @@ namespace Greatbone.Core
             Add("</form>");
         }
 
-        public void GRID(List<WebAction> actions, IDataInput input, Action<IDataInput, HtmlContent> valve)
+        public void GRID(List<WebAction> actns, IDataInput input, Action<IDataInput, HtmlContent> valve)
         {
             Add("<form>");
 
             // buttons
-            BUTTONS(actions);
+            BUTTONS(actns);
 
             if (input != null)
             {
@@ -668,14 +668,13 @@ namespace Greatbone.Core
         {
             Add("<button class=\"button primary\"");
             Add(" formaction=\""); Add(actn.Name); Add("\"");
-            Add(" formmethod=\"post\" onclick=\"dialog(); return false;\"");
 
             UiAttribute ui = actn.Ui;
 
-            int dialog = ui?.Dialog ?? 0;
-            if (dialog > 0)
+            int modal = ui?.Modal ?? 0;
+            if (modal > 0)
             {
-                Add(" onclick=\"dialog(this,"); Add(dialog); Add("); return false;\"");
+                Add(" onclick=\"return dialog(this,"); Add(modal); Add(");\"");
             }
 
             StateAttribute state = actn.State;

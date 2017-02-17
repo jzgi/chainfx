@@ -9,8 +9,8 @@ namespace Greatbone.Core
     {
         public StateAttribute(int @if = 0, int unif = 0, int def = 0, int undef = 0)
         {
-            Unif = unif;
             If = @if;
+            Unif = unif;
             Def = def;
             Undef = undef;
         }

@@ -92,6 +92,7 @@ namespace Greatbone.Sample
 
         }
 
+        [Ui("登录")]
         public async Task signon(WebActionContext ac)
         {
             if (ac.GET) // return the login form

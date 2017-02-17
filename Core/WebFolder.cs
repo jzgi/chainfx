@@ -209,25 +209,13 @@ namespace Greatbone.Core
             return actions[method];
         }
 
-        public WebAction[] GetActions(params string[] methods)
-        {
-            int len = methods.Length;
-            WebAction[] atn = new WebAction[len];
-            for (int i = 0; i < methods.Length; i++)
-            {
-                string mthd = methods[i];
-                atn[i] = string.IsNullOrEmpty(mthd) ? defaction : actions[mthd];
-            }
-            return atn;
-        }
-
-        public List<WebAction> GetUiActions(Type checktyp)
+        public List<WebAction> GetModalActions(Type checktyp)
         {
             List<WebAction> lst = null;
             for (int i = 0; i < actions.Count; i++)
             {
                 WebAction a = actions[i];
-                if (a.Ui != null && a.HasRole(checktyp))
+                if (a.IsModal && a.HasRole(checktyp))
                 {
                     if (lst == null) lst = new List<WebAction>();
                     lst.Add(a);
@@ -236,13 +224,13 @@ namespace Greatbone.Core
             return lst;
         }
 
-        public List<WebAction> GetUiActions(WebActionContext ac)
+        public List<WebAction> GetModalActions(WebActionContext ac)
         {
             List<WebAction> lst = null;
             for (int i = 0; i < actions.Count; i++)
             {
                 WebAction a = actions[i];
-                if (a.HasUi && a.Check(ac, false) == true)
+                if (a.IsModal && a.Check(ac, false) == true)
                 {
                     if (lst == null) lst = new List<WebAction>();
                     lst.Add(a);
@@ -312,7 +300,7 @@ namespace Greatbone.Core
                     return;
                 }
                 if (!atn.Check(ac, true)) { return; }
-                
+
                 // try in cache
 
                 if (atn.Async)
