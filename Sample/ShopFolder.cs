@@ -82,7 +82,7 @@ namespace Greatbone.Sample
         //
 
         // [Admin]
-        [Ui("新建")]
+        [Ui("新建", 3)]
         public async Task @new(WebActionContext ac)
         {
             if (ac.GET)
@@ -123,25 +123,25 @@ namespace Greatbone.Sample
             }
         }
 
-        [Ui("删除")]
+        [Ui("删除", 1)]
         public void del(WebActionContext ac)
         {
 
         }
 
-        [Ui("禁用")]
+        [Ui("禁用", 2)]
         public void disable(WebActionContext ac)
         {
 
         }
 
-        [Ui("启用")]
+        [Ui("启用", 2)]
         public void enable(WebActionContext ac)
         {
 
         }
 
-        [Ui("分布报告")]
+        [Ui("分布报告", 2)]
         public void rpt(WebActionContext ac)
         {
 

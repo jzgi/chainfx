@@ -7,7 +7,7 @@ function dialog(btn, modal) {
 
     var html =
         '<div class="' + sizg + ' reveal" id="dialog" data-reveal data-close-on-click="false">' +
-        '<h3></h3>' +
+        '<h3>' + btn.innerHTML + ' </h3>' +
         '<button class="close-button" data-close aria-label="Close modal" type="button"><span aria-hidden="true">&times;</span></button>' +
         okbtn +
         '<iframe src="' + btn.name + '" style="width: 100%; height: 80%"></iframe>' +

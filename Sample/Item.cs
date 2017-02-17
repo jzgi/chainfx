@@ -11,7 +11,7 @@ namespace Greatbone.Sample
 
         internal string shopid;
 
-        internal string item;
+        internal string name;
 
         internal string unit;
 
@@ -21,7 +21,7 @@ namespace Greatbone.Sample
 
         internal decimal oprice; // original price
 
-        internal string price; // current price
+        internal decimal price; // current price
 
         internal int min; // minimal ordered
 
@@ -29,11 +29,14 @@ namespace Greatbone.Sample
 
         internal int sold; // total sold 
 
+        internal bool enabled;
+
         public void ReadData(IDataInput i, int proj = 0)
         {
             i.Get(nameof(shopid), ref shopid);
-            i.Get(nameof(item), ref item);
+            i.Get(nameof(name), ref name);
             i.Get(nameof(unit), ref unit);
+            i.Get(nameof(descr), ref descr);
             if (proj.Bin())
             {
                 i.Get(nameof(icon), ref icon);
@@ -43,13 +46,15 @@ namespace Greatbone.Sample
             i.Get(nameof(min), ref min);
             i.Get(nameof(step), ref step);
             i.Get(nameof(sold), ref sold);
+            i.Get(nameof(enabled), ref enabled);
         }
 
         public void WriteData<R>(IDataOutput<R> o, int proj = 0) where R : IDataOutput<R>
         {
             o.Put(nameof(shopid), shopid);
-            o.Put(nameof(item), item);
+            o.Put(nameof(name), name);
             o.Put(nameof(unit), unit);
+            o.Put(nameof(descr), descr);
             if (proj.Bin())
             {
                 o.Put(nameof(icon), icon);
@@ -59,6 +64,7 @@ namespace Greatbone.Sample
             o.Put(nameof(min), min);
             o.Put(nameof(step), step);
             o.Put(nameof(sold), sold);
+            o.Put(nameof(enabled), enabled, Options: b => b ? "在售" : "下架");
         }
     }
 }

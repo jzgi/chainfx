@@ -1,14 +1,13 @@
 using Greatbone.Core;
+using System.Collections.Generic;
 
 namespace Greatbone.Sample
 {
     ///
-    /// /shop/-id-/
+    /// /shop/-shopid-/
     ///
     public class ShopVarFolder : WebFolder, IVar
     {
-        readonly WebAction _re_menu_;
-
         public ShopVarFolder(WebFolderContext dc) : base(dc)
         {
             Create<OrderFolder>("orderi"); // order inbox
@@ -18,10 +17,13 @@ namespace Greatbone.Sample
             Create<ItemFolder>("item");
 
             Create<RepayFolder>("repay");
-
-            _re_menu_ = GetAction(nameof(remenu));
         }
 
+
+        public void @default(WebActionContext ac)
+        {
+            ac.ReplyFolderPage(200, (List<Item>)null);
+        }
 
         ///
         /// Get shop items
@@ -48,32 +50,9 @@ namespace Greatbone.Sample
         }
 
 
-        ///
-        /// Get products and submit to basket.
-        ///
-        /// <code>
-        /// GET /010001/
-        /// </code>
-        ///
-        public void @default(WebActionContext ac)
-        {
-            string shopid = ac[0];
-            using (var dc = Service.NewDbContext())
-            {
-                DbSql sql = new DbSql("SELECT ").columnlst(Item.Empty)._("FROM items WHERE shopid = @1 AND NOT disabled");
-                if (dc.Query(sql.ToString(), p => p.Set(shopid)))
-                {
-                    var items = dc.ToArray<Item>();
-                }
-                else
-                {
-
-                }
-
-            }
-        }
-
-        #region -shop-management-
+        //
+        // management
+        //
 
         [Shop]
         public void remenu(WebActionContext ac)
@@ -88,7 +67,5 @@ namespace Greatbone.Sample
         public void invoice(WebActionContext ac)
         {
         }
-
-        #endregion
     }
 }

@@ -667,14 +667,14 @@ namespace Greatbone.Core
         public void BUTTON(WebAction actn)
         {
             Add("<button class=\"button primary\"");
-            Add(" formaction=\""); Add(actn.Name); Add("\"");
+            Add(" formaction=\""); Add(actn.Name); Add("\" formmethod=\"post\"");
 
             UiAttribute ui = actn.Ui;
 
             int modal = ui?.Modal ?? 0;
             if (modal > 0)
             {
-                Add(" onclick=\"return dialog(this,"); Add(modal); Add(");\"");
+                Add(" onclick=\"dialog(this,"); Add(modal); Add("); return false;\"");
             }
 
             StateAttribute state = actn.State;

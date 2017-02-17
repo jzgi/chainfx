@@ -14,7 +14,9 @@ namespace Greatbone.Sample
             CreateVar<OrderVarFolder>();
         }
 
-        #region /user/-userid-/order/
+        //
+        // USER
+        //
 
         public void my(WebActionContext ac, string page)
         {
@@ -32,8 +34,6 @@ namespace Greatbone.Sample
                 }
             }
         }
-
-        #endregion
 
         #region /shop/-shopid-/orderi/ OR /shop/-shopid-/ordero/
 

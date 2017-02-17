@@ -13,7 +13,49 @@ namespace Greatbone.Sample
             CreateVar<ItemVarFolder>();
         }
 
-        #region /shop/-shopid-/item/
+        // [Shop]
+        public void @default(WebActionContext ac)
+        {
+            string shopid = ac[1];
+            using (var dc = ac.NewDbContext())
+            {
+                if (dc.Query("SELECT * FROM items WHERE shopid = @1", p => p.Set(shopid)))
+                {
+                    ac.ReplyFolderPage(200, dc.ToList<Item>());
+                }
+                else
+                {
+                    ac.ReplyFolderPage(200, (List<Item>)null);
+                }
+            }
+        }
+
+        // [Shop]
+        [Ui("新建", 3)]
+        public async Task @new(WebActionContext ac)
+        {
+            if (ac.GET)
+            {
+                Item o = Item.Empty;
+                ac.ReplyForm(200, o);
+            }
+            else // post
+            {
+                var item = await ac.ReadObjectAsync<Item>();
+                using (var dc = Service.NewDbContext())
+                {
+                    dc.Sql("INSERT INTO items")._(Item.Empty)._VALUES_(Item.Empty)._("");
+                    if (dc.Execute(p => p.Set(item)) > 0)
+                    {
+                        ac.Reply(201); // created
+                    }
+                    else
+                    {
+                        ac.Reply(500); // internal server error
+                    }
+                }
+            }
+        }
 
         public void lst(WebActionContext ac)
         {
@@ -31,27 +73,6 @@ namespace Greatbone.Sample
             }
         }
 
-        #endregion
-
-        #region /shop/-shopid-/order/
-
-        [Shop]
-        [Ui]
-        public void @default(WebActionContext ac)
-        {
-            string shopid = ac[1];
-            using (var dc = ac.NewDbContext())
-            {
-                if (dc.Query("SELECT * FROM orders WHERE shopid = @1 AND status < 4", p => p.Set(shopid)))
-                {
-                    ac.ReplyFolderPage(200, dc.ToList<Item>());
-                }
-                else
-                {
-                    ac.ReplyFolderPage(200, (List<Item>)null);
-                }
-            }
-        }
 
         [Shop]
         public void _cat_(WebActionContext ac)
@@ -106,7 +127,5 @@ namespace Greatbone.Sample
                 }
             }
         }
-
-        #endregion
     }
 }
