@@ -22,12 +22,13 @@ namespace Greatbone.Sample
         internal string password;
         internal string credential;
         internal string tel;
+        internal string wx;
+        internal string city;
         internal double x;
         internal double y;
-        internal string prov;
-        internal string city;
-        internal string wx;
-        internal string note;
+        internal byte[] icon;
+        internal string descr;
+        internal string license;
         internal short status; // -1 dismissed, 0 closed, 1 open
 
         public void ReadData(IDataInput i, int proj = 0)
@@ -39,12 +40,13 @@ namespace Greatbone.Sample
                 i.Get(nameof(credential), ref credential);
             }
             i.Get(nameof(tel), ref tel);
+            i.Get(nameof(wx), ref wx);
+            i.Get(nameof(city), ref city);
             i.Get(nameof(x), ref x);
             i.Get(nameof(y), ref y);
-            i.Get(nameof(prov), ref prov);
-            i.Get(nameof(city), ref city);
-            i.Get(nameof(wx), ref wx);
-            i.Get(nameof(note), ref note);
+            i.Get(nameof(icon), ref icon);
+            i.Get(nameof(descr), ref descr);
+            i.Get(nameof(license), ref license);
             i.Get(nameof(status), ref status);
         }
 
@@ -59,10 +61,11 @@ namespace Greatbone.Sample
             o.Put(nameof(tel), tel);
             o.Put(nameof(x), x);
             o.Put(nameof(y), y);
-            o.Put(nameof(prov), prov);
+            o.Put(nameof(icon), icon);
             o.Put(nameof(city), city);
             o.Put(nameof(wx), wx);
-            o.Put(nameof(note), note);
+            o.Put(nameof(descr), descr);
+            o.Put(nameof(license), license);
             o.Put(nameof(status), status, Options: STATUS);
         }
 

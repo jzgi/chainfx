@@ -8,10 +8,30 @@ namespace Greatbone.Sample
     ///
     public class ItemFolder : WebFolder
     {
+        // last modified tick count
+        volatile int lastmod;
+
         public ItemFolder(WebFolderContext fc) : base(fc)
         {
             CreateVar<ItemVarFolder>();
         }
+
+        public void lst(WebActionContext ac)
+        {
+            string shopid = ac[1];
+            using (var dc = ac.NewDbContext())
+            {
+                if (dc.Query("SELECT * FROM items WHERE shopid = @1 AND enabled", p => p.Set(shopid)))
+                {
+                    ac.Reply(200, dc.Dump<JsonContent>());
+                }
+                else
+                {
+                    ac.Reply(204); // no content
+                }
+            }
+        }
+
 
         // [Shop]
         public void @default(WebActionContext ac)
@@ -56,23 +76,6 @@ namespace Greatbone.Sample
                 }
             }
         }
-
-        public void lst(WebActionContext ac)
-        {
-            string shopid = ac[1];
-            using (var dc = ac.NewDbContext())
-            {
-                if (dc.Query("SELECT * FROM items WHERE shopid = @1 AND enabled", p => p.Set(shopid)))
-                {
-                    ac.Reply(200, dc.Dump<JsonContent>());
-                }
-                else
-                {
-                    ac.Reply(204);
-                }
-            }
-        }
-
 
         [Shop]
         public void _cat_(WebActionContext ac)

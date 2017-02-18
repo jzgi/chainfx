@@ -3,17 +3,15 @@
 
 <head>
   <title>粗粮达人</title>
+  <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <link rel="stylesheet" href="//cdn.bootcss.com/foundation/6.3.0/css/foundation.min.css">
-  <script type="text/javascript">
-
-  </script>
 </head>
 
 <body>
   <div id="main" class="row">
   </div>
-  <div class="reveal" id="dialog" data-reveal data-close-on-click="false">
+  <div class="full reveal" id="dialog" data-reveal data-close-on-click="false">
     <h3></h3>
     <button class="close-button" data-close aria-label="Close modal" type="button"><span aria-hidden="true">&times;</span></button>
     <iframe style="width: 100%; height: 80%"></iframe>
@@ -24,17 +22,26 @@
   <script>
     $(document).foundation();
     $(document).ready(function () {
-      // get shop list
-      $.getJSON('/shop/lst',
-        function (data) {
-          $.each(data.items, function (i, item) {
-            $('#testfield').html('<p>' + item.d.title + '</p>');
-          });
-        }).done(function () {
-          alert('done');
-        }).fail(function () {
-          alert('failed');
+      if (navigator.geolocation)
+        navigator.geolocation.getCurrentPosition(function (pos) {
+          var crd = pos.coords;
+          var xv = crd.longitude.toString();
+          var yv = crd.latitude.toString();
+
+          // get shop list
+          $.getJSON('/shop/lst',
+            { x: xv.substring(0, xv.indexOf('.') + 2), y: yv.substring(0, yv.indexOf('.') + 2) },
+            function (ret) {
+              $.each(ret, function (i, shop) {
+                $('#main').append('<div class="card">' + shop.name + '</div>');
+              });
+            }).done(function () {
+              console.log('Ajax Done');
+            }).fail(function () {
+              alert('failed');
+            });
         });
+
     });
   </script>
 </body>

@@ -32,6 +32,8 @@ namespace Greatbone.Sample
         // whether an aligned floating point
         bool IsAligned(string v)
         {
+            if (v == null) { return false; }
+
             int pt = v.IndexOf('.');
             return pt == v.Length - 2;
         }
@@ -66,7 +68,7 @@ namespace Greatbone.Sample
             // get nearby shops
             using (var dc = Service.NewDbContext())
             {
-                if (dc.Query("SELECT shops.*, items.* FROM shops INNER JOIN items ON shops.id = items.shopid WHERE x > @1 AND x < @2 AND y > @3 AND y < @4", p => p.Set(x1).Set(x2).Set(y1).Set(y2)))
+                if (dc.Query("SELECT * FROM shops WHERE x > @1 AND x < @2 AND y > @3 AND y < @4", p => p.Set(x1).Set(x2).Set(y1).Set(y2)))
                 {
                     ac.Reply(200, dc.Dump<JsonContent>());
                 }
@@ -89,16 +91,6 @@ namespace Greatbone.Sample
             {
                 Shop o = Shop.Empty;
                 ac.ReplyForm(200, o);
-                // ac.ReplyDlg(200, a =>
-                // {
-                //     a.FIELDSET_("新建服务点");
-                //     a.TEXT(nameof(o.id), o.id, Pick: true);
-                //     a.TEXT(nameof(o.name), o.name);
-                //     a.PASSWORD("password", "");
-                //     a.TEL(nameof(o.tel), o.tel);
-                //     a.CHECKBOX("ok", true);
-                //     a._FIELDSET();
-                // });
             }
             else // post
             {
