@@ -59,20 +59,20 @@ namespace Greatbone.Core
                 AutoFlush = true
             };
 
-            // create embedded server instance
+            // create kestrel instance
             KestrelServerOptions options = new KestrelServerOptions();
             server = new KestrelServer(Options.Create(options), Lifetime, factory);
-            ICollection<string> addrcoll = server.Features.Get<IServerAddressesFeature>().Addresses;
+            ICollection<string> addrs = server.Features.Get<IServerAddressesFeature>().Addresses;
             if (string.IsNullOrEmpty(sc.addresses))
             {
                 throw new WebServiceException("'addresss' in webconfig");
             }
             foreach (string a in sc.addresses.Split(',', ';'))
             {
-                addrcoll.Add(a.Trim());
+                addrs.Add(a.Trim());
             }
 
-            // init event hooks
+            // initialize event handlers
             Type typ = GetType();
             foreach (MethodInfo mi in typ.GetMethods(BindingFlags.Public | BindingFlags.Instance))
             {
@@ -102,7 +102,7 @@ namespace Greatbone.Core
                 events.Add(evt);
             }
 
-            // init refers
+            // initialize cluster connectors
             Dictionary<string, string> refs = sc.cluster;
             if (refs != null)
             {
@@ -116,7 +116,7 @@ namespace Greatbone.Core
                 }
             }
 
-            // init response cache
+            // initialize response cache
             cache = new WebCache(Environment.ProcessorCount * 2, 4096);
 
             // create database structures for event queue
@@ -146,8 +146,6 @@ namespace Greatbone.Core
         public Roll<WebClient> Cluster => cluster;
 
         public new WebServiceContext Context => (WebServiceContext)context;
-
-        public WebAuthent Authent { get; set; }
 
         internal WebCache Cache => cache;
 
@@ -193,6 +191,12 @@ namespace Greatbone.Core
         {
         }
 
+        //
+        // authentication
+        //
+        protected virtual void Authenticate(WebActionContext ac) { }
+
+
         ///  
         /// Returns a framework custom context.
         /// 
@@ -215,16 +219,13 @@ namespace Greatbone.Core
             string path = req.Path.Value;
 
             // authentication
-            if (Authent != null)
+            try
             {
-                try
-                {
-                    Authent.Authenticate(ac);
-                }
-                catch (Exception e)
-                {
-                    DBG(e.Message);
-                }
+                Authenticate(ac);
+            }
+            catch (Exception e)
+            {
+                DBG(e.Message);
             }
 
             try
@@ -511,6 +512,47 @@ namespace Greatbone.Core
                     Lifetime);
 
                 Lifetime.ApplicationStopping.WaitHandle.WaitOne();
+            }
+        }
+    }
+
+    public abstract class WebService<T> : WebService where T : IData, new()
+    {
+        protected WebService(WebServiceContext sc) : base(sc) { }
+
+        protected override void Authenticate(WebActionContext ac)
+        {
+            string tokstr;
+            string hv = ac.Header("Authorization");
+            if (hv != null && hv.StartsWith("Bearer ")) // the Bearer scheme
+            {
+                tokstr = hv.Substring(7);
+                string jsonstr = Context.Decrypt(tokstr);
+                ac.Token = JsonUtility.StringToObject<T>(jsonstr);
+            }
+            else if (ac.Cookies.TryGetValue("Bearer", out tokstr))
+            {
+                string jsonstr = Context.Decrypt(tokstr);
+                ac.Token = JsonUtility.StringToObject<T>(jsonstr);
+            }
+        }
+
+        protected virtual void Challenge(WebActionContext ac)
+        {
+            if (ac.Header("Accept") != null) // if from browsing
+            {
+                string loc = "singon" + "?orig=" + ac.Uri;
+                ac.SetHeader("Location", loc);
+                ac.Reply(303); // see other - redirect to signon url
+            }
+            else if (ac.Header("User-Agent").Contains("MicroMessenger"))
+            {
+
+            }
+            else // from non-browser
+            {
+                ac.SetHeader("WWW-Authenticate", "Bearer");
+                ac.Reply(401); // unauthorized
             }
         }
     }

@@ -11,6 +11,13 @@ namespace Greatbone.Sample
         ///
         public static void Main(string[] args)
         {
+            AuthConfig auth = new AuthConfig
+            {
+                mask = 0x4a78be76,
+                repos = 0x1f0335e2,
+                maxage = 3600
+            };
+
             DbConfig pg = new DbConfig
             {
                 host = "106.14.45.109",
@@ -20,8 +27,6 @@ namespace Greatbone.Sample
                 queue = false
             };
 
-            WebAuthent<Token> auth = new WebAuthent<Token>(0x4a78be76, 0x1f0335e2);
-
             List<WebService> svclst = new List<WebService>(4);
 
             WebServiceContext sc;
@@ -29,12 +34,13 @@ namespace Greatbone.Sample
             sc = new WebServiceContext("op")
             {
                 addresses = "http://localhost:8080",
+                auth = auth,
                 db = pg
             };
 #if !DEBUG
             sc.TryLoad();
 #endif
-            if (sc.LoadedOk != false) svclst.Add(new OpService(sc) { Authent = auth });
+            if (sc.LoadedOk != false) svclst.Add(new OpService(sc));
 
             string tree = svclst[0].Describe();
             Debug.WriteLine(tree);
@@ -42,13 +48,14 @@ namespace Greatbone.Sample
             sc = new WebServiceContext("comm")
             {
                 addresses = "http://localhost:8081",
+                auth = auth,
                 db = pg
             };
 #if !DEBUG
             sc.TryLoad();
 #endif
 
-            if (sc.LoadedOk != false) svclst.Add(new CommService(sc) { Authent = auth });
+            if (sc.LoadedOk != false) svclst.Add(new CommService(sc));
 
             WebService.Run(svclst);
         }

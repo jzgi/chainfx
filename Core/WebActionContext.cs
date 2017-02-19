@@ -6,6 +6,7 @@ using System.Threading.Tasks;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Http.Features;
 using Microsoft.Extensions.Primitives;
+using System.Text;
 
 namespace Greatbone.Core
 {
@@ -314,6 +315,7 @@ namespace Greatbone.Core
         {
             Response.Headers.Add(name, new StringValues(values));
         }
+
 
         public int Status
         {

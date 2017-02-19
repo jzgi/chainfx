@@ -28,6 +28,9 @@ namespace Greatbone.Core
         /// The bind addresses in URI (scheme://host:port) format.
         public string addresses;
 
+        /// The authentication attributes.
+        public AuthConfig auth;
+
         /// The database connectivity attributes.
         public DbConfig db;
 
@@ -115,6 +118,107 @@ namespace Greatbone.Core
                 }
                 return connstr;
             }
+        }
+        // hexidecimal characters
+        protected static readonly char[] HEX =
+        {
+            '0', '1', '2', '3', '4', '5', '6', '7', '8', '9', 'A', 'B', 'C', 'D', 'E', 'F'
+        };
+
+        public string Encrypt(IData token)
+        {
+            if (auth == null) return null;
+
+            JsonContent cont = new JsonContent(true, true, 4096); // borrow
+            cont.Put(null, token);
+            byte[] bytebuf = cont.ByteBuffer;
+            int count = cont.Size;
+
+            int mask = auth.mask;
+            int[] masks = { (mask >> 24) & 0xff, (mask >> 16) & 0xff, (mask >> 8) & 0xff, mask & 0xff };
+            char[] charbuf = new char[count * 2]; // the target 
+            int p = 0;
+            for (int i = 0; i < count; i++)
+            {
+                // masking
+                int b = bytebuf[i] ^ masks[i % 4];
+
+                //transform
+                charbuf[p++] = HEX[(b >> 4) & 0x0f];
+                charbuf[p++] = HEX[(b) & 0x0f];
+
+                // reordering
+            }
+            // return pool
+            BufferUtility.Return(bytebuf);
+
+            return new string(charbuf, 0, charbuf.Length);
+        }
+
+        public string Decrypt(string tokenstr)
+        {
+            if (auth == null) return null;
+
+            int mask = auth.mask;
+            int[] masks = { (mask >> 24) & 0xff, (mask >> 16) & 0xff, (mask >> 8) & 0xff, mask & 0xff };
+            int len = tokenstr.Length / 2;
+            Text str = new Text(256);
+            int p = 0;
+            for (int i = 0; i < len; i++)
+            {
+                // reordering
+
+                // transform to byte
+                int b = (byte)(Dv(tokenstr[p++]) << 4 | Dv(tokenstr[p++]));
+
+                // masking
+                str.Accept((byte)(b ^ masks[i % 4]));
+            }
+            return str.ToString();
+        }
+
+
+        // return digit value
+        static int Dv(char hex)
+        {
+            int v = hex - '0';
+            if (v >= 0 && v <= 9)
+            {
+                return v;
+            }
+            v = hex - 'A';
+            if (v >= 0 && v <= 5) return 10 + v;
+            return 0;
+        }
+
+        public void SetBearerCookie(WebActionContext ac, IData token)
+        {
+            StringBuilder sb = new StringBuilder("Bearer=");
+            string tokenstr = Encrypt(token);
+            sb.Append(tokenstr);
+            sb.Append("; HttpOnly");
+            if (auth.maxage != 0)
+            {
+                sb.Append("; Max-Age=").Append(auth.maxage);
+            }
+            // detect domain from the Host header
+            string host = ac.Header("Host");
+            if (!string.IsNullOrEmpty(host))
+            {
+                // if the last part is not numeric
+                int lastdot = host.LastIndexOf('.');
+                if (lastdot > -1 && !char.IsDigit(host[lastdot + 1])) // a domain name is given
+                {
+                    int dot = host.LastIndexOf('.', lastdot - 1);
+                    if (dot != -1)
+                    {
+                        string domain = host.Substring(dot + 1);
+                        sb.Append("; Domain=").Append(domain);
+                    }
+                }
+            }
+            // set header
+            ac.SetHeader("Set-Cookie", sb.ToString());
         }
     }
 }

@@ -72,6 +72,11 @@ namespace Greatbone.Sample
                     jo = await WeiXin.GetAsync<JObj>(null, "/sns/userinfo?access_token=" + access_token + "&openid=" + openid);
                     nickname = jo[nameof(nickname)];
 
+                    using (var dc = ac.NewDbContext()) {
+                        dc.Execute();
+                        
+                    }
+
                     ac.SetHeader("Set-Cookie", "openid=" + openid);
                 }
 
@@ -114,7 +119,7 @@ namespace Greatbone.Sample
                             var shop = dc.ToObject<Shop>();
                             if (credential.Equals(shop.credential))
                             {
-                                Service.Authent.SetCookie(ac, shop.ToToken());
+                                Context.SetBearerCookie(ac, shop.ToToken());
                                 ac.ReplyRedirect(login.orig);
                                 return;
                             }
@@ -132,7 +137,7 @@ namespace Greatbone.Sample
                             var user = dc.ToObject<User>();
                             if (credential.Equals(user.credential))
                             {
-                                Service.Authent.SetCookie(ac, user.ToToken());
+                                Context.SetBearerCookie(ac, user.ToToken());
                                 ac.ReplyRedirect(login.orig);
                                 return;
                             }
@@ -146,7 +151,7 @@ namespace Greatbone.Sample
                     var admin = admins.Find(a => a.id == login.id && credential.Equals(a.credential));
                     if (admin != null)
                     {
-                        Service.Authent.SetCookie(ac, admin.ToToken());
+                        Context.SetBearerCookie(ac, admin.ToToken());
                         ac.ReplyRedirect(login.orig);
                         return;
                     }

@@ -8,9 +8,6 @@ namespace Greatbone.Sample
     ///
     public class ItemFolder : WebFolder
     {
-        // last modified tick count
-        volatile int lastmod;
-
         public ItemFolder(WebFolderContext fc) : base(fc)
         {
             CreateVar<ItemVarFolder>();

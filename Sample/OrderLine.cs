@@ -5,13 +5,9 @@ namespace Greatbone.Sample
     public struct OrderLine : IData
     {
         internal string shopid;
-
         internal string item;
-
         internal short qty;
-
         internal decimal price;
-
         string note;
 
         public decimal Subtotal => price * qty;

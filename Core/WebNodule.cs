@@ -92,20 +92,6 @@ namespace Greatbone.Core
             {
                 if (ac.Token == null)
                 {
-                    if (reply)
-                    {
-                        if (ac.Header("Accept") != null) // if from browsing
-                        {
-                            string loc = Service.Authent?.SignOn + "?orig=" + ac.Uri;
-                            ac.SetHeader("Location", loc);
-                            ac.Reply(303); // see other - redirect to signon url
-                        }
-                        else // from non-browser
-                        {
-                            ac.SetHeader("WWW-Authenticate", "Bearer");
-                            ac.Reply(401); // unauthorized
-                        }
-                    }
                     return false;
                 }
 

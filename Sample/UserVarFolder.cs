@@ -19,7 +19,7 @@ namespace Greatbone.Sample
         }
 
         ///
-        /// POST /buyer/-id-/cart
+        /// POST /user/-userwx-/cart
         ///
         /// shopid=_id_&amp;item=_item_&amp;qty=_n_
         ///

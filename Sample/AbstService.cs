@@ -2,7 +2,7 @@ using Greatbone.Core;
 
 namespace Greatbone.Sample
 {
-    public abstract class AbstService : WebService
+    public abstract class AbstService : WebService<Token>
     {
         internal readonly Admin[] admins;
 
