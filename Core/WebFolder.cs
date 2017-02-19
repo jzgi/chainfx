@@ -230,7 +230,7 @@ namespace Greatbone.Core
             for (int i = 0; i < actions.Count; i++)
             {
                 WebAction a = actions[i];
-                if (a.IsModal && a.Check(ac, false) == true)
+                if (a.IsModal && a.Check(ac))
                 {
                     if (lst == null) lst = new List<WebAction>();
                     lst.Add(a);
@@ -239,10 +239,10 @@ namespace Greatbone.Core
             return lst;
         }
 
-        internal WebFolder Locate(ref string relative, WebActionContext ac)
+        internal WebFolder TryExplore(ref string relative, WebActionContext ac)
         {
-            // access check and set reply
-            if (!Check(ac, true)) { return null; }
+            // access check 
+            if (!Check(ac)) return null;
 
             int slash = relative.IndexOf('/');
             if (slash == -1)
@@ -257,12 +257,12 @@ namespace Greatbone.Core
             if (subs != null && subs.TryGet(key, out sub)) // chiled
             {
                 ac.Chain(key, sub);
-                return sub.Locate(ref relative, ac);
+                return sub.TryExplore(ref relative, ac);
             }
             if (varsub != null) // variable-key
             {
                 ac.Chain(key, varsub);
-                return varsub.Locate(ref relative, ac);
+                return varsub.TryExplore(ref relative, ac);
             }
 
             ac.Reply(404); // not found
@@ -293,23 +293,23 @@ namespace Greatbone.Core
                     name = rsc.Substring(0, dash);
                     arg = rsc.Substring(dash + 1);
                 }
-                WebAction atn = string.IsNullOrEmpty(name) ? defaction : GetAction(name);
-                if (atn == null)
+                WebAction actn = string.IsNullOrEmpty(name) ? defaction : GetAction(name);
+                if (actn == null)
                 {
                     ac.Reply(404); // not found
                     return;
                 }
-                if (!atn.Check(ac, true)) { return; }
+                if (!actn.Check(ac)) { return; }
 
                 // try in cache
 
-                if (atn.Async)
+                if (actn.Async)
                 {
-                    await atn.DoAsync(ac, arg);
+                    await actn.DoAsync(ac, arg);
                 }
                 else
                 {
-                    atn.Do(ac, arg);
+                    actn.Do(ac, arg);
                 }
             }
 

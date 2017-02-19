@@ -196,6 +196,8 @@ namespace Greatbone.Core
         //
         protected virtual void Authenticate(WebActionContext ac) { }
 
+        protected virtual void Challenge(WebActionContext ac) { }
+
 
         ///  
         /// Returns a framework custom context.
@@ -237,10 +239,18 @@ namespace Greatbone.Core
                 else // handle a regular request
                 {
                     string relative = path.Substring(1);
-                    WebFolder folder = Locate(ref relative, ac);
+                    WebFolder folder = TryExplore(ref relative, ac);
                     if (folder != null)
                     {
                         await folder.HandleAsync(relative, ac);
+                    }
+                    else if (ac.Token == null)
+                    {
+                        Challenge(ac);
+                    }
+                    else
+                    {
+                        ac.Reply(403); // forbidden
                     }
                 }
             }

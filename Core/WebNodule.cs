@@ -86,24 +86,17 @@ namespace Greatbone.Core
 
         public bool IsModal => ui != null && ui.Modal > 0;
 
-        public bool Check(WebActionContext ac, bool reply)
+        public bool Check(WebActionContext ac)
         {
             if (roles != null)
             {
-                if (ac.Token == null)
-                {
-                    return false;
-                }
+                if (ac.Token == null) return false;
 
                 // run checks
                 for (int i = 0; i < roles.Length; i++)
                 {
                     if (!roles[i].Check(ac))
                     {
-                        if (reply)
-                        {
-                            ac.Reply(403); // forbidden
-                        }
                         return false;
                     }
                 }
