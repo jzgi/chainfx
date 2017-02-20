@@ -48,40 +48,37 @@ namespace Greatbone.Sample
 
         ///
         /// redirect_uri/?code=CODE&amp;state=STATE
-        public async Task weixin(WebActionContext ac)
+        public async Task wxsignon(WebActionContext ac)
         {
             string code = ac.Query[nameof(code)];
             if (code == null)
             {
-                // redirect the user to weixin authorization page
-                ac.ReplyRedirect("https://open.weixin.qq.com/connect/oauth2/authorize?appid=APPID&redirect_uri=REDIRECT_URI&response_type=code&scope=SCOPE&state=STATE#wechat_redirect");
+                ac.Reply(301);
+                return;
             }
-            else
+            string openid = ac.Cookies[nameof(openid)];
+            string nickname = ac.Cookies[nameof(nickname)];
+            if (openid == null || nickname == null)
             {
-                string openid = ac.Cookies[nameof(openid)];
-                string nickname = ac.Cookies[nameof(nickname)];
-                if (openid == null || nickname == null)
+                // get access token by the code
+                JObj jo = await WeiXin.GetAsync<JObj>(null, "/sns/oauth2/access_token?appid=APPID&secret=SECRET&code=CODE&grant_type=authorization_code");
+
+                string access_token = jo[nameof(access_token)];
+                openid = jo[nameof(openid)];
+
+                // get user info
+                jo = await WeiXin.GetAsync<JObj>(null, "/sns/userinfo?access_token=" + access_token + "&openid=" + openid);
+                nickname = jo[nameof(nickname)];
+
+                using (var dc = ac.NewDbContext())
                 {
-                    // get access token by the code
-                    JObj jo = await WeiXin.GetAsync<JObj>(null, "/sns/oauth2/access_token?appid=APPID&secret=SECRET&code=CODE&grant_type=authorization_code");
-
-                    string access_token = jo[nameof(access_token)];
-                    openid = jo[nameof(openid)];
-
-                    // get user info
-                    jo = await WeiXin.GetAsync<JObj>(null, "/sns/userinfo?access_token=" + access_token + "&openid=" + openid);
-                    nickname = jo[nameof(nickname)];
-
-                    using (var dc = ac.NewDbContext()) {
-                        dc.Execute();
-                        
-                    }
-
-                    ac.SetHeader("Set-Cookie", "openid=" + openid);
+                    dc.Execute();
                 }
 
-                // display index.html
+                ac.SetHeader("Set-Cookie", "openid=" + openid);
             }
+
+            // display index.html
         }
 
 

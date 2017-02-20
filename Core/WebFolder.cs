@@ -239,10 +239,10 @@ namespace Greatbone.Core
             return lst;
         }
 
-        internal WebFolder TryExplore(ref string relative, WebActionContext ac)
+        internal WebFolder ResolveFolder(ref string relative, WebActionContext ac)
         {
             // access check 
-            if (!Check(ac)) return null;
+            if (!Check(ac)) throw AccessEx;
 
             int slash = relative.IndexOf('/');
             if (slash == -1)
@@ -257,15 +257,13 @@ namespace Greatbone.Core
             if (subs != null && subs.TryGet(key, out sub)) // chiled
             {
                 ac.Chain(key, sub);
-                return sub.TryExplore(ref relative, ac);
+                return sub.ResolveFolder(ref relative, ac);
             }
             if (varsub != null) // variable-key
             {
                 ac.Chain(key, varsub);
-                return varsub.TryExplore(ref relative, ac);
+                return varsub.ResolveFolder(ref relative, ac);
             }
-
-            ac.Reply(404); // not found
             return null;
         }
 
@@ -299,7 +297,9 @@ namespace Greatbone.Core
                     ac.Reply(404); // not found
                     return;
                 }
-                if (!actn.Check(ac)) { return; }
+
+                // access check
+                if (!actn.Check(ac)) throw AccessEx;
 
                 // try in cache
 

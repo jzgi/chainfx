@@ -239,19 +239,13 @@ namespace Greatbone.Core
                 else // handle a regular request
                 {
                     string relative = path.Substring(1);
-                    WebFolder folder = TryExplore(ref relative, ac);
-                    if (folder != null)
+                    WebFolder folder = ResolveFolder(ref relative, ac);
+                    if (folder == null)
                     {
-                        await folder.HandleAsync(relative, ac);
+                        ac.Reply(404); // not found
+                        return;
                     }
-                    else if (ac.Token == null)
-                    {
-                        Challenge(ac);
-                    }
-                    else
-                    {
-                        ac.Reply(403); // forbidden
-                    }
+                    await folder.HandleAsync(relative, ac);
                 }
             }
             catch (Exception e)
@@ -259,6 +253,17 @@ namespace Greatbone.Core
                 if (e is ParseException)
                 {
                     ac.Reply(400, e.Message); // bad request
+                }
+                else if (e is WebAccessException)
+                {
+                    if (ac.Token == null)
+                    {
+                        Challenge(ac);
+                    }
+                    else
+                    {
+                        ac.Reply(403); // forbidden
+                    }
                 }
                 else
                 {
@@ -547,19 +552,16 @@ namespace Greatbone.Core
             }
         }
 
-        protected virtual void Challenge(WebActionContext ac)
+        protected override void Challenge(WebActionContext ac)
         {
-            if (ac.Header("Accept") != null) // if from browsing
+            string ua = ac.Header("User-Agent");
+            if (ua.Contains("Mozila")) // browser
             {
                 string loc = "singon" + "?orig=" + ac.Uri;
                 ac.SetHeader("Location", loc);
                 ac.Reply(303); // see other - redirect to signon url
             }
-            else if (ac.Header("User-Agent").Contains("MicroMessenger"))
-            {
-
-            }
-            else // from non-browser
+            else // non-browser
             {
                 ac.SetHeader("WWW-Authenticate", "Bearer");
                 ac.Reply(401); // unauthorized

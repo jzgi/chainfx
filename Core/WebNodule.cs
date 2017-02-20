@@ -9,6 +9,8 @@ namespace Greatbone.Core
     ///
     public abstract class WebNodule : IRollable
     {
+        protected static readonly WebAccessException AccessEx = new WebAccessException();
+
         // name as appeared in the uri path
         readonly string name;
 
