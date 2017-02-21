@@ -63,14 +63,14 @@ namespace Greatbone.Core
 
         public string Name => key;
 
-        public bool Async => async;
+        public bool IsAsync => async;
 
-        public bool Arg => arg;
+        public bool HasArg => arg;
 
         // invoke the right event method
         internal void Do(WebEventContext ec, string arg)
         {
-            if (Arg)
+            if (HasArg)
             {
                 do2(ec, arg);
             }
@@ -83,7 +83,7 @@ namespace Greatbone.Core
         // invoke the right event method
         internal async Task DoAsync(WebEventContext ec, string arg)
         {
-            if (Arg)
+            if (HasArg)
             {
                 await do2async(ec, arg);
             }

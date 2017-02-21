@@ -68,9 +68,9 @@ namespace Greatbone.Core
 
         public WebFolder Folder => folder;
 
-        public bool Async => async;
+        public bool IsAsync => async;
 
-        public bool Arg => arg;
+        public bool HasArg => arg;
 
         public override WebService Service => folder.Service;
 
@@ -83,7 +83,7 @@ namespace Greatbone.Core
             DoBefore(ac);
 
             // invoke the right action method
-            if (Arg)
+            if (HasArg)
             {
                 do2(ac, arg);
             }
@@ -104,7 +104,7 @@ namespace Greatbone.Core
             DoBefore(ac);
 
             // invoke the right action method
-            if (Arg)
+            if (HasArg)
             {
                 await do2async(ac, arg);
             }

@@ -303,7 +303,7 @@ namespace Greatbone.Core
 
                 // try in cache
 
-                if (actn.Async)
+                if (actn.IsAsync)
                 {
                     await actn.DoAsync(ac, arg);
                 }

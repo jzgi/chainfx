@@ -9,13 +9,16 @@ namespace Greatbone.Core
     /// 
     public class FormMpContent : DynamicContent, IDataOutput<FormMpContent>
     {
-        public const string Boundary = "~7^E!3#A&W";
+        public const string BOUNDARY = "~7^E!3#A&W";
 
         // deliberately not longer than 40 characters
-        const string Mime = "multipart/form-data; boundary=" + Boundary;
+        const string Mime = "multipart/form-data; boundary=" + BOUNDARY;
 
-        public FormMpContent(bool pooled, int capacity = 1024 * 256) : base(true, pooled, capacity)
+        readonly string boundary;
+
+        public FormMpContent(bool pooled, string boundary = "~7^E!3#A&W", int capacity = 1024 * 256) : base(true, pooled, capacity)
         {
+            this.boundary = boundary;
         }
 
         public override string Type => Mime;
@@ -26,7 +29,7 @@ namespace Greatbone.Core
 
         void Part(string name)
         {
-            Add(Boundary);
+            Add(BOUNDARY);
             Add("Content-Disposition: form-data; name=\"");
             Add(name);
             Add("\"\r\n\r\n");
@@ -340,7 +343,7 @@ namespace Greatbone.Core
             return this;
         }
 
-        public void PutEvent(long id, string name, DateTime time, string mtype, ArraySegment<byte> body)
+        public void PutEvent(long id, string name, string shard, string arg, DateTime time, IContent content)
         {
 
         }

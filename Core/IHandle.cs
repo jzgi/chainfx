@@ -8,11 +8,11 @@ namespace Greatbone.Core
         ///
         /// Whether this handler method is async.
         ///
-        bool Async { get; }
+        bool IsAsync { get; }
 
         ///
         /// Whether this handler method has an optional argument.
         ///
-        bool Arg { get; }
+        bool HasArg { get; }
     }
 }

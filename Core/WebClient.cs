@@ -51,15 +51,13 @@ namespace Greatbone.Core
                 return;
             }
 
-            PollAsync();
+            PollHandleAsync();
         }
 
         /// NOTE: We make it async void because the scheduler doesn't need to await this method
-        internal async void PollAsync()
+        internal async void PollHandleAsync()
         {
-
             HttpResponseMessage resp = await GetAsync("*");
-
             byte[] cont = await resp.Content.ReadAsByteArrayAsync();
 
             WebEventContext ec = new WebEventContext(this);
@@ -67,6 +65,7 @@ namespace Greatbone.Core
             {
                 EventContext = ec
             };
+            
             // parse and process one by one
             p.Parse(async x =>
             {
@@ -76,7 +75,7 @@ namespace Greatbone.Core
                 WebEvent evt = null;
                 if (service.Events.TryGet(name, out evt))
                 {
-                    if (evt.Async)
+                    if (evt.IsAsync)
                     {
                         await evt.DoAsync(ec, null);
                     }

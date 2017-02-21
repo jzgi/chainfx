@@ -65,7 +65,7 @@ namespace Greatbone.Core
 
             if (dc.Query(p => p.Set(lastid.Value)))
             {
-                FormMpContent cont = new FormMpContent(true, 1024 * 1024);
+                FormMpContent cont = new FormMpContent(true, capacity: 1024 * 1024);
                 while (dc.Next())
                 {
                     long id = dc.GetLong();
@@ -75,7 +75,7 @@ namespace Greatbone.Core
                     ArraySegment<byte> body = dc.GetBytesSeg();
 
                     // add an extension part
-                    cont.PutEvent(id, name, time, type, body);
+                    // cont.PutEvent(id, name, time, type, body);
                 }
             }
             else
