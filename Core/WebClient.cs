@@ -170,14 +170,14 @@ namespace Greatbone.Core
             return SendAsync(req, HttpCompletionOption.ResponseContentRead);
         }
 
-        public Task<HttpResponseMessage> PostAsync<C>(WebActionContext ctx, string uri, IDataInput inp) where C : IContent, IDataOutput<C>, new()
+        public Task<HttpResponseMessage> PostAsync(WebActionContext ctx, string uri, IDataInput inp)
         {
             HttpRequestMessage req = new HttpRequestMessage(HttpMethod.Post, uri);
             if (ctx != null)
             {
                 req.Headers.Add("Authorization", "Bearer " + ctx.TokenText);
             }
-            IContent cont = inp.Dump<C>();
+            IContent cont = inp.Dump();
             req.Content = (HttpContent)cont;
             req.Content.Headers.ContentType.MediaType = cont.Type;
             req.Content.Headers.ContentLength = cont.Size;

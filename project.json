@@ -1,21 +1,24 @@
-﻿
-{
-  "version": "1.1.0",
-  "description": "Greatbone Core Library for Microservices",
-  "buildOptions": {
-    "emitEntryPoint": true,
-    "debugType": "portable",
-    "additionalArguments": []
-  },
-  "dependencies": {
-    "Microsoft.NETCore.App": {
-      "type": "platform",
-      "version": "1.1"
+﻿{
+    "version": "1.1.0",
+    "description": "Greatbone Core Library for Microservices",
+    "buildOptions": {
+        "emitEntryPoint": true,
+        "debugType": "portable",
+        "additionalArguments": []
     },
-    "Microsoft.AspNetCore.Server.Kestrel": "1.1.0",
-    "Npgsql": "3.2.1"
-  },
-  "frameworks": {
-    "netcoreapp1.1": {}
-  }
+    "dependencies": {
+        "Microsoft.NETCore.App": {
+            "version": "1.1.0",
+            "type": "platform"
+        },
+        "Microsoft.AspNetCore.Server.Kestrel": "1.1.0",
+        "Npgsql": "3.2.1"
+    },
+    "frameworks": {
+        "netcoreapp1.1": {
+            "imports": [
+                "dotnet46"
+            ]
+        }
+    }
 }

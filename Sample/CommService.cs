@@ -38,10 +38,10 @@ namespace Greatbone.Sample
                 int millis = (expires_in - 60) * 1000;
                 timer.Change(millis, millis); // adjust interval
 
-                // queue an event
+                // post an event
                 using (var dc = NewDbContext())
                 {
-                    // dc.Event("ACCESS_TOKEN", null, access_token.ToString());
+                    dc.Post("ACCESS_TOKEN", null, access_token, null);
                 }
 
             }, null, 5000, 60000);

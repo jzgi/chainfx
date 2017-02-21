@@ -1,14 +1,17 @@
 ﻿namespace Greatbone.Core
 {
     ///
-    /// DB configuration embedded in WebConfig.
+    /// The DB configuration embedded in a service context.
     ///
     public class DbConfig : IData
     {
+        // IP host or unix domain socket
         public string host;
 
+        // IP port
         public int port;
 
+        // default database name
         public string database;
 
         public string username;

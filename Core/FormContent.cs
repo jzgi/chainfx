@@ -9,7 +9,7 @@ namespace Greatbone.Core
     /// 
     public class FormContent : DynamicContent, IDataOutput<FormContent>
     {
-        public FormContent(bool sendable = true, bool pooled = true, int capacity = 4092) : base(sendable, pooled, capacity)
+        public FormContent(bool sendable, bool pooled, int capacity = 4092) : base(sendable, pooled, capacity)
         {
         }
 

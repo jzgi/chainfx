@@ -10,6 +10,7 @@ namespace Greatbone.Core
     {
         static readonly int Cores = Environment.ProcessorCount;
 
+        // for byte buffers
         static readonly Que<byte[]>[] BPool =
         {
             new Que<byte[]>(1024 * 4, Cores * 16),
@@ -19,6 +20,7 @@ namespace Greatbone.Core
             new Que<byte[]>(1024 * 1024, Cores * 4),
         };
 
+        // for char buffers
         static readonly Que<char[]>[] CPool =
         {
             new Que<char[]>(1024 * 1, Cores * 8),

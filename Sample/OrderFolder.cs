@@ -26,7 +26,7 @@ namespace Greatbone.Sample
             {
                 if (dc.Query("SELECT * FROM orders WHERE userid = @1 ORDER BY id LIMIT 20 OFFSET @2", p => p.Set(userid).Set(page.ToInt() * 20)))
                 {
-                    ac.Reply(200, dc.Dump<JsonContent>());
+                    ac.ReplyFolderPage(200, dc.ToList<Order>());
                 }
                 else
                 {

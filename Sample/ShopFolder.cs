@@ -70,7 +70,7 @@ namespace Greatbone.Sample
             {
                 if (dc.Query("SELECT * FROM shops WHERE x > @1 AND x < @2 AND y > @3 AND y < @4", p => p.Set(x1).Set(x2).Set(y1).Set(y2)))
                 {
-                    ac.Reply(200, dc.Dump<JsonContent>());
+                    ac.Reply(200, dc.Dump());
                 }
                 else
                 {

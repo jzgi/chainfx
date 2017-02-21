@@ -61,9 +61,9 @@ namespace Greatbone.Core
         void WriteData<R>(IDataOutput<R> o) where R : IDataOutput<R>;
 
         ///
-        /// Dump as specified content.
+        /// Dump as sendable content.
         ///
-        C Dump<C>() where C : IContent, IDataOutput<C>, new();
+        IContent Dump();
 
         ///
         /// If this includes multiple data entries.

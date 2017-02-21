@@ -480,7 +480,7 @@ namespace Greatbone.Core
             return true;
         }
 
-        public ArraySegment<byte> ToBytesSeg()
+        public ArraySegment<byte> ToByteAs()
         {
             return new ArraySegment<byte>(bytebuf, 0, count);
         }

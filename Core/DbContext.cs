@@ -165,7 +165,7 @@ namespace Greatbone.Core
                 p(parameters);
                 if (prepare) command.Prepare();
             }
-            reader = (NpgsqlDataReader) await command.ExecuteReaderAsync();
+            reader = (NpgsqlDataReader)await command.ExecuteReaderAsync();
             return reader.HasRows;
         }
 
@@ -476,7 +476,7 @@ namespace Greatbone.Core
                 if (!reader.IsDBNull(ord))
                 {
                     int len;
-                    if ((len = (int) reader.GetBytes(ord, 0, null, 0, 0)) > 0)
+                    if ((len = (int)reader.GetBytes(ord, 0, null, 0, 0)) > 0)
                     {
                         // get the number of bytes that are available to read.
                         v = new byte[len];
@@ -500,7 +500,7 @@ namespace Greatbone.Core
                 if (!reader.IsDBNull(ord))
                 {
                     int len;
-                    if ((len = (int) reader.GetBytes(ord, 0, null, 0, 0)) > 0)
+                    if ((len = (int)reader.GetBytes(ord, 0, null, 0, 0)) > 0)
                     {
                         byte[] buf = BufferUtility.ByteBuffer(len);
                         reader.GetBytes(ord, 0, buf, 0, len); // read data into the buffer
@@ -523,7 +523,7 @@ namespace Greatbone.Core
             {
                 string str = reader.GetString(ord);
                 JsonParse p = new JsonParse(str);
-                JObj jo = (JObj) p.Parse();
+                JObj jo = (JObj)p.Parse();
                 v = new D();
                 v.ReadData(jo, proj);
 
@@ -545,7 +545,7 @@ namespace Greatbone.Core
             {
                 string str = reader.GetString(ord);
                 JsonParse p = new JsonParse(str);
-                v = (JObj) p.Parse();
+                v = (JObj)p.Parse();
                 return true;
             }
             return false;
@@ -558,7 +558,7 @@ namespace Greatbone.Core
             {
                 string str = reader.GetString(ord);
                 JsonParse parse = new JsonParse(str);
-                v = (JArr) parse.Parse();
+                v = (JArr)parse.Parse();
                 return true;
             }
             return false;
@@ -625,7 +625,7 @@ namespace Greatbone.Core
             {
                 string str = reader.GetString(ord);
                 JsonParse parse = new JsonParse(str);
-                JArr ja = (JArr) parse.Parse();
+                JArr ja = (JArr)parse.Parse();
                 int len = ja.Count;
                 v = new D[len];
                 for (int i = 0; i < len; i++)
@@ -655,7 +655,7 @@ namespace Greatbone.Core
             {
                 string str = reader.GetString(ord);
                 JsonParse p = new JsonParse(str);
-                JArr ja = (JArr) p.Parse();
+                JArr ja = (JArr)p.Parse();
                 int len = ja.Count;
                 v = new List<D>(len + 8);
                 for (int i = 0; i < len; i++)
@@ -682,39 +682,33 @@ namespace Greatbone.Core
         // MESSAGING
         //
 
-        public void Event(string name, string shard, IData obj, int proj = 0)
+        public void PostJson(string name, string shard, string arg, IData obj, int proj = 0)
         {
             JsonContent cont = new JsonContent(true, true);
             cont.Put(null, obj, proj);
-            Event(name, shard, cont);
+            Post(name, shard, arg, cont);
+            BufferUtility.Return(cont); // back to pool
         }
 
-        public void Event<D>(string name, string shard, D[] objs, int proj = 0) where D : IData
+        public void PostJson<D>(string name, string shard, string arg, D[] arr, int proj = 0) where D : IData
         {
-            JsonContent cont = new JsonContent();
-            cont.Put(null, objs, proj);
-            Event(name, shard, cont);
+            JsonContent cont = new JsonContent(true, true);
+            cont.Put(null, arr, proj);
+            Post(name, shard, arg, cont);
+            BufferUtility.Return(cont); // back to pool
         }
 
-        public void Event(string name, string shard, IDataInput inp)
-        {
-        }
-
-        public void Event(string name, string shard, ArraySegment<byte> bytesseg)
-        {
-        }
-
-        public void Event<C>(string name, string shard, C content) where C : IContent
+        public void Post(string name, string shard, string arg, IContent content)
         {
             // convert message to byte buffer
-            ArraySegment<byte> byteseg = new ArraySegment<byte>(content.ByteBuffer, 0, content.Size);
-            Execute("INSERT INTO eq (name, shard, body) VALUES (@1, @2, @3)", p =>
+            var byteas = new ArraySegment<byte>(content.ByteBuffer, 0, content.Size);
+            Execute("INSERT INTO eq (name, shard, arg, body) VALUES (@1, @2, @3, @4)", p =>
             {
                 p.Set(name);
                 p.Set(shard);
-                p.Set(byteseg);
+                p.Set(arg);
+                p.Set(byteas);
             });
-            BufferUtility.Return(content); // back to pool
         }
 
         public void WriteData<R>(IDataOutput<R> o) where R : IDataOutput<R>
@@ -742,9 +736,9 @@ namespace Greatbone.Core
             }
         }
 
-        public C Dump<C>() where C : IContent, IDataOutput<C>, new()
+        public IContent Dump()
         {
-            C cont = new C();
+            var cont = new JsonContent(true, true);
             cont.Put(null, this);
             return cont;
         }

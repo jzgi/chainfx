@@ -159,7 +159,7 @@ namespace Greatbone.Sample
             {
                 if (dc.Query("SELECT * FROM orders WHERE buyerwx = @1 AND status > 0", p => p.Set(wx)))
                 {
-                    ac.Reply(200, dc.Dump<JsonContent>());
+                    ac.Reply(200, dc.Dump());
                 }
                 else
                 {

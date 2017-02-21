@@ -209,10 +209,10 @@ namespace Greatbone.Core
         {
         }
 
-        public C Dump<C>() where C : IContent, IDataOutput<C>, new()
+        public IContent Dump()
         {
-            C cont = new C();
-            cont.Put(null, this);
+            var cont = new TextContent(true, true);
+            cont.Add(buf, 0, count);
             return cont;
         }
 

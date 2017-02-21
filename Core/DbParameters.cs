@@ -6,7 +6,7 @@ using NpgsqlTypes;
 namespace Greatbone.Core
 {
     ///
-    /// A wrapper of db parameter collection.
+    /// A database operation session.
     ///
     public class DbParameters : IDataOutput<DbParameters>
     {

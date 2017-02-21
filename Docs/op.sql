@@ -11,7 +11,7 @@ Target Server Type    : PGSQL
 Target Server Version : 90505
 File Encoding         : 65001
 
-Date: 2017-02-14 07:54:20
+Date: 2017-02-21 14:33:38
 */
 
 
@@ -23,8 +23,9 @@ CREATE SEQUENCE "public"."orders_id_seq"
  INCREMENT 1
  MINVALUE 1
  MAXVALUE 9223372036854775807
- START 1
+ START 3
  CACHE 1;
+SELECT setval('"public"."orders_id_seq"', 3, true);
 
 -- ----------------------------
 -- Sequence structure for pays_id_seq
@@ -54,15 +55,17 @@ CREATE SEQUENCE "public"."repays_id_seq"
 DROP TABLE IF EXISTS "public"."items";
 CREATE TABLE "public"."items" (
 "shopid" varchar(6) COLLATE "default" NOT NULL,
-"item" varchar(10) COLLATE "default" NOT NULL,
-"descript" varchar(100) COLLATE "default",
+"name" varchar(10) COLLATE "default" NOT NULL,
+"descr" varchar(100) COLLATE "default",
 "price" money,
 "unit" varchar(4) COLLATE "default",
 "oprice" money,
 "icon" bytea,
 "min" int2,
 "step" int2,
-"sold" int4
+"sold" int4,
+"enabled" bool,
+"capacity" int2
 )
 WITH (OIDS=FALSE)
 
@@ -71,8 +74,8 @@ WITH (OIDS=FALSE)
 -- ----------------------------
 -- Records of items
 -- ----------------------------
-INSERT INTO "public"."items" VALUES ('360001', '全麦馒头', null, '$2.00', '个', '$2.50', null, '20', '5', '40');
-INSERT INTO "public"."items" VALUES ('360001', '全麦馒头加', null, '$3.00', '个', '$3.50', null, '10', '5', '10');
+INSERT INTO "public"."items" VALUES ('360001', '全麦馒头', '全麦馒头', '$2.00', '个', '$2.50', null, '20', '5', '40', 't', null);
+INSERT INTO "public"."items" VALUES ('360001', '全麦馒头加', '全麦馒头加', '$3.00', '个', '$3.50', null, '10', '5', '10', 't', null);
 
 -- ----------------------------
 -- Table structure for orders
@@ -103,6 +106,7 @@ WITH (OIDS=FALSE)
 -- ----------------------------
 -- Records of orders
 -- ----------------------------
+INSERT INTO "public"."orders" VALUES ('3', '360001', '黄田', 'hismichael', null, null, null, null, null, null, null, null, '2017-02-17 17:08:16', null, null, '0');
 
 -- ----------------------------
 -- Table structure for pays
@@ -149,14 +153,15 @@ CREATE TABLE "public"."shops" (
 "id" varchar(6) COLLATE "default" NOT NULL,
 "name" varchar(10) COLLATE "default",
 "credential" char(32) COLLATE "default",
-"prov" varchar(4) COLLATE "default",
 "city" varchar(4) COLLATE "default",
 "tel" varchar(11) COLLATE "default",
 "status" int2,
 "x" float8,
 "y" float8,
 "wx" varchar(255) COLLATE "default",
-"note" varchar(20) COLLATE "default"
+"descr" varchar(20) COLLATE "default",
+"icon" bytea,
+"license" varchar(20) COLLATE "default"
 )
 WITH (OIDS=FALSE)
 
@@ -165,7 +170,10 @@ WITH (OIDS=FALSE)
 -- ----------------------------
 -- Records of shops
 -- ----------------------------
-INSERT INTO "public"."shops" VALUES ('360001', '黄田', null, '江西', '南昌', null, null, '125.4', '42.4', null, null);
+INSERT INTO "public"."shops" VALUES ('360001', '黄田', '3391AA55C0221F8DEE00B7594DE3B378', '南昌', null, null, '115.9', '28.6', null, null, null, null);
+INSERT INTO "public"."shops" VALUES ('360003', '涂红妹粗粮馒头', 'E690820BC5D7E1F1CEA517914FDB29E8', null, null, null, '115.9', '28.6', null, null, null, null);
+INSERT INTO "public"."shops" VALUES ('360004', '刘玉红粮油', 'A5FB36057110F41CCD5392BB038EF259', null, null, null, '115.9', '28.6', null, null, null, null);
+INSERT INTO "public"."shops" VALUES ('360005', '黄燕理疗康复中心', '0967E4E07F6526709996BC3BA923BA49', null, null, null, '115.9', '28.6', null, null, null, null);
 
 -- ----------------------------
 -- Table structure for users
@@ -197,7 +205,7 @@ ALTER SEQUENCE "public"."repays_id_seq" OWNED BY "repays"."id";
 -- ----------------------------
 -- Primary Key structure for table items
 -- ----------------------------
-ALTER TABLE "public"."items" ADD PRIMARY KEY ("shopid", "item");
+ALTER TABLE "public"."items" ADD PRIMARY KEY ("shopid", "name");
 
 -- ----------------------------
 -- Primary Key structure for table orders

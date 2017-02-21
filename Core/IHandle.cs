@@ -1,7 +1,7 @@
 namespace Greatbone.Core
 {
     ///
-    /// A handler method, such as an action or event.
+    /// A handler method, either an action or an event.
     ///
     public interface IHandle : IRollable
     {

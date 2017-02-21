@@ -5,7 +5,7 @@ using NpgsqlTypes;
 namespace Greatbone.Core
 {
     ///
-    /// A helper used to generate SQL commands.
+    /// A specialized string builder for generating SQL commands.
     ///
     public class DbSql : DynamicContent, IDataOutput<DbSql>
     {

@@ -5,7 +5,7 @@ namespace Greatbone.Core
     ///
     public struct JsonParse
     {
-        static readonly ParseException ParseEx = new ParseException("invalid json");
+        static readonly ParseException ParseEx = new ParseException("error parsing json");
 
         // byte content to parse
         readonly byte[] bytebuf;

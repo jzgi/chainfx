@@ -14,7 +14,7 @@ namespace Greatbone.Sample
             AuthConfig auth = new AuthConfig
             {
                 mask = 0x4a78be76,
-                repos = 0x1f0335e2,
+                pose = 0x1f0335e2,
                 maxage = 3600
             };
 
@@ -40,10 +40,13 @@ namespace Greatbone.Sample
 #if !DEBUG
             sc.TryLoad();
 #endif
-            if (sc.LoadedOk != false) svclst.Add(new OpService(sc));
+            if (sc.LoadedOk != false)
+            {
+                svclst.Add(new OpService(sc));
+            }
 
-            string tree = svclst[0].Describe();
-            Debug.WriteLine(tree);
+            // string tree = svclst[0].Describe();
+            // Debug.WriteLine(tree);
 
             sc = new WebServiceContext("comm")
             {
@@ -55,7 +58,10 @@ namespace Greatbone.Sample
             sc.TryLoad();
 #endif
 
-            if (sc.LoadedOk != false) svclst.Add(new CommService(sc));
+            if (sc.LoadedOk != false)
+            {
+                svclst.Add(new CommService(sc));
+            }
 
             WebService.Run(svclst);
         }

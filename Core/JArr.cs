@@ -227,10 +227,10 @@ namespace Greatbone.Core
             }
         }
 
-        public C Dump<C>() where C : IContent, IDataOutput<C>, new()
+        public IContent Dump()
         {
-            C cont = new C();
-            WriteData(cont);
+            var cont = new JsonContent(true, true);
+            cont.Put(null, this);
             return cont;
         }
 

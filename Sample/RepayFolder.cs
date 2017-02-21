@@ -21,7 +21,7 @@ namespace Greatbone.Sample
             {
                 if (dc.Query("SELECT * FROM items WHERE shopid = @1 AND enabled", p => p.Set(shopid)))
                 {
-                    ac.Reply(200, dc.Dump<JsonContent>());
+                    ac.Reply(200, dc.Dump());
                 }
                 else
                 {

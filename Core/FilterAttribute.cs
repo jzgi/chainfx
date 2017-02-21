@@ -3,7 +3,7 @@
 namespace Greatbone.Core
 {
     ///
-    /// Working on a web folder or individual web action, to manipulate the action context as well as the result returned from it.
+    /// To alter relevant action context(s) through annotating on the action method(s) or its enclosing web folder.
     ///
     [AttributeUsage(AttributeTargets.Class | AttributeTargets.Method, Inherited = false)]
     public abstract class FilterAttribute : Attribute

@@ -25,7 +25,7 @@ namespace Greatbone.Core
     public abstract class WebService : WebFolder, IHttpApplication<HttpContext>, ILoggerProvider, ILogger
     {
         // the service instance id
-        readonly string key;
+        readonly string moniker;
 
         // the embedded server
         readonly KestrelServer server;
@@ -47,7 +47,7 @@ namespace Greatbone.Core
             // adjust configuration
             sc.Service = this;
 
-            key = (sc.shard == null) ? sc.name : sc.name + "-" + sc.shard;
+            moniker = (sc.shard == null) ? sc.name : sc.name + "-" + sc.shard;
 
             // setup logging 
             LoggerFactory factory = new LoggerFactory();
@@ -65,7 +65,7 @@ namespace Greatbone.Core
             ICollection<string> addrs = server.Features.Get<IServerAddressesFeature>().Addresses;
             if (string.IsNullOrEmpty(sc.addresses))
             {
-                throw new WebServiceException("'addresss' in webconfig");
+                throw new WebServiceException("missing 'addresses'");
             }
             foreach (string a in sc.addresses.Split(',', ';'))
             {
@@ -102,15 +102,15 @@ namespace Greatbone.Core
                 events.Add(evt);
             }
 
-            // initialize cluster connectors
-            Dictionary<string, string> refs = sc.cluster;
-            if (refs != null)
+            // initialize connectivities to the cluster members
+            Dictionary<string, string> mems = sc.cluster;
+            if (mems != null)
             {
-                foreach (KeyValuePair<string, string> e in refs)
+                foreach (KeyValuePair<string, string> e in mems)
                 {
                     if (cluster == null)
                     {
-                        cluster = new Roll<WebClient>(refs.Count * 2);
+                        cluster = new Roll<WebClient>(mems.Count * 2);
                     }
                     cluster.Add(new WebClient(e.Key, e.Value));
                 }
@@ -122,7 +122,10 @@ namespace Greatbone.Core
             // create database structures for event queue
             if (Context.db.queue)
             {
-                CreateEq();
+                using (var dc = Service.NewDbContext())
+                {
+                    EventsUtility.CreateEq(dc);
+                }
             }
 
         }
@@ -134,12 +137,10 @@ namespace Greatbone.Core
             return cont.ToString();
         }
 
-
-
         ///
         /// Uniquely identify a service instance.
         ///
-        public string Key => key;
+        public string Moniker => moniker;
 
         public Roll<WebEvent> Events => events;
 
@@ -148,40 +149,6 @@ namespace Greatbone.Core
         public new WebServiceContext Context => (WebServiceContext)context;
 
         internal WebCache Cache => cache;
-
-        bool CreateEq()
-        {
-            // check db
-            using (var dc = Service.NewDbContext())
-            {
-                dc.Execute(@"CREATE TABLE IF NOT EXISTS eu (
-                                moniker varchar(20),
-                                lastid int8,
-                                CONSTRAINT eu_pkey PRIMARY KEY (moniker)
-                            ) WITH (OIDS=FALSE)"
-                );
-
-                dc.Execute(@"CREATE SEQUENCE IF NOT EXISTS eq_id_seq 
-                                INCREMENT 1 
-                                MINVALUE 1 MAXVALUE 9223372036854775807 
-                                START 1 CACHE 32 NO CYCLE
-                                OWNED BY eq.id"
-                );
-
-                dc.Execute(@"CREATE TABLE IF NOT EXISTS eq (
-                                id int8 DEFAULT nextval('eq_id_seq'::regclass) NOT NULL,
-                                name varchar(40),
-                                shard varchar(20),
-                                time timestamp,
-                                type varchar(40),
-                                body bytea,
-                                CONSTRAINT eq_pkey PRIMARY KEY (id)
-                            ) WITH (OIDS=FALSE)"
-                );
-
-            }
-            return true;
-        }
 
         public virtual void OnStart()
         {
@@ -220,8 +187,7 @@ namespace Greatbone.Core
             HttpRequest req = ac.Request;
             string path = req.Path.Value;
 
-            // authentication
-            try
+            try // authentication
             {
                 Authenticate(ac);
             }
@@ -234,7 +200,10 @@ namespace Greatbone.Core
             {
                 if ("/*".Equals(path)) // handle an event queue request
                 {
-                    PeekEq(ac);
+                    using (var dc = NewDbContext())
+                    {
+                        // EventsUtility.PeekEq();
+                    }
                 }
                 else // handle a regular request
                 {
@@ -256,10 +225,7 @@ namespace Greatbone.Core
                 }
                 else if (e is WebAccessException)
                 {
-                    if (ac.Token == null)
-                    {
-                        Challenge(ac);
-                    }
+                    if (ac.Token == null) { Challenge(ac); }
                     else
                     {
                         ac.Reply(403); // forbidden
@@ -313,55 +279,6 @@ namespace Greatbone.Core
                 if (cli.Name.Equals(svcid)) return cli;
             }
             return null;
-        }
-
-
-        ///
-        /// Peek and load events from the event queue (DB)
-        ///
-        void PeekEq(WebActionContext ac)
-        {
-            string[] names = ac.Query[nameof(names)];
-            string shard = ac.Header("Shard"); // can be null
-            long? lastid = ac.HeaderLong("Range");
-
-            using (var dc = NewDbContext())
-            {
-                DbSql sql = dc.Sql("SELECT id, name, time, type, body FROM eq WHERE id > @1 AND event IN [");
-                for (int i = 0; i < names.Length; i++)
-                {
-                    if (i > 0) sql.Add(',');
-                    sql.Put(null, names[i]);
-                }
-                sql.Add(']');
-                if (shard != null)
-                {
-                    // the IN clause with shard is normally fixed, don't need to be parameters
-                    sql._("AND (shard IS NULL OR shard =")._(shard)._(")");
-                }
-                sql._("LIMIT 120");
-
-                if (dc.Query(p => p.Set(lastid.Value)))
-                {
-                    FormMpContent cont = new FormMpContent(true, 1024 * 1024);
-                    while (dc.Next())
-                    {
-                        long id = dc.GetLong();
-                        string name = dc.GetString();
-                        DateTime time = dc.GetDateTime();
-                        string type = dc.GetString();
-                        ArraySegment<byte> body = dc.GetBytesSeg();
-
-                        // add an extension part
-                        cont.PutEvent(id, name, time, type, body);
-                    }
-                    ac.Reply(200, cont);
-                }
-                else
-                {
-                    ac.Reply(204); // no content
-                }
-            }
         }
 
         public void Start()
@@ -531,7 +448,10 @@ namespace Greatbone.Core
         }
     }
 
-    public abstract class WebService<T> : WebService where T : IData, new()
+    ///
+    /// A web service that implements authentication and authorization.
+    ///
+    public abstract class WebService<TToken> : WebService where TToken : IData, new()
     {
         protected WebService(WebServiceContext sc) : base(sc) { }
 
@@ -543,12 +463,12 @@ namespace Greatbone.Core
             {
                 tokstr = hv.Substring(7);
                 string jsonstr = Context.Decrypt(tokstr);
-                ac.Token = JsonUtility.StringToObject<T>(jsonstr);
+                ac.Token = JsonUtility.StringToObject<TToken>(jsonstr);
             }
             else if (ac.Cookies.TryGetValue("Bearer", out tokstr))
             {
                 string jsonstr = Context.Decrypt(tokstr);
-                ac.Token = JsonUtility.StringToObject<T>(jsonstr);
+                ac.Token = JsonUtility.StringToObject<TToken>(jsonstr);
             }
         }
 

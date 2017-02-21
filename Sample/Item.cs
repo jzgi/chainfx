@@ -23,6 +23,8 @@ namespace Greatbone.Sample
 
         internal decimal price; // current price
 
+        internal short capacity;
+
         internal int min; // minimal ordered
 
         internal int step;
