@@ -2,7 +2,7 @@ using System;
 
 namespace Greatbone.Core
 {
-    static class EventsUtility
+    static class WebEventsUtility
     {
         internal static void CreateEq(DbContext dc)
         {

@@ -4,9 +4,9 @@ using System.Data;
 namespace Greatbone.Core
 {
     ///
-    /// The processing of an queued message.
+    /// The processing of an received web event. A single object is reused.
     ///
-    public class WebEventContext : IHandleContext<WebEvent>, IDisposable
+    public class WebEventContext : IHandlerContext<WebEvent>, IDisposable
     {
         readonly WebClient client;
 
@@ -41,7 +41,7 @@ namespace Greatbone.Core
             }
         }
 
-        public WebEvent Handle
+        public WebEvent Handler
         {
             get
             {

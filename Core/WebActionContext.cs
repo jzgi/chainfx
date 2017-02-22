@@ -13,7 +13,7 @@ namespace Greatbone.Core
     ///
     /// The encapsulation of a web request/response exchange context.
     ///
-    public class WebActionContext : DefaultHttpContext, IHandleContext<WebAction>, IDisposable
+    public class WebActionContext : DefaultHttpContext, IHandlerContext<WebAction>, IDisposable
     {
         internal WebActionContext(IFeatureCollection features) : base(features)
         {
@@ -23,7 +23,7 @@ namespace Greatbone.Core
 
         public WebFolder Folder { get; internal set; }
 
-        public WebAction Handle { get; internal set; }
+        public WebAction Handler { get; internal set; }
 
         public IData Token { get; internal set; }
 

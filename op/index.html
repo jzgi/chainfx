@@ -6,9 +6,19 @@
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <link rel="stylesheet" href="//cdn.bootcss.com/foundation/6.3.0/css/foundation.min.css">
+  <link rel="stylesheet" href="//cdn.bootcss.com/font-awesome/4.7.0/css/font-awesome.min.css">
 </head>
 
 <body>
+  <div class="row">
+    <div class="small-10 columns">
+      <i class="fa fa-spinner fa-spin fa-3x fa-fw"></i>
+      <span class="sr-only">15公里以内</span>
+    </div>
+    <div class="small-2 columns float-right">
+      <i class="fa fa-cart-plus fa-lg"></i>
+    </div>
+  </div>
   <div id="main" class="row">
   </div>
   <div class="full reveal" id="dialog" data-reveal data-close-on-click="false">
@@ -21,25 +31,51 @@
   <script src="/app.js"></script>
   <script>
     $(document).foundation();
+
     $(document).ready(function () {
+
       if (navigator.geolocation)
+
         navigator.geolocation.getCurrentPosition(function (pos) {
+
           var crd = pos.coords;
           var xv = crd.longitude.toString();
           var yv = crd.latitude.toString();
 
           // get shop list
           $.getJSON('/shop/lst',
+
             { x: xv.substring(0, xv.indexOf('.') + 2), y: yv.substring(0, yv.indexOf('.') + 2) },
+
             function (ret) {
-              $.each(ret, function (i, shop) {
-                $('#main').append('<div class="card">' + shop.name + '</div>');
+
+              var ul = '<ul class="accordion" data-accordion>';
+
+              console.log('Got ' + ret.length);
+
+              ret.forEach(function (shop) {
+                ul += '<li class="accordion-item" data-accordion-item>';
+                ul += '<a href="#" class="accordion-title">' + shop.name + '</a>';
+                ul += '<div class="accordion-content" data-tab-content>';
+                ul += '</div>';
+                ul += '</li>';
               });
+
+              ul += '</ul>';
+
+              var ule = $(ul);
+              ule.on('down.zf.accordion', function () {
+                $('li.is-active > div').load('/app.css')
+              });
+
+              $('#main').append(ule).foundation();
+
             }).done(function () {
               console.log('Ajax Done');
             }).fail(function () {
               alert('failed');
             });
+
         });
 
     });

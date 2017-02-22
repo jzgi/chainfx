@@ -124,7 +124,7 @@ namespace Greatbone.Core
             {
                 using (var dc = Service.NewDbContext())
                 {
-                    EventsUtility.CreateEq(dc);
+                    WebEventsUtility.CreateEq(dc);
                 }
             }
 

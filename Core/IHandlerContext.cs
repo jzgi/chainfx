@@ -3,15 +3,15 @@ using System.Data;
 namespace Greatbone.Core
 {
     ///
-    /// A handler method, such as an action or event.
+    /// A running context related to a handler method.
     ///
-    public interface IHandleContext<out H> where H : IHandle
+    public interface IHandlerContext<out H> where H : IHandler
     {
         WebServiceContext ServiceContext { get; }
 
         WebFolder Folder { get; }
 
-        H Handle { get; }
+        H Handler { get; }
 
         DbContext NewDbContext(IsolationLevel? level = null);
     }
