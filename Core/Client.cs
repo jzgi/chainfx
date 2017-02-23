@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 namespace Greatbone.Core
 {
     ///
-    /// The connect to a remote peer service that the current service depends on.
+    /// A client to RPC, service and event queue.
     ///
     public class Client : HttpClient, IRollable
     {

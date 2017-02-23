@@ -30,16 +30,16 @@ namespace Greatbone.Core
         // the embedded server
         readonly KestrelServer server;
 
-        // client connectivity to the related peers
-        readonly Roll<Client> cluster;
-
         // event consumption
         readonly Roll<EventInfo> events;
 
-        readonly ResponseCache cache;
+        // client connectivity to the related peers
+        readonly Roll<Client> clients;
 
         // event providing
         readonly Roll<EventQueue> queues;
+
+        readonly ResponseCache cache;
 
         Thread scheduler;
 
@@ -106,16 +106,22 @@ namespace Greatbone.Core
             }
 
             // initialize connectivities to the cluster members
-            Dictionary<string, string> mems = sc.cluster;
-            if (mems != null)
+            Dictionary<string, string> cluster = sc.cluster;
+            if (cluster != null)
             {
-                foreach (KeyValuePair<string, string> e in mems)
+                foreach (KeyValuePair<string, string> mem in cluster)
                 {
-                    if (cluster == null)
+                    if (clients == null)
                     {
-                        cluster = new Roll<Client>(mems.Count * 2);
+                        clients = new Roll<Client>(cluster.Count * 2);
                     }
-                    cluster.Add(new Client(e.Key, e.Value));
+                    clients.Add(new Client(mem.Key, mem.Value));
+
+                    if (queues == null)
+                    {
+                        queues = new Roll<EventQueue>(cluster.Count * 2);
+                    }
+                    queues.Add(new EventQueue(mem.Key, 20));
                 }
             }
 
@@ -147,7 +153,7 @@ namespace Greatbone.Core
 
         public Roll<EventInfo> Events => events;
 
-        public Roll<Client> Cluster => cluster;
+        public Roll<Client> Cluster => clients;
 
         public new ServiceContext Context => (ServiceContext)context;
 
@@ -276,9 +282,9 @@ namespace Greatbone.Core
 
         internal Client GetClient(string svcid)
         {
-            for (int i = 0; i < cluster.Count; i++)
+            for (int i = 0; i < clients.Count; i++)
             {
-                Client cli = cluster[i];
+                Client cli = clients[i];
                 if (cli.Name.Equals(svcid)) return cli;
             }
             return null;
@@ -299,7 +305,7 @@ namespace Greatbone.Core
             cleaner = new Thread(Clean);
             // cleaner.Start();
 
-            if (cluster != null)
+            if (clients != null)
             {
                 scheduler = new Thread(Schedule);
                 // scheduler.Start();

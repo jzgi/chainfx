@@ -1,5 +1,3 @@
-using System;
-
 namespace Greatbone.Core
 {
     ///
@@ -9,7 +7,7 @@ namespace Greatbone.Core
     {
         static readonly Form Empty = new Form(true);
 
-        static readonly ParseException ParseEx = new ParseException("multipart error");
+        static readonly ParseException ParseEx = new ParseException("parsing multipart error");
 
         readonly byte[] bound;
 
@@ -35,17 +33,9 @@ namespace Greatbone.Core
 
             this.buffer = buffer;
             this.length = length;
-            EventContext = null;
         }
-
-        public EventContext EventContext { get; internal set; }
 
         public Form Parse()
-        {
-            return Parse(null);
-        }
-
-        public Form Parse(Action<EventContext> handler)
         {
             // locality for performance
             byte[] bound = this.bound;
@@ -74,9 +64,7 @@ namespace Greatbone.Core
             {
                 string name = null;
                 string filename = null;
-                string date = null;
                 string ctype = null;
-                string clength = null;
 
                 // parse headers
                 for (;;)
@@ -100,17 +88,9 @@ namespace Greatbone.Core
                         name = hdr.SeekParam("name");
                         filename = hdr.SeekParam("filename");
                     }
-                    else if (clength == null && hdr.Check("Date"))
-                    {
-                        date = hdr.GetVvalue();
-                    }
                     else if (ctype == null && hdr.Check("Content-Type"))
                     {
                         ctype = hdr.GetVvalue();
-                    }
-                    else if (clength == null && hdr.Check("Content-Length"))
-                    {
-                        clength = hdr.GetVvalue();
                     }
                 }
 
@@ -118,56 +98,39 @@ namespace Greatbone.Core
                 str.Clear();
                 bool plain = ctype == null || "text/plain".Equals(ctype);
                 int start = p; // mark down content start
-                if (EventContext == null) // parse till bound to get content
+                int idx = 0; // index on bound 
+                for (;;)
                 {
-                    int idx = 0; // index on bound 
-                    for (;;)
+                    byte b = buffer[p++];
+                    if (b == bound[idx])
                     {
-                        byte b = buffer[p++];
-                        if (b == bound[idx])
+                        idx++;
+                        if (idx >= boundlen) // fully matched the bound accumulatively
                         {
-                            idx++;
-                            if (idx >= boundlen) // fully matched the bound accumulatively
-                            {
-                                if (frm == null) frm = new Form(true) { Buffer = buffer };
-                                if (plain)
-                                    frm.Add(name, str.ToString());
-                                else
-                                    frm.Add(name, filename, start, p - start - boundlen);
-                                // goto the ending CRLF/-- check
-                                break;
-                            }
-                        }
-                        else if (idx > 0) // if fail-match
-                        {
-                            if (plain) // re-add
-                            {
-                                for (int i = 0; i < idx; i++)
-                                {
-                                    str.Accept(bound[i]);
-                                }
-                            }
-                            idx = 0; // reset
-                        }
-                        else
-                        {
-                            if (plain) str.Accept(b);
+                            if (frm == null) frm = new Form(true) { Buffer = buffer };
+                            if (plain)
+                                frm.Add(name, str.ToString());
+                            else
+                                frm.Add(name, filename, start, p - start - boundlen);
+                            // goto the ending CRLF/-- check
+                            break;
                         }
                     }
-                }
-                else // it is event context
-                {
-                    int len;
-                    if (int.TryParse(clength, out len))
+                    else if (idx > 0) // if fail-match
                     {
-                        object cont = Contentize(ctype, buffer, start, len);
-                        // handle the event context
-                        DateTime time; TextUtility.TryParseDate(date, out time);
-                        EventContext.Reset(234, name, time, ctype, cont);
-                        handler(EventContext);
+                        if (plain) // re-add
+                        {
+                            for (int i = 0; i < idx; i++)
+                            {
+                                str.Accept(bound[i]);
+                            }
+                        }
+                        idx = 0; // reset
                     }
-                    // skip bound
-                    p += boundlen;
+                    else
+                    {
+                        if (plain) str.Accept(b);
+                    }
                 }
 
                 // check if any more part
@@ -178,11 +141,6 @@ namespace Greatbone.Core
                 break;
             } // parts
             return frm ?? Empty;
-        }
-
-        object Contentize(string typ, byte[] buf, int offset, int count)
-        {
-            return null;
         }
     }
 }
