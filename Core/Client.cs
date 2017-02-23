@@ -2,6 +2,8 @@
 using System.Collections.Generic;
 using System.Net.Http;
 using System.Threading.Tasks;
+using System.Net;
+using System.Net.Http.Headers;
 
 namespace Greatbone.Core
 {
@@ -53,32 +55,55 @@ namespace Greatbone.Core
                 return;
             }
 
-            PollHandleAsync();
+            PollAndDoAsync();
         }
 
+        static readonly Uri PollUri = new Uri("*", UriKind.Relative);
+
         /// NOTE: We make it async void because the scheduler doesn't need to await this method
-        internal async void PollHandleAsync()
+        internal async void PollAndDoAsync()
         {
-            HttpResponseMessage resp = await GetAsync("*");
-            byte[] cont = await resp.Content.ReadAsByteArrayAsync();
-
-            EventContext ec = new EventContext(this);
-
-            // parse and process one by one
-            long id;
-            string name = "";
-            string arg = "";
-            DateTime time;
-            EventInfo evt = null;
-            if (service.Events.TryGet(name, out evt))
+            for (;;)
             {
-                if (evt.IsAsync)
+                HttpRequestMessage req = new HttpRequestMessage(HttpMethod.Get, PollUri);
+                HttpRequestHeaders headers = req.Headers;
+                Roll<EventInfo> evts = service.Events;
+                string[] vals = new string[evts.Count];
+                for (int i = 0; i < evts.Count; i++)
                 {
-                    await evt.DoAsync(ec, arg);
+                    EventInfo evt = evts[i];
+                    vals[i] = evts[i].Name;
                 }
-                else
+                headers.TryAddWithoutValidation("From", service.Moniker);
+                headers.TryAddWithoutValidation("X-Event", vals);
+                headers.TryAddWithoutValidation("X-Shard", service.Context.shard);
+
+
+                HttpResponseMessage resp = await SendAsync(req);
+                if (resp.StatusCode == HttpStatusCode.NoContent)
                 {
-                    evt.Do(ec, arg);
+                    break;
+                }
+
+                byte[] cont = await resp.Content.ReadAsByteArrayAsync();
+                EventContext ec = new EventContext(this);
+
+                // parse and process one by one
+                long id;
+                string name = resp.Headers.GetValue("");
+                string arg = resp.Headers.GetValue("");
+                DateTime time;
+                EventInfo ei = null;
+                if (service.Events.TryGet(name, out ei))
+                {
+                    if (ei.IsAsync)
+                    {
+                        await ei.DoAsync(ec, arg);
+                    }
+                    else
+                    {
+                        ei.Do(ec, arg);
+                    }
                 }
             }
         }

@@ -26,6 +26,12 @@ namespace Greatbone.Sample
                 password = "721004"
             };
 
+            Dictionary<string, string> cluster = new Dictionary<string, string>()
+            {
+                ["op"] = "http://localhost:8080",
+                ["comm"] = "http://localhost:8081",
+            };
+
             List<Service> svclst = new List<Service>(4);
 
             ServiceContext sc;
@@ -34,7 +40,8 @@ namespace Greatbone.Sample
             {
                 addresses = "http://localhost:8080",
                 auth = auth,
-                db = pg
+                db = pg,
+                cluster = cluster
             };
 #if !DEBUG
             sc.TryLoad();
@@ -51,7 +58,8 @@ namespace Greatbone.Sample
             {
                 addresses = "http://localhost:8081",
                 auth = auth,
-                db = pg
+                db = pg,
+                cluster = cluster
             };
 #if !DEBUG
             sc.TryLoad();

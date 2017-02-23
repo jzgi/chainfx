@@ -21,7 +21,10 @@ GET http://localhost:8080/shop/360001/item/lst
 ### POLL EVENTS
 
 GET http://localhost:8080/*
-Shard: bj
-Range: 1
+From: op
+X-Event: ACCESS_TOKEN
+X-Event: CHAT_LOG
+X-Shard: bj
+X-ID: 1
 
 

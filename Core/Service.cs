@@ -123,7 +123,6 @@ namespace Greatbone.Core
                     }
                     queues.Add(new EventQueue(mem.Key, 20));
                 }
-                EventQueue.GlobalInit(this, clients);
             }
 
             // initialize response cache
@@ -297,6 +296,11 @@ namespace Greatbone.Core
 
         public void Start()
         {
+            if (clients != null)
+            {
+                EventQueue.GlobalInit(this, clients);
+            }
+            
             // start the server
             //
             server.Start(this);

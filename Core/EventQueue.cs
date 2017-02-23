@@ -108,30 +108,28 @@ namespace Greatbone.Core
             {
                 // create database objects
 
-                dc.Execute(@"CREATE TABLE IF NOT EXISTS EVTU (
-                                moniker varchar(20),
-                                lastid int8
-                                CONSTRAINT evtu_pkey PRIMARY KEY (moniker)
-                            ) WITH (OIDS=FALSE)"
-                );
+                dc.Execute(
+                    @"CREATE TABLE IF NOT EXISTS EVTU (
+                        moniker varchar(20),
+                        lastid int8,
+                        CONSTRAINT evtu_pkey PRIMARY KEY (moniker)
+                    ) WITH (OIDS=FALSE);
 
-                dc.Execute(@"CREATE SEQUENCE IF NOT EXISTS evtq_id_seq 
-                                INCREMENT 1 
-                                MINVALUE 1 MAXVALUE 9223372036854775807 
-                                START 1 CACHE 100 NO CYCLE
-                                OWNED BY EVTQ.id"
-                );
+                    CREATE SEQUENCE IF NOT EXISTS evtq_id_seq 
+                        INCREMENT 1 
+                        MINVALUE 1 MAXVALUE 9223372036854775807 
+                        START 1 CACHE 100 NO CYCLE;
 
-                dc.Execute(@"CREATE TABLE IF NOT EXISTS EVTQ (
-                                id int8 DEFAULT nextval('evtq_id_seq'::regclass) NOT NULL,
-                                name varchar(40),
-                                shard varchar(20),
-                                arg varchar(40),
-                                type varchar(40),
-                                body bytea,
-                                time timestamp
-                                CONSTRAINT evtq_pkey PRIMARY KEY (id)
-                            ) WITH (OIDS=FALSE)"
+                    CREATE TABLE IF NOT EXISTS EVTQ (
+                        id int8 DEFAULT nextval('evtq_id_seq'::regclass) NOT NULL,
+                        name varchar(40),
+                        shard varchar(20),
+                        arg varchar(40),
+                        type varchar(40),
+                        body bytea,
+                        time timestamp,
+                        CONSTRAINT evtq_pkey PRIMARY KEY (id)
+                    ) WITH (OIDS=FALSE)"
                 );
 
                 // init records for each moniker 
