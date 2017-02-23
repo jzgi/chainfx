@@ -27,10 +27,10 @@ namespace Greatbone.Core
         // the default action
         readonly ActionInfo defaction;
 
-        // sub folders, if any
+        // subfolders, if any
         internal Roll<Folder> subs;
 
-        // the varied folder, if any
+        // the variable-key subfolder, if any
         internal Folder varsub;
 
         protected Folder(FolderContext fc) : base(fc.Name, null)
@@ -50,27 +50,27 @@ namespace Greatbone.Core
                 else continue;
 
                 ParameterInfo[] pis = mi.GetParameters();
-                ActionInfo atn = null;
+                ActionInfo ai = null;
                 if (pis.Length == 1 && pis[0].ParameterType == typeof(ActionContext))
                 {
-                    atn = new ActionInfo(this, mi, async, false);
+                    ai = new ActionInfo(this, mi, async, false);
                 }
                 else if (pis.Length == 2 && pis[0].ParameterType == typeof(ActionContext) && pis[1].ParameterType == typeof(string))
                 {
-                    atn = new ActionInfo(this, mi, async, true);
+                    ai = new ActionInfo(this, mi, async, true);
                 }
                 else continue;
 
-                actions.Add(atn);
-                if (atn.Name.Equals("default"))
+                actions.Add(ai);
+                if (ai.Name.Equals("default"))
                 {
-                    defaction = atn;
+                    defaction = ai;
                 }
 
                 // to override annotated attributes
-                if (fc.Roles != null)
+                if (fc.Accesses != null)
                 {
-                    roles = fc.Roles;
+                    accesses = fc.Accesses;
                 }
                 if (fc.Ui != null)
                 {
@@ -103,7 +103,7 @@ namespace Greatbone.Core
             FolderContext ctx = new FolderContext
             {
                 name = key,
-                Roles = roles,
+                Accesses = roles,
                 Ui = ui,
                 IsVar = false,
                 Parent = this,
@@ -137,7 +137,7 @@ namespace Greatbone.Core
             FolderContext ctx = new FolderContext
             {
                 name = _VAR_,
-                Roles = roles,
+                Accesses = roles,
                 IsVar = true,
                 Parent = this,
                 Level = Level + 1,
@@ -215,7 +215,7 @@ namespace Greatbone.Core
             for (int i = 0; i < actions.Count; i++)
             {
                 ActionInfo a = actions[i];
-                if (a.IsModal && a.HasRole(checktyp))
+                if (a.IsModal && a.HasAccess(checktyp))
                 {
                     if (lst == null) lst = new List<ActionInfo>();
                     lst.Add(a);
@@ -230,7 +230,7 @@ namespace Greatbone.Core
             for (int i = 0; i < actions.Count; i++)
             {
                 ActionInfo a = actions[i];
-                if (a.IsModal && a.Check(ac))
+                if (a.IsModal && a.CheckAccess(ac))
                 {
                     if (lst == null) lst = new List<ActionInfo>();
                     lst.Add(a);
@@ -242,7 +242,7 @@ namespace Greatbone.Core
         internal Folder ResolveFolder(ref string relative, ActionContext ac)
         {
             // access check 
-            if (!Check(ac)) throw AccessEx;
+            if (!CheckAccess(ac)) throw AccessEx;
 
             int slash = relative.IndexOf('/');
             if (slash == -1)
@@ -299,7 +299,7 @@ namespace Greatbone.Core
                 }
 
                 // access check
-                if (!actn.Check(ac)) throw AccessEx;
+                if (!actn.CheckAccess(ac)) throw AccessEx;
 
                 // try in cache
 

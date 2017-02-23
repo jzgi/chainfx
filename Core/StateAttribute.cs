@@ -3,6 +3,7 @@ using System;
 namespace Greatbone.Core
 {
     /// 
+    /// To associate pre- and post- states to an action method.
     ///
     [AttributeUsage(AttributeTargets.Method, Inherited = false)]
     public class StateAttribute : Attribute
@@ -15,9 +16,9 @@ namespace Greatbone.Core
             Undef = undef;
         }
 
-        public int If { get; set; } = 0;
+        public int If { get; set; }
 
-        public int Unif { get; set; } = 0;
+        public int Unif { get; set; }
 
         public int Def { get; set; }
 

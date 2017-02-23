@@ -15,7 +15,7 @@ namespace Greatbone.Core
         readonly string name;
 
         // access checks
-        internal AccessAttribute[] roles;
+        internal AccessAttribute[] accesses;
 
         // filtering
         readonly FilterAttribute[] filters;
@@ -33,30 +33,30 @@ namespace Greatbone.Core
             }
 
             // roles
-            List<AccessAttribute> rolelst = null;
-            foreach (var role in (AccessAttribute[])attrs.GetCustomAttributes(typeof(AccessAttribute), false))
+            List<AccessAttribute> accesslst = null;
+            foreach (var access in (AccessAttribute[])attrs.GetCustomAttributes(typeof(AccessAttribute), false))
             {
-                if (rolelst == null)
+                if (accesslst == null)
                 {
-                    rolelst = new List<AccessAttribute>(8);
+                    accesslst = new List<AccessAttribute>(8);
                 }
-                role.Nodule = this;
-                rolelst.Add(role);
+                access.Nodule = this;
+                accesslst.Add(access);
             }
-            this.roles = rolelst?.ToArray();
+            this.accesses = accesslst?.ToArray();
 
             // filters
-            List<FilterAttribute> fltlst = null;
-            foreach (var flt in (FilterAttribute[])attrs.GetCustomAttributes(typeof(FilterAttribute), false))
+            List<FilterAttribute> filterlst = null;
+            foreach (var filter in (FilterAttribute[])attrs.GetCustomAttributes(typeof(FilterAttribute), false))
             {
-                if (fltlst == null)
+                if (filterlst == null)
                 {
-                    fltlst = new List<FilterAttribute>(8);
+                    filterlst = new List<FilterAttribute>(8);
                 }
-                flt.Nodule = this;
-                fltlst.Add(flt);
+                filter.Nodule = this;
+                filterlst.Add(filter);
             }
-            this.filters = fltlst?.ToArray();
+            this.filters = filterlst?.ToArray();
 
             // ui
             var uis = (UiAttribute[])attrs.GetCustomAttributes(typeof(UiAttribute), false);
@@ -72,13 +72,13 @@ namespace Greatbone.Core
 
         public UiAttribute Ui => ui;
 
-        public bool HasRole(Type roletyp)
+        public bool HasAccess(Type accesstyp)
         {
-            if (roles != null)
+            if (accesses != null)
             {
-                for (int i = 0; i < roles.Length; i++)
+                for (int i = 0; i < accesses.Length; i++)
                 {
-                    if (roles[i].GetType() == roletyp) return true;
+                    if (accesses[i].GetType() == accesstyp) return true;
                 }
             }
             return false;
@@ -88,16 +88,16 @@ namespace Greatbone.Core
 
         public bool IsModal => ui != null && ui.Modal > 0;
 
-        public bool Check(ActionContext ac)
+        public bool CheckAccess(ActionContext ac)
         {
-            if (roles != null)
+            if (accesses != null)
             {
                 if (ac.Token == null) return false;
 
                 // run checks
-                for (int i = 0; i < roles.Length; i++)
+                for (int i = 0; i < accesses.Length; i++)
                 {
-                    if (!roles[i].Check(ac))
+                    if (!accesses[i].Check(ac))
                     {
                         return false;
                     }

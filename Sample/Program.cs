@@ -23,8 +23,7 @@ namespace Greatbone.Sample
                 host = "106.14.45.109",
                 port = 5432,
                 username = "postgres",
-                password = "721004",
-                queue = false
+                password = "721004"
             };
 
             List<Service> svclst = new List<Service>(4);

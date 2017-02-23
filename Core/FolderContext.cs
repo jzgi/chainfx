@@ -11,7 +11,7 @@ namespace Greatbone.Core
 
         public string Name => name;
 
-        public AccessAttribute[] Roles { get; internal set; }
+        public AccessAttribute[] Accesses { get; internal set; }
 
         public UiAttribute Ui { get; internal set; }
 

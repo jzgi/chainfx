@@ -123,19 +123,11 @@ namespace Greatbone.Core
                     }
                     queues.Add(new EventQueue(mem.Key, 20));
                 }
+                EventQueue.GlobalInit(this, queues);
             }
 
             // initialize response cache
             cache = new ResponseCache(Environment.ProcessorCount * 2, 4096);
-
-            // create database structures for event queue
-            if (Context.db.queue)
-            {
-                using (var dc = Service.NewDbContext())
-                {
-                    EventsUtility.CreateEq(dc);
-                }
-            }
 
         }
 
