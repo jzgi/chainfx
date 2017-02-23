@@ -6,68 +6,67 @@ using System.Threading.Tasks;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Http.Features;
 using Microsoft.Extensions.Primitives;
-using System.Text;
 
 namespace Greatbone.Core
 {
     ///
     /// The encapsulation of a web request/response exchange context.
     ///
-    public class WebActionContext : DefaultHttpContext, IHandlerContext<WebAction>, IDisposable
+    public class ActionContext : DefaultHttpContext, IHandlerContext<ActionInfo>, IDisposable
     {
-        internal WebActionContext(IFeatureCollection features) : base(features)
+        internal ActionContext(IFeatureCollection features) : base(features)
         {
         }
 
-        public WebServiceContext ServiceContext { get; set; }
+        public ServiceContext ServiceContext { get; set; }
 
-        public WebFolder Folder { get; internal set; }
+        public Folder Folder { get; internal set; }
 
-        public WebAction Handler { get; internal set; }
+        public ActionInfo Handler { get; internal set; }
 
         public IData Token { get; internal set; }
 
         public string TokenText { get; internal set; }
 
         // levels of keys along the URI path
-        WebSeg[] segs;
+        Segment[] segs;
 
         int segnum; // actual number of knots
 
-        internal void Chain(string key, WebFolder folder)
+        internal void Chain(string key, Folder folder)
         {
             if (segs == null)
             {
-                segs = new WebSeg[4];
+                segs = new Segment[4];
             }
-            segs[segnum++] = new WebSeg(key, folder);
+            segs[segnum++] = new Segment(key, folder);
         }
 
-        public WebSeg this[int level] => segs[level];
+        public Segment this[int level] => segs[level];
 
-        public WebSeg this[Type folderType]
+        public Segment this[Type folderType]
         {
             get
             {
                 for (int i = 0; i < segnum; i++)
                 {
-                    WebSeg v = segs[i];
+                    Segment v = segs[i];
                     if (v.Type == folderType) return v;
                 }
-                return default(WebSeg);
+                return default(Segment);
             }
         }
 
-        public WebSeg this[WebFolder folder]
+        public Segment this[Folder folder]
         {
             get
             {
                 for (int i = 0; i < segnum; i++)
                 {
-                    WebSeg v = segs[i];
+                    Segment v = segs[i];
                     if (v.Folder == folder) return v;
                 }
-                return default(WebSeg);
+                return default(Segment);
             }
         }
 
@@ -286,6 +285,11 @@ namespace Greatbone.Core
         //
 
         public void SetHeader(string name, int v)
+        {
+            Response.Headers.Add(name, new StringValues(v.ToString()));
+        }
+
+        public void SetHeader(string name, long v)
         {
             Response.Headers.Add(name, new StringValues(v.ToString()));
         }

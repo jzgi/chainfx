@@ -5,16 +5,16 @@ namespace Greatbone.Sample
 {
     ///
     ///
-    public class RepayFolder : WebFolder
+    public class RepayFolder : Folder
     {
-        public RepayFolder(WebFolderContext fc) : base(fc)
+        public RepayFolder(FolderContext fc) : base(fc)
         {
             CreateVar<ItemVarFolder>();
         }
 
         #region /shop/-shopid-/item/
 
-        public void lst(WebActionContext ac)
+        public void lst(ActionContext ac)
         {
             string shopid = ac[1];
             using (var dc = ac.NewDbContext())
@@ -36,7 +36,7 @@ namespace Greatbone.Sample
 
         [Shop]
         [Ui]
-        public void @default(WebActionContext ac)
+        public void @default(ActionContext ac)
         {
             string shopid = ac[1];
             using (var dc = ac.NewDbContext())
@@ -53,7 +53,7 @@ namespace Greatbone.Sample
         }
 
         [Shop]
-        public void _cat_(WebActionContext ac)
+        public void _cat_(ActionContext ac)
         {
             string shopid = ac[1];
             using (var dc = ac.NewDbContext())

@@ -6,15 +6,15 @@ namespace Greatbone.Sample
     ///
     /// /shop/
     ///
-    public class ShopFolder : WebFolder
+    public class ShopFolder : Folder
     {
-        public ShopFolder(WebFolderContext fc) : base(fc)
+        public ShopFolder(FolderContext fc) : base(fc)
         {
             CreateVar<ShopVarFolder>();
         }
 
         [Admin]
-        public void @default(WebActionContext ac)
+        public void @default(ActionContext ac)
         {
             using (var dc = ac.NewDbContext())
             {
@@ -45,7 +45,7 @@ namespace Greatbone.Sample
         /// GET /items
         /// </code>
         ///
-        public void lst(WebActionContext ac)
+        public void lst(ActionContext ac)
         {
             string x = ac.Query[nameof(x)];
             string y = ac.Query[nameof(y)];
@@ -85,7 +85,7 @@ namespace Greatbone.Sample
 
         // [Admin]
         [Ui("新建", 3)]
-        public async Task @new(WebActionContext ac)
+        public async Task @new(ActionContext ac)
         {
             if (ac.GET)
             {
@@ -116,25 +116,25 @@ namespace Greatbone.Sample
         }
 
         [Ui("删除", 1)]
-        public void del(WebActionContext ac)
+        public void del(ActionContext ac)
         {
 
         }
 
         [Ui("禁用", 2)]
-        public void disable(WebActionContext ac)
+        public void disable(ActionContext ac)
         {
 
         }
 
         [Ui("启用", 2)]
-        public void enable(WebActionContext ac)
+        public void enable(ActionContext ac)
         {
 
         }
 
         [Ui("分布报告", 2)]
-        public void rpt(WebActionContext ac)
+        public void rpt(ActionContext ac)
         {
 
         }

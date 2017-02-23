@@ -6,9 +6,9 @@ namespace Greatbone.Sample
     ///
     /// /shop/-shopid-/
     ///
-    public class ShopVarFolder : WebFolder, IVar
+    public class ShopVarFolder : Folder, IVar
     {
-        public ShopVarFolder(WebFolderContext dc) : base(dc)
+        public ShopVarFolder(FolderContext dc) : base(dc)
         {
             Create<OrderFolder>("orderi"); // order inbox
 
@@ -20,7 +20,7 @@ namespace Greatbone.Sample
         }
 
 
-        public void @default(WebActionContext ac)
+        public void @default(ActionContext ac)
         {
             ac.ReplyFolderPage(200, (List<Item>)null);
         }
@@ -32,7 +32,7 @@ namespace Greatbone.Sample
         /// GET /-shopid-/items
         /// </code>
         ///
-        public void items(WebActionContext ac)
+        public void items(ActionContext ac)
         {
             string shopid = ac[0];
 
@@ -55,16 +55,16 @@ namespace Greatbone.Sample
         //
 
         [Shop]
-        public void remenu(WebActionContext ac)
+        public void remenu(ActionContext ac)
         {
         }
 
 
-        public void basket(WebActionContext ac)
+        public void basket(ActionContext ac)
         {
         }
 
-        public void invoice(WebActionContext ac)
+        public void invoice(ActionContext ac)
         {
         }
     }

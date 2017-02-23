@@ -27,11 +27,11 @@ namespace Greatbone.Sample
                 queue = false
             };
 
-            List<WebService> svclst = new List<WebService>(4);
+            List<Service> svclst = new List<Service>(4);
 
-            WebServiceContext sc;
+            ServiceContext sc;
 
-            sc = new WebServiceContext("op")
+            sc = new ServiceContext("op")
             {
                 addresses = "http://localhost:8080",
                 auth = auth,
@@ -48,7 +48,7 @@ namespace Greatbone.Sample
             // string tree = svclst[0].Describe();
             // Debug.WriteLine(tree);
 
-            sc = new WebServiceContext("comm")
+            sc = new ServiceContext("comm")
             {
                 addresses = "http://localhost:8081",
                 auth = auth,
@@ -63,7 +63,7 @@ namespace Greatbone.Sample
                 svclst.Add(new CommService(sc));
             }
 
-            WebService.Run(svclst);
+            Service.Run(svclst);
         }
     }
 }

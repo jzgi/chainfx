@@ -8,10 +8,10 @@ namespace Greatbone.Core
     [AttributeUsage(AttributeTargets.Class | AttributeTargets.Method, Inherited = false)]
     public abstract class FilterAttribute : Attribute
     {
-        public WebNodule Nodule { get; internal set; }
+        public Nodule Nodule { get; internal set; }
 
-        public abstract void Before(WebActionContext ac);
+        public abstract void Before(ActionContext ac);
 
-        public abstract void After(WebActionContext ac);
+        public abstract void After(ActionContext ac);
     }
 }

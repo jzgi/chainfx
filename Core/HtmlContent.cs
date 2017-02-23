@@ -131,7 +131,7 @@ namespace Greatbone.Core
         {
         }
 
-        public void FORM(WebAction actn, Action<HtmlContent> inner)
+        public void FORM(ActionInfo actn, Action<HtmlContent> inner)
         {
             Add("<form class=\"pure-form pure-g\">");
 
@@ -140,7 +140,7 @@ namespace Greatbone.Core
             Add("</form>");
         }
 
-        public void FORM(WebAction actn, IData obj, int proj = 0)
+        public void FORM(ActionInfo actn, IData obj, int proj = 0)
         {
             Add("<form class=\"pure-form pure-g\">");
 
@@ -150,7 +150,7 @@ namespace Greatbone.Core
             Add("</form>");
         }
 
-        public void GRID<D>(List<WebAction> actns, List<D> lst, int proj = 0) where D : IData
+        public void GRID<D>(List<ActionInfo> actns, List<D> lst, int proj = 0) where D : IData
         {
             Add("<form>");
 
@@ -198,7 +198,7 @@ namespace Greatbone.Core
             Add("</form>");
         }
 
-        public void GRID(List<WebAction> actns, IDataInput input, Action<IDataInput, HtmlContent> valve)
+        public void GRID(List<ActionInfo> actns, IDataInput input, Action<IDataInput, HtmlContent> valve)
         {
             Add("<form>");
 
@@ -664,7 +664,7 @@ namespace Greatbone.Core
             Add("</label>");
         }
 
-        public void BUTTON(WebAction actn)
+        public void BUTTON(ActionInfo actn)
         {
             Add("<button class=\"button primary\"");
             Add(" formaction=\""); Add(actn.Name); Add("\" formmethod=\"post\"");
@@ -697,11 +697,11 @@ namespace Greatbone.Core
             Add("</button>");
         }
 
-        public void BUTTONS(List<WebAction> actns)
+        public void BUTTONS(List<ActionInfo> actns)
         {
             for (int i = 0; i < actns.Count; i++)
             {
-                WebAction act = actns[i];
+                ActionInfo act = actns[i];
                 BUTTON(act);
             }
         }

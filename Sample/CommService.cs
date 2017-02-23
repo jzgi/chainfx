@@ -5,14 +5,14 @@ namespace Greatbone.Sample
 {
     public class CommService : AbstService
     {
-        readonly WebClient WeiXin = new WebClient("weixin", "https://api.weixin.qq.com");
+        readonly Client WeiXin = new Client("weixin", "https://api.weixin.qq.com");
 
         // the timer for triggering periodically obtaining access_token from weixin
         readonly Timer timer;
 
         volatile string access_token;
 
-        public CommService(WebServiceContext sc) : base(sc)
+        public CommService(ServiceContext sc) : base(sc)
         {
             // add sub folder
             CreateVar<CommVarFolder>();

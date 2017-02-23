@@ -6,14 +6,14 @@ namespace Greatbone.Sample
 {
     ///
     ///
-    public class ItemFolder : WebFolder
+    public class ItemFolder : Folder
     {
-        public ItemFolder(WebFolderContext fc) : base(fc)
+        public ItemFolder(FolderContext fc) : base(fc)
         {
             CreateVar<ItemVarFolder>();
         }
 
-        public void lst(WebActionContext ac)
+        public void lst(ActionContext ac)
         {
             string shopid = ac[1];
             using (var dc = ac.NewDbContext())
@@ -31,7 +31,7 @@ namespace Greatbone.Sample
 
 
         // [Shop]
-        public void @default(WebActionContext ac)
+        public void @default(ActionContext ac)
         {
             string shopid = ac[1];
             using (var dc = ac.NewDbContext())
@@ -49,7 +49,7 @@ namespace Greatbone.Sample
 
         // [Shop]
         [Ui("新建", 3)]
-        public async Task @new(WebActionContext ac)
+        public async Task @new(ActionContext ac)
         {
             if (ac.GET)
             {
@@ -75,7 +75,7 @@ namespace Greatbone.Sample
         }
 
         [Shop]
-        public void _cat_(WebActionContext ac)
+        public void _cat_(ActionContext ac)
         {
             string shopid = ac[1];
             using (var dc = ac.NewDbContext())
@@ -94,7 +94,7 @@ namespace Greatbone.Sample
 
         [Shop]
         [Ui]
-        public void toggle(WebActionContext ac)
+        public void toggle(ActionContext ac)
         {
             string shopid = ac[1];
             using (var dc = ac.NewDbContext())
@@ -107,7 +107,7 @@ namespace Greatbone.Sample
 
         [Shop]
         [Ui]
-        public async Task modify(WebActionContext ac)
+        public async Task modify(ActionContext ac)
         {
             string shopid = ac[1];
 

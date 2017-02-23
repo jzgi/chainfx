@@ -5,18 +5,18 @@ using System.Threading;
 namespace Greatbone.Core
 {
     /// 
-    /// A response cache in service.
+    /// A response cache for polling of events in a service.
     /// 
-    public class WebCache
+    public class EventQueue : IRollable
     {
         // keyed by target uri
-        readonly ConcurrentDictionary<string, Entry> entries;
+        readonly ConcurrentDictionary<string, Que> queues;
 
         Action<int>[] handlers;
 
-        internal WebCache(int concurrency, int capcity)
+        internal EventQueue(int concurrency, int capcity)
         {
-            entries = new ConcurrentDictionary<string, Entry>(concurrency, capcity);
+            queues = new ConcurrentDictionary<string, Que>(concurrency, capcity);
             handlers = new Action<int>[8];
         }
 
@@ -27,9 +27,11 @@ namespace Greatbone.Core
 
         public void Add(string target, int seconds, IContent content)
         {
-            Entry e = new Entry(seconds, content, Environment.TickCount);
-            entries.AddOrUpdate(target, e, (k, v) => e.Merge(v));
+            Que e = new Que(seconds, content, Environment.TickCount);
+            queues.AddOrUpdate(target, e, (k, v) => e.Merge(v));
         }
+
+        public string Name=>null;
 
         public void Remove(string target)
         {
@@ -46,15 +48,15 @@ namespace Greatbone.Core
             int now = Environment.TickCount;
 
             // a single loop to clean up expired items
-            using (var enm = entries.GetEnumerator())
+            using (var enm = queues.GetEnumerator())
             {
                 while (enm.MoveNext())
                 {
-                    Entry e = enm.Current.Value;
+                    Que e = enm.Current.Value;
                     if (e.IfExpired(now))
                     {
-                        Entry old;
-                        entries.TryRemove(enm.Current.Key, out old);
+                        Que old;
+                        queues.TryRemove(enm.Current.Key, out old);
                     }
                 }
             }
@@ -62,8 +64,8 @@ namespace Greatbone.Core
 
         internal bool TryGetContent(string target, out IContent v)
         {
-            Entry e;
-            if (entries.TryGetValue(target, out e))
+            Que e;
+            if (queues.TryGetValue(target, out e))
             {
                 e.Increment();
                 v = e.content;
@@ -73,7 +75,7 @@ namespace Greatbone.Core
             return false;
         }
 
-        class Entry
+        class Que
         {
             // ticks of expiration
             int expiry;
@@ -85,7 +87,7 @@ namespace Greatbone.Core
 
             int hits;
 
-            internal Entry(int expiry, IContent content, int ticks)
+            internal Que(int expiry, IContent content, int ticks)
             {
                 this.expiry = expiry;
                 this.content = content;
@@ -104,7 +106,7 @@ namespace Greatbone.Core
                 return (ticks + expiry * 60000) < now;
             }
 
-            internal Entry Merge(Entry e)
+            internal Que Merge(Que e)
             {
                 expiry = e.expiry;
                 hits += e.hits;

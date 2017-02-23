@@ -12,7 +12,7 @@ namespace Greatbone.Core
     ///
     public class DbContext : IDataInput, IDisposable
     {
-        readonly WebServiceContext servicectx;
+        readonly ServiceContext servicectx;
 
         readonly IHandlerContext<IHandler> handlectx;
 
@@ -33,11 +33,11 @@ namespace Greatbone.Core
 
         bool disposed;
 
-        internal DbContext(WebServiceContext servicectx) : this(servicectx, null)
+        internal DbContext(ServiceContext servicectx) : this(servicectx, null)
         {
         }
 
-        internal DbContext(WebServiceContext servicectx, IHandlerContext<IHandler> handlectx)
+        internal DbContext(ServiceContext servicectx, IHandlerContext<IHandler> handlectx)
         {
             this.servicectx = servicectx;
             this.handlectx = handlectx;

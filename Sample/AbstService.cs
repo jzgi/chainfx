@@ -2,16 +2,16 @@ using Greatbone.Core;
 
 namespace Greatbone.Sample
 {
-    public abstract class AbstService : WebService<Token>
+    public abstract class AbstService : Service<Token>
     {
         internal readonly Admin[] admins;
 
-        public AbstService(WebServiceContext sc) : base(sc)
+        public AbstService(ServiceContext sc) : base(sc)
         {
             admins = JsonUtility.FileToArray<Admin>(sc.GetFilePath("$admins.json"));
         }
 
-        protected override void Challenge(WebActionContext ac)
+        protected override void Challenge(ActionContext ac)
         {
             string ua = ac.Header("User-Agent");
             if (ua != null && ua.Contains("MicroMessenger")) // weixin

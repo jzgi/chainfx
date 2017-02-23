@@ -7,29 +7,29 @@ namespace Greatbone.Core
     ///
     /// The descriptor for an action method.
     ///
-    public class WebAction : WebNodule, IHandler
+    public class ActionInfo : Nodule, IHandler
     {
-        readonly WebFolder folder;
+        readonly Folder folder;
 
         readonly bool async;
 
         readonly bool arg;
 
         // void action(WebActionContext)
-        readonly Action<WebActionContext> @do;
+        readonly Action<ActionContext> @do;
 
         // async Task action(WebActionContext)
-        readonly Func<WebActionContext, Task> doasync;
+        readonly Func<ActionContext, Task> doasync;
 
         // void action(WebActionContext, string)
-        readonly Action<WebActionContext, string> do2;
+        readonly Action<ActionContext, string> do2;
 
         // async Task action(WebActionContext, string)
-        readonly Func<WebActionContext, string, Task> do2async;
+        readonly Func<ActionContext, string, Task> do2async;
 
         readonly StateAttribute state;
 
-        internal WebAction(WebFolder folder, MethodInfo mi, bool async, bool arg) : base(mi.Name, mi)
+        internal ActionInfo(Folder folder, MethodInfo mi, bool async, bool arg) : base(mi.Name, mi)
         {
             this.folder = folder;
             this.async = async;
@@ -39,22 +39,22 @@ namespace Greatbone.Core
             {
                 if (arg)
                 {
-                    do2async = (Func<WebActionContext, string, Task>)mi.CreateDelegate(typeof(Func<WebActionContext, string, Task>), folder);
+                    do2async = (Func<ActionContext, string, Task>)mi.CreateDelegate(typeof(Func<ActionContext, string, Task>), folder);
                 }
                 else
                 {
-                    doasync = (Func<WebActionContext, Task>)mi.CreateDelegate(typeof(Func<WebActionContext, Task>), folder);
+                    doasync = (Func<ActionContext, Task>)mi.CreateDelegate(typeof(Func<ActionContext, Task>), folder);
                 }
             }
             else
             {
                 if (arg)
                 {
-                    do2 = (Action<WebActionContext, string>)mi.CreateDelegate(typeof(Action<WebActionContext, string>), folder);
+                    do2 = (Action<ActionContext, string>)mi.CreateDelegate(typeof(Action<ActionContext, string>), folder);
                 }
                 else
                 {
-                    @do = (Action<WebActionContext>)mi.CreateDelegate(typeof(Action<WebActionContext>), folder);
+                    @do = (Action<ActionContext>)mi.CreateDelegate(typeof(Action<ActionContext>), folder);
                 }
             }
 
@@ -66,17 +66,17 @@ namespace Greatbone.Core
             }
         }
 
-        public WebFolder Folder => folder;
+        public Folder Folder => folder;
 
         public bool IsAsync => async;
 
         public bool HasArg => arg;
 
-        public override WebService Service => folder.Service;
+        public override Service Service => folder.Service;
 
         public StateAttribute State => state;
 
-        internal void Do(WebActionContext ac, String arg)
+        internal void Do(ActionContext ac, String arg)
         {
             ac.Handler = this;
             // pre-
@@ -97,7 +97,7 @@ namespace Greatbone.Core
             ac.Handler = null;
         }
 
-        internal async Task DoAsync(WebActionContext ac, string arg)
+        internal async Task DoAsync(ActionContext ac, string arg)
         {
             ac.Handler = this;
             // pre-

@@ -38,14 +38,14 @@ namespace Greatbone.Core
             EventContext = null;
         }
 
-        public WebEventContext EventContext { get; internal set; }
+        public EventContext EventContext { get; internal set; }
 
         public Form Parse()
         {
             return Parse(null);
         }
 
-        public Form Parse(Action<WebEventContext> handler)
+        public Form Parse(Action<EventContext> handler)
         {
             // locality for performance
             byte[] bound = this.bound;

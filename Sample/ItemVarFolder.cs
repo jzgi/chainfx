@@ -5,15 +5,15 @@ namespace Greatbone.Sample
     ///
     /// /shop/-id-/item/-id-/
     ///
-    public class ItemVarFolder : WebFolder, IVar
+    public class ItemVarFolder : Folder, IVar
     {
-        public ItemVarFolder(WebFolderContext fc) : base(fc)
+        public ItemVarFolder(FolderContext fc) : base(fc)
         {
         }
 
         #region /shop/-id-/item/-id-/
 
-        public void my(WebActionContext ac)
+        public void my(ActionContext ac)
         {
 
         }
@@ -23,7 +23,7 @@ namespace Greatbone.Sample
         #region /shop/-id-/order/-id-/
 
         [Shop]
-        public void @default(WebActionContext ac)
+        public void @default(ActionContext ac)
         {
             string shopid = ac[0];
             int id = ac[this];
@@ -42,11 +42,11 @@ namespace Greatbone.Sample
             }
         }
 
-        public void pend(WebActionContext ac)
+        public void pend(ActionContext ac)
         {
         }
 
-        public void cannel(WebActionContext ac)
+        public void cannel(ActionContext ac)
         {
             string shopid = ac[0];
             int orderid = ac[this];

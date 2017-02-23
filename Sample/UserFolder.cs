@@ -5,9 +5,9 @@ namespace Greatbone.Sample
     ///
     /// /user/
     ///
-    public class UserFolder : WebFolder
+    public class UserFolder : Folder
     {
-        public UserFolder(WebFolderContext fc) : base(fc)
+        public UserFolder(FolderContext fc) : base(fc)
         {
             CreateVar<UserVarFolder>();
         }
@@ -16,13 +16,13 @@ namespace Greatbone.Sample
 
         /// search for a user by name.
         ///
-        public void srch(WebActionContext ac)
+        public void srch(ActionContext ac)
         {
         }
 
         /// aggregate users information.
         ///
-        public void aggr(WebActionContext ac)
+        public void aggr(ActionContext ac)
         {
         }
 

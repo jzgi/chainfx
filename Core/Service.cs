@@ -22,7 +22,7 @@ namespace Greatbone.Core
     ///
     /// A service work implements a microservice.
     ///
-    public abstract class WebService : WebFolder, IHttpApplication<HttpContext>, ILoggerProvider, ILogger
+    public abstract class Service : Folder, IHttpApplication<HttpContext>, ILoggerProvider, ILogger
     {
         // the service instance id
         readonly string moniker;
@@ -31,18 +31,21 @@ namespace Greatbone.Core
         readonly KestrelServer server;
 
         // client connectivity to the related peers
-        readonly Roll<WebClient> cluster;
+        readonly Roll<Client> cluster;
 
-        // event hooks
-        readonly Roll<WebEvent> events;
+        // event consumption
+        readonly Roll<EventInfo> events;
 
-        readonly WebCache cache;
+        readonly ResponseCache cache;
+
+        // event providing
+        readonly Roll<EventQueue> queues;
 
         Thread scheduler;
 
         Thread cleaner;
 
-        protected WebService(WebServiceContext sc) : base(sc)
+        protected Service(ServiceContext sc) : base(sc)
         {
             // adjust configuration
             sc.Service = this;
@@ -65,7 +68,7 @@ namespace Greatbone.Core
             ICollection<string> addrs = server.Features.Get<IServerAddressesFeature>().Addresses;
             if (string.IsNullOrEmpty(sc.addresses))
             {
-                throw new WebServiceException("missing 'addresses'");
+                throw new ServiceException("missing 'addresses'");
             }
             foreach (string a in sc.addresses.Split(',', ';'))
             {
@@ -84,20 +87,20 @@ namespace Greatbone.Core
                 else continue;
 
                 ParameterInfo[] pis = mi.GetParameters();
-                WebEvent evt;
-                if (pis.Length == 1 && pis[0].ParameterType == typeof(WebEventContext))
+                EventInfo evt;
+                if (pis.Length == 1 && pis[0].ParameterType == typeof(EventContext))
                 {
-                    evt = new WebEvent(this, mi, async, false);
+                    evt = new EventInfo(this, mi, async, false);
                 }
-                else if (pis.Length == 2 && pis[0].ParameterType == typeof(WebEventContext) && pis[1].ParameterType == typeof(string))
+                else if (pis.Length == 2 && pis[0].ParameterType == typeof(EventContext) && pis[1].ParameterType == typeof(string))
                 {
-                    evt = new WebEvent(this, mi, async, true);
+                    evt = new EventInfo(this, mi, async, true);
                 }
                 else continue;
 
                 if (events == null)
                 {
-                    events = new Roll<WebEvent>(16);
+                    events = new Roll<EventInfo>(16);
                 }
                 events.Add(evt);
             }
@@ -110,21 +113,21 @@ namespace Greatbone.Core
                 {
                     if (cluster == null)
                     {
-                        cluster = new Roll<WebClient>(mems.Count * 2);
+                        cluster = new Roll<Client>(mems.Count * 2);
                     }
-                    cluster.Add(new WebClient(e.Key, e.Value));
+                    cluster.Add(new Client(e.Key, e.Value));
                 }
             }
 
             // initialize response cache
-            cache = new WebCache(Environment.ProcessorCount * 2, 4096);
+            cache = new ResponseCache(Environment.ProcessorCount * 2, 4096);
 
             // create database structures for event queue
             if (Context.db.queue)
             {
                 using (var dc = Service.NewDbContext())
                 {
-                    WebEventsUtility.CreateEq(dc);
+                    EventsUtility.CreateEq(dc);
                 }
             }
 
@@ -142,13 +145,13 @@ namespace Greatbone.Core
         ///
         public string Moniker => moniker;
 
-        public Roll<WebEvent> Events => events;
+        public Roll<EventInfo> Events => events;
 
-        public Roll<WebClient> Cluster => cluster;
+        public Roll<Client> Cluster => cluster;
 
-        public new WebServiceContext Context => (WebServiceContext)context;
+        public new ServiceContext Context => (ServiceContext)context;
 
-        internal WebCache Cache => cache;
+        internal ResponseCache Cache => cache;
 
         public virtual void OnStart()
         {
@@ -161,9 +164,9 @@ namespace Greatbone.Core
         //
         // authentication
         //
-        protected virtual void Authenticate(WebActionContext ac) { }
+        protected virtual void Authenticate(ActionContext ac) { }
 
-        protected virtual void Challenge(WebActionContext ac) { }
+        protected virtual void Challenge(ActionContext ac) { }
 
 
         ///  
@@ -171,7 +174,7 @@ namespace Greatbone.Core
         /// 
         public HttpContext CreateContext(IFeatureCollection features)
         {
-            return new WebActionContext(features)
+            return new ActionContext(features)
             {
                 ServiceContext = Context
             };
@@ -183,7 +186,7 @@ namespace Greatbone.Core
         /// 
         public async Task ProcessRequestAsync(HttpContext context)
         {
-            WebActionContext ac = (WebActionContext)context;
+            ActionContext ac = (ActionContext)context;
             HttpRequest req = ac.Request;
             string path = req.Path.Value;
 
@@ -208,7 +211,7 @@ namespace Greatbone.Core
                 else // handle a regular request
                 {
                     string relative = path.Substring(1);
-                    WebFolder folder = ResolveFolder(ref relative, ac);
+                    Folder folder = ResolveFolder(ref relative, ac);
                     if (folder == null)
                     {
                         ac.Reply(404); // not found
@@ -223,7 +226,7 @@ namespace Greatbone.Core
                 {
                     ac.Reply(400, e.Message); // bad request
                 }
-                else if (e is WebAccessException)
+                else if (e is AccessException)
                 {
                     if (ac.Token == null) { Challenge(ac); }
                     else
@@ -253,7 +256,7 @@ namespace Greatbone.Core
         public void DisposeContext(HttpContext context, Exception exception)
         {
             // dispose the action context
-            ((WebActionContext)context).Dispose();
+            ((ActionContext)context).Dispose();
         }
 
 
@@ -271,11 +274,11 @@ namespace Greatbone.Core
         // CLUSTER
         //
 
-        internal WebClient GetClient(string svcid)
+        internal Client GetClient(string svcid)
         {
             for (int i = 0; i < cluster.Count; i++)
             {
-                WebClient cli = cluster[i];
+                Client cli = cluster[i];
                 if (cli.Name.Equals(svcid)) return cli;
             }
             return null;
@@ -314,7 +317,7 @@ namespace Greatbone.Core
                 int tick = Environment.TickCount;
                 for (int i = 0; i < Cluster.Count; i++)
                 {
-                    WebClient client = Cluster[i];
+                    Client client = Cluster[i];
                     client.ToPoll(tick);
                 }
             }
@@ -403,13 +406,13 @@ namespace Greatbone.Core
         ///
         /// STATIC
         ///
-        static readonly WebLifetime Lifetime = new WebLifetime();
+        static readonly ApplicationLifetime Lifetime = new ApplicationLifetime();
 
 
         /// 
         /// Runs a number of web services and block until shutdown.
         /// 
-        public static void Run(IEnumerable<WebService> services)
+        public static void Run(IEnumerable<Service> services)
         {
             using (var cts = new CancellationTokenSource())
             {
@@ -422,8 +425,8 @@ namespace Greatbone.Core
                 };
 
                 // start services
-                var svcs = services as WebService[] ?? services.ToArray();
-                foreach (WebService svc in svcs)
+                var svcs = services as Service[] ?? services.ToArray();
+                foreach (Service svc in svcs)
                 {
                     svc.Start();
                 }
@@ -434,7 +437,7 @@ namespace Greatbone.Core
                     {
                         ((IApplicationLifetime)state).StopApplication();
                         // dispose services
-                        foreach (WebService svc in svcs)
+                        foreach (Service svc in svcs)
                         {
                             svc.OnStop();
 
@@ -449,13 +452,13 @@ namespace Greatbone.Core
     }
 
     ///
-    /// A web service that implements authentication and authorization.
+    /// A microservice that implements authentication and authorization.
     ///
-    public abstract class WebService<TToken> : WebService where TToken : IData, new()
+    public abstract class Service<TToken> : Service where TToken : IData, new()
     {
-        protected WebService(WebServiceContext sc) : base(sc) { }
+        protected Service(ServiceContext sc) : base(sc) { }
 
-        protected override void Authenticate(WebActionContext ac)
+        protected override void Authenticate(ActionContext ac)
         {
             string tokstr;
             string hv = ac.Header("Authorization");
@@ -472,7 +475,7 @@ namespace Greatbone.Core
             }
         }
 
-        protected override void Challenge(WebActionContext ac)
+        protected override void Challenge(ActionContext ac)
         {
             string ua = ac.Header("User-Agent");
             if (ua.Contains("Mozila")) // browser

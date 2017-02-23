@@ -3,15 +3,15 @@
 namespace Greatbone.Core
 {
     ///
-    /// A resolved variable part or segment in the URI path.
+    /// A resolved part or segment in the URI path.
     ///
-    public struct WebSeg
+    public struct Segment
     {
         readonly string key;
 
-        readonly WebFolder folder;
+        readonly Folder folder;
 
-        internal WebSeg(string key, WebFolder folder)
+        internal Segment(string key, Folder folder)
         {
             this.key = key;
             this.folder = folder;
@@ -21,7 +21,7 @@ namespace Greatbone.Core
 
         public Type Type => folder?.GetType();
 
-        public WebFolder Folder => folder;
+        public Folder Folder => folder;
 
         public bool IsVar => folder is IVar;
 
@@ -29,7 +29,7 @@ namespace Greatbone.Core
         // CONVERSION
         //
 
-        public static implicit operator bool(WebSeg v)
+        public static implicit operator bool(Segment v)
         {
             string str = v.key;
             if (!string.IsNullOrEmpty(str))
@@ -39,7 +39,7 @@ namespace Greatbone.Core
             return false;
         }
 
-        public static implicit operator short(WebSeg v)
+        public static implicit operator short(Segment v)
         {
             string str = v.key;
             if (!string.IsNullOrEmpty(str))
@@ -53,7 +53,7 @@ namespace Greatbone.Core
             return 0;
         }
 
-        public static implicit operator int(WebSeg v)
+        public static implicit operator int(Segment v)
         {
             string str = v.key;
             if (!string.IsNullOrEmpty(str))
@@ -67,7 +67,7 @@ namespace Greatbone.Core
             return 0;
         }
 
-        public static implicit operator long(WebSeg v)
+        public static implicit operator long(Segment v)
         {
             string str = v.key;
             if (!string.IsNullOrEmpty(str))
@@ -81,7 +81,7 @@ namespace Greatbone.Core
             return 0;
         }
 
-        public static implicit operator decimal(WebSeg v)
+        public static implicit operator decimal(Segment v)
         {
             string str = v.key;
             if (!string.IsNullOrEmpty(str))
@@ -95,18 +95,18 @@ namespace Greatbone.Core
             return 0;
         }
 
-        public static implicit operator DateTime(WebSeg v)
+        public static implicit operator DateTime(Segment v)
         {
             return default(DateTime);
         }
 
-        public static implicit operator char[] (WebSeg v)
+        public static implicit operator char[] (Segment v)
         {
             string str = v.key;
             return str?.ToCharArray();
         }
 
-        public static implicit operator string(WebSeg v)
+        public static implicit operator string(Segment v)
         {
             return v.key;
         }

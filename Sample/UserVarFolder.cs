@@ -7,11 +7,11 @@ namespace Greatbone.Sample
 {
     ///
     ///
-    public class UserVarFolder : WebFolder, IVar
+    public class UserVarFolder : Folder, IVar
     {
         readonly ConcurrentDictionary<string, List<OrderLine>> carts;
 
-        public UserVarFolder(WebFolderContext dc) : base(dc)
+        public UserVarFolder(FolderContext dc) : base(dc)
         {
             Create<OrderFolder>("order");
 
@@ -23,7 +23,7 @@ namespace Greatbone.Sample
         ///
         /// shopid=_id_&amp;item=_item_&amp;qty=_n_
         ///
-        public async Task cart(WebActionContext ac)
+        public async Task cart(ActionContext ac)
         {
             string wx = ac[0];
             var ln = await ac.ReadObjectAsync<OrderLine>();
@@ -76,7 +76,7 @@ namespace Greatbone.Sample
         ///
         /// shopid=_id_&amp;item=_item_&amp;qty=_n_
         ///
-        public void empty(WebActionContext ac)
+        public void empty(ActionContext ac)
         {
             string wx = ac[0];
 
@@ -99,7 +99,7 @@ namespace Greatbone.Sample
         ///
         /// POST /buyer/-wx-/checkout
         ///
-        public void checkout(WebActionContext ac)
+        public void checkout(ActionContext ac)
         {
             string wx = ac[0];
 
@@ -149,7 +149,7 @@ namespace Greatbone.Sample
         ///
         /// GET /buyer/-wx-/my
         ///
-        public void my(WebActionContext ac)
+        public void my(ActionContext ac)
         {
             string wx = ac[0];
 

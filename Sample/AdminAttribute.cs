@@ -2,9 +2,9 @@
 
 namespace Greatbone.Sample
 {
-    public class AdminAttribute : RoleAttribute
+    public class AdminAttribute : AccessAttribute
     {
-        public override bool Check(WebActionContext wc)
+        public override bool Check(ActionContext wc)
         {
             return ((Token)wc.Token).IsAdmin;
         }

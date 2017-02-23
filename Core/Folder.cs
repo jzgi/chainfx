@@ -8,9 +8,9 @@ using Microsoft.Extensions.Logging;
 namespace Greatbone.Core
 {
     ///
-    /// A web folder realizes a virtual folder containing static/dynamic resources.
+    /// A virtual web folder that contains static/dynamic resources.
     ///
-    public abstract class WebFolder : WebNodule
+    public abstract class Folder : Nodule
     {
         // max nesting levels
         const int Nesting = 4;
@@ -19,26 +19,26 @@ namespace Greatbone.Core
         const string _VAR_ = "VAR";
 
         // state-passing
-        internal readonly WebFolderContext context;
+        internal readonly FolderContext context;
 
         // declared actions 
-        readonly Roll<WebAction> actions;
+        readonly Roll<ActionInfo> actions;
 
         // the default action
-        readonly WebAction defaction;
+        readonly ActionInfo defaction;
 
         // sub folders, if any
-        internal Roll<WebFolder> subs;
+        internal Roll<Folder> subs;
 
         // the varied folder, if any
-        internal WebFolder varsub;
+        internal Folder varsub;
 
-        protected WebFolder(WebFolderContext fc) : base(fc.Name, null)
+        protected Folder(FolderContext fc) : base(fc.Name, null)
         {
             this.context = fc;
 
             // init actions
-            actions = new Roll<WebAction>(32);
+            actions = new Roll<ActionInfo>(32);
             Type typ = GetType();
             foreach (MethodInfo mi in typ.GetMethods(BindingFlags.Public | BindingFlags.Instance))
             {
@@ -50,14 +50,14 @@ namespace Greatbone.Core
                 else continue;
 
                 ParameterInfo[] pis = mi.GetParameters();
-                WebAction atn = null;
-                if (pis.Length == 1 && pis[0].ParameterType == typeof(WebActionContext))
+                ActionInfo atn = null;
+                if (pis.Length == 1 && pis[0].ParameterType == typeof(ActionContext))
                 {
-                    atn = new WebAction(this, mi, async, false);
+                    atn = new ActionInfo(this, mi, async, false);
                 }
-                else if (pis.Length == 2 && pis[0].ParameterType == typeof(WebActionContext) && pis[1].ParameterType == typeof(string))
+                else if (pis.Length == 2 && pis[0].ParameterType == typeof(ActionContext) && pis[1].ParameterType == typeof(string))
                 {
-                    atn = new WebAction(this, mi, async, true);
+                    atn = new ActionInfo(this, mi, async, true);
                 }
                 else continue;
 
@@ -82,25 +82,25 @@ namespace Greatbone.Core
         ///
         /// Create a subfolder.
         ///
-        public F Create<F>(string key, RoleAttribute[] roles = null, UiAttribute ui = null) where F : WebFolder
+        public F Create<F>(string key, AccessAttribute[] roles = null, UiAttribute ui = null) where F : Folder
         {
             if (Level >= Nesting)
             {
-                throw new WebServiceException("folder nesting more than " + Nesting);
+                throw new ServiceException("folder nesting more than " + Nesting);
             }
 
             if (subs == null)
             {
-                subs = new Roll<WebFolder>(32);
+                subs = new Roll<Folder>(32);
             }
             // create instance by reflection
             Type typ = typeof(F);
-            ConstructorInfo ci = typ.GetConstructor(new[] { typeof(WebFolderContext) });
+            ConstructorInfo ci = typ.GetConstructor(new[] { typeof(FolderContext) });
             if (ci == null)
             {
-                throw new WebServiceException(typ + " missing WebFolderContext");
+                throw new ServiceException(typ + " missing WebFolderContext");
             }
-            WebFolderContext ctx = new WebFolderContext
+            FolderContext ctx = new FolderContext
             {
                 name = key,
                 Roles = roles,
@@ -120,21 +120,21 @@ namespace Greatbone.Core
         ///
         /// Create a variable-key subfolder.
         ///
-        public F CreateVar<F>(RoleAttribute[] roles = null) where F : WebFolder, IVar
+        public F CreateVar<F>(AccessAttribute[] roles = null) where F : Folder, IVar
         {
             if (Level >= Nesting)
             {
-                throw new WebServiceException("nesting levels");
+                throw new ServiceException("nesting levels");
             }
 
             // create instance
             Type typ = typeof(F);
-            ConstructorInfo ci = typ.GetConstructor(new[] { typeof(WebFolderContext) });
+            ConstructorInfo ci = typ.GetConstructor(new[] { typeof(FolderContext) });
             if (ci == null)
             {
-                throw new WebServiceException(typ + " missing WebFolderContext");
+                throw new ServiceException(typ + " missing WebFolderContext");
             }
-            WebFolderContext ctx = new WebFolderContext
+            FolderContext ctx = new FolderContext
             {
                 name = _VAR_,
                 Roles = roles,
@@ -150,23 +150,23 @@ namespace Greatbone.Core
             return folder;
         }
 
-        public Roll<WebAction> Actions => actions;
+        public Roll<ActionInfo> Actions => actions;
 
-        public Roll<WebFolder> Subs => subs;
+        public Roll<Folder> Subs => subs;
 
-        public WebFolder VarSub => varsub;
+        public Folder VarSub => varsub;
 
-        public WebFolderContext Context => context;
+        public FolderContext Context => context;
 
         public bool IsVar => context.IsVar;
 
         public string Directory => context.Directory;
 
-        public WebFolder Parent => context.Parent;
+        public Folder Parent => context.Parent;
 
         public int Level => context.Level;
 
-        public override WebService Service => context.Service;
+        public override Service Service => context.Service;
 
 
         internal void Describe(XmlContent cont)
@@ -176,7 +176,7 @@ namespace Greatbone.Core
             {
                 for (int i = 0; i < Actions.Count; i++)
                 {
-                    WebAction action = Actions[i];
+                    ActionInfo action = Actions[i];
                     cont.Put(action.Name, "");
                 }
             },
@@ -186,7 +186,7 @@ namespace Greatbone.Core
                 {
                     for (int i = 0; i < subs.Count; i++)
                     {
-                        WebFolder child = subs[i];
+                        Folder child = subs[i];
                         child.Describe(cont);
                     }
                 }
@@ -200,7 +200,7 @@ namespace Greatbone.Core
 
         // public Roll<WebAction> Actions => actions;
 
-        public WebAction GetAction(string method)
+        public ActionInfo GetAction(string method)
         {
             if (string.IsNullOrEmpty(method))
             {
@@ -209,37 +209,37 @@ namespace Greatbone.Core
             return actions[method];
         }
 
-        public List<WebAction> GetModalActions(Type checktyp)
+        public List<ActionInfo> GetModalActions(Type checktyp)
         {
-            List<WebAction> lst = null;
+            List<ActionInfo> lst = null;
             for (int i = 0; i < actions.Count; i++)
             {
-                WebAction a = actions[i];
+                ActionInfo a = actions[i];
                 if (a.IsModal && a.HasRole(checktyp))
                 {
-                    if (lst == null) lst = new List<WebAction>();
+                    if (lst == null) lst = new List<ActionInfo>();
                     lst.Add(a);
                 }
             }
             return lst;
         }
 
-        public List<WebAction> GetModalActions(WebActionContext ac)
+        public List<ActionInfo> GetModalActions(ActionContext ac)
         {
-            List<WebAction> lst = null;
+            List<ActionInfo> lst = null;
             for (int i = 0; i < actions.Count; i++)
             {
-                WebAction a = actions[i];
+                ActionInfo a = actions[i];
                 if (a.IsModal && a.Check(ac))
                 {
-                    if (lst == null) lst = new List<WebAction>();
+                    if (lst == null) lst = new List<ActionInfo>();
                     lst.Add(a);
                 }
             }
             return lst;
         }
 
-        internal WebFolder ResolveFolder(ref string relative, WebActionContext ac)
+        internal Folder ResolveFolder(ref string relative, ActionContext ac)
         {
             // access check 
             if (!Check(ac)) throw AccessEx;
@@ -253,7 +253,7 @@ namespace Greatbone.Core
             // sub folder
             string key = relative.Substring(0, slash);
             relative = relative.Substring(slash + 1); // adjust relative
-            WebFolder sub;
+            Folder sub;
             if (subs != null && subs.TryGet(key, out sub)) // chiled
             {
                 ac.Chain(key, sub);
@@ -267,7 +267,7 @@ namespace Greatbone.Core
             return null;
         }
 
-        internal async Task HandleAsync(string rsc, WebActionContext ac)
+        internal async Task HandleAsync(string rsc, ActionContext ac)
         {
             ac.Folder = this;
 
@@ -291,7 +291,7 @@ namespace Greatbone.Core
                     name = rsc.Substring(0, dash);
                     arg = rsc.Substring(dash + 1);
                 }
-                WebAction actn = string.IsNullOrEmpty(name) ? defaction : GetAction(name);
+                ActionInfo actn = string.IsNullOrEmpty(name) ? defaction : GetAction(name);
                 if (actn == null)
                 {
                     ac.Reply(404); // not found
@@ -320,7 +320,7 @@ namespace Greatbone.Core
         }
 
 
-        void DoFile(string filename, string ext, WebActionContext ac)
+        void DoFile(string filename, string ext, ActionContext ac)
         {
             if (filename.StartsWith("$")) // private resource
             {

@@ -5,13 +5,13 @@ namespace Greatbone.Core
     ///
     /// The context for a particular node in the web folder hierarchy.
     ///
-    public class WebFolderContext
+    public class FolderContext
     {
         internal string name;
 
         public string Name => name;
 
-        public RoleAttribute[] Roles { get; internal set; }
+        public AccessAttribute[] Roles { get; internal set; }
 
         public UiAttribute Ui { get; internal set; }
 
@@ -19,11 +19,11 @@ namespace Greatbone.Core
 
         public int Level { get; internal set; }
 
-        public WebFolder Parent { get; internal set; }
+        public Folder Parent { get; internal set; }
 
         public virtual string Directory { get; internal set; }
 
-        public WebService Service { get; internal set; }
+        public Service Service { get; internal set; }
 
 
         public string GetFilePath(string file)

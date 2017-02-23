@@ -80,7 +80,7 @@ namespace Greatbone.Core
             return v;
         }
 
-        public static ArraySegment<byte> GetBytesSeg(this IDataInput inp, string name = null)
+        public static ArraySegment<byte> GetByteAs(this IDataInput inp, string name = null)
         {
             ArraySegment<byte> v;
             inp.Get(name, ref v);

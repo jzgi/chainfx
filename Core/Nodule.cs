@@ -7,22 +7,22 @@ namespace Greatbone.Core
     ///
     /// A certain node of resources along the URi path.
     ///
-    public abstract class WebNodule : IRollable
+    public abstract class Nodule : IRollable
     {
-        protected static readonly WebAccessException AccessEx = new WebAccessException();
+        protected static readonly AccessException AccessEx = new AccessException();
 
         // name as appeared in the uri path
         readonly string name;
 
         // access checks
-        internal RoleAttribute[] roles;
+        internal AccessAttribute[] roles;
 
         // filtering
         readonly FilterAttribute[] filters;
 
         internal UiAttribute ui;
 
-        internal WebNodule(string name, ICustomAttributeProvider attrs)
+        internal Nodule(string name, ICustomAttributeProvider attrs)
         {
             this.name = name;
 
@@ -33,12 +33,12 @@ namespace Greatbone.Core
             }
 
             // roles
-            List<RoleAttribute> rolelst = null;
-            foreach (var role in (RoleAttribute[])attrs.GetCustomAttributes(typeof(RoleAttribute), false))
+            List<AccessAttribute> rolelst = null;
+            foreach (var role in (AccessAttribute[])attrs.GetCustomAttributes(typeof(AccessAttribute), false))
             {
                 if (rolelst == null)
                 {
-                    rolelst = new List<RoleAttribute>(8);
+                    rolelst = new List<AccessAttribute>(8);
                 }
                 role.Nodule = this;
                 rolelst.Add(role);
@@ -66,7 +66,7 @@ namespace Greatbone.Core
             }
         }
 
-        public abstract WebService Service { get; }
+        public abstract Service Service { get; }
 
         public string Name => name;
 
@@ -88,7 +88,7 @@ namespace Greatbone.Core
 
         public bool IsModal => ui != null && ui.Modal > 0;
 
-        public bool Check(WebActionContext ac)
+        public bool Check(ActionContext ac)
         {
             if (roles != null)
             {
@@ -106,7 +106,7 @@ namespace Greatbone.Core
             return true;
         }
 
-        internal void DoBefore(WebActionContext ac)
+        internal void DoBefore(ActionContext ac)
         {
             if (filters == null) return;
 
@@ -116,7 +116,7 @@ namespace Greatbone.Core
             }
         }
 
-        internal void DoAfter(WebActionContext ac)
+        internal void DoAfter(ActionContext ac)
         {
             if (filters == null) return;
 

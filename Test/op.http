@@ -17,3 +17,11 @@ shopid=360001&item=全麦馒头&qty=30
 
 GET http://localhost:8080/shop/360001/item/lst
 
+
+### POLL EVENTS
+
+GET http://localhost:8080/*
+Shard: bj
+Range: 1
+
+

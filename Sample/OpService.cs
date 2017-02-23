@@ -9,12 +9,12 @@ namespace Greatbone.Sample
     ///
     public class OpService : AbstService
     {
-        static readonly WebClient WeiXin = new WebClient("wechat", "http://sh.api.weixin.qq.com");
+        static readonly Client WeiXin = new Client("wechat", "http://sh.api.weixin.qq.com");
 
-        static readonly WebClient WCPay = new WebClient("wcpay", "https://api.mch.weixin.qq.com");
+        static readonly Client WCPay = new Client("wcpay", "https://api.mch.weixin.qq.com");
 
 
-        public OpService(WebServiceContext sc) : base(sc)
+        public OpService(ServiceContext sc) : base(sc)
         {
             Create<ShopFolder>("shop");
 
@@ -23,8 +23,8 @@ namespace Greatbone.Sample
             Create<RepayFolder>("repay");
         }
 
-        [Role]
-        public void @default(WebActionContext ac)
+        [Access]
+        public void @default(ActionContext ac)
         {
             Token tok = (Token)ac.Token;
             if (tok.IsAdmin)
@@ -48,7 +48,7 @@ namespace Greatbone.Sample
 
         ///
         /// redirect_uri/?code=CODE&amp;state=STATE
-        public async Task wxsignon(WebActionContext ac)
+        public async Task wxsignon(ActionContext ac)
         {
             string code = ac.Query[nameof(code)];
             if (code == null)
@@ -82,7 +82,7 @@ namespace Greatbone.Sample
         }
 
 
-        public async Task paynotify(WebActionContext ac)
+        public async Task paynotify(ActionContext ac)
         {
             XElem xe = await ac.ReadAsync<XElem>();
             string mch_id = xe[nameof(mch_id)];
@@ -95,7 +95,7 @@ namespace Greatbone.Sample
         }
 
         [Ui("登录")]
-        public async Task signon(WebActionContext ac)
+        public async Task signon(ActionContext ac)
         {
             if (ac.GET) // return the login form
             {
@@ -158,6 +158,11 @@ namespace Greatbone.Sample
                 // error
                 ac.ReplyForm(200, login);
             }
+        }
+
+        public void ACCESS_TOKEN(EventContext ec)
+        {
+
         }
     }
 }

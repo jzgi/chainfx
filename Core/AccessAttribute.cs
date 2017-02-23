@@ -6,10 +6,10 @@ namespace Greatbone.Core
     /// An access check before the target construct is invoked.
     ///
     [AttributeUsage(AttributeTargets.Class | AttributeTargets.Method, Inherited = false)]
-    public class RoleAttribute : Attribute
+    public class AccessAttribute : Attribute
     {
-        public WebNodule Nodule { get; internal set; }
+        public Nodule Nodule { get; internal set; }
 
-        public virtual bool Check(WebActionContext ac) => true;
+        public virtual bool Check(ActionContext ac) => true;
     }
 }

@@ -6,13 +6,13 @@ namespace Greatbone.Sample
 {
     public static class WebActionContextUtility
     {
-        public static void ReplyRedirect(this WebActionContext ac, string uri, bool? pub = null, int maxage = 60)
+        public static void ReplyRedirect(this ActionContext ac, string uri, bool? pub = null, int maxage = 60)
         {
             ac.SetHeader("Location", string.IsNullOrEmpty(uri) ? "/" : uri);
             ac.Reply(303);
         }
 
-        public static void ReplyHtml(this WebActionContext ac, int status, Action<HtmlContent> header, Action<HtmlContent> main, Action<HtmlContent> footer, bool? pub = null, int maxage = 60)
+        public static void ReplyHtml(this ActionContext ac, int status, Action<HtmlContent> header, Action<HtmlContent> main, Action<HtmlContent> footer, bool? pub = null, int maxage = 60)
         {
             HtmlContent cont = new HtmlContent(true, true, 16 * 1024);
 
@@ -59,7 +59,7 @@ namespace Greatbone.Sample
             ac.Reply(status, cont, pub, maxage);
         }
 
-        public static void ReplySheet(this WebActionContext ac, int status, Action<HtmlContent> inner, bool? pub = null, int maxage = 60)
+        public static void ReplySheet(this ActionContext ac, int status, Action<HtmlContent> inner, bool? pub = null, int maxage = 60)
         {
             ac.ReplyHtml(status,
             null,
@@ -73,7 +73,7 @@ namespace Greatbone.Sample
             pub, maxage);
         }
 
-        public static void ReplyForm(this WebActionContext ac, int status, IData obj, int proj = 0, bool? pub = null, int maxage = 60)
+        public static void ReplyForm(this ActionContext ac, int status, IData obj, int proj = 0, bool? pub = null, int maxage = 60)
         {
             ac.ReplyHtml(status,
             null,
@@ -89,7 +89,7 @@ namespace Greatbone.Sample
             pub, maxage);
         }
 
-        public static void ReplyForm(this WebActionContext ac, int status, Action<HtmlContent> form, bool? pub = null, int maxage = 60)
+        public static void ReplyForm(this ActionContext ac, int status, Action<HtmlContent> form, bool? pub = null, int maxage = 60)
         {
             ac.ReplyHtml(status,
             null,
@@ -105,9 +105,9 @@ namespace Greatbone.Sample
             pub, maxage);
         }
 
-        public static void ReplyFolderPage<D>(this WebActionContext ac, int status, List<D> lst, int proj = 0, bool? pub = null, int maxage = 60) where D : IData
+        public static void ReplyFolderPage<D>(this ActionContext ac, int status, List<D> lst, int proj = 0, bool? pub = null, int maxage = 60) where D : IData
         {
-            WebFolder folder = ac.Folder;
+            Folder folder = ac.Folder;
 
             ac.ReplyHtml(status,
             header =>
@@ -116,13 +116,13 @@ namespace Greatbone.Sample
                 {
                     header.Add("<a href=\"../\" class=\"button\">上层</a>");
                 }
-                Roll<WebFolder> subs = folder.subs;
+                Roll<Folder> subs = folder.subs;
                 if (subs != null)
                 {
                     header.Add(" <ul class=\"menu\">");
                     for (int i = 0; i < subs.Count; i++)
                     {
-                        WebFolder sub = subs[i];
+                        Folder sub = subs[i];
                         header.Add("<li class=\"\"><a href=\"");
                         header.Add(sub.Name);
                         header.Add("/\">");
@@ -134,16 +134,16 @@ namespace Greatbone.Sample
             },
             main =>
             {
-                List<WebAction> actions = folder.GetModalActions(ac);
+                List<ActionInfo> actions = folder.GetModalActions(ac);
                 main.GRID(actions, lst);
             },
             null,
             pub, maxage);
         }
 
-        public static void ReplyPane(this WebActionContext ac, int status, IDataInput input, Action<IDataInput, HtmlContent> valve, bool? pub = null, int maxage = 60)
+        public static void ReplyPane(this ActionContext ac, int status, IDataInput input, Action<IDataInput, HtmlContent> valve, bool? pub = null, int maxage = 60)
         {
-            List<WebAction> actions = ac.Folder.GetModalActions(ac);
+            List<ActionInfo> actions = ac.Folder.GetModalActions(ac);
             ac.ReplyHtml(status,
             null,
             main =>

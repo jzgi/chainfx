@@ -7,9 +7,9 @@ namespace Greatbone.Core
     /// 
     /// The descriptor of an event handler method.
     /// 
-    public class WebEvent : IHandler
+    public class EventInfo : IHandler
     {
-        readonly WebService service;
+        readonly Service service;
 
         readonly string key;
 
@@ -18,18 +18,18 @@ namespace Greatbone.Core
         readonly bool arg;
 
         // void event(WebEventContext)
-        readonly Action<WebEventContext> @do;
+        readonly Action<EventContext> @do;
 
         // async Task event(WebEventContext)
-        readonly Func<WebEventContext, Task> doasync;
+        readonly Func<EventContext, Task> doasync;
 
         // void action(WebActionContext, string)
-        readonly Action<WebEventContext, string> do2;
+        readonly Action<EventContext, string> do2;
 
         // async Task action(WebActionContext, string)
-        readonly Func<WebEventContext, string, Task> do2async;
+        readonly Func<EventContext, string, Task> do2async;
 
-        internal WebEvent(WebService service, MethodInfo mi, bool async, bool arg)
+        internal EventInfo(Service service, MethodInfo mi, bool async, bool arg)
         {
             this.key = mi.Name;
             this.async = async;
@@ -39,27 +39,27 @@ namespace Greatbone.Core
             {
                 if (arg)
                 {
-                    do2async = (Func<WebEventContext, string, Task>)mi.CreateDelegate(typeof(Func<WebEventContext, string, Task>), service);
+                    do2async = (Func<EventContext, string, Task>)mi.CreateDelegate(typeof(Func<EventContext, string, Task>), service);
                 }
                 else
                 {
-                    doasync = (Func<WebEventContext, Task>)mi.CreateDelegate(typeof(Func<WebEventContext, Task>), service);
+                    doasync = (Func<EventContext, Task>)mi.CreateDelegate(typeof(Func<EventContext, Task>), service);
                 }
             }
             else
             {
                 if (arg)
                 {
-                    do2 = (Action<WebEventContext, string>)mi.CreateDelegate(typeof(Action<WebEventContext, string>), service);
+                    do2 = (Action<EventContext, string>)mi.CreateDelegate(typeof(Action<EventContext, string>), service);
                 }
                 else
                 {
-                    @do = (Action<WebEventContext>)mi.CreateDelegate(typeof(Action<WebEventContext>), service);
+                    @do = (Action<EventContext>)mi.CreateDelegate(typeof(Action<EventContext>), service);
                 }
             }
         }
 
-        public WebService Service => service;
+        public Service Service => service;
 
         public string Name => key;
 
@@ -68,7 +68,7 @@ namespace Greatbone.Core
         public bool HasArg => arg;
 
         // invoke the right event method
-        internal void Do(WebEventContext ec, string arg)
+        internal void Do(EventContext ec, string arg)
         {
             if (HasArg)
             {
@@ -81,7 +81,7 @@ namespace Greatbone.Core
         }
 
         // invoke the right event method
-        internal async Task DoAsync(WebEventContext ec, string arg)
+        internal async Task DoAsync(EventContext ec, string arg)
         {
             if (HasArg)
             {

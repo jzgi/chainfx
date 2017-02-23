@@ -7,12 +7,12 @@ namespace Greatbone.Sample
 {
     /// Each key is tne openid for a buyer or shop
     ///
-    public class CommVarFolder : WebFolder, IVar
+    public class CommVarFolder : Folder, IVar
     {
 
         readonly ConcurrentDictionary<string, Chat> chats;
 
-        public CommVarFolder(WebFolderContext fc) : base(fc)
+        public CommVarFolder(FolderContext fc) : base(fc)
         {
         }
 
@@ -26,8 +26,8 @@ namespace Greatbone.Sample
         /// POST /-userid-/inbox
         /// </code>
         ///
-        [Role]
-        public async Task inbox(WebActionContext ac, string arg)
+        [Access]
+        public async Task inbox(ActionContext ac, string arg)
         {
             Token tok = (Token)ac.Token;
             string userid = ac[0];

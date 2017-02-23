@@ -8,7 +8,7 @@ namespace Greatbone.Core
     ///
     /// The connect to a remote peer service that the current service depends on.
     ///
-    public class WebClient : HttpClient, IRollable
+    public class Client : HttpClient, IRollable
     {
         const int
             INITIAL = -1,
@@ -17,7 +17,7 @@ namespace Greatbone.Core
             NO_CONTENT = 12,
             NOT_IMPLEMENTED = 720;
 
-        WebService service;
+        Service service;
 
         // subdomain name or a reference name
         readonly string name;
@@ -35,7 +35,7 @@ namespace Greatbone.Core
         int lastConnect;
 
 
-        public WebClient(string name, string raddr)
+        public Client(string name, string raddr)
         {
             this.name = name;
             string addr = raddr.StartsWith("http") ? raddr : "http://" + raddr;
@@ -60,31 +60,25 @@ namespace Greatbone.Core
             HttpResponseMessage resp = await GetAsync("*");
             byte[] cont = await resp.Content.ReadAsByteArrayAsync();
 
-            WebEventContext ec = new WebEventContext(this);
-            FormMpParse p = new FormMpParse("", cont, cont.Length)
-            {
-                EventContext = ec
-            };
-            
+            EventContext ec = new EventContext(this);
+
             // parse and process one by one
-            p.Parse(async x =>
+            long id;
+            string name = "";
+            string arg = "";
+            DateTime time;
+            EventInfo evt = null;
+            if (service.Events.TryGet(name, out evt))
             {
-                long id;
-                string name = "";
-                DateTime time;
-                WebEvent evt = null;
-                if (service.Events.TryGet(name, out evt))
+                if (evt.IsAsync)
                 {
-                    if (evt.IsAsync)
-                    {
-                        await evt.DoAsync(ec, null);
-                    }
-                    else
-                    {
-                        evt.Do(ec, null);
-                    }
+                    await evt.DoAsync(ec, arg);
                 }
-            });
+                else
+                {
+                    evt.Do(ec, arg);
+                }
+            }
         }
 
         internal void SetCancel()
@@ -96,7 +90,7 @@ namespace Greatbone.Core
         // RPC
         //
 
-        public async Task<byte[]> GetAsync(WebActionContext ctx, string uri)
+        public async Task<byte[]> GetAsync(ActionContext ctx, string uri)
         {
             HttpRequestMessage req = new HttpRequestMessage(HttpMethod.Get, uri);
             req.Headers.Add("Authorization", "Bearer " + ctx.TokenText);
@@ -104,7 +98,7 @@ namespace Greatbone.Core
             return await resp.Content.ReadAsByteArrayAsync();
         }
 
-        public async Task<M> GetAsync<M>(WebActionContext ctx, string uri) where M : class, IDataInput
+        public async Task<M> GetAsync<M>(ActionContext ctx, string uri) where M : class, IDataInput
         {
             HttpRequestMessage req = new HttpRequestMessage(HttpMethod.Get, uri);
             if (ctx != null)
@@ -117,7 +111,7 @@ namespace Greatbone.Core
             return (M)WebUtility.ParseContent(ctyp, bytea, 0, bytea.Length);
         }
 
-        public async Task<D> GetObjectAsync<D>(WebActionContext ctx, string uri, int proj = 0) where D : IData, new()
+        public async Task<D> GetObjectAsync<D>(ActionContext ctx, string uri, int proj = 0) where D : IData, new()
         {
             HttpRequestMessage req = new HttpRequestMessage(HttpMethod.Get, uri);
             if (ctx != null)
@@ -129,7 +123,7 @@ namespace Greatbone.Core
             return src.ToObject<D>(proj);
         }
 
-        public async Task<D[]> GetArrayAsync<D>(WebActionContext ctx, string uri, int proj = 0) where D : IData, new()
+        public async Task<D[]> GetArrayAsync<D>(ActionContext ctx, string uri, int proj = 0) where D : IData, new()
         {
             HttpRequestMessage req = new HttpRequestMessage(HttpMethod.Get, uri);
             if (ctx != null)
@@ -142,7 +136,7 @@ namespace Greatbone.Core
             return srcset.ToArray<D>(proj);
         }
 
-        public async Task<List<D>> GetListAsync<D>(WebActionContext ctx, string uri, int proj = 0) where D : IData, new()
+        public async Task<List<D>> GetListAsync<D>(ActionContext ctx, string uri, int proj = 0) where D : IData, new()
         {
             HttpRequestMessage req = new HttpRequestMessage(HttpMethod.Get, uri);
             if (ctx != null)
@@ -155,7 +149,7 @@ namespace Greatbone.Core
             return srcset.ToList<D>(proj);
         }
 
-        public Task<HttpResponseMessage> PostAsync<C>(WebActionContext ctx, string uri, C content) where C : HttpContent, IContent
+        public Task<HttpResponseMessage> PostAsync<C>(ActionContext ctx, string uri, C content) where C : HttpContent, IContent
         {
             HttpRequestMessage req = new HttpRequestMessage(HttpMethod.Post, uri);
             if (ctx != null)
@@ -169,7 +163,7 @@ namespace Greatbone.Core
             return SendAsync(req, HttpCompletionOption.ResponseContentRead);
         }
 
-        public Task<HttpResponseMessage> PostAsync(WebActionContext ctx, string uri, IDataInput inp)
+        public Task<HttpResponseMessage> PostAsync(ActionContext ctx, string uri, IDataInput inp)
         {
             HttpRequestMessage req = new HttpRequestMessage(HttpMethod.Post, uri);
             if (ctx != null)
@@ -185,7 +179,7 @@ namespace Greatbone.Core
         }
 
 
-        public Task<HttpResponseMessage> PostJsonAsync(WebActionContext ctx, string uri, object model)
+        public Task<HttpResponseMessage> PostJsonAsync(ActionContext ctx, string uri, object model)
         {
             HttpRequestMessage req = new HttpRequestMessage(HttpMethod.Post, uri);
             if (ctx != null)

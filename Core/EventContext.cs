@@ -6,9 +6,9 @@ namespace Greatbone.Core
     ///
     /// The processing of an received web event. A single object is reused.
     ///
-    public class WebEventContext : IHandlerContext<WebEvent>, IDisposable
+    public class EventContext : IHandlerContext<EventInfo>, IDisposable
     {
-        readonly WebClient client;
+        readonly Client client;
 
         long id;
 
@@ -17,7 +17,7 @@ namespace Greatbone.Core
         // either JObj or JArr
         object entity;
 
-        internal WebEventContext(WebClient client)
+        internal EventContext(Client client)
         {
             this.client = client;
         }
@@ -33,7 +33,7 @@ namespace Greatbone.Core
 
         public string Name => name;
 
-        public WebFolder Folder
+        public Folder Folder
         {
             get
             {
@@ -41,7 +41,7 @@ namespace Greatbone.Core
             }
         }
 
-        public WebEvent Handler
+        public EventInfo Handler
         {
             get
             {
@@ -49,7 +49,7 @@ namespace Greatbone.Core
             }
         }
 
-        public WebServiceContext ServiceContext
+        public ServiceContext ServiceContext
         {
             get
             {

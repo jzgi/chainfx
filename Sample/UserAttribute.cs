@@ -2,7 +2,7 @@
 
 namespace Greatbone.Sample
 {
-    public class UserAttribute : RoleAttribute
+    public class UserAttribute : AccessAttribute
     {
         readonly bool owner;
 
@@ -11,7 +11,7 @@ namespace Greatbone.Sample
             this.owner = owner;
         }
 
-        public override bool Check(WebActionContext wc)
+        public override bool Check(ActionContext wc)
         {
             return ((Token)wc.Token).IsUser;
         }

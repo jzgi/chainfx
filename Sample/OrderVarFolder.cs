@@ -5,21 +5,21 @@ namespace Greatbone.Sample
 {
     ///
     ///
-    public class OrderVarFolder : WebFolder, IVar
+    public class OrderVarFolder : Folder, IVar
     {
-        public OrderVarFolder(WebFolderContext fc) : base(fc)
+        public OrderVarFolder(FolderContext fc) : base(fc)
         {
         }
 
         #region /user/-userid-/order/-orderid-/
 
-        public void my(WebActionContext ac)
+        public void my(ActionContext ac)
         {
 
         }
 
         [State(PAID, FIXED, ASKED)]
-        public void ask(WebActionContext ac)
+        public void ask(ActionContext ac)
         {
             string userid = ac[0];
             int orderid = ac[this];
@@ -45,7 +45,7 @@ namespace Greatbone.Sample
         #region /shop/-id-/order/-id-/
 
         [Shop]
-        public void @default(WebActionContext ac)
+        public void @default(ActionContext ac)
         {
             string shopid = ac[0];
             int id = ac[this];
@@ -65,7 +65,7 @@ namespace Greatbone.Sample
 
         [Ui(Label = "取消")]
         [State(ASKED, FIXED | CANCELLED, CANCELLED)]
-        public void cannel(WebActionContext ac)
+        public void cannel(ActionContext ac)
         {
             string shopid = ac[0];
             int orderid = ac[this];
@@ -85,7 +85,7 @@ namespace Greatbone.Sample
 
         [Ui(Label = "已备货")]
         [State(ASKED, FIXED | CANCELLED, CANCELLED)]
-        public void fix(WebActionContext ac)
+        public void fix(ActionContext ac)
         {
             string shopid = ac[0];
             int id = ac[this];
@@ -103,7 +103,7 @@ namespace Greatbone.Sample
             }
         }
 
-        public void close(WebActionContext ac)
+        public void close(ActionContext ac)
         {
         }
 
@@ -113,7 +113,7 @@ namespace Greatbone.Sample
 
         [Admin, Shop]
         [Ui]
-        public void exam(WebActionContext ac)
+        public void exam(ActionContext ac)
         {
 
         }

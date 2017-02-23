@@ -11,16 +11,16 @@ namespace Greatbone.Core
     /// The strong semantic allows the web folder hierarchy to be established during object initialization.
     /// </remark>
     /// <code>
-    /// public class FooService : WebService
+    /// public class FooService : Service
     /// {
-    ///     public FooService(WebServiceContext sc) : base(sc)
+    ///     public FooService(ServiceContext sc) : base(sc)
     ///     {
     ///         Create&lt;BarFolder&gt;("bar");
     ///     }
     /// }
     /// </code>
     ///
-    public class WebServiceContext : WebFolderContext, IData
+    public class ServiceContext : FolderContext, IData
     {
         /// The shard identifier when one service is divided into many shards
         public string shard;
@@ -42,7 +42,7 @@ namespace Greatbone.Core
         // connection string
         volatile string connstr;
 
-        public WebServiceContext(string name)
+        public ServiceContext(string name)
         {
             this.name = name;
         }
@@ -191,7 +191,7 @@ namespace Greatbone.Core
             return 0;
         }
 
-        public void SetBearerCookie(WebActionContext ac, IData token)
+        public void SetBearerCookie(ActionContext ac, IData token)
         {
             StringBuilder sb = new StringBuilder("Bearer=");
             string tokenstr = Encrypt(token);

@@ -4,14 +4,13 @@ using System.Threading.Tasks;
 
 namespace Greatbone.Core
 {
-    public static class WebClientUtility
+    public static class ClientUtility
     {
-
-        public static void CallAny(this WebClient[] df)
+        public static void CallAny(this Client[] df)
         {
 
         }
-        public static void CallAll(this WebClient[] df)
+        public static void CallAll(this Client[] df)
         {
 
         }

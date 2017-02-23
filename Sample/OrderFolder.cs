@@ -7,9 +7,9 @@ namespace Greatbone.Sample
 {
     ///
     ///
-    public class OrderFolder : WebFolder
+    public class OrderFolder : Folder
     {
-        public OrderFolder(WebFolderContext fc) : base(fc)
+        public OrderFolder(FolderContext fc) : base(fc)
         {
             CreateVar<OrderVarFolder>();
         }
@@ -18,7 +18,7 @@ namespace Greatbone.Sample
         // USER
         //
 
-        public void my(WebActionContext ac, string page)
+        public void my(ActionContext ac, string page)
         {
             string userid = ac[0];
 
@@ -39,7 +39,7 @@ namespace Greatbone.Sample
 
         // [Shop]
         [Ui]
-        public void @default(WebActionContext ac, string page)
+        public void @default(ActionContext ac, string page)
         {
             string shopid = ac[1];
             string key = ac[this];
@@ -75,7 +75,7 @@ namespace Greatbone.Sample
 
         [Ui(Label = "取消")]
         [State(ASKED, FIXED | CANCELLED, CANCELLED)]
-        public async Task cancel(WebActionContext ac)
+        public async Task cancel(ActionContext ac)
         {
             string shopid = ac[0];
             Form frm = await ac.ReadAsync<Form>();
@@ -114,7 +114,7 @@ namespace Greatbone.Sample
 
         [Ui(Label = "已备货")]
         [State(ASKED, FIXED | CANCELLED, CANCELLED)]
-        public async Task fix(WebActionContext ac)
+        public async Task fix(ActionContext ac)
         {
             string shopid = ac[0];
             Form frm = await ac.ReadAsync<Form>();
@@ -133,13 +133,13 @@ namespace Greatbone.Sample
             }
         }
 
-        public void close(WebActionContext ac)
+        public void close(ActionContext ac)
         {
         }
 
         [Shop]
         [Ui]
-        public void clear(WebActionContext ac)
+        public void clear(ActionContext ac)
         {
             // string shopid = wc.Var(null);
 
@@ -158,7 +158,7 @@ namespace Greatbone.Sample
 
         [Admin]
         [Ui]
-        public void exam(WebActionContext ac)
+        public void exam(ActionContext ac)
         {
 
         }
