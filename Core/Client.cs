@@ -34,6 +34,8 @@ namespace Greatbone.Core
         // tick count
         int lastConnect;
 
+        internal long lastid;
+
 
         public Client(string name, string raddr)
         {

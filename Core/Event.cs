@@ -9,7 +9,7 @@ namespace Greatbone.Core
         internal string shard;
         internal string arg;
         internal string type;
-        internal string body;
+        internal ArraySegment<byte> body;
         internal DateTime time;
 
         public void ReadData(IDataInput i, int proj = 0)

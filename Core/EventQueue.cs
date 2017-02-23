@@ -17,8 +17,6 @@ namespace Greatbone.Core
 
         int count;
 
-        internal long lastid;
-
         internal EventQueue(string name, int capacity)
         {
             this.name = name;
@@ -29,7 +27,68 @@ namespace Greatbone.Core
 
         public void Poll(ActionContext ac)
         {
-            return;
+            string[] events = ac.Headers("X-Event");
+            string shard = ac.Header("X-Shard");
+            string arg = ac.Header("X-Arg");
+            long? lastid = ac.HeaderLong("X-ID");
+
+            // try in-memory
+            if (count == 0)
+            {
+                using (var dc = ac.NewDbContext())
+                {
+                    DbSql sql = dc.Sql("SELECT * FROM EVTQ WHERE id > @1 AND name IN [");
+                    for (int i = 0; i < events.Length; i++)
+                    {
+                        if (i > 0) sql.Add(',');
+                        sql.Put(null, events[i]);
+                    }
+                    sql.Add(']');
+                    if (shard != null)
+                    {
+                        // the IN clause with shard is normally fixed, don't need to be parameters
+                        sql._("AND (shard IS NULL OR shard =")._(shard)._(")");
+                    }
+                    sql._(" LIMIT 1");
+
+                    if (dc.Query1(p => p.Set(lastid.Value)))
+                    {
+                        var evt = dc.ToObject<Event>();
+
+                        ac.SetHeader("ID", evt.id);
+                        ac.SetHeader("Date", evt.time);
+                        if (evt.type != null)
+                        {
+                            ac.SetHeader("Content-Type", evt.type);
+                        }
+                        ac.Reply(200);
+                    }
+                    else
+                    {
+                        ac.Reply(204); // no content
+                    }
+                }
+            }
+
+
+            if (count > 0)
+            {
+                // remove & return the head
+                Event e = elements[head];
+                ac.SetHeader("x-Event", "");
+                ac.SetHeader("x-Event", "");
+                ac.SetHeader("x-Event", "");
+                IContent cont = null;
+                if (e.type != null)
+                {
+                    cont = new StaticContent(e.body) { Type = e.type };
+                }
+                ac.Reply(200, cont);
+            }
+            else
+            {
+                ac.Reply(204); // no content
+            }
         }
 
         public void Clear()
@@ -43,7 +102,7 @@ namespace Greatbone.Core
         // static
         //
 
-        internal static void GlobalInit(Service service, Roll<EventQueue> queues)
+        internal static void GlobalInit(Service service, Roll<Client> client)
         {
             using (var dc = service.NewDbContext())
             {
@@ -77,16 +136,16 @@ namespace Greatbone.Core
 
                 // init records for each moniker 
 
-                for (int i = 0; i < queues.Count; i++)
+                for (int i = 0; i < client.Count; i++)
                 {
-                    EventQueue que = queues[i];
-                    if (dc.Query1("SELECT lastid FROM EVTU WHERE moniker = @1", p => p.Set(que.Name)))
+                    Client cli = client[i];
+                    if (dc.Query1("SELECT lastid FROM EVTU WHERE moniker = @1", p => p.Set(cli.Name)))
                     {
-                        que.lastid = dc.GetLong();
+                        cli.lastid = dc.GetLong();
                     }
                     else
                     {
-                        dc.Execute("INSERT INTO EVTU (moniker, lastid) VALUES (@1, @2)", p => p.Set(que.Name).Set(que.lastid));
+                        dc.Execute("INSERT INTO EVTU (moniker, lastid) VALUES (@1, @2)", p => p.Set(cli.Name).Set(cli.lastid));
                     }
                 }
             }
@@ -110,43 +169,5 @@ namespace Greatbone.Core
                 });
             }
         }
-
-        internal static void PeekEq(ActionContext ac, string[] names, string shard, long? lastid)
-        {
-            using (var dc = ac.NewDbContext())
-            {
-                DbSql sql = dc.Sql("SELECT * FROM evtq WHERE id > @1 AND name IN [");
-                for (int i = 0; i < names.Length; i++)
-                {
-                    if (i > 0) sql.Add(',');
-                    sql.Put(null, names[i]);
-                }
-                sql.Add(']');
-                if (shard != null)
-                {
-                    // the IN clause with shard is normally fixed, don't need to be parameters
-                    sql._("AND (shard IS NULL OR shard =")._(shard)._(")");
-                }
-                sql._(" LIMIT 1");
-
-                if (dc.Query1(p => p.Set(lastid.Value)))
-                {
-                    var evt = dc.ToObject<Event>();
-
-                    ac.SetHeader("ID", evt.id);
-                    ac.SetHeader("Date", evt.time);
-                    if (evt.type != null)
-                    {
-                        ac.SetHeader("Content-Type", evt.type);
-                    }
-                    ac.Reply(200);
-                }
-                else
-                {
-                    ac.Reply(204); // no content
-                }
-            }
-        }
-
     }
 }

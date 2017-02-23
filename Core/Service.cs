@@ -123,7 +123,7 @@ namespace Greatbone.Core
                     }
                     queues.Add(new EventQueue(mem.Key, 20));
                 }
-                EventQueue.GlobalInit(this, queues);
+                EventQueue.GlobalInit(this, clients);
             }
 
             // initialize response cache
@@ -143,9 +143,9 @@ namespace Greatbone.Core
         ///
         public string Moniker => moniker;
 
-        public Roll<EventInfo> Events => events;
+        public Roll<Client> Clients => clients;
 
-        public Roll<Client> Cluster => clients;
+        public Roll<EventInfo> Events => events;
 
         public new ServiceContext Context => (ServiceContext)context;
 
@@ -199,11 +199,24 @@ namespace Greatbone.Core
 
             try
             {
-                if ("/*".Equals(path)) // handle an event queue request
+                if ("/*".Equals(path)) // handle an event poll request
                 {
-                    using (var dc = NewDbContext())
+                    if (queues == null)
                     {
-                        // EventsUtility.PeekEq();
+                        ac.Reply(501); // not implemented
+                    }
+                    else
+                    {
+                        EventQueue que;
+                        string from = ac.Header("From");
+                        if (from == null || (que = queues[from]) == null)
+                        {
+                            ac.Reply(400); // bad request
+                        }
+                        else
+                        {
+                            que.Poll(ac);
+                        }
                     }
                 }
                 else // handle a regular request
@@ -313,9 +326,9 @@ namespace Greatbone.Core
                 Thread.Sleep(50);
 
                 int tick = Environment.TickCount;
-                for (int i = 0; i < Cluster.Count; i++)
+                for (int i = 0; i < Clients.Count; i++)
                 {
-                    Client client = Cluster[i];
+                    Client client = Clients[i];
                     client.ToPoll(tick);
                 }
             }

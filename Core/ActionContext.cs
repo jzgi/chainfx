@@ -166,6 +166,16 @@ namespace Greatbone.Core
             return null;
         }
 
+        public string[] Headers(string name)
+        {
+            StringValues vs;
+            if (Request.Headers.TryGetValue(name, out vs))
+            {
+                return vs;
+            }
+            return null;
+        }
+
         public IRequestCookieCollection Cookies => Request.Cookies;
 
         public async Task<ArraySegment<byte>> ReadAsync()
