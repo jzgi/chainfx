@@ -35,16 +35,6 @@ namespace Greatbone.Core
             Add("\"\r\n\r\n");
         }
 
-        public FormMpContent PutEnter(bool multi)
-        {
-            throw new NotImplementedException();
-        }
-
-        public FormMpContent PutExit(bool multi)
-        {
-            throw new NotImplementedException();
-        }
-
         public FormMpContent PutNull(string name)
         {
             return this;

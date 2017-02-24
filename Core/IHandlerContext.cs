@@ -3,7 +3,7 @@ using System.Data;
 namespace Greatbone.Core
 {
     ///
-    /// A running context related to a handler method.
+    /// An execution context related to a handler method.
     ///
     public interface IHandlerContext<out H> where H : IHandler
     {

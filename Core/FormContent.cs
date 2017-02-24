@@ -58,17 +58,6 @@ namespace Greatbone.Core
         // SINK
         //
 
-
-        public FormContent PutEnter(bool multi)
-        {
-            throw new NotImplementedException();
-        }
-
-        public FormContent PutExit(bool multi)
-        {
-            throw new NotImplementedException();
-        }
-
         public FormContent PutRaw(string name, string raw)
         {
             throw new NotImplementedException();

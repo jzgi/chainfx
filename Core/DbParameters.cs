@@ -31,17 +31,6 @@ namespace Greatbone.Core
             position = 0;
         }
 
-
-        public DbParameters PutEnter(bool multi)
-        {
-            return this;
-        }
-
-        public DbParameters PutExit(bool multi)
-        {
-            return this;
-        }
-
         public DbParameters PutRaw(string name, string raw)
         {
             return this;

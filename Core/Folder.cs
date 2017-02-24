@@ -82,11 +82,11 @@ namespace Greatbone.Core
         ///
         /// Create a subfolder.
         ///
-        public F Create<F>(string key, AccessAttribute[] roles = null, UiAttribute ui = null) where F : Folder
+        public F Create<F>(string key, AccessAttribute[] accesses = null, UiAttribute ui = null) where F : Folder
         {
             if (Level >= Nesting)
             {
-                throw new ServiceException("folder nesting more than " + Nesting);
+                throw new ServiceException("allowed folder nesting " + Nesting);
             }
 
             if (subs == null)
@@ -98,12 +98,12 @@ namespace Greatbone.Core
             ConstructorInfo ci = typ.GetConstructor(new[] { typeof(FolderContext) });
             if (ci == null)
             {
-                throw new ServiceException(typ + " missing WebFolderContext");
+                throw new ServiceException(typ + " missing FolderContext");
             }
             FolderContext ctx = new FolderContext
             {
                 name = key,
-                Accesses = roles,
+                Accesses = accesses,
                 Ui = ui,
                 IsVar = false,
                 Parent = this,
@@ -120,11 +120,11 @@ namespace Greatbone.Core
         ///
         /// Create a variable-key subfolder.
         ///
-        public F CreateVar<F>(AccessAttribute[] roles = null) where F : Folder, IVar
+        public F CreateVar<F>(AccessAttribute[] accesses = null) where F : Folder, IVar
         {
             if (Level >= Nesting)
             {
-                throw new ServiceException("nesting levels");
+                throw new ServiceException("allowed folder nesting " + Nesting);
             }
 
             // create instance
@@ -132,12 +132,12 @@ namespace Greatbone.Core
             ConstructorInfo ci = typ.GetConstructor(new[] { typeof(FolderContext) });
             if (ci == null)
             {
-                throw new ServiceException(typ + " missing WebFolderContext");
+                throw new ServiceException(typ + " missing FolderContext");
             }
             FolderContext ctx = new FolderContext
             {
                 name = _VAR_,
-                Accesses = roles,
+                Accesses = accesses,
                 IsVar = true,
                 Parent = this,
                 Level = Level + 1,
@@ -209,13 +209,13 @@ namespace Greatbone.Core
             return actions[method];
         }
 
-        public List<ActionInfo> GetModalActions(Type checktyp)
+        public List<ActionInfo> GetModalActions(Type accesstyp)
         {
             List<ActionInfo> lst = null;
             for (int i = 0; i < actions.Count; i++)
             {
                 ActionInfo a = actions[i];
-                if (a.IsModal && a.HasAccess(checktyp))
+                if (a.IsModal && a.HasAccess(accesstyp))
                 {
                     if (lst == null) lst = new List<ActionInfo>();
                     lst.Add(a);

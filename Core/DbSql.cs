@@ -10,10 +10,10 @@ namespace Greatbone.Core
     public class DbSql : DynamicContent, IDataOutput<DbSql>
     {
         // contexts
-        const sbyte ColumnList = 1, ParameterList = 2, SetList = 3;
+        const sbyte CTX_COLUMNLIST = 1, CTX_PARAMLIST = 2, CTX_SETLIST = 3;
 
         // the putting context
-        internal sbyte list;
+        internal sbyte ctx;
 
         // used when generating a list
         internal int ordinal;
@@ -28,7 +28,7 @@ namespace Greatbone.Core
         internal void Clear()
         {
             count = 0;
-            list = 0;
+            ctx = 0;
             ordinal = 0;
         }
 
@@ -42,7 +42,7 @@ namespace Greatbone.Core
 
         public DbSql setlst(IData obj, int proj = 0)
         {
-            list = SetList;
+            ctx = CTX_SETLIST;
             ordinal = 1;
             obj.WriteData(this, proj);
             return this;
@@ -61,7 +61,7 @@ namespace Greatbone.Core
 
         public DbSql columnlst(IData obj, int proj = 0)
         {
-            list = ColumnList;
+            ctx = CTX_COLUMNLIST;
             ordinal = 1;
             obj.WriteData(this, proj);
             return this;
@@ -69,7 +69,7 @@ namespace Greatbone.Core
 
         public DbSql parameterlst(IData obj, int proj = 0)
         {
-            list = ParameterList;
+            ctx = CTX_PARAMLIST;
             ordinal = 1;
             obj.WriteData(this, proj);
             return this;
@@ -102,18 +102,18 @@ namespace Greatbone.Core
         {
             if (ordinal > 1) Add(", ");
 
-            switch (list)
+            switch (ctx)
             {
-                case ColumnList:
+                case CTX_COLUMNLIST:
                     Add('"');
                     Add(name);
                     Add('"');
                     break;
-                case ParameterList:
+                case CTX_PARAMLIST:
                     Add("@");
                     Add(name);
                     break;
-                case SetList:
+                case CTX_SETLIST:
                     Add('"');
                     Add(name);
                     Add('"');
@@ -123,17 +123,6 @@ namespace Greatbone.Core
             }
 
             ordinal++;
-        }
-
-
-        public DbSql PutEnter(bool multi)
-        {
-            throw new NotImplementedException();
-        }
-
-        public DbSql PutExit(bool multi)
-        {
-            throw new NotImplementedException();
         }
 
         public DbSql PutRaw(string name, string raw)

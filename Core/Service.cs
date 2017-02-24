@@ -300,7 +300,7 @@ namespace Greatbone.Core
             {
                 EventQueue.GlobalInit(this, clients);
             }
-            
+
             // start the server
             //
             server.Start(this);
@@ -327,7 +327,7 @@ namespace Greatbone.Core
         {
             while (!stop)
             {
-                Thread.Sleep(50);
+                Thread.Sleep(5000);
 
                 int tick = Environment.TickCount;
                 for (int i = 0; i < Clients.Count; i++)

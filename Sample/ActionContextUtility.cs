@@ -4,7 +4,7 @@ using Greatbone.Core;
 
 namespace Greatbone.Sample
 {
-    public static class WebActionContextUtility
+    public static class ActionContextUtility
     {
         public static void ReplyRedirect(this ActionContext ac, string uri, bool? pub = null, int maxage = 60)
         {
@@ -63,11 +63,11 @@ namespace Greatbone.Sample
         {
             ac.ReplyHtml(status,
             null,
-            main =>
+            m =>
             {
-                main.Add("<form>");
-                inner(main);
-                main.Add("</form>");
+                m.Add("<form>");
+                inner(m);
+                m.Add("</form>");
             },
             null,
             pub, maxage);
@@ -77,13 +77,13 @@ namespace Greatbone.Sample
         {
             ac.ReplyHtml(status,
             null,
-            main =>
+            m =>
             {
-                main.Add("<form>");
-                main.ctx = HtmlContent.CTX_FORM;
-                obj.WriteData(main, proj);
-                main.BUTTON(ac.Handler);
-                main.Add("</form>");
+                m.Add("<form>");
+                m.ctx = HtmlContent.CTX_FORM;
+                obj.WriteData(m, proj);
+                m.BUTTON(ac.Handler);
+                m.Add("</form>");
             },
             null,
             pub, maxage);
@@ -93,13 +93,13 @@ namespace Greatbone.Sample
         {
             ac.ReplyHtml(status,
             null,
-            main =>
+            m =>
             {
-                main.Add("<form>");
-                main.ctx = HtmlContent.CTX_FORM;
-                form(main);
-                main.BUTTON(ac.Handler);
-                main.Add("</form>");
+                m.Add("<form>");
+                m.ctx = HtmlContent.CTX_FORM;
+                form(m);
+                m.BUTTON(ac.Handler);
+                m.Add("</form>");
             },
             null,
             pub, maxage);
@@ -110,32 +110,32 @@ namespace Greatbone.Sample
             Folder folder = ac.Folder;
 
             ac.ReplyHtml(status,
-            header =>
+            h =>
             {
                 if (folder.Parent != null)
                 {
-                    header.Add("<a href=\"../\" class=\"button\">上层</a>");
+                    h.Add("<a href=\"../\" class=\"button\">上层</a>");
                 }
                 Roll<Folder> subs = folder.subs;
                 if (subs != null)
                 {
-                    header.Add(" <ul class=\"menu\">");
+                    h.Add(" <ul class=\"menu\">");
                     for (int i = 0; i < subs.Count; i++)
                     {
                         Folder sub = subs[i];
-                        header.Add("<li class=\"\"><a href=\"");
-                        header.Add(sub.Name);
-                        header.Add("/\">");
-                        header.Add(sub.Name);
-                        header.Add("</a></li>");
+                        h.Add("<li class=\"\"><a href=\"");
+                        h.Add(sub.Name);
+                        h.Add("/\">");
+                        h.Add(sub.Name);
+                        h.Add("</a></li>");
                     }
-                    header.Add(" </ul>");
+                    h.Add(" </ul>");
                 }
             },
-            main =>
+            m =>
             {
                 List<ActionInfo> actions = folder.GetModalActions(ac);
-                main.GRID(actions, lst);
+                m.GRID(actions, lst);
             },
             null,
             pub, maxage);
@@ -146,9 +146,9 @@ namespace Greatbone.Sample
             List<ActionInfo> actions = ac.Folder.GetModalActions(ac);
             ac.ReplyHtml(status,
             null,
-            main =>
+            m =>
             {
-                main.GRID(actions, input, valve);
+                m.GRID(actions, input, valve);
             },
             null,
             pub, maxage);
