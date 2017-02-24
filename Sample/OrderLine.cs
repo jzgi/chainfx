@@ -14,7 +14,6 @@ namespace Greatbone.Sample
 
         public void ReadData(IDataInput i, int proj = 0)
         {
-            i.Get(nameof(shopid), ref shopid);
             i.Get(nameof(item), ref item);
             i.Get(nameof(qty), ref qty);
             i.Get(nameof(price), ref price);
@@ -23,7 +22,6 @@ namespace Greatbone.Sample
 
         public void WriteData<R>(IDataOutput<R> o, int proj = 0) where R : IDataOutput<R>
         {
-            o.Put(nameof(shopid), shopid);
             o.Put(nameof(item), item);
             o.Put(nameof(qty), qty);
             o.Put(nameof(price), price);

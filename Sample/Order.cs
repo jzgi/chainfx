@@ -51,7 +51,7 @@ namespace Greatbone.Sample
 
         internal DateTime closed; // time closed
 
-        OrderLine[] detail;
+        List<OrderLine> lines;
 
         decimal total;
 
@@ -78,7 +78,7 @@ namespace Greatbone.Sample
             i.Get(nameof(created), ref created);
             if (proj.Sub())
             {
-                i.Get(nameof(detail), ref detail);
+                i.Get(nameof(lines), ref lines);
             }
             i.Get(nameof(total), ref total);
 
@@ -102,7 +102,7 @@ namespace Greatbone.Sample
             o.Put(nameof(created), created);
             if (proj.Sub())
             {
-                o.Put(nameof(detail), detail);
+                o.Put(nameof(lines), lines);
             }
             o.Put(nameof(total), total);
 
@@ -113,5 +113,20 @@ namespace Greatbone.Sample
         }
 
         public int State => state;
+
+        public void add(string item, short qty, decimal price, string note)
+        {
+            if (lines == null)
+            {
+                lines = new List<OrderLine>();
+            }
+            // var orderln = lines.Find(o => o.shopid.Equals(shopid));
+            // if (orderln == null)
+            // {
+            //     orderln = new OrderLine();
+            //     Add(order);
+            // }
+        }
+
     }
 }

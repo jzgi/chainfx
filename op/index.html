@@ -7,6 +7,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <link rel="stylesheet" href="//cdn.bootcss.com/foundation/6.3.0/css/foundation.min.css">
   <link rel="stylesheet" href="//cdn.bootcss.com/font-awesome/4.7.0/css/font-awesome.min.css">
+  <link rel="stylesheet" href="/app.css">
 </head>
 
 <body>
@@ -15,16 +16,35 @@
       <i class="fa fa-spinner fa-spin fa-3x fa-fw"></i>
       <span class="sr-only">15公里以内</span>
     </div>
-    <div class="small-2 columns float-right">
+    <div class="small-2 columns float-right" onclick="$('#cart').foundation('open');">
       <i class="fa fa-cart-plus fa-lg"></i>
     </div>
   </div>
   <div id="main" class="row">
   </div>
-  <div class="full reveal" id="dialog" data-reveal data-close-on-click="false">
-    <h3></h3>
+  <div class="tiny reveal" id="addto" data-reveal>
+    <h3>
+      购物车
+      <i class="fa fa-cart-plus fa-lg"></i>
+    </h3>
     <button class="close-button" data-close aria-label="Close modal" type="button"><span aria-hidden="true">&times;</span></button>
-    <iframe style="width: 100%; height: 80%"></iframe>
+    <form>
+      <input type="number" name="" value="">
+      <button>添加到购物车</button>
+    </form>
+  </div>
+  <div class="full reveal" id="cart" data-reveal data-close-on-click="false">
+    <h3>
+      购物车
+      <i class="fa fa-cart-plus fa-lg"></i>
+    </h3>
+    <button class="close-button" data-close aria-label="Close modal" type="button"><span aria-hidden="true">&times;</span></button>
+    <div class="row">
+      <form>
+        <input type="number" name="" value="">
+        <button>付款</button>
+      </form>
+    </div>
   </div>
   <script src="//cdn.bootcss.com/jquery/3.1.1/jquery.min.js"></script>
   <script src="//cdn.bootcss.com/foundation/6.3.0/js/foundation.min.js"></script>
