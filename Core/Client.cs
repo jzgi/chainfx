@@ -4,6 +4,9 @@ using System.Net.Http;
 using System.Threading.Tasks;
 using System.Net;
 using System.Net.Http.Headers;
+using System.Text;
+using static Greatbone.Core.EventQueue;
+using System.IO;
 
 namespace Greatbone.Core
 {
@@ -19,7 +22,9 @@ namespace Greatbone.Core
             NO_CONTENT = 12,
             NOT_IMPLEMENTED = 720;
 
-        Service service;
+        readonly Service service;
+
+        readonly string @event;
 
         // subdomain name or a reference name
         readonly string name;
@@ -38,10 +43,31 @@ namespace Greatbone.Core
 
         internal long lastid;
 
+        // event last id
+        FileStream eventid;
 
-        public Client(string name, string raddr)
+        public Client(string raddr) : this(null, null, raddr) { }
+
+        public Client(Service service, string name, string raddr)
         {
+            this.service = service;
             this.name = name;
+
+            if (service != null) // build lastevent poll condition
+            {
+                Roll<EventInfo> eis = service.Events;
+                if (eis != null)
+                {
+                    StringBuilder sb = new StringBuilder();
+                    for (int i = 0; i < eis.Count; i++)
+                    {
+                        if (i > 0) sb.Append(',');
+                        sb.Append(eis[i].Name);
+                    }
+                    @event = sb.ToString();
+                }
+            }
+
             string addr = raddr.StartsWith("http") ? raddr : "http://" + raddr;
             BaseAddress = new Uri(addr);
         }
@@ -67,17 +93,9 @@ namespace Greatbone.Core
             {
                 HttpRequestMessage req = new HttpRequestMessage(HttpMethod.Get, PollUri);
                 HttpRequestHeaders headers = req.Headers;
-                Roll<EventInfo> evts = service.Events;
-                string[] vals = new string[evts.Count];
-                for (int i = 0; i < evts.Count; i++)
-                {
-                    EventInfo evt = evts[i];
-                    vals[i] = evts[i].Name;
-                }
                 headers.TryAddWithoutValidation("From", service.Moniker);
-                headers.TryAddWithoutValidation("X-Event", vals);
-                headers.TryAddWithoutValidation("X-Shard", service.Context.shard);
-
+                headers.TryAddWithoutValidation(X_EVENT, @event);
+                headers.TryAddWithoutValidation(X_SHARD, service.Context.shard);
 
                 HttpResponseMessage resp = await SendAsync(req);
                 if (resp.StatusCode == HttpStatusCode.NoContent)
@@ -90,8 +108,8 @@ namespace Greatbone.Core
 
                 // parse and process one by one
                 long id;
-                string name = resp.Headers.GetValue("");
-                string arg = resp.Headers.GetValue("");
+                ec.name = resp.Headers.GetValue(X_EVENT);
+                string arg = resp.Headers.GetValue(X_ARG);
                 DateTime time;
                 EventInfo ei = null;
                 if (service.Events.TryGet(name, out ei))
@@ -104,6 +122,12 @@ namespace Greatbone.Core
                     {
                         ei.Do(ec, arg);
                     }
+                }
+
+                // database last id
+                using (var dc = service.NewDbContext())
+                {
+
                 }
             }
         }

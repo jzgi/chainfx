@@ -115,13 +115,13 @@ namespace Greatbone.Core
                     {
                         clients = new Roll<Client>(cluster.Count * 2);
                     }
-                    clients.Add(new Client(mem.Key, mem.Value));
+                    clients.Add(new Client(this, mem.Key, mem.Value));
 
                     if (queues == null)
                     {
                         queues = new Roll<EventQueue>(cluster.Count * 2);
                     }
-                    queues.Add(new EventQueue(mem.Key, 20));
+                    queues.Add(new EventQueue(mem.Key));
                 }
             }
 
@@ -206,15 +206,15 @@ namespace Greatbone.Core
                     }
                     else
                     {
-                        EventQueue que;
+                        EventQueue eq;
                         string from = ac.Header("From");
-                        if (from == null || (que = queues[from]) == null)
+                        if (from == null || (eq = queues[from]) == null)
                         {
                             ac.Reply(400); // bad request
                         }
                         else
                         {
-                            que.Poll(ac);
+                            eq.Poll(ac);
                         }
                     }
                 }

@@ -10,9 +10,15 @@ namespace Greatbone.Core
     {
         readonly Client client;
 
-        long id;
+        internal long id;
 
-        string name;
+        internal string name;
+
+        internal string shard;
+
+        internal string arg;
+
+        byte[] content;
 
         // either JObj or JArr
         object entity;

@@ -22,8 +22,7 @@ GET http://localhost:8080/shop/360001/item/lst
 
 GET http://localhost:8080/*
 From: op
-X-Event: ACCESS_TOKEN
-X-Event: CHAT_LOG
+X-Event: ACCESS_TOKEN,CHAT_LOG
 X-Shard: bj
 X-ID: 1
 

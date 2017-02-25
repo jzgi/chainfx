@@ -5,7 +5,7 @@ namespace Greatbone.Sample
 {
     public class CommService : AbstService
     {
-        readonly Client WeiXin = new Client("weixin", "https://api.weixin.qq.com");
+        readonly Client WeiXin = new Client("https://api.weixin.qq.com");
 
         // the timer for triggering periodically obtaining access_token from weixin
         readonly Timer timer;

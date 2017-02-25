@@ -9,9 +9,9 @@ namespace Greatbone.Sample
     ///
     public class OpService : AbstService
     {
-        static readonly Client WeiXin = new Client("wechat", "http://sh.api.weixin.qq.com");
+        static readonly Client WeiXin = new Client("http://sh.api.weixin.qq.com");
 
-        static readonly Client WCPay = new Client("wcpay", "https://api.mch.weixin.qq.com");
+        static readonly Client WCPay = new Client("https://api.mch.weixin.qq.com");
 
 
         public OpService(ServiceContext sc) : base(sc)

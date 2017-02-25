@@ -7,102 +7,125 @@ namespace Greatbone.Core
     /// 
     public class EventQueue : IRollable
     {
+        internal const string
+            X_EVENT = "X-Event",
+            X_SHARD = "X-Shard",
+            X_ARG = "X-Arg",
+            X_ID = "X-ID";
+
+        const int CAPACITY = 120;
+
         readonly string name;
 
         readonly Event[] elements;
 
         int head;
 
-        int tail;
-
         int count;
 
-        internal EventQueue(string name, int capacity)
+        //
+        // keeping last query condition
+
+        string lastevent;
+
+        string lastshard;
+
+        long lastid;
+
+        internal EventQueue(string name)
         {
             this.name = name;
-            elements = new Event[capacity];
+            elements = new Event[CAPACITY];
         }
 
         public string Name => name;
 
         public void Poll(ActionContext ac)
         {
-            string[] events = ac.Headers("X-Event");
-            string shard = ac.Header("X-Shard");
-            string arg = ac.Header("X-Arg");
-            long? lastid = ac.HeaderLong("X-ID");
+            string @event = ac.Header(X_EVENT); // maybe a number of names
+            string shard = ac.Header(X_SHARD);
+            long? id = ac.HeaderLong(X_ID);
 
-            // try in-memory
-            if (count == 0)
+            lock (this)
             {
-                using (var dc = ac.NewDbContext())
+                if (@event != lastevent || shard != lastshard || id != lastid)
                 {
-                    DbSql sql = dc.Sql("SELECT * FROM EVTQ WHERE id > @1 AND name IN [");
-                    for (int i = 0; i < events.Length; i++)
-                    {
-                        if (i > 0) sql.Add(',');
-                        sql.Put(null, events[i]);
-                    }
-                    sql.Add(']');
-                    if (shard != null)
-                    {
-                        // the IN clause with shard is normally fixed, don't need to be parameters
-                        sql._("AND (shard IS NULL OR shard =")._(shard)._(")");
-                    }
-                    sql._(" LIMIT 1");
+                    Clear();
+                }
 
-                    if (dc.Query1(p => p.Set(lastid.Value)))
+                // try in-memory
+                if (count == 0) // not in memory
+                {
+                    using (var dc = ac.NewDbContext())
                     {
-                        var evt = dc.ToObject<Event>();
-
-                        ac.SetHeader("ID", evt.id);
-                        ac.SetHeader("Date", evt.time);
-                        if (evt.type != null)
+                        DbSql sql = dc.Sql("SELECT * FROM EVTQ WHERE id > @1 AND name IN (");
+                        string[] names = @event.Split(',');
+                        for (int i = 0; i < names.Length; i++)
                         {
-                            ac.SetHeader("Content-Type", evt.type);
+                            if (i > 0) sql.Add(',');
+                            sql.Put(null, names[i]); // quoted name
                         }
-                        ac.Reply(200);
-                    }
-                    else
-                    {
-                        ac.Reply(204); // no content
+                        sql.Add(')');
+                        if (shard != null)
+                        {
+                            sql._("AND (shard IS NULL OR shard =").Put(null, shard)._(")");
+                        }
+                        sql._("LIMIT @2");
+
+                        if (dc.Query(p => p.Set(id.Value).Set(CAPACITY)))
+                        {
+                            // load & cache into memory
+                            while (dc.Next())
+                            {
+                                elements[count++] = dc.ToObject<Event>();
+                            }
+                        }
+                        else
+                        {
+                            ac.Reply(204); // no content
+                            return;
+                        }
                     }
                 }
-            }
 
-
-            if (count > 0)
-            {
                 // remove & return the head
-                Event e = elements[head];
-                ac.SetHeader("x-Event", "");
-                ac.SetHeader("x-Event", "");
-                ac.SetHeader("x-Event", "");
+                Event e = elements[head++]; count--;
+
+                // set headers
+                ac.SetHeader(X_EVENT, e.name);
+                ac.SetHeader(X_SHARD, e.shard);
+                ac.SetHeader(X_ARG, e.arg);
+                ac.SetHeader(X_ID, e.id);
+
+                // set content, if any
                 IContent cont = null;
                 if (e.type != null)
                 {
                     cont = new StaticContent(e.body) { Type = e.type };
                 }
                 ac.Reply(200, cont);
-            }
-            else
-            {
-                ac.Reply(204); // no content
+
+                // keep for state validation of next poll 
+                lastevent = e.name;
+                lastshard = e.shard;
+                lastid = e.id;
             }
         }
 
         public void Clear()
         {
-            head = 0;
-            tail = 0;
-            count = 0;
+            lock (this)
+            {
+                head = 0;
+                count = 0;
+            }
         }
 
         //
         // static
         //
 
-        internal static void GlobalInit(Service service, Roll<Client> client)
+        internal static void GlobalInit(Service service, Roll<Client> clients)
         {
             using (var dc = service.NewDbContext())
             {
@@ -134,9 +157,9 @@ namespace Greatbone.Core
 
                 // init records for each moniker 
 
-                for (int i = 0; i < client.Count; i++)
+                for (int i = 0; i < clients.Count; i++)
                 {
-                    Client cli = client[i];
+                    Client cli = clients[i];
                     if (dc.Query1("SELECT lastid FROM EVTU WHERE moniker = @1", p => p.Set(cli.Name)))
                     {
                         cli.lastid = dc.GetLong();
