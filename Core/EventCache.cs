@@ -5,7 +5,7 @@ namespace Greatbone.Core
     /// 
     /// A event queue pertaining to a certain event client.
     /// 
-    public class EventQueue : IRollable
+    public class EventCache : IRollable
     {
         internal const string
             X_EVENT = "X-Event",
@@ -32,7 +32,7 @@ namespace Greatbone.Core
 
         long lastid;
 
-        internal EventQueue(string name)
+        internal EventCache(string name)
         {
             this.name = name;
             elements = new Event[CAPACITY];

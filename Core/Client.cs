@@ -5,7 +5,7 @@ using System.Threading.Tasks;
 using System.Net;
 using System.Net.Http.Headers;
 using System.Text;
-using static Greatbone.Core.EventQueue;
+using static Greatbone.Core.EventCache;
 using System.IO;
 
 namespace Greatbone.Core

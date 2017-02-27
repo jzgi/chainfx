@@ -37,9 +37,9 @@ namespace Greatbone.Core
         readonly Roll<Client> clients;
 
         // event providing
-        readonly Roll<EventQueue> queues;
+        readonly Roll<EventCache> queues;
 
-        readonly ResponseCache cache;
+        readonly ActionCache cache;
 
         Thread scheduler;
 
@@ -119,14 +119,14 @@ namespace Greatbone.Core
 
                     if (queues == null)
                     {
-                        queues = new Roll<EventQueue>(cluster.Count * 2);
+                        queues = new Roll<EventCache>(cluster.Count * 2);
                     }
-                    queues.Add(new EventQueue(mem.Key));
+                    queues.Add(new EventCache(mem.Key));
                 }
             }
 
             // initialize response cache
-            cache = new ResponseCache(Environment.ProcessorCount * 2, 4096);
+            cache = new ActionCache(Environment.ProcessorCount * 2, 4096);
 
         }
 
@@ -148,7 +148,7 @@ namespace Greatbone.Core
 
         public new ServiceContext Context => (ServiceContext)context;
 
-        internal ResponseCache Cache => cache;
+        internal ActionCache Cache => cache;
 
         public virtual void OnStart()
         {
@@ -206,7 +206,7 @@ namespace Greatbone.Core
                     }
                     else
                     {
-                        EventQueue eq;
+                        EventCache eq;
                         string from = ac.Header("From");
                         if (from == null || (eq = queues[from]) == null)
                         {
@@ -298,7 +298,7 @@ namespace Greatbone.Core
         {
             if (clients != null)
             {
-                EventQueue.GlobalInit(this, clients);
+                EventCache.GlobalInit(this, clients);
             }
 
             // start the server

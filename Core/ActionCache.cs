@@ -7,14 +7,14 @@ namespace Greatbone.Core
     /// 
     /// A response cache for handling of actions in a service.
     /// 
-    public class ResponseCache
+    public class ActionCache
     {
         // keyed by target uri
         readonly ConcurrentDictionary<string, Entry> entries;
 
         Action<int>[] handlers;
 
-        internal ResponseCache(int concurrency, int capcity)
+        internal ActionCache(int concurrency, int capcity)
         {
             entries = new ConcurrentDictionary<string, Entry>(concurrency, capcity);
             handlers = new Action<int>[8];
