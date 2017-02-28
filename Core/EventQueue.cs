@@ -5,7 +5,7 @@ namespace Greatbone.Core
     /// 
     /// A event queue pertaining to a certain event client.
     /// 
-    public class EventCache : IRollable
+    public class EventQueue : IRollable
     {
         internal const string
             X_EVENT = "X-Event",
@@ -32,7 +32,7 @@ namespace Greatbone.Core
 
         long lastid;
 
-        internal EventCache(string name)
+        internal EventQueue(string name)
         {
             this.name = name;
             elements = new Event[CAPACITY];
@@ -125,19 +125,13 @@ namespace Greatbone.Core
         // static
         //
 
-        internal static void GlobalInit(Service service, Roll<Client> clients)
+        internal static void GlobalInit(Service service)
         {
             using (var dc = service.NewDbContext())
             {
                 // create database objects
 
-                dc.Execute(
-                    @"CREATE TABLE IF NOT EXISTS EVTU (
-                        moniker varchar(20),
-                        lastid int8,
-                        CONSTRAINT evtu_pkey PRIMARY KEY (moniker)
-                    ) WITH (OIDS=FALSE);
-
+                dc.Execute(@"
                     CREATE SEQUENCE IF NOT EXISTS evtq_id_seq 
                         INCREMENT 1 
                         MINVALUE 1 MAXVALUE 9223372036854775807 
@@ -154,21 +148,6 @@ namespace Greatbone.Core
                         CONSTRAINT evtq_pkey PRIMARY KEY (id)
                     ) WITH (OIDS=FALSE)"
                 );
-
-                // init records for each moniker 
-
-                for (int i = 0; i < clients.Count; i++)
-                {
-                    Client cli = clients[i];
-                    if (dc.Query1("SELECT lastid FROM EVTU WHERE moniker = @1", p => p.Set(cli.Name)))
-                    {
-                        cli.lastid = dc.GetLong();
-                    }
-                    else
-                    {
-                        dc.Execute("INSERT INTO EVTU (moniker, lastid) VALUES (@1, @2)", p => p.Set(cli.Name).Set(cli.lastid));
-                    }
-                }
             }
         }
 

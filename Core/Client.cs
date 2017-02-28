@@ -5,7 +5,7 @@ using System.Threading.Tasks;
 using System.Net;
 using System.Net.Http.Headers;
 using System.Text;
-using static Greatbone.Core.EventCache;
+using static Greatbone.Core.EventQueue;
 using System.IO;
 
 namespace Greatbone.Core
@@ -66,13 +66,29 @@ namespace Greatbone.Core
                     }
                     @event = sb.ToString();
                 }
+
+                eventid = new FileStream(service.Context.GetFilePath(name), FileMode.OpenOrCreate, FileAccess.ReadWrite);
             }
 
             string addr = raddr.StartsWith("http") ? raddr : "http://" + raddr;
             BaseAddress = new Uri(addr);
+
         }
 
         public string Name => name;
+
+        long ReadEventId()
+        {
+            byte[] buf = new byte[21];
+            eventid.Read(buf, 0, buf.Length);
+            return 0;
+        }
+
+        void WriteEventId(long id)
+        {
+
+        }
+
 
         public void ToPoll(int ticks)
         {
@@ -107,7 +123,7 @@ namespace Greatbone.Core
                 EventContext ec = new EventContext(this);
 
                 // parse and process one by one
-                long id;
+                long id = 0;
                 ec.name = resp.Headers.GetValue(X_EVENT);
                 string arg = resp.Headers.GetValue(X_ARG);
                 DateTime time;
@@ -125,10 +141,7 @@ namespace Greatbone.Core
                 }
 
                 // database last id
-                using (var dc = service.NewDbContext())
-                {
-
-                }
+                WriteEventId(id);
             }
         }
 

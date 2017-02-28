@@ -37,7 +37,7 @@ namespace Greatbone.Core
         readonly Roll<Client> clients;
 
         // event providing
-        readonly Roll<EventCache> queues;
+        readonly Roll<EventQueue> queues;
 
         readonly ActionCache cache;
 
@@ -119,9 +119,9 @@ namespace Greatbone.Core
 
                     if (queues == null)
                     {
-                        queues = new Roll<EventCache>(cluster.Count * 2);
+                        queues = new Roll<EventQueue>(cluster.Count * 2);
                     }
-                    queues.Add(new EventCache(mem.Key));
+                    queues.Add(new EventQueue(mem.Key));
                 }
             }
 
@@ -206,7 +206,7 @@ namespace Greatbone.Core
                     }
                     else
                     {
-                        EventCache eq;
+                        EventQueue eq;
                         string from = ac.Header("From");
                         if (from == null || (eq = queues[from]) == null)
                         {
@@ -298,7 +298,7 @@ namespace Greatbone.Core
         {
             if (clients != null)
             {
-                EventCache.GlobalInit(this, clients);
+                EventQueue.GlobalInit(this);
             }
 
             // start the server
