@@ -55,7 +55,7 @@ namespace Greatbone.Core
             }
         }
 
-        public ServiceContext ServiceContext
+        public Service Service
         {
             get
             {

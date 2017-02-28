@@ -3,12 +3,10 @@ using System.Collections.Generic;
 using System.Data;
 using System.Diagnostics;
 using System.IO;
-using System.Linq;
 using System.Reflection;
 using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
-using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Hosting.Server;
 using Microsoft.AspNetCore.Hosting.Server.Features;
 using Microsoft.AspNetCore.Http;
@@ -24,6 +22,17 @@ namespace Greatbone.Core
     ///
     public abstract class Service : Folder, IHttpApplication<HttpContext>, ILoggerProvider, ILogger
     {
+
+        internal readonly string shard;
+
+        internal readonly string[] addresses;
+
+        internal readonly Db db;
+
+        internal readonly Auth auth;
+
+        internal readonly int logging;
+
         // the service instance id
         readonly string moniker;
 
@@ -36,6 +45,8 @@ namespace Greatbone.Core
         // client connectivity to the related peers
         readonly Roll<Client> clients;
 
+        EventU eventu;
+
         // event providing
         readonly Roll<EventQueue> queues;
 
@@ -45,17 +56,24 @@ namespace Greatbone.Core
 
         Thread cleaner;
 
-        protected Service(ServiceContext sc) : base(sc)
+        protected Service(FolderContext fc) : base(fc)
         {
-            // adjust configuration
-            sc.Service = this;
 
-            moniker = (sc.shard == null) ? sc.name : sc.name + "-" + sc.shard;
+            JObj cfg = fc.Configuration;
+            cfg.Get(nameof(shard), ref shard);
+            cfg.Get(nameof(addresses), ref addresses);
+            cfg.Get(nameof(db), ref db);
+            cfg.Get(nameof(logging), ref logging);
+
+            // adjust configuration
+            fc.Service = this;
+
+            moniker = (shard == null) ? fc.Name : fc.Name + "-" + shard;
 
             // setup logging 
             LoggerFactory factory = new LoggerFactory();
             factory.AddProvider(this);
-            string file = sc.GetFilePath('$' + DateTime.Now.ToString("yyyyMM") + ".log");
+            string file = fc.GetFilePath('$' + DateTime.Now.ToString("yyyyMM") + ".log");
             FileStream fs = new FileStream(file, FileMode.Append, FileAccess.Write);
             logWriter = new StreamWriter(fs, Encoding.UTF8, 1024 * 4, false)
             {
@@ -64,13 +82,13 @@ namespace Greatbone.Core
 
             // create kestrel instance
             KestrelServerOptions options = new KestrelServerOptions();
-            server = new KestrelServer(Options.Create(options), Lifetime, factory);
+            server = new KestrelServer(Options.Create(options), ServiceUtility.Lifetime, factory);
             ICollection<string> addrs = server.Features.Get<IServerAddressesFeature>().Addresses;
-            if (string.IsNullOrEmpty(sc.addresses))
+            if (addresses == null)
             {
                 throw new ServiceException("missing 'addresses'");
             }
-            foreach (string a in sc.addresses.Split(',', ';'))
+            foreach (string a in addresses)
             {
                 addrs.Add(a.Trim());
             }
@@ -106,22 +124,23 @@ namespace Greatbone.Core
             }
 
             // initialize connectivities to the cluster members
-            Dictionary<string, string> cluster = sc.cluster;
+            JObj cluster = cfg[nameof(cluster)];
             if (cluster != null)
             {
-                foreach (KeyValuePair<string, string> mem in cluster)
+                for (int i = 0; i < cluster.Count; i++)
                 {
+                    JMbr mbr = cluster[i];
                     if (clients == null)
                     {
                         clients = new Roll<Client>(cluster.Count * 2);
                     }
-                    clients.Add(new Client(this, mem.Key, mem.Value));
+                    clients.Add(new Client(this, mbr.Name, (string)mbr));
 
                     if (queues == null)
                     {
                         queues = new Roll<EventQueue>(cluster.Count * 2);
                     }
-                    queues.Add(new EventQueue(mem.Key));
+                    queues.Add(new EventQueue(mbr.Name));
                 }
             }
 
@@ -145,8 +164,6 @@ namespace Greatbone.Core
         public Roll<Client> Clients => clients;
 
         public Roll<EventInfo> Events => events;
-
-        public new ServiceContext Context => (ServiceContext)context;
 
         internal ActionCache Cache => cache;
 
@@ -173,7 +190,7 @@ namespace Greatbone.Core
         {
             return new ActionContext(features)
             {
-                ServiceContext = Context
+                Service = this
             };
         }
 
@@ -236,7 +253,7 @@ namespace Greatbone.Core
                 {
                     ac.Reply(400, e.Message); // bad request
                 }
-                else if (e is AccessException)
+                else if (e is CheckException)
                 {
                     if (ac.Token == null) { Challenge(ac); }
                     else
@@ -272,7 +289,7 @@ namespace Greatbone.Core
 
         public DbContext NewDbContext(IsolationLevel? level = null)
         {
-            DbContext dc = new DbContext(Context);
+            DbContext dc = new DbContext(this);
             if (level != null)
             {
                 dc.Begin(level.Value);
@@ -307,7 +324,7 @@ namespace Greatbone.Core
 
             OnStart();
 
-            Debug.WriteLine(Name + " -> " + Context.addresses + " started");
+            // Debug.WriteLine(Name + " -> " + Context.addresses + " started");
 
             // start helper threads
 
@@ -371,7 +388,7 @@ namespace Greatbone.Core
 
         public bool IsEnabled(LogLevel level)
         {
-            return (int)level >= Context.logging;
+            return (int)level >= logging;
         }
 
         public void Dispose()
@@ -418,50 +435,199 @@ namespace Greatbone.Core
             }
         }
 
-        ///
-        /// STATIC
-        ///
-        static readonly ApplicationLifetime Lifetime = new ApplicationLifetime();
+        volatile string connstr;
 
-
-        /// 
-        /// Runs a number of web services and block until shutdown.
-        /// 
-        public static void Run(IEnumerable<Service> services)
+        public string ConnectionString
         {
-            using (var cts = new CancellationTokenSource())
+            get
             {
-                Console.CancelKeyPress += (sender, eventArgs) =>
+                if (connstr == null)
                 {
-                    cts.Cancel();
+                    StringBuilder sb = new StringBuilder();
+                    sb.Append("Host=").Append(db.host);
+                    sb.Append(";Port=").Append(db.port);
+                    sb.Append(";Database=").Append(db.database ?? Name);
+                    sb.Append(";Username=").Append(db.username);
+                    sb.Append(";Password=").Append(db.password);
+                    sb.Append(";Read Buffer Size=").Append(1024 * 32);
+                    sb.Append(";Write Buffer Size=").Append(1024 * 32);
+                    sb.Append(";No Reset On Close=").Append(true);
 
-                    // wait for the Main thread to exit gracefully.
-                    eventArgs.Cancel = true;
-                };
-
-                // start services
-                var svcs = services as Service[] ?? services.ToArray();
-                foreach (Service svc in svcs)
-                {
-                    svc.Start();
+                    connstr = sb.ToString();
                 }
+                return connstr;
+            }
+        }
+        // hexidecimal characters
+        protected static readonly char[] HEX =
+        {
+            '0', '1', '2', '3', '4', '5', '6', '7', '8', '9', 'A', 'B', 'C', 'D', 'E', 'F'
+        };
 
-                Console.WriteLine("ctrl_c to shut down");
+        public string Encrypt(IData token)
+        {
+            if (auth == null) return null;
 
-                cts.Token.Register(state =>
+            JsonContent cont = new JsonContent(true, true, 4096); // borrow
+            cont.Put(null, token);
+            byte[] bytebuf = cont.ByteBuffer;
+            int count = cont.Size;
+
+            int mask = auth.mask;
+            int[] masks = { (mask >> 24) & 0xff, (mask >> 16) & 0xff, (mask >> 8) & 0xff, mask & 0xff };
+            char[] charbuf = new char[count * 2]; // the target 
+            int p = 0;
+            for (int i = 0; i < count; i++)
+            {
+                // masking
+                int b = bytebuf[i] ^ masks[i % 4];
+
+                //transform
+                charbuf[p++] = HEX[(b >> 4) & 0x0f];
+                charbuf[p++] = HEX[(b) & 0x0f];
+
+                // reordering
+            }
+            // return pool
+            BufferUtility.Return(bytebuf);
+
+            return new string(charbuf, 0, charbuf.Length);
+        }
+
+        public string Decrypt(string tokenstr)
+        {
+            if (auth == null) return null;
+
+            int mask = auth.mask;
+            int[] masks = { (mask >> 24) & 0xff, (mask >> 16) & 0xff, (mask >> 8) & 0xff, mask & 0xff };
+            int len = tokenstr.Length / 2;
+            Text str = new Text(256);
+            int p = 0;
+            for (int i = 0; i < len; i++)
+            {
+                // reordering
+
+                // transform to byte
+                int b = (byte)(Dv(tokenstr[p++]) << 4 | Dv(tokenstr[p++]));
+
+                // masking
+                str.Accept((byte)(b ^ masks[i % 4]));
+            }
+            return str.ToString();
+        }
+
+
+        // return digit value
+        static int Dv(char hex)
+        {
+            int v = hex - '0';
+            if (v >= 0 && v <= 9)
+            {
+                return v;
+            }
+            v = hex - 'A';
+            if (v >= 0 && v <= 5) return 10 + v;
+            return 0;
+        }
+
+        public void SetBearerCookie(ActionContext ac, IData token)
+        {
+            StringBuilder sb = new StringBuilder("Bearer=");
+            string tokenstr = Encrypt(token);
+            sb.Append(tokenstr);
+            sb.Append("; HttpOnly");
+            if (auth.maxage != 0)
+            {
+                sb.Append("; Max-Age=").Append(auth.maxage);
+            }
+            // detect domain from the Host header
+            string host = ac.Header("Host");
+            if (!string.IsNullOrEmpty(host))
+            {
+                // if the last part is not numeric
+                int lastdot = host.LastIndexOf('.');
+                if (lastdot > -1 && !char.IsDigit(host[lastdot + 1])) // a domain name is given
+                {
+                    int dot = host.LastIndexOf('.', lastdot - 1);
+                    if (dot != -1)
                     {
-                        ((IApplicationLifetime)state).StopApplication();
-                        // dispose services
-                        foreach (Service svc in svcs)
-                        {
-                            svc.OnStop();
+                        string domain = host.Substring(dot + 1);
+                        sb.Append("; Domain=").Append(domain);
+                    }
+                }
+            }
+            // set header
+            ac.SetHeader("Set-Cookie", sb.ToString());
+        }
 
-                            svc.Dispose();
-                        }
-                    },
-                    Lifetime);
+        ///
+        /// The DB configuration embedded in a service context.
+        ///
+        public class Db : IData
+        {
+            // IP host or unix domain socket
+            public string host;
 
-                Lifetime.ApplicationStopping.WaitHandle.WaitOne();
+            // IP port
+            public int port;
+
+            // default database name
+            public string database;
+
+            public string username;
+
+            public string password;
+
+            public void ReadData(IDataInput i, int proj = 0)
+            {
+                i.Get(nameof(host), ref host);
+                i.Get(nameof(port), ref port);
+                i.Get(nameof(database), ref database);
+                i.Get(nameof(username), ref username);
+                i.Get(nameof(password), ref password);
+            }
+
+            public void WriteData<R>(IDataOutput<R> o, int proj = 0) where R : IDataOutput<R>
+            {
+                o.Put(nameof(host), host);
+                o.Put(nameof(port), port);
+                o.Put(nameof(database), database);
+                o.Put(nameof(username), username);
+                o.Put(nameof(password), password);
+            }
+        }
+
+        ///
+        /// The web authetication configuration embedded in a service context.
+        ///
+        public class Auth : IData
+        {
+            // mask for encoding/decoding token
+            public int mask;
+
+            // repositioning factor for encoding/decoding token
+            public int pose;
+
+            // The number of seconds that a signon durates, or null if session-wide.
+            public int maxage;
+
+            // The service instance that does signon. Can be null if local
+            public string moniker;
+
+            public void ReadData(IDataInput i, int proj = 0)
+            {
+                i.Get(nameof(mask), ref mask);
+                i.Get(nameof(pose), ref pose);
+                i.Get(nameof(maxage), ref maxage);
+                i.Get(nameof(moniker), ref moniker);
+            }
+
+            public void WriteData<R>(IDataOutput<R> o, int proj = 0) where R : IDataOutput<R>
+            {
+                o.Put(nameof(mask), mask);
+                o.Put(nameof(pose), pose);
+                o.Put(nameof(maxage), maxage);
+                o.Put(nameof(moniker), moniker);
             }
         }
     }
@@ -471,7 +637,7 @@ namespace Greatbone.Core
     ///
     public abstract class Service<TToken> : Service where TToken : IData, new()
     {
-        protected Service(ServiceContext sc) : base(sc) { }
+        protected Service(FolderContext fc) : base(fc) { }
 
         protected override void Authenticate(ActionContext ac)
         {
@@ -480,12 +646,12 @@ namespace Greatbone.Core
             if (hv != null && hv.StartsWith("Bearer ")) // the Bearer scheme
             {
                 tokstr = hv.Substring(7);
-                string jsonstr = Context.Decrypt(tokstr);
+                string jsonstr = Decrypt(tokstr);
                 ac.Token = JsonUtility.StringToObject<TToken>(jsonstr);
             }
             else if (ac.Cookies.TryGetValue("Bearer", out tokstr))
             {
-                string jsonstr = Context.Decrypt(tokstr);
+                string jsonstr = Decrypt(tokstr);
                 ac.Token = JsonUtility.StringToObject<TToken>(jsonstr);
             }
         }

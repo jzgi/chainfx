@@ -2,7 +2,7 @@
 
 namespace Greatbone.Sample
 {
-    public class AdminAttribute : AccessAttribute
+    public class AdminAttribute : CheckAttribute
     {
         public override bool Check(ActionContext wc)
         {

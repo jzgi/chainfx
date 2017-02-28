@@ -68,9 +68,9 @@ namespace Greatbone.Core
                 }
 
                 // to override annotated attributes
-                if (fc.Accesses != null)
+                if (fc.Checks != null)
                 {
-                    accesses = fc.Accesses;
+                    accesses = fc.Checks;
                 }
                 if (fc.Ui != null)
                 {
@@ -82,7 +82,7 @@ namespace Greatbone.Core
         ///
         /// Create a subfolder.
         ///
-        public F Create<F>(string key, AccessAttribute[] accesses = null, UiAttribute ui = null) where F : Folder
+        public F Create<F>(string name, CheckAttribute[] accesses = null, UiAttribute ui = null) where F : Folder
         {
             if (Level >= Nesting)
             {
@@ -100,16 +100,16 @@ namespace Greatbone.Core
             {
                 throw new ServiceException(typ + " missing FolderContext");
             }
-            FolderContext ctx = new FolderContext
+            FolderContext ctx = new FolderContext(name)
             {
-                name = key,
-                Accesses = accesses,
+                Checks = accesses,
                 Ui = ui,
                 IsVar = false,
                 Parent = this,
                 Level = Level + 1,
-                Directory = (Parent == null) ? key : Path.Combine(Parent.Directory, key),
-                Service = Service
+                Directory = (Parent == null) ? name : Path.Combine(Parent.Directory, name),
+                Service = Service,
+                Configuration = context.Configuration
             };
             F folder = (F)ci.Invoke(new object[] { ctx });
             subs.Add(folder);
@@ -120,7 +120,7 @@ namespace Greatbone.Core
         ///
         /// Create a variable-key subfolder.
         ///
-        public F CreateVar<F>(AccessAttribute[] accesses = null) where F : Folder, IVar
+        public F CreateVar<F>(CheckAttribute[] accesses = null) where F : Folder, IVar
         {
             if (Level >= Nesting)
             {
@@ -134,10 +134,9 @@ namespace Greatbone.Core
             {
                 throw new ServiceException(typ + " missing FolderContext");
             }
-            FolderContext ctx = new FolderContext
+            FolderContext ctx = new FolderContext(_VAR_)
             {
-                name = _VAR_,
-                Accesses = accesses,
+                Checks = accesses,
                 IsVar = true,
                 Parent = this,
                 Level = Level + 1,

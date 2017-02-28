@@ -12,7 +12,7 @@ namespace Greatbone.Sample
 
         volatile string access_token;
 
-        public CommService(ServiceContext sc) : base(sc)
+        public CommService(FolderContext fc) : base(fc)
         {
             // add sub folder
             CreateVar<CommVarFolder>();

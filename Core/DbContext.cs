@@ -12,7 +12,7 @@ namespace Greatbone.Core
     ///
     public class DbContext : IDataInput, IDisposable
     {
-        readonly ServiceContext servicectx;
+        readonly Service service;
 
         readonly IHandlerContext<IHandler> handlectx;
 
@@ -33,16 +33,16 @@ namespace Greatbone.Core
 
         bool disposed;
 
-        internal DbContext(ServiceContext servicectx) : this(servicectx, null)
+        internal DbContext(Service service) : this(service, null)
         {
         }
 
-        internal DbContext(ServiceContext servicectx, IHandlerContext<IHandler> handlectx)
+        internal DbContext(Service service, IHandlerContext<IHandler> handlectx)
         {
-            this.servicectx = servicectx;
+            this.service = service;
             this.handlectx = handlectx;
 
-            connection = new NpgsqlConnection(servicectx.ConnectionString);
+            connection = new NpgsqlConnection(service.ConnectionString);
             command = new NpgsqlCommand();
             parameters = new DbParameters(command.Parameters);
             command.Connection = connection;
@@ -324,7 +324,7 @@ namespace Greatbone.Core
             IShardable sharded = obj as IShardable;
             if (sharded != null)
             {
-                sharded.Shard = servicectx.shard;
+                sharded.Shard = service.shard;
             }
 
             return obj;
@@ -347,7 +347,7 @@ namespace Greatbone.Core
                 IShardable sharded = obj as IShardable;
                 if (sharded != null)
                 {
-                    sharded.Shard = servicectx.shard;
+                    sharded.Shard = service.shard;
                 }
 
                 lst.Add(obj);
@@ -531,7 +531,7 @@ namespace Greatbone.Core
                 IShardable sharded = v as IShardable;
                 if (sharded != null)
                 {
-                    sharded.Shard = servicectx.shard;
+                    sharded.Shard = service.shard;
                 }
                 return true;
             }
@@ -638,7 +638,7 @@ namespace Greatbone.Core
                     IShardable sharded = obj as IShardable;
                     if (sharded != null)
                     {
-                        sharded.Shard = servicectx.shard;
+                        sharded.Shard = service.shard;
                     }
 
                     v[i] = obj;
@@ -668,7 +668,7 @@ namespace Greatbone.Core
                     IShardable sharded = obj as IShardable;
                     if (sharded != null)
                     {
-                        sharded.Shard = servicectx.shard;
+                        sharded.Shard = service.shard;
                     }
 
                     v.Add(obj);

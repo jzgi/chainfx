@@ -6,7 +6,7 @@ namespace Greatbone.Core
     ///
     /// A JSON member that is either a value, or a property if with the name.
     ///
-    public struct JMember : IRollable
+    public struct JMbr : IRollable
     {
         // property name, if not null
         readonly string name;
@@ -19,7 +19,7 @@ namespace Greatbone.Core
 
         internal readonly JNumber numv;
 
-        public JMember(string name)
+        public JMbr(string name)
         {
             this.name = name;
             type = JType.Null;
@@ -27,7 +27,7 @@ namespace Greatbone.Core
             numv = default(JNumber);
         }
 
-        public JMember(string name, JObj v)
+        public JMbr(string name, JObj v)
         {
             this.name = name;
             type = JType.Object;
@@ -35,7 +35,7 @@ namespace Greatbone.Core
             numv = default(JNumber);
         }
 
-        public JMember(string name, JArr v)
+        public JMbr(string name, JArr v)
         {
             this.name = name;
             type = JType.Array;
@@ -43,7 +43,7 @@ namespace Greatbone.Core
             numv = default(JNumber);
         }
 
-        public JMember(string name, string v)
+        public JMbr(string name, string v)
         {
             this.name = name;
             type = JType.String;
@@ -51,7 +51,7 @@ namespace Greatbone.Core
             numv = default(JNumber);
         }
 
-        public JMember(string name, byte[] v)
+        public JMbr(string name, byte[] v)
         {
             this.name = name;
             type = JType.Bytes;
@@ -59,7 +59,7 @@ namespace Greatbone.Core
             numv = default(JNumber);
         }
 
-        public JMember(string name, bool v)
+        public JMbr(string name, bool v)
         {
             this.name = name;
             type = v ? JType.True : JType.False;
@@ -67,7 +67,7 @@ namespace Greatbone.Core
             numv = default(JNumber);
         }
 
-        public JMember(string name, JNumber v)
+        public JMbr(string name, JNumber v)
         {
             this.name = name;
             type = JType.Number;
@@ -79,7 +79,7 @@ namespace Greatbone.Core
 
         public bool IsProperty => name != null;
 
-        public static implicit operator JObj(JMember v)
+        public static implicit operator JObj(JMbr v)
         {
             if (v.type == JType.Object)
             {
@@ -88,7 +88,7 @@ namespace Greatbone.Core
             return null;
         }
 
-        public static implicit operator JArr(JMember v)
+        public static implicit operator JArr(JMbr v)
         {
             if (v.type == JType.Array)
             {
@@ -97,12 +97,12 @@ namespace Greatbone.Core
             return null;
         }
 
-        public static implicit operator bool(JMember v)
+        public static implicit operator bool(JMbr v)
         {
             return v.type == JType.True;
         }
 
-        public static implicit operator short(JMember v)
+        public static implicit operator short(JMbr v)
         {
             if (v.type == JType.Number)
             {
@@ -111,7 +111,7 @@ namespace Greatbone.Core
             return 0;
         }
 
-        public static implicit operator int(JMember v)
+        public static implicit operator int(JMbr v)
         {
             if (v.type == JType.Number)
             {
@@ -120,7 +120,7 @@ namespace Greatbone.Core
             return 0;
         }
 
-        public static implicit operator long(JMember v)
+        public static implicit operator long(JMbr v)
         {
             if (v.type == JType.Number)
             {
@@ -129,7 +129,7 @@ namespace Greatbone.Core
             return 0;
         }
 
-        public static implicit operator double(JMember v)
+        public static implicit operator double(JMbr v)
         {
             if (v.type == JType.Number)
             {
@@ -138,7 +138,7 @@ namespace Greatbone.Core
             return 0;
         }
 
-        public static implicit operator decimal(JMember v)
+        public static implicit operator decimal(JMbr v)
         {
             if (v.type == JType.Number)
             {
@@ -147,7 +147,7 @@ namespace Greatbone.Core
             return 0;
         }
 
-        public static implicit operator JNumber(JMember v)
+        public static implicit operator JNumber(JMbr v)
         {
             if (v.type == JType.Number)
             {
@@ -156,7 +156,7 @@ namespace Greatbone.Core
             return default(JNumber);
         }
 
-        public static implicit operator DateTime(JMember v)
+        public static implicit operator DateTime(JMbr v)
         {
             if (v.type == JType.String)
             {
@@ -167,7 +167,7 @@ namespace Greatbone.Core
             return default(DateTime);
         }
 
-        public static implicit operator NpgsqlPoint(JMember v)
+        public static implicit operator NpgsqlPoint(JMbr v)
         {
             if (v.type == JType.String)
             {
@@ -190,7 +190,7 @@ namespace Greatbone.Core
             return default(NpgsqlPoint);
         }
 
-        public static implicit operator char[] (JMember v)
+        public static implicit operator char[] (JMbr v)
         {
             if (v.type == JType.String)
             {
@@ -200,7 +200,7 @@ namespace Greatbone.Core
             return null;
         }
 
-        public static implicit operator string(JMember v)
+        public static implicit operator string(JMbr v)
         {
             if (v.type == JType.String)
             {
@@ -209,7 +209,7 @@ namespace Greatbone.Core
             return null;
         }
 
-        public static implicit operator byte[] (JMember v)
+        public static implicit operator byte[] (JMbr v)
         {
             if (v.type == JType.String)
             {

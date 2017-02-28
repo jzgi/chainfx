@@ -6,7 +6,6 @@ using System.Net;
 using System.Net.Http.Headers;
 using System.Text;
 using static Greatbone.Core.EventQueue;
-using System.IO;
 
 namespace Greatbone.Core
 {
@@ -44,7 +43,7 @@ namespace Greatbone.Core
         internal long lastid;
 
         // event last id
-        FileStream eventid;
+        EventU eventu;
 
         public Client(string raddr) : this(null, null, raddr) { }
 
@@ -66,28 +65,13 @@ namespace Greatbone.Core
                     }
                     @event = sb.ToString();
                 }
-
-                eventid = new FileStream(service.Context.GetFilePath(name), FileMode.OpenOrCreate, FileAccess.ReadWrite);
             }
 
             string addr = raddr.StartsWith("http") ? raddr : "http://" + raddr;
             BaseAddress = new Uri(addr);
-
         }
 
         public string Name => name;
-
-        long ReadEventId()
-        {
-            byte[] buf = new byte[21];
-            eventid.Read(buf, 0, buf.Length);
-            return 0;
-        }
-
-        void WriteEventId(long id)
-        {
-
-        }
 
 
         public void ToPoll(int ticks)
@@ -111,7 +95,7 @@ namespace Greatbone.Core
                 HttpRequestHeaders headers = req.Headers;
                 headers.TryAddWithoutValidation("From", service.Moniker);
                 headers.TryAddWithoutValidation(X_EVENT, @event);
-                headers.TryAddWithoutValidation(X_SHARD, service.Context.shard);
+                headers.TryAddWithoutValidation(X_SHARD, service.shard);
 
                 HttpResponseMessage resp = await SendAsync(req);
                 if (resp.StatusCode == HttpStatusCode.NoContent)
@@ -141,7 +125,7 @@ namespace Greatbone.Core
                 }
 
                 // database last id
-                WriteEventId(id);
+                eventu.Write(9, id);
             }
         }
 

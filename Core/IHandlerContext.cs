@@ -7,7 +7,7 @@ namespace Greatbone.Core
     ///
     public interface IHandlerContext<out H> where H : IHandler
     {
-        ServiceContext ServiceContext { get; }
+        Service Service { get; }
 
         Folder Folder { get; }
 

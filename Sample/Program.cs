@@ -1,6 +1,4 @@
-﻿using System.Collections.Generic;
-using System.Diagnostics;
-using Greatbone.Core;
+﻿using Greatbone.Core;
 
 namespace Greatbone.Sample
 {
@@ -11,66 +9,47 @@ namespace Greatbone.Sample
         ///
         public static void Main(string[] args)
         {
-            AuthConfig auth = new AuthConfig
-            {
-                mask = 0x4a78be76,
-                pose = 0x1f0335e2,
-                maxage = 3600
+            JObj auth = new JObj{
+                new JMbr("mask", 0x4a78be76),
+                new JMbr("pose", 0x1f0335e2),
+                new JMbr("maxage", 360000),
             };
 
-            DbConfig pg = new DbConfig
-            {
-                host = "106.14.45.109",
-                port = 5432,
-                username = "postgres",
-                password = "721004"
+            JObj pg = new JObj{
+                new JMbr("host", "106.14.45.109"),
+                new JMbr("port", 5432),
+                new JMbr("username", "postgres"),
+                new JMbr("password", "721004"),
             };
 
-            Dictionary<string, string> cluster = new Dictionary<string, string>()
-            {
-                ["op"] = "http://localhost:8080",
-                ["comm"] = "http://localhost:8081",
+            JObj cluster = new JObj{
+                new JMbr("op", "http://localhost:8080#00000000"),
+                new JMbr("comm", "http://localhost:8081"),
             };
 
-            List<Service> svclst = new List<Service>(4);
-
-            ServiceContext sc;
-
-            sc = new ServiceContext("op")
-            {
-                addresses = "http://localhost:8080",
-                auth = auth,
-                db = pg,
-                cluster = cluster
-            };
-#if !DEBUG
-            sc.TryLoad();
-#endif
-            if (sc.LoadedOk != false)
-            {
-                svclst.Add(new OpService(sc));
-            }
-
-            // string tree = svclst[0].Describe();
-            // Debug.WriteLine(tree);
-
-            sc = new ServiceContext("comm")
-            {
-                addresses = "http://localhost:8081",
-                auth = auth,
-                db = pg,
-                cluster = cluster
-            };
-#if !DEBUG
-            sc.TryLoad();
+#if DEBUG
+            ServiceUtility.Create<OpService>("op", new JObj{
+                new JMbr("address", "http://localhost:8080"),
+                new JMbr("auth", auth),
+                new JMbr("db", pg),
+                new JMbr("cluster", cluster),
+            });
+#else
+            ServiceUtility.Create<OpService>("op");
 #endif
 
-            if (sc.LoadedOk != false)
-            {
-                svclst.Add(new CommService(sc));
-            }
+#if DEBUG
+            ServiceUtility.Create<OpService>("comm", new JObj{
+                new JMbr("address", "http://localhost:8081"),
+                new JMbr("auth", auth),
+                new JMbr("db", pg),
+                new JMbr("cluster", cluster),
+            });
+#else
+            ServiceUtility.Create<OpService>("comm");
+#endif
 
-            Service.Run(svclst);
+            ServiceUtility.StartAll();
         }
     }
 }

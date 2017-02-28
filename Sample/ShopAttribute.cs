@@ -2,7 +2,7 @@
 
 namespace Greatbone.Sample
 {
-    public class ShopAttribute : AccessAttribute
+    public class ShopAttribute : CheckAttribute
     {
         readonly bool owner;
 

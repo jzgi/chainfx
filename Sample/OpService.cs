@@ -14,7 +14,7 @@ namespace Greatbone.Sample
         static readonly Client WCPay = new Client("https://api.mch.weixin.qq.com");
 
 
-        public OpService(ServiceContext sc) : base(sc)
+        public OpService(FolderContext fc) : base(fc)
         {
             Create<ShopFolder>("shop");
 
@@ -23,7 +23,7 @@ namespace Greatbone.Sample
             Create<RepayFolder>("repay");
         }
 
-        [Access]
+        [Check]
         public void @default(ActionContext ac)
         {
             Token tok = (Token)ac.Token;
@@ -116,7 +116,7 @@ namespace Greatbone.Sample
                             var shop = dc.ToObject<Shop>();
                             if (credential.Equals(shop.credential))
                             {
-                                Context.SetBearerCookie(ac, shop.ToToken());
+                                SetBearerCookie(ac, shop.ToToken());
                                 ac.ReplyRedirect(login.orig);
                                 return;
                             }
@@ -134,7 +134,7 @@ namespace Greatbone.Sample
                             var user = dc.ToObject<User>();
                             if (credential.Equals(user.credential))
                             {
-                                Context.SetBearerCookie(ac, user.ToToken());
+                                SetBearerCookie(ac, user.ToToken());
                                 ac.ReplyRedirect(login.orig);
                                 return;
                             }
@@ -148,7 +148,7 @@ namespace Greatbone.Sample
                     var admin = admins.Find(a => a.id == login.id && credential.Equals(a.credential));
                     if (admin != null)
                     {
-                        Context.SetBearerCookie(ac, admin.ToToken());
+                        SetBearerCookie(ac, admin.ToToken());
                         ac.ReplyRedirect(login.orig);
                         return;
                     }

@@ -7,11 +7,16 @@ namespace Greatbone.Core
     ///
     public class FolderContext
     {
-        internal string name;
+        readonly string name;
+
+        public FolderContext(string name)
+        {
+            this.name = name;
+        }
 
         public string Name => name;
 
-        public AccessAttribute[] Accesses { get; internal set; }
+        public CheckAttribute[] Checks { get; internal set; }
 
         public UiAttribute Ui { get; internal set; }
 
@@ -25,10 +30,12 @@ namespace Greatbone.Core
 
         public Service Service { get; internal set; }
 
+        public JObj Configuration { get; internal set; }
 
         public string GetFilePath(string file)
         {
             return Path.Combine(Directory, file);
         }
+
     }
 }

@@ -9,13 +9,13 @@ namespace Greatbone.Core
     ///
     public abstract class Nodule : IRollable
     {
-        protected static readonly AccessException AccessEx = new AccessException();
+        protected static readonly CheckException AccessEx = new CheckException();
 
         // name as appeared in the uri path
         readonly string name;
 
         // access checks
-        internal AccessAttribute[] accesses;
+        internal CheckAttribute[] accesses;
 
         // filtering
         readonly FilterAttribute[] filters;
@@ -33,12 +33,12 @@ namespace Greatbone.Core
             }
 
             // roles
-            List<AccessAttribute> accesslst = null;
-            foreach (var access in (AccessAttribute[])attrs.GetCustomAttributes(typeof(AccessAttribute), false))
+            List<CheckAttribute> accesslst = null;
+            foreach (var access in (CheckAttribute[])attrs.GetCustomAttributes(typeof(CheckAttribute), false))
             {
                 if (accesslst == null)
                 {
-                    accesslst = new List<AccessAttribute>(8);
+                    accesslst = new List<CheckAttribute>(8);
                 }
                 access.Nodule = this;
                 accesslst.Add(access);

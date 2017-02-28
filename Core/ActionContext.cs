@@ -18,7 +18,7 @@ namespace Greatbone.Core
         {
         }
 
-        public ServiceContext ServiceContext { get; set; }
+        public Service Service { get; set; }
 
         public Folder Folder { get; internal set; }
 
@@ -486,7 +486,7 @@ namespace Greatbone.Core
 
         public DbContext NewDbContext(IsolationLevel? level = null)
         {
-            DbContext dc = new DbContext(ServiceContext, this);
+            DbContext dc = new DbContext(Service, this);
             if (level != null)
             {
                 dc.Begin(level.Value);

@@ -26,7 +26,7 @@ namespace Greatbone.Sample
         /// POST /-userid-/inbox
         /// </code>
         ///
-        [Access]
+        [Check]
         public async Task inbox(ActionContext ac, string arg)
         {
             Token tok = (Token)ac.Token;
