@@ -55,10 +55,10 @@ namespace Greatbone.Core
 
         public bool Get(string name, ref bool v)
         {
-            JMbr mem;
-            if (TryGet(name, out mem))
+            JMbr mbr;
+            if (TryGet(name, out mbr))
             {
-                v = mem;
+                v = mbr;
                 return true;
             }
             return false;
@@ -66,10 +66,10 @@ namespace Greatbone.Core
 
         public bool Get(string name, ref short v)
         {
-            JMbr mem;
-            if (TryGet(name, out mem))
+            JMbr mbr;
+            if (TryGet(name, out mbr))
             {
-                v = mem;
+                v = mbr;
                 return true;
             }
             return false;
@@ -77,10 +77,10 @@ namespace Greatbone.Core
 
         public bool Get(string name, ref int v)
         {
-            JMbr mem;
-            if (TryGet(name, out mem))
+            JMbr mbr;
+            if (TryGet(name, out mbr))
             {
-                v = mem;
+                v = mbr;
                 return true;
             }
             return false;
@@ -88,10 +88,10 @@ namespace Greatbone.Core
 
         public bool Get(string name, ref long v)
         {
-            JMbr mem;
-            if (TryGet(name, out mem))
+            JMbr mbr;
+            if (TryGet(name, out mbr))
             {
-                v = mem;
+                v = mbr;
                 return true;
             }
             return false;
@@ -99,10 +99,10 @@ namespace Greatbone.Core
 
         public bool Get(string name, ref double v)
         {
-            JMbr mem;
-            if (TryGet(name, out mem))
+            JMbr mbr;
+            if (TryGet(name, out mbr))
             {
-                v = mem;
+                v = mbr;
                 return true;
             }
             return false;
@@ -110,10 +110,10 @@ namespace Greatbone.Core
 
         public bool Get(string name, ref decimal v)
         {
-            JMbr mem;
-            if (TryGet(name, out mem))
+            JMbr mbr;
+            if (TryGet(name, out mbr))
             {
-                v = mem;
+                v = mbr;
                 return true;
             }
             return false;
@@ -121,10 +121,10 @@ namespace Greatbone.Core
 
         public bool Get(string name, ref DateTime v)
         {
-            JMbr mem;
-            if (TryGet(name, out mem))
+            JMbr mbr;
+            if (TryGet(name, out mbr))
             {
-                v = mem;
+                v = mbr;
                 return true;
             }
             return false;
@@ -132,10 +132,10 @@ namespace Greatbone.Core
 
         public bool Get(string name, ref NpgsqlPoint v)
         {
-            JMbr mem;
-            if (TryGet(name, out mem))
+            JMbr mbr;
+            if (TryGet(name, out mbr))
             {
-                v = mem;
+                v = mbr;
                 return true;
             }
             return false;
@@ -143,10 +143,10 @@ namespace Greatbone.Core
 
         public bool Get(string name, ref char[] v)
         {
-            JMbr mem;
-            if (TryGet(name, out mem))
+            JMbr mbr;
+            if (TryGet(name, out mbr))
             {
-                v = mem;
+                v = mbr;
                 return true;
             }
             return false;
@@ -154,10 +154,10 @@ namespace Greatbone.Core
 
         public bool Get(string name, ref string v)
         {
-            JMbr mem;
-            if (TryGet(name, out mem))
+            JMbr mbr;
+            if (TryGet(name, out mbr))
             {
-                v = mem;
+                v = mbr;
                 return true;
             }
             return false;
@@ -165,10 +165,10 @@ namespace Greatbone.Core
 
         public bool Get(string name, ref byte[] v)
         {
-            JMbr mem;
-            if (TryGet(name, out mem))
+            JMbr mbr;
+            if (TryGet(name, out mbr))
             {
-                v = mem;
+                v = mbr;
                 return true;
             }
             return false;
@@ -176,10 +176,10 @@ namespace Greatbone.Core
 
         public bool Get(string name, ref ArraySegment<byte> v)
         {
-            JMbr mem;
-            if (TryGet(name, out mem))
+            JMbr mbr;
+            if (TryGet(name, out mbr))
             {
-                byte[] bv = mem;
+                byte[] bv = mbr;
                 v = new ArraySegment<byte>(bv);
                 return true;
             }
@@ -188,10 +188,10 @@ namespace Greatbone.Core
 
         public bool Get(string name, ref short[] v)
         {
-            JMbr mem;
-            if (TryGet(name, out mem))
+            JMbr mbr;
+            if (TryGet(name, out mbr))
             {
-                JArr ja = mem;
+                JArr ja = mbr;
                 if (ja != null)
                 {
                     v = new short[ja.Count];
@@ -207,10 +207,10 @@ namespace Greatbone.Core
 
         public bool Get(string name, ref int[] v)
         {
-            JMbr mem;
-            if (TryGet(name, out mem))
+            JMbr mbr;
+            if (TryGet(name, out mbr))
             {
-                JArr ja = mem;
+                JArr ja = mbr;
                 if (ja != null)
                 {
                     v = new int[ja.Count];
@@ -226,10 +226,10 @@ namespace Greatbone.Core
 
         public bool Get(string name, ref long[] v)
         {
-            JMbr mem;
-            if (TryGet(name, out mem))
+            JMbr mbr;
+            if (TryGet(name, out mbr))
             {
-                JArr ja = mem;
+                JArr ja = mbr;
                 if (ja != null)
                 {
                     v = new long[ja.Count];
@@ -264,12 +264,12 @@ namespace Greatbone.Core
 
         public bool Get(string name, ref Dictionary<string, string> v)
         {
-            JMbr mem;
-            if (TryGet(name, out mem))
+            JMbr mbr;
+            if (TryGet(name, out mbr))
             {
-                if (mem.type == JType.Object)
+                if (mbr.type == JType.Object)
                 {
-                    JObj jo = mem;
+                    JObj jo = mbr;
                     int count = jo.Count;
                     Dictionary<string, string> dict = new Dictionary<string, string>(count);
                     for (int i = 0; i < count; i++)
@@ -286,10 +286,10 @@ namespace Greatbone.Core
 
         public bool Get<D>(string name, ref D v, int proj = 0) where D : IData, new()
         {
-            JMbr mem;
-            if (TryGet(name, out mem))
+            JMbr mbr;
+            if (TryGet(name, out mbr))
             {
-                JObj jobj = mem;
+                JObj jobj = mbr;
                 if (jobj != null)
                 {
                     v = new D();
@@ -302,10 +302,10 @@ namespace Greatbone.Core
 
         public bool Get<D>(string name, ref D[] v, int proj = 0) where D : IData, new()
         {
-            JMbr mem;
-            if (TryGet(name, out mem))
+            JMbr mbr;
+            if (TryGet(name, out mbr))
             {
-                JArr ja = mem;
+                JArr ja = mbr;
                 if (ja != null)
                 {
                     v = new D[ja.Count];
@@ -324,16 +324,16 @@ namespace Greatbone.Core
 
         public bool Get<D>(string name, ref List<D> v, int proj = 0) where D : IData, new()
         {
-            JMbr mem;
-            if (TryGet(name, out mem))
+            JMbr mbr;
+            if (TryGet(name, out mbr))
             {
-                JArr jarr = mem;
-                if (jarr != null)
+                JArr ja = mbr;
+                if (ja != null)
                 {
-                    v = new List<D>(jarr.Count + 8);
-                    for (int i = 0; i < jarr.Count; i++)
+                    v = new List<D>(ja.Count + 8);
+                    for (int i = 0; i < ja.Count; i++)
                     {
-                        JObj jo = jarr[i];
+                        JObj jo = ja[i];
                         D obj = new D();
                         obj.ReadData(jo);
                         v.Add(obj);
@@ -365,35 +365,35 @@ namespace Greatbone.Core
         {
             for (int i = 0; i < Count; i++)
             {
-                JMbr mem = this[i];
-                JType t = mem.type;
+                JMbr mbr = this[i];
+                JType t = mbr.type;
                 if (t == JType.Array)
                 {
-                    o.Put(mem.Name, (JArr) mem);
+                    o.Put(mbr.Name, (JArr)mbr);
                 }
                 else if (t == JType.Object)
                 {
-                    o.Put(mem.Name, (JObj) mem);
+                    o.Put(mbr.Name, (JObj)mbr);
                 }
                 else if (t == JType.String)
                 {
-                    o.Put(mem.Name, (string) mem);
+                    o.Put(mbr.Name, (string)mbr);
                 }
                 else if (t == JType.Number)
                 {
-                    o.Put(mem.Name, (JNumber) mem);
+                    o.Put(mbr.Name, (JNumber)mbr);
                 }
                 else if (t == JType.True)
                 {
-                    o.Put(mem.Name, true);
+                    o.Put(mbr.Name, true);
                 }
                 else if (t == JType.False)
                 {
-                    o.Put(mem.Name, false);
+                    o.Put(mbr.Name, false);
                 }
                 else if (t == JType.Null)
                 {
-                    o.PutNull(mem.Name);
+                    o.PutNull(mbr.Name);
                 }
             }
         }

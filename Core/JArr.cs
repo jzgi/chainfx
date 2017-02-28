@@ -23,11 +23,27 @@ namespace Greatbone.Core
             current = -1;
         }
 
+        public JArr(params int[] elems) : this(elems.Length)
+        {
+            for (int i = 0; i < elems.Length; i++)
+            {
+                Add(new JMbr(null, elems[i]));
+            }
+        }
+
+        public JArr(params string[] elems) : this(elems.Length)
+        {
+            for (int i = 0; i < elems.Length; i++)
+            {
+                Add(new JMbr(null, elems[i]));
+            }
+        }
+
         public JMbr this[int index] => elements[index];
 
         public int Count => count;
 
-        internal void Add(JMbr mem)
+        internal void Add(JMbr e)
         {
             int len = elements.Length;
             if (count >= len)
@@ -36,13 +52,13 @@ namespace Greatbone.Core
                 Array.Copy(elements, 0, alloc, 0, len);
                 elements = alloc;
             }
-            elements[count++] = mem;
+            elements[count++] = e;
         }
 
         public bool Get(string name, ref bool v)
         {
-            JObj jobj = elements[current];
-            return jobj != null && jobj.Get(name, ref v);
+            JObj jo = elements[current];
+            return jo != null && jo.Get(name, ref v);
         }
 
         public bool Get(string name, ref short v)
@@ -194,23 +210,23 @@ namespace Greatbone.Core
         {
             for (int i = 0; i < count; i++)
             {
-                JMbr mem = elements[i];
-                JType t = mem.type;
+                JMbr mbr = elements[i];
+                JType t = mbr.type;
                 if (t == JType.Array)
                 {
-                    o.Put(null, (JArr)mem);
+                    o.Put(null, (JArr)mbr);
                 }
                 else if (t == JType.Object)
                 {
-                    o.Put(null, (JObj)mem);
+                    o.Put(null, (JObj)mbr);
                 }
                 else if (t == JType.String)
                 {
-                    o.Put(null, (string)mem);
+                    o.Put(null, (string)mbr);
                 }
                 else if (t == JType.Number)
                 {
-                    o.Put(null, (JNumber)mem);
+                    o.Put(null, (JNumber)mbr);
                 }
                 else if (t == JType.True)
                 {
@@ -248,11 +264,6 @@ namespace Greatbone.Core
             string str = cont.ToString();
             BufferUtility.Return(cont);
             return str;
-        }
-
-        public bool Get(string name, ref IDataInput v)
-        {
-            throw new NotImplementedException();
         }
     }
 }

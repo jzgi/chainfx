@@ -2,7 +2,7 @@
 
 namespace Greatbone.Sample
 {
-    public class Program
+    public class Program : ServerMain
     {
         ///
         /// The program's entry point.
@@ -27,29 +27,34 @@ namespace Greatbone.Sample
                 new JMbr("comm", "http://localhost:8081"),
             };
 
+            JObj wexin = new JObj{
+                new JMbr("appid", "wxf2820fd58bf8745f"),
+                new JMbr("appsecret", "85912d26f108b6a3d9fd2fa4aa8f0b83"),
+            };
+
 #if DEBUG
-            ServiceUtility.Create<OpService>("op", new JObj{
-                new JMbr("address", "http://localhost:8080"),
+            Create<OpService>("op", new JObj{
+                new JMbr("addresses", new JArr("http://localhost:8080")),
                 new JMbr("auth", auth),
                 new JMbr("db", pg),
                 new JMbr("cluster", cluster),
             });
 #else
-            ServiceUtility.Create<OpService>("op");
+            Create<OpService>("op");
 #endif
 
 #if DEBUG
-            ServiceUtility.Create<OpService>("comm", new JObj{
-                new JMbr("address", "http://localhost:8081"),
+            ServerMain.Create<OpService>("comm", new JObj{
+                new JMbr("addresses", new JArr("http://localhost:8081")),
                 new JMbr("auth", auth),
                 new JMbr("db", pg),
                 new JMbr("cluster", cluster),
             });
 #else
-            ServiceUtility.Create<OpService>("comm");
+            Create<OpService>("comm");
 #endif
 
-            ServiceUtility.StartAll();
+            StartAll();
         }
     }
 }

@@ -7,7 +7,7 @@ using System.IO;
 
 namespace Greatbone.Core
 {
-    public static class ServiceUtility
+    public class ServerMain
     {
         const string CfgFile = "$web.json";
 

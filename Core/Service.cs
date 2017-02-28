@@ -1,7 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Data;
-using System.Diagnostics;
 using System.IO;
 using System.Reflection;
 using System.Text;
@@ -75,14 +74,11 @@ namespace Greatbone.Core
             factory.AddProvider(this);
             string file = fc.GetFilePath('$' + DateTime.Now.ToString("yyyyMM") + ".log");
             FileStream fs = new FileStream(file, FileMode.Append, FileAccess.Write);
-            logWriter = new StreamWriter(fs, Encoding.UTF8, 1024 * 4, false)
-            {
-                AutoFlush = true
-            };
+            logWriter = new StreamWriter(fs, Encoding.UTF8, 1024 * 4, false) { AutoFlush = true };
 
             // create kestrel instance
             KestrelServerOptions options = new KestrelServerOptions();
-            server = new KestrelServer(Options.Create(options), ServiceUtility.Lifetime, factory);
+            server = new KestrelServer(Options.Create(options), ServerMain.Lifetime, factory);
             ICollection<string> addrs = server.Features.Get<IServerAddressesFeature>().Addresses;
             if (addresses == null)
             {
