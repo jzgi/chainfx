@@ -78,7 +78,7 @@ namespace Greatbone.Core
 
             // create kestrel instance
             KestrelServerOptions options = new KestrelServerOptions();
-            server = new KestrelServer(Options.Create(options), ServerMain.Lifetime, factory);
+            server = new KestrelServer(Options.Create(options), Application.Lifetime, factory);
             ICollection<string> addrs = server.Features.Get<IServerAddressesFeature>().Addresses;
             if (addresses == null)
             {
@@ -243,26 +243,24 @@ namespace Greatbone.Core
                     await folder.HandleAsync(relative, ac);
                 }
             }
-            catch (Exception e)
+            catch (ParseException e)
             {
-                if (e is ParseException)
-                {
-                    ac.Reply(400, e.Message); // bad request
-                }
-                else if (e is CheckException)
-                {
-                    if (ac.Token == null) { Challenge(ac); }
-                    else
-                    {
-                        ac.Reply(403); // forbidden
-                    }
-                }
+                ac.Reply(400, e.Message); // bad request
+            }
+            catch (CheckException e)
+            {
+                if (ac.Token == null) { Challenge(ac); }
                 else
                 {
-                    DBG(e.Message, e);
-                    ac.Reply(500, e.Message);
+                    ac.Reply(403); // forbidden
                 }
             }
+            catch (Exception e)
+            {
+                DBG(e.Message, e);
+                ac.Reply(500, e.Message);
+            }
+
 
             // prepare and send
             try
@@ -291,6 +289,30 @@ namespace Greatbone.Core
                 dc.Begin(level.Value);
             }
             return dc;
+        }
+
+        volatile string connstr;
+
+        public string ConnectionString
+        {
+            get
+            {
+                if (connstr == null)
+                {
+                    StringBuilder sb = new StringBuilder();
+                    sb.Append("Host=").Append(db.host);
+                    sb.Append(";Port=").Append(db.port);
+                    sb.Append(";Database=").Append(db.database ?? Name);
+                    sb.Append(";Username=").Append(db.username);
+                    sb.Append(";Password=").Append(db.password);
+                    sb.Append(";Read Buffer Size=").Append(1024 * 32);
+                    sb.Append(";Write Buffer Size=").Append(1024 * 32);
+                    sb.Append(";No Reset On Close=").Append(true);
+
+                    connstr = sb.ToString();
+                }
+                return connstr;
+            }
         }
 
         //
@@ -431,29 +453,6 @@ namespace Greatbone.Core
             }
         }
 
-        volatile string connstr;
-
-        public string ConnectionString
-        {
-            get
-            {
-                if (connstr == null)
-                {
-                    StringBuilder sb = new StringBuilder();
-                    sb.Append("Host=").Append(db.host);
-                    sb.Append(";Port=").Append(db.port);
-                    sb.Append(";Database=").Append(db.database ?? Name);
-                    sb.Append(";Username=").Append(db.username);
-                    sb.Append(";Password=").Append(db.password);
-                    sb.Append(";Read Buffer Size=").Append(1024 * 32);
-                    sb.Append(";Write Buffer Size=").Append(1024 * 32);
-                    sb.Append(";No Reset On Close=").Append(true);
-
-                    connstr = sb.ToString();
-                }
-                return connstr;
-            }
-        }
         ///
         /// The DB configuration embedded in a service context.
         ///

@@ -2,10 +2,10 @@
 
 namespace Greatbone.Sample
 {
-    public class Program : ServerMain
+    public class Program : Application
     {
         ///
-        /// The program's entry point.
+        /// The application entry point.
         ///
         public static void Main(string[] args)
         {
@@ -23,7 +23,7 @@ namespace Greatbone.Sample
             };
 
             JObj cluster = new JObj{
-                new JMbr("op", "http://localhost:8080#00000000"),
+                new JMbr("op", "http://localhost:8080"),
                 new JMbr("comm", "http://localhost:8081"),
             };
 
@@ -32,27 +32,27 @@ namespace Greatbone.Sample
                 new JMbr("appsecret", "85912d26f108b6a3d9fd2fa4aa8f0b83"),
             };
 
+            Create<OpService>("op",
 #if DEBUG
-            Create<OpService>("op", new JObj{
+            new JObj{
                 new JMbr("addresses", new JArr("http://localhost:8080")),
                 new JMbr("auth", auth),
                 new JMbr("db", pg),
-                new JMbr("cluster", cluster),
-            });
-#else
-            Create<OpService>("op");
+                new JMbr("cluster", cluster)
+            }
 #endif
+            );
 
+            Create<CommService>("comm",
 #if DEBUG
-            ServerMain.Create<OpService>("comm", new JObj{
+            new JObj{
                 new JMbr("addresses", new JArr("http://localhost:8081")),
                 new JMbr("auth", auth),
                 new JMbr("db", pg),
                 new JMbr("cluster", cluster),
-            });
-#else
-            Create<OpService>("comm");
+            }
 #endif
+            );
 
             StartAll();
         }

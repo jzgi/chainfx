@@ -7,7 +7,7 @@ using System.IO;
 
 namespace Greatbone.Core
 {
-    public class ServerMain
+    public class Application
     {
         const string CfgFile = "$web.json";
 
@@ -20,7 +20,7 @@ namespace Greatbone.Core
 
         public static S Create<S>(string name, JObj cfgjo = null, CheckAttribute[] checks = null, UiAttribute ui = null) where S : Service
         {
-            if (cfgjo == null) // load configuration file
+            if (cfgjo == null) // need to load configuration file
             {
                 if (File.Exists(CfgFile))
                 {
@@ -41,7 +41,7 @@ namespace Greatbone.Core
             {
                 throw new ServiceException(typ + " missing FolderContext");
             }
-            FolderContext ctx = new FolderContext(name)
+            FolderContext fc = new FolderContext(name)
             {
                 Checks = checks,
                 Ui = ui,
@@ -51,9 +51,9 @@ namespace Greatbone.Core
                 Directory = name,
                 Config = cfgjo
             };
-            S svc = (S)ci.Invoke(new object[] { ctx });
-            Services.Add(svc);
-            return svc;
+            S service = (S)ci.Invoke(new object[] { fc });
+            Services.Add(service);
+            return service;
         }
 
         /// 
