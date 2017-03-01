@@ -569,11 +569,6 @@ namespace Greatbone.Core
             throw new NotImplementedException();
         }
 
-        public bool Get(string name, ref Dictionary<string, string> v)
-        {
-            throw new NotImplementedException();
-        }
-
         public bool Get(string name, ref short[] v)
         {
             int ord = name == null ? ordinal++ : reader.GetOrdinal(name);

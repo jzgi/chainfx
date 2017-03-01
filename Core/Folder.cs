@@ -13,7 +13,7 @@ namespace Greatbone.Core
     public abstract class Folder : Nodule
     {
         // max nesting levels
-        const int Nesting = 4;
+        const int MaxNesting = 6;
 
         // underlying file directory name
         const string _VAR_ = "VAR";
@@ -70,7 +70,7 @@ namespace Greatbone.Core
                 // to override annotated attributes
                 if (fc.Checks != null)
                 {
-                    accesses = fc.Checks;
+                    checks = fc.Checks;
                 }
                 if (fc.Ui != null)
                 {
@@ -82,11 +82,11 @@ namespace Greatbone.Core
         ///
         /// Create a subfolder.
         ///
-        public F Create<F>(string name, CheckAttribute[] accesses = null, UiAttribute ui = null) where F : Folder
+        public F Create<F>(string name, CheckAttribute[] checks = null, UiAttribute ui = null) where F : Folder
         {
-            if (Level >= Nesting)
+            if (Level >= MaxNesting)
             {
-                throw new ServiceException("allowed folder nesting " + Nesting);
+                throw new ServiceException("allowed folder nesting " + MaxNesting);
             }
 
             if (subs == null)
@@ -100,18 +100,18 @@ namespace Greatbone.Core
             {
                 throw new ServiceException(typ + " missing FolderContext");
             }
-            FolderContext ctx = new FolderContext(name)
+            FolderContext fc = new FolderContext(name)
             {
-                Checks = accesses,
+                Checks = checks,
                 Ui = ui,
                 IsVar = false,
                 Parent = this,
                 Level = Level + 1,
                 Directory = (Parent == null) ? name : Path.Combine(Parent.Directory, name),
                 Service = Service,
-                Configuration = context.Configuration
+                Config = context.Config
             };
-            F folder = (F)ci.Invoke(new object[] { ctx });
+            F folder = (F)ci.Invoke(new object[] { fc });
             subs.Add(folder);
 
             return folder;
@@ -120,11 +120,11 @@ namespace Greatbone.Core
         ///
         /// Create a variable-key subfolder.
         ///
-        public F CreateVar<F>(CheckAttribute[] accesses = null) where F : Folder, IVar
+        public F CreateVar<F>(CheckAttribute[] checks = null) where F : Folder, IVar
         {
-            if (Level >= Nesting)
+            if (Level >= MaxNesting)
             {
-                throw new ServiceException("allowed folder nesting " + Nesting);
+                throw new ServiceException("allowed folder nesting " + MaxNesting);
             }
 
             // create instance
@@ -134,16 +134,16 @@ namespace Greatbone.Core
             {
                 throw new ServiceException(typ + " missing FolderContext");
             }
-            FolderContext ctx = new FolderContext(_VAR_)
+            FolderContext fc = new FolderContext(_VAR_)
             {
-                Checks = accesses,
+                Checks = checks,
                 IsVar = true,
                 Parent = this,
                 Level = Level + 1,
                 Directory = (Parent == null) ? _VAR_ : Path.Combine(Parent.Directory, _VAR_),
                 Service = Service
             };
-            F folder = (F)ci.Invoke(new object[] { ctx });
+            F folder = (F)ci.Invoke(new object[] { fc });
             varsub = folder;
 
             return folder;
@@ -154,8 +154,6 @@ namespace Greatbone.Core
         public Roll<Folder> Subs => subs;
 
         public Folder VarSub => varsub;
-
-        public FolderContext Context => context;
 
         public bool IsVar => context.IsVar;
 
@@ -208,13 +206,13 @@ namespace Greatbone.Core
             return actions[method];
         }
 
-        public List<ActionInfo> GetModalActions(Type accesstyp)
+        public List<ActionInfo> GetModalActions(Type checktyp)
         {
             List<ActionInfo> lst = null;
             for (int i = 0; i < actions.Count; i++)
             {
                 ActionInfo a = actions[i];
-                if (a.IsModal && a.HasAccess(accesstyp))
+                if (a.IsModal && a.HasCheck(checktyp))
                 {
                     if (lst == null) lst = new List<ActionInfo>();
                     lst.Add(a);
@@ -229,7 +227,7 @@ namespace Greatbone.Core
             for (int i = 0; i < actions.Count; i++)
             {
                 ActionInfo a = actions[i];
-                if (a.IsModal && a.CheckAccess(ac))
+                if (a.IsModal && a.Check(ac))
                 {
                     if (lst == null) lst = new List<ActionInfo>();
                     lst.Add(a);
@@ -241,7 +239,7 @@ namespace Greatbone.Core
         internal Folder ResolveFolder(ref string relative, ActionContext ac)
         {
             // access check 
-            if (!CheckAccess(ac)) throw AccessEx;
+            if (!Check(ac)) throw AccessEx;
 
             int slash = relative.IndexOf('/');
             if (slash == -1)
@@ -298,7 +296,7 @@ namespace Greatbone.Core
                 }
 
                 // access check
-                if (!actn.CheckAccess(ac)) throw AccessEx;
+                if (!actn.Check(ac)) throw AccessEx;
 
                 // try in cache
 

@@ -57,8 +57,8 @@ namespace Greatbone.Core
 
         protected Service(FolderContext fc) : base(fc)
         {
-
-            JObj cfg = fc.Configuration;
+            // take relavant config
+            JObj cfg = fc.Config;
             cfg.Get(nameof(shard), ref shard);
             cfg.Get(nameof(addresses), ref addresses);
             cfg.Get(nameof(db), ref db);
@@ -89,7 +89,7 @@ namespace Greatbone.Core
                 addrs.Add(a.Trim());
             }
 
-            // initialize event handlers
+            // events
             Type typ = GetType();
             foreach (MethodInfo mi in typ.GetMethods(BindingFlags.Public | BindingFlags.Instance))
             {
@@ -119,7 +119,7 @@ namespace Greatbone.Core
                 events.Add(evt);
             }
 
-            // initialize connectivities to the cluster members
+            // cluster connectivity
             JObj cluster = cfg[nameof(cluster)];
             if (cluster != null)
             {
@@ -140,7 +140,7 @@ namespace Greatbone.Core
                 }
             }
 
-            // initialize response cache
+            // response cache
             cache = new ActionCache(Environment.ProcessorCount * 2, 4096);
 
         }
@@ -297,12 +297,12 @@ namespace Greatbone.Core
         // CLUSTER
         //
 
-        internal Client GetClient(string svcid)
+        internal Client GetClient(string moniker)
         {
             for (int i = 0; i < clients.Count; i++)
             {
                 Client cli = clients[i];
-                if (cli.Name.Equals(svcid)) return cli;
+                if (cli.Name.Equals(moniker)) return cli;
             }
             return null;
         }
@@ -454,108 +454,6 @@ namespace Greatbone.Core
                 return connstr;
             }
         }
-        // hexidecimal characters
-        protected static readonly char[] HEX =
-        {
-            '0', '1', '2', '3', '4', '5', '6', '7', '8', '9', 'A', 'B', 'C', 'D', 'E', 'F'
-        };
-
-        public string Encrypt(IData token)
-        {
-            if (auth == null) return null;
-
-            JsonContent cont = new JsonContent(true, true, 4096); // borrow
-            cont.Put(null, token);
-            byte[] bytebuf = cont.ByteBuffer;
-            int count = cont.Size;
-
-            int mask = auth.mask;
-            int[] masks = { (mask >> 24) & 0xff, (mask >> 16) & 0xff, (mask >> 8) & 0xff, mask & 0xff };
-            char[] charbuf = new char[count * 2]; // the target 
-            int p = 0;
-            for (int i = 0; i < count; i++)
-            {
-                // masking
-                int b = bytebuf[i] ^ masks[i % 4];
-
-                //transform
-                charbuf[p++] = HEX[(b >> 4) & 0x0f];
-                charbuf[p++] = HEX[(b) & 0x0f];
-
-                // reordering
-            }
-            // return pool
-            BufferUtility.Return(bytebuf);
-
-            return new string(charbuf, 0, charbuf.Length);
-        }
-
-        public string Decrypt(string tokenstr)
-        {
-            if (auth == null) return null;
-
-            int mask = auth.mask;
-            int[] masks = { (mask >> 24) & 0xff, (mask >> 16) & 0xff, (mask >> 8) & 0xff, mask & 0xff };
-            int len = tokenstr.Length / 2;
-            Text str = new Text(256);
-            int p = 0;
-            for (int i = 0; i < len; i++)
-            {
-                // reordering
-
-                // transform to byte
-                int b = (byte)(Dv(tokenstr[p++]) << 4 | Dv(tokenstr[p++]));
-
-                // masking
-                str.Accept((byte)(b ^ masks[i % 4]));
-            }
-            return str.ToString();
-        }
-
-
-        // return digit value
-        static int Dv(char hex)
-        {
-            int v = hex - '0';
-            if (v >= 0 && v <= 9)
-            {
-                return v;
-            }
-            v = hex - 'A';
-            if (v >= 0 && v <= 5) return 10 + v;
-            return 0;
-        }
-
-        public void SetBearerCookie(ActionContext ac, IData token)
-        {
-            StringBuilder sb = new StringBuilder("Bearer=");
-            string tokenstr = Encrypt(token);
-            sb.Append(tokenstr);
-            sb.Append("; HttpOnly");
-            if (auth.maxage != 0)
-            {
-                sb.Append("; Max-Age=").Append(auth.maxage);
-            }
-            // detect domain from the Host header
-            string host = ac.Header("Host");
-            if (!string.IsNullOrEmpty(host))
-            {
-                // if the last part is not numeric
-                int lastdot = host.LastIndexOf('.');
-                if (lastdot > -1 && !char.IsDigit(host[lastdot + 1])) // a domain name is given
-                {
-                    int dot = host.LastIndexOf('.', lastdot - 1);
-                    if (dot != -1)
-                    {
-                        string domain = host.Substring(dot + 1);
-                        sb.Append("; Domain=").Append(domain);
-                    }
-                }
-            }
-            // set header
-            ac.SetHeader("Set-Cookie", sb.ToString());
-        }
-
         ///
         /// The DB configuration embedded in a service context.
         ///
@@ -607,6 +505,8 @@ namespace Greatbone.Core
             // The number of seconds that a signon durates, or null if session-wide.
             public int maxage;
 
+            public string domain;
+
             // The service instance that does signon. Can be null if local
             public string moniker;
 
@@ -615,6 +515,7 @@ namespace Greatbone.Core
                 i.Get(nameof(mask), ref mask);
                 i.Get(nameof(pose), ref pose);
                 i.Get(nameof(maxage), ref maxage);
+                i.Get(nameof(domain), ref domain);
                 i.Get(nameof(moniker), ref moniker);
             }
 
@@ -623,6 +524,7 @@ namespace Greatbone.Core
                 o.Put(nameof(mask), mask);
                 o.Put(nameof(pose), pose);
                 o.Put(nameof(maxage), maxage);
+                o.Put(nameof(domain), domain);
                 o.Put(nameof(moniker), moniker);
             }
         }
@@ -631,24 +533,22 @@ namespace Greatbone.Core
     ///
     /// A microservice that implements authentication and authorization.
     ///
-    public abstract class Service<TToken> : Service where TToken : IData, new()
+    public abstract class Service<TToken> : Service where TToken : class, IData, new()
     {
         protected Service(FolderContext fc) : base(fc) { }
 
         protected override void Authenticate(ActionContext ac)
         {
-            string tokstr;
+            string toktext;
             string hv = ac.Header("Authorization");
             if (hv != null && hv.StartsWith("Bearer ")) // the Bearer scheme
             {
-                tokstr = hv.Substring(7);
-                string jsonstr = Decrypt(tokstr);
-                ac.Token = JsonUtility.StringToObject<TToken>(jsonstr);
+                toktext = hv.Substring(7);
+                ac.Token = Decrypt(toktext);
             }
-            else if (ac.Cookies.TryGetValue("Bearer", out tokstr))
+            else if (ac.Cookies.TryGetValue("Bearer", out toktext))
             {
-                string jsonstr = Decrypt(tokstr);
-                ac.Token = JsonUtility.StringToObject<TToken>(jsonstr);
+                ac.Token = Decrypt(toktext);
             }
         }
 
@@ -666,6 +566,118 @@ namespace Greatbone.Core
                 ac.SetHeader("WWW-Authenticate", "Bearer");
                 ac.Reply(401); // unauthorized
             }
+        }
+
+        public void SetCookies(ActionContext ac, TToken tok, string identity = null)
+        {
+            // set bearer cookie
+            //
+
+            StringBuilder sb = new StringBuilder("Bearer=");
+            string toktext = Encrypt(tok);
+            sb.Append(toktext);
+            if (auth.maxage > 0)
+            {
+                sb.Append("; Max-Age=").Append(auth.maxage);
+            }
+            if (auth.domain != null)
+            {
+                sb.Append("; Domain=").Append(auth.domain);
+            }
+            sb.Append("; HttpOnly");
+            ac.SetHeader("Set-Cookie", sb.ToString());
+
+            // set identity cookie
+            //
+
+            if (identity != null)
+            {
+                sb.Clear().Append("Identity="); ;
+                sb.Append(identity);
+                if (auth.maxage > 0)
+                {
+                    sb.Append("; Max-Age=").Append(auth.maxage);
+                }
+                if (auth.domain != null)
+                {
+                    sb.Append("; Domain=").Append(auth.domain);
+                }
+                ac.SetHeader("Set-Cookie", sb.ToString());
+            }
+        }
+
+        public string Encrypt(TToken token)
+        {
+            if (auth == null) return null;
+
+            JsonContent cont = new JsonContent(true, true, 4096); // borrow
+            cont.Put(null, token);
+            byte[] bytebuf = cont.ByteBuffer;
+            int count = cont.Size;
+
+            int mask = auth.mask;
+            int[] masks = { (mask >> 24) & 0xff, (mask >> 16) & 0xff, (mask >> 8) & 0xff, mask & 0xff };
+            char[] charbuf = new char[count * 2]; // the target 
+            int p = 0;
+            for (int i = 0; i < count; i++)
+            {
+                // masking
+                int b = bytebuf[i] ^ masks[i % 4];
+
+                //transform
+                charbuf[p++] = HEX[(b >> 4) & 0x0f];
+                charbuf[p++] = HEX[(b) & 0x0f];
+
+                // reordering
+            }
+            // return pool
+            BufferUtility.Return(bytebuf);
+
+            return new string(charbuf, 0, charbuf.Length);
+        }
+
+        public TToken Decrypt(string toktext)
+        {
+            if (auth == null) return null;
+
+            int mask = auth.mask;
+            int[] masks = { (mask >> 24) & 0xff, (mask >> 16) & 0xff, (mask >> 8) & 0xff, mask & 0xff };
+            int len = toktext.Length / 2;
+            Text str = new Text(256);
+            int p = 0;
+            for (int i = 0; i < len; i++)
+            {
+                // reordering
+
+                // transform to byte
+                int b = (byte)(Dv(toktext[p++]) << 4 | Dv(toktext[p++]));
+
+                // masking
+                str.Accept((byte)(b ^ masks[i % 4]));
+            }
+
+            JsonParse parse = new JsonParse(str.ToString());
+            JObj jo = (JObj)parse.Parse();
+            return jo.ToObject<TToken>();
+        }
+
+        // hexidecimal characters
+        protected static readonly char[] HEX =
+        {
+            '0', '1', '2', '3', '4', '5', '6', '7', '8', '9', 'A', 'B', 'C', 'D', 'E', 'F'
+        };
+
+        // return digit value
+        static int Dv(char hex)
+        {
+            int v = hex - '0';
+            if (v >= 0 && v <= 9)
+            {
+                return v;
+            }
+            v = hex - 'A';
+            if (v >= 0 && v <= 5) return 10 + v;
+            return 0;
         }
     }
 }

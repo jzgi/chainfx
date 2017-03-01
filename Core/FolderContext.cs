@@ -3,7 +3,7 @@
 namespace Greatbone.Core
 {
     ///
-    /// The context for a particular node in the web folder hierarchy.
+    /// The environment for a particular folder.
     ///
     public class FolderContext
     {
@@ -26,16 +26,17 @@ namespace Greatbone.Core
 
         public Folder Parent { get; internal set; }
 
-        public virtual string Directory { get; internal set; }
+        public string Directory { get; internal set; }
 
         public Service Service { get; internal set; }
 
-        public JObj Configuration { get; internal set; }
+        /// The global configuration.
+        ///
+        public JObj Config { get; internal set; }
 
         public string GetFilePath(string file)
         {
             return Path.Combine(Directory, file);
         }
-
     }
 }

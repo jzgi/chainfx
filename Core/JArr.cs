@@ -133,12 +133,6 @@ namespace Greatbone.Core
             return jo != null && jo.Get(name, ref v, proj);
         }
 
-        public bool Get(string name, ref Dictionary<string, string> v)
-        {
-            JObj jo = elements[current];
-            return jo != null && jo.Get(name, ref v);
-        }
-
         public bool Get(string name, ref short[] v)
         {
             JObj jo = elements[current];

@@ -29,20 +29,20 @@ namespace Greatbone.Core
         public string TokenText { get; internal set; }
 
         // levels of keys along the URI path
-        Segment[] segs;
+        Segment[] segments;
 
         int segnum; // actual number of knots
 
         internal void Chain(string key, Folder folder)
         {
-            if (segs == null)
+            if (segments == null)
             {
-                segs = new Segment[4];
+                segments = new Segment[4];
             }
-            segs[segnum++] = new Segment(key, folder);
+            segments[segnum++] = new Segment(key, folder);
         }
 
-        public Segment this[int level] => segs[level];
+        public Segment this[int level] => segments[level];
 
         public Segment this[Type folderType]
         {
@@ -50,8 +50,8 @@ namespace Greatbone.Core
             {
                 for (int i = 0; i < segnum; i++)
                 {
-                    Segment v = segs[i];
-                    if (v.Type == folderType) return v;
+                    Segment seg = segments[i];
+                    if (seg.Type == folderType) return seg;
                 }
                 return default(Segment);
             }
@@ -63,8 +63,8 @@ namespace Greatbone.Core
             {
                 for (int i = 0; i < segnum; i++)
                 {
-                    Segment v = segs[i];
-                    if (v.Folder == folder) return v;
+                    Segment seg = segments[i];
+                    if (seg.Folder == folder) return seg;
                 }
                 return default(Segment);
             }

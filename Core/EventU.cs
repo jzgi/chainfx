@@ -6,12 +6,9 @@ namespace Greatbone.Core
     {
         FileStream stream;
 
-        EventU(
-            Service service
-        )
+        EventU(Service service)
         {
-            stream = new FileStream(service.Context.GetFilePath(""), FileMode.OpenOrCreate, FileAccess.ReadWrite);
-
+            // stream = new FileStream(service.GetFilePath(""), FileMode.OpenOrCreate, FileAccess.ReadWrite);
         }
 
         public int GetPointer(string moniker)

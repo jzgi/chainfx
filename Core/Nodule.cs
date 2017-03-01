@@ -15,7 +15,7 @@ namespace Greatbone.Core
         readonly string name;
 
         // access checks
-        internal CheckAttribute[] accesses;
+        internal CheckAttribute[] checks;
 
         // filtering
         readonly FilterAttribute[] filters;
@@ -33,17 +33,17 @@ namespace Greatbone.Core
             }
 
             // roles
-            List<CheckAttribute> accesslst = null;
-            foreach (var access in (CheckAttribute[])attrs.GetCustomAttributes(typeof(CheckAttribute), false))
+            List<CheckAttribute> checklst = null;
+            foreach (var check in (CheckAttribute[])attrs.GetCustomAttributes(typeof(CheckAttribute), false))
             {
-                if (accesslst == null)
+                if (checklst == null)
                 {
-                    accesslst = new List<CheckAttribute>(8);
+                    checklst = new List<CheckAttribute>(8);
                 }
-                access.Nodule = this;
-                accesslst.Add(access);
+                check.Nodule = this;
+                checklst.Add(check);
             }
-            this.accesses = accesslst?.ToArray();
+            this.checks = checklst?.ToArray();
 
             // filters
             List<FilterAttribute> filterlst = null;
@@ -72,13 +72,13 @@ namespace Greatbone.Core
 
         public UiAttribute Ui => ui;
 
-        public bool HasAccess(Type accesstyp)
+        public bool HasCheck(Type checktyp)
         {
-            if (accesses != null)
+            if (checks != null)
             {
-                for (int i = 0; i < accesses.Length; i++)
+                for (int i = 0; i < checks.Length; i++)
                 {
-                    if (accesses[i].GetType() == accesstyp) return true;
+                    if (checks[i].GetType() == checktyp) return true;
                 }
             }
             return false;
@@ -88,16 +88,16 @@ namespace Greatbone.Core
 
         public bool IsModal => ui != null && ui.Modal > 0;
 
-        public bool CheckAccess(ActionContext ac)
+        public bool Check(ActionContext ac)
         {
-            if (accesses != null)
+            if (checks != null)
             {
                 if (ac.Token == null) return false;
 
                 // run checks
-                for (int i = 0; i < accesses.Length; i++)
+                for (int i = 0; i < checks.Length; i++)
                 {
-                    if (!accesses[i].Check(ac))
+                    if (!checks[i].Check(ac))
                     {
                         return false;
                     }

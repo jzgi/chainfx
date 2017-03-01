@@ -262,28 +262,6 @@ namespace Greatbone.Core
             return false;
         }
 
-        public bool Get(string name, ref Dictionary<string, string> v)
-        {
-            JMbr mbr;
-            if (TryGet(name, out mbr))
-            {
-                if (mbr.type == JType.Object)
-                {
-                    JObj jo = mbr;
-                    int count = jo.Count;
-                    Dictionary<string, string> dict = new Dictionary<string, string>(count);
-                    for (int i = 0; i < count; i++)
-                    {
-                        JMbr e = jo[i];
-                        dict.Add(e.Name, e);
-                    }
-                    v = dict;
-                    return true;
-                }
-            }
-            return false;
-        }
-
         public bool Get<D>(string name, ref D v, int proj = 0) where D : IData, new()
         {
             JMbr mbr;

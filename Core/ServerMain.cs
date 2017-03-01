@@ -49,7 +49,7 @@ namespace Greatbone.Core
                 Parent = null,
                 Level = 0,
                 Directory = name,
-                Configuration = cfgjo
+                Config = cfgjo
             };
             S svc = (S)ci.Invoke(new object[] { ctx });
             Services.Add(svc);

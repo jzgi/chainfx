@@ -1,4 +1,5 @@
-﻿using Greatbone.Core;
+﻿using System;
+using Greatbone.Core;
 
 namespace Greatbone.Sample
 {
@@ -14,9 +15,7 @@ namespace Greatbone.Sample
             MKTG = 0x11,
             ACCTG = 0x12,
             CUSTSVC = 0x14,
-
             SHOP = 0x20,
-
             USER = 0x40;
 
         internal string key;
@@ -28,6 +27,9 @@ namespace Greatbone.Sample
         internal int roles;
 
         internal string extra;
+
+
+        public string Key => key;
 
         public bool IsAdmin => (roles & 0x10) == 0x10;
 

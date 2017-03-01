@@ -10,7 +10,7 @@ using static Greatbone.Core.EventQueue;
 namespace Greatbone.Core
 {
     ///
-    /// A client to RPC, service and event queue.
+    /// A client of RPC, service and/or event queue.
     ///
     public class Client : HttpClient, IRollable
     {

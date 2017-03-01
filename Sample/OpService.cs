@@ -116,7 +116,7 @@ namespace Greatbone.Sample
                             var shop = dc.ToObject<Shop>();
                             if (credential.Equals(shop.credential))
                             {
-                                SetBearerCookie(ac, shop.ToToken());
+                                SetCookies(ac, shop.ToToken());
                                 ac.ReplyRedirect(login.orig);
                                 return;
                             }
@@ -134,7 +134,7 @@ namespace Greatbone.Sample
                             var user = dc.ToObject<User>();
                             if (credential.Equals(user.credential))
                             {
-                                SetBearerCookie(ac, user.ToToken());
+                                SetCookies(ac, user.ToToken());
                                 ac.ReplyRedirect(login.orig);
                                 return;
                             }
@@ -148,7 +148,7 @@ namespace Greatbone.Sample
                     var admin = admins.Find(a => a.id == login.id && credential.Equals(a.credential));
                     if (admin != null)
                     {
-                        SetBearerCookie(ac, admin.ToToken());
+                        SetCookies(ac, admin.ToToken());
                         ac.ReplyRedirect(login.orig);
                         return;
                     }
