@@ -7,7 +7,7 @@ namespace Greatbone.Core
     /// 
     /// The descriptor of an event handler method.
     /// 
-    public class EventInfo : IHandler
+    public class EventInfo : IDoer
     {
         readonly Service service;
 

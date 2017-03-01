@@ -82,7 +82,7 @@ namespace Greatbone.Sample
                 m.Add("<form>");
                 m.ctx = HtmlContent.CTX_FORM;
                 obj.WriteData(m, proj);
-                m.BUTTON(ac.Handler);
+                m.BUTTON(ac.Doer);
                 m.Add("</form>");
             },
             null,
@@ -98,7 +98,7 @@ namespace Greatbone.Sample
                 m.Add("<form>");
                 m.ctx = HtmlContent.CTX_FORM;
                 form(m);
-                m.BUTTON(ac.Handler);
+                m.BUTTON(ac.Doer);
                 m.Add("</form>");
             },
             null,

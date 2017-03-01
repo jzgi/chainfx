@@ -6,6 +6,7 @@ using System.Net;
 using System.Net.Http.Headers;
 using System.Text;
 using static Greatbone.Core.EventQueue;
+using System.Data;
 
 namespace Greatbone.Core
 {
@@ -25,32 +26,23 @@ namespace Greatbone.Core
 
         readonly string @event;
 
-        // subdomain name or a reference name
-        readonly string name;
+        // moniker
+        readonly string moniker;
 
-        //
-        // event polling & processing
-        //
+        // this field is only accessed by the scheduler
+        Task pollTask;
 
-        bool connect;
-
-        // last status
-        bool status;
-
-        // tick count
-        int lastConnect;
+        // retry point of time, due to timeout or disconnection
+        int retrypt;
 
         internal long lastid;
 
-        // event last id
-        EventU eventu;
-
         public Client(string raddr) : this(null, null, raddr) { }
 
-        public Client(Service service, string name, string raddr)
+        public Client(Service service, string moniker, string raddr)
         {
             this.service = service;
-            this.name = name;
+            this.moniker = moniker;
 
             if (service != null) // build lastevent poll condition
             {
@@ -71,68 +63,69 @@ namespace Greatbone.Core
             BaseAddress = new Uri(addr);
         }
 
-        public string Name => name;
+        public string Name => moniker;
 
 
-        public void ToPoll(int ticks)
+        public void TryPoll(int ticks)
         {
-            if (lastConnect < 100)
+            if (pollTask != null && !pollTask.IsCompleted)
             {
                 return;
             }
 
-            PollAndDoAsync();
+            pollTask = Task.Run(async () =>
+            {
+                for (;;)
+                {
+                    HttpRequestMessage req = new HttpRequestMessage(HttpMethod.Get, PollUri);
+                    HttpRequestHeaders reqhs = req.Headers;
+                    reqhs.TryAddWithoutValidation("From", service.Moniker);
+                    reqhs.TryAddWithoutValidation(X_EVENT, @event);
+                    reqhs.TryAddWithoutValidation(X_SHARD, service.shard);
+
+                    HttpResponseMessage rsp = await SendAsync(req);
+                    if (rsp.StatusCode == HttpStatusCode.NoContent)
+                    {
+                        break;
+                    }
+
+                    HttpResponseHeaders rsphs = rsp.Headers;
+                    byte[] cont = await rsp.Content.ReadAsByteArrayAsync();
+                    EventContext ec = new EventContext(this)
+                    {
+                        id = rsphs.GetValue(X_ID).ToLong(),
+                        // time = rsphs.GetValue(X_ARG)
+                    };
+
+                    // parse and process one by one
+                    long id = 0;
+                    string name = rsp.Headers.GetValue(X_EVENT);
+                    string arg = rsp.Headers.GetValue(X_ARG);
+                    DateTime time;
+                    EventInfo ei = null;
+
+                    using (var dc = ec.NewDbContext(IsolationLevel.ReadUncommitted))
+                    {
+                        if (service.Events.TryGet(name, out ei))
+                        {
+                            if (ei.IsAsync)
+                            {
+                                await ei.DoAsync(ec, arg);
+                            }
+                            else
+                            {
+                                ei.Do(ec, arg);
+                            }
+                        }
+
+                        // database last id
+                        dc.Execute("UPDATE evtu SET lastid = @1 WHERE moniker = @2", p => p.Set(id).Set(moniker));
+                    }
+                }
+            });
         }
 
         static readonly Uri PollUri = new Uri("*", UriKind.Relative);
-
-        /// NOTE: We make it async void because the scheduler doesn't need to await this method
-        internal async void PollAndDoAsync()
-        {
-            for (;;)
-            {
-                HttpRequestMessage req = new HttpRequestMessage(HttpMethod.Get, PollUri);
-                HttpRequestHeaders headers = req.Headers;
-                headers.TryAddWithoutValidation("From", service.Moniker);
-                headers.TryAddWithoutValidation(X_EVENT, @event);
-                headers.TryAddWithoutValidation(X_SHARD, service.shard);
-
-                HttpResponseMessage resp = await SendAsync(req);
-                if (resp.StatusCode == HttpStatusCode.NoContent)
-                {
-                    break;
-                }
-
-                byte[] cont = await resp.Content.ReadAsByteArrayAsync();
-                EventContext ec = new EventContext(this);
-
-                // parse and process one by one
-                long id = 0;
-                ec.name = resp.Headers.GetValue(X_EVENT);
-                string arg = resp.Headers.GetValue(X_ARG);
-                DateTime time;
-                EventInfo ei = null;
-                if (service.Events.TryGet(name, out ei))
-                {
-                    if (ei.IsAsync)
-                    {
-                        await ei.DoAsync(ec, arg);
-                    }
-                    else
-                    {
-                        ei.Do(ec, arg);
-                    }
-                }
-
-                // database last id
-                eventu.Write(9, id);
-            }
-        }
-
-        internal void SetCancel()
-        {
-            status = false;
-        }
 
         //
         // RPC
@@ -153,9 +146,9 @@ namespace Greatbone.Core
             {
                 req.Headers.Add("Authorization", "Bearer " + ctx.TokenText);
             }
-            HttpResponseMessage resp = await SendAsync(req, HttpCompletionOption.ResponseContentRead);
-            byte[] bytea = await resp.Content.ReadAsByteArrayAsync();
-            string ctyp = resp.Content.Headers.GetValue("Content-Type");
+            HttpResponseMessage rsp = await SendAsync(req, HttpCompletionOption.ResponseContentRead);
+            byte[] bytea = await rsp.Content.ReadAsByteArrayAsync();
+            string ctyp = rsp.Content.Headers.GetValue("Content-Type");
             return (M)WebUtility.ParseContent(ctyp, bytea, 0, bytea.Length);
         }
 
@@ -178,7 +171,7 @@ namespace Greatbone.Core
             {
                 req.Headers.Add("Authorization", "Bearer " + ctx.TokenText);
             }
-            HttpResponseMessage resp = await SendAsync(req, HttpCompletionOption.ResponseContentRead);
+            HttpResponseMessage rsp = await SendAsync(req, HttpCompletionOption.ResponseContentRead);
 
             IDataInput srcset = null;
             return srcset.ToArray<D>(proj);
@@ -191,7 +184,7 @@ namespace Greatbone.Core
             {
                 req.Headers.Add("Authorization", "Bearer " + ctx.TokenText);
             }
-            HttpResponseMessage resp = await SendAsync(req, HttpCompletionOption.ResponseContentRead);
+            HttpResponseMessage rsp = await SendAsync(req, HttpCompletionOption.ResponseContentRead);
 
             IDataInput srcset = null;
             return srcset.ToList<D>(proj);
@@ -227,7 +220,7 @@ namespace Greatbone.Core
         }
 
 
-        public Task<HttpResponseMessage> PostJsonAsync(ActionContext ctx, string uri, object model)
+        public Task<HttpResponseMessage> PostJsonAsync(ActionContext ctx, string uri, object state)
         {
             HttpRequestMessage req = new HttpRequestMessage(HttpMethod.Post, uri);
             if (ctx != null)
@@ -235,20 +228,20 @@ namespace Greatbone.Core
                 req.Headers.Add("Authorization", "Bearer " + ctx.TokenText);
             }
 
-            if (model is Form)
+            if (state is Form)
             {
 
             }
-            else if (model is JObj)
+            else if (state is JObj)
             {
                 JsonContent cont = new JsonContent(true, true);
-                ((JObj)model).WriteData(cont);
+                ((JObj)state).WriteData(cont);
                 req.Content = cont;
             }
-            else if (model is IData)
+            else if (state is IData)
             {
                 JsonContent cont = new JsonContent(true, true);
-                ((JObj)model).WriteData(cont);
+                ((JObj)state).WriteData(cont);
                 req.Content = cont;
             }
             return SendAsync(req, HttpCompletionOption.ResponseContentRead);

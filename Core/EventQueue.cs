@@ -125,19 +125,25 @@ namespace Greatbone.Core
         // static
         //
 
-        internal static void GlobalInit(Service service)
+        internal static void GlobalInit(Service service, Roll<Client> client)
         {
             using (var dc = service.NewDbContext())
             {
                 // create database objects
 
                 dc.Execute(@"
+                    CREATE TABLE IF NOT EXISTS evtu (
+                        moniker varchar(20),
+                        lastid int8,
+                        CONSTRAINT evtu_pkey PRIMARY KEY (moniker)
+                    ) WITH (OIDS=FALSE);
+
                     CREATE SEQUENCE IF NOT EXISTS evtq_id_seq 
                         INCREMENT 1 
                         MINVALUE 1 MAXVALUE 9223372036854775807 
                         START 1 CACHE 100 NO CYCLE;
 
-                    CREATE TABLE IF NOT EXISTS EVTQ (
+                    CREATE TABLE IF NOT EXISTS evtq (
                         id int8 DEFAULT nextval('evtq_id_seq'::regclass) NOT NULL,
                         name varchar(40),
                         shard varchar(20),
@@ -148,6 +154,21 @@ namespace Greatbone.Core
                         CONSTRAINT evtq_pkey PRIMARY KEY (id)
                     ) WITH (OIDS=FALSE)"
                 );
+
+                // init records for each moniker 
+
+                for (int i = 0; i < client.Count; i++)
+                {
+                    Client cli = client[i];
+                    if (dc.Query1("SELECT lastid FROM evtu WHERE moniker = @1", p => p.Set(cli.Name)))
+                    {
+                        cli.lastid = dc.GetLong();
+                    }
+                    else
+                    {
+                        dc.Execute("INSERT INTO evtu (moniker, lastid) VALUES (@1, @2)", p => p.Set(cli.Name).Set(cli.lastid));
+                    }
+                }
             }
         }
 
@@ -155,7 +176,7 @@ namespace Greatbone.Core
         {
             if (content == null)
             {
-                dc.Execute("INSERT INTO EVTQ (name, shard, arg) VALUES (@1, @2, @3)", p =>
+                dc.Execute("INSERT INTO evtq (name, shard, arg) VALUES (@1, @2, @3)", p =>
                 {
                     p.Set(name).Set(shard).Set(arg);
                 });
@@ -163,7 +184,7 @@ namespace Greatbone.Core
             else
             {
                 var body = new ArraySegment<byte>(content.ByteBuffer, 0, content.Size);
-                dc.Execute("INSERT INTO EVTQ (name, shard, arg, type, body) VALUES (@1, @2, @3, @4, @5)", p =>
+                dc.Execute("INSERT INTO evtq (name, shard, arg, type, body) VALUES (@1, @2, @3, @4, @5)", p =>
                 {
                     p.Set(name).Set(shard).Set(arg).Set(content.Type).Set(body);
                 });

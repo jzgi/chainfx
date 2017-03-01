@@ -5,13 +5,13 @@ namespace Greatbone.Core
     ///
     /// An execution context related to a handler method.
     ///
-    public interface IHandlerContext<out H> where H : IHandler
+    public interface IDoerContext<out D> where D : IDoer
     {
         Service Service { get; }
 
         Folder Folder { get; }
 
-        H Handler { get; }
+        D Doer { get; }
 
         DbContext NewDbContext(IsolationLevel? level = null);
     }

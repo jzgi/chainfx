@@ -6,17 +6,13 @@ namespace Greatbone.Core
     ///
     /// The processing of an received web event. A single object is reused.
     ///
-    public class EventContext : IHandlerContext<EventInfo>, IDisposable
+    public class EventContext : IDoerContext<EventInfo>, IDisposable
     {
         readonly Client client;
 
         internal long id;
 
-        internal string name;
-
-        internal string shard;
-
-        internal string arg;
+        internal DateTime time;
 
         byte[] content;
 
@@ -28,16 +24,7 @@ namespace Greatbone.Core
             this.client = client;
         }
 
-        internal void Reset(long id, string name, DateTime time, string mtype, object body)
-        {
-            this.id = id;
-            this.name = name;
-            this.entity = body;
-        }
-
         public long Id => id;
-
-        public string Name => name;
 
         public Folder Folder
         {
@@ -47,7 +34,7 @@ namespace Greatbone.Core
             }
         }
 
-        public EventInfo Handler
+        public EventInfo Doer
         {
             get
             {
@@ -63,7 +50,7 @@ namespace Greatbone.Core
             }
         }
 
-        public ArraySegment<byte>? AsBytesSeg()
+        public ArraySegment<byte>? AsByteAs()
         {
             return entity as ArraySegment<byte>?;
         }
@@ -85,13 +72,8 @@ namespace Greatbone.Core
 
         public D[] AsArray<D>(int proj = 0) where D : IData, new()
         {
-            IDataInput srcs = entity as IDataInput;
-            return srcs?.ToArray<D>(proj);
-        }
-
-        public void Cancel()
-        {
-            client.SetCancel();
+            IDataInput inp = entity as IDataInput;
+            return inp?.ToArray<D>(proj);
         }
 
         public DbContext NewDbContext(IsolationLevel? level = null)

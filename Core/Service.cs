@@ -44,8 +44,6 @@ namespace Greatbone.Core
         // client connectivity to the related peers
         readonly Roll<Client> clients;
 
-        EventU eventu;
-
         // event providing
         readonly Roll<EventQueue> queues;
 
@@ -333,7 +331,7 @@ namespace Greatbone.Core
         {
             if (clients != null)
             {
-                EventQueue.GlobalInit(this);
+                EventQueue.GlobalInit(this, clients);
             }
 
             // start the server
@@ -352,7 +350,7 @@ namespace Greatbone.Core
             if (clients != null)
             {
                 scheduler = new Thread(Schedule);
-                // scheduler.Start();
+                scheduler.Start();
             }
         }
 
@@ -362,13 +360,15 @@ namespace Greatbone.Core
         {
             while (!stop)
             {
+                // interval
                 Thread.Sleep(5000);
 
+                // a schedule cycle
                 int tick = Environment.TickCount;
                 for (int i = 0; i < Clients.Count; i++)
                 {
                     Client client = Clients[i];
-                    client.ToPoll(tick);
+                    client.TryPoll(tick);
                 }
             }
         }

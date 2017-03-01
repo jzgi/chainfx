@@ -14,7 +14,7 @@ namespace Greatbone.Core
     {
         readonly Service service;
 
-        readonly IHandlerContext<IHandler> handlectx;
+        readonly IDoerContext<IDoer> handlectx;
 
         readonly NpgsqlConnection connection;
 
@@ -37,7 +37,7 @@ namespace Greatbone.Core
         {
         }
 
-        internal DbContext(Service service, IHandlerContext<IHandler> handlectx)
+        internal DbContext(Service service, IDoerContext<IDoer> handlectx)
         {
             this.service = service;
             this.handlectx = handlectx;

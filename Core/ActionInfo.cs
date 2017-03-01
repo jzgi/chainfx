@@ -7,7 +7,7 @@ namespace Greatbone.Core
     ///
     /// The descriptor for an action method.
     ///
-    public class ActionInfo : Nodule, IHandler
+    public class ActionInfo : Nodule, IDoer
     {
         readonly Folder folder;
 
@@ -78,7 +78,7 @@ namespace Greatbone.Core
 
         internal void Do(ActionContext ac, String arg)
         {
-            ac.Handler = this;
+            ac.Doer = this;
             // pre-
             DoBefore(ac);
 
@@ -94,12 +94,12 @@ namespace Greatbone.Core
 
             // post-
             DoAfter(ac);
-            ac.Handler = null;
+            ac.Doer = null;
         }
 
         internal async Task DoAsync(ActionContext ac, string arg)
         {
-            ac.Handler = this;
+            ac.Doer = this;
             // pre-
             DoBefore(ac);
 
@@ -115,7 +115,7 @@ namespace Greatbone.Core
 
             // post-
             DoAfter(ac);
-            ac.Handler = null;
+            ac.Doer = null;
         }
     }
 }
