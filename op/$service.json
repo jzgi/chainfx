@@ -6,17 +6,5 @@
     "cluster": {
         "op": "http://localhost:8082",
         "comm": "http://localhost:8083"
-    },
-    "weixin": {
-        "appid": "wxd007f5ad60226953",
-        "appsecret": "85912d26f108b6a3d9fd2fa4aa8f0b83"
-    },
-    "admins": [
-        {
-            "id": "michael",
-            "name": "michael",
-            "credential": "E4D21B96BBAA2BCDA2A2ECFF5AEC38F2",
-            "roles": 23
-        }
-    ]
+    }
 }

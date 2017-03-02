@@ -17,7 +17,7 @@ using Microsoft.Extensions.Options;
 namespace Greatbone.Core
 {
     ///
-    /// A service work implements a microservice.
+    /// A service is a HTTP endpoint that manages resources in a hierarchical manner.
     ///
     public abstract class Service : Folder, IHttpApplication<HttpContext>, ILoggerProvider, ILogger
     {
@@ -321,6 +321,8 @@ namespace Greatbone.Core
             return null;
         }
 
+        volatile bool stop;
+
         public void Start()
         {
             if (clients != null)
@@ -336,50 +338,41 @@ namespace Greatbone.Core
 
             // Debug.WriteLine(Name + " -> " + Context.addresses + " started");
 
-            // start helper threads
+            /// Run in the cleaner thread to repeatedly check and relinguish cache entries.
+            cleaner = new Thread(() =>
+            {
+                while (!stop)
+                {
+                    Thread.Sleep(1000);
 
-            cleaner = new Thread(Clean);
+                    int now = Environment.TickCount;
+                }
+            });
             // cleaner.Start();
 
             if (clients != null)
             {
-                scheduler = new Thread(Schedule);
-                scheduler.Start();
-            }
-        }
-
-        ///
-        /// Run in the scheduler thread to repeatedly check and initiate event polling activities.
-        internal void Schedule()
-        {
-            while (!stop)
-            {
-                // interval
-                Thread.Sleep(5000);
-
-                // a schedule cycle
-                int tick = Environment.TickCount;
-                for (int i = 0; i < Clients.Count; i++)
+                /// Run in the scheduler thread to repeatedly check and initiate event polling activities.
+                scheduler = new Thread(() =>
                 {
-                    Client client = Clients[i];
-                    client.TryPoll(tick);
-                }
+                    while (!stop)
+                    {
+                        // interval
+                        Thread.Sleep(5000);
+
+                        // a schedule cycle
+                        int tick = Environment.TickCount;
+                        for (int i = 0; i < Clients.Count; i++)
+                        {
+                            Client client = Clients[i];
+                            client.TryPoll(tick);
+                        }
+                    }
+                });
+                // scheduler.Start();
             }
         }
 
-        volatile bool stop;
-
-        ///
-        /// Run in the cleaner thread to repeatedly check and relinguish cache entries.
-        internal void Clean()
-        {
-            while (!stop)
-            {
-                Thread.Sleep(1000);
-
-                int now = Environment.TickCount;
-            }
-        }
         //
         // LOGGING
         //

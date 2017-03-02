@@ -39,7 +39,7 @@ namespace Greatbone.Sample
                 ["comm"] = "http://localhost:8080"
             };
 
-            Create<OpService>(
+            TryCreate<OpService>(
                 new ServiceContext("op")
                 {
                     addrs = new[] { "http://localhost:8080" },
@@ -50,7 +50,7 @@ namespace Greatbone.Sample
                 !IsDebug()
             );
 
-            Create<CommService>(
+            TryCreate<CommService>(
                 new ServiceContext("comm")
                 {
                     addrs = new[] { "http://localhost:8081" },

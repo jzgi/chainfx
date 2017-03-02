@@ -18,7 +18,7 @@ namespace Greatbone.Core
         static readonly List<Service> Services = new List<Service>(8);
 
 
-        public static S Create<S>(ServiceContext sc, bool load, CheckAttribute[] checks = null, UiAttribute ui = null) where S : Service
+        public static bool TryCreate<S>(ServiceContext sc, bool load, CheckAttribute[] checks = null, UiAttribute ui = null) where S : Service
         {
             if (load) // need to load configuration file
             {
@@ -33,7 +33,7 @@ namespace Greatbone.Core
                 }
                 else
                 {
-                    return null;
+                    return false;
                 }
             }
 
@@ -55,7 +55,7 @@ namespace Greatbone.Core
 
             S service = (S)ci.Invoke(new object[] { sc });
             Services.Add(service);
-            return service;
+            return true;
         }
 
         /// 
