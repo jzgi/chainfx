@@ -9,9 +9,9 @@ namespace Greatbone.Core
 {
     public class Application
     {
-        const string ConfigFile = "$service.json";
+        const string CFG_FILE = "$service.json";
 
-        static readonly ServiceException ConfigEx = new ServiceException("error loading " + ConfigFile);
+        static readonly ServiceException ConfigEx = new ServiceException("error loading " + CFG_FILE);
 
         internal static readonly Lifetime Lifetime = new Lifetime();
 
@@ -20,11 +20,20 @@ namespace Greatbone.Core
 
         public static bool TryCreate<S>(ServiceContext sc, bool load, CheckAttribute[] checks = null, UiAttribute ui = null) where S : Service
         {
+            // initialize folder context
+            sc.Checks = checks;
+            sc.Ui = ui;
+            sc.IsVar = false;
+            sc.Parent = null;
+            sc.Level = 0;
+            sc.Directory = sc.Name;
+
             if (load) // need to load configuration file
             {
-                if (File.Exists(ConfigFile))
+                string file = sc.GetFilePath(CFG_FILE);
+                if (File.Exists(file))
                 {
-                    byte[] bytes = File.ReadAllBytes(ConfigFile);
+                    byte[] bytes = File.ReadAllBytes(file);
                     JsonParse p = new JsonParse(bytes, bytes.Length);
                     JObj jo = (JObj)p.Parse();
 
@@ -44,14 +53,6 @@ namespace Greatbone.Core
             {
                 throw new ServiceException(typ + " missing ServiceContext");
             }
-
-            // initialize folder context
-            sc.Checks = checks;
-            sc.Ui = ui;
-            sc.IsVar = false;
-            sc.Parent = null;
-            sc.Level = 0;
-            sc.Directory = sc.Name;
 
             S service = (S)ci.Invoke(new object[] { sc });
             Services.Add(service);

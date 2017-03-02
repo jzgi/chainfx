@@ -401,7 +401,24 @@ namespace Greatbone.Core
 
         public bool Get(string name, ref Diction v)
         {
-            throw new NotImplementedException();
+            JMbr mbr;
+            if (TryGet(name, out mbr))
+            {
+                if (mbr.type == JType.Object)
+                {
+                    JObj jo = mbr;
+                    int count = jo.Count;
+                    Diction dict = new Diction(count);
+                    for (int i = 0; i < count; i++)
+                    {
+                        JMbr e = jo[i];
+                        dict.Add(e.Name, e);
+                    }
+                    v = dict;
+                    return true;
+                }
+            }
+            return false;
         }
 
         public bool Get<D>(string name, ref Map<D> v, int proj = 0) where D : IData, new()

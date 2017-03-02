@@ -336,7 +336,7 @@ namespace Greatbone.Core
 
             OnStart();
 
-            // Debug.WriteLine(Name + " -> " + Context.addresses + " started");
+            DBG(Name + " -> " + Addrs[0] + " started");
 
             /// Run in the cleaner thread to repeatedly check and relinguish cache entries.
             cleaner = new Thread(() =>

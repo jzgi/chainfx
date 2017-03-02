@@ -177,7 +177,7 @@ namespace Greatbone.Core
                 else if (b == '"')
                 {
                     string v = ParseString(ref p);
-                    ja.Add(new JMbr(v));
+                    ja.Add(new JMbr(null, v));
                 }
                 else if (b == 'n')
                 {
