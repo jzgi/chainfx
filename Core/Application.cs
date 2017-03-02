@@ -9,24 +9,27 @@ namespace Greatbone.Core
 {
     public class Application
     {
-        const string CfgFile = "$web.json";
+        const string ConfigFile = "$service.json";
 
-        static readonly ServiceException CfgEx = new ServiceException("error loading " + CfgFile);
+        static readonly ServiceException ConfigEx = new ServiceException("error loading " + ConfigFile);
 
         internal static readonly Lifetime Lifetime = new Lifetime();
 
         static readonly List<Service> Services = new List<Service>(8);
 
 
-        public static S Create<S>(string name, JObj cfgjo = null, CheckAttribute[] checks = null, UiAttribute ui = null) where S : Service
+        public static S Create<S>(ServiceContext sc, bool load, CheckAttribute[] checks = null, UiAttribute ui = null) where S : Service
         {
-            if (cfgjo == null) // need to load configuration file
+            if (load) // need to load configuration file
             {
-                if (File.Exists(CfgFile))
+                if (File.Exists(ConfigFile))
                 {
-                    byte[] bytes = File.ReadAllBytes(CfgFile);
+                    byte[] bytes = File.ReadAllBytes(ConfigFile);
                     JsonParse p = new JsonParse(bytes, bytes.Length);
-                    cfgjo = (JObj)p.Parse();
+                    JObj jo = (JObj)p.Parse();
+
+                    // this will override values
+                    sc.ReadData(jo, 0);
                 }
                 else
                 {
@@ -36,22 +39,21 @@ namespace Greatbone.Core
 
             // create instance by reflection
             Type typ = typeof(S);
-            ConstructorInfo ci = typ.GetConstructor(new[] { typeof(FolderContext) });
+            ConstructorInfo ci = typ.GetConstructor(new[] { typeof(ServiceContext) });
             if (ci == null)
             {
-                throw new ServiceException(typ + " missing FolderContext");
+                throw new ServiceException(typ + " missing ServiceContext");
             }
-            FolderContext fc = new FolderContext(name)
-            {
-                Checks = checks,
-                Ui = ui,
-                IsVar = false,
-                Parent = null,
-                Level = 0,
-                Directory = name,
-                Config = cfgjo
-            };
-            S service = (S)ci.Invoke(new object[] { fc });
+
+            // initialize folder context
+            sc.Checks = checks;
+            sc.Ui = ui;
+            sc.IsVar = false;
+            sc.Parent = null;
+            sc.Level = 0;
+            sc.Directory = sc.Name;
+
+            S service = (S)ci.Invoke(new object[] { sc });
             Services.Add(service);
             return service;
         }

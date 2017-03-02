@@ -70,6 +70,8 @@ namespace Greatbone.Core
 
         public string Name => name;
 
+        public CheckAttribute[] Checks => checks;
+
         public UiAttribute Ui => ui;
 
         public bool HasCheck(Type checktyp)

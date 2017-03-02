@@ -19,7 +19,7 @@ namespace Greatbone.Core
         const string _VAR_ = "VAR";
 
         // state-passing
-        internal readonly FolderContext context;
+        readonly FolderContext fc;
 
         // declared actions 
         readonly Roll<ActionInfo> actions;
@@ -35,7 +35,7 @@ namespace Greatbone.Core
 
         protected Folder(FolderContext fc) : base(fc.Name, null)
         {
-            this.context = fc;
+            this.fc = fc;
 
             // init actions
             actions = new Roll<ActionInfo>(32);
@@ -108,8 +108,7 @@ namespace Greatbone.Core
                 Parent = this,
                 Level = Level + 1,
                 Directory = (Parent == null) ? name : Path.Combine(Parent.Directory, name),
-                Service = Service,
-                Config = context.Config
+                Service = Service
             };
             F folder = (F)ci.Invoke(new object[] { fc });
             subs.Add(folder);
@@ -154,16 +153,17 @@ namespace Greatbone.Core
         public Roll<Folder> Subs => subs;
 
         public Folder VarSub => varsub;
+        
 
-        public bool IsVar => context.IsVar;
+        public bool IsVar => fc.IsVar;
 
-        public string Directory => context.Directory;
+        public string Directory => fc.Directory;
 
-        public Folder Parent => context.Parent;
+        public Folder Parent => fc.Parent;
 
-        public int Level => context.Level;
+        public int Level => fc.Level;
 
-        public override Service Service => context.Service;
+        public override Service Service => fc.Service;
 
 
         internal void Describe(XmlContent cont)

@@ -295,5 +295,15 @@ namespace Greatbone.Core
         {
             throw new NotImplementedException();
         }
+
+        public bool Get(string name, ref Diction v)
+        {
+            throw new NotImplementedException();
+        }
+
+        public bool Get<D>(string name, ref Map<D> v, int proj = 0) where D : IData, new()
+        {
+            throw new NotImplementedException();
+        }
     }
 }

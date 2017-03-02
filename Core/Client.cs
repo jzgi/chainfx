@@ -15,16 +15,12 @@ namespace Greatbone.Core
     ///
     public class Client : HttpClient, IRollable
     {
-        const int
-            INITIAL = -1,
-            TIME_OUT = 60,
-            TIME_OUT_2 = 120,
-            NO_CONTENT = 12,
-            NOT_IMPLEMENTED = 720;
+        static readonly Uri PollUri = new Uri("*", UriKind.Relative);
 
         readonly Service service;
 
-        readonly string @event;
+        // prepared header value
+        readonly string x_event;
 
         // moniker
         readonly string moniker;
@@ -32,8 +28,8 @@ namespace Greatbone.Core
         // this field is only accessed by the scheduler
         Task pollTask;
 
-        // retry point of time, due to timeout or disconnection
-        int retrypt;
+        // point of time to retry, set due to timeout or disconnection
+        volatile int retryat;
 
         internal long lastid;
 
@@ -55,12 +51,13 @@ namespace Greatbone.Core
                         if (i > 0) sb.Append(',');
                         sb.Append(eis[i].Name);
                     }
-                    @event = sb.ToString();
+                    x_event = sb.ToString();
                 }
             }
 
             string addr = raddr.StartsWith("http") ? raddr : "http://" + raddr;
             BaseAddress = new Uri(addr);
+            Timeout = TimeSpan.FromSeconds(5);
         }
 
         public string Name => moniker;
@@ -68,6 +65,10 @@ namespace Greatbone.Core
 
         public void TryPoll(int ticks)
         {
+            if (ticks < retryat)
+            {
+                return;
+            }
             if (pollTask != null && !pollTask.IsCompleted)
             {
                 return;
@@ -80,13 +81,22 @@ namespace Greatbone.Core
                     HttpRequestMessage req = new HttpRequestMessage(HttpMethod.Get, PollUri);
                     HttpRequestHeaders reqhs = req.Headers;
                     reqhs.TryAddWithoutValidation("From", service.Moniker);
-                    reqhs.TryAddWithoutValidation(X_EVENT, @event);
-                    reqhs.TryAddWithoutValidation(X_SHARD, service.shard);
+                    reqhs.TryAddWithoutValidation(X_EVENT, x_event);
+                    reqhs.TryAddWithoutValidation(X_SHARD, service.Shard);
 
-                    HttpResponseMessage rsp = await SendAsync(req);
-                    if (rsp.StatusCode == HttpStatusCode.NoContent)
+                    HttpResponseMessage rsp = null;
+                    try
                     {
-                        break;
+                        rsp = await SendAsync(req);
+                        if (rsp.StatusCode == HttpStatusCode.NoContent)
+                        {
+                            break;
+                        }
+                    }
+                    catch (Exception e)
+                    {
+                        retryat = Environment.TickCount + 15000;
+                        return;
                     }
 
                     HttpResponseHeaders rsphs = rsp.Headers;
@@ -124,8 +134,6 @@ namespace Greatbone.Core
                 }
             });
         }
-
-        static readonly Uri PollUri = new Uri("*", UriKind.Relative);
 
         //
         // RPC

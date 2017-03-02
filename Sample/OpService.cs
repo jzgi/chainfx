@@ -14,7 +14,7 @@ namespace Greatbone.Sample
         static readonly Client WCPay = new Client("https://api.mch.weixin.qq.com");
 
 
-        public OpService(FolderContext fc) : base(fc)
+        public OpService(ServiceContext sc) : base(sc)
         {
             Create<ShopFolder>("shop");
 

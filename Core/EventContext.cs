@@ -50,35 +50,44 @@ namespace Greatbone.Core
             }
         }
 
-        public ArraySegment<byte>? AsByteAs()
-        {
-            return entity as ArraySegment<byte>?;
-        }
+        public byte[] Content => content;
 
-        public M As<M>() where M : class, IDataInput
+        public M To<M>() where M : class, IDataInput
         {
             return entity as M;
         }
 
-        public D AsObject<D>(int proj = 0) where D : IData, new()
+        public D ToObject<D>(int proj = 0) where D : IData, new()
         {
-            IDataInput src = entity as IDataInput;
-            if (src == null)
+            IDataInput inp = entity as IDataInput;
+            if (inp == null)
             {
                 return default(D);
             }
-            return src.ToObject<D>(proj);
+            return inp.ToObject<D>(proj);
         }
 
-        public D[] AsArray<D>(int proj = 0) where D : IData, new()
+        public D[] ToArray<D>(int proj = 0) where D : IData, new()
         {
             IDataInput inp = entity as IDataInput;
             return inp?.ToArray<D>(proj);
         }
 
+
+        DbContext dbctx;
+
         public DbContext NewDbContext(IsolationLevel? level = null)
         {
-            return null;
+            if (dbctx == null)
+            {
+                DbContext dc = new DbContext(Service, this);
+                if (level != null)
+                {
+                    dc.Begin(level.Value);
+                }
+                dbctx = dc;
+            }
+            return dbctx;
         }
 
         public void Dispose()

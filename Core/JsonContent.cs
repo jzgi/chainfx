@@ -598,5 +598,15 @@ namespace Greatbone.Core
             }
             return this;
         }
+
+        public JsonContent Put(string name, Diction v, string Label = null, string Placeholder = null, bool ReadOnly = false, bool Required = false)
+        {
+            throw new NotImplementedException();
+        }
+
+        public JsonContent Put<D>(string name, Map<D> v, int proj = 0, string Label = null, string Placeholder = null, bool ReadOnly = false, bool Required = false) where D : IData
+        {
+            throw new NotImplementedException();
+        }
     }
 }

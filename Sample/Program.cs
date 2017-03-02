@@ -4,54 +4,61 @@ namespace Greatbone.Sample
 {
     public class Program : Application
     {
+        public static bool IsDebug()
+        {
+#if DEBUG
+            return true;
+#else
+            return false;
+#endif
+        }
+
         ///
         /// The application entry point.
         ///
         public static void Main(string[] args)
         {
-            JObj auth = new JObj{
-                new JMbr("mask", 0x4a78be76),
-                new JMbr("pose", 0x1f0335e2),
-                new JMbr("maxage", 360000),
+            Auth auth = new Auth
+            {
+                mask = 0x4a78be76,
+                pose = 0x1f0335e2,
+                maxage = 360000
             };
 
-            JObj pg = new JObj{
-                new JMbr("host", "106.14.45.109"),
-                new JMbr("port", 5432),
-                new JMbr("username", "postgres"),
-                new JMbr("password", "721004"),
+            Db pg = new Db
+            {
+                host = "106.14.45.109",
+                port = 5432,
+                username = "postgres",
+                password = "721004"
             };
 
-            JObj cluster = new JObj{
-                new JMbr("op", "http://localhost:8080"),
-                new JMbr("comm", "http://localhost:8081"),
+            Diction cluster = new Diction
+            {
+                ["op"] = "http://localhost:8080",
+                ["comm"] = "http://localhost:8080"
             };
 
-            JObj wexin = new JObj{
-                new JMbr("appid", "wxf2820fd58bf8745f"),
-                new JMbr("appsecret", "85912d26f108b6a3d9fd2fa4aa8f0b83"),
-            };
-
-            Create<OpService>("op",
-#if DEBUG
-            new JObj{
-                new JMbr("addresses", new JArr("http://localhost:8080")),
-                new JMbr("auth", auth),
-                new JMbr("db", pg),
-                new JMbr("cluster", cluster)
-            }
-#endif
+            Create<OpService>(
+                new ServiceContext("op")
+                {
+                    addrs = new[] { "http://localhost:8080" },
+                    auth = auth,
+                    db = pg,
+                    cluster = cluster
+                },
+                !IsDebug()
             );
 
-            Create<CommService>("comm",
-#if DEBUG
-            new JObj{
-                new JMbr("addresses", new JArr("http://localhost:8081")),
-                new JMbr("auth", auth),
-                new JMbr("db", pg),
-                new JMbr("cluster", cluster),
-            }
-#endif
+            Create<CommService>(
+                new ServiceContext("comm")
+                {
+                    addrs = new[] { "http://localhost:8081" },
+                    auth = auth,
+                    db = pg,
+                    cluster = cluster
+                },
+                !IsDebug()
             );
 
             StartAll();

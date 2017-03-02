@@ -398,5 +398,15 @@ namespace Greatbone.Core
             BufferUtility.Return(cont);
             return str;
         }
+
+        public bool Get(string name, ref Diction v)
+        {
+            throw new NotImplementedException();
+        }
+
+        public bool Get<D>(string name, ref Map<D> v, int proj = 0) where D : IData, new()
+        {
+            throw new NotImplementedException();
+        }
     }
 }

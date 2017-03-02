@@ -324,7 +324,7 @@ namespace Greatbone.Core
             IShardable sharded = obj as IShardable;
             if (sharded != null)
             {
-                sharded.Shard = service.shard;
+                sharded.Shard = service.Shard;
             }
 
             return obj;
@@ -347,7 +347,7 @@ namespace Greatbone.Core
                 IShardable sharded = obj as IShardable;
                 if (sharded != null)
                 {
-                    sharded.Shard = service.shard;
+                    sharded.Shard = service.Shard;
                 }
 
                 lst.Add(obj);
@@ -531,7 +531,7 @@ namespace Greatbone.Core
                 IShardable sharded = v as IShardable;
                 if (sharded != null)
                 {
-                    sharded.Shard = service.shard;
+                    sharded.Shard = service.Shard;
                 }
                 return true;
             }
@@ -633,7 +633,7 @@ namespace Greatbone.Core
                     IShardable sharded = obj as IShardable;
                     if (sharded != null)
                     {
-                        sharded.Shard = service.shard;
+                        sharded.Shard = service.Shard;
                     }
 
                     v[i] = obj;
@@ -663,7 +663,7 @@ namespace Greatbone.Core
                     IShardable sharded = obj as IShardable;
                     if (sharded != null)
                     {
-                        sharded.Shard = service.shard;
+                        sharded.Shard = service.Shard;
                     }
 
                     v.Add(obj);
@@ -757,6 +757,16 @@ namespace Greatbone.Core
                 // indicate that the instance has been disposed.
                 disposed = true;
             }
+        }
+
+        public bool Get(string name, ref Diction v)
+        {
+            throw new NotImplementedException();
+        }
+
+        public bool Get<D>(string name, ref Map<D> v, int proj = 0) where D : IData, new()
+        {
+            throw new NotImplementedException();
         }
     }
 }

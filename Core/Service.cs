@@ -21,16 +21,7 @@ namespace Greatbone.Core
     ///
     public abstract class Service : Folder, IHttpApplication<HttpContext>, ILoggerProvider, ILogger
     {
-
-        internal readonly string shard;
-
-        internal readonly string[] addresses;
-
-        internal readonly Db db;
-
-        internal readonly Auth auth;
-
-        internal readonly int logging;
+        protected readonly ServiceContext sc;
 
         // the service instance id
         readonly string moniker;
@@ -53,38 +44,31 @@ namespace Greatbone.Core
 
         Thread cleaner;
 
-        protected Service(FolderContext fc) : base(fc)
+        protected Service(ServiceContext sc) : base(sc)
         {
-            // take relavant config
-            JObj cfg = fc.Config;
-            cfg.Get(nameof(shard), ref shard);
-            cfg.Get(nameof(addresses), ref addresses);
-            cfg.Get(nameof(db), ref db);
-            cfg.Get(nameof(logging), ref logging);
+            sc.Service = this;
+            this.sc = sc;
 
-            // adjust configuration
-            fc.Service = this;
-
-            moniker = (shard == null) ? fc.Name : fc.Name + "-" + shard;
+            moniker = (Shard == null) ? sc.Name : sc.Name + "-" + Shard;
 
             // setup logging 
             LoggerFactory factory = new LoggerFactory();
             factory.AddProvider(this);
-            string file = fc.GetFilePath('$' + DateTime.Now.ToString("yyyyMM") + ".log");
+            string file = sc.GetFilePath('$' + DateTime.Now.ToString("yyyyMM") + ".log");
             FileStream fs = new FileStream(file, FileMode.Append, FileAccess.Write);
             logWriter = new StreamWriter(fs, Encoding.UTF8, 1024 * 4, false) { AutoFlush = true };
 
             // create kestrel instance
             KestrelServerOptions options = new KestrelServerOptions();
             server = new KestrelServer(Options.Create(options), Application.Lifetime, factory);
-            ICollection<string> addrs = server.Features.Get<IServerAddressesFeature>().Addresses;
-            if (addresses == null)
+            ICollection<string> addrcoll = server.Features.Get<IServerAddressesFeature>().Addresses;
+            if (Addrs == null)
             {
-                throw new ServiceException("missing 'addresses'");
+                throw new ServiceException("missing 'addrs'");
             }
-            foreach (string a in addresses)
+            foreach (string a in Addrs)
             {
-                addrs.Add(a.Trim());
+                addrcoll.Add(a.Trim());
             }
 
             // events
@@ -118,23 +102,21 @@ namespace Greatbone.Core
             }
 
             // cluster connectivity
-            JObj cluster = cfg[nameof(cluster)];
-            if (cluster != null)
+            if (Cluster != null)
             {
-                for (int i = 0; i < cluster.Count; i++)
+                foreach (KeyValuePair<string, string> entry in Cluster)
                 {
-                    JMbr mbr = cluster[i];
                     if (clients == null)
                     {
-                        clients = new Roll<Client>(cluster.Count * 2);
+                        clients = new Roll<Client>(Cluster.Count * 2);
                     }
-                    clients.Add(new Client(this, mbr.Name, (string)mbr));
+                    clients.Add(new Client(this, entry.Key, entry.Value));
 
                     if (queues == null)
                     {
-                        queues = new Roll<EventQueue>(cluster.Count * 2);
+                        queues = new Roll<EventQueue>(Cluster.Count * 2);
                     }
-                    queues.Add(new EventQueue(mbr.Name));
+                    queues.Add(new EventQueue(entry.Key));
                 }
             }
 
@@ -160,6 +142,18 @@ namespace Greatbone.Core
         public Roll<EventInfo> Events => events;
 
         internal ActionCache Cache => cache;
+
+
+        public string Shard => sc.shard;
+
+        public string[] Addrs => sc.addrs;
+
+        public Db Db => sc.db;
+
+        public Diction Cluster => sc.cluster;
+
+        public int Logging => sc.logging;
+
 
         public virtual void OnStart()
         {
@@ -298,11 +292,11 @@ namespace Greatbone.Core
                 if (connstr == null)
                 {
                     StringBuilder sb = new StringBuilder();
-                    sb.Append("Host=").Append(db.host);
-                    sb.Append(";Port=").Append(db.port);
-                    sb.Append(";Database=").Append(db.database ?? Name);
-                    sb.Append(";Username=").Append(db.username);
-                    sb.Append(";Password=").Append(db.password);
+                    sb.Append("Host=").Append(Db.host);
+                    sb.Append(";Port=").Append(Db.port);
+                    sb.Append(";Database=").Append(Db.database ?? Name);
+                    sb.Append(";Username=").Append(Db.username);
+                    sb.Append(";Password=").Append(Db.password);
                     sb.Append(";Read Buffer Size=").Append(1024 * 32);
                     sb.Append(";Write Buffer Size=").Append(1024 * 32);
                     sb.Append(";No Reset On Close=").Append(true);
@@ -406,7 +400,7 @@ namespace Greatbone.Core
 
         public bool IsEnabled(LogLevel level)
         {
-            return (int)level >= logging;
+            return (int)level >= Logging;
         }
 
         public void Dispose()
@@ -453,80 +447,6 @@ namespace Greatbone.Core
             }
         }
 
-        ///
-        /// The DB configuration embedded in a service context.
-        ///
-        public class Db : IData
-        {
-            // IP host or unix domain socket
-            public string host;
-
-            // IP port
-            public int port;
-
-            // default database name
-            public string database;
-
-            public string username;
-
-            public string password;
-
-            public void ReadData(IDataInput i, int proj = 0)
-            {
-                i.Get(nameof(host), ref host);
-                i.Get(nameof(port), ref port);
-                i.Get(nameof(database), ref database);
-                i.Get(nameof(username), ref username);
-                i.Get(nameof(password), ref password);
-            }
-
-            public void WriteData<R>(IDataOutput<R> o, int proj = 0) where R : IDataOutput<R>
-            {
-                o.Put(nameof(host), host);
-                o.Put(nameof(port), port);
-                o.Put(nameof(database), database);
-                o.Put(nameof(username), username);
-                o.Put(nameof(password), password);
-            }
-        }
-
-        ///
-        /// The web authetication configuration embedded in a service context.
-        ///
-        public class Auth : IData
-        {
-            // mask for encoding/decoding token
-            public int mask;
-
-            // repositioning factor for encoding/decoding token
-            public int pose;
-
-            // The number of seconds that a signon durates, or null if session-wide.
-            public int maxage;
-
-            public string domain;
-
-            // The service instance that does signon. Can be null if local
-            public string moniker;
-
-            public void ReadData(IDataInput i, int proj = 0)
-            {
-                i.Get(nameof(mask), ref mask);
-                i.Get(nameof(pose), ref pose);
-                i.Get(nameof(maxage), ref maxage);
-                i.Get(nameof(domain), ref domain);
-                i.Get(nameof(moniker), ref moniker);
-            }
-
-            public void WriteData<R>(IDataOutput<R> o, int proj = 0) where R : IDataOutput<R>
-            {
-                o.Put(nameof(mask), mask);
-                o.Put(nameof(pose), pose);
-                o.Put(nameof(maxage), maxage);
-                o.Put(nameof(domain), domain);
-                o.Put(nameof(moniker), moniker);
-            }
-        }
     }
 
     ///
@@ -534,7 +454,11 @@ namespace Greatbone.Core
     ///
     public abstract class Service<TToken> : Service where TToken : class, IData, new()
     {
-        protected Service(FolderContext fc) : base(fc) { }
+        protected Service(ServiceContext sc) : base(sc)
+        {
+        }
+
+        public Auth Auth => sc.auth;
 
         protected override void Authenticate(ActionContext ac)
         {
@@ -575,13 +499,13 @@ namespace Greatbone.Core
             StringBuilder sb = new StringBuilder("Bearer=");
             string toktext = Encrypt(tok);
             sb.Append(toktext);
-            if (auth.maxage > 0)
+            if (Auth.maxage > 0)
             {
-                sb.Append("; Max-Age=").Append(auth.maxage);
+                sb.Append("; Max-Age=").Append(Auth.maxage);
             }
-            if (auth.domain != null)
+            if (Auth.domain != null)
             {
-                sb.Append("; Domain=").Append(auth.domain);
+                sb.Append("; Domain=").Append(Auth.domain);
             }
             sb.Append("; HttpOnly");
             ac.SetHeader("Set-Cookie", sb.ToString());
@@ -593,13 +517,13 @@ namespace Greatbone.Core
             {
                 sb.Clear().Append("Identity="); ;
                 sb.Append(identity);
-                if (auth.maxage > 0)
+                if (Auth.maxage > 0)
                 {
-                    sb.Append("; Max-Age=").Append(auth.maxage);
+                    sb.Append("; Max-Age=").Append(Auth.maxage);
                 }
-                if (auth.domain != null)
+                if (Auth.domain != null)
                 {
-                    sb.Append("; Domain=").Append(auth.domain);
+                    sb.Append("; Domain=").Append(Auth.domain);
                 }
                 ac.SetHeader("Set-Cookie", sb.ToString());
             }
@@ -607,14 +531,14 @@ namespace Greatbone.Core
 
         public string Encrypt(TToken token)
         {
-            if (auth == null) return null;
+            if (Auth == null) return null;
 
             JsonContent cont = new JsonContent(true, true, 4096); // borrow
             cont.Put(null, token);
             byte[] bytebuf = cont.ByteBuffer;
             int count = cont.Size;
 
-            int mask = auth.mask;
+            int mask = Auth.mask;
             int[] masks = { (mask >> 24) & 0xff, (mask >> 16) & 0xff, (mask >> 8) & 0xff, mask & 0xff };
             char[] charbuf = new char[count * 2]; // the target 
             int p = 0;
@@ -637,9 +561,9 @@ namespace Greatbone.Core
 
         public TToken Decrypt(string toktext)
         {
-            if (auth == null) return null;
+            if (Auth == null) return null;
 
-            int mask = auth.mask;
+            int mask = Auth.mask;
             int[] masks = { (mask >> 24) & 0xff, (mask >> 16) & 0xff, (mask >> 8) & 0xff, mask & 0xff };
             int len = toktext.Length / 2;
             Text str = new Text(256);

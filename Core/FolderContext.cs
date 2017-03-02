@@ -14,6 +14,8 @@ namespace Greatbone.Core
             this.name = name;
         }
 
+        public Service Service { get; internal set; }
+
         public string Name => name;
 
         public CheckAttribute[] Checks { get; internal set; }
@@ -27,12 +29,6 @@ namespace Greatbone.Core
         public Folder Parent { get; internal set; }
 
         public string Directory { get; internal set; }
-
-        public Service Service { get; internal set; }
-
-        /// The global configuration.
-        ///
-        public JObj Config { get; internal set; }
 
         public string GetFilePath(string file)
         {

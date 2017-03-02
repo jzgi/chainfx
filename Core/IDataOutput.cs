@@ -47,13 +47,15 @@ namespace Greatbone.Core
 
         R Put(string name, string[] v, IDictionary<string, string> Options = null, string Label = null, string Placeholder = null, bool ReadOnly = false, bool Required = false);
 
-        R Put(string name, Dictionary<string, string> v, string Label = null, string Placeholder = null, bool ReadOnly = false, bool Required = false);
+        R Put(string name, Diction v, string Label = null, string Placeholder = null, bool ReadOnly = false, bool Required = false);
 
         R Put(string name, IData v, int proj = 0, string Label = null, string Placeholder = null, bool ReadOnly = false, bool Required = false);
 
         R Put<D>(string name, D[] v, int proj = 0, string Label = null, string Placeholder = null, bool ReadOnly = false, bool Required = false) where D : IData;
 
         R Put<D>(string name, List<D> v, int proj = 0, string Label = null, string Placeholder = null, bool ReadOnly = false, bool Required = false) where D : IData;
+
+        R Put<D>(string name, Map<D> v, int proj = 0, string Label = null, string Placeholder = null, bool ReadOnly = false, bool Required = false) where D : IData;
 
         R Put(string name, IDataInput v);
     }

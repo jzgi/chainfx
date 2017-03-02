@@ -6,9 +6,9 @@ namespace Greatbone.Sample
     {
         internal readonly Admin[] admins;
 
-        public AbstService(FolderContext fc) : base(fc)
+        public AbstService(ServiceContext sc) : base(sc)
         {
-            admins = JsonUtility.FileToArray<Admin>(fc.GetFilePath("$admins.json"));
+            admins = JsonUtility.FileToArray<Admin>(sc.GetFilePath("$admins.json"));
         }
 
         protected override void Challenge(ActionContext ac)
