@@ -26,10 +26,10 @@ namespace Greatbone.Sample
         /// POST /-userid-/inbox
         /// </code>
         ///
-        [Check]
+        [Authorize]
         public async Task inbox(ActionContext ac, string arg)
         {
-            Token tok = (Token)ac.Token;
+            User tok = (User)ac.Token;
             string userid = ac[0];
             Chat chat = null;
 
@@ -67,7 +67,7 @@ namespace Greatbone.Sample
                 var txt = await ac.ReadAsync<Text>();
                 Message msg = new Message()
                 {
-                    fromid = tok.key,
+                    fromid = tok.id,
                     from = tok.name,
                     text = txt.ToString(),
                     time = DateTime.Now

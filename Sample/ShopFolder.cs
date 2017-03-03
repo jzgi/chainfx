@@ -6,7 +6,7 @@ namespace Greatbone.Sample
     ///
     /// /shop/
     ///
-    [Check]
+    [Authorize]
     public class ShopFolder : Folder
     {
         public ShopFolder(FolderContext fc) : base(fc)
@@ -14,7 +14,7 @@ namespace Greatbone.Sample
             CreateVar<ShopVarFolder>();
         }
 
-        [Admin]
+        [User]
         public void @default(ActionContext ac)
         {
             using (var dc = ac.NewDbContext())

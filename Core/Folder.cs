@@ -68,9 +68,9 @@ namespace Greatbone.Core
                 }
 
                 // to override annotated attributes
-                if (fc.Checks != null)
+                if (fc.Authorizes != null)
                 {
-                    checks = fc.Checks;
+                    authorizes = fc.Authorizes;
                 }
                 if (fc.Ui != null)
                 {
@@ -82,7 +82,7 @@ namespace Greatbone.Core
         ///
         /// Create a subfolder.
         ///
-        public F Create<F>(string name, CheckAttribute[] checks = null, UiAttribute ui = null) where F : Folder
+        public F Create<F>(string name, AuthorizeAttribute[] authorizes = null, UiAttribute ui = null) where F : Folder
         {
             if (Level >= MaxNesting)
             {
@@ -102,7 +102,7 @@ namespace Greatbone.Core
             }
             FolderContext fc = new FolderContext(name)
             {
-                Checks = checks,
+                Authorizes = authorizes,
                 Ui = ui,
                 IsVar = false,
                 Parent = this,
@@ -119,7 +119,7 @@ namespace Greatbone.Core
         ///
         /// Create a variable-key subfolder.
         ///
-        public F CreateVar<F>(CheckAttribute[] checks = null) where F : Folder, IVar
+        public F CreateVar<F>(AuthorizeAttribute[] authorizes = null) where F : Folder, IVar
         {
             if (Level >= MaxNesting)
             {
@@ -135,7 +135,7 @@ namespace Greatbone.Core
             }
             FolderContext fc = new FolderContext(_VAR_)
             {
-                Checks = checks,
+                Authorizes = authorizes,
                 IsVar = true,
                 Parent = this,
                 Level = Level + 1,

@@ -77,7 +77,7 @@ namespace Greatbone.Sample
 
         ///
         ///
-        [Shop]
+        [User]
         public void empty(ActionContext ac)
         {
             string wx = ac[1];

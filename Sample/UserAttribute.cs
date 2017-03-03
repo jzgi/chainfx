@@ -2,18 +2,36 @@
 
 namespace Greatbone.Sample
 {
-    public class UserAttribute : CheckAttribute
+    public class UserAttribute : AuthorizeAttribute
     {
-        readonly bool owner;
+        public readonly bool shopop;
 
-        public UserAttribute(bool owner = true)
+        public readonly short jobs;
+
+        public UserAttribute(bool shopop = false, short jobs = 0)
         {
-            this.owner = owner;
+            this.shopop = shopop;
+            this.jobs = jobs;
         }
 
-        public override bool Check(ActionContext wc)
+        public override bool Check(ActionContext ac)
         {
-            return ((Token)wc.Token).IsUser;
+            User tok = ac.Token as User;
+
+            if (tok == null) return false;
+
+            if (shopop)
+            {
+                if (tok.shopid == null)
+                {
+                    return false;
+                }
+            }
+            if (jobs != 0 && (tok.jobs & jobs) == 0)
+            {
+                return false;
+            }
+            return true;
         }
     }
 }

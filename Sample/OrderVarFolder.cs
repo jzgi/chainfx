@@ -44,7 +44,7 @@ namespace Greatbone.Sample
 
         #region /shop/-id-/order/-id-/
 
-        [Shop]
+        [User]
         public void @default(ActionContext ac)
         {
             string shopid = ac[0];
@@ -111,7 +111,7 @@ namespace Greatbone.Sample
 
         #region /order/-id-/
 
-        [Admin, Shop]
+        [User]
         [Ui]
         public void exam(ActionContext ac)
         {

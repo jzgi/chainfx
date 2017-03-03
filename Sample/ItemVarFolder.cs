@@ -22,7 +22,7 @@ namespace Greatbone.Sample
 
         #region /shop/-id-/order/-id-/
 
-        [Shop]
+        [User]
         public void @default(ActionContext ac)
         {
             string shopid = ac[0];

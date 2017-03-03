@@ -15,7 +15,7 @@ namespace Greatbone.Core
         readonly string name;
 
         // access checks
-        internal CheckAttribute[] checks;
+        internal AuthorizeAttribute[] authorizes;
 
         // filtering
         readonly FilterAttribute[] filters;
@@ -33,17 +33,17 @@ namespace Greatbone.Core
             }
 
             // roles
-            List<CheckAttribute> checklst = null;
-            foreach (var check in (CheckAttribute[])attrs.GetCustomAttributes(typeof(CheckAttribute), false))
+            List<AuthorizeAttribute> authlst = null;
+            foreach (var auth in (AuthorizeAttribute[])attrs.GetCustomAttributes(typeof(AuthorizeAttribute), false))
             {
-                if (checklst == null)
+                if (authlst == null)
                 {
-                    checklst = new List<CheckAttribute>(8);
+                    authlst = new List<AuthorizeAttribute>(8);
                 }
-                check.Nodule = this;
-                checklst.Add(check);
+                auth.Nodule = this;
+                authlst.Add(auth);
             }
-            this.checks = checklst?.ToArray();
+            this.authorizes = authlst?.ToArray();
 
             // filters
             List<FilterAttribute> filterlst = null;
@@ -70,17 +70,17 @@ namespace Greatbone.Core
 
         public string Name => name;
 
-        public CheckAttribute[] Checks => checks;
+        public AuthorizeAttribute[] Authorizes => authorizes;
 
         public UiAttribute Ui => ui;
 
         public bool HasCheck(Type checktyp)
         {
-            if (checks != null)
+            if (authorizes != null)
             {
-                for (int i = 0; i < checks.Length; i++)
+                for (int i = 0; i < authorizes.Length; i++)
                 {
-                    if (checks[i].GetType() == checktyp) return true;
+                    if (authorizes[i].GetType() == checktyp) return true;
                 }
             }
             return false;
@@ -92,14 +92,14 @@ namespace Greatbone.Core
 
         public bool Authorize(ActionContext ac)
         {
-            if (checks != null)
+            if (authorizes != null)
             {
                 if (ac.Token == null) return false;
 
                 // run checks
-                for (int i = 0; i < checks.Length; i++)
+                for (int i = 0; i < authorizes.Length; i++)
                 {
-                    if (!checks[i].Check(ac))
+                    if (!authorizes[i].Check(ac))
                     {
                         return false;
                     }

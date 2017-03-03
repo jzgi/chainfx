@@ -57,10 +57,10 @@ namespace Greatbone.Sample
 
         }
 
-        [Check]
+        [Authorize]
         public void @default(ActionContext ac)
         {
-            Token tok = (Token)ac.Token;
+            User tok = (User)ac.Token;
             if (tok.IsAdmin)
             {
                 // display the folder's index page for admin
@@ -69,12 +69,12 @@ namespace Greatbone.Sample
             else if (tok.IsShop)
             {
                 // redirect to the shop's home page
-                ac.ReplyRedirect("shop/" + tok.key + "/");
+                ac.ReplyRedirect("shop/" + tok.id + "/");
             }
-            else if (tok.IsUser)
+            else
             {
                 // redirect to user's home page
-                ac.ReplyRedirect("user/" + tok.key + "/");
+                ac.ReplyRedirect("user/" + tok.id + "/");
             }
         }
 

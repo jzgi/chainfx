@@ -70,15 +70,5 @@ namespace Greatbone.Sample
             o.Put(nameof(note), note);
             o.Put(nameof(status), status);
         }
-
-        public Token ToToken()
-        {
-            return new Token()
-            {
-                key = wx,
-                name = shopid,
-                roles = 2
-            };
-        }
     }
 }

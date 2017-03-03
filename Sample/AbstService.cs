@@ -5,18 +5,14 @@ using Greatbone.Core;
 
 namespace Greatbone.Sample
 {
-    public abstract class AbstService : Service<Token>
+    public abstract class AbstService : Service<User>
     {
         protected static readonly Client WeiXinClient = new Client("https://sh.api.weixin.qq.com");
-
-        internal readonly Admin[] admins;
 
         protected readonly WeiXin weixin;
 
         public AbstService(ServiceContext sc) : base(sc)
         {
-            admins = JsonUtility.FileToArray<Admin>(sc.GetFilePath("$admins.json"));
-
             weixin = JsonUtility.FileToObject<WeiXin>(sc.GetFilePath("$weixin.json"));
         }
 
@@ -24,7 +20,7 @@ namespace Greatbone.Sample
         {
             // check cookie token
             string toktext;
-            if (ac.Cookies.TryGetValue("Bearer", out toktext))
+            if (ac.Cookies.TryGetValue("User", out toktext))
             {
                 ac.Token = Decrypt(toktext);
                 return;
@@ -33,7 +29,7 @@ namespace Greatbone.Sample
             // signon process
             //
 
-            IPrincipal prin = null;
+            User tok = null;
             string ua = ac.Header("User-Agent");
             if (ua != null && ua.Contains("MicroMessenger")) // if request from weixin
             {
@@ -56,11 +52,7 @@ namespace Greatbone.Sample
                 jo = await WeiXinClient.GetAsync<JObj>(null, "/sns/userinfo?access_token=" + access_token + "&openid=" + openid);
                 string nickname = jo[nameof(nickname)];
 
-                prin = new User
-                {
-                    wx = openid,
-                    wxname = nickname
-                };
+                tok = new User { };
             }
             else
             {
@@ -73,38 +65,20 @@ namespace Greatbone.Sample
                 int colon = orig.IndexOf(':');
                 string id = orig.Substring(0, colon);
                 string password = orig.Substring(colon + 1);
-                string credential = TextUtility.MD5(id + ':' + password);
-                if (id.Length == 6 && char.IsDigit(id[0])) // is shop id
+                string md5 = TextUtility.MD5(id + ':' + password);
+                using (var dc = Service.NewDbContext())
                 {
-                    using (var dc = Service.NewDbContext())
+                    if (dc.Query1("SELECT * FROM users WHERE id = @1", (p) => p.Set(id)))
                     {
-                        if (dc.Query1("SELECT * FROM shops WHERE id = @1", (p) => p.Set(id)))
-                        {
-                            prin = dc.ToObject<Shop>();
-                        }
+                        tok = dc.ToObject<User>();
                     }
-                }
-                else if (id.Length == 11 && char.IsDigit(id[0]))
-                {
-                    using (var dc = Service.NewDbContext())
-                    {
-                        if (dc.Query1("SELECT * FROM users WHERE id = @1", (p) => p.Set(id)))
-                        {
-                            prin = dc.ToObject<User>();
-                        }
-                    }
-                }
-                else // is admin id
-                {
-                    prin = admins.Find(a => a.id == id && credential.Equals(a.credential));
                 }
 
                 // validate
-                if (prin == null || !credential.Equals(prin.Credential)) { return; }
+                if (tok == null || !md5.Equals(tok.credential)) { return; }
             }
 
             // set token success
-            Token tok = prin.ToToken();
             ac.Token = tok;
             SetCookies(ac, tok);
         }

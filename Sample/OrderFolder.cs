@@ -137,7 +137,7 @@ namespace Greatbone.Sample
         {
         }
 
-        [Shop]
+        [User]
         [Ui]
         public void clear(ActionContext ac)
         {
@@ -156,7 +156,7 @@ namespace Greatbone.Sample
 
         #region /order/
 
-        [Admin]
+        [User]
         [Ui]
         public void exam(ActionContext ac)
         {

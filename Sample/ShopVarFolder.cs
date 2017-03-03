@@ -54,7 +54,7 @@ namespace Greatbone.Sample
         // management
         //
 
-        [Shop]
+        [User]
         public void remenu(ActionContext ac)
         {
         }

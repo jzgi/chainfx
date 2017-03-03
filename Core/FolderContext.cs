@@ -18,7 +18,7 @@ namespace Greatbone.Core
 
         public string Name => name;
 
-        public CheckAttribute[] Checks { get; internal set; }
+        public AuthorizeAttribute[] Authorizes { get; internal set; }
 
         public UiAttribute Ui { get; internal set; }
 

@@ -74,7 +74,7 @@ namespace Greatbone.Sample
             }
         }
 
-        [Shop]
+        [User]
         public void _cat_(ActionContext ac)
         {
             string shopid = ac[1];
@@ -92,7 +92,7 @@ namespace Greatbone.Sample
             }
         }
 
-        [Shop]
+        [User]
         [Ui]
         public void toggle(ActionContext ac)
         {
@@ -105,7 +105,7 @@ namespace Greatbone.Sample
             }
         }
 
-        [Shop]
+        [User]
         [Ui]
         public async Task modify(ActionContext ac)
         {
