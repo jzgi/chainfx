@@ -33,6 +33,7 @@ namespace Greatbone.Sample
             // signon process
             //
 
+            IPrincipal prin = null;
             string ua = ac.Header("User-Agent");
             if (ua != null && ua.Contains("MicroMessenger")) // if request from weixin
             {
@@ -55,23 +56,16 @@ namespace Greatbone.Sample
                 jo = await WeiXinClient.GetAsync<JObj>(null, "/sns/userinfo?access_token=" + access_token + "&openid=" + openid);
                 string nickname = jo[nameof(nickname)];
 
-                User prin = new User
+                prin = new User
                 {
                     wx = openid,
                     wxname = nickname
                 };
-
-                Token tok = prin.ToToken();
-                ac.Token = tok;
-                SetCookies(ac, tok);
             }
             else
             {
                 string authorization = ac.Header("Authorization");
-                if (authorization == null || !authorization.StartsWith("Basic "))
-                {
-                    return;
-                }
+                if (authorization == null || !authorization.StartsWith("Basic ")) { return; }
 
                 // decode basic scheme
                 byte[] bytes = Convert.FromBase64String(authorization.Substring(6));
@@ -80,7 +74,6 @@ namespace Greatbone.Sample
                 string id = orig.Substring(0, colon);
                 string password = orig.Substring(colon + 1);
                 string credential = TextUtility.MD5(id + ':' + password);
-                IPrincipal prin = null;
                 if (id.Length == 6 && char.IsDigit(id[0])) // is shop id
                 {
                     using (var dc = Service.NewDbContext())
@@ -107,13 +100,13 @@ namespace Greatbone.Sample
                 }
 
                 // validate
-                if (prin != null && credential.Equals(prin.Credential))
-                {
-                    Token tok = prin.ToToken();
-                    ac.Token = tok;
-                    SetCookies(ac, tok);
-                }
+                if (prin == null || !credential.Equals(prin.Credential)) { return; }
             }
+
+            // set token success
+            Token tok = prin.ToToken();
+            ac.Token = tok;
+            SetCookies(ac, tok);
         }
 
         protected override void Challenge(ActionContext ac)

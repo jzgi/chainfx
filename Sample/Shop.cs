@@ -78,9 +78,11 @@ namespace Greatbone.Sample
         {
             return new Token()
             {
-                key = wx,
+                key = id,
+                wx = wx,
                 name = name,
-                roles = 2
+                roles = Token.ROLE_SHOP,
+                extra = id
             };
         }
     }

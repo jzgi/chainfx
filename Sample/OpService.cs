@@ -69,14 +69,12 @@ namespace Greatbone.Sample
             else if (tok.IsShop)
             {
                 // redirect to the shop's home page
-                string shopid = tok.extra;
-                ac.ReplyRedirect("shop/" + shopid + "/");
+                ac.ReplyRedirect("shop/" + tok.key + "/");
             }
             else if (tok.IsUser)
             {
                 // redirect to user's home page
-                string userwx = tok.wx;
-                ac.ReplyRedirect("user/" + userwx + "/");
+                ac.ReplyRedirect("user/" + tok.key + "/");
             }
         }
 

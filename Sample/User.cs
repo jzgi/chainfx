@@ -43,6 +43,7 @@ namespace Greatbone.Sample
             return new Token()
             {
                 key = wx,
+                wx = wx,
                 name = name ?? wxname,
                 roles = Token.ROLE_USER
             };
