@@ -1,3 +1,5 @@
+using System;
+using System.Text;
 using System.Threading.Tasks;
 using Greatbone.Core;
 
@@ -28,19 +30,19 @@ namespace Greatbone.Sample
                 return;
             }
 
-            // as normal request if no # 
-            string uri = ac.Uri;
-            if (!uri.EndsWith("#"))
-            {
-                return;
-            }
-
             // signon process
             //
 
             string ua = ac.Header("User-Agent");
             if (ua != null && ua.Contains("MicroMessenger")) // if request from weixin
             {
+                // as normal request if no # 
+                string uri = ac.Uri;
+                if (!uri.EndsWith("X-SIGNON"))
+                {
+                    return;
+                }
+
                 string code = ac.Query[nameof(code)];
 
                 // get access token by the code
@@ -65,51 +67,51 @@ namespace Greatbone.Sample
             }
             else
             {
-                if (ac.GET) // return the login form
+                string authorization = ac.Header("Authorization");
+                if (authorization == null || !authorization.StartsWith("Basic "))
                 {
-                    var login = new Login();
-                    ac.ReplyForm(200, login);
+                    return;
                 }
-                else // POST
-                {
-                    var login = await ac.ReadObjectAsync<Login>();
-                    string credential = login.CalcCredential();
-                    IPrincipal prin = null;
-                    if (login.IsShop)
-                    {
-                        using (var dc = Service.NewDbContext())
-                        {
-                            if (dc.Query1("SELECT * FROM shops WHERE id = @1", (p) => p.Set(login.id)))
-                            {
-                                prin = dc.ToObject<Shop>();
-                            }
-                        }
-                    }
-                    else if (login.IsUser)
-                    {
-                        using (var dc = Service.NewDbContext())
-                        {
-                            if (dc.Query1("SELECT * FROM users WHERE id = @1", (p) => p.Set(login.id)))
-                            {
-                                prin = dc.ToObject<User>();
-                            }
-                        }
-                    }
-                    else // is admin id
-                    {
-                        prin = admins.Find(a => a.id == login.id && credential.Equals(a.credential));
-                    }
 
-                    // validate
-                    if (prin != null && credential.Equals(prin.Credential))
+                // decode basic scheme
+                byte[] bytes = Convert.FromBase64String(authorization.Substring(6));
+                string orig = Encoding.ASCII.GetString(bytes);
+                int colon = orig.IndexOf(':');
+                string id = orig.Substring(0, colon);
+                string password = orig.Substring(colon + 1);
+                string credential = TextUtility.MD5(id + ':' + password);
+                IPrincipal prin = null;
+                if (id.Length == 6 && char.IsDigit(id[0])) // is shop id
+                {
+                    using (var dc = Service.NewDbContext())
                     {
-                        SetCookies(ac, prin.ToToken());
-                        ac.ReplyRedirect(login.orig);
-                        return;
+                        if (dc.Query1("SELECT * FROM shops WHERE id = @1", (p) => p.Set(id)))
+                        {
+                            prin = dc.ToObject<Shop>();
+                        }
                     }
-                    else { ac.Reply(404); }
-                    // error
-                    ac.ReplyForm(200, login);
+                }
+                else if (id.Length == 11 && char.IsDigit(id[0]))
+                {
+                    using (var dc = Service.NewDbContext())
+                    {
+                        if (dc.Query1("SELECT * FROM users WHERE id = @1", (p) => p.Set(id)))
+                        {
+                            prin = dc.ToObject<User>();
+                        }
+                    }
+                }
+                else // is admin id
+                {
+                    prin = admins.Find(a => a.id == id && credential.Equals(a.credential));
+                }
+
+                // validate
+                if (prin != null && credential.Equals(prin.Credential))
+                {
+                    Token tok = prin.ToToken();
+                    ac.Token = tok;
+                    SetCookies(ac, tok);
                 }
             }
         }
@@ -120,12 +122,12 @@ namespace Greatbone.Sample
             if (ua != null && ua.Contains("MicroMessenger")) // weixin
             {
                 // redirect the user to weixin authorization page
-                ac.ReplyRedirect("https://open.weixin.qq.com/connect/oauth2/authorize?appid=" + weixin.appid + "&redirect_uri=" + ac.Uri + "#&response_type=code&scope=snsapi_userinfo&state=STATE#wechat_redirect");
+                ac.ReplyRedirect("https://open.weixin.qq.com/connect/oauth2/authorize?appid=" + weixin.appid + "&redirect_uri=" + ac.UriPad + "&response_type=code&scope=snsapi_userinfo&state=STATE#wechat_redirect");
             }
             else
             {
-                ac.SetHeader("Location", ac.Uri + "#");
-                ac.Reply(303); // see other - redirect to signon url
+                ac.SetHeader("WWW-Authenticate", "Basic realm=\"" + Auth.domain + "\"");
+                ac.Reply(401); // unauthorized
             }
         }
     }

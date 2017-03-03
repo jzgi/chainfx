@@ -82,6 +82,23 @@ namespace Greatbone.Core
 
         public string Uri => Features.Get<IHttpRequestFeature>().RawTarget;
 
+        public string UriPad
+        {
+            get
+            {
+                IHttpRequestFeature feat = Features.Get<IHttpRequestFeature>();
+                string qstr = feat.QueryString;
+                if (string.IsNullOrEmpty(qstr))
+                {
+                    return feat.Path + "?X-SIGNON";
+                }
+                else
+                {
+                    return feat.Path + qstr + "&X-SIGNON";
+                }
+            }
+        }
+
         // URL query 
         Form query;
 

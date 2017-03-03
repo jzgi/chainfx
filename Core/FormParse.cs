@@ -51,6 +51,10 @@ namespace Greatbone.Core
 
                 // name value
                 string name = ParseName(ref p);
+                if (name == null)
+                {
+                    return frm;
+                }
                 string value = ParseValue(ref p);
                 frm.Add(name, value);
             }
@@ -62,7 +66,10 @@ namespace Greatbone.Core
             int p = pos;
             for (;;)
             {
-                if (p >= length) { throw ParseEx; }
+                if (p >= length)
+                {
+                    return null; // NOTE: we deliberately ignore a name-without-eq
+                }
                 int b = this[p++];
                 if (b == '=')
                 {
