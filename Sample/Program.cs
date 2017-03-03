@@ -36,7 +36,7 @@ namespace Greatbone.Sample
             Diction cluster = new Diction
             {
                 ["op"] = "http://localhost:8080",
-                ["comm"] = "http://localhost:8080"
+                ["comm"] = "http://localhost:8081"
             };
 
             TryCreate<OpService>(

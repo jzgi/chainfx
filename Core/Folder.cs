@@ -227,7 +227,7 @@ namespace Greatbone.Core
             for (int i = 0; i < actions.Count; i++)
             {
                 ActionInfo a = actions[i];
-                if (a.IsModal && a.Check(ac))
+                if (a.IsModal && a.Authorize(ac))
                 {
                     if (lst == null) lst = new List<ActionInfo>();
                     lst.Add(a);
@@ -239,7 +239,7 @@ namespace Greatbone.Core
         internal Folder ResolveFolder(ref string relative, ActionContext ac)
         {
             // access check 
-            if (!Check(ac)) throw AccessEx;
+            if (!Authorize(ac)) throw AuthorizeEx;
 
             int slash = relative.IndexOf('/');
             if (slash == -1)
@@ -296,7 +296,7 @@ namespace Greatbone.Core
                 }
 
                 // access check
-                if (!actn.Check(ac)) throw AccessEx;
+                if (!actn.Authorize(ac)) throw AuthorizeEx;
 
                 // try in cache
 

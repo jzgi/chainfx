@@ -6,6 +6,7 @@ namespace Greatbone.Sample
     ///
     /// /shop/
     ///
+    [Check]
     public class ShopFolder : Folder
     {
         public ShopFolder(FolderContext fc) : base(fc)

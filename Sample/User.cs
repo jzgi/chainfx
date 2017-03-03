@@ -1,26 +1,21 @@
-﻿using System;
-using Greatbone.Core;
+﻿using Greatbone.Core;
 
 namespace Greatbone.Sample
 {
     /// 
     /// A buyer data object.
     ///
-    public class User : IData
+    public class User : IData, IPrincipal
     {
         internal string wx; // weixin openid
 
         internal string credential;
 
-        internal string name; // user name or weixin nickname
+        internal string name; // user name
 
         internal string wxname; // weixin nickname
 
         internal string tel;
-
-        internal DateTime orderon; // last order time
-
-        internal decimal orderup; // accumulative addup
 
         public void ReadData(IDataInput i, int proj = 0)
         {
@@ -28,8 +23,6 @@ namespace Greatbone.Sample
             i.Get(nameof(wxname), ref wxname);
             i.Get(nameof(name), ref name);
             i.Get(nameof(tel), ref tel);
-            i.Get(nameof(orderon), ref orderon);
-            i.Get(nameof(orderup), ref orderup);
         }
 
         public void WriteData<R>(IDataOutput<R> o, int proj = 0) where R : IDataOutput<R>
@@ -38,17 +31,20 @@ namespace Greatbone.Sample
             o.Put(nameof(wxname), wxname);
             o.Put(nameof(name), name);
             o.Put(nameof(tel), tel);
-            o.Put(nameof(orderon), orderon);
-            o.Put(nameof(orderup), orderup);
         }
+
+        //
+        // interface IPrincipal
+
+        public string Credential => credential;
 
         public Token ToToken()
         {
             return new Token()
             {
                 key = wx,
-                name = name,
-                roles = 3
+                name = name ?? wxname,
+                roles = Token.ROLE_USER
             };
         }
     }

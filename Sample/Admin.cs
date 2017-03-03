@@ -1,12 +1,11 @@
-﻿using System;
-using Greatbone.Core;
+﻿using Greatbone.Core;
 
 namespace Greatbone.Sample
 {
     /// 
     /// A user that is a platform internal worker.
     ///
-    public class Admin : IData
+    public class Admin : IData, IPrincipal
     {
         internal string id; // weixin openid
 
@@ -35,6 +34,11 @@ namespace Greatbone.Sample
             o.Put(nameof(roles), roles);
             o.Put(nameof(tel), tel);
         }
+
+        //
+        // interface IPrincipal
+
+        public string Credential => credential;
 
         public Token ToToken()
         {

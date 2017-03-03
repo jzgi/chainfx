@@ -1,5 +1,4 @@
-﻿using System;
-using Greatbone.Core;
+﻿using Greatbone.Core;
 
 namespace Greatbone.Sample
 {
@@ -10,13 +9,11 @@ namespace Greatbone.Sample
     {
         // roles
         public const int
-
-            // admins
-            MKTG = 0x11,
-            ACCTG = 0x12,
-            CUSTSVC = 0x14,
-            SHOP = 0x20,
-            USER = 0x40;
+            ROLE_MKTG = 0x11,
+            ROLE_ACCTG = 0x12,
+            ROLE_CUSTSVC = 0x14,
+            ROLE_SHOP = 0x20,
+            ROLE_USER = 0x40;
 
         internal string key;
 
@@ -33,9 +30,9 @@ namespace Greatbone.Sample
 
         public bool IsAdmin => (roles & 0x10) == 0x10;
 
-        public bool IsShop => (roles & SHOP) == SHOP;
+        public bool IsShop => (roles & ROLE_SHOP) == ROLE_SHOP;
 
-        public bool IsUser => (roles & USER) == USER;
+        public bool IsUser => (roles & ROLE_USER) == ROLE_USER;
 
         public void ReadData(IDataInput i, int proj = 0)
         {

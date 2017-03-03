@@ -6,7 +6,7 @@ namespace Greatbone.Sample
     ///
     /// A shop data object.
     ///
-    public class Shop : IData
+    public class Shop : IData, IPrincipal
     {
         public static readonly Shop Empty = new Shop();
 
@@ -68,6 +68,11 @@ namespace Greatbone.Sample
             o.Put(nameof(license), license);
             o.Put(nameof(status), status, Options: STATUS);
         }
+
+        //
+        // interface IPrincipal
+
+        public string Credential => credential;
 
         public Token ToToken()
         {

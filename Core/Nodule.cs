@@ -9,7 +9,7 @@ namespace Greatbone.Core
     ///
     public abstract class Nodule : IRollable
     {
-        protected static readonly CheckException AccessEx = new CheckException();
+        protected static readonly AuthorizeException AuthorizeEx = new AuthorizeException();
 
         // name as appeared in the uri path
         readonly string name;
@@ -90,7 +90,7 @@ namespace Greatbone.Core
 
         public bool IsModal => ui != null && ui.Modal > 0;
 
-        public bool Check(ActionContext ac)
+        public bool Authorize(ActionContext ac)
         {
             if (checks != null)
             {

@@ -166,7 +166,7 @@ namespace Greatbone.Core
         //
         // authentication
         //
-        protected virtual void Authenticate(ActionContext ac) { }
+        protected virtual async Task Authenticate(ActionContext ac) { }
 
         protected virtual void Challenge(ActionContext ac) { }
 
@@ -194,7 +194,7 @@ namespace Greatbone.Core
 
             try // authentication
             {
-                Authenticate(ac);
+                await Authenticate(ac);
             }
             catch (Exception e)
             {
@@ -239,7 +239,7 @@ namespace Greatbone.Core
             {
                 ac.Reply(400, e.Message); // bad request
             }
-            catch (CheckException e)
+            catch (AuthorizeException e)
             {
                 if (ac.Token == null) { Challenge(ac); }
                 else
@@ -453,7 +453,7 @@ namespace Greatbone.Core
 
         public Auth Auth => sc.auth;
 
-        protected override void Authenticate(ActionContext ac)
+        protected override async Task Authenticate(ActionContext ac)
         {
             string toktext;
             string hv = ac.Header("Authorization");
