@@ -35,12 +35,12 @@ namespace Greatbone.Sample
 
             Diction cluster = new Diction
             {
-                ["op"] = "http://localhost:8080",
-                ["comm"] = "http://localhost:8081"
+                ["shop"] = "http://localhost:8080",
+                ["chat"] = "http://localhost:8081"
             };
 
-            TryCreate<OpService>(
-                new ServiceContext("op")
+            TryCreate<ShopService>(
+                new ServiceContext("shop")
                 {
                     addrs = new[] { "http://localhost:8080" },
                     auth = auth,
@@ -50,8 +50,8 @@ namespace Greatbone.Sample
                 !IsDebug()
             );
 
-            TryCreate<CommService>(
-                new ServiceContext("comm")
+            TryCreate<ChatService>(
+                new ServiceContext("chat")
                 {
                     addrs = new[] { "http://localhost:8081" },
                     auth = auth,

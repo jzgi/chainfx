@@ -20,7 +20,7 @@ namespace Greatbone.Sample
         {
             // check cookie token
             string toktext;
-            if (ac.Cookies.TryGetValue("User", out toktext))
+            if (ac.Cookies.TryGetValue("Bearer", out toktext))
             {
                 ac.Token = Decrypt(toktext);
                 return;
@@ -52,7 +52,18 @@ namespace Greatbone.Sample
                 jo = await WeiXinClient.GetAsync<JObj>(null, "/sns/userinfo?access_token=" + access_token + "&openid=" + openid);
                 string nickname = jo[nameof(nickname)];
 
-                tok = new User { };
+                // whether a recorded user?
+                using (var dc = NewDbContext())
+                {
+                    if (dc.Query1("SELECT * FROM users WHERE wx = @1", (p) => p.Set(openid)))
+                    {
+                        tok = dc.ToObject<User>();
+                    }
+                    else // create a temporary user
+                    {
+                        tok = new User { wx = openid, wxname = nickname };
+                    }
+                }
             }
             else
             {
@@ -66,7 +77,7 @@ namespace Greatbone.Sample
                 string id = orig.Substring(0, colon);
                 string password = orig.Substring(colon + 1);
                 string md5 = TextUtility.MD5(id + ':' + password);
-                using (var dc = Service.NewDbContext())
+                using (var dc = NewDbContext())
                 {
                     if (dc.Query1("SELECT * FROM users WHERE id = @1", (p) => p.Set(id)))
                     {

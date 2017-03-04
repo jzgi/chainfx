@@ -2,14 +2,14 @@ using Greatbone.Core;
 
 namespace Greatbone.Sample
 {
-    public class CommService : AbstService
+    public class ChatService : AbstService
     {
         readonly Client WeiXinClient = new Client("https://api.weixin.qq.com");
 
-        public CommService(ServiceContext sc) : base(sc)
+        public ChatService(ServiceContext sc) : base(sc)
         {
             // add sub folder
-            CreateVar<CommVarFolder>();
+            CreateVar<ChatVarFolder>();
         }
     }
 }
