@@ -524,7 +524,7 @@ namespace Greatbone.Core
             throw new NotImplementedException();
         }
 
-        public FormContent Put(string name, Diction v, string Label = null, string Placeholder = null, bool ReadOnly = false, bool Required = false)
+        public FormContent Put(string name, Dict v, string Label = null, string Placeholder = null, bool ReadOnly = false, bool Required = false)
         {
             throw new NotImplementedException();
         }

@@ -2,9 +2,7 @@
 
 namespace Greatbone.Sample
 {
-    ///
-    /// /user/
-    ///
+    [User, Staff(-1, Ui = true)]
     public class UserFolder : Folder
     {
         public UserFolder(FolderContext fc) : base(fc)
@@ -12,10 +10,22 @@ namespace Greatbone.Sample
             CreateVar<UserVarFolder>();
         }
 
-        #region /user/
+        public void @default(ActionContext ac)
+        {
+            using (var dc = ac.NewDbContext())
+            {
+                if (dc.Query("SELECT * FROM users"))
+                {
+                    ac.ReplyFolderPage(200, dc.ToList<User>()); // ok
+                }
+                else
+                {
+                    ac.Reply(204); // no content
+                }
+            }
+        }
 
-        /// search for a user by name.
-        ///
+        [Staff(User.MARKETG)]
         public void srch(ActionContext ac)
         {
         }
@@ -25,7 +35,5 @@ namespace Greatbone.Sample
         public void aggr(ActionContext ac)
         {
         }
-
-        #endregion
     }
 }

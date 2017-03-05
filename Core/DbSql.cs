@@ -507,7 +507,7 @@ namespace Greatbone.Core
             return new string(charbuf, 0, count);
         }
 
-        public DbSql Put(string name, Diction v, string Label = null, string Placeholder = null, bool ReadOnly = false, bool Required = false)
+        public DbSql Put(string name, Dict v, string Label = null, string Placeholder = null, bool ReadOnly = false, bool Required = false)
         {
             throw new NotImplementedException();
         }

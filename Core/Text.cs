@@ -240,7 +240,7 @@ namespace Greatbone.Core
             return true;
         }
 
-        public bool Get(string name, ref Diction v)
+        public bool Get(string name, ref Dict v)
         {
             throw new NotImplementedException();
         }

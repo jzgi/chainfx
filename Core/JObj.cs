@@ -399,7 +399,7 @@ namespace Greatbone.Core
             return str;
         }
 
-        public bool Get(string name, ref Diction v)
+        public bool Get(string name, ref Dict v)
         {
             JMbr mbr;
             if (TryGet(name, out mbr))
@@ -408,7 +408,7 @@ namespace Greatbone.Core
                 {
                     JObj jo = mbr;
                     int count = jo.Count;
-                    Diction dict = new Diction(count);
+                    Dict dict = new Dict(count);
                     for (int i = 0; i < count; i++)
                     {
                         JMbr e = jo[i];

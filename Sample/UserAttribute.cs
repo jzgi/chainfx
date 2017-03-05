@@ -2,15 +2,36 @@
 
 namespace Greatbone.Sample
 {
-    public class UserAttribute : AuthorizeAttribute
+    public class UserAttribute : RoleAttribute
     {
-        public readonly bool shopop;
+        public override bool Check(ActionContext ac)
+        {
+            return true;
+        }
+    }
 
+    public class ShopAttribute : UserAttribute
+    {
+        public override bool Check(ActionContext ac)
+        {
+            User tok = ac.Token as User;
+
+            if (tok == null) return false;
+
+            if (tok.shopid == null)
+            {
+                return false;
+            }
+            return true;
+        }
+    }
+
+    public class StaffAttribute : UserAttribute
+    {
         public readonly short jobs;
 
-        public UserAttribute(bool shopop = false, short jobs = 0)
+        public StaffAttribute(short jobs)
         {
-            this.shopop = shopop;
             this.jobs = jobs;
         }
 
@@ -20,13 +41,6 @@ namespace Greatbone.Sample
 
             if (tok == null) return false;
 
-            if (shopop)
-            {
-                if (tok.shopid == null)
-                {
-                    return false;
-                }
-            }
             if (jobs != 0 && (tok.jobs & jobs) == 0)
             {
                 return false;

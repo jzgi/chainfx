@@ -5,14 +5,14 @@ namespace Greatbone.Sample
 {
     ///
     ///
+    [Shop(Ui = true), Staff(-1, Ui = true)]
+    [Ui("结款管理")]
     public class RepayFolder : Folder
     {
         public RepayFolder(FolderContext fc) : base(fc)
         {
             CreateVar<ItemVarFolder>();
         }
-
-        #region /shop/-shopid-/item/
 
         public void lst(ActionContext ac)
         {
@@ -29,10 +29,6 @@ namespace Greatbone.Sample
                 }
             }
         }
-
-        #endregion
-
-        #region /shop/-shopid-/order/
 
         [User]
         [Ui]
@@ -69,7 +65,5 @@ namespace Greatbone.Sample
                 }); // see other
             }
         }
-
-        #endregion
     }
 }

@@ -15,7 +15,7 @@ namespace Greatbone.Core
         public Db db;
 
         // cluster members in the form of moniker-address pairs
-        public Diction cluster;
+        public Dict cluster;
 
         // logging level
         public int logging = 3;

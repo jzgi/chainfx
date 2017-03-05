@@ -1,4 +1,5 @@
-﻿using System.IO;
+﻿using System;
+using System.IO;
 
 namespace Greatbone.Core
 {
@@ -18,11 +19,11 @@ namespace Greatbone.Core
 
         public string Name => name;
 
-        public AuthorizeAttribute[] Authorizes { get; internal set; }
+        public Func<IData, string> Keyer { get; internal set; }
+
+        public RoleAttribute[] Roles { get; internal set; }
 
         public UiAttribute Ui { get; internal set; }
-
-        public bool IsVar { get; internal set; }
 
         public int Level { get; internal set; }
 

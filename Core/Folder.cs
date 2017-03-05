@@ -21,6 +21,9 @@ namespace Greatbone.Core
         // state-passing
         readonly FolderContext fc;
 
+        // roles that have access to uiactions of this folder
+        RoleAttribute[] uiroles;
+
         // declared actions 
         readonly Roll<ActionInfo> actions;
 
@@ -68,9 +71,9 @@ namespace Greatbone.Core
                 }
 
                 // to override annotated attributes
-                if (fc.Authorizes != null)
+                if (fc.Roles != null)
                 {
-                    authorizes = fc.Authorizes;
+                    roles = fc.Roles;
                 }
                 if (fc.Ui != null)
                 {
@@ -82,7 +85,7 @@ namespace Greatbone.Core
         ///
         /// Create a subfolder.
         ///
-        public F Create<F>(string name, AuthorizeAttribute[] authorizes = null, UiAttribute ui = null) where F : Folder
+        public F Create<F>(string name, RoleAttribute[] roles = null, UiAttribute ui = null) where F : Folder
         {
             if (Level >= MaxNesting)
             {
@@ -102,9 +105,8 @@ namespace Greatbone.Core
             }
             FolderContext fc = new FolderContext(name)
             {
-                Authorizes = authorizes,
+                Roles = roles,
                 Ui = ui,
-                IsVar = false,
                 Parent = this,
                 Level = Level + 1,
                 Directory = (Parent == null) ? name : Path.Combine(Parent.Directory, name),
@@ -119,7 +121,7 @@ namespace Greatbone.Core
         ///
         /// Create a variable-key subfolder.
         ///
-        public F CreateVar<F>(AuthorizeAttribute[] authorizes = null) where F : Folder, IVar
+        public F CreateVar<F>(Func<IData, string> keyer = null, RoleAttribute[] roles = null) where F : Folder, IVar
         {
             if (Level >= MaxNesting)
             {
@@ -135,8 +137,8 @@ namespace Greatbone.Core
             }
             FolderContext fc = new FolderContext(_VAR_)
             {
-                Authorizes = authorizes,
-                IsVar = true,
+                Keyer = keyer,
+                Roles = roles,
                 Parent = this,
                 Level = Level + 1,
                 Directory = (Parent == null) ? _VAR_ : Path.Combine(Parent.Directory, _VAR_),
@@ -153,9 +155,8 @@ namespace Greatbone.Core
         public Roll<Folder> Subs => subs;
 
         public Folder VarSub => varsub;
-        
 
-        public bool IsVar => fc.IsVar;
+        public Func<IData, string> Keyer => fc.Keyer;
 
         public string Directory => fc.Directory;
 
@@ -206,28 +207,13 @@ namespace Greatbone.Core
             return actions[method];
         }
 
-        public List<ActionInfo> GetModalActions(Type checktyp)
+        public List<ActionInfo> GetUiActions(ActionContext ac)
         {
             List<ActionInfo> lst = null;
             for (int i = 0; i < actions.Count; i++)
             {
                 ActionInfo a = actions[i];
-                if (a.IsModal && a.HasCheck(checktyp))
-                {
-                    if (lst == null) lst = new List<ActionInfo>();
-                    lst.Add(a);
-                }
-            }
-            return lst;
-        }
-
-        public List<ActionInfo> GetModalActions(ActionContext ac)
-        {
-            List<ActionInfo> lst = null;
-            for (int i = 0; i < actions.Count; i++)
-            {
-                ActionInfo a = actions[i];
-                if (a.IsModal && a.Authorize(ac))
+                if (a.HasUi && a.Authorize(ac))
                 {
                     if (lst == null) lst = new List<ActionInfo>();
                     lst.Add(a);

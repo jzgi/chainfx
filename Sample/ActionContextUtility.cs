@@ -134,7 +134,7 @@ namespace Greatbone.Sample
             },
             m =>
             {
-                List<ActionInfo> actions = folder.GetModalActions(ac);
+                List<ActionInfo> actions = folder.GetUiActions(ac);
                 m.GRID(actions, lst);
             },
             null,
@@ -143,7 +143,7 @@ namespace Greatbone.Sample
 
         public static void ReplyPane(this ActionContext ac, int status, IDataInput input, Action<IDataInput, HtmlContent> valve, bool? pub = null, int maxage = 60)
         {
-            List<ActionInfo> actions = ac.Folder.GetModalActions(ac);
+            List<ActionInfo> actions = ac.Folder.GetUiActions(ac);
             ac.ReplyHtml(status,
             null,
             m =>

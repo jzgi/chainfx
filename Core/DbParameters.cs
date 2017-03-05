@@ -504,7 +504,7 @@ namespace Greatbone.Core
             return Put(null, v);
         }
 
-        public DbParameters Put(string name, Diction v, string Label = null, string Placeholder = null, bool ReadOnly = false, bool Required = false)
+        public DbParameters Put(string name, Dict v, string Label = null, string Placeholder = null, bool ReadOnly = false, bool Required = false)
         {
             throw new NotImplementedException();
         }

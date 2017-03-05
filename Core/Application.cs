@@ -18,12 +18,11 @@ namespace Greatbone.Core
         static readonly List<Service> Services = new List<Service>(8);
 
 
-        public static bool TryCreate<S>(ServiceContext sc, bool load, AuthorizeAttribute[] authorizes = null, UiAttribute ui = null) where S : Service
+        public static bool TryCreate<S>(ServiceContext sc, bool load, RoleAttribute[] authorizes = null, UiAttribute ui = null) where S : Service
         {
             // initialize folder context
-            sc.Authorizes = authorizes;
+            sc.Roles = authorizes;
             sc.Ui = ui;
-            sc.IsVar = false;
             sc.Parent = null;
             sc.Level = 0;
             sc.Directory = sc.Name;

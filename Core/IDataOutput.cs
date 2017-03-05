@@ -47,7 +47,7 @@ namespace Greatbone.Core
 
         R Put(string name, string[] v, IDictionary<string, string> Options = null, string Label = null, string Placeholder = null, bool ReadOnly = false, bool Required = false);
 
-        R Put(string name, Diction v, string Label = null, string Placeholder = null, bool ReadOnly = false, bool Required = false);
+        R Put(string name, Dict v, string Label = null, string Placeholder = null, bool ReadOnly = false, bool Required = false);
 
         R Put(string name, IData v, int proj = 0, string Label = null, string Placeholder = null, bool ReadOnly = false, bool Required = false);
 

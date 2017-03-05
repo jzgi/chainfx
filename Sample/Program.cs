@@ -33,7 +33,7 @@ namespace Greatbone.Sample
                 password = "721004"
             };
 
-            Diction cluster = new Diction
+            Dict cluster = new Dict
             {
                 ["shop"] = "http://localhost:8080",
                 ["chat"] = "http://localhost:8081"

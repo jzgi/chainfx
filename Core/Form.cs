@@ -296,7 +296,7 @@ namespace Greatbone.Core
             throw new NotImplementedException();
         }
 
-        public bool Get(string name, ref Diction v)
+        public bool Get(string name, ref Dict v)
         {
             throw new NotImplementedException();
         }
