@@ -27,8 +27,10 @@ namespace Greatbone.Sample
         public void ReadData(IDataInput i, int proj = 0)
         {
             i.Get(nameof(id), ref id);
-            i.Get(nameof(password), ref password);
-            i.Get(nameof(credential), ref credential);
+            if (proj.Kept())
+            {
+                i.Get(nameof(credential), ref credential);
+            }
             i.Get(nameof(wx), ref wx);
             i.Get(nameof(wxname), ref wxname);
             i.Get(nameof(name), ref name);
@@ -42,13 +44,17 @@ namespace Greatbone.Sample
 
         public void WriteData<R>(IDataOutput<R> o, int proj = 0) where R : IDataOutput<R>
         {
+            if (proj.Kept())
+            {
+                o.Put(nameof(password), password);
+            }
             o.Put(nameof(wx), wx);
             o.Put(nameof(wxname), wxname);
             o.Put(nameof(name), name);
             o.Put(nameof(tel), tel);
         }
 
-        public bool IsAdmin=> false;
+        public bool IsAdmin => false;
 
         public bool IsShop => false;
 

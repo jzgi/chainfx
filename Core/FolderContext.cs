@@ -19,8 +19,6 @@ namespace Greatbone.Core
 
         public string Name => name;
 
-        public Func<IData, string> Keyer { get; internal set; }
-
         public AuthorizeAttribute Authorize { get; internal set; }
 
         public UiAttribute Ui { get; internal set; }

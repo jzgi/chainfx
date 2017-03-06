@@ -19,15 +19,15 @@ namespace Greatbone.Sample
 
         public ShopService(ServiceContext sc) : base(sc)
         {
-            Create<CartFolder>("cart");
+            AddSub<CartFolder>("cart");
 
-            Create<UserFolder>("user");
+            AddSub<UserFolder>("user");
 
-            Create<ShopFolder>("shop");
+            AddSub<ShopFolder>("shop");
 
-            Create<PayFolder>("pay");
+            AddSub<PayFolder>("pay");
 
-            Create<RepayFolder>("repay");
+            AddSub<RepayFolder>("repay");
 
             // timer obtaining access_token from weixin
             timer = new Timer(async state =>

@@ -37,11 +37,10 @@ namespace Greatbone.Sample
 
             if (tok == null) return false;
 
-            if (tok.shopid == null)
+            if (shop && tok.shopid == null)
             {
                 return false;
             }
-            if (tok == null) return false;
 
             if (jobs != 0 && (tok.jobs & jobs) == 0)
             {

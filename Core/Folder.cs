@@ -31,10 +31,12 @@ namespace Greatbone.Core
         readonly ActionInfo defaction;
 
         // subfolders, if any
-        internal Roll<Folder> subs;
+        internal Roll<Folder> subfolders;
 
         // the variable-key subfolder, if any
-        internal Folder varsub;
+        internal Folder varfolder;
+
+        internal Func<IData, string> varkeyer;
 
         protected Folder(FolderContext fc) : base(fc.Name, null)
         {
@@ -111,7 +113,7 @@ namespace Greatbone.Core
             for (int i = 0; i < actions.Count; i++)
             {
                 ActionInfo ai = actions[i];
-                if (!ai.HasUi) continue;
+                // if (!ai.HasUi) continue;
 
                 AuthorizeAttribute authorize = ai.authorize;
                 if (authorize != null)
@@ -126,16 +128,16 @@ namespace Greatbone.Core
         ///
         /// Create a subfolder.
         ///
-        public F Create<F>(string name, UiAttribute ui = null, AuthorizeAttribute authorize = null) where F : Folder
+        public F AddSub<F>(string name, UiAttribute ui = null, AuthorizeAttribute authorize = null) where F : Folder
         {
             if (Level >= MaxNesting)
             {
                 throw new ServiceException("allowed folder nesting " + MaxNesting);
             }
 
-            if (subs == null)
+            if (subfolders == null)
             {
-                subs = new Roll<Folder>(32);
+                subfolders = new Roll<Folder>(32);
             }
             // create instance by reflection
             Type typ = typeof(F);
@@ -154,7 +156,7 @@ namespace Greatbone.Core
                 Service = Service
             };
             F folder = (F)ci.Invoke(new object[] { fc });
-            subs.Add(folder);
+            subfolders.Add(folder);
 
             return folder;
         }
@@ -178,7 +180,6 @@ namespace Greatbone.Core
             }
             FolderContext fc = new FolderContext(_VAR_)
             {
-                Keyer = keyer,
                 Ui = ui,
                 Authorize = authorize,
                 Parent = this,
@@ -187,18 +188,21 @@ namespace Greatbone.Core
                 Service = Service
             };
             F folder = (F)ci.Invoke(new object[] { fc });
-            varsub = folder;
+            varkeyer = keyer;
+            varfolder = folder;
 
             return folder;
         }
 
         public Roll<ActionInfo> Actions => actions;
 
-        public Roll<Folder> Subs => subs;
+        public Roll<Folder> SubFolders => subfolders;
 
-        public Folder VarSub => varsub;
+        public Folder VarFolder => varfolder;
 
-        public Func<IData, string> Keyer => fc.Keyer;
+        public Func<IData, string> VarKeyer => varkeyer;
+
+        public AuthorizeAttribute UiAuthorize => uiauthorize;
 
         public string Directory => fc.Directory;
 
@@ -208,6 +212,7 @@ namespace Greatbone.Core
 
         public override Service Service => fc.Service;
 
+        public string GetVarKey(IData token) => varkeyer?.Invoke(token);
 
         internal void Describe(XmlContent cont)
         {
@@ -222,17 +227,17 @@ namespace Greatbone.Core
             },
             delegate
             {
-                if (subs != null)
+                if (subfolders != null)
                 {
-                    for (int i = 0; i < subs.Count; i++)
+                    for (int i = 0; i < subfolders.Count; i++)
                     {
-                        Folder child = subs[i];
+                        Folder child = subfolders[i];
                         child.Describe(cont);
                     }
                 }
-                if (varsub != null)
+                if (varfolder != null)
                 {
-                    varsub.Describe(cont);
+                    varfolder.Describe(cont);
                 }
             });
         }
@@ -279,15 +284,15 @@ namespace Greatbone.Core
             string key = relative.Substring(0, slash);
             relative = relative.Substring(slash + 1); // adjust relative
             Folder sub;
-            if (subs != null && subs.TryGet(key, out sub)) // chiled
+            if (subfolders != null && subfolders.TryGet(key, out sub)) // chiled
             {
                 ac.Chain(key, sub);
                 return sub.ResolveFolder(ref relative, ac);
             }
-            if (varsub != null) // variable-key
+            if (varfolder != null) // variable-key
             {
-                ac.Chain(key, varsub);
-                return varsub.ResolveFolder(ref relative, ac);
+                ac.Chain(key, varfolder);
+                return varfolder.ResolveFolder(ref relative, ac);
             }
             return null;
         }

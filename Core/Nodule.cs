@@ -68,6 +68,8 @@ namespace Greatbone.Core
 
         public UiAttribute Ui => ui;
 
+        public string Label => ui?.Label?? name;
+
         public bool HasCheck => authorize != null;
 
         public bool HasUi => ui != null;

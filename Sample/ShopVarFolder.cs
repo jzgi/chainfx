@@ -10,13 +10,13 @@ namespace Greatbone.Sample
     {
         public ShopVarFolder(FolderContext dc) : base(dc)
         {
-            Create<OrderFolder>("orderi"); // order inbox
+            AddSub<OrderFolder>("orderi"); // order inbox
 
-            Create<OrderFolder>("orderh"); // order history
+            AddSub<OrderFolder>("orderh"); // order history
 
-            Create<ItemFolder>("item");
+            AddSub<ItemFolder>("item");
 
-            Create<RepayFolder>("repay");
+            AddSub<RepayFolder>("repay");
         }
 
 

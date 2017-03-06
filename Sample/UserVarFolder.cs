@@ -9,7 +9,7 @@ namespace Greatbone.Sample
     {
         public UserVarFolder(FolderContext fc) : base(fc)
         {
-            Create<OrderFolder>("order");
+            AddSub<OrderFolder>("order");
         }
     }
 }

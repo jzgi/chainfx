@@ -112,18 +112,31 @@ namespace Greatbone.Sample
             ac.ReplyHtml(status,
             h =>
             {
-                Roll<Folder> subs = folder.subs;
+                Roll<Folder> subs = folder.subfolders;
                 if (subs != null)
                 {
                     h.Add(" <ul class=\"menu\">");
                     for (int i = 0; i < subs.Count; i++)
                     {
-                        Folder sub = subs[i];
-                        h.Add("<li class=\"\"><a href=\"");
-                        h.Add(sub.Name);
-                        h.Add("/\">");
-                        h.Add(sub.Name);
-                        h.Add("</a></li>");
+                        Folder fdr = subs[i];
+                        AuthorizeAttribute authorize = fdr.UiAuthorize;
+                        if (authorize != null && authorize.Check(ac.Token))
+                        {
+                            h.Add("<li class=\"\"><a href=\"");
+                            h.Add(fdr.Name);
+                            h.Add("/\">");
+                            h.Add(fdr.Label);
+                            h.Add("</a></li>");
+                        }
+                        string key = fdr.GetVarKey(ac.Token);
+                        if (key != null)
+                        {
+                            h.Add("<li class=\"\"><a href=\"");
+                            h.Add(key);
+                            h.Add("/\">");
+                            h.Add(fdr.VarFolder.Label);
+                            h.Add("</a></li>");
+                        }
                     }
                     h.Add(" </ul>");
                 }
@@ -147,7 +160,7 @@ namespace Greatbone.Sample
                 {
                     h.Add("<a href=\"../\" class=\"button\">上层</a>");
                 }
-                Roll<Folder> subs = folder.subs;
+                Roll<Folder> subs = folder.subfolders;
                 if (subs != null)
                 {
                     h.Add(" <ul class=\"menu\">");

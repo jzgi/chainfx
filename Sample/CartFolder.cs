@@ -5,8 +5,7 @@ using System.Collections.Concurrent;
 
 namespace Greatbone.Sample
 {
-    ///
-    ///
+    [Ui("购物车管理")]
     public class CartFolder : Folder
     {
         // all carts keyed by userid

@@ -1,13 +1,9 @@
-﻿using System;
-
-namespace Greatbone.Core
+﻿namespace Greatbone.Core
 {
     ///
-    /// To mark a variable-name folder.
+    /// To mark a variable-key folder.
     ///
     public interface IVar
     {
-        // to get variable key from token
-        Func<IData, string> Keyer { get; }
     }
 }
