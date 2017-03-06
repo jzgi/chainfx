@@ -22,7 +22,7 @@ namespace Greatbone.Core
         readonly FolderContext fc;
 
         // roles that have access to uiactions of this folder
-        RoleAttribute[] uiroles;
+        AuthorizeAttribute uiauthorize;
 
         // declared actions 
         readonly Roll<ActionInfo> actions;
@@ -69,23 +69,64 @@ namespace Greatbone.Core
                 {
                     defaction = ai;
                 }
+            }
 
-                // to override annotated attributes
-                if (fc.Roles != null)
+            // to override annotated attributes
+            if (fc.Ui != null)
+            {
+                ui = fc.Ui;
+            }
+            if (fc.Authorize != null)
+            {
+                authorize = fc.Authorize;
+            }
+
+            // preprocess start-end annotations
+            AuthorizeAttribute start = null;
+            for (int i = 0; i < actions.Count; i++)
+            {
+                ActionInfo ai = actions[i];
+                AuthorizeAttribute authorize = ai.authorize;
+
+                if (start != null)
                 {
-                    roles = fc.Roles;
+                    if (authorize == null) ai.authorize = start;
+                    else authorize.Or(start);
                 }
-                if (fc.Ui != null)
+
+                if (authorize != null && authorize.Start)
                 {
-                    ui = fc.Ui;
+                    authorize.Start = false;
+                    start = authorize;
+                }
+                if (authorize != null && authorize.End)
+                {
+                    authorize.End = false;
+                    start = null;
                 }
             }
+
+            // sum up uiauthorize
+            AuthorizeAttribute sum = null;
+            for (int i = 0; i < actions.Count; i++)
+            {
+                ActionInfo ai = actions[i];
+                if (!ai.HasUi) continue;
+
+                AuthorizeAttribute authorize = ai.authorize;
+                if (authorize != null)
+                {
+                    if (sum == null) sum = authorize.Clone();
+                    else { sum.Or(authorize); }
+                }
+            }
+            uiauthorize = sum;
         }
 
         ///
         /// Create a subfolder.
         ///
-        public F Create<F>(string name, RoleAttribute[] roles = null, UiAttribute ui = null) where F : Folder
+        public F Create<F>(string name, UiAttribute ui = null, AuthorizeAttribute authorize = null) where F : Folder
         {
             if (Level >= MaxNesting)
             {
@@ -105,8 +146,8 @@ namespace Greatbone.Core
             }
             FolderContext fc = new FolderContext(name)
             {
-                Roles = roles,
                 Ui = ui,
+                Authorize = authorize,
                 Parent = this,
                 Level = Level + 1,
                 Directory = (Parent == null) ? name : Path.Combine(Parent.Directory, name),
@@ -121,7 +162,7 @@ namespace Greatbone.Core
         ///
         /// Create a variable-key subfolder.
         ///
-        public F CreateVar<F>(Func<IData, string> keyer = null, RoleAttribute[] roles = null) where F : Folder, IVar
+        public F CreateVar<F>(Func<IData, string> keyer = null, UiAttribute ui = null, AuthorizeAttribute authorize = null) where F : Folder, IVar
         {
             if (Level >= MaxNesting)
             {
@@ -138,7 +179,8 @@ namespace Greatbone.Core
             FolderContext fc = new FolderContext(_VAR_)
             {
                 Keyer = keyer,
-                Roles = roles,
+                Ui = ui,
+                Authorize = authorize,
                 Parent = this,
                 Level = Level + 1,
                 Directory = (Parent == null) ? _VAR_ : Path.Combine(Parent.Directory, _VAR_),
@@ -213,7 +255,7 @@ namespace Greatbone.Core
             for (int i = 0; i < actions.Count; i++)
             {
                 ActionInfo a = actions[i];
-                if (a.HasUi && a.Authorize(ac))
+                if (a.HasUi && a.DoAuthorize(ac))
                 {
                     if (lst == null) lst = new List<ActionInfo>();
                     lst.Add(a);
@@ -225,7 +267,7 @@ namespace Greatbone.Core
         internal Folder ResolveFolder(ref string relative, ActionContext ac)
         {
             // access check 
-            if (!Authorize(ac)) throw AuthorizeEx;
+            if (!DoAuthorize(ac)) throw AuthorizeEx;
 
             int slash = relative.IndexOf('/');
             if (slash == -1)
@@ -282,7 +324,7 @@ namespace Greatbone.Core
                 }
 
                 // access check
-                if (!actn.Authorize(ac)) throw AuthorizeEx;
+                if (!actn.DoAuthorize(ac)) throw AuthorizeEx;
 
                 // try in cache
 

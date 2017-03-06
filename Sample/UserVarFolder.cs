@@ -9,8 +9,6 @@ namespace Greatbone.Sample
     {
         public UserVarFolder(FolderContext fc) : base(fc)
         {
-            Create<CartFolder>("cart");
-
             Create<OrderFolder>("order");
         }
     }

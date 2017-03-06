@@ -105,6 +105,37 @@ namespace Greatbone.Sample
             pub, maxage);
         }
 
+        public static void ReplyStartPage(this ActionContext ac, int status, bool? pub = null, int maxage = 60)
+        {
+            Folder folder = ac.Folder;
+
+            ac.ReplyHtml(status,
+            h =>
+            {
+                Roll<Folder> subs = folder.subs;
+                if (subs != null)
+                {
+                    h.Add(" <ul class=\"menu\">");
+                    for (int i = 0; i < subs.Count; i++)
+                    {
+                        Folder sub = subs[i];
+                        h.Add("<li class=\"\"><a href=\"");
+                        h.Add(sub.Name);
+                        h.Add("/\">");
+                        h.Add(sub.Name);
+                        h.Add("</a></li>");
+                    }
+                    h.Add(" </ul>");
+                }
+            },
+            m =>
+            {
+
+            },
+            null,
+            pub, maxage);
+        }
+
         public static void ReplyFolderPage<D>(this ActionContext ac, int status, List<D> lst, int proj = 0, bool? pub = null, int maxage = 60) where D : IData
         {
             Folder folder = ac.Folder;

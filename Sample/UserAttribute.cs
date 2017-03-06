@@ -2,17 +2,36 @@
 
 namespace Greatbone.Sample
 {
-    public class UserAttribute : RoleAttribute
+    public class UserAttribute : AuthorizeAttribute
     {
-        public override bool Check(IData token)
-        {
-            return true;
-        }
-    }
+        bool shop;
 
-    public class ShopAttribute : UserAttribute
-    {
-        public override bool Check(IData token)
+        short jobs;
+
+        public UserAttribute() : this(false, 0) { }
+
+        public UserAttribute(bool shop, short jobs)
+        {
+            this.shop = shop;
+            this.jobs = jobs;
+        }
+
+        public bool Shop => shop;
+
+        public short Jobs => jobs;
+
+        protected internal override AuthorizeAttribute Clone()
+        {
+            return new UserAttribute(shop, jobs);
+        }
+        protected internal override void Or(AuthorizeAttribute another)
+        {
+            var ua = another as UserAttribute;
+            shop |= ua.shop;
+            jobs |= ua.jobs;
+        }
+
+        protected internal override bool Check(IData token)
         {
             User tok = token as User;
 
@@ -22,23 +41,6 @@ namespace Greatbone.Sample
             {
                 return false;
             }
-            return true;
-        }
-    }
-
-    public class StaffAttribute : UserAttribute
-    {
-        public readonly short jobs;
-
-        public StaffAttribute(short jobs)
-        {
-            this.jobs = jobs;
-        }
-
-        public override bool Check(IData token)
-        {
-            User tok = token as User;
-
             if (tok == null) return false;
 
             if (jobs != 0 && (tok.jobs & jobs) == 0)

@@ -19,6 +19,8 @@ namespace Greatbone.Sample
 
         public ShopService(ServiceContext sc) : base(sc)
         {
+            Create<CartFolder>("cart");
+
             Create<UserFolder>("user");
 
             Create<ShopFolder>("shop");
@@ -61,17 +63,10 @@ namespace Greatbone.Sample
         [User]
         public void @default(ActionContext ac)
         {
-            using (var dc = ac.NewDbContext())
-            {
-                if (dc.Query("SELECT * FROM shops"))
-                {
-                    ac.ReplyFolderPage(200, dc.ToList<Shop>()); // ok
-                }
-                else
-                {
-                    ac.Reply(204); // no content
-                }
-            }
+            bool wx = ac.Query[nameof(wx)];
+
+            // return the shop start page
+            ac.ReplyStartPage(200);
         }
 
         public async Task paynotify(ActionContext ac)

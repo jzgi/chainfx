@@ -3,7 +3,7 @@ using Greatbone.Core;
 
 namespace Greatbone.Sample
 {
-    [Ui("商户")]
+    [Ui("供应点")]
     public class ShopFolder : Folder
     {
         public ShopFolder(FolderContext fc) : base(fc)
@@ -65,7 +65,7 @@ namespace Greatbone.Sample
         // administrative actions
         //
 
-        [Staff(User.MARKETG, Ui = true)]
+        [User(false, User.MARKETG)]
         [Ui("新建", 3)]
         public async Task @new(ActionContext ac)
         {

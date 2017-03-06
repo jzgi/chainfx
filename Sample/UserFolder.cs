@@ -25,7 +25,7 @@ namespace Greatbone.Sample
             }
         }
 
-        [Staff(User.MARKETG)]
+        [User(false, User.MARKETG)]
         public void srch(ActionContext ac)
         {
         }

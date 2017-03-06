@@ -7,16 +7,13 @@ namespace Greatbone.Sample
 {
     ///
     ///
-    public class CartFolder : Folder
+    public class CartVarFolder : Folder, IVar
     {
         // all carts keyed by userid
         readonly ConcurrentDictionary<string, Cart> carts;
 
-        public CartFolder(FolderContext dc) : base(dc)
+        public CartVarFolder(FolderContext dc) : base(dc)
         {
-            CreateVar<CartVarFolder>(tok => ((User)tok).id);
-
-            carts = new ConcurrentDictionary<string, Cart>(8, 1024);
         }
 
         public void @default(ActionContext ac)

@@ -1,4 +1,3 @@
-using System;
 using System.Collections.Generic;
 using System.Reflection;
 
@@ -14,13 +13,13 @@ namespace Greatbone.Core
         // name as appeared in the uri path
         readonly string name;
 
-        // access checks
-        internal RoleAttribute[] roles;
+        internal UiAttribute ui;
+
+        // access check
+        internal AuthorizeAttribute authorize;
 
         // filtering
         readonly FilterAttribute[] filters;
-
-        internal UiAttribute ui;
 
         internal Nodule(string name, ICustomAttributeProvider attrs)
         {
@@ -32,18 +31,20 @@ namespace Greatbone.Core
                 attrs = GetType().GetTypeInfo();
             }
 
-            // roles
-            List<RoleAttribute> rolelst = null;
-            foreach (var role in (RoleAttribute[])attrs.GetCustomAttributes(typeof(RoleAttribute), false))
+            // ui
+            var uis = (UiAttribute[])attrs.GetCustomAttributes(typeof(UiAttribute), false);
+            if (uis.Length > 0)
             {
-                if (rolelst == null)
-                {
-                    rolelst = new List<RoleAttribute>(8);
-                }
-                role.Nodule = this;
-                rolelst.Add(role);
+                ui = uis[0];
             }
-            this.roles = rolelst?.ToArray();
+
+            // authorize
+            var authorizes = (AuthorizeAttribute[])attrs.GetCustomAttributes(typeof(AuthorizeAttribute), false);
+            if (authorizes.Length > 0)
+            {
+                authorize = authorizes[0];
+                authorize.Nodule = this;
+            }
 
             // filters
             List<FilterAttribute> filterlst = null;
@@ -57,54 +58,32 @@ namespace Greatbone.Core
                 filterlst.Add(filter);
             }
             this.filters = filterlst?.ToArray();
-
-            // ui
-            var uis = (UiAttribute[])attrs.GetCustomAttributes(typeof(UiAttribute), false);
-            if (uis.Length > 0)
-            {
-                ui = uis[0];
-            }
         }
 
         public abstract Service Service { get; }
 
         public string Name => name;
 
-        public RoleAttribute[] Roles => roles;
+        public AuthorizeAttribute Authorize => authorize;
 
         public UiAttribute Ui => ui;
 
-        public bool HasCheck(Type checktyp)
-        {
-            if (roles != null)
-            {
-                for (int i = 0; i < roles.Length; i++)
-                {
-                    if (roles[i].GetType() == checktyp) return true;
-                }
-            }
-            return false;
-        }
+        public bool HasCheck => authorize != null;
 
         public bool HasUi => ui != null;
 
         public bool IsModal => ui != null && ui.Modal > 0;
 
-        public bool Authorize(ActionContext ac)
+        public bool DoAuthorize(ActionContext ac)
         {
-            if (roles != null)
+            if (authorize != null)
             {
                 IData token = ac.Token;
-                if (token == null) return false;
-
-                // run checks
-                for (int i = 0; i < roles.Length; i++)
+                if (token == null)
                 {
-                    if (!roles[i].Check(token))
-                    {
-                        return false;
-                    }
+                    return false;
                 }
+                return authorize.Check(token);
             }
             return true;
         }
