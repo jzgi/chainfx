@@ -4,7 +4,7 @@ namespace Greatbone.Sample
 {
     public class UserAttribute : RoleAttribute
     {
-        public override bool Check(ActionContext ac)
+        public override bool Check(IData token)
         {
             return true;
         }
@@ -12,9 +12,9 @@ namespace Greatbone.Sample
 
     public class ShopAttribute : UserAttribute
     {
-        public override bool Check(ActionContext ac)
+        public override bool Check(IData token)
         {
-            User tok = ac.Token as User;
+            User tok = token as User;
 
             if (tok == null) return false;
 
@@ -35,9 +35,9 @@ namespace Greatbone.Sample
             this.jobs = jobs;
         }
 
-        public override bool Check(ActionContext ac)
+        public override bool Check(IData token)
         {
-            User tok = ac.Token as User;
+            User tok = token as User;
 
             if (tok == null) return false;
 

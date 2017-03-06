@@ -94,12 +94,13 @@ namespace Greatbone.Core
         {
             if (roles != null)
             {
-                if (ac.Token == null) return false;
+                IData token = ac.Token;
+                if (token == null) return false;
 
                 // run checks
                 for (int i = 0; i < roles.Length; i++)
                 {
-                    if (!roles[i].Check(ac))
+                    if (!roles[i].Check(token))
                     {
                         return false;
                     }

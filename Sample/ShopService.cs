@@ -23,6 +23,8 @@ namespace Greatbone.Sample
 
             Create<ShopFolder>("shop");
 
+            Create<PayFolder>("pay");
+
             Create<RepayFolder>("repay");
 
             // timer obtaining access_token from weixin

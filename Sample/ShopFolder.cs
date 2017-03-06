@@ -3,13 +3,12 @@ using Greatbone.Core;
 
 namespace Greatbone.Sample
 {
-    [User, Staff(-1, Ui = true)]
-    [Ui("商户管理")]
+    [Ui("商户")]
     public class ShopFolder : Folder
     {
         public ShopFolder(FolderContext fc) : base(fc)
         {
-            CreateVar<ShopVarFolder>((tok)=>((User)tok).shopid);
+            CreateVar<ShopVarFolder>((tok) => ((User)tok).shopid);
         }
 
         // whether an aligned floating point

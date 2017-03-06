@@ -3,10 +3,10 @@ using Greatbone.Core;
 
 namespace Greatbone.Sample
 {
-    [Ui("结款管理")]
-    public class RepayFolder : Folder
+    [Ui("付款管理")]
+    public class PayFolder : Folder
     {
-        public RepayFolder(FolderContext fc) : base(fc)
+        public PayFolder(FolderContext fc) : base(fc)
         {
             CreateVar<ItemVarFolder>();
         }

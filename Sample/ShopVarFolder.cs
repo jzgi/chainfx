@@ -12,7 +12,7 @@ namespace Greatbone.Sample
         {
             Create<OrderFolder>("orderi"); // order inbox
 
-            Create<OrderFolder>("ordero"); // order old history
+            Create<OrderFolder>("orderh"); // order history
 
             Create<ItemFolder>("item");
 

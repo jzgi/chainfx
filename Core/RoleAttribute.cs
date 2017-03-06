@@ -18,6 +18,6 @@ namespace Greatbone.Core
 
         public virtual void Aggregate() { }
 
-        public virtual bool Check(ActionContext ac) => true;
+        public virtual bool Check(IData token) => true;
     }
 }
