@@ -3,9 +3,7 @@ using System.Collections.Generic;
 
 namespace Greatbone.Sample
 {
-    ///
-    /// /shop/-shopid-/
-    ///
+    [Ui("供应点")]
     public class ShopVarFolder : Folder, IVar
     {
         public ShopVarFolder(FolderContext dc) : base(dc)

@@ -132,6 +132,8 @@ namespace Greatbone.Sample
                         if (key != null)
                         {
                             h.Add("<li class=\"\"><a href=\"");
+                            h.Add(fdr.Name);
+                            h.Add('/');
                             h.Add(key);
                             h.Add("/\">");
                             h.Add(fdr.VarFolder.Label);

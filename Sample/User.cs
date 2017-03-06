@@ -44,14 +44,16 @@ namespace Greatbone.Sample
 
         public void WriteData<R>(IDataOutput<R> o, int proj = 0) where R : IDataOutput<R>
         {
-            if (proj.Kept())
-            {
-                o.Put(nameof(password), password);
-            }
+            o.Put(nameof(id), id);
             o.Put(nameof(wx), wx);
             o.Put(nameof(wxname), wxname);
             o.Put(nameof(name), name);
             o.Put(nameof(tel), tel);
+            o.Put(nameof(shopid), shopid);
+            o.Put(nameof(jobs), jobs);
+
+            o.Put(nameof(ordered), ordered);
+            o.Put(nameof(addup), addup);
         }
 
         public bool IsAdmin => false;

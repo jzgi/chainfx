@@ -3,7 +3,7 @@ using Greatbone.Core;
 
 namespace Greatbone.Sample
 {
-    [Ui("供应点")]
+    [Ui("供应点管理")]
     public class ShopFolder : Folder
     {
         public ShopFolder(FolderContext fc) : base(fc)

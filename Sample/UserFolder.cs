@@ -2,7 +2,7 @@
 
 namespace Greatbone.Sample
 {
-    [Ui("用户")]
+    [Ui("用户管理")]
     public class UserFolder : Folder
     {
         public UserFolder(FolderContext fc) : base(fc)
