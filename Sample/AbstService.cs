@@ -100,12 +100,12 @@ namespace Greatbone.Sample
             if (ua != null && ua.Contains("MicroMessenger")) // weixin
             {
                 // redirect the user to weixin authorization page
-                ac.ReplyRedirect("https://open.weixin.qq.com/connect/oauth2/authorize?appid=" + weixin.appid + "&redirect_uri=" + ac.UriPad + "&response_type=code&scope=snsapi_userinfo&state=STATE#wechat_redirect");
+                ac.GiveRedirect("https://open.weixin.qq.com/connect/oauth2/authorize?appid=" + weixin.appid + "&redirect_uri=" + ac.UriPad + "&response_type=code&scope=snsapi_userinfo&state=STATE#wechat_redirect");
             }
             else
             {
                 ac.SetHeader("WWW-Authenticate", "Basic realm=\"" + Auth.domain + "\"");
-                ac.Reply(401); // unauthorized
+                ac.Give(401); // unauthorized
             }
         }
     }

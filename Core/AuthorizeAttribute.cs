@@ -14,10 +14,8 @@ namespace Greatbone.Core
 
         public bool End { get; set; }
 
-        protected internal abstract AuthorizeAttribute Clone();
-
         protected internal abstract void Or(AuthorizeAttribute another);
 
-        protected internal abstract bool Check(IData token);
+        protected internal abstract bool Check(ActionContext ac);
     }
 }

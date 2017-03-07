@@ -4,9 +4,6 @@ using Greatbone.Core;
 
 namespace Greatbone.Sample
 {
-    ///
-    /// The business operation service.
-    ///
     public class ShopService : AbstService
     {
         static readonly Client WCPay = new Client("https://api.mch.weixin.qq.com");
@@ -60,13 +57,18 @@ namespace Greatbone.Sample
 
         }
 
-        [User]
         public void @default(ActionContext ac)
         {
             bool wx = ac.Query[nameof(wx)];
 
             // return the shop start page
-            ac.ReplyStartPage(200);
+            ac.GiveStartPage(200);
+        }
+
+        [User]
+        public void start(ActionContext ac)
+        {
+            ac.GiveStartPage(200);
         }
 
         public async Task paynotify(ActionContext ac)

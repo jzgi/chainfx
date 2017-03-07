@@ -10,24 +10,17 @@ namespace Greatbone.Core
     {
         public UiAttribute() { }
 
-        public UiAttribute(string label, int modal = 0, string icon = null)
+        public UiAttribute(string label, string icon = null, int modal = 0)
         {
             Label = label;
-            Modal = modal;
             Icon = icon;
+            Modal = modal;
         }
 
         public string Label { get; set; }
 
         public string Icon { get; set; }
 
-        ///
-        /// <remarks>
-        /// 0 No Dialog
-        /// 1 Small Dialog
-        /// 2 Large Dialog
-        /// 3 Full Standalone
-        /// </remarks>
         public int Modal { get; set; }
     }
 }

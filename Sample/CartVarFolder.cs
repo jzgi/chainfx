@@ -5,19 +5,20 @@ using System.Collections.Concurrent;
 
 namespace Greatbone.Sample
 {
-    [Ui("购物车")]
+    [Ui("购物车", "fa-shopping-cart")]
     public class CartVarFolder : Folder, IVar
     {
-        // all carts keyed by userid
         readonly ConcurrentDictionary<string, Cart> carts;
 
-        public CartVarFolder(FolderContext dc) : base(dc)
+        public CartVarFolder(FolderContext fc) : base(fc)
         {
+            carts = ((CartFolder)fc.Parent).Carts;
         }
 
         public void @default(ActionContext ac)
         {
-            ac.ReplyFolderPage(200, (List<Item>)null);
+            
+            ac.GiveFolderPage(200, (List<Item>)null);
         }
 
         ///
@@ -70,7 +71,7 @@ namespace Greatbone.Sample
                 }
             }
 
-            ac.Reply(200);
+            ac.Give(200);
         }
 
         ///
@@ -88,7 +89,7 @@ namespace Greatbone.Sample
                     cart.Clear();
                 }
             }
-            ac.Reply(200);
+            ac.Give(200);
         }
 
         ///
@@ -101,7 +102,7 @@ namespace Greatbone.Sample
             { // give change to review the orders
 
                 List<Order> orders = GetOrderList();
-                ac.ReplyJson(200, orders);
+                ac.GiveJson(200, orders);
             }
             else
             {

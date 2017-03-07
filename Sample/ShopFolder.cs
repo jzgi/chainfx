@@ -33,7 +33,7 @@ namespace Greatbone.Sample
             string y = ac.Query[nameof(y)];
             if (!IsAligned(x) || !IsAligned(y))
             {
-                ac.Reply(400, "x or y not aligned");
+                ac.Give(400, "x or y not aligned");
                 return;
             }
 
@@ -52,11 +52,11 @@ namespace Greatbone.Sample
             {
                 if (dc.Query("SELECT * FROM shops WHERE x > @1 AND x < @2 AND y > @3 AND y < @4", p => p.Set(x1).Set(x2).Set(y1).Set(y2)))
                 {
-                    ac.Reply(200, dc.Dump());
+                    ac.Give(200, dc.Dump());
                 }
                 else
                 {
-                    ac.Reply(204); // no content
+                    ac.Give(204); // no content
                 }
             }
         }
@@ -66,13 +66,13 @@ namespace Greatbone.Sample
         //
 
         [User(false, User.MARKETG)]
-        [Ui("新建", 3)]
+        [Ui("新建", Modal = 3)]
         public async Task @new(ActionContext ac)
         {
             if (ac.GET)
             {
                 Shop o = Shop.Empty;
-                ac.ReplyForm(200, o);
+                ac.GiveForm(200, o);
             }
             else // post
             {
@@ -87,35 +87,35 @@ namespace Greatbone.Sample
                     dc.Sql("INSERT INTO shops")._(Shop.Empty)._VALUES_(Shop.Empty)._("");
                     if (dc.Execute(p => p.Set(shop)) > 0)
                     {
-                        ac.Reply(201); // created
+                        ac.Give(201); // created
                     }
                     else
                     {
-                        ac.Reply(500); // internal server error
+                        ac.Give(500); // internal server error
                     }
                 }
             }
         }
 
-        [Ui("删除", 1)]
+        [Ui("删除")]
         public void del(ActionContext ac)
         {
 
         }
 
-        [Ui("禁用", 2)]
+        [Ui("禁用")]
         public void disable(ActionContext ac)
         {
 
         }
 
-        [Ui("启用", 2)]
+        [Ui("启用")]
         public void enable(ActionContext ac)
         {
 
         }
 
-        [Ui("分布报告", 2)]
+        [Ui("分布报告")]
         public void rpt(ActionContext ac)
         {
 

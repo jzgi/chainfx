@@ -6,13 +6,13 @@ namespace Greatbone.Sample
 {
     public static class ActionContextUtility
     {
-        public static void ReplyRedirect(this ActionContext ac, string uri, bool? pub = null, int maxage = 60)
+        public static void GiveRedirect(this ActionContext ac, string uri, bool? pub = null, int maxage = 60)
         {
             ac.SetHeader("Location", string.IsNullOrEmpty(uri) ? "/" : uri);
-            ac.Reply(303);
+            ac.Give(303);
         }
 
-        public static void ReplyHtml(this ActionContext ac, int status, Action<HtmlContent> header, Action<HtmlContent> main, Action<HtmlContent> footer, bool? pub = null, int maxage = 60)
+        public static void GiveHtml(this ActionContext ac, int status, Action<HtmlContent> header, Action<HtmlContent> main, Action<HtmlContent> footer, bool? pub = null, int maxage = 60)
         {
             HtmlContent cont = new HtmlContent(true, true, 16 * 1024);
 
@@ -56,12 +56,12 @@ namespace Greatbone.Sample
             cont.Add("</html>");
 
             // cont.Render(main);
-            ac.Reply(status, cont, pub, maxage);
+            ac.Give(status, cont, pub, maxage);
         }
 
-        public static void ReplySheet(this ActionContext ac, int status, Action<HtmlContent> inner, bool? pub = null, int maxage = 60)
+        public static void GiveSheet(this ActionContext ac, int status, Action<HtmlContent> inner, bool? pub = null, int maxage = 60)
         {
-            ac.ReplyHtml(status,
+            ac.GiveHtml(status,
             null,
             m =>
             {
@@ -73,9 +73,9 @@ namespace Greatbone.Sample
             pub, maxage);
         }
 
-        public static void ReplyForm(this ActionContext ac, int status, IData obj, int proj = 0, bool? pub = null, int maxage = 60)
+        public static void GiveForm(this ActionContext ac, int status, IData obj, int proj = 0, bool? pub = null, int maxage = 60)
         {
-            ac.ReplyHtml(status,
+            ac.GiveHtml(status,
             null,
             m =>
             {
@@ -89,9 +89,9 @@ namespace Greatbone.Sample
             pub, maxage);
         }
 
-        public static void ReplyForm(this ActionContext ac, int status, Action<HtmlContent> form, bool? pub = null, int maxage = 60)
+        public static void GiveForm(this ActionContext ac, int status, Action<HtmlContent> form, bool? pub = null, int maxage = 60)
         {
-            ac.ReplyHtml(status,
+            ac.GiveHtml(status,
             null,
             m =>
             {
@@ -105,11 +105,11 @@ namespace Greatbone.Sample
             pub, maxage);
         }
 
-        public static void ReplyStartPage(this ActionContext ac, int status, bool? pub = null, int maxage = 60)
+        public static void GiveStartPage(this ActionContext ac, int status, bool? pub = null, int maxage = 60)
         {
             Folder folder = ac.Folder;
 
-            ac.ReplyHtml(status,
+            ac.GiveHtml(status,
             h =>
             {
                 Roll<Folder> subs = folder.subfolders;
@@ -119,8 +119,10 @@ namespace Greatbone.Sample
                     for (int i = 0; i < subs.Count; i++)
                     {
                         Folder fdr = subs[i];
-                        AuthorizeAttribute authorize = fdr.UiAuthorize;
-                        if (authorize != null && authorize.Check(ac.Token))
+                        if (!fdr.HasUi) continue;
+
+                        AuthorizeAttribute auth = fdr.Authorize;
+                        if (auth != null && auth.Check(ac))
                         {
                             h.Add("<li class=\"\"><a href=\"");
                             h.Add(fdr.Name);
@@ -151,11 +153,11 @@ namespace Greatbone.Sample
             pub, maxage);
         }
 
-        public static void ReplyFolderPage<D>(this ActionContext ac, int status, List<D> lst, int proj = 0, bool? pub = null, int maxage = 60) where D : IData
+        public static void GiveFolderPage<D>(this ActionContext ac, int status, List<D> lst, int proj = 0, bool? pub = null, int maxage = 60) where D : IData
         {
             Folder folder = ac.Folder;
 
-            ac.ReplyHtml(status,
+            ac.GiveHtml(status,
             h =>
             {
                 if (folder.Parent != null)
@@ -187,10 +189,10 @@ namespace Greatbone.Sample
             pub, maxage);
         }
 
-        public static void ReplyPane(this ActionContext ac, int status, IDataInput input, Action<IDataInput, HtmlContent> valve, bool? pub = null, int maxage = 60)
+        public static void GivePane(this ActionContext ac, int status, IDataInput input, Action<IDataInput, HtmlContent> valve, bool? pub = null, int maxage = 60)
         {
             List<ActionInfo> actions = ac.Folder.GetUiActions(ac);
-            ac.ReplyHtml(status,
+            ac.GiveHtml(status,
             null,
             m =>
             {

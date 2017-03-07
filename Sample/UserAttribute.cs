@@ -20,20 +20,19 @@ namespace Greatbone.Sample
 
         public short Jobs => jobs;
 
-        protected internal override AuthorizeAttribute Clone()
-        {
-            return new UserAttribute(shop, jobs);
-        }
         protected internal override void Or(AuthorizeAttribute another)
         {
             var ua = another as UserAttribute;
+            if (ua == null) return;
+
             shop |= ua.shop;
             jobs |= ua.jobs;
         }
 
-        protected internal override bool Check(IData token)
+        protected internal override bool Check(ActionContext ac)
         {
-            User tok = token as User;
+
+            User tok = ac.Token as User;
 
             if (tok == null) return false;
 

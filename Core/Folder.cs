@@ -21,9 +21,6 @@ namespace Greatbone.Core
         // state-passing
         readonly FolderContext fc;
 
-        // roles that have access to uiactions of this folder
-        AuthorizeAttribute uiauthorize;
-
         // declared actions 
         readonly Roll<ActionInfo> actions;
 
@@ -88,47 +85,31 @@ namespace Greatbone.Core
             for (int i = 0; i < actions.Count; i++)
             {
                 ActionInfo ai = actions[i];
-                AuthorizeAttribute authorize = ai.authorize;
+                AuthorizeAttribute auth = ai.authorize;
 
                 if (start != null)
                 {
-                    if (authorize == null) ai.authorize = start;
-                    else authorize.Or(start);
+                    if (auth == null) ai.authorize = start;
+                    else auth.Or(start);
                 }
 
-                if (authorize != null && authorize.Start)
+                if (auth != null && auth.Start)
                 {
-                    authorize.Start = false;
-                    start = authorize;
+                    auth.Start = false;
+                    start = auth;
                 }
-                if (authorize != null && authorize.End)
+                if (auth != null && auth.End)
                 {
-                    authorize.End = false;
+                    auth.End = false;
                     start = null;
                 }
             }
-
-            // sum up uiauthorize
-            AuthorizeAttribute sum = null;
-            for (int i = 0; i < actions.Count; i++)
-            {
-                ActionInfo ai = actions[i];
-                // if (!ai.HasUi) continue;
-
-                AuthorizeAttribute authorize = ai.authorize;
-                if (authorize != null)
-                {
-                    if (sum == null) sum = authorize.Clone();
-                    else { sum.Or(authorize); }
-                }
-            }
-            uiauthorize = sum;
         }
 
         ///
         /// Create a subfolder.
         ///
-        public F AddSub<F>(string name, UiAttribute ui = null, AuthorizeAttribute authorize = null) where F : Folder
+        public F AddSub<F>(string name, UiAttribute ui = null, AuthorizeAttribute auth = null) where F : Folder
         {
             if (Level >= MaxNesting)
             {
@@ -149,7 +130,7 @@ namespace Greatbone.Core
             FolderContext fc = new FolderContext(name)
             {
                 Ui = ui,
-                Authorize = authorize,
+                Authorize = auth,
                 Parent = this,
                 Level = Level + 1,
                 Directory = (Parent == null) ? name : Path.Combine(Parent.Directory, name),
@@ -164,7 +145,7 @@ namespace Greatbone.Core
         ///
         /// Create a variable-key subfolder.
         ///
-        public F CreateVar<F>(Func<IData, string> keyer = null, UiAttribute ui = null, AuthorizeAttribute authorize = null) where F : Folder, IVar
+        public F CreateVar<F>(Func<IData, string> keyer = null, UiAttribute ui = null, AuthorizeAttribute auth = null) where F : Folder, IVar
         {
             if (Level >= MaxNesting)
             {
@@ -181,7 +162,7 @@ namespace Greatbone.Core
             FolderContext fc = new FolderContext(_VAR_)
             {
                 Ui = ui,
-                Authorize = authorize,
+                Authorize = auth,
                 Parent = this,
                 Level = Level + 1,
                 Directory = (Parent == null) ? _VAR_ : Path.Combine(Parent.Directory, _VAR_),
@@ -201,8 +182,6 @@ namespace Greatbone.Core
         public Folder VarFolder => varfolder;
 
         public Func<IData, string> VarKeyer => varkeyer;
-
-        public AuthorizeAttribute UiAuthorize => uiauthorize;
 
         public string Directory => fc.Directory;
 
@@ -324,7 +303,7 @@ namespace Greatbone.Core
                 ActionInfo actn = string.IsNullOrEmpty(name) ? defaction : GetAction(name);
                 if (actn == null)
                 {
-                    ac.Reply(404); // not found
+                    ac.Give(404); // not found
                     return;
                 }
 
@@ -354,21 +333,21 @@ namespace Greatbone.Core
         {
             if (filename.StartsWith("$")) // private resource
             {
-                ac.Reply(403); // forbidden
+                ac.Give(403); // forbidden
                 return;
             }
 
             string ctyp;
             if (!StaticContent.TryGetType(ext, out ctyp))
             {
-                ac.Reply(415); // unsupported media type
+                ac.Give(415); // unsupported media type
                 return;
             }
 
             string path = Path.Combine(Directory, filename);
             if (!File.Exists(path))
             {
-                ac.Reply(404); // not found
+                ac.Give(404); // not found
                 return;
             }
 
@@ -376,7 +355,7 @@ namespace Greatbone.Core
             DateTime? since = ac.HeaderDateTime("If-Modified-Since");
             if (since != null && modified <= since)
             {
-                ac.Reply(304); // not modified
+                ac.Give(304); // not modified
                 return;
             }
 
@@ -388,7 +367,7 @@ namespace Greatbone.Core
                 Type = ctyp,
                 Modified = modified
             };
-            ac.Reply(200, cont, true, 3600 * 12);
+            ac.Give(200, cont, true, 3600 * 12);
         }
 
         //

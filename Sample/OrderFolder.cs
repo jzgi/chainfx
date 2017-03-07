@@ -26,11 +26,11 @@ namespace Greatbone.Sample
             {
                 if (dc.Query("SELECT * FROM orders WHERE userid = @1 ORDER BY id LIMIT 20 OFFSET @2", p => p.Set(userid).Set(page.ToInt() * 20)))
                 {
-                    ac.ReplyFolderPage(200, dc.ToList<Order>());
+                    ac.GiveFolderPage(200, dc.ToList<Order>());
                 }
                 else
                 {
-                    ac.Reply(204); // no content
+                    ac.Give(204); // no content
                 }
             }
         }
@@ -49,11 +49,11 @@ namespace Greatbone.Sample
                 {
                     if (dc.Query("SELECT * FROM orders WHERE shopid = @1 AND status < 4", p => p.Set(shopid)))
                     {
-                        ac.ReplyFolderPage(200, dc.ToList<Order>());
+                        ac.GiveFolderPage(200, dc.ToList<Order>());
                     }
                     else
                     {
-                        ac.ReplyFolderPage(200, (List<Order>)null);
+                        ac.GiveFolderPage(200, (List<Order>)null);
                     }
                 }
             }
@@ -63,11 +63,11 @@ namespace Greatbone.Sample
                 {
                     if (dc.Query("SELECT * FROM orders WHERE shopid = @1 AND status >= 4 ORDER BY id LIMIT 20 OFFSET @2", p => p.Set(shopid).Set(page.ToInt() * 20)))
                     {
-                        ac.ReplyFolderPage(200, dc.ToList<Order>());
+                        ac.GiveFolderPage(200, dc.ToList<Order>());
                     }
                     else
                     {
-                        ac.ReplyFolderPage(200, (List<Order>)null);
+                        ac.GiveFolderPage(200, (List<Order>)null);
                     }
                 }
             }
@@ -102,11 +102,11 @@ namespace Greatbone.Sample
                     dc.Sql("UPDATE orders SET ").setstate()._(" WHERE id IN () AND shopid = @1 AND ").statecond();
                     if (dc.Query(p => p.Set(pk).Set(shopid)))
                     {
-                        ac.Reply(303); // see other
+                        ac.Give(303); // see other
                     }
                     else
                     {
-                        ac.Reply(303); // see other
+                        ac.Give(303); // see other
                     }
                 }
             }

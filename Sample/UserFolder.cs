@@ -16,11 +16,11 @@ namespace Greatbone.Sample
             {
                 if (dc.Query("SELECT * FROM users"))
                 {
-                    ac.ReplyFolderPage(200, dc.ToList<User>()); // ok
+                    ac.GiveFolderPage(200, dc.ToList<User>()); // ok
                 }
                 else
                 {
-                    ac.Reply(204); // no content
+                    ac.Give(204); // no content
                 }
             }
         }

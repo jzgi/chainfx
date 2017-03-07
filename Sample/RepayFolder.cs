@@ -18,11 +18,11 @@ namespace Greatbone.Sample
             {
                 if (dc.Query("SELECT * FROM items WHERE shopid = @1 AND enabled", p => p.Set(shopid)))
                 {
-                    ac.Reply(200, dc.Dump());
+                    ac.Give(200, dc.Dump());
                 }
                 else
                 {
-                    ac.Reply(204);
+                    ac.Give(204);
                 }
             }
         }
@@ -36,11 +36,11 @@ namespace Greatbone.Sample
             {
                 if (dc.Query("SELECT * FROM orders WHERE shopid = @1 AND status < 4", p => p.Set(shopid)))
                 {
-                    ac.ReplyFolderPage(200, dc.ToList<Item>());
+                    ac.GiveFolderPage(200, dc.ToList<Item>());
                 }
                 else
                 {
-                    ac.ReplyFolderPage(200, (List<Item>)null);
+                    ac.GiveFolderPage(200, (List<Item>)null);
                 }
             }
         }
@@ -55,7 +55,7 @@ namespace Greatbone.Sample
                 int age;
                 dc.Execute("UPDATE items SET enabled = NOT enabled WHERE shopid = @1", p => p.Set(shopid));
                 // ac.SetHeader();
-                ac.ReplyPane(303, dc, (i, o) =>
+                ac.GivePane(303, dc, (i, o) =>
                 {
                     o.Put(nameof(name), name = i.GetString());
                     o.Put(nameof(age), age = i.GetInt());

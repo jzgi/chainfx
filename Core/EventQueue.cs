@@ -82,7 +82,7 @@ namespace Greatbone.Core
                         }
                         else
                         {
-                            ac.Reply(204); // no content
+                            ac.Give(204); // no content
                             return;
                         }
                     }
@@ -103,7 +103,7 @@ namespace Greatbone.Core
                 {
                     cont = new StaticContent(e.body) { Type = e.type };
                 }
-                ac.Reply(200, cont);
+                ac.Give(200, cont);
 
                 // keep for state validation of next poll 
                 lastevent = e.name;

@@ -39,10 +39,10 @@ namespace Greatbone.Core
             }
 
             // authorize
-            var authorizes = (AuthorizeAttribute[])attrs.GetCustomAttributes(typeof(AuthorizeAttribute), false);
-            if (authorizes.Length > 0)
+            var auths = (AuthorizeAttribute[])attrs.GetCustomAttributes(typeof(AuthorizeAttribute), false);
+            if (auths.Length > 0)
             {
-                authorize = authorizes[0];
+                authorize = auths[0];
                 authorize.Nodule = this;
             }
 
@@ -68,13 +68,11 @@ namespace Greatbone.Core
 
         public UiAttribute Ui => ui;
 
-        public string Label => ui?.Label?? name;
-
-        public bool HasCheck => authorize != null;
+        public string Label => ui?.Label ?? name;
 
         public bool HasUi => ui != null;
 
-        public bool IsModal => ui != null && ui.Modal > 0;
+        public bool HasAuthorize => authorize != null;
 
         public bool DoAuthorize(ActionContext ac)
         {
@@ -85,7 +83,7 @@ namespace Greatbone.Core
                 {
                     return false;
                 }
-                return authorize.Check(token);
+                return authorize.Check(ac);
             }
             return true;
         }

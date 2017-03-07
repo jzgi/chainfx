@@ -20,7 +20,7 @@ namespace Greatbone.Sample
 
         public void @default(ActionContext ac)
         {
-            ac.ReplyFolderPage(200, (List<Item>)null);
+            ac.GiveFolderPage(200, (List<Item>)null);
         }
 
         ///

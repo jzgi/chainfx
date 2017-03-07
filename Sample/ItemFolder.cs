@@ -20,11 +20,11 @@ namespace Greatbone.Sample
             {
                 if (dc.Query("SELECT * FROM items WHERE shopid = @1 AND enabled", p => p.Set(shopid)))
                 {
-                    ac.Reply(200, dc.Dump());
+                    ac.Give(200, dc.Dump());
                 }
                 else
                 {
-                    ac.Reply(204); // no content
+                    ac.Give(204); // no content
                 }
             }
         }
@@ -38,23 +38,23 @@ namespace Greatbone.Sample
             {
                 if (dc.Query("SELECT * FROM items WHERE shopid = @1", p => p.Set(shopid)))
                 {
-                    ac.ReplyFolderPage(200, dc.ToList<Item>());
+                    ac.GiveFolderPage(200, dc.ToList<Item>());
                 }
                 else
                 {
-                    ac.ReplyFolderPage(200, (List<Item>)null);
+                    ac.GiveFolderPage(200, (List<Item>)null);
                 }
             }
         }
 
         // [Shop]
-        [Ui("新建", 3)]
+        [Ui("新建")]
         public async Task @new(ActionContext ac)
         {
             if (ac.GET)
             {
                 Item o = Item.Empty;
-                ac.ReplyForm(200, o);
+                ac.GiveForm(200, o);
             }
             else // post
             {
@@ -64,11 +64,11 @@ namespace Greatbone.Sample
                     dc.Sql("INSERT INTO items")._(Item.Empty)._VALUES_(Item.Empty)._("");
                     if (dc.Execute(p => p.Set(item)) > 0)
                     {
-                        ac.Reply(201); // created
+                        ac.Give(201); // created
                     }
                     else
                     {
-                        ac.Reply(500); // internal server error
+                        ac.Give(500); // internal server error
                     }
                 }
             }
@@ -84,7 +84,7 @@ namespace Greatbone.Sample
                 int age;
                 dc.Execute("UPDATE items SET enabled = NOT enabled WHERE shopid = @1", p => p.Set(shopid));
                 // ac.SetHeader();
-                ac.ReplyPane(303, dc, (i, o) =>
+                ac.GivePane(303, dc, (i, o) =>
                 {
                     o.Put(nameof(name), name = i.GetString());
                     o.Put(nameof(age), age = i.GetInt());
@@ -101,7 +101,7 @@ namespace Greatbone.Sample
             {
                 dc.Execute("UPDATE items SET enabled = NOT enabled WHERE shopid = @1", p => p.Set(shopid));
                 // ac.SetHeader();
-                ac.Reply(303); // see other
+                ac.Give(303); // see other
             }
         }
 
@@ -114,7 +114,7 @@ namespace Greatbone.Sample
             if (ac.GET)
             {
                 var item = new Item() { };
-                ac.ReplyForm(200, item);
+                ac.GiveForm(200, item);
             }
             else
             {
@@ -123,7 +123,7 @@ namespace Greatbone.Sample
                 {
                     dc.Execute("UPDATE items SET enabled = NOT enabled WHERE shopid = @1", p => p.Set(shopid));
                     // ac.SetHeader();
-                    ac.Reply(303); // see other
+                    ac.Give(303); // see other
                 }
             }
         }

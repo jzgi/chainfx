@@ -207,7 +207,7 @@ namespace Greatbone.Core
                 {
                     if (queues == null)
                     {
-                        ac.Reply(501); // not implemented
+                        ac.Give(501); // not implemented
                     }
                     else
                     {
@@ -215,7 +215,7 @@ namespace Greatbone.Core
                         string from = ac.Header("From");
                         if (from == null || (eq = queues[from]) == null)
                         {
-                            ac.Reply(400); // bad request
+                            ac.Give(400); // bad request
                         }
                         else
                         {
@@ -229,7 +229,7 @@ namespace Greatbone.Core
                     Folder folder = ResolveFolder(ref relative, ac);
                     if (folder == null)
                     {
-                        ac.Reply(404); // not found
+                        ac.Give(404); // not found
                         return;
                     }
                     await folder.HandleAsync(relative, ac);
@@ -237,20 +237,20 @@ namespace Greatbone.Core
             }
             catch (ParseException e)
             {
-                ac.Reply(400, e.Message); // bad request
+                ac.Give(400, e.Message); // bad request
             }
             catch (AuthorizeException e)
             {
                 if (ac.Token == null) { Challenge(ac); }
                 else
                 {
-                    ac.Reply(403); // forbidden
+                    ac.Give(403); // forbidden
                 }
             }
             catch (Exception e)
             {
                 DBG(e.Message, e);
-                ac.Reply(500, e.Message);
+                ac.Give(500, e.Message);
             }
 
 
@@ -262,7 +262,7 @@ namespace Greatbone.Core
             catch (Exception e)
             {
                 ERR(e.Message, e);
-                ac.Reply(500, e.Message);
+                ac.Give(500, e.Message);
             }
         }
 
@@ -475,12 +475,12 @@ namespace Greatbone.Core
             {
                 string loc = "singon" + "?orig=" + ac.Uri;
                 ac.SetHeader("Location", loc);
-                ac.Reply(303); // see other - redirect to signon url
+                ac.Give(303); // see other - redirect to signon url
             }
             else // non-browser
             {
                 ac.SetHeader("WWW-Authenticate", "Bearer");
-                ac.Reply(401); // unauthorized
+                ac.Give(401); // unauthorized
             }
         }
 

@@ -55,11 +55,11 @@ namespace Greatbone.Sample
                 var messages = await chat.GetAsync("wait".Equals(arg));
                 if (messages == null)
                 {
-                    ac.Reply(204); // no content
+                    ac.Give(204); // no content
                 }
                 else
                 {
-                    ac.ReplyJson(200, messages);
+                    ac.GiveJson(200, messages);
                 }
             }
             else // post message(s) to inbox

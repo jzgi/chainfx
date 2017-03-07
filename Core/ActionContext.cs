@@ -362,7 +362,7 @@ namespace Greatbone.Core
         /// the cached response is to be considered stale after its age is greater than the specified number of seconds.
         public int MaxAge { get; internal set; }
 
-        public void Reply(int status, IContent content = null, bool? pub = null, int maxage = 60)
+        public void Give(int status, IContent content = null, bool? pub = null, int maxage = 60)
         {
             Status = status;
             Content = content;
@@ -370,7 +370,7 @@ namespace Greatbone.Core
             MaxAge = maxage;
         }
 
-        public void Reply(int status, IDataInput inp, bool? pub = null, int maxage = 60)
+        public void Give(int status, IDataInput inp, bool? pub = null, int maxage = 60)
         {
             Status = status;
             // Content = model.Dump();
@@ -378,7 +378,7 @@ namespace Greatbone.Core
             MaxAge = maxage;
         }
 
-        public void Reply(int status, string text, bool? pub = null, int maxage = 60)
+        public void Give(int status, string text, bool? pub = null, int maxage = 60)
         {
             TextContent content = new TextContent(true);
             content.Add(text);
@@ -396,7 +396,7 @@ namespace Greatbone.Core
 
         static readonly TypeInfo ListType = typeof(List<IData>).GetTypeInfo();
 
-        public void ReplyJson(int status, object data, int proj = 0, bool? pub = null, int maxage = 60)
+        public void GiveJson(int status, object data, int proj = 0, bool? pub = null, int maxage = 60)
         {
             TypeInfo typ = data.GetType().GetTypeInfo();
 
@@ -422,7 +422,7 @@ namespace Greatbone.Core
             MaxAge = maxage;
         }
 
-        public void ReplyXml(int status, object dat, int proj = 0, bool? pub = null, int maxage = 60)
+        public void GiveXml(int status, object dat, int proj = 0, bool? pub = null, int maxage = 60)
         {
         }
 

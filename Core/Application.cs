@@ -9,27 +9,27 @@ namespace Greatbone.Core
 {
     public class Application
     {
-        const string CFG_FILE = "$service.json";
+        const string CONFIG_FILE = "$service.json";
 
-        static readonly ServiceException ConfigEx = new ServiceException("error loading " + CFG_FILE);
+        static readonly ServiceException ConfigEx = new ServiceException("error loading " + CONFIG_FILE);
 
         internal static readonly Lifetime Lifetime = new Lifetime();
 
         static readonly List<Service> Services = new List<Service>(8);
 
 
-        public static bool TryCreate<S>(ServiceContext sc, bool load, UiAttribute ui = null, AuthorizeAttribute authorize = null) where S : Service
+        public static bool TryCreate<S>(ServiceContext sc, bool load, UiAttribute ui = null, AuthorizeAttribute auth = null) where S : Service
         {
             // initialize folder context
-            sc.Authorize = authorize;
             sc.Ui = ui;
+            sc.Authorize = auth;
             sc.Parent = null;
             sc.Level = 0;
             sc.Directory = sc.Name;
 
             if (load) // need to load configuration file
             {
-                string file = sc.GetFilePath(CFG_FILE);
+                string file = sc.GetFilePath(CONFIG_FILE);
                 if (File.Exists(file))
                 {
                     byte[] bytes = File.ReadAllBytes(file);
