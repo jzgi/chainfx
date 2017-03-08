@@ -78,11 +78,6 @@ namespace Greatbone.Core
 
         internal void Do(ActionContext ac, String arg)
         {
-            ac.Doer = this;
-            // pre-
-            DoBefore(ac);
-
-            // invoke the right action method
             if (HasArg)
             {
                 do2(ac, arg);
@@ -91,18 +86,10 @@ namespace Greatbone.Core
             {
                 @do(ac);
             }
-
-            // post-
-            DoAfter(ac);
-            ac.Doer = null;
         }
 
         internal async Task DoAsync(ActionContext ac, string arg)
         {
-            ac.Doer = this;
-            // pre-
-            DoBefore(ac);
-
             // invoke the right action method
             if (HasArg)
             {
@@ -112,10 +99,6 @@ namespace Greatbone.Core
             {
                 await doasync(ac);
             }
-
-            // post-
-            DoAfter(ac);
-            ac.Doer = null;
         }
     }
 }

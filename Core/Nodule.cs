@@ -74,7 +74,7 @@ namespace Greatbone.Core
 
         public AuthorizeAttribute Authorize => authorize;
 
-        public WorkAttribute Filter => work;
+        public WorkAttribute Work => work;
 
         public CatchAttribute Catch => @catch;
 
@@ -96,22 +96,6 @@ namespace Greatbone.Core
                 return authorize.Check(ac);
             }
             return true;
-        }
-
-        internal void DoBefore(ActionContext ac)
-        {
-            if (work != null && work.Before)
-            {
-                work.Work(ac);
-            }
-        }
-
-        internal void DoAfter(ActionContext ac)
-        {
-            if (work != null && !work.Before)
-            {
-                work.Work(ac);
-            }
         }
 
         internal void DoCatch(ActionContext ac, Exception ex)

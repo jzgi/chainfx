@@ -12,6 +12,8 @@ namespace Greatbone.Core
     ///
     public abstract class Folder : Nodule
     {
+        static readonly VarKeyException VarkeyEx = new VarKeyException();
+
         // max nesting levels
         const int MaxNesting = 6;
 
@@ -250,9 +252,6 @@ namespace Greatbone.Core
 
         internal Folder ResolveFolder(ref string relative, ActionContext ac)
         {
-            // access check 
-            if (!DoAuthorize(ac)) throw AuthorizeEx;
-
             int slash = relative.IndexOf('/');
             if (slash == -1)
             {
@@ -270,6 +269,15 @@ namespace Greatbone.Core
             }
             if (varfolder != null) // variable-key
             {
+                if (key.Length == 0) // resolve varkey
+                {
+                    if (varkeyer == null) return null;
+                    key = varkeyer(ac.Token);
+                    if (key == null)
+                    {
+                        throw VarkeyEx;
+                    }
+                }
                 ac.Chain(key, varfolder);
                 return varfolder.ResolveFolder(ref relative, ac);
             }
@@ -280,8 +288,12 @@ namespace Greatbone.Core
         {
             ac.Folder = this;
 
+            // access check 
+            if (!DoAuthorize(ac)) throw AuthorizeEx;
+
             // pre-
-            DoBefore(ac);
+            WorkAttribute wrk = Work;
+            if (wrk != null && wrk.Before) { if (wrk.IsAsync) await wrk.WorkAsync(ac); else wrk.Work(ac); }
 
             int dot = rsc.LastIndexOf('.');
             if (dot != -1) // file
@@ -307,23 +319,45 @@ namespace Greatbone.Core
                     return;
                 }
 
-                // access check
-                if (!actn.DoAuthorize(ac)) throw AuthorizeEx;
-
-                // try in cache
-
-                if (actn.IsAsync)
+                try
                 {
-                    await actn.DoAsync(ac, arg);
+                    ac.Doer = actn;
+
+                    // access check
+                    if (!actn.DoAuthorize(ac)) throw AuthorizeEx;
+
+                    // try in cache
+
+                    // work before
+                    WorkAttribute awrk = actn.Work;
+                    if (awrk != null && awrk.Before) { if (awrk.IsAsync) await awrk.WorkAsync(ac); else awrk.Work(ac); }
+                    // method invocation
+                    if (actn.IsAsync)
+                    {
+                        await actn.DoAsync(ac, arg); // invoke action method
+                    }
+                    else
+                    {
+                        actn.Do(ac, arg);
+                    }
+                    // work after
+                    if (awrk != null && !awrk.Before) { if (awrk.IsAsync) await awrk.WorkAsync(ac); else awrk.Work(ac); }
+
+                    ac.Doer = null;
                 }
-                else
+                catch (Exception ex)
                 {
-                    actn.Do(ac, arg);
+                    CatchAttribute @catch = actn.Catch;
+                    if (@catch != null)
+                    {
+                        @catch.Catch(ac, ex);
+                    }
+                    else { throw ex; }
                 }
             }
 
             // post-
-            DoAfter(ac);
+            if (wrk != null && !wrk.Before) { if (wrk.IsAsync) await wrk.WorkAsync(ac); else wrk.Work(ac); }
 
             ac.Folder = null;
         }

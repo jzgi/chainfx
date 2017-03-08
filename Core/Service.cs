@@ -237,6 +237,7 @@ namespace Greatbone.Core
                         ac.Give(404); // not found
                         return;
                     }
+
                     await folder.HandleAsync(relative, ac);
                 }
             }

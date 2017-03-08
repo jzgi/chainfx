@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Threading.Tasks;
 
 namespace Greatbone.Core
 {
@@ -10,15 +11,22 @@ namespace Greatbone.Core
     {
         bool before;
 
-        public WorkAttribute(bool before)
+        bool @async;
+
+        public WorkAttribute(bool before, bool @async)
         {
             this.before = before;
+            this.@async = @async;
         }
 
         public bool Before => before;
 
+        public bool IsAsync => @async;
+
         public Nodule Nodule { get; internal set; }
 
         public abstract void Work(ActionContext ac);
+
+        public abstract Task WorkAsync(ActionContext ac);
     }
 }
