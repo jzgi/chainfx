@@ -3,10 +3,10 @@
 namespace Greatbone.Core
 {
     ///
-    /// An access check before the target nodule is invoked.
+    /// An access check filter before the target nodule is invoked.
     ///
     [AttributeUsage(AttributeTargets.Class | AttributeTargets.Method, AllowMultiple = false, Inherited = false)]
-    public abstract class AuthorizeAttribute : Attribute
+    public abstract class AuthorizeAttribute : Attribute, IFilter
     {
         public Nodule Nodule { get; internal set; }
 

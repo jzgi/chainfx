@@ -16,6 +16,11 @@ namespace Greatbone.Sample
         {
         }
 
+        public string GetKey(ActionContext ac)
+        {
+            throw new NotImplementedException();
+        }
+
         ///
         /// Retrieve or put message(s).
         ///
@@ -86,7 +91,5 @@ namespace Greatbone.Sample
                 }
             }
         }
-
-
     }
 }

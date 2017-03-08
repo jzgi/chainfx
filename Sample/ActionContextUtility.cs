@@ -22,7 +22,7 @@ namespace Greatbone.Sample
             cont.Add("<head>");
             cont.Add("<title>粗粮达人</title>");
             cont.Add("<meta name=\"viewport\" content=\"width=device-width, initial-scale=1.0\">");
-            cont.Add("<link rel=\"stylesheet\" href=\"//cdn.bootcss.com/foundation/6.3.0/css/foundation.min.css\">");
+            cont.Add("<link rel=\"stylesheet\" href=\"//cdn.bootcss.com/foundation/6.3.1/css/foundation.min.css\">");
             cont.Add("<link rel=\"stylesheet\" href=\"//cdn.bootcss.com/font-awesome/4.7.0/css/font-awesome.min.css\">");
             cont.Add("</head>");
 
@@ -48,7 +48,7 @@ namespace Greatbone.Sample
 
             // zurb foundation
             cont.Add("<script src=\"//cdn.bootcss.com/jquery/3.1.1/jquery.min.js\"></script>");
-            cont.Add("<script src=\"//cdn.bootcss.com/foundation/6.3.0/js/foundation.min.js\"></script>");
+            cont.Add("<script src=\"//cdn.bootcss.com/foundation/6.3.1/js/foundation.min.js\"></script>");
             cont.Add("<script src=\"/app.js\"></script>");
             cont.Add("<script>$(document).foundation();</script>");
 
@@ -110,7 +110,7 @@ namespace Greatbone.Sample
             Folder folder = ac.Folder;
 
             ac.GiveHtml(status,
-            h =>
+(Action<HtmlContent>)(            h =>
             {
                 Roll<Folder> subs = folder.subfolders;
                 if (subs != null)
@@ -144,7 +144,7 @@ namespace Greatbone.Sample
                     }
                     h.Add(" </ul>");
                 }
-            },
+            }),
             m =>
             {
 

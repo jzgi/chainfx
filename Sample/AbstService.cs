@@ -16,7 +16,7 @@ namespace Greatbone.Sample
             weixin = JsonUtility.FileToObject<WeiXin>(sc.GetFilePath("$weixin.json"));
         }
 
-        protected override async Task Authenticate(ActionContext ac)
+        protected override async Task AuthenticateAsync(ActionContext ac)
         {
             // check cookie token
             string toktext;

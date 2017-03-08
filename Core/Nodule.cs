@@ -1,4 +1,4 @@
-using System.Collections.Generic;
+using System;
 using System.Reflection;
 
 namespace Greatbone.Core
@@ -18,8 +18,11 @@ namespace Greatbone.Core
         // access check
         internal AuthorizeAttribute authorize;
 
-        // filtering
-        readonly FilterAttribute[] filters;
+        // operation(s)
+        readonly WorkAttribute work;
+
+        // exception handling
+        internal CatchAttribute @catch;
 
         internal Nodule(string name, ICustomAttributeProvider attrs)
         {
@@ -46,27 +49,34 @@ namespace Greatbone.Core
                 authorize.Nodule = this;
             }
 
-            // filters
-            List<FilterAttribute> filterlst = null;
-            foreach (var filter in (FilterAttribute[])attrs.GetCustomAttributes(typeof(FilterAttribute), false))
+            // work
+            var works = (WorkAttribute[])attrs.GetCustomAttributes(typeof(WorkAttribute), false);
+            if (works.Length > 0)
             {
-                if (filterlst == null)
-                {
-                    filterlst = new List<FilterAttribute>(8);
-                }
-                filter.Nodule = this;
-                filterlst.Add(filter);
+                work = works[0];
+                work.Nodule = this;
             }
-            this.filters = filterlst?.ToArray();
+
+            // work
+            var catches = (CatchAttribute[])attrs.GetCustomAttributes(typeof(CatchAttribute), false);
+            if (catches.Length > 0)
+            {
+                @catch = catches[0];
+                @catch.Nodule = this;
+            }
         }
 
         public abstract Service Service { get; }
 
         public string Name => name;
 
+        public UiAttribute Ui => ui;
+
         public AuthorizeAttribute Authorize => authorize;
 
-        public UiAttribute Ui => ui;
+        public WorkAttribute Filter => work;
+
+        public CatchAttribute Catch => @catch;
 
         public string Label => ui?.Label ?? name;
 
@@ -74,7 +84,7 @@ namespace Greatbone.Core
 
         public bool HasAuthorize => authorize != null;
 
-        public bool DoAuthorize(ActionContext ac)
+        internal bool DoAuthorize(ActionContext ac)
         {
             if (authorize != null)
             {
@@ -90,22 +100,25 @@ namespace Greatbone.Core
 
         internal void DoBefore(ActionContext ac)
         {
-            if (filters == null) return;
-
-            for (int i = 0; i < filters.Length; i++)
+            if (work != null && work.Before)
             {
-                filters[i].Before(ac);
+                work.Work(ac);
             }
         }
 
         internal void DoAfter(ActionContext ac)
         {
-            if (filters == null) return;
-
-            // execute in reversed order
-            for (int i = filters.Length - 1; i >= 0; i--)
+            if (work != null && !work.Before)
             {
-                filters[i].After(ac);
+                work.Work(ac);
+            }
+        }
+
+        internal void DoCatch(ActionContext ac, Exception ex)
+        {
+            if (@catch != null)
+            {
+                @catch.Catch(ac, ex);
             }
         }
 
