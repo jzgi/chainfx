@@ -3,24 +3,24 @@ using System.Collections.Generic;
 
 namespace Greatbone.Sample
 {
-    [Ui("供应点")]
+    [Ui("我的供应点")]
     public class ShopVarFolder : Folder, IVar
     {
         public ShopVarFolder(FolderContext dc) : base(dc)
         {
-            AddSub<OrderFolder>("orderi"); // order inbox
+            AddSub<OrderFolder>("orderi", new UiAttribute("当前订单"));
 
-            AddSub<OrderFolder>("orderh"); // order history
+            AddSub<OrderFolder>("ordero", new UiAttribute("以往订单"));
 
-            AddSub<ItemFolder>("item");
+            AddSub<ItemFolder>("item", new UiAttribute("货架"));
 
-            AddSub<RepayFolder>("repay");
+            AddSub<RepayFolder>("repay", new UiAttribute("平台结款"));
         }
 
 
         public void @default(ActionContext ac)
         {
-            ac.GiveFolderPage(200, (List<Item>)null);
+            ac.GiveFolderPage(this, 200, (List<Item>)null);
         }
 
         ///

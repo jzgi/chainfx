@@ -26,7 +26,7 @@ namespace Greatbone.Sample
             {
                 if (dc.Query("SELECT * FROM orders WHERE userid = @1 ORDER BY id LIMIT 20 OFFSET @2", p => p.Set(userid).Set(page.ToInt() * 20)))
                 {
-                    ac.GiveFolderPage(200, dc.ToList<Order>());
+                    ac.GiveFolderPage(Parent, 200, dc.ToList<Order>());
                 }
                 else
                 {
@@ -49,11 +49,11 @@ namespace Greatbone.Sample
                 {
                     if (dc.Query("SELECT * FROM orders WHERE shopid = @1 AND status < 4", p => p.Set(shopid)))
                     {
-                        ac.GiveFolderPage(200, dc.ToList<Order>());
+                        ac.GiveFolderPage(Parent, 200, dc.ToList<Order>());
                     }
                     else
                     {
-                        ac.GiveFolderPage(200, (List<Order>)null);
+                        ac.GiveFolderPage(Parent, 200, (List<Order>)null);
                     }
                 }
             }
@@ -63,11 +63,11 @@ namespace Greatbone.Sample
                 {
                     if (dc.Query("SELECT * FROM orders WHERE shopid = @1 AND status >= 4 ORDER BY id LIMIT 20 OFFSET @2", p => p.Set(shopid).Set(page.ToInt() * 20)))
                     {
-                        ac.GiveFolderPage(200, dc.ToList<Order>());
+                        ac.GiveFolderPage(Parent, 200, dc.ToList<Order>());
                     }
                     else
                     {
-                        ac.GiveFolderPage(200, (List<Order>)null);
+                        ac.GiveFolderPage(Parent, 200, (List<Order>)null);
                     }
                 }
             }

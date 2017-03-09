@@ -109,8 +109,7 @@ namespace Greatbone.Sample
         {
             Folder folder = ac.Folder;
 
-            ac.GiveHtml(status,
-(Action<HtmlContent>)(            h =>
+            ac.GiveHtml(status, (Action<HtmlContent>)(h =>
             {
                 Roll<Folder> subs = folder.subfolders;
                 if (subs != null)
@@ -153,28 +152,33 @@ namespace Greatbone.Sample
             pub, maxage);
         }
 
-        public static void GiveFolderPage<D>(this ActionContext ac, int status, List<D> lst, int proj = 0, bool? pub = null, int maxage = 60) where D : IData
+        public static void GiveFolderPage<D>(this ActionContext ac, Folder @base, int status, List<D> lst, int proj = 0, bool? pub = null, int maxage = 60) where D : IData
         {
             Folder folder = ac.Folder;
+            bool top = folder == @base;
 
             ac.GiveHtml(status,
             h =>
             {
-                if (folder.Parent != null)
-                {
-                    h.Add("<a href=\"../\" class=\"button\">上层</a>");
-                }
-                Roll<Folder> subs = folder.subfolders;
+
+                Roll<Folder> subs = @base.subfolders;
                 if (subs != null)
                 {
-                    h.Add(" <ul class=\"menu\">");
+                    h.Add("<ul class=\"menu\">");
+
+                    h.Add("<li><a href=\"\"><b>");
+                    h.Add(@base.Label);
+                    h.Add("</b></a></li>");
                     for (int i = 0; i < subs.Count; i++)
                     {
                         Folder sub = subs[i];
-                        h.Add("<li class=\"\"><a href=\"");
+                        h.Add("<li");
+                        if (sub == folder) h.Add(" class=\"active primary\"");
+                        h.Add("><a href=\"");
+                        if (!top) h.Add("../");
                         h.Add(sub.Name);
                         h.Add("/\">");
-                        h.Add(sub.Name);
+                        h.Add(sub.Label);
                         h.Add("</a></li>");
                     }
                     h.Add(" </ul>");

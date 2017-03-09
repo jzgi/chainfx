@@ -16,7 +16,7 @@ namespace Greatbone.Sample
             {
                 if (dc.Query("SELECT * FROM users"))
                 {
-                    ac.GiveFolderPage(200, dc.ToList<User>()); // ok
+                    ac.GiveFolderPage(this, 200, dc.ToList<User>()); // ok
                 }
                 else
                 {

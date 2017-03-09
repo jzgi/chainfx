@@ -9,17 +9,19 @@ namespace Greatbone.Sample
     [Ui("购物车", "fa-shopping-cart")]
     public class CartVarFolder : Folder, IVar
     {
+        // all carts keyed by userid
         readonly ConcurrentDictionary<string, Cart> carts;
 
         public CartVarFolder(FolderContext fc) : base(fc)
         {
-            carts = ((CartFolder)fc.Parent).Carts;
+
+            carts = new ConcurrentDictionary<string, Cart>(8, 1024);
         }
 
         public void @default(ActionContext ac)
         {
             
-            ac.GiveFolderPage(200, (List<Item>)null);
+            ac.GiveFolderPage(this, 200, (List<Item>)null);
         }
 
         ///

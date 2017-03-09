@@ -259,11 +259,11 @@ namespace Greatbone.Core
             // sub folder
             string key = relative.Substring(0, slash);
             relative = relative.Substring(slash + 1); // adjust relative
-            Folder sub;
-            if (subfolders != null && subfolders.TryGet(key, out sub)) // chiled
+            Folder subfdr;
+            if (subfolders != null && subfolders.TryGet(key, out subfdr)) // chiled
             {
-                ac.Chain(key, sub);
-                return sub.ResolveFolder(ref relative, ac);
+                ac.Chain(key, subfdr);
+                return subfdr.ResolveFolder(ref relative, ac);
             }
             if (varfolder != null) // variable-key
             {
@@ -343,6 +343,11 @@ namespace Greatbone.Core
             ac.Folder = null;
         }
 
+        public void DoFile(string filename, ActionContext ac)
+        {
+            int dot = filename.LastIndexOf('.');
+            DoFile(filename, filename.Substring(dot), ac);
+        }
 
         void DoFile(string filename, string ext, ActionContext ac)
         {

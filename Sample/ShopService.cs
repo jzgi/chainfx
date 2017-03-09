@@ -16,7 +16,7 @@ namespace Greatbone.Sample
 
         public ShopService(ServiceContext sc) : base(sc)
         {
-            AddSub<CartFolder>("cart");
+            CreateVar<CartVarFolder>(tok => ((User)tok).id);
 
             AddSub<UserFolder>("user");
 
@@ -59,10 +59,8 @@ namespace Greatbone.Sample
 
         public void @default(ActionContext ac)
         {
-            bool wx = ac.Query[nameof(wx)];
-
             // return the shop start page
-            ac.GiveStartPage(200);
+            DoFile("default.html", ac);
         }
 
         [User]

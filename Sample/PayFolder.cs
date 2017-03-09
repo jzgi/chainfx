@@ -36,11 +36,11 @@ namespace Greatbone.Sample
             {
                 if (dc.Query("SELECT * FROM orders WHERE shopid = @1 AND status < 4", p => p.Set(shopid)))
                 {
-                    ac.GiveFolderPage(200, dc.ToList<Item>());
+                    ac.GiveFolderPage(this, 200, dc.ToList<Item>());
                 }
                 else
                 {
-                    ac.GiveFolderPage(200, (List<Item>)null);
+                    ac.GiveFolderPage(this, 200, (List<Item>)null);
                 }
             }
         }
