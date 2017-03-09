@@ -23,7 +23,7 @@ namespace Greatbone.Sample
             cont.Add("<title>粗粮达人</title>");
             cont.Add("<meta name=\"viewport\" content=\"width=device-width, initial-scale=1.0\">");
             cont.Add("<link rel=\"stylesheet\" href=\"//cdn.bootcss.com/foundation/6.3.1/css/foundation.min.css\">");
-            cont.Add("<link rel=\"stylesheet\" href=\"//cdn.bootcss.com/font-awesome/4.7.0/css/font-awesome.min.css\">");
+            cont.Add("<link rel=\"stylesheet\" href=\"//cdn.bootcss.com/foundicons/3.0.0/foundation-icons.min.css\">");
             cont.Add("</head>");
 
             cont.Add("<body>");
@@ -166,9 +166,10 @@ namespace Greatbone.Sample
                 {
                     h.Add("<ul class=\"menu\">");
 
-                    h.Add("<li><a href=\"\"><b>");
+                    h.Add("<li><a href=\"\">");
+                    h.Add("<span class=\"fi-folder\" style=\"font-size: 70px\">");
                     h.Add(@base.Label);
-                    h.Add("</b></a></li>");
+                    h.Add("</span></a></li>");
                     for (int i = 0; i < subs.Count; i++)
                     {
                         Folder sub = subs[i];

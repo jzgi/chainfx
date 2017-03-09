@@ -302,7 +302,7 @@ namespace Greatbone.Core
             Add("\">");
         }
 
-        public void TEXT(string name, string v, string Label = null, string Placeholder = null, string Pattern = null, sbyte Max = 0, sbyte Min = 0, bool ReadOnly = false, bool Required = false)
+        public void TEXT(string name, string v, string Label = null, string Help = null, string Pattern = null, sbyte Max = 0, sbyte Min = 0, bool ReadOnly = false, bool Required = false)
         {
             Add("<label>");
             AddLabel(Label, name);
@@ -312,10 +312,10 @@ namespace Greatbone.Core
             AddEsc(v);
             Add("\"");
 
-            if (Placeholder != null)
+            if (Help != null)
             {
                 Add(" placeholder=\"");
-                Add(Placeholder);
+                Add(Help);
                 Add("\"");
             }
             if (Pattern != null)
@@ -347,7 +347,7 @@ namespace Greatbone.Core
             Add("</label>");
         }
 
-        public void TEXTPicker(string name, string v, string Label = null, string Placeholder = null, string Pattern = null, sbyte Max = 0, sbyte Min = 0, bool ReadOnly = false, bool Required = false)
+        public void TEXTPicker(string name, string v, string Label = null, string Help = null, string Pattern = null, sbyte Max = 0, sbyte Min = 0, bool ReadOnly = false, bool Required = false)
         {
             Add("<label>");
             AddLabel(Label, name);
@@ -357,10 +357,10 @@ namespace Greatbone.Core
             AddEsc(v);
             Add("\"");
 
-            if (Placeholder != null)
+            if (Help != null)
             {
-                Add(" placeholder=\"");
-                Add(Placeholder);
+                Add(" Help=\"");
+                Add(Help);
                 Add("\"");
             }
             if (Pattern != null)
@@ -392,7 +392,7 @@ namespace Greatbone.Core
             Add("</label>");
         }
 
-        public void PASSWORD(string name, string v, string Label = null, string Placeholder = null, string Pattern = null, sbyte Max = 0, sbyte Min = 0, bool ReadOnly = false, bool Required = false)
+        public void PASSWORD(string name, string v, string Label = null, string Help = null, string Pattern = null, sbyte Max = 0, sbyte Min = 0, bool ReadOnly = false, bool Required = false)
         {
             Add("<label>");
             AddLabel(Label, name);
@@ -402,10 +402,10 @@ namespace Greatbone.Core
             AddEsc(v);
             Add("\"");
 
-            if (Placeholder != null)
+            if (Help != null)
             {
-                Add(" placeholder=\"");
-                Add(Placeholder);
+                Add(" Help=\"");
+                Add(Help);
                 Add("\"");
             }
             if (Pattern != null)
@@ -477,7 +477,7 @@ namespace Greatbone.Core
             T("</tbody>");
         }
 
-        public void NUMBER<V>(string name, V v, string Label = null, string Placeholder = null, V Max = default(V), V Min = default(V), V Step = default(V), bool ReadOnly = false, bool Required = false) where V : IEquatable<V>, IConvertible
+        public void NUMBER<V>(string name, V v, string Label = null, string Help = null, V Max = default(V), V Min = default(V), V Step = default(V), bool ReadOnly = false, bool Required = false) where V : IEquatable<V>, IConvertible
         {
             Add("<label>");
             AddLabel(null, name);
@@ -487,10 +487,10 @@ namespace Greatbone.Core
             AddConvert(v);
             Add("\"");
 
-            if (Placeholder != null)
+            if (Help != null)
             {
-                Add(" placeholder=\"");
-                Add(Placeholder);
+                Add(" Help=\"");
+                Add(Help);
                 Add("\"");
             }
             if (Max.Equals(default(V)))
@@ -541,7 +541,7 @@ namespace Greatbone.Core
             Add("</label>");
         }
 
-        public void CHECKBOX<V>(V[] v, IDictionary<V, string> options, string Label = null, bool Required = false) where V : IEquatable<V>, IConvertible
+        public void CHECKBOX<V>(V[] v, Set<V> opt, string Label = null, bool Required = false) where V : IEquatable<V>, IConvertible
         {
             Add("<fieldset>");
 
@@ -549,7 +549,7 @@ namespace Greatbone.Core
             AddLabel(Label, null);
             Add("</legend>");
 
-            foreach (var pair in options)
+            foreach (var pair in opt)
             {
                 V key = pair.Key;
 
@@ -578,7 +578,7 @@ namespace Greatbone.Core
             Add("</fieldset>");
         }
 
-        public void RADIO<V>(string name, V v, IDictionary<V, string> options, string Label = null, bool Required = false) where V : IEquatable<V>, IConvertible
+        public void RADIO<V>(string name, V v, Set<V> opt, string Label = null, bool Required = false) where V : IEquatable<V>, IConvertible
         {
             Add("<fieldset>");
 
@@ -586,7 +586,7 @@ namespace Greatbone.Core
             AddLabel(Label, name);
             Add("</legend>");
 
-            foreach (var pair in options)
+            foreach (var pair in opt)
             {
                 Add("<input type=\"radio\" name=\"");
                 Add(name);
@@ -625,7 +625,7 @@ namespace Greatbone.Core
             Add("</label>");
         }
 
-        public void TEXTAREA(string name, string v, string Label = null, string Placeholder = null, short Max = 0, short Min = 0, bool ReadOnly = false, bool Required = false)
+        public void TEXTAREA(string name, string v, string Label = null, string Help = null, short Max = 0, short Min = 0, bool ReadOnly = false, bool Required = false)
         {
             Add("<label>");
             AddLabel(Label, name);
@@ -635,10 +635,10 @@ namespace Greatbone.Core
             AddEsc(v);
             Add("\"");
 
-            if (Placeholder != null)
+            if (Help != null)
             {
-                Add(" placeholder=\"");
-                Add(Placeholder);
+                Add(" Help=\"");
+                Add(Help);
                 Add("\"");
             }
             if (Max > 0)
@@ -706,7 +706,7 @@ namespace Greatbone.Core
             }
         }
 
-        public void SELECT<V>(string name, V v, IDictionary<V, string> options, string Label = null, bool Required = false) where V : IEquatable<V>, IConvertible
+        public void SELECT<V>(string name, V v, Set<V> opt, string Label = null, bool Required = false) where V : IEquatable<V>, IConvertible
         {
             Add("<label>");
             AddLabel(Label, name);
@@ -716,7 +716,7 @@ namespace Greatbone.Core
             if (Required) Add(" required");
             Add(">");
 
-            foreach (var pair in options)
+            foreach (var pair in opt)
             {
                 V key = pair.Key;
                 Add("<option value=\"");
@@ -764,7 +764,7 @@ namespace Greatbone.Core
             return this;
         }
 
-        public HtmlContent Put(string name, bool v, Func<bool, string> Options = null, string Label = null, bool Required = false)
+        public HtmlContent Put(string name, bool v, Func<bool, string> Opt = null, string Label = null, bool Required = false)
         {
             switch (ctx)
             {
@@ -788,7 +788,7 @@ namespace Greatbone.Core
             return this;
         }
 
-        public HtmlContent Put(string name, short v, IDictionary<short, string> Options = null, string Label = null, string Placeholder = null, short Max = 0, short Min = 0, short Step = 0, bool ReadOnly = false, bool Required = false)
+        public HtmlContent Put(string name, short v, Set<short> Opt = null, string Label = null, string Help = null, short Max = 0, short Min = 0, short Step = 0, bool ReadOnly = false, bool Required = false)
         {
             switch (ctx)
             {
@@ -808,9 +808,9 @@ namespace Greatbone.Core
                     {
                         Add("<input type=\"checkbox\" name=\"pk\">");
                     }
-                    if (Options != null)
+                    if (Opt != null)
                     {
-                        Add(Options[v]);
+                        Add(Opt[v]);
                     }
                     else
                     {
@@ -823,7 +823,7 @@ namespace Greatbone.Core
             return this;
         }
 
-        public HtmlContent Put(string name, int v, IDictionary<int, string> Options = null, string Label = null, string Placeholder = null, int Max = 0, int Min = 0, int Step = 0, bool ReadOnly = false, bool Required = false)
+        public HtmlContent Put(string name, int v, Set<int> Opt = null, string Label = null, string Help = null, int Max = 0, int Min = 0, int Step = 0, bool ReadOnly = false, bool Required = false)
         {
             switch (ctx)
             {
@@ -851,7 +851,7 @@ namespace Greatbone.Core
             return this;
         }
 
-        public HtmlContent Put(string name, long v, IDictionary<long, string> Options = null, string Label = null, string Placeholder = null, long Max = 0, long Min = 0, long Step = 0, bool ReadOnly = false, bool Required = false)
+        public HtmlContent Put(string name, long v, Set<long> Opt = null, string Label = null, string Help = null, long Max = 0, long Min = 0, long Step = 0, bool ReadOnly = false, bool Required = false)
         {
             switch (ctx)
             {
@@ -879,7 +879,7 @@ namespace Greatbone.Core
             return this;
         }
 
-        public HtmlContent Put(string name, double v, string Label = null, string Placeholder = null, double Max = 0, double Min = 0, double Step = 0, bool ReadOnly = false, bool Required = false)
+        public HtmlContent Put(string name, double v, string Label = null, string Help = null, double Max = 0, double Min = 0, double Step = 0, bool ReadOnly = false, bool Required = false)
         {
             switch (ctx)
             {
@@ -902,7 +902,7 @@ namespace Greatbone.Core
             return this;
         }
 
-        public HtmlContent Put(string name, decimal v, string Label = null, string Placeholder = null, decimal Max = 0, decimal Min = 0, decimal Step = 0, bool ReadOnly = false, bool Required = false)
+        public HtmlContent Put(string name, decimal v, string Label = null, string Help = null, decimal Max = 0, decimal Min = 0, decimal Step = 0, bool ReadOnly = false, bool Required = false)
         {
             switch (ctx)
             {
@@ -1000,7 +1000,7 @@ namespace Greatbone.Core
             return this;
         }
 
-        public HtmlContent Put(string name, string v, IDictionary<string, string> Options = null, string Label = null, string Placeholder = null, string Pattern = null, short Max = 0, short Min = 0, bool ReadOnly = false, bool Required = false)
+        public HtmlContent Put(string name, string v, Set<string> Opt = null, string Label = null, string Help = null, string Pattern = null, short Max = 0, short Min = 0, bool ReadOnly = false, bool Required = false)
         {
             switch (ctx)
             {
@@ -1011,15 +1011,15 @@ namespace Greatbone.Core
                     }
                     else if (name.EndsWith("password"))
                     {
-                        PASSWORD(name, v, Label, Placeholder, Pattern, (sbyte)Max, (sbyte)Min, ReadOnly, Required);
+                        PASSWORD(name, v, Label, Help, Pattern, (sbyte)Max, (sbyte)Min, ReadOnly, Required);
                     }
                     else if (Max < 128)
                     {
-                        TEXT(name, v, Label, Placeholder, Pattern, (sbyte)Max, (sbyte)Min, ReadOnly, Required);
+                        TEXT(name, v, Label, Help, Pattern, (sbyte)Max, (sbyte)Min, ReadOnly, Required);
                     }
                     else
                     {
-                        TEXTAREA(name, v, Label, Placeholder, Max, Min, ReadOnly, Required);
+                        TEXTAREA(name, v, Label, Help, Max, Min, ReadOnly, Required);
                     }
                     break;
                 case CTX_GRIDTHEAD:
@@ -1065,50 +1065,50 @@ namespace Greatbone.Core
             return this;
         }
 
-        public HtmlContent Put(string name, short[] v, IDictionary<short, string> Options = null, string Label = null, string Placeholder = null, bool ReadOnly = false, bool Required = false)
+        public HtmlContent Put(string name, short[] v, Set<short> Opt = null, string Label = null, string Help = null, bool ReadOnly = false, bool Required = false)
         {
 
             ordinal++;
             return this;
         }
 
-        public HtmlContent Put(string name, int[] v, IDictionary<int, string> Options = null, string Label = null, string Placeholder = null, bool ReadOnly = false, bool Required = false)
+        public HtmlContent Put(string name, int[] v, Set<int> Opt = null, string Label = null, string Help = null, bool ReadOnly = false, bool Required = false)
         {
             ordinal++;
             return this;
         }
 
-        public HtmlContent Put(string name, long[] v, IDictionary<long, string> Options = null, string Label = null, string Placeholder = null, bool ReadOnly = false, bool Required = false)
+        public HtmlContent Put(string name, long[] v, Set<long> Opt = null, string Label = null, string Help = null, bool ReadOnly = false, bool Required = false)
         {
             ordinal++;
             return this;
         }
 
-        public HtmlContent Put(string name, string[] v, IDictionary<string, string> Options = null, string Label = null, string Placeholder = null, bool ReadOnly = false, bool Required = false)
+        public HtmlContent Put(string name, string[] v, Set<string> Opt = null, string Label = null, string Help = null, bool ReadOnly = false, bool Required = false)
         {
             ordinal++;
             return this;
         }
 
-        public HtmlContent Put(string name, Dictionary<string, string> v, string Label = null, string Placeholder = null, bool ReadOnly = false, bool Required = false)
+        public HtmlContent Put(string name, Dictionary<string, string> v, string Label = null, string Help = null, bool ReadOnly = false, bool Required = false)
         {
             ordinal++;
             return this;
         }
 
-        public HtmlContent Put(string name, IData v, int proj = 0, string Label = null, string Placeholder = null, bool ReadOnly = false, bool Required = false)
+        public HtmlContent Put(string name, IData v, int proj = 0, string Label = null, string Help = null, bool ReadOnly = false, bool Required = false)
         {
             ordinal++;
             return this;
         }
 
-        public HtmlContent Put<D>(string name, D[] v, int proj = 0, string Label = null, string Placeholder = null, bool ReadOnly = false, bool Required = false) where D : IData
+        public HtmlContent Put<D>(string name, D[] v, int proj = 0, string Label = null, string Help = null, bool ReadOnly = false, bool Required = false) where D : IData
         {
             ordinal++;
             return this;
         }
 
-        public HtmlContent Put<D>(string name, List<D> v, int proj = 0, string Label = null, string Placeholder = null, bool ReadOnly = false, bool Required = false) where D : IData
+        public HtmlContent Put<D>(string name, List<D> v, int proj = 0, string Label = null, string Help = null, bool ReadOnly = false, bool Required = false) where D : IData
         {
             ordinal++;
             return this;
@@ -1120,12 +1120,12 @@ namespace Greatbone.Core
             return this;
         }
 
-        public HtmlContent Put(string name, Dict v, string Label = null, string Placeholder = null, bool ReadOnly = false, bool Required = false)
+        public HtmlContent Put(string name, Map v, string Label = null, string Help = null, bool ReadOnly = false, bool Required = false)
         {
             throw new NotImplementedException();
         }
 
-        public HtmlContent Put<D>(string name, Map<D> v, int proj = 0, string Label = null, string Placeholder = null, bool ReadOnly = false, bool Required = false) where D : IData
+        public HtmlContent Put<D>(string name, Map<D> v, int proj = 0, string Label = null, string Help = null, bool ReadOnly = false, bool Required = false) where D : IData
         {
             throw new NotImplementedException();
         }

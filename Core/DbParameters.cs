@@ -46,7 +46,7 @@ namespace Greatbone.Core
             return this;
         }
 
-        public DbParameters Put(string name, bool v, Func<bool, string> Options = null, string Label = null, bool Required = false)
+        public DbParameters Put(string name, bool v, Func<bool, string> Opt = null, string Label = null, bool Required = false)
         {
             if (name == null)
             {
@@ -59,7 +59,7 @@ namespace Greatbone.Core
             return this;
         }
 
-        public DbParameters Put(string name, short v, IDictionary<short, string> Options = null, string Label = null, string Placeholder = null, short Max = 0, short Min = 0, short Step = 0, bool ReadOnly = false, bool Required = false)
+        public DbParameters Put(string name, short v, Set<short> Opt = null, string Label = null, string Help = null, short Max = 0, short Min = 0, short Step = 0, bool ReadOnly = false, bool Required = false)
         {
             if (name == null)
             {
@@ -72,7 +72,7 @@ namespace Greatbone.Core
             return this;
         }
 
-        public DbParameters Put(string name, int v, IDictionary<int, string> Options = null, string Label = null, string Placeholder = null, int Max = 0, int Min = 0, int Step = 0, bool ReadOnly = false, bool Required = false)
+        public DbParameters Put(string name, int v, Set<int> Opt = null, string Label = null, string Help = null, int Max = 0, int Min = 0, int Step = 0, bool ReadOnly = false, bool Required = false)
         {
             if (name == null)
             {
@@ -85,7 +85,7 @@ namespace Greatbone.Core
             return this;
         }
 
-        public DbParameters Put(string name, long v, IDictionary<long, string> Options = null, string Label = null, string Placeholder = null, long Max = 0, long Min = 0, long Step = 0, bool ReadOnly = false, bool Required = false)
+        public DbParameters Put(string name, long v, Set<long> Opt = null, string Label = null, string Help = null, long Max = 0, long Min = 0, long Step = 0, bool ReadOnly = false, bool Required = false)
         {
             if (name == null)
             {
@@ -98,7 +98,7 @@ namespace Greatbone.Core
             return this;
         }
 
-        public DbParameters Put(string name, double v, string Label = null, string Placeholder = null, double Max = 0, double Min = 0, double Step = 0, bool ReadOnly = false, bool Required = false)
+        public DbParameters Put(string name, double v, string Label = null, string Help = null, double Max = 0, double Min = 0, double Step = 0, bool ReadOnly = false, bool Required = false)
         {
             if (name == null)
             {
@@ -111,7 +111,7 @@ namespace Greatbone.Core
             return this;
         }
 
-        public DbParameters Put(string name, decimal v, string Label = null, string Placeholder = null, decimal Max = 0, decimal Min = 0, decimal Step = 0, bool ReadOnly = false, bool Required = false)
+        public DbParameters Put(string name, decimal v, string Label = null, string Help = null, decimal Max = 0, decimal Min = 0, decimal Step = 0, bool ReadOnly = false, bool Required = false)
         {
             if (name == null)
             {
@@ -176,7 +176,7 @@ namespace Greatbone.Core
             return this;
         }
 
-        public DbParameters Put(string name, string v, IDictionary<string, string> Options = null, string Label = null, string Placeholder = null, string Pattern = null, short Max = 0, short Min = 0, bool ReadOnly = false, bool Required = false)
+        public DbParameters Put(string name, string v, Set<string> Opt = null, string Label = null, string Help = null, string Pattern = null, short Max = 0, short Min = 0, bool ReadOnly = false, bool Required = false)
         {
             if (name == null)
             {
@@ -262,7 +262,7 @@ namespace Greatbone.Core
             return this;
         }
 
-        public DbParameters Put(string name, short[] v, IDictionary<short, string> Options = null, string Label = null, string Placeholder = null, bool ReadOnly = false, bool Required = false)
+        public DbParameters Put(string name, short[] v, Set<short> Opt = null, string Label = null, string Help = null, bool ReadOnly = false, bool Required = false)
         {
             if (name == null)
             {
@@ -275,7 +275,7 @@ namespace Greatbone.Core
             return this;
         }
 
-        public DbParameters Put(string name, int[] v, IDictionary<int, string> Options = null, string Label = null, string Placeholder = null, bool ReadOnly = false, bool Required = false)
+        public DbParameters Put(string name, int[] v, Set<int> Opt = null, string Label = null, string Help = null, bool ReadOnly = false, bool Required = false)
         {
             if (name == null)
             {
@@ -288,7 +288,7 @@ namespace Greatbone.Core
             return this;
         }
 
-        public DbParameters Put(string name, long[] v, IDictionary<long, string> Options = null, string Label = null, string Placeholder = null, bool ReadOnly = false, bool Required = false)
+        public DbParameters Put(string name, long[] v, Set<long> Opt = null, string Label = null, string Help = null, bool ReadOnly = false, bool Required = false)
         {
             if (name == null)
             {
@@ -301,7 +301,7 @@ namespace Greatbone.Core
             return this;
         }
 
-        public DbParameters Put(string name, string[] v, IDictionary<string, string> Options = null, string Label = null, string Placeholder = null, bool ReadOnly = false, bool Required = false)
+        public DbParameters Put(string name, string[] v, Set<string> Opt = null, string Label = null, string Help = null, bool ReadOnly = false, bool Required = false)
         {
             if (name == null)
             {
@@ -314,7 +314,7 @@ namespace Greatbone.Core
             return this;
         }
 
-        public DbParameters Put(string name, IData v, int proj = 0, string Label = null, string Placeholder = null, bool ReadOnly = false, bool Required = false)
+        public DbParameters Put(string name, IData v, int proj = 0, string Label = null, string Help = null, bool ReadOnly = false, bool Required = false)
         {
             if (name == null)
             {
@@ -334,7 +334,7 @@ namespace Greatbone.Core
             return this;
         }
 
-        public DbParameters Put<D>(string name, D[] v, int proj = 0, string Label = null, string Placeholder = null, bool ReadOnly = false, bool Required = false) where D : IData
+        public DbParameters Put<D>(string name, D[] v, int proj = 0, string Label = null, string Help = null, bool ReadOnly = false, bool Required = false) where D : IData
         {
             if (name == null)
             {
@@ -357,7 +357,7 @@ namespace Greatbone.Core
             return this;
         }
 
-        public DbParameters Put<D>(string name, List<D> v, int proj = 0, string Label = null, string Placeholder = null, bool ReadOnly = false, bool Required = false) where D : IData
+        public DbParameters Put<D>(string name, List<D> v, int proj = 0, string Label = null, string Help = null, bool ReadOnly = false, bool Required = false) where D : IData
         {
             if (name == null)
             {
@@ -385,7 +385,7 @@ namespace Greatbone.Core
             return this;
         }
 
-        public DbParameters Put(string name, Dictionary<string, string> v, string Label = null, string Placeholder = null, bool ReadOnly = false, bool Required = false)
+        public DbParameters Put(string name, Dictionary<string, string> v, string Label = null, string Help = null, bool ReadOnly = false, bool Required = false)
         {
             return this;
         }
@@ -504,12 +504,12 @@ namespace Greatbone.Core
             return Put(null, v);
         }
 
-        public DbParameters Put(string name, Dict v, string Label = null, string Placeholder = null, bool ReadOnly = false, bool Required = false)
+        public DbParameters Put(string name, Map v, string Label = null, string Help = null, bool ReadOnly = false, bool Required = false)
         {
             throw new NotImplementedException();
         }
 
-        public DbParameters Put<D>(string name, Map<D> v, int proj = 0, string Label = null, string Placeholder = null, bool ReadOnly = false, bool Required = false) where D : IData
+        public DbParameters Put<D>(string name, Map<D> v, int proj = 0, string Label = null, string Help = null, bool ReadOnly = false, bool Required = false) where D : IData
         {
             throw new NotImplementedException();
         }

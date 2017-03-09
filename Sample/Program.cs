@@ -33,7 +33,7 @@ namespace Greatbone.Sample
                 password = "721004"
             };
 
-            Dict cluster = new Dict
+            Map cluster = new Map
             {
                 ["shop"] = "http://localhost:8080",
                 ["chat"] = "http://localhost:8081"

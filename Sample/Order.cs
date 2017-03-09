@@ -19,7 +19,7 @@ namespace Greatbone.Sample
             CANCELLED = 8;
 
         // status
-        static readonly Dictionary<short, string> STATUS = new Dictionary<short, string>
+        static readonly Set<short> STATUS = new Set<short>
         {
             [0] = null,
             [1] = "已付款",
@@ -106,10 +106,10 @@ namespace Greatbone.Sample
             }
             o.Put(nameof(total), total);
 
-            o.Put(nameof(delivery), delivery, Options: b => b ? "派送" : "自提");
+            o.Put(nameof(delivery), delivery, Opt: b => b ? "派送" : "自提");
             o.Put(nameof(delivered), delivered);
             o.Put(nameof(state), state);
-            o.Put(nameof(status), status, Options: STATUS);
+            o.Put(nameof(status), status, Opt: STATUS);
         }
 
         public int State => state;

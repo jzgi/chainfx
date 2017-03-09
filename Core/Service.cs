@@ -150,7 +150,7 @@ namespace Greatbone.Core
 
         public Db Db => sc.db;
 
-        public Dict Cluster => sc.cluster;
+        public Map Cluster => sc.cluster;
 
         public int Logging => sc.logging;
 

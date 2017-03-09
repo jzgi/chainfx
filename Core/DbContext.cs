@@ -759,7 +759,7 @@ namespace Greatbone.Core
             }
         }
 
-        public bool Get(string name, ref Dict v)
+        public bool Get(string name, ref Map v)
         {
             throw new NotImplementedException();
         }

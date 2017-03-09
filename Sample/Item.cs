@@ -66,7 +66,7 @@ namespace Greatbone.Sample
             o.Put(nameof(min), min);
             o.Put(nameof(step), step);
             o.Put(nameof(sold), sold);
-            o.Put(nameof(enabled), enabled, Options: b => b ? "在售" : "下架");
+            o.Put(nameof(enabled), enabled, Opt: b => b ? "在售" : "下架");
         }
     }
 }

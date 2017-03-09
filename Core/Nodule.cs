@@ -12,6 +12,8 @@ namespace Greatbone.Core
         // name as appeared in the uri path
         readonly string name;
 
+        readonly string upname;
+
         internal UiAttribute ui;
 
         // access check
@@ -24,6 +26,7 @@ namespace Greatbone.Core
         internal Nodule(string name, ICustomAttributeProvider attrs)
         {
             this.name = name;
+            this.upname = name.ToUpper();
 
             // either methodinfo or typeinfo
             if (attrs == null)
@@ -65,7 +68,7 @@ namespace Greatbone.Core
 
         public WorkAttribute Work => work;
 
-        public string Label => ui?.Label ?? name;
+        public string Label => ui?.Label ?? upname;
 
         public bool HasUi => ui != null;
 

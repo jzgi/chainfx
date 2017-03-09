@@ -38,11 +38,11 @@ namespace Greatbone.Sample
             {
                 if (dc.Query("SELECT * FROM items WHERE shopid = @1", p => p.Set(shopid)))
                 {
-                    ac.GiveFolderPage(this, 200, dc.ToList<Item>());
+                    ac.GiveFolderPage(Parent, 200, dc.ToList<Item>());
                 }
                 else
                 {
-                    ac.GiveFolderPage(this, 200, (List<Item>)null);
+                    ac.GiveFolderPage(Parent, 200, (List<Item>)null);
                 }
             }
         }
