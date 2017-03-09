@@ -21,8 +21,6 @@ namespace Greatbone.Core
         // operation(s)
         readonly WorkAttribute work;
 
-        // exception handling
-        internal CatchAttribute @catch;
 
         internal Nodule(string name, ICustomAttributeProvider attrs)
         {
@@ -56,14 +54,6 @@ namespace Greatbone.Core
                 work = works[0];
                 work.Nodule = this;
             }
-
-            // work
-            var catches = (CatchAttribute[])attrs.GetCustomAttributes(typeof(CatchAttribute), false);
-            if (catches.Length > 0)
-            {
-                @catch = catches[0];
-                @catch.Nodule = this;
-            }
         }
 
         public abstract Service Service { get; }
@@ -75,8 +65,6 @@ namespace Greatbone.Core
         public AuthorizeAttribute Authorize => authorize;
 
         public WorkAttribute Work => work;
-
-        public CatchAttribute Catch => @catch;
 
         public string Label => ui?.Label ?? name;
 
@@ -96,14 +84,6 @@ namespace Greatbone.Core
                 return authorize.Check(ac);
             }
             return true;
-        }
-
-        internal void DoCatch(ActionContext ac, Exception ex)
-        {
-            if (@catch != null)
-            {
-                @catch.Catch(ac, ex);
-            }
         }
 
         public override string ToString()

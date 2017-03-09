@@ -12,8 +12,6 @@ namespace Greatbone.Core
     ///
     public abstract class Folder : Nodule
     {
-        static readonly VarKeyException VarkeyEx = new VarKeyException();
-
         // max nesting levels
         const int MaxNesting = 6;
 
@@ -271,12 +269,7 @@ namespace Greatbone.Core
             {
                 if (key.Length == 0) // resolve varkey
                 {
-                    if (varkeyer == null) return null;
-                    key = varkeyer(ac.Token);
-                    if (key == null)
-                    {
-                        throw VarkeyEx;
-                    }
+                    if (varkeyer == null || (key = varkeyer(ac.Token)) == null) return null;
                 }
                 ac.Chain(key, varfolder);
                 return varfolder.ResolveFolder(ref relative, ac);
@@ -319,41 +312,29 @@ namespace Greatbone.Core
                     return;
                 }
 
-                try
+                ac.Doer = actn;
+
+                // access check
+                if (!actn.DoAuthorize(ac)) throw AuthorizeEx;
+
+                // try in cache
+
+                // work before
+                WorkAttribute awrk = actn.Work;
+                if (awrk != null && awrk.Before) { if (awrk.IsAsync) await awrk.WorkAsync(ac); else awrk.Work(ac); }
+                // method invocation
+                if (actn.IsAsync)
                 {
-                    ac.Doer = actn;
-
-                    // access check
-                    if (!actn.DoAuthorize(ac)) throw AuthorizeEx;
-
-                    // try in cache
-
-                    // work before
-                    WorkAttribute awrk = actn.Work;
-                    if (awrk != null && awrk.Before) { if (awrk.IsAsync) await awrk.WorkAsync(ac); else awrk.Work(ac); }
-                    // method invocation
-                    if (actn.IsAsync)
-                    {
-                        await actn.DoAsync(ac, arg); // invoke action method
-                    }
-                    else
-                    {
-                        actn.Do(ac, arg);
-                    }
-                    // work after
-                    if (awrk != null && !awrk.Before) { if (awrk.IsAsync) await awrk.WorkAsync(ac); else awrk.Work(ac); }
-
-                    ac.Doer = null;
+                    await actn.DoAsync(ac, arg); // invoke action method
                 }
-                catch (Exception ex)
+                else
                 {
-                    CatchAttribute @catch = actn.Catch;
-                    if (@catch != null)
-                    {
-                        @catch.Catch(ac, ex);
-                    }
-                    else { throw ex; }
+                    actn.Do(ac, arg);
                 }
+                // work after
+                if (awrk != null && !awrk.Before) { if (awrk.IsAsync) await awrk.WorkAsync(ac); else awrk.Work(ac); }
+
+                ac.Doer = null;
             }
 
             // post-
