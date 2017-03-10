@@ -4,14 +4,17 @@ using Greatbone.Core;
 
 namespace Greatbone.Sample
 {
+    ///
     public static class ActionContextUtility
     {
+        ///
         public static void GiveRedirect(this ActionContext ac, string uri, bool? pub = null, int maxage = 60)
         {
             ac.SetHeader("Location", string.IsNullOrEmpty(uri) ? "/" : uri);
             ac.Give(303);
         }
 
+        ///
         public static void GiveHtml(this ActionContext ac, int status, Action<HtmlContent> header, Action<HtmlContent> main, Action<HtmlContent> footer, bool? pub = null, int maxage = 60)
         {
             HtmlContent cont = new HtmlContent(true, true, 16 * 1024);
@@ -80,7 +83,7 @@ namespace Greatbone.Sample
             m =>
             {
                 m.Add("<form>");
-                m.ctx = HtmlContent.CTX_FORM;
+                // m.ctx = HtmlContent.CTX_INPUT;
                 obj.WriteData(m, proj);
                 m.BUTTON(ac.Doer);
                 m.Add("</form>");
@@ -96,7 +99,7 @@ namespace Greatbone.Sample
             m =>
             {
                 m.Add("<form>");
-                m.ctx = HtmlContent.CTX_FORM;
+                // m.ctx = HtmlContent.CTX_INPUT;
                 form(m);
                 m.BUTTON(ac.Doer);
                 m.Add("</form>");

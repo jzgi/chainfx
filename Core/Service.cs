@@ -245,7 +245,7 @@ namespace Greatbone.Core
             {
                 ac.Give(400, e.Message); // bad request
             }
-            catch (AuthorizeException e)
+            catch (AuthorizeException)
             {
                 if (ac.Token == null)
                 {

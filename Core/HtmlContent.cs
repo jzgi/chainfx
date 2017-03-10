@@ -9,32 +9,44 @@ namespace Greatbone.Core
     ///
     public class HtmlContent : DynamicContent, IDataOutput<HtmlContent>
     {
-        public const sbyte
+        const int DEPTH = 8;
 
-            CTX_THREAD = 1,
+        internal const sbyte
+            CTX_TABLE = 0x10,
+            CTX_TABLE_ROW = 0x11,
+            CTX_LIST = 0x20,
+            CTX_LIST_ITEM = 0x21,
+            CTX_GRID = 0x30,
+            CTX_GRID_PANE = 0x31,
+            CTX_INPUT = 0x50;
 
-            CTX_TBODY = 2,
+        // per idata object outputing context
+        struct Ctx
+        {
+            // component type
+            internal sbyte type;
 
-            CTX_GRIDTHEAD = 3,
+            // whether currently need to ouput label
+            internal bool label;
 
-            CTX_GRIDTBODY = 4,
+            internal int ordinal;
+        }
 
-            CTX_SHEET = 5,
+        // whether within a form
+        internal bool formed;
 
-            CTX_FORM = 7;
 
-        internal sbyte ctx;
+        // outputing context chain
+        Ctx[] chain = new Ctx[DEPTH];
 
-        internal int ordinal;
-
-        // during data output
-        int[] counts;
         int level; // current level
 
+        ///
         public HtmlContent(bool sendable, bool pooled, int capacity = 16 * 1024) : base(sendable, pooled, capacity)
         {
         }
 
+        ///
         public override string Type => "text/html; charset=utf-8";
 
 
@@ -123,11 +135,7 @@ namespace Greatbone.Core
             Add("</fieldset>");
         }
 
-        public void SHEET(IData obj, int proj = 0)
-        {
-        }
-
-        public void SHEET(Action<HtmlContent> inner)
+        public void GRIDPANE(IData obj, int proj = 0)
         {
         }
 
@@ -144,7 +152,7 @@ namespace Greatbone.Core
         {
             Add("<form class=\"pure-form pure-g\">");
 
-            ctx = CTX_FORM;
+            chain[level].type = CTX_INPUT;
 
             // function buttuns
             Add("</form>");
@@ -162,31 +170,7 @@ namespace Greatbone.Core
 
             if (lst != null)
             {
-                Add("<table class=\"hover\">");
-
-                ctx = CTX_GRIDTHEAD;
-                Add("<thead>");
-                Add("<tr>");
-                for (int i = 0; i < lst.Count; i++)
-                {
-                    IData obj = lst[i];
-                    obj.WriteData(this, proj);
-                }
-                Add("</tr>");
-                Add("</thead>");
-
-                ctx = CTX_GRIDTBODY;
-                Add("<tbody>");
-
-                for (int i = 0; i < lst.Count; i++)
-                {
-                    Add("<tr>");
-                    D obj = lst[i];
-                    ordinal = 0; // reset ordical
-                    obj.WriteData(this, proj);
-                    Add("</tr>");
-                }
-                Add("</tbody>");
+                Put(null, lst, proj);
             }
             else
             {
@@ -209,14 +193,14 @@ namespace Greatbone.Core
             {
                 Add("<table class=\"hover\">");
 
-                ctx = CTX_GRIDTHEAD;
+                // ctx = CTX_GRIDTHEAD;
                 Add("<thead>");
                 Add("<tr>");
                 valve(input, this);
                 Add("</tr>");
                 Add("</thead>");
 
-                ctx = CTX_GRIDTBODY;
+                // ctx = CTX_GRIDTBODY;
                 Add("<tbody>");
                 while (input.Next())
                 {
@@ -240,31 +224,7 @@ namespace Greatbone.Core
         {
             if (lst != null)
             {
-                Add("<table class=\"hover\">");
-
-                ctx = CTX_GRIDTHEAD;
-                Add("<thead>");
-                Add("<tr>");
-                for (int i = 0; i < lst.Count; i++)
-                {
-                    IData obj = lst[i];
-                    obj.WriteData(this, proj);
-                }
-                Add("</tr>");
-                Add("</thead>");
-
-                ctx = CTX_GRIDTBODY;
-                Add("<tbody>");
-
-                for (int i = 0; i < lst.Count; i++)
-                {
-                    Add("<tr>");
-                    D obj = lst[i];
-                    ordinal = 0; // reset ordical
-                    obj.WriteData(this, proj);
-                    Add("</tr>");
-                }
-                Add("</tbody>");
+                Put(null, lst, proj);
             }
         }
 
@@ -274,14 +234,14 @@ namespace Greatbone.Core
             {
                 Add("<table class=\"hover\">");
 
-                ctx = CTX_GRIDTHEAD;
+                // ctx = CTX_GRIDTHEAD;
                 Add("<thead>");
                 Add("<tr>");
                 valve(input, this);
                 Add("</tr>");
                 Add("</thead>");
 
-                ctx = CTX_GRIDTBODY;
+                // ctx = CTX_GRIDTBODY;
                 Add("<tbody>");
                 while (input.Next())
                 {
@@ -754,257 +714,238 @@ namespace Greatbone.Core
 
         public HtmlContent PutNull(string name)
         {
-            ordinal++;
+            chain[level].ordinal++;
             return this;
         }
 
         public HtmlContent PutRaw(string name, string raw)
         {
-            ordinal++;
+            chain[level].ordinal++;
             return this;
         }
 
         public HtmlContent Put(string name, bool v, Func<bool, string> Opt = null, string Label = null, bool Required = false)
         {
-            switch (ctx)
+            switch (chain[level].type)
             {
-                case CTX_FORM:
-                    Add("<div class=\"pure-u-1 pure-u-md-1-2\">");
-                    CHECKBOX(name, v);
-                    Add("</div>");
-                    break;
-                case CTX_GRIDTHEAD:
+                case CTX_TABLE_ROW:
                     Add("<th>");
                     AddLabel(null, name);
                     Add("</th>");
-                    break;
-                case CTX_GRIDTBODY:
                     Add("<td>");
                     Add(v);
                     Add("</td>");
                     break;
+                case CTX_LIST_ITEM:
+                    break;
+                case CTX_GRID_PANE:
+                    break;
+                case CTX_INPUT:
+                    Add("<div class=\"pure-u-1 pure-u-md-1-2\">");
+                    CHECKBOX(name, v);
+                    Add("</div>");
+                    break;
             }
-            ordinal++;
+            chain[level].ordinal++;
             return this;
         }
 
         public HtmlContent Put(string name, short v, Set<short> Opt = null, string Label = null, string Help = null, short Max = 0, short Min = 0, short Step = 0, bool ReadOnly = false, bool Required = false)
         {
-            switch (ctx)
+            var ctx = chain[level];
+            switch (ctx.type)
             {
-                case CTX_FORM:
+                case CTX_TABLE_ROW:
+                    if (ctx.label)
+                    {
+                        Add("<th>");
+                        AddLabel(Label, name);
+                        Add("</th>");
+                    }
+                    else
+                    {
+                        Add("<td style=\"text-align: right;\">");
+                        if (formed && level == 1)
+                        {
+                            Add("<input type=\"checkbox\" name=\"pk\">");
+                        }
+                        if (Opt != null)
+                        {
+                            Add(Opt[v]);
+                        }
+                        else
+                        {
+                            Add(v);
+                        }
+                        Add("</td>");
+                    }
+                    break;
+                case CTX_LIST_ITEM:
+                    break;
+                case CTX_INPUT:
                     Add("<div class=\"pure-u-1 pure-u-md-1-2\">");
                     NUMBER(name, v);
                     Add("</div>");
                     break;
-                case CTX_GRIDTHEAD:
-                    Add("<th>");
-                    AddLabel(null, name);
-                    Add("</th>");
-                    break;
-                case CTX_GRIDTBODY:
-                    Add("<td style=\"text-align: right;\">");
-                    if (ordinal == 0)
-                    {
-                        Add("<input type=\"checkbox\" name=\"pk\">");
-                    }
-                    if (Opt != null)
-                    {
-                        Add(Opt[v]);
-                    }
-                    else
-                    {
-                        Add(v);
-                    }
-                    Add("</td>");
-                    break;
             }
-            ordinal++;
+            chain[level].ordinal++;
             return this;
         }
 
         public HtmlContent Put(string name, int v, Set<int> Opt = null, string Label = null, string Help = null, int Max = 0, int Min = 0, int Step = 0, bool ReadOnly = false, bool Required = false)
         {
-            switch (ctx)
+            switch (chain[level].type)
             {
-                case CTX_FORM:
-                    Add("<div class=\"pure-u-1 pure-u-md-1-2\">");
-                    NUMBER(name, v);
-                    Add("</div>");
-                    break;
-                case CTX_GRIDTHEAD:
+                case CTX_TABLE_ROW:
+
                     Add("<th>");
                     AddLabel(null, name);
                     Add("</th>");
                     break;
-                case CTX_GRIDTBODY:
+
                     Add("<td style=\"text-align: right;\">");
-                    if (ordinal == 0)
+                    if (formed && level == 1)
                     {
                         Add("<input type=\"checkbox\" name=\"pk\">");
                     }
                     Add(v);
                     Add("</td>");
                     break;
+                case CTX_LIST_ITEM:
+                    break;
+                case CTX_GRID_PANE:
+                    break;
+                case CTX_INPUT:
+                    Add("<div class=\"pure-u-1 pure-u-md-1-2\">");
+                    NUMBER(name, v);
+                    Add("</div>");
+                    break;
+
             }
-            ordinal++;
+            chain[level].ordinal++;
             return this;
         }
 
         public HtmlContent Put(string name, long v, Set<long> Opt = null, string Label = null, string Help = null, long Max = 0, long Min = 0, long Step = 0, bool ReadOnly = false, bool Required = false)
         {
-            switch (ctx)
+            switch (chain[level].type)
             {
-                case CTX_FORM:
-                    Add("<div class=\"pure-u-1 pure-u-md-1-2\">");
-                    NUMBER(name, v);
-                    Add("</div>");
-                    break;
-                case CTX_GRIDTHEAD:
+                case CTX_TABLE_ROW:
                     Add("<th>");
                     AddLabel(null, name);
                     Add("</th>");
-                    break;
-                case CTX_GRIDTBODY:
+
                     Add("<td style=\"text-align: right;\">");
-                    if (ordinal == 0)
+                    if (formed && level == 1)
                     {
                         Add("<input type=\"checkbox\" name=\"pk\">");
                     }
                     Add(v);
                     Add("</td>");
                     break;
+                case CTX_LIST_ITEM:
+                    Add("<div class=\"pure-u-1 pure-u-md-1-2\">");
+                    NUMBER(name, v);
+                    Add("</div>");
+                    break;
+                case CTX_GRID_PANE:
+                    Add("<div class=\"pure-u-1 pure-u-md-1-2\">");
+                    NUMBER(name, v);
+                    Add("</div>");
+                    break;
+                case CTX_INPUT:
+                    Add("<div class=\"pure-u-1 pure-u-md-1-2\">");
+                    NUMBER(name, v);
+                    Add("</div>");
+                    break;
             }
-            ordinal++;
+            chain[level].ordinal++;
             return this;
         }
 
         public HtmlContent Put(string name, double v, string Label = null, string Help = null, double Max = 0, double Min = 0, double Step = 0, bool ReadOnly = false, bool Required = false)
         {
-            switch (ctx)
+            switch (chain[level].type)
             {
-                case CTX_FORM:
-                    Add("<div class=\"pure-u-1 pure-u-md-1-2\">");
-                    Add("</div>");
-                    break;
-                case CTX_GRIDTHEAD:
+                case CTX_TABLE_ROW:
                     Add("<th>");
                     AddLabel(null, name);
                     Add("</th>");
                     break;
-                case CTX_GRIDTBODY:
+                case CTX_LIST_ITEM:
                     Add("<td style=\"text-align: right;\">");
                     Add(v);
                     Add("</td>");
                     break;
+                case CTX_GRID_PANE:
+                    Add("<td style=\"text-align: right;\">");
+                    Add(v);
+                    Add("</td>");
+                    break;
+                case CTX_INPUT:
+                    Add("<div class=\"pure-u-1 pure-u-md-1-2\">");
+                    Add("</div>");
+                    break;
             }
-            ordinal++;
+            chain[level].ordinal++;
             return this;
         }
 
         public HtmlContent Put(string name, decimal v, string Label = null, string Help = null, decimal Max = 0, decimal Min = 0, decimal Step = 0, bool ReadOnly = false, bool Required = false)
         {
-            switch (ctx)
-            {
-                case CTX_FORM:
-                    NUMBER(name, v);
-                    break;
-                case CTX_GRIDTHEAD:
-                    Add("<th>");
-                    AddLabel(null, name);
-                    Add("</th>");
-                    break;
-                case CTX_GRIDTBODY:
-                    Add("<td style=\"text-align: right;\">");
-                    Add(v);
-                    Add("</td>");
-                    break;
-            }
-            ordinal++;
             return this;
         }
 
         public HtmlContent Put(string name, JNumber v)
         {
-            switch (ctx)
-            {
-                case CTX_FORM:
-                    Add("<div class=\"pure-u-1 pure-u-md-1-2\">");
-                    // Number(name, v);
-                    Add("</div>");
-                    break;
-                case CTX_GRIDTHEAD:
-                    Add("<th>");
-                    AddLabel(null, name);
-                    Add("</th>");
-                    break;
-                case CTX_GRIDTBODY:
-                    Add("<td style=\"text-align: right;\">");
-                    Add(v);
-                    Add("</td>");
-                    break;
-            }
-            ordinal++;
             return this;
         }
 
         public HtmlContent Put(string name, DateTime v, string Label = null, DateTime Max = default(DateTime), DateTime Min = default(DateTime), int Step = 0, bool ReadOnly = false, bool Required = false)
         {
-            switch (ctx)
-            {
-                case CTX_FORM:
-                    DATE(name, v);
-                    break;
-                case CTX_GRIDTHEAD:
-                    Add("<th>");
-                    AddLabel(null, name);
-                    Add("</th>");
-                    break;
-                case CTX_GRIDTBODY:
-                    Add("<td style=\"text-align: right;\">");
-                    Add(v);
-                    Add("</td>");
-                    break;
-            }
-            ordinal++;
             return this;
         }
 
         public HtmlContent Put(string name, NpgsqlPoint v)
         {
-            switch (ctx)
-            {
-                case CTX_FORM:
-                    Add("<div class=\"pure-u-1 pure-u-md-1-2\">");
-                    // Date(name, v);
-                    Add("</div>");
-                    break;
-                case CTX_GRIDTHEAD:
-                    Add("<th>");
-                    AddLabel(null, name);
-                    Add("</th>");
-                    break;
-                case CTX_GRIDTBODY:
-                    Add("<td style=\"text-align: right;\">");
-                    Add(v);
-                    Add("</td>");
-                    break;
-            }
-            ordinal++;
             return this;
         }
 
         public HtmlContent Put(string name, char[] v)
         {
-            ordinal++;
             return this;
         }
 
         public HtmlContent Put(string name, string v, Set<string> Opt = null, string Label = null, string Help = null, string Pattern = null, short Max = 0, short Min = 0, bool ReadOnly = false, bool Required = false)
         {
-            switch (ctx)
+            var ctx = chain[level];
+            switch (ctx.type)
             {
-                case CTX_FORM:
+                case CTX_TABLE_ROW:
+                    if (ctx.label)
+                    {
+                        Add("<th>");
+                        AddLabel(Label, name);
+                        Add("</th>");
+                    }
+                    else
+                    {
+                        Add("<td>");
+                        if (formed && level == 1)
+                        {
+                            Add("<input type=\"checkbox\" name=\"pk\">");
+                        }
+                        Add(v);
+                        Add("</td>");
+                    }
+                    break;
+                case CTX_LIST_ITEM:
+                    Add(v);
+                    break;
+                case CTX_GRID_PANE:
+                    Add(v);
+                    break;
+                case CTX_INPUT:
                     if (Label != null && Label.Length == 0)
                     {
                         HIDDEN(name, v);
@@ -1022,107 +963,199 @@ namespace Greatbone.Core
                         TEXTAREA(name, v, Label, Help, Max, Min, ReadOnly, Required);
                     }
                     break;
-                case CTX_GRIDTHEAD:
-                    Add("<th>");
-                    AddLabel(Label, name);
-                    Add("</th>");
-                    break;
-                case CTX_GRIDTBODY:
-                    Add("<td>");
-                    if (ordinal == 0)
-                    {
-                        Add("<input type=\"checkbox\" name=\"pk\">");
-                    }
-                    Add(v);
-                    Add("</td>");
-                    break;
             }
-            ordinal++;
+            chain[level].ordinal++;
             return this;
         }
 
         public HtmlContent Put(string name, byte[] v)
         {
-            ordinal++;
             return this;
         }
 
         public HtmlContent Put(string name, ArraySegment<byte> v)
         {
-            ordinal++;
             return this;
         }
 
         public HtmlContent Put(string name, JObj v)
         {
-            ordinal++;
             return this;
         }
 
         public HtmlContent Put(string name, JArr v)
         {
-            ordinal++;
             return this;
         }
 
         public HtmlContent Put(string name, short[] v, Set<short> Opt = null, string Label = null, string Help = null, bool ReadOnly = false, bool Required = false)
         {
 
-            ordinal++;
             return this;
         }
 
         public HtmlContent Put(string name, int[] v, Set<int> Opt = null, string Label = null, string Help = null, bool ReadOnly = false, bool Required = false)
         {
-            ordinal++;
             return this;
         }
 
         public HtmlContent Put(string name, long[] v, Set<long> Opt = null, string Label = null, string Help = null, bool ReadOnly = false, bool Required = false)
         {
-            ordinal++;
             return this;
         }
 
         public HtmlContent Put(string name, string[] v, Set<string> Opt = null, string Label = null, string Help = null, bool ReadOnly = false, bool Required = false)
         {
-            ordinal++;
-            return this;
-        }
-
-        public HtmlContent Put(string name, Dictionary<string, string> v, string Label = null, string Help = null, bool ReadOnly = false, bool Required = false)
-        {
-            ordinal++;
-            return this;
-        }
-
-        public HtmlContent Put(string name, IData v, int proj = 0, string Label = null, string Help = null, bool ReadOnly = false, bool Required = false)
-        {
-            ordinal++;
-            return this;
-        }
-
-        public HtmlContent Put<D>(string name, D[] v, int proj = 0, string Label = null, string Help = null, bool ReadOnly = false, bool Required = false) where D : IData
-        {
-            ordinal++;
-            return this;
-        }
-
-        public HtmlContent Put<D>(string name, List<D> v, int proj = 0, string Label = null, string Help = null, bool ReadOnly = false, bool Required = false) where D : IData
-        {
-            ordinal++;
-            return this;
-        }
-
-        public HtmlContent Put(string name, IDataInput v)
-        {
-            ordinal++;
             return this;
         }
 
         public HtmlContent Put(string name, Map v, string Label = null, string Help = null, bool ReadOnly = false, bool Required = false)
         {
-            throw new NotImplementedException();
+            return this;
+        }
+
+        public HtmlContent Put(string name, IData v, int proj = 0, string Label = null, string Help = null, bool ReadOnly = false, bool Required = false)
+        {
+            return this;
+        }
+
+        public HtmlContent Put<D>(string name, D[] v, int proj = 0, string Label = null, string Help = null, bool ReadOnly = false, bool Required = false) where D : IData
+        {
+            return this;
+        }
+
+        public HtmlContent Put<D>(string name, List<D> v, int proj = 0, string Label = null, string Help = null, bool ReadOnly = false, bool Required = false) where D : IData
+        {
+            var ctx = chain[level];
+            switch (ctx.type)
+            {
+                case CTX_TABLE:
+                    if (v != null)
+                    {
+                        level++;
+                        chain[level].type = CTX_TABLE_ROW;
+
+                        Add("<table class=\"hover\">");
+                        Add("<thead>");
+
+                        chain[level].label = true;
+
+                        Add("<tr>");
+                        for (int i = 0; i < v.Count; i++)
+                        {
+                            IData obj = v[i];
+                            obj.WriteData(this, proj);
+                        }
+                        Add("</tr>");
+                        Add("</thead>");
+
+                        chain[level].label = false;
+                        Add("<tbody>");
+
+                        for (int i = 0; i < v.Count; i++)
+                        {
+                            Add("<tr>");
+                            D obj = v[i];
+
+                            chain[level].ordinal = 0; // reset ordical
+                            obj.WriteData(this, proj);
+
+                            Add("</tr>");
+                        }
+                        Add("</tbody>");
+                        level--;
+                    }
+                    else
+                    {
+                        Add("<div class=\"row\">");
+                        Add("<span>没有记录</span>");
+                        Add("</div>");
+                    }
+                    break;
+                case CTX_TABLE_ROW:
+                    if (ctx.label)
+                    {
+                        Add("<th>");
+                        AddLabel(Label, name);
+                        Add("</th>");
+                    }
+                    else
+                    {
+                        Add("<td>");
+                        if (formed && level == 1)
+                        {
+                            Add("<input type=\"checkbox\" name=\"pk\">");
+                        }
+
+                        // set type to LIST 
+                        chain[++level].type = CTX_LIST;
+                        Put(name, v, proj, Label, Help, ReadOnly, Required);
+                        level--;
+
+                        Add("</td>");
+                    }
+                    break;
+                case CTX_LIST:
+                    if (v != null)
+                    {
+                        Add("<ul>");
+                        level++;
+                        chain[level].type = CTX_LIST_ITEM;
+                        for (int i = 0; i < v.Count; i++)
+                        {
+                            IData obj = v[i];
+                            Add("<li>");
+                            obj.WriteData(this, proj);
+                            Add("</li>");
+                        }
+                        Add("</ul>");
+                        level--;
+                    }
+                    else
+                    {
+                        Add("<div class=\"row\">");
+                        Add("<span>没有记录</span>");
+                        Add("</div>");
+                    }
+                    break;
+                case CTX_GRID:
+                    if (v != null)
+                    {
+                        Add("<ul>");
+                        level++;
+                        chain[level].type = CTX_GRID_PANE;
+                        for (int i = 0; i < v.Count; i++)
+                        {
+                            IData obj = v[i];
+                            Add("<li>");
+                            obj.WriteData(this, proj);
+                            Add("</li>");
+                        }
+                        Add("</ul>");
+                        level--;
+                    }
+                    else
+                    {
+                        Add("<div class=\"row\">");
+                        Add("<span>没有记录</span>");
+                        Add("</div>");
+                    }
+                    break;
+                case CTX_GRID_PANE:
+
+                    // set type to TABLE 
+                    chain[++level].type = CTX_TABLE;
+                    Put(name, v, proj, Label, Help, ReadOnly, Required);
+                    level--;
+                    break;
+            }
+            chain[level].ordinal++;
+            return this;
+        }
+
+        public HtmlContent Put(string name, IDataInput v)
+        {
+            return this;
         }
 
         public HtmlContent Put<D>(string name, Map<D> v, int proj = 0, string Label = null, string Help = null, bool ReadOnly = false, bool Required = false) where D : IData

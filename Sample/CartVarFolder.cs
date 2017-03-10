@@ -2,7 +2,6 @@ using Greatbone.Core;
 using System.Collections.Generic;
 using System.Threading.Tasks;
 using System.Collections.Concurrent;
-using System;
 
 namespace Greatbone.Sample
 {
