@@ -191,7 +191,7 @@ namespace Greatbone.Sample
             m =>
             {
                 List<ActionInfo> actions = folder.GetUiActions(ac);
-                m.GRID(actions, lst);
+                m.GRID(lst);
             },
             null,
             pub, maxage);
@@ -204,7 +204,7 @@ namespace Greatbone.Sample
             null,
             m =>
             {
-                m.GRID(actions, input, valve);
+                m.GRID(input, valve);
             },
             null,
             pub, maxage);

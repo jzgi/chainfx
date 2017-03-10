@@ -9,16 +9,16 @@ namespace Greatbone.Core
     ///
     public class HtmlContent : DynamicContent, IDataOutput<HtmlContent>
     {
-        const int DEPTH = 8;
+        const int DEPTH = 4;
 
         internal const sbyte
-            CTX_TABLE = 0x10,
-            CTX_TABLE_ROW = 0x11,
-            CTX_LIST = 0x20,
-            CTX_LIST_ITEM = 0x21,
-            CTX_GRID = 0x30,
-            CTX_GRID_PANE = 0x31,
-            CTX_INPUT = 0x50;
+            // multiple
+            CTX_TABLE = 1,
+            CTX_GRID = 2,
+            CTX_LIST = 3,
+            // single
+            CTX_FORMINP = 4,
+            CTX_CARD = 5;
 
         // per idata object outputing context
         struct Ctx
@@ -135,97 +135,36 @@ namespace Greatbone.Core
             Add("</fieldset>");
         }
 
-        public void GRIDPANE(IData obj, int proj = 0)
+        public void TABLE<D>(List<D> lst, int proj = 0) where D : IData
         {
-        }
-
-        public void FORM(ActionInfo actn, Action<HtmlContent> inner)
-        {
-            Add("<form class=\"pure-form pure-g\">");
-
-            inner?.Invoke(this);
-
-            Add("</form>");
-        }
-
-        public void FORM(ActionInfo actn, IData obj, int proj = 0)
-        {
-            Add("<form class=\"pure-form pure-g\">");
-
-            chain[level].type = CTX_INPUT;
-
-            // function buttuns
-            Add("</form>");
-        }
-
-        public void GRID<D>(List<ActionInfo> actns, List<D> lst, int proj = 0) where D : IData
-        {
-            Add("<form>");
-
-            // buttons
-            if (actns != null)
-            {
-                BUTTONS(actns);
-            }
-
+            chain[++level].type = CTX_TABLE;
             if (lst != null)
-            {
-                Put(null, lst, proj);
-            }
-            else
-            {
-                Add("<div class=\"row\">");
-                Add("<span>没有记录</span>");
-                Add("</div>");
-            }
-
-            Add("</form>");
-        }
-
-        public void GRID(List<ActionInfo> actns, IDataInput input, Action<IDataInput, HtmlContent> valve)
-        {
-            Add("<form>");
-
-            // buttons
-            BUTTONS(actns);
-
-            if (input != null)
             {
                 Add("<table class=\"hover\">");
 
-                // ctx = CTX_GRIDTHEAD;
+                chain[level].label = true;
                 Add("<thead>");
                 Add("<tr>");
-                valve(input, this);
+                for (int i = 0; i < lst.Count; i++)
+                {
+                    chain[level].ordinal = 0; // reset ordical
+                    lst[i].WriteData(this, proj);
+                }
                 Add("</tr>");
                 Add("</thead>");
 
-                // ctx = CTX_GRIDTBODY;
+                chain[level].label = false;
                 Add("<tbody>");
-                while (input.Next())
+                for (int i = 0; i < lst.Count; i++)
                 {
                     Add("<tr>");
-                    valve(input, this);
+                    chain[level].ordinal = 0; // reset ordical
+                    lst[i].WriteData(this, proj);
                     Add("</tr>");
                 }
                 Add("</tbody>");
             }
-            else
-            {
-                Add("<div class=\"row\">");
-                Add("<span>没有记录</span>");
-                Add("</div>");
-            }
-
-            Add("</form>");
-        }
-
-        public void TABLE<D>(List<D> lst, int proj = 0) where D : IData
-        {
-            if (lst != null)
-            {
-                Put(null, lst, proj);
-            }
+            --level;
         }
 
         public void TABLE(IDataInput input, Action<IDataInput, HtmlContent> valve)
@@ -251,6 +190,102 @@ namespace Greatbone.Core
                 }
                 Add("</tbody>");
             }
+        }
+
+        public void GRID<D>(List<D> lst, int proj = 0) where D : IData
+        {
+            chain[++level].type = CTX_GRID;
+            if (lst != null)
+            {
+                for (int i = 0; i < lst.Count; i++)
+                {
+                    Add("<div class=\"row\">");
+                    chain[level].ordinal = 0; // reset ordical
+                    lst[i].WriteData(this, proj);
+                    Add("</div>");
+                }
+            }
+            else
+            {
+                Add("<div class=\"row\">");
+                Add("<span>没有记录</span>");
+                Add("</div>");
+            }
+            --level;
+        }
+
+        public void GRID(IDataInput input, Action<IDataInput, HtmlContent> valve)
+        {
+            if (input != null)
+            {
+                Add("<table class=\"hover\">");
+
+                // ctx = CTX_GRIDTHEAD;
+                Add("<thead>");
+                Add("<tr>");
+                valve(input, this);
+                Add("</tr>");
+                Add("</thead>");
+
+                // ctx = CTX_GRIDTBODY;
+                Add("<tbody>");
+                while (input.Next())
+                {
+                    Add("<tr>");
+                    valve(input, this);
+                    Add("</tr>");
+                }
+                Add("</tbody>");
+            }
+            else
+            {
+                Add("<div class=\"row\">");
+                Add("<span>没有记录</span>");
+                Add("</div>");
+            }
+
+            Add("</form>");
+        }
+
+        public void LIST<D>(List<D> lst, int proj = 0) where D : IData
+        {
+            chain[++level].type = CTX_LIST;
+            if (lst != null)
+            {
+                Add("<ul>");
+                for (int i = 0; i < lst.Count; i++)
+                {
+                    Add("<li>");
+                    chain[level].ordinal = 0; // reset ordical
+                    lst[i].WriteData(this, proj);
+                    Add("</li>");
+                }
+                Add("</ul>");
+            }
+            --level;
+        }
+
+        public void CARD(IData obj, int proj = 0)
+        {
+            Add("<div>");
+            chain[level].ordinal = 0; // reset ordical
+            obj.WriteData(this, proj);
+            Add("</div>");
+        }
+
+        public void FORM(ActionInfo actn, Action<HtmlContent> inner)
+        {
+            Add("<form class=\"pure-form pure-g\">");
+
+            inner?.Invoke(this);
+
+            Add("</form>");
+        }
+
+        public void FORMINP(IData obj, int proj = 0)
+        {
+            chain[level].type = CTX_FORMINP;
+            obj.WriteData(this, proj);
         }
 
         public void HIDDEN(string name, string value)
@@ -728,19 +763,25 @@ namespace Greatbone.Core
         {
             switch (chain[level].type)
             {
-                case CTX_TABLE_ROW:
-                    Add("<th>");
-                    AddLabel(null, name);
-                    Add("</th>");
-                    Add("<td>");
-                    Add(v);
-                    Add("</td>");
+                case CTX_TABLE:
+                    if (chain[level].label)
+                    {
+                        Add("<th>");
+                        AddLabel(Label, name);
+                        Add("</th>");
+                    }
+                    else
+                    {
+                        Add("<td>");
+                        Add(v);
+                        Add("</td>");
+                    }
                     break;
-                case CTX_LIST_ITEM:
+                case CTX_LIST:
                     break;
-                case CTX_GRID_PANE:
+                case CTX_GRID:
                     break;
-                case CTX_INPUT:
+                case CTX_FORMINP:
                     Add("<div class=\"pure-u-1 pure-u-md-1-2\">");
                     CHECKBOX(name, v);
                     Add("</div>");
@@ -755,7 +796,7 @@ namespace Greatbone.Core
             var ctx = chain[level];
             switch (ctx.type)
             {
-                case CTX_TABLE_ROW:
+                case CTX_TABLE:
                     if (ctx.label)
                     {
                         Add("<th>");
@@ -780,9 +821,9 @@ namespace Greatbone.Core
                         Add("</td>");
                     }
                     break;
-                case CTX_LIST_ITEM:
+                case CTX_LIST:
                     break;
-                case CTX_INPUT:
+                case CTX_FORMINP:
                     Add("<div class=\"pure-u-1 pure-u-md-1-2\">");
                     NUMBER(name, v);
                     Add("</div>");
@@ -796,26 +837,29 @@ namespace Greatbone.Core
         {
             switch (chain[level].type)
             {
-                case CTX_TABLE_ROW:
-
-                    Add("<th>");
-                    AddLabel(null, name);
-                    Add("</th>");
-                    break;
-
-                    Add("<td style=\"text-align: right;\">");
-                    if (formed && level == 1)
+                case CTX_TABLE:
+                    if (chain[level].label)
                     {
-                        Add("<input type=\"checkbox\" name=\"pk\">");
+                        Add("<th>");
+                        AddLabel(Label, name);
+                        Add("</th>");
                     }
-                    Add(v);
-                    Add("</td>");
+                    else
+                    {
+                        Add("<td style=\"text-align: right;\">");
+                        if (formed && level == 1)
+                        {
+                            Add("<input type=\"checkbox\" name=\"pk\">");
+                        }
+                        Add(v);
+                        Add("</td>");
+                    }
                     break;
-                case CTX_LIST_ITEM:
+                case CTX_LIST:
                     break;
-                case CTX_GRID_PANE:
+                case CTX_GRID:
                     break;
-                case CTX_INPUT:
+                case CTX_FORMINP:
                     Add("<div class=\"pure-u-1 pure-u-md-1-2\">");
                     NUMBER(name, v);
                     Add("</div>");
@@ -830,30 +874,35 @@ namespace Greatbone.Core
         {
             switch (chain[level].type)
             {
-                case CTX_TABLE_ROW:
-                    Add("<th>");
-                    AddLabel(null, name);
-                    Add("</th>");
-
-                    Add("<td style=\"text-align: right;\">");
-                    if (formed && level == 1)
+                case CTX_TABLE:
+                    if (chain[level].label)
                     {
-                        Add("<input type=\"checkbox\" name=\"pk\">");
+                        Add("<th>");
+                        AddLabel(Label, name);
+                        Add("</th>");
                     }
-                    Add(v);
-                    Add("</td>");
+                    else
+                    {
+                        Add("<td style=\"text-align: right;\">");
+                        if (formed && level == 1)
+                        {
+                            Add("<input type=\"checkbox\" name=\"pk\">");
+                        }
+                        Add(v);
+                        Add("</td>");
+                    }
                     break;
-                case CTX_LIST_ITEM:
+                case CTX_LIST:
                     Add("<div class=\"pure-u-1 pure-u-md-1-2\">");
                     NUMBER(name, v);
                     Add("</div>");
                     break;
-                case CTX_GRID_PANE:
+                case CTX_GRID:
                     Add("<div class=\"pure-u-1 pure-u-md-1-2\">");
                     NUMBER(name, v);
                     Add("</div>");
                     break;
-                case CTX_INPUT:
+                case CTX_FORMINP:
                     Add("<div class=\"pure-u-1 pure-u-md-1-2\">");
                     NUMBER(name, v);
                     Add("</div>");
@@ -867,22 +916,31 @@ namespace Greatbone.Core
         {
             switch (chain[level].type)
             {
-                case CTX_TABLE_ROW:
-                    Add("<th>");
-                    AddLabel(null, name);
-                    Add("</th>");
+                case CTX_TABLE:
+                    if (chain[level].label)
+                    {
+                        Add("<th>");
+                        AddLabel(Label, name);
+                        Add("</th>");
+                    }
+                    else
+                    {
+                        Add("<td style=\"text-align: right;\">");
+                        Add(v);
+                        Add("</td>");
+                    }
                     break;
-                case CTX_LIST_ITEM:
+                case CTX_LIST:
                     Add("<td style=\"text-align: right;\">");
                     Add(v);
                     Add("</td>");
                     break;
-                case CTX_GRID_PANE:
+                case CTX_GRID:
                     Add("<td style=\"text-align: right;\">");
                     Add(v);
                     Add("</td>");
                     break;
-                case CTX_INPUT:
+                case CTX_FORMINP:
                     Add("<div class=\"pure-u-1 pure-u-md-1-2\">");
                     Add("</div>");
                     break;
@@ -893,6 +951,38 @@ namespace Greatbone.Core
 
         public HtmlContent Put(string name, decimal v, string Label = null, string Help = null, decimal Max = 0, decimal Min = 0, decimal Step = 0, bool ReadOnly = false, bool Required = false)
         {
+            switch (chain[level].type)
+            {
+                case CTX_TABLE:
+                    if (chain[level].label)
+                    {
+                        Add("<th>");
+                        AddLabel(Label, name);
+                        Add("</th>");
+                    }
+                    else
+                    {
+                        Add("<td style=\"text-align: right;\">");
+                        Add(v);
+                        Add("</td>");
+                    }
+                    break;
+                case CTX_LIST:
+                    Add("<td style=\"text-align: right;\">");
+                    Add(v);
+                    Add("</td>");
+                    break;
+                case CTX_GRID:
+                    Add("<td style=\"text-align: right;\">");
+                    Add(v);
+                    Add("</td>");
+                    break;
+                case CTX_FORMINP:
+                    Add("<div class=\"pure-u-1 pure-u-md-1-2\">");
+                    Add("</div>");
+                    break;
+            }
+            chain[level].ordinal++;
             return this;
         }
 
@@ -921,7 +1011,7 @@ namespace Greatbone.Core
             var ctx = chain[level];
             switch (ctx.type)
             {
-                case CTX_TABLE_ROW:
+                case CTX_TABLE:
                     if (ctx.label)
                     {
                         Add("<th>");
@@ -939,13 +1029,13 @@ namespace Greatbone.Core
                         Add("</td>");
                     }
                     break;
-                case CTX_LIST_ITEM:
+                case CTX_LIST:
                     Add(v);
                     break;
-                case CTX_GRID_PANE:
+                case CTX_GRID:
                     Add(v);
                     break;
-                case CTX_INPUT:
+                case CTX_FORMINP:
                     if (Label != null && Label.Length == 0)
                     {
                         HIDDEN(name, v);
@@ -1026,54 +1116,10 @@ namespace Greatbone.Core
 
         public HtmlContent Put<D>(string name, List<D> v, int proj = 0, string Label = null, string Help = null, bool ReadOnly = false, bool Required = false) where D : IData
         {
-            var ctx = chain[level];
-            switch (ctx.type)
+            switch (chain[level].type)
             {
                 case CTX_TABLE:
-                    if (v != null)
-                    {
-                        level++;
-                        chain[level].type = CTX_TABLE_ROW;
-
-                        Add("<table class=\"hover\">");
-                        Add("<thead>");
-
-                        chain[level].label = true;
-
-                        Add("<tr>");
-                        for (int i = 0; i < v.Count; i++)
-                        {
-                            IData obj = v[i];
-                            obj.WriteData(this, proj);
-                        }
-                        Add("</tr>");
-                        Add("</thead>");
-
-                        chain[level].label = false;
-                        Add("<tbody>");
-
-                        for (int i = 0; i < v.Count; i++)
-                        {
-                            Add("<tr>");
-                            D obj = v[i];
-
-                            chain[level].ordinal = 0; // reset ordical
-                            obj.WriteData(this, proj);
-
-                            Add("</tr>");
-                        }
-                        Add("</tbody>");
-                        level--;
-                    }
-                    else
-                    {
-                        Add("<div class=\"row\">");
-                        Add("<span>没有记录</span>");
-                        Add("</div>");
-                    }
-                    break;
-                case CTX_TABLE_ROW:
-                    if (ctx.label)
+                    if (chain[level].label)
                     {
                         Add("<th>");
                         AddLabel(Label, name);
@@ -1081,72 +1127,24 @@ namespace Greatbone.Core
                     }
                     else
                     {
-                        Add("<td>");
-                        if (formed && level == 1)
+                        if (v != null) { LIST(v, proj); }
+                        else
                         {
-                            Add("<input type=\"checkbox\" name=\"pk\">");
+                            Add("<div class=\"row\"><span>没有记录</span></div>");
                         }
-
-                        // set type to LIST 
-                        chain[++level].type = CTX_LIST;
-                        Put(name, v, proj, Label, Help, ReadOnly, Required);
-                        level--;
-
-                        Add("</td>");
-                    }
-                    break;
-                case CTX_LIST:
-                    if (v != null)
-                    {
-                        Add("<ul>");
-                        level++;
-                        chain[level].type = CTX_LIST_ITEM;
-                        for (int i = 0; i < v.Count; i++)
-                        {
-                            IData obj = v[i];
-                            Add("<li>");
-                            obj.WriteData(this, proj);
-                            Add("</li>");
-                        }
-                        Add("</ul>");
-                        level--;
-                    }
-                    else
-                    {
-                        Add("<div class=\"row\">");
-                        Add("<span>没有记录</span>");
-                        Add("</div>");
                     }
                     break;
                 case CTX_GRID:
                     if (v != null)
                     {
-                        Add("<ul>");
-                        level++;
-                        chain[level].type = CTX_GRID_PANE;
-                        for (int i = 0; i < v.Count; i++)
-                        {
-                            IData obj = v[i];
-                            Add("<li>");
-                            obj.WriteData(this, proj);
-                            Add("</li>");
-                        }
-                        Add("</ul>");
-                        level--;
+                        TABLE(v, proj);
                     }
                     else
                     {
-                        Add("<div class=\"row\">");
-                        Add("<span>没有记录</span>");
-                        Add("</div>");
+                        Add("<div class=\"row\"><span>没有记录</span></div>");
                     }
                     break;
-                case CTX_GRID_PANE:
-
-                    // set type to TABLE 
-                    chain[++level].type = CTX_TABLE;
-                    Put(name, v, proj, Label, Help, ReadOnly, Required);
-                    level--;
+                case CTX_LIST:
                     break;
             }
             chain[level].ordinal++;
