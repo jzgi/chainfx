@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Collections.Generic;
-using NpgsqlTypes;
 
 namespace Greatbone.Core
 {
@@ -23,13 +22,7 @@ namespace Greatbone.Core
 
         bool Get(string name, ref DateTime v);
 
-        bool Get(string name, ref NpgsqlPoint v);
-
-        bool Get(string name, ref char[] v);
-
         bool Get(string name, ref string v);
-
-        bool Get(string name, ref byte[] v);
 
         bool Get(string name, ref ArraySegment<byte> v);
 

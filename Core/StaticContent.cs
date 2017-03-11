@@ -1530,9 +1530,6 @@ namespace Greatbone.Core
 
         readonly int size;
 
-        public StaticContent(byte[] bytes) : this(false, bytes, bytes.Length)
-        {
-        }
 
         public StaticContent(ArraySegment<byte> byteas) : this(true, byteas.Array, byteas.Count)
         {

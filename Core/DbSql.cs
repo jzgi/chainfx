@@ -125,6 +125,30 @@ namespace Greatbone.Core
             ordinal++;
         }
 
+        public DbSql PutNull(string name)
+        {
+            Build(name);
+            return this;
+        }
+
+        public DbSql Put(string name, JNumber v)
+        {
+            if (name != null)
+            {
+                Build(name);
+            }
+            else
+            {
+                Add(v);
+            }
+            return this;
+        }
+
+        public DbSql Put(string name, IDataInput v)
+        {
+            throw new NotImplementedException();
+        }
+
         public DbSql PutRaw(string name, string raw)
         {
             throw new NotImplementedException();
@@ -195,19 +219,6 @@ namespace Greatbone.Core
             return this;
         }
 
-        public DbSql Put(string name, JNumber v)
-        {
-            if (name != null)
-            {
-                Build(name);
-            }
-            else
-            {
-                Add(v);
-            }
-            return this;
-        }
-
         public DbSql Put(string name, decimal v, string Label = null, string Help = null, decimal Max = 0, decimal Min = 0, decimal Step = 0, bool ReadOnly = false, bool Required = false)
         {
             if (name != null)
@@ -222,19 +233,6 @@ namespace Greatbone.Core
         }
 
         public DbSql Put(string name, DateTime v, string Label = null, DateTime Max = default(DateTime), DateTime Min = default(DateTime), int Step = 0, bool ReadOnly = false, bool Required = false)
-        {
-            if (name != null)
-            {
-                Build(name);
-            }
-            else
-            {
-                Add(v);
-            }
-            return this;
-        }
-
-        public DbSql Put(string name, NpgsqlPoint v)
         {
             if (name != null)
             {
@@ -262,74 +260,9 @@ namespace Greatbone.Core
             return this;
         }
 
-        public DbSql Put(string name, char[] v)
-        {
-            if (name != null)
-            {
-                Build(name);
-            }
-            else
-            {
-                Add('\'');
-                Add(v);
-                Add('\'');
-            }
-            return this;
-        }
-
-        public DbSql Put(string name, byte[] v)
+        public DbSql Put(string name, ArraySegment<byte> v, string Label = null, string Size = null, string Ratio = null, bool Required = false)
         {
             Build(name);
-            return this;
-        }
-
-        public DbSql Put(string name, ArraySegment<byte> v)
-        {
-            Build(name);
-            return this;
-        }
-
-        public DbSql Put(string name, JArr v)
-        {
-            if (name != null)
-            {
-                Build(name);
-            }
-            else
-            {
-                if (v == null)
-                {
-                    Add("NULL");
-                }
-                else
-                {
-                    Add('\'');
-                    v.WriteData(this);
-                    Add('\'');
-                }
-            }
-            return this;
-        }
-
-        public DbSql Put(string name, JObj v)
-        {
-            if (name != null)
-            {
-                Build(name);
-            }
-            else
-            {
-                if (v == null)
-                {
-                    Add("NULL");
-                }
-                else
-                {
-                    Add('\'');
-                    v.WriteData(this);
-                    Add('\'');
-                }
-            }
             return this;
         }
 
@@ -455,12 +388,7 @@ namespace Greatbone.Core
             return this;
         }
 
-        public DbSql Put(string name, IDataInput v)
-        {
-            throw new NotImplementedException();
-        }
-
-        public DbSql Put(string name, Dictionary<string, string> v, string Label = null, string Help = null, bool ReadOnly = false, bool Required = false)
+        public DbSql Put(string name, Map v, string Label = null, string Help = null, bool ReadOnly = false, bool Required = false)
         {
             throw new NotImplementedException();
         }
@@ -496,25 +424,14 @@ namespace Greatbone.Core
             return this;
         }
 
-        public DbSql PutNull(string name)
+        public DbSql Put<D>(string name, Map<D> v, int proj = 0, string Label = null, string Help = null, bool ReadOnly = false, bool Required = false) where D : IData
         {
-            Build(name);
-            return this;
+            throw new NotImplementedException();
         }
 
         public override string ToString()
         {
             return new string(charbuf, 0, count);
-        }
-
-        public DbSql Put(string name, Map v, string Label = null, string Help = null, bool ReadOnly = false, bool Required = false)
-        {
-            throw new NotImplementedException();
-        }
-
-        public DbSql Put<D>(string name, Map<D> v, int proj = 0, string Label = null, string Help = null, bool ReadOnly = false, bool Required = false) where D : IData
-        {
-            throw new NotImplementedException();
         }
     }
 }

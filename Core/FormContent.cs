@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Collections.Generic;
-using NpgsqlTypes;
 
 namespace Greatbone.Core
 {
@@ -58,11 +57,6 @@ namespace Greatbone.Core
         // SINK
         //
 
-        public FormContent PutRaw(string name, string raw)
-        {
-            throw new NotImplementedException();
-        }
-
         public FormContent PutNull(string name)
         {
             if (name != null)
@@ -76,6 +70,35 @@ namespace Greatbone.Core
             Add("null");
 
             return this;
+        }
+
+        public FormContent Put(string name, JNumber v)
+        {
+            if (name != null)
+            {
+                Add('"');
+                Add(name);
+                Add('"');
+                Add(':');
+            }
+
+            Add(v.bigint);
+            if (v.Pt)
+            {
+                Add('.');
+                Add(v.fract);
+            }
+            return this;
+        }
+
+        public FormContent Put(string name, IDataInput v)
+        {
+            throw new NotImplementedException();
+        }
+
+        public FormContent PutRaw(string name, string raw)
+        {
+            throw new NotImplementedException();
         }
 
         public FormContent Put(string name, bool v, Func<bool, string> Opt = null, string Label = null, bool Required = false)
@@ -156,25 +179,6 @@ namespace Greatbone.Core
             return this;
         }
 
-        public FormContent Put(string name, JNumber v)
-        {
-            if (name != null)
-            {
-                Add('"');
-                Add(name);
-                Add('"');
-                Add(':');
-            }
-
-            Add(v.bigint);
-            if (v.Pt)
-            {
-                Add('.');
-                Add(v.fract);
-            }
-            return this;
-        }
-
         public FormContent Put(string name, DateTime v, string Label = null, DateTime Max = default(DateTime), DateTime Min = default(DateTime), int Step = 0, bool ReadOnly = false, bool Required = false)
         {
             if (name != null)
@@ -188,49 +192,6 @@ namespace Greatbone.Core
             Add('"');
             Add(v);
             Add('"');
-
-            return this;
-        }
-
-        public FormContent Put(string name, NpgsqlPoint v)
-        {
-            if (name != null)
-            {
-                Add('"');
-                Add(name);
-                Add('"');
-                Add(':');
-            }
-
-            Add('"');
-            Add(v.X);
-            Add(':');
-            Add(v.Y);
-            Add('"');
-
-            return this;
-        }
-
-        public FormContent Put(string name, char[] v)
-        {
-            if (name != null)
-            {
-                Add('"');
-                Add(name);
-                Add('"');
-                Add(':');
-            }
-
-            if (v == null)
-            {
-                Add("null");
-            }
-            else
-            {
-                Add('"');
-                Add(v);
-                Add('"');
-            }
 
             return this;
         }
@@ -259,61 +220,9 @@ namespace Greatbone.Core
             return this;
         }
 
-        public virtual FormContent Put(string name, byte[] v)
+        public virtual FormContent Put(string name, ArraySegment<byte> v, string Label = null, string Size = null, string Ratio = null, bool Required = false)
         {
             return this; // ignore ir
-        }
-
-        public virtual FormContent Put(string name, ArraySegment<byte> v)
-        {
-            return this; // ignore ir
-        }
-
-        public FormContent Put(string name, JObj v)
-        {
-            if (name != null)
-            {
-                Add('"');
-                Add(name);
-                Add('"');
-                Add(':');
-            }
-
-            if (v == null)
-            {
-                Add("null");
-            }
-            else
-            {
-                Add('{');
-                v.WriteData(this);
-                Add('}');
-            }
-
-            return this;
-        }
-
-        public FormContent Put(string name, JArr v)
-        {
-            if (name != null)
-            {
-                Add('"');
-                Add(name);
-                Add('"');
-                Add(':');
-            }
-
-            if (v == null)
-            {
-                Add("null");
-            }
-            else
-            {
-                Add('[');
-                v.WriteData(this);
-                Add(']');
-            }
-            return this;
         }
 
         public FormContent Put(string name, short[] v, Set<short> Opt = null, string Label = null, string Help = null, bool ReadOnly = false, bool Required = false)
@@ -438,7 +347,7 @@ namespace Greatbone.Core
             return this;
         }
 
-        public FormContent Put(string name, Dictionary<string, string> v, string Label = null, string Help = null, bool ReadOnly = false, bool Required = false)
+        public FormContent Put(string name, Map v, string Label = null, string Help = null, bool ReadOnly = false, bool Required = false)
         {
             throw new NotImplementedException();
         }
@@ -517,16 +426,6 @@ namespace Greatbone.Core
                 Add(']');
             }
             return this;
-        }
-
-        public FormContent Put(string name, IDataInput v)
-        {
-            throw new NotImplementedException();
-        }
-
-        public FormContent Put(string name, Map v, string Label = null, string Help = null, bool ReadOnly = false, bool Required = false)
-        {
-            throw new NotImplementedException();
         }
 
         public FormContent Put<D>(string name, Map<D> v, int proj = 0, string Label = null, string Help = null, bool ReadOnly = false, bool Required = false) where D : IData

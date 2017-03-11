@@ -1,4 +1,5 @@
-﻿using Greatbone.Core;
+﻿using System;
+using Greatbone.Core;
 
 namespace Greatbone.Sample
 {
@@ -25,7 +26,7 @@ namespace Greatbone.Sample
         internal string city;
         internal double x;
         internal double y;
-        internal byte[] icon;
+        internal ArraySegment<byte> icon;
         internal string descr;
         internal string license;
         internal short status; // -1 dismissed, 0 closed, 1 open

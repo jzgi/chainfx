@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Collections.Generic;
-using NpgsqlTypes;
 
 namespace Greatbone.Core
 {
@@ -111,6 +110,78 @@ namespace Greatbone.Core
             return this;
         }
 
+        public JsonContent Put(string name, JNumber v)
+        {
+            if (counts[level]++ > 0) Add(',');
+            if (name != null)
+            {
+                Add('"');
+                Add(name);
+                Add('"');
+                Add(':');
+            }
+
+            Add(v.bigint);
+            if (v.Pt)
+            {
+                Add('.');
+                Add(v.fract);
+            }
+            return this;
+        }
+
+        public JsonContent Put(string name, IDataInput v)
+        {
+            if (counts[level]++ > 0) Add(',');
+            if (name != null)
+            {
+                Add('"');
+                Add(name);
+                Add('"');
+                Add(':');
+            }
+
+            if (v == null)
+            {
+                Add("null");
+            }
+            else
+            {
+                counts[++level] = 0; // enter
+
+                if (v.DataSet)
+                {
+                    Add('[');
+                    bool bgn = false;
+                    while (v.Next())
+                    {
+                        counts[++level] = 0; // enter an data entry
+
+                        if (bgn) Add(',');
+
+                        Add('{');
+                        v.WriteData(this);
+                        Add('}');
+
+                        level--;
+                        bgn = true;
+                    }
+                    Add(']');
+                }
+                else
+                {
+                    Add('{');
+
+                    v.WriteData(this);
+
+                    Add('}');
+                }
+
+                level--; // exit
+            }
+            return this;
+        }
+
         public JsonContent PutRaw(string name, string raw)
         {
             if (counts[level]++ > 0) Add(',');
@@ -209,26 +280,6 @@ namespace Greatbone.Core
             return this;
         }
 
-        public JsonContent Put(string name, JNumber v)
-        {
-            if (counts[level]++ > 0) Add(',');
-            if (name != null)
-            {
-                Add('"');
-                Add(name);
-                Add('"');
-                Add(':');
-            }
-
-            Add(v.bigint);
-            if (v.Pt)
-            {
-                Add('.');
-                Add(v.fract);
-            }
-            return this;
-        }
-
         public JsonContent Put(string name, DateTime v, string Label = null, DateTime Max = default(DateTime), DateTime Min = default(DateTime), int Step = 0, bool ReadOnly = false, bool Required = false)
         {
             if (counts[level]++ > 0) Add(',');
@@ -243,50 +294,6 @@ namespace Greatbone.Core
             Add('"');
             Add(v);
             Add('"');
-            return this;
-        }
-
-        public JsonContent Put(string name, NpgsqlPoint v)
-        {
-            if (counts[level]++ > 0) Add(',');
-            if (name != null)
-            {
-                Add('"');
-                Add(name);
-                Add('"');
-                Add(':');
-            }
-
-            Add('{');
-            Add("\"x\":");
-            Add(v.X);
-            Add(",\"x\":");
-            Add(v.Y);
-            Add('}');
-            return this;
-        }
-
-        public JsonContent Put(string name, char[] v)
-        {
-            if (counts[level]++ > 0) Add(',');
-            if (name != null)
-            {
-                Add('"');
-                Add(name);
-                Add('"');
-                Add(':');
-            }
-
-            if (v == null)
-            {
-                Add("null");
-            }
-            else
-            {
-                Add('"');
-                Add(v);
-                Add('"');
-            }
             return this;
         }
 
@@ -314,66 +321,14 @@ namespace Greatbone.Core
             return this;
         }
 
-        public virtual JsonContent Put(string name, byte[] v)
+        public virtual JsonContent Put(string name, byte[] v, string Label = null, string Size = null, string Ratio = null, bool Required = false)
         {
             return this; // ignore ir
         }
 
-        public virtual JsonContent Put(string name, ArraySegment<byte> v)
+        public virtual JsonContent Put(string name, ArraySegment<byte> v, string Label = null, string Size = null, string Ratio = null, bool Required = false)
         {
             return this; // ignore ir
-        }
-
-        public JsonContent Put(string name, IDataInput v)
-        {
-            if (counts[level]++ > 0) Add(',');
-            if (name != null)
-            {
-                Add('"');
-                Add(name);
-                Add('"');
-                Add(':');
-            }
-
-            if (v == null)
-            {
-                Add("null");
-            }
-            else
-            {
-                counts[++level] = 0; // enter
-
-                if (v.DataSet)
-                {
-                    Add('[');
-                    bool bgn = false;
-                    while (v.Next())
-                    {
-                        counts[++level] = 0; // enter an data entry
-
-                        if (bgn) Add(',');
-
-                        Add('{');
-                        v.WriteData(this);
-                        Add('}');
-
-                        level--;
-                        bgn = true;
-                    }
-                    Add(']');
-                }
-                else
-                {
-                    Add('{');
-
-                    v.WriteData(this);
-
-                    Add('}');
-                }
-
-                level--; // exit
-            }
-            return this;
         }
 
         public JsonContent Put(string name, short[] v, Set<short> Opt = null, string Label = null, string Help = null, bool ReadOnly = false, bool Required = false)
@@ -500,7 +455,7 @@ namespace Greatbone.Core
         }
 
 
-        public JsonContent Put(string name, Dictionary<string, string> v, string Label = null, string Help = null, bool ReadOnly = false, bool Required = false)
+        public JsonContent Put(string name, Map v, string Label = null, string Help = null, bool ReadOnly = false, bool Required = false)
         {
             throw new NotImplementedException();
         }
@@ -597,11 +552,6 @@ namespace Greatbone.Core
                 level--; // exit
             }
             return this;
-        }
-
-        public JsonContent Put(string name, Map v, string Label = null, string Help = null, bool ReadOnly = false, bool Required = false)
-        {
-            throw new NotImplementedException();
         }
 
         public JsonContent Put<D>(string name, Map<D> v, int proj = 0, string Label = null, string Help = null, bool ReadOnly = false, bool Required = false) where D : IData

@@ -52,30 +52,9 @@ namespace Greatbone.Core
             return v;
         }
 
-        public static NpgsqlPoint GetPoint(this IDataInput inp, string name = null)
-        {
-            NpgsqlPoint v = default(NpgsqlPoint);
-            inp.Get(name, ref v);
-            return v;
-        }
-
-        public static char[] GetChars(this IDataInput inp, string name = null)
-        {
-            char[] v = null;
-            inp.Get(name, ref v);
-            return v;
-        }
-
         public static string GetString(this IDataInput inp, string name = null)
         {
             string v = null;
-            inp.Get(name, ref v);
-            return v;
-        }
-
-        public static byte[] GetBytes(this IDataInput inp, string name = null)
-        {
-            byte[] v = null;
             inp.Get(name, ref v);
             return v;
         }

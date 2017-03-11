@@ -31,11 +31,6 @@ namespace Greatbone.Core
             position = 0;
         }
 
-        public DbParameters PutRaw(string name, string raw)
-        {
-            return this;
-        }
-
         public DbParameters PutNull(string name)
         {
             if (name == null)
@@ -43,6 +38,29 @@ namespace Greatbone.Core
                 name = Defaults[position++];
             }
             coll.AddWithValue(name, DBNull.Value);
+            return this;
+        }
+
+        public DbParameters Put(string name, JNumber v)
+        {
+            if (name == null)
+            {
+                name = Defaults[position++];
+            }
+            coll.Add(new NpgsqlParameter(name, NpgsqlDbType.Numeric)
+            {
+                Value = v.Decimal
+            });
+            return this;
+        }
+
+        public DbParameters Put(string name, IDataInput v)
+        {
+            return this;
+        }
+
+        public DbParameters PutRaw(string name, string raw)
+        {
             return this;
         }
 
@@ -124,19 +142,6 @@ namespace Greatbone.Core
             return this;
         }
 
-        public DbParameters Put(string name, JNumber v)
-        {
-            if (name == null)
-            {
-                name = Defaults[position++];
-            }
-            coll.Add(new NpgsqlParameter(name, NpgsqlDbType.Numeric)
-            {
-                Value = v.Decimal
-            });
-            return this;
-        }
-
         public DbParameters Put(string name, DateTime v, string Label = null, DateTime Max = default(DateTime), DateTime Min = default(DateTime), int Step = 0, bool ReadOnly = false, bool Required = false)
         {
             if (name == null)
@@ -144,32 +149,6 @@ namespace Greatbone.Core
                 name = Defaults[position++];
             }
             coll.Add(new NpgsqlParameter(name, NpgsqlDbType.Timestamp)
-            {
-                Value = v
-            });
-            return this;
-        }
-
-        public DbParameters Put(string name, NpgsqlPoint v)
-        {
-            if (name == null)
-            {
-                name = Defaults[position++];
-            }
-            coll.Add(new NpgsqlParameter(name, NpgsqlDbType.Point)
-            {
-                Value = v
-            });
-            return this;
-        }
-
-        public DbParameters Put(string name, char[] v)
-        {
-            if (name == null)
-            {
-                name = Defaults[position++];
-            }
-            coll.Add(new NpgsqlParameter(name, NpgsqlDbType.Char, v.Length)
             {
                 Value = v
             });
@@ -190,20 +169,7 @@ namespace Greatbone.Core
             return this;
         }
 
-        public DbParameters Put(string name, byte[] v)
-        {
-            if (name == null)
-            {
-                name = Defaults[position++];
-            }
-            coll.Add(new NpgsqlParameter(name, NpgsqlDbType.Bytea)
-            {
-                Value = (v != null) ? (object)v : DBNull.Value
-            });
-            return this;
-        }
-
-        public DbParameters Put(string name, ArraySegment<byte> v)
+        public DbParameters Put(string name, ArraySegment<byte> v, string Label = null, string Size = null, string Ratio = null, bool Required = false)
         {
             if (name == null)
             {
@@ -314,6 +280,11 @@ namespace Greatbone.Core
             return this;
         }
 
+        public DbParameters Put(string name, Map v, string Label = null, string Help = null, bool ReadOnly = false, bool Required = false)
+        {
+            throw new NotImplementedException();
+        }
+
         public DbParameters Put(string name, IData v, int proj = 0, string Label = null, string Help = null, bool ReadOnly = false, bool Required = false)
         {
             if (name == null)
@@ -380,14 +351,9 @@ namespace Greatbone.Core
             return this;
         }
 
-        public DbParameters Put(string name, IDataInput v)
+        public DbParameters Put<D>(string name, Map<D> v, int proj = 0, string Label = null, string Help = null, bool ReadOnly = false, bool Required = false) where D : IData
         {
-            return this;
-        }
-
-        public DbParameters Put(string name, Dictionary<string, string> v, string Label = null, string Help = null, bool ReadOnly = false, bool Required = false)
-        {
-            return this;
+            throw new NotImplementedException();
         }
 
         //
@@ -397,6 +363,11 @@ namespace Greatbone.Core
         public DbParameters SetNull()
         {
             return PutNull(null);
+        }
+
+        public DbParameters Set(IDataInput v)
+        {
+            return Put(null, v);
         }
 
         public DbParameters Set(bool v)
@@ -439,32 +410,12 @@ namespace Greatbone.Core
             return Put(null, v);
         }
 
-        public DbParameters Set(NpgsqlPoint v)
-        {
-            return Put(null, v);
-        }
-
-        public DbParameters Set(char[] v)
-        {
-            return Put(null, v);
-        }
-
-        public DbParameters Set(string v, bool? anylen = null)
-        {
-            return Put(null, v);
-        }
-
-        public DbParameters Set(byte[] v)
+        public DbParameters Set(string v)
         {
             return Put(null, v);
         }
 
         public DbParameters Set(ArraySegment<byte> v)
-        {
-            return Put(null, v);
-        }
-
-        public DbParameters Set(IDataInput v)
         {
             return Put(null, v);
         }
@@ -502,16 +453,6 @@ namespace Greatbone.Core
         public DbParameters Set<D>(List<D> v, int proj = 0) where D : IData
         {
             return Put(null, v);
-        }
-
-        public DbParameters Put(string name, Map v, string Label = null, string Help = null, bool ReadOnly = false, bool Required = false)
-        {
-            throw new NotImplementedException();
-        }
-
-        public DbParameters Put<D>(string name, Map<D> v, int proj = 0, string Label = null, string Help = null, bool ReadOnly = false, bool Required = false) where D : IData
-        {
-            throw new NotImplementedException();
         }
     }
 }

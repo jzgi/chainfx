@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Collections.Generic;
-using NpgsqlTypes;
 
 namespace Greatbone.Core
 {
@@ -38,6 +37,23 @@ namespace Greatbone.Core
         public FormMpContent PutNull(string name)
         {
             return this;
+        }
+
+        public FormMpContent Put(string name, JNumber v)
+        {
+            Part(name);
+            Add(v.bigint);
+            if (v.Pt)
+            {
+                Add('.');
+                Add(v.fract);
+            }
+            return this;
+        }
+
+        public FormMpContent Put(string name, IDataInput v)
+        {
+            throw new NotImplementedException();
         }
 
         public FormMpContent PutRaw(string name, string raw)
@@ -87,45 +103,10 @@ namespace Greatbone.Core
             return this;
         }
 
-        public FormMpContent Put(string name, JNumber v)
-        {
-            Part(name);
-            Add(v.bigint);
-            if (v.Pt)
-            {
-                Add('.');
-                Add(v.fract);
-            }
-            return this;
-        }
-
         public FormMpContent Put(string name, DateTime v, string Label = null, DateTime Max = default(DateTime), DateTime Min = default(DateTime), int Step = 0, bool ReadOnly = false, bool Required = false)
         {
             Part(name);
             Add(v);
-            return this;
-        }
-
-        public FormMpContent Put(string name, NpgsqlPoint v)
-        {
-            Part(name);
-            Add(v.X);
-            Add(',');
-            Add(v.Y);
-            return this;
-        }
-
-        public FormMpContent Put(string name, char[] v)
-        {
-            Part(name);
-            if (v == null)
-            {
-                Add("null");
-            }
-            else
-            {
-                Add(v);
-            }
             return this;
         }
 
@@ -143,46 +124,9 @@ namespace Greatbone.Core
             return this;
         }
 
-        public virtual FormMpContent Put(string name, byte[] v)
+        public virtual FormMpContent Put(string name, ArraySegment<byte> v, string Label = null, string Size = null, string Ratio = null, bool Required = false)
         {
             return this; // ignore ir
-        }
-
-        public virtual FormMpContent Put(string name, ArraySegment<byte> v)
-        {
-            return this; // ignore ir
-        }
-
-        public FormMpContent Put(string name, JObj v)
-        {
-            Part(name);
-            if (v == null)
-            {
-                Add("null");
-            }
-            else
-            {
-                Add('{');
-                v.WriteData(this);
-                Add('}');
-            }
-            return this;
-        }
-
-        public FormMpContent Put(string name, JArr v)
-        {
-            Part(name);
-            if (v == null)
-            {
-                Add("null");
-            }
-            else
-            {
-                Add('[');
-                v.WriteData(this);
-                Add(']');
-            }
-            return this;
         }
 
         public FormMpContent Put(string name, short[] v, Set<short> Opt = null, string Label = null, string Help = null, bool ReadOnly = false, bool Required = false)
@@ -274,7 +218,7 @@ namespace Greatbone.Core
             return this;
         }
 
-        public FormMpContent Put(string name, Dictionary<string, string> v, string Label = null, string Help = null, bool ReadOnly = false, bool Required = false)
+        public FormMpContent Put(string name, Map v, string Label = null, string Help = null, bool ReadOnly = false, bool Required = false)
         {
             throw new NotImplementedException();
         }
@@ -336,16 +280,6 @@ namespace Greatbone.Core
         public void PutEvent(long id, string name, string shard, string arg, DateTime time, IContent content)
         {
 
-        }
-
-        public FormMpContent Put(string name, IDataInput v)
-        {
-            throw new NotImplementedException();
-        }
-
-        public FormMpContent Put(string name, Map v, string Label = null, string Help = null, bool ReadOnly = false, bool Required = false)
-        {
-            throw new NotImplementedException();
         }
 
         public FormMpContent Put<D>(string name, Map<D> v, int proj = 0, string Label = null, string Help = null, bool ReadOnly = false, bool Required = false) where D : IData

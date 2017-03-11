@@ -1,4 +1,5 @@
-﻿using Greatbone.Core;
+﻿using System;
+using Greatbone.Core;
 
 namespace Greatbone.Sample
 {
@@ -17,7 +18,7 @@ namespace Greatbone.Sample
 
         internal string descr;
 
-        internal byte[] icon;
+        internal ArraySegment<byte> icon;
 
         internal decimal oprice; // original price
 

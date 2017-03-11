@@ -1,6 +1,5 @@
 using System;
 using System.Collections.Generic;
-using NpgsqlTypes;
 
 namespace Greatbone.Core
 {
@@ -692,16 +691,34 @@ namespace Greatbone.Core
             Add("</fieldset>");
         }
 
-        public void FILE(string name, string Label = null, bool Required = false)
+        public void FILE(string name, string Label = null, string Size = null, string Ratio = null, bool Required = false)
         {
-            Add("<label>");
+            // <div class="slim"
+            //      data-label="Drop your avatar here"
+            //      data-fetcher="fetch.php"
+            //      data-size="240,240"
+            //      data-ratio="1:1">
+            //     <input type="file" name="slim[]" required />
+            // </div>
+            //         
+            Add("<div class=\"slim\" data-label=\"");
             AddLabel(Label, name);
-            Add("<input type=\"checkbox\" name=\"");
-            Add(name);
-            Add("\"");
+            Add("\" data-fetcher=\"_"); Add(name); Add("_");
+
+            if (Size != null)
+            {
+                Add("\" data-size=\""); Add(Size);
+            }
+            if (Ratio != null)
+            {
+                Add("\" data-ratio=\""); Add(Ratio);
+            }
+            Add("\">");
+
+            Add("<input type=\"file\" name=\""); Add(name); Add("\"");
             if (Required) Add(" required");
             Add(">");
-            Add("</label>");
+            Add("</div>");
         }
 
         public void TEXTAREA(string name, string v, string Label = null, string Help = null, short Max = 0, short Min = 0, bool ReadOnly = false, bool Required = false)
@@ -837,6 +854,16 @@ namespace Greatbone.Core
             return this;
         }
 
+        public HtmlContent Put(string name, JNumber v)
+        {
+            return this;
+        }
+
+        public HtmlContent Put(string name, IDataInput v)
+        {
+            return this;
+        }
+
         public HtmlContent PutRaw(string name, string raw)
         {
             chain[level].ordinal++;
@@ -904,6 +931,9 @@ namespace Greatbone.Core
                         }
                         Add("</td>");
                     }
+                    break;
+                case CTX_GRID:
+                    Add("<div>");
                     break;
                 case CTX_LIST:
                     break;
@@ -1070,22 +1100,7 @@ namespace Greatbone.Core
             return this;
         }
 
-        public HtmlContent Put(string name, JNumber v)
-        {
-            return this;
-        }
-
         public HtmlContent Put(string name, DateTime v, string Label = null, DateTime Max = default(DateTime), DateTime Min = default(DateTime), int Step = 0, bool ReadOnly = false, bool Required = false)
-        {
-            return this;
-        }
-
-        public HtmlContent Put(string name, NpgsqlPoint v)
-        {
-            return this;
-        }
-
-        public HtmlContent Put(string name, char[] v)
         {
             return this;
         }
@@ -1142,23 +1157,34 @@ namespace Greatbone.Core
             return this;
         }
 
-        public HtmlContent Put(string name, byte[] v)
+        public HtmlContent Put(string name, ArraySegment<byte> v, string Label = null, string Size = null, string Ratio = null, bool Required = false)
         {
-            return this;
-        }
-
-        public HtmlContent Put(string name, ArraySegment<byte> v)
-        {
-            return this;
-        }
-
-        public HtmlContent Put(string name, JObj v)
-        {
-            return this;
-        }
-
-        public HtmlContent Put(string name, JArr v)
-        {
+            switch (chain[level].type)
+            {
+                case CTX_TABLE:
+                    if (chain[level].label)
+                    {
+                        Add("<th>");
+                        AddLabel(Label, name);
+                        Add("</th>");
+                    }
+                    else
+                    {
+                        Add("<td style=\"text-align: right;\">");
+                        Add("</td>");
+                    }
+                    break;
+                case CTX_GRID:
+                    Add("<td style=\"text-align: right;\">");
+                    Add("</td>");
+                    break;
+                case CTX_FORMINP:
+                    Add("<div class=\"\">");
+                    FILE(name, Label, Size, Ratio, Required);
+                    Add("</div>");
+                    break;
+            }
+            chain[level].ordinal++;
             return this;
         }
 
@@ -1232,11 +1258,6 @@ namespace Greatbone.Core
                     break;
             }
             chain[level].ordinal++;
-            return this;
-        }
-
-        public HtmlContent Put(string name, IDataInput v)
-        {
             return this;
         }
 

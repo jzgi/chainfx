@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Collections.Generic;
-using NpgsqlTypes;
 
 namespace Greatbone.Core
 {
@@ -143,6 +142,22 @@ namespace Greatbone.Core
             return this;
         }
 
+        public XmlContent Put(string name, JNumber v)
+        {
+            Add(' ');
+            Add(name);
+            Add('=');
+            Add('"');
+            Add(v);
+            Add('"');
+            return this;
+        }
+
+        public XmlContent Put(string name, IDataInput v)
+        {
+            return this;
+        }
+
         public XmlContent PutRaw(string name, string raw)
         {
             return this;
@@ -214,40 +229,7 @@ namespace Greatbone.Core
             return this;
         }
 
-        public XmlContent Put(string name, JNumber v)
-        {
-            Add(' ');
-            Add(name);
-            Add('=');
-            Add('"');
-            Add(v);
-            Add('"');
-            return this;
-        }
-
         public XmlContent Put(string name, DateTime v, string Label = null, DateTime Max = default(DateTime), DateTime Min = default(DateTime), int Step = 0, bool ReadOnly = false, bool Required = false)
-        {
-            Add(' ');
-            Add(name);
-            Add('=');
-            Add('"');
-            Add(v);
-            Add('"');
-            return this;
-        }
-
-        public XmlContent Put(string name, NpgsqlPoint v)
-        {
-            Add(' ');
-            Add(name);
-            Add('=');
-            Add('"');
-            Add(v);
-            Add('"');
-            return this;
-        }
-
-        public XmlContent Put(string name, char[] v)
         {
             Add(' ');
             Add(name);
@@ -269,12 +251,7 @@ namespace Greatbone.Core
             return this;
         }
 
-        public XmlContent Put(string name, byte[] v)
-        {
-            return this;
-        }
-
-        public XmlContent Put(string name, ArraySegment<byte> v)
+        public XmlContent Put(string name, ArraySegment<byte> v, string Label = null, string Size = null, string Ratio = null, bool Required = false)
         {
             return this;
         }
@@ -347,7 +324,7 @@ namespace Greatbone.Core
             return this;
         }
 
-        public XmlContent Put(string name, Dictionary<string, string> v, string Label = null, string Help = null, bool ReadOnly = false, bool Required = false)
+        public XmlContent Put(string name, Map v, string Label = null, string Help = null, bool ReadOnly = false, bool Required = false)
         {
             return this;
         }
@@ -365,16 +342,6 @@ namespace Greatbone.Core
         public XmlContent Put<D>(string name, List<D> v, int proj = 0, string Label = null, string Help = null, bool ReadOnly = false, bool Required = false) where D : IData
         {
             return this;
-        }
-
-        public XmlContent Put(string name, IDataInput v)
-        {
-            return this;
-        }
-
-        public XmlContent Put(string name, Map v, string Label = null, string Help = null, bool ReadOnly = false, bool Required = false)
-        {
-            throw new NotImplementedException();
         }
 
         public XmlContent Put<D>(string name, Map<D> v, int proj = 0, string Label = null, string Help = null, bool ReadOnly = false, bool Required = false) where D : IData

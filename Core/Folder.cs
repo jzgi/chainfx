@@ -382,7 +382,7 @@ namespace Greatbone.Core
 
             // load file content
             byte[] bytes = File.ReadAllBytes(path);
-            StaticContent cont = new StaticContent(bytes)
+            StaticContent cont = new StaticContent(true, bytes, bytes.Length)
             {
                 Name = filename,
                 Type = ctyp,
