@@ -119,6 +119,7 @@ namespace Greatbone.Core
             Add("</div>");
         }
 
+
         public void FIELDSET_(string legend = null)
         {
             Add("<fieldset class=\"fieldset\">");
@@ -133,6 +134,23 @@ namespace Greatbone.Core
         public void _FIELDSET()
         {
             Add("</fieldset>");
+        }
+
+        public void FORM_TABLE<D>(List<ActionInfo> acts, List<D> lst, int proj = 0) where D : IData
+        {
+            Add("<form>");
+
+            formed = true;
+
+            // buttons
+            if (acts != null)
+            {
+                BUTTONS(acts);
+            }
+
+            TABLE(lst, proj);
+
+            Add("</form>");
         }
 
         public void TABLE<D>(List<D> lst, int proj = 0) where D : IData
@@ -167,6 +185,23 @@ namespace Greatbone.Core
             --level;
         }
 
+        public void FORM_TABLE(List<ActionInfo> actns, IDataInput input, Action<IDataInput, HtmlContent> valve)
+        {
+            Add("<form>");
+
+            formed = true;
+
+            // buttons
+            if (actns != null)
+            {
+                BUTTONS(actns);
+            }
+
+            TABLE(input, valve);
+
+            Add("</form>");
+        }
+
         public void TABLE(IDataInput input, Action<IDataInput, HtmlContent> valve)
         {
             if (input != null)
@@ -192,6 +227,23 @@ namespace Greatbone.Core
             }
         }
 
+        public void FORM_GRID<D>(List<ActionInfo> actns, List<D> lst, int proj = 0) where D : IData
+        {
+            Add("<form>");
+
+            formed = true;
+
+            // buttons
+            if (actns != null)
+            {
+                BUTTONS(actns);
+            }
+
+            GRID(lst, proj);
+
+            Add("</form>");
+        }
+
         public void GRID<D>(List<D> lst, int proj = 0) where D : IData
         {
             chain[++level].type = CTX_GRID;
@@ -212,6 +264,23 @@ namespace Greatbone.Core
                 Add("</div>");
             }
             --level;
+        }
+
+        public void FORM_GRID(List<ActionInfo> actns, IDataInput input, Action<IDataInput, HtmlContent> valve)
+        {
+            Add("<form>");
+
+            formed = true;
+
+            // buttons
+            if (actns != null)
+            {
+                BUTTONS(actns);
+            }
+
+            GRID(input, valve);
+
+            Add("</form>");
         }
 
         public void GRID(IDataInput input, Action<IDataInput, HtmlContent> valve)
@@ -243,6 +312,21 @@ namespace Greatbone.Core
                 Add("<span>没有记录</span>");
                 Add("</div>");
             }
+        }
+
+        public void FORM_LIST<D>(List<ActionInfo> actns, List<D> lst, int proj = 0) where D : IData
+        {
+            Add("<form>");
+
+            formed = true;
+
+            // buttons
+            if (actns != null)
+            {
+                BUTTONS(actns);
+            }
+
+            LIST(lst, proj);
 
             Add("</form>");
         }

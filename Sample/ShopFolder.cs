@@ -1,3 +1,4 @@
+using System.Collections.Generic;
 using System.Threading.Tasks;
 using Greatbone.Core;
 
@@ -9,6 +10,22 @@ namespace Greatbone.Sample
         public ShopFolder(FolderContext fc) : base(fc)
         {
             CreateVar<ShopVarFolder>((tok) => ((User)tok).shopid);
+        }
+
+        // [Shop]
+        public void @default(ActionContext ac)
+        {
+            using (var dc = ac.NewDbContext())
+            {
+                if (dc.Query("SELECT * FROM shops "))
+                {
+                    ac.GiveFolderPage(Parent, 200, dc.ToList<Shop>());
+                }
+                else
+                {
+                    ac.GiveFolderPage(Parent, 200, (List<Shop>)null);
+                }
+            }
         }
 
         // whether an aligned floating point

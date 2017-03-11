@@ -204,7 +204,7 @@ namespace Greatbone.Sample
             null,
             m =>
             {
-                m.GRID(input, valve);
+                m.FORM_GRID(actions, input, valve);
             },
             null,
             pub, maxage);

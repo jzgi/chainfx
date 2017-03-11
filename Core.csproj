@@ -7,12 +7,8 @@
     <AssemblyName>Core</AssemblyName>
     <OutputType>Exe</OutputType>
     <DebugType>portable</DebugType>
-    <GenerateDocumentationFile>true</GenerateDocumentationFile>
     <PackageId>Core</PackageId>
     <RuntimeFrameworkVersion>1.1.1</RuntimeFrameworkVersion>
-    <FileUpgradeFlags>40</FileUpgradeFlags>
-    <UpgradeBackupLocation>D:\Core\Backup1\</UpgradeBackupLocation>
-    <OldToolsVersion>15.0</OldToolsVersion>
   </PropertyGroup>
   <ItemGroup>
     <PackageReference Include="Microsoft.AspNetCore.Server.Kestrel" Version="1.1.1" />
