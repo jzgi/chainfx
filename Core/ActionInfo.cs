@@ -13,33 +13,33 @@ namespace Greatbone.Core
 
         readonly bool async;
 
-        readonly bool arg;
+        readonly bool subscpt;
 
-        // void action(WebActionContext)
+        // void action(ActionContext)
         readonly Action<ActionContext> @do;
 
-        // async Task action(WebActionContext)
+        // async Task action(ActionContext)
         readonly Func<ActionContext, Task> doasync;
 
-        // void action(WebActionContext, string)
-        readonly Action<ActionContext, string> do2;
+        // void action(ActionContext, int)
+        readonly Action<ActionContext, int> do2;
 
-        // async Task action(WebActionContext, string)
-        readonly Func<ActionContext, string, Task> do2async;
+        // async Task action(ActionContext, int)
+        readonly Func<ActionContext, int, Task> do2async;
 
         readonly StateAttribute state;
 
-        internal ActionInfo(Folder folder, MethodInfo mi, bool async, bool arg) : base(mi.Name, mi)
+        internal ActionInfo(Folder folder, MethodInfo mi, bool async, bool subscpt) : base(mi.Name, mi)
         {
             this.folder = folder;
             this.async = async;
-            this.arg = arg;
+            this.subscpt = subscpt;
 
             if (async)
             {
-                if (arg)
+                if (subscpt)
                 {
-                    do2async = (Func<ActionContext, string, Task>)mi.CreateDelegate(typeof(Func<ActionContext, string, Task>), folder);
+                    do2async = (Func<ActionContext, int, Task>)mi.CreateDelegate(typeof(Func<ActionContext, int, Task>), folder);
                 }
                 else
                 {
@@ -48,9 +48,9 @@ namespace Greatbone.Core
             }
             else
             {
-                if (arg)
+                if (subscpt)
                 {
-                    do2 = (Action<ActionContext, string>)mi.CreateDelegate(typeof(Action<ActionContext, string>), folder);
+                    do2 = (Action<ActionContext, int>)mi.CreateDelegate(typeof(Action<ActionContext, int>), folder);
                 }
                 else
                 {
@@ -70,17 +70,17 @@ namespace Greatbone.Core
 
         public bool IsAsync => async;
 
-        public bool HasArg => arg;
+        public bool HasSubscpt => subscpt;
 
         public override Service Service => folder.Service;
 
         public StateAttribute State => state;
 
-        internal void Do(ActionContext ac, String arg)
+        internal void Do(ActionContext ac, int subscpt)
         {
-            if (HasArg)
+            if (HasSubscpt)
             {
-                do2(ac, arg);
+                do2(ac, subscpt);
             }
             else
             {
@@ -88,12 +88,12 @@ namespace Greatbone.Core
             }
         }
 
-        internal async Task DoAsync(ActionContext ac, string arg)
+        internal async Task DoAsync(ActionContext ac, int subscpt)
         {
             // invoke the right action method
-            if (HasArg)
+            if (HasSubscpt)
             {
-                await do2async(ac, arg);
+                await do2async(ac, subscpt);
             }
             else
             {

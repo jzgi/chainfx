@@ -10,7 +10,7 @@ namespace Greatbone.Core
     {
         public UiAttribute() { }
 
-        public UiAttribute(string label, string icon = null, int modal = 0)
+        public UiAttribute(string label, string icon = null, Modal modal = Modal.None)
         {
             Label = label;
             Icon = icon;
@@ -21,6 +21,20 @@ namespace Greatbone.Core
 
         public string Icon { get; set; }
 
-        public int Modal { get; set; }
+        public Modal Modal { get; set; }
+    }
+
+    public enum Modal
+    {
+
+        None = 0,
+
+        Tiny,
+
+        Small,
+
+        Large,
+
+        LargeSelf
     }
 }

@@ -13,7 +13,7 @@ namespace Greatbone.Sample
         }
 
         // [Shop]
-        public void @default(ActionContext ac)
+        public void @default(ActionContext ac, int page)
         {
             using (var dc = ac.NewDbContext())
             {
@@ -83,7 +83,7 @@ namespace Greatbone.Sample
         //
 
         [User(false, User.MARKETG)]
-        [Ui("新建", Modal = 3)]
+        [Ui("新建", Modal = Modal.LargeSelf)]
         public async Task @new(ActionContext ac)
         {
             if (ac.GET)
@@ -96,7 +96,6 @@ namespace Greatbone.Sample
                 var shop = await ac.ReadObjectAsync<Shop>();
 
                 // validate
-
 
                 using (var dc = Service.NewDbContext())
                 {

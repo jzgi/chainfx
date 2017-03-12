@@ -65,12 +65,12 @@ namespace Greatbone.Core
 
         public bool IsAsync => async;
 
-        public bool HasArg => arg;
+        public bool HasSubscpt => arg;
 
         // invoke the right event method
         internal void Do(EventContext ec, string arg)
         {
-            if (HasArg)
+            if (HasSubscpt)
             {
                 do2(ec, arg);
             }
@@ -83,7 +83,7 @@ namespace Greatbone.Core
         // invoke the right event method
         internal async Task DoAsync(EventContext ec, string arg)
         {
-            if (HasArg)
+            if (HasSubscpt)
             {
                 await do2async(ec, arg);
             }

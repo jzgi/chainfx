@@ -24,6 +24,8 @@ namespace Greatbone.Core
 
         public ActionInfo Doer { get; internal set; }
 
+        public int Subscpt { get; internal set; }
+
         public IData Token { get; internal set; }
 
         public string TokenText { get; internal set; }
@@ -82,20 +84,18 @@ namespace Greatbone.Core
 
         public string Uri => Features.Get<IHttpRequestFeature>().RawTarget;
 
-        public string UriPad
+        string querystr;
+
+        public string QueryString
         {
             get
             {
-                IHttpRequestFeature feat = Features.Get<IHttpRequestFeature>();
-                string qstr = feat.QueryString;
-                if (string.IsNullOrEmpty(qstr))
+                if (querystr == null)
                 {
-                    return feat.Path + "?X-SIGNON";
+                    IHttpRequestFeature feat = Features.Get<IHttpRequestFeature>();
+                    string querystr = feat.QueryString;
                 }
-                else
-                {
-                    return feat.Path + qstr + "&X-SIGNON";
-                }
+                return querystr;
             }
         }
 

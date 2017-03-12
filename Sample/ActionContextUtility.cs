@@ -194,7 +194,7 @@ namespace Greatbone.Sample
             m =>
             {
                 List<ActionInfo> actions = folder.GetUiActions(ac);
-                m.FORM_GRID(actions, lst);
+                m.FORM_GRID(ac, actions, lst);
             },
             null,
             pub, maxage);

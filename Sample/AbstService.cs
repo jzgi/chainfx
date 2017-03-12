@@ -100,7 +100,7 @@ namespace Greatbone.Sample
             if (ua != null && ua.Contains("MicroMessenger")) // weixin
             {
                 // redirect the user to weixin authorization page
-                ac.GiveRedirect("https://open.weixin.qq.com/connect/oauth2/authorize?appid=" + weixin.appid + "&redirect_uri=" + ac.UriPad + "&response_type=code&scope=snsapi_userinfo&state=STATE#wechat_redirect");
+                ac.GiveRedirect("https://open.weixin.qq.com/connect/oauth2/authorize?appid=" + weixin.appid + "&redirect_uri=" + ac.Uri + "&response_type=code&scope=snsapi_userinfo&state=STATE#wechat_redirect");
             }
             else
             {

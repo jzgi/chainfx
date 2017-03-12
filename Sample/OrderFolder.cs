@@ -39,7 +39,7 @@ namespace Greatbone.Sample
 
         // [Shop]
         [Ui]
-        public void @default(ActionContext ac, string page)
+        public void @default(ActionContext ac, int page)
         {
             string shopid = ac[1];
             string key = ac[this];
@@ -61,7 +61,7 @@ namespace Greatbone.Sample
             {
                 using (var dc = ac.NewDbContext())
                 {
-                    if (dc.Query("SELECT * FROM orders WHERE shopid = @1 AND status >= 4 ORDER BY id LIMIT 20 OFFSET @2", p => p.Set(shopid).Set(page.ToInt() * 20)))
+                    if (dc.Query("SELECT * FROM orders WHERE shopid = @1 AND status >= 4 ORDER BY id LIMIT 20 OFFSET @2", p => p.Set(shopid).Set(page * 20)))
                     {
                         ac.GiveFolderPage(Parent, 200, dc.ToList<Order>());
                     }

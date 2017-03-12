@@ -39,7 +39,7 @@ namespace Greatbone.Core
         {
             this.fc = fc;
 
-            // init actions
+            // gather actions
             actions = new Roll<ActionInfo>(32);
             Type typ = GetType();
             foreach (MethodInfo mi in typ.GetMethods(BindingFlags.Public | BindingFlags.Instance))
@@ -57,7 +57,7 @@ namespace Greatbone.Core
                 {
                     ai = new ActionInfo(this, mi, async, false);
                 }
-                else if (pis.Length == 2 && pis[0].ParameterType == typeof(ActionContext) && pis[1].ParameterType == typeof(string))
+                else if (pis.Length == 2 && pis[0].ParameterType == typeof(ActionContext) && pis[1].ParameterType == typeof(int))
                 {
                     ai = new ActionInfo(this, mi, async, true);
                 }
@@ -299,38 +299,38 @@ namespace Greatbone.Core
             else // action
             {
                 string name = rsc;
-                string arg = null;
+                int subscpt = 0;
                 int dash = rsc.LastIndexOf('-');
                 if (dash != -1)
                 {
                     name = rsc.Substring(0, dash);
-                    arg = rsc.Substring(dash + 1);
+                    ac.Subscpt = subscpt = rsc.Substring(dash + 1).ToInt();
                 }
-                ActionInfo actn = string.IsNullOrEmpty(name) ? defaction : GetAction(name);
-                if (actn == null)
+                ActionInfo act = string.IsNullOrEmpty(name) ? defaction : GetAction(name);
+                if (act == null)
                 {
                     ac.Give(404); // not found
                     return;
                 }
 
-                ac.Doer = actn;
+                ac.Doer = act;
 
                 // access check
-                if (!actn.DoAuthorize(ac)) throw AuthorizeEx;
+                if (!act.DoAuthorize(ac)) throw AuthorizeEx;
 
                 // try in cache
 
                 // work before
-                WorkAttribute awrk = actn.Work;
+                WorkAttribute awrk = act.Work;
                 if (awrk != null && awrk.Before) { if (awrk.IsAsync) await awrk.WorkAsync(ac); else awrk.Work(ac); }
                 // method invocation
-                if (actn.IsAsync)
+                if (act.IsAsync)
                 {
-                    await actn.DoAsync(ac, arg); // invoke action method
+                    await act.DoAsync(ac, subscpt); // invoke action method
                 }
                 else
                 {
-                    actn.Do(ac, arg);
+                    act.Do(ac, subscpt);
                 }
                 // work after
                 if (awrk != null && !awrk.Before) { if (awrk.IsAsync) await awrk.WorkAsync(ac); else awrk.Work(ac); }

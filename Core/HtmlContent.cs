@@ -230,7 +230,7 @@ namespace Greatbone.Core
             }
         }
 
-        public void FORM_GRID<D>(List<ActionInfo> actions, List<D> lst, int proj = 0) where D : IData
+        public void FORM_GRID<D>(ActionContext ac, List<ActionInfo> actions, List<D> lst, int proj = 0) where D : IData
         {
             Add("<form>");
 
@@ -244,7 +244,25 @@ namespace Greatbone.Core
                 Add("</div>");
             }
 
+            // grid
             GRID(lst, proj);
+
+            // pagination
+            ActionInfo act = ac.Doer;
+            if (act.HasSubscpt)
+            {
+                Add("<div class=\"row\">");
+                Add("<ul class=\"pagination text-center\" role=\"navigation\">");
+                int subscript = ac.Subscpt;
+                Add("<li class=\"pagination-previous disabled\">Previous</li>");
+                for (int i = 0; i < subscript; i++)
+                {
+                    Add("<li><a href=\""); Add(act.Name); Add('-'); Add(subscript); Add(ac.QueryString); Add("\">"); Add(i); Add("</a></li>");
+                }
+                Add("<li class=\"pagination-next disabled\">Next</li>");
+                Add("</ul>");
+                Add("</div>");
+            }
 
             Add("</form>");
         }
@@ -779,10 +797,10 @@ namespace Greatbone.Core
 
             UiAttribute ui = actn.Ui;
 
-            int modal = ui?.Modal ?? 0;
+            Modal modal = ui?.Modal ?? Modal.None;
             if (modal > 0)
             {
-                Add(" onclick=\"dialog(this,"); Add(modal); Add("); return false;\"");
+                Add(" onclick=\"dialog(this,"); Add((int)modal); Add("); return false;\"");
             }
 
             StateAttribute state = actn.State;
