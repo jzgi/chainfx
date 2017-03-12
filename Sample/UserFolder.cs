@@ -16,7 +16,7 @@ namespace Greatbone.Sample
             {
                 if (dc.Query("SELECT * FROM users"))
                 {
-                    ac.GiveFolderPage(this, 200, dc.ToList<User>()); // ok
+                    ac.GiveFolderPage(Parent, 200, dc.ToList<User>()); // ok
                 }
                 else
                 {
@@ -25,13 +25,12 @@ namespace Greatbone.Sample
             }
         }
 
-        [User(false, User.MARKETG)]
+        [Ui]
         public void srch(ActionContext ac)
         {
         }
 
-        /// aggregate users information.
-        ///
+        [Ui]
         public void aggr(ActionContext ac)
         {
         }

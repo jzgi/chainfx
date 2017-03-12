@@ -27,6 +27,7 @@ namespace Greatbone.Sample
             cont.Add("<meta name=\"viewport\" content=\"width=device-width, initial-scale=1.0\">");
             cont.Add("<link rel=\"stylesheet\" href=\"//cdn.bootcss.com/foundation/6.3.1/css/foundation.min.css\">");
             cont.Add("<link rel=\"stylesheet\" href=\"//cdn.bootcss.com/foundicons/3.0.0/foundation-icons.min.css\">");
+            cont.Add("<link rel=\"stylesheet\" href=\"/slim.min.css\">");
             cont.Add("<link rel=\"stylesheet\" href=\"/app.css\">");
             cont.Add("</head>");
 
@@ -53,8 +54,9 @@ namespace Greatbone.Sample
             // zurb foundation
             cont.Add("<script src=\"//cdn.bootcss.com/jquery/3.1.1/jquery.min.js\"></script>");
             cont.Add("<script src=\"//cdn.bootcss.com/foundation/6.3.1/js/foundation.min.js\"></script>");
+            cont.Add("<script src=\"/slim.jquery.min.js\"></script>");
             cont.Add("<script src=\"/app.js\"></script>");
-            cont.Add("<script>$(document).foundation();</script>");
+            cont.Add("<script>$(document).foundation();$('body').slim('parse');</script>");
 
             cont.Add("</body>");
             cont.Add("</html>");

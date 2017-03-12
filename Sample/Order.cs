@@ -57,7 +57,7 @@ namespace Greatbone.Sample
 
         internal string payid; // payment id
 
-        internal bool delivery;
+        internal bool deliver;
 
         internal DateTime delivered;
 
@@ -82,7 +82,7 @@ namespace Greatbone.Sample
             }
             i.Get(nameof(total), ref total);
 
-            i.Get(nameof(delivery), ref delivery);
+            i.Get(nameof(deliver), ref deliver);
             i.Get(nameof(delivered), ref delivered);
             i.Get(nameof(state), ref state);
             i.Get(nameof(status), ref status);
@@ -106,7 +106,7 @@ namespace Greatbone.Sample
             }
             o.Put(nameof(total), total);
 
-            o.Put(nameof(delivery), delivery, Opt: b => b ? "派送" : "自提");
+            o.Put(nameof(deliver), deliver, Opt: b => b ? "派送" : "自提");
             o.Put(nameof(delivered), delivered);
             o.Put(nameof(state), state);
             o.Put(nameof(status), status, Opt: STATUS);

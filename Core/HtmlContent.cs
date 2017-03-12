@@ -230,17 +230,17 @@ namespace Greatbone.Core
             }
         }
 
-        public void FORM_GRID<D>(List<ActionInfo> acts, List<D> lst, int proj = 0) where D : IData
+        public void FORM_GRID<D>(List<ActionInfo> actions, List<D> lst, int proj = 0) where D : IData
         {
             Add("<form>");
 
             formed = true;
 
             // buttons
-            if (acts != null)
+            if (actions != null)
             {
                 Add("<div class=\"row\">");
-                BUTTONS(acts);
+                BUTTONS(actions);
                 Add("</div>");
             }
 
@@ -273,17 +273,17 @@ namespace Greatbone.Core
             --level;
         }
 
-        public void FORM_GRID(List<ActionInfo> acts, IDataInput input, Action<IDataInput, HtmlContent> valve)
+        public void FORM_GRID(List<ActionInfo> actions, IDataInput input, Action<IDataInput, HtmlContent> valve)
         {
             Add("<form>");
 
             formed = true;
 
             // buttons
-            if (acts != null)
+            if (actions != null)
             {
                 Add("<div class=\"row\">");
-                BUTTONS(acts);
+                BUTTONS(actions);
                 Add("</div>");
             }
 
@@ -323,17 +323,17 @@ namespace Greatbone.Core
             }
         }
 
-        public void FORM_LIST<D>(List<ActionInfo> acts, List<D> lst, int proj = 0) where D : IData
+        public void FORM_LIST<D>(List<ActionInfo> actions, List<D> lst, int proj = 0) where D : IData
         {
             Add("<form>");
 
             formed = true;
 
             // buttons
-            if (acts != null)
+            if (actions != null)
             {
                 Add("<div class=\"row\">");
-                BUTTONS(acts);
+                BUTTONS(actions);
                 Add("</div>");
             }
 
