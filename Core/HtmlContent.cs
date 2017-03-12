@@ -38,7 +38,7 @@ namespace Greatbone.Core
         // outputing context chain
         Ctx[] chain = new Ctx[DEPTH];
 
-        int level; // current level
+        int level = -1; // current level
 
         ///
         public HtmlContent(bool sendable, bool pooled, int capacity = 16 * 1024) : base(sendable, pooled, capacity)
@@ -144,7 +144,9 @@ namespace Greatbone.Core
             // buttons
             if (acts != null)
             {
+                Add("<div class=\"row\">");
                 BUTTONS(acts);
+                Add("</div>");
             }
 
             TABLE(lst, proj);
@@ -184,16 +186,18 @@ namespace Greatbone.Core
             --level;
         }
 
-        public void FORM_TABLE(List<ActionInfo> actns, IDataInput input, Action<IDataInput, HtmlContent> valve)
+        public void FORM_TABLE(List<ActionInfo> acts, IDataInput input, Action<IDataInput, HtmlContent> valve)
         {
             Add("<form>");
 
             formed = true;
 
             // buttons
-            if (actns != null)
+            if (acts != null)
             {
-                BUTTONS(actns);
+                Add("<div class=\"row\">");
+                BUTTONS(acts);
+                Add("</div>");
             }
 
             TABLE(input, valve);
@@ -226,16 +230,18 @@ namespace Greatbone.Core
             }
         }
 
-        public void FORM_GRID<D>(List<ActionInfo> actns, List<D> lst, int proj = 0) where D : IData
+        public void FORM_GRID<D>(List<ActionInfo> acts, List<D> lst, int proj = 0) where D : IData
         {
             Add("<form>");
 
             formed = true;
 
             // buttons
-            if (actns != null)
+            if (acts != null)
             {
-                BUTTONS(actns);
+                Add("<div class=\"row\">");
+                BUTTONS(acts);
+                Add("</div>");
             }
 
             GRID(lst, proj);
@@ -248,13 +254,15 @@ namespace Greatbone.Core
             chain[++level].type = CTX_GRID;
             if (lst != null)
             {
+                Add("<div class=\"expanded row\">");
                 for (int i = 0; i < lst.Count; i++)
                 {
-                    Add("<div class=\"row\">");
+                    Add("<div class=\"small-12 medium-6 large-4 columns\">");
                     chain[level].ordinal = 0; // reset ordical
                     lst[i].WriteData(this, proj);
                     Add("</div>");
                 }
+                Add("</div>");
             }
             else
             {
@@ -265,16 +273,18 @@ namespace Greatbone.Core
             --level;
         }
 
-        public void FORM_GRID(List<ActionInfo> actns, IDataInput input, Action<IDataInput, HtmlContent> valve)
+        public void FORM_GRID(List<ActionInfo> acts, IDataInput input, Action<IDataInput, HtmlContent> valve)
         {
             Add("<form>");
 
             formed = true;
 
             // buttons
-            if (actns != null)
+            if (acts != null)
             {
-                BUTTONS(actns);
+                Add("<div class=\"row\">");
+                BUTTONS(acts);
+                Add("</div>");
             }
 
             GRID(input, valve);
@@ -313,16 +323,18 @@ namespace Greatbone.Core
             }
         }
 
-        public void FORM_LIST<D>(List<ActionInfo> actns, List<D> lst, int proj = 0) where D : IData
+        public void FORM_LIST<D>(List<ActionInfo> acts, List<D> lst, int proj = 0) where D : IData
         {
             Add("<form>");
 
             formed = true;
 
             // buttons
-            if (actns != null)
+            if (acts != null)
             {
-                BUTTONS(actns);
+                Add("<div class=\"row\">");
+                BUTTONS(acts);
+                Add("</div>");
             }
 
             LIST(lst, proj);
@@ -762,7 +774,7 @@ namespace Greatbone.Core
 
         public void BUTTON(ActionInfo actn)
         {
-            Add("<button class=\"button primary\"");
+            Add("<button class=\"button alert\"");
             Add(" formaction=\""); Add(actn.Name); Add("\" formmethod=\"post\"");
 
             UiAttribute ui = actn.Ui;
@@ -888,9 +900,9 @@ namespace Greatbone.Core
                         Add("</td>");
                     }
                     break;
-                case CTX_LIST:
-                    break;
                 case CTX_GRID:
+                    break;
+                case CTX_LIST:
                     break;
                 case CTX_FORMINP:
                     Add("<div class=\"pure-u-1 pure-u-md-1-2\">");
@@ -933,7 +945,19 @@ namespace Greatbone.Core
                     }
                     break;
                 case CTX_GRID:
-                    Add("<div>");
+                    Add("<div class=\"row\">");
+                    Add("<div class=\"small-3 columns\">");
+                    if (formed && level == 0 && chain[level].ordinal == 0)
+                    {
+                        Add("<input type=\"checkbox\" name=\"pk\" value=\""); Add(v); Add("\">");
+                    }
+                    else
+                    {
+                        AddLabel(Label, name);
+                    }
+                    Add("</div>");
+                    Add("<div class=\"small-9 columns\">"); if (Opt != null) Add(Opt[v]); else Add(v); Add("</div>");
+                    Add("</div>");
                     break;
                 case CTX_LIST:
                     break;
@@ -961,7 +985,7 @@ namespace Greatbone.Core
                     else
                     {
                         Add("<td style=\"text-align: right;\">");
-                        if (formed && level == 1)
+                        if (formed && level == 0 && chain[level].ordinal == 0)
                         {
                             Add("<input type=\"checkbox\" name=\"pk\">");
                         }
@@ -969,9 +993,22 @@ namespace Greatbone.Core
                         Add("</td>");
                     }
                     break;
-                case CTX_LIST:
-                    break;
                 case CTX_GRID:
+                    Add("<div class=\"row\">");
+                    Add("<div class=\"small-3 columns\">");
+                    if (formed && level == 0)
+                    {
+                        Add("<input type=\"checkbox\" name=\"pk\" value=\""); Add(v); Add("\">");
+                    }
+                    else
+                    {
+                        AddLabel(Label, name);
+                    }
+                    Add("</div>");
+                    Add("<div class=\"small-9 columns\">"); Add(v); Add("</div>");
+                    Add("</div>");
+                    break;
+                case CTX_LIST:
                     break;
                 case CTX_FORMINP:
                     Add("<div class=\"pure-u-1 pure-u-md-1-2\">");
@@ -1006,12 +1043,22 @@ namespace Greatbone.Core
                         Add("</td>");
                     }
                     break;
-                case CTX_LIST:
-                    Add("<div class=\"pure-u-1 pure-u-md-1-2\">");
-                    NUMBER(name, v);
+                case CTX_GRID:
+                    Add("<div class=\"row\">");
+                    Add("<div class=\"small-3 columns\">");
+                    if (formed && level == 0 && chain[level].ordinal == 0)
+                    {
+                        Add("<input type=\"checkbox\" name=\"pk\" value=\""); Add(v); Add("\">");
+                    }
+                    else
+                    {
+                        AddLabel(Label, name);
+                    }
+                    Add("</div>");
+                    Add("<div class=\"small-9 columns\">"); Add(v); Add("</div>");
                     Add("</div>");
                     break;
-                case CTX_GRID:
+                case CTX_LIST:
                     Add("<div class=\"pure-u-1 pure-u-md-1-2\">");
                     NUMBER(name, v);
                     Add("</div>");
@@ -1044,15 +1091,13 @@ namespace Greatbone.Core
                         Add("</td>");
                     }
                     break;
-                case CTX_LIST:
-                    Add("<td style=\"text-align: right;\">");
-                    Add(v);
-                    Add("</td>");
-                    break;
                 case CTX_GRID:
-                    Add("<td style=\"text-align: right;\">");
-                    Add(v);
-                    Add("</td>");
+                    Add("<div class=\"row\">");
+                    Add("<div class=\"small-3 columns\">"); AddLabel(Label, name); Add("</div>");
+                    Add("<div class=\"small-9 columns\">"); Add(v); Add("</div>");
+                    Add("</div>");
+                    break;
+                case CTX_LIST:
                     break;
                 case CTX_FORMINP:
                     Add("<div class=\"pure-u-1 pure-u-md-1-2\">");
@@ -1081,12 +1126,13 @@ namespace Greatbone.Core
                         Add("</td>");
                     }
                     break;
-                case CTX_LIST:
-                    Add("<td style=\"text-align: right;\">");
-                    Add(v);
-                    Add("</td>");
-                    break;
                 case CTX_GRID:
+                    Add("<div class=\"row\">");
+                    Add("<div class=\"small-3 columns\">"); AddLabel(Label, name); Add("</div>");
+                    Add("<div class=\"small-9 columns\">"); Add(v); Add("</div>");
+                    Add("</div>");
+                    break;
+                case CTX_LIST:
                     Add("<td style=\"text-align: right;\">");
                     Add(v);
                     Add("</td>");
@@ -1113,9 +1159,7 @@ namespace Greatbone.Core
                 case CTX_TABLE:
                     if (ctx.label)
                     {
-                        Add("<th>");
-                        AddLabel(Label, name);
-                        Add("</th>");
+                        Add("<th>"); AddLabel(Label, name); Add("</th>");
                     }
                     else
                     {
@@ -1128,10 +1172,22 @@ namespace Greatbone.Core
                         Add("</td>");
                     }
                     break;
-                case CTX_LIST:
-                    Add(v);
-                    break;
                 case CTX_GRID:
+                    Add("<div class=\"row\">");
+                    Add("<div class=\"small-3 columns\">");
+                    if (formed && level == 0 && chain[level].ordinal == 0)
+                    {
+                        Add("<input type=\"checkbox\" name=\"pk\" value=\""); Add(v); Add("\">");
+                    }
+                    else
+                    {
+                        AddLabel(Label, name);
+                    }
+                    Add("</div>");
+                    Add("<div class=\"small-9 columns\">"); Add(v); Add("</div>");
+                    Add("</div>");
+                    break;
+                case CTX_LIST:
                     Add(v);
                     break;
                 case CTX_FORMINP:
@@ -1175,8 +1231,6 @@ namespace Greatbone.Core
                     }
                     break;
                 case CTX_GRID:
-                    Add("<td style=\"text-align: right;\">");
-                    Add("</td>");
                     break;
                 case CTX_FORMINP:
                     Add("<div class=\"\">");

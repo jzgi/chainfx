@@ -27,6 +27,7 @@ namespace Greatbone.Sample
             cont.Add("<meta name=\"viewport\" content=\"width=device-width, initial-scale=1.0\">");
             cont.Add("<link rel=\"stylesheet\" href=\"//cdn.bootcss.com/foundation/6.3.1/css/foundation.min.css\">");
             cont.Add("<link rel=\"stylesheet\" href=\"//cdn.bootcss.com/foundicons/3.0.0/foundation-icons.min.css\">");
+            cont.Add("<link rel=\"stylesheet\" href=\"/app.css\">");
             cont.Add("</head>");
 
             cont.Add("<body>");
