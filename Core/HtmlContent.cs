@@ -386,7 +386,7 @@ namespace Greatbone.Core
             Add("</div>");
         }
 
-        public void FORM(ActionInfo actn, Action<HtmlContent> inner)
+        public void FORM(ActionInfo act, Action<HtmlContent> inner)
         {
             Add("<form class=\"pure-form pure-g\">");
 
@@ -395,10 +395,18 @@ namespace Greatbone.Core
             Add("</form>");
         }
 
-        public void FORMINP(IData obj, int proj = 0)
+        public void FORM_INP(ActionInfo act, IData obj, int proj = 0)
         {
-            chain[level].type = CTX_FORMINP;
+            chain[++level].type = CTX_FORMINP;
+            Add("<form method=\"post");
+            if (act != null)
+            {
+                Add("\" action=\""); Add(act.Name);
+            }
+            Add("\">");
             obj.WriteData(this, proj);
+            Add("</form>");
+            --level;
         }
 
         public void HIDDEN(string name, string value)
@@ -828,7 +836,35 @@ namespace Greatbone.Core
             for (int i = 0; i < actns.Count; i++)
             {
                 ActionInfo act = actns[i];
-                BUTTON(act);
+                Add("<button class=\"button primary\" style=\"margin-right: 5px;\" name=\""); Add(act.Name);
+                Add("\" formaction=\""); Add(act.Name); Add("\" formmethod=\"post\"");
+
+                UiAttribute ui = act.Ui;
+
+                int modal = ui?.Modal ?? 0;
+                if (modal > 0)
+                {
+                    Add(" onclick=\"dialog(this,"); Add(modal); Add("); return false;\"");
+                }
+
+                StateAttribute state = act.State;
+                if (state != null)
+                {
+                    Add(" data-if=\""); Add(state.If); Add("\"");
+                    Add(" data-unif=\""); Add(state.Unif); Add("\"");
+                }
+                Add(">");
+                // label and ison
+                string icon = ui?.Icon;
+                if (icon != null)
+                {
+                    Add("<i class=\"");
+                    Add(icon);
+                    Add("\"></i>");
+                }
+                AddLabel(ui?.Label, act.Name);
+
+                Add("</button>");
             }
         }
 

@@ -79,7 +79,7 @@ namespace Greatbone.Sample
             pub, maxage);
         }
 
-        public static void GiveForm(this ActionContext ac, int status, IData obj, int proj = 0, bool? pub = null, int maxage = 60)
+        public static void GiveModal(this ActionContext ac, int status, IData obj, int proj = 0, bool? pub = null, int maxage = 60)
         {
             ac.GiveHtml(status,
             null,
@@ -91,7 +91,33 @@ namespace Greatbone.Sample
                 m.BUTTON(ac.Doer);
                 m.Add("</form>");
             },
+            f =>
+            {
+                f.Add("<script>");
+                f.Add("$(document).ready(function(){");
+                f.Add("$('#dynadlg > button).disabled = false;'");
+                f.Add("});");
+                f.Add("</script>");
+            },
+            pub, maxage);
+        }
+
+        public static void GiveModalForm(this ActionContext ac, int status, IData obj, int proj = 0, bool? pub = null, int maxage = 60)
+        {
+            ac.GiveHtml(status,
             null,
+            m =>
+            {
+                m.FORM_INP(ac.Doer, obj, proj);
+            },
+            f =>
+            {
+                f.Add("<script>");
+                f.Add("$(document).ready(function(){");
+                f.Add("$('#dynadlg > button).disabled = false;'");
+                f.Add("});");
+                f.Add("</script>");
+            },
             pub, maxage);
         }
 

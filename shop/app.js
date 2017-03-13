@@ -8,9 +8,9 @@ function dialog(btn, modal) {
 
     var html = '<div id="dynadlg" class="' + sizg + ' reveal"  data-reveal data-close-on-click="false">'
         + '<h3>' + btn.innerHTML + ' </h3>'
-        + '<button class="close-button" data-close type="button"><span aria-hidden="true">&times;</span></button>'
-        + '<iframe src="' + btn.name + '" style="width: 100%; height: 80%"></iframe>'
-        + '<button onclick="onok(' + modal + ');">确定</botton>'
+        + '<button class="close-button" type="button" onclick="oncancel(this);"><span aria-hidden="true">&times;</span></button>'
+        + '<div style="height: 600px"><iframe src="' + btn.name + '" style="width: 100%; height: 100%"></iframe></div>'
+        + '<button onclick="onok(this,' + modal + ');" disabled>确定</botton>'
         + '</div>';
 
     var dive = $(html);
@@ -30,10 +30,13 @@ function onok(btn, modal) {
     var dlge = $('#dynadlg');
 
     if (modal == 1) { // standard mode, submit or return
-        var iframe = dlge.find('iframe')[0]
+        var iframe = dlge.find('iframe');
         var form = iframe.contents().find('form');
-        if (form) {
-
+        if (form.length != 0) {
+            form.first().submit();
+        } else {
+            location.reload();
+            return;
         }
     } else if (modal == 2) { // prompt mode, merge to the parent and submit
 
@@ -41,6 +44,15 @@ function onok(btn, modal) {
 
     }
 
+    // clean up the dialog
+    dlge.foundation('close');
+    dlge.foundation('destroy');
+    dlge.remove();
+}
+
+// when clicked on the OK button
+function oncancel(btn) {
+    var dlge = $(btn).parent();
     // clean up the dialog
     dlge.foundation('close');
     dlge.foundation('destroy');

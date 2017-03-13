@@ -89,7 +89,7 @@ namespace Greatbone.Sample
             if (ac.GET)
             {
                 Shop o = Shop.Empty;
-                ac.GiveForm(200, o);
+                ac.GiveModalForm(200, o);
             }
             else // post
             {
