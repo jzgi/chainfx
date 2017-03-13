@@ -10,7 +10,7 @@ namespace Greatbone.Core
     {
         public UiAttribute() { }
 
-        public UiAttribute(string label, string icon = null, Modal modal = Modal.None)
+        public UiAttribute(string label, string icon = null, int modal = 0)
         {
             Label = label;
             Icon = icon;
@@ -21,20 +21,11 @@ namespace Greatbone.Core
 
         public string Icon { get; set; }
 
-        public Modal Modal { get; set; }
-    }
-
-    public enum Modal
-    {
-
-        None = 0,
-
-        Tiny,
-
-        Small,
-
-        Large,
-
-        LargeSelf
+        ///
+        /// 1. standard mode, submit or return
+        /// 2. prompt mode, merge to the parent and submit
+        /// 3. picker mode
+        ///
+        public int Modal { get; set; }
     }
 }

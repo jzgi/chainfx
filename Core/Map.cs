@@ -42,5 +42,7 @@ namespace Greatbone.Core
         public bool Pick { get; set; }
 
         public bool Plus { get; set; }
+
+        public bool Large { get; set; }
     }
 }

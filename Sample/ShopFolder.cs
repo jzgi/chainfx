@@ -83,7 +83,7 @@ namespace Greatbone.Sample
         //
 
         [User(false, User.MARKETG)]
-        [Ui("新建", Modal = Modal.LargeSelf)]
+        [Ui("新建", Modal = 1)]
         public async Task @new(ActionContext ac)
         {
             if (ac.GET)

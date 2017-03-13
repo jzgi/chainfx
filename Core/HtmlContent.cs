@@ -792,15 +792,15 @@ namespace Greatbone.Core
 
         public void BUTTON(ActionInfo act)
         {
-            Add("<button class=\"button alert\"");
+            Add("<button class=\"button primary\" style=\"margin-right: 5px; border-radius: 15%\"");
             Add(" formaction=\""); Add(act.Name); Add("\" formmethod=\"post\"");
 
             UiAttribute ui = act.Ui;
 
-            Modal modal = ui?.Modal ?? Modal.None;
+            int modal = ui?.Modal ?? 0;
             if (modal > 0)
             {
-                Add(" onclick=\"dialog(this,"); Add((int)modal); Add("); return false;\"");
+                Add(" onclick=\"dialog(this,"); Add(modal); Add("); return false;\"");
             }
 
             StateAttribute state = act.State;
