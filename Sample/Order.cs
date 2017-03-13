@@ -19,7 +19,7 @@ namespace Greatbone.Sample
             CANCELLED = 8;
 
         // status
-        static readonly Set<short> STATUS = new Set<short>
+        static readonly Map<short> STATUS = new Map<short>
         {
             [0] = null,
             [1] = "已付款",

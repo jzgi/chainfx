@@ -20,15 +20,23 @@ namespace Greatbone.Core
 
         public Service Service { get; set; }
 
+        /// Whether this is requested from a cluster member.
+        ///
+        public bool Cluster { get; internal set; }
+
         public Folder Folder { get; internal set; }
 
         public ActionInfo Doer { get; internal set; }
 
-        public int Subscpt { get; internal set; }
+        public int Subscript { get; internal set; }
 
-        public IData Token { get; internal set; }
+        /// The decrypted/decoded principal object.
+        ///
+        public IData Principal { get; internal set; }
 
-        public string TokenText { get; internal set; }
+        /// A token string.
+        ///
+        public string Token { get; internal set; }
 
         // levels of keys along the URI path
         Segment[] segments;
@@ -82,7 +90,19 @@ namespace Greatbone.Core
 
         public bool POST => "POST".Equals(Request.Method);
 
-        public string Uri => Features.Get<IHttpRequestFeature>().RawTarget;
+        string uri;
+
+        public string Uri
+        {
+            get
+            {
+                if (uri == null)
+                {
+                    uri = Features.Get<IHttpRequestFeature>().RawTarget;
+                }
+                return uri;
+            }
+        }
 
         string querystr;
 
@@ -92,8 +112,7 @@ namespace Greatbone.Core
             {
                 if (querystr == null)
                 {
-                    IHttpRequestFeature feat = Features.Get<IHttpRequestFeature>();
-                    string querystr = feat.QueryString;
+                    string querystr = Features.Get<IHttpRequestFeature>().QueryString;
                 }
                 return querystr;
             }
@@ -116,8 +135,7 @@ namespace Greatbone.Core
             {
                 if (query == null)
                 {
-                    string qstr = Request.QueryString.Value;
-                    FormParse p = new FormParse(qstr);
+                    FormParse p = new FormParse(QueryString);
                     query = p.Parse(); // non-null
                 }
                 return query;
@@ -206,9 +224,7 @@ namespace Greatbone.Core
                     // reading
                     int len = (int)clen;
                     buffer = BufferUtility.ByteBuffer(len); // borrow from the pool
-                    while ((count += await Request.Body.ReadAsync(buffer, count, (len - count))) < len)
-                    {
-                    }
+                    while ((count += await Request.Body.ReadAsync(buffer, count, (len - count))) < len) { }
                 }
             }
             return new ArraySegment<byte>(buffer, 0, count);
@@ -225,9 +241,7 @@ namespace Greatbone.Core
                 {
                     int len = (int)clen;
                     buffer = BufferUtility.ByteBuffer(len); // borrow from the pool
-                    while ((count += await Request.Body.ReadAsync(buffer, count, (len - count))) < len)
-                    {
-                    }
+                    while ((count += await Request.Body.ReadAsync(buffer, count, (len - count))) < len) { }
                 }
                 // parse
                 string ctyp = Header("Content-Type");
@@ -247,9 +261,7 @@ namespace Greatbone.Core
                 {
                     int len = (int)clen;
                     buffer = BufferUtility.ByteBuffer(len); // borrow from the pool
-                    while ((count += await Request.Body.ReadAsync(buffer, count, (len - count))) < len)
-                    {
-                    }
+                    while ((count += await Request.Body.ReadAsync(buffer, count, (len - count))) < len) { }
                 }
                 // parse
                 string ctyp = Header("Content-Type");
@@ -274,9 +286,7 @@ namespace Greatbone.Core
                 {
                     int len = (int)clen;
                     buffer = BufferUtility.ByteBuffer(len); // borrow from the pool
-                    while ((count += await Request.Body.ReadAsync(buffer, count, (len - count))) < len)
-                    {
-                    }
+                    while ((count += await Request.Body.ReadAsync(buffer, count, (len - count))) < len) { }
                 }
                 // parse
                 string ctyp = Header("Content-Type");
@@ -296,9 +306,7 @@ namespace Greatbone.Core
                 {
                     int len = (int)clen;
                     buffer = BufferUtility.ByteBuffer(len); // borrow from the pool
-                    while ((count += await Request.Body.ReadAsync(buffer, count, (len - count))) < len)
-                    {
-                    }
+                    while ((count += await Request.Body.ReadAsync(buffer, count, (len - count))) < len) { }
                 }
                 // parse
                 string ctyp = Header("Content-Type");

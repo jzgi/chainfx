@@ -32,7 +32,7 @@ namespace Greatbone.Sample
         protected internal override bool Check(ActionContext ac)
         {
 
-            User tok = ac.Token as User;
+            User tok = ac.Principal as User;
 
             if (tok == null) return false;
 

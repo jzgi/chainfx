@@ -269,8 +269,8 @@ namespace Greatbone.Core
             {
                 if (key.Length == 0) // resolve varkey
                 {
-                    if (ac.Token == null) throw AuthorizeEx;
-                    if ((key = GetVarKey(ac.Token)) == null) return null;
+                    if (ac.Principal == null) throw AuthorizeEx;
+                    if ((key = GetVarKey(ac.Principal)) == null) return null;
                 }
                 ac.Chain(key, varfolder);
                 return varfolder.ResolveFolder(ref relative, ac);
@@ -304,7 +304,7 @@ namespace Greatbone.Core
                 if (dash != -1)
                 {
                     name = rsc.Substring(0, dash);
-                    ac.Subscpt = subscpt = rsc.Substring(dash + 1).ToInt();
+                    ac.Subscript = subscpt = rsc.Substring(dash + 1).ToInt();
                 }
                 ActionInfo act = string.IsNullOrEmpty(name) ? defaction : GetAction(name);
                 if (act == null)

@@ -1,6 +1,5 @@
 using System;
 using System.Collections.Generic;
-using NpgsqlTypes;
 
 namespace Greatbone.Core
 {
@@ -89,11 +88,6 @@ namespace Greatbone.Core
             rest = 0;
         }
 
-        public override string ToString()
-        {
-            return new string(buf, 0, count);
-        }
-
         public bool Get(string name, ref bool v)
         {
             throw new NotImplementedException();
@@ -129,32 +123,12 @@ namespace Greatbone.Core
             throw new NotImplementedException();
         }
 
-        public bool Get(string name, ref NpgsqlPoint v)
-        {
-            throw new NotImplementedException();
-        }
-
-        public bool Get(string name, ref char[] v)
-        {
-            throw new NotImplementedException();
-        }
-
         public bool Get(string name, ref string v)
         {
             throw new NotImplementedException();
         }
 
-        public bool Get(string name, ref byte[] v)
-        {
-            throw new NotImplementedException();
-        }
-
         public bool Get(string name, ref ArraySegment<byte> v)
-        {
-            throw new NotImplementedException();
-        }
-
-        public bool Get<D>(string name, ref D v, int proj = 0) where D : IData, new()
         {
             throw new NotImplementedException();
         }
@@ -175,6 +149,16 @@ namespace Greatbone.Core
         }
 
         public bool Get(string name, ref string[] v)
+        {
+            throw new NotImplementedException();
+        }
+
+        public bool Get(string name, ref Map v)
+        {
+            throw new NotImplementedException();
+        }
+
+        public bool Get<D>(string name, ref D v, int proj = 0) where D : IData, new()
         {
             throw new NotImplementedException();
         }
@@ -240,14 +224,9 @@ namespace Greatbone.Core
             return true;
         }
 
-        public bool Get(string name, ref Map v)
+        public override string ToString()
         {
-            throw new NotImplementedException();
-        }
-
-        public bool Get<D>(string name, ref Map<D> v, int proj = 0) where D : IData, new()
-        {
-            throw new NotImplementedException();
+            return new string(buf, 0, count);
         }
     }
 }

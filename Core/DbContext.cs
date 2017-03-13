@@ -446,17 +446,6 @@ namespace Greatbone.Core
             return false;
         }
 
-        public bool Get(string name, ref char[] v)
-        {
-            int ord = name == null ? ordinal++ : reader.GetOrdinal(name);
-            if (!reader.IsDBNull(ord))
-            {
-                v = reader.GetFieldValue<char[]>(ord);
-                return true;
-            }
-            return false;
-        }
-
         public bool Get(string name, ref string v)
         {
             int ord = name == null ? ordinal++ : reader.GetOrdinal(name);
@@ -465,30 +454,6 @@ namespace Greatbone.Core
                 v = reader.GetString(ord);
                 return true;
             }
-            return false;
-        }
-
-        public bool Get(string name, ref byte[] v)
-        {
-            int ord = name == null ? ordinal++ : reader.GetOrdinal(name);
-            try
-            {
-                if (!reader.IsDBNull(ord))
-                {
-                    int len;
-                    if ((len = (int)reader.GetBytes(ord, 0, null, 0, 0)) > 0)
-                    {
-                        // get the number of bytes that are available to read.
-                        v = new byte[len];
-                        reader.GetBytes(ord, 0, v, 0, len); // read data into the buffer
-                        return true;
-                    }
-                }
-            }
-            catch
-            {
-            }
-
             return false;
         }
 
@@ -514,6 +479,11 @@ namespace Greatbone.Core
             }
 
             return false;
+        }
+
+        public bool Get(string name, ref Map v)
+        {
+            throw new NotImplementedException();
         }
 
         public bool Get<D>(string name, ref D v, int proj = 0) where D : IData, new()
@@ -759,14 +729,5 @@ namespace Greatbone.Core
             }
         }
 
-        public bool Get(string name, ref Map v)
-        {
-            throw new NotImplementedException();
-        }
-
-        public bool Get<D>(string name, ref Map<D> v, int proj = 0) where D : IData, new()
-        {
-            throw new NotImplementedException();
-        }
     }
 }

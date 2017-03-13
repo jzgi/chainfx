@@ -1,6 +1,5 @@
 using System;
 using System.Collections.Generic;
-using NpgsqlTypes;
 
 namespace Greatbone.Core
 {
@@ -97,25 +96,7 @@ namespace Greatbone.Core
             return jo != null && jo.Get(name, ref v);
         }
 
-        public bool Get(string name, ref NpgsqlPoint v)
-        {
-            JObj jo = elements[current];
-            return jo != null && jo.Get(name, ref v);
-        }
-
-        public bool Get(string name, ref char[] v)
-        {
-            JObj jo = elements[current];
-            return jo != null && jo.Get(name, ref v);
-        }
-
         public bool Get(string name, ref string v)
-        {
-            JObj jo = elements[current];
-            return jo != null && jo.Get(name, ref v);
-        }
-
-        public bool Get(string name, ref byte[] v)
         {
             JObj jo = elements[current];
             return jo != null && jo.Get(name, ref v);
@@ -155,6 +136,11 @@ namespace Greatbone.Core
         {
             JObj jo = elements[current];
             return jo != null && jo.Get(name, ref v);
+        }
+
+        public bool Get(string name, ref Map v)
+        {
+            throw new NotImplementedException();
         }
 
         public bool Get<D>(string name, ref D[] v, int proj = 0) where D : IData, new()
@@ -258,16 +244,6 @@ namespace Greatbone.Core
             string str = cont.ToString();
             BufferUtility.Return(cont);
             return str;
-        }
-
-        public bool Get(string name, ref Map v)
-        {
-            throw new NotImplementedException();
-        }
-
-        public bool Get<D>(string name, ref Map<D> v, int proj = 0) where D : IData, new()
-        {
-            throw new NotImplementedException();
         }
     }
 }

@@ -247,7 +247,7 @@ namespace Greatbone.Core
             }
             catch (AuthorizeException)
             {
-                if (ac.Token == null)
+                if (ac.Principal == null)
                 {
                     Challenge(ac);
                 }
@@ -469,11 +469,11 @@ namespace Greatbone.Core
             if (hv != null && hv.StartsWith("Bearer ")) // the Bearer scheme
             {
                 toktext = hv.Substring(7);
-                ac.Token = Decrypt(toktext);
+                ac.Principal = Decrypt(toktext);
             }
             else if (ac.Cookies.TryGetValue("Bearer", out toktext))
             {
-                ac.Token = Decrypt(toktext);
+                ac.Principal = Decrypt(toktext);
             }
         }
 

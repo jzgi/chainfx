@@ -135,7 +135,7 @@ namespace Greatbone.Sample
                             h.Add(fdr.Label);
                             h.Add("</a></li>");
                         }
-                        string key = fdr.GetVarKey(ac.Token);
+                        string key = fdr.GetVarKey(ac.Principal);
                         if (key != null)
                         {
                             h.Add("<li class=\"\"><a href=\"");

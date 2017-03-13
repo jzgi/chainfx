@@ -42,8 +42,6 @@ namespace Greatbone.Core
 
         bool Get<D>(string name, ref List<D> v, int proj = 0) where D : IData, new();
 
-        bool Get<D>(string name, ref Map<D> v, int proj = 0) where D : IData, new();
-
         D ToObject<D>(int proj = 0) where D : IData, new();
 
         D[] ToArray<D>(int proj = 0) where D : IData, new();

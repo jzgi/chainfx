@@ -1,6 +1,5 @@
 using System;
 using System.Collections.Generic;
-using NpgsqlTypes;
 
 namespace Greatbone.Core
 {
@@ -130,40 +129,7 @@ namespace Greatbone.Core
             return false;
         }
 
-        public bool Get(string name, ref NpgsqlPoint v)
-        {
-            JMbr mbr;
-            if (TryGet(name, out mbr))
-            {
-                v = mbr;
-                return true;
-            }
-            return false;
-        }
-
-        public bool Get(string name, ref char[] v)
-        {
-            JMbr mbr;
-            if (TryGet(name, out mbr))
-            {
-                v = mbr;
-                return true;
-            }
-            return false;
-        }
-
         public bool Get(string name, ref string v)
-        {
-            JMbr mbr;
-            if (TryGet(name, out mbr))
-            {
-                v = mbr;
-                return true;
-            }
-            return false;
-        }
-
-        public bool Get(string name, ref byte[] v)
         {
             JMbr mbr;
             if (TryGet(name, out mbr))
@@ -258,6 +224,28 @@ namespace Greatbone.Core
                     }
                 }
                 return true;
+            }
+            return false;
+        }
+
+        public bool Get(string name, ref Map v)
+        {
+            JMbr mbr;
+            if (TryGet(name, out mbr))
+            {
+                if (mbr.type == JType.Object)
+                {
+                    JObj jo = mbr;
+                    int count = jo.Count;
+                    Map dict = new Map(count);
+                    for (int i = 0; i < count; i++)
+                    {
+                        JMbr e = jo[i];
+                        dict.Add(e.Name, e);
+                    }
+                    v = dict;
+                    return true;
+                }
             }
             return false;
         }
@@ -397,33 +385,6 @@ namespace Greatbone.Core
             string str = cont.ToString();
             BufferUtility.Return(cont);
             return str;
-        }
-
-        public bool Get(string name, ref Map v)
-        {
-            JMbr mbr;
-            if (TryGet(name, out mbr))
-            {
-                if (mbr.type == JType.Object)
-                {
-                    JObj jo = mbr;
-                    int count = jo.Count;
-                    Map dict = new Map(count);
-                    for (int i = 0; i < count; i++)
-                    {
-                        JMbr e = jo[i];
-                        dict.Add(e.Name, e);
-                    }
-                    v = dict;
-                    return true;
-                }
-            }
-            return false;
-        }
-
-        public bool Get<D>(string name, ref Map<D> v, int proj = 0) where D : IData, new()
-        {
-            throw new NotImplementedException();
         }
     }
 }

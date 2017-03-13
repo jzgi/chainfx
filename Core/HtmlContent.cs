@@ -253,7 +253,7 @@ namespace Greatbone.Core
             {
                 Add("<div class=\"row\">");
                 Add("<ul class=\"pagination text-center\" role=\"navigation\">");
-                int subscript = ac.Subscpt;
+                int subscript = ac.Subscript;
                 Add("<li class=\"pagination-previous disabled\">Previous</li>");
                 for (int i = 0; i < subscript; i++)
                 {
@@ -649,7 +649,7 @@ namespace Greatbone.Core
             Add("</label>");
         }
 
-        public void CHECKBOX<V>(V[] v, Set<V> opt, string Label = null, bool Required = false) where V : IEquatable<V>, IConvertible
+        public void CHECKBOX<V>(V[] v, Map<V> opt, string Label = null, bool Required = false) where V : IEquatable<V>, IConvertible
         {
             Add("<fieldset>");
 
@@ -686,7 +686,7 @@ namespace Greatbone.Core
             Add("</fieldset>");
         }
 
-        public void RADIO<V>(string name, V v, Set<V> opt, string Label = null, bool Required = false) where V : IEquatable<V>, IConvertible
+        public void RADIO<V>(string name, V v, Map<V> opt, string Label = null, bool Required = false) where V : IEquatable<V>, IConvertible
         {
             Add("<fieldset>");
 
@@ -790,12 +790,12 @@ namespace Greatbone.Core
             Add("</label>");
         }
 
-        public void BUTTON(ActionInfo actn)
+        public void BUTTON(ActionInfo act)
         {
             Add("<button class=\"button alert\"");
-            Add(" formaction=\""); Add(actn.Name); Add("\" formmethod=\"post\"");
+            Add(" formaction=\""); Add(act.Name); Add("\" formmethod=\"post\"");
 
-            UiAttribute ui = actn.Ui;
+            UiAttribute ui = act.Ui;
 
             Modal modal = ui?.Modal ?? Modal.None;
             if (modal > 0)
@@ -803,7 +803,7 @@ namespace Greatbone.Core
                 Add(" onclick=\"dialog(this,"); Add((int)modal); Add("); return false;\"");
             }
 
-            StateAttribute state = actn.State;
+            StateAttribute state = act.State;
             if (state != null)
             {
                 Add(" data-if=\""); Add(state.If); Add("\"");
@@ -818,7 +818,7 @@ namespace Greatbone.Core
                 Add(icon);
                 Add("\"></i>");
             }
-            AddLabel(ui?.Label, actn.Name);
+            AddLabel(ui?.Label, act.Name);
 
             Add("</button>");
         }
@@ -832,7 +832,7 @@ namespace Greatbone.Core
             }
         }
 
-        public void SELECT<V>(string name, V v, Set<V> opt, string Label = null, bool Required = false) where V : IEquatable<V>, IConvertible
+        public void SELECT<V>(string name, V v, Map<V> opt, string Label = null, bool Required = false) where V : IEquatable<V>, IConvertible
         {
             Add("<label>");
             AddLabel(Label, name);
@@ -932,7 +932,7 @@ namespace Greatbone.Core
             return this;
         }
 
-        public HtmlContent Put(string name, short v, Set<short> Opt = null, string Label = null, string Help = null, short Max = 0, short Min = 0, short Step = 0, bool ReadOnly = false, bool Required = false)
+        public HtmlContent Put(string name, short v, Map<short> Opt = null, string Label = null, string Help = null, short Max = 0, short Min = 0, short Step = 0, bool ReadOnly = false, bool Required = false)
         {
             var ctx = chain[level];
             switch (ctx.type)
@@ -989,7 +989,7 @@ namespace Greatbone.Core
             return this;
         }
 
-        public HtmlContent Put(string name, int v, Set<int> Opt = null, string Label = null, string Help = null, int Max = 0, int Min = 0, int Step = 0, bool ReadOnly = false, bool Required = false)
+        public HtmlContent Put(string name, int v, Map<int> Opt = null, string Label = null, string Help = null, int Max = 0, int Min = 0, int Step = 0, bool ReadOnly = false, bool Required = false)
         {
             switch (chain[level].type)
             {
@@ -1039,7 +1039,7 @@ namespace Greatbone.Core
             return this;
         }
 
-        public HtmlContent Put(string name, long v, Set<long> Opt = null, string Label = null, string Help = null, long Max = 0, long Min = 0, long Step = 0, bool ReadOnly = false, bool Required = false)
+        public HtmlContent Put(string name, long v, Map<long> Opt = null, string Label = null, string Help = null, long Max = 0, long Min = 0, long Step = 0, bool ReadOnly = false, bool Required = false)
         {
             switch (chain[level].type)
             {
@@ -1169,7 +1169,7 @@ namespace Greatbone.Core
             return this;
         }
 
-        public HtmlContent Put(string name, string v, Set<string> Opt = null, string Label = null, string Help = null, string Pattern = null, short Max = 0, short Min = 0, bool ReadOnly = false, bool Required = false)
+        public HtmlContent Put(string name, string v, Map<string> Opt = null, string Label = null, string Help = null, string Pattern = null, short Max = 0, short Min = 0, bool ReadOnly = false, bool Required = false)
         {
             var ctx = chain[level];
             switch (ctx.type)
@@ -1260,23 +1260,23 @@ namespace Greatbone.Core
             return this;
         }
 
-        public HtmlContent Put(string name, short[] v, Set<short> Opt = null, string Label = null, string Help = null, bool ReadOnly = false, bool Required = false)
+        public HtmlContent Put(string name, short[] v, Map<short> Opt = null, string Label = null, string Help = null, bool ReadOnly = false, bool Required = false)
         {
 
             return this;
         }
 
-        public HtmlContent Put(string name, int[] v, Set<int> Opt = null, string Label = null, string Help = null, bool ReadOnly = false, bool Required = false)
+        public HtmlContent Put(string name, int[] v, Map<int> Opt = null, string Label = null, string Help = null, bool ReadOnly = false, bool Required = false)
         {
             return this;
         }
 
-        public HtmlContent Put(string name, long[] v, Set<long> Opt = null, string Label = null, string Help = null, bool ReadOnly = false, bool Required = false)
+        public HtmlContent Put(string name, long[] v, Map<long> Opt = null, string Label = null, string Help = null, bool ReadOnly = false, bool Required = false)
         {
             return this;
         }
 
-        public HtmlContent Put(string name, string[] v, Set<string> Opt = null, string Label = null, string Help = null, bool ReadOnly = false, bool Required = false)
+        public HtmlContent Put(string name, string[] v, Map<string> Opt = null, string Label = null, string Help = null, bool ReadOnly = false, bool Required = false)
         {
             return this;
         }
@@ -1332,11 +1332,5 @@ namespace Greatbone.Core
             chain[level].ordinal++;
             return this;
         }
-
-        public HtmlContent Put<D>(string name, Map<D> v, int proj = 0, string Label = null, string Help = null, bool ReadOnly = false, bool Required = false) where D : IData
-        {
-            throw new NotImplementedException();
-        }
     }
-
 }

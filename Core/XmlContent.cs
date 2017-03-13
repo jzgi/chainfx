@@ -174,7 +174,7 @@ namespace Greatbone.Core
             return this;
         }
 
-        public XmlContent Put(string name, short v, Set<short> Opt = null, string Label = null, string Help = null, short Max = 0, short Min = 0, short Step = 0, bool ReadOnly = false, bool Required = false)
+        public XmlContent Put(string name, short v, Map<short> Opt = null, string Label = null, string Help = null, short Max = 0, short Min = 0, short Step = 0, bool ReadOnly = false, bool Required = false)
         {
             Add(' ');
             Add(name);
@@ -185,7 +185,7 @@ namespace Greatbone.Core
             return this;
         }
 
-        public XmlContent Put(string name, int v, Set<int> Opt = null, string Label = null, string Help = null, int Max = 0, int Min = 0, int Step = 0, bool ReadOnly = false, bool Required = false)
+        public XmlContent Put(string name, int v, Map<int> Opt = null, string Label = null, string Help = null, int Max = 0, int Min = 0, int Step = 0, bool ReadOnly = false, bool Required = false)
         {
             Add(' ');
             Add(name);
@@ -196,7 +196,7 @@ namespace Greatbone.Core
             return this;
         }
 
-        public XmlContent Put(string name, long v, Set<long> Opt = null, string Label = null, string Help = null, long Max = 0, long Min = 0, long Step = 0, bool ReadOnly = false, bool Required = false)
+        public XmlContent Put(string name, long v, Map<long> Opt = null, string Label = null, string Help = null, long Max = 0, long Min = 0, long Step = 0, bool ReadOnly = false, bool Required = false)
         {
             Add(' ');
             Add(name);
@@ -240,7 +240,7 @@ namespace Greatbone.Core
             return this;
         }
 
-        public XmlContent Put(string name, string v, Set<string> Opt = null, string Label = null, string Help = null, string Pattern = null, short Max = 0, short Min = 0, bool ReadOnly = false, bool Required = false)
+        public XmlContent Put(string name, string v, Map<string> Opt = null, string Label = null, string Help = null, string Pattern = null, short Max = 0, short Min = 0, bool ReadOnly = false, bool Required = false)
         {
             Add(' ');
             Add(name);
@@ -256,7 +256,7 @@ namespace Greatbone.Core
             return this;
         }
 
-        public XmlContent Put(string name, short[] v, Set<short> Opt = null, string Label = null, string Help = null, bool ReadOnly = false, bool Required = false)
+        public XmlContent Put(string name, short[] v, Map<short> Opt = null, string Label = null, string Help = null, bool ReadOnly = false, bool Required = false)
         {
             Add(' ');
             Add(name);
@@ -273,7 +273,7 @@ namespace Greatbone.Core
             return this;
         }
 
-        public XmlContent Put(string name, int[] v, Set<int> Opt = null, string Label = null, string Help = null, bool ReadOnly = false, bool Required = false)
+        public XmlContent Put(string name, int[] v, Map<int> Opt = null, string Label = null, string Help = null, bool ReadOnly = false, bool Required = false)
         {
             Add(' ');
             Add(name);
@@ -290,7 +290,7 @@ namespace Greatbone.Core
             return this;
         }
 
-        public XmlContent Put(string name, long[] v, Set<long> Opt = null, string Label = null, string Help = null, bool ReadOnly = false, bool Required = false)
+        public XmlContent Put(string name, long[] v, Map<long> Opt = null, string Label = null, string Help = null, bool ReadOnly = false, bool Required = false)
         {
             Add(' ');
             Add(name);
@@ -307,7 +307,7 @@ namespace Greatbone.Core
             return this;
         }
 
-        public XmlContent Put(string name, string[] v, Set<string> Opt = null, string Label = null, string Help = null, bool ReadOnly = false, bool Required = false)
+        public XmlContent Put(string name, string[] v, Map<string> Opt = null, string Label = null, string Help = null, bool ReadOnly = false, bool Required = false)
         {
             Add(' ');
             Add(name);
@@ -342,11 +342,6 @@ namespace Greatbone.Core
         public XmlContent Put<D>(string name, List<D> v, int proj = 0, string Label = null, string Help = null, bool ReadOnly = false, bool Required = false) where D : IData
         {
             return this;
-        }
-
-        public XmlContent Put<D>(string name, Map<D> v, int proj = 0, string Label = null, string Help = null, bool ReadOnly = false, bool Required = false) where D : IData
-        {
-            throw new NotImplementedException();
         }
     }
 }

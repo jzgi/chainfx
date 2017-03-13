@@ -10,7 +10,7 @@ namespace Greatbone.Sample
     {
         public static readonly Shop Empty = new Shop();
 
-        public static readonly Set<short> STATUS = new Set<short>
+        public static readonly Map<short> STATUS = new Map<short>
         {
             [0] = "禁用",
             [1] = "营业",

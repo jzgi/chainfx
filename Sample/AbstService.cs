@@ -22,7 +22,7 @@ namespace Greatbone.Sample
             string toktext;
             if (ac.Cookies.TryGetValue("Bearer", out toktext))
             {
-                ac.Token = Decrypt(toktext);
+                ac.Principal = Decrypt(toktext);
                 return;
             }
 
@@ -90,7 +90,7 @@ namespace Greatbone.Sample
             }
 
             // set token success
-            ac.Token = tok;
+            ac.Principal = tok;
             SetCookies(ac, tok);
         }
 

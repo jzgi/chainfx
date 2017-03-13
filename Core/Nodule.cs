@@ -78,7 +78,7 @@ namespace Greatbone.Core
         {
             if (authorize != null)
             {
-                IData token = ac.Token;
+                IData token = ac.Principal;
                 if (token == null)
                 {
                     return false;

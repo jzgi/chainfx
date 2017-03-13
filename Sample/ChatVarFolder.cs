@@ -34,7 +34,7 @@ namespace Greatbone.Sample
         [User]
         public async Task inbox(ActionContext ac, string arg)
         {
-            User tok = (User)ac.Token;
+            User tok = (User)ac.Principal;
             string userid = ac[0];
             Chat chat = null;
 

@@ -142,7 +142,7 @@ namespace Greatbone.Core
         public async Task<byte[]> GetAsync(ActionContext ctx, string uri)
         {
             HttpRequestMessage req = new HttpRequestMessage(HttpMethod.Get, uri);
-            req.Headers.Add("Authorization", "Bearer " + ctx.TokenText);
+            req.Headers.Add("Authorization", "Bearer " + ctx.Token);
             HttpResponseMessage resp = await SendAsync(req, HttpCompletionOption.ResponseContentRead);
             return await resp.Content.ReadAsByteArrayAsync();
         }
@@ -152,7 +152,7 @@ namespace Greatbone.Core
             HttpRequestMessage req = new HttpRequestMessage(HttpMethod.Get, uri);
             if (ctx != null)
             {
-                req.Headers.Add("Authorization", "Bearer " + ctx.TokenText);
+                req.Headers.Add("Authorization", "Bearer " + ctx.Token);
             }
             HttpResponseMessage rsp = await SendAsync(req, HttpCompletionOption.ResponseContentRead);
             byte[] bytea = await rsp.Content.ReadAsByteArrayAsync();
@@ -165,7 +165,7 @@ namespace Greatbone.Core
             HttpRequestMessage req = new HttpRequestMessage(HttpMethod.Get, uri);
             if (ctx != null)
             {
-                req.Headers.Add("Authorization", "Bearer " + ctx.TokenText);
+                req.Headers.Add("Authorization", "Bearer " + ctx.Token);
             }
             HttpResponseMessage resp = await SendAsync(req, HttpCompletionOption.ResponseContentRead);
             IDataInput src = null;
@@ -177,7 +177,7 @@ namespace Greatbone.Core
             HttpRequestMessage req = new HttpRequestMessage(HttpMethod.Get, uri);
             if (ctx != null)
             {
-                req.Headers.Add("Authorization", "Bearer " + ctx.TokenText);
+                req.Headers.Add("Authorization", "Bearer " + ctx.Token);
             }
             HttpResponseMessage rsp = await SendAsync(req, HttpCompletionOption.ResponseContentRead);
 
@@ -190,7 +190,7 @@ namespace Greatbone.Core
             HttpRequestMessage req = new HttpRequestMessage(HttpMethod.Get, uri);
             if (ctx != null)
             {
-                req.Headers.Add("Authorization", "Bearer " + ctx.TokenText);
+                req.Headers.Add("Authorization", "Bearer " + ctx.Token);
             }
             HttpResponseMessage rsp = await SendAsync(req, HttpCompletionOption.ResponseContentRead);
 
@@ -203,7 +203,7 @@ namespace Greatbone.Core
             HttpRequestMessage req = new HttpRequestMessage(HttpMethod.Post, uri);
             if (ctx != null)
             {
-                req.Headers.Add("Authorization", "Bearer " + ctx.TokenText);
+                req.Headers.Add("Authorization", "Bearer " + ctx.Token);
             }
             req.Content = content;
             req.Headers.Add("Content-Type", content.Type);
@@ -217,7 +217,7 @@ namespace Greatbone.Core
             HttpRequestMessage req = new HttpRequestMessage(HttpMethod.Post, uri);
             if (ctx != null)
             {
-                req.Headers.Add("Authorization", "Bearer " + ctx.TokenText);
+                req.Headers.Add("Authorization", "Bearer " + ctx.Token);
             }
             IContent cont = inp.Dump();
             req.Content = (HttpContent)cont;
@@ -233,7 +233,7 @@ namespace Greatbone.Core
             HttpRequestMessage req = new HttpRequestMessage(HttpMethod.Post, uri);
             if (ctx != null)
             {
-                req.Headers.Add("Authorization", "Bearer " + ctx.TokenText);
+                req.Headers.Add("Authorization", "Bearer " + ctx.Token);
             }
 
             if (state is Form)

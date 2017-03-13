@@ -1,6 +1,5 @@
 using System;
 using System.Collections.Generic;
-using NpgsqlTypes;
 
 namespace Greatbone.Core
 {
@@ -115,34 +114,7 @@ namespace Greatbone.Core
             return false;
         }
 
-        public bool Get(string name, ref NpgsqlPoint v)
-        {
-            throw new NotImplementedException();
-        }
-
         public bool Get(string name, ref string v)
-        {
-            Field fld;
-            if (TryGet(name, out fld))
-            {
-                v = fld;
-                return true;
-            }
-            return false;
-        }
-
-        public bool Get(string name, ref char[] v)
-        {
-            Field fld;
-            if (TryGet(name, out fld))
-            {
-                v = fld;
-                return true;
-            }
-            return false;
-        }
-
-        public bool Get(string name, ref byte[] v)
         {
             Field fld;
             if (TryGet(name, out fld))
@@ -167,38 +139,6 @@ namespace Greatbone.Core
         public bool Get<D>(string name, ref D v, int proj = 0) where D : IData, new()
         {
             throw new NotImplementedException();
-        }
-
-        public bool Get(string name, ref JArr v)
-        {
-            Field fld;
-            if (TryGet(name, out fld))
-            {
-                string strv = fld;
-                if (strv != null)
-                {
-                    JsonParse p = new JsonParse(strv);
-                    v = p.Parse() as JArr;
-                    return true;
-                }
-            }
-            return false;
-        }
-
-        public bool Get(string name, ref JObj v)
-        {
-            Field fld;
-            if (TryGet(name, out fld))
-            {
-                string strv = fld;
-                if (strv != null)
-                {
-                    JsonParse p = new JsonParse(strv);
-                    v = p.Parse() as JObj;
-                    return true;
-                }
-            }
-            return false;
         }
 
         public bool Get(string name, ref short[] v)
@@ -243,6 +183,11 @@ namespace Greatbone.Core
                 return true;
             }
             return false;
+        }
+
+        public bool Get(string name, ref Map v)
+        {
+            throw new NotImplementedException();
         }
 
         public bool Get<D>(string name, ref D[] v, int proj = 0) where D : IData, new()
@@ -292,16 +237,6 @@ namespace Greatbone.Core
         }
 
         public bool Get(string name, ref IDataInput v)
-        {
-            throw new NotImplementedException();
-        }
-
-        public bool Get(string name, ref Map v)
-        {
-            throw new NotImplementedException();
-        }
-
-        public bool Get<D>(string name, ref Map<D> v, int proj = 0) where D : IData, new()
         {
             throw new NotImplementedException();
         }
