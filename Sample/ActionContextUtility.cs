@@ -132,18 +132,6 @@ namespace Greatbone.Sample
             pub, maxage);
         }
 
-        public static void GiveModalForm(this ActionContext ac, int status, Action<HtmlContent> form, bool? pub = null, int maxage = 60)
-        {
-            ac.GivePage(status,
-            null,
-            m =>
-            {
-                m.FORM_FILL(ac.Doer, form);
-            },
-            null,
-            pub, maxage);
-        }
-
         public static void GiveModalForm(this ActionContext ac, int status, IDataInput input, Action<IDataInput, HtmlContent> valve, bool? pub = null, int maxage = 60)
         {
             ac.GivePage(status,
@@ -206,12 +194,10 @@ namespace Greatbone.Sample
         public static void GiveFolderPage<D>(this ActionContext ac, Folder @base, int status, List<D> lst, int proj = 0, bool? pub = null, int maxage = 60) where D : IData
         {
             Folder folder = ac.Folder;
-            bool top = folder == @base;
-
             ac.GivePage(status,
-            h =>
+            @base == null ? (Action<HtmlContent>)null : h =>
             {
-
+                bool top = folder == @base;
                 Roll<Folder> subs = @base.subfolders;
                 if (subs != null)
                 {

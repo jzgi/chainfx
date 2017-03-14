@@ -39,9 +39,9 @@ namespace Greatbone.Sample
 
         internal string shopwx; // shop weixin openid
 
-        internal string userwx; // buyer weixin openid
+        internal string buyer; // buyer nickname or name
 
-        internal string user; // buyer nickname or name
+        internal string buyerwx; // buyer weixin openid
 
         internal DateTime created; // time created
 
@@ -72,8 +72,8 @@ namespace Greatbone.Sample
             i.Get(nameof(shop), ref shop);
             i.Get(nameof(shopwx), ref shopwx);
 
-            i.Get(nameof(user), ref user);
-            i.Get(nameof(userwx), ref userwx);
+            i.Get(nameof(buyer), ref buyer);
+            i.Get(nameof(buyerwx), ref buyerwx);
 
             i.Get(nameof(created), ref created);
             if (proj.Sub())
@@ -96,8 +96,8 @@ namespace Greatbone.Sample
             o.Put(nameof(shop), shop);
             o.Put(nameof(shopwx), shopwx);
 
-            o.Put(nameof(user), user);
-            o.Put(nameof(userwx), userwx);
+            o.Put(nameof(buyer), buyer);
+            o.Put(nameof(buyerwx), buyerwx);
 
             o.Put(nameof(created), created);
             if (proj.Sub())

@@ -14,31 +14,7 @@ namespace Greatbone.Sample
             CreateVar<OrderVarFolder>();
         }
 
-        //
-        // USER
-        //
-
-        public void my(ActionContext ac, string page)
-        {
-            string userid = ac[0];
-
-            using (var dc = ac.NewDbContext())
-            {
-                if (dc.Query("SELECT * FROM orders WHERE userid = @1 ORDER BY id LIMIT 20 OFFSET @2", p => p.Set(userid).Set(page.ToInt() * 20)))
-                {
-                    ac.GiveFolderPage(Parent, 200, dc.ToList<Order>());
-                }
-                else
-                {
-                    ac.Give(204); // no content
-                }
-            }
-        }
-
-        #region /shop/-shopid-/orderi/ OR /shop/-shopid-/ordero/
-
         // [Shop]
-        [Ui]
         public void @default(ActionContext ac, int page)
         {
             string shopid = ac[1];
@@ -145,16 +121,10 @@ namespace Greatbone.Sample
 
         }
 
-        #endregion
 
 
-        #region /shop/-shopid-/orderout/
 
 
-        #endregion
-
-
-        #region /order/
 
         [User]
         [Ui]
@@ -163,6 +133,5 @@ namespace Greatbone.Sample
 
         }
 
-        #endregion
     }
 }
