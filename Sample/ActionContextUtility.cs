@@ -15,7 +15,7 @@ namespace Greatbone.Sample
         }
 
         ///
-        public static void GiveHtml(this ActionContext ac, int status, Action<HtmlContent> header, Action<HtmlContent> main, Action<HtmlContent> footer, bool? pub = null, int maxage = 60)
+        public static void GivePage(this ActionContext ac, int status, Action<HtmlContent> header, Action<HtmlContent> main, Action<HtmlContent> footer, bool? pub = null, int maxage = 60)
         {
             HtmlContent cont = new HtmlContent(true, true, 16 * 1024);
 
@@ -27,7 +27,6 @@ namespace Greatbone.Sample
             cont.Add("<meta name=\"viewport\" content=\"width=device-width, initial-scale=1.0\">");
             cont.Add("<link rel=\"stylesheet\" href=\"//cdn.bootcss.com/foundation/6.3.1/css/foundation.min.css\">");
             cont.Add("<link rel=\"stylesheet\" href=\"//cdn.bootcss.com/foundicons/3.0.0/foundation-icons.min.css\">");
-            cont.Add("<link rel=\"stylesheet\" href=\"/slim.min.css\">");
             cont.Add("<link rel=\"stylesheet\" href=\"/app.css\">");
             cont.Add("</head>");
 
@@ -56,7 +55,7 @@ namespace Greatbone.Sample
             cont.Add("<script src=\"//cdn.bootcss.com/foundation/6.3.1/js/foundation.min.js\"></script>");
             cont.Add("<script src=\"/slim.jquery.min.js\"></script>");
             cont.Add("<script src=\"/app.js\"></script>");
-            cont.Add("<script>$(document).foundation();$('body').slim('parse');</script>");
+            cont.Add("<script>$(document).foundation();</script>");
 
             cont.Add("</body>");
             cont.Add("</html>");
@@ -127,23 +126,31 @@ namespace Greatbone.Sample
             null,
             m =>
             {
-                m.FORM_INP(ac.Doer, obj, proj);
+                m.FORM_FILL(ac.Doer, obj, proj);
             },
             null,
             pub, maxage);
         }
 
-        public static void GiveForm(this ActionContext ac, int status, Action<HtmlContent> form, bool? pub = null, int maxage = 60)
+        public static void GiveModalForm(this ActionContext ac, int status, Action<HtmlContent> form, bool? pub = null, int maxage = 60)
         {
-            ac.GiveHtml(status,
+            ac.GivePage(status,
             null,
             m =>
             {
-                m.Add("<form>");
-                // m.ctx = HtmlContent.CTX_INPUT;
-                form(m);
-                m.BUTTON(ac.Doer);
-                m.Add("</form>");
+                m.FORM_FILL(ac.Doer, form);
+            },
+            null,
+            pub, maxage);
+        }
+
+        public static void GiveModalForm(this ActionContext ac, int status, IDataInput input, Action<IDataInput, HtmlContent> valve, bool? pub = null, int maxage = 60)
+        {
+            ac.GivePage(status,
+            null,
+            m =>
+            {
+                m.FORM_FILL(ac.Doer, input, valve);
             },
             null,
             pub, maxage);
@@ -153,7 +160,7 @@ namespace Greatbone.Sample
         {
             Folder folder = ac.Folder;
 
-            ac.GiveHtml(status, (Action<HtmlContent>)(h =>
+            ac.GivePage(status, (Action<HtmlContent>)(h =>
             {
                 Roll<Folder> subs = folder.subfolders;
                 if (subs != null)
@@ -201,7 +208,7 @@ namespace Greatbone.Sample
             Folder folder = ac.Folder;
             bool top = folder == @base;
 
-            ac.GiveHtml(status,
+            ac.GivePage(status,
             h =>
             {
 
@@ -233,19 +240,6 @@ namespace Greatbone.Sample
             {
                 List<ActionInfo> actions = folder.GetUiActions(ac);
                 m.FORM_GRID(ac, actions, lst);
-            },
-            null,
-            pub, maxage);
-        }
-
-        public static void GivePane(this ActionContext ac, int status, IDataInput input, Action<IDataInput, HtmlContent> valve, bool? pub = null, int maxage = 60)
-        {
-            List<ActionInfo> actions = ac.Folder.GetUiActions(ac);
-            ac.GiveHtml(status,
-            null,
-            m =>
-            {
-                m.FORM_GRID(actions, input, valve);
             },
             null,
             pub, maxage);

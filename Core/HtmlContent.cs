@@ -16,7 +16,7 @@ namespace Greatbone.Core
             CTX_GRID = 2,
             CTX_LIST = 3,
             // single
-            CTX_FORMINP = 4,
+            CTX_FILL = 4,
             CTX_CARD = 5;
 
         // per idata object outputing context
@@ -312,26 +312,18 @@ namespace Greatbone.Core
 
         public void GRID(IDataInput input, Action<IDataInput, HtmlContent> valve)
         {
+            chain[++level].type = CTX_GRID;
             if (input != null)
             {
-                Add("<table class=\"hover\">");
-
-                // ctx = CTX_GRIDTHEAD;
-                Add("<thead>");
-                Add("<tr>");
-                valve(input, this);
-                Add("</tr>");
-                Add("</thead>");
-
-                // ctx = CTX_GRIDTBODY;
-                Add("<tbody>");
+                Add("<div class=\"expanded row\">");
                 while (input.Next())
                 {
-                    Add("<tr>");
+                    Add("<div class=\"small-12 medium-6 large-4 columns\">");
+                    chain[level].ordinal = 0; // reset ordical
                     valve(input, this);
-                    Add("</tr>");
+                    Add("</div>");
                 }
-                Add("</tbody>");
+                Add("</div>");
             }
             else
             {
@@ -339,6 +331,7 @@ namespace Greatbone.Core
                 Add("<span>没有记录</span>");
                 Add("</div>");
             }
+            --level;
         }
 
         public void FORM_LIST<D>(List<ActionInfo> actions, List<D> lst, int proj = 0) where D : IData
@@ -378,26 +371,38 @@ namespace Greatbone.Core
             --level;
         }
 
-        public void CARD(IData obj, int proj = 0)
+        public void FORM_FILL(ActionInfo act, IDataInput input, Action<IDataInput, HtmlContent> valve)
         {
-            Add("<div>");
-            chain[level].ordinal = 0; // reset ordical
-            obj.WriteData(this, proj);
-            Add("</div>");
-        }
+            Add("<form method=\"post\">");
 
-        public void FORM(ActionInfo act, Action<HtmlContent> inner)
-        {
-            Add("<form class=\"pure-form pure-g\">");
-
-            inner?.Invoke(this);
+            FILL(input, valve);
 
             Add("</form>");
         }
 
-        public void FORM_INP(ActionInfo act, IData obj, int proj = 0)
+        public void FILL(IDataInput input, Action<IDataInput, HtmlContent> valve)
         {
-            chain[++level].type = CTX_FORMINP;
+            chain[++level].type = CTX_FILL;
+            if (input != null)
+            {
+                while (input.Next())
+                {
+                    chain[level].ordinal = 0; // reset ordical
+                    valve(input, this);
+                }
+            }
+            else
+            {
+                Add("<div class=\"row\">");
+                Add("<span>没有记录</span>");
+                Add("</div>");
+            }
+            --level;
+        }
+
+        public void FORM_FILL(ActionInfo act, IData obj, int proj = 0)
+        {
+            chain[++level].type = CTX_FILL;
             Add("<form method=\"post");
             if (act != null)
             {
@@ -406,6 +411,13 @@ namespace Greatbone.Core
             Add("\">");
             obj.WriteData(this, proj);
             Add("</form>");
+            --level;
+        }
+
+        public void FILL(IData obj, int proj = 0)
+        {
+            chain[++level].type = CTX_FILL;
+            obj.WriteData(this, proj);
             --level;
         }
 
@@ -958,7 +970,7 @@ namespace Greatbone.Core
                     break;
                 case CTX_LIST:
                     break;
-                case CTX_FORMINP:
+                case CTX_FILL:
                     Add("<div class=\"pure-u-1 pure-u-md-1-2\">");
                     CHECKBOX(name, v);
                     Add("</div>");
@@ -1015,7 +1027,7 @@ namespace Greatbone.Core
                     break;
                 case CTX_LIST:
                     break;
-                case CTX_FORMINP:
+                case CTX_FILL:
                     Add("<div class=\"pure-u-1 pure-u-md-1-2\">");
                     NUMBER(name, v);
                     Add("</div>");
@@ -1064,7 +1076,7 @@ namespace Greatbone.Core
                     break;
                 case CTX_LIST:
                     break;
-                case CTX_FORMINP:
+                case CTX_FILL:
                     Add("<div class=\"pure-u-1 pure-u-md-1-2\">");
                     NUMBER(name, v);
                     Add("</div>");
@@ -1117,7 +1129,7 @@ namespace Greatbone.Core
                     NUMBER(name, v);
                     Add("</div>");
                     break;
-                case CTX_FORMINP:
+                case CTX_FILL:
                     Add("<div class=\"pure-u-1 pure-u-md-1-2\">");
                     NUMBER(name, v);
                     Add("</div>");
@@ -1153,7 +1165,7 @@ namespace Greatbone.Core
                     break;
                 case CTX_LIST:
                     break;
-                case CTX_FORMINP:
+                case CTX_FILL:
                     Add("<div class=\"pure-u-1 pure-u-md-1-2\">");
                     Add("</div>");
                     break;
@@ -1191,7 +1203,7 @@ namespace Greatbone.Core
                     Add(v);
                     Add("</td>");
                     break;
-                case CTX_FORMINP:
+                case CTX_FILL:
                     Add("<div class=\"pure-u-1 pure-u-md-1-2\">");
                     Add("</div>");
                     break;
@@ -1244,7 +1256,7 @@ namespace Greatbone.Core
                 case CTX_LIST:
                     Add(v);
                     break;
-                case CTX_FORMINP:
+                case CTX_FILL:
                     if (Label != null && Label.Length == 0)
                     {
                         HIDDEN(name, v);
@@ -1286,7 +1298,7 @@ namespace Greatbone.Core
                     break;
                 case CTX_GRID:
                     break;
-                case CTX_FORMINP:
+                case CTX_FILL:
                     Add("<div class=\"\">");
                     FILE(name, Label, Size, Ratio, Required);
                     Add("</div>");
