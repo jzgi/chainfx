@@ -65,59 +65,71 @@ namespace Greatbone.Sample
             ac.Give(status, cont, pub, maxage);
         }
 
-        public static void GiveSheet(this ActionContext ac, int status, Action<HtmlContent> inner, bool? pub = null, int maxage = 60)
+        public static void GiveModal(this ActionContext ac, int status, Action<HtmlContent> header, Action<HtmlContent> main, Action<HtmlContent> footer, bool? pub = null, int maxage = 60)
         {
-            ac.GiveHtml(status,
-            null,
-            m =>
-            {
-                m.Add("<form>");
-                inner(m);
-                m.Add("</form>");
-            },
-            null,
-            pub, maxage);
-        }
+            HtmlContent cont = new HtmlContent(true, true, 16 * 1024);
 
-        public static void GiveModal(this ActionContext ac, int status, IData obj, int proj = 0, bool? pub = null, int maxage = 60)
-        {
-            ac.GiveHtml(status,
-            null,
-            m =>
+            cont.Add("<!DOCTYPE html>");
+            cont.Add("<html>");
+
+            cont.Add("<head>");
+            cont.Add("<title>粗粮达人</title>");
+            cont.Add("<meta name=\"viewport\" content=\"width=device-width, initial-scale=1.0\">");
+            cont.Add("<link rel=\"stylesheet\" href=\"//cdn.bootcss.com/foundation/6.3.1/css/foundation.min.css\">");
+            cont.Add("<link rel=\"stylesheet\" href=\"//cdn.bootcss.com/foundicons/3.0.0/foundation-icons.min.css\">");
+            cont.Add("<link rel=\"stylesheet\" href=\"/slim.min.css\">");
+            cont.Add("<link rel=\"stylesheet\" href=\"/app.css\">");
+            cont.Add("</head>");
+
+            cont.Add("<body>");
+
+            if (header != null)
             {
-                m.Add("<form>");
-                // m.ctx = HtmlContent.CTX_INPUT;
-                obj.WriteData(m, proj);
-                m.BUTTON(ac.Doer);
-                m.Add("</form>");
-            },
-            f =>
+                cont.Add("<div class\"row\">");
+                header(cont);
+                cont.Add("</div>");
+            }
+
+            cont.Add("<div class\"row\">");
+            main(cont);
+            cont.Add("</div>");
+
+            if (footer != null)
             {
-                f.Add("<script>");
-                f.Add("$(document).ready(function(){");
-                f.Add("$('#dynadlg > button).disabled = false;'");
-                f.Add("});");
-                f.Add("</script>");
-            },
-            pub, maxage);
+                cont.Add("<div class\"row\">");
+                footer(cont);
+                cont.Add("</div>");
+            }
+
+            // zurb foundation
+            cont.Add("<script src=\"//cdn.bootcss.com/jquery/3.1.1/jquery.min.js\"></script>");
+            cont.Add("<script src=\"//cdn.bootcss.com/foundation/6.3.1/js/foundation.min.js\"></script>");
+            cont.Add("<script src=\"/slim.jquery.min.js\"></script>");
+            cont.Add("<script src=\"/app.js\"></script>");
+            cont.Add("<script>");
+            cont.Add("$(document).foundation();");
+            cont.Add("$('body').slim('parse');");
+            // enabling ok button
+            cont.Add("$(document).ready(function(){");
+            cont.Add("$('#dynadlg', window.parent.document).find('button').prop('disabled', false);");
+            cont.Add("});");
+            cont.Add("</script>");
+            cont.Add("</body>");
+            cont.Add("</html>");
+
+            // cont.Render(main);
+            ac.Give(status, cont, pub, maxage);
         }
 
         public static void GiveModalForm(this ActionContext ac, int status, IData obj, int proj = 0, bool? pub = null, int maxage = 60)
         {
-            ac.GiveHtml(status,
+            ac.GiveModal(status,
             null,
             m =>
             {
                 m.FORM_INP(ac.Doer, obj, proj);
             },
-            f =>
-            {
-                f.Add("<script>");
-                f.Add("$(document).ready(function(){");
-                f.Add("$('#dynadlg > button).disabled = false;'");
-                f.Add("});");
-                f.Add("</script>");
-            },
+            null,
             pub, maxage);
         }
 

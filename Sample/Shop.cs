@@ -52,7 +52,7 @@ namespace Greatbone.Sample
 
         public void WriteData<R>(IDataOutput<R> o, int proj = 0) where R : IDataOutput<R>
         {
-            o.Put(nameof(id), id);
+            o.Put(nameof(id), id, Required: true);
             o.Put(nameof(name), name);
             if (proj.Kept())
             {

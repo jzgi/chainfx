@@ -59,5 +59,10 @@
         {
             return (proj & KEPT) != KEPT;
         }
+
+        public static bool Contextual(this int proj)
+        {
+            return (proj & CONTEXTUAL) != CONTEXTUAL;
+        }
     }
 }

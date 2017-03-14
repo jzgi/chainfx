@@ -48,7 +48,7 @@ namespace Greatbone.Sample
         }
 
         // [Shop]
-        [Ui("新建")]
+        [Ui("新建", Modal = 1)]
         public async Task @new(ActionContext ac)
         {
             if (ac.GET)
@@ -59,6 +59,7 @@ namespace Greatbone.Sample
             else // post
             {
                 var item = await ac.ReadObjectAsync<Item>();
+                item.shopid = ac[typeof(ShopVarFolder)];
                 using (var dc = Service.NewDbContext())
                 {
                     dc.Sql("INSERT INTO items")._(Item.Empty)._VALUES_(Item.Empty)._("");
@@ -93,10 +94,10 @@ namespace Greatbone.Sample
         }
 
         [User]
-        [Ui]
+        [Ui("上架/下架")]
         public void toggle(ActionContext ac)
         {
-            string shopid = ac[1];
+            string shopid = ac[typeof(ShopVarFolder)];
             using (var dc = ac.NewDbContext())
             {
                 dc.Execute("UPDATE items SET enabled = NOT enabled WHERE shopid = @1", p => p.Set(shopid));
@@ -106,10 +107,10 @@ namespace Greatbone.Sample
         }
 
         [User]
-        [Ui]
+        [Ui("删除")]
         public async Task modify(ActionContext ac)
         {
-            string shopid = ac[1];
+            string shopid = ac[typeof(ShopVarFolder)];
 
             if (ac.GET)
             {

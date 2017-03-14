@@ -36,7 +36,10 @@ namespace Greatbone.Sample
 
         public void ReadData(IDataInput i, int proj = 0)
         {
-            i.Get(nameof(shopid), ref shopid);
+            if (proj.Contextual())
+            {
+                i.Get(nameof(shopid), ref shopid);
+            }
             i.Get(nameof(name), ref name);
             i.Get(nameof(unit), ref unit);
             i.Get(nameof(descr), ref descr);
@@ -54,16 +57,19 @@ namespace Greatbone.Sample
 
         public void WriteData<R>(IDataOutput<R> o, int proj = 0) where R : IDataOutput<R>
         {
-            o.Put(nameof(shopid), shopid);
-            o.Put(nameof(name), name);
+            if (proj.Contextual())
+            {
+                o.Put(nameof(shopid), shopid);
+            }
+            o.Put(nameof(name), name, Label: "品名", Max: 10, Required: true);
             o.Put(nameof(unit), unit);
             o.Put(nameof(descr), descr);
             if (proj.Bin())
             {
-                o.Put(nameof(icon), icon);
+                o.Put(nameof(icon), icon, Label: "图片", Size: "240,240", Ratio: "1:1", Required: true);
             }
             o.Put(nameof(oprice), oprice);
-            o.Put(nameof(price), price);
+            o.Put(nameof(price), price, Required: true);
             o.Put(nameof(min), min);
             o.Put(nameof(step), step);
             o.Put(nameof(sold), sold);

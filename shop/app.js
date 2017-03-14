@@ -33,7 +33,8 @@ function onok(btn, modal) {
         var iframe = dlge.find('iframe');
         var form = iframe.contents().find('form');
         if (form.length != 0) {
-            form.first().submit();
+            if (!form[0].reportValidity()) return;
+            form[0].submit();
         } else {
             location.reload();
             return;
