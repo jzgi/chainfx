@@ -2,9 +2,6 @@
 
 namespace Greatbone.Sample
 {
-    ///
-    /// This folder contains mainly a user's personal stuffs, including the shopping cart and orders.
-    ///
     [Ui("用户")]
     public class UserVarFolder : Folder, IVar
     {
@@ -30,13 +27,32 @@ namespace Greatbone.Sample
         }
 
         [Ui]
+        [State]
         public void cancel(ActionContext ac)
         {
 
         }
 
-        [Ui]
+        [Ui("基本资料", Modal = 1)]
         public void profile(ActionContext ac)
+        {
+            string userid = ac[this];
+
+            using (var dc = ac.NewDbContext())
+            {
+                if (dc.Query1("SELECT * FROM users WHERE id = @1", p => p.Set(userid)))
+                {
+                    ac.GiveModalForm(200, dc.ToObject<User>());
+                }
+                else
+                {
+                    ac.Give(404); // not found
+                }
+            }
+        }
+
+        [Ui("设置密码", Modal = 1)]
+        public void pass(ActionContext ac)
         {
 
         }

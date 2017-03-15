@@ -9,6 +9,8 @@ namespace Greatbone.Sample
     ///
     public class OrderFolder : Folder
     {
+        static readonly Map<string> Abc = new Map<string>();
+
         public OrderFolder(FolderContext fc) : base(fc)
         {
             CreateVar<OrderVarFolder>();
@@ -17,34 +19,17 @@ namespace Greatbone.Sample
         // [Shop]
         public void @default(ActionContext ac, int page)
         {
-            string shopid = ac[1];
-            string key = ac[this];
-            if (key.EndsWith("i")) // orderi
+            string shopid = ac[typeof(ShopVarFolder)];
+            short status = Minor;
+            using (var dc = ac.NewDbContext())
             {
-                using (var dc = ac.NewDbContext())
+                if (dc.Query("SELECT * FROM orders WHERE shopid = @1 AND status = @2 ORDER BY id LIMIT 20 OFFSET @3", p => p.Set(shopid).Set(status).Set(page * 20)))
                 {
-                    if (dc.Query("SELECT * FROM orders WHERE shopid = @1 AND status < 4", p => p.Set(shopid)))
-                    {
-                        ac.GiveFolderPage(Parent, 200, dc.ToList<Order>());
-                    }
-                    else
-                    {
-                        ac.GiveFolderPage(Parent, 200, (List<Order>)null);
-                    }
+                    ac.GiveFolderPage(Parent, 200, dc.ToList<Order>());
                 }
-            }
-            else // ordero
-            {
-                using (var dc = ac.NewDbContext())
+                else
                 {
-                    if (dc.Query("SELECT * FROM orders WHERE shopid = @1 AND status >= 4 ORDER BY id LIMIT 20 OFFSET @2", p => p.Set(shopid).Set(page * 20)))
-                    {
-                        ac.GiveFolderPage(Parent, 200, dc.ToList<Order>());
-                    }
-                    else
-                    {
-                        ac.GiveFolderPage(Parent, 200, (List<Order>)null);
-                    }
+                    ac.GiveFolderPage(Parent, 200, (List<Order>)null);
                 }
             }
         }

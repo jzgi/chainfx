@@ -8,9 +8,11 @@ namespace Greatbone.Sample
     {
         public ShopVarFolder(FolderContext dc) : base(dc)
         {
-            AddSub<OrderFolder>("orderi", new UiAttribute("当前订单"));
+            AddSub<OrderFolder>("order-0", new UiAttribute("当前订单"));
 
-            AddSub<OrderFolder>("ordero", new UiAttribute("以往订单"));
+            AddSub<OrderFolder>("order-2", new UiAttribute("已完成订单"));
+
+            AddSub<OrderFolder>("order-7", new UiAttribute("已取消订单"));
 
             AddSub<ItemFolder>("item", new UiAttribute("货架"));
 

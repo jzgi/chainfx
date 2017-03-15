@@ -21,6 +21,10 @@ namespace Greatbone.Core
         // state-passing
         readonly FolderContext fc;
 
+        readonly string major;
+
+        readonly short minor;
+
         // declared actions 
         readonly Roll<ActionInfo> actions;
 
@@ -38,6 +42,17 @@ namespace Greatbone.Core
         protected Folder(FolderContext fc) : base(fc.Name, null)
         {
             this.fc = fc;
+            // separate major and minor name parts
+            int dash = Name.IndexOf('-');
+            if (dash != -1)
+            {
+                major = Name.Substring(0, dash);
+                minor = Name.Substring(dash + 1).ToShort();
+            }
+            else
+            {
+                major = Name;
+            }
 
             // gather actions
             actions = new Roll<ActionInfo>(32);
@@ -174,6 +189,10 @@ namespace Greatbone.Core
 
             return folder;
         }
+
+        public string Major => major;
+
+        public short Minor => minor;
 
         public Roll<ActionInfo> Actions => actions;
 

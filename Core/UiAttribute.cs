@@ -27,5 +27,7 @@ namespace Greatbone.Core
         /// 3. picker mode
         ///
         public int Modal { get; set; }
+
+        public bool Get { get; set; }
     }
 }
