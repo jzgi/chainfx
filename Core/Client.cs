@@ -22,8 +22,8 @@ namespace Greatbone.Core
         // prepared header value
         readonly string x_event;
 
-        // moniker
-        readonly string moniker;
+        // target serviceid
+        readonly string targetid;
 
         // this field is only accessed by the scheduler
         Task pollTask;
@@ -38,7 +38,7 @@ namespace Greatbone.Core
         public Client(Service service, string moniker, string raddr)
         {
             this.service = service;
-            this.moniker = moniker;
+            this.targetid = moniker;
 
             if (service != null) // build lastevent poll condition
             {
@@ -60,7 +60,7 @@ namespace Greatbone.Core
             Timeout = TimeSpan.FromSeconds(5);
         }
 
-        public string Name => moniker;
+        public string Name => targetid;
 
 
         public void TryPoll(int ticks)
@@ -129,7 +129,7 @@ namespace Greatbone.Core
                         }
 
                         // database last id
-                        dc.Execute("UPDATE evtu SET lastid = @1 WHERE moniker = @2", p => p.Set(id).Set(moniker));
+                        dc.Execute("UPDATE evtu SET lastid = @1 WHERE moniker = @2", p => p.Set(id).Set(targetid));
                     }
                 }
             });

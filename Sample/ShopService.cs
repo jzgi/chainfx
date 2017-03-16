@@ -1,13 +1,11 @@
-﻿using System.Threading;
-using System.Threading.Tasks;
+﻿using System.Collections.Generic;
+using System.Threading;
 using Greatbone.Core;
 
 namespace Greatbone.Sample
 {
     public class ShopService : AbstService
     {
-        static readonly Client WCPay = new Client("https://api.mch.weixin.qq.com");
-
         // the timer for triggering periodically obtaining access_token from weixin
         readonly Timer timer;
 
@@ -64,21 +62,9 @@ namespace Greatbone.Sample
         }
 
         [User]
-        public void start(ActionContext ac)
+        public void mgmt(ActionContext ac)
         {
-            ac.GiveStartPage(200);
-        }
-
-        public async Task paynotify(ActionContext ac)
-        {
-            XElem xe = await ac.ReadAsync<XElem>();
-            string mch_id = xe[nameof(mch_id)];
-            string openid = xe[nameof(openid)];
-            string bank_type = xe[nameof(bank_type)];
-            string total_fee = xe[nameof(total_fee)];
-            string transaction_id = xe[nameof(transaction_id)]; // 微信支付订单号
-            string out_trade_no = xe[nameof(out_trade_no)]; // 商户订单号
-
+            ac.GiveFolderPage(this, 200, (List<Order>)null);
         }
 
         public void ACCESS_TOKEN(EventContext ec)

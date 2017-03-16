@@ -5,12 +5,8 @@ using static Greatbone.Sample.Order;
 
 namespace Greatbone.Sample
 {
-    ///
-    ///
     public class OrderFolder : Folder
     {
-        static readonly Map<string> Abc = new Map<string>();
-
         public OrderFolder(FolderContext fc) : base(fc)
         {
             CreateVar<OrderVarFolder>();
@@ -34,7 +30,55 @@ namespace Greatbone.Sample
             }
         }
 
-        [Ui(Label = "取消")]
+        [Ui("核对付款")]
+        [State(ASKED, FIXED | CANCELLED, CANCELLED)]
+        public async Task check(ActionContext ac)
+        {
+            string shopid = ac[0];
+            Form frm = await ac.ReadAsync<Form>();
+            int[] pk = frm[nameof(pk)];
+
+            using (var dc = ac.NewDbContext())
+            {
+                dc.Sql("UPDATE orders SET ").setstate()._(" WHERE id = @1 AND shopid = @2 AND ").statecond();
+                if (dc.Query(p => p.Set(pk).Set(shopid)))
+                {
+                    var order = dc.ToArray<Order>();
+                }
+                else
+                {
+                }
+            }
+        }
+
+        [Ui("锁定备货")]
+        [State(ASKED, FIXED | CANCELLED, CANCELLED)]
+        public async Task fix(ActionContext ac)
+        {
+            string shopid = ac[0];
+            Form frm = await ac.ReadAsync<Form>();
+            int[] pk = frm[nameof(pk)];
+
+            using (var dc = ac.NewDbContext())
+            {
+                dc.Sql("UPDATE orders SET ").setstate()._(" WHERE id = @1 AND shopid = @2 AND ").statecond();
+                if (dc.Query(p => p.Set(pk).Set(shopid)))
+                {
+                    var order = dc.ToArray<Order>();
+                }
+                else
+                {
+                }
+            }
+        }
+
+        [Ui("标注完成")]
+        [State(ASKED, FIXED | CANCELLED, CANCELLED)]
+        public void close(ActionContext ac)
+        {
+        }
+
+        [Ui("取消")]
         [State(ASKED, FIXED | CANCELLED, CANCELLED)]
         public async Task cancel(ActionContext ac)
         {
@@ -58,7 +102,7 @@ namespace Greatbone.Sample
             }
             else
             {
-                using (var dc = Service.NewDbContext())
+                using (var dc = ac.NewDbContext())
                 {
                     dc.Sql("UPDATE orders SET ").setstate()._(" WHERE id IN () AND shopid = @1 AND ").statecond();
                     if (dc.Query(p => p.Set(pk).Set(shopid)))
@@ -71,31 +115,6 @@ namespace Greatbone.Sample
                     }
                 }
             }
-        }
-
-        [Ui(Label = "已备货")]
-        [State(ASKED, FIXED | CANCELLED, CANCELLED)]
-        public async Task fix(ActionContext ac)
-        {
-            string shopid = ac[0];
-            Form frm = await ac.ReadAsync<Form>();
-            int[] pk = frm[nameof(pk)];
-
-            using (var dc = ac.NewDbContext())
-            {
-                dc.Sql("UPDATE orders SET ").setstate()._(" WHERE id = @1 AND shopid = @2 AND ").statecond();
-                if (dc.Query(p => p.Set(pk).Set(shopid)))
-                {
-                    var order = dc.ToArray<Order>();
-                }
-                else
-                {
-                }
-            }
-        }
-
-        public void close(ActionContext ac)
-        {
         }
 
         [User]

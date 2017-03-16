@@ -39,7 +39,7 @@ namespace Greatbone.Sample
         internal string city;
         internal string wx;
 
-        internal string note;
+        internal string endorderid;
         internal int state;
         internal short status; // -1 dismissed, 0 closed, 1 open
 
@@ -54,7 +54,7 @@ namespace Greatbone.Sample
             i.Get(nameof(paid), ref paid);
             i.Get(nameof(city), ref city);
             i.Get(nameof(wx), ref wx);
-            i.Get(nameof(note), ref note);
+            i.Get(nameof(endorderid), ref endorderid);
             i.Get(nameof(status), ref status);
         }
 
@@ -67,7 +67,7 @@ namespace Greatbone.Sample
             o.Put(nameof(paid), paid);
             o.Put(nameof(city), city);
             o.Put(nameof(wx), wx);
-            o.Put(nameof(note), note);
+            o.Put(nameof(endorderid), endorderid);
             o.Put(nameof(status), status);
         }
     }
