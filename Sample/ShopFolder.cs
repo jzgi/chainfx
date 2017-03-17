@@ -85,7 +85,7 @@ namespace Greatbone.Sample
         // administrative actions
         //
 
-        [User(false, User.MARKETG)]
+        [User(false, User.LOCALADMIN)]
         [Ui("新建", Dialog = 1)]
         public async Task @new(ActionContext ac)
         {

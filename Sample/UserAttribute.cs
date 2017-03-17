@@ -41,7 +41,7 @@ namespace Greatbone.Sample
                 return false;
             }
 
-            if (jobs != 0 && (tok.jobs & jobs) == 0)
+            if (jobs != 0 && (tok.admin & jobs) == 0)
             {
                 return false;
             }

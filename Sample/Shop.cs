@@ -20,7 +20,7 @@ namespace Greatbone.Sample
         internal string credential;
         internal string tel;
         internal string mgrid;
-        internal string mgrwx;
+        internal string province;
         internal string city;
         internal double x;
         internal double y;
@@ -47,7 +47,7 @@ namespace Greatbone.Sample
             }
             i.Get(nameof(tel), ref tel);
             i.Get(nameof(mgrid), ref mgrid);
-            i.Get(nameof(mgrwx), ref mgrwx);
+            i.Get(nameof(province), ref province);
             i.Get(nameof(city), ref city);
             i.Get(nameof(x), ref x);
             i.Get(nameof(y), ref y);
@@ -78,7 +78,7 @@ namespace Greatbone.Sample
             }
             o.Put(nameof(tel), tel, Label: "电话", Max: 11);
             o.Put(nameof(mgrid), mgrid, Label: "管理员编号");
-            o.Put(nameof(mgrwx), mgrwx);
+            o.Put(nameof(province), province);
             o.Put(nameof(city), city, Label: "城市", Max: 10);
             o.Put(nameof(x), x);
             o.Put(nameof(y), y);

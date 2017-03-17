@@ -61,7 +61,7 @@ namespace Greatbone.Sample
                     }
                     else // create a temporary user
                     {
-                        tok = new User { wx = openid, nickname = nickname };
+                        tok = new User { city = openid, nickname = nickname };
                     }
                 }
             }
@@ -81,7 +81,7 @@ namespace Greatbone.Sample
                 {
                     if (dc.Query1("SELECT * FROM users WHERE id = @1", (p) => p.Set(id)))
                     {
-                        tok = dc.ToObject<User>();
+                        tok = dc.ToObject<User>(-1 ^ Projection.SECRET);
                     }
                 }
 
