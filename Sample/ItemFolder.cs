@@ -48,7 +48,7 @@ namespace Greatbone.Sample
         }
 
         // [Shop]
-        [Ui("新建", Modal = 1)]
+        [Ui("新建", Dialog = 1)]
         public async Task @new(ActionContext ac)
         {
             if (ac.GET)

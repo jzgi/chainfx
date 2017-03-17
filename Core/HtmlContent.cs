@@ -118,6 +118,16 @@ namespace Greatbone.Core
             Add("</div>");
         }
 
+        public void FORM_()
+        {
+            Add("<form>");
+        }
+
+        public void _FORM()
+        {
+            Add("</form>");
+        }
+
 
         public void FIELDSET_(string legend = null)
         {
@@ -817,7 +827,7 @@ namespace Greatbone.Core
 
             UiAttribute ui = act.Ui;
 
-            int modal = ui?.Modal ?? 0;
+            int modal = ui?.Dialog ?? 0;
             if (modal > 0)
             {
                 Add(" onclick=\"dialog(this,"); Add(modal); Add("); return false;\"");
@@ -853,7 +863,7 @@ namespace Greatbone.Core
 
                 UiAttribute ui = act.Ui;
 
-                int modal = ui?.Modal ?? 0;
+                int modal = ui?.Dialog ?? 0;
                 if (modal > 0)
                 {
                     Add(" onclick=\"dialog(this,"); Add(modal); Add("); return false;\"");
@@ -967,12 +977,18 @@ namespace Greatbone.Core
                     }
                     break;
                 case CTX_GRID:
+                    Add("<div class=\"row\">");
+                    Add("<div class=\"small-3 columns\">");
+                    AddLabel(Label, name);
+                    Add("</div>");
+                    Add("<div class=\"small-9 columns\">"); if (Opt != null) Add(Opt(v)); else Add(v); Add("</div>");
+                    Add("</div>");
                     break;
                 case CTX_LIST:
                     break;
                 case CTX_FILL:
-                    Add("<div class=\"pure-u-1 pure-u-md-1-2\">");
-                    CHECKBOX(name, v);
+                    Add("<div class=\"row\">");
+                    CHECKBOX(name, v, Label, Required);
                     Add("</div>");
                     break;
             }

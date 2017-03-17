@@ -33,7 +33,7 @@ namespace Greatbone.Sample
 
         }
 
-        [Ui("基本资料", Modal = 1)]
+        [Ui("基本资料", Dialog = 1)]
         public void profile(ActionContext ac)
         {
             string userid = ac[this];
@@ -51,7 +51,7 @@ namespace Greatbone.Sample
             }
         }
 
-        [Ui("设置密码", Modal = 1)]
+        [Ui("设置密码", Dialog = 1)]
         public void pass(ActionContext ac)
         {
 

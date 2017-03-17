@@ -20,8 +20,6 @@ namespace Greatbone.Sample
 
             AddSub<ShopFolder>("shop");
 
-            AddSub<PayFolder>("pay");
-
             AddSub<RepayFolder>("repay");
 
             // timer obtaining access_token from weixin
@@ -67,9 +65,12 @@ namespace Greatbone.Sample
             ac.GiveFolderPage(this, 200, (List<Order>)null);
         }
 
-        public void ACCESS_TOKEN(EventContext ec)
+        [User]
+        [Ui("清理购物车")]
+        public void clear(ActionContext ac)
         {
-
+            ac.GiveFolderPage(this, 200, (List<Order>)null);
         }
+
     }
 }

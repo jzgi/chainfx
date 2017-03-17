@@ -8,6 +8,8 @@ namespace Greatbone.Sample
     ///
     public class User : IData
     {
+        public static readonly User Empty = new User();
+
         // jobs
         public const short MARKETG = 0x11, ACCOUNTG = 0x12, CUSTOMER_SVC = 0x14;
 
@@ -15,7 +17,7 @@ namespace Greatbone.Sample
         internal string password;
         internal string credential;
         internal string wx; // weixin openid
-        internal string wxname; // weixin nickname
+        internal string nickname; // weixin nickname
         internal string name; // user name
         internal string tel;
         internal string shopid; // bound shop id
@@ -27,12 +29,12 @@ namespace Greatbone.Sample
         public void ReadData(IDataInput i, int proj = 0)
         {
             i.Get(nameof(id), ref id);
-            if (proj.Kept())
+            if (proj.Code())
             {
                 i.Get(nameof(credential), ref credential);
             }
             i.Get(nameof(wx), ref wx);
-            i.Get(nameof(wxname), ref wxname);
+            i.Get(nameof(nickname), ref nickname);
             i.Get(nameof(name), ref name);
             i.Get(nameof(tel), ref tel);
             i.Get(nameof(shopid), ref shopid);
@@ -46,7 +48,7 @@ namespace Greatbone.Sample
         {
             o.Put(nameof(id), id);
             o.Put(nameof(wx), wx);
-            o.Put(nameof(wxname), wxname);
+            o.Put(nameof(nickname), nickname);
             o.Put(nameof(name), name);
             o.Put(nameof(tel), tel);
             o.Put(nameof(shopid), shopid);

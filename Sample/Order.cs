@@ -76,7 +76,7 @@ namespace Greatbone.Sample
             i.Get(nameof(buyerwx), ref buyerwx);
 
             i.Get(nameof(created), ref created);
-            if (proj.Sub())
+            if (proj.Detail())
             {
                 i.Get(nameof(lines), ref lines);
             }
@@ -100,7 +100,7 @@ namespace Greatbone.Sample
             o.Put(nameof(buyerwx), buyerwx);
 
             o.Put(nameof(created), created);
-            if (proj.Sub())
+            if (proj.Detail())
             {
                 o.Put(nameof(lines), lines);
             }

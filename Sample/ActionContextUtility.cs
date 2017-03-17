@@ -132,6 +132,20 @@ namespace Greatbone.Sample
             pub, maxage);
         }
 
+        public static void GiveModalForm(this ActionContext ac, int status, Action<HtmlContent> form, bool? pub = null, int maxage = 60)
+        {
+            ac.GiveModal(status,
+            null,
+            m =>
+            {
+                m.FORM_();
+                form(m);
+                m._FORM();
+            },
+            null,
+            pub, maxage);
+        }
+
         public static void GiveModalForm(this ActionContext ac, int status, IDataInput input, Action<IDataInput, HtmlContent> valve, bool? pub = null, int maxage = 60)
         {
             ac.GivePage(status,
@@ -225,7 +239,7 @@ namespace Greatbone.Sample
             m =>
             {
                 List<ActionInfo> actions = folder.GetUiActions(ac);
-                m.FORM_GRID(ac, actions, lst);
+                m.FORM_GRID(ac, actions, lst, proj);
             },
             null,
             pub, maxage);

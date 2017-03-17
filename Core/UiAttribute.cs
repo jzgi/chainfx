@@ -10,11 +10,11 @@ namespace Greatbone.Core
     {
         public UiAttribute() { }
 
-        public UiAttribute(string label, string icon = null, int modal = 0)
+        public UiAttribute(string label, string icon = null, int dialog = 0)
         {
             Label = label;
             Icon = icon;
-            Modal = modal;
+            Dialog = dialog;
         }
 
         public string Label { get; set; }
@@ -26,8 +26,9 @@ namespace Greatbone.Core
         /// 2. prompt mode, merge to the parent and submit
         /// 3. picker mode
         ///
-        public int Modal { get; set; }
+        public int Dialog { get; set; }
 
         public bool Get { get; set; }
+
     }
 }

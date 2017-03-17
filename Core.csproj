@@ -13,5 +13,6 @@
   <ItemGroup>
     <PackageReference Include="Microsoft.AspNetCore.Server.Kestrel" Version="1.1.1"/>
     <PackageReference Include="Npgsql" Version="3.2.1"/>
+    <PackageReference Include="EmguCV" Version="3.1.0.1"/>
   </ItemGroup>
 </Project>

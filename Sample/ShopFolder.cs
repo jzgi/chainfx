@@ -1,6 +1,7 @@
 using System.Collections.Generic;
 using System.Threading.Tasks;
 using Greatbone.Core;
+using static Greatbone.Core.Projection;
 
 namespace Greatbone.Sample
 {
@@ -17,9 +18,11 @@ namespace Greatbone.Sample
         {
             using (var dc = ac.NewDbContext())
             {
-                if (dc.Query("SELECT * FROM shops "))
+                const int proj = -1 ^ BIN ^ CODE ^ HUMAN;
+                dc.Sql("SELECT ").columnlst(Shop.Empty, proj)._("FROM shops ORDER BY id LIMIT 30 OFFSET @1");
+                if (dc.Query(p => p.Set(page)))
                 {
-                    ac.GiveFolderPage(Parent, 200, dc.ToList<Shop>());
+                    ac.GiveFolderPage(Parent, 200, dc.ToList<Shop>(proj), proj);
                 }
                 else
                 {
@@ -83,13 +86,12 @@ namespace Greatbone.Sample
         //
 
         [User(false, User.MARKETG)]
-        [Ui("新建", Modal = 1)]
+        [Ui("新建", Dialog = 1)]
         public async Task @new(ActionContext ac)
         {
             if (ac.GET)
             {
-                Shop o = Shop.Empty;
-                ac.GiveModalForm(200, o);
+                ac.GiveModalForm(200, Shop.Empty, -1 ^ Projection.CODE);
             }
             else // post
             {
@@ -113,20 +115,8 @@ namespace Greatbone.Sample
             }
         }
 
-        [Ui("删除")]
-        public void del(ActionContext ac)
-        {
-
-        }
-
-        [Ui("禁用")]
-        public void disable(ActionContext ac)
-        {
-
-        }
-
-        [Ui("启用")]
-        public void enable(ActionContext ac)
+        [Ui("停业/启用")]
+        public void toggle(ActionContext ac)
         {
 
         }

@@ -9,5 +9,10 @@ namespace Greatbone.Sample
             // add sub folder
             CreateVar<ChatVarFolder>();
         }
+
+        public void ACCESS_TOKEN(EventContext ec)
+        {
+
+        }
     }
 }

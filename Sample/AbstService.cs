@@ -61,7 +61,7 @@ namespace Greatbone.Sample
                     }
                     else // create a temporary user
                     {
-                        tok = new User { wx = openid, wxname = nickname };
+                        tok = new User { wx = openid, nickname = nickname };
                     }
                 }
             }

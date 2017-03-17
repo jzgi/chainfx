@@ -17,12 +17,18 @@
             LATE = 0x10000000,
 
             // many
-            SUB = 0x04000000,
+            DETAIL = 0x08000000,
 
             // hidden or reserved
-            KEPT = 0x02000000,
+            CODE = 0x04000000,
 
-            CONTEXTUAL = 0x01000000;
+            // human interactive only
+            HUMAN = 0x02000000,
+
+            CONTEXTUAL = 0x01000000,
+
+            // operate by authority
+            CTRL = 0x00800000;
 
 
         public static bool Y(this int proj, int v)
@@ -37,32 +43,42 @@
 
         public static bool Auto(this int proj)
         {
-            return (proj & AUTO) != AUTO;
+            return (proj & AUTO) == AUTO;
         }
 
         public static bool Bin(this int proj)
         {
-            return (proj & BIN) != BIN;
+            return (proj & BIN) == BIN;
         }
 
         public static bool Late(this int proj)
         {
-            return (proj & LATE) != LATE;
+            return (proj & LATE) == LATE;
         }
 
-        public static bool Sub(this int proj)
+        public static bool Detail(this int proj)
         {
-            return (proj & SUB) != SUB;
+            return (proj & DETAIL) == DETAIL;
         }
 
-        public static bool Kept(this int proj)
+        public static bool Code(this int proj)
         {
-            return (proj & KEPT) != KEPT;
+            return (proj & CODE) == CODE;
+        }
+
+        public static bool Human(this int proj)
+        {
+            return (proj & HUMAN) == HUMAN;
         }
 
         public static bool Contextual(this int proj)
         {
-            return (proj & CONTEXTUAL) != CONTEXTUAL;
+            return (proj & CONTEXTUAL) == CONTEXTUAL;
+        }
+
+        public static bool Ctrl(this int proj)
+        {
+            return (proj & CTRL) == CTRL;
         }
     }
 }

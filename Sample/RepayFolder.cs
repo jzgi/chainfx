@@ -107,5 +107,10 @@ namespace Greatbone.Sample
                 }); // see other
             }
         }
+
+        [Ui("余额管理")]
+        public void balance(ActionContext ac)
+        {
+        }
     }
 }
