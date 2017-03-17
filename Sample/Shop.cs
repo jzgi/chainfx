@@ -37,7 +37,7 @@ namespace Greatbone.Sample
                 i.Get(nameof(id), ref id);
             }
             i.Get(nameof(name), ref name);
-            if (proj.Human())
+            if (proj.Secret())
             {
                 i.Get(nameof(password), ref password);
             }
@@ -68,7 +68,7 @@ namespace Greatbone.Sample
                 o.Put(nameof(id), id, Label: "编号", Required: true);
             }
             o.Put(nameof(name), name, Label: "名称");
-            if (proj.Human())
+            if (proj.Secret())
             {
                 o.Put(nameof(password), password, Label: "密码", Max: 20);
             }

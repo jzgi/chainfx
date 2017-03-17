@@ -23,12 +23,14 @@
             CODE = 0x04000000,
 
             // human interactive only
-            HUMAN = 0x02000000,
+            SECRET = 0x02000000,
 
-            CONTEXTUAL = 0x01000000,
+            IMPLIED = 0x01000000,
 
             // operate by authority
-            CTRL = 0x00800000;
+            CTRL = 0x00800000,
+
+            TRANSIENT = 0x00400000;
 
 
         public static bool Y(this int proj, int v)
@@ -66,19 +68,24 @@
             return (proj & CODE) == CODE;
         }
 
-        public static bool Human(this int proj)
+        public static bool Secret(this int proj)
         {
-            return (proj & HUMAN) == HUMAN;
+            return (proj & SECRET) == SECRET;
         }
 
-        public static bool Contextual(this int proj)
+        public static bool Implied(this int proj)
         {
-            return (proj & CONTEXTUAL) == CONTEXTUAL;
+            return (proj & IMPLIED) == IMPLIED;
         }
 
         public static bool Ctrl(this int proj)
         {
             return (proj & CTRL) == CTRL;
+        }
+
+        public static bool Transient(this int proj)
+        {
+            return (proj & TRANSIENT) == TRANSIENT;
         }
     }
 }

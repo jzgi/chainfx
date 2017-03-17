@@ -22,6 +22,8 @@ namespace Greatbone.Sample
 
             AddSub<RepayFolder>("repay");
 
+            AddSub<OrderFolder>("order", new UiAttribute("订单管理"));
+
             // timer obtaining access_token from weixin
             timer = new Timer(async state =>
             {

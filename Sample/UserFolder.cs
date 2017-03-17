@@ -15,8 +15,8 @@ namespace Greatbone.Sample
         {
             using (var dc = ac.NewDbContext())
             {
-                const int proj = -1 ^ BIN ^ CODE ^ HUMAN;
-                dc.Sql("SELECT ").columnlst(Shop.Empty, proj)._("FROM users ORDER BY id LIMIT 30 OFFSET @1");
+                const int proj = -1 ^ BIN ^ CODE ^ SECRET;
+                dc.Sql("SELECT ").columnlst(User.Empty, proj)._("FROM users ORDER BY id LIMIT 30 OFFSET @1");
                 if (dc.Query("SELECT * FROM users"))
                 {
                     ac.GiveFolderPage(Parent, 200, dc.ToList<User>()); // ok
@@ -50,7 +50,7 @@ namespace Greatbone.Sample
 
                 using (var dc = ac.NewDbContext())
                 {
-                    const int proj = -1 ^ BIN ^ CODE ^ HUMAN;
+                    const int proj = -1 ^ BIN ^ CODE ^ SECRET;
                     dc.Sql("SELECT ").columnlst(User.Empty, proj)._("FROM users WHERE id = @1");
                     if (dc.Query(p => p.Set(id)))
                     {

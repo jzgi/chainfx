@@ -146,7 +146,7 @@ namespace Greatbone.Sample
             pub, maxage);
         }
 
-        public static void GiveModalForm(this ActionContext ac, int status, IDataInput input, Action<IDataInput, HtmlContent> valve, bool? pub = null, int maxage = 60)
+        public static void GiveDialogForm(this ActionContext ac, int status, IDataInput input, Action<IDataInput, HtmlContent> valve, bool? pub = null, int maxage = 60)
         {
             ac.GivePage(status,
             null,
