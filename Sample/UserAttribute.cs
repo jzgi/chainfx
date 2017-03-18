@@ -6,19 +6,22 @@ namespace Greatbone.Sample
     {
         bool shop;
 
-        short jobs;
+        bool admin;
 
-        public UserAttribute() : this(false, 0) { }
+        bool sa;
 
-        public UserAttribute(bool shop, short jobs)
+        public UserAttribute() : this(false, false, false) { }
+
+        public UserAttribute(bool shop, bool admin, bool sa)
         {
             this.shop = shop;
-            this.jobs = jobs;
+            this.admin = admin;
+            this.sa = sa;
         }
 
         public bool Shop => shop;
 
-        public short Jobs => jobs;
+        public bool Admin => admin;
 
         protected internal override void Or(AuthorizeAttribute another)
         {
@@ -26,7 +29,7 @@ namespace Greatbone.Sample
             if (ua == null) return;
 
             shop |= ua.shop;
-            jobs |= ua.jobs;
+            admin |= ua.admin;
         }
 
         protected internal override bool Check(ActionContext ac)
@@ -41,7 +44,7 @@ namespace Greatbone.Sample
                 return false;
             }
 
-            if (jobs != 0 && (tok.admin & jobs) == 0)
+            if (admin && tok.admin)
             {
                 return false;
             }

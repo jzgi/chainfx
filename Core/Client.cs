@@ -80,7 +80,7 @@ namespace Greatbone.Core
                 {
                     HttpRequestMessage req = new HttpRequestMessage(HttpMethod.Get, PollUri);
                     HttpRequestHeaders reqhs = req.Headers;
-                    reqhs.TryAddWithoutValidation("From", service.Moniker);
+                    reqhs.TryAddWithoutValidation("From", service.Id);
                     reqhs.TryAddWithoutValidation(X_EVENT, x_event);
                     reqhs.TryAddWithoutValidation(X_SHARD, service.Shard);
 

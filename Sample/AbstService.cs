@@ -14,6 +14,9 @@ namespace Greatbone.Sample
         public AbstService(ServiceContext sc) : base(sc)
         {
             weixin = JsonUtility.FileToObject<WeiXin>(sc.GetFilePath("$weixin.json"));
+
+            // async authentication
+            Async = true;
         }
 
         protected override async Task AuthenticateAsync(ActionContext ac)
@@ -91,10 +94,10 @@ namespace Greatbone.Sample
 
             // set token success
             ac.Principal = tok;
-            SetCookies(ac, tok);
+            SetTokenCookie(ac, tok);
         }
 
-        protected override void Challenge(ActionContext ac)
+        protected override void GiveChallenge(ActionContext ac)
         {
             string ua = ac.Header("User-Agent");
             if (ua != null && ua.Contains("MicroMessenger")) // weixin

@@ -101,8 +101,8 @@ namespace Greatbone.Core
 
         public string domain;
 
-        // The service instance that does signon. Can be null if local
-        public string moniker;
+        // The service id that does signon. Can be null if local
+        public string svcid;
 
         public void ReadData(IDataInput i, int proj = 0)
         {
@@ -110,7 +110,7 @@ namespace Greatbone.Core
             i.Get(nameof(pose), ref pose);
             i.Get(nameof(maxage), ref maxage);
             i.Get(nameof(domain), ref domain);
-            i.Get(nameof(moniker), ref moniker);
+            i.Get(nameof(svcid), ref svcid);
         }
 
         public void WriteData<R>(IDataOutput<R> o, int proj = 0) where R : IDataOutput<R>
@@ -119,7 +119,7 @@ namespace Greatbone.Core
             o.Put(nameof(pose), pose);
             o.Put(nameof(maxage), maxage);
             o.Put(nameof(domain), domain);
-            o.Put(nameof(moniker), moniker);
+            o.Put(nameof(svcid), svcid);
         }
     }
 }

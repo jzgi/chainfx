@@ -22,7 +22,8 @@ namespace Greatbone.Sample
         internal string province; // province
         internal string city; // 
         internal string shopid; // bound shop id
-        internal short admin; // administrative jobs
+        internal bool admin; // local administrator
+        internal bool sa; // system administrator
         internal DateTime created;
         internal decimal addup; // orders addup
         internal bool disabled;
@@ -79,7 +80,7 @@ namespace Greatbone.Sample
             o.Put(nameof(disabled), disabled);
         }
 
-        public bool IsAdmin => admin != 0;
+        public bool IsAdmin => admin;
 
         public bool IsShop => shopid != null;
     }
