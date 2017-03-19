@@ -1,3 +1,4 @@
+using System;
 using System.Collections.Generic;
 using System.Net.Http.Headers;
 
@@ -25,7 +26,7 @@ namespace Greatbone.Core
         ///
         /// Used in both client and server to parse received content into model.
         ///
-        public static IDataInput ParseContent(string ctyp, byte[] buffer, int start, int count)
+        public static IDataInput ParseContent(string ctyp, byte[] buffer, int start, int count, Type typ = null)
         {
             if (string.IsNullOrEmpty(ctyp)) return null;
 
@@ -48,12 +49,23 @@ namespace Greatbone.Core
             }
             if (ctyp.StartsWith("text/plain"))
             {
-                Text txt = new Text();
-                for (int i = 0; i < count; i++)
+                if (typ == typeof(JObj) || typ == typeof(JArr))
                 {
-                    txt.Accept(buffer[i]);
+                    return new JsonParse(buffer, count).Parse();
                 }
-                return txt;
+                else if (typ == typeof(XElem))
+                {
+                    return new XmlParse(buffer, 0, count).Parse();
+                }
+                else
+                {
+                    Text txt = new Text();
+                    for (int i = 0; i < count; i++)
+                    {
+                        txt.Accept(buffer[i]);
+                    }
+                    return txt;
+                }
             }
             return null;
         }

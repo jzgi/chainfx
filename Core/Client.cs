@@ -35,10 +35,10 @@ namespace Greatbone.Core
 
         public Client(string raddr) : this(null, null, raddr) { }
 
-        public Client(Service service, string moniker, string raddr)
+        public Client(Service service, string targetid, string raddr)
         {
             this.service = service;
-            this.targetid = moniker;
+            this.targetid = targetid;
 
             if (service != null) // build lastevent poll condition
             {
@@ -55,8 +55,7 @@ namespace Greatbone.Core
                 }
             }
 
-            string addr = raddr.StartsWith("http") ? raddr : "http://" + raddr;
-            BaseAddress = new Uri(addr);
+            BaseAddress = new Uri(raddr);
             Timeout = TimeSpan.FromSeconds(5);
         }
 
@@ -155,9 +154,13 @@ namespace Greatbone.Core
                 req.Headers.Add("Authorization", "Bearer " + ctx.Token);
             }
             HttpResponseMessage rsp = await SendAsync(req, HttpCompletionOption.ResponseContentRead);
+            if (rsp.StatusCode != HttpStatusCode.OK)
+            {
+                return null;
+            }
             byte[] bytea = await rsp.Content.ReadAsByteArrayAsync();
             string ctyp = rsp.Content.Headers.GetValue("Content-Type");
-            return (M)WebUtility.ParseContent(ctyp, bytea, 0, bytea.Length);
+            return (M)WebUtility.ParseContent(ctyp, bytea, 0, bytea.Length, typeof(M));
         }
 
         public async Task<D> GetObjectAsync<D>(ActionContext ctx, string uri, int proj = 0) where D : IData, new()

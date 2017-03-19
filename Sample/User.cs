@@ -37,7 +37,7 @@ namespace Greatbone.Sample
             i.Get(nameof(nickname), ref nickname);
             i.Get(nameof(name), ref name);
             i.Get(nameof(tel), ref tel);
-            if (proj.Secret())
+            if (proj.Transient())
             {
                 i.Get(nameof(password), ref password);
             }
@@ -63,7 +63,7 @@ namespace Greatbone.Sample
             o.Put(nameof(nickname), nickname, Label: "昵称");
             o.Put(nameof(name), name, Label: "姓名");
             o.Put(nameof(tel), tel, Label: "电话");
-            if (proj.Secret())
+            if (proj.Transient())
             {
                 o.Put(nameof(password), password, Label: "密码");
             }

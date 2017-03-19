@@ -90,7 +90,7 @@ namespace Greatbone.Core
 
         public bool POST => "POST".Equals(Request.Method);
 
-        string uri;
+        volatile string uri;
 
         public string Uri
         {
@@ -104,7 +104,7 @@ namespace Greatbone.Core
             }
         }
 
-        string querystr;
+        volatile string querystr;
 
         public string QueryString
         {
@@ -112,7 +112,7 @@ namespace Greatbone.Core
             {
                 if (querystr == null)
                 {
-                    string querystr = Features.Get<IHttpRequestFeature>().QueryString;
+                    querystr = Features.Get<IHttpRequestFeature>().QueryString;
                 }
                 return querystr;
             }
@@ -245,7 +245,7 @@ namespace Greatbone.Core
                 }
                 // parse
                 string ctyp = Header("Content-Type");
-                entity = WebUtility.ParseContent(ctyp, buffer, 0, count);
+                entity = WebUtility.ParseContent(ctyp, buffer, 0, count, typeof(M));
             }
             return entity as M;
         }

@@ -286,10 +286,10 @@ namespace Greatbone.Core
             }
             if (varfolder != null) // variable-key
             {
-                if (key.Length == 0) // resolve varkey
+                if (key.Length == 0 && varkeyer != null) // resolve varkey
                 {
                     if (ac.Principal == null) throw AuthorizeEx;
-                    if ((key = GetVarKey(ac.Principal)) == null) return null;
+                    if ((key = varkeyer(ac.Principal)) == null) return null;
                 }
                 ac.Chain(key, varfolder);
                 return varfolder.ResolveFolder(ref relative, ac);

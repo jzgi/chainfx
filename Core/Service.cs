@@ -173,7 +173,6 @@ namespace Greatbone.Core
             };
         }
 
-
         /// 
         /// To asynchronously process the request.
         /// 
@@ -198,7 +197,6 @@ namespace Greatbone.Core
                         ac.Give(404); // not found
                         return;
                     }
-
                     await folder.HandleAsync(relative, ac);
                 }
             }
@@ -211,7 +209,6 @@ namespace Greatbone.Core
                 DBG(e.Message, e);
                 ac.Give(500, e.Message);
             }
-
 
             // prepare and send
             try
@@ -473,9 +470,9 @@ namespace Greatbone.Core
         }
 
         /// 
-        /// To asynchronously process the request.
+        /// To asynchronously process the request with authentication support.
         /// 
-        public virtual async Task ProcessRequestAsync(HttpContext context)
+        public override async Task ProcessRequestAsync(HttpContext context)
         {
             ActionContext ac = (ActionContext)context;
             HttpRequest req = ac.Request;
@@ -483,8 +480,8 @@ namespace Greatbone.Core
 
             try // authentication
             {
-                if (Async) { await AuthenticateAsync(ac); }
-                else { Authenticate(ac); }
+                if (Async) await AuthenticateAsync(ac);
+                else Authenticate(ac);
             }
             catch (Exception e) { DBG(e.Message); }
 
@@ -513,21 +510,14 @@ namespace Greatbone.Core
             }
             catch (AuthorizeException)
             {
-                if (ac.Principal == null)
-                {
-                    GiveChallenge(ac);
-                }
-                else
-                {
-                    ac.Give(403); // forbidden
-                }
+                if (ac.Principal == null) GiveChallenge(ac);
+                else ac.Give(403); // forbidden
             }
             catch (Exception e)
             {
                 DBG(e.Message, e);
                 ac.Give(500, e.Message);
             }
-
 
             // prepare and send
             try

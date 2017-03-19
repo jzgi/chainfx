@@ -11,7 +11,6 @@ namespace Greatbone.Sample
 
         volatile string access_token;
 
-
         public ShopService(ServiceContext sc) : base(sc)
         {
             CreateVar<CartVarFolder>(tok => ((User)tok).id);
@@ -57,7 +56,6 @@ namespace Greatbone.Sample
 
         public void @default(ActionContext ac)
         {
-            // return the shop start page
             DoFile("default.html", ac);
         }
 
