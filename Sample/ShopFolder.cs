@@ -127,5 +127,41 @@ namespace Greatbone.Sample
 
         }
 
+        public async Task @null(ActionContext ac)
+        {
+            if (ac.GET)
+            {
+                // return a form
+                // ac.GivePage(200, )
+
+            }
+            else
+            {
+                var f = await ac.ReadAsync<Form>();
+                string shopid = f[nameof(shopid)];
+                string password = f[nameof(password)];
+                string orig = f[nameof(orig)];
+
+                // data op
+                User prin = (User)ac.Principal;
+                if (prin.temp)
+                {
+                    using (var dc = ac.NewDbContext())
+                    {
+                        dc.Execute("INSERT INTO users");
+                    }
+                }
+                else
+                {
+                    using (var dc = ac.NewDbContext())
+                    {
+                        dc.Execute("UPDATE users");
+                    }
+                }
+
+                // return back
+                ac.GiveRedirect(orig);
+            }
+        }
     }
 }

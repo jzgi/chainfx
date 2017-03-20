@@ -180,7 +180,8 @@ namespace Greatbone.Core
                 else // handle a regular request
                 {
                     string relative = path.Substring(1);
-                    Folder folder = ResolveFolder(ref relative, ac);
+                    bool @null = false;
+                    Folder folder = ResolveFolder(ref relative, ac, ref @null);
                     if (folder == null)
                     {
                         ac.Give(404); // not found
@@ -191,8 +192,8 @@ namespace Greatbone.Core
             }
             catch (Exception e)
             {
-                if (this is ICatchAsync) await ((ICatchAsync)this).CatchAsync(ac, e);
-                else if (this is ICatch) ((ICatch)this).Catch(ac, e);
+                if (this is ICatchAsync) await ((ICatchAsync)this).CatchAsync(e, ac);
+                else if (this is ICatch) ((ICatch)this).Catch(e, ac);
                 else
                 {
                     ERR(e.Message, e);
@@ -459,10 +460,19 @@ namespace Greatbone.Core
                 else // handle a regular request
                 {
                     string relative = path.Substring(1);
-                    Folder folder = ResolveFolder(ref relative, ac);
+                    bool @null = false; // null-key-recovering
+                    Folder folder = ResolveFolder(ref relative, ac, ref @null);
                     if (folder == null)
                     {
-                        ac.Give(404); // not found
+                        if (@null)
+                        {
+                            ac.SetHeader("Location", path.Substring(path.Length - relative.Length) + "null?orig=" + ac.Uri);
+                            ac.Give(303); // redirect
+                        }
+                        else
+                        {
+                            ac.Give(404); // not found
+                        }
                         return;
                     }
                     await folder.HandleAsync(relative, ac);
@@ -470,8 +480,8 @@ namespace Greatbone.Core
             }
             catch (Exception e)
             {
-                if (this is ICatchAsync) await ((ICatchAsync)this).CatchAsync(ac, e);
-                else if (this is ICatch) ((ICatch)this).Catch(ac, e);
+                if (this is ICatchAsync) await ((ICatchAsync)this).CatchAsync(e, ac);
+                else if (this is ICatch) ((ICatch)this).Catch(e, ac);
                 else
                 {
                     WAR(e.Message, e);
@@ -490,7 +500,7 @@ namespace Greatbone.Core
             }
         }
 
-        public void SetTokenCookie(ActionContext ac, TPrincipal principal)
+        public void SetBearerCookie(ActionContext ac, TPrincipal principal)
         {
             StringBuilder sb = new StringBuilder("Bearer=");
             string token = Encrypt(principal);

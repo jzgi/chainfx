@@ -7,7 +7,8 @@ namespace Greatbone.Core
     ///
     public abstract class Nodule : IRollable
     {
-        protected static readonly AuthorizeException AuthorizeEx = new AuthorizeException();
+        public readonly AuthorizeException NoToken;
+        public readonly AuthorizeException NoPermission;
 
         // name as appeared in the uri path
         readonly string name;
@@ -25,6 +26,9 @@ namespace Greatbone.Core
 
         internal Nodule(string name, ICustomAttributeProvider attrs)
         {
+            NoToken = new AuthorizeException(true) { Nodoule = this };
+            NoPermission = new AuthorizeException(false) { Nodoule = this };
+
             this.name = name;
             this.upname = name.ToUpper();
 

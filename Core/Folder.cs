@@ -29,7 +29,10 @@ namespace Greatbone.Core
         readonly Roll<ActionInfo> actions;
 
         // the default action
-        readonly ActionInfo defaction;
+        readonly ActionInfo @default;
+
+        // the null-key-recovering action
+        readonly ActionInfo @null;
 
         // subfolders, if any
         internal Roll<Folder> subfolders;
@@ -79,10 +82,8 @@ namespace Greatbone.Core
                 else continue;
 
                 actions.Add(ai);
-                if (ai.Name.Equals("default"))
-                {
-                    defaction = ai;
-                }
+                if (ai.Name.Equals("default")) { @default = ai; }
+                if (ai.Name.Equals("null")) { @null = ai; }
             }
 
             // to override annotated attributes
@@ -247,7 +248,7 @@ namespace Greatbone.Core
         {
             if (string.IsNullOrEmpty(method))
             {
-                return defaction;
+                return @default;
             }
             return actions[method];
         }
@@ -267,7 +268,7 @@ namespace Greatbone.Core
             return lst;
         }
 
-        internal Folder ResolveFolder(ref string relative, ActionContext ac)
+        internal Folder ResolveFolder(ref string relative, ActionContext ac, ref bool handled)
         {
             int slash = relative.IndexOf('/');
             if (slash == -1)
@@ -282,17 +283,24 @@ namespace Greatbone.Core
             if (subfolders != null && subfolders.TryGet(key, out subfdr)) // chiled
             {
                 ac.Chain(key, subfdr);
-                return subfdr.ResolveFolder(ref relative, ac);
+                return subfdr.ResolveFolder(ref relative, ac, ref handled);
             }
             if (varfolder != null) // variable-key
             {
                 if (key.Length == 0 && varkeyer != null) // resolve varkey
                 {
-                    if (ac.Principal == null) throw AuthorizeEx;
-                    if ((key = varkeyer(ac.Principal)) == null) return null;
+                    if (ac.Principal == null) throw NoToken;
+                    if ((key = varkeyer(ac.Principal)) == null)
+                    {
+                        if (@null != null)
+                        {
+                            // redirect
+                        }
+                        return null;
+                    }
                 }
                 ac.Chain(key, varfolder);
-                return varfolder.ResolveFolder(ref relative, ac);
+                return varfolder.ResolveFolder(ref relative, ac, ref handled);
             }
             return null;
         }
@@ -302,7 +310,7 @@ namespace Greatbone.Core
             ac.Folder = this;
 
             // access check 
-            if (!DoAuthorize(ac)) throw AuthorizeEx;
+            if (!DoAuthorize(ac)) throw NoPermission;
 
             // pre-
             FilterAttribute flt = Filter;
@@ -325,7 +333,7 @@ namespace Greatbone.Core
                     name = rsc.Substring(0, dash);
                     ac.Subscript = subscpt = rsc.Substring(dash + 1).ToInt();
                 }
-                ActionInfo act = string.IsNullOrEmpty(name) ? defaction : GetAction(name);
+                ActionInfo act = string.IsNullOrEmpty(name) ? @default : GetAction(name);
                 if (act == null)
                 {
                     ac.Give(404); // not found
@@ -335,7 +343,7 @@ namespace Greatbone.Core
                 ac.Doer = act;
 
                 // access check
-                if (!act.DoAuthorize(ac)) throw AuthorizeEx;
+                if (!act.DoAuthorize(ac)) throw NoPermission;
 
                 // try in cache
 

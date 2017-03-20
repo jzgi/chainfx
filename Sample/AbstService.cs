@@ -85,19 +85,7 @@ namespace Greatbone.Sample
                     string province = jo[nameof(province)];
 
                     ERR("nickname: " + nickname);
-
-                    // whether a recorded user?
-                    using (var dc = NewDbContext())
-                    {
-                        if (dc.Query1("SELECT * FROM users WHERE id = @1", (p) => p.Set(openid)))
-                        {
-                            prin = dc.ToObject<User>();
-                        }
-                        else // create a temporary user
-                        {
-                            prin = new User { city = openid, nickname = nickname };
-                        }
-                    }
+                    prin = new User { city = openid, nickname = nickname, temp = true };
                 }
 
             }
@@ -129,13 +117,13 @@ namespace Greatbone.Sample
 
             // set token success
             ac.Principal = prin;
-            SetTokenCookie(ac, prin);
+            SetBearerCookie(ac, prin);
 
             ERR("principal and cookie being set...");
             ERR("normal exist ------------AuthenticateAsync");
         }
 
-        public virtual void Catch(ActionContext ac, Exception e)
+        public virtual void Catch(Exception e, ActionContext ac)
         {
             ERR("GiveChallenge() --------------");
             ERR("URI: " + ac.Uri);
@@ -155,6 +143,5 @@ namespace Greatbone.Sample
                 ac.Give(401); // unauthorized
             }
         }
-
     }
 }

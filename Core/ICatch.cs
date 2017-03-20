@@ -7,11 +7,11 @@ namespace Greatbone.Core
     ///
     public interface ICatch
     {
-        void Catch(ActionContext ac, Exception e);
+        void Catch(Exception e, ActionContext ac);
     }
 
     public interface ICatchAsync
     {
-        Task CatchAsync(ActionContext ac, Exception e);
+        Task CatchAsync(Exception e, ActionContext ac);
     }
 }
