@@ -120,7 +120,7 @@ namespace Greatbone.Sample
             ac.Give(status, cont, pub, maxage);
         }
 
-        public static void GiveModalForm(this ActionContext ac, int status, IData obj, int proj = 0, bool? pub = null, int maxage = 60)
+        public static void GiveDialogForm(this ActionContext ac, int status, IData obj, int proj = 0, bool? pub = null, int maxage = 60)
         {
             ac.GiveModal(status,
             null,

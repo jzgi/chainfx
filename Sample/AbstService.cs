@@ -31,9 +31,7 @@ namespace Greatbone.Sample
             }
 
             User prin = null;
-            string ua = ac.Header("User-Agent");
-            ERR("check ua: " + ua);
-            if (ua != null && ua.Contains("MicroMessenger")) // if from weixin
+            if (ac.ByWeiXin) // if from weixin
             {
                 ERR("From WeiXin");
                 string code = ac.Query[nameof(code)];
@@ -87,7 +85,6 @@ namespace Greatbone.Sample
                     ERR("nickname: " + nickname);
                     prin = new User { city = openid, nickname = nickname, temp = true };
                 }
-
             }
             else
             {
@@ -120,7 +117,7 @@ namespace Greatbone.Sample
             SetBearerCookie(ac, prin);
 
             ERR("principal and cookie being set...");
-            ERR("normal exist ------------AuthenticateAsync");
+            ERR("successful exist ------------AuthenticateAsync");
         }
 
         public virtual void Catch(Exception e, ActionContext ac)
@@ -129,13 +126,11 @@ namespace Greatbone.Sample
             ERR("URI: " + ac.Uri);
 
             // weixin authorization challenge
-            string ua = ac.Header("User-Agent");
-            if (ua != null && ua.Contains("MicroMessenger")) // weixin
+            if (ac.ByWeiXin) // weixin
             {
                 // redirect the user to weixin authorization page
                 string redirect_url = System.Net.WebUtility.UrlEncode(weixin.addr + ac.Uri);
                 ac.GiveRedirect("https://open.weixin.qq.com/connect/oauth2/authorize?appid=" + weixin.appid + "&redirect_uri=" + redirect_url + "&response_type=code&scope=snsapi_userinfo&state=1#wechat_redirect");
-                ERR("https://open.weixin.qq.com/connect/oauth2/authorize?appid=" + weixin.appid + "&redirect_uri=" + redirect_url + "&response_type=code&scope=snsapi_userinfo&state=1#wechat_redirect");
             }
             else // challenge BASIC scheme
             {

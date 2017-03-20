@@ -39,20 +39,20 @@ namespace Greatbone.Core
         public string Token { get; internal set; }
 
         // levels of keys along the URI path
-        Segment[] segments;
+        Segment[] segs;
 
         int segnum; // actual number of knots
 
         internal void Chain(string key, Folder folder)
         {
-            if (segments == null)
+            if (segs == null)
             {
-                segments = new Segment[4];
+                segs = new Segment[4];
             }
-            segments[segnum++] = new Segment(key, folder);
+            segs[segnum++] = new Segment(key, folder);
         }
 
-        public Segment this[int level] => segments[level];
+        public Segment this[int level] => segs[level];
 
         public Segment this[Type folderType]
         {
@@ -60,7 +60,7 @@ namespace Greatbone.Core
             {
                 for (int i = 0; i < segnum; i++)
                 {
-                    Segment seg = segments[i];
+                    Segment seg = segs[i];
                     if (seg.Type == folderType) return seg;
                 }
                 return default(Segment);
@@ -73,7 +73,7 @@ namespace Greatbone.Core
             {
                 for (int i = 0; i < segnum; i++)
                 {
-                    Segment seg = segments[i];
+                    Segment seg = segs[i];
                     if (seg.Folder == folder) return seg;
                 }
                 return default(Segment);
@@ -90,7 +90,7 @@ namespace Greatbone.Core
 
         public bool POST => "POST".Equals(Request.Method);
 
-        volatile string uri;
+        string uri;
 
         public string Uri
         {
@@ -104,7 +104,7 @@ namespace Greatbone.Core
             }
         }
 
-        volatile string querystr;
+        string querystr;
 
         public string QueryString
         {
@@ -118,16 +118,30 @@ namespace Greatbone.Core
             }
         }
 
+        string ua;
+
+        public string Ua
+        {
+            get
+            {
+                if (ua == null)
+                {
+                    ua = Header("User-Agent");
+                }
+                return ua;
+            }
+        }
+
+        public bool ByBrowser => Ua?.StartsWith("Mozilla") ?? false;
+
+        public bool ByBrowse => ByBrowser && Header("X-Requested-With") == null;
+
+        public bool ByWeiXin => Ua?.Contains("MicroMessenger") ?? false;
+
+        public bool ByJquery => Header("X-Requested-With") != null;
+
         // URL query 
         Form query;
-
-        // request body
-        byte[] buffer;
-
-        int count = -1;
-
-        // request entity (ArraySegment<byte>, JObj, JArr, Form, XElem, null)
-        object entity;
 
         public Form Query
         {
@@ -212,6 +226,14 @@ namespace Greatbone.Core
         }
 
         public IRequestCookieCollection Cookies => Request.Cookies;
+
+        // request body
+        byte[] buffer;
+
+        int count = -1;
+
+        // request entity (ArraySegment<byte>, JObj, JArr, Form, XElem, null)
+        object entity;
 
         public async Task<ArraySegment<byte>> ReadAsync()
         {

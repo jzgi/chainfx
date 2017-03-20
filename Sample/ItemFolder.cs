@@ -54,7 +54,7 @@ namespace Greatbone.Sample
             if (ac.GET)
             {
                 Item o = Item.Empty;
-                ac.GiveModalForm(200, o);
+                ac.GiveDialogForm(200, o);
             }
             else // post
             {
@@ -115,7 +115,7 @@ namespace Greatbone.Sample
             if (ac.GET)
             {
                 var item = new Item() { };
-                ac.GiveModalForm(200, item);
+                ac.GiveDialogForm(200, item);
             }
             else
             {

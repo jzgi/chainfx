@@ -5,7 +5,6 @@ using static Greatbone.Core.Projection;
 
 namespace Greatbone.Sample
 {
-    [Ui("供应点管理")]
     public class ShopFolder : Folder
     {
         public ShopFolder(FolderContext fc) : base(fc)
@@ -85,13 +84,42 @@ namespace Greatbone.Sample
         // administrative actions
         //
 
+        [Ui("申请", Dialog = 1)]
+        public async Task apply(ActionContext ac)
+        {
+            if (ac.GET)
+            {
+                ac.GiveDialogForm(200, Shop.Empty, -1 ^ Projection.CODE);
+            }
+            else // post
+            {
+                var shop = await ac.ReadObjectAsync<Shop>();
+
+                // validate
+
+                using (var dc = Service.NewDbContext())
+                {
+                    shop.credential = TextUtility.MD5(shop.id + ':' + shop.credential);
+                    dc.Sql("INSERT INTO shops")._(Shop.Empty)._VALUES_(Shop.Empty)._("");
+                    if (dc.Execute(p => p.Set(shop)) > 0)
+                    {
+                        ac.Give(201); // created
+                    }
+                    else
+                    {
+                        ac.Give(500); // internal server error
+                    }
+                }
+            }
+        }
+
         [User()]
         [Ui("新建", Dialog = 1)]
         public async Task @new(ActionContext ac)
         {
             if (ac.GET)
             {
-                ac.GiveModalForm(200, Shop.Empty, -1 ^ Projection.CODE);
+                ac.GiveDialogForm(200, Shop.Empty, -1 ^ Projection.CODE);
             }
             else // post
             {
@@ -146,8 +174,10 @@ namespace Greatbone.Sample
                 User prin = (User)ac.Principal;
                 if (prin.temp)
                 {
+                    prin.shopid = shopid;
                     using (var dc = ac.NewDbContext())
                     {
+                        dc.Sql("INSERT INTO users")._(User.Empty)._VALUES_(User.Empty)._("");
                         dc.Execute("INSERT INTO users");
                     }
                 }
@@ -155,7 +185,7 @@ namespace Greatbone.Sample
                 {
                     using (var dc = ac.NewDbContext())
                     {
-                        dc.Execute("UPDATE users");
+                        dc.Execute("UPDATE users SET shopid = @1 WHERE id = @2");
                     }
                 }
 

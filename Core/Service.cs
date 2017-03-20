@@ -464,7 +464,7 @@ namespace Greatbone.Core
                     Folder folder = ResolveFolder(ref relative, ac, ref @null);
                     if (folder == null)
                     {
-                        if (@null)
+                        if (@null && ac.ByBrowse)
                         {
                             ac.SetHeader("Location", path.Substring(path.Length - relative.Length) + "null?orig=" + ac.Uri);
                             ac.Give(303); // redirect
