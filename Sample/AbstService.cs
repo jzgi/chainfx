@@ -69,7 +69,7 @@ namespace Greatbone.Sample
                 {
                     if (dc.Query1("SELECT * FROM users WHERE id = @1", (p) => p.Set(openid)))
                     {
-                        prin = dc.ToObject<User>(-1 ^ Projection.TRANSIENT);
+                        prin = dc.ToObject<User>(-1 ^ Projection.SECRET);
                     }
                 }
 

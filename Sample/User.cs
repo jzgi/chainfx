@@ -29,18 +29,18 @@ namespace Greatbone.Sample
 
         public void ReadData(IDataInput i, int proj = 0)
         {
-            if (proj.Ctrl())
+            if (proj.Prime())
             {
                 i.Get(nameof(id), ref id);
             }
             i.Get(nameof(nickname), ref nickname);
             i.Get(nameof(name), ref name);
             i.Get(nameof(tel), ref tel);
-            if (proj.Transient())
+            if (proj.Secret())
             {
                 i.Get(nameof(password), ref password);
             }
-            if (proj.Code())
+            if (proj.Transf())
             {
                 i.Get(nameof(credential), ref credential);
             }
@@ -51,24 +51,26 @@ namespace Greatbone.Sample
             i.Get(nameof(created), ref created);
             i.Get(nameof(addup), ref addup);
             i.Get(nameof(disabled), ref disabled);
-
-            i.Get(nameof(temp), ref temp);
+            if (proj.Ctrl())
+            {
+                i.Get(nameof(temp), ref temp);
+            }
         }
 
         public void WriteData<R>(IDataOutput<R> o, int proj = 0) where R : IDataOutput<R>
         {
-            if (proj.Ctrl())
+            if (proj.Prime())
             {
                 o.Put(nameof(id), id, Label: "编号");
             }
             o.Put(nameof(nickname), nickname, Label: "昵称");
             o.Put(nameof(name), name, Label: "姓名");
             o.Put(nameof(tel), tel, Label: "电话");
-            if (proj.Transient())
+            if (proj.Secret())
             {
                 o.Put(nameof(password), password, Label: "密码");
             }
-            if (proj.Code())
+            if (proj.Transf())
             {
                 o.Put(nameof(credential), credential);
             }
@@ -79,8 +81,10 @@ namespace Greatbone.Sample
             o.Put(nameof(created), created);
             o.Put(nameof(addup), addup);
             o.Put(nameof(disabled), disabled);
-
-            o.Put(nameof(temp), temp);
+            if (proj.Ctrl())
+            {
+                o.Put(nameof(temp), temp);
+            }
         }
 
         public bool IsAdmin => admin;

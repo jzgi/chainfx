@@ -41,7 +41,7 @@ namespace Greatbone.Sample
             {
                 i.Get(nameof(password), ref password);
             }
-            if (proj.Code())
+            if (proj.Transf())
             {
                 i.Get(nameof(credential), ref credential);
             }
@@ -72,7 +72,7 @@ namespace Greatbone.Sample
             {
                 o.Put(nameof(password), password, Label: "密码", Max: 20);
             }
-            if (proj.Code())
+            if (proj.Transf())
             {
                 o.Put(nameof(credential), credential);
             }

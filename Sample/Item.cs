@@ -36,7 +36,7 @@ namespace Greatbone.Sample
 
         public void ReadData(IDataInput i, int proj = 0)
         {
-            if (proj.Implied())
+            if (proj.Stat())
             {
                 i.Get(nameof(shopid), ref shopid);
             }
@@ -57,7 +57,7 @@ namespace Greatbone.Sample
 
         public void WriteData<R>(IDataOutput<R> o, int proj = 0) where R : IDataOutput<R>
         {
-            if (proj.Implied())
+            if (proj.Stat())
             {
                 o.Put(nameof(shopid), shopid);
             }

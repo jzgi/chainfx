@@ -17,7 +17,7 @@ namespace Greatbone.Sample
         {
             using (var dc = ac.NewDbContext())
             {
-                const int proj = -1 ^ BIN ^ CODE ^ SECRET;
+                const int proj = -1 ^ BIN ^ TRANSF ^ SECRET;
                 dc.Sql("SELECT ").columnlst(Shop.Empty, proj)._("FROM shops ORDER BY id LIMIT 30 OFFSET @1");
                 if (dc.Query(p => p.Set(page)))
                 {
@@ -89,7 +89,7 @@ namespace Greatbone.Sample
         {
             if (ac.GET)
             {
-                ac.GiveDialogForm(200, Shop.Empty, -1 ^ Projection.CODE);
+                ac.GiveDialogForm(200, Shop.Empty, -1 ^ Projection.TRANSF);
             }
             else // post
             {
@@ -119,7 +119,7 @@ namespace Greatbone.Sample
         {
             if (ac.GET)
             {
-                ac.GiveDialogForm(200, Shop.Empty, -1 ^ Projection.CODE);
+                ac.GiveDialogForm(200, Shop.Empty, -1 ^ Projection.TRANSF);
             }
             else // post
             {
