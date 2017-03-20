@@ -10,9 +10,6 @@ namespace Greatbone.Sample
     {
         public static readonly User Empty = new User();
 
-        // jobs
-        public const short GLOBALADMIN = 3, LOCALADMIN = 1;
-
         internal string id; // openid
         internal string nickname; // weixin nickname
         internal string name; // user name
@@ -22,11 +19,13 @@ namespace Greatbone.Sample
         internal string province; // province
         internal string city; // 
         internal string shopid; // bound shop id
-        internal bool admin; // local administrator
-        internal bool sa; // system administrator
+        internal bool admin; // local admin
+        internal bool sa; // system admin
         internal DateTime created;
         internal decimal addup; // orders addup
         internal bool disabled;
+
+        internal bool temp; // record not in db yet
 
         public void ReadData(IDataInput i, int proj = 0)
         {
@@ -52,6 +51,8 @@ namespace Greatbone.Sample
             i.Get(nameof(created), ref created);
             i.Get(nameof(addup), ref addup);
             i.Get(nameof(disabled), ref disabled);
+
+            i.Get(nameof(temp), ref temp);
         }
 
         public void WriteData<R>(IDataOutput<R> o, int proj = 0) where R : IDataOutput<R>
@@ -78,6 +79,8 @@ namespace Greatbone.Sample
             o.Put(nameof(created), created);
             o.Put(nameof(addup), addup);
             o.Put(nameof(disabled), disabled);
+
+            o.Put(nameof(temp), temp);
         }
 
         public bool IsAdmin => admin;

@@ -20,7 +20,7 @@ namespace Greatbone.Core
         internal AuthorizeAttribute authorize;
 
         // operation(s)
-        readonly WorkAttribute work;
+        readonly FilterAttribute filter;
 
 
         internal Nodule(string name, ICustomAttributeProvider attrs)
@@ -50,11 +50,11 @@ namespace Greatbone.Core
             }
 
             // work
-            var works = (WorkAttribute[])attrs.GetCustomAttributes(typeof(WorkAttribute), false);
-            if (works.Length > 0)
+            var flts = (FilterAttribute[])attrs.GetCustomAttributes(typeof(FilterAttribute), false);
+            if (flts.Length > 0)
             {
-                work = works[0];
-                work.Nodule = this;
+                filter = flts[0];
+                filter.Nodule = this;
             }
         }
 
@@ -66,7 +66,7 @@ namespace Greatbone.Core
 
         public AuthorizeAttribute Authorize => authorize;
 
-        public WorkAttribute Work => work;
+        public FilterAttribute Filter => filter;
 
         public string Label => ui?.Label ?? upname;
 

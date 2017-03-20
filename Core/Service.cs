@@ -162,17 +162,6 @@ namespace Greatbone.Core
         {
         }
 
-        ///  
-        /// Returns a framework custom context.
-        /// 
-        public HttpContext CreateContext(IFeatureCollection features)
-        {
-            return new ActionContext(features)
-            {
-                Service = this
-            };
-        }
-
         /// 
         /// To asynchronously process the request.
         /// 
@@ -200,14 +189,15 @@ namespace Greatbone.Core
                     await folder.HandleAsync(relative, ac);
                 }
             }
-            catch (ParseException e)
-            {
-                ac.Give(400, e.Message); // bad request
-            }
             catch (Exception e)
             {
-                DBG(e.Message, e);
-                ac.Give(500, e.Message);
+                if (this is ICatchAsync) await ((ICatchAsync)this).CatchAsync(ac, e);
+                else if (this is ICatch) ((ICatch)this).Catch(ac, e);
+                else
+                {
+                    ERR(e.Message, e);
+                    ac.Give(500, e.Message);
+                }
             }
 
             // prepare and send
@@ -220,6 +210,17 @@ namespace Greatbone.Core
                 ERR(e.Message, e);
                 ac.Give(500, e.Message);
             }
+        }
+
+        ///  
+        /// Returns a framework custom context.
+        /// 
+        public HttpContext CreateContext(IFeatureCollection features)
+        {
+            return new ActionContext(features)
+            {
+                Service = this
+            };
         }
 
         public void DisposeContext(HttpContext context, Exception exception)
@@ -289,12 +290,12 @@ namespace Greatbone.Core
         // CLUSTER
         //
 
-        internal Client GetClient(string moniker)
+        internal Client GetClient(string targetid)
         {
             for (int i = 0; i < clients.Count; i++)
             {
                 Client cli = clients[i];
-                if (cli.Name.Equals(moniker)) return cli;
+                if (cli.Name.Equals(targetid)) return cli;
             }
             return null;
         }
@@ -423,51 +424,13 @@ namespace Greatbone.Core
     ///
     /// A microservice that implements authentication and authorization.
     ///
-    public abstract class Service<TPrin> : Service where TPrin : class, IData, new()
+    public abstract class Service<TPrincipal> : Service where TPrincipal : class, IData, new()
     {
         protected Service(ServiceContext sc) : base(sc)
         {
         }
 
         public Auth Auth => sc.auth;
-
-        public bool Async { get; set; }
-
-        protected virtual void Authenticate(ActionContext ac)
-        {
-            string token;
-            string hv = ac.Header("Authorization");
-            if (hv != null && hv.StartsWith("Bearer ")) // the Bearer scheme
-            {
-                token = hv.Substring(7);
-                ac.Principal = Decrypt(token);
-            }
-            else if (ac.Cookies.TryGetValue("Bearer", out token))
-            {
-                ac.Principal = Decrypt(token);
-            }
-        }
-
-        protected virtual async Task AuthenticateAsync(ActionContext ac)
-        {
-            await Task.CompletedTask;
-        }
-
-        protected virtual void GiveChallenge(ActionContext ac)
-        {
-            string ua = ac.Header("User-Agent");
-            if (ua.Contains("Mozila")) // if browser
-            {
-                string loc = "singon" + "?orig=" + ac.Uri;
-                ac.SetHeader("Location", loc);
-                ac.Give(303); // see other - redirect to signon url
-            }
-            else // non-browser
-            {
-                ac.SetHeader("WWW-Authenticate", "Bearer");
-                ac.Give(401); // unauthorized
-            }
-        }
 
         /// 
         /// To asynchronously process the request with authentication support.
@@ -478,13 +441,15 @@ namespace Greatbone.Core
             HttpRequest req = ac.Request;
             string path = req.Path.Value;
 
-            try // authentication
+            // authentication
+            try
             {
-                if (Async) await AuthenticateAsync(ac);
-                else Authenticate(ac);
+                if (this is IAuthenticateAsync) await ((IAuthenticateAsync)this).AuthenticateAsync(ac, true);
+                else if (this is IAuthenticate) ((IAuthenticate)this).Authenticate(ac, true);
             }
             catch (Exception e) { DBG(e.Message); }
 
+            // handling
             try
             {
                 if ("/*".Equals(path)) // handle an event poll request
@@ -500,26 +465,20 @@ namespace Greatbone.Core
                         ac.Give(404); // not found
                         return;
                     }
-
                     await folder.HandleAsync(relative, ac);
                 }
             }
-            catch (ParseException e)
-            {
-                ac.Give(400, e.Message); // bad request
-            }
-            catch (AuthorizeException)
-            {
-                if (ac.Principal == null) GiveChallenge(ac);
-                else ac.Give(403); // forbidden
-            }
             catch (Exception e)
             {
-                DBG(e.Message, e);
-                ac.Give(500, e.Message);
+                if (this is ICatchAsync) await ((ICatchAsync)this).CatchAsync(ac, e);
+                else if (this is ICatch) ((ICatch)this).Catch(ac, e);
+                else
+                {
+                    WAR(e.Message, e);
+                    ac.Give(500, e.Message);
+                }
             }
-
-            // prepare and send
+            // sending
             try
             {
                 await ac.SendAsync();
@@ -531,7 +490,7 @@ namespace Greatbone.Core
             }
         }
 
-        public void SetTokenCookie(ActionContext ac, TPrin principal)
+        public void SetTokenCookie(ActionContext ac, TPrincipal principal)
         {
             StringBuilder sb = new StringBuilder("Bearer=");
             string token = Encrypt(principal);
@@ -548,7 +507,7 @@ namespace Greatbone.Core
             ac.SetHeader("Set-Cookie", sb.ToString());
         }
 
-        public string Encrypt(TPrin principal)
+        public string Encrypt(TPrincipal principal)
         {
             if (Auth == null) return null;
 
@@ -578,7 +537,7 @@ namespace Greatbone.Core
             return new string(charbuf, 0, charbuf.Length);
         }
 
-        public TPrin Decrypt(string token)
+        public TPrincipal Decrypt(string token)
         {
             if (Auth == null) return null;
 
@@ -600,7 +559,7 @@ namespace Greatbone.Core
 
             JsonParse parse = new JsonParse(str.ToString());
             JObj jo = (JObj)parse.Parse();
-            return jo.ToObject<TPrin>();
+            return jo.ToObject<TPrincipal>();
         }
 
         // hexidecimal characters

@@ -5,7 +5,7 @@ using Greatbone.Core;
 
 namespace Greatbone.Sample
 {
-    public abstract class AbstService : Service<User>
+    public abstract class AbstService : Service<User>, IAuthenticateAsync, ICatch
     {
         protected static readonly Client WeiXinClient = new Client("https://api.weixin.qq.com");
 
@@ -14,12 +14,9 @@ namespace Greatbone.Sample
         public AbstService(ServiceContext sc) : base(sc)
         {
             weixin = JsonUtility.FileToObject<WeiXin>(sc.GetFilePath("$weixin.json"));
-
-            // async authentication
-            Async = true;
         }
 
-        protected override async Task AuthenticateAsync(ActionContext ac)
+        public async Task AuthenticateAsync(ActionContext ac, bool e)
         {
             // check cookie token
             ERR("AuthenticateAsync() --------------");
@@ -138,7 +135,7 @@ namespace Greatbone.Sample
             ERR("normal exist ------------AuthenticateAsync");
         }
 
-        protected override void GiveChallenge(ActionContext ac)
+        public virtual void Catch(ActionContext ac, Exception e)
         {
             ERR("GiveChallenge() --------------");
             ERR("URI: " + ac.Uri);
@@ -158,5 +155,6 @@ namespace Greatbone.Sample
                 ac.Give(401); // unauthorized
             }
         }
+
     }
 }
