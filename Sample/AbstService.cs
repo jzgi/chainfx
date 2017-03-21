@@ -7,6 +7,8 @@ namespace Greatbone.Sample
 {
     public abstract class AbstService : Service<User>, IAuthenticateAsync, ICatch
     {
+        const string STATE = "WXAUTH";
+
         protected static readonly Client WeiXinClient = new Client("https://api.weixin.qq.com");
 
         protected readonly WeiXin weixin;
@@ -18,23 +20,24 @@ namespace Greatbone.Sample
 
         public async Task<bool> AuthenticateAsync(ActionContext ac, bool e)
         {
+            ERR("---- AuthenticateAsync() -----");
+            ERR("URI: " + ac.Uri);
+
             string token;
             if (ac.Cookies.TryGetValue("Bearer", out token))
             {
+                ERR("-------- Bearer Cookie");
                 ac.Principal = Decrypt(token);
                 return true;
             }
 
             User prin = null;
-            if (ac.ByWeiXin) // if from weixin
+            string state = ac.Query[nameof(state)];
+            if ("WXAUTH".Equals(state)) // if weixin auth
             {
+                ERR("-------- WXAUTH");
+                // get access token by the code parameter value
                 string code = ac.Query[nameof(code)];
-                if (code == null)
-                {
-                    return true; // exit normal
-                }
-
-                // get access token by the code
                 JObj jo = await WeiXinClient.GetAsync<JObj>(null, "/sns/oauth2/access_token?appid=" + weixin.appid + "&secret=" + weixin.appsecret + "&code=" + code + "&grant_type=authorization_code");
                 if (jo == null)
                 {
@@ -45,7 +48,7 @@ namespace Greatbone.Sample
                 if (access_token == null)
                 {
                     string errmsg = jo[nameof(errmsg)];
-                    ERR("err: " + errmsg);
+                    ERR("err getting access_token: " + errmsg);
                     return false;
                 }
                 string openid = jo[nameof(openid)];
@@ -71,10 +74,11 @@ namespace Greatbone.Sample
                     }
                 }
             }
-            else
+            else if (ac.ByBrowse)
             {
+                ERR("-------- ByBrowse");
                 string authorization = ac.Header("Authorization");
-                if (authorization == null || !authorization.StartsWith("Basic ")) { return false; }
+                if (authorization == null || !authorization.StartsWith("Basic ")) { return true; }
 
                 // decode basic scheme
                 byte[] bytes = Convert.FromBase64String(authorization.Substring(6));
@@ -93,28 +97,31 @@ namespace Greatbone.Sample
                 // validate
                 if (prin == null || !md5.Equals(prin.credential)) { return false; }
             }
-
-            // set token success
-            ac.Principal = prin;
-            SetBearerCookie(ac, prin);
+            if (prin != null)
+            {
+                // set token success
+                ac.Principal = prin;
+                SetBearerCookie(ac, prin);
+            }
             return true;
         }
 
         public virtual void Catch(Exception e, ActionContext ac)
         {
+            ERR("---- Catch() -----");
+            ERR("URI: " + ac.Uri);
             if (e is AuthorizeException)
             {
-                ERR("GiveChallenge() --------------");
-                ERR("URI: " + ac.Uri);
-
                 if (((AuthorizeException)e).NoToken)
                 {
+                    ERR("-------- NoToken");
                     // weixin authorization challenge
                     if (ac.ByWeiXin) // weixin
                     {
+                        ERR("------------ ByWeiXin");
                         // redirect the user to weixin authorization page
                         string redirect_url = System.Net.WebUtility.UrlEncode(weixin.addr + ac.Uri);
-                        ac.GiveRedirect("https://open.weixin.qq.com/connect/oauth2/authorize?appid=" + weixin.appid + "&redirect_uri=" + redirect_url + "&response_type=code&scope=snsapi_userinfo&state=1#wechat_redirect");
+                        ac.GiveRedirect("https://open.weixin.qq.com/connect/oauth2/authorize?appid=" + weixin.appid + "&redirect_uri=" + redirect_url + "&response_type=code&scope=snsapi_userinfo&state=" + STATE + "#wechat_redirect");
                     }
                     else // challenge BASIC scheme
                     {

@@ -39,7 +39,7 @@ namespace Greatbone.Sample
             if (ac.GET)
             {
                 string id = null;
-                ac.GiveModalForm(200, f =>
+                ac.GiveDialogForm(200, f =>
                 {
                     f.TEXT(nameof(id), id, Label: "用户编号", Max: 11, Min: 11);
                 });

@@ -17,7 +17,7 @@ namespace Greatbone.Sample
 
             AddSub<UserFolder>("user");
 
-            AddSub<ShopFolder>("shop");
+            AddSub<ShopFolder>("shop", new UiAttribute("供应点管理"));
 
             AddSub<RepayFolder>("repay");
 

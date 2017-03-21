@@ -11,42 +11,18 @@
 </head>
 
 <body>
-
-    <a href="https://open.weixin.qq.com/connect/oauth2/authorize?appid=wxd007f5ad60226953&redirect_uri=http://shop.144000.tv/user//&response_type=code&scope=snsapi_userinfo&state=1#wechat_redirect">点击这里体验</a>
-
     <div class="row">
         <div class="small-10 columns">
-            <i class="fa fa-spinner fa-spin fa-3x fa-fw"></i>
-            <span class="sr-only">15公里以内</span>
+            <span>附近的供应点</span>
         </div>
-        <div class="small-2 columns float-right" onclick="$('#cart').foundation('open');">
-            <i class="fa fa-cart-plus fa-lg"></i>
+        <div class="small-2 columns float-right">
+            <a href="//"><i class="fa fa-cart-plus fa-lg"></i></a>
         </div>
     </div>
     <div id="main" class="row">
-    </div>
-    <div class="tiny reveal" id="addto" data-reveal data-resize="addto">
-        <h3>
-            购物车
-            <i class="fa fa-cart-plus fa-lg"></i>
-        </h3>
-        <button class="close-button" data-close aria-label="Close modal" type="button"><span aria-hidden="true">&times;</span></button>
-        <form>
-            <input type="number" name="" value="">
-            <button>添加到购物车</button>
-        </form>
-    </div>
-    <div class="tiny reveal" id="cart" data-reveal data-close-on-click="false">
-        <h3>
-            购物车
-            <i class="fa fa-cart-plus fa-lg"></i>
-        </h3>
-        <button class="close-button" data-close aria-label="Close modal" type="button"><span aria-hidden="true">&times;</span></button>
-        <div class="row">
-            <form>
-                <input type="number" name="" value="">
-                <button>付款</button>
-            </form>
+        <div class="small-10 columns">
+            <i class="fa fa-spinner fa-spin fa-3x fa-fw"></i>
+            <span class="sr-only">15公里以内</span>
         </div>
     </div>
     <script src="//cdn.bootcss.com/jquery/3.1.1/jquery.min.js"></script>
@@ -55,25 +31,25 @@
     <script>
         $(document).foundation();
 
-        $(document).ready(function() {
+        $(document).ready(function () {
 
             if (navigator.geolocation)
 
-                navigator.geolocation.getCurrentPosition(function(pos) {
+                navigator.geolocation.getCurrentPosition(function (pos) {
 
-                var crd = pos.coords;
-                var xv = crd.longitude.toString();
-                var yv = crd.latitude.toString();
+                    var crd = pos.coords;
+                    var xv = crd.longitude.toString();
+                    var yv = crd.latitude.toString();
 
 
-                $('#main').load(
-                    '/shop/lst', {
-                        x: xv.substring(0, xv.indexOf('.') + 2),
-                        y: yv.substring(0, yv.indexOf('.') + 2)
-                    }
-                );
+                    $('#main').load(
+                        '/shop/lst', {
+                            x: xv.substring(0, xv.indexOf('.') + 2),
+                            y: yv.substring(0, yv.indexOf('.') + 2)
+                        }
+                    );
 
-            });
+                });
 
         });
     </script>

@@ -160,7 +160,11 @@ namespace Greatbone.Sample
             if (ac.GET)
             {
                 // return a form
-                // ac.GivePage(200, )
+                ac.GiveDialogForm(200, (x) =>
+                {
+                    x.TEXT("shopid", "");
+                    x.PASSWORD("password", "");
+                });
 
             }
             else

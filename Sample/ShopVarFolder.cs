@@ -3,6 +3,7 @@ using System.Collections.Generic;
 
 namespace Greatbone.Sample
 {
+    [User]
     [Ui("供应点")]
     public class ShopVarFolder : Folder, IVar
     {
