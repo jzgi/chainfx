@@ -9,9 +9,9 @@ namespace Greatbone.Sample
 
         public Map<short> Scopes = new Map<short>
         {
-            [1] = "方圆三十公里",
-            [2] = "方圆一百公里",
-            [3] = "方圆一千公里"
+            [1] = "三十公里",
+            [2] = "一百公里",
+            [3] = "一千公里"
         };
 
         internal string id;
@@ -19,7 +19,8 @@ namespace Greatbone.Sample
         internal string password;
         internal string credential;
         internal string tel;
-        internal string mgrid;
+        internal string mgr; // manager name
+        internal string mgrwx; // manager weixin
         internal string province;
         internal string city;
         internal double x;
@@ -27,12 +28,12 @@ namespace Greatbone.Sample
         internal short scope;
         internal ArraySegment<byte> icon;
         internal string descr;
-        internal string license;
+        internal string lic;
         internal bool enabled;
 
         public void ReadData(IDataInput i, int proj = 0)
         {
-            if (proj.Ctrl())
+            if (proj.Prime())
             {
                 i.Get(nameof(id), ref id);
             }
@@ -46,7 +47,10 @@ namespace Greatbone.Sample
                 i.Get(nameof(credential), ref credential);
             }
             i.Get(nameof(tel), ref tel);
-            i.Get(nameof(mgrid), ref mgrid);
+            if (proj.Late())
+            {
+                i.Get(nameof(mgrwx), ref mgrwx);
+            }
             i.Get(nameof(province), ref province);
             i.Get(nameof(city), ref city);
             i.Get(nameof(x), ref x);
@@ -54,16 +58,19 @@ namespace Greatbone.Sample
             i.Get(nameof(scope), ref scope);
             i.Get(nameof(icon), ref icon);
             i.Get(nameof(descr), ref descr);
-            if (proj.Ctrl())
+            if (proj.Froz())
             {
-                i.Get(nameof(license), ref license);
+                i.Get(nameof(lic), ref lic);
+            }
+            if (proj.Power())
+            {
                 i.Get(nameof(enabled), ref enabled);
             }
         }
 
         public void WriteData<R>(IDataOutput<R> o, int proj = 0) where R : IDataOutput<R>
         {
-            if (proj.Ctrl())
+            if (proj.Prime())
             {
                 o.Put(nameof(id), id, Label: "编号", Required: true);
             }
@@ -77,7 +84,10 @@ namespace Greatbone.Sample
                 o.Put(nameof(credential), credential);
             }
             o.Put(nameof(tel), tel, Label: "电话", Max: 11);
-            o.Put(nameof(mgrid), mgrid, Label: "管理员编号");
+            if (proj.Late())
+            {
+                o.Put(nameof(mgrwx), mgrwx);
+            }
             o.Put(nameof(province), province);
             o.Put(nameof(city), city, Label: "城市", Max: 10);
             o.Put(nameof(x), x);
@@ -85,9 +95,12 @@ namespace Greatbone.Sample
             o.Put(nameof(scope), scope, Label: "覆盖", Opt: Scopes);
             o.Put(nameof(icon), icon);
             o.Put(nameof(descr), descr, Label: "简语");
-            if (proj.Ctrl())
+            if (proj.Froz())
             {
-                o.Put(nameof(license), license, Label: "工商登记");
+                o.Put(nameof(lic), lic, Label: "工商登记");
+            }
+            if (proj.Power())
+            {
                 o.Put(nameof(enabled), enabled, Label: "运行中", Opt: (b) => b ? "是" : "否");
             }
         }

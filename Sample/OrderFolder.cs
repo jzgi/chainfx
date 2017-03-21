@@ -50,7 +50,7 @@ namespace Greatbone.Sample
         }
 
         [Ui("核对付款")]
-        [State(ASKED, FIXED | CANCELLED, CANCELLED)]
+        [State(REASONED, LOCKED | CANCELLED, CANCELLED)]
         public async Task check(ActionContext ac)
         {
             string shopid = ac[0];
@@ -71,7 +71,7 @@ namespace Greatbone.Sample
         }
 
         [Ui("设为在处理")]
-        [State(ASKED, FIXED | CANCELLED, CANCELLED)]
+        [State(REASONED, LOCKED | CANCELLED, CANCELLED)]
         public async Task fix(ActionContext ac)
         {
             string shopid = ac[0];
@@ -92,13 +92,13 @@ namespace Greatbone.Sample
         }
 
         [Ui("标注完成")]
-        [State(ASKED, FIXED | CANCELLED, CANCELLED)]
+        [State(REASONED, LOCKED | CANCELLED, CANCELLED)]
         public void close(ActionContext ac)
         {
         }
 
         [Ui("取消")]
-        [State(ASKED, FIXED | CANCELLED, CANCELLED)]
+        [State(REASONED, LOCKED | CANCELLED, CANCELLED)]
         public async Task cancel(ActionContext ac)
         {
             string shopid = ac[0];

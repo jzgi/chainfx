@@ -28,11 +28,14 @@
             // secret or protected
             SECRET = 0x01000000,
 
-            /// state and status
-            STAT = 0x00800000,
+            /// need authority
+            POWER = 0x00800000,
+
+            /// frozen or immutable
+            FROZ = 0x00400000,
 
             // non-data or for control
-            CTRL = 0x00400000;
+            CTRL = 0x00200000;
 
 
         public static bool Y(this int proj, int v)
@@ -53,6 +56,11 @@
         public static bool Auto(this int proj)
         {
             return (proj & AUTO) == AUTO;
+        }
+
+        public static bool AutoPrime(this int proj)
+        {
+            return (proj & (AUTO | PRIME)) == (AUTO | PRIME);
         }
 
         public static bool Bin(this int proj)
@@ -80,9 +88,14 @@
             return (proj & SECRET) == SECRET;
         }
 
-        public static bool Stat(this int proj)
+        public static bool Power(this int proj)
         {
-            return (proj & STAT) == STAT;
+            return (proj & POWER) == POWER;
+        }
+
+        public static bool Froz(this int proj)
+        {
+            return (proj & FROZ) == FROZ;
         }
 
         public static bool Ctrl(this int proj)

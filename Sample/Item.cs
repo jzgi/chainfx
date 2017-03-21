@@ -11,32 +11,21 @@ namespace Greatbone.Sample
         public static readonly Item Empty = new Item();
 
         internal string shopid;
-
         internal string name;
-
         internal string unit;
-
         internal string descr;
-
         internal ArraySegment<byte> icon;
-
         internal decimal oprice; // original price
-
         internal decimal price; // current price
-
         internal short capacity;
-
         internal int min; // minimal ordered
-
         internal int step;
-
         internal int sold; // total sold 
-
         internal bool enabled;
 
         public void ReadData(IDataInput i, int proj = 0)
         {
-            if (proj.Stat())
+            if (proj.Prime())
             {
                 i.Get(nameof(shopid), ref shopid);
             }
@@ -51,13 +40,16 @@ namespace Greatbone.Sample
             i.Get(nameof(price), ref price);
             i.Get(nameof(min), ref min);
             i.Get(nameof(step), ref step);
-            i.Get(nameof(sold), ref sold);
+            if (proj.Froz())
+            {
+                i.Get(nameof(sold), ref sold);
+            }
             i.Get(nameof(enabled), ref enabled);
         }
 
         public void WriteData<R>(IDataOutput<R> o, int proj = 0) where R : IDataOutput<R>
         {
-            if (proj.Stat())
+            if (proj.Power())
             {
                 o.Put(nameof(shopid), shopid);
             }
@@ -72,7 +64,10 @@ namespace Greatbone.Sample
             o.Put(nameof(price), price, Required: true);
             o.Put(nameof(min), min);
             o.Put(nameof(step), step);
-            o.Put(nameof(sold), sold);
+            if (proj.Froz())
+            {
+                o.Put(nameof(sold), sold);
+            }
             o.Put(nameof(enabled), enabled, Opt: b => b ? "在售" : "下架");
         }
     }

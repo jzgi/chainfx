@@ -5,27 +5,28 @@ using Greatbone.Core;
 namespace Greatbone.Sample
 {
     /// 
-    /// An order processing workflow.
+    /// An order data object.
     ///
     public class Order : IData, IStatable
     {
         // state
         public const int
-            INITIAL = 0,
+            CREATED = 0,
             PAID = 1,
-            ASKED = 2,
-            FIXED = 4,
-            CLOSED = 4,
-            CANCELLED = 8;
+            LOCKED = 2,
+            CANCELLED = 4,
+            CLOSED = 8,
+
+            REASONED = 0x0100; // asked for cancelling
 
         // status
         static readonly Map<short> STATUS = new Map<short>
         {
-            [0] = "初始",
-            [1] = "已付款，等待处理",
-            [2] = "处理中",
-            [3] = "已结束",
-            [7] = "已取消",
+            [CREATED] = "新创建，等待付款",
+            [PAID] = "已付款，等待处理",
+            [LOCKED] = "处理中",
+            [CANCELLED] = "已取消",
+            [CLOSED] = "已结束",
         };
 
 
@@ -40,19 +41,19 @@ namespace Greatbone.Sample
         internal string buywx; // buyer openid
         internal string buytel; // buyer telephone
         internal string buyaddr; // buyer shipping address
-        internal decimal total;
         List<OrderLine> lines;
+        internal decimal total;
+        internal short status;
         internal DateTime created; // time created
         internal DateTime paid; // time paid
+        internal string reason; // for late cancelling
         internal DateTime cancelled; // time cancelled
-        internal DateTime handled; // time start to handle
+        internal DateTime locked; // time start to handle
         internal DateTime closed; // time received or closed
-        internal short state;
-        internal short status;
 
         public void ReadData(IDataInput i, int proj = 0)
         {
-            if (proj.Prime() && proj.Auto())
+            if (proj.AutoPrime())
             {
                 i.Get(nameof(id), ref id);
             }
@@ -69,6 +70,7 @@ namespace Greatbone.Sample
             {
                 i.Get(nameof(lines), ref lines);
             }
+            i.Get(nameof(status), ref status);
             if (proj.Auto())
             {
                 i.Get(nameof(created), ref created);
@@ -77,13 +79,8 @@ namespace Greatbone.Sample
             {
                 i.Get(nameof(paid), ref paid);
                 i.Get(nameof(cancelled), ref cancelled);
-                i.Get(nameof(handled), ref handled);
+                i.Get(nameof(locked), ref locked);
                 i.Get(nameof(closed), ref closed);
-            }
-            if (proj.Stat())
-            {
-                i.Get(nameof(state), ref state);
-                i.Get(nameof(status), ref status);
             }
         }
 
@@ -107,6 +104,7 @@ namespace Greatbone.Sample
             {
                 o.Put(nameof(lines), lines);
             }
+            o.Put(nameof(status), status, Opt: STATUS);
             if (proj.Auto())
             {
                 o.Put(nameof(created), created);
@@ -116,17 +114,23 @@ namespace Greatbone.Sample
             {
                 o.Put(nameof(paid), paid);
                 o.Put(nameof(cancelled), cancelled);
-                o.Put(nameof(handled), handled);
+                o.Put(nameof(locked), locked);
                 o.Put(nameof(closed), closed);
-            }
-            if (proj.Stat())
-            {
-                o.Put(nameof(state), state);
-                o.Put(nameof(status), status, Opt: STATUS);
             }
         }
 
-        public int State => state;
+        public int State
+        {
+            get
+            {
+                int v = status;
+                if (reason != null)
+                {
+                    v |= REASONED;
+                }
+                return v;
+            }
+        }
 
         public void add(string item, short qty, decimal price, string note)
         {
