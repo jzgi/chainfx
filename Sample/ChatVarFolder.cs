@@ -67,7 +67,7 @@ namespace Greatbone.Sample
                 var txt = await ac.ReadAsync<Text>();
                 Message msg = new Message()
                 {
-                    fromid = tok.id,
+                    fromid = tok.wx,
                     from = tok.name,
                     text = txt.ToString(),
                     time = DateTime.Now

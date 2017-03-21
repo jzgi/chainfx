@@ -13,7 +13,7 @@ namespace Greatbone.Sample
 
         public ShopService(ServiceContext sc) : base(sc)
         {
-            CreateVar<CartVarFolder>(tok => ((User)tok).id);
+            CreateVar<CartVarFolder>(tok => ((User)tok).wx);
 
             AddSub<UserFolder>("user");
 
@@ -24,33 +24,33 @@ namespace Greatbone.Sample
             AddSub<OrderFolder>("order", new UiAttribute("订单管理"));
 
             // timer obtaining access_token from weixin
-            timer = new Timer(async state =>
-            {
-                JObj jo = await WeiXinClient.GetAsync<JObj>(null, "/cgi-bin/token?grant_type=client_credential&appid=" + weixin.appid + "&secret=" + weixin.appsecret);
+            // timer = new Timer(async state =>
+            // {
+            //     JObj jo = await WeiXinClient.GetAsync<JObj>(null, "/cgi-bin/token?grant_type=client_credential&appid=" + weixin.appid + "&secret=" + weixin.appsecret);
 
-                if (jo == null) return;
+            //     if (jo == null) return;
 
-                access_token = jo[nameof(access_token)];
-                if (access_token == null)
-                {
-                    ERR("error getting access token");
-                    string errmsg = jo[nameof(errmsg)];
-                    ERR(errmsg);
-                    return;
-                }
+            //     access_token = jo[nameof(access_token)];
+            //     if (access_token == null)
+            //     {
+            //         ERR("error getting access token");
+            //         string errmsg = jo[nameof(errmsg)];
+            //         ERR(errmsg);
+            //         return;
+            //     }
 
-                int expires_in = jo[nameof(expires_in)]; // in seconds
+            //     int expires_in = jo[nameof(expires_in)]; // in seconds
 
-                int millis = (expires_in - 60) * 1000;
-                timer.Change(millis, millis); // adjust interval
+            //     int millis = (expires_in - 60) * 1000;
+            //     timer.Change(millis, millis); // adjust interval
 
-                // post an event
-                // using (var dc = NewDbContext())
-                // {
-                //     dc.Post("ACCESS_TOKEN", null, access_token, null);
-                // }
+            //     // post an event
+            //     // using (var dc = NewDbContext())
+            //     // {
+            //     //     dc.Post("ACCESS_TOKEN", null, access_token, null);
+            //     // }
 
-            }, null, 5000, 60000);
+            // }, null, 5000, 60000);
 
         }
 

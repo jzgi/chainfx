@@ -31,7 +31,7 @@ namespace Greatbone.Core
         // point of time to retry, set due to timeout or disconnection
         volatile int retryat;
 
-        internal long lastid;
+        internal long evtid;
 
         public Client(string raddr) : this(null, null, raddr) { }
 
@@ -128,7 +128,7 @@ namespace Greatbone.Core
                         }
 
                         // database last id
-                        dc.Execute("UPDATE evtu SET lastid = @1 WHERE moniker = @2", p => p.Set(id).Set(targetid));
+                        dc.Execute("UPDATE evtu SET evtid = @1 WHERE peerid = @2", p => p.Set(id).Set(targetid));
                     }
                 }
             });

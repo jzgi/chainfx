@@ -268,7 +268,7 @@ namespace Greatbone.Core
             return lst;
         }
 
-        internal Folder ResolveFolder(ref string relative, ActionContext ac, ref bool handled)
+        internal Folder ResolveFolder(ref string relative, ActionContext ac, ref bool recover)
         {
             int slash = relative.IndexOf('/');
             if (slash == -1)
@@ -283,7 +283,7 @@ namespace Greatbone.Core
             if (subfolders != null && subfolders.TryGet(key, out subfdr)) // chiled
             {
                 ac.Chain(key, subfdr);
-                return subfdr.ResolveFolder(ref relative, ac, ref handled);
+                return subfdr.ResolveFolder(ref relative, ac, ref recover);
             }
             if (varfolder != null) // variable-key
             {
@@ -292,15 +292,12 @@ namespace Greatbone.Core
                     if (ac.Principal == null) throw NoToken;
                     if ((key = varkeyer(ac.Principal)) == null)
                     {
-                        if (@null != null)
-                        {
-                            // redirect
-                        }
+                        if (@null != null) { recover = true; }
                         return null;
                     }
                 }
                 ac.Chain(key, varfolder);
-                return varfolder.ResolveFolder(ref relative, ac, ref handled);
+                return varfolder.ResolveFolder(ref relative, ac, ref recover);
             }
             return null;
         }

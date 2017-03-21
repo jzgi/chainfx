@@ -6,11 +6,11 @@ namespace Greatbone.Core
     ///
     public interface IAuthenticate
     {
-        void Authenticate(ActionContext ac, bool e);
+        bool Authenticate(ActionContext ac, bool e);
     }
 
     public interface IAuthenticateAsync
     {
-        Task AuthenticateAsync(ActionContext ac, bool e);
+        Task<bool> AuthenticateAsync(ActionContext ac, bool e);
     }
 }

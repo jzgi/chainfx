@@ -30,7 +30,7 @@ namespace Greatbone.Core
 
         string lastshard;
 
-        long lastid;
+        long evtid;
 
         internal EventQueue(string name)
         {
@@ -48,7 +48,7 @@ namespace Greatbone.Core
 
             lock (this)
             {
-                if (@event != lastevent || shard != lastshard || id != lastid)
+                if (@event != lastevent || shard != lastshard || id != evtid)
                 {
                     Clear();
                 }
@@ -108,7 +108,7 @@ namespace Greatbone.Core
                 // keep for state validation of next poll 
                 lastevent = e.name;
                 lastshard = e.shard;
-                lastid = e.id;
+                evtid = e.id;
             }
         }
 
@@ -133,9 +133,9 @@ namespace Greatbone.Core
 
                 dc.Execute(@"
                     CREATE TABLE IF NOT EXISTS evtu (
-                        moniker varchar(20),
-                        lastid int8,
-                        CONSTRAINT evtu_pkey PRIMARY KEY (moniker)
+                        peerid varchar(20),
+                        evtid int8,
+                        CONSTRAINT evtu_pkey PRIMARY KEY (peerid)
                     ) WITH (OIDS=FALSE);
 
                     CREATE SEQUENCE IF NOT EXISTS evtq_id_seq 
@@ -155,18 +155,18 @@ namespace Greatbone.Core
                     ) WITH (OIDS=FALSE)"
                 );
 
-                // init records for each moniker 
+                // init records for each peerid 
 
                 for (int i = 0; i < client.Count; i++)
                 {
                     Client cli = client[i];
-                    if (dc.Query1("SELECT lastid FROM evtu WHERE moniker = @1", p => p.Set(cli.Name)))
+                    if (dc.Query1("SELECT evtid FROM evtu WHERE peerid = @1", p => p.Set(cli.Name)))
                     {
-                        cli.lastid = dc.GetLong();
+                        cli.evtid = dc.GetLong();
                     }
                     else
                     {
-                        dc.Execute("INSERT INTO evtu (moniker, lastid) VALUES (@1, @2)", p => p.Set(cli.Name).Set(cli.lastid));
+                        dc.Execute("INSERT INTO evtu (peerid, evtid) VALUES (@1, @2)", p => p.Set(cli.Name).Set(cli.evtid));
                     }
                 }
             }

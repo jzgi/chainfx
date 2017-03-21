@@ -32,7 +32,7 @@
             POWER = 0x00800000,
 
             /// frozen or immutable
-            FROZ = 0x00400000,
+            IMMUT = 0x00400000,
 
             // non-data or for control
             CTRL = 0x00200000;
@@ -93,14 +93,9 @@
             return (proj & POWER) == POWER;
         }
 
-        public static bool Froz(this int proj)
+        public static bool Immut(this int proj)
         {
-            return (proj & FROZ) == FROZ;
-        }
-
-        public static bool Ctrl(this int proj)
-        {
-            return (proj & CTRL) == CTRL;
+            return (proj & IMMUT) == IMMUT;
         }
     }
 }

@@ -16,39 +16,29 @@ namespace Greatbone.Sample
             weixin = JsonUtility.FileToObject<WeiXin>(sc.GetFilePath("$weixin.json"));
         }
 
-        public async Task AuthenticateAsync(ActionContext ac, bool e)
+        public async Task<bool> AuthenticateAsync(ActionContext ac, bool e)
         {
-            // check cookie token
-            ERR("AuthenticateAsync() --------------");
-            ERR("URI: " + ac.Uri);
-
             string token;
             if (ac.Cookies.TryGetValue("Bearer", out token))
             {
                 ac.Principal = Decrypt(token);
-                ERR("got cookie principal ok ");
-                return;
+                return true;
             }
 
             User prin = null;
             if (ac.ByWeiXin) // if from weixin
             {
-                ERR("From WeiXin");
                 string code = ac.Query[nameof(code)];
                 if (code == null)
                 {
-                    ERR("No code, exist ------------AuthenticateAsync");
-                    return;
+                    return true; // exit normal
                 }
 
                 // get access token by the code
-                ERR("to get access_token from weixin ... ");
-
                 JObj jo = await WeiXinClient.GetAsync<JObj>(null, "/sns/oauth2/access_token?appid=" + weixin.appid + "&secret=" + weixin.appsecret + "&code=" + code + "&grant_type=authorization_code");
                 if (jo == null)
                 {
-                    ERR("no return json, exit: -----------AuthenticateAsync");
-                    return;
+                    return false;
                 }
 
                 string access_token = jo[nameof(access_token)];
@@ -56,42 +46,35 @@ namespace Greatbone.Sample
                 {
                     string errmsg = jo[nameof(errmsg)];
                     ERR("err: " + errmsg);
-                    ac.Give(403); // forbidden
-                    return;
+                    return false;
                 }
                 string openid = jo[nameof(openid)];
 
-                ERR("access_token: " + access_token);
-                ERR("openid: " + openid);
-
-                // whether a recorded user?
+                // check in db
                 using (var dc = NewDbContext())
                 {
-                    if (dc.Query1("SELECT * FROM users WHERE id = @1", (p) => p.Set(openid)))
+                    if (dc.Query1("SELECT * FROM users WHERE wx = @1", (p) => p.Set(openid)))
                     {
                         prin = dc.ToObject<User>(-1 ^ Projection.SECRET);
                     }
                 }
-
-                if (prin == null)
+                if (prin == null) // if not an existing user
                 {
                     // get user info
-                    ERR("to get userinfo from weixin ... ");
-
                     jo = await WeiXinClient.GetAsync<JObj>(null, "/sns/userinfo?access_token=" + access_token + "&openid=" + openid);
                     string nickname = jo[nameof(nickname)];
-                    string province = jo[nameof(province)];
-
-                    ERR("nickname: " + nickname);
-                    prin = new User { city = openid, nickname = nickname, temp = true };
+                    string city = jo[nameof(city)];
+                    prin = new User { wx = openid, nickname = nickname, city = city };
+                    using (var dc = NewDbContext())
+                    {
+                        dc.Execute("INSERT INTO users (wx, nickname, city) VALUES (@1, @2, @3)", (p) => p.Set(openid).Set(nickname).Set(city));
+                    }
                 }
             }
             else
             {
-                ERR("From NOT WeiXin");
-
                 string authorization = ac.Header("Authorization");
-                if (authorization == null || !authorization.StartsWith("Basic ")) { return; }
+                if (authorization == null || !authorization.StartsWith("Basic ")) { return false; }
 
                 // decode basic scheme
                 byte[] bytes = Convert.FromBase64String(authorization.Substring(6));
@@ -107,35 +90,46 @@ namespace Greatbone.Sample
                         prin = dc.ToObject<User>(-1 ^ Projection.SECRET);
                     }
                 }
-
                 // validate
-                if (prin == null || !md5.Equals(prin.credential)) { return; }
+                if (prin == null || !md5.Equals(prin.credential)) { return false; }
             }
 
             // set token success
             ac.Principal = prin;
             SetBearerCookie(ac, prin);
-
-            ERR("principal and cookie being set...");
-            ERR("successful exist ------------AuthenticateAsync");
+            return true;
         }
 
         public virtual void Catch(Exception e, ActionContext ac)
         {
-            ERR("GiveChallenge() --------------");
-            ERR("URI: " + ac.Uri);
+            if (e is AuthorizeException)
+            {
+                ERR("GiveChallenge() --------------");
+                ERR("URI: " + ac.Uri);
 
-            // weixin authorization challenge
-            if (ac.ByWeiXin) // weixin
-            {
-                // redirect the user to weixin authorization page
-                string redirect_url = System.Net.WebUtility.UrlEncode(weixin.addr + ac.Uri);
-                ac.GiveRedirect("https://open.weixin.qq.com/connect/oauth2/authorize?appid=" + weixin.appid + "&redirect_uri=" + redirect_url + "&response_type=code&scope=snsapi_userinfo&state=1#wechat_redirect");
+                if (((AuthorizeException)e).NoToken)
+                {
+                    // weixin authorization challenge
+                    if (ac.ByWeiXin) // weixin
+                    {
+                        // redirect the user to weixin authorization page
+                        string redirect_url = System.Net.WebUtility.UrlEncode(weixin.addr + ac.Uri);
+                        ac.GiveRedirect("https://open.weixin.qq.com/connect/oauth2/authorize?appid=" + weixin.appid + "&redirect_uri=" + redirect_url + "&response_type=code&scope=snsapi_userinfo&state=1#wechat_redirect");
+                    }
+                    else // challenge BASIC scheme
+                    {
+                        ac.SetHeader("WWW-Authenticate", "Basic realm=\"" + Auth.domain + "\"");
+                        ac.Give(401); // unauthorized
+                    }
+                }
+                else
+                {
+                    ac.Give(403); // forbidden
+                }
             }
-            else // challenge BASIC scheme
+            else
             {
-                ac.SetHeader("WWW-Authenticate", "Basic realm=\"" + Auth.domain + "\"");
-                ac.Give(401); // unauthorized
+                ac.Give(500, e.Message);
             }
         }
     }

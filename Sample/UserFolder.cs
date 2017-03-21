@@ -8,7 +8,7 @@ namespace Greatbone.Sample
     {
         public UserFolder(FolderContext fc) : base(fc)
         {
-            CreateVar<UserVarFolder>((tok) => ((User)tok).id);
+            CreateVar<UserVarFolder>((tok) => ((User)tok).wx);
         }
 
         public void @default(ActionContext ac)

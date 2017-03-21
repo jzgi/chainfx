@@ -172,21 +172,9 @@ namespace Greatbone.Sample
 
                 // data op
                 User prin = (User)ac.Principal;
-                if (prin.temp)
+                using (var dc = ac.NewDbContext())
                 {
-                    prin.shopid = shopid;
-                    using (var dc = ac.NewDbContext())
-                    {
-                        dc.Sql("INSERT INTO users")._(User.Empty)._VALUES_(User.Empty)._("");
-                        dc.Execute("INSERT INTO users");
-                    }
-                }
-                else
-                {
-                    using (var dc = ac.NewDbContext())
-                    {
-                        dc.Execute("UPDATE users SET shopid = @1 WHERE id = @2");
-                    }
+                    dc.Execute("UPDATE users SET shopid = @1 WHERE id = @2");
                 }
 
                 // return back

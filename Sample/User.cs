@@ -4,34 +4,37 @@ using Greatbone.Core;
 namespace Greatbone.Sample
 {
     /// 
-    /// A user principal object.
+    /// A user data object that is a principal.
     ///
     public class User : IData
     {
         public static readonly User Empty = new User();
 
-        internal string id; // openid
+        // admin types
+        static readonly Map<short> ADMIN = new Map<short>
+        {
+            [0] = null,
+            [2] = "分管员",
+            [2] = "统管员",
+        };
+
+        internal string wx; // openid
         internal string nickname; // weixin nickname
         internal string name; // user name
         internal string tel;
         internal string password;
         internal string credential;
-        internal string province; // province
         internal string city; // 
-        internal string shopid; // bound shop id
-        internal bool admin; // local admin
-        internal bool sa; // system admin
         internal DateTime created;
+        internal string shopid; // bound shop id
+        internal short admin; // admin
         internal decimal addup; // orders addup
-        internal bool disabled;
-
-        internal bool temp; // record not in db yet
 
         public void ReadData(IDataInput i, int proj = 0)
         {
             if (proj.Prime())
             {
-                i.Get(nameof(id), ref id);
+                i.Get(nameof(wx), ref wx);
             }
             i.Get(nameof(nickname), ref nickname);
             i.Get(nameof(name), ref name);
@@ -44,16 +47,13 @@ namespace Greatbone.Sample
             {
                 i.Get(nameof(credential), ref credential);
             }
-            i.Get(nameof(province), ref province);
             i.Get(nameof(city), ref city);
-            i.Get(nameof(shopid), ref shopid);
-            i.Get(nameof(admin), ref admin);
             i.Get(nameof(created), ref created);
-            i.Get(nameof(addup), ref addup);
-            i.Get(nameof(disabled), ref disabled);
-            if (proj.Ctrl())
+            if (proj.Late())
             {
-                i.Get(nameof(temp), ref temp);
+                i.Get(nameof(shopid), ref shopid);
+                i.Get(nameof(admin), ref admin);
+                i.Get(nameof(addup), ref addup);
             }
         }
 
@@ -61,7 +61,7 @@ namespace Greatbone.Sample
         {
             if (proj.Prime())
             {
-                o.Put(nameof(id), id, Label: "编号");
+                o.Put(nameof(wx), wx, Label: "编号");
             }
             o.Put(nameof(nickname), nickname, Label: "昵称");
             o.Put(nameof(name), name, Label: "姓名");
@@ -74,20 +74,15 @@ namespace Greatbone.Sample
             {
                 o.Put(nameof(credential), credential);
             }
-            o.Put(nameof(province), admin, Label: "省份");
             o.Put(nameof(city), city);
-            o.Put(nameof(shopid), shopid, Label: "供应点");
-            o.Put(nameof(admin), admin, Label: "管理员");
             o.Put(nameof(created), created);
-            o.Put(nameof(addup), addup);
-            o.Put(nameof(disabled), disabled);
-            if (proj.Ctrl())
+            if (proj.Late())
             {
-                o.Put(nameof(temp), temp);
+                o.Put(nameof(shopid), shopid, Label: "供应点");
+                o.Put(nameof(admin), admin, Label: "管理员");
+                o.Put(nameof(addup), addup);
             }
         }
-
-        public bool IsAdmin => admin;
 
         public bool IsShop => shopid != null;
     }

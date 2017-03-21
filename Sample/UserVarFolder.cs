@@ -1,4 +1,5 @@
-﻿using Greatbone.Core;
+﻿using System.Collections.Generic;
+using Greatbone.Core;
 
 namespace Greatbone.Sample
 {
@@ -15,13 +16,13 @@ namespace Greatbone.Sample
 
             using (var dc = ac.NewDbContext())
             {
-                if (dc.Query("SELECT * FROM orders WHERE buyerid = @1 ORDER BY id LIMIT 20 OFFSET @2", p => p.Set(userid).Set(page * 20)))
+                if (dc.Query("SELECT * FROM orders WHERE buywx = @1 ORDER BY id LIMIT 20 OFFSET @2", p => p.Set(userid).Set(page * 20)))
                 {
                     ac.GiveFolderPage(null, 200, dc.ToList<Order>());
                 }
                 else
                 {
-                    ac.Give(204); // no content
+                    ac.GiveFolderPage(null, 200, (List<Order>)null);
                 }
             }
         }

@@ -21,7 +21,6 @@ namespace Greatbone.Sample
         internal string tel;
         internal string mgr; // manager name
         internal string mgrwx; // manager weixin
-        internal string province;
         internal string city;
         internal double x;
         internal double y;
@@ -51,14 +50,13 @@ namespace Greatbone.Sample
             {
                 i.Get(nameof(mgrwx), ref mgrwx);
             }
-            i.Get(nameof(province), ref province);
             i.Get(nameof(city), ref city);
             i.Get(nameof(x), ref x);
             i.Get(nameof(y), ref y);
             i.Get(nameof(scope), ref scope);
             i.Get(nameof(icon), ref icon);
             i.Get(nameof(descr), ref descr);
-            if (proj.Froz())
+            if (proj.Immut())
             {
                 i.Get(nameof(lic), ref lic);
             }
@@ -88,14 +86,13 @@ namespace Greatbone.Sample
             {
                 o.Put(nameof(mgrwx), mgrwx);
             }
-            o.Put(nameof(province), province);
             o.Put(nameof(city), city, Label: "城市", Max: 10);
             o.Put(nameof(x), x);
             o.Put(nameof(y), y);
             o.Put(nameof(scope), scope, Label: "覆盖", Opt: Scopes);
             o.Put(nameof(icon), icon);
             o.Put(nameof(descr), descr, Label: "简语");
-            if (proj.Froz())
+            if (proj.Immut())
             {
                 o.Put(nameof(lic), lic, Label: "工商登记");
             }

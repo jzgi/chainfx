@@ -14,7 +14,7 @@ namespace Greatbone.Core
         // db configuration
         public Db db;
 
-        // cluster members in the form of moniker-address pairs
+        // cluster members in the form of peerid-address pairs
         public Map cluster;
 
         // logging level

@@ -445,10 +445,22 @@ namespace Greatbone.Core
             // authentication
             try
             {
-                if (this is IAuthenticateAsync) await ((IAuthenticateAsync)this).AuthenticateAsync(ac, true);
-                else if (this is IAuthenticate) ((IAuthenticate)this).Authenticate(ac, true);
+                bool authres = false;
+                if (this is IAuthenticateAsync)
+                    authres = await ((IAuthenticateAsync)this).AuthenticateAsync(ac, true);
+                else if (this is IAuthenticate)
+                    authres = ((IAuthenticate)this).Authenticate(ac, true);
+                if (!authres)
+                {
+                    ac.Give(511); // 511 Network Authentication Required
+                    return;
+                }
             }
-            catch (Exception e) { DBG(e.Message); }
+            catch (Exception e)
+            {
+                ac.Give(511, e.Message); // 511 Network Authentication Required
+                DBG(e.Message);
+            }
 
             // handling
             try
@@ -460,11 +472,11 @@ namespace Greatbone.Core
                 else // handle a regular request
                 {
                     string relative = path.Substring(1);
-                    bool @null = false; // null-key-recovering
-                    Folder folder = ResolveFolder(ref relative, ac, ref @null);
+                    bool recover = false; // null-key-recovering
+                    Folder folder = ResolveFolder(ref relative, ac, ref recover);
                     if (folder == null)
                     {
-                        if (@null && ac.ByBrowse)
+                        if (recover && ac.ByBrowse)
                         {
                             ac.SetHeader("Location", path.Substring(path.Length - relative.Length) + "null?orig=" + ac.Uri);
                             ac.Give(303); // redirect
@@ -517,12 +529,14 @@ namespace Greatbone.Core
             ac.SetHeader("Set-Cookie", sb.ToString());
         }
 
-        public string Encrypt(TPrincipal principal)
+        const int Proj = -1 ^ Projection.BIN ^ Projection.SECRET;
+
+        public string Encrypt(TPrincipal prin)
         {
             if (Auth == null) return null;
 
             JsonContent cont = new JsonContent(true, true, 4096); // borrow
-            cont.Put(null, principal);
+            cont.Put(null, prin, Proj);
             byte[] bytebuf = cont.ByteBuffer;
             int count = cont.Size;
 
@@ -569,7 +583,7 @@ namespace Greatbone.Core
 
             JsonParse parse = new JsonParse(str.ToString());
             JObj jo = (JObj)parse.Parse();
-            return jo.ToObject<TPrincipal>();
+            return jo.ToObject<TPrincipal>(Proj);
         }
 
         // hexidecimal characters

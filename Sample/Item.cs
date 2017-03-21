@@ -4,24 +4,31 @@ using Greatbone.Core;
 namespace Greatbone.Sample
 {
     /// 
-    /// A product or service being sold.
+    /// A product or service.
     ///
     public class Item : IData
     {
         public static readonly Item Empty = new Item();
 
+        // status
+        static readonly Map<short> STATUS = new Map<short>
+        {
+            [0] = "架下",
+            [2] = "架上展示",
+            [2] = "架上接单",
+        };
+
         internal string shopid;
         internal string name;
-        internal string unit;
         internal string descr;
         internal ArraySegment<byte> icon;
+        internal string unit;
         internal decimal oprice; // original price
         internal decimal price; // current price
-        internal short capacity;
         internal int min; // minimal ordered
         internal int step;
         internal int sold; // total sold 
-        internal bool enabled;
+        internal short status;
 
         public void ReadData(IDataInput i, int proj = 0)
         {
@@ -40,11 +47,11 @@ namespace Greatbone.Sample
             i.Get(nameof(price), ref price);
             i.Get(nameof(min), ref min);
             i.Get(nameof(step), ref step);
-            if (proj.Froz())
+            i.Get(nameof(status), ref status);
+            if (proj.Immut())
             {
                 i.Get(nameof(sold), ref sold);
             }
-            i.Get(nameof(enabled), ref enabled);
         }
 
         public void WriteData<R>(IDataOutput<R> o, int proj = 0) where R : IDataOutput<R>
@@ -64,11 +71,11 @@ namespace Greatbone.Sample
             o.Put(nameof(price), price, Required: true);
             o.Put(nameof(min), min);
             o.Put(nameof(step), step);
-            if (proj.Froz())
+            o.Put(nameof(status), status, Opt: STATUS);
+            if (proj.Immut())
             {
                 o.Put(nameof(sold), sold);
             }
-            o.Put(nameof(enabled), enabled, Opt: b => b ? "在售" : "下架");
         }
     }
 }

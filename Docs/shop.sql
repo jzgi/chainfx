@@ -11,7 +11,7 @@ Target Server Type    : PGSQL
 Target Server Version : 90505
 File Encoding         : 65001
 
-Date: 2017-03-21 10:52:42
+Date: 2017-03-21 12:27:22
 */
 
 
@@ -71,7 +71,7 @@ WITH (OIDS=FALSE)
 DROP TABLE IF EXISTS "public"."evtu";
 CREATE TABLE "public"."evtu" (
 "peerid" varchar(20) COLLATE "default" NOT NULL,
-"lastid" int8
+"evtid" int8
 )
 WITH (OIDS=FALSE)
 
@@ -84,16 +84,15 @@ DROP TABLE IF EXISTS "public"."items";
 CREATE TABLE "public"."items" (
 "shopid" varchar(6) COLLATE "default" NOT NULL,
 "name" varchar(10) COLLATE "default" NOT NULL,
-"descr" varchar(100) COLLATE "default",
-"price" money,
+"descr" varchar(20) COLLATE "default",
+"icon" bytea,
 "unit" varchar(4) COLLATE "default",
 "oprice" money,
-"icon" bytea,
+"price" money,
 "min" int2,
 "step" int2,
 "sold" int4,
-"enabled" bool,
-"capacity" int2
+"status" int2
 )
 WITH (OIDS=FALSE)
 
@@ -175,18 +174,17 @@ WITH (OIDS=FALSE)
 -- ----------------------------
 DROP TABLE IF EXISTS "public"."users";
 CREATE TABLE "public"."users" (
-"id" varchar(28) COLLATE "default" NOT NULL,
+"wx" varchar(28) COLLATE "default" NOT NULL,
 "nickname" varchar(10) COLLATE "default",
-"name" varchar(10) COLLATE "default",
+"name" varchar(4) COLLATE "default",
 "tel" varchar(11) COLLATE "default",
-"created" date,
-"addup" money,
-"city" varchar(20) COLLATE "default",
-"credential" varchar(255) COLLATE "default",
+"credential" varchar(32) COLLATE "default",
+"province" varchar(4) COLLATE "default",
+"city" varchar(4) COLLATE "default",
+"created" timestamp(6),
 "shopid" varchar(6) COLLATE "default",
 "admin" int2,
-"disabled" bool,
-"prov" varchar(255) COLLATE "default"
+"addup" money
 )
 WITH (OIDS=FALSE)
 
@@ -231,4 +229,4 @@ ALTER TABLE "public"."shops" ADD PRIMARY KEY ("id");
 -- ----------------------------
 -- Primary Key structure for table users
 -- ----------------------------
-ALTER TABLE "public"."users" ADD PRIMARY KEY ("id");
+ALTER TABLE "public"."users" ADD PRIMARY KEY ("wx");

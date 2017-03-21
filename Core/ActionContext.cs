@@ -136,7 +136,7 @@ namespace Greatbone.Core
 
         public bool ByBrowse => ByBrowser && Header("X-Requested-With") == null;
 
-        public bool ByWeiXin => Ua?.Contains("MicroMessenger") ?? false;
+        public bool ByWeiXin => Ua?.Contains("MicroMessenger/") ?? false;
 
         public bool ByJquery => Header("X-Requested-With") != null;
 
