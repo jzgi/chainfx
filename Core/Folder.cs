@@ -12,6 +12,8 @@ namespace Greatbone.Core
     ///
     public abstract class Folder : Nodule
     {
+        internal static readonly AuthorizeException AuthorizeEx = new AuthorizeException();
+
         // max nesting levels
         const int MaxNesting = 6;
 
@@ -289,7 +291,7 @@ namespace Greatbone.Core
             {
                 if (key.Length == 0 && varkeyer != null) // resolve varkey
                 {
-                    if (ac.Principal == null) throw NoToken;
+                    if (ac.Principal == null) throw AuthorizeEx;
                     if ((key = varkeyer(ac.Principal)) == null)
                     {
                         if (@null != null) { recover = true; }
@@ -307,7 +309,7 @@ namespace Greatbone.Core
             ac.Folder = this;
 
             // access check 
-            if (!DoAuthorize(ac)) throw NoPermission;
+            if (!DoAuthorize(ac)) throw AuthorizeEx;
 
             // pre-
             FilterAttribute flt = Filter;
@@ -340,7 +342,7 @@ namespace Greatbone.Core
                 ac.Doer = act;
 
                 // access check
-                if (!act.DoAuthorize(ac)) throw NoPermission;
+                if (!act.DoAuthorize(ac)) throw AuthorizeEx;
 
                 // try in cache
 

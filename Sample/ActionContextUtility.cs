@@ -15,6 +15,14 @@ namespace Greatbone.Sample
         }
 
         ///
+        public static void GiveSnippet(this ActionContext ac, int status, Action<HtmlContent> main, bool? pub = null, int maxage = 60)
+        {
+            HtmlContent cont = new HtmlContent(true, true, 16 * 1024);
+            main(cont);
+            ac.Give(status, cont, pub, maxage);
+        }
+
+        ///
         public static void GivePage(this ActionContext ac, int status, Action<HtmlContent> header, Action<HtmlContent> main, Action<HtmlContent> footer, bool? pub = null, int maxage = 60)
         {
             HtmlContent cont = new HtmlContent(true, true, 16 * 1024);
@@ -64,7 +72,7 @@ namespace Greatbone.Sample
             ac.Give(status, cont, pub, maxage);
         }
 
-        public static void GiveModal(this ActionContext ac, int status, Action<HtmlContent> header, Action<HtmlContent> main, Action<HtmlContent> footer, bool? pub = null, int maxage = 60)
+        public static void GivePane(this ActionContext ac, int status, Action<HtmlContent> header, Action<HtmlContent> main, Action<HtmlContent> footer, bool? pub = null, int maxage = 60)
         {
             HtmlContent cont = new HtmlContent(true, true, 16 * 1024);
 
@@ -120,9 +128,9 @@ namespace Greatbone.Sample
             ac.Give(status, cont, pub, maxage);
         }
 
-        public static void GiveDialogForm(this ActionContext ac, int status, IData obj, int proj = 0, bool? pub = null, int maxage = 60)
+        public static void GivePaneForm(this ActionContext ac, int status, IData obj, int proj = 0, bool? pub = null, int maxage = 60)
         {
-            ac.GiveModal(status,
+            ac.GivePane(status,
             null,
             m =>
             {
@@ -132,9 +140,9 @@ namespace Greatbone.Sample
             pub, maxage);
         }
 
-        public static void GiveDialogForm(this ActionContext ac, int status, Action<HtmlContent> form, bool? pub = null, int maxage = 60)
+        public static void GivePaneForm(this ActionContext ac, int status, Action<HtmlContent> form, bool? pub = null, int maxage = 60)
         {
-            ac.GiveModal(status,
+            ac.GivePane(status,
             null,
             m =>
             {
@@ -146,60 +154,13 @@ namespace Greatbone.Sample
             pub, maxage);
         }
 
-        public static void GiveDialogForm(this ActionContext ac, int status, IDataInput input, Action<IDataInput, HtmlContent> valve, bool? pub = null, int maxage = 60)
+        public static void GivePaneForm(this ActionContext ac, int status, IDataInput input, Action<IDataInput, HtmlContent> valve, bool? pub = null, int maxage = 60)
         {
             ac.GivePage(status,
             null,
             m =>
             {
                 m.FORM_FILL(ac.Doer, input, valve);
-            },
-            null,
-            pub, maxage);
-        }
-
-        public static void GiveStartPage(this ActionContext ac, int status, bool? pub = null, int maxage = 60)
-        {
-            Folder folder = ac.Folder;
-
-            ac.GivePage(status, (Action<HtmlContent>)(h =>
-            {
-                Roll<Folder> subs = folder.subfolders;
-                if (subs != null)
-                {
-                    h.Add(" <ul class=\"menu\">");
-                    for (int i = 0; i < subs.Count; i++)
-                    {
-                        Folder fdr = subs[i];
-                        if (!fdr.HasUi) continue;
-
-                        AuthorizeAttribute auth = fdr.Authorize;
-                        if (auth != null && auth.Check(ac))
-                        {
-                            h.Add("<li class=\"\"><a href=\"");
-                            h.Add(fdr.Name);
-                            h.Add("/\">");
-                            h.Add(fdr.Label);
-                            h.Add("</a></li>");
-                        }
-                        string key = fdr.GetVarKey(ac.Principal);
-                        if (key != null)
-                        {
-                            h.Add("<li class=\"\"><a href=\"");
-                            h.Add(fdr.Name);
-                            h.Add('/');
-                            h.Add(key);
-                            h.Add("/\">");
-                            h.Add(fdr.VarFolder.Label);
-                            h.Add("</a></li>");
-                        }
-                    }
-                    h.Add(" </ul>");
-                }
-            }),
-            m =>
-            {
-
             },
             null,
             pub, maxage);

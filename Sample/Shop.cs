@@ -9,9 +9,9 @@ namespace Greatbone.Sample
 
         public Map<short> Scopes = new Map<short>
         {
-            [1] = "三十公里",
-            [2] = "一百公里",
-            [3] = "一千公里"
+            [1] = "本市",
+            [2] = "本省",
+            [3] = "全国"
         };
 
         internal string id;

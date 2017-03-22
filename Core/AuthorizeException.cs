@@ -7,15 +7,5 @@ namespace Greatbone.Core
     ///
     public class AuthorizeException : Exception
     {
-        readonly bool notoken;
-
-        public AuthorizeException(bool notoken)
-        {
-            this.notoken = notoken;
-        }
-
-        public Nodule Nodoule { get; internal set; }
-
-        public bool NoToken => notoken;
     }
 }

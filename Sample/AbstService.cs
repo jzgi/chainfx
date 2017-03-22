@@ -89,7 +89,7 @@ namespace Greatbone.Sample
                 string md5 = TextUtility.MD5(id + ':' + password);
                 using (var dc = NewDbContext())
                 {
-                    if (dc.Query1("SELECT * FROM users WHERE id = @1", (p) => p.Set(id)))
+                    if (dc.Query1("SELECT * FROM users WHERE tel = @1", (p) => p.Set(id)))
                     {
                         prin = dc.ToObject<User>(-1 ^ Projection.SECRET);
                     }
@@ -112,7 +112,7 @@ namespace Greatbone.Sample
             ERR("URI: " + ac.Uri);
             if (e is AuthorizeException)
             {
-                if (((AuthorizeException)e).NoToken)
+                if (ac.Principal == null)
                 {
                     ERR("-------- NoToken");
                     // weixin authorization challenge

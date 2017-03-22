@@ -24,7 +24,7 @@ namespace Greatbone.Core
             level = 0;
         }
 
-        public override string Type => "application/json";
+        public override string Type => "application/json; charset=utf-8";
 
         void AddEsc(string v)
         {

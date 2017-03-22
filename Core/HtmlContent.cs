@@ -145,6 +145,17 @@ namespace Greatbone.Core
             Add("</fieldset>");
         }
 
+        public void CALLOUT(string v, bool closable)
+        {
+            Add("<div class=\"alert callout\" data-closable>");
+            Add("<p class=\"text-center\">");
+            Add(v);
+            Add("</p>");
+            Add("<button class=\"close-button\" type=\"button\" data-close><span>&times;</span></button>");
+            Add("</div>");
+        }
+
+
         public void FORM_TABLE<D>(List<ActionInfo> acts, List<D> lst, int proj = 0) where D : IData
         {
             Add("<form>");

@@ -43,7 +43,7 @@ namespace Greatbone.Sample
                 int age;
                 dc.Execute("UPDATE items SET enabled = NOT enabled WHERE shopid = @1", p => p.Set(shopid));
                 // ac.SetHeader();
-                ac.GiveDialogForm(303, dc, (i, o) =>
+                ac.GivePaneForm(303, dc, (i, o) =>
                 {
                     o.Put(nameof(name), name = i.GetString());
                     o.Put(nameof(age), age = i.GetInt());
@@ -62,7 +62,7 @@ namespace Greatbone.Sample
                 int age;
                 dc.Execute("UPDATE items SET enabled = NOT enabled WHERE shopid = @1", p => p.Set(shopid));
                 // ac.SetHeader();
-                ac.GiveDialogForm(303, dc, (i, o) =>
+                ac.GivePaneForm(303, dc, (i, o) =>
                 {
                     o.Put(nameof(name), name = i.GetString());
                     o.Put(nameof(age), age = i.GetInt());
@@ -100,7 +100,7 @@ namespace Greatbone.Sample
                 int age;
                 dc.Execute("UPDATE items SET enabled = NOT enabled WHERE shopid = @1", p => p.Set(shopid));
                 // ac.SetHeader();
-                ac.GiveDialogForm(303, dc, (i, o) =>
+                ac.GivePaneForm(303, dc, (i, o) =>
                 {
                     o.Put(nameof(name), name = i.GetString());
                     o.Put(nameof(age), age = i.GetInt());

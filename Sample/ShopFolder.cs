@@ -39,43 +39,26 @@ namespace Greatbone.Sample
             return pt == v.Length - 2;
         }
 
-        ///
-        /// Get items grouped by shop
-        ///
-        /// <code>
-        /// GET /items
-        /// </code>
-        ///
+        [User]
         public void lst(ActionContext ac)
         {
-            string x = ac.Query[nameof(x)];
-            string y = ac.Query[nameof(y)];
-            if (!IsAligned(x) || !IsAligned(y))
+            string city = ac.Query[nameof(city)];
+            if (city == null)
             {
-                ac.Give(400, "x or y not aligned");
-                return;
+                city = ((User)ac.Principal).city;
             }
-
-            double dx, dy;
-            dx = double.Parse(x);
-            dy = double.Parse(y);
-
-            double x1 = dx - 0.1;
-            double x2 = dx + 0.2;
-
-            double y1 = dy - 0.1;
-            double y2 = dy + 0.2;
-
-            // get nearby shops
             using (var dc = Service.NewDbContext())
             {
-                if (dc.Query("SELECT * FROM shops WHERE x > @1 AND x < @2 AND y > @3 AND y < @4", p => p.Set(x1).Set(x2).Set(y1).Set(y2)))
+                if (dc.Query("SELECT * FROM shops WHERE ((scope = 0 AND city = @1) OR scope = 1) AND enabled", p => p.Set(city)))
                 {
                     ac.Give(200, dc.Dump());
                 }
                 else
                 {
-                    ac.Give(204); // no content
+                    ac.GiveSnippet(200, h =>
+                    {
+                        h.CALLOUT("没有找到附近的供应点", true);
+                    });
                 }
             }
         }
@@ -89,7 +72,7 @@ namespace Greatbone.Sample
         {
             if (ac.GET)
             {
-                ac.GiveDialogForm(200, Shop.Empty, -1 ^ Projection.TRANSF);
+                ac.GivePaneForm(200, Shop.Empty, -1 ^ Projection.TRANSF);
             }
             else // post
             {
@@ -119,7 +102,7 @@ namespace Greatbone.Sample
         {
             if (ac.GET)
             {
-                ac.GiveDialogForm(200, Shop.Empty, -1 ^ Projection.TRANSF);
+                ac.GivePaneForm(200, Shop.Empty, -1 ^ Projection.TRANSF);
             }
             else // post
             {
@@ -160,7 +143,7 @@ namespace Greatbone.Sample
             if (ac.GET)
             {
                 // return a form
-                ac.GiveDialogForm(200, (x) =>
+                ac.GivePaneForm(200, (x) =>
                 {
                     x.TEXT("shopid", "");
                     x.PASSWORD("password", "");

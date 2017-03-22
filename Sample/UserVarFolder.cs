@@ -43,7 +43,7 @@ namespace Greatbone.Sample
             {
                 if (dc.Query1("SELECT * FROM users WHERE id = @1", p => p.Set(userid)))
                 {
-                    ac.GiveDialogForm(200, dc.ToObject<User>());
+                    ac.GivePaneForm(200, dc.ToObject<User>());
                 }
                 else
                 {

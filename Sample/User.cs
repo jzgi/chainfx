@@ -14,8 +14,8 @@ namespace Greatbone.Sample
         static readonly Map<short> ADMIN = new Map<short>
         {
             [0] = null,
-            [2] = "分管员",
-            [2] = "统管员",
+            [2] = "本地管理员",
+            [2] = "统一管理员",
         };
 
         internal string wx; // openid
