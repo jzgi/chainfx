@@ -360,108 +360,144 @@ namespace Greatbone.Core
 
         public bool Get(string name, ref bool v)
         {
-            int ord = name == null ? ordinal++ : reader.GetOrdinal(name);
-            if (!reader.IsDBNull(ord))
+            try
             {
-                v = reader.GetBoolean(ord);
-                return true;
+                int ord = name == null ? ordinal++ : reader.GetOrdinal(name);
+                if (!reader.IsDBNull(ord))
+                {
+                    v = reader.GetBoolean(ord);
+                    return true;
+                }
             }
+            catch { }
             return false;
         }
 
         public bool Get(string name, ref short v)
         {
-            int ord = name == null ? ordinal++ : reader.GetOrdinal(name);
-            if (!reader.IsDBNull(ord))
+            try
             {
-                v = reader.GetInt16(ord);
-                return true;
+                int ord = name == null ? ordinal++ : reader.GetOrdinal(name);
+                if (!reader.IsDBNull(ord))
+                {
+                    v = reader.GetInt16(ord);
+                    return true;
+                }
             }
+            catch { }
             return false;
         }
 
         public bool Get(string name, ref int v)
         {
-            int ord = name == null ? ordinal++ : reader.GetOrdinal(name);
-            if (!reader.IsDBNull(ord))
+            try
             {
-                v = reader.GetInt32(ord);
-                return true;
+                int ord = name == null ? ordinal++ : reader.GetOrdinal(name);
+                if (!reader.IsDBNull(ord))
+                {
+                    v = reader.GetInt32(ord);
+                    return true;
+                }
             }
+            catch { }
             return false;
         }
 
         public bool Get(string name, ref long v)
         {
-            int ord = name == null ? ordinal++ : reader.GetOrdinal(name);
-            if (!reader.IsDBNull(ord))
+            try
             {
-                v = reader.GetInt64(ord);
-                return true;
+                int ord = name == null ? ordinal++ : reader.GetOrdinal(name);
+                if (!reader.IsDBNull(ord))
+                {
+                    v = reader.GetInt64(ord);
+                    return true;
+                }
             }
+            catch { }
             return false;
         }
 
         public bool Get(string name, ref double v)
         {
-            int ord = name == null ? ordinal++ : reader.GetOrdinal(name);
-            if (!reader.IsDBNull(ord))
+            try
             {
-                v = reader.GetDouble(ord);
-                return true;
+                int ord = name == null ? ordinal++ : reader.GetOrdinal(name);
+                if (!reader.IsDBNull(ord))
+                {
+                    v = reader.GetDouble(ord);
+                    return true;
+                }
             }
+            catch { }
             return false;
         }
 
         public bool Get(string name, ref decimal v)
         {
-            int ord = name == null ? ordinal++ : reader.GetOrdinal(name);
-            if (!reader.IsDBNull(ord))
+            try
             {
-                v = reader.GetDecimal(ord);
-                return true;
+                int ord = name == null ? ordinal++ : reader.GetOrdinal(name);
+                if (!reader.IsDBNull(ord))
+                {
+                    v = reader.GetDecimal(ord);
+                    return true;
+                }
             }
+            catch { }
             return false;
         }
 
         public bool Get(string name, ref DateTime v)
         {
-            int ord = name == null ? ordinal++ : reader.GetOrdinal(name);
-            if (!reader.IsDBNull(ord))
+            try
             {
-                v = reader.GetDateTime(ord);
-                return true;
+                int ord = name == null ? ordinal++ : reader.GetOrdinal(name);
+                if (!reader.IsDBNull(ord))
+                {
+                    v = reader.GetDateTime(ord);
+                    return true;
+                }
             }
+            catch { }
             return false;
         }
 
         public bool Get(string name, ref NpgsqlPoint v)
         {
-            int ord = name == null ? ordinal++ : reader.GetOrdinal(name);
-            if (!reader.IsDBNull(ord))
+            try
             {
-                v = reader.GetFieldValue<NpgsqlPoint>(ord);
-                return true;
+                int ord = name == null ? ordinal++ : reader.GetOrdinal(name);
+                if (!reader.IsDBNull(ord))
+                {
+                    v = reader.GetFieldValue<NpgsqlPoint>(ord);
+                    return true;
+                }
             }
+            catch { }
             return false;
         }
 
         public bool Get(string name, ref string v)
         {
-            int ord = name == null ? ordinal++ : reader.GetOrdinal(name);
-            if (!reader.IsDBNull(ord))
+            try
             {
-                v = reader.GetString(ord);
-                return true;
+                int ord = name == null ? ordinal++ : reader.GetOrdinal(name);
+                if (!reader.IsDBNull(ord))
+                {
+                    v = reader.GetString(ord);
+                    return true;
+                }
             }
+            catch { }
             return false;
         }
 
         public bool Get(string name, ref ArraySegment<byte> v)
         {
-            int ord = name == null ? ordinal++ : reader.GetOrdinal(name);
             try
             {
+                int ord = name == null ? ordinal++ : reader.GetOrdinal(name);
                 if (!reader.IsDBNull(ord))
                 {
                     int len;
@@ -474,9 +510,7 @@ namespace Greatbone.Core
                     }
                 }
             }
-            catch
-            {
-            }
+            catch { }
 
             return false;
         }
@@ -488,49 +522,61 @@ namespace Greatbone.Core
 
         public bool Get<D>(string name, ref D v, int proj = 0) where D : IData, new()
         {
-            int ord = name == null ? ordinal++ : reader.GetOrdinal(name);
-            if (!reader.IsDBNull(ord))
+            try
             {
-                string str = reader.GetString(ord);
-                JsonParse p = new JsonParse(str);
-                JObj jo = (JObj)p.Parse();
-                v = new D();
-                v.ReadData(jo, proj);
-
-                // add shard if any
-                IShardable sharded = v as IShardable;
-                if (sharded != null)
+                int ord = name == null ? ordinal++ : reader.GetOrdinal(name);
+                if (!reader.IsDBNull(ord))
                 {
-                    sharded.Shard = service.Shard;
+                    string str = reader.GetString(ord);
+                    JsonParse p = new JsonParse(str);
+                    JObj jo = (JObj)p.Parse();
+                    v = new D();
+                    v.ReadData(jo, proj);
+
+                    // add shard if any
+                    IShardable sharded = v as IShardable;
+                    if (sharded != null)
+                    {
+                        sharded.Shard = service.Shard;
+                    }
+                    return true;
                 }
-                return true;
             }
+            catch { }
             return false;
         }
 
         public bool Get(string name, ref JObj v)
         {
-            int ord = name == null ? ordinal++ : reader.GetOrdinal(name);
-            if (!reader.IsDBNull(ord))
+            try
             {
-                string str = reader.GetString(ord);
-                JsonParse p = new JsonParse(str);
-                v = (JObj)p.Parse();
-                return true;
+                int ord = name == null ? ordinal++ : reader.GetOrdinal(name);
+                if (!reader.IsDBNull(ord))
+                {
+                    string str = reader.GetString(ord);
+                    JsonParse p = new JsonParse(str);
+                    v = (JObj)p.Parse();
+                    return true;
+                }
             }
+            catch { }
             return false;
         }
 
         public bool Get(string name, ref JArr v)
         {
-            int ord = name == null ? ordinal++ : reader.GetOrdinal(name);
-            if (!reader.IsDBNull(ord))
+            try
             {
-                string str = reader.GetString(ord);
-                JsonParse parse = new JsonParse(str);
-                v = (JArr)parse.Parse();
-                return true;
+                int ord = name == null ? ordinal++ : reader.GetOrdinal(name);
+                if (!reader.IsDBNull(ord))
+                {
+                    string str = reader.GetString(ord);
+                    JsonParse parse = new JsonParse(str);
+                    v = (JArr)parse.Parse();
+                    return true;
+                }
             }
+            catch { }
             return false;
         }
 
@@ -541,105 +587,129 @@ namespace Greatbone.Core
 
         public bool Get(string name, ref short[] v)
         {
-            int ord = name == null ? ordinal++ : reader.GetOrdinal(name);
-            if (!reader.IsDBNull(ord))
+            try
             {
-                v = reader.GetFieldValue<short[]>(ord);
-                return true;
+                int ord = name == null ? ordinal++ : reader.GetOrdinal(name);
+                if (!reader.IsDBNull(ord))
+                {
+                    v = reader.GetFieldValue<short[]>(ord);
+                    return true;
+                }
             }
+            catch { }
             return false;
         }
 
         public bool Get(string name, ref int[] v)
         {
-            int ord = name == null ? ordinal++ : reader.GetOrdinal(name);
-            if (!reader.IsDBNull(ord))
+            try
             {
-                v = reader.GetFieldValue<int[]>(ord);
-                return true;
+                int ord = name == null ? ordinal++ : reader.GetOrdinal(name);
+                if (!reader.IsDBNull(ord))
+                {
+                    v = reader.GetFieldValue<int[]>(ord);
+                    return true;
+                }
             }
+            catch { }
             return false;
         }
 
         public bool Get(string name, ref long[] v)
         {
-            int ord = name == null ? ordinal++ : reader.GetOrdinal(name);
-            if (!reader.IsDBNull(ord))
+            try
             {
-                v = reader.GetFieldValue<long[]>(ord);
-                return true;
+                int ord = name == null ? ordinal++ : reader.GetOrdinal(name);
+                if (!reader.IsDBNull(ord))
+                {
+                    v = reader.GetFieldValue<long[]>(ord);
+                    return true;
+                }
             }
+            catch { }
             return false;
         }
 
         public bool Get(string name, ref string[] v)
         {
-            int ord = name == null ? ordinal++ : reader.GetOrdinal(name);
-            if (!reader.IsDBNull(ord))
+            try
             {
-                v = reader.GetFieldValue<string[]>(ord);
-                return true;
+                int ord = name == null ? ordinal++ : reader.GetOrdinal(name);
+                if (!reader.IsDBNull(ord))
+                {
+                    v = reader.GetFieldValue<string[]>(ord);
+                    return true;
+                }
             }
+            catch { }
             return false;
         }
 
         public bool Get<D>(string name, ref D[] v, int proj = 0) where D : IData, new()
         {
-            int ord = name == null ? ordinal++ : reader.GetOrdinal(name);
-            if (!reader.IsDBNull(ord))
+            try
             {
-                string str = reader.GetString(ord);
-                JsonParse parse = new JsonParse(str);
-                JArr ja = (JArr)parse.Parse();
-                int len = ja.Count;
-                v = new D[len];
-                for (int i = 0; i < len; i++)
+                int ord = name == null ? ordinal++ : reader.GetOrdinal(name);
+                if (!reader.IsDBNull(ord))
                 {
-                    JObj jo = ja[i];
-                    D obj = new D();
-                    obj.ReadData(jo, proj);
-
-                    // add shard if any
-                    IShardable sharded = obj as IShardable;
-                    if (sharded != null)
+                    string str = reader.GetString(ord);
+                    JsonParse parse = new JsonParse(str);
+                    JArr ja = (JArr)parse.Parse();
+                    int len = ja.Count;
+                    v = new D[len];
+                    for (int i = 0; i < len; i++)
                     {
-                        sharded.Shard = service.Shard;
-                    }
+                        JObj jo = ja[i];
+                        D obj = new D();
+                        obj.ReadData(jo, proj);
 
-                    v[i] = obj;
+                        // add shard if any
+                        IShardable sharded = obj as IShardable;
+                        if (sharded != null)
+                        {
+                            sharded.Shard = service.Shard;
+                        }
+
+                        v[i] = obj;
+                    }
+                    return true;
                 }
-                return true;
             }
+            catch { }
             return false;
         }
 
         public bool Get<D>(string name, ref List<D> v, int proj = 0) where D : IData, new()
         {
-            int ord = name == null ? ordinal++ : reader.GetOrdinal(name);
-            if (!reader.IsDBNull(ord))
+            try
             {
-                string str = reader.GetString(ord);
-                JsonParse p = new JsonParse(str);
-                JArr ja = (JArr)p.Parse();
-                int len = ja.Count;
-                v = new List<D>(len + 8);
-                for (int i = 0; i < len; i++)
+                int ord = name == null ? ordinal++ : reader.GetOrdinal(name);
+                if (!reader.IsDBNull(ord))
                 {
-                    JObj jo = ja[i];
-                    D obj = new D();
-                    obj.ReadData(jo, proj);
-
-                    // add shard if any
-                    IShardable sharded = obj as IShardable;
-                    if (sharded != null)
+                    string str = reader.GetString(ord);
+                    JsonParse p = new JsonParse(str);
+                    JArr ja = (JArr)p.Parse();
+                    int len = ja.Count;
+                    v = new List<D>(len + 8);
+                    for (int i = 0; i < len; i++)
                     {
-                        sharded.Shard = service.Shard;
-                    }
+                        JObj jo = ja[i];
+                        D obj = new D();
+                        obj.ReadData(jo, proj);
 
-                    v.Add(obj);
+                        // add shard if any
+                        IShardable sharded = obj as IShardable;
+                        if (sharded != null)
+                        {
+                            sharded.Shard = service.Shard;
+                        }
+
+                        v.Add(obj);
+                    }
+                    return true;
                 }
-                return true;
             }
+            catch { }
             return false;
         }
 

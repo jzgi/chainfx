@@ -51,7 +51,25 @@ namespace Greatbone.Sample
             {
                 if (dc.Query("SELECT * FROM shops WHERE ((scope = 0 AND city = @1) OR scope = 1) AND enabled", p => p.Set(city)))
                 {
-                    ac.Give(200, dc.Dump());
+                    ac.GivePage(200,
+                    h =>
+                    {
+                        h.Add("<div class=\"small-8 columns\"><span>附近的供应点</span></div>");
+                        h.Add("<div class=\"small-4 columns text-right\"><a href=\"..//\">购物车<i class=\"fi-shopping-cart\"></i></a></div>");
+                    },
+                    m =>
+                    {
+                        var shops = dc.ToList<Shop>(-1 ^ Projection.BIN);
+                        for (int i = 0; i < shops.Count; i++)
+                        {
+                            var shop = shops[i];
+
+                            m.Add("<div class=\"row\">");
+                            m.Add("<div class=\"small-2 columns\"><a href=\"#\"><span></span><img src=\""); m.Add(shop.id); m.Add("/_icon_\" alt=\"\" class=\" thumbnail\"></a></div>");
+                            m.Add("</div>");
+                        }
+
+                    }, null);
                 }
                 else
                 {
