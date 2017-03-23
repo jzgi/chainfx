@@ -6,109 +6,56 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link rel="stylesheet" href="//cdn.bootcss.com/foundation/6.3.1/css/foundation.min.css">
     <link rel="stylesheet" href="//cdn.bootcss.com/foundicons/3.0.0/foundation-icons.min.css">
-    <link rel="stylesheet" href="/slim.min.css">
     <link rel="stylesheet" href="/app.css">
 </head>
 
 <body>
     <div class "row">
-        <ul class="menu">
-            <li><a href=""><span class="fi-folder" style="font-size: 70px">供应点</span></a></li>
-            <li><a href="../orderi/">当前订单</a></li>
-            <li><a href="../ordero/">以往订单</a></li>
-            <li class="active primary"><a href="../item/">货架</a></li>
-            <li><a href="../repay/">平台结款</a></li>
-        </ul>
+        <div class="small-8 columns">
+            <h2>附近的供应点</h2>
+        </div>
+        <div class="small-4 columns text-right"><a href="..//">购物车<i class="fi-shopping-cart"></i></a></div>
     </div>
     <div class "row">
-        <form>
-            <div class="row"><button class="button primary" style="margin-right: 5px;" name="new" formaction="new" formmethod="post" onclick="dialog(this,1); return false;">新建</button><button class="button primary" style="margin-right: 5px;" name="toggle" formaction="toggle" formmethod="post">上架/下架</button><button class="button primary" style="margin-right: 5px;" name="modify" formaction="modify" formmethod="post">MODIFY</button></div>
-            <div class="expanded row">
-                <div class="small-12 medium-6 large-4 columns">
-                    <div class="row">
-                        <div class="small-3 columns"><input type="checkbox" name="pk" value="360001"></div>
-                        <div class="small-9 columns">360001</div>
-                    </div>
-                    <div class="row">
-                        <div class="small-3 columns">品名</div>
-                        <div class="small-9 columns">全麦馒头加</div>
-                    </div>
-                    <div class="row">
-                        <div class="small-3 columns">UNIT</div>
-                        <div class="small-9 columns">个</div>
-                    </div>
-                    <div class="row">
-                        <div class="small-3 columns">DESCR</div>
-                        <div class="small-9 columns">全麦馒头加</div>
-                    </div>
-                    <div class="row">
-                        <div class="small-3 columns">OPRICE</div>
-                        <div class="small-9 columns">3.5</div>
-                    </div>
-                    <div class="row">
-                        <div class="small-3 columns">PRICE</div>
-                        <div class="small-9 columns">3</div>
-                    </div>
-                    <div class="row">
-                        <div class="small-3 columns"><input type="checkbox" name="pk" value="10"></div>
-                        <div class="small-9 columns">10</div>
-                    </div>
-                    <div class="row">
-                        <div class="small-3 columns"><input type="checkbox" name="pk" value="5"></div>
-                        <div class="small-9 columns">5</div>
-                    </div>
-                    <div class="row">
-                        <div class="small-3 columns"><input type="checkbox" name="pk" value="10"></div>
-                        <div class="small-9 columns">10</div>
-                    </div>
-                </div>
-                <div class="small-12 medium-6 large-4 columns">
-                    <div class="row">
-                        <div class="small-3 columns"><input type="checkbox" name="pk" value="360001"></div>
-                        <div class="small-9 columns">360001</div>
-                    </div>
-                    <div class="row">
-                        <div class="small-3 columns">品名</div>
-                        <div class="small-9 columns">全麦馒头</div>
-                    </div>
-                    <div class="row">
-                        <div class="small-3 columns">UNIT</div>
-                        <div class="small-9 columns">个</div>
-                    </div>
-                    <div class="row">
-                        <div class="small-3 columns">DESCR</div>
-                        <div class="small-9 columns">全麦馒头</div>
-                    </div>
-                    <div class="row">
-                        <div class="small-3 columns">OPRICE</div>
-                        <div class="small-9 columns">2.5</div>
-                    </div>
-                    <div class="row">
-                        <div class="small-3 columns">PRICE</div>
-                        <div class="small-9 columns">2</div>
-                    </div>
-                    <div class="row">
-                        <div class="small-3 columns"><input type="checkbox" name="pk" value="20"></div>
-                        <div class="small-9 columns">20</div>
-                    </div>
-                    <div class="row">
-                        <div class="small-3 columns"><input type="checkbox" name="pk" value="5"></div>
-                        <div class="small-9 columns">5</div>
-                    </div>
-                    <div class="row">
-                        <div class="small-3 columns"><input type="checkbox" name="pk" value="40"></div>
-                        <div class="small-9 columns">40</div>
-                    </div>
-                </div>
+        <div class="row">
+            <div class="small-3 columns"><a href="#"><span></span><img src="330001/_icon_" alt="" class=" thumbnail"></a></div>
+            <div class="small-9 columns">
+                <h3><a href="330001/">涂红妹粗粮馒头</a></h3>
+                <p>南昌青山湖区</p>
+                <p></p>
             </div>
-        </form>
+        </div>
+        <div class="row">
+            <div class="small-3 columns"><a href="#"><span></span><img src="330002/_icon_" alt="" class=" thumbnail"></a></div>
+            <div class="small-9 columns">
+                <h3><a href="330002/">喻芳纯棉服装</a></h3>
+                <p>南昌西湖区</p>
+                <p></p>
+            </div>
+        </div>
+        <div class="row">
+            <div class="small-3 columns"><a href="#"><span></span><img src="330003/_icon_" alt="" class=" thumbnail"></a></div>
+            <div class="small-9 columns">
+                <h3><a href="330003/">黄燕理疗康复</a></h3>
+                <p>南昌东湖区</p>
+                <p></p>
+            </div>
+        </div>
+        <div class="row">
+            <div class="small-3 columns"><a href="#"><span></span><img src="330004/_icon_" alt="" class=" thumbnail"></a></div>
+            <div class="small-9 columns">
+                <h3><a href="330004/">刘玉红原生粮油</a></h3>
+                <p>南昌青山湖区</p>
+                <p></p>
+            </div>
+        </div>
     </div>
     <script src="//cdn.bootcss.com/jquery/3.1.1/jquery.min.js"></script>
     <script src="//cdn.bootcss.com/foundation/6.3.1/js/foundation.min.js"></script>
     <script src="/slim.jquery.min.js"></script>
     <script src="/app.js"></script>
     <script>
-        $(document).foundation(); $('body').slim('parse');
+        $(document).foundation();
     </script>
 </body>
 

@@ -12,35 +12,8 @@ namespace Greatbone.Sample
             CreateVar<ShopVarFolder>((tok) => ((User)tok).shopid);
         }
 
-        // [Shop]
-        public void @default(ActionContext ac, int page)
-        {
-            using (var dc = ac.NewDbContext())
-            {
-                const int proj = -1 ^ BIN ^ TRANSF ^ SECRET;
-                dc.Sql("SELECT ").columnlst(Shop.Empty, proj)._("FROM shops ORDER BY id LIMIT 30 OFFSET @1");
-                if (dc.Query(p => p.Set(page)))
-                {
-                    ac.GiveFolderPage(Parent, 200, dc.ToList<Shop>(proj), proj);
-                }
-                else
-                {
-                    ac.GiveFolderPage(Parent, 200, (List<Shop>)null);
-                }
-            }
-        }
-
-        // whether an aligned floating point
-        bool IsAligned(string v)
-        {
-            if (v == null) { return false; }
-
-            int pt = v.IndexOf('.');
-            return pt == v.Length - 2;
-        }
-
         [User]
-        public void lst(ActionContext ac)
+        public void @default(ActionContext ac)
         {
             string city = ac.Query[nameof(city)];
             if (city == null)
@@ -83,6 +56,24 @@ namespace Greatbone.Sample
                     {
                         h.CALLOUT("没有找到附近的供应点", true);
                     });
+                }
+            }
+        }
+
+        [User]
+        public void _(ActionContext ac, int page)
+        {
+            using (var dc = ac.NewDbContext())
+            {
+                const int proj = -1 ^ BIN ^ TRANSF ^ SECRET;
+                dc.Sql("SELECT ").columnlst(Shop.Empty, proj)._("FROM shops ORDER BY id LIMIT 30 OFFSET @1");
+                if (dc.Query(p => p.Set(page)))
+                {
+                    ac.GiveFolderPage(Parent, 200, dc.ToList<Shop>(proj), proj);
+                }
+                else
+                {
+                    ac.GiveFolderPage(Parent, 200, (List<Shop>)null);
                 }
             }
         }

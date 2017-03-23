@@ -11,7 +11,7 @@ namespace Greatbone.Sample
             CreateVar<UserVarFolder>((tok) => ((User)tok).wx);
         }
 
-        public void @default(ActionContext ac)
+        public void _(ActionContext ac)
         {
             using (var dc = ac.NewDbContext())
             {

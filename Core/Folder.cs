@@ -30,13 +30,13 @@ namespace Greatbone.Core
         // declared actions 
         readonly Roll<ActionInfo> actions;
 
-        // the default action
+        // the default action, can be null
         readonly ActionInfo @default;
 
-        // the operator action
-        readonly ActionInfo @void;
+        // the underscore action, can be null. 
+        readonly ActionInfo underscore;
 
-        // the null action for key recovering
+        // the goto action, can be null
         readonly ActionInfo @goto;
 
         // child folders, if any
@@ -88,10 +88,10 @@ namespace Greatbone.Core
 
                 actions.Add(ai);
                 if (ai.Name.Equals("default")) { @default = ai; }
-                if (ai.Name.Equals("_")) { @void = ai; }
+                if (ai.Name.Equals("_")) { underscore = ai; }
                 if (ai.Name.Equals("goto")) { @goto = ai; }
             }
-            if (@default == null) @default = @void;
+            if (@default == null) @default = underscore;
 
             // to override annotated attributes
             if (fc.Ui != null)

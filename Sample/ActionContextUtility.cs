@@ -190,7 +190,7 @@ namespace Greatbone.Sample
                         h.Add("><a href=\"");
                         if (!top) h.Add("../");
                         h.Add(sub.Name);
-                        h.Add("/\">");
+                        h.Add("/_\">");
                         h.Add(sub.Label);
                         h.Add("</a></li>");
                     }
