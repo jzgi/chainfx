@@ -7,10 +7,11 @@ namespace Greatbone.Sample
 {
     public abstract class AbstService : Service<User>, IAuthenticateAsync, ICatch
     {
-        const string STATE = "WXAUTH";
+        const string WXAUTH = "wxauth";
 
         protected static readonly Client WeiXinClient = new Client("https://api.weixin.qq.com");
 
+        // weixin config json
         protected readonly WeiXin weixin;
 
         public AbstService(ServiceContext sc) : base(sc)
@@ -33,16 +34,13 @@ namespace Greatbone.Sample
 
             User prin = null;
             string state = ac.Query[nameof(state)];
-            if ("WXAUTH".Equals(state)) // if weixin auth
+            if (WXAUTH.Equals(state)) // if weixin auth
             {
                 ERR("-------- WXAUTH");
                 // get access token by the code parameter value
                 string code = ac.Query[nameof(code)];
                 JObj jo = await WeiXinClient.GetAsync<JObj>(null, "/sns/oauth2/access_token?appid=" + weixin.appid + "&secret=" + weixin.appsecret + "&code=" + code + "&grant_type=authorization_code");
-                if (jo == null)
-                {
-                    return false;
-                }
+                if (jo == null) { return false; }
 
                 string access_token = jo[nameof(access_token)];
                 if (access_token == null)
@@ -58,20 +56,16 @@ namespace Greatbone.Sample
                 {
                     if (dc.Query1("SELECT * FROM users WHERE wx = @1", (p) => p.Set(openid)))
                     {
-                        prin = dc.ToObject<User>(-1 ^ Projection.SECRET);
+                        prin = dc.ToObject<User>(-1 ^ Proj.SECRET);
+                        prin.stored = true;
                     }
                 }
-                if (prin == null) // if not an existing user
+                if (prin == null) // get userinfo remotely
                 {
-                    // get user info
                     jo = await WeiXinClient.GetAsync<JObj>(null, "/sns/userinfo?access_token=" + access_token + "&openid=" + openid);
                     string nickname = jo[nameof(nickname)];
                     string city = jo[nameof(city)];
                     prin = new User { wx = openid, nickname = nickname, city = city };
-                    using (var dc = NewDbContext())
-                    {
-                        dc.Execute("INSERT INTO users (wx, nickname, city) VALUES (@1, @2, @3)", (p) => p.Set(openid).Set(nickname).Set(city));
-                    }
                 }
             }
             else if (ac.ByBrowse)
@@ -91,7 +85,7 @@ namespace Greatbone.Sample
                 {
                     if (dc.Query1("SELECT * FROM users WHERE tel = @1", (p) => p.Set(id)))
                     {
-                        prin = dc.ToObject<User>(-1 ^ Projection.SECRET);
+                        prin = dc.ToObject<User>(-1 ^ Proj.SECRET);
                     }
                 }
                 // validate
@@ -121,7 +115,7 @@ namespace Greatbone.Sample
                         ERR("------------ ByWeiXin");
                         // redirect the user to weixin authorization page
                         string redirect_url = System.Net.WebUtility.UrlEncode(weixin.addr + ac.Uri);
-                        ac.GiveRedirect("https://open.weixin.qq.com/connect/oauth2/authorize?appid=" + weixin.appid + "&redirect_uri=" + redirect_url + "&response_type=code&scope=snsapi_userinfo&state=" + STATE + "#wechat_redirect");
+                        ac.GiveRedirect("https://open.weixin.qq.com/connect/oauth2/authorize?appid=" + weixin.appid + "&redirect_uri=" + redirect_url + "&response_type=code&scope=snsapi_userinfo&state=" + WXAUTH + "#wechat_redirect");
                     }
                     else // challenge BASIC scheme
                     {

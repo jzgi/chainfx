@@ -3,7 +3,7 @@
     ///
     /// The bit-wise flags that filter what selectos data input/output.
     ///
-    public static class Projection
+    public static class Proj
     {
         public const int
 
@@ -96,6 +96,11 @@
         public static bool Immut(this int proj)
         {
             return (proj & IMMUT) == IMMUT;
+        }
+
+        public static bool Ctrl(this int proj)
+        {
+            return (proj & CTRL) == CTRL;
         }
     }
 }

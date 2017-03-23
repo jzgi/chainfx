@@ -1,6 +1,6 @@
 using Greatbone.Core;
 using System.Collections.Generic;
-using static Greatbone.Core.Projection;
+using static Greatbone.Core.Proj;
 
 namespace Greatbone.Sample
 {

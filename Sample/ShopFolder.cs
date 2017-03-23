@@ -1,7 +1,7 @@
 using System.Collections.Generic;
 using System.Threading.Tasks;
 using Greatbone.Core;
-using static Greatbone.Core.Projection;
+using static Greatbone.Core.Proj;
 
 namespace Greatbone.Sample
 {
@@ -33,7 +33,7 @@ namespace Greatbone.Sample
                         m.Add("<div class=\"small-4 columns text-right\"><a href=\"..//\">购物车<i class=\"fi-shopping-cart\"></i></a></div>");
                         m.Add("</div>");
 
-                        var shops = dc.ToList<Shop>(-1 ^ Projection.BIN);
+                        var shops = dc.ToList<Shop>(-1 ^ Proj.BIN);
                         for (int i = 0; i < shops.Count; i++)
                         {
                             var shop = shops[i];
@@ -78,6 +78,37 @@ namespace Greatbone.Sample
             }
         }
 
+        public async Task @goto(ActionContext ac)
+        {
+            if (ac.GET)
+            {
+                // return a form
+                ac.GivePaneForm(200, (x) =>
+                {
+                    x.TEXT("shopid", "");
+                    x.PASSWORD("password", "");
+                });
+
+            }
+            else
+            {
+                var f = await ac.ReadAsync<Form>();
+                string shopid = f[nameof(shopid)];
+                string password = f[nameof(password)];
+                string orig = f[nameof(orig)];
+
+                // data op
+                User prin = (User)ac.Principal;
+                using (var dc = ac.NewDbContext())
+                {
+                    dc.Execute("UPDATE users SET shopid = @1 WHERE id = @2");
+                }
+
+                // return back
+                ac.GiveRedirect(orig);
+            }
+        }
+
         //
         // administrative actions
         //
@@ -87,7 +118,7 @@ namespace Greatbone.Sample
         {
             if (ac.GET)
             {
-                ac.GivePaneForm(200, Shop.Empty, -1 ^ Projection.TRANSF);
+                ac.GivePaneForm(200, Shop.Empty, -1 ^ Proj.TRANSF);
             }
             else // post
             {
@@ -117,7 +148,7 @@ namespace Greatbone.Sample
         {
             if (ac.GET)
             {
-                ac.GivePaneForm(200, Shop.Empty, -1 ^ Projection.TRANSF);
+                ac.GivePaneForm(200, Shop.Empty, -1 ^ Proj.TRANSF);
             }
             else // post
             {
@@ -151,37 +182,6 @@ namespace Greatbone.Sample
         public void rpt(ActionContext ac)
         {
 
-        }
-
-        public async Task @null(ActionContext ac)
-        {
-            if (ac.GET)
-            {
-                // return a form
-                ac.GivePaneForm(200, (x) =>
-                {
-                    x.TEXT("shopid", "");
-                    x.PASSWORD("password", "");
-                });
-
-            }
-            else
-            {
-                var f = await ac.ReadAsync<Form>();
-                string shopid = f[nameof(shopid)];
-                string password = f[nameof(password)];
-                string orig = f[nameof(orig)];
-
-                // data op
-                User prin = (User)ac.Principal;
-                using (var dc = ac.NewDbContext())
-                {
-                    dc.Execute("UPDATE users SET shopid = @1 WHERE id = @2");
-                }
-
-                // return back
-                ac.GiveRedirect(orig);
-            }
         }
     }
 }

@@ -30,6 +30,8 @@ namespace Greatbone.Sample
         internal string shopid; // bound shop id
         internal short admin; // admin
 
+        internal bool stored; // whether recorded in db
+
         public void ReadData(IDataInput i, int proj = 0)
         {
             if (proj.Prime())
@@ -54,6 +56,10 @@ namespace Greatbone.Sample
             {
                 i.Get(nameof(shopid), ref shopid);
                 i.Get(nameof(admin), ref admin);
+            }
+            if (proj.Ctrl())
+            {
+                i.Get(nameof(stored), ref stored);
             }
         }
 
@@ -81,6 +87,10 @@ namespace Greatbone.Sample
             {
                 o.Put(nameof(shopid), shopid, Label: "供应点");
                 o.Put(nameof(admin), admin, Label: "管理员");
+            }
+            if (proj.Ctrl())
+            {
+                o.Put(nameof(stored), stored);
             }
         }
 

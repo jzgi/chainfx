@@ -1,5 +1,5 @@
 ﻿using Greatbone.Core;
-using static Greatbone.Core.Projection;
+using static Greatbone.Core.Proj;
 
 namespace Greatbone.Sample
 {

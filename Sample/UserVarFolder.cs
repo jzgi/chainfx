@@ -11,7 +11,7 @@ namespace Greatbone.Sample
             Create<UserOrderFolder>("order");
         }
 
-        public void @default(ActionContext ac, int page)
+        public void _(ActionContext ac, int page)
         {
             string userid = ac[this];
 

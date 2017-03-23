@@ -530,7 +530,7 @@ namespace Greatbone.Core
             ac.SetHeader("Set-Cookie", sb.ToString());
         }
 
-        const int Proj = -1 ^ Projection.BIN ^ Projection.SECRET;
+        const int Proj = -1 ^ Core.Proj.BIN ^ Core.Proj.SECRET;
 
         public string Encrypt(TPrincipal prin)
         {
