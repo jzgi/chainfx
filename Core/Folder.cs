@@ -33,11 +33,14 @@ namespace Greatbone.Core
         // the default action
         readonly ActionInfo @default;
 
-        // the null-key-recovering action
-        readonly ActionInfo @null;
+        // the operator action
+        readonly ActionInfo @void;
 
-        // subfolders, if any
-        internal Roll<Folder> subfolders;
+        // the null action for key recovering
+        readonly ActionInfo @goto;
+
+        // child folders, if any
+        internal Roll<Folder> folders;
 
         // the variable-key subfolder, if any
         internal Folder varfolder;
@@ -85,8 +88,10 @@ namespace Greatbone.Core
 
                 actions.Add(ai);
                 if (ai.Name.Equals("default")) { @default = ai; }
-                if (ai.Name.Equals("null")) { @null = ai; }
+                if (ai.Name.Equals("_")) { @void = ai; }
+                if (ai.Name.Equals("goto")) { @goto = ai; }
             }
+            if (@default == null) @default = @void;
 
             // to override annotated attributes
             if (fc.Ui != null)
@@ -127,16 +132,16 @@ namespace Greatbone.Core
         ///
         /// Create a subfolder.
         ///
-        public F AddSub<F>(string name, UiAttribute ui = null, AuthorizeAttribute auth = null) where F : Folder
+        public F Create<F>(string name, UiAttribute ui = null, AuthorizeAttribute auth = null) where F : Folder
         {
             if (Level >= MaxNesting)
             {
                 throw new ServiceException("allowed folder nesting " + MaxNesting);
             }
 
-            if (subfolders == null)
+            if (folders == null)
             {
-                subfolders = new Roll<Folder>(32);
+                folders = new Roll<Folder>(32);
             }
             // create instance by reflection
             Type typ = typeof(F);
@@ -154,10 +159,10 @@ namespace Greatbone.Core
                 Directory = (Parent == null) ? name : Path.Combine(Parent.Directory, name),
                 Service = Service
             };
-            F folder = (F)ci.Invoke(new object[] { fc });
-            subfolders.Add(folder);
+            F fdr = (F)ci.Invoke(new object[] { fc });
+            folders.Add(fdr);
 
-            return folder;
+            return fdr;
         }
 
         ///
@@ -186,11 +191,11 @@ namespace Greatbone.Core
                 Directory = (Parent == null) ? _VAR_ : Path.Combine(Parent.Directory, _VAR_),
                 Service = Service
             };
-            F folder = (F)ci.Invoke(new object[] { fc });
+            F fdr = (F)ci.Invoke(new object[] { fc });
             varkeyer = keyer;
-            varfolder = folder;
+            varfolder = fdr;
 
-            return folder;
+            return fdr;
         }
 
         public string Major => major;
@@ -199,7 +204,7 @@ namespace Greatbone.Core
 
         public Roll<ActionInfo> Actions => actions;
 
-        public Roll<Folder> SubFolders => subfolders;
+        public Roll<Folder> Folders => folders;
 
         public Folder VarFolder => varfolder;
 
@@ -228,12 +233,12 @@ namespace Greatbone.Core
             },
             delegate
             {
-                if (subfolders != null)
+                if (folders != null)
                 {
-                    for (int i = 0; i < subfolders.Count; i++)
+                    for (int i = 0; i < folders.Count; i++)
                     {
-                        Folder child = subfolders[i];
-                        child.Describe(cont);
+                        Folder fdr = folders[i];
+                        fdr.Describe(cont);
                     }
                 }
                 if (varfolder != null)
@@ -273,28 +278,25 @@ namespace Greatbone.Core
         internal Folder ResolveFolder(ref string relative, ActionContext ac, ref bool recover)
         {
             int slash = relative.IndexOf('/');
-            if (slash == -1)
-            {
-                return this;
-            }
+            if (slash == -1) { return this; }
 
-            // sub folder
+            // seek as sub folder
             string key = relative.Substring(0, slash);
             relative = relative.Substring(slash + 1); // adjust relative
-            Folder subfdr;
-            if (subfolders != null && subfolders.TryGet(key, out subfdr)) // chiled
+            Folder fdr;
+            if (folders != null && folders.TryGet(key, out fdr)) // if child folder
             {
-                ac.Chain(key, subfdr);
-                return subfdr.ResolveFolder(ref relative, ac, ref recover);
+                ac.Chain(key, fdr);
+                return fdr.ResolveFolder(ref relative, ac, ref recover);
             }
-            if (varfolder != null) // variable-key
+            if (varfolder != null) // if variable-key folder
             {
                 if (key.Length == 0 && varkeyer != null) // resolve varkey
                 {
                     if (ac.Principal == null) throw AuthorizeEx;
                     if ((key = varkeyer(ac.Principal)) == null)
                     {
-                        if (@null != null) { recover = true; }
+                        if (@goto != null) { recover = true; }
                         return null;
                     }
                 }

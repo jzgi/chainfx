@@ -5,7 +5,7 @@ namespace Greatbone.Sample
 {
     ///
     ///
-    public class OrderVarFolder : Folder, IVar
+    public abstract class OrderVarFolder : Folder, IVar
     {
         public OrderVarFolder(FolderContext fc) : base(fc)
         {
@@ -121,4 +121,19 @@ namespace Greatbone.Sample
         #endregion
 
     }
+
+    public class UserOrderVarFolder : OrderVarFolder
+    {
+        public UserOrderVarFolder(FolderContext fc) : base(fc)
+        {
+        }
+    }
+
+    public class ShopOrderVarFolder : OrderVarFolder
+    {
+        public ShopOrderVarFolder(FolderContext fc) : base(fc)
+        {
+        }
+    }
+
 }

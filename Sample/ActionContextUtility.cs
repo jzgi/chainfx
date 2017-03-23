@@ -173,7 +173,7 @@ namespace Greatbone.Sample
             @base == null ? (Action<HtmlContent>)null : h =>
             {
                 bool top = folder == @base;
-                Roll<Folder> subs = @base.subfolders;
+                Roll<Folder> subs = @base.folders;
                 if (subs != null)
                 {
                     h.Add("<ul class=\"menu\">");

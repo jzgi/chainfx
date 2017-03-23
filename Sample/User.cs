@@ -25,10 +25,10 @@ namespace Greatbone.Sample
         internal string password;
         internal string credential;
         internal string city; // 
+        internal string addr;
         internal DateTime created;
         internal string shopid; // bound shop id
         internal short admin; // admin
-        internal decimal addup; // orders addup
 
         public void ReadData(IDataInput i, int proj = 0)
         {
@@ -48,12 +48,12 @@ namespace Greatbone.Sample
                 i.Get(nameof(credential), ref credential);
             }
             i.Get(nameof(city), ref city);
+            i.Get(nameof(addr), ref addr);
             i.Get(nameof(created), ref created);
             if (proj.Late())
             {
                 i.Get(nameof(shopid), ref shopid);
                 i.Get(nameof(admin), ref admin);
-                i.Get(nameof(addup), ref addup);
             }
         }
 
@@ -75,12 +75,12 @@ namespace Greatbone.Sample
                 o.Put(nameof(credential), credential);
             }
             o.Put(nameof(city), city);
+            o.Put(nameof(addr), addr);
             o.Put(nameof(created), created);
             if (proj.Late())
             {
                 o.Put(nameof(shopid), shopid, Label: "供应点");
                 o.Put(nameof(admin), admin, Label: "管理员");
-                o.Put(nameof(addup), addup);
             }
         }
 

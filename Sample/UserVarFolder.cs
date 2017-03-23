@@ -8,6 +8,7 @@ namespace Greatbone.Sample
     {
         public UserVarFolder(FolderContext fc) : base(fc)
         {
+            Create<UserOrderFolder>("order");
         }
 
         public void @default(ActionContext ac, int page)

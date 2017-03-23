@@ -6,7 +6,7 @@ using Greatbone.Core;
 namespace Greatbone.Sample
 {
     [Ui("结款管理")]
-    public class RepayFolder : Folder
+    public class RepayFolder<V> : Folder where V : RepayVarFolder
     {
         static readonly Client WcPay = new Client("https://api.mch.weixin.qq.com");
 
@@ -113,4 +113,19 @@ namespace Greatbone.Sample
         {
         }
     }
+
+    public class ShopRepayFolder : RepayFolder<ShopRepayVarFolder>
+    {
+        public ShopRepayFolder(FolderContext fc) : base(fc)
+        {
+        }
+    }
+
+    public class OpRepayFolder : RepayFolder<OpRepayVarFolder>
+    {
+        public OpRepayFolder(FolderContext fc) : base(fc)
+        {
+        }
+    }
+
 }

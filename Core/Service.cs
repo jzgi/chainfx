@@ -445,12 +445,13 @@ namespace Greatbone.Core
             // authentication
             try
             {
-                bool ret = false;
+                bool norm = true;
                 if (this is IAuthenticateAsync)
-                    ret = await ((IAuthenticateAsync)this).AuthenticateAsync(ac, true);
+                    norm = await ((IAuthenticateAsync)this).AuthenticateAsync(ac, true);
                 else if (this is IAuthenticate)
-                    ret = ((IAuthenticate)this).Authenticate(ac, true);
-                if (!ret)
+                    norm = ((IAuthenticate)this).Authenticate(ac, true);
+
+                if (!norm)
                 {
                     ac.Give(511); // 511 Network Authentication Required
                     return;
@@ -478,7 +479,7 @@ namespace Greatbone.Core
                     {
                         if (recover && ac.ByBrowse)
                         {
-                            ac.SetHeader("Location", path.Substring(0, path.Length - relative.Length - 1) + "null?orig=" + ac.Uri);
+                            ac.SetHeader("Location", path.Substring(0, path.Length - relative.Length - 1) + "goto?orig=" + ac.Uri);
                             ac.Give(303); // redirect
                         }
                         else

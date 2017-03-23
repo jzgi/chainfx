@@ -15,13 +15,11 @@ namespace Greatbone.Sample
         {
             CreateVar<CartVarFolder>(tok => ((User)tok).wx);
 
-            AddSub<UserFolder>("user");
+            Create<UserFolder>("user");
 
-            AddSub<ShopFolder>("shop", new UiAttribute("供应点管理"));
+            Create<ShopFolder>("shop", new UiAttribute("供应点管理"));
 
-            AddSub<RepayFolder>("repay");
-
-            AddSub<OrderFolder>("order", new UiAttribute("订单管理"));
+            Create<OpRepayFolder>("repay");
 
             // timer obtaining access_token from weixin
             // timer = new Timer(async state =>

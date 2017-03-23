@@ -52,20 +52,26 @@ namespace Greatbone.Sample
                 if (dc.Query("SELECT * FROM shops WHERE ((scope = 0 AND city = @1) OR scope = 1) AND enabled", p => p.Set(city)))
                 {
                     ac.GivePage(200,
-                    h =>
-                    {
-                        h.Add("<div class=\"small-8 columns\"><span>附近的供应点</span></div>");
-                        h.Add("<div class=\"small-4 columns text-right\"><a href=\"..//\">购物车<i class=\"fi-shopping-cart\"></i></a></div>");
-                    },
+                    null,
                     m =>
                     {
+                        m.Add("<div class=\"row\">");
+                        m.Add("<div class=\"small-8 columns\"><h2>附近的供应点</h2></div>");
+                        m.Add("<div class=\"small-4 columns text-right\"><a href=\"..//\">购物车<i class=\"fi-shopping-cart\"></i></a></div>");
+                        m.Add("</div>");
+
                         var shops = dc.ToList<Shop>(-1 ^ Projection.BIN);
                         for (int i = 0; i < shops.Count; i++)
                         {
                             var shop = shops[i];
 
                             m.Add("<div class=\"row\">");
-                            m.Add("<div class=\"small-2 columns\"><a href=\"#\"><span></span><img src=\""); m.Add(shop.id); m.Add("/_icon_\" alt=\"\" class=\" thumbnail\"></a></div>");
+                            m.Add("<div class=\"small-3 columns\"><a href=\"#\"><span></span><img src=\""); m.Add(shop.id); m.Add("/_icon_\" alt=\"\" class=\" thumbnail\"></a></div>");
+                            m.Add("<div class=\"small-9 columns\">");
+                            m.Add("<h3><a href=\""); m.Add(shop.id); m.Add("/\">"); m.Add(shop.name); m.Add("</a></h3>");
+                            m.Add("<p>"); m.Add(shop.city); m.Add(shop.addr); m.Add("</p>");
+                            m.Add("<p>"); m.Add(shop.descr); m.Add("</p>");
+                            m.Add("</div>");
                             m.Add("</div>");
                         }
 

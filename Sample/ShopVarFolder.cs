@@ -1,5 +1,6 @@
 using Greatbone.Core;
 using System.Collections.Generic;
+using static Greatbone.Core.Projection;
 
 namespace Greatbone.Sample
 {
@@ -9,19 +10,41 @@ namespace Greatbone.Sample
     {
         public ShopVarFolder(FolderContext dc) : base(dc)
         {
-            AddSub<OrderFolder>("order-0", new UiAttribute("当前订单"));
+            Create<ShopOrderFolder>("order-0", new UiAttribute("当前订单"));
 
-            AddSub<OrderFolder>("order-2", new UiAttribute("已完成订单"));
+            Create<ShopOrderFolder>("order-2", new UiAttribute("已完成订单"));
 
-            AddSub<OrderFolder>("order-7", new UiAttribute("已取消订单"));
+            Create<ShopOrderFolder>("order-7", new UiAttribute("已取消订单"));
 
-            AddSub<ItemFolder>("item", new UiAttribute("货架"));
+            Create<ItemFolder>("item", new UiAttribute("货架"));
 
-            AddSub<RepayFolder>("repay", new UiAttribute("平台结款"));
+            Create<ShopRepayFolder>("repay", new UiAttribute("平台结款"));
+        }
+
+        public void @default(ActionContext ac)
+        {
+            using (var dc = ac.NewDbContext())
+            {
+                // shop info
+                const int proj = -1 ^ BIN ^ TRANSF ^ SECRET;
+                dc.Sql("SELECT ").columnlst(Shop.Empty, proj)._("FROM shops WHERE id = @!");
+
+
+                // shop items 
+                dc.Sql("SELECT ").columnlst(Shop.Empty, proj)._("FROM items ORDER BY id LIMIT 30 OFFSET @1");
+                if (dc.Query(p => p.Set(1)))
+                {
+                    ac.GiveFolderPage(Parent, 200, dc.ToList<Shop>(proj), proj);
+                }
+                else
+                {
+                    ac.GiveFolderPage(Parent, 200, (List<Shop>)null);
+                }
+            }
         }
 
 
-        public void @default(ActionContext ac)
+        public void _(ActionContext ac)
         {
             ac.GiveFolderPage(this, 200, (List<Item>)null);
         }

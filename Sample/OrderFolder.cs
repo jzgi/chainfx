@@ -5,11 +5,11 @@ using static Greatbone.Sample.Order;
 
 namespace Greatbone.Sample
 {
-    public class OrderFolder : Folder
+    public abstract class OrderFolder<V> : Folder where V : OrderVarFolder
     {
         public OrderFolder(FolderContext fc) : base(fc)
         {
-            CreateVar<OrderVarFolder>();
+            CreateVar<V>();
         }
 
         // [Shop]
@@ -152,5 +152,19 @@ namespace Greatbone.Sample
 
         }
 
+    }
+
+    public class UserOrderFolder : OrderFolder<UserOrderVarFolder>
+    {
+        public UserOrderFolder(FolderContext fc) : base(fc)
+        {
+        }
+    }
+
+    public class ShopOrderFolder : OrderFolder<ShopOrderVarFolder>
+    {
+        public ShopOrderFolder(FolderContext fc) : base(fc)
+        {
+        }
     }
 }
