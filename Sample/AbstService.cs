@@ -62,7 +62,7 @@ namespace Greatbone.Sample
                 }
                 if (prin == null) // get userinfo remotely
                 {
-                    jo = await WeiXinClient.GetAsync<JObj>(null, "/sns/userinfo?access_token=" + access_token + "&openid=" + openid);
+                    jo = await WeiXinClient.GetAsync<JObj>(null, "/sns/userinfo?access_token=" + access_token + "&openid=" + openid + "&lang=zh_CN");
                     string nickname = jo[nameof(nickname)];
                     string city = jo[nameof(city)];
                     prin = new User { wx = openid, nickname = nickname, city = city };

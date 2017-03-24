@@ -15,47 +15,73 @@ namespace Greatbone.Sample
         [User]
         public void @default(ActionContext ac)
         {
-            string city = ac.Query[nameof(city)];
-            if (city == null)
+            bool dlg = ac.Query[nameof(dlg)];
+            if (dlg)
             {
-                city = ((User)ac.Principal).city;
-            }
-            using (var dc = Service.NewDbContext())
-            {
-                if (dc.Query("SELECT * FROM shops WHERE ((scope = 0 AND city = @1) OR scope = 1) AND enabled", p => p.Set(city)))
+                using (var dc = Service.NewDbContext())
                 {
-                    ac.GivePage(200,
-                    null,
-                    m =>
+                    if (dc.Query("SELECT DISTINCT city FROM shops"))
                     {
-                        m.Add("<div class=\"row\">");
-                        m.Add("<div class=\"small-8 columns\"><h2>附近的供应点</h2></div>");
-                        m.Add("<div class=\"small-4 columns text-right\"><a href=\"..//\">购物车<i class=\"fi-shopping-cart\"></i></a></div>");
-                        m.Add("</div>");
-
-                        var shops = dc.ToList<Shop>(-1 ^ Proj.BIN);
-                        for (int i = 0; i < shops.Count; i++)
+                        ac.GivePaneForm(200, f =>
                         {
-                            var shop = shops[i];
-
-                            m.Add("<div class=\"row\">");
-                            m.Add("<div class=\"small-3 columns\"><a href=\"#\"><span></span><img src=\""); m.Add(shop.id); m.Add("/_icon_\" alt=\"\" class=\" thumbnail\"></a></div>");
-                            m.Add("<div class=\"small-9 columns\">");
-                            m.Add("<h3><a href=\""); m.Add(shop.id); m.Add("/\">"); m.Add(shop.name); m.Add("</a></h3>");
-                            m.Add("<p>"); m.Add(shop.city); m.Add(shop.addr); m.Add("</p>");
-                            m.Add("<p>"); m.Add(shop.descr); m.Add("</p>");
-                            m.Add("</div>");
-                            m.Add("</div>");
-                        }
-
-                    }, null);
+                            int i = 0;
+                            while (dc.Next())
+                            {
+                                i++;
+                                string city = dc.GetString();
+                                f.Add("<input type=\"radio\" name=\"city\" id=\"city"); f.Add(i);
+                                f.Add("\" value=\""); f.Add(city); f.Add("\">");
+                                f.Add("<label for=\"city"); f.Add(i); f.Add("\">"); f.Add(city); f.Add("</label>");
+                            }
+                        });
+                    }
+                    else { ac.Give(204); }
                 }
-                else
+            }
+            else
+            {
+                string city = ac.Query[nameof(city)];
+                if (city == null)
                 {
-                    ac.GiveSnippet(200, h =>
+                    city = ((User)ac.Principal).city;
+                }
+                using (var dc = Service.NewDbContext())
+                {
+                    if (dc.Query("SELECT * FROM shops WHERE ((scope = 0 AND city = @1) OR scope = 1) AND enabled", p => p.Set(city)))
                     {
-                        h.CALLOUT("没有找到附近的供应点", true);
-                    });
+                        ac.GivePage(200,
+                        null,
+                        m =>
+                        {
+                            m.Add("<div class=\"row\">");
+                            m.Add("<div class=\"small-8 columns\"><h1><a href=\"\" onclick=\"dialog(this, 2);return false;\">"); m.Add(city); m.Add("（切换城市）</a></h1></div>");
+                            m.Add("<div class=\"small-4 columns text-right\"><a href=\"..//\">购物车<i class=\"fi-shopping-cart\"></i></a></div>");
+                            m.Add("</div>");
+
+                            var shops = dc.ToList<Shop>(-1 ^ Proj.BIN);
+                            for (int i = 0; i < shops.Count; i++)
+                            {
+                                var shop = shops[i];
+
+                                m.Add("<div class=\"row\">");
+                                m.Add("<div class=\"small-3 columns\"><a href=\"#\"><span></span><img src=\""); m.Add(shop.id); m.Add("/_icon_\" alt=\"\" class=\" thumbnail\"></a></div>");
+                                m.Add("<div class=\"small-9 columns\">");
+                                m.Add("<h3><a href=\""); m.Add(shop.id); m.Add("/\">"); m.Add(shop.name); m.Add("</a></h3>");
+                                m.Add("<p>"); m.Add(shop.city); m.Add(shop.addr); m.Add("</p>");
+                                m.Add("<p>"); m.Add(shop.descr); m.Add("</p>");
+                                m.Add("</div>");
+                                m.Add("</div>");
+                            }
+
+                        }, null);
+                    }
+                    else
+                    {
+                        ac.GiveSnippet(200, h =>
+                        {
+                            h.CALLOUT("没有找到附近的供应点", true);
+                        });
+                    }
                 }
             }
         }
@@ -108,6 +134,7 @@ namespace Greatbone.Sample
                 ac.GiveRedirect(orig);
             }
         }
+
 
         //
         // administrative actions

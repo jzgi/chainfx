@@ -1,16 +1,31 @@
 
 // build and open a reveal dialog
-function dialog(btn, modal) {
+// trig - a button, input_button or anchor element
+// mode - STANDARD, PROMPT or PICKER
+function dialog(trig, mode, siz) {
 
-    var sizg = modal == 1 ? 'large' : modal == 2 ? 'small' : 'tiny';
-    // behave: free, submit, input
-    var behave = 1;
+    var sizg = siz == 1 ? 'tiny' : mode == 2 ? 'small' : 'large';
+
+    // keep the trigger info
+    var formid = trig.from ? trig.form.id : '';
+    var tag = trig.tagName;
+    var action;
+    var method;
+    if (tag == 'BUTTON') {
+        action = trig.formaction | trig.name;
+        method = trig.formmethod;
+    } else if (tag == 'A') {
+        action = trig.href
+        method = 'GET';
+    }
+
+    var src = action.split("?")[0] + '?dlg=true';
 
     var html = '<div id="dynadlg" class="' + sizg + ' reveal"  data-reveal data-close-on-click="false">'
-        + '<h3>' + btn.innerHTML + ' </h3>'
+        + '<h3>' + trig.innerHTML + ' </h3>'
         + '<button class="close-button" type="button" onclick="oncancel(this);"><span aria-hidden="true">&times;</span></button>'
-        + '<div style="height: 600px"><iframe src="' + btn.name + '" style="width: 100%; height: 100%"></iframe></div>'
-        + '<button onclick="onok(this,' + modal + ');" disabled>确定</botton>'
+        + '<div style=""><iframe src="' + src + '" style="width: 100%; height: 100%"></iframe></div>'
+        + '<button onclick="onok(this,' + mode + ',\'' + formid + '\',\'' + tag + '\',\'' + action + '\',\'' + method + '\');" disabled>确定</botton>'
         + '</div>';
 
     var dive = $(html);
@@ -22,14 +37,17 @@ function dialog(btn, modal) {
 
     // open
     $(dive).foundation('open');
+
+    // abort the onclick
+    return false;
 }
 
 // when clicked on the OK button
-function onok(btn, modal) {
+function onok(okbtn, mode, formid, tag, action, method) {
 
     var dlge = $('#dynadlg');
 
-    if (modal == 1) { // standard mode, submit or return
+    if (mode == 1) { // standard mode
         var iframe = dlge.find('iframe');
         var form = iframe.contents().find('form');
         if (form.length != 0) {
@@ -39,8 +57,18 @@ function onok(btn, modal) {
             location.reload();
             return;
         }
-    } else if (modal == 2) { // prompt mode, merge to the parent and submit
-
+    } else if (mode == 2) { // prompt mode, merge to the parent and submit
+        if (tag == 'A') {
+            var iframe = dlge.find('iframe');
+            var form = iframe.contents().find('form');
+            if (form.length != 0) {
+                var qstr = $(form[0]).serialize();
+                if (qstr) {
+                    location.href = action.split("?")[0] + '?' + qstr;
+                }
+                return;
+            }
+        }
     } else { // picker mode
 
     }

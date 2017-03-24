@@ -15,9 +15,10 @@ namespace Greatbone.Core
             CTX_TABLE = 1,
             CTX_GRID = 2,
             CTX_LIST = 3,
+            CTX_SHEET = 4,
             // single
-            CTX_FILL = 4,
-            CTX_CARD = 5;
+            CTX_FILL = 5,
+            CTX_CARD = 6;
 
         // per idata object outputing context
         struct Ctx
@@ -293,10 +294,10 @@ namespace Greatbone.Core
             chain[++level].type = CTX_GRID;
             if (lst != null)
             {
-                Add("<div class=\"expanded row\">");
+                Add("<div class=\"row small-up-2 medium-up-4 large-up-6\">");
                 for (int i = 0; i < lst.Count; i++)
                 {
-                    Add("<div class=\"small-12 medium-6 large-4 columns\">");
+                    Add("<div class=\"column\">");
                     chain[level].ordinal = 0; // reset ordical
                     lst[i].WriteData(this, proj);
                     Add("</div>");
