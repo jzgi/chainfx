@@ -474,8 +474,8 @@ namespace Greatbone.Core
                 {
                     string relative = path.Substring(1);
                     bool recover = false; // null-key-recovering
-                    Folder folder = ResolveFolder(ref relative, ac, ref recover);
-                    if (folder == null)
+                    Folder fdr = ResolveFolder(ref relative, ac, ref recover);
+                    if (fdr == null)
                     {
                         if (recover && ac.ByBrowse)
                         {
@@ -488,7 +488,7 @@ namespace Greatbone.Core
                         }
                         return;
                     }
-                    await folder.HandleAsync(relative, ac);
+                    await fdr.HandleAsync(relative, ac);
                 }
             }
             catch (Exception e)

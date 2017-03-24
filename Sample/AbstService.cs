@@ -21,13 +21,13 @@ namespace Greatbone.Sample
 
         public async Task<bool> AuthenticateAsync(ActionContext ac, bool e)
         {
-            ERR("---- AuthenticateAsync() -----");
-            ERR("URI: " + ac.Uri);
+            // ERR("---- AuthenticateAsync() -----");
+            // ERR("URI: " + ac.Uri);
 
             string token;
             if (ac.Cookies.TryGetValue("Bearer", out token))
             {
-                ERR("-------- Bearer Cookie");
+                // ERR("-------- Bearer Cookie");
                 ac.Principal = Decrypt(token);
                 return true;
             }
@@ -36,17 +36,19 @@ namespace Greatbone.Sample
             string state = ac.Query[nameof(state)];
             if (WXAUTH.Equals(state)) // if weixin auth
             {
-                ERR("-------- WXAUTH");
+                // ERR("-------- WXAUTH");
                 // get access token by the code parameter value
                 string code = ac.Query[nameof(code)];
+                if (code == null) return false;
+
                 JObj jo = await WeiXinClient.GetAsync<JObj>(null, "/sns/oauth2/access_token?appid=" + weixin.appid + "&secret=" + weixin.appsecret + "&code=" + code + "&grant_type=authorization_code");
-                if (jo == null) { return false; }
+                if (jo == null) return false;
 
                 string access_token = jo[nameof(access_token)];
                 if (access_token == null)
                 {
                     string errmsg = jo[nameof(errmsg)];
-                    ERR("err getting access_token: " + errmsg);
+                    // ERR("err getting access_token: " + errmsg);
                     return false;
                 }
                 string openid = jo[nameof(openid)];
@@ -70,7 +72,7 @@ namespace Greatbone.Sample
             }
             else if (ac.ByBrowse)
             {
-                ERR("-------- ByBrowse");
+                // ERR("-------- ByBrowse");
                 string authorization = ac.Header("Authorization");
                 if (authorization == null || !authorization.StartsWith("Basic ")) { return true; }
 
@@ -102,17 +104,17 @@ namespace Greatbone.Sample
 
         public virtual void Catch(Exception e, ActionContext ac)
         {
-            ERR("---- Catch() -----");
-            ERR("URI: " + ac.Uri);
+            // ERR("---- Catch() -----");
+            // ERR("URI: " + ac.Uri);
             if (e is AuthorizeException)
             {
                 if (ac.Principal == null)
                 {
-                    ERR("-------- NoToken");
+                    // ERR("-------- NoToken");
                     // weixin authorization challenge
                     if (ac.ByWeiXin) // weixin
                     {
-                        ERR("------------ ByWeiXin");
+                        // ERR("------------ ByWeiXin");
                         // redirect the user to weixin authorization page
                         string redirect_url = System.Net.WebUtility.UrlEncode(weixin.addr + ac.Uri);
                         ac.GiveRedirect("https://open.weixin.qq.com/connect/oauth2/authorize?appid=" + weixin.appid + "&redirect_uri=" + redirect_url + "&response_type=code&scope=snsapi_userinfo&state=" + WXAUTH + "#wechat_redirect");

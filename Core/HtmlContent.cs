@@ -627,11 +627,11 @@ namespace Greatbone.Core
             T("</tbody>");
         }
 
-        public void NUMBER<V>(string name, V v, string Label = null, string Help = null, V Max = default(V), V Min = default(V), V Step = default(V), bool ReadOnly = false, bool Required = false) where V : IEquatable<V>, IConvertible
+        public void NUMBER(string name, short v, string Label = null, string Help = null, short Max =  0, short Min = 0, short Step = 0, bool ReadOnly = false, bool Required = false) 
         {
             Add("<label>");
             AddLabel(null, name);
-            Add("<input type=\"number\" name=\"");
+            Add("<input style=\"height: 100px\" type=\"number\" name=\"");
             Add(name);
             Add("\" value=\"");
             AddConvert(v);
@@ -643,19 +643,19 @@ namespace Greatbone.Core
                 Add(Help);
                 Add("\"");
             }
-            if (Max.Equals(default(V)))
+            if (Max != 0)
             {
                 Add(" max=\"");
                 AddConvert(Max);
                 Add("\"");
             }
-            if (Min.Equals(default(V)))
+            if (Min != 0)
             {
                 Add(" min=\"");
                 AddConvert(Min);
                 Add("\"");
             }
-            if (Step.Equals(default(V)))
+            if (Step != 0)
             {
                 Add(" step=\"");
                 AddConvert(Step);
@@ -1106,7 +1106,7 @@ namespace Greatbone.Core
                     break;
                 case CTX_FILL:
                     Add("<div class=\"pure-u-1 pure-u-md-1-2\">");
-                    NUMBER(name, v);
+                    // NUMBER(name, v);
                     Add("</div>");
                     break;
 
@@ -1154,12 +1154,12 @@ namespace Greatbone.Core
                     break;
                 case CTX_LIST:
                     Add("<div class=\"pure-u-1 pure-u-md-1-2\">");
-                    NUMBER(name, v);
+                    // NUMBER(name, v);
                     Add("</div>");
                     break;
                 case CTX_FILL:
                     Add("<div class=\"pure-u-1 pure-u-md-1-2\">");
-                    NUMBER(name, v);
+                    // NUMBER(name, v);
                     Add("</div>");
                     break;
             }

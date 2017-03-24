@@ -7,13 +7,13 @@ function dialog(trig, mode, siz) {
     var sizg = siz == 1 ? 'tiny' : mode == 2 ? 'small' : 'large';
 
     // keep the trigger info
-    var formid = trig.from ? trig.form.id : '';
+    var formid = trig.form ? trig.form.id : '';
     var tag = trig.tagName;
     var action;
-    var method;
+    var method = 'POST';
     if (tag == 'BUTTON') {
-        action = trig.formaction | trig.name;
-        method = trig.formmethod;
+        action = trig.formAction || trig.name;
+        method = trig.formMethod || method;
     } else if (tag == 'A') {
         action = trig.href
         method = 'GET';
@@ -62,9 +62,30 @@ function onok(okbtn, mode, formid, tag, action, method) {
             var iframe = dlge.find('iframe');
             var form = iframe.contents().find('form');
             if (form.length != 0) {
+                if (!form[0].reportValidity()) return;
                 var qstr = $(form[0]).serialize();
                 if (qstr) {
                     location.href = action.split("?")[0] + '?' + qstr;
+                }
+                return;
+            }
+        } else if (tag == 'BUTTON') {
+            var iframe = dlge.find('iframe');
+            var form = iframe.contents().find('form');
+            if (form.length != 0) {
+                if (!form[0].reportValidity()) return;
+                if (method == 'GET') {
+                    var qstr = $(form[0]).serialize();
+                    if (qstr) {
+                        location.href = action.split("?")[0] + '?' + qstr;
+                    }
+                } else if (method == 'POST') {
+                    var pairs = $(form[0]).serializeArray();
+                    pairs.forEach(function (e, i) {
+                        $('<input>').attr({ type: 'hidden', name: e.name, value: e.value }).appendTo(form);
+                    });
+
+                    $(formid).submit;
                 }
                 return;
             }

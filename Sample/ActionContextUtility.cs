@@ -62,7 +62,7 @@ namespace Greatbone.Sample
             cont.Add("<script src=\"//cdn.bootcss.com/jquery/3.1.1/jquery.min.js\"></script>");
             cont.Add("<script src=\"//cdn.bootcss.com/foundation/6.3.1/js/foundation.min.js\"></script>");
             cont.Add("<script src=\"/slim.jquery.min.js\"></script>");
-            cont.Add("<script src=\"/app.js\"></script>");
+            cont.Add("<script src=\"/app01.js\"></script>");
             cont.Add("<script>$(document).foundation();</script>");
 
             cont.Add("</body>");
@@ -93,7 +93,9 @@ namespace Greatbone.Sample
             if (header != null)
             {
                 cont.Add("<div class\"row\">");
+                cont.Add("<div class\"small-8 text-center column\">");
                 header(cont);
+                cont.Add("</div>");
                 cont.Add("</div>");
             }
 
@@ -112,7 +114,7 @@ namespace Greatbone.Sample
             cont.Add("<script src=\"//cdn.bootcss.com/jquery/3.1.1/jquery.min.js\"></script>");
             cont.Add("<script src=\"//cdn.bootcss.com/foundation/6.3.1/js/foundation.min.js\"></script>");
             cont.Add("<script src=\"/slim.jquery.min.js\"></script>");
-            cont.Add("<script src=\"/app.js\"></script>");
+            cont.Add("<script src=\"/app01.js\"></script>");
             cont.Add("<script>");
             cont.Add("$(document).foundation();");
             cont.Add("$('body').slim('parse');");

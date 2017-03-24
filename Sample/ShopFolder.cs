@@ -55,7 +55,7 @@ namespace Greatbone.Sample
                         {
                             m.Add("<div class=\"row\">");
                             m.Add("<div class=\"small-8 columns\"><h1><a href=\"\" onclick=\"dialog(this, 2);return false;\">"); m.Add(city); m.Add("（切换城市）</a></h1></div>");
-                            m.Add("<div class=\"small-4 columns text-right\"><a href=\"..//\">购物车<i class=\"fi-shopping-cart\"></i></a></div>");
+                            m.Add("<div class=\"small-4 columns text-right\"><a href=\"..//\">购物车<i class=\"fi-shopping-cart warning\"></i>付款</a></div>");
                             m.Add("</div>");
 
                             var shops = dc.ToList<Shop>(-1 ^ Proj.BIN);
