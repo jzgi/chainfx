@@ -314,8 +314,8 @@ namespace Greatbone.Core
             if (!DoAuthorize(ac)) throw AuthorizeEx;
 
             // pre-
-            FilterAttribute flt = Filter;
-            if (flt != null) { if (flt.IsAsync) await flt.BeforeAsync(ac); else flt.Before(ac); }
+            BeforeAttribute bef = Before;
+            if (bef != null) { if (bef.IsAsync) await bef.DoAsync(ac); else bef.Do(ac); }
 
             int dot = rsc.LastIndexOf('.');
             if (dot != -1) // file
@@ -348,9 +348,9 @@ namespace Greatbone.Core
 
                 // try in cache
 
-                // action filter before
-                FilterAttribute aflt = act.Filter;
-                if (aflt != null) { if (aflt.IsAsync) await aflt.BeforeAsync(ac); else aflt.Before(ac); }
+                BeforeAttribute actbef = act.Before;
+                if (actbef != null) { if (actbef.IsAsync) await actbef.DoAsync(ac); else actbef.Do(ac); }
+
                 // method invocation
                 if (act.IsAsync)
                 {
@@ -360,14 +360,16 @@ namespace Greatbone.Core
                 {
                     act.Do(ac, subscpt);
                 }
-                // action filter after
-                if (aflt != null) { if (aflt.IsAsync) await aflt.AfterAsync(ac); else aflt.After(ac); }
+
+                AfterAttribute actaft = act.After;
+                if (actaft != null) { if (actaft.IsAsync) await actaft.DoAsync(ac); else actaft.Do(ac); }
 
                 ac.Doer = null;
             }
 
             // post-
-            if (flt != null) { if (flt.IsAsync) await flt.AfterAsync(ac); else flt.After(ac); }
+            AfterAttribute aft = After;
+            if (aft != null) { if (aft.IsAsync) await aft.DoAsync(ac); else aft.Do(ac); }
 
             ac.Folder = null;
         }

@@ -10,21 +10,26 @@ namespace Greatbone.Core
         // name as appeared in the uri path
         readonly string name;
 
-        readonly string upname;
+        // name in uppercase
+        readonly string upper;
 
+        // user interface settings
         internal UiAttribute ui;
 
         // access check
         internal AuthorizeAttribute authorize;
 
-        // operation(s)
-        readonly FilterAttribute filter;
+        // pre- operation
+        readonly BeforeAttribute before;
+
+        // post- operation
+        readonly AfterAttribute after;
 
 
         internal Nodule(string name, ICustomAttributeProvider attrs)
         {
             this.name = name;
-            this.upname = name.ToUpper();
+            this.upper = name.ToUpper();
 
             // either methodinfo or typeinfo
             if (attrs == null)
@@ -47,12 +52,20 @@ namespace Greatbone.Core
                 authorize.Nodule = this;
             }
 
-            // work
-            var flts = (FilterAttribute[])attrs.GetCustomAttributes(typeof(FilterAttribute), false);
-            if (flts.Length > 0)
+            // before 
+            var befs = (BeforeAttribute[])attrs.GetCustomAttributes(typeof(BeforeAttribute), false);
+            if (befs.Length > 0)
             {
-                filter = flts[0];
-                filter.Nodule = this;
+                before = befs[0];
+                before.Nodule = this;
+            }
+
+            // after 
+            var afts = (AfterAttribute[])attrs.GetCustomAttributes(typeof(AfterAttribute), false);
+            if (afts.Length > 0)
+            {
+                after = afts[0];
+                after.Nodule = this;
             }
         }
 
@@ -64,9 +77,11 @@ namespace Greatbone.Core
 
         public AuthorizeAttribute Authorize => authorize;
 
-        public FilterAttribute Filter => filter;
+        public BeforeAttribute Before => before;
 
-        public string Label => ui?.Label ?? upname;
+        public AfterAttribute After => after;
+
+        public string Label => ui?.Label ?? upper;
 
         public bool HasUi => ui != null;
 
