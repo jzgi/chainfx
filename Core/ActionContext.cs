@@ -268,7 +268,7 @@ namespace Greatbone.Core
                 }
                 // parse
                 string ctyp = Header("Content-Type");
-                entity = DataInputUtility.ParseContent(ctyp, buffer, 0, count, typeof(M));
+                entity = ParseContent(ctyp, buffer, count, typeof(M));
             }
             return entity as M;
         }
@@ -288,7 +288,7 @@ namespace Greatbone.Core
                 }
                 // parse
                 string ctyp = Header("Content-Type");
-                entity = ParseContent(ctyp, buffer, 0, count);
+                entity = ParseContent(ctyp, buffer, count);
             }
             IDataInput src = entity as IDataInput;
             if (src == null)
@@ -313,7 +313,7 @@ namespace Greatbone.Core
                 }
                 // parse
                 string ctyp = Header("Content-Type");
-                entity = ParseContent(ctyp, buffer, 0, count);
+                entity = ParseContent(ctyp, buffer, count);
             }
             return (entity as IDataInput)?.ToArray<D>(proj);
         }
@@ -333,7 +333,7 @@ namespace Greatbone.Core
                 }
                 // parse
                 string ctyp = Header("Content-Type");
-                entity = ParseContent(ctyp, buffer, 0, count);
+                entity = ParseContent(ctyp, buffer, count);
             }
             return (entity as IDataInput)?.ToList<D>(proj);
         }

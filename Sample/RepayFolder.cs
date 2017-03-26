@@ -92,7 +92,7 @@ namespace Greatbone.Sample
             // <sign>C97BDBACF37622775366F38B629F45E3</sign>
             // </xml>
             XmlContent cont = new XmlContent();
-            HttpResponseMessage resp = await WcPay.PostAsync(null, "/mmpaymkttransfers/promotion/transfers", cont);
+            XElem resp = await WcPay.PostAsync<XElem>(null, "/mmpaymkttransfers/promotion/transfers", cont);
 
             using (var dc = ac.NewDbContext())
             {

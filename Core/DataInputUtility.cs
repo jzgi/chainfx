@@ -10,40 +10,40 @@ namespace Greatbone.Core
         ///
         /// Used in both client and server to parse received content into model.
         ///
-        public static IDataInput ParseContent(string ctyp, byte[] buffer, int start, int count, Type typ = null)
+        public static IDataInput ParseContent(string ctyp, byte[] buffer, int length, Type typ = null)
         {
             if (string.IsNullOrEmpty(ctyp)) return null;
 
             if ("application/x-www-form-urlencoded".Equals(ctyp))
             {
-                return new FormParse(buffer, count).Parse();
+                return new FormParse(buffer, length).Parse();
             }
             if (ctyp.StartsWith("multipart/form-data; boundary="))
             {
-                return new FormMpParse(buffer, count, ctyp.Substring(30)).Parse();
+                return new FormMpParse(buffer, length, ctyp.Substring(30)).Parse();
             }
             if (ctyp.StartsWith("application/json"))
             {
-                return new JsonParse(buffer, count).Parse();
+                return new JsonParse(buffer, length).Parse();
             }
             if (ctyp.StartsWith("application/xml"))
             {
-                return new XmlParse(buffer, count).Parse();
+                return new XmlParse(buffer, length).Parse();
             }
             if (ctyp.StartsWith("text/plain"))
             {
                 if (typ == typeof(JObj) || typ == typeof(JArr))
                 {
-                    return new JsonParse(buffer, count).Parse();
+                    return new JsonParse(buffer, length).Parse();
                 }
                 else if (typ == typeof(XElem))
                 {
-                    return new XmlParse(buffer, count).Parse();
+                    return new XmlParse(buffer, length).Parse();
                 }
                 else
                 {
                     Text txt = new Text();
-                    for (int i = 0; i < count; i++)
+                    for (int i = 0; i < length; i++)
                     {
                         txt.Accept(buffer[i]);
                     }

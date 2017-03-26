@@ -16,6 +16,8 @@ namespace Greatbone.Core
     ///
     public class Connector : HttpClient, IRollable
     {
+        const int AHEAD = 1000 * 12;
+
         static readonly Uri PollUri = new Uri("*", UriKind.Relative);
 
         readonly Service service;
@@ -24,7 +26,7 @@ namespace Greatbone.Core
         readonly string x_event;
 
         // target serviceid
-        readonly string targetid;
+        readonly string peerid;
 
         // this field is only accessed by the scheduler
         Task pollTask;
@@ -36,10 +38,10 @@ namespace Greatbone.Core
 
         public Connector(string raddr) : this(null, null, raddr) { }
 
-        public Connector(Service service, string targetid, string raddr)
+        internal Connector(Service service, string peerid, string raddr)
         {
             this.service = service;
-            this.targetid = targetid;
+            this.peerid = peerid;
 
             if (service != null) // build lastevent poll condition
             {
@@ -60,7 +62,7 @@ namespace Greatbone.Core
             Timeout = TimeSpan.FromSeconds(5);
         }
 
-        public string Name => targetid;
+        public string Name => peerid;
 
 
         public void TryPoll(int ticks)
@@ -129,7 +131,7 @@ namespace Greatbone.Core
                         }
 
                         // database last id
-                        dc.Execute("UPDATE evtu SET evtid = @1 WHERE peerid = @2", p => p.Set(id).Set(targetid));
+                        dc.Execute("UPDATE evtu SET evtid = @1 WHERE peerid = @2", p => p.Set(id).Set(peerid));
                     }
                 }
             });
@@ -139,124 +141,180 @@ namespace Greatbone.Core
         // RPC
         //
 
-        public async Task<byte[]> GetAsync(ActionContext ctx, string uri)
+        public async Task<byte[]> GetAsync(ActionContext ac, string uri)
         {
-            HttpRequestMessage req = new HttpRequestMessage(HttpMethod.Get, uri);
-            req.Headers.Add("Authorization", "Bearer " + ctx.Token);
-            HttpResponseMessage resp = await SendAsync(req, HttpCompletionOption.ResponseContentRead);
-            return await resp.Content.ReadAsByteArrayAsync();
+            try
+            {
+                HttpRequestMessage req = new HttpRequestMessage(HttpMethod.Get, uri);
+                if (peerid != null && ac != null)
+                {
+                    if (ac.Token != null)
+                    {
+                        req.Headers.Add("Authorization", "Bearer " + ac.Token);
+                    }
+                }
+                HttpResponseMessage resp = await SendAsync(req, HttpCompletionOption.ResponseContentRead);
+                return await resp.Content.ReadAsByteArrayAsync();
+            }
+            catch
+            {
+                retryat = Environment.TickCount + AHEAD;
+            }
+            return null;
         }
 
         public async Task<M> GetAsync<M>(ActionContext ac, string uri) where M : class, IDataInput
         {
-            HttpRequestMessage req = new HttpRequestMessage(HttpMethod.Get, uri);
-            if (ac != null)
+            try
             {
-                req.Headers.Add("Authorization", "Bearer " + ac.Token);
+                HttpRequestMessage req = new HttpRequestMessage(HttpMethod.Get, uri);
+                if (peerid != null && ac != null)
+                {
+                    if (ac.Token != null)
+                    {
+                        req.Headers.Add("Authorization", "Bearer " + ac.Token);
+                    }
+                }
+                HttpResponseMessage rsp = await SendAsync(req, HttpCompletionOption.ResponseContentRead);
+                if (rsp.StatusCode != HttpStatusCode.OK)
+                {
+                    return null;
+                }
+                byte[] bytea = await rsp.Content.ReadAsByteArrayAsync();
+                string ctyp = rsp.Content.Headers.GetValue("Content-Type");
+                return (M)ParseContent(ctyp, bytea, bytea.Length, typeof(M));
             }
-            HttpResponseMessage rsp = await SendAsync(req, HttpCompletionOption.ResponseContentRead);
-            if (rsp.StatusCode != HttpStatusCode.OK)
+            catch
             {
-                return null;
+                retryat = Environment.TickCount + AHEAD;
             }
-            byte[] bytea = await rsp.Content.ReadAsByteArrayAsync();
-            string ctyp = rsp.Content.Headers.GetValue("Content-Type");
-            return (M)DataInputUtility.ParseContent(ctyp, bytea, 0, bytea.Length, typeof(M));
+            return null;
         }
 
-        public async Task<D> GetObjectAsync<D>(ActionContext ctx, string uri, int proj = 0) where D : IData, new()
+        public async Task<D> GetObjectAsync<D>(ActionContext ac, string uri, int proj = 0) where D : IData, new()
         {
-            HttpRequestMessage req = new HttpRequestMessage(HttpMethod.Get, uri);
-            if (ctx != null)
+            try
             {
-                req.Headers.Add("Authorization", "Bearer " + ctx.Token);
+                HttpRequestMessage req = new HttpRequestMessage(HttpMethod.Get, uri);
+                if (peerid != null && ac != null)
+                {
+                    if (ac.Token != null)
+                    {
+                        req.Headers.Add("Authorization", "Bearer " + ac.Token);
+                    }
+                }
+                HttpResponseMessage rsp = await SendAsync(req, HttpCompletionOption.ResponseContentRead);
+                if (rsp.StatusCode != HttpStatusCode.OK)
+                {
+                    return default(D);
+                }
+                byte[] bytea = await rsp.Content.ReadAsByteArrayAsync();
+                string ctyp = rsp.Content.Headers.GetValue("Content-Type");
+                IDataInput inp = ParseContent(ctyp, bytea, bytea.Length);
+                D obj = new D();
+                obj.ReadData(inp, proj);
+                return obj;
             }
-            HttpResponseMessage resp = await SendAsync(req, HttpCompletionOption.ResponseContentRead);
-            IDataInput src = null;
-            return src.ToObject<D>(proj);
+            catch
+            {
+                retryat = Environment.TickCount + AHEAD;
+            }
+            return default(D);
         }
 
-        public async Task<D[]> GetArrayAsync<D>(ActionContext ctx, string uri, int proj = 0) where D : IData, new()
+        public async Task<D[]> GetArrayAsync<D>(ActionContext ac, string uri, int proj = 0) where D : IData, new()
         {
-            HttpRequestMessage req = new HttpRequestMessage(HttpMethod.Get, uri);
-            if (ctx != null)
+            try
             {
-                req.Headers.Add("Authorization", "Bearer " + ctx.Token);
+                HttpRequestMessage req = new HttpRequestMessage(HttpMethod.Get, uri);
+                if (peerid != null && ac != null)
+                {
+                    if (ac.Token != null)
+                    {
+                        req.Headers.Add("Authorization", "Bearer " + ac.Token);
+                    }
+                }
+                HttpResponseMessage rsp = await SendAsync(req, HttpCompletionOption.ResponseContentRead);
+                if (rsp.StatusCode != HttpStatusCode.OK)
+                {
+                    return null;
+                }
+                byte[] bytea = await rsp.Content.ReadAsByteArrayAsync();
+                string ctyp = rsp.Content.Headers.GetValue("Content-Type");
+                IDataInput inp = ParseContent(ctyp, bytea, bytea.Length);
+                return inp.ToArray<D>(proj);
             }
-            HttpResponseMessage rsp = await SendAsync(req, HttpCompletionOption.ResponseContentRead);
-
-            IDataInput srcset = null;
-            return srcset.ToArray<D>(proj);
+            catch
+            {
+                retryat = Environment.TickCount + AHEAD;
+            }
+            return null;
         }
 
-        public async Task<List<D>> GetListAsync<D>(ActionContext ctx, string uri, int proj = 0) where D : IData, new()
+        public async Task<List<D>> GetListAsync<D>(ActionContext ac, string uri, int proj = 0) where D : IData, new()
         {
-            HttpRequestMessage req = new HttpRequestMessage(HttpMethod.Get, uri);
-            if (ctx != null)
+            try
             {
-                req.Headers.Add("Authorization", "Bearer " + ctx.Token);
+                HttpRequestMessage req = new HttpRequestMessage(HttpMethod.Get, uri);
+                if (peerid != null && ac != null)
+                {
+                    if (ac.Token != null)
+                    {
+                        req.Headers.Add("Authorization", "Bearer " + ac.Token);
+                    }
+                }
+                HttpResponseMessage rsp = await SendAsync(req, HttpCompletionOption.ResponseContentRead);
+                if (rsp.StatusCode != HttpStatusCode.OK)
+                {
+                    return null;
+                }
+                byte[] bytea = await rsp.Content.ReadAsByteArrayAsync();
+                string ctyp = rsp.Content.Headers.GetValue("Content-Type");
+                IDataInput inp = ParseContent(ctyp, bytea, bytea.Length);
+                return inp.ToList<D>(proj);
             }
-            HttpResponseMessage rsp = await SendAsync(req, HttpCompletionOption.ResponseContentRead);
-
-            IDataInput srcset = null;
-            return srcset.ToList<D>(proj);
+            catch
+            {
+                retryat = Environment.TickCount + AHEAD;
+            }
+            return null;
         }
 
-        public Task<HttpResponseMessage> PostAsync<C>(ActionContext ctx, string uri, C content) where C : HttpContent, IContent
+        public async Task<int> PostAsync(ActionContext ac, string uri, IContent content)
         {
             HttpRequestMessage req = new HttpRequestMessage(HttpMethod.Post, uri);
-            if (ctx != null)
+            if (peerid != null && ac != null)
             {
-                req.Headers.Add("Authorization", "Bearer " + ctx.Token);
+                if (ac.Token != null)
+                {
+                    req.Headers.Add("Authorization", "Bearer " + ac.Token);
+                }
             }
-            req.Content = content;
+            req.Content = (HttpContent)content;
             req.Headers.Add("Content-Type", content.Type);
             req.Headers.Add("Content-Length", content.Size.ToString());
 
-            return SendAsync(req, HttpCompletionOption.ResponseContentRead);
+            HttpResponseMessage rsp = await SendAsync(req, HttpCompletionOption.ResponseContentRead);
+            return (int)rsp.StatusCode;
         }
 
-        public Task<HttpResponseMessage> PostAsync(ActionContext ctx, string uri, IDataInput inp)
+        public async Task<M> PostAsync<M>(ActionContext ctx, string uri, IContent content) where M : class, IDataInput
         {
             HttpRequestMessage req = new HttpRequestMessage(HttpMethod.Post, uri);
             if (ctx != null)
             {
                 req.Headers.Add("Authorization", "Bearer " + ctx.Token);
             }
-            IContent cont = inp.Dump();
-            req.Content = (HttpContent)cont;
-            req.Content.Headers.ContentType.MediaType = cont.Type;
-            req.Content.Headers.ContentLength = cont.Size;
+            req.Content = (HttpContent)content;
+            req.Headers.Add("Content-Type", content.Type);
+            req.Headers.Add("Content-Length", content.Size.ToString());
 
-            return SendAsync(req, HttpCompletionOption.ResponseContentRead);
-        }
+            HttpResponseMessage rsp = await SendAsync(req, HttpCompletionOption.ResponseContentRead);
+            string ctyp = rsp.Headers.GetValue("Content-Type");
+            if (ctyp == null) return null;
 
-
-        public Task<HttpResponseMessage> PostJsonAsync(ActionContext ctx, string uri, object state)
-        {
-            HttpRequestMessage req = new HttpRequestMessage(HttpMethod.Post, uri);
-            if (ctx != null)
-            {
-                req.Headers.Add("Authorization", "Bearer " + ctx.Token);
-            }
-
-            if (state is Form)
-            {
-
-            }
-            else if (state is JObj)
-            {
-                JsonContent cont = new JsonContent(true, true);
-                ((JObj)state).WriteData(cont);
-                req.Content = cont;
-            }
-            else if (state is IData)
-            {
-                JsonContent cont = new JsonContent(true, true);
-                ((JObj)state).WriteData(cont);
-                req.Content = cont;
-            }
-            return SendAsync(req, HttpCompletionOption.ResponseContentRead);
+            byte[] bytes = await rsp.Content.ReadAsByteArrayAsync();
+            return ParseContent(ctyp, bytes, bytes.Length, typeof(M)) as M;
         }
     }
 }
