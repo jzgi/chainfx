@@ -13,8 +13,6 @@ namespace Greatbone.Sample
 
         public ShopService(ServiceContext sc) : base(sc)
         {
-            CreateVar<CartVarFolder>(tok => ((User)tok).wx);
-
             Create<UserFolder>("user");
 
             Create<ShopFolder>("shop", new UiAttribute("供应点管理"));

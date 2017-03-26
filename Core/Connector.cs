@@ -7,13 +7,14 @@ using System.Net.Http.Headers;
 using System.Text;
 using static Greatbone.Core.EventQueue;
 using System.Data;
+using static Greatbone.Core.DataInputUtility;
 
 namespace Greatbone.Core
 {
     ///
     /// A client of RPC, service and/or event queue.
     ///
-    public class Client : HttpClient, IRollable
+    public class Connector : HttpClient, IRollable
     {
         static readonly Uri PollUri = new Uri("*", UriKind.Relative);
 
@@ -33,9 +34,9 @@ namespace Greatbone.Core
 
         internal long evtid;
 
-        public Client(string raddr) : this(null, null, raddr) { }
+        public Connector(string raddr) : this(null, null, raddr) { }
 
-        public Client(Service service, string targetid, string raddr)
+        public Connector(Service service, string targetid, string raddr)
         {
             this.service = service;
             this.targetid = targetid;
@@ -146,12 +147,12 @@ namespace Greatbone.Core
             return await resp.Content.ReadAsByteArrayAsync();
         }
 
-        public async Task<M> GetAsync<M>(ActionContext ctx, string uri) where M : class, IDataInput
+        public async Task<M> GetAsync<M>(ActionContext ac, string uri) where M : class, IDataInput
         {
             HttpRequestMessage req = new HttpRequestMessage(HttpMethod.Get, uri);
-            if (ctx != null)
+            if (ac != null)
             {
-                req.Headers.Add("Authorization", "Bearer " + ctx.Token);
+                req.Headers.Add("Authorization", "Bearer " + ac.Token);
             }
             HttpResponseMessage rsp = await SendAsync(req, HttpCompletionOption.ResponseContentRead);
             if (rsp.StatusCode != HttpStatusCode.OK)
@@ -160,7 +161,7 @@ namespace Greatbone.Core
             }
             byte[] bytea = await rsp.Content.ReadAsByteArrayAsync();
             string ctyp = rsp.Content.Headers.GetValue("Content-Type");
-            return (M)WebUtility.ParseContent(ctyp, bytea, 0, bytea.Length, typeof(M));
+            return (M)DataInputUtility.ParseContent(ctyp, bytea, 0, bytea.Length, typeof(M));
         }
 
         public async Task<D> GetObjectAsync<D>(ActionContext ctx, string uri, int proj = 0) where D : IData, new()

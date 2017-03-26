@@ -33,7 +33,7 @@ namespace Greatbone.Core
         readonly Roll<EventInfo> events;
 
         // client connectivity to the related peers
-        readonly Roll<Client> clients;
+        readonly Roll<Connector> clients;
 
         // event providing
         readonly Roll<EventQueue> queues;
@@ -108,9 +108,9 @@ namespace Greatbone.Core
                 {
                     if (clients == null)
                     {
-                        clients = new Roll<Client>(Cluster.Count * 2);
+                        clients = new Roll<Connector>(Cluster.Count * 2);
                     }
-                    clients.Add(new Client(this, entry.Key, entry.Value));
+                    clients.Add(new Connector(this, entry.Key, entry.Value));
 
                     if (queues == null)
                     {
@@ -137,7 +137,7 @@ namespace Greatbone.Core
         ///
         public string Id => id;
 
-        public Roll<Client> Clients => clients;
+        public Roll<Connector> Clients => clients;
 
         public Roll<EventInfo> Events => events;
 
@@ -291,11 +291,11 @@ namespace Greatbone.Core
         // CLUSTER
         //
 
-        internal Client GetClient(string targetid)
+        internal Connector GetClient(string targetid)
         {
             for (int i = 0; i < clients.Count; i++)
             {
-                Client cli = clients[i];
+                Connector cli = clients[i];
                 if (cli.Name.Equals(targetid)) return cli;
             }
             return null;
@@ -344,7 +344,7 @@ namespace Greatbone.Core
                         int tick = Environment.TickCount;
                         for (int i = 0; i < Clients.Count; i++)
                         {
-                            Client client = Clients[i];
+                            Connector client = Clients[i];
                             client.TryPoll(tick);
                         }
                     }

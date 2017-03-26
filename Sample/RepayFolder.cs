@@ -8,7 +8,7 @@ namespace Greatbone.Sample
     [Ui("结款管理")]
     public class RepayFolder<V> : Folder where V : RepayVarFolder
     {
-        static readonly Client WcPay = new Client("https://api.mch.weixin.qq.com");
+        static readonly Connector WcPay = new Connector("https://api.mch.weixin.qq.com");
 
         public RepayFolder(FolderContext fc) : base(fc)
         {

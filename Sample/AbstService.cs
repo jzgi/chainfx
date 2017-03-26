@@ -9,14 +9,14 @@ namespace Greatbone.Sample
     {
         const string WXAUTH = "wxauth";
 
-        protected static readonly Client WeiXinClient = new Client("https://api.weixin.qq.com");
+        protected static readonly Connector WeiXinClient = new Connector("https://api.weixin.qq.com");
 
         // weixin config json
         protected readonly WeiXin weixin;
 
         public AbstService(ServiceContext sc) : base(sc)
         {
-            weixin = JsonUtility.FileToObject<WeiXin>(sc.GetFilePath("$weixin.json"));
+            weixin = DataInputUtility.FileToObject<WeiXin>(sc.GetFilePath("$weixin.json"));
         }
 
         public async Task<bool> AuthenticateAsync(ActionContext ac, bool e)

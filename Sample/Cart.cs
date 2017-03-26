@@ -18,5 +18,10 @@ namespace Greatbone.Sample
                 Add(order);
             }
         }
+
+        public void pay(int index)
+        {
+            
+        }
     }
 }

@@ -38,12 +38,6 @@ namespace Greatbone.Sample
             }
         }
 
-        #endregion
-
-
-
-        #region /shop/-id-/order/-id-/
-
         [User]
         public void @default(ActionContext ac)
         {

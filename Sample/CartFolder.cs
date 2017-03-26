@@ -1,25 +1,27 @@
-using Greatbone.Core;
+﻿using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.Threading.Tasks;
-using System.Collections.Concurrent;
+using Greatbone.Core;
 
 namespace Greatbone.Sample
 {
-    [Ui("购物车", "fa-shopping-cart")]
-    public class CartVarFolder : Folder, IVar
+    ///
+    ///
+    public class CartFolder : Folder
     {
+        static readonly Connector WcPay = new Connector("https://api.mch.weixin.qq.com");
+
         // all carts keyed by userid
         readonly ConcurrentDictionary<string, Cart> carts;
 
-        public CartVarFolder(FolderContext fc) : base(fc)
+        public CartFolder(FolderContext fc) : base(fc)
         {
-
             carts = new ConcurrentDictionary<string, Cart>(8, 1024);
         }
 
         public void @default(ActionContext ac)
         {
-            
+
             ac.GiveFolderPage(this, 200, (List<Item>)null);
         }
 
@@ -30,7 +32,7 @@ namespace Greatbone.Sample
         ///
         public async Task add(ActionContext ac)
         {
-            string wx = ac[0];
+            string wx = ac[typeof(UserVarFolder)];
             var ln = await ac.ReadObjectAsync<OrderLine>();
 
             using (var dc = Service.NewDbContext())
@@ -96,50 +98,54 @@ namespace Greatbone.Sample
 
         ///
         ///
-        public void checkout(ActionContext ac)
+        public async Task prepay(ActionContext ac)
         {
             string wx = ac[0];
 
-            if (ac.GET)
-            { // give change to review the orders
+            int index = 0;
 
-                List<Order> orders = GetOrderList();
-                ac.GiveJson(200, orders);
-            }
-            else
+            // // store backet to db
+            // string openid = ac.Cookies[nameof(openid)];
+
+            Cart cart;
+            if (!carts.TryGetValue(wx, out cart))
             {
-                // // store backet to db
-                // string openid = ac.Cookies[nameof(openid)];
-
-                List<Order> orders = GetOrderList();
-
-                // save the orders to db
-                using (var dc = Service.NewDbContext())
-                {
-                    dc.Sql("INSERT INFO orders ")._(Order.Empty)._VALUES_(Order.Empty);
-
-                    foreach (var order in orders)
-                    {
-                        dc.Execute(p => order.WriteData(p));
-                    }
-
-                    // remove cart 
-                    Cart cart;
-                    carts.TryRemove(wx, out cart);
-                }
-
-                //  call weixin to prepay
-                XmlContent cont = new XmlContent()
-                    .Put("out_trade_no", "")
-                    .Put("total_fee", 0);
-                // await WCPay.PostAsync(null, "/pay/unifiedorder", cont);
 
             }
+            var order = cart[index];
+
+            // save the order and call prepay api
+            using (var dc = Service.NewDbContext())
+            {
+                dc.Sql("INSERT INFO orders ")._(Order.Empty)._VALUES_(Order.Empty);
+
+                dc.Execute(p => order.WriteData(p));
+
+                XmlContent xml = new XmlContent();
+                xml.ELEM("xml", null, () =>
+                {
+                    xml.ELEM("appid", "");
+                    xml.ELEM("mch_id", "");
+                    xml.ELEM("nonce_str", "");
+                    xml.ELEM("sign", "");
+                    xml.ELEM("body", "");
+                    xml.ELEM("out_trade_no", "");
+                    xml.ELEM("total_fee", "");
+                    xml.ELEM("notify_url", "");
+                    xml.ELEM("trade_type", "");
+                    xml.ELEM("openid", "");
+                });
+                var rsp = await WcPay.PostAsync("/pay/unifiedorder", xml);
+                // rsp.ReadAsync<XElem>();
+            }
+
+            //  call weixin to prepay
+            XmlContent cont = new XmlContent()
+                .Put("out_trade_no", "")
+                .Put("total_fee", 0);
+            // await WCPay.PostAsync(null, "/pay/unifiedorder", cont);
+
         }
 
-        List<Order> GetOrderList()
-        {
-            return null;
-        }
     }
 }

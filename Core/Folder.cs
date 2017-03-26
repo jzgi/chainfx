@@ -227,8 +227,8 @@ namespace Greatbone.Core
             {
                 for (int i = 0; i < Actions.Count; i++)
                 {
-                    ActionInfo action = Actions[i];
-                    cont.Put(action.Name, "");
+                    ActionInfo act = Actions[i];
+                    cont.Put(act.Name, "");
                 }
             },
             delegate

@@ -6,6 +6,7 @@ using System.Threading.Tasks;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Http.Features;
 using Microsoft.Extensions.Primitives;
+using static Greatbone.Core.DataInputUtility;
 
 namespace Greatbone.Core
 {
@@ -267,7 +268,7 @@ namespace Greatbone.Core
                 }
                 // parse
                 string ctyp = Header("Content-Type");
-                entity = WebUtility.ParseContent(ctyp, buffer, 0, count, typeof(M));
+                entity = DataInputUtility.ParseContent(ctyp, buffer, 0, count, typeof(M));
             }
             return entity as M;
         }
@@ -287,7 +288,7 @@ namespace Greatbone.Core
                 }
                 // parse
                 string ctyp = Header("Content-Type");
-                entity = WebUtility.ParseContent(ctyp, buffer, 0, count);
+                entity = ParseContent(ctyp, buffer, 0, count);
             }
             IDataInput src = entity as IDataInput;
             if (src == null)
@@ -312,7 +313,7 @@ namespace Greatbone.Core
                 }
                 // parse
                 string ctyp = Header("Content-Type");
-                entity = WebUtility.ParseContent(ctyp, buffer, 0, count);
+                entity = ParseContent(ctyp, buffer, 0, count);
             }
             return (entity as IDataInput)?.ToArray<D>(proj);
         }
@@ -332,7 +333,7 @@ namespace Greatbone.Core
                 }
                 // parse
                 string ctyp = Header("Content-Type");
-                entity = WebUtility.ParseContent(ctyp, buffer, 0, count);
+                entity = ParseContent(ctyp, buffer, 0, count);
             }
             return (entity as IDataInput)?.ToList<D>(proj);
         }

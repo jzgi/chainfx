@@ -13,18 +13,15 @@ namespace Greatbone.Core
         // chars to parse
         readonly string strbuf;
 
-        readonly int offset;
-
         readonly int length;
 
         // UTF-8 string builder
         readonly Text str;
 
-        public XmlParse(byte[] bytebuf, int offset, int length)
+        public XmlParse(byte[] bytebuf, int length)
         {
             this.bytebuf = bytebuf;
             this.strbuf = null;
-            this.offset = offset;
             this.length = length;
             this.str = new Text(1024);
         }
@@ -33,7 +30,6 @@ namespace Greatbone.Core
         {
             this.bytebuf = null;
             this.strbuf = strbuf;
-            this.offset = 0;
             this.length = strbuf.Length;
             this.str = new Text(1024);
         }
@@ -42,7 +38,7 @@ namespace Greatbone.Core
 
         public XElem Parse()
         {
-            int p = offset;
+            int p = 0;
 
             // seek to a less-than (<)
             int b;

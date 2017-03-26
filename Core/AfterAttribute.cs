@@ -4,7 +4,7 @@ using System.Threading.Tasks;
 namespace Greatbone.Core
 {
     ///
-    /// To run before and/or after an action execution.
+    /// To run after an action execution.
     ///
     [AttributeUsage(AttributeTargets.Class | AttributeTargets.Method, Inherited = false)]
     public abstract class AfterAttribute : Attribute
