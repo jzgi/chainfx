@@ -95,9 +95,9 @@ namespace Greatbone.Core
                             break;
                         }
                     }
-                    catch (Exception e)
+                    catch
                     {
-                        retryat = Environment.TickCount + 15000;
+                        retryat = Environment.TickCount + AHEAD;
                         return;
                     }
 
@@ -113,7 +113,7 @@ namespace Greatbone.Core
                     long id = 0;
                     string name = rsp.Headers.GetValue(X_EVENT);
                     string arg = rsp.Headers.GetValue(X_ARG);
-                    DateTime time;
+                    // DateTime time;
                     EventInfo ei = null;
 
                     using (var dc = ec.NewDbContext(IsolationLevel.ReadUncommitted))
@@ -282,39 +282,55 @@ namespace Greatbone.Core
 
         public async Task<int> PostAsync(ActionContext ac, string uri, IContent content)
         {
-            HttpRequestMessage req = new HttpRequestMessage(HttpMethod.Post, uri);
-            if (peerid != null && ac != null)
+            try
             {
-                if (ac.Token != null)
+                HttpRequestMessage req = new HttpRequestMessage(HttpMethod.Post, uri);
+                if (peerid != null && ac != null)
                 {
-                    req.Headers.Add("Authorization", "Bearer " + ac.Token);
+                    if (ac.Token != null)
+                    {
+                        req.Headers.Add("Authorization", "Bearer " + ac.Token);
+                    }
                 }
-            }
-            req.Content = (HttpContent)content;
-            req.Headers.Add("Content-Type", content.Type);
-            req.Headers.Add("Content-Length", content.Size.ToString());
+                req.Content = (HttpContent)content;
+                req.Headers.Add("Content-Type", content.Type);
+                req.Headers.Add("Content-Length", content.Size.ToString());
 
-            HttpResponseMessage rsp = await SendAsync(req, HttpCompletionOption.ResponseContentRead);
-            return (int)rsp.StatusCode;
+                HttpResponseMessage rsp = await SendAsync(req, HttpCompletionOption.ResponseContentRead);
+                return (int)rsp.StatusCode;
+            }
+            catch
+            {
+                retryat = Environment.TickCount + AHEAD;
+            }
+            return 500; // internal error
         }
 
         public async Task<M> PostAsync<M>(ActionContext ctx, string uri, IContent content) where M : class, IDataInput
         {
-            HttpRequestMessage req = new HttpRequestMessage(HttpMethod.Post, uri);
-            if (ctx != null)
+            try
             {
-                req.Headers.Add("Authorization", "Bearer " + ctx.Token);
+                HttpRequestMessage req = new HttpRequestMessage(HttpMethod.Post, uri);
+                if (ctx != null)
+                {
+                    req.Headers.Add("Authorization", "Bearer " + ctx.Token);
+                }
+                req.Content = (HttpContent)content;
+                req.Headers.Add("Content-Type", content.Type);
+                req.Headers.Add("Content-Length", content.Size.ToString());
+
+                HttpResponseMessage rsp = await SendAsync(req, HttpCompletionOption.ResponseContentRead);
+                string ctyp = rsp.Headers.GetValue("Content-Type");
+                if (ctyp == null) return null;
+
+                byte[] bytes = await rsp.Content.ReadAsByteArrayAsync();
+                return ParseContent(ctyp, bytes, bytes.Length, typeof(M)) as M;
             }
-            req.Content = (HttpContent)content;
-            req.Headers.Add("Content-Type", content.Type);
-            req.Headers.Add("Content-Length", content.Size.ToString());
-
-            HttpResponseMessage rsp = await SendAsync(req, HttpCompletionOption.ResponseContentRead);
-            string ctyp = rsp.Headers.GetValue("Content-Type");
-            if (ctyp == null) return null;
-
-            byte[] bytes = await rsp.Content.ReadAsByteArrayAsync();
-            return ParseContent(ctyp, bytes, bytes.Length, typeof(M)) as M;
+            catch
+            {
+                retryat = Environment.TickCount + AHEAD;
+            }
+            return null;
         }
     }
 }

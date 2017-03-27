@@ -56,7 +56,7 @@ namespace Greatbone.Sample
         }
 
         [User]
-        public void mgmt(ActionContext ac)
+        public void _(ActionContext ac)
         {
             ac.GiveFolderPage(this, 200, (List<Order>)null);
         }

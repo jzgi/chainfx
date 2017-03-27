@@ -53,20 +53,20 @@ namespace Greatbone.Core
             return null;
         }
 
-        public static T StringTo<T>(string v) where T : class, IDataInput
+        public static M StringTo<M>(string v) where M : class, IDataInput
         {
-            Type t = typeof(T);
+            Type t = typeof(M);
             if (t == typeof(JArr) || t == typeof(JObj))
             {
-                return new JsonParse(v).Parse() as T;
+                return new JsonParse(v).Parse() as M;
             }
             else if (t == typeof(XElem))
             {
-                return new XmlParse(v).Parse() as T;
+                return new XmlParse(v).Parse() as M;
             }
             else if (t == typeof(Form))
             {
-                return new FormParse(v).Parse() as T;
+                return new FormParse(v).Parse() as M;
             }
             return null;
         }

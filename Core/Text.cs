@@ -212,6 +212,11 @@ namespace Greatbone.Core
             throw new NotImplementedException();
         }
 
+        public override int GetHashCode()
+        {
+            return base.GetHashCode();
+        }
+
         public override bool Equals(object v)
         {
             string str = v as string;
