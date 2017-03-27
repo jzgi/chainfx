@@ -1,7 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Data;
-using System.Reflection;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Http.Features;
@@ -404,47 +403,15 @@ namespace Greatbone.Core
         public void Give(int status, IDataInput inp, bool? pub = null, int maxage = 60)
         {
             Status = status;
-            // Content = model.Dump();
+            Content = inp.Dump();
             Pub = pub;
             MaxAge = maxage;
         }
 
         public void Give(int status, string text, bool? pub = null, int maxage = 60)
         {
-            TextContent content = new TextContent(true);
-            content.Add(text);
-
-            // set response states
-            Status = status;
-            Content = content;
-            Pub = pub;
-            MaxAge = maxage;
-        }
-
-        static readonly TypeInfo ObjectType = typeof(IData).GetTypeInfo();
-
-        static readonly TypeInfo ArrayType = typeof(IData[]).GetTypeInfo();
-
-        static readonly TypeInfo ListType = typeof(List<IData>).GetTypeInfo();
-
-        public void GiveJson(int status, object data, int proj = 0, bool? pub = null, int maxage = 60)
-        {
-            TypeInfo typ = data.GetType().GetTypeInfo();
-
-            JsonContent cont = new JsonContent();
-
-            if (ObjectType.IsAssignableFrom(typ))
-            {
-                cont.Put(null, (IData)data, proj);
-            }
-            else if (ArrayType.IsAssignableFrom(typ))
-            {
-                cont.Put(null, (IData[])data, proj);
-            }
-            else if (ListType.IsAssignableFrom(typ))
-            {
-                cont.Put(null, (List<IData>)data, proj);
-            }
+            TextContent cont = new TextContent(true);
+            cont.Add(text);
 
             // set response states
             Status = status;
@@ -453,10 +420,32 @@ namespace Greatbone.Core
             MaxAge = maxage;
         }
 
-        public void GiveXml(int status, object dat, int proj = 0, bool? pub = null, int maxage = 60)
+        public void Give(int status, IData obj, int proj = 0, bool? pub = null, int maxage = 60)
         {
+            JsonContent cont = new JsonContent().Put(null, obj, proj);
+            Status = status;
+            Content = cont;
+            Pub = pub;
+            MaxAge = maxage;
         }
 
+        public void Give<D>(int status, D[] arr, int proj = 0, bool? pub = null, int maxage = 60) where D : IData
+        {
+            JsonContent cont = new JsonContent().Put(null, arr, proj);
+            Status = status;
+            Content = cont;
+            Pub = pub;
+            MaxAge = maxage;
+        }
+
+        public void Give<D>(int status, List<D> lst, int proj = 0, bool? pub = null, int maxage = 60) where D : IData
+        {
+            JsonContent cont = new JsonContent().Put(null, lst, proj);
+            Status = status;
+            Content = cont;
+            Pub = pub;
+            MaxAge = maxage;
+        }
 
         internal async Task SendAsync()
         {

@@ -1,5 +1,4 @@
 ﻿using System.Collections.Concurrent;
-using System.Collections.Generic;
 using System.Threading.Tasks;
 using Greatbone.Core;
 
@@ -11,7 +10,7 @@ namespace Greatbone.Sample
     {
         static readonly Connector WcPay = new Connector("https://api.mch.weixin.qq.com");
 
-        // all carts keyed by userid
+        // keyed by wx
         readonly ConcurrentDictionary<string, Cart> carts;
 
         public CartFolder(FolderContext fc) : base(fc)
@@ -21,8 +20,14 @@ namespace Greatbone.Sample
 
         public void @default(ActionContext ac)
         {
+            string wx = ac[typeof(UserVarFolder)];
+            Cart cart;
+            if (carts.TryGetValue(wx, out cart))
+            {
 
-            ac.GiveFolderPage(this, 200, (List<Item>)null);
+                // ac.GivePage(200, )
+
+            }
         }
 
         ///

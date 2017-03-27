@@ -14,7 +14,7 @@ namespace Greatbone.Core
     {
         readonly Service service;
 
-        readonly IDoerContext<IDoer> handlectx;
+        readonly IDoerContext<IDoer> doerctx;
 
         readonly NpgsqlConnection connection;
 
@@ -37,10 +37,10 @@ namespace Greatbone.Core
         {
         }
 
-        internal DbContext(Service service, IDoerContext<IDoer> handlectx)
+        internal DbContext(Service service, IDoerContext<IDoer> doerctx)
         {
             this.service = service;
-            this.handlectx = handlectx;
+            this.doerctx = doerctx;
 
             connection = new NpgsqlConnection(service.ConnectionString);
             command = new NpgsqlCommand();
@@ -714,10 +714,10 @@ namespace Greatbone.Core
         }
 
         //
-        // MESSAGING
+        // EVENTS
         //
 
-        public void PostJson(string name, string shard, string arg, IData obj, int proj = 0)
+        public void Post(string name, string shard, string arg, IData obj, int proj = 0)
         {
             JsonContent cont = new JsonContent(true, true);
             cont.Put(null, obj, proj);
@@ -725,7 +725,7 @@ namespace Greatbone.Core
             BufferUtility.Return(cont); // back to pool
         }
 
-        public void PostJson<D>(string name, string shard, string arg, D[] arr, int proj = 0) where D : IData
+        public void Post<D>(string name, string shard, string arg, D[] arr, int proj = 0) where D : IData
         {
             JsonContent cont = new JsonContent(true, true);
             cont.Put(null, arr, proj);

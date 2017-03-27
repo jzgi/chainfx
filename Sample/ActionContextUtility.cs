@@ -15,14 +15,6 @@ namespace Greatbone.Sample
         }
 
         ///
-        public static void GiveSnippet(this ActionContext ac, int status, Action<HtmlContent> main, bool? pub = null, int maxage = 60)
-        {
-            HtmlContent cont = new HtmlContent(true, true, 16 * 1024);
-            main(cont);
-            ac.Give(status, cont, pub, maxage);
-        }
-
-        ///
         public static void GivePage(this ActionContext ac, int status, Action<HtmlContent> header, Action<HtmlContent> main, Action<HtmlContent> footer, bool? pub = null, int maxage = 60)
         {
             HtmlContent cont = new HtmlContent(true, true, 16 * 1024);

@@ -59,7 +59,7 @@ namespace Greatbone.Sample
                 }
                 else
                 {
-                    ac.GiveJson(200, messages);
+                    ac.Give(200, messages);
                 }
             }
             else // post message(s) to inbox
