@@ -156,7 +156,75 @@ namespace Greatbone.Core
         }
 
 
-        public void FORM_TABLE<D>(List<ActionInfo> acts, List<D> lst, int proj = 0) where D : IData
+        public void FILLFORM(ActionInfo act, IDataInput input, Action<IDataInput, HtmlContent> valve)
+        {
+            Add("<form method=\"post\">");
+
+            FILL(input, valve);
+
+            Add("</form>");
+        }
+
+        public void GRIDFORM(List<ActionInfo> actions, IDataInput input, Action<IDataInput, HtmlContent> valve)
+        {
+            Add("<form>");
+
+            formed = true;
+
+            // buttons
+            if (actions != null)
+            {
+                Add("<div class=\"row\">");
+                // BUTTONS(actions);
+                Add("</div>");
+            }
+
+            GRID(input, valve);
+
+            Add("</form>");
+        }
+
+        public void GRIDFORM<D>(ActionContext ac, List<D> lst, int proj = 0) where D : IData
+        {
+            Folder fdr = ac.Folder;
+            ActionInfo[] uias = fdr.UiActions;
+
+            Add("<form>");
+
+            formed = true;
+
+            // buttons
+            if (uias != null)
+            {
+                Add("<div class=\"row\">");
+                CONTROLS(uias);
+                Add("</div>");
+            }
+
+            // grid
+            GRID(fdr, lst, proj);
+
+            // pagination
+            ActionInfo act = ac.Doer;
+            if (act.HasSubscpt)
+            {
+                Add("<div class=\"row\">");
+                Add("<ul class=\"pagination text-center\" role=\"navigation\">");
+                int subscript = ac.Subscript;
+                Add("<li class=\"pagination-previous disabled\">Previous</li>");
+                for (int i = 0; i < subscript; i++)
+                {
+                    Add("<li><a href=\""); Add(act.Name); Add('-'); Add(subscript); Add(ac.QueryString); Add("\">"); Add(i); Add("</a></li>");
+                }
+                Add("<li class=\"pagination-next disabled\">Next</li>");
+                Add("</ul>");
+                Add("</div>");
+            }
+
+            Add("</form>");
+        }
+
+        public void TABLEFORM<D>(List<ActionInfo> acts, List<D> lst, int proj = 0) where D : IData
         {
             Add("<form>");
 
@@ -166,13 +234,71 @@ namespace Greatbone.Core
             if (acts != null)
             {
                 Add("<div class=\"row\">");
-                BUTTONS(acts);
+                // BUTTONS(acts);
                 Add("</div>");
             }
 
             TABLE(lst, proj);
 
             Add("</form>");
+        }
+
+        public void TABLEFORM(List<ActionInfo> acts, IDataInput input, Action<IDataInput, HtmlContent> valve)
+        {
+            Add("<form>");
+
+            formed = true;
+
+            // buttons
+            if (acts != null)
+            {
+                Add("<div class=\"row\">");
+                // BUTTONS(acts);
+                Add("</div>");
+            }
+
+            TABLE(input, valve);
+
+            Add("</form>");
+        }
+
+        public void FILLFORM(ActionInfo act, IData obj, int proj = 0)
+        {
+            chain[++level].type = CTX_FILL;
+            Add("<form method=\"post");
+            if (act != null)
+            {
+                Add("\" action=\""); Add(act.Name);
+            }
+            Add("\">");
+            obj.WriteData(this, proj);
+            Add("</form>");
+            --level;
+        }
+
+        public void TABLE(IDataInput input, Action<IDataInput, HtmlContent> valve)
+        {
+            if (input != null)
+            {
+                Add("<table class=\"hover\">");
+
+                // ctx = CTX_GRIDTHEAD;
+                Add("<thead>");
+                Add("<tr>");
+                valve(input, this);
+                Add("</tr>");
+                Add("</thead>");
+
+                // ctx = CTX_GRIDTBODY;
+                Add("<tbody>");
+                while (input.Next())
+                {
+                    Add("<tr>");
+                    valve(input, this);
+                    Add("</tr>");
+                }
+                Add("</tbody>");
+            }
         }
 
         public void TABLE<D>(List<D> lst, int proj = 0) where D : IData
@@ -207,135 +333,6 @@ namespace Greatbone.Core
             --level;
         }
 
-        public void FORM_TABLE(List<ActionInfo> acts, IDataInput input, Action<IDataInput, HtmlContent> valve)
-        {
-            Add("<form>");
-
-            formed = true;
-
-            // buttons
-            if (acts != null)
-            {
-                Add("<div class=\"row\">");
-                BUTTONS(acts);
-                Add("</div>");
-            }
-
-            TABLE(input, valve);
-
-            Add("</form>");
-        }
-
-        public void TABLE(IDataInput input, Action<IDataInput, HtmlContent> valve)
-        {
-            if (input != null)
-            {
-                Add("<table class=\"hover\">");
-
-                // ctx = CTX_GRIDTHEAD;
-                Add("<thead>");
-                Add("<tr>");
-                valve(input, this);
-                Add("</tr>");
-                Add("</thead>");
-
-                // ctx = CTX_GRIDTBODY;
-                Add("<tbody>");
-                while (input.Next())
-                {
-                    Add("<tr>");
-                    valve(input, this);
-                    Add("</tr>");
-                }
-                Add("</tbody>");
-            }
-        }
-
-        public void FORMGRID<D>(ActionContext ac, List<D> lst, int proj = 0) where D : IData
-        {
-            Folder fdr = ac.Folder;
-            ActionInfo[] uias = fdr.UiActions;
-
-            Add("<form>");
-
-            formed = true;
-
-            // buttons
-            if (uias != null)
-            {
-                Add("<div class=\"row\">");
-                BUTTONS(uias);
-                Add("</div>");
-            }
-
-            // grid
-            GRID(lst, proj);
-
-            // pagination
-            ActionInfo act = ac.Doer;
-            if (act.HasSubscpt)
-            {
-                Add("<div class=\"row\">");
-                Add("<ul class=\"pagination text-center\" role=\"navigation\">");
-                int subscript = ac.Subscript;
-                Add("<li class=\"pagination-previous disabled\">Previous</li>");
-                for (int i = 0; i < subscript; i++)
-                {
-                    Add("<li><a href=\""); Add(act.Name); Add('-'); Add(subscript); Add(ac.QueryString); Add("\">"); Add(i); Add("</a></li>");
-                }
-                Add("<li class=\"pagination-next disabled\">Next</li>");
-                Add("</ul>");
-                Add("</div>");
-            }
-
-            Add("</form>");
-        }
-
-        public void GRID<D>(List<D> lst, Folder varfdr, int proj = 0) where D : IData
-        {
-            ActionInfo[] uias = varfdr.UiActions;
-
-            chain[++level].type = CTX_GRID;
-            if (lst != null)
-            {
-                Add("<div class=\"row small-up-2 medium-up-4 large-up-6\">");
-                for (int i = 0; i < lst.Count; i++)
-                {
-                    Add("<div class=\"column\">");
-                    chain[level].ordinal = 0; // reset ordinal
-                    lst[i].WriteData(this, proj);
-                    Add("</div>");
-                }
-                Add("</div>");
-            }
-            else
-            {
-                Add("<div class=\"row\">");
-                Add("<span>没有记录</span>");
-                Add("</div>");
-            }
-            --level;
-        }
-
-        public void FORM_GRID(List<ActionInfo> actions, IDataInput input, Action<IDataInput, HtmlContent> valve)
-        {
-            Add("<form>");
-
-            formed = true;
-
-            // buttons
-            if (actions != null)
-            {
-                Add("<div class=\"row\">");
-                BUTTONS(actions);
-                Add("</div>");
-            }
-
-            GRID(input, valve);
-
-            Add("</form>");
-        }
-
         public void GRID(IDataInput input, Action<IDataInput, HtmlContent> valve)
         {
             chain[++level].type = CTX_GRID;
@@ -360,23 +357,36 @@ namespace Greatbone.Core
             --level;
         }
 
-        public void FORM_LIST<D>(List<ActionInfo> actions, List<D> lst, int proj = 0) where D : IData
+        public void GRID<D>(Folder fdr, List<D> lst, int proj = 0) where D : IData
         {
-            Add("<form>");
+            ++level;
+            chain[level].type = CTX_GRID;
+            chain[level].folder = fdr;
 
-            formed = true;
-
-            // buttons
-            if (actions != null)
+            if (lst != null)
             {
-                Add("<div class=\"row\">");
-                BUTTONS(actions);
+                ActionInfo[] uias = fdr.UiActions;
+
+                Add("<div class=\"row small-up-2 medium-up-4 large-up-6\">");
+                for (int i = 0; i < lst.Count; i++)
+                {
+                    Add("<div class=\"column\">");
+                    chain[level].ordinal = 0; // reset ordinal
+                    lst[i].WriteData(this, proj);
+                    Add("</div>");
+
+                    // acitons
+                    CONTROLS(uias);
+                }
                 Add("</div>");
             }
-
-            LIST(lst, proj);
-
-            Add("</form>");
+            else
+            {
+                Add("<div class=\"row\">");
+                Add("<span>没有记录</span>");
+                Add("</div>");
+            }
+            --level;
         }
 
         public void LIST<D>(List<D> lst, int proj = 0) where D : IData
@@ -397,15 +407,6 @@ namespace Greatbone.Core
             --level;
         }
 
-        public void FORM_FILL(ActionInfo act, IDataInput input, Action<IDataInput, HtmlContent> valve)
-        {
-            Add("<form method=\"post\">");
-
-            FILL(input, valve);
-
-            Add("</form>");
-        }
-
         public void FILL(IDataInput input, Action<IDataInput, HtmlContent> valve)
         {
             chain[++level].type = CTX_FILL;
@@ -423,20 +424,6 @@ namespace Greatbone.Core
                 Add("<span>没有记录</span>");
                 Add("</div>");
             }
-            --level;
-        }
-
-        public void FORM_FILL(ActionInfo act, IData obj, int proj = 0)
-        {
-            chain[++level].type = CTX_FILL;
-            Add("<form method=\"post");
-            if (act != null)
-            {
-                Add("\" action=\""); Add(act.Name);
-            }
-            Add("\">");
-            obj.WriteData(this, proj);
-            Add("</form>");
             --level;
         }
 
@@ -843,10 +830,10 @@ namespace Greatbone.Core
 
             UiAttribute ui = act.Ui;
 
-            int modal = ui?.Mode ?? 0;
-            if (modal > 0)
+            UiMode mode = ui.Mode;
+            if (mode > 0)
             {
-                Add(" onclick=\"dialog(this,"); Add(modal); Add("); return false;\"");
+                Add(" onclick=\"dialog(this,"); Add((int)mode); Add("); return false;\"");
             }
 
             StateAttribute state = act.State;
@@ -869,7 +856,7 @@ namespace Greatbone.Core
             Add("</button>");
         }
 
-        public void BUTTONS(ActionInfo[] actns)
+        public void CONTROLS(ActionInfo[] actns)
         {
             for (int i = 0; i < actns.Length; i++)
             {
@@ -879,10 +866,10 @@ namespace Greatbone.Core
 
                 UiAttribute ui = act.Ui;
 
-                int modal = ui?.Mode ?? 0;
-                if (modal > 0)
+                UiMode mode = ui.Mode;
+                if (mode > 0)
                 {
-                    Add(" onclick=\"dialog(this,"); Add(modal); Add("); return false;\"");
+                    Add(" onclick=\"dialog(this,"); Add((int)mode); Add("); return false;\"");
                 }
 
                 StateAttribute state = act.State;

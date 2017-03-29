@@ -11,8 +11,6 @@ namespace Greatbone.Sample
         {
         }
 
-        #region /user/-userid-/order/-orderid-/
-
         public void my(ActionContext ac)
         {
 
@@ -101,9 +99,6 @@ namespace Greatbone.Sample
         {
         }
 
-        #endregion
-
-        #region /order/-id-/
 
         [User]
         [Ui]
@@ -111,8 +106,6 @@ namespace Greatbone.Sample
         {
 
         }
-
-        #endregion
 
     }
 

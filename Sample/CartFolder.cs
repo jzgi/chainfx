@@ -4,7 +4,7 @@ using Greatbone.Core;
 
 namespace Greatbone.Sample
 {
-    /// A cart pertaining to one user.
+    /// A cart pertaining to one user. (placed under UserVar)
     ///
     public class CartFolder : Folder
     {
@@ -27,7 +27,7 @@ namespace Greatbone.Sample
             if (carts.TryGetValue(wx, out cart))
             {
 
-                ac.GiveFolderPage(200, )
+                ac.GiveFolderPage(200, cart, 0);
 
             }
         }

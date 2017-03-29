@@ -128,7 +128,7 @@ namespace Greatbone.Sample
             null,
             m =>
             {
-                m.FORM_FILL(ac.Doer, obj, proj);
+                m.FILLFORM(ac.Doer, obj, proj);
             },
             null,
             pub, maxage);
@@ -154,17 +154,22 @@ namespace Greatbone.Sample
             null,
             m =>
             {
-                m.FORM_FILL(ac.Doer, input, valve);
+                m.FILLFORM(ac.Doer, input, valve);
             },
             null,
             pub, maxage);
         }
 
+        public static void GiveFolderPage<D>(this ActionContext ac, int status, List<D> lst, int proj = 0, bool? pub = null, int maxage = 60) where D : IData
+        {
+            GiveFolderPage(ac, null, status, lst, proj, pub, maxage);
+        }
+
         public static void GiveFolderPage<D>(this ActionContext ac, Folder @base, int status, List<D> lst, int proj = 0, bool? pub = null, int maxage = 60) where D : IData
         {
             Folder folder = ac.Folder;
-            ac.GivePage(status,
-            @base == null ? (Action<HtmlContent>)null : h =>
+
+            Action<HtmlContent> header = @base == null ? (Action<HtmlContent>)null : (h) =>
             {
                 bool top = folder == @base;
                 Roll<Folder> subs = @base.folders;
@@ -190,11 +195,12 @@ namespace Greatbone.Sample
                     }
                     h.Add(" </ul>");
                 }
-            },
-            m =>
+            };
+
+
+            ac.GivePage(status, header, main =>
             {
-                List<ActionInfo> actions = folder.GetUiActions(ac);
-                m.FORM_GRID(ac, actions, lst, proj);
+                main.GRIDFORM(ac, lst, proj);
             },
             null,
             pub, maxage);
