@@ -717,23 +717,35 @@ namespace Greatbone.Core
         // EVENTS
         //
 
-        public void Post(string name, string shard, string arg, IData obj, int proj = 0)
+        public void Publish(string name, string shard, int arg, IDataInput inp)
         {
-            JsonContent cont = new JsonContent(true, true);
-            cont.Put(null, obj, proj);
-            Post(name, shard, arg, cont);
+            IContent cont = inp.Dump();
+            Publish(name, shard, arg, cont);
             BufferUtility.Return(cont); // back to pool
         }
 
-        public void Post<D>(string name, string shard, string arg, D[] arr, int proj = 0) where D : IData
+        public void Publish(string name, string shard, int arg, IData obj, int proj = 0)
         {
-            JsonContent cont = new JsonContent(true, true);
-            cont.Put(null, arr, proj);
-            Post(name, shard, arg, cont);
+            JsonContent cont = new JsonContent(true, true).Put(null, obj, proj);
+            Publish(name, shard, arg, cont);
             BufferUtility.Return(cont); // back to pool
         }
 
-        public void Post(string name, string shard, string arg, IContent content)
+        public void Publish<D>(string name, string shard, int arg, D[] arr, int proj = 0) where D : IData
+        {
+            JsonContent cont = new JsonContent(true, true).Put(null, arr, proj);
+            Publish(name, shard, arg, cont);
+            BufferUtility.Return(cont); // back to pool
+        }
+
+        public void Publish<D>(string name, string shard, int arg, List<D> lst, int proj = 0) where D : IData
+        {
+            JsonContent cont = new JsonContent(true, true).Put(null, lst, proj);
+            Publish(name, shard, arg, cont);
+            BufferUtility.Return(cont); // back to pool
+        }
+
+        public void Publish(string name, string shard, int arg, IContent content)
         {
             // convert message to byte buffer
             var byteas = new ArraySegment<byte>(content.ByteBuffer, 0, content.Size);

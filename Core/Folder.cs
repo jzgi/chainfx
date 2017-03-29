@@ -34,10 +34,13 @@ namespace Greatbone.Core
         readonly ActionInfo @default;
 
         // the underscore action, can be null. 
-        readonly ActionInfo underscore;
+        readonly ActionInfo under;
 
         // the goto action, can be null
         readonly ActionInfo @goto;
+
+        // actions with Ui attribute
+        readonly ActionInfo[] uiactions;
 
         // child folders, if any
         internal Roll<Folder> folders;
@@ -88,10 +91,10 @@ namespace Greatbone.Core
 
                 actions.Add(ai);
                 if (ai.Name.Equals("default")) { @default = ai; }
-                if (ai.Name.Equals("_")) { underscore = ai; }
+                if (ai.Name.Equals("_")) { under = ai; }
                 if (ai.Name.Equals("goto")) { @goto = ai; }
             }
-            if (@default == null) @default = underscore;
+            if (@default == null) @default = under;
 
             // to override annotated attributes
             if (fc.Ui != null)
@@ -127,6 +130,19 @@ namespace Greatbone.Core
                     start = null;
                 }
             }
+
+            // gather ui actions
+            List<ActionInfo> uias = null;
+            for (int i = 0; i < actions.Count; i++)
+            {
+                ActionInfo a = actions[i];
+                if (a.HasUi)
+                {
+                    if (uias == null) uias = new List<ActionInfo>();
+                    uias.Add(a);
+                }
+            }
+            uiactions = uias?.ToArray();
         }
 
         ///
@@ -204,6 +220,14 @@ namespace Greatbone.Core
 
         public Roll<ActionInfo> Actions => actions;
 
+        public ActionInfo[] UiActions => uiactions;
+
+        public bool HasDefault => @default != null;
+
+        public bool HasUnder => under != null;
+
+        public bool HasGoto => @goto != null;
+
         public Roll<Folder> Folders => folders;
 
         public Folder VarFolder => varfolder;
@@ -217,8 +241,6 @@ namespace Greatbone.Core
         public int Level => fc.Level;
 
         public override Service Service => fc.Service;
-
-        public string GetVarKey(IData token) => varkeyer?.Invoke(token);
 
         internal void Describe(XmlContent cont)
         {
@@ -248,9 +270,6 @@ namespace Greatbone.Core
             });
         }
 
-
-        // public Roll<WebAction> Actions => actions;
-
         public ActionInfo GetAction(string method)
         {
             if (string.IsNullOrEmpty(method))
@@ -258,21 +277,6 @@ namespace Greatbone.Core
                 return @default;
             }
             return actions[method];
-        }
-
-        public List<ActionInfo> GetUiActions(ActionContext ac)
-        {
-            List<ActionInfo> lst = null;
-            for (int i = 0; i < actions.Count; i++)
-            {
-                ActionInfo a = actions[i];
-                if (a.HasUi && a.DoAuthorize(ac))
-                {
-                    if (lst == null) lst = new List<ActionInfo>();
-                    lst.Add(a);
-                }
-            }
-            return lst;
         }
 
         internal Folder ResolveFolder(ref string relative, ActionContext ac, ref bool recover)
@@ -421,33 +425,5 @@ namespace Greatbone.Core
             ac.Give(200, cont, true, 3600 * 12);
         }
 
-        //
-        // LOGGING METHODS
-        //
-
-        public void TRC(string message, Exception exception = null)
-        {
-            Service.Log(LogLevel.Trace, 0, message, exception, null);
-        }
-
-        public void DBG(string message, Exception exception = null)
-        {
-            Service.Log(LogLevel.Debug, 0, message, exception, null);
-        }
-
-        public void INF(string message, Exception exception = null)
-        {
-            Service.Log(LogLevel.Information, 0, message, exception, null);
-        }
-
-        public void WAR(string message, Exception exception = null)
-        {
-            Service.Log(LogLevel.Warning, 0, message, exception, null);
-        }
-
-        public void ERR(string message, Exception exception = null)
-        {
-            Service.Log(LogLevel.Error, 0, message, exception, null);
-        }
     }
 }

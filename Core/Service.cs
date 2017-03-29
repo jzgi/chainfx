@@ -376,15 +376,29 @@ namespace Greatbone.Core
             return (int)level >= Logging;
         }
 
-        public void Dispose()
+        public void TRC(string message, Exception exception = null)
         {
-            server.Dispose();
+            Log(LogLevel.Trace, 0, message, exception, null);
+        }
 
-            logWriter.Flush();
-            logWriter.Dispose();
+        public void DBG(string message, Exception exception = null)
+        {
+            Log(LogLevel.Debug, 0, message, exception, null);
+        }
 
-            Console.Write(Name);
-            Console.WriteLine(".");
+        public void INF(string message, Exception exception = null)
+        {
+            Log(LogLevel.Information, 0, message, exception, null);
+        }
+
+        public void WAR(string message, Exception exception = null)
+        {
+            Log(LogLevel.Warning, 0, message, exception, null);
+        }
+
+        public void ERR(string message, Exception exception = null)
+        {
+            Log(LogLevel.Error, 0, message, exception, null);
         }
 
         static readonly string[] LVL = { "TRC: ", "DBG: ", "INF: ", "WAR: ", "ERR: ", "CRL: ", "NON: " };
@@ -418,6 +432,17 @@ namespace Greatbone.Core
                     logWriter.WriteLine(exception.StackTrace);
                 }
             }
+        }
+
+        public void Dispose()
+        {
+            server.Dispose();
+
+            logWriter.Flush();
+            logWriter.Dispose();
+
+            Console.Write(Name);
+            Console.WriteLine(".");
         }
 
     }

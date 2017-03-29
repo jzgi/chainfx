@@ -11,16 +11,14 @@ namespace Greatbone.Core
         const int DEPTH = 4;
 
         internal const sbyte
-            // multiple
+            // multiple records
             CTX_TABLE = 1,
             CTX_GRID = 2,
             CTX_LIST = 3,
-            CTX_SHEET = 4,
-            // single
-            CTX_FILL = 5,
-            CTX_CARD = 6;
+            // single record 
+            CTX_FILL = 5;
 
-        // per idata object outputing context
+        // per data object outputing context
         struct Ctx
         {
             // component type
@@ -30,11 +28,12 @@ namespace Greatbone.Core
             internal bool label;
 
             internal int ordinal;
+
+            internal Folder folder;
         }
 
         // whether within a form
         internal bool formed;
-
 
         // outputing context chain
         Ctx[] chain = new Ctx[DEPTH];
@@ -252,17 +251,20 @@ namespace Greatbone.Core
             }
         }
 
-        public void FORM_GRID<D>(ActionContext ac, List<ActionInfo> actions, List<D> lst, int proj = 0) where D : IData
+        public void FORMGRID<D>(ActionContext ac, List<D> lst, int proj = 0) where D : IData
         {
+            Folder fdr = ac.Folder;
+            ActionInfo[] uias = fdr.UiActions;
+
             Add("<form>");
 
             formed = true;
 
             // buttons
-            if (actions != null)
+            if (uias != null)
             {
                 Add("<div class=\"row\">");
-                BUTTONS(actions);
+                BUTTONS(uias);
                 Add("</div>");
             }
 
@@ -289,8 +291,10 @@ namespace Greatbone.Core
             Add("</form>");
         }
 
-        public void GRID<D>(List<D> lst, int proj = 0) where D : IData
+        public void GRID<D>(List<D> lst, Folder varfdr, int proj = 0) where D : IData
         {
+            ActionInfo[] uias = varfdr.UiActions;
+
             chain[++level].type = CTX_GRID;
             if (lst != null)
             {
@@ -298,7 +302,7 @@ namespace Greatbone.Core
                 for (int i = 0; i < lst.Count; i++)
                 {
                     Add("<div class=\"column\">");
-                    chain[level].ordinal = 0; // reset ordical
+                    chain[level].ordinal = 0; // reset ordinal
                     lst[i].WriteData(this, proj);
                     Add("</div>");
                 }
@@ -627,7 +631,7 @@ namespace Greatbone.Core
             T("</tbody>");
         }
 
-        public void NUMBER(string name, short v, string Label = null, string Help = null, short Max =  0, short Min = 0, short Step = 0, bool ReadOnly = false, bool Required = false) 
+        public void NUMBER(string name, short v, string Label = null, string Help = null, short Max = 0, short Min = 0, short Step = 0, bool ReadOnly = false, bool Required = false)
         {
             Add("<label>");
             AddLabel(null, name);
@@ -839,7 +843,7 @@ namespace Greatbone.Core
 
             UiAttribute ui = act.Ui;
 
-            int modal = ui?.Dialog ?? 0;
+            int modal = ui?.Mode ?? 0;
             if (modal > 0)
             {
                 Add(" onclick=\"dialog(this,"); Add(modal); Add("); return false;\"");
@@ -865,9 +869,9 @@ namespace Greatbone.Core
             Add("</button>");
         }
 
-        public void BUTTONS(List<ActionInfo> actns)
+        public void BUTTONS(ActionInfo[] actns)
         {
-            for (int i = 0; i < actns.Count; i++)
+            for (int i = 0; i < actns.Length; i++)
             {
                 ActionInfo act = actns[i];
                 Add("<button class=\"button primary\" style=\"margin-right: 5px;\" name=\""); Add(act.Name);
@@ -875,7 +879,7 @@ namespace Greatbone.Core
 
                 UiAttribute ui = act.Ui;
 
-                int modal = ui?.Dialog ?? 0;
+                int modal = ui?.Mode ?? 0;
                 if (modal > 0)
                 {
                     Add(" onclick=\"dialog(this,"); Add(modal); Add("); return false;\"");

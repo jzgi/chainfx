@@ -10,25 +10,32 @@ namespace Greatbone.Core
     {
         public UiAttribute() { }
 
-        public UiAttribute(string label, string icon = null, int dialog = 0)
+        public UiAttribute(string label, string icon = null, UiMode mode = 0)
         {
             Label = label;
             Icon = icon;
-            Dialog = dialog;
         }
 
         public string Label { get; set; }
 
         public string Icon { get; set; }
 
-        ///
-        /// 1. standard mode, submit or return
-        /// 2. prompt mode, merge to the parent and submit
-        /// 3. picker mode
-        ///
-        public int Dialog { get; set; }
+        public UiMode Mode { get; set; }
+    }
 
-        public bool Get { get; set; }
 
+    public enum UiMode
+    {
+        Link = 0,
+
+        LinkDialog = 1,
+
+        AnchorDialog = 10,
+
+        Button = 20,
+
+        ButtonConfirm = 21,
+
+        ButtonDialog = 22,
     }
 }

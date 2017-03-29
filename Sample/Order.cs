@@ -41,7 +41,7 @@ namespace Greatbone.Sample
         internal string buywx; // buyer openid
         internal string buytel; // buyer telephone
         internal string buyaddr; // buyer shipping address
-        List<OrderLine> lines;
+        internal List<OrderLine> lines;
         internal decimal total;
         internal short status;
         internal DateTime created; // time created

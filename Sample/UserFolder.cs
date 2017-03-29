@@ -28,12 +28,12 @@ namespace Greatbone.Sample
             }
         }
 
-        [Ui("按城市", Dialog = 2, Get = true)]
+        [Ui("按城市", Mode = UiMode.Button)]
         public void srch(ActionContext ac)
         {
         }
 
-        [Ui("查找编号", Dialog = 2, Get = true)]
+        [Ui("查找编号", Mode = UiMode.AnchorDialog)]
         public void find(ActionContext ac)
         {
             if (ac.GET)
