@@ -172,7 +172,7 @@ namespace Greatbone.Sample
             Action<HtmlContent> header = @base == null ? (Action<HtmlContent>)null : (h) =>
             {
                 bool top = work == @base;
-                Roll<Work> subs = @base.children;
+                Roll<Work> subs = @base.subworks;
                 if (subs != null)
                 {
                     h.Add("<ul class=\"menu\">");

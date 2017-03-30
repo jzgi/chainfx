@@ -4,9 +4,9 @@ using Greatbone.Core;
 
 namespace Greatbone.Sample
 {
-    /// An order line in cart.
+    /// An order item in cart.
     ///
-    public class CartVarVarWork : Work, IVar
+    public class CartVarVarWork : Work
     {
         IDictionary<string, Cart> carts;
 

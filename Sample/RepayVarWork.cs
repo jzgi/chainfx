@@ -2,7 +2,7 @@ using Greatbone.Core;
 
 namespace Greatbone.Sample
 {
-    public class RepayVarWork : Work, IVar
+    public class RepayVarWork : Work
     {
         public RepayVarWork(WorkContext fc) : base(fc)
         {

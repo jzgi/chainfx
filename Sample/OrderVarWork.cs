@@ -5,7 +5,7 @@ namespace Greatbone.Sample
 {
     ///
     ///
-    public abstract class OrderVarWork : Work, IVar
+    public abstract class OrderVarWork : Work
     {
         public OrderVarWork(WorkContext wc) : base(wc)
         {
@@ -106,7 +106,6 @@ namespace Greatbone.Sample
         {
 
         }
-
     }
 
     public class UserOrderVarWork : OrderVarWork

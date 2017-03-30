@@ -7,12 +7,11 @@ namespace Greatbone.Sample
 {
     /// Each key is tne openid for a buyer or shop
     ///
-    public class ChatWork : Work, IVar
+    public class ChatVarWork : Work
     {
-
         readonly ConcurrentDictionary<string, Chat> chats;
 
-        public ChatWork(WorkContext fc) : base(fc)
+        public ChatVarWork(WorkContext fc) : base(fc)
         {
         }
 

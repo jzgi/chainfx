@@ -42,13 +42,14 @@ namespace Greatbone.Core
         // actions with Ui attribute
         readonly ActionInfo[] uiactions;
 
-        // child works, if any
-        internal Roll<Work> children;
+        // sub works, if any
+        internal Roll<Work> subworks;
 
-        // the variable-key subwork, if any
-        internal Work varsub;
+        // the attached variable-key work, if any
+        internal Work varwork;
 
-        internal Func<IData, string> varkeyer;
+        // to obtain a string key from a data object.
+        Func<IData, string> keyer;
 
         protected Work(WorkContext wc) : base(wc.Name, null)
         {
@@ -155,9 +156,9 @@ namespace Greatbone.Core
                 throw new ServiceException("allowed work nesting " + MaxNesting);
             }
 
-            if (children == null)
+            if (subworks == null)
             {
-                children = new Roll<Work>(16);
+                subworks = new Roll<Work>(16);
             }
             // create instance by reflection
             Type typ = typeof(W);
@@ -176,7 +177,7 @@ namespace Greatbone.Core
                 Service = Service
             };
             W work = (W)ci.Invoke(new object[] { wc });
-            children.Add(work);
+            subworks.Add(work);
 
             return work;
         }
@@ -184,7 +185,7 @@ namespace Greatbone.Core
         ///
         /// Create a variable-key subwork.
         ///
-        public W CreateVar<W>(Func<IData, string> keyer = null, UiAttribute ui = null, AuthorizeAttribute auth = null) where W : Work, IVar
+        public W CreateVar<W>(Func<IData, string> keyer = null, UiAttribute ui = null, AuthorizeAttribute auth = null) where W : Work
         {
             if (Level >= MaxNesting)
             {
@@ -203,13 +204,14 @@ namespace Greatbone.Core
                 Ui = ui,
                 Authorize = auth,
                 Parent = this,
+                IsVar = true,
                 Level = Level + 1,
                 Directory = (Parent == null) ? _VAR_ : Path.Combine(Parent.Directory, _VAR_),
                 Service = Service
             };
             W work = (W)ci.Invoke(new object[] { wc });
-            varkeyer = keyer;
-            varsub = work;
+            this.keyer = keyer;
+            varwork = work;
             return work;
         }
 
@@ -227,15 +229,17 @@ namespace Greatbone.Core
 
         public bool HasGoto => @goto != null;
 
-        public Roll<Work> Children => children;
+        public Roll<Work> SubWorks => subworks;
 
-        public Work VarSub => varsub;
+        public Work VarWork => varwork;
 
-        public Func<IData, string> VarKeyer => varkeyer;
+        public Func<IData, string> Keyer => keyer;
 
         public string Directory => wc.Directory;
 
         public Work Parent => wc.Parent;
+
+        public bool IsVar => wc.IsVar;
 
         public int Level => wc.Level;
 
@@ -254,17 +258,17 @@ namespace Greatbone.Core
             },
             delegate
             {
-                if (children != null)
+                if (subworks != null)
                 {
-                    for (int i = 0; i < children.Count; i++)
+                    for (int i = 0; i < subworks.Count; i++)
                     {
-                        Work work = children[i];
+                        Work work = subworks[i];
                         work.Describe(cont);
                     }
                 }
-                if (varsub != null)
+                if (varwork != null)
                 {
-                    varsub.Describe(cont);
+                    varwork.Describe(cont);
                 }
             });
         }
@@ -287,24 +291,24 @@ namespace Greatbone.Core
             string key = relative.Substring(0, slash);
             relative = relative.Substring(slash + 1); // adjust relative
             Work work;
-            if (children != null && children.TryGet(key, out work)) // if child
+            if (subworks != null && subworks.TryGet(key, out work)) // if child
             {
                 ac.Chain(key, work);
                 return work.Resolve(ref relative, ac, ref recover);
             }
-            if (varsub != null) // if variable-key sub
+            if (varwork != null) // if variable-key sub
             {
-                if (key.Length == 0 && varkeyer != null) // resolve varkey
+                if (key.Length == 0 && keyer != null) // resolve varkey
                 {
                     if (ac.Principal == null) throw AuthorizeEx;
-                    if ((key = varkeyer(ac.Principal)) == null)
+                    if ((key = keyer(ac.Principal)) == null)
                     {
                         if (@goto != null) { recover = true; }
                         return null;
                     }
                 }
-                ac.Chain(key, varsub);
-                return varsub.Resolve(ref relative, ac, ref recover);
+                ac.Chain(key, varwork);
+                return varwork.Resolve(ref relative, ac, ref recover);
             }
             return null;
         }

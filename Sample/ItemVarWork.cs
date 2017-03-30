@@ -5,22 +5,15 @@ namespace Greatbone.Sample
     ///
     /// /shop/-id-/item/-id-/
     ///
-    public class ItemVarWork : Work, IVar
+    public class ItemVarWork : Work
     {
         public ItemVarWork(WorkContext fc) : base(fc)
         {
         }
 
-        #region /shop/-id-/item/-id-/
-
         public void my(ActionContext ac)
         {
-
         }
-
-        #endregion
-
-        #region /shop/-id-/order/-id-/
 
         [User]
         public void @default(ActionContext ac)
@@ -111,7 +104,5 @@ namespace Greatbone.Sample
                 }
             }
         }
-
-        #endregion
     }
 }

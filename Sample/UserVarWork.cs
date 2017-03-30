@@ -4,7 +4,7 @@ using Greatbone.Core;
 namespace Greatbone.Sample
 {
     [Ui("用户")]
-    public class UserVarWork : Work, IVar
+    public class UserVarWork : Work
     {
         public UserVarWork(WorkContext fc) : base(fc)
         {
@@ -34,7 +34,6 @@ namespace Greatbone.Sample
         [State]
         public void cancel(ActionContext ac)
         {
-
         }
 
         [Ui("基本资料", Mode = UiMode.AnchorDialog)]
@@ -58,7 +57,6 @@ namespace Greatbone.Sample
         [Ui("设置密码", Mode = UiMode.AnchorDialog)]
         public void pass(ActionContext ac)
         {
-
         }
     }
 }

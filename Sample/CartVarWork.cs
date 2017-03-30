@@ -1,4 +1,4 @@
-﻿using System.Collections.Concurrent;
+﻿using System.Collections.Generic;
 using System.Threading.Tasks;
 using Greatbone.Core;
 
@@ -6,18 +6,17 @@ namespace Greatbone.Sample
 {
     /// An order in cart
     ///
-    public class CartVarWork : Work, IVar
+    public class CartVarWork : Work
     {
         static readonly Connector WcPay = new Connector("https://api.mch.weixin.qq.com");
 
-        // keyed by wx
-        internal readonly ConcurrentDictionary<string, Cart> carts;
+        internal readonly IDictionary<string, Cart> carts;
 
         public CartVarWork(WorkContext fc) : base(fc)
         {
             CreateVar<CartVarVarWork>();
 
-            carts = new ConcurrentDictionary<string, Cart>(8, 1024);
+            carts = ((CartWork)Parent).carts;
         }
 
         public void pay(ActionContext ac)

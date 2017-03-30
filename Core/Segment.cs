@@ -23,8 +23,6 @@ namespace Greatbone.Core
 
         public Work Work => work;
 
-        public bool IsVar => work is IVar;
-
         //
         // CONVERSION
         //

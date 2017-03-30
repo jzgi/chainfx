@@ -6,9 +6,9 @@ namespace Greatbone.Sample
 {
     [User]
     [Ui("供应点")]
-    public class ShopVarWork : Work, IVar
+    public class ShopVarWork : Work
     {
-        public ShopVarWork(WorkContext dc) : base(dc)
+        public ShopVarWork(WorkContext wc) : base(wc)
         {
             Create<ShopOrderWork>("order-0", new UiAttribute("当前订单"));
 
@@ -140,7 +140,6 @@ namespace Greatbone.Sample
         public void remenu(ActionContext ac)
         {
         }
-
 
         public void basket(ActionContext ac)
         {

@@ -26,6 +26,8 @@ namespace Greatbone.Core
 
         public Work Parent { get; internal set; }
 
+        public bool IsVar { get; internal set; }
+
         public string Directory { get; internal set; }
 
         public string GetFilePath(string file)
