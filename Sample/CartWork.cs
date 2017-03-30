@@ -15,14 +15,14 @@ namespace Greatbone.Sample
 
         public CartWork(WorkContext fc) : base(fc)
         {
-            CreateVar<CartOrderWork>();
+            CreateVar<CartVarWork>();
 
             carts = new ConcurrentDictionary<string, Cart>(8, 1024);
         }
 
         public void @default(ActionContext ac)
         {
-            string wx = ac[typeof(UserWork)];
+            string wx = ac[typeof(UserVarWork)];
             Cart cart;
             if (carts.TryGetValue(wx, out cart))
             {
@@ -39,7 +39,7 @@ namespace Greatbone.Sample
         ///
         public async Task add(ActionContext ac)
         {
-            string wx = ac[typeof(UserWork)];
+            string wx = ac[typeof(UserVarWork)];
             var ln = await ac.ReadObjectAsync<OrderLine>();
 
             using (var dc = ac.NewDbContext())

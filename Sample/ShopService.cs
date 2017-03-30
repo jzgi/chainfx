@@ -13,11 +13,11 @@ namespace Greatbone.Sample
 
         public ShopService(ServiceContext sc) : base(sc)
         {
-            Create<UsersWork>("users");
+            Create<UserWork>("users");
 
-            Create<ShopsWork>("shops", new UiAttribute("供应点管理"));
+            Create<ShopWork>("shops", new UiAttribute("供应点管理"));
 
-            Create<SysRepaysWork>("oprepays");
+            Create<SysRepayWork>("oprepays");
 
             // timer obtaining access_token from weixin
             // timer = new Timer(async state =>

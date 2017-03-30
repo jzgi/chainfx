@@ -1,64 +1,72 @@
-﻿using System.Collections.Generic;
-using Greatbone.Core;
+﻿using Greatbone.Core;
+using static Greatbone.Core.Proj;
 
 namespace Greatbone.Sample
 {
-    [Ui("用户")]
-    public class UserWork : Work, IVar
+    [Ui("用户管理")]
+    public class UserWork : Work
     {
-        public UserWork(WorkContext fc) : base(fc)
+        public UserWork(WorkContext wc) : base(wc)
         {
-            CreateVar<CartOrderWork>();
-
-            Create<UserOrdersWork>("order");
+            CreateVar<UserVarWork>((prin) => ((User)prin).wx);
         }
 
-        public void _(ActionContext ac, int page)
+        public void _(ActionContext ac)
         {
-            string userid = ac[this];
-
             using (var dc = ac.NewDbContext())
             {
-                if (dc.Query("SELECT * FROM orders WHERE buywx = @1 ORDER BY id LIMIT 20 OFFSET @2", p => p.Set(userid).Set(page * 20)))
+                const int proj = -1 ^ BIN ^ TRANSF ^ SECRET;
+                dc.Sql("SELECT ").columnlst(User.Empty, proj)._("FROM users ORDER BY id LIMIT 30 OFFSET @1");
+                if (dc.Query("SELECT * FROM users"))
                 {
-                    ac.GiveWorkPage(null, 200, dc.ToList<Order>());
+                    ac.GiveWorkPage(Parent, 200, dc.ToList<User>()); // ok
                 }
                 else
                 {
-                    ac.GiveWorkPage(null, 200, (List<Order>)null);
+                    ac.Give(204); // no content
+                }
+            }
+        }
+
+        [Ui("按城市", Mode = UiMode.Button)]
+        public void srch(ActionContext ac)
+        {
+        }
+
+        [Ui("查找编号", Mode = UiMode.AnchorDialog)]
+        public void find(ActionContext ac)
+        {
+            if (ac.GET)
+            {
+                string id = null;
+                ac.GivePaneForm(200, f =>
+                {
+                    f.TEXT(nameof(id), id, Label: "用户编号", Max: 11, Min: 11);
+                });
+            }
+            else
+            {
+                string id = ac.Query[nameof(id)];
+
+                using (var dc = ac.NewDbContext())
+                {
+                    const int proj = -1 ^ BIN ^ TRANSF ^ SECRET;
+                    dc.Sql("SELECT ").columnlst(User.Empty, proj)._("FROM users WHERE id = @1");
+                    if (dc.Query(p => p.Set(id)))
+                    {
+                        ac.GiveWorkPage(Parent, 200, dc.ToList<User>()); // ok
+                    }
+                    else
+                    {
+                        ac.Give(204); // no content
+                    }
                 }
             }
         }
 
         [Ui]
-        [State]
-        public void cancel(ActionContext ac)
+        public void aggr(ActionContext ac)
         {
-
-        }
-
-        [Ui("基本资料", Mode = UiMode.AnchorDialog)]
-        public void profile(ActionContext ac)
-        {
-            string userid = ac[this];
-
-            using (var dc = ac.NewDbContext())
-            {
-                if (dc.Query1("SELECT * FROM users WHERE id = @1", p => p.Set(userid)))
-                {
-                    ac.GivePaneForm(200, dc.ToObject<User>());
-                }
-                else
-                {
-                    ac.Give(404); // not found
-                }
-            }
-        }
-
-        [Ui("设置密码", Mode = UiMode.AnchorDialog)]
-        public void pass(ActionContext ac)
-        {
-
         }
     }
 }

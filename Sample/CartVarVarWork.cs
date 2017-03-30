@@ -6,11 +6,11 @@ namespace Greatbone.Sample
 {
     /// An order line in cart.
     ///
-    public class CartItemWork : Work, IVar
+    public class CartVarVarWork : Work, IVar
     {
         IDictionary<string, Cart> carts;
 
-        public CartItemWork(WorkContext fc) : base(fc)
+        public CartVarVarWork(WorkContext fc) : base(fc)
         {
         }
 

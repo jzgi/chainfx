@@ -1,153 +1,214 @@
-using Greatbone.Core;
 using System.Collections.Generic;
+using System.Threading.Tasks;
+using Greatbone.Core;
 using static Greatbone.Core.Proj;
 
 namespace Greatbone.Sample
 {
-    [User]
-    [Ui("供应点")]
-    public class ShopWork : Work, IVar
+    public class ShopWork : Work
     {
-        public ShopWork(WorkContext dc) : base(dc)
+        public ShopWork(WorkContext wc) : base(wc)
         {
-            Create<ShopOrdersWork>("orders-0", new UiAttribute("当前订单"));
-
-            Create<ShopOrdersWork>("orders-2", new UiAttribute("已完成订单"));
-
-            Create<ShopOrdersWork>("orders-7", new UiAttribute("已取消订单"));
-
-            Create<ItemsWork>("item", new UiAttribute("货架"));
-
-            Create<ShopRepaysWork>("repay", new UiAttribute("平台结款"));
+            CreateVar<ShopVarWork>((prin) => ((User)prin).shopid);
         }
-
-        public void @default(ActionContext ac)
-        {
-            string shopid = ac[this];
-
-            using (var dc = ac.NewDbContext())
-            {
-                // shop info
-                const int proj = -1 ^ BIN ^ TRANSF ^ SECRET;
-                dc.Sql("SELECT ").columnlst(Shop.Empty, proj)._("FROM shops WHERE id = @1");
-                if (dc.Query1(p => p.Set(shopid)))
-                {
-                    var shop = dc.ToObject<Shop>(proj);
-                    // shop items 
-                    List<Item> items = null;
-                    dc.Sql("SELECT ").columnlst(Item.Empty, proj)._("FROM items WHERE shopid = @1");
-                    if (dc.Query(p => p.Set(shopid)))
-                    {
-                        items = dc.ToList<Item>(proj);
-                    }
-                    ac.GivePage(200, null, m =>
-                    {
-                        m.Add("<div class=\"row\">");
-                        m.Add("<div class=\"small-3 columns\"><a href=\"#\"><span></span><img src=\""); m.Add(shop.id); m.Add("/_icon_\" alt=\"\" class=\" thumbnail\"></a></div>");
-                        m.Add("<div class=\"small-9 columns\">");
-                        m.Add("<h3><a href=\""); m.Add(shop.id); m.Add("/\">"); m.Add(shop.name); m.Add("</a></h3>");
-                        m.Add("<p>"); m.Add(shop.city); m.Add(shop.addr); m.Add("</p>");
-                        m.Add("<p>"); m.Add(shop.descr); m.Add("</p>");
-                        m.Add("</div>");
-                        m.Add("</div>");
-
-                        // display items
-
-                        for (int i = 0; i < items.Count; i++)
-                        {
-                            Item item = items[i];
-                            m.Add("<form id=\"item"); m.Add(i); m.Add("\">");
-                            m.Add("<div class=\"row\">");
-
-                            m.Add("<div class=\"small-3 columns\"><a href=\"#\"><span></span><img src=\"item/"); m.Add(item.name); m.Add("/_icon_\" alt=\"\" class=\" thumbnail\"></a></div>");
-                            m.Add("<div class=\"small-9 columns\">");
-                            m.Add("<p>&yen;"); m.Add(item.price); m.Add("</p>");
-                            m.Add("<p>"); m.Add(item.descr); m.Add("</p>");
-
-                            m.Add("<button class=\"button warning\" formaction=\"item/"); m.Add(item.name); m.Add("/add\" onclick=\"return dialog(this,2)\">加入购物车</button>");
-                            m.Add("</div>");
-
-                            m.Add("</div>");
-                            m.Add("</form>");
-                        }
-
-
-                    }, null);
-                }
-                else
-                {
-                    ac.Give(404); // not found
-                }
-            }
-        }
-
-
-        public void _(ActionContext ac)
-        {
-            ac.GiveWorkPage(this, 200, (List<Item>)null);
-        }
-
-        ///
-        /// Get shop items
-        ///
-        /// <code>
-        /// GET /-shopid-/items
-        /// </code>
-        ///
-        public void items(ActionContext ac)
-        {
-            string shopid = ac[0];
-
-            using (var dc = Service.NewDbContext())
-            {
-                dc.Sql("SELECT ").columnlst(Shop.Empty)._("FROM items WHERE @shopid = @1 AND NOT disabled");
-                if (dc.Query(p => p.Set(shopid)))
-                {
-                    var items = dc.ToArray<Item>();
-                }
-                else
-                {
-                }
-            }
-        }
-
-        public void _icon_(ActionContext ac)
-        {
-            string shopid = ac[this];
-
-            using (var dc = Service.NewDbContext())
-            {
-                if (dc.Query1("SELECT icon FROM shops WHERE id = @1", p => p.Set(shopid)))
-                {
-                    var byteas = dc.GetByteAs();
-                    if (byteas.Count == 0) ac.Give(204); // no content 
-                    else
-                    {
-                        StaticContent cont = new StaticContent(byteas);
-                        ac.Give(200, cont);
-                    }
-                }
-                else ac.Give(404); // not found           
-            }
-        }
-
-
-        //
-        // management
-        //
 
         [User]
-        public void remenu(ActionContext ac)
+        public void @default(ActionContext ac)
         {
+            bool dlg = ac.Query[nameof(dlg)];
+            if (dlg)
+            {
+                using (var dc = Service.NewDbContext())
+                {
+                    if (dc.Query("SELECT DISTINCT city FROM shops"))
+                    {
+                        ac.GivePaneForm(200, f =>
+                        {
+                            int i = 0;
+                            while (dc.Next())
+                            {
+                                i++;
+                                string city = dc.GetString();
+                                f.Add("<input type=\"radio\" name=\"city\" id=\"city"); f.Add(i);
+                                f.Add("\" value=\""); f.Add(city); f.Add("\">");
+                                f.Add("<label for=\"city"); f.Add(i); f.Add("\">"); f.Add(city); f.Add("</label>");
+                            }
+                        });
+                    }
+                    else { ac.Give(204); }
+                }
+            }
+            else
+            {
+                string city = ac.Query[nameof(city)];
+                if (city == null)
+                {
+                    city = ((User)ac.Principal).city;
+                }
+                using (var dc = Service.NewDbContext())
+                {
+                    if (dc.Query("SELECT * FROM shops WHERE ((scope = 0 AND city = @1) OR scope = 1) AND enabled", p => p.Set(city)))
+                    {
+                        ac.GivePage(200,
+                        null,
+                        m =>
+                        {
+                            m.Add("<div class=\"row\">");
+                            m.Add("<div class=\"small-8 columns\"><h1><a href=\"\" onclick=\"dialog(this, 2);return false;\">"); m.Add(city); m.Add("（切换城市）</a></h1></div>");
+                            m.Add("<div class=\"small-4 columns text-right\"><a href=\"/user//cart/\">购物车<i class=\"fi-shopping-cart warning\"></i>付款</a></div>");
+                            m.Add("</div>");
+
+                            var shops = dc.ToList<Shop>(-1 ^ Proj.BIN);
+                            for (int i = 0; i < shops.Count; i++)
+                            {
+                                var shop = shops[i];
+
+                                m.Add("<div class=\"row\">");
+                                m.Add("<div class=\"small-3 columns\"><a href=\"#\"><span></span><img src=\""); m.Add(shop.id); m.Add("/_icon_\" alt=\"\" class=\" thumbnail\"></a></div>");
+                                m.Add("<div class=\"small-9 columns\">");
+                                m.Add("<h3><a href=\""); m.Add(shop.id); m.Add("/\">"); m.Add(shop.name); m.Add("</a></h3>");
+                                m.Add("<p>"); m.Add(shop.city); m.Add(shop.addr); m.Add("</p>");
+                                m.Add("<p>"); m.Add(shop.descr); m.Add("</p>");
+                                m.Add("</div>");
+                                m.Add("</div>");
+                            }
+
+                        }, null);
+                    }
+                    else
+                    {
+                        // ac.GivePage(200, h =>
+                        // {
+                        //     h.CALLOUT("没有找到附近的供应点", true);
+                        // });
+                    }
+                }
+            }
+        }
+
+        [User]
+        public void _(ActionContext ac, int page)
+        {
+            using (var dc = ac.NewDbContext())
+            {
+                const int proj = -1 ^ BIN ^ TRANSF ^ SECRET;
+                dc.Sql("SELECT ").columnlst(Shop.Empty, proj)._("FROM shops ORDER BY id LIMIT 30 OFFSET @1");
+                if (dc.Query(p => p.Set(page)))
+                {
+                    ac.GiveWorkPage(Parent, 200, dc.ToList<Shop>(proj), proj);
+                }
+                else
+                {
+                    ac.GiveWorkPage(Parent, 200, (List<Shop>)null);
+                }
+            }
+        }
+
+        public async Task @goto(ActionContext ac)
+        {
+            if (ac.GET)
+            {
+                // return a form
+                ac.GivePaneForm(200, (x) =>
+                {
+                    x.TEXT("shopid", "");
+                    x.PASSWORD("password", "");
+                });
+
+            }
+            else
+            {
+                var f = await ac.ReadAsync<Form>();
+                string shopid = f[nameof(shopid)];
+                string password = f[nameof(password)];
+                string orig = f[nameof(orig)];
+
+                // data op
+                User prin = (User)ac.Principal;
+                using (var dc = ac.NewDbContext())
+                {
+                    dc.Execute("UPDATE users SET shopid = @1 WHERE id = @2");
+                }
+
+                // return back
+                ac.GiveRedirect(orig);
+            }
         }
 
 
-        public void basket(ActionContext ac)
+        //
+        // administrative actions
+        //
+
+        [Ui("申请", Mode = UiMode.AnchorDialog)]
+        public async Task apply(ActionContext ac)
         {
+            if (ac.GET)
+            {
+                ac.GivePaneForm(200, Shop.Empty, -1 ^ Proj.TRANSF);
+            }
+            else // post
+            {
+                var shop = await ac.ReadObjectAsync<Shop>();
+
+                // validate
+
+                using (var dc = Service.NewDbContext())
+                {
+                    shop.credential = TextUtility.MD5(shop.id + ':' + shop.credential);
+                    dc.Sql("INSERT INTO shops")._(Shop.Empty)._VALUES_(Shop.Empty)._("");
+                    if (dc.Execute(p => p.Set(shop)) > 0)
+                    {
+                        ac.Give(201); // created
+                    }
+                    else
+                    {
+                        ac.Give(500); // internal server error
+                    }
+                }
+            }
         }
 
-        public void invoice(ActionContext ac)
+        [User()]
+        [Ui("新建", Mode = UiMode.AnchorDialog)]
+        public async Task @new(ActionContext ac)
         {
+            if (ac.GET)
+            {
+                ac.GivePaneForm(200, Shop.Empty, -1 ^ Proj.TRANSF);
+            }
+            else // post
+            {
+                var shop = await ac.ReadObjectAsync<Shop>();
+
+                // validate
+
+                using (var dc = Service.NewDbContext())
+                {
+                    shop.credential = TextUtility.MD5(shop.id + ':' + shop.credential);
+                    dc.Sql("INSERT INTO shops")._(Shop.Empty)._VALUES_(Shop.Empty)._("");
+                    if (dc.Execute(p => p.Set(shop)) > 0)
+                    {
+                        ac.Give(201); // created
+                    }
+                    else
+                    {
+                        ac.Give(500); // internal server error
+                    }
+                }
+            }
+        }
+
+        [Ui("停业/启用")]
+        public void toggle(ActionContext ac)
+        {
+
+        }
+
+        [Ui("分布报告")]
+        public void rpt(ActionContext ac)
+        {
+
         }
     }
 }

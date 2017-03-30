@@ -17,7 +17,7 @@ using Microsoft.Extensions.Options;
 namespace Greatbone.Core
 {
     ///
-    /// A service is a HTTP endpoint that manages resources in a hierarchical manner.
+    /// A service is a work that implements HTTP endpoint.
     ///
     public abstract class Service : Work, IHttpApplication<HttpContext>, ILoggerProvider, ILogger
     {
@@ -499,8 +499,8 @@ namespace Greatbone.Core
                 {
                     string relative = path.Substring(1);
                     bool recover = false; // null-key-recovering
-                    Work fdr = Resolve(ref relative, ac, ref recover);
-                    if (fdr == null)
+                    Work work = Resolve(ref relative, ac, ref recover);
+                    if (work == null)
                     {
                         if (recover && ac.ByBrowse)
                         {
@@ -513,7 +513,7 @@ namespace Greatbone.Core
                         }
                         return;
                     }
-                    await fdr.HandleAsync(relative, ac);
+                    await work.HandleAsync(relative, ac);
                 }
             }
             catch (Exception e)

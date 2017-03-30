@@ -6,16 +6,16 @@ namespace Greatbone.Sample
 {
     /// An order in cart
     ///
-    public class CartOrderWork : Work, IVar
+    public class CartVarWork : Work, IVar
     {
         static readonly Connector WcPay = new Connector("https://api.mch.weixin.qq.com");
 
         // keyed by wx
         internal readonly ConcurrentDictionary<string, Cart> carts;
 
-        public CartOrderWork(WorkContext fc) : base(fc)
+        public CartVarWork(WorkContext fc) : base(fc)
         {
-            CreateVar<CartItemWork>();
+            CreateVar<CartVarVarWork>();
 
             carts = new ConcurrentDictionary<string, Cart>(8, 1024);
         }

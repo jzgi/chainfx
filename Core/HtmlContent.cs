@@ -186,8 +186,8 @@ namespace Greatbone.Core
 
         public void GRIDFORM<D>(ActionContext ac, List<D> lst, int proj = 0) where D : IData
         {
-            Work fdr = ac.Work;
-            ActionInfo[] uias = fdr.UiActions;
+            Work work = ac.Work;
+            ActionInfo[] uias = work.UiActions;
 
             Add("<form>");
 
@@ -202,7 +202,7 @@ namespace Greatbone.Core
             }
 
             // grid
-            GRID(fdr, lst, proj);
+            GRID(work, lst, proj);
 
             // pagination
             ActionInfo act = ac.Doer;
@@ -357,15 +357,15 @@ namespace Greatbone.Core
             --level;
         }
 
-        public void GRID<D>(Work fdr, List<D> lst, int proj = 0) where D : IData
+        public void GRID<D>(Work work, List<D> lst, int proj = 0) where D : IData
         {
             ++level;
             chain[level].type = CTX_GRID;
-            chain[level].work = fdr;
+            chain[level].work = work;
 
             if (lst != null)
             {
-                ActionInfo[] uias = fdr.UiActions;
+                ActionInfo[] uias = work.UiActions;
 
                 Add("<div class=\"row small-up-2 medium-up-4 large-up-6\">");
                 for (int i = 0; i < lst.Count; i++)

@@ -1,117 +1,132 @@
+﻿using System.Collections.Generic;
+using System.Threading.Tasks;
 using Greatbone.Core;
 
 namespace Greatbone.Sample
 {
     ///
-    /// /shop/-id-/item/-id-/
     ///
-    public class ItemWork : Work, IVar
+    public class ItemWork : Work
     {
         public ItemWork(WorkContext fc) : base(fc)
         {
+            CreateVar<ItemVarWork>();
         }
 
-        #region /shop/-id-/item/-id-/
-
-        public void my(ActionContext ac)
+        public void lst(ActionContext ac)
         {
-
-        }
-
-        #endregion
-
-        #region /shop/-id-/order/-id-/
-
-        [User]
-        public void @default(ActionContext ac)
-        {
-            string shopid = ac[0];
-            int id = ac[this];
-
-            using (var dc = Service.NewDbContext())
+            string shopid = ac[1];
+            using (var dc = ac.NewDbContext())
             {
-                dc.Sql("SELECT ").columnlst(Order.Empty)._("FROM orders WHERE id = @1 AND shopid = @2");
-                if (dc.Query(p => p.Set(id).Set(shopid)))
+                if (dc.Query("SELECT * FROM items WHERE shopid = @1 AND enabled", p => p.Set(shopid)))
                 {
-                    var order = dc.ToArray<Order>();
+                    ac.Give(200, dc.Dump());
                 }
                 else
                 {
-
+                    ac.Give(204); // no content
                 }
             }
         }
 
-        public void _icon_(ActionContext ac)
-        {
-            string shopid = ac[typeof(ShopWork)];
-            string name = ac[this];
 
-            using (var dc = Service.NewDbContext())
+        // [Shop]
+        public void @default(ActionContext ac)
+        {
+            string shopid = ac[1];
+            using (var dc = ac.NewDbContext())
             {
-                if (dc.Query1("SELECT icon FROM items WHERE shopid = @1 AND name = @2", p => p.Set(shopid).Set(name)))
+                if (dc.Query("SELECT * FROM items WHERE shopid = @1", p => p.Set(shopid)))
                 {
-                    var byteas = dc.GetByteAs();
-                    if (byteas.Count == 0) ac.Give(204); // no content 
-                    else
-                    {
-                        StaticContent cont = new StaticContent(byteas);
-                        ac.Give(200, cont);
-                    }
+                    ac.GiveWorkPage(Parent, 200, dc.ToList<Item>());
                 }
-                else ac.Give(404); // not found           
+                else
+                {
+                    ac.GiveWorkPage(Parent, 200, (List<Item>)null);
+                }
             }
         }
 
-        public void add(ActionContext ac)
+        // [Shop]
+        [Ui("新建", Mode = UiMode.AnchorDialog)]
+        public async Task @new(ActionContext ac)
         {
-            string shopid = ac[typeof(ShopWork)];
-            string name = ac[this];
             if (ac.GET)
             {
+                Item o = Item.Empty;
+                ac.GivePaneForm(200, o);
+            }
+            else // post
+            {
+                var item = await ac.ReadObjectAsync<Item>();
+                item.shopid = ac[typeof(ShopVarWork)];
                 using (var dc = Service.NewDbContext())
                 {
-                    if (dc.Query1("SELECT price, min, step FROM items WHERE shopid = @1 AND name = @2", p => p.Set(shopid).Set(name)))
+                    dc.Sql("INSERT INTO items")._(Item.Empty)._VALUES_(Item.Empty)._("");
+                    if (dc.Execute(p => p.Set(item)) > 0)
                     {
-                        var price = dc.GetDecimal();
-                        var min = dc.GetShort();
-                        short qty = min;
-                        var step = dc.GetShort();
-                        string note = null;
-                        ac.GivePaneForm(200, f =>
-                        {
-                            f.NUMBER(nameof(qty), qty, Min: min, Step: step);
-                            f.TEXTAREA(nameof(note), note);
-                        });
+                        ac.Give(201); // created
                     }
-                    else ac.Give(404); // not found           
+                    else
+                    {
+                        ac.Give(500); // internal server error
+                    }
                 }
+            }
+        }
+
+        [User]
+        public void _cat_(ActionContext ac)
+        {
+            string shopid = ac[1];
+            using (var dc = ac.NewDbContext())
+            {
+                string name;
+                int age;
+                dc.Execute("UPDATE items SET enabled = NOT enabled WHERE shopid = @1", p => p.Set(shopid));
+                // ac.SetHeader();
+                ac.GivePaneForm(303, dc, (i, o) =>
+                {
+                    o.Put(nameof(name), name = i.GetString());
+                    o.Put(nameof(age), age = i.GetInt());
+                }); // see other
+            }
+        }
+
+        [User]
+        [Ui("上架/下架")]
+        public void toggle(ActionContext ac)
+        {
+            string shopid = ac[typeof(ShopVarWork)];
+            using (var dc = ac.NewDbContext())
+            {
+                dc.Execute("UPDATE items SET enabled = NOT enabled WHERE shopid = @1", p => p.Set(shopid));
+                // ac.SetHeader();
+                ac.Give(303); // see other
+            }
+        }
+
+        [User]
+        [Ui("删除")]
+        public async Task modify(ActionContext ac)
+        {
+            string shopid = ac[typeof(ShopVarWork)];
+
+            if (ac.GET)
+            {
+                var item = new Item() { };
+                ac.GivePaneForm(200, item);
             }
             else
             {
-
-            }
-        }
-
-        public void cannel(ActionContext ac)
-        {
-            string shopid = ac[0];
-            int orderid = ac[this];
-
-            using (var dc = Service.NewDbContext())
-            {
-                dc.Sql("SELECT ").columnlst(Order.Empty)._("FROM orders WHERE id = @1 AND shopid = @2");
-                if (dc.Query(p => p.Set(orderid).Set(shopid)))
+                var item = await ac.ReadObjectAsync<Item>();
+                using (var dc = ac.NewDbContext())
                 {
-                    var order = dc.ToArray<Order>();
-                }
-                else
-                {
-
+                    dc.Execute("UPDATE items SET enabled = NOT enabled WHERE shopid = @1", p => p.Set(shopid));
+                    // ac.SetHeader();
+                    ac.Give(303); // see other
                 }
             }
         }
-
-        #endregion
     }
 }

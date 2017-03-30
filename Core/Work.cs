@@ -8,6 +8,7 @@ namespace Greatbone.Core
 {
     ///
     /// A work is a virtual web folder that contains a single or collection of resources along with operations on it or them.
+    /// A work can contain child/sub works.
     ///
     public abstract class Work : Nodule
     {
@@ -257,8 +258,8 @@ namespace Greatbone.Core
                 {
                     for (int i = 0; i < children.Count; i++)
                     {
-                        Work fdr = children[i];
-                        fdr.Describe(cont);
+                        Work work = children[i];
+                        work.Describe(cont);
                     }
                 }
                 if (varsub != null)
