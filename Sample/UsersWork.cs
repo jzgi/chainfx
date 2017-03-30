@@ -4,11 +4,11 @@ using static Greatbone.Core.Proj;
 namespace Greatbone.Sample
 {
     [Ui("用户管理")]
-    public class UserFolder : Folder
+    public class UsersWork : Work
     {
-        public UserFolder(FolderContext fc) : base(fc)
+        public UsersWork(WorkContext fc) : base(fc)
         {
-            CreateVar<UserVarFolder>((tok) => ((User)tok).wx);
+            CreateVar<UserWork>((tok) => ((User)tok).wx);
         }
 
         public void _(ActionContext ac)
@@ -19,7 +19,7 @@ namespace Greatbone.Sample
                 dc.Sql("SELECT ").columnlst(User.Empty, proj)._("FROM users ORDER BY id LIMIT 30 OFFSET @1");
                 if (dc.Query("SELECT * FROM users"))
                 {
-                    ac.GiveFolderPage(Parent, 200, dc.ToList<User>()); // ok
+                    ac.GiveWorkPage(Parent, 200, dc.ToList<User>()); // ok
                 }
                 else
                 {
@@ -54,7 +54,7 @@ namespace Greatbone.Sample
                     dc.Sql("SELECT ").columnlst(User.Empty, proj)._("FROM users WHERE id = @1");
                     if (dc.Query(p => p.Set(id)))
                     {
-                        ac.GiveFolderPage(Parent, 200, dc.ToList<User>()); // ok
+                        ac.GiveWorkPage(Parent, 200, dc.ToList<User>()); // ok
                     }
                     else
                     {

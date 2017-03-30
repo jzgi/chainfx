@@ -20,7 +20,7 @@ namespace Greatbone.Core
 
         public static bool TryCreate<S>(ServiceContext sc, bool load, UiAttribute ui = null, AuthorizeAttribute auth = null) where S : Service
         {
-            // initialize folder context
+            // initialize work context
             sc.Ui = ui;
             sc.Authorize = auth;
             sc.Parent = null;

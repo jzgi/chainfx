@@ -26,7 +26,7 @@ namespace Greatbone.Core
 
         public long Id => id;
 
-        public Folder Folder
+        public Work Work
         {
             get
             {

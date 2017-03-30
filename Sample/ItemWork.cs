@@ -5,9 +5,9 @@ namespace Greatbone.Sample
     ///
     /// /shop/-id-/item/-id-/
     ///
-    public class ItemVarFolder : Folder, IVar
+    public class ItemWork : Work, IVar
     {
-        public ItemVarFolder(FolderContext fc) : base(fc)
+        public ItemWork(WorkContext fc) : base(fc)
         {
         }
 
@@ -44,7 +44,7 @@ namespace Greatbone.Sample
 
         public void _icon_(ActionContext ac)
         {
-            string shopid = ac[typeof(ShopVarFolder)];
+            string shopid = ac[typeof(ShopWork)];
             string name = ac[this];
 
             using (var dc = Service.NewDbContext())
@@ -65,7 +65,7 @@ namespace Greatbone.Sample
 
         public void add(ActionContext ac)
         {
-            string shopid = ac[typeof(ShopVarFolder)];
+            string shopid = ac[typeof(ShopWork)];
             string name = ac[this];
             if (ac.GET)
             {

@@ -5,13 +5,13 @@ using Greatbone.Core;
 namespace Greatbone.Sample
 {
     [Ui("结款管理")]
-    public class RepayFolder<V> : Folder where V : RepayVarFolder
+    public class RepaysWork<V> : Work where V : RepayWork
     {
         static readonly Connector WcPay = new Connector("https://api.mch.weixin.qq.com");
 
-        public RepayFolder(FolderContext fc) : base(fc)
+        public RepaysWork(WorkContext wc) : base(wc)
         {
-            CreateVar<ItemVarFolder>();
+            CreateVar<ItemWork>();
         }
 
         [User]
@@ -23,11 +23,11 @@ namespace Greatbone.Sample
             {
                 if (dc.Query("SELECT * FROM repays WHERE shopid = @1 AND status < 4", p => p.Set(shopid)))
                 {
-                    ac.GiveFolderPage(this, 200, dc.ToList<Repay>());
+                    ac.GiveWorkPage(this, 200, dc.ToList<Repay>());
                 }
                 else
                 {
-                    ac.GiveFolderPage(this, 200, (List<Repay>)null);
+                    ac.GiveWorkPage(this, 200, (List<Repay>)null);
                 }
             }
         }
@@ -113,16 +113,16 @@ namespace Greatbone.Sample
         }
     }
 
-    public class ShopRepayFolder : RepayFolder<ShopRepayVarFolder>
+    public class ShopRepaysWork : RepaysWork<ShopRepayWork>
     {
-        public ShopRepayFolder(FolderContext fc) : base(fc)
+        public ShopRepaysWork(WorkContext wc) : base(wc)
         {
         }
     }
 
-    public class OpRepayFolder : RepayFolder<OpRepayVarFolder>
+    public class SysRepaysWork : RepaysWork<SysRepayWork>
     {
-        public OpRepayFolder(FolderContext fc) : base(fc)
+        public SysRepaysWork(WorkContext wc) : base(wc)
         {
         }
     }

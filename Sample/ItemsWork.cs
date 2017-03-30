@@ -6,11 +6,11 @@ namespace Greatbone.Sample
 {
     ///
     ///
-    public class ItemFolder : Folder
+    public class ItemsWork : Work
     {
-        public ItemFolder(FolderContext fc) : base(fc)
+        public ItemsWork(WorkContext fc) : base(fc)
         {
-            CreateVar<ItemVarFolder>();
+            CreateVar<ItemWork>();
         }
 
         public void lst(ActionContext ac)
@@ -38,11 +38,11 @@ namespace Greatbone.Sample
             {
                 if (dc.Query("SELECT * FROM items WHERE shopid = @1", p => p.Set(shopid)))
                 {
-                    ac.GiveFolderPage(Parent, 200, dc.ToList<Item>());
+                    ac.GiveWorkPage(Parent, 200, dc.ToList<Item>());
                 }
                 else
                 {
-                    ac.GiveFolderPage(Parent, 200, (List<Item>)null);
+                    ac.GiveWorkPage(Parent, 200, (List<Item>)null);
                 }
             }
         }
@@ -59,7 +59,7 @@ namespace Greatbone.Sample
             else // post
             {
                 var item = await ac.ReadObjectAsync<Item>();
-                item.shopid = ac[typeof(ShopVarFolder)];
+                item.shopid = ac[typeof(ShopWork)];
                 using (var dc = Service.NewDbContext())
                 {
                     dc.Sql("INSERT INTO items")._(Item.Empty)._VALUES_(Item.Empty)._("");
@@ -97,7 +97,7 @@ namespace Greatbone.Sample
         [Ui("上架/下架")]
         public void toggle(ActionContext ac)
         {
-            string shopid = ac[typeof(ShopVarFolder)];
+            string shopid = ac[typeof(ShopWork)];
             using (var dc = ac.NewDbContext())
             {
                 dc.Execute("UPDATE items SET enabled = NOT enabled WHERE shopid = @1", p => p.Set(shopid));
@@ -110,7 +110,7 @@ namespace Greatbone.Sample
         [Ui("删除")]
         public async Task modify(ActionContext ac)
         {
-            string shopid = ac[typeof(ShopVarFolder)];
+            string shopid = ac[typeof(ShopWork)];
 
             if (ac.GET)
             {

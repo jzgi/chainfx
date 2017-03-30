@@ -22,9 +22,9 @@ namespace Greatbone.Core
 
         /// Whether this is requested from a cluster member.
         ///
-        public bool Cluster { get; internal set; }
+        public bool Clustered { get; internal set; }
 
-        public Folder Folder { get; internal set; }
+        public Work Work { get; internal set; }
 
         public ActionInfo Doer { get; internal set; }
 
@@ -43,38 +43,38 @@ namespace Greatbone.Core
 
         int segnum; // actual number of knots
 
-        internal void Chain(string key, Folder folder)
+        internal void Chain(string key, Work work)
         {
             if (segs == null)
             {
                 segs = new Segment[4];
             }
-            segs[segnum++] = new Segment(key, folder);
+            segs[segnum++] = new Segment(key, work);
         }
 
         public Segment this[int level] => segs[level];
 
-        public Segment this[Type folderType]
+        public Segment this[Type workType]
         {
             get
             {
                 for (int i = 0; i < segnum; i++)
                 {
                     Segment seg = segs[i];
-                    if (seg.Type == folderType) return seg;
+                    if (seg.Type == workType) return seg;
                 }
                 return default(Segment);
             }
         }
 
-        public Segment this[Folder folder]
+        public Segment this[Work work]
         {
             get
             {
                 for (int i = 0; i < segnum; i++)
                 {
                     Segment seg = segs[i];
-                    if (seg.Folder == folder) return seg;
+                    if (seg.Work == work) return seg;
                 }
                 return default(Segment);
             }

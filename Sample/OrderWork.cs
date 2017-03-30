@@ -5,9 +5,9 @@ namespace Greatbone.Sample
 {
     ///
     ///
-    public abstract class OrderVarFolder : Folder, IVar
+    public abstract class OrderWork : Work, IVar
     {
-        public OrderVarFolder(FolderContext fc) : base(fc)
+        public OrderWork(WorkContext wc) : base(wc)
         {
         }
 
@@ -109,16 +109,16 @@ namespace Greatbone.Sample
 
     }
 
-    public class UserOrderVarFolder : OrderVarFolder
+    public class UserOrderWork : OrderWork
     {
-        public UserOrderVarFolder(FolderContext fc) : base(fc)
+        public UserOrderWork(WorkContext wc) : base(wc)
         {
         }
     }
 
-    public class ShopOrderVarFolder : OrderVarFolder
+    public class ShopOrderWork : OrderWork
     {
-        public ShopOrderVarFolder(FolderContext fc) : base(fc)
+        public ShopOrderWork(WorkContext wc) : base(wc)
         {
         }
     }

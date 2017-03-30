@@ -5,11 +5,11 @@ using static Greatbone.Core.Proj;
 
 namespace Greatbone.Sample
 {
-    public class ShopFolder : Folder
+    public class ShopsWork : Work
     {
-        public ShopFolder(FolderContext fc) : base(fc)
+        public ShopsWork(WorkContext wc) : base(wc)
         {
-            CreateVar<ShopVarFolder>((prin) => ((User)prin).shopid);
+            CreateVar<ShopWork>((prin) => ((User)prin).shopid);
         }
 
         [User]
@@ -95,11 +95,11 @@ namespace Greatbone.Sample
                 dc.Sql("SELECT ").columnlst(Shop.Empty, proj)._("FROM shops ORDER BY id LIMIT 30 OFFSET @1");
                 if (dc.Query(p => p.Set(page)))
                 {
-                    ac.GiveFolderPage(Parent, 200, dc.ToList<Shop>(proj), proj);
+                    ac.GiveWorkPage(Parent, 200, dc.ToList<Shop>(proj), proj);
                 }
                 else
                 {
-                    ac.GiveFolderPage(Parent, 200, (List<Shop>)null);
+                    ac.GiveWorkPage(Parent, 200, (List<Shop>)null);
                 }
             }
         }

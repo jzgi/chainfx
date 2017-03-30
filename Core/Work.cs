@@ -3,14 +3,13 @@ using System.Collections.Generic;
 using System.IO;
 using System.Reflection;
 using System.Threading.Tasks;
-using Microsoft.Extensions.Logging;
 
 namespace Greatbone.Core
 {
     ///
-    /// A virtual web folder that contains static/dynamic resources.
+    /// A work is a virtual web folder that contains a single or collection of resources along with operations on it or them.
     ///
-    public abstract class Folder : Nodule
+    public abstract class Work : Nodule
     {
         internal static readonly AuthorizeException AuthorizeEx = new AuthorizeException();
 
@@ -21,7 +20,7 @@ namespace Greatbone.Core
         const string _VAR_ = "VAR";
 
         // state-passing
-        readonly FolderContext fc;
+        readonly WorkContext wc;
 
         readonly string major;
 
@@ -42,17 +41,17 @@ namespace Greatbone.Core
         // actions with Ui attribute
         readonly ActionInfo[] uiactions;
 
-        // child folders, if any
-        internal Roll<Folder> folders;
+        // child works, if any
+        internal Roll<Work> children;
 
-        // the variable-key subfolder, if any
-        internal Folder varfolder;
+        // the variable-key subwork, if any
+        internal Work varsub;
 
         internal Func<IData, string> varkeyer;
 
-        protected Folder(FolderContext fc) : base(fc.Name, null)
+        protected Work(WorkContext wc) : base(wc.Name, null)
         {
-            this.fc = fc;
+            this.wc = wc;
             // separate major and minor name parts
             int dash = Name.IndexOf('-');
             if (dash != -1)
@@ -97,13 +96,13 @@ namespace Greatbone.Core
             if (@default == null) @default = under;
 
             // to override annotated attributes
-            if (fc.Ui != null)
+            if (wc.Ui != null)
             {
-                ui = fc.Ui;
+                ui = wc.Ui;
             }
-            if (fc.Authorize != null)
+            if (wc.Authorize != null)
             {
-                authorize = fc.Authorize;
+                authorize = wc.Authorize;
             }
 
             // preprocess start-end annotations
@@ -146,27 +145,27 @@ namespace Greatbone.Core
         }
 
         ///
-        /// Create a subfolder.
+        /// Create a child work.
         ///
-        public F Create<F>(string name, UiAttribute ui = null, AuthorizeAttribute auth = null) where F : Folder
+        public W Create<W>(string name, UiAttribute ui = null, AuthorizeAttribute auth = null) where W : Work
         {
             if (Level >= MaxNesting)
             {
-                throw new ServiceException("allowed folder nesting " + MaxNesting);
+                throw new ServiceException("allowed work nesting " + MaxNesting);
             }
 
-            if (folders == null)
+            if (children == null)
             {
-                folders = new Roll<Folder>(32);
+                children = new Roll<Work>(16);
             }
             // create instance by reflection
-            Type typ = typeof(F);
-            ConstructorInfo ci = typ.GetConstructor(new[] { typeof(FolderContext) });
+            Type typ = typeof(W);
+            ConstructorInfo ci = typ.GetConstructor(new[] { typeof(WorkContext) });
             if (ci == null)
             {
-                throw new ServiceException(typ + " missing FolderContext");
+                throw new ServiceException(typ + " missing WorkContext");
             }
-            FolderContext fc = new FolderContext(name)
+            WorkContext wc = new WorkContext(name)
             {
                 Ui = ui,
                 Authorize = auth,
@@ -175,30 +174,30 @@ namespace Greatbone.Core
                 Directory = (Parent == null) ? name : Path.Combine(Parent.Directory, name),
                 Service = Service
             };
-            F fdr = (F)ci.Invoke(new object[] { fc });
-            folders.Add(fdr);
+            W work = (W)ci.Invoke(new object[] { wc });
+            children.Add(work);
 
-            return fdr;
+            return work;
         }
 
         ///
-        /// Create a variable-key subfolder.
+        /// Create a variable-key subwork.
         ///
-        public F CreateVar<F>(Func<IData, string> keyer = null, UiAttribute ui = null, AuthorizeAttribute auth = null) where F : Folder, IVar
+        public W CreateVar<W>(Func<IData, string> keyer = null, UiAttribute ui = null, AuthorizeAttribute auth = null) where W : Work, IVar
         {
             if (Level >= MaxNesting)
             {
-                throw new ServiceException("allowed folder nesting " + MaxNesting);
+                throw new ServiceException("allowed work nesting " + MaxNesting);
             }
 
             // create instance
-            Type typ = typeof(F);
-            ConstructorInfo ci = typ.GetConstructor(new[] { typeof(FolderContext) });
+            Type typ = typeof(W);
+            ConstructorInfo ci = typ.GetConstructor(new[] { typeof(WorkContext) });
             if (ci == null)
             {
-                throw new ServiceException(typ + " missing FolderContext");
+                throw new ServiceException(typ + " missing WorkContext");
             }
-            FolderContext fc = new FolderContext(_VAR_)
+            WorkContext wc = new WorkContext(_VAR_)
             {
                 Ui = ui,
                 Authorize = auth,
@@ -207,11 +206,10 @@ namespace Greatbone.Core
                 Directory = (Parent == null) ? _VAR_ : Path.Combine(Parent.Directory, _VAR_),
                 Service = Service
             };
-            F fdr = (F)ci.Invoke(new object[] { fc });
+            W work = (W)ci.Invoke(new object[] { wc });
             varkeyer = keyer;
-            varfolder = fdr;
-
-            return fdr;
+            varsub = work;
+            return work;
         }
 
         public string Major => major;
@@ -228,19 +226,19 @@ namespace Greatbone.Core
 
         public bool HasGoto => @goto != null;
 
-        public Roll<Folder> Folders => folders;
+        public Roll<Work> Children => children;
 
-        public Folder VarFolder => varfolder;
+        public Work VarSub => varsub;
 
         public Func<IData, string> VarKeyer => varkeyer;
 
-        public string Directory => fc.Directory;
+        public string Directory => wc.Directory;
 
-        public Folder Parent => fc.Parent;
+        public Work Parent => wc.Parent;
 
-        public int Level => fc.Level;
+        public int Level => wc.Level;
 
-        public override Service Service => fc.Service;
+        public override Service Service => wc.Service;
 
         internal void Describe(XmlContent cont)
         {
@@ -255,17 +253,17 @@ namespace Greatbone.Core
             },
             delegate
             {
-                if (folders != null)
+                if (children != null)
                 {
-                    for (int i = 0; i < folders.Count; i++)
+                    for (int i = 0; i < children.Count; i++)
                     {
-                        Folder fdr = folders[i];
+                        Work fdr = children[i];
                         fdr.Describe(cont);
                     }
                 }
-                if (varfolder != null)
+                if (varsub != null)
                 {
-                    varfolder.Describe(cont);
+                    varsub.Describe(cont);
                 }
             });
         }
@@ -279,21 +277,21 @@ namespace Greatbone.Core
             return actions[method];
         }
 
-        internal Folder ResolveFolder(ref string relative, ActionContext ac, ref bool recover)
+        internal Work Resolve(ref string relative, ActionContext ac, ref bool recover)
         {
             int slash = relative.IndexOf('/');
             if (slash == -1) { return this; }
 
-            // seek as sub folder
+            // seek as child/sub work
             string key = relative.Substring(0, slash);
             relative = relative.Substring(slash + 1); // adjust relative
-            Folder fdr;
-            if (folders != null && folders.TryGet(key, out fdr)) // if child folder
+            Work work;
+            if (children != null && children.TryGet(key, out work)) // if child
             {
-                ac.Chain(key, fdr);
-                return fdr.ResolveFolder(ref relative, ac, ref recover);
+                ac.Chain(key, work);
+                return work.Resolve(ref relative, ac, ref recover);
             }
-            if (varfolder != null) // if variable-key folder
+            if (varsub != null) // if variable-key sub
             {
                 if (key.Length == 0 && varkeyer != null) // resolve varkey
                 {
@@ -304,15 +302,15 @@ namespace Greatbone.Core
                         return null;
                     }
                 }
-                ac.Chain(key, varfolder);
-                return varfolder.ResolveFolder(ref relative, ac, ref recover);
+                ac.Chain(key, varsub);
+                return varsub.Resolve(ref relative, ac, ref recover);
             }
             return null;
         }
 
         internal async Task HandleAsync(string rsc, ActionContext ac)
         {
-            ac.Folder = this;
+            ac.Work = this;
 
             // access check 
             if (!DoAuthorize(ac)) throw AuthorizeEx;
@@ -375,7 +373,7 @@ namespace Greatbone.Core
             AfterAttribute aft = After;
             if (aft != null) { if (aft.IsAsync) await aft.DoAsync(ac); else aft.Do(ac); }
 
-            ac.Folder = null;
+            ac.Work = null;
         }
 
         public void DoFile(string filename, ActionContext ac)
@@ -424,6 +422,5 @@ namespace Greatbone.Core
             };
             ac.Give(200, cont, true, 3600 * 12);
         }
-
     }
 }

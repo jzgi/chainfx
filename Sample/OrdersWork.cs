@@ -5,9 +5,9 @@ using static Greatbone.Sample.Order;
 
 namespace Greatbone.Sample
 {
-    public abstract class OrderFolder<V> : Folder where V : OrderVarFolder
+    public abstract class OrdersWork<V> : Work where V : OrderWork
     {
-        public OrderFolder(FolderContext fc) : base(fc)
+        public OrdersWork(WorkContext wc) : base(wc)
         {
             CreateVar<V>();
         }
@@ -15,17 +15,17 @@ namespace Greatbone.Sample
         // [Shop]
         public void @default(ActionContext ac, int page)
         {
-            string shopid = ac[typeof(ShopVarFolder)];
+            string shopid = ac[typeof(ShopWork)];
             short status = Minor;
             using (var dc = ac.NewDbContext())
             {
                 if (dc.Query("SELECT * FROM orders WHERE shopid = @1 AND status = @2 ORDER BY id LIMIT 20 OFFSET @3", p => p.Set(shopid).Set(status).Set(page * 20)))
                 {
-                    ac.GiveFolderPage(Parent, 200, dc.ToList<Order>());
+                    ac.GiveWorkPage(Parent, 200, dc.ToList<Order>());
                 }
                 else
                 {
-                    ac.GiveFolderPage(Parent, 200, (List<Order>)null);
+                    ac.GiveWorkPage(Parent, 200, (List<Order>)null);
                 }
             }
         }
@@ -154,16 +154,16 @@ namespace Greatbone.Sample
 
     }
 
-    public class UserOrderFolder : OrderFolder<UserOrderVarFolder>
+    public class UserOrdersWork : OrdersWork<UserOrderWork>
     {
-        public UserOrderFolder(FolderContext fc) : base(fc)
+        public UserOrdersWork(WorkContext wc) : base(wc)
         {
         }
     }
 
-    public class ShopOrderFolder : OrderFolder<ShopOrderVarFolder>
+    public class ShopOrdersWork : OrdersWork<ShopOrderWork>
     {
-        public ShopOrderFolder(FolderContext fc) : base(fc)
+        public ShopOrdersWork(WorkContext wc) : base(wc)
         {
         }
     }

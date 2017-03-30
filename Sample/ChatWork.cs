@@ -7,12 +7,12 @@ namespace Greatbone.Sample
 {
     /// Each key is tne openid for a buyer or shop
     ///
-    public class ChatVarFolder : Folder, IVar
+    public class ChatWork : Work, IVar
     {
 
         readonly ConcurrentDictionary<string, Chat> chats;
 
-        public ChatVarFolder(FolderContext fc) : base(fc)
+        public ChatWork(WorkContext fc) : base(fc)
         {
         }
 

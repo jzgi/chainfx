@@ -29,7 +29,7 @@ namespace Greatbone.Core
 
             internal int ordinal;
 
-            internal Folder folder;
+            internal Work work;
         }
 
         // whether within a form
@@ -186,7 +186,7 @@ namespace Greatbone.Core
 
         public void GRIDFORM<D>(ActionContext ac, List<D> lst, int proj = 0) where D : IData
         {
-            Folder fdr = ac.Folder;
+            Work fdr = ac.Work;
             ActionInfo[] uias = fdr.UiActions;
 
             Add("<form>");
@@ -357,11 +357,11 @@ namespace Greatbone.Core
             --level;
         }
 
-        public void GRID<D>(Folder fdr, List<D> lst, int proj = 0) where D : IData
+        public void GRID<D>(Work fdr, List<D> lst, int proj = 0) where D : IData
         {
             ++level;
             chain[level].type = CTX_GRID;
-            chain[level].folder = fdr;
+            chain[level].work = fdr;
 
             if (lst != null)
             {

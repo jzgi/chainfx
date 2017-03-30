@@ -3,13 +3,13 @@
 namespace Greatbone.Core
 {
     ///
-    /// The environment for a particular folder.
+    /// The environment for a particular work.
     ///
-    public class FolderContext
+    public class WorkContext
     {
         readonly string name;
 
-        public FolderContext(string name)
+        public WorkContext(string name)
         {
             this.name = name;
         }
@@ -24,7 +24,7 @@ namespace Greatbone.Core
 
         public int Level { get; internal set; }
 
-        public Folder Parent { get; internal set; }
+        public Work Parent { get; internal set; }
 
         public string Directory { get; internal set; }
 

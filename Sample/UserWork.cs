@@ -4,13 +4,13 @@ using Greatbone.Core;
 namespace Greatbone.Sample
 {
     [Ui("用户")]
-    public class UserVarFolder : Folder, IVar
+    public class UserWork : Work, IVar
     {
-        public UserVarFolder(FolderContext fc) : base(fc)
+        public UserWork(WorkContext fc) : base(fc)
         {
-            CreateVar<CartVarFolder>();
+            CreateVar<CartOrderWork>();
 
-            Create<UserOrderFolder>("order");
+            Create<UserOrdersWork>("order");
         }
 
         public void _(ActionContext ac, int page)
@@ -21,11 +21,11 @@ namespace Greatbone.Sample
             {
                 if (dc.Query("SELECT * FROM orders WHERE buywx = @1 ORDER BY id LIMIT 20 OFFSET @2", p => p.Set(userid).Set(page * 20)))
                 {
-                    ac.GiveFolderPage(null, 200, dc.ToList<Order>());
+                    ac.GiveWorkPage(null, 200, dc.ToList<Order>());
                 }
                 else
                 {
-                    ac.GiveFolderPage(null, 200, (List<Order>)null);
+                    ac.GiveWorkPage(null, 200, (List<Order>)null);
                 }
             }
         }

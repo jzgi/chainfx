@@ -9,21 +9,21 @@ namespace Greatbone.Core
     {
         readonly string key;
 
-        readonly Folder folder;
+        readonly Work work;
 
-        internal Segment(string key, Folder folder)
+        internal Segment(string key, Work work)
         {
             this.key = key;
-            this.folder = folder;
+            this.work = work;
         }
 
         public string Key => key;
 
-        public Type Type => folder?.GetType();
+        public Type Type => work?.GetType();
 
-        public Folder Folder => folder;
+        public Work Work => work;
 
-        public bool IsVar => folder is IVar;
+        public bool IsVar => work is IVar;
 
         //
         // CONVERSION

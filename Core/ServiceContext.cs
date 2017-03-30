@@ -3,7 +3,7 @@ namespace Greatbone.Core
     ///
     /// The configuration and running environment for a service istance. It is easy to be constructed programmatically or loaded from file.
     ///
-    public class ServiceContext : FolderContext, IData
+    public class ServiceContext : WorkContext, IData
     {
         // the shard id of the service instance, can be null
         public string shard;

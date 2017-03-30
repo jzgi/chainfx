@@ -13,11 +13,11 @@ namespace Greatbone.Sample
 
         public ShopService(ServiceContext sc) : base(sc)
         {
-            Create<UserFolder>("user");
+            Create<UsersWork>("users");
 
-            Create<ShopFolder>("shop", new UiAttribute("供应点管理"));
+            Create<ShopsWork>("shops", new UiAttribute("供应点管理"));
 
-            Create<OpRepayFolder>("repay");
+            Create<SysRepaysWork>("oprepays");
 
             // timer obtaining access_token from weixin
             // timer = new Timer(async state =>
@@ -58,14 +58,14 @@ namespace Greatbone.Sample
         [User]
         public void _(ActionContext ac)
         {
-            ac.GiveFolderPage(this, 200, (List<Order>)null);
+            ac.GiveWorkPage(this, 200, (List<Order>)null);
         }
 
         [User]
         [Ui("清理购物车")]
         public void clear(ActionContext ac)
         {
-            ac.GiveFolderPage(this, 200, (List<Order>)null);
+            ac.GiveWorkPage(this, 200, (List<Order>)null);
         }
 
     }

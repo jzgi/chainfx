@@ -9,7 +9,7 @@ namespace Greatbone.Core
     ///
     public class ActionInfo : Nodule, IDoer
     {
-        readonly Folder folder;
+        readonly Work work;
 
         readonly bool async;
 
@@ -29,9 +29,9 @@ namespace Greatbone.Core
 
         readonly StateAttribute state;
 
-        internal ActionInfo(Folder folder, MethodInfo mi, bool async, bool subscpt) : base(mi.Name, mi)
+        internal ActionInfo(Work work, MethodInfo mi, bool async, bool subscpt) : base(mi.Name, mi)
         {
-            this.folder = folder;
+            this.work = work;
             this.async = async;
             this.subscpt = subscpt;
 
@@ -39,22 +39,22 @@ namespace Greatbone.Core
             {
                 if (subscpt)
                 {
-                    do2async = (Func<ActionContext, int, Task>)mi.CreateDelegate(typeof(Func<ActionContext, int, Task>), folder);
+                    do2async = (Func<ActionContext, int, Task>)mi.CreateDelegate(typeof(Func<ActionContext, int, Task>), work);
                 }
                 else
                 {
-                    doasync = (Func<ActionContext, Task>)mi.CreateDelegate(typeof(Func<ActionContext, Task>), folder);
+                    doasync = (Func<ActionContext, Task>)mi.CreateDelegate(typeof(Func<ActionContext, Task>), work);
                 }
             }
             else
             {
                 if (subscpt)
                 {
-                    do2 = (Action<ActionContext, int>)mi.CreateDelegate(typeof(Action<ActionContext, int>), folder);
+                    do2 = (Action<ActionContext, int>)mi.CreateDelegate(typeof(Action<ActionContext, int>), work);
                 }
                 else
                 {
-                    @do = (Action<ActionContext>)mi.CreateDelegate(typeof(Action<ActionContext>), folder);
+                    @do = (Action<ActionContext>)mi.CreateDelegate(typeof(Action<ActionContext>), work);
                 }
             }
 
@@ -66,13 +66,13 @@ namespace Greatbone.Core
             }
         }
 
-        public Folder Folder => folder;
+        public Work Work => work;
 
         public bool IsAsync => async;
 
         public bool HasSubscpt => subscpt;
 
-        public override Service Service => folder.Service;
+        public override Service Service => work.Service;
 
         public StateAttribute State => state;
 

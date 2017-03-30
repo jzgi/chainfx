@@ -6,19 +6,19 @@ namespace Greatbone.Sample
 {
     [User]
     [Ui("供应点")]
-    public class ShopVarFolder : Folder, IVar
+    public class ShopWork : Work, IVar
     {
-        public ShopVarFolder(FolderContext dc) : base(dc)
+        public ShopWork(WorkContext dc) : base(dc)
         {
-            Create<ShopOrderFolder>("order-0", new UiAttribute("当前订单"));
+            Create<ShopOrdersWork>("orders-0", new UiAttribute("当前订单"));
 
-            Create<ShopOrderFolder>("order-2", new UiAttribute("已完成订单"));
+            Create<ShopOrdersWork>("orders-2", new UiAttribute("已完成订单"));
 
-            Create<ShopOrderFolder>("order-7", new UiAttribute("已取消订单"));
+            Create<ShopOrdersWork>("orders-7", new UiAttribute("已取消订单"));
 
-            Create<ItemFolder>("item", new UiAttribute("货架"));
+            Create<ItemsWork>("item", new UiAttribute("货架"));
 
-            Create<ShopRepayFolder>("repay", new UiAttribute("平台结款"));
+            Create<ShopRepaysWork>("repay", new UiAttribute("平台结款"));
         }
 
         public void @default(ActionContext ac)
@@ -84,7 +84,7 @@ namespace Greatbone.Sample
 
         public void _(ActionContext ac)
         {
-            ac.GiveFolderPage(this, 200, (List<Item>)null);
+            ac.GiveWorkPage(this, 200, (List<Item>)null);
         }
 
         ///

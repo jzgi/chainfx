@@ -6,28 +6,28 @@ namespace Greatbone.Sample
 {
     /// A cart pertaining to one user. (placed under UserVar)
     ///
-    public class CartFolder : Folder
+    public class CartWork : Work
     {
         static readonly Connector WcPay = new Connector("https://api.mch.weixin.qq.com");
 
         // keyed by wx
         internal readonly ConcurrentDictionary<string, Cart> carts;
 
-        public CartFolder(FolderContext fc) : base(fc)
+        public CartWork(WorkContext fc) : base(fc)
         {
-            CreateVar<CartVarFolder>();
+            CreateVar<CartOrderWork>();
 
             carts = new ConcurrentDictionary<string, Cart>(8, 1024);
         }
 
         public void @default(ActionContext ac)
         {
-            string wx = ac[typeof(UserVarFolder)];
+            string wx = ac[typeof(UserWork)];
             Cart cart;
             if (carts.TryGetValue(wx, out cart))
             {
 
-                ac.GiveFolderPage(200, cart, 0);
+                ac.GiveWorkPage(200, cart, 0);
 
             }
         }
@@ -39,7 +39,7 @@ namespace Greatbone.Sample
         ///
         public async Task add(ActionContext ac)
         {
-            string wx = ac[typeof(UserVarFolder)];
+            string wx = ac[typeof(UserWork)];
             var ln = await ac.ReadObjectAsync<OrderLine>();
 
             using (var dc = ac.NewDbContext())

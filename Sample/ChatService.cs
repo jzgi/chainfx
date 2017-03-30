@@ -6,8 +6,7 @@ namespace Greatbone.Sample
     {
         public ChatService(ServiceContext sc) : base(sc)
         {
-            // add sub folder
-            CreateVar<ChatVarFolder>();
+            CreateVar<ChatWork>();
         }
 
         public void ACCESS_TOKEN(EventContext ec)

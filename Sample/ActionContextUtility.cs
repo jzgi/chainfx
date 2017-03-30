@@ -160,19 +160,19 @@ namespace Greatbone.Sample
             pub, maxage);
         }
 
-        public static void GiveFolderPage<D>(this ActionContext ac, int status, List<D> lst, int proj = 0, bool? pub = null, int maxage = 60) where D : IData
+        public static void GiveWorkPage<D>(this ActionContext ac, int status, List<D> lst, int proj = 0, bool? pub = null, int maxage = 60) where D : IData
         {
-            GiveFolderPage(ac, null, status, lst, proj, pub, maxage);
+            GiveWorkPage(ac, null, status, lst, proj, pub, maxage);
         }
 
-        public static void GiveFolderPage<D>(this ActionContext ac, Folder @base, int status, List<D> lst, int proj = 0, bool? pub = null, int maxage = 60) where D : IData
+        public static void GiveWorkPage<D>(this ActionContext ac, Work @base, int status, List<D> lst, int proj = 0, bool? pub = null, int maxage = 60) where D : IData
         {
-            Folder folder = ac.Folder;
+            Work work = ac.Work;
 
             Action<HtmlContent> header = @base == null ? (Action<HtmlContent>)null : (h) =>
             {
-                bool top = folder == @base;
-                Roll<Folder> subs = @base.folders;
+                bool top = work == @base;
+                Roll<Work> subs = @base.children;
                 if (subs != null)
                 {
                     h.Add("<ul class=\"menu\">");
@@ -183,9 +183,9 @@ namespace Greatbone.Sample
                     h.Add("</span></a></li>");
                     for (int i = 0; i < subs.Count; i++)
                     {
-                        Folder sub = subs[i];
+                        Work sub = subs[i];
                         h.Add("<li");
-                        if (sub == folder) h.Add(" class=\"active primary\"");
+                        if (sub == work) h.Add(" class=\"active primary\"");
                         h.Add("><a href=\"");
                         if (!top) h.Add("../");
                         h.Add(sub.Name);

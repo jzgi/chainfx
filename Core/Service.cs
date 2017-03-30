@@ -19,7 +19,7 @@ namespace Greatbone.Core
     ///
     /// A service is a HTTP endpoint that manages resources in a hierarchical manner.
     ///
-    public abstract class Service : Folder, IHttpApplication<HttpContext>, ILoggerProvider, ILogger
+    public abstract class Service : Work, IHttpApplication<HttpContext>, ILoggerProvider, ILogger
     {
         protected readonly ServiceContext sc;
 
@@ -33,7 +33,7 @@ namespace Greatbone.Core
         readonly Roll<EventInfo> events;
 
         // client connectivity to the related peers
-        readonly Roll<Connector> clients;
+        readonly Roll<Connector> connectors;
 
         // event providing
         readonly Roll<EventQueue> queues;
@@ -106,11 +106,11 @@ namespace Greatbone.Core
             {
                 foreach (KeyValuePair<string, string> entry in Cluster)
                 {
-                    if (clients == null)
+                    if (connectors == null)
                     {
-                        clients = new Roll<Connector>(Cluster.Count * 2);
+                        connectors = new Roll<Connector>(Cluster.Count * 2);
                     }
-                    clients.Add(new Connector(this, entry.Key, entry.Value));
+                    connectors.Add(new Connector(this, entry.Key, entry.Value));
 
                     if (queues == null)
                     {
@@ -137,7 +137,7 @@ namespace Greatbone.Core
         ///
         public string Id => id;
 
-        public Roll<Connector> Clients => clients;
+        public Roll<Connector> Clients => connectors;
 
         public Roll<EventInfo> Events => events;
 
@@ -181,13 +181,13 @@ namespace Greatbone.Core
                 {
                     string relative = path.Substring(1);
                     bool @null = false;
-                    Folder folder = ResolveFolder(ref relative, ac, ref @null);
-                    if (folder == null)
+                    Work work = Resolve(ref relative, ac, ref @null);
+                    if (work == null)
                     {
                         ac.Give(404); // not found
                         return;
                     }
-                    await folder.HandleAsync(relative, ac);
+                    await work.HandleAsync(relative, ac);
                 }
             }
             catch (Exception e)
@@ -293,9 +293,9 @@ namespace Greatbone.Core
 
         internal Connector GetClient(string targetid)
         {
-            for (int i = 0; i < clients.Count; i++)
+            for (int i = 0; i < connectors.Count; i++)
             {
-                Connector cli = clients[i];
+                Connector cli = connectors[i];
                 if (cli.Name.Equals(targetid)) return cli;
             }
             return null;
@@ -305,9 +305,9 @@ namespace Greatbone.Core
 
         public void Start()
         {
-            if (clients != null)
+            if (connectors != null)
             {
-                EventQueue.GlobalInit(this, clients);
+                EventQueue.GlobalInit(this, connectors);
             }
 
             // start the server
@@ -330,7 +330,7 @@ namespace Greatbone.Core
             });
             // cleaner.Start();
 
-            if (clients != null)
+            if (connectors != null)
             {
                 /// Run in the scheduler thread to repeatedly check and initiate event polling activities.
                 scheduler = new Thread(() =>
@@ -499,7 +499,7 @@ namespace Greatbone.Core
                 {
                     string relative = path.Substring(1);
                     bool recover = false; // null-key-recovering
-                    Folder fdr = ResolveFolder(ref relative, ac, ref recover);
+                    Work fdr = Resolve(ref relative, ac, ref recover);
                     if (fdr == null)
                     {
                         if (recover && ac.ByBrowse)

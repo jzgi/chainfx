@@ -9,7 +9,7 @@ namespace Greatbone.Core
     {
         Service Service { get; }
 
-        Folder Folder { get; }
+        Work Work { get; }
 
         D Doer { get; }
 
