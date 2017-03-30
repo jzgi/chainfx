@@ -123,6 +123,11 @@ namespace Greatbone.Core
             Add("<form>");
         }
 
+        public void FORM_(string action)
+        {
+            Add("<form method=\"post\" action=\""); Add(action); Add("\">");
+        }
+
         public void _FORM()
         {
             Add("</form>");
@@ -432,6 +437,13 @@ namespace Greatbone.Core
             chain[++level].type = CTX_FILL;
             obj.WriteData(this, proj);
             --level;
+        }
+
+        public void BUTTON(string value)
+        {
+            Add("<button>");
+            AddEsc(value);
+            Add("</button>");
         }
 
         public void HIDDEN(string name, string value)

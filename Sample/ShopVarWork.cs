@@ -5,7 +5,6 @@ using static Greatbone.Core.Proj;
 namespace Greatbone.Sample
 {
     [User]
-    [Ui("供应点")]
     public class ShopVarWork : Work
     {
         public ShopVarWork(WorkContext wc) : base(wc)

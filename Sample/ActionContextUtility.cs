@@ -64,7 +64,7 @@ namespace Greatbone.Sample
             ac.Give(status, cont, pub, maxage);
         }
 
-        public static void GivePane(this ActionContext ac, int status, Action<HtmlContent> header, Action<HtmlContent> main, Action<HtmlContent> footer, bool? pub = null, int maxage = 60)
+        public static void GivePane(this ActionContext ac, int status, Action<HtmlContent> main, bool? pub = null, int maxage = 60)
         {
             HtmlContent cont = new HtmlContent(true, true, 16 * 1024);
 
@@ -82,25 +82,9 @@ namespace Greatbone.Sample
 
             cont.Add("<body>");
 
-            if (header != null)
-            {
-                cont.Add("<div class\"row\">");
-                cont.Add("<div class\"small-8 text-center column\">");
-                header(cont);
-                cont.Add("</div>");
-                cont.Add("</div>");
-            }
-
             cont.Add("<div class\"row\">");
             main(cont);
             cont.Add("</div>");
-
-            if (footer != null)
-            {
-                cont.Add("<div class\"row\">");
-                footer(cont);
-                cont.Add("</div>");
-            }
 
             // zurb foundation
             cont.Add("<script src=\"//cdn.bootcss.com/jquery/3.1.1/jquery.min.js\"></script>");
@@ -125,26 +109,22 @@ namespace Greatbone.Sample
         public static void GivePaneForm(this ActionContext ac, int status, IData obj, int proj = 0, bool? pub = null, int maxage = 60)
         {
             ac.GivePane(status,
-            null,
             m =>
             {
                 m.FILLFORM(ac.Doer, obj, proj);
             },
-            null,
             pub, maxage);
         }
 
         public static void GivePaneForm(this ActionContext ac, int status, Action<HtmlContent> form, bool? pub = null, int maxage = 60)
         {
             ac.GivePane(status,
-            null,
             m =>
             {
                 m.FORM_();
                 form(m);
                 m._FORM();
             },
-            null,
             pub, maxage);
         }
 
@@ -172,7 +152,7 @@ namespace Greatbone.Sample
             Action<HtmlContent> header = @base == null ? (Action<HtmlContent>)null : (h) =>
             {
                 bool top = work == @base;
-                Roll<Work> subs = @base.subworks;
+                Roll<Work> subs = @base.Children;
                 if (subs != null)
                 {
                     h.Add("<ul class=\"menu\">");

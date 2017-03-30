@@ -109,12 +109,14 @@ namespace Greatbone.Sample
             if (ac.GET)
             {
                 // return a form
-                ac.GivePaneForm(200, (x) =>
+                ac.GivePane(200, (x) =>
                 {
-                    x.TEXT("shopid", "");
+                    x.FORM_(nameof(@goto));
+                    x.TEXT("shopid", "", Required: true);
                     x.PASSWORD("password", "");
+                    x.BUTTON("绑定");
+                    x._FORM();
                 });
-
             }
             else
             {
@@ -127,7 +129,8 @@ namespace Greatbone.Sample
                 User prin = (User)ac.Principal;
                 using (var dc = ac.NewDbContext())
                 {
-                    dc.Execute("UPDATE users SET shopid = @1 WHERE id = @2");
+                    string credential = TextUtility.MD5(shopid + ":" + password);
+                    dc.Execute("UPDATE users SET shopid = @1 WHERE id = @2", p => p.Set(shopid).Set(credential));
                 }
 
                 // return back

@@ -62,11 +62,8 @@ namespace Greatbone.Core
             int p = pos;
             for (;;)
             {
+                if (p >= length) { return null; }
                 int b = this[p++];
-                if (p >= length)
-                {
-                    return null;
-                }
                 if (b == '=')
                 {
                     pos = p;

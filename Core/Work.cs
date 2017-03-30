@@ -43,10 +43,10 @@ namespace Greatbone.Core
         readonly ActionInfo[] uiactions;
 
         // sub works, if any
-        internal Roll<Work> subworks;
+        internal Roll<Work> children;
 
-        // the attached variable-key work, if any
-        internal Work varwork;
+        // the attached variable-key subwork, if any
+        internal Work varsub;
 
         // to obtain a string key from a data object.
         Func<IData, string> keyer;
@@ -156,9 +156,9 @@ namespace Greatbone.Core
                 throw new ServiceException("allowed work nesting " + MaxNesting);
             }
 
-            if (subworks == null)
+            if (children == null)
             {
-                subworks = new Roll<Work>(16);
+                children = new Roll<Work>(16);
             }
             // create instance by reflection
             Type typ = typeof(W);
@@ -177,7 +177,7 @@ namespace Greatbone.Core
                 Service = Service
             };
             W work = (W)ci.Invoke(new object[] { wc });
-            subworks.Add(work);
+            Children.Add(work);
 
             return work;
         }
@@ -211,7 +211,7 @@ namespace Greatbone.Core
             };
             W work = (W)ci.Invoke(new object[] { wc });
             this.keyer = keyer;
-            varwork = work;
+            varsub = work;
             return work;
         }
 
@@ -229,9 +229,9 @@ namespace Greatbone.Core
 
         public bool HasGoto => @goto != null;
 
-        public Roll<Work> SubWorks => subworks;
+        public Roll<Work> Children => children;
 
-        public Work VarWork => varwork;
+        public Work VarSub => varsub;
 
         public Func<IData, string> Keyer => keyer;
 
@@ -258,17 +258,17 @@ namespace Greatbone.Core
             },
             delegate
             {
-                if (subworks != null)
+                if (this.Children != null)
                 {
-                    for (int i = 0; i < subworks.Count; i++)
+                    for (int i = 0; i < this.Children.Count; i++)
                     {
-                        Work work = subworks[i];
+                        Work work = this.Children[i];
                         work.Describe(cont);
                     }
                 }
-                if (varwork != null)
+                if (varsub != null)
                 {
-                    varwork.Describe(cont);
+                    varsub.Describe(cont);
                 }
             });
         }
@@ -291,12 +291,12 @@ namespace Greatbone.Core
             string key = relative.Substring(0, slash);
             relative = relative.Substring(slash + 1); // adjust relative
             Work work;
-            if (subworks != null && subworks.TryGet(key, out work)) // if child
+            if (Children != null && Children.TryGet(key, out work)) // if child
             {
                 ac.Chain(key, work);
                 return work.Resolve(ref relative, ac, ref recover);
             }
-            if (varwork != null) // if variable-key sub
+            if (varsub != null) // if variable-key sub
             {
                 if (key.Length == 0 && keyer != null) // resolve varkey
                 {
@@ -307,8 +307,8 @@ namespace Greatbone.Core
                         return null;
                     }
                 }
-                ac.Chain(key, varwork);
-                return varwork.Resolve(ref relative, ac, ref recover);
+                ac.Chain(key, varsub);
+                return varsub.Resolve(ref relative, ac, ref recover);
             }
             return null;
         }
