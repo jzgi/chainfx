@@ -13,7 +13,7 @@ namespace Greatbone.Sample
             CreateVar<ItemVarWork>();
         }
 
-        public void lst(ActionContext ac)
+        public void @default(ActionContext ac)
         {
             string shopid = ac[1];
             using (var dc = ac.NewDbContext())
@@ -30,8 +30,8 @@ namespace Greatbone.Sample
         }
 
 
-        // [Shop]
-        public void @default(ActionContext ac)
+        [User]
+        public void _(ActionContext ac)
         {
             string shopid = ac[1];
             using (var dc = ac.NewDbContext())

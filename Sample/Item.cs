@@ -14,8 +14,8 @@ namespace Greatbone.Sample
         static readonly Map<short> STATUS = new Map<short>
         {
             [0] = "架下",
-            [2] = "架上展示",
-            [2] = "架上接单",
+            [1] = "展示",
+            [2] = "在售",
         };
 
         internal string shopid;
@@ -71,7 +71,7 @@ namespace Greatbone.Sample
             o.Put(nameof(price), price, Required: true);
             o.Put(nameof(min), min);
             o.Put(nameof(step), step);
-            o.Put(nameof(status), status, Opt: STATUS);
+            o.Put(nameof(status), status, Label: "状态", Opt: STATUS);
             if (proj.Immut())
             {
                 o.Put(nameof(sold), sold);

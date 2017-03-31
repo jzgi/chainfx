@@ -70,27 +70,6 @@ namespace Greatbone.Sample
             }
         }
 
-        [Ui("设为在处理")]
-        [State(REASONED, LOCKED | CANCELLED, CANCELLED)]
-        public async Task fix(ActionContext ac)
-        {
-            string shopid = ac[0];
-            Form frm = await ac.ReadAsync<Form>();
-            int[] pk = frm[nameof(pk)];
-
-            using (var dc = ac.NewDbContext())
-            {
-                dc.Sql("UPDATE orders SET ").setstate()._(" WHERE id = @1 AND shopid = @2 AND ").statecond();
-                if (dc.Query(p => p.Set(pk).Set(shopid)))
-                {
-                    var order = dc.ToArray<Order>();
-                }
-                else
-                {
-                }
-            }
-        }
-
         [Ui("标注完成")]
         [State(REASONED, LOCKED | CANCELLED, CANCELLED)]
         public void close(ActionContext ac)
@@ -159,6 +138,14 @@ namespace Greatbone.Sample
         public UserOrderWork(WorkContext wc) : base(wc)
         {
         }
+
+        [User]
+        [Ui]
+        public void ask(ActionContext ac)
+        {
+            // string shopid = wc.Var(null);
+        }
+
     }
 
     public class ShopOrderWork : OrderWork<ShopOrderVarWork>
@@ -166,5 +153,27 @@ namespace Greatbone.Sample
         public ShopOrderWork(WorkContext wc) : base(wc)
         {
         }
+
+        [Ui("锁定/处理")]
+        [State(REASONED, LOCKED | CANCELLED, CANCELLED)]
+        public async Task @lock(ActionContext ac)
+        {
+            string shopid = ac[0];
+            Form frm = await ac.ReadAsync<Form>();
+            int[] pk = frm[nameof(pk)];
+
+            using (var dc = ac.NewDbContext())
+            {
+                dc.Sql("UPDATE orders SET ").setstate()._(" WHERE id = @1 AND shopid = @2 AND ").statecond();
+                if (dc.Query(p => p.Set(pk).Set(shopid)))
+                {
+                    var order = dc.ToArray<Order>();
+                }
+                else
+                {
+                }
+            }
+        }
+
     }
 }
