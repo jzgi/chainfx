@@ -71,7 +71,7 @@ namespace Greatbone.Sample
                         short qty = min;
                         var step = dc.GetShort();
                         string note = null;
-                        ac.GivePaneForm(200, f =>
+                        ac.GiveDialogForm(200, f =>
                         {
                             f.NUMBER(nameof(qty), qty, Min: min, Step: step);
                             f.TEXTAREA(nameof(note), note);

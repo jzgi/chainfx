@@ -41,9 +41,7 @@ namespace Greatbone.Core
         int level = -1; // current level
 
         ///
-        public HtmlContent(bool sendable, bool pooled, int capacity = 16 * 1024) : base(sendable, pooled, capacity)
-        {
-        }
+        public HtmlContent(bool sendable, bool pooled, int capacity = 16 * 1024) : base(sendable, pooled, capacity) { }
 
         ///
         public override string Type => "text/html; charset=utf-8";
@@ -681,6 +679,23 @@ namespace Greatbone.Core
             T("</tbody>");
         }
 
+        /// <summary>
+        /// Outputs a list of checkbox controls from the values of a data input source.
+        /// </summary>
+        /// <param name="name">name in both the data input and the output radio control</param>
+        /// <param name="inp">a data input source</param>
+        /// <param name="putv">directly put value of any type from source</param>
+        public void CHECKBOXES(string name, IDataInput inp, Action putv)
+        {
+            int i = 0;
+            while (inp.Next())
+            {
+                Add("<input type=\"checkbox\" name=\""); Add(name); Add("\" id=\""); Add(name); Add(i); Add("\" value=\""); putv(); Add("\">");
+                Add("<label for=\""); Add(name); Add(i); Add("\">"); putv(); Add("</label>");
+                i++;
+            }
+        }
+
         public void CHECKBOX(string name, bool v, string Label = null, bool Required = false)
         {
             Add("<label>");
@@ -729,6 +744,23 @@ namespace Greatbone.Core
                 Add("</label>");
             }
             Add("</fieldset>");
+        }
+
+        /// <summary>
+        /// Outputs a list of radio controls from the values of a data input source.
+        /// </summary>
+        /// <param name="name">name in both the data input and the output radio control</param>
+        /// <param name="inp">a data input source</param>
+        /// <param name="putv">directly put value of any type from source</param>
+        public void RADIOS(string name, IDataInput inp, Action putv)
+        {
+            int i = 0;
+            while (inp.Next())
+            {
+                Add("<input type=\"radio\" name=\""); Add(name); Add("\" id=\""); Add(name); Add(i); Add("\" value=\""); putv(); Add("\">");
+                Add("<label for=\""); Add(name); Add(i); Add("\">"); putv(); Add("</label>");
+                i++;
+            }
         }
 
         public void RADIO<V>(string name, V v, Map<V> opt, string Label = null, bool Required = false) where V : IEquatable<V>, IConvertible

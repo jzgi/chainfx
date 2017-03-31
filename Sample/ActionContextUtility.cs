@@ -15,6 +15,8 @@ namespace Greatbone.Sample
         }
 
         ///
+        /// Gives a browser window page.
+        ///
         public static void GivePage(this ActionContext ac, int status, Action<HtmlContent> header, Action<HtmlContent> main, Action<HtmlContent> footer, bool? pub = null, int maxage = 60)
         {
             HtmlContent cont = new HtmlContent(true, true, 16 * 1024);
@@ -64,6 +66,9 @@ namespace Greatbone.Sample
             ac.Give(status, cont, pub, maxage);
         }
 
+        ///
+        /// Gives a browser iframe pane.
+        ///
         public static void GivePane(this ActionContext ac, int status, Action<HtmlContent> main, bool? pub = null, int maxage = 60)
         {
             HtmlContent cont = new HtmlContent(true, true, 16 * 1024);
@@ -106,8 +111,35 @@ namespace Greatbone.Sample
             cont.Add("</body>");
             cont.Add("</html>");
 
-            // cont.Render(main);
             ac.Give(status, cont, pub, maxage);
+        }
+
+        public static void GivePageForm(this ActionContext ac, int status, string action, string legend, Action<HtmlContent> form, bool? pub = null, int maxage = 60)
+        {
+            ac.GivePage(status, null, m =>
+            {
+                m.FORM_(action);
+                m.FIELDSET_(legend);
+                form(m);
+                m.BUTTON("确定");
+                m._FIELDSET();
+                m._FORM();
+            }, null, pub, maxage);
+        }
+
+        public static void GiveDialogForm(this ActionContext ac, int status, Action<HtmlContent> form, bool? pub = null, int maxage = 60)
+        {
+            ac.GivePane(status,
+            m =>
+            {
+                m.FORM_();
+                m.FIELDSET_();
+                form(m);
+                m.BUTTON("确定");
+                m._FIELDSET();
+                m._FORM();
+            },
+            pub, maxage);
         }
 
         public static void GivePaneForm(this ActionContext ac, int status, IData obj, int proj = 0, bool? pub = null, int maxage = 60)
@@ -116,18 +148,6 @@ namespace Greatbone.Sample
             m =>
             {
                 m.FILLFORM(ac.Doer, obj, proj);
-            },
-            pub, maxage);
-        }
-
-        public static void GivePaneForm(this ActionContext ac, int status, Action<HtmlContent> form, bool? pub = null, int maxage = 60)
-        {
-            ac.GivePane(status,
-            m =>
-            {
-                m.FORM_();
-                form(m);
-                m._FORM();
             },
             pub, maxage);
         }

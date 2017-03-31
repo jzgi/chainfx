@@ -80,7 +80,7 @@ namespace Greatbone.Sample
             }
         }
 
-
+        [User]
         public void _(ActionContext ac)
         {
             ac.GiveWorkPage(this, 200, (List<Item>)null);

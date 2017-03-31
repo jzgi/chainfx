@@ -447,10 +447,11 @@ namespace Greatbone.Core
 
     }
 
-    ///
+    /// <summary>
     /// A microservice that implements authentication and authorization.
-    ///
-    public abstract class Service<TPrincipal> : Service where TPrincipal : class, IData, new()
+    /// </summary>
+    /// <param name="P">The principal class</param>
+    public abstract class Service<P> : Service where P : class, IData, new()
     {
         protected Service(ServiceContext sc) : base(sc)
         {
@@ -538,10 +539,10 @@ namespace Greatbone.Core
             }
         }
 
-        public void SetBearerCookie(ActionContext ac, TPrincipal principal)
+        internal void SetCookie(ActionContext ac, P prin)
         {
             StringBuilder sb = new StringBuilder("Bearer=");
-            string token = Encrypt(principal);
+            string token = Encrypt(prin);
             sb.Append(token);
             if (Auth.maxage > 0)
             {
@@ -557,7 +558,7 @@ namespace Greatbone.Core
 
         const int Proj = -1 ^ Core.Proj.BIN ^ Core.Proj.SECRET;
 
-        public string Encrypt(TPrincipal prin)
+        public string Encrypt(P prin)
         {
             if (Auth == null) return null;
 
@@ -587,7 +588,7 @@ namespace Greatbone.Core
             return new string(charbuf, 0, charbuf.Length);
         }
 
-        public TPrincipal Decrypt(string token)
+        public P Decrypt(string token)
         {
             if (Auth == null) return null;
 
@@ -609,7 +610,7 @@ namespace Greatbone.Core
 
             JsonParse parse = new JsonParse(str.ToString());
             JObj jo = (JObj)parse.Parse();
-            return jo.ToObject<TPrincipal>(Proj);
+            return jo.ToObject<P>(Proj);
         }
 
         // hexidecimal characters

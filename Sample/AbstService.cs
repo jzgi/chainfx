@@ -97,7 +97,7 @@ namespace Greatbone.Sample
             {
                 // set token success
                 ac.Principal = prin;
-                SetBearerCookie(ac, prin);
+                ac.SetCookie(prin);
             }
             return true;
         }

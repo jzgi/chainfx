@@ -22,18 +22,7 @@ namespace Greatbone.Sample
                 {
                     if (dc.Query("SELECT DISTINCT city FROM shops"))
                     {
-                        ac.GivePaneForm(200, f =>
-                        {
-                            int i = 0;
-                            while (dc.Next())
-                            {
-                                i++;
-                                string city = dc.GetString();
-                                f.Add("<input type=\"radio\" name=\"city\" id=\"city"); f.Add(i);
-                                f.Add("\" value=\""); f.Add(city); f.Add("\">");
-                                f.Add("<label for=\"city"); f.Add(i); f.Add("\">"); f.Add(city); f.Add("</label>");
-                            }
-                        });
+                        ac.GiveDialogForm(200, f => f.RADIOS("city", dc, () => f.Add(dc.GetString())));
                     }
                     else { ac.Give(204); }
                 }
@@ -106,36 +95,37 @@ namespace Greatbone.Sample
 
         public async Task @goto(ActionContext ac)
         {
+            string shopid = null;
+            string password = null;
+            string orig = ac.Query[nameof(orig)];
             if (ac.GET)
             {
-                // return a form
-                ac.GivePane(200, (x) =>
+                ac.GivePageForm(200, nameof(@goto), "请绑定供应点", (x) =>
                 {
-                    x.FORM_(nameof(@goto));
-                    x.FIELDSET_("请绑定供应点");
-                    x.TEXT("shopid", "", Required: true);
-                    x.PASSWORD("password", "");
-                    x.BUTTON("绑定");
-                    x._FIELDSET();
-                    x._FORM();
+                    x.TEXT(nameof(shopid), shopid, Required: true);
+                    x.PASSWORD(nameof(password), password);
+                    x.HIDDEN(nameof(orig), orig);
                 });
             }
             else
             {
                 var f = await ac.ReadAsync<Form>();
-                string shopid = f[nameof(shopid)];
-                string password = f[nameof(password)];
-                string orig = f[nameof(orig)];
+                shopid = f[nameof(shopid)];
+                password = f[nameof(password)];
+                orig = f[nameof(orig)];
 
                 // data op
                 User prin = (User)ac.Principal;
                 using (var dc = ac.NewDbContext())
                 {
-                    string credential = StrUtility.MD5(shopid + ":" + password);
-                    dc.Execute("UPDATE users SET shopid = @1 WHERE id = @2", p => p.Set(shopid).Set(credential));
+                    var credential = (string)dc.Scalar("SELECT credential FROM shops WHERE id = @1", p => p.Set(shopid));
+                    if (credential.EqualsCredential(shopid, password))
+                    {
+                        dc.Execute("UPDATE users SET shopid = @1 WHERE wx = @2", p => p.Set(shopid).Set(prin.wx));
+                        prin.shopid = shopid;
+                        ac.SetCookie(prin);
+                    }
                 }
-
-                // return back
                 ac.GiveRedirect(orig);
             }
         }

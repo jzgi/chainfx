@@ -202,8 +202,10 @@ namespace Greatbone.Core
         /// <summary>
         /// Returns the central 8 bytes of the hash result of the input string.
         /// </summary>
-        public static bool CredentialEquals(string id, string pass, string credential)
+        public static bool EqualsCredential(this string credential, string id, string pass)
         {
+            if (credential == null || credential.Length != 32) return false;
+
             // convert to bytea, assume ascii 
             int idlen = id.Length;
             int passlen = pass.Length;
@@ -215,7 +217,7 @@ namespace Greatbone.Core
                 raw[p++] = (byte)id[i];
             }
             raw[p++] = (byte)':';
-            for (int i = 0; i < idlen; i++)
+            for (int i = 0; i < passlen; i++)
             {
                 raw[p++] = (byte)pass[i];
             }

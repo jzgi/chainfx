@@ -12,8 +12,8 @@ namespace Greatbone.Sample
             CreateVar<V>();
         }
 
-        // [Shop]
-        public void @default(ActionContext ac, int page)
+        [User]
+        public void _(ActionContext ac, int page)
         {
             string shopid = ac[typeof(ShopVarWork)];
             short status = Minor;
