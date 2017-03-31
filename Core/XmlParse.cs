@@ -16,14 +16,14 @@ namespace Greatbone.Core
         readonly int length;
 
         // UTF-8 string builder
-        readonly Text str;
+        readonly Str str;
 
         public XmlParse(byte[] bytebuf, int length)
         {
             this.bytebuf = bytebuf;
             this.strbuf = null;
             this.length = length;
-            this.str = new Text(1024);
+            this.str = new Str(1024);
         }
 
         public XmlParse(string strbuf)
@@ -31,7 +31,7 @@ namespace Greatbone.Core
             this.bytebuf = null;
             this.strbuf = strbuf;
             this.length = strbuf.Length;
-            this.str = new Text(1024);
+            this.str = new Str(1024);
         }
 
         int this[int index] => bytebuf?[index] ?? (int)strbuf[index];

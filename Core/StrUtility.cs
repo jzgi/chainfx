@@ -4,7 +4,7 @@ using System.Text;
 
 namespace Greatbone.Core
 {
-    public static class TextUtility
+    public static class StrUtility
     {
         // hexidecimal numbers
         static readonly char[] HEX = { '0', '1', '2', '3', '4', '5', '6', '7', '8', '9', 'a', 'b', 'c', 'd', 'e', 'f' };
@@ -172,16 +172,16 @@ namespace Greatbone.Core
         /// <summary>
         /// Returns the central 8 bytes of the hash result of the input string.
         /// </summary>
-        public static string MD5(string input)
+        public static string MD5(string combo)
         {
-            if (input == null) return null;
+            if (combo == null) return null;
 
             // convert to bytea, assume ascii 
-            int len = input.Length;
+            int len = combo.Length;
             byte[] raw = new byte[len];
             for (int i = 0; i < len; i++)
             {
-                raw[i] = (byte)input[i];
+                raw[i] = (byte)combo[i];
             }
 
             // digest and transform
@@ -197,6 +197,43 @@ namespace Greatbone.Core
                 }
                 return str.ToString();
             }
+        }
+
+        /// <summary>
+        /// Returns the central 8 bytes of the hash result of the input string.
+        /// </summary>
+        public static bool CredentialEquals(string id, string pass, string credential)
+        {
+            // convert to bytea, assume ascii 
+            int idlen = id.Length;
+            int passlen = pass.Length;
+            int len = idlen + passlen + 1;
+            byte[] raw = new byte[len];
+            int p = 0;
+            for (int i = 0; i < idlen; i++)
+            {
+                raw[p++] = (byte)id[i];
+            }
+            raw[p++] = (byte)':';
+            for (int i = 0; i < idlen; i++)
+            {
+                raw[p++] = (byte)pass[i];
+            }
+
+            // digest and transform
+            using (MD5 md5 = System.Security.Cryptography.MD5.Create())
+            {
+                byte[] hash = md5.ComputeHash(raw);
+                for (int i = 0; i < 16; i++)
+                {
+                    byte b = hash[i];
+                    if (credential[i * 2] != HEX[b >> 4] || credential[i * 2 + 1] != HEX[b & 0x0f])
+                    {
+                        return false;
+                    }
+                }
+            }
+            return true;
         }
 
         public static string ToHex(string v)

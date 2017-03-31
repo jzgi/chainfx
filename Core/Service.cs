@@ -594,7 +594,7 @@ namespace Greatbone.Core
             int mask = Auth.mask;
             int[] masks = { (mask >> 24) & 0xff, (mask >> 16) & 0xff, (mask >> 8) & 0xff, mask & 0xff };
             int len = token.Length / 2;
-            Text str = new Text(256);
+            Str str = new Str(256);
             int p = 0;
             for (int i = 0; i < len; i++)
             {

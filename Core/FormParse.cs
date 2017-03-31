@@ -16,14 +16,14 @@ namespace Greatbone.Core
         readonly int length;
 
         // UTF-8 string builder
-        readonly Text str;
+        readonly Str str;
 
         public FormParse(byte[] bytebuf, int length)
         {
             this.bytebuf = bytebuf;
             this.strbuf = null;
             this.length = length;
-            this.str = new Text(256);
+            this.str = new Str(256);
         }
 
         public FormParse(string strbuf)
@@ -31,7 +31,7 @@ namespace Greatbone.Core
             this.bytebuf = null;
             this.strbuf = strbuf;
             this.length = strbuf?.Length ?? 0;
-            this.str = new Text(256);
+            this.str = new Str(256);
         }
 
         int this[int index] => bytebuf?[index] ?? (int)strbuf[index];

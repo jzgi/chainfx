@@ -6,7 +6,7 @@ namespace Greatbone.Core
     ///
     /// A text/plain model or comma-separate values. It can be used as UTF-8 string builder.
     ///
-    public class Text : IDataInput
+    public class Str : IDataInput
     {
         protected char[] buf;
 
@@ -19,7 +19,7 @@ namespace Greatbone.Core
         // number of rest octets
         int rest;
 
-        public Text(int capacity = 256)
+        public Str(int capacity = 256)
         {
             buf = new char[capacity];
             sum = 0;
@@ -195,7 +195,7 @@ namespace Greatbone.Core
 
         public IContent Dump()
         {
-            var cont = new TextContent(true, true);
+            var cont = new StrContent(true, true);
             cont.Add(buf, 0, count);
             return cont;
         }

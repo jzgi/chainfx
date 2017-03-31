@@ -160,7 +160,7 @@ namespace Greatbone.Core
         {
             string str = v.First;
             DateTime dt;
-            if (TextUtility.TryParseDate(str, out dt))
+            if (StrUtility.TryParseDate(str, out dt))
             {
                 return dt;
             }

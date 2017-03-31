@@ -42,7 +42,7 @@ namespace Greatbone.Core
                 }
                 else
                 {
-                    Text txt = new Text();
+                    Str txt = new Str();
                     for (int i = 0; i < length; i++)
                     {
                         txt.Accept(buffer[i]);

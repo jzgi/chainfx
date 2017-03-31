@@ -441,7 +441,7 @@ namespace Greatbone.Core
 
         public void BUTTON(string value)
         {
-            Add("<button>");
+            Add("<button class=\"button\">");
             AddEsc(value);
             Add("</button>");
         }

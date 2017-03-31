@@ -26,7 +26,7 @@ namespace Greatbone.Sample
         /// </code>
         ///
         [User]
-        public async Task inbox(ActionContext ac, string arg)
+        public async Task inbox(ActionContext ac, int arg)
         {
             User tok = (User)ac.Principal;
             string userid = ac[0];
@@ -63,7 +63,7 @@ namespace Greatbone.Sample
             }
             else // post message(s) to inbox
             {
-                var txt = await ac.ReadAsync<Text>();
+                var txt = await ac.ReadAsync<Str>();
                 Message msg = new Message()
                 {
                     fromid = tok.wx,

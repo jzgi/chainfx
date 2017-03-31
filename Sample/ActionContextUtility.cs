@@ -83,7 +83,11 @@ namespace Greatbone.Sample
             cont.Add("<body>");
 
             cont.Add("<div class\"row\">");
+            cont.Add("<div class\"small-2 columns\"></div>");
+            cont.Add("<div class\"columns\">");
             main(cont);
+            cont.Add("</div>");
+            cont.Add("<div class\"small-2 columns\"></div>");
             cont.Add("</div>");
 
             // zurb foundation

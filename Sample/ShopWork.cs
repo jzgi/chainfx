@@ -112,9 +112,11 @@ namespace Greatbone.Sample
                 ac.GivePane(200, (x) =>
                 {
                     x.FORM_(nameof(@goto));
+                    x.FIELDSET_("请绑定供应点");
                     x.TEXT("shopid", "", Required: true);
                     x.PASSWORD("password", "");
                     x.BUTTON("绑定");
+                    x._FIELDSET();
                     x._FORM();
                 });
             }
@@ -129,7 +131,7 @@ namespace Greatbone.Sample
                 User prin = (User)ac.Principal;
                 using (var dc = ac.NewDbContext())
                 {
-                    string credential = TextUtility.MD5(shopid + ":" + password);
+                    string credential = StrUtility.MD5(shopid + ":" + password);
                     dc.Execute("UPDATE users SET shopid = @1 WHERE id = @2", p => p.Set(shopid).Set(credential));
                 }
 
@@ -158,7 +160,7 @@ namespace Greatbone.Sample
 
                 using (var dc = Service.NewDbContext())
                 {
-                    shop.credential = TextUtility.MD5(shop.id + ':' + shop.credential);
+                    shop.credential = StrUtility.MD5(shop.id + ':' + shop.credential);
                     dc.Sql("INSERT INTO shops")._(Shop.Empty)._VALUES_(Shop.Empty)._("");
                     if (dc.Execute(p => p.Set(shop)) > 0)
                     {
@@ -188,7 +190,7 @@ namespace Greatbone.Sample
 
                 using (var dc = Service.NewDbContext())
                 {
-                    shop.credential = TextUtility.MD5(shop.id + ':' + shop.credential);
+                    shop.credential = StrUtility.MD5(shop.id + ':' + shop.credential);
                     dc.Sql("INSERT INTO shops")._(Shop.Empty)._VALUES_(Shop.Empty)._("");
                     if (dc.Execute(p => p.Set(shop)) > 0)
                     {

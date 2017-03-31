@@ -207,7 +207,7 @@ namespace Greatbone.Core
             {
                 string str = vs;
                 DateTime v;
-                if (TextUtility.TryParseUtcDate(str, out v))
+                if (StrUtility.TryParseUtcDate(str, out v))
                 {
                     return v;
                 }
@@ -368,7 +368,7 @@ namespace Greatbone.Core
 
         public void SetHeader(string name, DateTime v)
         {
-            string str = TextUtility.FormatUtcDate(v);
+            string str = StrUtility.FormatUtcDate(v);
             Response.Headers.Add(name, new StringValues(str));
         }
 
@@ -410,7 +410,7 @@ namespace Greatbone.Core
 
         public void Give(int status, string text, bool? pub = null, int maxage = 60)
         {
-            TextContent cont = new TextContent(true);
+            StrContent cont = new StrContent(true);
             cont.Add(text);
 
             // set response states
@@ -470,14 +470,14 @@ namespace Greatbone.Core
                 if (dyna != null) // set etag
                 {
                     ulong etag = dyna.ETag;
-                    SetHeader("ETag", TextUtility.ToHex(etag));
+                    SetHeader("ETag", StrUtility.ToHex(etag));
                 }
 
                 // set last-modified
                 DateTime? last = Content.Modified;
                 if (last != null)
                 {
-                    SetHeader("Last-Modified", TextUtility.FormatUtcDate(last.Value));
+                    SetHeader("Last-Modified", StrUtility.FormatUtcDate(last.Value));
                 }
 
                 // send async

@@ -82,7 +82,7 @@ namespace Greatbone.Sample
                 int colon = orig.IndexOf(':');
                 string id = orig.Substring(0, colon);
                 string password = orig.Substring(colon + 1);
-                string md5 = TextUtility.MD5(id + ':' + password);
+                string md5 = StrUtility.MD5(orig);
                 using (var dc = NewDbContext())
                 {
                     if (dc.Query1("SELECT * FROM users WHERE tel = @1", (p) => p.Set(id)))

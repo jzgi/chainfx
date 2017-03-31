@@ -43,7 +43,7 @@ namespace Greatbone.Core
 
             // UTF-8 header builder
             Header hdr = new Header(128);
-            Text str = new Text(128);
+            Str str = new Str(128);
 
             // keep local for speed
             int boundlen = bound.Length;
