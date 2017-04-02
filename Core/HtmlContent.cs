@@ -200,7 +200,7 @@ namespace Greatbone.Core
             if (uias != null)
             {
                 Add("<div class=\"row\">");
-                CONTROLS(uias);
+                // CONTROLS(ac, uias);
                 Add("</div>");
             }
 
@@ -379,7 +379,7 @@ namespace Greatbone.Core
                     Add("</div>");
 
                     // acitons
-                    CONTROLS(uias);
+                    // CONTROLS(uias);
                 }
                 Add("</div>");
             }
@@ -453,169 +453,124 @@ namespace Greatbone.Core
             Add("\">");
         }
 
-        public void TEXT(string name, string v, string Label = null, string Help = null, string Pattern = null, sbyte Max = 0, sbyte Min = 0, bool ReadOnly = false, bool Required = false)
+        public void TEXT(string name, string v, string label = null, string help = null, string pattern = null, sbyte max = 0, sbyte min = 0, Opt<string> opt = null, bool @readonly = false, bool required = false)
         {
             Add("<label>");
-            AddLabel(Label, name);
+            AddLabel(label, name);
             Add("<input type=\"text\" name=\"");
             Add(name);
             Add("\" value=\"");
             AddEsc(v);
             Add("\"");
 
-            if (Help != null)
+            if (help != null)
             {
                 Add(" placeholder=\"");
-                Add(Help);
+                Add(help);
                 Add("\"");
             }
-            if (Pattern != null)
+            if (pattern != null)
             {
                 Add(" pattern=\"");
-                AddEsc(Pattern);
+                AddEsc(pattern);
                 Add("\"");
             }
-            if (Max > 0)
+            if (max > 0)
             {
                 Add(" maxlength=\"");
-                Add(Max);
+                Add(max);
                 Add("\"");
                 Add(" size=\"");
-                Add(Max);
+                Add(max);
                 Add("\"");
             }
-            if (Min > 0)
+            if (min > 0)
             {
                 Add(" minlength=\"");
-                Add(Min);
+                Add(min);
                 Add("\"");
             }
-            if (ReadOnly) Add(" readonly");
-            if (Required) Add(" required");
+            if (@readonly) Add(" readonly");
+            if (required) Add(" required");
 
             Add(">");
 
             Add("</label>");
         }
 
-        public void TEXTPicker(string name, string v, string Label = null, string Help = null, string Pattern = null, sbyte Max = 0, sbyte Min = 0, bool ReadOnly = false, bool Required = false)
+        public void PASSWORD(string name, string v, string label = null, string help = null, string pattern = null, sbyte max = 0, sbyte min = 0, bool @readonly = false, bool required = false)
         {
             Add("<label>");
-            AddLabel(Label, name);
-            Add("<input type=\"text\" name=\"");
-            Add(name);
-            Add("\" value=\"");
-            AddEsc(v);
-            Add("\"");
-
-            if (Help != null)
-            {
-                Add(" Help=\"");
-                Add(Help);
-                Add("\"");
-            }
-            if (Pattern != null)
-            {
-                Add(" pattern=\"");
-                AddEsc(Pattern);
-                Add("\"");
-            }
-            if (Max > 0)
-            {
-                Add(" maxlength=\"");
-                Add(Max);
-                Add("\"");
-                Add(" size=\"");
-                Add(Max);
-                Add("\"");
-            }
-            if (Min > 0)
-            {
-                Add(" minlength=\"");
-                Add(Min);
-                Add("\"");
-            }
-            if (ReadOnly) Add(" readonly");
-            if (Required) Add(" required");
-
-            Add(">");
-
-            Add("</label>");
-        }
-
-        public void PASSWORD(string name, string v, string Label = null, string Help = null, string Pattern = null, sbyte Max = 0, sbyte Min = 0, bool ReadOnly = false, bool Required = false)
-        {
-            Add("<label>");
-            AddLabel(Label, name);
+            AddLabel(label, name);
             Add("<input type=\"password\" name=\"");
             Add(name);
             Add("\" value=\"");
             AddEsc(v);
             Add("\"");
 
-            if (Help != null)
+            if (help != null)
             {
                 Add(" Help=\"");
-                Add(Help);
+                Add(help);
                 Add("\"");
             }
-            if (Pattern != null)
+            if (pattern != null)
             {
                 Add(" pattern=\"");
-                AddEsc(Pattern);
+                AddEsc(pattern);
                 Add("\"");
             }
-            if (Max > 0)
+            if (max > 0)
             {
                 Add(" maxlength=\"");
-                Add(Max);
+                Add(max);
                 Add("\"");
                 Add(" size=\"");
-                Add(Max);
+                Add(max);
                 Add("\"");
             }
-            if (Min > 0)
+            if (min > 0)
             {
                 Add(" minlength=\"");
-                Add(Min);
+                Add(min);
                 Add("\"");
             }
-            if (ReadOnly) Add(" readonly");
-            if (Required) Add(" required");
+            if (@readonly) Add(" readonly");
+            if (required) Add(" required");
 
             Add(">");
 
             Add("</label>");
         }
 
-        public void DATE(string name, DateTime v, string Label = null, DateTime Max = default(DateTime), DateTime Min = default(DateTime), bool ReadOnly = false, bool Required = false, int Step = 0)
+        public void DATE(string name, DateTime v, string label = null, DateTime max = default(DateTime), DateTime min = default(DateTime), bool @readonly = false, bool required = false, int step = 0)
         {
             Add("<label>");
-            AddLabel(Label, name);
+            AddLabel(label, name);
             Add("<input type=\"date\" name=\"");
             Add(name);
             Add("\" value=\"");
             Add(v);
             Add("\"");
 
-            if (Max != default(DateTime))
+            if (max != default(DateTime))
             {
                 Add(" max=\"");
-                Add(Max);
+                Add(max);
                 Add("\"");
             }
-            if (Min != default(DateTime))
+            if (min != default(DateTime))
             {
                 Add(" min=\"");
-                Add(Min);
+                Add(min);
                 Add("\"");
             }
-            if (ReadOnly) Add(" readonly");
-            if (Required) Add(" required");
-            if (Step != 0)
+            if (@readonly) Add(" readonly");
+            if (required) Add(" required");
+            if (step != 0)
             {
                 Add(" step=\"");
-                Add(Step);
+                Add(step);
                 Add("\"");
             }
 
@@ -628,42 +583,71 @@ namespace Greatbone.Core
             T("</tbody>");
         }
 
-        public void NUMBER(string name, short v, string Label = null, string Help = null, short Max = 0, short Min = 0, short Step = 0, bool ReadOnly = false, bool Required = false)
+        public void NUMBER(string name, short v, string label = null, string help = null, short max = 0, short min = 0, short step = 0, bool opt = false, bool @readonly = false, bool required = false)
         {
             Add("<label>");
             AddLabel(null, name);
             Add("<input style=\"height: 100px\" type=\"number\" name=\"");
             Add(name);
-            Add("\" value=\"");
-            AddConvert(v);
-            Add("\"");
+            Add("\" value=\""); Add(v); Add("\"");
 
-            if (Help != null)
+            if (help != null)
             {
-                Add(" Help=\"");
-                Add(Help);
-                Add("\"");
+                Add(" placeholder=\""); Add(help); Add("\"");
             }
-            if (Max != 0)
+            if (max != 0)
             {
-                Add(" max=\"");
-                AddConvert(Max);
-                Add("\"");
+                Add(" max=\""); Add(max); Add("\"");
             }
-            if (Min != 0)
+            if (min != 0)
             {
-                Add(" min=\"");
-                AddConvert(Min);
-                Add("\"");
+                Add(" min=\""); Add(min); Add("\"");
             }
-            if (Step != 0)
+            if (step != 0)
             {
-                Add(" step=\"");
-                AddConvert(Step);
-                Add("\"");
+                Add(" step=\""); Add(step); Add("\"");
             }
-            if (ReadOnly) Add(" readonly");
-            if (Required) Add(" required");
+            if (opt)
+            {
+                Add("<input type=\"button\" value=\"...\" onclick=\"dialog(this, 1, 1)\"> ");
+            }
+            if (@readonly) Add(" readonly");
+            if (required) Add(" required");
+
+            Add(">");
+            Add("</label>");
+        }
+
+        public void NUMBER(string name, int v, string label = null, string help = null, int max = 0, int min = 0, int step = 0, bool opt = false, bool @readonly = false, bool required = false)
+        {
+            Add("<label>");
+            AddLabel(null, name);
+            Add("<input style=\"height: 100px\" type=\"number\" name=\"");
+            Add(name);
+            Add("\" value=\""); Add(v); Add("\"");
+
+            if (help != null)
+            {
+                Add(" placeholder=\""); Add(help); Add("\"");
+            }
+            if (max != 0)
+            {
+                Add(" max=\""); Add(max); Add("\"");
+            }
+            if (min != 0)
+            {
+                Add(" min=\""); Add(min); Add("\"");
+            }
+            if (step != 0)
+            {
+                Add(" step=\""); Add(step); Add("\"");
+            }
+            if (opt)
+            {
+                Add("<input type=\"button\" value=\"...\" onclick=\"dialog(this, 1, 1)\"> ");
+            }
+            if (@readonly) Add(" readonly");
+            if (required) Add(" required");
 
             Add(">");
             Add("</label>");
@@ -709,36 +693,31 @@ namespace Greatbone.Core
             Add("</label>");
         }
 
-        public void CHECKBOX<V>(V[] v, Map<V> opt, string Label = null, bool Required = false) where V : IEquatable<V>, IConvertible
+        public void CHECKBOX<V>(string name, V[] v, Opt<V> opt, string label = null, bool required = false) where V : IEquatable<V>, IConvertible
         {
             Add("<fieldset>");
 
-            Add("<legend>");
-            AddLabel(Label, null);
-            Add("</legend>");
+            Add("<legend>"); AddLabel(label, null); Add("</legend>");
 
             foreach (var pair in opt)
             {
                 V key = pair.Key;
+                Add("<input type=\"checkbox\" name=\""); Add(name); Add("\"");
+                Add("\" id=\""); AddVary(key); Add("\"");
+                Add("\" value=\""); AddVary(key); Add("\"");
 
-                Add("<input type=\"checkbox\" name=\"");
-                AddConvert(key);
-                Add("\"");
+                bool equal = false;
+                for (int i = 0; i < v.Length; i++)
+                {
+                    if (key.Equals(v[i])) { equal = true; break; }
+                }
+                if (equal) Add(" checked");
 
-                Add("\" id=\"");
-                AddConvert(key);
-                Add("\"");
-
-                Add("\" value=\"");
-                AddConvert(key);
-                Add("\"");
-
-                if (key.Equals(v)) Add(" checked");
-                if (Required) Add(" required");
+                if (required) Add(" required");
                 Add(">");
 
                 Add("<label for=\"");
-                AddConvert(key);
+                AddVary(key);
                 Add("\">");
                 Add(pair.Value);
                 Add("</label>");
@@ -763,7 +742,7 @@ namespace Greatbone.Core
             }
         }
 
-        public void RADIO<V>(string name, V v, Map<V> opt, string Label = null, bool Required = false) where V : IEquatable<V>, IConvertible
+        public void RADIO<V>(string name, V v, Opt<V> opt, string Label = null, bool Required = false) where V : IEquatable<V>, IConvertible
         {
             Add("<fieldset>");
 
@@ -777,28 +756,22 @@ namespace Greatbone.Core
                 Add(name);
                 V key = pair.Key;
 
-                Add("\" id=\""); Add(name);
-                AddConvert(key);
-                Add("\"");
+                Add("\" id=\""); Add(name); AddVary(key); Add("\"");
 
-                Add("\" value=\"");
-                AddConvert(key);
-                Add("\"");
+                Add("\" value=\""); AddVary(key); Add("\"");
 
                 if (key.Equals(v)) Add(" checked");
                 if (Required) Add(" required");
                 Add(">");
 
-                Add("<label for=\""); Add(name);
-                AddConvert(key);
-                Add("\">");
+                Add("<label for=\""); Add(name); AddVary(key); Add("\">");
                 Add(pair.Value);
                 Add("</label>");
             }
             Add("</fieldset>");
         }
 
-        public void FILE(string name, string Label = null, string Size = null, string Ratio = null, bool Required = false)
+        public void FILE(string name, string label = null, string size = null, string ratio = null, bool required = false)
         {
             // <div class="slim"
             //      data-label="Drop your avatar here"
@@ -809,59 +782,51 @@ namespace Greatbone.Core
             // </div>
             //         
             Add("<div class=\"slim\" data-label=\"");
-            AddLabel(Label, name);
+            AddLabel(label, name);
             Add("\" data-fetcher=\"_"); Add(name); Add("_");
 
-            if (Size != null)
+            if (size != null)
             {
-                Add("\" data-size=\""); Add(Size);
+                Add("\" data-size=\""); Add(size);
             }
-            if (Ratio != null)
+            if (ratio != null)
             {
-                Add("\" data-ratio=\""); Add(Ratio);
+                Add("\" data-ratio=\""); Add(ratio);
             }
             Add("\">");
 
             Add("<input type=\"file\" name=\""); Add(name); Add("\"");
-            if (Required) Add(" required");
+            if (required) Add(" required");
             Add(">");
             Add("</div>");
         }
 
-        public void TEXTAREA(string name, string v, string Label = null, string Help = null, short Max = 0, short Min = 0, bool ReadOnly = false, bool Required = false)
+        public void TEXTAREA(string name, string v, string label = null, string help = null, short max = 0, short min = 0, bool @readonly = false, bool required = false)
         {
             Add("<label>");
-            AddLabel(Label, name);
+            AddLabel(label, name);
             Add("<input type=\"text\" name=\"");
             Add(name);
             Add("\" value=\"");
             AddEsc(v);
             Add("\"");
 
-            if (Help != null)
+            if (help != null)
             {
-                Add(" Help=\"");
-                Add(Help);
-                Add("\"");
+                Add(" placeholder=\""); Add(help); Add("\"");
             }
-            if (Max > 0)
+            if (max > 0)
             {
-                Add(" maxlength=\"");
-                Add(Max);
-                Add("\"");
+                Add(" maxlength=\""); Add(max); Add("\"");
 
-                Add(" rows=\"");
-                Add(Max < 200 ? 2 : Max < 400 ? 3 : 4);
-                Add("\"");
+                Add(" rows=\""); Add(max < 200 ? 3 : max < 400 ? 4 : 5); Add("\"");
             }
-            if (Min > 0)
+            if (min > 0)
             {
-                Add(" minlength=\"");
-                Add(Min);
-                Add("\"");
+                Add(" minlength=\""); Add(min); Add("\"");
             }
-            if (ReadOnly) Add(" readonly");
-            if (Required) Add(" required");
+            if (@readonly) Add(" readonly");
+            if (required) Add(" required");
 
             Add(">");
             Add("</label>");
@@ -880,11 +845,11 @@ namespace Greatbone.Core
                 Add(" onclick=\"dialog(this,"); Add((int)mode); Add("); return false;\"");
             }
 
-            StateAttribute state = act.State;
-            if (state != null)
+            int state = ui.State;
+            if (state != 0)
             {
-                Add(" data-if=\""); Add(state.If); Add("\"");
-                Add(" data-unif=\""); Add(state.Unif); Add("\"");
+                // Add(" data-if=\""); Add(state.If); Add("\"");
+                // Add(" data-unif=\""); Add(state.Unif); Add("\"");
             }
             Add(">");
             // label and ison
@@ -900,15 +865,28 @@ namespace Greatbone.Core
             Add("</button>");
         }
 
-        public void CONTROLS(ActionInfo[] actns)
+        public void CONTROLS(ActionContext ac, ActionInfo[] acts, IStatable stat)
         {
-            for (int i = 0; i < actns.Length; i++)
+            for (int i = 0; i < acts.Length; i++)
             {
-                ActionInfo act = actns[i];
-                Add("<button class=\"button primary\" style=\"margin-right: 5px;\" name=\""); Add(act.Name);
-                Add("\" formaction=\""); Add(act.Name); Add("\" formmethod=\"post\"");
+                ActionInfo act = acts[i];
+
+                if (!act.DoAuthorize(ac)) continue;
 
                 UiAttribute ui = act.Ui;
+
+                if (ui.IsLink)
+                {
+                    Add("<a class=\"hollow button primary\" href=\""); Add(act.Name);
+                }
+                else if (ui.IsAnchor)
+                {
+                    Add("<a class=\"hollow button secondary\" href=\""); Add(act.Name);
+                }
+                else if (ui.IsButton)
+                {
+                    Add("<button class=\"hollow button alert\" name=\""); Add(act.Name); Add("\" formaction=\""); Add(act.Name); Add("\" formmethod=\"post\"");
+                }
 
                 UiMode mode = ui.Mode;
                 if (mode > 0)
@@ -916,11 +894,11 @@ namespace Greatbone.Core
                     Add(" onclick=\"dialog(this,"); Add((int)mode); Add("); return false;\"");
                 }
 
-                StateAttribute state = act.State;
-                if (state != null)
+                int state = ui.State;
+                if (state != 0)
                 {
-                    Add(" data-if=\""); Add(state.If); Add("\"");
-                    Add(" data-unif=\""); Add(state.Unif); Add("\"");
+                    // Add(" data-if=\""); Add(state.If); Add("\"");
+                    // Add(" data-unif=\""); Add(state.Unif); Add("\"");
                 }
                 Add(">");
                 // label and ison
@@ -937,21 +915,23 @@ namespace Greatbone.Core
             }
         }
 
-        public void SELECT<V>(string name, V v, Map<V> opt, string Label = null, bool Required = false) where V : IEquatable<V>, IConvertible
+        public void SELECT<V>(string name, V v, Opt<V> opt, string label = null, bool multiple = false, bool required = false, sbyte size = 0) where V : IEquatable<V>, IConvertible
         {
             Add("<label>");
-            AddLabel(Label, name);
+            AddLabel(label, name);
             Add("<select name=\"");
             Add(name);
             Add("\"");
-            if (Required) Add(" required");
+            if (multiple) Add(" multiple");
+            if (required) Add(" required");
+            if (size > 0) { Add(" size=\""); Add(size); Add("\""); }
             Add(">");
 
             foreach (var pair in opt)
             {
                 V key = pair.Key;
                 Add("<option value=\"");
-                AddConvert(key);
+                AddVary(key);
                 Add("\"");
                 if (key.Equals(v)) Add(" selected");
                 Add(">");
@@ -1043,7 +1023,7 @@ namespace Greatbone.Core
             return this;
         }
 
-        public HtmlContent Put(string name, short v, Map<short> Opt = null, string Label = null, string Help = null, short Max = 0, short Min = 0, short Step = 0, bool ReadOnly = false, bool Required = false)
+        public HtmlContent Put(string name, short v, Opt<short> Opt = null, string Label = null, string Help = null, short Max = 0, short Min = 0, short Step = 0, bool ReadOnly = false, bool Required = false)
         {
             var ctx = chain[level];
             switch (ctx.type)
@@ -1100,7 +1080,7 @@ namespace Greatbone.Core
             return this;
         }
 
-        public HtmlContent Put(string name, int v, Map<int> Opt = null, string Label = null, string Help = null, int Max = 0, int Min = 0, int Step = 0, bool ReadOnly = false, bool Required = false)
+        public HtmlContent Put(string name, int v, Opt<int> Opt = null, string Label = null, string Help = null, int Max = 0, int Min = 0, int Step = 0, bool ReadOnly = false, bool Required = false)
         {
             switch (chain[level].type)
             {
@@ -1150,7 +1130,7 @@ namespace Greatbone.Core
             return this;
         }
 
-        public HtmlContent Put(string name, long v, Map<long> Opt = null, string Label = null, string Help = null, long Max = 0, long Min = 0, long Step = 0, bool ReadOnly = false, bool Required = false)
+        public HtmlContent Put(string name, long v, Opt<long> Opt = null, string Label = null, string Help = null, long Max = 0, long Min = 0, long Step = 0, bool ReadOnly = false, bool Required = false)
         {
             switch (chain[level].type)
             {
@@ -1280,7 +1260,7 @@ namespace Greatbone.Core
             return this;
         }
 
-        public HtmlContent Put(string name, string v, Map<string> Opt = null, string Label = null, string Help = null, string Pattern = null, short Max = 0, short Min = 0, bool ReadOnly = false, bool Required = false)
+        public HtmlContent Put(string name, string v, Opt<string> Opt = null, string Label = null, string Help = null, string Pattern = null, short Max = 0, short Min = 0, bool ReadOnly = false, bool Required = false)
         {
             var ctx = chain[level];
             switch (ctx.type)
@@ -1330,7 +1310,7 @@ namespace Greatbone.Core
                     }
                     else if (Max < 128)
                     {
-                        TEXT(name, v, Label, Help, Pattern, (sbyte)Max, (sbyte)Min, ReadOnly, Required);
+                        // TEXT(name, v, Label, Help, Pattern, (sbyte)Max, (sbyte)Min, ReadOnly, Required);
                     }
                     else
                     {
@@ -1371,28 +1351,28 @@ namespace Greatbone.Core
             return this;
         }
 
-        public HtmlContent Put(string name, short[] v, Map<short> Opt = null, string Label = null, string Help = null, bool ReadOnly = false, bool Required = false)
+        public HtmlContent Put(string name, short[] v, Opt<short> Opt = null, string Label = null, string Help = null, bool ReadOnly = false, bool Required = false)
         {
 
             return this;
         }
 
-        public HtmlContent Put(string name, int[] v, Map<int> Opt = null, string Label = null, string Help = null, bool ReadOnly = false, bool Required = false)
+        public HtmlContent Put(string name, int[] v, Opt<int> Opt = null, string Label = null, string Help = null, bool ReadOnly = false, bool Required = false)
         {
             return this;
         }
 
-        public HtmlContent Put(string name, long[] v, Map<long> Opt = null, string Label = null, string Help = null, bool ReadOnly = false, bool Required = false)
+        public HtmlContent Put(string name, long[] v, Opt<long> Opt = null, string Label = null, string Help = null, bool ReadOnly = false, bool Required = false)
         {
             return this;
         }
 
-        public HtmlContent Put(string name, string[] v, Map<string> Opt = null, string Label = null, string Help = null, bool ReadOnly = false, bool Required = false)
+        public HtmlContent Put(string name, string[] v, Opt<string> Opt = null, string Label = null, string Help = null, bool ReadOnly = false, bool Required = false)
         {
             return this;
         }
 
-        public HtmlContent Put(string name, Map v, string Label = null, string Help = null, bool ReadOnly = false, bool Required = false)
+        public HtmlContent Put(string name, Dictionary<string, string> v, string Label = null, string Help = null, bool ReadOnly = false, bool Required = false)
         {
             return this;
         }

@@ -1,3 +1,5 @@
+using System.Collections.Generic;
+
 namespace Greatbone.Core
 {
     ///
@@ -15,7 +17,7 @@ namespace Greatbone.Core
         public Db db;
 
         // cluster members in the form of peerid-address pairs
-        public Map cluster;
+        public Dictionary<string, string> cluster;
 
         // logging level
         public int logging = 3;

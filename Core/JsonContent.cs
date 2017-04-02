@@ -210,7 +210,7 @@ namespace Greatbone.Core
             return this;
         }
 
-        public JsonContent Put(string name, short v, Map<short> Opt = null, string Label = null, string Help = null, short Max = 0, short Min = 0, short Step = 0, bool ReadOnly = false, bool Required = false)
+        public JsonContent Put(string name, short v, Opt<short> Opt = null, string Label = null, string Help = null, short Max = 0, short Min = 0, short Step = 0, bool ReadOnly = false, bool Required = false)
         {
             if (counts[level]++ > 0) Add(',');
             if (name != null)
@@ -224,7 +224,7 @@ namespace Greatbone.Core
             return this;
         }
 
-        public JsonContent Put(string name, int v, Map<int> Opt = null, string Label = null, string Help = null, int Max = 0, int Min = 0, int Step = 0, bool ReadOnly = false, bool Required = false)
+        public JsonContent Put(string name, int v, Opt<int> Opt = null, string Label = null, string Help = null, int Max = 0, int Min = 0, int Step = 0, bool ReadOnly = false, bool Required = false)
         {
             if (counts[level]++ > 0) Add(',');
             if (name != null)
@@ -238,7 +238,7 @@ namespace Greatbone.Core
             return this;
         }
 
-        public JsonContent Put(string name, long v, Map<long> Opt = null, string Label = null, string Help = null, long Max = 0, long Min = 0, long Step = 0, bool ReadOnly = false, bool Required = false)
+        public JsonContent Put(string name, long v, Opt<long> Opt = null, string Label = null, string Help = null, long Max = 0, long Min = 0, long Step = 0, bool ReadOnly = false, bool Required = false)
         {
             if (counts[level]++ > 0) Add(',');
             if (name != null)
@@ -297,7 +297,7 @@ namespace Greatbone.Core
             return this;
         }
 
-        public JsonContent Put(string name, string v, Map<string> Opt = null, string Label = null, string Help = null, string Pattern = null, short Max = 0, short Min = 0, bool ReadOnly = false, bool Required = false)
+        public JsonContent Put(string name, string v, Opt<string> Opt = null, string Label = null, string Help = null, string Pattern = null, short Max = 0, short Min = 0, bool ReadOnly = false, bool Required = false)
         {
             if (counts[level]++ > 0) Add(',');
             if (name != null)
@@ -326,7 +326,7 @@ namespace Greatbone.Core
             return this; // ignore ir
         }
 
-        public JsonContent Put(string name, short[] v, Map<short> Opt = null, string Label = null, string Help = null, bool ReadOnly = false, bool Required = false)
+        public JsonContent Put(string name, short[] v, Opt<short> Opt = null, string Label = null, string Help = null, bool ReadOnly = false, bool Required = false)
         {
             if (counts[level]++ > 0) Add(',');
 
@@ -355,7 +355,7 @@ namespace Greatbone.Core
             return this;
         }
 
-        public JsonContent Put(string name, int[] v, Map<int> Opt = null, string Label = null, string Help = null, bool ReadOnly = false, bool Required = false)
+        public JsonContent Put(string name, int[] v, Opt<int> Opt = null, string Label = null, string Help = null, bool ReadOnly = false, bool Required = false)
         {
             if (counts[level]++ > 0) Add(',');
             if (name != null)
@@ -383,7 +383,7 @@ namespace Greatbone.Core
             return this;
         }
 
-        public JsonContent Put(string name, long[] v, Map<long> Opt = null, string Label = null, string Help = null, bool ReadOnly = false, bool Required = false)
+        public JsonContent Put(string name, long[] v, Opt<long> Opt = null, string Label = null, string Help = null, bool ReadOnly = false, bool Required = false)
         {
             if (counts[level]++ > 0) Add(',');
             if (name != null)
@@ -411,7 +411,7 @@ namespace Greatbone.Core
             return this;
         }
 
-        public JsonContent Put(string name, string[] v, Map<string> Opt = null, string Label = null, string Help = null, bool ReadOnly = false, bool Required = false)
+        public JsonContent Put(string name, string[] v, Opt<string> Opt = null, string Label = null, string Help = null, bool ReadOnly = false, bool Required = false)
         {
             if (counts[level]++ > 0) Add(',');
             if (name != null)
@@ -450,7 +450,7 @@ namespace Greatbone.Core
         }
 
 
-        public JsonContent Put(string name, Map v, string Label = null, string Help = null, bool ReadOnly = false, bool Required = false)
+        public JsonContent Put(string name, Dictionary<string, string> v, string Label = null, string Help = null, bool ReadOnly = false, bool Required = false)
         {
             throw new NotImplementedException();
         }

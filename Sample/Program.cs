@@ -1,4 +1,5 @@
-﻿using Greatbone.Core;
+﻿using System.Collections.Generic;
+using Greatbone.Core;
 
 namespace Greatbone.Sample
 {
@@ -33,7 +34,7 @@ namespace Greatbone.Sample
                 password = "721004"
             };
 
-            Map cluster = new Map
+            Dictionary<string, string> cluster = new Dictionary<string, string>
             {
                 ["shop"] = "http://localhost:8080",
                 ["chat"] = "http://localhost:8081"

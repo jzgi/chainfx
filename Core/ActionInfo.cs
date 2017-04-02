@@ -27,8 +27,6 @@ namespace Greatbone.Core
         // async Task action(ActionContext, int)
         readonly Func<ActionContext, int, Task> do2async;
 
-        readonly StateAttribute state;
-
         internal ActionInfo(Work work, MethodInfo mi, bool async, bool subscpt) : base(mi.Name, mi)
         {
             this.work = work;
@@ -57,13 +55,6 @@ namespace Greatbone.Core
                     @do = (Action<ActionContext>)mi.CreateDelegate(typeof(Action<ActionContext>), work);
                 }
             }
-
-            // state
-            var states = (StateAttribute[])mi.GetCustomAttributes(typeof(StateAttribute), false);
-            if (states.Length > 0)
-            {
-                state = states[0];
-            }
         }
 
         public Work Work => work;
@@ -73,8 +64,6 @@ namespace Greatbone.Core
         public bool HasSubscpt => subscpt;
 
         public override Service Service => work.Service;
-
-        public StateAttribute State => state;
 
         internal void Do(ActionContext ac, int subscpt)
         {

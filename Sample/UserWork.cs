@@ -41,7 +41,7 @@ namespace Greatbone.Sample
                 string id = null;
                 ac.GiveDialogForm(200, f =>
                 {
-                    f.TEXT(nameof(id), id, Label: "用户编号", Max: 11, Min: 11);
+                    f.TEXT(nameof(id), id, label: "用户编号", max: 11, min: 11);
                 });
             }
             else

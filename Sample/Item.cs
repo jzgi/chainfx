@@ -11,7 +11,7 @@ namespace Greatbone.Sample
         public static readonly Item Empty = new Item();
 
         // status
-        static readonly Map<short> STATUS = new Map<short>
+        static readonly Opt<short> STATUS = new Opt<short>
         {
             [0] = "架下",
             [1] = "展示",
@@ -60,18 +60,18 @@ namespace Greatbone.Sample
             {
                 o.Put(nameof(shopid), shopid);
             }
-            o.Put(nameof(name), name, Label: "品名", Max: 10, Required: true);
+            o.Put(nameof(name), name, label: "品名", max: 10, required: true);
             o.Put(nameof(unit), unit);
             o.Put(nameof(descr), descr);
             if (proj.Bin())
             {
-                o.Put(nameof(icon), icon, Label: "图片", Size: "240,240", Ratio: "1:1", Required: true);
+                o.Put(nameof(icon), icon, label: "图片", size: "240,240", ratio: "1:1", required: true);
             }
             o.Put(nameof(oprice), oprice);
-            o.Put(nameof(price), price, Required: true);
+            o.Put(nameof(price), price, required: true);
             o.Put(nameof(min), min);
             o.Put(nameof(step), step);
-            o.Put(nameof(status), status, Label: "状态", Opt: STATUS);
+            o.Put(nameof(status), status, label: "状态", opt: STATUS);
             if (proj.Immut())
             {
                 o.Put(nameof(sold), sold);

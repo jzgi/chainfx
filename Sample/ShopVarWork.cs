@@ -9,13 +9,15 @@ namespace Greatbone.Sample
     {
         public ShopVarWork(WorkContext wc) : base(wc)
         {
-            Create<ShopOrderWork>("order-" + Order.PAID, new UiAttribute("已付款订单"));
+            Create<ShopUnpaidOrderWork>("unpaid", new UiAttribute("已付款"));
 
-            Create<ShopOrderWork>("order-" + Order.LOCKED, new UiAttribute("已锁定订单"));
+            Create<ShopPaidOrderWork>("paid", new UiAttribute("已锁定"));
 
-            Create<ShopOrderWork>("order-" + Order.CLOSED, new UiAttribute("已完成订单"));
+            Create<ShopFixedOrderWork>("fixed", new UiAttribute("已完成"));
 
-            Create<ShopOrderWork>("order-" + Order.CANCELLED, new UiAttribute("已取消订单"));
+            Create<ShopClosedOrderWork>("closed", new UiAttribute("已撤消"));
+
+            Create<ShopAbortedOrderWork>("aborted", new UiAttribute("已撤消"));
 
             Create<ItemWork>("item", new UiAttribute("货架"));
 

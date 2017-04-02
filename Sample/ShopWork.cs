@@ -102,7 +102,7 @@ namespace Greatbone.Sample
             {
                 ac.GivePageForm(200, nameof(@goto), "请绑定供应点", (x) =>
                 {
-                    x.TEXT(nameof(shopid), shopid, Required: true);
+                    x.TEXT(nameof(shopid), shopid, required: true);
                     x.PASSWORD(nameof(password), password);
                     x.HIDDEN(nameof(orig), orig);
                 });

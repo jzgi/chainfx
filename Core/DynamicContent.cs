@@ -234,7 +234,7 @@ namespace Greatbone.Core
             }
         }
 
-        public void AddConvert<V>(V v) where V : IConvertible
+        public void AddVary<V>(V v) where V : IConvertible
         {
             if (v is short)
             {

@@ -7,7 +7,7 @@ namespace Greatbone.Sample
     {
         public static readonly Shop Empty = new Shop();
 
-        public Map<short> Scopes = new Map<short>
+        public Opt<short> Scopes = new Opt<short>
         {
             [0] = "本地",
             [1] = "全国"
@@ -71,36 +71,36 @@ namespace Greatbone.Sample
         {
             if (proj.Prime())
             {
-                o.Put(nameof(id), id, Label: "编号", Required: true);
+                o.Put(nameof(id), id, label: "编号", required: true);
             }
-            o.Put(nameof(name), name, Label: "名称");
+            o.Put(nameof(name), name, label: "名称");
             if (proj.Secret())
             {
-                o.Put(nameof(password), password, Label: "密码", Max: 20);
+                o.Put(nameof(password), password, label: "密码", max: 20);
             }
             if (proj.Transf())
             {
                 o.Put(nameof(credential), credential);
             }
-            o.Put(nameof(tel), tel, Label: "电话", Max: 11);
+            o.Put(nameof(tel), tel, label: "电话", max: 11);
             if (proj.Late())
             {
                 o.Put(nameof(mgrwx), mgrwx);
             }
-            o.Put(nameof(city), city, Label: "城市", Max: 10);
-            o.Put(nameof(addr), addr, Label: "地址", Max: 10);
+            o.Put(nameof(city), city, label: "城市", max: 10);
+            o.Put(nameof(addr), addr, label: "地址", max: 10);
             o.Put(nameof(x), x);
             o.Put(nameof(y), y);
-            o.Put(nameof(scope), scope, Label: "覆盖", Opt: Scopes);
+            o.Put(nameof(scope), scope, label: "覆盖", opt: Scopes);
             o.Put(nameof(icon), icon);
-            o.Put(nameof(descr), descr, Label: "简语");
+            o.Put(nameof(descr), descr, label: "简语");
             if (proj.Immut())
             {
-                o.Put(nameof(lic), lic, Label: "工商登记");
+                o.Put(nameof(lic), lic, label: "工商登记");
             }
             if (proj.Power())
             {
-                o.Put(nameof(enabled), enabled, Label: "运行中", Opt: (b) => b ? "是" : "否");
+                o.Put(nameof(enabled), enabled, label: "运行中", opt: (b) => b ? "是" : "否");
             }
         }
     }

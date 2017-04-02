@@ -224,7 +224,7 @@ namespace Greatbone.Core
             throw new NotImplementedException();
         }
 
-        public bool Get(string name, ref Map v)
+        public bool Get(string name, ref Dictionary<string, string> v)
         {
             throw new NotImplementedException();
         }
@@ -249,7 +249,7 @@ namespace Greatbone.Core
             throw new NotImplementedException();
         }
 
-        public void WriteData<R>(IDataOutput<R> snk) where R : IDataOutput<R>
+        public void WriteData<R>(IDataOutput<R> o) where R : IDataOutput<R>
         {
             throw new NotImplementedException();
         }

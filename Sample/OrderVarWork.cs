@@ -1,5 +1,4 @@
 using Greatbone.Core;
-using static Greatbone.Sample.Order;
 
 namespace Greatbone.Sample
 {
@@ -16,7 +15,6 @@ namespace Greatbone.Sample
 
         }
 
-        [State(PAID, LOCKED, REASONED)]
         public void ask(ActionContext ac)
         {
             string userid = ac[0];
@@ -56,7 +54,6 @@ namespace Greatbone.Sample
         }
 
         [Ui(Label = "取消")]
-        [State(REASONED, LOCKED | CANCELLED, CANCELLED)]
         public void cannel(ActionContext ac)
         {
             string shopid = ac[0];
@@ -76,7 +73,6 @@ namespace Greatbone.Sample
         }
 
         [Ui(Label = "已备货")]
-        [State(REASONED, LOCKED | CANCELLED, CANCELLED)]
         public void fix(ActionContext ac)
         {
             string shopid = ac[0];
@@ -121,4 +117,40 @@ namespace Greatbone.Sample
         {
         }
     }
+
+    public class ShopUnpaidOrderVarWork : ShopOrderVarWork
+    {
+        public ShopUnpaidOrderVarWork(WorkContext wc) : base(wc)
+        {
+        }
+    }
+
+    public class ShopPaidOrderVarWork : ShopOrderVarWork
+    {
+        public ShopPaidOrderVarWork(WorkContext wc) : base(wc)
+        {
+        }
+    }
+
+    public class ShopLockedOrderVarWork : ShopOrderVarWork
+    {
+        public ShopLockedOrderVarWork(WorkContext wc) : base(wc)
+        {
+        }
+    }
+
+    public class ShopClosedOrderVarWork : ShopOrderVarWork
+    {
+        public ShopClosedOrderVarWork(WorkContext wc) : base(wc)
+        {
+        }
+    }
+
+    public class ShopCancelledOrderVarWork : ShopOrderVarWork
+    {
+        public ShopCancelledOrderVarWork(WorkContext wc) : base(wc)
+        {
+        }
+    }
+
 }

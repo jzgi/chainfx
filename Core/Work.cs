@@ -23,10 +23,6 @@ namespace Greatbone.Core
         // state-passing
         readonly WorkContext wc;
 
-        readonly string major;
-
-        readonly short minor;
-
         // declared actions 
         readonly Roll<ActionInfo> actions;
 
@@ -54,17 +50,6 @@ namespace Greatbone.Core
         protected Work(WorkContext wc) : base(wc.Name, null)
         {
             this.wc = wc;
-            // separate major and minor name parts
-            int dash = Name.IndexOf('-');
-            if (dash != -1)
-            {
-                major = Name.Substring(0, dash);
-                minor = Name.Substring(dash + 1).ToShort();
-            }
-            else
-            {
-                major = Name;
-            }
 
             // gather actions
             actions = new Roll<ActionInfo>(32);
@@ -214,10 +199,6 @@ namespace Greatbone.Core
             varwork = work;
             return work;
         }
-
-        public string Major => major;
-
-        public short Minor => minor;
 
         public Roll<ActionInfo> Actions => actions;
 

@@ -14,18 +14,18 @@ namespace Greatbone.Sample
             CREATED = 0,
             PAID = 1,
             LOCKED = 2,
-            CANCELLED = 4,
+            ABORTED = 4,
             CLOSED = 8,
 
             REASONED = 0x0100; // asked for cancelling
 
         // status
-        static readonly Map<short> STATUS = new Map<short>
+        static readonly Opt<short> STATUS = new Opt<short>
         {
             [CREATED] = "新创建，等待付款",
             [PAID] = "已付款，等待处理",
             [LOCKED] = "处理中",
-            [CANCELLED] = "已取消",
+            [ABORTED] = "已取消",
             [CLOSED] = "已结束",
         };
 
@@ -104,7 +104,7 @@ namespace Greatbone.Sample
             {
                 o.Put(nameof(lines), lines);
             }
-            o.Put(nameof(status), status, Opt: STATUS);
+            o.Put(nameof(status), status, opt: STATUS);
             if (proj.Auto())
             {
                 o.Put(nameof(created), created);

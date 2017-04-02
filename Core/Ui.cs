@@ -5,19 +5,20 @@ namespace Greatbone.Core
 
     public enum UiMode
     {
-        Script = 22,
+        Link = 0x10,
 
-        Link = 0,
+        LinkDialog = 0x12,
 
-        LinkDialog = 1,
+        AnchorDialog = 0x22,
 
-        AnchorDialog = 10,
+        Button = 0x40,
 
-        Button = 20,
+        ButtonConfirm = 0x41,
 
-        ButtonConfirm = 21,
+        ButtonDialog = 0x42,
 
-        ButtonDialog = 22,
+        ButtonScript = 0x44,
+
     }
 
     /// 
@@ -42,6 +43,19 @@ namespace Greatbone.Core
         public UiMode Mode { get; set; }
 
         public int Limit { get; set; }
+
+        public int State { get; set; }
+
+        public bool IsButton => ((int)Mode & 0x40) == 0x40;
+
+        public bool IsAnchor => ((int)Mode & 0x20) == 0x20;
+
+        public bool IsLink => ((int)Mode & 0x10) == 0x10;
+
+        public bool HasConfirm => ((int)Mode & 0x01) == 0x01;
+
+        public bool HasDialog => ((int)Mode & 0x02) == 0x02;
+
     }
 
 }

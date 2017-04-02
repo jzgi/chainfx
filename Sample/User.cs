@@ -11,7 +11,7 @@ namespace Greatbone.Sample
         public static readonly User Empty = new User();
 
         // admin types
-        static readonly Map<short> ADMIN = new Map<short>
+        static readonly Opt<short> ADMIN = new Opt<short>
         {
             [0] = null,
             [2] = "本地管理员",
@@ -67,14 +67,14 @@ namespace Greatbone.Sample
         {
             if (proj.Prime())
             {
-                o.Put(nameof(wx), wx, Label: "编号");
+                o.Put(nameof(wx), wx, label: "编号");
             }
-            o.Put(nameof(nickname), nickname, Label: "昵称");
-            o.Put(nameof(name), name, Label: "姓名");
-            o.Put(nameof(tel), tel, Label: "电话");
+            o.Put(nameof(nickname), nickname, label: "昵称");
+            o.Put(nameof(name), name, label: "姓名");
+            o.Put(nameof(tel), tel, label: "电话");
             if (proj.Secret())
             {
-                o.Put(nameof(password), password, Label: "密码");
+                o.Put(nameof(password), password, label: "密码");
             }
             if (proj.Transf())
             {
@@ -85,8 +85,8 @@ namespace Greatbone.Sample
             o.Put(nameof(created), created);
             if (proj.Late())
             {
-                o.Put(nameof(shopid), shopid, Label: "供应点");
-                o.Put(nameof(admin), admin, Label: "管理员");
+                o.Put(nameof(shopid), shopid, label: "供应点");
+                o.Put(nameof(admin), admin, label: "管理员");
             }
             if (proj.Ctrl())
             {

@@ -31,7 +31,6 @@ namespace Greatbone.Sample
         }
 
         [Ui]
-        [State]
         public void cancel(ActionContext ac)
         {
         }

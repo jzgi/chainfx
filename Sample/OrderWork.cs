@@ -16,10 +16,9 @@ namespace Greatbone.Sample
         public void _(ActionContext ac, int page)
         {
             string shopid = ac[typeof(ShopVarWork)];
-            short status = Minor;
             using (var dc = ac.NewDbContext())
             {
-                if (dc.Query("SELECT * FROM orders WHERE shopid = @1 AND status = @2 ORDER BY id LIMIT 20 OFFSET @3", p => p.Set(shopid).Set(status).Set(page * 20)))
+                if (dc.Query("SELECT * FROM orders WHERE shopid = @1 AND status = 2 ORDER BY id LIMIT 20 OFFSET @3", p => p.Set(shopid).Set(page * 20)))
                 {
                     ac.GiveWorkPage(Parent, 200, dc.ToList<Order>());
                 }
@@ -50,7 +49,6 @@ namespace Greatbone.Sample
         }
 
         [Ui("核对付款")]
-        [State(REASONED, LOCKED | CANCELLED, CANCELLED)]
         public async Task check(ActionContext ac)
         {
             string shopid = ac[0];
@@ -71,13 +69,11 @@ namespace Greatbone.Sample
         }
 
         [Ui("标注完成")]
-        [State(REASONED, LOCKED | CANCELLED, CANCELLED)]
         public void close(ActionContext ac)
         {
         }
 
         [Ui("取消")]
-        [State(REASONED, LOCKED | CANCELLED, CANCELLED)]
         public async Task cancel(ActionContext ac)
         {
             string shopid = ac[0];
@@ -148,14 +144,21 @@ namespace Greatbone.Sample
 
     }
 
-    public class ShopOrderWork : OrderWork<ShopOrderVarWork>
+    public class ShopOrderWork<V> : OrderWork<V> where V : ShopOrderVarWork
     {
         public ShopOrderWork(WorkContext wc) : base(wc)
         {
         }
 
+    }
+
+    public class ShopUnpaidOrderWork : ShopOrderWork<ShopUnpaidOrderVarWork>
+    {
+        public ShopUnpaidOrderWork(WorkContext wc) : base(wc)
+        {
+        }
+
         [Ui("锁定/处理")]
-        [State(REASONED, LOCKED | CANCELLED, CANCELLED)]
         public async Task @lock(ActionContext ac)
         {
             string shopid = ac[0];
@@ -174,6 +177,115 @@ namespace Greatbone.Sample
                 }
             }
         }
-
     }
+
+    public class ShopPaidOrderWork : ShopOrderWork<ShopPaidOrderVarWork>
+    {
+        public ShopPaidOrderWork(WorkContext wc) : base(wc)
+        {
+        }
+
+        [Ui("锁定/处理")]
+        public async Task @lock(ActionContext ac)
+        {
+            string shopid = ac[0];
+            Form frm = await ac.ReadAsync<Form>();
+            int[] pk = frm[nameof(pk)];
+
+            using (var dc = ac.NewDbContext())
+            {
+                dc.Sql("UPDATE orders SET ").setstate()._(" WHERE id = @1 AND shopid = @2 AND ").statecond();
+                if (dc.Query(p => p.Set(pk).Set(shopid)))
+                {
+                    var order = dc.ToArray<Order>();
+                }
+                else
+                {
+                }
+            }
+        }
+    }
+
+    public class ShopFixedOrderWork : ShopOrderWork<ShopLockedOrderVarWork>
+    {
+        public ShopFixedOrderWork(WorkContext wc) : base(wc)
+        {
+        }
+
+        [Ui("锁定/处理")]
+        public async Task @lock(ActionContext ac)
+        {
+            string shopid = ac[0];
+            Form frm = await ac.ReadAsync<Form>();
+            int[] pk = frm[nameof(pk)];
+
+            using (var dc = ac.NewDbContext())
+            {
+                dc.Sql("UPDATE orders SET ").setstate()._(" WHERE id = @1 AND shopid = @2 AND ").statecond();
+                if (dc.Query(p => p.Set(pk).Set(shopid)))
+                {
+                    var order = dc.ToArray<Order>();
+                }
+                else
+                {
+                }
+            }
+        }
+    }
+
+    public class ShopClosedOrderWork : ShopOrderWork<ShopClosedOrderVarWork>
+    {
+        public ShopClosedOrderWork(WorkContext wc) : base(wc)
+        {
+        }
+
+        [Ui("锁定/处理")]
+        public async Task @lock(ActionContext ac)
+        {
+            string shopid = ac[0];
+            Form frm = await ac.ReadAsync<Form>();
+            int[] pk = frm[nameof(pk)];
+
+            using (var dc = ac.NewDbContext())
+            {
+                dc.Sql("UPDATE orders SET ").setstate()._(" WHERE id = @1 AND shopid = @2 AND ").statecond();
+                if (dc.Query(p => p.Set(pk).Set(shopid)))
+                {
+                    var order = dc.ToArray<Order>();
+                }
+                else
+                {
+                }
+            }
+        }
+    }
+
+    public class ShopAbortedOrderWork : ShopOrderWork<ShopCancelledOrderVarWork>
+    {
+        public ShopAbortedOrderWork(WorkContext wc) : base(wc)
+        {
+        }
+
+        [Ui("锁定/处理")]
+        public async Task @lock(ActionContext ac)
+        {
+            string shopid = ac[0];
+            Form frm = await ac.ReadAsync<Form>();
+            int[] pk = frm[nameof(pk)];
+
+            using (var dc = ac.NewDbContext())
+            {
+                dc.Sql("UPDATE orders SET ").setstate()._(" WHERE id = @1 AND shopid = @2 AND ").statecond();
+                if (dc.Query(p => p.Set(pk).Set(shopid)))
+                {
+                    var order = dc.ToArray<Order>();
+                }
+                else
+                {
+                }
+            }
+        }
+    }
+
+
 }

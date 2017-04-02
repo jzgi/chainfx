@@ -228,7 +228,7 @@ namespace Greatbone.Core
             return false;
         }
 
-        public bool Get(string name, ref Map v)
+        public bool Get(string name, ref Dictionary<string, string> v)
         {
             JMbr mbr;
             if (TryGet(name, out mbr))
@@ -237,7 +237,7 @@ namespace Greatbone.Core
                 {
                     JObj jo = mbr;
                     int count = jo.Count;
-                    Map dict = new Map(count);
+                    Dictionary<string, string> dict = new Dictionary<string, string>(count);
                     for (int i = 0; i < count; i++)
                     {
                         JMbr e = jo[i];

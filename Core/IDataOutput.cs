@@ -16,38 +16,38 @@ namespace Greatbone.Core
 
         R PutRaw(string name, string raw);
 
-        R Put(string name, bool v, Func<bool, string> Opt = null, string Label = null, bool Required = false);
+        R Put(string name, bool v, Func<bool, string> opt = null, string label = null, bool required = false);
 
-        R Put(string name, short v, Map<short> Opt = null, string Label = null, string Help = null, short Max = 0, short Min = 0, short Step = 0, bool ReadOnly = false, bool Required = false);
+        R Put(string name, short v, Opt<short> opt = null, string label = null, string help = null, short max = 0, short min = 0, short step = 0, bool @readonly = false, bool required = false);
 
-        R Put(string name, int v, Map<int> Opt = null, string Label = null, string Help = null, int Max = 0, int Min = 0, int Step = 0, bool ReadOnly = false, bool Required = false);
+        R Put(string name, int v, Opt<int> opt = null, string label = null, string help = null, int max = 0, int min = 0, int step = 0, bool @readonly = false, bool required = false);
 
-        R Put(string name, long v, Map<long> Opt = null, string Label = null, string Help = null, long Max = 0, long Min = 0, long Step = 0, bool ReadOnly = false, bool Required = false);
+        R Put(string name, long v, Opt<long> opt = null, string label = null, string help = null, long max = 0, long min = 0, long step = 0, bool @readonly = false, bool required = false);
 
-        R Put(string name, double v, string Label = null, string Help = null, double Max = 0, double Min = 0, double Step = 0, bool ReadOnly = false, bool Required = false);
+        R Put(string name, double v, string label = null, string help = null, double max = 0, double min = 0, double Step = 0, bool @readonly = false, bool required = false);
 
-        R Put(string name, decimal v, string Label = null, string Help = null, decimal Max = 0, decimal Min = 0, decimal Step = 0, bool ReadOnly = false, bool Required = false);
+        R Put(string name, decimal v, string label = null, string help = null, decimal max = 0, decimal min = 0, decimal step = 0, bool @readonly = false, bool required = false);
 
-        R Put(string name, DateTime v, string Label = null, DateTime Max = default(DateTime), DateTime Min = default(DateTime), int Step = 0, bool ReadOnly = false, bool Required = false);
+        R Put(string name, DateTime v, string label = null, DateTime max = default(DateTime), DateTime min = default(DateTime), int step = 0, bool @readonly = false, bool required = false);
 
-        R Put(string name, string v, Map<string> Opt = null, string Label = null, string Help = null, string Pattern = null, short Max = 0, short Min = 0, bool ReadOnly = false, bool Required = false);
+        R Put(string name, string v, Opt<string> opt = null, string label = null, string help = null, string pattern = null, short max = 0, short min = 0, bool @readonly = false, bool required = false);
 
-        R Put(string name, ArraySegment<byte> v, string Label = null, string Size = null, string Ratio = null, bool Required = false);
+        R Put(string name, ArraySegment<byte> v, string label = null, string size = null, string ratio = null, bool required = false);
 
-        R Put(string name, short[] v, Map<short> Opt = null, string Label = null, string Help = null, bool ReadOnly = false, bool Required = false);
+        R Put(string name, short[] v, Opt<short> opt = null, string label = null, string help = null, bool @readonly = false, bool Required = false);
 
-        R Put(string name, int[] v, Map<int> Opt = null, string Label = null, string Help = null, bool ReadOnly = false, bool Required = false);
+        R Put(string name, int[] v, Opt<int> opt = null, string label = null, string help = null, bool @readonly = false, bool required = false);
 
-        R Put(string name, long[] v, Map<long> Opt = null, string Label = null, string Help = null, bool ReadOnly = false, bool Required = false);
+        R Put(string name, long[] v, Opt<long> opt = null, string label = null, string help = null, bool @readonly = false, bool required = false);
 
-        R Put(string name, string[] v, Map<string> Opt = null, string Label = null, string Help = null, bool ReadOnly = false, bool Required = false);
+        R Put(string name, string[] v, Opt<string> opt = null, string label = null, string help = null, bool @readonly = false, bool required = false);
 
-        R Put(string name, Map v, string Label = null, string Help = null, bool ReadOnly = false, bool Required = false);
+        R Put(string name, Dictionary<string, string> v, string label = null, string help = null, bool @readonly = false, bool required = false);
 
-        R Put(string name, IData v, int proj = 0, string Label = null, string Help = null, bool ReadOnly = false, bool Required = false);
+        R Put(string name, IData v, int proj = 0, string label = null, string help = null, bool @readonly = false, bool required = false);
 
-        R Put<D>(string name, D[] v, int proj = 0, string Label = null, string Help = null, bool ReadOnly = false, bool Required = false) where D : IData;
+        R Put<D>(string name, D[] v, int proj = 0, string label = null, string help = null, bool @readonly = false, bool required = false) where D : IData;
 
-        R Put<D>(string name, List<D> v, int proj = 0, string Label = null, string Help = null, bool ReadOnly = false, bool Required = false) where D : IData;
+        R Put<D>(string name, List<D> v, int proj = 0, string label = null, string help = null, bool @readonly = false, bool required = false) where D : IData;
     }
 }

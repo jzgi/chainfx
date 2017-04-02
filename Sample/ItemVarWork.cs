@@ -73,7 +73,7 @@ namespace Greatbone.Sample
                         string note = null;
                         ac.GiveDialogForm(200, f =>
                         {
-                            f.NUMBER(nameof(qty), qty, Min: min, Step: step);
+                            f.NUMBER(nameof(qty), qty, min: min, step: step);
                             f.TEXTAREA(nameof(note), note);
                         });
                     }

@@ -138,7 +138,7 @@ namespace Greatbone.Core
             return jo != null && jo.Get(name, ref v);
         }
 
-        public bool Get(string name, ref Map v)
+        public bool Get(string name, ref Dictionary<string, string> v)
         {
             throw new NotImplementedException();
         }
