@@ -6,7 +6,7 @@ namespace Greatbone.Sample
 {
     ///
     ///
-    public class ItemWork : Work
+    public abstract class ItemWork<V> : Work where V : ItemVarWork
     {
         public ItemWork(WorkContext fc) : base(fc)
         {
@@ -127,6 +127,13 @@ namespace Greatbone.Sample
                     ac.Give(303); // see other
                 }
             }
+        }
+    }
+
+    public class OprItemWork : ItemWork<OprItemVarWork>
+    {
+        public OprItemWork(WorkContext wc) : base(wc)
+        {
         }
     }
 }

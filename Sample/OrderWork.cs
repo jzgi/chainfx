@@ -1,7 +1,6 @@
 ﻿using System.Collections.Generic;
 using System.Threading.Tasks;
 using Greatbone.Core;
-using static Greatbone.Sample.Order;
 
 namespace Greatbone.Sample
 {
@@ -12,8 +11,7 @@ namespace Greatbone.Sample
             CreateVar<V>();
         }
 
-        [User]
-        public void _(ActionContext ac, int page)
+        public virtual void @default(ActionContext ac, int page)
         {
             string shopid = ac[typeof(ShopVarWork)];
             using (var dc = ac.NewDbContext())
@@ -111,7 +109,6 @@ namespace Greatbone.Sample
             }
         }
 
-        [User]
         [Ui]
         public void clear(ActionContext ac)
         {
@@ -120,7 +117,6 @@ namespace Greatbone.Sample
         }
 
 
-        [User]
         [Ui]
         public void exam(ActionContext ac)
         {
@@ -129,13 +125,12 @@ namespace Greatbone.Sample
 
     }
 
-    public class UserOrderWork : OrderWork<UserOrderVarWork>
+    public abstract class MyOrderWork<V> : OrderWork<V> where V : MyOrderVarWork
     {
-        public UserOrderWork(WorkContext wc) : base(wc)
+        public MyOrderWork(WorkContext wc) : base(wc)
         {
         }
 
-        [User]
         [Ui]
         public void ask(ActionContext ac)
         {
@@ -144,17 +139,45 @@ namespace Greatbone.Sample
 
     }
 
-    public class ShopOrderWork<V> : OrderWork<V> where V : ShopOrderVarWork
+    public class MyCartOrderWork : MyOrderWork<MyCartOrderVarWork>
     {
-        public ShopOrderWork(WorkContext wc) : base(wc)
+        public MyCartOrderWork(WorkContext wc) : base(wc)
+        {
+        }
+
+        [Ui]
+        public void ask(ActionContext ac)
+        {
+            // string shopid = wc.Var(null);
+        }
+
+    }
+
+    public class MyRestOrderWork : MyOrderWork<MyCartOrderVarWork>
+    {
+        public MyRestOrderWork(WorkContext wc) : base(wc)
+        {
+        }
+
+        [Ui]
+        public void ask(ActionContext ac)
+        {
+            // string shopid = wc.Var(null);
+        }
+
+    }
+
+    public abstract class MgrOrderWork<V> : OrderWork<V> where V : MgrOrderVarWork
+    {
+        public MgrOrderWork(WorkContext wc) : base(wc)
         {
         }
 
     }
 
-    public class ShopUnpaidOrderWork : ShopOrderWork<ShopUnpaidOrderVarWork>
+    public class MgrUnpaidOrderWork : MgrOrderWork<MgrUnpaidOrderVarWork>
     {
-        public ShopUnpaidOrderWork(WorkContext wc) : base(wc)
+        public MgrUnpaidOrderWork(WorkContext wc) : base(wc)
         {
         }
 
@@ -179,9 +202,9 @@ namespace Greatbone.Sample
         }
     }
 
-    public class ShopPaidOrderWork : ShopOrderWork<ShopPaidOrderVarWork>
+    public class MgrPaidOrderWork : MgrOrderWork<MgrPaidOrderVarWork>
     {
-        public ShopPaidOrderWork(WorkContext wc) : base(wc)
+        public MgrPaidOrderWork(WorkContext wc) : base(wc)
         {
         }
 
@@ -206,9 +229,9 @@ namespace Greatbone.Sample
         }
     }
 
-    public class ShopFixedOrderWork : ShopOrderWork<ShopLockedOrderVarWork>
+    public class MgrFixedOrderWork : MgrOrderWork<MgrLockedOrderVarWork>
     {
-        public ShopFixedOrderWork(WorkContext wc) : base(wc)
+        public MgrFixedOrderWork(WorkContext wc) : base(wc)
         {
         }
 
@@ -233,9 +256,9 @@ namespace Greatbone.Sample
         }
     }
 
-    public class ShopClosedOrderWork : ShopOrderWork<ShopClosedOrderVarWork>
+    public class MgrClosedOrderWork : MgrOrderWork<MgrClosedOrderVarWork>
     {
-        public ShopClosedOrderWork(WorkContext wc) : base(wc)
+        public MgrClosedOrderWork(WorkContext wc) : base(wc)
         {
         }
 
@@ -260,9 +283,9 @@ namespace Greatbone.Sample
         }
     }
 
-    public class ShopAbortedOrderWork : ShopOrderWork<ShopCancelledOrderVarWork>
+    public class MgrAbortedOrderWork : MgrOrderWork<MgrAbortedOrderVarWork>
     {
-        public ShopAbortedOrderWork(WorkContext wc) : base(wc)
+        public MgrAbortedOrderWork(WorkContext wc) : base(wc)
         {
         }
 

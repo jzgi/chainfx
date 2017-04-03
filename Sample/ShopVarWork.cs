@@ -9,19 +9,6 @@ namespace Greatbone.Sample
     {
         public ShopVarWork(WorkContext wc) : base(wc)
         {
-            Create<ShopUnpaidOrderWork>("unpaid", new UiAttribute("已付款"));
-
-            Create<ShopPaidOrderWork>("paid", new UiAttribute("已锁定"));
-
-            Create<ShopFixedOrderWork>("fixed", new UiAttribute("已完成"));
-
-            Create<ShopClosedOrderWork>("closed", new UiAttribute("已撤消"));
-
-            Create<ShopAbortedOrderWork>("aborted", new UiAttribute("已撤消"));
-
-            Create<ItemWork>("item", new UiAttribute("货架"));
-
-            Create<ShopRepayWork>("repay", new UiAttribute("平台结款"));
         }
 
         public void @default(ActionContext ac)
@@ -149,6 +136,40 @@ namespace Greatbone.Sample
         }
 
         public void invoice(ActionContext ac)
+        {
+        }
+    }
+
+    public class PubShopVarWork : ShopVarWork
+    {
+        public PubShopVarWork(WorkContext wc) : base(wc)
+        {
+        }
+    }
+
+    public class OprShopVarWork : ShopVarWork
+    {
+        public OprShopVarWork(WorkContext wc) : base(wc)
+        {
+            Create<MgrUnpaidOrderWork>("unpaid", new UiAttribute("已付款"));
+
+            Create<MgrPaidOrderWork>("paid", new UiAttribute("已锁定"));
+
+            Create<MgrFixedOrderWork>("fixed", new UiAttribute("已完成"));
+
+            Create<MgrClosedOrderWork>("closed", new UiAttribute("已撤消"));
+
+            Create<MgrAbortedOrderWork>("aborted", new UiAttribute("已撤消"));
+
+            Create<OprItemWork>("item", new UiAttribute("货架"));
+
+            Create<MgrRepayWork>("repay", new UiAttribute("平台结款"));
+        }
+    }
+
+    public class AdmShopVarWork : ShopVarWork
+    {
+        public AdmShopVarWork(WorkContext wc) : base(wc)
         {
         }
     }

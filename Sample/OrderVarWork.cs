@@ -1,3 +1,4 @@
+using System.Threading.Tasks;
 using Greatbone.Core;
 
 namespace Greatbone.Sample
@@ -6,12 +7,60 @@ namespace Greatbone.Sample
     ///
     public abstract class OrderVarWork : Work
     {
+        static readonly Connector WcPay = new Connector("https://api.mch.weixin.qq.com");
+
         public OrderVarWork(WorkContext wc) : base(wc)
         {
         }
 
         public void my(ActionContext ac)
         {
+
+        }
+
+        ///
+        ///
+        public async Task prepay(ActionContext ac)
+        {
+            string wx = ac[0];
+
+            int index = 0;
+
+            // // store backet to db
+            // string openid = ac.Cookies[nameof(openid)];
+
+            Order order = null;
+
+            // save the order and call prepay api
+            using (var dc = Service.NewDbContext())
+            {
+                dc.Sql("INSERT INFO orders ")._(Order.Empty)._VALUES_(Order.Empty);
+
+                dc.Execute(p => order.WriteData(p));
+
+                XmlContent xml = new XmlContent();
+                xml.ELEM("xml", null, () =>
+                {
+                    xml.ELEM("appid", "");
+                    xml.ELEM("mch_id", "");
+                    xml.ELEM("nonce_str", "");
+                    xml.ELEM("sign", "");
+                    xml.ELEM("body", "");
+                    xml.ELEM("out_trade_no", "");
+                    xml.ELEM("total_fee", "");
+                    xml.ELEM("notify_url", "");
+                    xml.ELEM("trade_type", "");
+                    xml.ELEM("openid", "");
+                });
+                var rsp = await WcPay.PostAsync("/pay/unifiedorder", xml);
+                // rsp.ReadAsync<XElem>();
+            }
+
+            //  call weixin to prepay
+            XmlContent cont = new XmlContent()
+                .Put("out_trade_no", "")
+                .Put("total_fee", 0);
+            // await WCPay.PostAsync(null, "/pay/unifiedorder", cont);
 
         }
 
@@ -104,51 +153,65 @@ namespace Greatbone.Sample
         }
     }
 
-    public class UserOrderVarWork : OrderVarWork
+    public class MyOrderVarWork : OrderVarWork
     {
-        public UserOrderVarWork(WorkContext wc) : base(wc)
+        public MyOrderVarWork(WorkContext wc) : base(wc)
         {
         }
     }
 
-    public class ShopOrderVarWork : OrderVarWork
+    public class MyCartOrderVarWork : MyOrderVarWork
     {
-        public ShopOrderVarWork(WorkContext wc) : base(wc)
+        public MyCartOrderVarWork(WorkContext wc) : base(wc)
         {
         }
     }
 
-    public class ShopUnpaidOrderVarWork : ShopOrderVarWork
+    public class MyRestOrderVarWork : MyOrderVarWork
     {
-        public ShopUnpaidOrderVarWork(WorkContext wc) : base(wc)
+        public MyRestOrderVarWork(WorkContext wc) : base(wc)
         {
         }
     }
 
-    public class ShopPaidOrderVarWork : ShopOrderVarWork
+    public class MgrOrderVarWork : OrderVarWork
     {
-        public ShopPaidOrderVarWork(WorkContext wc) : base(wc)
+        public MgrOrderVarWork(WorkContext wc) : base(wc)
         {
         }
     }
 
-    public class ShopLockedOrderVarWork : ShopOrderVarWork
+    public class MgrUnpaidOrderVarWork : MgrOrderVarWork
     {
-        public ShopLockedOrderVarWork(WorkContext wc) : base(wc)
+        public MgrUnpaidOrderVarWork(WorkContext wc) : base(wc)
         {
         }
     }
 
-    public class ShopClosedOrderVarWork : ShopOrderVarWork
+    public class MgrPaidOrderVarWork : MgrOrderVarWork
     {
-        public ShopClosedOrderVarWork(WorkContext wc) : base(wc)
+        public MgrPaidOrderVarWork(WorkContext wc) : base(wc)
         {
         }
     }
 
-    public class ShopCancelledOrderVarWork : ShopOrderVarWork
+    public class MgrLockedOrderVarWork : MgrOrderVarWork
     {
-        public ShopCancelledOrderVarWork(WorkContext wc) : base(wc)
+        public MgrLockedOrderVarWork(WorkContext wc) : base(wc)
+        {
+        }
+    }
+
+    public class MgrClosedOrderVarWork : MgrOrderVarWork
+    {
+        public MgrClosedOrderVarWork(WorkContext wc) : base(wc)
+        {
+        }
+    }
+
+    public class MgrAbortedOrderVarWork : MgrOrderVarWork
+    {
+        public MgrAbortedOrderVarWork(WorkContext wc) : base(wc)
         {
         }
     }

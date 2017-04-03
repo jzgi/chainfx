@@ -8,9 +8,6 @@ namespace Greatbone.Sample
     {
         public UserVarWork(WorkContext fc) : base(fc)
         {
-            Create<CartWork>("cart");
-
-            Create<UserOrderWork>("order");
         }
 
         public void _(ActionContext ac, int page)
@@ -55,6 +52,23 @@ namespace Greatbone.Sample
 
         [Ui("设置密码", Mode = UiMode.AnchorDialog)]
         public void pass(ActionContext ac)
+        {
+        }
+    }
+
+    public class MyUserVarWork : UserVarWork
+    {
+        public MyUserVarWork(WorkContext fc) : base(fc)
+        {
+            Create<MyCartOrderWork>("cart");
+
+            Create<MyRestOrderWork>("rest");
+        }
+    }
+
+    public class AdmUserVarWork : UserVarWork
+    {
+        public AdmUserVarWork(WorkContext fc) : base(fc)
         {
         }
     }

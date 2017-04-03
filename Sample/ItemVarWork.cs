@@ -7,7 +7,7 @@ namespace Greatbone.Sample
     ///
     public class ItemVarWork : Work
     {
-        public ItemVarWork(WorkContext fc) : base(fc)
+        public ItemVarWork(WorkContext wc) : base(wc)
         {
         }
 
@@ -103,6 +103,13 @@ namespace Greatbone.Sample
 
                 }
             }
+        }
+    }
+
+    public class OprItemVarWork : ItemVarWork
+    {
+        public OprItemVarWork(WorkContext wc) : base(wc)
+        {
         }
     }
 }

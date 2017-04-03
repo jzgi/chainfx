@@ -113,16 +113,16 @@ namespace Greatbone.Sample
         }
     }
 
-    public class ShopRepayWork : RepayWork<ShopRepayVarWork>
+    public class MgrRepayWork : RepayWork<MgrRepayVarWork>
     {
-        public ShopRepayWork(WorkContext wc) : base(wc)
+        public MgrRepayWork(WorkContext wc) : base(wc)
         {
         }
     }
 
-    public class SysRepayWork : RepayWork<SysRepayVarWork>
+    public class AdmRepayWork : RepayWork<AdmRepayVarWork>
     {
-        public SysRepayWork(WorkContext wc) : base(wc)
+        public AdmRepayWork(WorkContext wc) : base(wc)
         {
         }
     }

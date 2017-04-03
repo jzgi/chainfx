@@ -3,8 +3,7 @@ using static Greatbone.Core.Proj;
 
 namespace Greatbone.Sample
 {
-    [Ui("用户管理")]
-    public class UserWork : Work
+    public class UserWork<V> : Work where V : UserVarWork
     {
         public UserWork(WorkContext wc) : base(wc)
         {
@@ -66,6 +65,20 @@ namespace Greatbone.Sample
 
         [Ui]
         public void aggr(ActionContext ac)
+        {
+        }
+    }
+
+    public class MyUserWork : UserWork<MyUserVarWork>
+    {
+        public MyUserWork(WorkContext wc) : base(wc)
+        {
+        }
+    }
+
+    public class AdmUserWork : UserWork<MyUserVarWork>
+    {
+        public AdmUserWork(WorkContext wc) : base(wc)
         {
         }
     }
