@@ -18,11 +18,10 @@ namespace Greatbone.Core
         static readonly List<Service> Services = new List<Service>(8);
 
 
-        public static bool TryCreate<S>(ServiceContext sc, bool load, UiAttribute ui = null, AuthorizeAttribute auth = null) where S : Service
+        public static bool TryCreate<S>(ServiceContext sc, bool load, object attachment = null) where S : Service
         {
             // initialize work context
-            sc.Ui = ui;
-            sc.Authorize = auth;
+            sc.Attachment = attachment;
             sc.Parent = null;
             sc.Level = 0;
             sc.Directory = sc.Name;

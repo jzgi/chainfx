@@ -3,11 +3,31 @@ using static Greatbone.Core.Proj;
 
 namespace Greatbone.Sample
 {
-    public class UserWork<V> : Work where V : UserVarWork
+    public abstract class UserWork<V> : Work where V : UserVarWork
     {
         public UserWork(WorkContext wc) : base(wc)
         {
+            CreateVar<V>((obj) => ((User)obj).wx);
         }
+    }
+
+    /// <summary>
+    /// 
+    /// </summary>
+    public class MyUserWork : UserWork<MyUserVarWork>
+    {
+        public MyUserWork(WorkContext wc) : base(wc) { }
+    }
+
+
+
+    /// <summary>
+    /// 
+    /// </summary>
+    [Ui("用户管理")]
+    public class AdmUserWork : UserWork<AdmUserVarWork>
+    {
+        public AdmUserWork(WorkContext wc) : base(wc) { }
 
         public void @default(ActionContext ac)
         {
@@ -62,23 +82,9 @@ namespace Greatbone.Sample
             }
         }
 
+
         [Ui]
         public void aggr(ActionContext ac)
-        {
-        }
-    }
-
-    public class MyUserWork : UserWork<MyUserVarWork>
-    {
-        public MyUserWork(WorkContext wc) : base(wc)
-        {
-            CreateVar<MyUserVarWork>((prin) => ((User)prin).wx);
-        }
-    }
-
-    public class AdmUserWork : UserWork<MyUserVarWork>
-    {
-        public AdmUserWork(WorkContext wc) : base(wc)
         {
         }
     }

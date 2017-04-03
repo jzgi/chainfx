@@ -10,12 +10,6 @@ namespace Greatbone.Core
     {
         public Nodule Nodule { get; internal set; }
 
-        public bool Start { get; set; }
-
-        public bool End { get; set; }
-
-        public abstract void Or(AuthorizeAttribute another);
-
         public abstract bool Check(ActionContext ac);
     }
 }

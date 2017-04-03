@@ -202,6 +202,7 @@ namespace Greatbone.Sample
         }
     }
 
+    [Ui("供应点管理")]
     public class AdmShopWork : ShopWork<AdmShopVarWork>
     {
         public AdmShopWork(WorkContext wc) : base(wc)

@@ -3,7 +3,7 @@
 namespace Greatbone.Core
 {
     ///
-    /// The environment for a particular work.
+    /// The creation environment for a particular work instance.
     ///
     public class WorkContext
     {
@@ -18,9 +18,7 @@ namespace Greatbone.Core
 
         public string Name => name;
 
-        public AuthorizeAttribute Authorize { get; internal set; }
-
-        public UiAttribute Ui { get; internal set; }
+        public object Attachment { get; internal set; }
 
         public int Level { get; internal set; }
 

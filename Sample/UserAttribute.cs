@@ -4,30 +4,21 @@ namespace Greatbone.Sample
 {
     public class UserAttribute : AuthorizeAttribute
     {
-        bool shopmgr;
+        bool mgr;
 
-        short admin;
+        short adm;
 
         public UserAttribute() : this(false, 0) { }
 
-        public UserAttribute(bool shopmgr, short admin)
+        public UserAttribute(bool mgr, short adm)
         {
-            this.shopmgr = shopmgr;
-            this.admin = admin;
+            this.mgr = mgr;
+            this.adm = adm;
         }
 
-        public bool ShopMgr => shopmgr;
+        public bool IsMgr => mgr;
 
-        public short Admin => admin;
-
-        public override void Or(AuthorizeAttribute another)
-        {
-            var ua = another as UserAttribute;
-            if (ua == null) return;
-
-            shopmgr |= ua.shopmgr;
-            admin |= ua.admin;
-        }
+        public short IsAdm => adm;
 
         public override bool Check(ActionContext ac)
         {
@@ -35,12 +26,12 @@ namespace Greatbone.Sample
 
             if (prin == null) return false;
 
-            if (shopmgr && prin.shopid == null)
+            if (mgr && prin.shopid == null)
             {
                 return false;
             }
 
-            if (admin != 0 && admin > prin.admin)
+            if (adm != 0 && adm > prin.admin)
             {
                 return false;
             }

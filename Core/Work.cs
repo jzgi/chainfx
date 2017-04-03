@@ -29,9 +29,6 @@ namespace Greatbone.Core
         // the default action, can be null
         readonly ActionInfo @default;
 
-        // the underscore action, can be null. 
-        readonly ActionInfo under;
-
         // the goto action, can be null
         readonly ActionInfo @goto;
 
@@ -45,7 +42,7 @@ namespace Greatbone.Core
         internal Work varwork;
 
         // to obtain a string key from a data object.
-        Func<IData, string> keyer;
+        Func<IData, string> varkey;
 
         protected Work(WorkContext wc) : base(wc.Name, null)
         {
@@ -77,44 +74,7 @@ namespace Greatbone.Core
 
                 actions.Add(ai);
                 if (ai.Name.Equals("default")) { @default = ai; }
-                if (ai.Name.Equals("_")) { under = ai; }
                 if (ai.Name.Equals("goto")) { @goto = ai; }
-            }
-            if (@default == null) @default = under;
-
-            // to override annotated attributes
-            if (wc.Ui != null)
-            {
-                ui = wc.Ui;
-            }
-            if (wc.Authorize != null)
-            {
-                authorize = wc.Authorize;
-            }
-
-            // preprocess start-end annotations
-            AuthorizeAttribute start = null;
-            for (int i = 0; i < actions.Count; i++)
-            {
-                ActionInfo ai = actions[i];
-                AuthorizeAttribute auth = ai.authorize;
-
-                if (start != null)
-                {
-                    if (auth == null) ai.authorize = start;
-                    else auth.Or(start);
-                }
-
-                if (auth != null && auth.Start)
-                {
-                    auth.Start = false;
-                    start = auth;
-                }
-                if (auth != null && auth.End)
-                {
-                    auth.End = false;
-                    start = null;
-                }
             }
 
             // gather ui actions
@@ -132,9 +92,9 @@ namespace Greatbone.Core
         }
 
         ///
-        /// Create a child work.
+        /// Create a subwork.
         ///
-        public W Create<W>(string name, UiAttribute ui = null, AuthorizeAttribute auth = null) where W : Work
+        public W Create<W>(string name, object attachment = null) where W : Work
         {
             if (Level >= MaxNesting)
             {
@@ -154,8 +114,7 @@ namespace Greatbone.Core
             }
             WorkContext wc = new WorkContext(name)
             {
-                Ui = ui,
-                Authorize = auth,
+                Attachment = attachment,
                 Parent = this,
                 Level = Level + 1,
                 Directory = (Parent == null) ? name : Path.Combine(Parent.Directory, name),
@@ -168,9 +127,9 @@ namespace Greatbone.Core
         }
 
         ///
-        /// Create a variable-key subwork.
+        /// Create a variable work.
         ///
-        public W CreateVar<W>(Func<IData, string> keyer = null, UiAttribute ui = null, AuthorizeAttribute auth = null) where W : Work
+        public W CreateVar<W>(Func<IData, string> key = null, object attachment = null) where W : Work
         {
             if (Level >= MaxNesting)
             {
@@ -186,8 +145,7 @@ namespace Greatbone.Core
             }
             WorkContext wc = new WorkContext(_VAR_)
             {
-                Ui = ui,
-                Authorize = auth,
+                Attachment = attachment,
                 Parent = this,
                 IsVar = true,
                 Level = Level + 1,
@@ -195,7 +153,7 @@ namespace Greatbone.Core
                 Service = Service
             };
             W work = (W)ci.Invoke(new object[] { wc });
-            this.keyer = keyer;
+            varkey = key;
             varwork = work;
             return work;
         }
@@ -206,15 +164,13 @@ namespace Greatbone.Core
 
         public bool HasDefault => @default != null;
 
-        public bool HasUnder => under != null;
-
         public bool HasGoto => @goto != null;
 
         public Roll<Work> Subworks => subworks;
 
         public Work Varwork => varwork;
 
-        public Func<IData, string> Keyer => keyer;
+        public Func<IData, string> Varkey => varkey;
 
         public string Directory => wc.Directory;
 
@@ -280,10 +236,10 @@ namespace Greatbone.Core
             }
             if (varwork != null) // if variable-key sub
             {
-                if (key.Length == 0 && keyer != null) // resolve varkey
+                if (key.Length == 0 && varkey != null) // resolve varkey
                 {
                     if (ac.Principal == null) throw AuthorizeEx;
-                    if ((key = keyer(ac.Principal)) == null)
+                    if ((key = varkey(ac.Principal)) == null)
                     {
                         if (@goto != null) { recover = true; }
                         return null;
