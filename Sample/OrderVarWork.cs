@@ -83,7 +83,6 @@ namespace Greatbone.Sample
             }
         }
 
-        [User]
         public void @default(ActionContext ac)
         {
             string shopid = ac[0];
@@ -145,7 +144,6 @@ namespace Greatbone.Sample
         }
 
 
-        [User]
         [Ui]
         public void exam(ActionContext ac)
         {

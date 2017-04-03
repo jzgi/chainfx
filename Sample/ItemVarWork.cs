@@ -15,7 +15,6 @@ namespace Greatbone.Sample
         {
         }
 
-        [User]
         public void @default(ActionContext ac)
         {
             string shopid = ac[0];

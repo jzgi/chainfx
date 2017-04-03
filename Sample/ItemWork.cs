@@ -30,7 +30,6 @@ namespace Greatbone.Sample
         }
 
 
-        [User]
         public void _(ActionContext ac)
         {
             string shopid = ac[1];
@@ -47,7 +46,6 @@ namespace Greatbone.Sample
             }
         }
 
-        // [Shop]
         [Ui("新建", Mode = UiMode.AnchorDialog)]
         public async Task @new(ActionContext ac)
         {
@@ -75,7 +73,6 @@ namespace Greatbone.Sample
             }
         }
 
-        [User]
         public void _cat_(ActionContext ac)
         {
             string shopid = ac[1];
@@ -93,7 +90,6 @@ namespace Greatbone.Sample
             }
         }
 
-        [User]
         [Ui("上架/下架")]
         public void toggle(ActionContext ac)
         {
@@ -106,7 +102,6 @@ namespace Greatbone.Sample
             }
         }
 
-        [User]
         [Ui("删除")]
         public async Task modify(ActionContext ac)
         {

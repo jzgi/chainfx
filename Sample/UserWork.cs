@@ -7,10 +7,9 @@ namespace Greatbone.Sample
     {
         public UserWork(WorkContext wc) : base(wc)
         {
-            CreateVar<UserVarWork>((prin) => ((User)prin).wx);
         }
 
-        public void _(ActionContext ac)
+        public void @default(ActionContext ac)
         {
             using (var dc = ac.NewDbContext())
             {
@@ -73,6 +72,7 @@ namespace Greatbone.Sample
     {
         public MyUserWork(WorkContext wc) : base(wc)
         {
+            CreateVar<MyUserVarWork>((prin) => ((User)prin).wx);
         }
     }
 

@@ -5,11 +5,10 @@ using static Greatbone.Core.Proj;
 
 namespace Greatbone.Sample
 {
-    public class ShopWork<V> : Work where V : ShopVarWork
+    public abstract class ShopWork<V> : Work where V : ShopVarWork
     {
         public ShopWork(WorkContext wc) : base(wc)
         {
-            CreateVar<ShopVarWork>((prin) => ((User)prin).shopid);
         }
 
         //
@@ -45,7 +44,6 @@ namespace Greatbone.Sample
             }
         }
 
-        [User()]
         [Ui("新建", Mode = UiMode.AnchorDialog)]
         public async Task @new(ActionContext ac)
         {
@@ -92,8 +90,9 @@ namespace Greatbone.Sample
     {
         public PubShopWork(WorkContext wc) : base(wc)
         {
+            CreateVar<PubShopVarWork>();
         }
-        [User]
+
         public void @default(ActionContext ac)
         {
             bool dlg = ac.Query[nameof(dlg)];
@@ -162,6 +161,7 @@ namespace Greatbone.Sample
     {
         public OprShopWork(WorkContext wc) : base(wc)
         {
+            CreateVar<OprShopVarWork>((prin) => ((User)prin).shopid);
         }
 
         public async Task @goto(ActionContext ac)

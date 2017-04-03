@@ -5,9 +5,78 @@ using static Greatbone.Core.Proj;
 namespace Greatbone.Sample
 {
     [User]
-    public class ShopVarWork : Work
+    public abstract class ShopVarWork : Work
     {
         public ShopVarWork(WorkContext wc) : base(wc)
+        {
+        }
+
+
+        ///
+        /// Get shop items
+        ///
+        /// <code>
+        /// GET /-shopid-/items
+        /// </code>
+        ///
+        public void items(ActionContext ac)
+        {
+            string shopid = ac[0];
+
+            using (var dc = Service.NewDbContext())
+            {
+                dc.Sql("SELECT ").columnlst(Shop.Empty)._("FROM items WHERE @shopid = @1 AND NOT disabled");
+                if (dc.Query(p => p.Set(shopid)))
+                {
+                    var items = dc.ToArray<Item>();
+                }
+                else
+                {
+                }
+            }
+        }
+
+        public void _icon_(ActionContext ac)
+        {
+            string shopid = ac[this];
+
+            using (var dc = Service.NewDbContext())
+            {
+                if (dc.Query1("SELECT icon FROM shops WHERE id = @1", p => p.Set(shopid)))
+                {
+                    var byteas = dc.GetByteAs();
+                    if (byteas.Count == 0) ac.Give(204); // no content 
+                    else
+                    {
+                        StaticContent cont = new StaticContent(byteas);
+                        ac.Give(200, cont);
+                    }
+                }
+                else ac.Give(404); // not found           
+            }
+        }
+
+
+        //
+        // management
+        //
+
+        public void remenu(ActionContext ac)
+        {
+        }
+
+        public void basket(ActionContext ac)
+        {
+        }
+
+        public void invoice(ActionContext ac)
+        {
+        }
+    }
+
+    public class PubShopVarWork : ShopVarWork
+    {
+        public PubShopVarWork(WorkContext wc) : base(wc)
         {
         }
 
@@ -70,81 +139,6 @@ namespace Greatbone.Sample
                 }
             }
         }
-
-        [User]
-        public void _(ActionContext ac)
-        {
-            ac.GiveWorkPage(this, 200, (List<Item>)null);
-        }
-
-        ///
-        /// Get shop items
-        ///
-        /// <code>
-        /// GET /-shopid-/items
-        /// </code>
-        ///
-        public void items(ActionContext ac)
-        {
-            string shopid = ac[0];
-
-            using (var dc = Service.NewDbContext())
-            {
-                dc.Sql("SELECT ").columnlst(Shop.Empty)._("FROM items WHERE @shopid = @1 AND NOT disabled");
-                if (dc.Query(p => p.Set(shopid)))
-                {
-                    var items = dc.ToArray<Item>();
-                }
-                else
-                {
-                }
-            }
-        }
-
-        public void _icon_(ActionContext ac)
-        {
-            string shopid = ac[this];
-
-            using (var dc = Service.NewDbContext())
-            {
-                if (dc.Query1("SELECT icon FROM shops WHERE id = @1", p => p.Set(shopid)))
-                {
-                    var byteas = dc.GetByteAs();
-                    if (byteas.Count == 0) ac.Give(204); // no content 
-                    else
-                    {
-                        StaticContent cont = new StaticContent(byteas);
-                        ac.Give(200, cont);
-                    }
-                }
-                else ac.Give(404); // not found           
-            }
-        }
-
-
-        //
-        // management
-        //
-
-        [User]
-        public void remenu(ActionContext ac)
-        {
-        }
-
-        public void basket(ActionContext ac)
-        {
-        }
-
-        public void invoice(ActionContext ac)
-        {
-        }
-    }
-
-    public class PubShopVarWork : ShopVarWork
-    {
-        public PubShopVarWork(WorkContext wc) : base(wc)
-        {
-        }
     }
 
     public class OprShopVarWork : ShopVarWork
@@ -164,6 +158,11 @@ namespace Greatbone.Sample
             Create<OprItemWork>("item", new UiAttribute("货架"));
 
             Create<MgrRepayWork>("repay", new UiAttribute("平台结款"));
+        }
+
+        public void @default(ActionContext ac)
+        {
+            ac.GiveWorkPage(this, 200, (List<Item>)null);
         }
     }
 

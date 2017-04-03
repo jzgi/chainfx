@@ -17,7 +17,7 @@ namespace Greatbone.Sample
 
             Create<MyUserWork>("my");
 
-            Create<OprShopWork>("shop", new UiAttribute("供应点管理"));
+            Create<OprShopWork>("opr");
 
             Create<AdmWork>("adm");
 
@@ -63,7 +63,6 @@ namespace Greatbone.Sample
             ac.GiveWorkPage(this, 200, (List<Order>)null);
         }
 
-        [User]
         [Ui("清理购物车")]
         public void clear(ActionContext ac)
         {

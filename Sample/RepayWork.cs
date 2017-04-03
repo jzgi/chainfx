@@ -14,7 +14,6 @@ namespace Greatbone.Sample
             CreateVar<V>();
         }
 
-        [User]
         [Ui]
         public void @default(ActionContext ac)
         {
@@ -32,7 +31,6 @@ namespace Greatbone.Sample
             }
         }
 
-        [User]
         public void _cat_(ActionContext ac)
         {
             string shopid = ac[1];
@@ -50,7 +48,6 @@ namespace Greatbone.Sample
             }
         }
 
-        [User]
         [Ui("生成结款单")]
         public void @new(ActionContext ac)
         {
@@ -69,7 +66,6 @@ namespace Greatbone.Sample
             }
         }
 
-        [User]
         [Ui("结款")]
         public async Task pay(ActionContext ac)
         {

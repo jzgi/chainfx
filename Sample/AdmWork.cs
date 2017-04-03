@@ -1,4 +1,5 @@
-﻿using Greatbone.Core;
+﻿using System.Collections.Generic;
+using Greatbone.Core;
 
 namespace Greatbone.Sample
 {
@@ -12,6 +13,12 @@ namespace Greatbone.Sample
             Create<AdmShopWork>("shop");
 
             Create<AdmRepayWork>("repay");
+        }
+
+
+        public void @default(ActionContext ac)
+        {
+            ac.GiveWorkPage(this, 200, (List<Item>)null);
         }
     }
 }
