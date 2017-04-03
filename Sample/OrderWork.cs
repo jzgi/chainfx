@@ -139,6 +139,7 @@ namespace Greatbone.Sample
 
     }
 
+    [Ui("购物车")]
     public class MyCartOrderWork : MyOrderWork<MyCartOrderVarWork>
     {
         public MyCartOrderWork(WorkContext wc) : base(wc)
@@ -153,6 +154,7 @@ namespace Greatbone.Sample
 
     }
 
+    [Ui("订单")]
     public class MyRestOrderWork : MyOrderWork<MyCartOrderVarWork>
     {
         public MyRestOrderWork(WorkContext wc) : base(wc)
@@ -202,6 +204,7 @@ namespace Greatbone.Sample
         }
     }
 
+    [Ui("已付")]
     public class MgrPaidOrderWork : MgrOrderWork<MgrPaidOrderVarWork>
     {
         public MgrPaidOrderWork(WorkContext wc) : base(wc)
@@ -229,6 +232,7 @@ namespace Greatbone.Sample
         }
     }
 
+    [Ui("已锁")]
     public class MgrFixedOrderWork : MgrOrderWork<MgrLockedOrderVarWork>
     {
         public MgrFixedOrderWork(WorkContext wc) : base(wc)
@@ -256,6 +260,7 @@ namespace Greatbone.Sample
         }
     }
 
+    [Ui("已完")]
     public class MgrClosedOrderWork : MgrOrderWork<MgrClosedOrderVarWork>
     {
         public MgrClosedOrderWork(WorkContext wc) : base(wc)
@@ -283,6 +288,7 @@ namespace Greatbone.Sample
         }
     }
 
+    [Ui("已撤")]
     public class MgrAbortedOrderWork : MgrOrderWork<MgrAbortedOrderVarWork>
     {
         public MgrAbortedOrderWork(WorkContext wc) : base(wc)

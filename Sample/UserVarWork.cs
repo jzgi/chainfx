@@ -64,6 +64,11 @@ namespace Greatbone.Sample
 
             Create<MyRestOrderWork>("rest");
         }
+
+        public void @default(ActionContext ac)
+        {
+            ac.GiveWorkPage(this, 200, (List<Item>)null);
+        }
     }
 
     public class AdmUserVarWork : UserVarWork

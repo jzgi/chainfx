@@ -125,9 +125,10 @@ namespace Greatbone.Sample
         }
     }
 
-    public class OprItemWork : ItemWork<OprItemVarWork>
+    [Ui("货架")]
+    public class MgrItemWork : ItemWork<OprItemVarWork>
     {
-        public OprItemWork(WorkContext wc) : base(wc)
+        public MgrItemWork(WorkContext wc) : base(wc)
         {
         }
     }

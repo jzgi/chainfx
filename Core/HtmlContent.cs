@@ -845,8 +845,8 @@ namespace Greatbone.Core
                 Add(" onclick=\"dialog(this,"); Add((int)mode); Add("); return false;\"");
             }
 
-            int state = ui.State;
-            if (state != 0)
+            string state = ui.Enable;
+            if (state != null)
             {
                 // Add(" data-if=\""); Add(state.If); Add("\"");
                 // Add(" data-unif=\""); Add(state.Unif); Add("\"");
@@ -865,7 +865,7 @@ namespace Greatbone.Core
             Add("</button>");
         }
 
-        public void CONTROLS(ActionContext ac, ActionInfo[] acts, IStatable stat)
+        public void CONTROLS(ActionContext ac, ActionInfo[] acts)
         {
             for (int i = 0; i < acts.Length; i++)
             {
@@ -894,8 +894,8 @@ namespace Greatbone.Core
                     Add(" onclick=\"dialog(this,"); Add((int)mode); Add("); return false;\"");
                 }
 
-                int state = ui.State;
-                if (state != 0)
+                string state = ui.Enable;
+                if (state != null)
                 {
                     // Add(" data-if=\""); Add(state.If); Add("\"");
                     // Add(" data-unif=\""); Add(state.Unif); Add("\"");

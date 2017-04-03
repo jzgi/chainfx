@@ -109,6 +109,7 @@ namespace Greatbone.Sample
         }
     }
 
+    [Ui("结款")]
     public class MgrRepayWork : RepayWork<MgrRepayVarWork>
     {
         public MgrRepayWork(WorkContext wc) : base(wc)

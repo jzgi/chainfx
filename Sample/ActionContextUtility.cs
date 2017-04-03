@@ -179,23 +179,13 @@ namespace Greatbone.Sample
                 Roll<Work> subs = @base.Subworks;
                 if (subs != null)
                 {
-                    h.Add("<ul class=\"menu\">");
+                    h.Add("<ul class=\"tabs\" data-tabs id=\"example-tabs\">");
 
-                    h.Add("<li><a href=\"\">");
-                    h.Add("<span class=\"fi-folder\" style=\"font-size: 70px\">");
-                    h.Add(@base.Label);
-                    h.Add("</span></a></li>");
+                    h.Add("<li class=\"tabs-title is-active\"><a style=\"padding:0.25rem 0.5rem;\" href=\"#panel1\">"); h.Add(@base.Label); h.Add("</a></li>");
                     for (int i = 0; i < subs.Count; i++)
                     {
                         Work sub = subs[i];
-                        h.Add("<li");
-                        if (sub == work) h.Add(" class=\"active primary\"");
-                        h.Add("><a href=\"");
-                        if (!top) h.Add("../");
-                        h.Add(sub.Name);
-                        h.Add("/\">");
-                        h.Add(sub.Label);
-                        h.Add("</a></li>");
+                        h.Add("<li class=\"tabs-title primary\"><a style=\"padding:0.25rem 0.5rem;\" href=\"#panel"); h.Add(i); h.Add("\">"); h.Add(sub.Label); h.Add("</a></li>");
                     }
                     h.Add(" </ul>");
                 }

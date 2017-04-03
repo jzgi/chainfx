@@ -141,23 +141,21 @@ namespace Greatbone.Sample
         }
     }
 
-    public class OprShopVarWork : ShopVarWork
+    public class MgrShopVarWork : ShopVarWork
     {
-        public OprShopVarWork(WorkContext wc) : base(wc)
+        public MgrShopVarWork(WorkContext wc) : base(wc)
         {
-            Create<MgrUnpaidOrderWork>("unpaid", new UiAttribute("已付款"));
+            Create<MgrPaidOrderWork>("paid");
 
-            Create<MgrPaidOrderWork>("paid", new UiAttribute("已锁定"));
+            Create<MgrFixedOrderWork>("fixed");
 
-            Create<MgrFixedOrderWork>("fixed", new UiAttribute("已完成"));
+            Create<MgrClosedOrderWork>("closed");
 
-            Create<MgrClosedOrderWork>("closed", new UiAttribute("已撤消"));
+            Create<MgrAbortedOrderWork>("aborted");
 
-            Create<MgrAbortedOrderWork>("aborted", new UiAttribute("已撤消"));
+            Create<MgrItemWork>("item");
 
-            Create<OprItemWork>("item", new UiAttribute("货架"));
-
-            Create<MgrRepayWork>("repay", new UiAttribute("平台结款"));
+            Create<MgrRepayWork>("repay");
         }
 
         public void @default(ActionContext ac)

@@ -7,7 +7,7 @@ namespace Greatbone.Sample
     /// 
     /// An order data object.
     ///
-    public class Order : IData, IStatable
+    public class Order : IData
     {
         // state
         public const int
@@ -116,19 +116,6 @@ namespace Greatbone.Sample
                 o.Put(nameof(cancelled), cancelled);
                 o.Put(nameof(locked), locked);
                 o.Put(nameof(closed), closed);
-            }
-        }
-
-        public int State
-        {
-            get
-            {
-                int v = status;
-                if (reason != null)
-                {
-                    v |= REASONED;
-                }
-                return v;
             }
         }
 

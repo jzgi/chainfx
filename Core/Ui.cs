@@ -44,7 +44,7 @@ namespace Greatbone.Core
 
         public int Limit { get; set; }
 
-        public int State { get; set; }
+        public string Enable { get; set; }
 
         public bool IsButton => ((int)Mode & 0x40) == 0x40;
 

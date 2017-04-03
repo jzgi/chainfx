@@ -7,7 +7,7 @@ namespace Greatbone.Sample
     ///
     /// A workflow that repays collected money to shops.
     ///
-    public class Repay : IData, IStatable
+    public class Repay : IData
     {
         // state
         public const int
@@ -40,10 +40,7 @@ namespace Greatbone.Sample
         internal string wx;
 
         internal string endorderid;
-        internal int state;
         internal short status; // -1 dismissed, 0 closed, 1 open
-
-        public int State => state;
 
         public void ReadData(IDataInput i, int proj = 0)
         {
