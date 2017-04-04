@@ -18,11 +18,11 @@ namespace Greatbone.Sample
             {
                 if (dc.Query("SELECT * FROM orders WHERE shopid = @1 AND status = 2 ORDER BY id LIMIT 20 OFFSET @3", p => p.Set(shopid).Set(page * 20)))
                 {
-                    ac.GiveWorkPage(Parent, 200, dc.ToList<Order>());
+                    ac.GiveGridFormPage(200, dc.ToList<Order>());
                 }
                 else
                 {
-                    ac.GiveWorkPage(Parent, 200, (List<Order>)null);
+                    ac.GiveGridFormPage(200, (List<Order>)null);
                 }
             }
         }

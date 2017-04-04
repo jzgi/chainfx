@@ -3,29 +3,12 @@ using Greatbone.Core;
 
 namespace Greatbone.Sample
 {
-    [Ui("用户")]
-    public class UserVarWork : Work
+    public abstract class UserVarWork : Work
     {
         public UserVarWork(WorkContext fc) : base(fc)
         {
         }
 
-        public void _(ActionContext ac, int page)
-        {
-            string userid = ac[this];
-
-            using (var dc = ac.NewDbContext())
-            {
-                if (dc.Query("SELECT * FROM orders WHERE buywx = @1 ORDER BY id LIMIT 20 OFFSET @2", p => p.Set(userid).Set(page * 20)))
-                {
-                    ac.GiveWorkPage(null, 200, dc.ToList<Order>());
-                }
-                else
-                {
-                    ac.GiveWorkPage(null, 200, (List<Order>)null);
-                }
-            }
-        }
 
         [Ui]
         public void cancel(ActionContext ac)
@@ -41,7 +24,7 @@ namespace Greatbone.Sample
             {
                 if (dc.Query1("SELECT * FROM users WHERE id = @1", p => p.Set(userid)))
                 {
-                    ac.GivePaneForm(200, dc.ToObject<User>());
+                    ac.GiveFormPane(200, dc.ToObject<User>());
                 }
                 else
                 {
@@ -56,6 +39,7 @@ namespace Greatbone.Sample
         }
     }
 
+    [Ui("用户")]
     public class MyUserVarWork : UserVarWork
     {
         public MyUserVarWork(WorkContext fc) : base(fc)
@@ -67,7 +51,7 @@ namespace Greatbone.Sample
 
         public void @default(ActionContext ac)
         {
-            ac.GiveWorkPage(this, 200, (List<Item>)null);
+            ac.GiveFramePage(200);
         }
     }
 

@@ -20,7 +20,7 @@ namespace Greatbone.Sample
         {
             if (ac.GET)
             {
-                ac.GivePaneForm(200, Shop.Empty, -1 ^ Proj.TRANSF);
+                ac.GiveFormPane(200, Shop.Empty, -1 ^ Proj.TRANSF);
             }
             else // post
             {
@@ -49,7 +49,7 @@ namespace Greatbone.Sample
         {
             if (ac.GET)
             {
-                ac.GivePaneForm(200, Shop.Empty, -1 ^ Proj.TRANSF);
+                ac.GiveFormPane(200, Shop.Empty, -1 ^ Proj.TRANSF);
             }
             else // post
             {
@@ -86,6 +86,7 @@ namespace Greatbone.Sample
         }
     }
 
+    [User]
     public class PubShopWork : ShopWork<ShopVarWork>
     {
         public PubShopWork(WorkContext wc) : base(wc)
@@ -102,7 +103,7 @@ namespace Greatbone.Sample
                 {
                     if (dc.Query("SELECT DISTINCT city FROM shops"))
                     {
-                        ac.GiveDialogForm(200, f => f.RADIOS("city", dc, () => f.Add(dc.GetString())));
+                        ac.GiveFormPane(200, f => f.RADIOS("city", dc, () => f.Add(dc.GetString())));
                     }
                     else { ac.Give(204); }
                 }
@@ -119,7 +120,6 @@ namespace Greatbone.Sample
                     if (dc.Query("SELECT * FROM shops WHERE ((scope = 0 AND city = @1) OR scope = 1) AND enabled", p => p.Set(city)))
                     {
                         ac.GivePage(200,
-                        null,
                         m =>
                         {
                             m.Add("<div class=\"row\">");
@@ -175,7 +175,7 @@ namespace Greatbone.Sample
             string orig = ac.Query[nameof(orig)];
             if (ac.GET)
             {
-                ac.GivePageForm(200, nameof(@goto), "请绑定供应点", (x) =>
+                ac.GiveFormPage(200, nameof(@goto), "请绑定供应点", (x) =>
                 {
                     x.TEXT(nameof(shopid), shopid, required: true);
                     x.PASSWORD(nameof(password), password);
@@ -221,11 +221,11 @@ namespace Greatbone.Sample
                 dc.Sql("SELECT ").columnlst(Shop.Empty, proj)._("FROM shops ORDER BY id LIMIT 30 OFFSET @1");
                 if (dc.Query(p => p.Set(page)))
                 {
-                    ac.GiveWorkPage(Parent, 200, dc.ToList<Shop>(proj), proj);
+                    ac.GiveGridFormPage(200, dc.ToList<Shop>(proj), proj);
                 }
                 else
                 {
-                    ac.GiveWorkPage(Parent, 200, (List<Shop>)null);
+                    ac.GiveGridFormPage(200, (List<Shop>)null);
                 }
             }
         }

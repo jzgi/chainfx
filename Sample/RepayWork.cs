@@ -14,7 +14,6 @@ namespace Greatbone.Sample
             CreateVar<V>();
         }
 
-        [Ui]
         public void @default(ActionContext ac)
         {
             string shopid = ac[1];
@@ -22,11 +21,11 @@ namespace Greatbone.Sample
             {
                 if (dc.Query("SELECT * FROM repays WHERE shopid = @1 AND status < 4", p => p.Set(shopid)))
                 {
-                    ac.GiveWorkPage(this, 200, dc.ToList<Repay>());
+                    ac.GiveGridFormPage(200, dc.ToList<Repay>());
                 }
                 else
                 {
-                    ac.GiveWorkPage(this, 200, (List<Repay>)null);
+                    ac.GiveGridFormPage(200, (List<Repay>)null);
                 }
             }
         }
@@ -40,7 +39,7 @@ namespace Greatbone.Sample
                 int age;
                 dc.Execute("UPDATE items SET enabled = NOT enabled WHERE shopid = @1", p => p.Set(shopid));
                 // ac.SetHeader();
-                ac.GivePaneForm(303, dc, (i, o) =>
+                ac.GiveFormPane(303, dc, (i, o) =>
                 {
                     o.Put(nameof(name), name = i.GetString());
                     o.Put(nameof(age), age = i.GetInt());
@@ -58,7 +57,7 @@ namespace Greatbone.Sample
                 int age;
                 dc.Execute("UPDATE items SET enabled = NOT enabled WHERE shopid = @1", p => p.Set(shopid));
                 // ac.SetHeader();
-                ac.GivePaneForm(303, dc, (i, o) =>
+                ac.GiveFormPane(303, dc, (i, o) =>
                 {
                     o.Put(nameof(name), name = i.GetString());
                     o.Put(nameof(age), age = i.GetInt());
@@ -95,7 +94,7 @@ namespace Greatbone.Sample
                 int age;
                 dc.Execute("UPDATE items SET enabled = NOT enabled WHERE shopid = @1", p => p.Set(shopid));
                 // ac.SetHeader();
-                ac.GivePaneForm(303, dc, (i, o) =>
+                ac.GiveFormPane(303, dc, (i, o) =>
                 {
                     o.Put(nameof(name), name = i.GetString());
                     o.Put(nameof(age), age = i.GetInt());

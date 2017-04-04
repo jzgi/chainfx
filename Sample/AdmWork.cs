@@ -16,7 +16,7 @@ namespace Greatbone.Sample
 
         public void @default(ActionContext ac)
         {
-            ac.GiveWorkPage(this, 200, (List<Item>)null);
+            ac.GiveFramePage(200);
         }
     }
 }

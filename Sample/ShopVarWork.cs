@@ -99,7 +99,7 @@ namespace Greatbone.Sample
                     {
                         items = dc.ToList<Item>(proj);
                     }
-                    ac.GivePage(200, null, m =>
+                    ac.GivePage(200, m =>
                     {
                         m.Add("<div class=\"row\">");
                         m.Add("<div class=\"small-3 columns\"><a href=\"#\"><span></span><img src=\""); m.Add(shop.id); m.Add("/_icon_\" alt=\"\" class=\" thumbnail\"></a></div>");
@@ -131,7 +131,7 @@ namespace Greatbone.Sample
                         }
 
 
-                    }, null);
+                    });
                 }
                 else
                 {
@@ -160,7 +160,7 @@ namespace Greatbone.Sample
 
         public void @default(ActionContext ac)
         {
-            ac.GiveWorkPage(this, 200, (List<Item>)null);
+            ac.GiveFramePage(200);
         }
     }
 

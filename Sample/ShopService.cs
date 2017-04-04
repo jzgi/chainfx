@@ -57,17 +57,5 @@ namespace Greatbone.Sample
             DoFile("default.html", ac);
         }
 
-        [User]
-        public void _(ActionContext ac)
-        {
-            ac.GiveWorkPage(this, 200, (List<Order>)null);
-        }
-
-        [Ui("清理购物车")]
-        public void clear(ActionContext ac)
-        {
-            ac.GiveWorkPage(this, 200, (List<Order>)null);
-        }
-
     }
 }

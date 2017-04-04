@@ -24,7 +24,7 @@ namespace Greatbone.Sample
         {
             [CREATED] = "新创建，等待付款",
             [PAID] = "已付款，等待处理",
-            [LOCKED] = "处理中",
+            [LOCKED] = "已锁定",
             [ABORTED] = "已取消",
             [CLOSED] = "已结束",
         };

@@ -41,7 +41,9 @@ namespace Greatbone.Sample
                 string code = ac.Query[nameof(code)];
                 if (code == null) return false;
 
-                JObj jo = await WeiXinClient.GetAsync<JObj>(null, "/sns/oauth2/access_token?appid=" + weixin.appid + "&secret=" + weixin.appsecret + "&code=" + code + "&grant_type=authorization_code");
+                string url = "/sns/oauth2/access_token?appid=" + weixin.appid + "&secret=" + weixin.appsecret + "&code=" + code + "&grant_type=authorization_code";
+                // ERR("-------- Get from URL: " + url);
+                JObj jo = await WeiXinClient.GetAsync<JObj>(null, url);
                 if (jo == null) return false;
 
                 string access_token = jo[nameof(access_token)];

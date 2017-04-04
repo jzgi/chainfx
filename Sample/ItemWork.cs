@@ -37,11 +37,11 @@ namespace Greatbone.Sample
             {
                 if (dc.Query("SELECT * FROM items WHERE shopid = @1", p => p.Set(shopid)))
                 {
-                    ac.GiveWorkPage(Parent, 200, dc.ToList<Item>());
+                    ac.GiveGridFormPage(200, dc.ToList<Item>());
                 }
                 else
                 {
-                    ac.GiveWorkPage(Parent, 200, (List<Item>)null);
+                    ac.GiveGridFormPage(200, (List<Item>)null);
                 }
             }
         }
@@ -52,7 +52,7 @@ namespace Greatbone.Sample
             if (ac.GET)
             {
                 Item o = Item.Empty;
-                ac.GivePaneForm(200, o);
+                ac.GiveFormPane(200, o);
             }
             else // post
             {
@@ -82,7 +82,7 @@ namespace Greatbone.Sample
                 int age;
                 dc.Execute("UPDATE items SET enabled = NOT enabled WHERE shopid = @1", p => p.Set(shopid));
                 // ac.SetHeader();
-                ac.GivePaneForm(303, dc, (i, o) =>
+                ac.GiveFormPane(303, dc, (i, o) =>
                 {
                     o.Put(nameof(name), name = i.GetString());
                     o.Put(nameof(age), age = i.GetInt());
@@ -110,7 +110,7 @@ namespace Greatbone.Sample
             if (ac.GET)
             {
                 var item = new Item() { };
-                ac.GivePaneForm(200, item);
+                ac.GiveFormPane(200, item);
             }
             else
             {

@@ -37,7 +37,7 @@ namespace Greatbone.Sample
                 dc.Sql("SELECT ").columnlst(User.Empty, proj)._("FROM users ORDER BY id LIMIT 30 OFFSET @1");
                 if (dc.Query("SELECT * FROM users"))
                 {
-                    ac.GiveWorkPage(Parent, 200, dc.ToList<User>()); // ok
+                    ac.GiveGridFormPage(200, dc.ToList<User>()); // ok
                 }
                 else
                 {
@@ -57,7 +57,7 @@ namespace Greatbone.Sample
             if (ac.GET)
             {
                 string id = null;
-                ac.GiveDialogForm(200, f =>
+                ac.GiveFormPane(200, f =>
                 {
                     f.TEXT(nameof(id), id, label: "用户编号", max: 11, min: 11);
                 });
@@ -72,7 +72,7 @@ namespace Greatbone.Sample
                     dc.Sql("SELECT ").columnlst(User.Empty, proj)._("FROM users WHERE id = @1");
                     if (dc.Query(p => p.Set(id)))
                     {
-                        ac.GiveWorkPage(Parent, 200, dc.ToList<User>()); // ok
+                        ac.GiveGridFormPage(200, dc.ToList<User>()); // ok
                     }
                     else
                     {

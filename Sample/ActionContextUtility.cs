@@ -17,120 +17,104 @@ namespace Greatbone.Sample
         ///
         /// Gives a browser window page.
         ///
-        public static void GivePage(this ActionContext ac, int status, Action<HtmlContent> header, Action<HtmlContent> main, Action<HtmlContent> footer, bool? pub = null, int maxage = 60)
+        public static void GivePage(this ActionContext ac, int status, Action<HtmlContent> main, bool? pub = null, int maxage = 60)
         {
-            HtmlContent cont = new HtmlContent(true, true, 16 * 1024);
+            HtmlContent h = new HtmlContent(true, true, 32 * 1024);
 
-            cont.Add("<!DOCTYPE html>");
-            cont.Add("<html>");
+            h.Add("<!DOCTYPE html>");
+            h.Add("<html>");
 
-            cont.Add("<head>");
-            cont.Add("<title>粗粮达人</title>");
-            cont.Add("<meta name=\"viewport\" content=\"width=device-width, initial-scale=1.0\">");
-            cont.Add("<link rel=\"stylesheet\" href=\"//cdn.bootcss.com/foundation/6.3.1/css/foundation.min.css\">");
-            cont.Add("<link rel=\"stylesheet\" href=\"//cdn.bootcss.com/foundicons/3.0.0/foundation-icons.min.css\">");
-            cont.Add("<link rel=\"stylesheet\" href=\"/app.css\">");
-            cont.Add("</head>");
+            h.Add("<head>");
+            h.Add("<title>粗粮达人</title>");
+            h.Add("<meta name=\"viewport\" content=\"width=device-width, initial-scale=1.0\">");
+            h.Add("<link rel=\"stylesheet\" href=\"//cdn.bootcss.com/foundation/6.3.1/css/foundation.min.css\">");
+            h.Add("<link rel=\"stylesheet\" href=\"//cdn.bootcss.com/foundicons/3.0.0/foundation-icons.min.css\">");
+            h.Add("<link rel=\"stylesheet\" href=\"/app.css\">");
+            h.Add("</head>");
 
-            cont.Add("<body>");
+            h.Add("<body>");
 
-            if (header != null)
-            {
-                cont.Add("<div class\"row\">");
-                header(cont);
-                cont.Add("</div>");
-            }
-
-            cont.Add("<div class\"row\">");
-            main(cont);
-            cont.Add("</div>");
-
-            if (footer != null)
-            {
-                cont.Add("<div class\"row\">");
-                footer(cont);
-                cont.Add("</div>");
-            }
+            main(h);
 
             // zurb foundation
-            cont.Add("<script src=\"//cdn.bootcss.com/jquery/3.1.1/jquery.min.js\"></script>");
-            cont.Add("<script src=\"//cdn.bootcss.com/foundation/6.3.1/js/foundation.min.js\"></script>");
-            cont.Add("<script src=\"/slim.jquery.min.js\"></script>");
-            cont.Add("<script src=\"/app01.js\"></script>");
-            cont.Add("<script>$(document).foundation();</script>");
+            h.Add("<script src=\"//cdn.bootcss.com/jquery/3.1.1/jquery.min.js\"></script>");
+            h.Add("<script src=\"//cdn.bootcss.com/foundation/6.3.1/js/foundation.min.js\"></script>");
+            h.Add("<script src=\"/slim.jquery.min.js\"></script>");
+            h.Add("<script src=\"/app01.js\"></script>");
+            h.Add("<script>$(document).foundation();</script>");
 
-            cont.Add("</body>");
-            cont.Add("</html>");
+            h.Add("</body>");
+            h.Add("</html>");
 
-            // cont.Render(main);
-            ac.Give(status, cont, pub, maxage);
+            ac.Give(status, h, pub, maxage);
         }
 
         ///
-        /// Gives a browser iframe pane.
+        /// Gives an iframe pane.
         ///
         public static void GivePane(this ActionContext ac, int status, Action<HtmlContent> main, bool? pub = null, int maxage = 60)
         {
-            HtmlContent cont = new HtmlContent(true, true, 16 * 1024);
+            HtmlContent h = new HtmlContent(true, true, 16 * 1024);
 
-            cont.Add("<!DOCTYPE html>");
-            cont.Add("<html>");
+            h.Add("<!DOCTYPE html>");
+            h.Add("<html>");
 
-            cont.Add("<head>");
-            cont.Add("<title>粗粮达人</title>");
-            cont.Add("<meta name=\"viewport\" content=\"width=device-width, initial-scale=1.0\">");
-            cont.Add("<link rel=\"stylesheet\" href=\"//cdn.bootcss.com/foundation/6.3.1/css/foundation.min.css\">");
-            cont.Add("<link rel=\"stylesheet\" href=\"//cdn.bootcss.com/foundicons/3.0.0/foundation-icons.min.css\">");
-            cont.Add("<link rel=\"stylesheet\" href=\"/slim.min.css\">");
-            cont.Add("<link rel=\"stylesheet\" href=\"/app.css\">");
-            cont.Add("</head>");
+            h.Add("<head>");
+            h.Add("<title>粗粮达人</title>");
+            h.Add("<meta name=\"viewport\" content=\"width=device-width, initial-scale=1.0\">");
+            h.Add("<link rel=\"stylesheet\" href=\"//cdn.bootcss.com/foundation/6.3.1/css/foundation.min.css\">");
+            h.Add("<link rel=\"stylesheet\" href=\"//cdn.bootcss.com/foundicons/3.0.0/foundation-icons.min.css\">");
+            h.Add("<link rel=\"stylesheet\" href=\"/slim.min.css\">");
+            h.Add("<link rel=\"stylesheet\" href=\"/app.css\">");
+            h.Add("</head>");
 
-            cont.Add("<body>");
+            h.Add("<body>");
 
-            cont.Add("<div class\"row\">");
-            cont.Add("<div class\"small-2 columns\"></div>");
-            cont.Add("<div class\"columns\">");
-            main(cont);
-            cont.Add("</div>");
-            cont.Add("<div class\"small-2 columns\"></div>");
-            cont.Add("</div>");
+            h.Add("<div class\"row\">");
+            h.Add("<div class=\"small-centered small-10 medium-8 large-6 columns\">");
+            main(h);
+            h.Add("</div>");
+            h.Add("</div>");
 
             // zurb foundation
-            cont.Add("<script src=\"//cdn.bootcss.com/jquery/3.1.1/jquery.min.js\"></script>");
-            cont.Add("<script src=\"//cdn.bootcss.com/foundation/6.3.1/js/foundation.min.js\"></script>");
-            cont.Add("<script src=\"/slim.jquery.min.js\"></script>");
-            cont.Add("<script src=\"/app01.js\"></script>");
-            cont.Add("<script>");
-            cont.Add("$(document).foundation();");
-            cont.Add("$('body').slim('parse');");
+            h.Add("<script src=\"//cdn.bootcss.com/jquery/3.1.1/jquery.min.js\"></script>");
+            h.Add("<script src=\"//cdn.bootcss.com/foundation/6.3.1/js/foundation.min.js\"></script>");
+            h.Add("<script src=\"/slim.jquery.min.js\"></script>");
+            h.Add("<script src=\"/app01.js\"></script>");
+            h.Add("<script>");
+            h.Add("$(document).foundation();");
+            h.Add("$('body').slim('parse');");
             // enabling ok button
-            cont.Add("$(document).ready(function(){");
-            cont.Add("$('#dynadlg', window.parent.document).find('button').prop('disabled', false);");
-            cont.Add("});");
-            cont.Add("</script>");
-            cont.Add("</body>");
-            cont.Add("</html>");
+            h.Add("$(document).ready(function(){");
+            h.Add("$('#dynadlg', window.parent.document).find('button').prop('disabled', false);");
+            h.Add("});");
+            h.Add("</script>");
+            h.Add("</body>");
+            h.Add("</html>");
 
-            ac.Give(status, cont, pub, maxage);
+            ac.Give(status, h, pub, maxage);
         }
 
-        public static void GivePageForm(this ActionContext ac, int status, string action, string legend, Action<HtmlContent> form, bool? pub = null, int maxage = 60)
+        public static void GiveFormPage(this ActionContext ac, int status, string action, string legend, Action<HtmlContent> form, bool? pub = null, int maxage = 60)
         {
-            ac.GivePage(status, null, m =>
+            ac.GivePage(status, m =>
             {
+                m.Add("<div class\"row\">");
+                m.Add("<div class=\"small-centered small-10 medium-8 large-6 columns\">");
                 m.FORM_(action);
                 m.FIELDSET_(legend);
                 form(m);
                 m.BUTTON("确定");
                 m._FIELDSET();
                 m._FORM();
-            }, null, pub, maxage);
+                m.Add("</div>");
+                m.Add("</div>");
+            }, pub, maxage);
         }
 
-        public static void GiveDialogForm(this ActionContext ac, int status, Action<HtmlContent> form, bool? pub = null, int maxage = 60)
+        public static void GiveFormPane(this ActionContext ac, int status, Action<HtmlContent> form, bool? pub = null, int maxage = 60)
         {
-            ac.GivePane(status,
-            m =>
+            ac.GivePane(status, m =>
             {
                 m.FORM_();
                 m.FIELDSET_();
@@ -142,46 +126,35 @@ namespace Greatbone.Sample
             pub, maxage);
         }
 
-        public static void GivePaneForm(this ActionContext ac, int status, IData obj, int proj = 0, bool? pub = null, int maxage = 60)
+        public static void GiveFormPane(this ActionContext ac, int status, IData obj, int proj = 0, bool? pub = null, int maxage = 60)
         {
-            ac.GivePane(status,
-            m =>
+            ac.GivePane(status, m =>
             {
                 m.FILLFORM(ac.Doer, obj, proj);
             },
             pub, maxage);
         }
 
-        public static void GivePaneForm(this ActionContext ac, int status, IDataInput input, Action<IDataInput, HtmlContent> valve, bool? pub = null, int maxage = 60)
+        public static void GiveFormPane(this ActionContext ac, int status, IDataInput input, Action<IDataInput, HtmlContent> valve, bool? pub = null, int maxage = 60)
         {
-            ac.GivePage(status,
-            null,
-            m =>
+            ac.GivePane(status, m =>
             {
                 m.FILLFORM(ac.Doer, input, valve);
             },
-            null,
             pub, maxage);
         }
 
-        public static void GiveWorkPage<D>(this ActionContext ac, int status, List<D> lst, int proj = 0, bool? pub = null, int maxage = 60) where D : IData
+        public static void GiveFramePage(this ActionContext ac, int status, bool? pub = null, int maxage = 60)
         {
-            GiveWorkPage(ac, null, status, lst, proj, pub, maxage);
-        }
-
-        public static void GiveWorkPage<D>(this ActionContext ac, Work @base, int status, List<D> lst, int proj = 0, bool? pub = null, int maxage = 60) where D : IData
-        {
-            Work work = ac.Work;
-
-            Action<HtmlContent> header = @base == null ? (Action<HtmlContent>)null : (h) =>
+            ac.GivePage(status, h =>
             {
-                bool top = work == @base;
-                Roll<Work> subs = @base.Subworks;
+                Work work = ac.Work;
+                Roll<Work> subs = work.Subworks;
                 if (subs != null)
                 {
                     h.Add("<ul class=\"tabs\" data-tabs id=\"example-tabs\">");
 
-                    h.Add("<li class=\"tabs-title is-active\"><a style=\"padding:0.25rem 0.5rem;\" href=\"#panel1\">"); h.Add(@base.Label); h.Add("</a></li>");
+                    h.Add("<li class=\"tabs-title is-active\"><a style=\"padding:0.25rem 0.5rem;\" href=\"#panel1\">"); h.Add(work.Label); h.Add("</a></li>");
                     for (int i = 0; i < subs.Count; i++)
                     {
                         Work sub = subs[i];
@@ -189,15 +162,35 @@ namespace Greatbone.Sample
                     }
                     h.Add(" </ul>");
                 }
-            };
+            },
+            pub, maxage);
+        }
 
-
-            ac.GivePage(status, header, main =>
+        public static void GiveGridFormPage<D>(this ActionContext ac, int status, List<D> lst, int proj = 0, bool? pub = null, int maxage = 60) where D : IData
+        {
+            Work work = ac.Work;
+            ac.GivePage(status, main =>
             {
                 main.GRIDFORM(ac, lst, proj);
             },
-            null,
             pub, maxage);
         }
+
+        public static void GiveGridFormPage<D>(this ActionContext ac, int status, List<D> lst, Action<HtmlContent, D> putobj, bool? pub = null, int maxage = 60) where D : IData
+        {
+            Work work = ac.Work;
+        }
+
+        public static void GiveTableFormPage<D>(this ActionContext ac, int status, List<D> lst, int proj = 0, bool? pub = null, int maxage = 60) where D : IData
+        {
+            Work work = ac.Work;
+
+        }
+
+        public static void GiveTableFormPage<D>(this ActionContext ac, int status, List<D> lst, Action<HtmlContent, D> putobj, bool? pub = null, int maxage = 60) where D : IData
+        {
+            Work work = ac.Work;
+        }
+
     }
 }
