@@ -52,7 +52,7 @@ namespace Greatbone.Core
             segs[segnum++] = new Segment(key, work);
         }
 
-        public Segment this[int level] => segs[level];
+        public Segment this[int level] => level < 0 ? segs[segnum + level - 1] : segs[level];
 
         public Segment this[Type workType]
         {

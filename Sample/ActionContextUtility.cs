@@ -57,7 +57,7 @@ namespace Greatbone.Sample
             HtmlContent h = new HtmlContent(true, true, 16 * 1024);
 
             h.Add("<!DOCTYPE html>");
-            h.Add("<html style=\"height:100%\">");
+            h.Add("<html>");
 
             h.Add("<head>");
             h.Add("<title>粗粮达人</title>");
@@ -68,7 +68,7 @@ namespace Greatbone.Sample
             h.Add("<link rel=\"stylesheet\" href=\"/app.css\">");
             h.Add("</head>");
 
-            h.Add("<body style=\"height:100%\">");
+            h.Add("<body>");
 
             h.Add("<div class\"row\">");
             h.Add("<div class=\"small-centered small-10 medium-8 large-6 columns\">");
@@ -144,7 +144,7 @@ namespace Greatbone.Sample
             pub, maxage);
         }
 
-        public static void GiveFramePage(this ActionContext ac, int status, bool? pub = null, int maxage = 60)
+        public static void GiveFrame(this ActionContext ac, int status, bool? pub = null, int maxage = 60)
         {
             HtmlContent h = new HtmlContent(true, true, 32 * 1024);
 
@@ -188,7 +188,7 @@ namespace Greatbone.Sample
                 {
                     Work sub = subs[i];
                     h.Add("<div class=\"tabs-panel\" style=\"height: 100%\" id=\"panel"); h.Add(i); h.Add("\">");
-                    h.Add("<iframe src=\""); h.Add(sub.Name); h.Add("/\" style=\"width:100%; height:100%;\"></iframe>");
+                    h.Add("<iframe id=\""); h.Add(sub.Name); h.Add("/\" style=\"width:100%; height:100%;\"></iframe>");
                     h.Add(" </div>");
                 }
             }
@@ -203,7 +203,7 @@ namespace Greatbone.Sample
             h.Add("<script src=\"/app.js\"></script>");
             h.Add("<script>");
             h.Add("$(document).foundation();");
-            h.Add("$('#example-tabs').on('change.zf.tabs', function(e){alert(e)});");
+            h.Add("$('#example-tabs').on('change.zf.tabs', function(e){var ifr = $('.tabs-panel.is-active').find('iframe'); if (ifr && !ifr[0].src) ifr[0].src = ifr[0].id;});");
             h.Add("</script>");
             h.Add("</body>");
             h.Add("</html>");

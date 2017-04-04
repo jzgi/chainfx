@@ -160,7 +160,7 @@ namespace Greatbone.Sample
 
         public void @default(ActionContext ac)
         {
-            ac.GiveFramePage(200);
+            ac.GiveFrame(200);
         }
     }
 

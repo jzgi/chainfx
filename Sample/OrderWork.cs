@@ -11,22 +11,6 @@ namespace Greatbone.Sample
             CreateVar<V>();
         }
 
-        public virtual void @default(ActionContext ac, int page)
-        {
-            string shopid = ac[typeof(ShopVarWork)];
-            using (var dc = ac.NewDbContext())
-            {
-                if (dc.Query("SELECT * FROM orders WHERE shopid = @1 AND status = 2 ORDER BY id LIMIT 20 OFFSET @3", p => p.Set(shopid).Set(page * 20)))
-                {
-                    ac.GiveGridFormPage(200, dc.ToList<Order>());
-                }
-                else
-                {
-                    ac.GiveGridFormPage(200, (List<Order>)null);
-                }
-            }
-        }
-
         public async Task notify(ActionContext ac)
         {
             XElem xe = await ac.ReadAsync<XElem>();
@@ -146,6 +130,22 @@ namespace Greatbone.Sample
         {
         }
 
+        public void @default(ActionContext ac, int page)
+        {
+            string wx = ac[-1];
+            using (var dc = ac.NewDbContext())
+            {
+                if (dc.Query("SELECT * FROM orders WHERE buywx = @1 AND status = 0 ORDER BY id LIMIT 20 OFFSET @2", p => p.Set(wx).Set(page * 20)))
+                {
+                    ac.GiveGridFormPage(200, dc.ToList<Order>());
+                }
+                else
+                {
+                    ac.GiveGridFormPage(200, (List<Order>)null);
+                }
+            }
+        }
+
         [Ui]
         public void ask(ActionContext ac)
         {
@@ -209,6 +209,22 @@ namespace Greatbone.Sample
     {
         public MgrPaidOrderWork(WorkContext wc) : base(wc)
         {
+        }
+
+        public void @default(ActionContext ac, int page)
+        {
+            string shopid = ac[-1];
+            using (var dc = ac.NewDbContext())
+            {
+                if (dc.Query("SELECT * FROM orders WHERE shopid = @1 AND status = 0 ORDER BY id LIMIT 20 OFFSET @3", p => p.Set(shopid).Set(page * 20)))
+                {
+                    ac.GiveGridFormPage(200, dc.ToList<Order>());
+                }
+                else
+                {
+                    ac.GiveGridFormPage(200, (List<Order>)null);
+                }
+            }
         }
 
         [Ui("锁定/处理")]
