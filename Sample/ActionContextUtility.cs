@@ -22,7 +22,7 @@ namespace Greatbone.Sample
             HtmlContent h = new HtmlContent(true, true, 32 * 1024);
 
             h.Add("<!DOCTYPE html>");
-            h.Add("<html>");
+            h.Add("<html style=\"height:100%\">");
 
             h.Add("<head>");
             h.Add("<title>粗粮达人</title>");
@@ -32,7 +32,7 @@ namespace Greatbone.Sample
             h.Add("<link rel=\"stylesheet\" href=\"/app.css\">");
             h.Add("</head>");
 
-            h.Add("<body>");
+            h.Add("<body style=\"height:100%\">");
 
             main(h);
 
@@ -40,7 +40,7 @@ namespace Greatbone.Sample
             h.Add("<script src=\"//cdn.bootcss.com/jquery/3.1.1/jquery.min.js\"></script>");
             h.Add("<script src=\"//cdn.bootcss.com/foundation/6.3.1/js/foundation.min.js\"></script>");
             h.Add("<script src=\"/slim.jquery.min.js\"></script>");
-            h.Add("<script src=\"/app01.js\"></script>");
+            h.Add("<script src=\"/app.js\"></script>");
             h.Add("<script>$(document).foundation();</script>");
 
             h.Add("</body>");
@@ -57,7 +57,7 @@ namespace Greatbone.Sample
             HtmlContent h = new HtmlContent(true, true, 16 * 1024);
 
             h.Add("<!DOCTYPE html>");
-            h.Add("<html>");
+            h.Add("<html style=\"height:100%\">");
 
             h.Add("<head>");
             h.Add("<title>粗粮达人</title>");
@@ -68,7 +68,7 @@ namespace Greatbone.Sample
             h.Add("<link rel=\"stylesheet\" href=\"/app.css\">");
             h.Add("</head>");
 
-            h.Add("<body>");
+            h.Add("<body style=\"height:100%\">");
 
             h.Add("<div class\"row\">");
             h.Add("<div class=\"small-centered small-10 medium-8 large-6 columns\">");
@@ -80,7 +80,7 @@ namespace Greatbone.Sample
             h.Add("<script src=\"//cdn.bootcss.com/jquery/3.1.1/jquery.min.js\"></script>");
             h.Add("<script src=\"//cdn.bootcss.com/foundation/6.3.1/js/foundation.min.js\"></script>");
             h.Add("<script src=\"/slim.jquery.min.js\"></script>");
-            h.Add("<script src=\"/app01.js\"></script>");
+            h.Add("<script src=\"/app.js\"></script>");
             h.Add("<script>");
             h.Add("$(document).foundation();");
             h.Add("$('body').slim('parse');");
@@ -146,24 +146,69 @@ namespace Greatbone.Sample
 
         public static void GiveFramePage(this ActionContext ac, int status, bool? pub = null, int maxage = 60)
         {
-            ac.GivePage(status, h =>
-            {
-                Work work = ac.Work;
-                Roll<Work> subs = work.Subworks;
-                if (subs != null)
-                {
-                    h.Add("<ul class=\"tabs\" data-tabs id=\"example-tabs\">");
+            HtmlContent h = new HtmlContent(true, true, 32 * 1024);
 
-                    h.Add("<li class=\"tabs-title is-active\"><a style=\"padding:0.25rem 0.5rem;\" href=\"#panel1\">"); h.Add(work.Label); h.Add("</a></li>");
-                    for (int i = 0; i < subs.Count; i++)
-                    {
-                        Work sub = subs[i];
-                        h.Add("<li class=\"tabs-title primary\"><a style=\"padding:0.25rem 0.5rem;\" href=\"#panel"); h.Add(i); h.Add("\">"); h.Add(sub.Label); h.Add("</a></li>");
-                    }
-                    h.Add(" </ul>");
+            h.Add("<!DOCTYPE html>");
+            h.Add("<html style=\"height:100%\">");
+
+            h.Add("<head>");
+            h.Add("<title>粗粮达人</title>");
+            h.Add("<meta name=\"viewport\" content=\"width=device-width, initial-scale=1.0\">");
+            h.Add("<link rel=\"stylesheet\" href=\"//cdn.bootcss.com/foundation/6.3.1/css/foundation.min.css\">");
+            h.Add("<link rel=\"stylesheet\" href=\"//cdn.bootcss.com/foundicons/3.0.0/foundation-icons.min.css\">");
+            h.Add("<link rel=\"stylesheet\" href=\"/app.css\">");
+            h.Add("</head>");
+
+            h.Add("<body style=\"height:100%\">");
+
+            Work work = ac.Work;
+            Roll<Work> subs = work.Subworks;
+            h.Add("<ul class=\"tabs\" data-tabs id=\"example-tabs\">");
+
+            h.Add("<li class=\"tabs-title is-active\"><a style=\"padding:0.25rem 0.5rem;\" href=\"#paneltop\">"); h.Add(work.Label); h.Add("</a></li>");
+
+            if (subs != null)
+            {
+                for (int i = 0; i < subs.Count; i++)
+                {
+                    Work sub = subs[i];
+                    h.Add("<li class=\"tabs-title primary\"><a style=\"padding:0.25rem 0.5rem;\" href=\"#panel"); h.Add(i); h.Add("\">"); h.Add(sub.Label); h.Add("</a></li>");
                 }
-            },
-            pub, maxage);
+            }
+            h.Add(" </ul>");
+
+            h.Add("<div class=\"tabs-content\" style=\"height: calc(100% - 2em)\" data-tabs-content=\"example-tabs\">");
+
+            h.Add("<div class=\"tabs-panel is-active\" id=\"paneltop\">");
+            h.Add(" </div>");
+
+            if (subs != null)
+            {
+                for (int i = 0; i < subs.Count; i++)
+                {
+                    Work sub = subs[i];
+                    h.Add("<div class=\"tabs-panel\" style=\"height: 100%\" id=\"panel"); h.Add(i); h.Add("\">");
+                    h.Add("<iframe src=\""); h.Add(sub.Name); h.Add("/\" style=\"width:100%; height:100%;\"></iframe>");
+                    h.Add(" </div>");
+                }
+            }
+            h.Add(" </div>");
+
+            h.Add(" </div>");
+
+            // zurb foundation
+            h.Add("<script src=\"//cdn.bootcss.com/jquery/3.1.1/jquery.min.js\"></script>");
+            h.Add("<script src=\"//cdn.bootcss.com/foundation/6.3.1/js/foundation.min.js\"></script>");
+            h.Add("<script src=\"/slim.jquery.min.js\"></script>");
+            h.Add("<script src=\"/app.js\"></script>");
+            h.Add("<script>");
+            h.Add("$(document).foundation();");
+            h.Add("$('#example-tabs').on('change.zf.tabs', function(e){alert(e)});");
+            h.Add("</script>");
+            h.Add("</body>");
+            h.Add("</html>");
+
+            ac.Give(status, h, pub, maxage);
         }
 
         public static void GiveGridFormPage<D>(this ActionContext ac, int status, List<D> lst, int proj = 0, bool? pub = null, int maxage = 60) where D : IData
