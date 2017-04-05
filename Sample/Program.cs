@@ -5,20 +5,13 @@ namespace Greatbone.Sample
 {
     public class Program : Application
     {
-        public static bool IsDebug()
-        {
-#if DEBUG
-            return true;
-#else
-            return false;
-#endif
-        }
-
         ///
         /// The application entry point.
         ///
         public static void Main(string[] args)
         {
+            bool deploy = args.Length > 0;
+
             Auth auth = new Auth
             {
                 mask = 0x4a78be76,
@@ -48,7 +41,7 @@ namespace Greatbone.Sample
                     db = pg,
                     cluster = cluster
                 },
-                !IsDebug()
+                deploy
             );
 
             TryCreate<ChatService>(
@@ -59,7 +52,7 @@ namespace Greatbone.Sample
                     db = pg,
                     cluster = cluster
                 },
-                !IsDebug()
+                deploy
             );
 
             StartAll();

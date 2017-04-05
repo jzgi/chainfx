@@ -17,11 +17,11 @@ namespace Greatbone.Sample
 
         public const string NONCE_STR = "sadfasd2s";
 
-        static readonly Connector WcPay = new Connector("https://api.mch.weixin.qq.com");
+        static readonly Connector WweiXinPay = new Connector("https://api.mch.weixin.qq.com");
 
-        static readonly Connector WeiXinClient = new Connector("https://api.weixin.qq.com");
+        static readonly Connector WeiXin = new Connector("https://api.weixin.qq.com");
 
-        public static async Task prepay(long orderid, decimal total, string openid)
+        public static async Task PostOrderAsync(long orderid, decimal total, string openid)
         {
             XmlContent xml = new XmlContent();
             xml.ELEM("xml", null, () =>
@@ -37,7 +37,7 @@ namespace Greatbone.Sample
                 xml.ELEM("trade_type", "");
                 xml.ELEM("openid", openid);
             });
-            var rsp = await WcPay.PostAsync("/pay/unifiedorder", xml);
+            var rsp = await WweiXinPay.PostAsync("/pay/unifiedorder", xml);
 
         }
 
@@ -50,7 +50,7 @@ namespace Greatbone.Sample
         public static async Task<AccessToken> GetAccessTokenAsync(string code)
         {
             string url = "/sns/oauth2/access_token?appid=" + APPID + "&secret=" + APPSECRET + "&code=" + code + "&grant_type=authorization_code";
-            JObj jo = await WeiXinClient.GetAsync<JObj>(null, url);
+            JObj jo = await WeiXin.GetAsync<JObj>(null, url);
             if (jo == null) return default(AccessToken);
 
             string access_token = jo[nameof(access_token)];
@@ -66,7 +66,7 @@ namespace Greatbone.Sample
 
         public static async Task<User> GetUserInfoAsync(string access_token, string openid)
         {
-            JObj jo = await WeiXinClient.GetAsync<JObj>(null, "/sns/userinfo?access_token=" + access_token + "&openid=" + openid + "&lang=zh_CN");
+            JObj jo = await WeiXin.GetAsync<JObj>(null, "/sns/userinfo?access_token=" + access_token + "&openid=" + openid + "&lang=zh_CN");
             string nickname = jo[nameof(nickname)];
             string city = jo[nameof(city)];
             return new User { wx = openid, nickname = nickname, city = city };

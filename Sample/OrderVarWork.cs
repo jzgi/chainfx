@@ -104,8 +104,10 @@ namespace Greatbone.Sample
 
                 }
 
+                string preorder = null;
+                
                 // prepare remotely
-                await WeiXinUtility.prepay(ordid, (decimal)total, null);
+                await WeiXinUtility.PostOrderAsync(ordid, (decimal)total, null);
 
 
                 dc.Sql("UPDATE orders SET ").setstate()._(" WHERE id = @1 AND shopid = @2 AND ").statecond();
