@@ -30,26 +30,6 @@ namespace Greatbone.Sample
 
         }
 
-        [Ui("核对付款")]
-        public async Task check(ActionContext ac)
-        {
-            string shopid = ac[0];
-            Form frm = await ac.ReadAsync<Form>();
-            int[] pk = frm[nameof(pk)];
-
-            using (var dc = ac.NewDbContext())
-            {
-                dc.Sql("UPDATE orders SET ").setstate()._(" WHERE id = @1 AND shopid = @2 AND ").statecond();
-                if (dc.Query(p => p.Set(pk).Set(shopid)))
-                {
-                    var order = dc.ToArray<Order>();
-                }
-                else
-                {
-                }
-            }
-        }
-
         [Ui("标注完成")]
         public void close(ActionContext ac)
         {
@@ -115,12 +95,6 @@ namespace Greatbone.Sample
         {
         }
 
-        [Ui]
-        public void ask(ActionContext ac)
-        {
-            // string shopid = wc.Var(null);
-        }
-
     }
 
     [Ui("购物车")]
@@ -146,12 +120,25 @@ namespace Greatbone.Sample
             }
         }
 
-        [Ui]
-        public void ask(ActionContext ac)
+        [Ui("地址")]
+        public async Task addr(ActionContext ac)
         {
-            // string shopid = wc.Var(null);
-        }
+            string shopid = ac[0];
+            Form frm = await ac.ReadAsync<Form>();
+            int[] pk = frm[nameof(pk)];
 
+            using (var dc = ac.NewDbContext())
+            {
+                dc.Sql("UPDATE orders SET ").setstate()._(" WHERE id = @1 AND shopid = @2 AND ").statecond();
+                if (dc.Query(p => p.Set(pk).Set(shopid)))
+                {
+                    var order = dc.ToArray<Order>();
+                }
+                else
+                {
+                }
+            }
+        }
     }
 
     [Ui("订单")]

@@ -7,62 +7,7 @@ namespace Greatbone.Sample
     ///
     public abstract class OrderVarWork : Work
     {
-        static readonly Connector WcPay = new Connector("https://api.mch.weixin.qq.com");
-
-        public OrderVarWork(WorkContext wc) : base(wc)
-        {
-        }
-
-        public void my(ActionContext ac)
-        {
-
-        }
-
-        ///
-        ///
-        public async Task prepay(ActionContext ac)
-        {
-            string wx = ac[0];
-
-            int index = 0;
-
-            // // store backet to db
-            // string openid = ac.Cookies[nameof(openid)];
-
-            Order order = null;
-
-            // save the order and call prepay api
-            using (var dc = Service.NewDbContext())
-            {
-                dc.Sql("INSERT INFO orders ")._(Order.Empty)._VALUES_(Order.Empty);
-
-                dc.Execute(p => order.WriteData(p));
-
-                XmlContent xml = new XmlContent();
-                xml.ELEM("xml", null, () =>
-                {
-                    xml.ELEM("appid", "");
-                    xml.ELEM("mch_id", "");
-                    xml.ELEM("nonce_str", "");
-                    xml.ELEM("sign", "");
-                    xml.ELEM("body", "");
-                    xml.ELEM("out_trade_no", "");
-                    xml.ELEM("total_fee", "");
-                    xml.ELEM("notify_url", "");
-                    xml.ELEM("trade_type", "");
-                    xml.ELEM("openid", "");
-                });
-                var rsp = await WcPay.PostAsync("/pay/unifiedorder", xml);
-                // rsp.ReadAsync<XElem>();
-            }
-
-            //  call weixin to prepay
-            XmlContent cont = new XmlContent()
-                .Put("out_trade_no", "")
-                .Put("total_fee", 0);
-            // await WCPay.PostAsync(null, "/pay/unifiedorder", cont);
-
-        }
+        public OrderVarWork(WorkContext wc) : base(wc) { }
 
         public void ask(ActionContext ac)
         {
@@ -74,24 +19,6 @@ namespace Greatbone.Sample
             {
                 dc.Sql("UPDATE orders SET reason = @1, ").setstate()._(" WHERE id = @2 AND userid = @3 AND ").statecond();
                 if (dc.Query(p => p.Set(reason).Set(orderid).Set(userid)))
-                {
-                    var order = dc.ToArray<Order>();
-                }
-                else
-                {
-                }
-            }
-        }
-
-        public void @default(ActionContext ac)
-        {
-            string shopid = ac[0];
-            int id = ac[this];
-
-            using (var dc = Service.NewDbContext())
-            {
-                dc.Sql("SELECT ").columnlst(Order.Empty)._("FROM orders WHERE id = @1 AND shopid = @2");
-                if (dc.Query(p => p.Set(id).Set(shopid)))
                 {
                     var order = dc.ToArray<Order>();
                 }
@@ -151,17 +78,45 @@ namespace Greatbone.Sample
         }
     }
 
-    public class MyOrderVarWork : OrderVarWork
-    {
-        public MyOrderVarWork(WorkContext wc) : base(wc)
-        {
-        }
-    }
+    public abstract class MyOrderVarWork : OrderVarWork { public MyOrderVarWork(WorkContext wc) : base(wc) { } }
 
+    /// <summary>
+    /// About a single cart order targeted one shop.
+    /// </summary>
+    /// <code>
+    /// /my//cart/-ordid-/
+    /// </code>
     public class MyCartOrderVarWork : MyOrderVarWork
     {
-        public MyCartOrderVarWork(WorkContext wc) : base(wc)
+        public MyCartOrderVarWork(WorkContext wc) : base(wc) { }
+
+        [Ui("付款")]
+        public async Task prepay(ActionContext ac)
         {
+            long ordid = ac[this];
+            string buywx = ((User)ac.Principal).wx;
+
+            using (var dc = ac.NewDbContext())
+            {
+                object total = dc.Scalar("SELECT total FROM orders WHERE id = @1 AND buywx = @2", p => p.Set(ordid).Set(buywx));
+                if (total == null)
+                {
+
+                }
+
+                // prepare remotely
+                await WeiXinUtility.prepay(ordid, (decimal)total, null);
+
+
+                dc.Sql("UPDATE orders SET ").setstate()._(" WHERE id = @1 AND shopid = @2 AND ").statecond();
+                if (dc.Query(p => p.Set(ordid)))
+                {
+                    var order = dc.ToArray<Order>();
+                }
+                else
+                {
+                }
+            }
         }
     }
 
@@ -190,6 +145,24 @@ namespace Greatbone.Sample
     {
         public MgrPaidOrderVarWork(WorkContext wc) : base(wc)
         {
+        }
+
+        public void @default(ActionContext ac)
+        {
+            string shopid = ac[0];
+            int id = ac[this];
+
+            using (var dc = Service.NewDbContext())
+            {
+                dc.Sql("SELECT ").columnlst(Order.Empty)._("FROM orders WHERE id = @1 AND shopid = @2");
+                if (dc.Query(p => p.Set(id).Set(shopid)))
+                {
+                    var order = dc.ToArray<Order>();
+                }
+                else
+                {
+                }
+            }
         }
     }
 
