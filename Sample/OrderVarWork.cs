@@ -129,7 +129,7 @@ namespace Greatbone.Sample
         }
     }
 
-    public class MgrOrderVarWork : OrderVarWork
+    public abstract class MgrOrderVarWork : OrderVarWork
     {
         public MgrOrderVarWork(WorkContext wc) : base(wc)
         {
