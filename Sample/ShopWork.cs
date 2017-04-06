@@ -122,9 +122,9 @@ namespace Greatbone.Sample
                         ac.GivePage(200,
                         m =>
                         {
-                            m.Add("<div class=\"callout clearfix\">");
-                            m.Add("<a class=\"float-left\" href=\"\" onclick=\"dialog(this, 2);return false;\">"); m.Add(city); m.Add("（切换城市）</a>");
-                            m.Add("<a class=\"float-right\" href=\"/user//cart/\">购物车/付款</a>");
+                            m.Add("<div class=\"callout clearfix primary\">");
+                            m.Add("<a class=\"float-left\" href=\"\" onclick=\"return dialog(this, 2);\">"); m.Add(city); m.Add("（切换）</a>");
+                            m.Add("<a class=\"float-right\" href=\"/my//cart/\">购物车/付款</a>");
                             m.Add("</div>");
 
                             var shops = dc.ToList<Shop>(-1 ^ Proj.BIN);

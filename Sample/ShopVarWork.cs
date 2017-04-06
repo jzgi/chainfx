@@ -88,13 +88,14 @@ namespace Greatbone.Sample
                     }
                     ac.GivePage(200, m =>
                     {
-                        m.Add("<div class=\"row\">");
-                        m.Add("<div class=\"small-3 columns\"><a href=\"#\"><span></span><img src=\""); m.Add(shop.id); m.Add("/_icon_\" alt=\"\" class=\" thumbnail\"></a></div>");
-                        m.Add("<div class=\"small-9 columns\">");
-                        m.Add("<h3><a href=\""); m.Add(shop.id); m.Add("/\">"); m.Add(shop.name); m.Add("</a></h3>");
+                        m.Add("<div class=\"callout clearfix primary\">");
+                        m.Add("<a class=\"float-left\" href=\"../\">"); m.Add(shop.name); m.Add("（切换）</a>");
+                        m.Add("<a class=\"float-right\" href=\"/my//cart/\">购物车/付款</a>");
+                        m.Add("</div>");
+
+                        m.Add("<div>");
                         m.Add("<p>"); m.Add(shop.city); m.Add(shop.addr); m.Add("</p>");
                         m.Add("<p>"); m.Add(shop.descr); m.Add("</p>");
-                        m.Add("</div>");
                         m.Add("</div>");
 
                         // display items

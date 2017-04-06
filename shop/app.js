@@ -21,11 +21,11 @@ function dialog(trig, mode, siz) {
 
     var src = action.split("?")[0] + '?dlg=true';
 
-    var html = '<div id="dynadlg" class="' + sizg + ' reveal"  data-reveal data-close-on-click="false">'
+    var html = '<div style="background-color: gainsboro" id="dynadlg" class="' + sizg + ' reveal"  data-reveal data-close-on-click="false">'
         + '<h3>' + trig.innerHTML + ' </h3>'
         + '<button class="close-button" type="button" onclick="destory(this);">&times;</button>'
-        + '<div style="height: calc(100% - 1em)"><iframe src="' + src + '" style="width: 100%; height: 100%"></iframe></div>'
-        + '<button onclick="onok(this,' + mode + ',\'' + formid + '\',\'' + tag + '\',\'' + action + '\',\'' + method + '\');" disabled>确定</botton>'
+        + '<div style="height: calc(100% - 5em)"><iframe src="' + src + '" style="width: 100%; height: 100%"></iframe></div>'
+        + '<button class=\"button success float-center\" onclick="ok(this,' + mode + ',\'' + formid + '\',\'' + tag + '\',\'' + action + '\',\'' + method + '\');" disabled>确定</botton>'
         + '</div>';
 
     var dive = $(html);
@@ -43,7 +43,7 @@ function dialog(trig, mode, siz) {
 }
 
 // when clicked on the OK button
-function onok(okbtn, mode, formid, tag, action, method) {
+function ok(okbtn, mode, formid, tag, action, method) {
 
     var dlge = $('#dynadlg');
 

@@ -119,7 +119,6 @@ namespace Greatbone.Sample
                 m.FORM_();
                 m.FIELDSET_();
                 form(m);
-                m.BUTTON("确定");
                 m._FIELDSET();
                 m._FORM();
             },
