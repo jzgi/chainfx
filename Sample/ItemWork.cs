@@ -8,10 +8,7 @@ namespace Greatbone.Sample
     ///
     public abstract class ItemWork<V> : Work where V : ItemVarWork
     {
-        public ItemWork(WorkContext fc) : base(fc)
-        {
-            CreateVar<ItemVarWork>();
-        }
+        public ItemWork(WorkContext fc) : base(fc) { }
 
         public void @default(ActionContext ac)
         {
@@ -126,7 +123,7 @@ namespace Greatbone.Sample
     }
 
     [Ui("货架")]
-    public class MgrItemWork : ItemWork<OprItemVarWork>
+    public class MgrItemWork : ItemWork<MgrItemVarWork>
     {
         public MgrItemWork(WorkContext wc) : base(wc)
         {

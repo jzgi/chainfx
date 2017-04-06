@@ -2,10 +2,7 @@ using Greatbone.Core;
 
 namespace Greatbone.Sample
 {
-    ///
-    /// /shop/-id-/item/-id-/
-    ///
-    public class ItemVarWork : Work
+    public abstract class ItemVarWork : Work
     {
         public ItemVarWork(WorkContext wc) : base(wc)
         {
@@ -105,9 +102,16 @@ namespace Greatbone.Sample
         }
     }
 
-    public class OprItemVarWork : ItemVarWork
+    public class PubItemVarWork : ItemVarWork
     {
-        public OprItemVarWork(WorkContext wc) : base(wc)
+        public PubItemVarWork(WorkContext wc) : base(wc)
+        {
+        }
+    }
+
+    public class MgrItemVarWork : ItemVarWork
+    {
+        public MgrItemVarWork(WorkContext wc) : base(wc)
         {
         }
     }

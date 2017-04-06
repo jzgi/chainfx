@@ -1,9 +1,9 @@
-﻿using System;
+﻿using Npgsql;
+using NpgsqlTypes;
+using System;
 using System.Collections.Generic;
 using System.Data;
 using System.Threading.Tasks;
-using Npgsql;
-using NpgsqlTypes;
 
 namespace Greatbone.Core
 {

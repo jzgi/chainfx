@@ -55,29 +55,16 @@ namespace Greatbone.Sample
                 else ac.Give(404); // not found           
             }
         }
-
-
-        //
-        // management
-        //
-
-        public void remenu(ActionContext ac)
-        {
-        }
-
-        public void basket(ActionContext ac)
-        {
-        }
-
-        public void invoice(ActionContext ac)
-        {
-        }
     }
 
+    /// <summary>
+    /// /pub/-shopid-/
+    /// </summary>
     public class PubShopVarWork : ShopVarWork
     {
         public PubShopVarWork(WorkContext wc) : base(wc)
         {
+            CreateVar<PubItemVarWork>();
         }
 
         public void @default(ActionContext ac)
@@ -118,12 +105,12 @@ namespace Greatbone.Sample
                             m.Add("<form id=\"item"); m.Add(i); m.Add("\">");
                             m.Add("<div class=\"row\">");
 
-                            m.Add("<div class=\"small-3 columns\"><a href=\"#\"><span></span><img src=\"item/"); m.Add(item.name); m.Add("/_icon_\" alt=\"\" class=\" thumbnail\"></a></div>");
+                            m.Add("<div class=\"small-3 columns\"><a href=\"#\"><span></span><img src=\""); m.Add(item.name); m.Add("/_icon_\" alt=\"\" class=\" thumbnail\"></a></div>");
                             m.Add("<div class=\"small-9 columns\">");
                             m.Add("<p>&yen;"); m.Add(item.price); m.Add("</p>");
                             m.Add("<p>"); m.Add(item.descr); m.Add("</p>");
 
-                            m.Add("<button class=\"button warning\" formaction=\"item/"); m.Add(item.name); m.Add("/add\" onclick=\"return dialog(this,2)\">加入购物车</button>");
+                            m.Add("<button class=\"button warning\" formaction=\""); m.Add(item.name); m.Add("/add\" onclick=\"return dialog(this,2)\">加入购物车</button>");
                             m.Add("</div>");
 
                             m.Add("</div>");

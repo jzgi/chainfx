@@ -23,6 +23,8 @@ namespace Greatbone.Core
         // state-passing
         readonly WorkContext wc;
 
+        readonly TypeInfo typeinfo;
+
         // declared actions 
         readonly Roll<ActionInfo> actions;
 
@@ -51,6 +53,8 @@ namespace Greatbone.Core
             // gather actions
             actions = new Roll<ActionInfo>(32);
             Type typ = GetType();
+            typeinfo = typ.GetTypeInfo();
+
             foreach (MethodInfo mi in typ.GetMethods(BindingFlags.Public | BindingFlags.Instance))
             {
                 // verify the return type
@@ -209,6 +213,8 @@ namespace Greatbone.Core
                 }
             });
         }
+
+        public bool IsSubclassOf(Type typ) => typeinfo.IsSubclassOf(typ);
 
         public ActionInfo GetAction(string method)
         {

@@ -1,10 +1,10 @@
-﻿using System;
+﻿using Microsoft.AspNetCore.Http;
+using Microsoft.AspNetCore.Http.Features;
+using Microsoft.Extensions.Primitives;
+using System;
 using System.Collections.Generic;
 using System.Data;
 using System.Threading.Tasks;
-using Microsoft.AspNetCore.Http;
-using Microsoft.AspNetCore.Http.Features;
-using Microsoft.Extensions.Primitives;
 using static Greatbone.Core.DataInputUtility;
 
 namespace Greatbone.Core
@@ -61,7 +61,7 @@ namespace Greatbone.Core
                 for (int i = 0; i < segnum; i++)
                 {
                     Segment seg = segs[i];
-                    if (seg.Type == workType) return seg;
+                    if (seg.Work.IsSubclassOf(workType)) return seg;
                 }
                 return default(Segment);
             }
