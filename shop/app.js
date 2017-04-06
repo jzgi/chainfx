@@ -23,7 +23,7 @@ function dialog(trig, mode, siz) {
 
     var html = '<div id="dynadlg" class="' + sizg + ' reveal"  data-reveal data-close-on-click="false">'
         + '<h3>' + trig.innerHTML + ' </h3>'
-        + '<button class="close-button" type="button" onclick="oncancel(this);"><span aria-hidden="true">&times;</span></button>'
+        + '<button class="close-button" type="button" onclick="destory(this);">&times;</button>'
         + '<div style="height: calc(100% - 1em)"><iframe src="' + src + '" style="width: 100%; height: 100%"></iframe></div>'
         + '<button onclick="onok(this,' + mode + ',\'' + formid + '\',\'' + tag + '\',\'' + action + '\',\'' + method + '\');" disabled>确定</botton>'
         + '</div>';
@@ -101,7 +101,7 @@ function onok(okbtn, mode, formid, tag, action, method) {
 }
 
 // when clicked on the OK button
-function oncancel(btn) {
+function destory(btn) {
     var dlge = $(btn).parent();
     // clean up the dialog
     dlge.foundation('close');

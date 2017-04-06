@@ -586,7 +586,7 @@ namespace Greatbone.Core
         public void NUMBER(string name, short v, string label = null, string help = null, short max = 0, short min = 0, short step = 0, bool opt = false, bool @readonly = false, bool required = false)
         {
             Add("<label>");
-            AddLabel(null, name);
+            AddLabel(label, name);
             Add("<input style=\"height: 100px\" type=\"number\" name=\"");
             Add(name);
             Add("\" value=\""); Add(v); Add("\"");
@@ -621,7 +621,7 @@ namespace Greatbone.Core
         public void NUMBER(string name, int v, string label = null, string help = null, int max = 0, int min = 0, int step = 0, bool opt = false, bool @readonly = false, bool required = false)
         {
             Add("<label>");
-            AddLabel(null, name);
+            AddLabel(label, name);
             Add("<input style=\"height: 100px\" type=\"number\" name=\"");
             Add(name);
             Add("\" value=\""); Add(v); Add("\"");

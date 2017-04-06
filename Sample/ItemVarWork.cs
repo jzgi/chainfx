@@ -52,36 +52,6 @@ namespace Greatbone.Sample
             }
         }
 
-        public void add(ActionContext ac)
-        {
-            string shopid = ac[typeof(ShopVarWork)];
-            string name = ac[this];
-            if (ac.GET)
-            {
-                using (var dc = Service.NewDbContext())
-                {
-                    if (dc.Query1("SELECT price, min, step FROM items WHERE shopid = @1 AND name = @2", p => p.Set(shopid).Set(name)))
-                    {
-                        var price = dc.GetDecimal();
-                        var min = dc.GetShort();
-                        short qty = min;
-                        var step = dc.GetShort();
-                        string note = null;
-                        ac.GiveFormPane(200, f =>
-                        {
-                            f.NUMBER(nameof(qty), qty, min: min, step: step);
-                            f.TEXTAREA(nameof(note), note);
-                        });
-                    }
-                    else ac.Give(404); // not found           
-                }
-            }
-            else
-            {
-
-            }
-        }
-
         public void cannel(ActionContext ac)
         {
             string shopid = ac[0];
@@ -104,8 +74,36 @@ namespace Greatbone.Sample
 
     public class PubItemVarWork : ItemVarWork
     {
-        public PubItemVarWork(WorkContext wc) : base(wc)
+        public PubItemVarWork(WorkContext wc) : base(wc) { }
+
+        public void add(ActionContext ac)
         {
+            string shopid = ac[typeof(ShopVarWork)];
+            string name = ac[this];
+            if (ac.GET)
+            {
+                using (var dc = Service.NewDbContext())
+                {
+                    if (dc.Query1("SELECT price, min, step FROM items WHERE shopid = @1 AND name = @2", p => p.Set(shopid).Set(name)))
+                    {
+                        var price = dc.GetDecimal();
+                        var min = dc.GetShort();
+                        short qty = min;
+                        var step = dc.GetShort();
+                        string note = null;
+                        ac.GiveFormPane(200, f =>
+                        {
+                            f.NUMBER(nameof(qty), qty, label: "数量", min: min, step: step);
+                            f.TEXTAREA(nameof(note), note, label: "附加说明");
+                        });
+                    }
+                    else ac.Give(404); // not found           
+                }
+            }
+            else
+            {
+
+            }
         }
     }
 
