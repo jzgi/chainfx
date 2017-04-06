@@ -1,6 +1,6 @@
-﻿using System.Collections.Generic;
+﻿using Greatbone.Core;
+using System.Collections.Generic;
 using System.Threading.Tasks;
-using Greatbone.Core;
 
 namespace Greatbone.Sample
 {

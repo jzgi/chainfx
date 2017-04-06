@@ -1,6 +1,6 @@
-﻿using System;
+﻿using Greatbone.Core;
+using System;
 using System.Collections.Generic;
-using Greatbone.Core;
 
 namespace Greatbone.Sample
 {
@@ -90,15 +90,15 @@ namespace Greatbone.Sample
             {
                 o.Put(nameof(id), id);
             }
-            o.Put(nameof(shopid), shopid);
-            o.Put(nameof(shop), shop);
+            o.Put(nameof(shopid), shopid, label: "商家编号");
+            o.Put(nameof(shop), shop, label: "商家名称");
             o.Put(nameof(shopwx), shopwx);
-            o.Put(nameof(shoptel), shoptel);
+            o.Put(nameof(shoptel), shoptel, label: "  电话");
             o.Put(nameof(buywx), buywx);
-            o.Put(nameof(buy), buy);
-            o.Put(nameof(buytel), buytel);
-            o.Put(nameof(buyaddr), buyaddr);
-            o.Put(nameof(total), total);
+            o.Put(nameof(buy), buy, label: "买家名称");
+            o.Put(nameof(buytel), buytel, label: "  电话");
+            o.Put(nameof(buyaddr), buyaddr, label: "  地址");
+            o.Put(nameof(total), total, label: "金额");
             o.Put(nameof(created), created);
             if (proj.Detail())
             {
@@ -109,7 +109,6 @@ namespace Greatbone.Sample
             {
                 o.Put(nameof(created), created);
             }
-
             if (proj.Late())
             {
                 o.Put(nameof(paid), paid);
@@ -154,10 +153,10 @@ namespace Greatbone.Sample
 
         public void WriteData<R>(IDataOutput<R> o, int proj = 0) where R : IDataOutput<R>
         {
-            o.Put(nameof(item), item);
-            o.Put(nameof(qty), qty);
-            o.Put(nameof(price), price);
-            o.Put(nameof(note), note);
+            o.Put(nameof(item), item, label: "品名");
+            o.Put(nameof(qty), qty, label: "数量");
+            o.Put(nameof(price), price, label: "单价");
+            o.Put(nameof(note), note, label: "附注");
         }
 
         public void AddQty(short qty)
