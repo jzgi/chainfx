@@ -90,7 +90,7 @@ namespace Greatbone.Sample
     {
         public MyCartOrderVarWork(WorkContext wc) : base(wc) { }
 
-        [Ui("付款")]
+        [Ui("付款", Mode = UiMode.ButtonScript)]
         public async Task prepay(ActionContext ac)
         {
             long ordid = ac[this];
@@ -98,25 +98,23 @@ namespace Greatbone.Sample
 
             using (var dc = ac.NewDbContext())
             {
-                object total = dc.Scalar("SELECT total FROM orders WHERE id = @1 AND buywx = @2", p => p.Set(ordid).Set(buywx));
-                if (total == null)
+                string prepay_id = null;
+                decimal total = 0;
+                if (dc.Query1("SELECT prepay_id, total FROM orders WHERE id = @1 AND buywx = @2", p => p.Set(ordid).Set(buywx)))
                 {
+                    prepay_id = dc.GetString();
+                    total = dc.GetDecimal();
+                    if (prepay_id == null) // if not yet, call unifiedorder remotely
+                    {
+                        prepay_id = await WeiXinUtility.PostUnifiedOrderAsync(ordid, total, null, "http://shop.144000.tv/notify");
+                        dc.Execute("UPDATE orders SET prepay_id = @1 WHERE id = @2", p => p.Set(prepay_id).Set(ordid));
+                    }
 
-                }
-
-                string preorder = null;
-                
-                // prepare remotely
-                await WeiXinUtility.PostOrderAsync(ordid, (decimal)total, null);
-
-
-                dc.Sql("UPDATE orders SET ").setstate()._(" WHERE id = @1 AND shopid = @2 AND ").statecond();
-                if (dc.Query(p => p.Set(ordid)))
-                {
-                    var order = dc.ToArray<Order>();
+                    ac.Give(200, WeiXinUtility.PrepayContent(prepay_id));
                 }
                 else
                 {
+                    ac.Give(404, "order not found");
                 }
             }
         }

@@ -280,7 +280,7 @@ namespace Greatbone.Core
             return null;
         }
 
-        public async Task<int> PostAsync(ActionContext ac, string uri, IContent content)
+        public async Task<HttpResponseMessage> PostAsync(ActionContext ac, string uri, IContent content)
         {
             try
             {
@@ -296,14 +296,13 @@ namespace Greatbone.Core
                 req.Headers.Add("Content-Type", content.Type);
                 req.Headers.Add("Content-Length", content.Size.ToString());
 
-                HttpResponseMessage rsp = await SendAsync(req, HttpCompletionOption.ResponseContentRead);
-                return (int)rsp.StatusCode;
+                return await SendAsync(req, HttpCompletionOption.ResponseContentRead);
             }
             catch
             {
                 retryat = Environment.TickCount + AHEAD;
             }
-            return 500; // internal error
+            return null; // internal error
         }
 
         public async Task<M> PostAsync<M>(ActionContext ctx, string uri, IContent content) where M : class, IDataInput

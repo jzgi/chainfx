@@ -21,7 +21,7 @@ namespace Greatbone.Sample
 
         static readonly Connector WeiXin = new Connector("https://api.weixin.qq.com");
 
-        public static async Task PostOrderAsync(long orderid, decimal total, string openid)
+        public static async Task<string> PostUnifiedOrderAsync(long orderid, decimal total, string openid, string notifyurl)
         {
             XmlContent xml = new XmlContent();
             xml.ELEM("xml", null, () =>
@@ -30,15 +30,18 @@ namespace Greatbone.Sample
                 xml.ELEM("mch_id", MCH_ID);
                 xml.ELEM("nonce_str", NONCE_STR);
                 xml.ELEM("sign", "");
-                xml.ELEM("body", "");
+                xml.ELEM("body", "粗粮达人-健康产品");
                 xml.ELEM("out_trade_no", orderid);
                 xml.ELEM("total_fee", total);
-                xml.ELEM("notify_url", "");
-                xml.ELEM("trade_type", "");
+                xml.ELEM("notify_url", notifyurl);
+                xml.ELEM("trade_type", "JSAPI");
                 xml.ELEM("openid", openid);
             });
-            var rsp = await WweiXinPay.PostAsync("/pay/unifiedorder", xml);
+            var rsp = await WweiXinPay.PostAsync(null, "/pay/unifiedorder", xml);
+            XElem xe = await rsp.ReadAsync<XElem>();
+            string prepay_id = xe.Child(nameof(prepay_id));
 
+            return prepay_id;
         }
 
         public static void GiveRedirectWeiXinAuthorize(this ActionContext ac)
@@ -77,6 +80,21 @@ namespace Greatbone.Sample
             internal string access_token;
 
             internal string openid;
+        }
+
+        public static IContent PrepayContent(string prepay_id)
+        {
+            JsonContent cont = new JsonContent();
+            cont.OBJ(delegate
+            {
+                cont.Put("appId", APPID);
+                cont.Put("timeStamp", "");
+                cont.Put("nonceStr", "");
+                cont.Put("package", "");
+                cont.Put("signType", "MD5");
+                cont.Put("paySign", "");
+            });
+            return cont;
         }
     }
 }

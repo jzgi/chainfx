@@ -70,7 +70,7 @@ namespace Greatbone.Core
 
         int current;
 
-        XElem Sub(string name)
+        public XElem Child(string name)
         {
             if (elems != null)
             {
@@ -99,7 +99,7 @@ namespace Greatbone.Core
         public bool Sub(string name, ref bool v)
         {
             // try sub
-            XElem e = Sub(name);
+            XElem e = Child(name);
             if (e != null)
             {
                 v = e.text.ToBool();

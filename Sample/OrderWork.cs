@@ -11,25 +11,6 @@ namespace Greatbone.Sample
             CreateVar<V>();
         }
 
-        public async Task notify(ActionContext ac)
-        {
-            XElem xe = await ac.ReadAsync<XElem>();
-            string appid = xe[nameof(appid)];
-            string mch_id = xe[nameof(mch_id)];
-            string openid = xe[nameof(openid)];
-            string nonce_str = xe[nameof(nonce_str)];
-            string sign = xe[nameof(sign)];
-            string result_code = xe[nameof(result_code)];
-
-            string bank_type = xe[nameof(bank_type)];
-            string total_fee = xe[nameof(total_fee)]; // 订单总金额单位分
-            string cash_fee = xe[nameof(cash_fee)]; // 支付金额单位分
-            string transaction_id = xe[nameof(transaction_id)]; // 微信支付订单号
-            string out_trade_no = xe[nameof(out_trade_no)]; // 商户订单号
-            string time_end = xe[nameof(time_end)]; // 支付完成时间
-
-        }
-
         [Ui("标注完成")]
         public void close(ActionContext ac)
         {

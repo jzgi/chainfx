@@ -102,11 +102,6 @@ namespace Greatbone.Core
             return default(DateTime);
         }
 
-        public static implicit operator NpgsqlPoint(XAttr v)
-        {
-            return default(NpgsqlPoint);
-        }
-
         public static implicit operator char[](XAttr v)
         {
             string str = v.value;
