@@ -20,52 +20,48 @@ namespace Greatbone.Core
         internal AuthorizeAttribute authorize;
 
         // pre- operation
-        readonly BeforeAttribute before;
+        readonly IBefore before;
+        readonly IBeforeAsync beforeasync;
 
         // post- operation
-        readonly AfterAttribute after;
+        readonly IAfter after;
+        readonly IAfterAsync afterasync;
 
-
-        internal Nodule(string name, ICustomAttributeProvider attrs)
+        internal Nodule(string name, ICustomAttributeProvider attrprov)
         {
             this.name = name;
             this.upper = name.ToUpper();
 
             // either methodinfo or typeinfo
-            if (attrs == null)
+            if (attrprov == null)
             {
-                attrs = GetType().GetTypeInfo();
+                attrprov = GetType().GetTypeInfo();
             }
 
             // ui
-            var uis = (UiAttribute[])attrs.GetCustomAttributes(typeof(UiAttribute), false);
+            var uis = (UiAttribute[])attrprov.GetCustomAttributes(typeof(UiAttribute), false);
             if (uis.Length > 0)
             {
                 ui = uis[0];
             }
 
             // authorize
-            var auths = (AuthorizeAttribute[])attrs.GetCustomAttributes(typeof(AuthorizeAttribute), false);
+            var auths = (AuthorizeAttribute[])attrprov.GetCustomAttributes(typeof(AuthorizeAttribute), false);
             if (auths.Length > 0)
             {
                 authorize = auths[0];
                 authorize.Nodule = this;
             }
 
-            // before 
-            var befs = (BeforeAttribute[])attrs.GetCustomAttributes(typeof(BeforeAttribute), false);
-            if (befs.Length > 0)
+            // filters
+            var attrs = attrprov.GetCustomAttributes(false);
+            for (int i = 0; i < attrs.Length; i++)
             {
-                before = befs[0];
-                before.Nodule = this;
-            }
-
-            // after 
-            var afts = (AfterAttribute[])attrs.GetCustomAttributes(typeof(AfterAttribute), false);
-            if (afts.Length > 0)
-            {
-                after = afts[0];
-                after.Nodule = this;
+                var a = attrs[i];
+                if (a is IBefore) before = (IBefore)a;
+                if (a is IBeforeAsync) beforeasync = (IBeforeAsync)a;
+                if (a is IAfter) after = (IAfter)a;
+                if (a is IAfterAsync) afterasync = (IAfterAsync)a;
             }
         }
 
@@ -77,9 +73,13 @@ namespace Greatbone.Core
 
         public AuthorizeAttribute Authorize => authorize;
 
-        public BeforeAttribute Before => before;
+        public IBefore Before => before;
 
-        public AfterAttribute After => after;
+        public IBeforeAsync BeforeAsync => beforeasync;
+
+        public IAfter After => after;
+
+        public IAfterAsync AfterAsync => afterasync;
 
         public string Label => ui?.Label ?? upper;
 

@@ -261,12 +261,10 @@ namespace Greatbone.Core
         {
             ac.Work = this;
 
-            // access check 
+            // authorize and filters
             if (!DoAuthorize(ac)) throw AuthorizeEx;
-
-            // pre-
-            BeforeAttribute bef = Before;
-            if (bef != null) { if (bef.IsAsync) await bef.DoAsync(ac); else bef.Do(ac); }
+            if (Before != null) Before.Do(ac);
+            if (BeforeAsync != null) await BeforeAsync.DoAsync(ac);
 
             int dot = rsc.LastIndexOf('.');
             if (dot != -1) // file
@@ -299,8 +297,8 @@ namespace Greatbone.Core
 
                 // try in cache
 
-                BeforeAttribute actbef = act.Before;
-                if (actbef != null) { if (actbef.IsAsync) await actbef.DoAsync(ac); else actbef.Do(ac); }
+                if (act.Before != null) act.Before.Do(ac);
+                if (act.BeforeAsync != null) await act.BeforeAsync.DoAsync(ac);
 
                 // method invocation
                 if (act.IsAsync)
@@ -312,15 +310,14 @@ namespace Greatbone.Core
                     act.Do(ac, subscpt);
                 }
 
-                AfterAttribute actaft = act.After;
-                if (actaft != null) { if (actaft.IsAsync) await actaft.DoAsync(ac); else actaft.Do(ac); }
+                if (act.After != null) act.After.Do(ac);
+                if (act.AfterAsync != null) await act.AfterAsync.DoAsync(ac);
 
                 ac.Doer = null;
             }
 
-            // post-
-            AfterAttribute aft = After;
-            if (aft != null) { if (aft.IsAsync) await aft.DoAsync(ac); else aft.Do(ac); }
+            if (After != null) After.Do(ac);
+            if (AfterAsync != null) await AfterAsync.DoAsync(ac);
 
             ac.Work = null;
         }
