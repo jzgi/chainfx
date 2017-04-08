@@ -1,5 +1,6 @@
-﻿using System.Threading.Tasks;
-using Greatbone.Core;
+﻿using Greatbone.Core;
+using System.Net;
+using System.Threading.Tasks;
 
 namespace Greatbone.Sample
 {
@@ -46,25 +47,26 @@ namespace Greatbone.Sample
 
         public static void GiveRedirectWeiXinAuthorize(this ActionContext ac)
         {
-            string redirect_url = System.Net.WebUtility.UrlEncode(ADDR + ac.Uri);
-            ac.GiveRedirect("https://open.weixin.qq.com/connect/oauth2/authorize?appid=" + APPID + "&redirect_uri=" + redirect_url + "&response_type=code&scope=snsapi_userinfo&state=" + WXAUTH + "#wechat_redirect");
+            string redirect_url = WebUtility.UrlEncode(ADDR + ac.Uri);
+            ac.SetHeader("Location", "https://open.weixin.qq.com/connect/oauth2/authorize?appid=" + APPID + "&redirect_uri=" + redirect_url + "&response_type=code&scope=snsapi_userinfo&state=" + WXAUTH + "#wechat_redirect");
+            ac.Give(303);
         }
 
-        public static async Task<AccessToken> GetAccessTokenAsync(string code)
+        public static async Task<Accessor> GetAccessorAsync(string code)
         {
             string url = "/sns/oauth2/access_token?appid=" + APPID + "&secret=" + APPSECRET + "&code=" + code + "&grant_type=authorization_code";
             JObj jo = await WeiXin.GetAsync<JObj>(null, url);
-            if (jo == null) return default(AccessToken);
+            if (jo == null) return default(Accessor);
 
             string access_token = jo[nameof(access_token)];
             if (access_token == null)
             {
                 string errmsg = jo[nameof(errmsg)];
-                return default(AccessToken);
+                return default(Accessor);
             }
             string openid = jo[nameof(openid)];
 
-            return new AccessToken();
+            return new Accessor { access_token = access_token, openid = openid };
         }
 
         public static async Task<User> GetUserInfoAsync(string access_token, string openid)
@@ -75,7 +77,7 @@ namespace Greatbone.Sample
             return new User { wx = openid, nickname = nickname, city = city };
         }
 
-        public struct AccessToken
+        public struct Accessor
         {
             internal string access_token;
 

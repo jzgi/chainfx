@@ -118,20 +118,19 @@ namespace Greatbone.Sample
             }
         }
 
-        public void add(string item, short qty, decimal price, string note)
+        public void AddItem(string item, short qty, decimal price, string note)
         {
             if (lines == null)
             {
                 lines = new List<OrderLine>();
             }
-            // var orderln = lines.Find(o => o.shopid.Equals(shopid));
-            // if (orderln == null)
-            // {
-            //     orderln = new OrderLine();
-            //     Add(order);
-            // }
+            var orderln = lines.Find(o => o.item.Equals(item));
+            if (orderln.item == null)
+            {
+                orderln = new OrderLine();
+                lines.Add(orderln);
+            }
         }
-
     }
 
     public struct OrderLine : IData

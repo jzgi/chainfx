@@ -2,7 +2,7 @@ using Greatbone.Core;
 
 namespace Greatbone.Sample
 {
-    public class ChatService : AbstService
+    public class ChatService : Service
     {
         public ChatService(ServiceContext sc) : base(sc)
         {
