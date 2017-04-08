@@ -137,17 +137,17 @@ namespace Greatbone.Sample
 
     }
 
-    public abstract class MgrOrderWork<V> : OrderWork<V> where V : MgrOrderVarWork
+    public abstract class OprOrderWork<V> : OrderWork<V> where V : OprOrderVarWork
     {
-        public MgrOrderWork(WorkContext wc) : base(wc)
+        public OprOrderWork(WorkContext wc) : base(wc)
         {
         }
 
     }
 
-    public class MgrUnpaidOrderWork : MgrOrderWork<MgrUnpaidOrderVarWork>
+    public class OprUnpaidOrderWork : OprOrderWork<OprUnpaidOrderVarWork>
     {
-        public MgrUnpaidOrderWork(WorkContext wc) : base(wc)
+        public OprUnpaidOrderWork(WorkContext wc) : base(wc)
         {
         }
 
@@ -173,9 +173,9 @@ namespace Greatbone.Sample
     }
 
     [Ui("已付")]
-    public class MgrPaidOrderWork : MgrOrderWork<MgrPaidOrderVarWork>
+    public class OprPaidOrderWork : OprOrderWork<OprPaidOrderVarWork>
     {
-        public MgrPaidOrderWork(WorkContext wc) : base(wc)
+        public OprPaidOrderWork(WorkContext wc) : base(wc)
         {
         }
 
@@ -217,9 +217,9 @@ namespace Greatbone.Sample
     }
 
     [Ui("已锁")]
-    public class MgrFixedOrderWork : MgrOrderWork<MgrLockedOrderVarWork>
+    public class OprFixedOrderWork : OprOrderWork<OprLockedOrderVarWork>
     {
-        public MgrFixedOrderWork(WorkContext wc) : base(wc)
+        public OprFixedOrderWork(WorkContext wc) : base(wc)
         {
         }
 
@@ -245,9 +245,9 @@ namespace Greatbone.Sample
     }
 
     [Ui("已完")]
-    public class MgrClosedOrderWork : MgrOrderWork<MgrClosedOrderVarWork>
+    public class OprClosedOrderWork : OprOrderWork<OprClosedOrderVarWork>
     {
-        public MgrClosedOrderWork(WorkContext wc) : base(wc)
+        public OprClosedOrderWork(WorkContext wc) : base(wc)
         {
         }
 
@@ -273,9 +273,9 @@ namespace Greatbone.Sample
     }
 
     [Ui("已撤")]
-    public class MgrAbortedOrderWork : MgrOrderWork<MgrAbortedOrderVarWork>
+    public class OprAbortedOrderWork : OprOrderWork<OprAbortedOrderVarWork>
     {
-        public MgrAbortedOrderWork(WorkContext wc) : base(wc)
+        public OprAbortedOrderWork(WorkContext wc) : base(wc)
         {
         }
 

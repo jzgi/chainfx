@@ -47,6 +47,15 @@ namespace Greatbone.Sample
             }
         }
 
+    }
+
+    [Ui("结款")]
+    public class OprRepayWork : RepayWork<OprRepayVarWork>
+    {
+        public OprRepayWork(WorkContext wc) : base(wc)
+        {
+        }
+
         [Ui("生成结款单")]
         public void @new(ActionContext ac)
         {
@@ -86,7 +95,7 @@ namespace Greatbone.Sample
             // <sign>C97BDBACF37622775366F38B629F45E3</sign>
             // </xml>
             XmlContent cont = new XmlContent();
-            XElem resp = await WcPay.PostAsync<XElem>(null, "/mmpaymkttransfers/promotion/transfers", cont);
+//            XElem resp = await WcPay.PostAsync<XElem>(null, "/mmpaymkttransfers/promotion/transfers", cont);
 
             using (var dc = ac.NewDbContext())
             {
@@ -104,14 +113,6 @@ namespace Greatbone.Sample
 
         [Ui("余额管理")]
         public void balance(ActionContext ac)
-        {
-        }
-    }
-
-    [Ui("结款")]
-    public class MgrRepayWork : RepayWork<MgrRepayVarWork>
-    {
-        public MgrRepayWork(WorkContext wc) : base(wc)
         {
         }
     }

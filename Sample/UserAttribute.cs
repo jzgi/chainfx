@@ -4,19 +4,19 @@ namespace Greatbone.Sample
 {
     public class UserAttribute : AuthorizeAttribute
     {
-        bool mgr;
+        bool opr;
 
         short adm;
 
         public UserAttribute() : this(false, 0) { }
 
-        public UserAttribute(bool mgr, short adm)
+        public UserAttribute(bool opr, short adm)
         {
-            this.mgr = mgr;
+            this.opr = opr;
             this.adm = adm;
         }
 
-        public bool IsMgr => mgr;
+        public bool IsOpr => opr;
 
         public short IsAdm => adm;
 
@@ -26,7 +26,7 @@ namespace Greatbone.Sample
 
             if (prin == null) return false;
 
-            if (mgr && prin.shopid == null)
+            if (opr && prin.shopid == null)
             {
                 return false;
             }

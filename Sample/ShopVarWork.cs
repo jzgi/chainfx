@@ -129,21 +129,21 @@ namespace Greatbone.Sample
         }
     }
 
-    public class MgrShopVarWork : ShopVarWork
+    public class OprShopVarWork : ShopVarWork
     {
-        public MgrShopVarWork(WorkContext wc) : base(wc)
+        public OprShopVarWork(WorkContext wc) : base(wc)
         {
-            Create<MgrPaidOrderWork>("paid");
+            Create<OprPaidOrderWork>("paid");
 
-            Create<MgrFixedOrderWork>("fixed");
+            Create<OprFixedOrderWork>("fixed");
 
-            Create<MgrClosedOrderWork>("closed");
+            Create<OprClosedOrderWork>("closed");
 
-            Create<MgrAbortedOrderWork>("aborted");
+            Create<OprAbortedOrderWork>("aborted");
 
-            Create<MgrItemWork>("item");
+            Create<OprItemWork>("item");
 
-            Create<MgrRepayWork>("repay");
+            Create<OprRepayWork>("repay");
         }
 
         public void @default(ActionContext ac)

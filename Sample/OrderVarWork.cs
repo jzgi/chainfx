@@ -127,23 +127,23 @@ namespace Greatbone.Sample
         }
     }
 
-    public abstract class MgrOrderVarWork : OrderVarWork
+    public abstract class OprOrderVarWork : OrderVarWork
     {
-        public MgrOrderVarWork(WorkContext wc) : base(wc)
+        public OprOrderVarWork(WorkContext wc) : base(wc)
         {
         }
     }
 
-    public class MgrUnpaidOrderVarWork : MgrOrderVarWork
+    public class OprUnpaidOrderVarWork : OprOrderVarWork
     {
-        public MgrUnpaidOrderVarWork(WorkContext wc) : base(wc)
+        public OprUnpaidOrderVarWork(WorkContext wc) : base(wc)
         {
         }
     }
 
-    public class MgrPaidOrderVarWork : MgrOrderVarWork
+    public class OprPaidOrderVarWork : OprOrderVarWork
     {
-        public MgrPaidOrderVarWork(WorkContext wc) : base(wc)
+        public OprPaidOrderVarWork(WorkContext wc) : base(wc)
         {
         }
 
@@ -166,23 +166,23 @@ namespace Greatbone.Sample
         }
     }
 
-    public class MgrLockedOrderVarWork : MgrOrderVarWork
+    public class OprLockedOrderVarWork : OprOrderVarWork
     {
-        public MgrLockedOrderVarWork(WorkContext wc) : base(wc)
+        public OprLockedOrderVarWork(WorkContext wc) : base(wc)
         {
         }
     }
 
-    public class MgrClosedOrderVarWork : MgrOrderVarWork
+    public class OprClosedOrderVarWork : OprOrderVarWork
     {
-        public MgrClosedOrderVarWork(WorkContext wc) : base(wc)
+        public OprClosedOrderVarWork(WorkContext wc) : base(wc)
         {
         }
     }
 
-    public class MgrAbortedOrderVarWork : MgrOrderVarWork
+    public class OprAbortedOrderVarWork : OprOrderVarWork
     {
-        public MgrAbortedOrderVarWork(WorkContext wc) : base(wc)
+        public OprAbortedOrderVarWork(WorkContext wc) : base(wc)
         {
         }
     }

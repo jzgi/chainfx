@@ -161,11 +161,11 @@ namespace Greatbone.Sample
     /// <summary>
     /// 
     /// </summary>
-    public class MgrShopWork : ShopWork<MgrShopVarWork>
+    public class OprShopWork : ShopWork<OprShopVarWork>
     {
-        public MgrShopWork(WorkContext wc) : base(wc)
+        public OprShopWork(WorkContext wc) : base(wc)
         {
-            CreateVar<MgrShopVarWork>((prin) => ((User)prin).shopid);
+            CreateVar<OprShopVarWork>((prin) => ((User)prin).shopid);
         }
 
         public async Task @goto(ActionContext ac)

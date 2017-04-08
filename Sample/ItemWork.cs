@@ -15,7 +15,7 @@ namespace Greatbone.Sample
             string shopid = ac[1];
             using (var dc = ac.NewDbContext())
             {
-                if (dc.Query("SELECT * FROM items WHERE shopid = @1 AND enabled", p => p.Set(shopid)))
+                if (dc.Query("SELECT * FROM items WHERE shopid = @1 AND status > 0", p => p.Set(shopid)))
                 {
                     ac.Give(200, dc.Dump());
                 }
@@ -123,9 +123,9 @@ namespace Greatbone.Sample
     }
 
     [Ui("货架")]
-    public class MgrItemWork : ItemWork<MgrItemVarWork>
+    public class OprItemWork : ItemWork<OprItemVarWork>
     {
-        public MgrItemWork(WorkContext wc) : base(wc)
+        public OprItemWork(WorkContext wc) : base(wc)
         {
         }
     }

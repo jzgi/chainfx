@@ -107,9 +107,9 @@ namespace Greatbone.Sample
         }
     }
 
-    public class MgrItemVarWork : ItemVarWork
+    public class OprItemVarWork : ItemVarWork
     {
-        public MgrItemVarWork(WorkContext wc) : base(wc)
+        public OprItemVarWork(WorkContext wc) : base(wc)
         {
         }
     }

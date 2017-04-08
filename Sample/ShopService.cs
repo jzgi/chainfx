@@ -18,7 +18,7 @@ namespace Greatbone.Sample
 
             Create<MyUserWork>("my");
 
-            Create<MgrShopWork>("mgr");
+            Create<OprShopWork>("opr");
 
             Create<AdmWork>("adm");
 
