@@ -150,7 +150,7 @@ namespace Greatbone.Core
                 {
                     if (ac.Token != null)
                     {
-                        req.Headers.Add("Authorization", "Bearer " + ac.Token);
+                        req.Headers.Add("Authorization", "Token " + ac.Token);
                     }
                 }
                 HttpResponseMessage resp = await SendAsync(req, HttpCompletionOption.ResponseContentRead);
@@ -172,7 +172,7 @@ namespace Greatbone.Core
                 {
                     if (ac.Token != null)
                     {
-                        req.Headers.Add("Authorization", "Bearer " + ac.Token);
+                        req.Headers.Add("Authorization", "Token " + ac.Token);
                     }
                 }
                 HttpResponseMessage rsp = await SendAsync(req, HttpCompletionOption.ResponseContentRead);
@@ -200,7 +200,7 @@ namespace Greatbone.Core
                 {
                     if (ac.Token != null)
                     {
-                        req.Headers.Add("Authorization", "Bearer " + ac.Token);
+                        req.Headers.Add("Authorization", "Token " + ac.Token);
                     }
                 }
                 HttpResponseMessage rsp = await SendAsync(req, HttpCompletionOption.ResponseContentRead);
@@ -231,7 +231,7 @@ namespace Greatbone.Core
                 {
                     if (ac.Token != null)
                     {
-                        req.Headers.Add("Authorization", "Bearer " + ac.Token);
+                        req.Headers.Add("Authorization", "Token " + ac.Token);
                     }
                 }
                 HttpResponseMessage rsp = await SendAsync(req, HttpCompletionOption.ResponseContentRead);
@@ -260,7 +260,7 @@ namespace Greatbone.Core
                 {
                     if (ac.Token != null)
                     {
-                        req.Headers.Add("Authorization", "Bearer " + ac.Token);
+                        req.Headers.Add("Authorization", "Token " + ac.Token);
                     }
                 }
                 HttpResponseMessage rsp = await SendAsync(req, HttpCompletionOption.ResponseContentRead);
@@ -289,7 +289,7 @@ namespace Greatbone.Core
                 {
                     if (ac.Token != null)
                     {
-                        req.Headers.Add("Authorization", "Bearer " + ac.Token);
+                        req.Headers.Add("Authorization", "Token " + ac.Token);
                     }
                 }
                 req.Content = (HttpContent)content;
@@ -312,7 +312,7 @@ namespace Greatbone.Core
                 HttpRequestMessage req = new HttpRequestMessage(HttpMethod.Post, uri);
                 if (ctx != null)
                 {
-                    req.Headers.Add("Authorization", "Bearer " + ctx.Token);
+                    req.Headers.Add("Authorization", "Token " + ctx.Token);
                 }
                 req.Content = (HttpContent)content;
                 req.Headers.Add("Content-Type", content.Type);

@@ -46,7 +46,7 @@ namespace Greatbone.Sample
         {
             Create<MyCartOrderWork>("cart");
 
-            Create<MyRestOrderWork>("rest");
+            Create<MyRealOrderWork>("rest");
         }
 
         public void @default(ActionContext ac)

@@ -110,7 +110,7 @@ namespace Greatbone.Sample
                         dc.Execute("UPDATE orders SET prepay_id = @1 WHERE id = @2", p => p.Set(prepay_id).Set(ordid));
                     }
 
-                    ac.Give(200, WeiXinUtility.PrepayContent(prepay_id));
+                    ac.Give(200, WeiXinUtility.MakePrepayContent(prepay_id));
                 }
                 else
                 {
@@ -120,9 +120,9 @@ namespace Greatbone.Sample
         }
     }
 
-    public class MyRestOrderVarWork : MyOrderVarWork
+    public class MyRealOrderVarWork : MyOrderVarWork
     {
-        public MyRestOrderVarWork(WorkContext wc) : base(wc)
+        public MyRealOrderVarWork(WorkContext wc) : base(wc)
         {
         }
     }
@@ -166,9 +166,9 @@ namespace Greatbone.Sample
         }
     }
 
-    public class OprLockedOrderVarWork : OprOrderVarWork
+    public class OprFixedOrderVarWork : OprOrderVarWork
     {
-        public OprLockedOrderVarWork(WorkContext wc) : base(wc)
+        public OprFixedOrderVarWork(WorkContext wc) : base(wc)
         {
         }
     }

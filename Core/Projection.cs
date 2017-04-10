@@ -3,7 +3,7 @@
     ///
     /// The bit-wise flags that filter what selectos data input/output.
     ///
-    public static class Proj
+    public static class Projection
     {
         public const int
 

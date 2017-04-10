@@ -66,7 +66,20 @@ namespace Greatbone.Sample
             }
             string openid = jo[nameof(openid)];
 
-            return new Accessor { access_token = access_token, openid = openid };
+            return new Accessor(access_token, openid);
+        }
+
+        public struct Accessor
+        {
+            internal readonly string access_token;
+
+            internal readonly string openid;
+
+            internal Accessor(string access_token, string openid)
+            {
+                this.access_token = access_token;
+                this.openid = openid;
+            }
         }
 
         public static async Task<User> GetUserInfoAsync(string access_token, string openid)
@@ -77,14 +90,7 @@ namespace Greatbone.Sample
             return new User { wx = openid, nickname = nickname, city = city };
         }
 
-        public struct Accessor
-        {
-            internal string access_token;
-
-            internal string openid;
-        }
-
-        public static IContent PrepayContent(string prepay_id)
+        public static IContent MakePrepayContent(string prepay_id)
         {
             JsonContent cont = new JsonContent();
             cont.OBJ(delegate

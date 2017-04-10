@@ -58,7 +58,7 @@ namespace Greatbone.Sample
         public async Task<bool> AuthenticateAsync(ActionContext ac, bool e)
         {
             string token;
-            if (ac.Cookies.TryGetValue("Bearer", out token))
+            if (ac.Cookies.TryGetValue("Token", out token))
             {
                 ac.Principal = Decrypt(token);
                 return true;
@@ -80,7 +80,7 @@ namespace Greatbone.Sample
                 {
                     if (dc.Query1("SELECT * FROM users WHERE wx = @1", (p) => p.Set(accessor.openid)))
                     {
-                        prin = dc.ToObject<User>(-1 ^ Proj.SECRET);
+                        prin = dc.ToObject<User>(-1 ^ Projection.SECRET);
                         prin.stored = true;
                     }
                 }
@@ -105,7 +105,7 @@ namespace Greatbone.Sample
                 {
                     if (dc.Query1("SELECT * FROM users WHERE tel = @1", (p) => p.Set(id)))
                     {
-                        prin = dc.ToObject<User>(-1 ^ Proj.SECRET);
+                        prin = dc.ToObject<User>(-1 ^ Projection.SECRET);
                     }
                 }
                 // validate
@@ -115,7 +115,7 @@ namespace Greatbone.Sample
             {
                 // set token success
                 ac.Principal = prin;
-                ac.SetCookie(prin);
+                ac.SetTokenCookie(prin);
             }
             return true;
         }

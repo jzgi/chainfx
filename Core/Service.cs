@@ -539,9 +539,9 @@ namespace Greatbone.Core
             }
         }
 
-        internal void SetCookie(ActionContext ac, P prin)
+        internal void SetTokenCookie(ActionContext ac, P prin)
         {
-            StringBuilder sb = new StringBuilder("Bearer=");
+            StringBuilder sb = new StringBuilder("Token=");
             string token = Encrypt(prin);
             sb.Append(token);
             if (Auth.maxage > 0)
@@ -556,7 +556,7 @@ namespace Greatbone.Core
             ac.SetHeader("Set-Cookie", sb.ToString());
         }
 
-        const int Proj = -1 ^ Core.Proj.BIN ^ Core.Proj.SECRET;
+        const int Proj = -1 ^ Core.Projection.BIN ^ Core.Projection.SECRET;
 
         public string Encrypt(P prin)
         {

@@ -377,9 +377,9 @@ namespace Greatbone.Core
             Response.Headers.Add(name, new StringValues(values));
         }
 
-        public void SetCookie<P>(P prin) where P : class, IData, new()
+        public void SetTokenCookie<P>(P prin) where P : class, IData, new()
         {
-            ((Service<P>)Service).SetCookie(this, prin);
+            ((Service<P>)Service).SetTokenCookie(this, prin);
         }
 
         public int Status

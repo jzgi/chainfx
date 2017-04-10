@@ -117,15 +117,16 @@ namespace Greatbone.Sample
                 }
                 else
                 {
+
                 }
             }
         }
     }
 
     [Ui("订单")]
-    public class MyRestOrderWork : MyOrderWork<MyCartOrderVarWork>
+    public class MyRealOrderWork : MyOrderWork<MyCartOrderVarWork>
     {
-        public MyRestOrderWork(WorkContext wc) : base(wc)
+        public MyRealOrderWork(WorkContext wc) : base(wc)
         {
         }
 
@@ -217,7 +218,7 @@ namespace Greatbone.Sample
     }
 
     [Ui("已锁")]
-    public class OprFixedOrderWork : OprOrderWork<OprLockedOrderVarWork>
+    public class OprFixedOrderWork : OprOrderWork<OprFixedOrderVarWork>
     {
         public OprFixedOrderWork(WorkContext wc) : base(wc)
         {

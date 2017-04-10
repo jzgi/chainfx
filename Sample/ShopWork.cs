@@ -1,7 +1,7 @@
 using Greatbone.Core;
 using System.Collections.Generic;
 using System.Threading.Tasks;
-using static Greatbone.Core.Proj;
+using static Greatbone.Core.Projection;
 
 namespace Greatbone.Sample
 {
@@ -20,7 +20,7 @@ namespace Greatbone.Sample
         {
             if (ac.GET)
             {
-                ac.GiveFormPane(200, Shop.Empty, -1 ^ Proj.TRANSF);
+                ac.GiveFormPane(200, Shop.Empty, -1 ^ Projection.TRANSF);
             }
             else // post
             {
@@ -49,7 +49,7 @@ namespace Greatbone.Sample
         {
             if (ac.GET)
             {
-                ac.GiveFormPane(200, Shop.Empty, -1 ^ Proj.TRANSF);
+                ac.GiveFormPane(200, Shop.Empty, -1 ^ Projection.TRANSF);
             }
             else // post
             {
@@ -127,7 +127,7 @@ namespace Greatbone.Sample
                             m.Add("<a class=\"float-right\" href=\"/my//cart/\">购物车/付款</a>");
                             m.Add("</div>");
 
-                            var shops = dc.ToList<Shop>(-1 ^ Proj.BIN);
+                            var shops = dc.ToList<Shop>(-1 ^ Projection.BIN);
                             for (int i = 0; i < shops.Count; i++)
                             {
                                 var shop = shops[i];
@@ -198,7 +198,7 @@ namespace Greatbone.Sample
                     {
                         dc.Execute("UPDATE users SET shopid = @1 WHERE wx = @2", p => p.Set(shopid).Set(prin.wx));
                         prin.shopid = shopid;
-                        ac.SetCookie(prin);
+                        ac.SetTokenCookie(prin);
                     }
                 }
                 ac.GiveRedirect(orig);
