@@ -200,7 +200,7 @@ namespace Greatbone.Core
             if (uias != null)
             {
                 Add("<div class=\"row\">");
-                // CONTROLS(ac, uias);
+                TOOLS(ac, uias);
                 Add("</div>");
             }
 
@@ -434,6 +434,58 @@ namespace Greatbone.Core
             chain[++level].type = CTX_FILL;
             obj.WriteData(this, proj);
             --level;
+        }
+
+        public void TOOLS(ActionContext ac, ActionInfo[] acts)
+        {
+            for (int i = 0; i < acts.Length; i++)
+            {
+                ActionInfo act = acts[i];
+
+                UiAttribute ui = act.Ui;
+
+                if (ui.IsLink)
+                {
+                    Add("<a class=\"hollow button primary\" href=\""); Add(act.Name); Add("\"");
+                    if (ui.HasDialog)
+                    {
+                        Add(" onclick=\"return dialog(this,1,2);\"");
+                    }
+                    Add(">"); Add(act.Label); Add("</a>");
+                }
+                else if (ui.IsZero || ui.IsButton)
+                {
+                    Add("<button class=\"hollow button alert\" name=\""); Add(act.Name); Add("\" formaction=\""); Add(act.Name); Add("\" formmethod=\"post\"");
+                    if (ui.HasConfirm)
+                    {
+                        Add(" onclick=\"return confirm();\"");
+                    }
+                    else if (ui.HasDialog)
+                    {
+                        Add(" onclick=\"return dialog(this,2,3);\"");
+                    }
+                    string enable = ui.Enable;
+                    if (enable != null)
+                    {
+                        // Add(" data-if=\""); Add(state.If); Add("\"");
+                        // Add(" data-unif=\""); Add(state.Unif); Add("\"");
+                    }
+                    Add(">"); Add(act.Label); Add("</button>");
+                }
+                else if (ui.IsAnchor)
+                {
+                    Add("<a class=\"hollow button secondary\" href=\"#\">");
+                    if (ui.HasDialog)
+                    {
+                        Add(" onclick=\"return dialog(this,1,3);\"");
+                    }
+                    else if (ui.HasScript)
+                    {
+                        Add(" onclick=\""); Add(act.Name); Add("(this);\"");
+                    }
+                    Add(">"); Add(act.Label); Add("</a>");
+                }
+            }
         }
 
         public void BUTTON(string value)
@@ -851,67 +903,9 @@ namespace Greatbone.Core
                 // Add(" data-unif=\""); Add(state.Unif); Add("\"");
             }
             Add(">");
-            // label and ison
-            string icon = ui?.Icon;
-            if (icon != null)
-            {
-                Add("<i class=\"");
-                Add(icon);
-                Add("\"></i>");
-            }
             AddLabel(ui?.Label, act.Name);
 
             Add("</button>");
-        }
-
-        public void CONTROLS(ActionContext ac, ActionInfo[] acts)
-        {
-            for (int i = 0; i < acts.Length; i++)
-            {
-                ActionInfo act = acts[i];
-
-                if (!act.DoAuthorize(ac)) continue;
-
-                UiAttribute ui = act.Ui;
-
-                if (ui.IsLink)
-                {
-                    Add("<a class=\"hollow button primary\" href=\""); Add(act.Name);
-                }
-                else if (ui.IsAnchor)
-                {
-                    Add("<a class=\"hollow button secondary\" href=\""); Add(act.Name);
-                }
-                else if (ui.IsButton)
-                {
-                    Add("<button class=\"hollow button alert\" name=\""); Add(act.Name); Add("\" formaction=\""); Add(act.Name); Add("\" formmethod=\"post\"");
-                }
-
-                UiMode mode = ui.Mode;
-                if (mode > 0)
-                {
-                    Add(" onclick=\"dialog(this,"); Add((int)mode); Add("); return false;\"");
-                }
-
-                string state = ui.Enable;
-                if (state != null)
-                {
-                    // Add(" data-if=\""); Add(state.If); Add("\"");
-                    // Add(" data-unif=\""); Add(state.Unif); Add("\"");
-                }
-                Add(">");
-                // label and ison
-                string icon = ui?.Icon;
-                if (icon != null)
-                {
-                    Add("<i class=\"");
-                    Add(icon);
-                    Add("\"></i>");
-                }
-                AddLabel(ui?.Label, act.Name);
-
-                Add("</button>");
-            }
         }
 
         public void SELECT<V>(string name, V v, Opt<V> opt, string label = null, bool multiple = false, bool required = false, sbyte size = 0) where V : IEquatable<V>, IConvertible

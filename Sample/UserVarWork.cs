@@ -15,7 +15,7 @@ namespace Greatbone.Sample
         {
         }
 
-        [Ui("基本资料", Mode = UiMode.AnchorDialog)]
+        [Ui("基本资料", UiMode.AnchorDialog)]
         public void profile(ActionContext ac)
         {
             string userid = ac[this];
@@ -33,7 +33,7 @@ namespace Greatbone.Sample
             }
         }
 
-        [Ui("设置密码", Mode = UiMode.AnchorDialog)]
+        [Ui("设置密码", UiMode.AnchorDialog)]
         public void pass(ActionContext ac)
         {
         }

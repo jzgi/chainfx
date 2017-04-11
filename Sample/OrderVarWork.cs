@@ -28,7 +28,7 @@ namespace Greatbone.Sample
             }
         }
 
-        [Ui(Label = "取消")]
+        [Ui("取消")]
         public void cannel(ActionContext ac)
         {
             string shopid = ac[0];
@@ -47,7 +47,7 @@ namespace Greatbone.Sample
             }
         }
 
-        [Ui(Label = "已备货")]
+        [Ui("已备货")]
         public void fix(ActionContext ac)
         {
             string shopid = ac[0];
@@ -90,7 +90,7 @@ namespace Greatbone.Sample
     {
         public MyCartOrderVarWork(WorkContext wc) : base(wc) { }
 
-        [Ui("付款", Mode = UiMode.ButtonScript)]
+        [Ui("付款", UiMode.AnchorScript)]
         public async Task prepay(ActionContext ac)
         {
             long ordid = ac[this];

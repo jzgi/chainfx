@@ -46,9 +46,8 @@ namespace Greatbone.Sample
         internal short status;
         internal DateTime created; // time created
         internal DateTime paid; // time paid
-        internal string reason; // for late cancelling
-        internal DateTime cancelled; // time cancelled
-        internal DateTime locked; // time start to handle
+        internal DateTime aborted; // time cancelled
+        internal DateTime @fixed; // time start to handle
         internal DateTime closed; // time received or closed
 
         public void ReadData(IDataInput i, int proj = 0)
@@ -78,8 +77,8 @@ namespace Greatbone.Sample
             if (proj.Late())
             {
                 i.Get(nameof(paid), ref paid);
-                i.Get(nameof(cancelled), ref cancelled);
-                i.Get(nameof(locked), ref locked);
+                i.Get(nameof(aborted), ref aborted);
+                i.Get(nameof(@fixed), ref @fixed);
                 i.Get(nameof(closed), ref closed);
             }
         }
@@ -112,8 +111,8 @@ namespace Greatbone.Sample
             if (proj.Late())
             {
                 o.Put(nameof(paid), paid);
-                o.Put(nameof(cancelled), cancelled);
-                o.Put(nameof(locked), locked);
+                o.Put(nameof(aborted), aborted);
+                o.Put(nameof(@fixed), @fixed);
                 o.Put(nameof(closed), closed);
             }
         }

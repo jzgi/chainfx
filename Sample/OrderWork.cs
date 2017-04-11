@@ -16,58 +16,6 @@ namespace Greatbone.Sample
         {
         }
 
-        [Ui("取消")]
-        public async Task cancel(ActionContext ac)
-        {
-            string shopid = ac[0];
-            Form frm = await ac.ReadAsync<Form>();
-            int[] pk = frm[nameof(pk)];
-
-            if (ac.GET)
-            {
-                using (var dc = ac.NewDbContext())
-                {
-                    dc.Sql("SELECT ").columnlst(Order.Empty)._("FROM orders WHERE id = @1 AND shopid = @2");
-                    if (dc.Query(p => p.Set(pk).Set(shopid)))
-                    {
-                        var order = dc.ToArray<Order>();
-                    }
-                    else
-                    {
-                    }
-                }
-            }
-            else
-            {
-                using (var dc = ac.NewDbContext())
-                {
-                    dc.Sql("UPDATE orders SET ").setstate()._(" WHERE id IN () AND shopid = @1 AND ").statecond();
-                    if (dc.Query(p => p.Set(pk).Set(shopid)))
-                    {
-                        ac.Give(303); // see other
-                    }
-                    else
-                    {
-                        ac.Give(303); // see other
-                    }
-                }
-            }
-        }
-
-        [Ui]
-        public void clear(ActionContext ac)
-        {
-            // string shopid = wc.Var(null);
-
-        }
-
-
-        [Ui]
-        public void exam(ActionContext ac)
-        {
-
-        }
-
     }
 
     public abstract class MyOrderWork<V> : OrderWork<V> where V : MyOrderVarWork
@@ -130,12 +78,43 @@ namespace Greatbone.Sample
         {
         }
 
-        [Ui]
-        public void ask(ActionContext ac)
+        [Ui("取消")]
+        public async Task abort(ActionContext ac)
         {
-            // string shopid = wc.Var(null);
-        }
+            string shopid = ac[0];
+            Form frm = await ac.ReadAsync<Form>();
+            int[] pk = frm[nameof(pk)];
 
+            if (ac.GET)
+            {
+                using (var dc = ac.NewDbContext())
+                {
+                    dc.Sql("SELECT ").columnlst(Order.Empty)._("FROM orders WHERE id = @1 AND shopid = @2");
+                    if (dc.Query(p => p.Set(pk).Set(shopid)))
+                    {
+                        var order = dc.ToArray<Order>();
+                    }
+                    else
+                    {
+                    }
+                }
+            }
+            else
+            {
+                using (var dc = ac.NewDbContext())
+                {
+                    dc.Sql("UPDATE orders SET ").setstate()._(" WHERE id IN () AND shopid = @1 AND ").statecond();
+                    if (dc.Query(p => p.Set(pk).Set(shopid)))
+                    {
+                        ac.Give(303); // see other
+                    }
+                    else
+                    {
+                        ac.Give(303); // see other
+                    }
+                }
+            }
+        }
     }
 
     public abstract class OprOrderWork<V> : OrderWork<V> where V : OprOrderVarWork

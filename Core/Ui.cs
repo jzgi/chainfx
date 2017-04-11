@@ -9,15 +9,15 @@ namespace Greatbone.Core
 
         LinkDialog = 0x12,
 
-        AnchorDialog = 0x22,
+        Button = 0x20,
 
-        Button = 0x40,
+        ButtonConfirm = 0x21,
 
-        ButtonConfirm = 0x41,
+        ButtonDialog = 0x22,
 
-        ButtonDialog = 0x42,
+        AnchorDialog = 0x42,
 
-        ButtonScript = 0x44,
+        AnchorScript = 0x44,
 
     }
 
@@ -27,35 +27,37 @@ namespace Greatbone.Core
     [AttributeUsage(AttributeTargets.Class | AttributeTargets.Method, Inherited = false)]
     public class UiAttribute : Attribute
     {
-        public UiAttribute() { }
+        readonly string label;
 
-        public UiAttribute(string label, string icon = null, UiMode mode = 0)
+        readonly UiMode mode;
+
+        public UiAttribute(string label = null, UiMode mode = 0)
         {
-            Label = label;
-            Icon = icon;
-            Mode = mode;
+            this.label = label;
+            this.mode = mode;
         }
 
-        public string Label { get; set; }
+        public string Label => label;
 
-        public string Icon { get; set; }
-
-        public UiMode Mode { get; set; }
+        public UiMode Mode => mode;
 
         public int Limit { get; set; }
 
         public string Enable { get; set; }
 
-        public bool IsButton => ((int)Mode & 0x40) == 0x40;
+        public bool IsZero => mode == 0;
 
-        public bool IsAnchor => ((int)Mode & 0x20) == 0x20;
+        public bool IsLink => ((int)mode & 0x10) == 0x10;
 
-        public bool IsLink => ((int)Mode & 0x10) == 0x10;
+        public bool IsButton => ((int)mode & 0x20) == 0x20;
 
-        public bool HasConfirm => ((int)Mode & 0x01) == 0x01;
+        public bool IsAnchor => ((int)mode & 0x40) == 0x40;
 
-        public bool HasDialog => ((int)Mode & 0x02) == 0x02;
+        public bool HasConfirm => ((int)mode & 0x01) == 0x01;
 
+        public bool HasDialog => ((int)mode & 0x02) == 0x02;
+
+        public bool HasScript => ((int)mode & 0x04) == 0x04;
     }
 
 }

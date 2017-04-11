@@ -15,7 +15,7 @@ namespace Greatbone.Sample
         // administrative actions
         //
 
-        [Ui("申请", Mode = UiMode.AnchorDialog)]
+        [Ui("申请", UiMode.AnchorDialog)]
         public async Task apply(ActionContext ac)
         {
             if (ac.GET)
@@ -44,7 +44,7 @@ namespace Greatbone.Sample
             }
         }
 
-        [Ui("新建", Mode = UiMode.AnchorDialog)]
+        [Ui("新建", UiMode.AnchorDialog)]
         public async Task @new(ActionContext ac)
         {
             if (ac.GET)
