@@ -13,7 +13,7 @@ namespace Greatbone.Core
 
         readonly bool async;
 
-        readonly bool subscpt;
+        readonly bool subscript;
 
         // void action(ActionContext)
         readonly Action<ActionContext> @do;
@@ -27,32 +27,32 @@ namespace Greatbone.Core
         // async Task action(ActionContext, int)
         readonly Func<ActionContext, int, Task> do2async;
 
-        internal ActionInfo(Work work, MethodInfo mi, bool async, bool subscpt) : base(mi.Name, mi)
+        internal ActionInfo(Work work, MethodInfo mi, bool async, bool subscript) : base(mi.Name, mi)
         {
             this.work = work;
             this.async = async;
-            this.subscpt = subscpt;
+            this.subscript = subscript;
 
             if (async)
             {
-                if (subscpt)
+                if (subscript)
                 {
-                    do2async = (Func<ActionContext, int, Task>)mi.CreateDelegate(typeof(Func<ActionContext, int, Task>), work);
+                    do2async = (Func<ActionContext, int, Task>) mi.CreateDelegate(typeof(Func<ActionContext, int, Task>), work);
                 }
                 else
                 {
-                    doasync = (Func<ActionContext, Task>)mi.CreateDelegate(typeof(Func<ActionContext, Task>), work);
+                    doasync = (Func<ActionContext, Task>) mi.CreateDelegate(typeof(Func<ActionContext, Task>), work);
                 }
             }
             else
             {
-                if (subscpt)
+                if (subscript)
                 {
-                    do2 = (Action<ActionContext, int>)mi.CreateDelegate(typeof(Action<ActionContext, int>), work);
+                    do2 = (Action<ActionContext, int>) mi.CreateDelegate(typeof(Action<ActionContext, int>), work);
                 }
                 else
                 {
-                    @do = (Action<ActionContext>)mi.CreateDelegate(typeof(Action<ActionContext>), work);
+                    @do = (Action<ActionContext>) mi.CreateDelegate(typeof(Action<ActionContext>), work);
                 }
             }
         }
@@ -61,13 +61,13 @@ namespace Greatbone.Core
 
         public bool IsAsync => async;
 
-        public bool HasSubscpt => subscpt;
+        public bool HasSubscript => subscript;
 
         public override Service Service => work.Service;
 
         internal void Do(ActionContext ac, int subscpt)
         {
-            if (HasSubscpt)
+            if (HasSubscript)
             {
                 do2(ac, subscpt);
             }
@@ -80,7 +80,7 @@ namespace Greatbone.Core
         internal async Task DoAsync(ActionContext ac, int subscpt)
         {
             // invoke the right action method
-            if (HasSubscpt)
+            if (HasSubscript)
             {
                 await do2async(ac, subscpt);
             }

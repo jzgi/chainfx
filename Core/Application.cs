@@ -1,9 +1,9 @@
 ﻿using System;
+using System.Collections.Generic;
+using System.IO;
+using System.Reflection;
 using System.Threading;
 using Microsoft.AspNetCore.Hosting;
-using System.Collections.Generic;
-using System.Reflection;
-using System.IO;
 
 namespace Greatbone.Core
 {
@@ -33,10 +33,10 @@ namespace Greatbone.Core
                 {
                     byte[] bytes = File.ReadAllBytes(file);
                     JsonParse p = new JsonParse(bytes, bytes.Length);
-                    JObj jo = (JObj)p.Parse();
+                    JObj jo = (JObj) p.Parse();
 
                     // this will override values
-                    sc.ReadData(jo, 0);
+                    sc.ReadData(jo, -1);
                 }
                 else
                 {
@@ -46,13 +46,13 @@ namespace Greatbone.Core
 
             // create instance by reflection
             Type typ = typeof(S);
-            ConstructorInfo ci = typ.GetConstructor(new[] { typeof(ServiceContext) });
+            ConstructorInfo ci = typ.GetConstructor(new[] {typeof(ServiceContext)});
             if (ci == null)
             {
                 throw new ServiceException(typ + " missing ServiceContext");
             }
 
-            S service = (S)ci.Invoke(new object[] { sc });
+            S service = (S) ci.Invoke(new object[] {sc});
             Services.Add(service);
             return true;
         }
@@ -82,7 +82,7 @@ namespace Greatbone.Core
 
                 cts.Token.Register(state =>
                     {
-                        ((IApplicationLifetime)state).StopApplication();
+                        ((IApplicationLifetime) state).StopApplication();
                         // dispose services
                         foreach (Service svc in Services)
                         {
@@ -96,12 +96,10 @@ namespace Greatbone.Core
                 Lifetime.ApplicationStopping.WaitHandle.WaitOne();
             }
         }
-
     }
 
     class Lifetime : IApplicationLifetime
     {
-
         readonly CancellationTokenSource started = new CancellationTokenSource();
 
         readonly CancellationTokenSource stopping = new CancellationTokenSource();

@@ -1,10 +1,10 @@
-﻿using Microsoft.AspNetCore.Http;
-using Microsoft.AspNetCore.Http.Features;
-using Microsoft.Extensions.Primitives;
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Data;
 using System.Threading.Tasks;
+using Microsoft.AspNetCore.Http;
+using Microsoft.AspNetCore.Http.Features;
+using Microsoft.Extensions.Primitives;
 using static Greatbone.Core.DataInputUtility;
 
 namespace Greatbone.Core
@@ -244,9 +244,11 @@ namespace Greatbone.Core
                 if (clen > 0)
                 {
                     // reading
-                    int len = (int)clen;
+                    int len = (int) clen;
                     buffer = BufferUtility.ByteBuffer(len); // borrow from the pool
-                    while ((count += await Request.Body.ReadAsync(buffer, count, (len - count))) < len) { }
+                    while ((count += await Request.Body.ReadAsync(buffer, count, (len - count))) < len)
+                    {
+                    }
                 }
             }
             return new ArraySegment<byte>(buffer, 0, count);
@@ -261,9 +263,11 @@ namespace Greatbone.Core
                 int? clen = HeaderInt("Content-Length");
                 if (clen > 0)
                 {
-                    int len = (int)clen;
+                    int len = (int) clen;
                     buffer = BufferUtility.ByteBuffer(len); // borrow from the pool
-                    while ((count += await Request.Body.ReadAsync(buffer, count, (len - count))) < len) { }
+                    while ((count += await Request.Body.ReadAsync(buffer, count, (len - count))) < len)
+                    {
+                    }
                 }
                 // parse
                 string ctyp = Header("Content-Type");
@@ -281,9 +285,11 @@ namespace Greatbone.Core
                 int? clen = HeaderInt("Content-Length");
                 if (clen > 0)
                 {
-                    int len = (int)clen;
+                    int len = (int) clen;
                     buffer = BufferUtility.ByteBuffer(len); // borrow from the pool
-                    while ((count += await Request.Body.ReadAsync(buffer, count, (len - count))) < len) { }
+                    while ((count += await Request.Body.ReadAsync(buffer, count, (len - count))) < len)
+                    {
+                    }
                 }
                 // parse
                 string ctyp = Header("Content-Type");
@@ -306,9 +312,11 @@ namespace Greatbone.Core
                 int? clen = HeaderInt("Content-Length");
                 if (clen > 0)
                 {
-                    int len = (int)clen;
+                    int len = (int) clen;
                     buffer = BufferUtility.ByteBuffer(len); // borrow from the pool
-                    while ((count += await Request.Body.ReadAsync(buffer, count, (len - count))) < len) { }
+                    while ((count += await Request.Body.ReadAsync(buffer, count, (len - count))) < len)
+                    {
+                    }
                 }
                 // parse
                 string ctyp = Header("Content-Type");
@@ -326,9 +334,11 @@ namespace Greatbone.Core
                 int? clen = HeaderInt("Content-Length");
                 if (clen > 0)
                 {
-                    int len = (int)clen;
+                    int len = (int) clen;
                     buffer = BufferUtility.ByteBuffer(len); // borrow from the pool
-                    while ((count += await Request.Body.ReadAsync(buffer, count, (len - count))) < len) { }
+                    while ((count += await Request.Body.ReadAsync(buffer, count, (len - count))) < len)
+                    {
+                    }
                 }
                 // parse
                 string ctyp = Header("Content-Type");
@@ -379,7 +389,7 @@ namespace Greatbone.Core
 
         public void SetTokenCookie<P>(P prin) where P : class, IData, new()
         {
-            ((Service<P>)Service).SetTokenCookie(this, prin);
+            ((Service<P>) Service).SetTokenCookie(this, prin);
         }
 
         public int Status

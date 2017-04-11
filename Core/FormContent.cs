@@ -225,7 +225,7 @@ namespace Greatbone.Core
             return this; // ignore ir
         }
 
-        public FormContent Put(string name, short[] v, Opt<short> Opt = null, string Label = null, string Help = null, bool ReadOnly = false, bool Required = false)
+        public FormContent Put(string name, short[] v, Opt<short> Opt = null, string Label = null, string Help = null, bool ReadOnly = false, bool required = false)
         {
             if (name != null)
             {
@@ -253,7 +253,7 @@ namespace Greatbone.Core
             return this;
         }
 
-        public FormContent Put(string name, int[] v, Opt<int> Opt = null, string Label = null, string Help = null, bool ReadOnly = false, bool Required = false)
+        public FormContent Put(string name, int[] v, Opt<int> Opt = null, string Label = null, string Help = null, bool ReadOnly = false, bool required = false)
         {
             if (name != null)
             {
@@ -281,7 +281,7 @@ namespace Greatbone.Core
             return this;
         }
 
-        public FormContent Put(string name, long[] v, Opt<long> Opt = null, string Label = null, string Help = null, bool ReadOnly = false, bool Required = false)
+        public FormContent Put(string name, long[] v, Opt<long> Opt = null, string Label = null, string Help = null, bool ReadOnly = false, bool required = false)
         {
             if (name != null)
             {
@@ -309,7 +309,7 @@ namespace Greatbone.Core
             return this;
         }
 
-        public FormContent Put(string name, string[] v, Opt<string> Opt = null, string Label = null, string Help = null, bool ReadOnly = false, bool Required = false)
+        public FormContent Put(string name, string[] v, Opt<string> Opt = null, string Label = null, string Help = null, bool ReadOnly = false, bool required = false)
         {
             if (name != null)
             {
@@ -352,7 +352,7 @@ namespace Greatbone.Core
             throw new NotImplementedException();
         }
 
-        public FormContent Put(string name, IData v, int proj = 0, string Label = null, string Help = null, bool ReadOnly = false, bool Required = false)
+        public FormContent Put(string name, IData v, int proj = 0, string Label = null, string Help = null, bool ReadOnly = false, bool required = false)
         {
             if (name != null)
             {
@@ -376,7 +376,7 @@ namespace Greatbone.Core
             return this;
         }
 
-        public FormContent Put<D>(string name, D[] v, int proj = 0, string Label = null, string Help = null, bool ReadOnly = false, bool Required = false) where D : IData
+        public FormContent Put<D>(string name, D[] v, int proj = 0, string Label = null, string Help = null, bool ReadOnly = false, bool required = false) where D : IData
         {
             if (name != null)
             {
@@ -402,7 +402,7 @@ namespace Greatbone.Core
             return this;
         }
 
-        public FormContent Put<D>(string name, List<D> v, int proj = 0, string Label = null, string Help = null, bool ReadOnly = false, bool Required = false) where D : IData
+        public FormContent Put<D>(string name, List<D> v, int proj = 0, string Label = null, string Help = null, bool ReadOnly = false, bool required = false) where D : IData
         {
             if (name != null)
             {

@@ -28,22 +28,22 @@ namespace Greatbone.Core
 
             for (int i = 0; i < len; i++)
             {
-                if (buf[i] != hdrname[i])
+                if (charbuf[i] != hdrname[i])
                 {
                     return false;
                 }
             }
-            if (buf[len] != ':') return false;
+            if (charbuf[len] != ':') return false;
 
             // markdown the value start
             int p = len + 1;
-            if (buf[p] == ' ') p++;
+            if (charbuf[p] == ' ') p++;
             vstart = p;
 
             return true;
         }
 
-        public string GetVvalue() => new string(buf, vstart, count - vstart);
+        public string GetVvalue() => new string(charbuf, vstart, count - vstart);
 
         static bool IsEdge(char c)
         {
@@ -61,7 +61,7 @@ namespace Greatbone.Core
                 for (;;)
                 {
                     if (p >= count) return null;
-                    if (buf[p] == '=') break;
+                    if (charbuf[p] == '=') break;
                     p++;
                 }
 
@@ -70,13 +70,13 @@ namespace Greatbone.Core
                 bool match = true;
                 for (int i = 0; i < len; i++)
                 {
-                    if (buf[first + i] != param[i])
+                    if (charbuf[first + i] != param[i])
                     {
                         match = false;
                         break;
                     }
                 }
-                if (!match || !IsEdge(buf[first - 1]))
+                if (!match || !IsEdge(charbuf[first - 1]))
                 {
                     p = eq + 2; // adjust position
                     continue;
@@ -84,14 +84,14 @@ namespace Greatbone.Core
 
                 // get param-value after eq
                 int v0 = ++p;
-                bool quot = buf[p] == '"';
+                bool quot = charbuf[p] == '"';
                 if (quot)
                 {
                     for (;;)
                     {
-                        if (buf[++p] == '"')
+                        if (charbuf[++p] == '"')
                         {
-                            return new string(buf, v0 + 1, p - v0 - 1);
+                            return new string(charbuf, v0 + 1, p - v0 - 1);
                         }
                     }
                 }

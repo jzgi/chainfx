@@ -9,7 +9,7 @@ namespace Greatbone.Sample
     {
         static readonly Connector WcPay = new Connector("https://api.mch.weixin.qq.com");
 
-        public RepayWork(WorkContext wc) : base(wc)
+        public RepayWork(WorkContext ctx) : base(ctx)
         {
             CreateVar<V>();
         }
@@ -52,7 +52,7 @@ namespace Greatbone.Sample
     [Ui("结款")]
     public class OprRepayWork : RepayWork<OprRepayVarWork>
     {
-        public OprRepayWork(WorkContext wc) : base(wc)
+        public OprRepayWork(WorkContext ctx) : base(ctx)
         {
         }
 
@@ -120,7 +120,7 @@ namespace Greatbone.Sample
     [Ui("结款管理")]
     public class AdmRepayWork : RepayWork<AdmRepayVarWork>
     {
-        public AdmRepayWork(WorkContext wc) : base(wc)
+        public AdmRepayWork(WorkContext ctx) : base(ctx)
         {
         }
     }

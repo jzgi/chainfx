@@ -4,7 +4,7 @@ namespace Greatbone.Sample
 {
     public abstract class ItemVarWork : Work
     {
-        public ItemVarWork(WorkContext wc) : base(wc)
+        public ItemVarWork(WorkContext ctx) : base(ctx)
         {
         }
 
@@ -74,7 +74,7 @@ namespace Greatbone.Sample
 
     public class PubItemVarWork : ItemVarWork
     {
-        public PubItemVarWork(WorkContext wc) : base(wc) { }
+        public PubItemVarWork(WorkContext ctx) : base(ctx) { }
 
         public void add(ActionContext ac)
         {
@@ -109,7 +109,7 @@ namespace Greatbone.Sample
 
     public class OprItemVarWork : ItemVarWork
     {
-        public OprItemVarWork(WorkContext wc) : base(wc)
+        public OprItemVarWork(WorkContext ctx) : base(ctx)
         {
         }
     }

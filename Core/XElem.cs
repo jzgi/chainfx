@@ -8,7 +8,7 @@ namespace Greatbone.Core
     ///
     public class XElem : IDataInput
     {
-        readonly string name;
+        readonly string tag;
 
         // attributes, can be null
         Roll<XAttr> attrs;
@@ -21,17 +21,14 @@ namespace Greatbone.Core
 
         int count; // number of subs
 
-        public XElem(string name)
+        public XElem(string tag)
         {
-            this.name = name;
+            this.tag = tag;
         }
 
-        public XElem this[string name] => null;
+        public XAttr Attr(string attr) => attrs[attr];
 
-        public bool DataSet
-        {
-            get { throw new NotImplementedException(); }
-        }
+        public bool DataSet => false;
 
         internal void AddAttr(string name, string v)
         {
@@ -77,7 +74,7 @@ namespace Greatbone.Core
                 for (int i = current; i < count; i++)
                 {
                     XElem elem = elems[i];
-                    if (elem.name.Equals(name))
+                    if (elem.tag.Equals(name))
                     {
                         current = i;
                         return elem;
@@ -86,7 +83,7 @@ namespace Greatbone.Core
                 for (int i = 0; i < current; i++)
                 {
                     XElem elem = elems[i];
-                    if (elem.name.Equals(name))
+                    if (elem.tag.Equals(name))
                     {
                         current = i;
                         return elem;

@@ -8,7 +8,7 @@ namespace Greatbone.Core
     ///
     public class Str : IDataInput
     {
-        protected char[] buf;
+        protected char[] charbuf;
 
         // number of chars
         protected int count;
@@ -21,7 +21,7 @@ namespace Greatbone.Core
 
         public Str(int capacity = 256)
         {
-            buf = new char[capacity];
+            charbuf = new char[capacity];
             sum = 0;
             rest = 0;
         }
@@ -31,15 +31,15 @@ namespace Greatbone.Core
         public void Add(char c)
         {
             // ensure capacity
-            int len = buf.Length; // old length
+            int len = charbuf.Length; // old length
             if (count >= len)
             {
                 int newlen = len * 4; // new length
-                char[] buf = this.buf;
-                this.buf = new char[newlen];
-                Array.Copy(buf, 0, this.buf, 0, len);
+                char[] buf = charbuf;
+                charbuf = new char[newlen];
+                Array.Copy(buf, 0, charbuf, 0, len);
             }
-            buf[count++] = c;
+            charbuf[count++] = c;
         }
 
         // utf-8 decoding 
@@ -50,12 +50,12 @@ namespace Greatbone.Core
             {
                 if (b > 0xff) // if a char already
                 {
-                    Add((char)b);
+                    Add((char) b);
                     return;
                 }
                 if (b < 0x80)
                 {
-                    Add((char)b); // single byte
+                    Add((char) b); // single byte
                 }
                 else if (b >= 0xc0 && b < 0xe0)
                 {
@@ -72,7 +72,7 @@ namespace Greatbone.Core
             {
                 sum |= (b & 0x3f);
                 rest--;
-                Add((char)sum);
+                Add((char) sum);
             }
             else if (rest == 2)
             {
@@ -196,7 +196,7 @@ namespace Greatbone.Core
         public IContent Dump()
         {
             var cont = new StrContent(true, true);
-            cont.Add(buf, 0, count);
+            cont.Add(charbuf, 0, count);
             return cont;
         }
 
@@ -207,26 +207,20 @@ namespace Greatbone.Core
             throw new NotImplementedException();
         }
 
-        public override int GetHashCode()
+        public bool Matches(string str)
         {
-            return base.GetHashCode();
-        }
-
-        public override bool Equals(object v)
-        {
-            string str = v as string;
             if (str == null || str.Length != count) return false;
 
             for (int i = 0; i < count; i++)
             {
-                if (buf[i] != str[i]) return false;
+                if (charbuf[i] != str[i]) return false;
             }
             return true;
         }
 
         public override string ToString()
         {
-            return new string(buf, 0, count);
+            return new string(charbuf, 0, count);
         }
     }
 }

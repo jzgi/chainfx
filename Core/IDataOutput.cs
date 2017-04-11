@@ -34,7 +34,7 @@ namespace Greatbone.Core
 
         R Put(string name, ArraySegment<byte> v, string label = null, string size = null, string ratio = null, bool required = false);
 
-        R Put(string name, short[] v, Opt<short> opt = null, string label = null, string help = null, bool @readonly = false, bool Required = false);
+        R Put(string name, short[] v, Opt<short> opt = null, string label = null, string help = null, bool @readonly = false, bool required = false);
 
         R Put(string name, int[] v, Opt<int> opt = null, string label = null, string help = null, bool @readonly = false, bool required = false);
 

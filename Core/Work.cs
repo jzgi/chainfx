@@ -21,7 +21,7 @@ namespace Greatbone.Core
         const string _VAR_ = "VAR";
 
         // state-passing
-        readonly WorkContext wc;
+        readonly WorkContext ctx;
 
         readonly TypeInfo typeinfo;
 
@@ -46,9 +46,9 @@ namespace Greatbone.Core
         // to obtain a string key from a data object.
         Func<IData, string> varkey;
 
-        protected Work(WorkContext wc) : base(wc.Name, null)
+        protected Work(WorkContext ctx) : base(ctx.Name, null)
         {
-            this.wc = wc;
+            this.ctx = ctx;
 
             // gather actions
             actions = new Roll<ActionInfo>(32);
@@ -65,7 +65,7 @@ namespace Greatbone.Core
                 else continue;
 
                 ParameterInfo[] pis = mi.GetParameters();
-                ActionInfo ai = null;
+                ActionInfo ai;
                 if (pis.Length == 1 && pis[0].ParameterType == typeof(ActionContext))
                 {
                     ai = new ActionInfo(this, mi, async, false);
@@ -77,8 +77,14 @@ namespace Greatbone.Core
                 else continue;
 
                 actions.Add(ai);
-                if (ai.Name.Equals("default")) { @default = ai; }
-                if (ai.Name.Equals("goto")) { @goto = ai; }
+                if (ai.Name.Equals("default"))
+                {
+                    @default = ai;
+                }
+                if (ai.Name.Equals("goto"))
+                {
+                    @goto = ai;
+                }
             }
 
             // gather ui actions
@@ -111,7 +117,7 @@ namespace Greatbone.Core
             }
             // create instance by reflection
             Type typ = typeof(W);
-            ConstructorInfo ci = typ.GetConstructor(new[] { typeof(WorkContext) });
+            ConstructorInfo ci = typ.GetConstructor(new[] {typeof(WorkContext)});
             if (ci == null)
             {
                 throw new ServiceException(typ + " missing WorkContext");
@@ -124,7 +130,7 @@ namespace Greatbone.Core
                 Directory = (Parent == null) ? name : Path.Combine(Parent.Directory, name),
                 Service = Service
             };
-            W work = (W)ci.Invoke(new object[] { wc });
+            W work = (W) ci.Invoke(new object[] {wc});
             Subworks.Add(work);
 
             return work;
@@ -142,7 +148,7 @@ namespace Greatbone.Core
 
             // create instance
             Type typ = typeof(W);
-            ConstructorInfo ci = typ.GetConstructor(new[] { typeof(WorkContext) });
+            ConstructorInfo ci = typ.GetConstructor(new[] {typeof(WorkContext)});
             if (ci == null)
             {
                 throw new ServiceException(typ + " missing WorkContext");
@@ -156,7 +162,7 @@ namespace Greatbone.Core
                 Directory = (Parent == null) ? _VAR_ : Path.Combine(Parent.Directory, _VAR_),
                 Service = Service
             };
-            W work = (W)ci.Invoke(new object[] { wc });
+            W work = (W) ci.Invoke(new object[] {wc});
             varkey = key;
             varwork = work;
             return work;
@@ -176,42 +182,39 @@ namespace Greatbone.Core
 
         public Func<IData, string> Varkey => varkey;
 
-        public string Directory => wc.Directory;
+        public string Directory => ctx.Directory;
 
-        public Work Parent => wc.Parent;
+        public Work Parent => ctx.Parent;
 
-        public bool IsVar => wc.IsVar;
+        public bool IsVar => ctx.IsVar;
 
-        public int Level => wc.Level;
+        public int Level => ctx.Level;
 
-        public override Service Service => wc.Service;
+        public override Service Service => ctx.Service;
 
         internal void Describe(XmlContent cont)
         {
             cont.ELEM(Name,
-            delegate
-            {
-                for (int i = 0; i < Actions.Count; i++)
+                delegate
                 {
-                    ActionInfo act = Actions[i];
-                    cont.Put(act.Name, "");
-                }
-            },
-            delegate
-            {
-                if (this.Subworks != null)
-                {
-                    for (int i = 0; i < this.Subworks.Count; i++)
+                    for (int i = 0; i < Actions.Count; i++)
                     {
-                        Work work = this.Subworks[i];
-                        work.Describe(cont);
+                        ActionInfo act = Actions[i];
+                        cont.Put(act.Name, "");
                     }
-                }
-                if (varwork != null)
+                },
+                delegate
                 {
-                    varwork.Describe(cont);
-                }
-            });
+                    if (subworks != null)
+                    {
+                        for (int i = 0; i < subworks.Count; i++)
+                        {
+                            Work work = subworks[i];
+                            work.Describe(cont);
+                        }
+                    }
+                    varwork?.Describe(cont);
+                });
         }
 
         public bool IsSubclassOf(Type typ) => typeinfo.IsSubclassOf(typ);
@@ -228,7 +231,10 @@ namespace Greatbone.Core
         internal Work Resolve(ref string relative, ActionContext ac, ref bool recover)
         {
             int slash = relative.IndexOf('/');
-            if (slash == -1) { return this; }
+            if (slash == -1)
+            {
+                return this;
+            }
 
             // seek subworks/varwork
             //
@@ -247,7 +253,10 @@ namespace Greatbone.Core
                     if (ac.Principal == null) throw AuthorizeEx;
                     if ((key = varkey(ac.Principal)) == null)
                     {
-                        if (@goto != null) { recover = true; }
+                        if (@goto != null)
+                        {
+                            recover = true;
+                        }
                         return null;
                     }
                 }
@@ -263,7 +272,7 @@ namespace Greatbone.Core
 
             // authorize and filters
             if (!DoAuthorize(ac)) throw AuthorizeEx;
-            if (Before != null) Before.Do(ac);
+            Before?.Do(ac);
             if (BeforeAsync != null) await BeforeAsync.DoAsync(ac);
 
             int dot = rsc.LastIndexOf('.');
@@ -297,7 +306,7 @@ namespace Greatbone.Core
 
                 // try in cache
 
-                if (act.Before != null) act.Before.Do(ac);
+                act.Before?.Do(ac);
                 if (act.BeforeAsync != null) await act.BeforeAsync.DoAsync(ac);
 
                 // method invocation
@@ -310,13 +319,13 @@ namespace Greatbone.Core
                     act.Do(ac, subscpt);
                 }
 
-                if (act.After != null) act.After.Do(ac);
+                act.After?.Do(ac);
                 if (act.AfterAsync != null) await act.AfterAsync.DoAsync(ac);
 
                 ac.Doer = null;
             }
 
-            if (After != null) After.Do(ac);
+            After?.Do(ac);
             if (AfterAsync != null) await AfterAsync.DoAsync(ac);
 
             ac.Work = null;

@@ -1,5 +1,4 @@
 using System;
-using NpgsqlTypes;
 
 namespace Greatbone.Core
 {

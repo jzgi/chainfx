@@ -13,6 +13,6 @@ namespace Greatbone.Core
         ///
         /// Whether this handler method has an argument.
         ///
-        bool HasSubscpt { get; }
+        bool HasSubscript { get; }
     }
 }

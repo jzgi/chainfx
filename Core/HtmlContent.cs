@@ -36,12 +36,14 @@ namespace Greatbone.Core
         internal bool formed;
 
         // outputing context chain
-        Ctx[] chain = new Ctx[DEPTH];
+        readonly Ctx[] chain = new Ctx[DEPTH];
 
         int level = -1; // current level
 
         ///
-        public HtmlContent(bool sendable, bool pooled, int capacity = 16 * 1024) : base(sendable, pooled, capacity) { }
+        public HtmlContent(bool sendable, bool pooled, int capacity = 16 * 1024) : base(sendable, pooled, capacity)
+        {
+        }
 
         ///
         public override string Type => "text/html; charset=utf-8";
@@ -60,7 +62,7 @@ namespace Greatbone.Core
                     char c = alt[i];
                     if (c >= 'a' && c <= 'z')
                     {
-                        c = (char)(c - 32);
+                        c = (char) (c - 32);
                     }
                     Add(c);
                 }
@@ -103,9 +105,6 @@ namespace Greatbone.Core
             return this;
         }
 
-        int table_idx;
-
-
         public void ROW_()
         {
             Add("<div class=\"row\">");
@@ -123,7 +122,9 @@ namespace Greatbone.Core
 
         public void FORM_(string action)
         {
-            Add("<form method=\"post\" action=\""); Add(action); Add("\">");
+            Add("<form method=\"post\" action=\"");
+            Add(action);
+            Add("\">");
         }
 
         public void _FORM()
@@ -200,7 +201,7 @@ namespace Greatbone.Core
             if (uias != null)
             {
                 Add("<div class=\"row\">");
-                TOOLS(ac, uias);
+                TOOLS(uias);
                 Add("</div>");
             }
 
@@ -209,7 +210,7 @@ namespace Greatbone.Core
 
             // pagination
             ActionInfo act = ac.Doer;
-            if (act.HasSubscpt)
+            if (act.HasSubscript)
             {
                 Add("<div class=\"row\">");
                 Add("<ul class=\"pagination text-center\" role=\"navigation\">");
@@ -217,7 +218,14 @@ namespace Greatbone.Core
                 Add("<li class=\"pagination-previous disabled\">Previous</li>");
                 for (int i = 0; i < subscript; i++)
                 {
-                    Add("<li><a href=\""); Add(act.Name); Add('-'); Add(subscript); Add(ac.QueryString); Add("\">"); Add(i); Add("</a></li>");
+                    Add("<li><a href=\"");
+                    Add(act.Name);
+                    Add('-');
+                    Add(subscript);
+                    Add(ac.QueryString);
+                    Add("\">");
+                    Add(i);
+                    Add("</a></li>");
                 }
                 Add("<li class=\"pagination-next disabled\">Next</li>");
                 Add("</ul>");
@@ -271,7 +279,8 @@ namespace Greatbone.Core
             Add("<form method=\"post");
             if (act != null)
             {
-                Add("\" action=\""); Add(act.Name);
+                Add("\" action=\"");
+                Add(act.Name);
             }
             Add("\">");
             obj.WriteData(this, proj);
@@ -367,18 +376,21 @@ namespace Greatbone.Core
 
             if (lst != null)
             {
-                ActionInfo[] uias = work.UiActions;
-
                 Add("<div class=\"row small-up-1 medium-up-2 large-up-3\">");
                 for (int i = 0; i < lst.Count; i++)
                 {
                     Add("<div class=\"column card\">");
                     chain[level].ordinal = 0; // reset ordinal
                     lst[i].WriteData(this, proj);
-                    Add("</div>");
-
                     // acitons
-                    // CONTROLS(uias);
+                    ActionInfo[] varuias = work.Varwork?.UiActions;
+                    if (varuias != null)
+                    {
+                        Add("<div class=\"row\">");
+                        TOOLS(varuias);
+                        Add("</div>");
+                    }
+                    Add("</div>");
                 }
                 Add("</div>");
             }
@@ -436,7 +448,7 @@ namespace Greatbone.Core
             --level;
         }
 
-        public void TOOLS(ActionContext ac, ActionInfo[] acts)
+        public void TOOLS(ActionInfo[] acts)
         {
             for (int i = 0; i < acts.Length; i++)
             {
@@ -446,16 +458,24 @@ namespace Greatbone.Core
 
                 if (ui.IsLink)
                 {
-                    Add("<a class=\"hollow button primary\" href=\""); Add(act.Name); Add("\"");
+                    Add("<a class=\"hollow button primary\" href=\"");
+                    Add(act.Name);
+                    Add("\"");
                     if (ui.HasDialog)
                     {
                         Add(" onclick=\"return dialog(this,1,2);\"");
                     }
-                    Add(">"); Add(act.Label); Add("</a>");
+                    Add(">");
+                    Add(act.Label);
+                    Add("</a>");
                 }
                 else if (ui.IsZero || ui.IsButton)
                 {
-                    Add("<button class=\"hollow button alert\" name=\""); Add(act.Name); Add("\" formaction=\""); Add(act.Name); Add("\" formmethod=\"post\"");
+                    Add("<button class=\"button success\" name=\"");
+                    Add(act.Name);
+                    Add("\" formaction=\"");
+                    Add(act.Name);
+                    Add("\" formmethod=\"post\"");
                     if (ui.HasConfirm)
                     {
                         Add(" onclick=\"return confirm();\"");
@@ -470,20 +490,26 @@ namespace Greatbone.Core
                         // Add(" data-if=\""); Add(state.If); Add("\"");
                         // Add(" data-unif=\""); Add(state.Unif); Add("\"");
                     }
-                    Add(">"); Add(act.Label); Add("</button>");
+                    Add(">");
+                    Add(act.Label);
+                    Add("</button>");
                 }
                 else if (ui.IsAnchor)
                 {
-                    Add("<a class=\"hollow button secondary\" href=\"#\">");
+                    Add("<a class=\"button alert\" href=\"#\"");
                     if (ui.HasDialog)
                     {
                         Add(" onclick=\"return dialog(this,1,3);\"");
                     }
                     else if (ui.HasScript)
                     {
-                        Add(" onclick=\""); Add(act.Name); Add("(this);\"");
+                        Add(" onclick=\"");
+                        Add(act.Name);
+                        Add("(this);\"");
                     }
-                    Add(">"); Add(act.Label); Add("</a>");
+                    Add(">");
+                    Add(act.Label);
+                    Add("</a>");
                 }
             }
         }
@@ -640,23 +666,33 @@ namespace Greatbone.Core
             AddLabel(label, name);
             Add("<input style=\"height: 100px\" type=\"number\" name=\"");
             Add(name);
-            Add("\" value=\""); Add(v); Add("\"");
+            Add("\" value=\"");
+            Add(v);
+            Add("\"");
 
             if (help != null)
             {
-                Add(" placeholder=\""); Add(help); Add("\"");
+                Add(" placeholder=\"");
+                Add(help);
+                Add("\"");
             }
             if (max != 0)
             {
-                Add(" max=\""); Add(max); Add("\"");
+                Add(" max=\"");
+                Add(max);
+                Add("\"");
             }
             if (min != 0)
             {
-                Add(" min=\""); Add(min); Add("\"");
+                Add(" min=\"");
+                Add(min);
+                Add("\"");
             }
             if (step != 0)
             {
-                Add(" step=\""); Add(step); Add("\"");
+                Add(" step=\"");
+                Add(step);
+                Add("\"");
             }
             if (opt)
             {
@@ -675,23 +711,33 @@ namespace Greatbone.Core
             AddLabel(label, name);
             Add("<input style=\"height: 100px\" type=\"number\" name=\"");
             Add(name);
-            Add("\" value=\""); Add(v); Add("\"");
+            Add("\" value=\"");
+            Add(v);
+            Add("\"");
 
             if (help != null)
             {
-                Add(" placeholder=\""); Add(help); Add("\"");
+                Add(" placeholder=\"");
+                Add(help);
+                Add("\"");
             }
             if (max != 0)
             {
-                Add(" max=\""); Add(max); Add("\"");
+                Add(" max=\"");
+                Add(max);
+                Add("\"");
             }
             if (min != 0)
             {
-                Add(" min=\""); Add(min); Add("\"");
+                Add(" min=\"");
+                Add(min);
+                Add("\"");
             }
             if (step != 0)
             {
-                Add(" step=\""); Add(step); Add("\"");
+                Add(" step=\"");
+                Add(step);
+                Add("\"");
             }
             if (opt)
             {
@@ -725,8 +771,20 @@ namespace Greatbone.Core
             int i = 0;
             while (inp.Next())
             {
-                Add("<input type=\"checkbox\" name=\""); Add(name); Add("\" id=\""); Add(name); Add(i); Add("\" value=\""); putv(); Add("\">");
-                Add("<label for=\""); Add(name); Add(i); Add("\">"); putv(); Add("</label>");
+                Add("<input type=\"checkbox\" name=\"");
+                Add(name);
+                Add("\" id=\"");
+                Add(name);
+                Add(i);
+                Add("\" value=\"");
+                putv();
+                Add("\">");
+                Add("<label for=\"");
+                Add(name);
+                Add(i);
+                Add("\">");
+                putv();
+                Add("</label>");
                 i++;
             }
         }
@@ -748,19 +806,31 @@ namespace Greatbone.Core
         {
             Add("<fieldset>");
 
-            Add("<legend>"); AddLabel(label, null); Add("</legend>");
+            Add("<legend>");
+            AddLabel(label, null);
+            Add("</legend>");
 
             foreach (var pair in opt)
             {
                 V key = pair.Key;
-                Add("<input type=\"checkbox\" name=\""); Add(name); Add("\"");
-                Add("\" id=\""); AddVary(key); Add("\"");
-                Add("\" value=\""); AddVary(key); Add("\"");
+                Add("<input type=\"checkbox\" name=\"");
+                Add(name);
+                Add("\"");
+                Add("\" id=\"");
+                AddVary(key);
+                Add("\"");
+                Add("\" value=\"");
+                AddVary(key);
+                Add("\"");
 
                 bool equal = false;
                 for (int i = 0; i < v.Length; i++)
                 {
-                    if (key.Equals(v[i])) { equal = true; break; }
+                    if (key.Equals(v[i]))
+                    {
+                        equal = true;
+                        break;
+                    }
                 }
                 if (equal) Add(" checked");
 
@@ -787,8 +857,20 @@ namespace Greatbone.Core
             int i = 0;
             while (inp.Next())
             {
-                Add("<input type=\"radio\" name=\""); Add(name); Add("\" id=\""); Add(name); Add(i); Add("\" value=\""); putv(); Add("\">");
-                Add("<label for=\""); Add(name); Add(i); Add("\">"); putv(); Add("</label>");
+                Add("<input type=\"radio\" name=\"");
+                Add(name);
+                Add("\" id=\"");
+                Add(name);
+                Add(i);
+                Add("\" value=\"");
+                putv();
+                Add("\">");
+                Add("<label for=\"");
+                Add(name);
+                Add(i);
+                Add("\">");
+                putv();
+                Add("</label>");
                 i++;
             }
         }
@@ -807,15 +889,23 @@ namespace Greatbone.Core
                 Add(name);
                 V key = pair.Key;
 
-                Add("\" id=\""); Add(name); AddVary(key); Add("\"");
+                Add("\" id=\"");
+                Add(name);
+                AddVary(key);
+                Add("\"");
 
-                Add("\" value=\""); AddVary(key); Add("\"");
+                Add("\" value=\"");
+                AddVary(key);
+                Add("\"");
 
                 if (key.Equals(v)) Add(" checked");
                 if (required) Add(" required");
                 Add(">");
 
-                Add("<label for=\""); Add(name); AddVary(key); Add("\">");
+                Add("<label for=\"");
+                Add(name);
+                AddVary(key);
+                Add("\">");
                 Add(pair.Value);
                 Add("</label>");
             }
@@ -831,22 +921,28 @@ namespace Greatbone.Core
             //      data-ratio="1:1">
             //     <input type="file" name="slim[]" required />
             // </div>
-            //         
+            //
             Add("<div class=\"slim\" data-label=\"");
             AddLabel(label, name);
-            Add("\" data-fetcher=\"_"); Add(name); Add("_");
+            Add("\" data-fetcher=\"_");
+            Add(name);
+            Add("_");
 
             if (size != null)
             {
-                Add("\" data-size=\""); Add(size);
+                Add("\" data-size=\"");
+                Add(size);
             }
             if (ratio != null)
             {
-                Add("\" data-ratio=\""); Add(ratio);
+                Add("\" data-ratio=\"");
+                Add(ratio);
             }
             Add("\">");
 
-            Add("<input type=\"file\" name=\""); Add(name); Add("\"");
+            Add("<input type=\"file\" name=\"");
+            Add(name);
+            Add("\"");
             if (required) Add(" required");
             Add(">");
             Add("</div>");
@@ -864,17 +960,25 @@ namespace Greatbone.Core
 
             if (help != null)
             {
-                Add(" placeholder=\""); Add(help); Add("\"");
+                Add(" placeholder=\"");
+                Add(help);
+                Add("\"");
             }
             if (max > 0)
             {
-                Add(" maxlength=\""); Add(max); Add("\"");
+                Add(" maxlength=\"");
+                Add(max);
+                Add("\"");
 
-                Add(" rows=\""); Add(max < 200 ? 3 : max < 400 ? 4 : 5); Add("\"");
+                Add(" rows=\"");
+                Add(max < 200 ? 3 : max < 400 ? 4 : 5);
+                Add("\"");
             }
             if (min > 0)
             {
-                Add(" minlength=\""); Add(min); Add("\"");
+                Add(" minlength=\"");
+                Add(min);
+                Add("\"");
             }
             if (@readonly) Add(" readonly");
             if (required) Add(" required");
@@ -886,14 +990,18 @@ namespace Greatbone.Core
         public void BUTTON(ActionInfo act)
         {
             Add("<button class=\"button primary\" style=\"margin-right: 5px; border-radius: 15%\"");
-            Add(" formaction=\""); Add(act.Name); Add("\" formmethod=\"post\"");
+            Add(" formaction=\"");
+            Add(act.Name);
+            Add("\" formmethod=\"post\"");
 
             UiAttribute ui = act.Ui;
 
             UiMode mode = ui.Mode;
             if (mode > 0)
             {
-                Add(" onclick=\"dialog(this,"); Add((int)mode); Add("); return false;\"");
+                Add(" onclick=\"dialog(this,");
+                Add((int) mode);
+                Add("); return false;\"");
             }
 
             string state = ui.Enable;
@@ -903,7 +1011,7 @@ namespace Greatbone.Core
                 // Add(" data-unif=\""); Add(state.Unif); Add("\"");
             }
             Add(">");
-            AddLabel(ui?.Label, act.Name);
+            AddLabel(ui.Label, act.Name);
 
             Add("</button>");
         }
@@ -917,7 +1025,12 @@ namespace Greatbone.Core
             Add("\"");
             if (multiple) Add(" multiple");
             if (required) Add(" required");
-            if (size > 0) { Add(" size=\""); Add(size); Add("\""); }
+            if (size > 0)
+            {
+                Add(" size=\"");
+                Add(size);
+                Add("\"");
+            }
             Add(">");
 
             foreach (var pair in opt)
@@ -1001,7 +1114,10 @@ namespace Greatbone.Core
                     Add("<div class=\"small-4 columns\">");
                     AddLabel(label, name);
                     Add("</div>");
-                    Add("<div class=\"small-8 columns\">"); if (opt != null) Add(opt(v)); else Add(v); Add("</div>");
+                    Add("<div class=\"small-8 columns\">");
+                    if (opt != null) Add(opt(v));
+                    else Add(v);
+                    Add("</div>");
                     Add("</div>");
                     break;
                 case CTX_LIST:
@@ -1051,14 +1167,19 @@ namespace Greatbone.Core
                     Add("<div class=\"small-4 columns\">");
                     if (formed && level == 0 && chain[level].ordinal == 0)
                     {
-                        Add("<input type=\"checkbox\" name=\"pk\" value=\""); Add(v); Add("\">");
+                        Add("<input type=\"checkbox\" name=\"pk\" value=\"");
+                        Add(v);
+                        Add("\">");
                     }
                     else
                     {
                         AddLabel(label, name);
                     }
                     Add("</div>");
-                    Add("<div class=\"small-8 columns\">"); if (opt != null) Add(opt[v]); else Add(v); Add("</div>");
+                    Add("<div class=\"small-8 columns\">");
+                    if (opt != null) Add(opt[v]);
+                    else Add(v);
+                    Add("</div>");
                     Add("</div>");
                     break;
                 case CTX_LIST:
@@ -1100,14 +1221,18 @@ namespace Greatbone.Core
                     Add("<div class=\"small-4 columns\">");
                     if (formed && level == 0 && chain[level].ordinal == 0)
                     {
-                        Add("<input type=\"checkbox\" name=\"pk\" value=\""); Add(v); Add("\">");
+                        Add("<input type=\"checkbox\" name=\"pk\" value=\"");
+                        Add(v);
+                        Add("\">");
                     }
                     else
                     {
                         AddLabel(label, name);
                     }
                     Add("</div>");
-                    Add("<div class=\"small-8 columns\">"); Add(v); Add("</div>");
+                    Add("<div class=\"small-8 columns\">");
+                    Add(v);
+                    Add("</div>");
                     Add("</div>");
                     break;
                 case CTX_LIST:
@@ -1117,7 +1242,6 @@ namespace Greatbone.Core
                     // NUMBER(name, v);
                     Add("</div>");
                     break;
-
             }
             chain[level].ordinal++;
             return this;
@@ -1150,14 +1274,18 @@ namespace Greatbone.Core
                     Add("<div class=\"small-4 columns\">");
                     if (formed && level == 0 && chain[level].ordinal == 0)
                     {
-                        Add("<input type=\"checkbox\" name=\"pk\" value=\""); Add(v); Add("\">");
+                        Add("<input type=\"checkbox\" name=\"pk\" value=\"");
+                        Add(v);
+                        Add("\">");
                     }
                     else
                     {
                         AddLabel(label, name);
                     }
                     Add("</div>");
-                    Add("<div class=\"small-8 columns\">"); Add(v); Add("</div>");
+                    Add("<div class=\"small-8 columns\">");
+                    Add(v);
+                    Add("</div>");
                     Add("</div>");
                     break;
                 case CTX_LIST:
@@ -1195,8 +1323,12 @@ namespace Greatbone.Core
                     break;
                 case CTX_GRID:
                     Add("<div class=\"row\">");
-                    Add("<div class=\"small-4 columns\">"); AddLabel(label, name); Add("</div>");
-                    Add("<div class=\"small-8 columns\">"); Add(v); Add("</div>");
+                    Add("<div class=\"small-4 columns\">");
+                    AddLabel(label, name);
+                    Add("</div>");
+                    Add("<div class=\"small-8 columns\">");
+                    Add(v);
+                    Add("</div>");
                     Add("</div>");
                     break;
                 case CTX_LIST:
@@ -1230,8 +1362,12 @@ namespace Greatbone.Core
                     break;
                 case CTX_GRID:
                     Add("<div class=\"row\">");
-                    Add("<div class=\"small-4 columns\">"); AddLabel(label, name); Add("</div>");
-                    Add("<div class=\"small-8 columns\">"); Add(v); Add("</div>");
+                    Add("<div class=\"small-4 columns\">");
+                    AddLabel(label, name);
+                    Add("</div>");
+                    Add("<div class=\"small-8 columns\">");
+                    Add(v);
+                    Add("</div>");
                     Add("</div>");
                     break;
                 case CTX_LIST:
@@ -1268,8 +1404,12 @@ namespace Greatbone.Core
                     break;
                 case CTX_GRID:
                     Add("<div class=\"row\">");
-                    Add("<div class=\"small-4 columns\">"); AddLabel(label, name); Add("</div>");
-                    Add("<div class=\"small-8 columns\">"); if (v != default(DateTime)) Add(v); Add("</div>");
+                    Add("<div class=\"small-4 columns\">");
+                    AddLabel(label, name);
+                    Add("</div>");
+                    Add("<div class=\"small-8 columns\">");
+                    if (v != default(DateTime)) Add(v);
+                    Add("</div>");
                     Add("</div>");
                     break;
                 case CTX_LIST:
@@ -1294,7 +1434,9 @@ namespace Greatbone.Core
                 case CTX_TABLE:
                     if (ctx.label)
                     {
-                        Add("<th>"); AddLabel(label, name); Add("</th>");
+                        Add("<th>");
+                        AddLabel(label, name);
+                        Add("</th>");
                     }
                     else
                     {
@@ -1312,14 +1454,18 @@ namespace Greatbone.Core
                     Add("<div class=\"small-4 columns\">");
                     if (formed && level == 0 && chain[level].ordinal == 0)
                     {
-                        Add("<input type=\"checkbox\" name=\"pk\" value=\""); Add(v); Add("\">");
+                        Add("<input type=\"checkbox\" name=\"pk\" value=\"");
+                        Add(v);
+                        Add("\">");
                     }
                     else
                     {
                         AddLabel(label, name);
                     }
                     Add("</div>");
-                    Add("<div class=\"small-8 columns\">"); Add(v); Add("</div>");
+                    Add("<div class=\"small-8 columns\">");
+                    Add(v);
+                    Add("</div>");
                     Add("</div>");
                     break;
                 case CTX_LIST:
@@ -1332,7 +1478,7 @@ namespace Greatbone.Core
                     }
                     else if (name.EndsWith("password"))
                     {
-                        PASSWORD(name, v, label, help, pattern, (sbyte)max, (sbyte)min, @readonly, required);
+                        PASSWORD(name, v, label, help, pattern, (sbyte) max, (sbyte) min, @readonly, required);
                     }
                     else if (max < 128)
                     {
@@ -1377,23 +1523,22 @@ namespace Greatbone.Core
             return this;
         }
 
-        public HtmlContent Put(string name, short[] v, Opt<short> Opt = null, string Label = null, string Help = null, bool ReadOnly = false, bool Required = false)
-        {
-
-            return this;
-        }
-
-        public HtmlContent Put(string name, int[] v, Opt<int> Opt = null, string Label = null, string Help = null, bool ReadOnly = false, bool Required = false)
+        public HtmlContent Put(string name, short[] v, Opt<short> Opt = null, string Label = null, string Help = null, bool ReadOnly = false, bool required = false)
         {
             return this;
         }
 
-        public HtmlContent Put(string name, long[] v, Opt<long> Opt = null, string Label = null, string Help = null, bool ReadOnly = false, bool Required = false)
+        public HtmlContent Put(string name, int[] v, Opt<int> Opt = null, string Label = null, string Help = null, bool ReadOnly = false, bool required = false)
         {
             return this;
         }
 
-        public HtmlContent Put(string name, string[] v, Opt<string> Opt = null, string Label = null, string Help = null, bool ReadOnly = false, bool Required = false)
+        public HtmlContent Put(string name, long[] v, Opt<long> Opt = null, string Label = null, string Help = null, bool ReadOnly = false, bool required = false)
+        {
+            return this;
+        }
+
+        public HtmlContent Put(string name, string[] v, Opt<string> Opt = null, string Label = null, string Help = null, bool ReadOnly = false, bool required = false)
         {
             return this;
         }
@@ -1403,12 +1548,12 @@ namespace Greatbone.Core
             return this;
         }
 
-        public HtmlContent Put(string name, IData v, int proj = 0, string Label = null, string Help = null, bool ReadOnly = false, bool Required = false)
+        public HtmlContent Put(string name, IData v, int proj = 0, string Label = null, string Help = null, bool ReadOnly = false, bool required = false)
         {
             return this;
         }
 
-        public HtmlContent Put<D>(string name, D[] v, int proj = 0, string Label = null, string Help = null, bool ReadOnly = false, bool Required = false) where D : IData
+        public HtmlContent Put<D>(string name, D[] v, int proj = 0, string Label = null, string Help = null, bool ReadOnly = false, bool required = false) where D : IData
         {
             return this;
         }
@@ -1426,7 +1571,10 @@ namespace Greatbone.Core
                     }
                     else
                     {
-                        if (v != null) { LIST(v, proj); }
+                        if (v != null)
+                        {
+                            LIST(v, proj);
+                        }
                         else
                         {
                             Add("<div class=\"row\"><span>没有记录</span></div>");

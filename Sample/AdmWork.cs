@@ -5,7 +5,7 @@ namespace Greatbone.Sample
 {
     public class AdmWork : Work
     {
-        public AdmWork(WorkContext wc) : base(wc)
+        public AdmWork(WorkContext ctx) : base(ctx)
         {
             Create<AdmUserWork>("user");
 

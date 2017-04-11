@@ -251,29 +251,12 @@ namespace Greatbone.Core
             return this;
         }
 
-        public XmlContent Put(string name, ArraySegment<byte> v, string Label = null, string Size = null, string Ratio = null, bool Required = false)
+        public XmlContent Put(string name, ArraySegment<byte> v, string Label = null, string size = null, string Ratio = null, bool required = false)
         {
             return this;
         }
 
-        public XmlContent Put(string name, short[] v, Opt<short> Opt = null, string Label = null, string Help = null, bool ReadOnly = false, bool Required = false)
-        {
-            Add(' ');
-            Add(name);
-            Add('=');
-            Add('"');
-
-            for (int i = 0; i < v.Length; i++)
-            {
-                if (i > 0) Add(',');
-                Add(v[i]);
-            }
-
-            Add('"');
-            return this;
-        }
-
-        public XmlContent Put(string name, int[] v, Opt<int> Opt = null, string Label = null, string Help = null, bool ReadOnly = false, bool Required = false)
+        public XmlContent Put(string name, short[] v, Opt<short> Opt = null, string Label = null, string Help = null, bool @readonly = false, bool required = false)
         {
             Add(' ');
             Add(name);
@@ -290,7 +273,7 @@ namespace Greatbone.Core
             return this;
         }
 
-        public XmlContent Put(string name, long[] v, Opt<long> Opt = null, string Label = null, string Help = null, bool ReadOnly = false, bool Required = false)
+        public XmlContent Put(string name, int[] v, Opt<int> Opt = null, string Label = null, string Help = null, bool @readonly = false, bool required = false)
         {
             Add(' ');
             Add(name);
@@ -307,7 +290,7 @@ namespace Greatbone.Core
             return this;
         }
 
-        public XmlContent Put(string name, string[] v, Opt<string> Opt = null, string Label = null, string Help = null, bool ReadOnly = false, bool Required = false)
+        public XmlContent Put(string name, long[] v, Opt<long> Opt = null, string Label = null, string Help = null, bool @readonly = false, bool required = false)
         {
             Add(' ');
             Add(name);
@@ -324,22 +307,39 @@ namespace Greatbone.Core
             return this;
         }
 
-        public XmlContent Put(string name, Dictionary<string, string> v, string Label = null, string Help = null, bool ReadOnly = false, bool Required = false)
+        public XmlContent Put(string name, string[] v, Opt<string> Opt = null, string Label = null, string Help = null, bool @readonly = false, bool required = false)
+        {
+            Add(' ');
+            Add(name);
+            Add('=');
+            Add('"');
+
+            for (int i = 0; i < v.Length; i++)
+            {
+                if (i > 0) Add(',');
+                Add(v[i]);
+            }
+
+            Add('"');
+            return this;
+        }
+
+        public XmlContent Put(string name, Dictionary<string, string> v, string Label = null, string Help = null, bool ReadOnly = false, bool required = false)
         {
             return this;
         }
 
-        public XmlContent Put(string name, IData v, int proj = 0, string Label = null, string Help = null, bool ReadOnly = false, bool Required = false)
+        public XmlContent Put(string name, IData v, int proj = 0, string Label = null, string Help = null, bool @readonly = false, bool required = false)
         {
             return this;
         }
 
-        public XmlContent Put<D>(string name, D[] v, int proj = 0, string Label = null, string Help = null, bool ReadOnly = false, bool Required = false) where D : IData
+        public XmlContent Put<D>(string name, D[] v, int proj = 0, string Label = null, string Help = null, bool @readonly = false, bool required = false) where D : IData
         {
             return this;
         }
 
-        public XmlContent Put<D>(string name, List<D> v, int proj = 0, string Label = null, string Help = null, bool ReadOnly = false, bool Required = false) where D : IData
+        public XmlContent Put<D>(string name, List<D> v, int proj = 0, string Label = null, string Help = null, bool @readonly = false, bool required = false) where D : IData
         {
             return this;
         }

@@ -1,11 +1,4 @@
-﻿using Microsoft.AspNetCore.Hosting.Server;
-using Microsoft.AspNetCore.Hosting.Server.Features;
-using Microsoft.AspNetCore.Http;
-using Microsoft.AspNetCore.Http.Features;
-using Microsoft.AspNetCore.Server.Kestrel;
-using Microsoft.Extensions.Logging;
-using Microsoft.Extensions.Options;
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Data;
 using System.IO;
@@ -13,6 +6,13 @@ using System.Reflection;
 using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
+using Microsoft.AspNetCore.Hosting.Server;
+using Microsoft.AspNetCore.Hosting.Server.Features;
+using Microsoft.AspNetCore.Http;
+using Microsoft.AspNetCore.Http.Features;
+using Microsoft.AspNetCore.Server.Kestrel;
+using Microsoft.Extensions.Logging;
+using Microsoft.Extensions.Options;
 
 namespace Greatbone.Core
 {
@@ -56,7 +56,7 @@ namespace Greatbone.Core
             factory.AddProvider(this);
             string file = sc.GetFilePath('$' + DateTime.Now.ToString("yyyyMM") + ".log");
             FileStream fs = new FileStream(file, FileMode.Append, FileAccess.Write);
-            logWriter = new StreamWriter(fs, Encoding.UTF8, 1024 * 4, false) { AutoFlush = true };
+            logWriter = new StreamWriter(fs, Encoding.UTF8, 1024 * 4, false) {AutoFlush = true};
 
             // create kestrel instance
             KestrelServerOptions options = new KestrelServerOptions();
@@ -122,7 +122,6 @@ namespace Greatbone.Core
 
             // response cache
             cache = new ActionCache(Environment.ProcessorCount * 2, 4096);
-
         }
 
         public string Describe()
@@ -167,7 +166,7 @@ namespace Greatbone.Core
         /// 
         public virtual async Task ProcessRequestAsync(HttpContext context)
         {
-            ActionContext ac = (ActionContext)context;
+            ActionContext ac = (ActionContext) context;
             HttpRequest req = ac.Request;
             string path = req.Path.Value;
 
@@ -180,8 +179,8 @@ namespace Greatbone.Core
                 else // handle a regular request
                 {
                     string relative = path.Substring(1);
-                    bool @null = false;
-                    Work work = Resolve(ref relative, ac, ref @null);
+                    bool recover = false;
+                    Work work = Resolve(ref relative, ac, ref recover);
                     if (work == null)
                     {
                         ac.Give(404); // not found
@@ -192,8 +191,8 @@ namespace Greatbone.Core
             }
             catch (Exception e)
             {
-                if (this is ICatchAsync) await ((ICatchAsync)this).CatchAsync(e, ac);
-                else if (this is ICatch) ((ICatch)this).Catch(e, ac);
+                if (this is ICatchAsync) await ((ICatchAsync) this).CatchAsync(e, ac);
+                else if (this is ICatch) ((ICatch) this).Catch(e, ac);
                 else
                 {
                     ERR(e.Message, e);
@@ -227,7 +226,7 @@ namespace Greatbone.Core
         public void DisposeContext(HttpContext context, Exception exception)
         {
             // dispose the action context
-            ((ActionContext)context).Dispose();
+            ((ActionContext) context).Dispose();
         }
 
 
@@ -260,7 +259,6 @@ namespace Greatbone.Core
                     eq.Poll(ac);
                 }
             }
-
         }
 
         volatile string connstr;
@@ -303,6 +301,11 @@ namespace Greatbone.Core
 
         volatile bool stop;
 
+        public void Stop()
+        {
+            stop = true;
+        }
+
         public void Start()
         {
             if (connectors != null)
@@ -318,7 +321,7 @@ namespace Greatbone.Core
 
             DBG(Name + " -> " + Addrs[0] + " started");
 
-            /// Run in the cleaner thread to repeatedly check and relinguish cache entries.
+            // Run in the cleaner thread to repeatedly check and relinguish cache entries.
             cleaner = new Thread(() =>
             {
                 while (!stop)
@@ -332,7 +335,7 @@ namespace Greatbone.Core
 
             if (connectors != null)
             {
-                /// Run in the scheduler thread to repeatedly check and initiate event polling activities.
+                // Run in the scheduler thread to repeatedly check and initiate event polling activities.
                 scheduler = new Thread(() =>
                 {
                     while (!stop)
@@ -373,7 +376,7 @@ namespace Greatbone.Core
 
         public bool IsEnabled(LogLevel level)
         {
-            return (int)level >= Logging;
+            return (int) level >= Logging;
         }
 
         public void TRC(string message, Exception exception = null)
@@ -401,7 +404,7 @@ namespace Greatbone.Core
             Log(LogLevel.Error, 0, message, exception, null);
         }
 
-        static readonly string[] LVL = { "TRC: ", "DBG: ", "INF: ", "WAR: ", "ERR: ", "CRL: ", "NON: " };
+        static readonly string[] LVL = {"TRC: ", "DBG: ", "INF: ", "WAR: ", "ERR: ", "CRL: ", "NON: "};
 
         public void Log<T>(LogLevel level, EventId eid, T state, Exception exception, Func<T, Exception, string> formatter)
         {
@@ -410,7 +413,7 @@ namespace Greatbone.Core
                 return;
             }
 
-            logWriter.Write(LVL[(int)level]);
+            logWriter.Write(LVL[(int) level]);
 
             if (eid.Id != 0)
             {
@@ -444,13 +447,12 @@ namespace Greatbone.Core
             Console.Write(Name);
             Console.WriteLine(".");
         }
-
     }
 
     /// <summary>
     /// A microservice that implements authentication and authorization.
     /// </summary>
-    /// <param name="P">The principal class</param>
+    /// <typeparam name="P">the principal type.</typeparam>
     public abstract class Service<P> : Service where P : class, IData, new()
     {
         protected Service(ServiceContext sc) : base(sc)
@@ -464,7 +466,7 @@ namespace Greatbone.Core
         /// 
         public override async Task ProcessRequestAsync(HttpContext context)
         {
-            ActionContext ac = (ActionContext)context;
+            ActionContext ac = (ActionContext) context;
             HttpRequest req = ac.Request;
             string path = req.Path.Value;
 
@@ -472,11 +474,8 @@ namespace Greatbone.Core
             try
             {
                 bool norm = true;
-                if (this is IAuthenticateAsync)
-                    norm = await ((IAuthenticateAsync)this).AuthenticateAsync(ac, true);
-                else if (this is IAuthenticate)
-                    norm = ((IAuthenticate)this).Authenticate(ac, true);
-
+                if (this is IAuthenticateAsync) norm = await ((IAuthenticateAsync) this).AuthenticateAsync(ac, true);
+                else if (this is IAuthenticate) norm = ((IAuthenticate) this).Authenticate(ac, true);
                 if (!norm)
                 {
                     ac.Give(511); // 511 Network Authentication Required
@@ -519,8 +518,8 @@ namespace Greatbone.Core
             }
             catch (Exception e)
             {
-                if (this is ICatchAsync) await ((ICatchAsync)this).CatchAsync(e, ac);
-                else if (this is ICatch) ((ICatch)this).Catch(e, ac);
+                if (this is ICatchAsync) await ((ICatchAsync) this).CatchAsync(e, ac);
+                else if (this is ICatch) ((ICatch) this).Catch(e, ac);
                 else
                 {
                     WAR(e.Message, e);
@@ -556,7 +555,7 @@ namespace Greatbone.Core
             ac.SetHeader("Set-Cookie", sb.ToString());
         }
 
-        const int Proj = -1 ^ Core.Projection.BIN ^ Core.Projection.SECRET;
+        const int Proj = -1 ^ Projection.BIN ^ Projection.SECRET;
 
         public string Encrypt(P prin)
         {
@@ -568,7 +567,7 @@ namespace Greatbone.Core
             int count = cont.Size;
 
             int mask = Auth.mask;
-            int[] masks = { (mask >> 24) & 0xff, (mask >> 16) & 0xff, (mask >> 8) & 0xff, mask & 0xff };
+            int[] masks = {(mask >> 24) & 0xff, (mask >> 16) & 0xff, (mask >> 8) & 0xff, mask & 0xff};
             char[] charbuf = new char[count * 2]; // the target 
             int p = 0;
             for (int i = 0; i < count; i++)
@@ -593,7 +592,7 @@ namespace Greatbone.Core
             if (Auth == null) return null;
 
             int mask = Auth.mask;
-            int[] masks = { (mask >> 24) & 0xff, (mask >> 16) & 0xff, (mask >> 8) & 0xff, mask & 0xff };
+            int[] masks = {(mask >> 24) & 0xff, (mask >> 16) & 0xff, (mask >> 8) & 0xff, mask & 0xff};
             int len = token.Length / 2;
             Str str = new Str(256);
             int p = 0;
@@ -602,15 +601,17 @@ namespace Greatbone.Core
                 // reordering
 
                 // transform to byte
-                int b = (byte)(Dv(token[p++]) << 4 | Dv(token[p++]));
+                int b = (byte) (Dv(token[p++]) << 4 | Dv(token[p++]));
 
                 // masking
-                str.Accept((byte)(b ^ masks[i % 4]));
+                str.Accept((byte) (b ^ masks[i % 4]));
             }
 
             JsonParse parse = new JsonParse(str.ToString());
-            JObj jo = (JObj)parse.Parse();
-            return jo.ToObject<P>(Proj);
+            JObj jo = (JObj) parse.Parse();
+            P prin = new P();
+            prin.ReadData(jo, Proj);
+            return prin;
         }
 
         // hexidecimal characters

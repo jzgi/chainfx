@@ -7,7 +7,9 @@ namespace Greatbone.Sample
     ///
     public abstract class OrderVarWork : Work
     {
-        public OrderVarWork(WorkContext wc) : base(wc) { }
+        protected OrderVarWork(WorkContext ctx) : base(ctx)
+        {
+        }
 
         public void ask(ActionContext ac)
         {
@@ -74,11 +76,15 @@ namespace Greatbone.Sample
         [Ui]
         public void exam(ActionContext ac)
         {
-
         }
     }
 
-    public abstract class MyOrderVarWork : OrderVarWork { public MyOrderVarWork(WorkContext wc) : base(wc) { } }
+    public abstract class MyOrderVarWork : OrderVarWork
+    {
+        public MyOrderVarWork(WorkContext ctx) : base(ctx)
+        {
+        }
+    }
 
     /// <summary>
     /// About a single cart order targeted one shop.
@@ -88,13 +94,15 @@ namespace Greatbone.Sample
     /// </code>
     public class MyCartOrderVarWork : MyOrderVarWork
     {
-        public MyCartOrderVarWork(WorkContext wc) : base(wc) { }
+        public MyCartOrderVarWork(WorkContext ctx) : base(ctx)
+        {
+        }
 
         [Ui("付款", UiMode.AnchorScript)]
         public async Task prepay(ActionContext ac)
         {
             long ordid = ac[this];
-            string buywx = ((User)ac.Principal).wx;
+            string buywx = ((User) ac.Principal).wx;
 
             using (var dc = ac.NewDbContext())
             {
@@ -122,28 +130,28 @@ namespace Greatbone.Sample
 
     public class MyRealOrderVarWork : MyOrderVarWork
     {
-        public MyRealOrderVarWork(WorkContext wc) : base(wc)
+        public MyRealOrderVarWork(WorkContext ctx) : base(ctx)
         {
         }
     }
 
     public abstract class OprOrderVarWork : OrderVarWork
     {
-        public OprOrderVarWork(WorkContext wc) : base(wc)
+        protected OprOrderVarWork(WorkContext ctx) : base(ctx)
         {
         }
     }
 
     public class OprUnpaidOrderVarWork : OprOrderVarWork
     {
-        public OprUnpaidOrderVarWork(WorkContext wc) : base(wc)
+        public OprUnpaidOrderVarWork(WorkContext ctx) : base(ctx)
         {
         }
     }
 
     public class OprPaidOrderVarWork : OprOrderVarWork
     {
-        public OprPaidOrderVarWork(WorkContext wc) : base(wc)
+        public OprPaidOrderVarWork(WorkContext ctx) : base(ctx)
         {
         }
 
@@ -168,23 +176,43 @@ namespace Greatbone.Sample
 
     public class OprFixedOrderVarWork : OprOrderVarWork
     {
-        public OprFixedOrderVarWork(WorkContext wc) : base(wc)
+        public OprFixedOrderVarWork(WorkContext ctx) : base(ctx)
         {
         }
     }
 
     public class OprClosedOrderVarWork : OprOrderVarWork
     {
-        public OprClosedOrderVarWork(WorkContext wc) : base(wc)
+        public OprClosedOrderVarWork(WorkContext ctx) : base(ctx)
         {
         }
     }
 
     public class OprAbortedOrderVarWork : OprOrderVarWork
     {
-        public OprAbortedOrderVarWork(WorkContext wc) : base(wc)
+        public OprAbortedOrderVarWork(WorkContext ctx) : base(ctx)
         {
         }
     }
 
+    public abstract class DvrOrderVarWork : OrderVarWork
+    {
+        protected DvrOrderVarWork(WorkContext ctx) : base(ctx)
+        {
+        }
+    }
+
+    public class DvrReadyOrderVarWork : DvrOrderVarWork
+    {
+        public DvrReadyOrderVarWork(WorkContext ctx) : base(ctx)
+        {
+        }
+    }
+
+    public class DvrShippedOrderVarWork : DvrOrderVarWork
+    {
+        public DvrShippedOrderVarWork(WorkContext ctx) : base(ctx)
+        {
+        }
+    }
 }
