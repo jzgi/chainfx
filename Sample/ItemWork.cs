@@ -7,7 +7,7 @@ namespace Greatbone.Sample
     ///
     public abstract class ItemWork<V> : Work where V : ItemVarWork
     {
-        protected ItemWork(WorkContext ctx) : base(ctx)
+        protected ItemWork(WorkContext wc) : base(wc)
         {
         }
 
@@ -126,7 +126,7 @@ namespace Greatbone.Sample
     [Ui("货架")]
     public class OprItemWork : ItemWork<OprItemVarWork>
     {
-        public OprItemWork(WorkContext ctx) : base(ctx)
+        public OprItemWork(WorkContext wc) : base(wc)
         {
         }
     }

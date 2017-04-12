@@ -7,7 +7,7 @@ namespace Greatbone.Sample
     ///
     public abstract class OrderVarWork : Work
     {
-        protected OrderVarWork(WorkContext ctx) : base(ctx)
+        protected OrderVarWork(WorkContext wc) : base(wc)
         {
         }
 
@@ -81,7 +81,7 @@ namespace Greatbone.Sample
 
     public abstract class MyOrderVarWork : OrderVarWork
     {
-        public MyOrderVarWork(WorkContext ctx) : base(ctx)
+        public MyOrderVarWork(WorkContext wc) : base(wc)
         {
         }
     }
@@ -94,7 +94,7 @@ namespace Greatbone.Sample
     /// </code>
     public class MyCartOrderVarWork : MyOrderVarWork
     {
-        public MyCartOrderVarWork(WorkContext ctx) : base(ctx)
+        public MyCartOrderVarWork(WorkContext wc) : base(wc)
         {
         }
 
@@ -130,28 +130,28 @@ namespace Greatbone.Sample
 
     public class MyRealOrderVarWork : MyOrderVarWork
     {
-        public MyRealOrderVarWork(WorkContext ctx) : base(ctx)
+        public MyRealOrderVarWork(WorkContext wc) : base(wc)
         {
         }
     }
 
     public abstract class OprOrderVarWork : OrderVarWork
     {
-        protected OprOrderVarWork(WorkContext ctx) : base(ctx)
+        protected OprOrderVarWork(WorkContext wc) : base(wc)
         {
         }
     }
 
     public class OprUnpaidOrderVarWork : OprOrderVarWork
     {
-        public OprUnpaidOrderVarWork(WorkContext ctx) : base(ctx)
+        public OprUnpaidOrderVarWork(WorkContext wc) : base(wc)
         {
         }
     }
 
     public class OprPaidOrderVarWork : OprOrderVarWork
     {
-        public OprPaidOrderVarWork(WorkContext ctx) : base(ctx)
+        public OprPaidOrderVarWork(WorkContext wc) : base(wc)
         {
         }
 
@@ -176,42 +176,42 @@ namespace Greatbone.Sample
 
     public class OprFixedOrderVarWork : OprOrderVarWork
     {
-        public OprFixedOrderVarWork(WorkContext ctx) : base(ctx)
+        public OprFixedOrderVarWork(WorkContext wc) : base(wc)
         {
         }
     }
 
     public class OprClosedOrderVarWork : OprOrderVarWork
     {
-        public OprClosedOrderVarWork(WorkContext ctx) : base(ctx)
+        public OprClosedOrderVarWork(WorkContext wc) : base(wc)
         {
         }
     }
 
     public class OprAbortedOrderVarWork : OprOrderVarWork
     {
-        public OprAbortedOrderVarWork(WorkContext ctx) : base(ctx)
+        public OprAbortedOrderVarWork(WorkContext wc) : base(wc)
         {
         }
     }
 
     public abstract class DvrOrderVarWork : OrderVarWork
     {
-        protected DvrOrderVarWork(WorkContext ctx) : base(ctx)
+        protected DvrOrderVarWork(WorkContext wc) : base(wc)
         {
         }
     }
 
     public class DvrReadyOrderVarWork : DvrOrderVarWork
     {
-        public DvrReadyOrderVarWork(WorkContext ctx) : base(ctx)
+        public DvrReadyOrderVarWork(WorkContext wc) : base(wc)
         {
         }
     }
 
     public class DvrShippedOrderVarWork : DvrOrderVarWork
     {
-        public DvrShippedOrderVarWork(WorkContext ctx) : base(ctx)
+        public DvrShippedOrderVarWork(WorkContext wc) : base(wc)
         {
         }
     }

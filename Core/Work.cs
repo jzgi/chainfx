@@ -21,7 +21,7 @@ namespace Greatbone.Core
         const string _VAR_ = "VAR";
 
         // state-passing
-        readonly WorkContext ctx;
+        readonly WorkContext wc;
 
         readonly TypeInfo typeinfo;
 
@@ -44,9 +44,9 @@ namespace Greatbone.Core
         internal Work varwork;
 
         // to obtain a string key from a data object.
-        protected Work(WorkContext ctx) : base(ctx.Name, null)
+        protected Work(WorkContext wc) : base(wc.Name, null)
         {
-            this.ctx = ctx;
+            this.wc = wc;
 
             // gather actions
             actions = new Roll<ActionInfo>(32);
@@ -178,21 +178,21 @@ namespace Greatbone.Core
 
         public Work Varwork => varwork;
 
-        public string Directory => ctx.Directory;
+        public string Directory => wc.Directory;
 
-        public Work Parent => ctx.Parent;
+        public Work Parent => wc.Parent;
 
-        public bool IsVar => ctx.IsVar;
+        public bool IsVar => wc.IsVar;
 
-        public int Level => ctx.Level;
+        public int Level => wc.Level;
 
-        public override Service Service => ctx.Service;
+        public override Service Service => wc.Service;
 
-        public bool HasKeyer => ctx.Keyer != null;
+        public bool HasKeyer => wc.Keyer != null;
 
         public string ObtainVarKey(IData obj)
         {
-            Delegate keyer = ctx.Keyer;
+            Delegate keyer = wc.Keyer;
             if (keyer is Func<IData, string>)
             {
                 return ((Func<IData, string>) keyer)(obj);
@@ -202,7 +202,7 @@ namespace Greatbone.Core
 
         public void OutputVarKey(IData obj, DynamicContent @out)
         {
-            Delegate keyer = ctx.Keyer;
+            Delegate keyer = wc.Keyer;
             if (keyer is Func<IData, string>)
             {
                 @out.Add(((Func<IData, string>) keyer)(obj));
@@ -400,7 +400,7 @@ namespace Greatbone.Core
                 Type = ctyp,
                 Modified = modified
             };
-            ac.Give(200, cont, true, 3600 * 12);
+            ac.Give(200, cont); // todo 
         }
     }
 }

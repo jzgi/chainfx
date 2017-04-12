@@ -27,8 +27,7 @@ namespace Greatbone.Sample
             h.Add("<head>");
             h.Add("<title>粗粮达人</title>");
             h.Add("<meta name=\"viewport\" content=\"width=device-width, initial-scale=1.0\">");
-            h.Add("<link rel=\"stylesheet\" href=\"//cdn.bootcss.com/foundation/6.3.1/css/foundation.min.css\">");
-            h.Add("<link rel=\"stylesheet\" href=\"//cdn.bootcss.com/foundicons/3.0.0/foundation-icons.min.css\">");
+            h.Add("<link rel=\"stylesheet\" href=\"/foundation.min.css\">");
             h.Add("<link rel=\"stylesheet\" href=\"/app.css\">");
             h.Add("</head>");
 
@@ -62,8 +61,7 @@ namespace Greatbone.Sample
             h.Add("<head>");
             h.Add("<title>粗粮达人</title>");
             h.Add("<meta name=\"viewport\" content=\"width=device-width, initial-scale=1.0\">");
-            h.Add("<link rel=\"stylesheet\" href=\"//cdn.bootcss.com/foundation/6.3.1/css/foundation.min.css\">");
-            h.Add("<link rel=\"stylesheet\" href=\"//cdn.bootcss.com/foundicons/3.0.0/foundation-icons.min.css\">");
+            h.Add("<link rel=\"stylesheet\" href=\"/foundation.min.css\">");
             h.Add("<link rel=\"stylesheet\" href=\"/slim.min.css\">");
             h.Add("<link rel=\"stylesheet\" href=\"/app.css\">");
             h.Add("</head>");
@@ -147,8 +145,7 @@ namespace Greatbone.Sample
             h.Add("<head>");
             h.Add("<title>粗粮达人</title>");
             h.Add("<meta name=\"viewport\" content=\"width=device-width, initial-scale=1.0\">");
-            h.Add("<link rel=\"stylesheet\" href=\"//cdn.bootcss.com/foundation/6.3.1/css/foundation.min.css\">");
-            h.Add("<link rel=\"stylesheet\" href=\"//cdn.bootcss.com/foundicons/3.0.0/foundation-icons.min.css\">");
+            h.Add("<link rel=\"stylesheet\" href=\"/foundation.min.css\">");
             h.Add("<link rel=\"stylesheet\" href=\"/app.css\">");
             h.Add("</head>");
 
@@ -158,7 +155,7 @@ namespace Greatbone.Sample
             Roll<Work> subs = work.Subworks;
             h.Add("<ul class=\"tabs\" data-tabs id=\"example-tabs\">");
 
-            h.Add("<li class=\"tabs-title is-active\"><a style=\"padding:0.25rem 0.5rem;\" href=\"#paneltop\">");
+            h.Add("<li class=\"tabs-title is-active\"><a href=\"#paneltop\">");
             h.Add(work.Label);
             h.Add("</a></li>");
 
@@ -167,16 +164,14 @@ namespace Greatbone.Sample
                 for (int i = 0; i < subs.Count; i++)
                 {
                     Work sub = subs[i];
-                    h.Add("<li class=\"tabs-title primary\"><a style=\"padding:0.25rem 0.5rem;\" href=\"#panel");
-                    h.Add(i);
-                    h.Add("\">");
+                    h.Add("<li class=\"tabs-title\"><a href=\"#panel"); h.Add(i); h.Add("\">");
                     h.Add(sub.Label);
                     h.Add("</a></li>");
                 }
             }
-            h.Add(" </ul>");
+            h.Add("</ul>");
 
-            h.Add("<div class=\"tabs-content\" style=\"height: calc(100% - 2em)\" data-tabs-content=\"example-tabs\">");
+            h.Add("<div class=\"tabs-content\" data-tabs-content=\"example-tabs\">");
 
             h.Add("<div class=\"tabs-panel is-active\" id=\"paneltop\">");
             h.Add(" </div>");
@@ -191,7 +186,7 @@ namespace Greatbone.Sample
                     h.Add("\">");
                     h.Add("<iframe id=\"");
                     h.Add(sub.Name);
-                    h.Add("/\" style=\"width:100%; height:100%;\"></iframe>");
+                    h.Add("/\" frameborder=\"0\" style=\"width:100%; height:100%;\"></iframe>");
                     h.Add(" </div>");
                 }
             }

@@ -11,7 +11,7 @@ namespace Greatbone.Sample
     {
         readonly ConcurrentDictionary<string, Chat> chats;
 
-        public ChatVarWork(WorkContext fc) : base(fc)
+        public ChatVarWork(WorkContext wc) : base(wc)
         {
         }
 

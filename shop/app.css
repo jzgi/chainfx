@@ -72,7 +72,6 @@
 }
 
 .header-subnav li {
-    float: none;
     display: inline-block;
 }
 
@@ -94,4 +93,9 @@
 .header-subnav li a:hover {
     background: rgba(250, 250, 250, 0.15);
     transition: all 0.35s ease-in-out;
+}
+
+.tabs-panel {
+    display: none;
+    padding: 0rem;
 }

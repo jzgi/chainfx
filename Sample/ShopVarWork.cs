@@ -7,7 +7,7 @@ namespace Greatbone.Sample
     [User]
     public abstract class ShopVarWork : Work
     {
-        protected ShopVarWork(WorkContext ctx) : base(ctx)
+        protected ShopVarWork(WorkContext wc) : base(wc)
         {
         }
 
@@ -37,7 +37,7 @@ namespace Greatbone.Sample
     /// </summary>
     public class PubShopVarWork : ShopVarWork
     {
-        public PubShopVarWork(WorkContext ctx) : base(ctx)
+        public PubShopVarWork(WorkContext wc) : base(wc)
         {
             CreateVar<PubItemVarWork, string>();
         }
@@ -119,9 +119,10 @@ namespace Greatbone.Sample
         }
     }
 
+    [Ui("设置")]
     public class OprShopVarWork : ShopVarWork
     {
-        public OprShopVarWork(WorkContext ctx) : base(ctx)
+        public OprShopVarWork(WorkContext wc) : base(wc)
         {
             Create<OprPaidOrderWork>("paid");
 
@@ -144,7 +145,7 @@ namespace Greatbone.Sample
 
     public class AdmShopVarWork : ShopVarWork
     {
-        public AdmShopVarWork(WorkContext ctx) : base(ctx)
+        public AdmShopVarWork(WorkContext wc) : base(wc)
         {
         }
     }
