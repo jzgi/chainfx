@@ -6,9 +6,9 @@ namespace Greatbone.Sample
 {
     public abstract class RepayWork<V> : Work where V : RepayVarWork
     {
-        protected RepayWork(WorkContext wc) : base(wc)
+        protected RepayWork(WorkContext ctx) : base(ctx)
         {
-            CreateVar<V>();
+            CreateVar<V, int>();
         }
 
         public void _cat_(ActionContext ac)
@@ -32,7 +32,7 @@ namespace Greatbone.Sample
     [Ui("结款")]
     public class OprRepayWork : RepayWork<OprRepayVarWork>
     {
-        public OprRepayWork(WorkContext wc) : base(wc)
+        public OprRepayWork(WorkContext ctx) : base(ctx)
         {
         }
 
@@ -104,9 +104,10 @@ namespace Greatbone.Sample
     [Ui("结款管理")]
     public class DvrRepayWork : RepayWork<DvrRepayVarWork>
     {
-        public DvrRepayWork(WorkContext wc) : base(wc)
+        public DvrRepayWork(WorkContext ctx) : base(ctx)
         {
         }
+
         public void @default(ActionContext ac)
         {
             string shopid = ac[1];
@@ -122,15 +123,15 @@ namespace Greatbone.Sample
                 }
             }
         }
-
     }
 
     [Ui("结款管理")]
     public class AdmRepayWork : RepayWork<AdmRepayVarWork>
     {
-        public AdmRepayWork(WorkContext wc) : base(wc)
+        public AdmRepayWork(WorkContext ctx) : base(ctx)
         {
         }
+
         public void @default(ActionContext ac)
         {
             string shopid = ac[1];
@@ -146,6 +147,5 @@ namespace Greatbone.Sample
                 }
             }
         }
-
     }
 }

@@ -1,14 +1,15 @@
-﻿using Greatbone.Core;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Threading.Tasks;
+using Greatbone.Core;
 
 namespace Greatbone.Sample
 {
     ///
-    ///
     public abstract class ItemWork<V> : Work where V : ItemVarWork
     {
-        public ItemWork(WorkContext fc) : base(fc) { }
+        protected ItemWork(WorkContext ctx) : base(ctx)
+        {
+        }
 
         public void @default(ActionContext ac)
         {
@@ -38,7 +39,7 @@ namespace Greatbone.Sample
                 }
                 else
                 {
-                    ac.GiveGridFormPage(200, (List<Item>)null);
+                    ac.GiveGridFormPage(200, (List<Item>) null);
                 }
             }
         }
@@ -125,7 +126,7 @@ namespace Greatbone.Sample
     [Ui("货架")]
     public class OprItemWork : ItemWork<OprItemVarWork>
     {
-        public OprItemWork(WorkContext wc) : base(wc)
+        public OprItemWork(WorkContext ctx) : base(ctx)
         {
         }
     }

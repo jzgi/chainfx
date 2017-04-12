@@ -1,6 +1,6 @@
-using Greatbone.Core;
 using System;
 using System.Collections.Generic;
+using Greatbone.Core;
 
 namespace Greatbone.Sample
 {
@@ -115,32 +115,26 @@ namespace Greatbone.Sample
         public static void GiveFormPane(this ActionContext ac, int status, Action<HtmlContent> form, bool? pub = null, int maxage = 60)
         {
             ac.GivePane(status, m =>
-            {
-                m.FORM_();
-                m.FIELDSET_();
-                form(m);
-                m._FIELDSET();
-                m._FORM();
-            },
-            pub, maxage);
+                {
+                    m.FORM_();
+                    m.FIELDSET_();
+                    form(m);
+                    m._FIELDSET();
+                    m._FORM();
+                },
+                pub, maxage);
         }
 
         public static void GiveFormPane(this ActionContext ac, int status, IData obj, int proj = 0, bool? pub = null, int maxage = 60)
         {
-            ac.GivePane(status, m =>
-            {
-                m.FILLFORM(ac.Doer, obj, proj);
-            },
-            pub, maxage);
+            ac.GivePane(status, m => { m.FILLFORM(ac.Doer, obj, proj); },
+                pub, maxage);
         }
 
         public static void GiveFormPane(this ActionContext ac, int status, IDataInput input, Action<IDataInput, HtmlContent> valve, bool? pub = null, int maxage = 60)
         {
-            ac.GivePane(status, m =>
-            {
-                m.FILLFORM(ac.Doer, input, valve);
-            },
-            pub, maxage);
+            ac.GivePane(status, m => { m.FILLFORM(ac.Doer, input, valve); },
+                pub, maxage);
         }
 
         public static void GiveFrame(this ActionContext ac, int status, bool? pub = null, int maxage = 60)
@@ -164,14 +158,20 @@ namespace Greatbone.Sample
             Roll<Work> subs = work.Subworks;
             h.Add("<ul class=\"tabs\" data-tabs id=\"example-tabs\">");
 
-            h.Add("<li class=\"tabs-title is-active\"><a style=\"padding:0.25rem 0.5rem;\" href=\"#paneltop\">"); h.Add(work.Label); h.Add("</a></li>");
+            h.Add("<li class=\"tabs-title is-active\"><a style=\"padding:0.25rem 0.5rem;\" href=\"#paneltop\">");
+            h.Add(work.Label);
+            h.Add("</a></li>");
 
             if (subs != null)
             {
                 for (int i = 0; i < subs.Count; i++)
                 {
                     Work sub = subs[i];
-                    h.Add("<li class=\"tabs-title primary\"><a style=\"padding:0.25rem 0.5rem;\" href=\"#panel"); h.Add(i); h.Add("\">"); h.Add(sub.Label); h.Add("</a></li>");
+                    h.Add("<li class=\"tabs-title primary\"><a style=\"padding:0.25rem 0.5rem;\" href=\"#panel");
+                    h.Add(i);
+                    h.Add("\">");
+                    h.Add(sub.Label);
+                    h.Add("</a></li>");
                 }
             }
             h.Add(" </ul>");
@@ -186,8 +186,12 @@ namespace Greatbone.Sample
                 for (int i = 0; i < subs.Count; i++)
                 {
                     Work sub = subs[i];
-                    h.Add("<div class=\"tabs-panel\" style=\"height: 100%\" id=\"panel"); h.Add(i); h.Add("\">");
-                    h.Add("<iframe id=\""); h.Add(sub.Name); h.Add("/\" style=\"width:100%; height:100%;\"></iframe>");
+                    h.Add("<div class=\"tabs-panel\" style=\"height: 100%\" id=\"panel");
+                    h.Add(i);
+                    h.Add("\">");
+                    h.Add("<iframe id=\"");
+                    h.Add(sub.Name);
+                    h.Add("/\" style=\"width:100%; height:100%;\"></iframe>");
                     h.Add(" </div>");
                 }
             }
@@ -213,11 +217,8 @@ namespace Greatbone.Sample
         public static void GiveGridFormPage<D>(this ActionContext ac, int status, List<D> lst, int proj = 0, bool? pub = null, int maxage = 60) where D : IData
         {
             Work work = ac.Work;
-            ac.GivePage(status, main =>
-            {
-                main.GRIDFORM(ac, lst, proj);
-            },
-            pub, maxage);
+            ac.GivePage(status, main => { main.GRIDFORM(ac, lst, proj); },
+                pub, maxage);
         }
 
         public static void GiveGridFormPage<D>(this ActionContext ac, int status, List<D> lst, Action<HtmlContent, D> putobj, bool? pub = null, int maxage = 60) where D : IData
@@ -228,13 +229,11 @@ namespace Greatbone.Sample
         public static void GiveTableFormPage<D>(this ActionContext ac, int status, List<D> lst, int proj = 0, bool? pub = null, int maxage = 60) where D : IData
         {
             Work work = ac.Work;
-
         }
 
         public static void GiveTableFormPage<D>(this ActionContext ac, int status, List<D> lst, Action<HtmlContent, D> putobj, bool? pub = null, int maxage = 60) where D : IData
         {
             Work work = ac.Work;
         }
-
     }
 }

@@ -21,7 +21,7 @@ namespace Greatbone.Core
         const string _VAR_ = "VAR";
 
         // state-passing
-        readonly WorkContext wc;
+        readonly WorkContext ctx;
 
         readonly TypeInfo typeinfo;
 
@@ -44,11 +44,9 @@ namespace Greatbone.Core
         internal Work varwork;
 
         // to obtain a string key from a data object.
-        Func<IData, string> varkey;
-
-        protected Work(WorkContext wc) : base(wc.Name, null)
+        protected Work(WorkContext ctx) : base(ctx.Name, null)
         {
-            this.wc = wc;
+            this.ctx = ctx;
 
             // gather actions
             actions = new Roll<ActionInfo>(32);
@@ -139,7 +137,7 @@ namespace Greatbone.Core
         ///
         /// Create a variable work.
         ///
-        public W CreateVar<W>(Func<IData, string> key = null, object attachment = null) where W : Work
+        public W CreateVar<W, K>(Func<IData, K> keyer = null, object attachment = null) where W : Work where K : IComparable<K>, IEquatable<K>
         {
             if (Level >= MaxNesting)
             {
@@ -155,6 +153,7 @@ namespace Greatbone.Core
             }
             WorkContext wc = new WorkContext(_VAR_)
             {
+                Keyer = keyer,
                 Attachment = attachment,
                 Parent = this,
                 IsVar = true,
@@ -163,7 +162,6 @@ namespace Greatbone.Core
                 Service = Service
             };
             W work = (W) ci.Invoke(new object[] {wc});
-            varkey = key;
             varwork = work;
             return work;
         }
@@ -180,17 +178,44 @@ namespace Greatbone.Core
 
         public Work Varwork => varwork;
 
-        public Func<IData, string> Varkey => varkey;
+        public string Directory => ctx.Directory;
 
-        public string Directory => wc.Directory;
+        public Work Parent => ctx.Parent;
 
-        public Work Parent => wc.Parent;
+        public bool IsVar => ctx.IsVar;
 
-        public bool IsVar => wc.IsVar;
+        public int Level => ctx.Level;
 
-        public int Level => wc.Level;
+        public override Service Service => ctx.Service;
 
-        public override Service Service => wc.Service;
+        public bool HasKeyer => ctx.Keyer != null;
+
+        public string ObtainVarKey(IData obj)
+        {
+            Delegate keyer = ctx.Keyer;
+            if (keyer is Func<IData, string>)
+            {
+                return ((Func<IData, string>) keyer)(obj);
+            }
+            return null;
+        }
+
+        public void OutputVarKey(IData obj, DynamicContent @out)
+        {
+            Delegate keyer = ctx.Keyer;
+            if (keyer is Func<IData, string>)
+            {
+                @out.Add(((Func<IData, string>) keyer)(obj));
+            }
+            else if (keyer is Func<IData, long>)
+            {
+                @out.Add(((Func<IData, long>) keyer)(obj));
+            }
+            else if (keyer is Func<IData, int>)
+            {
+                @out.Add(((Func<IData, int>) keyer)(obj));
+            }
+        }
 
         internal void Describe(XmlContent cont)
         {
@@ -248,10 +273,10 @@ namespace Greatbone.Core
             }
             if (varwork != null) // if variable-key sub
             {
-                if (key.Length == 0 && varkey != null) // resolve varkey
+                if (key.Length == 0 && varwork.HasKeyer) // resolve varkey
                 {
                     if (ac.Principal == null) throw AuthorizeEx;
-                    if ((key = varkey(ac.Principal)) == null)
+                    if ((key = varwork.ObtainVarKey(ac.Principal)) == null)
                     {
                         if (@goto != null)
                         {

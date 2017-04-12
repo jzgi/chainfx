@@ -4,11 +4,7 @@ namespace Greatbone.Sample
 {
     public abstract class ItemVarWork : Work
     {
-        public ItemVarWork(WorkContext wc) : base(wc)
-        {
-        }
-
-        public void my(ActionContext ac)
+        protected ItemVarWork(WorkContext ctx) : base(ctx)
         {
         }
 
@@ -26,7 +22,6 @@ namespace Greatbone.Sample
                 }
                 else
                 {
-
                 }
             }
         }
@@ -66,7 +61,6 @@ namespace Greatbone.Sample
                 }
                 else
                 {
-
                 }
             }
         }
@@ -74,7 +68,9 @@ namespace Greatbone.Sample
 
     public class PubItemVarWork : ItemVarWork
     {
-        public PubItemVarWork(WorkContext wc) : base(wc) { }
+        public PubItemVarWork(WorkContext ctx) : base(ctx)
+        {
+        }
 
         public void add(ActionContext ac)
         {
@@ -93,8 +89,8 @@ namespace Greatbone.Sample
                         string note = null;
                         ac.GiveFormPane(200, f =>
                         {
-                            f.NUMBER(nameof(qty), qty, label: "数量", min: min, step: step);
-                            f.TEXTAREA(nameof(note), note, label: "附加说明");
+                            f.NUMBER(nameof(qty), qty, label: "鏁伴噺", min: min, step: step);
+                            f.TEXTAREA(nameof(note), note, label: "闄勫姞璇存槑");
                         });
                     }
                     else ac.Give(404); // not found           
@@ -102,14 +98,13 @@ namespace Greatbone.Sample
             }
             else
             {
-
             }
         }
     }
 
     public class OprItemVarWork : ItemVarWork
     {
-        public OprItemVarWork(WorkContext wc) : base(wc)
+        public OprItemVarWork(WorkContext ctx) : base(ctx)
         {
         }
     }

@@ -5,9 +5,9 @@ namespace Greatbone.Sample
 {
     public abstract class UserWork<V> : Work where V : UserVarWork
     {
-        protected UserWork(WorkContext wc) : base(wc)
+        protected UserWork(WorkContext ctx) : base(ctx)
         {
-            CreateVar<V>((obj) => ((User) obj).wx);
+            CreateVar<V, string>((obj) => ((User) obj).wx);
         }
     }
 
@@ -16,14 +16,14 @@ namespace Greatbone.Sample
     /// </summary>
     public class MyUserWork : UserWork<MyUserVarWork>
     {
-        public MyUserWork(WorkContext wc) : base(wc)
+        public MyUserWork(WorkContext ctx) : base(ctx)
         {
         }
     }
 
     public class DvrUserWork : UserWork<DvrUserVarWork>
     {
-        public DvrUserWork(WorkContext wc) : base(wc)
+        public DvrUserWork(WorkContext ctx) : base(ctx)
         {
         }
     }
@@ -35,7 +35,7 @@ namespace Greatbone.Sample
     [Ui("用户管理")]
     public class AdmUserWork : UserWork<AdmUserVarWork>
     {
-        public AdmUserWork(WorkContext wc) : base(wc)
+        public AdmUserWork(WorkContext ctx) : base(ctx)
         {
         }
 

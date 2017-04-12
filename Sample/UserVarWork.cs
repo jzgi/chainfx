@@ -4,7 +4,7 @@ namespace Greatbone.Sample
 {
     public abstract class UserVarWork : Work
     {
-        protected UserVarWork(WorkContext wc) : base(wc)
+        protected UserVarWork(WorkContext ctx) : base(ctx)
         {
         }
 
@@ -39,7 +39,7 @@ namespace Greatbone.Sample
 
     public class MyUserVarWork : UserVarWork
     {
-        public MyUserVarWork(WorkContext wc) : base(wc)
+        public MyUserVarWork(WorkContext ctx) : base(ctx)
         {
             Create<MyCartOrderWork>("cart");
 
@@ -49,7 +49,7 @@ namespace Greatbone.Sample
 
     public class DvrUserVarWork : UserVarWork
     {
-        public DvrUserVarWork(WorkContext wc) : base(wc)
+        public DvrUserVarWork(WorkContext ctx) : base(ctx)
         {
             Create<DvrReadyOrderWork>("ready"); // orders ready to ship
 
@@ -61,7 +61,7 @@ namespace Greatbone.Sample
 
     public class AdmUserVarWork : UserVarWork
     {
-        public AdmUserVarWork(WorkContext wc) : base(wc)
+        public AdmUserVarWork(WorkContext ctx) : base(ctx)
         {
         }
     }

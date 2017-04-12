@@ -1,4 +1,5 @@
-﻿using System.IO;
+﻿using System;
+using System.IO;
 
 namespace Greatbone.Core
 {
@@ -17,6 +18,9 @@ namespace Greatbone.Core
         public Service Service { get; internal set; }
 
         public string Name => name;
+
+        // to obtain a string key from a data object.
+        public Delegate Keyer { get; internal set; }
 
         public object Attachment { get; internal set; }
 

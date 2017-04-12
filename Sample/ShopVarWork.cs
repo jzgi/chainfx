@@ -7,33 +7,8 @@ namespace Greatbone.Sample
     [User]
     public abstract class ShopVarWork : Work
     {
-        public ShopVarWork(WorkContext wc) : base(wc)
+        protected ShopVarWork(WorkContext ctx) : base(ctx)
         {
-        }
-
-
-        ///
-        /// Get shop items
-        ///
-        /// <code>
-        /// GET /-shopid-/items
-        /// </code>
-        ///
-        public void items(ActionContext ac)
-        {
-            string shopid = ac[0];
-
-            using (var dc = Service.NewDbContext())
-            {
-                dc.Sql("SELECT ").columnlst(Shop.Empty)._("FROM items WHERE @shopid = @1 AND NOT disabled");
-                if (dc.Query(p => p.Set(shopid)))
-                {
-                    var items = dc.ToArray<Item>();
-                }
-                else
-                {
-                }
-            }
         }
 
         public void _icon_(ActionContext ac)
@@ -62,9 +37,9 @@ namespace Greatbone.Sample
     /// </summary>
     public class PubShopVarWork : ShopVarWork
     {
-        public PubShopVarWork(WorkContext wc) : base(wc)
+        public PubShopVarWork(WorkContext ctx) : base(ctx)
         {
-            CreateVar<PubItemVarWork>();
+            CreateVar<PubItemVarWork, string>();
         }
 
         public void @default(ActionContext ac)
@@ -89,13 +64,20 @@ namespace Greatbone.Sample
                     ac.GivePage(200, m =>
                     {
                         m.Add("<div class=\"callout clearfix primary\">");
-                        m.Add("<a class=\"float-left\" href=\"../\">"); m.Add(shop.name); m.Add("（切换）</a>");
+                        m.Add("<a class=\"float-left\" href=\"../\">");
+                        m.Add(shop.name);
+                        m.Add("（切换）</a>");
                         m.Add("<a class=\"float-right\" href=\"/my//cart/\">购物车/付款</a>");
                         m.Add("</div>");
 
                         m.Add("<div>");
-                        m.Add("<p>"); m.Add(shop.city); m.Add(shop.addr); m.Add("</p>");
-                        m.Add("<p>"); m.Add(shop.descr); m.Add("</p>");
+                        m.Add("<p>");
+                        m.Add(shop.city);
+                        m.Add(shop.addr);
+                        m.Add("</p>");
+                        m.Add("<p>");
+                        m.Add(shop.descr);
+                        m.Add("</p>");
                         m.Add("</div>");
 
                         // display items
@@ -103,22 +85,30 @@ namespace Greatbone.Sample
                         for (int i = 0; i < items.Count; i++)
                         {
                             Item item = items[i];
-                            m.Add("<form id=\"item"); m.Add(i); m.Add("\">");
+                            m.Add("<form id=\"item");
+                            m.Add(i);
+                            m.Add("\">");
                             m.Add("<div class=\"row\">");
 
-                            m.Add("<div class=\"small-3 columns\"><a href=\"#\"><span></span><img src=\""); m.Add(item.name); m.Add("/_icon_\" alt=\"\" class=\" thumbnail\"></a></div>");
+                            m.Add("<div class=\"small-3 columns\"><a href=\"#\"><span></span><img src=\"");
+                            m.Add(item.name);
+                            m.Add("/_icon_\" alt=\"\" class=\" thumbnail\"></a></div>");
                             m.Add("<div class=\"small-9 columns\">");
-                            m.Add("<p>&yen;"); m.Add(item.price); m.Add("</p>");
-                            m.Add("<p>"); m.Add(item.descr); m.Add("</p>");
+                            m.Add("<p>&yen;");
+                            m.Add(item.price);
+                            m.Add("</p>");
+                            m.Add("<p>");
+                            m.Add(item.descr);
+                            m.Add("</p>");
 
-                            m.Add("<button class=\"button warning\" formaction=\""); m.Add(item.name); m.Add("/add\" onclick=\"return dialog(this,2)\">加入购物车</button>");
+                            m.Add("<button class=\"button warning\" formaction=\"");
+                            m.Add(item.name);
+                            m.Add("/add\" onclick=\"return dialog(this,2)\">加入购物车</button>");
                             m.Add("</div>");
 
                             m.Add("</div>");
                             m.Add("</form>");
                         }
-
-
                     });
                 }
                 else
@@ -131,7 +121,7 @@ namespace Greatbone.Sample
 
     public class OprShopVarWork : ShopVarWork
     {
-        public OprShopVarWork(WorkContext wc) : base(wc)
+        public OprShopVarWork(WorkContext ctx) : base(ctx)
         {
             Create<OprPaidOrderWork>("paid");
 
@@ -154,7 +144,7 @@ namespace Greatbone.Sample
 
     public class AdmShopVarWork : ShopVarWork
     {
-        public AdmShopVarWork(WorkContext wc) : base(wc)
+        public AdmShopVarWork(WorkContext ctx) : base(ctx)
         {
         }
     }
