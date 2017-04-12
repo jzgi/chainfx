@@ -1,35 +1,30 @@
-﻿using Greatbone.Core;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Threading.Tasks;
+using Greatbone.Core;
 
 namespace Greatbone.Sample
 {
     public abstract class OrderWork<V> : Work where V : OrderVarWork
     {
-        public OrderWork(WorkContext ctx) : base(ctx)
+        protected OrderWork(WorkContext wc) : base(wc)
         {
             CreateVar<V>();
         }
-
-        [Ui("标注完成")]
-        public void close(ActionContext ac)
-        {
-        }
-
     }
 
     public abstract class MyOrderWork<V> : OrderWork<V> where V : MyOrderVarWork
     {
-        public MyOrderWork(WorkContext ctx) : base(ctx)
+        protected MyOrderWork(WorkContext wc) : base(wc)
         {
         }
-
     }
 
     [Ui("购物车")]
     public class MyCartOrderWork : MyOrderWork<MyCartOrderVarWork>
     {
-        public MyCartOrderWork(WorkContext ctx) : base(ctx) { }
+        public MyCartOrderWork(WorkContext wc) : base(wc)
+        {
+        }
 
         public void @default(ActionContext ac, int page)
         {
@@ -42,7 +37,7 @@ namespace Greatbone.Sample
                 }
                 else
                 {
-                    ac.GiveGridFormPage(200, (List<Order>)null);
+                    ac.GiveGridFormPage(200, (List<Order>) null);
                 }
             }
         }
@@ -63,7 +58,6 @@ namespace Greatbone.Sample
                 }
                 else
                 {
-
                 }
             }
         }
@@ -72,7 +66,7 @@ namespace Greatbone.Sample
     [Ui("订单")]
     public class MyRealOrderWork : MyOrderWork<MyCartOrderVarWork>
     {
-        public MyRealOrderWork(WorkContext ctx) : base(ctx)
+        public MyRealOrderWork(WorkContext wc) : base(wc)
         {
         }
 
@@ -117,15 +111,14 @@ namespace Greatbone.Sample
 
     public abstract class OprOrderWork<V> : OrderWork<V> where V : OprOrderVarWork
     {
-        public OprOrderWork(WorkContext ctx) : base(ctx)
+        protected OprOrderWork(WorkContext wc) : base(wc)
         {
         }
-
     }
 
     public class OprUnpaidOrderWork : OprOrderWork<OprUnpaidOrderVarWork>
     {
-        public OprUnpaidOrderWork(WorkContext ctx) : base(ctx)
+        public OprUnpaidOrderWork(WorkContext wc) : base(wc)
         {
         }
 
@@ -153,7 +146,7 @@ namespace Greatbone.Sample
     [Ui("已付")]
     public class OprPaidOrderWork : OprOrderWork<OprPaidOrderVarWork>
     {
-        public OprPaidOrderWork(WorkContext ctx) : base(ctx)
+        public OprPaidOrderWork(WorkContext wc) : base(wc)
         {
         }
 
@@ -168,7 +161,7 @@ namespace Greatbone.Sample
                 }
                 else
                 {
-                    ac.GiveGridFormPage(200, (List<Order>)null);
+                    ac.GiveGridFormPage(200, (List<Order>) null);
                 }
             }
         }
@@ -197,7 +190,7 @@ namespace Greatbone.Sample
     [Ui("已锁")]
     public class OprFixedOrderWork : OprOrderWork<OprFixedOrderVarWork>
     {
-        public OprFixedOrderWork(WorkContext ctx) : base(ctx)
+        public OprFixedOrderWork(WorkContext wc) : base(wc)
         {
         }
 
@@ -225,7 +218,7 @@ namespace Greatbone.Sample
     [Ui("已完")]
     public class OprClosedOrderWork : OprOrderWork<OprClosedOrderVarWork>
     {
-        public OprClosedOrderWork(WorkContext ctx) : base(ctx)
+        public OprClosedOrderWork(WorkContext wc) : base(wc)
         {
         }
 
@@ -253,7 +246,7 @@ namespace Greatbone.Sample
     [Ui("已撤")]
     public class OprAbortedOrderWork : OprOrderWork<OprAbortedOrderVarWork>
     {
-        public OprAbortedOrderWork(WorkContext ctx) : base(ctx)
+        public OprAbortedOrderWork(WorkContext wc) : base(wc)
         {
         }
 
@@ -280,13 +273,15 @@ namespace Greatbone.Sample
 
     public abstract class DvrOrderWork<V> : OrderWork<V> where V : DvrOrderVarWork
     {
-        public DvrOrderWork(WorkContext ctx) : base(ctx) { }
-
+        protected DvrOrderWork(WorkContext wc) : base(wc)
+        {
+        }
     }
 
+    [Ui("待派送")]
     public class DvrReadyOrderWork : DvrOrderWork<DvrReadyOrderVarWork>
     {
-        public DvrReadyOrderWork(WorkContext ctx) : base(ctx)
+        public DvrReadyOrderWork(WorkContext wc) : base(wc)
         {
         }
 
@@ -311,9 +306,10 @@ namespace Greatbone.Sample
         }
     }
 
+    [Ui("已派送")]
     public class DvrShippedOrderWork : DvrOrderWork<DvrShippedOrderVarWork>
     {
-        public DvrShippedOrderWork(WorkContext ctx) : base(ctx)
+        public DvrShippedOrderWork(WorkContext wc) : base(wc)
         {
         }
 
@@ -337,6 +333,4 @@ namespace Greatbone.Sample
             }
         }
     }
-
-
 }

@@ -36,7 +36,7 @@ namespace Greatbone.Sample
             TryCreate<ShopService>(
                 new ServiceContext("shop")
                 {
-                    addrs = new[] { "http://localhost:8080" },
+                    addrs = new[] {"http://localhost:8080"},
                     auth = auth,
                     db = pg,
                     cluster = cluster
@@ -47,7 +47,7 @@ namespace Greatbone.Sample
             TryCreate<ChatService>(
                 new ServiceContext("chat")
                 {
-                    addrs = new[] { "http://localhost:8081" },
+                    addrs = new[] {"http://localhost:8081"},
                     auth = auth,
                     db = pg,
                     cluster = cluster

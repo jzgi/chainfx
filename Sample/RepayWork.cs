@@ -4,30 +4,11 @@ using Greatbone.Core;
 
 namespace Greatbone.Sample
 {
-    [Ui("结款管理")]
-    public class RepayWork<V> : Work where V : RepayVarWork
+    public abstract class RepayWork<V> : Work where V : RepayVarWork
     {
-        static readonly Connector WcPay = new Connector("https://api.mch.weixin.qq.com");
-
-        public RepayWork(WorkContext ctx) : base(ctx)
+        protected RepayWork(WorkContext wc) : base(wc)
         {
             CreateVar<V>();
-        }
-
-        public void @default(ActionContext ac)
-        {
-            string shopid = ac[1];
-            using (var dc = ac.NewDbContext())
-            {
-                if (dc.Query("SELECT * FROM repays WHERE shopid = @1 AND status < 4", p => p.Set(shopid)))
-                {
-                    ac.GiveGridFormPage(200, dc.ToList<Repay>());
-                }
-                else
-                {
-                    ac.GiveGridFormPage(200, (List<Repay>)null);
-                }
-            }
         }
 
         public void _cat_(ActionContext ac)
@@ -46,14 +27,29 @@ namespace Greatbone.Sample
                 }); // see other
             }
         }
-
     }
 
     [Ui("结款")]
     public class OprRepayWork : RepayWork<OprRepayVarWork>
     {
-        public OprRepayWork(WorkContext ctx) : base(ctx)
+        public OprRepayWork(WorkContext wc) : base(wc)
         {
+        }
+
+        public void @default(ActionContext ac)
+        {
+            string shopid = ac[1];
+            using (var dc = ac.NewDbContext())
+            {
+                if (dc.Query("SELECT * FROM repays WHERE shopid = @1 AND status < 4", p => p.Set(shopid)))
+                {
+                    ac.GiveGridFormPage(200, dc.ToList<Repay>());
+                }
+                else
+                {
+                    ac.GiveGridFormPage(200, (List<Repay>) null);
+                }
+            }
         }
 
         [Ui("生成结款单")]
@@ -81,26 +77,14 @@ namespace Greatbone.Sample
 
             int id = ac.Query[nameof(id)];
 
-            // <xml>
-            // <mch_appid>wxe062425f740c30d8</mch_appid>
-            // <mchid>10000098</mchid>
-            // <nonce_str>3PG2J4ILTKCH16CQ2502SI8ZNMTM67VS</nonce_str>
-            // <partner_trade_no>100000982014120919616</partner_trade_no>
-            // <openid>ohO4Gt7wVPxIT1A9GjFaMYMiZY1s</openid>
-            // <check_name>OPTION_CHECK</check_name>
-            // <re_user_name>张三</re_user_name>
-            // <amount>100</amount>
-            // <desc>节日快乐!</desc>
-            // <spbill_create_ip>10.2.3.10</spbill_create_ip>
-            // <sign>C97BDBACF37622775366F38B629F45E3</sign>
-            // </xml>
-            XmlContent cont = new XmlContent();
-//            XElem resp = await WcPay.PostAsync<XElem>(null, "/mmpaymkttransfers/promotion/transfers", cont);
 
             using (var dc = ac.NewDbContext())
             {
                 string name;
                 int age;
+
+                await WeiXinUtility.PostTransferAsync();
+
                 dc.Execute("UPDATE items SET enabled = NOT enabled WHERE shopid = @1", p => p.Set(shopid));
                 // ac.SetHeader();
                 ac.GiveFormPane(303, dc, (i, o) =>
@@ -118,11 +102,50 @@ namespace Greatbone.Sample
     }
 
     [Ui("结款管理")]
-    public class AdmRepayWork : RepayWork<AdmRepayVarWork>
+    public class DvrRepayWork : RepayWork<DvrRepayVarWork>
     {
-        public AdmRepayWork(WorkContext ctx) : base(ctx)
+        public DvrRepayWork(WorkContext wc) : base(wc)
         {
         }
+        public void @default(ActionContext ac)
+        {
+            string shopid = ac[1];
+            using (var dc = ac.NewDbContext())
+            {
+                if (dc.Query("SELECT * FROM repays WHERE shopid = @1 AND status < 4", p => p.Set(shopid)))
+                {
+                    ac.GiveGridFormPage(200, dc.ToList<Repay>());
+                }
+                else
+                {
+                    ac.GiveGridFormPage(200, (List<Repay>) null);
+                }
+            }
+        }
+
     }
 
+    [Ui("结款管理")]
+    public class AdmRepayWork : RepayWork<AdmRepayVarWork>
+    {
+        public AdmRepayWork(WorkContext wc) : base(wc)
+        {
+        }
+        public void @default(ActionContext ac)
+        {
+            string shopid = ac[1];
+            using (var dc = ac.NewDbContext())
+            {
+                if (dc.Query("SELECT * FROM repays WHERE shopid = @1 AND status < 4", p => p.Set(shopid)))
+                {
+                    ac.GiveGridFormPage(200, dc.ToList<Repay>());
+                }
+                else
+                {
+                    ac.GiveGridFormPage(200, (List<Repay>) null);
+                }
+            }
+        }
+
+    }
 }

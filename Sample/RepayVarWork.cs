@@ -2,9 +2,9 @@ using Greatbone.Core;
 
 namespace Greatbone.Sample
 {
-    public class RepayVarWork : Work
+    public abstract class RepayVarWork : Work
     {
-        public RepayVarWork(WorkContext fc) : base(fc)
+        protected RepayVarWork(WorkContext fc) : base(fc)
         {
         }
     }
@@ -12,6 +12,13 @@ namespace Greatbone.Sample
     public class OprRepayVarWork : RepayVarWork
     {
         public OprRepayVarWork(WorkContext fc) : base(fc)
+        {
+        }
+    }
+
+    public class DvrRepayVarWork : RepayVarWork
+    {
+        public DvrRepayVarWork(WorkContext fc) : base(fc)
         {
         }
     }

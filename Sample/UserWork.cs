@@ -5,9 +5,9 @@ namespace Greatbone.Sample
 {
     public abstract class UserWork<V> : Work where V : UserVarWork
     {
-        public UserWork(WorkContext ctx) : base(ctx)
+        protected UserWork(WorkContext wc) : base(wc)
         {
-            CreateVar<V>((obj) => ((User)obj).wx);
+            CreateVar<V>((obj) => ((User) obj).wx);
         }
     }
 
@@ -16,9 +16,17 @@ namespace Greatbone.Sample
     /// </summary>
     public class MyUserWork : UserWork<MyUserVarWork>
     {
-        public MyUserWork(WorkContext ctx) : base(ctx) { }
+        public MyUserWork(WorkContext wc) : base(wc)
+        {
+        }
     }
 
+    public class DvrUserWork : UserWork<DvrUserVarWork>
+    {
+        public DvrUserWork(WorkContext wc) : base(wc)
+        {
+        }
+    }
 
 
     /// <summary>
@@ -27,7 +35,9 @@ namespace Greatbone.Sample
     [Ui("用户管理")]
     public class AdmUserWork : UserWork<AdmUserVarWork>
     {
-        public AdmUserWork(WorkContext ctx) : base(ctx) { }
+        public AdmUserWork(WorkContext wc) : base(wc)
+        {
+        }
 
         public void @default(ActionContext ac)
         {
@@ -57,10 +67,7 @@ namespace Greatbone.Sample
             if (ac.GET)
             {
                 string id = null;
-                ac.GiveFormPane(200, f =>
-                {
-                    f.TEXT(nameof(id), id, label: "用户编号", max: 11, min: 11);
-                });
+                ac.GiveFormPane(200, f => { f.TEXT(nameof(id), id, label: "用户编号", max: 11, min: 11); });
             }
             else
             {

@@ -1,8 +1,8 @@
-﻿using Greatbone.Core;
-using System;
+﻿using System;
 using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
+using Greatbone.Core;
 using static Greatbone.Sample.WeiXinUtility;
 
 namespace Greatbone.Sample
@@ -16,13 +16,15 @@ namespace Greatbone.Sample
 
         public ShopService(ServiceContext sc) : base(sc)
         {
-            Create<PubShopWork>("pub");
+            Create<PubShopWork>("pub"); // public access
 
-            Create<MyUserWork>("my");
+            Create<MyUserWork>("my"); // my personal
 
-            Create<OprShopWork>("opr");
+            Create<OprShopWork>("opr"); // operator of shop
 
-            Create<AdmWork>("adm");
+            Create<DvrUserWork>("dvr"); // deliverer
+
+            Create<AdmWork>("adm"); // administrator of the system
 
             // timer obtaining access_token from weixin
             // timer = new Timer(async state =>
@@ -101,8 +103,7 @@ namespace Greatbone.Sample
                 string orig = Encoding.ASCII.GetString(bytes);
                 int colon = orig.IndexOf(':');
                 string id = orig.Substring(0, colon);
-                string password = orig.Substring(colon + 1);
-                string md5 = StrUtility.MD5(orig);
+                string credential = StrUtility.MD5(orig);
                 using (var dc = NewDbContext())
                 {
                     if (dc.Query1("SELECT * FROM users WHERE tel = @1", (p) => p.Set(id)))
@@ -111,7 +112,7 @@ namespace Greatbone.Sample
                     }
                 }
                 // validate
-                if (prin == null || !md5.Equals(prin.credential))
+                if (prin == null || !credential.Equals(prin.credential))
                 {
                     return false;
                 }

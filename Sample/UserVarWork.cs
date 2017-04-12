@@ -1,18 +1,16 @@
-﻿using System.Collections.Generic;
-using Greatbone.Core;
+﻿using Greatbone.Core;
 
 namespace Greatbone.Sample
 {
     public abstract class UserVarWork : Work
     {
-        public UserVarWork(WorkContext fc) : base(fc)
+        protected UserVarWork(WorkContext wc) : base(wc)
         {
         }
 
-
-        [Ui]
-        public void cancel(ActionContext ac)
+        public void @default(ActionContext ac)
         {
+            ac.GiveFrame(200);
         }
 
         [Ui("基本资料", UiMode.AnchorDialog)]
@@ -34,30 +32,36 @@ namespace Greatbone.Sample
         }
 
         [Ui("设置密码", UiMode.AnchorDialog)]
-        public void pass(ActionContext ac)
+        public void pwd(ActionContext ac)
         {
         }
     }
 
-    [Ui("用户")]
     public class MyUserVarWork : UserVarWork
     {
-        public MyUserVarWork(WorkContext fc) : base(fc)
+        public MyUserVarWork(WorkContext wc) : base(wc)
         {
             Create<MyCartOrderWork>("cart");
 
-            Create<MyRealOrderWork>("rest");
+            Create<MyRealOrderWork>("real");
         }
+    }
 
-        public void @default(ActionContext ac)
+    public class DvrUserVarWork : UserVarWork
+    {
+        public DvrUserVarWork(WorkContext wc) : base(wc)
         {
-            ac.GiveFrame(200);
+            Create<DvrReadyOrderWork>("ready"); // orders ready to ship
+
+            Create<DvrShippedOrderWork>("shipped"); // orders shipped
+
+            Create<DvrRepayWork>("repay"); // deliverer repay management
         }
     }
 
     public class AdmUserVarWork : UserVarWork
     {
-        public AdmUserVarWork(WorkContext fc) : base(fc)
+        public AdmUserVarWork(WorkContext wc) : base(wc)
         {
         }
     }

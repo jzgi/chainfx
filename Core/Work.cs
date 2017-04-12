@@ -21,7 +21,7 @@ namespace Greatbone.Core
         const string _VAR_ = "VAR";
 
         // state-passing
-        readonly WorkContext ctx;
+        readonly WorkContext wc;
 
         readonly TypeInfo typeinfo;
 
@@ -46,9 +46,9 @@ namespace Greatbone.Core
         // to obtain a string key from a data object.
         Func<IData, string> varkey;
 
-        protected Work(WorkContext ctx) : base(ctx.Name, null)
+        protected Work(WorkContext wc) : base(wc.Name, null)
         {
-            this.ctx = ctx;
+            this.wc = wc;
 
             // gather actions
             actions = new Roll<ActionInfo>(32);
@@ -182,15 +182,15 @@ namespace Greatbone.Core
 
         public Func<IData, string> Varkey => varkey;
 
-        public string Directory => ctx.Directory;
+        public string Directory => wc.Directory;
 
-        public Work Parent => ctx.Parent;
+        public Work Parent => wc.Parent;
 
-        public bool IsVar => ctx.IsVar;
+        public bool IsVar => wc.IsVar;
 
-        public int Level => ctx.Level;
+        public int Level => wc.Level;
 
-        public override Service Service => ctx.Service;
+        public override Service Service => wc.Service;
 
         internal void Describe(XmlContent cont)
         {
