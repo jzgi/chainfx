@@ -93,12 +93,20 @@ namespace Greatbone.Core
 
         public FormContent Put(string name, IDataInput v)
         {
-            throw new NotImplementedException();
+            return this;
         }
 
         public FormContent PutRaw(string name, string raw)
         {
-            throw new NotImplementedException();
+            return this;
+        }
+
+        public void Begin(string label)
+        {
+        }
+
+        public void End()
+        {
         }
 
         public FormContent Put(string name, bool v, Func<bool, string> Opt = null, string Label = null, bool Required = false)

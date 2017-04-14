@@ -29,6 +29,9 @@ namespace Greatbone.Core
 
             internal int ordinal;
 
+            // begun of a group
+            internal string begin;
+
             internal Work work;
         }
 
@@ -1089,6 +1092,16 @@ namespace Greatbone.Core
         {
             chain[level].ordinal++;
             return this;
+        }
+
+        public void Begin(string label)
+        {
+            chain[level].begin = label;
+        }
+
+        public void End()
+        {
+            chain[level].begin = null;
         }
 
         public HtmlContent Put(string name, bool v, Func<bool, string> opt = null, string label = null, bool required = false)

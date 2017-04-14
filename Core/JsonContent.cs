@@ -96,6 +96,28 @@ namespace Greatbone.Core
         // SINK
         //
 
+        public JsonContent PutRaw(string name, string raw)
+        {
+            if (counts[level]++ > 0) Add(',');
+            if (name != null)
+            {
+                Add('"');
+                Add(name);
+                Add('"');
+                Add(':');
+            }
+            Add(raw ?? "null");
+            return this;
+        }
+
+        public void Begin(string label)
+        {
+        }
+
+        public void End()
+        {
+        }
+
         public JsonContent PutNull(string name)
         {
             if (counts[level]++ > 0) Add(',');
@@ -179,20 +201,6 @@ namespace Greatbone.Core
 
                 level--; // exit
             }
-            return this;
-        }
-
-        public JsonContent PutRaw(string name, string raw)
-        {
-            if (counts[level]++ > 0) Add(',');
-            if (name != null)
-            {
-                Add('"');
-                Add(name);
-                Add('"');
-                Add(':');
-            }
-            Add(raw ?? "null");
             return this;
         }
 

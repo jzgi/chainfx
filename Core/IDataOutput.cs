@@ -16,6 +16,10 @@ namespace Greatbone.Core
 
         R PutRaw(string name, string raw);
 
+        void Begin(string label);
+
+        void End();
+
         R Put(string name, bool v, Func<bool, string> opt = null, string label = null, bool required = false);
 
         R Put(string name, short v, Opt<short> opt = null, string label = null, string help = null, short max = 0, short min = 0, short step = 0, bool @readonly = false, bool required = false);

@@ -163,6 +163,14 @@ namespace Greatbone.Core
             return this;
         }
 
+        public void Begin(string label)
+        {
+        }
+
+        public void End()
+        {
+        }
+
         public XmlContent Put(string name, bool v, Func<bool, string> Opt = null, string Label = null, bool Required = false)
         {
             Add(' ');

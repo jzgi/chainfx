@@ -145,12 +145,20 @@ namespace Greatbone.Core
 
         public DbSql Put(string name, IDataInput v)
         {
-            throw new NotImplementedException();
+            return this;
         }
 
         public DbSql PutRaw(string name, string raw)
         {
-            throw new NotImplementedException();
+            return this;
+        }
+
+        public void Begin(string label)
+        {
+        }
+
+        public void End()
+        {
         }
 
         public DbSql Put(string name, bool v, Func<bool, string> Options = null, string Label = null, bool Required = false)
