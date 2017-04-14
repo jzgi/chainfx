@@ -49,19 +49,6 @@ namespace Greatbone.Sample
 
     }
 
-    [Ui("设置")]
-    public class DvrUserVarWork : UserVarWork
-    {
-        public DvrUserVarWork(WorkContext wc) : base(wc)
-        {
-            Create<DvrReadyOrderWork>("ready"); // orders ready to ship
-
-            Create<DvrShippedOrderWork>("shipped"); // orders shipped
-
-            Create<DvrRepayWork>("repay"); // deliverer repay management
-        }
-    }
-
     public class AdmUserVarWork : UserVarWork
     {
         public AdmUserVarWork(WorkContext wc) : base(wc)

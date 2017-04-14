@@ -21,14 +21,6 @@ namespace Greatbone.Sample
         }
     }
 
-    public class DvrUserWork : UserWork<DvrUserVarWork>
-    {
-        public DvrUserWork(WorkContext wc) : base(wc)
-        {
-        }
-    }
-
-
     /// <summary>
     /// 
     /// </summary>

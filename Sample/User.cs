@@ -8,39 +8,55 @@ namespace Greatbone.Sample
     ///
     public class User : IData
     {
+        public const short MGR = 1, DVR = 2;
+
         public static readonly User Empty = new User();
 
-        // admin types
-        static readonly Opt<short> ADMIN = new Opt<short>
+        // operator
+        static readonly Opt<short> OPR = new Opt<short>
         {
             [0] = null,
-            [2] = "本地管理员",
-            [2] = "统一管理员",
+            [MGR] = "经理",
+            [DVR] = "派送员",
+            [MGR | DVR] = "经理兼派送员"
         };
 
-        internal string wx; // openid
-        internal string nickname; // weixin nickname
-        internal string name; // user name
-        internal string tel;
-        internal string password;
-        internal string credential;
-        internal string city; // 
-        internal string addr;
-        internal DateTime created;
-        internal string shopid; // bound shop id
-        internal short admin; // admin
+        // administrator
+        static readonly Opt<short> ADM = new Opt<short>
+        {
+            [0] = null,
+            [1] = "本地监管员",
+            [2] = "系统监管员",
+        };
 
         internal bool stored; // whether recorded in db
 
+        internal string wx; // openid
+        internal string name;
+        internal string password;
+        internal string credential;
+        internal string tel;
+        internal string city; //
+        internal string distr;
+        internal string addr;
+        internal DateTime created;
+        internal short opr;
+        internal string oprshopid; // bound shop id
+        internal short adm;
+        internal string admcity;
+
         public void ReadData(IDataInput i, int proj = 0)
         {
+            if (proj.Ctrl())
+            {
+                i.Get(nameof(stored), ref stored);
+            }
+
             if (proj.Prime())
             {
                 i.Get(nameof(wx), ref wx);
             }
-            i.Get(nameof(nickname), ref nickname);
             i.Get(nameof(name), ref name);
-            i.Get(nameof(tel), ref tel);
             if (proj.Secret())
             {
                 i.Get(nameof(password), ref password);
@@ -49,29 +65,32 @@ namespace Greatbone.Sample
             {
                 i.Get(nameof(credential), ref credential);
             }
+            i.Get(nameof(tel), ref tel);
             i.Get(nameof(city), ref city);
+            i.Get(nameof(distr), ref distr);
             i.Get(nameof(addr), ref addr);
             i.Get(nameof(created), ref created);
             if (proj.Late())
             {
-                i.Get(nameof(shopid), ref shopid);
-                i.Get(nameof(admin), ref admin);
-            }
-            if (proj.Ctrl())
-            {
-                i.Get(nameof(stored), ref stored);
+                i.Get(nameof(opr), ref opr);
+                i.Get(nameof(oprshopid), ref oprshopid);
+                i.Get(nameof(adm), ref adm);
+                i.Get(nameof(admcity), ref admcity);
             }
         }
 
         public void WriteData<R>(IDataOutput<R> o, int proj = 0) where R : IDataOutput<R>
         {
+            if (proj.Ctrl())
+            {
+                o.Put(nameof(stored), stored);
+            }
+
             if (proj.Prime())
             {
                 o.Put(nameof(wx), wx, label: "编号");
             }
-            o.Put(nameof(nickname), nickname, label: "昵称");
-            o.Put(nameof(name), name, label: "姓名");
-            o.Put(nameof(tel), tel, label: "电话");
+            o.Put(nameof(name), name, label: "名称");
             if (proj.Secret())
             {
                 o.Put(nameof(password), password, label: "密码");
@@ -80,20 +99,20 @@ namespace Greatbone.Sample
             {
                 o.Put(nameof(credential), credential);
             }
-            o.Put(nameof(city), city);
-            o.Put(nameof(addr), addr);
+            o.Put(nameof(tel), tel, label: "电话");
+            o.Put(nameof(city), city, label: "城市");
+            o.Put(nameof(distr), distr, label: "区县");
+            o.Put(nameof(addr), addr, label: "地址");
             o.Put(nameof(created), created);
             if (proj.Late())
             {
-                o.Put(nameof(shopid), shopid, label: "供应点");
-                o.Put(nameof(admin), admin, label: "管理员");
-            }
-            if (proj.Ctrl())
-            {
-                o.Put(nameof(stored), stored);
+                o.Put(nameof(opr), opr, label: "操作员");
+                o.Put(nameof(oprshopid), oprshopid, label: "操作供应点");
+                o.Put(nameof(adm), adm, label: "监管员");
+                o.Put(nameof(admcity), admcity, label: "监管城市");
             }
         }
 
-        public bool IsShop => shopid != null;
+        public bool IsShop => oprshopid != null;
     }
 }

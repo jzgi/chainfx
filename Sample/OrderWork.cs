@@ -187,10 +187,38 @@ namespace Greatbone.Sample
         }
     }
 
-    [Ui("已锁")]
-    public class OprFixedOrderWork : OprOrderWork<OprFixedOrderVarWork>
+    [Ui("已备")]
+    public class OprPackedOrderWork : OprOrderWork<OprPackedOrderVarWork>
     {
-        public OprFixedOrderWork(WorkContext wc) : base(wc)
+        public OprPackedOrderWork(WorkContext wc) : base(wc)
+        {
+        }
+
+        [Ui("锁定/处理")]
+        public async Task @lock(ActionContext ac)
+        {
+            string shopid = ac[0];
+            Form frm = await ac.ReadAsync<Form>();
+            int[] pk = frm[nameof(pk)];
+
+            using (var dc = ac.NewDbContext())
+            {
+                dc.Sql("UPDATE orders SET ").setstate()._(" WHERE id = @1 AND shopid = @2 AND ").statecond();
+                if (dc.Query(p => p.Set(pk).Set(shopid)))
+                {
+                    var order = dc.ToArray<Order>();
+                }
+                else
+                {
+                }
+            }
+        }
+    }
+
+    [Ui("在派")]
+    public class OprShippedOrderWork : OprOrderWork<OprShippedOrderVarWork>
+    {
+        public OprShippedOrderWork(WorkContext wc) : base(wc)
         {
         }
 
@@ -216,9 +244,9 @@ namespace Greatbone.Sample
     }
 
     [Ui("已完")]
-    public class OprClosedOrderWork : OprOrderWork<OprClosedOrderVarWork>
+    public class OprCompletedOrderWork : OprOrderWork<OprClosedOrderVarWork>
     {
-        public OprClosedOrderWork(WorkContext wc) : base(wc)
+        public OprCompletedOrderWork(WorkContext wc) : base(wc)
         {
         }
     }
@@ -228,68 +256,6 @@ namespace Greatbone.Sample
     {
         public OprAbortedOrderWork(WorkContext wc) : base(wc)
         {
-        }
-    }
-
-    public abstract class DvrOrderWork<V> : OrderWork<V> where V : DvrOrderVarWork
-    {
-        protected DvrOrderWork(WorkContext wc) : base(wc)
-        {
-        }
-    }
-
-    [Ui("待派送")]
-    public class DvrReadyOrderWork : DvrOrderWork<DvrReadyOrderVarWork>
-    {
-        public DvrReadyOrderWork(WorkContext wc) : base(wc)
-        {
-        }
-
-        public async Task @default(ActionContext ac)
-        {
-            string shopid = ac[0];
-            Form frm = await ac.ReadAsync<Form>();
-            int[] pk = frm[nameof(pk)];
-
-            using (var dc = ac.NewDbContext())
-            {
-                dc.Sql("UPDATE orders SET ").setstate()._(" WHERE id = @1 AND shopid = @2 AND ").statecond();
-                if (dc.Query(p => p.Set(pk).Set(shopid)))
-                {
-                    var order = dc.ToArray<Order>();
-                }
-                else
-                {
-                }
-            }
-        }
-    }
-
-    [Ui("已派送")]
-    public class DvrShippedOrderWork : DvrOrderWork<DvrShippedOrderVarWork>
-    {
-        public DvrShippedOrderWork(WorkContext wc) : base(wc)
-        {
-        }
-
-        [Ui("锁定/处理")]
-        public async Task @lock(ActionContext ac)
-        {
-            string shopid = ac[0];
-            Form frm = await ac.ReadAsync<Form>();
-            int[] pk = frm[nameof(pk)];
-
-            using (var dc = ac.NewDbContext())
-            {
-                dc.Sql("UPDATE orders SET ").setstate()._(" WHERE id = @1 AND shopid = @2 AND ").statecond();
-                if (dc.Query(p => p.Set(pk).Set(shopid)))
-                {
-                    var order = dc.ToArray<Order>();
-                }
-                else
-                {
-                }
-            }
         }
     }
 }

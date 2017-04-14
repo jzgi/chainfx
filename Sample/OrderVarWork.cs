@@ -174,9 +174,16 @@ namespace Greatbone.Sample
         }
     }
 
-    public class OprFixedOrderVarWork : OprOrderVarWork
+    public class OprPackedOrderVarWork : OprOrderVarWork
     {
-        public OprFixedOrderVarWork(WorkContext wc) : base(wc)
+        public OprPackedOrderVarWork(WorkContext wc) : base(wc)
+        {
+        }
+    }
+
+    public class OprShippedOrderVarWork : OprOrderVarWork
+    {
+        public OprShippedOrderVarWork(WorkContext wc) : base(wc)
         {
         }
     }
@@ -191,27 +198,6 @@ namespace Greatbone.Sample
     public class OprAbortedOrderVarWork : OprOrderVarWork
     {
         public OprAbortedOrderVarWork(WorkContext wc) : base(wc)
-        {
-        }
-    }
-
-    public abstract class DvrOrderVarWork : OrderVarWork
-    {
-        protected DvrOrderVarWork(WorkContext wc) : base(wc)
-        {
-        }
-    }
-
-    public class DvrReadyOrderVarWork : DvrOrderVarWork
-    {
-        public DvrReadyOrderVarWork(WorkContext wc) : base(wc)
-        {
-        }
-    }
-
-    public class DvrShippedOrderVarWork : DvrOrderVarWork
-    {
-        public DvrShippedOrderVarWork(WorkContext wc) : base(wc)
         {
         }
     }

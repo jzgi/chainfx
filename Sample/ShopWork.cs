@@ -173,7 +173,7 @@ namespace Greatbone.Sample
     {
         public OprShopWork(WorkContext wc) : base(wc)
         {
-            CreateVar<OprShopVarWork, string>((prin) => ((User) prin).shopid);
+            CreateVar<OprShopVarWork, string>((prin) => ((User) prin).oprshopid);
         }
 
         public async Task @goto(ActionContext ac)
@@ -205,7 +205,7 @@ namespace Greatbone.Sample
                     if (credential.EqualsCredential(shopid, password))
                     {
                         dc.Execute("UPDATE users SET shopid = @1 WHERE wx = @2", p => p.Set(shopid).Set(prin.wx));
-                        prin.shopid = shopid;
+                        prin.oprshopid = shopid;
                         ac.SetTokenCookie(prin);
                     }
                 }

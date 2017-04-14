@@ -126,11 +126,13 @@ namespace Greatbone.Sample
         {
             Create<OprPaidOrderWork>("paid");
 
-            Create<OprFixedOrderWork>("fixed");
+            Create<OprPackedOrderWork>("packed");
 
-            Create<OprClosedOrderWork>("closed");
+            Create<OprShippedOrderWork>("shipped");
 
             Create<OprAbortedOrderWork>("aborted");
+
+            Create<OprCompletedOrderWork>("completed");
 
             Create<OprItemWork>("item");
 

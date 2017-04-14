@@ -22,8 +22,6 @@ namespace Greatbone.Sample
 
             Create<OprShopWork>("opr"); // operator of shop
 
-            Create<DvrUserWork>("dvr"); // deliverer
-
             Create<AdmWork>("adm"); // administrator of the system
 
             // timer obtaining access_token from weixin

@@ -4,21 +4,23 @@ namespace Greatbone.Sample
 {
     public class UserAttribute : AuthorizeAttribute
     {
-        bool opr;
+        readonly short opr;
 
-        short adm;
+        readonly short adm;
 
-        public UserAttribute() : this(false, 0) { }
+        public UserAttribute() : this(0, 0)
+        {
+        }
 
-        public UserAttribute(bool opr, short adm)
+        public UserAttribute(short opr, short adm)
         {
             this.opr = opr;
             this.adm = adm;
         }
 
-        public bool IsOpr => opr;
+        public bool IsOpr => opr > 0;
 
-        public short IsAdm => adm;
+        public bool IsAdm => adm > 0;
 
         public override bool Check(ActionContext ac)
         {
@@ -26,14 +28,21 @@ namespace Greatbone.Sample
 
             if (prin == null) return false;
 
-            if (opr && prin.shopid == null)
+            if (opr != 0)
             {
-                return false;
+                if ((prin.opr & opr) == 0 || prin.oprshopid == null)
+                {
+                    return false;
+                }
+                string shopid = ac[typeof(ShopVarWork)];
+                return shopid == prin.oprshopid;
             }
-
-            if (adm != 0 && adm > prin.admin)
+            if (adm != 0)
             {
-                return false;
+                if ((prin.adm & adm) == 0)
+                {
+                    return false;
+                }
             }
             return true;
         }

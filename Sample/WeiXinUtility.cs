@@ -87,7 +87,7 @@ namespace Greatbone.Sample
             JObj jo = await WeiXin.GetAsync<JObj>(null, "/sns/userinfo?access_token=" + access_token + "&openid=" + openid + "&lang=zh_CN");
             string nickname = jo[nameof(nickname)];
             string city = jo[nameof(city)];
-            return new User {wx = openid, nickname = nickname, city = city};
+            return new User {wx = openid, distr = nickname, city = city};
         }
 
         public static IContent MakePrepayContent(string prepay_id)
