@@ -23,11 +23,9 @@ namespace Greatbone.Sample
         internal string descr;
         internal ArraySegment<byte> icon;
         internal string unit;
-        internal decimal oprice; // original price
         internal decimal price; // current price
         internal int min; // minimal ordered
         internal int step;
-        internal int sold; // total sold 
         internal short status;
 
         public void ReadData(IDataInput i, int proj = 0)
@@ -43,15 +41,10 @@ namespace Greatbone.Sample
             {
                 i.Get(nameof(icon), ref icon);
             }
-            i.Get(nameof(oprice), ref oprice);
             i.Get(nameof(price), ref price);
             i.Get(nameof(min), ref min);
             i.Get(nameof(step), ref step);
             i.Get(nameof(status), ref status);
-            if (proj.Immut())
-            {
-                i.Get(nameof(sold), ref sold);
-            }
         }
 
         public void WriteData<R>(IDataOutput<R> o, int proj = 0) where R : IDataOutput<R>
@@ -67,15 +60,10 @@ namespace Greatbone.Sample
             {
                 o.Put(nameof(icon), icon, label: "图片", size: "240,240", ratio: "1:1", required: true);
             }
-            o.Put(nameof(oprice), oprice);
             o.Put(nameof(price), price, required: true);
             o.Put(nameof(min), min);
             o.Put(nameof(step), step);
             o.Put(nameof(status), status, label: "状态", opt: STATUS);
-            if (proj.Immut())
-            {
-                o.Put(nameof(sold), sold);
-            }
         }
     }
 }
