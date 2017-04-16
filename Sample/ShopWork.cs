@@ -114,7 +114,7 @@ namespace Greatbone.Sample
                 }
                 using (var dc = Service.NewDbContext())
                 {
-                    if (dc.Query("SELECT * FROM shops WHERE ((scope = 0 AND city = @1) OR scope = 1) AND enabled", p => p.Set(city)))
+                    if (dc.Query("SELECT * FROM shops WHERE ((NOT global AND city = @1) OR global) AND status > 0", p => p.Set(city)))
                     {
                         ac.GivePage(200,
                             m =>

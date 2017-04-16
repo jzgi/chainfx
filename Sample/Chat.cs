@@ -1,3 +1,4 @@
+using System;
 using System.Collections.Generic;
 using System.Threading;
 using System.Threading.Tasks;
@@ -12,7 +13,7 @@ namespace Greatbone.Sample
     {
         internal string userwx; // openid of the owner
 
-        internal List<Message> messages;
+        internal List<ChatMsg> msgs;
 
         internal int status;
 
@@ -20,12 +21,12 @@ namespace Greatbone.Sample
 
         volatile TaskCompletionSource<bool> tcs;
 
-        internal async Task<Message[]> GetAsync(bool wait = false)
+        internal async Task<ChatMsg[]> GetAsync(bool wait = false)
         {
             await lck.WaitAsync();
             try
             {
-                if (messages == null || messages.Count == 0)
+                if (msgs == null || msgs.Count == 0)
                 {
                     if (wait)
                     {
@@ -35,8 +36,8 @@ namespace Greatbone.Sample
                     return null;
                 }
 
-                Message[] ret = messages.ToArray();
-                messages.Clear();
+                ChatMsg[] ret = msgs.ToArray();
+                msgs.Clear();
                 return ret;
             }
             finally
@@ -45,16 +46,16 @@ namespace Greatbone.Sample
             }
         }
 
-        internal async Task Put(Message msg)
+        internal async Task Put(ChatMsg msg)
         {
             await lck.WaitAsync();
             try
             {
-                if (messages == null)
+                if (msgs == null)
                 {
-                    messages = new List<Message>(8);
+                    msgs = new List<ChatMsg>(8);
                 }
-                messages.Add(msg);
+                msgs.Add(msg);
 
                 if (tcs != null)
                 {
@@ -72,15 +73,47 @@ namespace Greatbone.Sample
         public void ReadData(IDataInput i, int proj = 0)
         {
             i.Get(nameof(userwx), ref userwx);
-            i.Get(nameof(messages), ref messages);
+            i.Get(nameof(msgs), ref msgs);
             i.Get(nameof(status), ref status);
         }
 
         public void WriteData<R>(IDataOutput<R> o, int proj = 0) where R : IDataOutput<R>
         {
             o.Put(nameof(userwx), userwx);
-            o.Put(nameof(messages), messages);
+            o.Put(nameof(msgs), msgs);
             o.Put(nameof(status), status);
+        }
+    }
+
+
+    public struct ChatMsg : IData
+    {
+        internal string fromid;
+
+        internal string from;
+
+        internal short type;
+
+        internal string text;
+
+        internal DateTime time;
+
+        public void ReadData(IDataInput i, int proj = 0)
+        {
+            i.Get(nameof(fromid), ref fromid);
+            i.Get(nameof(from), ref from);
+            i.Get(nameof(type), ref type);
+            i.Get(nameof(text), ref text);
+            i.Get(nameof(time), ref time);
+        }
+
+        public void WriteData<R>(IDataOutput<R> o, int proj = 0) where R : IDataOutput<R>
+        {
+            o.Put(nameof(fromid), fromid);
+            o.Put(nameof(@from), @from);
+            o.Put(nameof(type), type);
+            o.Put(nameof(text), text);
+            o.Put(nameof(time), time);
         }
     }
 }

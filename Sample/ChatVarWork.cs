@@ -63,7 +63,7 @@ namespace Greatbone.Sample
             else // post message(s) to inbox
             {
                 var txt = await ac.ReadAsync<Str>();
-                Message msg = new Message()
+                ChatMsg msg = new ChatMsg()
                 {
                     fromid = tok.wx,
                     from = tok.name,

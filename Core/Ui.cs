@@ -9,16 +9,17 @@ namespace Greatbone.Core
 
         LinkDialog = 0x12,
 
-        Button = 0x20,
+        AnchorDialog = 0x22,
 
-        ButtonConfirm = 0x21,
+        AnchorScript = 0x24,
 
-        ButtonDialog = 0x22,
+        Button = 0x40,
 
-        AnchorDialog = 0x42,
+        ButtonConfirm = 0x41,
 
-        AnchorScript = 0x44,
+        ButtonDialog = 0x42,
 
+        ButtonScript = 0x44,
     }
 
     /// 
@@ -49,9 +50,9 @@ namespace Greatbone.Core
 
         public bool IsLink => ((int)mode & 0x10) == 0x10;
 
-        public bool IsButton => ((int)mode & 0x20) == 0x20;
+        public bool IsAnchor => ((int)mode & 0x20) == 0x20;
 
-        public bool IsAnchor => ((int)mode & 0x40) == 0x40;
+        public bool IsButton => ((int)mode & 0x40) == 0x40;
 
         public bool HasConfirm => ((int)mode & 0x01) == 0x01;
 

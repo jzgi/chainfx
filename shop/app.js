@@ -1,10 +1,10 @@
 
 // build and open a reveal dialog
 // trig - a button, input_button or anchor element
-// mode - STANDARD, PROMPT or PICKER
+// mode - link, anchor, button, input
 function dialog(trig, mode, siz) {
 
-    var sizg = siz == 1 ? 'tiny' : mode == 2 ? 'small' : 'large';
+    var sizg = siz == 1 ? 'small' : siz == 2 ? 'large' : 'full';
 
     // keep the trigger info
     var formid = trig.form ? trig.form.id : '';
@@ -21,11 +21,11 @@ function dialog(trig, mode, siz) {
 
     var src = action.split("?")[0] + '?dlg=true';
 
-    var html = '<div style="background-color: gainsboro" id="dynadlg" class="' + sizg + ' reveal"  data-reveal data-close-on-click="false">'
-        + '<h3>' + trig.innerHTML + ' </h3>'
+    var html = '<div id="dynadlg" class="' + sizg + ' reveal"  data-reveal data-close-on-click="false">'
+        + '<strong>' + trig.innerHTML + ' </strong>'
         + '<button class="close-button" type="button" onclick="destory(this);">&times;</button>'
-        + '<div style="height: calc(100% - 5em)"><iframe src="' + src + '" style="width: 100%; height: 100%"></iframe></div>'
-        + '<button class=\"button success float-center\" onclick="ok(this,' + mode + ',\'' + formid + '\',\'' + tag + '\',\'' + action + '\',\'' + method + '\');" disabled>确定</botton>'
+        + '<div style="height: calc(100% - 3rem)"><iframe src="' + src + '" style="width: 100%; height: 100%"></iframe></div>'
+        + '<button class=\"button primary float-center\" onclick="ok(this,' + mode + ',\'' + formid + '\',\'' + tag + '\',\'' + action + '\',\'' + method + '\');" disabled>确定</botton>'
         + '</div>';
 
     var dive = $(html);
@@ -47,7 +47,18 @@ function ok(okbtn, mode, formid, tag, action, method) {
 
     var dlge = $('#dynadlg');
 
-    if (mode == 1) { // standard mode
+    if (mode == 1) { // link mode
+        var iframe = dlge.find('iframe');
+        var form = iframe.contents().find('form');
+        if (form.length != 0) {
+            if (!form[0].reportValidity()) return;
+            var qstr = $(form[0]).serialize();
+            if (qstr) {
+                location.href = action.split("?")[0] + '?' + qstr;
+            }
+            return;
+        }
+    } else if (mode == 2) { // anchor mode
         var iframe = dlge.find('iframe');
         var form = iframe.contents().find('form');
         if (form.length != 0) {
@@ -57,38 +68,25 @@ function ok(okbtn, mode, formid, tag, action, method) {
             location.reload();
             return;
         }
-    } else if (mode == 2) { // prompt mode, merge to the parent and submit
-        if (tag == 'A') {
-            var iframe = dlge.find('iframe');
-            var form = iframe.contents().find('form');
-            if (form.length != 0) {
-                if (!form[0].reportValidity()) return;
+    } else if (mode == 4) { // button mode, merge to the parent and submit
+        var iframe = dlge.find('iframe');
+        var form = iframe.contents().find('form');
+        if (form.length != 0) {
+            if (!form[0].reportValidity()) return;
+            if (method == 'GET') {
                 var qstr = $(form[0]).serialize();
                 if (qstr) {
                     location.href = action.split("?")[0] + '?' + qstr;
                 }
-                return;
-            }
-        } else if (tag == 'BUTTON') {
-            var iframe = dlge.find('iframe');
-            var form = iframe.contents().find('form');
-            if (form.length != 0) {
-                if (!form[0].reportValidity()) return;
-                if (method == 'GET') {
-                    var qstr = $(form[0]).serialize();
-                    if (qstr) {
-                        location.href = action.split("?")[0] + '?' + qstr;
-                    }
-                } else if (method == 'POST') {
-                    var pairs = $(form[0]).serializeArray();
-                    pairs.forEach(function (e, i) {
-                        $('<input>').attr({ type: 'hidden', name: e.name, value: e.value }).appendTo(form);
-                    });
+            } else if (method == 'POST') {
+                var pairs = $(form[0]).serializeArray();
+                pairs.forEach(function (e, i) {
+                    $('<input>').attr({ type: 'hidden', name: e.name, value: e.value }).appendTo(form);
+                });
 
-                    $(formid).submit;
-                }
-                return;
+                $(formid).submit;
             }
+            return;
         }
     } else { // picker mode
 

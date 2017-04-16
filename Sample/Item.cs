@@ -14,7 +14,7 @@ namespace Greatbone.Sample
         static readonly Opt<short> STATUS = new Opt<short>
         {
             [0] = "架下",
-            [1] = "展示",
+            [1] = "缺货",
             [2] = "在售",
         };
 
@@ -54,15 +54,15 @@ namespace Greatbone.Sample
                 o.Put(nameof(shopid), shopid);
             }
             o.Put(nameof(name), name, label: "品名", max: 10, required: true);
-            o.Put(nameof(unit), unit);
-            o.Put(nameof(descr), descr);
+            o.Put(nameof(unit), unit, label: "单位");
+            o.Put(nameof(descr), descr, label: "描述");
             if (proj.Bin())
             {
                 o.Put(nameof(icon), icon, label: "图片", size: "240,240", ratio: "1:1", required: true);
             }
-            o.Put(nameof(price), price, required: true);
-            o.Put(nameof(min), min);
-            o.Put(nameof(step), step);
+            o.Put(nameof(price), price, label: "单价", required: true);
+            o.Put(nameof(min), min, label: "起订");
+            o.Put(nameof(step), step, label: "递增");
             o.Put(nameof(status), status, label: "状态", opt: STATUS);
         }
     }

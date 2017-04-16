@@ -461,7 +461,7 @@ namespace Greatbone.Core
 
                 if (ui.IsLink)
                 {
-                    Add("<a class=\"hollow button primary\" href=\"");
+                    Add("<a class=\"button hollow primary\" href=\"");
                     Add(act.Name);
                     Add("\"");
                     if (ui.HasDialog)
@@ -472,37 +472,12 @@ namespace Greatbone.Core
                     Add(act.Label);
                     Add("</a>");
                 }
-                else if (ui.IsZero || ui.IsButton)
-                {
-                    Add("<button class=\"button success\" name=\"");
-                    Add(act.Name);
-                    Add("\" formaction=\"");
-                    Add(act.Name);
-                    Add("\" formmethod=\"post\"");
-                    if (ui.HasConfirm)
-                    {
-                        Add(" onclick=\"return confirm();\"");
-                    }
-                    else if (ui.HasDialog)
-                    {
-                        Add(" onclick=\"return dialog(this,2,3);\"");
-                    }
-                    string enable = ui.Enable;
-                    if (enable != null)
-                    {
-                        // Add(" data-if=\""); Add(state.If); Add("\"");
-                        // Add(" data-unif=\""); Add(state.Unif); Add("\"");
-                    }
-                    Add(">");
-                    Add(act.Label);
-                    Add("</button>");
-                }
                 else if (ui.IsAnchor)
                 {
-                    Add("<a class=\"button alert\" href=\"#\"");
+                    Add("<a class=\"button hollow alert\" href=\""); Add(act.Name); Add("\"");  
                     if (ui.HasDialog)
                     {
-                        Add(" onclick=\"return dialog(this,1,3);\"");
+                        Add(" onclick=\"return dialog(this,2,3);\"");
                     }
                     else if (ui.HasScript)
                     {
@@ -513,6 +488,31 @@ namespace Greatbone.Core
                     Add(">");
                     Add(act.Label);
                     Add("</a>");
+                }
+                else if (ui.IsZero || ui.IsButton)
+                {
+                    Add("<button class=\"button hollow primary\" name=\"");
+                    Add(act.Name);
+                    Add("\" formaction=\"");
+                    Add(act.Name);
+                    Add("\" formmethod=\"post\"");
+                    if (ui.HasConfirm)
+                    {
+                        Add(" onclick=\"return confirm();\"");
+                    }
+                    else if (ui.HasDialog)
+                    {
+                        Add(" onclick=\"return dialog(this,4,2);\"");
+                    }
+                    string enable = ui.Enable;
+                    if (enable != null)
+                    {
+                        // Add(" data-if=\""); Add(state.If); Add("\"");
+                        // Add(" data-unif=\""); Add(state.Unif); Add("\"");
+                    }
+                    Add(">");
+                    Add(act.Label);
+                    Add("</button>");
                 }
             }
         }
@@ -1507,6 +1507,15 @@ namespace Greatbone.Core
             return this;
         }
 
+        void PutPath()
+        {
+            for (int i = 0; i <= level; i++)
+            {
+                Add(chain[level].work.Name);
+                Add('/');
+            }
+        }
+
         public HtmlContent Put(string name, ArraySegment<byte> v, string label = null, string size = null, string ratio = null, bool required = false)
         {
             switch (chain[level].type)
@@ -1525,6 +1534,7 @@ namespace Greatbone.Core
                     }
                     break;
                 case CTX_GRID:
+                    Add("<img src=\"data:");
                     break;
                 case CTX_FILL:
                     Add("<div class=\"\">");

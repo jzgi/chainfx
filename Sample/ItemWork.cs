@@ -11,66 +11,6 @@ namespace Greatbone.Sample
         {
         }
 
-        public void @default(ActionContext ac)
-        {
-            string shopid = ac[1];
-            using (var dc = ac.NewDbContext())
-            {
-                if (dc.Query("SELECT * FROM items WHERE shopid = @1 AND status > 0", p => p.Set(shopid)))
-                {
-                    ac.Give(200, dc.Dump());
-                }
-                else
-                {
-                    ac.Give(204); // no content
-                }
-            }
-        }
-
-
-        public void _(ActionContext ac)
-        {
-            string shopid = ac[1];
-            using (var dc = ac.NewDbContext())
-            {
-                if (dc.Query("SELECT * FROM items WHERE shopid = @1", p => p.Set(shopid)))
-                {
-                    ac.GiveGridFormPage(200, dc.ToList<Item>());
-                }
-                else
-                {
-                    ac.GiveGridFormPage(200, (List<Item>) null);
-                }
-            }
-        }
-
-        [Ui("新建", UiMode.AnchorDialog)]
-        public async Task @new(ActionContext ac)
-        {
-            if (ac.GET)
-            {
-                Item o = Item.Empty;
-                ac.GiveFormPane(200, o);
-            }
-            else // post
-            {
-                var item = await ac.ReadObjectAsync<Item>();
-                item.shopid = ac[typeof(ShopVarWork)];
-                using (var dc = Service.NewDbContext())
-                {
-                    dc.Sql("INSERT INTO items")._(Item.Empty)._VALUES_(Item.Empty)._("");
-                    if (dc.Execute(p => p.Set(item)) > 0)
-                    {
-                        ac.Give(201); // created
-                    }
-                    else
-                    {
-                        ac.Give(500); // internal server error
-                    }
-                }
-            }
-        }
-
         public void _cat_(ActionContext ac)
         {
             string shopid = ac[1];
@@ -128,6 +68,49 @@ namespace Greatbone.Sample
     {
         public OprItemWork(WorkContext wc) : base(wc)
         {
+        }
+
+        public void @default(ActionContext ac)
+        {
+            string shopid = ac[typeof(ShopVarWork)];
+            using (var dc = ac.NewDbContext())
+            {
+                if (dc.Query("SELECT * FROM items WHERE shopid = @1", p => p.Set(shopid)))
+                {
+                    ac.GiveGridFormPage(200, dc.ToList<Item>());
+                }
+                else
+                {
+                    ac.GiveGridFormPage(200, (List<Item>) null);
+                }
+            }
+        }
+
+        [Ui("新建", UiMode.AnchorDialog)]
+        public async Task @new(ActionContext ac)
+        {
+            if (ac.GET)
+            {
+                Item o = Item.Empty;
+                ac.GiveFormPane(200, o);
+            }
+            else // post
+            {
+                var item = await ac.ReadObjectAsync<Item>();
+                item.shopid = ac[typeof(ShopVarWork)];
+                using (var dc = Service.NewDbContext())
+                {
+                    dc.Sql("INSERT INTO items")._(Item.Empty)._VALUES_(Item.Empty)._("");
+                    if (dc.Execute(p => p.Set(item)) > 0)
+                    {
+                        ac.Give(201); // created
+                    }
+                    else
+                    {
+                        ac.Give(500); // internal server error
+                    }
+                }
+            }
         }
     }
 }
