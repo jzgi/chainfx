@@ -1546,7 +1546,7 @@ namespace Greatbone.Core
 
         public string Type { get; set; }
 
-        public bool Sendable => true;
+        public bool Octal => true;
 
         public bool Poolable => pooled;
 

@@ -12,27 +12,38 @@ namespace Greatbone.Core
 
         internal const sbyte
             // multiple records
-            CTX_TABLE = 1,
-            CTX_GRID = 2,
-            CTX_LIST = 3,
+            COMP_TABLE = 1,
+            COMP_GRID = 2,
+            COMP_LIST = 3,
             // single record 
-            CTX_FILL = 5;
+            COMP_FILL = 5;
 
-        // per data object outputing context
+        ///
+        /// The outputing context for per data object
+        ///
         struct Ctx
         {
-            // component type
-            internal sbyte type;
+            // key position in the output stream
+            internal IData obj;
 
-            // whether currently need to ouput label
+            internal Work varwork;
+
+            // component
+            internal sbyte comp;
+
+            // whether currently ouput label
             internal bool label;
 
+            // the ordinal of each field
             internal int ordinal;
 
-            // begun of a group
+            // beginning label of a field group
             internal string begin;
 
-            internal Work work;
+            internal void OutputVarKey(HtmlContent cont)
+            {
+                varwork.OutputVarKey(obj, cont);
+            }
         }
 
         // whether within a form
@@ -44,7 +55,7 @@ namespace Greatbone.Core
         int level = -1; // current level
 
         ///
-        public HtmlContent(bool sendable, bool pooled, int capacity = 16 * 1024) : base(sendable, pooled, capacity)
+        public HtmlContent(bool octal, bool pooled, int capacity = 16 * 1024) : base(octal, pooled, capacity)
         {
         }
 
@@ -278,7 +289,7 @@ namespace Greatbone.Core
 
         public void FILLFORM(ActionInfo act, IData obj, int proj = 0)
         {
-            chain[++level].type = CTX_FILL;
+            chain[++level].comp = COMP_FILL;
             Add("<form method=\"post");
             if (act != null)
             {
@@ -291,6 +302,15 @@ namespace Greatbone.Core
             Add("</div>");
             Add("</form>");
             --level;
+        }
+
+        void PutPath()
+        {
+            for (int i = 0; i <= level; i++)
+            {
+                chain[i].OutputVarKey(this);
+                Add('/');
+            }
         }
 
         public void TABLE(IDataInput input, Action<IDataInput, HtmlContent> valve)
@@ -321,7 +341,7 @@ namespace Greatbone.Core
 
         public void TABLE<D>(List<D> lst, int proj = 0) where D : IData
         {
-            chain[++level].type = CTX_TABLE;
+            chain[++level].comp = COMP_TABLE;
             if (lst != null)
             {
                 Add("<table class=\"unstriped\">");
@@ -351,7 +371,7 @@ namespace Greatbone.Core
 
         public void GRID(IDataInput input, Action<IDataInput, HtmlContent> valve)
         {
-            chain[++level].type = CTX_GRID;
+            chain[++level].comp = COMP_GRID;
             if (input != null)
             {
                 Add("<div class=\"expanded row\">");
@@ -376,8 +396,8 @@ namespace Greatbone.Core
         public void GRID<D>(Work work, List<D> lst, int proj = 0) where D : IData
         {
             ++level;
-            chain[level].type = CTX_GRID;
-            chain[level].work = work;
+            chain[level].comp = COMP_GRID;
+            chain[level].varwork = work.varwork;
 
             if (lst != null)
             {
@@ -386,12 +406,14 @@ namespace Greatbone.Core
                 {
                     Add("<div class=\"column card\">");
                     chain[level].ordinal = 0; // reset ordinal
-                    lst[i].WriteData(this, proj);
+                    D obj = lst[i];
+                    chain[level].obj = obj; // reset ordinal
+                    obj.WriteData(this, proj);
                     // acitons
                     ActionInfo[] varuias = work.Varwork?.UiActions;
                     if (varuias != null)
                     {
-                        Add("<div class=\"row\">");
+                        Add("<div class=\"row float-right\">");
                         TOOLS(varuias);
                         Add("</div>");
                     }
@@ -410,7 +432,7 @@ namespace Greatbone.Core
 
         public void LIST<D>(List<D> lst, int proj = 0) where D : IData
         {
-            chain[++level].type = CTX_LIST;
+            chain[++level].comp = COMP_LIST;
             if (lst != null)
             {
                 Add("<ul>");
@@ -428,7 +450,7 @@ namespace Greatbone.Core
 
         public void FILL(IDataInput input, Action<IDataInput, HtmlContent> valve)
         {
-            chain[++level].type = CTX_FILL;
+            chain[++level].comp = COMP_FILL;
             if (input != null)
             {
                 while (input.Next())
@@ -448,7 +470,7 @@ namespace Greatbone.Core
 
         public void FILL(IData obj, int proj = 0)
         {
-            chain[++level].type = CTX_FILL;
+            chain[++level].comp = COMP_FILL;
             obj.WriteData(this, proj);
             --level;
         }
@@ -464,6 +486,7 @@ namespace Greatbone.Core
                 if (ui.IsLink)
                 {
                     Add("<a class=\"button hollow primary\" href=\"");
+                    PutPath();
                     Add(act.Name);
                     Add("\"");
                     if (ui.HasDialog)
@@ -476,7 +499,8 @@ namespace Greatbone.Core
                 }
                 else if (ui.IsAnchor)
                 {
-                    Add("<a class=\"button hollow alert\" href=\"");
+                    Add("<a class=\"button hollow primary\" href=\"");
+                    PutPath();
                     Add(act.Name);
                     Add("\"");
                     if (ui.HasDialog)
@@ -498,6 +522,7 @@ namespace Greatbone.Core
                     Add("<button class=\"button hollow primary\" name=\"");
                     Add(act.Name);
                     Add("\" formaction=\"");
+                    PutPath();
                     Add(act.Name);
                     Add("\" formmethod=\"post\"");
                     if (ui.HasConfirm)
@@ -1196,9 +1221,9 @@ namespace Greatbone.Core
 
         public HtmlContent Put(string name, bool v, Func<bool, string> opt = null, string label = null, bool required = false)
         {
-            switch (chain[level].type)
+            switch (chain[level].comp)
             {
-                case CTX_TABLE:
+                case COMP_TABLE:
                     if (chain[level].label)
                     {
                         Add("<th>");
@@ -1212,7 +1237,7 @@ namespace Greatbone.Core
                         Add("</td>");
                     }
                     break;
-                case CTX_GRID:
+                case COMP_GRID:
                     Add("<div class=\"row\">");
                     Add("<div class=\"small-4 columns\">");
                     AddLabel(label, name);
@@ -1223,9 +1248,9 @@ namespace Greatbone.Core
                     Add("</div>");
                     Add("</div>");
                     break;
-                case CTX_LIST:
+                case COMP_LIST:
                     break;
-                case CTX_FILL:
+                case COMP_FILL:
                     Add("<div class=\"column\">");
                     CHECKBOX(name, v, label, required);
                     Add("</div>");
@@ -1238,9 +1263,9 @@ namespace Greatbone.Core
         public HtmlContent Put(string name, short v, Opt<short> opt = null, string label = null, string help = null, short max = 0, short min = 0, short step = 0, bool @readonly = false, bool required = false)
         {
             var ctx = chain[level];
-            switch (ctx.type)
+            switch (ctx.comp)
             {
-                case CTX_TABLE:
+                case COMP_TABLE:
                     if (ctx.label)
                     {
                         Add("<th>");
@@ -1265,7 +1290,7 @@ namespace Greatbone.Core
                         Add("</td>");
                     }
                     break;
-                case CTX_GRID:
+                case COMP_GRID:
                     Add("<div class=\"row\">");
                     Add("<div class=\"small-4 columns\">");
                     if (formed && level == 0 && chain[level].ordinal == 0)
@@ -1285,9 +1310,9 @@ namespace Greatbone.Core
                     Add("</div>");
                     Add("</div>");
                     break;
-                case CTX_LIST:
+                case COMP_LIST:
                     break;
-                case CTX_FILL:
+                case COMP_FILL:
                     Add("<div class=\"column\">");
                     if (opt == null)
                     {
@@ -1306,9 +1331,9 @@ namespace Greatbone.Core
 
         public HtmlContent Put(string name, int v, Opt<int> opt = null, string label = null, string help = null, int max = 0, int min = 0, int step = 0, bool @readonly = false, bool required = false)
         {
-            switch (chain[level].type)
+            switch (chain[level].comp)
             {
-                case CTX_TABLE:
+                case COMP_TABLE:
                     if (chain[level].label)
                     {
                         Add("<th>");
@@ -1326,7 +1351,7 @@ namespace Greatbone.Core
                         Add("</td>");
                     }
                     break;
-                case CTX_GRID:
+                case COMP_GRID:
                     Add("<div class=\"row\">");
                     Add("<div class=\"small-4 columns\">");
                     if (formed && level == 0 && chain[level].ordinal == 0)
@@ -1345,9 +1370,9 @@ namespace Greatbone.Core
                     Add("</div>");
                     Add("</div>");
                     break;
-                case CTX_LIST:
+                case COMP_LIST:
                     break;
-                case CTX_FILL:
+                case COMP_FILL:
                     Add("<div class=\"column\">");
                     NUMBER(name, v, label);
                     Add("</div>");
@@ -1359,9 +1384,9 @@ namespace Greatbone.Core
 
         public HtmlContent Put(string name, long v, Opt<long> opt = null, string label = null, string help = null, long max = 0, long min = 0, long step = 0, bool @readonly = false, bool required = false)
         {
-            switch (chain[level].type)
+            switch (chain[level].comp)
             {
-                case CTX_TABLE:
+                case COMP_TABLE:
                     if (chain[level].label)
                     {
                         Add("<th>");
@@ -1379,7 +1404,7 @@ namespace Greatbone.Core
                         Add("</td>");
                     }
                     break;
-                case CTX_GRID:
+                case COMP_GRID:
                     Add("<div class=\"row\">");
                     Add("<div class=\"small-4 columns\">");
                     if (formed && level == 0 && chain[level].ordinal == 0)
@@ -1398,12 +1423,12 @@ namespace Greatbone.Core
                     Add("</div>");
                     Add("</div>");
                     break;
-                case CTX_LIST:
+                case COMP_LIST:
                     Add("<div class=\"pure-u-1 pure-u-md-1-2\">");
                     // NUMBER(name, v);
                     Add("</div>");
                     break;
-                case CTX_FILL:
+                case COMP_FILL:
                     Add("<div class=\"column\">");
                     NUMBER(name, v, label);
                     Add("</div>");
@@ -1415,9 +1440,9 @@ namespace Greatbone.Core
 
         public HtmlContent Put(string name, double v, string label = null, string help = null, double max = 0, double min = 0, double step = 0, bool @readonly = false, bool required = false)
         {
-            switch (chain[level].type)
+            switch (chain[level].comp)
             {
-                case CTX_TABLE:
+                case COMP_TABLE:
                     if (chain[level].label)
                     {
                         Add("<th>");
@@ -1431,7 +1456,7 @@ namespace Greatbone.Core
                         Add("</td>");
                     }
                     break;
-                case CTX_GRID:
+                case COMP_GRID:
                     Add("<div class=\"row\">");
                     Add("<div class=\"small-4 columns\">");
                     AddLabel(label, name);
@@ -1441,9 +1466,9 @@ namespace Greatbone.Core
                     Add("</div>");
                     Add("</div>");
                     break;
-                case CTX_LIST:
+                case COMP_LIST:
                     break;
-                case CTX_FILL:
+                case COMP_FILL:
                     Add("<div class=\"column\">");
                     Add("</div>");
                     break;
@@ -1454,9 +1479,9 @@ namespace Greatbone.Core
 
         public HtmlContent Put(string name, decimal v, string label = null, string help = null, decimal max = 0, decimal min = 0, decimal step = 0, bool @readonly = false, bool required = false)
         {
-            switch (chain[level].type)
+            switch (chain[level].comp)
             {
-                case CTX_TABLE:
+                case COMP_TABLE:
                     if (chain[level].label)
                     {
                         Add("<th>");
@@ -1470,7 +1495,7 @@ namespace Greatbone.Core
                         Add("</td>");
                     }
                     break;
-                case CTX_GRID:
+                case COMP_GRID:
                     Add("<div class=\"row\">");
                     Add("<div class=\"small-4 columns\">");
                     AddLabel(label, name);
@@ -1480,12 +1505,12 @@ namespace Greatbone.Core
                     Add("</div>");
                     Add("</div>");
                     break;
-                case CTX_LIST:
+                case COMP_LIST:
                     Add("<td style=\"text-align: right;\">");
                     Add(v);
                     Add("</td>");
                     break;
-                case CTX_FILL:
+                case COMP_FILL:
                     Add("<div class=\"column\">");
                     NUMBER(name, v, label);
                     Add("</div>");
@@ -1497,9 +1522,9 @@ namespace Greatbone.Core
 
         public HtmlContent Put(string name, DateTime v, string label = null, DateTime max = default(DateTime), DateTime min = default(DateTime), int step = 0, bool @readonly = false, bool required = false)
         {
-            switch (chain[level].type)
+            switch (chain[level].comp)
             {
-                case CTX_TABLE:
+                case COMP_TABLE:
                     if (chain[level].label)
                     {
                         Add("<th>");
@@ -1513,7 +1538,7 @@ namespace Greatbone.Core
                         Add("</td>");
                     }
                     break;
-                case CTX_GRID:
+                case COMP_GRID:
                     Add("<div class=\"row\">");
                     Add("<div class=\"small-4 columns\">");
                     AddLabel(label, name);
@@ -1523,12 +1548,12 @@ namespace Greatbone.Core
                     Add("</div>");
                     Add("</div>");
                     break;
-                case CTX_LIST:
+                case COMP_LIST:
                     Add("<td style=\"text-align: right;\">");
                     Add(v);
                     Add("</td>");
                     break;
-                case CTX_FILL:
+                case COMP_FILL:
                     Add("<div class=\"column\">");
                     DATE(name, v);
                     Add("</div>");
@@ -1541,9 +1566,9 @@ namespace Greatbone.Core
         public HtmlContent Put(string name, string v, Opt<string> opt = null, string label = null, string help = null, string pattern = null, short max = 0, short min = 0, bool @readonly = false, bool required = false)
         {
             var ctx = chain[level];
-            switch (ctx.type)
+            switch (ctx.comp)
             {
-                case CTX_TABLE:
+                case COMP_TABLE:
                     if (ctx.label)
                     {
                         Add("<th>");
@@ -1561,7 +1586,7 @@ namespace Greatbone.Core
                         Add("</td>");
                     }
                     break;
-                case CTX_GRID:
+                case COMP_GRID:
                     Add("<div class=\"row\">");
                     Add("<div class=\"small-4 columns\">");
                     if (formed && level == 0 && chain[level].ordinal == 0)
@@ -1580,10 +1605,10 @@ namespace Greatbone.Core
                     Add("</div>");
                     Add("</div>");
                     break;
-                case CTX_LIST:
+                case COMP_LIST:
                     Add(v);
                     break;
-                case CTX_FILL:
+                case COMP_FILL:
                     Add("<div class=\"column\">");
                     if (label != null && label.Length == 0)
                     {
@@ -1608,20 +1633,11 @@ namespace Greatbone.Core
             return this;
         }
 
-        void PutPath()
-        {
-            for (int i = 0; i <= level; i++)
-            {
-                Add(chain[level].work.Name);
-                Add('/');
-            }
-        }
-
         public HtmlContent Put(string name, ArraySegment<byte> v, string label = null, string size = null, string ratio = null, bool required = false)
         {
-            switch (chain[level].type)
+            switch (chain[level].comp)
             {
-                case CTX_TABLE:
+                case COMP_TABLE:
                     if (chain[level].label)
                     {
                         Add("<th>");
@@ -1634,10 +1650,10 @@ namespace Greatbone.Core
                         Add("</td>");
                     }
                     break;
-                case CTX_GRID:
+                case COMP_GRID:
                     Add("<img src=\"data:");
                     break;
-                case CTX_FILL:
+                case COMP_FILL:
                     Add("<div class=\"\">");
                     FILE(name, label, size, ratio, required);
                     Add("</div>");
@@ -1684,9 +1700,9 @@ namespace Greatbone.Core
 
         public HtmlContent Put<D>(string name, List<D> v, int proj = 0, string label = null, string help = null, bool @readonly = false, bool required = false) where D : IData
         {
-            switch (chain[level].type)
+            switch (chain[level].comp)
             {
-                case CTX_TABLE:
+                case COMP_TABLE:
                     if (chain[level].label)
                     {
                         Add("<th>");
@@ -1705,7 +1721,7 @@ namespace Greatbone.Core
                         }
                     }
                     break;
-                case CTX_GRID:
+                case COMP_GRID:
                     if (v != null)
                     {
                         TABLE(v, proj);
@@ -1715,7 +1731,7 @@ namespace Greatbone.Core
                         Add("<div class=\"row\"><span>没有记录</span></div>");
                     }
                     break;
-                case CTX_LIST:
+                case COMP_LIST:
                     break;
             }
             chain[level].ordinal++;

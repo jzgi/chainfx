@@ -49,7 +49,7 @@ namespace Greatbone.Sample
 
         public void WriteData<R>(IDataOutput<R> o, int proj = 0) where R : IDataOutput<R>
         {
-            if (proj.Power())
+            if (proj.Prime())
             {
                 o.Put(nameof(shopid), shopid);
             }

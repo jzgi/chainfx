@@ -8,7 +8,7 @@ namespace Greatbone.Core
     /// 
     public class FormContent : DynamicContent, IDataOutput<FormContent>
     {
-        public FormContent(bool sendable, bool pooled, int capacity = 4092) : base(sendable, pooled, capacity)
+        public FormContent(bool octal, bool pooled, int capacity = 4092) : base(octal, pooled, capacity)
         {
         }
 

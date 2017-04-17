@@ -12,7 +12,7 @@ namespace Greatbone.Core
         ///
         /// If the content is in binary form hence able to send asynchronously.
         ///
-        bool Sendable { get; }
+        bool Octal { get; }
 
         ///
         /// Can the content buffer be rented from pool so as to returned back lately.

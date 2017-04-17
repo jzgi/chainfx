@@ -1,11 +1,11 @@
-﻿using NpgsqlTypes;
-using System;
+﻿using System;
 using System.Globalization;
 using System.IO;
 using System.Net;
 using System.Net.Http;
 using System.Text;
 using System.Threading.Tasks;
+using NpgsqlTypes;
 
 namespace Greatbone.Core
 {
@@ -94,10 +94,10 @@ namespace Greatbone.Core
         // byte-wise etag checksum, for text-based output only
         protected ulong checksum;
 
-        protected DynamicContent(bool sendable, bool pooled, int capacity)
+        protected DynamicContent(bool octal, bool pooled, int capacity)
         {
             this.pooled = pooled;
-            if (sendable)
+            if (octal)
             {
                 bytebuf = pooled ? BufferUtility.ByteBuffer(capacity) : new byte[capacity];
             }
@@ -110,7 +110,7 @@ namespace Greatbone.Core
 
         public abstract string Type { get; }
 
-        public bool Sendable => bytebuf != null;
+        public bool Octal => bytebuf != null;
 
         public byte[] ByteBuffer => bytebuf;
 
@@ -146,26 +146,26 @@ namespace Greatbone.Core
 
         public void Add(char c)
         {
-            if (Sendable) // byte-oriented
+            if (Octal) // byte-oriented
             {
                 // UTF-8 encoding but without surrogate support
                 if (c < 0x80)
                 {
                     // have at most seven bits
-                    AddByte((byte)c);
+                    AddByte((byte) c);
                 }
                 else if (c < 0x800)
                 {
                     // 2 char, 11 bits
-                    AddByte((byte)(0xc0 | (c >> 6)));
-                    AddByte((byte)(0x80 | (c & 0x3f)));
+                    AddByte((byte) (0xc0 | (c >> 6)));
+                    AddByte((byte) (0x80 | (c & 0x3f)));
                 }
                 else
                 {
                     // 3 char, 16 bits
-                    AddByte((byte)(0xe0 | ((c >> 12))));
-                    AddByte((byte)(0x80 | ((c >> 6) & 0x3f)));
-                    AddByte((byte)(0x80 | (c & 0x3f)));
+                    AddByte((byte) (0xe0 | ((c >> 12))));
+                    AddByte((byte) (0x80 | ((c >> 6) & 0x3f)));
+                    AddByte((byte) (0x80 | (c & 0x3f)));
                 }
             }
             else // char-oriented
@@ -258,7 +258,7 @@ namespace Greatbone.Core
         {
             if (v == 0)
             {
-                AddByte((byte)'0');
+                AddByte((byte) '0');
                 return;
             }
             int x = v; // convert to int
@@ -286,7 +286,7 @@ namespace Greatbone.Core
         {
             if (v >= short.MinValue && v <= short.MaxValue)
             {
-                Add((short)v);
+                Add((short) v);
                 return;
             }
 
@@ -314,7 +314,7 @@ namespace Greatbone.Core
         {
             if (v >= int.MinValue && v <= int.MaxValue)
             {
-                Add((int)v);
+                Add((int) v);
                 return;
             }
 
@@ -345,7 +345,7 @@ namespace Greatbone.Core
         }
 
         // sign mask
-        const int Sign = unchecked((int)0x80000000);
+        const int Sign = unchecked((int) 0x80000000);
 
         ///
         /// This method outputs decimal numbers fastly.
@@ -370,7 +370,7 @@ namespace Greatbone.Core
 
             if (mid != 0) // if 64 bits
             {
-                long x = ((long)mid << 32) + low;
+                long x = ((long) mid << 32) + low;
                 bool bgn = false;
                 for (int i = LONG.Length - 1; i > 0; i--)
                 {
@@ -443,7 +443,7 @@ namespace Greatbone.Core
 
         public void Add(DateTime v)
         {
-            short yr = (short)v.Year;
+            short yr = (short) v.Year;
 
             // yyyy-mm-dd
             if (yr < 1000) Add('0');

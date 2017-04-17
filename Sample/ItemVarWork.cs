@@ -1,3 +1,4 @@
+using System;
 using System.Threading.Tasks;
 using Greatbone.Core;
 
@@ -114,7 +115,21 @@ namespace Greatbone.Sample
         {
             if (ac.GET)
             {
-                ac.GiveFormPane(200, Item.Empty);
+                string shopid = ac[typeof(ShopVarWork)];
+                string name = ac[this];
+                using (var dc = Service.NewDbContext())
+                {
+                    const int proj = -1 ^ Projection.BIN ^ Projection.PRIME;
+                    dc.Sql("SELECT ").columnlst(Item.Empty, proj)._("FROM items WHERE shopid = @1 AND name = @2");
+                    if (dc.Query1(p => p.Set(shopid).Set(name)))
+                    {
+                        ac.GiveFormPane(200, dc.ToObject<Item>(proj), proj);
+                    }
+                    else
+                    {
+                        ac.Give(500); // internal server error
+                    }
+                }
             }
             else // post
             {
@@ -141,19 +156,18 @@ namespace Greatbone.Sample
         {
             if (ac.GET)
             {
-                ac.GiveFormPane(200, Item.Empty);
+                ac.GiveFormPane(200, x => { x.FILE(nameof(icon), size: "120,120"); });
             }
             else // post
             {
-                var item = await ac.ReadObjectAsync<Item>();
-                item.shopid = ac[typeof(ShopVarWork)];
+                var frm = await ac.ReadAsync<Form>();
+                ArraySegment<byte> icon = frm[nameof(icon)];
+                string shopid = ac[typeof(ShopVarWork)];
                 using (var dc = Service.NewDbContext())
                 {
-                    const int proj = -1 ^ Projection.BIN;
-                    dc.Sql("INSERT INTO items")._(Item.Empty, proj)._VALUES_(Item.Empty, proj)._("");
-                    if (dc.Execute(p => item.WriteData(p, proj)) > 0)
+                    if (dc.Execute("UPDATE items SET icon = @1 WHERE shopid = @2", p => p.Set(icon).Set(shopid)) > 0)
                     {
-                        ac.Give(201); // created
+                        ac.Give(200); // ok
                     }
                     else
                     {

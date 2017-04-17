@@ -18,7 +18,7 @@ namespace Greatbone.Core
         {
         }
 
-        public JsonContent(bool sendable, bool pooled, int capacity = 8 * 1024) : base(sendable, pooled, capacity)
+        public JsonContent(bool octal, bool pooled, int capacity = 8 * 1024) : base(octal, pooled, capacity)
         {
             counts = new int[8];
             level = 0;
