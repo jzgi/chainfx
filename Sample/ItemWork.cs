@@ -91,8 +91,7 @@ namespace Greatbone.Sample
         {
             if (ac.GET)
             {
-                Item o = Item.Empty;
-                ac.GiveFormPane(200, o);
+                ac.GiveFormPane(200, Item.Empty);
             }
             else // post
             {

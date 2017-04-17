@@ -286,7 +286,9 @@ namespace Greatbone.Core
                 Add(act.Name);
             }
             Add("\">");
+            Add("<div class=\"row small-up-1 medium-up-2 large-up-3\">");
             obj.WriteData(this, proj);
+            Add("</div>");
             Add("</form>");
             --level;
         }
@@ -474,7 +476,9 @@ namespace Greatbone.Core
                 }
                 else if (ui.IsAnchor)
                 {
-                    Add("<a class=\"button hollow alert\" href=\""); Add(act.Name); Add("\"");  
+                    Add("<a class=\"button hollow alert\" href=\"");
+                    Add(act.Name);
+                    Add("\"");
                     if (ui.HasDialog)
                     {
                         Add(" onclick=\"return dialog(this,2,3);\"");
@@ -667,7 +671,7 @@ namespace Greatbone.Core
         {
             Add("<label>");
             AddLabel(label, name);
-            Add("<input style=\"height: 100px\" type=\"number\" name=\"");
+            Add("<input type=\"number\" name=\"");
             Add(name);
             Add("\" value=\"");
             Add(v);
@@ -712,7 +716,7 @@ namespace Greatbone.Core
         {
             Add("<label>");
             AddLabel(label, name);
-            Add("<input style=\"height: 100px\" type=\"number\" name=\"");
+            Add("<input type=\"number\" name=\"");
             Add(name);
             Add("\" value=\"");
             Add(v);
@@ -745,6 +749,92 @@ namespace Greatbone.Core
             if (opt)
             {
                 Add("<input type=\"button\" value=\"...\" onclick=\"dialog(this, 1, 1)\"> ");
+            }
+            if (@readonly) Add(" readonly");
+            if (required) Add(" required");
+
+            Add(">");
+            Add("</label>");
+        }
+
+        public void NUMBER(string name, long v, string label = null, string help = null, long max = 0, long min = 0, long step = 0, bool opt = false, bool @readonly = false, bool required = false)
+        {
+            Add("<label>");
+            AddLabel(label, name);
+            Add("<input type=\"number\" name=\"");
+            Add(name);
+            Add("\" value=\"");
+            Add(v);
+            Add("\"");
+
+            if (help != null)
+            {
+                Add(" placeholder=\"");
+                Add(help);
+                Add("\"");
+            }
+            if (max != 0)
+            {
+                Add(" max=\"");
+                Add(max);
+                Add("\"");
+            }
+            if (min != 0)
+            {
+                Add(" min=\"");
+                Add(min);
+                Add("\"");
+            }
+            if (step != 0)
+            {
+                Add(" step=\"");
+                Add(step);
+                Add("\"");
+            }
+            if (opt)
+            {
+                Add("<input type=\"button\" value=\"...\" onclick=\"dialog(this, 1, 1)\"> ");
+            }
+            if (@readonly) Add(" readonly");
+            if (required) Add(" required");
+
+            Add(">");
+            Add("</label>");
+        }
+
+        public void NUMBER(string name, decimal v, string label = null, string help = null, decimal max = 0, decimal min = 0, decimal step = 0, bool @readonly = false, bool required = false)
+        {
+            Add("<label>");
+            AddLabel(label, name);
+            Add("<input type=\"number\" name=\"");
+            Add(name);
+            Add("\" value=\"");
+            Add(v);
+            Add("\"");
+
+            if (help != null)
+            {
+                Add(" placeholder=\"");
+                Add(help);
+                Add("\"");
+            }
+            if (max != 0)
+            {
+                Add(" max=\"");
+                Add(max);
+                Add("\"");
+            }
+            if (min != 0)
+            {
+                Add(" min=\"");
+                Add(min);
+                Add("\"");
+            }
+            if (step != 0)
+            {
+                Add(" step=\"");
+                Add(step);
+                Add("\"");
             }
             if (@readonly) Add(" readonly");
             if (required) Add(" required");
@@ -1019,7 +1109,7 @@ namespace Greatbone.Core
             Add("</button>");
         }
 
-        public void SELECT<V>(string name, V v, Opt<V> opt, string label = null, bool multiple = false, bool required = false, sbyte size = 0) where V : IEquatable<V>, IConvertible
+        public void SELECT(string name, short v, Opt<short> opt, string label = null, bool multiple = false, bool required = false, sbyte size = 0)
         {
             Add("<label>");
             AddLabel(label, name);
@@ -1038,11 +1128,11 @@ namespace Greatbone.Core
 
             foreach (var pair in opt)
             {
-                V key = pair.Key;
+                short key = pair.Key;
                 Add("<option value=\"");
-                AddVary(key);
+                Add(key);
                 Add("\"");
-                if (key.Equals(v)) Add(" selected");
+                if (key == v) Add(" selected");
                 Add(">");
 
                 Add(pair.Value);
@@ -1136,7 +1226,7 @@ namespace Greatbone.Core
                 case CTX_LIST:
                     break;
                 case CTX_FILL:
-                    Add("<div class=\"row\">");
+                    Add("<div class=\"column\">");
                     CHECKBOX(name, v, label, required);
                     Add("</div>");
                     break;
@@ -1198,8 +1288,15 @@ namespace Greatbone.Core
                 case CTX_LIST:
                     break;
                 case CTX_FILL:
-                    Add("<div class=\"pure-u-1 pure-u-md-1-2\">");
-                    NUMBER(name, v);
+                    Add("<div class=\"column\">");
+                    if (opt == null)
+                    {
+                        NUMBER(name, v);
+                    }
+                    else
+                    {
+                        SELECT(name, v, opt, label);
+                    }
                     Add("</div>");
                     break;
             }
@@ -1251,8 +1348,8 @@ namespace Greatbone.Core
                 case CTX_LIST:
                     break;
                 case CTX_FILL:
-                    Add("<div class=\"pure-u-1 pure-u-md-1-2\">");
-                    // NUMBER(name, v);
+                    Add("<div class=\"column\">");
+                    NUMBER(name, v, label);
                     Add("</div>");
                     break;
             }
@@ -1307,8 +1404,8 @@ namespace Greatbone.Core
                     Add("</div>");
                     break;
                 case CTX_FILL:
-                    Add("<div class=\"pure-u-1 pure-u-md-1-2\">");
-                    // NUMBER(name, v);
+                    Add("<div class=\"column\">");
+                    NUMBER(name, v, label);
                     Add("</div>");
                     break;
             }
@@ -1347,7 +1444,7 @@ namespace Greatbone.Core
                 case CTX_LIST:
                     break;
                 case CTX_FILL:
-                    Add("<div class=\"pure-u-1 pure-u-md-1-2\">");
+                    Add("<div class=\"column\">");
                     Add("</div>");
                     break;
             }
@@ -1389,7 +1486,8 @@ namespace Greatbone.Core
                     Add("</td>");
                     break;
                 case CTX_FILL:
-                    Add("<div class=\"pure-u-1 pure-u-md-1-2\">");
+                    Add("<div class=\"column\">");
+                    NUMBER(name, v, label);
                     Add("</div>");
                     break;
             }
@@ -1431,7 +1529,8 @@ namespace Greatbone.Core
                     Add("</td>");
                     break;
                 case CTX_FILL:
-                    Add("<div class=\"pure-u-1 pure-u-md-1-2\">");
+                    Add("<div class=\"column\">");
+                    DATE(name, v);
                     Add("</div>");
                     break;
             }
@@ -1485,22 +1584,24 @@ namespace Greatbone.Core
                     Add(v);
                     break;
                 case CTX_FILL:
+                    Add("<div class=\"column\">");
                     if (label != null && label.Length == 0)
                     {
                         HIDDEN(name, v);
                     }
-                    else if (name.EndsWith("password"))
+                    else if (name.EndsWith("password") || name.EndsWith("pwd"))
                     {
                         PASSWORD(name, v, label, help, pattern, (sbyte) max, (sbyte) min, @readonly, required);
                     }
                     else if (max < 128)
                     {
-                        // TEXT(name, v, Label, Help, Pattern, (sbyte)Max, (sbyte)Min, ReadOnly, Required);
+                        TEXT(name, v, label, help, pattern, (sbyte) max, (sbyte) min, opt, @readonly, required);
                     }
                     else
                     {
                         TEXTAREA(name, v, label, help, max, min, @readonly, required);
                     }
+                    Add("</div>");
                     break;
             }
             chain[level].ordinal++;

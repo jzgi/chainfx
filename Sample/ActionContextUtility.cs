@@ -144,11 +144,7 @@ namespace Greatbone.Sample
 
             h.Add("<body>");
 
-            h.Add("<div class\"row\">");
-            h.Add("<div class=\"small-centered small-10 medium-8 large-6 columns\">");
             main(h);
-            h.Add("</div>");
-            h.Add("</div>");
 
             // zurb foundation
             h.Add("<script src=\"//cdn.bootcss.com/jquery/3.2.1/jquery.min.js\"></script>");
@@ -201,8 +197,10 @@ namespace Greatbone.Sample
 
         public static void GiveFormPane(this ActionContext ac, int status, IData obj, int proj = 0, bool? pub = null, int maxage = 60)
         {
-            ac.GivePane(status, m => { m.FILLFORM(ac.Doer, obj, proj); },
-                pub, maxage);
+            ac.GivePane(status,
+                m => { m.FILLFORM(ac.Doer, obj, proj); },
+                pub, maxage
+            );
         }
 
         public static void GiveFormPane(this ActionContext ac, int status, IDataInput input, Action<IDataInput, HtmlContent> valve, bool? pub = null, int maxage = 60)
