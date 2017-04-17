@@ -54,7 +54,7 @@ namespace Greatbone.Sample
                 o.Put(nameof(shopid), shopid);
             }
             o.Put(nameof(name), name, label: "品名", max: 10, required: true);
-            o.Put(nameof(unit), unit, label: "单位", max: 4, required: true);
+            o.Put(nameof(unit), unit, label: "单位", max: 8, required: true);
             o.Put(nameof(descr), descr, label: "描述", max: 20, required: true);
             if (proj.Bin())
             {

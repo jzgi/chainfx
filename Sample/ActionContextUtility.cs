@@ -98,7 +98,7 @@ namespace Greatbone.Sample
             HtmlContent h = new HtmlContent(true, true, 32 * 1024);
 
             h.Add("<!DOCTYPE html>");
-            h.Add("<html style=\"height:100%\">");
+            h.Add("<html>");
 
             h.Add("<head>");
             h.Add("<title>粗粮达人</title>");
@@ -107,7 +107,7 @@ namespace Greatbone.Sample
             h.Add("<link rel=\"stylesheet\" href=\"/app.css\">");
             h.Add("</head>");
 
-            h.Add("<body style=\"height:100%\">");
+            h.Add("<body>");
 
             main(h);
 

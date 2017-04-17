@@ -9,6 +9,7 @@ namespace Greatbone.Sample
     {
         protected ItemWork(WorkContext wc) : base(wc)
         {
+            CreateVar<V, string>(obj => ((Item) obj).name);
         }
 
         public void _cat_(ActionContext ac)
@@ -99,8 +100,9 @@ namespace Greatbone.Sample
                 item.shopid = ac[typeof(ShopVarWork)];
                 using (var dc = Service.NewDbContext())
                 {
-                    dc.Sql("INSERT INTO items")._(Item.Empty)._VALUES_(Item.Empty)._("");
-                    if (dc.Execute(p => p.Set(item)) > 0)
+                    const int proj = -1 ^ Projection.BIN;
+                    dc.Sql("INSERT INTO items")._(Item.Empty, proj)._VALUES_(Item.Empty, proj)._("");
+                    if (dc.Execute(p => item.WriteData(p, proj)) > 0)
                     {
                         ac.Give(201); // created
                     }

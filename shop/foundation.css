@@ -1914,6 +1914,7 @@ screen and (min-width: 40em) {
     background: white;
     list-style-type: none;
     -webkit-padding-start: 0;
+    padding-left: 0;
 }
 
 .tabs::before,
@@ -1958,7 +1959,7 @@ screen and (min-width: 40em) {
     border-bottom: 0.25rem solid #2ba6cb;
     background: #fefefe;
     color: #0a0a0a;
-    height: calc(100% - 2rem - 4px);
+    height: calc(100% - 2.25rem);
 }
 
 .tabs-panel {

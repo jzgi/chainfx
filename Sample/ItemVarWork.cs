@@ -1,3 +1,4 @@
+using System.Threading.Tasks;
 using Greatbone.Core;
 
 namespace Greatbone.Sample
@@ -106,6 +107,60 @@ namespace Greatbone.Sample
     {
         public OprItemVarWork(WorkContext wc) : base(wc)
         {
+        }
+
+        [Ui("修改", UiMode.AnchorDialog)]
+        public async Task edit(ActionContext ac)
+        {
+            if (ac.GET)
+            {
+                ac.GiveFormPane(200, Item.Empty);
+            }
+            else // post
+            {
+                var item = await ac.ReadObjectAsync<Item>();
+                item.shopid = ac[typeof(ShopVarWork)];
+                using (var dc = Service.NewDbContext())
+                {
+                    const int proj = -1 ^ Projection.BIN;
+                    dc.Sql("INSERT INTO items")._(Item.Empty, proj)._VALUES_(Item.Empty, proj)._("");
+                    if (dc.Execute(p => item.WriteData(p, proj)) > 0)
+                    {
+                        ac.Give(201); // created
+                    }
+                    else
+                    {
+                        ac.Give(500); // internal server error
+                    }
+                }
+            }
+        }
+
+        [Ui("图片", UiMode.AnchorDialog)]
+        public async Task icon(ActionContext ac)
+        {
+            if (ac.GET)
+            {
+                ac.GiveFormPane(200, Item.Empty);
+            }
+            else // post
+            {
+                var item = await ac.ReadObjectAsync<Item>();
+                item.shopid = ac[typeof(ShopVarWork)];
+                using (var dc = Service.NewDbContext())
+                {
+                    const int proj = -1 ^ Projection.BIN;
+                    dc.Sql("INSERT INTO items")._(Item.Empty, proj)._VALUES_(Item.Empty, proj)._("");
+                    if (dc.Execute(p => item.WriteData(p, proj)) > 0)
+                    {
+                        ac.Give(201); // created
+                    }
+                    else
+                    {
+                        ac.Give(500); // internal server error
+                    }
+                }
+            }
         }
     }
 }
