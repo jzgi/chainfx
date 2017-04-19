@@ -13,6 +13,8 @@ namespace Greatbone.Core
 
         AnchorScript = 0x24,
 
+        AnchorCrop = 0x28,
+
         Button = 0x40,
 
         ButtonConfirm = 0x41,
@@ -59,6 +61,8 @@ namespace Greatbone.Core
         public bool HasDialog => ((int)mode & 0x02) == 0x02;
 
         public bool HasScript => ((int)mode & 0x04) == 0x04;
+
+        public bool HasCrop => ((int)mode & 0x08) == 0x08;
     }
 
 }

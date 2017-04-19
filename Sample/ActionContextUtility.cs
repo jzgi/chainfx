@@ -78,7 +78,6 @@ namespace Greatbone.Sample
             // zurb foundation
             h.Add("<script src=\"//cdn.bootcss.com/jquery/3.2.1/jquery.min.js\"></script>");
             h.Add("<script src=\"//cdn.bootcss.com/foundation/6.3.1/js/foundation.min.js\"></script>");
-            h.Add("<script src=\"/slim.jquery.min.js\"></script>");
             h.Add("<script src=\"/app.js\"></script>");
             h.Add("<script>");
             h.Add("$(document).foundation();");
@@ -103,6 +102,7 @@ namespace Greatbone.Sample
             h.Add("<head>");
             h.Add("<title>粗粮达人</title>");
             h.Add("<meta name=\"viewport\" content=\"width=device-width, initial-scale=1.0\">");
+            h.Add("<link rel=\"stylesheet\" href=\"https://cdn.bootcss.com/croppie/2.4.1/croppie.min.css\">");
             h.Add("<link rel=\"stylesheet\" href=\"/foundation.min.css\">");
             h.Add("<link rel=\"stylesheet\" href=\"/app.css\">");
             h.Add("</head>");
@@ -114,7 +114,7 @@ namespace Greatbone.Sample
             // zurb foundation
             h.Add("<script src=\"//cdn.bootcss.com/jquery/3.2.1/jquery.min.js\"></script>");
             h.Add("<script src=\"//cdn.bootcss.com/foundation/6.3.1/js/foundation.min.js\"></script>");
-            h.Add("<script src=\"/slim.jquery.min.js\"></script>");
+            h.Add("<script src=\"//cdn.bootcss.com/croppie/2.4.1/croppie.min.js\"></script>");
             h.Add("<script src=\"/app.js\"></script>");
             h.Add("<script>$(document).foundation();</script>");
 
@@ -138,7 +138,6 @@ namespace Greatbone.Sample
             h.Add("<title>粗粮达人</title>");
             h.Add("<meta name=\"viewport\" content=\"width=device-width, initial-scale=1.0\">");
             h.Add("<link rel=\"stylesheet\" href=\"/foundation.min.css\">");
-            h.Add("<link rel=\"stylesheet\" href=\"/slim.min.css\">");
             h.Add("<link rel=\"stylesheet\" href=\"/app.css\">");
             h.Add("</head>");
 
@@ -149,11 +148,9 @@ namespace Greatbone.Sample
             // zurb foundation
             h.Add("<script src=\"//cdn.bootcss.com/jquery/3.2.1/jquery.min.js\"></script>");
             h.Add("<script src=\"//cdn.bootcss.com/foundation/6.3.1/js/foundation.min.js\"></script>");
-            h.Add("<script src=\"/slim.jquery.min.js\"></script>");
             h.Add("<script src=\"/app.js\"></script>");
             h.Add("<script>");
             h.Add("$(document).foundation();");
-            h.Add("$('body').slim('parse');");
             // enabling ok button
             h.Add("$(document).ready(function(){");
             h.Add("$('#dynadlg', window.parent.document).find('button').prop('disabled', false);");
@@ -186,7 +183,7 @@ namespace Greatbone.Sample
         {
             ac.GivePane(status, m =>
                 {
-                    m.FORM_();
+                    m.FORM_(mp: true);
                     m.FIELDSET_();
                     form(m);
                     m._FIELDSET();

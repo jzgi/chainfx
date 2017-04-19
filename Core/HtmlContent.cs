@@ -129,16 +129,24 @@ namespace Greatbone.Core
             Add("</div>");
         }
 
-        public void FORM_()
+        public void FORM_(string action = null, bool post = true, bool mp = false)
         {
-            Add("<form>");
-        }
-
-        public void FORM_(string action)
-        {
-            Add("<form method=\"post\" action=\"");
-            Add(action);
-            Add("\">");
+            Add("<form");
+            if (action != null)
+            {
+                Add(" action=\"");
+                Add(action);
+                Add("\"");
+            }
+            if (post)
+            {
+                Add(" method=\"post\"");
+            }
+            if (mp)
+            {
+                Add(" enctype=\"multipart/form-data\"");
+            }
+            Add(">");
         }
 
         public void _FORM()
@@ -512,6 +520,8 @@ namespace Greatbone.Core
                         Add(" onclick=\"");
                         Add(act.Name);
                         Add("(this);\"");
+                    } else if (ui.HasCrop) {
+                        Add(" onclick=\"return crop(this);\"");
                     }
                     Add(">");
                     Add(act.Label);
@@ -1040,7 +1050,7 @@ namespace Greatbone.Core
             //     <input type="file" name="slim[]" required />
             // </div>
             //
-            Add("<div class=\"slim\" data-label=\"");
+            Add("<div class=\"slim\" data-upload-base64=\"false\" data-instant-edit=\"true\" data-label=\"");
             AddLabel(label, name);
             Add("\" data-fetcher=\"_");
             Add(name);
@@ -1049,6 +1059,8 @@ namespace Greatbone.Core
             if (size != null)
             {
                 Add("\" data-size=\"");
+                Add(size);
+                Add("\" data-force-size=\"");
                 Add(size);
             }
             if (ratio != null)

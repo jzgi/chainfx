@@ -23,7 +23,7 @@ function dialog(trig, mode, siz) {
 
     var html = '<div id="dynadlg" class="' + sizg + ' reveal"  data-reveal data-close-on-click="false">'
         + '<strong>' + trig.innerHTML + ' </strong>'
-        + '<button class="close-button" type="button" onclick="destory(this);">&times;</button>'
+        + '<button class="close-button" type="button" onclick="$(\'#dynadlg\').foundation(\'destroy\').remove();">&times;</button>'
         + '<div style="height: calc(100% - 3rem)"><iframe src="' + src + '" style="width: 100%; height: 100%"></iframe></div>'
         + '<button class=\"button primary float-center\" onclick="ok(this,' + mode + ',\'' + formid + '\',\'' + tag + '\',\'' + action + '\',\'' + method + '\');" disabled>确定</botton>'
         + '</div>';
@@ -98,15 +98,88 @@ function ok(okbtn, mode, formid, tag, action, method) {
     dlge.remove();
 }
 
-// when clicked on the OK button
-function destory(btn) {
-    var dlge = $(btn).parent();
-    // clean up the dialog
-    dlge.foundation('close');
-    dlge.foundation('destroy');
-    dlge.remove();
+
+function crop(trig, siz, wid, hei, circle) {
+
+    var sizg = siz == 1 ? 'small' : siz == 2 ? 'large' : 'full';
+
+    // keep the trigger info
+    var formid = trig.form ? trig.form.id : '';
+    var tag = trig.tagName;
+    var action;
+    if (tag == 'BUTTON') {
+        action = trig.formAction || trig.name;
+        method = trig.formMethod || method;
+    } else if (tag == 'A') {
+        action = trig.href
+        method = 'GET';
+    }
+
+    var html = '<div id="dynadlg" class="' + sizg + ' reveal"  data-reveal data-close-on-click="false">'
+        + '<strong>' + trig.innerHTML + ' </strong>'
+        + '<button class="close-button" type="button" onclick="$(\'#dynadlg\').foundation(\'destroy\').remove();">&times;</button>'
+        + '<div id="demo" style="height: calc(100% - 8rem)">'
+        + '<input type="file" id="fileinput" style="display: none;" onchange="bind(window.URL.createObjectURL(this.files[0]));">'
+        + '<a class="button" onclick="$(\'#fileinput\').click();">选择图片</a>'
+        + '<div class="progress button" role="progressbar" tabindex="0" onclick="upload();"><div class="progress-meter" style="width: 50%">Upload</div></div>'
+        + '</div>';
+    + '</div>';
+
+    var dive = $(html);
+
+    $('body').append(dive);
+
+    // initialize
+    $(dive).foundation();
+
+    $('#demo').croppie({ url: action, viewport: { width: wid, height: hei, type: circle ? 'circle' : 'square' }, });
+
+    // open
+    $(dive).foundation('open');
+
+    // abort the onclick
+    return false;
 }
 
+function bind(url, wid, height, circle) {
+
+    var mc = $('#demo');
+
+    mc.croppie('destroy');
+
+    mc.croppie({
+        url: url,
+        viewport: {
+            width: wid,
+            height: height,
+            type: circle ? 'circle' : 'square'
+        },
+    });
+}
+
+function upload() {
+    $.ajax({
+        xhr: function () {
+            var xhr = new window.XMLHttpRequest();
+            xhr.upload.addEventListener("progress", function (evt) {
+                if (evt.lengthComputable) {
+                    var percent = evt.loaded / evt.total;
+                    //Do something with upload progress here
+                }
+            }, false);
+            return xhr;
+        },
+        type: 'POST',
+        url: "/",
+        data: {},
+        success: function (data) {
+            //Do something on success
+        }
+    });
+
+
+    $.post('', $('#demo').croppie('result', { type: 'blob' }))
+}
 function validate() {
 
     // calculate checked if and unif

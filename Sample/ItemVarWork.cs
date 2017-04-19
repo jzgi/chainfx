@@ -151,17 +151,33 @@ namespace Greatbone.Sample
             }
         }
 
-        [Ui("图片", UiMode.AnchorDialog)]
+        [Ui("图片", UiMode.AnchorCrop)]
         public async Task icon(ActionContext ac)
         {
             if (ac.GET)
             {
-                ac.GiveFormPane(200, x => { x.FILE(nameof(icon), size: "120,120"); });
+                string shopid = ac[typeof(ShopVarWork)];
+                string name = ac[this];
+
+                using (var dc = Service.NewDbContext())
+                {
+                    if (dc.Query1("SELECT icon FROM items WHERE shopid = @1 AND name = @2", p => p.Set(shopid).Set(name)))
+                    {
+                        var byteas = dc.GetByteAs();
+                        if (byteas.Count == 0) ac.Give(204); // no content 
+                        else
+                        {
+                            StaticContent cont = new StaticContent(byteas);
+                            ac.Give(200, cont);
+                        }
+                    }
+                    else ac.Give(404); // not found           
+                }
             }
             else // post
             {
                 var frm = await ac.ReadAsync<Form>();
-                ArraySegment<byte> icon = frm[nameof(icon)];
+                string icon = frm[nameof(icon)];
                 string shopid = ac[typeof(ShopVarWork)];
                 using (var dc = Service.NewDbContext())
                 {
