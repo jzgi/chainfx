@@ -34,7 +34,7 @@ namespace Greatbone.Core
 
         readonly UiMode mode;
 
-        public UiAttribute(string label = null, UiMode mode = 0)
+        public UiAttribute(string label = null, UiMode mode = UiMode.Button)
         {
             this.label = label;
             this.mode = mode;
@@ -44,11 +44,15 @@ namespace Greatbone.Core
 
         public UiMode Mode => mode;
 
-        public int Limit { get; set; }
+        public int Limit { get; set; } = 20;
 
         public string Enable { get; set; }
 
-        public bool IsZero => mode == 0;
+        public short Width { get; set; } = 120;
+
+        public short Height { get; set; } = 120;
+
+        public bool Circle { get; set; } = false;
 
         public bool IsLink => ((int)mode & 0x10) == 0x10;
 

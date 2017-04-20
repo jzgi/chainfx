@@ -400,7 +400,7 @@ namespace Greatbone.Core
                 Type = ctyp,
                 Modified = modified
             };
-            ac.Give(200, cont); // todo 
+            ac.Give(200, cont, true, 60); // todo 
         }
     }
 }

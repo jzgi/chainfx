@@ -23,9 +23,9 @@ function dialog(trig, mode, siz) {
 
     var html = '<div id="dynadlg" class="' + sizg + ' reveal"  data-reveal data-close-on-click="false">'
         + '<strong>' + trig.innerHTML + ' </strong>'
-        + '<button class="close-button" type="button" onclick="$(\'#dynadlg\').foundation(\'destroy\').remove();">&times;</button>'
+        + '<button class="close-button medium" type="button" onclick="$(\'#dynadlg\').foundation(\'close\').remove();">&times;</button>'
         + '<div style="height: calc(100% - 3rem)"><iframe src="' + src + '" style="width: 100%; height: 100%"></iframe></div>'
-        + '<button class=\"button primary float-center\" onclick="ok(this,' + mode + ',\'' + formid + '\',\'' + tag + '\',\'' + action + '\',\'' + method + '\');" disabled>确定</botton>'
+        + '<button class=\"button secondary float-center\" onclick="ok(this,' + mode + ',\'' + formid + '\',\'' + tag + '\',\'' + action + '\',\'' + method + '\');" disabled>确定</botton>'
         + '</div>';
 
     var dive = $(html);
@@ -103,25 +103,18 @@ function crop(trig, siz, wid, hei, circle) {
 
     var sizg = siz == 1 ? 'small' : siz == 2 ? 'large' : 'full';
 
-    // keep the trigger info
-    var formid = trig.form ? trig.form.id : '';
-    var tag = trig.tagName;
-    var action;
-    if (tag == 'BUTTON') {
-        action = trig.formAction || trig.name;
-        method = trig.formMethod || method;
-    } else if (tag == 'A') {
-        action = trig.href
-        method = 'GET';
-    }
+    var action = trig.href;
+
+    wid = wid ? wid : 120;
+    hei = hei ? hei : 120;
 
     var html = '<div id="dynadlg" class="' + sizg + ' reveal"  data-reveal data-close-on-click="false">'
         + '<strong>' + trig.innerHTML + ' </strong>'
-        + '<button class="close-button" type="button" onclick="$(\'#dynadlg\').foundation(\'destroy\').remove();">&times;</button>'
+        + '<button class="close-button medium" type="button" onclick="$(\'#dynadlg\').foundation(\'close\').remove();">&times;</button>'
         + '<div id="demo" style="height: calc(100% - 8rem)">'
         + '<input type="file" id="fileinput" style="display: none;" onchange="bind(window.URL.createObjectURL(this.files[0]));">'
-        + '<a class="button" onclick="$(\'#fileinput\').click();">选择图片</a>'
-        + '<div class="progress button" role="progressbar" tabindex="0" onclick="upload();"><div class="progress-meter" style="width: 50%">Upload</div></div>'
+        + '<a class="button hollow" onclick="$(\'#fileinput\').click();">选择图片</a>'
+        + '<div class="progress button hollow" role="progressbar" tabindex="0" onclick="upload();"><div class="progress-meter" style="width: 50%">Upload</div></div>'
         + '</div>';
     + '</div>';
 
@@ -132,7 +125,7 @@ function crop(trig, siz, wid, hei, circle) {
     // initialize
     $(dive).foundation();
 
-    $('#demo').croppie({ url: action, viewport: { width: wid, height: hei, type: circle ? 'circle' : 'square' }, });
+    $('#demo').croppie({ url: action, viewport: { width: wid, height: hei, type: circle ? 'circle' : 'square' }, enforceBoundary: false });
 
     // open
     $(dive).foundation('open');
@@ -154,6 +147,7 @@ function bind(url, wid, height, circle) {
             height: height,
             type: circle ? 'circle' : 'square'
         },
+        enforceBoundary: false
     });
 }
 

@@ -76,9 +76,11 @@ namespace Greatbone.Sample
             string shopid = ac[typeof(ShopVarWork)];
             using (var dc = ac.NewDbContext())
             {
-                if (dc.Query("SELECT * FROM items WHERE shopid = @1", p => p.Set(shopid)))
+                const int proj = -1 ^ Projection.BIN;
+                dc.Sql("SELECT ").columnlst(Item.Empty,proj)._("FROM items WHERE shopid = @1");
+                if (dc.Query(p => p.Set(shopid)))
                 {
-                    ac.GiveGridFormPage(200, dc.ToList<Item>());
+                    ac.GiveGridFormPage(200, dc.ToList<Item>(proj), proj);
                 }
                 else
                 {
