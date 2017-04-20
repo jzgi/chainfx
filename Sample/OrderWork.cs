@@ -12,15 +12,9 @@ namespace Greatbone.Sample
         }
     }
 
-    public abstract class MyOrderWork<V> : OrderWork<V> where V : MyOrderVarWork
-    {
-        protected MyOrderWork(WorkContext wc) : base(wc)
-        {
-        }
-    }
 
     [Ui("购物车")]
-    public class MyCartOrderWork : MyOrderWork<MyCartOrderVarWork>
+    public class MyCartOrderWork : OrderWork<MyCartOrderVarWork>
     {
         public MyCartOrderWork(WorkContext wc) : base(wc)
         {
@@ -64,7 +58,7 @@ namespace Greatbone.Sample
     }
 
     [Ui("订单")]
-    public class MyRealOrderWork : MyOrderWork<MyCartOrderVarWork>
+    public class MyRealOrderWork : OrderWork<MyCartOrderVarWork>
     {
         public MyRealOrderWork(WorkContext wc) : base(wc)
         {
@@ -109,14 +103,7 @@ namespace Greatbone.Sample
         }
     }
 
-    public abstract class OprOrderWork<V> : OrderWork<V> where V : OprOrderVarWork
-    {
-        protected OprOrderWork(WorkContext wc) : base(wc)
-        {
-        }
-    }
-
-    public class OprUnpaidOrderWork : OprOrderWork<OprUnpaidOrderVarWork>
+    public class OprUnpaidOrderWork : OrderWork<OprUnpaidOrderVarWork>
     {
         public OprUnpaidOrderWork(WorkContext wc) : base(wc)
         {
@@ -144,7 +131,7 @@ namespace Greatbone.Sample
     }
 
     [Ui("已付")]
-    public class OprPaidOrderWork : OprOrderWork<OprPaidOrderVarWork>
+    public class OprPaidOrderWork : OrderWork<OprPaidOrderVarWork>
     {
         public OprPaidOrderWork(WorkContext wc) : base(wc)
         {
@@ -188,7 +175,7 @@ namespace Greatbone.Sample
     }
 
     [Ui("已备")]
-    public class OprPackedOrderWork : OprOrderWork<OprPackedOrderVarWork>
+    public class OprPackedOrderWork : OrderWork<OprPackedOrderVarWork>
     {
         public OprPackedOrderWork(WorkContext wc) : base(wc)
         {
@@ -216,9 +203,9 @@ namespace Greatbone.Sample
     }
 
     [Ui("在派")]
-    public class OprShippedOrderWork : OprOrderWork<OprShippedOrderVarWork>
+    public class OprAssignedOrderWork : OrderWork<OprAssignedOrderVarWork>
     {
-        public OprShippedOrderWork(WorkContext wc) : base(wc)
+        public OprAssignedOrderWork(WorkContext wc) : base(wc)
         {
         }
 
@@ -244,18 +231,74 @@ namespace Greatbone.Sample
     }
 
     [Ui("已完")]
-    public class OprCompletedOrderWork : OprOrderWork<OprClosedOrderVarWork>
+    public class OprDoneOrderWork : OrderWork<OprDoneOrderVarWork>
     {
-        public OprCompletedOrderWork(WorkContext wc) : base(wc)
+        public OprDoneOrderWork(WorkContext wc) : base(wc)
         {
         }
     }
 
     [Ui("已撤")]
-    public class OprAbortedOrderWork : OprOrderWork<OprAbortedOrderVarWork>
+    public class OprAbortedOrderWork : OrderWork<OprAbortedOrderVarWork>
     {
         public OprAbortedOrderWork(WorkContext wc) : base(wc)
         {
+        }
+    }
+
+    [Ui("已派")]
+    public class DvrAssignedOrderWork : OrderWork<DvrAssignedOrderVarWork>
+    {
+        public DvrAssignedOrderWork(WorkContext wc) : base(wc)
+        {
+        }
+
+        [Ui("锁定/处理")]
+        public async Task @lock(ActionContext ac)
+        {
+            string shopid = ac[0];
+            Form frm = await ac.ReadAsync<Form>();
+            int[] pk = frm[nameof(pk)];
+
+            using (var dc = ac.NewDbContext())
+            {
+                dc.Sql("UPDATE orders SET ").setstate()._(" WHERE id = @1 AND shopid = @2 AND ").statecond();
+                if (dc.Query(p => p.Set(pk).Set(shopid)))
+                {
+                    var order = dc.ToArray<Order>();
+                }
+                else
+                {
+                }
+            }
+        }
+    }
+
+    [Ui("历史")]
+    public class DvrDoneOrderWork : OrderWork<DvrDoneOrderVarWork>
+    {
+        public DvrDoneOrderWork(WorkContext wc) : base(wc)
+        {
+        }
+
+        [Ui("锁定/处理")]
+        public async Task @lock(ActionContext ac)
+        {
+            string shopid = ac[0];
+            Form frm = await ac.ReadAsync<Form>();
+            int[] pk = frm[nameof(pk)];
+
+            using (var dc = ac.NewDbContext())
+            {
+                dc.Sql("UPDATE orders SET ").setstate()._(" WHERE id = @1 AND shopid = @2 AND ").statecond();
+                if (dc.Query(p => p.Set(pk).Set(shopid)))
+                {
+                    var order = dc.ToArray<Order>();
+                }
+                else
+                {
+                }
+            }
         }
     }
 }

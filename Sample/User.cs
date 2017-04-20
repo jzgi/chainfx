@@ -40,10 +40,9 @@ namespace Greatbone.Sample
         internal string distr;
         internal string addr;
         internal DateTime created;
-        internal short opr;
-        internal string oprshopid; // bound shop id
-        internal short adm;
-        internal string admcity;
+        internal string oprat; // operator of shopid
+        internal string dvrat; // deliverer of shopid
+        internal string mgrat; // manager of city
 
         public void ReadData(IDataInput i, int proj = 0)
         {
@@ -72,10 +71,9 @@ namespace Greatbone.Sample
             i.Get(nameof(created), ref created);
             if (proj.Late())
             {
-                i.Get(nameof(opr), ref opr);
-                i.Get(nameof(oprshopid), ref oprshopid);
-                i.Get(nameof(adm), ref adm);
-                i.Get(nameof(admcity), ref admcity);
+                i.Get(nameof(oprat), ref oprat);
+                i.Get(nameof(dvrat), ref dvrat);
+                i.Get(nameof(mgrat), ref mgrat);
             }
         }
 
@@ -106,13 +104,12 @@ namespace Greatbone.Sample
             o.Put(nameof(created), created);
             if (proj.Late())
             {
-                o.Put(nameof(opr), opr, label: "操作员");
-                o.Put(nameof(oprshopid), oprshopid, label: "操作供应点");
-                o.Put(nameof(adm), adm, label: "监管员");
-                o.Put(nameof(admcity), admcity, label: "监管城市");
+                o.Put(nameof(oprat), oprat, label: "操作员");
+                o.Put(nameof(dvrat), dvrat, label: "派送员");
+                o.Put(nameof(mgrat), mgrat, label: "监管员");
             }
         }
 
-        public bool IsShop => oprshopid != null;
+        public bool IsShop => oprat != null;
     }
 }

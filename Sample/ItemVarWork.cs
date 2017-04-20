@@ -32,7 +32,6 @@ namespace Greatbone.Sample
         {
             string shopid = ac[typeof(ShopVarWork)];
             string name = ac[this];
-
             using (var dc = Service.NewDbContext())
             {
                 if (dc.Query1("SELECT icon FROM items WHERE shopid = @1 AND name = @2", p => p.Set(shopid).Set(name)))
@@ -42,7 +41,7 @@ namespace Greatbone.Sample
                     else
                     {
                         StaticContent cont = new StaticContent(byteas);
-                        ac.Give(200, cont);
+                        ac.Give(200, cont, true, 60);
                     }
                 }
                 else ac.Give(404); // not found           
@@ -154,11 +153,10 @@ namespace Greatbone.Sample
         [Ui("图片", UiMode.AnchorCrop)]
         public async Task icon(ActionContext ac)
         {
+            string shopid = ac[typeof(ShopVarWork)];
+            string name = ac[this];
             if (ac.GET)
             {
-                string shopid = ac[typeof(ShopVarWork)];
-                string name = ac[this];
-
                 using (var dc = Service.NewDbContext())
                 {
                     if (dc.Query1("SELECT icon FROM items WHERE shopid = @1 AND name = @2", p => p.Set(shopid).Set(name)))
@@ -177,11 +175,10 @@ namespace Greatbone.Sample
             else // post
             {
                 var frm = await ac.ReadAsync<Form>();
-                string icon = frm[nameof(icon)];
-                string shopid = ac[typeof(ShopVarWork)];
+                ArraySegment<byte> icon = frm[nameof(icon)];
                 using (var dc = Service.NewDbContext())
                 {
-                    if (dc.Execute("UPDATE items SET icon = @1 WHERE shopid = @2", p => p.Set(icon).Set(shopid)) > 0)
+                    if (dc.Execute("UPDATE items SET icon = @1 WHERE shopid = @2 AND name = @3", p => p.Set(icon).Set(shopid).Set(name)) > 0)
                     {
                         ac.Give(200); // ok
                     }

@@ -173,7 +173,7 @@ namespace Greatbone.Sample
     {
         public OprShopWork(WorkContext wc) : base(wc)
         {
-            CreateVar<OprShopVarWork, string>((prin) => ((User) prin).oprshopid);
+            CreateVar<OprShopVarWork, string>((prin) => ((User) prin).oprat);
         }
 
         public async Task @goto(ActionContext ac)
@@ -205,7 +205,52 @@ namespace Greatbone.Sample
                     if (credential.EqualsCredential(shopid, password))
                     {
                         dc.Execute("UPDATE users SET shopid = @1 WHERE wx = @2", p => p.Set(shopid).Set(prin.wx));
-                        prin.oprshopid = shopid;
+                        prin.oprat = shopid;
+                        ac.SetTokenCookie(prin);
+                    }
+                }
+                ac.GiveRedirect(orig);
+            }
+        }
+    }
+
+    public sealed class DvrShopWork : ShopWork<DvrShopVarWork>
+    {
+        public DvrShopWork(WorkContext wc) : base(wc)
+        {
+            CreateVar<DvrShopVarWork, string>((prin) => ((User) prin).oprat);
+        }
+
+        public async Task @goto(ActionContext ac)
+        {
+            string shopid = null;
+            string password = null;
+            string orig = ac.Query[nameof(orig)];
+            if (ac.GET)
+            {
+                ac.GiveFormPage(200, nameof(@goto), "请绑定供应点", (x) =>
+                {
+                    x.TEXT(nameof(shopid), shopid, required: true);
+                    x.PASSWORD(nameof(password), password);
+                    x.HIDDEN(nameof(orig), orig);
+                });
+            }
+            else
+            {
+                var f = await ac.ReadAsync<Form>();
+                shopid = f[nameof(shopid)];
+                password = f[nameof(password)];
+                orig = f[nameof(orig)];
+
+                // data op
+                User prin = (User) ac.Principal;
+                using (var dc = ac.NewDbContext())
+                {
+                    var credential = (string) dc.Scalar("SELECT credential FROM shops WHERE id = @1", p => p.Set(shopid));
+                    if (credential.EqualsCredential(shopid, password))
+                    {
+                        dc.Execute("UPDATE users SET shopid = @1 WHERE wx = @2", p => p.Set(shopid).Set(prin.wx));
+                        prin.oprat = shopid;
                         ac.SetTokenCookie(prin);
                     }
                 }

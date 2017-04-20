@@ -16,13 +16,15 @@ namespace Greatbone.Sample
 
         public ShopService(ServiceContext sc) : base(sc)
         {
-            Create<PubShopWork>("pub"); // public access
+            Create<PubShopWork>("pub"); // public
 
             Create<MyUserWork>("my"); // my personal
 
-            Create<OprShopWork>("opr"); // operator of shop
+            Create<OprShopWork>("opr"); // shop deliverer
 
-            Create<AdmWork>("adm"); // administrator of the system
+            Create<DvrShopWork>("dvr"); // shop operator
+
+            Create<AdmWork>("adm"); // administrator
 
             // timer obtaining access_token from weixin
             // timer = new Timer(async state =>

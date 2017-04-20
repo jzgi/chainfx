@@ -99,9 +99,9 @@ function ok(okbtn, mode, formid, tag, action, method) {
 }
 
 
-function crop(trig, siz, wid, hei, circle) {
+function crop(trig, wid, hei, circle) {
 
-    var sizg = siz == 1 ? 'small' : siz == 2 ? 'large' : 'full';
+    var sizg = 'full';
 
     var action = trig.href;
 
@@ -112,9 +112,11 @@ function crop(trig, siz, wid, hei, circle) {
         + '<strong>' + trig.innerHTML + ' </strong>'
         + '<button class="close-button medium" type="button" onclick="$(\'#dynadlg\').foundation(\'close\').remove();">&times;</button>'
         + '<div id="demo" style="height: calc(100% - 8rem)">'
-        + '<input type="file" id="fileinput" style="display: none;" onchange="bind(window.URL.createObjectURL(this.files[0]));">'
+        + '<input type="file" id="fileinput" style="display: none;" onchange="bind(window.URL.createObjectURL(this.files[0]),' + wid + ',' + hei + ',' + circle + ');">'
+        + '<div style="text-align: center">'
         + '<a class="button hollow" onclick="$(\'#fileinput\').click();">选择图片</a>'
-        + '<div class="progress button hollow" role="progressbar" tabindex="0" onclick="upload();"><div class="progress-meter" style="width: 50%">Upload</div></div>'
+        + '<a class="button hollow" onclick="upload(\'' + action + '\',' + circle + ');">裁剪并上传</a>'
+        + '</div>'
         + '</div>';
     + '</div>';
 
@@ -125,7 +127,7 @@ function crop(trig, siz, wid, hei, circle) {
     // initialize
     $(dive).foundation();
 
-    $('#demo').croppie({ url: action, viewport: { width: wid, height: hei, type: circle ? 'circle' : 'square' }, enforceBoundary: false });
+    bind(action, wid, hei, circle);
 
     // open
     $(dive).foundation('open');
@@ -151,29 +153,30 @@ function bind(url, wid, height, circle) {
     });
 }
 
-function upload() {
-    $.ajax({
-        xhr: function () {
-            var xhr = new window.XMLHttpRequest();
-            xhr.upload.addEventListener("progress", function (evt) {
-                if (evt.lengthComputable) {
-                    var percent = evt.loaded / evt.total;
-                    //Do something with upload progress here
-                }
-            }, false);
-            return xhr;
-        },
-        type: 'POST',
-        url: "/",
-        data: {},
-        success: function (data) {
-            //Do something on success
-        }
+function upload(url, circle) {
+
+    // get blob of cropped image
+    $('#demo').croppie('result', { type: 'blob', size: 'viewport', circle: circle }).then(function (blob) {
+
+        var fd = new FormData();
+        fd.append('icon', blob, 'icon.png');
+
+        // post
+        $.ajax({
+            type: 'POST',
+            url: url,
+            data: fd,
+            processData: false,
+            contentType: false,
+            success: function (data) {
+                alert('上传成功!');
+            }
+        });
     });
 
-
-    $.post('', $('#demo').croppie('result', { type: 'blob' }))
 }
+
+
 function validate() {
 
     // calculate checked if and unif

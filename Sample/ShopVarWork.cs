@@ -90,10 +90,10 @@ namespace Greatbone.Sample
                             m.Add("\">");
                             m.Add("<div class=\"row\">");
 
-                            m.Add("<div class=\"small-3 columns\"><a href=\"#\"><span></span><img src=\"");
+                            m.Add("<div class=\"small-4 columns\"><a href=\"#\"><span></span><img src=\"");
                             m.Add(item.name);
                             m.Add("/_icon_\" alt=\"\" class=\" thumbnail\"></a></div>");
-                            m.Add("<div class=\"small-9 columns\">");
+                            m.Add("<div class=\"small-8 columns\">");
                             m.Add("<p>&yen;");
                             m.Add(item.price);
                             m.Add("</p>");
@@ -128,15 +128,31 @@ namespace Greatbone.Sample
 
             Create<OprPackedOrderWork>("packed");
 
-            Create<OprShippedOrderWork>("shipped");
-
             Create<OprAbortedOrderWork>("aborted");
 
-            Create<OprCompletedOrderWork>("completed");
+            Create<OprAssignedOrderWork>("assigned");
+
+            Create<OprDoneOrderWork>("done");
 
             Create<OprItemWork>("item");
 
             Create<OprRepayWork>("repay");
+        }
+
+        public void @default(ActionContext ac)
+        {
+            ac.GiveFrame(200);
+        }
+    }
+
+    [Ui("设置")]
+    public class DvrShopVarWork : ShopVarWork
+    {
+        public DvrShopVarWork(WorkContext wc) : base(wc)
+        {
+            Create<DvrAssignedOrderWork>("assigned");
+
+            Create<DvrDoneOrderWork>("done");
         }
 
         public void @default(ActionContext ac)
