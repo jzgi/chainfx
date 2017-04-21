@@ -161,6 +161,13 @@ namespace Greatbone.Sample
         }
     }
 
+    public class MgrShopVarWork : ShopVarWork
+    {
+        public MgrShopVarWork(WorkContext wc) : base(wc)
+        {
+        }
+    }
+
     public class AdmShopVarWork : ShopVarWork
     {
         public AdmShopVarWork(WorkContext wc) : base(wc)

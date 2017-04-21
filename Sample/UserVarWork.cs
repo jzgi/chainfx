@@ -46,7 +46,13 @@ namespace Greatbone.Sample
 
             Create<MyRealOrderWork>("real");
         }
+    }
 
+    public class MgrUserVarWork : UserVarWork
+    {
+        public MgrUserVarWork(WorkContext wc) : base(wc)
+        {
+        }
     }
 
     public class AdmUserVarWork : UserVarWork

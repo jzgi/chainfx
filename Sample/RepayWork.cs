@@ -102,9 +102,9 @@ namespace Greatbone.Sample
     }
 
     [Ui("结款管理")]
-    public class DvrRepayWork : RepayWork<DvrRepayVarWork>
+    public class MgrRepayWork : RepayWork<MgrRepayVarWork>
     {
-        public DvrRepayWork(WorkContext wc) : base(wc)
+        public MgrRepayWork(WorkContext wc) : base(wc)
         {
         }
 
@@ -122,6 +122,11 @@ namespace Greatbone.Sample
                     ac.GiveGridFormPage(200, (List<Repay>) null);
                 }
             }
+
+        }
+        [Ui("发起")]
+        public void calc(ActionContext ac)
+        {
         }
     }
 

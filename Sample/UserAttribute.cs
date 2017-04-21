@@ -4,25 +4,25 @@ namespace Greatbone.Sample
 {
     public class UserAttribute : AuthorizeAttribute
     {
-        readonly string oprat;
+        readonly bool opr;
 
-        readonly string dvrat;
+        readonly bool dvr;
 
-        readonly string mgrat;
+        readonly bool mgr;
 
-        public UserAttribute() : this(null, null)
+        readonly bool adm;
+
+        public UserAttribute(bool opr = false, bool dvr = false, bool mgr = false, bool adm = false)
         {
+            this.opr = opr;
+            this.dvr = dvr;
+            this.mgr = mgr;
+            this.adm = adm;
         }
 
-        public UserAttribute(string oprat, string mgrat)
-        {
-            this.oprat = oprat;
-            this.mgrat = mgrat;
-        }
+        public bool IsOpr => opr;
 
-        public bool IsOpr => oprat != null;
-
-        public bool IsAdm => mgrat != null;
+        public bool IsAdm => mgr;
 
         public override bool Check(ActionContext ac)
         {
@@ -30,23 +30,22 @@ namespace Greatbone.Sample
 
             if (prin == null) return false;
 
-            if (oprat != null)
+            if (opr)
             {
-                if (prin.oprat == null)
-                {
-                    return false;
-                }
-                string shopid = ac[typeof(ShopVarWork)];
-                return shopid == prin.oprat;
+                if (prin.oprat == null) return false;
+                return prin.oprat == ac[typeof(ShopVarWork)];
             }
-            if (mgrat != null)
+            if (dvr)
             {
-                if (prin.mgrat == null)
-                {
-                    return false;
-                }
+                if (prin.dvrat == null) return false;
+                return prin.dvrat == ac[typeof(ShopVarWork)];
             }
-            return true;
+            if (mgr)
+            {
+                if (prin.mgrat == null) return false;
+                return prin.mgrat == ac[typeof(CityVarWork)];
+            }
+            return !adm || prin.adm;
         }
     }
 }

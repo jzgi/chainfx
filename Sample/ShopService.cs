@@ -24,6 +24,8 @@ namespace Greatbone.Sample
 
             Create<DvrShopWork>("dvr"); // shop operator
 
+            Create<MgrCityWork>("mgr"); // city manager
+
             Create<AdmWork>("adm"); // administrator
 
             // timer obtaining access_token from weixin
