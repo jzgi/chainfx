@@ -1,5 +1,5 @@
-using Greatbone.Core;
 using System.Collections.Generic;
+using Greatbone.Core;
 using static Greatbone.Core.Projection;
 
 namespace Greatbone.Sample
@@ -32,9 +32,6 @@ namespace Greatbone.Sample
         }
     }
 
-    /// <summary>
-    /// /pub/-shopid-/
-    /// </summary>
     public class PubShopVarWork : ShopVarWork
     {
         public PubShopVarWork(WorkContext wc) : base(wc)
@@ -48,26 +45,34 @@ namespace Greatbone.Sample
 
             using (var dc = ac.NewDbContext())
             {
-                // shop info
+                // query for the shop record
                 const int proj = -1 ^ BIN ^ TRANSF ^ SECRET;
                 dc.Sql("SELECT ").columnlst(Shop.Empty, proj)._("FROM shops WHERE id = @1");
                 if (dc.Query1(p => p.Set(shopid)))
                 {
                     var shop = dc.ToObject<Shop>(proj);
-                    // shop items 
+
+                    // query for item records of the shop
                     List<Item> items = null;
                     dc.Sql("SELECT ").columnlst(Item.Empty, proj)._("FROM items WHERE shopid = @1");
                     if (dc.Query(p => p.Set(shopid)))
                     {
                         items = dc.ToList<Item>(proj);
                     }
+
                     ac.GivePage(200, m =>
                     {
-                        m.Add("<div class=\"callout clearfix primary\">");
-                        m.Add("<a class=\"float-left\" href=\"../\">");
-                        m.Add(shop.name);
-                        m.Add("（切换）</a>");
-                        m.Add("<a class=\"float-right\" href=\"/my//cart/\">购物车/付款</a>");
+                        m.Add("<div data-sticky-container>");
+                        m.Add("<div class=\"sticky\" style=\"width: 100%\" data-sticky  data-options=\"anchor: page; marginTop: 0; stickyOn: small;\">");
+                        m.Add("<div class=\"title-bar\">");
+                        m.Add("<div class=\"title-bar-left\">");
+                        m.Add("<a href=\"../\" onclick=\"return dialog(this, 2);\">"); m.Add(shop.name); m.Add("</a>");
+                        m.Add("</div>");
+                        m.Add("<div class=\"title-bar-right\">");
+                        m.Add("<a class=\"float-right\" href=\"/my//cart/\"><span class=\"fa-stack fa-lg\"><i class=\"fa fa-circle fa-stack-2x\"></i><i class=\"fa fa-shopping-cart fa-stack-1x fa-inverse\"></i></span></a>");
+                        m.Add("</div>");
+                        m.Add("</div>");
+                        m.Add("</div>");
                         m.Add("</div>");
 
                         m.Add("<div>");
@@ -82,6 +87,11 @@ namespace Greatbone.Sample
 
                         // display items
 
+                        if (items == null)
+                        {
+                            m.Add("没有上架商品");
+                            return;
+                        }
                         for (int i = 0; i < items.Count; i++)
                         {
                             Item item = items[i];
@@ -101,9 +111,9 @@ namespace Greatbone.Sample
                             m.Add(item.descr);
                             m.Add("</p>");
 
-                            m.Add("<button class=\"button warning\" formaction=\"");
+                            m.Add("<a class=\"button warning\" href=\"");
                             m.Add(item.name);
-                            m.Add("/add\" onclick=\"return dialog(this,2)\">加入购物车</button>");
+                            m.Add("/add\" onclick=\"return dialog(this,2)\">加入购物车</a>");
                             m.Add("</div>");
 
                             m.Add("</div>");

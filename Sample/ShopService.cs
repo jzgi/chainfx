@@ -18,13 +18,13 @@ namespace Greatbone.Sample
         {
             Create<PubShopWork>("pub"); // public
 
-            Create<MyUserWork>("my"); // my personal
+            Create<MyUserWork>("my"); // personal
 
-            Create<OprShopWork>("opr"); // shop deliverer
+            Create<OprShopWork>("opr"); // shop operator
 
-            Create<DvrShopWork>("dvr"); // shop operator
+            Create<DvrShopWork>("dvr"); // shop deliverer
 
-            Create<MgrCityWork>("mgr"); // city manager
+            Create<MgrCityWork>("mgr"); // local manager
 
             Create<AdmWork>("adm"); // administrator
 

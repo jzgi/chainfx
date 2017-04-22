@@ -508,7 +508,7 @@ template {
 
 html {
     box-sizing: border-box;
-    font-size: 87.5%;
+    font-size: 100%;
 }
 
 *,
@@ -521,6 +521,7 @@ body {
     margin: 0;
     padding: 0;
     background: #fefefe;
+    font-size: 0.875rem;
     font-family: "Helvetica Neue", Helvetica, Roboto, Arial, sans-serif;
     font-weight: normal;
     line-height: 1.5;
@@ -1605,14 +1606,15 @@ select[multiple] {
 
 .title-bar {
     padding: 0.5rem;
-    background: #0a0a0a;
-    color: #fefefe;
+    background: white;
+    color: purple;
     display: -ms-flexbox;
     display: flex;
     -ms-flex-pack: justify;
     justify-content: space-between;
     -ms-flex-align: center;
     align-items: center;
+    border-bottom: 2px solid purple;
 }
 
 .title-bar .menu-icon {
@@ -2225,16 +2227,22 @@ html.is-reveal-open body {
     position: fixed;
 }
 
+.labeldiv {
+    background: #e6e6e6;
+    color: black;
+    text-align: right;
+}
+
 table {
     width: 100%;
     margin-bottom: 1rem;
-    border-radius: 3px;
+    border-radius: 0;
 }
 
 table thead,
 table tbody,
 table tfoot {
-    border: 1px solid #f1f1f1;
+    border: 0 solid #e6e6e6;
     background-color: #fefefe;
 }
 
@@ -2244,12 +2252,12 @@ table caption {
 }
 
 table thead {
-    background: #f8f8f8;
-    color: #0a0a0a;
+    background: #e6e6e6;
+    color: black;
 }
 
 table tfoot {
-    background: #f1f1f1;
+    background: #e6e6e6;
     color: #0a0a0a;
 }
 
@@ -2258,18 +2266,20 @@ table tfoot tr {
     background: transparent;
 }
 
-table thead th,
+table thead th {
+    text-align: center; 
+}
 table thead td,
 table tfoot th,
 table tfoot td {
-    padding: 0.5rem 0.625rem 0.625rem;
-    font-weight: bold;
+    padding: 0 0;
+    font-weight: normal;
     text-align: left;
 }
 
 table tbody th,
 table tbody td {
-    padding: 0.5rem 0.625rem 0.625rem;
+    padding: 0;
 }
 
 table tbody tr:nth-child(even) {

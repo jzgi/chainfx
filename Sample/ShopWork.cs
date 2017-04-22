@@ -93,7 +93,7 @@ namespace Greatbone.Sample
             bool dlg = ac.Query[nameof(dlg)];
             if (dlg)
             {
-                using (var dc = Service.NewDbContext())
+                using (var dc = ac.NewDbContext())
                 {
                     if (dc.Query("SELECT DISTINCT city FROM shops"))
                     {
@@ -110,7 +110,7 @@ namespace Greatbone.Sample
                 string city = ac.Query[nameof(city)];
                 if (city == null)
                 {
-                    city = ((User) ac.Principal).city;
+                    city = ((User)ac.Principal).city;
                 }
                 using (var dc = Service.NewDbContext())
                 {
@@ -119,11 +119,17 @@ namespace Greatbone.Sample
                         ac.GivePage(200,
                             m =>
                             {
-                                m.Add("<div class=\"callout clearfix primary\">");
-                                m.Add("<a class=\"float-left\" href=\"\" onclick=\"return dialog(this, 2);\">");
-                                m.Add(city);
-                                m.Add("（切换）</a>");
-                                m.Add("<a class=\"float-right\" href=\"/my//cart/\">购物车/付款</a>");
+                                m.Add("<div data-sticky-container>");
+                                m.Add("<div class=\"sticky\" style=\"width: 100%\" data-sticky  data-options=\"anchor: page; marginTop: 0; stickyOn: small;\">");
+                                m.Add("<div class=\"title-bar\">");
+                                m.Add("<div class=\"title-bar-left\">");
+                                m.Add("<a href=\"\" onclick=\"return dialog(this, 2);\">"); m.Add(city); m.Add("（切换）</a>");
+                                m.Add("</div>");
+                                m.Add("<div class=\"title-bar-right\">");
+                                m.Add("<a class=\"float-right\" href=\"/my//cart/\"><span class=\"fa-stack fa-lg\"><i class=\"fa fa-circle fa-stack-2x\"></i><i class=\"fa fa-shopping-cart fa-stack-1x fa-inverse\"></i></span></a>");
+                                m.Add("</div>");
+                                m.Add("</div>");
+                                m.Add("</div>");
                                 m.Add("</div>");
 
                                 var shops = dc.ToList<Shop>(-1 ^ BIN);
@@ -166,14 +172,11 @@ namespace Greatbone.Sample
     }
 
 
-    /// <summary>
-    ///
-    /// </summary>
     public class OprShopWork : ShopWork<OprShopVarWork>
     {
         public OprShopWork(WorkContext wc) : base(wc)
         {
-            CreateVar<OprShopVarWork, string>((prin) => ((User) prin).oprat);
+            CreateVar<OprShopVarWork, string>((prin) => ((User)prin).oprat);
         }
 
         public async Task @goto(ActionContext ac)
@@ -198,13 +201,13 @@ namespace Greatbone.Sample
                 orig = f[nameof(orig)];
 
                 // data op
-                User prin = (User) ac.Principal;
+                User prin = (User)ac.Principal;
                 using (var dc = ac.NewDbContext())
                 {
-                    var credential = (string) dc.Scalar("SELECT credential FROM shops WHERE id = @1", p => p.Set(shopid));
+                    var credential = (string)dc.Scalar("SELECT credential FROM shops WHERE id = @1", p => p.Set(shopid));
                     if (credential.EqualsCredential(shopid, password))
                     {
-                        dc.Execute("UPDATE users SET shopid = @1 WHERE wx = @2", p => p.Set(shopid).Set(prin.wx));
+                        dc.Execute("UPDATE users SET oprat = @1 WHERE wx = @2", p => p.Set(shopid).Set(prin.wx));
                         prin.oprat = shopid;
                         ac.SetTokenCookie(prin);
                     }
@@ -218,44 +221,7 @@ namespace Greatbone.Sample
     {
         public DvrShopWork(WorkContext wc) : base(wc)
         {
-            CreateVar<DvrShopVarWork, string>((prin) => ((User) prin).oprat);
-        }
-
-        public async Task @goto(ActionContext ac)
-        {
-            string shopid = null;
-            string password = null;
-            string orig = ac.Query[nameof(orig)];
-            if (ac.GET)
-            {
-                ac.GiveFormPage(200, nameof(@goto), "请绑定供应点", (x) =>
-                {
-                    x.TEXT(nameof(shopid), shopid, required: true);
-                    x.PASSWORD(nameof(password), password);
-                    x.HIDDEN(nameof(orig), orig);
-                });
-            }
-            else
-            {
-                var f = await ac.ReadAsync<Form>();
-                shopid = f[nameof(shopid)];
-                password = f[nameof(password)];
-                orig = f[nameof(orig)];
-
-                // data op
-                User prin = (User) ac.Principal;
-                using (var dc = ac.NewDbContext())
-                {
-                    var credential = (string) dc.Scalar("SELECT credential FROM shops WHERE id = @1", p => p.Set(shopid));
-                    if (credential.EqualsCredential(shopid, password))
-                    {
-                        dc.Execute("UPDATE users SET shopid = @1 WHERE wx = @2", p => p.Set(shopid).Set(prin.wx));
-                        prin.oprat = shopid;
-                        ac.SetTokenCookie(prin);
-                    }
-                }
-                ac.GiveRedirect(orig);
-            }
+            CreateVar<DvrShopVarWork, string>((prin) => ((User)prin).dvrat);
         }
     }
 
@@ -286,7 +252,7 @@ namespace Greatbone.Sample
                 }
                 else
                 {
-                    ac.GiveGridFormPage(200, (List<Shop>) null);
+                    ac.GiveGridFormPage(200, (List<Shop>)null);
                 }
             }
         }

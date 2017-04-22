@@ -16,7 +16,7 @@ namespace Greatbone.Sample
             {
                 mask = 0x4a78be76,
                 pose = 0x1f0335e2,
-                maxage = 3600 * 12
+                maxage = 3600
             };
 
             Db pg = new Db

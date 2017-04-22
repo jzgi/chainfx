@@ -103,6 +103,7 @@ namespace Greatbone.Sample
             h.Add("<title>粗粮达人</title>");
             h.Add("<meta name=\"viewport\" content=\"width=device-width, initial-scale=1.0\">");
             h.Add("<link rel=\"stylesheet\" href=\"//cdn.bootcss.com/croppie/2.4.1/croppie.min.css\">");
+            h.Add("<link rel=\"stylesheet\" href=\"//cdn.bootcss.com/font-awesome/4.7.0/css/font-awesome.min.css\">");
             h.Add("<link rel=\"stylesheet\" href=\"/foundation.min.css\">");
             h.Add("<link rel=\"stylesheet\" href=\"/app.css\">");
             h.Add("</head>");
@@ -137,6 +138,7 @@ namespace Greatbone.Sample
             h.Add("<head>");
             h.Add("<title>粗粮达人</title>");
             h.Add("<meta name=\"viewport\" content=\"width=device-width, initial-scale=1.0\">");
+            h.Add("<link rel=\"stylesheet\" href=\"//cdn.bootcss.com/font-awesome/4.7.0/css/font-awesome.min.css\">");
             h.Add("<link rel=\"stylesheet\" href=\"/foundation.min.css\">");
             h.Add("<link rel=\"stylesheet\" href=\"/app.css\">");
             h.Add("</head>");

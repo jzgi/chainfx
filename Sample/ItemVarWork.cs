@@ -1,4 +1,5 @@
 using System;
+using System.Collections.Generic;
 using System.Threading.Tasks;
 using Greatbone.Core;
 
@@ -73,13 +74,13 @@ namespace Greatbone.Sample
         {
         }
 
-        public void add(ActionContext ac)
+        public async Task add(ActionContext ac)
         {
             string shopid = ac[typeof(ShopVarWork)];
             string name = ac[this];
             if (ac.GET)
             {
-                using (var dc = Service.NewDbContext())
+                using (var dc = ac.NewDbContext())
                 {
                     if (dc.Query1("SELECT price, min, step FROM items WHERE shopid = @1 AND name = @2", p => p.Set(shopid).Set(name)))
                     {
@@ -88,17 +89,54 @@ namespace Greatbone.Sample
                         short qty = min;
                         var step = dc.GetShort();
                         string note = null;
-                        ac.GiveFormPane(200, f =>
+                        ac.GiveFormPane(200, h =>
                         {
-                            f.NUMBER(nameof(qty), qty, label: "数量", min: min, step: step);
-                            f.TEXTAREA(nameof(note), note, label: "附加说明");
+                            h.Add(name);
+                            h.NUMBER(nameof(qty), qty, label: "数量", min: min, step: step, required: true);
+                            h.TEXTAREA(nameof(note), note, label: "附加说明", max: 20);
                         });
                     }
                     else ac.Give(404); // not found           
                 }
             }
-            else
+            else // process post
             {
+                var frm = await ac.ReadAsync<Form>();
+                short qty = frm[nameof(qty)];
+                short note = frm[nameof(note)];
+
+                using (var dc = ac.NewDbContext())
+                {
+                    if (dc.Query1("SELECT detail, total FROM orders WHERE shopid = @1 AND buywx = @2 AND status = 0", p => p.Set(shopid).Set(shopid)))
+                    {
+                        var detail = dc.GetList<OrderLine>();
+                        var total = dc.GetDecimal();
+
+//                        detail
+
+                        dc.Execute("UPDATE orders SET detail = @1, total = @2 WHERE ", p => p.Set(detail).Set(total));
+                    }
+                    else
+                    {
+                        User prin = (User) ac.Principal;
+                        var order = new Order
+                        {
+                            buy = prin.name,
+                            buywx = prin.wx,
+                            buytel = prin.tel,
+
+                            detail = new List<OrderLine>
+                            {
+                                new OrderLine {item = name, price = 0, qty = qty, unit = ""}
+                            }
+                        };
+
+                        const int proj = -1 ^ Projection.AUTO ^ Projection.LATE;
+
+                        dc.Sql("INSERT INTO orders ")._(order, proj)._VALUES_(order, proj);
+                        dc.Execute(p => order.WriteData(p, proj));
+                    }
+                }
             }
         }
     }

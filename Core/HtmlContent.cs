@@ -76,7 +76,7 @@ namespace Greatbone.Core
                     char c = alt[i];
                     if (c >= 'a' && c <= 'z')
                     {
-                        c = (char)(c - 32);
+                        c = (char) (c - 32);
                     }
                     Add(c);
                 }
@@ -222,7 +222,7 @@ namespace Greatbone.Core
             // buttons
             if (uias != null)
             {
-                Add("<div class=\"row\">");
+                Add("<div class=\"row expanded\">");
                 TOOLS(uias);
                 Add("</div>");
             }
@@ -409,7 +409,7 @@ namespace Greatbone.Core
 
             if (lst != null)
             {
-                Add("<div class=\"row small-up-1 medium-up-2 large-up-3\">");
+                Add("<div class=\"row expanded small-up-1 medium-up-2 large-up-3\">");
                 for (int i = 0; i < lst.Count; i++)
                 {
                     Add("<div class=\"column card\">");
@@ -523,7 +523,13 @@ namespace Greatbone.Core
                     }
                     else if (ui.HasCrop)
                     {
-                        Add(" onclick=\"return crop(this,"); Add(ui.Width); Add(','); Add(ui.Height); Add(','); Add(ui.Circle); Add(");\"");
+                        Add(" onclick=\"return crop(this,");
+                        Add(ui.Width);
+                        Add(',');
+                        Add(ui.Height);
+                        Add(',');
+                        Add(ui.Circle);
+                        Add(");\"");
                     }
                     Add(">");
                     Add(act.Label);
@@ -564,6 +570,7 @@ namespace Greatbone.Core
             AddEsc(value);
             Add("</button>");
         }
+
 
         public void HIDDEN(string name, string value)
         {
@@ -708,11 +715,25 @@ namespace Greatbone.Core
         {
             Add("<label>");
             AddLabel(label, name);
+
+            bool group = step > 0; // input group with up up and down
+
+            if (group)
+            {
+                Add("<div class=\"input-group\">");
+                Add("<input type=\"button\" class=\"input-group-label\" onclick=\"this.form['qty'].stepDown()\" value=\"-\">");
+            }
+
             Add("<input type=\"number\" name=\"");
             Add(name);
             Add("\" value=\"");
             Add(v);
             Add("\"");
+
+            if (group)
+            {
+                Add(" class=\"input-group-field\"");
+            }
 
             if (help != null)
             {
@@ -746,6 +767,13 @@ namespace Greatbone.Core
             if (required) Add(" required");
 
             Add(">");
+
+            if (group)
+            {
+                Add("<input type=\"button\" class=\"input-group-label\" onclick=\"this.form['qty'].stepUp()\" value=\"+\">");
+                Add("</div>");
+            }
+
             Add("</label>");
         }
 
@@ -1132,7 +1160,7 @@ namespace Greatbone.Core
             if (mode > 0)
             {
                 Add(" onclick=\"dialog(this,");
-                Add((int)mode);
+                Add((int) mode);
                 Add("); return false;\"");
             }
 
@@ -1253,10 +1281,10 @@ namespace Greatbone.Core
                     break;
                 case COMP_GRID:
                     Add("<div class=\"row\">");
-                    Add("<div class=\"small-4 columns\">");
+                    Add("<div class=\"small-3 columns labeldiv\">");
                     AddLabel(label, name);
                     Add("</div>");
-                    Add("<div class=\"small-8 columns\">");
+                    Add("<div class=\"small-9 columns\">");
                     if (opt != null) Add(opt(v));
                     else Add(v);
                     Add("</div>");
@@ -1306,7 +1334,7 @@ namespace Greatbone.Core
                     break;
                 case COMP_GRID:
                     Add("<div class=\"row\">");
-                    Add("<div class=\"small-4 columns\">");
+                    Add("<div class=\"small-3 columns labeldiv\">");
                     if (formed && level == 0 && chain[level].ordinal == 0)
                     {
                         Add("<input type=\"checkbox\" name=\"pk\" value=\"");
@@ -1318,7 +1346,7 @@ namespace Greatbone.Core
                         AddLabel(label, name);
                     }
                     Add("</div>");
-                    Add("<div class=\"small-8 columns\">");
+                    Add("<div class=\"small-9 columns\">");
                     if (opt != null) Add(opt[v]);
                     else Add(v);
                     Add("</div>");
@@ -1367,7 +1395,7 @@ namespace Greatbone.Core
                     break;
                 case COMP_GRID:
                     Add("<div class=\"row\">");
-                    Add("<div class=\"small-4 columns\">");
+                    Add("<div class=\"small-3 columns labeldiv\">");
                     if (formed && level == 0 && chain[level].ordinal == 0)
                     {
                         Add("<input type=\"checkbox\" name=\"pk\" value=\"");
@@ -1379,7 +1407,7 @@ namespace Greatbone.Core
                         AddLabel(label, name);
                     }
                     Add("</div>");
-                    Add("<div class=\"small-8 columns\">");
+                    Add("<div class=\"small-9 columns\">");
                     Add(v);
                     Add("</div>");
                     Add("</div>");
@@ -1420,7 +1448,7 @@ namespace Greatbone.Core
                     break;
                 case COMP_GRID:
                     Add("<div class=\"row\">");
-                    Add("<div class=\"small-4 columns\">");
+                    Add("<div class=\"small-3 columns labeldiv\">");
                     if (formed && level == 0 && chain[level].ordinal == 0)
                     {
                         Add("<input type=\"checkbox\" name=\"pk\" value=\"");
@@ -1432,7 +1460,7 @@ namespace Greatbone.Core
                         AddLabel(label, name);
                     }
                     Add("</div>");
-                    Add("<div class=\"small-8 columns\">");
+                    Add("<div class=\"small-9 columns\">");
                     Add(v);
                     Add("</div>");
                     Add("</div>");
@@ -1472,10 +1500,10 @@ namespace Greatbone.Core
                     break;
                 case COMP_GRID:
                     Add("<div class=\"row\">");
-                    Add("<div class=\"small-4 columns\">");
+                    Add("<div class=\"small-3 columns labeldiv\">");
                     AddLabel(label, name);
                     Add("</div>");
-                    Add("<div class=\"small-8 columns\">");
+                    Add("<div class=\"small-9 columns\">");
                     Add(v);
                     Add("</div>");
                     Add("</div>");
@@ -1511,10 +1539,10 @@ namespace Greatbone.Core
                     break;
                 case COMP_GRID:
                     Add("<div class=\"row\">");
-                    Add("<div class=\"small-4 columns\">");
+                    Add("<div class=\"small-3 columns labeldiv\">");
                     AddLabel(label, name);
                     Add("</div>");
-                    Add("<div class=\"small-8 columns\">");
+                    Add("<div class=\"small-9 columns\">");
                     Add(v);
                     Add("</div>");
                     Add("</div>");
@@ -1554,10 +1582,10 @@ namespace Greatbone.Core
                     break;
                 case COMP_GRID:
                     Add("<div class=\"row\">");
-                    Add("<div class=\"small-4 columns\">");
+                    Add("<div class=\"small-3 columns labeldiv\">");
                     AddLabel(label, name);
                     Add("</div>");
-                    Add("<div class=\"small-8 columns\">");
+                    Add("<div class=\"small-9 columns\">");
                     if (v != default(DateTime)) Add(v);
                     Add("</div>");
                     Add("</div>");
@@ -1602,7 +1630,7 @@ namespace Greatbone.Core
                     break;
                 case COMP_GRID:
                     Add("<div class=\"row\">");
-                    Add("<div class=\"small-4 columns\">");
+                    Add("<div class=\"small-3 columns labeldiv\">");
                     if (formed && level == 0 && chain[level].ordinal == 0)
                     {
                         Add("<input type=\"checkbox\" name=\"pk\" value=\"");
@@ -1614,7 +1642,7 @@ namespace Greatbone.Core
                         AddLabel(label, name);
                     }
                     Add("</div>");
-                    Add("<div class=\"small-8 columns\">");
+                    Add("<div class=\"small-9 columns\">");
                     Add(v);
                     Add("</div>");
                     Add("</div>");
@@ -1630,11 +1658,11 @@ namespace Greatbone.Core
                     }
                     else if (name.EndsWith("password") || name.EndsWith("pwd"))
                     {
-                        PASSWORD(name, v, label, help, pattern, (sbyte)max, (sbyte)min, @readonly, required);
+                        PASSWORD(name, v, label, help, pattern, (sbyte) max, (sbyte) min, @readonly, required);
                     }
                     else if (max < 128)
                     {
-                        TEXT(name, v, label, help, pattern, (sbyte)max, (sbyte)min, opt, @readonly, required);
+                        TEXT(name, v, label, help, pattern, (sbyte) max, (sbyte) min, opt, @readonly, required);
                     }
                     else
                     {
@@ -1738,7 +1766,9 @@ namespace Greatbone.Core
                 case COMP_GRID:
                     if (v != null)
                     {
+                        Add("<div class=\"row\">");
                         TABLE(v, proj);
+                        Add("</div>");
                     }
                     else
                     {

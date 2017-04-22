@@ -1,6 +1,6 @@
-﻿using Greatbone.Core;
-using System.Net;
+﻿using System.Net;
 using System.Threading.Tasks;
+using Greatbone.Core;
 
 namespace Greatbone.Sample
 {

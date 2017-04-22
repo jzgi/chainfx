@@ -42,6 +42,7 @@ namespace Greatbone.Sample
         internal string buyaddr; // buyer shipping address
         internal List<OrderLine> detail;
         internal decimal total;
+        internal string note;
         internal DateTime created; // time created
 
         internal string prepay_id;
@@ -80,6 +81,7 @@ namespace Greatbone.Sample
                 i.Get(nameof(detail), ref detail);
             }
             i.Get(nameof(total), ref total);
+            i.Get(nameof(note), ref note);
             i.Get(nameof(created), ref created);
 
             if (proj.Late())
@@ -115,6 +117,7 @@ namespace Greatbone.Sample
 
             o.Put(nameof(buy), buy, label: "买家名称");
             o.Put(nameof(buywx), buywx);
+
             o.Begin("送货地址");
             o.Put(nameof(buytel), buytel);
             o.Put(nameof(buydistr), buydistr);
@@ -126,7 +129,8 @@ namespace Greatbone.Sample
                 o.Put(nameof(detail), detail);
             }
             o.Put(nameof(total), total, label: "金额");
-            o.Put(nameof(created), created);
+            o.Put(nameof(note), note, label: "附加说明");
+            o.Put(nameof(created), created, label: "创建时间");
 
             if (proj.Late())
             {
@@ -177,7 +181,6 @@ namespace Greatbone.Sample
         internal short qty;
         internal string unit;
         internal decimal price;
-        string note;
 
         public decimal Subtotal => price * qty;
 
@@ -187,7 +190,6 @@ namespace Greatbone.Sample
             i.Get(nameof(qty), ref qty);
             i.Get(nameof(unit), ref unit);
             i.Get(nameof(price), ref price);
-            i.Get(nameof(note), ref note);
         }
 
         public void WriteData<R>(IDataOutput<R> o, int proj = 0) where R : IDataOutput<R>
@@ -198,7 +200,6 @@ namespace Greatbone.Sample
             o.Put(nameof(unit), unit);
             o.End();
             o.Put(nameof(price), price, label: "单价");
-            o.Put(nameof(note), note, label: "附注");
         }
 
         public void AddQty(short qty)

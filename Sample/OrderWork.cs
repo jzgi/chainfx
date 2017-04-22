@@ -25,9 +25,11 @@ namespace Greatbone.Sample
             string wx = ac[-1];
             using (var dc = ac.NewDbContext())
             {
-                if (dc.Query("SELECT * FROM orders WHERE buywx = @1 AND status = 0 ORDER BY id LIMIT 20 OFFSET @2", p => p.Set(wx).Set(page * 20)))
+                const int proj = -1 ^ Projection.LATE;
+                dc.Sql("SELECT ").columnlst(Order.Empty, proj)._("FROM orders WHERE buywx = @1 AND status = 0");
+                if (dc.Query(p => p.Set(wx)))
                 {
-                    ac.GiveGridFormPage(200, dc.ToList<Order>(-1), -1);
+                    ac.GiveGridFormPage(200, dc.ToList<Order>(proj), proj);
                 }
                 else
                 {
@@ -253,8 +255,24 @@ namespace Greatbone.Sample
         {
         }
 
-        [Ui("锁定/处理")]
-        public async Task @lock(ActionContext ac)
+        public void @default(ActionContext ac, int page)
+        {
+            string shopid = ac[typeof(ShopVarWork)];
+            using (var dc = ac.NewDbContext())
+            {
+                if (dc.Query("SELECT * FROM orders WHERE shopid = @1 AND status = 0 ORDER BY id LIMIT 20 OFFSET @2", p => p.Set(shopid).Set(page * 20)))
+                {
+                    ac.GiveGridFormPage(200, dc.ToList<Order>(-1), -1);
+                }
+                else
+                {
+                    ac.GiveGridFormPage(200, (List<Order>) null);
+                }
+            }
+        }
+
+        [Ui("反回")]
+        public async Task unassign(ActionContext ac)
         {
             string shopid = ac[0];
             Form frm = await ac.ReadAsync<Form>();
