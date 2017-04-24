@@ -493,42 +493,50 @@ namespace Greatbone.Core
             --level;
         }
 
-        public void TOOLS(ActionInfo[] acts)
+        public void TOOLS(ActionInfo[] ais)
         {
-            for (int i = 0; i < acts.Length; i++)
+            for (int i = 0; i < ais.Length; i++)
             {
-                ActionInfo act = acts[i];
+                ActionInfo ai = ais[i];
 
-                UiAttribute ui = act.Ui;
+                UiAttribute ui = ai.Ui;
 
                 if (ui.IsLink)
                 {
                     Add("<a class=\"button hollow primary\" href=\"");
                     PutPath();
-                    Add(act.Name);
+                    Add(ai.Name);
                     Add("\"");
-                    if (ui.HasDialog)
+                    if (ai.Enabler != null && !ai.Enabler(chain[level].obj))
+                    {
+                        Add(" disabled onclick=\"return false;\"");
+                    }
+                    else if (ui.HasDialog)
                     {
                         Add(" onclick=\"return dialog(this,1,2);\"");
                     }
                     Add(">");
-                    Add(act.Label);
+                    Add(ai.Label);
                     Add("</a>");
                 }
                 else if (ui.IsAnchor)
                 {
                     Add("<a class=\"button hollow primary\" href=\"");
                     PutPath();
-                    Add(act.Name);
+                    Add(ai.Name);
                     Add("\"");
-                    if (ui.HasDialog)
+                    if (ai.Enabler != null && !ai.Enabler(chain[level].obj))
+                    {
+                        Add(" disabled onclick=\"return false;\"");
+                    }
+                    else if (ui.HasDialog)
                     {
                         Add(" onclick=\"return dialog(this,2,3);\"");
                     }
                     else if (ui.HasScript)
                     {
                         Add(" onclick=\"");
-                        Add(act.Name);
+                        Add(ai.Name);
                         Add("(this);\"");
                     }
                     else if (ui.HasCrop)
@@ -542,18 +550,22 @@ namespace Greatbone.Core
                         Add(");\"");
                     }
                     Add(">");
-                    Add(act.Label);
+                    Add(ai.Label);
                     Add("</a>");
                 }
                 else if (ui.IsButton)
                 {
                     Add("<button class=\"button hollow primary\" name=\"");
-                    Add(act.Name);
+                    Add(ai.Name);
                     Add("\" formaction=\"");
                     PutPath();
-                    Add(act.Name);
+                    Add(ai.Name);
                     Add("\" formmethod=\"post\"");
-                    if (ui.HasConfirm)
+                    if (ai.Enabler != null && !ai.Enabler(chain[level].obj))
+                    {
+                        Add(" disabled");
+                    }
+                    else if (ui.HasConfirm)
                     {
                         Add(" onclick=\"return confirm();\"");
                     }
@@ -561,14 +573,8 @@ namespace Greatbone.Core
                     {
                         Add(" onclick=\"return dialog(this,4,2);\"");
                     }
-                    string enable = ui.Enable;
-                    if (enable != null)
-                    {
-                        // Add(" data-if=\""); Add(state.If); Add("\"");
-                        // Add(" data-unif=\""); Add(state.Unif); Add("\"");
-                    }
                     Add(">");
-                    Add(act.Label);
+                    Add(ai.Label);
                     Add("</button>");
                 }
             }
@@ -1157,14 +1163,14 @@ namespace Greatbone.Core
             Add("</label>");
         }
 
-        public void BUTTON(ActionInfo act)
+        public void BUTTON(ActionInfo ai)
         {
             Add("<button class=\"button primary\" style=\"margin-right: 5px; border-radius: 15%\"");
             Add(" formaction=\"");
-            Add(act.Name);
+            Add(ai.Name);
             Add("\" formmethod=\"post\"");
 
-            UiAttribute ui = act.Ui;
+            UiAttribute ui = ai.Ui;
 
             UiMode mode = ui.Mode;
             if (mode > 0)
@@ -1174,14 +1180,13 @@ namespace Greatbone.Core
                 Add("); return false;\"");
             }
 
-            string state = ui.Enable;
-            if (state != null)
+            if (ai.Enabler != null)
             {
                 // Add(" data-if=\""); Add(state.If); Add("\"");
                 // Add(" data-unif=\""); Add(state.Unif); Add("\"");
             }
             Add(">");
-            AddLabel(ui.Label, act.Name);
+            AddLabel(ui.Label, ai.Name);
 
             Add("</button>");
         }

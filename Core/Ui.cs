@@ -44,10 +44,6 @@ namespace Greatbone.Core
 
         public UiMode Mode => mode;
 
-        public int Limit { get; set; } = 20;
-
-        public string Enable { get; set; }
-
         public short Width { get; set; } = 120;
 
         public short Height { get; set; } = 120;

@@ -28,8 +28,6 @@ namespace Greatbone.Core
 
         public ActionInfo Doer { get; internal set; }
 
-        public int Limit => Doer.Ui?.Limit ?? 20;
-
         public int Subscript { get; internal set; }
 
         /// The decrypted/decoded principal object.

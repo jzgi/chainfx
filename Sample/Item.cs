@@ -65,7 +65,7 @@ namespace Greatbone.Sample
             o.Put(nameof(price), price, label: "单价", required: true);
             o.Put(nameof(min), min, label: "起订");
             o.Put(nameof(step), step, label: "递增");
-            o.Put(nameof(global), global, label: "递增");
+            o.Put(nameof(global), global, label: "不限同城");
             o.Put(nameof(status), status, label: "状态", opt: STATUS);
         }
     }

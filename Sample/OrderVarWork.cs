@@ -1,3 +1,4 @@
+using System;
 using System.Threading.Tasks;
 using Greatbone.Core;
 
@@ -54,6 +55,8 @@ namespace Greatbone.Sample
                 }
             }
         }
+
+        static readonly Func<IData, bool> PREPAY = obj => ((Order) obj).custaddr != null;
 
         [Ui("付款", UiMode.AnchorScript)]
         public async Task prepay(ActionContext ac)
@@ -204,14 +207,21 @@ namespace Greatbone.Sample
         }
     }
 
-    public class DvrSentOrderVarWork : OrderVarWork
+    public abstract class DvrOrderVarWork : OrderVarWork
+    {
+        protected DvrOrderVarWork(WorkContext wc) : base(wc)
+        {
+        }
+    }
+
+    public class DvrSentOrderVarWork : DvrOrderVarWork
     {
         public DvrSentOrderVarWork(WorkContext wc) : base(wc)
         {
         }
     }
 
-    public class DvrDoneOrderVarWork : OrderVarWork
+    public class DvrDoneOrderVarWork : DvrOrderVarWork
     {
         public DvrDoneOrderVarWork(WorkContext wc) : base(wc)
         {

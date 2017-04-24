@@ -132,7 +132,7 @@ namespace Greatbone.Sample
             string shopid = ac[-1];
             using (var dc = ac.NewDbContext())
             {
-                if (dc.Query("SELECT * FROM orders WHERE shopid = @1 AND status = @2 ORDER BY id LIMIT @3 OFFSET @4", p => p.Set(shopid).Set(status).Set(ac.Limit).Set(page * ac.Limit)))
+                if (dc.Query("SELECT * FROM orders WHERE shopid = @1 AND status = @2 ORDER BY id LIMIT 20 OFFSET @4", p => p.Set(shopid).Set(status).Set(page * 20)))
                 {
                     ac.GiveGridFormPage(200, dc.ToList<Order>());
                 }
@@ -264,21 +264,23 @@ namespace Greatbone.Sample
         }
     }
 
-    [Ui("已派")]
-    public class DvrSentOrderWork : OrderWork<DvrSentOrderVarWork>
+    public abstract class DvrOrderWork<V> : OrderWork<V> where V : DvrOrderVarWork
     {
-        public DvrSentOrderWork(WorkContext wc) : base(wc)
+        protected readonly short status;
+
+        protected DvrOrderWork(WorkContext wc, short status) : base(wc)
         {
+            this.status = status;
         }
 
         public void @default(ActionContext ac, int page)
         {
-            string shopid = ac[typeof(ShopVarWork)];
+            string shopid = ac[-1];
             using (var dc = ac.NewDbContext())
             {
-                if (dc.Query("SELECT * FROM orders WHERE shopid = @1 AND status = 0 ORDER BY id LIMIT 20 OFFSET @2", p => p.Set(shopid).Set(page * 20)))
+                if (dc.Query("SELECT * FROM orders WHERE shopid = @1 AND dvr = #2 AND status = @3 ORDER BY id LIMIT 20 OFFSET @4", p => p.Set(shopid).Set(status).Set(page * 20)))
                 {
-                    ac.GiveGridFormPage(200, dc.ToList<Order>(-1), -1);
+                    ac.GiveGridFormPage(200, dc.ToList<Order>());
                 }
                 else
                 {
@@ -286,8 +288,18 @@ namespace Greatbone.Sample
                 }
             }
         }
+    }
 
-        [Ui("反回")]
+
+    [Ui("安排在派")]
+    public class DvrSentOrderWork : DvrOrderWork<DvrSentOrderVarWork>
+    {
+        public DvrSentOrderWork(WorkContext wc) : base(wc, Order.SENT)
+        {
+        }
+
+
+        [Ui("驳回安排")]
         public async Task unassign(ActionContext ac)
         {
             string shopid = ac[0];
@@ -308,7 +320,7 @@ namespace Greatbone.Sample
         }
     }
 
-    [Ui("历史")]
+    [Ui("派送成功")]
     public class DvrDoneOrderWork : OrderWork<DvrDoneOrderVarWork>
     {
         public DvrDoneOrderWork(WorkContext wc) : base(wc)

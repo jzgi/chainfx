@@ -1,3 +1,4 @@
+using System;
 using System.Reflection;
 
 namespace Greatbone.Core
@@ -21,10 +22,12 @@ namespace Greatbone.Core
 
         // pre- operation
         readonly IBefore before;
+
         readonly IBeforeAsync beforeasync;
 
         // post- operation
         readonly IAfter after;
+
         readonly IAfterAsync afterasync;
 
         internal Nodule(string name, ICustomAttributeProvider attrprov)
@@ -39,14 +42,14 @@ namespace Greatbone.Core
             }
 
             // ui
-            var uis = (UiAttribute[])attrprov.GetCustomAttributes(typeof(UiAttribute), false);
+            var uis = (UiAttribute[]) attrprov.GetCustomAttributes(typeof(UiAttribute), false);
             if (uis.Length > 0)
             {
                 ui = uis[0];
             }
 
             // authorize
-            var auths = (AuthorizeAttribute[])attrprov.GetCustomAttributes(typeof(AuthorizeAttribute), false);
+            var auths = (AuthorizeAttribute[]) attrprov.GetCustomAttributes(typeof(AuthorizeAttribute), false);
             if (auths.Length > 0)
             {
                 authorize = auths[0];
@@ -58,10 +61,10 @@ namespace Greatbone.Core
             for (int i = 0; i < attrs.Length; i++)
             {
                 var a = attrs[i];
-                if (a is IBefore) before = (IBefore)a;
-                if (a is IBeforeAsync) beforeasync = (IBeforeAsync)a;
-                if (a is IAfter) after = (IAfter)a;
-                if (a is IAfterAsync) afterasync = (IAfterAsync)a;
+                if (a is IBefore) before = (IBefore) a;
+                if (a is IBeforeAsync) beforeasync = (IBeforeAsync) a;
+                if (a is IAfter) after = (IAfter) a;
+                if (a is IAfterAsync) afterasync = (IAfterAsync) a;
             }
         }
 
@@ -70,6 +73,8 @@ namespace Greatbone.Core
         public string Name => name;
 
         public UiAttribute Ui => ui;
+
+        public Func<IData, bool> Enabler { get; internal set; }
 
         public AuthorizeAttribute Authorize => authorize;
 
