@@ -44,7 +44,9 @@ namespace Greatbone.Sample
         {
             Create<MyCartOrderWork>("cart");
 
-            Create<MyRealOrderWork>("real");
+            Create<MyCurrentOrderWork>("current");
+
+            Create<MyHistoryOrderWork>("history");
         }
     }
 

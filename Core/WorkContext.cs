@@ -22,7 +22,7 @@ namespace Greatbone.Core
         // to obtain a string key from a data object.
         public Delegate Keyer { get; internal set; }
 
-        public object Attachment { get; internal set; }
+        public object State { get; internal set; }
 
         public int Level { get; internal set; }
 

@@ -11,12 +11,11 @@ namespace Greatbone.Sample
         {
             [0] = "停业",
             [1] = "休假中",
-            [1] = "营业中"
+            [2] = "营业中"
         };
 
         internal string id;
         internal string name;
-        internal string password;
         internal string credential;
         internal string descr;
         internal string tel;
@@ -37,10 +36,6 @@ namespace Greatbone.Sample
                 i.Get(nameof(id), ref id);
             }
             i.Get(nameof(name), ref name);
-            if (proj.Secret())
-            {
-                i.Get(nameof(password), ref password);
-            }
             if (proj.Transf())
             {
                 i.Get(nameof(credential), ref credential);
@@ -67,10 +62,6 @@ namespace Greatbone.Sample
                 o.Put(nameof(id), id, label: "编号", required: true);
             }
             o.Put(nameof(name), name, label: "名称");
-            if (proj.Secret())
-            {
-                o.Put(nameof(password), password, label: "密码", max: 20);
-            }
             if (proj.Transf())
             {
                 o.Put(nameof(credential), credential);

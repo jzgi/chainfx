@@ -140,7 +140,7 @@ namespace Greatbone.Sample
 
             Create<OprAbortedOrderWork>("aborted");
 
-            Create<OprAssignedOrderWork>("assigned");
+            Create<OprSentOrderWork>("assigned");
 
             Create<OprDoneOrderWork>("done");
 
@@ -160,7 +160,7 @@ namespace Greatbone.Sample
     {
         public DvrShopVarWork(WorkContext wc) : base(wc)
         {
-            Create<DvrAssignedOrderWork>("assigned");
+            Create<DvrSentOrderWork>("assigned");
 
             Create<DvrDoneOrderWork>("done");
         }

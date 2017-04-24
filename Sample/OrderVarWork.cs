@@ -12,7 +12,15 @@ namespace Greatbone.Sample
         }
     }
 
-    public class MyCartOrderVarWork : OrderVarWork
+    public abstract class MyOrderVarWork : OrderVarWork
+    {
+        protected MyOrderVarWork(WorkContext wc) : base(wc)
+        {
+        }
+    }
+
+
+    public class MyCartOrderVarWork : MyOrderVarWork
     {
         public MyCartOrderVarWork(WorkContext wc) : base(wc)
         {
@@ -26,11 +34,9 @@ namespace Greatbone.Sample
 
             if (ac.GET)
             {
-
             }
             else
             {
-
             }
             string shopid = ac[0];
             Form frm = await ac.ReadAsync<Form>();
@@ -79,21 +85,73 @@ namespace Greatbone.Sample
         }
     }
 
-    public class MyRealOrderVarWork : OrderVarWork
+    public class MyCurrentOrderVarWork : MyOrderVarWork
     {
-        public MyRealOrderVarWork(WorkContext wc) : base(wc)
+        public MyCurrentOrderVarWork(WorkContext wc) : base(wc)
+        {
+        }
+
+        [Ui("撤销")]
+        public async Task abort(ActionContext ac)
+        {
+            string shopid = ac[0];
+            Form frm = await ac.ReadAsync<Form>();
+            int[] pk = frm[nameof(pk)];
+
+            if (ac.GET)
+            {
+                using (var dc = ac.NewDbContext())
+                {
+                    dc.Sql("SELECT ").columnlst(Order.Empty)._("FROM orders WHERE id = @1 AND shopid = @2");
+                    if (dc.Query(p => p.Set(pk).Set(shopid)))
+                    {
+                        var order = dc.ToArray<Order>();
+                    }
+                    else
+                    {
+                    }
+                }
+            }
+            else
+            {
+                using (var dc = ac.NewDbContext())
+                {
+                    dc.Sql("UPDATE orders SET ").setstate()._(" WHERE id IN () AND shopid = @1 AND ").statecond();
+                    if (dc.Query(p => p.Set(pk).Set(shopid)))
+                    {
+                        ac.Give(303); // see other
+                    }
+                    else
+                    {
+                        ac.Give(303); // see other
+                    }
+                }
+            }
+        }
+    }
+
+    public class MyHistoryOrderVarWork : MyOrderVarWork
+    {
+        public MyHistoryOrderVarWork(WorkContext wc) : base(wc)
         {
         }
     }
 
-    public class OprUnpaidOrderVarWork : OrderVarWork
+    public abstract class OprOrderVarWork : OrderVarWork
     {
-        public OprUnpaidOrderVarWork(WorkContext wc) : base(wc)
+        protected OprOrderVarWork(WorkContext wc) : base(wc)
         {
         }
     }
 
-    public class OprPaidOrderVarWork : OrderVarWork
+    public class OprCreatedOrderVarWork : OprOrderVarWork
+    {
+        public OprCreatedOrderVarWork(WorkContext wc) : base(wc)
+        {
+        }
+    }
+
+    public class OprPaidOrderVarWork : OprOrderVarWork
     {
         public OprPaidOrderVarWork(WorkContext wc) : base(wc)
         {
@@ -118,37 +176,37 @@ namespace Greatbone.Sample
         }
     }
 
-    public class OprPackedOrderVarWork : OrderVarWork
+    public class OprPackedOrderVarWork : OprOrderVarWork
     {
         public OprPackedOrderVarWork(WorkContext wc) : base(wc)
         {
         }
     }
 
-    public class OprAssignedOrderVarWork : OrderVarWork
+    public class OprSentOrderVarWork : OprOrderVarWork
     {
-        public OprAssignedOrderVarWork(WorkContext wc) : base(wc)
+        public OprSentOrderVarWork(WorkContext wc) : base(wc)
         {
         }
     }
 
-    public class OprDoneOrderVarWork : OrderVarWork
+    public class OprDoneOrderVarWork : OprOrderVarWork
     {
         public OprDoneOrderVarWork(WorkContext wc) : base(wc)
         {
         }
     }
 
-    public class OprAbortedOrderVarWork : OrderVarWork
+    public class OprAbortedOrderVarWork : OprOrderVarWork
     {
         public OprAbortedOrderVarWork(WorkContext wc) : base(wc)
         {
         }
     }
 
-    public class DvrAssignedOrderVarWork : OrderVarWork
+    public class DvrSentOrderVarWork : OrderVarWork
     {
-        public DvrAssignedOrderVarWork(WorkContext wc) : base(wc)
+        public DvrSentOrderVarWork(WorkContext wc) : base(wc)
         {
         }
     }

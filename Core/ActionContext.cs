@@ -28,6 +28,8 @@ namespace Greatbone.Core
 
         public ActionInfo Doer { get; internal set; }
 
+        public int Limit => Doer.Ui?.Limit ?? 20;
+
         public int Subscript { get; internal set; }
 
         /// The decrypted/decoded principal object.
@@ -138,7 +140,7 @@ namespace Greatbone.Core
 
         public bool ByWeiXin => Ua?.Contains("MicroMessenger/") ?? false;
 
-        public bool ByJquery => Header("X-Requested-With") != null;
+        public bool ByJQuery => Header("X-Requested-With") != null;
 
         // URL query 
         Form query;

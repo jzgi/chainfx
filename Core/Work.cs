@@ -21,7 +21,7 @@ namespace Greatbone.Core
         const string _VAR_ = "VAR";
 
         // state-passing
-        readonly WorkContext wc;
+        readonly WorkContext ctx;
 
         readonly TypeInfo typeinfo;
 
@@ -46,7 +46,7 @@ namespace Greatbone.Core
         // to obtain a string key from a data object.
         protected Work(WorkContext wc) : base(wc.Name, null)
         {
-            this.wc = wc;
+            this.ctx = wc;
 
             // gather actions
             actions = new Roll<ActionInfo>(32);
@@ -102,7 +102,7 @@ namespace Greatbone.Core
         ///
         /// Create a subwork.
         ///
-        public W Create<W>(string name, object attachment = null) where W : Work
+        public W Create<W>(string name, object state = null) where W : Work
         {
             if (Level >= MaxNesting)
             {
@@ -118,11 +118,11 @@ namespace Greatbone.Core
             ConstructorInfo ci = typ.GetConstructor(new[] {typeof(WorkContext)});
             if (ci == null)
             {
-                throw new ServiceException(typ + " missing WorkContext");
+                throw new ServiceException(typ + "no valid constructor");
             }
             WorkContext wc = new WorkContext(name)
             {
-                Attachment = attachment,
+                State = state,
                 Parent = this,
                 Level = Level + 1,
                 Directory = (Parent == null) ? name : Path.Combine(Parent.Directory, name),
@@ -137,7 +137,7 @@ namespace Greatbone.Core
         ///
         /// Create a variable work.
         ///
-        public W CreateVar<W, K>(Func<IData, K> keyer = null, object attachment = null) where W : Work where K : IComparable<K>, IEquatable<K>
+        public W CreateVar<W, K>(Func<IData, K> keyer = null, object state = null) where W : Work where K : IComparable<K>, IEquatable<K>
         {
             if (Level >= MaxNesting)
             {
@@ -149,12 +149,12 @@ namespace Greatbone.Core
             ConstructorInfo ci = typ.GetConstructor(new[] {typeof(WorkContext)});
             if (ci == null)
             {
-                throw new ServiceException(typ + " missing WorkContext");
+                throw new ServiceException(typ + " no valid constructor");
             }
             WorkContext wc = new WorkContext(_VAR_)
             {
                 Keyer = keyer,
-                Attachment = attachment,
+                State = state,
                 Parent = this,
                 IsVar = true,
                 Level = Level + 1,
@@ -178,21 +178,21 @@ namespace Greatbone.Core
 
         public Work Varwork => varwork;
 
-        public string Directory => wc.Directory;
+        public string Directory => ctx.Directory;
 
-        public Work Parent => wc.Parent;
+        public Work Parent => ctx.Parent;
 
-        public bool IsVar => wc.IsVar;
+        public bool IsVar => ctx.IsVar;
 
-        public int Level => wc.Level;
+        public int Level => ctx.Level;
 
-        public override Service Service => wc.Service;
+        public override Service Service => ctx.Service;
 
-        public bool HasKeyer => wc.Keyer != null;
+        public bool HasKeyer => ctx.Keyer != null;
 
         public string ObtainVarKey(IData obj)
         {
-            Delegate keyer = wc.Keyer;
+            Delegate keyer = ctx.Keyer;
             if (keyer is Func<IData, string>)
             {
                 return ((Func<IData, string>) keyer)(obj);
@@ -202,7 +202,7 @@ namespace Greatbone.Core
 
         public void OutputVarKey(IData obj, DynamicContent @out)
         {
-            Delegate keyer = wc.Keyer;
+            Delegate keyer = ctx.Keyer;
             if (keyer is Func<IData, string>)
             {
                 @out.Add(((Func<IData, string>) keyer)(obj));

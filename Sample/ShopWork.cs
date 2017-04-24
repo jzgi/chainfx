@@ -10,74 +10,6 @@ namespace Greatbone.Sample
         protected ShopWork(WorkContext wc) : base(wc)
         {
         }
-
-        [Ui("申请", UiMode.AnchorDialog)]
-        public async Task apply(ActionContext ac)
-        {
-            if (ac.GET)
-            {
-                ac.GiveFormPane(200, Shop.Empty, -1 ^ TRANSF);
-            }
-            else // post
-            {
-                var shop = await ac.ReadObjectAsync<Shop>();
-
-                // validate
-
-                using (var dc = Service.NewDbContext())
-                {
-                    shop.credential = StrUtility.MD5(shop.id + ':' + shop.credential);
-                    dc.Sql("INSERT INTO shops")._(Shop.Empty)._VALUES_(Shop.Empty)._("");
-                    if (dc.Execute(p => p.Set(shop)) > 0)
-                    {
-                        ac.Give(201); // created
-                    }
-                    else
-                    {
-                        ac.Give(500); // internal server error
-                    }
-                }
-            }
-        }
-
-        [Ui("新建", UiMode.AnchorDialog)]
-        public async Task @new(ActionContext ac)
-        {
-            if (ac.GET)
-            {
-                ac.GiveFormPane(200, Shop.Empty, -1 ^ TRANSF);
-            }
-            else // post
-            {
-                var shop = await ac.ReadObjectAsync<Shop>();
-
-                // validate
-
-                using (var dc = Service.NewDbContext())
-                {
-                    shop.credential = StrUtility.MD5(shop.id + ':' + shop.credential);
-                    dc.Sql("INSERT INTO shops")._(Shop.Empty)._VALUES_(Shop.Empty)._("");
-                    if (dc.Execute(p => p.Set(shop)) > 0)
-                    {
-                        ac.Give(201); // created
-                    }
-                    else
-                    {
-                        ac.Give(500); // internal server error
-                    }
-                }
-            }
-        }
-
-        [Ui("停业/启用")]
-        public void toggle(ActionContext ac)
-        {
-        }
-
-        [Ui("分布报告")]
-        public void rpt(ActionContext ac)
-        {
-        }
     }
 
     [User]
@@ -110,7 +42,7 @@ namespace Greatbone.Sample
                 string city = ac.Query[nameof(city)];
                 if (city == null)
                 {
-                    city = ((User)ac.Principal).city;
+                    city = ((User) ac.Principal).city;
                 }
                 using (var dc = ac.NewDbContext())
                 {
@@ -123,7 +55,9 @@ namespace Greatbone.Sample
                                 m.Add("<div class=\"sticky\" style=\"width: 100%\" data-sticky  data-options=\"anchor: page; marginTop: 0; stickyOn: small;\">");
                                 m.Add("<div class=\"title-bar\">");
                                 m.Add("<div class=\"title-bar-title\">");
-                                m.Add("<a href=\"\" onclick=\"return dialog(this, 2);\">"); m.Add(city); m.Add("（切换）</a>");
+                                m.Add("<a href=\"\" onclick=\"return dialog(this, 2);\">");
+                                m.Add(city);
+                                m.Add("（切换）</a>");
                                 m.Add("</div>");
                                 m.Add("<div class=\"title-bar-right\">");
                                 m.Add("<a class=\"float-right\" href=\"/my//cart/\"><span class=\"fa-stack fa-lg\"><i class=\"fa fa-circle fa-stack-2x\"></i><i class=\"fa fa-shopping-cart fa-stack-1x fa-inverse\"></i></span></a>");
@@ -176,7 +110,7 @@ namespace Greatbone.Sample
     {
         public OprShopWork(WorkContext wc) : base(wc)
         {
-            CreateVar<OprShopVarWork, string>((prin) => ((User)prin).oprat);
+            CreateVar<OprShopVarWork, string>((prin) => ((User) prin).oprat);
         }
 
         public async Task @goto(ActionContext ac)
@@ -201,10 +135,10 @@ namespace Greatbone.Sample
                 orig = f[nameof(orig)];
 
                 // data op
-                User prin = (User)ac.Principal;
+                User prin = (User) ac.Principal;
                 using (var dc = ac.NewDbContext())
                 {
-                    var credential = (string)dc.Scalar("SELECT credential FROM shops WHERE id = @1", p => p.Set(shopid));
+                    var credential = (string) dc.Scalar("SELECT credential FROM shops WHERE id = @1", p => p.Set(shopid));
                     if (credential.EqualsCredential(shopid, password))
                     {
                         dc.Execute("UPDATE users SET oprat = @1 WHERE wx = @2", p => p.Set(shopid).Set(prin.wx));
@@ -221,7 +155,7 @@ namespace Greatbone.Sample
     {
         public DvrShopWork(WorkContext wc) : base(wc)
         {
-            CreateVar<DvrShopVarWork, string>((prin) => ((User)prin).dvrat);
+            CreateVar<DvrShopVarWork, string>((prin) => ((User) prin).dvrat);
         }
     }
 
@@ -230,6 +164,53 @@ namespace Greatbone.Sample
     {
         public MgrShopWork(WorkContext wc) : base(wc)
         {
+        }
+
+        public void @default(ActionContext ac)
+        {
+            string city = ac[typeof(CityVarWork)];
+            using (var dc = ac.NewDbContext())
+            {
+                const int proj = -1 ^ BIN;
+                dc.Sql("SELECT ").columnlst(Shop.Empty, proj)._("FROM shops WHERE city = @1");
+                if (dc.Query(p => p.Set(city)))
+                {
+                    ac.GiveGridFormPage(200, dc.ToList<Shop>(proj), proj);
+                }
+                else
+                {
+                    ac.GiveGridFormPage(200, (List<Shop>) null);
+                }
+            }
+        }
+
+        [Ui("新建", UiMode.AnchorDialog)]
+        public async Task @new(ActionContext ac)
+        {
+            if (ac.GET)
+            {
+                ac.GiveFormPane(200, Shop.Empty, -1 ^ TRANSF);
+            }
+            else // post
+            {
+                var shop = await ac.ReadObjectAsync<Shop>();
+
+                // validate
+
+                using (var dc = Service.NewDbContext())
+                {
+                    shop.credential = StrUtility.MD5(shop.id + ':' + shop.credential);
+                    dc.Sql("INSERT INTO shops")._(Shop.Empty)._VALUES_(Shop.Empty)._("");
+                    if (dc.Execute(p => p.Set(shop)) > 0)
+                    {
+                        ac.Give(201); // created
+                    }
+                    else
+                    {
+                        ac.Give(500); // internal server error
+                    }
+                }
+            }
         }
     }
 
@@ -252,7 +233,7 @@ namespace Greatbone.Sample
                 }
                 else
                 {
-                    ac.GiveGridFormPage(200, (List<Shop>)null);
+                    ac.GiveGridFormPage(200, (List<Shop>) null);
                 }
             }
         }

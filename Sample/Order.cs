@@ -14,19 +14,19 @@ namespace Greatbone.Sample
             CREATED = 0,
             PAID = 1,
             PACKED = 2,
-            SHIPPED = 4,
-            ABORTED = 16,
-            COMPLETED = 32;
+            SENT = 3,
+            DONE = 7,
+            ABORTED = 10;
 
         // status
         static readonly Opt<short> STATUS = new Opt<short>
         {
             [CREATED] = "新建等待付款",
-            [PAID] = "已付款等待备货",
-            [PACKED] = "已备货",
-            [SHIPPED] = "已派送等待收货",
+            [PAID] = "已付等待备货",
+            [PACKED] = "备妥等待派送",
+            [SENT] = "已派等待收货",
+            [DONE] = "已完成",
             [ABORTED] = "已撤销",
-            [COMPLETED] = "已完成",
         };
 
 

@@ -11,7 +11,7 @@ Target Server Type    : PGSQL
 Target Server Version : 90505
 File Encoding         : 65001
 
-Date: 2017-04-20 08:43:18
+Date: 2017-04-24 11:48:53
 */
 
 
@@ -36,6 +36,7 @@ CREATE SEQUENCE "public"."orders_id_seq"
  MAXVALUE 9223372036854775807
  START 1
  CACHE 1;
+SELECT setval('"public"."orders_id_seq"', 1, true);
 
 -- ----------------------------
 -- Sequence structure for repays_id_seq
@@ -47,6 +48,19 @@ CREATE SEQUENCE "public"."repays_id_seq"
  MAXVALUE 9223372036854775807
  START 1
  CACHE 1;
+
+-- ----------------------------
+-- Table structure for cities
+-- ----------------------------
+DROP TABLE IF EXISTS "public"."cities";
+CREATE TABLE "public"."cities" (
+"name" varchar(4) COLLATE "default",
+"code" varchar(4) COLLATE "default",
+"distrs" varchar(4)[] COLLATE "default"
+)
+WITH (OIDS=FALSE)
+
+;
 
 -- ----------------------------
 -- Table structure for evtq
@@ -90,7 +104,8 @@ CREATE TABLE "public"."items" (
 "price" money,
 "min" int2,
 "step" int2,
-"status" int2
+"status" int2,
+"global" bool DEFAULT false
 )
 WITH (OIDS=FALSE)
 
@@ -104,11 +119,11 @@ CREATE TABLE "public"."orders" (
 "id" int8 DEFAULT nextval('orders_id_seq'::regclass) NOT NULL,
 "shop" varchar(10) COLLATE "default",
 "shopid" varchar(6) COLLATE "default",
-"buy" varchar(10) COLLATE "default",
-"buywx" varchar(28) COLLATE "default",
-"buytel" varchar(11) COLLATE "default",
-"buydistr" varchar(4) COLLATE "default",
-"buyaddr" varchar(20) COLLATE "default",
+"cust" varchar(10) COLLATE "default",
+"custwx" varchar(28) COLLATE "default",
+"shiptel" varchar(11) COLLATE "default",
+"shipdistr" varchar(4) COLLATE "default",
+"shipaddr" varchar(40) COLLATE "default",
 "detail" jsonb,
 "total" money,
 "created" timestamp(6),
@@ -116,26 +131,15 @@ CREATE TABLE "public"."orders" (
 "pack" varchar(4) COLLATE "default",
 "packtel" varchar(11) COLLATE "default",
 "packed" timestamp(6),
-"shipshopid" varchar(6) COLLATE "default",
-"ship" varchar(4) COLLATE "default",
-"shiptel" varchar(11) COLLATE "default",
-"shipped" timestamp(6),
+"dvrat" varchar(6) COLLATE "default",
+"dvr" varchar(4) COLLATE "default",
+"dvrtel" varchar(11) COLLATE "default",
+"dvred" timestamp(6),
 "closed" timestamp(6),
 "status" int2,
-"prepay_id" varchar(40) COLLATE "default"
-)
-WITH (OIDS=FALSE)
-
-;
-
--- ----------------------------
--- Table structure for regions
--- ----------------------------
-DROP TABLE IF EXISTS "public"."regions";
-CREATE TABLE "public"."regions" (
-"code" varchar(4) COLLATE "default",
-"city" varchar(4) COLLATE "default",
-"distr" varchar(6) COLLATE "default"
+"prepay_id" varchar(40) COLLATE "default",
+"repaid" timestamp(6),
+"note" varchar(20) COLLATE "default"
 )
 WITH (OIDS=FALSE)
 
@@ -174,11 +178,11 @@ CREATE TABLE "public"."shops" (
 "addr" varchar(20) COLLATE "default",
 "x" float8,
 "y" float8,
-"global" bool,
 "lic" varchar(20) COLLATE "default",
 "created" timestamp(6),
 "orders" int4,
-"status" int2
+"status" int2,
+"icon" bytea
 )
 WITH (OIDS=FALSE)
 
@@ -197,10 +201,10 @@ CREATE TABLE "public"."users" (
 "distr" varchar(6) COLLATE "default",
 "addr" varchar(20) COLLATE "default",
 "created" timestamp(6),
-"opr" int2,
-"oprshopid" varchar(6) COLLATE "default",
-"adm" int2,
-"admcity" varchar(4) COLLATE "default"
+"oprat" varchar(6) COLLATE "default",
+"dvrat" varchar(6) COLLATE "default",
+"mgrat" varchar(4) COLLATE "default",
+"adm" bool DEFAULT false
 )
 WITH (OIDS=FALSE)
 
