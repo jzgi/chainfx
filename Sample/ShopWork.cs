@@ -112,9 +112,9 @@ namespace Greatbone.Sample
                 {
                     city = ((User)ac.Principal).city;
                 }
-                using (var dc = Service.NewDbContext())
+                using (var dc = ac.NewDbContext())
                 {
-                    if (dc.Query("SELECT * FROM shops WHERE ((NOT global AND city = @1) OR global) AND status > 0", p => p.Set(city)))
+                    if (dc.Query("SELECT * FROM shops WHERE city = @1 AND status > 0", p => p.Set(city)))
                     {
                         ac.GivePage(200,
                             m =>
@@ -122,7 +122,7 @@ namespace Greatbone.Sample
                                 m.Add("<div data-sticky-container>");
                                 m.Add("<div class=\"sticky\" style=\"width: 100%\" data-sticky  data-options=\"anchor: page; marginTop: 0; stickyOn: small;\">");
                                 m.Add("<div class=\"title-bar\">");
-                                m.Add("<div class=\"title-bar-left\">");
+                                m.Add("<div class=\"title-bar-title\">");
                                 m.Add("<a href=\"\" onclick=\"return dialog(this, 2);\">"); m.Add(city); m.Add("（切换）</a>");
                                 m.Add("</div>");
                                 m.Add("<div class=\"title-bar-right\">");

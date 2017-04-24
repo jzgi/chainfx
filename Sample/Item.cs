@@ -26,6 +26,7 @@ namespace Greatbone.Sample
         internal decimal price; // current price
         internal int min; // minimal ordered
         internal int step;
+        internal bool global;
         internal short status;
 
         public void ReadData(IDataInput i, int proj = 0)
@@ -44,6 +45,7 @@ namespace Greatbone.Sample
             i.Get(nameof(price), ref price);
             i.Get(nameof(min), ref min);
             i.Get(nameof(step), ref step);
+            i.Get(nameof(global), ref global);
             i.Get(nameof(status), ref status);
         }
 
@@ -63,6 +65,7 @@ namespace Greatbone.Sample
             o.Put(nameof(price), price, label: "单价", required: true);
             o.Put(nameof(min), min, label: "起订");
             o.Put(nameof(step), step, label: "递增");
+            o.Put(nameof(global), global, label: "递增");
             o.Put(nameof(status), status, label: "状态", opt: STATUS);
         }
     }

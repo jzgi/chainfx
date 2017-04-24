@@ -121,9 +121,9 @@ namespace Greatbone.Sample
                         User prin = (User) ac.Principal;
                         var order = new Order
                         {
-                            buy = prin.name,
-                            buywx = prin.wx,
-                            buytel = prin.tel,
+                            cust = prin.name,
+                            custwx = prin.wx,
+                            custtel = prin.tel,
 
                             detail = new List<OrderLine>
                             {

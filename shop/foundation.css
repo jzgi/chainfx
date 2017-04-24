@@ -119,6 +119,10 @@ a {
     /* 2 */
     text-decoration: none;
 }
+a:link{color:inherit}
+a:active{color:inherit}
+a:visited{color:inherit}
+a:hover{color:inherit}
 
 /**
      * Remove the outline on focused links when they are also active or hovered
@@ -508,7 +512,7 @@ template {
 
 html {
     box-sizing: border-box;
-    font-size: 100%;
+    font-size: 87.5%;
 }
 
 *,
@@ -521,7 +525,6 @@ body {
     margin: 0;
     padding: 0;
     background: #fefefe;
-    font-size: 0.875rem;
     font-family: "Helvetica Neue", Helvetica, Roboto, Arial, sans-serif;
     font-weight: normal;
     line-height: 1.5;
@@ -1607,14 +1610,15 @@ select[multiple] {
 .title-bar {
     padding: 0.5rem;
     background: white;
-    color: purple;
+    color: #2285a2;
     display: -ms-flexbox;
     display: flex;
     -ms-flex-pack: justify;
     justify-content: space-between;
     -ms-flex-align: center;
     align-items: center;
-    border-bottom: 2px solid purple;
+    border-bottom: 2px solid #2285a2;
+    padding: 0 0;
 }
 
 .title-bar .menu-icon {
@@ -1622,13 +1626,14 @@ select[multiple] {
     margin-right: 0.25rem;
 }
 
-.title-bar-left,
-.title-bar-right {
+.title-bar-left {
     -ms-flex: 1 1 0px;
     flex: 1 1 0px;
 }
 
 .title-bar-right {
+    -ms-flex: 0 1 0px;
+    flex: 0 1 0px;
     text-align: right;
 }
 
@@ -3783,6 +3788,327 @@ a.thumbnail image {
     }
 }
 
+@media print, screen and (min-width: 90em) {
+    .xlarge-1 {
+        -ms-flex: 0 0 8.33333%;
+        flex: 0 0 8.33333%;
+        max-width: 8.33333%;
+    }
+
+    .xlarge-offset-0 {
+        margin-left: 0%;
+    }
+
+    .xlarge-2 {
+        -ms-flex: 0 0 16.66667%;
+        flex: 0 0 16.66667%;
+        max-width: 16.66667%;
+    }
+
+    .xlarge-offset-1 {
+        margin-left: 8.33333%;
+    }
+
+    .xlarge-3 {
+        -ms-flex: 0 0 25%;
+        flex: 0 0 25%;
+        max-width: 25%;
+    }
+
+    .xlarge-offset-2 {
+        margin-left: 16.66667%;
+    }
+
+    .xlarge-4 {
+        -ms-flex: 0 0 33.33333%;
+        flex: 0 0 33.33333%;
+        max-width: 33.33333%;
+    }
+
+    .xlarge-offset-3 {
+        margin-left: 25%;
+    }
+
+    .xlarge-5 {
+        -ms-flex: 0 0 41.66667%;
+        flex: 0 0 41.66667%;
+        max-width: 41.66667%;
+    }
+
+    .xlarge-offset-4 {
+        margin-left: 33.33333%;
+    }
+
+    .xlarge-6 {
+        -ms-flex: 0 0 50%;
+        flex: 0 0 50%;
+        max-width: 50%;
+    }
+
+    .xlarge-offset-5 {
+        margin-left: 41.66667%;
+    }
+
+    .xlarge-7 {
+        -ms-flex: 0 0 58.33333%;
+        flex: 0 0 58.33333%;
+        max-width: 58.33333%;
+    }
+
+    .xlarge-offset-6 {
+        margin-left: 50%;
+    }
+
+    .xlarge-8 {
+        -ms-flex: 0 0 66.66667%;
+        flex: 0 0 66.66667%;
+        max-width: 66.66667%;
+    }
+
+    .xlarge-offset-7 {
+        margin-left: 58.33333%;
+    }
+
+    .xlarge-9 {
+        -ms-flex: 0 0 75%;
+        flex: 0 0 75%;
+        max-width: 75%;
+    }
+
+    .xlarge-offset-8 {
+        margin-left: 66.66667%;
+    }
+
+    .xlarge-10 {
+        -ms-flex: 0 0 83.33333%;
+        flex: 0 0 83.33333%;
+        max-width: 83.33333%;
+    }
+
+    .xlarge-offset-9 {
+        margin-left: 75%;
+    }
+
+    .xlarge-11 {
+        -ms-flex: 0 0 91.66667%;
+        flex: 0 0 91.66667%;
+        max-width: 91.66667%;
+    }
+
+    .xlarge-offset-10 {
+        margin-left: 83.33333%;
+    }
+
+    .xlarge-12 {
+        -ms-flex: 0 0 100%;
+        flex: 0 0 100%;
+        max-width: 100%;
+    }
+
+    .xlarge-offset-11 {
+        margin-left: 91.66667%;
+    }
+
+    .xlarge-order-1 {
+        -ms-flex-order: 1;
+        order: 1;
+    }
+
+    .xlarge-order-2 {
+        -ms-flex-order: 2;
+        order: 2;
+    }
+
+    .xlarge-order-3 {
+        -ms-flex-order: 3;
+        order: 3;
+    }
+
+    .xlarge-order-4 {
+        -ms-flex-order: 4;
+        order: 4;
+    }
+
+    .xlarge-order-5 {
+        -ms-flex-order: 5;
+        order: 5;
+    }
+
+    .xlarge-order-6 {
+        -ms-flex-order: 6;
+        order: 6;
+    }
+
+    .xlarge-up-1 {
+        -ms-flex-wrap: wrap;
+        flex-wrap: wrap;
+    }
+
+    .xlarge-up-1 > .column,
+    .xlarge-up-1 > .columns {
+        -ms-flex: 0 0 100%;
+        flex: 0 0 100%;
+        max-width: 100%;
+    }
+
+    .xlarge-up-2 {
+        -ms-flex-wrap: wrap;
+        flex-wrap: wrap;
+    }
+
+    .xlarge-up-2 > .column,
+    .xlarge-up-2 > .columns {
+        -ms-flex: 0 0 50%;
+        flex: 0 0 50%;
+        max-width: 50%;
+    }
+
+    .xlarge-up-3 {
+        -ms-flex-wrap: wrap;
+        flex-wrap: wrap;
+    }
+
+    .xlarge-up-3 > .column,
+    .xlarge-up-3 > .columns {
+        -ms-flex: 0 0 33.33333%;
+        flex: 0 0 33.33333%;
+        max-width: 33.33333%;
+    }
+
+    .xlarge-up-4 {
+        -ms-flex-wrap: wrap;
+        flex-wrap: wrap;
+    }
+
+    .xlarge-up-4 > .column,
+    .xlarge-up-4 > .columns {
+        -ms-flex: 0 0 25%;
+        flex: 0 0 25%;
+        max-width: 25%;
+    }
+
+    .xlarge-up-5 {
+        -ms-flex-wrap: wrap;
+        flex-wrap: wrap;
+    }
+
+    .xlarge-up-5 > .column,
+    .xlarge-up-5 > .columns {
+        -ms-flex: 0 0 20%;
+        flex: 0 0 20%;
+        max-width: 20%;
+    }
+
+    .xlarge-up-6 {
+        -ms-flex-wrap: wrap;
+        flex-wrap: wrap;
+    }
+
+    .xlarge-up-6 > .column,
+    .xlarge-up-6 > .columns {
+        -ms-flex: 0 0 16.66667%;
+        flex: 0 0 16.66667%;
+        max-width: 16.66667%;
+    }
+
+    .xlarge-up-7 {
+        -ms-flex-wrap: wrap;
+        flex-wrap: wrap;
+    }
+
+    .xlarge-up-7 > .column,
+    .xlarge-up-7 > .columns {
+        -ms-flex: 0 0 14.28571%;
+        flex: 0 0 14.28571%;
+        max-width: 14.28571%;
+    }
+
+    .xlarge-up-8 {
+        -ms-flex-wrap: wrap;
+        flex-wrap: wrap;
+    }
+
+    .xlarge-up-8 > .column,
+    .xlarge-up-8 > .columns {
+        -ms-flex: 0 0 12.5%;
+        flex: 0 0 12.5%;
+        max-width: 12.5%;
+    }
+}
+
+@media print, screen and (min-width: 90em) and (min-width: 90em) {
+    .xlarge-expand {
+        -ms-flex: 1 1 0px;
+        flex: 1 1 0px;
+    }
+}
+
+@media print, screen and (min-width: 90em) {
+    .xlarge-flex-dir-row {
+        -ms-flex-direction: row;
+        flex-direction: row;
+    }
+
+    .xlarge-flex-dir-row-reverse {
+        -ms-flex-direction: row-reverse;
+        flex-direction: row-reverse;
+    }
+
+    .xlarge-flex-dir-column {
+        -ms-flex-direction: column;
+        flex-direction: column;
+    }
+
+    .xlarge-flex-dir-column-reverse {
+        -ms-flex-direction: column-reverse;
+        flex-direction: column-reverse;
+    }
+
+    .xlarge-flex-child-auto {
+        -ms-flex: 1 1 auto;
+        flex: 1 1 auto;
+    }
+
+    .xlarge-flex-child-grow {
+        -ms-flex: 1 0 auto;
+        flex: 1 0 auto;
+    }
+
+    .xlarge-flex-child-shrink {
+        -ms-flex: 0 1 auto;
+        flex: 0 1 auto;
+    }
+}
+
+.row.xlarge-unstack > .column,
+.row.xlarge-unstack > .columns {
+    -ms-flex: 0 0 100%;
+    flex: 0 0 100%;
+}
+
+@media print, screen and (min-width: 90em) {
+    .row.xlarge-unstack > .column,
+    .row.xlarge-unstack > .columns {
+        -ms-flex: 1 1 0px;
+        flex: 1 1 0px;
+    }
+}
+
+@media print, screen and (min-width: 90em) {
+    .xlarge-collapse > .column,
+    .xlarge-collapse > .columns {
+        padding-right: 0;
+        padding-left: 0;
+    }
+
+    .xlarge-uncollapse > .column,
+    .xlarge-uncollapse > .columns {
+        padding-right: 0.9375rem;
+        padding-left: 0.9375rem;
+    }
+}
+
+
 .shrink {
     -ms-flex: 0 0 auto;
     flex: 0 0 auto;
@@ -3948,6 +4274,38 @@ a.thumbnail image {
     }
 
     .large-order-6 {
+        -ms-flex-order: 6;
+        order: 6;
+    }
+}
+
+@media print, screen and (min-width: 90em) {
+    .xlarge-order-1 {
+        -ms-flex-order: 1;
+        order: 1;
+    }
+
+    .xlarge-order-2 {
+        -ms-flex-order: 2;
+        order: 2;
+    }
+
+    .xlarge-order-3 {
+        -ms-flex-order: 3;
+        order: 3;
+    }
+
+    .xlarge-order-4 {
+        -ms-flex-order: 4;
+        order: 4;
+    }
+
+    .xlarge-order-5 {
+        -ms-flex-order: 5;
+        order: 5;
+    }
+
+    .xlarge-order-6 {
         -ms-flex-order: 6;
         order: 6;
     }

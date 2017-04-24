@@ -12,11 +12,11 @@ namespace Greatbone.Core
 
         internal const sbyte
             // multiple records
-            COMP_TABLE = 1,
-            COMP_GRID = 2,
-            COMP_LIST = 3,
+            HTABLE = 1,
+            HGRID = 2,
+            HLIST = 3,
             // single record 
-            COMP_FILL = 5;
+            HFILL = 5;
 
         ///
         /// The outputing context for per data object
@@ -213,17 +213,27 @@ namespace Greatbone.Core
         public void GRIDFORM<D>(ActionContext ac, List<D> lst, int proj = 0) where D : IData
         {
             Work work = ac.Work;
-            ActionInfo[] uias = work.UiActions;
+            ActionInfo[] ais = work.UiActions;
 
             Add("<form>");
 
             formed = true;
 
             // buttons
-            if (uias != null)
+            if (ais != null)
             {
-                Add("<div class=\"row expanded\">");
-                TOOLS(uias);
+                Add("<div data-sticky-container>");
+                Add("<div class=\"sticky\" style=\"width: 100%\" data-sticky  data-options=\"anchor: page; marginTop: 0; stickyOn: small;\">");
+                Add("<div class=\"title-bar\">");
+
+                Add("<div class=\"title-bar-left\">");
+                TOOLS(ais);
+                Add("</div>");
+
+                Add("<div class=\"title-bar-right\"><i class=\"fa fa-refresh\"></i></div>");
+
+                Add("</div>");
+                Add("</div>");
                 Add("</div>");
             }
 
@@ -231,8 +241,8 @@ namespace Greatbone.Core
             GRID(work, lst, proj);
 
             // pagination
-            ActionInfo act = ac.Doer;
-            if (act.HasSubscript)
+            ActionInfo ai = ac.Doer;
+            if (ai.HasSubscript)
             {
                 Add("<div class=\"row\">");
                 Add("<ul class=\"pagination text-center\" role=\"navigation\">");
@@ -241,7 +251,7 @@ namespace Greatbone.Core
                 for (int i = 0; i < subscript; i++)
                 {
                     Add("<li><a href=\"");
-                    Add(act.Name);
+                    Add(ai.Name);
                     Add('-');
                     Add(subscript);
                     Add(ac.QueryString);
@@ -297,7 +307,7 @@ namespace Greatbone.Core
 
         public void FILLFORM(ActionInfo act, IData obj, int proj = 0)
         {
-            chain[++level].comp = COMP_FILL;
+            chain[++level].comp = HFILL;
             Add("<form method=\"post");
             if (act != null)
             {
@@ -305,7 +315,7 @@ namespace Greatbone.Core
                 Add(act.Name);
             }
             Add("\">");
-            Add("<div class=\"row small-up-1 medium-up-2 large-up-3\">");
+            Add("<div class=\"row small-up-1 medium-up-2 large-up-3 xlarge-up-4\">");
             obj.WriteData(this, proj);
             Add("</div>");
             Add("</form>");
@@ -349,7 +359,7 @@ namespace Greatbone.Core
 
         public void TABLE<D>(List<D> lst, int proj = 0) where D : IData
         {
-            chain[++level].comp = COMP_TABLE;
+            chain[++level].comp = HTABLE;
             if (lst != null)
             {
                 Add("<table class=\"unstriped\">");
@@ -379,13 +389,13 @@ namespace Greatbone.Core
 
         public void GRID(IDataInput input, Action<IDataInput, HtmlContent> valve)
         {
-            chain[++level].comp = COMP_GRID;
+            chain[++level].comp = HGRID;
             if (input != null)
             {
                 Add("<div class=\"expanded row\">");
                 while (input.Next())
                 {
-                    Add("<div class=\"row small-up-1 medium-up-2 large-up-3\">");
+                    Add("<div class=\"row small-up-1 medium-up-2 large-up-3 xlarge-up-4\">");
                     chain[level].ordinal = 0; // reset ordical
                     valve(input, this);
                     Add("</div>");
@@ -404,12 +414,12 @@ namespace Greatbone.Core
         public void GRID<D>(Work work, List<D> lst, int proj = 0) where D : IData
         {
             ++level;
-            chain[level].comp = COMP_GRID;
+            chain[level].comp = HGRID;
             chain[level].varwork = work.varwork;
 
             if (lst != null)
             {
-                Add("<div class=\"row expanded small-up-1 medium-up-2 large-up-3\">");
+                Add("<div class=\"row expanded small-up-1 medium-up-2 large-up-3 xlarge-up-4\">");
                 for (int i = 0; i < lst.Count; i++)
                 {
                     Add("<div class=\"column card\">");
@@ -440,7 +450,7 @@ namespace Greatbone.Core
 
         public void LIST<D>(List<D> lst, int proj = 0) where D : IData
         {
-            chain[++level].comp = COMP_LIST;
+            chain[++level].comp = HLIST;
             if (lst != null)
             {
                 Add("<ul>");
@@ -458,7 +468,7 @@ namespace Greatbone.Core
 
         public void FILL(IDataInput input, Action<IDataInput, HtmlContent> valve)
         {
-            chain[++level].comp = COMP_FILL;
+            chain[++level].comp = HFILL;
             if (input != null)
             {
                 while (input.Next())
@@ -478,7 +488,7 @@ namespace Greatbone.Core
 
         public void FILL(IData obj, int proj = 0)
         {
-            chain[++level].comp = COMP_FILL;
+            chain[++level].comp = HFILL;
             obj.WriteData(this, proj);
             --level;
         }
@@ -1265,7 +1275,7 @@ namespace Greatbone.Core
         {
             switch (chain[level].comp)
             {
-                case COMP_TABLE:
+                case HTABLE:
                     if (chain[level].label)
                     {
                         Add("<th>");
@@ -1279,7 +1289,7 @@ namespace Greatbone.Core
                         Add("</td>");
                     }
                     break;
-                case COMP_GRID:
+                case HGRID:
                     Add("<div class=\"row\">");
                     Add("<div class=\"small-3 columns labeldiv\">");
                     AddLabel(label, name);
@@ -1290,9 +1300,9 @@ namespace Greatbone.Core
                     Add("</div>");
                     Add("</div>");
                     break;
-                case COMP_LIST:
+                case HLIST:
                     break;
-                case COMP_FILL:
+                case HFILL:
                     Add("<div class=\"column\">");
                     CHECKBOX(name, v, label, required);
                     Add("</div>");
@@ -1307,7 +1317,7 @@ namespace Greatbone.Core
             var ctx = chain[level];
             switch (ctx.comp)
             {
-                case COMP_TABLE:
+                case HTABLE:
                     if (ctx.label)
                     {
                         Add("<th>");
@@ -1332,7 +1342,7 @@ namespace Greatbone.Core
                         Add("</td>");
                     }
                     break;
-                case COMP_GRID:
+                case HGRID:
                     Add("<div class=\"row\">");
                     Add("<div class=\"small-3 columns labeldiv\">");
                     if (formed && level == 0 && chain[level].ordinal == 0)
@@ -1352,9 +1362,9 @@ namespace Greatbone.Core
                     Add("</div>");
                     Add("</div>");
                     break;
-                case COMP_LIST:
+                case HLIST:
                     break;
-                case COMP_FILL:
+                case HFILL:
                     Add("<div class=\"column\">");
                     if (opt == null)
                     {
@@ -1375,7 +1385,7 @@ namespace Greatbone.Core
         {
             switch (chain[level].comp)
             {
-                case COMP_TABLE:
+                case HTABLE:
                     if (chain[level].label)
                     {
                         Add("<th>");
@@ -1393,7 +1403,7 @@ namespace Greatbone.Core
                         Add("</td>");
                     }
                     break;
-                case COMP_GRID:
+                case HGRID:
                     Add("<div class=\"row\">");
                     Add("<div class=\"small-3 columns labeldiv\">");
                     if (formed && level == 0 && chain[level].ordinal == 0)
@@ -1412,9 +1422,9 @@ namespace Greatbone.Core
                     Add("</div>");
                     Add("</div>");
                     break;
-                case COMP_LIST:
+                case HLIST:
                     break;
-                case COMP_FILL:
+                case HFILL:
                     Add("<div class=\"column\">");
                     NUMBER(name, v, label);
                     Add("</div>");
@@ -1428,7 +1438,7 @@ namespace Greatbone.Core
         {
             switch (chain[level].comp)
             {
-                case COMP_TABLE:
+                case HTABLE:
                     if (chain[level].label)
                     {
                         Add("<th>");
@@ -1446,7 +1456,7 @@ namespace Greatbone.Core
                         Add("</td>");
                     }
                     break;
-                case COMP_GRID:
+                case HGRID:
                     Add("<div class=\"row\">");
                     Add("<div class=\"small-3 columns labeldiv\">");
                     if (formed && level == 0 && chain[level].ordinal == 0)
@@ -1465,12 +1475,12 @@ namespace Greatbone.Core
                     Add("</div>");
                     Add("</div>");
                     break;
-                case COMP_LIST:
+                case HLIST:
                     Add("<div class=\"pure-u-1 pure-u-md-1-2\">");
                     // NUMBER(name, v);
                     Add("</div>");
                     break;
-                case COMP_FILL:
+                case HFILL:
                     Add("<div class=\"column\">");
                     NUMBER(name, v, label);
                     Add("</div>");
@@ -1484,7 +1494,7 @@ namespace Greatbone.Core
         {
             switch (chain[level].comp)
             {
-                case COMP_TABLE:
+                case HTABLE:
                     if (chain[level].label)
                     {
                         Add("<th>");
@@ -1498,7 +1508,7 @@ namespace Greatbone.Core
                         Add("</td>");
                     }
                     break;
-                case COMP_GRID:
+                case HGRID:
                     Add("<div class=\"row\">");
                     Add("<div class=\"small-3 columns labeldiv\">");
                     AddLabel(label, name);
@@ -1508,9 +1518,9 @@ namespace Greatbone.Core
                     Add("</div>");
                     Add("</div>");
                     break;
-                case COMP_LIST:
+                case HLIST:
                     break;
-                case COMP_FILL:
+                case HFILL:
                     Add("<div class=\"column\">");
                     Add("</div>");
                     break;
@@ -1523,7 +1533,7 @@ namespace Greatbone.Core
         {
             switch (chain[level].comp)
             {
-                case COMP_TABLE:
+                case HTABLE:
                     if (chain[level].label)
                     {
                         Add("<th>");
@@ -1537,7 +1547,7 @@ namespace Greatbone.Core
                         Add("</td>");
                     }
                     break;
-                case COMP_GRID:
+                case HGRID:
                     Add("<div class=\"row\">");
                     Add("<div class=\"small-3 columns labeldiv\">");
                     AddLabel(label, name);
@@ -1547,12 +1557,12 @@ namespace Greatbone.Core
                     Add("</div>");
                     Add("</div>");
                     break;
-                case COMP_LIST:
+                case HLIST:
                     Add("<td style=\"text-align: right;\">");
                     Add(v);
                     Add("</td>");
                     break;
-                case COMP_FILL:
+                case HFILL:
                     Add("<div class=\"column\">");
                     NUMBER(name, v, label);
                     Add("</div>");
@@ -1566,7 +1576,7 @@ namespace Greatbone.Core
         {
             switch (chain[level].comp)
             {
-                case COMP_TABLE:
+                case HTABLE:
                     if (chain[level].label)
                     {
                         Add("<th>");
@@ -1580,7 +1590,7 @@ namespace Greatbone.Core
                         Add("</td>");
                     }
                     break;
-                case COMP_GRID:
+                case HGRID:
                     Add("<div class=\"row\">");
                     Add("<div class=\"small-3 columns labeldiv\">");
                     AddLabel(label, name);
@@ -1590,12 +1600,12 @@ namespace Greatbone.Core
                     Add("</div>");
                     Add("</div>");
                     break;
-                case COMP_LIST:
+                case HLIST:
                     Add("<td style=\"text-align: right;\">");
                     Add(v);
                     Add("</td>");
                     break;
-                case COMP_FILL:
+                case HFILL:
                     Add("<div class=\"column\">");
                     DATE(name, v);
                     Add("</div>");
@@ -1610,7 +1620,7 @@ namespace Greatbone.Core
             var ctx = chain[level];
             switch (ctx.comp)
             {
-                case COMP_TABLE:
+                case HTABLE:
                     if (ctx.label)
                     {
                         Add("<th>");
@@ -1628,7 +1638,7 @@ namespace Greatbone.Core
                         Add("</td>");
                     }
                     break;
-                case COMP_GRID:
+                case HGRID:
                     Add("<div class=\"row\">");
                     Add("<div class=\"small-3 columns labeldiv\">");
                     if (formed && level == 0 && chain[level].ordinal == 0)
@@ -1647,10 +1657,10 @@ namespace Greatbone.Core
                     Add("</div>");
                     Add("</div>");
                     break;
-                case COMP_LIST:
+                case HLIST:
                     Add(v);
                     break;
-                case COMP_FILL:
+                case HFILL:
                     Add("<div class=\"column\">");
                     if (label != null && label.Length == 0)
                     {
@@ -1679,7 +1689,7 @@ namespace Greatbone.Core
         {
             switch (chain[level].comp)
             {
-                case COMP_TABLE:
+                case HTABLE:
                     if (chain[level].label)
                     {
                         Add("<th>");
@@ -1692,10 +1702,10 @@ namespace Greatbone.Core
                         Add("</td>");
                     }
                     break;
-                case COMP_GRID:
+                case HGRID:
                     Add("<img src=\"data:");
                     break;
-                case COMP_FILL:
+                case HFILL:
                     Add("<div class=\"\">");
                     FILE(name, label, size, ratio, required);
                     Add("</div>");
@@ -1744,7 +1754,7 @@ namespace Greatbone.Core
         {
             switch (chain[level].comp)
             {
-                case COMP_TABLE:
+                case HTABLE:
                     if (chain[level].label)
                     {
                         Add("<th>");
@@ -1763,7 +1773,7 @@ namespace Greatbone.Core
                         }
                     }
                     break;
-                case COMP_GRID:
+                case HGRID:
                     if (v != null)
                     {
                         Add("<div class=\"row\">");
@@ -1775,7 +1785,7 @@ namespace Greatbone.Core
                         Add("<div class=\"row\"><span>没有记录</span></div>");
                     }
                     break;
-                case COMP_LIST:
+                case HLIST:
                     break;
             }
             chain[level].ordinal++;

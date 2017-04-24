@@ -10,85 +10,43 @@ namespace Greatbone.Sample
         protected OrderVarWork(WorkContext wc) : base(wc)
         {
         }
-
-        public void ask(ActionContext ac)
-        {
-            string userid = ac[0];
-            int orderid = ac[this];
-            string reason = null;
-
-            using (var dc = Service.NewDbContext())
-            {
-                dc.Sql("UPDATE orders SET reason = @1, ").setstate()._(" WHERE id = @2 AND userid = @3 AND ").statecond();
-                if (dc.Query(p => p.Set(reason).Set(orderid).Set(userid)))
-                {
-                    var order = dc.ToArray<Order>();
-                }
-                else
-                {
-                }
-            }
-        }
-
-        [Ui("取消")]
-        public void cannel(ActionContext ac)
-        {
-            string shopid = ac[0];
-            int orderid = ac[this];
-
-            using (var dc = ac.NewDbContext())
-            {
-                dc.Sql("SELECT ").columnlst(Order.Empty)._("FROM orders WHERE id = @1 AND shopid = @2");
-                if (dc.Query(p => p.Set(orderid).Set(shopid)))
-                {
-                    var order = dc.ToArray<Order>();
-                }
-                else
-                {
-                }
-            }
-        }
-
-        [Ui("已备货")]
-        public void fix(ActionContext ac)
-        {
-            string shopid = ac[0];
-            int id = ac[this];
-
-            using (var dc = ac.NewDbContext())
-            {
-                dc.Sql("UPDATE orders SET ").setstate()._(" WHERE id = @1 AND shopid = @2 AND ").statecond();
-                if (dc.Query(p => p.Set(id).Set(shopid)))
-                {
-                    var order = dc.ToArray<Order>();
-                }
-                else
-                {
-                }
-            }
-        }
-
-        public void close(ActionContext ac)
-        {
-        }
-
-
-        [Ui]
-        public void exam(ActionContext ac)
-        {
-        }
     }
 
-    /// <summary>
-    /// About a single cart order targeted one shop.
-    /// </summary>
-    /// <code>
-    /// /my//cart/-ordid-/
-    /// </code>
     public class MyCartOrderVarWork : OrderVarWork
     {
         public MyCartOrderVarWork(WorkContext wc) : base(wc)
         {
+        }
+
+        [Ui("附注/收货地址")]
+        public async Task addr(ActionContext ac)
+        {
+            string buywx = ac[typeof(UserVarWork)];
+            long ordid = ac[this];
+
+            if (ac.GET)
+            {
+
+            }
+            else
+            {
+
+            }
+            string shopid = ac[0];
+            Form frm = await ac.ReadAsync<Form>();
+            int[] pk = frm[nameof(pk)];
+
+            using (var dc = ac.NewDbContext())
+            {
+                dc.Sql("UPDATE orders SET ").setstate()._(" WHERE id = @1 AND shopid = @2 AND ").statecond();
+                if (dc.Query(p => p.Set(pk).Set(shopid)))
+                {
+                    var order = dc.ToArray<Order>();
+                }
+                else
+                {
+                }
+            }
         }
 
         [Ui("付款", UiMode.AnchorScript)]

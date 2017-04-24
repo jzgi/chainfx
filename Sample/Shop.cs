@@ -25,7 +25,6 @@ namespace Greatbone.Sample
         internal string addr;
         internal double x;
         internal double y;
-        internal bool global;
         internal string lic;
         internal DateTime created;
         internal int orders;
@@ -53,7 +52,6 @@ namespace Greatbone.Sample
             i.Get(nameof(addr), ref addr);
             i.Get(nameof(x), ref x);
             i.Get(nameof(y), ref y);
-            i.Get(nameof(global), ref global);
             if (proj.Immut())
             {
                 i.Get(nameof(lic), ref lic);
@@ -84,7 +82,6 @@ namespace Greatbone.Sample
             o.Put(nameof(addr), addr, label: "地址", max: 10);
             o.Put(nameof(x), x);
             o.Put(nameof(y), y);
-            o.Put(nameof(global), global, label: "服务全国");
             if (proj.Immut())
             {
                 o.Put(nameof(lic), lic, label: "工商登记");

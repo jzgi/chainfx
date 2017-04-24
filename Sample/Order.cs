@@ -21,10 +21,10 @@ namespace Greatbone.Sample
         // status
         static readonly Opt<short> STATUS = new Opt<short>
         {
-            [CREATED] = "新创建，等待付款",
-            [PAID] = "已付款，等待处理",
+            [CREATED] = "新建等待付款",
+            [PAID] = "已付款等待备货",
             [PACKED] = "已备货",
-            [SHIPPED] = "已派送，等待收货",
+            [SHIPPED] = "已派送等待收货",
             [ABORTED] = "已撤销",
             [COMPLETED] = "已完成",
         };
@@ -35,11 +35,11 @@ namespace Greatbone.Sample
         internal int id;
         internal string shop; // shop name
         internal string shopid;
-        internal string buy; // buyer name or nickname
-        internal string buywx; // buyer openid
-        internal string buytel; // buyer telephone
-        internal string buydistr; // shop openid
-        internal string buyaddr; // buyer shipping address
+        internal string cust; // customer name
+        internal string custwx; // weixin openid
+        internal string custtel; // telephone
+        internal string custdistr; // disrict
+        internal string custaddr; // address
         internal List<OrderLine> detail;
         internal decimal total;
         internal string note;
@@ -52,10 +52,10 @@ namespace Greatbone.Sample
         internal string packtel;
         internal DateTime packed;
 
-        internal string shipshopid;
-        internal string ship; // packer name
-        internal string shiptel;
-        internal DateTime shipped;
+        internal string dvrat; // delivered at shopid
+        internal string dvr; // deliverer name
+        internal string dvrtel;
+        internal DateTime dvred;
 
         internal DateTime closed; // time completed or aborted
 
@@ -71,11 +71,11 @@ namespace Greatbone.Sample
             i.Get(nameof(shop), ref shop);
             i.Get(nameof(shopid), ref shopid);
 
-            i.Get(nameof(buy), ref buy);
-            i.Get(nameof(buywx), ref buywx);
-            i.Get(nameof(buytel), ref buytel);
-            i.Get(nameof(buydistr), ref buydistr);
-            i.Get(nameof(buyaddr), ref buyaddr);
+            i.Get(nameof(cust), ref cust);
+            i.Get(nameof(custwx), ref custwx);
+            i.Get(nameof(custtel), ref custtel);
+            i.Get(nameof(custdistr), ref custdistr);
+            i.Get(nameof(custaddr), ref custaddr);
             if (proj.Detail())
             {
                 i.Get(nameof(detail), ref detail);
@@ -93,10 +93,10 @@ namespace Greatbone.Sample
                 i.Get(nameof(packtel), ref packtel);
                 i.Get(nameof(packed), ref packed);
 
-                i.Get(nameof(shipshopid), ref shipshopid);
-                i.Get(nameof(ship), ref ship);
-                i.Get(nameof(shiptel), ref shiptel);
-                i.Get(nameof(shipped), ref shipped);
+                i.Get(nameof(dvrat), ref dvrat);
+                i.Get(nameof(dvr), ref dvr);
+                i.Get(nameof(dvrtel), ref dvrtel);
+                i.Get(nameof(dvred), ref dvred);
 
                 i.Get(nameof(closed), ref closed);
             }
@@ -115,13 +115,13 @@ namespace Greatbone.Sample
             o.Put(nameof(shopid), shopid);
             o.End();
 
-            o.Put(nameof(buy), buy, label: "买家名称");
-            o.Put(nameof(buywx), buywx);
+            o.Put(nameof(cust), cust, label: "买家名称");
+            o.Put(nameof(custwx), custwx);
 
             o.Begin("送货地址");
-            o.Put(nameof(buytel), buytel);
-            o.Put(nameof(buydistr), buydistr);
-            o.Put(nameof(buyaddr), buyaddr);
+            o.Put(nameof(custtel), custtel);
+            o.Put(nameof(custdistr), custdistr);
+            o.Put(nameof(custaddr), custaddr);
             o.End();
 
             if (proj.Detail())
@@ -147,10 +147,10 @@ namespace Greatbone.Sample
                 }
                 if (proj.PhaseC())
                 {
-                    o.Put(nameof(shipshopid), shipshopid);
-                    o.Put(nameof(ship), ship);
-                    o.Put(nameof(shiptel), shiptel);
-                    o.Put(nameof(shipped), shipped);
+                    o.Put(nameof(dvrat), dvrat);
+                    o.Put(nameof(dvr), dvr);
+                    o.Put(nameof(dvrtel), dvrtel);
+                    o.Put(nameof(dvred), dvred);
                 }
                 if (proj.PhaseD())
                 {

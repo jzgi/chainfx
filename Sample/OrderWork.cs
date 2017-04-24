@@ -38,8 +38,8 @@ namespace Greatbone.Sample
             }
         }
 
-        [Ui("地址")]
-        public async Task addr(ActionContext ac)
+        [Ui("购物车清空")]
+        public async Task empty(ActionContext ac)
         {
             string shopid = ac[0];
             Form frm = await ac.ReadAsync<Form>();
