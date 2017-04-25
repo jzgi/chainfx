@@ -2,7 +2,6 @@ using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
 using Greatbone.Core;
-using static Greatbone.Core.Projection;
 
 namespace Greatbone.Sample
 {
@@ -48,7 +47,7 @@ namespace Greatbone.Sample
             using (var dc = ac.NewDbContext())
             {
                 // query for the shop record
-                const int proj = -1 ^ BIN ^ TRANSF ^ SECRET;
+                const int proj = -1 ^ Shop.BIN ^ Shop.TRANSF ^ Shop.SECRET;
                 dc.Sql("SELECT ").columnlst(Shop.Empty, proj)._("FROM shops WHERE id = @1");
                 if (dc.Query1(p => p.Set(shopid)))
                 {
@@ -190,7 +189,7 @@ namespace Greatbone.Sample
                 string city = ac[typeof(CityVarWork)];
                 using (var dc = ac.NewDbContext())
                 {
-                    const int proj = -1 ^ BIN ^ PRIME;
+                    const int proj = -1 ^ Shop.BIN ^ Shop.PRIME;
                     dc.Sql("SELECT ").columnlst(Shop.Empty, proj)._("FROM shops WHERE id = @1 AND city = @2");
                     if (dc.Query1(p => p.Set(id).Set(city)))
                     {
@@ -208,7 +207,7 @@ namespace Greatbone.Sample
                 shop.id = ac[this];
                 using (var dc = ac.NewDbContext())
                 {
-                    const int proj = -1 ^ BIN;
+                    const int proj = -1 ^ Shop.BIN;
                     dc.Sql("INSERT INTO shops")._(Shop.Empty, proj)._VALUES_(Shop.Empty, proj)._("");
                     if (dc.Execute(p => shop.WriteData(p, proj)) > 0)
                     {

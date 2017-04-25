@@ -108,7 +108,7 @@ namespace Greatbone.Core
             return jo != null && jo.Get(name, ref v);
         }
 
-        public bool Get<D>(string name, ref D v, int proj = 0) where D : IData, new()
+        public bool Get<D>(string name, ref D v, short proj = 0) where D : IData, new()
         {
             JObj jo = elements[current];
             return jo != null && jo.Get(name, ref v, proj);
@@ -143,26 +143,26 @@ namespace Greatbone.Core
             throw new NotImplementedException();
         }
 
-        public bool Get<D>(string name, ref D[] v, int proj = 0) where D : IData, new()
+        public bool Get<D>(string name, ref D[] v, short proj = 0) where D : IData, new()
         {
             JObj jo = elements[current];
             return jo != null && jo.Get(name, ref v);
         }
 
-        public bool Get<D>(string name, ref List<D> v, int proj = 0) where D : IData, new()
+        public bool Get<D>(string name, ref List<D> v, short proj = 0) where D : IData, new()
         {
             JObj jo = elements[current];
             return jo != null && jo.Get(name, ref v);
         }
 
-        public D ToObject<D>(int proj = 0) where D : IData, new()
+        public D ToObject<D>(short proj = 0) where D : IData, new()
         {
             D obj = new D();
             obj.ReadData(this, proj);
             return obj;
         }
 
-        public D[] ToArray<D>(int proj = 0) where D : IData, new()
+        public D[] ToArray<D>(short proj = 0) where D : IData, new()
         {
             D[] arr = new D[count];
             for (int i = 0; i < arr.Length; i++)
@@ -174,7 +174,7 @@ namespace Greatbone.Core
             return arr;
         }
 
-        public List<D> ToList<D>(int proj = 0) where D : IData, new()
+        public List<D> ToList<D>(short proj = 0) where D : IData, new()
         {
             List<D> lst = new List<D>(count + 8);
             for (int i = 0; i < count; i++)

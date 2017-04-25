@@ -1,7 +1,6 @@
 using System.Collections.Generic;
 using System.Threading.Tasks;
 using Greatbone.Core;
-using static Greatbone.Core.Projection;
 
 namespace Greatbone.Sample
 {
@@ -16,7 +15,7 @@ namespace Greatbone.Sample
         {
             if (ac.GET)
             {
-                ac.GiveFormPane(200, Shop.Empty, -1 ^ TRANSF);
+                ac.GiveFormPane(200, Shop.Empty, -1);
             }
             else // post
             {
@@ -45,7 +44,7 @@ namespace Greatbone.Sample
         {
             if (ac.GET)
             {
-                ac.GiveFormPane(200, Shop.Empty, -1 ^ TRANSF);
+                ac.GiveFormPane(200, Shop.Empty, -1);
             }
             else // post
             {
@@ -103,11 +102,10 @@ namespace Greatbone.Sample
         {
             using (var dc = ac.NewDbContext())
             {
-                const int proj = -1 ^ BIN ^ TRANSF ^ SECRET;
-                dc.Sql("SELECT ").columnlst(Shop.Empty, proj)._("FROM shops ORDER BY id LIMIT 30 OFFSET @1");
+                dc.Sql("SELECT ").columnlst(Shop.Empty)._("FROM shops ORDER BY id LIMIT 30 OFFSET @1");
                 if (dc.Query(p => p.Set(page)))
                 {
-                    ac.GiveGridFormPage(200, dc.ToList<Shop>(proj), proj);
+                    ac.GiveGridFormPage(200, dc.ToList<Shop>());
                 }
                 else
                 {

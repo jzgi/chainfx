@@ -400,7 +400,7 @@ namespace Greatbone.Core
             throw new NotImplementedException();
         }
 
-        public DbSql Put(string name, IData v, int proj = 0, string Label = null, string Help = null, bool ReadOnly = false, bool required = false)
+        public DbSql Put(string name, IData v, short proj = 0, string Label = null, string Help = null, bool ReadOnly = false, bool required = false)
         {
             if (name != null)
             {
@@ -419,13 +419,13 @@ namespace Greatbone.Core
             return this;
         }
 
-        public DbSql Put<D>(string name, D[] v, int proj = 0, string Label = null, string Help = null, bool ReadOnly = false, bool required = false) where D : IData
+        public DbSql Put<D>(string name, D[] v, short proj = 0, string Label = null, string Help = null, bool ReadOnly = false, bool required = false) where D : IData
         {
             Build(name);
             return this;
         }
 
-        public DbSql Put<D>(string name, List<D> v, int proj = 0, string Label = null, string Help = null, bool ReadOnly = false, bool required = false) where D : IData
+        public DbSql Put<D>(string name, List<D> v, short proj = 0, string Label = null, string Help = null, bool ReadOnly = false, bool required = false) where D : IData
         {
             Build(name);
             return this;

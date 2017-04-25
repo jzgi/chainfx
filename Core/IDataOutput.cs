@@ -48,10 +48,10 @@ namespace Greatbone.Core
 
         R Put(string name, Dictionary<string, string> v, string label = null, string help = null, bool @readonly = false, bool required = false);
 
-        R Put(string name, IData v, int proj = 0, string label = null, string help = null, bool @readonly = false, bool required = false);
+        R Put(string name, IData v, short proj = 0, string label = null, string help = null, bool @readonly = false, bool required = false);
 
-        R Put<D>(string name, D[] v, int proj = 0, string label = null, string help = null, bool @readonly = false, bool required = false) where D : IData;
+        R Put<D>(string name, D[] v, short proj = 0, string label = null, string help = null, bool @readonly = false, bool required = false) where D : IData;
 
-        R Put<D>(string name, List<D> v, int proj = 0, string label = null, string help = null, bool @readonly = false, bool required = false) where D : IData;
+        R Put<D>(string name, List<D> v, short proj = 0, string label = null, string help = null, bool @readonly = false, bool required = false) where D : IData;
     }
 }

@@ -222,7 +222,7 @@ namespace Greatbone.Core
             return default(D);
         }
 
-        public async Task<D[]> GetArrayAsync<D>(ActionContext ac, string uri, int proj = 0) where D : IData, new()
+        public async Task<D[]> GetArrayAsync<D>(ActionContext ac, string uri, short proj = 0) where D : IData, new()
         {
             try
             {
@@ -251,7 +251,7 @@ namespace Greatbone.Core
             return null;
         }
 
-        public async Task<List<D>> GetListAsync<D>(ActionContext ac, string uri, int proj = 0) where D : IData, new()
+        public async Task<List<D>> GetListAsync<D>(ActionContext ac, string uri, short proj = 0) where D : IData, new()
         {
             try
             {

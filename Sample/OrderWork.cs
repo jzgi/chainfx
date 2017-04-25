@@ -32,7 +32,7 @@ namespace Greatbone.Sample
             string wx = ac[-1];
             using (var dc = ac.NewDbContext())
             {
-                const int proj = -1 ^ Projection.LATE;
+                const int proj = -1 ^ Order.LATE;
                 dc.Sql("SELECT ").columnlst(Order.Empty, proj)._("FROM orders WHERE custwx = @1 AND status = @2");
                 if (dc.Query(p => p.Set(wx).Set(Order.CREATED)))
                 {

@@ -293,7 +293,7 @@ namespace Greatbone.Core
             throw new NotImplementedException();
         }
 
-        public DbParameters Put(string name, IData v, int proj = 0, string Label = null, string Help = null, bool ReadOnly = false, bool required = false)
+        public DbParameters Put(string name, IData v, short proj = 0, string Label = null, string Help = null, bool ReadOnly = false, bool required = false)
         {
             if (name == null)
             {
@@ -313,7 +313,7 @@ namespace Greatbone.Core
             return this;
         }
 
-        public DbParameters Put<D>(string name, D[] v, int proj = 0, string Label = null, string Help = null, bool ReadOnly = false, bool required = false) where D : IData
+        public DbParameters Put<D>(string name, D[] v, short proj = 0, string Label = null, string Help = null, bool ReadOnly = false, bool required = false) where D : IData
         {
             if (name == null)
             {
@@ -336,7 +336,7 @@ namespace Greatbone.Core
             return this;
         }
 
-        public DbParameters Put<D>(string name, List<D> v, int proj = 0, string Label = null, string Help = null, bool ReadOnly = false, bool required = false) where D : IData
+        public DbParameters Put<D>(string name, List<D> v, short proj = 0, string Label = null, string Help = null, bool ReadOnly = false, bool required = false) where D : IData
         {
             if (name == null)
             {

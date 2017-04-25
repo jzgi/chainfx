@@ -26,29 +26,11 @@ namespace Greatbone.Core
 
         public long Id => id;
 
-        public Work Work
-        {
-            get
-            {
-                throw new NotImplementedException();
-            }
-        }
+        public Work Work { get; set; }
 
-        public EventInfo Doer
-        {
-            get
-            {
-                throw new NotImplementedException();
-            }
-        }
+        public EventInfo Doer { get; set; }
 
-        public Service Service
-        {
-            get
-            {
-                throw new NotImplementedException();
-            }
-        }
+        public Service Service { get; set; }
 
         public byte[] Content => content;
 
@@ -57,7 +39,7 @@ namespace Greatbone.Core
             return entity as M;
         }
 
-        public D ToObject<D>(int proj = 0) where D : IData, new()
+        public D ToObject<D>(short proj = 0) where D : IData, new()
         {
             IDataInput inp = entity as IDataInput;
             if (inp == null)
@@ -67,7 +49,7 @@ namespace Greatbone.Core
             return inp.ToObject<D>(proj);
         }
 
-        public D[] ToArray<D>(int proj = 0) where D : IData, new()
+        public D[] ToArray<D>(short proj = 0) where D : IData, new()
         {
             IDataInput inp = entity as IDataInput;
             return inp?.ToArray<D>(proj);

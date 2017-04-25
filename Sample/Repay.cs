@@ -9,6 +9,39 @@ namespace Greatbone.Sample
     ///
     public class Repay : IData
     {
+        public const short
+
+            // non-data or for control
+            CTRL = 0x4000,
+
+            // primary or key
+            PRIME = 0x0800,
+
+            // auto generated or with default
+            AUTO = 0x0400,
+
+            // binary
+            BIN = 0x0200,
+
+            // late-handled
+            LATE = 0x0100,
+
+            // many
+            DETAIL = 0x0080,
+
+            // transform or digest
+            TRANSF = 0x0040,
+
+            // secret or protected
+            SECRET = 0x0020,
+
+            // need authority
+            POWER = 0x0010,
+
+            // frozen or immutable
+            IMMUT = 0x0008;
+
+
         // state
         public const int
             Prepared = 0,

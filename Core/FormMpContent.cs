@@ -231,7 +231,7 @@ namespace Greatbone.Core
             throw new NotImplementedException();
         }
 
-        public FormMpContent Put(string name, IData v, int proj = 0, string Label = null, string help = null, bool @readonly = false, bool required = false)
+        public FormMpContent Put(string name, IData v, short proj = 0, string Label = null, string help = null, bool @readonly = false, bool required = false)
         {
             Part(name);
             if (v == null)
@@ -247,7 +247,7 @@ namespace Greatbone.Core
             return this;
         }
 
-        public FormMpContent Put<D>(string name, D[] v, int proj = 0, string Label = null, string help = null, bool @readonly = false, bool required = false) where D : IData
+        public FormMpContent Put<D>(string name, D[] v, short proj = 0, string Label = null, string help = null, bool @readonly = false, bool required = false) where D : IData
         {
             Part(name);
             if (v == null)
@@ -266,7 +266,7 @@ namespace Greatbone.Core
             return this;
         }
 
-        public FormMpContent Put<D>(string name, List<D> v, int proj = 0, string Label = null, string help = null, bool @readonly = false, bool required = false) where D : IData
+        public FormMpContent Put<D>(string name, List<D> v, short proj = 0, string Label = null, string help = null, bool @readonly = false, bool required = false) where D : IData
         {
             Part(name);
             if (v == null)

@@ -1745,17 +1745,17 @@ namespace Greatbone.Core
             return this;
         }
 
-        public HtmlContent Put(string name, IData v, int proj = 0, string Label = null, string Help = null, bool ReadOnly = false, bool required = false)
+        public HtmlContent Put(string name, IData v, short proj = 0, string Label = null, string Help = null, bool ReadOnly = false, bool required = false)
         {
             return this;
         }
 
-        public HtmlContent Put<D>(string name, D[] v, int proj = 0, string Label = null, string Help = null, bool ReadOnly = false, bool required = false) where D : IData
+        public HtmlContent Put<D>(string name, D[] v, short proj = 0, string Label = null, string Help = null, bool ReadOnly = false, bool required = false) where D : IData
         {
             return this;
         }
 
-        public HtmlContent Put<D>(string name, List<D> v, int proj = 0, string label = null, string help = null, bool @readonly = false, bool required = false) where D : IData
+        public HtmlContent Put<D>(string name, List<D> v, short proj = 0, string label = null, string help = null, bool @readonly = false, bool required = false) where D : IData
         {
             switch (chain[level].comp)
             {

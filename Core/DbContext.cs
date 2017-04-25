@@ -1,9 +1,9 @@
-﻿using Npgsql;
-using NpgsqlTypes;
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Data;
 using System.Threading.Tasks;
+using Npgsql;
+using NpgsqlTypes;
 
 namespace Greatbone.Core
 {
@@ -165,7 +165,7 @@ namespace Greatbone.Core
                 p(parameters);
                 if (prepare) command.Prepare();
             }
-            reader = (NpgsqlDataReader)await command.ExecuteReaderAsync();
+            reader = (NpgsqlDataReader) await command.ExecuteReaderAsync();
             return reader.HasRows;
         }
 
@@ -315,7 +315,7 @@ namespace Greatbone.Core
         // RESULTSET
         //
 
-        public D ToObject<D>(int proj = 0) where D : IData, new()
+        public D ToObject<D>(short proj = 0) where D : IData, new()
         {
             D obj = new D();
             obj.ReadData(this, proj);
@@ -330,12 +330,12 @@ namespace Greatbone.Core
             return obj;
         }
 
-        public D[] ToArray<D>(int proj = 0) where D : IData, new()
+        public D[] ToArray<D>(short proj = 0) where D : IData, new()
         {
             return ToList<D>(proj).ToArray();
         }
 
-        public List<D> ToList<D>(int proj = 0) where D : IData, new()
+        public List<D> ToList<D>(short proj = 0) where D : IData, new()
         {
             List<D> lst = new List<D>(32);
             while (Next())
@@ -369,7 +369,9 @@ namespace Greatbone.Core
                     return true;
                 }
             }
-            catch { }
+            catch
+            {
+            }
             return false;
         }
 
@@ -384,7 +386,9 @@ namespace Greatbone.Core
                     return true;
                 }
             }
-            catch { }
+            catch
+            {
+            }
             return false;
         }
 
@@ -399,7 +403,9 @@ namespace Greatbone.Core
                     return true;
                 }
             }
-            catch { }
+            catch
+            {
+            }
             return false;
         }
 
@@ -414,7 +420,9 @@ namespace Greatbone.Core
                     return true;
                 }
             }
-            catch { }
+            catch
+            {
+            }
             return false;
         }
 
@@ -429,7 +437,9 @@ namespace Greatbone.Core
                     return true;
                 }
             }
-            catch { }
+            catch
+            {
+            }
             return false;
         }
 
@@ -444,7 +454,9 @@ namespace Greatbone.Core
                     return true;
                 }
             }
-            catch { }
+            catch
+            {
+            }
             return false;
         }
 
@@ -459,7 +471,9 @@ namespace Greatbone.Core
                     return true;
                 }
             }
-            catch { }
+            catch
+            {
+            }
             return false;
         }
 
@@ -474,7 +488,9 @@ namespace Greatbone.Core
                     return true;
                 }
             }
-            catch { }
+            catch
+            {
+            }
             return false;
         }
 
@@ -489,7 +505,9 @@ namespace Greatbone.Core
                     return true;
                 }
             }
-            catch { }
+            catch
+            {
+            }
             return false;
         }
 
@@ -501,7 +519,7 @@ namespace Greatbone.Core
                 if (!reader.IsDBNull(ord))
                 {
                     int len;
-                    if ((len = (int)reader.GetBytes(ord, 0, null, 0, 0)) > 0)
+                    if ((len = (int) reader.GetBytes(ord, 0, null, 0, 0)) > 0)
                     {
                         byte[] buf = BufferUtility.ByteBuffer(len);
                         reader.GetBytes(ord, 0, buf, 0, len); // read data into the buffer
@@ -510,7 +528,9 @@ namespace Greatbone.Core
                     }
                 }
             }
-            catch { }
+            catch
+            {
+            }
 
             return false;
         }
@@ -520,7 +540,7 @@ namespace Greatbone.Core
             throw new NotImplementedException();
         }
 
-        public bool Get<D>(string name, ref D v, int proj = 0) where D : IData, new()
+        public bool Get<D>(string name, ref D v, short proj = 0) where D : IData, new()
         {
             try
             {
@@ -529,7 +549,7 @@ namespace Greatbone.Core
                 {
                     string str = reader.GetString(ord);
                     JsonParse p = new JsonParse(str);
-                    JObj jo = (JObj)p.Parse();
+                    JObj jo = (JObj) p.Parse();
                     v = new D();
                     v.ReadData(jo, proj);
 
@@ -542,7 +562,9 @@ namespace Greatbone.Core
                     return true;
                 }
             }
-            catch { }
+            catch
+            {
+            }
             return false;
         }
 
@@ -555,11 +577,13 @@ namespace Greatbone.Core
                 {
                     string str = reader.GetString(ord);
                     JsonParse p = new JsonParse(str);
-                    v = (JObj)p.Parse();
+                    v = (JObj) p.Parse();
                     return true;
                 }
             }
-            catch { }
+            catch
+            {
+            }
             return false;
         }
 
@@ -572,11 +596,13 @@ namespace Greatbone.Core
                 {
                     string str = reader.GetString(ord);
                     JsonParse parse = new JsonParse(str);
-                    v = (JArr)parse.Parse();
+                    v = (JArr) parse.Parse();
                     return true;
                 }
             }
-            catch { }
+            catch
+            {
+            }
             return false;
         }
 
@@ -596,7 +622,9 @@ namespace Greatbone.Core
                     return true;
                 }
             }
-            catch { }
+            catch
+            {
+            }
             return false;
         }
 
@@ -611,7 +639,9 @@ namespace Greatbone.Core
                     return true;
                 }
             }
-            catch { }
+            catch
+            {
+            }
             return false;
         }
 
@@ -626,7 +656,9 @@ namespace Greatbone.Core
                     return true;
                 }
             }
-            catch { }
+            catch
+            {
+            }
             return false;
         }
 
@@ -641,11 +673,13 @@ namespace Greatbone.Core
                     return true;
                 }
             }
-            catch { }
+            catch
+            {
+            }
             return false;
         }
 
-        public bool Get<D>(string name, ref D[] v, int proj = 0) where D : IData, new()
+        public bool Get<D>(string name, ref D[] v, short proj = 0) where D : IData, new()
         {
             try
             {
@@ -654,7 +688,7 @@ namespace Greatbone.Core
                 {
                     string str = reader.GetString(ord);
                     JsonParse parse = new JsonParse(str);
-                    JArr ja = (JArr)parse.Parse();
+                    JArr ja = (JArr) parse.Parse();
                     int len = ja.Count;
                     v = new D[len];
                     for (int i = 0; i < len; i++)
@@ -675,11 +709,13 @@ namespace Greatbone.Core
                     return true;
                 }
             }
-            catch { }
+            catch
+            {
+            }
             return false;
         }
 
-        public bool Get<D>(string name, ref List<D> v, int proj = 0) where D : IData, new()
+        public bool Get<D>(string name, ref List<D> v, short proj = 0) where D : IData, new()
         {
             try
             {
@@ -688,7 +724,7 @@ namespace Greatbone.Core
                 {
                     string str = reader.GetString(ord);
                     JsonParse p = new JsonParse(str);
-                    JArr ja = (JArr)p.Parse();
+                    JArr ja = (JArr) p.Parse();
                     int len = ja.Count;
                     v = new List<D>(len + 8);
                     for (int i = 0; i < len; i++)
@@ -709,7 +745,9 @@ namespace Greatbone.Core
                     return true;
                 }
             }
-            catch { }
+            catch
+            {
+            }
             return false;
         }
 
@@ -724,21 +762,21 @@ namespace Greatbone.Core
             BufferUtility.Return(cont); // back to pool
         }
 
-        public void Publish(string name, string shard, int arg, IData obj, int proj = 0)
+        public void Publish(string name, string shard, int arg, IData obj, short proj = 0)
         {
             JsonContent cont = new JsonContent(true, true).Put(null, obj, proj);
             Publish(name, shard, arg, cont);
             BufferUtility.Return(cont); // back to pool
         }
 
-        public void Publish<D>(string name, string shard, int arg, D[] arr, int proj = 0) where D : IData
+        public void Publish<D>(string name, string shard, int arg, D[] arr, short proj = 0) where D : IData
         {
             JsonContent cont = new JsonContent(true, true).Put(null, arr, proj);
             Publish(name, shard, arg, cont);
             BufferUtility.Return(cont); // back to pool
         }
 
-        public void Publish<D>(string name, string shard, int arg, List<D> lst, int proj = 0) where D : IData
+        public void Publish<D>(string name, string shard, int arg, List<D> lst, short proj = 0) where D : IData
         {
             JsonContent cont = new JsonContent(true, true).Put(null, lst, proj);
             Publish(name, shard, arg, cont);
@@ -810,6 +848,5 @@ namespace Greatbone.Core
                 disposed = true;
             }
         }
-
     }
 }

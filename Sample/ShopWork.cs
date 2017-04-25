@@ -1,7 +1,6 @@
 using System.Collections.Generic;
 using System.Threading.Tasks;
 using Greatbone.Core;
-using static Greatbone.Core.Projection;
 
 namespace Greatbone.Sample
 {
@@ -66,7 +65,7 @@ namespace Greatbone.Sample
                                 m.Add("</div>");
                                 m.Add("</div>");
 
-                                var shops = dc.ToList<Shop>(-1 ^ BIN);
+                                var shops = dc.ToList<Shop>(-1 ^ Shop.BIN);
                                 for (int i = 0; i < shops.Count; i++)
                                 {
                                     var shop = shops[i];
@@ -143,7 +142,7 @@ namespace Greatbone.Sample
                     {
                         dc.Execute("UPDATE users SET oprat = @1 WHERE wx = @2", p => p.Set(shopid).Set(prin.wx));
                         prin.oprat = shopid;
-                        ac.SetTokenCookie(prin);
+                        ac.SetTokenCookie(prin, -1);
                     }
                 }
                 ac.GiveRedirect(orig);
@@ -171,7 +170,7 @@ namespace Greatbone.Sample
             string city = ac[typeof(CityVarWork)];
             using (var dc = ac.NewDbContext())
             {
-                const int proj = -1 ^ BIN;
+                const int proj = -1 ^ Shop.BIN;
                 dc.Sql("SELECT ").columnlst(Shop.Empty, proj)._("FROM shops WHERE city = @1");
                 if (dc.Query(p => p.Set(city)))
                 {
@@ -189,7 +188,7 @@ namespace Greatbone.Sample
         {
             if (ac.GET)
             {
-                ac.GiveFormPane(200, Shop.Empty, -1 ^ TRANSF);
+                ac.GiveFormPane(200, Shop.Empty, -1 ^ Shop.TRANSF);
             }
             else // post
             {
@@ -225,7 +224,7 @@ namespace Greatbone.Sample
         {
             using (var dc = ac.NewDbContext())
             {
-                const int proj = -1 ^ BIN ^ TRANSF ^ SECRET;
+                const int proj = -1 ^ Shop.BIN ^ Shop.TRANSF ^ Shop.SECRET;
                 dc.Sql("SELECT ").columnlst(Shop.Empty, proj)._("FROM shops ORDER BY id LIMIT 30 OFFSET @1");
                 if (dc.Query(p => p.Set(page)))
                 {

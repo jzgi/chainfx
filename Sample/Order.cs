@@ -4,11 +4,45 @@ using Greatbone.Core;
 
 namespace Greatbone.Sample
 {
-    /// 
+    ///
     /// An order data object.
     ///
     public class Order : IData
     {
+        public const short
+
+            // non-data or for control
+            CTRL = 0x4000,
+
+            // primary or key
+            PRIME = 0x0800,
+
+            // auto generated or with default
+            AUTO = 0x0400,
+
+            // binary
+            BIN = 0x0200,
+
+            // late-handled
+            LATE = 0x0100,
+
+            // many
+            DETAIL = 0x0080,
+
+            // transform or digest
+            TRANSF = 0x0040,
+
+            // secret or protected
+            SECRET = 0x0020,
+
+            // need authority
+            POWER = 0x0010,
+
+            // frozen or immutable
+            IMMUT = 0x0008;
+
+
+
         // state
         public const int
             CREATED = 0,
@@ -63,7 +97,7 @@ namespace Greatbone.Sample
 
         public void ReadData(IDataInput i, int proj = 0)
         {
-            if (proj.Prime() && proj.Auto())
+            if ((proj & PRIME) == PRIME)
             {
                 i.Get(nameof(id), ref id);
             }
@@ -76,7 +110,7 @@ namespace Greatbone.Sample
             i.Get(nameof(custtel), ref custtel);
             i.Get(nameof(custdistr), ref custdistr);
             i.Get(nameof(custaddr), ref custaddr);
-            if (proj.Detail())
+            if ((proj & DETAIL) == DETAIL)
             {
                 i.Get(nameof(detail), ref detail);
             }
@@ -84,7 +118,7 @@ namespace Greatbone.Sample
             i.Get(nameof(note), ref note);
             i.Get(nameof(created), ref created);
 
-            if (proj.Late())
+            if ((proj & LATE) == LATE)
             {
                 i.Get(nameof(prepay_id), ref prepay_id);
                 i.Get(nameof(paid), ref paid);
@@ -106,7 +140,7 @@ namespace Greatbone.Sample
 
         public void WriteData<R>(IDataOutput<R> o, int proj = 0) where R : IDataOutput<R>
         {
-            if (proj.Prime() && proj.Auto())
+            if ((proj & PRIME) == PRIME)
             {
                 o.Put(nameof(id), id);
             }
@@ -124,7 +158,7 @@ namespace Greatbone.Sample
             o.Put(nameof(custaddr), custaddr);
             o.End();
 
-            if (proj.Detail())
+            if ((proj & DETAIL) == DETAIL)
             {
                 o.Put(nameof(detail), detail);
             }
@@ -132,27 +166,27 @@ namespace Greatbone.Sample
             o.Put(nameof(note), note, label: "附加说明");
             o.Put(nameof(created), created, label: "创建时间");
 
-            if (proj.Late())
+            if ((proj & LATE) == LATE)
             {
-                if (proj.PhaseA())
+                if ((proj & PRIME) == PRIME)
                 {
                     o.Put(nameof(prepay_id), prepay_id);
                     o.Put(nameof(paid), paid);
                 }
-                if (proj.PhaseB())
+                if ((proj & PRIME) == PRIME)
                 {
                     o.Put(nameof(pack), pack);
                     o.Put(nameof(packtel), packtel);
                     o.Put(nameof(packed), packed);
                 }
-                if (proj.PhaseC())
+                if ((proj & PRIME) == PRIME)
                 {
                     o.Put(nameof(dvrat), dvrat);
                     o.Put(nameof(dvr), dvr);
                     o.Put(nameof(dvrtel), dvrtel);
                     o.Put(nameof(dvred), dvred);
                 }
-                if (proj.PhaseD())
+                if ((proj & PRIME) == PRIME)
                 {
                     o.Put(nameof(closed), closed);
                 }

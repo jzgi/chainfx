@@ -337,17 +337,17 @@ namespace Greatbone.Core
             return this;
         }
 
-        public XmlContent Put(string name, IData v, int proj = 0, string Label = null, string Help = null, bool @readonly = false, bool required = false)
+        public XmlContent Put(string name, IData v, short proj = 0, string Label = null, string Help = null, bool @readonly = false, bool required = false)
         {
             return this;
         }
 
-        public XmlContent Put<D>(string name, D[] v, int proj = 0, string Label = null, string Help = null, bool @readonly = false, bool required = false) where D : IData
+        public XmlContent Put<D>(string name, D[] v, short proj = 0, string Label = null, string Help = null, bool @readonly = false, bool required = false) where D : IData
         {
             return this;
         }
 
-        public XmlContent Put<D>(string name, List<D> v, int proj = 0, string Label = null, string Help = null, bool @readonly = false, bool required = false) where D : IData
+        public XmlContent Put<D>(string name, List<D> v, short proj = 0, string Label = null, string Help = null, bool @readonly = false, bool required = false) where D : IData
         {
             return this;
         }

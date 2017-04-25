@@ -113,7 +113,7 @@ namespace Greatbone.Sample
                             }
                         };
 
-                        const int proj = -1 ^ Projection.AUTO ^ Projection.LATE;
+                        const int proj = -1 ^ Item.AUTO ^ Item.LATE;
 
                         dc.Sql("INSERT INTO orders ")._(order, proj)._VALUES_(order, proj);
                         dc.Execute(p => order.WriteData(p, proj));
@@ -138,7 +138,7 @@ namespace Greatbone.Sample
                 string name = ac[this];
                 using (var dc = Service.NewDbContext())
                 {
-                    const int proj = -1 ^ Projection.BIN ^ Projection.PRIME;
+                    const int proj = -1 ^ Item.BIN ^ Item.PRIME;
                     dc.Sql("SELECT ").columnlst(Item.Empty, proj)._("FROM items WHERE shopid = @1 AND name = @2");
                     if (dc.Query1(p => p.Set(shopid).Set(name)))
                     {
@@ -156,7 +156,7 @@ namespace Greatbone.Sample
                 item.shopid = ac[typeof(ShopVarWork)];
                 using (var dc = Service.NewDbContext())
                 {
-                    const int proj = -1 ^ Projection.BIN;
+                    const int proj = -1 ^ Item.BIN;
                     dc.Sql("INSERT INTO items")._(Item.Empty, proj)._VALUES_(Item.Empty, proj)._("");
                     if (dc.Execute(p => item.WriteData(p, proj)) > 0)
                     {

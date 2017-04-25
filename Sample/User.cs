@@ -10,6 +10,39 @@ namespace Greatbone.Sample
     {
         public static readonly User Empty = new User();
 
+        public const short
+
+            // non-data or for control
+            CTRL = 0x4000,
+
+            // primary or key
+            PRIME = 0x0800,
+
+            // auto generated or with default
+            AUTO = 0x0400,
+
+            // binary
+            BIN = 0x0200,
+
+            // late-handled
+            LATE = 0x0100,
+
+            // many
+            DETAIL = 0x0080,
+
+            // transform or digest
+            TRANSF = 0x0040,
+
+            // secret or protected
+            SECRET = 0x0020,
+
+            // need authority
+            POWER = 0x0010,
+
+            // frozen or immutable
+            IMMUT = 0x0008;
+
+
         internal bool stored; // whether recorded in db
 
         internal string wx; // openid
@@ -27,17 +60,17 @@ namespace Greatbone.Sample
 
         public void ReadData(IDataInput i, int proj = 0)
         {
-            if (proj.Ctrl())
+            if ((proj & CTRL) == CTRL)
             {
                 i.Get(nameof(stored), ref stored);
             }
 
-            if (proj.Prime())
+            if ((proj & PRIME) == PRIME)
             {
                 i.Get(nameof(wx), ref wx);
             }
             i.Get(nameof(name), ref name);
-            if (proj.Transf())
+            if ((proj & TRANSF) == TRANSF)
             {
                 i.Get(nameof(credential), ref credential);
             }
@@ -46,7 +79,7 @@ namespace Greatbone.Sample
             i.Get(nameof(distr), ref distr);
             i.Get(nameof(addr), ref addr);
             i.Get(nameof(created), ref created);
-            if (proj.Late())
+            if ((proj & LATE) == LATE)
             {
                 i.Get(nameof(oprat), ref oprat);
                 i.Get(nameof(dvrat), ref dvrat);
@@ -57,17 +90,17 @@ namespace Greatbone.Sample
 
         public void WriteData<R>(IDataOutput<R> o, int proj = 0) where R : IDataOutput<R>
         {
-            if (proj.Ctrl())
+            if ((proj & CTRL) == CTRL)
             {
                 o.Put(nameof(stored), stored);
             }
 
-            if (proj.Prime())
+            if ((proj & PRIME) == PRIME)
             {
                 o.Put(nameof(wx), wx, label: "编号");
             }
             o.Put(nameof(name), name, label: "名称");
-            if (proj.Transf())
+            if ((proj & TRANSF) == TRANSF)
             {
                 o.Put(nameof(credential), credential);
             }
@@ -76,7 +109,7 @@ namespace Greatbone.Sample
             o.Put(nameof(distr), distr, label: "区县");
             o.Put(nameof(addr), addr, label: "地址");
             o.Put(nameof(created), created);
-            if (proj.Late())
+            if ((proj & LATE) == LATE)
             {
                 o.Put(nameof(oprat), oprat, label: "操作员");
                 o.Put(nameof(dvrat), dvrat, label: "派送员");

@@ -538,10 +538,10 @@ namespace Greatbone.Core
             }
         }
 
-        internal void SetTokenCookie(ActionContext ac, P prin)
+        internal void SetTokenCookie(ActionContext ac, P prin, short proj)
         {
             StringBuilder sb = new StringBuilder("Token=");
-            string token = Encrypt(prin);
+            string token = Encrypt(prin, proj);
             sb.Append(token);
             if (Auth.maxage > 0)
             {
@@ -555,14 +555,12 @@ namespace Greatbone.Core
             ac.SetHeader("Set-Cookie", sb.ToString());
         }
 
-        const int Proj = -1 ^ Projection.BIN ^ Projection.SECRET;
-
-        public string Encrypt(P prin)
+        public string Encrypt(P prin, short proj)
         {
             if (Auth == null) return null;
 
             JsonContent cont = new JsonContent(true, true, 4096); // borrow
-            cont.Put(null, prin, Proj);
+            cont.Put(null, prin, proj);
             byte[] bytebuf = cont.ByteBuffer;
             int count = cont.Size;
 
@@ -610,7 +608,7 @@ namespace Greatbone.Core
             JsonParse parse = new JsonParse(str.ToString());
             JObj jo = (JObj) parse.Parse();
             P prin = new P();
-            prin.ReadData(jo, Proj);
+            prin.ReadData(jo, -1);
             return prin;
         }
 
