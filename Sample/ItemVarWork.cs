@@ -48,24 +48,6 @@ namespace Greatbone.Sample
                 else ac.Give(404); // not found           
             }
         }
-
-        public void cannel(ActionContext ac)
-        {
-            string shopid = ac[0];
-            int orderid = ac[this];
-
-            using (var dc = Service.NewDbContext())
-            {
-                dc.Sql("SELECT ").columnlst(Order.Empty)._("FROM orders WHERE id = @1 AND shopid = @2");
-                if (dc.Query(p => p.Set(orderid).Set(shopid)))
-                {
-                    var order = dc.ToArray<Order>();
-                }
-                else
-                {
-                }
-            }
-        }
     }
 
     public class PubItemVarWork : ItemVarWork
@@ -188,7 +170,7 @@ namespace Greatbone.Sample
             }
         }
 
-        [Ui("图片", UiMode.AnchorCrop)]
+        [Ui("图片", UiMode.AnchorCrop, Circle = true)]
         public async Task icon(ActionContext ac)
         {
             string shopid = ac[typeof(ShopVarWork)];

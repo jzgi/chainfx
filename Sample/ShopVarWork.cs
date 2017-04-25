@@ -1,4 +1,6 @@
+using System;
 using System.Collections.Generic;
+using System.Threading.Tasks;
 using Greatbone.Core;
 using static Greatbone.Core.Projection;
 
@@ -66,7 +68,9 @@ namespace Greatbone.Sample
                         m.Add("<div class=\"sticky\" style=\"width: 100%\" data-sticky  data-options=\"anchor: page; marginTop: 0; stickyOn: small;\">");
                         m.Add("<div class=\"title-bar\">");
                         m.Add("<div class=\"title-bar-left\">");
-                        m.Add("<a href=\"../\" onclick=\"return dialog(this, 2);\">"); m.Add(shop.name); m.Add("</a>");
+                        m.Add("<a href=\"../\" onclick=\"return dialog(this, 2);\">");
+                        m.Add(shop.name);
+                        m.Add("</a>");
                         m.Add("</div>");
                         m.Add("<div class=\"title-bar-right\">");
                         m.Add("<a class=\"float-right\" href=\"/my//cart/\"><span class=\"fa-stack fa-lg\"><i class=\"fa fa-circle fa-stack-2x\"></i><i class=\"fa fa-shopping-cart fa-stack-1x fa-inverse\"></i></span></a>");
@@ -175,6 +179,87 @@ namespace Greatbone.Sample
     {
         public MgrShopVarWork(WorkContext wc) : base(wc)
         {
+        }
+
+        [Ui("修改", UiMode.AnchorDialog)]
+        public async Task edit(ActionContext ac)
+        {
+            if (ac.GET)
+            {
+                string id = ac[this];
+                string city = ac[typeof(CityVarWork)];
+                using (var dc = ac.NewDbContext())
+                {
+                    const int proj = -1 ^ BIN ^ PRIME;
+                    dc.Sql("SELECT ").columnlst(Shop.Empty, proj)._("FROM shops WHERE id = @1 AND city = @2");
+                    if (dc.Query1(p => p.Set(id).Set(city)))
+                    {
+                        ac.GiveFormPane(200, dc.ToObject<Item>(proj), proj);
+                    }
+                    else
+                    {
+                        ac.Give(500); // internal server error
+                    }
+                }
+            }
+            else // post
+            {
+                var shop = await ac.ReadObjectAsync<Shop>();
+                shop.id = ac[this];
+                using (var dc = ac.NewDbContext())
+                {
+                    const int proj = -1 ^ BIN;
+                    dc.Sql("INSERT INTO shops")._(Shop.Empty, proj)._VALUES_(Shop.Empty, proj)._("");
+                    if (dc.Execute(p => shop.WriteData(p, proj)) > 0)
+                    {
+                        ac.Give(201); // created
+                    }
+                    else
+                    {
+                        ac.Give(500); // internal server error
+                    }
+                }
+            }
+        }
+
+        [Ui("图片", UiMode.AnchorCrop, Circle = true)]
+        public async Task icon(ActionContext ac)
+        {
+            string id = ac[this];
+            string city = ac[typeof(CityVarWork)];
+            if (ac.GET)
+            {
+                using (var dc = Service.NewDbContext())
+                {
+                    if (dc.Query1("SELECT icon FROM shops WHERE id = @1 AND name = @2", p => p.Set(id).Set(city)))
+                    {
+                        var byteas = dc.GetByteAs();
+                        if (byteas.Count == 0) ac.Give(204); // no content
+                        else
+                        {
+                            StaticContent cont = new StaticContent(byteas);
+                            ac.Give(200, cont);
+                        }
+                    }
+                    else ac.Give(404); // not found
+                }
+            }
+            else // post
+            {
+                var frm = await ac.ReadAsync<Form>();
+                ArraySegment<byte> icon = frm[nameof(icon)];
+                using (var dc = Service.NewDbContext())
+                {
+                    if (dc.Execute("UPDATE shops SET icon = @1 WHERE id = @2 AND city = @3", p => p.Set(icon).Set(id).Set(city)) > 0)
+                    {
+                        ac.Give(200); // ok
+                    }
+                    else
+                    {
+                        ac.Give(500); // internal server error
+                    }
+                }
+            }
         }
     }
 

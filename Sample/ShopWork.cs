@@ -9,6 +9,7 @@ namespace Greatbone.Sample
     {
         protected ShopWork(WorkContext wc) : base(wc)
         {
+            CreateVar<V, string>(obj => ((Shop) obj).id);
         }
     }
 
@@ -17,7 +18,6 @@ namespace Greatbone.Sample
     {
         public PubShopWork(WorkContext wc) : base(wc)
         {
-            CreateVar<PubShopVarWork, string>();
         }
 
         public void @default(ActionContext ac)
@@ -71,11 +71,11 @@ namespace Greatbone.Sample
                                 {
                                     var shop = shops[i];
 
-                                    m.Add("<div class=\"row\">");
-                                    m.Add("<div class=\"small-3 columns\"><a href=\"#\"><span></span><img src=\"");
+                                    m.Add("<div class=\"row card\">");
+                                    m.Add("<div class=\"small-4 columns\"><a href=\"#\"><span></span><img src=\"");
                                     m.Add(shop.id);
                                     m.Add("/_icon_\" alt=\"\" class=\" thumbnail\"></a></div>");
-                                    m.Add("<div class=\"small-9 columns\">");
+                                    m.Add("<div class=\"small-8 columns\">");
                                     m.Add("<h3><a href=\"");
                                     m.Add(shop.id);
                                     m.Add("/\">");

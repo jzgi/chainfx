@@ -156,7 +156,7 @@ function bind(url, wid, height, circle) {
 function upload(url, circle) {
 
     // get blob of cropped image
-    $('#demo').croppie('result', { type: 'blob', size: 'viewport', circle: circle }).then(function (blob) {
+    $('#demo').croppie('result', { type: 'blob', size: 'viewport', format: 'jpeg', quality: 0.75, circle: circle }).then(function (blob) {
 
         var fd = new FormData();
         fd.append('icon', blob, 'icon.png');
