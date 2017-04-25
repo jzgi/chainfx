@@ -266,25 +266,6 @@ namespace Greatbone.Core
             return this;
         }
 
-        public FormMpContent Put<D>(string name, List<D> v, short proj = 0, string Label = null, string help = null, bool @readonly = false, bool required = false) where D : IData
-        {
-            Part(name);
-            if (v == null)
-            {
-                Add("null");
-            }
-            else
-            {
-                Add('[');
-                for (int i = 0; i < v.Count; i++)
-                {
-                    Put(null, v[i], proj);
-                }
-                Add(']');
-            }
-            return this;
-        }
-
         public void PutEvent(long id, string name, string shard, string arg, DateTime time, IContent content)
         {
         }

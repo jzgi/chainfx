@@ -195,7 +195,7 @@ namespace Greatbone.Core
             throw new NotImplementedException();
         }
 
-        public bool Get<D>(string name, ref List<D> v, short proj = 0) where D : IData, new()
+        public bool Get(string name, ref IDataInput v)
         {
             throw new NotImplementedException();
         }
@@ -205,6 +205,11 @@ namespace Greatbone.Core
             D dat = new D();
             dat.ReadData(this, proj);
             return dat;
+        }
+
+        public D[] ToArray<D>(short proj = 0) where D : IData, new()
+        {
+            throw new NotImplementedException();
         }
 
         public void WriteData<R>(IDataOutput<R> @out) where R : IDataOutput<R>
@@ -222,21 +227,6 @@ namespace Greatbone.Core
         public bool DataSet => false;
 
         public bool Next()
-        {
-            throw new NotImplementedException();
-        }
-
-        public D[] ToArray<D>(short proj = 0) where D : IData, new()
-        {
-            throw new NotImplementedException();
-        }
-
-        public List<D> ToList<D>(short proj = 0) where D : IData, new()
-        {
-            throw new NotImplementedException();
-        }
-
-        public bool Get(string name, ref IDataInput v)
         {
             throw new NotImplementedException();
         }

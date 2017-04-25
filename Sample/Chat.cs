@@ -1,5 +1,4 @@
 using System;
-using System.Collections.Generic;
 using System.Threading;
 using System.Threading.Tasks;
 using Greatbone.Core;
@@ -13,7 +12,7 @@ namespace Greatbone.Sample
     {
         internal string userwx; // openid of the owner
 
-        internal List<ChatMsg> msgs;
+        internal ChatMsg[] msgs;
 
         internal int status;
 
@@ -21,63 +20,14 @@ namespace Greatbone.Sample
 
         volatile TaskCompletionSource<bool> tcs;
 
-        internal async Task<ChatMsg[]> GetAsync(bool wait = false)
-        {
-            await lck.WaitAsync();
-            try
-            {
-                if (msgs == null || msgs.Count == 0)
-                {
-                    if (wait)
-                    {
-                        tcs = new TaskCompletionSource<bool>();
-                        bool arrival = await tcs.Task;
-                    }
-                    return null;
-                }
-
-                ChatMsg[] ret = msgs.ToArray();
-                msgs.Clear();
-                return ret;
-            }
-            finally
-            {
-                lck.Release();
-            }
-        }
-
-        internal async Task Put(ChatMsg msg)
-        {
-            await lck.WaitAsync();
-            try
-            {
-                if (msgs == null)
-                {
-                    msgs = new List<ChatMsg>(8);
-                }
-                msgs.Add(msg);
-
-                if (tcs != null)
-                {
-                    // try release a long polling
-                    tcs.TrySetResult(true);
-                    tcs = null;
-                }
-            }
-            finally
-            {
-                lck.Release();
-            }
-        }
-
-        public void ReadData(IDataInput i, int proj = 0)
+        public void ReadData(IDataInput i, short proj = 0)
         {
             i.Get(nameof(userwx), ref userwx);
             i.Get(nameof(msgs), ref msgs);
             i.Get(nameof(status), ref status);
         }
 
-        public void WriteData<R>(IDataOutput<R> o, int proj = 0) where R : IDataOutput<R>
+        public void WriteData<R>(IDataOutput<R> o, short proj = 0) where R : IDataOutput<R>
         {
             o.Put(nameof(userwx), userwx);
             o.Put(nameof(msgs), msgs);
@@ -98,7 +48,7 @@ namespace Greatbone.Sample
 
         internal DateTime time;
 
-        public void ReadData(IDataInput i, int proj = 0)
+        public void ReadData(IDataInput i, short proj = 0)
         {
             i.Get(nameof(fromid), ref fromid);
             i.Get(nameof(from), ref from);
@@ -107,7 +57,7 @@ namespace Greatbone.Sample
             i.Get(nameof(time), ref time);
         }
 
-        public void WriteData<R>(IDataOutput<R> o, int proj = 0) where R : IDataOutput<R>
+        public void WriteData<R>(IDataOutput<R> o, short proj = 0) where R : IDataOutput<R>
         {
             o.Put(nameof(fromid), fromid);
             o.Put(nameof(@from), @from);

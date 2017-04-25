@@ -22,7 +22,7 @@ namespace Greatbone.Core
 
         /// Whether this is requested from a cluster member.
         ///
-        public bool Clustered { get; internal set; }
+        public bool Cluster { get; internal set; }
 
         public Work Work { get; internal set; }
 
@@ -39,28 +39,28 @@ namespace Greatbone.Core
         public string Token { get; internal set; }
 
         // levels of keys along the URI path
-        Segment[] segs;
+        Segment[] chain;
 
-        int segnum; // actual number of knots
+        int level; // actual number of segments
 
         internal void Chain(string key, Work work)
         {
-            if (segs == null)
+            if (chain == null)
             {
-                segs = new Segment[4];
+                chain = new Segment[8];
             }
-            segs[segnum++] = new Segment(key, work);
+            chain[level++] = new Segment(key, work);
         }
 
-        public Segment this[int level] => level < 0 ? segs[segnum + level - 1] : segs[level];
+        public Segment this[int pos] => pos < 0 ? chain[level + pos - 1] : chain[pos];
 
         public Segment this[Type workType]
         {
             get
             {
-                for (int i = 0; i < segnum; i++)
+                for (int i = 0; i < level; i++)
                 {
-                    Segment seg = segs[i];
+                    Segment seg = chain[i];
                     if (seg.Work.IsSubclassOf(workType)) return seg;
                 }
                 return default(Segment);
@@ -71,9 +71,9 @@ namespace Greatbone.Core
         {
             get
             {
-                for (int i = 0; i < segnum; i++)
+                for (int i = 0; i < level; i++)
                 {
-                    Segment seg = segs[i];
+                    Segment seg = chain[i];
                     if (seg.Work == work) return seg;
                 }
                 return default(Segment);
@@ -325,28 +325,6 @@ namespace Greatbone.Core
             return (entity as IDataInput)?.ToArray<D>(proj);
         }
 
-        public async Task<List<D>> ReadListAsync<D>(short proj = 0) where D : IData, new()
-        {
-            if (entity == null && count == -1) // if not yet parse and read
-            {
-                // read
-                count = 0;
-                int? clen = HeaderInt("Content-Length");
-                if (clen > 0)
-                {
-                    int len = (int) clen;
-                    buffer = BufferUtility.ByteBuffer(len); // borrow from the pool
-                    while ((count += await Request.Body.ReadAsync(buffer, count, (len - count))) < len)
-                    {
-                    }
-                }
-                // parse
-                string ctyp = Header("Content-Type");
-                entity = ParseContent(ctyp, buffer, count);
-            }
-            return (entity as IDataInput)?.ToList<D>(proj);
-        }
-
         //
         // RESPONSE
         //
@@ -446,15 +424,6 @@ namespace Greatbone.Core
         public void Give<D>(int status, D[] arr, short proj = 0, bool? pub = null, int maxage = 60) where D : IData
         {
             JsonContent cont = new JsonContent().Put(null, arr, proj);
-            Status = status;
-            Content = cont;
-            Pub = pub;
-            MaxAge = maxage;
-        }
-
-        public void Give<D>(int status, List<D> lst, short proj = 0, bool? pub = null, int maxage = 60) where D : IData
-        {
-            JsonContent cont = new JsonContent().Put(null, lst, proj);
             Status = status;
             Content = cont;
             Pub = pub;

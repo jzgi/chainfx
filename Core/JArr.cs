@@ -149,12 +149,6 @@ namespace Greatbone.Core
             return jo != null && jo.Get(name, ref v);
         }
 
-        public bool Get<D>(string name, ref List<D> v, short proj = 0) where D : IData, new()
-        {
-            JObj jo = elements[current];
-            return jo != null && jo.Get(name, ref v);
-        }
-
         public D ToObject<D>(short proj = 0) where D : IData, new()
         {
             D obj = new D();

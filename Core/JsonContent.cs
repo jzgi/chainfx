@@ -526,35 +526,5 @@ namespace Greatbone.Core
             }
             return this;
         }
-
-        public JsonContent Put<D>(string name, List<D> v, short proj = 0, string Label = null, string Help = null, bool ReadOnly = false, bool required = false) where D : IData
-        {
-            if (counts[level]++ > 0) Add(',');
-
-            if (name != null)
-            {
-                Add('"');
-                Add(name);
-                Add('"');
-                Add(':');
-            }
-
-            if (v == null)
-            {
-                Add("null");
-            }
-            else
-            {
-                counts[++level] = 0; // enter
-                Add('[');
-                for (int i = 0; i < v.Count; i++)
-                {
-                    Put(null, v[i], proj);
-                }
-                Add(']');
-                level--; // exit
-            }
-            return this;
-        }
     }
 }

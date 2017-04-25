@@ -346,10 +346,5 @@ namespace Greatbone.Core
         {
             return this;
         }
-
-        public XmlContent Put<D>(string name, List<D> v, short proj = 0, string Label = null, string Help = null, bool @readonly = false, bool required = false) where D : IData
-        {
-            return this;
-        }
     }
 }

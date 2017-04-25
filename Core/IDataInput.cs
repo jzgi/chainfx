@@ -40,13 +40,9 @@ namespace Greatbone.Core
 
         bool Get<D>(string name, ref D[] v, short proj = 0) where D : IData, new();
 
-        bool Get<D>(string name, ref List<D> v, short proj = 0) where D : IData, new();
-
         D ToObject<D>(short proj = 0) where D : IData, new();
 
         D[] ToArray<D>(short proj = 0) where D : IData, new();
-
-        List<D> ToList<D>(short proj = 0) where D : IData, new();
 
         ///
         /// Write a single (or current) data entry into the given output object.

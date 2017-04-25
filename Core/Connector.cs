@@ -1,12 +1,11 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Net.Http;
-using System.Threading.Tasks;
+using System.Data;
 using System.Net;
+using System.Net.Http;
 using System.Net.Http.Headers;
 using System.Text;
+using System.Threading.Tasks;
 using static Greatbone.Core.EventQueue;
-using System.Data;
 using static Greatbone.Core.DataInputUtility;
 
 namespace Greatbone.Core
@@ -36,7 +35,9 @@ namespace Greatbone.Core
 
         internal long evtid;
 
-        public Connector(string raddr) : this(null, null, raddr) { }
+        public Connector(string raddr) : this(null, null, raddr)
+        {
+        }
 
         internal Connector(Service service, string peerid, string raddr)
         {
@@ -182,7 +183,7 @@ namespace Greatbone.Core
                 }
                 byte[] bytea = await rsp.Content.ReadAsByteArrayAsync();
                 string ctyp = rsp.Content.Headers.GetValue("Content-Type");
-                return (M)ParseContent(ctyp, bytea, bytea.Length, typeof(M));
+                return (M) ParseContent(ctyp, bytea, bytea.Length, typeof(M));
             }
             catch
             {
@@ -191,7 +192,7 @@ namespace Greatbone.Core
             return null;
         }
 
-        public async Task<D> GetObjectAsync<D>(ActionContext ac, string uri, int proj = 0) where D : IData, new()
+        public async Task<D> GetObjectAsync<D>(ActionContext ac, string uri, short proj = 0) where D : IData, new()
         {
             try
             {
@@ -251,35 +252,6 @@ namespace Greatbone.Core
             return null;
         }
 
-        public async Task<List<D>> GetListAsync<D>(ActionContext ac, string uri, short proj = 0) where D : IData, new()
-        {
-            try
-            {
-                HttpRequestMessage req = new HttpRequestMessage(HttpMethod.Get, uri);
-                if (peerid != null && ac != null)
-                {
-                    if (ac.Token != null)
-                    {
-                        req.Headers.Add("Authorization", "Token " + ac.Token);
-                    }
-                }
-                HttpResponseMessage rsp = await SendAsync(req, HttpCompletionOption.ResponseContentRead);
-                if (rsp.StatusCode != HttpStatusCode.OK)
-                {
-                    return null;
-                }
-                byte[] bytea = await rsp.Content.ReadAsByteArrayAsync();
-                string ctyp = rsp.Content.Headers.GetValue("Content-Type");
-                IDataInput inp = ParseContent(ctyp, bytea, bytea.Length);
-                return inp.ToList<D>(proj);
-            }
-            catch
-            {
-                retryat = Environment.TickCount + AHEAD;
-            }
-            return null;
-        }
-
         public async Task<HttpResponseMessage> PostAsync(ActionContext ac, string uri, IContent content)
         {
             try
@@ -292,7 +264,7 @@ namespace Greatbone.Core
                         req.Headers.Add("Authorization", "Token " + ac.Token);
                     }
                 }
-                req.Content = (HttpContent)content;
+                req.Content = (HttpContent) content;
                 req.Headers.Add("Content-Type", content.Type);
                 req.Headers.Add("Content-Length", content.Size.ToString());
 
@@ -314,7 +286,7 @@ namespace Greatbone.Core
                 {
                     req.Headers.Add("Authorization", "Token " + ctx.Token);
                 }
-                req.Content = (HttpContent)content;
+                req.Content = (HttpContent) content;
                 req.Headers.Add("Content-Type", content.Type);
                 req.Headers.Add("Content-Length", content.Size.ToString());
 

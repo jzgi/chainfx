@@ -101,15 +101,6 @@ namespace Greatbone.Core
             return str;
         }
 
-        public static string ToString<D>(List<D> v, short proj = 0) where D : IData
-        {
-            JsonContent cont = new JsonContent(false, true, 4 * 1024);
-            cont.Put(null, v, proj);
-            string str = cont.ToString();
-            BufferUtility.Return(cont); // return buffer to pool
-            return str;
-        }
-
         public static T FileTo<T>(string file) where T : class, IDataInput, new()
         {
             try
@@ -164,24 +155,6 @@ namespace Greatbone.Core
                 if (ja != null)
                 {
                     return ja.ToArray<D>(proj);
-                }
-            }
-            catch (Exception ex)
-            {
-                Debug.WriteLine(ex.Message);
-            }
-            return null;
-        }
-
-        public static List<D> FileToList<D>(string file, short proj = 0) where D : IData, new()
-        {
-            try
-            {
-                byte[] bytes = File.ReadAllBytes(file);
-                JArr ja = (JArr) new JsonParse(bytes, bytes.Length).Parse();
-                if (ja != null)
-                {
-                    return ja.ToList<D>(proj);
                 }
             }
             catch (Exception ex)

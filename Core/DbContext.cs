@@ -332,11 +332,6 @@ namespace Greatbone.Core
 
         public D[] ToArray<D>(short proj = 0) where D : IData, new()
         {
-            return ToList<D>(proj).ToArray();
-        }
-
-        public List<D> ToList<D>(short proj = 0) where D : IData, new()
-        {
             List<D> lst = new List<D>(32);
             while (Next())
             {
@@ -352,7 +347,7 @@ namespace Greatbone.Core
 
                 lst.Add(obj);
             }
-            return lst;
+            return lst.ToArray();
         }
 
         // current column ordinal
@@ -715,42 +710,6 @@ namespace Greatbone.Core
             return false;
         }
 
-        public bool Get<D>(string name, ref List<D> v, short proj = 0) where D : IData, new()
-        {
-            try
-            {
-                int ord = name == null ? ordinal++ : reader.GetOrdinal(name);
-                if (!reader.IsDBNull(ord))
-                {
-                    string str = reader.GetString(ord);
-                    JsonParse p = new JsonParse(str);
-                    JArr ja = (JArr) p.Parse();
-                    int len = ja.Count;
-                    v = new List<D>(len + 8);
-                    for (int i = 0; i < len; i++)
-                    {
-                        JObj jo = ja[i];
-                        D obj = new D();
-                        obj.ReadData(jo, proj);
-
-                        // add shard if any
-                        IShardable sharded = obj as IShardable;
-                        if (sharded != null)
-                        {
-                            sharded.Shard = service.Shard;
-                        }
-
-                        v.Add(obj);
-                    }
-                    return true;
-                }
-            }
-            catch
-            {
-            }
-            return false;
-        }
-
         //
         // EVENTS
         //
@@ -772,13 +731,6 @@ namespace Greatbone.Core
         public void Publish<D>(string name, string shard, int arg, D[] arr, short proj = 0) where D : IData
         {
             JsonContent cont = new JsonContent(true, true).Put(null, arr, proj);
-            Publish(name, shard, arg, cont);
-            BufferUtility.Return(cont); // back to pool
-        }
-
-        public void Publish<D>(string name, string shard, int arg, List<D> lst, short proj = 0) where D : IData
-        {
-            JsonContent cont = new JsonContent(true, true).Put(null, lst, proj);
             Publish(name, shard, arg, cont);
             BufferUtility.Return(cont); // back to pool
         }

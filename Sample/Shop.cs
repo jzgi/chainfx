@@ -61,7 +61,7 @@ namespace Greatbone.Sample
         internal int orders;
         internal short status;
 
-        public void ReadData(IDataInput i, int proj = 0)
+        public void ReadData(IDataInput i, short proj = 0)
         {
             if ((proj & PRIME) == PRIME)
             {
@@ -87,7 +87,7 @@ namespace Greatbone.Sample
             i.Get(nameof(status), ref status);
         }
 
-        public void WriteData<R>(IDataOutput<R> o, int proj = 0) where R : IDataOutput<R>
+        public void WriteData<R>(IDataOutput<R> o, short proj = 0) where R : IDataOutput<R>
         {
             if ((proj & PRIME) == PRIME)
             {

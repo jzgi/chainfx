@@ -1,5 +1,4 @@
-﻿using System.Collections.Generic;
-using System.Threading.Tasks;
+﻿using System.Threading.Tasks;
 using Greatbone.Core;
 
 namespace Greatbone.Sample
@@ -43,11 +42,11 @@ namespace Greatbone.Sample
             {
                 if (dc.Query("SELECT * FROM repays WHERE shopid = @1 AND status < 4", p => p.Set(shopid)))
                 {
-                    ac.GiveGridFormPage(200, dc.ToList<Repay>());
+                    ac.GiveGridFormPage(200, dc.ToArray<Repay>());
                 }
                 else
                 {
-                    ac.GiveGridFormPage(200, (List<Repay>) null);
+                    ac.GiveGridFormPage(200, (Repay[]) null);
                 }
             }
         }
@@ -115,15 +114,15 @@ namespace Greatbone.Sample
             {
                 if (dc.Query("SELECT * FROM repays WHERE shopid = @1 AND status < 4", p => p.Set(shopid)))
                 {
-                    ac.GiveGridFormPage(200, dc.ToList<Repay>());
+                    ac.GiveGridFormPage(200, dc.ToArray<Repay>());
                 }
                 else
                 {
-                    ac.GiveGridFormPage(200, (List<Repay>) null);
+                    ac.GiveGridFormPage(200, (Repay[]) null);
                 }
             }
-
         }
+
         [Ui("发起")]
         public void calc(ActionContext ac)
         {
@@ -144,11 +143,11 @@ namespace Greatbone.Sample
             {
                 if (dc.Query("SELECT * FROM repays WHERE shopid = @1 AND status < 4", p => p.Set(shopid)))
                 {
-                    ac.GiveGridFormPage(200, dc.ToList<Repay>());
+                    ac.GiveGridFormPage(200, dc.ToArray<Repay>());
                 }
                 else
                 {
-                    ac.GiveGridFormPage(200, (List<Repay>) null);
+                    ac.GiveGridFormPage(200, (Repay[]) null);
                 }
             }
         }

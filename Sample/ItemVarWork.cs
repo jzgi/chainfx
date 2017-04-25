@@ -91,7 +91,7 @@ namespace Greatbone.Sample
                 {
                     if (dc.Query1("SELECT detail, total FROM orders WHERE shopid = @1 AND buywx = @2 AND status = 0", p => p.Set(shopid).Set(shopid)))
                     {
-                        var detail = dc.GetList<OrderLine>();
+                        var detail = dc.GetArray<OrderLine>();
                         var total = dc.GetDecimal();
 
 //                        detail
@@ -107,7 +107,7 @@ namespace Greatbone.Sample
                             custwx = prin.wx,
                             custtel = prin.tel,
 
-                            detail = new List<OrderLine>
+                            detail = new []
                             {
                                 new OrderLine {item = name, price = 0, qty = qty, unit = ""}
                             }

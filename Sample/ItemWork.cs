@@ -80,11 +80,11 @@ namespace Greatbone.Sample
                 dc.Sql("SELECT ").columnlst(Item.Empty,proj)._("FROM items WHERE shopid = @1");
                 if (dc.Query(p => p.Set(shopid)))
                 {
-                    ac.GiveGridFormPage(200, dc.ToList<Item>(proj), proj);
+                    ac.GiveGridFormPage(200, dc.ToArray<Item>(proj), proj);
                 }
                 else
                 {
-                    ac.GiveGridFormPage(200, (List<Item>) null);
+                    ac.GiveGridFormPage(200, (Item[]) null);
                 }
             }
         }

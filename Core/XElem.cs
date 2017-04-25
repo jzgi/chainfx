@@ -236,12 +236,12 @@ namespace Greatbone.Core
             throw new NotImplementedException();
         }
 
-        public bool Get<D>(string name, ref List<D> v, short proj = 0) where D : IData, new()
+        public D ToObject<D>(short proj = 0) where D : IData, new()
         {
             throw new NotImplementedException();
         }
 
-        public D ToObject<D>(short proj = 0) where D : IData, new()
+        public D[] ToArray<D>(short proj = 0) where D : IData, new()
         {
             throw new NotImplementedException();
         }
@@ -259,16 +259,6 @@ namespace Greatbone.Core
         }
 
         public bool Next()
-        {
-            throw new NotImplementedException();
-        }
-
-        public D[] ToArray<D>(short proj = 0) where D : IData, new()
-        {
-            throw new NotImplementedException();
-        }
-
-        public List<D> ToList<D>(short proj = 0) where D : IData, new()
         {
             throw new NotImplementedException();
         }

@@ -168,11 +168,6 @@ namespace Greatbone.Core
             throw new NotImplementedException();
         }
 
-        public bool Get<D>(string name, ref List<D> v, short proj = 0) where D : IData, new()
-        {
-            throw new NotImplementedException();
-        }
-
         public D ToObject<D>(short proj = 0) where D : IData, new()
         {
             throw new NotImplementedException();
@@ -182,12 +177,6 @@ namespace Greatbone.Core
         {
             throw new NotImplementedException();
         }
-
-        public List<D> ToList<D>(short proj = 0) where D : IData, new()
-        {
-            throw new NotImplementedException();
-        }
-
 
         public void WriteData<R>(IDataOutput<R> snk) where R : IDataOutput<R>
         {

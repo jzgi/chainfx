@@ -42,7 +42,6 @@ namespace Greatbone.Sample
             IMMUT = 0x0008;
 
 
-
         // state
         public const int
             CREATED = 0,
@@ -74,7 +73,7 @@ namespace Greatbone.Sample
         internal string custtel; // telephone
         internal string custdistr; // disrict
         internal string custaddr; // address
-        internal List<OrderLine> detail;
+        internal OrderLine[] detail;
         internal decimal total;
         internal string note;
         internal DateTime created; // time created
@@ -95,7 +94,7 @@ namespace Greatbone.Sample
 
         internal short status;
 
-        public void ReadData(IDataInput i, int proj = 0)
+        public void ReadData(IDataInput i, short proj = 0)
         {
             if ((proj & PRIME) == PRIME)
             {
@@ -138,7 +137,7 @@ namespace Greatbone.Sample
             i.Get(nameof(status), ref status);
         }
 
-        public void WriteData<R>(IDataOutput<R> o, int proj = 0) where R : IDataOutput<R>
+        public void WriteData<R>(IDataOutput<R> o, short proj = 0) where R : IDataOutput<R>
         {
             if ((proj & PRIME) == PRIME)
             {
@@ -198,7 +197,7 @@ namespace Greatbone.Sample
         {
             if (detail == null)
             {
-                detail = new List<OrderLine>();
+                detail = new[] { new OrderLine(), };
             }
             var orderln = detail.Find(o => o.item.Equals(item));
             if (orderln.item == null)
@@ -218,7 +217,7 @@ namespace Greatbone.Sample
 
         public decimal Subtotal => price * qty;
 
-        public void ReadData(IDataInput i, int proj = 0)
+        public void ReadData(IDataInput i, short proj = 0)
         {
             i.Get(nameof(item), ref item);
             i.Get(nameof(qty), ref qty);
@@ -226,7 +225,7 @@ namespace Greatbone.Sample
             i.Get(nameof(price), ref price);
         }
 
-        public void WriteData<R>(IDataOutput<R> o, int proj = 0) where R : IDataOutput<R>
+        public void WriteData<R>(IDataOutput<R> o, short proj = 0) where R : IDataOutput<R>
         {
             o.Put(nameof(item), item, label: "品名");
             o.Begin("数量");

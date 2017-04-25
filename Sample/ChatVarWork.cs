@@ -27,7 +27,7 @@ namespace Greatbone.Sample
         ///
         public async Task inbox(ActionContext ac, int arg)
         {
-            User tok = (User)ac.Principal;
+            User tok = (User) ac.Principal;
             string userid = ac[0];
             Chat chat = null;
 
@@ -50,15 +50,6 @@ namespace Greatbone.Sample
                     chats.AddOrUpdate(userid, chat, (k, v) => v);
                 }
                 // can wait (long polling)
-                var messages = await chat.GetAsync("wait".Equals(arg));
-                if (messages == null)
-                {
-                    ac.Give(204); // no content
-                }
-                else
-                {
-                    ac.Give(200, messages);
-                }
             }
             else // post message(s) to inbox
             {
@@ -73,7 +64,7 @@ namespace Greatbone.Sample
 
                 if (chats.TryGetValue(userid, out chat)) // if the user is active
                 {
-                    await chat.Put(msg);
+//                    await chat.Put(msg);
                 }
                 else // put in database
                 {

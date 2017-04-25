@@ -106,12 +106,5 @@ namespace Greatbone.Core
             inp.Get(name, ref v);
             return v;
         }
-
-        public static List<D> GetList<D>(this IDataInput inp, string name = null) where D : IData, new()
-        {
-            List<D> v = null;
-            inp.Get(name, ref v);
-            return v;
-        }
     }
 }

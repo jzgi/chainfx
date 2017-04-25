@@ -336,29 +336,6 @@ namespace Greatbone.Core
             return this;
         }
 
-        public DbParameters Put<D>(string name, List<D> v, short proj = 0, string Label = null, string Help = null, bool ReadOnly = false, bool required = false) where D : IData
-        {
-            if (name == null)
-            {
-                name = Defaults[position++];
-            }
-            if (v == null)
-            {
-                coll.Add(new NpgsqlParameter(name, NpgsqlDbType.Jsonb)
-                {
-                    Value = DBNull.Value
-                });
-            }
-            else
-            {
-                coll.Add(new NpgsqlParameter(name, NpgsqlDbType.Jsonb)
-                {
-                    Value = DataInputUtility.ToString(v, proj)
-                });
-            }
-            return this;
-        }
-
         //
         // positional
         //
@@ -443,17 +420,12 @@ namespace Greatbone.Core
             return Put(null, v);
         }
 
-        public DbParameters Set(IData v, int proj = 0)
+        public DbParameters Set(IData v, short proj = 0)
         {
             return Put(null, v);
         }
 
-        public DbParameters Set<D>(D[] v, int proj = 0) where D : IData
-        {
-            return Put(null, v);
-        }
-
-        public DbParameters Set<D>(List<D> v, int proj = 0) where D : IData
+        public DbParameters Set<D>(D[] v, short proj = 0) where D : IData
         {
             return Put(null, v);
         }

@@ -1,4 +1,3 @@
-using System.Collections.Generic;
 using System.Threading.Tasks;
 using Greatbone.Core;
 
@@ -65,8 +64,8 @@ namespace Greatbone.Sample
                                 m.Add("</div>");
                                 m.Add("</div>");
 
-                                var shops = dc.ToList<Shop>(-1 ^ Shop.BIN);
-                                for (int i = 0; i < shops.Count; i++)
+                                var shops = dc.ToArray<Shop>(-1 ^ Shop.BIN);
+                                for (int i = 0; i < shops.Length; i++)
                                 {
                                     var shop = shops[i];
 
@@ -174,11 +173,11 @@ namespace Greatbone.Sample
                 dc.Sql("SELECT ").columnlst(Shop.Empty, proj)._("FROM shops WHERE city = @1");
                 if (dc.Query(p => p.Set(city)))
                 {
-                    ac.GiveGridFormPage(200, dc.ToList<Shop>(proj), proj);
+                    ac.GiveGridFormPage(200, dc.ToArray<Shop>(proj), proj);
                 }
                 else
                 {
-                    ac.GiveGridFormPage(200, (List<Shop>) null);
+                    ac.GiveGridFormPage(200, (Shop[]) null);
                 }
             }
         }
@@ -228,11 +227,11 @@ namespace Greatbone.Sample
                 dc.Sql("SELECT ").columnlst(Shop.Empty, proj)._("FROM shops ORDER BY id LIMIT 30 OFFSET @1");
                 if (dc.Query(p => p.Set(page)))
                 {
-                    ac.GiveGridFormPage(200, dc.ToList<Shop>(proj), proj);
+                    ac.GiveGridFormPage(200, dc.ToArray<Shop>(proj), proj);
                 }
                 else
                 {
-                    ac.GiveGridFormPage(200, (List<Shop>) null);
+                    ac.GiveGridFormPage(200, (Shop[]) null);
                 }
             }
         }

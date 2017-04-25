@@ -1,5 +1,4 @@
 using System;
-using System.Collections.Generic;
 using System.Threading.Tasks;
 using Greatbone.Core;
 
@@ -54,11 +53,11 @@ namespace Greatbone.Sample
                     var shop = dc.ToObject<Shop>(proj);
 
                     // query for item records of the shop
-                    List<Item> items = null;
+                    Item[] items = null;
                     dc.Sql("SELECT ").columnlst(Item.Empty, proj)._("FROM items WHERE shopid = @1");
                     if (dc.Query(p => p.Set(shopid)))
                     {
-                        items = dc.ToList<Item>(proj);
+                        items = dc.ToArray<Item>(proj);
                     }
 
                     ac.GivePage(200, m =>
@@ -95,7 +94,7 @@ namespace Greatbone.Sample
                             m.Add("没有上架商品");
                             return;
                         }
-                        for (int i = 0; i < items.Count; i++)
+                        for (int i = 0; i < items.Length; i++)
                         {
                             Item item = items[i];
                             m.Add("<form id=\"item");

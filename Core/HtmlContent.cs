@@ -210,7 +210,7 @@ namespace Greatbone.Core
             Add("</form>");
         }
 
-        public void GRIDFORM<D>(ActionContext ac, List<D> lst, int proj = 0) where D : IData
+        public void GRIDFORM<D>(ActionContext ac, D[] lst, short proj = 0) where D : IData
         {
             Work work = ac.Work;
             ActionInfo[] ais = work.UiActions;
@@ -267,7 +267,7 @@ namespace Greatbone.Core
             Add("</form>");
         }
 
-        public void TABLEFORM<D>(List<ActionInfo> acts, List<D> lst, int proj = 0) where D : IData
+        public void TABLEFORM<D>(List<ActionInfo> acts, D[] lst, short proj = 0) where D : IData
         {
             Add("<form>");
 
@@ -305,7 +305,7 @@ namespace Greatbone.Core
             Add("</form>");
         }
 
-        public void FILLFORM(ActionInfo act, IData obj, int proj = 0)
+        public void FILLFORM(ActionInfo act, IData obj, short proj = 0)
         {
             chain[++level].comp = HFILL;
             Add("<form method=\"post");
@@ -357,7 +357,7 @@ namespace Greatbone.Core
             }
         }
 
-        public void TABLE<D>(List<D> lst, int proj = 0) where D : IData
+        public void TABLE<D>(D[] lst, short proj = 0) where D : IData
         {
             chain[++level].comp = HTABLE;
             if (lst != null)
@@ -374,7 +374,7 @@ namespace Greatbone.Core
 
                 chain[level].label = false;
                 Add("<tbody>");
-                for (int i = 0; i < lst.Count; i++)
+                for (int i = 0; i < lst.Length; i++)
                 {
                     Add("<tr>");
                     chain[level].ordinal = 0; // reset ordical
@@ -411,7 +411,7 @@ namespace Greatbone.Core
             --level;
         }
 
-        public void GRID<D>(Work work, List<D> lst, int proj = 0) where D : IData
+        public void GRID<D>(Work work, D[] lst, short proj = 0) where D : IData
         {
             ++level;
             chain[level].comp = HGRID;
@@ -420,7 +420,7 @@ namespace Greatbone.Core
             if (lst != null)
             {
                 Add("<div class=\"row expanded small-up-1 medium-up-2 large-up-3 xlarge-up-4\">");
-                for (int i = 0; i < lst.Count; i++)
+                for (int i = 0; i < lst.Length; i++)
                 {
                     Add("<div class=\"column card\">");
                     chain[level].ordinal = 0; // reset ordinal
@@ -448,13 +448,13 @@ namespace Greatbone.Core
             --level;
         }
 
-        public void LIST<D>(List<D> lst, int proj = 0) where D : IData
+        public void LIST<D>(D[] lst, short proj = 0) where D : IData
         {
             chain[++level].comp = HLIST;
             if (lst != null)
             {
                 Add("<ul>");
-                for (int i = 0; i < lst.Count; i++)
+                for (int i = 0; i < lst.Length; i++)
                 {
                     Add("<li>");
                     chain[level].ordinal = 0; // reset ordical
@@ -486,7 +486,7 @@ namespace Greatbone.Core
             --level;
         }
 
-        public void FILL(IData obj, int proj = 0)
+        public void FILL(IData obj, short proj = 0)
         {
             chain[++level].comp = HFILL;
             obj.WriteData(this, proj);
@@ -1720,42 +1720,37 @@ namespace Greatbone.Core
             return this;
         }
 
-        public HtmlContent Put(string name, short[] v, Opt<short> Opt = null, string Label = null, string Help = null, bool ReadOnly = false, bool required = false)
+        public HtmlContent Put(string name, short[] v, Opt<short> Opt = null, string label = null, string help = null, bool @readonly = false, bool required = false)
         {
             return this;
         }
 
-        public HtmlContent Put(string name, int[] v, Opt<int> Opt = null, string Label = null, string Help = null, bool ReadOnly = false, bool required = false)
+        public HtmlContent Put(string name, int[] v, Opt<int> Opt = null, string label = null, string help = null, bool @readonly = false, bool required = false)
         {
             return this;
         }
 
-        public HtmlContent Put(string name, long[] v, Opt<long> Opt = null, string Label = null, string Help = null, bool ReadOnly = false, bool required = false)
+        public HtmlContent Put(string name, long[] v, Opt<long> Opt = null, string label = null, string help = null, bool @readonly = false, bool required = false)
         {
             return this;
         }
 
-        public HtmlContent Put(string name, string[] v, Opt<string> Opt = null, string Label = null, string Help = null, bool ReadOnly = false, bool required = false)
+        public HtmlContent Put(string name, string[] v, Opt<string> Opt = null, string label = null, string help = null, bool @readonly = false, bool required = false)
         {
             return this;
         }
 
-        public HtmlContent Put(string name, Dictionary<string, string> v, string Label = null, string Help = null, bool ReadOnly = false, bool Required = false)
+        public HtmlContent Put(string name, Dictionary<string, string> v, string label = null, string help = null, bool @readonly = false, bool Required = false)
         {
             return this;
         }
 
-        public HtmlContent Put(string name, IData v, short proj = 0, string Label = null, string Help = null, bool ReadOnly = false, bool required = false)
+        public HtmlContent Put(string name, IData v, short proj = 0, string label = null, string help = null, bool @readonly = false, bool required = false)
         {
             return this;
         }
 
-        public HtmlContent Put<D>(string name, D[] v, short proj = 0, string Label = null, string Help = null, bool ReadOnly = false, bool required = false) where D : IData
-        {
-            return this;
-        }
-
-        public HtmlContent Put<D>(string name, List<D> v, short proj = 0, string label = null, string help = null, bool @readonly = false, bool required = false) where D : IData
+        public HtmlContent Put<D>(string name, D[] v, short proj = 0, string label = null, string help = null, bool @readonly = false, bool required = false) where D : IData
         {
             switch (chain[level].comp)
             {

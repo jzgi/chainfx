@@ -288,27 +288,6 @@ namespace Greatbone.Core
             return false;
         }
 
-        public bool Get<D>(string name, ref List<D> v, short proj = 0) where D : IData, new()
-        {
-            JMbr mbr;
-            if (TryGet(name, out mbr))
-            {
-                JArr ja = mbr;
-                if (ja != null)
-                {
-                    v = new List<D>(ja.Count + 8);
-                    for (int i = 0; i < ja.Count; i++)
-                    {
-                        JObj jo = ja[i];
-                        D obj = new D();
-                        obj.ReadData(jo);
-                        v.Add(obj);
-                    }
-                }
-                return true;
-            }
-            return false;
-        }
 
         public D ToObject<D>(short proj = 0) where D : IData, new()
         {
@@ -322,11 +301,6 @@ namespace Greatbone.Core
             throw new NotImplementedException();
         }
 
-        public List<D> ToList<D>(short proj = 0) where D : IData, new()
-        {
-            throw new NotImplementedException();
-        }
-
         public void WriteData<R>(IDataOutput<R> o) where R : IDataOutput<R>
         {
             for (int i = 0; i < Count; i++)
@@ -335,19 +309,19 @@ namespace Greatbone.Core
                 JType t = mbr.type;
                 if (t == JType.Array)
                 {
-                    o.Put(mbr.Name, (JArr)mbr);
+                    o.Put(mbr.Name, (JArr) mbr);
                 }
                 else if (t == JType.Object)
                 {
-                    o.Put(mbr.Name, (JObj)mbr);
+                    o.Put(mbr.Name, (JObj) mbr);
                 }
                 else if (t == JType.String)
                 {
-                    o.Put(mbr.Name, (string)mbr);
+                    o.Put(mbr.Name, (string) mbr);
                 }
                 else if (t == JType.Number)
                 {
-                    o.Put(mbr.Name, (JNumber)mbr);
+                    o.Put(mbr.Name, (JNumber) mbr);
                 }
                 else if (t == JType.True)
                 {

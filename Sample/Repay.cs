@@ -75,7 +75,7 @@ namespace Greatbone.Sample
         internal string endorderid;
         internal short status; // -1 dismissed, 0 closed, 1 open
 
-        public void ReadData(IDataInput i, int proj = 0)
+        public void ReadData(IDataInput i, short proj = 0)
         {
             i.Get(nameof(id), ref id);
             i.Get(nameof(shopid), ref shopid);
@@ -88,7 +88,7 @@ namespace Greatbone.Sample
             i.Get(nameof(status), ref status);
         }
 
-        public void WriteData<R>(IDataOutput<R> o, int proj = 0) where R : IDataOutput<R>
+        public void WriteData<R>(IDataOutput<R> o, short proj = 0) where R : IDataOutput<R>
         {
             o.Put(nameof(id), id);
             o.Put(nameof(shopid), shopid);

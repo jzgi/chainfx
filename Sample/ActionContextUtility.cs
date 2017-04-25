@@ -194,7 +194,7 @@ namespace Greatbone.Sample
                 pub, maxage);
         }
 
-        public static void GiveFormPane(this ActionContext ac, int status, IData obj, int proj = 0, bool? pub = null, int maxage = 60)
+        public static void GiveFormPane(this ActionContext ac, int status, IData obj, short proj = 0, bool? pub = null, int maxage = 60)
         {
             ac.GivePane(status,
                 m => { m.FILLFORM(ac.Doer, obj, proj); },
@@ -208,23 +208,23 @@ namespace Greatbone.Sample
                 pub, maxage);
         }
 
-        public static void GiveGridFormPage<D>(this ActionContext ac, int status, List<D> lst, int proj = 0, bool? pub = null, int maxage = 60) where D : IData
+        public static void GiveGridFormPage<D>(this ActionContext ac, int status, D[] lst, short proj = 0, bool? pub = null, int maxage = 60) where D : IData
         {
             Work work = ac.Work;
             ac.GivePage(status, main => { main.GRIDFORM(ac, lst, proj); }, pub, maxage);
         }
 
-        public static void GiveGridFormPage<D>(this ActionContext ac, int status, List<D> lst, Action<HtmlContent, D> putobj, bool? pub = null, int maxage = 60) where D : IData
+        public static void GiveGridFormPage<D>(this ActionContext ac, int status, D[] lst, Action<HtmlContent, D> putobj, bool? pub = null, int maxage = 60) where D : IData
         {
             Work work = ac.Work;
         }
 
-        public static void GiveTableFormPage<D>(this ActionContext ac, int status, List<D> lst, int proj = 0, bool? pub = null, int maxage = 60) where D : IData
+        public static void GiveTableFormPage<D>(this ActionContext ac, int status, D[] lst, int proj = 0, bool? pub = null, int maxage = 60) where D : IData
         {
             Work work = ac.Work;
         }
 
-        public static void GiveTableFormPage<D>(this ActionContext ac, int status, List<D> lst, Action<HtmlContent, D> putobj, bool? pub = null, int maxage = 60) where D : IData
+        public static void GiveTableFormPage<D>(this ActionContext ac, int status, D[] lst, Action<HtmlContent, D> putobj, bool? pub = null, int maxage = 60) where D : IData
         {
             Work work = ac.Work;
         }
