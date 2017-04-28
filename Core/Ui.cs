@@ -50,6 +50,8 @@ namespace Greatbone.Core
 
         public bool Circle { get; set; } = false;
 
+        public bool Alert { get; set; } = false;
+
         public bool IsLink => ((int)mode & 0x10) == 0x10;
 
         public bool IsAnchor => ((int)mode & 0x20) == 0x20;

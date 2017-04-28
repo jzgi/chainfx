@@ -966,7 +966,7 @@ select[multiple] {
     padding: 0.25rem 0.25rem;
     -webkit-appearance: none;
     border: 1px solid transparent;
-    border-radius: 0.25rem;
+    border-radius: 0.5rem;
     transition: background-color 0.25s ease-out, color 0.25s ease-out;
     font-size: 1rem;
     line-height: 1;
@@ -1007,24 +1007,24 @@ select[multiple] {
 
 .button.primary {
     background-color: #2ba6cb;
-    color: #0a0a0a;
+    color: #fefefe;
 }
 
 .button.primary:hover,
 .button.primary:focus {
     background-color: #2285a2;
-    color: #0a0a0a;
+    color: #fefefe;
 }
 
 .button.secondary {
     background-color: #393a3e;
-    color: white;
+    color: #fefefe;
 }
 
 .button.secondary:hover,
 .button.secondary:focus {
     background-color: black;
-    color: white;
+    color: #fefefe;
 }
 
 .button.alert {

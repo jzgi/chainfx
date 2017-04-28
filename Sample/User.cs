@@ -14,24 +14,23 @@ namespace Greatbone.Sample
             INDB = 0x4000,
             WX = 0x0800,
             PERM = 0x0100,
-            CREDENTIAL = 0x0040,
-            ADDRS = 0x0020;
+            CREDENTIAL = 0x0040;
 
 
         internal bool indb; // whether recorded in db
 
         internal string wx; // openid
         internal string name;
-        internal string city; // default viewing city
         internal string tel;
         internal string credential;
+        internal string city; // default viewing city
+        internal string distr;
+        internal string addr;
         internal DateTime created;
         internal string oprat; // operator at shopid
         internal string dvrat; // deliverer at shopid
         internal string mgrat; // manager at city
         internal bool adm; // administrator
-
-        internal Address[] addrs;
 
 
         public void ReadData(IDataInput i, short proj = 0)
@@ -45,12 +44,14 @@ namespace Greatbone.Sample
                 i.Get(nameof(wx), ref wx);
             }
             i.Get(nameof(name), ref name);
-            i.Get(nameof(city), ref city);
             i.Get(nameof(tel), ref tel);
             if ((proj & CREDENTIAL) == CREDENTIAL)
             {
                 i.Get(nameof(credential), ref credential);
             }
+            i.Get(nameof(city), ref city);
+            i.Get(nameof(distr), ref distr);
+            i.Get(nameof(addr), ref addr);
             i.Get(nameof(created), ref created);
             if ((proj & PERM) == PERM)
             {
@@ -58,10 +59,6 @@ namespace Greatbone.Sample
                 i.Get(nameof(dvrat), ref dvrat);
                 i.Get(nameof(mgrat), ref mgrat);
                 i.Get(nameof(adm), ref adm);
-            }
-            if ((proj & ADDRS) == ADDRS)
-            {
-                i.Get(nameof(addrs), ref addrs);
             }
         }
 
@@ -76,12 +73,14 @@ namespace Greatbone.Sample
                 o.Put(nameof(wx), wx, label: "编号");
             }
             o.Put(nameof(name), name, label: "名称");
-            o.Put(nameof(city), city, label: "城市");
             o.Put(nameof(tel), tel, label: "电话");
             if ((proj & CREDENTIAL) == CREDENTIAL)
             {
                 o.Put(nameof(credential), credential);
             }
+            o.Put(nameof(city), city, label: "城市");
+            o.Put(nameof(distr), distr, label: "区划");
+            o.Put(nameof(addr), addr, label: "地址");
             o.Put(nameof(created), created);
             if ((proj & PERM) == PERM)
             {
@@ -90,40 +89,8 @@ namespace Greatbone.Sample
                 o.Put(nameof(mgrat), mgrat, label: "监管员");
                 o.Put(nameof(adm), adm, label: "监管员");
             }
-            if ((proj & ADDRS) == ADDRS)
-            {
-                o.Put(nameof(addrs), addrs, label: "地址");
-            }
         }
 
         public bool IsShop => oprat != null;
-    }
-
-    ///
-    ///
-    public class Address : IData
-    {
-        public static readonly Item Empty = new Item();
-
-        internal string tel;
-        internal string city;
-        internal string distr;
-        internal string addr;
-
-        public void ReadData(IDataInput i, short proj = 0)
-        {
-            i.Get(nameof(tel), ref tel);
-            i.Get(nameof(city), ref city);
-            i.Get(nameof(distr), ref distr);
-            i.Get(nameof(addr), ref addr);
-        }
-
-        public void WriteData<R>(IDataOutput<R> o, short proj = 0) where R : IDataOutput<R>
-        {
-            o.Put(nameof(tel), tel);
-            o.Put(nameof(city), city);
-            o.Put(nameof(distr), distr);
-            o.Put(nameof(addr), addr);
-        }
     }
 }

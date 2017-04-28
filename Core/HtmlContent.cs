@@ -9,17 +9,11 @@ namespace Greatbone.Core
     public class HtmlContent : DynamicContent, IDataOutput<HtmlContent>
     {
         internal const sbyte
-
             TABLE_THEAD = 1,
-
             TABLE_TBODY = 2,
-
             GRID_DIV = 3,
-
             LIST_UL = 4,
-
             PICKER = 5,
-
             FILLER_FORM = 6;
 
         ///
@@ -50,7 +44,9 @@ namespace Greatbone.Core
 
         int level = -1; // current level
 
-        public HtmlContent(bool octal, bool pooled, int capacity = 32 * 1024) : base(octal, pooled, capacity) { }
+        public HtmlContent(bool octal, bool pooled, int capacity = 32 * 1024) : base(octal, pooled, capacity)
+        {
+        }
 
         ///
         public override string Type => "text/html; charset=utf-8";
@@ -261,15 +257,6 @@ namespace Greatbone.Core
             --level;
         }
 
-        void PutPath()
-        {
-            for (int i = 0; i <= level; i++)
-            {
-                chain[i].OutputVarKey(this);
-                Add('/');
-            }
-        }
-
         public void TABLE(IDataInput input, Action<IDataInput, HtmlContent> valve)
         {
             if (input != null)
@@ -406,18 +393,26 @@ namespace Greatbone.Core
 
                     if (check == 1)
                     {
-                        Add("<div class=\"column\">");
-                        Add("<input name=\"key\" type=\"radio\" value=\"");
+                        Add("<div class=\"row\">");
+                        Add("<div class=\"small-3 columns labeldiv\">");
+                        Add("</div>");
+                        Add("<div class=\"small-9 columns\" style=\"text-align: right\">");
+                        Add("<input name=\"key\" type=\"radio\" style=\"margin: 0\" value=\"");
                         work.OutputVarKey(obj, this);
-                        Add("<\">");
+                        Add("\">");
+                        Add("</div>");
                         Add("</div>");
                     }
                     else if (check == 2)
                     {
-                        Add("<div class=\"column\">");
-                        Add("<input name=\"key\" type=\"checkbox\" value=\"");
+                        Add("<div class=\"row\">");
+                        Add("<div class=\"small-3 columns labeldiv\">");
+                        Add("</div>");
+                        Add("<div class=\"small-9 columns\" style=\"text-align: right\">");
+                        Add("<input name=\"key\" type=\"checkbox\" style=\"margin: 0\" value=\"");
                         work.OutputVarKey(obj, this);
-                        Add("<\">");
+                        Add("\">");
+                        Add("</div>");
                         Add("</div>");
                     }
 
@@ -495,8 +490,14 @@ namespace Greatbone.Core
 
                 if (ui.IsLink)
                 {
-                    Add("<a class=\"button hollow primary\" href=\"");
-                    PutPath();
+                    Add("<a class=\"button ");
+                    Add(ui.Alert ? "alert" : "primary");
+                    Add("\" href=\"");
+                    for (int lvl = 0; lvl <= level; lvl++)
+                    {
+                        chain[lvl].OutputVarKey(this);
+                        Add('/');
+                    }
                     Add(ai.Name);
                     Add("\"");
                     if (ai.Enabler != null && !ai.Enabler(chain[level].obj))
@@ -513,8 +514,12 @@ namespace Greatbone.Core
                 }
                 else if (ui.IsAnchor)
                 {
-                    Add("<a class=\"button hollow primary\" href=\"");
-                    PutPath();
+                    Add("<a class=\"button "); Add(ui.Alert ? "alert" : "primary"); Add("\" href=\"");
+                    for (int lvl = 0; lvl <= level; lvl++)
+                    {
+                        chain[lvl].OutputVarKey(this);
+                        Add('/');
+                    }
                     Add(ai.Name);
                     Add("\"");
                     if (ai.Enabler != null && !ai.Enabler(chain[level].obj))
@@ -547,10 +552,14 @@ namespace Greatbone.Core
                 }
                 else if (ui.IsButton)
                 {
-                    Add("<button class=\"button hollow primary\" name=\"");
+                    Add("<button class=\"button "); Add(ui.Alert ? "alert" : "primary"); Add("\" name=\"");
                     Add(ai.Name);
                     Add("\" formaction=\"");
-                    PutPath();
+                    for (int lvl = 0; lvl <= level; lvl++)
+                    {
+                        chain[lvl].OutputVarKey(this);
+                        Add('/');
+                    }
                     Add(ai.Name);
                     Add("\" formmethod=\"post\"");
                     if (ai.Enabler != null && !ai.Enabler(chain[level].obj))
@@ -1297,7 +1306,6 @@ namespace Greatbone.Core
             }
 
             chain[level].group = false;
-
         }
 
         public HtmlContent Put(string name, bool v, Func<bool, string> opt = null, string label = null, bool required = false)
@@ -1315,12 +1323,16 @@ namespace Greatbone.Core
                 case TABLE_TBODY:
                     if (!chain[level].group)
                     {
-                        Add("<td>");
-                    }
-                    Add(v);
-                    if (!chain[level].group)
-                    {
+                        Add("<td style=\"text-align: right;\">");
+                        if (opt != null) Add(opt(v));
+                        else Add(v);
                         Add("</td>");
+                    }
+                    else
+                    {
+                        if (opt != null) Add(opt(v));
+                        else Add(v);
+                        Add(' ');
                     }
                     break;
                 case GRID_DIV:
@@ -1331,12 +1343,16 @@ namespace Greatbone.Core
                         AddLabel(label, name);
                         Add("</div>");
                         Add("<div class=\"small-9 columns\">");
+                        if (opt != null) Add(opt(v));
+                        else Add(v);
+                        Add("</div>");
+                        Add("</div>");
                     }
-                    if (opt != null) Add(opt(v)); else Add(v);
-                    if (!chain[level].group)
+                    else
                     {
-                        Add("</div>");
-                        Add("</div>");
+                        if (opt != null) Add(opt(v));
+                        else Add(v);
+                        Add(' ');
                     }
                     break;
                 case LIST_UL:
@@ -1366,11 +1382,15 @@ namespace Greatbone.Core
                     if (!chain[level].group)
                     {
                         Add("<td style=\"text-align: right;\">");
-                    }
-                    Add(v);
-                    if (!chain[level].group)
-                    {
+                        if (opt != null) Add(opt[v]);
+                        else Add(v);
                         Add("</td>");
+                    }
+                    else
+                    {
+                        if (opt != null) Add(opt[v]);
+                        else Add(v);
+                        Add(' ');
                     }
                     break;
                 case GRID_DIV:
@@ -1381,12 +1401,16 @@ namespace Greatbone.Core
                         AddLabel(label, name);
                         Add("</div>");
                         Add("<div class=\"small-9 columns\">");
+                        if (opt != null) Add(opt[v]);
+                        else Add(v);
+                        Add("</div>");
+                        Add("</div>");
                     }
-                    Add(v);
-                    if (!chain[level].group)
+                    else
                     {
-                        Add("</div>");
-                        Add("</div>");
+                        if (opt != null) Add(opt[v]);
+                        else Add(v);
+                        Add(' ');
                     }
                     break;
                 case LIST_UL:
@@ -1423,11 +1447,15 @@ namespace Greatbone.Core
                     if (!chain[level].group)
                     {
                         Add("<td style=\"text-align: right;\">");
-                    }
-                    Add(v);
-                    if (!chain[level].group)
-                    {
+                        if (opt != null) Add(opt[v]);
+                        else Add(v);
                         Add("</td>");
+                    }
+                    else
+                    {
+                        if (opt != null) Add(opt[v]);
+                        else Add(v);
+                        Add(' ');
                     }
                     break;
                 case GRID_DIV:
@@ -1438,12 +1466,16 @@ namespace Greatbone.Core
                         AddLabel(label, name);
                         Add("</div>");
                         Add("<div class=\"small-9 columns\">");
+                        if (opt != null) Add(opt[v]);
+                        else Add(v);
+                        Add("</div>");
+                        Add("</div>");
                     }
-                    Add(v);
-                    if (!chain[level].group)
+                    else
                     {
-                        Add("</div>");
-                        Add("</div>");
+                        if (opt != null) Add(opt[v]);
+                        else Add(v);
+                        Add(' ');
                     }
                     break;
                 case LIST_UL:
@@ -1473,11 +1505,15 @@ namespace Greatbone.Core
                     if (!chain[level].group)
                     {
                         Add("<td style=\"text-align: right;\">");
-                    }
-                    Add(v);
-                    if (!chain[level].group)
-                    {
+                        if (opt != null) Add(opt[v]);
+                        else Add(v);
                         Add("</td>");
+                    }
+                    else
+                    {
+                        if (opt != null) Add(opt[v]);
+                        else Add(v);
+                        Add(' ');
                     }
                     break;
                 case GRID_DIV:
@@ -1488,12 +1524,16 @@ namespace Greatbone.Core
                         AddLabel(label, name);
                         Add("</div>");
                         Add("<div class=\"small-9 columns\">");
+                        if (opt != null) Add(opt[v]);
+                        else Add(v);
+                        Add("</div>");
+                        Add("</div>");
                     }
-                    Add(v);
-                    if (!chain[level].group)
+                    else
                     {
-                        Add("</div>");
-                        Add("</div>");
+                        if (opt != null) Add(opt[v]);
+                        else Add(v);
+                        Add(' ');
                     }
                     break;
                 case LIST_UL:
@@ -1526,11 +1566,13 @@ namespace Greatbone.Core
                     if (!chain[level].group)
                     {
                         Add("<td style=\"text-align: right;\">");
-                    }
-                    Add(v);
-                    if (!chain[level].group)
-                    {
+                        Add(v);
                         Add("</td>");
+                    }
+                    else
+                    {
+                        Add(v);
+                        Add(' ');
                     }
                     break;
                 case GRID_DIV:
@@ -1541,12 +1583,14 @@ namespace Greatbone.Core
                         AddLabel(label, name);
                         Add("</div>");
                         Add("<div class=\"small-9 columns\">");
+                        Add(v);
+                        Add("</div>");
+                        Add("</div>");
                     }
-                    Add(v);
-                    if (!chain[level].group)
+                    else
                     {
-                        Add("</div>");
-                        Add("</div>");
+                        Add(v);
+                        Add(' ');
                     }
                     break;
                 case LIST_UL:
@@ -1564,24 +1608,43 @@ namespace Greatbone.Core
             switch (chain[level].node)
             {
                 case TABLE_THEAD:
-                    Add("<th>");
-                    AddLabel(label, name);
-                    Add("</th>");
+                    if (!chain[level].group)
+                    {
+                        Add("<th>");
+                        AddLabel(label, name);
+                        Add("</th>");
+                    }
                     break;
                 case TABLE_TBODY:
-                    Add("<td style=\"text-align: right;\">");
-                    Add(v);
-                    Add("</td>");
+                    if (!chain[level].group)
+                    {
+                        Add("<td style=\"text-align: right;\">");
+                        Add(v);
+                        Add("</td>");
+                    }
+                    else
+                    {
+                        Add(v);
+                        Add(' ');
+                    }
                     break;
                 case GRID_DIV:
-                    Add("<div class=\"row\">");
-                    Add("<div class=\"small-3 columns labeldiv\">");
-                    AddLabel(label, name);
-                    Add("</div>");
-                    Add("<div class=\"small-9 columns\">");
-                    Add(v);
-                    Add("</div>");
-                    Add("</div>");
+                    if (!chain[level].group)
+                    {
+                        Add("<div class=\"row\">");
+                        Add("<div class=\"small-3 columns labeldiv\">");
+                        AddLabel(label, name);
+                        Add("</div>");
+                        Add("<div class=\"small-9 columns\">");
+                        Add(v);
+                        Add("</div>");
+                        Add("</div>");
+                    }
+                    else
+                    {
+                        Add(v);
+                        Add(' ');
+                    }
                     break;
                 case LIST_UL:
                     Add("<td style=\"text-align: right;\">");
@@ -1613,11 +1676,19 @@ namespace Greatbone.Core
                     if (!chain[level].group)
                     {
                         Add("<td>");
-                    }
-                    if (v != default(DateTime)) Add(v);
-                    if (!chain[level].group)
-                    {
+                        if (v != default(DateTime))
+                        {
+                            Add(v);
+                        }
                         Add("</td>");
+                    }
+                    else
+                    {
+                        if (v != default(DateTime))
+                        {
+                            Add(v);
+                            Add(' ');
+                        }
                     }
                     break;
                 case GRID_DIV:
@@ -1629,7 +1700,11 @@ namespace Greatbone.Core
                         Add("</div>");
                         Add("<div class=\"small-9 columns\">");
                     }
-                    if (v != default(DateTime)) Add(v);
+                    if (v != default(DateTime))
+                    {
+                        Add(v);
+                        Add(' ');
+                    }
                     if (!chain[level].group)
                     {
                         Add("</div>");
@@ -1667,11 +1742,13 @@ namespace Greatbone.Core
                     if (!chain[level].group)
                     {
                         Add("<td>");
-                    }
-                    Add(v);
-                    if (!chain[level].group)
-                    {
+                        Add(v);
                         Add("</td>");
+                    }
+                    else
+                    {
+                        Add(v);
+                        Add(' ');
                     }
                     break;
                 case GRID_DIV:
@@ -1684,6 +1761,7 @@ namespace Greatbone.Core
                         Add("<div class=\"small-9 columns\">");
                     }
                     Add(v);
+                    Add(' ');
                     if (!chain[level].group)
                     {
                         Add("</div>");
@@ -1783,11 +1861,12 @@ namespace Greatbone.Core
                     if (!chain[level].group)
                     {
                         Add("<td>");
-                    }
-                    LIST(null, null, 0, v, proj);
-                    if (!chain[level].group)
-                    {
+                        LIST(null, null, 0, v, proj);
                         Add("</td>");
+                    }
+                    else
+                    {
+                        LIST(null, null, 0, v, proj);
                     }
                     break;
                 case GRID_DIV:

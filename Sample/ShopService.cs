@@ -14,6 +14,8 @@ namespace Greatbone.Sample
 
         volatile string access_token;
 
+        readonly JObj cities;
+
         public ShopService(ServiceContext sc) : base(sc)
         {
             Create<PubShopWork>("pub"); // public
@@ -27,6 +29,8 @@ namespace Greatbone.Sample
             Create<MgrCityWork>("mgr"); // local manager
 
             Create<AdmWork>("adm"); // administrator
+
+            cities = DataInputUtility.FileTo<JObj>(sc.GetFilePath("$cities.json"));
 
             // timer obtaining access_token from weixin
             // timer = new Timer(async state =>
@@ -123,7 +127,7 @@ namespace Greatbone.Sample
             {
                 // set token success
                 ac.Principal = prin;
-                ac.SetTokenCookie(prin, -1 ^ User.CREDENTIAL ^ User.ADDRS);
+                ac.SetTokenCookie(prin, -1 ^ User.CREDENTIAL);
             }
             return true;
         }

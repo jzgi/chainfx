@@ -103,7 +103,7 @@ namespace Greatbone.Sample
                         User prin = (User) ac.Principal;
                         var order = new Order
                         {
-                            cust = prin.name,
+                            custname = prin.name,
                             custwx = prin.wx,
                             custtel = prin.tel,
 

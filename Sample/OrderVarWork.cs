@@ -27,8 +27,43 @@ namespace Greatbone.Sample
         {
         }
 
-        [Ui("附注/收货地址")]
+        [Ui("收货地址", UiMode.ButtonDialog)]
         public async Task addr(ActionContext ac)
+        {
+            string buywx = ac[typeof(UserVarWork)];
+            long ordid = ac[this];
+
+            if (ac.GET)
+            {
+                ac.GivePane(200, m =>
+                {
+                    // selection
+
+                    // input new
+                });
+            }
+            else
+            {
+            }
+            string shopid = ac[0];
+            Form frm = await ac.ReadAsync<Form>();
+            int[] pk = frm[nameof(pk)];
+
+            using (var dc = ac.NewDbContext())
+            {
+                dc.Sql("UPDATE orders SET ").setstate()._(" WHERE id = @1 AND shopid = @2 AND ").statecond();
+                if (dc.Query(p => p.Set(pk).Set(shopid)))
+                {
+                    var order = dc.ToArray<Order>();
+                }
+                else
+                {
+                }
+            }
+        }
+
+        [Ui("附注")]
+        public async Task note(ActionContext ac)
         {
             string buywx = ac[typeof(UserVarWork)];
             long ordid = ac[this];
@@ -56,13 +91,13 @@ namespace Greatbone.Sample
             }
         }
 
-        static readonly Func<IData, bool> PREPAY = obj => ((Order) obj).custaddr != null;
+        static readonly Func<IData, bool> PREPAY = obj => ((Order)obj).custaddr != null;
 
-        [Ui("付款", UiMode.AnchorScript)]
+        [Ui("付款", UiMode.AnchorScript, Alert = true)]
         public async Task prepay(ActionContext ac)
         {
             long ordid = ac[this];
-            string buywx = ((User) ac.Principal).wx;
+            string buywx = ((User)ac.Principal).wx;
 
             using (var dc = ac.NewDbContext())
             {

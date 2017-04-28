@@ -1,5 +1,4 @@
 using System;
-using System.Collections.Generic;
 using System.Diagnostics;
 using System.IO;
 
@@ -101,7 +100,7 @@ namespace Greatbone.Core
             return str;
         }
 
-        public static T FileTo<T>(string file) where T : class, IDataInput, new()
+        public static T FileTo<T>(string file) where T : class, IDataInput
         {
             try
             {

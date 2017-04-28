@@ -1,5 +1,4 @@
 ﻿using System;
-using System.Collections.Generic;
 using Greatbone.Core;
 
 namespace Greatbone.Sample
@@ -10,37 +9,10 @@ namespace Greatbone.Sample
     public class Order : IData
     {
         public const short
-
-            // non-data or for control
-            CTRL = 0x4000,
-
-            // primary or key
-            PRIME = 0x0800,
-
-            // auto generated or with default
-            AUTO = 0x0400,
-
-            // binary
-            BIN = 0x0200,
-
-            // late-handled
-            LATE = 0x0100,
-
-            // many
-            DETAIL = 0x0080,
-
-            // transform or digest
-            TRANSF = 0x0040,
-
-            // secret or protected
-            SECRET = 0x0020,
-
-            // need authority
-            POWER = 0x0010,
-
-            // frozen or immutable
-            IMMUT = 0x0008;
-
+            ID = 0x0001,
+            CUSTWX = 0x0002,
+            LATE = 0x0010,
+            DETAIL = 0x0020;
 
         // state
         public const int
@@ -68,9 +40,10 @@ namespace Greatbone.Sample
         internal int id;
         internal string shop; // shop name
         internal string shopid;
-        internal string cust; // customer name
+        internal string custname; // customer name
         internal string custwx; // weixin openid
         internal string custtel; // telephone
+        internal string custcity; // city
         internal string custdistr; // disrict
         internal string custaddr; // address
         internal OrderLine[] detail;
@@ -96,7 +69,7 @@ namespace Greatbone.Sample
 
         public void ReadData(IDataInput i, short proj = 0)
         {
-            if ((proj & PRIME) == PRIME)
+            if ((proj & ID) == ID)
             {
                 i.Get(nameof(id), ref id);
             }
@@ -104,9 +77,10 @@ namespace Greatbone.Sample
             i.Get(nameof(shop), ref shop);
             i.Get(nameof(shopid), ref shopid);
 
-            i.Get(nameof(cust), ref cust);
+            i.Get(nameof(custname), ref custname);
             i.Get(nameof(custwx), ref custwx);
             i.Get(nameof(custtel), ref custtel);
+            i.Get(nameof(custcity), ref custcity);
             i.Get(nameof(custdistr), ref custdistr);
             i.Get(nameof(custaddr), ref custaddr);
             if ((proj & DETAIL) == DETAIL)
@@ -139,20 +113,23 @@ namespace Greatbone.Sample
 
         public void WriteData<R>(IDataOutput<R> o, short proj = 0) where R : IDataOutput<R>
         {
-            if ((proj & PRIME) == PRIME)
+            if ((proj & ID) == ID)
             {
-                o.Put(nameof(id), id);
+                o.Put(nameof(id), id, label: "编号");
             }
-            o.Group("供应点");
-            o.Put(nameof(shop), shop);
+            o.Group("商家");
             o.Put(nameof(shopid), shopid);
+            o.Put(nameof(shop), shop);
             o.UnGroup();
 
-            o.Put(nameof(cust), cust, label: "买家名称");
-            o.Put(nameof(custwx), custwx);
-
+            o.Put(nameof(custname), custname, label: "买家");
+            if ((proj & CUSTWX) == CUSTWX)
+            {
+                o.Put(nameof(custwx), custwx);
+            }
+            o.Put(nameof(custtel), custtel, label: "联系电话");
             o.Group("送货地址");
-            o.Put(nameof(custtel), custtel);
+            o.Put(nameof(custcity), custcity);
             o.Put(nameof(custdistr), custdistr);
             o.Put(nameof(custaddr), custaddr);
             o.UnGroup();
@@ -167,25 +144,25 @@ namespace Greatbone.Sample
 
             if ((proj & LATE) == LATE)
             {
-                if ((proj & PRIME) == PRIME)
+                if ((proj & ID) == ID)
                 {
                     o.Put(nameof(prepay_id), prepay_id);
                     o.Put(nameof(paid), paid);
                 }
-                if ((proj & PRIME) == PRIME)
+                if ((proj & ID) == ID)
                 {
                     o.Put(nameof(pack), pack);
                     o.Put(nameof(packtel), packtel);
                     o.Put(nameof(packed), packed);
                 }
-                if ((proj & PRIME) == PRIME)
+                if ((proj & ID) == ID)
                 {
                     o.Put(nameof(dvrat), dvrat);
                     o.Put(nameof(dvr), dvr);
                     o.Put(nameof(dvrtel), dvrtel);
                     o.Put(nameof(dvred), dvred);
                 }
-                if ((proj & PRIME) == PRIME)
+                if ((proj & ID) == ID)
                 {
                     o.Put(nameof(closed), closed);
                 }
@@ -197,7 +174,7 @@ namespace Greatbone.Sample
         {
             if (detail == null)
             {
-                detail = new[] { new OrderLine(), };
+                detail = new[] {new OrderLine(),};
             }
             var orderln = detail.Find(o => o.item.Equals(item));
             if (orderln.item == null)
