@@ -16,9 +16,9 @@ namespace Greatbone.Core
 
         R PutRaw(string name, string raw);
 
-        void Begin(string label);
+        void Group(string label);
 
-        void End();
+        void UnGroup();
 
         R Put(string name, bool v, Func<bool, string> opt = null, string label = null, bool required = false);
 

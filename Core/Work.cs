@@ -115,7 +115,7 @@ namespace Greatbone.Core
         ///
         /// Create a subwork.
         ///
-        public W Create<W>(string name, object state = null) where W : Work
+        public W Create<W>(string name, object attach = null) where W : Work
         {
             if (Level >= MaxNesting)
             {
@@ -135,7 +135,7 @@ namespace Greatbone.Core
             }
             WorkContext wc = new WorkContext(name)
             {
-                State = state,
+                Attach = attach,
                 Parent = this,
                 Level = Level + 1,
                 Directory = (Parent == null) ? name : Path.Combine(Parent.Directory, name),
@@ -150,7 +150,7 @@ namespace Greatbone.Core
         ///
         /// Create a variable work.
         ///
-        public W CreateVar<W, K>(Func<IData, K> keyer = null, object state = null) where W : Work where K : IComparable<K>, IEquatable<K>
+        public W CreateVar<W, K>(Func<IData, K> keyer = null, object attach = null) where W : Work where K : IComparable<K>, IEquatable<K>
         {
             if (Level >= MaxNesting)
             {
@@ -167,7 +167,7 @@ namespace Greatbone.Core
             WorkContext wc = new WorkContext(_VAR_)
             {
                 Keyer = keyer,
-                State = state,
+                Attach = attach,
                 Parent = this,
                 IsVar = true,
                 Level = Level + 1,

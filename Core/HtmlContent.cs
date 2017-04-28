@@ -11,34 +11,34 @@ namespace Greatbone.Core
         const int DEPTH = 4;
 
         internal const sbyte
-            // multiple records
-            HTABLE = 1,
-            HGRID = 2,
-            HLIST = 3,
-            // single record 
-            HFILL = 5;
+
+            TABLEPART = 1,
+
+            GRIDPART = 2,
+
+            LISTPART = 3,
+
+            PICKER = 4,
+
+            FILLERPART = 5;
 
         ///
         /// The outputing context for per data object
         ///
         struct Ctx
         {
-            // key position in the output stream
-            internal IData obj;
+            // type of data control part
+            internal sbyte part;
 
             internal Work varwork;
 
-            // component
-            internal sbyte comp;
+            internal IData obj;
 
             // whether currently ouput label
             internal bool label;
 
-            // the ordinal of each field
-            internal int ordinal;
-
-            // beginning label of a field group
-            internal string begin;
+            // the label of a group
+            internal string group;
 
             internal void OutputVarKey(HtmlContent cont)
             {
@@ -50,14 +50,11 @@ namespace Greatbone.Core
         internal bool formed;
 
         // outputing context chain
-        readonly Ctx[] chain = new Ctx[DEPTH];
+        Ctx[] chain;
 
         int level = -1; // current level
 
-        ///
-        public HtmlContent(bool octal, bool pooled, int capacity = 16 * 1024) : base(octal, pooled, capacity)
-        {
-        }
+        public HtmlContent(bool octal, bool pooled, int capacity = 16 * 1024) : base(octal, pooled, capacity) { }
 
         ///
         public override string Type => "text/html; charset=utf-8";
@@ -76,7 +73,7 @@ namespace Greatbone.Core
                     char c = alt[i];
                     if (c >= 'a' && c <= 'z')
                     {
-                        c = (char) (c - 32);
+                        c = (char)(c - 32);
                     }
                     Add(c);
                 }
@@ -154,7 +151,6 @@ namespace Greatbone.Core
             Add("</form>");
         }
 
-
         public void FIELDSET_(string legend = null)
         {
             Add("<fieldset class=\"fieldset\">");
@@ -181,65 +177,29 @@ namespace Greatbone.Core
             Add("</div>");
         }
 
-
-        public void FILLFORM(ActionInfo act, IDataInput input, Action<IDataInput, HtmlContent> valve)
+        public void TOOLBAR(Work work)
         {
-            Add("<form method=\"post\">");
+            Add("<div data-sticky-container>");
+            Add("<div class=\"sticky\" style=\"width: 100%\" data-sticky  data-options=\"anchor: page; marginTop: 0; stickyOn: small;\">");
+            Add("<div class=\"title-bar\">");
 
-            FILL(input, valve);
-
-            Add("</form>");
-        }
-
-        public void GRIDFORM(List<ActionInfo> actions, IDataInput input, Action<IDataInput, HtmlContent> valve)
-        {
-            Add("<form>");
-
-            formed = true;
-
-            // buttons
-            if (actions != null)
-            {
-                Add("<div class=\"row\">");
-                // BUTTONS(actions);
-                Add("</div>");
-            }
-
-            GRID(input, valve);
-
-            Add("</form>");
-        }
-
-        public void GRIDFORM<D>(ActionContext ac, D[] lst, short proj = 0) where D : IData
-        {
-            Work work = ac.Work;
-            ActionInfo[] ais = work.UiActions;
-
-            Add("<form>");
-
-            formed = true;
-
-            // buttons
+            ActionInfo[] ais = work?.UiActions;
             if (ais != null)
             {
-                Add("<div data-sticky-container>");
-                Add("<div class=\"sticky\" style=\"width: 100%\" data-sticky  data-options=\"anchor: page; marginTop: 0; stickyOn: small;\">");
-                Add("<div class=\"title-bar\">");
-
                 Add("<div class=\"title-bar-left\">");
-                TOOLS(ais);
-                Add("</div>");
-
-                Add("<div class=\"title-bar-right\"><i class=\"fa fa-refresh\"></i></div>");
-
-                Add("</div>");
-                Add("</div>");
+                BUTTONS(ais);
                 Add("</div>");
             }
 
-            // grid
-            GRID(work, lst, proj);
+            Add("<div class=\"title-bar-right\"><i class=\"fa fa-refresh fa-lg\"></i></div>");
 
+            Add("</div>");
+            Add("</div>");
+            Add("</div>");
+        }
+
+        public void PAGENATION(ActionContext ac)
+        {
             // pagination
             ActionInfo ai = ac.Doer;
             if (ai.HasSubscript)
@@ -263,51 +223,34 @@ namespace Greatbone.Core
                 Add("</ul>");
                 Add("</div>");
             }
-
-            Add("</form>");
         }
 
-        public void TABLEFORM<D>(List<ActionInfo> acts, D[] lst, short proj = 0) where D : IData
+        public void FILLER(ActionInfo act, IDataInput input, Action<IDataInput, HtmlContent> pipe)
         {
-            Add("<form>");
+            Add("<form method=\"post\">");
 
-            formed = true;
-
-            // buttons
-            if (acts != null)
+            chain[++level].part = FILLERPART;
+            if (input != null)
+            {
+                while (input.Next())
+                {
+                    pipe(input, this);
+                }
+            }
+            else
             {
                 Add("<div class=\"row\">");
-                // BUTTONS(acts);
+                Add("<span>没有记录</span>");
                 Add("</div>");
             }
-
-            TABLE(lst, proj);
+            --level;
 
             Add("</form>");
         }
 
-        public void TABLEFORM(List<ActionInfo> acts, IDataInput input, Action<IDataInput, HtmlContent> valve)
+        public void FILLER(ActionInfo act, IData obj, short proj = 0)
         {
-            Add("<form>");
-
-            formed = true;
-
-            // buttons
-            if (acts != null)
-            {
-                Add("<div class=\"row\">");
-                // BUTTONS(acts);
-                Add("</div>");
-            }
-
-            TABLE(input, valve);
-
-            Add("</form>");
-        }
-
-        public void FILLFORM(ActionInfo act, IData obj, short proj = 0)
-        {
-            chain[++level].comp = HFILL;
+            chain[++level].part = FILLERPART;
             Add("<form method=\"post");
             if (act != null)
             {
@@ -357,28 +300,54 @@ namespace Greatbone.Core
             }
         }
 
-        public void TABLE<D>(D[] lst, short proj = 0) where D : IData
+        public void TABLE<D>(ActionContext ac, Work work, sbyte check, D[] arr, short proj = 0) where D : IData
         {
-            chain[++level].comp = HTABLE;
-            if (lst != null)
+            if (chain == null) chain = new Ctx[DEPTH];
+
+            if (check > 0)
             {
+                Add("<form id=\"gridform\">");
+
+                if (check > 1) TOOLBAR(ac.Work);
+            }
+
+            if (arr != null)
+            {
+                ++level;
+                chain[++level].part = TABLEPART;
+                chain[level].varwork = work?.varwork;
+
                 Add("<table class=\"unstriped\">");
 
                 chain[level].label = true;
                 Add("<thead>");
                 Add("<tr>");
-                chain[level].ordinal = 0; // reset ordical
-                lst[0].WriteData(this, proj);
+                arr[0].WriteData(this, proj);
                 Add("</tr>");
                 Add("</thead>");
 
                 chain[level].label = false;
                 Add("<tbody>");
-                for (int i = 0; i < lst.Length; i++)
+                for (int i = 0; i < arr.Length; i++)
                 {
+                    D obj = arr[i];
                     Add("<tr>");
-                    chain[level].ordinal = 0; // reset ordical
-                    lst[i].WriteData(this, proj);
+                    if (check == 1)
+                    {
+                        Add("<td>");
+                        Add("<input name=\"key\" type=\"radio\" value=\"");
+                        Add("</td>");
+                        work.OutputVarKey(obj, this);
+                    }
+                    else if (check == 2)
+                    {
+                        Add("<td>");
+                        Add("<input name=\"key\" type=\"checkbox\" value=\"");
+                        work.OutputVarKey(obj, this);
+                        Add("</td>");
+                    }
+
+                    arr[i].WriteData(this, proj);
                     Add("</tr>");
                 }
                 Add("</tbody>");
@@ -387,17 +356,18 @@ namespace Greatbone.Core
             --level;
         }
 
-        public void GRID(IDataInput input, Action<IDataInput, HtmlContent> valve)
+        public void GRID(IDataInput input, Action<IDataInput, HtmlContent> pipe)
         {
-            chain[++level].comp = HGRID;
+            chain = new Ctx[DEPTH];
+
+            chain[++level].part = GRIDPART;
             if (input != null)
             {
                 Add("<div class=\"expanded row\">");
                 while (input.Next())
                 {
                     Add("<div class=\"row small-up-1 medium-up-2 large-up-3 xlarge-up-4\">");
-                    chain[level].ordinal = 0; // reset ordical
-                    valve(input, this);
+                    pipe(input, this);
                     Add("</div>");
                 }
                 Add("</div>");
@@ -411,89 +381,103 @@ namespace Greatbone.Core
             --level;
         }
 
-        public void GRID<D>(Work work, D[] lst, short proj = 0) where D : IData
+        public void GRID<D>(ActionContext ac, Work work, sbyte check, D[] arr, short proj = 0) where D : IData
         {
-            ++level;
-            chain[level].comp = HGRID;
-            chain[level].varwork = work.varwork;
+            if (chain == null) chain = new Ctx[DEPTH];
 
-            if (lst != null)
+            if (check > 0)
             {
+                Add("<form id=\"gridform\">");
+
+                if (check > 1) TOOLBAR(ac.Work);
+            }
+
+            if (arr != null) // grid component
+            {
+                ++level;
+                chain[level].part = GRIDPART;
+                chain[level].varwork = work?.varwork;
+
                 Add("<div class=\"row expanded small-up-1 medium-up-2 large-up-3 xlarge-up-4\">");
-                for (int i = 0; i < lst.Length; i++)
+                for (int i = 0; i < arr.Length; i++)
                 {
                     Add("<div class=\"column card\">");
-                    chain[level].ordinal = 0; // reset ordinal
-                    D obj = lst[i];
+                    D obj = arr[i];
                     chain[level].obj = obj; // reset ordinal
+
+                    if (check == 1)
+                    {
+                        Add("<div class=\"column\">");
+                        Add("<input name=\"key\" type=\"radio\" value=\"");
+                        work.OutputVarKey(obj, this);
+                        Add("<\">");
+                        Add("</div>");
+                    }
+                    else if (check == 2)
+                    {
+                        Add("<div class=\"column\">");
+                        Add("<input name=\"key\" type=\"checkbox\" value=\"");
+                        work.OutputVarKey(obj, this);
+                        Add("<\">");
+                        Add("</div>");
+                    }
+
                     obj.WriteData(this, proj);
                     // acitons
-                    ActionInfo[] varuias = work.Varwork?.UiActions;
-                    if (varuias != null)
+                    ActionInfo[] ais = work.Varwork?.UiActions;
+                    if (ais != null)
                     {
-                        Add("<div class=\"row float-right\">");
-                        TOOLS(varuias);
+                        Add("<div class=\"row\" style=\"text-align: right\">");
+                        BUTTONS(ais);
                         Add("</div>");
                     }
                     Add("</div>");
                 }
                 Add("</div>");
+                --level;
             }
-            else
+            else // empty
             {
                 Add("<div class=\"row\">");
-                Add("<span>没有记录</span>");
                 Add("</div>");
             }
-            --level;
+
+            // pagination controls if any
+            PAGENATION(ac);
+
+            if (check > 0) Add("</form>");
         }
 
-        public void LIST<D>(D[] lst, short proj = 0) where D : IData
+        public void LIST<D>(ActionContext ac, Work work, sbyte check, D[] arr, short proj = 0) where D : IData
         {
-            chain[++level].comp = HLIST;
-            if (lst != null)
+            if (chain == null) chain = new Ctx[DEPTH];
+
+            if (check > 0)
             {
+                Add("<form id=\"gridform\">");
+
+                if (check > 1) TOOLBAR(ac.Work);
+            }
+
+            if (arr != null)
+            {
+                ++level;
+                chain[++level].part = LISTPART;
+                chain[level].varwork = work?.varwork;
+
                 Add("<ul>");
-                for (int i = 0; i < lst.Length; i++)
+                for (int i = 0; i < arr.Length; i++)
                 {
                     Add("<li>");
-                    chain[level].ordinal = 0; // reset ordical
-                    lst[i].WriteData(this, proj);
+                    arr[i].WriteData(this, proj);
                     Add("</li>");
                 }
                 Add("</ul>");
+                --level;
             }
-            --level;
         }
 
-        public void FILL(IDataInput input, Action<IDataInput, HtmlContent> valve)
-        {
-            chain[++level].comp = HFILL;
-            if (input != null)
-            {
-                while (input.Next())
-                {
-                    chain[level].ordinal = 0; // reset ordical
-                    valve(input, this);
-                }
-            }
-            else
-            {
-                Add("<div class=\"row\">");
-                Add("<span>没有记录</span>");
-                Add("</div>");
-            }
-            --level;
-        }
-
-        public void FILL(IData obj, short proj = 0)
-        {
-            chain[++level].comp = HFILL;
-            obj.WriteData(this, proj);
-            --level;
-        }
-
-        public void TOOLS(ActionInfo[] ais)
+        public void BUTTONS(ActionInfo[] ais)
         {
             for (int i = 0; i < ais.Length; i++)
             {
@@ -1176,7 +1160,7 @@ namespace Greatbone.Core
             if (mode > 0)
             {
                 Add(" onclick=\"dialog(this,");
-                Add((int) mode);
+                Add((int)mode);
                 Add("); return false;\"");
             }
 
@@ -1246,7 +1230,6 @@ namespace Greatbone.Core
 
         public HtmlContent PutNull(string name)
         {
-            chain[level].ordinal++;
             return this;
         }
 
@@ -1262,25 +1245,24 @@ namespace Greatbone.Core
 
         public HtmlContent PutRaw(string name, string raw)
         {
-            chain[level].ordinal++;
             return this;
         }
 
-        public void Begin(string label)
+        public void Group(string label)
         {
-            chain[level].begin = label;
+            chain[level].group = label;
         }
 
-        public void End()
+        public void UnGroup()
         {
-            chain[level].begin = null;
+            chain[level].group = null;
         }
 
         public HtmlContent Put(string name, bool v, Func<bool, string> opt = null, string label = null, bool required = false)
         {
-            switch (chain[level].comp)
+            switch (chain[level].part)
             {
-                case HTABLE:
+                case TABLEPART:
                     if (chain[level].label)
                     {
                         Add("<th>");
@@ -1294,7 +1276,7 @@ namespace Greatbone.Core
                         Add("</td>");
                     }
                     break;
-                case HGRID:
+                case GRIDPART:
                     Add("<div class=\"row\">");
                     Add("<div class=\"small-3 columns labeldiv\">");
                     AddLabel(label, name);
@@ -1305,24 +1287,23 @@ namespace Greatbone.Core
                     Add("</div>");
                     Add("</div>");
                     break;
-                case HLIST:
+                case LISTPART:
                     break;
-                case HFILL:
+                case FILLERPART:
                     Add("<div class=\"column\">");
                     CHECKBOX(name, v, label, required);
                     Add("</div>");
                     break;
             }
-            chain[level].ordinal++;
             return this;
         }
 
         public HtmlContent Put(string name, short v, Opt<short> opt = null, string label = null, string help = null, short max = 0, short min = 0, short step = 0, bool @readonly = false, bool required = false)
         {
             var ctx = chain[level];
-            switch (ctx.comp)
+            switch (ctx.part)
             {
-                case HTABLE:
+                case TABLEPART:
                     if (ctx.label)
                     {
                         Add("<th>");
@@ -1332,10 +1313,6 @@ namespace Greatbone.Core
                     else
                     {
                         Add("<td style=\"text-align: right;\">");
-                        if (formed && level == 0 && chain[level].ordinal == 0)
-                        {
-                            Add("<input type=\"checkbox\" name=\"pk\">");
-                        }
                         if (opt != null)
                         {
                             Add(opt[v]);
@@ -1347,19 +1324,10 @@ namespace Greatbone.Core
                         Add("</td>");
                     }
                     break;
-                case HGRID:
+                case GRIDPART:
                     Add("<div class=\"row\">");
                     Add("<div class=\"small-3 columns labeldiv\">");
-                    if (formed && level == 0 && chain[level].ordinal == 0)
-                    {
-                        Add("<input type=\"checkbox\" name=\"pk\" value=\"");
-                        Add(v);
-                        Add("\">");
-                    }
-                    else
-                    {
-                        AddLabel(label, name);
-                    }
+                    AddLabel(label, name);
                     Add("</div>");
                     Add("<div class=\"small-9 columns\">");
                     if (opt != null) Add(opt[v]);
@@ -1367,9 +1335,9 @@ namespace Greatbone.Core
                     Add("</div>");
                     Add("</div>");
                     break;
-                case HLIST:
+                case LISTPART:
                     break;
-                case HFILL:
+                case FILLERPART:
                     Add("<div class=\"column\">");
                     if (opt == null)
                     {
@@ -1382,15 +1350,14 @@ namespace Greatbone.Core
                     Add("</div>");
                     break;
             }
-            chain[level].ordinal++;
             return this;
         }
 
         public HtmlContent Put(string name, int v, Opt<int> opt = null, string label = null, string help = null, int max = 0, int min = 0, int step = 0, bool @readonly = false, bool required = false)
         {
-            switch (chain[level].comp)
+            switch (chain[level].part)
             {
-                case HTABLE:
+                case TABLEPART:
                     if (chain[level].label)
                     {
                         Add("<th>");
@@ -1400,50 +1367,36 @@ namespace Greatbone.Core
                     else
                     {
                         Add("<td style=\"text-align: right;\">");
-                        if (formed && level == 0 && chain[level].ordinal == 0)
-                        {
-                            Add("<input type=\"checkbox\" name=\"pk\">");
-                        }
                         Add(v);
                         Add("</td>");
                     }
                     break;
-                case HGRID:
+                case GRIDPART:
                     Add("<div class=\"row\">");
                     Add("<div class=\"small-3 columns labeldiv\">");
-                    if (formed && level == 0 && chain[level].ordinal == 0)
-                    {
-                        Add("<input type=\"checkbox\" name=\"pk\" value=\"");
-                        Add(v);
-                        Add("\">");
-                    }
-                    else
-                    {
-                        AddLabel(label, name);
-                    }
+                    AddLabel(label, name);
                     Add("</div>");
                     Add("<div class=\"small-9 columns\">");
                     Add(v);
                     Add("</div>");
                     Add("</div>");
                     break;
-                case HLIST:
+                case LISTPART:
                     break;
-                case HFILL:
+                case FILLERPART:
                     Add("<div class=\"column\">");
                     NUMBER(name, v, label);
                     Add("</div>");
                     break;
             }
-            chain[level].ordinal++;
             return this;
         }
 
         public HtmlContent Put(string name, long v, Opt<long> opt = null, string label = null, string help = null, long max = 0, long min = 0, long step = 0, bool @readonly = false, bool required = false)
         {
-            switch (chain[level].comp)
+            switch (chain[level].part)
             {
-                case HTABLE:
+                case TABLEPART:
                     if (chain[level].label)
                     {
                         Add("<th>");
@@ -1453,53 +1406,39 @@ namespace Greatbone.Core
                     else
                     {
                         Add("<td style=\"text-align: right;\">");
-                        if (formed && level == 1)
-                        {
-                            Add("<input type=\"checkbox\" name=\"pk\">");
-                        }
                         Add(v);
                         Add("</td>");
                     }
                     break;
-                case HGRID:
+                case GRIDPART:
                     Add("<div class=\"row\">");
                     Add("<div class=\"small-3 columns labeldiv\">");
-                    if (formed && level == 0 && chain[level].ordinal == 0)
-                    {
-                        Add("<input type=\"checkbox\" name=\"pk\" value=\"");
-                        Add(v);
-                        Add("\">");
-                    }
-                    else
-                    {
-                        AddLabel(label, name);
-                    }
+                    AddLabel(label, name);
                     Add("</div>");
                     Add("<div class=\"small-9 columns\">");
                     Add(v);
                     Add("</div>");
                     Add("</div>");
                     break;
-                case HLIST:
+                case LISTPART:
                     Add("<div class=\"pure-u-1 pure-u-md-1-2\">");
                     // NUMBER(name, v);
                     Add("</div>");
                     break;
-                case HFILL:
+                case FILLERPART:
                     Add("<div class=\"column\">");
                     NUMBER(name, v, label);
                     Add("</div>");
                     break;
             }
-            chain[level].ordinal++;
             return this;
         }
 
         public HtmlContent Put(string name, double v, string label = null, string help = null, double max = 0, double min = 0, double step = 0, bool @readonly = false, bool required = false)
         {
-            switch (chain[level].comp)
+            switch (chain[level].part)
             {
-                case HTABLE:
+                case TABLEPART:
                     if (chain[level].label)
                     {
                         Add("<th>");
@@ -1513,7 +1452,7 @@ namespace Greatbone.Core
                         Add("</td>");
                     }
                     break;
-                case HGRID:
+                case GRIDPART:
                     Add("<div class=\"row\">");
                     Add("<div class=\"small-3 columns labeldiv\">");
                     AddLabel(label, name);
@@ -1523,22 +1462,21 @@ namespace Greatbone.Core
                     Add("</div>");
                     Add("</div>");
                     break;
-                case HLIST:
+                case LISTPART:
                     break;
-                case HFILL:
+                case FILLERPART:
                     Add("<div class=\"column\">");
                     Add("</div>");
                     break;
             }
-            chain[level].ordinal++;
             return this;
         }
 
         public HtmlContent Put(string name, decimal v, string label = null, string help = null, decimal max = 0, decimal min = 0, decimal step = 0, bool @readonly = false, bool required = false)
         {
-            switch (chain[level].comp)
+            switch (chain[level].part)
             {
-                case HTABLE:
+                case TABLEPART:
                     if (chain[level].label)
                     {
                         Add("<th>");
@@ -1552,7 +1490,7 @@ namespace Greatbone.Core
                         Add("</td>");
                     }
                     break;
-                case HGRID:
+                case GRIDPART:
                     Add("<div class=\"row\">");
                     Add("<div class=\"small-3 columns labeldiv\">");
                     AddLabel(label, name);
@@ -1562,26 +1500,25 @@ namespace Greatbone.Core
                     Add("</div>");
                     Add("</div>");
                     break;
-                case HLIST:
+                case LISTPART:
                     Add("<td style=\"text-align: right;\">");
                     Add(v);
                     Add("</td>");
                     break;
-                case HFILL:
+                case FILLERPART:
                     Add("<div class=\"column\">");
                     NUMBER(name, v, label);
                     Add("</div>");
                     break;
             }
-            chain[level].ordinal++;
             return this;
         }
 
         public HtmlContent Put(string name, DateTime v, string label = null, DateTime max = default(DateTime), DateTime min = default(DateTime), int step = 0, bool @readonly = false, bool required = false)
         {
-            switch (chain[level].comp)
+            switch (chain[level].part)
             {
-                case HTABLE:
+                case TABLEPART:
                     if (chain[level].label)
                     {
                         Add("<th>");
@@ -1595,7 +1532,7 @@ namespace Greatbone.Core
                         Add("</td>");
                     }
                     break;
-                case HGRID:
+                case GRIDPART:
                     Add("<div class=\"row\">");
                     Add("<div class=\"small-3 columns labeldiv\">");
                     AddLabel(label, name);
@@ -1605,27 +1542,26 @@ namespace Greatbone.Core
                     Add("</div>");
                     Add("</div>");
                     break;
-                case HLIST:
+                case LISTPART:
                     Add("<td style=\"text-align: right;\">");
                     Add(v);
                     Add("</td>");
                     break;
-                case HFILL:
+                case FILLERPART:
                     Add("<div class=\"column\">");
                     DATE(name, v);
                     Add("</div>");
                     break;
             }
-            chain[level].ordinal++;
             return this;
         }
 
         public HtmlContent Put(string name, string v, Opt<string> opt = null, string label = null, string help = null, string pattern = null, short max = 0, short min = 0, bool @readonly = false, bool required = false)
         {
             var ctx = chain[level];
-            switch (ctx.comp)
+            switch (ctx.part)
             {
-                case HTABLE:
+                case TABLEPART:
                     if (ctx.label)
                     {
                         Add("<th>");
@@ -1635,37 +1571,24 @@ namespace Greatbone.Core
                     else
                     {
                         Add("<td>");
-                        if (formed && level == 0 && chain[level].ordinal == 0)
-                        {
-                            Add("<input type=\"checkbox\" name=\"pk\">");
-                        }
                         Add(v);
                         Add("</td>");
                     }
                     break;
-                case HGRID:
+                case GRIDPART:
                     Add("<div class=\"row\">");
                     Add("<div class=\"small-3 columns labeldiv\">");
-                    if (formed && level == 0 && chain[level].ordinal == 0)
-                    {
-                        Add("<input type=\"checkbox\" name=\"pk\" value=\"");
-                        Add(v);
-                        Add("\">");
-                    }
-                    else
-                    {
-                        AddLabel(label, name);
-                    }
+                    AddLabel(label, name);
                     Add("</div>");
                     Add("<div class=\"small-9 columns\">");
                     Add(v);
                     Add("</div>");
                     Add("</div>");
                     break;
-                case HLIST:
+                case LISTPART:
                     Add(v);
                     break;
-                case HFILL:
+                case FILLERPART:
                     Add("<div class=\"column\">");
                     if (label != null && label.Length == 0)
                     {
@@ -1673,11 +1596,11 @@ namespace Greatbone.Core
                     }
                     else if (name.EndsWith("password") || name.EndsWith("pwd"))
                     {
-                        PASSWORD(name, v, label, help, pattern, (sbyte) max, (sbyte) min, @readonly, required);
+                        PASSWORD(name, v, label, help, pattern, (sbyte)max, (sbyte)min, @readonly, required);
                     }
                     else if (max < 128)
                     {
-                        TEXT(name, v, label, help, pattern, (sbyte) max, (sbyte) min, opt, @readonly, required);
+                        TEXT(name, v, label, help, pattern, (sbyte)max, (sbyte)min, opt, @readonly, required);
                     }
                     else
                     {
@@ -1686,15 +1609,14 @@ namespace Greatbone.Core
                     Add("</div>");
                     break;
             }
-            chain[level].ordinal++;
             return this;
         }
 
         public HtmlContent Put(string name, ArraySegment<byte> v, string label = null, string size = null, string ratio = null, bool required = false)
         {
-            switch (chain[level].comp)
+            switch (chain[level].part)
             {
-                case HTABLE:
+                case TABLEPART:
                     if (chain[level].label)
                     {
                         Add("<th>");
@@ -1707,16 +1629,15 @@ namespace Greatbone.Core
                         Add("</td>");
                     }
                     break;
-                case HGRID:
+                case GRIDPART:
                     Add("<img src=\"data:");
                     break;
-                case HFILL:
+                case FILLERPART:
                     Add("<div class=\"\">");
                     FILE(name, label, size, ratio, required);
                     Add("</div>");
                     break;
             }
-            chain[level].ordinal++;
             return this;
         }
 
@@ -1752,9 +1673,9 @@ namespace Greatbone.Core
 
         public HtmlContent Put<D>(string name, D[] v, short proj = 0, string label = null, string help = null, bool @readonly = false, bool required = false) where D : IData
         {
-            switch (chain[level].comp)
+            switch (chain[level].part)
             {
-                case HTABLE:
+                case TABLEPART:
                     if (chain[level].label)
                     {
                         Add("<th>");
@@ -1765,7 +1686,7 @@ namespace Greatbone.Core
                     {
                         if (v != null)
                         {
-                            LIST(v, proj);
+                            LIST(null, null, 0, v, proj);
                         }
                         else
                         {
@@ -1773,11 +1694,11 @@ namespace Greatbone.Core
                         }
                     }
                     break;
-                case HGRID:
+                case GRIDPART:
                     if (v != null)
                     {
                         Add("<div class=\"row\">");
-                        TABLE(v, proj);
+                        TABLE(null, null, 0, v, proj);
                         Add("</div>");
                     }
                     else
@@ -1785,10 +1706,9 @@ namespace Greatbone.Core
                         Add("<div class=\"row\"><span>没有记录</span></div>");
                     }
                     break;
-                case HLIST:
+                case LISTPART:
                     break;
             }
-            chain[level].ordinal++;
             return this;
         }
     }

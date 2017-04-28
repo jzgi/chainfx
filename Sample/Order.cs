@@ -143,19 +143,19 @@ namespace Greatbone.Sample
             {
                 o.Put(nameof(id), id);
             }
-            o.Begin("供应点");
+            o.Group("供应点");
             o.Put(nameof(shop), shop);
             o.Put(nameof(shopid), shopid);
-            o.End();
+            o.UnGroup();
 
             o.Put(nameof(cust), cust, label: "买家名称");
             o.Put(nameof(custwx), custwx);
 
-            o.Begin("送货地址");
+            o.Group("送货地址");
             o.Put(nameof(custtel), custtel);
             o.Put(nameof(custdistr), custdistr);
             o.Put(nameof(custaddr), custaddr);
-            o.End();
+            o.UnGroup();
 
             if ((proj & DETAIL) == DETAIL)
             {
@@ -228,10 +228,10 @@ namespace Greatbone.Sample
         public void WriteData<R>(IDataOutput<R> o, short proj = 0) where R : IDataOutput<R>
         {
             o.Put(nameof(item), item, label: "品名");
-            o.Begin("数量");
+            o.Group("数量");
             o.Put(nameof(qty), qty);
             o.Put(nameof(unit), unit);
-            o.End();
+            o.UnGroup();
             o.Put(nameof(price), price, label: "单价");
         }
 

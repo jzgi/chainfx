@@ -372,8 +372,8 @@ namespace Greatbone.Core
 
         public int Status
         {
-            get { return Response.StatusCode; }
-            set { Response.StatusCode = value; }
+            get => Response.StatusCode;
+            set => Response.StatusCode = value;
         }
 
         public IContent Content { get; internal set; }

@@ -40,7 +40,7 @@ namespace Greatbone.Sample
         {
             using (var dc = ac.NewDbContext())
             {
-                const int proj = -1 ^ User.BIN ^ User.TRANSF ^ User.SECRET;
+                const int proj = -1 ^ User.CREDENTIAL ^ User.ADDRS;
                 dc.Sql("SELECT ").columnlst(User.Empty, proj)._("FROM users ORDER BY id LIMIT 30 OFFSET @1");
                 if (dc.Query("SELECT * FROM users"))
                 {
@@ -72,7 +72,7 @@ namespace Greatbone.Sample
 
                 using (var dc = ac.NewDbContext())
                 {
-                    const int proj = -1 ^ User.BIN ^ User.TRANSF ^ User.SECRET;
+                    const int proj = -1 ^ User.CREDENTIAL ^ User.ADDRS;
                     dc.Sql("SELECT ").columnlst(User.Empty, proj)._("FROM users WHERE id = @1");
                     if (dc.Query(p => p.Set(id)))
                     {

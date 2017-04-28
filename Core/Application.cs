@@ -21,7 +21,7 @@ namespace Greatbone.Core
         public static bool TryCreate<S>(ServiceContext sc, bool load, object attachment = null) where S : Service
         {
             // initialize work context
-            sc.State = attachment;
+            sc.Attach = attachment;
             sc.Parent = null;
             sc.Level = 0;
             sc.Directory = sc.Name;

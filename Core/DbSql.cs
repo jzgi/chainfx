@@ -153,11 +153,11 @@ namespace Greatbone.Core
             return this;
         }
 
-        public void Begin(string label)
+        public void Group(string label)
         {
         }
 
-        public void End()
+        public void UnGroup()
         {
         }
 

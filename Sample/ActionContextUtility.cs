@@ -197,21 +197,21 @@ namespace Greatbone.Sample
         public static void GiveFormPane(this ActionContext ac, int status, IData obj, short proj = 0, bool? pub = null, int maxage = 60)
         {
             ac.GivePane(status,
-                m => { m.FILLFORM(ac.Doer, obj, proj); },
+                m => { m.FILLER(ac.Doer, obj, proj); },
                 pub, maxage
             );
         }
 
         public static void GiveFormPane(this ActionContext ac, int status, IDataInput input, Action<IDataInput, HtmlContent> valve, bool? pub = null, int maxage = 60)
         {
-            ac.GivePane(status, m => { m.FILLFORM(ac.Doer, input, valve); },
+            ac.GivePane(status, m => { m.FILLER(ac.Doer, input, valve); },
                 pub, maxage);
         }
 
         public static void GiveGridFormPage<D>(this ActionContext ac, int status, D[] lst, short proj = 0, bool? pub = null, int maxage = 60) where D : IData
         {
             Work work = ac.Work;
-            ac.GivePage(status, main => { main.GRIDFORM(ac, lst, proj); }, pub, maxage);
+            ac.GivePage(status, main => { main.GRID(ac, ac.Work, 2, lst, proj); }, pub, maxage);
         }
 
         public static void GiveGridFormPage<D>(this ActionContext ac, int status, D[] lst, Action<HtmlContent, D> putobj, bool? pub = null, int maxage = 60) where D : IData

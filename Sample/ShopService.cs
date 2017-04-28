@@ -84,7 +84,7 @@ namespace Greatbone.Sample
                     if (dc.Query1("SELECT * FROM users WHERE wx = @1", (p) => p.Set(accessor.openid)))
                     {
                         prin = dc.ToObject<User>(-1 ^ Shop.SECRET);
-                        prin.stored = true;
+                        prin.indb = true;
                     }
                 }
                 if (prin == null) // get userinfo remotely
@@ -123,7 +123,7 @@ namespace Greatbone.Sample
             {
                 // set token success
                 ac.Principal = prin;
-                ac.SetTokenCookie(prin, -1);
+                ac.SetTokenCookie(prin, -1 ^ User.CREDENTIAL ^ User.ADDRS);
             }
             return true;
         }
