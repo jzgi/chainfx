@@ -1,5 +1,4 @@
 using System;
-using NpgsqlTypes;
 
 namespace Greatbone.Core
 {
@@ -83,7 +82,7 @@ namespace Greatbone.Core
         {
             if (v.type == JType.Object)
             {
-                return (JObj)v.refv;
+                return (JObj) v.refv;
             }
             return null;
         }
@@ -92,7 +91,7 @@ namespace Greatbone.Core
         {
             if (v.type == JType.Array)
             {
-                return (JArr)v.refv;
+                return (JArr) v.refv;
             }
             return null;
         }
@@ -160,60 +159,27 @@ namespace Greatbone.Core
         {
             if (v.type == JType.String)
             {
-                string str = (string)v.refv;
+                string str = (string) v.refv;
                 DateTime dt;
                 if (StrUtility.TryParseDate(str, out dt)) return dt;
             }
             return default(DateTime);
         }
 
-        public static implicit operator NpgsqlPoint(JMbr v)
-        {
-            if (v.type == JType.String)
-            {
-                string str = (string)v.refv;
-                if (str != null)
-                {
-                    int comma = str.IndexOf(',');
-                    if (comma != -1)
-                    {
-                        string xstr = str.Substring(comma);
-                        string ystr = str.Substring(comma + 1);
-                        double x, y;
-                        if (double.TryParse(xstr, out x) && double.TryParse(ystr, out y))
-                        {
-                            return new NpgsqlPoint(x, y);
-                        }
-                    }
-                }
-            }
-            return default(NpgsqlPoint);
-        }
-
-        public static implicit operator char[] (JMbr v)
-        {
-            if (v.type == JType.String)
-            {
-                string str = (string)v.refv;
-                return str.ToCharArray();
-            }
-            return null;
-        }
-
         public static implicit operator string(JMbr v)
         {
             if (v.type == JType.String)
             {
-                return (string)v.refv;
+                return (string) v.refv;
             }
             return null;
         }
 
-        public static implicit operator byte[] (JMbr v)
+        public static implicit operator byte[](JMbr v)
         {
             if (v.type == JType.String)
             {
-                return (byte[])v.refv;
+                return (byte[]) v.refv;
             }
             return null;
         }

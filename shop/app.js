@@ -10,13 +10,13 @@ function dialog(trig, mode, siz) {
     var formid = trig.form ? trig.form.id : '';
     var tag = trig.tagName;
     var action;
-    var method = 'POST';
+    var method = 'post';
     if (tag == 'BUTTON') {
         action = trig.formAction || trig.name;
         method = trig.formMethod || method;
     } else if (tag == 'A') {
         action = trig.href
-        method = 'GET';
+        method = 'get';
     }
 
     var src = action.split("?")[0] + '?dlg=true';
@@ -73,29 +73,36 @@ function ok(okbtn, mode, formid, tag, action, method) {
         var form = iframe.contents().find('form');
         if (form.length != 0) {
             if (!form[0].reportValidity()) return;
-            if (method == 'GET') {
+            if (method == 'get') {
                 var qstr = $(form[0]).serialize();
                 if (qstr) {
+                    // dispose the dialog
+                    dlge.foundation('close');
+                    dlge.foundation('destroy');
+                    dlge.remove();
+                    // load page
                     location.href = action.split("?")[0] + '?' + qstr;
                 }
-            } else if (method == 'POST') {
+            } else if (method == 'post') {
+                var gridform = $('#' + formid);
                 var pairs = $(form[0]).serializeArray();
                 pairs.forEach(function (e, i) {
-                    $('<input>').attr({ type: 'hidden', name: e.name, value: e.value }).appendTo(form);
+                    $('<input>').attr({ type: 'hidden', name: e.name, value: e.value }).appendTo(gridform);
                 });
 
-                $(formid).submit;
+                // dispose the dialog
+                dlge.foundation('close');
+                dlge.foundation('destroy');
+                dlge.remove();
+                // submit
+                gridform.attr('action', action);
+                gridform.attr('method', method);
+                gridform.submit();
             }
-            return;
         }
     } else { // picker mode
 
     }
-
-    // clean up the dialog
-    dlge.foundation('close');
-    dlge.foundation('destroy');
-    dlge.remove();
 }
 
 

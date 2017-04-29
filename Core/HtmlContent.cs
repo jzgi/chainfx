@@ -65,7 +65,7 @@ namespace Greatbone.Core
                     char c = alt[i];
                     if (c >= 'a' && c <= 'z')
                     {
-                        c = (char)(c - 32);
+                        c = (char) (c - 32);
                     }
                     Add(c);
                 }
@@ -491,7 +491,7 @@ namespace Greatbone.Core
                 if (ui.IsLink)
                 {
                     Add("<a class=\"button ");
-                    Add(ui.Alert ? "alert" : "primary");
+                    Add(ui.Alert ? "warning" : "primary");
                     Add("\" href=\"");
                     for (int lvl = 0; lvl <= level; lvl++)
                     {
@@ -514,7 +514,9 @@ namespace Greatbone.Core
                 }
                 else if (ui.IsAnchor)
                 {
-                    Add("<a class=\"button "); Add(ui.Alert ? "alert" : "primary"); Add("\" href=\"");
+                    Add("<a class=\"button ");
+                    Add(ui.Alert ? "warning" : "primary");
+                    Add("\" href=\"");
                     for (int lvl = 0; lvl <= level; lvl++)
                     {
                         chain[lvl].OutputVarKey(this);
@@ -552,7 +554,9 @@ namespace Greatbone.Core
                 }
                 else if (ui.IsButton)
                 {
-                    Add("<button class=\"button "); Add(ui.Alert ? "alert" : "primary"); Add("\" name=\"");
+                    Add("<button class=\"button ");
+                    Add(ui.Alert ? "warning" : "primary");
+                    Add("\" name=\"");
                     Add(ai.Name);
                     Add("\" formaction=\"");
                     for (int lvl = 0; lvl <= level; lvl++)
@@ -1129,10 +1133,8 @@ namespace Greatbone.Core
         {
             Add("<label>");
             AddLabel(label, name);
-            Add("<input type=\"text\" name=\"");
+            Add("<textarea name=\"");
             Add(name);
-            Add("\" value=\"");
-            AddEsc(v);
             Add("\"");
 
             if (help != null)
@@ -1161,6 +1163,8 @@ namespace Greatbone.Core
             if (required) Add(" required");
 
             Add(">");
+            AddEsc(v);
+            Add("</textarea>");
             Add("</label>");
         }
 
@@ -1177,7 +1181,7 @@ namespace Greatbone.Core
             if (mode > 0)
             {
                 Add(" onclick=\"dialog(this,");
-                Add((int)mode);
+                Add((int) mode);
                 Add("); return false;\"");
             }
 
@@ -1212,6 +1216,39 @@ namespace Greatbone.Core
             foreach (var pair in opt)
             {
                 short key = pair.Key;
+                Add("<option value=\"");
+                Add(key);
+                Add("\"");
+                if (key == v) Add(" selected");
+                Add(">");
+
+                Add(pair.Value);
+                Add("</option>");
+            }
+            Add("</select>");
+            Add("</label>");
+        }
+
+        public void SELECT(string name, string v, Opt<string> opt, string label = null, bool multiple = false, bool required = false, sbyte size = 0)
+        {
+            Add("<label>");
+            AddLabel(label, name);
+            Add("<select name=\"");
+            Add(name);
+            Add("\"");
+            if (multiple) Add(" multiple");
+            if (required) Add(" required");
+            if (size > 0)
+            {
+                Add(" size=\"");
+                Add(size);
+                Add("\"");
+            }
+            Add(">");
+
+            foreach (var pair in opt)
+            {
+                string key = pair.Key;
                 Add("<option value=\"");
                 Add(key);
                 Add("\"");
@@ -1779,11 +1816,11 @@ namespace Greatbone.Core
                     }
                     else if (name.EndsWith("password") || name.EndsWith("pwd"))
                     {
-                        PASSWORD(name, v, label, help, pattern, (sbyte)max, (sbyte)min, @readonly, required);
+                        PASSWORD(name, v, label, help, pattern, (sbyte) max, (sbyte) min, @readonly, required);
                     }
                     else if (max < 128)
                     {
-                        TEXT(name, v, label, help, pattern, (sbyte)max, (sbyte)min, opt, @readonly, required);
+                        TEXT(name, v, label, help, pattern, (sbyte) max, (sbyte) min, opt, @readonly, required);
                     }
                     else
                     {

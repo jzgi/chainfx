@@ -35,59 +35,77 @@ namespace Greatbone.Sample
 
             if (ac.GET)
             {
-                ac.GivePane(200, m =>
+                using (var dc = ac.NewDbContext())
                 {
-                    // selection
-
-                    // input new
-                });
+                    if (dc.Query1("SELECT custtel, custcity, custdistr, custaddr FROM orders WHERE id = @1", p => p.Set(ordid)))
+                    {
+                        var tel = dc.GetString();
+                        var city = dc.GetString();
+                        var distr = dc.GetString();
+                        var addr = dc.GetString();
+                        ac.GiveFormPane(200, m =>
+                        {
+                            m.TEXT(nameof(tel), tel, label: "电话");
+                            m.SELECT(nameof(city), city, ((ShopService)Service).CityOpt, label: "城市");
+                            //                            m.SELECT(nameof(distr), distr);
+                            m.TEXT(nameof(addr), addr, label: "地址");
+                        });
+                    }
+                    else
+                    {
+                    }
+                }
             }
             else
             {
-            }
-            string shopid = ac[0];
-            Form frm = await ac.ReadAsync<Form>();
-            int[] pk = frm[nameof(pk)];
+                string shopid = ac[0];
+                Form frm = await ac.ReadAsync<Form>();
+                int[] pk = frm[nameof(pk)];
 
-            using (var dc = ac.NewDbContext())
-            {
-                dc.Sql("UPDATE orders SET ").setstate()._(" WHERE id = @1 AND shopid = @2 AND ").statecond();
-                if (dc.Query(p => p.Set(pk).Set(shopid)))
+                using (var dc = ac.NewDbContext())
                 {
-                    var order = dc.ToArray<Order>();
-                }
-                else
-                {
+                    dc.Sql("UPDATE orders SET ").setstate()._(" WHERE id = @1 AND shopid = @2 AND ").statecond();
+                    if (dc.Query(p => p.Set(pk).Set(shopid)))
+                    {
+                        var order = dc.ToArray<Order>();
+                    }
+                    else
+                    {
+                    }
                 }
             }
         }
 
-        [Ui("附注")]
+        [Ui("附注", UiMode.ButtonDialog)]
         public async Task note(ActionContext ac)
         {
             string buywx = ac[typeof(UserVarWork)];
-            long ordid = ac[this];
+            long id = ac[this];
 
             if (ac.GET)
             {
+                using (var dc = ac.NewDbContext())
+                {
+                    if (dc.Query1("SELECT note FROM orders WHERE id = @1", p => p.Set(id)))
+                    {
+                        var note = dc.GetString();
+                        ac.GiveFormPane(200, m => { m.TEXTAREA(nameof(note), note, label: "附加说明", max: 20, required: true); });
+                    }
+                    else
+                    {
+                    }
+                }
             }
             else
             {
-            }
-            string shopid = ac[0];
-            Form frm = await ac.ReadAsync<Form>();
-            int[] pk = frm[nameof(pk)];
+                Form frm = await ac.ReadAsync<Form>();
+                string note = frm[nameof(note)];
 
-            using (var dc = ac.NewDbContext())
-            {
-                dc.Sql("UPDATE orders SET ").setstate()._(" WHERE id = @1 AND shopid = @2 AND ").statecond();
-                if (dc.Query(p => p.Set(pk).Set(shopid)))
+                using (var dc = ac.NewDbContext())
                 {
-                    var order = dc.ToArray<Order>();
+                    dc.Execute("UPDATE orders SET note = @1 WHERE id = @2", p => p.Set(note).Set(id));
                 }
-                else
-                {
-                }
+                ac.GiveRedirect("../");
             }
         }
 

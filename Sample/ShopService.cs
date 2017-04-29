@@ -16,6 +16,8 @@ namespace Greatbone.Sample
 
         readonly JObj cities;
 
+        readonly Opt<string> citiopt;
+
         public ShopService(ServiceContext sc) : base(sc)
         {
             Create<PubShopWork>("pub"); // public
@@ -31,6 +33,14 @@ namespace Greatbone.Sample
             Create<AdmWork>("adm"); // administrator
 
             cities = DataInputUtility.FileTo<JObj>(sc.GetFilePath("$cities.json"));
+
+            citiopt = new Opt<string>();
+            for (int i = 0; i < cities.Count; i++)
+            {
+                JObj mbr = cities[i];
+                string city = mbr[nameof(city)];
+                citiopt.Add(city, city);
+            }
 
             // timer obtaining access_token from weixin
             // timer = new Timer(async state =>
@@ -61,6 +71,8 @@ namespace Greatbone.Sample
 
             // }, null, 5000, 60000);
         }
+
+        public Opt<string> CityOpt => citiopt;
 
         public async Task<bool> AuthenticateAsync(ActionContext ac, bool e)
         {
