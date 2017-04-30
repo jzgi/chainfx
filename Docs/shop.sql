@@ -11,7 +11,7 @@ Target Server Type    : PGSQL
 Target Server Version : 90505
 File Encoding         : 65001
 
-Date: 2017-04-24 11:48:53
+Date: 2017-04-30 00:20:24
 */
 
 
@@ -48,19 +48,6 @@ CREATE SEQUENCE "public"."repays_id_seq"
  MAXVALUE 9223372036854775807
  START 1
  CACHE 1;
-
--- ----------------------------
--- Table structure for cities
--- ----------------------------
-DROP TABLE IF EXISTS "public"."cities";
-CREATE TABLE "public"."cities" (
-"name" varchar(4) COLLATE "default",
-"code" varchar(4) COLLATE "default",
-"distrs" varchar(4)[] COLLATE "default"
-)
-WITH (OIDS=FALSE)
-
-;
 
 -- ----------------------------
 -- Table structure for evtq
@@ -119,11 +106,11 @@ CREATE TABLE "public"."orders" (
 "id" int8 DEFAULT nextval('orders_id_seq'::regclass) NOT NULL,
 "shop" varchar(10) COLLATE "default",
 "shopid" varchar(6) COLLATE "default",
-"cust" varchar(10) COLLATE "default",
+"custname" varchar(10) COLLATE "default",
 "custwx" varchar(28) COLLATE "default",
-"shiptel" varchar(11) COLLATE "default",
-"shipdistr" varchar(4) COLLATE "default",
-"shipaddr" varchar(40) COLLATE "default",
+"custtel" varchar(11) COLLATE "default",
+"custdistr" varchar(4) COLLATE "default",
+"custaddr" varchar(20) COLLATE "default",
 "detail" jsonb,
 "total" money,
 "created" timestamp(6),
@@ -139,7 +126,8 @@ CREATE TABLE "public"."orders" (
 "status" int2,
 "prepay_id" varchar(40) COLLATE "default",
 "repaid" timestamp(6),
-"note" varchar(20) COLLATE "default"
+"note" varchar(20) COLLATE "default",
+"custcity" varchar(4) COLLATE "default"
 )
 WITH (OIDS=FALSE)
 

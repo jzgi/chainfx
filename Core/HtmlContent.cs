@@ -602,6 +602,24 @@ namespace Greatbone.Core
             Add("\">");
         }
 
+        public void HIDDEN(string name, int value)
+        {
+            Add("<input type=\"hidden\" name=\"");
+            Add(name);
+            Add("\" value=\"");
+            Add(value);
+            Add("\">");
+        }
+
+        public void HIDDEN(string name, decimal value)
+        {
+            Add("<input type=\"hidden\" name=\"");
+            Add(name);
+            Add("\" value=\"");
+            Add(value);
+            Add("\">");
+        }
+
         public void TEXT(string name, string v, string label = null, string help = null, string pattern = null, sbyte max = 0, sbyte min = 0, Opt<string> opt = null, bool @readonly = false, bool required = false)
         {
             Add("<label>");

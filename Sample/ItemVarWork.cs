@@ -1,5 +1,4 @@
 using System;
-using System.Collections.Generic;
 using System.Threading.Tasks;
 using Greatbone.Core;
 
@@ -56,6 +55,7 @@ namespace Greatbone.Sample
         {
         }
 
+        [Ui("加入购物车", UiMode.ButtonDialog)]
         public async Task add(ActionContext ac)
         {
             string shopid = ac[typeof(ShopVarWork)];
@@ -64,18 +64,19 @@ namespace Greatbone.Sample
             {
                 using (var dc = ac.NewDbContext())
                 {
-                    if (dc.Query1("SELECT price, min, step FROM items WHERE shopid = @1 AND name = @2", p => p.Set(shopid).Set(name)))
+                    if (dc.Query1("SELECT unit, price, min, step FROM items WHERE shopid = @1 AND name = @2", p => p.Set(shopid).Set(name)))
                     {
+                        var unit = dc.GetString();
                         var price = dc.GetDecimal();
                         var min = dc.GetShort();
                         short qty = min;
                         var step = dc.GetShort();
-                        string note = null;
                         ac.GiveFormPane(200, h =>
                         {
                             h.Add(name);
                             h.NUMBER(nameof(qty), qty, label: "数量", min: min, step: step, required: true);
-                            h.TEXTAREA(nameof(note), note, label: "附加说明", max: 20);
+                            h.HIDDEN(nameof(unit), unit);
+                            h.HIDDEN(nameof(price), price);
                         });
                     }
                     else ac.Give(404); // not found           
@@ -85,35 +86,40 @@ namespace Greatbone.Sample
             {
                 var frm = await ac.ReadAsync<Form>();
                 short qty = frm[nameof(qty)];
-                short note = frm[nameof(note)];
-
+                string unit = frm[nameof(unit)];
+                decimal price = frm[nameof(price)];
                 using (var dc = ac.NewDbContext())
                 {
-                    if (dc.Query1("SELECT detail, total FROM orders WHERE shopid = @1 AND buywx = @2 AND status = 0", p => p.Set(shopid).Set(shopid)))
+                    if (dc.Query1("SELECT detail, total FROM orders WHERE shopid = @1 AND custwx = @2 AND status = 0", p => p.Set(shopid).Set(shopid)))
                     {
-                        var detail = dc.GetArray<OrderLine>();
-                        var total = dc.GetDecimal();
-
-//                        detail
-
-                        dc.Execute("UPDATE orders SET detail = @1, total = @2 WHERE ", p => p.Set(detail).Set(total));
+                        var order = new Order();
+                        order.detail = dc.GetArray<OrderLine>();
+                        order.total = dc.GetDecimal();
+                        order.AddItem(name, qty, unit, price);
+                        dc.Execute("UPDATE orders SET detail = @1, total = @2 WHERE ", p => p.Set(order.detail).Set(order.total));
                     }
                     else
                     {
+                        string shop = (string) dc.Scalar("SELECT name FROM shops WHERE id = @1", p => p.Set(shopid));
                         User prin = (User) ac.Principal;
                         var order = new Order
                         {
+                            shopid = shopid,
+                            shop = shop,
                             custname = prin.name,
                             custwx = prin.wx,
                             custtel = prin.tel,
-
-                            detail = new []
+                            custcity = prin.city,
+                            custdistr = prin.distr,
+                            custaddr = prin.addr,
+                            detail = new[]
                             {
-                                new OrderLine {item = name, price = 0, qty = qty, unit = ""}
+                                new OrderLine {item = name, price = price, qty = qty, unit = ""}
                             }
                         };
+                        order.Sum();
 
-                        const int proj = -1 ^ Item.AUTO ^ Item.LATE;
+                        const int proj = -1 ^ Order.ID ^ Order.LATE;
 
                         dc.Sql("INSERT INTO orders ")._(order, proj)._VALUES_(order, proj);
                         dc.Execute(p => order.WriteData(p, proj));
@@ -138,7 +144,7 @@ namespace Greatbone.Sample
                 string name = ac[this];
                 using (var dc = Service.NewDbContext())
                 {
-                    const int proj = -1 ^ Item.BIN ^ Item.PRIME;
+                    const int proj = -1 ^ Item.ICON ^ Item.SHOPID;
                     dc.Sql("SELECT ").columnlst(Item.Empty, proj)._("FROM items WHERE shopid = @1 AND name = @2");
                     if (dc.Query1(p => p.Set(shopid).Set(name)))
                     {
@@ -156,7 +162,7 @@ namespace Greatbone.Sample
                 item.shopid = ac[typeof(ShopVarWork)];
                 using (var dc = Service.NewDbContext())
                 {
-                    const int proj = -1 ^ Item.BIN;
+                    const int proj = -1 ^ Item.ICON;
                     dc.Sql("INSERT INTO items")._(Item.Empty, proj)._VALUES_(Item.Empty, proj)._("");
                     if (dc.Execute(p => item.WriteData(p, proj)) > 0)
                     {

@@ -170,17 +170,29 @@ namespace Greatbone.Sample
             o.Put(nameof(status), status, label: "状态", opt: STATUS);
         }
 
-        public void AddItem(string item, short qty, decimal price, string note)
+        public void AddItem(string item, short qty, string unit, decimal price)
         {
             if (detail == null)
             {
-                detail = new[] {new OrderLine(),};
+                detail = new[] {new OrderLine() {item = item, qty = qty, unit = unit, price = price}};
             }
             var orderln = detail.Find(o => o.item.Equals(item));
             if (orderln.item == null)
             {
-                orderln = new OrderLine();
-                detail.Add(orderln);
+                detail.Add(new OrderLine() {item = item, qty = qty, unit = unit, price = price});
+            }
+        }
+
+        public void Sum()
+        {
+            if (detail != null)
+            {
+                decimal sum = 0;
+                for (int i = 0; i < detail.Length; i++)
+                {
+                    sum += detail[i].qty * detail[i].price;
+                }
+                total = sum;
             }
         }
     }
