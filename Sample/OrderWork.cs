@@ -8,7 +8,7 @@ namespace Greatbone.Sample
     {
         protected OrderWork(WorkContext wc) : base(wc)
         {
-            CreateVar<V, long>((obj) => ((Order) obj).id);
+            CreateVar<V, long>((obj) => ((Order)obj).id);
         }
     }
 
@@ -33,14 +33,14 @@ namespace Greatbone.Sample
             using (var dc = ac.NewDbContext())
             {
                 const int proj = -1 ^ Order.LATE ^ Order.CUSTWX;
-                dc.Sql("SELECT ").columnlst(Order.Empty, proj)._("FROM orders WHERE custwx = @1 AND status = @2");
+                dc.Sql("SELECT ").columnlst(Order.Empty, proj)._("FROM orders WHERE custwx = @1 AND status = @2 ORDER BY id DESC");
                 if (dc.Query(p => p.Set(wx).Set(Order.CREATED)))
                 {
                     ac.GiveGridFormPage(200, dc.ToArray<Order>(proj), proj);
                 }
                 else
                 {
-                    ac.GiveGridFormPage(200, (Order[]) null);
+                    ac.GiveGridFormPage(200, (Order[])null);
                 }
             }
         }
@@ -98,19 +98,21 @@ namespace Greatbone.Sample
                 var item = await ac.ReadObjectAsync<Item>(-1 ^ Item.ICON);
                 using (var dc = ac.NewDbContext())
                 {
-                    if (dc.Query1("SELECT detail, total FROM orders WHERE shopid = @1 AND custwx = @2 AND status = 0", p => p.Set(shopid).Set(shopid)))
+                    if (dc.Query1("SELECT id, detail, total FROM orders WHERE shopid = @1 AND custwx = @2 AND status = 0", p => p.Set(shopid).Set(wx)))
                     {
                         var order = new Order
                         {
+                            id = dc.GetLong(),
                             detail = dc.GetArray<OrderLine>(),
                             total = dc.GetDecimal()
                         };
                         order.AddItem(name, item.qty, item.unit, item.price);
-                        dc.Execute("UPDATE orders SET detail = @1, total = @2 WHERE ", p => p.Set(order.detail).Set(order.total));
+                        order.Sum();
+                        dc.Execute("UPDATE orders SET detail = @1, total = @2 WHERE id = @3", p => p.Set(order.detail).Set(order.total).Set(order.id));
                     }
                     else
                     {
-                        User prin = (User) ac.Principal;
+                        User prin = (User)ac.Principal;
                         var order = new Order
                         {
                             shopid = shopid,
@@ -134,6 +136,7 @@ namespace Greatbone.Sample
                         dc.Sql("INSERT INTO orders ")._(order, proj)._VALUES_(order, proj);
                         dc.Execute(p => order.WriteData(p, proj));
                     }
+                    ac.GivePane(200, null);
                 }
             }
         }
@@ -159,7 +162,7 @@ namespace Greatbone.Sample
                 }
                 else
                 {
-                    ac.GiveGridFormPage(200, (Order[]) null);
+                    ac.GiveGridFormPage(200, (Order[])null);
                 }
             }
         }
@@ -185,7 +188,7 @@ namespace Greatbone.Sample
                 }
                 else
                 {
-                    ac.GiveGridFormPage(200, (Order[]) null);
+                    ac.GiveGridFormPage(200, (Order[])null);
                 }
             }
         }
@@ -211,7 +214,7 @@ namespace Greatbone.Sample
                 }
                 else
                 {
-                    ac.GiveGridFormPage(200, (Order[]) null);
+                    ac.GiveGridFormPage(200, (Order[])null);
                 }
             }
         }
@@ -357,7 +360,7 @@ namespace Greatbone.Sample
                 }
                 else
                 {
-                    ac.GiveGridFormPage(200, (Order[]) null);
+                    ac.GiveGridFormPage(200, (Order[])null);
                 }
             }
         }

@@ -65,7 +65,7 @@ namespace Greatbone.Core
                     char c = alt[i];
                     if (c >= 'a' && c <= 'z')
                     {
-                        c = (char) (c - 32);
+                        c = (char)(c - 32);
                     }
                     Add(c);
                 }
@@ -175,15 +175,17 @@ namespace Greatbone.Core
             Add("<div class=\"sticky\" style=\"width: 100%\" data-sticky  data-options=\"anchor: page; marginTop: 0; stickyOn: small;\">");
             Add("<div class=\"title-bar\">");
 
+            Add("<div class=\"title-bar-left\">");
             ActionInfo[] ais = work?.UiActions;
             if (ais != null)
             {
-                Add("<div class=\"title-bar-left\">");
                 BUTTONS(ais);
-                Add("</div>");
             }
+            Add("</div>");
 
-            Add("<div class=\"title-bar-right\"><i class=\"fa fa-refresh fa-lg\"></i></div>");
+            Add("<div class=\"title-bar-right\">");
+            Add("<a class=\"float-right\" href=\"javascript: location.reload();\"><span class=\"fa-stack fa-lg\"><i class=\"fa fa-circle fa-stack-2x\"></i><i class=\"fa fa-refresh fa-stack-1x fa-inverse\"></i></span></a>");
+            Add("</div>");
 
             Add("</div>");
             Add("</div>");
@@ -1199,7 +1201,7 @@ namespace Greatbone.Core
             if (mode > 0)
             {
                 Add(" onclick=\"dialog(this,");
-                Add((int) mode);
+                Add((int)mode);
                 Add("); return false;\"");
             }
 
@@ -1834,11 +1836,11 @@ namespace Greatbone.Core
                     }
                     else if (name.EndsWith("password") || name.EndsWith("pwd"))
                     {
-                        PASSWORD(name, v, label, help, pattern, (sbyte) max, (sbyte) min, @readonly, required);
+                        PASSWORD(name, v, label, help, pattern, (sbyte)max, (sbyte)min, @readonly, required);
                     }
                     else if (max < 128)
                     {
-                        TEXT(name, v, label, help, pattern, (sbyte) max, (sbyte) min, opt, @readonly, required);
+                        TEXT(name, v, label, help, pattern, (sbyte)max, (sbyte)min, opt, @readonly, required);
                     }
                     else
                     {

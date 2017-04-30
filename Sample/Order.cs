@@ -37,7 +37,7 @@ namespace Greatbone.Sample
 
         public static readonly Order Empty = new Order();
 
-        internal int id;
+        internal long id;
         internal string shopname; // shop name
         internal string shopid;
         internal string custname; // customer name
@@ -174,12 +174,16 @@ namespace Greatbone.Sample
         {
             if (detail == null)
             {
-                detail = new[] {new OrderLine() {item = item, qty = qty, unit = unit, price = price}};
+                detail = new[] { new OrderLine() { item = item, qty = qty, unit = unit, price = price } };
             }
             var orderln = detail.Find(o => o.item.Equals(item));
-            if (orderln.item == null)
+            if (orderln != null)
             {
-                detail.Add(new OrderLine() {item = item, qty = qty, unit = unit, price = price});
+                orderln.qty += qty;
+            }
+            else
+            {
+                detail = detail.Add(new OrderLine() { item = item, qty = qty, unit = unit, price = price });
             }
         }
 
@@ -197,7 +201,7 @@ namespace Greatbone.Sample
         }
     }
 
-    public struct OrderLine : IData
+    public class OrderLine : IData
     {
         internal string item;
         internal short qty;

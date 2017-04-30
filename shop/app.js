@@ -23,7 +23,7 @@ function dialog(trig, mode, siz) {
 
     var html = '<div id="dyndlg" class="' + sizg + ' reveal"  data-reveal data-close-on-click="false">'
         + '<strong>' + trig.innerHTML + ' </strong>'
-        + '<button class="close-button medium" type="button" onclick="$(\'#dyndlg\').foundation(\'close\').remove();">&times;</button>'
+        + '<button class="close-button medium" type="button" onclick="$(\'#dyndlg\').foundation(\'close\').foundation(\'destroy\').remove();">&times;</button>'
         + '<div style="height: calc(100% - 3rem)"><iframe src="' + src + '" style="width: 100%; height: 100%"></iframe></div>'
         + '<button class=\"button secondary float-center\" onclick="ok(this,' + mode + ',\'' + formid + '\',\'' + tag + '\',\'' + action + '\',\'' + method + '\');" disabled>确定</botton>'
         + '</div>';
@@ -64,8 +64,6 @@ function ok(okbtn, mode, formid, tag, action, method) {
         if (form.length != 0) {
             if (!form[0].reportValidity()) return;
             form[0].submit();
-        } else {
-            location.reload();
             return;
         }
     } else if (mode == 4) { // button mode, merge to the parent and submit
@@ -117,7 +115,7 @@ function crop(trig, wid, hei, circle) {
 
     var html = '<div id="dyndlg" class="' + sizg + ' reveal"  data-reveal data-close-on-click="false">'
         + '<strong>' + trig.innerHTML + ' </strong>'
-        + '<button class="close-button medium" type="button" onclick="$(\'#dyndlg\').foundation(\'close\').remove();">&times;</button>'
+        + '<button class="close-button medium" type="button" onclick="$(\'#dyndlg\').foundation(\'close\').foundation(\'destroy\').remove();">&times;</button>'
         + '<div id="demo" style="height: calc(100% - 8rem)">'
         + '<input type="file" id="fileinput" style="display: none;" onchange="bind(window.URL.createObjectURL(this.files[0]),' + wid + ',' + hei + ',' + circle + ');">'
         + '<div style="text-align: center">'

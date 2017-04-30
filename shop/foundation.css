@@ -972,7 +972,7 @@ select[multiple] {
     line-height: 1;
     text-align: center;
     cursor: pointer;
-    background-color: #2ba6cb;
+    background-color: #ba55d3;
     color: #fefefe;
 }
 
@@ -1006,13 +1006,13 @@ select[multiple] {
 }
 
 .button.primary {
-    background-color: #2ba6cb;
+    background-color: #ba55d3;
     color: #fefefe;
 }
 
 .button.primary:hover,
 .button.primary:focus {
-    background-color: #2285a2;
+    background-color: #800080;
     color: #fefefe;
 }
 
@@ -1083,8 +1083,8 @@ select[multiple] {
 }
 
 .button.hollow {
-    border: 1px solid #2ba6cb;
-    color: #2ba6cb;
+    border: 1px solid #ba55d3;
+    color: #ba55d3;
 }
 
 .button.hollow,
@@ -1100,8 +1100,8 @@ select[multiple] {
 }
 
 .button.hollow.primary {
-    border: 1px solid #2ba6cb;
-    color: #2ba6cb;
+    border: 1px solid #ba55d3;
+    color: #ba55d3;
 }
 
 .button.hollow.primary:hover,
@@ -1188,7 +1188,7 @@ select[multiple] {
 .button[disabled],
 .button[disabled]:hover,
 .button[disabled]:focus {
-    background-color: #2ba6cb;
+    background-color: #ba55d3;
     color: #fefefe;
 }
 
@@ -1204,7 +1204,7 @@ select[multiple] {
 .button[disabled].primary,
 .button[disabled].primary:hover,
 .button[disabled].primary:focus {
-    background-color: #2ba6cb;
+    background-color: #ba55d3;
     color: #0a0a0a;
 }
 
@@ -1571,7 +1571,7 @@ select[multiple] {
 }
 
 .menu .active > a {
-    background: #2ba6cb;
+    background: #ba55d3;
     color: #fefefe;
 }
 
@@ -1610,14 +1610,14 @@ select[multiple] {
 .title-bar {
     padding: 0.5rem;
     background: white;
-    color: #2285a2;
+    color: #ba55d3;
     display: -ms-flexbox;
     display: flex;
     -ms-flex-pack: justify;
     justify-content: space-between;
     -ms-flex-align: center;
     align-items: center;
-    border-bottom: 2px solid #2285a2;
+    border-bottom: 2px solid #ba55d3;
     padding: 0 0;
 }
 
@@ -1775,7 +1775,7 @@ select[multiple] {
 }
 
 .breadcrumbs a {
-    color: #2ba6cb;
+    color: #ba55d3;
 }
 
 .breadcrumbs a:hover {
@@ -1839,7 +1839,7 @@ select[multiple] {
 
 .pagination .current {
     padding: 0.1875rem 0.625rem;
-    background: #2ba6cb;
+    background: #ba55d3;
     color: #fefefe;
     cursor: default;
 }
@@ -2359,12 +2359,12 @@ table.hover:not(.unstriped) tr:nth-of-type(even):hover {
     border-radius: 50%;
     font-size: 0.6rem;
     text-align: center;
-    background: #2ba6cb;
+    background: #ba55d3;
     color: #fefefe;
 }
 
 .badge.primary {
-    background: #2ba6cb;
+    background: #ba55d3;
     color: #0a0a0a;
 }
 
@@ -2406,12 +2406,12 @@ table.hover:not(.unstriped) tr:nth-of-type(even):hover {
     line-height: 1;
     white-space: nowrap;
     cursor: default;
-    background: #2ba6cb;
+    background: #ba55d3;
     color: #fefefe;
 }
 
 .label.primary {
-    background: #2ba6cb;
+    background: #ba55d3;
     color: #0a0a0a;
 }
 
@@ -2453,7 +2453,7 @@ table.hover:not(.unstriped) tr:nth-of-type(even):hover {
 }
 
 .progress.primary .progress-meter {
-    background-color: #2ba6cb;
+    background-color: #ba55d3;
 }
 
 .progress.secondary .progress-meter {
@@ -2485,7 +2485,7 @@ table.hover:not(.unstriped) tr:nth-of-type(even):hover {
     display: block;
     width: 0%;
     height: 100%;
-    background-color: #2ba6cb;
+    background-color: #ba55d3;
     border-radius: 3px;
 }
 

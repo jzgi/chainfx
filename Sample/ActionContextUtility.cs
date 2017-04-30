@@ -145,7 +145,7 @@ namespace Greatbone.Sample
 
             h.Add("<body>");
 
-            main(h);
+            if (main != null) main(h);
 
             // zurb foundation
             h.Add("<script src=\"//cdn.bootcss.com/jquery/3.2.1/jquery.min.js\"></script>");
@@ -155,7 +155,10 @@ namespace Greatbone.Sample
             h.Add("$(document).foundation();");
             // enabling ok button
             h.Add("$(document).ready(function(){");
-            h.Add("$('#dynadlg', window.parent.document).find('button').prop('disabled', false);");
+            h.Add("$('#dyndlg', window.parent.document).find('button').prop('disabled', false);");
+            if (main == null) {
+                 h.Add("$('#dyndlg').find('.close-button').trigger('click')");
+            }
             h.Add("});");
             h.Add("</script>");
             h.Add("</body>");
