@@ -64,7 +64,7 @@ namespace Greatbone.Sample
                                 m.Add("</div>");
                                 m.Add("</div>");
 
-                                var shops = dc.ToArray<Shop>(-1 ^ Shop.BIN);
+                                var shops = dc.ToArray<Shop>(-1 ^ Shop.ICON);
                                 for (int i = 0; i < shops.Length; i++)
                                 {
                                     var shop = shops[i];
@@ -169,7 +169,7 @@ namespace Greatbone.Sample
             string city = ac[typeof(CityVarWork)];
             using (var dc = ac.NewDbContext())
             {
-                const int proj = -1 ^ Shop.BIN;
+                const int proj = -1 ^ Shop.ICON;
                 dc.Sql("SELECT ").columnlst(Shop.Empty, proj)._("FROM shops WHERE city = @1");
                 if (dc.Query(p => p.Set(city)))
                 {
@@ -187,7 +187,7 @@ namespace Greatbone.Sample
         {
             if (ac.GET)
             {
-                ac.GiveFormPane(200, Shop.Empty, -1 ^ Shop.TRANSF);
+                ac.GiveFormPane(200, Shop.Empty, -1 ^ Shop.CREDENTIAL);
             }
             else // post
             {
@@ -223,7 +223,7 @@ namespace Greatbone.Sample
         {
             using (var dc = ac.NewDbContext())
             {
-                const int proj = -1 ^ Shop.BIN ^ Shop.TRANSF ^ Shop.SECRET;
+                const int proj = -1 ^ Shop.ICON ^ Shop.CREDENTIAL;
                 dc.Sql("SELECT ").columnlst(Shop.Empty, proj)._("FROM shops ORDER BY id LIMIT 30 OFFSET @1");
                 if (dc.Query(p => p.Set(page)))
                 {

@@ -9,7 +9,8 @@ namespace Greatbone.Sample
     public class Item : IData
     {
         public const short
-            SHOPID = 0x0800,
+            SHOPID = 0x0001,
+            QTY = 0x0002,
             ICON = 0x0200;
 
 
@@ -25,13 +26,14 @@ namespace Greatbone.Sample
 
         internal string shopid;
         internal string name;
+        internal string shopname;
         internal string descr;
         internal ArraySegment<byte> icon;
         internal string unit;
         internal decimal price; // current price
-        internal int min; // minimal ordered
-        internal int step;
-        internal bool global;
+        internal short min; // minimal ordered
+        internal short step;
+        internal short qty;
         internal short status;
 
         public void ReadData(IDataInput i, short proj = 0)
@@ -39,6 +41,7 @@ namespace Greatbone.Sample
             if ((proj & SHOPID) == SHOPID)
             {
                 i.Get(nameof(shopid), ref shopid);
+                i.Get(nameof(shopname), ref shopname);
             }
             i.Get(nameof(name), ref name);
             i.Get(nameof(unit), ref unit);
@@ -50,7 +53,10 @@ namespace Greatbone.Sample
             i.Get(nameof(price), ref price);
             i.Get(nameof(min), ref min);
             i.Get(nameof(step), ref step);
-            i.Get(nameof(global), ref global);
+            if ((proj & QTY) == QTY)
+            {
+                i.Get(nameof(qty), ref qty);
+            }
             i.Get(nameof(status), ref status);
         }
 
@@ -59,6 +65,7 @@ namespace Greatbone.Sample
             if ((proj & SHOPID) == SHOPID)
             {
                 o.Put(nameof(shopid), shopid);
+                o.Put(nameof(shopname), shopname);
             }
             o.Put(nameof(name), name, label: "品名", max: 10, required: true);
             o.Put(nameof(unit), unit, label: "单位", max: 8, required: true);
@@ -70,7 +77,10 @@ namespace Greatbone.Sample
             o.Put(nameof(price), price, label: "单价", required: true);
             o.Put(nameof(min), min, label: "起订");
             o.Put(nameof(step), step, label: "递增");
-            o.Put(nameof(global), global, label: "不限同城");
+            if ((proj & QTY) == QTY)
+            {
+                o.Put(nameof(qty), qty, label: "数量");
+            }
             o.Put(nameof(status), status, label: "状态", opt: STATUS);
         }
     }

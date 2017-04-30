@@ -36,7 +36,6 @@ namespace Greatbone.Sample
     {
         public PubShopVarWork(WorkContext wc) : base(wc)
         {
-            CreateVar<PubItemVarWork, string>();
         }
 
         public void @default(ActionContext ac)
@@ -46,18 +45,19 @@ namespace Greatbone.Sample
             using (var dc = ac.NewDbContext())
             {
                 // query for the shop record
-                const int proj = -1 ^ Shop.BIN ^ Shop.TRANSF ^ Shop.SECRET;
+                const int proj = -1 ^ Shop.ICON ^ Shop.CREDENTIAL;
                 dc.Sql("SELECT ").columnlst(Shop.Empty, proj)._("FROM shops WHERE id = @1");
                 if (dc.Query1(p => p.Set(shopid)))
                 {
                     var shop = dc.ToObject<Shop>(proj);
 
                     // query for item records of the shop
+                    const short projitem = -1 ^ Item.ICON ^ Item.QTY;
                     Item[] items = null;
-                    dc.Sql("SELECT ").columnlst(Item.Empty, proj)._("FROM items WHERE shopid = @1");
+                    dc.Sql("SELECT ").columnlst(Item.Empty, projitem)._("FROM items WHERE shopid = @1");
                     if (dc.Query(p => p.Set(shopid)))
                     {
-                        items = dc.ToArray<Item>(proj);
+                        items = dc.ToArray<Item>(projitem);
                     }
 
                     ac.GivePage(200, m =>
@@ -113,9 +113,11 @@ namespace Greatbone.Sample
                             m.Add(item.descr);
                             m.Add("</p>");
 
-                            m.Add("<a class=\"button warning\" href=\"");
+                            m.Add("<a class=\"button warning\" href=\"/my//cart/add?shopid=");
+                            m.Add(shopid);
+                            m.Add("&name=");
                             m.Add(item.name);
-                            m.Add("/add\" onclick=\"return dialog(this,2)\">加入购物车</a>");
+                            m.Add("\" onclick=\"return dialog(this,2)\">加入购物车</a>");
                             m.Add("</div>");
 
                             m.Add("</div>");
@@ -188,7 +190,7 @@ namespace Greatbone.Sample
                 string city = ac[typeof(CityVarWork)];
                 using (var dc = ac.NewDbContext())
                 {
-                    const int proj = -1 ^ Shop.BIN ^ Shop.PRIME;
+                    const int proj = -1 ^ Shop.ICON ^ Shop.ID;
                     dc.Sql("SELECT ").columnlst(Shop.Empty, proj)._("FROM shops WHERE id = @1 AND city = @2");
                     if (dc.Query1(p => p.Set(id).Set(city)))
                     {
@@ -206,7 +208,7 @@ namespace Greatbone.Sample
                 shop.id = ac[this];
                 using (var dc = ac.NewDbContext())
                 {
-                    const int proj = -1 ^ Shop.BIN;
+                    const int proj = -1 ^ Shop.ICON;
                     dc.Sql("INSERT INTO shops")._(Shop.Empty, proj)._VALUES_(Shop.Empty, proj)._("");
                     if (dc.Execute(p => shop.WriteData(p, proj)) > 0)
                     {

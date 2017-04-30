@@ -1,4 +1,5 @@
-﻿using System.Threading.Tasks;
+﻿using System;
+using System.Threading.Tasks;
 using Greatbone.Core;
 
 namespace Greatbone.Sample
@@ -60,6 +61,79 @@ namespace Greatbone.Sample
                 }
                 else
                 {
+                }
+            }
+        }
+
+        [Ui("加入购物车", UiMode.ButtonDialog)]
+        public async Task add(ActionContext ac)
+        {
+            string wx = ac[typeof(UserVarWork)];
+            string shopid = ac.Query[nameof(shopid)];
+            string name = ac.Query[nameof(name)];
+            if (ac.GET)
+            {
+                using (var dc = ac.NewDbContext())
+                {
+                    const short proj = -1 ^ Item.QTY ^ Item.ICON;
+                    dc.Sql("SELECT ").columnlst(Item.Empty, proj)._("FROM items WHERE shopid = @1 AND name = @2");
+                    if (dc.Query1(p => p.Set(shopid).Set(name)))
+                    {
+                        var item = dc.ToObject<Item>(proj);
+                        short qty = item.min;
+                        ac.GiveFormPane(200, h =>
+                        {
+                            h.Add(name);
+                            h.NUMBER(nameof(qty), qty, label: "数量", min: item.min, step: item.step, required: true);
+                            h.HIDDEN(nameof(item.shopname), item.shopname);
+                            h.HIDDEN(nameof(item.unit), item.unit);
+                            h.HIDDEN(nameof(item.price), item.price);
+                        });
+                    }
+                    else ac.Give(404); // not found
+                }
+            }
+            else // process post
+            {
+                var item = await ac.ReadObjectAsync<Item>(-1 ^ Item.ICON);
+                using (var dc = ac.NewDbContext())
+                {
+                    if (dc.Query1("SELECT detail, total FROM orders WHERE shopid = @1 AND custwx = @2 AND status = 0", p => p.Set(shopid).Set(shopid)))
+                    {
+                        var order = new Order
+                        {
+                            detail = dc.GetArray<OrderLine>(),
+                            total = dc.GetDecimal()
+                        };
+                        order.AddItem(name, item.qty, item.unit, item.price);
+                        dc.Execute("UPDATE orders SET detail = @1, total = @2 WHERE ", p => p.Set(order.detail).Set(order.total));
+                    }
+                    else
+                    {
+                        User prin = (User) ac.Principal;
+                        var order = new Order
+                        {
+                            shopid = shopid,
+                            shopname = item.shopname,
+                            custname = prin.name,
+                            custwx = prin.wx,
+                            custtel = prin.tel,
+                            custcity = prin.city,
+                            custdistr = prin.distr,
+                            custaddr = prin.addr,
+                            detail = new[]
+                            {
+                                new OrderLine {item = name, price = item.price, qty = item.qty, unit = item.unit}
+                            },
+                            created = DateTime.Now
+                        };
+                        order.Sum();
+
+                        const int proj = -1 ^ Order.ID ^ Order.LATE;
+
+                        dc.Sql("INSERT INTO orders ")._(order, proj)._VALUES_(order, proj);
+                        dc.Execute(p => order.WriteData(p, proj));
+                    }
                 }
             }
         }

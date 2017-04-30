@@ -19,11 +19,11 @@ function dialog(trig, mode, siz) {
         method = 'get';
     }
 
-    var src = action.split("?")[0] + '?dlg=true';
+    var src = action.indexOf('?') == -1 ? action + '?dyndlg=true' : action + '&dyndlg=true';
 
-    var html = '<div id="dynadlg" class="' + sizg + ' reveal"  data-reveal data-close-on-click="false">'
+    var html = '<div id="dyndlg" class="' + sizg + ' reveal"  data-reveal data-close-on-click="false">'
         + '<strong>' + trig.innerHTML + ' </strong>'
-        + '<button class="close-button medium" type="button" onclick="$(\'#dynadlg\').foundation(\'close\').remove();">&times;</button>'
+        + '<button class="close-button medium" type="button" onclick="$(\'#dyndlg\').foundation(\'close\').remove();">&times;</button>'
         + '<div style="height: calc(100% - 3rem)"><iframe src="' + src + '" style="width: 100%; height: 100%"></iframe></div>'
         + '<button class=\"button secondary float-center\" onclick="ok(this,' + mode + ',\'' + formid + '\',\'' + tag + '\',\'' + action + '\',\'' + method + '\');" disabled>确定</botton>'
         + '</div>';
@@ -45,7 +45,7 @@ function dialog(trig, mode, siz) {
 // when clicked on the OK button
 function ok(okbtn, mode, formid, tag, action, method) {
 
-    var dlge = $('#dynadlg');
+    var dlge = $('#dyndlg');
 
     if (mode == 1) { // link mode
         var iframe = dlge.find('iframe');
@@ -115,9 +115,9 @@ function crop(trig, wid, hei, circle) {
     wid = wid ? wid : 120;
     hei = hei ? hei : 120;
 
-    var html = '<div id="dynadlg" class="' + sizg + ' reveal"  data-reveal data-close-on-click="false">'
+    var html = '<div id="dyndlg" class="' + sizg + ' reveal"  data-reveal data-close-on-click="false">'
         + '<strong>' + trig.innerHTML + ' </strong>'
-        + '<button class="close-button medium" type="button" onclick="$(\'#dynadlg\').foundation(\'close\').remove();">&times;</button>'
+        + '<button class="close-button medium" type="button" onclick="$(\'#dyndlg\').foundation(\'close\').remove();">&times;</button>'
         + '<div id="demo" style="height: calc(100% - 8rem)">'
         + '<input type="file" id="fileinput" style="display: none;" onchange="bind(window.URL.createObjectURL(this.files[0]),' + wid + ',' + hei + ',' + circle + ');">'
         + '<div style="text-align: center">'

@@ -38,7 +38,7 @@ namespace Greatbone.Sample
         public static readonly Order Empty = new Order();
 
         internal int id;
-        internal string shop; // shop name
+        internal string shopname; // shop name
         internal string shopid;
         internal string custname; // customer name
         internal string custwx; // weixin openid
@@ -74,7 +74,7 @@ namespace Greatbone.Sample
                 i.Get(nameof(id), ref id);
             }
 
-            i.Get(nameof(shop), ref shop);
+            i.Get(nameof(shopname), ref shopname);
             i.Get(nameof(shopid), ref shopid);
 
             i.Get(nameof(custname), ref custname);
@@ -119,7 +119,7 @@ namespace Greatbone.Sample
             }
             o.Group("商家");
             o.Put(nameof(shopid), shopid);
-            o.Put(nameof(shop), shop);
+            o.Put(nameof(shopname), shopname);
             o.UnGroup();
 
             o.Put(nameof(custname), custname, label: "买家");

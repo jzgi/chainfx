@@ -99,7 +99,7 @@ namespace Greatbone.Sample
                 {
                     if (dc.Query1("SELECT * FROM users WHERE wx = @1", (p) => p.Set(accessor.openid)))
                     {
-                        prin = dc.ToObject<User>(-1 ^ Shop.SECRET);
+                        prin = dc.ToObject<User>(-1 ^ User.CREDENTIAL);
                         prin.indb = true;
                     }
                 }
@@ -124,9 +124,10 @@ namespace Greatbone.Sample
                 string credential = StrUtility.MD5(orig);
                 using (var dc = NewDbContext())
                 {
-                    if (dc.Query1("SELECT * FROM users WHERE tel = @1", (p) => p.Set(id)))
+                    if (dc.Query1("SELECT * FROM users WHERE id = @1", (p) => p.Set(id)))
                     {
-                        prin = dc.ToObject<User>(-1 ^ Shop.SECRET);
+                        prin = dc.ToObject<User>(-1 ^ User.INDB);
+                        prin.indb = true;
                     }
                 }
                 // validate

@@ -20,9 +20,10 @@ namespace Greatbone.Sample
         internal bool indb; // whether recorded in db
 
         internal string wx; // openid
+        internal string id; // optional unique id
+        internal string credential;
         internal string name;
         internal string tel;
-        internal string credential;
         internal string city; // default viewing city
         internal string distr;
         internal string addr;
@@ -43,12 +44,13 @@ namespace Greatbone.Sample
             {
                 i.Get(nameof(wx), ref wx);
             }
-            i.Get(nameof(name), ref name);
-            i.Get(nameof(tel), ref tel);
+            i.Get(nameof(id), ref id);
             if ((proj & CREDENTIAL) == CREDENTIAL)
             {
                 i.Get(nameof(credential), ref credential);
             }
+            i.Get(nameof(name), ref name);
+            i.Get(nameof(tel), ref tel);
             i.Get(nameof(city), ref city);
             i.Get(nameof(distr), ref distr);
             i.Get(nameof(addr), ref addr);
@@ -72,12 +74,13 @@ namespace Greatbone.Sample
             {
                 o.Put(nameof(wx), wx, label: "编号");
             }
-            o.Put(nameof(name), name, label: "名称");
-            o.Put(nameof(tel), tel, label: "电话");
+            o.Put(nameof(id), id, label: "登录号");
             if ((proj & CREDENTIAL) == CREDENTIAL)
             {
                 o.Put(nameof(credential), credential);
             }
+            o.Put(nameof(name), name, label: "名称");
+            o.Put(nameof(tel), tel, label: "电话");
             o.Put(nameof(city), city, label: "城市");
             o.Put(nameof(distr), distr, label: "区划");
             o.Put(nameof(addr), addr, label: "地址");
