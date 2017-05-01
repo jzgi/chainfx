@@ -265,12 +265,12 @@ namespace Greatbone.Core
                     }
                 }
                 req.Content = (HttpContent) content;
-                req.Headers.Add("Content-Type", content.Type);
-                req.Headers.Add("Content-Length", content.Size.ToString());
+                req.Headers.TryAddWithoutValidation("Content-Type", content.Type);
+                req.Headers.TryAddWithoutValidation("Content-Length", content.Size.ToString());
 
                 return await SendAsync(req, HttpCompletionOption.ResponseContentRead);
             }
-            catch
+            catch (Exception e)
             {
                 retryat = Environment.TickCount + AHEAD;
             }

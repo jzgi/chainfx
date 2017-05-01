@@ -30,14 +30,14 @@ namespace Greatbone.Sample
         [Ui("收货地址", UiMode.ButtonDialog)]
         public async Task addr(ActionContext ac)
         {
-            string buywx = ac[typeof(UserVarWork)];
-            long ordid = ac[this];
+            string wx = ac[typeof(UserVarWork)];
+            long id = ac[this];
 
             if (ac.GET)
             {
                 using (var dc = ac.NewDbContext())
                 {
-                    if (dc.Query1("SELECT custtel, custcity, custdistr, custaddr FROM orders WHERE id = @1", p => p.Set(ordid)))
+                    if (dc.Query1("SELECT custtel, custcity, custdistr, custaddr FROM orders WHERE id = @1", p => p.Set(id)))
                     {
                         var tel = dc.GetString();
                         var city = dc.GetString();
@@ -46,7 +46,7 @@ namespace Greatbone.Sample
                         ac.GiveFormPane(200, m =>
                         {
                             m.TEXT(nameof(tel), tel, label: "电话");
-                            m.SELECT(nameof(city), city, ((ShopService)Service).CityOpt, label: "城市");
+                            m.SELECT(nameof(city), city, ((ShopService) Service).CityOpt, label: "城市");
                             //                            m.SELECT(nameof(distr), distr);
                             m.TEXT(nameof(addr), addr, label: "地址");
                         });
@@ -79,7 +79,7 @@ namespace Greatbone.Sample
         [Ui("附注", UiMode.ButtonDialog)]
         public async Task note(ActionContext ac)
         {
-            string buywx = ac[typeof(UserVarWork)];
+            string wx = ac[typeof(UserVarWork)];
             long id = ac[this];
 
             if (ac.GET)
@@ -109,29 +109,27 @@ namespace Greatbone.Sample
             }
         }
 
-        static readonly Func<IData, bool> PREPAY = obj => ((Order)obj).custaddr != null;
+        static readonly Func<IData, bool> PREPAY = obj => ((Order) obj).custaddr != null;
 
         [Ui("付款", UiMode.AnchorScript, Alert = true)]
         public async Task prepay(ActionContext ac)
         {
-            long ordid = ac[this];
-            string buywx = ((User)ac.Principal).wx;
+            string wx = ac[typeof(UserVarWork)];
+            long id = ac[this];
 
             using (var dc = ac.NewDbContext())
             {
-                string prepay_id = null;
-                decimal total = 0;
-                if (dc.Query1("SELECT prepay_id, total FROM orders WHERE id = @1 AND buywx = @2", p => p.Set(ordid).Set(buywx)))
+                if (dc.Query1("SELECT prepay_id, total FROM orders WHERE id = @1 AND custwx = @2", p => p.Set(id).Set(wx)))
                 {
-                    prepay_id = dc.GetString();
-                    total = dc.GetDecimal();
+                    var prepay_id = dc.GetString();
+                    var total = dc.GetDecimal();
                     if (prepay_id == null) // if not yet, call unifiedorder remotely
                     {
-                        prepay_id = await WeiXinUtility.PostUnifiedOrderAsync(ordid, total, null, "http://shop.144000.tv/notify");
-                        dc.Execute("UPDATE orders SET prepay_id = @1 WHERE id = @2", p => p.Set(prepay_id).Set(ordid));
+                        prepay_id = await WeiXinUtility.PostUnifiedOrderAsync(id, total, wx, ac.RemoteIpAddress.ToString(), "http://shop.144000.tv/notify");
+                        dc.Execute("UPDATE orders SET prepay_id = @1 WHERE id = @2", p => p.Set(prepay_id).Set(id));
                     }
 
-                    ac.Give(200, WeiXinUtility.MakePrepayContent(prepay_id));
+                    ac.Give(200, WeiXinUtility.BuildPrepayContent(prepay_id));
                 }
                 else
                 {

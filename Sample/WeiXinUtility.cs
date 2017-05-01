@@ -1,4 +1,5 @@
-﻿using System.Net;
+﻿using System;
+using System.Net;
 using System.Threading.Tasks;
 using Greatbone.Core;
 
@@ -16,27 +17,49 @@ namespace Greatbone.Sample
 
         public const string MCH_ID = "1445565602";
 
-        public const string NONCE_STR = "sadfasd2s";
+        public const string NONCE_STR = "30A5FE271";
 
         static readonly Connector WweiXinPay = new Connector("https://api.mch.weixin.qq.com");
 
+        public const string KEY = "28165ACAB74C2FBF3B042B5D2F87D274";
+
         static readonly Connector WeiXin = new Connector("https://api.weixin.qq.com");
 
-        public static async Task<string> PostUnifiedOrderAsync(long orderid, decimal total, string openid, string notifyurl)
+        const string BODY_DESC = "粗粮达人-健康产品";
+
+        public static async Task<string> PostUnifiedOrderAsync(long orderid, decimal total, string openid, string ip, string notifyurl)
         {
+            FormContent temp = new FormContent(false, true);
+            temp.Put("appid", APPID);
+            temp.Put("body", BODY_DESC);
+            temp.Put("mch_id", MCH_ID);
+            temp.Put("nonce_str", NONCE_STR);
+            temp.Put("notify_url", notifyurl);
+            temp.Put("openid", openid);
+            temp.Put("out_trade_no", orderid);
+            temp.Put("spbill_create_ip", ip);
+            temp.Put("total_fee", (int) (total * 100));
+            temp.Put("trade_type", "JSAPI");
+
+            temp.Put("key", KEY);
+
+
+            string signasdf = StrUtility.MD5(temp.ToString());
+
             XmlContent xml = new XmlContent();
             xml.ELEM("xml", null, () =>
             {
                 xml.ELEM("appid", APPID);
                 xml.ELEM("mch_id", MCH_ID);
                 xml.ELEM("nonce_str", NONCE_STR);
-                xml.ELEM("sign", "");
-                xml.ELEM("body", "粗粮达人-健康产品");
+                xml.ELEM("body", BODY_DESC);
                 xml.ELEM("out_trade_no", orderid);
-                xml.ELEM("total_fee", total);
+                xml.ELEM("total_fee", (int) (total * 100));
                 xml.ELEM("notify_url", notifyurl);
+                xml.ELEM("spbill_create_ip", ip);
                 xml.ELEM("trade_type", "JSAPI");
                 xml.ELEM("openid", openid);
+                xml.ELEM("sign", StrUtility.MD5(temp.ToString()));
             });
             var rsp = await WweiXinPay.PostAsync(null, "/pay/unifiedorder", xml);
             XElem xe = await rsp.ReadAsync<XElem>();
@@ -90,17 +113,31 @@ namespace Greatbone.Sample
             return new User {wx = openid, name = nickname, city = city};
         }
 
-        public static IContent MakePrepayContent(string prepay_id)
+        static readonly DateTime EPOCH = new DateTime(1970, 1, 1);
+
+        public static IContent BuildPrepayContent(string prepay_id)
         {
+            string appId = APPID;
+            string nonceStr = NONCE_STR;
+            string package = "prepay_id=" + prepay_id;
+            double timeStamp = (DateTime.Now - EPOCH).TotalSeconds;
+
+            FormContent temp = new FormContent(false, true);
+            temp.Put(nameof(appId), appId);
+            temp.Put(nameof(nonceStr), nonceStr);
+            temp.Put(nameof(package), package);
+            temp.Put(nameof(timeStamp), timeStamp);
+            temp.Put("key", KEY);
+
             JsonContent cont = new JsonContent();
             cont.OBJ(delegate
             {
-                cont.Put("appId", APPID);
-                cont.Put("timeStamp", "");
-                cont.Put("nonceStr", "");
-                cont.Put("package", "");
+                cont.Put(nameof(appId), appId);
+                cont.Put(nameof(timeStamp), timeStamp);
+                cont.Put(nameof(nonceStr), nonceStr);
+                cont.Put(nameof(package), package);
                 cont.Put("signType", "MD5");
-                cont.Put("paySign", "");
+                cont.Put("paySign", StrUtility.MD5(temp.ToString()));
             });
             return cont;
         }

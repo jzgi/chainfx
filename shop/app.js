@@ -202,8 +202,16 @@ function validate() {
 
 function prepay(trig) {
     // get prepare id
-    var url = trig.formAction;
-    $.get(url, null, function (data) {
+    var action;
+    var method = 'post';
+    if (tag == 'BUTTON') {
+        action = trig.formAction || trig.name;
+        method = trig.formMethod || method;
+    } else if (tag == 'A') {
+        action = trig.href
+        method = 'get';
+    }
+    $.get(action, null, function (data) {
         WeixinJSBridge.invoke('getBrandWCPayRequest', data, function (res) {
             if (res.err_msg == "get_brand_wcpay_request:ok") { }
         });

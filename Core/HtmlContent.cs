@@ -574,7 +574,7 @@ namespace Greatbone.Core
                     }
                     else if (ui.HasConfirm)
                     {
-                        Add(" onclick=\"return confirm();\"");
+                        Add(" onclick=\"return confirm('"); Add(ai.Label); Add("?');\"");
                     }
                     else if (ui.HasDialog)
                     {

@@ -8,7 +8,6 @@ namespace Greatbone.Core
 {
     public static class ConnectorUtility
     {
-
         public static string GetValue(this HttpHeaders headers, string name)
         {
             IEnumerable<string> values;
@@ -22,11 +21,10 @@ namespace Greatbone.Core
 
         public static void CallAny(this Connector[] df)
         {
-
         }
+
         public static void CallAll(this Connector[] df)
         {
-
         }
 
         public static async void CallAll(Task<HttpResponseMessage>[] requests, Action<HttpResponseMessage> a)
@@ -39,16 +37,14 @@ namespace Greatbone.Core
         }
 
 
-
-        public static int GetStatus(this HttpResponseMessage msg) => (int)msg.StatusCode;
+        public static int GetStatus(this HttpResponseMessage msg) => (int) msg.StatusCode;
 
 
         public static async Task<M> ReadAsync<M>(this HttpResponseMessage rsp) where M : class, IDataInput
         {
             byte[] bytea = await rsp.Content.ReadAsByteArrayAsync();
             string ctyp = rsp.Content.Headers.GetValue("Content-Type");
-            return DataInputUtility.ParseContent(ctyp, bytea, bytea.Length) as M;
+            return DataInputUtility.ParseContent(ctyp, bytea, bytea.Length, typeof(M)) as M;
         }
-
     }
 }

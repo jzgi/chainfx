@@ -45,7 +45,7 @@ namespace Greatbone.Sample
             }
         }
 
-        [Ui("购物车清空")]
+        [Ui("清空购物车", UiMode.ButtonConfirm)]
         public async Task empty(ActionContext ac)
         {
             string shopid = ac[0];

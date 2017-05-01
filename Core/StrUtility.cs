@@ -7,7 +7,7 @@ namespace Greatbone.Core
     public static class StrUtility
     {
         // hexidecimal numbers
-        static readonly char[] HEX = { '0', '1', '2', '3', '4', '5', '6', '7', '8', '9', 'a', 'b', 'c', 'd', 'e', 'f' };
+        static readonly char[] HEX = { '0', '1', '2', '3', '4', '5', '6', '7', '8', '9', 'A', 'B', 'C', 'D', 'E', 'F' };
 
         public static string ToHex(ulong v)
         {
@@ -269,7 +269,7 @@ namespace Greatbone.Core
 
         static int Dv(char hex)
         {
-            int num = hex - 'a';
+            int num = hex - 'A';
             if (num >= 0 && num <= 5)
             {
                 return num + 10;

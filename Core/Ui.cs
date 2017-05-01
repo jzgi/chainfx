@@ -3,7 +3,7 @@ using System;
 namespace Greatbone.Core
 {
 
-    public enum UiMode
+    public enum UiMode : int
     {
         Link = 0x10,
 

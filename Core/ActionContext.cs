@@ -1,6 +1,6 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.Data;
+using System.Net;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Http.Features;
@@ -155,6 +155,8 @@ namespace Greatbone.Core
                 return query;
             }
         }
+
+        public IPAddress RemoteIpAddress => Connection.RemoteIpAddress;
 
         //
         // HEADER
