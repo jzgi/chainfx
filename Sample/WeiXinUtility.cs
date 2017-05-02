@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Net;
+using System.Threading;
 using System.Threading.Tasks;
 using Greatbone.Core;
 
@@ -27,24 +28,80 @@ namespace Greatbone.Sample
 
         const string BODY_DESC = "粗粮达人-健康产品";
 
+
+        static volatile string AccessToken;
+
+        static volatile string JsApiTicket;
+
+        private static bool stop;
+
+        private static readonly Thread renewer = new Thread(async () =>
+        {
+            while (!stop)
+            {
+                int now = Environment.TickCount;
+
+                JObj jo = await WeiXin.GetAsync<JObj>(null, "/cgi-bin/token?grant_type=client_credential&appid=" + APPID + "&secret=" + APPSECRET);
+                string access_token = jo?[nameof(access_token)];
+                AccessToken = access_token;
+
+                jo = await WeiXin.GetAsync<JObj>(null, "/cgi-bin/ticket/getticket?access_token=" + access_token + "&type=jsapi");
+                string ticket = jo?[nameof(ticket)];
+                JsApiTicket = ticket;
+
+                // suspend for 1 hour
+                Thread.Sleep(3600000);
+            }
+        });
+
+        static WeiXinUtility()
+        {
+//            renewer.Start();
+        }
+
+        public static void Stop()
+        {
+            stop = true;
+        }
+
+        public static void WxConfig(HtmlContent h, string url)
+        {
+            int timestamp = (int) (DateTime.Now - EPOCH).TotalSeconds;
+
+            string temp = "jsapi_ticket=" + JsApiTicket +
+                          "&noncestr=" + NONCE_STR +
+                          "&timestamp=" + timestamp +
+                          "&url=" + url;
+
+            h.Add("wx.config({");
+            h.Add("debug: true");
+            h.Add(", appId: '");
+            h.Add(APPID);
+            h.Add("', timestamp: ");
+            h.Add(timestamp);
+            h.Add(", nonceStr: '");
+            h.Add(NONCE_STR);
+            h.Add("', signature: '");
+            h.Add(StrUtility.SHA1(temp));
+            h.Add("");
+            h.Add("', jsApiList: ['chooseWXPay']");
+            h.Add("});");
+        }
+
         public static async Task<string> PostUnifiedOrderAsync(long orderid, decimal total, string openid, string ip, string notifyurl)
         {
-            FormContent temp = new FormContent(false, true);
-            temp.Put("appid", APPID);
-            temp.Put("body", BODY_DESC);
-            temp.Put("mch_id", MCH_ID);
-            temp.Put("nonce_str", NONCE_STR);
-            temp.Put("notify_url", notifyurl);
-            temp.Put("openid", openid);
-            temp.Put("out_trade_no", orderid);
-            temp.Put("spbill_create_ip", ip);
-            temp.Put("total_fee", (int) (total * 100));
-            temp.Put("trade_type", "JSAPI");
+            var temp = "appid=" + APPID +
+                       "&body=" + BODY_DESC +
+                       "&mch_id=" + MCH_ID +
+                       "&nonce_str=" + NONCE_STR +
+                       "&notify_url=" + notifyurl +
+                       "&openid=" + openid +
+                       "&out_trade_no=" + orderid +
+                       "&spbill_create_ip=" + ip +
+                       "&total_fee=" + ((int) (total * 100)) +
+                       "&trade_type=" + "JSAPI" +
+                       "&key=" + KEY;
 
-            temp.Put("key", KEY);
-
-
-            string signasdf = StrUtility.MD5(temp.ToString());
 
             XmlContent xml = new XmlContent();
             xml.ELEM("xml", null, () =>
@@ -59,7 +116,7 @@ namespace Greatbone.Sample
                 xml.ELEM("spbill_create_ip", ip);
                 xml.ELEM("trade_type", "JSAPI");
                 xml.ELEM("openid", openid);
-                xml.ELEM("sign", StrUtility.MD5(temp.ToString()));
+                xml.ELEM("sign", StrUtility.MD5(temp));
             });
             var rsp = await WweiXinPay.PostAsync(null, "/pay/unifiedorder", xml);
             XElem xe = await rsp.ReadAsync<XElem>();
@@ -117,27 +174,25 @@ namespace Greatbone.Sample
 
         public static IContent BuildPrepayContent(string prepay_id)
         {
-            string appId = APPID;
-            string nonceStr = NONCE_STR;
             string package = "prepay_id=" + prepay_id;
-            double timeStamp = (DateTime.Now - EPOCH).TotalSeconds;
+            string timeStamp = ((int) (DateTime.Now - EPOCH).TotalSeconds).ToString();
 
-            FormContent temp = new FormContent(false, true);
-            temp.Put(nameof(appId), appId);
-            temp.Put(nameof(nonceStr), nonceStr);
-            temp.Put(nameof(package), package);
-            temp.Put(nameof(timeStamp), timeStamp);
-            temp.Put("key", KEY);
+            var temp = "appId=" + APPID +
+                       "&nonceStr=" + NONCE_STR +
+                       "&package=" + package +
+                       "&signType=MD5" +
+                       "&timeStamp=" + timeStamp +
+                       "&key=" + KEY;
 
             JsonContent cont = new JsonContent();
             cont.OBJ(delegate
             {
-                cont.Put(nameof(appId), appId);
-                cont.Put(nameof(timeStamp), timeStamp);
-                cont.Put(nameof(nonceStr), nonceStr);
-                cont.Put(nameof(package), package);
+                cont.Put("appId", APPID);
+                cont.Put("timeStamp", timeStamp);
+                cont.Put("nonceStr", NONCE_STR);
+                cont.Put("package", package);
                 cont.Put("signType", "MD5");
-                cont.Put("paySign", StrUtility.MD5(temp.ToString()));
+                cont.Put("paySign", StrUtility.MD5(temp));
             });
             return cont;
         }

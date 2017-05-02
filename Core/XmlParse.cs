@@ -42,7 +42,10 @@ namespace Greatbone.Core
 
             // seek to a less-than (<)
             int b;
-            while (IsWs(b = this[p])) { p++; } // skip ws
+            while (IsWs(b = this[p]))
+            {
+                p++;
+            } // skip ws
             if (b != '<') throw ParseEx;
 
             // the first char
@@ -50,7 +53,9 @@ namespace Greatbone.Core
 
             if (b == '?') // skip the prolog line
             {
-                while (this[++p] != '>') { }
+                while (this[++p] != '>')
+                {
+                }
 
                 // seek to a <
                 for (;;)
@@ -102,7 +107,9 @@ namespace Greatbone.Core
             // optionally parse attributes
             while (IsWs(b))
             {
-                while (IsWs(b = this[++p])) { } // skip ws
+                while (IsWs(b = this[++p]))
+                {
+                } // skip ws
 
                 if (IsNameStartChar(b))
                 {
@@ -127,19 +134,23 @@ namespace Greatbone.Core
                             int b3 = this[p + 3];
                             if (b1 == 'l' && b2 == 't' && b3 == ';')
                             {
-                                b = '<'; p += 3;
+                                b = '<';
+                                p += 3;
                             }
                             else if (b1 == 'g' && b2 == 't' && b3 == ';')
                             {
-                                b = '>'; p += 3;
+                                b = '>';
+                                p += 3;
                             }
                             else if (b1 == 'a' && b2 == 'm' && b3 == 'p' && this[p + 4] == ';')
                             {
-                                b = '&'; p += 4;
+                                b = '&';
+                                p += 4;
                             }
                             else if (b1 == 'q' && b2 == 'u' && b3 == 'o' && this[p + 4] == 't' && this[p + 5] == ';')
                             {
-                                b = '"'; p += 5;
+                                b = '"';
+                                p += 5;
                             }
                         }
                         str.Accept(b);
@@ -156,7 +167,9 @@ namespace Greatbone.Core
             {
                 for (;;) // child nodes iteration
                 {
-                    while (IsWs(b = this[++p])) { } // skip ws
+                    while (IsWs(b = this[++p])) // skip ws
+                    {
+                    }
 
                     if (b == '<')
                     {
@@ -170,14 +183,28 @@ namespace Greatbone.Core
                                 str.Accept(b);
                             }
                             if (!str.Matches(tag)) throw ParseEx;
-
+                            
                             pos = p; // adjust current position
                             return elem;
                         }
-
-                        if (IsNameStartChar(b))
+                        else if (b == '!') // CDATA section
                         {
-                            elem.AddSub(ParseElem(ref p, b));
+                            if (this[p + 1] == '[' && this[p + 2] == 'C' && this[p + 3] == 'D' && this[p + 4] == 'A' && this[p + 5] == 'T' && this[p + 6] == 'A' && this[p + 7] == '[')
+                            {
+                                str.Clear();
+                                p += 7;
+                                while ((b = this[++p]) != ']' || this[p + 1] != ']' || this[p + 2] != '>')
+                                {
+                                    str.Accept(b);
+                                }
+                                elem.Text = str.ToString();
+                                p += 2; // skip ]>
+                            }
+                        }
+                        else if (IsNameStartChar(b))
+                        {
+                            XElem child = ParseElem(ref p, b);
+                            elem.AddSub(child);
                         }
                     }
                     else // text node
@@ -192,19 +219,23 @@ namespace Greatbone.Core
                                 int b3 = this[p + 3];
                                 if (b1 == 'l' && b2 == 't' && b3 == ';')
                                 {
-                                    b = '<'; p += 3;
+                                    b = '<';
+                                    p += 3;
                                 }
                                 else if (b1 == 'g' && b2 == 't' && b3 == ';')
                                 {
-                                    b = '>'; p += 3;
+                                    b = '>';
+                                    p += 3;
                                 }
                                 else if (b1 == 'a' && b2 == 'm' && b3 == 'p' && this[p + 4] == ';')
                                 {
-                                    b = '&'; p += 4;
+                                    b = '&';
+                                    p += 4;
                                 }
                                 else if (b1 == 'q' && b2 == 'u' && b3 == 'o' && this[p + 4] == 't' && this[p + 5] == ';')
                                 {
-                                    b = '"'; p += 5;
+                                    b = '"';
+                                    p += 5;
                                 }
                             }
                             str.Accept(b);

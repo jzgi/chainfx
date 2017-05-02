@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Text;
-using System.Threading;
 using System.Threading.Tasks;
 using Greatbone.Core;
 using static Greatbone.Sample.WeiXinUtility;
@@ -9,11 +8,6 @@ namespace Greatbone.Sample
 {
     public class ShopService : Service<User>, IAuthenticateAsync, ICatch
     {
-        // the timer for triggering periodically obtaining access_token from weixin
-        readonly Timer timer;
-
-        volatile string access_token;
-
         readonly JObj cities;
 
         readonly Opt<string> citiopt;
@@ -41,35 +35,6 @@ namespace Greatbone.Sample
                 string city = mbr[nameof(city)];
                 citiopt.Add(city, city);
             }
-
-            // timer obtaining access_token from weixin
-            // timer = new Timer(async state =>
-            // {
-            //     JObj jo = await WeiXinClient.GetAsync<JObj>(null, "/cgi-bin/token?grant_type=client_credential&appid=" + weixin.appid + "&secret=" + weixin.appsecret);
-
-            //     if (jo == null) return;
-
-            //     access_token = jo[nameof(access_token)];
-            //     if (access_token == null)
-            //     {
-            //         ERR("error getting access token");
-            //         string errmsg = jo[nameof(errmsg)];
-            //         ERR(errmsg);
-            //         return;
-            //     }
-
-            //     int expires_in = jo[nameof(expires_in)]; // in seconds
-
-            //     int millis = (expires_in - 60) * 1000;
-            //     timer.Change(millis, millis); // adjust interval
-
-            //     // post an event
-            //     // using (var dc = NewDbContext())
-            //     // {
-            //     //     dc.Post("ACCESS_TOKEN", null, access_token, null);
-            //     // }
-
-            // }, null, 5000, 60000);
         }
 
         public Opt<string> CityOpt => citiopt;

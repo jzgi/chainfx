@@ -8,7 +8,7 @@ namespace Greatbone.Sample
     {
         protected OrderWork(WorkContext wc) : base(wc)
         {
-            CreateVar<V, long>((obj) => ((Order)obj).id);
+            CreateVar<V, long>((obj) => ((Order) obj).id);
         }
     }
 
@@ -40,7 +40,7 @@ namespace Greatbone.Sample
                 }
                 else
                 {
-                    ac.GiveGridFormPage(200, (Order[])null);
+                    ac.GiveGridFormPage(200, (Order[]) null);
                 }
             }
         }
@@ -112,7 +112,7 @@ namespace Greatbone.Sample
                     }
                     else
                     {
-                        User prin = (User)ac.Principal;
+                        User prin = (User) ac.Principal;
                         var order = new Order
                         {
                             shopid = shopid,
@@ -162,7 +162,7 @@ namespace Greatbone.Sample
                 }
                 else
                 {
-                    ac.GiveGridFormPage(200, (Order[])null);
+                    ac.GiveGridFormPage(200, (Order[]) null);
                 }
             }
         }
@@ -188,7 +188,7 @@ namespace Greatbone.Sample
                 }
                 else
                 {
-                    ac.GiveGridFormPage(200, (Order[])null);
+                    ac.GiveGridFormPage(200, (Order[]) null);
                 }
             }
         }
@@ -214,7 +214,7 @@ namespace Greatbone.Sample
                 }
                 else
                 {
-                    ac.GiveGridFormPage(200, (Order[])null);
+                    ac.GiveGridFormPage(200, (Order[]) null);
                 }
             }
         }
@@ -360,7 +360,7 @@ namespace Greatbone.Sample
                 }
                 else
                 {
-                    ac.GiveGridFormPage(200, (Order[])null);
+                    ac.GiveGridFormPage(200, (Order[]) null);
                 }
             }
         }

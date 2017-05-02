@@ -1,5 +1,4 @@
 using System;
-using System.Collections.Generic;
 using Greatbone.Core;
 
 namespace Greatbone.Sample
@@ -116,9 +115,11 @@ namespace Greatbone.Sample
             h.Add("<script src=\"//cdn.bootcss.com/jquery/3.2.1/jquery.min.js\"></script>");
             h.Add("<script src=\"//cdn.bootcss.com/foundation/6.3.1/js/foundation.min.js\"></script>");
             h.Add("<script src=\"//cdn.bootcss.com/croppie/2.4.1/croppie.min.js\"></script>");
+            h.Add("<script src=\"//res.wx.qq.com/open/js/jweixin-1.2.0.js\"></script>");
             h.Add("<script src=\"/app.js\"></script>");
-            h.Add("<script>$(document).foundation();</script>");
-
+            h.Add("<script>");
+            h.Add("$(document).foundation();");
+            h.Add("</script>");
             h.Add("</body>");
             h.Add("</html>");
 
@@ -156,8 +157,9 @@ namespace Greatbone.Sample
             // enabling ok button
             h.Add("$(document).ready(function(){");
             h.Add("$('#dyndlg', window.parent.document).find('button').prop('disabled', false);");
-            if (main == null) {
-                 h.Add("$('#dyndlg').find('.close-button').trigger('click')");
+            if (main == null)
+            {
+                h.Add("$('#dyndlg').find('.close-button').trigger('click')");
             }
             h.Add("});");
             h.Add("</script>");
@@ -214,7 +216,7 @@ namespace Greatbone.Sample
         public static void GiveGridFormPage<D>(this ActionContext ac, int status, D[] lst, short proj = 0, bool? pub = null, int maxage = 60) where D : IData
         {
             Work work = ac.Work;
-            ac.GivePage(status, main => { main.GRID(ac, ac.Work, 2, lst, proj); }, pub, maxage);
+            ac.GivePage(status, main => { main.GRID(ac, ac.Work, 2, lst, proj); }, pub, maxage, jsapi);
         }
 
         public static void GiveGridFormPage<D>(this ActionContext ac, int status, D[] lst, Action<HtmlContent, D> putobj, bool? pub = null, int maxage = 60) where D : IData

@@ -29,7 +29,7 @@ namespace Greatbone.Core
             for (int i = 0; i < v.Length; i++)
             {
                 char c = v[i];
-                if (c >= 'a' && c <= 'z' || c >= 'A' && c <= 'Z' || c >= '0' && c <= '9')
+                if (c >= 'a' && c <= 'z' || c >= 'A' && c <= 'Z' || c >= '0' && c <= '9') // alphabetic and decimal digits
                 {
                     Add(c);
                 }
@@ -43,12 +43,6 @@ namespace Greatbone.Core
                 }
                 else
                 {
-//                    Add('%');
-//                    Add(HEX[(c >> 12) & 0x0f]);
-//                    Add(HEX[(c >> 8) & 0x0f]);
-//                    Add('%');
-//                    Add(HEX[(c >> 4) & 0x0f]);
-//                    Add(HEX[c & 0x0f]);
                     if (c < 0x80)
                     {
                         // have at most seven bits

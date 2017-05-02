@@ -46,7 +46,7 @@ namespace Greatbone.Sample
                         ac.GiveFormPane(200, m =>
                         {
                             m.TEXT(nameof(tel), tel, label: "电话");
-                            m.SELECT(nameof(city), city, ((ShopService) Service).CityOpt, label: "城市");
+                            m.SELECT(nameof(city), city, ((ShopService)Service).CityOpt, label: "城市");
                             //                            m.SELECT(nameof(distr), distr);
                             m.TEXT(nameof(addr), addr, label: "地址");
                         });
@@ -109,7 +109,7 @@ namespace Greatbone.Sample
             }
         }
 
-        static readonly Func<IData, bool> PREPAY = obj => ((Order) obj).custaddr != null;
+        static readonly Func<IData, bool> PREPAY = obj => ((Order)obj).custaddr != null;
 
         [Ui("付款", UiMode.AnchorScript, Alert = true)]
         public async Task prepay(ActionContext ac)
@@ -119,16 +119,10 @@ namespace Greatbone.Sample
 
             using (var dc = ac.NewDbContext())
             {
-                if (dc.Query1("SELECT prepay_id, total FROM orders WHERE id = @1 AND custwx = @2", p => p.Set(id).Set(wx)))
+                if (dc.Query1("SELECT total FROM orders WHERE id = @1 AND custwx = @2", p => p.Set(id).Set(wx)))
                 {
-                    var prepay_id = dc.GetString();
                     var total = dc.GetDecimal();
-                    if (prepay_id == null) // if not yet, call unifiedorder remotely
-                    {
-                        prepay_id = await WeiXinUtility.PostUnifiedOrderAsync(id, total, wx, ac.RemoteIpAddress.ToString(), "http://shop.144000.tv/notify");
-                        dc.Execute("UPDATE orders SET prepay_id = @1 WHERE id = @2", p => p.Set(prepay_id).Set(id));
-                    }
-
+                    var prepay_id = await WeiXinUtility.PostUnifiedOrderAsync(id, total, wx, ac.RemoteAddr, "http://shop.144000.tv/notify");
                     ac.Give(200, WeiXinUtility.BuildPrepayContent(prepay_id));
                 }
                 else

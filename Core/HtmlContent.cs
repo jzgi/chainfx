@@ -538,7 +538,7 @@ namespace Greatbone.Core
                     {
                         Add(" onclick=\"");
                         Add(ai.Name);
-                        Add("(this);\"");
+                        Add("(this);return false;\"");
                     }
                     else if (ui.HasCrop)
                     {

@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Data;
-using System.Net;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Http.Features;
@@ -104,6 +103,20 @@ namespace Greatbone.Core
             }
         }
 
+        string url;
+
+        public string Url
+        {
+            get
+            {
+                if (url == null)
+                {
+                    url = Features.Get<IHttpRequestFeature>().Scheme + "://" + Header("Host" + Features.Get<IHttpRequestFeature>().RawTarget);
+                }
+                return url;
+            }
+        }
+
         string querystr;
 
         public string QueryString
@@ -132,6 +145,20 @@ namespace Greatbone.Core
             }
         }
 
+        string raddr;
+
+        public string RemoteAddr
+        {
+            get
+            {
+                if (raddr == null)
+                {
+                    raddr = Features.Get<IHttpConnectionFeature>().RemoteIpAddress.ToString();
+                }
+                return raddr;
+            }
+        }
+
         public bool ByBrowser => Ua?.StartsWith("Mozilla") ?? false;
 
         public bool ByBrowse => ByBrowser && Header("X-Requested-With") == null;
@@ -155,8 +182,6 @@ namespace Greatbone.Core
                 return query;
             }
         }
-
-        public IPAddress RemoteIpAddress => Connection.RemoteIpAddress;
 
         //
         // HEADER

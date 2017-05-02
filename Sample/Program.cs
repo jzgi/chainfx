@@ -10,6 +10,7 @@ namespace Greatbone.Sample
         ///
         public static void Main(string[] args)
         {
+
             bool deploy = args.Length > 0;
 
             Auth auth = new Auth

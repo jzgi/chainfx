@@ -7,7 +7,7 @@ namespace Greatbone.Core
     public static class StrUtility
     {
         // hexidecimal numbers
-        static readonly char[] HEX = { '0', '1', '2', '3', '4', '5', '6', '7', '8', '9', 'A', 'B', 'C', 'D', 'E', 'F' };
+        static readonly char[] HEX = {'0', '1', '2', '3', '4', '5', '6', '7', '8', '9', 'A', 'B', 'C', 'D', 'E', 'F'};
 
         public static string ToHex(ulong v)
         {
@@ -20,7 +20,7 @@ namespace Greatbone.Core
         }
 
         // days of week
-        static readonly string[] DOW = { "Mon", "Tue", "Wed", "Thu", "Fri", "Sat", "Sun" };
+        static readonly string[] DOW = {"Mon", "Tue", "Wed", "Thu", "Fri", "Sat", "Sun"};
 
         // sexagesimal numbers
         static readonly string[] SEX =
@@ -71,7 +71,7 @@ namespace Greatbone.Core
             v = v.ToUniversalTime();
 
             StringBuilder gmt = new StringBuilder();
-            gmt.Append(DOW[(int)v.DayOfWeek]);
+            gmt.Append(DOW[(int) v.DayOfWeek]);
             gmt.Append(", ");
 
             gmt.Append(SEX[v.Day]);
@@ -169,25 +169,37 @@ namespace Greatbone.Core
         // DIGEST
         //
 
-        /// <summary>
-        /// Returns the central 8 bytes of the hash result of the input string.
-        /// </summary>
-        public static string MD5(string combo)
+        public static string MD5(string src)
         {
-            if (combo == null) return null;
+            if (src == null) return null;
 
-            // convert to bytea, assume ascii 
-            int len = combo.Length;
-            byte[] raw = new byte[len];
-            for (int i = 0; i < len; i++)
-            {
-                raw[i] = (byte)combo[i];
-            }
+            byte[] raw = Encoding.UTF8.GetBytes(src);
 
             // digest and transform
             using (MD5 md5 = System.Security.Cryptography.MD5.Create())
             {
                 byte[] hash = md5.ComputeHash(raw);
+                StringBuilder str = new StringBuilder(32);
+                for (int i = 0; i < 16; i++)
+                {
+                    byte b = hash[i];
+                    str.Append(HEX[b >> 4]);
+                    str.Append(HEX[b & 0x0f]);
+                }
+                return str.ToString();
+            }
+        }
+
+        public static string SHA1(string src)
+        {
+            if (src == null) return null;
+
+            byte[] raw = Encoding.UTF8.GetBytes(src);
+
+            // digest and transform
+            using (SHA1 sha1 = System.Security.Cryptography.SHA1.Create())
+            {
+                byte[] hash = sha1.ComputeHash(raw);
                 StringBuilder str = new StringBuilder(32);
                 for (int i = 0; i < 16; i++)
                 {
@@ -214,12 +226,12 @@ namespace Greatbone.Core
             int p = 0;
             for (int i = 0; i < idlen; i++)
             {
-                raw[p++] = (byte)id[i];
+                raw[p++] = (byte) id[i];
             }
-            raw[p++] = (byte)':';
+            raw[p++] = (byte) ':';
             for (int i = 0; i < passlen; i++)
             {
-                raw[p++] = (byte)pass[i];
+                raw[p++] = (byte) pass[i];
             }
 
             // digest and transform
@@ -261,7 +273,7 @@ namespace Greatbone.Core
             while (i < vlen)
             {
                 int m = i / 4;
-                char c = (char)((Dv(v[i++]) << 12) + (Dv(v[i++]) << 8) + (Dv(v[i++]) << 4) + Dv(v[i++]));
+                char c = (char) ((Dv(v[i++]) << 12) + (Dv(v[i++]) << 8) + (Dv(v[i++]) << 4) + Dv(v[i++]));
                 buf[m] = c;
             }
             return new string(buf);
@@ -269,7 +281,7 @@ namespace Greatbone.Core
 
         static int Dv(char hex)
         {
-            int num = hex - 'A';
+            int num = hex - 'a';
             if (num >= 0 && num <= 5)
             {
                 return num + 10;
@@ -295,20 +307,20 @@ namespace Greatbone.Core
                 if (c < 0x80)
                 {
                     // have at most seven bits
-                    buf[p++] = ((byte)c);
+                    buf[p++] = ((byte) c);
                 }
                 else if (c < 0x800)
                 {
                     // 2 text, 11 bits
-                    buf[p++] = (byte)(0xc0 | (c >> 6));
-                    buf[p++] = (byte)(0x80 | (c & 0x3f));
+                    buf[p++] = (byte) (0xc0 | (c >> 6));
+                    buf[p++] = (byte) (0x80 | (c & 0x3f));
                 }
                 else
                 {
                     // 3 text, 16 bits
-                    buf[p++] = (byte)(0xe0 | (c >> 12));
-                    buf[p++] = (byte)(0x80 | (c >> 6) & 0x3f);
-                    buf[p++] = (byte)(0x80 | (c & 0x3f));
+                    buf[p++] = (byte) (0xe0 | (c >> 12));
+                    buf[p++] = (byte) (0x80 | (c >> 6) & 0x3f);
+                    buf[p++] = (byte) (0x80 | (c & 0x3f));
                 }
             }
             return new ArraySegment<byte>(buf, 0, p);

@@ -198,13 +198,29 @@ namespace Greatbone.Core
 
         public bool Matches(string str)
         {
-            if (str == null || str.Length != count) return false;
+            if (str == null || str.Length > count) return false;
 
             for (int i = 0; i < count; i++)
             {
                 if (charbuf[i] != str[i]) return false;
             }
             return true;
+        }
+
+        public bool EndsWith(string str)
+        {
+            if (str == null || str.Length > count) return false;
+
+            for (int i = count - 1; i >= 0; i--)
+            {
+                if (charbuf[i] != str[i]) return false;
+            }
+            return true;
+        }
+
+        public string ToString(int start, int len)
+        {
+            return new string(charbuf, start, len);
         }
 
         public override string ToString()
