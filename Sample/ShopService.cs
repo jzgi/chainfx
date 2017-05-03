@@ -157,10 +157,10 @@ namespace Greatbone.Sample
             string result_code = xe.Child(nameof(result_code));
 
             string bank_type = xe.Child(nameof(bank_type));
-            string total_fee = xe.Child(nameof(total_fee)); // 订单总金额单位分
-            string cash_fee = xe.Child(nameof(cash_fee)); // 支付金额单位分
+            int total_fee = xe.Child(nameof(total_fee)); // in cents
+            int cash_fee = xe.Child(nameof(cash_fee)); // in cent
             string transaction_id = xe.Child(nameof(transaction_id)); // 微信支付订单号
-            string out_trade_no = xe.Child(nameof(out_trade_no)); // 商户订单号
+            long out_trade_no = xe.Child(nameof(out_trade_no)); // 商户订单号
             string time_end = xe.Child(nameof(time_end)); // 支付完成时间
         }
     }

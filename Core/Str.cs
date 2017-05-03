@@ -196,7 +196,18 @@ namespace Greatbone.Core
             throw new NotImplementedException();
         }
 
-        public bool Matches(string str)
+        public bool Equals(string str)
+        {
+            if (str == null || str.Length != count) return false;
+
+            for (int i = 0; i < count; i++)
+            {
+                if (charbuf[i] != str[i]) return false;
+            }
+            return true;
+        }
+
+        public bool StartsWith(string str)
         {
             if (str == null || str.Length > count) return false;
 

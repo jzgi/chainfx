@@ -31,23 +31,15 @@ namespace Greatbone.Sample
 
         static volatile string AccessToken;
 
-        static volatile string JsApiTicket;
-
         private static bool stop;
 
-        private static readonly Thread renewer = new Thread(async () =>
+        private static readonly Thread Renewer = new Thread(async () =>
         {
             while (!stop)
             {
-                int now = Environment.TickCount;
-
                 JObj jo = await WeiXin.GetAsync<JObj>(null, "/cgi-bin/token?grant_type=client_credential&appid=" + APPID + "&secret=" + APPSECRET);
                 string access_token = jo?[nameof(access_token)];
                 AccessToken = access_token;
-
-                jo = await WeiXin.GetAsync<JObj>(null, "/cgi-bin/ticket/getticket?access_token=" + access_token + "&type=jsapi");
-                string ticket = jo?[nameof(ticket)];
-                JsApiTicket = ticket;
 
                 // suspend for 1 hour
                 Thread.Sleep(3600000);
@@ -62,30 +54,6 @@ namespace Greatbone.Sample
         public static void Stop()
         {
             stop = true;
-        }
-
-        public static void WxConfig(HtmlContent h, string url)
-        {
-            int timestamp = (int) (DateTime.Now - EPOCH).TotalSeconds;
-
-            string temp = "jsapi_ticket=" + JsApiTicket +
-                          "&noncestr=" + NONCE_STR +
-                          "&timestamp=" + timestamp +
-                          "&url=" + url;
-
-            h.Add("wx.config({");
-            h.Add("debug: true");
-            h.Add(", appId: '");
-            h.Add(APPID);
-            h.Add("', timestamp: ");
-            h.Add(timestamp);
-            h.Add(", nonceStr: '");
-            h.Add(NONCE_STR);
-            h.Add("', signature: '");
-            h.Add(StrUtility.SHA1(temp));
-            h.Add("");
-            h.Add("', jsApiList: ['chooseWXPay']");
-            h.Add("});");
         }
 
         public static async Task<string> PostUnifiedOrderAsync(long orderid, decimal total, string openid, string ip, string notifyurl)
@@ -141,7 +109,6 @@ namespace Greatbone.Sample
             string access_token = jo[nameof(access_token)];
             if (access_token == null)
             {
-                string errmsg = jo[nameof(errmsg)];
                 return default(Accessor);
             }
             string openid = jo[nameof(openid)];

@@ -182,7 +182,7 @@ namespace Greatbone.Core
                             {
                                 str.Accept(b);
                             }
-                            if (!str.Matches(tag)) throw ParseEx;
+                            if (!str.Equals(tag)) throw ParseEx;
                             
                             pos = p; // adjust current position
                             return elem;

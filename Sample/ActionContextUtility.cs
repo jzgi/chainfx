@@ -9,13 +9,13 @@ namespace Greatbone.Sample
         ///
         public static void GiveRedirect(this ActionContext ac, string uri, bool? pub = null, int maxage = 60)
         {
-            ac.SetHeader("Location", uri == null ? "./" : uri);
+            ac.SetHeader("Location", uri ?? "./");
             ac.Give(303);
         }
 
         public static void GiveFrame(this ActionContext ac, int status, bool? pub = null, int maxage = 60)
         {
-            HtmlContent h = new HtmlContent(true, true, 32 * 1024);
+            HtmlContent h = new HtmlContent(true, true, 8 * 1024);
 
             h.Add("<!DOCTYPE html>");
             h.Add("<html style=\"height:100%\">");
@@ -131,7 +131,7 @@ namespace Greatbone.Sample
         ///
         public static void GivePane(this ActionContext ac, int status, Action<HtmlContent> main, bool? pub = null, int maxage = 60)
         {
-            HtmlContent h = new HtmlContent(true, true, 16 * 1024);
+            HtmlContent h = new HtmlContent(true, true, 8 * 1024);
 
             h.Add("<!DOCTYPE html>");
             h.Add("<html>");
@@ -146,7 +146,7 @@ namespace Greatbone.Sample
 
             h.Add("<body>");
 
-            if (main != null) main(h);
+            main?.Invoke(h);
 
             // zurb foundation
             h.Add("<script src=\"//cdn.bootcss.com/jquery/3.2.1/jquery.min.js\"></script>");
@@ -216,7 +216,7 @@ namespace Greatbone.Sample
         public static void GiveGridFormPage<D>(this ActionContext ac, int status, D[] lst, short proj = 0, bool? pub = null, int maxage = 60) where D : IData
         {
             Work work = ac.Work;
-            ac.GivePage(status, main => { main.GRID(ac, ac.Work, 2, lst, proj); }, pub, maxage, jsapi);
+            ac.GivePage(status, main => { main.GRID(ac, ac.Work, 2, lst, proj); }, pub, maxage);
         }
 
         public static void GiveGridFormPage<D>(this ActionContext ac, int status, D[] lst, Action<HtmlContent, D> putobj, bool? pub = null, int maxage = 60) where D : IData
