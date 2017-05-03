@@ -138,15 +138,13 @@ namespace Greatbone.Sample
     {
         public OprShopVarWork(WorkContext wc) : base(wc)
         {
+            Create<OprCartOrderWork>("cart");
+
             Create<OprPaidOrderWork>("paid");
 
-            Create<OprPackedOrderWork>("packed");
+            Create<OprSentOrderWork>("sent");
 
-            Create<OprAbortedOrderWork>("aborted");
-
-            Create<OprSentOrderWork>("assigned");
-
-            Create<OprDoneOrderWork>("done");
+            Create<OprHistoryOrderWork>("history");
 
             Create<OprItemWork>("item");
 

@@ -17,8 +17,7 @@ namespace Greatbone.Sample
         // state
         public const int
             CREATED = 0,
-            PAID = 1,
-            PACKED = 2,
+            RECEIVED = 1,
             SENT = 3,
             DONE = 7,
             ABORTED = 10;
@@ -26,10 +25,9 @@ namespace Greatbone.Sample
         // status
         static readonly Opt<short> STATUS = new Opt<short>
         {
-            [CREATED] = "新建等待付款",
-            [PAID] = "已付等待备货",
-            [PACKED] = "备妥等待派送",
-            [SENT] = "已派等待收货",
+            [CREATED] = "在购等待收款",
+            [RECEIVED] = "到款等待发货",
+            [SENT] = "在途",
             [DONE] = "已完成",
             [ABORTED] = "已撤销",
         };
@@ -174,7 +172,7 @@ namespace Greatbone.Sample
         {
             if (detail == null)
             {
-                detail = new[] { new OrderLine() { item = item, qty = qty, unit = unit, price = price } };
+                detail = new[] {new OrderLine() {item = item, qty = qty, unit = unit, price = price}};
             }
             var orderln = detail.Find(o => o.item.Equals(item));
             if (orderln != null)
@@ -183,7 +181,7 @@ namespace Greatbone.Sample
             }
             else
             {
-                detail = detail.Add(new OrderLine() { item = item, qty = qty, unit = unit, price = price });
+                detail = detail.Add(new OrderLine() {item = item, qty = qty, unit = unit, price = price});
             }
         }
 

@@ -224,9 +224,9 @@ namespace Greatbone.Sample
         }
     }
 
-    public class OprPackedOrderVarWork : OprOrderVarWork
+    public class OprCartOrderVarWork : OprOrderVarWork
     {
-        public OprPackedOrderVarWork(WorkContext wc) : base(wc)
+        public OprCartOrderVarWork(WorkContext wc) : base(wc)
         {
         }
     }
@@ -238,9 +238,9 @@ namespace Greatbone.Sample
         }
     }
 
-    public class OprDoneOrderVarWork : OprOrderVarWork
+    public class OprHistoryOrderVarWork : OprOrderVarWork
     {
-        public OprDoneOrderVarWork(WorkContext wc) : base(wc)
+        public OprHistoryOrderVarWork(WorkContext wc) : base(wc)
         {
         }
     }

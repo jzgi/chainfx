@@ -221,6 +221,7 @@ function prepay(trig) {
 
             WeixinJSBridge.invoke('getBrandWCPayRequest', data, function (res) {
                 if (res.err_msg == "get_brand_wcpay_request:ok") {
+                    alert('本订单支付成功！');
                     location.reload();
                 }
             });
