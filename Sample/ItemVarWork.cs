@@ -4,9 +4,9 @@ using Greatbone.Core;
 
 namespace Greatbone.Sample
 {
-    public abstract class ItemVarWork : Work
+    public class ItemVarWork : Work
     {
-        protected ItemVarWork(WorkContext wc) : base(wc)
+        public ItemVarWork(WorkContext wc) : base(wc)
         {
         }
 
@@ -28,7 +28,7 @@ namespace Greatbone.Sample
             }
         }
 
-        public void _icon_(ActionContext ac)
+        public void icon(ActionContext ac)
         {
             string shopid = ac[typeof(ShopVarWork)];
             string name = ac[this];
@@ -97,7 +97,7 @@ namespace Greatbone.Sample
         }
 
         [Ui("图片", UiMode.AnchorCrop, Circle = true)]
-        public async Task icon(ActionContext ac)
+        public new async Task icon(ActionContext ac)
         {
             string shopid = ac[typeof(ShopVarWork)];
             string name = ac[this];

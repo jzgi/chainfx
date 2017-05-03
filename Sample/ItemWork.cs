@@ -1,5 +1,4 @@
-﻿using System.Collections.Generic;
-using System.Threading.Tasks;
+﻿using System.Threading.Tasks;
 using Greatbone.Core;
 
 namespace Greatbone.Sample
@@ -64,6 +63,7 @@ namespace Greatbone.Sample
         }
     }
 
+
     [Ui("货架")]
     public class OprItemWork : ItemWork<OprItemVarWork>
     {
@@ -77,7 +77,7 @@ namespace Greatbone.Sample
             using (var dc = ac.NewDbContext())
             {
                 const int proj = -1 ^ Item.ICON;
-                dc.Sql("SELECT ").columnlst(Item.Empty,proj)._("FROM items WHERE shopid = @1");
+                dc.Sql("SELECT ").columnlst(Item.Empty, proj)._("FROM items WHERE shopid = @1");
                 if (dc.Query(p => p.Set(shopid)))
                 {
                     ac.GiveGridFormPage(200, dc.ToArray<Item>(proj), proj);

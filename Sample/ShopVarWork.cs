@@ -36,6 +36,7 @@ namespace Greatbone.Sample
     {
         public PubShopVarWork(WorkContext wc) : base(wc)
         {
+            CreateVar<ItemVarWork, string>(obj => ((Item) obj).name);
         }
 
         public void @default(ActionContext ac)
@@ -104,7 +105,7 @@ namespace Greatbone.Sample
 
                             m.Add("<div class=\"small-4 columns\"><a href=\"#\"><span></span><img src=\"");
                             m.Add(item.name);
-                            m.Add("/_icon_\" alt=\"\" class=\" thumbnail\"></a></div>");
+                            m.Add("/icon\" alt=\"\" class=\" thumbnail\"></a></div>");
                             m.Add("<div class=\"small-8 columns\">");
                             m.Add("<p>&yen;");
                             m.Add(item.price);

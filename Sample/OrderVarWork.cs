@@ -39,16 +39,16 @@ namespace Greatbone.Sample
                 {
                     if (dc.Query1("SELECT custtel, custcity, custdistr, custaddr FROM orders WHERE id = @1", p => p.Set(id)))
                     {
-                        var tel = dc.GetString();
-                        var city = dc.GetString();
-                        var distr = dc.GetString();
-                        var addr = dc.GetString();
+                        var custtel = dc.GetString();
+                        var custcity = dc.GetString();
+                        var custdistr = dc.GetString();
+                        var custaddr = dc.GetString();
                         ac.GiveFormPane(200, m =>
                         {
-                            m.TEXT(nameof(tel), tel, label: "电话");
-                            m.SELECT(nameof(city), city, ((ShopService)Service).CityOpt, label: "城市");
+                            m.TEXT(nameof(custtel), custtel, label: "电话");
+                            m.SELECT(nameof(custcity), custcity, ((ShopService) Service).CityOpt, label: "城市");
                             //                            m.SELECT(nameof(distr), distr);
-                            m.TEXT(nameof(addr), addr, label: "地址");
+                            m.TEXT(nameof(custaddr), custaddr, label: "地址");
                         });
                     }
                     else
@@ -58,21 +58,16 @@ namespace Greatbone.Sample
             }
             else
             {
-                string shopid = ac[0];
-                Form frm = await ac.ReadAsync<Form>();
-                int[] pk = frm[nameof(pk)];
-
+                var frm = await ac.ReadAsync<Form>();
+                string custtel = frm[nameof(custtel)];
+                string custcity = frm[nameof(custcity)];
+                string custdistr = frm[nameof(custdistr)];
+                string custaddr = frm[nameof(custaddr)];
                 using (var dc = ac.NewDbContext())
                 {
-                    dc.Sql("UPDATE orders SET ").setstate()._(" WHERE id = @1 AND shopid = @2 AND ").statecond();
-                    if (dc.Query(p => p.Set(pk).Set(shopid)))
-                    {
-                        var order = dc.ToArray<Order>();
-                    }
-                    else
-                    {
-                    }
+                    dc.Execute("UPDATE orders SET custtel = @1, custcity = @2, custdistr = @3, custaddr = @4 WHERE id = @5", p => p.Set(custtel).Set(custcity).Set(custdistr).Set(custaddr).Set(id));
                 }
+                ac.GiveRedirect("../");
             }
         }
 
@@ -109,7 +104,7 @@ namespace Greatbone.Sample
             }
         }
 
-        static readonly Func<IData, bool> PREPAY = obj => ((Order)obj).custaddr != null;
+        static readonly Func<IData, bool> PREPAY = obj => ((Order) obj).custaddr != null;
 
         [Ui("付款", UiMode.AnchorScript, Alert = true)]
         public async Task prepay(ActionContext ac)
