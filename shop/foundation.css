@@ -2247,7 +2247,7 @@ table {
 table thead,
 table tbody,
 table tfoot {
-    border: 0 solid #e6e6e6;
+    border: 1px solid #e6e6e6;
     background-color: #fefefe;
 }
 

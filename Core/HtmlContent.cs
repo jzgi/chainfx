@@ -65,7 +65,7 @@ namespace Greatbone.Core
                     char c = alt[i];
                     if (c >= 'a' && c <= 'z')
                     {
-                        c = (char)(c - 32);
+                        c = (char) (c - 32);
                     }
                     Add(c);
                 }
@@ -301,10 +301,18 @@ namespace Greatbone.Core
 
                 Add("<table class=\"unstriped\">");
 
+                ActionInfo[] ais = work.Varwork?.UiActions;
+
+
                 chain[level].node = TABLE_THEAD;
                 Add("<thead>");
                 Add("<tr>");
                 arr[0].WriteData(this, proj);
+
+                if (ais != null)
+                {
+                    Add("<th></th>"); // head for controls
+                }
                 Add("</tr>");
                 Add("</thead>");
 
@@ -332,6 +340,15 @@ namespace Greatbone.Core
                     }
 
                     arr[i].WriteData(this, proj);
+
+                    // acitons
+                    if (ais != null)
+                    {
+                        Add("<td>");
+                        BUTTONS(ais, level > 0);
+                        Add("</td>");
+                    }
+
                     Add("</tr>");
                 }
                 Add("</tbody>");
@@ -419,12 +436,13 @@ namespace Greatbone.Core
                     }
 
                     obj.WriteData(this, proj);
+
                     // acitons
                     ActionInfo[] ais = work.Varwork?.UiActions;
                     if (ais != null)
                     {
                         Add("<div style=\"text-align: right\">");
-                        BUTTONS(ais);
+                        BUTTONS(ais, level > 0);
                         Add("</div>");
                     }
                     Add("</div>");
@@ -482,7 +500,7 @@ namespace Greatbone.Core
             }
         }
 
-        public void BUTTONS(ActionInfo[] ais)
+        public void BUTTONS(ActionInfo[] ais, bool hollow = false)
         {
             for (int i = 0; i < ais.Length; i++)
             {
@@ -494,6 +512,10 @@ namespace Greatbone.Core
                 {
                     Add("<a class=\"button ");
                     Add(ui.Alert ? "warning" : "primary");
+                    if (hollow)
+                    {
+                        Add(" hollow");
+                    }
                     Add("\" href=\"");
                     for (int lvl = 0; lvl <= level; lvl++)
                     {
@@ -518,6 +540,10 @@ namespace Greatbone.Core
                 {
                     Add("<a class=\"button ");
                     Add(ui.Alert ? "warning" : "primary");
+                    if (hollow)
+                    {
+                        Add(" hollow");
+                    }
                     Add("\" href=\"");
                     for (int lvl = 0; lvl <= level; lvl++)
                     {
@@ -558,6 +584,10 @@ namespace Greatbone.Core
                 {
                     Add("<button class=\"button ");
                     Add(ui.Alert ? "warning" : "primary");
+                    if (hollow)
+                    {
+                        Add(" hollow");
+                    }
                     Add("\" name=\"");
                     Add(ai.Name);
                     Add("\" formaction=\"");
@@ -574,7 +604,9 @@ namespace Greatbone.Core
                     }
                     else if (ui.HasConfirm)
                     {
-                        Add(" onclick=\"return confirm('"); Add(ai.Label); Add("?');\"");
+                        Add(" onclick=\"return confirm('");
+                        Add(ai.Label);
+                        Add("?');\"");
                     }
                     else if (ui.HasDialog)
                     {
@@ -1201,7 +1233,7 @@ namespace Greatbone.Core
             if (mode > 0)
             {
                 Add(" onclick=\"dialog(this,");
-                Add((int)mode);
+                Add((int) mode);
                 Add("); return false;\"");
             }
 
@@ -1276,6 +1308,43 @@ namespace Greatbone.Core
                 Add(">");
 
                 Add(pair.Value);
+                Add("</option>");
+            }
+            Add("</select>");
+            Add("</label>");
+        }
+
+        public void SELECT(string name, string v, string[] opt, string label = null, bool multiple = false, bool required = false, sbyte size = 0, bool refresh = false)
+        {
+            Add("<label>");
+            AddLabel(label, name);
+            Add("<select name=\"");
+            Add(name);
+            Add("\"");
+            if (multiple) Add(" multiple");
+            if (required) Add(" required");
+            if (size > 0)
+            {
+                Add(" size=\"");
+                Add(size);
+                Add("\"");
+            }
+            if (refresh)
+            {
+                Add(" onchange=\"location = location.href.split('?')[0] + '?' + $(this.form).serialize();\"");
+            }
+            Add(">");
+
+            for (int i = 0; i < opt.Length; i++)
+            {
+                string key = opt[i];
+                Add("<option value=\"");
+                Add(key);
+                Add("\"");
+                if (key == v) Add(" selected");
+                Add(">");
+
+                Add(key);
                 Add("</option>");
             }
             Add("</select>");
@@ -1836,11 +1905,11 @@ namespace Greatbone.Core
                     }
                     else if (name.EndsWith("password") || name.EndsWith("pwd"))
                     {
-                        PASSWORD(name, v, label, help, pattern, (sbyte)max, (sbyte)min, @readonly, required);
+                        PASSWORD(name, v, label, help, pattern, (sbyte) max, (sbyte) min, @readonly, required);
                     }
                     else if (max < 128)
                     {
-                        TEXT(name, v, label, help, pattern, (sbyte)max, (sbyte)min, opt, @readonly, required);
+                        TEXT(name, v, label, help, pattern, (sbyte) max, (sbyte) min, opt, @readonly, required);
                     }
                     else
                     {

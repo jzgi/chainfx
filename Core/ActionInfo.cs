@@ -15,6 +15,8 @@ namespace Greatbone.Core
 
         readonly bool subscript;
 
+        readonly int limit;
+
         // void action(ActionContext)
         readonly Action<ActionContext> @do;
 
@@ -27,11 +29,12 @@ namespace Greatbone.Core
         // async Task action(ActionContext, int)
         readonly Func<ActionContext, int, Task> do2async;
 
-        internal ActionInfo(Work work, MethodInfo mi, bool async, bool subscript) : base(mi.Name, mi)
+        internal ActionInfo(Work work, MethodInfo mi, bool async, bool subscript, int limit = 0) : base(mi.Name, mi)
         {
             this.work = work;
             this.async = async;
             this.subscript = subscript;
+            this.limit = limit;
 
             if (async)
             {
@@ -62,6 +65,8 @@ namespace Greatbone.Core
         public bool IsAsync => async;
 
         public bool HasSubscript => subscript;
+
+        public int Limit => limit;
 
         public override Service Service => work.Service;
 

@@ -8,9 +8,9 @@ namespace Greatbone.Sample
 {
     public class ShopService : Service<User>, IAuthenticateAsync, ICatch
     {
-        readonly JObj cities;
+        readonly City[] cities;
 
-        readonly Opt<string> citiopt;
+        readonly string[] cityopt;
 
         public ShopService(ServiceContext sc) : base(sc)
         {
@@ -26,18 +26,19 @@ namespace Greatbone.Sample
 
             Create<AdmWork>("adm"); // administrator
 
-            cities = DataInputUtility.FileTo<JObj>(sc.GetFilePath("$cities.json"));
+            cities = DataInputUtility.FileToArray<City>(sc.GetFilePath("$cities.json"));
 
-            citiopt = new Opt<string>();
-            for (int i = 0; i < cities.Count; i++)
+            int len = cities.Length;
+            cityopt = new string[len];
+            for (int i = 0; i < len; i++)
             {
-                JObj mbr = cities[i];
-                string city = mbr[nameof(city)];
-                citiopt.Add(city, city);
+                cityopt[i] = cities[i].name;
             }
         }
 
-        public Opt<string> CityOpt => citiopt;
+        public string[] CityOpt => cityopt;
+
+        public string[] GetDistrs(string city) => cities.Find(e => e.name == city)?.distrs;
 
         public async Task<bool> AuthenticateAsync(ActionContext ac, bool e)
         {

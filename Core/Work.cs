@@ -70,7 +70,8 @@ namespace Greatbone.Core
                 }
                 else if (pis.Length == 2 && pis[0].ParameterType == typeof(ActionContext) && pis[1].ParameterType == typeof(int))
                 {
-                    ai = new ActionInfo(this, mi, async, true);
+                    LimitAttribute limit = (LimitAttribute) pis[1].GetCustomAttribute(typeof(LimitAttribute));
+                    ai = new ActionInfo(this, mi, async, true, limit?.Value ?? 20);
                 }
                 else continue;
 

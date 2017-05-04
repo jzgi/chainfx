@@ -162,22 +162,10 @@ namespace Greatbone.Core
             for (int i = 0; i < arr.Length; i++)
             {
                 D obj = new D();
-                obj.ReadData((JObj)elements[i], proj);
+                obj.ReadData((JObj) elements[i], proj);
                 arr[i] = obj;
             }
             return arr;
-        }
-
-        public List<D> ToList<D>(short proj = 0) where D : IData, new()
-        {
-            List<D> lst = new List<D>(count + 8);
-            for (int i = 0; i < count; i++)
-            {
-                D obj = new D();
-                obj.ReadData((JObj)elements[i], proj);
-                lst.Add(obj);
-            }
-            return lst;
         }
 
         public void WriteData<R>(IDataOutput<R> o) where R : IDataOutput<R>
@@ -188,19 +176,19 @@ namespace Greatbone.Core
                 JType t = mbr.type;
                 if (t == JType.Array)
                 {
-                    o.Put(null, (JArr)mbr);
+                    o.Put(null, (JArr) mbr);
                 }
                 else if (t == JType.Object)
                 {
-                    o.Put(null, (JObj)mbr);
+                    o.Put(null, (JObj) mbr);
                 }
                 else if (t == JType.String)
                 {
-                    o.Put(null, (string)mbr);
+                    o.Put(null, (string) mbr);
                 }
                 else if (t == JType.Number)
                 {
-                    o.Put(null, (JNumber)mbr);
+                    o.Put(null, (JNumber) mbr);
                 }
                 else if (t == JType.True)
                 {
@@ -238,6 +226,16 @@ namespace Greatbone.Core
             string str = cont.ToString();
             BufferUtility.Return(cont);
             return str;
+        }
+
+        public static implicit operator string[](JArr v)
+        {
+            string[] arr = new string[v.count];
+            for (int i = 0; i < v.count; i++)
+            {
+                arr[i] = v[i];
+            }
+            return arr;
         }
     }
 }

@@ -25,6 +25,7 @@ namespace Greatbone.Sample
     {
         public MyCartOrderVarWork(WorkContext wc) : base(wc)
         {
+            CreateVar<MyCartOrderVarVarWork, string>(obj => ((OrderLine) obj).item);
         }
 
         [Ui("收货地址", UiMode.ButtonDialog)]
@@ -33,39 +34,49 @@ namespace Greatbone.Sample
             string wx = ac[typeof(UserVarWork)];
             long id = ac[this];
 
+            string tel = null;
+            string city = null;
+            string distr = null;
+            string addr = null;
+
             if (ac.GET)
             {
-                using (var dc = ac.NewDbContext())
+                tel = ac.Query[nameof(tel)];
+                city = ac.Query[nameof(city)];
+                distr = ac.Query[nameof(distr)];
+                addr = ac.Query[nameof(addr)];
+
+                if (city == null)
                 {
-                    if (dc.Query1("SELECT custtel, custcity, custdistr, custaddr FROM orders WHERE id = @1", p => p.Set(id)))
+                    using (var dc = ac.NewDbContext())
                     {
-                        var custtel = dc.GetString();
-                        var custcity = dc.GetString();
-                        var custdistr = dc.GetString();
-                        var custaddr = dc.GetString();
-                        ac.GiveFormPane(200, m =>
+                        if (dc.Query1("SELECT custtel, custcity, custdistr, custaddr FROM orders WHERE id = @1", p => p.Set(id)))
                         {
-                            m.TEXT(nameof(custtel), custtel, label: "电话");
-                            m.SELECT(nameof(custcity), custcity, ((ShopService) Service).CityOpt, label: "城市");
-                            //                            m.SELECT(nameof(distr), distr);
-                            m.TEXT(nameof(custaddr), custaddr, label: "地址");
-                        });
-                    }
-                    else
-                    {
+                            tel = dc.GetString();
+                            city = dc.GetString();
+                            distr = dc.GetString();
+                            addr = dc.GetString();
+                        }
                     }
                 }
+                ac.GiveFormPane(200, m =>
+                {
+                    m.TEXT(nameof(tel), tel, label: "电话");
+                    m.SELECT(nameof(city), city, ((ShopService) Service).CityOpt, label: "城市", refresh: true);
+                    m.SELECT(nameof(distr), distr, ((ShopService) Service).GetDistrs(city), label: "区域");
+                    m.TEXT(nameof(addr), addr, label: "地址");
+                });
             }
             else
             {
                 var frm = await ac.ReadAsync<Form>();
-                string custtel = frm[nameof(custtel)];
-                string custcity = frm[nameof(custcity)];
-                string custdistr = frm[nameof(custdistr)];
-                string custaddr = frm[nameof(custaddr)];
+                tel = frm[nameof(tel)];
+                city = frm[nameof(city)];
+                distr = frm[nameof(distr)];
+                addr = frm[nameof(addr)];
                 using (var dc = ac.NewDbContext())
                 {
-                    dc.Execute("UPDATE orders SET custtel = @1, custcity = @2, custdistr = @3, custaddr = @4 WHERE id = @5", p => p.Set(custtel).Set(custcity).Set(custdistr).Set(custaddr).Set(id));
+                    dc.Execute("UPDATE orders SET custtel = @1, custcity = @2, custdistr = @3, custaddr = @4 WHERE id = @5", p => p.Set(tel).Set(city).Set(distr).Set(addr).Set(id));
                 }
                 ac.GiveRedirect("../");
             }
