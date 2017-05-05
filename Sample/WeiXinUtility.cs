@@ -20,11 +20,11 @@ namespace Greatbone.Sample
 
         public const string NONCE_STR = "30A5FE271";
 
-        static readonly Connector WweiXinPay = new Connector("https://api.mch.weixin.qq.com");
+        static readonly Client WweiXinPay = new Client("https://api.mch.weixin.qq.com");
 
         public const string KEY = "28165ACAB74C2FBF3B042B5D2F87D274";
 
-        static readonly Connector WeiXin = new Connector("https://api.weixin.qq.com");
+        static readonly Client WeiXin = new Client("https://api.weixin.qq.com");
 
         const string BODY_DESC = "粗粮达人-健康产品";
 
@@ -86,8 +86,7 @@ namespace Greatbone.Sample
                 xml.ELEM("openid", openid);
                 xml.ELEM("sign", StrUtility.MD5(temp));
             });
-            var rsp = await WweiXinPay.PostAsync(null, "/pay/unifiedorder", xml);
-            XElem xe = await rsp.ReadAsync<XElem>();
+            XElem xe = (await WweiXinPay.PostForAsync<XElem>(null, "/pay/unifiedorder", xml)).Item2;
             string prepay_id = xe.Child(nameof(prepay_id));
 
             return prepay_id;
@@ -180,7 +179,7 @@ namespace Greatbone.Sample
             // <sign>C97BDBACF37622775366F38B629F45E3</sign>
             // </xml>
             XmlContent cont = new XmlContent();
-            XElem resp = await WweiXinPay.PostAsync<XElem>(null, "/mmpaymkttransfers/promotion/transfers", cont);
+            XElem resp = (await WweiXinPay.PostForAsync<XElem>(null, "/mmpaymkttransfers/promotion/transfers", cont)).Item2;
         }
     }
 }

@@ -21,13 +21,13 @@ namespace Greatbone.Core
             int len = boundary.Length;
             byte[] a = new byte[4 + len];
             int i = 0;
-            a[i++] = (byte)'\r';
-            a[i++] = (byte)'\n';
-            a[i++] = (byte)'-';
-            a[i++] = (byte)'-';
+            a[i++] = (byte) '\r';
+            a[i++] = (byte) '\n';
+            a[i++] = (byte) '-';
+            a[i++] = (byte) '-';
             for (int k = 0; k < len; k++, i++)
             {
-                a[i] = (byte)boundary[k];
+                a[i] = (byte) boundary[k];
             }
             this.bound = a;
             this.buffer = buffer;
@@ -37,16 +37,16 @@ namespace Greatbone.Core
         public Form Parse()
         {
             // locality for performance
-            byte[] bound = this.bound;
-            byte[] buffer = this.buffer;
-            int length = this.length;
+            byte[] bound_ = this.bound;
+            byte[] buffer_ = this.buffer;
+            int length_ = this.length;
 
             // UTF-8 header builder
             Header hdr = new Header(128);
             Str str = new Str(128);
 
             // keep local for speed
-            int boundlen = bound.Length;
+            int boundlen = bound_.Length;
 
             // shall init lately
             Form frm = null;
@@ -55,7 +55,7 @@ namespace Greatbone.Core
             // skip first bound line whatever
             for (;;)
             {
-                if (buffer[p++] == '\r' && buffer[p++] == '\n') break;
+                if (buffer_[p++] == '\r' && buffer_[p++] == '\n') break;
             }
 
             // parse parts
@@ -73,9 +73,9 @@ namespace Greatbone.Core
                     // parse a header line
                     for (;;)
                     {
-                        if (p >= length - 2) throw ParseEx;
+                        if (p >= length_ - 2) throw ParseEx;
                         byte b;
-                        if ((b = buffer[p++]) == '\r' && buffer[p++] == '\n') break;
+                        if ((b = buffer_[p++]) == '\r' && buffer_[p++] == '\n') break;
                         hdr.Accept(b); // lineup the byte
                     }
                     if (hdr.Count == 0) // if empty line then quit header section
@@ -97,16 +97,16 @@ namespace Greatbone.Core
                 str.Clear();
                 bool plain = ctype == null || "text/plain".Equals(ctype);
                 int start = p; // mark down content start
-                int idx = 0; // index on bound 
+                int idx = 0; // index on bound
                 for (;;)
                 {
-                    byte b = buffer[p++];
-                    if (b == bound[idx])
+                    byte b = buffer_[p++];
+                    if (b == bound_[idx])
                     {
                         idx++;
                         if (idx >= boundlen) // fully matched the bound accumulatively
                         {
-                            if (frm == null) frm = new Form(true) { Buffer = buffer };
+                            if (frm == null) frm = new Form(true) {Buffer = buffer_};
                             if (plain)
                                 frm.Add(name, str.ToString());
                             else
@@ -121,7 +121,7 @@ namespace Greatbone.Core
                         {
                             for (int i = 0; i < idx; i++)
                             {
-                                str.Accept(bound[i]);
+                                str.Accept(bound_[i]);
                             }
                         }
                         idx = 0; // reset
@@ -133,7 +133,7 @@ namespace Greatbone.Core
                 }
 
                 // check if any more part
-                if (buffer[p++] == '\r' && buffer[p++] == '\n')
+                if (buffer_[p++] == '\r' && buffer_[p++] == '\n')
                 {
                     continue;
                 }

@@ -33,7 +33,7 @@ namespace Greatbone.Core
         readonly Roll<EventInfo> events;
 
         // client connectivity to the related peers
-        readonly Roll<Connector> connectors;
+        readonly Roll<Client> clients;
 
         // event providing
         readonly Roll<EventQueue> queues;
@@ -106,11 +106,11 @@ namespace Greatbone.Core
             {
                 foreach (KeyValuePair<string, string> entry in Cluster)
                 {
-                    if (connectors == null)
+                    if (clients == null)
                     {
-                        connectors = new Roll<Connector>(Cluster.Count * 2);
+                        clients = new Roll<Client>(Cluster.Count * 2);
                     }
-                    connectors.Add(new Connector(this, entry.Key, entry.Value));
+                    clients.Add(new Client(this, entry.Key, entry.Value));
 
                     if (queues == null)
                     {
@@ -136,7 +136,7 @@ namespace Greatbone.Core
         ///
         public string Id => id;
 
-        public Roll<Connector> Clients => connectors;
+        public Roll<Client> Clients => clients;
 
         public Roll<EventInfo> Events => events;
 
@@ -289,11 +289,11 @@ namespace Greatbone.Core
         // CLUSTER
         //
 
-        internal Connector GetClient(string targetid)
+        internal Client GetClient(string targetid)
         {
-            for (int i = 0; i < connectors.Count; i++)
+            for (int i = 0; i < clients.Count; i++)
             {
-                Connector cli = connectors[i];
+                Client cli = clients[i];
                 if (cli.Name.Equals(targetid)) return cli;
             }
             return null;
@@ -308,9 +308,9 @@ namespace Greatbone.Core
 
         public void Start()
         {
-            if (connectors != null)
+            if (clients != null)
             {
-                EventQueue.GlobalInit(this, connectors);
+                EventQueue.GlobalInit(this, clients);
             }
 
             // start the server
@@ -333,7 +333,7 @@ namespace Greatbone.Core
             });
             // cleaner.Start();
 
-            if (connectors != null)
+            if (clients != null)
             {
                 // Run in the scheduler thread to repeatedly check and initiate event polling activities.
                 scheduler = new Thread(() =>
@@ -347,7 +347,7 @@ namespace Greatbone.Core
                         int tick = Environment.TickCount;
                         for (int i = 0; i < Clients.Count; i++)
                         {
-                            Connector client = Clients[i];
+                            Client client = Clients[i];
                             client.TryPoll(tick);
                         }
                     }

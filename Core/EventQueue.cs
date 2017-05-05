@@ -125,7 +125,7 @@ namespace Greatbone.Core
         // static
         //
 
-        internal static void GlobalInit(Service service, Roll<Connector> client)
+        internal static void GlobalInit(Service service, Roll<Client> client)
         {
             using (var dc = service.NewDbContext())
             {
@@ -159,7 +159,7 @@ namespace Greatbone.Core
 
                 for (int i = 0; i < client.Count; i++)
                 {
-                    Connector cli = client[i];
+                    Client cli = client[i];
                     if (dc.Query1("SELECT evtid FROM evtu WHERE peerid = @1", p => p.Set(cli.Name)))
                     {
                         cli.evtid = dc.GetLong();

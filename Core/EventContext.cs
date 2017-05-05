@@ -8,7 +8,7 @@ namespace Greatbone.Core
     ///
     public class EventContext : IDoerContext<EventInfo>, IDisposable
     {
-        readonly Connector client;
+        readonly Client client;
 
         internal long id;
 
@@ -19,7 +19,7 @@ namespace Greatbone.Core
         // either JObj or JArr
         object entity;
 
-        internal EventContext(Connector client)
+        internal EventContext(Client client)
         {
             this.client = client;
         }
