@@ -48,7 +48,7 @@ namespace Greatbone.Sample
             if (ac.GET)
             {
                 var item = new Item() { };
-                ac.GiveFormPane(200, item);
+                ac.GivePane(200, m => { });
             }
             else
             {
@@ -94,7 +94,7 @@ namespace Greatbone.Sample
         {
             if (ac.GET)
             {
-                ac.GiveFormPane(200, Item.Empty);
+//                ac.GivePane(200, Item.Empty);
             }
             else // post
             {

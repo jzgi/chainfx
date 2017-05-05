@@ -15,7 +15,7 @@ namespace Greatbone.Sample
             DETAIL = 0x0020;
 
         // state
-        public const int
+        public const short
             CREATED = 0,
             RECEIVED = 1,
             SENT = 3,
@@ -49,7 +49,6 @@ namespace Greatbone.Sample
         internal string note;
         internal DateTime created; // time created
 
-        internal string prepay_id;
         internal DateTime paid; // time paid
 
         internal string pack; // packer name
@@ -91,7 +90,6 @@ namespace Greatbone.Sample
 
             if ((proj & LATE) == LATE)
             {
-                i.Get(nameof(prepay_id), ref prepay_id);
                 i.Get(nameof(paid), ref paid);
 
                 i.Get(nameof(pack), ref pack);
@@ -144,7 +142,6 @@ namespace Greatbone.Sample
             {
                 if ((proj & ID) == ID)
                 {
-                    o.Put(nameof(prepay_id), prepay_id);
                     o.Put(nameof(paid), paid);
                 }
                 if ((proj & ID) == ID)
@@ -165,14 +162,14 @@ namespace Greatbone.Sample
                     o.Put(nameof(closed), closed);
                 }
             }
-            o.Put(nameof(status), status, label: "状态", opt: STATUS);
+            o.Put(nameof(status), status, opt: STATUS, label: "状态");
         }
 
         public void AddItem(string item, short qty, string unit, decimal price)
         {
             if (detail == null)
             {
-                detail = new[] {new OrderLine() {item = item, qty = qty, unit = unit, price = price}};
+                detail = new[] { new OrderLine() { item = item, qty = qty, unit = unit, price = price } };
             }
             var orderln = detail.Find(o => o.item.Equals(item));
             if (orderln != null)
@@ -181,7 +178,7 @@ namespace Greatbone.Sample
             }
             else
             {
-                detail = detail.Add(new OrderLine() {item = item, qty = qty, unit = unit, price = price});
+                detail = detail.Add(new OrderLine() { item = item, qty = qty, unit = unit, price = price });
             }
         }
 

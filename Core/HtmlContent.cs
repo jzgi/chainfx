@@ -13,8 +13,7 @@ namespace Greatbone.Core
             TABLE_TBODY = 2,
             GRID_DIV = 3,
             LIST_UL = 4,
-            PICKER = 5,
-            FILLER_FORM = 6;
+            PICKER = 5;
 
         ///
         /// The outputing context for per data object
@@ -169,14 +168,13 @@ namespace Greatbone.Core
             Add("</div>");
         }
 
-        public void TOOLBAR(Work work)
+        public void TOOLBAR(ActionInfo[] ais)
         {
             Add("<div data-sticky-container>");
             Add("<div class=\"sticky\" style=\"width: 100%\" data-sticky  data-options=\"anchor: page; marginTop: 0; stickyOn: small;\">");
             Add("<div class=\"title-bar\">");
 
             Add("<div class=\"title-bar-left\">");
-            ActionInfo[] ais = work?.UiActions;
             if (ais != null)
             {
                 BUTTONS(ais);
@@ -219,46 +217,6 @@ namespace Greatbone.Core
             }
         }
 
-        public void FILLER(ActionInfo act, IDataInput input, Action<IDataInput, HtmlContent> pipe)
-        {
-            Add("<form method=\"post\">");
-
-            chain[++level].node = FILLER_FORM;
-            if (input != null)
-            {
-                while (input.Next())
-                {
-                    pipe(input, this);
-                }
-            }
-            else
-            {
-                Add("<div class=\"row\">");
-                Add("<span>没有记录</span>");
-                Add("</div>");
-            }
-            --level;
-
-            Add("</form>");
-        }
-
-        public void FILLER(ActionInfo act, IData obj, short proj = 0)
-        {
-            chain[++level].node = FILLER_FORM;
-            Add("<form method=\"post");
-            if (act != null)
-            {
-                Add("\" action=\"");
-                Add(act.Name);
-            }
-            Add("\">");
-            Add("<div class=\"row small-up-1 medium-up-2 large-up-3 xlarge-up-4\">");
-            obj.WriteData(this, proj);
-            Add("</div>");
-            Add("</form>");
-            --level;
-        }
-
         public void TABLE(IDataInput input, Action<IDataInput, HtmlContent> valve)
         {
             if (input != null)
@@ -291,7 +249,7 @@ namespace Greatbone.Core
             {
                 Add("<form id=\"gridform\">");
 
-                if (check > 1) TOOLBAR(formctx.Work);
+                if (check > 1) TOOLBAR(formctx.Work.UiActions);
             }
 
             if (arr != null)
@@ -394,7 +352,7 @@ namespace Greatbone.Core
             {
                 Add("<form id=\"gridform\">");
 
-                if (check > 1) TOOLBAR(formctx.Work);
+                if (check > 1) TOOLBAR(formctx.Work.UiActions);
             }
 
             if (arr != null) // grid component
@@ -471,7 +429,7 @@ namespace Greatbone.Core
             {
                 Add("<form id=\"gridform\">");
 
-                if (check > 1) TOOLBAR(formctx.Work);
+                if (check > 1) TOOLBAR(formctx.Work.UiActions);
             }
 
             if (arr != null)
@@ -1434,7 +1392,7 @@ namespace Greatbone.Core
             chain[level].group = false;
         }
 
-        public HtmlContent Put(string name, bool v, Func<bool, string> opt = null, string label = null, bool required = false)
+        public HtmlContent Put(string name, bool v, Func<bool, string> opt = null, string label = null)
         {
             switch (chain[level].node)
             {
@@ -1483,16 +1441,11 @@ namespace Greatbone.Core
                     break;
                 case LIST_UL:
                     break;
-                case FILLER_FORM:
-                    Add("<div class=\"column\">");
-                    CHECKBOX(name, v, label, required);
-                    Add("</div>");
-                    break;
             }
             return this;
         }
 
-        public HtmlContent Put(string name, short v, Opt<short> opt = null, string label = null, string help = null, short max = 0, short min = 0, short step = 0, bool @readonly = false, bool required = false)
+        public HtmlContent Put(string name, short v, Opt<short> opt = null, string label = null)
         {
             switch (chain[level].node)
             {
@@ -1541,23 +1494,11 @@ namespace Greatbone.Core
                     break;
                 case LIST_UL:
                     break;
-                case FILLER_FORM:
-                    Add("<div class=\"column\">");
-                    if (opt == null)
-                    {
-                        NUMBER(name, v);
-                    }
-                    else
-                    {
-                        SELECT(name, v, opt, label);
-                    }
-                    Add("</div>");
-                    break;
             }
             return this;
         }
 
-        public HtmlContent Put(string name, int v, Opt<int> opt = null, string label = null, string help = null, int max = 0, int min = 0, int step = 0, bool @readonly = false, bool required = false)
+        public HtmlContent Put(string name, int v, Opt<int> opt = null, string label = null)
         {
             switch (chain[level].node)
             {
@@ -1606,16 +1547,11 @@ namespace Greatbone.Core
                     break;
                 case LIST_UL:
                     break;
-                case FILLER_FORM:
-                    Add("<div class=\"column\">");
-                    NUMBER(name, v, label);
-                    Add("</div>");
-                    break;
             }
             return this;
         }
 
-        public HtmlContent Put(string name, long v, Opt<long> opt = null, string label = null, string help = null, long max = 0, long min = 0, long step = 0, bool @readonly = false, bool required = false)
+        public HtmlContent Put(string name, long v, Opt<long> opt = null, string label = null)
         {
             switch (chain[level].node)
             {
@@ -1667,16 +1603,11 @@ namespace Greatbone.Core
                     // NUMBER(name, v);
                     Add("</div>");
                     break;
-                case FILLER_FORM:
-                    Add("<div class=\"column\">");
-                    NUMBER(name, v, label);
-                    Add("</div>");
-                    break;
             }
             return this;
         }
 
-        public HtmlContent Put(string name, double v, string label = null, string help = null, double max = 0, double min = 0, double step = 0, bool @readonly = false, bool required = false)
+        public HtmlContent Put(string name, double v, string label = null)
         {
             switch (chain[level].node)
             {
@@ -1721,15 +1652,11 @@ namespace Greatbone.Core
                     break;
                 case LIST_UL:
                     break;
-                case FILLER_FORM:
-                    Add("<div class=\"column\">");
-                    Add("</div>");
-                    break;
             }
             return this;
         }
 
-        public HtmlContent Put(string name, decimal v, string label = null, string help = null, decimal max = 0, decimal min = 0, decimal step = 0, bool @readonly = false, bool required = false)
+        public HtmlContent Put(string name, decimal v, string label = null)
         {
             switch (chain[level].node)
             {
@@ -1777,16 +1704,11 @@ namespace Greatbone.Core
                     Add(v);
                     Add("</td>");
                     break;
-                case FILLER_FORM:
-                    Add("<div class=\"column\">");
-                    NUMBER(name, v, label);
-                    Add("</div>");
-                    break;
             }
             return this;
         }
 
-        public HtmlContent Put(string name, DateTime v, string label = null, DateTime max = default(DateTime), DateTime min = default(DateTime), int step = 0, bool @readonly = false, bool required = false)
+        public HtmlContent Put(string name, DateTime v, string label = null)
         {
             switch (chain[level].node)
             {
@@ -1842,16 +1764,11 @@ namespace Greatbone.Core
                     Add(v);
                     Add("</li>");
                     break;
-                case FILLER_FORM:
-                    Add("<div class=\"column\">");
-                    DATE(name, v);
-                    Add("</div>");
-                    break;
             }
             return this;
         }
 
-        public HtmlContent Put(string name, string v, Opt<string> opt = null, string label = null, string help = null, string pattern = null, short max = 0, short min = 0, bool @readonly = false, bool required = false)
+        public HtmlContent Put(string name, string v, Opt<string> opt = null, string label = null)
         {
             var ctx = chain[level];
             switch (ctx.node)
@@ -1897,31 +1814,11 @@ namespace Greatbone.Core
                 case LIST_UL:
                     Add(v);
                     break;
-                case FILLER_FORM:
-                    Add("<div class=\"column\">");
-                    if (label != null && label.Length == 0)
-                    {
-                        HIDDEN(name, v);
-                    }
-                    else if (name.EndsWith("password") || name.EndsWith("pwd"))
-                    {
-                        PASSWORD(name, v, label, help, pattern, (sbyte) max, (sbyte) min, @readonly, required);
-                    }
-                    else if (max < 128)
-                    {
-                        TEXT(name, v, label, help, pattern, (sbyte) max, (sbyte) min, opt, @readonly, required);
-                    }
-                    else
-                    {
-                        TEXTAREA(name, v, label, help, max, min, @readonly, required);
-                    }
-                    Add("</div>");
-                    break;
             }
             return this;
         }
 
-        public HtmlContent Put(string name, ArraySegment<byte> v, string label = null, string size = null, string ratio = null, bool required = false)
+        public HtmlContent Put(string name, ArraySegment<byte> v, string label = null)
         {
             switch (chain[level].node)
             {
@@ -1932,46 +1829,41 @@ namespace Greatbone.Core
                 case GRID_DIV:
                     Add("<img src=\"data:");
                     break;
-                case FILLER_FORM:
-                    Add("<div class=\"\">");
-                    FILE(name, label, size, ratio, required);
-                    Add("</div>");
-                    break;
             }
             return this;
         }
 
-        public HtmlContent Put(string name, short[] v, Opt<short> Opt = null, string label = null, string help = null, bool @readonly = false, bool required = false)
+        public HtmlContent Put(string name, short[] v, Opt<short> Opt = null, string label = null)
         {
             return this;
         }
 
-        public HtmlContent Put(string name, int[] v, Opt<int> Opt = null, string label = null, string help = null, bool @readonly = false, bool required = false)
+        public HtmlContent Put(string name, int[] v, Opt<int> Opt = null, string label = null)
         {
             return this;
         }
 
-        public HtmlContent Put(string name, long[] v, Opt<long> Opt = null, string label = null, string help = null, bool @readonly = false, bool required = false)
+        public HtmlContent Put(string name, long[] v, Opt<long> Opt = null, string label = null)
         {
             return this;
         }
 
-        public HtmlContent Put(string name, string[] v, Opt<string> Opt = null, string label = null, string help = null, bool @readonly = false, bool required = false)
+        public HtmlContent Put(string name, string[] v, Opt<string> Opt = null, string label = null)
         {
             return this;
         }
 
-        public HtmlContent Put(string name, Dictionary<string, string> v, string label = null, string help = null, bool @readonly = false, bool Required = false)
+        public HtmlContent Put(string name, Dictionary<string, string> v, string label = null)
         {
             return this;
         }
 
-        public HtmlContent Put(string name, IData v, short proj = 0, string label = null, string help = null, bool @readonly = false, bool required = false)
+        public HtmlContent Put(string name, IData v, short proj = 0, string label = null)
         {
             return this;
         }
 
-        public HtmlContent Put<D>(string name, D[] v, short proj = 0, string label = null, string help = null, bool @readonly = false, bool required = false) where D : IData
+        public HtmlContent Put<D>(string name, D[] v, short proj = 0, string label = null) where D : IData
         {
             switch (chain[level].node)
             {

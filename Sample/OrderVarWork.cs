@@ -59,7 +59,7 @@ namespace Greatbone.Sample
                         }
                     }
                 }
-                ac.GiveFormPane(200, m =>
+                ac.GivePane(200, m =>
                 {
                     m.TEXT(nameof(tel), tel, label: "电话");
                     m.SELECT(nameof(city), city, ((ShopService) Service).CityOpt, label: "城市", refresh: true);
@@ -95,7 +95,7 @@ namespace Greatbone.Sample
                     if (dc.Query1("SELECT note FROM orders WHERE id = @1", p => p.Set(id)))
                     {
                         var note = dc.GetString();
-                        ac.GiveFormPane(200, m => { m.TEXTAREA(nameof(note), note, label: "附加说明", max: 20, required: true); });
+                        ac.GivePane(200, m => { m.TEXTAREA(nameof(note), note, label: "附加说明", max: 20, required: true); });
                     }
                     else
                     {

@@ -8,10 +8,9 @@ namespace Greatbone.Sample
         public static readonly Shop Empty = new Shop();
 
         public const short
-            ID = 0x0800,
-            ICON = 0x0200,
-            LATE = 0x0100,
-            CREDENTIAL = 0x0040;
+            ID = 0x0001,
+            ICON = 0x0002,
+            LATE = 0x0010;
 
 
         public Opt<short> STATUS = new Opt<short>
@@ -23,7 +22,6 @@ namespace Greatbone.Sample
 
         internal string id;
         internal string name;
-        internal string credential;
         internal string descr;
         internal string icon;
         internal string tel;
@@ -44,10 +42,6 @@ namespace Greatbone.Sample
                 i.Get(nameof(id), ref id);
             }
             i.Get(nameof(name), ref name);
-            if ((proj & CREDENTIAL) == CREDENTIAL)
-            {
-                i.Get(nameof(credential), ref credential);
-            }
             i.Get(nameof(descr), ref descr);
             if ((proj & ICON) == ICON)
             {
@@ -68,27 +62,23 @@ namespace Greatbone.Sample
         {
             if ((proj & ID) == ID)
             {
-                o.Put(nameof(id), id, label: "编号", required: true);
+                o.Put(nameof(id), id, label: "编号");
             }
             o.Put(nameof(name), name, label: "名称");
-            if ((proj & CREDENTIAL) == CREDENTIAL)
-            {
-                o.Put(nameof(credential), credential);
-            }
             o.Put(nameof(descr), descr, label: "简语");
             if ((proj & ICON) == ICON)
             {
                 o.Put(nameof(icon), icon, label: "照片");
             }
-            o.Put(nameof(tel), tel, label: "电话", max: 11);
-            o.Put(nameof(city), city, label: "城市", max: 10);
-            o.Put(nameof(distr), distr, label: "区县", max: 10);
-            o.Put(nameof(addr), addr, label: "地址", max: 10);
+            o.Put(nameof(tel), tel, label: "电话");
+            o.Put(nameof(city), city, label: "城市");
+            o.Put(nameof(distr), distr, label: "区县");
+            o.Put(nameof(addr), addr, label: "地址");
             o.Put(nameof(x), x);
             o.Put(nameof(y), y);
             o.Put(nameof(lic), lic, label: "工商登记");
             o.Put(nameof(orders), orders);
-            o.Put(nameof(status), status, label: "状态", opt: STATUS);
+            o.Put(nameof(status), status, opt: STATUS, label: "状态");
         }
     }
 }

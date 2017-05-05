@@ -1,4 +1,3 @@
-using System.Collections.Generic;
 using System.Threading.Tasks;
 using Greatbone.Core;
 
@@ -10,73 +9,6 @@ namespace Greatbone.Sample
         {
         }
 
-        [Ui("申请", UiMode.AnchorDialog)]
-        public async Task apply(ActionContext ac)
-        {
-            if (ac.GET)
-            {
-                ac.GiveFormPane(200, Shop.Empty, -1);
-            }
-            else // post
-            {
-                var shop = await ac.ReadObjectAsync<Shop>();
-
-                // validate
-
-                using (var dc = Service.NewDbContext())
-                {
-                    shop.credential = StrUtility.MD5(shop.id + ':' + shop.credential);
-                    dc.Sql("INSERT INTO shops")._(Shop.Empty)._VALUES_(Shop.Empty)._("");
-                    if (dc.Execute(p => p.Set(shop)) > 0)
-                    {
-                        ac.Give(201); // created
-                    }
-                    else
-                    {
-                        ac.Give(500); // internal server error
-                    }
-                }
-            }
-        }
-
-        [Ui("新建", UiMode.AnchorDialog)]
-        public async Task @new(ActionContext ac)
-        {
-            if (ac.GET)
-            {
-                ac.GiveFormPane(200, Shop.Empty, -1);
-            }
-            else // post
-            {
-                var shop = await ac.ReadObjectAsync<Shop>();
-
-                // validate
-
-                using (var dc = Service.NewDbContext())
-                {
-                    shop.credential = StrUtility.MD5(shop.id + ':' + shop.credential);
-                    dc.Sql("INSERT INTO shops")._(Shop.Empty)._VALUES_(Shop.Empty)._("");
-                    if (dc.Execute(p => p.Set(shop)) > 0)
-                    {
-                        ac.Give(201); // created
-                    }
-                    else
-                    {
-                        ac.Give(500); // internal server error
-                    }
-                }
-            }
-        }
-
-        [Ui("停业/启用")]
-        public void toggle(ActionContext ac)
-        {
-        }
-
-        [Ui("分布报告")]
-        public void rpt(ActionContext ac)
-        {
-        }
     }
 
     /// <summary>
@@ -112,6 +44,44 @@ namespace Greatbone.Sample
                     ac.GiveGridFormPage(200, (Shop[]) null);
                 }
             }
+        }
+
+        [Ui("新建", UiMode.AnchorDialog)]
+        public async Task @new(ActionContext ac)
+        {
+            if (ac.GET)
+            {
+//                ac.GiveFormPane(200, Shop.Empty, -1);
+            }
+            else // post
+            {
+                var shop = await ac.ReadObjectAsync<Shop>();
+
+                // validate
+
+                using (var dc = Service.NewDbContext())
+                {
+                    dc.Sql("INSERT INTO shops")._(Shop.Empty)._VALUES_(Shop.Empty)._("");
+                    if (dc.Execute(p => p.Set(shop)) > 0)
+                    {
+                        ac.Give(201); // created
+                    }
+                    else
+                    {
+                        ac.Give(500); // internal server error
+                    }
+                }
+            }
+        }
+
+        [Ui("停业/启用")]
+        public void toggle(ActionContext ac)
+        {
+        }
+
+        [Ui("分布报告")]
+        public void rpt(ActionContext ac)
+        {
         }
     }
 }

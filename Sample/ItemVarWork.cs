@@ -68,7 +68,8 @@ namespace Greatbone.Sample
                     dc.Sql("SELECT ").columnlst(Item.Empty, proj)._("FROM items WHERE shopid = @1 AND name = @2");
                     if (dc.Query1(p => p.Set(shopid).Set(name)))
                     {
-                        ac.GiveFormPane(200, dc.ToObject<Item>(proj), proj);
+                        var item = dc.ToObject<Item>(proj);
+                        ac.GivePane(200, maxage => { });
                     }
                     else
                     {

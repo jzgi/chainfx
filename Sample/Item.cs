@@ -67,21 +67,21 @@ namespace Greatbone.Sample
                 o.Put(nameof(shopid), shopid);
                 o.Put(nameof(shopname), shopname);
             }
-            o.Put(nameof(name), name, label: "品名", max: 10, required: true);
-            o.Put(nameof(unit), unit, label: "单位", max: 8, required: true);
-            o.Put(nameof(descr), descr, label: "描述", max: 20, required: true);
+            o.Put(nameof(name), name, label: "品名");
+            o.Put(nameof(unit), unit, label: "单位");
+            o.Put(nameof(descr), descr, label: "描述");
             if ((proj & ICON) == ICON)
             {
-                o.Put(nameof(icon), icon, label: "图片", size: "240,240", ratio: "1:1", required: true);
+                o.Put(nameof(icon), icon, label: "图片");
             }
-            o.Put(nameof(price), price, label: "单价", required: true);
+            o.Put(nameof(price), price, label: "单价");
             o.Put(nameof(min), min, label: "起订");
             o.Put(nameof(step), step, label: "递增");
             if ((proj & QTY) == QTY)
             {
                 o.Put(nameof(qty), qty, label: "数量");
             }
-            o.Put(nameof(status), status, label: "状态", opt: STATUS);
+            o.Put(nameof(status), status, opt: STATUS, label: "状态");
         }
     }
 }

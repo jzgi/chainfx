@@ -71,7 +71,7 @@ namespace Greatbone.Sample
                     {
                         var item = dc.ToObject<Item>(proj);
                         short qty = item.min;
-                        ac.GiveFormPane(200, h =>
+                        ac.GivePane(200, h =>
                         {
                             h.Add(name);
                             h.NUMBER(nameof(qty), qty, label: "数量", min: item.min, step: item.step, required: true);

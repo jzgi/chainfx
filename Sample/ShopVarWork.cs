@@ -4,14 +4,13 @@ using Greatbone.Core;
 
 namespace Greatbone.Sample
 {
-    [User]
     public abstract class ShopVarWork : Work
     {
         protected ShopVarWork(WorkContext wc) : base(wc)
         {
         }
 
-        public void _icon_(ActionContext ac)
+        public void icon(ActionContext ac)
         {
             string shopid = ac[this];
 
@@ -46,7 +45,7 @@ namespace Greatbone.Sample
             using (var dc = ac.NewDbContext())
             {
                 // query for the shop record
-                const int proj = -1 ^ Shop.ICON ^ Shop.CREDENTIAL;
+                const int proj = -1 ^ Shop.ICON;
                 dc.Sql("SELECT ").columnlst(Shop.Empty, proj)._("FROM shops WHERE id = @1");
                 if (dc.Query1(p => p.Set(shopid)))
                 {
@@ -67,9 +66,9 @@ namespace Greatbone.Sample
                         m.Add("<div class=\"sticky\" style=\"width: 100%\" data-sticky  data-options=\"anchor: page; marginTop: 0; stickyOn: small;\">");
                         m.Add("<div class=\"title-bar\">");
                         m.Add("<div class=\"title-bar-left\">");
-                        m.Add("<a href=\"../\" onclick=\"return dialog(this, 2);\">");
+                        m.Add("<span style=\"font-size: 1.25rem;\">");
                         m.Add(shop.name);
-                        m.Add("</a>");
+                        m.Add("</span>");
                         m.Add("</div>");
                         m.Add("<div class=\"title-bar-right\">");
                         m.Add("<a class=\"float-right\" href=\"/my//cart/\"><span class=\"fa-stack fa-lg\"><i class=\"fa fa-circle fa-stack-2x\"></i><i class=\"fa fa-shopping-cart fa-stack-1x fa-inverse\"></i></span></a>");
@@ -156,6 +155,74 @@ namespace Greatbone.Sample
         {
             ac.GiveFrame(200);
         }
+
+        [Ui("基本资料", UiMode.AnchorDialog)]
+        public async Task edit(ActionContext ac)
+        {
+            const int proj = -1 ^ Shop.ICON ^ Shop.ID;
+            if (ac.GET)
+            {
+                string id = ac[this];
+                using (var dc = ac.NewDbContext())
+                {
+                    dc.Sql("SELECT ").columnlst(Shop.Empty, proj)._("FROM shops WHERE id = @1");
+                    if (dc.Query1(p => p.Set(id)))
+                    {
+                        var shop = dc.ToObject<Shop>(proj);
+                        ac.GivePane(200, m => { });
+                    }
+                    else
+                    {
+                        ac.Give(500); // internal server error
+                    }
+                }
+            }
+            else // post
+            {
+                var shop = await ac.ReadObjectAsync<Shop>();
+                shop.id = ac[this];
+                using (var dc = ac.NewDbContext())
+                {
+                    dc.Sql("INSERT INTO shops")._(Shop.Empty, proj)._VALUES_(Shop.Empty, proj)._("");
+                    dc.Execute(p => shop.WriteData(p, proj));
+                }
+                ac.GivePane(201, null);
+            }
+        }
+
+        [Ui("图片", UiMode.AnchorCrop, Circle = true)]
+        public new async Task icon(ActionContext ac)
+        {
+            string id = ac[this];
+            string city = ac[typeof(CityVarWork)];
+            if (ac.GET)
+            {
+                using (var dc = ac.NewDbContext())
+                {
+                    if (dc.Query1("SELECT icon FROM shops WHERE id = @1", p => p.Set(id)))
+                    {
+                        var byteas = dc.GetByteAs();
+                        if (byteas.Count == 0) ac.Give(204); // no content
+                        else
+                        {
+                            StaticContent cont = new StaticContent(byteas);
+                            ac.Give(200, cont);
+                        }
+                    }
+                    else ac.Give(404); // not found
+                }
+            }
+            else // post
+            {
+                var frm = await ac.ReadAsync<Form>();
+                ArraySegment<byte> icon = frm[nameof(icon)];
+                using (var dc = ac.NewDbContext())
+                {
+                    dc.Execute("UPDATE shops SET icon = @1 WHERE id = @2", p => p.Set(icon).Set(id));
+                    ac.Give(200); // ok
+                }
+            }
+        }
     }
 
     [Ui("设置")]
@@ -193,7 +260,8 @@ namespace Greatbone.Sample
                     dc.Sql("SELECT ").columnlst(Shop.Empty, proj)._("FROM shops WHERE id = @1 AND city = @2");
                     if (dc.Query1(p => p.Set(id).Set(city)))
                     {
-                        ac.GiveFormPane(200, dc.ToObject<Item>(proj), proj);
+                        var shop = dc.ToObject<Item>(proj);
+                        ac.GivePane(200, m => { });
                     }
                     else
                     {
@@ -222,7 +290,7 @@ namespace Greatbone.Sample
         }
 
         [Ui("图片", UiMode.AnchorCrop, Circle = true)]
-        public async Task icon(ActionContext ac)
+        public new async Task icon(ActionContext ac)
         {
             string id = ac[this];
             string city = ac[typeof(CityVarWork)];

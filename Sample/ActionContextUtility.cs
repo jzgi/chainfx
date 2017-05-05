@@ -31,11 +31,13 @@ namespace Greatbone.Sample
 
             Work work = ac.Work;
             Roll<Work> subs = work.Subworks;
-            h.Add("<ul class=\"tabs\" data-tabs id=\"example-tabs\">");
+            h.Add("<ul class=\"tabs\" data-tabs id=\"frame-tabs\">");
 
-            h.Add("<li class=\"tabs-title is-active\"><a href=\"#paneltop\">");
+            h.Add("<li class=\"tabs-title is-active\">");
+            h.Add("<a href=\"#paneltop\">");
             h.Add(work.Label);
-            h.Add("</a></li>");
+            h.Add("</a>");
+            h.Add("</li>");
 
             if (subs != null)
             {
@@ -51,10 +53,15 @@ namespace Greatbone.Sample
             }
             h.Add("</ul>");
 
-            h.Add("<div class=\"tabs-content\" data-tabs-content=\"example-tabs\">");
+            h.Add("<div class=\"tabs-content\" data-tabs-content=\"frame-tabs\">");
 
             h.Add("<div class=\"tabs-panel is-active\" id=\"paneltop\">");
-            h.Add(" </div>");
+            h.Add("<div class=\"title-bar\">");
+            h.Add("<div class=\"title-bar-left\">");
+            h.BUTTONS(work.UiActions);
+            h.Add("</div>");
+            h.Add("</div>");
+            h.Add("</div>");
 
             if (subs != null)
             {
@@ -80,7 +87,7 @@ namespace Greatbone.Sample
             h.Add("<script src=\"/app.js\"></script>");
             h.Add("<script>");
             h.Add("$(document).foundation();");
-            h.Add("$('#example-tabs').on('change.zf.tabs', function(e){var ifr = $('.tabs-panel.is-active').find('iframe'); if (ifr && !ifr[0].src) ifr[0].src = ifr[0].id;});");
+            h.Add("$('#frame-tabs').on('change.zf.tabs', function(e){var ifr = $('.tabs-panel.is-active').find('iframe'); if (ifr && !ifr[0].src) ifr[0].src = ifr[0].id;});");
             h.Add("</script>");
             h.Add("</body>");
             h.Add("</html>");
@@ -185,30 +192,16 @@ namespace Greatbone.Sample
             }, pub, maxage);
         }
 
-        public static void GiveFormPane(this ActionContext ac, int status, Action<HtmlContent> form, bool? pub = null, int maxage = 60)
+        public static void GiveFormPane(this ActionContext ac, int status, IDataInput inp, Action<IDataInput, HtmlContent> pipe, bool? pub = null, int maxage = 60)
         {
             ac.GivePane(status, m =>
                 {
                     m.FORM_(mp: true);
                     m.FIELDSET_();
-                    form(m);
+                    pipe(inp, m);
                     m._FIELDSET();
                     m._FORM();
                 },
-                pub, maxage);
-        }
-
-        public static void GiveFormPane(this ActionContext ac, int status, IData obj, short proj = 0, bool? pub = null, int maxage = 60)
-        {
-            ac.GivePane(status,
-                m => { m.FILLER(ac.Doer, obj, proj); },
-                pub, maxage
-            );
-        }
-
-        public static void GiveFormPane(this ActionContext ac, int status, IDataInput input, Action<IDataInput, HtmlContent> valve, bool? pub = null, int maxage = 60)
-        {
-            ac.GivePane(status, m => { m.FILLER(ac.Doer, input, valve); },
                 pub, maxage);
         }
 

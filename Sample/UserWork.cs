@@ -64,7 +64,7 @@ namespace Greatbone.Sample
             if (ac.GET)
             {
                 string id = null;
-                ac.GiveFormPane(200, f => { f.TEXT(nameof(id), id, label: "用户编号", max: 11, min: 11); });
+                ac.GivePane(200, f => { f.TEXT(nameof(id), id, label: "用户编号", max: 11, min: 11); });
             }
             else
             {
