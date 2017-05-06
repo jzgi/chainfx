@@ -1,5 +1,7 @@
 ﻿using System;
 using System.Net;
+using System.Net.Http;
+using System.Security.Cryptography.X509Certificates;
 using System.Threading;
 using System.Threading.Tasks;
 using Greatbone.Core;
@@ -20,7 +22,7 @@ namespace Greatbone.Sample
 
         public const string NONCE_STR = "30A5FE271";
 
-        static readonly Client WweiXinPay = new Client("https://api.mch.weixin.qq.com");
+        static Client WweiXinPay;
 
         public const string KEY = "28165ACAB74C2FBF3B042B5D2F87D274";
 
@@ -46,9 +48,26 @@ namespace Greatbone.Sample
             }
         });
 
+        internal static void InitWweiXinPay(string p12file)
+        {
+            var handler = new HttpClientHandler
+            {
+                ClientCertificateOptions = ClientCertificateOption.Manual
+            };
+            X509Certificate2 cert = new X509Certificate2(p12file, WeiXinUtility.MCH_ID, X509KeyStorageFlags.MachineKeySet);
+            handler.ClientCertificates.Add(cert);
+            var myClient = new System.Net.Http.HttpClient(handler);
+
+            WweiXinPay = new Client(handler)
+            {
+                BaseAddress = new Uri("https://api.mch.weixin.qq.com")
+            };
+
+        }
+        
         static WeiXinUtility()
         {
-//            renewer.Start();
+            //            renewer.Start();
         }
 
         public static void Stop()
@@ -66,7 +85,7 @@ namespace Greatbone.Sample
                        "&openid=" + openid +
                        "&out_trade_no=" + orderid +
                        "&spbill_create_ip=" + ip +
-                       "&total_fee=" + ((int) (total * 100)) +
+                       "&total_fee=" + ((int)(total * 100)) +
                        "&trade_type=" + "JSAPI" +
                        "&key=" + KEY;
 
@@ -79,7 +98,7 @@ namespace Greatbone.Sample
                 xml.ELEM("nonce_str", NONCE_STR);
                 xml.ELEM("body", BODY_DESC);
                 xml.ELEM("out_trade_no", orderid);
-                xml.ELEM("total_fee", (int) (total * 100));
+                xml.ELEM("total_fee", (int)(total * 100));
                 xml.ELEM("notify_url", notifyurl);
                 xml.ELEM("spbill_create_ip", ip);
                 xml.ELEM("trade_type", "JSAPI");
@@ -133,7 +152,7 @@ namespace Greatbone.Sample
             JObj jo = await WeiXin.GetAsync<JObj>(null, "/sns/userinfo?access_token=" + access_token + "&openid=" + openid + "&lang=zh_CN");
             string nickname = jo[nameof(nickname)];
             string city = jo[nameof(city)];
-            return new User {wx = openid, name = nickname, city = city};
+            return new User { wx = openid, name = nickname, city = city };
         }
 
         static readonly DateTime EPOCH = new DateTime(1970, 1, 1);
@@ -141,7 +160,7 @@ namespace Greatbone.Sample
         public static IContent BuildPrepayContent(string prepay_id)
         {
             string package = "prepay_id=" + prepay_id;
-            string timeStamp = ((int) (DateTime.Now - EPOCH).TotalSeconds).ToString();
+            string timeStamp = ((int)(DateTime.Now - EPOCH).TotalSeconds).ToString();
 
             var temp = "appId=" + APPID +
                        "&nonceStr=" + NONCE_STR +

@@ -29,7 +29,7 @@ namespace Greatbone.Sample
 
             if (opr > 0)
             {
-                if (prin.opr != opr) return false;
+                if ((prin.opr & opr) != opr) return false; // inclusive check
                 return prin.oprat == ac[typeof(ShopVarWork)];
             }
             if (spr)

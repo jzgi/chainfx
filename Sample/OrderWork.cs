@@ -216,7 +216,7 @@ namespace Greatbone.Sample
         }
     }
 
-    [Ui("购买中")]
+    [Ui("在购")]
     public class OprCartOrderWork : OprOrderWork<OprCartOrderVarWork>
     {
         public OprCartOrderWork(WorkContext wc) : base(wc)
@@ -237,7 +237,7 @@ namespace Greatbone.Sample
         }
     }
 
-    [Ui("已受理")]
+    [Ui("已接")]
     public class OprAcceptedOrderWork : OprOrderWork<OprAcceptedOrderVarWork>
     {
         public OprAcceptedOrderWork(WorkContext wc) : base(wc)
@@ -271,7 +271,7 @@ namespace Greatbone.Sample
         }
     }
 
-    [Ui("已发货")]
+    [Ui("已发")]
     public class OprSentOrderWork : OprOrderWork<OprSentOrderVarWork>
     {
         public OprSentOrderWork(WorkContext wc) : base(wc)
@@ -293,7 +293,7 @@ namespace Greatbone.Sample
         }
     }
 
-    [Ui("已结束")]
+    [Ui("历史")]
     public class OprHistoryOrderWork : OprOrderWork<OprHistoryOrderVarWork>
     {
         public OprHistoryOrderWork(WorkContext wc) : base(wc)
@@ -305,7 +305,7 @@ namespace Greatbone.Sample
     }
 
 
-    [Ui("代派送")]
+    [Ui("代送")]
     public class OprAlienOrderWork : OrderWork<OprAlienOrderVarWork>
     {
         public OprAlienOrderWork(WorkContext wc) : base(wc)
