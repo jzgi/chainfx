@@ -7,7 +7,7 @@ namespace Greatbone.Sample
     {
         protected ShopWork(WorkContext wc) : base(wc)
         {
-            CreateVar<V, string>(obj => ((Shop) obj).id);
+            CreateVar<V, string>(obj => ((Shop)obj).id);
         }
     }
 
@@ -40,7 +40,7 @@ namespace Greatbone.Sample
                 string city = ac.Query[nameof(city)];
                 if (city == null)
                 {
-                    city = ((User) ac.Principal).city;
+                    city = ((User)ac.Principal).city;
                 }
                 using (var dc = ac.NewDbContext())
                 {
@@ -51,7 +51,7 @@ namespace Greatbone.Sample
                         m.Add("<div class=\"title-bar\">");
                         m.Add("<div class=\"title-bar-title\">");
                         m.Add("<select name=\"city\" style=\"margin: 0; border: 0; color: #ba55d3; font-size: 1.25rem;\" onchange=\"location = location.href.split('?')[0] + '?city=' + this.value;\">");
-                        string[] vs = ((ShopService) Service).CityOpt;
+                        string[] vs = ((ShopService)Service).CityOpt;
                         for (int i = 0; i < vs.Length; i++)
                         {
                             string v = vs[i];
@@ -119,7 +119,7 @@ namespace Greatbone.Sample
     {
         public OprShopWork(WorkContext wc) : base(wc)
         {
-            CreateVar<OprShopVarWork, string>((prin) => ((User) prin).oprat);
+            CreateVar<OprShopVarWork, string>((prin) => ((User)prin).oprat);
         }
 
         public async Task @goto(ActionContext ac)
@@ -144,10 +144,10 @@ namespace Greatbone.Sample
                 orig = f[nameof(orig)];
 
                 // data op
-                User prin = (User) ac.Principal;
+                User prin = (User)ac.Principal;
                 using (var dc = ac.NewDbContext())
                 {
-                    var credential = (string) dc.Scalar("SELECT credential FROM shops WHERE id = @1", p => p.Set(shopid));
+                    var credential = (string)dc.Scalar("SELECT credential FROM shops WHERE id = @1", p => p.Set(shopid));
                     if (credential.EqualsCredential(shopid, password))
                     {
                         dc.Execute("UPDATE users SET oprat = @1 WHERE wx = @2", p => p.Set(shopid).Set(prin.wx));
@@ -160,18 +160,10 @@ namespace Greatbone.Sample
         }
     }
 
-    public sealed class DvrShopWork : ShopWork<DvrShopVarWork>
-    {
-        public DvrShopWork(WorkContext wc) : base(wc)
-        {
-            CreateVar<DvrShopVarWork, string>((prin) => ((User) prin).dvrat);
-        }
-    }
-
     [Ui("商家管理")]
-    public class MgrShopWork : ShopWork<MgrShopVarWork>
+    public class SupShopWork : ShopWork<SupShopVarWork>
     {
-        public MgrShopWork(WorkContext wc) : base(wc)
+        public SupShopWork(WorkContext wc) : base(wc)
         {
         }
 
@@ -188,7 +180,7 @@ namespace Greatbone.Sample
                 }
                 else
                 {
-                    ac.GiveGridFormPage(200, (Shop[]) null);
+                    ac.GiveGridFormPage(200, (Shop[])null);
                 }
             }
         }
@@ -241,7 +233,7 @@ namespace Greatbone.Sample
                 }
                 else
                 {
-                    ac.GiveGridFormPage(200, (Shop[]) null);
+                    ac.GiveGridFormPage(200, (Shop[])null);
                 }
             }
         }

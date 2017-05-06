@@ -101,9 +101,9 @@ namespace Greatbone.Sample
     }
 
     [Ui("结款管理")]
-    public class MgrRepayWork : RepayWork<MgrRepayVarWork>
+    public class SupRepayWork : RepayWork<MgrRepayVarWork>
     {
-        public MgrRepayWork(WorkContext wc) : base(wc)
+        public SupRepayWork(WorkContext wc) : base(wc)
         {
         }
 

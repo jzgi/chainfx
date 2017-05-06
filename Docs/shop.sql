@@ -11,7 +11,7 @@ Target Server Type    : PGSQL
 Target Server Version : 90505
 File Encoding         : 65001
 
-Date: 2017-04-30 00:20:24
+Date: 2017-05-05 14:57:12
 */
 
 
@@ -32,11 +32,11 @@ CREATE SEQUENCE "public"."evtq_id_seq"
 DROP SEQUENCE IF EXISTS "public"."orders_id_seq";
 CREATE SEQUENCE "public"."orders_id_seq"
  INCREMENT 1
- MINVALUE 1
+ MINVALUE 1000
  MAXVALUE 9223372036854775807
- START 1
- CACHE 1;
-SELECT setval('"public"."orders_id_seq"', 1, true);
+ START 1008
+ CACHE 8;
+SELECT setval('"public"."orders_id_seq"', 1008, true);
 
 -- ----------------------------
 -- Sequence structure for repays_id_seq
@@ -92,7 +92,8 @@ CREATE TABLE "public"."items" (
 "min" int2,
 "step" int2,
 "status" int2,
-"global" bool DEFAULT false
+"shopname" varchar(10) COLLATE "default",
+"qty" int2
 )
 WITH (OIDS=FALSE)
 
@@ -104,7 +105,7 @@ WITH (OIDS=FALSE)
 DROP TABLE IF EXISTS "public"."orders";
 CREATE TABLE "public"."orders" (
 "id" int8 DEFAULT nextval('orders_id_seq'::regclass) NOT NULL,
-"shop" varchar(10) COLLATE "default",
+"shopname" varchar(10) COLLATE "default",
 "shopid" varchar(6) COLLATE "default",
 "custname" varchar(10) COLLATE "default",
 "custwx" varchar(28) COLLATE "default",
@@ -124,7 +125,7 @@ CREATE TABLE "public"."orders" (
 "dvred" timestamp(6),
 "closed" timestamp(6),
 "status" int2,
-"prepay_id" varchar(40) COLLATE "default",
+"prepay_id" varchar(60) COLLATE "default",
 "repaid" timestamp(6),
 "note" varchar(20) COLLATE "default",
 "custcity" varchar(4) COLLATE "default"
@@ -158,7 +159,6 @@ DROP TABLE IF EXISTS "public"."shops";
 CREATE TABLE "public"."shops" (
 "id" varchar(6) COLLATE "default" NOT NULL,
 "name" varchar(10) COLLATE "default",
-"credential" varchar(32) COLLATE "default",
 "descr" varchar(20) COLLATE "default",
 "tel" varchar(11) COLLATE "default",
 "city" varchar(4) COLLATE "default",
@@ -192,7 +192,8 @@ CREATE TABLE "public"."users" (
 "oprat" varchar(6) COLLATE "default",
 "dvrat" varchar(6) COLLATE "default",
 "mgrat" varchar(4) COLLATE "default",
-"adm" bool DEFAULT false
+"adm" bool DEFAULT false,
+"id" varchar(11) COLLATE "default"
 )
 WITH (OIDS=FALSE)
 

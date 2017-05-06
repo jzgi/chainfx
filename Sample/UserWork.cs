@@ -21,9 +21,9 @@ namespace Greatbone.Sample
     }
 
     [Ui("用户管理")]
-    public class MgrUserWork : UserWork<MgrUserVarWork>
+    public class SupUserWork : UserWork<MgrUserVarWork>
     {
-        public MgrUserWork(WorkContext wc) : base(wc)
+        public SupUserWork(WorkContext wc) : base(wc)
         {
         }
     }

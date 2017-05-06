@@ -25,7 +25,7 @@ namespace Greatbone.Sample
     {
         public MyCartOrderVarWork(WorkContext wc) : base(wc)
         {
-            CreateVar<MyCartOrderVarVarWork, string>(obj => ((OrderLine) obj).item);
+            CreateVar<MyCartOrderVarVarWork, string>(obj => ((OrderLine)obj).item);
         }
 
         [Ui("收货地址", UiMode.ButtonDialog)]
@@ -62,8 +62,8 @@ namespace Greatbone.Sample
                 ac.GivePane(200, m =>
                 {
                     m.TEXT(nameof(tel), tel, label: "电话");
-                    m.SELECT(nameof(city), city, ((ShopService) Service).CityOpt, label: "城市", refresh: true);
-                    m.SELECT(nameof(distr), distr, ((ShopService) Service).GetDistrs(city), label: "区域");
+                    m.SELECT(nameof(city), city, ((ShopService)Service).CityOpt, label: "城市", refresh: true);
+                    m.SELECT(nameof(distr), distr, ((ShopService)Service).GetDistrs(city), label: "区域");
                     m.TEXT(nameof(addr), addr, label: "地址");
                 });
             }
@@ -115,7 +115,7 @@ namespace Greatbone.Sample
             }
         }
 
-        static readonly Func<IData, bool> PREPAY = obj => ((Order) obj).custaddr != null;
+        static readonly Func<IData, bool> PREPAY = obj => ((Order)obj).custaddr != null;
 
         [Ui("付款", UiMode.AnchorScript, Alert = true)]
         public async Task prepay(ActionContext ac)
@@ -145,41 +145,13 @@ namespace Greatbone.Sample
         {
         }
 
-        [Ui("撤销")]
-        public async Task abort(ActionContext ac)
+        [Ui("请求撤销")]
+        public void abort(ActionContext ac)
         {
-            string shopid = ac[0];
-            Form frm = await ac.ReadAsync<Form>();
-            int[] pk = frm[nameof(pk)];
-
-            if (ac.GET)
+            long id = ac[this];
+            using (var dc = ac.NewDbContext())
             {
-                using (var dc = ac.NewDbContext())
-                {
-                    dc.Sql("SELECT ").columnlst(Order.Empty)._("FROM orders WHERE id = @1 AND shopid = @2");
-                    if (dc.Query(p => p.Set(pk).Set(shopid)))
-                    {
-                        var order = dc.ToArray<Order>();
-                    }
-                    else
-                    {
-                    }
-                }
-            }
-            else
-            {
-                using (var dc = ac.NewDbContext())
-                {
-                    dc.Sql("UPDATE orders SET ").setstate()._(" WHERE id IN () AND shopid = @1 AND ").statecond();
-                    if (dc.Query(p => p.Set(pk).Set(shopid)))
-                    {
-                        ac.Give(303); // see other
-                    }
-                    else
-                    {
-                        ac.Give(303); // see other
-                    }
-                }
+                dc.Execute("UPDATE orders SET status = @1 WHERE id = @2", p => p.Set(0).Set(id));
             }
         }
     }
@@ -205,9 +177,9 @@ namespace Greatbone.Sample
         }
     }
 
-    public class OprPaidOrderVarWork : OprOrderVarWork
+    public class OprAcceptedOrderVarWork : OprOrderVarWork
     {
-        public OprPaidOrderVarWork(WorkContext wc) : base(wc)
+        public OprAcceptedOrderVarWork(WorkContext wc) : base(wc)
         {
         }
 
@@ -235,6 +207,17 @@ namespace Greatbone.Sample
         public OprCartOrderVarWork(WorkContext wc) : base(wc)
         {
         }
+        [Ui("置己收", UiMode.ButtonConfirm)]
+        public async Task rcved(ActionContext ac)
+        {
+            long id = ac[this];
+
+            using (var dc = Service.NewDbContext())
+            {
+                dc.Execute("UPDATE orders SET status = @1 WHERE id = @2", p => p.Set(Order.ACCEPTED).Set(id));
+                ac.GiveRedirect("../");
+            }
+        }
     }
 
     public class OprSentOrderVarWork : OprOrderVarWork
@@ -258,23 +241,9 @@ namespace Greatbone.Sample
         }
     }
 
-    public abstract class DvrOrderVarWork : OrderVarWork
+    public class OprAlienOrderVarWork : OprOrderVarWork
     {
-        protected DvrOrderVarWork(WorkContext wc) : base(wc)
-        {
-        }
-    }
-
-    public class DvrSentOrderVarWork : DvrOrderVarWork
-    {
-        public DvrSentOrderVarWork(WorkContext wc) : base(wc)
-        {
-        }
-    }
-
-    public class DvrDoneOrderVarWork : DvrOrderVarWork
-    {
-        public DvrDoneOrderVarWork(WorkContext wc) : base(wc)
+        public OprAlienOrderVarWork(WorkContext wc) : base(wc)
         {
         }
     }

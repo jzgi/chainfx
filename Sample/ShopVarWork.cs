@@ -35,7 +35,7 @@ namespace Greatbone.Sample
     {
         public PubShopVarWork(WorkContext wc) : base(wc)
         {
-            CreateVar<ItemVarWork, string>(obj => ((Item) obj).name);
+            CreateVar<ItemVarWork, string>(obj => ((Item)obj).name);
         }
 
         public void @default(ActionContext ac)
@@ -140,15 +140,18 @@ namespace Greatbone.Sample
         {
             Create<OprCartOrderWork>("cart");
 
-            Create<OprPaidOrderWork>("paid");
+            Create<OprAcceptedOrderWork>("acpt");
 
             Create<OprSentOrderWork>("sent");
 
             Create<OprHistoryOrderWork>("history");
 
+            Create<OprAlienOrderWork>("alien");
+
             Create<OprItemWork>("item");
 
             Create<OprRepayWork>("repay");
+
         }
 
         public void @default(ActionContext ac)
@@ -159,21 +162,32 @@ namespace Greatbone.Sample
         [Ui("基本资料", UiMode.AnchorDialog)]
         public async Task edit(ActionContext ac)
         {
-            const int proj = -1 ^ Shop.ICON ^ Shop.ID;
+            const int proj = -1 ^ Shop.ICON ^ Shop.ID ^ Shop.ADM;
+            string id = ac[this];
             if (ac.GET)
             {
-                string id = ac[this];
                 using (var dc = ac.NewDbContext())
                 {
                     dc.Sql("SELECT ").columnlst(Shop.Empty, proj)._("FROM shops WHERE id = @1");
                     if (dc.Query1(p => p.Set(id)))
                     {
-                        var shop = dc.ToObject<Shop>(proj);
-                        ac.GivePane(200, m => { });
+                        var o = dc.ToObject<Shop>(proj);
+                        ac.GivePane(200, m =>
+                        {
+                            m.FORM_();
+                            m.TEXT(nameof(o.name), o.name, label: "商家名称", max: 10, @readonly: true);
+                            m.TEXT(nameof(o.descr), o.descr, label: "商家描述", max: 20);
+                            m.TEXT(nameof(o.tel), o.tel, label: "电话", max: 11);
+                            m.TEXT(nameof(o.city), o.city, label: "城市", @readonly: true);
+                            m.SELECT(nameof(o.distr), o.distr, ((ShopService)Service).GetDistrs(o.city), label: "区域");
+                            m.TEXT(nameof(o.addr), o.addr, label: "地址");
+                            m.SELECT(nameof(o.status), o.status, Shop.STATUS, label: "状态");
+                            m._FORM();
+                        });
                     }
                     else
                     {
-                        ac.Give(500); // internal server error
+                        ac.Give(404); // not found
                     }
                 }
             }
@@ -183,10 +197,10 @@ namespace Greatbone.Sample
                 shop.id = ac[this];
                 using (var dc = ac.NewDbContext())
                 {
-                    dc.Sql("INSERT INTO shops")._(Shop.Empty, proj)._VALUES_(Shop.Empty, proj)._("");
-                    dc.Execute(p => shop.WriteData(p, proj));
+                    dc.Sql("UPDATE shops")._SET_(Shop.Empty, proj)._("WHERE id = @1");
+                    dc.Execute(p => { shop.WriteData(p, proj); p.Set(id); });
                 }
-                ac.GivePane(201, null);
+                ac.GivePane(200, null);
             }
         }
 
@@ -225,25 +239,9 @@ namespace Greatbone.Sample
         }
     }
 
-    [Ui("设置")]
-    public class DvrShopVarWork : ShopVarWork
+    public class SupShopVarWork : ShopVarWork
     {
-        public DvrShopVarWork(WorkContext wc) : base(wc)
-        {
-            Create<DvrSentOrderWork>("assigned");
-
-            Create<DvrDoneOrderWork>("done");
-        }
-
-        public void @default(ActionContext ac)
-        {
-            ac.GiveFrame(200);
-        }
-    }
-
-    public class MgrShopVarWork : ShopVarWork
-    {
-        public MgrShopVarWork(WorkContext wc) : base(wc)
+        public SupShopVarWork(WorkContext wc) : base(wc)
         {
         }
 
@@ -256,12 +254,21 @@ namespace Greatbone.Sample
                 string city = ac[typeof(CityVarWork)];
                 using (var dc = ac.NewDbContext())
                 {
-                    const int proj = -1 ^ Shop.ICON ^ Shop.ID;
+                    const int proj = -1 ^ Shop.ICON;
                     dc.Sql("SELECT ").columnlst(Shop.Empty, proj)._("FROM shops WHERE id = @1 AND city = @2");
                     if (dc.Query1(p => p.Set(id).Set(city)))
                     {
-                        var shop = dc.ToObject<Item>(proj);
-                        ac.GivePane(200, m => { });
+                        var o = dc.ToObject<Shop>(proj);
+                        ac.GivePane(200, m =>
+                        {
+                            m.FORM_();
+                            m.TEXT(nameof(o.name), o.name);
+                            m.TEXT(nameof(o.city), o.city, label: "城市", @readonly: true);
+                            m.SELECT(nameof(o.distr), o.distr, ((ShopService)Service).GetDistrs(o.city), label: "区域");
+                            m.TEXT(nameof(o.lic), o.lic, label: "工商登记");
+                            m.TEXT(nameof(o.mgrid), o.mgrid, label: "经理登录号");
+                            m._FORM();
+                        });
                     }
                     else
                     {
@@ -271,21 +278,15 @@ namespace Greatbone.Sample
             }
             else // post
             {
-                var shop = await ac.ReadObjectAsync<Shop>();
-                shop.id = ac[this];
+                var o = await ac.ReadObjectAsync<Shop>();
+                o.id = ac[this];
                 using (var dc = ac.NewDbContext())
                 {
                     const int proj = -1 ^ Shop.ICON;
-                    dc.Sql("INSERT INTO shops")._(Shop.Empty, proj)._VALUES_(Shop.Empty, proj)._("");
-                    if (dc.Execute(p => shop.WriteData(p, proj)) > 0)
-                    {
-                        ac.Give(201); // created
-                    }
-                    else
-                    {
-                        ac.Give(500); // internal server error
-                    }
+                    dc.Sql("UPDATE shops")._SET_(Shop.Empty, proj)._("WHERE id = @1");
+                    dc.Execute(p => { o.WriteData(p, proj); p.Set(o.id); });
                 }
+                ac.GiveRedirect();
             }
         }
 

@@ -7,13 +7,9 @@ namespace Greatbone.Sample
     {
         public static readonly Shop Empty = new Shop();
 
-        public const short
-            ID = 0x0001,
-            ICON = 0x0002,
-            LATE = 0x0010;
+        public const short ID = 0x0001, ICON = 0x0002, ADM = 0x0010;
 
-
-        public Opt<short> STATUS = new Opt<short>
+        public static Opt<short> STATUS = new Opt<short>
         {
             [0] = "停业",
             [1] = "休假中",
@@ -21,19 +17,25 @@ namespace Greatbone.Sample
         };
 
         internal string id;
+        internal string credential;
         internal string name;
+        
         internal string descr;
-        internal string icon;
+        internal ArraySegment<byte> icon;
         internal string tel;
         internal string city;
         internal string distr;
         internal string addr;
         internal double x;
         internal double y;
+        internal short status; 
+
         internal string lic;
         internal DateTime created;
-        internal int orders;
-        internal short status;
+        internal string mgrid; // set by mgr
+        internal string mgrwx; // bound by opr himself
+        
+        internal int orders; // counted/updated by system
 
         public void ReadData(IDataInput i, short proj = 0)
         {
@@ -53,8 +55,12 @@ namespace Greatbone.Sample
             i.Get(nameof(addr), ref addr);
             i.Get(nameof(x), ref x);
             i.Get(nameof(y), ref y);
-            i.Get(nameof(lic), ref lic);
-            i.Get(nameof(orders), ref orders);
+            if ((proj & ADM) == ADM)
+            {
+                i.Get(nameof(lic), ref lic);
+                i.Get(nameof(created), ref created);
+                i.Get(nameof(orders), ref orders);
+            }
             i.Get(nameof(status), ref status);
         }
 
@@ -76,8 +82,12 @@ namespace Greatbone.Sample
             o.Put(nameof(addr), addr, label: "地址");
             o.Put(nameof(x), x);
             o.Put(nameof(y), y);
-            o.Put(nameof(lic), lic, label: "工商登记");
-            o.Put(nameof(orders), orders);
+            if ((proj & ADM) == ADM)
+            {
+                o.Put(nameof(lic), lic, label: "工商登记");
+                o.Put(nameof(created), created, label: "创建时间");
+                o.Put(nameof(orders), orders);
+            }
             o.Put(nameof(status), status, opt: STATUS, label: "状态");
         }
     }

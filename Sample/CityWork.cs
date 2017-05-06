@@ -14,17 +14,17 @@ namespace Greatbone.Sample
     /// <summary>
     ///
     /// </summary>
-    public class MgrCityWork : CityWork<MgrCityVarWork>
+    public class SprCityWork : CityWork<SprCityVarWork>
     {
-        public MgrCityWork(WorkContext wc) : base(wc)
+        public SprCityWork(WorkContext wc) : base(wc)
         {
-            CreateVar<MgrCityVarWork, string>((prin) => ((User) prin).mgrat);
+            CreateVar<SprCityVarWork, string>((prin) => ((User) prin).sprat);
         }
     }
 
 
     [Ui("城市")]
-    public class AdmCityWork : CityWork<AdmCityVarWork>
+    public class AdmCityWork : CityWork<SprCityVarWork>
     {
         public AdmCityWork(WorkContext wc) : base(wc)
         {

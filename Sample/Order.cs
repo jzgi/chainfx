@@ -17,7 +17,7 @@ namespace Greatbone.Sample
         // state
         public const short
             CREATED = 0,
-            RECEIVED = 1,
+            ACCEPTED = 1,
             SENT = 3,
             DONE = 7,
             ABORTED = 10;
@@ -25,9 +25,9 @@ namespace Greatbone.Sample
         // status
         static readonly Opt<short> STATUS = new Opt<short>
         {
-            [CREATED] = "在购等待收款",
-            [RECEIVED] = "到款等待发货",
-            [SENT] = "在途",
+            [CREATED] = "购买中",
+            [ACCEPTED] = "已受理",
+            [SENT] = "已发货",
             [DONE] = "已完成",
             [ABORTED] = "已撤销",
         };
@@ -40,10 +40,10 @@ namespace Greatbone.Sample
         internal string shopid;
         internal string custname; // customer name
         internal string custwx; // weixin openid
-        internal string custtel; // telephone
         internal string custcity; // city
         internal string custdistr; // disrict
         internal string custaddr; // address
+        internal string custtel; // telephone
         internal OrderLine[] detail;
         internal decimal total;
         internal string note;
@@ -76,10 +76,10 @@ namespace Greatbone.Sample
 
             i.Get(nameof(custname), ref custname);
             i.Get(nameof(custwx), ref custwx);
-            i.Get(nameof(custtel), ref custtel);
             i.Get(nameof(custcity), ref custcity);
             i.Get(nameof(custdistr), ref custdistr);
             i.Get(nameof(custaddr), ref custaddr);
+            i.Get(nameof(custtel), ref custtel);
             if ((proj & DETAIL) == DETAIL)
             {
                 i.Get(nameof(detail), ref detail);
@@ -123,19 +123,19 @@ namespace Greatbone.Sample
             {
                 o.Put(nameof(custwx), custwx);
             }
-            o.Put(nameof(custtel), custtel, label: "联系电话");
-            o.Group("送货地址");
+            o.Group("收货地址");
             o.Put(nameof(custcity), custcity);
             o.Put(nameof(custdistr), custdistr);
             o.Put(nameof(custaddr), custaddr);
             o.UnGroup();
+            o.Put(nameof(custtel), custtel, label: "联系电话");
 
             if ((proj & DETAIL) == DETAIL)
             {
                 o.Put(nameof(detail), detail);
             }
             o.Put(nameof(total), total, label: "金额");
-            o.Put(nameof(note), note, label: "附加说明");
+            o.Put(nameof(note), note, label: "附注");
             o.Put(nameof(created), created, label: "创建时间");
 
             if ((proj & LATE) == LATE)

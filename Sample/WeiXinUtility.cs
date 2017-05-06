@@ -86,7 +86,7 @@ namespace Greatbone.Sample
                 xml.ELEM("openid", openid);
                 xml.ELEM("sign", StrUtility.MD5(temp));
             });
-            XElem xe = (await WweiXinPay.PostForAsync<XElem>(null, "/pay/unifiedorder", xml)).Item2;
+            XElem xe = (await WweiXinPay.PostAsync<XElem>(null, "/pay/unifiedorder", xml)).Y;
             string prepay_id = xe.Child(nameof(prepay_id));
 
             return prepay_id;
@@ -179,7 +179,7 @@ namespace Greatbone.Sample
             // <sign>C97BDBACF37622775366F38B629F45E3</sign>
             // </xml>
             XmlContent cont = new XmlContent();
-            XElem resp = (await WweiXinPay.PostForAsync<XElem>(null, "/mmpaymkttransfers/promotion/transfers", cont)).Item2;
+            XElem resp = (await WweiXinPay.PostAsync<XElem>(null, "/mmpaymkttransfers/promotion/transfers", cont)).Y;
         }
     }
 }

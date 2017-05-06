@@ -460,6 +460,8 @@ namespace Greatbone.Core
 
         public void BUTTONS(ActionInfo[] ais, bool hollow = false)
         {
+            if (ais == null) return;
+
             for (int i = 0; i < ais.Length; i++)
             {
                 ActionInfo ai = ais[i];

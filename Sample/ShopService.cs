@@ -20,9 +20,7 @@ namespace Greatbone.Sample
 
             Create<OprShopWork>("opr"); // shop operator
 
-            Create<DvrShopWork>("dvr"); // shop deliverer
-
-            Create<MgrCityWork>("mgr"); // local manager
+            Create<SprCityWork>("spr"); // local supervisor
 
             Create<AdmWork>("adm"); // administrator
 

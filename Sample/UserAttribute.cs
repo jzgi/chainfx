@@ -4,25 +4,22 @@ namespace Greatbone.Sample
 {
     public class UserAttribute : AuthorizeAttribute
     {
-        readonly bool opr;
+        readonly short opr;
 
-        readonly bool dvr;
-
-        readonly bool mgr;
+        readonly bool spr;
 
         readonly bool adm;
 
-        public UserAttribute(bool opr = false, bool dvr = false, bool mgr = false, bool adm = false)
+        public UserAttribute(short opr = 0, bool spr = false, bool adm = false)
         {
             this.opr = opr;
-            this.dvr = dvr;
-            this.mgr = mgr;
+            this.spr = spr;
             this.adm = adm;
         }
 
-        public bool IsOpr => opr;
+        public bool IsOpr => opr > 0;
 
-        public bool IsAdm => mgr;
+        public bool IsAdm => spr;
 
         public override bool Check(ActionContext ac)
         {
@@ -30,20 +27,14 @@ namespace Greatbone.Sample
 
             if (prin == null) return false;
 
-            if (opr)
+            if (opr > 0)
             {
-                if (prin.oprat == null) return false;
+                if (prin.opr != opr) return false;
                 return prin.oprat == ac[typeof(ShopVarWork)];
             }
-            if (dvr)
+            if (spr)
             {
-                if (prin.dvrat == null) return false;
-                return prin.dvrat == ac[typeof(ShopVarWork)];
-            }
-            if (mgr)
-            {
-                if (prin.mgrat == null) return false;
-                return prin.mgrat == ac[typeof(CityVarWork)];
+                return prin.sprat == ac[typeof(CityVarWork)];
             }
             return !adm || prin.adm;
         }

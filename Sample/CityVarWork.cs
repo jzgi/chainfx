@@ -32,15 +32,15 @@ namespace Greatbone.Sample
 
 
     [Ui("设置")]
-    public class MgrCityVarWork : CityVarWork
+    public class SprCityVarWork : CityVarWork
     {
-        public MgrCityVarWork(WorkContext wc) : base(wc)
+        public SprCityVarWork(WorkContext wc) : base(wc)
         {
-            Create<MgrUserWork>("user");
+            Create<SupUserWork>("user");
 
-            Create<MgrShopWork>("shop");
+            Create<SupShopWork>("shop");
 
-            Create<MgrRepayWork>("repay");
+            Create<SupRepayWork>("repay");
         }
 
         public void @default(ActionContext ac)
@@ -49,11 +49,4 @@ namespace Greatbone.Sample
         }
     }
 
-    [Ui("设置")]
-    public class AdmCityVarWork : CityVarWork
-    {
-        public AdmCityVarWork(WorkContext wc) : base(wc)
-        {
-        }
-    }
 }

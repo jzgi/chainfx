@@ -16,10 +16,19 @@ namespace Greatbone.Sample
             PERM = 0x0100,
             CREDENTIAL = 0x0040;
 
+        public const short MANAGER = 1, ASSISTANT = 2, DELIVERER = 3;
+
+        public readonly Opt<short> OPR = new Opt<short>
+        {
+            [MANAGER] = "经理",
+            [ASSISTANT] = "助理",
+            [DELIVERER] = "派送"
+        };
+
 
         internal bool indb; // whether recorded in db
 
-        internal string wx; // openid
+        internal string wx; // wexin openid
         internal string id; // optional unique id
         internal string credential;
         internal string name;
@@ -29,9 +38,9 @@ namespace Greatbone.Sample
         internal string addr;
         internal DateTime created;
         internal string oprat; // operator at shopid
-        internal string dvrat; // deliverer at shopid
-        internal string mgrat; // manager at city
-        internal bool adm; // administrator
+        internal short opr; // 
+        internal string sprat; // supervisor at city
+        internal bool adm; // admininistrator
 
 
         public void ReadData(IDataInput i, short proj = 0)
@@ -58,8 +67,8 @@ namespace Greatbone.Sample
             if ((proj & PERM) == PERM)
             {
                 i.Get(nameof(oprat), ref oprat);
-                i.Get(nameof(dvrat), ref dvrat);
-                i.Get(nameof(mgrat), ref mgrat);
+                i.Get(nameof(opr), ref opr);
+                i.Get(nameof(sprat), ref sprat);
                 i.Get(nameof(adm), ref adm);
             }
         }
@@ -87,13 +96,13 @@ namespace Greatbone.Sample
             o.Put(nameof(created), created);
             if ((proj & PERM) == PERM)
             {
-                o.Put(nameof(oprat), oprat, label: "操作员");
-                o.Put(nameof(dvrat), dvrat, label: "派送员");
-                o.Put(nameof(mgrat), mgrat, label: "监管员");
+                o.Put(nameof(opr), opr, label: "操作员");
+                o.Put(nameof(oprat), oprat, label: "派送员");
+                o.Put(nameof(sprat), sprat, label: "监管员");
                 o.Put(nameof(adm), adm, label: "监管员");
             }
         }
 
-        public bool IsShop => oprat != null;
+        public bool IsShop => opr != 0;
     }
 }

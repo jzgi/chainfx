@@ -47,17 +47,6 @@ namespace Greatbone.Core
             return this;
         }
 
-        public DbSql setstate()
-        {
-            return this;
-        }
-
-        public DbSql statecond()
-        {
-            // 
-            return this;
-        }
-
         public DbSql columnlst(IData obj, short proj = 0)
         {
             ctx = CTX_COLUMNLIST;
@@ -94,6 +83,47 @@ namespace Greatbone.Core
         {
             Add(" SET ");
             setlst(obj, proj);
+            return this;
+        }
+
+        public DbSql _IN_(int[] vals)
+        {
+            Add(" IN (");
+            for (int i = 0; i < vals.Length; i++)
+            {
+                if (i > 0) Add(',');
+                Add(vals[i]);
+            }
+            Add(')');
+
+            return this;
+        }
+
+        public DbSql _IN_(long[] vals)
+        {
+            Add(" IN (");
+            for (int i = 0; i < vals.Length; i++)
+            {
+                if (i > 0) Add(',');
+                Add(vals[i]);
+            }
+            Add(')');
+
+            return this;
+        }
+
+        public DbSql _IN_(string[] vals)
+        {
+            Add(" IN (");
+            for (int i = 0; i < vals.Length; i++)
+            {
+                if (i > 0) Add(',');
+                Add('\'');
+                Add(vals[i]);
+                Add('\'');
+            }
+            Add(')');
+
             return this;
         }
 
