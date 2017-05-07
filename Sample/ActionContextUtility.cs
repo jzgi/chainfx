@@ -44,6 +44,9 @@ namespace Greatbone.Sample
                 for (int i = 0; i < subs.Count; i++)
                 {
                     Work sub = subs[i];
+
+                    if (!sub.DoAuthorize(ac)) continue;
+
                     h.Add("<li class=\"tabs-title\"><a href=\"#panel");
                     h.Add(i);
                     h.Add("\">");
@@ -58,7 +61,12 @@ namespace Greatbone.Sample
             h.Add("<div class=\"tabs-panel is-active\" id=\"paneltop\">");
             h.Add("<div class=\"title-bar\">");
             h.Add("<div class=\"title-bar-left\">");
-            h.BUTTONS(work.UiActions);
+            h.BUTTONS(work.UiActions, ac);
+            h.Add("</div>");
+            h.Add("<div class=\"title-bar-right\">");
+            h.Add("<span style=\"margin: 0.5rem 0.25rem; padding: 0.25rem; font-size: 1.25rem; white-space: nowrap;\">");
+            h.Add((string) ac[work]);
+            h.Add("</span>");
             h.Add("</div>");
             h.Add("</div>");
             h.Add("</div>");
@@ -68,6 +76,9 @@ namespace Greatbone.Sample
                 for (int i = 0; i < subs.Count; i++)
                 {
                     Work sub = subs[i];
+
+                    if (!sub.DoAuthorize(ac)) continue;
+
                     h.Add("<div class=\"tabs-panel\" style=\"height: 100%\" id=\"panel");
                     h.Add(i);
                     h.Add("\">");

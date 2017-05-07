@@ -11,17 +11,18 @@ namespace Greatbone.Sample
         public static readonly User Empty = new User();
 
         public const short
-            INDB = 0x4000,
-            WX = 0x0800,
-            PERM = 0x0100,
-            CREDENTIAL = 0x0040;
+            INDB = 1,
+            WX = 2,
+            PERM = 4,
+            CREDENTIAL = 8;
 
-        public const short MANAGER = 3, ASSISTANT = 1, DELIVERER = 3;
+        public const short MANAGER = 7, ASSISTANT = 3, DELIVERER = 1;
 
         public readonly Opt<short> OPR = new Opt<short>
         {
             [MANAGER] = "经理",
-            [ASSISTANT] = "助理"
+            [ASSISTANT] = "助理",
+            [DELIVERER] = "派送"
         };
 
 

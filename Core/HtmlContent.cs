@@ -303,7 +303,7 @@ namespace Greatbone.Core
                     if (ais != null)
                     {
                         Add("<td>");
-                        BUTTONS(ais, level > 0);
+                        BUTTONS(ais);
                         Add("</td>");
                     }
 
@@ -400,7 +400,7 @@ namespace Greatbone.Core
                     if (ais != null)
                     {
                         Add("<div style=\"text-align: right\">");
-                        BUTTONS(ais, level > 0);
+                        BUTTONS(ais);
                         Add("</div>");
                     }
                     Add("</div>");
@@ -458,7 +458,7 @@ namespace Greatbone.Core
             }
         }
 
-        public void BUTTONS(ActionInfo[] ais, bool hollow = false)
+        public void BUTTONS(ActionInfo[] ais, ActionContext ac = null)
         {
             if (ais == null) return;
 
@@ -466,16 +466,15 @@ namespace Greatbone.Core
             {
                 ActionInfo ai = ais[i];
 
+                // access check if neccessary
+                if (ac != null && !ai.DoAuthorize(ac)) continue;
+
                 UiAttribute ui = ai.Ui;
 
                 if (ui.IsLink)
                 {
-                    Add("<a class=\"button ");
-                    Add(ui.Alert ? "warning" : "primary");
-                    if (hollow)
-                    {
-                        Add(" hollow");
-                    }
+                    Add("<a class=\"button hollow");
+                    Add(ui.Alert ? " warning" : " primary");
                     Add("\" href=\"");
                     for (int lvl = 0; lvl <= level; lvl++)
                     {
@@ -498,12 +497,8 @@ namespace Greatbone.Core
                 }
                 else if (ui.IsAnchor)
                 {
-                    Add("<a class=\"button ");
-                    Add(ui.Alert ? "warning" : "primary");
-                    if (hollow)
-                    {
-                        Add(" hollow");
-                    }
+                    Add("<a class=\"button hollow");
+                    Add(ui.Alert ? " warning" : " primary");
                     Add("\" href=\"");
                     for (int lvl = 0; lvl <= level; lvl++)
                     {
@@ -542,12 +537,8 @@ namespace Greatbone.Core
                 }
                 else if (ui.IsButton)
                 {
-                    Add("<button class=\"button ");
-                    Add(ui.Alert ? "warning" : "primary");
-                    if (hollow)
-                    {
-                        Add(" hollow");
-                    }
+                    Add("<button class=\"button hollow");
+                    Add(ui.Alert ? " warning" : " primary");
                     Add("\" name=\"");
                     Add(ai.Name);
                     Add("\" formaction=\"");

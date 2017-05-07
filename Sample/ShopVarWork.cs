@@ -35,7 +35,7 @@ namespace Greatbone.Sample
     {
         public PubShopVarWork(WorkContext wc) : base(wc)
         {
-            CreateVar<ItemVarWork, string>(obj => ((Item)obj).name);
+            CreateVar<ItemVarWork, string>(obj => ((Item) obj).name);
         }
 
         public void @default(ActionContext ac)
@@ -151,7 +151,6 @@ namespace Greatbone.Sample
             Create<OprItemWork>("item");
 
             Create<OprRepayWork>("repay");
-
         }
 
         public void @default(ActionContext ac)
@@ -179,7 +178,7 @@ namespace Greatbone.Sample
                             m.TEXT(nameof(o.descr), o.descr, label: "商家描述", max: 20);
                             m.TEXT(nameof(o.tel), o.tel, label: "电话", max: 11);
                             m.TEXT(nameof(o.city), o.city, label: "城市", @readonly: true);
-                            m.SELECT(nameof(o.distr), o.distr, ((ShopService)Service).GetDistrs(o.city), label: "区域");
+                            m.SELECT(nameof(o.distr), o.distr, ((ShopService) Service).GetDistrs(o.city), label: "区域");
                             m.TEXT(nameof(o.addr), o.addr, label: "地址");
                             m.SELECT(nameof(o.status), o.status, Shop.STATUS, label: "状态");
                             m._FORM();
@@ -198,7 +197,11 @@ namespace Greatbone.Sample
                 using (var dc = ac.NewDbContext())
                 {
                     dc.Sql("UPDATE shops")._SET_(Shop.Empty, proj)._("WHERE id = @1");
-                    dc.Execute(p => { shop.WriteData(p, proj); p.Set(id); });
+                    dc.Execute(p =>
+                    {
+                        shop.WriteData(p, proj);
+                        p.Set(id);
+                    });
                 }
                 ac.GivePane(200, null);
             }
@@ -237,6 +240,12 @@ namespace Greatbone.Sample
                 }
             }
         }
+
+        [Ui("人员", UiMode.AnchorDialog)]
+        [User(User.ASSISTANT)]
+        public void access(ActionContext ac)
+        {
+        }
     }
 
     public class SupShopVarWork : ShopVarWork
@@ -264,7 +273,7 @@ namespace Greatbone.Sample
                             m.FORM_();
                             m.TEXT(nameof(o.name), o.name);
                             m.TEXT(nameof(o.city), o.city, label: "城市", @readonly: true);
-                            m.SELECT(nameof(o.distr), o.distr, ((ShopService)Service).GetDistrs(o.city), label: "区域");
+                            m.SELECT(nameof(o.distr), o.distr, ((ShopService) Service).GetDistrs(o.city), label: "区域");
                             m.TEXT(nameof(o.lic), o.lic, label: "工商登记");
                             m.TEXT(nameof(o.mgrid), o.mgrid, label: "经理登录号");
                             m._FORM();
@@ -284,7 +293,11 @@ namespace Greatbone.Sample
                 {
                     const int proj = -1 ^ Shop.ICON;
                     dc.Sql("UPDATE shops")._SET_(Shop.Empty, proj)._("WHERE id = @1");
-                    dc.Execute(p => { o.WriteData(p, proj); p.Set(o.id); });
+                    dc.Execute(p =>
+                    {
+                        o.WriteData(p, proj);
+                        p.Set(o.id);
+                    });
                 }
                 ac.GiveRedirect();
             }
