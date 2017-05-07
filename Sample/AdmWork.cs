@@ -10,7 +10,9 @@ namespace Greatbone.Sample
 
             Create<AdmShopWork>("shop"); // shops management
 
-            Create<AdmRepayWork>("repay"); // repays management
+            Create<AdmRepayWork>("present"); // repays present
+
+            Create<AdmPastRepayWork>("past"); // repays past
         }
 
         public void @default(ActionContext ac)

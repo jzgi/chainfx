@@ -36,11 +36,13 @@ namespace Greatbone.Sample
     {
         public SprCityVarWork(WorkContext wc) : base(wc)
         {
-            Create<SupUserWork>("user");
+            Create<SprUserWork>("user");
 
-            Create<SupShopWork>("shop");
+            Create<SprShopWork>("shop");
 
-            Create<SupRepayWork>("repay");
+            Create<SprRepayWork>("present");
+
+            Create<SprPastRepayWork>("past");
         }
 
         public void @default(ActionContext ac)

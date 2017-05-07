@@ -1,4 +1,5 @@
-﻿using System.Threading.Tasks;
+﻿using System;
+using System.Threading.Tasks;
 using Greatbone.Core;
 
 namespace Greatbone.Sample
@@ -41,7 +42,7 @@ namespace Greatbone.Sample
             string shopid = ac[1];
             using (var dc = ac.NewDbContext())
             {
-                if (dc.Query("SELECT * FROM repays WHERE shopid = @1 AND status < 4", p => p.Set(shopid)))
+                if (dc.Query("SELECT * FROM repays WHERE shopid = @1", p => p.Set(shopid)))
                 {
                     ac.GiveGridFormPage(200, dc.ToArray<Repay>());
                 }
@@ -51,60 +52,12 @@ namespace Greatbone.Sample
                 }
             }
         }
-
-        [Ui("生成结款单")]
-        public void @new(ActionContext ac)
-        {
-            string shopid = ac[1];
-            using (var dc = ac.NewDbContext())
-            {
-                string name;
-                int age;
-                dc.Execute("UPDATE items SET enabled = NOT enabled WHERE shopid = @1", p => p.Set(shopid));
-                // ac.SetHeader();
-                ac.GiveFormPane(303, dc, (i, o) =>
-                {
-                    o.Put(nameof(name), name = i.GetString());
-                    o.Put(nameof(age), age = i.GetInt());
-                }); // see other
-            }
-        }
-
-        [Ui("结款")]
-        public async Task pay(ActionContext ac)
-        {
-            string shopid = ac[Parent];
-
-            int id = ac.Query[nameof(id)];
-
-
-            using (var dc = ac.NewDbContext())
-            {
-                string name;
-                int age;
-
-                await WeiXinUtility.PostTransferAsync();
-
-                dc.Execute("UPDATE items SET enabled = NOT enabled WHERE shopid = @1", p => p.Set(shopid));
-                // ac.SetHeader();
-                ac.GiveFormPane(303, dc, (i, o) =>
-                {
-                    o.Put(nameof(name), name = i.GetString());
-                    o.Put(nameof(age), age = i.GetInt());
-                }); // see other
-            }
-        }
-
-        [Ui("余额管理")]
-        public void balance(ActionContext ac)
-        {
-        }
     }
 
-    [Ui("结款管理")]
-    public class SupRepayWork : RepayWork<MgrRepayVarWork>
+    [Ui("当前结款")]
+    public class SprRepayWork : RepayWork<SprRepayVarWork>
     {
-        public SupRepayWork(WorkContext wc) : base(wc)
+        public SprRepayWork(WorkContext wc) : base(wc)
         {
         }
 
@@ -130,10 +83,86 @@ namespace Greatbone.Sample
         }
     }
 
-    [Ui("结款管理")]
+    [Ui("以往结款")]
+    public class SprPastRepayWork : RepayWork<SprRepayVarWork>
+    {
+        public SprPastRepayWork(WorkContext wc) : base(wc)
+        {
+        }
+
+        public void @default(ActionContext ac)
+        {
+            string shopid = ac[1];
+            using (var dc = ac.NewDbContext())
+            {
+                if (dc.Query("SELECT * FROM repays WHERE shopid = @1 AND status < 4", p => p.Set(shopid)))
+                {
+                    ac.GiveGridFormPage(200, dc.ToArray<Repay>());
+                }
+                else
+                {
+                    ac.GiveGridFormPage(200, (Repay[]) null);
+                }
+            }
+        }
+
+        [Ui("发起")]
+        public void calc(ActionContext ac)
+        {
+        }
+    }
+
+    [Ui("当前结款")]
     public class AdmRepayWork : RepayWork<AdmRepayVarWork>
     {
         public AdmRepayWork(WorkContext wc) : base(wc)
+        {
+        }
+
+        public void @default(ActionContext ac)
+        {
+            string shopid = ac[1];
+            using (var dc = ac.NewDbContext())
+            {
+                if (dc.Query("SELECT * FROM repays WHERE shopid = @1 AND status < 4", p => p.Set(shopid)))
+                {
+                    ac.GiveGridFormPage(200, dc.ToArray<Repay>());
+                }
+                else
+                {
+                    ac.GiveGridFormPage(200, (Repay[]) null);
+                }
+            }
+        }
+
+        [Ui("结款")]
+        public void @new(ActionContext ac)
+        {
+            DateTime now = DateTime.Now;
+            int term = 0;
+            DateTime till = now;
+            using (var dc = ac.NewDbContext())
+            {
+                dc.Execute(@"INSERT INTO repays (term, shopid, shopname, city, mgrwx, orders, total, amount, till, created)
+                    SELECT @1, shopid, COUNT(*), SUM(total), (SUM(total) * 0.994), @2, @3 FROM orders WHERE status = 7 AND closed < @2 GROUP BY shopid
+                    ON CONFLICT DO NOTHING",
+                    p => p.Set(term).Set(till).Set(now));
+                if (dc.Query("SELECT * FROM repays WHERE status = 0"))
+                {
+                    ac.GiveGridFormPage(200, dc.ToArray<Repay>());
+                }
+                else
+                {
+                    ac.GiveGridFormPage(200, (Repay[]) null);
+                }
+            }
+        }
+    }
+
+    [Ui("以往结款")]
+    public class AdmPastRepayWork : RepayWork<AdmRepayVarWork>
+    {
+        public AdmPastRepayWork(WorkContext wc) : base(wc)
         {
         }
 

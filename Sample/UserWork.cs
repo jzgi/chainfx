@@ -20,16 +20,16 @@ namespace Greatbone.Sample
         }
     }
 
-    [Ui("用户管理")]
-    public class SupUserWork : UserWork<MgrUserVarWork>
+    [Ui("用户")]
+    public class SprUserWork : UserWork<MgrUserVarWork>
     {
-        public SupUserWork(WorkContext wc) : base(wc)
+        public SprUserWork(WorkContext wc) : base(wc)
         {
         }
     }
 
 
-    [Ui("用户管理")]
+    [Ui("用户")]
     public class AdmUserWork : UserWork<AdmUserVarWork>
     {
         public AdmUserWork(WorkContext wc) : base(wc)

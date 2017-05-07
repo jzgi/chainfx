@@ -5,77 +5,87 @@ using Greatbone.Core;
 namespace Greatbone.Sample
 {
     ///
-    /// A workflow that repays collected money to shops.
+    /// A repay data object.
     ///
     public class Repay : IData
     {
+        public const short PAY = 1;
+
+        // status
         public const short
-
-            // non-data or for control
-            CTRL = 0x4000,
-
-            // primary or key
-            PRIME = 0x0800,
-
-            // auto generated or with default
-            AUTO = 0x0400;
-
-        // state
-        public const int
-            Prepared = 0,
-            PAID = 1,
-            ASKED = 2,
-            FIXED = 4,
-            CLOSED = 4,
-            CANCELLED = 8;
+            CREATED = 0,
+            PAID = 1;
 
         // status
         static readonly Dictionary<short, string> STATUS = new Dictionary<short, string>
         {
-            [0] = null,
-            [1] = "已付款",
-            [2] = "已锁定",
-            [3] = "已结束",
-            [7] = "已取消",
+            [0] = "新创建",
+            [1] = "已付款"
         };
 
 
         public static readonly Repay Empty = new Repay();
 
-        internal int id; // platform shop id
+        internal int term; // platform shop id
         internal string shopid;
-        internal DateTime time;
-        internal decimal amount;
-        internal decimal paid;
         internal string city;
-        internal string wx;
+        internal string mgrwx;
+        internal string shopname;
 
-        internal string endorderid;
-        internal short status; // -1 dismissed, 0 closed, 1 open
+        internal int orders;
+        internal decimal total;
+        internal decimal amount;
+        internal DateTime till;
+        internal DateTime created;
+        internal string creator;
+
+        internal DateTime paid;
+        internal string payer;
+        internal short status;
 
         public void ReadData(IDataInput i, short proj = 0)
         {
-            i.Get(nameof(id), ref id);
+            i.Get(nameof(term), ref term);
             i.Get(nameof(shopid), ref shopid);
-            i.Get(nameof(time), ref time);
-            i.Get(nameof(amount), ref amount);
-            i.Get(nameof(paid), ref paid);
+            i.Get(nameof(shopname), ref shopname);
             i.Get(nameof(city), ref city);
-            i.Get(nameof(wx), ref wx);
-            i.Get(nameof(endorderid), ref endorderid);
+            i.Get(nameof(mgrwx), ref mgrwx);
+
+            i.Get(nameof(orders), ref orders);
+            i.Get(nameof(total), ref total);
+            i.Get(nameof(amount), ref amount);
+            i.Get(nameof(till), ref till);
+            i.Get(nameof(created), ref created);
+            i.Get(nameof(creator), ref creator);
+
+            if ((proj & PAY) == PAY)
+            {
+                i.Get(nameof(paid), ref paid);
+                i.Get(nameof(payer), ref payer);
+            }
+
             i.Get(nameof(status), ref status);
         }
 
         public void WriteData<R>(IDataOutput<R> o, short proj = 0) where R : IDataOutput<R>
         {
-            o.Put(nameof(id), id);
+            o.Put(nameof(term), term);
             o.Put(nameof(shopid), shopid);
-            o.Put(nameof(time), time);
-            o.Put(nameof(amount), amount);
-            o.Put(nameof(paid), paid);
+            o.Put(nameof(shopname), shopname);
             o.Put(nameof(city), city);
-            o.Put(nameof(wx), wx);
-            o.Put(nameof(endorderid), endorderid);
+            o.Put(nameof(mgrwx), mgrwx);
+
+            o.Put(nameof(orders), orders);
+            o.Put(nameof(total), total);
+            o.Put(nameof(amount), amount);
+            o.Put(nameof(till), till);
+            o.Put(nameof(created), created);
+            o.Put(nameof(creator), creator);
+            if ((proj & PAY) == PAY)
+            {
+                o.Put(nameof(paid), paid);
+                o.Put(nameof(payer), payer);
+            }
             o.Put(nameof(status), status);
         }
     }

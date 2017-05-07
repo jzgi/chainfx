@@ -16,9 +16,9 @@ namespace Greatbone.Sample
         }
     }
 
-    public class MgrRepayVarWork : RepayVarWork
+    public class SprRepayVarWork : RepayVarWork
     {
-        public MgrRepayVarWork(WorkContext fc) : base(fc)
+        public SprRepayVarWork(WorkContext fc) : base(fc)
         {
         }
     }

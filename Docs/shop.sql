@@ -11,7 +11,7 @@ Target Server Type    : PGSQL
 Target Server Version : 90505
 File Encoding         : 65001
 
-Date: 2017-05-05 14:57:12
+Date: 2017-05-07 22:32:58
 */
 
 
@@ -37,17 +37,6 @@ CREATE SEQUENCE "public"."orders_id_seq"
  START 1008
  CACHE 8;
 SELECT setval('"public"."orders_id_seq"', 1008, true);
-
--- ----------------------------
--- Sequence structure for repays_id_seq
--- ----------------------------
-DROP SEQUENCE IF EXISTS "public"."repays_id_seq";
-CREATE SEQUENCE "public"."repays_id_seq"
- INCREMENT 1
- MINVALUE 1
- MAXVALUE 9223372036854775807
- START 1
- CACHE 1;
 
 -- ----------------------------
 -- Table structure for evtq
@@ -139,14 +128,19 @@ WITH (OIDS=FALSE)
 -- ----------------------------
 DROP TABLE IF EXISTS "public"."repays";
 CREATE TABLE "public"."repays" (
-"id" int4 DEFAULT nextval('repays_id_seq'::regclass) NOT NULL,
+"term" int4 NOT NULL,
 "shopid" varchar(6) COLLATE "default",
 "amount" money,
-"paid" money,
-"state" int4,
 "status" int2,
-"endorderid" int4,
-"time" timestamp(6)
+"till" timestamp(6),
+"created" timestamp(6),
+"transfered" timestamp(6),
+"total" money,
+"orders" int4,
+"city" varchar(4) COLLATE "default",
+"mgrwx" varchar(28) COLLATE "default",
+"creator" varchar(4) COLLATE "default",
+"shopname" varchar(10) COLLATE "default"
 )
 WITH (OIDS=FALSE)
 
@@ -170,7 +164,10 @@ CREATE TABLE "public"."shops" (
 "created" timestamp(6),
 "orders" int4,
 "status" int2,
-"icon" bytea
+"icon" bytea,
+"mgrid" varchar(11) COLLATE "default",
+"mgrwx" varchar(28) COLLATE "default",
+"credential" varchar(32) COLLATE "default"
 )
 WITH (OIDS=FALSE)
 
@@ -190,10 +187,10 @@ CREATE TABLE "public"."users" (
 "addr" varchar(20) COLLATE "default",
 "created" timestamp(6),
 "oprat" varchar(6) COLLATE "default",
-"dvrat" varchar(6) COLLATE "default",
-"mgrat" varchar(4) COLLATE "default",
+"sprat" varchar(4) COLLATE "default",
 "adm" bool DEFAULT false,
-"id" varchar(11) COLLATE "default"
+"id" varchar(11) COLLATE "default",
+"opr" int2
 )
 WITH (OIDS=FALSE)
 
@@ -203,7 +200,6 @@ WITH (OIDS=FALSE)
 -- Alter Sequences Owned By 
 -- ----------------------------
 ALTER SEQUENCE "public"."orders_id_seq" OWNED BY "orders"."id";
-ALTER SEQUENCE "public"."repays_id_seq" OWNED BY "repays"."id";
 
 -- ----------------------------
 -- Primary Key structure for table evtq
@@ -219,8 +215,3 @@ ALTER TABLE "public"."evtu" ADD PRIMARY KEY ("peerid");
 -- Primary Key structure for table items
 -- ----------------------------
 ALTER TABLE "public"."items" ADD PRIMARY KEY ("shopid", "name");
-
--- ----------------------------
--- Primary Key structure for table repays
--- ----------------------------
-ALTER TABLE "public"."repays" ADD PRIMARY KEY ("id");

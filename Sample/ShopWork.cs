@@ -160,10 +160,10 @@ namespace Greatbone.Sample
         }
     }
 
-    [Ui("商家管理")]
-    public class SupShopWork : ShopWork<SupShopVarWork>
+    [Ui("商家")]
+    public class SprShopWork : ShopWork<SupShopVarWork>
     {
-        public SupShopWork(WorkContext wc) : base(wc)
+        public SprShopWork(WorkContext wc) : base(wc)
         {
         }
 
@@ -214,7 +214,7 @@ namespace Greatbone.Sample
         }
     }
 
-    [Ui("商家管理")]
+    [Ui("商家")]
     public class AdmShopWork : ShopWork<AdmShopVarWork>
     {
         public AdmShopWork(WorkContext wc) : base(wc)
