@@ -31,9 +31,6 @@ namespace Greatbone.Core
         // the default action, can be null
         readonly ActionInfo @default;
 
-        // the goto action, can be null
-        readonly ActionInfo @goto;
-
         // actions with Ui attribute
         readonly ActionInfo[] uiactions;
 
@@ -79,10 +76,6 @@ namespace Greatbone.Core
                 if (ai.Name.Equals("default"))
                 {
                     @default = ai;
-                }
-                if (ai.Name.Equals("goto"))
-                {
-                    @goto = ai;
                 }
             }
 
@@ -186,8 +179,6 @@ namespace Greatbone.Core
 
         public bool HasDefault => @default != null;
 
-        public bool HasGoto => @goto != null;
-
         public Roll<Work> Subworks => subworks;
 
         public Work Varwork => varwork;
@@ -267,7 +258,7 @@ namespace Greatbone.Core
             return actions[method];
         }
 
-        internal Work Resolve(ref string relative, ActionContext ac, ref bool recover)
+        internal Work Resolve(ref string relative, ActionContext ac)
         {
             int slash = relative.IndexOf('/');
             if (slash == -1)
@@ -283,24 +274,21 @@ namespace Greatbone.Core
             if (subworks != null && subworks.TryGet(key, out work)) // if child
             {
                 ac.Chain(key, work);
-                return work.Resolve(ref relative, ac, ref recover);
+                return work.Resolve(ref relative, ac);
             }
             if (varwork != null) // if variable-key sub
             {
-                if (key.Length == 0 && varwork.HasKeyer) // resolve varkey
+                IData prin = ac.Principal;
+                if (key.Length == 0 && varwork.HasKeyer) // resolve shortcut
                 {
-                    if (ac.Principal == null) throw AuthorizeEx;
-                    if ((key = varwork.ObtainVarKey(ac.Principal)) == null)
+                    if (prin == null) throw AuthorizeEx;
+                    if ((key = varwork.ObtainVarKey(prin)) == null)
                     {
-                        if (@goto != null)
-                        {
-                            recover = true;
-                        }
-                        return null;
+                        throw AuthorizeEx;
                     }
                 }
                 ac.Chain(key, varwork);
-                return varwork.Resolve(ref relative, ac, ref recover);
+                return varwork.Resolve(ref relative, ac);
             }
             return null;
         }
@@ -331,35 +319,35 @@ namespace Greatbone.Core
                     name = rsc.Substring(0, dash);
                     ac.Subscript = subscpt = rsc.Substring(dash + 1).ToInt();
                 }
-                ActionInfo act = string.IsNullOrEmpty(name) ? @default : GetAction(name);
-                if (act == null)
+                ActionInfo ai = string.IsNullOrEmpty(name) ? @default : GetAction(name);
+                if (ai == null)
                 {
                     ac.Give(404); // not found
                     return;
                 }
 
-                ac.Doer = act;
+                ac.Doer = ai;
 
                 // access check
-                if (!act.DoAuthorize(ac)) throw AuthorizeEx;
+                if (!ai.DoAuthorize(ac)) throw AuthorizeEx;
 
                 // try in cache
 
-                act.Before?.Do(ac);
-                if (act.BeforeAsync != null) await act.BeforeAsync.DoAsync(ac);
+                ai.Before?.Do(ac);
+                if (ai.BeforeAsync != null) await ai.BeforeAsync.DoAsync(ac);
 
                 // method invocation
-                if (act.IsAsync)
+                if (ai.IsAsync)
                 {
-                    await act.DoAsync(ac, subscpt); // invoke action method
+                    await ai.DoAsync(ac, subscpt); // invoke action method
                 }
                 else
                 {
-                    act.Do(ac, subscpt);
+                    ai.Do(ac, subscpt);
                 }
 
-                act.After?.Do(ac);
-                if (act.AfterAsync != null) await act.AfterAsync.DoAsync(ac);
+                ai.After?.Do(ac);
+                if (ai.AfterAsync != null) await ai.AfterAsync.DoAsync(ac);
 
                 ac.Doer = null;
             }

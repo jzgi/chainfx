@@ -134,6 +134,7 @@ namespace Greatbone.Sample
     }
 
     [Ui("设置")]
+    [User(User.DELIVERER)]
     public class OprShopVarWork : ShopVarWork
     {
         public OprShopVarWork(WorkContext wc) : base(wc)
@@ -159,6 +160,7 @@ namespace Greatbone.Sample
         }
 
         [Ui("基本资料", Mode = UiMode.AnchorDialog)]
+        [User(User.ASSISTANT)]
         public async Task edit(ActionContext ac)
         {
             const int proj = -1 ^ Shop.ICON ^ Shop.ID ^ Shop.ADM;
@@ -208,6 +210,7 @@ namespace Greatbone.Sample
         }
 
         [Ui("图片", Mode = UiMode.AnchorCrop, Circle = true)]
+        [User(User.ASSISTANT)]
         public new async Task icon(ActionContext ac)
         {
             string id = ac[this];
@@ -242,7 +245,7 @@ namespace Greatbone.Sample
         }
 
         [Ui("人员", Mode = UiMode.AnchorDialog)]
-        [User(User.ASSISTANT)]
+        [User(User.MANAGER)]
         public void access(ActionContext ac)
         {
         }

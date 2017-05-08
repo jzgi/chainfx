@@ -215,7 +215,7 @@ namespace Greatbone.Sample
         }
     }
 
-    [Ui("在购", "订单尚在购物车")]
+    [Ui("购物车")]
     [User(User.ASSISTANT)]
     public class OprCartOrderWork : OprOrderWork<OprCartOrderVarWork>
     {

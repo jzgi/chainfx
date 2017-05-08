@@ -1,6 +1,4 @@
 ﻿using System;
-using System.Net.Http;
-using System.Security.Cryptography.X509Certificates;
 using System.Text;
 using System.Threading.Tasks;
 using Greatbone.Core;
@@ -35,7 +33,7 @@ namespace Greatbone.Sample
                 cityopt[i] = cities[i].name;
             }
 
-            WeiXinUtility.InitWweiXinPay(sc.GetFilePath("$apiclient_cert.p12"));
+            InitWweiXinPay(sc.GetFilePath("$apiclient_cert.p12"));
         }
 
         public string[] CityOpt => cityopt;
@@ -132,7 +130,7 @@ namespace Greatbone.Sample
                 }
                 else
                 {
-                    ac.Give(403); // forbidden
+                    ac.Give(403, "您没有访问权限"); // forbidden
                 }
             }
             else

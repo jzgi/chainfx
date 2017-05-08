@@ -64,7 +64,7 @@ namespace Greatbone.Core
                     char c = alt[i];
                     if (c >= 'a' && c <= 'z')
                     {
-                        c = (char) (c - 32);
+                        c = (char)(c - 32);
                     }
                     Add(c);
                 }
@@ -182,9 +182,7 @@ namespace Greatbone.Core
             Add("</div>");
 
             Add("<div class=\"title-bar-title\">");
-            Add("<a class=\"button primary hollow\" href=\"javascript: location.reload();\">");
-            Add(work.ui.TipOrLabel);
-            Add("</a>");
+            Add("<a class=\"button primary hollow\" href=\"javascript: location.reload();\">刷新</a>");
             Add("</div>");
 
             Add("</div>");
@@ -303,7 +301,7 @@ namespace Greatbone.Core
                     // acitons
                     if (ais != null)
                     {
-                        Add("<td>");
+                        Add("<td style=\"width: 1px; white-space: nowrap;\">");
                         BUTTONS(ais);
                         Add("</td>");
                     }
@@ -474,8 +472,8 @@ namespace Greatbone.Core
 
                 if (ui.IsLink)
                 {
-                    Add("<a class=\"button secondary");
-//                    Add(ui.Alert ? " warning" : " primary");
+                    Add("<a class=\"button success");
+                    if (!ui.Alert) Add(" hollow");
                     Add("\" href=\"");
                     for (int lvl = 0; lvl <= level; lvl++)
                     {
@@ -498,8 +496,8 @@ namespace Greatbone.Core
                 }
                 else if (ui.IsAnchor)
                 {
-                    Add("<a class=\"button secondary");
-//                    Add(ui.Alert ? " warning" : " primary");
+                    Add("<a class=\"button success");
+                    if (!ui.Alert) Add(" hollow");
                     Add("\" href=\"");
                     for (int lvl = 0; lvl <= level; lvl++)
                     {
@@ -538,8 +536,8 @@ namespace Greatbone.Core
                 }
                 else if (ui.IsButton)
                 {
-                    Add("<button class=\"button secondary");
-//                    Add(ui.Alert ? " warning" : " primary");
+                    Add("<button class=\"button success");
+                    if (!ui.Alert) Add(" hollow");
                     Add("\" name=\"");
                     Add(ai.Name);
                     Add("\" formaction=\"");
@@ -1185,7 +1183,7 @@ namespace Greatbone.Core
             if (mode > 0)
             {
                 Add(" onclick=\"dialog(this,");
-                Add((int) mode);
+                Add((int)mode);
                 Add("); return false;\"");
             }
 

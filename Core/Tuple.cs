@@ -1,12 +1,12 @@
 ﻿namespace Greatbone.Core
 {
-    public struct Value<TX, TY>
+    public struct Dual<TX, TY>
     {
         readonly TX x;
 
         readonly TY y;
 
-        public Value(TX x, TY y)
+        public Dual(TX x, TY y)
         {
             this.x = x;
             this.y = y;
@@ -17,7 +17,7 @@
         public TY Y => y;
     }
 
-    public struct Value<TX, TY, TZ>
+    public struct Triple<TX, TY, TZ>
     {
         readonly TX x;
 
@@ -25,7 +25,7 @@
 
         readonly TZ z;
 
-        public Value(TX x, TY y, TZ z)
+        public Triple(TX x, TY y, TZ z)
         {
             this.x = x;
             this.y = y;

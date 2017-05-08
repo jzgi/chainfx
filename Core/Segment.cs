@@ -98,7 +98,7 @@ namespace Greatbone.Core
             return default(DateTime);
         }
 
-        public static implicit operator char[] (Segment v)
+        public static implicit operator char[](Segment v)
         {
             string str = v.key;
             return str?.ToCharArray();

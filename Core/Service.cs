@@ -179,8 +179,7 @@ namespace Greatbone.Core
                 else // handle a regular request
                 {
                     string relative = path.Substring(1);
-                    bool recover = false;
-                    Work work = Resolve(ref relative, ac, ref recover);
+                    Work work = Resolve(ref relative, ac);
                     if (work == null)
                     {
                         ac.Give(404); // not found
@@ -498,19 +497,10 @@ namespace Greatbone.Core
                 else // handle a regular request
                 {
                     string relative = path.Substring(1);
-                    bool recover = false; // null-key-recovering
-                    Work work = Resolve(ref relative, ac, ref recover);
+                    Work work = Resolve(ref relative, ac);
                     if (work == null)
                     {
-                        if (recover && ac.ByBrowse)
-                        {
-                            ac.SetHeader("Location", path.Substring(0, path.Length - relative.Length - 1) + "goto?orig=" + ac.Uri);
-                            ac.Give(303); // redirect
-                        }
-                        else
-                        {
-                            ac.Give(404); // not found
-                        }
+                        ac.Give(404); // not found
                         return;
                     }
                     await work.HandleAsync(relative, ac);

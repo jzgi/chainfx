@@ -962,11 +962,11 @@ select[multiple] {
 .button {
     display: inline-block;
     vertical-align: middle;
-    margin: 0.5rem 0.25rem 0.5rem 0;
     padding: 0.25rem 0.25rem;
+    margin: 2px 2px;
     -webkit-appearance: none;
     border: 1px solid transparent;
-    border-radius: 0.5rem;
+    border-radius: 0.25rem;
     transition: background-color 0.25s ease-out, color 0.25s ease-out;
     font-size: 1rem;
     line-height: 1;
@@ -1608,7 +1608,7 @@ select[multiple] {
 }
 
 .title-bar {
-    padding: 0.5rem;
+    padding: 0.25rem 0.25rem;
     background: white;
     color: #ba55d3;
     display: -ms-flexbox;
@@ -1618,7 +1618,6 @@ select[multiple] {
     -ms-flex-align: center;
     align-items: center;
     border-bottom: 2px solid #ba55d3;
-    padding: 0 0;
 }
 
 .title-bar .menu-icon {
@@ -1640,7 +1639,7 @@ select[multiple] {
 .title-bar-title {
     display: inline-block;
     vertical-align: middle;
-    font-weight: bold;
+    font-weight: normal;
 }
 
 .top-bar {
@@ -2242,6 +2241,7 @@ table {
     width: 100%;
     margin-bottom: 1rem;
     border-radius: 0;
+    border-collapse: collapse;
 }
 
 table thead,
@@ -2259,6 +2259,7 @@ table caption {
 table thead {
     background: #e6e6e6;
     color: black;
+    font-weight: normal;
 }
 
 table tfoot {
@@ -2273,6 +2274,7 @@ table tfoot tr {
 
 table thead th {
     text-align: center; 
+    font-weight: normal;
 }
 table thead td,
 table tfoot th,
@@ -2284,7 +2286,8 @@ table tfoot td {
 
 table tbody th,
 table tbody td {
-    padding: 0;
+    border: 0px solid #e6e6e6;
+    padding: 2px;
 }
 
 table tbody tr:nth-child(even) {
@@ -2297,29 +2300,8 @@ table.unstriped tbody {
 }
 
 table.unstriped tbody tr {
-    border-bottom: 0;
     border-bottom: 1px solid #f1f1f1;
     background-color: #fefefe;
-}
-
-@media screen and (max-width: 63.9375em) {
-    table.stack thead {
-        display: none;
-    }
-
-    table.stack tfoot {
-        display: none;
-    }
-
-    table.stack tr,
-    table.stack th,
-    table.stack td {
-        display: block;
-    }
-
-    table.stack td {
-        border-top: 0;
-    }
 }
 
 table.scroll {

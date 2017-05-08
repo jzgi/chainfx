@@ -21,7 +21,7 @@ namespace Greatbone.Sample
     }
 
     [Ui("用户")]
-    public class SprUserWork : UserWork<MgrUserVarWork>
+    public class SprUserWork : UserWork<OprUserVarWork>
     {
         public SprUserWork(WorkContext wc) : base(wc)
         {

@@ -103,6 +103,6 @@ namespace Greatbone.Sample
             }
         }
 
-        public bool IsShop => opr != 0;
+        public string Label => name;
     }
 }
