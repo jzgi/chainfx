@@ -90,7 +90,7 @@ namespace Greatbone.Sample
             }
         }
 
-        [Ui("新建", UiMode.AnchorDialog)]
+        [Ui("新建", Mode=UiMode.AnchorDialog)]
         public async Task @new(ActionContext ac)
         {
             if (ac.GET)

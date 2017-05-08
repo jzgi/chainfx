@@ -168,21 +168,23 @@ namespace Greatbone.Core
             Add("</div>");
         }
 
-        public void TOOLBAR(ActionInfo[] ais)
+        public void TOOLBAR(Work work)
         {
             Add("<div data-sticky-container>");
             Add("<div class=\"sticky\" style=\"width: 100%\" data-sticky  data-options=\"anchor: page; marginTop: 0; stickyOn: small;\">");
             Add("<div class=\"title-bar\">");
 
             Add("<div class=\"title-bar-left\">");
-            if (ais != null)
+            if (work.UiActions != null)
             {
-                BUTTONS(ais);
+                BUTTONS(work.UiActions);
             }
             Add("</div>");
 
-            Add("<div class=\"title-bar-right\">");
-            Add("<a class=\"float-right\" href=\"javascript: location.reload();\"><span class=\"fa-stack fa-lg\"><i class=\"fa fa-circle fa-stack-2x\"></i><i class=\"fa fa-refresh fa-stack-1x fa-inverse\"></i></span></a>");
+            Add("<div class=\"title-bar-title\">");
+            Add("<a class=\"button primary hollow\" href=\"javascript: location.reload();\">");
+            Add(work.ui.TipOrLabel);
+            Add("</a>");
             Add("</div>");
 
             Add("</div>");
@@ -249,7 +251,7 @@ namespace Greatbone.Core
             {
                 Add("<form id=\"gridform\">");
 
-                if (check > 1) TOOLBAR(formctx.Work.UiActions);
+                if (check > 1) TOOLBAR(formctx.Work);
             }
 
             if (arr != null)
@@ -260,7 +262,6 @@ namespace Greatbone.Core
                 Add("<table class=\"unstriped\">");
 
                 ActionInfo[] ais = work.Varwork?.UiActions;
-
 
                 chain[level].node = TABLE_THEAD;
                 Add("<thead>");
@@ -352,7 +353,7 @@ namespace Greatbone.Core
             {
                 Add("<form id=\"gridform\">");
 
-                if (check > 1) TOOLBAR(formctx.Work.UiActions);
+                if (check > 1) TOOLBAR(formctx.Work);
             }
 
             if (arr != null) // grid component
@@ -429,7 +430,7 @@ namespace Greatbone.Core
             {
                 Add("<form id=\"gridform\">");
 
-                if (check > 1) TOOLBAR(formctx.Work.UiActions);
+                if (check > 1) TOOLBAR(formctx.Work);
             }
 
             if (arr != null)
@@ -473,8 +474,8 @@ namespace Greatbone.Core
 
                 if (ui.IsLink)
                 {
-                    Add("<a class=\"button hollow");
-                    Add(ui.Alert ? " warning" : " primary");
+                    Add("<a class=\"button secondary");
+//                    Add(ui.Alert ? " warning" : " primary");
                     Add("\" href=\"");
                     for (int lvl = 0; lvl <= level; lvl++)
                     {
@@ -497,8 +498,8 @@ namespace Greatbone.Core
                 }
                 else if (ui.IsAnchor)
                 {
-                    Add("<a class=\"button hollow");
-                    Add(ui.Alert ? " warning" : " primary");
+                    Add("<a class=\"button secondary");
+//                    Add(ui.Alert ? " warning" : " primary");
                     Add("\" href=\"");
                     for (int lvl = 0; lvl <= level; lvl++)
                     {
@@ -537,8 +538,8 @@ namespace Greatbone.Core
                 }
                 else if (ui.IsButton)
                 {
-                    Add("<button class=\"button hollow");
-                    Add(ui.Alert ? " warning" : " primary");
+                    Add("<button class=\"button secondary");
+//                    Add(ui.Alert ? " warning" : " primary");
                     Add("\" name=\"");
                     Add(ai.Name);
                     Add("\" formaction=\"");

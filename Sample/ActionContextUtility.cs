@@ -63,9 +63,13 @@ namespace Greatbone.Sample
             h.Add("<div class=\"title-bar-left\">");
             h.BUTTONS(work.UiActions, ac);
             h.Add("</div>");
-            h.Add("<div class=\"title-bar-right\">");
-            h.Add("<span style=\"margin: 0.5rem 0.25rem; padding: 0.25rem; font-size: 1.25rem; white-space: nowrap;\">");
-            h.Add((string) ac[work]);
+            h.Add("<div class=\"title-bar-title\">");
+            h.Add("<span class=\"button primary hollow\">");
+            string title = ac[work];
+            if (title.Length < 10)
+            {
+                h.Add(title);
+            }
             h.Add("</span>");
             h.Add("</div>");
             h.Add("</div>");

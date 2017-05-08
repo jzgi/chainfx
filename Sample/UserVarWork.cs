@@ -13,7 +13,7 @@ namespace Greatbone.Sample
             ac.GiveFrame(200);
         }
 
-        [Ui("基本资料", UiMode.AnchorDialog)]
+        [Ui("基本资料", Mode = UiMode.AnchorDialog)]
         public void profile(ActionContext ac)
         {
             string userid = ac[this];
@@ -32,7 +32,7 @@ namespace Greatbone.Sample
             }
         }
 
-        [Ui("设置密码", UiMode.AnchorDialog)]
+        [Ui("设置密码", Mode = UiMode.AnchorDialog)]
         public void pwd(ActionContext ac)
         {
         }
@@ -45,9 +45,9 @@ namespace Greatbone.Sample
         {
             Create<MyCartOrderWork>("cart");
 
-            Create<MyCurrentOrderWork>("current");
+            Create<MyPresentOrderWork>("current");
 
-            Create<MyHistoryOrderWork>("history");
+            Create<MyPastOrderWork>("history");
         }
     }
 

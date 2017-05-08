@@ -140,11 +140,11 @@ namespace Greatbone.Sample
         {
             Create<OprCartOrderWork>("cart");
 
-            Create<OprAcceptedOrderWork>("acpt");
+            Create<OprPaidOrderWork>("paid");
 
             Create<OprSentOrderWork>("sent");
 
-            Create<OprHistoryOrderWork>("history");
+            Create<OprPastOrderWork>("past");
 
             Create<OprAlienOrderWork>("alien");
 
@@ -158,7 +158,7 @@ namespace Greatbone.Sample
             ac.GiveFrame(200);
         }
 
-        [Ui("基本资料", UiMode.AnchorDialog)]
+        [Ui("基本资料", Mode = UiMode.AnchorDialog)]
         public async Task edit(ActionContext ac)
         {
             const int proj = -1 ^ Shop.ICON ^ Shop.ID ^ Shop.ADM;
@@ -207,7 +207,7 @@ namespace Greatbone.Sample
             }
         }
 
-        [Ui("图片", UiMode.AnchorCrop, Circle = true)]
+        [Ui("图片", Mode = UiMode.AnchorCrop, Circle = true)]
         public new async Task icon(ActionContext ac)
         {
             string id = ac[this];
@@ -241,7 +241,7 @@ namespace Greatbone.Sample
             }
         }
 
-        [Ui("人员", UiMode.AnchorDialog)]
+        [Ui("人员", Mode = UiMode.AnchorDialog)]
         [User(User.ASSISTANT)]
         public void access(ActionContext ac)
         {
@@ -254,7 +254,7 @@ namespace Greatbone.Sample
         {
         }
 
-        [Ui("修改", UiMode.AnchorDialog)]
+        [Ui("修改", Mode = UiMode.AnchorDialog)]
         public async Task edit(ActionContext ac)
         {
             if (ac.GET)
@@ -303,7 +303,7 @@ namespace Greatbone.Sample
             }
         }
 
-        [Ui("图片", UiMode.AnchorCrop, Circle = true)]
+        [Ui("图片", Mode = UiMode.AnchorCrop, Circle = true)]
         public new async Task icon(ActionContext ac)
         {
             string id = ac[this];

@@ -55,7 +55,7 @@ namespace Greatbone.Sample
         {
         }
 
-        [Ui("修改", UiMode.AnchorDialog)]
+        [Ui("修改", Mode = UiMode.AnchorDialog)]
         public async Task edit(ActionContext ac)
         {
             if (ac.GET)
@@ -97,7 +97,7 @@ namespace Greatbone.Sample
             }
         }
 
-        [Ui("图片", UiMode.AnchorCrop, Circle = true)]
+        [Ui("图片", Mode = UiMode.AnchorCrop, Circle = true)]
         public new async Task icon(ActionContext ac)
         {
             string shopid = ac[typeof(ShopVarWork)];

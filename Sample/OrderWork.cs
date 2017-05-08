@@ -20,7 +20,7 @@ namespace Greatbone.Sample
     }
 
 
-    [Ui("购物车")]
+    [Ui("购物车", "购物车")]
     public class MyCartOrderWork : MyOrderWork<MyCartOrderVarWork>
     {
         public MyCartOrderWork(WorkContext wc) : base(wc)
@@ -45,7 +45,7 @@ namespace Greatbone.Sample
             }
         }
 
-        [Ui("清空购物车", UiMode.ButtonConfirm)]
+        [Ui("清空购物车", Mode = UiMode.ButtonConfirm)]
         public void empty(ActionContext ac)
         {
             string wx = ac[typeof(UserVarWork)];
@@ -132,10 +132,10 @@ namespace Greatbone.Sample
         }
     }
 
-    [Ui("当前订单")]
-    public class MyCurrentOrderWork : MyOrderWork<MyCurrentOrderVarWork>
+    [Ui("当前订单", "订单在处理中")]
+    public class MyPresentOrderWork : MyOrderWork<MyPresentOrderVarWork>
     {
-        public MyCurrentOrderWork(WorkContext wc) : base(wc)
+        public MyPresentOrderWork(WorkContext wc) : base(wc)
         {
         }
 
@@ -156,12 +156,13 @@ namespace Greatbone.Sample
                 }
             }
         }
+
     }
 
-    [Ui("历史订单")]
-    public class MyHistoryOrderWork : MyOrderWork<MyHistoryOrderVarWork>
+    [Ui("以往订单", "订单已完成或撤销")]
+    public class MyPastOrderWork : MyOrderWork<MyPastOrderVarWork>
     {
-        public MyHistoryOrderWork(WorkContext wc) : base(wc)
+        public MyPastOrderWork(WorkContext wc) : base(wc)
         {
         }
 
@@ -201,9 +202,7 @@ namespace Greatbone.Sample
             string shopid = ac[-1];
             using (var dc = ac.NewDbContext())
             {
-                bool found = (status2 == 0) ?
-                    dc.Query("SELECT * FROM orders WHERE shopid = @1 AND status = @2 ORDER BY id LIMIT 20 OFFSET @3", p => p.Set(shopid).Set(status).Set(page * 20)) :
-                    dc.Query("SELECT * FROM orders WHERE shopid = @1 AND status BETWEEN @2 AND @3 ORDER BY id LIMIT 20 OFFSET @4", p => p.Set(shopid).Set(status).Set(status2).Set(page * 20));
+                bool found = (status2 == 0) ? dc.Query("SELECT * FROM orders WHERE shopid = @1 AND status = @2 ORDER BY id LIMIT 20 OFFSET @3", p => p.Set(shopid).Set(status).Set(page * 20)) : dc.Query("SELECT * FROM orders WHERE shopid = @1 AND status BETWEEN @2 AND @3 ORDER BY id LIMIT 20 OFFSET @4", p => p.Set(shopid).Set(status).Set(status2).Set(page * 20));
                 if (found)
                 {
                     ac.GiveGridFormPage(200, dc.ToArray<Order>(proj), proj);
@@ -216,7 +215,7 @@ namespace Greatbone.Sample
         }
     }
 
-    [Ui("在购")]
+    [Ui("在购", "订单尚在购物车")]
     [User(User.ASSISTANT)]
     public class OprCartOrderWork : OprOrderWork<OprCartOrderVarWork>
     {
@@ -226,7 +225,7 @@ namespace Greatbone.Sample
             proj = -1 ^ Order.LATE;
         }
 
-        [Ui("清理旧单", UiMode.ButtonConfirm)]
+        [Ui("清理旧单", Mode = UiMode.ButtonConfirm)]
         public void clear(ActionContext ac)
         {
             string shopid = ac[-1];
@@ -238,17 +237,17 @@ namespace Greatbone.Sample
         }
     }
 
-    [Ui("已付")]
+    [Ui("已付", "订单已收到付款")]
     [User(User.ASSISTANT)]
-    public class OprAcceptedOrderWork : OprOrderWork<OprAcceptedOrderVarWork>
+    public class OprPaidOrderWork : OprOrderWork<OprAcceptedOrderVarWork>
     {
-        public OprAcceptedOrderWork(WorkContext wc) : base(wc)
+        public OprPaidOrderWork(WorkContext wc) : base(wc)
         {
             status = Order.ACCEPTED;
             proj = -1 ^ Order.LATE;
         }
 
-        [Ui("统计", UiMode.AnchorDialog)]
+        [Ui("统计", Mode = UiMode.AnchorDialog)]
         public async Task calc(ActionContext ac)
         {
             string shopid = ac[-1];
@@ -273,7 +272,7 @@ namespace Greatbone.Sample
         }
     }
 
-    [Ui("已派")]
+    [Ui("在派", "订单在派送中")]
     [User(User.DELIVERER)]
     public class OprSentOrderWork : OprOrderWork<OprSentOrderVarWork>
     {
@@ -296,11 +295,11 @@ namespace Greatbone.Sample
         }
     }
 
-    [Ui("历史")]
+    [Ui("以往", "订单已完成或撤销")]
     [User(User.DELIVERER)]
-    public class OprHistoryOrderWork : OprOrderWork<OprHistoryOrderVarWork>
+    public class OprPastOrderWork : OprOrderWork<OprHistoryOrderVarWork>
     {
-        public OprHistoryOrderWork(WorkContext wc) : base(wc)
+        public OprPastOrderWork(WorkContext wc) : base(wc)
         {
             status = Order.DONE;
             status2 = Order.ABORTED;
@@ -309,7 +308,7 @@ namespace Greatbone.Sample
     }
 
 
-    [Ui("代派")]
+    [Ui("代派", "代派别家的订单")]
     [User(User.DELIVERER)]
     public class OprAlienOrderWork : OrderWork<OprAlienOrderVarWork>
     {
@@ -317,15 +316,19 @@ namespace Greatbone.Sample
         {
         }
 
-        [Ui("锁定/处理")]
-        public async Task @lock(ActionContext ac)
+        public void @default(ActionContext ac, int page)
         {
-            string shopid = ac[0];
-            Form frm = await ac.ReadAsync<Form>();
-            int[] pk = frm[nameof(pk)];
-
+            string shopid = ac[-1];
             using (var dc = ac.NewDbContext())
             {
+                if (dc.Query("SELECT * FROM orders WHERE shopid = @1 AND status = @2 ORDER BY id LIMIT 20 OFFSET @3", p => p.Set(shopid).Set(page * 20)))
+                {
+                    ac.GiveGridFormPage(200, dc.ToArray<Order>());
+                }
+                else
+                {
+                    ac.GiveGridFormPage(200, (Order[])null);
+                }
             }
         }
     }

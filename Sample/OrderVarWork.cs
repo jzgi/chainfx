@@ -28,7 +28,7 @@ namespace Greatbone.Sample
             CreateVar<MyCartOrderVarVarWork, string>(obj => ((OrderLine)obj).item);
         }
 
-        [Ui("收货地址", UiMode.ButtonDialog)]
+        [Ui("收货地址", Mode=UiMode.ButtonDialog)]
         public async Task addr(ActionContext ac)
         {
             string wx = ac[typeof(UserVarWork)];
@@ -82,7 +82,7 @@ namespace Greatbone.Sample
             }
         }
 
-        [Ui("附注", UiMode.ButtonDialog)]
+        [Ui("附注", Mode=UiMode.ButtonDialog)]
         public async Task note(ActionContext ac)
         {
             string wx = ac[typeof(UserVarWork)];
@@ -117,7 +117,7 @@ namespace Greatbone.Sample
 
         static readonly Func<IData, bool> PREPAY = obj => ((Order)obj).custaddr != null;
 
-        [Ui("付款", UiMode.AnchorScript, Alert = true)]
+        [Ui("付款", Mode=UiMode.AnchorScript, Alert = true)]
         public async Task prepay(ActionContext ac)
         {
             string wx = ac[typeof(UserVarWork)];
@@ -139,9 +139,9 @@ namespace Greatbone.Sample
         }
     }
 
-    public class MyCurrentOrderVarWork : MyOrderVarWork
+    public class MyPresentOrderVarWork : MyOrderVarWork
     {
-        public MyCurrentOrderVarWork(WorkContext wc) : base(wc)
+        public MyPresentOrderVarWork(WorkContext wc) : base(wc)
         {
         }
 
@@ -156,9 +156,9 @@ namespace Greatbone.Sample
         }
     }
 
-    public class MyHistoryOrderVarWork : MyOrderVarWork
+    public class MyPastOrderVarWork : MyOrderVarWork
     {
-        public MyHistoryOrderVarWork(WorkContext wc) : base(wc)
+        public MyPastOrderVarWork(WorkContext wc) : base(wc)
         {
         }
     }
@@ -207,7 +207,7 @@ namespace Greatbone.Sample
         public OprCartOrderVarWork(WorkContext wc) : base(wc)
         {
         }
-        [Ui("置己收", UiMode.ButtonConfirm)]
+        [Ui("置己收", Mode=UiMode.ButtonConfirm)]
         public async Task rcved(ActionContext ac)
         {
             long id = ac[this];
