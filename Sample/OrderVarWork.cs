@@ -25,10 +25,10 @@ namespace Greatbone.Sample
     {
         public MyCartOrderVarWork(WorkContext wc) : base(wc)
         {
-            CreateVar<MyCartOrderVarVarWork, string>(obj => ((OrderLine)obj).item);
+            CreateVar<MyCartOrderVarVarWork, string>(obj => ((OrderLine) obj).item);
         }
 
-        [Ui("收货地址", Mode=UiMode.ButtonDialog)]
+        [Ui("收货地址", Mode = UiMode.ButtonDialog)]
         public async Task addr(ActionContext ac)
         {
             string wx = ac[typeof(UserVarWork)];
@@ -61,10 +61,12 @@ namespace Greatbone.Sample
                 }
                 ac.GivePane(200, m =>
                 {
+                    m.FORM_();
                     m.TEXT(nameof(tel), tel, label: "电话");
-                    m.SELECT(nameof(city), city, ((ShopService)Service).CityOpt, label: "城市", refresh: true);
-                    m.SELECT(nameof(distr), distr, ((ShopService)Service).GetDistrs(city), label: "区域");
+                    m.SELECT(nameof(city), city, ((ShopService) Service).CityOpt, label: "城市", refresh: true);
+                    m.SELECT(nameof(distr), distr, ((ShopService) Service).GetDistrs(city), label: "区域");
                     m.TEXT(nameof(addr), addr, label: "地址");
+                    m._FORM();
                 });
             }
             else
@@ -82,7 +84,7 @@ namespace Greatbone.Sample
             }
         }
 
-        [Ui("附注", Mode=UiMode.ButtonDialog)]
+        [Ui("附注", Mode = UiMode.ButtonDialog)]
         public async Task note(ActionContext ac)
         {
             string wx = ac[typeof(UserVarWork)];
@@ -115,9 +117,9 @@ namespace Greatbone.Sample
             }
         }
 
-        static readonly Func<IData, bool> PREPAY = obj => ((Order)obj).custaddr != null;
+        static readonly Func<IData, bool> PREPAY = obj => ((Order) obj).custaddr != null;
 
-        [Ui("付款", Mode=UiMode.AnchorScript, Alert = true)]
+        [Ui("付款", Mode = UiMode.AnchorScript, Alert = true)]
         public async Task prepay(ActionContext ac)
         {
             string wx = ac[typeof(UserVarWork)];
@@ -207,7 +209,8 @@ namespace Greatbone.Sample
         public OprCartOrderVarWork(WorkContext wc) : base(wc)
         {
         }
-        [Ui("置己收", Mode=UiMode.ButtonConfirm)]
+
+        [Ui("置己收", Mode = UiMode.ButtonConfirm)]
         public async Task rcved(ActionContext ac)
         {
             long id = ac[this];

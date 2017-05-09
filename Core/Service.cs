@@ -533,10 +533,10 @@ namespace Greatbone.Core
             StringBuilder sb = new StringBuilder("Token=");
             string token = Encrypt(prin, proj);
             sb.Append(token);
-            if (Auth.maxage > 0)
-            {
-                sb.Append("; Max-Age=").Append(Auth.maxage);
-            }
+//            if (Auth.maxage > 0)
+//            {
+//                sb.Append("; Max-Age=").Append(Auth.maxage);
+//            }
             if (Auth.domain != null)
             {
                 sb.Append("; Domain=").Append(Auth.domain);

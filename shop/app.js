@@ -113,7 +113,8 @@ function crop(trig, wid, hei, circle) {
     wid = wid ? wid : 120;
     hei = hei ? hei : 120;
 
-    var html = '<div id="dyndlg" class="' + sizg + ' reveal"  data-reveal data-close-on-click="false">'
+    var html =
+        '<div id="dyndlg" class="' + sizg + ' reveal"  data-reveal data-close-on-click="false">'
         + '<strong>' + trig.innerHTML + ' </strong>'
         + '<button class="close-button medium" type="button" onclick="$(\'#dyndlg\').foundation(\'close\').foundation(\'destroy\').remove();">&times;</button>'
         + '<div id="demo" style="height: calc(100% - 8rem)">'
@@ -123,7 +124,6 @@ function crop(trig, wid, hei, circle) {
         + '<a class="button hollow" onclick="upload(\'' + action + '\',' + circle + ');">裁剪并上传</a>'
         + '</div>'
         + '</div>';
-    + '</div>';
 
     var dive = $(html);
 
@@ -181,24 +181,6 @@ function upload(url, circle) {
 
 }
 
-
-function validate() {
-
-    // calculate checked if and unif
-    var if_;
-    var unif;
-    $(':checked').each(function () {
-        if_ &= $(this).data('if');
-        unif |= $(this).data('unif');
-    });
-
-    // enable/disable buttons
-    $('button').each(function () {
-        var a = $(this).data('if');
-        var b = $(this).data('unif');
-        this.disabled = (if_ & a == a) && (unif | b == b);
-    });
-}
 
 function prepay(trig) {
     // get prepare id

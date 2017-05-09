@@ -149,7 +149,7 @@ namespace Greatbone.Sample
         ///
         /// Gives an iframe pane.
         ///
-        public static void GivePane(this ActionContext ac, int status, Action<HtmlContent> main, bool? pub = null, int maxage = 60)
+        public static void GivePane(this ActionContext ac, int status, Action<HtmlContent> main = null, bool? pub = null, int maxage = 60)
         {
             HtmlContent h = new HtmlContent(true, true, 8 * 1024);
 
@@ -173,13 +173,16 @@ namespace Greatbone.Sample
             h.Add("<script src=\"//cdn.bootcss.com/foundation/6.3.1/js/foundation.min.js\"></script>");
             h.Add("<script src=\"/app.js\"></script>");
             h.Add("<script>");
-            h.Add("$(document).foundation();");
             // enabling ok button
             h.Add("$(document).ready(function(){");
-            h.Add("$('#dyndlg', window.parent.document).find('button').prop('disabled', false);");
-            if (main == null)
+            h.Add("$(document).foundation();");
+            if (main != null)
             {
-                h.Add("$('#dyndlg').find('.close-button').trigger('click')");
+                h.Add("$('#dyndlg', window.parent.document).find('button').prop('disabled', false);");
+            }
+            else
+            {
+                h.Add("$('#dyndlg', window.parent.document).find('.close-button').trigger('click');");
             }
             h.Add("});");
             h.Add("</script>");
