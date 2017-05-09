@@ -117,7 +117,7 @@ function crop(trig, wid, hei, circle) {
         '<div id="dyndlg" class="' + sizg + ' reveal"  data-reveal data-close-on-click="false">'
         + '<strong>' + trig.innerHTML + ' </strong>'
         + '<button class="close-button medium" type="button" onclick="$(\'#dyndlg\').foundation(\'close\').foundation(\'destroy\').remove();">&times;</button>'
-        + '<div id="demo" style="height: calc(100% - 8rem)">'
+        + '<div id="demo" style="height: calc(100% - 8rem); text-align: center;">'
         + '<input type="file" id="fileinput" style="display: none;" onchange="bind(window.URL.createObjectURL(this.files[0]),' + wid + ',' + hei + ',' + circle + ');">'
         + '<div style="text-align: center">'
         + '<a class="button hollow" onclick="$(\'#fileinput\').click();">选择图片</a>'

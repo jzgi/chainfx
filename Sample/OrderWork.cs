@@ -8,7 +8,7 @@ namespace Greatbone.Sample
     {
         protected OrderWork(WorkContext wc) : base(wc)
         {
-            CreateVar<V, long>((obj) => ((Order)obj).id);
+            CreateVar<V, long>((obj) => ((Order) obj).id);
         }
     }
 
@@ -40,7 +40,7 @@ namespace Greatbone.Sample
                 }
                 else
                 {
-                    ac.GiveGridFormPage(200, (Order[])null);
+                    ac.GiveGridFormPage(200, (Order[]) null);
                 }
             }
         }
@@ -102,7 +102,7 @@ namespace Greatbone.Sample
                     }
                     else
                     {
-                        User prin = (User)ac.Principal;
+                        User prin = (User) ac.Principal;
                         var order = new Order
                         {
                             shopid = shopid,
@@ -132,7 +132,7 @@ namespace Greatbone.Sample
         }
     }
 
-    [Ui("当前订单", "订单在处理中")]
+    [Ui("当前订单")]
     public class MyPresentOrderWork : MyOrderWork<MyPresentOrderVarWork>
     {
         public MyPresentOrderWork(WorkContext wc) : base(wc)
@@ -152,14 +152,13 @@ namespace Greatbone.Sample
                 }
                 else
                 {
-                    ac.GiveGridFormPage(200, (Order[])null);
+                    ac.GiveGridFormPage(200, (Order[]) null);
                 }
             }
         }
-
     }
 
-    [Ui("以往订单", "订单已完成或撤销")]
+    [Ui("过去订单")]
     public class MyPastOrderWork : MyOrderWork<MyPastOrderVarWork>
     {
         public MyPastOrderWork(WorkContext wc) : base(wc)
@@ -179,7 +178,7 @@ namespace Greatbone.Sample
                 }
                 else
                 {
-                    ac.GiveGridFormPage(200, (Order[])null);
+                    ac.GiveGridFormPage(200, (Order[]) null);
                 }
             }
         }
@@ -209,7 +208,7 @@ namespace Greatbone.Sample
                 }
                 else
                 {
-                    ac.GiveGridFormPage(200, (Order[])null);
+                    ac.GiveGridFormPage(200, (Order[]) null);
                 }
             }
         }
@@ -237,7 +236,7 @@ namespace Greatbone.Sample
         }
     }
 
-    [Ui("已付", "订单已收到付款")]
+    [Ui("已付")]
     [User(User.ASSISTANT)]
     public class OprPaidOrderWork : OprOrderWork<OprAcceptedOrderVarWork>
     {
@@ -272,7 +271,7 @@ namespace Greatbone.Sample
         }
     }
 
-    [Ui("在派", "订单在派送中")]
+    [Ui("在派")]
     [User(User.DELIVERER)]
     public class OprSentOrderWork : OprOrderWork<OprSentOrderVarWork>
     {
@@ -295,7 +294,7 @@ namespace Greatbone.Sample
         }
     }
 
-    [Ui("以往", "订单已完成或撤销")]
+    [Ui("过去")]
     [User(User.DELIVERER)]
     public class OprPastOrderWork : OprOrderWork<OprHistoryOrderVarWork>
     {
@@ -327,7 +326,7 @@ namespace Greatbone.Sample
                 }
                 else
                 {
-                    ac.GiveGridFormPage(200, (Order[])null);
+                    ac.GiveGridFormPage(200, (Order[]) null);
                 }
             }
         }

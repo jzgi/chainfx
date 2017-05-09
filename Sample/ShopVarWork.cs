@@ -159,11 +159,11 @@ namespace Greatbone.Sample
             ac.GiveFrame(200);
         }
 
-        [Ui("基本资料", Mode = UiMode.AnchorDialog)]
+        [Ui("基本信息", Mode = UiMode.AnchorDialog)]
         [User(User.ASSISTANT)]
-        public async Task edit(ActionContext ac)
+        public async Task profile(ActionContext ac)
         {
-            const int proj = -1 ^ Shop.ICON ^ Shop.ID ^ Shop.ADM;
+            const short proj = -1 ^ Shop.ICON ^ Shop.ID ^ Shop.ADM;
             string id = ac[this];
             if (ac.GET)
             {
@@ -177,8 +177,8 @@ namespace Greatbone.Sample
                         {
                             m.FORM_();
                             m.TEXT(nameof(o.name), o.name, label: "商家名称", max: 10, @readonly: true);
-                            m.TEXT(nameof(o.descr), o.descr, label: "商家描述", max: 20);
-                            m.TEXT(nameof(o.tel), o.tel, label: "电话", max: 11);
+                            m.TEXT(nameof(o.descr), o.descr, label: "商家描述", max: 20, required: true);
+                            m.TEXT(nameof(o.tel), o.tel, label: "电话", max: 11, min: 11, pattern: "[0-9]+", required: true);
                             m.TEXT(nameof(o.city), o.city, label: "城市", @readonly: true);
                             m.SELECT(nameof(o.distr), o.distr, ((ShopService) Service).GetDistrs(o.city), label: "区域");
                             m.TEXT(nameof(o.addr), o.addr, label: "地址");
@@ -194,14 +194,14 @@ namespace Greatbone.Sample
             }
             else // post
             {
-                var shop = await ac.ReadObjectAsync<Shop>();
-                shop.id = ac[this];
+                var o = await ac.ReadObjectAsync<Shop>();
+                o.id = ac[this];
                 using (var dc = ac.NewDbContext())
                 {
                     dc.Sql("UPDATE shops")._SET_(Shop.Empty, proj)._("WHERE id = @1");
                     dc.Execute(p =>
                     {
-                        shop.WriteData(p, proj);
+                        o.WriteData(p, proj);
                         p.Set(id);
                     });
                 }
@@ -209,12 +209,11 @@ namespace Greatbone.Sample
             }
         }
 
-        [Ui("图片", Mode = UiMode.AnchorCrop, Circle = true)]
+        [Ui("场地照片", Mode = UiMode.AnchorCrop, Circle = true)]
         [User(User.ASSISTANT)]
         public new async Task icon(ActionContext ac)
         {
             string id = ac[this];
-            string city = ac[typeof(CityVarWork)];
             if (ac.GET)
             {
                 using (var dc = ac.NewDbContext())
@@ -234,8 +233,8 @@ namespace Greatbone.Sample
             }
             else // post
             {
-                var frm = await ac.ReadAsync<Form>();
-                ArraySegment<byte> icon = frm[nameof(icon)];
+                var f = await ac.ReadAsync<Form>();
+                ArraySegment<byte> icon = f[nameof(icon)];
                 using (var dc = ac.NewDbContext())
                 {
                     dc.Execute("UPDATE shops SET icon = @1 WHERE id = @2", p => p.Set(icon).Set(id));
@@ -244,10 +243,11 @@ namespace Greatbone.Sample
             }
         }
 
-        [Ui("人员", Mode = UiMode.AnchorDialog)]
+        [Ui("人员管理", Mode = UiMode.AnchorDialog)]
         [User(User.MANAGER)]
         public void access(ActionContext ac)
         {
+
         }
     }
 
@@ -315,7 +315,7 @@ namespace Greatbone.Sample
             {
                 using (var dc = Service.NewDbContext())
                 {
-                    if (dc.Query1("SELECT icon FROM shops WHERE id = @1 AND name = @2", p => p.Set(id).Set(city)))
+                    if (dc.Query1("SELECT icon FROM shops WHERE id = @1 AND city = @2", p => p.Set(id).Set(city)))
                     {
                         var byteas = dc.GetByteAs();
                         if (byteas.Count == 0) ac.Give(204); // no content

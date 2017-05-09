@@ -268,7 +268,8 @@ namespace Greatbone.Core
                 p(parameters);
                 if (prepare) command.Prepare();
             }
-            return command.ExecuteScalar();
+            object res = command.ExecuteScalar();
+            return res == DBNull.Value ? null : res;
         }
 
         public async Task<object> ScalarAsync(Action<DbParameters> p = null, bool prepare = true)

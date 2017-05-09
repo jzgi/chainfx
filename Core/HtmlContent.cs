@@ -64,7 +64,7 @@ namespace Greatbone.Core
                     char c = alt[i];
                     if (c >= 'a' && c <= 'z')
                     {
-                        c = (char)(c - 32);
+                        c = (char) (c - 32);
                     }
                     Add(c);
                 }
@@ -160,11 +160,18 @@ namespace Greatbone.Core
 
         public void CALLOUT(string v, bool closable)
         {
-            Add("<div class=\"alert callout\" data-closable>");
-            Add("<p class=\"text-center\">");
+            Add("<div class=\"alert callout\"");
+            if (closable)
+            {
+                Add(" data-closable");
+            }
+            Add("><p class=\"text-center\">");
             Add(v);
             Add("</p>");
-            Add("<button class=\"close-button\" type=\"button\" data-close><span>&times;</span></button>");
+            if (closable)
+            {
+                Add("<button class=\"close-button\" type=\"button\" data-close><span>&times;</span></button>");
+            }
             Add("</div>");
         }
 
@@ -1183,7 +1190,7 @@ namespace Greatbone.Core
             if (mode > 0)
             {
                 Add(" onclick=\"dialog(this,");
-                Add((int)mode);
+                Add((int) mode);
                 Add("); return false;\"");
             }
 

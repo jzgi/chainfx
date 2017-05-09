@@ -23,6 +23,7 @@ namespace Greatbone.Sample
             h.Add("<head>");
             h.Add("<title>粗粮达人</title>");
             h.Add("<meta name=\"viewport\" content=\"width=device-width, initial-scale=1.0\">");
+            h.Add("<link rel=\"stylesheet\" href=\"//cdn.bootcss.com/croppie/2.4.1/croppie.min.css\">");
             h.Add("<link rel=\"stylesheet\" href=\"/foundation.min.css\">");
             h.Add("<link rel=\"stylesheet\" href=\"/app.css\">");
             h.Add("</head>");
@@ -173,14 +174,14 @@ namespace Greatbone.Sample
             h.Add("<script src=\"//cdn.bootcss.com/foundation/6.3.1/js/foundation.min.js\"></script>");
             h.Add("<script src=\"/app.js\"></script>");
             h.Add("<script>");
-            // enabling ok button
+
             h.Add("$(document).ready(function(){");
             h.Add("$(document).foundation();");
-            if (main != null)
+            if (main != null) // enable the ok button
             {
                 h.Add("$('#dyndlg', window.parent.document).find('button').prop('disabled', false);");
             }
-            else
+            else // trigger click on the close-button
             {
                 h.Add("$('#dyndlg', window.parent.document).find('.close-button').trigger('click');");
             }
