@@ -137,7 +137,7 @@ namespace Greatbone.Core
             return this;
         }
 
-        public DbParameters Put(string name, decimal v, string Label = null)
+        public DbParameters Put(string name, decimal v, string Label = null, char format = '\0')
         {
             if (name == null)
             {

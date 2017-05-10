@@ -75,7 +75,10 @@ namespace Greatbone.Sample
             i.Get(nameof(shopid), ref shopid);
 
             i.Get(nameof(custname), ref custname);
-            i.Get(nameof(custwx), ref custwx);
+            if ((proj & CUSTWX) == CUSTWX)
+            {
+                i.Get(nameof(custwx), ref custwx);
+            }
             i.Get(nameof(custcity), ref custcity);
             i.Get(nameof(custdistr), ref custdistr);
             i.Get(nameof(custaddr), ref custaddr);
@@ -111,7 +114,7 @@ namespace Greatbone.Sample
         {
             if ((proj & ID) == ID)
             {
-                o.Put(nameof(id), id, label: "编号");
+                o.Put(nameof(id), id, label: "订单编号");
             }
             o.Group("商家");
             o.Put(nameof(shopid), shopid);
@@ -134,7 +137,7 @@ namespace Greatbone.Sample
             {
                 o.Put(nameof(detail), detail);
             }
-            o.Put(nameof(total), total, label: "金额");
+            o.Put(nameof(total), total, label: "金额", format: '¥');
             o.Put(nameof(note), note, label: "附注");
             o.Put(nameof(created), created, label: "创建时间");
 
@@ -169,7 +172,7 @@ namespace Greatbone.Sample
         {
             if (detail == null)
             {
-                detail = new[] { new OrderLine() { item = item, qty = qty, unit = unit, price = price } };
+                detail = new[] {new OrderLine() {item = item, qty = qty, unit = unit, price = price}};
             }
             var orderln = detail.Find(o => o.item.Equals(item));
             if (orderln != null)
@@ -178,7 +181,7 @@ namespace Greatbone.Sample
             }
             else
             {
-                detail = detail.Add(new OrderLine() { item = item, qty = qty, unit = unit, price = price });
+                detail = detail.Add(new OrderLine() {item = item, qty = qty, unit = unit, price = price});
             }
         }
 

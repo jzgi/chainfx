@@ -350,7 +350,7 @@ namespace Greatbone.Core
             int low = bits[0], mid = bits[1], hi = bits[2], flags = bits[3];
             int scale = (bits[3] >> 16) & 0x7F;
 
-            if (hi != 0) // if 96 bits, use existing api 
+            if (hi != 0) // if 96 bits, use system api
             {
                 Add(v.ToString(CultureInfo.CurrentCulture));
                 return;
@@ -414,6 +414,16 @@ namespace Greatbone.Core
                 }
                 Add(DIGIT[x]); // last reminder
             }
+
+            // to pad extra zeros for monetary output
+            if (scale == 0)
+            {
+                Add(".00");
+            }
+            else if (scale == 1)
+            {
+                Add('0');
+            }
         }
 
         public void Add(JNumber v)
@@ -424,15 +434,6 @@ namespace Greatbone.Core
                 Add('.');
                 Add(v.fract);
             }
-        }
-
-        public void Add(NpgsqlPoint v)
-        {
-            Add('"');
-            Add(v.X);
-            Add(':');
-            Add(v.Y);
-            Add('"');
         }
 
         public void Add(DateTime v)

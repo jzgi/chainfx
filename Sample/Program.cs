@@ -10,14 +10,13 @@ namespace Greatbone.Sample
         ///
         public static void Main(string[] args)
         {
-
             bool deploy = args.Length > 0;
 
             Auth auth = new Auth
             {
                 mask = 0x4a78be76,
                 pose = 0x1f0335e2,
-                maxage = 3600
+                maxage = 1800
             };
 
             Db pg = new Db

@@ -91,73 +91,23 @@ namespace Greatbone.Core
 
         string uri;
 
-        public string Uri
-        {
-            get
-            {
-                if (uri == null)
-                {
-                    uri = Features.Get<IHttpRequestFeature>().RawTarget;
-                }
-                return uri;
-            }
-        }
+        public string Uri => uri ?? (uri = Features.Get<IHttpRequestFeature>().RawTarget);
 
         string url;
 
-        public string Url
-        {
-            get
-            {
-                if (url == null)
-                {
-                    url = Features.Get<IHttpRequestFeature>().Scheme + "://" + Header("Host" + Features.Get<IHttpRequestFeature>().RawTarget);
-                }
-                return url;
-            }
-        }
+        public string Url => url ?? (url = Features.Get<IHttpRequestFeature>().Scheme + "://" + Header("Host" + Features.Get<IHttpRequestFeature>().RawTarget));
 
         string querystr;
 
-        public string QueryString
-        {
-            get
-            {
-                if (querystr == null)
-                {
-                    querystr = Features.Get<IHttpRequestFeature>().QueryString;
-                }
-                return querystr;
-            }
-        }
+        public string QueryString => querystr ?? (querystr = Features.Get<IHttpRequestFeature>().QueryString);
 
         string ua;
 
-        public string Ua
-        {
-            get
-            {
-                if (ua == null)
-                {
-                    ua = Header("User-Agent");
-                }
-                return ua;
-            }
-        }
+        public string Ua => ua ?? (ua = Header("User-Agent"));
 
         string raddr;
 
-        public string RemoteAddr
-        {
-            get
-            {
-                if (raddr == null)
-                {
-                    raddr = Features.Get<IHttpConnectionFeature>().RemoteIpAddress.ToString();
-                }
-                return raddr;
-            }
-        }
+        public string RemoteAddr => raddr ?? (raddr = Features.Get<IHttpConnectionFeature>().RemoteIpAddress.ToString());
 
         public bool ByBrowser => Ua?.StartsWith("Mozilla") ?? false;
 
@@ -170,18 +120,7 @@ namespace Greatbone.Core
         // URL query 
         Form query;
 
-        public Form Query
-        {
-            get
-            {
-                if (query == null)
-                {
-                    FormParse p = new FormParse(QueryString);
-                    query = p.Parse(); // non-null
-                }
-                return query;
-            }
-        }
+        public Form Query => query ?? (query = new FormParse(QueryString).Parse());
 
         //
         // HEADER

@@ -169,6 +169,26 @@ namespace Greatbone.Sample
                 }
             }
         }
+
+        [Ui("调试刷新", Mode = UiMode.AnchorDialog)]
+        public void token(ActionContext ac)
+        {
+            string wx = ac[this];
+            using (var dc = ac.NewDbContext())
+            {
+                const short proj = -1 ^ User.CREDENTIAL;
+                if (dc.Query1("SELECT * FROM users WHERE wx = @1", (p) => p.Set(wx)))
+                {
+                    var o = dc.ToObject<User>(proj);
+                    ac.SetTokenCookie(o, proj);
+                    ac.GivePane(200);
+                }
+                else
+                {
+                    ac.GivePane(404);
+                }
+            }
+        }
     }
 
     public class OprUserVarWork : UserVarWork

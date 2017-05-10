@@ -10,57 +10,6 @@ namespace Greatbone.Sample
         {
             CreateVar<V, string>(obj => ((Item) obj).name);
         }
-
-        public void _cat_(ActionContext ac)
-        {
-            string shopid = ac[1];
-            using (var dc = ac.NewDbContext())
-            {
-                string name;
-                int age;
-                dc.Execute("UPDATE items SET enabled = NOT enabled WHERE shopid = @1", p => p.Set(shopid));
-                // ac.SetHeader();
-                ac.GiveFormPane(303, dc, (i, o) =>
-                {
-                    o.Put(nameof(name), name = i.GetString());
-                    o.Put(nameof(age), age = i.GetInt());
-                }); // see other
-            }
-        }
-
-        [Ui("上架/下架")]
-        public void toggle(ActionContext ac)
-        {
-            string shopid = ac[typeof(ShopVarWork)];
-            using (var dc = ac.NewDbContext())
-            {
-                dc.Execute("UPDATE items SET enabled = NOT enabled WHERE shopid = @1", p => p.Set(shopid));
-                // ac.SetHeader();
-                ac.Give(303); // see other
-            }
-        }
-
-        [Ui("删除")]
-        public async Task modify(ActionContext ac)
-        {
-            string shopid = ac[typeof(ShopVarWork)];
-
-            if (ac.GET)
-            {
-                var item = new Item() { };
-                ac.GivePane(200, m => { });
-            }
-            else
-            {
-                var item = await ac.ReadObjectAsync<Item>();
-                using (var dc = ac.NewDbContext())
-                {
-                    dc.Execute("UPDATE items SET enabled = NOT enabled WHERE shopid = @1", p => p.Set(shopid));
-                    // ac.SetHeader();
-                    ac.Give(303); // see other
-                }
-            }
-        }
     }
 
 
@@ -81,7 +30,7 @@ namespace Greatbone.Sample
                 dc.Sql("SELECT ").columnlst(Item.Empty, proj)._("FROM items WHERE shopid = @1");
                 if (dc.Query(p => p.Set(shopid)))
                 {
-                    ac.GiveGridFormPage(200, dc.ToArray<Item>(proj), proj);
+                    ac.GiveGridFormPage(200, dc.ToArray<Item>(proj), proj ^ Item.SHOPID);
                 }
                 else
                 {
@@ -90,30 +39,54 @@ namespace Greatbone.Sample
             }
         }
 
-        [Ui("新建", Mode=UiMode.AnchorDialog)]
+        [Ui("新建", Mode = UiMode.AnchorDialog)]
         public async Task @new(ActionContext ac)
         {
             if (ac.GET)
             {
-//                ac.GivePane(200, Item.Empty);
+                var o = new Item();
+
+                ac.GivePane(200, m =>
+                {
+                    m.FORM_();
+
+                    m.TEXT(nameof(o.name), o.name, label: "品名");
+                    m.TEXT(nameof(o.descr), o.descr, label: "描述");
+                    m.TEXT(nameof(o.unit), o.unit, label: "单位（如：斤，小瓶）");
+                    m.NUMBER(nameof(o.price), o.price, label: "单价");
+                    m.NUMBER(nameof(o.min), o.min, label: "起订数量（0表示不限）");
+                    m.NUMBER(nameof(o.step), o.step, label: "递增因子");
+                    m.NUMBER(nameof(o.qty), o.qty, label: "本批供应量");
+                    m.SELECT(nameof(o.status), o.status, Item.STATUS);
+
+                    m._FORM();
+                });
             }
             else // post
             {
-                var item = await ac.ReadObjectAsync<Item>();
-                item.shopid = ac[typeof(ShopVarWork)];
+                var o = await ac.ReadObjectAsync<Item>();
+                o.shopid = ac[typeof(ShopVarWork)];
                 using (var dc = Service.NewDbContext())
                 {
                     const int proj = -1 ^ Item.ICON;
-                    dc.Sql("INSERT INTO items")._(Item.Empty, proj)._VALUES_(Item.Empty, proj)._("");
-                    if (dc.Execute(p => item.WriteData(p, proj)) > 0)
-                    {
-                        ac.Give(201); // created
-                    }
-                    else
-                    {
-                        ac.Give(500); // internal server error
-                    }
+                    dc.Sql("INSERT INTO items")._(Item.Empty, proj)._VALUES_(Item.Empty, proj);
+                    dc.Execute(p => o.WriteData(p, proj));
+                    ac.GivePane(201);
                 }
+            }
+        }
+
+        [Ui("删除", Mode = UiMode.ButtonConfirm)]
+        public async Task del(ActionContext ac)
+        {
+            string shopid = ac[typeof(ShopVarWork)];
+            var f = await ac.ReadAsync<Form>();
+            string[] key = f[nameof(key)];
+            using (var dc = ac.NewDbContext())
+            {
+                dc.Sql("DELETE FROM items WHERE shopid = @1 AND name")._IN_(key);
+                dc.Execute(p => p.Set(shopid));
+                ac.GiveRedirect();
             }
         }
     }

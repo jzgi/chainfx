@@ -226,7 +226,7 @@ namespace Greatbone.Core
             return this;
         }
 
-        public XmlContent Put(string name, decimal v, string Label = null)
+        public XmlContent Put(string name, decimal v, string Label = null, char format = '\0')
         {
             Add(' ');
             Add(name);

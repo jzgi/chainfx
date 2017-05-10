@@ -30,7 +30,7 @@ namespace Greatbone.Core
 
         R Put(string name, double v, string label = null);
 
-        R Put(string name, decimal v, string label = null);
+        R Put(string name, decimal v, string label = null, char format = '\0');
 
         R Put(string name, DateTime v, string label = null);
 

@@ -104,7 +104,7 @@ namespace Greatbone.Core
             return this;
         }
 
-        public FormMpContent Put(string name, decimal v, string label = null)
+        public FormMpContent Put(string name, decimal v, string label = null, char format = '\0')
         {
             Part(name);
             Add(v);

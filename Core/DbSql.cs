@@ -35,7 +35,13 @@ namespace Greatbone.Core
         {
             Add(' ');
             Add(str);
+            return this;
+        }
 
+        public DbSql comma_(string str)
+        {
+            Add(", ");
+            Add(str);
             return this;
         }
 
@@ -63,26 +69,41 @@ namespace Greatbone.Core
             return this;
         }
 
-        public DbSql _(IData obj, short proj = 0)
+        public DbSql _(IData obj, short proj = 0, string extra = null)
         {
             Add(" (");
             columnlst(obj, proj);
+            if (extra != null)
+            {
+                Add(",");
+                Add(extra);
+            }
             Add(")");
             return this;
         }
 
-        public DbSql _VALUES_(IData obj, short proj = 0)
+        public DbSql _VALUES_(IData obj, short proj = 0, string extra = null)
         {
             Add(" VALUES (");
             parameterlst(obj, proj);
+            if (extra != null)
+            {
+                Add(",");
+                Add(extra);
+            }
             Add(")");
             return this;
         }
 
-        public DbSql _SET_(IData obj, short proj = 0)
+        public DbSql _SET_(IData obj, short proj = 0, string extra = null)
         {
             Add(" SET ");
             setlst(obj, proj);
+            if (extra != null)
+            {
+                Add(",");
+                Add(extra);
+            }
             return this;
         }
 
@@ -256,7 +277,7 @@ namespace Greatbone.Core
             return this;
         }
 
-        public DbSql Put(string name, decimal v, string label = null)
+        public DbSql Put(string name, decimal v, string label = null, char format = '\0')
         {
             if (name != null)
             {

@@ -174,7 +174,7 @@ namespace Greatbone.Core
             return this;
         }
 
-        public FormContent Put(string name, decimal v, string Label = null)
+        public FormContent Put(string name, decimal v, string Label = null, char format = '\0')
         {
             ordinal++;
 

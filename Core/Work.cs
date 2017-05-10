@@ -34,6 +34,8 @@ namespace Greatbone.Core
         // actions with Ui attribute
         readonly ActionInfo[] uiactions;
 
+        readonly int buttons;
+
         // subworks, if any
         internal Roll<Work> subworks;
 
@@ -80,17 +82,20 @@ namespace Greatbone.Core
             }
 
             // gather ui actions
+            int btns = 0;
             List<ActionInfo> uias = null;
             for (int i = 0; i < actions.Count; i++)
             {
-                ActionInfo a = actions[i];
-                if (a.HasUi)
+                ActionInfo ai = actions[i];
+                if (ai.HasUi)
                 {
                     if (uias == null) uias = new List<ActionInfo>();
-                    uias.Add(a);
+                    uias.Add(ai);
+                    if (ai.Ui.IsButton) btns++;
                 }
             }
             uiactions = uias?.ToArray();
+            buttons = btns;
 
             // enablers
             foreach (FieldInfo fi in typ.GetFields(BindingFlags.Static | BindingFlags.Public | BindingFlags.NonPublic))
@@ -176,6 +181,8 @@ namespace Greatbone.Core
         public Roll<ActionInfo> Actions => actions;
 
         public ActionInfo[] UiActions => uiactions;
+
+        public int Buttons => buttons;
 
         public bool HasDefault => @default != null;
 

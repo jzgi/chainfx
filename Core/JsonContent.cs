@@ -274,7 +274,7 @@ namespace Greatbone.Core
             return this;
         }
 
-        public JsonContent Put(string name, decimal v, string Label = null)
+        public JsonContent Put(string name, decimal v, string Label = null, char format = '\0')
         {
             if (counts[level]++ > 0) Add(',');
             if (name != null)

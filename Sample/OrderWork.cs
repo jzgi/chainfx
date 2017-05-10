@@ -75,7 +75,6 @@ namespace Greatbone.Sample
                         {
                             h.Add(name);
                             h.NUMBER(nameof(qty), qty, label: "数量", min: item.min, step: item.step, required: true);
-                            h.HIDDEN(nameof(item.shopname), item.shopname);
                             h.HIDDEN(nameof(item.unit), item.unit);
                             h.HIDDEN(nameof(item.price), item.price);
                         });
@@ -106,7 +105,6 @@ namespace Greatbone.Sample
                         var order = new Order
                         {
                             shopid = shopid,
-                            shopname = item.shopname,
                             custname = prin.name,
                             custwx = prin.wx,
                             custtel = prin.tel,
@@ -221,7 +219,7 @@ namespace Greatbone.Sample
         public OprCartOrderWork(WorkContext wc) : base(wc)
         {
             status = Order.CREATED;
-            proj = -1 ^ Order.LATE;
+            proj = -1 ^ Order.LATE ^ Order.CUSTWX;
         }
 
         [Ui("清理旧单", Mode = UiMode.ButtonConfirm)]
@@ -243,7 +241,7 @@ namespace Greatbone.Sample
         public OprPaidOrderWork(WorkContext wc) : base(wc)
         {
             status = Order.ACCEPTED;
-            proj = -1 ^ Order.LATE;
+            proj = -1 ^ Order.LATE ^ Order.CUSTWX;
         }
 
         [Ui("统计", Mode = UiMode.AnchorDialog)]
@@ -278,7 +276,7 @@ namespace Greatbone.Sample
         public OprSentOrderWork(WorkContext wc) : base(wc)
         {
             status = Order.SENT;
-            proj = -1 ^ Order.LATE;
+            proj = -1 ^ Order.LATE ^ Order.CUSTWX;
         }
 
         [Ui("锁定/处理")]
@@ -302,7 +300,7 @@ namespace Greatbone.Sample
         {
             status = Order.DONE;
             status2 = Order.ABORTED;
-            proj = -1 ^ Order.LATE;
+            proj = -1 ^ Order.LATE ^ Order.CUSTWX;
         }
     }
 

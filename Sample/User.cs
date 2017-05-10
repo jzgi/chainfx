@@ -19,7 +19,7 @@ namespace Greatbone.Sample
 
         public const short MANAGER = 7, ASSISTANT = 3, DELIVERER = 1;
 
-        public readonly Opt<short> OPR = new Opt<short>
+        public static readonly Opt<short> OPR = new Opt<short>
         {
             [MANAGER] = "经理",
             [ASSISTANT] = "助理",
