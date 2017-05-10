@@ -100,15 +100,23 @@ namespace Greatbone.Sample
                             m.Add("<form id=\"item");
                             m.Add(i);
                             m.Add("\">");
-                            m.Add("<div class=\"row\">");
+                            m.Add("<div class=\"row card align-middle\">");
 
-                            m.Add("<div class=\"small-4 columns\"><a href=\"#\"><span></span><img src=\"");
+                            m.Add("<div class=\"small-4 columns\"><img src=\"");
                             m.Add(item.name);
-                            m.Add("/icon\" alt=\"\" class=\" thumbnail\"></a></div>");
+                            m.Add("/icon\" alt=\"\" class=\"thumbnail\"></div>");
+
                             m.Add("<div class=\"small-8 columns\">");
-                            m.Add("<p>&yen;");
+                            m.Add("<h3>");
+                            m.Add(item.name);
+                            m.Add("</h3>");
+                            m.Add("<div>");
+                            m.Add("<span style=\"font-size: 1.25rem; font-weight: bold\">&yen;");
                             m.Add(item.price);
-                            m.Add("</p>");
+                            m.Add("</span>");
+                            m.Add(" ");
+                            m.Add(item.unit);
+                            m.Add("</div>");
                             m.Add("<p>");
                             m.Add(item.descr);
                             m.Add("</p>");

@@ -64,7 +64,7 @@ namespace Greatbone.Core
                     char c = alt[i];
                     if (c >= 'a' && c <= 'z')
                     {
-                        c = (char) (c - 32);
+                        c = (char)(c - 32);
                     }
                     Add(c);
                 }
@@ -117,8 +117,15 @@ namespace Greatbone.Core
             Add("</div>");
         }
 
-        public void FORM_(string action = null, bool post = true, bool mp = false)
+        public void FORM_(bool centered = true, string action = null, bool post = true, bool mp = false)
         {
+            Add("<div");
+            if (centered)
+            {
+                Add(" class=\"row column align-center small-10 medium-8 large-6 container-padded\"");
+            }
+            Add(">");
+            Add("<h2></h2>");
             Add("<form");
             if (action != null)
             {
@@ -140,6 +147,7 @@ namespace Greatbone.Core
         public void _FORM()
         {
             Add("</form>");
+            Add("</div>");
         }
 
         public void FIELDSET_(string legend = null)
@@ -1176,7 +1184,7 @@ namespace Greatbone.Core
             if (mode > 0)
             {
                 Add(" onclick=\"dialog(this,");
-                Add((int) mode);
+                Add((int)mode);
                 Add("); return false;\"");
             }
 

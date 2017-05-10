@@ -62,10 +62,10 @@ namespace Greatbone.Sample
                         {
                             var shop = shops[i];
 
-                            m.Add("<div class=\"row card\">");
+                            m.Add("<div class=\"row card align-middle\">");
                             m.Add("<div class=\"small-4 columns\"><a href=\"#\"><span></span><img src=\"");
                             m.Add(shop.id);
-                            m.Add("/icon\" alt=\"\" class=\" thumbnail\"></a></div>");
+                            m.Add("/icon\" alt=\"\" class=\"thumbnail\"></a></div>");
                             m.Add("<div class=\"small-8 columns\">");
                             m.Add("<h3><a href=\"");
                             m.Add(shop.id);

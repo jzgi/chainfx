@@ -20,11 +20,11 @@ namespace Greatbone.Sample
                 int age;
                 dc.Execute("UPDATE items SET enabled = NOT enabled WHERE shopid = @1", p => p.Set(shopid));
                 // ac.SetHeader();
-                ac.GiveFormPane(303, dc, (i, o) =>
-                {
-                    o.Put(nameof(name), name = i.GetString());
-                    o.Put(nameof(age), age = i.GetInt());
-                }); // see other
+                // ac.GiveFormPane(303, dc, (i, o) =>
+                // {
+                //     o.Put(nameof(name), name = i.GetString());
+                //     o.Put(nameof(age), age = i.GetInt());
+                // }); // see other
             }
         }
     }

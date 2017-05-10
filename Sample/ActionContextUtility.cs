@@ -67,7 +67,7 @@ namespace Greatbone.Sample
             h.Add("<div class=\"title-bar-title\">");
             h.Add("<span class=\"button primary hollow\">");
             string title = ac[work];
-            if (title.Length > 20) title = ((User) ac.Principal).name;
+            if (title.Length > 20) title = ((User)ac.Principal).name;
             h.Add(title);
             h.Add("</span>");
             h.Add("</div>");
@@ -191,36 +191,6 @@ namespace Greatbone.Sample
             h.Add("</html>");
 
             ac.Give(status, h, pub, maxage);
-        }
-
-        public static void GiveFormPage(this ActionContext ac, int status, string action, string legend, Action<HtmlContent> form, bool? pub = null, int maxage = 60)
-        {
-            ac.GivePage(status, m =>
-            {
-                m.Add("<div class\"row\">");
-                m.Add("<div class=\"small-centered small-10 medium-8 large-6 columns\">");
-                m.FORM_(action);
-                m.FIELDSET_(legend);
-                form(m);
-                m.BUTTON("确定");
-                m._FIELDSET();
-                m._FORM();
-                m.Add("</div>");
-                m.Add("</div>");
-            }, pub, maxage);
-        }
-
-        public static void GiveFormPane(this ActionContext ac, int status, IDataInput inp, Action<IDataInput, HtmlContent> pipe, bool? pub = null, int maxage = 60)
-        {
-            ac.GivePane(status, m =>
-                {
-                    m.FORM_(mp: true);
-                    m.FIELDSET_();
-                    pipe(inp, m);
-                    m._FIELDSET();
-                    m._FORM();
-                },
-                pub, maxage);
         }
 
         public static void GiveGridFormPage<D>(this ActionContext ac, int status, D[] lst, short proj = 0, bool? pub = null, int maxage = 60) where D : IData
