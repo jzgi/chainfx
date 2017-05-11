@@ -33,7 +33,7 @@ namespace Greatbone.Sample
                 cityopt[i] = cities[i].name;
             }
 
-            InitWweiXinPay(sc.GetFilePath("$apiclient_cert.p12"));
+            InitWCPaySecure(sc.GetFilePath("$apiclient_cert.p12"));
         }
 
         public string[] CityOpt => cityopt;

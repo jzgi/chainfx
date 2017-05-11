@@ -995,61 +995,23 @@ namespace Greatbone.Core
             }
         }
 
-        public void CHECKBOX(string name, bool v, string Label = null, bool Required = false)
+        public void CHECKBOX(string name, bool v, string label = null, bool required = false)
         {
-            Add("<label>");
-            AddLabel(Label, name);
+            if (label != null)
+            {
+                Add("<label>");
+            }
             Add("<input type=\"checkbox\" name=\"");
             Add(name);
             Add("\"");
             if (v) Add(" checked");
-            if (Required) Add(" required");
+            if (required) Add(" required");
             Add(">");
-            Add("</label>");
-        }
-
-        public void CHECKBOX<V>(string name, V[] v, Opt<V> opt, string label = null, bool required = false) where V : IEquatable<V>, IConvertible
-        {
-            Add("<fieldset>");
-
-            Add("<legend>");
-            AddLabel(label, null);
-            Add("</legend>");
-
-            foreach (var pair in opt)
+            if (label != null)
             {
-                V key = pair.Key;
-                Add("<input type=\"checkbox\" name=\"");
-                Add(name);
-                Add("\"");
-                Add("\" id=\"");
-                AddVary(key);
-                Add("\"");
-                Add("\" value=\"");
-                AddVary(key);
-                Add("\"");
-
-                bool equal = false;
-                for (int i = 0; i < v.Length; i++)
-                {
-                    if (key.Equals(v[i]))
-                    {
-                        equal = true;
-                        break;
-                    }
-                }
-                if (equal) Add(" checked");
-
-                if (required) Add(" required");
-                Add(">");
-
-                Add("<label for=\"");
-                AddVary(key);
-                Add("\">");
-                Add(pair.Value);
-                Add("</label>");
+                Add(label);
+                Add(" </label>");
             }
-            Add("</fieldset>");
         }
 
         public void RADIOS(string name, IDataInput inp, Action<IDataInput, HtmlContent, char> putter)
@@ -1087,7 +1049,7 @@ namespace Greatbone.Core
                 Add("\"");
 
                 Add("\" value=\"");
-                AddVary(key);
+                Add(key);
                 Add("\"");
 
                 if (key.Equals(v)) Add(" checked");
@@ -1405,7 +1367,7 @@ namespace Greatbone.Core
             chain[level].group = false;
         }
 
-        public HtmlContent Put(string name, bool v, Func<bool, string> opt = null, string label = null)
+        public HtmlContent Put(string name, bool v, string label = null, Func<bool, string> opt = null)
         {
             switch (chain[level].node)
             {
@@ -1458,7 +1420,7 @@ namespace Greatbone.Core
             return this;
         }
 
-        public HtmlContent Put(string name, short v, Opt<short> opt = null, string label = null)
+        public HtmlContent Put(string name, short v, string label = null, Opt<short> opt = null)
         {
             switch (chain[level].node)
             {
@@ -1511,7 +1473,7 @@ namespace Greatbone.Core
             return this;
         }
 
-        public HtmlContent Put(string name, int v, Opt<int> opt = null, string label = null)
+        public HtmlContent Put(string name, int v, string label = null, Opt<int> opt = null)
         {
             switch (chain[level].node)
             {
@@ -1564,7 +1526,7 @@ namespace Greatbone.Core
             return this;
         }
 
-        public HtmlContent Put(string name, long v, Opt<long> opt = null, string label = null)
+        public HtmlContent Put(string name, long v, string label = null, Opt<long> opt = null)
         {
             switch (chain[level].node)
             {
@@ -1799,7 +1761,7 @@ namespace Greatbone.Core
             return this;
         }
 
-        public HtmlContent Put(string name, string v, Opt<string> opt = null, string label = null)
+        public HtmlContent Put(string name, string v, string label = null, Opt<string> opt = null)
         {
             var ctx = chain[level];
             switch (ctx.node)
@@ -1864,22 +1826,22 @@ namespace Greatbone.Core
             return this;
         }
 
-        public HtmlContent Put(string name, short[] v, Opt<short> Opt = null, string label = null)
+        public HtmlContent Put(string name, short[] v, string label = null, Opt<short> Opt = null)
         {
             return this;
         }
 
-        public HtmlContent Put(string name, int[] v, Opt<int> Opt = null, string label = null)
+        public HtmlContent Put(string name, int[] v, string label = null, Opt<int> Opt = null)
         {
             return this;
         }
 
-        public HtmlContent Put(string name, long[] v, Opt<long> Opt = null, string label = null)
+        public HtmlContent Put(string name, long[] v, string label = null, Opt<long> Opt = null)
         {
             return this;
         }
 
-        public HtmlContent Put(string name, string[] v, Opt<string> Opt = null, string label = null)
+        public HtmlContent Put(string name, string[] v, string label = null, Opt<string> Opt = null)
         {
             return this;
         }

@@ -67,7 +67,7 @@ namespace Greatbone.Sample
             h.Add("<div class=\"title-bar-title\">");
             h.Add("<span class=\"button primary hollow\">");
             string title = ac[work];
-            if (title.Length > 20) title = ((User)ac.Principal).name;
+            if (title.Length > 20) title = ((User) ac.Principal).name;
             h.Add(title);
             h.Add("</span>");
             h.Add("</div>");
@@ -193,23 +193,24 @@ namespace Greatbone.Sample
             ac.Give(status, h, pub, maxage);
         }
 
-        public static void GiveGridFormPage<D>(this ActionContext ac, int status, D[] lst, short proj = 0, bool? pub = null, int maxage = 60) where D : IData
+        public static void GiveGridPage<D>(this ActionContext ac, int status, D[] objs, short proj = 0, bool? pub = null, int maxage = 60) where D : IData
         {
             Work work = ac.Work;
-            ac.GivePage(status, main => { main.GRID(ac, work.varwork, lst, proj); }, pub, maxage);
+            ac.GivePage(status, main => { main.GRID(ac, work.varwork, objs, proj); }, pub, maxage);
         }
 
-        public static void GiveGridFormPage<D>(this ActionContext ac, int status, D[] lst, Action<HtmlContent, D> putobj, bool? pub = null, int maxage = 60) where D : IData
-        {
-            Work work = ac.Work;
-        }
-
-        public static void GiveTableFormPage<D>(this ActionContext ac, int status, D[] lst, int proj = 0, bool? pub = null, int maxage = 60) where D : IData
+        public static void GiveGridPage<D>(this ActionContext ac, int status, D[] objs, Action<HtmlContent, D> putobj, bool? pub = null, int maxage = 60) where D : IData
         {
             Work work = ac.Work;
         }
 
-        public static void GiveTableFormPage<D>(this ActionContext ac, int status, D[] lst, Action<HtmlContent, D> putobj, bool? pub = null, int maxage = 60) where D : IData
+        public static void GiveTablePage<D>(this ActionContext ac, int status, D[] objs, short proj = 0, bool? pub = null, int maxage = 60) where D : IData
+        {
+            Work work = ac.Work;
+            ac.GivePage(status, main => { main.TABLE(ac, work.varwork, objs, proj); }, pub, maxage);
+        }
+
+        public static void GiveTablePage<D>(this ActionContext ac, int status, D[] objs, Action<HtmlContent, D> putobj, bool? pub = null, int maxage = 60) where D : IData
         {
             Work work = ac.Work;
         }

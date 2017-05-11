@@ -69,28 +69,28 @@ namespace Greatbone.Core
         {
         }
 
-        public FormMpContent Put(string name, bool v, Func<bool, string> Opt = null, string Label = null)
+        public FormMpContent Put(string name, bool v, string Label = null, Func<bool, string> Opt = null)
         {
             Part(name);
             Add(v ? "true" : "false");
             return this;
         }
 
-        public FormMpContent Put(string name, short v, Opt<short> opt = null, string Label = null)
+        public FormMpContent Put(string name, short v, string Label = null, Opt<short> opt = null)
         {
             Part(name);
             Add(v);
             return this;
         }
 
-        public FormMpContent Put(string name, int v, Opt<int> Opt = null, string Label = null)
+        public FormMpContent Put(string name, int v, string Label = null, Opt<int> Opt = null)
         {
             Part(name);
             Add(v);
             return this;
         }
 
-        public FormMpContent Put(string name, long v, Opt<long> Opt = null, string Label = null)
+        public FormMpContent Put(string name, long v, string Label = null, Opt<long> Opt = null)
         {
             Part(name);
             Add(v);
@@ -118,7 +118,7 @@ namespace Greatbone.Core
             return this;
         }
 
-        public FormMpContent Put(string name, string v, Opt<string> Opt = null, string Label = null)
+        public FormMpContent Put(string name, string v, string Label = null, Opt<string> Opt = null)
         {
             Part(name);
             if (v == null)
@@ -137,7 +137,7 @@ namespace Greatbone.Core
             return this; // ignore ir
         }
 
-        public FormMpContent Put(string name, short[] v, Opt<short> opt = null, string Label = null)
+        public FormMpContent Put(string name, short[] v, string Label = null, Opt<short> opt = null)
         {
             Part(name);
             if (v == null)
@@ -158,7 +158,7 @@ namespace Greatbone.Core
             return this;
         }
 
-        public FormMpContent Put(string name, int[] v, Opt<int> Opt = null, string Label = null)
+        public FormMpContent Put(string name, int[] v, string Label = null, Opt<int> Opt = null)
         {
             Part(name);
             if (v == null)
@@ -178,7 +178,7 @@ namespace Greatbone.Core
             return this;
         }
 
-        public FormMpContent Put(string name, long[] v, Opt<long> Opt = null, string Label = null)
+        public FormMpContent Put(string name, long[] v, string Label = null, Opt<long> Opt = null)
         {
             if (v == null)
             {
@@ -197,7 +197,7 @@ namespace Greatbone.Core
             return this;
         }
 
-        public FormMpContent Put(string name, string[] v, Opt<string> Opt = null, string Label = null)
+        public FormMpContent Put(string name, string[] v, string Label = null, Opt<string> Opt = null)
         {
             Part(name);
             if (v == null)

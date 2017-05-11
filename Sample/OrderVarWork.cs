@@ -25,7 +25,7 @@ namespace Greatbone.Sample
     {
         public MyCartOrderVarWork(WorkContext wc) : base(wc)
         {
-            CreateVar<MyCartOrderVarVarWork, string>(obj => ((OrderLine) obj).item);
+            CreateVar<MyCartOrderVarVarWork, string>(obj => ((OrderLine) obj).name);
         }
 
         [Ui("收货地址", Mode = UiMode.ButtonDialog)]

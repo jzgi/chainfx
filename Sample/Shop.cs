@@ -88,7 +88,7 @@ namespace Greatbone.Sample
                 o.Put(nameof(created), created, label: "创建时间");
                 o.Put(nameof(orders), orders);
             }
-            o.Put(nameof(status), status, opt: STATUS, label: "状态");
+            o.Put(nameof(status), status, label: "状态", opt: STATUS);
         }
     }
 }

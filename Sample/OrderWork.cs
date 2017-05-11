@@ -8,7 +8,7 @@ namespace Greatbone.Sample
     {
         protected OrderWork(WorkContext wc) : base(wc)
         {
-            CreateVar<V, long>((obj) => ((Order)obj).id);
+            CreateVar<V, long>((obj) => ((Order) obj).id);
         }
     }
 
@@ -36,11 +36,11 @@ namespace Greatbone.Sample
                 dc.Sql("SELECT ").columnlst(Order.Empty, proj)._("FROM orders WHERE custwx = @1 AND status = @2 ORDER BY id DESC");
                 if (dc.Query(p => p.Set(wx).Set(Order.CREATED)))
                 {
-                    ac.GiveGridFormPage(200, dc.ToDatas<Order>(proj), proj);
+                    ac.GiveGridPage(200, dc.ToDatas<Order>(proj), proj);
                 }
                 else
                 {
-                    ac.GiveGridFormPage(200, (Order[])null);
+                    ac.GiveGridPage(200, (Order[]) null);
                 }
             }
         }
@@ -59,34 +59,36 @@ namespace Greatbone.Sample
         public async Task add(ActionContext ac)
         {
             string wx = ac[typeof(UserVarWork)];
+
             var f = await ac.ReadAsync<Form>();
             string shopid = f[nameof(shopid)];
+            string shopname = f[nameof(shopname)];
             string name = f[nameof(name)];
             string unit = f[nameof(unit)];
+            decimal price = f[nameof(price)];
             short qty = f[nameof(qty)];
 
             using (var dc = ac.NewDbContext())
             {
-                decimal price = 0;
                 if (dc.Query1("SELECT id, detail, total FROM orders WHERE shopid = @1 AND custwx = @2 AND status = 0", p => p.Set(shopid).Set(wx)))
                 {
-                    var order = new Order
+                    var o = new Order
                     {
                         id = dc.GetLong(),
                         detail = dc.GetDatas<OrderLine>(),
                         total = dc.GetDecimal()
                     };
-                    order.AddItem(name, qty, unit, price);
-                    order.Sum();
-                    dc.Execute("UPDATE orders SET detail = @1, total = @2 WHERE id = @3", p => p.Set(order.detail).Set(order.total).Set(order.id));
+                    o.AddItem(name, qty, unit, price);
+                    o.Sum();
+                    dc.Execute("UPDATE orders SET detail = @1, total = @2 WHERE id = @3", p => p.Set(o.detail).Set(o.total).Set(o.id));
                 }
                 else
                 {
-                    User prin = (User)ac.Principal;
-                    var order = new Order
+                    User prin = (User) ac.Principal;
+                    var o = new Order
                     {
                         shopid = shopid,
-                        shopname = (string)dc.Scalar("SELECT shopname FROM shops WHERE id = @1", p=>p.Set(shopid)),
+                        shopname = shopname,
                         custname = prin.name,
                         custwx = prin.wx,
                         custtel = prin.tel,
@@ -95,18 +97,18 @@ namespace Greatbone.Sample
                         custaddr = prin.addr,
                         detail = new[]
                         {
-                                new OrderLine {item = name, price = price, qty = qty, unit = unit}
-                            },
+                            new OrderLine {name = name, price = price, qty = qty, unit = unit}
+                        },
                         created = DateTime.Now
                     };
-                    order.Sum();
+                    o.Sum();
 
                     const int proj = -1 ^ Order.ID ^ Order.LATE;
 
-                    dc.Sql("INSERT INTO orders ")._(order, proj)._VALUES_(order, proj);
-                    dc.Execute(p => order.WriteData(p, proj));
+                    dc.Sql("INSERT INTO orders ")._(o, proj)._VALUES_(o, proj);
+                    dc.Execute(p => o.WriteData(p, proj));
                 }
-                ac.GivePane(200, null);
+                ac.Give(200);
             }
         }
     }
@@ -127,11 +129,11 @@ namespace Greatbone.Sample
                 dc.Sql("SELECT ").columnlst(Order.Empty, proj)._("FROM orders WHERE custwx = @1 AND status BETWEEN @2 AND @3");
                 if (dc.Query(p => p.Set(wx).Set(Order.ACCEPTED).Set(Order.SENT)))
                 {
-                    ac.GiveGridFormPage(200, dc.ToDatas<Order>(proj), proj);
+                    ac.GiveGridPage(200, dc.ToDatas<Order>(proj), proj);
                 }
                 else
                 {
-                    ac.GiveGridFormPage(200, (Order[])null);
+                    ac.GiveGridPage(200, (Order[]) null);
                 }
             }
         }
@@ -153,11 +155,11 @@ namespace Greatbone.Sample
                 dc.Sql("SELECT ").columnlst(Order.Empty, proj)._("FROM orders WHERE custwx = @1 AND status >= @2 ORDER BY id LIMIT 10 OFFSET @4");
                 if (dc.Query(p => p.Set(wx).Set(Order.DONE).Set(page * 10)))
                 {
-                    ac.GiveGridFormPage(200, dc.ToDatas<Order>(proj), proj);
+                    ac.GiveGridPage(200, dc.ToDatas<Order>(proj), proj);
                 }
                 else
                 {
-                    ac.GiveGridFormPage(200, (Order[])null);
+                    ac.GiveGridPage(200, (Order[]) null);
                 }
             }
         }
@@ -183,11 +185,11 @@ namespace Greatbone.Sample
                 bool found = (status2 == 0) ? dc.Query("SELECT * FROM orders WHERE shopid = @1 AND status = @2 ORDER BY id LIMIT 20 OFFSET @3", p => p.Set(shopid).Set(status).Set(page * 20)) : dc.Query("SELECT * FROM orders WHERE shopid = @1 AND status BETWEEN @2 AND @3 ORDER BY id LIMIT 20 OFFSET @4", p => p.Set(shopid).Set(status).Set(status2).Set(page * 20));
                 if (found)
                 {
-                    ac.GiveGridFormPage(200, dc.ToDatas<Order>(proj), proj);
+                    ac.GiveGridPage(200, dc.ToDatas<Order>(proj), proj);
                 }
                 else
                 {
-                    ac.GiveGridFormPage(200, (Order[])null);
+                    ac.GiveGridPage(200, (Order[]) null);
                 }
             }
         }
@@ -301,11 +303,11 @@ namespace Greatbone.Sample
             {
                 if (dc.Query("SELECT * FROM orders WHERE shopid = @1 AND status = @2 ORDER BY id LIMIT 20 OFFSET @3", p => p.Set(shopid).Set(page * 20)))
                 {
-                    ac.GiveGridFormPage(200, dc.ToDatas<Order>());
+                    ac.GiveGridPage(200, dc.ToDatas<Order>());
                 }
                 else
                 {
-                    ac.GiveGridFormPage(200, (Order[])null);
+                    ac.GiveGridPage(200, (Order[]) null);
                 }
             }
         }

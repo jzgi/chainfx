@@ -72,7 +72,7 @@ namespace Greatbone.Core
         {
         }
 
-        public DbParameters Put(string name, bool v, Func<bool, string> Opt = null, string label = null)
+        public DbParameters Put(string name, bool v, string label = null, Func<bool, string> Opt = null)
         {
             if (name == null)
             {
@@ -85,7 +85,7 @@ namespace Greatbone.Core
             return this;
         }
 
-        public DbParameters Put(string name, short v, Opt<short> Opt = null, string label = null)
+        public DbParameters Put(string name, short v, string label = null, Opt<short> Opt = null)
         {
             if (name == null)
             {
@@ -98,7 +98,7 @@ namespace Greatbone.Core
             return this;
         }
 
-        public DbParameters Put(string name, int v, Opt<int> Opt = null, string label = null)
+        public DbParameters Put(string name, int v, string label = null, Opt<int> Opt = null)
         {
             if (name == null)
             {
@@ -111,7 +111,7 @@ namespace Greatbone.Core
             return this;
         }
 
-        public DbParameters Put(string name, long v, Opt<long> Opt = null, string label = null)
+        public DbParameters Put(string name, long v, string label = null, Opt<long> Opt = null)
         {
             if (name == null)
             {
@@ -163,7 +163,7 @@ namespace Greatbone.Core
             return this;
         }
 
-        public DbParameters Put(string name, string v, Opt<string> Opt = null, string label = null)
+        public DbParameters Put(string name, string v, string label = null, Opt<string> Opt = null)
         {
             if (name == null)
             {
@@ -236,7 +236,7 @@ namespace Greatbone.Core
             return this;
         }
 
-        public DbParameters Put(string name, short[] v, Opt<short> Opt = null, string label = null)
+        public DbParameters Put(string name, short[] v, string label = null, Opt<short> Opt = null)
         {
             if (name == null)
             {
@@ -249,7 +249,7 @@ namespace Greatbone.Core
             return this;
         }
 
-        public DbParameters Put(string name, int[] v, Opt<int> Opt = null, string label = null)
+        public DbParameters Put(string name, int[] v, string label = null, Opt<int> Opt = null)
         {
             if (name == null)
             {
@@ -262,7 +262,7 @@ namespace Greatbone.Core
             return this;
         }
 
-        public DbParameters Put(string name, long[] v, Opt<long> Opt = null, string label = null)
+        public DbParameters Put(string name, long[] v, string label = null, Opt<long> Opt = null)
         {
             if (name == null)
             {
@@ -275,7 +275,7 @@ namespace Greatbone.Core
             return this;
         }
 
-        public DbParameters Put(string name, string[] v, Opt<string> Opt = null, string label = null)
+        public DbParameters Put(string name, string[] v, string label = null, Opt<string> Opt = null)
         {
             if (name == null)
             {

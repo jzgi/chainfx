@@ -78,7 +78,7 @@ namespace Greatbone.Sample
             {
                 o.Put(nameof(qty), qty, label: "本批供应量");
             }
-            o.Put(nameof(status), status, opt: STATUS, label: "状态");
+            o.Put(nameof(status), status, label: "状态", opt: STATUS);
         }
     }
 }

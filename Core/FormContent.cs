@@ -104,7 +104,7 @@ namespace Greatbone.Core
         {
         }
 
-        public FormContent Put(string name, bool v, Func<bool, string> Opt = null, string Label = null)
+        public FormContent Put(string name, bool v, string Label = null, Func<bool, string> Opt = null)
         {
             ordinal++;
 
@@ -118,7 +118,7 @@ namespace Greatbone.Core
             return this;
         }
 
-        public FormContent Put(string name, short v, Opt<short> Opt = null, string Label = null)
+        public FormContent Put(string name, short v, string Label = null, Opt<short> Opt = null)
         {
             ordinal++;
 
@@ -132,7 +132,7 @@ namespace Greatbone.Core
             return this;
         }
 
-        public FormContent Put(string name, int v, Opt<int> Opt = null, string Label = null)
+        public FormContent Put(string name, int v, string Label = null, Opt<int> Opt = null)
         {
             ordinal++;
 
@@ -146,7 +146,7 @@ namespace Greatbone.Core
             return this;
         }
 
-        public FormContent Put(string name, long v, Opt<long> Opt = null, string Label = null)
+        public FormContent Put(string name, long v, string Label = null, Opt<long> Opt = null)
         {
             ordinal++;
 
@@ -202,7 +202,7 @@ namespace Greatbone.Core
             return this;
         }
 
-        public FormContent Put(string name, string v, Opt<string> Opt = null, string Label = null)
+        public FormContent Put(string name, string v, string Label = null, Opt<string> Opt = null)
         {
             ordinal++;
 
@@ -221,7 +221,7 @@ namespace Greatbone.Core
             return this; // ignore ir
         }
 
-        public FormContent Put(string name, short[] v, Opt<short> Opt = null, string Label = null)
+        public FormContent Put(string name, short[] v, string Label = null, Opt<short> Opt = null)
         {
             ordinal++;
 
@@ -239,7 +239,7 @@ namespace Greatbone.Core
             return this;
         }
 
-        public FormContent Put(string name, int[] v, Opt<int> Opt = null, string Label = null)
+        public FormContent Put(string name, int[] v, string Label = null, Opt<int> Opt = null)
         {
             ordinal++;
 
@@ -257,7 +257,7 @@ namespace Greatbone.Core
             return this;
         }
 
-        public FormContent Put(string name, long[] v, Opt<long> Opt = null, string Label = null)
+        public FormContent Put(string name, long[] v, string Label = null, Opt<long> Opt = null)
         {
             ordinal++;
 
@@ -275,7 +275,7 @@ namespace Greatbone.Core
             return this;
         }
 
-        public FormContent Put(string name, string[] v, Opt<string> Opt = null, string Label = null)
+        public FormContent Put(string name, string[] v, string Label = null, Opt<string> Opt = null)
         {
             ordinal++;
 

@@ -126,11 +126,11 @@ namespace Greatbone.Sample
                 dc.Sql("SELECT ").columnlst(Shop.Empty, proj)._("FROM shops WHERE city = @1");
                 if (dc.Query(p => p.Set(city)))
                 {
-                    ac.GiveGridFormPage(200, dc.ToDatas<Shop>(proj), proj);
+                    ac.GiveGridPage(200, dc.ToDatas<Shop>(proj), proj);
                 }
                 else
                 {
-                    ac.GiveGridFormPage(200, (Shop[]) null);
+                    ac.GiveGridPage(200, (Shop[]) null);
                 }
             }
         }
@@ -188,11 +188,11 @@ namespace Greatbone.Sample
                 dc.Sql("SELECT ").columnlst(Shop.Empty, proj)._("FROM shops ORDER BY id LIMIT 30 OFFSET @1");
                 if (dc.Query(p => p.Set(page)))
                 {
-                    ac.GiveGridFormPage(200, dc.ToDatas<Shop>(proj), proj);
+                    ac.GiveGridPage(200, dc.ToDatas<Shop>(proj), proj);
                 }
                 else
                 {
-                    ac.GiveGridFormPage(200, (Shop[]) null);
+                    ac.GiveGridPage(200, (Shop[]) null);
                 }
             }
         }

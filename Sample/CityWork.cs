@@ -36,11 +36,11 @@ namespace Greatbone.Sample
                 dc.Sql("SELECT ").columnlst(Shop.Empty)._("FROM shops ORDER BY id LIMIT 30 OFFSET @1");
                 if (dc.Query(p => p.Set(page)))
                 {
-                    ac.GiveGridFormPage(200, dc.ToDatas<Shop>());
+                    ac.GiveGridPage(200, dc.ToDatas<Shop>());
                 }
                 else
                 {
-                    ac.GiveGridFormPage(200, (Shop[]) null);
+                    ac.GiveGridPage(200, (Shop[]) null);
                 }
             }
         }

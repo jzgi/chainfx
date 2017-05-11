@@ -723,7 +723,7 @@ label > [type='radio'] {
 label {
     display: block;
     margin: 0;
-    font-size: 0.875rem;
+    font-size: 1rem;
     font-weight: normal;
     line-height: 1.8;
     color: #0a0a0a;
@@ -772,7 +772,7 @@ label.middle {
 .input-group-label {
     padding: 0 1rem;
     border: 1px solid #cacaca;
-    background: #e6e6e6;
+    background: inherit;
     color: #0a0a0a;
     text-align: center;
     white-space: nowrap;

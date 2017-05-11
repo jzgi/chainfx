@@ -5,7 +5,6 @@ using System.Net;
 using System.Net.Http;
 using System.Text;
 using System.Threading.Tasks;
-using NpgsqlTypes;
 
 namespace Greatbone.Core
 {
@@ -225,26 +224,6 @@ namespace Greatbone.Core
             for (int i = offset; i < len; i++)
             {
                 Add(v[i]);
-            }
-        }
-
-        public void AddVary<V>(V v) where V : IConvertible
-        {
-            if (v is short)
-            {
-                Add(v.ToInt16(null));
-            }
-            else if (v is int)
-            {
-                Add(v.ToInt32(null));
-            }
-            else if (v is long)
-            {
-                Add(v.ToInt64(null));
-            }
-            else
-            {
-                Add(v.ToString());
             }
         }
 

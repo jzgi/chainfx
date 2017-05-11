@@ -44,7 +44,7 @@ namespace Greatbone.Sample
                 dc.Sql("SELECT ").columnlst(User.Empty, proj)._("FROM users ORDER BY id LIMIT 30 OFFSET @1");
                 if (dc.Query("SELECT * FROM users"))
                 {
-                    ac.GiveGridFormPage(200, dc.ToDatas<User>()); // ok
+                    ac.GiveGridPage(200, dc.ToDatas<User>()); // ok
                 }
                 else
                 {
@@ -76,7 +76,7 @@ namespace Greatbone.Sample
                     dc.Sql("SELECT ").columnlst(User.Empty, proj)._("FROM users WHERE id = @1");
                     if (dc.Query(p => p.Set(id)))
                     {
-                        ac.GiveGridFormPage(200, dc.ToDatas<User>()); // ok
+                        ac.GiveGridPage(200, dc.ToDatas<User>()); // ok
                     }
                     else
                     {

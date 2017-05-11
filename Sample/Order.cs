@@ -165,23 +165,23 @@ namespace Greatbone.Sample
                     o.Put(nameof(closed), closed);
                 }
             }
-            o.Put(nameof(status), status, opt: STATUS, label: "状态");
+            o.Put(nameof(status), status, label: "状态", opt: STATUS);
         }
 
         public void AddItem(string item, short qty, string unit, decimal price)
         {
             if (detail == null)
             {
-                detail = new[] {new OrderLine() {item = item, qty = qty, unit = unit, price = price}};
+                detail = new[] {new OrderLine() {name = item, qty = qty, unit = unit, price = price}};
             }
-            var orderln = detail.Find(o => o.item.Equals(item));
+            var orderln = detail.Find(o => o.name.Equals(item));
             if (orderln != null)
             {
                 orderln.qty += qty;
             }
             else
             {
-                detail = detail.Add(new OrderLine() {item = item, qty = qty, unit = unit, price = price});
+                detail = detail.Add(new OrderLine() {name = item, qty = qty, unit = unit, price = price});
             }
         }
 
@@ -197,11 +197,25 @@ namespace Greatbone.Sample
                 total = sum;
             }
         }
+
+        public void SetLineQty(string name, short qty)
+        {
+            var ln = detail.Find(x => x.name == name);
+            if (ln != null)
+            {
+                ln.qty = qty;
+            }
+        }
+
+        public void RemoveLine(string name)
+        {
+            detail = detail.RemovedOf(x => x.name == name);
+        }
     }
 
     public class OrderLine : IData
     {
-        internal string item;
+        internal string name;
         internal short qty;
         internal string unit;
         internal decimal price;
@@ -210,7 +224,7 @@ namespace Greatbone.Sample
 
         public void ReadData(IDataInput i, short proj = 0)
         {
-            i.Get(nameof(item), ref item);
+            i.Get(nameof(name), ref name);
             i.Get(nameof(qty), ref qty);
             i.Get(nameof(unit), ref unit);
             i.Get(nameof(price), ref price);
@@ -218,12 +232,12 @@ namespace Greatbone.Sample
 
         public void WriteData<R>(IDataOutput<R> o, short proj = 0) where R : IDataOutput<R>
         {
-            o.Put(nameof(item), item, label: "品名");
+            o.Put(nameof(name), name, "品名");
             o.Group("数量");
             o.Put(nameof(qty), qty);
             o.Put(nameof(unit), unit);
             o.UnGroup();
-            o.Put(nameof(price), price, label: "单价");
+            o.Put(nameof(price), price, "单价");
         }
 
         public void AddQty(short qty)

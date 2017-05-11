@@ -44,11 +44,11 @@ namespace Greatbone.Sample
             {
                 if (dc.Query("SELECT * FROM repays WHERE shopid = @1", p => p.Set(shopid)))
                 {
-                    ac.GiveGridFormPage(200, dc.ToDatas<Repay>());
+                    ac.GiveGridPage(200, dc.ToDatas<Repay>());
                 }
                 else
                 {
-                    ac.GiveGridFormPage(200, (Repay[]) null);
+                    ac.GiveGridPage(200, (Repay[]) null);
                 }
             }
         }
@@ -68,11 +68,11 @@ namespace Greatbone.Sample
             {
                 if (dc.Query("SELECT * FROM repays WHERE shopid = @1 AND status < 4", p => p.Set(shopid)))
                 {
-                    ac.GiveGridFormPage(200, dc.ToDatas<Repay>());
+                    ac.GiveGridPage(200, dc.ToDatas<Repay>());
                 }
                 else
                 {
-                    ac.GiveGridFormPage(200, (Repay[]) null);
+                    ac.GiveGridPage(200, (Repay[]) null);
                 }
             }
         }
@@ -97,11 +97,11 @@ namespace Greatbone.Sample
             {
                 if (dc.Query("SELECT * FROM repays WHERE shopid = @1 AND status < 4", p => p.Set(shopid)))
                 {
-                    ac.GiveGridFormPage(200, dc.ToDatas<Repay>());
+                    ac.GiveGridPage(200, dc.ToDatas<Repay>());
                 }
                 else
                 {
-                    ac.GiveGridFormPage(200, (Repay[]) null);
+                    ac.GiveGridPage(200, (Repay[]) null);
                 }
             }
         }
@@ -126,11 +126,11 @@ namespace Greatbone.Sample
             {
                 if (dc.Query("SELECT * FROM repays WHERE shopid = @1 AND status < 4", p => p.Set(shopid)))
                 {
-                    ac.GiveGridFormPage(200, dc.ToDatas<Repay>());
+                    ac.GiveGridPage(200, dc.ToDatas<Repay>());
                 }
                 else
                 {
-                    ac.GiveGridFormPage(200, (Repay[]) null);
+                    ac.GiveGridPage(200, (Repay[]) null);
                 }
             }
         }
@@ -149,11 +149,11 @@ namespace Greatbone.Sample
                     p => p.Set(term).Set(till).Set(now));
                 if (dc.Query("SELECT * FROM repays WHERE status = 0"))
                 {
-                    ac.GiveGridFormPage(200, dc.ToDatas<Repay>());
+                    ac.GiveGridPage(200, dc.ToDatas<Repay>());
                 }
                 else
                 {
-                    ac.GiveGridFormPage(200, (Repay[]) null);
+                    ac.GiveGridPage(200, (Repay[]) null);
                 }
             }
         }
@@ -173,11 +173,11 @@ namespace Greatbone.Sample
             {
                 if (dc.Query("SELECT * FROM repays WHERE shopid = @1 AND status < 4", p => p.Set(shopid)))
                 {
-                    ac.GiveGridFormPage(200, dc.ToDatas<Repay>());
+                    ac.GiveGridPage(200, dc.ToDatas<Repay>());
                 }
                 else
                 {
-                    ac.GiveGridFormPage(200, (Repay[]) null);
+                    ac.GiveGridPage(200, (Repay[]) null);
                 }
             }
         }

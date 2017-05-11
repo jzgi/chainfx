@@ -110,6 +110,19 @@ namespace Greatbone.Core
             return this;
         }
 
+        public XmlContent ELEM(string name, long v)
+        {
+            Add('<');
+            Add(name);
+            Add('>');
+            Add(v);
+            Add('<');
+            Add('/');
+            Add(name);
+            Add('>');
+            return this;
+        }
+
         public XmlContent ELEM(string name, decimal v)
         {
             Add('<');
@@ -171,7 +184,7 @@ namespace Greatbone.Core
         {
         }
 
-        public XmlContent Put(string name, bool v, Func<bool, string> Opt = null, string Label = null)
+        public XmlContent Put(string name, bool v, string Label = null, Func<bool, string> Opt = null)
         {
             Add(' ');
             Add(name);
@@ -182,7 +195,7 @@ namespace Greatbone.Core
             return this;
         }
 
-        public XmlContent Put(string name, short v, Opt<short> Opt = null, string Label = null)
+        public XmlContent Put(string name, short v, string Label = null, Opt<short> Opt = null)
         {
             Add(' ');
             Add(name);
@@ -193,7 +206,7 @@ namespace Greatbone.Core
             return this;
         }
 
-        public XmlContent Put(string name, int v, Opt<int> Opt = null, string Label = null)
+        public XmlContent Put(string name, int v, string Label = null, Opt<int> Opt = null)
         {
             Add(' ');
             Add(name);
@@ -204,7 +217,7 @@ namespace Greatbone.Core
             return this;
         }
 
-        public XmlContent Put(string name, long v, Opt<long> Opt = null, string Label = null)
+        public XmlContent Put(string name, long v, string Label = null, Opt<long> Opt = null)
         {
             Add(' ');
             Add(name);
@@ -248,7 +261,7 @@ namespace Greatbone.Core
             return this;
         }
 
-        public XmlContent Put(string name, string v, Opt<string> Opt = null, string Label = null)
+        public XmlContent Put(string name, string v, string Label = null, Opt<string> Opt = null)
         {
             Add(' ');
             Add(name);
@@ -264,7 +277,7 @@ namespace Greatbone.Core
             return this;
         }
 
-        public XmlContent Put(string name, short[] v, Opt<short> Opt = null, string Label = null)
+        public XmlContent Put(string name, short[] v, string Label = null, Opt<short> Opt = null)
         {
             Add(' ');
             Add(name);
@@ -281,7 +294,7 @@ namespace Greatbone.Core
             return this;
         }
 
-        public XmlContent Put(string name, int[] v, Opt<int> Opt = null, string Label = null)
+        public XmlContent Put(string name, int[] v, string Label = null, Opt<int> Opt = null)
         {
             Add(' ');
             Add(name);
@@ -298,7 +311,7 @@ namespace Greatbone.Core
             return this;
         }
 
-        public XmlContent Put(string name, long[] v, Opt<long> Opt = null, string Label = null)
+        public XmlContent Put(string name, long[] v, string Label = null, Opt<long> Opt = null)
         {
             Add(' ');
             Add(name);
@@ -315,7 +328,7 @@ namespace Greatbone.Core
             return this;
         }
 
-        public XmlContent Put(string name, string[] v, Opt<string> Opt = null, string Label = null)
+        public XmlContent Put(string name, string[] v, string Label = null, Opt<string> Opt = null)
         {
             Add(' ');
             Add(name);

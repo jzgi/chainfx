@@ -52,12 +52,12 @@ namespace Greatbone.Sample
                     var shop = dc.ToData<Shop>(proj);
 
                     // query for item records of the shop
-                    const short projitem = -1 ^ Item.ICON;
+                    const short proj2 = -1 ^ Item.ICON;
                     Item[] items = null;
-                    dc.Sql("SELECT ").columnlst(Item.Empty, projitem)._("FROM items WHERE shopid = @1");
+                    dc.Sql("SELECT ").columnlst(Item.Empty, proj2)._("FROM items WHERE shopid = @1");
                     if (dc.Query(p => p.Set(shopid)))
                     {
-                        items = dc.ToDatas<Item>(projitem);
+                        items = dc.ToDatas<Item>(proj2);
                     }
 
                     ac.GivePage(200, m =>
@@ -96,50 +96,55 @@ namespace Greatbone.Sample
                         }
                         for (int i = 0; i < items.Length; i++)
                         {
-                            Item o = items[i];
+                            Item item = items[i];
                             m.Add("<form>");
 
+                            var shopname = shop.name;
+
                             m.HIDDEN(nameof(shopid), shopid);
-                            m.HIDDEN(nameof(o.name), o.name);
+                            m.HIDDEN(nameof(shopname), shopname);
+                            m.HIDDEN(nameof(item.name), item.name);
+                            m.HIDDEN(nameof(item.unit), item.unit);
+                            m.HIDDEN(nameof(item.price), item.price);
 
                             m.Add("<div class=\"row card align-middle\">");
 
                             m.Add("<div class=\"small-4 column\">");
                             m.Add("<img src=\"");
-                            m.Add(o.name);
+                            m.Add(item.name);
                             m.Add("/icon\" alt=\"\" class=\"thumbnail\">");
                             m.Add("</div>"); // column
 
                             m.Add("<div class=\"small-8 column\">");
                             m.Add("<h3>");
-                            m.Add(o.name);
-                            if (o.qty > 0)
+                            m.Add(item.name);
+                            if (item.qty > 0)
                             {
                                 m.Add("（");
-                                m.Add(o.qty);
-                                m.Add(o.unit);
+                                m.Add(item.qty);
+                                m.Add(item.unit);
                                 m.Add("）");
                             }
                             m.Add("</h3>");
                             m.Add("<div>");
-                            m.Add(o.descr);
+                            m.Add(item.descr);
                             m.Add("</div>");
 
                             m.Add("<p>");
                             m.Add("<strong class=\"money\">&yen;");
-                            m.Add(o.price);
+                            m.Add(item.price);
                             m.Add("</strong> 每");
-                            m.Add(o.unit);
+                            m.Add(item.unit);
                             m.Add("</p>");
 
                             m.Add("<div class=\"row\">");
 
                             m.Add("<div class=\"small-7 columns\">");
-                            m.NUMBER(nameof(o.qty), o.min, step: o.step);
+                            m.NUMBER(nameof(item.qty), item.min, step: item.step);
                             m.Add("</div>");
 
                             m.Add("<div class=\"small-5 columns\">");
-                            m.Add("<button type=\"button\" class=\"button success hollow\" onclick=\"$.post('/my//cart/add', $(this.form).serialize(), function(data){alert('成功加入购物车');});\">+ 购物车</button>");
+                            m.Add("<button type=\"button\" class=\"button success hollow\" onclick=\"var frm=this.form; $.post('/my//cart/add', $(frm).serialize(), function(data){alert('成功加入购物车'); frm.reset();});\">+ 购物车</button>");
                             m.Add("</div>");
 
                             m.Add("</div>"); // row
