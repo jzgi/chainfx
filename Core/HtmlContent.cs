@@ -64,7 +64,7 @@ namespace Greatbone.Core
                     char c = alt[i];
                     if (c >= 'a' && c <= 'z')
                     {
-                        c = (char)(c - 32);
+                        c = (char) (c - 32);
                     }
                     Add(c);
                 }
@@ -751,15 +751,20 @@ namespace Greatbone.Core
 
         public void NUMBER(string name, short v, string label = null, string tip = null, short max = 0, short min = 0, short step = 0, bool opt = false, bool @readonly = false, bool required = false)
         {
-            Add("<label>");
-            AddLabel(label, name);
+            if (label != null)
+            {
+                Add("<label>");
+                AddLabel(label, name);
+            }
 
             bool group = step > 0; // input group with up up and down
 
             if (group)
             {
                 Add("<div class=\"input-group\">");
-                Add("<input type=\"button\" class=\"input-group-label\" onclick=\"this.form['qty'].stepDown()\" value=\"-\">");
+                Add("<input type=\"button\" class=\"input-group-label\" onclick=\"this.form['");
+                Add(name);
+                Add("'].stepDown()\" value=\"-\">");
             }
 
             Add("<input type=\"number\" name=\"");
@@ -808,11 +813,16 @@ namespace Greatbone.Core
 
             if (group)
             {
-                Add("<input type=\"button\" class=\"input-group-label\" onclick=\"this.form['qty'].stepUp()\" value=\"+\">");
+                Add("<input type=\"button\" class=\"input-group-label\" onclick=\"this.form['");
+                Add(name);
+                Add("'].stepUp()\" value=\"+\">");
                 Add("</div>");
             }
 
-            Add("</label>");
+            if (label != null)
+            {
+                Add("</label>");
+            }
         }
 
         public void NUMBER(string name, int v, string label = null, string tip = null, int max = 0, int min = 0, int step = 0, bool opt = false, bool @readonly = false, bool required = false)
@@ -1184,7 +1194,7 @@ namespace Greatbone.Core
             if (mode > 0)
             {
                 Add(" onclick=\"dialog(this,");
-                Add((int)mode);
+                Add((int) mode);
                 Add("); return false;\"");
             }
 
@@ -1313,6 +1323,13 @@ namespace Greatbone.Core
         public void PROGRES()
         {
             T("</tbody>");
+        }
+
+        public void OUTPUT(string name)
+        {
+            Add("<output name=\"");
+            Add(name);
+            Add("\"></output>");
         }
 
         public void METER()
@@ -1670,9 +1687,9 @@ namespace Greatbone.Core
                         Add("<td style=\"text-align: right;\">");
                         if (format == '¥')
                         {
-                            Add("<span style=\"color: mediumorchid\">&yen;");
+                            Add("<strong class=\"money\">&yen;");
                             Add(v);
-                            Add("</span>");
+                            Add("</strong>");
                         }
                         else
                         {
@@ -1696,9 +1713,9 @@ namespace Greatbone.Core
                         Add("<div class=\"small-9 columns\">");
                         if (format == '¥')
                         {
-                            Add("<span style=\"color: mediumorchid\">&yen;");
+                            Add("<strong class=\"money\">&yen;");
                             Add(v);
-                            Add("</span>");
+                            Add("</strong>");
                         }
                         else
                         {

@@ -289,14 +289,14 @@ namespace Greatbone.Core
         }
 
 
-        public D ToObject<D>(short proj = 0) where D : IData, new()
+        public D ToData<D>(short proj = 0) where D : IData, new()
         {
             D obj = new D();
             obj.ReadData(this, proj);
             return obj;
         }
 
-        public D[] ToArray<D>(short proj = 0) where D : IData, new()
+        public D[] ToDatas<D>(short proj = 0) where D : IData, new()
         {
             throw new NotImplementedException();
         }

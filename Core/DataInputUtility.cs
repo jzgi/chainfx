@@ -13,7 +13,7 @@ namespace Greatbone.Core
         {
             if (string.IsNullOrEmpty(ctyp)) return null;
 
-            if ("application/x-www-form-urlencoded".Equals(ctyp))
+            if (ctyp.StartsWith("application/x-www-form-urlencoded"))
             {
                 return new FormParse(buffer, length).Parse();
             }
@@ -70,16 +70,16 @@ namespace Greatbone.Core
             return null;
         }
 
-        public static D StringToObject<D>(string v, short proj = 0) where D : IData, new()
+        public static D StringToData<D>(string v, short proj = 0) where D : IData, new()
         {
             JObj jo = (JObj) new JsonParse(v).Parse();
-            return jo.ToObject<D>(proj);
+            return jo.ToData<D>(proj);
         }
 
-        public static D[] StringToArray<D>(string v, short proj = 0) where D : IData, new()
+        public static D[] StringToDatas<D>(string v, short proj = 0) where D : IData, new()
         {
             JArr ja = (JArr) new JsonParse(v).Parse();
-            return ja.ToArray<D>(proj);
+            return ja.ToDatas<D>(proj);
         }
 
         public static string ToString<D>(D v, short proj = 0) where D : IData
@@ -127,7 +127,7 @@ namespace Greatbone.Core
             return null;
         }
 
-        public static D FileToObject<D>(string file, short proj = 0) where D : IData, new()
+        public static D FileToData<D>(string file, short proj = 0) where D : IData, new()
         {
             try
             {
@@ -135,7 +135,7 @@ namespace Greatbone.Core
                 JObj jo = (JObj) new JsonParse(bytes, bytes.Length).Parse();
                 if (jo != null)
                 {
-                    return jo.ToObject<D>(proj);
+                    return jo.ToData<D>(proj);
                 }
             }
             catch (Exception ex)
@@ -145,7 +145,7 @@ namespace Greatbone.Core
             return default(D);
         }
 
-        public static D[] FileToArray<D>(string file, short proj = 0) where D : IData, new()
+        public static D[] FileToDatas<D>(string file, short proj = 0) where D : IData, new()
         {
             try
             {
@@ -153,7 +153,7 @@ namespace Greatbone.Core
                 JArr ja = (JArr) new JsonParse(bytes, bytes.Length).Parse();
                 if (ja != null)
                 {
-                    return ja.ToArray<D>(proj);
+                    return ja.ToDatas<D>(proj);
                 }
             }
             catch (Exception ex)

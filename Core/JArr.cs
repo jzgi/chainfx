@@ -149,14 +149,14 @@ namespace Greatbone.Core
             return jo != null && jo.Get(name, ref v);
         }
 
-        public D ToObject<D>(short proj = 0) where D : IData, new()
+        public D ToData<D>(short proj = 0) where D : IData, new()
         {
             D obj = new D();
             obj.ReadData(this, proj);
             return obj;
         }
 
-        public D[] ToArray<D>(short proj = 0) where D : IData, new()
+        public D[] ToDatas<D>(short proj = 0) where D : IData, new()
         {
             D[] arr = new D[count];
             for (int i = 0; i < arr.Length; i++)

@@ -49,15 +49,15 @@ namespace Greatbone.Sample
                 dc.Sql("SELECT ").columnlst(Shop.Empty, proj)._("FROM shops WHERE id = @1");
                 if (dc.Query1(p => p.Set(shopid)))
                 {
-                    var shop = dc.ToObject<Shop>(proj);
+                    var shop = dc.ToData<Shop>(proj);
 
                     // query for item records of the shop
-                    const short projitem = -1 ^ Item.ICON ^ Item.QTY;
+                    const short projitem = -1 ^ Item.ICON;
                     Item[] items = null;
                     dc.Sql("SELECT ").columnlst(Item.Empty, projitem)._("FROM items WHERE shopid = @1");
                     if (dc.Query(p => p.Set(shopid)))
                     {
-                        items = dc.ToArray<Item>(projitem);
+                        items = dc.ToDatas<Item>(projitem);
                     }
 
                     ac.GivePage(200, m =>
@@ -96,39 +96,57 @@ namespace Greatbone.Sample
                         }
                         for (int i = 0; i < items.Length; i++)
                         {
-                            Item item = items[i];
-                            m.Add("<form id=\"item");
-                            m.Add(i);
-                            m.Add("\">");
+                            Item o = items[i];
+                            m.Add("<form>");
+
+                            m.HIDDEN(nameof(shopid), shopid);
+                            m.HIDDEN(nameof(o.name), o.name);
+
                             m.Add("<div class=\"row card align-middle\">");
 
-                            m.Add("<div class=\"small-4 columns\"><img src=\"");
-                            m.Add(item.name);
-                            m.Add("/icon\" alt=\"\" class=\"thumbnail\"></div>");
+                            m.Add("<div class=\"small-4 column\">");
+                            m.Add("<img src=\"");
+                            m.Add(o.name);
+                            m.Add("/icon\" alt=\"\" class=\"thumbnail\">");
+                            m.Add("</div>"); // column
 
-                            m.Add("<div class=\"small-8 columns\">");
+                            m.Add("<div class=\"small-8 column\">");
                             m.Add("<h3>");
-                            m.Add(item.name);
+                            m.Add(o.name);
+                            if (o.qty > 0)
+                            {
+                                m.Add("（");
+                                m.Add(o.qty);
+                                m.Add(o.unit);
+                                m.Add("）");
+                            }
                             m.Add("</h3>");
                             m.Add("<div>");
-                            m.Add("<span style=\"font-size: 1.25rem; font-weight: bold\">&yen;");
-                            m.Add(item.price);
-                            m.Add("</span>");
-                            m.Add(" ");
-                            m.Add(item.unit);
+                            m.Add(o.descr);
                             m.Add("</div>");
+
                             m.Add("<p>");
-                            m.Add(item.descr);
+                            m.Add("<strong class=\"money\">&yen;");
+                            m.Add(o.price);
+                            m.Add("</strong> 每");
+                            m.Add(o.unit);
                             m.Add("</p>");
 
-                            m.Add("<a class=\"button warning\" href=\"/my//cart/add?shopid=");
-                            m.Add(shopid);
-                            m.Add("&name=");
-                            m.Add(item.name);
-                            m.Add("\" onclick=\"return dialog(this,2)\">加入购物车</a>");
+                            m.Add("<div class=\"row\">");
+
+                            m.Add("<div class=\"small-7 columns\">");
+                            m.NUMBER(nameof(o.qty), o.min, step: o.step);
                             m.Add("</div>");
 
+                            m.Add("<div class=\"small-5 columns\">");
+                            m.Add("<button type=\"button\" class=\"button success hollow\" onclick=\"$.post('/my//cart/add', $(this.form).serialize(), function(data){alert('成功加入购物车');});\">+ 购物车</button>");
                             m.Add("</div>");
+
+                            m.Add("</div>"); // row
+
+                            m.Add("</div>"); // column
+
+                            m.Add("</div>"); // row card
                             m.Add("</form>");
                         }
                     });
@@ -180,7 +198,7 @@ namespace Greatbone.Sample
                     dc.Sql("SELECT ").columnlst(Shop.Empty, proj)._("FROM shops WHERE id = @1");
                     if (dc.Query1(p => p.Set(id)))
                     {
-                        var o = dc.ToObject<Shop>(proj);
+                        var o = dc.ToData<Shop>(proj);
                         ac.GivePane(200, m =>
                         {
                             m.FORM_();
@@ -202,7 +220,7 @@ namespace Greatbone.Sample
             }
             else // post
             {
-                var o = await ac.ReadObjectAsync<Shop>();
+                var o = await ac.ReadDataAsync<Shop>();
                 o.id = ac[this];
                 using (var dc = ac.NewDbContext())
                 {
@@ -342,7 +360,7 @@ namespace Greatbone.Sample
                     dc.Sql("SELECT ").columnlst(Shop.Empty, proj)._("FROM shops WHERE id = @1 AND city = @2");
                     if (dc.Query1(p => p.Set(id).Set(city)))
                     {
-                        var o = dc.ToObject<Shop>(proj);
+                        var o = dc.ToData<Shop>(proj);
                         ac.GivePane(200, m =>
                         {
                             m.FORM_();
@@ -362,7 +380,7 @@ namespace Greatbone.Sample
             }
             else // post
             {
-                var o = await ac.ReadObjectAsync<Shop>();
+                var o = await ac.ReadDataAsync<Shop>();
                 o.id = ac[this];
                 using (var dc = ac.NewDbContext())
                 {

@@ -24,7 +24,7 @@ namespace Greatbone.Sample
 
             Create<AdmWork>("adm"); // administrator
 
-            cities = DataInputUtility.FileToArray<City>(sc.GetFilePath("$cities.json"));
+            cities = DataInputUtility.FileToDatas<City>(sc.GetFilePath("$cities.json"));
 
             int len = cities.Length;
             cityopt = new string[len];
@@ -65,7 +65,7 @@ namespace Greatbone.Sample
                 {
                     if (dc.Query1("SELECT * FROM users WHERE wx = @1", (p) => p.Set(accessor.openid)))
                     {
-                        prin = dc.ToObject<User>(-1 ^ User.CREDENTIAL);
+                        prin = dc.ToData<User>(-1 ^ User.CREDENTIAL);
                     }
                 }
                 if (prin == null) // get userinfo remotely
@@ -91,7 +91,7 @@ namespace Greatbone.Sample
                 {
                     if (dc.Query1("SELECT * FROM users WHERE id = @1", (p) => p.Set(id)))
                     {
-                        prin = dc.ToObject<User>(-1);
+                        prin = dc.ToData<User>(-1);
                     }
                 }
                 // validate

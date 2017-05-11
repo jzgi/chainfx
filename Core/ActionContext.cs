@@ -242,7 +242,7 @@ namespace Greatbone.Core
             return entity as M;
         }
 
-        public async Task<D> ReadObjectAsync<D>(short proj = 0) where D : IData, new()
+        public async Task<D> ReadDataAsync<D>(short proj = 0) where D : IData, new()
         {
             if (entity == null && count == -1) // if not yet parse and read
             {
@@ -266,10 +266,10 @@ namespace Greatbone.Core
             {
                 return default(D);
             }
-            return src.ToObject<D>(proj);
+            return src.ToData<D>(proj);
         }
 
-        public async Task<D[]> ReadArrayAsync<D>(short proj = 0) where D : IData, new()
+        public async Task<D[]> ReadDatasAsync<D>(short proj = 0) where D : IData, new()
         {
             if (entity == null && count == -1) // if not yet parse and read
             {
@@ -288,7 +288,7 @@ namespace Greatbone.Core
                 string ctyp = Header("Content-Type");
                 entity = ParseContent(ctyp, buffer, count);
             }
-            return (entity as IDataInput)?.ToArray<D>(proj);
+            return (entity as IDataInput)?.ToDatas<D>(proj);
         }
 
         //

@@ -9,8 +9,8 @@ namespace Greatbone.Sample
     public class Item : IData
     {
         public const short
-            SHOPID = 0x0003, // inclusive
-            QTY = 0x0004,
+            SHOPID = 0x0001, // inclusive
+            QTY = 0x0002,
             ICON = 0x0200;
 
 

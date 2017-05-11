@@ -20,7 +20,7 @@ namespace Greatbone.Sample
                 dc.Sql("SELECT ").columnlst(Order.Empty)._("FROM orders WHERE id = @1 AND shopid = @2");
                 if (dc.Query(p => p.Set(id).Set(shopid)))
                 {
-                    var order = dc.ToArray<Order>();
+                    var order = dc.ToDatas<Order>();
                 }
                 else
                 {
@@ -68,7 +68,7 @@ namespace Greatbone.Sample
                     dc.Sql("SELECT ").columnlst(Item.Empty, proj)._("FROM items WHERE shopid = @1 AND name = @2");
                     if (dc.Query1(p => p.Set(shopid).Set(name)))
                     {
-                        var o = dc.ToObject<Item>(proj);
+                        var o = dc.ToData<Item>(proj);
                         ac.GivePane(200, m =>
                         {
                             m.FORM_();
@@ -93,10 +93,10 @@ namespace Greatbone.Sample
             }
             else // post
             {
-                var o = await ac.ReadObjectAsync<Item>();
+                const int proj = -1 ^ Item.SHOPID ^ Item.ICON;
+                var o = await ac.ReadDataAsync<Item>(proj);
                 using (var dc = ac.NewDbContext())
                 {
-                    const int proj = -1 ^ Item.SHOPID ^ Item.ICON;
                     dc.Sql("UPDATE items")._SET_(Item.Empty, proj)._("WHERE shopid = @1 AND name = @2");
                     dc.Execute(p =>
                     {

@@ -40,7 +40,7 @@ namespace Greatbone.Sample
                     {
                         if (dc.Query1("SELECT * FROM inboxes WHERE userid = @1", p => p.Set(userid)))
                         {
-                            chat = dc.ToObject<Chat>();
+                            chat = dc.ToData<Chat>();
                         }
                         else
                         {

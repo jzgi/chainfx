@@ -22,9 +22,5 @@ namespace Greatbone.Sample
         {
         }
 
-        [Ui("删除")]
-        public void rm(ActionContext ac)
-        {
-        }
     }
 }

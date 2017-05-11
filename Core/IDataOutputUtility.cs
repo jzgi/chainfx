@@ -1,5 +1,4 @@
 ﻿using System;
-using System.Collections.Generic;
 
 namespace Greatbone.Core
 {
@@ -65,7 +64,7 @@ namespace Greatbone.Core
             return v;
         }
 
-        public static D GetObject<D>(this IDataInput inp, string name = null) where D : IData, new()
+        public static D GetData<D>(this IDataInput inp, string name = null) where D : IData, new()
         {
             D v = default(D);
             inp.Get(name, ref v);
@@ -100,7 +99,7 @@ namespace Greatbone.Core
             return v;
         }
 
-        public static D[] GetArray<D>(this IDataInput inp, string name = null) where D : IData, new()
+        public static D[] GetDatas<D>(this IDataInput inp, string name = null) where D : IData, new()
         {
             D[] v = null;
             inp.Get(name, ref v);

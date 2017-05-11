@@ -316,7 +316,7 @@ namespace Greatbone.Core
         // RESULTSET
         //
 
-        public D ToObject<D>(short proj = 0) where D : IData, new()
+        public D ToData<D>(short proj = 0) where D : IData, new()
         {
             D obj = new D();
             obj.ReadData(this, proj);
@@ -331,7 +331,7 @@ namespace Greatbone.Core
             return obj;
         }
 
-        public D[] ToArray<D>(short proj = 0) where D : IData, new()
+        public D[] ToDatas<D>(short proj = 0) where D : IData, new()
         {
             List<D> lst = new List<D>(32);
             while (Next())

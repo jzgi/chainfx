@@ -236,12 +236,12 @@ namespace Greatbone.Core
             throw new NotImplementedException();
         }
 
-        public D ToObject<D>(short proj = 0) where D : IData, new()
+        public D ToData<D>(short proj = 0) where D : IData, new()
         {
             throw new NotImplementedException();
         }
 
-        public D[] ToArray<D>(short proj = 0) where D : IData, new()
+        public D[] ToDatas<D>(short proj = 0) where D : IData, new()
         {
             throw new NotImplementedException();
         }

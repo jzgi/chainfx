@@ -195,7 +195,7 @@ namespace Greatbone.Sample
                 dc.Sql("SELECT ").columnlst(Order.Empty)._("FROM orders WHERE id = @1 AND shopid = @2");
                 if (dc.Query(p => p.Set(id).Set(shopid)))
                 {
-                    var order = dc.ToArray<Order>();
+                    var order = dc.ToDatas<Order>();
                 }
                 else
                 {

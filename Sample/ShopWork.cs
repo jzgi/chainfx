@@ -57,7 +57,7 @@ namespace Greatbone.Sample
 
                     if (dc.Query("SELECT * FROM shops WHERE city = @1 AND status > 0", p => p.Set(city)))
                     {
-                        var shops = dc.ToArray<Shop>(-1 ^ Shop.ICON);
+                        var shops = dc.ToDatas<Shop>(-1 ^ Shop.ICON);
                         for (int i = 0; i < shops.Length; i++)
                         {
                             var shop = shops[i];
@@ -126,7 +126,7 @@ namespace Greatbone.Sample
                 dc.Sql("SELECT ").columnlst(Shop.Empty, proj)._("FROM shops WHERE city = @1");
                 if (dc.Query(p => p.Set(city)))
                 {
-                    ac.GiveGridFormPage(200, dc.ToArray<Shop>(proj), proj);
+                    ac.GiveGridFormPage(200, dc.ToDatas<Shop>(proj), proj);
                 }
                 else
                 {
@@ -156,7 +156,7 @@ namespace Greatbone.Sample
             else // post
             {
                 const short proj = -1 ^ Shop.ICON;
-                var o = await ac.ReadObjectAsync<Shop>();
+                var o = await ac.ReadDataAsync<Shop>();
                 using (var dc = ac.NewDbContext())
                 {
                     dc.Sql("INSERT INTO shops")._(Shop.Empty)._VALUES_(Shop.Empty)._("");
@@ -188,7 +188,7 @@ namespace Greatbone.Sample
                 dc.Sql("SELECT ").columnlst(Shop.Empty, proj)._("FROM shops ORDER BY id LIMIT 30 OFFSET @1");
                 if (dc.Query(p => p.Set(page)))
                 {
-                    ac.GiveGridFormPage(200, dc.ToArray<Shop>(proj), proj);
+                    ac.GiveGridFormPage(200, dc.ToDatas<Shop>(proj), proj);
                 }
                 else
                 {

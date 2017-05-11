@@ -34,7 +34,7 @@ namespace Greatbone.Sample
             string wx = ac[this];
             if (ac.GET)
             {
-                var o = ac.Query.ToObject<User>();
+                var o = ac.Query.ToData<User>();
                 if (o.name == null)
                 {
                     User prin = (User) ac.Principal;
@@ -60,7 +60,7 @@ namespace Greatbone.Sample
             else
             {
                 const short proj = -1 ^ User.LOGIN ^ User.PERM;
-                var o = await ac.ReadObjectAsync<User>();
+                var o = await ac.ReadDataAsync<User>();
                 o.wx = wx;
                 o.created = DateTime.Now;
                 using (var dc = ac.NewDbContext())
@@ -179,7 +179,7 @@ namespace Greatbone.Sample
                 const short proj = -1 ^ User.CREDENTIAL;
                 if (dc.Query1("SELECT * FROM users WHERE wx = @1", (p) => p.Set(wx)))
                 {
-                    var o = dc.ToObject<User>(proj);
+                    var o = dc.ToData<User>(proj);
                     ac.SetTokenCookie(o, proj);
                     ac.GivePane(200);
                 }

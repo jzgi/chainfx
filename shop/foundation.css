@@ -156,16 +156,14 @@ abbr[title] {
 b,
 strong {
     font-weight: inherit;
-}
-
-/**
-     * Add the correct font weight in Chrome, Edge, and Safari.
-     */
-
-b,
-strong {
     font-weight: bolder;
 }
+
+.money {
+    color: mediumorchid;
+    font-size: 1.25rem;
+}
+
 
 /**
      * 1. Correct the inheritance and scaling of font size in all browsers.
@@ -403,9 +401,10 @@ input {
      */
 
 fieldset {
-    border: 1px solid #c0c0c0;
-    margin: 0 2px;
-    padding: 0.35em 0.625em 0.75em;
+    border-top: 1px solid #c0c0c0;
+    border-bottom: 1px solid #c0c0c0;
+    margin: 0.5rem 0;
+    padding: 0.5rem 0;
 }
 
 /**
@@ -831,9 +830,10 @@ legend {
 }
 
 .fieldset {
-    margin: 1.125rem 0;
-    padding: 1.25rem;
-    border: 1px solid #cacaca;
+    margin: 1rem 0;
+    padding: 1rem 0;
+    border-top: 1px solid #cacaca;
+    border-bottom: 1px solid #cacaca;
 }
 
 .fieldset legend {
