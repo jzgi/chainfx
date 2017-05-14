@@ -41,10 +41,10 @@ namespace Greatbone.Sample
                     else
                     {
                         StaticContent cont = new StaticContent(byteas);
-                        ac.Give(200, cont, true, 60);
+                        ac.Give(200, cont, pub: true, maxage: 60 * 5);
                     }
                 }
-                else ac.Give(404); // not found           
+                else ac.Give(404, pub: true, maxage: 60 * 5); // not found
             }
         }
     }

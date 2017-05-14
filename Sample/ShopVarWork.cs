@@ -23,10 +23,10 @@ namespace Greatbone.Sample
                     else
                     {
                         StaticContent cont = new StaticContent(byteas);
-                        ac.Give(200, cont);
+                        ac.Give(200, cont, pub: true, maxage: 60 * 5);
                     }
                 }
-                else ac.Give(404); // not found           
+                else ac.Give(404, pub: true, maxage: 60 * 5); // not found
             }
         }
     }
@@ -154,11 +154,11 @@ namespace Greatbone.Sample
                             m.Add("</div>"); // row card
                             m.Add("</form>");
                         }
-                    });
+                    }, pub: true, maxage: 60 * 5);
                 }
                 else
                 {
-                    ac.Give(404); // not found
+                    ac.Give(404, pub: true, maxage: 60 * 5); // not found
                 }
             }
         }
@@ -187,7 +187,7 @@ namespace Greatbone.Sample
 
         public void @default(ActionContext ac)
         {
-            ac.GiveFrame(200);
+            ac.GiveFrame(200, pub: false, maxage: 60 * 5);
         }
 
         [Ui("基本信息", Mode = UiMode.AnchorDialog)]

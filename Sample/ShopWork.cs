@@ -91,7 +91,7 @@ namespace Greatbone.Sample
                         m.Add("目前没有商家</p>");
                         m.Add("</div>");
                     }
-                });
+                }, pub: true, maxage: 60 * 5);
             }
         }
     }
@@ -126,11 +126,11 @@ namespace Greatbone.Sample
                 dc.Sql("SELECT ").columnlst(Shop.Empty, proj)._("FROM shops WHERE city = @1");
                 if (dc.Query(p => p.Set(city)))
                 {
-                    ac.GiveGridPage(200, dc.ToDatas<Shop>(proj), proj);
+                    ac.GiveGridPage(200, dc.ToDatas<Shop>(proj), proj, pub: false, maxage: 3);
                 }
                 else
                 {
-                    ac.GiveGridPage(200, (Shop[]) null);
+                    ac.GiveGridPage(200, (Shop[]) null, pub: false, maxage: 3);
                 }
             }
         }
@@ -193,11 +193,11 @@ namespace Greatbone.Sample
                 dc.Sql("SELECT ").columnlst(Shop.Empty, proj)._("FROM shops ORDER BY id LIMIT 30 OFFSET @1");
                 if (dc.Query(p => p.Set(page)))
                 {
-                    ac.GiveGridPage(200, dc.ToDatas<Shop>(proj), proj);
+                    ac.GiveGridPage(200, dc.ToDatas<Shop>(proj), proj, pub: false, maxage: 3);
                 }
                 else
                 {
-                    ac.GiveGridPage(200, (Shop[]) null);
+                    ac.GiveGridPage(200, (Shop[]) null, pub: false, maxage: 3);
                 }
             }
         }

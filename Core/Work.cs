@@ -340,22 +340,29 @@ namespace Greatbone.Core
                 if (!ai.DoAuthorize(ac)) throw AuthorizeEx;
 
                 // try in cache
-
-                ai.Before?.Do(ac);
-                if (ai.BeforeAsync != null) await ai.BeforeAsync.DoAsync(ac);
-
-                // method invocation
-                if (ai.IsAsync)
+                IContent cont;
+                if (Service.Cache.TryGetContent(ac.Uri, out cont))
                 {
-                    await ai.DoAsync(ac, subscpt); // invoke action method
+                    ac.Content = cont;
                 }
                 else
                 {
-                    ai.Do(ac, subscpt);
-                }
+                    ai.Before?.Do(ac);
+                    if (ai.BeforeAsync != null) await ai.BeforeAsync.DoAsync(ac);
 
-                ai.After?.Do(ac);
-                if (ai.AfterAsync != null) await ai.AfterAsync.DoAsync(ac);
+                    // method invocation
+                    if (ai.IsAsync)
+                    {
+                        await ai.DoAsync(ac, subscpt); // invoke action method
+                    }
+                    else
+                    {
+                        ai.Do(ac, subscpt);
+                    }
+
+                    ai.After?.Do(ac);
+                    if (ai.AfterAsync != null) await ai.AfterAsync.DoAsync(ac);
+                }
 
                 ac.Doer = null;
             }
@@ -426,7 +433,7 @@ namespace Greatbone.Core
                 Modified = modified,
                 GZip = gzip
             };
-            ac.Give(200, cont, true, 60); // todo 
+            ac.Give(200, cont, pub: true, maxage: 60 * 15);
         }
     }
 }

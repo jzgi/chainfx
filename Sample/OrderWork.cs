@@ -36,11 +36,11 @@ namespace Greatbone.Sample
                 dc.Sql("SELECT ").columnlst(Order.Empty, proj)._("FROM orders WHERE custwx = @1 AND status = @2 ORDER BY id DESC");
                 if (dc.Query(p => p.Set(wx).Set(Order.CREATED)))
                 {
-                    ac.GiveGridPage(200, dc.ToDatas<Order>(proj), proj);
+                    ac.GiveGridPage(200, dc.ToDatas<Order>(proj), proj, pub: false, maxage: 3);
                 }
                 else
                 {
-                    ac.GiveGridPage(200, (Order[]) null);
+                    ac.GiveGridPage(200, (Order[]) null, pub: false, maxage: 3);
                 }
             }
         }
@@ -129,11 +129,11 @@ namespace Greatbone.Sample
                 dc.Sql("SELECT ").columnlst(Order.Empty, proj)._("FROM orders WHERE custwx = @1 AND status BETWEEN @2 AND @3");
                 if (dc.Query(p => p.Set(wx).Set(Order.ACCEPTED).Set(Order.SENT)))
                 {
-                    ac.GiveGridPage(200, dc.ToDatas<Order>(proj), proj);
+                    ac.GiveGridPage(200, dc.ToDatas<Order>(proj), proj, pub: false, maxage: 3);
                 }
                 else
                 {
-                    ac.GiveGridPage(200, (Order[]) null);
+                    ac.GiveGridPage(200, (Order[]) null, pub: false, maxage: 3);
                 }
             }
         }
@@ -155,11 +155,11 @@ namespace Greatbone.Sample
                 dc.Sql("SELECT ").columnlst(Order.Empty, proj)._("FROM orders WHERE custwx = @1 AND status >= @2 ORDER BY id LIMIT 10 OFFSET @4");
                 if (dc.Query(p => p.Set(wx).Set(Order.DONE).Set(page * 10)))
                 {
-                    ac.GiveGridPage(200, dc.ToDatas<Order>(proj), proj);
+                    ac.GiveGridPage(200, dc.ToDatas<Order>(proj), proj, pub: false, maxage: 3);
                 }
                 else
                 {
-                    ac.GiveGridPage(200, (Order[]) null);
+                    ac.GiveGridPage(200, (Order[]) null, pub: false, maxage: 3);
                 }
             }
         }
@@ -185,11 +185,11 @@ namespace Greatbone.Sample
                 bool found = (status2 == 0) ? dc.Query("SELECT * FROM orders WHERE shopid = @1 AND status = @2 ORDER BY id LIMIT 20 OFFSET @3", p => p.Set(shopid).Set(status).Set(page * 20)) : dc.Query("SELECT * FROM orders WHERE shopid = @1 AND status BETWEEN @2 AND @3 ORDER BY id LIMIT 20 OFFSET @4", p => p.Set(shopid).Set(status).Set(status2).Set(page * 20));
                 if (found)
                 {
-                    ac.GiveGridPage(200, dc.ToDatas<Order>(proj), proj);
+                    ac.GiveGridPage(200, dc.ToDatas<Order>(proj), proj, pub: false, maxage: 3);
                 }
                 else
                 {
-                    ac.GiveGridPage(200, (Order[]) null);
+                    ac.GiveGridPage(200, (Order[]) null, pub: false, maxage: 3);
                 }
             }
         }
@@ -303,11 +303,11 @@ namespace Greatbone.Sample
             {
                 if (dc.Query("SELECT * FROM orders WHERE shopid = @1 AND status = @2 ORDER BY id LIMIT 20 OFFSET @3", p => p.Set(shopid).Set(page * 20)))
                 {
-                    ac.GiveGridPage(200, dc.ToDatas<Order>());
+                    ac.GiveGridPage(200, dc.ToDatas<Order>(), pub: false, maxage: 3);
                 }
                 else
                 {
-                    ac.GiveGridPage(200, (Order[]) null);
+                    ac.GiveGridPage(200, (Order[]) null, pub: false, maxage: 3);
                 }
             }
         }

@@ -197,7 +197,7 @@ namespace Greatbone.Core
             Add("</div>");
 
             Add("<div class=\"title-bar-title\">");
-            Add("<a class=\"button primary hollow\" href=\"javascript: location.reload();\">刷新</a>");
+            Add("<a class=\"button primary hollow\" href=\"javascript: location.reload(false);\">刷新</a>");
             Add("</div>");
 
             Add("</div>");
