@@ -463,5 +463,7 @@ namespace Greatbone.Core
         {
             return charbuf == null ? null : new string(charbuf, 0, count);
         }
+
+        public bool GZip => false;
     }
 }

@@ -57,7 +57,7 @@ namespace Greatbone.Sample
                 ChatMsg msg = new ChatMsg()
                 {
                     fromid = tok.wx,
-                    from = tok.name,
+                    from = tok.nickname,
                     text = txt.ToString(),
                     time = DateTime.Now
                 };

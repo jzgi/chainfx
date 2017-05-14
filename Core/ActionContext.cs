@@ -413,6 +413,10 @@ namespace Greatbone.Core
                 HttpResponse r = Response;
                 r.ContentLength = Content.Size;
                 r.ContentType = Content.Type;
+                if (Content.GZip)
+                {
+                    SetHeader("Content-Encoding", "gzip");
+                }
 
                 // cache indicators
                 var dyna = Content as DynamicContent;

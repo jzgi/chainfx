@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.IO;
+using System.IO.Compression;
 using System.Reflection;
 using System.Threading.Tasks;
 
@@ -365,13 +366,7 @@ namespace Greatbone.Core
             ac.Work = null;
         }
 
-        public void DoFile(string filename, ActionContext ac)
-        {
-            int dot = filename.LastIndexOf('.');
-            DoFile(filename, filename.Substring(dot), ac);
-        }
-
-        void DoFile(string filename, string ext, ActionContext ac)
+        public void DoFile(string filename, string ext, ActionContext ac)
         {
             if (filename.StartsWith("$")) // private resource
             {
@@ -402,12 +397,34 @@ namespace Greatbone.Core
             }
 
             // load file content
-            byte[] bytes = File.ReadAllBytes(path);
+            byte[] bytes;
+            bool gzip = false;
+            using (FileStream fs = new FileStream(path, FileMode.Open, FileAccess.Read))
+            {
+                int len = (int) fs.Length;
+                if (len > 4024)
+                {
+                    var ms = new MemoryStream(len);
+                    using (GZipStream gzs = new GZipStream(ms, CompressionMode.Compress))
+                    {
+                        fs.CopyTo(gzs);
+                    }
+                    bytes = ms.ToArray();
+                    gzip = true;
+                }
+                else
+                {
+                    bytes = new byte[len];
+                    fs.Read(bytes, 0, len);
+                }
+            }
+
             StaticContent cont = new StaticContent(true, bytes, bytes.Length)
             {
                 Name = filename,
                 Type = ctyp,
-                Modified = modified
+                Modified = modified,
+                GZip = gzip
             };
             ac.Give(200, cont, true, 60); // todo 
         }

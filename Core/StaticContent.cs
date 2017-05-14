@@ -1560,6 +1560,8 @@ namespace Greatbone.Core
 
         public ulong ETag => 0;
 
+        public bool GZip { get; set; }
+
         protected override Task SerializeToStreamAsync(Stream stream, TransportContext context)
         {
             return stream.WriteAsync(buffer, 0, size);

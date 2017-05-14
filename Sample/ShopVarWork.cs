@@ -316,19 +316,19 @@ namespace Greatbone.Sample
                 {
                     if (dc.Query("SELECT id, name, opr FROM users WHERE oprat = @1", p => p.Set(shopid)))
                     {
-                        m.RADIOS(nameof(id), dc, (inp, h, part) =>
+                        m.RADIOS(nameof(id), dc, (inp, h, prime) =>
                         {
-                            if (part == 'V')
-                            {
-                                h.Add(inp.GetString("id"));
-                            }
-                            else if (part == 'L')
+                            if (prime)
                             {
                                 h.Add(inp.GetString("id"));
                                 h.Add(' ');
                                 h.Add(inp.GetString("name"));
                                 h.Add(' ');
                                 h.Add(User.OPR[inp.GetShort("opr")]);
+                            }
+                            else
+                            {
+                                h.Add(inp.GetString("id"));
                             }
                         });
                         m.BUTTON(nameof(crew), 1, "删除");
@@ -346,9 +346,9 @@ namespace Greatbone.Sample
         }
     }
 
-    public class SupShopVarWork : ShopVarWork
+    public class SprShopVarWork : ShopVarWork
     {
-        public SupShopVarWork(WorkContext wc) : base(wc)
+        public SprShopVarWork(WorkContext wc) : base(wc)
         {
         }
 
@@ -438,6 +438,54 @@ namespace Greatbone.Sample
                         ac.Give(500); // internal server error
                     }
                 }
+            }
+        }
+
+        [Ui("设置经理", Mode = UiMode.AnchorDialog)]
+        public new async Task mgr(ActionContext ac)
+        {
+            string shopid = ac[this];
+            string city = ac[typeof(CityVarWork)];
+            if (ac.GET)
+            {
+                ac.GivePane(200, m =>
+                {
+                    m.FORM_();
+                    using (var dc = ac.NewDbContext())
+                    {
+                        if (dc.Query("SELECT id, name, wx FROM users WHERE city = @1 AND NOT id IS NULL AND NOT name IS NULL", p => p.Set(city)))
+                        {
+                            m.RADIOS("id_wx", dc, (inp, h, prime) =>
+                            {
+                                if (prime)
+                                {
+                                    h.Add(inp.GetString("id"));
+                                    h.Add(' ');
+                                    h.Add(inp.GetString("name"));
+                                }
+                                else
+                                {
+                                    h.Add(inp.GetString("id"));
+                                    h.Add('-');
+                                    h.Add(inp.GetString("wx"));
+                                }
+                            });
+                            m._FORM();
+                        }
+                    }
+                });
+            }
+            else // post
+            {
+                var f = await ac.ReadAsync<Form>();
+                string id_wx = f[nameof(id_wx)];
+                Duo<string, string> duo = id_wx.ToStringString();
+                using (var dc = ac.NewDbContext())
+                {
+                    dc.Execute(@"UPDATE shops SET mgrid = @1, mgrwx = @2 WHERE id = @3;
+                        UPDATE users SET oprat = @3, opr = @4 WHERE wx = @2;", p => p.Set(duo.X).Set(duo.Y).Set(shopid).Set(User.MANAGER));
+                }
+                ac.GivePane(200);
             }
         }
     }

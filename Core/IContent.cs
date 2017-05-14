@@ -38,5 +38,10 @@ namespace Greatbone.Core
         /// If any, the last modified time.
         ///
         DateTime? Modified { get; }
+
+        ///
+        /// If any, gzip compression
+        ///
+        bool GZip { get; }
     }
 }

@@ -35,10 +35,10 @@ namespace Greatbone.Sample
             if (ac.GET)
             {
                 var o = ac.Query.ToData<User>();
-                if (o.name == null)
+                if (o.nickname == null)
                 {
                     User prin = (User) ac.Principal;
-                    o.name = prin.name;
+                    o.nickname = prin.nickname;
                     o.city = prin.city;
                     o.addr = prin.addr;
                     o.distr = prin.distr;
@@ -47,11 +47,11 @@ namespace Greatbone.Sample
                 ac.GivePane(200, m =>
                 {
                     m.FORM_();
-                    m.TEXT(nameof(o.name), o.name, label: "用户名称（后台人员须用实名）", max: 10, required: true);
                     m.FIELDSET_("默认收货地址");
+                    m.TEXT(nameof(o.nickname), o.nickname, label: "用户名称", max: 10, required: true);
                     m.SELECT(nameof(o.city), o.city, ((ShopService) Service).CityOpt, label: "城市", refresh: true);
-                    m.SELECT(nameof(o.distr), o.distr, ((ShopService) Service).GetDistrs(o.city), label: "区域");
-                    m.TEXT(nameof(o.addr), o.addr, label: "地址");
+                    m.SELECT(nameof(o.distr), o.distr, ((ShopService) Service).GetDistrs(o.city), label: "区划");
+                    m.TEXT(nameof(o.addr), o.addr, label: "街道/地址");
                     m.TEXT(nameof(o.tel), o.tel, label: "联系电话");
                     m._FIELDSET();
                     m._FORM();
@@ -59,13 +59,13 @@ namespace Greatbone.Sample
             }
             else
             {
-                const short proj = -1 ^ User.LOGIN ^ User.PERM;
                 var o = await ac.ReadDataAsync<User>();
                 o.wx = wx;
                 o.created = DateTime.Now;
                 using (var dc = ac.NewDbContext())
                 {
-                    dc.Sql("INSERT INTO users ")._(User.Empty, proj)._VALUES_(User.Empty, proj)._("ON CONFLICT (wx) DO UPDATE")._SET_(User.Empty, proj ^ User.CREATED);
+                    const short proj = User.WX | User.CREATTED;
+                    dc.Sql("INSERT INTO users ")._(User.Empty, proj)._VALUES_(User.Empty, proj)._("ON CONFLICT (wx) DO UPDATE")._SET_(User.Empty);
                     dc.Execute(p => o.WriteData(p, proj));
                 }
 
@@ -76,7 +76,7 @@ namespace Greatbone.Sample
 
         const string PASS = "0z4R4pX7";
 
-        [Ui("个人手机号", Mode = UiMode.AnchorDialog)]
+        [Ui("后台操作设置", "后台操作帐号", Mode = UiMode.AnchorDialog)]
         public async Task loginf(ActionContext ac)
         {
             string wx = ac[this];
@@ -87,8 +87,10 @@ namespace Greatbone.Sample
                 ac.GivePane(200, (x) =>
                 {
                     x.FORM_();
-                    x.TEXT(nameof(prin.id), prin.id, label: "个人手机号（不要轻易改变）", max: 11, min: 11, pattern: "[0-9]+", required: true);
-                    x.PASSWORD(nameof(password), password, label: " 登录密码（用于在微信以外登录）", min: 3);
+                    x.FIELDSET_("仅后台操作人员填写");
+                    x.TEXT(nameof(prin.id), prin.id, "用户编号（个人手机号）", max: 11, min: 11, pattern: "[0-9]+", required: true);
+                    x.TEXT(nameof(prin.name), prin.name, "真实姓名（和身份证一致）", max: 4, min: 2, required: true);
+                    x.PASSWORD(nameof(password), password, "登录密码（用于微信以外登录）", min: 3);
                     x._FORM();
                 });
             }
@@ -96,77 +98,24 @@ namespace Greatbone.Sample
             {
                 var f = await ac.ReadAsync<Form>();
                 prin.id = f[nameof(prin.id)];
+                prin.name = f[nameof(prin.name)];
                 password = f[nameof(password)];
 
                 using (var dc = ac.NewDbContext())
                 {
                     if (PASS == password)
                     {
-                        dc.Execute("UPDATE users SET id = @1 WHERE wx = @2", p => p.Set(prin.id).Set(wx));
+                        dc.Execute("UPDATE users SET id = @1, name = @2 WHERE wx = @3", p => p.Set(prin.id).Set(prin.name).Set(wx));
                     }
                     else
                     {
                         string credential = StrUtility.MD5(prin.id + ":" + password);
-                        dc.Execute("UPDATE users SET id = @1, credential = @2 WHERE wx = @3", p => p.Set(prin.id).Set(credential).Set(wx));
+                        dc.Execute("UPDATE users SET id = @1, name = @2, credential = @3 WHERE wx = @4", p => p.Set(prin.id).Set(prin.name).Set(credential).Set(wx));
                     }
                 }
 
                 ac.SetTokenCookie(prin, -1 ^ User.CREDENTIAL);
                 ac.GivePane(200); // close dialog
-            }
-        }
-
-        [Ui("绑定为商家", Mode = UiMode.AnchorDialog)]
-        public async Task bind(ActionContext ac)
-        {
-            User prin = (User) ac.Principal;
-
-            if (prin.id == null)
-            {
-                ac.GivePane(200, (x) => { x.CALLOUT("请先设置个人手机号", false); });
-                return;
-            }
-
-            string shopid = null;
-            string password = null;
-            if (ac.GET)
-            {
-                ac.GivePane(200, (x) =>
-                {
-                    x.CALLOUT("已经绑定为商家", false);
-                    x.FORM_();
-                    x.TEXT(nameof(shopid), shopid, label: "商家编号", max: 6, min: 6, pattern: "[0-9]+", required: true);
-                    x.PASSWORD(nameof(password), password, label: "商家密码", min: 3, required: true);
-                    x._FORM();
-                });
-            }
-            else
-            {
-                var f = await ac.ReadAsync<Form>();
-                shopid = f[nameof(shopid)];
-                password = f[nameof(password)];
-
-                // data op
-                using (var dc = ac.NewDbContext())
-                {
-                    var credential = (string) dc.Scalar("SELECT credential FROM shops WHERE id = @1 AND mgrid = @2", p => p.Set(shopid).Set(prin.id));
-                    if (credential != null && credential.EqualsCredential(shopid, password))
-                    {
-                        dc.Execute("UPDATE users SET oprat = @1, opr = @2 WHERE wx = @3; UPDATE shops SET mgrwx = @3 WHERE id = @1", p => p.Set(shopid).Set(User.MANAGER).Set(prin.wx));
-                        prin.oprat = shopid;
-
-                        // update token
-                        prin.oprat = shopid;
-                        prin.opr = User.MANAGER;
-                        ac.SetTokenCookie(prin, -1);
-
-                        ac.GivePane(200);
-                    }
-                    else
-                    {
-                        ac.GivePane(200, (x) => { x.CALLOUT("输入的编号或密码有误；或者没有绑定为商家的权限", false); });
-                    }
-                }
             }
         }
 

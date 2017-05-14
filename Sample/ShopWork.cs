@@ -111,7 +111,7 @@ namespace Greatbone.Sample
     }
 
     [Ui("商家")]
-    public class SprShopWork : ShopWork<SupShopVarWork>
+    public class SprShopWork : ShopWork<SprShopVarWork>
     {
         public SprShopWork(WorkContext wc) : base(wc)
         {
@@ -138,16 +138,21 @@ namespace Greatbone.Sample
         [Ui("新建", Mode = UiMode.AnchorDialog)]
         public async Task @new(ActionContext ac)
         {
+            string city = ac[typeof(CityVarWork)];
             if (ac.GET)
             {
-                var o = new Shop();
+                var o = new Shop
+                {
+                    city = city
+                };
                 ac.GivePane(200, m =>
                 {
                     m.FORM_();
-                    m.TEXT(nameof(o.id), o.id, label: "商家编号", max: 6, min: 6, required: true);
-                    m.TEXT(nameof(o.name), o.name, label: "商家名称", max: 10, required: true);
-                    m.TEXT(nameof(o.mgrid), o.descr, label: "经理个人手机号", max: 11, min: 11, required: true);
-                    m.TEXT(nameof(o.city), o.city, label: "所在城市", @readonly: true);
+                    m.TEXT(nameof(o.id), o.id, "商家编号", max: 6, min: 6, required: true);
+                    m.TEXT(nameof(o.name), o.name, "商家名称", max: 10, required: true);
+                    m.TEXT(nameof(o.mgrid), o.descr, "简述", max: 11, min: 11, required: true);
+                    m.TEXT(nameof(o.mgrid), o.lic, "工商登记", max: 20, min: 11, required: true);
+                    m.TEXT(nameof(o.city), o.city, "所在城市", @readonly: true);
                     m.SELECT(nameof(o.distr), o.distr, ((ShopService) Service).GetDistrs(o.city), label: "区域");
                     m.SELECT(nameof(o.status), o.status, Shop.STATUS, label: "状态");
                     m._FORM();

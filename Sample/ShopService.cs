@@ -139,7 +139,7 @@ namespace Greatbone.Sample
 
         public void @default(ActionContext ac)
         {
-            DoFile("default.html", ac);
+            DoFile("default.html", ".html", ac);
         }
 
         /// <summary>

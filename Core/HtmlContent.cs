@@ -117,15 +117,15 @@ namespace Greatbone.Core
             Add("</div>");
         }
 
-        public void FORM_(bool centered = true, string action = null, bool post = true, bool mp = false)
+        public void FORM_(string caption = null, string action = null, bool post = true, bool mp = false)
         {
-            Add("<div");
-            if (centered)
+            Add("<div class=\"row column align-center small-10 medium-8 large-6 container-padded\">");
+            Add("<h2>");
+            if (caption != null)
             {
-                Add(" class=\"row column align-center small-10 medium-8 large-6 container-padded\"");
+                AddEsc(caption);
             }
-            Add(">");
-            Add("<h2></h2>");
+            Add("</h2>");
             Add("<form");
             if (action != null)
             {
@@ -232,30 +232,84 @@ namespace Greatbone.Core
             }
         }
 
-        public void TABLE(IDataInput input, Action<IDataInput, HtmlContent> valve)
+        public void TH(params string[] labels)
         {
-            if (input != null)
+            for (int i = 0; i < labels.Length; i++)
             {
-                Add("<table class=\"unstriped\">");
-
-                // ctx = CTX_GRIDTHEAD;
-                Add("<thead>");
-                Add("<tr>");
-                valve(input, this);
-                Add("</tr>");
-                Add("</thead>");
-
-                // ctx = CTX_GRIDTBODY;
-                Add("<tbody>");
-                while (input.Next())
-                {
-                    Add("<tr>");
-                    valve(input, this);
-                    Add("</tr>");
-                }
-                Add("</tbody>");
-                Add("</table>");
+                Add("<th>");
+                Add(labels[i]);
+                Add("</th>");
             }
+        }
+
+        public void TD(short v)
+        {
+            Add("<td style=\"text-align: right\">");
+            Add(v);
+            Add("</td>");
+        }
+
+        public void TD(int v)
+        {
+            Add("<td style=\"text-align: right\">");
+            Add(v);
+            Add("</td>");
+        }
+
+        public void TD(long v)
+        {
+            Add("<td style=\"text-align: right\">");
+            Add(v);
+            Add("</td>");
+        }
+
+        public void TD(decimal v)
+        {
+            Add("<td style=\"text-align: right\">");
+            Add(v);
+            Add("</td>");
+        }
+
+        public void TD(string v)
+        {
+            Add("<td>");
+            AddEsc(v);
+            Add("</td>");
+        }
+
+        public void TD_()
+        {
+            Add("<td>");
+        }
+
+        public void _TD()
+        {
+            Add("</td>");
+        }
+
+        public void TABLE(string name, IDataInput inp, Action<IDataInput, HtmlContent, char> putter)
+        {
+            Add("<table class=\"unstriped\">");
+
+            Add("<thead>");
+            Add("<tr>");
+            if (name != null)
+            {
+                Add("<th></th>");
+            }
+            putter(inp, this, 'L'); // putting value
+            Add("</tr>");
+            Add("</thead>");
+
+            Add("<tbody>");
+            while (inp.Next())
+            {
+                Add("<tr>");
+                putter(inp, this, 'B'); // putting label
+                Add("</tr>");
+            }
+            Add("</tbody>");
+            Add("</table>");
         }
 
         public void TABLE<D>(ActionContext formctx, Work varwork, D[] arr, short proj = 0) where D : IData
@@ -966,32 +1020,18 @@ namespace Greatbone.Core
             T("</tbody>");
         }
 
-        /// <summary>
-        /// Outputs a list of checkbox controls from the values of a data input source.
-        /// </summary>
-        /// <param name="name">name in both the data input and the output radio control</param>
-        /// <param name="inp">a data input source</param>
-        /// <param name="putv">directly put value of any type from source</param>
-        public void CHECKBOXES(string name, IDataInput inp, Action putv)
+        public void CHECKBOXES(string name, IDataInput inp, Action<IDataInput, HtmlContent, char> putter)
         {
-            int i = 0;
             while (inp.Next())
             {
+                Add("<label>");
                 Add("<input type=\"checkbox\" name=\"");
                 Add(name);
-                Add("\" id=\"");
-                Add(name);
-                Add(i);
                 Add("\" value=\"");
-                putv();
+                putter(inp, this, 'V'); // putting value
                 Add("\">");
-                Add("<label for=\"");
-                Add(name);
-                Add(i);
-                Add("\">");
-                putv();
+                putter(inp, this, 'L'); // putting label
                 Add("</label>");
-                i++;
             }
         }
 
@@ -1014,7 +1054,7 @@ namespace Greatbone.Core
             }
         }
 
-        public void RADIOS(string name, IDataInput inp, Action<IDataInput, HtmlContent, char> putter)
+        public void RADIOS(string name, IDataInput inp, Action<IDataInput, HtmlContent, bool> putter)
         {
             while (inp.Next())
             {
@@ -1022,14 +1062,14 @@ namespace Greatbone.Core
                 Add("<input type=\"radio\" name=\"");
                 Add(name);
                 Add("\" value=\"");
-                putter(inp, this, 'V'); // putting value
+                putter(inp, this, false); // putting value
                 Add("\">");
-                putter(inp, this, 'L'); // putting label
+                putter(inp, this, true); // putting label
                 Add("</label>");
             }
         }
 
-        public void RADIO(string name, string v, Opt<string> opt = null, string label = null, bool required = false)
+        public void RADIOS(string name, string v, Opt<string> opt = null, string label = null, bool required = false)
         {
             Add("<fieldset>");
 

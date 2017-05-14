@@ -12,8 +12,8 @@ namespace Greatbone.Sample
 
         public const short
             WX = 2,
-            CREATED = 2,
-            LOGIN = 0x00f0, // inclusive
+            CREATTED = 2,
+            BACKEND = 0x00f0, // inclusive
             CREDENTIAL = 0x0010,
             PERM = 0x0100;
 
@@ -28,13 +28,15 @@ namespace Greatbone.Sample
 
 
         internal string wx; // wexin openid
-        internal string name;
+
+        internal string nickname;
         internal string city; // default viewing city
         internal string distr;
         internal string addr;
         internal string tel;
         internal DateTime created;
 
+        internal string name;
         internal string id; // optional unique id
         internal string credential;
         internal string oprat; // operator at shopid
@@ -49,16 +51,21 @@ namespace Greatbone.Sample
             {
                 i.Get(nameof(wx), ref wx);
             }
-            i.Get(nameof(name), ref name);
+            i.Get(nameof(nickname), ref nickname);
             i.Get(nameof(city), ref city);
             i.Get(nameof(distr), ref distr);
             i.Get(nameof(addr), ref addr);
             i.Get(nameof(tel), ref tel);
-            i.Get(nameof(created), ref created);
 
-            if ((proj & LOGIN) != 0) // inclusive
+            if ((proj & CREATTED) == CREATTED)
+            {
+                i.Get(nameof(created), ref created);
+            }
+
+            if ((proj & BACKEND) != 0) // inclusive
             {
                 i.Get(nameof(id), ref id);
+                i.Get(nameof(name), ref name);
                 if ((proj & CREDENTIAL) == CREDENTIAL)
                 {
                     i.Get(nameof(credential), ref credential);
@@ -77,20 +84,22 @@ namespace Greatbone.Sample
         {
             if ((proj & WX) == WX)
             {
-                o.Put(nameof(wx), wx, label: "编号");
+                o.Put(nameof(wx), wx);
             }
-            o.Put(nameof(name), name, label: "名称");
-            o.Put(nameof(tel), tel, label: "电话");
-            o.Put(nameof(city), city, label: "城市");
-            o.Put(nameof(distr), distr, label: "区划");
-            o.Put(nameof(addr), addr, label: "地址");
-            if ((proj & CREATED) == CREATED)
+            o.Put(nameof(nickname), nickname, "用户名称");
+            o.Put(nameof(city), city, "城市");
+            o.Put(nameof(distr), distr, "区划");
+            o.Put(nameof(addr), addr, "街道/地址");
+            o.Put(nameof(tel), tel, "电话");
+
+            if ((proj & CREATTED) == CREATTED)
             {
                 o.Put(nameof(created), created);
             }
-            if ((proj & LOGIN) != 0)
+            if ((proj & BACKEND) != 0)
             {
-                o.Put(nameof(id), id, label: "登录号");
+                o.Put(nameof(id), id, "后台帐号");
+                o.Put(nameof(name), name, "真实姓名");
                 if ((proj & CREDENTIAL) == CREDENTIAL)
                 {
                     o.Put(nameof(credential), credential);
@@ -98,13 +107,11 @@ namespace Greatbone.Sample
             }
             if ((proj & PERM) == PERM)
             {
-                o.Put(nameof(opr), opr, label: "操作员");
-                o.Put(nameof(oprat), oprat, label: "派送员");
-                o.Put(nameof(sprat), sprat, label: "监管员");
-                o.Put(nameof(adm), adm, label: "监管员");
+                o.Put(nameof(oprat), oprat, "所在商家");
+                o.Put(nameof(opr), opr, "操作权限", OPR);
+                o.Put(nameof(sprat), sprat, "区域监督");
+                o.Put(nameof(adm), adm, "平台管理");
             }
         }
-
-        public string Label => name;
     }
 }

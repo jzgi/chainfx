@@ -89,7 +89,7 @@ namespace Greatbone.Sample
                     {
                         shopid = shopid,
                         shopname = shopname,
-                        custname = prin.name,
+                        custname = prin.nickname,
                         custwx = prin.wx,
                         custtel = prin.tel,
                         custcity = prin.city,

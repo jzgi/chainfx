@@ -380,5 +380,59 @@ namespace Greatbone.Core
             TryParseDate(str, out v);
             return v;
         }
+
+
+        public static Duo<string, string> ToStringString(this string str)
+        {
+            string x = null;
+            string y = null;
+            int dash = str.IndexOf('-');
+            if (dash != -1)
+            {
+                x = str.Substring(0, dash);
+                y = str.Substring(dash + 1);
+            }
+            else
+            {
+                x = str;
+            }
+            return new Duo<string, string>(x, y);
+        }
+
+        public static Duo<int, string> ToIntString(this string str)
+        {
+            int x = 0;
+            string y = null;
+            int dash = str.IndexOf('-');
+            if (dash != -1)
+            {
+                string strx = str.Substring(0, dash);
+                x = strx.ToInt();
+                y = str.Substring(dash + 1);
+            }
+            else
+            {
+                y = str;
+            }
+            return new Duo<int, string>(x, y);
+        }
+
+        public static Duo<long, string> ToLongString(this string str)
+        {
+            long x = 0;
+            string y = null;
+            int dash = str.IndexOf('-');
+            if (dash != -1)
+            {
+                string strx = str.Substring(0, dash);
+                x = strx.ToLong();
+                y = str.Substring(dash + 1);
+            }
+            else
+            {
+                y = str;
+            }
+            return new Duo<long, string>(x, y);
+        }
     }
 }

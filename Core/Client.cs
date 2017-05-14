@@ -282,7 +282,7 @@ namespace Greatbone.Core
             return 0;
         }
 
-        public async Task<Dual<int, M>> PostAsync<M>(ActionContext ctx, string uri, IContent content) where M : class, IDataInput
+        public async Task<Duo<int, M>> PostAsync<M>(ActionContext ctx, string uri, IContent content) where M : class, IDataInput
         {
             try
             {
@@ -299,20 +299,20 @@ namespace Greatbone.Core
                 string ctyp = rsp.Content.Headers.GetValue("Content-Type");
                 if (ctyp == null)
                 {
-                    return new Dual<int, M>((int) rsp.StatusCode, null);
+                    return new Duo<int, M>((int) rsp.StatusCode, null);
                 }
                 else
                 {
                     byte[] bytes = await rsp.Content.ReadAsByteArrayAsync();
                     M inp = ParseContent(ctyp, bytes, bytes.Length, typeof(M)) as M;
-                    return new Dual<int, M>((int) rsp.StatusCode, inp);
+                    return new Duo<int, M>((int) rsp.StatusCode, inp);
                 }
             }
             catch (Exception e)
             {
                 retryat = Environment.TickCount + AHEAD;
             }
-            return default(Dual<int, M>);
+            return default(Duo<int, M>);
         }
     }
 }
