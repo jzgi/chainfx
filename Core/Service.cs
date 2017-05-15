@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.Data;
 using System.IO;
@@ -35,14 +36,17 @@ namespace Greatbone.Core
         // client connectivity to the related peers
         readonly Roll<Client> clients;
 
-        // event providing
+        // event queues
         readonly Roll<EventQueue> queues;
 
-        readonly ActionCache cache;
-
+        // event schesuler thread
         Thread scheduler;
 
-        Thread cleaner;
+        // cache entries
+        readonly ConcurrentDictionary<string, Cachie> cachies;
+
+        // cache cleaner thread
+        readonly Thread cleaner;
 
         protected Service(ServiceContext sc) : base(sc)
         {
@@ -51,7 +55,7 @@ namespace Greatbone.Core
 
             id = (Shard == null) ? sc.Name : sc.Name + "-" + Shard;
 
-            // setup logging 
+            // setup logging
             LoggerFactory factory = new LoggerFactory();
             factory.AddProvider(this);
             string file = sc.GetFilePath('$' + DateTime.Now.ToString("yyyyMM") + ".log");
@@ -121,7 +125,8 @@ namespace Greatbone.Core
             }
 
             // response cache
-            cache = new ActionCache(Environment.ProcessorCount * 2, 4096);
+            cleaner = new Thread(Clean);
+            cachies = new ConcurrentDictionary<string, Cachie>(Environment.ProcessorCount * 2, 1024);
         }
 
         public string Describe()
@@ -139,8 +144,6 @@ namespace Greatbone.Core
         public Roll<Client> Clients => clients;
 
         public Roll<EventInfo> Events => events;
-
-        internal ActionCache Cache => cache;
 
         public string Shard => sc.shard;
 
@@ -161,15 +164,16 @@ namespace Greatbone.Core
         {
         }
 
-        /// 
+        ///
         /// To asynchronously process the request.
-        /// 
+        ///
         public virtual async Task ProcessRequestAsync(HttpContext context)
         {
             ActionContext ac = (ActionContext) context;
             HttpRequest req = ac.Request;
             string path = req.Path.Value;
 
+            // handling
             try
             {
                 if ("/*".Equals(path)) // handle an event poll request
@@ -194,12 +198,11 @@ namespace Greatbone.Core
                 else if (this is ICatch) ((ICatch) this).Catch(e, ac);
                 else
                 {
-                    ERR(e.Message, e);
+                    WAR(e.Message, e);
                     ac.Give(500, e.Message);
                 }
             }
-
-            // prepare and send
+            // sending
             try
             {
                 await ac.SendAsync();
@@ -211,9 +214,9 @@ namespace Greatbone.Core
             }
         }
 
-        ///  
+        ///
         /// Returns a framework custom context.
-        /// 
+        ///
         public HttpContext CreateContext(IFeatureCollection features)
         {
             return new ActionContext(features)
@@ -285,8 +288,47 @@ namespace Greatbone.Core
         }
 
         //
-        // CLUSTER
+        // CACHE
+
+        internal void Clean()
+        {
+            while (!stop)
+            {
+                Thread.Sleep(1000 * 12);
+
+                int now = Environment.TickCount;
+
+                // a single loop to clean up expired items
+                using (var enm = cachies.GetEnumerator())
+                {
+                    while (enm.MoveNext())
+                    {
+                        Cachie ca = enm.Current.Value;
+                        ca.CheckReset(now);
+                    }
+                }
+            }
+        }
+
+        public void AddCachie(ActionContext ac)
+        {
+            Cachie ca = new Cachie(ac.Status, ac.Content, ac.MaxAge, Environment.TickCount);
+            cachies.AddOrUpdate(ac.Uri, ca, (k, old) => ca.MergeWith(old));
+        }
+
+        public bool TryGiveFromCache(ActionContext ac)
+        {
+            string target = ac.Uri;
+            Cachie ca;
+            if (cachies.TryGetValue(target, out ca))
+            {
+                return ca.TryGive(ac, Environment.TickCount);
+            }
+            return false;
+        }
+
         //
+        // CLUSTER
 
         internal Client GetClient(string targetid)
         {
@@ -320,17 +362,7 @@ namespace Greatbone.Core
 
             DBG(Name + " -> " + Addrs[0] + " started");
 
-            // Run in the cleaner thread to repeatedly check and relinguish cache entries.
-            cleaner = new Thread(() =>
-            {
-                while (!stop)
-                {
-                    Thread.Sleep(1000);
-
-                    int now = Environment.TickCount;
-                }
-            });
-            // cleaner.Start();
+            cleaner.Start();
 
             if (clients != null)
             {
@@ -460,9 +492,9 @@ namespace Greatbone.Core
 
         public Auth Auth => sc.auth;
 
-        /// 
+        ///
         /// To asynchronously process the request with authentication support.
-        /// 
+        ///
         public override async Task ProcessRequestAsync(HttpContext context)
         {
             ActionContext ac = (ActionContext) context;
@@ -556,7 +588,7 @@ namespace Greatbone.Core
 
             int mask = Auth.mask;
             int[] masks = {(mask >> 24) & 0xff, (mask >> 16) & 0xff, (mask >> 8) & 0xff, mask & 0xff};
-            char[] charbuf = new char[count * 2]; // the target 
+            char[] charbuf = new char[count * 2]; // the target
             int p = 0;
             for (int i = 0; i < count; i++)
             {

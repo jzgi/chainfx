@@ -314,8 +314,10 @@ namespace Greatbone.Core
             if (dot != -1) // file
             {
                 // try in cache 
-
-                DoFile(rsc, rsc.Substring(dot), ac);
+                if (!Service.TryGiveFromCache(ac))
+                {
+                    DoFile(rsc, rsc.Substring(dot), ac);
+                }
             }
             else // action
             {
@@ -340,12 +342,7 @@ namespace Greatbone.Core
                 if (!ai.DoAuthorize(ac)) throw AuthorizeEx;
 
                 // try in cache
-                IContent cont;
-                if (Service.Cache.TryGetContent(ac.Uri, out cont))
-                {
-                    ac.Content = cont;
-                }
-                else
+                if (!Service.TryGiveFromCache(ac))
                 {
                     ai.Before?.Do(ac);
                     if (ai.BeforeAsync != null) await ai.BeforeAsync.DoAsync(ac);

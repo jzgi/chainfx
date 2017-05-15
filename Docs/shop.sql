@@ -11,7 +11,7 @@ Target Server Type    : PGSQL
 Target Server Version : 90505
 File Encoding         : 65001
 
-Date: 2017-05-12 00:32:39
+Date: 2017-05-15 00:08:37
 */
 
 
@@ -34,9 +34,9 @@ CREATE SEQUENCE "public"."orders_id_seq"
  INCREMENT 1
  MINVALUE 1000
  MAXVALUE 9223372036854775807
- START 1064
+ START 1096
  CACHE 8;
-SELECT setval('"public"."orders_id_seq"', 1064, true);
+SELECT setval('"public"."orders_id_seq"', 1096, true);
 
 -- ----------------------------
 -- Table structure for evtq
@@ -161,12 +161,10 @@ CREATE TABLE "public"."shops" (
 "y" float8,
 "lic" varchar(20) COLLATE "default",
 "created" timestamp(6),
-"orders" int4,
 "status" int2,
 "icon" bytea,
 "mgrid" varchar(11) COLLATE "default",
-"mgrwx" varchar(28) COLLATE "default",
-"credential" varchar(32) COLLATE "default"
+"mgrwx" varchar(28) COLLATE "default"
 )
 WITH (OIDS=FALSE)
 
@@ -178,7 +176,7 @@ WITH (OIDS=FALSE)
 DROP TABLE IF EXISTS "public"."users";
 CREATE TABLE "public"."users" (
 "wx" varchar(28) COLLATE "default" NOT NULL,
-"name" varchar(10) COLLATE "default",
+"nickname" varchar(10) COLLATE "default",
 "credential" varchar(32) COLLATE "default",
 "tel" varchar(11) COLLATE "default",
 "city" varchar(4) COLLATE "default",
@@ -189,7 +187,8 @@ CREATE TABLE "public"."users" (
 "sprat" varchar(4) COLLATE "default",
 "adm" bool DEFAULT false,
 "id" varchar(11) COLLATE "default",
-"opr" int2
+"opr" int2,
+"name" varchar(4) COLLATE "default"
 )
 WITH (OIDS=FALSE)
 

@@ -310,7 +310,7 @@ namespace Greatbone.Core
             Response.Headers.Add(name, new StringValues(v));
         }
 
-        public void SetHeaderNon(string name, string v)
+        public void SetHeaderAbsent(string name, string v)
         {
             StringValues strvs;
             IHeaderDictionary headers = Response.Headers;
@@ -336,6 +336,8 @@ namespace Greatbone.Core
             ((Service<P>) Service).SetTokenCookie(this, prin, proj);
         }
 
+        public bool Cached { get; internal set; }
+
         public int Status
         {
             get => Response.StatusCode;
@@ -345,7 +347,7 @@ namespace Greatbone.Core
         public IContent Content { get; internal set; }
 
         // public, no-cache or private
-        public bool? Pub { get; internal set; }
+        public bool? Public { get; internal set; }
 
         /// the cached response is to be considered stale after its age is greater than the specified number of seconds.
         public int MaxAge { get; internal set; }
@@ -354,7 +356,7 @@ namespace Greatbone.Core
         {
             Status = status;
             Content = content;
-            Pub = pub;
+            Public = pub;
             MaxAge = maxage;
         }
 
@@ -362,7 +364,7 @@ namespace Greatbone.Core
         {
             Status = status;
             Content = inp.Dump();
-            Pub = pub;
+            Public = pub;
             MaxAge = maxage;
         }
 
@@ -374,7 +376,7 @@ namespace Greatbone.Core
             // set response states
             Status = status;
             Content = cont;
-            Pub = pub;
+            Public = pub;
             MaxAge = maxage;
         }
 
@@ -383,7 +385,7 @@ namespace Greatbone.Core
             JsonContent cont = new JsonContent().Put(null, obj, proj);
             Status = status;
             Content = cont;
-            Pub = pub;
+            Public = pub;
             MaxAge = maxage;
         }
 
@@ -392,18 +394,18 @@ namespace Greatbone.Core
             JsonContent cont = new JsonContent().Put(null, arr, proj);
             Status = status;
             Content = cont;
-            Pub = pub;
+            Public = pub;
             MaxAge = maxage;
         }
 
         internal async Task SendAsync()
         {
             // set connection header if absent
-            SetHeaderNon("Connection", "keep-alive");
+            SetHeaderAbsent("Connection", "keep-alive");
 
-            if (Pub.HasValue)
+            if (Public.HasValue)
             {
-                string hv = (Pub.Value ? "public" : "private") + ", max-age=" + MaxAge;
+                string hv = (Public.Value ? "public" : "private") + ", max-age=" + MaxAge;
                 SetHeader("Cache-Control", hv);
             }
 
@@ -413,17 +415,21 @@ namespace Greatbone.Core
                 HttpResponse r = Response;
                 r.ContentLength = Content.Size;
                 r.ContentType = Content.Type;
-                if (Content.GZip)
-                {
-                    SetHeader("Content-Encoding", "gzip");
-                }
 
-                // cache indicators
-                var dyna = Content as DynamicContent;
-                if (dyna != null) // set etag
+                // content-related headers
+
+                var dyn = Content as DynamicContent;
+                if (dyn != null) // set etag
                 {
-                    ulong etag = dyna.ETag;
+                    ulong etag = dyn.ETag;
                     SetHeader("ETag", StrUtility.ToHex(etag));
+                }
+                else
+                {
+                    if (((StaticContent) Content).GZip)
+                    {
+                        SetHeader("Content-Encoding", "gzip");
+                    }
                 }
 
                 // set last-modified
@@ -439,24 +445,7 @@ namespace Greatbone.Core
         }
 
         //
-        // RPC
         //
-
-
-        internal bool Cacheable
-        {
-            get
-            {
-                int sc = Response.StatusCode;
-                if (GET && Pub == true)
-                {
-                    return sc == 200 || sc == 203 || sc == 204 || sc == 206 || sc == 300 || sc == 301 || sc == 404 ||
-                           sc == 405 || sc == 410 || sc == 414 || sc == 501;
-                }
-                return false;
-            }
-        }
-
 
         public void Dispose()
         {
@@ -466,11 +455,20 @@ namespace Greatbone.Core
                 BufferUtility.Return(buffer);
             }
 
-            // response content buffer
-            IContent cont = Content;
-            if (cont != null && cont.Poolable)
+            // response content caching or pool returning
+
+            if (!Cached && Public == true)
             {
-                BufferUtility.Return(cont.ByteBuffer);
+                Service.AddCachie(this);
+            }
+            else
+            {
+                IContent cont = Content;
+
+                if (cont != null && cont.Poolable)
+                {
+                    BufferUtility.Return(cont.ByteBuffer);
+                }
             }
         }
 
