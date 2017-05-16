@@ -111,11 +111,9 @@ namespace Greatbone.Core
 
         public int Size => count;
 
-        public DateTime? Modified { get; set; } = null;
-
         public bool Poolable => pooled;
 
-        public ulong ETag => checksum;
+        public ulong Checksum => checksum;
 
         void AddByte(byte b)
         {

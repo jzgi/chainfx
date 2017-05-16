@@ -1,6 +1,4 @@
-﻿using System;
-
-namespace Greatbone.Core
+﻿namespace Greatbone.Core
 {
     public interface IContent
     {
@@ -33,10 +31,5 @@ namespace Greatbone.Core
         /// This is either the count or length of the content.
         ///
         int Size { get; }
-
-        ///
-        /// If any, the last modified time.
-        ///
-        DateTime? Modified { get; }
     }
 }

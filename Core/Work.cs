@@ -393,12 +393,6 @@ namespace Greatbone.Core
             }
 
             DateTime modified = File.GetLastWriteTime(path);
-            DateTime? since = ac.HeaderDateTime("If-Modified-Since");
-            if (since != null && modified <= since)
-            {
-                ac.Give(304); // not modified
-                return;
-            }
 
             // load file content
             byte[] bytes;

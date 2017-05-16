@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Data;
+using System.Diagnostics;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Http.Features;
@@ -89,9 +90,13 @@ namespace Greatbone.Core
 
         public bool POST => "POST".Equals(Request.Method);
 
+        string path;
+
+        public string Path => path ?? (path = Features.Get<IHttpRequestFeature>().Path);
+
         string uri;
 
-        public string Uri => uri ?? (uri = Features.Get<IHttpRequestFeature>().RawTarget);
+        public string Uri => uri ?? (uri = string.IsNullOrEmpty(QueryString) ? Path : Path + QueryString);
 
         string url;
 
@@ -403,44 +408,57 @@ namespace Greatbone.Core
             // set connection header if absent
             SetHeaderAbsent("Connection", "keep-alive");
 
+            // cache control header
             if (Public.HasValue)
             {
                 string hv = (Public.Value ? "public" : "private") + ", max-age=" + MaxAge;
                 SetHeader("Cache-Control", hv);
             }
 
-            // setup appropriate headers
+            // content check
             if (Content != null)
             {
-                HttpResponse r = Response;
-                r.ContentLength = Content.Size;
-                r.ContentType = Content.Type;
-
-                // content-related headers
-
                 var dyn = Content as DynamicContent;
-                if (dyn != null) // set etag
+                if (dyn != null) // dynamic content
                 {
-                    ulong etag = dyn.ETag;
-                    SetHeader("ETag", StrUtility.ToHex(etag));
+                    // set etag
+                    string etag = StrUtility.ToHex(dyn.Checksum);
+                    string inm = Header("If-None-Match");
+                    if (inm != null && inm == etag)
+                    {
+                        Status = 304; // not modified
+                        return;
+                    }
+
+                    SetHeader("ETag", etag);
                 }
-                else
+                else // static content
                 {
-                    if (((StaticContent) Content).GZip)
+                    var sta = Content as StaticContent;
+                    DateTime? since = HeaderDateTime("If-Modified-Since");
+                    Debug.Assert(sta != null);
+                    if (since != null && sta.Modified <= since)
+                    {
+                        Status = 304; // not modified
+                        return;
+                    }
+
+                    DateTime? last = sta.Modified;
+                    if (last != null)
+                    {
+                        SetHeader("Last-Modified", StrUtility.FormatUtcDate(last.Value));
+                    }
+
+                    if (sta.GZip)
                     {
                         SetHeader("Content-Encoding", "gzip");
                     }
                 }
 
-                // set last-modified
-                DateTime? last = Content.Modified;
-                if (last != null)
-                {
-                    SetHeader("Last-Modified", StrUtility.FormatUtcDate(last.Value));
-                }
-
-                // send async
-                await r.Body.WriteAsync(Content.ByteBuffer, 0, Content.Size);
+                // send out the content async
+                Response.ContentLength = Content.Size;
+                Response.ContentType = Content.Type;
+                await Response.Body.WriteAsync(Content.ByteBuffer, 0, Content.Size);
             }
         }
 
