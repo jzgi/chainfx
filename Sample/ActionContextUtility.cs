@@ -115,7 +115,7 @@ namespace Greatbone.Sample
         ///
         public static void GivePage(this ActionContext ac, int status, Action<HtmlContent> main, bool? pub = null, int maxage = 60)
         {
-            HtmlContent h = new HtmlContent(true, true, 32 * 1024);
+            HtmlContent h = new HtmlContent(true, true, 16 * 1024);
 
             h.Add("<!DOCTYPE html>");
             h.Add("<html>");

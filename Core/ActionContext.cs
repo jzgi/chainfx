@@ -477,10 +477,14 @@ namespace Greatbone.Core
 
             // response content caching and pool returning
 
+            if (!InCache && Public == true)
+            {
+                Service.AddCachie(this);
+                InCache = true;
+            }
+
             if (!InCache)
             {
-                if (Public == true) Service.AddCachie(this);
-
                 var dcont = Content as DynamicContent;
                 if (dcont != null)
                 {
