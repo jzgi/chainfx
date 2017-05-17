@@ -217,9 +217,9 @@ namespace Greatbone.Core
             throw new NotImplementedException();
         }
 
-        public IContent Dump()
+        public DynamicContent Dump()
         {
-            var cont = new FormContent(true, true);
+            var cont = new FormContent(true);
             cont.Put(null, this);
             return cont;
         }

@@ -52,7 +52,7 @@ namespace Greatbone.Core
         ///
         /// Dump as sendable content.
         ///
-        IContent Dump();
+        DynamicContent Dump();
 
         ///
         /// If this includes multiple data entries.

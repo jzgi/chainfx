@@ -8,16 +8,6 @@
         string Type { get; }
 
         ///
-        /// If the content is in binary form hence able to send asynchronously.
-        ///
-        bool Octal { get; }
-
-        ///
-        /// Can the content buffer be rented from pool so as to returned back lately.
-        ///
-        bool Poolable { get; }
-
-        /// 
         /// The byte buffer that contains binary content. Can be null.
         ///
         byte[] ByteBuffer { get; }

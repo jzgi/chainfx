@@ -338,11 +338,9 @@ namespace Greatbone.Core
             }
         }
 
-        public IContent Dump()
+        public DynamicContent Dump()
         {
-            var cont = new JsonContent(true, true);
-            cont.Put(null, this);
-            return cont;
+            return new JsonContent(true).Put(null, this);
         }
 
         public bool DataSet => false;
@@ -354,7 +352,7 @@ namespace Greatbone.Core
 
         public override string ToString()
         {
-            JsonContent cont = new JsonContent(false, true, 4 * 1024);
+            JsonContent cont = new JsonContent(false, 4 * 1024);
             cont.Put(null, this);
             string str = cont.ToString();
             BufferUtility.Return(cont);

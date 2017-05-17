@@ -3,7 +3,6 @@ using System.Collections.Generic;
 using System.Data;
 using System.Threading.Tasks;
 using Npgsql;
-using NpgsqlTypes;
 
 namespace Greatbone.Core
 {
@@ -473,23 +472,6 @@ namespace Greatbone.Core
             return false;
         }
 
-        public bool Get(string name, ref NpgsqlPoint v)
-        {
-            try
-            {
-                int ord = name == null ? ordinal++ : reader.GetOrdinal(name);
-                if (!reader.IsDBNull(ord))
-                {
-                    v = reader.GetFieldValue<NpgsqlPoint>(ord);
-                    return true;
-                }
-            }
-            catch
-            {
-            }
-            return false;
-        }
-
         public bool Get(string name, ref string v)
         {
             try
@@ -507,6 +489,29 @@ namespace Greatbone.Core
             return false;
         }
 
+        public bool Get(string name, ref byte[] v)
+        {
+            try
+            {
+                int ord = name == null ? ordinal++ : reader.GetOrdinal(name);
+                if (!reader.IsDBNull(ord))
+                {
+                    int len;
+                    if ((len = (int) reader.GetBytes(ord, 0, null, 0, 0)) > 0)
+                    {
+                        v = new byte[len];
+                        reader.GetBytes(ord, 0, v, 0, len); // read data into the buffer
+                        return true;
+                    }
+                }
+            }
+            catch
+            {
+            }
+
+            return false;
+        }
+
         public bool Get(string name, ref ArraySegment<byte> v)
         {
             try
@@ -517,7 +522,7 @@ namespace Greatbone.Core
                     int len;
                     if ((len = (int) reader.GetBytes(ord, 0, null, 0, 0)) > 0)
                     {
-                        byte[] buf = BufferUtility.ByteBuffer(len);
+                        byte[] buf = new byte[len];
                         reader.GetBytes(ord, 0, buf, 0, len); // read data into the buffer
                         v = new ArraySegment<byte>(buf, 0, len);
                         return true;
@@ -717,21 +722,21 @@ namespace Greatbone.Core
 
         public void Publish(string name, string shard, int arg, IDataInput inp)
         {
-            IContent cont = inp.Dump();
-            Publish(name, shard, arg, cont);
-            BufferUtility.Return(cont); // back to pool
+            DynamicContent dcont = inp.Dump();
+            Publish(name, shard, arg, dcont);
+            BufferUtility.Return(dcont); // back to pool
         }
 
         public void Publish(string name, string shard, int arg, IData obj, short proj = 0)
         {
-            JsonContent cont = new JsonContent(true, true).Put(null, obj, proj);
+            JsonContent cont = new JsonContent(true).Put(null, obj, proj);
             Publish(name, shard, arg, cont);
             BufferUtility.Return(cont); // back to pool
         }
 
         public void Publish<D>(string name, string shard, int arg, D[] arr, short proj = 0) where D : IData
         {
-            JsonContent cont = new JsonContent(true, true).Put(null, arr, proj);
+            JsonContent cont = new JsonContent(true).Put(null, arr, proj);
             Publish(name, shard, arg, cont);
             BufferUtility.Return(cont); // back to pool
         }
@@ -774,11 +779,9 @@ namespace Greatbone.Core
             }
         }
 
-        public IContent Dump()
+        public DynamicContent Dump()
         {
-            var cont = new JsonContent(true, true);
-            cont.Put(null, this);
-            return cont;
+            return new JsonContent(true).Put(null, this);
         }
 
         public void Dispose()

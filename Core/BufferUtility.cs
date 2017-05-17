@@ -105,17 +105,15 @@ namespace Greatbone.Core
             }
         }
 
-        public static bool Return(IContent content)
+        public static bool Return(DynamicContent dcont)
         {
-            if (!content.Poolable) return false;
-
-            if (content.Octal) // is a byte buffer
+            if (dcont.Octet) // is a byte buffer
             {
-                Return(content.ByteBuffer);
+                Return(dcont.ByteBuffer);
             }
             else
             {
-                Return(content.CharBuffer);
+                Return(dcont.CharBuffer);
             }
             return true;
         }

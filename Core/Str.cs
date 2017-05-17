@@ -182,7 +182,7 @@ namespace Greatbone.Core
         {
         }
 
-        public IContent Dump()
+        public DynamicContent Dump()
         {
             var cont = new StrContent(true, true);
             cont.Add(charbuf, 0, count);

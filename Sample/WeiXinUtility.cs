@@ -58,7 +58,7 @@ namespace Greatbone.Sample
             };
             X509Certificate2 cert = new X509Certificate2(p12file, MCH_ID, X509KeyStorageFlags.MachineKeySet);
             handler.ClientCertificates.Add(cert);
-            var myClient = new System.Net.Http.HttpClient(handler);
+            var myClient = new HttpClient(handler);
 
             WweiXinPaySecure = new Client(handler)
             {
@@ -170,7 +170,7 @@ namespace Greatbone.Sample
                        "&timeStamp=" + timeStamp +
                        "&key=" + KEY;
 
-            JsonContent cont = new JsonContent();
+            JsonContent cont = new JsonContent(true);
             cont.OBJ(delegate
             {
                 cont.Put("appId", APPID);

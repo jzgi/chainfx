@@ -1524,20 +1524,18 @@ namespace Greatbone.Core
             }
         };
 
-        readonly bool pooled;
-
         readonly byte[] buffer;
 
         readonly int size;
 
-
-        public StaticContent(ArraySegment<byte> byteas) : this(true, byteas.Array, byteas.Count)
+        public StaticContent(ArraySegment<byte> bytea)
         {
+            this.buffer = bytea.Array;
+            this.size = bytea.Count;
         }
 
-        public StaticContent(bool pooled, byte[] buffer, int size)
+        public StaticContent(byte[] buffer, int size)
         {
-            this.pooled = pooled;
             this.buffer = buffer;
             this.size = size;
         }
@@ -1545,10 +1543,6 @@ namespace Greatbone.Core
         public string Name { get; set; }
 
         public string Type { get; set; }
-
-        public bool Octal => true;
-
-        public bool Poolable => pooled;
 
         public byte[] ByteBuffer => buffer;
 

@@ -14,11 +14,7 @@ namespace Greatbone.Core
         // current level
         int level;
 
-        public JsonContent() : this(true, true)
-        {
-        }
-
-        public JsonContent(bool octal, bool pooled, int capacity = 8 * 1024) : base(octal, pooled, capacity)
+        public JsonContent(bool octet, int capacity = 8 * 1024) : base(octet, capacity)
         {
             counts = new int[8];
             level = 0;

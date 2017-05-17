@@ -581,7 +581,7 @@ namespace Greatbone.Core
         {
             if (Auth == null) return null;
 
-            JsonContent cont = new JsonContent(true, true, 4096); // borrow
+            JsonContent cont = new JsonContent(true, 4096); // borrow
             cont.Put(null, prin, proj);
             byte[] bytebuf = cont.ByteBuffer;
             int count = cont.Size;

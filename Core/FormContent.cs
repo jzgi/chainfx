@@ -16,7 +16,7 @@ namespace Greatbone.Core
 
         int ordinal = -1;
 
-        public FormContent(bool octal, bool pooled, int capacity = 4092) : base(octal, pooled, capacity)
+        public FormContent(bool octet, int capacity = 4092) : base(octet, capacity)
         {
         }
 

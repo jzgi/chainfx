@@ -215,7 +215,7 @@ namespace Greatbone.Core
                 if (clen > 0)
                 {
                     // reading
-                    int len = (int) clen;
+                    int len = (int)clen;
                     buffer = BufferUtility.ByteBuffer(len); // borrow from the pool
                     while ((count += await Request.Body.ReadAsync(buffer, count, (len - count))) < len)
                     {
@@ -234,7 +234,7 @@ namespace Greatbone.Core
                 int? clen = HeaderInt("Content-Length");
                 if (clen > 0)
                 {
-                    int len = (int) clen;
+                    int len = (int)clen;
                     buffer = BufferUtility.ByteBuffer(len); // borrow from the pool
                     while ((count += await Request.Body.ReadAsync(buffer, count, (len - count))) < len)
                     {
@@ -256,7 +256,7 @@ namespace Greatbone.Core
                 int? clen = HeaderInt("Content-Length");
                 if (clen > 0)
                 {
-                    int len = (int) clen;
+                    int len = (int)clen;
                     buffer = BufferUtility.ByteBuffer(len); // borrow from the pool
                     while ((count += await Request.Body.ReadAsync(buffer, count, (len - count))) < len)
                     {
@@ -283,7 +283,7 @@ namespace Greatbone.Core
                 int? clen = HeaderInt("Content-Length");
                 if (clen > 0)
                 {
-                    int len = (int) clen;
+                    int len = (int)clen;
                     buffer = BufferUtility.ByteBuffer(len); // borrow from the pool
                     while ((count += await Request.Body.ReadAsync(buffer, count, (len - count))) < len)
                     {
@@ -338,10 +338,10 @@ namespace Greatbone.Core
 
         public void SetTokenCookie<P>(P prin, short proj) where P : class, IData, new()
         {
-            ((Service<P>) Service).SetTokenCookie(this, prin, proj);
+            ((Service<P>)Service).SetTokenCookie(this, prin, proj);
         }
 
-        public bool Cached { get; internal set; }
+        public bool InCache { get; internal set; }
 
         public int Status
         {
@@ -387,7 +387,7 @@ namespace Greatbone.Core
 
         public void Give(int status, IData obj, short proj = 0, bool? pub = null, int maxage = 60)
         {
-            JsonContent cont = new JsonContent().Put(null, obj, proj);
+            JsonContent cont = new JsonContent(true).Put(null, obj, proj);
             Status = status;
             Content = cont;
             Public = pub;
@@ -396,7 +396,7 @@ namespace Greatbone.Core
 
         public void Give<D>(int status, D[] arr, short proj = 0, bool? pub = null, int maxage = 60) where D : IData
         {
-            JsonContent cont = new JsonContent().Put(null, arr, proj);
+            JsonContent cont = new JsonContent(true).Put(null, arr, proj);
             Status = status;
             Content = cont;
             Public = pub;
@@ -429,8 +429,10 @@ namespace Greatbone.Core
                         Status = 304; // not modified
                         return;
                     }
-
-                    SetHeader("ETag", etag);
+                    else
+                    {
+                        SetHeader("ETag", etag);
+                    }
                 }
                 else // static content
                 {
@@ -473,19 +475,16 @@ namespace Greatbone.Core
                 BufferUtility.Return(buffer);
             }
 
-            // response content caching or pool returning
+            // response content caching and pool returning
 
-            if (!Cached && Public == true)
+            if (!InCache)
             {
-                Service.AddCachie(this);
-            }
-            else
-            {
-                IContent cont = Content;
+                if (Public == true) Service.AddCachie(this);
 
-                if (cont != null && cont.Poolable)
+                var dcont = Content as DynamicContent;
+                if (dcont != null)
                 {
-                    BufferUtility.Return(cont.ByteBuffer);
+                    BufferUtility.Return(dcont.ByteBuffer);
                 }
             }
         }

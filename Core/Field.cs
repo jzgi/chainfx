@@ -167,17 +167,6 @@ namespace Greatbone.Core
             return default(DateTime);
         }
 
-        public static implicit operator NpgsqlPoint(Field v)
-        {
-            return default(NpgsqlPoint);
-        }
-
-        public static implicit operator char[] (Field v)
-        {
-            string str = v.First;
-            return str?.ToCharArray();
-        }
-
         public static implicit operator string(Field v)
         {
             return v.First;

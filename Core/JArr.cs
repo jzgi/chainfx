@@ -205,9 +205,9 @@ namespace Greatbone.Core
             }
         }
 
-        public IContent Dump()
+        public DynamicContent Dump()
         {
-            var cont = new JsonContent(true, true);
+            var cont = new JsonContent(true);
             cont.Put(null, this);
             return cont;
         }
@@ -221,7 +221,7 @@ namespace Greatbone.Core
 
         public override string ToString()
         {
-            JsonContent cont = new JsonContent(false, true);
+            JsonContent cont = new JsonContent(false);
             cont.Put(null, this);
             string str = cont.ToString();
             BufferUtility.Return(cont);

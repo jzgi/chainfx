@@ -84,7 +84,7 @@ namespace Greatbone.Core
 
         public static string ToString<D>(D v, short proj = 0) where D : IData
         {
-            JsonContent cont = new JsonContent(false, true, 4 * 1024);
+            JsonContent cont = new JsonContent(false, 4 * 1024);
             cont.Put(null, v, proj);
             string str = cont.ToString();
             BufferUtility.Return(cont); // return buffer to pool
@@ -93,7 +93,7 @@ namespace Greatbone.Core
 
         public static string ToString<D>(D[] v, short proj = 0) where D : IData
         {
-            JsonContent cont = new JsonContent(false, true, 4 * 1024);
+            JsonContent cont = new JsonContent(false, 4 * 1024);
             cont.Put(null, v, proj);
             string str = cont.ToString();
             BufferUtility.Return(cont); // return buffer to pool

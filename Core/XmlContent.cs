@@ -8,11 +8,11 @@ namespace Greatbone.Core
     /// 
     public class XmlContent : DynamicContent, IDataOutput<XmlContent>
     {
-        public XmlContent() : base(true, true, 4096)
+        public XmlContent() : base(true, 4096)
         {
         }
 
-        public XmlContent(bool octal, bool pooled, int capacity = 4096) : base(octal, pooled, capacity)
+        public XmlContent(bool octet, bool pooled, int capacity = 4096) : base(octet, capacity)
         {
         }
 

@@ -15,7 +15,7 @@ namespace Greatbone.Core
 
         readonly string boundary;
 
-        public FormMpContent(bool pooled, string boundary = "~7^E!3#A&W", int capacity = 1024 * 256) : base(true, pooled, capacity)
+        public FormMpContent(bool pooled, string boundary = "~7^E!3#A&W", int capacity = 1024 * 256) : base(true, capacity)
         {
             this.boundary = boundary;
         }

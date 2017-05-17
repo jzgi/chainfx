@@ -417,7 +417,7 @@ namespace Greatbone.Core
                 }
             }
 
-            StaticContent cont = new StaticContent(true, bytes, bytes.Length)
+            StaticContent cont = new StaticContent(bytes, bytes.Length)
             {
                 Name = filename,
                 Type = ctyp,

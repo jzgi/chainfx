@@ -36,7 +36,7 @@ namespace Greatbone.Sample
             {
                 if (dc.Query1("SELECT icon FROM items WHERE shopid = @1 AND name = @2", p => p.Set(shopid).Set(name)))
                 {
-                    var byteas = dc.GetByteAs();
+                    var byteas = dc.GetByteAS();
                     if (byteas.Count == 0) ac.Give(204); // no content 
                     else
                     {
@@ -119,7 +119,7 @@ namespace Greatbone.Sample
                 {
                     if (dc.Query1("SELECT icon FROM items WHERE shopid = @1 AND name = @2", p => p.Set(shopid).Set(name)))
                     {
-                        var byteas = dc.GetByteAs();
+                        var byteas = dc.GetByteAS();
                         if (byteas.Count == 0) ac.Give(204); // no content 
                         else
                         {

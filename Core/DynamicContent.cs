@@ -75,8 +75,6 @@ namespace Greatbone.Core
             1000000000000000000L
         };
 
-        readonly bool pooled;
-
         protected byte[] bytebuf; // NOTE: HttpResponseStream doesn't have internal buffer
 
         protected char[] charbuf;
@@ -87,31 +85,28 @@ namespace Greatbone.Core
         // byte-wise etag checksum, for text-based output only
         protected ulong checksum;
 
-        protected DynamicContent(bool octal, bool pooled, int capacity)
+        protected DynamicContent(bool octet, int capacity)
         {
-            this.pooled = pooled;
-            if (octal)
+            if (octet)
             {
-                bytebuf = pooled ? BufferUtility.ByteBuffer(capacity) : new byte[capacity];
+                bytebuf = BufferUtility.ByteBuffer(capacity);
             }
             else
             {
-                charbuf = pooled ? BufferUtility.CharBuffer(capacity) : new char[capacity];
+                charbuf = BufferUtility.CharBuffer(capacity);
             }
             count = 0;
         }
 
         public abstract string Type { get; }
 
-        public bool Octal => bytebuf != null;
+        public bool Octet => bytebuf != null;
 
         public byte[] ByteBuffer => bytebuf;
 
         public char[] CharBuffer => charbuf;
 
         public int Size => count;
-
-        public bool Poolable => pooled;
 
         public ulong Checksum => checksum;
 
@@ -123,9 +118,9 @@ namespace Greatbone.Core
             {
                 int nlen = olen * 4; // new length
                 byte[] obuf = bytebuf;
-                bytebuf = (pooled) ? BufferUtility.ByteBuffer(nlen) : new byte[nlen];
+                bytebuf = BufferUtility.ByteBuffer(nlen);
                 Array.Copy(obuf, 0, bytebuf, 0, olen);
-                if (pooled) BufferUtility.Return(obuf);
+                BufferUtility.Return(obuf);
             }
             bytebuf[count++] = b;
 
@@ -137,26 +132,26 @@ namespace Greatbone.Core
 
         public void Add(char c)
         {
-            if (Octal) // byte-oriented
+            if (Octet) // byte-oriented
             {
                 // UTF-8 encoding but without surrogate support
                 if (c < 0x80)
                 {
                     // have at most seven bits
-                    AddByte((byte) c);
+                    AddByte((byte)c);
                 }
                 else if (c < 0x800)
                 {
                     // 2 char, 11 bits
-                    AddByte((byte) (0xc0 | (c >> 6)));
-                    AddByte((byte) (0x80 | (c & 0x3f)));
+                    AddByte((byte)(0xc0 | (c >> 6)));
+                    AddByte((byte)(0x80 | (c & 0x3f)));
                 }
                 else
                 {
                     // 3 char, 16 bits
-                    AddByte((byte) (0xe0 | ((c >> 12))));
-                    AddByte((byte) (0x80 | ((c >> 6) & 0x3f)));
-                    AddByte((byte) (0x80 | (c & 0x3f)));
+                    AddByte((byte)(0xe0 | ((c >> 12))));
+                    AddByte((byte)(0x80 | ((c >> 6) & 0x3f)));
+                    AddByte((byte)(0x80 | (c & 0x3f)));
                 }
             }
             else // char-oriented
@@ -167,9 +162,9 @@ namespace Greatbone.Core
                 {
                     int nlen = olen * 4; // new length
                     char[] obuf = charbuf;
-                    charbuf = (pooled) ? BufferUtility.CharBuffer(nlen) : new char[nlen];
+                    charbuf = BufferUtility.CharBuffer(nlen);
                     Array.Copy(obuf, 0, charbuf, 0, olen);
-                    if (pooled) BufferUtility.Return(obuf);
+                    BufferUtility.Return(obuf);
                 }
                 charbuf[count++] = c;
             }
@@ -229,7 +224,7 @@ namespace Greatbone.Core
         {
             if (v == 0)
             {
-                AddByte((byte) '0');
+                AddByte((byte)'0');
                 return;
             }
             int x = v; // convert to int
@@ -257,7 +252,7 @@ namespace Greatbone.Core
         {
             if (v >= short.MinValue && v <= short.MaxValue)
             {
-                Add((short) v);
+                Add((short)v);
                 return;
             }
 
@@ -285,7 +280,7 @@ namespace Greatbone.Core
         {
             if (v >= int.MinValue && v <= int.MaxValue)
             {
-                Add((int) v);
+                Add((int)v);
                 return;
             }
 
@@ -316,7 +311,7 @@ namespace Greatbone.Core
         }
 
         // sign mask
-        const int Sign = unchecked((int) 0x80000000);
+        const int Sign = unchecked((int)0x80000000);
 
         ///
         /// This method outputs decimal numbers fastly.
@@ -341,7 +336,7 @@ namespace Greatbone.Core
 
             if (mid != 0) // if 64 bits
             {
-                long x = ((long) mid << 32) + low;
+                long x = ((long)mid << 32) + low;
                 bool bgn = false;
                 for (int i = LONG.Length - 1; i > 0; i--)
                 {
@@ -415,7 +410,7 @@ namespace Greatbone.Core
 
         public void Add(DateTime v)
         {
-            short yr = (short) v.Year;
+            short yr = (short)v.Year;
 
             // yyyy-mm-dd
             if (yr < 1000) Add('0');

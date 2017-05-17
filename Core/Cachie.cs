@@ -33,7 +33,8 @@ namespace Greatbone.Core
                 {
                     status = 0;
 
-                    if (content != null && content.Poolable)
+                    var dont = content as DynamicContent;
+                    if (dont != null )
                     {
                         BufferUtility.Return(content.ByteBuffer);
                     }
@@ -56,7 +57,7 @@ namespace Greatbone.Core
                 int remain = ((stamp + maxage * 1000) - ticks) / 1000;
                 if (remain > 0)
                 {
-                    ac.Cached = true;
+                    ac.InCache = true;
                     ac.Give(status, content, true, remain);
 
                     Interlocked.Increment(ref hits);
