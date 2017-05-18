@@ -29,7 +29,7 @@ namespace Greatbone.Core
             {
                 return new XmlParse(buffer, length).Parse();
             }
-            if (ctyp.StartsWith("text/plain"))
+            if (ctyp.StartsWith("text/"))
             {
                 if (typ == typeof(JObj) || typ == typeof(JArr))
                 {

@@ -8,11 +8,7 @@ namespace Greatbone.Core
     /// 
     public class XmlContent : DynamicContent, IDataOutput<XmlContent>
     {
-        public XmlContent() : base(true, 4096)
-        {
-        }
-
-        public XmlContent(bool octet, bool pooled, int capacity = 4096) : base(octet, capacity)
+        public XmlContent(bool octet, int capacity = 4096) : base(octet, capacity)
         {
         }
 
@@ -49,6 +45,43 @@ namespace Greatbone.Core
             }
         }
 
+        public XmlContent ELEM(XElem e)
+        {
+            Add('<');
+            Add(e.Tag);
+            if (e.Attrs != null)
+            {
+                Roll<XAttr> attrs = e.Attrs;
+                for (int i = 0; i < attrs.Count; i++)
+                {
+                    XAttr attr = attrs[i];
+                    Add(' ');
+                    Add(attr.Name);
+                    Add('=');
+                    Add('"');
+                    AddEsc(attr.Value);
+                    Add('"');
+                }
+            }
+            Add('>');
+
+            if (e.Text != null)
+            {
+                AddEsc(e.Text);
+            }
+            if (e.Count > 0)
+            {
+                for (int i = 0; i < e.Count; i++)
+                {
+                    ELEM(e.Child(i));
+                }
+            }
+            Add("</");
+            Add(e.Tag);
+            Add('>');
+
+            return this;
+        }
         //
         // PUT
         //

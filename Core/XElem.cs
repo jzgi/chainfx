@@ -6,29 +6,31 @@ namespace Greatbone.Core
     ///
     /// An XML element tag.
     ///
-    public class XElem : IDataInput
+    public class XElem : IDataInput, IComparable<XElem>
     {
         readonly string tag;
 
         // attributes, can be null
         Roll<XAttr> attrs;
 
-        // child text node, can be null
+        // text node, can be null
         string text;
 
-        // child element nodes. can be null
-        XElem[] elems;
+        // child elements. can be null
+        XElem[] children;
 
-        int count; // number of subs
+        int count; // number of children
 
         public XElem(string tag)
         {
             this.tag = tag;
         }
 
-        public XAttr Attr(string attr) => attrs[attr];
+        public string Tag => tag;
 
-        public bool DataSet => false;
+        public Roll<XAttr> Attrs => attrs;
+
+        public XAttr Attr(string attr) => attrs[attr];
 
         internal void AddAttr(string name, string v)
         {
@@ -39,41 +41,47 @@ namespace Greatbone.Core
             attrs.Add(new XAttr(name, v));
         }
 
-        internal void AddSub(XElem e)
+        internal void AddChild(XElem e)
         {
-            if (elems == null)
+            if (children == null)
             {
-                elems = new XElem[16];
+                children = new XElem[16];
             }
             else
             {
-                int len = elems.Length;
+                int len = children.Length;
                 if (count >= len)
                 {
-                    XElem[] temp = elems;
-                    elems = new XElem[len * 4];
-                    Array.Copy(temp, 0, elems, 0, len);
+                    XElem[] temp = children;
+                    children = new XElem[len * 4];
+                    Array.Copy(temp, 0, children, 0, len);
                 }
             }
-            elems[count++] = e;
+            children[count++] = e;
         }
 
+        public void AddChild(string tag, string text)
+        {
+            var e = new XElem(tag);
+            e.Text = text;
+            AddChild(e);
+        }
 
         public string Text
         {
-            get { return text; }
-            internal set { text = value; }
+            get => text;
+            internal set => text = value;
         }
 
         int current;
 
         public XElem Child(string name)
         {
-            if (elems != null)
+            if (children != null)
             {
                 for (int i = current; i < count; i++)
                 {
-                    XElem elem = elems[i];
+                    XElem elem = children[i];
                     if (elem.tag.Equals(name))
                     {
                         current = i;
@@ -82,7 +90,7 @@ namespace Greatbone.Core
                 }
                 for (int i = 0; i < current; i++)
                 {
-                    XElem elem = elems[i];
+                    XElem elem = children[i];
                     if (elem.tag.Equals(name))
                     {
                         current = i;
@@ -93,18 +101,15 @@ namespace Greatbone.Core
             return null;
         }
 
-        public bool Sub(string name, ref bool v)
-        {
-            // try sub
-            XElem e = Child(name);
-            if (e != null)
-            {
-                v = e.text.ToBool();
-                return true;
-            }
-            return false;
-        }
+        public XElem Child(int index) => children?[index];
 
+        public int Count => count;
+
+
+        public void Sort()
+        {
+            Array.Sort(children, 0, count);
+        }
 
         public bool Get(string name, ref bool v)
         {
@@ -253,10 +258,10 @@ namespace Greatbone.Core
 
         public DynamicContent Dump()
         {
-            var cont = new XmlContent(true, true);
-            cont.Put(null, this);
-            return cont;
+            return new XmlContent(true).ELEM(this);
         }
+
+        public bool DataSet => false;
 
         public bool Next()
         {
@@ -276,6 +281,11 @@ namespace Greatbone.Core
         public static implicit operator string(XElem v)
         {
             return v?.text;
+        }
+
+        public int CompareTo(XElem other)
+        {
+            return String.CompareOrdinal(tag, other.tag);
         }
     }
 }

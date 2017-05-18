@@ -131,7 +131,7 @@ namespace Greatbone.Core
 
         public string Describe()
         {
-            XmlContent cont = new XmlContent(false, false);
+            XmlContent cont = new XmlContent(false);
             Describe(cont);
             return cont.ToString();
         }

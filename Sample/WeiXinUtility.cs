@@ -2,6 +2,7 @@
 using System.Net;
 using System.Net.Http;
 using System.Security.Cryptography.X509Certificates;
+using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
 using Greatbone.Core;
@@ -78,35 +79,21 @@ namespace Greatbone.Sample
 
         public static async Task<string> PostUnifiedOrderAsync(long orderid, decimal total, string openid, string ip, string notifyurl)
         {
-            var temp = "appid=" + APPID +
-                       "&body=" + BODY_DESC +
-                       "&mch_id=" + MCH_ID +
-                       "&nonce_str=" + NONCE_STR +
-                       "&notify_url=" + notifyurl +
-                       "&openid=" + openid +
-                       "&out_trade_no=" + orderid +
-                       "&spbill_create_ip=" + ip +
-                       "&total_fee=" + ((int) (total * 100)) +
-                       "&trade_type=" + "JSAPI" +
-                       "&key=" + KEY;
+            XElem x = new XElem("xml");
+            x.AddChild("appid", APPID);
+            x.AddChild("body", BODY_DESC);
+            x.AddChild("mch_id", MCH_ID);
+            x.AddChild("nonce_str", NONCE_STR);
+            x.AddChild("notify_url", notifyurl);
+            x.AddChild("openid", openid);
+            x.AddChild("out_trade_no", orderid.ToString());
+            x.AddChild("spbill_create_ip", ip);
+            x.AddChild("total_fee", ((int) (total * 100)).ToString());
+            x.AddChild("trade_type", "JSAPI");
+            string sign = Sign(x);
+            x.AddChild("sign", sign);
 
-
-            XmlContent xml = new XmlContent(true, true);
-            xml.ELEM("xml", null, () =>
-            {
-                xml.ELEM("appid", APPID);
-                xml.ELEM("mch_id", MCH_ID);
-                xml.ELEM("nonce_str", NONCE_STR);
-                xml.ELEM("body", BODY_DESC);
-                xml.ELEM("out_trade_no", orderid);
-                xml.ELEM("total_fee", (int) (total * 100));
-                xml.ELEM("notify_url", notifyurl);
-                xml.ELEM("spbill_create_ip", ip);
-                xml.ELEM("trade_type", "JSAPI");
-                xml.ELEM("openid", openid);
-                xml.ELEM("sign", StrUtility.MD5(temp));
-            });
-            XElem xe = (await WCPay.PostAsync<XElem>(null, "/pay/unifiedorder", xml)).Y;
+            XElem xe = (await WCPay.PostAsync<XElem>(null, "/pay/unifiedorder", x.Dump())).Y;
             string prepay_id = xe.Child(nameof(prepay_id));
 
             return prepay_id;
@@ -163,28 +150,22 @@ namespace Greatbone.Sample
             string package = "prepay_id=" + prepay_id;
             string timeStamp = ((int) (DateTime.Now - EPOCH).TotalSeconds).ToString();
 
-            var temp = "appId=" + APPID +
-                       "&nonceStr=" + NONCE_STR +
-                       "&package=" + package +
-                       "&signType=MD5" +
-                       "&timeStamp=" + timeStamp +
-                       "&key=" + KEY;
-
-            JsonContent cont = new JsonContent(true);
-            cont.OBJ(delegate
+            JObj jo = new JObj
             {
-                cont.Put("appId", APPID);
-                cont.Put("timeStamp", timeStamp);
-                cont.Put("nonceStr", NONCE_STR);
-                cont.Put("package", package);
-                cont.Put("signType", "MD5");
-                cont.Put("paySign", StrUtility.MD5(temp));
-            });
-            return cont;
+                new JMbr("appId", APPID),
+                new JMbr("nonceStr", NONCE_STR),
+                new JMbr("package", package),
+                new JMbr("signType", "MD5"),
+                new JMbr("timeStamp", timeStamp),
+            };
+            jo.Add("paySign", Sign(jo, "paySign"));
+
+            return jo.Dump();
         }
 
         public static async Task PostTransferAsync()
         {
+            XElem x = new XElem("xml");
             // <xml>
             // <mch_appid>wxe062425f740c30d8</mch_appid>
             // <mchid>10000098</mchid>
@@ -198,8 +179,76 @@ namespace Greatbone.Sample
             // <spbill_create_ip>10.2.3.10</spbill_create_ip>
             // <sign>C97BDBACF37622775366F38B629F45E3</sign>
             // </xml>
-            XmlContent cont = new XmlContent();
-            XElem resp = (await WCPay.PostAsync<XElem>(null, "/mmpaymkttransfers/promotion/transfers", cont)).Y;
+            XElem resp = (await WCPay.PostAsync<XElem>(null, "/mmpaymkttransfers/promotion/transfers", x.Dump())).Y;
+        }
+
+        public static bool Notified(XElem xe, out long out_trade_no, out decimal cash)
+        {
+            cash = 0;
+            out_trade_no = 0;
+
+            string appid = xe.Child(nameof(appid));
+            string mch_id = xe.Child(nameof(mch_id));
+            string nonce_str = xe.Child(nameof(nonce_str));
+
+            if (appid != APPID || mch_id != MCH_ID || nonce_str != NONCE_STR) return false;
+
+            string result_code = xe.Child(nameof(result_code));
+
+            if (result_code != "SUCCESS") return false;
+
+            string sign = xe.Child(nameof(sign));
+            xe.Sort();
+            if (sign != Sign(xe, "sign")) return false;
+
+            int cash_fee = xe.Child(nameof(cash_fee)); // in cent
+            cash = ((decimal) cash_fee) / 100;
+            out_trade_no = xe.Child(nameof(out_trade_no)); // 商户订单号
+            return true;
+        }
+
+        static string Sign(XElem xe, string exclude = null)
+        {
+            StringBuilder sb = new StringBuilder(1024);
+            for (int i = 0; i < xe.Count; i++)
+            {
+                XElem child = xe.Child(i);
+
+                // not include the sign field
+                if (exclude != null && child.Tag == exclude) continue;
+
+                if (sb.Length > 0)
+                {
+                    sb.Append('&');
+                }
+                sb.Append(child.Tag).Append('=').Append(child.Text);
+            }
+
+            sb.Append("&key=").Append(KEY);
+
+            return StrUtility.MD5(sb.ToString());
+        }
+
+        static string Sign(JObj jo, string exclude = null)
+        {
+            StringBuilder sb = new StringBuilder(1024);
+            for (int i = 0; i < jo.Count; i++)
+            {
+                JMbr mbr = jo[i];
+
+                // not include the sign field
+                if (exclude != null && mbr.Name == exclude) continue;
+
+                if (sb.Length > 0)
+                {
+                    sb.Append('&');
+                }
+                sb.Append(mbr.Name).Append('=').Append((string) mbr);
+            }
+
+            sb.Append("&key=").Append(KEY);
+
+            return StrUtility.MD5(sb.ToString());
         }
     }
 }

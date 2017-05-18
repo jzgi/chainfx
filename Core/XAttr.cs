@@ -16,6 +16,8 @@ namespace Greatbone.Core
             value = v;
         }
 
+        public string Value => value;
+
         public static implicit operator bool(XAttr v)
         {
             string str = v.value;

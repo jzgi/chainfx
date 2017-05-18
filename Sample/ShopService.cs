@@ -148,19 +148,28 @@ namespace Greatbone.Sample
         public async Task notify(ActionContext ac)
         {
             XElem xe = await ac.ReadAsync<XElem>();
-            string appid = xe.Child(nameof(appid));
-            string mch_id = xe.Child(nameof(mch_id));
-            string openid = xe.Child(nameof(openid));
-            string nonce_str = xe.Child(nameof(nonce_str));
-            string sign = xe.Child(nameof(sign));
-            string result_code = xe.Child(nameof(result_code));
 
-            string bank_type = xe.Child(nameof(bank_type));
-            int total_fee = xe.Child(nameof(total_fee)); // in cents
-            int cash_fee = xe.Child(nameof(cash_fee)); // in cent
-            string transaction_id = xe.Child(nameof(transaction_id)); // 微信支付订单号
-            long out_trade_no = xe.Child(nameof(out_trade_no)); // 商户订单号
-            string time_end = xe.Child(nameof(time_end)); // 支付完成时间
+            long orderid;
+            decimal cash;
+            if (Notified(xe, out orderid, out cash))
+            {
+                using (var dc = NewDbContext())
+                {
+                    dc.Execute("UPDATE orders SET status = 1, cash = @1 WHERE id = @2 AND status <= 1", (p) => p.Set(cash).Set(orderid));
+                }
+                // return xml
+                XmlContent cont = new XmlContent(true, 1024);
+                cont.ELEM("xml", null, () =>
+                {
+                    cont.ELEM("return_code", "SUCCESS");
+                    cont.ELEM("return_msg", "OK");
+                });
+                ac.Give(200, cont);
+            }
+            else
+            {
+                ac.Give(304);
+            }
         }
     }
 }
