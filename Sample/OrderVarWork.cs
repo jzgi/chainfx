@@ -273,7 +273,7 @@ namespace Greatbone.Sample
         {
         }
 
-        static readonly Func<IData, bool> UNCLOSE = obj => ((Order) obj).status < Order.REPAID;
+        static readonly Func<IData, bool> UNCLOSE = obj => ((Order) obj).status < Order.CLOSED;
 
         [Ui("反关闭")]
         public void unclose(ActionContext ac)
@@ -289,9 +289,9 @@ namespace Greatbone.Sample
         }
     }
 
-    public class OprTrustOrderVarWork : OprOrderVarWork
+    public class OprPartnerOrderVarWork : OprOrderVarWork
     {
-        public OprTrustOrderVarWork(WorkContext wc) : base(wc)
+        public OprPartnerOrderVarWork(WorkContext wc) : base(wc)
         {
         }
     }

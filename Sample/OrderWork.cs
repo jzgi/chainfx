@@ -20,7 +20,7 @@ namespace Greatbone.Sample
     }
 
 
-    [Ui("购物车", "购物车")]
+    [Ui("购物车")]
     public class MyCartOrderWork : MyOrderWork<MyCartOrderVarWork>
     {
         public MyCartOrderWork(WorkContext wc) : base(wc)
@@ -227,14 +227,13 @@ namespace Greatbone.Sample
             proj = -1 ^ Order.LATE ^ Order.WX;
         }
 
-        [Ui("发送消息", Mode=UiMode.AnchorDialog)]
+        [Ui("发送消息", Mode = UiMode.AnchorDialog)]
         public void shipped(ActionContext ac)
         {
             long[] key = ac.Query[nameof(key)];
 
             if (ac.GET)
             {
-
             }
             else
             {
@@ -264,7 +263,6 @@ namespace Greatbone.Sample
                 }
             }
         }
-
     }
 
     [Ui("已往单")]
@@ -274,7 +272,7 @@ namespace Greatbone.Sample
         public OprPastOrderWork(WorkContext wc) : base(wc)
         {
             status = Order.CANCELLED;
-            status2 = Order.REPAID;
+            status2 = Order.CLOSED;
             proj = -1 ^ Order.LATE ^ Order.WX;
         }
 
@@ -295,9 +293,9 @@ namespace Greatbone.Sample
 
     [Ui("受托单", "代派别家的订单")]
     [User(User.ASSISTANT)]
-    public class OprTrustOrderWork : OrderWork<OprTrustOrderVarWork>
+    public class OprPartnerOrderWork : OrderWork<OprPartnerOrderVarWork>
     {
-        public OprTrustOrderWork(WorkContext wc) : base(wc)
+        public OprPartnerOrderWork(WorkContext wc) : base(wc)
         {
         }
 

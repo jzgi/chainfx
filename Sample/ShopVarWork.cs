@@ -172,11 +172,11 @@ namespace Greatbone.Sample
         {
             Create<OprCartOrderWork>("cart");
 
-            Create<OprActiveOrderWork>("paid");
+            Create<OprActiveOrderWork>("active");
 
             Create<OprPastOrderWork>("past");
 
-            Create<OprTrustOrderWork>("alien");
+            Create<OprPartnerOrderWork>("partner");
 
             Create<OprItemWork>("item");
 
