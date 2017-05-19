@@ -2,6 +2,7 @@
 
 namespace Greatbone.Sample
 {
+    [User(adm: true)]
     public class AdmWork : Work
     {
         public AdmWork(WorkContext wc) : base(wc)
@@ -10,9 +11,11 @@ namespace Greatbone.Sample
 
             Create<AdmShopWork>("shop"); // shops management
 
-            Create<AdmRepayWork>("present"); // repays present
+            Create<AdmRepayWork>("repay"); // repays present
 
-            Create<AdmPastRepayWork>("past"); // repays past
+            Create<AdmPastRepayWork>("pastrepay"); // repays past
+
+            Create<AdmFeekbackWork>("feedback");
         }
 
         public void @default(ActionContext ac)

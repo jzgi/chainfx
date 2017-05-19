@@ -40,9 +40,11 @@ namespace Greatbone.Sample
 
             Create<SprShopWork>("shop");
 
-            Create<SprRepayWork>("present");
+            Create<SprRepayWork>("repay");
 
-            Create<SprPastRepayWork>("past");
+            Create<SprPastRepayWork>("pastrepay");
+
+            Create<SprFeekbackWork>("feedback");
         }
 
         public void @default(ActionContext ac)

@@ -203,7 +203,7 @@ function prepay(trig) {
 
             WeixinJSBridge.invoke('getBrandWCPayRequest', data, function (res) {
                 if (res.err_msg == "get_brand_wcpay_request:ok") {
-                    alert('本订单支付成功！');
+                    alert('本订单支付成功！我们一般会在几秒钟之内接到付款通知。如有异常请您联系商家。');
                     location.reload();
                 }
             });

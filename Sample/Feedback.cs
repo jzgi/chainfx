@@ -4,9 +4,8 @@ using Greatbone.Core;
 namespace Greatbone.Sample
 {
     /// 
-    /// A product or service.
     ///
-    public class Complaint : IData
+    public class Feedback : IData
     {
         public static readonly Item Empty = new Item();
 

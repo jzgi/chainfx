@@ -176,7 +176,7 @@ namespace Greatbone.Sample
 
             Create<OprPastOrderWork>("past");
 
-            Create<OprAlienOrderWork>("alien");
+            Create<OprTrustOrderWork>("alien");
 
             Create<OprItemWork>("item");
 

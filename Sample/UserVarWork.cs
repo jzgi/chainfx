@@ -23,9 +23,11 @@ namespace Greatbone.Sample
         {
             Create<MyCartOrderWork>("cart");
 
-            Create<MyActiveOrderWork>("present");
+            Create<MyActiveOrderWork>("active");
 
             Create<MyPastOrderWork>("past");
+
+            Create<MyFeekbackWork>("feedback");
         }
 
         [Ui("基本信息", Mode = UiMode.AnchorDialog)]

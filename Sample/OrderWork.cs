@@ -295,9 +295,9 @@ namespace Greatbone.Sample
 
     [Ui("受托单", "代派别家的订单")]
     [User(User.ASSISTANT)]
-    public class OprAlienOrderWork : OrderWork<OprAlienOrderVarWork>
+    public class OprTrustOrderWork : OrderWork<OprTrustOrderVarWork>
     {
-        public OprAlienOrderWork(WorkContext wc) : base(wc)
+        public OprTrustOrderWork(WorkContext wc) : base(wc)
         {
         }
 

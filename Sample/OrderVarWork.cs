@@ -5,7 +5,6 @@ using Greatbone.Core;
 namespace Greatbone.Sample
 {
     ///
-    ///
     public abstract class OrderVarWork : Work
     {
         protected OrderVarWork(WorkContext wc) : base(wc)
@@ -268,13 +267,6 @@ namespace Greatbone.Sample
         }
     }
 
-    public class OprSentOrderVarWork : OprOrderVarWork
-    {
-        public OprSentOrderVarWork(WorkContext wc) : base(wc)
-        {
-        }
-    }
-
     public class OprPastOrderVarWork : OprOrderVarWork
     {
         public OprPastOrderVarWork(WorkContext wc) : base(wc)
@@ -297,16 +289,9 @@ namespace Greatbone.Sample
         }
     }
 
-    public class OprAbortedOrderVarWork : OprOrderVarWork
+    public class OprTrustOrderVarWork : OprOrderVarWork
     {
-        public OprAbortedOrderVarWork(WorkContext wc) : base(wc)
-        {
-        }
-    }
-
-    public class OprAlienOrderVarWork : OprOrderVarWork
-    {
-        public OprAlienOrderVarWork(WorkContext wc) : base(wc)
+        public OprTrustOrderVarWork(WorkContext wc) : base(wc)
         {
         }
     }
