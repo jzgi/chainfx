@@ -154,7 +154,7 @@ namespace Greatbone.Sample
                             m.Add("</div>"); // row card
                             m.Add("</form>");
                         }
-                    }, pub: true, maxage: 60 * 5);
+                    }, @public: true, maxage: 60 * 5);
                 }
                 else
                 {
@@ -165,16 +165,14 @@ namespace Greatbone.Sample
     }
 
     [Ui("设置")]
-    [User(User.DELIVERER)]
+    [User(User.ASSISTANT)]
     public class OprShopVarWork : ShopVarWork
     {
         public OprShopVarWork(WorkContext wc) : base(wc)
         {
             Create<OprCartOrderWork>("cart");
 
-            Create<OprPaidOrderWork>("paid");
-
-            Create<OprSentOrderWork>("sent");
+            Create<OprActiveOrderWork>("paid");
 
             Create<OprPastOrderWork>("past");
 
@@ -187,7 +185,7 @@ namespace Greatbone.Sample
 
         public void @default(ActionContext ac)
         {
-            ac.GiveFrame(200, pub: false, maxage: 60 * 5);
+            ac.GiveFrame(200, @public: false, maxage: 60 * 5);
         }
 
         [Ui("基本信息", Mode = UiMode.AnchorDialog)]

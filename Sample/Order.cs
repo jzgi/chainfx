@@ -10,58 +10,50 @@ namespace Greatbone.Sample
     {
         public const short
             ID = 0x0001,
-            CUSTWX = 0x0002,
+            WX = 0x0002,
             LATE = 0x0010,
             DETAIL = 0x0020;
 
-        // state
+        // status
         public const short
-            CREATED = 0,
+            DRAFT = 0,
             ACCEPTED = 1,
-            SENT = 3,
-            DONE = 7,
-            ABORTED = 10;
+            CANCELLED = 3,
+            SHIPPED = 5,
+            REPAID = 7;
 
         // status
         static readonly Opt<short> STATUS = new Opt<short>
         {
-            [CREATED] = "购买中",
-            [ACCEPTED] = "已受理",
-            [SENT] = "已发货",
-            [DONE] = "已完成",
-            [ABORTED] = "已撤销",
+            [DRAFT] = "购物车",
+            [ACCEPTED] = "已承接",
+            [CANCELLED] = "已撤销",
+            [SHIPPED] = "已送达",
+            [REPAID] = "已结款",
         };
 
 
         public static readonly Order Empty = new Order();
 
         internal long id;
-        internal string shopname; // shop name
+        internal string shop; // shop name
         internal string shopid;
-        internal string custname; // customer name
-        internal string custwx; // weixin openid
-        internal string custcity; // city
-        internal string custdistr; // disrict
-        internal string custaddr; // address
-        internal string custtel; // telephone
-        internal OrderLine[] detail;
-        internal decimal total;
-        internal string note;
         internal DateTime created; // time created
+        internal string buyer; // customer name
+        internal string wx; // weixin openid
+        internal string city; // city
+        internal string distr; // disrict
+        internal string addr; // address
+        internal string tel; // telephone
+        internal OrderLine[] detail;
+        internal decimal total; // receivable
+        internal string note;
+        internal decimal cash; // amount recieved
+        internal DateTime cashed; // time received
 
-        internal DateTime paid; // time paid
-
-        internal string pack; // packer name
-        internal string packtel;
-        internal DateTime packed;
-
-        internal string dvrat; // delivered at shopid
-        internal string dvr; // deliverer name
-        internal string dvrtel;
-        internal DateTime dvred;
-
+        internal string agentid; // agent shopid
         internal DateTime closed; // time completed or aborted
-
+        internal string closer;
         internal short status;
 
         public void ReadData(IDataInput i, short proj = 0)
@@ -70,19 +62,18 @@ namespace Greatbone.Sample
             {
                 i.Get(nameof(id), ref id);
             }
-
-            i.Get(nameof(shopname), ref shopname);
+            i.Get(nameof(shop), ref shop);
             i.Get(nameof(shopid), ref shopid);
 
-            i.Get(nameof(custname), ref custname);
-            if ((proj & CUSTWX) == CUSTWX)
+            i.Get(nameof(buyer), ref buyer);
+            if ((proj & WX) == WX)
             {
-                i.Get(nameof(custwx), ref custwx);
+                i.Get(nameof(wx), ref wx);
             }
-            i.Get(nameof(custcity), ref custcity);
-            i.Get(nameof(custdistr), ref custdistr);
-            i.Get(nameof(custaddr), ref custaddr);
-            i.Get(nameof(custtel), ref custtel);
+            i.Get(nameof(city), ref city);
+            i.Get(nameof(distr), ref distr);
+            i.Get(nameof(addr), ref addr);
+            i.Get(nameof(tel), ref tel);
             if ((proj & DETAIL) == DETAIL)
             {
                 i.Get(nameof(detail), ref detail);
@@ -93,18 +84,11 @@ namespace Greatbone.Sample
 
             if ((proj & LATE) == LATE)
             {
-                i.Get(nameof(paid), ref paid);
-
-                i.Get(nameof(pack), ref pack);
-                i.Get(nameof(packtel), ref packtel);
-                i.Get(nameof(packed), ref packed);
-
-                i.Get(nameof(dvrat), ref dvrat);
-                i.Get(nameof(dvr), ref dvr);
-                i.Get(nameof(dvrtel), ref dvrtel);
-                i.Get(nameof(dvred), ref dvred);
-
+                i.Get(nameof(cash), ref cash);
+                i.Get(nameof(cashed), ref cashed);
+                i.Get(nameof(agentid), ref agentid);
                 i.Get(nameof(closed), ref closed);
+                i.Get(nameof(closer), ref closer);
             }
 
             i.Get(nameof(status), ref status);
@@ -114,58 +98,43 @@ namespace Greatbone.Sample
         {
             if ((proj & ID) == ID)
             {
-                o.Put(nameof(id), id, label: "订单编号");
+                o.Put(nameof(id), id, "订单编号");
             }
+            o.Put(nameof(created), created, "创建时间");
+
             o.Group("商家");
+            o.Put(nameof(shop), shop);
             o.Put(nameof(shopid), shopid);
-            o.Put(nameof(shopname), shopname);
             o.UnGroup();
 
-            o.Put(nameof(custname), custname, label: "买家");
-            if ((proj & CUSTWX) == CUSTWX)
+            o.Put(nameof(buyer), buyer, "买家");
+            if ((proj & WX) == WX)
             {
-                o.Put(nameof(custwx), custwx);
+                o.Put(nameof(wx), wx);
             }
             o.Group("收货地址");
-            o.Put(nameof(custcity), custcity);
-            o.Put(nameof(custdistr), custdistr);
-            o.Put(nameof(custaddr), custaddr);
+            o.Put(nameof(city), city);
+            o.Put(nameof(distr), distr);
+            o.Put(nameof(addr), addr);
             o.UnGroup();
-            o.Put(nameof(custtel), custtel, label: "联系电话");
+            o.Put(nameof(tel), tel, "联系电话");
 
             if ((proj & DETAIL) == DETAIL)
             {
                 o.Put(nameof(detail), detail);
             }
-            o.Put(nameof(total), total, label: "金额", format: '¥');
-            o.Put(nameof(note), note, label: "附注");
-            o.Put(nameof(created), created, label: "创建时间");
+            o.Put(nameof(total), total, "应付金额", '¥');
+            o.Put(nameof(note), note, "附注");
 
             if ((proj & LATE) == LATE)
             {
-                if ((proj & ID) == ID)
-                {
-                    o.Put(nameof(paid), paid);
-                }
-                if ((proj & ID) == ID)
-                {
-                    o.Put(nameof(pack), pack);
-                    o.Put(nameof(packtel), packtel);
-                    o.Put(nameof(packed), packed);
-                }
-                if ((proj & ID) == ID)
-                {
-                    o.Put(nameof(dvrat), dvrat);
-                    o.Put(nameof(dvr), dvr);
-                    o.Put(nameof(dvrtel), dvrtel);
-                    o.Put(nameof(dvred), dvred);
-                }
-                if ((proj & ID) == ID)
-                {
-                    o.Put(nameof(closed), closed);
-                }
+                o.Put(nameof(cash), cash, "实收金额", '¥');
+                o.Put(nameof(cashed), cashed, "实收时间");
+                o.Put(nameof(agentid), agentid);
+                o.Put(nameof(closed), closed);
+                o.Put(nameof(closer), closer);
             }
-            o.Put(nameof(status), status, label: "状态", opt: STATUS);
+            o.Put(nameof(status), status, "状态", STATUS);
         }
 
         public void AddItem(string item, short qty, string unit, decimal price)

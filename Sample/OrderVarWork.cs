@@ -106,8 +106,8 @@ namespace Greatbone.Sample
             }
             else
             {
-                Form frm = await ac.ReadAsync<Form>();
-                string note = frm[nameof(note)];
+                Form f = await ac.ReadAsync<Form>();
+                string note = f[nameof(note)];
 
                 using (var dc = ac.NewDbContext())
                 {
@@ -117,9 +117,9 @@ namespace Greatbone.Sample
             }
         }
 
-        static readonly Func<IData, bool> PREPAY = obj => ((Order) obj).custaddr != null;
+        static readonly Func<IData, bool> PREPAY = obj => ((Order) obj).addr != null;
 
-        [Ui("付款", Mode = UiMode.AnchorScript, Alert = true)]
+        [Ui("付款", "确定此单要付款吗", Mode = UiMode.AnchorScript, Alert = true)]
         public async Task prepay(ActionContext ac)
         {
             string wx = ac[typeof(UserVarWork)];
@@ -127,7 +127,7 @@ namespace Greatbone.Sample
 
             using (var dc = ac.NewDbContext())
             {
-                if (dc.Query1("SELECT total FROM orders WHERE id = @1 AND custwx = @2", p => p.Set(id).Set(wx)))
+                if (dc.Query1("SELECT total FROM orders WHERE id = @1 AND wx = @2", p => p.Set(id).Set(wx)))
                 {
                     var total = dc.GetDecimal();
                     var prepay_id = await WeiXinUtility.PostUnifiedOrderAsync(id, total, wx, ac.RemoteAddr, "http://shop.144000.tv/notify");
@@ -141,19 +141,59 @@ namespace Greatbone.Sample
         }
     }
 
-    public class MyPresentOrderVarWork : MyOrderVarWork
+    public class MyActiveOrderVarWork : MyOrderVarWork
     {
-        public MyPresentOrderVarWork(WorkContext wc) : base(wc)
+        public MyActiveOrderVarWork(WorkContext wc) : base(wc)
         {
         }
 
-        [Ui("请求撤销")]
-        public void abort(ActionContext ac)
+        [Ui("请求撤销", Mode = UiMode.ButtonDialog)]
+        public async Task cancel(ActionContext ac)
         {
             long id = ac[this];
-            using (var dc = ac.NewDbContext())
+            string reason = null;
+            if (ac.GET)
             {
-                dc.Execute("UPDATE orders SET status = @1 WHERE id = @2", p => p.Set(0).Set(id));
+                ac.GivePane(200, m =>
+                {
+                    m.FORM_();
+                    m.TEXTAREA(nameof(reason), reason, "请填写撤销的原因");
+                    m._FORM();
+                });
+            }
+            else
+            {
+                var f = await ac.ReadAsync<Form>();
+                reason = f[nameof(reason)];
+                using (var dc = ac.NewDbContext())
+                {
+                    dc.Execute("UPDATE orders SET cancel = @1 WHERE id = @2", p => p.Set(reason).Set(id));
+                }
+            }
+        }
+
+        [Ui("确认收货", "确认收货并结束次单", Mode = UiMode.ButtonDialog)]
+        public async Task got(ActionContext ac)
+        {
+            long id = ac[this];
+            string review = null;
+            if (ac.GET)
+            {
+                ac.GivePane(200, m =>
+                {
+                    m.FORM_();
+                    m.TEXTAREA(nameof(review), review, "请给出您的宝贵意见");
+                    m._FORM();
+                });
+            }
+            else
+            {
+                var f = await ac.ReadAsync<Form>();
+                review = f[nameof(review)];
+                using (var dc = ac.NewDbContext())
+                {
+                    dc.Execute("UPDATE orders SET review = @1 WHERE id = @2", p => p.Set(review).Set(id));
+                }
             }
         }
     }
@@ -172,16 +212,40 @@ namespace Greatbone.Sample
         }
     }
 
-    public class OprCreatedOrderVarWork : OprOrderVarWork
+    public class OprCartOrderVarWork : OprOrderVarWork
     {
-        public OprCreatedOrderVarWork(WorkContext wc) : base(wc)
+        public OprCartOrderVarWork(WorkContext wc) : base(wc)
         {
+        }
+
+        [Ui("强行接受", "此单可能尚未付款，确定接受吗", Mode = UiMode.ButtonConfirm)]
+        public void accept(ActionContext ac)
+        {
+            long id = ac[this];
+
+            using (var dc = Service.NewDbContext())
+            {
+                dc.Execute("UPDATE orders SET status = @1 WHERE id = @2", p => p.Set(Order.ACCEPTED).Set(id));
+                ac.GiveRedirect("../");
+            }
+        }
+
+        [Ui("付款核查", Mode = UiMode.AnchorDialog)]
+        public void check(ActionContext ac)
+        {
+            long id = ac[this];
+
+            using (var dc = Service.NewDbContext())
+            {
+                dc.Execute("UPDATE orders SET status = @1 WHERE id = @2", p => p.Set(Order.ACCEPTED).Set(id));
+                ac.GiveRedirect("../");
+            }
         }
     }
 
-    public class OprAcceptedOrderVarWork : OprOrderVarWork
+    public class OprActiveOrderVarWork : OprOrderVarWork
     {
-        public OprAcceptedOrderVarWork(WorkContext wc) : base(wc)
+        public OprActiveOrderVarWork(WorkContext wc) : base(wc)
         {
         }
 
@@ -204,25 +268,6 @@ namespace Greatbone.Sample
         }
     }
 
-    public class OprCartOrderVarWork : OprOrderVarWork
-    {
-        public OprCartOrderVarWork(WorkContext wc) : base(wc)
-        {
-        }
-
-        [Ui("置己收", Mode = UiMode.ButtonConfirm)]
-        public async Task rcved(ActionContext ac)
-        {
-            long id = ac[this];
-
-            using (var dc = Service.NewDbContext())
-            {
-                dc.Execute("UPDATE orders SET status = @1 WHERE id = @2", p => p.Set(Order.ACCEPTED).Set(id));
-                ac.GiveRedirect("../");
-            }
-        }
-    }
-
     public class OprSentOrderVarWork : OprOrderVarWork
     {
         public OprSentOrderVarWork(WorkContext wc) : base(wc)
@@ -230,10 +275,25 @@ namespace Greatbone.Sample
         }
     }
 
-    public class OprHistoryOrderVarWork : OprOrderVarWork
+    public class OprPastOrderVarWork : OprOrderVarWork
     {
-        public OprHistoryOrderVarWork(WorkContext wc) : base(wc)
+        public OprPastOrderVarWork(WorkContext wc) : base(wc)
         {
+        }
+
+        static readonly Func<IData, bool> UNCLOSE = obj => ((Order) obj).status < Order.REPAID;
+
+        [Ui("反关闭")]
+        public void unclose(ActionContext ac)
+        {
+            long[] key = ac.Query[nameof(key)];
+
+            using (var dc = ac.NewDbContext())
+            {
+                dc.Sql("UPDATE orders SET status = @1 WHERE id")._IN_(key);
+                dc.Execute();
+            }
+            ac.GiveRedirect();
         }
     }
 

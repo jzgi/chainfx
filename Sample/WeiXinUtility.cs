@@ -166,19 +166,20 @@ namespace Greatbone.Sample
         public static async Task PostTransferAsync()
         {
             XElem x = new XElem("xml");
-            // <xml>
-            // <mch_appid>wxe062425f740c30d8</mch_appid>
-            // <mchid>10000098</mchid>
-            // <nonce_str>3PG2J4ILTKCH16CQ2502SI8ZNMTM67VS</nonce_str>
-            // <partner_trade_no>100000982014120919616</partner_trade_no>
-            // <openid>ohO4Gt7wVPxIT1A9GjFaMYMiZY1s</openid>
-            // <check_name>OPTION_CHECK</check_name>
-            // <re_user_name>张三</re_user_name>
-            // <amount>100</amount>
-            // <desc>节日快乐!</desc>
-            // <spbill_create_ip>10.2.3.10</spbill_create_ip>
-            // <sign>C97BDBACF37622775366F38B629F45E3</sign>
-            // </xml>
+            x.AddChild("mch_appid", APPID);
+            x.AddChild("mchid", APPID);
+            x.AddChild("nonce_str", APPID);
+            x.AddChild("partner_trade_no", APPID);
+            x.AddChild("openid", APPID);
+            x.AddChild("check_name", APPID);
+            x.AddChild("re_user_name", APPID);
+            x.AddChild("amount", APPID);
+            x.AddChild("desc", APPID);
+            x.AddChild("spbill_create_ip", APPID);
+
+            string sign = x.Child(nameof(sign));
+            x.AddChild("sign", sign);
+
             XElem resp = (await WCPay.PostAsync<XElem>(null, "/mmpaymkttransfers/promotion/transfers", x.Dump())).Y;
         }
 

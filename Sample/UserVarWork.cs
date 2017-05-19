@@ -23,7 +23,7 @@ namespace Greatbone.Sample
         {
             Create<MyCartOrderWork>("cart");
 
-            Create<MyPresentOrderWork>("present");
+            Create<MyActiveOrderWork>("present");
 
             Create<MyPastOrderWork>("past");
         }

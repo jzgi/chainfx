@@ -32,15 +32,15 @@ namespace Greatbone.Sample
             string wx = ac[-1];
             using (var dc = ac.NewDbContext())
             {
-                const int proj = -1 ^ Order.LATE ^ Order.CUSTWX;
-                dc.Sql("SELECT ").columnlst(Order.Empty, proj)._("FROM orders WHERE custwx = @1 AND status = @2 ORDER BY id DESC");
-                if (dc.Query(p => p.Set(wx).Set(Order.CREATED)))
+                const int proj = -1 ^ Order.LATE ^ Order.WX;
+                dc.Sql("SELECT ").columnlst(Order.Empty, proj)._("FROM orders WHERE wx = @1 AND status = @2 ORDER BY id DESC");
+                if (dc.Query(p => p.Set(wx).Set(Order.DRAFT)))
                 {
-                    ac.GiveGridPage(200, dc.ToDatas<Order>(proj), proj, pub: false, maxage: 3);
+                    ac.GiveGridPage(200, dc.ToDatas<Order>(proj), proj, @public: false, maxage: 3);
                 }
                 else
                 {
-                    ac.GiveGridPage(200, (Order[]) null, pub: false, maxage: 3);
+                    ac.GiveGridPage(200, (Order[]) null, @public: false, maxage: 3);
                 }
             }
         }
@@ -51,7 +51,7 @@ namespace Greatbone.Sample
             string wx = ac[typeof(UserVarWork)];
             using (var dc = ac.NewDbContext())
             {
-                dc.Execute("DELETE FROM orders WHERE custwx = @1 AND status = @2", p => p.Set(wx).Set(Order.CREATED));
+                dc.Execute("DELETE FROM orders WHERE wx = @1 AND status = @2", p => p.Set(wx).Set(Order.DRAFT));
                 ac.GiveRedirect();
             }
         }
@@ -70,7 +70,7 @@ namespace Greatbone.Sample
 
             using (var dc = ac.NewDbContext())
             {
-                if (dc.Query1("SELECT id, detail, total FROM orders WHERE shopid = @1 AND custwx = @2 AND status = 0", p => p.Set(shopid).Set(wx)))
+                if (dc.Query1("SELECT id, detail, total FROM orders WHERE shopid = @1 AND wx = @2 AND status = 0", p => p.Set(shopid).Set(wx)))
                 {
                     var o = new Order
                     {
@@ -88,13 +88,13 @@ namespace Greatbone.Sample
                     var o = new Order
                     {
                         shopid = shopid,
-                        shopname = shopname,
-                        custname = prin.nickname,
-                        custwx = prin.wx,
-                        custtel = prin.tel,
-                        custcity = prin.city,
-                        custdistr = prin.distr,
-                        custaddr = prin.addr,
+                        shop = shopname,
+                        buyer = prin.nickname,
+                        wx = prin.wx,
+                        tel = prin.tel,
+                        city = prin.city,
+                        distr = prin.distr,
+                        addr = prin.addr,
                         detail = new[]
                         {
                             new OrderLine {name = name, price = price, qty = qty, unit = unit}
@@ -113,10 +113,10 @@ namespace Greatbone.Sample
         }
     }
 
-    [Ui("当前订单")]
-    public class MyPresentOrderWork : MyOrderWork<MyPresentOrderVarWork>
+    [Ui("当前单")]
+    public class MyActiveOrderWork : MyOrderWork<MyActiveOrderVarWork>
     {
-        public MyPresentOrderWork(WorkContext wc) : base(wc)
+        public MyActiveOrderWork(WorkContext wc) : base(wc)
         {
         }
 
@@ -126,20 +126,20 @@ namespace Greatbone.Sample
             using (var dc = ac.NewDbContext())
             {
                 const int proj = -1;
-                dc.Sql("SELECT ").columnlst(Order.Empty, proj)._("FROM orders WHERE custwx = @1 AND status BETWEEN @2 AND @3");
-                if (dc.Query(p => p.Set(wx).Set(Order.ACCEPTED).Set(Order.SENT)))
+                dc.Sql("SELECT ").columnlst(Order.Empty, proj)._("FROM orders WHERE wx = @1 AND status = @2");
+                if (dc.Query(p => p.Set(wx).Set(Order.ACCEPTED)))
                 {
-                    ac.GiveGridPage(200, dc.ToDatas<Order>(proj), proj, pub: false, maxage: 3);
+                    ac.GiveGridPage(200, dc.ToDatas<Order>(proj), proj, @public: false, maxage: 3);
                 }
                 else
                 {
-                    ac.GiveGridPage(200, (Order[]) null, pub: false, maxage: 3);
+                    ac.GiveGridPage(200, (Order[]) null, @public: false, maxage: 3);
                 }
             }
         }
     }
 
-    [Ui("过去订单")]
+    [Ui("已往单")]
     public class MyPastOrderWork : MyOrderWork<MyPastOrderVarWork>
     {
         public MyPastOrderWork(WorkContext wc) : base(wc)
@@ -152,14 +152,14 @@ namespace Greatbone.Sample
             using (var dc = ac.NewDbContext())
             {
                 const int proj = -1;
-                dc.Sql("SELECT ").columnlst(Order.Empty, proj)._("FROM orders WHERE custwx = @1 AND status >= @2 ORDER BY id LIMIT 10 OFFSET @4");
-                if (dc.Query(p => p.Set(wx).Set(Order.DONE).Set(page * 10)))
+                dc.Sql("SELECT ").columnlst(Order.Empty, proj)._("FROM orders WHERE wx = @1 AND status >= @2 ORDER BY id LIMIT 10 OFFSET @4");
+                if (dc.Query(p => p.Set(wx).Set(Order.SHIPPED).Set(page * 10)))
                 {
-                    ac.GiveGridPage(200, dc.ToDatas<Order>(proj), proj, pub: false, maxage: 3);
+                    ac.GiveGridPage(200, dc.ToDatas<Order>(proj), proj, @public: false, maxage: 3);
                 }
                 else
                 {
-                    ac.GiveGridPage(200, (Order[]) null, pub: false, maxage: 3);
+                    ac.GiveGridPage(200, (Order[]) null, @public: false, maxage: 3);
                 }
             }
         }
@@ -185,11 +185,11 @@ namespace Greatbone.Sample
                 bool found = (status2 == 0) ? dc.Query("SELECT * FROM orders WHERE shopid = @1 AND status = @2 ORDER BY id LIMIT 20 OFFSET @3", p => p.Set(shopid).Set(status).Set(page * 20)) : dc.Query("SELECT * FROM orders WHERE shopid = @1 AND status BETWEEN @2 AND @3 ORDER BY id LIMIT 20 OFFSET @4", p => p.Set(shopid).Set(status).Set(status2).Set(page * 20));
                 if (found)
                 {
-                    ac.GiveGridPage(200, dc.ToDatas<Order>(proj), proj, pub: false, maxage: 3);
+                    ac.GiveGridPage(200, dc.ToDatas<Order>(proj), proj, @public: false, maxage: 3);
                 }
                 else
                 {
-                    ac.GiveGridPage(200, (Order[]) null, pub: false, maxage: 3);
+                    ac.GiveGridPage(200, (Order[]) null, @public: false, maxage: 3);
                 }
             }
         }
@@ -201,44 +201,84 @@ namespace Greatbone.Sample
     {
         public OprCartOrderWork(WorkContext wc) : base(wc)
         {
-            status = Order.CREATED;
-            proj = -1 ^ Order.LATE ^ Order.CUSTWX;
+            status = Order.DRAFT;
+            proj = -1 ^ Order.LATE ^ Order.WX;
         }
 
-        [Ui("清理旧单", Mode = UiMode.ButtonConfirm)]
+        [Ui("一周清理", "清理一周以前的旧单", Mode = UiMode.ButtonConfirm)]
         public void clear(ActionContext ac)
         {
             string shopid = ac[-1];
             using (var dc = ac.NewDbContext())
             {
-                dc.Execute("DELETE FROM orders WHERE shopid = @1 AND status = @2 AND age(created) > '15 days'", p => p.Set(shopid).Set(Order.CREATED));
-                ac.GiveRedirect(null);
+                dc.Execute("DELETE FROM orders WHERE shopid = @1 AND status = 0 AND age(created) > '7 days'", p => p.Set(shopid));
+                ac.GiveRedirect();
             }
         }
     }
 
-    [Ui("已付")]
+    [Ui("当前单")]
     [User(User.ASSISTANT)]
-    public class OprPaidOrderWork : OprOrderWork<OprAcceptedOrderVarWork>
+    public class OprActiveOrderWork : OprOrderWork<OprActiveOrderVarWork>
     {
-        public OprPaidOrderWork(WorkContext wc) : base(wc)
+        public OprActiveOrderWork(WorkContext wc) : base(wc)
         {
             status = Order.ACCEPTED;
-            proj = -1 ^ Order.LATE ^ Order.CUSTWX;
+            proj = -1 ^ Order.LATE ^ Order.WX;
         }
 
-        [Ui("统计", Mode = UiMode.AnchorDialog)]
+        [Ui("发送消息", Mode=UiMode.AnchorDialog)]
+        public void shipped(ActionContext ac)
+        {
+            long[] key = ac.Query[nameof(key)];
+
+            if (ac.GET)
+            {
+
+            }
+            else
+            {
+                using (var dc = ac.NewDbContext())
+                {
+                    dc.Sql("UPDATE orders SET status = @1 WHERE id")._IN_(key);
+                    dc.Execute();
+                }
+            }
+            ac.GiveRedirect();
+        }
+
+        [Ui("委托办理", Mode = UiMode.AnchorDialog)]
         public async Task calc(ActionContext ac)
         {
             string shopid = ac[-1];
             long[] pk = ac.Query[nameof(pk)];
 
-            using (var dc = ac.NewDbContext())
+            if (ac.GET)
             {
+            }
+            else
+            {
+                var key = await ac.ReadAsync<Form>();
+                using (var dc = ac.NewDbContext())
+                {
+                }
             }
         }
 
-        [Ui("发货")]
+    }
+
+    [Ui("已往单")]
+    [User(User.ASSISTANT)]
+    public class OprPastOrderWork : OprOrderWork<OprPastOrderVarWork>
+    {
+        public OprPastOrderWork(WorkContext wc) : base(wc)
+        {
+            status = Order.CANCELLED;
+            status2 = Order.REPAID;
+            proj = -1 ^ Order.LATE ^ Order.WX;
+        }
+
+        [Ui("查询")]
         public void send(ActionContext ac)
         {
             long[] key = ac.Query[nameof(key)];
@@ -252,44 +292,9 @@ namespace Greatbone.Sample
         }
     }
 
-    [Ui("在派")]
-    [User(User.DELIVERER)]
-    public class OprSentOrderWork : OprOrderWork<OprSentOrderVarWork>
-    {
-        public OprSentOrderWork(WorkContext wc) : base(wc)
-        {
-            status = Order.SENT;
-            proj = -1 ^ Order.LATE ^ Order.CUSTWX;
-        }
 
-        [Ui("锁定/处理")]
-        public async Task @lock(ActionContext ac)
-        {
-            string shopid = ac[0];
-            Form frm = await ac.ReadAsync<Form>();
-            int[] pk = frm[nameof(pk)];
-
-            using (var dc = ac.NewDbContext())
-            {
-            }
-        }
-    }
-
-    [Ui("过去")]
-    [User(User.DELIVERER)]
-    public class OprPastOrderWork : OprOrderWork<OprHistoryOrderVarWork>
-    {
-        public OprPastOrderWork(WorkContext wc) : base(wc)
-        {
-            status = Order.DONE;
-            status2 = Order.ABORTED;
-            proj = -1 ^ Order.LATE ^ Order.CUSTWX;
-        }
-    }
-
-
-    [Ui("代派", "代派别家的订单")]
-    [User(User.DELIVERER)]
+    [Ui("受托单", "代派别家的订单")]
+    [User(User.ASSISTANT)]
     public class OprAlienOrderWork : OrderWork<OprAlienOrderVarWork>
     {
         public OprAlienOrderWork(WorkContext wc) : base(wc)
@@ -303,11 +308,11 @@ namespace Greatbone.Sample
             {
                 if (dc.Query("SELECT * FROM orders WHERE shopid = @1 AND status = @2 ORDER BY id LIMIT 20 OFFSET @3", p => p.Set(shopid).Set(page * 20)))
                 {
-                    ac.GiveGridPage(200, dc.ToDatas<Order>(), pub: false, maxage: 3);
+                    ac.GiveGridPage(200, dc.ToDatas<Order>(), @public: false, maxage: 3);
                 }
                 else
                 {
-                    ac.GiveGridPage(200, (Order[]) null, pub: false, maxage: 3);
+                    ac.GiveGridPage(200, (Order[]) null, @public: false, maxage: 3);
                 }
             }
         }

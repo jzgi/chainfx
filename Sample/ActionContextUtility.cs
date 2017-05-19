@@ -7,13 +7,13 @@ namespace Greatbone.Sample
     public static class ActionContextUtility
     {
         ///
-        public static void GiveRedirect(this ActionContext ac, string uri = null, bool? pub = null, int maxage = 60)
+        public static void GiveRedirect(this ActionContext ac, string uri = null, bool? @public = null, int maxage = 60)
         {
             ac.SetHeader("Location", uri ?? "./");
             ac.Give(303);
         }
 
-        public static void GiveFrame(this ActionContext ac, int status, bool? pub = null, int maxage = 60)
+        public static void GiveFrame(this ActionContext ac, int status, bool? @public = null, int maxage = 60)
         {
             HtmlContent h = new HtmlContent(true, true, 8 * 1024);
 
@@ -107,13 +107,13 @@ namespace Greatbone.Sample
             h.Add("</body>");
             h.Add("</html>");
 
-            ac.Give(status, h, pub, maxage);
+            ac.Give(status, h, @public, maxage);
         }
 
         ///
         /// Gives a browser window page.
         ///
-        public static void GivePage(this ActionContext ac, int status, Action<HtmlContent> main, bool? pub = null, int maxage = 60)
+        public static void GivePage(this ActionContext ac, int status, Action<HtmlContent> main, bool? @public = null, int maxage = 60)
         {
             HtmlContent h = new HtmlContent(true, true, 16 * 1024);
 
@@ -144,13 +144,13 @@ namespace Greatbone.Sample
             h.Add("</body>");
             h.Add("</html>");
 
-            ac.Give(status, h, pub, maxage);
+            ac.Give(status, h, @public, maxage);
         }
 
         ///
         /// Gives an iframe pane.
         ///
-        public static void GivePane(this ActionContext ac, int status, Action<HtmlContent> main = null, bool? pub = null, int maxage = 60)
+        public static void GivePane(this ActionContext ac, int status, Action<HtmlContent> main = null, bool? @public = null, int maxage = 60)
         {
             HtmlContent h = new HtmlContent(true, true, 8 * 1024);
 
@@ -190,27 +190,27 @@ namespace Greatbone.Sample
             h.Add("</body>");
             h.Add("</html>");
 
-            ac.Give(status, h, pub, maxage);
+            ac.Give(status, h, @public, maxage);
         }
 
-        public static void GiveGridPage<D>(this ActionContext ac, int status, D[] objs, short proj = 0, bool? pub = null, int maxage = 60) where D : IData
+        public static void GiveGridPage<D>(this ActionContext ac, int status, D[] objs, short proj = 0, bool? @public = null, int maxage = 60) where D : IData
         {
             Work work = ac.Work;
-            ac.GivePage(status, main => { main.GRID(ac, work.varwork, objs, proj); }, pub, maxage);
+            ac.GivePage(status, main => { main.GRID(ac, work.varwork, objs, proj); }, @public, maxage);
         }
 
-        public static void GiveGridPage<D>(this ActionContext ac, int status, D[] objs, Action<HtmlContent, D> putobj, bool? pub = null, int maxage = 60) where D : IData
+        public static void GiveGridPage<D>(this ActionContext ac, int status, D[] objs, Action<HtmlContent, D> putobj, bool? @public = null, int maxage = 60) where D : IData
         {
             Work work = ac.Work;
         }
 
-        public static void GiveTablePage<D>(this ActionContext ac, int status, D[] objs, short proj = 0, bool? pub = null, int maxage = 60) where D : IData
+        public static void GiveTablePage<D>(this ActionContext ac, int status, D[] objs, short proj = 0, bool? @public = null, int maxage = 60) where D : IData
         {
             Work work = ac.Work;
-            ac.GivePage(status, main => { main.TABLE(ac, work.varwork, objs, proj); }, pub, maxage);
+            ac.GivePage(status, main => { main.TABLE(ac, work.varwork, objs, proj); }, @public, maxage);
         }
 
-        public static void GiveTablePage<D>(this ActionContext ac, int status, D[] objs, Action<HtmlContent, D> putobj, bool? pub = null, int maxage = 60) where D : IData
+        public static void GiveTablePage<D>(this ActionContext ac, int status, D[] objs, Action<HtmlContent, D> putobj, bool? @public = null, int maxage = 60) where D : IData
         {
             Work work = ac.Work;
         }

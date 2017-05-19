@@ -17,13 +17,12 @@ namespace Greatbone.Sample
             CREDENTIAL = 0x0010,
             PERM = 0x0100;
 
-        public const short MANAGER = 7, ASSISTANT = 3, DELIVERER = 1;
+        public const short MANAGER = 7, ASSISTANT = 3;
 
         public static readonly Opt<short> OPR = new Opt<short>
         {
             [MANAGER] = "经理",
-            [ASSISTANT] = "助理",
-            [DELIVERER] = "派送"
+            [ASSISTANT] = "助理"
         };
 
 
