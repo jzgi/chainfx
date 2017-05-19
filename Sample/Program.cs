@@ -44,17 +44,6 @@ namespace Greatbone.Sample
                 deploy
             );
 
-            TryCreate<ChatService>(
-                new ServiceContext("chat")
-                {
-                    addrs = new[] {"http://localhost:8081"},
-                    auth = auth,
-                    db = pg,
-                    cluster = cluster
-                },
-                deploy
-            );
-
             StartAll();
         }
     }
