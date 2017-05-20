@@ -17,7 +17,7 @@ namespace Greatbone.Sample
         {
         }
 
-        [Ui("修改", Mode = UiMode.ButtonDialog)]
+        [Ui("修改", Mode = UiMode.ButtonPrompt)]
         public async Task edit(ActionContext ac)
         {
             string name = ac[this];

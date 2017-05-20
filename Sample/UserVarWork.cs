@@ -30,7 +30,7 @@ namespace Greatbone.Sample
             Create<MyFeekbackWork>("feedback");
         }
 
-        [Ui("基本信息", Mode = UiMode.AnchorDialog)]
+        [Ui("基本信息", Mode = UiMode.AnchorShow)]
         public async Task profile(ActionContext ac)
         {
             string wx = ac[this];
@@ -78,7 +78,7 @@ namespace Greatbone.Sample
 
         const string PASS = "0z4R4pX7";
 
-        [Ui("后台操作设置", "后台操作帐号", Mode = UiMode.AnchorDialog)]
+        [Ui("后台操作设置", "后台操作帐号", Mode = UiMode.AnchorShow)]
         public async Task loginf(ActionContext ac)
         {
             string wx = ac[this];
@@ -121,7 +121,7 @@ namespace Greatbone.Sample
             }
         }
 
-        [Ui("调试刷新", Mode = UiMode.AnchorDialog)]
+        [Ui("调试刷新", Mode = UiMode.AnchorShow)]
         public void token(ActionContext ac)
         {
             string wx = ac[this];

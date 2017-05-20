@@ -188,7 +188,7 @@ namespace Greatbone.Sample
             ac.GiveFrame(200, @public: false, maxage: 60 * 5);
         }
 
-        [Ui("基本信息", Mode = UiMode.AnchorDialog)]
+        [Ui("基本信息", Mode = UiMode.AnchorShow)]
         [User(User.ASSISTANT)]
         public async Task profile(ActionContext ac)
         {
@@ -272,7 +272,7 @@ namespace Greatbone.Sample
             }
         }
 
-        [Ui("操作授权", Mode = UiMode.AnchorDialog)]
+        [Ui("操作授权", Mode = UiMode.AnchorShow)]
         [User(User.MANAGER)]
         public async Task crew(ActionContext ac, int subcmd)
         {
@@ -350,7 +350,7 @@ namespace Greatbone.Sample
         {
         }
 
-        [Ui("修改", Mode = UiMode.AnchorDialog)]
+        [Ui("修改", Mode = UiMode.AnchorShow)]
         public async Task edit(ActionContext ac)
         {
             if (ac.GET)
@@ -439,7 +439,7 @@ namespace Greatbone.Sample
             }
         }
 
-        [Ui("设置经理", Mode = UiMode.AnchorDialog)]
+        [Ui("设置经理", Mode = UiMode.AnchorShow)]
         public new async Task mgr(ActionContext ac)
         {
             string shopid = ac[this];

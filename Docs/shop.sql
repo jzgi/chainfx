@@ -11,7 +11,7 @@ Target Server Type    : PGSQL
 Target Server Version : 90505
 File Encoding         : 65001
 
-Date: 2017-05-15 00:08:37
+Date: 2017-05-19 23:48:13
 */
 
 
@@ -34,9 +34,9 @@ CREATE SEQUENCE "public"."orders_id_seq"
  INCREMENT 1
  MINVALUE 1000
  MAXVALUE 9223372036854775807
- START 1096
+ START 1176
  CACHE 8;
-SELECT setval('"public"."orders_id_seq"', 1096, true);
+SELECT setval('"public"."orders_id_seq"', 1176, true);
 
 -- ----------------------------
 -- Table structure for evtq
@@ -93,30 +93,25 @@ WITH (OIDS=FALSE)
 DROP TABLE IF EXISTS "public"."orders";
 CREATE TABLE "public"."orders" (
 "id" int8 DEFAULT nextval('orders_id_seq'::regclass) NOT NULL,
-"shopname" varchar(10) COLLATE "default",
+"shop" varchar(10) COLLATE "default",
 "shopid" varchar(6) COLLATE "default",
-"custname" varchar(10) COLLATE "default",
-"custwx" varchar(28) COLLATE "default",
-"custtel" varchar(11) COLLATE "default",
-"custdistr" varchar(6) COLLATE "default",
-"custaddr" varchar(20) COLLATE "default",
+"buyer" varchar(10) COLLATE "default",
+"wx" varchar(28) COLLATE "default",
+"tel" varchar(11) COLLATE "default",
+"distr" varchar(6) COLLATE "default",
+"addr" varchar(20) COLLATE "default",
 "detail" jsonb,
 "total" money,
 "created" timestamp(6),
-"paid" timestamp(6),
-"pack" varchar(4) COLLATE "default",
-"packtel" varchar(11) COLLATE "default",
-"packed" timestamp(6),
-"dvrat" varchar(6) COLLATE "default",
-"dvr" varchar(4) COLLATE "default",
-"dvrtel" varchar(11) COLLATE "default",
-"dvred" timestamp(6),
+"partnerid" varchar(6) COLLATE "default",
+"closer" varchar(4) COLLATE "default",
+"cashed" timestamp(6),
 "closed" timestamp(6),
 "status" int2,
-"prepay_id" varchar(60) COLLATE "default",
 "repaid" timestamp(6),
-"note" varchar(20) COLLATE "default",
-"custcity" varchar(6) COLLATE "default"
+"criteria" varchar(20) COLLATE "default",
+"city" varchar(6) COLLATE "default",
+"cash" money DEFAULT 0
 )
 WITH (OIDS=FALSE)
 

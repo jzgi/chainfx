@@ -2240,7 +2240,7 @@ html.is-reveal-open body {
 
 table {
     width: 100%;
-    margin-bottom: 1rem;
+    margin-bottom: 0rem;
     border-radius: 0;
     border-collapse: collapse;
 }
@@ -2813,8 +2813,8 @@ a.thumbnail image {
 .columns {
     -ms-flex: 1 1 0px;
     flex: 1 1 0px;
-    padding-right: 0.9375rem;
-    padding-left: 0.9375rem;
+    padding-right: 0.5rem;
+    padding-left: 0.5rem;
     min-width: initial;
 }
 
@@ -3126,8 +3126,8 @@ a.thumbnail image {
 
 .small-uncollapse > .column,
 .small-uncollapse > .columns {
-    padding-right: 0.9375rem;
-    padding-left: 0.9375rem;
+    padding-right: 0.5rem;
+    padding-left: 0.5rem;
 }
 
 @media print, screen and (min-width: 40em) {
@@ -3445,8 +3445,8 @@ a.thumbnail image {
 
     .medium-uncollapse > .column,
     .medium-uncollapse > .columns {
-        padding-right: 0.9375rem;
-        padding-left: 0.9375rem;
+        padding-right: 0.5rem;
+        padding-left: 0.5rem;
     }
 }
 
@@ -3765,8 +3765,8 @@ a.thumbnail image {
 
     .large-uncollapse > .column,
     .large-uncollapse > .columns {
-        padding-right: 0.9375rem;
-        padding-left: 0.9375rem;
+        padding-right: 0.5rem;
+        padding-left: 0.5rem;
     }
 }
 
@@ -4085,8 +4085,8 @@ a.thumbnail image {
 
     .xlarge-uncollapse > .column,
     .xlarge-uncollapse > .columns {
-        padding-right: 0.9375rem;
-        padding-left: 0.9375rem;
+        padding-right: 0.5rem;
+        padding-left: 0.5rem;
     }
 }
 

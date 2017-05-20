@@ -528,10 +528,10 @@ namespace Greatbone.Core
 
                 UiAttribute ui = ai.Ui;
 
-                if (ui.IsLink)
+                if (ui.IsAnchor)
                 {
                     Add("<a class=\"button success");
-                    if (!ui.Alert) Add(" hollow");
+                    if (!ui.Bold) Add(" hollow");
                     Add("\" href=\"");
                     for (int lvl = 0; lvl <= level; lvl++)
                     {
@@ -544,37 +544,23 @@ namespace Greatbone.Core
                     {
                         Add(" disabled onclick=\"return false;\"");
                     }
-                    else if (ui.HasDialog)
+                    else if (ui.HasPrompt)
                     {
-                        Add(" onclick=\"return dialog(this,1,2);\"");
+                        Add(" onclick=\"return dialog(this,2,2,'");
+                        Add(ui.Tip);
+                        Add("');\"");
                     }
-                    Add(">");
-                    Add(ai.Label);
-                    Add("</a>");
-                }
-                else if (ui.IsAnchor)
-                {
-                    Add("<a class=\"button success");
-                    if (!ui.Alert) Add(" hollow");
-                    Add("\" href=\"");
-                    for (int lvl = 0; lvl <= level; lvl++)
+                    else if (ui.HasShow)
                     {
-                        chain[lvl].OutputVarKey(this);
-                        Add('/');
-                    }
-                    Add(ai.Name);
-                    Add("\"");
-                    if (ai.Enabler != null && !ai.Enabler(chain[level].obj))
-                    {
-                        Add(" disabled onclick=\"return false;\"");
-                    }
-                    else if (ui.HasDialog)
-                    {
-                        Add(" onclick=\"return dialog(this,2,3);\"");
+                        Add(" onclick=\"return dialog(this,4,3,'");
+                        Add(ui.Tip);
+                        Add("');\"");
                     }
                     else if (ui.HasScript)
                     {
-                        Add(" onclick=\"");
+                        Add(" onclick=\"if(!confirm('");
+                        Add(ui.Tip ?? ui.Label);
+                        Add("')) return false;");
                         Add(ai.Name);
                         Add("(this);return false;\"");
                     }
@@ -595,7 +581,7 @@ namespace Greatbone.Core
                 else if (ui.IsButton)
                 {
                     Add("<button class=\"button success");
-                    if (!ui.Alert) Add(" hollow");
+                    if (!ui.Bold) Add(" hollow");
                     Add("\" name=\"");
                     Add(ai.Name);
                     Add("\" formaction=\"");
@@ -613,12 +599,26 @@ namespace Greatbone.Core
                     else if (ui.HasConfirm)
                     {
                         Add(" onclick=\"return confirm('");
-                        Add(ai.Label);
+                        Add(ui.Tip ?? ui.Label);
                         Add("?');\"");
                     }
-                    else if (ui.HasDialog)
+                    else if (ui.HasPrompt)
                     {
-                        Add(" onclick=\"return dialog(this,4,2);\"");
+                        Add(" onclick=\"return dialog(this,2,2,'");
+                        Add(ui.Tip);
+                        Add("');\"");
+                    }
+                    else if (ui.HasShow)
+                    {
+                        Add(" onclick=\"return dialog(this,4,3,'");
+                        Add(ui.Tip);
+                        Add("');\"");
+                    }
+                    else if (ui.HasOpen)
+                    {
+                        Add(" onclick=\"return dialog(this,8,3,'");
+                        Add(ui.Tip);
+                        Add("');\"");
                     }
                     Add(">");
                     Add(ai.Label);

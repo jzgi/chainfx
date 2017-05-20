@@ -58,7 +58,7 @@ namespace Greatbone.Sample
         {
         }
 
-        [Ui("查找编号", Mode = UiMode.AnchorDialog)]
+        [Ui("查找编号", Mode = UiMode.AnchorShow)]
         public void find(ActionContext ac)
         {
             if (ac.GET)

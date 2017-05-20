@@ -1,8 +1,8 @@
 
 // build and open a reveal dialog
 // trig - a button, input_button or anchor element
-// mode - link, anchor, button, input
-function dialog(trig, mode, siz) {
+// mode - 2 (prompt), 4 (show), 8 (open)
+function dialog(trig, mode, siz, title) {
 
     var sizg = siz == 1 ? 'small' : siz == 2 ? 'large' : 'full';
 
@@ -21,11 +21,13 @@ function dialog(trig, mode, siz) {
 
     var src = action.indexOf('?') == -1 ? action + '?dyndlg=true' : action + '&dyndlg=true';
 
+    title = title || trig.innerHTML;
+
     var html = '<div id="dyndlg" class="' + sizg + ' reveal"  data-reveal data-close-on-click="false">'
-        + '<strong>' + trig.innerHTML + ' </strong>'
+        + '<strong>' + title + ' </strong>'
         + '<button class="close-button medium" type="button" onclick="$(\'#dyndlg\').foundation(\'close\').foundation(\'destroy\').remove();">&times;</button>'
-        + '<div style="height: calc(100% - 3rem)"><iframe src="' + src + '" style="width: 100%; height: 100%"></iframe></div>'
-        + '<button class=\"button primary float-center\" onclick="ok(this,' + mode + ',\'' + formid + '\',\'' + tag + '\',\'' + action + '\',\'' + method + '\');" disabled>确定</botton>'
+        + '<div style="height: calc(100% - ' + (mode == 8 ? '0rem' : '3rem') + ')"><iframe src="' + src + '" style="width: 100%; height: 100%"></iframe></div>'
+        + (mode == 8 ? '' : ('<button class=\"button primary float-center\" onclick="ok(this,' + mode + ',\'' + formid + '\',\'' + tag + '\',\'' + action + '\',\'' + method + '\');" disabled>确定</botton>'))
         + '</div>';
 
     var dive = $(html);

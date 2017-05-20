@@ -227,7 +227,7 @@ namespace Greatbone.Sample
             proj = -1 ^ Order.LATE ^ Order.WX;
         }
 
-        [Ui("发送消息", Mode = UiMode.AnchorDialog)]
+        [Ui("发送通知", Mode = UiMode.ButtonShow)]
         public void shipped(ActionContext ac)
         {
             long[] key = ac.Query[nameof(key)];
@@ -246,7 +246,7 @@ namespace Greatbone.Sample
             ac.GiveRedirect();
         }
 
-        [Ui("委托办理", Mode = UiMode.AnchorDialog)]
+        [Ui("委托办理", Mode = UiMode.ButtonShow)]
         public async Task calc(ActionContext ac)
         {
             string shopid = ac[-1];

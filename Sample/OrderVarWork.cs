@@ -27,7 +27,7 @@ namespace Greatbone.Sample
             CreateVar<MyCartOrderVarVarWork, string>(obj => ((OrderLine) obj).name);
         }
 
-        [Ui("收货地址", Mode = UiMode.ButtonDialog)]
+        [Ui("收货地址", Mode = UiMode.ButtonPrompt)]
         public async Task addr(ActionContext ac)
         {
             string wx = ac[typeof(UserVarWork)];
@@ -83,7 +83,7 @@ namespace Greatbone.Sample
             }
         }
 
-        [Ui("附注", Mode = UiMode.ButtonDialog)]
+        [Ui("附注", Mode = UiMode.ButtonPrompt)]
         public async Task note(ActionContext ac)
         {
             string wx = ac[typeof(UserVarWork)];
@@ -118,7 +118,7 @@ namespace Greatbone.Sample
 
         static readonly Func<IData, bool> PREPAY = obj => ((Order) obj).addr != null;
 
-        [Ui("付款", "确定此单要付款吗", Mode = UiMode.AnchorScript, Alert = true)]
+        [Ui("付款", "确定此单要付款吗", Mode = UiMode.AnchorScript, Bold = true)]
         public async Task prepay(ActionContext ac)
         {
             string wx = ac[typeof(UserVarWork)];
@@ -146,7 +146,7 @@ namespace Greatbone.Sample
         {
         }
 
-        [Ui("请求撤销", Mode = UiMode.ButtonDialog)]
+        [Ui("请求撤销", Mode = UiMode.ButtonPrompt)]
         public async Task cancel(ActionContext ac)
         {
             long id = ac[this];
@@ -171,7 +171,7 @@ namespace Greatbone.Sample
             }
         }
 
-        [Ui("确认收货", "确认收货并结束次单", Mode = UiMode.ButtonDialog)]
+        [Ui("确认收货", "确认收货并结束次单", Mode = UiMode.ButtonPrompt)]
         public async Task got(ActionContext ac)
         {
             long id = ac[this];
@@ -229,7 +229,7 @@ namespace Greatbone.Sample
             }
         }
 
-        [Ui("付款核查", Mode = UiMode.AnchorDialog)]
+        [Ui("付款核查", Mode = UiMode.AnchorShow)]
         public void check(ActionContext ac)
         {
             long id = ac[this];
