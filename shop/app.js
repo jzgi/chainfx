@@ -1,7 +1,10 @@
 
 // build and open a reveal dialog
 // trig - a button, input_button or anchor element
-// mode - 2 (prompt), 4 (show), 8 (open)
+
+// mode
+const PROMPT = 2, SHOW = 4, OPEN = 8;
+
 function dialog(trig, mode, siz, title) {
 
     var sizg = siz == 1 ? 'small' : siz == 2 ? 'large' : 'full';
@@ -26,8 +29,8 @@ function dialog(trig, mode, siz, title) {
     var html = '<div id="dyndlg" class="' + sizg + ' reveal"  data-reveal data-close-on-click="false">'
         + '<strong>' + title + ' </strong>'
         + '<button class="close-button medium" type="button" onclick="$(\'#dyndlg\').foundation(\'close\').foundation(\'destroy\').remove();">&times;</button>'
-        + '<div style="height: calc(100% - ' + (mode == 8 ? '0rem' : '3rem') + ')"><iframe src="' + src + '" style="width: 100%; height: 100%"></iframe></div>'
-        + (mode == 8 ? '' : ('<button class=\"button primary float-center\" onclick="ok(this,' + mode + ',\'' + formid + '\',\'' + tag + '\',\'' + action + '\',\'' + method + '\');" disabled>确定</botton>'))
+        + '<div style="height: calc(100% - ' + (mode == OPEN ? '0rem' : '3rem') + ')"><iframe src="' + src + '" style="width: 100%; height: 100%"></iframe></div>'
+        + (mode == OPEN ? '' : ('<button class=\"button primary float-center\" onclick="ok(this,' + mode + ',\'' + formid + '\',\'' + tag + '\',\'' + action + '\',\'' + method + '\');" disabled>确定</botton>'))
         + '</div>';
 
     var dive = $(html);
@@ -49,18 +52,47 @@ function ok(okbtn, mode, formid, tag, action, method) {
 
     var dlge = $('#dyndlg');
 
-    if (mode == 1) { // link mode
+    if (mode == PROMPT) {
+
         var iframe = dlge.find('iframe');
         var form = iframe.contents().find('form');
         if (form.length != 0) {
+
             if (!form[0].reportValidity()) return;
-            var qstr = $(form[0]).serialize();
-            if (qstr) {
-                location.href = action.split("?")[0] + '?' + qstr;
+
+            if (tag == 'A') { // append to url and switch
+                var qstr = $(form[0]).serialize();
+                if (qstr) {
+                    var uri = action.indexOf('?') == -1 ? action + '?' + qstr : action + qstr;
+                    location.href = uri;
+                }
+            } else if (tag == 'BUTTON') { // merge to the parent and submit
+                if (method == 'get') {
+                    var qstr = $(form[0]).serialize();
+                    if (qstr) {
+                        // dispose the dialog
+                        dlge.foundation('close'); dlge.foundation('destroy'); dlge.remove();
+                        // load page
+                        location.href = action.split("?")[0] + '?' + qstr;
+                    }
+                } else if (method == 'post') {
+                    var theform = $('#' + formid);
+                    var pairs = $(form[0]).serializeArray();
+                    pairs.forEach(function (e, i) {
+                        $('<input>').attr({ type: 'hidden', name: e.name, value: e.value }).appendTo(theform);
+                    });
+
+                    // dispose the dialog
+                    dlge.foundation('close'); dlge.foundation('destroy'); dlge.remove();
+                    // submit
+                    theform.attr('action', action);
+                    theform.attr('method', method);
+                    theform.submit();
+                }
             }
             return;
         }
-    } else if (mode == 2) { // anchor mode
+    } else if (mode == SHOW) {
         var iframe = dlge.find('iframe');
         var form = iframe.contents().find('form');
         if (form.length != 0) {
@@ -68,40 +100,12 @@ function ok(okbtn, mode, formid, tag, action, method) {
             form[0].submit();
             return;
         }
-    } else if (mode == 4) { // button mode, merge to the parent and submit
+    } else if (mode == OPEN) { 
         var iframe = dlge.find('iframe');
         var form = iframe.contents().find('form');
         if (form.length != 0) {
             if (!form[0].reportValidity()) return;
-            if (method == 'get') {
-                var qstr = $(form[0]).serialize();
-                if (qstr) {
-                    // dispose the dialog
-                    dlge.foundation('close');
-                    dlge.foundation('destroy');
-                    dlge.remove();
-                    // load page
-                    location.href = action.split("?")[0] + '?' + qstr;
-                }
-            } else if (method == 'post') {
-                var gridform = $('#' + formid);
-                var pairs = $(form[0]).serializeArray();
-                pairs.forEach(function (e, i) {
-                    $('<input>').attr({ type: 'hidden', name: e.name, value: e.value }).appendTo(gridform);
-                });
-
-                // dispose the dialog
-                dlge.foundation('close');
-                dlge.foundation('destroy');
-                dlge.remove();
-                // submit
-                gridform.attr('action', action);
-                gridform.attr('method', method);
-                gridform.submit();
-            }
         }
-    } else { // picker mode
-
     }
 }
 

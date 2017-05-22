@@ -34,7 +34,7 @@ namespace Greatbone.Sample
             {
                 const int proj = -1 ^ Order.LATE ^ Order.WX;
                 dc.Sql("SELECT ").columnlst(Order.Empty, proj)._("FROM orders WHERE wx = @1 AND status = @2 ORDER BY id DESC");
-                if (dc.Query(p => p.Set(wx).Set(Order.DRAFT)))
+                if (dc.Query(p => p.Set(wx).Set(Order.CREATED)))
                 {
                     ac.GiveGridPage(200, dc.ToDatas<Order>(proj), proj, @public: false, maxage: 3);
                 }
@@ -51,7 +51,7 @@ namespace Greatbone.Sample
             string wx = ac[typeof(UserVarWork)];
             using (var dc = ac.NewDbContext())
             {
-                dc.Execute("DELETE FROM orders WHERE wx = @1 AND status = @2", p => p.Set(wx).Set(Order.DRAFT));
+                dc.Execute("DELETE FROM orders WHERE wx = @1 AND status = @2", p => p.Set(wx).Set(Order.CREATED));
                 ac.GiveRedirect();
             }
         }
@@ -152,8 +152,8 @@ namespace Greatbone.Sample
             using (var dc = ac.NewDbContext())
             {
                 const int proj = -1;
-                dc.Sql("SELECT ").columnlst(Order.Empty, proj)._("FROM orders WHERE wx = @1 AND status >= @2 ORDER BY id LIMIT 10 OFFSET @4");
-                if (dc.Query(p => p.Set(wx).Set(Order.SHIPPED).Set(page * 10)))
+                dc.Sql("SELECT ").columnlst(Order.Empty, proj)._("FROM orders WHERE wx = @1 AND status > @2 ORDER BY id LIMIT 10 OFFSET @3");
+                if (dc.Query(p => p.Set(wx).Set(Order.ACCEPTED).Set(page * 10)))
                 {
                     ac.GiveGridPage(200, dc.ToDatas<Order>(proj), proj, @public: false, maxage: 3);
                 }
@@ -201,7 +201,7 @@ namespace Greatbone.Sample
     {
         public OprCartOrderWork(WorkContext wc) : base(wc)
         {
-            status = Order.DRAFT;
+            status = Order.CREATED;
             proj = -1 ^ Order.LATE ^ Order.WX;
         }
 
@@ -271,8 +271,8 @@ namespace Greatbone.Sample
     {
         public OprPastOrderWork(WorkContext wc) : base(wc)
         {
-            status = Order.CANCELLED;
-            status2 = Order.CLOSED;
+            status = Order.ABORTED;
+            status2 = Order.COMPLETED;
             proj = -1 ^ Order.LATE ^ Order.WX;
         }
 

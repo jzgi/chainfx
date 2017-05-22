@@ -23,9 +23,7 @@ namespace Greatbone.Sample
 
         public const string NONCE_STR = "30A5FE271";
 
-        static readonly Client WCPay = new Client("https://api.mch.weixin.qq.com");
-
-        static Client WweiXinPaySecure;
+        static Client WCPay;
 
         public const string KEY = "28165ACAB74C2FBF3B042B5D2F87D274";
 
@@ -51,7 +49,7 @@ namespace Greatbone.Sample
             }
         });
 
-        internal static void InitWCPaySecure(string p12file)
+        internal static void Initialize(string p12file, bool deploy)
         {
             var handler = new HttpClientHandler
             {
@@ -59,44 +57,21 @@ namespace Greatbone.Sample
             };
             X509Certificate2 cert = new X509Certificate2(p12file, MCH_ID, X509KeyStorageFlags.MachineKeySet);
             handler.ClientCertificates.Add(cert);
-            var myClient = new HttpClient(handler);
-
-            WweiXinPaySecure = new Client(handler)
+            WCPay = new Client(handler)
             {
                 BaseAddress = new Uri("https://api.mch.weixin.qq.com")
             };
-        }
 
-        static WeiXinUtility()
-        {
-            //            renewer.Start();
+            // start the access token renewer thread
+            if (deploy)
+            {
+                Renewer.Start();
+            }
         }
 
         public static void Stop()
         {
             stop = true;
-        }
-
-        public static async Task<string> PostUnifiedOrderAsync(long orderid, decimal total, string openid, string ip, string notifyurl)
-        {
-            XElem x = new XElem("xml");
-            x.AddChild("appid", APPID);
-            x.AddChild("body", BODY_DESC);
-            x.AddChild("mch_id", MCH_ID);
-            x.AddChild("nonce_str", NONCE_STR);
-            x.AddChild("notify_url", notifyurl);
-            x.AddChild("openid", openid);
-            x.AddChild("out_trade_no", orderid.ToString());
-            x.AddChild("spbill_create_ip", ip);
-            x.AddChild("total_fee", ((int) (total * 100)).ToString());
-            x.AddChild("trade_type", "JSAPI");
-            string sign = Sign(x);
-            x.AddChild("sign", sign);
-
-            XElem xe = (await WCPay.PostAsync<XElem>(null, "/pay/unifiedorder", x.Dump())).Y;
-            string prepay_id = xe.Child(nameof(prepay_id));
-
-            return prepay_id;
         }
 
         public static void GiveRedirectWeiXinAuthorize(this ActionContext ac)
@@ -183,6 +158,28 @@ namespace Greatbone.Sample
             XElem resp = (await WCPay.PostAsync<XElem>(null, "/mmpaymkttransfers/promotion/transfers", x.Dump())).Y;
         }
 
+        public static async Task<string> PostUnifiedOrderAsync(long orderid, decimal total, string openid, string ip, string notifyurl)
+        {
+            XElem x = new XElem("xml");
+            x.AddChild("appid", APPID);
+            x.AddChild("body", BODY_DESC);
+            x.AddChild("mch_id", MCH_ID);
+            x.AddChild("nonce_str", NONCE_STR);
+            x.AddChild("notify_url", notifyurl);
+            x.AddChild("openid", openid);
+            x.AddChild("out_trade_no", orderid.ToString());
+            x.AddChild("spbill_create_ip", ip);
+            x.AddChild("total_fee", ((int) (total * 100)).ToString());
+            x.AddChild("trade_type", "JSAPI");
+            string sign = Sign(x);
+            x.AddChild("sign", sign);
+
+            XElem xe = (await WCPay.PostAsync<XElem>(null, "/pay/unifiedorder", x.Dump())).Y;
+            string prepay_id = xe.Child(nameof(prepay_id));
+
+            return prepay_id;
+        }
+
         public static bool Notified(XElem xe, out long out_trade_no, out decimal cash)
         {
             cash = 0;
@@ -206,6 +203,30 @@ namespace Greatbone.Sample
             cash = ((decimal) cash_fee) / 100;
             out_trade_no = xe.Child(nameof(out_trade_no)); // 商户订单号
             return true;
+        }
+
+        public static async Task<decimal> PostOrderQueryAsync(long orderid)
+        {
+            XElem x = new XElem("xml");
+            x.AddChild("appid", APPID);
+            x.AddChild("mch_id", MCH_ID);
+            x.AddChild("nonce_str", NONCE_STR);
+            x.AddChild("out_trade_no", orderid.ToString());
+            string sign = Sign(x);
+            x.AddChild("sign", sign);
+
+            XElem xe = (await WCPay.PostAsync<XElem>(null, "/pay/orderquery", x.Dump())).Y;
+
+            sign = xe.Child(nameof(sign));
+            xe.Sort();
+            if (sign != Sign(xe, "sign")) return 0;
+
+            string return_code = xe.Child(nameof(return_code));
+            if (return_code != "SUCCESS") return 0;
+
+            decimal cash_fee = xe.Child(nameof(cash_fee));
+
+            return cash_fee;
         }
 
         static string Sign(XElem xe, string exclude = null)

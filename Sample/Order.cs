@@ -15,21 +15,15 @@ namespace Greatbone.Sample
             LATE = 0x0010;
 
         // status
-        public const short
-            DRAFT = 0,
-            ACCEPTED = 1,
-            CANCELLED = 3,
-            SHIPPED = 5,
-            CLOSED = 7;
+        public const short CREATED = 0, ACCEPTED = 1, ABORTED = 3, COMPLETED = 5;
 
         // status
         static readonly Opt<short> STATUS = new Opt<short>
         {
-            [DRAFT] = "购物车",
+            [CREATED] = "购物车",
             [ACCEPTED] = "已接受，在处理",
-            [CANCELLED] = "已撤销",
-            [SHIPPED] = "已确认收货",
-            [CLOSED] = "已关闭",
+            [ABORTED] = "已撤销",
+            [COMPLETED] = "已完成",
         };
 
 
@@ -46,14 +40,14 @@ namespace Greatbone.Sample
         internal string addr; // address
         internal string tel; // mobile number
         internal OrderLine[] detail;
-        internal string criteria;
+        internal string comment;
         internal decimal total; // receivable
         internal decimal cash; // amount recieved
-        internal DateTime cashed; // time received
 
         internal string partnerid; // delegate shopid
-        internal DateTime closed; // time completed or aborted
-        internal DateTime repaid;
+        internal DateTime accepted; // when cash received or forcibly accepted
+        internal DateTime aborted; // time aborted
+        internal DateTime completed; // time completed
         internal short status;
 
         public void ReadData(IDataInput i, short proj = 0)
@@ -62,9 +56,9 @@ namespace Greatbone.Sample
             {
                 i.Get(nameof(id), ref id);
             }
+            i.Get(nameof(created), ref created);
             i.Get(nameof(shop), ref shop);
             i.Get(nameof(shopid), ref shopid);
-
             i.Get(nameof(buyer), ref buyer);
             if ((proj & WX) == WX)
             {
@@ -78,17 +72,16 @@ namespace Greatbone.Sample
             {
                 i.Get(nameof(detail), ref detail);
             }
+            i.Get(nameof(comment), ref comment);
             i.Get(nameof(total), ref total);
-            i.Get(nameof(criteria), ref criteria);
-            i.Get(nameof(created), ref created);
 
             if ((proj & LATE) == LATE)
             {
                 i.Get(nameof(cash), ref cash);
-                i.Get(nameof(cashed), ref cashed);
+                i.Get(nameof(accepted), ref accepted);
                 i.Get(nameof(partnerid), ref partnerid);
-                i.Get(nameof(closed), ref closed);
-                i.Get(nameof(repaid), ref repaid);
+                i.Get(nameof(aborted), ref aborted);
+                i.Get(nameof(completed), ref completed);
             }
 
             i.Get(nameof(status), ref status);
@@ -123,16 +116,16 @@ namespace Greatbone.Sample
             {
                 o.Put(nameof(detail), detail);
             }
+            o.Put(nameof(comment), comment, "附加说明");
             o.Put(nameof(total), total, "应付金额", '¥');
-            o.Put(nameof(criteria), criteria, "附注");
 
             if ((proj & LATE) == LATE)
             {
                 o.Put(nameof(cash), cash, "实收金额", '¥');
-                o.Put(nameof(cashed), cashed, "实收时间");
+                o.Put(nameof(accepted), accepted, "实收时间");
                 o.Put(nameof(partnerid), partnerid);
-                o.Put(nameof(closed), closed);
-                o.Put(nameof(repaid), repaid);
+                o.Put(nameof(aborted), aborted);
+                o.Put(nameof(completed), completed);
             }
             o.Put(nameof(status), status, "状态", STATUS);
         }

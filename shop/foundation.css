@@ -2009,11 +2009,12 @@ select[multiple] {
     display: flex;
     -ms-flex-direction: column;
     flex-direction: column;
-    margin-bottom: 1rem;
-    border: 1px solid #e6e6e6;
+    margin-top: 0.75rem;
+    margin-bottom: 0.75rem;
+    border: 0px solid #e6e6e6;
     border-radius: 3px;
     background: #fefefe;
-    box-shadow: none;
+    box-shadow: 0 0 0.5rem black;
     overflow: hidden;
     color: #0a0a0a;
 }

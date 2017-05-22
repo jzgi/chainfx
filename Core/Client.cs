@@ -187,7 +187,7 @@ namespace Greatbone.Core
                 }
                 byte[] bytea = await rsp.Content.ReadAsByteArrayAsync();
                 string ctyp = rsp.Content.Headers.GetValue("Content-Type");
-                return (M) ParseContent(ctyp, bytea, bytea.Length, typeof(M));
+                return (M)ParseContent(ctyp, bytea, bytea.Length, typeof(M));
             }
             catch
             {
@@ -268,16 +268,23 @@ namespace Greatbone.Core
                         req.Headers.Add("Authorization", "Token " + ac.Token);
                     }
                 }
-                req.Content = (HttpContent) content;
+                req.Content = (HttpContent)content;
                 req.Headers.TryAddWithoutValidation("Content-Type", content.Type);
                 req.Headers.TryAddWithoutValidation("Content-Length", content.Size.ToString());
 
                 HttpResponseMessage rsp = await SendAsync(req, HttpCompletionOption.ResponseContentRead);
-                return (int) rsp.StatusCode;
+                return (int)rsp.StatusCode;
             }
             catch (Exception e)
             {
                 retryat = Environment.TickCount + AHEAD;
+            }
+            finally
+            {
+                if (content is DynamicContent)
+                {
+                    BufferUtility.Return((DynamicContent)content);
+                }
             }
             return 0;
         }
@@ -291,7 +298,7 @@ namespace Greatbone.Core
                 {
                     req.Headers.Add("Authorization", "Token " + ctx.Token);
                 }
-                req.Content = (HttpContent) content;
+                req.Content = (HttpContent)content;
                 req.Headers.TryAddWithoutValidation("Content-Type", content.Type);
                 req.Headers.TryAddWithoutValidation("Content-Length", content.Size.ToString());
 
@@ -299,18 +306,25 @@ namespace Greatbone.Core
                 string ctyp = rsp.Content.Headers.GetValue("Content-Type");
                 if (ctyp == null)
                 {
-                    return new Duo<int, M>((int) rsp.StatusCode, null);
+                    return new Duo<int, M>((int)rsp.StatusCode, null);
                 }
                 else
                 {
                     byte[] bytes = await rsp.Content.ReadAsByteArrayAsync();
                     M inp = ParseContent(ctyp, bytes, bytes.Length, typeof(M)) as M;
-                    return new Duo<int, M>((int) rsp.StatusCode, inp);
+                    return new Duo<int, M>((int)rsp.StatusCode, inp);
                 }
             }
             catch (Exception e)
             {
                 retryat = Environment.TickCount + AHEAD;
+            }
+            finally
+            {
+                if (content is DynamicContent)
+                {
+                    BufferUtility.Return((DynamicContent)content);
+                }
             }
             return default(Duo<int, M>);
         }

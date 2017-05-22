@@ -436,7 +436,8 @@ namespace Greatbone.Core
                 Add("<div class=\"row expanded small-up-1 medium-up-2 large-up-3 xlarge-up-4\">");
                 for (int i = 0; i < arr.Length; i++)
                 {
-                    Add("<div class=\"column card\">");
+                    Add("<div class=\"column\">");
+                    Add("<div class=\"card\">");
                     D obj = arr[i];
                     chain[level].obj = obj;
 
@@ -463,6 +464,7 @@ namespace Greatbone.Core
                         TRIGGERS(ais);
                         Add("</div>");
                     }
+                    Add("</div>");
                     Add("</div>");
                 }
                 Add("</div>");
@@ -1923,7 +1925,7 @@ namespace Greatbone.Core
                 case GRID_DIV:
                     if (v != null)
                     {
-                        Add("<div class=\"row\">");
+                        Add("<div class=\"row column\">");
                         TABLE(null, chain[level].varwork?.varwork, v, proj);
                         Add("</div>");
                     }

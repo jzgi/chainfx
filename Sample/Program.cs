@@ -33,6 +33,9 @@ namespace Greatbone.Sample
                 ["chat"] = "http://localhost:8081"
             };
 
+
+            WeiXinUtility.Initialize("apiclient_cert.p12", deploy);
+
             TryCreate<ShopService>(
                 new ServiceContext("shop")
                 {

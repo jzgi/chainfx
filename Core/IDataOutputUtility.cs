@@ -105,5 +105,34 @@ namespace Greatbone.Core
             inp.Get(name, ref v);
             return v;
         }
+
+
+        public static void GetOn(this IDataInput inp, ref string v1, ref string v2)
+        {
+            inp.Get(null, ref v1);
+            inp.Get(null, ref v2);
+        }
+
+        public static void GetOn(this IDataInput inp, ref string v1, ref string v2, ref string v3)
+        {
+            inp.Get(null, ref v1);
+            inp.Get(null, ref v2);
+            inp.Get(null, ref v3);
+        }
+
+        public static void GetOn(this IDataInput inp, ref string v1, ref string v2, ref string v3, ref string v4)
+        {
+            inp.Get(null, ref v1);
+            inp.Get(null, ref v2);
+            inp.Get(null, ref v3);
+            inp.Get(null, ref v4);
+        }
+
+        public static void GetOn(this IDataInput inp, ref int v1, ref string v2, ref string v3)
+        {
+            inp.Get(null, ref v1);
+            inp.Get(null, ref v2);
+            inp.Get(null, ref v3);
+        }
     }
 }

@@ -32,8 +32,6 @@ namespace Greatbone.Sample
             {
                 cityopt[i] = cities[i].name;
             }
-
-            InitWCPaySecure(sc.GetFilePath("$apiclient_cert.p12"));
         }
 
         public string[] CityOpt => cityopt;
@@ -155,7 +153,7 @@ namespace Greatbone.Sample
             {
                 using (var dc = NewDbContext())
                 {
-                    dc.Execute("UPDATE orders SET status = 1, cash = @1 WHERE id = @2 AND status <= 1", (p) => p.Set(cash).Set(orderid));
+                    dc.Execute("UPDATE orders SET cash = @1, accepted = localtimestamp, status = @2 WHERE id = @3 AND status <= @2", (p) => p.Set(cash).Set(Order.ACCEPTED).Set(orderid));
                 }
                 // return xml
                 XmlContent cont = new XmlContent(true, 1024);

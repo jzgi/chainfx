@@ -33,10 +33,10 @@ namespace Greatbone.Sample
             string wx = ac[typeof(UserVarWork)];
             long id = ac[this];
 
-            string tel = null;
-            string city = null;
-            string distr = null;
-            string addr = null;
+            string city;
+            string distr;
+            string addr;
+            string tel;
 
             if (ac.GET)
             {
@@ -49,22 +49,19 @@ namespace Greatbone.Sample
                 {
                     using (var dc = ac.NewDbContext())
                     {
-                        if (dc.Query1("SELECT custtel, custcity, custdistr, custaddr FROM orders WHERE id = @1", p => p.Set(id)))
+                        if (dc.Query1("SELECT city, distr, addr, tel FROM orders WHERE id = @1", p => p.Set(id)))
                         {
-                            tel = dc.GetString();
-                            city = dc.GetString();
-                            distr = dc.GetString();
-                            addr = dc.GetString();
+                            dc.GetOn(ref city, ref distr, ref addr, ref tel);
                         }
                     }
                 }
                 ac.GivePane(200, m =>
                 {
                     m.FORM_();
-                    m.TEXT(nameof(tel), tel, label: "电话");
                     m.SELECT(nameof(city), city, ((ShopService) Service).CityOpt, label: "城市", refresh: true);
                     m.SELECT(nameof(distr), distr, ((ShopService) Service).GetDistrs(city), label: "区域");
                     m.TEXT(nameof(addr), addr, label: "地址");
+                    m.TEXT(nameof(tel), tel, label: "电话");
                     m._FORM();
                 });
             }
@@ -77,13 +74,13 @@ namespace Greatbone.Sample
                 addr = frm[nameof(addr)];
                 using (var dc = ac.NewDbContext())
                 {
-                    dc.Execute("UPDATE orders SET custtel = @1, custcity = @2, custdistr = @3, custaddr = @4 WHERE id = @5", p => p.Set(tel).Set(city).Set(distr).Set(addr).Set(id));
+                    dc.Execute("UPDATE orders SET tel = @1, city = @2, distr = @3, addr = @4 WHERE id = @5", p => p.Set(tel).Set(city).Set(distr).Set(addr).Set(id));
                 }
                 ac.GiveRedirect("../");
             }
         }
 
-        [Ui("附注", Mode = UiMode.ButtonPrompt)]
+        [Ui("附加说明", Mode = UiMode.ButtonPrompt)]
         public async Task note(ActionContext ac)
         {
             string wx = ac[typeof(UserVarWork)];
@@ -93,10 +90,10 @@ namespace Greatbone.Sample
             {
                 using (var dc = ac.NewDbContext())
                 {
-                    if (dc.Query1("SELECT note FROM orders WHERE id = @1", p => p.Set(id)))
+                    if (dc.Query1("SELECT comment FROM orders WHERE id = @1", p => p.Set(id)))
                     {
-                        var note = dc.GetString();
-                        ac.GivePane(200, m => { m.TEXTAREA(nameof(note), note, label: "附加说明", max: 20, required: true); });
+                        var comment = dc.GetString();
+                        ac.GivePane(200, m => { m.TEXTAREA(nameof(comment), comment, label: "附加说明", max: 20, required: true); });
                     }
                     else
                     {
@@ -106,11 +103,10 @@ namespace Greatbone.Sample
             else
             {
                 Form f = await ac.ReadAsync<Form>();
-                string note = f[nameof(note)];
-
+                string comment = f[nameof(comment)];
                 using (var dc = ac.NewDbContext())
                 {
-                    dc.Execute("UPDATE orders SET note = @1 WHERE id = @2", p => p.Set(note).Set(id));
+                    dc.Execute("UPDATE orders SET comment = @1 WHERE id = @2", p => p.Set(comment).Set(id));
                 }
                 ac.GiveRedirect("../");
             }
@@ -150,50 +146,37 @@ namespace Greatbone.Sample
         public async Task cancel(ActionContext ac)
         {
             long id = ac[this];
-            string reason = null;
+            string cancellation = null;
             if (ac.GET)
             {
                 ac.GivePane(200, m =>
                 {
                     m.FORM_();
-                    m.TEXTAREA(nameof(reason), reason, "请填写撤销的原因");
+                    m.TEXTAREA(nameof(cancellation), cancellation, "请填写撤销的原因");
                     m._FORM();
                 });
             }
             else
             {
                 var f = await ac.ReadAsync<Form>();
-                reason = f[nameof(reason)];
+                cancellation = f[nameof(cancellation)];
                 using (var dc = ac.NewDbContext())
                 {
-                    dc.Execute("UPDATE orders SET cancel = @1 WHERE id = @2", p => p.Set(reason).Set(id));
+                    dc.Execute("UPDATE orders SET cancellation = @1 WHERE id = @2", p => p.Set(cancellation).Set(id));
                 }
+                ac.GiveRedirect("../");
             }
         }
 
-        [Ui("确认收货", "确认收货并结束次单", Mode = UiMode.ButtonPrompt)]
-        public async Task got(ActionContext ac)
+        [Ui("确认收货", "对商品满意并确认收货", Mode = UiMode.ButtonConfirm)]
+        public void got(ActionContext ac)
         {
             long id = ac[this];
-            string review = null;
-            if (ac.GET)
+            using (var dc = ac.NewDbContext())
             {
-                ac.GivePane(200, m =>
-                {
-                    m.FORM_();
-                    m.TEXTAREA(nameof(review), review, "请给出您的宝贵意见");
-                    m._FORM();
-                });
+                dc.Execute("UPDATE orders SET completed = localtimestamp, status = @1 WHERE id = @2", p => p.Set(Order.COMPLETED).Set(id));
             }
-            else
-            {
-                var f = await ac.ReadAsync<Form>();
-                review = f[nameof(review)];
-                using (var dc = ac.NewDbContext())
-                {
-                    dc.Execute("UPDATE orders SET review = @1 WHERE id = @2", p => p.Set(review).Set(id));
-                }
-            }
+            ac.GiveRedirect("../");
         }
     }
 
@@ -224,21 +207,25 @@ namespace Greatbone.Sample
 
             using (var dc = Service.NewDbContext())
             {
-                dc.Execute("UPDATE orders SET status = @1 WHERE id = @2", p => p.Set(Order.ACCEPTED).Set(id));
+                dc.Execute("UPDATE orders SET accepted = localtimestamp, status = @1 WHERE id = @2", p => p.Set(Order.ACCEPTED).Set(id));
                 ac.GiveRedirect("../");
             }
         }
 
-        [Ui("付款核查", Mode = UiMode.AnchorShow)]
-        public void check(ActionContext ac)
+        [Ui("付款核查", Mode = UiMode.ButtonConfirm)]
+        public async Task check(ActionContext ac)
         {
             long id = ac[this];
 
-            using (var dc = Service.NewDbContext())
+            decimal cash = await WeiXinUtility.PostOrderQueryAsync(id);
+            if (cash > 0)
             {
-                dc.Execute("UPDATE orders SET status = @1 WHERE id = @2", p => p.Set(Order.ACCEPTED).Set(id));
-                ac.GiveRedirect("../");
+                using (var dc = Service.NewDbContext())
+                {
+                    dc.Execute("UPDATE orders SET cash = @1 WHERE id = @2", p => p.Set(cash).Set(id));
+                }
             }
+            ac.GiveRedirect("../");
         }
     }
 
@@ -273,7 +260,7 @@ namespace Greatbone.Sample
         {
         }
 
-        static readonly Func<IData, bool> UNCLOSE = obj => ((Order) obj).status < Order.CLOSED;
+        static readonly Func<IData, bool> UNCLOSE = obj => ((Order) obj).status < Order.COMPLETED;
 
         [Ui("反关闭")]
         public void unclose(ActionContext ac)
