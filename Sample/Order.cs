@@ -46,8 +46,8 @@ namespace Greatbone.Sample
 
         internal string partnerid; // delegate shopid
         internal DateTime accepted; // when cash received or forcibly accepted
-        internal DateTime aborted; // time aborted
-        internal DateTime completed; // time completed
+        internal string abortion; // time aborted
+        internal DateTime closed; // time completed
         internal short status;
 
         public void ReadData(IDataInput i, short proj = 0)
@@ -80,8 +80,8 @@ namespace Greatbone.Sample
                 i.Get(nameof(cash), ref cash);
                 i.Get(nameof(accepted), ref accepted);
                 i.Get(nameof(partnerid), ref partnerid);
-                i.Get(nameof(aborted), ref aborted);
-                i.Get(nameof(completed), ref completed);
+                i.Get(nameof(abortion), ref abortion);
+                i.Get(nameof(closed), ref closed);
             }
 
             i.Get(nameof(status), ref status);
@@ -124,8 +124,8 @@ namespace Greatbone.Sample
                 o.Put(nameof(cash), cash, "实收金额", '¥');
                 o.Put(nameof(accepted), accepted, "实收时间");
                 o.Put(nameof(partnerid), partnerid);
-                o.Put(nameof(aborted), aborted);
-                o.Put(nameof(completed), completed);
+                o.Put(nameof(abortion), abortion);
+                o.Put(nameof(closed), closed);
             }
             o.Put(nameof(status), status, "状态", STATUS);
         }

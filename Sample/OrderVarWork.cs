@@ -174,7 +174,7 @@ namespace Greatbone.Sample
             long id = ac[this];
             using (var dc = ac.NewDbContext())
             {
-                dc.Execute("UPDATE orders SET completed = localtimestamp, status = @1 WHERE id = @2", p => p.Set(Order.COMPLETED).Set(id));
+                dc.Execute("UPDATE orders SET closed = localtimestamp, status = @1 WHERE id = @2", p => p.Set(Order.COMPLETED).Set(id));
             }
             ac.GiveRedirect("../");
         }
@@ -251,6 +251,24 @@ namespace Greatbone.Sample
                 {
                 }
             }
+        }
+
+        static readonly Func<IData, bool> ABORT = obj => ((Order) obj).abortion != null;
+
+        [Ui("撤销", "撤销此单，实收金额将会在结款的时候退回给买家", Mode = UiMode.ButtonConfirm)]
+        public async Task abort(ActionContext ac)
+        {
+            long id = ac[this];
+
+            decimal cash = await WeiXinUtility.PostOrderQueryAsync(id);
+            if (cash > 0)
+            {
+                using (var dc = Service.NewDbContext())
+                {
+                    dc.Execute("UPDATE orders SET status = @1 WHERE id = @2", p => p.Set(Order.ABORTED).Set(id));
+                }
+            }
+            ac.GiveRedirect("../");
         }
     }
 

@@ -6,5 +6,11 @@
     "cluster": {
         "shop": "http://10.27.157.64",
         "chat": "http://10.27.157.64:8081"
+    },
+    "db": {
+        "host": "/tmp",
+        "port": 5432,
+        "username": "postgres",
+        "password": "721004"
     }
 }
