@@ -255,15 +255,15 @@ namespace Greatbone.Sample
 
         static readonly Func<IData, bool> ABORT = obj => ((Order) obj).abortion != null;
 
-        [Ui("撤销", "撤销此单，实收金额将会在结款的时候退回给买家", Mode = UiMode.ButtonConfirm)]
+        [Ui("撤销", "撤销此单，实收金额将会退回给买家", Mode = UiMode.ButtonConfirm)]
         public async Task abort(ActionContext ac)
         {
             long id = ac[this];
 
-            decimal cash = await WeiXinUtility.PostOrderQueryAsync(id);
-            if (cash > 0)
+            decimal total = 0, cash = 0;
+            if (await WeiXinUtility.PostRefundAsync(id, total, cash))
             {
-                using (var dc = Service.NewDbContext())
+                using (var dc = ac.NewDbContext())
                 {
                     dc.Execute("UPDATE orders SET status = @1 WHERE id = @2", p => p.Set(Order.ABORTED).Set(id));
                 }
@@ -278,19 +278,18 @@ namespace Greatbone.Sample
         {
         }
 
-        static readonly Func<IData, bool> UNCLOSE = obj => ((Order) obj).status < Order.COMPLETED;
+        static readonly Func<IData, bool> ABORT = obj => ((Order) obj).abortion != null;
 
-        [Ui("反关闭")]
-        public void unclose(ActionContext ac)
+        [Ui("退款核实", "撤销此单，实收金额将会退回给买家", Mode = UiMode.AnchorShow)]
+        public async Task abort(ActionContext ac)
         {
-            long[] key = ac.Query[nameof(key)];
+            long id = ac[this];
 
-            using (var dc = ac.NewDbContext())
+            decimal total, cash;
+            if (await WeiXinUtility.PostRefundQueryAsync(id))
             {
-                dc.Sql("UPDATE orders SET status = @1 WHERE id")._IN_(key);
-                dc.Execute();
             }
-            ac.GiveRedirect();
+            ac.GiveRedirect("../");
         }
     }
 

@@ -40,10 +40,6 @@ namespace Greatbone.Sample
 
             Create<SprShopWork>("shop");
 
-            Create<SprRepayWork>("repay");
-
-            Create<SprPastRepayWork>("pastrepay");
-
             Create<SprFeekbackWork>("feedback");
         }
 

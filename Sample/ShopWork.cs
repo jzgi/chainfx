@@ -110,7 +110,7 @@ namespace Greatbone.Sample
         }
     }
 
-    [Ui("商家")]
+    [Ui("商家管理")]
     public class SprShopWork : ShopWork<SprShopVarWork>
     {
         public SprShopWork(WorkContext wc) : base(wc)

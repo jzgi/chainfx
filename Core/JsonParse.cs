@@ -34,7 +34,7 @@ namespace Greatbone.Core
             this.str = new Str(256);
         }
 
-        int this[int index] => bytebuf?[index] ?? (int)strbuf[index];
+        int this[int index] => bytebuf?[index] ?? (int) strbuf[index];
 
         public IDataInput Parse()
         {
@@ -76,7 +76,7 @@ namespace Greatbone.Core
                     if (p >= length - 1) throw ParseEx;
                     int b = this[++p];
                     if (b == '"') break; // meet second quote
-                    str.Add((char)b);
+                    str.Add((char) b);
                 }
 
                 for (;;) // till a colon
@@ -228,7 +228,7 @@ namespace Greatbone.Core
                 int b = this[++p];
                 if (esc)
                 {
-                    str.Add(b == '"' ? '"' : b == '\\' ? '\\' : b == 'b' ? '\b' : b == 'f' ? '\f' : b == 'n' ? '\n' : b == 'r' ? '\r' : b == 't' ? '\t' : (char)0);
+                    str.Add(b == '"' ? '"' : b == '\\' ? '\\' : b == 'b' ? '\b' : b == 'f' ? '\f' : b == 'n' ? '\n' : b == 'r' ? '\r' : b == 't' ? '\t' : (char) 0);
                     esc = !esc;
                 }
                 else

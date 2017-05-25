@@ -229,6 +229,60 @@ namespace Greatbone.Sample
             return cash_fee;
         }
 
+        public static async Task<bool> PostRefundAsync(long orderid, decimal total, decimal cash)
+        {
+            XElem x = new XElem("xml");
+            x.AddChild("appid", APPID);
+            x.AddChild("mch_id", MCH_ID);
+            x.AddChild("nonce_str", NONCE_STR);
+            x.AddChild("op_user_id", MCH_ID);
+            x.AddChild("out_refund_no", orderid.ToString());
+            x.AddChild("out_trade_no", orderid.ToString());
+            x.AddChild("refund_fee", ((int)(cash * 100)).ToString());
+            x.AddChild("total_fee", ((int)(total * 100)).ToString());
+            string sign = Sign(x);
+            x.AddChild("sign", sign);
+
+            XElem xe = (await WCPay.PostAsync<XElem>(null, "/secapi/pay/refund", x.Dump())).Y;
+
+            sign = xe.Child(nameof(sign));
+            xe.Sort();
+            if (sign != Sign(xe, "sign")) return false;
+
+            string return_code = xe.Child(nameof(return_code));
+            if (return_code != "SUCCESS") return false;
+
+            decimal cash_fee = xe.Child(nameof(cash_fee));
+
+            return true;
+        }
+
+        public static async Task<bool> PostRefundQueryAsync(long orderid)
+        {
+            XElem x = new XElem("xml");
+            x.AddChild("appid", APPID);
+            x.AddChild("mch_id", MCH_ID);
+            x.AddChild("nonce_str", NONCE_STR);
+            x.AddChild("op_user_id", MCH_ID);
+            x.AddChild("out_refund_no", orderid.ToString());
+            x.AddChild("out_trade_no", orderid.ToString());
+            string sign = Sign(x);
+            x.AddChild("sign", sign);
+
+            XElem xe = (await WCPay.PostAsync<XElem>(null, "/pay/refundquery", x.Dump())).Y;
+
+            sign = xe.Child(nameof(sign));
+            xe.Sort();
+            if (sign != Sign(xe, "sign")) return false;
+
+            string return_code = xe.Child(nameof(return_code));
+            if (return_code != "SUCCESS") return false;
+
+            decimal cash_fee = xe.Child(nameof(cash_fee));
+
+            return true;
+        }
+
         static string Sign(XElem xe, string exclude = null)
         {
             StringBuilder sb = new StringBuilder(1024);
