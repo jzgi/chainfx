@@ -62,42 +62,35 @@ namespace Greatbone.Sample
 
                     ac.GivePage(200, m =>
                     {
-                        m.Add("<div data-sticky-container>");
-                        m.Add("<div class=\"sticky\" style=\"width: 100%\" data-sticky  data-options=\"anchor: page; marginTop: 0; stickyOn: small;\">");
-                        m.Add("<div class=\"title-bar\">");
-                        m.Add("<div class=\"title-bar-left\">");
-                        m.Add("<span style=\"font-size: 1.25rem;\">");
-                        m.Add(shop.name);
-                        m.Add("</span>");
-                        m.Add("</div>");
-                        m.Add("<div class=\"title-bar-right\">");
-                        m.Add("<a class=\"float-right\" href=\"/my//cart/\"><span class=\"fa-stack fa-lg\"><i class=\"fa fa-circle fa-stack-2x\"></i><i class=\"fa fa-shopping-cart fa-stack-1x fa-inverse\"></i></span></a>");
-                        m.Add("</div>");
-                        m.Add("</div>");
-                        m.Add("</div>");
-                        m.Add("</div>");
+                        m.T("<div data-sticky-container>");
+                        m.T("<div class=\"sticky\" style=\"width: 100%\" data-sticky  data-options=\"anchor: page; marginTop: 0; stickyOn: small;\">");
+                        m.T("<div class=\"title-bar\">");
+                        m.T("<div class=\"title-bar-left\">");
+                        m.T("<span style=\"font-size: 1.25rem;\">").T(shop.name).T("</span>");
+                        m.T("</div>");
+                        m.T("<div class=\"title-bar-right\">");
+                        m.T("<a class=\"float-right\" href=\"/my//cart/\"><span class=\"fa-stack fa-lg\"><i class=\"fa fa-circle fa-stack-2x\"></i><i class=\"fa fa-shopping-cart fa-stack-1x fa-inverse\"></i></span></a>");
+                        m.T("</div>");
+                        m.T("</div>");
+                        m.T("</div>");
+                        m.T("</div>");
 
-                        m.Add("<div>");
-                        m.Add("<p>");
-                        m.Add(shop.city);
-                        m.Add(shop.addr);
-                        m.Add("</p>");
-                        m.Add("<p>");
-                        m.Add(shop.descr);
-                        m.Add("</p>");
-                        m.Add("</div>");
+                        m.T("<div>");
+                        m.T("<p>").T(shop.city).T(shop.addr).T("</p>");
+                        m.T("<p>").T(shop.descr).T("</p>");
+                        m.T("</div>");
 
                         // display items
 
                         if (items == null)
                         {
-                            m.Add("没有上架商品");
+                            m.T("没有上架商品");
                             return;
                         }
                         for (int i = 0; i < items.Length; i++)
                         {
                             Item item = items[i];
-                            m.Add("<form>");
+                            m.T("<form>");
 
                             var shopname = shop.name;
 
@@ -107,52 +100,45 @@ namespace Greatbone.Sample
                             m.HIDDEN(nameof(item.unit), item.unit);
                             m.HIDDEN(nameof(item.price), item.price);
 
-                            m.Add("<div class=\"row card align-middle\">");
+                            m.T("<div class=\"row card align-middle\">");
 
-                            m.Add("<div class=\"small-4 column\">");
-                            m.Add("<img src=\"");
-                            m.Add(item.name);
-                            m.Add("/icon\" alt=\"\" class=\"thumbnail\">");
-                            m.Add("</div>"); // column
+                            m.T("<div class=\"small-4 column\">");
+                            m.T("<img src=\"").T(item.name).T("/icon\" alt=\"\" class=\"thumbnail\">");
+                            m.T("</div>"); // column
 
-                            m.Add("<div class=\"small-8 column\">");
-                            m.Add("<h3>");
-                            m.Add(item.name);
+                            m.T("<div class=\"small-8 column\">");
+                            m.T("<h3>");
+                            m.T(item.name);
                             if (item.qty > 0)
                             {
-                                m.Add("（");
-                                m.Add(item.qty);
-                                m.Add(item.unit);
-                                m.Add("）");
+                                m.T("（").T(item.qty).T(item.unit).T("）");
                             }
-                            m.Add("</h3>");
-                            m.Add("<div>");
-                            m.Add(item.descr);
-                            m.Add("</div>");
+                            m.T("</h3>");
+                            m.T("<div>");
+                            m.T(item.descr);
+                            m.T("</div>");
 
-                            m.Add("<p>");
-                            m.Add("<strong class=\"money\">&yen;");
-                            m.Add(item.price);
-                            m.Add("</strong> 每");
-                            m.Add(item.unit);
-                            m.Add("</p>");
+                            m.T("<p>");
+                            m.T("<strong class=\"money\">&yen;").T(item.price).T("</strong> ");
+                            m.T(item.unit);
+                            m.T("</p>");
 
-                            m.Add("<div class=\"row\">");
+                            m.T("<div class=\"row\">");
 
-                            m.Add("<div class=\"small-7 columns\">");
+                            m.T("<div class=\"small-7 columns\">");
                             m.NUMBER(nameof(item.qty), item.min, step: item.step);
-                            m.Add("</div>");
+                            m.T("</div>");
 
-                            m.Add("<div class=\"small-5 columns\">");
-                            m.Add("<button type=\"button\" class=\"button success hollow\" onclick=\"var frm=this.form; $.post('/my//cart/add', $(frm).serialize(), function(data){alert('成功加入购物车'); frm.reset();});\">+ 购物车</button>");
-                            m.Add("</div>");
+                            m.T("<div class=\"small-5 columns\">");
+                            m.T("<button type=\"button\" class=\"button success hollow\" onclick=\"var frm=this.form; $.post('/my//cart/add', $(frm).serialize(), function(data){alert('成功加入购物车'); frm.reset();});\">+ 购物车</button>");
+                            m.T("</div>");
 
-                            m.Add("</div>"); // row
+                            m.T("</div>"); // row
 
-                            m.Add("</div>"); // column
+                            m.T("</div>"); // column
 
-                            m.Add("</div>"); // row card
-                            m.Add("</form>");
+                            m.T("</div>"); // row card
+                            m.T("</form>");
                         }
                     }, @public: true, maxage: 60 * 5);
                 }

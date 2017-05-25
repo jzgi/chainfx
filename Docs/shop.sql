@@ -11,7 +11,7 @@ Target Server Type    : PGSQL
 Target Server Version : 90505
 File Encoding         : 65001
 
-Date: 2017-05-19 23:48:13
+Date: 2017-05-26 00:13:32
 */
 
 
@@ -34,9 +34,9 @@ CREATE SEQUENCE "public"."orders_id_seq"
  INCREMENT 1
  MINVALUE 1000
  MAXVALUE 9223372036854775807
- START 1176
+ START 1224
  CACHE 8;
-SELECT setval('"public"."orders_id_seq"', 1176, true);
+SELECT setval('"public"."orders_id_seq"', 1224, true);
 
 -- ----------------------------
 -- Table structure for evtq
@@ -104,14 +104,13 @@ CREATE TABLE "public"."orders" (
 "total" money,
 "created" timestamp(6),
 "partnerid" varchar(6) COLLATE "default",
-"closer" varchar(4) COLLATE "default",
-"cashed" timestamp(6),
+"accepted" timestamp(6),
 "closed" timestamp(6),
 "status" int2,
-"repaid" timestamp(6),
-"criteria" varchar(20) COLLATE "default",
+"comment" varchar(20) COLLATE "default",
 "city" varchar(6) COLLATE "default",
-"cash" money DEFAULT 0
+"cash" money DEFAULT 0,
+"abortion" varchar(20) COLLATE "default"
 )
 WITH (OIDS=FALSE)
 

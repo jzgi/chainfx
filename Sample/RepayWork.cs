@@ -77,25 +77,36 @@ namespace Greatbone.Sample
             }
         }
 
-        [Ui("结款")]
+        [Ui("生成结款单")]
         public void @new(ActionContext ac)
         {
             DateTime now = DateTime.Now;
             int term = 0;
             DateTime till = now;
-            using (var dc = ac.NewDbContext())
+
+            if (ac.GET)
             {
-                // compute
-                int ret = (int)dc.Scalar("SELECT newrepays(@1, @2)", p=>p.Set(100).Set(2));
-                
-                // view result
-                if (dc.Query("SELECT * FROM repays WHERE status = 0"))
+                using (var dc = ac.NewDbContext())
                 {
-                    ac.GiveGridPage(200, dc.ToDatas<Repay>());
+                    int ret = (int) dc.Scalar("SELECT created FROM repays WHERE (@1, @2)", p => p.Set(100).Set(2));
                 }
-                else
+            }
+            else
+            {
+                using (var dc = ac.NewDbContext())
                 {
-                    ac.GiveGridPage(200, (Repay[]) null);
+                    // compute
+                    int ret = (int) dc.Scalar("SELECT newrepays(@1, @2)", p => p.Set(100).Set(2));
+
+                    // view result
+                    if (dc.Query("SELECT * FROM repays WHERE status = 0"))
+                    {
+                        ac.GiveGridPage(200, dc.ToDatas<Repay>());
+                    }
+                    else
+                    {
+                        ac.GiveGridPage(200, (Repay[]) null);
+                    }
                 }
             }
         }

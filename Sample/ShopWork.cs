@@ -29,31 +29,29 @@ namespace Greatbone.Sample
             {
                 ac.GivePage(200, m =>
                 {
-                    m.Add("<div data-sticky-container>");
-                    m.Add("<div class=\"sticky\" style=\"width: 100%\" data-sticky  data-options=\"anchor: page; marginTop: 0; stickyOn: small;\">");
-                    m.Add("<div class=\"title-bar\">");
-                    m.Add("<div class=\"title-bar-title\">");
-                    m.Add("<select name=\"city\" style=\"margin: 0; border: 0; color: #ba55d3; font-size: 1.25rem;\" onchange=\"location = location.href.split('?')[0] + '?city=' + this.value;\">");
+                    m.T("<div data-sticky-container>");
+                    m.T("<div class=\"sticky\" style=\"width: 100%\" data-sticky  data-options=\"anchor: page; marginTop: 0; stickyOn: small;\">");
+                    m.T("<div class=\"title-bar\">");
+                    m.T("<div class=\"title-bar-title\">");
+                    m.T("<select name=\"city\" style=\"margin: 0; border: 0; color: #ba55d3; font-size: 1.25rem;\" onchange=\"location = location.href.split('?')[0] + '?city=' + this.value;\">");
                     string[] vs = ((ShopService) Service).CityOpt;
                     for (int i = 0; i < vs.Length; i++)
                     {
                         string v = vs[i];
-                        m.Add("<option value=\"");
-                        m.Add(v);
-                        m.Add("\"");
-                        if (v == city) m.Add(" selected");
-                        m.Add(">");
-                        m.Add(v);
-                        m.Add("</option>");
+                        m.T("<option value=\"").T(v).T("\"");
+                        if (v == city) m.T(" selected");
+                        m.T(">");
+                        m.T(v);
+                        m.T("</option>");
                     }
-                    m.Add("</select>");
-                    m.Add("</div>");
-                    m.Add("<div class=\"title-bar-right\">");
-                    m.Add("<a class=\"float-right\" href=\"/my//cart/\"><span class=\"fa-stack fa-lg\"><i class=\"fa fa-circle fa-stack-2x\"></i><i class=\"fa fa-shopping-cart fa-stack-1x fa-inverse\"></i></span></a>");
-                    m.Add("</div>");
-                    m.Add("</div>");
-                    m.Add("</div>");
-                    m.Add("</div>");
+                    m.T("</select>");
+                    m.T("</div>");
+                    m.T("<div class=\"title-bar-right\">");
+                    m.T("<a class=\"float-right\" href=\"/my//cart/\"><span class=\"fa-stack fa-lg\"><i class=\"fa fa-circle fa-stack-2x\"></i><i class=\"fa fa-shopping-cart fa-stack-1x fa-inverse\"></i></span></a>");
+                    m.T("</div>");
+                    m.T("</div>");
+                    m.T("</div>");
+                    m.T("</div>");
 
                     if (dc.Query("SELECT * FROM shops WHERE city = @1 AND status > 0", p => p.Set(city)))
                     {
@@ -62,34 +60,21 @@ namespace Greatbone.Sample
                         {
                             var shop = shops[i];
 
-                            m.Add("<div class=\"row card align-middle\">");
-                            m.Add("<div class=\"small-4 columns\"><a href=\"#\"><span></span><img src=\"");
-                            m.Add(shop.id);
-                            m.Add("/icon\" alt=\"\" class=\"thumbnail\"></a></div>");
-                            m.Add("<div class=\"small-8 columns\">");
-                            m.Add("<h3><a href=\"");
-                            m.Add(shop.id);
-                            m.Add("/\">");
-                            m.Add(shop.name);
-                            m.Add("</a></h3>");
-                            m.Add("<p>");
-                            m.Add(shop.city);
-                            m.Add(shop.addr);
-                            m.Add("</p>");
-                            m.Add("<p>");
-                            m.Add(shop.descr);
-                            m.Add("</p>");
-                            m.Add("</div>");
-                            m.Add("</div>");
+                            m.T("<div class=\"row card align-middle\">");
+                            m.T("<div class=\"small-4 columns\"><a href=\"#\"><span></span><img src=\"").T(shop.id).T("/icon\" alt=\"\" class=\"thumbnail\"></a></div>");
+                            m.T("<div class=\"small-8 columns\">");
+                            m.T("<h3><a href=\"").T(shop.id).T("/\">").T(shop.name).T("</a></h3>");
+                            m.T("<p>").T(shop.city).T(shop.addr).T("</p>");
+                            m.T("<p>").T(shop.descr).T("</p>");
+                            m.T("</div>");
+                            m.T("</div>");
                         }
                     }
                     else
                     {
-                        m.Add("<div style=\"text-align: center\">");
-                        m.Add("<p>");
-                        m.Add(city);
-                        m.Add("目前没有商家</p>");
-                        m.Add("</div>");
+                        m.T("<div style=\"text-align: center\">");
+                        m.T("<p>").T(city).T("目前没有商家</p>");
+                        m.T("</div>");
                     }
                 }, @public: true, maxage: 60 * 5);
             }

@@ -107,6 +107,30 @@ namespace Greatbone.Core
             return this;
         }
 
+        public HtmlContent T(short v)
+        {
+            Add(v);
+            return this;
+        }
+
+        public HtmlContent T(int v)
+        {
+            Add(v);
+            return this;
+        }
+
+        public HtmlContent T(long v)
+        {
+            Add(v);
+            return this;
+        }
+
+        public HtmlContent T(decimal v)
+        {
+            Add(v);
+            return this;
+        }
+
         public void ROW_()
         {
             Add("<div class=\"row\">");
