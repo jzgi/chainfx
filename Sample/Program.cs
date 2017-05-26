@@ -12,13 +12,6 @@ namespace Greatbone.Sample
         {
             bool deploy = args.Length > 0;
 
-            Auth auth = new Auth
-            {
-                mask = 0x4a78be76,
-                pose = 0x1f0335e2,
-                maxage = 1800
-            };
-
             Db pg = new Db
             {
                 host = "106.14.45.109",
@@ -40,7 +33,8 @@ namespace Greatbone.Sample
                 new ServiceContext("shop")
                 {
                     addrs = new[] {"http://localhost:8080"},
-                    auth = auth,
+                    cipher = 0x4a78be76,
+                    cache = true,
                     db = pg,
                     cluster = cluster
                 },

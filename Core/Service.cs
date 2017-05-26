@@ -22,7 +22,7 @@ namespace Greatbone.Core
     ///
     public abstract class Service : Work, IHttpApplication<HttpContext>, ILoggerProvider, ILogger
     {
-        protected readonly ServiceContext sc;
+        protected new readonly ServiceContext ctx;
 
         // the service instance id
         readonly string id;
@@ -51,7 +51,7 @@ namespace Greatbone.Core
         protected Service(ServiceContext sc) : base(sc)
         {
             sc.Service = this;
-            this.sc = sc;
+            this.ctx = sc;
 
             id = (Shard == null) ? sc.Name : sc.Name + "-" + Shard;
 
@@ -145,15 +145,15 @@ namespace Greatbone.Core
 
         public Roll<EventInfo> Events => events;
 
-        public string Shard => sc.shard;
+        public string Shard => ctx.shard;
 
-        public string[] Addrs => sc.addrs;
+        public string[] Addrs => ctx.addrs;
 
-        public Db Db => sc.db;
+        public Db Db => ctx.db;
 
-        public Dictionary<string, string> Cluster => sc.cluster;
+        public Dictionary<string, string> Cluster => ctx.cluster;
 
-        public int Logging => sc.logging;
+        public int Logging => ctx.logging;
 
 
         public virtual void OnStart()
@@ -490,8 +490,6 @@ namespace Greatbone.Core
         {
         }
 
-        public Auth Auth => sc.auth;
-
         ///
         /// To asynchronously process the request with authentication support.
         ///
@@ -560,33 +558,44 @@ namespace Greatbone.Core
             }
         }
 
-        internal void SetTokenCookie(ActionContext ac, P prin, short proj)
+        internal void SetTokenCookie(ActionContext ac, P prin, short proj, int maxage = 0)
         {
             StringBuilder sb = new StringBuilder("Token=");
             string token = Encrypt(prin, proj);
             sb.Append(token);
-            if (Auth.maxage > 0)
+            if (maxage > 0)
             {
-                sb.Append("; Max-Age=").Append(Auth.maxage);
+                sb.Append("; Max-Age=").Append(maxage);
             }
-            if (Auth.domain != null)
+
+            // obtain and add the domain attribute
+            string host = ac.Header("Host");
+            if (host != null)
             {
-                sb.Append("; Domain=").Append(Auth.domain);
+                int dot = host.LastIndexOf('.');
+                if (dot > 0)
+                {
+                    dot = host.LastIndexOf('.', dot - 1);
+                }
+                if (dot > 0)
+                {
+                    string domain = host.Substring(dot);
+                    sb.Append("; Domain=").Append(domain);
+                }
             }
+
             sb.Append("; Path=/; HttpOnly");
             ac.SetHeader("Set-Cookie", sb.ToString());
         }
 
         public string Encrypt(P prin, short proj)
         {
-            if (Auth == null) return null;
-
-            JsonContent cont = new JsonContent(true, 4096); // borrow
+            JsonContent cont = new JsonContent(true, 4096);
             cont.Put(null, prin, proj);
             byte[] bytebuf = cont.ByteBuffer;
             int count = cont.Size;
 
-            int mask = Auth.mask;
+            int mask = (int) ctx.cipher;
             int[] masks = {(mask >> 24) & 0xff, (mask >> 16) & 0xff, (mask >> 8) & 0xff, mask & 0xff};
             char[] charbuf = new char[count * 2]; // the target
             int p = 0;
@@ -609,9 +618,7 @@ namespace Greatbone.Core
 
         public P Decrypt(string token)
         {
-            if (Auth == null) return null;
-
-            int mask = Auth.mask;
+            int mask = (int) ctx.cipher;
             int[] masks = {(mask >> 24) & 0xff, (mask >> 16) & 0xff, (mask >> 8) & 0xff, mask & 0xff};
             int len = token.Length / 2;
             Str str = new Str(256);
@@ -627,11 +634,18 @@ namespace Greatbone.Core
                 str.Accept((byte) (b ^ masks[i % 4]));
             }
 
-            JsonParse parse = new JsonParse(str.ToString());
-            JObj jo = (JObj) parse.Parse();
-            P prin = new P();
-            prin.ReadData(jo, -1);
-            return prin;
+            // deserialize
+            try
+            {
+                JObj jo = (JObj) new JsonParse(str.ToString()).Parse();
+                P prin = new P();
+                prin.ReadData(jo, -1);
+                return prin;
+            }
+            catch
+            {
+                return null;
+            }
         }
 
         // hexidecimal characters

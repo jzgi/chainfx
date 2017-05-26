@@ -13,6 +13,9 @@ namespace Greatbone.Core
         // the bound addresses 
         public string[] addrs;
 
+        // two ints for enc/dec authentication token
+        public long cipher;
+
         // db configuration
         public Db db;
 
@@ -22,8 +25,8 @@ namespace Greatbone.Core
         // logging level
         public int logging = 3;
 
-        // authentication configuration
-        public Auth auth;
+        // shared cache or not
+        public bool cache;
 
         public ServiceContext(string name) : base(name)
         {
@@ -36,7 +39,7 @@ namespace Greatbone.Core
             i.Get(nameof(db), ref db);
             i.Get(nameof(cluster), ref cluster);
             i.Get(nameof(logging), ref logging);
-            i.Get(nameof(auth), ref auth);
+            i.Get(nameof(cache), ref cache);
         }
 
         public void WriteData<R>(IDataOutput<R> o, short proj = 0) where R : IDataOutput<R>
@@ -46,7 +49,7 @@ namespace Greatbone.Core
             o.Put(nameof(db), db);
             o.Put(nameof(cluster), cluster);
             o.Put(nameof(logging), logging);
-            o.Put(nameof(auth), auth);
+            o.Put(nameof(cache), cache);
         }
     }
 
@@ -84,44 +87,6 @@ namespace Greatbone.Core
             o.Put(nameof(database), database);
             o.Put(nameof(username), username);
             o.Put(nameof(password), password);
-        }
-    }
-
-    ///
-    /// The web authetication configuration embedded in a service context.
-    ///
-    public class Auth : IData
-    {
-        // mask for encoding/decoding token
-        public int mask;
-
-        // repositioning factor for encoding/decoding token
-        public int pose;
-
-        // The number of seconds that a signon durates, or null if session-wide.
-        public int maxage;
-
-        public string domain;
-
-        // The service id that does signon. Can be null if local
-        public string svcid;
-
-        public void ReadData(IDataInput i, short proj = 0)
-        {
-            i.Get(nameof(mask), ref mask);
-            i.Get(nameof(pose), ref pose);
-            i.Get(nameof(maxage), ref maxage);
-            i.Get(nameof(domain), ref domain);
-            i.Get(nameof(svcid), ref svcid);
-        }
-
-        public void WriteData<R>(IDataOutput<R> o, short proj = 0) where R : IDataOutput<R>
-        {
-            o.Put(nameof(mask), mask);
-            o.Put(nameof(pose), pose);
-            o.Put(nameof(maxage), maxage);
-            o.Put(nameof(domain), domain);
-            o.Put(nameof(svcid), svcid);
         }
     }
 }

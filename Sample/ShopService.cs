@@ -120,13 +120,13 @@ namespace Greatbone.Sample
                     }
                     else // challenge BASIC scheme
                     {
-                        ac.SetHeader("WWW-Authenticate", "Basic realm=\"" + Auth.domain + "\"");
+                        ac.SetHeader("WWW-Authenticate", "Basic realm=\"APP\"");
                         ac.Give(401); // unauthorized
                     }
                 }
                 else
                 {
-                    ac.Give(403, "您没有访问权限"); // forbidden
+                    ac.Give(403); // forbidden
                 }
             }
             else
