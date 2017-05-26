@@ -1,16 +1,16 @@
 {
     "addrs": [
-        "http://106.14.45.109",
-        "http://10.27.157.64"
+        "http://0.0.0.0",
+        "http://0.0.0.0"
     ],
     "cluster": {
-        "shop": "http://10.27.157.64",
-        "chat": "http://10.27.157.64:8081"
+        "shop": "http://0.0.0.0",
+        "chat": "http://0.0.0.0"
     },
     "db": {
         "host": "/tmp",
         "port": 5432,
-        "username": "postgres",
-        "password": "721004"
+        "username": "",
+        "password": ""
     }
 }
