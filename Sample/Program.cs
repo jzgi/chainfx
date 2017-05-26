@@ -27,7 +27,7 @@ namespace Greatbone.Sample
             };
 
 
-            WeiXinUtility.Initialize("apiclient_cert.p12", deploy);
+            WeiXinUtility.Setup("weixin.json", "apiclient_cert.p12", deploy);
 
             TryCreate<ShopService>(
                 new ServiceContext("shop")
