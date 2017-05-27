@@ -103,7 +103,7 @@ namespace Greatbone.Sample
                             m.T("<div class=\"row card align-middle\">");
 
                             m.T("<div class=\"small-4 column\">");
-                            m.T("<img src=\"").T(item.name).T("/icon\" alt=\"\" class=\"thumbnail\">");
+                            m.T("<img src=\"").T(item.name).T("/icon\" alt=\"\" class=\"thumbnail circle\">");
                             m.T("</div>"); // column
 
                             m.T("<div class=\"small-8 column\">");
@@ -130,7 +130,7 @@ namespace Greatbone.Sample
                             m.T("</div>");
 
                             m.T("<div class=\"small-5 columns\">");
-                            m.T("<button type=\"button\" class=\"button success hollow\" onclick=\"var frm=this.form; $.post('/my//cart/add', $(frm).serialize(), function(data){alert('成功加入购物车'); frm.reset();});\">+ 购物车</button>");
+                            m.T("<button type=\"button\" class=\"button success\" onclick=\"var frm=this.form; $.post('/my//cart/add', $(frm).serialize(), function(data){alert('成功加入购物车'); frm.reset();});\">加入购物车</button>");
                             m.T("</div>");
 
                             m.T("</div>"); // row

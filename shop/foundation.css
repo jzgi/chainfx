@@ -119,10 +119,22 @@ a {
     /* 2 */
     text-decoration: none;
 }
-a:link{color:inherit}
-a:active{color:inherit}
-a:visited{color:inherit}
-a:hover{color:inherit}
+
+a:link {
+    color: inherit
+}
+
+a:active {
+    color: inherit
+}
+
+a:visited {
+    color: inherit
+}
+
+a:hover {
+    color: inherit
+}
 
 /**
      * Remove the outline on focused links when they are also active or hovered
@@ -163,7 +175,6 @@ strong {
     color: mediumorchid;
     font-size: 1.25rem;
 }
-
 
 /**
      * 1. Correct the inheritance and scaling of font size in all browsers.
@@ -588,6 +599,10 @@ pre {
     display: none !important;
 }
 
+[type='number'] {
+    text-align: right;
+}
+
 [type='text'],
 [type='password'],
 [type='date'],
@@ -967,7 +982,7 @@ select[multiple] {
     margin: 2px 2px;
     -webkit-appearance: none;
     border: 1px solid transparent;
-    border-radius: 0.25rem;
+    border-radius: 0.5rem;
     transition: background-color 0.25s ease-out, color 0.25s ease-out;
     font-size: 1rem;
     line-height: 1;
@@ -1041,13 +1056,13 @@ select[multiple] {
 
 .button.success {
     background-color: #5da423;
-    color: #0a0a0a;
+    color: white;
 }
 
 .button.success:hover,
 .button.success:focus {
     background-color: #4a831c;
-    color: #0a0a0a;
+    color: white;
 }
 
 .button.warning {
@@ -1085,7 +1100,7 @@ select[multiple] {
 
 .button.hollow {
     border: 1px solid #ba55d3;
-    color: #ba55d3;
+    color: navy;
 }
 
 .button.hollow,
@@ -2275,9 +2290,10 @@ table tfoot tr {
 }
 
 table thead th {
-    text-align: center; 
+    text-align: center;
     font-weight: normal;
 }
+
 table thead td,
 table tfoot th,
 table tfoot td {
@@ -2704,9 +2720,12 @@ table.hover:not(.unstriped) tr:nth-of-type(even):hover {
     display: inline-block;
     max-width: 100%;
     border: solid 4px #fefefe;
-    border-radius: 50%;
     box-shadow: 0 0 0 1px rgba(10, 10, 10, 0.2);
     line-height: 0;
+}
+
+.thumbnail.circle {
+    border-radius: 50%;
 }
 
 a.thumbnail {
@@ -4090,7 +4109,6 @@ a.thumbnail image {
         padding-left: 0.5rem;
     }
 }
-
 
 .shrink {
     -ms-flex: 0 0 auto;

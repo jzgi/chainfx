@@ -18,15 +18,15 @@ namespace Greatbone.Sample
         public const string ADDR = "http://shop.144000.tv";
 
 
-        static string appid = "wxd007f5ad60226953";
+        static string appid;
 
-        static string appsecret = "7884c01588649198c2e83ea8d08891b6";
+        static string appsecret;
 
-        static string mchid = "1445565602";
+        static string mchid;
 
-        static string noncestr = "30A5FE271";
+        static string noncestr;
 
-        static string key = "28165ACAB74C2FBF3B042B5D2F87D274";
+        static string key;
 
 
         static Client WCPay;

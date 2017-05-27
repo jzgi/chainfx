@@ -416,11 +416,11 @@ namespace Greatbone.Core
             },
             {
                 ".htm",
-                "text/html"
+                "text/html; charset=utf-8"
             },
             {
                 ".html",
-                "text/html"
+                "text/html; charset=utf-8"
             },
             {
                 ".htt",
