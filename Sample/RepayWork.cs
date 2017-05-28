@@ -77,26 +77,39 @@ namespace Greatbone.Sample
             }
         }
 
-        [Ui("生成结款单")]
-        public void @new(ActionContext ac)
+        [Ui("发起清算", "为商家清算已完成的订单并生成结款单", Mode = UiMode.ButtonShow)]
+        public async Task reckon(ActionContext ac)
         {
             DateTime now = DateTime.Now;
             int term = 0;
             DateTime till = now;
 
+            DateTime end = default(DateTime);
             if (ac.GET)
             {
                 using (var dc = ac.NewDbContext())
                 {
-                    int ret = (int) dc.Scalar("SELECT created FROM repays WHERE (@1, @2)", p => p.Set(100).Set(2));
+                    var ret = dc.Scalar("SELECT created FROM repays ORDER BY id DESC LIMIT 1");
+                    ac.GivePane(200, m =>
+                    {
+                        m.FORM_();
+                        if (ret != null)
+                        {
+                            m.CALLOUT("上次清算时间是" + (DateTime) ret, false);
+                        }
+                        m.DATE(nameof(end), end, "截止日期");
+                        m._FORM();
+                    });
                 }
             }
             else
             {
+                var f = await ac.ReadAsync<Form>();
+                end = f[nameof(end)];
                 using (var dc = ac.NewDbContext())
                 {
                     // compute
-                    int ret = (int) dc.Scalar("SELECT newrepays(@1, @2)", p => p.Set(100).Set(2));
+                    int ret = (int) dc.Scalar("SELECT reckon()");
 
                     // view result
                     if (dc.Query("SELECT * FROM repays WHERE status = 0"))

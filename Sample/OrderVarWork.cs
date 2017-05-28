@@ -240,7 +240,7 @@ namespace Greatbone.Sample
             string shopid = ac[0];
             int id = ac[this];
 
-            using (var dc = Service.NewDbContext())
+            using (var dc = ac.NewDbContext())
             {
                 dc.Sql("SELECT ").columnlst(Order.Empty)._("FROM orders WHERE id = @1 AND shopid = @2");
                 if (dc.Query(p => p.Set(id).Set(shopid)))

@@ -95,7 +95,7 @@ namespace Greatbone.Sample
                 // validate
                 if (prin == null || !credential.Equals(prin.credential))
                 {
-                    return false;
+                    return true;
                 }
             }
             if (prin != null)
