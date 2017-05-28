@@ -10,27 +10,10 @@ namespace Greatbone.Sample
         {
             CreateVar<V, int>();
         }
-
-        public void _cat_(ActionContext ac)
-        {
-            string shopid = ac[1];
-            using (var dc = ac.NewDbContext())
-            {
-                string name;
-                int age;
-                dc.Execute("UPDATE items SET enabled = NOT enabled WHERE shopid = @1", p => p.Set(shopid));
-                // ac.SetHeader();
-                // ac.GiveFormPane(303, dc, (i, o) =>
-                // {
-                //     o.Put(nameof(name), name = i.GetString());
-                //     o.Put(nameof(age), age = i.GetInt());
-                // }); // see other
-            }
-        }
     }
 
     [Ui("结款")]
-    [User(User.AID)]
+    [User(User.MANAGER)]
     public class OprRepayWork : RepayWork<OprRepayVarWork>
     {
         public OprRepayWork(WorkContext wc) : base(wc)
@@ -66,7 +49,7 @@ namespace Greatbone.Sample
             string shopid = ac[1];
             using (var dc = ac.NewDbContext())
             {
-                if (dc.Query("SELECT * FROM repays WHERE shopid = @1 AND status < 4", p => p.Set(shopid)))
+                if (dc.Query("SELECT * FROM repays WHERE shopid = @1 AND status = 0", p => p.Set(shopid)))
                 {
                     ac.GiveGridPage(200, dc.ToDatas<Repay>());
                 }
@@ -80,16 +63,12 @@ namespace Greatbone.Sample
         [Ui("发起清算", "为商家清算已完成的订单并生成结款单", Mode = UiMode.ButtonShow)]
         public async Task reckon(ActionContext ac)
         {
-            DateTime now = DateTime.Now;
-            int term = 0;
-            DateTime till = now;
-
-            DateTime end = default(DateTime);
+            DateTime thru; // through date
             if (ac.GET)
             {
                 using (var dc = ac.NewDbContext())
                 {
-                    var ret = dc.Scalar("SELECT created FROM repays ORDER BY id DESC LIMIT 1");
+                    var ret = dc.Scalar("SELECT thru FROM repays ORDER BY id DESC LIMIT 1");
                     ac.GivePane(200, m =>
                     {
                         m.FORM_();
@@ -97,7 +76,8 @@ namespace Greatbone.Sample
                         {
                             m.CALLOUT("上次清算时间是" + (DateTime) ret, false);
                         }
-                        m.DATE(nameof(end), end, "截止日期");
+                        thru = DateTime.Today.AddDays(-1);
+                        m.DATE(nameof(thru), thru, "截止日期", max: thru);
                         m._FORM();
                     });
                 }
@@ -105,11 +85,11 @@ namespace Greatbone.Sample
             else
             {
                 var f = await ac.ReadAsync<Form>();
-                end = f[nameof(end)];
+                thru = f[nameof(thru)];
                 using (var dc = ac.NewDbContext())
                 {
                     // compute
-                    int ret = (int) dc.Scalar("SELECT reckon()");
+                    int ret = (int) dc.Scalar("SELECT reckon(@1)", p => p.Set(thru));
 
                     // view result
                     if (dc.Query("SELECT * FROM repays WHERE status = 0"))

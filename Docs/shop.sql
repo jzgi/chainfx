@@ -11,7 +11,7 @@ Target Server Type    : PGSQL
 Target Server Version : 90505
 File Encoding         : 65001
 
-Date: 2017-05-26 00:13:32
+Date: 2017-05-29 01:33:59
 */
 
 
@@ -34,9 +34,20 @@ CREATE SEQUENCE "public"."orders_id_seq"
  INCREMENT 1
  MINVALUE 1000
  MAXVALUE 9223372036854775807
- START 1224
+ START 1240
  CACHE 8;
-SELECT setval('"public"."orders_id_seq"', 1224, true);
+SELECT setval('"public"."orders_id_seq"', 1240, true);
+
+-- ----------------------------
+-- Sequence structure for repays_id_seq
+-- ----------------------------
+DROP SEQUENCE IF EXISTS "public"."repays_id_seq";
+CREATE SEQUENCE "public"."repays_id_seq"
+ INCREMENT 1
+ MINVALUE 1
+ MAXVALUE 9223372036854775807
+ START 1
+ CACHE 1;
 
 -- ----------------------------
 -- Table structure for evtq
@@ -103,14 +114,16 @@ CREATE TABLE "public"."orders" (
 "detail" jsonb,
 "total" money,
 "created" timestamp(6),
-"partnerid" varchar(6) COLLATE "default",
+"coshopid" varchar(6) COLLATE "default",
 "accepted" timestamp(6),
-"closed" timestamp(6),
+"shipped" timestamp(6),
 "status" int2,
 "comment" varchar(20) COLLATE "default",
 "city" varchar(6) COLLATE "default",
 "cash" money DEFAULT 0,
-"abortion" varchar(20) COLLATE "default"
+"abortion" varchar(20) COLLATE "default",
+"aborted" timestamp(6),
+"note" varchar(20) COLLATE "default"
 )
 WITH (OIDS=FALSE)
 
@@ -121,19 +134,18 @@ WITH (OIDS=FALSE)
 -- ----------------------------
 DROP TABLE IF EXISTS "public"."repays";
 CREATE TABLE "public"."repays" (
-"term" int4 NOT NULL,
 "shopid" varchar(6) COLLATE "default",
 "amount" money,
 "status" int2,
-"till" timestamp(6),
-"created" timestamp(6),
-"transfered" timestamp(6),
+"thru" date,
+"paid" timestamp(6),
 "total" money,
 "orders" int4,
 "city" varchar(4) COLLATE "default",
 "mgrwx" varchar(28) COLLATE "default",
 "creator" varchar(4) COLLATE "default",
-"shopname" varchar(10) COLLATE "default"
+"shopname" varchar(10) COLLATE "default",
+"id" int4 DEFAULT nextval('repays_id_seq'::regclass) NOT NULL
 )
 WITH (OIDS=FALSE)
 
@@ -192,6 +204,7 @@ WITH (OIDS=FALSE)
 -- Alter Sequences Owned By 
 -- ----------------------------
 ALTER SEQUENCE "public"."orders_id_seq" OWNED BY "orders"."id";
+ALTER SEQUENCE "public"."repays_id_seq" OWNED BY "repays"."id";
 
 -- ----------------------------
 -- Primary Key structure for table evtq
