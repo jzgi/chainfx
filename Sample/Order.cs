@@ -15,15 +15,16 @@ namespace Greatbone.Sample
             LATE = 0x0010;
 
         // status
-        public const short CREATED = 0, ACCEPTED = 1, ABORTED = 3, COMPLETED = 5;
+        public const short CREATED = 0, ACCEPTED = 1, ABORTED = 3, SHIPPED = 5, RECKONED = 7;
 
         // status
         static readonly Opt<short> STATUS = new Opt<short>
         {
             [CREATED] = "购物车",
-            [ACCEPTED] = "已接受，在处理",
+            [ACCEPTED] = "已接受/在处理",
             [ABORTED] = "已撤销",
-            [COMPLETED] = "已完成",
+            [SHIPPED] = "买家已确认收货",
+            [RECKONED] = "平台已清算",
         };
 
 
@@ -44,11 +45,13 @@ namespace Greatbone.Sample
         internal decimal total; // receivable
         internal decimal cash; // amount recieved
 
-        internal string partnerid; // delegate shopid
         internal DateTime accepted; // when cash received or forcibly accepted
-        internal string abortion; // time aborted
-        internal DateTime closed; // time completed
+        internal string coshopid; // delegate shopid
+        internal string abortion; // reason
+        internal DateTime aborted; // time aborted
+        internal DateTime shipped; // time shipped
         internal short status;
+        internal string note;
 
         public void ReadData(IDataInput i, short proj = 0)
         {
@@ -79,11 +82,12 @@ namespace Greatbone.Sample
             {
                 i.Get(nameof(cash), ref cash);
                 i.Get(nameof(accepted), ref accepted);
-                i.Get(nameof(partnerid), ref partnerid);
+                i.Get(nameof(coshopid), ref coshopid);
                 i.Get(nameof(abortion), ref abortion);
-                i.Get(nameof(closed), ref closed);
+                i.Get(nameof(aborted), ref aborted);
+                i.Get(nameof(shipped), ref shipped);
+                i.Get(nameof(note), ref note);
             }
-
             i.Get(nameof(status), ref status);
         }
 
@@ -123,9 +127,13 @@ namespace Greatbone.Sample
             {
                 o.Put(nameof(cash), cash, "实收金额", '¥');
                 o.Put(nameof(accepted), accepted, "实收时间");
-                o.Put(nameof(partnerid), partnerid);
+                o.Put(nameof(coshopid), coshopid);
+                o.Group("撤销");
                 o.Put(nameof(abortion), abortion);
-                o.Put(nameof(closed), closed);
+                o.Put(nameof(aborted), aborted);
+                o.UnGroup();
+                o.Put(nameof(shipped), shipped, "确认收货时间");
+                o.Put(nameof(note), note, "备忘");
             }
             o.Put(nameof(status), status, "状态", STATUS);
         }

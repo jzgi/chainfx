@@ -1,0 +1,39 @@
+{
+    "button": [
+        {
+            "type": "view",
+            "name": "产品/选购",
+            "url": "http://shop.144000.tv/pub/",
+            "sub_button": []
+        },
+        {
+            "type": "view",
+            "name": "我的...",
+            "url": "http://shop.144000.tv/my//",
+            "sub_button": []
+        },
+        {
+            "name": "平台...",
+            "sub_button": [
+                {
+                    "type": "view",
+                    "name": "关于粗粮达人",
+                    "url": "http://shop.144000.tv/about.html",
+                    "sub_button": []
+                },
+                {
+                    "type": "view",
+                    "name": "商家功能（需授权）",
+                    "url": "http://shop.144000.tv/opr//",
+                    "sub_button": []
+                },
+                {
+                    "type": "view",
+                    "name": "监管功能（需授权）",
+                    "url": "http://shop.144000.tv/spr//",
+                    "sub_button": []
+                }
+            ]
+        }
+    ]
+}

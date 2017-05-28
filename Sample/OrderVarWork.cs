@@ -174,7 +174,7 @@ namespace Greatbone.Sample
             long id = ac[this];
             using (var dc = ac.NewDbContext())
             {
-                dc.Execute("UPDATE orders SET closed = localtimestamp, status = @1 WHERE id = @2", p => p.Set(Order.COMPLETED).Set(id));
+                dc.Execute("UPDATE orders SET closed = localtimestamp, status = @1 WHERE id = @2", p => p.Set(Order.SHIPPED).Set(id));
             }
             ac.GiveRedirect("../");
         }

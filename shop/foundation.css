@@ -167,13 +167,12 @@ abbr[title] {
 
 b,
 strong {
-    font-weight: inherit;
-    font-weight: bolder;
+    font-weight: bold;
 }
 
 .money {
     color: mediumorchid;
-    font-size: 1.25rem;
+    font-size: 1rem;
 }
 
 /**
@@ -2029,7 +2028,7 @@ select[multiple] {
     border: 0px solid #e6e6e6;
     border-radius: 3px;
     background: #fefefe;
-    box-shadow: 0 0 0.5rem black;
+    box-shadow: 0 0 0.25rem black;
     overflow: hidden;
     color: #0a0a0a;
 }

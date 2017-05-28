@@ -30,7 +30,7 @@ namespace Greatbone.Sample
     }
 
     [Ui("结款")]
-    [User(User.ASSISTANT)]
+    [User(User.AID)]
     public class OprRepayWork : RepayWork<OprRepayVarWork>
     {
         public OprRepayWork(WorkContext wc) : base(wc)

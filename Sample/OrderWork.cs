@@ -196,7 +196,7 @@ namespace Greatbone.Sample
     }
 
     [Ui("购物车")]
-    [User(User.ASSISTANT)]
+    [User(User.AID)]
     public class OprCartOrderWork : OprOrderWork<OprCartOrderVarWork>
     {
         public OprCartOrderWork(WorkContext wc) : base(wc)
@@ -218,7 +218,7 @@ namespace Greatbone.Sample
     }
 
     [Ui("当前单")]
-    [User(User.ASSISTANT)]
+    [User(User.AID)]
     public class OprActiveOrderWork : OprOrderWork<OprActiveOrderVarWork>
     {
         public OprActiveOrderWork(WorkContext wc) : base(wc)
@@ -266,13 +266,13 @@ namespace Greatbone.Sample
     }
 
     [Ui("已往单")]
-    [User(User.ASSISTANT)]
+    [User(User.AID)]
     public class OprPastOrderWork : OprOrderWork<OprPastOrderVarWork>
     {
         public OprPastOrderWork(WorkContext wc) : base(wc)
         {
             status = Order.ABORTED;
-            status2 = Order.COMPLETED;
+            status2 = Order.SHIPPED;
             proj = -1 ^ Order.LATE ^ Order.WX;
         }
 
@@ -292,7 +292,7 @@ namespace Greatbone.Sample
 
 
     [Ui("受托单", "代派别家的订单")]
-    [User(User.ASSISTANT)]
+    [User(User.AID)]
     public class OprPartnerOrderWork : OrderWork<OprPartnerOrderVarWork>
     {
         public OprPartnerOrderWork(WorkContext wc) : base(wc)

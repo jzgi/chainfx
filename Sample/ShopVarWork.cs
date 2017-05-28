@@ -151,7 +151,7 @@ namespace Greatbone.Sample
     }
 
     [Ui("设置")]
-    [User(User.ASSISTANT)]
+    [User(User.AID)]
     public class OprShopVarWork : ShopVarWork
     {
         public OprShopVarWork(WorkContext wc) : base(wc)
@@ -175,7 +175,7 @@ namespace Greatbone.Sample
         }
 
         [Ui("基本信息", Mode = UiMode.AnchorShow)]
-        [User(User.ASSISTANT)]
+        [User(User.AID)]
         public async Task profile(ActionContext ac)
         {
             const short proj = -1 ^ Shop.ICON ^ Shop.ID ^ Shop.ADM;
@@ -225,7 +225,7 @@ namespace Greatbone.Sample
         }
 
         [Ui("场地照片", Mode = UiMode.AnchorCrop, Circle = true)]
-        [User(User.ASSISTANT)]
+        [User(User.AID)]
         public new async Task icon(ActionContext ac)
         {
             string id = ac[this];

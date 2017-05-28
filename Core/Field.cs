@@ -1,4 +1,3 @@
-using NpgsqlTypes;
 using System;
 
 namespace Greatbone.Core
@@ -49,7 +48,7 @@ namespace Greatbone.Core
         {
             if (items == 1) // a single string
             {
-                string old = (string)value;
+                string old = (string) value;
                 string[] arr = new string[8];
                 arr[0] = old;
                 arr[1] = v;
@@ -58,7 +57,7 @@ namespace Greatbone.Core
             else
             {
                 // ensure capacity
-                string[] arr = (string[])value;
+                string[] arr = (string[]) value;
                 int len = arr.Length;
                 if (items >= len)
                 {
@@ -70,7 +69,7 @@ namespace Greatbone.Core
             }
         }
 
-        string First => (items == 0) ? null : (items == 1) ? (string)value : ((string[])value)[0];
+        string First => (items == 0) ? null : (items == 1) ? (string) value : ((string[]) value)[0];
 
         //
         // CONVERSION
@@ -172,7 +171,7 @@ namespace Greatbone.Core
             return v.First;
         }
 
-        public static implicit operator byte[] (Field v)
+        public static implicit operator byte[](Field v)
         {
             byte[] buf = v.contentbuf;
             if (buf != null)
@@ -187,43 +186,46 @@ namespace Greatbone.Core
 
         public static implicit operator ArraySegment<byte>(Field v)
         {
-            if (v.count == 0) return default(ArraySegment<byte>);
+            if (v.count == 0)
+            {
+                return default(ArraySegment<byte>);
+            }
             return new ArraySegment<byte>(v.contentbuf, v.offset, v.count);
         }
 
-        public static implicit operator short[] (Field v)
+        public static implicit operator short[](Field v)
         {
             int len = v.items;
             if (len == 0) return null;
             if (len == 1)
             {
-                string str = (string)v.value;
+                string str = (string) v.value;
                 short n;
-                return new[] { short.TryParse(str, out n) ? n : (short)0 };
+                return new[] {short.TryParse(str, out n) ? n : (short) 0};
             }
 
-            string[] strs = (string[])v.value;
+            string[] strs = (string[]) v.value;
             short[] arr = new short[len];
             for (int i = 0; i < len; i++)
             {
                 short n;
-                arr[i] = short.TryParse(strs[i], out n) ? n : (short)0;
+                arr[i] = short.TryParse(strs[i], out n) ? n : (short) 0;
             }
             return arr;
         }
 
-        public static implicit operator int[] (Field v)
+        public static implicit operator int[](Field v)
         {
             int len = v.items;
             if (len == 0) return null;
             if (len == 1)
             {
-                string str = (string)v.value;
+                string str = (string) v.value;
                 int n;
-                return new[] { int.TryParse(str, out n) ? n : 0 };
+                return new[] {int.TryParse(str, out n) ? n : 0};
             }
 
-            string[] strs = (string[])v.value;
+            string[] strs = (string[]) v.value;
             int[] arr = new int[len];
             for (int i = 0; i < len; i++)
             {
@@ -233,17 +235,17 @@ namespace Greatbone.Core
             return arr;
         }
 
-        public static implicit operator long[] (Field v)
+        public static implicit operator long[](Field v)
         {
             int len = v.items;
             if (len == 0) return null;
             if (len == 1)
             {
-                string str = (string)v.value;
+                string str = (string) v.value;
                 long n;
-                return new[] { long.TryParse(str, out n) ? n : 0 };
+                return new[] {long.TryParse(str, out n) ? n : 0};
             }
-            string[] strs = (string[])v.value;
+            string[] strs = (string[]) v.value;
             long[] arr = new long[len];
             for (int i = 0; i < len; i++)
             {
@@ -253,17 +255,17 @@ namespace Greatbone.Core
             return arr;
         }
 
-        public static implicit operator string[] (Field v)
+        public static implicit operator string[](Field v)
         {
             int len = v.items;
             if (len == 0) return null;
             if (len == 1)
             {
-                string str = (string)v.value;
-                return new[] { str };
+                string str = (string) v.value;
+                return new[] {str};
             }
 
-            string[] strs = (string[])v.value;
+            string[] strs = (string[]) v.value;
             string[] arr = new string[len];
             for (int i = 0; i < len; i++)
             {
