@@ -125,6 +125,12 @@ namespace Greatbone.Core
             return this;
         }
 
+        public HtmlContent T(DateTime v)
+        {
+            Add(v);
+            return this;
+        }
+
         public HtmlContent T(decimal v)
         {
             Add(v);
@@ -199,6 +205,23 @@ namespace Greatbone.Core
             }
             Add("><p class=\"text-center\">");
             Add(v);
+            Add("</p>");
+            if (closable)
+            {
+                Add("<button class=\"close-button\" type=\"button\" data-close><span>&times;</span></button>");
+            }
+            Add("</div>");
+        }
+
+        public void CALLOUT(Action<HtmlContent> m, bool closable)
+        {
+            Add("<div class=\"alert callout\"");
+            if (closable)
+            {
+                Add(" data-closable");
+            }
+            Add("><p class=\"text-center\">");
+            m?.Invoke(this);
             Add("</p>");
             if (closable)
             {

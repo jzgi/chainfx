@@ -148,7 +148,7 @@ namespace Greatbone.Sample
             return jo.Dump();
         }
 
-        public static async Task PostTransferAsync()
+        public static async Task<bool> PostTransferAsync()
         {
             XElem x = new XElem("xml");
             x.AddChild("mch_appid", appid);
@@ -166,6 +166,7 @@ namespace Greatbone.Sample
             x.AddChild("sign", sign);
 
             XElem resp = (await WCPay.PostAsync<XElem>(null, "/mmpaymkttransfers/promotion/transfers", x.Dump())).Y;
+            return true;
         }
 
         public static async Task<string> PostUnifiedOrderAsync(long orderid, decimal total, string openid, string ip, string notifyurl)

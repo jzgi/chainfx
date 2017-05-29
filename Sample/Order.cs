@@ -127,7 +127,7 @@ namespace Greatbone.Sample
             {
                 o.Put(nameof(cash), cash, "实收金额", '¥');
                 o.Put(nameof(accepted), accepted, "实收时间");
-                o.Put(nameof(coshopid), coshopid);
+                o.Put(nameof(coshopid), coshopid, "受托商家");
                 o.Group("撤销");
                 o.Put(nameof(abortion), abortion);
                 o.Put(nameof(aborted), aborted);

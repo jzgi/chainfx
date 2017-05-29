@@ -17,10 +17,10 @@ namespace Greatbone.Sample
             PAID = 1;
 
         // status
-        static readonly Dictionary<short, string> STATUS = new Dictionary<short, string>
+        static readonly Opt<short> STATUS = new Opt<short>
         {
-            [0] = "新创建",
-            [1] = "已付款"
+            [0] = "新创建/未转款",
+            [1] = "已转款"
         };
 
 
@@ -35,7 +35,7 @@ namespace Greatbone.Sample
         internal int orders;
         internal decimal total;
         internal decimal amount;
-        internal DateTime till;
+        internal DateTime thru;
         internal DateTime created;
         internal string creator;
 
@@ -54,7 +54,7 @@ namespace Greatbone.Sample
             i.Get(nameof(orders), ref orders);
             i.Get(nameof(total), ref total);
             i.Get(nameof(amount), ref amount);
-            i.Get(nameof(till), ref till);
+            i.Get(nameof(thru), ref thru);
             i.Get(nameof(created), ref created);
             i.Get(nameof(creator), ref creator);
 
@@ -69,24 +69,27 @@ namespace Greatbone.Sample
 
         public void WriteData<R>(IDataOutput<R> o, short proj = 0) where R : IDataOutput<R>
         {
-            o.Put(nameof(term), term);
+            o.Group("商家");
             o.Put(nameof(shopid), shopid);
             o.Put(nameof(shopname), shopname);
+            o.UnGroup();
             o.Put(nameof(city), city);
             o.Put(nameof(mgrwx), mgrwx);
 
-            o.Put(nameof(orders), orders);
+            o.Put(nameof(thru), thru, "截至日期");
+            o.Put(nameof(orders), orders, "订单数");
             o.Put(nameof(total), total);
-            o.Put(nameof(amount), amount);
-            o.Put(nameof(till), till);
+            o.Put(nameof(amount), amount, "合计金额");
+            o.Group("转款操作");
             o.Put(nameof(created), created);
             o.Put(nameof(creator), creator);
+            o.UnGroup();
             if ((proj & PAY) == PAY)
             {
                 o.Put(nameof(paid), paid);
                 o.Put(nameof(payer), payer);
             }
-            o.Put(nameof(status), status);
+            o.Put(nameof(status), status, "状态", STATUS);
         }
     }
 }

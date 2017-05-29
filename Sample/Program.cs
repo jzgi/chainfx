@@ -1,5 +1,4 @@
-﻿using System.Collections.Generic;
-using Greatbone.Core;
+﻿using Greatbone.Core;
 
 namespace Greatbone.Sample
 {
@@ -20,13 +19,6 @@ namespace Greatbone.Sample
                 password = "721004"
             };
 
-            Dictionary<string, string> cluster = new Dictionary<string, string>
-            {
-                ["shop"] = "http://localhost:8080",
-                ["chat"] = "http://localhost:8081"
-            };
-
-
             WeiXinUtility.Setup("weixin.json", "apiclient_cert.p12", deploy);
 
             TryCreate<ShopService>(
@@ -35,8 +27,7 @@ namespace Greatbone.Sample
                     addrs = new[] {"http://localhost:8080"},
                     cipher = 0x4a78be76,
                     cache = true,
-                    db = pg,
-                    cluster = cluster
+                    db = pg
                 },
                 deploy
             );

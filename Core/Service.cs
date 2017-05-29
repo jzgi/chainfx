@@ -33,7 +33,7 @@ namespace Greatbone.Core
         // event consumption
         readonly Roll<EventInfo> events;
 
-        // client connectivity to the related peers
+        // clients to clustered peers
         readonly Roll<Client> clients;
 
         // event queues
@@ -349,9 +349,9 @@ namespace Greatbone.Core
 
         public void Start()
         {
-            if (clients != null)
+            if (events != null || clients != null)
             {
-                EventQueue.GlobalInit(this, clients);
+                EventQueue.Setup(this, clients);
             }
 
             // start the server

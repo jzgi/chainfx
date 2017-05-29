@@ -224,7 +224,7 @@ namespace Greatbone.Sample
         public OprActiveOrderWork(WorkContext wc) : base(wc)
         {
             status = Order.ACCEPTED;
-            proj = -1 ^ Order.LATE ^ Order.WX;
+            proj = -1 ^ Order.WX;
         }
 
         [Ui("发送通知", Mode = UiMode.ButtonShow)]

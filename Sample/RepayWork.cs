@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Threading.Tasks;
 using Greatbone.Core;
+using Microsoft.AspNetCore.Server.Kestrel.Internal.Networking;
 
 namespace Greatbone.Sample
 {
@@ -46,10 +47,9 @@ namespace Greatbone.Sample
 
         public void @default(ActionContext ac)
         {
-            string shopid = ac[1];
             using (var dc = ac.NewDbContext())
             {
-                if (dc.Query("SELECT * FROM repays WHERE shopid = @1 AND status = 0", p => p.Set(shopid)))
+                if (dc.Query("SELECT * FROM repays WHERE status = 0"))
                 {
                     ac.GiveGridPage(200, dc.ToDatas<Repay>());
                 }
@@ -60,7 +60,7 @@ namespace Greatbone.Sample
             }
         }
 
-        [Ui("发起清算", "为商家清算已完成的订单并生成结款单", Mode = UiMode.ButtonShow)]
+        [Ui("结算", "为商家结算已完成的订单", Mode = UiMode.ButtonShow)]
         public async Task reckon(ActionContext ac)
         {
             DateTime thru; // through date
@@ -74,10 +74,10 @@ namespace Greatbone.Sample
                         m.FORM_();
                         if (ret != null)
                         {
-                            m.CALLOUT("上次清算时间是" + (DateTime) ret, false);
+                            m.CALLOUT(t => { t.T("上次结算截至日期是").T((DateTime) ret); }, false);
                         }
                         thru = DateTime.Today.AddDays(-1);
-                        m.DATE(nameof(thru), thru, "截止日期", max: thru);
+                        m.DATE(nameof(thru), thru, "本次截至日期", max: thru);
                         m._FORM();
                     });
                 }
@@ -102,6 +102,28 @@ namespace Greatbone.Sample
                     }
                 }
             }
+        }
+
+        [Ui("转款", "按照结算单转款给商家", Mode = UiMode.ButtonConfirm)]
+        public async Task transfer(ActionContext ac)
+        {
+            DateTime thru; // through date
+            using (var dc = ac.NewDbContext())
+            {
+                if (dc.Query("SELECT * FROM repays WHERE status = 0"))
+                {
+                    while (dc.Next())
+                    {
+                        int id = dc.GetInt();
+                        bool ok = await WeiXinUtility.PostTransferAsync();
+                        if (ok)
+                        {
+                            dc.Execute("UPDATE repays SET status = 1 WHERE id = @1", p => p.Set(id));
+                        }
+                    }
+                }
+            }
+            ac.GiveRedirect();
         }
     }
 

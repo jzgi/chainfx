@@ -3,10 +3,6 @@
         "http://0.0.0.0",
         "http://0.0.0.0"
     ],
-    "cluster": {
-        "shop": "http://0.0.0.0",
-        "chat": "http://0.0.0.0"
-    },
     "db": {
         "host": "/tmp",
         "port": 5432,

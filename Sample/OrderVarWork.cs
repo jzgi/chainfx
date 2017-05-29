@@ -146,23 +146,23 @@ namespace Greatbone.Sample
         public async Task cancel(ActionContext ac)
         {
             long id = ac[this];
-            string cancellation = null;
+            string abortion = null;
             if (ac.GET)
             {
                 ac.GivePane(200, m =>
                 {
                     m.FORM_();
-                    m.TEXTAREA(nameof(cancellation), cancellation, "请填写撤销的原因");
+                    m.TEXTAREA(nameof(abortion), abortion, "请填写撤销的原因", max: 20, required: true);
                     m._FORM();
                 });
             }
             else
             {
                 var f = await ac.ReadAsync<Form>();
-                cancellation = f[nameof(cancellation)];
+                abortion = f[nameof(abortion)];
                 using (var dc = ac.NewDbContext())
                 {
-                    dc.Execute("UPDATE orders SET cancellation = @1 WHERE id = @2", p => p.Set(cancellation).Set(id));
+                    dc.Execute("UPDATE orders SET abortion = @1 WHERE id = @2", p => p.Set(abortion).Set(id));
                 }
                 ac.GiveRedirect("../");
             }
@@ -174,7 +174,7 @@ namespace Greatbone.Sample
             long id = ac[this];
             using (var dc = ac.NewDbContext())
             {
-                dc.Execute("UPDATE orders SET closed = localtimestamp, status = @1 WHERE id = @2", p => p.Set(Order.SHIPPED).Set(id));
+                dc.Execute("UPDATE orders SET shipped = localtimestamp, status = @1 WHERE id = @2", p => p.Set(Order.SHIPPED).Set(id));
             }
             ac.GiveRedirect("../");
         }
@@ -233,24 +233,6 @@ namespace Greatbone.Sample
     {
         public OprActiveOrderVarWork(WorkContext wc) : base(wc)
         {
-        }
-
-        public void @default(ActionContext ac)
-        {
-            string shopid = ac[0];
-            int id = ac[this];
-
-            using (var dc = ac.NewDbContext())
-            {
-                dc.Sql("SELECT ").columnlst(Order.Empty)._("FROM orders WHERE id = @1 AND shopid = @2");
-                if (dc.Query(p => p.Set(id).Set(shopid)))
-                {
-                    var order = dc.ToDatas<Order>();
-                }
-                else
-                {
-                }
-            }
         }
 
         static readonly Func<IData, bool> ABORT = obj => ((Order) obj).abortion != null;

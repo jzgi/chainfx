@@ -11,7 +11,7 @@ Target Server Type    : PGSQL
 Target Server Version : 90505
 File Encoding         : 65001
 
-Date: 2017-05-29 01:33:59
+Date: 2017-05-29 08:12:20
 */
 
 
@@ -48,35 +48,7 @@ CREATE SEQUENCE "public"."repays_id_seq"
  MAXVALUE 9223372036854775807
  START 1
  CACHE 1;
-
--- ----------------------------
--- Table structure for evtq
--- ----------------------------
-DROP TABLE IF EXISTS "public"."evtq";
-CREATE TABLE "public"."evtq" (
-"id" int8 DEFAULT nextval('evtq_id_seq'::regclass) NOT NULL,
-"name" varchar(40) COLLATE "default",
-"shard" varchar(20) COLLATE "default",
-"arg" varchar(40) COLLATE "default",
-"type" varchar(40) COLLATE "default",
-"body" bytea,
-"time" timestamp(6)
-)
-WITH (OIDS=FALSE)
-
-;
-
--- ----------------------------
--- Table structure for evtu
--- ----------------------------
-DROP TABLE IF EXISTS "public"."evtu";
-CREATE TABLE "public"."evtu" (
-"peerid" varchar(20) COLLATE "default" NOT NULL,
-"evtid" int8
-)
-WITH (OIDS=FALSE)
-
-;
+SELECT setval('"public"."repays_id_seq"', 1, true);
 
 -- ----------------------------
 -- Table structure for items
@@ -205,16 +177,6 @@ WITH (OIDS=FALSE)
 -- ----------------------------
 ALTER SEQUENCE "public"."orders_id_seq" OWNED BY "orders"."id";
 ALTER SEQUENCE "public"."repays_id_seq" OWNED BY "repays"."id";
-
--- ----------------------------
--- Primary Key structure for table evtq
--- ----------------------------
-ALTER TABLE "public"."evtq" ADD PRIMARY KEY ("id");
-
--- ----------------------------
--- Primary Key structure for table evtu
--- ----------------------------
-ALTER TABLE "public"."evtu" ADD PRIMARY KEY ("peerid");
 
 -- ----------------------------
 -- Primary Key structure for table items
