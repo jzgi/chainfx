@@ -1,7 +1,6 @@
 ﻿using System;
 using System.Threading.Tasks;
 using Greatbone.Core;
-using Microsoft.AspNetCore.Server.Kestrel.Internal.Networking;
 
 namespace Greatbone.Sample
 {

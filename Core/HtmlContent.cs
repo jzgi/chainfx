@@ -494,7 +494,7 @@ namespace Greatbone.Core
                         Add("<div class=\"small-3 columns labeldiv\">");
                         Add("</div>");
                         Add("<div class=\"small-9 columns\" style=\"text-align: right\">");
-                        Add("<input name=\"key\" type=\"checkbox\" style=\"margin: 0\" value=\"");
+                        Add("<input name=\"key\" type=\"checkbox\" style=\"margin: 0 0.5rem\" value=\"");
                         varwork?.OutputVarKey(obj, this);
                         Add("\">");
                         Add("</div>");

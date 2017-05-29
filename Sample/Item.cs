@@ -19,9 +19,9 @@ namespace Greatbone.Sample
         // status
         public static readonly Opt<short> STATUS = new Opt<short>
         {
-            [0] = "架下",
-            [1] = "架上仅展示",
-            [2] = "架上接单",
+            [0] = "下架",
+            [1] = "上架仅展示",
+            [2] = "上架可接单",
         };
 
         internal string shopid;

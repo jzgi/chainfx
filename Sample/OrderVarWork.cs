@@ -93,7 +93,12 @@ namespace Greatbone.Sample
                     if (dc.Query1("SELECT comment FROM orders WHERE id = @1", p => p.Set(id)))
                     {
                         var comment = dc.GetString();
-                        ac.GivePane(200, m => { m.TEXTAREA(nameof(comment), comment, label: "附加说明", max: 20, required: true); });
+                        ac.GivePane(200, m =>
+                        {
+                            m.FORM_();
+                            m.TEXTAREA(nameof(comment), comment, label: "附加说明", max: 20, required: true);
+                            m._FORM();
+                        });
                     }
                     else
                     {
@@ -114,7 +119,7 @@ namespace Greatbone.Sample
 
         static readonly Func<IData, bool> PREPAY = obj => ((Order) obj).addr != null;
 
-        [Ui("付款", "确定此单要付款吗", Mode = UiMode.AnchorScript, Bold = true)]
+        [Ui("微信付款", "确定要通过微信付款吗", Mode = UiMode.AnchorScript, Bold = true)]
         public async Task prepay(ActionContext ac)
         {
             string wx = ac[typeof(UserVarWork)];

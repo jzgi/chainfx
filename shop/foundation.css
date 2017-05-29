@@ -2025,7 +2025,7 @@ select[multiple] {
     flex-direction: column;
     margin-top: 0.75rem;
     margin-bottom: 0.75rem;
-    border: 0px solid #e6e6e6;
+    border: 0 solid #f3f3f3;
     border-radius: 3px;
     background: #fefefe;
     box-shadow: 0 0 0.25rem black;
@@ -2041,7 +2041,7 @@ select[multiple] {
     -ms-flex: 0 1 auto;
     flex: 0 1 auto;
     padding: 1rem;
-    background: #e6e6e6;
+    background: #f3f3f3;
 }
 
 .card-divider > :last-child {
@@ -2248,7 +2248,7 @@ html.is-reveal-open body {
 }
 
 .labeldiv {
-    background: #e6e6e6;
+    background: #f3f3f3;
     color: black;
     text-align: right;
 }
@@ -2263,8 +2263,8 @@ table {
 table thead,
 table tbody,
 table tfoot {
-    border: 1px solid #e6e6e6;
-    background-color: #fefefe;
+    border: 1px solid #f3f3f3;
+    background-color: #f3f3f3;
 }
 
 table caption {
@@ -2273,13 +2273,13 @@ table caption {
 }
 
 table thead {
-    background: #e6e6e6;
+    background: #f3f3f3;
     color: black;
     font-weight: normal;
 }
 
 table tfoot {
-    background: #e6e6e6;
+    background: #f3f3f3;
     color: #0a0a0a;
 }
 
@@ -2303,13 +2303,13 @@ table tfoot td {
 
 table tbody th,
 table tbody td {
-    border: 0px solid #e6e6e6;
+    border: 0 solid #f3f3f3;
     padding: 2px;
 }
 
 table tbody tr:nth-child(even) {
     border-bottom: 0;
-    background-color: #f1f1f1;
+    background-color: #f3f3f3;
 }
 
 table.unstriped tbody {
@@ -2340,7 +2340,7 @@ table.hover tbody tr:hover {
 }
 
 table.hover:not(.unstriped) tr:nth-of-type(even):hover {
-    background-color: #ececec;
+    background-color: #f3f3f3;
 }
 
 .table-scroll {

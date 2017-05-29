@@ -55,14 +55,14 @@ namespace Greatbone.Sample
 
                             m.FIELDSET_("修改数量");
 
-                            m.Add("<div class=\"row card align-middle\">");
+                            m.Add("<div class=\"row align-middle\">");
 
                             m.Add("<div class=\"small-6 column\">");
                             m.Add("<img src=\"/pub/");
                             m.Add(shopid);
                             m.Add("/");
                             m.Add(name);
-                            m.Add("/icon\" class=\"thumbnail\">");
+                            m.Add("/icon\" class=\"thumbnail circle\">");
                             m.Add("</div>"); // column
 
                             m.Add("<div class=\"small-6 column\">");

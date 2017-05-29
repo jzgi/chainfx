@@ -73,7 +73,7 @@ namespace Greatbone.Sample
             o.Put(nameof(shopid), shopid);
             o.Put(nameof(shopname), shopname);
             o.UnGroup();
-            o.Put(nameof(city), city);
+            o.Put(nameof(city), city, "城市");
             o.Put(nameof(mgrwx), mgrwx);
 
             o.Put(nameof(thru), thru, "截至日期");

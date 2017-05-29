@@ -45,13 +45,23 @@ namespace Greatbone.Sample
             }
         }
 
-        [Ui("清空购物车", Mode = UiMode.ButtonConfirm)]
-        public void empty(ActionContext ac)
+        [Ui("清空/删除", "清空购物车或者删除选中的项", Mode = UiMode.ButtonConfirm)]
+        public async Task remove(ActionContext ac)
         {
             string wx = ac[typeof(UserVarWork)];
+            var f = await ac.ReadAsync<Form>();
+            long[] key = f[nameof(key)];
             using (var dc = ac.NewDbContext())
             {
-                dc.Execute("DELETE FROM orders WHERE wx = @1 AND status = @2", p => p.Set(wx).Set(Order.CREATED));
+                if (key != null)
+                {
+                    dc.Sql("DELETE FROM orders WHERE wx = @1 AND status = @2 AND id")._IN_(key);
+                    dc.Execute(p => p.Set(wx).Set(Order.CREATED));
+                }
+                else
+                {
+                    dc.Execute("DELETE FROM orders WHERE wx = @1 AND status = @2", p => p.Set(wx).Set(Order.CREATED));
+                }
                 ac.GiveRedirect();
             }
         }
