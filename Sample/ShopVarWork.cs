@@ -162,7 +162,7 @@ namespace Greatbone.Sample
 
             Create<OprPastOrderWork>("past");
 
-            Create<OprPartnerOrderWork>("partner");
+            Create<OprCoOrderWork>("partner");
 
             Create<OprItemWork>("item");
 

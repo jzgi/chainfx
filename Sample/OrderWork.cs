@@ -257,20 +257,50 @@ namespace Greatbone.Sample
         }
 
         [Ui("委托办理", Mode = UiMode.ButtonShow)]
-        public async Task calc(ActionContext ac)
+        public async Task passon(ActionContext ac)
         {
+            var prin = (User) ac.Principal;
             string shopid = ac[-1];
-            long[] pk = ac.Query[nameof(pk)];
-
+            string city = prin.city;
             if (ac.GET)
             {
+                ac.GivePane(200, m =>
+                {
+                    m.FORM_();
+                    using (var dc = ac.NewDbContext())
+                    {
+                        if (dc.Query("SELECT id, name FROM shops WHERE city = @1", p => p.Set(city)))
+                        {
+                            m.RADIOS("id_name", dc, (inp, h, prime) =>
+                            {
+                                if (prime)
+                                {
+                                    h.Add(inp.GetString("id"));
+                                    h.Add(' ');
+                                    h.Add(inp.GetString("name"));
+                                }
+                                else
+                                {
+                                    h.Add(inp.GetString("id"));
+                                    h.Add('-');
+                                    h.Add(inp.GetString("name"));
+                                }
+                            });
+                            m._FORM();
+                        }
+                    }
+                });
             }
-            else
+            else // post
             {
-                var key = await ac.ReadAsync<Form>();
+                var f = await ac.ReadAsync<Form>();
+                string id_name = f[nameof(id_name)];
+                Duo<string, string> duo = id_name.ToStringString();
                 using (var dc = ac.NewDbContext())
                 {
+                    dc.Execute(@"UPDATE shops SET coshopid = @1 WHERE id = @2", p => p.Set(duo.X).Set(shopid));
                 }
+                ac.GivePane(200);
             }
         }
     }
@@ -301,11 +331,11 @@ namespace Greatbone.Sample
     }
 
 
-    [Ui("受托单", "代派别家的订单")]
+    [Ui("受托单", "受托办理其他商家的订单")]
     [User(User.AID)]
-    public class OprPartnerOrderWork : OrderWork<OprPartnerOrderVarWork>
+    public class OprCoOrderWork : OrderWork<OprCoOrderVarWork>
     {
-        public OprPartnerOrderWork(WorkContext wc) : base(wc)
+        public OprCoOrderWork(WorkContext wc) : base(wc)
         {
         }
 
@@ -314,7 +344,7 @@ namespace Greatbone.Sample
             string shopid = ac[-1];
             using (var dc = ac.NewDbContext())
             {
-                if (dc.Query("SELECT * FROM orders WHERE shopid = @1 AND status = @2 ORDER BY id LIMIT 20 OFFSET @3", p => p.Set(shopid).Set(page * 20)))
+                if (dc.Query("SELECT * FROM orders WHERE coshopid = @1 ORDER BY id LIMIT 20 OFFSET @2", p => p.Set(shopid).Set(page * 20)))
                 {
                     ac.GiveGridPage(200, dc.ToDatas<Order>(), @public: false, maxage: 3);
                 }

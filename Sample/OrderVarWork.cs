@@ -280,9 +280,9 @@ namespace Greatbone.Sample
         }
     }
 
-    public class OprPartnerOrderVarWork : OprOrderVarWork
+    public class OprCoOrderVarWork : OprOrderVarWork
     {
-        public OprPartnerOrderVarWork(WorkContext wc) : base(wc)
+        public OprCoOrderVarWork(WorkContext wc) : base(wc)
         {
         }
     }
