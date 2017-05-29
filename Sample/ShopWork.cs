@@ -162,29 +162,4 @@ namespace Greatbone.Sample
             }
         }
     }
-
-    [Ui("商家")]
-    public class AdmShopWork : ShopWork<AdmShopVarWork>
-    {
-        public AdmShopWork(WorkContext wc) : base(wc)
-        {
-        }
-
-        public void @default(ActionContext ac, int page)
-        {
-            using (var dc = ac.NewDbContext())
-            {
-                const int proj = -1 ^ Shop.ICON;
-                dc.Sql("SELECT ").columnlst(Shop.Empty, proj)._("FROM shops ORDER BY id LIMIT 30 OFFSET @1");
-                if (dc.Query(p => p.Set(page)))
-                {
-                    ac.GiveGridPage(200, dc.ToDatas<Shop>(proj), proj, @public: false, maxage: 3);
-                }
-                else
-                {
-                    ac.GiveGridPage(200, (Shop[]) null, @public: false, maxage: 3);
-                }
-            }
-        }
-    }
 }

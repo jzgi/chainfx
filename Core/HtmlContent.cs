@@ -43,7 +43,7 @@ namespace Greatbone.Core
 
         int level = -1; // current level
 
-        public HtmlContent(bool octet, bool pooled, int capacity = 32 * 1024) : base(octet, capacity)
+        public HtmlContent(bool octet, int capacity = 32 * 1024) : base(octet, capacity)
         {
         }
 

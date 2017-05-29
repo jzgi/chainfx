@@ -10,9 +10,6 @@ namespace Greatbone.Sample
         }
     }
 
-    /// <summary>
-    /// 
-    /// </summary>
     public class MyUserWork : UserWork<MyUserVarWork>
     {
         public MyUserWork(WorkContext wc) : base(wc)
@@ -20,29 +17,21 @@ namespace Greatbone.Sample
         }
     }
 
-    [Ui("用户管理")]
+    [Ui("人员管理")]
     public class SprUserWork : UserWork<OprUserVarWork>
     {
         public SprUserWork(WorkContext wc) : base(wc)
         {
         }
-    }
 
-
-    [Ui("用户")]
-    public class AdmUserWork : UserWork<AdmUserVarWork>
-    {
-        public AdmUserWork(WorkContext wc) : base(wc)
+        public void @default(ActionContext ac, int page)
         {
-        }
-
-        public void @default(ActionContext ac)
-        {
+            string city = ac[-1];
             using (var dc = ac.NewDbContext())
             {
                 const int proj = -1 ^ User.CREDENTIAL;
-                dc.Sql("SELECT ").columnlst(User.Empty, proj)._("FROM users ORDER BY id LIMIT 30 OFFSET @1");
-                if (dc.Query("SELECT * FROM users"))
+                dc.Sql("SELECT ").columnlst(User.Empty, proj)._("FROM users WHERE city = @1 AND opr <> 0 ORDER BY id LIMIT 20 OFFSET @2");
+                if (dc.Query(p => p.Set(city).Set(page * 20)))
                 {
                     ac.GiveGridPage(200, dc.ToDatas<User>()); // ok
                 }
@@ -52,44 +41,31 @@ namespace Greatbone.Sample
                 }
             }
         }
+    }
 
-        [Ui("按城市", Mode = UiMode.Button)]
-        public void srch(ActionContext ac)
+
+    [Ui("监管员")]
+    public class AdmUserWork : UserWork<AdmUserVarWork>
+    {
+        public AdmUserWork(WorkContext wc) : base(wc)
         {
         }
 
-        [Ui("查找编号", Mode = UiMode.AnchorShow)]
-        public void find(ActionContext ac)
+        public void @default(ActionContext ac, int page)
         {
-            if (ac.GET)
+            using (var dc = ac.NewDbContext())
             {
-                string id = null;
-                ac.GivePane(200, f => { f.TEXT(nameof(id), id, label: "用户编号", max: 11, min: 11); });
-            }
-            else
-            {
-                string id = ac.Query[nameof(id)];
-
-                using (var dc = ac.NewDbContext())
+                const int proj = -1 ^ User.CREDENTIAL;
+                dc.Sql("SELECT ").columnlst(User.Empty, proj)._("FROM users WHERE sprat IS NOT NULL ORDER BY city LIMIT 20 OFFSET @1");
+                if (dc.Query(p => p.Set(page * 20)))
                 {
-                    const int proj = -1 ^ User.CREDENTIAL;
-                    dc.Sql("SELECT ").columnlst(User.Empty, proj)._("FROM users WHERE id = @1");
-                    if (dc.Query(p => p.Set(id)))
-                    {
-                        ac.GiveGridPage(200, dc.ToDatas<User>()); // ok
-                    }
-                    else
-                    {
-                        ac.Give(204); // no content
-                    }
+                    ac.GiveGridPage(200, dc.ToDatas<User>()); // ok
+                }
+                else
+                {
+                    ac.Give(204); // no content
                 }
             }
-        }
-
-
-        [Ui]
-        public void aggr(ActionContext ac)
-        {
         }
     }
 }

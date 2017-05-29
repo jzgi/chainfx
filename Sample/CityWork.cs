@@ -43,11 +43,5 @@ namespace Greatbone.Sample
                 }
             }
         }
-
-
-        [Ui("分布报告")]
-        public void rpt(ActionContext ac)
-        {
-        }
     }
 }

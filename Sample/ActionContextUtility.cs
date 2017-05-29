@@ -15,7 +15,7 @@ namespace Greatbone.Sample
 
         public static void GiveFrame(this ActionContext ac, int status, bool? @public = null, int maxage = 60)
         {
-            HtmlContent h = new HtmlContent(true, true, 8 * 1024);
+            HtmlContent h = new HtmlContent(true, 8 * 1024);
 
             h.Add("<!DOCTYPE html>");
             h.Add("<html style=\"height:100%\">");
@@ -113,7 +113,7 @@ namespace Greatbone.Sample
         ///
         public static void GivePage(this ActionContext ac, int status, Action<HtmlContent> main, bool? @public = null, int maxage = 60)
         {
-            HtmlContent h = new HtmlContent(true, true, 16 * 1024);
+            HtmlContent h = new HtmlContent(true, 16 * 1024);
 
             h.Add("<!DOCTYPE html>");
             h.Add("<html>");
@@ -150,7 +150,7 @@ namespace Greatbone.Sample
         ///
         public static void GivePane(this ActionContext ac, int status, Action<HtmlContent> main = null, bool? @public = null, int maxage = 60)
         {
-            HtmlContent h = new HtmlContent(true, true, 8 * 1024);
+            HtmlContent h = new HtmlContent(true, 8 * 1024);
 
             h.Add("<!DOCTYPE html>");
             h.Add("<html>");
