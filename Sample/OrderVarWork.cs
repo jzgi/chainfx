@@ -147,17 +147,21 @@ namespace Greatbone.Sample
         {
         }
 
-        [Ui("请求撤销", Mode = UiMode.ButtonPrompt)]
+        [Ui("我要撤销", Mode = UiMode.ButtonPrompt)]
         public async Task cancel(ActionContext ac)
         {
             long id = ac[this];
             string abortion = null;
             if (ac.GET)
             {
+                using (var dc = ac.NewDbContext())
+                {
+                    abortion = (string) dc.Scalar("SELECT abortion FROM orders WHERE id = @1", p => p.Set(id));
+                }
                 ac.GivePane(200, m =>
                 {
                     m.FORM_();
-                    m.TEXTAREA(nameof(abortion), abortion, "请填写撤销的原因", max: 20, required: true);
+                    m.TEXTAREA(nameof(abortion), abortion, "撤销此单的理由", max: 20, required: true);
                     m._FORM();
                 });
             }

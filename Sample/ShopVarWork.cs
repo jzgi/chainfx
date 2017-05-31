@@ -258,7 +258,7 @@ namespace Greatbone.Sample
             }
         }
 
-        [Ui("操作授权", Mode = UiMode.AnchorShow)]
+        [Ui("操作授权", Mode = UiMode.AnchorOpen)]
         [User(User.MANAGER)]
         public async Task crew(ActionContext ac, int subcmd)
         {

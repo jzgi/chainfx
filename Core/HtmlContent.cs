@@ -595,13 +595,19 @@ namespace Greatbone.Core
                     }
                     else if (ui.HasPrompt)
                     {
-                        Add(" onclick=\"return dialog(this,2,2,'");
+                        Add(" onclick=\"return dialog(this,2,1,'");
                         Add(ui.Tip);
                         Add("');\"");
                     }
                     else if (ui.HasShow)
                     {
-                        Add(" onclick=\"return dialog(this,4,3,'");
+                        Add(" onclick=\"return dialog(this,4,2,'");
+                        Add(ui.Tip);
+                        Add("');\"");
+                    }
+                    else if (ui.HasOpen)
+                    {
+                        Add(" onclick=\"return dialog(this,8,3,'");
                         Add(ui.Tip);
                         Add("');\"");
                     }
@@ -621,7 +627,9 @@ namespace Greatbone.Core
                         Add(ui.Height);
                         Add(',');
                         Add(ui.Circle);
-                        Add(");\"");
+                        Add(",'");
+                        Add(ui.Tip);
+                        Add("');\"");
                     }
                     Add(">");
                     Add(ai.Label);
@@ -653,13 +661,13 @@ namespace Greatbone.Core
                     }
                     else if (ui.HasPrompt)
                     {
-                        Add(" onclick=\"return dialog(this,2,2,'");
+                        Add(" onclick=\"return dialog(this,2,1,'");
                         Add(ui.Tip);
                         Add("');\"");
                     }
                     else if (ui.HasShow)
                     {
-                        Add(" onclick=\"return dialog(this,4,3,'");
+                        Add(" onclick=\"return dialog(this,4,2,'");
                         Add(ui.Tip);
                         Add("');\"");
                     }
@@ -678,14 +686,14 @@ namespace Greatbone.Core
 
         public void BUTTON(string value)
         {
-            Add("<button class=\"button\">");
+            Add("<button class=\"button primary hollow\">");
             AddEsc(value);
             Add("</button>");
         }
 
         public void BUTTON(string name, int subcmd, string value)
         {
-            Add("<button class=\"button hollow\" formmethod=\"post\" formaction=\"");
+            Add("<button class=\"button primary hollow\" formmethod=\"post\" formaction=\"");
             Add(name);
             Add('-');
             Add(subcmd);

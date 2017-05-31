@@ -2186,6 +2186,7 @@ html.is-reveal-open body {
 @media print, screen and (min-width: 40em) {
     .reveal.tiny {
         width: 30%;
+        height: 60%;
         max-width: 62.5rem;
     }
 }
@@ -2193,6 +2194,7 @@ html.is-reveal-open body {
 @media print, screen and (min-width: 40em) {
     .reveal.small {
         width: 50%;
+        height: 60%;
         max-width: 62.5rem;
     }
 }
@@ -2200,6 +2202,7 @@ html.is-reveal-open body {
 @media print, screen and (min-width: 40em) {
     .reveal.large {
         width: 90%;
+        height: 60%;
         max-width: 62.5rem;
     }
 }
