@@ -507,7 +507,7 @@ namespace Greatbone.Core
                     ActionInfo[] ais = varwork?.UiActions;
                     if (ais != null)
                     {
-                        Add("<div style=\"text-align: right\">");
+                        Add("<div style=\"text-align: right; border-top: 1px solid mediumorchid\">");
                         TRIGGERS(ais);
                         Add("</div>");
                     }

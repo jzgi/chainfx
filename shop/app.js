@@ -27,9 +27,8 @@ function dialog(trig, mode, siz, title) {
     title = title || trig.innerHTML;
 
     var html = '<div id="dyndlg" class="' + sizg + ' reveal"  data-reveal data-close-on-click="false">'
-        + '<strong>' + title + ' </strong>'
-        + '<button class="close-button medium" type="button" onclick="$(\'#dyndlg\').foundation(\'close\').foundation(\'destroy\').remove();">&times;</button>'
-        + '<div style="height: calc(100% - ' + (mode == OPEN ? '0rem' : '3rem') + ')"><iframe src="' + src + '" style="width: 100%; height: 100%"></iframe></div>'
+        + '<div class="title-bar"><div clsas="title-bar-title">' + title + '</div><div class="title-bar-right"><a class="close-button" href="#" onclick="$(\'#dyndlg\').foundation(\'close\').foundation(\'destroy\').remove();">&times;</a></div></div>'
+        + '<div style="height: calc(100% - ' + (mode == OPEN ? '0rem' : '5rem') + ')"><iframe src="' + src + '" style="width: 100%; height: 100%; border: 0"></iframe></div>'
         + (mode == OPEN ? '' : ('<button class=\"button primary float-center\" onclick="ok(this,' + mode + ',\'' + formid + '\',\'' + tag + '\',\'' + action + '\',\'' + method + '\');" disabled>确定</botton>'))
         + '</div>';
 
@@ -100,7 +99,7 @@ function ok(okbtn, mode, formid, tag, action, method) {
             form[0].submit();
             return;
         }
-    } else if (mode == OPEN) { 
+    } else if (mode == OPEN) {
         var iframe = dlge.find('iframe');
         var form = iframe.contents().find('form');
         if (form.length != 0) {
@@ -110,9 +109,11 @@ function ok(okbtn, mode, formid, tag, action, method) {
 }
 
 
-function crop(trig, wid, hei, circle) {
+function crop(trig, wid, hei, circle, title) {
 
     var sizg = 'full';
+
+    title = title || trig.innerHTML;
 
     var action = trig.href;
 
@@ -121,13 +122,12 @@ function crop(trig, wid, hei, circle) {
 
     var html =
         '<div id="dyndlg" class="' + sizg + ' reveal"  data-reveal data-close-on-click="false">'
-        + '<strong>' + trig.innerHTML + ' </strong>'
-        + '<button class="close-button medium" type="button" onclick="$(\'#dyndlg\').foundation(\'close\').foundation(\'destroy\').remove();">&times;</button>'
+        + '<div class="title-bar"><div clsas="title-bar-title">' + title + '</div><div class="title-bar-right"><a class="close-button" href="#" onclick="$(\'#dyndlg\').foundation(\'close\').foundation(\'destroy\').remove();">&times;</a></div></div>'
         + '<div id="demo" style="height: calc(100% - 8rem); text-align: center;">'
         + '<input type="file" id="fileinput" style="display: none;" onchange="bind(window.URL.createObjectURL(this.files[0]),' + wid + ',' + hei + ',' + circle + ');">'
         + '<div style="text-align: center">'
-        + '<a class="button hollow" onclick="$(\'#fileinput\').click();">选择图片</a>'
-        + '<a class="button hollow" onclick="upload(\'' + action + '\',' + circle + ');">裁剪并上传</a>'
+        + '<a class="button success hollow" onclick="$(\'#fileinput\').click();">选择图片</a>'
+        + '<a class="button success hollow" onclick="upload(\'' + action + '\',' + circle + ');">裁剪并上传</a>'
         + '</div>'
         + '</div>';
 

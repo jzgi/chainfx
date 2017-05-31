@@ -534,7 +534,7 @@ html {
 body {
     margin: 0;
     padding: 0;
-    background: #fefefe;
+    background: gainsboro;
     font-family: "Helvetica Neue", Helvetica, Roboto, Arial, sans-serif;
     font-weight: normal;
     line-height: 1.5;
@@ -1203,7 +1203,6 @@ select[multiple] {
 .button[disabled],
 .button[disabled]:hover,
 .button[disabled]:focus {
-    background-color: #ba55d3;
     color: #fefefe;
 }
 
@@ -1219,7 +1218,6 @@ select[multiple] {
 .button[disabled].primary,
 .button[disabled].primary:hover,
 .button[disabled].primary:focus {
-    background-color: #ba55d3;
     color: #0a0a0a;
 }
 
@@ -1235,7 +1233,6 @@ select[multiple] {
 .button[disabled].secondary,
 .button[disabled].secondary:hover,
 .button[disabled].secondary:focus {
-    background-color: #e9e9e9;
     color: #0a0a0a;
 }
 
@@ -1251,7 +1248,6 @@ select[multiple] {
 .button[disabled].alert,
 .button[disabled].alert:hover,
 .button[disabled].alert:focus {
-    background-color: #c60f13;
     color: #fefefe;
 }
 
@@ -1267,7 +1263,6 @@ select[multiple] {
 .button[disabled].success,
 .button[disabled].success:hover,
 .button[disabled].success:focus {
-    background-color: #5da423;
     color: #0a0a0a;
 }
 
@@ -1283,7 +1278,6 @@ select[multiple] {
 .button[disabled].warning,
 .button[disabled].warning:hover,
 .button[disabled].warning:focus {
-    background-color: #ffae00;
     color: #0a0a0a;
 }
 
@@ -1299,7 +1293,6 @@ select[multiple] {
 .button[disabled].body-font,
 .button[disabled].body-font:hover,
 .button[disabled].body-font:focus {
-    background-color: #222222;
     color: #fefefe;
 }
 
@@ -1315,7 +1308,6 @@ select[multiple] {
 .button[disabled].header,
 .button[disabled].header:hover,
 .button[disabled].header:focus {
-    background-color: #222222;
     color: #fefefe;
 }
 
@@ -1341,8 +1333,7 @@ select[multiple] {
 }
 
 .close-button {
-    position: absolute;
-    color: #8a8a8a;
+    color: mediumorchid;
     cursor: pointer;
 }
 
@@ -1352,7 +1343,7 @@ select[multiple] {
 
 .close-button:hover,
 .close-button:focus {
-    color: #0a0a0a;
+    color: purple;
 }
 
 .close-button.small {
@@ -1937,7 +1928,6 @@ select[multiple] {
 .tabs-content {
     border-top: 0.25rem solid #393a3e;
     border-bottom: 0.25rem solid #393a3e;
-    background: #fefefe;
     color: #0a0a0a;
     height: calc(100% - 2.25rem);
 }
@@ -2025,10 +2015,9 @@ select[multiple] {
     flex-direction: column;
     margin-top: 0.75rem;
     margin-bottom: 0.75rem;
-    border: 0 solid #f3f3f3;
+    border: 1px solid gray;
     border-radius: 3px;
     background: #fefefe;
-    box-shadow: 0 0 0.25rem black;
     overflow: hidden;
     color: #0a0a0a;
 }
@@ -2144,8 +2133,8 @@ html.is-reveal-open body {
     -webkit-backface-visibility: hidden;
     backface-visibility: hidden;
     display: none;
-    padding: 1rem;
-    border: 1px solid #cacaca;
+    padding: 0;
+    border: 1px solid gainsboro;
     border-radius: 3px;
     background-color: #fefefe;
     position: relative;

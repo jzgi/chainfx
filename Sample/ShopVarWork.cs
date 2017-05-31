@@ -130,7 +130,7 @@ namespace Greatbone.Sample
                             m.T("</div>");
 
                             m.T("<div class=\"small-5 columns\">");
-                            m.T("<button type=\"button\" class=\"button success\" onclick=\"var frm=this.form; $.post('/my//cart/add', $(frm).serialize(), function(data){alert('成功加入购物车'); frm.reset();});\">加入购物车</button>");
+                            m.T("<button type=\"button\" class=\"button success hollow\" onclick=\"var frm=this.form; $.post('/my//cart/add', $(frm).serialize(), function(data){alert('成功加入购物车'); frm.reset();});\">加入购物车</button>");
                             m.T("</div>");
 
                             m.T("</div>"); // row
