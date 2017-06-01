@@ -107,6 +107,12 @@ namespace Greatbone.Core
             return this;
         }
 
+        public HtmlContent T(char v)
+        {
+            Add(v);
+            return this;
+        }
+
         public HtmlContent T(short v)
         {
             Add(v);
@@ -1111,19 +1117,149 @@ namespace Greatbone.Core
             }
         }
 
-        public void RADIOS(string name, IDataInput inp, Action<IDataInput, HtmlContent, bool> putter)
+        public void RADIO(string name, int value, bool check, string label)
         {
-            while (inp.Next())
+            Add("<label>");
+            Add("<input type=\"radio\" name=\"");
+            Add(name);
+            Add("\" value=\"");
+            Add(value);
+            if (check)
             {
-                Add("<label>");
-                Add("<input type=\"radio\" name=\"");
-                Add(name);
-                Add("\" value=\"");
-                putter(inp, this, false); // putting value
-                Add("\">");
-                putter(inp, this, true); // putting label
-                Add("</label>");
+                Add("\" checked>");
             }
+            else
+            {
+                Add("\">");
+            }
+            Add(label);
+            Add("</label>");
+        }
+
+        public void RADIO(string name, long value, bool check, string label)
+        {
+            Add("<label>");
+            Add("<input type=\"radio\" name=\"");
+            Add(name);
+            Add("\" value=\"");
+            Add(value);
+            if (check)
+            {
+                Add("\" checked>");
+            }
+            else
+            {
+                Add("\">");
+            }
+            Add(label);
+            Add("</label>");
+        }
+
+        public void RADIO(string name, string value, bool check, string label)
+        {
+            Add("<label>");
+            Add("<input type=\"radio\" name=\"");
+            Add(name);
+            Add("\" value=\"");
+            Add(value);
+            if (check)
+            {
+                Add("\" checked>");
+            }
+            else
+            {
+                Add("\">");
+            }
+            Add(label);
+            Add("</label>");
+        }
+
+        public void RADIO(string name, Action<HtmlContent> value, bool check, Action<HtmlContent> label)
+        {
+            Add("<label>");
+            Add("<input type=\"radio\" name=\"");
+            Add(name);
+            Add("\" value=\"");
+            value(this);
+            if (check)
+            {
+                Add("\" checked>");
+            }
+            else
+            {
+                Add("\">");
+            }
+            label(this);
+            Add("</label>");
+        }
+
+        public void RADIO(string name, string v1, string v2, bool check, string l1, string l2)
+        {
+            Add("<label>");
+            Add("<input type=\"radio\" name=\"");
+            Add(name);
+            Add("\" value=\"");
+            Add(v1);
+            Add('-');
+            Add(v2);
+            if (check)
+            {
+                Add("\" checked>");
+            }
+            else
+            {
+                Add("\">");
+            }
+            Add(l1);
+            Add(' ');
+            Add(l2);
+            Add("</label>");
+        }
+
+        public void RADIO(string name, int v1, string v2, bool check, int l1, string l2)
+        {
+            Add("<label>");
+            Add("<input type=\"radio\" name=\"");
+            Add(name);
+            Add("\" value=\"");
+            Add(v1);
+            Add('-');
+            Add(v2);
+            if (check)
+            {
+                Add("\" checked>");
+            }
+            else
+            {
+                Add("\">");
+            }
+            Add(l1);
+            Add(' ');
+            Add(l2);
+            Add("</label>");
+        }
+
+        public void RADIO(string name, long v1, string v2, bool check, long l1, string l2)
+        {
+            Add("<label>");
+            Add("<input type=\"radio\" name=\"");
+            Add(name);
+            Add("\" value=\"");
+            Add(v1);
+            Add('-');
+            Add(v2);
+            if (check)
+            {
+                Add("\" checked>");
+            }
+            else
+            {
+                Add("\">");
+            }
+            Add(l1);
+            Add(' ');
+            Add(l2);
+            Add("</label>");
         }
 
         public void RADIOS(string name, string v, Opt<string> opt = null, string label = null, bool required = false)

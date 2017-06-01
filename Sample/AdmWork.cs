@@ -13,8 +13,6 @@ namespace Greatbone.Sample
             Create<AdmRepayWork>("repay"); // repays present
 
             Create<AdmPastRepayWork>("pastrepay"); // repays past
-
-            Create<AdmFeekbackWork>("feedback");
         }
 
         public void @default(ActionContext ac)

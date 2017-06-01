@@ -194,6 +194,38 @@ namespace Greatbone.Sample
         public MyPastOrderVarWork(WorkContext wc) : base(wc)
         {
         }
+
+        [Ui("举报商家", "向平台举报商家的产品质量问题", Mode = UiMode.AnchorShow)]
+        public async Task tipoff(ActionContext ac)
+        {
+            long id = ac[this];
+
+            bool yes = false;
+            string report = null;
+            if (ac.GET)
+            {
+                ac.GivePane(200, m =>
+                {
+                    m.FORM_();
+
+                    m.CALLOUT("让我们共同来维护人类健康福祉。在监管人员受理您的举报后，可能需要在您的协助下进行调查。", false);
+                    m.CHECKBOX(nameof(yes), yes, "我同意协助监管人员进行调查", required: true);
+                    m.TEXTAREA(nameof(report), report, "举报内容", max: 40, required: true);
+
+                    m._FORM();
+                });
+            }
+            else
+            {
+                var f = await ac.ReadAsync<Form>();
+                report = f[nameof(report)];
+                using (var dc = ac.NewDbContext())
+                {
+                    dc.Execute("INSERT INTO tipoffs () VALUES () ON CONFLICT DO NOTHING");
+                }
+                ac.GivePane(200);
+            }
+        }
     }
 
     public abstract class OprOrderVarWork : OrderVarWork

@@ -271,21 +271,12 @@ namespace Greatbone.Sample
                     {
                         if (dc.Query("SELECT id, name FROM shops WHERE city = @1", p => p.Set(city)))
                         {
-                            m.RADIOS("id_name", dc, (inp, h, prime) =>
+                            while (dc.Next())
                             {
-                                if (prime)
-                                {
-                                    h.Add(inp.GetString("id"));
-                                    h.Add(' ');
-                                    h.Add(inp.GetString("name"));
-                                }
-                                else
-                                {
-                                    h.Add(inp.GetString("id"));
-                                    h.Add('-');
-                                    h.Add(inp.GetString("name"));
-                                }
-                            });
+                                string id = dc.GetString();
+                                string name = dc.GetString();
+                                m.RADIO("id_name", id, name, false, id, name);
+                            }
                             m._FORM();
                         }
                     }

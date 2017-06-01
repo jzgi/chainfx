@@ -40,7 +40,7 @@ namespace Greatbone.Sample
 
             Create<SprShopWork>("shop");
 
-            Create<SprFeekbackWork>("feedback");
+            Create<SprTipoffWork>("feedback");
         }
 
         public void @default(ActionContext ac)

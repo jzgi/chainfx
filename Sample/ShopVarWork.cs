@@ -300,21 +300,13 @@ namespace Greatbone.Sample
                 {
                     if (dc.Query("SELECT id, name, opr FROM users WHERE oprat = @1", p => p.Set(shopid)))
                     {
-                        m.RADIOS(nameof(id), dc, (inp, h, prime) =>
+                        while (dc.Next())
                         {
-                            if (prime)
-                            {
-                                h.Add(inp.GetString("id"));
-                                h.Add(' ');
-                                h.Add(inp.GetString("name"));
-                                h.Add(' ');
-                                h.Add(User.OPR[inp.GetShort("opr")]);
-                            }
-                            else
-                            {
-                                h.Add(inp.GetString("id"));
-                            }
-                        });
+                            id = dc.GetString();
+                            string name = dc.GetString();
+                            opr = dc.GetShort();
+                            m.RADIO(nameof(id), (h) => h.T(id), false, (h) => h.T(id).T(' ').T(name).T(' ').T(User.OPR[opr]));
+                        }
                         m.BUTTON(nameof(crew), 1, "删除");
                     }
                 }
@@ -439,21 +431,13 @@ namespace Greatbone.Sample
                     {
                         if (dc.Query("SELECT id, name, wx FROM users WHERE city = @1 AND NOT id IS NULL AND NOT name IS NULL", p => p.Set(city)))
                         {
-                            m.RADIOS("id_wx", dc, (inp, h, prime) =>
+                            while (dc.Next())
                             {
-                                if (prime)
-                                {
-                                    h.Add(inp.GetString("id"));
-                                    h.Add(' ');
-                                    h.Add(inp.GetString("name"));
-                                }
-                                else
-                                {
-                                    h.Add(inp.GetString("id"));
-                                    h.Add('-');
-                                    h.Add(inp.GetString("wx"));
-                                }
-                            });
+                                string id = dc.GetString();
+                                string name = dc.GetString();
+                                string wx = dc.GetString();
+                                m.RADIO("id_wx", id, wx, false, id, name);
+                            }
                             m._FORM();
                         }
                     }
