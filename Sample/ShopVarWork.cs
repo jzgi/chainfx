@@ -305,7 +305,7 @@ namespace Greatbone.Sample
                             id = dc.GetString();
                             string name = dc.GetString();
                             opr = dc.GetShort();
-                            m.RADIO(nameof(id), (h) => h.T(id), false, (h) => h.T(id).T(' ').T(name).T(' ').T(User.OPR[opr]));
+                            m.RADIO(nameof(id), id, null, false, id,name, User.OPR[opr]);
                         }
                         m.BUTTON(nameof(crew), 1, "删除");
                     }

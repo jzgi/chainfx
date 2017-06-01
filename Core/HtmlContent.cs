@@ -64,7 +64,7 @@ namespace Greatbone.Core
                     char c = alt[i];
                     if (c >= 'a' && c <= 'z')
                     {
-                        c = (char) (c - 32);
+                        c = (char)(c - 32);
                     }
                     Add(c);
                 }
@@ -1117,14 +1117,14 @@ namespace Greatbone.Core
             }
         }
 
-        public void RADIO(string name, int value, bool check, string label)
+        public void RADIO(string name, int value, bool @checked, string label)
         {
             Add("<label>");
             Add("<input type=\"radio\" name=\"");
             Add(name);
             Add("\" value=\"");
             Add(value);
-            if (check)
+            if (@checked)
             {
                 Add("\" checked>");
             }
@@ -1174,14 +1174,14 @@ namespace Greatbone.Core
             Add("</label>");
         }
 
-        public void RADIO(string name, Action<HtmlContent> value, bool check, Action<HtmlContent> label)
+        public void RADIO(string name, Action<HtmlContent> value, bool @checked, Action<HtmlContent> label)
         {
             Add("<label>");
             Add("<input type=\"radio\" name=\"");
             Add(name);
             Add("\" value=\"");
             value(this);
-            if (check)
+            if (@checked)
             {
                 Add("\" checked>");
             }
@@ -1193,16 +1193,19 @@ namespace Greatbone.Core
             Add("</label>");
         }
 
-        public void RADIO(string name, string v1, string v2, bool check, string l1, string l2)
+        public void RADIO(string name, string v1, string v2, bool @checked, string l1, string l2, string l3 = null)
         {
             Add("<label>");
             Add("<input type=\"radio\" name=\"");
             Add(name);
             Add("\" value=\"");
             Add(v1);
-            Add('-');
-            Add(v2);
-            if (check)
+            if (v2 != null)
+            {
+                Add('-');
+                Add(v2);
+            }
+            if (@checked)
             {
                 Add("\" checked>");
             }
@@ -1213,19 +1216,27 @@ namespace Greatbone.Core
             Add(l1);
             Add(' ');
             Add(l2);
+            if (l3 != null)
+            {
+                Add(' ');
+                Add(l3);
+            }
             Add("</label>");
         }
 
-        public void RADIO(string name, int v1, string v2, bool check, int l1, string l2)
+        public void RADIO(string name, long v1, string v2, bool @checked, long l1, string l2, string l3 = null)
         {
             Add("<label>");
             Add("<input type=\"radio\" name=\"");
             Add(name);
             Add("\" value=\"");
             Add(v1);
-            Add('-');
-            Add(v2);
-            if (check)
+            if (v2 != null)
+            {
+                Add('-');
+                Add(v2);
+            }
+            if (@checked)
             {
                 Add("\" checked>");
             }
@@ -1236,29 +1247,11 @@ namespace Greatbone.Core
             Add(l1);
             Add(' ');
             Add(l2);
-            Add("</label>");
-        }
-
-        public void RADIO(string name, long v1, string v2, bool check, long l1, string l2)
-        {
-            Add("<label>");
-            Add("<input type=\"radio\" name=\"");
-            Add(name);
-            Add("\" value=\"");
-            Add(v1);
-            Add('-');
-            Add(v2);
-            if (check)
+            if (l3 != null)
             {
-                Add("\" checked>");
+                Add(' ');
+                Add(l3);
             }
-            else
-            {
-                Add("\">");
-            }
-            Add(l1);
-            Add(' ');
-            Add(l2);
             Add("</label>");
         }
 
@@ -1297,44 +1290,6 @@ namespace Greatbone.Core
                 Add("</label>");
             }
             Add("</fieldset>");
-        }
-
-        public void FILE(string name, string label = null, string size = null, string ratio = null, bool required = false)
-        {
-            // <div class="slim"
-            //      data-label="Drop your avatar here"
-            //      data-fetcher="fetch.php"
-            //      data-size="240,240"
-            //      data-ratio="1:1">
-            //     <input type="file" name="slim[]" required />
-            // </div>
-            //
-            Add("<div class=\"slim\" data-upload-base64=\"false\" data-instant-edit=\"true\" data-label=\"");
-            AddLabel(label, name);
-            Add("\" data-fetcher=\"_");
-            Add(name);
-            Add("_");
-
-            if (size != null)
-            {
-                Add("\" data-size=\"");
-                Add(size);
-                Add("\" data-force-size=\"");
-                Add(size);
-            }
-            if (ratio != null)
-            {
-                Add("\" data-ratio=\"");
-                Add(ratio);
-            }
-            Add("\">");
-
-            Add("<input type=\"file\" name=\"");
-            Add(name);
-            Add("\"");
-            if (required) Add(" required");
-            Add(">");
-            Add("</div>");
         }
 
         public void TEXTAREA(string name, string v, string label = null, string help = null, short max = 0, short min = 0, bool @readonly = false, bool required = false)
@@ -1389,7 +1344,7 @@ namespace Greatbone.Core
             if (mode > 0)
             {
                 Add(" onclick=\"dialog(this,");
-                Add((int) mode);
+                Add((int)mode);
                 Add("); return false;\"");
             }
 

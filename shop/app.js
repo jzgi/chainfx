@@ -111,7 +111,7 @@ function ok(okbtn, mode, formid, tag, action, method) {
 
 function crop(trig, wid, hei, circle, title) {
 
-    var sizg = 'full';
+    var sizg = 'large';
 
     title = title || trig.innerHTML;
 
