@@ -88,7 +88,7 @@ namespace Greatbone.Sample
                 thru = f[nameof(thru)];
                 using (var dc = ac.NewDbContext(IsolationLevel.ReadUncommitted))
                 {
-                    dc.Execute("SELECT reckon(@1, '1000000.00'::money, '20000.00'::money)", p => p.Set(thru));
+                    dc.Execute("SELECT reckon(@1, 1000000.00::money, 20000.00::money)", p => p.Set(thru));
                 }
                 ac.GivePane(200);
             }
@@ -99,7 +99,7 @@ namespace Greatbone.Sample
         {
             using (var dc = ac.NewDbContext())
             {
-                if (dc.Query("SELECT repays.id, mgrwx, mgr, cash FROM repays JOIN shops WHERE status = 0"))
+                if (dc.Query("SELECT r.id, mgrwx, mgr, cash FROM repays AS r, shops AS s WHERE r.shopid = s.id AND r.status = 0"))
                 {
                     while (dc.Next())
                     {
@@ -111,6 +111,10 @@ namespace Greatbone.Sample
                         if (err != null)
                         {
                             dc.Execute("UPDATE repays SET status = 1 WHERE id = @1", p => p.Set(id));
+                        }
+                        else
+                        {
+                            dc.Execute("UPDATE repays SET err = @1 WHERE id = @1", p => p.Set(id).Set(err));
                         }
                     }
                 }
@@ -128,10 +132,9 @@ namespace Greatbone.Sample
 
         public void @default(ActionContext ac)
         {
-            string shopid = ac[1];
             using (var dc = ac.NewDbContext())
             {
-                if (dc.Query("SELECT * FROM repays WHERE shopid = @1 AND status < 4", p => p.Set(shopid)))
+                if (dc.Query("SELECT * FROM repays WHERE status > 0"))
                 {
                     ac.GiveGridPage(200, dc.ToDatas<Repay>());
                 }

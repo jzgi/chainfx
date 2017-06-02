@@ -11,7 +11,7 @@ Target Server Type    : PGSQL
 Target Server Version : 90505
 File Encoding         : 65001
 
-Date: 2017-06-02 23:55:42
+Date: 2017-06-03 01:07:31
 */
 
 
@@ -104,7 +104,8 @@ CREATE TABLE "public"."repays" (
 "cash" money,
 "paid" timestamp(6),
 "payer" varchar(6) COLLATE "default",
-"status" int2 DEFAULT 0
+"status" int2 DEFAULT 0,
+"err" varchar(20) COLLATE "default"
 )
 WITH (OIDS=FALSE)
 
@@ -129,7 +130,8 @@ CREATE TABLE "public"."shops" (
 "status" int2,
 "icon" bytea,
 "mgrid" varchar(11) COLLATE "default",
-"mgrwx" varchar(28) COLLATE "default"
+"mgrwx" varchar(28) COLLATE "default",
+"mgr" varchar(6) COLLATE "default"
 )
 WITH (OIDS=FALSE)
 
@@ -191,3 +193,73 @@ ALTER TABLE "public"."items" ADD PRIMARY KEY ("shopid", "name");
 -- Primary Key structure for table users
 -- ----------------------------
 ALTER TABLE "public"."users" ADD PRIMARY KEY ("wx");
+
+
+CREATE OR REPLACE FUNCTION "public"."reckon"("thru" date, "gmax" money, "rmax" money)
+  RETURNS "pg_catalog"."void" AS $BODY$
+
+DECLARE 
+
+  cur CURSOR FOR SELECT id, shopid, shop, cash, status FROM orders WHERE status = 5 AND shipped <= thru ORDER BY shopid FOR UPDATE;
+
+  rshopid VARCHAR(6) DEFAULT NULL;
+  rshop VARCHAR(10) DEFAULT NULL;
+  rorders INT DEFAULT 0;
+  rtotal MONEY DEFAULT 0.00; -- repay total
+  rcash MONEY DEFAULT 0.00; -- repay cash
+  
+  gtotal MONEY DEFAULT 0.00; -- grand total
+  gcash MONEY DEFAULT 0.00; -- grand cash
+  
+  ord RECORD;
+  
+BEGIN
+
+  OPEN cur;
+
+  LOOP
+  
+    FETCH cur INTO ord; -- fetch an order
+
+    IF NOT FOUND OR rshopid <> ord.shopid THEN
+
+      IF rshopid IS NOT NULL AND rtotal > 0.00::money THEN
+        -- insert the accumulated repay
+        INSERT INTO repays (shopid, shop, thru, orders, total, cash) VALUES (rshopid, rshop, thru, rorders, rtotal, rtotal * 0.994);
+        -- reset repay 
+        rshopid := NULL;
+        rshop := NULL;
+        rorders := 0;
+        rtotal := 0;
+      END IF;
+
+      IF NOT FOUND THEN
+        CLOSE cur;
+        EXIT;
+      END IF;
+    
+    END IF;
+
+    rshopid := ord.shopid;
+
+    -- test against the limitation
+    IF rtotal + ord.cash <= rmax AND gtotal + ord.cash <= gmax THEN
+
+			rshop := ord.shop;
+      rorders := rorders + 1;
+      rtotal := rtotal + ord.cash;
+      gtotal := gtotal + ord.cash;
+
+      -- set status to reckoned
+      UPDATE orders SET status = 7  WHERE CURRENT OF cur; 
+
+    END IF;
+
+  END LOOP;
+
+END
+$BODY$
+  LANGUAGE 'plpgsql' VOLATILE COST 100
+;
+
+ALTER FUNCTION "public"."reckon"("thru" date, "gmax" money, "rmax" money) OWNER TO "postgres";
