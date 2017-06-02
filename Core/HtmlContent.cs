@@ -204,7 +204,7 @@ namespace Greatbone.Core
 
         public void CALLOUT(string v, bool closable)
         {
-            Add("<div class=\"alert callout\"");
+            Add("<div class=\"callout primary\"");
             if (closable)
             {
                 Add(" data-closable");
@@ -221,7 +221,7 @@ namespace Greatbone.Core
 
         public void CALLOUT(Action<HtmlContent> m, bool closable)
         {
-            Add("<div class=\"alert callout\"");
+            Add("<div class=\"callout primary\"");
             if (closable)
             {
                 Add(" data-closable");

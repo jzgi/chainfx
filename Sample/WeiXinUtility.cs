@@ -26,6 +26,8 @@ namespace Greatbone.Sample
 
         static string noncestr;
 
+        static string spbillcreateip;
+
         static string key;
 
 
@@ -58,6 +60,7 @@ namespace Greatbone.Sample
             appsecret = wx[nameof(appsecret)];
             mchid = wx[nameof(mchid)];
             noncestr = wx[nameof(noncestr)];
+            spbillcreateip = wx[nameof(spbillcreateip)];
             key = wx[nameof(key)];
 
             // load and init client certificate
@@ -125,7 +128,7 @@ namespace Greatbone.Sample
             JObj jo = await WeiXin.GetAsync<JObj>(null, "/sns/userinfo?access_token=" + access_token + "&openid=" + openid + "&lang=zh_CN");
             string nickname = jo[nameof(nickname)];
             string city = jo[nameof(city)];
-            return new User {wx = openid, name = nickname, city = city};
+            return new User { wx = openid, name = nickname, city = city };
         }
 
         static readonly DateTime EPOCH = new DateTime(1970, 1, 1);
@@ -133,7 +136,7 @@ namespace Greatbone.Sample
         public static IContent BuildPrepayContent(string prepay_id)
         {
             string package = "prepay_id=" + prepay_id;
-            string timeStamp = ((int) (DateTime.Now - EPOCH).TotalSeconds).ToString();
+            string timeStamp = ((int)(DateTime.Now - EPOCH).TotalSeconds).ToString();
 
             JObj jo = new JObj
             {
@@ -148,25 +151,40 @@ namespace Greatbone.Sample
             return jo.Dump();
         }
 
-        public static async Task<bool> PostTransferAsync()
+        public static async Task<string> PostTransferAsync(int id, string openid, string username, decimal cash, string desc)
         {
             XElem x = new XElem("xml");
+            x.AddChild("amount", ((int)(cash * 100)).ToString());
+            x.AddChild("check_name", "FORCE_CHECK");
+            x.AddChild("desc", desc);
             x.AddChild("mch_appid", appid);
-            x.AddChild("mchid", appid);
-            x.AddChild("nonce_str", appid);
-            x.AddChild("partner_trade_no", appid);
-            x.AddChild("openid", appid);
-            x.AddChild("check_name", appid);
-            x.AddChild("re_user_name", appid);
-            x.AddChild("amount", appid);
-            x.AddChild("desc", appid);
-            x.AddChild("spbill_create_ip", appid);
+            x.AddChild("mchid", mchid);
+            x.AddChild("nonce_str", noncestr);
+            x.AddChild("openid", openid);
+            x.AddChild("partner_trade_no", id.ToString());
+            x.AddChild("re_user_name", username);
+            x.AddChild("spbill_create_ip", spbillcreateip);
 
             string sign = x.Child(nameof(sign));
             x.AddChild("sign", sign);
 
-            XElem resp = (await WCPay.PostAsync<XElem>(null, "/mmpaymkttransfers/promotion/transfers", x.Dump())).Y;
-            return true;
+            XElem xe = (await WCPay.PostAsync<XElem>(null, "/mmpaymkttransfers/promotion/transfers", x.Dump())).Y;
+            string return_code = xe.Child(nameof(return_code));
+            if ("SUCCESS" == return_code)
+            {
+                string result_code = xe.Child(nameof(result_code));
+                if ("SUCCESS" != result_code)
+                {
+                    string err_code_des = xe.Child(nameof(err_code_des));
+                    return err_code_des;
+                }
+            }
+            else
+            {
+                string return_msg = xe.Child(nameof(return_msg));
+                return return_msg;
+            }
+            return null;
         }
 
         public static async Task<string> PostUnifiedOrderAsync(long orderid, decimal total, string openid, string ip, string notifyurl)
@@ -180,7 +198,7 @@ namespace Greatbone.Sample
             x.AddChild("openid", openid);
             x.AddChild("out_trade_no", orderid.ToString());
             x.AddChild("spbill_create_ip", ip);
-            x.AddChild("total_fee", ((int) (total * 100)).ToString());
+            x.AddChild("total_fee", ((int)(total * 100)).ToString());
             x.AddChild("trade_type", "JSAPI");
             string sign = Sign(x);
             x.AddChild("sign", sign);
@@ -211,7 +229,7 @@ namespace Greatbone.Sample
             if (sign != Sign(xe, "sign")) return false;
 
             int cash_fee = xe.Child(nameof(cash_fee)); // in cent
-            cash = ((decimal) cash_fee) / 100;
+            cash = ((decimal)cash_fee) / 100;
             out_trade_no = xe.Child(nameof(out_trade_no)); // 商户订单号
             return true;
         }
@@ -249,8 +267,8 @@ namespace Greatbone.Sample
             x.AddChild("op_user_id", mchid);
             x.AddChild("out_refund_no", orderid.ToString());
             x.AddChild("out_trade_no", orderid.ToString());
-            x.AddChild("refund_fee", ((int) (cash * 100)).ToString());
-            x.AddChild("total_fee", ((int) (total * 100)).ToString());
+            x.AddChild("refund_fee", ((int)(cash * 100)).ToString());
+            x.AddChild("total_fee", ((int)(total * 100)).ToString());
             string sign = Sign(x);
             x.AddChild("sign", sign);
 
@@ -330,7 +348,7 @@ namespace Greatbone.Sample
                 {
                     sb.Append('&');
                 }
-                sb.Append(mbr.Name).Append('=').Append((string) mbr);
+                sb.Append(mbr.Name).Append('=').Append((string)mbr);
             }
 
             sb.Append("&key=").Append(key);

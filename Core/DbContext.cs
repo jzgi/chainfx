@@ -49,6 +49,10 @@ namespace Greatbone.Core
 
         public void Begin(IsolationLevel level)
         {
+            if (connection.State != ConnectionState.Open)
+            {
+                connection.Open();
+            }
             if (transact == null)
             {
                 transact = connection.BeginTransaction(level);

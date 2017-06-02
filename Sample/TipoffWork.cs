@@ -1,5 +1,4 @@
-﻿using System.Threading.Tasks;
-using Greatbone.Core;
+﻿using Greatbone.Core;
 
 namespace Greatbone.Sample
 {

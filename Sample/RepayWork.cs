@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Data;
 using System.Threading.Tasks;
 using Greatbone.Core;
 
@@ -31,7 +32,7 @@ namespace Greatbone.Sample
                 }
                 else
                 {
-                    ac.GiveGridPage(200, (Repay[]) null);
+                    ac.GiveGridPage(200, (Repay[])null);
                 }
             }
         }
@@ -54,7 +55,7 @@ namespace Greatbone.Sample
                 }
                 else
                 {
-                    ac.GiveGridPage(200, (Repay[]) null);
+                    ac.GiveGridPage(200, (Repay[])null);
                 }
             }
         }
@@ -73,7 +74,7 @@ namespace Greatbone.Sample
                         m.FORM_();
                         if (ret != null)
                         {
-                            m.CALLOUT(t => { t.T("上次结算截至日期是").T((DateTime) ret); }, false);
+                            m.CALLOUT(t => { t.T("上次结算截至日期是").T((DateTime)ret); }, false);
                         }
                         thru = DateTime.Today.AddDays(-1);
                         m.DATE(nameof(thru), thru, "本次截至日期", max: thru);
@@ -85,37 +86,29 @@ namespace Greatbone.Sample
             {
                 var f = await ac.ReadAsync<Form>();
                 thru = f[nameof(thru)];
-                using (var dc = ac.NewDbContext())
+                using (var dc = ac.NewDbContext(IsolationLevel.ReadUncommitted))
                 {
-                    // compute
-                    int ret = (int) dc.Scalar("SELECT reckon(@1)", p => p.Set(thru));
-
-                    // view result
-                    if (dc.Query("SELECT * FROM repays WHERE status = 0"))
-                    {
-                        ac.GiveGridPage(200, dc.ToDatas<Repay>());
-                    }
-                    else
-                    {
-                        ac.GiveGridPage(200, (Repay[]) null);
-                    }
+                    dc.Execute("SELECT reckon(@1, '1000000.00'::money, '20000.00'::money)", p => p.Set(thru));
                 }
+                ac.GivePane(200);
             }
         }
 
         [Ui("转款", "按照结算单转款给商家", Mode = UiMode.ButtonConfirm)]
         public async Task transfer(ActionContext ac)
         {
-            DateTime thru; // through date
             using (var dc = ac.NewDbContext())
             {
-                if (dc.Query("SELECT * FROM repays WHERE status = 0"))
+                if (dc.Query("SELECT repays.id, mgrwx, mgr, cash FROM repays JOIN shops WHERE status = 0"))
                 {
                     while (dc.Next())
                     {
                         int id = dc.GetInt();
-                        bool ok = await WeiXinUtility.PostTransferAsync();
-                        if (ok)
+                        string mgrwx = dc.GetString();
+                        string mgr = dc.GetString();
+                        decimal cash = dc.GetDecimal();
+                        string err = await WeiXinUtility.PostTransferAsync(id, mgrwx, mgr, cash, "订单结款");
+                        if (err != null)
                         {
                             dc.Execute("UPDATE repays SET status = 1 WHERE id = @1", p => p.Set(id));
                         }
@@ -144,7 +137,7 @@ namespace Greatbone.Sample
                 }
                 else
                 {
-                    ac.GiveGridPage(200, (Repay[]) null);
+                    ac.GiveGridPage(200, (Repay[])null);
                 }
             }
         }

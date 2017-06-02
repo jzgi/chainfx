@@ -1,5 +1,4 @@
 ﻿using System;
-using System.Collections.Generic;
 using Greatbone.Core;
 
 namespace Greatbone.Sample
@@ -26,44 +25,31 @@ namespace Greatbone.Sample
 
         public static readonly Repay Empty = new Repay();
 
-        internal int term; // platform shop id
+        internal int id;
         internal string shopid;
-        internal string city;
-        internal string mgrwx;
-        internal string shopname;
-
+        internal string shop;
+        internal DateTime thru;
         internal int orders;
         internal decimal total;
-        internal decimal amount;
-        internal DateTime thru;
-        internal DateTime created;
-        internal string creator;
-
+        internal decimal cash;
         internal DateTime paid;
         internal string payer;
         internal short status;
 
         public void ReadData(IDataInput i, short proj = 0)
         {
-            i.Get(nameof(term), ref term);
+            i.Get(nameof(id), ref id);
             i.Get(nameof(shopid), ref shopid);
-            i.Get(nameof(shopname), ref shopname);
-            i.Get(nameof(city), ref city);
-            i.Get(nameof(mgrwx), ref mgrwx);
-
+            i.Get(nameof(shop), ref shop);
             i.Get(nameof(orders), ref orders);
             i.Get(nameof(total), ref total);
-            i.Get(nameof(amount), ref amount);
+            i.Get(nameof(cash), ref cash);
             i.Get(nameof(thru), ref thru);
-            i.Get(nameof(created), ref created);
-            i.Get(nameof(creator), ref creator);
-
             if ((proj & PAY) == PAY)
             {
                 i.Get(nameof(paid), ref paid);
                 i.Get(nameof(payer), ref payer);
             }
-
             i.Get(nameof(status), ref status);
         }
 
@@ -71,18 +57,13 @@ namespace Greatbone.Sample
         {
             o.Group("商家");
             o.Put(nameof(shopid), shopid);
-            o.Put(nameof(shopname), shopname);
+            o.Put(nameof(shop), shop);
             o.UnGroup();
-            o.Put(nameof(city), city, "城市");
-            o.Put(nameof(mgrwx), mgrwx);
-
             o.Put(nameof(thru), thru, "截至日期");
             o.Put(nameof(orders), orders, "订单数");
-            o.Put(nameof(total), total);
-            o.Put(nameof(amount), amount, "合计金额");
+            o.Put(nameof(total), total, "订单总额");
+            o.Put(nameof(cash), cash, "转款金额");
             o.Group("转款操作");
-            o.Put(nameof(created), created);
-            o.Put(nameof(creator), creator);
             o.UnGroup();
             if ((proj & PAY) == PAY)
             {
