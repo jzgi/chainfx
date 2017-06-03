@@ -382,7 +382,7 @@ namespace Greatbone.Core
         }
 
 
-        public static Duo<string, string> ToStringString(this string str)
+        public static Dual ToDual(this string str)
         {
             string x = null;
             string y = null;
@@ -396,43 +396,34 @@ namespace Greatbone.Core
             {
                 x = str;
             }
-            return new Duo<string, string>(x, y);
+            return new Dual(x, y);
         }
 
-        public static Duo<int, string> ToIntString(this string str)
+        public static Triple ToTriple(this string str)
         {
-            int x = 0;
+            string x = null;
             string y = null;
-            int dash = str.IndexOf('-');
-            if (dash != -1)
+            string z = null;
+            int dash1 = str.IndexOf('-');
+            if (dash1 != -1)
             {
-                string strx = str.Substring(0, dash);
-                x = strx.ToInt();
-                y = str.Substring(dash + 1);
+                x = str.Substring(0, dash1);
+                int dash2 = str.IndexOf('-', dash1 + 1);
+                if (dash2 != -1)
+                {
+                    y = str.Substring(dash1 + 1, dash2 - dash1 - 1);
+                    z = str.Substring(dash2 + 1);
+                }
+                else
+                {
+                    y = str.Substring(dash1 + 1);
+                }
             }
             else
             {
-                y = str;
+                x = str;
             }
-            return new Duo<int, string>(x, y);
-        }
-
-        public static Duo<long, string> ToLongString(this string str)
-        {
-            long x = 0;
-            string y = null;
-            int dash = str.IndexOf('-');
-            if (dash != -1)
-            {
-                string strx = str.Substring(0, dash);
-                x = strx.ToLong();
-                y = str.Substring(dash + 1);
-            }
-            else
-            {
-                y = str;
-            }
-            return new Duo<long, string>(x, y);
+            return new Triple(x, y, z);
         }
     }
 }

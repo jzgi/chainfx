@@ -178,7 +178,7 @@ namespace Greatbone.Sample
         [User(User.AID)]
         public async Task profile(ActionContext ac)
         {
-            const short proj = -1 ^ Shop.ICON ^ Shop.ID ^ Shop.ADM;
+            const short proj = -1 ^ Shop.ICON ^ Shop.ID ^ Shop.SUPER;
             string id = ac[this];
             if (ac.GET)
             {
@@ -305,7 +305,7 @@ namespace Greatbone.Sample
                             id = dc.GetString();
                             string name = dc.GetString();
                             opr = dc.GetShort();
-                            m.RADIO(nameof(id), id, null, false, id,name, User.OPR[opr]);
+                            m.RADIO(nameof(id), id, null, null, false, id, name, User.OPR[opr]);
                         }
                         m.BUTTON(nameof(crew), 1, "删除");
                     }
@@ -436,7 +436,7 @@ namespace Greatbone.Sample
                                 string id = dc.GetString();
                                 string name = dc.GetString();
                                 string wx = dc.GetString();
-                                m.RADIO("id_wx", id, wx, false, id, name);
+                                m.RADIO("id_wx_name", id, wx, name, false, id, name, null);
                             }
                             m._FORM();
                         }
@@ -446,12 +446,12 @@ namespace Greatbone.Sample
             else // post
             {
                 var f = await ac.ReadAsync<Form>();
-                string id_wx = f[nameof(id_wx)];
-                Duo<string, string> duo = id_wx.ToStringString();
+                string id_wx_name = f[nameof(id_wx_name)];
+                Triple tri = id_wx_name.ToTriple();
                 using (var dc = ac.NewDbContext())
                 {
-                    dc.Execute(@"UPDATE shops SET mgrid = @1, mgrwx = @2 WHERE id = @3;
-                        UPDATE users SET oprat = @3, opr = @4 WHERE wx = @2;", p => p.Set(duo.X).Set(duo.Y).Set(shopid).Set(User.MANAGER));
+                    dc.Execute(@"UPDATE shops SET mgrid = @1, mgrwx = @2, mgr = @3 WHERE id = @4;
+                        UPDATE users SET oprat = @4, opr = @5 WHERE wx = @2;", p => p.Set(tri.X).Set(tri.Y).Set(tri.Z).Set(shopid).Set(User.MANAGER));
                 }
                 ac.GivePane(200);
             }

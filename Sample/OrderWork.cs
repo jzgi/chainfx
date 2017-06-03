@@ -8,7 +8,7 @@ namespace Greatbone.Sample
     {
         protected OrderWork(WorkContext wc) : base(wc)
         {
-            CreateVar<V, long>((obj) => ((Order) obj).id);
+            CreateVar<V, long>((obj) => ((Order)obj).id);
         }
     }
 
@@ -40,7 +40,7 @@ namespace Greatbone.Sample
                 }
                 else
                 {
-                    ac.GiveGridPage(200, (Order[]) null, @public: false, maxage: 3);
+                    ac.GiveGridPage(200, (Order[])null, @public: false, maxage: 3);
                 }
             }
         }
@@ -94,7 +94,7 @@ namespace Greatbone.Sample
                 }
                 else
                 {
-                    User prin = (User) ac.Principal;
+                    User prin = (User)ac.Principal;
                     var o = new Order
                     {
                         shopid = shopid,
@@ -143,7 +143,7 @@ namespace Greatbone.Sample
                 }
                 else
                 {
-                    ac.GiveGridPage(200, (Order[]) null, @public: false, maxage: 3);
+                    ac.GiveGridPage(200, (Order[])null, @public: false, maxage: 3);
                 }
             }
         }
@@ -169,7 +169,7 @@ namespace Greatbone.Sample
                 }
                 else
                 {
-                    ac.GiveGridPage(200, (Order[]) null, @public: false, maxage: 3);
+                    ac.GiveGridPage(200, (Order[])null, @public: false, maxage: 3);
                 }
             }
         }
@@ -199,7 +199,7 @@ namespace Greatbone.Sample
                 }
                 else
                 {
-                    ac.GiveGridPage(200, (Order[]) null, @public: false, maxage: 3);
+                    ac.GiveGridPage(200, (Order[])null, @public: false, maxage: 3);
                 }
             }
         }
@@ -259,7 +259,7 @@ namespace Greatbone.Sample
         [Ui("委托办理", Mode = UiMode.ButtonShow)]
         public async Task passon(ActionContext ac)
         {
-            var prin = (User) ac.Principal;
+            var prin = (User)ac.Principal;
             string shopid = ac[-1];
             string city = prin.city;
             if (ac.GET)
@@ -275,7 +275,7 @@ namespace Greatbone.Sample
                             {
                                 string id = dc.GetString();
                                 string name = dc.GetString();
-                                m.RADIO("id_name", id, name, false, id, name);
+                                m.RADIO("id_name", id, name, null, false, id, name, null);
                             }
                             m._FORM();
                         }
@@ -286,7 +286,7 @@ namespace Greatbone.Sample
             {
                 var f = await ac.ReadAsync<Form>();
                 string id_name = f[nameof(id_name)];
-                Duo<string, string> duo = id_name.ToStringString();
+                Dual duo = id_name.ToDual();
                 using (var dc = ac.NewDbContext())
                 {
                     dc.Execute(@"UPDATE shops SET coshopid = @1 WHERE id = @2", p => p.Set(duo.X).Set(shopid));
@@ -341,7 +341,7 @@ namespace Greatbone.Sample
                 }
                 else
                 {
-                    ac.GiveGridPage(200, (Order[]) null, @public: false, maxage: 3);
+                    ac.GiveGridPage(200, (Order[])null, @public: false, maxage: 3);
                 }
             }
         }

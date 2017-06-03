@@ -110,11 +110,11 @@ namespace Greatbone.Sample
                         string err = await WeiXinUtility.PostTransferAsync(id, mgrwx, mgr, cash, "订单结款");
                         if (err != null)
                         {
-                            dc.Execute("UPDATE repays SET status = 1 WHERE id = @1", p => p.Set(id));
+                            dc.Execute("UPDATE repays SET err = @1 WHERE id = @1", p => p.Set(id).Set(err));
                         }
                         else
                         {
-                            dc.Execute("UPDATE repays SET err = @1 WHERE id = @1", p => p.Set(id).Set(err));
+                            dc.Execute("UPDATE repays SET status = 1 WHERE id = @1", p => p.Set(id));
                         }
                     }
                 }

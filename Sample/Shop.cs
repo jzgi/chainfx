@@ -7,7 +7,7 @@ namespace Greatbone.Sample
     {
         public static readonly Shop Empty = new Shop();
 
-        public const short ID = 0x0001, ICON = 0x0002, ADM = 0x0010;
+        public const short ID = 0x0001, ICON = 0x0002, SUPER = 0x0010;
 
         public static Opt<short> STATUS = new Opt<short>
         {
@@ -32,7 +32,8 @@ namespace Greatbone.Sample
         internal string lic;
         internal DateTime created;
         internal string mgrid; // set by mgr
-        internal string mgrwx; // bound by opr himself
+        internal string mgrwx;
+        internal string mgr;
 
         public void ReadData(IDataInput i, short proj = 0)
         {
@@ -52,10 +53,13 @@ namespace Greatbone.Sample
             i.Get(nameof(addr), ref addr);
             i.Get(nameof(x), ref x);
             i.Get(nameof(y), ref y);
-            if ((proj & ADM) == ADM)
+            if ((proj & SUPER) == SUPER)
             {
                 i.Get(nameof(lic), ref lic);
                 i.Get(nameof(created), ref created);
+                i.Get(nameof(mgrid), ref mgrid);
+                i.Get(nameof(mgrwx), ref mgrwx);
+                i.Get(nameof(mgr), ref mgr);
             }
             i.Get(nameof(status), ref status);
         }
@@ -78,10 +82,13 @@ namespace Greatbone.Sample
             o.Put(nameof(addr), addr, "地址");
             o.Put(nameof(x), x);
             o.Put(nameof(y), y);
-            if ((proj & ADM) == ADM)
+            if ((proj & SUPER) == SUPER)
             {
                 o.Put(nameof(lic), lic, "工商登记");
                 o.Put(nameof(created), created, "创建时间");
+                o.Put(nameof(mgrid), mgrid);
+                o.Put(nameof(mgrwx), mgrwx);
+                o.Put(nameof(mgr), mgr);
             }
             o.Put(nameof(status), status, "状态", STATUS);
         }

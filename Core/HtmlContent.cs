@@ -1193,7 +1193,7 @@ namespace Greatbone.Core
             Add("</label>");
         }
 
-        public void RADIO(string name, string v1, string v2, bool @checked, string l1, string l2, string l3 = null)
+        public void RADIO(string name, string v1, string v2, string v3, bool @checked, string l1, string l2, string l3)
         {
             Add("<label>");
             Add("<input type=\"radio\" name=\"");
@@ -1205,6 +1205,11 @@ namespace Greatbone.Core
                 Add('-');
                 Add(v2);
             }
+            if (v3 != null)
+            {
+                Add('-');
+                Add(v3);
+            }
             if (@checked)
             {
                 Add("\" checked>");
@@ -1214,8 +1219,11 @@ namespace Greatbone.Core
                 Add("\">");
             }
             Add(l1);
-            Add(' ');
-            Add(l2);
+            if (l2 != null)
+            {
+                Add(' ');
+                Add(l2);
+            }
             if (l3 != null)
             {
                 Add(' ');

@@ -165,7 +165,7 @@ namespace Greatbone.Sample
             x.AddChild("re_user_name", username);
             x.AddChild("spbill_create_ip", spbillcreateip);
 
-            string sign = x.Child(nameof(sign));
+            string sign = Sign(x);
             x.AddChild("sign", sign);
 
             XElem xe = (await WCPay.PostAsync<XElem>(null, "/mmpaymkttransfers/promotion/transfers", x.Dump())).Y;
