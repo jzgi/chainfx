@@ -27,7 +27,7 @@ namespace Greatbone.Sample
 
             Create<MyPastOrderWork>("past");
 
-            Create<MyTipoffWork>("tipoff");
+            Create<MyChargeWork>("tipoff");
         }
 
         [Ui("基本信息", Mode = UiMode.AnchorShow)]

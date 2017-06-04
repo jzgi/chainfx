@@ -3,7 +3,7 @@
 namespace Greatbone.Sample
 {
     ///
-    public class Tipoff : IData
+    public class Charge : IData
     {
         public static readonly Item Empty = new Item();
 

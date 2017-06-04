@@ -114,7 +114,7 @@ namespace Greatbone.Sample
                         }
                         else
                         {
-                            dc.Execute("UPDATE repays SET status = 1 WHERE id = @1", p => p.Set(id));
+                            dc.Execute("UPDATE repays SET err = NULL, status = 1 WHERE id = @1", p => p.Set(id));
                         }
                     }
                 }

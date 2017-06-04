@@ -4,9 +4,9 @@ using Greatbone.Core;
 
 namespace Greatbone.Sample
 {
-    public class TipoffVarWork : Work
+    public class ChargeVarWork : Work
     {
-        public TipoffVarWork(WorkContext wc) : base(wc)
+        public ChargeVarWork(WorkContext wc) : base(wc)
         {
         }
 
@@ -49,9 +49,9 @@ namespace Greatbone.Sample
         }
     }
 
-    public class MyTipoffVarWork : TipoffVarWork
+    public class MyChargeVarWork : ChargeVarWork
     {
-        public MyTipoffVarWork(WorkContext wc) : base(wc)
+        public MyChargeVarWork(WorkContext wc) : base(wc)
         {
         }
 
@@ -109,9 +109,9 @@ namespace Greatbone.Sample
         }
     }
 
-    public class SprTipoffVarWork : TipoffVarWork
+    public class SprChargeVarWork : ChargeVarWork
     {
-        public SprTipoffVarWork(WorkContext wc) : base(wc)
+        public SprChargeVarWork(WorkContext wc) : base(wc)
         {
         }
     }

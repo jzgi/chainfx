@@ -162,6 +162,7 @@ namespace Greatbone.Sample
                 {
                     m.FORM_();
                     m.TEXTAREA(nameof(abortion), abortion, "撤销此单的理由", max: 20, required: true);
+                    m.CALLOUT("一经商家同意，您通过平台支付的金额将在20分钟之内退回您的钱包。如果是从银行卡支付的，则可能需要更长时间。如经同意后两天内没有收到退款，请与商家联系。");
                     m._FORM();
                 });
             }
@@ -241,7 +242,7 @@ namespace Greatbone.Sample
         {
         }
 
-        [Ui("强行接受", "此单可能尚未付款，确定接受吗", Mode = UiMode.ButtonConfirm)]
+        [Ui("强行接受", "此单可能尚未通过平台付款，确定接受吗", Mode = UiMode.ButtonConfirm)]
         public void accept(ActionContext ac)
         {
             long id = ac[this];
@@ -253,7 +254,7 @@ namespace Greatbone.Sample
             }
         }
 
-        [Ui("付款核查", Mode = UiMode.ButtonConfirm)]
+        [Ui("付款情况核查", "实时核查该单的付款情况", Mode = UiMode.ButtonConfirm)]
         public async Task check(ActionContext ac)
         {
             long id = ac[this];
@@ -278,7 +279,7 @@ namespace Greatbone.Sample
 
         static readonly Func<IData, bool> ABORT = obj => ((Order) obj).abortion != null;
 
-        [Ui("撤销/退款", "撤销此单，实收金额退回给买家", Mode = UiMode.ButtonShow)]
+        [Ui("同意撤销/退款", "同意撤销此单，实收金额退回给买家", Mode = UiMode.ButtonShow)]
         public async Task abort(ActionContext ac)
         {
             long id = ac[this];
@@ -323,7 +324,7 @@ namespace Greatbone.Sample
 
         static readonly Func<IData, bool> REFUNDQ = obj => ((Order) obj).status == Order.ABORTED;
 
-        [Ui("退款核查", "查询退款到账情况", Mode = UiMode.AnchorOpen)]
+        [Ui("退款情况核查", "实时核查退款到账情况", Mode = UiMode.AnchorOpen)]
         public async Task refundq(ActionContext ac)
         {
             long id = ac[this];

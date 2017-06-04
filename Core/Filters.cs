@@ -15,4 +15,18 @@ namespace Greatbone.Core
     {
         Task DoAsync(ActionContext ac);
     }
+
+    /// To filter after action.
+    ///
+    public interface IAfter
+    {
+        bool Do(ActionContext ac);
+    }
+
+    /// To filter after action.
+    ///
+    public interface IAfterAsync
+    {
+        Task DoAsync(ActionContext ac);
+    }
 }
