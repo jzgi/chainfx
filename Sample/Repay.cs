@@ -35,6 +35,7 @@ namespace Greatbone.Sample
         internal DateTime paid;
         internal string payer;
         internal short status;
+        internal string err;
 
         public void ReadData(IDataInput i, short proj = 0)
         {
@@ -51,6 +52,7 @@ namespace Greatbone.Sample
                 i.Get(nameof(payer), ref payer);
             }
             i.Get(nameof(status), ref status);
+            i.Get(nameof(err), ref err);
         }
 
         public void WriteData<R>(IDataOutput<R> o, short proj = 0) where R : IDataOutput<R>
@@ -71,6 +73,7 @@ namespace Greatbone.Sample
                 o.Put(nameof(payer), payer);
             }
             o.Put(nameof(status), status, "状态", STATUS);
+            o.Put(nameof(err), err, "出错");
         }
     }
 }

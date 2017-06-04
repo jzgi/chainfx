@@ -147,7 +147,7 @@ namespace Greatbone.Sample
         {
         }
 
-        [Ui("我要撤销", Mode = UiMode.ButtonPrompt)]
+        [Ui("申请撤销", "向商家申请撤销此单", Mode = UiMode.ButtonPrompt)]
         public async Task cancel(ActionContext ac)
         {
             long id = ac[this];
@@ -278,20 +278,40 @@ namespace Greatbone.Sample
 
         static readonly Func<IData, bool> ABORT = obj => ((Order) obj).abortion != null;
 
-        [Ui("撤销", "撤销此单，实收金额将会退回给买家", Mode = UiMode.ButtonConfirm)]
+        [Ui("撤销/退款", "撤销此单，实收金额退回给买家", Mode = UiMode.ButtonShow)]
         public async Task abort(ActionContext ac)
         {
             long id = ac[this];
 
-            decimal total = 0, cash = 0;
-            if (await WeiXinUtility.PostRefundAsync(id, total, cash))
+            if (ac.GET)
             {
+                ac.GivePane(200, m => { m.FORM_().CALLOUT("确定要撤销此单，实收金额退回给买家?")._FORM(); });
+            }
+            else
+            {
+                decimal total = 0, cash = 0;
                 using (var dc = ac.NewDbContext())
                 {
-                    dc.Execute("UPDATE orders SET status = @1 WHERE id = @2", p => p.Set(Order.ABORTED).Set(id));
+                    if (dc.Query1("SELECT total, cash FROM orders WHERE id = @1", p => p.Set(id)))
+                    {
+                        total = dc.GetDecimal();
+                        cash = dc.GetDecimal();
+                    }
+                }
+                string err = await WeiXinUtility.PostRefundAsync(id, total, cash);
+                if (err == null) // success
+                {
+                    using (var dc = ac.NewDbContext())
+                    {
+                        dc.Execute("UPDATE orders SET status = @1 WHERE id = @2", p => p.Set(Order.ABORTED).Set(id));
+                    }
+                    ac.GivePane(200);
+                }
+                else // err
+                {
+                    ac.GivePane(200, m => { m.FORM_().CALLOUT(err).CALLOUT("确定重复操作吗？")._FORM(); });
                 }
             }
-            ac.GiveRedirect("../");
         }
     }
 
@@ -301,18 +321,34 @@ namespace Greatbone.Sample
         {
         }
 
-        static readonly Func<IData, bool> ABORT = obj => ((Order) obj).abortion != null;
+        static readonly Func<IData, bool> REFUNDQ = obj => ((Order) obj).status == Order.ABORTED;
 
-        [Ui("退款核实", "撤销此单，实收金额将会退回给买家", Mode = UiMode.AnchorShow)]
-        public async Task abort(ActionContext ac)
+        [Ui("退款核查", "查询退款到账情况", Mode = UiMode.AnchorOpen)]
+        public async Task refundq(ActionContext ac)
         {
             long id = ac[this];
 
-            decimal total, cash;
-            if (await WeiXinUtility.PostRefundQueryAsync(id))
+            string err = await WeiXinUtility.PostRefundQueryAsync(id);
+            if (err == null) // success
             {
+                ac.GivePane(200, m =>
+                {
+                    m.FORM_();
+                    m.CALLOUT("退款成功", false);
+                    m._FORM();
+                });
             }
-            ac.GiveRedirect("../");
+            else
+            {
+                ac.GivePane(200, m =>
+                {
+                    m.FORM_();
+                    m.CALLOUT(err, false);
+                    m.CHECKBOX("ok", false, "重新提交退款请求", true);
+                    m.BUTTON("", 1, "确认");
+                    m._FORM();
+                });
+            }
         }
     }
 

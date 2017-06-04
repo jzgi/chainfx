@@ -95,7 +95,7 @@ namespace Greatbone.Sample
         }
 
         [Ui("转款", "按照结算单转款给商家", Mode = UiMode.ButtonConfirm)]
-        public async Task transfer(ActionContext ac)
+        public async Task pay(ActionContext ac)
         {
             using (var dc = ac.NewDbContext())
             {
@@ -110,7 +110,7 @@ namespace Greatbone.Sample
                         string err = await WeiXinUtility.PostTransferAsync(id, mgrwx, mgr, cash, "订单结款");
                         if (err != null)
                         {
-                            dc.Execute("UPDATE repays SET err = @1 WHERE id = @1", p => p.Set(id).Set(err));
+                            dc.Execute("UPDATE repays SET err = @1 WHERE id = @2", p => p.Set(err).Set(id));
                         }
                         else
                         {

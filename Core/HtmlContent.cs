@@ -64,7 +64,7 @@ namespace Greatbone.Core
                     char c = alt[i];
                     if (c >= 'a' && c <= 'z')
                     {
-                        c = (char)(c - 32);
+                        c = (char) (c - 32);
                     }
                     Add(c);
                 }
@@ -143,17 +143,19 @@ namespace Greatbone.Core
             return this;
         }
 
-        public void ROW_()
+        public HtmlContent ROW_()
         {
             Add("<div class=\"row\">");
+            return this;
         }
 
-        public void _ROW()
+        public HtmlContent _ROW()
         {
             Add("</div>");
+            return this;
         }
 
-        public void FORM_(string caption = null, string action = null, bool post = true, bool mp = false)
+        public HtmlContent FORM_(string caption = null, string action = null, bool post = true, bool mp = false)
         {
             Add("<div class=\"row column align-center small-10 medium-8 large-6 container-padded\">");
             Add("<h2>");
@@ -178,15 +180,17 @@ namespace Greatbone.Core
                 Add(" enctype=\"multipart/form-data\"");
             }
             Add(">");
+            return this;
         }
 
-        public void _FORM()
+        public HtmlContent _FORM()
         {
             Add("</form>");
             Add("</div>");
+            return this;
         }
 
-        public void FIELDSET_(string legend = null)
+        public HtmlContent FIELDSET_(string legend = null)
         {
             Add("<fieldset class=\"fieldset\">");
             if (legend != null)
@@ -195,14 +199,16 @@ namespace Greatbone.Core
                 AddEsc(legend);
                 Add("</legend>");
             }
+            return this;
         }
 
-        public void _FIELDSET()
+        public HtmlContent _FIELDSET()
         {
             Add("</fieldset>");
+            return this;
         }
 
-        public void CALLOUT(string v, bool closable)
+        public HtmlContent CALLOUT(string v, bool closable = false)
         {
             Add("<div class=\"callout primary\"");
             if (closable)
@@ -217,9 +223,10 @@ namespace Greatbone.Core
                 Add("<button class=\"close-button\" type=\"button\" data-close><span>&times;</span></button>");
             }
             Add("</div>");
+            return this;
         }
 
-        public void CALLOUT(Action<HtmlContent> m, bool closable)
+        public HtmlContent CALLOUT(Action<HtmlContent> m, bool closable)
         {
             Add("<div class=\"callout primary\"");
             if (closable)
@@ -234,6 +241,7 @@ namespace Greatbone.Core
                 Add("<button class=\"close-button\" type=\"button\" data-close><span>&times;</span></button>");
             }
             Add("</div>");
+            return this;
         }
 
         public void TOOLBAR(Work work)
@@ -285,7 +293,7 @@ namespace Greatbone.Core
             }
         }
 
-        public void TH(params string[] labels)
+        public HtmlContent TH(params string[] labels)
         {
             for (int i = 0; i < labels.Length; i++)
             {
@@ -293,54 +301,62 @@ namespace Greatbone.Core
                 Add(labels[i]);
                 Add("</th>");
             }
+            return this;
         }
 
-        public void TD(short v)
+        public HtmlContent TD(short v)
         {
             Add("<td style=\"text-align: right\">");
             Add(v);
             Add("</td>");
+            return this;
         }
 
-        public void TD(int v)
+        public HtmlContent TD(int v)
         {
             Add("<td style=\"text-align: right\">");
             Add(v);
             Add("</td>");
+            return this;
         }
 
-        public void TD(long v)
+        public HtmlContent TD(long v)
         {
             Add("<td style=\"text-align: right\">");
             Add(v);
             Add("</td>");
+            return this;
         }
 
-        public void TD(decimal v)
+        public HtmlContent TD(decimal v)
         {
             Add("<td style=\"text-align: right\">");
             Add(v);
             Add("</td>");
+            return this;
         }
 
-        public void TD(string v)
+        public HtmlContent TD(string v)
         {
             Add("<td>");
             AddEsc(v);
             Add("</td>");
+            return this;
         }
 
-        public void TD_()
+        public HtmlContent TD_()
         {
             Add("<td>");
+            return this;
         }
 
-        public void _TD()
+        public HtmlContent _TD()
         {
             Add("</td>");
+            return this;
         }
 
-        public void TABLE(string name, IDataInput inp, Action<IDataInput, HtmlContent, char> putter)
+        public HtmlContent TABLE(string name, IDataInput inp, Action<IDataInput, HtmlContent, char> putter)
         {
             Add("<table class=\"unstriped\">");
 
@@ -363,9 +379,10 @@ namespace Greatbone.Core
             }
             Add("</tbody>");
             Add("</table>");
+            return this;
         }
 
-        public void TABLE<D>(ActionContext formctx, Work varwork, D[] arr, short proj = 0) where D : IData
+        public HtmlContent TABLE<D>(ActionContext formctx, Work varwork, D[] arr, short proj = 0) where D : IData
         {
             bool checks = false; // to draw selection-checkboxes?
             if (formctx != null)
@@ -445,9 +462,10 @@ namespace Greatbone.Core
 
                 Add("</form>");
             }
+            return this;
         }
 
-        public void GRID(IDataInput input, Action<IDataInput, HtmlContent> pipe)
+        public HtmlContent GRID(IDataInput input, Action<IDataInput, HtmlContent> pipe)
         {
             chain[++level].node = GRID_DIV;
             if (input != null)
@@ -468,9 +486,10 @@ namespace Greatbone.Core
                 Add("</div>");
             }
             --level;
+            return this;
         }
 
-        public void GRID<D>(ActionContext formctx, Work varwork, D[] arr, short proj = 0) where D : IData
+        public HtmlContent GRID<D>(ActionContext formctx, Work varwork, D[] arr, short proj = 0) where D : IData
         {
             bool checks = false; // to draw selection-checkboxes?
             if (formctx != null)
@@ -535,9 +554,10 @@ namespace Greatbone.Core
                 PAGENATE(formctx);
                 Add("</form>");
             }
+            return this;
         }
 
-        public void LIST<D>(ActionContext formctx, Work varwork, D[] arr, short proj = 0) where D : IData
+        public HtmlContent LIST<D>(ActionContext formctx, Work varwork, D[] arr, short proj = 0) where D : IData
         {
             if (formctx != null)
             {
@@ -568,11 +588,12 @@ namespace Greatbone.Core
                 PAGENATE(formctx);
                 Add("</form>");
             }
+            return this;
         }
 
-        public void TRIGGERS(ActionInfo[] ais, ActionContext ac = null)
+        public HtmlContent TRIGGERS(ActionInfo[] ais, ActionContext ac = null)
         {
-            if (ais == null) return;
+            if (ais == null) return this;
 
             for (int i = 0; i < ais.Length; i++)
             {
@@ -688,16 +709,18 @@ namespace Greatbone.Core
                     Add("</button>");
                 }
             }
+            return this;
         }
 
-        public void BUTTON(string value)
+        public HtmlContent BUTTON(string value)
         {
             Add("<button class=\"button primary hollow\">");
             AddEsc(value);
             Add("</button>");
+            return this;
         }
 
-        public void BUTTON(string name, int subcmd, string value)
+        public HtmlContent BUTTON(string name, int subcmd, string value)
         {
             Add("<button class=\"button primary hollow\" formmethod=\"post\" formaction=\"");
             Add(name);
@@ -706,37 +729,41 @@ namespace Greatbone.Core
             Add("\">");
             AddEsc(value);
             Add("</button>");
+            return this;
         }
 
 
-        public void HIDDEN(string name, string value)
+        public HtmlContent HIDDEN(string name, string value)
         {
             Add("<input type=\"hidden\" name=\"");
             Add(name);
             Add("\" value=\"");
             AddEsc(value);
             Add("\">");
+            return this;
         }
 
-        public void HIDDEN(string name, int value)
+        public HtmlContent HIDDEN(string name, int value)
         {
             Add("<input type=\"hidden\" name=\"");
             Add(name);
             Add("\" value=\"");
             Add(value);
             Add("\">");
+            return this;
         }
 
-        public void HIDDEN(string name, decimal value)
+        public HtmlContent HIDDEN(string name, decimal value)
         {
             Add("<input type=\"hidden\" name=\"");
             Add(name);
             Add("\" value=\"");
             Add(value);
             Add("\">");
+            return this;
         }
 
-        public void TEXT(string name, string v, string label = null, string help = null, string pattern = null, sbyte max = 0, sbyte min = 0, Opt<string> opt = null, bool @readonly = false, bool required = false)
+        public HtmlContent TEXT(string name, string v, string label = null, string help = null, string pattern = null, sbyte max = 0, sbyte min = 0, Opt<string> opt = null, bool @readonly = false, bool required = false)
         {
             Add("<label>");
             AddLabel(label, name);
@@ -779,9 +806,10 @@ namespace Greatbone.Core
             Add(">");
 
             Add("</label>");
+            return this;
         }
 
-        public void PASSWORD(string name, string v, string label = null, string help = null, string pattern = null, sbyte max = 0, sbyte min = 0, bool @readonly = false, bool required = false)
+        public HtmlContent PASSWORD(string name, string v, string label = null, string help = null, string pattern = null, sbyte max = 0, sbyte min = 0, bool @readonly = false, bool required = false)
         {
             Add("<label>");
             AddLabel(label, name);
@@ -824,9 +852,10 @@ namespace Greatbone.Core
             Add(">");
 
             Add("</label>");
+            return this;
         }
 
-        public void DATE(string name, DateTime v, string label = null, DateTime max = default(DateTime), DateTime min = default(DateTime), bool @readonly = false, bool required = false, int step = 0)
+        public HtmlContent DATE(string name, DateTime v, string label = null, DateTime max = default(DateTime), DateTime min = default(DateTime), bool @readonly = false, bool required = false, int step = 0)
         {
             Add("<label>");
             AddLabel(label, name);
@@ -859,14 +888,16 @@ namespace Greatbone.Core
 
             Add(">");
             Add("</label>");
+            return this;
         }
 
-        public void TIME()
+        public HtmlContent TIME()
         {
             T("</tbody>");
+            return this;
         }
 
-        public void NUMBER(string name, short v, string label = null, string tip = null, short max = 0, short min = 0, short step = 0, bool opt = false, bool @readonly = false, bool required = false)
+        public HtmlContent NUMBER(string name, short v, string label = null, string tip = null, short max = 0, short min = 0, short step = 0, bool opt = false, bool @readonly = false, bool required = false)
         {
             if (label != null)
             {
@@ -940,9 +971,10 @@ namespace Greatbone.Core
             {
                 Add("</label>");
             }
+            return this;
         }
 
-        public void NUMBER(string name, int v, string label = null, string tip = null, int max = 0, int min = 0, int step = 0, bool opt = false, bool @readonly = false, bool required = false)
+        public HtmlContent NUMBER(string name, int v, string label = null, string tip = null, int max = 0, int min = 0, int step = 0, bool opt = false, bool @readonly = false, bool required = false)
         {
             Add("<label>");
             AddLabel(label, name);
@@ -985,9 +1017,10 @@ namespace Greatbone.Core
 
             Add(">");
             Add("</label>");
+            return this;
         }
 
-        public void NUMBER(string name, long v, string label = null, string tip = null, long max = 0, long min = 0, long step = 0, bool opt = false, bool @readonly = false, bool required = false)
+        public HtmlContent NUMBER(string name, long v, string label = null, string tip = null, long max = 0, long min = 0, long step = 0, bool opt = false, bool @readonly = false, bool required = false)
         {
             Add("<label>");
             AddLabel(label, name);
@@ -1030,9 +1063,10 @@ namespace Greatbone.Core
 
             Add(">");
             Add("</label>");
+            return this;
         }
 
-        public void NUMBER(string name, decimal v, string label = null, string tip = null, decimal max = 0, decimal min = 0, decimal step = 0, bool @readonly = false, bool required = false)
+        public HtmlContent NUMBER(string name, decimal v, string label = null, string tip = null, decimal max = 0, decimal min = 0, decimal step = 0, bool @readonly = false, bool required = false)
         {
             Add("<label>");
             AddLabel(label, name);
@@ -1071,19 +1105,22 @@ namespace Greatbone.Core
 
             Add(">");
             Add("</label>");
+            return this;
         }
 
-        public void RANGE()
+        public HtmlContent RANGE()
         {
             T("</tbody>");
+            return this;
         }
 
-        public void COLOR()
+        public HtmlContent COLOR()
         {
             T("</tbody>");
+            return this;
         }
 
-        public void CHECKBOXES(string name, IDataInput inp, Action<IDataInput, HtmlContent, char> putter)
+        public HtmlContent CHECKBOXES(string name, IDataInput inp, Action<IDataInput, HtmlContent, char> putter)
         {
             while (inp.Next())
             {
@@ -1096,9 +1133,10 @@ namespace Greatbone.Core
                 putter(inp, this, 'L'); // putting label
                 Add("</label>");
             }
+            return this;
         }
 
-        public void CHECKBOX(string name, bool v, string label = null, bool required = false)
+        public HtmlContent CHECKBOX(string name, bool v, string label = null, bool required = false)
         {
             if (label != null)
             {
@@ -1115,9 +1153,10 @@ namespace Greatbone.Core
                 Add(label);
                 Add(" </label>");
             }
+            return this;
         }
 
-        public void RADIO(string name, int value, bool @checked, string label)
+        public HtmlContent RADIO(string name, int value, bool @checked, string label)
         {
             Add("<label>");
             Add("<input type=\"radio\" name=\"");
@@ -1134,9 +1173,10 @@ namespace Greatbone.Core
             }
             Add(label);
             Add("</label>");
+            return this;
         }
 
-        public void RADIO(string name, long value, bool check, string label)
+        public HtmlContent RADIO(string name, long value, bool check, string label)
         {
             Add("<label>");
             Add("<input type=\"radio\" name=\"");
@@ -1153,9 +1193,10 @@ namespace Greatbone.Core
             }
             Add(label);
             Add("</label>");
+            return this;
         }
 
-        public void RADIO(string name, string value, bool check, string label)
+        public HtmlContent RADIO(string name, string value, bool check, string label)
         {
             Add("<label>");
             Add("<input type=\"radio\" name=\"");
@@ -1172,9 +1213,10 @@ namespace Greatbone.Core
             }
             Add(label);
             Add("</label>");
+            return this;
         }
 
-        public void RADIO(string name, Action<HtmlContent> value, bool @checked, Action<HtmlContent> label)
+        public HtmlContent RADIO(string name, Action<HtmlContent> value, bool @checked, Action<HtmlContent> label)
         {
             Add("<label>");
             Add("<input type=\"radio\" name=\"");
@@ -1191,9 +1233,10 @@ namespace Greatbone.Core
             }
             label(this);
             Add("</label>");
+            return this;
         }
 
-        public void RADIO(string name, string v1, string v2, string v3, bool @checked, string l1, string l2, string l3)
+        public HtmlContent RADIO(string name, string v1, string v2, string v3, bool @checked, string l1, string l2, string l3)
         {
             Add("<label>");
             Add("<input type=\"radio\" name=\"");
@@ -1230,9 +1273,10 @@ namespace Greatbone.Core
                 Add(l3);
             }
             Add("</label>");
+            return this;
         }
 
-        public void RADIO(string name, long v1, string v2, bool @checked, long l1, string l2, string l3 = null)
+        public HtmlContent RADIO(string name, long v1, string v2, bool @checked, long l1, string l2, string l3 = null)
         {
             Add("<label>");
             Add("<input type=\"radio\" name=\"");
@@ -1261,9 +1305,10 @@ namespace Greatbone.Core
                 Add(l3);
             }
             Add("</label>");
+            return this;
         }
 
-        public void RADIOS(string name, string v, Opt<string> opt = null, string label = null, bool required = false)
+        public HtmlContent RADIOS(string name, string v, Opt<string> opt = null, string label = null, bool required = false)
         {
             Add("<fieldset>");
 
@@ -1298,9 +1343,10 @@ namespace Greatbone.Core
                 Add("</label>");
             }
             Add("</fieldset>");
+            return this;
         }
 
-        public void TEXTAREA(string name, string v, string label = null, string help = null, short max = 0, short min = 0, bool @readonly = false, bool required = false)
+        public HtmlContent TEXTAREA(string name, string v, string label = null, string help = null, short max = 0, short min = 0, bool @readonly = false, bool required = false)
         {
             Add("<label>");
             AddLabel(label, name);
@@ -1337,9 +1383,10 @@ namespace Greatbone.Core
             AddEsc(v);
             Add("</textarea>");
             Add("</label>");
+            return this;
         }
 
-        public void BUTTON(ActionInfo ai)
+        public HtmlContent BUTTON(ActionInfo ai)
         {
             Add("<button class=\"button primary\" style=\"margin-right: 5px; border-radius: 15%\"");
             Add(" formaction=\"");
@@ -1352,7 +1399,7 @@ namespace Greatbone.Core
             if (mode > 0)
             {
                 Add(" onclick=\"dialog(this,");
-                Add((int)mode);
+                Add((int) mode);
                 Add("); return false;\"");
             }
 
@@ -1365,9 +1412,10 @@ namespace Greatbone.Core
             AddLabel(ui.Label, ai.Name);
 
             Add("</button>");
+            return this;
         }
 
-        public void SELECT(string name, short v, Opt<short> opt, string label = null, bool multiple = false, bool required = false, sbyte size = 0)
+        public HtmlContent SELECT(string name, short v, Opt<short> opt, string label = null, bool multiple = false, bool required = false, sbyte size = 0)
         {
             Add("<label>");
             AddLabel(label, name);
@@ -1398,9 +1446,10 @@ namespace Greatbone.Core
             }
             Add("</select>");
             Add("</label>");
+            return this;
         }
 
-        public void SELECT(string name, string v, Opt<string> opt, string label = null, bool multiple = false, bool required = false, sbyte size = 0)
+        public HtmlContent SELECT(string name, string v, Opt<string> opt, string label = null, bool multiple = false, bool required = false, sbyte size = 0)
         {
             Add("<label>");
             AddLabel(label, name);
@@ -1431,9 +1480,10 @@ namespace Greatbone.Core
             }
             Add("</select>");
             Add("</label>");
+            return this;
         }
 
-        public void SELECT(string name, string v, string[] opt, string label = null, bool multiple = false, bool required = false, sbyte size = 0, bool refresh = false)
+        public HtmlContent SELECT(string name, string v, string[] opt, string label = null, bool multiple = false, bool required = false, sbyte size = 0, bool refresh = false)
         {
             Add("<label>");
             AddLabel(label, name);
@@ -1471,28 +1521,33 @@ namespace Greatbone.Core
             }
             Add("</select>");
             Add("</label>");
+            return this;
         }
 
-        public void DATALIST()
+        public HtmlContent DATALIST()
         {
             T("</tbody>");
+            return this;
         }
 
-        public void PROGRES()
+        public HtmlContent PROGRES()
         {
             T("</tbody>");
+            return this;
         }
 
-        public void OUTPUT(string name)
+        public HtmlContent OUTPUT(string name)
         {
             Add("<output name=\"");
             Add(name);
             Add("\"></output>");
+            return this;
         }
 
-        public void METER()
+        public HtmlContent METER()
         {
             T("</tbody>");
+            return this;
         }
 
 

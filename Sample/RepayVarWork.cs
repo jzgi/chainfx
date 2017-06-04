@@ -1,3 +1,4 @@
+using System.Threading.Tasks;
 using Greatbone.Core;
 
 namespace Greatbone.Sample
@@ -12,13 +13,6 @@ namespace Greatbone.Sample
     public class OprRepayVarWork : RepayVarWork
     {
         public OprRepayVarWork(WorkContext fc) : base(fc)
-        {
-        }
-    }
-
-    public class SprRepayVarWork : RepayVarWork
-    {
-        public SprRepayVarWork(WorkContext fc) : base(fc)
         {
         }
     }

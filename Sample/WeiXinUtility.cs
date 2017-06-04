@@ -128,7 +128,7 @@ namespace Greatbone.Sample
             JObj jo = await WeiXin.GetAsync<JObj>(null, "/sns/userinfo?access_token=" + access_token + "&openid=" + openid + "&lang=zh_CN");
             string nickname = jo[nameof(nickname)];
             string city = jo[nameof(city)];
-            return new User { wx = openid, name = nickname, city = city };
+            return new User {wx = openid, name = nickname, city = city};
         }
 
         static readonly DateTime EPOCH = new DateTime(1970, 1, 1);
@@ -136,7 +136,7 @@ namespace Greatbone.Sample
         public static IContent BuildPrepayContent(string prepay_id)
         {
             string package = "prepay_id=" + prepay_id;
-            string timeStamp = ((int)(DateTime.Now - EPOCH).TotalSeconds).ToString();
+            string timeStamp = ((int) (DateTime.Now - EPOCH).TotalSeconds).ToString();
 
             JObj jo = new JObj
             {
@@ -154,7 +154,7 @@ namespace Greatbone.Sample
         public static async Task<string> PostTransferAsync(int id, string openid, string username, decimal cash, string desc)
         {
             XElem x = new XElem("xml");
-            x.AddChild("amount", ((int)(cash * 100)).ToString());
+            x.AddChild("amount", ((int) (cash * 100)).ToString());
             x.AddChild("check_name", "FORCE_CHECK");
             x.AddChild("desc", desc);
             x.AddChild("mch_appid", appid);
@@ -198,7 +198,7 @@ namespace Greatbone.Sample
             x.AddChild("openid", openid);
             x.AddChild("out_trade_no", orderid.ToString());
             x.AddChild("spbill_create_ip", ip);
-            x.AddChild("total_fee", ((int)(total * 100)).ToString());
+            x.AddChild("total_fee", ((int) (total * 100)).ToString());
             x.AddChild("trade_type", "JSAPI");
             string sign = Sign(x);
             x.AddChild("sign", sign);
@@ -229,7 +229,7 @@ namespace Greatbone.Sample
             if (sign != Sign(xe, "sign")) return false;
 
             int cash_fee = xe.Child(nameof(cash_fee)); // in cent
-            cash = ((decimal)cash_fee) / 100;
+            cash = ((decimal) cash_fee) / 100;
             out_trade_no = xe.Child(nameof(out_trade_no)); // 商户订单号
             return true;
         }
@@ -258,58 +258,74 @@ namespace Greatbone.Sample
             return cash_fee;
         }
 
-        public static async Task<bool> PostRefundAsync(long orderid, decimal total, decimal cash)
+        public static async Task<string> PostRefundAsync(long orderid, decimal total, decimal cash)
         {
-            XElem x = new XElem("xml");
-            x.AddChild("appid", appid);
-            x.AddChild("mch_id", mchid);
-            x.AddChild("nonce_str", noncestr);
-            x.AddChild("op_user_id", mchid);
-            x.AddChild("out_refund_no", orderid.ToString());
-            x.AddChild("out_trade_no", orderid.ToString());
-            x.AddChild("refund_fee", ((int)(cash * 100)).ToString());
-            x.AddChild("total_fee", ((int)(total * 100)).ToString());
-            string sign = Sign(x);
-            x.AddChild("sign", sign);
+            string orderno = orderid.ToString();
 
-            XElem xe = (await WCPay.PostAsync<XElem>(null, "/secapi/pay/refund", x.Dump())).Y;
+            XElem xo = new XElem("xml");
+            xo.AddChild("appid", appid);
+            xo.AddChild("mch_id", mchid);
+            xo.AddChild("nonce_str", noncestr);
+            xo.AddChild("op_user_id", mchid);
+            xo.AddChild("out_refund_no", orderno);
+            xo.AddChild("out_trade_no", orderno);
+            xo.AddChild("refund_fee", ((int) (cash * 100)).ToString());
+            xo.AddChild("total_fee", ((int) (total * 100)).ToString());
+            string sign = Sign(xo);
+            xo.AddChild("sign", sign);
 
-            sign = xe.Child(nameof(sign));
-            xe.Sort();
-            if (sign != Sign(xe, "sign")) return false;
-
-            string return_code = xe.Child(nameof(return_code));
-            if (return_code != "SUCCESS") return false;
-
-            decimal cash_fee = xe.Child(nameof(cash_fee));
-
-            return true;
+            XElem xi = (await WCPay.PostAsync<XElem>(null, "/secapi/pay/refund", xo.Dump())).Y;
+            string return_code = xi.Child(nameof(return_code));
+            if (return_code != "SUCCESS")
+            {
+                string return_msg = xi.Child(nameof(return_msg));
+                return return_msg;
+            }
+            string result_code = xi.Child(nameof(result_code));
+            if (result_code != "SUCCESS")
+            {
+                string err_code_des = xi.Child(nameof(err_code_des));
+                return err_code_des;
+            }
+            return null;
         }
 
-        public static async Task<bool> PostRefundQueryAsync(long orderid)
+        public static async Task<string> PostRefundQueryAsync(long orderid)
         {
-            XElem x = new XElem("xml");
-            x.AddChild("appid", appid);
-            x.AddChild("mch_id", mchid);
-            x.AddChild("nonce_str", noncestr);
-            x.AddChild("op_user_id", mchid);
-            x.AddChild("out_refund_no", orderid.ToString());
-            x.AddChild("out_trade_no", orderid.ToString());
-            string sign = Sign(x);
-            x.AddChild("sign", sign);
+            XElem xo = new XElem("xml");
+            xo.AddChild("appid", appid);
+            xo.AddChild("mch_id", mchid);
+            xo.AddChild("nonce_str", noncestr);
+            xo.AddChild("out_trade_no", orderid.ToString());
+            string sign = Sign(xo);
+            xo.AddChild("sign", sign);
 
-            XElem xe = (await WCPay.PostAsync<XElem>(null, "/pay/refundquery", x.Dump())).Y;
+            XElem xi = (await WCPay.PostAsync<XElem>(null, "/pay/refundquery", xo.Dump())).Y;
 
-            sign = xe.Child(nameof(sign));
-            xe.Sort();
-            if (sign != Sign(xe, "sign")) return false;
+            sign = xi.Child(nameof(sign));
+            xi.Sort();
+            if (sign != Sign(xi, "sign")) return "返回结果签名错误";
 
-            string return_code = xe.Child(nameof(return_code));
-            if (return_code != "SUCCESS") return false;
+            string return_code = xi.Child(nameof(return_code));
+            if (return_code != "SUCCESS")
+            {
+                string return_msg = xi.Child(nameof(return_msg));
+                return return_msg;
+            }
 
-            decimal cash_fee = xe.Child(nameof(cash_fee));
+            string result_code = xi.Child(nameof(result_code));
+            if (result_code != "SUCCESS")
+            {
+                return "退款订单查询失败";
+            }
 
-            return true;
+            string refund_status_0 = xi.Child(nameof(refund_status_0));
+            if (refund_status_0 != "SUCCESS")
+            {
+                return refund_status_0 == "PROCESSING" ? "退款处理中" : refund_status_0 == "REFUNDCLOSE" ? "退款关闭" : "退款异常";
+            }
+
+            return null;
         }
 
         static string Sign(XElem xe, string exclude = null)
@@ -348,7 +364,7 @@ namespace Greatbone.Sample
                 {
                     sb.Append('&');
                 }
-                sb.Append(mbr.Name).Append('=').Append((string)mbr);
+                sb.Append(mbr.Name).Append('=').Append((string) mbr);
             }
 
             sb.Append("&key=").Append(key);
