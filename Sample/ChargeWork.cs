@@ -26,7 +26,7 @@ namespace Greatbone.Sample
             {
                 if (dc.Query("SELECT * FROM tipoffs WHERE wx = @1 ORDER BY id DESC", p => p.Set(wx)))
                 {
-                    ac.GiveGridPage(200, dc.ToDatas<Charge>(-1));
+                    ac.GiveGridPage(200, dc.ToDatas<Charge>(0xffff));
                 }
                 else
                 {
@@ -49,7 +49,7 @@ namespace Greatbone.Sample
             string shopid = ac[typeof(ShopVarWork)];
             using (var dc = ac.NewDbContext())
             {
-                const int proj = -1 ^ Item.ICON;
+                const ushort proj = 0xffff ^ Item.ICON;
                 dc.Sql("SELECT ").columnlst(Item.Empty, proj)._("FROM items WHERE shopid = @1");
                 if (dc.Query(p => p.Set(shopid)))
                 {

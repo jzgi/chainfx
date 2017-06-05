@@ -319,7 +319,7 @@ namespace Greatbone.Core
         // RESULTSET
         //
 
-        public D ToData<D>(short proj = 0) where D : IData, new()
+        public D ToData<D>(ushort proj = 0) where D : IData, new()
         {
             D obj = new D();
             obj.ReadData(this, proj);
@@ -334,7 +334,7 @@ namespace Greatbone.Core
             return obj;
         }
 
-        public D[] ToDatas<D>(short proj = 0) where D : IData, new()
+        public D[] ToDatas<D>(ushort proj = 0) where D : IData, new()
         {
             List<D> lst = new List<D>(32);
             while (Next())
@@ -544,7 +544,7 @@ namespace Greatbone.Core
             throw new NotImplementedException();
         }
 
-        public bool Get<D>(string name, ref D v, short proj = 0) where D : IData, new()
+        public bool Get<D>(string name, ref D v, ushort proj = 0) where D : IData, new()
         {
             try
             {
@@ -683,7 +683,7 @@ namespace Greatbone.Core
             return false;
         }
 
-        public bool Get<D>(string name, ref D[] v, short proj = 0) where D : IData, new()
+        public bool Get<D>(string name, ref D[] v, ushort proj = 0) where D : IData, new()
         {
             try
             {
@@ -917,7 +917,7 @@ namespace Greatbone.Core
             throw new NotImplementedException();
         }
 
-        public IDataInput Let<D>(out D v, short proj = 0) where D : IData, new()
+        public IDataInput Let<D>(out D v, ushort proj = 0) where D : IData, new()
         {
             try
             {
@@ -946,7 +946,7 @@ namespace Greatbone.Core
             return this;
         }
 
-        public IDataInput Let<D>(out D[] v, short proj = 0) where D : IData, new()
+        public IDataInput Let<D>(out D[] v, ushort proj = 0) where D : IData, new()
         {
             try
             {
@@ -995,14 +995,14 @@ namespace Greatbone.Core
             BufferUtility.Return(dcont); // back to pool
         }
 
-        public void Publish(string name, string shard, int arg, IData obj, short proj = 0)
+        public void Publish(string name, string shard, int arg, IData obj, ushort proj = 0)
         {
             JsonContent cont = new JsonContent(true).Put(null, obj, proj);
             Publish(name, shard, arg, cont);
             BufferUtility.Return(cont); // back to pool
         }
 
-        public void Publish<D>(string name, string shard, int arg, D[] arr, short proj = 0) where D : IData
+        public void Publish<D>(string name, string shard, int arg, D[] arr, ushort proj = 0) where D : IData
         {
             JsonContent cont = new JsonContent(true).Put(null, arr, proj);
             Publish(name, shard, arg, cont);

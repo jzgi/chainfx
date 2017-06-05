@@ -191,7 +191,7 @@ namespace Greatbone.Sample
             ac.Give(status, h, @public, maxage);
         }
 
-        public static void GiveGridPage<D>(this ActionContext ac, int status, D[] objs, short proj = 0, bool? @public = null, int maxage = 60) where D : IData
+        public static void GiveGridPage<D>(this ActionContext ac, int status, D[] objs, ushort proj = 0, bool? @public = null, int maxage = 60) where D : IData
         {
             Work work = ac.Work;
             ac.GivePage(status, main => { main.GRID(ac, work.varwork, objs, proj); }, @public, maxage);
@@ -202,15 +202,10 @@ namespace Greatbone.Sample
             Work work = ac.Work;
         }
 
-        public static void GiveTablePage<D>(this ActionContext ac, int status, D[] objs, short proj = 0, bool? @public = null, int maxage = 60) where D : IData
+        public static void GiveTablePage<D>(this ActionContext ac, int status, D[] objs, ushort proj = 0, bool? @public = null, int maxage = 60) where D : IData
         {
             Work work = ac.Work;
             ac.GivePage(status, main => { main.TABLE(ac, work.varwork, objs, proj); }, @public, maxage);
-        }
-
-        public static void GiveTablePage<D>(this ActionContext ac, int status, D[] objs, Action<HtmlContent, D> putobj, bool? @public = null, int maxage = 60) where D : IData
-        {
-            Work work = ac.Work;
         }
     }
 }

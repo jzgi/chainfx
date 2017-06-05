@@ -39,7 +39,7 @@ namespace Greatbone.Core
             return entity as M;
         }
 
-        public D ToData<D>(short proj = 0) where D : IData, new()
+        public D ToData<D>(ushort proj = 0) where D : IData, new()
         {
             IDataInput inp = entity as IDataInput;
             if (inp == null)
@@ -49,7 +49,7 @@ namespace Greatbone.Core
             return inp.ToData<D>(proj);
         }
 
-        public D[] ToDatas<D>(short proj = 0) where D : IData, new()
+        public D[] ToDatas<D>(ushort proj = 0) where D : IData, new()
         {
             IDataInput inp = entity as IDataInput;
             return inp?.ToDatas<D>(proj);

@@ -63,7 +63,7 @@ namespace Greatbone.Sample
                 {
                     if (dc.Query1("SELECT * FROM users WHERE wx = @1", (p) => p.Set(accessor.openid)))
                     {
-                        prin = dc.ToData<User>(-1 ^ User.CREDENTIAL);
+                        prin = dc.ToData<User>(0xffff ^ User.CREDENTIAL);
                     }
                 }
                 if (prin == null) // get userinfo remotely
@@ -89,7 +89,7 @@ namespace Greatbone.Sample
                 {
                     if (dc.Query1("SELECT * FROM users WHERE id = @1", (p) => p.Set(id)))
                     {
-                        prin = dc.ToData<User>(-1);
+                        prin = dc.ToData<User>(0xffff);
                     }
                 }
                 // validate
@@ -102,7 +102,7 @@ namespace Greatbone.Sample
             {
                 // set token success
                 ac.Principal = prin;
-                ac.SetTokenCookie(prin, -1 ^ User.CREDENTIAL);
+                ac.SetTokenCookie(prin, 0xffff ^ User.CREDENTIAL);
             }
             return true;
         }

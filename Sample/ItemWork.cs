@@ -26,7 +26,7 @@ namespace Greatbone.Sample
             string shopid = ac[typeof(ShopVarWork)];
             using (var dc = ac.NewDbContext())
             {
-                const int proj = -1 ^ Item.ICON;
+                const ushort proj = 0xffff ^ Item.ICON;
                 dc.Sql("SELECT ").columnlst(Item.Empty, proj)._("FROM items WHERE shopid = @1");
                 if (dc.Query(p => p.Set(shopid)))
                 {
@@ -68,7 +68,7 @@ namespace Greatbone.Sample
                 o.shopid = ac[typeof(ShopVarWork)];
                 using (var dc = Service.NewDbContext())
                 {
-                    const int proj = -1 ^ Item.ICON;
+                    const ushort proj = 0xffff ^ Item.ICON;
                     dc.Sql("INSERT INTO items")._(Item.Empty, proj)._VALUES_(Item.Empty, proj);
                     dc.Execute(p => o.WriteData(p, proj));
                     ac.GivePane(201);

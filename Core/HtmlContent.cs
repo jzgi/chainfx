@@ -382,7 +382,7 @@ namespace Greatbone.Core
             return this;
         }
 
-        public HtmlContent TABLE<D>(ActionContext formctx, Work varwork, D[] arr, short proj = 0) where D : IData
+        public HtmlContent TABLE<D>(ActionContext formctx, Work varwork, D[] arr, ushort proj = 0) where D : IData
         {
             bool checks = false; // to draw selection-checkboxes?
             if (formctx != null)
@@ -489,7 +489,7 @@ namespace Greatbone.Core
             return this;
         }
 
-        public HtmlContent GRID<D>(ActionContext formctx, Work varwork, D[] arr, short proj = 0) where D : IData
+        public HtmlContent GRID<D>(ActionContext formctx, Work varwork, D[] arr, ushort proj = 0) where D : IData
         {
             bool checks = false; // to draw selection-checkboxes?
             if (formctx != null)
@@ -557,7 +557,7 @@ namespace Greatbone.Core
             return this;
         }
 
-        public HtmlContent LIST<D>(ActionContext formctx, Work varwork, D[] arr, short proj = 0) where D : IData
+        public HtmlContent LIST<D>(ActionContext formctx, Work varwork, D[] arr, ushort proj = 0) where D : IData
         {
             if (formctx != null)
             {
@@ -2102,12 +2102,12 @@ namespace Greatbone.Core
             return this;
         }
 
-        public HtmlContent Put(string name, IData v, short proj = 0, string label = null)
+        public HtmlContent Put(string name, IData v, ushort proj = 0, string label = null)
         {
             return this;
         }
 
-        public HtmlContent Put<D>(string name, D[] v, short proj = 0, string label = null) where D : IData
+        public HtmlContent Put<D>(string name, D[] v, ushort proj = 0, string label = null) where D : IData
         {
             switch (chain[level].node)
             {

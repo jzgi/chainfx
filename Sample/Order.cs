@@ -53,7 +53,7 @@ namespace Greatbone.Sample
         internal short status;
         internal string note;
 
-        public void ReadData(IDataInput i, short proj = 0)
+        public void ReadData(IDataInput i, ushort proj = 0)
         {
             if ((proj & ID) == ID)
             {
@@ -91,7 +91,7 @@ namespace Greatbone.Sample
             i.Get(nameof(status), ref status);
         }
 
-        public void WriteData<R>(IDataOutput<R> o, short proj = 0) where R : IDataOutput<R>
+        public void WriteData<R>(IDataOutput<R> o, ushort proj = 0) where R : IDataOutput<R>
         {
             if ((proj & ID) == ID)
             {
@@ -192,7 +192,7 @@ namespace Greatbone.Sample
 
         public decimal Subtotal => price * qty;
 
-        public void ReadData(IDataInput i, short proj = 0)
+        public void ReadData(IDataInput i, ushort proj = 0)
         {
             i.Get(nameof(name), ref name);
             i.Get(nameof(qty), ref qty);
@@ -200,7 +200,7 @@ namespace Greatbone.Sample
             i.Get(nameof(price), ref price);
         }
 
-        public void WriteData<R>(IDataOutput<R> o, short proj = 0) where R : IDataOutput<R>
+        public void WriteData<R>(IDataOutput<R> o, ushort proj = 0) where R : IDataOutput<R>
         {
             o.Put(nameof(name), name, "品名");
             o.Group("数量");

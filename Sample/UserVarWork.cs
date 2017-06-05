@@ -66,12 +66,12 @@ namespace Greatbone.Sample
                 o.created = DateTime.Now;
                 using (var dc = ac.NewDbContext())
                 {
-                    const short proj = User.WX | User.CREATTED;
+                    const ushort proj = User.WX | User.CREATTED;
                     dc.Sql("INSERT INTO users ")._(User.Empty, proj)._VALUES_(User.Empty, proj)._("ON CONFLICT (wx) DO UPDATE")._SET_(User.Empty);
                     dc.Execute(p => o.WriteData(p, proj));
                 }
 
-                ac.SetTokenCookie(o, -1 ^ User.CREDENTIAL);
+                ac.SetTokenCookie(o, 0xffff ^ User.CREDENTIAL);
                 ac.GivePane(200); // close dialog
             }
         }
@@ -116,7 +116,7 @@ namespace Greatbone.Sample
                     }
                 }
 
-                ac.SetTokenCookie(prin, -1 ^ User.CREDENTIAL);
+                ac.SetTokenCookie(prin, 0xffff ^ User.CREDENTIAL);
                 ac.GivePane(200); // close dialog
             }
         }
@@ -127,7 +127,7 @@ namespace Greatbone.Sample
             string wx = ac[this];
             using (var dc = ac.NewDbContext())
             {
-                const short proj = -1 ^ User.CREDENTIAL;
+                const ushort proj = 0xffff ^ User.CREDENTIAL;
                 if (dc.Query1("SELECT * FROM users WHERE wx = @1", (p) => p.Set(wx)))
                 {
                     var o = dc.ToData<User>(proj);

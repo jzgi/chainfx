@@ -36,7 +36,7 @@ namespace Greatbone.Core
                     JObj jo = (JObj) p.Parse();
 
                     // this will override values
-                    sc.ReadData(jo, -1);
+                    sc.ReadData(jo, 0xffff);
                 }
                 else
                 {

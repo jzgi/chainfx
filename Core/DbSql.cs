@@ -45,7 +45,7 @@ namespace Greatbone.Core
             return this;
         }
 
-        public DbSql setlst(IData obj, short proj = 0)
+        public DbSql setlst(IData obj, ushort proj = 0)
         {
             ctx = CTX_SETLIST;
             ordinal = 1;
@@ -53,7 +53,7 @@ namespace Greatbone.Core
             return this;
         }
 
-        public DbSql columnlst(IData obj, short proj = 0)
+        public DbSql columnlst(IData obj, ushort proj = 0)
         {
             ctx = CTX_COLUMNLIST;
             ordinal = 1;
@@ -61,7 +61,7 @@ namespace Greatbone.Core
             return this;
         }
 
-        public DbSql parameterlst(IData obj, short proj = 0)
+        public DbSql parameterlst(IData obj, ushort proj = 0)
         {
             ctx = CTX_PARAMLIST;
             ordinal = 1;
@@ -69,7 +69,7 @@ namespace Greatbone.Core
             return this;
         }
 
-        public DbSql _(IData obj, short proj = 0, string extra = null)
+        public DbSql _(IData obj, ushort proj = 0, string extra = null)
         {
             Add(" (");
             columnlst(obj, proj);
@@ -82,7 +82,7 @@ namespace Greatbone.Core
             return this;
         }
 
-        public DbSql _VALUES_(IData obj, short proj = 0, string extra = null)
+        public DbSql _VALUES_(IData obj, ushort proj = 0, string extra = null)
         {
             Add(" VALUES (");
             parameterlst(obj, proj);
@@ -95,7 +95,7 @@ namespace Greatbone.Core
             return this;
         }
 
-        public DbSql _SET_(IData obj, short proj = 0, string extra = null)
+        public DbSql _SET_(IData obj, ushort proj = 0, string extra = null)
         {
             Add(" SET ");
             setlst(obj, proj);
@@ -451,7 +451,7 @@ namespace Greatbone.Core
             throw new NotImplementedException();
         }
 
-        public DbSql Put(string name, IData v, short proj = 0, string Label = null)
+        public DbSql Put(string name, IData v, ushort proj = 0, string Label = null)
         {
             if (name != null)
             {
@@ -470,7 +470,7 @@ namespace Greatbone.Core
             return this;
         }
 
-        public DbSql Put<D>(string name, D[] v, short proj = 0, string Label = null) where D : IData
+        public DbSql Put<D>(string name, D[] v, ushort proj = 0, string Label = null) where D : IData
         {
             Build(name);
             return this;

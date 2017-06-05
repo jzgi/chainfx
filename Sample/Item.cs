@@ -35,7 +35,7 @@ namespace Greatbone.Sample
         internal short qty;
         internal short status;
 
-        public void ReadData(IDataInput i, short proj = 0)
+        public void ReadData(IDataInput i, ushort proj = 0)
         {
             if ((proj & SHOPID) != 0)
             {
@@ -58,7 +58,7 @@ namespace Greatbone.Sample
             i.Get(nameof(status), ref status);
         }
 
-        public void WriteData<R>(IDataOutput<R> o, short proj = 0) where R : IDataOutput<R>
+        public void WriteData<R>(IDataOutput<R> o, ushort proj = 0) where R : IDataOutput<R>
         {
             if ((proj & SHOPID) != 0)
             {

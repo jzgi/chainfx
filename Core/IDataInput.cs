@@ -36,9 +36,9 @@ namespace Greatbone.Core
 
         bool Get(string name, ref Dictionary<string, string> v);
 
-        bool Get<D>(string name, ref D v, short proj = 0) where D : IData, new();
+        bool Get<D>(string name, ref D v, ushort proj = 0) where D : IData, new();
 
-        bool Get<D>(string name, ref D[] v, short proj = 0) where D : IData, new();
+        bool Get<D>(string name, ref D[] v, ushort proj = 0) where D : IData, new();
 
 
         IDataInput Let(out bool v);
@@ -69,14 +69,14 @@ namespace Greatbone.Core
 
         IDataInput Let(out Dictionary<string, string> v);
 
-        IDataInput Let<D>(out D v, short proj = 0) where D : IData, new();
+        IDataInput Let<D>(out D v, ushort proj = 0) where D : IData, new();
 
-        IDataInput Let<D>(out D[] v, short proj = 0) where D : IData, new();
+        IDataInput Let<D>(out D[] v, ushort proj = 0) where D : IData, new();
 
 
-        D ToData<D>(short proj = 0) where D : IData, new();
+        D ToData<D>(ushort proj = 0) where D : IData, new();
 
-        D[] ToDatas<D>(short proj = 0) where D : IData, new();
+        D[] ToDatas<D>(ushort proj = 0) where D : IData, new();
 
         ///
         /// Write a single (or current) data entry into the given output object.

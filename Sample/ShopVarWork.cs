@@ -46,14 +46,14 @@ namespace Greatbone.Sample
             using (var dc = ac.NewDbContext())
             {
                 // query for the shop record
-                const int proj = -1 ^ Shop.ICON;
+                const ushort proj = 0xffff ^ Shop.ICON;
                 dc.Sql("SELECT ").columnlst(Shop.Empty, proj)._("FROM shops WHERE id = @1");
                 if (dc.Query1(p => p.Set(shopid)))
                 {
                     var shop = dc.ToData<Shop>(proj);
 
                     // query for item records of the shop
-                    const short proj2 = -1 ^ Item.ICON;
+                    const ushort proj2 = 0xffff ^ Item.ICON;
                     Item[] items = null;
                     dc.Sql("SELECT ").columnlst(Item.Empty, proj2)._("FROM items WHERE shopid = @1");
                     if (dc.Query(p => p.Set(shopid)))
@@ -179,7 +179,7 @@ namespace Greatbone.Sample
         [User(User.AID)]
         public async Task profile(ActionContext ac)
         {
-            const short proj = -1 ^ Shop.ICON ^ Shop.ID ^ Shop.SUPER;
+            const ushort proj = 0xffff ^ Shop.ICON ^ Shop.ID ^ Shop.SUPER;
             string id = ac[this];
             if (ac.GET)
             {
@@ -341,7 +341,7 @@ namespace Greatbone.Sample
                 string city = ac[typeof(CityVarWork)];
                 using (var dc = ac.NewDbContext())
                 {
-                    const int proj = -1 ^ Shop.ICON;
+                    const ushort proj = 0xffff ^ Shop.ICON;
                     dc.Sql("SELECT ").columnlst(Shop.Empty, proj)._("FROM shops WHERE id = @1 AND city = @2");
                     if (dc.Query1(p => p.Set(id).Set(city)))
                     {
@@ -369,7 +369,7 @@ namespace Greatbone.Sample
                 o.id = ac[this];
                 using (var dc = ac.NewDbContext())
                 {
-                    const int proj = -1 ^ Shop.ICON;
+                    const ushort proj = 0xffff ^ Shop.ICON;
                     dc.Sql("UPDATE shops SET name  =@1, distr = @2, lic = @3, ")._SET_(Shop.Empty, proj)._("WHERE id = @1");
                     dc.Execute(p =>
                     {
