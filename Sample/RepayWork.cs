@@ -32,7 +32,7 @@ namespace Greatbone.Sample
                 }
                 else
                 {
-                    ac.GiveGridPage(200, (Repay[])null);
+                    ac.GiveGridPage(200, (Repay[]) null);
                 }
             }
         }
@@ -55,7 +55,7 @@ namespace Greatbone.Sample
                 }
                 else
                 {
-                    ac.GiveGridPage(200, (Repay[])null);
+                    ac.GiveGridPage(200, (Repay[]) null);
                 }
             }
         }
@@ -74,7 +74,7 @@ namespace Greatbone.Sample
                         m.FORM_();
                         if (ret != null)
                         {
-                            m.CALLOUT(t => { t.T("上次结算截至日期是").T((DateTime)ret); }, false);
+                            m.CALLOUT(t => { t.T("上次结算截至日期是").T((DateTime) ret); }, false);
                         }
                         thru = DateTime.Today.AddDays(-1);
                         m.DATE(nameof(thru), thru, "本次截至日期", max: thru);
@@ -103,10 +103,11 @@ namespace Greatbone.Sample
                 {
                     while (dc.Next())
                     {
-                        int id = dc.GetInt();
-                        string mgrwx = dc.GetString();
-                        string mgr = dc.GetString();
-                        decimal cash = dc.GetDecimal();
+                        int id;
+                        string mgrwx;
+                        string mgr;
+                        decimal cash;
+                        dc.Let(out id).Let(out mgrwx).Let(out mgr).Let(out cash);
                         string err = await WeiXinUtility.PostTransferAsync(id, mgrwx, mgr, cash, "订单结款");
                         if (err != null)
                         {
@@ -140,7 +141,7 @@ namespace Greatbone.Sample
                 }
                 else
                 {
-                    ac.GiveGridPage(200, (Repay[])null);
+                    ac.GiveGridPage(200, (Repay[]) null);
                 }
             }
         }

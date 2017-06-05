@@ -40,6 +40,40 @@ namespace Greatbone.Core
 
         bool Get<D>(string name, ref D[] v, short proj = 0) where D : IData, new();
 
+
+        IDataInput Let(out bool v);
+
+        IDataInput Let(out short v);
+
+        IDataInput Let(out int v);
+
+        IDataInput Let(out long v);
+
+        IDataInput Let(out double v);
+
+        IDataInput Let(out decimal v);
+
+        IDataInput Let(out DateTime v);
+
+        IDataInput Let(out string v);
+
+        IDataInput Let(out ArraySegment<byte> v);
+
+        IDataInput Let(out short[] v);
+
+        IDataInput Let(out int[] v);
+
+        IDataInput Let(out long[] v);
+
+        IDataInput Let(out string[] v);
+
+        IDataInput Let(out Dictionary<string, string> v);
+
+        IDataInput Let<D>(out D v, short proj = 0) where D : IData, new();
+
+        IDataInput Let<D>(out D[] v, short proj = 0) where D : IData, new();
+
+
         D ToData<D>(short proj = 0) where D : IData, new();
 
         D[] ToDatas<D>(short proj = 0) where D : IData, new();

@@ -24,6 +24,8 @@ namespace Greatbone.Sample
             long id = ac[-1];
 
             bool remove = false;
+            string shopid;
+            OrderLine[] detail;
 
             if (ac.GET)
             {
@@ -32,8 +34,8 @@ namespace Greatbone.Sample
                 {
                     if (dc.Query1("SELECT shopid, detail, total FROM orders WHERE id = @1", p => p.Set(id)))
                     {
-                        var shopid = dc.GetString();
-                        var detail = dc.GetDatas<OrderLine>();
+                        dc.Let(out shopid).Let<OrderLine>(out detail);
+
                         var ln = detail.Find(x => x.name == name);
 
                         string unit = null;
@@ -42,10 +44,7 @@ namespace Greatbone.Sample
                         short step = 0;
                         if (dc.Query1("SELECT unit, price, min, step FROM items WHERE shopid = @1 AND name = @2", p => p.Set(shopid).Set(ln.name)))
                         {
-                            unit = dc.GetString();
-                            price = dc.GetDecimal();
-                            min = dc.GetShort();
-                            step = dc.GetShort();
+                            dc.Let(out unit).Let(out price).Let(out min).Let(out step);
                         }
 
 
@@ -101,12 +100,9 @@ namespace Greatbone.Sample
                 {
                     if (dc.Query1("SELECT shopid, detail, total FROM orders WHERE id = @1", p => p.Set(id)))
                     {
-                        var o = new Order()
-                        {
-                            shopid = dc.GetString(),
-                            detail = dc.GetDatas<OrderLine>(),
-                            total = dc.GetDecimal()
-                        };
+                        var o = new Order();
+                        dc.Let(out o.shopid).Let<OrderLine>(out o.detail).Let(out o.total);
+
                         if (remove)
                         {
                             o.RemoveLine(name);

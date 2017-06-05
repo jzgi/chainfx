@@ -361,7 +361,7 @@ namespace Greatbone.Core
         {
             try
             {
-                int ord = name == null ? ordinal++ : reader.GetOrdinal(name);
+                int ord = reader.GetOrdinal(name);
                 if (!reader.IsDBNull(ord))
                 {
                     v = reader.GetBoolean(ord);
@@ -378,7 +378,7 @@ namespace Greatbone.Core
         {
             try
             {
-                int ord = name == null ? ordinal++ : reader.GetOrdinal(name);
+                int ord = reader.GetOrdinal(name);
                 if (!reader.IsDBNull(ord))
                 {
                     v = reader.GetInt16(ord);
@@ -395,7 +395,7 @@ namespace Greatbone.Core
         {
             try
             {
-                int ord = name == null ? ordinal++ : reader.GetOrdinal(name);
+                int ord = reader.GetOrdinal(name);
                 if (!reader.IsDBNull(ord))
                 {
                     v = reader.GetInt32(ord);
@@ -412,7 +412,7 @@ namespace Greatbone.Core
         {
             try
             {
-                int ord = name == null ? ordinal++ : reader.GetOrdinal(name);
+                int ord = reader.GetOrdinal(name);
                 if (!reader.IsDBNull(ord))
                 {
                     v = reader.GetInt64(ord);
@@ -429,7 +429,7 @@ namespace Greatbone.Core
         {
             try
             {
-                int ord = name == null ? ordinal++ : reader.GetOrdinal(name);
+                int ord = reader.GetOrdinal(name);
                 if (!reader.IsDBNull(ord))
                 {
                     v = reader.GetDouble(ord);
@@ -446,7 +446,7 @@ namespace Greatbone.Core
         {
             try
             {
-                int ord = name == null ? ordinal++ : reader.GetOrdinal(name);
+                int ord = reader.GetOrdinal(name);
                 if (!reader.IsDBNull(ord))
                 {
                     v = reader.GetDecimal(ord);
@@ -463,7 +463,7 @@ namespace Greatbone.Core
         {
             try
             {
-                int ord = name == null ? ordinal++ : reader.GetOrdinal(name);
+                int ord = reader.GetOrdinal(name);
                 if (!reader.IsDBNull(ord))
                 {
                     v = reader.GetDateTime(ord);
@@ -480,7 +480,7 @@ namespace Greatbone.Core
         {
             try
             {
-                int ord = name == null ? ordinal++ : reader.GetOrdinal(name);
+                int ord = reader.GetOrdinal(name);
                 if (!reader.IsDBNull(ord))
                 {
                     v = reader.GetString(ord);
@@ -497,7 +497,7 @@ namespace Greatbone.Core
         {
             try
             {
-                int ord = name == null ? ordinal++ : reader.GetOrdinal(name);
+                int ord = reader.GetOrdinal(name);
                 if (!reader.IsDBNull(ord))
                 {
                     int len;
@@ -520,7 +520,7 @@ namespace Greatbone.Core
         {
             try
             {
-                int ord = name == null ? ordinal++ : reader.GetOrdinal(name);
+                int ord = reader.GetOrdinal(name);
                 if (!reader.IsDBNull(ord))
                 {
                     int len;
@@ -536,7 +536,6 @@ namespace Greatbone.Core
             catch
             {
             }
-
             return false;
         }
 
@@ -549,7 +548,7 @@ namespace Greatbone.Core
         {
             try
             {
-                int ord = name == null ? ordinal++ : reader.GetOrdinal(name);
+                int ord = reader.GetOrdinal(name);
                 if (!reader.IsDBNull(ord))
                 {
                     string str = reader.GetString(ord);
@@ -577,7 +576,7 @@ namespace Greatbone.Core
         {
             try
             {
-                int ord = name == null ? ordinal++ : reader.GetOrdinal(name);
+                int ord = reader.GetOrdinal(name);
                 if (!reader.IsDBNull(ord))
                 {
                     string str = reader.GetString(ord);
@@ -596,7 +595,7 @@ namespace Greatbone.Core
         {
             try
             {
-                int ord = name == null ? ordinal++ : reader.GetOrdinal(name);
+                int ord = reader.GetOrdinal(name);
                 if (!reader.IsDBNull(ord))
                 {
                     string str = reader.GetString(ord);
@@ -620,7 +619,7 @@ namespace Greatbone.Core
         {
             try
             {
-                int ord = name == null ? ordinal++ : reader.GetOrdinal(name);
+                int ord = reader.GetOrdinal(name);
                 if (!reader.IsDBNull(ord))
                 {
                     v = reader.GetFieldValue<short[]>(ord);
@@ -637,7 +636,7 @@ namespace Greatbone.Core
         {
             try
             {
-                int ord = name == null ? ordinal++ : reader.GetOrdinal(name);
+                int ord = reader.GetOrdinal(name);
                 if (!reader.IsDBNull(ord))
                 {
                     v = reader.GetFieldValue<int[]>(ord);
@@ -654,7 +653,7 @@ namespace Greatbone.Core
         {
             try
             {
-                int ord = name == null ? ordinal++ : reader.GetOrdinal(name);
+                int ord = reader.GetOrdinal(name);
                 if (!reader.IsDBNull(ord))
                 {
                     v = reader.GetFieldValue<long[]>(ord);
@@ -671,7 +670,7 @@ namespace Greatbone.Core
         {
             try
             {
-                int ord = name == null ? ordinal++ : reader.GetOrdinal(name);
+                int ord = reader.GetOrdinal(name);
                 if (!reader.IsDBNull(ord))
                 {
                     v = reader.GetFieldValue<string[]>(ord);
@@ -688,7 +687,7 @@ namespace Greatbone.Core
         {
             try
             {
-                int ord = name == null ? ordinal++ : reader.GetOrdinal(name);
+                int ord = reader.GetOrdinal(name);
                 if (!reader.IsDBNull(ord))
                 {
                     string str = reader.GetString(ord);
@@ -719,6 +718,271 @@ namespace Greatbone.Core
             }
             return false;
         }
+
+
+        //
+        // LET
+        //
+
+        public IDataInput Let(out bool v)
+        {
+            try
+            {
+                int ord = ordinal++;
+                if (!reader.IsDBNull(ord))
+                {
+                    v = reader.GetBoolean(ord);
+                    return this;
+                }
+            }
+            catch
+            {
+            }
+            v = false;
+            return this;
+        }
+
+        public IDataInput Let(out short v)
+        {
+            try
+            {
+                int ord = ordinal++;
+                if (!reader.IsDBNull(ord))
+                {
+                    v = reader.GetInt16(ord);
+                    return this;
+                }
+            }
+            catch
+            {
+            }
+            v = 0;
+            return this;
+        }
+
+        public IDataInput Let(out int v)
+        {
+            try
+            {
+                int ord = ordinal++;
+                if (!reader.IsDBNull(ord))
+                {
+                    v = reader.GetInt32(ord);
+                    return this;
+                }
+            }
+            catch
+            {
+            }
+            v = 0;
+            return this;
+        }
+
+        public IDataInput Let(out long v)
+        {
+            try
+            {
+                int ord = ordinal++;
+                if (!reader.IsDBNull(ord))
+                {
+                    v = reader.GetInt64(ord);
+                    return this;
+                }
+            }
+            catch
+            {
+            }
+            v = 0;
+            return this;
+        }
+
+        public IDataInput Let(out double v)
+        {
+            try
+            {
+                int ord = ordinal++;
+                if (!reader.IsDBNull(ord))
+                {
+                    v = reader.GetDouble(ord);
+                    return this;
+                }
+            }
+            catch
+            {
+            }
+            v = 0;
+            return this;
+        }
+
+        public IDataInput Let(out decimal v)
+        {
+            try
+            {
+                int ord = ordinal++;
+                if (!reader.IsDBNull(ord))
+                {
+                    v = reader.GetDecimal(ord);
+                    return this;
+                }
+            }
+            catch
+            {
+            }
+            v = 0;
+            return this;
+        }
+
+        public IDataInput Let(out DateTime v)
+        {
+            try
+            {
+                int ord = ordinal++;
+                if (!reader.IsDBNull(ord))
+                {
+                    v = reader.GetDateTime(ord);
+                    return this;
+                }
+            }
+            catch
+            {
+            }
+            v = default(DateTime);
+            return this;
+        }
+
+        public IDataInput Let(out string v)
+        {
+            try
+            {
+                int ord = ordinal++;
+                if (!reader.IsDBNull(ord))
+                {
+                    v = reader.GetString(ord);
+                    return this;
+                }
+            }
+            catch
+            {
+            }
+            v = null;
+            return this;
+        }
+
+        public IDataInput Let(out ArraySegment<byte> v)
+        {
+            try
+            {
+                int ord = ordinal++;
+                if (!reader.IsDBNull(ord))
+                {
+                    int len;
+                    if ((len = (int) reader.GetBytes(ord, 0, null, 0, 0)) > 0)
+                    {
+                        byte[] buf = new byte[len];
+                        reader.GetBytes(ord, 0, buf, 0, len); // read data into the buffer
+                        v = new ArraySegment<byte>(buf, 0, len);
+                        return this;
+                    }
+                }
+            }
+            catch
+            {
+            }
+            v = default(ArraySegment<byte>);
+            return this;
+        }
+
+        public IDataInput Let(out short[] v)
+        {
+            throw new NotImplementedException();
+        }
+
+        public IDataInput Let(out int[] v)
+        {
+            throw new NotImplementedException();
+        }
+
+        public IDataInput Let(out long[] v)
+        {
+            throw new NotImplementedException();
+        }
+
+        public IDataInput Let(out string[] v)
+        {
+            throw new NotImplementedException();
+        }
+
+        public IDataInput Let(out Dictionary<string, string> v)
+        {
+            throw new NotImplementedException();
+        }
+
+        public IDataInput Let<D>(out D v, short proj = 0) where D : IData, new()
+        {
+            try
+            {
+                int ord = ordinal++;
+                if (!reader.IsDBNull(ord))
+                {
+                    string str = reader.GetString(ord);
+                    JsonParse p = new JsonParse(str);
+                    JObj jo = (JObj) p.Parse();
+                    v = new D();
+                    v.ReadData(jo, proj);
+
+                    // add shard if any
+                    IShardable sharded = v as IShardable;
+                    if (sharded != null)
+                    {
+                        sharded.Shard = service.Shard;
+                    }
+                    return this;
+                }
+            }
+            catch
+            {
+            }
+            v = default(D);
+            return this;
+        }
+
+        public IDataInput Let<D>(out D[] v, short proj = 0) where D : IData, new()
+        {
+            try
+            {
+                int ord = ordinal++;
+                if (!reader.IsDBNull(ord))
+                {
+                    string str = reader.GetString(ord);
+                    JsonParse parse = new JsonParse(str);
+                    JArr ja = (JArr) parse.Parse();
+                    int len = ja.Count;
+                    v = new D[len];
+                    for (int i = 0; i < len; i++)
+                    {
+                        JObj jo = ja[i];
+                        D obj = new D();
+                        obj.ReadData(jo, proj);
+
+                        // add shard if any
+                        IShardable sharded = obj as IShardable;
+                        if (sharded != null)
+                        {
+                            sharded.Shard = service.Shard;
+                        }
+
+                        v[i] = obj;
+                    }
+                    return this;
+                }
+            }
+            catch
+            {
+            }
+            v = null;
+            return this;
+        }
+
 
         //
         // EVENTS

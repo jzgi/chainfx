@@ -149,6 +149,96 @@ namespace Greatbone.Core
             return jo != null && jo.Get(name, ref v);
         }
 
+
+        //
+        // LET
+        //
+
+        public IDataInput Let(out bool v)
+        {
+            throw new NotImplementedException();
+        }
+
+        public IDataInput Let(out short v)
+        {
+            throw new NotImplementedException();
+        }
+
+        public IDataInput Let(out int v)
+        {
+            throw new NotImplementedException();
+        }
+
+        public IDataInput Let(out long v)
+        {
+            throw new NotImplementedException();
+        }
+
+        public IDataInput Let(out double v)
+        {
+            throw new NotImplementedException();
+        }
+
+        public IDataInput Let(out decimal v)
+        {
+            throw new NotImplementedException();
+        }
+
+        public IDataInput Let(out DateTime v)
+        {
+            throw new NotImplementedException();
+        }
+
+        public IDataInput Let(out string v)
+        {
+            throw new NotImplementedException();
+        }
+
+        public IDataInput Let(out ArraySegment<byte> v)
+        {
+            throw new NotImplementedException();
+        }
+
+        public IDataInput Let(out short[] v)
+        {
+            throw new NotImplementedException();
+        }
+
+        public IDataInput Let(out int[] v)
+        {
+            throw new NotImplementedException();
+        }
+
+        public IDataInput Let(out long[] v)
+        {
+            throw new NotImplementedException();
+        }
+
+        public IDataInput Let(out string[] v)
+        {
+            throw new NotImplementedException();
+        }
+
+        public IDataInput Let(out Dictionary<string, string> v)
+        {
+            throw new NotImplementedException();
+        }
+
+        public IDataInput Let<D>(out D v, short proj = 0) where D : IData, new()
+        {
+            throw new NotImplementedException();
+        }
+
+        public IDataInput Let<D>(out D[] v, short proj = 0) where D : IData, new()
+        {
+            throw new NotImplementedException();
+        }
+
+
+        //
+        // ENTIRITY
+        //
+
         public D ToData<D>(short proj = 0) where D : IData, new()
         {
             D obj = new D();

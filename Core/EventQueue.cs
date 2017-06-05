@@ -89,7 +89,8 @@ namespace Greatbone.Core
                 }
 
                 // remove & return the head
-                Event e = elements[head++]; count--;
+                Event e = elements[head++];
+                count--;
 
                 // set headers
                 ac.SetHeader(X_EVENT, e.name);
@@ -101,7 +102,7 @@ namespace Greatbone.Core
                 IContent cont = null;
                 if (e.type != null)
                 {
-                    cont = new StaticContent(e.body) { Type = e.type };
+                    cont = new StaticContent(e.body) {Type = e.type};
                 }
                 ac.Give(200, cont);
 
@@ -162,7 +163,7 @@ namespace Greatbone.Core
                     Client cli = clients[i];
                     if (dc.Query1("SELECT evtid FROM evtu WHERE peerid = @1", p => p.Set(cli.Name)))
                     {
-                        cli.evtid = dc.GetLong();
+                        dc.Let(out cli.evtid);
                     }
                     else
                     {
@@ -176,18 +177,12 @@ namespace Greatbone.Core
         {
             if (content == null)
             {
-                dc.Execute("INSERT INTO evtq (name, shard, arg) VALUES (@1, @2, @3)", p =>
-                {
-                    p.Set(name).Set(shard).Set(arg);
-                });
+                dc.Execute("INSERT INTO evtq (name, shard, arg) VALUES (@1, @2, @3)", p => { p.Set(name).Set(shard).Set(arg); });
             }
             else
             {
                 var body = new ArraySegment<byte>(content.ByteBuffer, 0, content.Size);
-                dc.Execute("INSERT INTO evtq (name, shard, arg, type, body) VALUES (@1, @2, @3, @4, @5)", p =>
-                {
-                    p.Set(name).Set(shard).Set(arg).Set(content.Type).Set(body);
-                });
+                dc.Execute("INSERT INTO evtq (name, shard, arg, type, body) VALUES (@1, @2, @3, @4, @5)", p => { p.Set(name).Set(shard).Set(arg).Set(content.Type).Set(body); });
             }
         }
     }

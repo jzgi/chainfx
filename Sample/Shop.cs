@@ -7,7 +7,10 @@ namespace Greatbone.Sample
     {
         public static readonly Shop Empty = new Shop();
 
-        public const short ID = 0x0001, ICON = 0x0002, SUPER = 0x0010;
+        public const short
+            SUPER = 0x0010,
+            ID = 0x0001,
+            ICON = 0x0002;
 
         public static Opt<short> STATUS = new Opt<short>
         {
@@ -18,22 +21,19 @@ namespace Greatbone.Sample
 
         internal string id;
         internal string name;
-
         internal string descr;
         internal ArraySegment<byte> icon;
         internal string tel;
         internal string city;
         internal string distr;
         internal string addr;
-        internal double x;
-        internal double y;
-        internal short status;
 
         internal string lic;
         internal DateTime created;
         internal string mgrid; // set by mgr
         internal string mgrwx;
         internal string mgr;
+        internal short status;
 
         public void ReadData(IDataInput i, short proj = 0)
         {
@@ -51,8 +51,6 @@ namespace Greatbone.Sample
             i.Get(nameof(city), ref city);
             i.Get(nameof(distr), ref distr);
             i.Get(nameof(addr), ref addr);
-            i.Get(nameof(x), ref x);
-            i.Get(nameof(y), ref y);
             if ((proj & SUPER) == SUPER)
             {
                 i.Get(nameof(lic), ref lic);
@@ -80,8 +78,6 @@ namespace Greatbone.Sample
             o.Put(nameof(city), city, "城市");
             o.Put(nameof(distr), distr, "区县");
             o.Put(nameof(addr), addr, "地址");
-            o.Put(nameof(x), x);
-            o.Put(nameof(y), y);
             if ((proj & SUPER) == SUPER)
             {
                 o.Put(nameof(lic), lic, "工商登记");

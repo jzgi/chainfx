@@ -1,3 +1,4 @@
+using System;
 using Greatbone.Core;
 
 namespace Greatbone.Sample
@@ -17,7 +18,8 @@ namespace Greatbone.Sample
             {
                 if (dc.Query1("SELECT icon FROM shops WHERE id = @1", p => p.Set(shopid)))
                 {
-                    var byteas = dc.GetByteAS();
+                    ArraySegment<byte> byteas;
+                    dc.Let(out byteas);
                     if (byteas.Count == 0) ac.Give(204); // no content 
                     else
                     {

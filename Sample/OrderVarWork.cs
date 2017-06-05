@@ -51,7 +51,7 @@ namespace Greatbone.Sample
                     {
                         if (dc.Query1("SELECT city, distr, addr, tel FROM orders WHERE id = @1", p => p.Set(id)))
                         {
-                            dc.GetOn(ref city, ref distr, ref addr, ref tel);
+                            dc.Let(out city).Let(out distr).Let(out addr).Let(out tel);
                         }
                     }
                 }
@@ -92,7 +92,8 @@ namespace Greatbone.Sample
                 {
                     if (dc.Query1("SELECT comment FROM orders WHERE id = @1", p => p.Set(id)))
                     {
-                        var comment = dc.GetString();
+                        string comment;
+                        dc.Let(out comment);
                         ac.GivePane(200, m =>
                         {
                             m.FORM_();
@@ -129,7 +130,8 @@ namespace Greatbone.Sample
             {
                 if (dc.Query1("SELECT total FROM orders WHERE id = @1 AND wx = @2", p => p.Set(id).Set(wx)))
                 {
-                    var total = dc.GetDecimal();
+                    decimal total;
+                    dc.Let(out total);
                     var prepay_id = await WeiXinUtility.PostUnifiedOrderAsync(id, total, wx, ac.RemoteAddr, "http://shop.144000.tv/notify");
                     ac.Give(200, WeiXinUtility.BuildPrepayContent(prepay_id));
                 }
@@ -295,8 +297,7 @@ namespace Greatbone.Sample
                 {
                     if (dc.Query1("SELECT total, cash FROM orders WHERE id = @1", p => p.Set(id)))
                     {
-                        total = dc.GetDecimal();
-                        cash = dc.GetDecimal();
+                        dc.Let(out total).Let(out cash);
                     }
                 }
                 string err = await WeiXinUtility.PostRefundAsync(id, total, cash);

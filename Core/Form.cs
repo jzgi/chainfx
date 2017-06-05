@@ -11,6 +11,8 @@ namespace Greatbone.Core
         // if multipart
         readonly bool mp;
 
+        int ordinal;
+
         public Form(bool mp, int capacity = 16) : base(capacity)
         {
             this.mp = mp;
@@ -184,6 +186,147 @@ namespace Greatbone.Core
             }
             return false;
         }
+
+        //
+        // LET
+        //
+
+        public IDataInput Let(out bool v)
+        {
+            int ord = ordinal++;
+            if (ord < Count)
+            {
+                v = this[ord];
+                return this;
+            }
+            v = false;
+            return this;
+        }
+
+        public IDataInput Let(out short v)
+        {
+            int ord = ordinal++;
+            if (ord < Count)
+            {
+                v = this[ord];
+                return this;
+            }
+            v = 0;
+            return this;
+        }
+
+        public IDataInput Let(out int v)
+        {
+            int ord = ordinal++;
+            if (ord < Count)
+            {
+                v = this[ord];
+                return this;
+            }
+            v = 0;
+            return this;
+        }
+
+        public IDataInput Let(out long v)
+        {
+            int ord = ordinal++;
+            if (ord < Count)
+            {
+                v = this[ord];
+                return this;
+            }
+            v = 0;
+            return this;
+        }
+
+        public IDataInput Let(out double v)
+        {
+            int ord = ordinal++;
+            if (ord < Count)
+            {
+                v = this[ord];
+                return this;
+            }
+            v = 0;
+            return this;
+        }
+
+        public IDataInput Let(out decimal v)
+        {
+            int ord = ordinal++;
+            if (ord < Count)
+            {
+                v = this[ord];
+                return this;
+            }
+            v = 0;
+            return this;
+        }
+
+        public IDataInput Let(out DateTime v)
+        {
+            int ord = ordinal++;
+            if (ord < Count)
+            {
+                v = this[ord];
+                return this;
+            }
+            v = default(DateTime);
+            return this;
+        }
+
+        public IDataInput Let(out string v)
+        {
+            int ord = ordinal++;
+            if (ord < Count)
+            {
+                v = this[ord];
+                return this;
+            }
+            v = null;
+            return this;
+        }
+
+        public IDataInput Let(out ArraySegment<byte> v)
+        {
+            throw new NotImplementedException();
+        }
+
+        public IDataInput Let(out short[] v)
+        {
+            throw new NotImplementedException();
+        }
+
+        public IDataInput Let(out int[] v)
+        {
+            throw new NotImplementedException();
+        }
+
+        public IDataInput Let(out long[] v)
+        {
+            throw new NotImplementedException();
+        }
+
+        public IDataInput Let(out string[] v)
+        {
+            throw new NotImplementedException();
+        }
+
+        public IDataInput Let(out Dictionary<string, string> v)
+        {
+            throw new NotImplementedException();
+        }
+
+        public IDataInput Let<D>(out D v, short proj = 0) where D : IData, new()
+        {
+            throw new NotImplementedException();
+        }
+
+        public IDataInput Let<D>(out D[] v, short proj = 0) where D : IData, new()
+        {
+            throw new NotImplementedException();
+        }
+
 
         public bool Get(string name, ref Dictionary<string, string> v)
         {

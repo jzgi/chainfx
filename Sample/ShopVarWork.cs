@@ -18,7 +18,8 @@ namespace Greatbone.Sample
             {
                 if (dc.Query1("SELECT icon FROM shops WHERE id = @1", p => p.Set(shopid)))
                 {
-                    var byteas = dc.GetByteAS();
+                    ArraySegment<byte> byteas;
+                    dc.Let(out byteas);
                     if (byteas.Count == 0) ac.Give(204); // no content 
                     else
                     {
@@ -235,7 +236,8 @@ namespace Greatbone.Sample
                 {
                     if (dc.Query1("SELECT icon FROM shops WHERE id = @1", p => p.Set(id)))
                     {
-                        var byteas = dc.GetByteAS();
+                        ArraySegment<byte> byteas;
+                        dc.Let(out byteas);
                         if (byteas.Count == 0) ac.Give(204); // no content
                         else
                         {
@@ -266,15 +268,18 @@ namespace Greatbone.Sample
 
             // form submitted values
             string id;
+            string name;
             string oprid = null;
             short opr = 0;
 
             var f = await ac.ReadAsync<Form>();
             if (f != null)
             {
-                id = f[nameof(id)];
-                oprid = f[nameof(oprid)];
-                opr = f[nameof(opr)];
+                f.Let(out id).Let(out oprid).Let(out opr);
+
+//                id = f[nameof(id)];
+//                oprid = f[nameof(oprid)];
+//                opr = f[nameof(opr)];
                 if (subcmd == 1) // remove
                 {
                     using (var dc = ac.NewDbContext())
@@ -302,9 +307,7 @@ namespace Greatbone.Sample
                     {
                         while (dc.Next())
                         {
-                            id = dc.GetString();
-                            string name = dc.GetString();
-                            opr = dc.GetShort();
+                            dc.Let(out id).Let(out name).Let(out opr);
                             m.RADIO(nameof(id), id, null, null, false, id, name, User.OPR[opr]);
                         }
                         m.BUTTON(nameof(crew), 1, "删除");
@@ -331,6 +334,7 @@ namespace Greatbone.Sample
         [Ui("修改", Mode = UiMode.AnchorShow)]
         public async Task edit(ActionContext ac)
         {
+            bool disabled = false;
             if (ac.GET)
             {
                 string id = ac[this];
@@ -349,7 +353,7 @@ namespace Greatbone.Sample
                             m.TEXT(nameof(o.city), o.city, label: "城市", @readonly: true);
                             m.SELECT(nameof(o.distr), o.distr, ((ShopService) Service).GetDistrs(o.city), label: "区域");
                             m.TEXT(nameof(o.lic), o.lic, label: "工商登记");
-                            m.TEXT(nameof(o.mgrid), o.mgrid, label: "经理登录号");
+                            m.CHECKBOX(nameof(disabled), disabled, label: "禁止营业");
                             m._FORM();
                         });
                     }
@@ -366,7 +370,7 @@ namespace Greatbone.Sample
                 using (var dc = ac.NewDbContext())
                 {
                     const int proj = -1 ^ Shop.ICON;
-                    dc.Sql("UPDATE shops")._SET_(Shop.Empty, proj)._("WHERE id = @1");
+                    dc.Sql("UPDATE shops SET name  =@1, distr = @2, lic = @3, ")._SET_(Shop.Empty, proj)._("WHERE id = @1");
                     dc.Execute(p =>
                     {
                         o.WriteData(p, proj);
@@ -374,46 +378,6 @@ namespace Greatbone.Sample
                     });
                 }
                 ac.GiveRedirect();
-            }
-        }
-
-        [Ui("图片", Mode = UiMode.AnchorCrop, Circle = true)]
-        public new async Task icon(ActionContext ac)
-        {
-            string id = ac[this];
-            string city = ac[typeof(CityVarWork)];
-            if (ac.GET)
-            {
-                using (var dc = Service.NewDbContext())
-                {
-                    if (dc.Query1("SELECT icon FROM shops WHERE id = @1 AND city = @2", p => p.Set(id).Set(city)))
-                    {
-                        var byteas = dc.GetByteAS();
-                        if (byteas.Count == 0) ac.Give(204); // no content
-                        else
-                        {
-                            StaticContent cont = new StaticContent(byteas);
-                            ac.Give(200, cont);
-                        }
-                    }
-                    else ac.Give(404); // not found
-                }
-            }
-            else // post
-            {
-                var frm = await ac.ReadAsync<Form>();
-                ArraySegment<byte> icon = frm[nameof(icon)];
-                using (var dc = Service.NewDbContext())
-                {
-                    if (dc.Execute("UPDATE shops SET icon = @1 WHERE id = @2 AND city = @3", p => p.Set(icon).Set(id).Set(city)) > 0)
-                    {
-                        ac.Give(200); // ok
-                    }
-                    else
-                    {
-                        ac.Give(500); // internal server error
-                    }
-                }
             }
         }
 
@@ -433,9 +397,10 @@ namespace Greatbone.Sample
                         {
                             while (dc.Next())
                             {
-                                string id = dc.GetString();
-                                string name = dc.GetString();
-                                string wx = dc.GetString();
+                                string id;
+                                string name;
+                                string wx;
+                                dc.Let(out id).Let(out name).Let(out wx);
                                 m.RADIO("id_wx_name", id, wx, name, false, id, name, null);
                             }
                             m._FORM();

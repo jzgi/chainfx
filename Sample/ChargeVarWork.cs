@@ -36,7 +36,8 @@ namespace Greatbone.Sample
             {
                 if (dc.Query1("SELECT icon FROM items WHERE shopid = @1 AND name = @2", p => p.Set(shopid).Set(name)))
                 {
-                    var byteas = dc.GetByteAS();
+                    ArraySegment<byte> byteas;
+                    dc.Let(out byteas);
                     if (byteas.Count == 0) ac.Give(204); // no content 
                     else
                     {

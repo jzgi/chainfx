@@ -8,7 +8,7 @@ namespace Greatbone.Sample
     {
         protected OrderWork(WorkContext wc) : base(wc)
         {
-            CreateVar<V, long>((obj) => ((Order)obj).id);
+            CreateVar<V, long>((obj) => ((Order) obj).id);
         }
     }
 
@@ -40,7 +40,7 @@ namespace Greatbone.Sample
                 }
                 else
                 {
-                    ac.GiveGridPage(200, (Order[])null, @public: false, maxage: 3);
+                    ac.GiveGridPage(200, (Order[]) null, @public: false, maxage: 3);
                 }
             }
         }
@@ -82,19 +82,15 @@ namespace Greatbone.Sample
             {
                 if (dc.Query1("SELECT id, detail, total FROM orders WHERE shopid = @1 AND wx = @2 AND status = 0", p => p.Set(shopid).Set(wx)))
                 {
-                    var o = new Order
-                    {
-                        id = dc.GetLong(),
-                        detail = dc.GetDatas<OrderLine>(),
-                        total = dc.GetDecimal()
-                    };
+                    var o = new Order();
+                    dc.Let(out o.id).Let(out o.detail).Let(out o.total);
                     o.AddItem(name, qty, unit, price);
                     o.Sum();
                     dc.Execute("UPDATE orders SET detail = @1, total = @2 WHERE id = @3", p => p.Set(o.detail).Set(o.total).Set(o.id));
                 }
                 else
                 {
-                    User prin = (User)ac.Principal;
+                    User prin = (User) ac.Principal;
                     var o = new Order
                     {
                         shopid = shopid,
@@ -143,7 +139,7 @@ namespace Greatbone.Sample
                 }
                 else
                 {
-                    ac.GiveGridPage(200, (Order[])null, @public: false, maxage: 3);
+                    ac.GiveGridPage(200, (Order[]) null, @public: false, maxage: 3);
                 }
             }
         }
@@ -169,7 +165,7 @@ namespace Greatbone.Sample
                 }
                 else
                 {
-                    ac.GiveGridPage(200, (Order[])null, @public: false, maxage: 3);
+                    ac.GiveGridPage(200, (Order[]) null, @public: false, maxage: 3);
                 }
             }
         }
@@ -199,7 +195,7 @@ namespace Greatbone.Sample
                 }
                 else
                 {
-                    ac.GiveGridPage(200, (Order[])null, @public: false, maxage: 3);
+                    ac.GiveGridPage(200, (Order[]) null, @public: false, maxage: 3);
                 }
             }
         }
@@ -259,7 +255,7 @@ namespace Greatbone.Sample
         [Ui("委托办理", Mode = UiMode.ButtonShow)]
         public async Task passon(ActionContext ac)
         {
-            var prin = (User)ac.Principal;
+            var prin = (User) ac.Principal;
             string shopid = ac[-1];
             string city = prin.city;
             if (ac.GET)
@@ -273,8 +269,9 @@ namespace Greatbone.Sample
                         {
                             while (dc.Next())
                             {
-                                string id = dc.GetString();
-                                string name = dc.GetString();
+                                string id;
+                                string name;
+                                dc.Let(out id).Let(out name);
                                 m.RADIO("id_name", id, name, null, false, id, name, null);
                             }
                             m._FORM();
@@ -341,7 +338,7 @@ namespace Greatbone.Sample
                 }
                 else
                 {
-                    ac.GiveGridPage(200, (Order[])null, @public: false, maxage: 3);
+                    ac.GiveGridPage(200, (Order[]) null, @public: false, maxage: 3);
                 }
             }
         }
