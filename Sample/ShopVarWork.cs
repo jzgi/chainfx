@@ -277,10 +277,6 @@ namespace Greatbone.Sample
             if (f != null)
             {
                 f.Let(out id).Let(out oprid).Let(out opr);
-
-//                id = f[nameof(id)];
-//                oprid = f[nameof(oprid)];
-//                opr = f[nameof(opr)];
                 if (subcmd == 1) // remove
                 {
                     using (var dc = ac.NewDbContext())
@@ -335,26 +331,26 @@ namespace Greatbone.Sample
         [Ui("修改", Mode = UiMode.AnchorShow)]
         public async Task edit(ActionContext ac)
         {
+            string id = ac[this];
+            string city = ac[typeof(CityVarWork)];
+            string name;
+            string distr;
+            string lic;
             bool disabled = false;
             if (ac.GET)
             {
-                string id = ac[this];
-                string city = ac[typeof(CityVarWork)];
                 using (var dc = ac.NewDbContext())
                 {
-                    const ushort proj = 0xffff ^ Shop.BASIC_ICON;
-                    dc.Sql("SELECT ").columnlst(Shop.Empty, proj)._("FROM shops WHERE id = @1 AND city = @2");
-                    if (dc.Query1(p => p.Set(id).Set(city)))
+                    if (dc.Query1("SELECT name, distr, lic FROM shops WHERE id = @1 AND city = @2", p => p.Set(id).Set(city)))
                     {
-                        var o = dc.ToData<Shop>(proj);
+                        dc.Let(out name).Let(out distr).Let(out lic);
                         ac.GivePane(200, m =>
                         {
                             m.FORM_();
-                            m.TEXT(nameof(o.name), o.name);
-                            m.TEXT(nameof(o.city), o.city, label: "城市", @readonly: true);
-                            m.SELECT(nameof(o.distr), o.distr, ((ShopService) Service).GetDistrs(o.city), label: "区域");
-                            m.TEXT(nameof(o.lic), o.lic, label: "工商登记");
-                            m.CHECKBOX(nameof(disabled), disabled, label: "禁止营业");
+                            m.TEXT(nameof(name), name, "商家名称");
+                            m.SELECT(nameof(distr), distr, ((ShopService) Service).GetDistrs(city), "区域");
+                            m.TEXT(nameof(lic), lic, "工商登记");
+                            m.CHECKBOX(nameof(disabled), disabled, "禁止营业");
                             m._FORM();
                         });
                     }
@@ -366,17 +362,12 @@ namespace Greatbone.Sample
             }
             else // post
             {
-                var o = await ac.ReadDataAsync<Shop>();
-                o.id = ac[this];
+                var f = await ac.ReadAsync<Form>();
+                f.Let(out name).Let(out distr).Let(out lic);
                 using (var dc = ac.NewDbContext())
                 {
-                    const ushort proj = 0xffff ^ Shop.BASIC_ICON;
-                    dc.Sql("UPDATE shops SET name  =@1, distr = @2, lic = @3, ")._SET_(Shop.Empty, proj)._("WHERE id = @1");
-                    dc.Execute(p =>
-                    {
-                        o.WriteData(p, proj);
-                        p.Set(o.id);
-                    });
+                    dc.Sql("UPDATE shops SET name = @1, distr = @2, lic = @3")._("WHERE id = @4");
+                    dc.Execute(p => p.Set(name).Set(distr).Set(lic).Set(id));
                 }
                 ac.GiveRedirect();
             }

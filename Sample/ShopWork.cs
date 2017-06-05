@@ -126,37 +126,31 @@ namespace Greatbone.Sample
             string city = ac[typeof(CityVarWork)];
             if (ac.GET)
             {
-                var o = new Shop
-                {
-                    city = city
-                };
+                var o = new Shop {city = city};
                 ac.GivePane(200, m =>
                 {
                     m.FORM_();
                     m.TEXT(nameof(o.id), o.id, "商家编号", max: 6, min: 6, required: true);
                     m.TEXT(nameof(o.name), o.name, "商家名称", max: 10, required: true);
-                    m.TEXT(nameof(o.mgrid), o.descr, "简述", max: 11, min: 11, required: true);
-                    m.TEXT(nameof(o.mgrid), o.lic, "工商登记", max: 20, min: 11, required: true);
                     m.TEXT(nameof(o.city), o.city, "所在城市", @readonly: true);
-                    m.SELECT(nameof(o.distr), o.distr, ((ShopService) Service).GetDistrs(o.city), label: "区域");
-                    m.SELECT(nameof(o.status), o.status, Shop.STATUS, label: "状态");
+                    m.SELECT(nameof(o.distr), o.distr, ((ShopService) Service).GetDistrs(o.city), "区域");
+                    m.TEXT(nameof(o.lic), o.lic, "工商登记", max: 20, min: 11, required: true);
                     m._FORM();
                 });
             }
             else // post
             {
-                const ushort proj = 0xffff ^ Shop.BASIC_ICON;
                 var o = await ac.ReadDataAsync<Shop>();
+                o.city = city;
                 using (var dc = ac.NewDbContext())
                 {
-                    dc.Sql("INSERT INTO shops")._(Shop.Empty)._VALUES_(Shop.Empty)._("");
-                    if (dc.Execute(p => p.Set(o)) > 0)
+                    if (dc.Execute("INSERT INTO shops (id, name, city, distr, lic) VALUES (@1, @2, @3, @4, @5)", p => p.Set(o.id).Set(o.name).Set(city).Set(o.distr).Set(o.lic)) > 0)
                     {
-                        ac.Give(201); // created
+                        ac.GivePane(200); // created
                     }
                     else
                     {
-                        ac.Give(500); // internal server error
+                        ac.GivePane(200); // internal server error
                     }
                 }
             }
