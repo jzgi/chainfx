@@ -247,7 +247,7 @@ namespace Greatbone.Core
             return entity as M;
         }
 
-        public async Task<D> ReadDataAsync<D>(ushort proj = 0) where D : IData, new()
+        public async Task<D> ReadDataAsync<D>(ushort proj = 0x00ff) where D : IData, new()
         {
             if (entity == null && count == -1) // if not yet parse and read
             {
@@ -274,7 +274,7 @@ namespace Greatbone.Core
             return src.ToData<D>(proj);
         }
 
-        public async Task<D[]> ReadDatasAsync<D>(ushort proj = 0) where D : IData, new()
+        public async Task<D[]> ReadDatasAsync<D>(ushort proj = 0x00ff) where D : IData, new()
         {
             if (entity == null && count == -1) // if not yet parse and read
             {
@@ -385,7 +385,7 @@ namespace Greatbone.Core
             MaxAge = maxage;
         }
 
-        public void Give(int status, IData obj, ushort proj = 0, bool? pub = null, int maxage = 60)
+        public void Give(int status, IData obj, ushort proj = 0x00ff, bool? pub = null, int maxage = 60)
         {
             JsonContent cont = new JsonContent(true).Put(null, obj, proj);
             Status = status;
@@ -394,7 +394,7 @@ namespace Greatbone.Core
             MaxAge = maxage;
         }
 
-        public void Give<D>(int status, D[] arr, ushort proj = 0, bool? pub = null, int maxage = 60) where D : IData
+        public void Give<D>(int status, D[] arr, ushort proj = 0x00ff, bool? pub = null, int maxage = 60) where D : IData
         {
             JsonContent cont = new JsonContent(true).Put(null, arr, proj);
             Status = status;

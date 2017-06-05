@@ -29,12 +29,12 @@ namespace Greatbone.Sample
 
             if (ac.GET)
             {
-                const int proj = -1 ^ Order.ID ^ Order.LATE;
+                const ushort proj = 0x00ff ^ Order.ID;
                 using (var dc = ac.NewDbContext())
                 {
                     if (dc.Query1("SELECT shopid, detail, total FROM orders WHERE id = @1", p => p.Set(id)))
                     {
-                        dc.Let(out shopid).Let<OrderLine>(out detail);
+                        dc.Let(out shopid).Let(out detail);
 
                         var ln = detail.Find(x => x.name == name);
 

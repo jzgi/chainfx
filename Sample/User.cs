@@ -44,7 +44,7 @@ namespace Greatbone.Sample
         internal bool adm; // admininistrator
 
 
-        public void ReadData(IDataInput i, ushort proj = 0)
+        public void ReadData(IDataInput i, ushort proj = 0x00ff)
         {
             if ((proj & WX) == WX)
             {
@@ -79,7 +79,7 @@ namespace Greatbone.Sample
             }
         }
 
-        public void WriteData<R>(IDataOutput<R> o, ushort proj = 0) where R : IDataOutput<R>
+        public void WriteData<R>(IDataOutput<R> o, ushort proj = 0x00ff) where R : IDataOutput<R>
         {
             if ((proj & WX) == WX)
             {

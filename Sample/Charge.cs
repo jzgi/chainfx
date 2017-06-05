@@ -29,11 +29,11 @@ namespace Greatbone.Sample
         internal int step;
         internal short status;
 
-        public void ReadData(IDataInput i, ushort proj = 0)
+        public void ReadData(IDataInput i, ushort proj = 0x00ff)
         {
         }
 
-        public void WriteData<R>(IDataOutput<R> o, ushort proj = 0) where R : IDataOutput<R>
+        public void WriteData<R>(IDataOutput<R> o, ushort proj = 0x00ff) where R : IDataOutput<R>
         {
         }
     }

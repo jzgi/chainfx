@@ -32,7 +32,7 @@ namespace Greatbone.Sample
             string wx = ac[-1];
             using (var dc = ac.NewDbContext())
             {
-                const ushort proj = 0xffff ^ Order.LATE ^ Order.WX;
+                const ushort proj = Order.ID | Order.BASIC_DETAIL;
                 dc.Sql("SELECT ").columnlst(Order.Empty, proj)._("FROM orders WHERE wx = @1 AND status = @2 ORDER BY id DESC");
                 if (dc.Query(p => p.Set(wx).Set(Order.CREATED)))
                 {
@@ -109,7 +109,7 @@ namespace Greatbone.Sample
                     };
                     o.Sum();
 
-                    const ushort proj = 0xffff ^ Order.ID ^ Order.LATE;
+                    const ushort proj = 0x00ff ^ Order.ID;
 
                     dc.Sql("INSERT INTO orders ")._(o, proj)._VALUES_(o, proj);
                     dc.Execute(p => o.WriteData(p, proj));
@@ -131,7 +131,7 @@ namespace Greatbone.Sample
             string wx = ac[-1];
             using (var dc = ac.NewDbContext())
             {
-                const ushort proj = 0xffff;
+                const ushort proj = Order.ID | Order.BASIC_DETAIL | Order.CASH | Order.FLOW;
                 dc.Sql("SELECT ").columnlst(Order.Empty, proj)._("FROM orders WHERE wx = @1 AND status = @2");
                 if (dc.Query(p => p.Set(wx).Set(Order.ACCEPTED)))
                 {
@@ -157,7 +157,7 @@ namespace Greatbone.Sample
             string wx = ac[-1];
             using (var dc = ac.NewDbContext())
             {
-                const ushort proj = 0xffff;
+                const ushort proj = Order.ID | Order.BASIC_DETAIL | Order.CASH | Order.FLOW;
                 dc.Sql("SELECT ").columnlst(Order.Empty, proj)._("FROM orders WHERE wx = @1 AND status > @2 ORDER BY id LIMIT 10 OFFSET @3");
                 if (dc.Query(p => p.Set(wx).Set(Order.ACCEPTED).Set(page * 10)))
                 {
@@ -208,7 +208,7 @@ namespace Greatbone.Sample
         public OprCartOrderWork(WorkContext wc) : base(wc)
         {
             status = Order.CREATED;
-            proj = 0xffff ^ Order.LATE ^ Order.WX;
+            proj = Order.ID | Order.BASIC_DETAIL | Order.CASH;
         }
 
         [Ui("一周清理", "清理一周以前的旧单", Mode = UiMode.ButtonConfirm)]
@@ -230,7 +230,7 @@ namespace Greatbone.Sample
         public OprActiveOrderWork(WorkContext wc) : base(wc)
         {
             status = Order.ACCEPTED;
-            proj = 0xffff ^ Order.WX;
+            proj = Order.ID | Order.BASIC_DETAIL | Order.CASH | Order.FLOW;
         }
 
         [Ui("发送通知", Mode = UiMode.ButtonShow)]
@@ -301,7 +301,7 @@ namespace Greatbone.Sample
         {
             status = Order.ABORTED;
             status2 = Order.SHIPPED;
-            proj = 0xffff ^ Order.LATE ^ Order.WX;
+            proj = Order.ID | Order.BASIC_DETAIL | Order.CASH | Order.FLOW;
         }
 
         [Ui("查询")]

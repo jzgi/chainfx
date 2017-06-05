@@ -55,7 +55,7 @@ namespace Greatbone.Sample
 
                     if (dc.Query("SELECT * FROM shops WHERE city = @1 AND status > 0", p => p.Set(city)))
                     {
-                        var shops = dc.ToDatas<Shop>(0xffff ^ Shop.ICON);
+                        var shops = dc.ToDatas<Shop>(0xffff ^ Shop.BASIC_ICON);
                         for (int i = 0; i < shops.Length; i++)
                         {
                             var shop = shops[i];
@@ -107,7 +107,7 @@ namespace Greatbone.Sample
             string city = ac[typeof(CityVarWork)];
             using (var dc = ac.NewDbContext())
             {
-                const ushort proj = 0xffff ^ Shop.ICON;
+                const ushort proj = Shop.ID | Shop.BASIC | Shop.SUPER;
                 dc.Sql("SELECT ").columnlst(Shop.Empty, proj)._("FROM shops WHERE city = @1");
                 if (dc.Query(p => p.Set(city)))
                 {
@@ -145,7 +145,7 @@ namespace Greatbone.Sample
             }
             else // post
             {
-                const ushort proj = 0xffff ^ Shop.ICON;
+                const ushort proj = 0xffff ^ Shop.BASIC_ICON;
                 var o = await ac.ReadDataAsync<Shop>();
                 using (var dc = ac.NewDbContext())
                 {

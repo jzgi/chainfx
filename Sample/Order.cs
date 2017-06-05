@@ -8,11 +8,13 @@ namespace Greatbone.Sample
     ///
     public class Order : IData
     {
-        public const short
+        public const ushort
             ID = 0x0001,
-            WX = 0x0002,
-            DETAIL = 0x0020,
-            LATE = 0x0010;
+            BASIC = 0x0002,
+            BASIC_WX = 0x006,
+            BASIC_DETAIL = 0x000A,
+            CASH = 0x0100,
+            FLOW = 0x0200;
 
         // status
         public const short CREATED = 0, ACCEPTED = 1, ABORTED = 3, SHIPPED = 5, RECKONED = 7;
@@ -20,11 +22,11 @@ namespace Greatbone.Sample
         // status
         static readonly Opt<short> STATUS = new Opt<short>
         {
-            [CREATED] = "购物车",
+            [CREATED] = "购物车/待付款",
             [ACCEPTED] = "已接受/在处理",
-            [ABORTED] = "已撤销",
-            [SHIPPED] = "买家已确认收货",
-            [RECKONED] = "平台已清算",
+            [ABORTED] = "已撤销/关闭",
+            [SHIPPED] = "买家已确收/未清算",
+            [RECKONED] = "平台已清算/完成",
         };
 
 
@@ -41,7 +43,7 @@ namespace Greatbone.Sample
         internal string addr; // address
         internal string tel; // mobile number
         internal OrderLine[] detail;
-        internal string comment;
+        internal string note;
         internal decimal total; // receivable
         internal decimal cash; // amount recieved
 
@@ -51,89 +53,96 @@ namespace Greatbone.Sample
         internal DateTime aborted; // time aborted
         internal DateTime shipped; // time shipped
         internal short status;
-        internal string note;
+        internal string memo;
 
-        public void ReadData(IDataInput i, ushort proj = 0)
+        public void ReadData(IDataInput i, ushort proj = 0x00ff)
         {
             if ((proj & ID) == ID)
             {
                 i.Get(nameof(id), ref id);
             }
-            i.Get(nameof(created), ref created);
-            i.Get(nameof(shop), ref shop);
-            i.Get(nameof(shopid), ref shopid);
-            i.Get(nameof(buyer), ref buyer);
-            if ((proj & WX) == WX)
+            if ((proj & BASIC) == BASIC)
             {
-                i.Get(nameof(wx), ref wx);
+                i.Get(nameof(created), ref created);
+                i.Get(nameof(shop), ref shop);
+                i.Get(nameof(shopid), ref shopid);
+                i.Get(nameof(buyer), ref buyer);
+                if ((proj & BASIC_WX) == BASIC_WX)
+                {
+                    i.Get(nameof(wx), ref wx);
+                }
+                i.Get(nameof(city), ref city);
+                i.Get(nameof(distr), ref distr);
+                i.Get(nameof(addr), ref addr);
+                i.Get(nameof(tel), ref tel);
+                if ((proj & BASIC_DETAIL) == BASIC_DETAIL)
+                {
+                    i.Get(nameof(detail), ref detail);
+                }
+                i.Get(nameof(note), ref note);
+                i.Get(nameof(total), ref total);
             }
-            i.Get(nameof(city), ref city);
-            i.Get(nameof(distr), ref distr);
-            i.Get(nameof(addr), ref addr);
-            i.Get(nameof(tel), ref tel);
-            if ((proj & DETAIL) == DETAIL)
-            {
-                i.Get(nameof(detail), ref detail);
-            }
-            i.Get(nameof(comment), ref comment);
-            i.Get(nameof(total), ref total);
-
-            if ((proj & LATE) == LATE)
+            if ((proj & CASH) == CASH)
             {
                 i.Get(nameof(cash), ref cash);
+            }
+            if ((proj & FLOW) == FLOW)
+            {
                 i.Get(nameof(accepted), ref accepted);
                 i.Get(nameof(coshopid), ref coshopid);
                 i.Get(nameof(abortion), ref abortion);
                 i.Get(nameof(aborted), ref aborted);
                 i.Get(nameof(shipped), ref shipped);
-                i.Get(nameof(note), ref note);
+                i.Get(nameof(memo), ref memo);
             }
             i.Get(nameof(status), ref status);
         }
 
-        public void WriteData<R>(IDataOutput<R> o, ushort proj = 0) where R : IDataOutput<R>
+        public void WriteData<R>(IDataOutput<R> o, ushort proj = 0x00ff) where R : IDataOutput<R>
         {
             if ((proj & ID) == ID)
             {
                 o.Put(nameof(id), id, "订单编号");
             }
-            o.Put(nameof(created), created, "创建时间");
-
-            o.Group("商家");
-            o.Put(nameof(shop), shop);
-            o.Put(nameof(shopid), shopid);
-            o.UnGroup();
-
-            o.Put(nameof(buyer), buyer, "买家");
-            if ((proj & WX) == WX)
+            if ((proj & BASIC) == BASIC)
             {
-                o.Put(nameof(wx), wx);
+                o.Put(nameof(created), created, "创建时间");
+                o.Group("商家");
+                o.Put(nameof(shop), shop);
+                o.Put(nameof(shopid), shopid);
+                o.UnGroup();
+                o.Put(nameof(buyer), buyer, "买家");
+                if ((proj & BASIC_WX) == BASIC_WX)
+                {
+                    o.Put(nameof(wx), wx);
+                }
+                o.Group("收货地址");
+                o.Put(nameof(city), city);
+                o.Put(nameof(distr), distr);
+                o.Put(nameof(addr), addr);
+                o.UnGroup();
+                o.Put(nameof(tel), tel, "联系电话");
+                if ((proj & BASIC_DETAIL) == BASIC_DETAIL)
+                {
+                    o.Put(nameof(detail), detail);
+                }
+                o.Put(nameof(note), note, "附加说明");
+                o.Put(nameof(total), total, "应付金额", '¥');
             }
-            o.Group("收货地址");
-            o.Put(nameof(city), city);
-            o.Put(nameof(distr), distr);
-            o.Put(nameof(addr), addr);
-            o.UnGroup();
-            o.Put(nameof(tel), tel, "联系电话");
-
-            if ((proj & DETAIL) == DETAIL)
-            {
-                o.Put(nameof(detail), detail);
-            }
-            o.Put(nameof(comment), comment, "附加说明");
-            o.Put(nameof(total), total, "应付金额", '¥');
-
-            if ((proj & LATE) == LATE)
+            if ((proj & CASH) == CASH)
             {
                 o.Put(nameof(cash), cash, "实收金额", '¥');
-                o.Put(nameof(accepted), accepted, "实收时间");
+            }
+            if ((proj & FLOW) == FLOW)
+            {
+                o.Put(nameof(accepted), accepted, "接受时间");
                 o.Put(nameof(coshopid), coshopid, "受托商家");
                 o.Group("撤销");
                 o.Put(nameof(abortion), abortion);
                 o.Put(nameof(aborted), aborted);
                 o.UnGroup();
-                o.Put(nameof(shipped), shipped, "确认收货时间");
-                o.Put(nameof(note), note, "备忘");
+                o.Put(nameof(shipped), shipped, "确收时间");
+                o.Put(nameof(memo), memo, "备忘");
             }
             o.Put(nameof(status), status, "状态", STATUS);
         }
@@ -192,7 +201,7 @@ namespace Greatbone.Sample
 
         public decimal Subtotal => price * qty;
 
-        public void ReadData(IDataInput i, ushort proj = 0)
+        public void ReadData(IDataInput i, ushort proj = 0x00ff)
         {
             i.Get(nameof(name), ref name);
             i.Get(nameof(qty), ref qty);
@@ -200,7 +209,7 @@ namespace Greatbone.Sample
             i.Get(nameof(price), ref price);
         }
 
-        public void WriteData<R>(IDataOutput<R> o, ushort proj = 0) where R : IDataOutput<R>
+        public void WriteData<R>(IDataOutput<R> o, ushort proj = 0x00ff) where R : IDataOutput<R>
         {
             o.Put(nameof(name), name, "品名");
             o.Group("数量");

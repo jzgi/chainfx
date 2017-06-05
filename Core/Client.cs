@@ -196,7 +196,7 @@ namespace Greatbone.Core
             return null;
         }
 
-        public async Task<D> GetDataAsync<D>(ActionContext ac, string uri, ushort proj = 0) where D : IData, new()
+        public async Task<D> GetDataAsync<D>(ActionContext ac, string uri, ushort proj = 0x00ff) where D : IData, new()
         {
             try
             {
@@ -227,7 +227,7 @@ namespace Greatbone.Core
             return default(D);
         }
 
-        public async Task<D[]> GetDatasAsync<D>(ActionContext ac, string uri, ushort proj = 0) where D : IData, new()
+        public async Task<D[]> GetDatasAsync<D>(ActionContext ac, string uri, ushort proj = 0x00ff) where D : IData, new()
         {
             try
             {
