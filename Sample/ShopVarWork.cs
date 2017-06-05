@@ -46,7 +46,7 @@ namespace Greatbone.Sample
             using (var dc = ac.NewDbContext())
             {
                 // query for the shop record
-                const ushort proj = 0xffff ^ Shop.BASIC_ICON;
+                const ushort proj = Shop.ID | Shop.BASIC;
                 dc.Sql("SELECT ").columnlst(Shop.Empty, proj)._("FROM shops WHERE id = @1");
                 if (dc.Query1(p => p.Set(shopid)))
                 {

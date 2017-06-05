@@ -7,7 +7,7 @@ namespace Greatbone.Sample
     {
         protected ShopWork(WorkContext wc) : base(wc)
         {
-            CreateVar<V, string>(obj => ((Shop) obj).id);
+            CreateVar<V, string>(obj => ((Shop)obj).id);
         }
     }
 
@@ -23,7 +23,7 @@ namespace Greatbone.Sample
             string city = ac.Query[nameof(city)];
             if (city == null)
             {
-                city = ((User) ac.Principal).city;
+                city = ((User)ac.Principal).city;
             }
             using (var dc = ac.NewDbContext())
             {
@@ -34,7 +34,7 @@ namespace Greatbone.Sample
                     m.T("<div class=\"title-bar\">");
                     m.T("<div class=\"title-bar-title\">");
                     m.T("<select name=\"city\" style=\"margin: 0; border: 0; color: #ba55d3; font-size: 1.25rem;\" onchange=\"location = location.href.split('?')[0] + '?city=' + this.value;\">");
-                    string[] vs = ((ShopService) Service).CityOpt;
+                    string[] vs = ((ShopService)Service).CityOpt;
                     for (int i = 0; i < vs.Length; i++)
                     {
                         string v = vs[i];
@@ -53,9 +53,11 @@ namespace Greatbone.Sample
                     m.T("</div>");
                     m.T("</div>");
 
-                    if (dc.Query("SELECT * FROM shops WHERE city = @1 AND status > 0", p => p.Set(city)))
+                    const ushort proj = Shop.ID | Shop.BASIC;
+                    dc.Sql("SELECT ").columnlst(Shop.Empty, proj)._("FROM shops WHERE city = @1 AND status > 0");
+                    if (dc.Query(p => p.Set(city)))
                     {
-                        var shops = dc.ToDatas<Shop>(0xffff ^ Shop.BASIC_ICON);
+                        var shops = dc.ToDatas<Shop>(proj);
                         for (int i = 0; i < shops.Length; i++)
                         {
                             var shop = shops[i];
@@ -86,7 +88,7 @@ namespace Greatbone.Sample
     {
         public OprShopWork(WorkContext wc) : base(wc)
         {
-            CreateVar<OprShopVarWork, string>((prin) => ((User) prin).oprat);
+            CreateVar<OprShopVarWork, string>((prin) => ((User)prin).oprat);
         }
 
         public void @null(ActionContext ac)
@@ -115,7 +117,7 @@ namespace Greatbone.Sample
                 }
                 else
                 {
-                    ac.GiveGridPage(200, (Shop[]) null, @public: false, maxage: 3);
+                    ac.GiveGridPage(200, (Shop[])null, @public: false, maxage: 3);
                 }
             }
         }
@@ -126,14 +128,14 @@ namespace Greatbone.Sample
             string city = ac[typeof(CityVarWork)];
             if (ac.GET)
             {
-                var o = new Shop {city = city};
+                var o = new Shop { city = city };
                 ac.GivePane(200, m =>
                 {
                     m.FORM_();
                     m.TEXT(nameof(o.id), o.id, "商家编号", max: 6, min: 6, required: true);
                     m.TEXT(nameof(o.name), o.name, "商家名称", max: 10, required: true);
                     m.TEXT(nameof(o.city), o.city, "所在城市", @readonly: true);
-                    m.SELECT(nameof(o.distr), o.distr, ((ShopService) Service).GetDistrs(o.city), "区域");
+                    m.SELECT(nameof(o.distr), o.distr, ((ShopService)Service).GetDistrs(o.city), "区域");
                     m.TEXT(nameof(o.lic), o.lic, "工商登记", max: 20, min: 11, required: true);
                     m._FORM();
                 });
