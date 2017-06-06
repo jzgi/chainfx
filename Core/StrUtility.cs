@@ -386,7 +386,7 @@ namespace Greatbone.Core
         {
             string x = null;
             string y = null;
-            int dash = str.IndexOf('-');
+            int dash = str.IndexOf('~');
             if (dash != -1)
             {
                 x = str.Substring(0, dash);
@@ -404,11 +404,11 @@ namespace Greatbone.Core
             string x = null;
             string y = null;
             string z = null;
-            int dash1 = str.IndexOf('-');
+            int dash1 = str.IndexOf('~');
             if (dash1 != -1)
             {
                 x = str.Substring(0, dash1);
-                int dash2 = str.IndexOf('-', dash1 + 1);
+                int dash2 = str.IndexOf('~', dash1 + 1);
                 if (dash2 != -1)
                 {
                     y = str.Substring(dash1 + 1, dash2 - dash1 - 1);

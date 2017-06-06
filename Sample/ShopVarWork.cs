@@ -369,12 +369,12 @@ namespace Greatbone.Sample
                     dc.Sql("UPDATE shops SET name = @1, distr = @2, lic = @3")._("WHERE id = @4");
                     dc.Execute(p => p.Set(name).Set(distr).Set(lic).Set(id));
                 }
-                ac.GiveRedirect();
+                ac.GivePane(200);
             }
         }
 
         [Ui("设置经理", Mode = UiMode.AnchorShow)]
-        public new async Task mgr(ActionContext ac)
+        public async Task mgr(ActionContext ac)
         {
             string shopid = ac[this];
             string city = ac[typeof(CityVarWork)];

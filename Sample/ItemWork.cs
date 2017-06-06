@@ -8,7 +8,7 @@ namespace Greatbone.Sample
     {
         protected ItemWork(WorkContext wc) : base(wc)
         {
-            CreateVar<V, string>(obj => ((Item) obj).name);
+            CreateVar<V, string>(obj => ((Item)obj).name);
         }
     }
 
@@ -34,7 +34,7 @@ namespace Greatbone.Sample
                 }
                 else
                 {
-                    ac.GiveGridPage(200, (Item[]) null);
+                    ac.GiveGridPage(200, (Item[])null);
                 }
             }
         }
@@ -50,8 +50,8 @@ namespace Greatbone.Sample
                 {
                     m.FORM_();
 
-                    m.TEXT(nameof(o.name), o.name, label: "品名");
-                    m.TEXT(nameof(o.descr), o.descr, label: "描述");
+                    m.TEXT(nameof(o.name), o.name, label: "品名", max: 10);
+                    m.TEXT(nameof(o.descr), o.descr, label: "描述", max: 30);
                     m.TEXT(nameof(o.unit), o.unit, label: "单位（如：斤，小瓶）");
                     m.NUMBER(nameof(o.price), o.price, label: "单价");
                     m.NUMBER(nameof(o.min), o.min, label: "起订数量（0表示不限）");

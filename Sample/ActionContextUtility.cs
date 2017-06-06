@@ -181,7 +181,9 @@ namespace Greatbone.Sample
             }
             else // trigger click on the close-button
             {
-                h.Add("$('#dyndlg', window.parent.document).find('.close-button').trigger('click');");
+                h.Add("var par = window.parent;");
+                h.Add("$('#dyndlg', par.document).find('.close-button').trigger('click');");
+                h.Add("par.location.reload(false);");
             }
             h.Add("});");
             h.Add("</script>");

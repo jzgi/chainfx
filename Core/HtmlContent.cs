@@ -1245,12 +1245,12 @@ namespace Greatbone.Core
             Add(v1);
             if (v2 != null)
             {
-                Add('-');
+                Add('~');
                 Add(v2);
             }
             if (v3 != null)
             {
-                Add('-');
+                Add('~');
                 Add(v3);
             }
             if (@checked)

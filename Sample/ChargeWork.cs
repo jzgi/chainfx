@@ -24,7 +24,7 @@ namespace Greatbone.Sample
             string wx = ac[-1];
             using (var dc = ac.NewDbContext())
             {
-                if (dc.Query("SELECT * FROM tipoffs WHERE wx = @1 ORDER BY id DESC", p => p.Set(wx)))
+                if (dc.Query("SELECT * FROM charges WHERE wx = @1 ORDER BY id DESC", p => p.Set(wx)))
                 {
                     ac.GiveGridPage(200, dc.ToDatas<Charge>(0xffff));
                 }
@@ -50,7 +50,7 @@ namespace Greatbone.Sample
             using (var dc = ac.NewDbContext())
             {
                 const ushort proj = 0xffff ^ Item.ICON;
-                dc.Sql("SELECT ").columnlst(Item.Empty, proj)._("FROM items WHERE shopid = @1");
+                dc.Sql("SELECT ").columnlst(Item.Empty, proj)._("FROM charges WHERE shopid = @1");
                 if (dc.Query(p => p.Set(shopid)))
                 {
                     ac.GiveGridPage(200, dc.ToDatas<Item>(proj), proj ^ Item.SHOPID);

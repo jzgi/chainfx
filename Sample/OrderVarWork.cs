@@ -27,7 +27,7 @@ namespace Greatbone.Sample
             CreateVar<MyCartOrderVarVarWork, string>(obj => ((OrderLine) obj).name);
         }
 
-        [Ui("收货地址", Mode = UiMode.ButtonPrompt)]
+        [Ui("收货地址", Mode = UiMode.ButtonShow)]
         public async Task addr(ActionContext ac)
         {
             string wx = ac[typeof(UserVarWork)];
@@ -76,11 +76,11 @@ namespace Greatbone.Sample
                 {
                     dc.Execute("UPDATE orders SET tel = @1, city = @2, distr = @3, addr = @4 WHERE id = @5", p => p.Set(tel).Set(city).Set(distr).Set(addr).Set(id));
                 }
-                ac.GiveRedirect("../");
+                ac.GivePane(200);
             }
         }
 
-        [Ui("附加说明", Mode = UiMode.ButtonPrompt)]
+        [Ui("附加说明", Mode = UiMode.ButtonShow)]
         public async Task note(ActionContext ac)
         {
             string wx = ac[typeof(UserVarWork)];
@@ -90,14 +90,14 @@ namespace Greatbone.Sample
             {
                 using (var dc = ac.NewDbContext())
                 {
-                    if (dc.Query1("SELECT comment FROM orders WHERE id = @1", p => p.Set(id)))
+                    if (dc.Query1("SELECT note FROM orders WHERE id = @1", p => p.Set(id)))
                     {
-                        string comment;
-                        dc.Let(out comment);
+                        string note;
+                        dc.Let(out note);
                         ac.GivePane(200, m =>
                         {
                             m.FORM_();
-                            m.TEXTAREA(nameof(comment), comment, label: "附加说明", max: 20, required: true);
+                            m.TEXTAREA(nameof(note), note, label: "附加说明", max: 20, required: true);
                             m._FORM();
                         });
                     }
@@ -109,12 +109,12 @@ namespace Greatbone.Sample
             else
             {
                 Form f = await ac.ReadAsync<Form>();
-                string comment = f[nameof(comment)];
+                string note = f[nameof(note)];
                 using (var dc = ac.NewDbContext())
                 {
-                    dc.Execute("UPDATE orders SET comment = @1 WHERE id = @2", p => p.Set(comment).Set(id));
+                    dc.Execute("UPDATE orders SET note = @1 WHERE id = @2", p => p.Set(note).Set(id));
                 }
-                ac.GiveRedirect("../");
+                ac.GivePane(200);
             }
         }
 

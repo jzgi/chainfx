@@ -27,7 +27,7 @@ namespace Greatbone.Sample
 
             Create<MyPastOrderWork>("past");
 
-            Create<MyChargeWork>("tipoff");
+            Create<MyChargeWork>("charge");
         }
 
         [Ui("基本信息", Mode = UiMode.AnchorShow)]
@@ -66,9 +66,8 @@ namespace Greatbone.Sample
                 o.created = DateTime.Now;
                 using (var dc = ac.NewDbContext())
                 {
-                    const ushort proj = User.WX | User.CREATTED;
-                    dc.Sql("INSERT INTO users ")._(User.Empty, proj)._VALUES_(User.Empty, proj)._("ON CONFLICT (wx) DO UPDATE")._SET_(User.Empty);
-                    dc.Execute(p => o.WriteData(p, proj));
+                    dc.Execute(@"INSERT INTO users (wx, nickname, city, distr, addr, tel, created) VALUES (@1, @2, @3, @4, @5, @6, @7) ON CONFLICT (wx) DO UPDATE SET nickname = @2, city = @3, distr = @4, addr = @5, tel = @6, created = @7",
+                            p=>p.Set(o.wx).Set(o.nickname).Set(o.city).Set(o.distr).Set(o.addr).Set(o.tel).Set(o.created));
                 }
 
                 ac.SetTokenCookie(o, 0xffff ^ User.CREDENTIAL);

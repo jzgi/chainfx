@@ -10,8 +10,8 @@ namespace Greatbone.Sample
     {
         public static readonly User Empty = new User();
 
-        public const short
-            WX = 2,
+        public const ushort
+            WX = 1,
             CREATTED = 2,
             BACKEND = 0x00f0, // inclusive
             CREDENTIAL = 0x0010,
