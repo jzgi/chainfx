@@ -32,27 +32,18 @@ namespace Greatbone.Sample
         {
             string wx = ac[typeof(UserVarWork)];
             long id = ac[this];
-
-            string city;
-            string distr;
-            string addr;
-            string tel;
-
+            string city = null;
+            string distr = null;
+            string addr = null;
+            string tel = null;
+            bool save = true;
             if (ac.GET)
             {
-                tel = ac.Query[nameof(tel)];
-                city = ac.Query[nameof(city)];
-                distr = ac.Query[nameof(distr)];
-                addr = ac.Query[nameof(addr)];
-
-                if (city == null)
+                using (var dc = ac.NewDbContext())
                 {
-                    using (var dc = ac.NewDbContext())
+                    if (dc.Query1("SELECT city, distr, addr, tel FROM orders WHERE id = @1", p => p.Set(id)))
                     {
-                        if (dc.Query1("SELECT city, distr, addr, tel FROM orders WHERE id = @1", p => p.Set(id)))
-                        {
-                            dc.Let(out city).Let(out distr).Let(out addr).Let(out tel);
-                        }
+                        dc.Let(out city).Let(out distr).Let(out addr).Let(out tel);
                     }
                 }
                 ac.GivePane(200, m =>
@@ -62,19 +53,27 @@ namespace Greatbone.Sample
                     m.SELECT(nameof(distr), distr, ((ShopService) Service).GetDistrs(city), label: "区域");
                     m.TEXT(nameof(addr), addr, label: "地址");
                     m.TEXT(nameof(tel), tel, label: "电话");
+                    m.CHECKBOX(nameof(save), save, label: "存为默认的收货地址");
                     m._FORM();
                 });
             }
             else
             {
-                var frm = await ac.ReadAsync<Form>();
-                tel = frm[nameof(tel)];
-                city = frm[nameof(city)];
-                distr = frm[nameof(distr)];
-                addr = frm[nameof(addr)];
+                var f = await ac.ReadAsync<Form>();
+                f.Let(out city).Let(out distr).Let(out addr).Let(out tel).Let(out save);
                 using (var dc = ac.NewDbContext())
                 {
-                    dc.Execute("UPDATE orders SET tel = @1, city = @2, distr = @3, addr = @4 WHERE id = @5", p => p.Set(tel).Set(city).Set(distr).Set(addr).Set(id));
+                    dc.Execute("UPDATE orders SET city = @1, distr = @2, addr = @3, tel = @4 WHERE id = @5", p => p.Set(city).Set(distr).Set(addr).Set(tel).Set(id));
+                    if (save)
+                    {
+                        User prin = (User) ac.Principal;
+                        dc.Execute("INSERT INTO users (wx, nickname, city, distr, addr, tel, created) VALUES (@1, @2, @3, @4, @5, @6, @7) ON CONFLICT (wx) DO UPDATE SET nickname = @2, city = @3, distr = @4, addr = @5, tel = @6, created = @7", p => p.Set(wx).Set(prin.nickname).Set(city).Set(distr).Set(addr).Set(tel).Set(DateTime.Now));
+                        prin.city = city;
+                        prin.distr = distr;
+                        prin.addr = addr;
+                        prin.tel = tel;
+                        ac.SetTokenCookie(prin, 0xffff ^ User.CREDENTIAL);
+                    }
                 }
                 ac.GivePane(200);
             }
@@ -103,6 +102,7 @@ namespace Greatbone.Sample
                     }
                     else
                     {
+                        ac.Give(404);
                     }
                 }
             }
@@ -118,7 +118,7 @@ namespace Greatbone.Sample
             }
         }
 
-        static readonly Func<IData, bool> PREPAY = obj => ((Order) obj).addr != null;
+        static readonly Func<IData, bool> PREPAY = obj => !string.IsNullOrEmpty(((Order) obj).addr);
 
         [Ui("微信付款", "确定要通过微信付款吗", Mode = UiMode.AnchorScript, Bold = true)]
         public async Task prepay(ActionContext ac)
@@ -224,7 +224,7 @@ namespace Greatbone.Sample
                 report = f[nameof(report)];
                 using (var dc = ac.NewDbContext())
                 {
-                    dc.Execute("INSERT INTO tipoffs () VALUES () ON CONFLICT DO NOTHING");
+                    dc.Execute("INSERT INTO charges () VALUES () ON CONFLICT DO NOTHING");
                 }
                 ac.GivePane(200);
             }

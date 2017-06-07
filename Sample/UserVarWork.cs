@@ -66,12 +66,10 @@ namespace Greatbone.Sample
                 o.created = DateTime.Now;
                 using (var dc = ac.NewDbContext())
                 {
-                    dc.Execute(@"INSERT INTO users (wx, nickname, city, distr, addr, tel, created) VALUES (@1, @2, @3, @4, @5, @6, @7) ON CONFLICT (wx) DO UPDATE SET nickname = @2, city = @3, distr = @4, addr = @5, tel = @6, created = @7",
-                            p=>p.Set(o.wx).Set(o.nickname).Set(o.city).Set(o.distr).Set(o.addr).Set(o.tel).Set(o.created));
+                    dc.Execute("INSERT INTO users (wx, nickname, city, distr, addr, tel, created) VALUES (@1, @2, @3, @4, @5, @6, @7) ON CONFLICT (wx) DO UPDATE SET nickname = @2, city = @3, distr = @4, addr = @5, tel = @6, created = @7", p => p.Set(o.wx).Set(o.nickname).Set(o.city).Set(o.distr).Set(o.addr).Set(o.tel).Set(o.created));
                 }
-
                 ac.SetTokenCookie(o, 0xffff ^ User.CREDENTIAL);
-                ac.GivePane(200); // close dialog
+                ac.GivePane(200);
             }
         }
 
