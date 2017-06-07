@@ -36,7 +36,7 @@ namespace Greatbone.Sample
     {
         public PubShopVarWork(WorkContext wc) : base(wc)
         {
-            CreateVar<ItemVarWork, string>(obj => ((Item) obj).name);
+            CreateVar<ItemVarWork, string>(obj => ((Item)obj).name);
         }
 
         public void @default(ActionContext ac)
@@ -53,12 +53,11 @@ namespace Greatbone.Sample
                     var shop = dc.ToData<Shop>(proj);
 
                     // query for item records of the shop
-                    const ushort proj2 = 0xffff ^ Item.ICON;
                     Item[] items = null;
-                    dc.Sql("SELECT ").columnlst(Item.Empty, proj2)._("FROM items WHERE shopid = @1");
+                    dc.Sql("SELECT ").columnlst(Item.Empty, Item.BASIC_SHOPID)._("FROM items WHERE shopid = @1");
                     if (dc.Query(p => p.Set(shopid)))
                     {
-                        items = dc.ToDatas<Item>(proj2);
+                        items = dc.ToDatas<Item>(Item.BASIC_SHOPID);
                     }
 
                     ac.GivePage(200, m =>
@@ -127,7 +126,7 @@ namespace Greatbone.Sample
                             m.T("<div class=\"row\">");
 
                             m.T("<div class=\"small-7 columns\">");
-                            m.NUMBER(nameof(item.qty), item.min, step: item.step);
+                            m.NUMBER(nameof(item.qty), item.min, min: item.min, step: item.step);
                             m.T("</div>");
 
                             m.T("<div class=\"small-5 columns\">");
@@ -196,7 +195,7 @@ namespace Greatbone.Sample
                             m.TEXT(nameof(o.descr), o.descr, label: "商家描述", max: 20, required: true);
                             m.TEXT(nameof(o.tel), o.tel, label: "电话", max: 11, min: 11, pattern: "[0-9]+", required: true);
                             m.TEXT(nameof(o.city), o.city, label: "城市", @readonly: true);
-                            m.SELECT(nameof(o.distr), o.distr, ((ShopService) Service).GetDistrs(o.city), label: "区域");
+                            m.SELECT(nameof(o.distr), o.distr, ((ShopService)Service).GetDistrs(o.city), label: "区域");
                             m.TEXT(nameof(o.addr), o.addr, label: "地址");
                             m.SELECT(nameof(o.status), o.status, Shop.STATUS, label: "状态");
                             m._FORM();
@@ -348,7 +347,7 @@ namespace Greatbone.Sample
                         {
                             m.FORM_();
                             m.TEXT(nameof(name), name, "商家名称");
-                            m.SELECT(nameof(distr), distr, ((ShopService) Service).GetDistrs(city), "区域");
+                            m.SELECT(nameof(distr), distr, ((ShopService)Service).GetDistrs(city), "区域");
                             m.TEXT(nameof(lic), lic, "工商登记");
                             m.CHECKBOX(nameof(disabled), disabled, "禁止营业");
                             m._FORM();

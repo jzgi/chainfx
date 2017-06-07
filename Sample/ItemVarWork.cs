@@ -56,7 +56,7 @@ namespace Greatbone.Sample
         {
         }
 
-        [Ui("修改", Mode = UiMode.AnchorShow)]
+        [Ui("修改", Mode = UiMode.ButtonShow)]
         public async Task edit(ActionContext ac)
         {
             string shopid = ac[typeof(ShopVarWork)];
@@ -65,7 +65,7 @@ namespace Greatbone.Sample
             {
                 using (var dc = ac.NewDbContext())
                 {
-                    const ushort proj = 0xffff ^ Item.ICON ^ Item.SHOPID;
+                    const ushort proj = Item.BASIC;
                     dc.Sql("SELECT ").columnlst(Item.Empty, proj)._("FROM items WHERE shopid = @1 AND name = @2");
                     if (dc.Query1(p => p.Set(shopid).Set(name)))
                     {
@@ -73,16 +73,14 @@ namespace Greatbone.Sample
                         ac.GivePane(200, m =>
                         {
                             m.FORM_();
-
-                            m.TEXT(nameof(o.name), o.name, label: "品名", max: 30);
-                            m.TEXT(nameof(o.descr), o.descr, label: "描述", max: 30);
-                            m.TEXT(nameof(o.unit), o.unit, label: "单位（如：斤，小瓶）");
-                            m.NUMBER(nameof(o.price), o.price, label: "单价");
-                            m.NUMBER(nameof(o.min), o.min, label: "起订数量（0表示不限）");
-                            m.NUMBER(nameof(o.step), o.step, label: "递增因子");
+                            m.TEXT(nameof(o.name), o.name, label: "品名", max: 30, required: true);
+                            m.TEXT(nameof(o.descr), o.descr, label: "描述", max: 30, required: true);
+                            m.TEXT(nameof(o.unit), o.unit, label: "单位（如：斤，小瓶）", required: true);
+                            m.NUMBER(nameof(o.price), o.price, label: "单价", required: true);
+                            m.NUMBER(nameof(o.min), o.min, label: "起订数量", min: (short)1);
+                            m.NUMBER(nameof(o.step), o.step, label: "递增因子", min: (short)1);
                             m.NUMBER(nameof(o.qty), o.qty, label: "本批供应量");
                             m.SELECT(nameof(o.status), o.status, Item.STATUS);
-
                             m._FORM();
                         });
                     }
@@ -94,7 +92,7 @@ namespace Greatbone.Sample
             }
             else // post
             {
-                const ushort proj = 0xffff ^ Item.SHOPID ^ Item.ICON;
+                const ushort proj = Item.BASIC;
                 var o = await ac.ReadDataAsync<Item>(proj);
                 using (var dc = ac.NewDbContext())
                 {
@@ -109,7 +107,19 @@ namespace Greatbone.Sample
             }
         }
 
-        [Ui("照片", Mode = UiMode.AnchorCrop, Circle = true)]
+        [Ui("删除", "删除该商品", Mode = UiMode.ButtonConfirm)]
+        public void del(ActionContext ac)
+        {
+            string shopid = ac[typeof(ShopVarWork)];
+            string name = ac[this];
+            using (var dc = ac.NewDbContext())
+            {
+                dc.Execute("DELETE FROM items WHERE shopid = @1 AND name = @2", p => p.Set(shopid).Set(name));
+            }
+            ac.GiveRedirect("../");
+        }
+
+        [Ui("设照片", Mode = UiMode.AnchorCrop, Circle = true)]
         public new async Task icon(ActionContext ac)
         {
             string shopid = ac[typeof(ShopVarWork)];

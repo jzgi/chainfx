@@ -49,11 +49,11 @@ namespace Greatbone.Sample
             string shopid = ac[typeof(ShopVarWork)];
             using (var dc = ac.NewDbContext())
             {
-                const ushort proj = 0xffff ^ Item.ICON;
+                const ushort proj = 0xffff ^ Item.BASIC_ICON;
                 dc.Sql("SELECT ").columnlst(Item.Empty, proj)._("FROM charges WHERE shopid = @1");
                 if (dc.Query(p => p.Set(shopid)))
                 {
-                    ac.GiveGridPage(200, dc.ToDatas<Item>(proj), proj ^ Item.SHOPID);
+                    ac.GiveGridPage(200, dc.ToDatas<Item>(proj), proj ^ Item.BASIC);
                 }
                 else
                 {

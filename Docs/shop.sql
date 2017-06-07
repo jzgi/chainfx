@@ -11,7 +11,7 @@ Target Server Type    : PGSQL
 Target Server Version : 90505
 File Encoding         : 65001
 
-Date: 2017-06-03 01:07:31
+Date: 2017-06-07 10:48:46
 */
 
 
@@ -23,9 +23,9 @@ CREATE SEQUENCE "public"."orders_id_seq"
  INCREMENT 1
  MINVALUE 1000
  MAXVALUE 9223372036854775807
- START 1256
+ START 1336
  CACHE 8;
-SELECT setval('"public"."orders_id_seq"', 1256, true);
+SELECT setval('"public"."orders_id_seq"', 1336, true);
 
 -- ----------------------------
 -- Sequence structure for repays_id_seq1
@@ -38,6 +38,34 @@ CREATE SEQUENCE "public"."repays_id_seq1"
  START 5
  CACHE 1;
 SELECT setval('"public"."repays_id_seq1"', 5, true);
+
+-- ----------------------------
+-- Table structure for charges
+-- ----------------------------
+DROP TABLE IF EXISTS "public"."charges";
+CREATE TABLE "public"."charges" (
+"id" int4,
+"wx" varchar(28) COLLATE "default",
+"city" varchar(6) COLLATE "default",
+"report" varchar(50) COLLATE "default",
+"creator" varchar(6) COLLATE "default",
+"created" timestamp(6),
+"status" int2
+)
+WITH (OIDS=FALSE)
+
+;
+
+-- ----------------------------
+-- Table structure for chats
+-- ----------------------------
+DROP TABLE IF EXISTS "public"."chats";
+CREATE TABLE "public"."chats" (
+"id" varchar(60) COLLATE "default" NOT NULL
+)
+WITH (OIDS=FALSE)
+
+;
 
 -- ----------------------------
 -- Table structure for items
@@ -79,12 +107,12 @@ CREATE TABLE "public"."orders" (
 "accepted" timestamp(6),
 "shipped" timestamp(6),
 "status" int2,
-"comment" varchar(20) COLLATE "default",
+"note" varchar(20) COLLATE "default",
 "city" varchar(6) COLLATE "default",
 "cash" money DEFAULT 0,
 "abortion" varchar(20) COLLATE "default",
 "aborted" timestamp(6),
-"note" varchar(20) COLLATE "default"
+"memo" varchar(20) COLLATE "default"
 )
 WITH (OIDS=FALSE)
 
@@ -105,7 +133,7 @@ CREATE TABLE "public"."repays" (
 "paid" timestamp(6),
 "payer" varchar(6) COLLATE "default",
 "status" int2 DEFAULT 0,
-"err" varchar(20) COLLATE "default"
+"err" varchar(40) COLLATE "default"
 )
 WITH (OIDS=FALSE)
 
@@ -123,8 +151,6 @@ CREATE TABLE "public"."shops" (
 "city" varchar(6) COLLATE "default",
 "distr" varchar(6) COLLATE "default",
 "addr" varchar(20) COLLATE "default",
-"x" float8,
-"y" float8,
 "lic" varchar(20) COLLATE "default",
 "created" timestamp(6),
 "status" int2,
@@ -132,23 +158,6 @@ CREATE TABLE "public"."shops" (
 "mgrid" varchar(11) COLLATE "default",
 "mgrwx" varchar(28) COLLATE "default",
 "mgr" varchar(6) COLLATE "default"
-)
-WITH (OIDS=FALSE)
-
-;
-
--- ----------------------------
--- Table structure for tipoffs
--- ----------------------------
-DROP TABLE IF EXISTS "public"."tipoffs";
-CREATE TABLE "public"."tipoffs" (
-"id" int4,
-"wx" varchar(28) COLLATE "default",
-"city" varchar(6) COLLATE "default",
-"report" varchar(50) COLLATE "default",
-"creator" varchar(6) COLLATE "default",
-"created" timestamp(6),
-"status" int2
 )
 WITH (OIDS=FALSE)
 
@@ -185,9 +194,29 @@ ALTER SEQUENCE "public"."orders_id_seq" OWNED BY "orders"."id";
 ALTER SEQUENCE "public"."repays_id_seq1" OWNED BY "repays"."id";
 
 -- ----------------------------
+-- Primary Key structure for table chats
+-- ----------------------------
+ALTER TABLE "public"."chats" ADD PRIMARY KEY ("id");
+
+-- ----------------------------
 -- Primary Key structure for table items
 -- ----------------------------
 ALTER TABLE "public"."items" ADD PRIMARY KEY ("shopid", "name");
+
+-- ----------------------------
+-- Primary Key structure for table orders
+-- ----------------------------
+ALTER TABLE "public"."orders" ADD PRIMARY KEY ("id");
+
+-- ----------------------------
+-- Primary Key structure for table repays
+-- ----------------------------
+ALTER TABLE "public"."repays" ADD PRIMARY KEY ("id");
+
+-- ----------------------------
+-- Primary Key structure for table shops
+-- ----------------------------
+ALTER TABLE "public"."shops" ADD PRIMARY KEY ("id");
 
 -- ----------------------------
 -- Primary Key structure for table users

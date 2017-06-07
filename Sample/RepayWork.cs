@@ -32,7 +32,7 @@ namespace Greatbone.Sample
                 }
                 else
                 {
-                    ac.GiveGridPage(200, (Repay[]) null);
+                    ac.GiveGridPage(200, (Repay[])null);
                 }
             }
         }
@@ -51,11 +51,11 @@ namespace Greatbone.Sample
             {
                 if (dc.Query("SELECT * FROM repays WHERE status = 0"))
                 {
-                    ac.GiveGridPage(200, dc.ToDatas<Repay>());
+                    ac.GiveGridPage(200, dc.ToDatas<Repay>(0), 0);
                 }
                 else
                 {
-                    ac.GiveGridPage(200, (Repay[]) null);
+                    ac.GiveGridPage(200, (Repay[])null);
                 }
             }
         }
@@ -63,21 +63,21 @@ namespace Greatbone.Sample
         [Ui("结算", "为商家结算已完成的订单", Mode = UiMode.ButtonShow)]
         public async Task reckon(ActionContext ac)
         {
-            DateTime thru; // through date
+            DateTime till; // till/before date
             if (ac.GET)
             {
                 using (var dc = ac.NewDbContext())
                 {
-                    var ret = dc.Scalar("SELECT thru FROM repays ORDER BY id DESC LIMIT 1");
+                    var ret = dc.Scalar("SELECT till FROM repays ORDER BY id DESC LIMIT 1");
                     ac.GivePane(200, m =>
                     {
                         m.FORM_();
                         if (ret != null)
                         {
-                            m.CALLOUT(t => { t.T("上次结算截至日期是").T((DateTime) ret); }, false);
+                            m.CALLOUT(t => { t.T("上次结算截至日期是").T((DateTime)ret); }, false);
                         }
-                        thru = DateTime.Today.AddDays(-1);
-                        m.DATE(nameof(thru), thru, "本次截至日期", max: thru);
+                        till = DateTime.Today;
+                        m.DATE(nameof(till), till, "本次截至日期（不包含）", max: till);
                         m._FORM();
                     });
                 }
@@ -85,10 +85,10 @@ namespace Greatbone.Sample
             else
             {
                 var f = await ac.ReadAsync<Form>();
-                thru = f[nameof(thru)];
+                till = f[nameof(till)];
                 using (var dc = ac.NewDbContext(IsolationLevel.ReadUncommitted))
                 {
-                    dc.Execute("SELECT reckon(@1, 1000000.00::money, 20000.00::money)", p => p.Set(thru));
+                    dc.Execute("SELECT reckon(@1, 1000000.00::money, 20000.00::money)", p => p.Set(till));
                 }
                 ac.GivePane(200);
             }
@@ -115,7 +115,8 @@ namespace Greatbone.Sample
                         }
                         else
                         {
-                            dc.Execute("UPDATE repays SET err = NULL, status = 1 WHERE id = @1", p => p.Set(id));
+                            User prin = (User)ac.Principal;
+                            dc.Execute("UPDATE repays SET payer = @1, paid = localtimestamp, err = NULL, status = 1 WHERE id = @2", p => p.Set(prin.name).Set(id));
                         }
                     }
                 }
@@ -141,7 +142,7 @@ namespace Greatbone.Sample
                 }
                 else
                 {
-                    ac.GiveGridPage(200, (Repay[]) null);
+                    ac.GiveGridPage(200, (Repay[])null);
                 }
             }
         }

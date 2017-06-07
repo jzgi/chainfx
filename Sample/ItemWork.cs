@@ -26,11 +26,11 @@ namespace Greatbone.Sample
             string shopid = ac[typeof(ShopVarWork)];
             using (var dc = ac.NewDbContext())
             {
-                const ushort proj = 0xffff ^ Item.ICON;
+                const ushort proj = Item.BASIC_SHOPID;
                 dc.Sql("SELECT ").columnlst(Item.Empty, proj)._("FROM items WHERE shopid = @1");
                 if (dc.Query(p => p.Set(shopid)))
                 {
-                    ac.GiveGridPage(200, dc.ToDatas<Item>(proj), proj ^ Item.SHOPID);
+                    ac.GiveGridPage(200, dc.ToDatas<Item>(proj), Item.BASIC);
                 }
                 else
                 {
@@ -44,18 +44,16 @@ namespace Greatbone.Sample
         {
             if (ac.GET)
             {
-                var o = new Item();
-
+                var o = new Item { min = 1, step = 1 };
                 ac.GivePane(200, m =>
                 {
                     m.FORM_();
-
                     m.TEXT(nameof(o.name), o.name, label: "品名", max: 10);
                     m.TEXT(nameof(o.descr), o.descr, label: "描述", max: 30);
-                    m.TEXT(nameof(o.unit), o.unit, label: "单位（如：斤，小瓶）");
-                    m.NUMBER(nameof(o.price), o.price, label: "单价");
-                    m.NUMBER(nameof(o.min), o.min, label: "起订数量（0表示不限）");
-                    m.NUMBER(nameof(o.step), o.step, label: "递增因子");
+                    m.TEXT(nameof(o.unit), o.unit, label: "单位（如：斤，小瓶）", required: true);
+                    m.NUMBER(nameof(o.price), o.price, label: "单价", required: true);
+                    m.NUMBER(nameof(o.min), o.min, label: "起订数量", min: (short)1);
+                    m.NUMBER(nameof(o.step), o.step, label: "递增因子", min: (short)1);
                     m.NUMBER(nameof(o.qty), o.qty, label: "本批供应量");
                     m.SELECT(nameof(o.status), o.status, Item.STATUS);
 
@@ -68,7 +66,7 @@ namespace Greatbone.Sample
                 o.shopid = ac[typeof(ShopVarWork)];
                 using (var dc = Service.NewDbContext())
                 {
-                    const ushort proj = 0xffff ^ Item.ICON;
+                    const ushort proj = Item.BASIC_SHOPID;
                     dc.Sql("INSERT INTO items")._(Item.Empty, proj)._VALUES_(Item.Empty, proj);
                     dc.Execute(p => o.WriteData(p, proj));
                     ac.GivePane(201);
