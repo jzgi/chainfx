@@ -92,7 +92,7 @@ namespace Greatbone.Core
 
         public bool HasAuthorize => authorize != null;
 
-        internal bool DoAuthorize(ActionContext ac)
+        public bool DoAuthorize(ActionContext ac)
         {
             if (authorize != null)
             {

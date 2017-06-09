@@ -274,14 +274,14 @@ namespace Greatbone.Core
             {
                 Add("<div class=\"row\">");
                 Add("<ul class=\"pagination text-center\" role=\"navigation\">");
-                int subscript = ac.Subscript;
+                int subscpt = ac.Subscript;
                 Add("<li class=\"pagination-previous disabled\">Previous</li>");
-                for (int i = 0; i < subscript; i++)
+                for (int i = 0; i < subscpt; i++)
                 {
                     Add("<li><a href=\"");
                     Add(ai.Name);
                     Add('-');
-                    Add(subscript);
+                    Add(subscpt);
                     Add(ac.QueryString);
                     Add("\">");
                     Add(i);

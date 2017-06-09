@@ -1193,7 +1193,7 @@ select[multiple] {
 
 .button.disabled,
 .button[disabled] {
-    opacity: 0.25;
+    opacity: 0.33;
     cursor: not-allowed;
 }
 
@@ -1208,7 +1208,7 @@ select[multiple] {
 
 .button.disabled.primary,
 .button[disabled].primary {
-    opacity: 0.25;
+    opacity: 0.33;
     cursor: not-allowed;
 }
 
@@ -1223,7 +1223,7 @@ select[multiple] {
 
 .button.disabled.secondary,
 .button[disabled].secondary {
-    opacity: 0.25;
+    opacity: 0.33;
     cursor: not-allowed;
 }
 
@@ -1238,7 +1238,7 @@ select[multiple] {
 
 .button.disabled.alert,
 .button[disabled].alert {
-    opacity: 0.25;
+    opacity: 0.33;
     cursor: not-allowed;
 }
 
@@ -1253,7 +1253,7 @@ select[multiple] {
 
 .button.disabled.success,
 .button[disabled].success {
-    opacity: 0.25;
+    opacity: 0.33;
     cursor: not-allowed;
 }
 
@@ -1268,7 +1268,7 @@ select[multiple] {
 
 .button.disabled.warning,
 .button[disabled].warning {
-    opacity: 0.25;
+    opacity: 0.33;
     cursor: not-allowed;
 }
 
@@ -2015,9 +2015,9 @@ select[multiple] {
     flex-direction: column;
     margin-top: 0.75rem;
     margin-bottom: 0.75rem;
-    border: 1px solid gray;
+    border: 1px solid silver;
     border-radius: 3px;
-    background: #fefefe;
+    background: white;
     overflow: hidden;
     color: #0a0a0a;
 }
@@ -2710,7 +2710,6 @@ table.hover:not(.unstriped) tr:nth-of-type(even):hover {
 .thumbnail {
     display: inline-block;
     max-width: 100%;
-    border: solid 4px #fefefe;
     box-shadow: 0 0 0 1px rgba(10, 10, 10, 0.2);
     line-height: 0;
 }

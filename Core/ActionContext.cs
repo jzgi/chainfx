@@ -32,7 +32,7 @@ namespace Greatbone.Core
 
         /// The decrypted/decoded principal object.
         ///
-        public IData Principal { get; internal set; }
+        public IData Principal { get; set; }
 
         /// A token string.
         ///
