@@ -53,7 +53,6 @@ namespace Greatbone.Sample
         internal DateTime aborted; // time aborted
         internal DateTime shipped; // time shipped
         internal short status;
-        internal string memo;
 
         public void ReadData(IDataInput i, ushort proj = 0x00ff)
         {
@@ -93,7 +92,6 @@ namespace Greatbone.Sample
                 i.Get(nameof(abortion), ref abortion);
                 i.Get(nameof(aborted), ref aborted);
                 i.Get(nameof(shipped), ref shipped);
-                i.Get(nameof(memo), ref memo);
             }
             i.Get(nameof(status), ref status);
         }
@@ -142,16 +140,15 @@ namespace Greatbone.Sample
                 o.Put(nameof(aborted), aborted);
                 o.UnGroup();
                 o.Put(nameof(shipped), shipped, "确收时间");
-                o.Put(nameof(memo), memo, "备忘");
             }
-            o.Put(nameof(status), status, "状态", STATUS);
+            o.Put(nameof(status), status, "订单状态", STATUS);
         }
 
         public void AddItem(string item, short qty, string unit, decimal price)
         {
             if (detail == null)
             {
-                detail = new[] {new OrderLine() {name = item, qty = qty, unit = unit, price = price}};
+                detail = new[] { new OrderLine() { name = item, qty = qty, unit = unit, price = price } };
             }
             var orderln = detail.Find(o => o.name.Equals(item));
             if (orderln != null)
@@ -160,7 +157,7 @@ namespace Greatbone.Sample
             }
             else
             {
-                detail = detail.Add(new OrderLine() {name = item, qty = qty, unit = unit, price = price});
+                detail = detail.Add(new OrderLine() { name = item, qty = qty, unit = unit, price = price });
             }
         }
 

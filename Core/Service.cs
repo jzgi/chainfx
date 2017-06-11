@@ -507,14 +507,12 @@ namespace Greatbone.Core
                 else if (this is IAuthenticate) norm = ((IAuthenticate) this).Authenticate(ac, true);
                 if (!norm)
                 {
-                    ac.Give(511); // 511 Network Authentication Required
+                    ac.Give(403); // forbidden
                     return;
                 }
             }
             catch (Exception e)
             {
-                ac.Give(511, e.Message); // 511 Network Authentication Required
-                DBG(e.Message);
             }
 
             // handling

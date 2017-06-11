@@ -126,7 +126,7 @@ namespace Greatbone.Sample
                 }
                 else
                 {
-                    ac.Give(403); // forbidden
+                    ac.GivePage(403, m => { m.CALLOUT("您目前没有访问权限!"); });
                 }
             }
             else

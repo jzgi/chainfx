@@ -90,22 +90,6 @@ namespace Greatbone.Core
 
         public bool POST => "POST".Equals(Request.Method);
 
-        string path;
-
-        public string Path => path ?? (path = Features.Get<IHttpRequestFeature>().Path);
-
-        string uri;
-
-        public string Uri => uri ?? (uri = string.IsNullOrEmpty(QueryString) ? Path : Path + QueryString);
-
-        string url;
-
-        public string Url => url ?? (url = Features.Get<IHttpRequestFeature>().Scheme + "://" + Header("Host" + Features.Get<IHttpRequestFeature>().RawTarget));
-
-        string querystr;
-
-        public string QueryString => querystr ?? (querystr = Features.Get<IHttpRequestFeature>().QueryString);
-
         string ua;
 
         public string Ua => ua ?? (ua = Header("User-Agent"));
@@ -122,10 +106,41 @@ namespace Greatbone.Core
 
         public bool ByJQuery => Header("X-Requested-With") != null;
 
+        string path;
+
+        public string Path => path ?? (path = Features.Get<IHttpRequestFeature>().Path);
+
+        string uri;
+
+        public string Uri => uri ?? (uri = string.IsNullOrEmpty(QueryString) ? Path : Path + QueryString);
+
+        string url;
+
+        public string Url => url ?? (url = Features.Get<IHttpRequestFeature>().Scheme + "://" + Header("Host" + Features.Get<IHttpRequestFeature>().RawTarget));
+
+        string querystr;
+
+        public string QueryString => querystr ?? (querystr = Features.Get<IHttpRequestFeature>().QueryString);
+
         // URL query 
         Form query;
 
         public Form Query => query ?? (query = new FormParse(QueryString).Parse());
+
+        public void AddParam(string name, string value)
+        {
+            string q = QueryString;
+            if (string.IsNullOrEmpty(q))
+            {
+                querystr = "?" + name + "=" + value;
+                query = null; // reset parsed form
+            }
+            else
+            {
+                querystr = querystr + "&" + name + "=" + value;
+                Query.Add(name, value);
+            }
+        }
 
         //
         // HEADER
@@ -215,7 +230,7 @@ namespace Greatbone.Core
                 if (clen > 0)
                 {
                     // reading
-                    int len = (int)clen;
+                    int len = (int) clen;
                     buffer = BufferUtility.ByteBuffer(len); // borrow from the pool
                     while ((count += await Request.Body.ReadAsync(buffer, count, (len - count))) < len)
                     {
@@ -234,7 +249,7 @@ namespace Greatbone.Core
                 int? clen = HeaderInt("Content-Length");
                 if (clen > 0)
                 {
-                    int len = (int)clen;
+                    int len = (int) clen;
                     buffer = BufferUtility.ByteBuffer(len); // borrow from the pool
                     while ((count += await Request.Body.ReadAsync(buffer, count, (len - count))) < len)
                     {
@@ -256,7 +271,7 @@ namespace Greatbone.Core
                 int? clen = HeaderInt("Content-Length");
                 if (clen > 0)
                 {
-                    int len = (int)clen;
+                    int len = (int) clen;
                     buffer = BufferUtility.ByteBuffer(len); // borrow from the pool
                     while ((count += await Request.Body.ReadAsync(buffer, count, (len - count))) < len)
                     {
@@ -283,7 +298,7 @@ namespace Greatbone.Core
                 int? clen = HeaderInt("Content-Length");
                 if (clen > 0)
                 {
-                    int len = (int)clen;
+                    int len = (int) clen;
                     buffer = BufferUtility.ByteBuffer(len); // borrow from the pool
                     while ((count += await Request.Body.ReadAsync(buffer, count, (len - count))) < len)
                     {
@@ -338,7 +353,7 @@ namespace Greatbone.Core
 
         public void SetTokenCookie<P>(P prin, ushort proj) where P : class, IData, new()
         {
-            ((Service<P>)Service).SetTokenCookie(this, prin, proj);
+            ((Service<P>) Service).SetTokenCookie(this, prin, proj);
         }
 
         public bool InCache { get; internal set; }
