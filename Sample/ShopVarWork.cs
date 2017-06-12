@@ -36,7 +36,7 @@ namespace Greatbone.Sample
     {
         public PubShopVarWork(WorkContext wc) : base(wc)
         {
-            CreateVar<ItemVarWork, string>(obj => ((Item)obj).name);
+            CreateVar<ItemVarWork, string>(obj => ((Item) obj).name);
         }
 
         public void @default(ActionContext ac)
@@ -148,6 +148,64 @@ namespace Greatbone.Sample
                 }
             }
         }
+
+        public new async Task custsvc(ActionContext ac, int subcmd)
+        {
+            string shopid = ac[this];
+
+            // form submitted values
+            string id;
+            string name;
+            string oprid = null;
+            short opr = 0;
+
+            var f = await ac.ReadAsync<Form>();
+            if (f != null)
+            {
+                f.Let(out id).Let(out oprid).Let(out opr);
+                if (subcmd == 1) // remove
+                {
+                    using (var dc = ac.NewDbContext())
+                    {
+                        dc.Execute("UPDATE users SET oprat = NULL, opr = 0 WHERE id = @1", p => p.Set(id));
+                    }
+                }
+                else if (subcmd == 2) // add
+                {
+                    using (var dc = ac.NewDbContext())
+                    {
+                        dc.Execute("UPDATE users SET oprat = @1, opr = @2 WHERE id = @3", p => p.Set(shopid).Set(opr).Set(oprid));
+                    }
+                }
+            }
+
+            ac.GivePane(200, m =>
+            {
+                m.FORM_();
+
+                m.FIELDSET_("现有操作授权");
+                using (var dc = ac.NewDbContext())
+                {
+                    if (dc.Query("SELECT id, name, opr FROM users WHERE oprat = @1", p => p.Set(shopid)))
+                    {
+                        while (dc.Next())
+                        {
+                            dc.Let(out id).Let(out name).Let(out opr);
+                            m.RADIO(nameof(id), id, null, null, false, id, name, User.OPR[opr]);
+                        }
+//                        m.BUTTON(nameof(crew), 1, "删除");
+                    }
+                }
+                m._FIELDSET();
+
+                m.FIELDSET_("添加操作授权");
+                m.TEXT(nameof(oprid), oprid, label: "个人手机号", max: 11, min: 11, pattern: "[0-9]+");
+                m.SELECT(nameof(opr), opr, User.OPR, label: "操作权限");
+//                m.BUTTON(nameof(crew), 2, "添加");
+                m._FIELDSET();
+                m._FORM();
+            });
+        }
     }
 
     [Ui("设置")]
@@ -162,9 +220,11 @@ namespace Greatbone.Sample
 
             Create<OprPastOrderWork>("past");
 
-            Create<OprCoOrderWork>("partner");
+            Create<OprCoOrderWork>("coorder");
 
             Create<OprItemWork>("item");
+
+            Create<OprChatWork>("chat");
 
             Create<OprRepayWork>("repay");
         }
@@ -195,7 +255,7 @@ namespace Greatbone.Sample
                             m.TEXT(nameof(o.descr), o.descr, label: "商家描述", max: 20, required: true);
                             m.TEXT(nameof(o.tel), o.tel, label: "电话", max: 11, min: 11, pattern: "[0-9]+", required: true);
                             m.TEXT(nameof(o.city), o.city, label: "城市", @readonly: true);
-                            m.SELECT(nameof(o.distr), o.distr, ((ShopService)Service).GetDistrs(o.city), label: "区域");
+                            m.SELECT(nameof(o.distr), o.distr, ((ShopService) Service).GetDistrs(o.city), label: "区域");
                             m.TEXT(nameof(o.addr), o.addr, label: "地址");
                             m.SELECT(nameof(o.status), o.status, Shop.STATUS, label: "状态");
                             m._FORM();
@@ -259,6 +319,67 @@ namespace Greatbone.Sample
                 }
             }
         }
+
+        [Ui("客服", Mode = UiMode.AnchorOpen)]
+        [User(User.AID)]
+        public new async Task custsvc(ActionContext ac, int subcmd)
+        {
+            string shopid = ac[this];
+
+            // form submitted values
+            string id;
+            string name;
+            string oprid = null;
+            short opr = 0;
+
+            var f = await ac.ReadAsync<Form>();
+            if (f != null)
+            {
+                f.Let(out id).Let(out oprid).Let(out opr);
+                if (subcmd == 1) // remove
+                {
+                    using (var dc = ac.NewDbContext())
+                    {
+                        dc.Execute("UPDATE users SET oprat = NULL, opr = 0 WHERE id = @1", p => p.Set(id));
+                    }
+                }
+                else if (subcmd == 2) // add
+                {
+                    using (var dc = ac.NewDbContext())
+                    {
+                        dc.Execute("UPDATE users SET oprat = @1, opr = @2 WHERE id = @3", p => p.Set(shopid).Set(opr).Set(oprid));
+                    }
+                }
+            }
+
+            ac.GivePane(200, m =>
+            {
+                m.FORM_();
+
+                m.FIELDSET_("现有操作授权");
+                using (var dc = ac.NewDbContext())
+                {
+                    if (dc.Query("SELECT id, name, opr FROM users WHERE oprat = @1", p => p.Set(shopid)))
+                    {
+                        while (dc.Next())
+                        {
+                            dc.Let(out id).Let(out name).Let(out opr);
+                            m.RADIO(nameof(id), id, null, null, false, id, name, User.OPR[opr]);
+                        }
+                        m.BUTTON(nameof(crew), 1, "删除");
+                    }
+                }
+                m._FIELDSET();
+
+                m.FIELDSET_("添加操作授权");
+                m.TEXT(nameof(oprid), oprid, label: "个人手机号", max: 11, min: 11, pattern: "[0-9]+");
+                m.SELECT(nameof(opr), opr, User.OPR, label: "操作权限");
+                m.BUTTON(nameof(crew), 2, "添加");
+                m._FIELDSET();
+                m._FORM();
+            });
+        }
+
 
         [Ui("操作授权", Mode = UiMode.AnchorOpen)]
         [User(User.MANAGER)]
@@ -347,7 +468,7 @@ namespace Greatbone.Sample
                         {
                             m.FORM_();
                             m.TEXT(nameof(name), name, "商家名称");
-                            m.SELECT(nameof(distr), distr, ((ShopService)Service).GetDistrs(city), "区域");
+                            m.SELECT(nameof(distr), distr, ((ShopService) Service).GetDistrs(city), "区域");
                             m.TEXT(nameof(lic), lic, "工商登记");
                             m.CHECKBOX(nameof(disabled), disabled, "禁止营业");
                             m._FORM();
