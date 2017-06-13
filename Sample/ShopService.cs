@@ -151,9 +151,14 @@ namespace Greatbone.Sample
             decimal cash;
             if (Notified(xe, out orderid, out cash))
             {
+                string mgrwx = null;
                 using (var dc = NewDbContext())
                 {
-                    dc.Execute("UPDATE orders SET cash = @1, accepted = localtimestamp, status = @2 WHERE id = @3 AND status <= @2", (p) => p.Set(cash).Set(Order.ACCEPTED).Set(orderid));
+                    var shopid = (string) dc.Scalar("UPDATE orders SET cash = @1, accepted = localtimestamp, status = @2 WHERE id = @3 AND status <= @2 RETURNING shopid", (p) => p.Set(cash).Set(Order.ACCEPTED).Set(orderid));
+                    if (shopid != null)
+                    {
+                        mgrwx = (string) dc.Scalar("SELECT mgrwx FROM shops WHERE id = @1", p => p.Set(shopid));
+                    }
                 }
                 // return xml
                 XmlContent cont = new XmlContent(true, 1024);
@@ -162,6 +167,12 @@ namespace Greatbone.Sample
                     cont.ELEM("return_code", "SUCCESS");
                     cont.ELEM("return_msg", "OK");
                 });
+
+                if (mgrwx != null)
+                {
+                    await PostSendAsync(mgrwx, "[买家付款]订单编号：" + orderid + "，金额：" + cash + "元");
+                }
+
                 ac.Give(200, cont);
             }
             else

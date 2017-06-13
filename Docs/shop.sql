@@ -11,7 +11,7 @@ Target Server Type    : PGSQL
 Target Server Version : 90505
 File Encoding         : 65001
 
-Date: 2017-06-07 10:48:46
+Date: 2017-06-13 16:57:20
 */
 
 
@@ -23,21 +23,21 @@ CREATE SEQUENCE "public"."orders_id_seq"
  INCREMENT 1
  MINVALUE 1000
  MAXVALUE 9223372036854775807
- START 1336
+ START 1384
  CACHE 8;
-SELECT setval('"public"."orders_id_seq"', 1336, true);
+SELECT setval('"public"."orders_id_seq"', 1384, true);
 
 -- ----------------------------
--- Sequence structure for repays_id_seq1
+-- Sequence structure for repays_id_seq
 -- ----------------------------
-DROP SEQUENCE IF EXISTS "public"."repays_id_seq1";
-CREATE SEQUENCE "public"."repays_id_seq1"
+DROP SEQUENCE IF EXISTS "public"."repays_id_seq";
+CREATE SEQUENCE "public"."repays_id_seq"
  INCREMENT 1
- MINVALUE 1
+ MINVALUE 1000
  MAXVALUE 9223372036854775807
- START 5
- CACHE 1;
-SELECT setval('"public"."repays_id_seq1"', 5, true);
+ START 1085
+ CACHE 16;
+SELECT setval('"public"."repays_id_seq"', 1085, true);
 
 -- ----------------------------
 -- Table structure for charges
@@ -61,7 +61,11 @@ WITH (OIDS=FALSE)
 -- ----------------------------
 DROP TABLE IF EXISTS "public"."chats";
 CREATE TABLE "public"."chats" (
-"id" varchar(60) COLLATE "default" NOT NULL
+"shopid" varchar(6) COLLATE "default" NOT NULL,
+"wx" varchar(28) COLLATE "default" NOT NULL,
+"msgs" jsonb,
+"quested" timestamp(6),
+"nickname" varchar(10) COLLATE "default"
 )
 WITH (OIDS=FALSE)
 
@@ -111,8 +115,7 @@ CREATE TABLE "public"."orders" (
 "city" varchar(6) COLLATE "default",
 "cash" money DEFAULT 0,
 "abortion" varchar(20) COLLATE "default",
-"aborted" timestamp(6),
-"memo" varchar(20) COLLATE "default"
+"aborted" timestamp(6)
 )
 WITH (OIDS=FALSE)
 
@@ -123,10 +126,10 @@ WITH (OIDS=FALSE)
 -- ----------------------------
 DROP TABLE IF EXISTS "public"."repays";
 CREATE TABLE "public"."repays" (
-"id" int4 DEFAULT nextval('repays_id_seq1'::regclass) NOT NULL,
+"id" int4 DEFAULT nextval('repays_id_seq'::regclass) NOT NULL,
 "shopid" varchar(6) COLLATE "default",
 "shop" varchar(10) COLLATE "default",
-"thru" date,
+"till" date,
 "orders" int4,
 "total" money,
 "cash" money,
@@ -191,12 +194,12 @@ WITH (OIDS=FALSE)
 -- Alter Sequences Owned By 
 -- ----------------------------
 ALTER SEQUENCE "public"."orders_id_seq" OWNED BY "orders"."id";
-ALTER SEQUENCE "public"."repays_id_seq1" OWNED BY "repays"."id";
+ALTER SEQUENCE "public"."repays_id_seq" OWNED BY "repays"."id";
 
 -- ----------------------------
 -- Primary Key structure for table chats
 -- ----------------------------
-ALTER TABLE "public"."chats" ADD PRIMARY KEY ("id");
+ALTER TABLE "public"."chats" ADD PRIMARY KEY ("shopid", "wx");
 
 -- ----------------------------
 -- Primary Key structure for table items
@@ -223,13 +226,33 @@ ALTER TABLE "public"."shops" ADD PRIMARY KEY ("id");
 -- ----------------------------
 ALTER TABLE "public"."users" ADD PRIMARY KEY ("wx");
 
+-- ----------------------------
+-- Foreign Key structure for table "public"."chats"
+-- ----------------------------
+ALTER TABLE "public"."chats" ADD FOREIGN KEY ("shopid") REFERENCES "public"."shops" ("id") ON DELETE NO ACTION ON UPDATE NO ACTION;
 
-CREATE OR REPLACE FUNCTION "public"."reckon"("thru" date, "gmax" money, "rmax" money)
+-- ----------------------------
+-- Foreign Key structure for table "public"."items"
+-- ----------------------------
+ALTER TABLE "public"."items" ADD FOREIGN KEY ("shopid") REFERENCES "public"."shops" ("id") ON DELETE NO ACTION ON UPDATE NO ACTION;
+
+-- ----------------------------
+-- Foreign Key structure for table "public"."orders"
+-- ----------------------------
+ALTER TABLE "public"."orders" ADD FOREIGN KEY ("shopid") REFERENCES "public"."shops" ("id") ON DELETE NO ACTION ON UPDATE NO ACTION;
+
+-- ----------------------------
+-- Foreign Key structure for table "public"."repays"
+-- ----------------------------
+ALTER TABLE "public"."repays" ADD FOREIGN KEY ("shopid") REFERENCES "public"."shops" ("id") ON DELETE NO ACTION ON UPDATE NO ACTION;
+
+
+CREATE OR REPLACE FUNCTION "public"."reckon"("till" date, "gmax" money, "rmax" money)
   RETURNS "pg_catalog"."void" AS $BODY$
 
 DECLARE 
 
-  cur CURSOR FOR SELECT id, shopid, shop, cash, status FROM orders WHERE status = 5 AND shipped <= thru ORDER BY shopid FOR UPDATE;
+  cur CURSOR FOR SELECT id, shopid, shop, cash, status FROM orders WHERE status = 5 AND shipped < till AND cash > 0.00::money ORDER BY shopid FOR UPDATE;
 
   rshopid VARCHAR(6) DEFAULT NULL;
   rshop VARCHAR(10) DEFAULT NULL;
@@ -254,7 +277,7 @@ BEGIN
 
       IF rshopid IS NOT NULL AND rtotal > 0.00::money THEN
         -- insert the accumulated repay
-        INSERT INTO repays (shopid, shop, thru, orders, total, cash) VALUES (rshopid, rshop, thru, rorders, rtotal, rtotal * 0.994);
+        INSERT INTO repays (shopid, shop, till, orders, total, cash) VALUES (rshopid, rshop, till, rorders, rtotal, rtotal * 0.994);
         -- reset repay 
         rshopid := NULL;
         rshop := NULL;
@@ -291,4 +314,4 @@ $BODY$
   LANGUAGE 'plpgsql' VOLATILE COST 100
 ;
 
-ALTER FUNCTION "public"."reckon"("thru" date, "gmax" money, "rmax" money) OWNER TO "postgres";
+ALTER FUNCTION "public"."reckon"("till" date, "gmax" money, "rmax" money) OWNER TO "postgres";

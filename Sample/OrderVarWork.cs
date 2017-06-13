@@ -181,13 +181,23 @@ namespace Greatbone.Sample
         }
 
         [Ui("确认收货", "对商品满意并确认收货", Mode = UiMode.ButtonConfirm)]
-        public void got(ActionContext ac)
+        public async Task got(ActionContext ac)
         {
             long id = ac[this];
+            string mgrwx = null;
             using (var dc = ac.NewDbContext())
             {
-                dc.Execute("UPDATE orders SET shipped = localtimestamp, status = @1 WHERE id = @2", p => p.Set(Order.SHIPPED).Set(id));
+                var shopid = (string) dc.Scalar("UPDATE orders SET shipped = localtimestamp, status = @1 WHERE id = @2  RETURNING shopid", p => p.Set(Order.SHIPPED).Set(id));
+                if (shopid != null)
+                {
+                    mgrwx = (string) dc.Scalar("SELECT mgrwx FROM shops WHERE id = @1", p => p.Set(shopid));
+                }
             }
+            if (mgrwx != null)
+            {
+                await WeiXinUtility.PostSendAsync(mgrwx, "[买家确收]订单编号：" + id);
+            }
+
             ac.GiveRedirect("../");
         }
     }

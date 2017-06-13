@@ -329,67 +329,6 @@ namespace Greatbone.Sample
             }
         }
 
-        [Ui("客服", Mode = UiMode.AnchorOpen)]
-        [User(User.AID)]
-        public new async Task custsvc(ActionContext ac, int subcmd)
-        {
-            string shopid = ac[this];
-
-            // form submitted values
-            string id;
-            string name;
-            string oprid = null;
-            short opr = 0;
-
-            var f = await ac.ReadAsync<Form>();
-            if (f != null)
-            {
-                f.Let(out id).Let(out oprid).Let(out opr);
-                if (subcmd == 1) // remove
-                {
-                    using (var dc = ac.NewDbContext())
-                    {
-                        dc.Execute("UPDATE users SET oprat = NULL, opr = 0 WHERE id = @1", p => p.Set(id));
-                    }
-                }
-                else if (subcmd == 2) // add
-                {
-                    using (var dc = ac.NewDbContext())
-                    {
-                        dc.Execute("UPDATE users SET oprat = @1, opr = @2 WHERE id = @3", p => p.Set(shopid).Set(opr).Set(oprid));
-                    }
-                }
-            }
-
-            ac.GivePane(200, m =>
-            {
-                m.FORM_();
-
-                m.FIELDSET_("现有操作授权");
-                using (var dc = ac.NewDbContext())
-                {
-                    if (dc.Query("SELECT id, name, opr FROM users WHERE oprat = @1", p => p.Set(shopid)))
-                    {
-                        while (dc.Next())
-                        {
-                            dc.Let(out id).Let(out name).Let(out opr);
-                            m.RADIO(nameof(id), id, null, null, false, id, name, User.OPR[opr]);
-                        }
-                        m.BUTTON(nameof(crew), 1, "删除");
-                    }
-                }
-                m._FIELDSET();
-
-                m.FIELDSET_("添加操作授权");
-                m.TEXT(nameof(oprid), oprid, label: "个人手机号", max: 11, min: 11, pattern: "[0-9]+");
-                m.SELECT(nameof(opr), opr, User.OPR, label: "操作权限");
-                m.BUTTON(nameof(crew), 2, "添加");
-                m._FIELDSET();
-                m._FORM();
-            });
-        }
-
-
         [Ui("操作授权", Mode = UiMode.AnchorOpen)]
         [User(User.MANAGER)]
         public async Task crew(ActionContext ac, int subcmd)

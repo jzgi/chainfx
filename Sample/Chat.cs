@@ -27,7 +27,7 @@ namespace Greatbone.Sample
             i.Get(nameof(msgs), ref msgs);
         }
 
-        const int NUM = 4;
+        const int NUM = 6;
 
         public void WriteData<R>(IDataOutput<R> o, ushort proj = 255) where R : IDataOutput<R>
         {
