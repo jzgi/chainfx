@@ -172,13 +172,13 @@ namespace Greatbone.Sample
                         {
                             ChatMsg[] msgs;
                             dc.Let(out msgs);
-                            // m.CARD_();
+                            m.CARD_();
                             for (int i = 0; i < msgs.Length; i++)
                             {
                                 ChatMsg msg = msgs[i];
                                 m.CARDITEM(msg.name, msg.text);
                             }
-                            // m._CARD();
+                            m._CARD();
                         }
                     }
                     m.FORM_();
@@ -206,12 +206,12 @@ namespace Greatbone.Sample
                         {
                             new ChatMsg() {name = prin.nickname, text = text}
                         };
-                        dc.Execute("INSERT INTO chats (shopid, wx, nickname, msgs, quested) VALUES (@1, @2, @3, @4, localtimestamp)", p => p.Set(shopid).Set(mgrwx).Set(prin.nickname).Set(msgs));
+                        dc.Execute("INSERT INTO chats (shopid, wx, nickname, msgs, quested) VALUES (@1, @2, @3, @4, localtimestamp)", p => p.Set(shopid).Set(prin.wx).Set(prin.nickname).Set(msgs));
                     }
 
                     mgrwx = (string)dc.Scalar("SELECT mgrwx FROM shops WHERE id = @1", p => p.Set(shopid));
                 }
-                await WeiXinUtility.PostSendAsync(mgrwx, "[" + prin.nickname + "]" + text);
+                await WeiXinUtility.PostSendAsync(mgrwx, "[买家]" + prin.nickname + "：" + text);
                 ac.GivePane(200);
             }
         }

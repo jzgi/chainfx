@@ -157,7 +157,7 @@ namespace Greatbone.Core
 
         public HtmlContent CARD_()
         {
-            Add("<div class=\"card\">");
+            Add("<div class=\"card\" style=\"margin: 0.25rem\">");
             return this;
         }
 
@@ -169,7 +169,7 @@ namespace Greatbone.Core
 
         public HtmlContent CARDITEM(string label, string v)
         {
-            Add("<div class=\"row\">");
+            Add("<div class=\"row\" style=\"margin: 0;\">");
             Add("<div class=\"small-3 columns labeldiv\">");
             Add(label);
             Add("</div>");

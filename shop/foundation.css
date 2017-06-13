@@ -1263,7 +1263,7 @@ select[multiple] {
 .button[disabled].success,
 .button[disabled].success:hover,
 .button[disabled].success:focus {
-    color: white;
+    color: gray;
 }
 
 .button.disabled.warning,

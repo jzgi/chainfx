@@ -23,7 +23,7 @@ namespace Greatbone.Sample
         {
             string shopid = ac[typeof(ShopVarWork)];
             User prin = (User)ac.Principal;
-            string wx = prin.wx;
+            string wx = ac[this];
 
             string text = null;
             if (ac.GET)
@@ -49,16 +49,36 @@ namespace Greatbone.Sample
                         dc.Execute("UPDATE chats SET msgs = @1 WHERE shopid = @2 AND wx = @3", p => p.Set(msgs).Set(shopid).Set(wx));
                     }
                 }
-                await WeiXinUtility.PostSendAsync(wx, "[" + prin.nickname + "]" + text);
+                await WeiXinUtility.PostSendAsync(wx, "[商家]" + prin.nickname + "：" + text);
                 ac.GivePane(200);
             }
         }
 
-        static readonly Func<IData, bool> ALL = obj => ((Chat)obj).msgs == null;
+        static readonly Func<IData, bool> ALL = obj => ((Chat)obj).msgs?.Length > Chat.NUM;
 
-        [Ui("显示更多", Mode = UiMode.ButtonShow)]
-        public async Task all(ActionContext ac)
+        [Ui("显示更多", Mode = UiMode.AnchorOpen)]
+        public void all(ActionContext ac)
         {
+            string shopid = ac[typeof(ShopVarWork)];
+            string wx = ac[this];
+            ac.GivePane(200, m =>
+            {
+                using (var dc = ac.NewDbContext())
+                {
+                    if (dc.Query1("SELECT msgs FROM chats WHERE shopid = @1 AND wx = @2", p => p.Set(shopid).Set(wx)))
+                    {
+                        ChatMsg[] msgs;
+                        dc.Let(out msgs);
+                        m.CARD_();
+                        for (int i = 0; i < msgs.Length; i++)
+                        {
+                            ChatMsg msg = msgs[i];
+                            m.CARDITEM(msg.name, msg.text);
+                        }
+                        m._CARD();
+                    }
+                }
+            });
         }
     }
 }
