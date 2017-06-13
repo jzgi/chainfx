@@ -157,7 +157,7 @@ namespace Greatbone.Sample
             }
             else
             {
-                detail = detail.Add(new OrderLine() { name = item, qty = qty, unit = unit, price = price });
+                detail = detail.AddOf(new OrderLine() { name = item, qty = qty, unit = unit, price = price });
             }
         }
 

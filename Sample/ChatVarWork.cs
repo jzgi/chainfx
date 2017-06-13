@@ -10,27 +10,6 @@ namespace Greatbone.Sample
         protected ChatVarWork(WorkContext wc) : base(wc)
         {
         }
-
-        public void _icon_(ActionContext ac)
-        {
-            string shopid = ac[this];
-
-            using (var dc = Service.NewDbContext())
-            {
-                if (dc.Query1("SELECT icon FROM shops WHERE id = @1", p => p.Set(shopid)))
-                {
-                    ArraySegment<byte> byteas;
-                    dc.Let(out byteas);
-                    if (byteas.Count == 0) ac.Give(204); // no content 
-                    else
-                    {
-                        StaticContent cont = new StaticContent(byteas);
-                        ac.Give(200, cont);
-                    }
-                }
-                else ac.Give(404); // not found           
-            }
-        }
     }
 
     public class OprChatVarWork : ChatVarWork
@@ -39,8 +18,46 @@ namespace Greatbone.Sample
         {
         }
 
-        [Ui("修改", Mode = UiMode.ButtonShow)]
-        public async Task edit(ActionContext ac)
+        [Ui("回复", Mode = UiMode.ButtonShow)]
+        public async Task reply(ActionContext ac)
+        {
+            string shopid = ac[typeof(ShopVarWork)];
+            User prin = (User)ac.Principal;
+            string wx = prin.wx;
+
+            string text = null;
+            if (ac.GET)
+            {
+                ac.GivePane(200, m =>
+                {
+                    m.FORM_();
+                    m.TEXTAREA(nameof(text), text, "发送信息", max: 30, required: true);
+                    m._FORM();
+                });
+            }
+            else
+            {
+                var f = await ac.ReadAsync<Form>();
+                text = f[nameof(text)];
+                ChatMsg[] msgs;
+                using (var dc = ac.NewDbContext())
+                {
+                    if (dc.Query1("SELECT msgs FROM chats WHERE shopid = @1 AND wx = @2", p => p.Set(shopid).Set(wx)))
+                    {
+                        dc.Let(out msgs);
+                        msgs = msgs.AddOf(new ChatMsg() { name = prin.nickname, text = text });
+                        dc.Execute("UPDATE chats SET msgs = @1 WHERE shopid = @2 AND wx = @3", p => p.Set(msgs).Set(shopid).Set(wx));
+                    }
+                }
+                await WeiXinUtility.PostSendAsync(wx, "[" + prin.nickname + "]" + text);
+                ac.GivePane(200);
+            }
+        }
+
+        static readonly Func<IData, bool> ALL = obj => ((Chat)obj).msgs == null;
+
+        [Ui("显示更多", Mode = UiMode.ButtonShow)]
+        public async Task all(ActionContext ac)
         {
         }
     }

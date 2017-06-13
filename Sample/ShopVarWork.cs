@@ -36,7 +36,7 @@ namespace Greatbone.Sample
     {
         public PubShopVarWork(WorkContext wc) : base(wc)
         {
-            CreateVar<ItemVarWork, string>(obj => ((Item) obj).name);
+            CreateVar<ItemVarWork, string>(obj => ((Item)obj).name);
         }
 
         public void @default(ActionContext ac)
@@ -75,9 +75,15 @@ namespace Greatbone.Sample
                         m.T("</div>");
                         m.T("</div>");
 
-                        m.T("<div>");
-                        m.T("<p>").T(shop.city).T(shop.addr).T("</p>");
+                        m.T("<div class=\"row\" style=\"background-color: white\">");
+                        m.T("<div class=\"small-8 column\">");
                         m.T("<p>").T(shop.descr).T("</p>");
+                        m.T("<p>").T(shop.city).T(shop.addr).T("</p>");
+                        m.T("</div>");
+                        m.T("<div class=\"small-4 column\">");
+                        m.T("<p><i class=\"fa fa-phone\"></i>").T(shop.tel).T("</p>");
+                        m.T("<a href=\"custsvc\" class=\"button hollow\" onclick=\"return dialog(this,4,2);\">在线客服</a>");
+                        m.T("</div>");
                         m.T("</div>");
 
                         // display items
@@ -149,62 +155,65 @@ namespace Greatbone.Sample
             }
         }
 
-        public new async Task custsvc(ActionContext ac, int subcmd)
+        public async Task custsvc(ActionContext ac, int subcmd)
         {
             string shopid = ac[this];
 
-            // form submitted values
-            string id;
-            string name;
-            string oprid = null;
-            short opr = 0;
+            User prin = (User)ac.Principal;
 
-            var f = await ac.ReadAsync<Form>();
-            if (f != null)
+            string text = null;
+            if (ac.GET)
             {
-                f.Let(out id).Let(out oprid).Let(out opr);
-                if (subcmd == 1) // remove
+                ac.GivePane(200, m =>
                 {
                     using (var dc = ac.NewDbContext())
                     {
-                        dc.Execute("UPDATE users SET oprat = NULL, opr = 0 WHERE id = @1", p => p.Set(id));
+                        if (dc.Query1("SELECT msgs FROM chats WHERE shopid = @1 AND wx = @2", p => p.Set(shopid).Set(prin.wx)))
+                        {
+                            ChatMsg[] msgs;
+                            dc.Let(out msgs);
+                            // m.CARD_();
+                            for (int i = 0; i < msgs.Length; i++)
+                            {
+                                ChatMsg msg = msgs[i];
+                                m.CARDITEM(msg.name, msg.text);
+                            }
+                            // m._CARD();
+                        }
                     }
-                }
-                else if (subcmd == 2) // add
-                {
-                    using (var dc = ac.NewDbContext())
-                    {
-                        dc.Execute("UPDATE users SET oprat = @1, opr = @2 WHERE id = @3", p => p.Set(shopid).Set(opr).Set(oprid));
-                    }
-                }
+                    m.FORM_();
+                    m.TEXTAREA(nameof(text), text, "发送信息", max: 30, required: true);
+                    m._FORM();
+                });
             }
-
-            ac.GivePane(200, m =>
+            else
             {
-                m.FORM_();
-
-                m.FIELDSET_("现有操作授权");
+                var f = await ac.ReadAsync<Form>();
+                text = f[nameof(text)];
+                ChatMsg[] msgs;
+                string mgrwx = null;
                 using (var dc = ac.NewDbContext())
                 {
-                    if (dc.Query("SELECT id, name, opr FROM users WHERE oprat = @1", p => p.Set(shopid)))
+                    if (dc.Query1("SELECT msgs FROM chats WHERE shopid = @1 AND wx = @2", p => p.Set(shopid).Set(prin.wx)))
                     {
-                        while (dc.Next())
-                        {
-                            dc.Let(out id).Let(out name).Let(out opr);
-                            m.RADIO(nameof(id), id, null, null, false, id, name, User.OPR[opr]);
-                        }
-//                        m.BUTTON(nameof(crew), 1, "删除");
+                        dc.Let(out msgs);
+                        msgs = msgs.AddOf(new ChatMsg() { name = prin.nickname, text = text });
+                        dc.Execute("UPDATE chats SET msgs = @1, quested = localtimestamp WHERE shopid = @2 AND wx = @3", p => p.Set(msgs).Set(shopid).Set(mgrwx));
                     }
-                }
-                m._FIELDSET();
+                    else
+                    {
+                        msgs = new[]
+                        {
+                            new ChatMsg() {name = prin.nickname, text = text}
+                        };
+                        dc.Execute("INSERT INTO chats (shopid, wx, nickname, msgs, quested) VALUES (@1, @2, @3, @4, localtimestamp)", p => p.Set(shopid).Set(mgrwx).Set(prin.nickname).Set(msgs));
+                    }
 
-                m.FIELDSET_("添加操作授权");
-                m.TEXT(nameof(oprid), oprid, label: "个人手机号", max: 11, min: 11, pattern: "[0-9]+");
-                m.SELECT(nameof(opr), opr, User.OPR, label: "操作权限");
-//                m.BUTTON(nameof(crew), 2, "添加");
-                m._FIELDSET();
-                m._FORM();
-            });
+                    mgrwx = (string)dc.Scalar("SELECT mgrwx FROM shops WHERE id = @1", p => p.Set(shopid));
+                }
+                await WeiXinUtility.PostSendAsync(mgrwx, "[" + prin.nickname + "]" + text);
+                ac.GivePane(200);
+            }
         }
     }
 
@@ -255,7 +264,7 @@ namespace Greatbone.Sample
                             m.TEXT(nameof(o.descr), o.descr, label: "商家描述", max: 20, required: true);
                             m.TEXT(nameof(o.tel), o.tel, label: "电话", max: 11, min: 11, pattern: "[0-9]+", required: true);
                             m.TEXT(nameof(o.city), o.city, label: "城市", @readonly: true);
-                            m.SELECT(nameof(o.distr), o.distr, ((ShopService) Service).GetDistrs(o.city), label: "区域");
+                            m.SELECT(nameof(o.distr), o.distr, ((ShopService)Service).GetDistrs(o.city), label: "区域");
                             m.TEXT(nameof(o.addr), o.addr, label: "地址");
                             m.SELECT(nameof(o.status), o.status, Shop.STATUS, label: "状态");
                             m._FORM();
@@ -468,7 +477,7 @@ namespace Greatbone.Sample
                         {
                             m.FORM_();
                             m.TEXT(nameof(name), name, "商家名称");
-                            m.SELECT(nameof(distr), distr, ((ShopService) Service).GetDistrs(city), "区域");
+                            m.SELECT(nameof(distr), distr, ((ShopService)Service).GetDistrs(city), "区域");
                             m.TEXT(nameof(lic), lic, "工商登记");
                             m.CHECKBOX(nameof(disabled), disabled, "禁止营业");
                             m._FORM();

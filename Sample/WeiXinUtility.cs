@@ -151,6 +151,23 @@ namespace Greatbone.Sample
             return jo.Dump();
         }
 
+        public static async Task PostSendAsync(string openid, string text)
+        {
+            var cnt = new JsonContent(true);
+
+            cnt.OBJ(x =>
+            {
+                x.Put("touser", openid);
+                x.Put("msgtype", "text");
+                x.Put("text", new JObj()
+                {
+                    new JMbr("content", text)
+                });
+            });
+            await WeiXin.PostAsync<XElem>(null, "/cgi-bin/message/custom/send?access_token=" + AccessToken, cnt);
+        }
+
+
         public static async Task<string> PostTransferAsync(int id, string openid, string username, decimal cash, string desc)
         {
             XElem x = new XElem("xml");

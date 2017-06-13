@@ -4,7 +4,7 @@ namespace Greatbone.Core
 {
     public static class ArrayUtility
     {
-        public static E[] Add<E>(this E[] arr, E v)
+        public static E[] AddOf<E>(this E[] arr, E v)
         {
             if (arr == null || arr.Length == 0)
             {
@@ -17,7 +17,7 @@ namespace Greatbone.Core
             return alloc;
         }
 
-        public static E[] Add<E>(this E[] arr, params E[] v)
+        public static E[] AddOf<E>(this E[] arr, params E[] v)
         {
             if (arr == null || arr.Length == 0)
             {

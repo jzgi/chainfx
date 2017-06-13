@@ -75,14 +75,14 @@ namespace Greatbone.Core
             level--; // exit
         }
 
-        public void OBJ(Action a)
+        public void OBJ(Action<JsonContent> a)
         {
             if (counts[level]++ > 0) Add(',');
 
             counts[++level] = 0; // enter
             Add('{');
 
-            a?.Invoke();
+            a?.Invoke(this);
 
             Add('}');
             level--; // exit

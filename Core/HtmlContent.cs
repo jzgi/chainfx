@@ -155,6 +155,31 @@ namespace Greatbone.Core
             return this;
         }
 
+        public HtmlContent CARD_()
+        {
+            Add("<div class=\"card\">");
+            return this;
+        }
+
+        public HtmlContent _CARD()
+        {
+            Add("</div>");
+            return this;
+        }
+
+        public HtmlContent CARDITEM(string label, string v)
+        {
+            Add("<div class=\"row\">");
+            Add("<div class=\"small-3 columns labeldiv\">");
+            Add(label);
+            Add("</div>");
+            Add("<div class=\"small-9 columns\">");
+            Add(v);
+            Add("</div>");
+            Add("</div>");
+            return this;
+        }
+
         public HtmlContent FORM_(string caption = null, string action = null, bool post = true, bool mp = false)
         {
             Add("<div class=\"row column align-center small-10 medium-8 large-6 container-padded\">");
