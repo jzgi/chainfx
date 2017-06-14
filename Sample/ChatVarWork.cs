@@ -31,7 +31,7 @@ namespace Greatbone.Sample
                 ac.GivePane(200, m =>
                 {
                     m.FORM_();
-                    m.TEXTAREA(nameof(text), text, "发送信息", max: 30, required: true);
+                    m.TEXT(nameof(text), text, "发送信息", pattern: "[\\S]*", max: 30, required: true);
                     m._FORM();
                 });
             }

@@ -182,7 +182,7 @@ namespace Greatbone.Sample
                         }
                     }
                     m.FORM_();
-                    m.TEXTAREA(nameof(text), text, "发送信息", max: 30, required: true);
+                    m.TEXT(nameof(text), text, "发送信息", pattern: "[\\S]*", max: 30, required: true);
                     m._FORM();
                 });
             }
@@ -198,7 +198,7 @@ namespace Greatbone.Sample
                     {
                         dc.Let(out msgs);
                         msgs = msgs.AddOf(new ChatMsg() { name = prin.nickname, text = text });
-                        dc.Execute("UPDATE chats SET msgs = @1, quested = localtimestamp WHERE shopid = @2 AND wx = @3", p => p.Set(msgs).Set(shopid).Set(mgrwx));
+                        dc.Execute("UPDATE chats SET msgs = @1, quested = localtimestamp WHERE shopid = @2 AND wx = @3", p => p.Set(msgs).Set(shopid).Set(prin.wx));
                     }
                     else
                     {
