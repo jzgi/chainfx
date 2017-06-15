@@ -64,7 +64,7 @@ namespace Greatbone.Core
                     char c = alt[i];
                     if (c >= 'a' && c <= 'z')
                     {
-                        c = (char) (c - 32);
+                        c = (char)(c - 32);
                     }
                     Add(c);
                 }
@@ -1333,6 +1333,45 @@ namespace Greatbone.Core
             return this;
         }
 
+        public HtmlContent RADIOS(string name, short v, Opt<short> opt = null, string label = null, bool required = false)
+        {
+            Add("<fieldset>");
+
+            Add("<legend>");
+            AddLabel(label, name);
+            Add("</legend>");
+
+            foreach (var pair in opt)
+            {
+                Add("<input type=\"radio\" name=\"");
+                Add(name);
+                short key = pair.Key;
+
+                Add("\" id=\"");
+                Add(name);
+                Add(key);
+                Add("\"");
+
+                Add("\" value=\"");
+                Add(key);
+                Add("\"");
+
+                if (key.Equals(v)) Add(" checked");
+                if (required) Add(" required");
+                Add(">");
+
+                Add("<label for=\"");
+                Add(name);
+                Add(key);
+                Add("\">");
+                Add(pair.Value);
+                Add("</label>");
+                Add("<br>");
+            }
+            Add("</fieldset>");
+            return this;
+        }
+
         public HtmlContent RADIOS(string name, string v, Opt<string> opt = null, string label = null, bool required = false)
         {
             Add("<fieldset>");
@@ -1424,7 +1463,7 @@ namespace Greatbone.Core
             if (mode > 0)
             {
                 Add(" onclick=\"dialog(this,");
-                Add((int) mode);
+                Add((int)mode);
                 Add("); return false;\"");
             }
 

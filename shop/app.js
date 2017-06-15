@@ -14,15 +14,21 @@ function dialog(trig, mode, siz, title) {
     var tag = trig.tagName;
     var action;
     var method = 'post';
+    var src;
     if (tag == 'BUTTON') {
         action = trig.formAction || trig.name;
         method = trig.formMethod || method;
+        var qstr = $(trig.form).serialize();
+        if (qstr) {
+            src = action.indexOf('?') == -1 ? action + '?' + qstr : action + '&' + qstr;
+        } else {
+            src = action;
+        }
     } else if (tag == 'A') {
         action = trig.href
         method = 'get';
+        src = action;
     }
-
-    var src = action.indexOf('?') == -1 ? action + '?dyndlg=true' : action + '&dyndlg=true';
 
     title = title || trig.innerHTML;
 

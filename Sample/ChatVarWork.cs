@@ -22,7 +22,7 @@ namespace Greatbone.Sample
         public async Task reply(ActionContext ac)
         {
             string shopid = ac[typeof(ShopVarWork)];
-            User prin = (User)ac.Principal;
+            User prin = (User) ac.Principal;
             string wx = ac[this];
 
             string text = null;
@@ -45,16 +45,16 @@ namespace Greatbone.Sample
                     if (dc.Query1("SELECT msgs FROM chats WHERE shopid = @1 AND wx = @2", p => p.Set(shopid).Set(wx)))
                     {
                         dc.Let(out msgs);
-                        msgs = msgs.AddOf(new ChatMsg() { name = prin.nickname, text = text });
+                        msgs = msgs.AddOf(new ChatMsg {name = prin.name, text = text});
                         dc.Execute("UPDATE chats SET msgs = @1 WHERE shopid = @2 AND wx = @3", p => p.Set(msgs).Set(shopid).Set(wx));
                     }
                 }
-                await WeiXinUtility.PostSendAsync(wx, "[商家]" + prin.nickname + "：" + text);
+                await WeiXinUtility.PostSendAsync(wx, "【商家】" + prin.name + "：" + text);
                 ac.GivePane(200);
             }
         }
 
-        static readonly Func<IData, bool> ALL = obj => ((Chat)obj).msgs?.Length > Chat.NUM;
+        static readonly Func<IData, bool> ALL = obj => ((Chat) obj).msgs?.Length > Chat.NUM;
 
         [Ui("显示更多", Mode = UiMode.AnchorOpen)]
         public void all(ActionContext ac)

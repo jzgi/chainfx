@@ -8,9 +8,9 @@
             Y = y;
         }
 
-        public string X { get; internal set; }
+        public string X { get; set; }
 
-        public string Y { get; internal set; }
+        public string Y { get; set; }
     }
 
     public struct Dual<TX, TY>
@@ -21,9 +21,9 @@
             Y = y;
         }
 
-        public TX X { get; internal set; }
+        public TX X { get; set; }
 
-        public TY Y { get; internal set; }
+        public TY Y { get; set; }
     }
 
     public struct Triple
@@ -35,11 +35,11 @@
             Z = z;
         }
 
-        public string X { get; internal set; }
+        public string X { get; set; }
 
-        public string Y { get; internal set; }
+        public string Y { get; set; }
 
-        public string Z { get; internal set; }
+        public string Z { get; set; }
     }
 
     public struct Triple<TX, TY, TZ>
@@ -51,11 +51,11 @@
             Z = z;
         }
 
-        public TX X { get; internal set; }
+        public TX X { get; set; }
 
-        public TY Y { get; internal set; }
+        public TY Y { get; set; }
 
-        public TZ Z { get; internal set; }
+        public TZ Z { get; set; }
     }
 
 }

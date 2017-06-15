@@ -195,7 +195,7 @@ namespace Greatbone.Sample
             }
             if (mgrwx != null)
             {
-                await WeiXinUtility.PostSendAsync(mgrwx, "[买家确收]订单编号：" + id);
+                await WeiXinUtility.PostSendAsync(mgrwx, "【买家确收】订单编号：" + id);
             }
 
             ac.GiveRedirect("../");

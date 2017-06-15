@@ -211,7 +211,7 @@ namespace Greatbone.Sample
 
                     mgrwx = (string)dc.Scalar("SELECT mgrwx FROM shops WHERE id = @1", p => p.Set(shopid));
                 }
-                await WeiXinUtility.PostSendAsync(mgrwx, "[买家]" + prin.nickname + "：" + text);
+                await WeiXinUtility.PostSendAsync(mgrwx, "【买家】" + prin.nickname + "：" + text);
                 ac.GivePane(200);
             }
         }

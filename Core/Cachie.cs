@@ -4,10 +4,10 @@ namespace Greatbone.Core
 {
     public class Cachie
     {
-        internal int status;
+        int status;
 
         // can be set to null
-        internal IContent content;
+        IContent content;
 
         // maxage in seconds
         int maxage;
@@ -25,21 +25,16 @@ namespace Greatbone.Core
             this.stamp = stamp;
         }
 
-        internal void CheckReset(int ticks)
+        internal void TryReset(int ticks)
         {
             lock (this)
             {
+                if (status == 0) return;
+
                 if (((stamp + maxage * 1000) - ticks) / 1000 <= 0)
                 {
                     status = 0;
-
-                    var dont = content as DynamicContent;
-                    if (dont != null )
-                    {
-                        BufferUtility.Return(content.ByteBuffer);
-                    }
-                    content = null;
-
+                    content = null; // NOTE: the buffer won't return to the pool
                     maxage = 0;
                     stamp = 0;
                 }

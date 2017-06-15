@@ -170,7 +170,7 @@ namespace Greatbone.Sample
 
                 if (mgrwx != null)
                 {
-                    await PostSendAsync(mgrwx, "[买家付款]订单编号：" + orderid + "，金额：" + cash + "元");
+                    await PostSendAsync(mgrwx, "【买家付款】订单编号：" + orderid + "，金额：" + cash + "元");
                 }
 
                 ac.Give(200, cont);

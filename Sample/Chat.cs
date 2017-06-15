@@ -33,12 +33,9 @@ namespace Greatbone.Sample
         {
             if (msgs != null && msgs.Length > 0)
             {
-                int count = msgs.Length;
-                if (count > NUM)
-                {
-                    count = NUM;
-                }
-                for (int i = 0; i < count; i++)
+                int start = msgs.Length - NUM;
+                if (start < 0) start = 0;
+                for (int i = start; i < msgs.Length; i++)
                 {
                     ChatMsg msg = msgs[i];
                     o.Put(nameof(msg.name), msg.text, msg.name);

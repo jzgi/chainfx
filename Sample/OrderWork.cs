@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Threading.Tasks;
 using Greatbone.Core;
 
@@ -8,7 +9,7 @@ namespace Greatbone.Sample
     {
         protected OrderWork(WorkContext wc) : base(wc)
         {
-            CreateVar<V, long>((obj) => ((Order) obj).id);
+            CreateVar<V, long>((obj) => ((Order)obj).id);
         }
     }
 
@@ -40,7 +41,7 @@ namespace Greatbone.Sample
                 }
                 else
                 {
-                    ac.GiveGridPage(200, (Order[]) null, @public: false, maxage: 3);
+                    ac.GiveGridPage(200, (Order[])null, @public: false, maxage: 3);
                 }
             }
         }
@@ -90,7 +91,7 @@ namespace Greatbone.Sample
                 }
                 else
                 {
-                    User prin = (User) ac.Principal;
+                    User prin = (User)ac.Principal;
                     var o = new Order
                     {
                         shopid = shopid,
@@ -139,7 +140,7 @@ namespace Greatbone.Sample
                 }
                 else
                 {
-                    ac.GiveGridPage(200, (Order[]) null, @public: false, maxage: 3);
+                    ac.GiveGridPage(200, (Order[])null, @public: false, maxage: 3);
                 }
             }
         }
@@ -165,7 +166,7 @@ namespace Greatbone.Sample
                 }
                 else
                 {
-                    ac.GiveGridPage(200, (Order[]) null, @public: false, maxage: 3);
+                    ac.GiveGridPage(200, (Order[])null, @public: false, maxage: 3);
                 }
             }
         }
@@ -195,7 +196,7 @@ namespace Greatbone.Sample
                 }
                 else
                 {
-                    ac.GiveGridPage(200, (Order[]) null, @public: false, maxage: 3);
+                    ac.GiveGridPage(200, (Order[])null, @public: false, maxage: 3);
                 }
             }
         }
@@ -227,35 +228,73 @@ namespace Greatbone.Sample
     [User(User.AID)]
     public class OprActiveOrderWork : OprOrderWork<OprActiveOrderVarWork>
     {
+        static readonly Opt<short> NOTIFS = new Opt<short>()
+        {
+            [1] = "正在为您的订单作备货生产",
+            [2] = "您的订单的备货生产已完成，准备发货",
+            [3] = "您的订单已发货，请您准备接收",
+            [4] = "您的订单已接收，请您作确认收货操作",
+        };
         public OprActiveOrderWork(WorkContext wc) : base(wc)
         {
             status = Order.ACCEPTED;
             proj = Order.ID | Order.BASIC_DETAIL | Order.CASH | Order.FLOW;
         }
 
-        [Ui("发送通知", Mode = UiMode.ButtonShow)]
-        public void shipped(ActionContext ac)
+        [Ui("通知买家", Mode = UiMode.ButtonShow)]
+        public async Task sendnotif(ActionContext ac)
         {
             long[] key = ac.Query[nameof(key)];
-
+            short notif = 0;
             if (ac.GET)
             {
+                ac.GivePane(200, m =>
+                {
+                    if (key == null)
+                    {
+                        m.CALLOUT("请先选择目标订单");
+                    }
+                    else
+                    {
+                        m.FORM_();
+                        m.RADIOS(nameof(notif), notif, NOTIFS, label: "通知内容", required: true);
+                        m._FORM();
+                    }
+                });
             }
             else
             {
+                var f = await ac.ReadAsync<Form>();
+                notif = f[nameof(notif)];
+                List<Dual<long, string>> rows = new List<Dual<long, string>>(16);
                 using (var dc = ac.NewDbContext())
                 {
-                    dc.Sql("UPDATE orders SET status = @1 WHERE id")._IN_(key);
-                    dc.Execute();
+                    dc.Sql("SELECT id, wx FROM orders WHERE id")._IN_(key);
+                    if (dc.Query())
+                    {
+                        while (dc.Next())
+                        {
+                            long id; string wx;
+                            dc.Let(out id).Let(out wx);
+                            rows.Add(new Dual<long, string>(id, wx));
+                        }
+                    }
                 }
+
+                for (int i = 0; i < rows.Count; i++)
+                {
+                    Dual<long, string> row = rows[i];
+                    await WeiXinUtility.PostSendAsync(row.Y, "【通知】" + NOTIFS[notif] + "（订单编号：" + row.X + "）");
+                }
+
+                ac.GivePane(200);
             }
-            ac.GiveRedirect();
         }
 
         [Ui("委托办理", Mode = UiMode.ButtonShow)]
         public async Task passon(ActionContext ac)
         {
-            var prin = (User) ac.Principal;
+            var prin = (User)ac.Principal;
             string shopid = ac[-1];
             string city = prin.city;
             if (ac.GET)
@@ -338,7 +377,7 @@ namespace Greatbone.Sample
                 }
                 else
                 {
-                    ac.GiveGridPage(200, (Order[]) null, @public: false, maxage: 3);
+                    ac.GiveGridPage(200, (Order[])null, @public: false, maxage: 3);
                 }
             }
         }
