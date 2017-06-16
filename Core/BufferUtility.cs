@@ -8,28 +8,35 @@ namespace Greatbone.Core
     ///
     public static class BufferUtility
     {
-        static readonly int Cores = Environment.ProcessorCount;
+        // we use number ocores as a factor
+        static readonly int Factor = Environment.ProcessorCount <= 2 ? 1 : Environment.ProcessorCount <= 8 ? 2 : 4;
 
-        // for byte buffers
+        // for byte buffers, remember that caching may exclusively hold some byte buffers
         static readonly Que<byte[]>[] BPool =
         {
-            new Que<byte[]>(1024 * 4, Cores * 16),
-            new Que<byte[]>(1024 * 16, Cores * 16),
-            new Que<byte[]>(1024 * 64, Cores * 8),
-            new Que<byte[]>(1024 * 256, Cores * 8),
-            new Que<byte[]>(1024 * 1024, Cores * 4),
+            new Que<byte[]>(1024 * 4, Factor * 8),
+            new Que<byte[]>(1024 * 8, Factor * 8),
+            new Que<byte[]>(1024 * 16, Factor * 8),
+            new Que<byte[]>(1024 * 32, Factor * 8),
+            new Que<byte[]>(1024 * 64, Factor * 4),
+            new Que<byte[]>(1024 * 128, Factor * 4),
+            new Que<byte[]>(1024 * 256, Factor * 4),
+            new Que<byte[]>(1024 * 512, Factor * 2),
+            new Que<byte[]>(1024 * 1024, Factor * 2)
         };
 
         // for char buffers
         static readonly Que<char[]>[] CPool =
         {
-            new Que<char[]>(1024 * 1, Cores * 8),
-            new Que<char[]>(1024 * 4, Cores * 8),
-            new Que<char[]>(1024 * 16, Cores * 4),
-            new Que<char[]>(1024 * 64, Cores * 2)
+            new Que<char[]>(1024 * 1, Factor * 8),
+            new Que<char[]>(1024 * 4, Factor * 8),
+            new Que<char[]>(1024 * 8, Factor * 8),
+            new Que<char[]>(1024 * 16, Factor * 4),
+            new Que<char[]>(1024 * 32, Factor * 4),
+            new Que<char[]>(1024 * 64, Factor * 2)
         };
 
-        public static byte[] ByteBuffer(int demand)
+        public static byte[] GetByteBuffer(int demand)
         {
             // locate the queue
             for (int i = 0; i < BPool.Length; i++)
@@ -67,7 +74,7 @@ namespace Greatbone.Core
             }
         }
 
-        public static char[] CharBuffer(int demand)
+        public static char[] GetCharBuffer(int demand)
         {
             // locate the queue
             for (int i = 0; i < CPool.Length; i++)

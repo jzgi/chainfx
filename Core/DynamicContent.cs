@@ -89,11 +89,11 @@ namespace Greatbone.Core
         {
             if (octet)
             {
-                bytebuf = BufferUtility.ByteBuffer(capacity);
+                bytebuf = BufferUtility.GetByteBuffer(capacity);
             }
             else
             {
-                charbuf = BufferUtility.CharBuffer(capacity);
+                charbuf = BufferUtility.GetCharBuffer(capacity);
             }
             count = 0;
         }
@@ -118,7 +118,7 @@ namespace Greatbone.Core
             {
                 int nlen = olen * 4; // new length
                 byte[] obuf = bytebuf;
-                bytebuf = BufferUtility.ByteBuffer(nlen);
+                bytebuf = BufferUtility.GetByteBuffer(nlen);
                 Array.Copy(obuf, 0, bytebuf, 0, olen);
                 BufferUtility.Return(obuf);
             }
@@ -162,7 +162,7 @@ namespace Greatbone.Core
                 {
                     int nlen = olen * 4; // new length
                     char[] obuf = charbuf;
-                    charbuf = BufferUtility.CharBuffer(nlen);
+                    charbuf = BufferUtility.GetCharBuffer(nlen);
                     Array.Copy(obuf, 0, charbuf, 0, olen);
                     BufferUtility.Return(obuf);
                 }

@@ -57,5 +57,4 @@
 
         public TZ Z { get; set; }
     }
-
 }

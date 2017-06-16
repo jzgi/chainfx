@@ -231,7 +231,7 @@ namespace Greatbone.Core
                 {
                     // reading
                     int len = (int) clen;
-                    buffer = BufferUtility.ByteBuffer(len); // borrow from the pool
+                    buffer = BufferUtility.GetByteBuffer(len); // borrow from the pool
                     while ((count += await Request.Body.ReadAsync(buffer, count, (len - count))) < len)
                     {
                     }
@@ -250,7 +250,7 @@ namespace Greatbone.Core
                 if (clen > 0)
                 {
                     int len = (int) clen;
-                    buffer = BufferUtility.ByteBuffer(len); // borrow from the pool
+                    buffer = BufferUtility.GetByteBuffer(len); // borrow from the pool
                     while ((count += await Request.Body.ReadAsync(buffer, count, (len - count))) < len)
                     {
                     }
@@ -272,7 +272,7 @@ namespace Greatbone.Core
                 if (clen > 0)
                 {
                     int len = (int) clen;
-                    buffer = BufferUtility.ByteBuffer(len); // borrow from the pool
+                    buffer = BufferUtility.GetByteBuffer(len); // borrow from the pool
                     while ((count += await Request.Body.ReadAsync(buffer, count, (len - count))) < len)
                     {
                     }
@@ -299,7 +299,7 @@ namespace Greatbone.Core
                 if (clen > 0)
                 {
                     int len = (int) clen;
-                    buffer = BufferUtility.ByteBuffer(len); // borrow from the pool
+                    buffer = BufferUtility.GetByteBuffer(len); // borrow from the pool
                     while ((count += await Request.Body.ReadAsync(buffer, count, (len - count))) < len)
                     {
                     }
