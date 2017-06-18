@@ -185,7 +185,7 @@ namespace Greatbone.Sample
             string sign = Sign(x);
             x.AddChild("sign", sign);
 
-            XElem xe = (await WCPay.PostAsync<XElem>(null, "/mmpaymkttransfers/promotion/transfers", x.Dump())).Y;
+            XElem xe = (await WCPay.PostAsync<XElem>(null, "/mmpaymkttransfers/promotion/transfers", x.Dump())).B;
             string return_code = xe.Child(nameof(return_code));
             if ("SUCCESS" == return_code)
             {
@@ -220,7 +220,7 @@ namespace Greatbone.Sample
             string sign = Sign(x);
             x.AddChild("sign", sign);
 
-            XElem xe = (await WCPay.PostAsync<XElem>(null, "/pay/unifiedorder", x.Dump())).Y;
+            XElem xe = (await WCPay.PostAsync<XElem>(null, "/pay/unifiedorder", x.Dump())).B;
             string prepay_id = xe.Child(nameof(prepay_id));
 
             return prepay_id;
@@ -261,7 +261,7 @@ namespace Greatbone.Sample
             string sign = Sign(x);
             x.AddChild("sign", sign);
 
-            XElem xe = (await WCPay.PostAsync<XElem>(null, "/pay/orderquery", x.Dump())).Y;
+            XElem xe = (await WCPay.PostAsync<XElem>(null, "/pay/orderquery", x.Dump())).B;
 
             sign = xe.Child(nameof(sign));
             xe.Sort();
@@ -291,7 +291,7 @@ namespace Greatbone.Sample
             string sign = Sign(xo);
             xo.AddChild("sign", sign);
 
-            XElem xi = (await WCPay.PostAsync<XElem>(null, "/secapi/pay/refund", xo.Dump())).Y;
+            XElem xi = (await WCPay.PostAsync<XElem>(null, "/secapi/pay/refund", xo.Dump())).B;
             string return_code = xi.Child(nameof(return_code));
             if (return_code != "SUCCESS")
             {
@@ -317,7 +317,7 @@ namespace Greatbone.Sample
             string sign = Sign(xo);
             xo.AddChild("sign", sign);
 
-            XElem xi = (await WCPay.PostAsync<XElem>(null, "/pay/refundquery", xo.Dump())).Y;
+            XElem xi = (await WCPay.PostAsync<XElem>(null, "/pay/refundquery", xo.Dump())).B;
 
             sign = xi.Child(nameof(sign));
             xi.Sort();

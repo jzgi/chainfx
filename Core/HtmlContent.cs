@@ -436,7 +436,7 @@ namespace Greatbone.Core
                     Add("<th></th>");
                 }
 
-                arr[0].WriteData(this, proj);
+                arr[0].Write(this, proj);
 
                 if (ais != null)
                 {
@@ -463,7 +463,7 @@ namespace Greatbone.Core
                         Add("</td>");
                     }
 
-                    arr[i].WriteData(this, proj);
+                    arr[i].Write(this, proj);
 
                     // acitons
                     if (ais != null)
@@ -551,7 +551,7 @@ namespace Greatbone.Core
                         Add("</div>");
                     }
 
-                    obj.WriteData(this, proj);
+                    obj.Write(this, proj);
 
                     // action trigers
                     ActionInfo[] ais = varwork?.UiActions;
@@ -600,7 +600,7 @@ namespace Greatbone.Core
                 for (int i = 0; i < arr.Length; i++)
                 {
                     Add("<li>");
-                    arr[i].WriteData(this, proj);
+                    arr[i].Write(this, proj);
                     Add("</li>");
                 }
                 Add("</ul>");

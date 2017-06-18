@@ -637,7 +637,7 @@ namespace Greatbone.Core
             {
                 JObj jo = (JObj)new JsonParse(str.ToString()).Parse();
                 P prin = new P();
-                prin.ReadData(jo, 0xffff);
+                prin.Read(jo, 0xffff);
                 return prin;
             }
             catch

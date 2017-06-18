@@ -259,7 +259,7 @@ namespace Greatbone.Core
                 if (jobj != null)
                 {
                     v = new D();
-                    v.ReadData(jobj);
+                    v.Read(jobj);
                 }
                 return true;
             }
@@ -279,7 +279,7 @@ namespace Greatbone.Core
                     {
                         JObj jo = ja[i];
                         D dat = new D();
-                        dat.ReadData(jo);
+                        dat.Read(jo);
                         v[i] = dat;
                     }
                 }
@@ -373,7 +373,7 @@ namespace Greatbone.Core
         public D ToData<D>(ushort proj = 0x00ff) where D : IData, new()
         {
             D obj = new D();
-            obj.ReadData(this, proj);
+            obj.Read(this, proj);
             return obj;
         }
 

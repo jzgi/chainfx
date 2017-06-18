@@ -19,7 +19,7 @@ namespace Greatbone.Sample
         internal ChatMsg[] msgs;
 
 
-        public void ReadData(IDataInput i, ushort proj = 255)
+        public void Read(IDataInput i, ushort proj = 255)
         {
             i.Get(nameof(shopid), ref shopid);
             i.Get(nameof(wx), ref wx);
@@ -29,7 +29,7 @@ namespace Greatbone.Sample
 
         public const int NUM = 6;
 
-        public void WriteData<R>(IDataOutput<R> o, ushort proj = 255) where R : IDataOutput<R>
+        public void Write<R>(IDataOutput<R> o, ushort proj = 255) where R : IDataOutput<R>
         {
             if (msgs != null && msgs.Length > 0)
             {
@@ -50,13 +50,13 @@ namespace Greatbone.Sample
 
         internal string text;
 
-        public void ReadData(IDataInput i, ushort proj = 255)
+        public void Read(IDataInput i, ushort proj = 255)
         {
             i.Get(nameof(name), ref name);
             i.Get(nameof(text), ref text);
         }
 
-        public void WriteData<R>(IDataOutput<R> o, ushort proj = 255) where R : IDataOutput<R>
+        public void Write<R>(IDataOutput<R> o, ushort proj = 255) where R : IDataOutput<R>
         {
             o.Put(nameof(name), name);
             o.Put(nameof(text), text);

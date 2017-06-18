@@ -9,7 +9,7 @@ namespace Greatbone.Sample
     {
         protected OrderWork(WorkContext wc) : base(wc)
         {
-            CreateVar<V, long>((obj) => ((Order)obj).id);
+            CreateVar<V, long>((obj) => ((Order) obj).id);
         }
     }
 
@@ -41,7 +41,7 @@ namespace Greatbone.Sample
                 }
                 else
                 {
-                    ac.GiveGridPage(200, (Order[])null, @public: false, maxage: 3);
+                    ac.GiveGridPage(200, (Order[]) null, @public: false, maxage: 3);
                 }
             }
         }
@@ -91,7 +91,7 @@ namespace Greatbone.Sample
                 }
                 else
                 {
-                    User prin = (User)ac.Principal;
+                    User prin = (User) ac.Principal;
                     var o = new Order
                     {
                         shopid = shopid,
@@ -113,7 +113,7 @@ namespace Greatbone.Sample
                     const ushort proj = 0x00ff ^ Order.ID;
 
                     dc.Sql("INSERT INTO orders ")._(o, proj)._VALUES_(o, proj);
-                    dc.Execute(p => o.WriteData(p, proj));
+                    dc.Execute(p => o.Write(p, proj));
                 }
                 ac.Give(200);
             }
@@ -140,7 +140,7 @@ namespace Greatbone.Sample
                 }
                 else
                 {
-                    ac.GiveGridPage(200, (Order[])null, @public: false, maxage: 3);
+                    ac.GiveGridPage(200, (Order[]) null, @public: false, maxage: 3);
                 }
             }
         }
@@ -166,7 +166,7 @@ namespace Greatbone.Sample
                 }
                 else
                 {
-                    ac.GiveGridPage(200, (Order[])null, @public: false, maxage: 3);
+                    ac.GiveGridPage(200, (Order[]) null, @public: false, maxage: 3);
                 }
             }
         }
@@ -196,7 +196,7 @@ namespace Greatbone.Sample
                 }
                 else
                 {
-                    ac.GiveGridPage(200, (Order[])null, @public: false, maxage: 3);
+                    ac.GiveGridPage(200, (Order[]) null, @public: false, maxage: 3);
                 }
             }
         }
@@ -235,6 +235,7 @@ namespace Greatbone.Sample
             [3] = "您的订单已发货，请您准备接收",
             [4] = "您的订单已接收，请您作确认收货操作",
         };
+
         public OprActiveOrderWork(WorkContext wc) : base(wc)
         {
             status = Order.ACCEPTED;
@@ -274,7 +275,8 @@ namespace Greatbone.Sample
                     {
                         while (dc.Next())
                         {
-                            long id; string wx;
+                            long id;
+                            string wx;
                             dc.Let(out id).Let(out wx);
                             rows.Add(new Dual<long, string>(id, wx));
                         }
@@ -284,7 +286,7 @@ namespace Greatbone.Sample
                 for (int i = 0; i < rows.Count; i++)
                 {
                     Dual<long, string> row = rows[i];
-                    await WeiXinUtility.PostSendAsync(row.Y, "【通知】" + NOTIFS[notif] + "（订单编号：" + row.X + "）");
+                    await WeiXinUtility.PostSendAsync(row.B, "【通知】" + NOTIFS[notif] + "（订单编号：" + row.A + "）");
                 }
 
                 ac.GivePane(200);
@@ -294,7 +296,7 @@ namespace Greatbone.Sample
         [Ui("委托办理", Mode = UiMode.ButtonShow)]
         public async Task passon(ActionContext ac)
         {
-            var prin = (User)ac.Principal;
+            var prin = (User) ac.Principal;
             string shopid = ac[-1];
             string city = prin.city;
             if (ac.GET)
@@ -322,10 +324,10 @@ namespace Greatbone.Sample
             {
                 var f = await ac.ReadAsync<Form>();
                 string id_name = f[nameof(id_name)];
-                Dual duo = id_name.ToDual();
+                var duo = id_name.ToDual<string, string>();
                 using (var dc = ac.NewDbContext())
                 {
-                    dc.Execute(@"UPDATE shops SET coshopid = @1 WHERE id = @2", p => p.Set(duo.X).Set(shopid));
+                    dc.Execute(@"UPDATE shops SET coshopid = @1 WHERE id = @2", p => p.Set(duo.A).Set(shopid));
                 }
                 ac.GivePane(200);
             }
@@ -377,7 +379,7 @@ namespace Greatbone.Sample
                 }
                 else
                 {
-                    ac.GiveGridPage(200, (Order[])null, @public: false, maxage: 3);
+                    ac.GiveGridPage(200, (Order[]) null, @public: false, maxage: 3);
                 }
             }
         }

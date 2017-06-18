@@ -138,6 +138,17 @@ namespace Greatbone.Core
             return false;
         }
 
+//        public bool Get(string name, ref ArraySegment<byte> v)
+//        {
+//            Field fld;
+//            if (TryGet(name, out fld))
+//            {
+//                v = fld;
+//                return true;
+//            }
+//            return false;
+//        }
+//
         public bool Get<D>(string name, ref D v, ushort proj = 0x00ff) where D : IData, new()
         {
             throw new NotImplementedException();
@@ -346,7 +357,7 @@ namespace Greatbone.Core
         public D ToData<D>(ushort proj = 0x00ff) where D : IData, new()
         {
             D obj = new D();
-            obj.ReadData(this, proj);
+            obj.Read(this, proj);
             return obj;
         }
 

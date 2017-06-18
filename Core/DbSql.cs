@@ -49,7 +49,7 @@ namespace Greatbone.Core
         {
             ctx = CTX_SETLIST;
             ordinal = 1;
-            obj.WriteData(this, proj);
+            obj.Write(this, proj);
             return this;
         }
 
@@ -57,7 +57,7 @@ namespace Greatbone.Core
         {
             ctx = CTX_COLUMNLIST;
             ordinal = 1;
-            obj.WriteData(this, proj);
+            obj.Write(this, proj);
             return this;
         }
 
@@ -65,7 +65,7 @@ namespace Greatbone.Core
         {
             ctx = CTX_PARAMLIST;
             ordinal = 1;
-            obj.WriteData(this, proj);
+            obj.Write(this, proj);
             return this;
         }
 

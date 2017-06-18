@@ -12,14 +12,14 @@ namespace Greatbone.Sample
 
         internal string[] distrs;
 
-        public void ReadData(IDataInput i, ushort proj = 0x00ff)
+        public void Read(IDataInput i, ushort proj = 0x00ff)
         {
             i.Get(nameof(code), ref code);
             i.Get(nameof(name), ref name);
             i.Get(nameof(distrs), ref distrs);
         }
 
-        public void WriteData<R>(IDataOutput<R> o, ushort proj = 0x00ff) where R : IDataOutput<R>
+        public void Write<R>(IDataOutput<R> o, ushort proj = 0x00ff) where R : IDataOutput<R>
         {
             o.Put(nameof(code), code);
             o.Put(nameof(name), name);

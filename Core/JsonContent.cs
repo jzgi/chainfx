@@ -486,7 +486,7 @@ namespace Greatbone.Core
                     Put("#", shard);
                 }
 
-                v.WriteData(this, proj);
+                v.Write(this, proj);
                 Add('}');
                 level--; // exit
             }

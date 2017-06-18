@@ -168,7 +168,7 @@ namespace Greatbone.Core
                 p(parameters);
                 if (prepare) command.Prepare();
             }
-            reader = (NpgsqlDataReader)await command.ExecuteReaderAsync();
+            reader = (NpgsqlDataReader) await command.ExecuteReaderAsync();
             return reader.HasRows;
         }
 
@@ -322,7 +322,7 @@ namespace Greatbone.Core
         public D ToData<D>(ushort proj = 0x00ff) where D : IData, new()
         {
             D obj = new D();
-            obj.ReadData(this, proj);
+            obj.Read(this, proj);
 
             // add shard if any
             IShardable sharded = obj as IShardable;
@@ -340,7 +340,7 @@ namespace Greatbone.Core
             while (Next())
             {
                 D obj = new D();
-                obj.ReadData(this, proj);
+                obj.Read(this, proj);
 
                 // add shard if any
                 IShardable sharded = obj as IShardable;
@@ -501,7 +501,7 @@ namespace Greatbone.Core
                 if (!reader.IsDBNull(ord))
                 {
                     int len;
-                    if ((len = (int)reader.GetBytes(ord, 0, null, 0, 0)) > 0)
+                    if ((len = (int) reader.GetBytes(ord, 0, null, 0, 0)) > 0)
                     {
                         v = new byte[len];
                         reader.GetBytes(ord, 0, v, 0, len); // read data into the buffer
@@ -524,7 +524,7 @@ namespace Greatbone.Core
                 if (!reader.IsDBNull(ord))
                 {
                     int len;
-                    if ((len = (int)reader.GetBytes(ord, 0, null, 0, 0)) > 0)
+                    if ((len = (int) reader.GetBytes(ord, 0, null, 0, 0)) > 0)
                     {
                         byte[] buf = new byte[len];
                         reader.GetBytes(ord, 0, buf, 0, len); // read data into the buffer
@@ -553,9 +553,9 @@ namespace Greatbone.Core
                 {
                     string str = reader.GetString(ord);
                     JsonParse p = new JsonParse(str);
-                    JObj jo = (JObj)p.Parse();
+                    JObj jo = (JObj) p.Parse();
                     v = new D();
-                    v.ReadData(jo, proj);
+                    v.Read(jo, proj);
 
                     // add shard if any
                     IShardable sharded = v as IShardable;
@@ -581,7 +581,7 @@ namespace Greatbone.Core
                 {
                     string str = reader.GetString(ord);
                     JsonParse p = new JsonParse(str);
-                    v = (JObj)p.Parse();
+                    v = (JObj) p.Parse();
                     return true;
                 }
             }
@@ -600,7 +600,7 @@ namespace Greatbone.Core
                 {
                     string str = reader.GetString(ord);
                     JsonParse parse = new JsonParse(str);
-                    v = (JArr)parse.Parse();
+                    v = (JArr) parse.Parse();
                     return true;
                 }
             }
@@ -692,14 +692,14 @@ namespace Greatbone.Core
                 {
                     string str = reader.GetString(ord);
                     JsonParse parse = new JsonParse(str);
-                    JArr ja = (JArr)parse.Parse();
+                    JArr ja = (JArr) parse.Parse();
                     int len = ja.Count;
                     v = new D[len];
                     for (int i = 0; i < len; i++)
                     {
                         JObj jo = ja[i];
                         D obj = new D();
-                        obj.ReadData(jo, proj);
+                        obj.Read(jo, proj);
 
                         // add shard if any
                         IShardable sharded = obj as IShardable;
@@ -876,7 +876,7 @@ namespace Greatbone.Core
                 if (!reader.IsDBNull(ord))
                 {
                     int len;
-                    if ((len = (int)reader.GetBytes(ord, 0, null, 0, 0)) > 0)
+                    if ((len = (int) reader.GetBytes(ord, 0, null, 0, 0)) > 0)
                     {
                         byte[] buf = new byte[len];
                         reader.GetBytes(ord, 0, buf, 0, len); // read data into the buffer
@@ -926,9 +926,9 @@ namespace Greatbone.Core
                 {
                     string str = reader.GetString(ord);
                     JsonParse p = new JsonParse(str);
-                    JObj jo = (JObj)p.Parse();
+                    JObj jo = (JObj) p.Parse();
                     v = new D();
-                    v.ReadData(jo, proj);
+                    v.Read(jo, proj);
 
                     // add shard if any
                     IShardable sharded = v as IShardable;
@@ -955,14 +955,14 @@ namespace Greatbone.Core
                 {
                     string str = reader.GetString(ord);
                     JsonParse parse = new JsonParse(str);
-                    JArr ja = (JArr)parse.Parse();
+                    JArr ja = (JArr) parse.Parse();
                     int len = ja.Count;
                     v = new D[len];
                     for (int i = 0; i < len; i++)
                     {
                         JObj jo = ja[i];
                         D obj = new D();
-                        obj.ReadData(jo, proj);
+                        obj.Read(jo, proj);
 
                         // add shard if any
                         IShardable sharded = obj as IShardable;

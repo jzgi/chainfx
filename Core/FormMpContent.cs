@@ -241,7 +241,7 @@ namespace Greatbone.Core
             else
             {
                 Add('{');
-                v.WriteData(this, proj);
+                v.Write(this, proj);
                 Add('}');
             }
             return this;

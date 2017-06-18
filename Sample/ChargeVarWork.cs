@@ -101,7 +101,7 @@ namespace Greatbone.Sample
                     dc.Sql("UPDATE items")._SET_(Item.Empty, proj)._("WHERE shopid = @1 AND name = @2");
                     dc.Execute(p =>
                     {
-                        o.WriteData(p, proj);
+                        o.Write(p, proj);
                         p.Set(shopid).Set(name);
                     });
                     ac.GivePane(200);

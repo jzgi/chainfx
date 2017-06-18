@@ -217,7 +217,7 @@ namespace Greatbone.Core
                 string ctyp = rsp.Content.Headers.GetValue("Content-Type");
                 IDataInput inp = ParseContent(ctyp, bytea, bytea.Length);
                 D obj = new D();
-                obj.ReadData(inp, proj);
+                obj.Read(inp, proj);
                 return obj;
             }
             catch

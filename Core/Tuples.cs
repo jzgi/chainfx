@@ -1,60 +1,72 @@
 ﻿namespace Greatbone.Core
 {
-    public struct Dual
+    public struct Dual<TA, TB>
     {
-        public Dual(string x, string y)
+        public Dual(TA a, TB b)
         {
-            X = x;
-            Y = y;
+            A = a;
+            B = b;
         }
 
-        public string X { get; set; }
+        public TA A { get; set; }
 
-        public string Y { get; set; }
+        public TB B { get; set; }
     }
 
-    public struct Dual<TX, TY>
+    public struct Triple<TA, TB, TC>
     {
-        public Dual(TX x, TY y)
+        public Triple(TA a, TB b, TC c)
         {
-            X = x;
-            Y = y;
+            A = a;
+            B = b;
+            C = c;
         }
 
-        public TX X { get; set; }
+        public TA A { get; set; }
 
-        public TY Y { get; set; }
+        public TB B { get; set; }
+
+        public TC C { get; set; }
     }
 
-    public struct Triple
+    public struct Quad<TA, TB, TC, TD>
     {
-        public Triple(string x, string y, string z)
+        public Quad(TA a, TB b, TC c, TD d)
         {
-            X = x;
-            Y = y;
-            Z = z;
+            A = a;
+            B = b;
+            C = c;
+            D = d;
         }
 
-        public string X { get; set; }
+        public TA A { get; set; }
 
-        public string Y { get; set; }
+        public TB B { get; set; }
 
-        public string Z { get; set; }
+        public TC C { get; set; }
+
+        public TD D { get; set; }
     }
 
-    public struct Triple<TX, TY, TZ>
+    public struct Quint<TA, TB, TC, TD, TE>
     {
-        public Triple(TX x, TY y, TZ z)
+        public Quint(TA a, TB b, TC c, TD d, TE e)
         {
-            X = x;
-            Y = y;
-            Z = z;
+            A = a;
+            B = b;
+            C = c;
+            D = d;
+            E = e;
         }
 
-        public TX X { get; set; }
+        public TA A { get; set; }
 
-        public TY Y { get; set; }
+        public TB B { get; set; }
 
-        public TZ Z { get; set; }
+        public TC C { get; set; }
+
+        public TD D { get; set; }
+
+        public TE E { get; set; }
     }
 }

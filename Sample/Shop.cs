@@ -37,7 +37,7 @@ namespace Greatbone.Sample
         internal string mgr;
         internal short status;
 
-        public void ReadData(IDataInput i, ushort proj = 0x00ff)
+        public void Read(IDataInput i, ushort proj = 0x00ff)
         {
             if ((proj & ID) == ID)
             {
@@ -70,7 +70,7 @@ namespace Greatbone.Sample
             i.Get(nameof(status), ref status);
         }
 
-        public void WriteData<R>(IDataOutput<R> o, ushort proj = 0x00ff) where R : IDataOutput<R>
+        public void Write<R>(IDataOutput<R> o, ushort proj = 0x00ff) where R : IDataOutput<R>
         {
             if ((proj & ID) == ID)
             {

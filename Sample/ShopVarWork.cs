@@ -36,7 +36,7 @@ namespace Greatbone.Sample
     {
         public PubShopVarWork(WorkContext wc) : base(wc)
         {
-            CreateVar<ItemVarWork, string>(obj => ((Item)obj).name);
+            CreateVar<ItemVarWork, string>(obj => ((Item) obj).name);
         }
 
         public void @default(ActionContext ac)
@@ -159,7 +159,7 @@ namespace Greatbone.Sample
         {
             string shopid = ac[this];
 
-            User prin = (User)ac.Principal;
+            User prin = (User) ac.Principal;
 
             string text = null;
             if (ac.GET)
@@ -197,7 +197,7 @@ namespace Greatbone.Sample
                     if (dc.Query1("SELECT msgs FROM chats WHERE shopid = @1 AND wx = @2", p => p.Set(shopid).Set(prin.wx)))
                     {
                         dc.Let(out msgs);
-                        msgs = msgs.AddOf(new ChatMsg() { name = prin.nickname, text = text });
+                        msgs = msgs.AddOf(new ChatMsg() {name = prin.nickname, text = text});
                         dc.Execute("UPDATE chats SET msgs = @1, quested = localtimestamp WHERE shopid = @2 AND wx = @3", p => p.Set(msgs).Set(shopid).Set(prin.wx));
                     }
                     else
@@ -209,7 +209,7 @@ namespace Greatbone.Sample
                         dc.Execute("INSERT INTO chats (shopid, wx, nickname, msgs, quested) VALUES (@1, @2, @3, @4, localtimestamp)", p => p.Set(shopid).Set(prin.wx).Set(prin.nickname).Set(msgs));
                     }
 
-                    mgrwx = (string)dc.Scalar("SELECT mgrwx FROM shops WHERE id = @1", p => p.Set(shopid));
+                    mgrwx = (string) dc.Scalar("SELECT mgrwx FROM shops WHERE id = @1", p => p.Set(shopid));
                 }
                 await WeiXinUtility.PostSendAsync(mgrwx, "【买家】" + prin.nickname + "：" + text);
                 ac.GivePane(200);
@@ -264,7 +264,7 @@ namespace Greatbone.Sample
                             m.TEXT(nameof(o.descr), o.descr, label: "商家描述", max: 20, required: true);
                             m.TEXT(nameof(o.tel), o.tel, label: "电话", max: 11, min: 11, pattern: "[0-9]+", required: true);
                             m.TEXT(nameof(o.city), o.city, label: "城市", @readonly: true);
-                            m.SELECT(nameof(o.distr), o.distr, ((ShopService)Service).GetDistrs(o.city), label: "区域");
+                            m.SELECT(nameof(o.distr), o.distr, ((ShopService) Service).GetDistrs(o.city), label: "区域");
                             m.TEXT(nameof(o.addr), o.addr, label: "地址");
                             m.SELECT(nameof(o.status), o.status, Shop.STATUS, label: "状态");
                             m._FORM();
@@ -286,7 +286,7 @@ namespace Greatbone.Sample
                     dc.Sql("UPDATE shops")._SET_(Shop.Empty, proj)._("WHERE id = @1");
                     dc.Execute(p =>
                     {
-                        o.WriteData(p, proj);
+                        o.Write(p, proj);
                         p.Set(id);
                     });
                 }
@@ -416,7 +416,7 @@ namespace Greatbone.Sample
                         {
                             m.FORM_();
                             m.TEXT(nameof(name), name, "商家名称");
-                            m.SELECT(nameof(distr), distr, ((ShopService)Service).GetDistrs(city), "区域");
+                            m.SELECT(nameof(distr), distr, ((ShopService) Service).GetDistrs(city), "区域");
                             m.TEXT(nameof(lic), lic, "工商登记");
                             m.CHECKBOX(nameof(disabled), disabled, "禁止营业");
                             m._FORM();
@@ -472,11 +472,11 @@ namespace Greatbone.Sample
             {
                 var f = await ac.ReadAsync<Form>();
                 string id_wx_name = f[nameof(id_wx_name)];
-                Triple tri = id_wx_name.ToTriple();
+                var tri = id_wx_name.ToTriple<string, string, string>();
                 using (var dc = ac.NewDbContext())
                 {
                     dc.Execute(@"UPDATE shops SET mgrid = @1, mgrwx = @2, mgr = @3 WHERE id = @4;
-                        UPDATE users SET oprat = @4, opr = @5 WHERE wx = @2;", p => p.Set(tri.X).Set(tri.Y).Set(tri.Z).Set(shopid).Set(User.MANAGER));
+                        UPDATE users SET oprat = @4, opr = @5 WHERE wx = @2;", p => p.Set(tri.A).Set(tri.B).Set(tri.C).Set(shopid).Set(User.MANAGER));
                 }
                 ac.GivePane(200);
             }

@@ -242,7 +242,7 @@ namespace Greatbone.Core
         public D ToData<D>(ushort proj = 0x00ff) where D : IData, new()
         {
             D obj = new D();
-            obj.ReadData(this, proj);
+            obj.Read(this, proj);
             return obj;
         }
 
@@ -252,7 +252,7 @@ namespace Greatbone.Core
             for (int i = 0; i < arr.Length; i++)
             {
                 D obj = new D();
-                obj.ReadData((JObj) elements[i], proj);
+                obj.Read((JObj) elements[i], proj);
                 arr[i] = obj;
             }
             return arr;

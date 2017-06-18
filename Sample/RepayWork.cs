@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Data;
 using System.Threading.Tasks;
 using Greatbone.Core;
@@ -32,7 +33,7 @@ namespace Greatbone.Sample
                 }
                 else
                 {
-                    ac.GiveGridPage(200, (Repay[])null);
+                    ac.GiveGridPage(200, (Repay[]) null);
                 }
             }
         }
@@ -51,11 +52,11 @@ namespace Greatbone.Sample
             {
                 if (dc.Query("SELECT * FROM repays WHERE status = 0"))
                 {
-                    ac.GiveGridPage(200, dc.ToDatas<Repay>(0), 0);
+                    ac.GiveGridPage(200, dc.ToDatas<Repay>());
                 }
                 else
                 {
-                    ac.GiveGridPage(200, (Repay[])null);
+                    ac.GiveGridPage(200, (Repay[]) null);
                 }
             }
         }
@@ -74,7 +75,7 @@ namespace Greatbone.Sample
                         m.FORM_();
                         if (ret != null)
                         {
-                            m.CALLOUT(t => { t.T("上次结算截至日期是").T((DateTime)ret); }, false);
+                            m.CALLOUT(t => { t.T("上次结算截至日期是").T((DateTime) ret); }, false);
                         }
                         till = DateTime.Today;
                         m.DATE(nameof(till), till, "本次截至日期（不包含）", max: till);
@@ -94,30 +95,48 @@ namespace Greatbone.Sample
             }
         }
 
+        struct Transfer
+        {
+            internal int id;
+            internal string mgrwx;
+            internal string mgr;
+            internal decimal cash;
+        }
+
         [Ui("转款", "按照结算单转款给商家", Mode = UiMode.ButtonConfirm)]
         public async Task pay(ActionContext ac)
         {
+            List<Transfer> lst = new List<Transfer>(16);
             using (var dc = ac.NewDbContext())
             {
+                // retrieve
                 if (dc.Query("SELECT r.id, mgrwx, mgr, cash FROM repays AS r, shops AS s WHERE r.shopid = s.id AND r.status = 0"))
                 {
                     while (dc.Next())
                     {
-                        int id;
-                        string mgrwx;
-                        string mgr;
-                        decimal cash;
-                        dc.Let(out id).Let(out mgrwx).Let(out mgr).Let(out cash);
-                        string err = await WeiXinUtility.PostTransferAsync(id, mgrwx, mgr, cash, "订单结款");
-                        if (err != null)
-                        {
-                            dc.Execute("UPDATE repays SET err = @1 WHERE id = @2", p => p.Set(err).Set(id));
-                        }
-                        else
-                        {
-                            User prin = (User)ac.Principal;
-                            dc.Execute("UPDATE repays SET payer = @1, paid = localtimestamp, err = NULL, status = 1 WHERE id = @2", p => p.Set(prin.name).Set(id));
-                        }
+                        Transfer tr;
+                        dc.Let(out tr.id).Let(out tr.mgrwx).Let(out tr.mgr).Let(out tr.cash);
+                        lst.Add(tr);
+                    }
+                }
+            }
+
+            // transfer for each
+            foreach (var tr in lst)
+            {
+                string err = await WeiXinUtility.PostTransferAsync(tr.id, tr.mgrwx, tr.mgr, tr.cash, "订单结款");
+
+                // update status
+                using (var dc = ac.NewDbContext())
+                {
+                    if (err != null)
+                    {
+                        dc.Execute("UPDATE repays SET err = @1 WHERE id = @2", p => p.Set(err).Set(tr.id));
+                    }
+                    else
+                    {
+                        User prin = (User) ac.Principal;
+                        dc.Execute("UPDATE repays SET payer = @1, paid = localtimestamp, err = NULL, status = 1 WHERE id = @2", p => p.Set(prin.name).Set(tr.id));
                     }
                 }
             }
@@ -142,7 +161,7 @@ namespace Greatbone.Sample
                 }
                 else
                 {
-                    ac.GiveGridPage(200, (Repay[])null);
+                    ac.GiveGridPage(200, (Repay[]) null);
                 }
             }
         }

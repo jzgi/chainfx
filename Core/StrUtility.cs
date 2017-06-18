@@ -382,48 +382,72 @@ namespace Greatbone.Core
         }
 
 
-        public static Dual ToDual(this string str)
+        public static Dual<A, B> ToDual<A, B>(this string str)
         {
-            string x = null;
-            string y = null;
+            string a = null;
+            string b = null;
             int dash = str.IndexOf('~');
             if (dash != -1)
             {
-                x = str.Substring(0, dash);
-                y = str.Substring(dash + 1);
+                a = str.Substring(0, dash);
+                b = str.Substring(dash + 1);
             }
             else
             {
-                x = str;
+                a = str;
             }
-            return new Dual(x, y);
+            return new Dual<A, B>(a.ToValue<A>(), b.ToValue<B>());
         }
 
-        public static Triple ToTriple(this string str)
+        public static Triple<A, B, C> ToTriple<A, B, C>(this string str)
         {
-            string x = null;
-            string y = null;
-            string z = null;
+            string a = null;
+            string b = null;
+            string c = null;
             int dash1 = str.IndexOf('~');
             if (dash1 != -1)
             {
-                x = str.Substring(0, dash1);
+                a = str.Substring(0, dash1);
                 int dash2 = str.IndexOf('~', dash1 + 1);
                 if (dash2 != -1)
                 {
-                    y = str.Substring(dash1 + 1, dash2 - dash1 - 1);
-                    z = str.Substring(dash2 + 1);
+                    b = str.Substring(dash1 + 1, dash2 - dash1 - 1);
+                    c = str.Substring(dash2 + 1);
                 }
                 else
                 {
-                    y = str.Substring(dash1 + 1);
+                    b = str.Substring(dash1 + 1);
                 }
             }
             else
             {
-                x = str;
+                a = str;
             }
-            return new Triple(x, y, z);
+            return new Triple<A, B, C>(a.ToValue<A>(), b.ToValue<B>(), c.ToValue<C>());
+        }
+
+        public static V ToValue<V>(this string str)
+        {
+            if (str != null)
+            {
+                Type t = typeof(V);
+
+                // cannot avoid boxing
+
+                if (t == typeof(string))
+                {
+                    return (V) (object) str;
+                }
+                if (t == typeof(int))
+                {
+                    return (V) (object) str.ToInt();
+                }
+                if (t == typeof(long))
+                {
+                    return (V) (object) str.ToLong();
+                }
+            }
+            return default(V);
         }
     }
 }
