@@ -286,7 +286,7 @@ namespace Greatbone.Sample
                 for (int i = 0; i < rows.Count; i++)
                 {
                     Dual<long, string> row = rows[i];
-                    await WeiXinUtility.PostSendAsync(row.B, "【通知】" + NOTIFS[notif] + "（订单编号：" + row.A + "）");
+                    await WeiXinUtility.PostSendAsync(row.B, "【商家通知】" + NOTIFS[notif] + "（订单编号：" + row.A + "）");
                 }
 
                 ac.GivePane(200);

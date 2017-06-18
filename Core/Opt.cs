@@ -10,7 +10,5 @@ namespace Greatbone.Core
         public Opt(int capacity = 8) : base(capacity)
         {
         }
-
-        public int Dialog { get; set; }
     }
 }

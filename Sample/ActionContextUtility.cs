@@ -67,7 +67,7 @@ namespace Greatbone.Sample
             h.Add("<div class=\"title-bar-title\">");
             h.Add("<span class=\"button primary hollow\">");
             string title = ac[work];
-            if (title.Length > 20) title = ((User) ac.Principal).nickname;
+            if (title.Length > 20) title = ((User)ac.Principal).nickname;
             h.Add(title);
             h.Add("</span>");
             h.Add("</div>");
@@ -181,9 +181,10 @@ namespace Greatbone.Sample
             }
             else // trigger click on the close-button
             {
-                h.Add("var par = window.parent;");
-                h.Add("$('#dyndlg', par.document).find('.close-button').trigger('click');");
-                h.Add("par.location.reload(false);");
+                h.Add("var win = window.parent;");
+                h.Add("var dlg = $('#dyndlg', win.document);");
+                h.Add("dlg.find('.close-button').trigger('click');");
+                h.Add("if (dlg.hasClass('button-trig')) win.location.reload(false);");
             }
             h.Add("});");
             h.Add("</script>");

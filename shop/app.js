@@ -15,6 +15,7 @@ function dialog(trig, mode, siz, title) {
     var action;
     var method = 'post';
     var src;
+    var trigclass;
     if (tag == 'BUTTON') {
         action = trig.formAction || trig.name;
         method = trig.formMethod || method;
@@ -24,15 +25,17 @@ function dialog(trig, mode, siz, title) {
         } else {
             src = action;
         }
+        trigclass = ' button-trig';
     } else if (tag == 'A') {
         action = trig.href
         method = 'get';
         src = action;
+        trigclass = ' anchor-trig';
     }
 
     title = title || trig.innerHTML;
 
-    var html = '<div id="dyndlg" class="' + sizg + ' reveal"  data-reveal data-close-on-click="false">'
+    var html = '<div id="dyndlg" class="' + sizg + ' reveal' + trigclass + '"  data-reveal data-close-on-click="false">'
         + '<div class="title-bar"><div clsas="title-bar-title">' + title + '</div><div class="title-bar-right"><a class="close-button" href="#" onclick="$(\'#dyndlg\').foundation(\'close\').foundation(\'destroy\').remove();">&times;</a></div></div>'
         + '<div style="height: calc(100% - ' + (mode == OPEN ? '3.5rem' : '5rem') + ')"><iframe src="' + src + '" style="width: 100%; height: 100%; border: 0"></iframe></div>'
         + (mode == OPEN ? '' : ('<button class=\"button primary float-center\" onclick="ok(this,' + mode + ',\'' + formid + '\',\'' + tag + '\',\'' + action + '\',\'' + method + '\');" disabled>确定</botton>'))

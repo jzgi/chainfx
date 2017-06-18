@@ -49,7 +49,7 @@ namespace Greatbone.Sample
                         dc.Execute("UPDATE chats SET msgs = @1 WHERE shopid = @2 AND wx = @3", p => p.Set(msgs).Set(shopid).Set(wx));
                     }
                 }
-                await WeiXinUtility.PostSendAsync(wx, "【商家】" + prin.name + "：" + text);
+                await WeiXinUtility.PostSendAsync(wx, "【商家消息】" + prin.name + "：" + text + "（http://shop.144000.tv/pub/" + shopid + "/）");
                 ac.GivePane(200);
             }
         }
