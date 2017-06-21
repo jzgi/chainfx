@@ -4,6 +4,7 @@ namespace Greatbone.Core
 {
     public class Cachie
     {
+        // response status, 0 means cleared, otherwise one of the cacheable status
         int status;
 
         // can be set to null
@@ -25,7 +26,15 @@ namespace Greatbone.Core
             this.stamp = stamp;
         }
 
-        internal void TryReset(int ticks)
+        /// <summary>
+        ///  RFC 7231 cacheable status codes.
+        /// </summary>
+        public static bool IsCacheable(int code)
+        {
+            return code == 200 || code == 203 || code == 204 || code == 206 || code == 300 || code == 301 || code == 404 || code == 405 || code == 410 || code == 414 || code == 501;
+        }
+
+        internal void TryClear(int ticks)
         {
             lock (this)
             {

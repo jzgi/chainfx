@@ -304,7 +304,7 @@ namespace Greatbone.Core
                     while (enm.MoveNext())
                     {
                         Cachie ca = enm.Current.Value;
-                        ca.TryReset(now);
+                        ca.TryClear(now);
                     }
                 }
             }

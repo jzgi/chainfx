@@ -230,7 +230,7 @@ namespace Greatbone.Core
                 if (clen > 0)
                 {
                     // reading
-                    int len = (int)clen;
+                    int len = (int) clen;
                     buffer = BufferUtility.GetByteBuffer(len); // borrow from the pool
                     while ((count += await Request.Body.ReadAsync(buffer, count, (len - count))) < len)
                     {
@@ -249,7 +249,7 @@ namespace Greatbone.Core
                 int? clen = HeaderInt("Content-Length");
                 if (clen > 0)
                 {
-                    int len = (int)clen;
+                    int len = (int) clen;
                     buffer = BufferUtility.GetByteBuffer(len); // borrow from the pool
                     while ((count += await Request.Body.ReadAsync(buffer, count, (len - count))) < len)
                     {
@@ -271,7 +271,7 @@ namespace Greatbone.Core
                 int? clen = HeaderInt("Content-Length");
                 if (clen > 0)
                 {
-                    int len = (int)clen;
+                    int len = (int) clen;
                     buffer = BufferUtility.GetByteBuffer(len); // borrow from the pool
                     while ((count += await Request.Body.ReadAsync(buffer, count, (len - count))) < len)
                     {
@@ -298,7 +298,7 @@ namespace Greatbone.Core
                 int? clen = HeaderInt("Content-Length");
                 if (clen > 0)
                 {
-                    int len = (int)clen;
+                    int len = (int) clen;
                     buffer = BufferUtility.GetByteBuffer(len); // borrow from the pool
                     while ((count += await Request.Body.ReadAsync(buffer, count, (len - count))) < len)
                     {
@@ -353,7 +353,7 @@ namespace Greatbone.Core
 
         public void SetTokenCookie<P>(P prin, ushort proj) where P : class, IData, new()
         {
-            ((Service<P>)Service).SetTokenCookie(this, prin, proj);
+            ((Service<P>) Service).SetTokenCookie(this, prin, proj);
         }
 
         public bool InCache { get; internal set; }
@@ -433,8 +433,6 @@ namespace Greatbone.Core
             // content check
             if (Content == null) return;
 
-            if (Status == 304) return;
-
             var dyn = Content as DynamicContent;
             if (dyn != null) // dynamic content
             {
@@ -472,7 +470,6 @@ namespace Greatbone.Core
                 {
                     SetHeader("Content-Encoding", "gzip");
                 }
-
             }
 
             // send out the content async
@@ -494,7 +491,7 @@ namespace Greatbone.Core
 
             // response content caching and pool returning
 
-            if (!InCache && Public == true)
+            if (!InCache && Public == true && Cachie.IsCacheable(Status))
             {
                 Service.AddCachie(this);
                 InCache = true;
