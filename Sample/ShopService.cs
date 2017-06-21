@@ -154,10 +154,10 @@ namespace Greatbone.Sample
                 string mgrwx = null;
                 using (var dc = NewDbContext())
                 {
-                    var shopid = (string) dc.Scalar("UPDATE orders SET cash = @1, accepted = localtimestamp, status = @2 WHERE id = @3 AND status <= @2 RETURNING shopid", (p) => p.Set(cash).Set(Order.ACCEPTED).Set(orderid));
+                    var shopid = (string)dc.Scalar("UPDATE orders SET cash = @1, accepted = localtimestamp, status = @2 WHERE id = @3 AND status <= @2 RETURNING shopid", (p) => p.Set(cash).Set(Order.ACCEPTED).Set(orderid));
                     if (shopid != null)
                     {
-                        mgrwx = (string) dc.Scalar("SELECT mgrwx FROM shops WHERE id = @1", p => p.Set(shopid));
+                        mgrwx = (string)dc.Scalar("SELECT mgrwx FROM shops WHERE id = @1", p => p.Set(shopid));
                     }
                 }
                 // return xml
@@ -177,7 +177,7 @@ namespace Greatbone.Sample
             }
             else
             {
-                ac.Give(304);
+                ac.Give(400);
             }
         }
     }

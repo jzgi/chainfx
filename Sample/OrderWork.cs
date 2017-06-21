@@ -341,7 +341,7 @@ namespace Greatbone.Sample
         public OprPastOrderWork(WorkContext wc) : base(wc)
         {
             status = Order.ABORTED;
-            status2 = Order.SHIPPED;
+            status2 = Order.RECKONED;
             proj = Order.ID | Order.BASIC_DETAIL | Order.CASH | Order.FLOW;
         }
 

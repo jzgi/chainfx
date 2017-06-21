@@ -230,7 +230,7 @@ namespace Greatbone.Core
                 if (clen > 0)
                 {
                     // reading
-                    int len = (int) clen;
+                    int len = (int)clen;
                     buffer = BufferUtility.GetByteBuffer(len); // borrow from the pool
                     while ((count += await Request.Body.ReadAsync(buffer, count, (len - count))) < len)
                     {
@@ -249,7 +249,7 @@ namespace Greatbone.Core
                 int? clen = HeaderInt("Content-Length");
                 if (clen > 0)
                 {
-                    int len = (int) clen;
+                    int len = (int)clen;
                     buffer = BufferUtility.GetByteBuffer(len); // borrow from the pool
                     while ((count += await Request.Body.ReadAsync(buffer, count, (len - count))) < len)
                     {
@@ -271,7 +271,7 @@ namespace Greatbone.Core
                 int? clen = HeaderInt("Content-Length");
                 if (clen > 0)
                 {
-                    int len = (int) clen;
+                    int len = (int)clen;
                     buffer = BufferUtility.GetByteBuffer(len); // borrow from the pool
                     while ((count += await Request.Body.ReadAsync(buffer, count, (len - count))) < len)
                     {
@@ -298,7 +298,7 @@ namespace Greatbone.Core
                 int? clen = HeaderInt("Content-Length");
                 if (clen > 0)
                 {
-                    int len = (int) clen;
+                    int len = (int)clen;
                     buffer = BufferUtility.GetByteBuffer(len); // borrow from the pool
                     while ((count += await Request.Body.ReadAsync(buffer, count, (len - count))) < len)
                     {
@@ -353,7 +353,7 @@ namespace Greatbone.Core
 
         public void SetTokenCookie<P>(P prin, ushort proj) where P : class, IData, new()
         {
-            ((Service<P>) Service).SetTokenCookie(this, prin, proj);
+            ((Service<P>)Service).SetTokenCookie(this, prin, proj);
         }
 
         public bool InCache { get; internal set; }
@@ -431,52 +431,54 @@ namespace Greatbone.Core
             }
 
             // content check
-            if (Content != null)
+            if (Content == null) return;
+
+            if (Status == 304) return;
+
+            var dyn = Content as DynamicContent;
+            if (dyn != null) // dynamic content
             {
-                var dyn = Content as DynamicContent;
-                if (dyn != null) // dynamic content
+                // set etag
+                string etag = StrUtility.ToHex(dyn.Checksum);
+                string inm = Header("If-None-Match");
+                if (inm != null && inm == etag)
                 {
-                    // set etag
-                    string etag = StrUtility.ToHex(dyn.Checksum);
-                    string inm = Header("If-None-Match");
-                    if (inm != null && inm == etag)
-                    {
-                        Status = 304; // not modified
-                        return;
-                    }
-                    else
-                    {
-                        SetHeader("ETag", etag);
-                    }
+                    Status = 304; // not modified
+                    return;
                 }
-                else // static content
+                else
                 {
-                    var sta = Content as StaticContent;
-                    DateTime? since = HeaderDateTime("If-Modified-Since");
-                    Debug.Assert(sta != null);
-                    if (since != null && sta.Modified <= since)
-                    {
-                        Status = 304; // not modified
-                        return;
-                    }
-
-                    DateTime? last = sta.Modified;
-                    if (last != null)
-                    {
-                        SetHeader("Last-Modified", StrUtility.FormatUtcDate(last.Value));
-                    }
-
-                    if (sta.GZip)
-                    {
-                        SetHeader("Content-Encoding", "gzip");
-                    }
+                    SetHeader("ETag", etag);
                 }
-
-                // send out the content async
-                Response.ContentLength = Content.Size;
-                Response.ContentType = Content.Type;
-                await Response.Body.WriteAsync(Content.ByteBuffer, 0, Content.Size);
             }
+            else // static content
+            {
+                var sta = Content as StaticContent;
+                DateTime? since = HeaderDateTime("If-Modified-Since");
+                Debug.Assert(sta != null);
+                if (since != null && sta.Modified <= since)
+                {
+                    Status = 304; // not modified
+                    return;
+                }
+
+                DateTime? last = sta.Modified;
+                if (last != null)
+                {
+                    SetHeader("Last-Modified", StrUtility.FormatUtcDate(last.Value));
+                }
+
+                if (sta.GZip)
+                {
+                    SetHeader("Content-Encoding", "gzip");
+                }
+
+            }
+
+            // send out the content async
+            Response.ContentLength = Content.Size;
+            Response.ContentType = Content.Type;
+            await Response.Body.WriteAsync(Content.ByteBuffer, 0, Content.Size);
         }
 
         //

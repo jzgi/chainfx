@@ -30,7 +30,7 @@ namespace Greatbone.Sample
             Create<MyChargeWork>("charge");
         }
 
-        [Ui("基本信息", Mode = UiMode.AnchorShow)]
+        [Ui("个人信息", Mode = UiMode.AnchorShow)]
         public async Task profile(ActionContext ac)
         {
             string wx = ac[this];
