@@ -1528,12 +1528,29 @@ namespace Greatbone.Core
 
         readonly int size;
 
+        /// <summary>
+        /// To construct from memory byte array. 
+        /// </summary>
         public StaticContent(ArraySegment<byte> bytea)
         {
             this.buffer = bytea.Array;
             this.size = bytea.Count;
+
+            // calculate checksum
+            ulong checksum = 0;
+            for (int i = 0; i < size; i++)
+            {
+                byte b = buffer[0];
+                ulong cs = checksum;
+                cs ^= b; // XOR
+                checksum = cs >> 57 | cs << 7; // circular left shift 7 bit
+            }
+            ETag = StrUtility.ToHex(checksum);
         }
 
+        /// <summary>
+        /// To construct from a file. 
+        /// </summary>
         public StaticContent(byte[] buffer, int size)
         {
             this.buffer = buffer;
@@ -1552,7 +1569,7 @@ namespace Greatbone.Core
 
         public DateTime? Modified { get; set; } = null;
 
-        public ulong ETag => 0;
+        public string ETag { get; internal set; }
 
         public bool GZip { get; set; }
 

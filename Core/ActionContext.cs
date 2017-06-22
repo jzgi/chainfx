@@ -230,7 +230,7 @@ namespace Greatbone.Core
                 if (clen > 0)
                 {
                     // reading
-                    int len = (int) clen;
+                    int len = (int)clen;
                     buffer = BufferUtility.GetByteBuffer(len); // borrow from the pool
                     while ((count += await Request.Body.ReadAsync(buffer, count, (len - count))) < len)
                     {
@@ -249,7 +249,7 @@ namespace Greatbone.Core
                 int? clen = HeaderInt("Content-Length");
                 if (clen > 0)
                 {
-                    int len = (int) clen;
+                    int len = (int)clen;
                     buffer = BufferUtility.GetByteBuffer(len); // borrow from the pool
                     while ((count += await Request.Body.ReadAsync(buffer, count, (len - count))) < len)
                     {
@@ -271,7 +271,7 @@ namespace Greatbone.Core
                 int? clen = HeaderInt("Content-Length");
                 if (clen > 0)
                 {
-                    int len = (int) clen;
+                    int len = (int)clen;
                     buffer = BufferUtility.GetByteBuffer(len); // borrow from the pool
                     while ((count += await Request.Body.ReadAsync(buffer, count, (len - count))) < len)
                     {
@@ -298,7 +298,7 @@ namespace Greatbone.Core
                 int? clen = HeaderInt("Content-Length");
                 if (clen > 0)
                 {
-                    int len = (int) clen;
+                    int len = (int)clen;
                     buffer = BufferUtility.GetByteBuffer(len); // borrow from the pool
                     while ((count += await Request.Body.ReadAsync(buffer, count, (len - count))) < len)
                     {
@@ -353,7 +353,7 @@ namespace Greatbone.Core
 
         public void SetTokenCookie<P>(P prin, ushort proj) where P : class, IData, new()
         {
-            ((Service<P>) Service).SetTokenCookie(this, prin, proj);
+            ((Service<P>)Service).SetTokenCookie(this, prin, proj);
         }
 
         public bool InCache { get; internal set; }
@@ -433,25 +433,23 @@ namespace Greatbone.Core
             // content check
             if (Content == null) return;
 
-            var dyn = Content as DynamicContent;
-            if (dyn != null) // dynamic content
+            // deal with not modified situations by etag
+            string etag = Content.ETag;
+            if (etag != null)
             {
-                // set etag
-                string etag = StrUtility.ToHex(dyn.Checksum);
                 string inm = Header("If-None-Match");
-                if (inm != null && inm == etag)
+                if (etag == inm)
                 {
                     Status = 304; // not modified
                     return;
                 }
-                else
-                {
-                    SetHeader("ETag", etag);
-                }
+                SetHeader("ETag", etag);
             }
-            else // static content
+
+            // static content special deal
+            var sta = Content as StaticContent;
+            if (sta != null)
             {
-                var sta = Content as StaticContent;
                 DateTime? since = HeaderDateTime("If-Modified-Since");
                 Debug.Assert(sta != null);
                 if (since != null && sta.Modified <= since)
@@ -489,14 +487,7 @@ namespace Greatbone.Core
                 BufferUtility.Return(buffer);
             }
 
-            // response content caching and pool returning
-
-            if (!InCache && Public == true && Cachie.IsCacheable(Status))
-            {
-                Service.AddCachie(this);
-                InCache = true;
-            }
-
+            // pool returning
             if (!InCache)
             {
                 var dcont = Content as DynamicContent;

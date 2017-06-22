@@ -21,5 +21,7 @@
         /// This is either the count or length of the content.
         ///
         int Size { get; }
+
+        string ETag { get; }
     }
 }

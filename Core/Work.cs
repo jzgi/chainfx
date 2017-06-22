@@ -301,6 +301,13 @@ namespace Greatbone.Core
             return null;
         }
 
+        /// <summary>
+        /// handles a request/response context. authorize, before/after filters
+        /// </summary>
+        /// <param name="rsc">the resource path</param>
+        /// <param name="ac">ActionContext</param>
+        /// <exception cref="AuthorizeException">Thrown when authorization is required and false is returned by checking</exception>
+        /// <seealso cref="AuthorizeAttribute.Check"/>
         internal async Task HandleAsync(string rsc, ActionContext ac)
         {
             ac.Work = this;
@@ -317,6 +324,7 @@ namespace Greatbone.Core
                 if (!Service.TryGiveFromCache(ac))
                 {
                     DoFile(rsc, rsc.Substring(dot), ac);
+                    Service.Cache(ac); // try cache it
                 }
             }
             else // action
@@ -338,15 +346,16 @@ namespace Greatbone.Core
 
                 ac.Doer = ai;
 
-                // access check
+                // action's authorization check
                 if (!ai.DoAuthorize(ac)) throw AuthorizeEx;
+
+                // action's before filtering
+                ai.Before?.Do(ac);
+                if (ai.BeforeAsync != null) await ai.BeforeAsync.DoAsync(ac);
 
                 // try in cache
                 if (!Service.TryGiveFromCache(ac))
                 {
-                    ai.Before?.Do(ac);
-                    if (ai.BeforeAsync != null) await ai.BeforeAsync.DoAsync(ac);
-
                     // method invocation
                     if (ai.IsAsync)
                     {
@@ -356,10 +365,12 @@ namespace Greatbone.Core
                     {
                         ai.Do(ac, subscpt);
                     }
-
-                    ai.After?.Do(ac);
-                    if (ai.AfterAsync != null) await ai.AfterAsync.DoAsync(ac);
+                    Service.Cache(ac); // try cache it
                 }
+
+                // action's after filtering
+                ai.After?.Do(ac);
+                if (ai.AfterAsync != null) await ai.AfterAsync.DoAsync(ac);
 
                 ac.Doer = null;
             }

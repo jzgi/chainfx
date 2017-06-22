@@ -60,7 +60,7 @@ namespace Greatbone.Core
             factory.AddProvider(this);
             string file = sc.GetFilePath('$' + DateTime.Now.ToString("yyyyMM") + ".log");
             FileStream fs = new FileStream(file, FileMode.Append, FileAccess.Write);
-            logWriter = new StreamWriter(fs, Encoding.UTF8, 1024 * 4, false) { AutoFlush = true };
+            logWriter = new StreamWriter(fs, Encoding.UTF8, 1024 * 4, false) {AutoFlush = true};
 
             // create kestrel instance
             KestrelServerOptions options = new KestrelServerOptions();
@@ -169,7 +169,7 @@ namespace Greatbone.Core
         ///
         public virtual async Task ProcessRequestAsync(HttpContext context)
         {
-            ActionContext ac = (ActionContext)context;
+            ActionContext ac = (ActionContext) context;
             HttpRequest req = ac.Request;
             string path = req.Path.Value;
 
@@ -194,8 +194,8 @@ namespace Greatbone.Core
             }
             catch (Exception e)
             {
-                if (this is ICatchAsync) await ((ICatchAsync)this).CatchAsync(e, ac);
-                else if (this is ICatch) ((ICatch)this).Catch(e, ac);
+                if (this is ICatchAsync) await ((ICatchAsync) this).CatchAsync(e, ac);
+                else if (this is ICatch) ((ICatch) this).Catch(e, ac);
                 else
                 {
                     WAR(e.Message, e);
@@ -228,9 +228,8 @@ namespace Greatbone.Core
         public void DisposeContext(HttpContext context, Exception exception)
         {
             // dispose the action context
-            ((ActionContext)context).Dispose();
+            ((ActionContext) context).Dispose();
         }
-
 
         public DbContext NewDbContext(IsolationLevel? level = null)
         {
@@ -310,13 +309,17 @@ namespace Greatbone.Core
             }
         }
 
-        public void AddCachie(ActionContext ac)
+        internal void Cache(ActionContext ac)
         {
-            Cachie ca = new Cachie(ac.Status, ac.Content, ac.MaxAge, Environment.TickCount);
-            cachies.AddOrUpdate(ac.Uri, ca, (k, old) => ca.MergeWith(old));
+            if (!ac.InCache && ac.Public == true && Cachie.IsCacheable(ac.Status))
+            {
+                Cachie ca = new Cachie(ac.Status, ac.Content, ac.MaxAge, Environment.TickCount);
+                cachies.AddOrUpdate(ac.Uri, ca, (k, old) => ca.MergeWith(old));
+                ac.InCache = true;
+            }
         }
 
-        public bool TryGiveFromCache(ActionContext ac)
+        internal bool TryGiveFromCache(ActionContext ac)
         {
             string target = ac.Uri;
             Cachie ca;
@@ -407,7 +410,7 @@ namespace Greatbone.Core
 
         public bool IsEnabled(LogLevel level)
         {
-            return (int)level >= Logging;
+            return (int) level >= Logging;
         }
 
         public void TRC(string message, Exception exception = null)
@@ -435,7 +438,7 @@ namespace Greatbone.Core
             Log(LogLevel.Error, 0, message, exception, null);
         }
 
-        static readonly string[] LVL = { "TRC: ", "DBG: ", "INF: ", "WAR: ", "ERR: ", "CRL: ", "NON: " };
+        static readonly string[] LVL = {"TRC: ", "DBG: ", "INF: ", "WAR: ", "ERR: ", "CRL: ", "NON: "};
 
         public void Log<T>(LogLevel level, EventId eid, T state, Exception exception, Func<T, Exception, string> formatter)
         {
@@ -444,7 +447,7 @@ namespace Greatbone.Core
                 return;
             }
 
-            logWriter.Write(LVL[(int)level]);
+            logWriter.Write(LVL[(int) level]);
 
             if (eid.Id != 0)
             {
@@ -495,7 +498,7 @@ namespace Greatbone.Core
         ///
         public override async Task ProcessRequestAsync(HttpContext context)
         {
-            ActionContext ac = (ActionContext)context;
+            ActionContext ac = (ActionContext) context;
             HttpRequest req = ac.Request;
             string path = req.Path.Value;
 
@@ -503,8 +506,8 @@ namespace Greatbone.Core
             try
             {
                 bool norm = true;
-                if (this is IAuthenticateAsync) norm = await ((IAuthenticateAsync)this).AuthenticateAsync(ac, true);
-                else if (this is IAuthenticate) norm = ((IAuthenticate)this).Authenticate(ac, true);
+                if (this is IAuthenticateAsync) norm = await ((IAuthenticateAsync) this).AuthenticateAsync(ac, true);
+                else if (this is IAuthenticate) norm = ((IAuthenticate) this).Authenticate(ac, true);
                 if (!norm)
                 {
                     ac.Give(403); // forbidden
@@ -536,8 +539,8 @@ namespace Greatbone.Core
             }
             catch (Exception e)
             {
-                if (this is ICatchAsync) await ((ICatchAsync)this).CatchAsync(e, ac);
-                else if (this is ICatch) ((ICatch)this).Catch(e, ac);
+                if (this is ICatchAsync) await ((ICatchAsync) this).CatchAsync(e, ac);
+                else if (this is ICatch) ((ICatch) this).Catch(e, ac);
                 else
                 {
                     WAR(e.Message, e);
@@ -593,8 +596,8 @@ namespace Greatbone.Core
             byte[] bytebuf = cont.ByteBuffer;
             int count = cont.Size;
 
-            int mask = (int)ctx.cipher;
-            int[] masks = { (mask >> 24) & 0xff, (mask >> 16) & 0xff, (mask >> 8) & 0xff, mask & 0xff };
+            int mask = (int) ctx.cipher;
+            int[] masks = {(mask >> 24) & 0xff, (mask >> 16) & 0xff, (mask >> 8) & 0xff, mask & 0xff};
             char[] charbuf = new char[count * 2]; // the target
             int p = 0;
             for (int i = 0; i < count; i++)
@@ -616,8 +619,8 @@ namespace Greatbone.Core
 
         public P Decrypt(string token)
         {
-            int mask = (int)ctx.cipher;
-            int[] masks = { (mask >> 24) & 0xff, (mask >> 16) & 0xff, (mask >> 8) & 0xff, mask & 0xff };
+            int mask = (int) ctx.cipher;
+            int[] masks = {(mask >> 24) & 0xff, (mask >> 16) & 0xff, (mask >> 8) & 0xff, mask & 0xff};
             int len = token.Length / 2;
             Str str = new Str(256);
             int p = 0;
@@ -626,16 +629,16 @@ namespace Greatbone.Core
                 // reordering
 
                 // transform to byte
-                int b = (byte)(Dv(token[p++]) << 4 | Dv(token[p++]));
+                int b = (byte) (Dv(token[p++]) << 4 | Dv(token[p++]));
 
                 // masking
-                str.Accept((byte)(b ^ masks[i % 4]));
+                str.Accept((byte) (b ^ masks[i % 4]));
             }
 
             // deserialize
             try
             {
-                JObj jo = (JObj)new JsonParse(str.ToString()).Parse();
+                JObj jo = (JObj) new JsonParse(str.ToString()).Parse();
                 P prin = new P();
                 prin.Read(jo, 0xffff);
                 return prin;
