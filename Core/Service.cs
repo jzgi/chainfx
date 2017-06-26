@@ -516,6 +516,7 @@ namespace Greatbone.Core
             }
             catch (Exception e)
             {
+                DBG(e.Message);
             }
 
             // handling

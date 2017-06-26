@@ -1528,6 +1528,8 @@ namespace Greatbone.Core
 
         readonly int size;
 
+        readonly string etag;
+
         /// <summary>
         /// To construct from memory byte array. 
         /// </summary>
@@ -1545,7 +1547,7 @@ namespace Greatbone.Core
                 cs ^= b; // XOR
                 checksum = cs >> 57 | cs << 7; // circular left shift 7 bit
             }
-            ETag = StrUtility.ToHex(checksum);
+            etag = StrUtility.ToHex(checksum);
         }
 
         /// <summary>
@@ -1569,7 +1571,7 @@ namespace Greatbone.Core
 
         public DateTime? Modified { get; set; } = null;
 
-        public string ETag { get; internal set; }
+        public string ETag => etag;
 
         public bool GZip { get; set; }
 

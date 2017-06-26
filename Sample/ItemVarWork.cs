@@ -77,8 +77,8 @@ namespace Greatbone.Sample
                             m.TEXT(nameof(o.descr), o.descr, label: "描述", max: 30, required: true);
                             m.TEXT(nameof(o.unit), o.unit, label: "单位（如：斤，小瓶）", required: true);
                             m.NUMBER(nameof(o.price), o.price, label: "单价", required: true);
-                            m.NUMBER(nameof(o.min), o.min, label: "起订数量", min: (short)1);
-                            m.NUMBER(nameof(o.step), o.step, label: "递增因子", min: (short)1);
+                            m.NUMBER(nameof(o.min), o.min, label: "起订数量", min: (short) 1);
+                            m.NUMBER(nameof(o.step), o.step, label: "递增因子", min: (short) 1);
                             m.NUMBER(nameof(o.qty), o.qty, label: "本批供应量");
                             m.SELECT(nameof(o.status), o.status, Item.STATUS);
                             m._FORM();

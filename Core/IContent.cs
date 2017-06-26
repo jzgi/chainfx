@@ -8,12 +8,12 @@
         string Type { get; }
 
         ///
-        /// The byte buffer that contains binary content. Can be null.
+        /// The byte buffer that contains binary content. It can be null.
         ///
         byte[] ByteBuffer { get; }
 
         ///
-        /// The char buffer that contains text content. Can be null.
+        /// The char buffer that contains text content. It can be null.
         ///
         char[] CharBuffer { get; }
 
@@ -22,6 +22,9 @@
         ///
         int Size { get; }
 
+        /// 
+        /// The ETag value for purpose of cache optimization. It can be null.
+        /// 
         string ETag { get; }
     }
 }
