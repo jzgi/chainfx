@@ -303,19 +303,23 @@ namespace Greatbone.Core
                 int subscpt = ac.Subscript;
                 for (int i = 0; i <= subscpt; i++)
                 {
-                    Add("<li><a");
                     if (subscpt == i)
                     {
-                        Add(" class=\"current\"");
+                        Add("<li class=\"current\">");
+                        Add(i + 1);
+                        Add("</li>");
                     }
-                    Add(" href=\"");
-                    Add(ai.Name);
-                    Add('-');
-                    Add(i);
-                    Add(ac.QueryString);
-                    Add("\">");
-                    Add(i + 1);
-                    Add("</a></li>");
+                    else
+                    {
+                        Add("<li><a href=\"");
+                        Add(ai.Name);
+                        Add('-');
+                        Add(i);
+                        Add(ac.QueryString);
+                        Add("\">");
+                        Add(i + 1);
+                        Add("</a></li>");
+                    }
                 }
                 if (count == ai.Limit)
                 {
@@ -324,7 +328,9 @@ namespace Greatbone.Core
                     Add('-');
                     Add(subscpt + 1);
                     Add(ac.QueryString);
-                    Add("\"><i class=\"fa fa-arrow-right\" ></i></a></li>");
+                    Add("\">");
+                    Add(subscpt + 2);
+                    Add("</a></li>");
                 }
                 Add("</ul>");
             }
