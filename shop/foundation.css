@@ -1814,8 +1814,8 @@ select[multiple] {
 .pagination li {
     margin-right: 0.0625rem;
     border-radius: 3px;
-    font-size: 0.875rem;
-    display: none;
+    font-size: 1rem;
+    display: inline-block;
 }
 
 .pagination li:last-child,

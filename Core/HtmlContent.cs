@@ -291,30 +291,42 @@ namespace Greatbone.Core
             Add("</div>");
         }
 
-        public void PAGENATE(ActionContext ac)
+        const int VPAGES = 6;
+
+        public void PAGENATE(ActionContext ac, int count)
         {
             // pagination
             ActionInfo ai = ac.Doer;
             if (ai.HasSubscript)
             {
-                Add("<div class=\"row\">");
                 Add("<ul class=\"pagination text-center\" role=\"navigation\">");
                 int subscpt = ac.Subscript;
-                Add("<li class=\"pagination-previous disabled\">Previous</li>");
-                for (int i = 0; i < subscpt; i++)
+                for (int i = 0; i <= subscpt; i++)
                 {
-                    Add("<li><a href=\"");
+                    Add("<li><a");
+                    if (subscpt == i)
+                    {
+                        Add(" class=\"current\"");
+                    }
+                    Add(" href=\"");
                     Add(ai.Name);
                     Add('-');
-                    Add(subscpt);
+                    Add(i);
                     Add(ac.QueryString);
                     Add("\">");
-                    Add(i);
+                    Add(i + 1);
                     Add("</a></li>");
                 }
-                Add("<li class=\"pagination-next disabled\">Next</li>");
+                if (count == ai.Limit)
+                {
+                    Add("<li class=\"pagination-next\"><a href=\"");
+                    Add(ai.Name);
+                    Add('-');
+                    Add(subscpt + 1);
+                    Add(ac.QueryString);
+                    Add("\"><i class=\"fa fa-arrow-right\" ></i></a></li>");
+                }
                 Add("</ul>");
-                Add("</div>");
             }
         }
 
@@ -407,17 +419,17 @@ namespace Greatbone.Core
             return this;
         }
 
-        public HtmlContent TABLE<D>(ActionContext formctx, Work varwork, D[] arr, ushort proj = 0x00ff) where D : IData
+        public HtmlContent TABLE<D>(ActionContext formed, Work varwork, D[] datas, ushort proj = 0x00ff) where D : IData
         {
             bool checks = false; // to draw selection-checkboxes?
-            if (formctx != null)
+            if (formed != null)
             {
                 Add("<form id=\"tableform\">");
-                TOOLBAR(formctx.Work);
-                checks = formctx.Work.Buttons > 0;
+                TOOLBAR(formed.Work);
+                checks = formed.Work.Buttons > 0;
             }
 
-            if (arr != null)
+            if (datas != null)
             {
                 ++level;
                 chain[level].varwork = varwork;
@@ -436,7 +448,7 @@ namespace Greatbone.Core
                     Add("<th></th>");
                 }
 
-                arr[0].Write(this, proj);
+                datas[0].Write(this, proj);
 
                 if (ais != null)
                 {
@@ -448,9 +460,9 @@ namespace Greatbone.Core
                 chain[level].node = TABLE_TBODY;
 
                 Add("<tbody>");
-                for (int i = 0; i < arr.Length; i++)
+                for (int i = 0; i < datas.Length; i++)
                 {
-                    D obj = arr[i];
+                    D obj = datas[i];
                     chain[level].obj = obj;
 
                     Add("<tr>");
@@ -463,7 +475,7 @@ namespace Greatbone.Core
                         Add("</td>");
                     }
 
-                    arr[i].Write(this, proj);
+                    datas[i].Write(this, proj);
 
                     // acitons
                     if (ais != null)
@@ -480,10 +492,10 @@ namespace Greatbone.Core
                 --level;
             }
 
-            if (formctx != null)
+            if (formed != null)
             {
                 // pagination controls if any
-                PAGENATE(formctx);
+                PAGENATE(formed, datas == null ? 0 : datas.Length);
 
                 Add("</form>");
             }
@@ -514,28 +526,28 @@ namespace Greatbone.Core
             return this;
         }
 
-        public HtmlContent GRID<D>(ActionContext formctx, Work varwork, D[] arr, ushort proj = 0x00ff) where D : IData
+        public HtmlContent GRID<D>(ActionContext formed, Work varwork, D[] datas, ushort proj = 0x00ff) where D : IData
         {
-            bool checks = false; // to draw selection-checkboxes?
-            if (formctx != null)
+            bool checks = false; // to render checkboxes?
+            if (formed != null)
             {
                 Add("<form id=\"gridform\">");
-                TOOLBAR(formctx.Work);
-                checks = formctx.Work.Buttons > 0;
+                TOOLBAR(formed.Work);
+                checks = formed.Work.Buttons > 0;
             }
 
-            if (arr != null) // grid component
+            if (datas != null) // render grid component
             {
                 ++level;
                 chain[level].node = GRID_DIV;
                 chain[level].varwork = varwork;
 
                 Add("<div class=\"row expanded small-up-1 medium-up-2 large-up-3 xlarge-up-4\">");
-                for (int i = 0; i < arr.Length; i++)
+                for (int i = 0; i < datas.Length; i++)
                 {
                     Add("<div class=\"column\">");
                     Add("<div class=\"card\">");
-                    D obj = arr[i];
+                    D obj = datas[i];
                     chain[level].obj = obj;
 
                     if (checks && level == 0)
@@ -573,44 +585,44 @@ namespace Greatbone.Core
                 Add("</div>");
             }
 
-            if (formctx != null)
+            if (formed != null)
             {
                 // pagination controls if any
-                PAGENATE(formctx);
+                PAGENATE(formed, datas == null ? 0 : datas.Length);
                 Add("</form>");
             }
             return this;
         }
 
-        public HtmlContent LIST<D>(ActionContext formctx, Work varwork, D[] arr, ushort proj = 0x00ff) where D : IData
+        public HtmlContent LIST<D>(ActionContext formed, Work varwork, D[] datas, ushort proj = 0x00ff) where D : IData
         {
-            if (formctx != null)
+            if (formed != null)
             {
                 Add("<form id=\"listform\">");
-                TOOLBAR(formctx.Work);
+                TOOLBAR(formed.Work);
             }
 
-            if (arr != null)
+            if (datas != null)
             {
                 ++level;
                 chain[level].node = LIST_UL;
                 chain[level].varwork = varwork;
 
                 Add("<ul>");
-                for (int i = 0; i < arr.Length; i++)
+                for (int i = 0; i < datas.Length; i++)
                 {
                     Add("<li>");
-                    arr[i].Write(this, proj);
+                    datas[i].Write(this, proj);
                     Add("</li>");
                 }
                 Add("</ul>");
                 --level;
             }
 
-            if (formctx != null)
+            if (formed != null)
             {
                 // pagination controls if any
-                PAGENATE(formctx);
+                PAGENATE(formed, datas == null ? 0 : datas.Length);
                 Add("</form>");
             }
             return this;

@@ -67,7 +67,7 @@ namespace Greatbone.Sample
             h.Add("<div class=\"title-bar-title\">");
             h.Add("<span class=\"button primary hollow\">");
             string title = ac[work];
-            if (title.Length > 20) title = ((User)ac.Principal).nickname;
+            if (title.Length > 20) title = ((User) ac.Principal).nickname;
             h.Add(title);
             h.Add("</span>");
             h.Add("</div>");
@@ -194,21 +194,16 @@ namespace Greatbone.Sample
             ac.Give(status, h, @public, maxage);
         }
 
-        public static void GiveGridPage<D>(this ActionContext ac, int status, D[] objs, ushort proj = 0x00ff, bool? @public = null, int maxage = 60) where D : IData
+        public static void GiveGridPage<D>(this ActionContext ac, int status, D[] datas, ushort proj = 0x00ff, bool? @public = null, int maxage = 60) where D : IData
         {
             Work work = ac.Work;
-            ac.GivePage(status, main => { main.GRID(ac, work.varwork, objs, proj); }, @public, maxage);
+            ac.GivePage(status, main => { main.GRID(ac, work.varwork, datas, proj); }, @public, maxage);
         }
 
-        public static void GiveGridPage<D>(this ActionContext ac, int status, D[] objs, Action<HtmlContent, D> putobj, bool? @public = null, int maxage = 60) where D : IData
+        public static void GiveTablePage<D>(this ActionContext ac, int status, D[] datas, ushort proj = 0x00ff, bool? @public = null, int maxage = 60) where D : IData
         {
             Work work = ac.Work;
-        }
-
-        public static void GiveTablePage<D>(this ActionContext ac, int status, D[] objs, ushort proj = 0x00ff, bool? @public = null, int maxage = 60) where D : IData
-        {
-            Work work = ac.Work;
-            ac.GivePage(status, main => { main.TABLE(ac, work.varwork, objs, proj); }, @public, maxage);
+            ac.GivePage(status, main => { main.TABLE(ac, work.varwork, datas, proj); }, @public, maxage);
         }
     }
 }
