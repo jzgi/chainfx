@@ -67,7 +67,7 @@ namespace Greatbone.Sample
             h.Add("<div class=\"title-bar-title\">");
             h.Add("<span class=\"button primary hollow\">");
             string title = ac[work];
-            if (title.Length > 20) title = ((User) ac.Principal).nickname;
+            if (title.Length > 20) title = ((User) ac.Principal).name;
             h.Add(title);
             h.Add("</span>");
             h.Add("</div>");

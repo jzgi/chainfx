@@ -1203,7 +1203,7 @@ select[multiple] {
 .button[disabled],
 .button[disabled]:hover,
 .button[disabled]:focus {
-    color: #fefefe;
+    color: #0a0a0a;
 }
 
 .button.disabled.primary,
@@ -1263,7 +1263,7 @@ select[multiple] {
 .button[disabled].success,
 .button[disabled].success:hover,
 .button[disabled].success:focus {
-    color: gray;
+    color: #5da423;
 }
 
 .button.disabled.warning,

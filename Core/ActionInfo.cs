@@ -17,6 +17,10 @@ namespace Greatbone.Core
 
         readonly int limit;
 
+        readonly Criteria disabler;
+
+        readonly Criteria asker;
+
         // void action(ActionContext)
         readonly Action<ActionContext> @do;
 
@@ -36,6 +40,14 @@ namespace Greatbone.Core
             this.subscript = subscript;
             this.limit = limit;
 
+            // create ui criteria delegates
+            if (ui != null)
+            {
+                if (ui.Disabler != null) disabler = work.CreateCriteria(ui.Disabler);
+                if (ui.Asker != null) asker = work.CreateCriteria(ui.Asker);
+            }
+
+            // create a doer delegate
             if (async)
             {
                 if (subscript)
@@ -67,6 +79,10 @@ namespace Greatbone.Core
         public bool HasSubscript => subscript;
 
         public int Limit => limit;
+
+        public Criteria Disabler => disabler;
+
+        public Criteria Asker => asker;
 
         public override Service Service => work.Service;
 

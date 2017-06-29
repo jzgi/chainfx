@@ -28,14 +28,13 @@ namespace Greatbone.Sample
 
         internal string wx; // wexin openid
 
-        internal string nickname;
+        internal string name;
         internal string city; // default viewing city
         internal string distr;
         internal string addr;
         internal string tel;
         internal DateTime created;
 
-        internal string name;
         internal string id; // optional unique id
         internal string credential;
         internal string oprat; // operator at shopid
@@ -50,7 +49,7 @@ namespace Greatbone.Sample
             {
                 i.Get(nameof(wx), ref wx);
             }
-            i.Get(nameof(nickname), ref nickname);
+            i.Get(nameof(name), ref name);
             i.Get(nameof(city), ref city);
             i.Get(nameof(distr), ref distr);
             i.Get(nameof(addr), ref addr);
@@ -64,7 +63,6 @@ namespace Greatbone.Sample
             if ((proj & BACKEND) != 0) // inclusive
             {
                 i.Get(nameof(id), ref id);
-                i.Get(nameof(name), ref name);
                 if ((proj & CREDENTIAL) == CREDENTIAL)
                 {
                     i.Get(nameof(credential), ref credential);
@@ -85,7 +83,7 @@ namespace Greatbone.Sample
             {
                 o.Put(nameof(wx), wx);
             }
-            o.Put(nameof(nickname), nickname, "用户名称");
+            o.Put(nameof(name), name, "用户名称");
             o.Put(nameof(city), city, "城市");
             o.Put(nameof(distr), distr, "区划");
             o.Put(nameof(addr), addr, "街道/地址");
@@ -98,7 +96,6 @@ namespace Greatbone.Sample
             if ((proj & BACKEND) != 0)
             {
                 o.Put(nameof(id), id, "后台帐号");
-                o.Put(nameof(name), name, "真实姓名");
                 if ((proj & CREDENTIAL) == CREDENTIAL)
                 {
                     o.Put(nameof(credential), credential);

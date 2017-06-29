@@ -30,56 +30,13 @@ namespace Greatbone.Sample
             Create<MyChargeWork>("charge");
         }
 
-        [Ui("个人信息", Mode = UiMode.AnchorShow)]
-        public async Task profile(ActionContext ac)
-        {
-            string wx = ac[this];
-            if (ac.GET)
-            {
-                var o = ac.Query.ToData<User>();
-                if (o.nickname == null)
-                {
-                    User prin = (User) ac.Principal;
-                    o.nickname = prin.nickname;
-                    o.city = prin.city;
-                    o.addr = prin.addr;
-                    o.distr = prin.distr;
-                    o.tel = prin.tel;
-                }
-                ac.GivePane(200, m =>
-                {
-                    m.FORM_();
-                    m.FIELDSET_("默认收货地址");
-                    m.TEXT(nameof(o.nickname), o.nickname, label: "用户名称", max: 10, required: true);
-                    m.SELECT(nameof(o.city), o.city, ((ShopService) Service).CityOpt, label: "城市", refresh: true);
-                    m.SELECT(nameof(o.distr), o.distr, ((ShopService) Service).GetDistrs(o.city), label: "区划");
-                    m.TEXT(nameof(o.addr), o.addr, label: "街道/地址");
-                    m.TEXT(nameof(o.tel), o.tel, label: "联系电话");
-                    m._FIELDSET();
-                    m._FORM();
-                });
-            }
-            else
-            {
-                var o = await ac.ReadDataAsync<User>();
-                o.wx = wx;
-                o.created = DateTime.Now;
-                using (var dc = ac.NewDbContext())
-                {
-                    dc.Execute("INSERT INTO users (wx, nickname, city, distr, addr, tel, created) VALUES (@1, @2, @3, @4, @5, @6, @7) ON CONFLICT (wx) DO UPDATE SET nickname = @2, city = @3, distr = @4, addr = @5, tel = @6, created = @7", p => p.Set(o.wx).Set(o.nickname).Set(o.city).Set(o.distr).Set(o.addr).Set(o.tel).Set(o.created));
-                }
-                ac.SetTokenCookie(o, 0xffff ^ User.CREDENTIAL);
-                ac.GivePane(200);
-            }
-        }
-
         const string PASS = "0z4R4pX7";
 
         [Ui("后台操作设置", "后台操作帐号", Mode = UiMode.AnchorShow)]
         public async Task loginf(ActionContext ac)
         {
             string wx = ac[this];
-            var prin = (User) ac.Principal;
+            var prin = (User)ac.Principal;
             string password = PASS;
             if (ac.GET)
             {

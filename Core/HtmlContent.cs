@@ -64,7 +64,7 @@ namespace Greatbone.Core
                     char c = alt[i];
                     if (c >= 'a' && c <= 'z')
                     {
-                        c = (char)(c - 32);
+                        c = (char) (c - 32);
                     }
                     Add(c);
                 }
@@ -269,7 +269,7 @@ namespace Greatbone.Core
             return this;
         }
 
-        public void TOOLBAR(Work work)
+        public void TOOLBAR(Work work, object model)
         {
             Add("<div data-sticky-container>");
             Add("<div class=\"sticky\" style=\"width: 100%\" data-sticky  data-options=\"anchor: page; marginTop: 0; stickyOn: small;\">");
@@ -278,7 +278,7 @@ namespace Greatbone.Core
             Add("<div class=\"title-bar-left\">");
             if (work.UiActions != null)
             {
-                TRIGGERS(work.UiActions);
+                TRIGGERS(work.UiActions, model: model);
             }
             Add("</div>");
 
@@ -431,7 +431,7 @@ namespace Greatbone.Core
             if (formed != null)
             {
                 Add("<form id=\"tableform\">");
-                TOOLBAR(formed.Work);
+                TOOLBAR(formed.Work, datas);
                 checks = formed.Work.Buttons > 0;
             }
 
@@ -532,14 +532,14 @@ namespace Greatbone.Core
             return this;
         }
 
-        public HtmlContent GRID<D>(ActionContext formed, Work varwork, D[] datas, ushort proj = 0x00ff) where D : IData
+        public HtmlContent GRID<D>(ActionContext formctx, Work varwork, D[] datas, ushort proj = 0x00ff) where D : IData
         {
             bool checks = false; // to render checkboxes?
-            if (formed != null)
+            if (formctx != null)
             {
                 Add("<form id=\"gridform\">");
-                TOOLBAR(formed.Work);
-                checks = formed.Work.Buttons > 0;
+                TOOLBAR(formctx.Work, datas);
+                checks = formctx.Work.Buttons > 0;
             }
 
             if (datas != null) // render grid component
@@ -553,8 +553,8 @@ namespace Greatbone.Core
                 {
                     Add("<div class=\"column\">");
                     Add("<div class=\"card\">");
-                    D obj = datas[i];
-                    chain[level].obj = obj;
+                    D data = datas[i];
+                    chain[level].obj = data;
 
                     if (checks && level == 0)
                     {
@@ -563,20 +563,20 @@ namespace Greatbone.Core
                         Add("</div>");
                         Add("<div class=\"small-9 columns\" style=\"text-align: right\">");
                         Add("<input name=\"key\" type=\"checkbox\" style=\"margin: 0 0.5rem\" value=\"");
-                        varwork?.OutputVarKey(obj, this);
+                        varwork?.OutputVarKey(data, this);
                         Add("\">");
                         Add("</div>");
                         Add("</div>");
                     }
 
-                    obj.Write(this, proj);
+                    data.Write(this, proj);
 
                     // action trigers
                     ActionInfo[] ais = varwork?.UiActions;
                     if (ais != null)
                     {
-                        Add("<div style=\"text-align: right; border-top: 1px solid mediumorchid\">");
-                        TRIGGERS(ais);
+                        Add("<div style=\"text-align: right; border-top: 1px solid silver\">");
+                        TRIGGERS(ais, null, data);
                         Add("</div>");
                     }
                     Add("</div>");
@@ -591,10 +591,10 @@ namespace Greatbone.Core
                 Add("</div>");
             }
 
-            if (formed != null)
+            if (formctx != null)
             {
                 // pagination controls if any
-                PAGENATE(formed, datas == null ? 0 : datas.Length);
+                PAGENATE(formctx, datas == null ? 0 : datas.Length);
                 Add("</form>");
             }
             return this;
@@ -605,7 +605,7 @@ namespace Greatbone.Core
             if (formed != null)
             {
                 Add("<form id=\"listform\">");
-                TOOLBAR(formed.Work);
+                TOOLBAR(formed.Work, datas);
             }
 
             if (datas != null)
@@ -634,7 +634,7 @@ namespace Greatbone.Core
             return this;
         }
 
-        public HtmlContent TRIGGERS(ActionInfo[] ais, ActionContext ac = null)
+        public HtmlContent TRIGGERS(ActionInfo[] ais, ActionContext ac = null, object model = null)
         {
             if (ais == null) return this;
 
@@ -659,7 +659,11 @@ namespace Greatbone.Core
                     }
                     Add(ai.Name);
                     Add("\"");
-                    if (ai.Enabler != null && !ai.Enabler(chain[level].obj))
+                    if (ai.Asker != null && ai.Asker(chain[level].obj))
+                    {
+                        Add(" style=\"text-decoration: underline wavy red;\"");
+                    }
+                    if (ai.Disabler != null && ai.Disabler(chain[level].obj))
                     {
                         Add(" disabled onclick=\"return false;\"");
                     }
@@ -719,7 +723,11 @@ namespace Greatbone.Core
                     }
                     Add(ai.Name);
                     Add("\" formmethod=\"post\"");
-                    if (ai.Enabler != null && !ai.Enabler(chain[level].obj))
+                    if (ai.Asker != null && ai.Asker(chain[level].obj))
+                    {
+                        Add(" style=\"text-decoration: underline wavy red;\"");
+                    }
+                    if (ai.Disabler != null && ai.Disabler(chain[level].obj))
                     {
                         Add(" disabled");
                     }
@@ -1481,11 +1489,11 @@ namespace Greatbone.Core
             if (mode > 0)
             {
                 Add(" onclick=\"dialog(this,");
-                Add((int)mode);
+                Add((int) mode);
                 Add("); return false;\"");
             }
 
-            if (ai.Enabler != null)
+            if (ai.Disabler != null)
             {
                 // Add(" data-if=\""); Add(state.If); Add("\"");
                 // Add(" data-unif=\""); Add(state.Unif); Add("\"");

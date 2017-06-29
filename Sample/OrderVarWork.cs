@@ -19,7 +19,6 @@ namespace Greatbone.Sample
         }
     }
 
-
     public class MyCartOrderVarWork : MyOrderVarWork
     {
         public MyCartOrderVarWork(WorkContext wc) : base(wc)
@@ -27,32 +26,42 @@ namespace Greatbone.Sample
             CreateVar<MyCartOrderVarVarWork, string>(obj => ((OrderLine) obj).name);
         }
 
-        [Ui("收货地址", Mode = UiMode.ButtonShow)]
+        public bool NoAddr(object obj) => string.IsNullOrEmpty(((Order) obj).addr);
+
+        [Ui("填写收货地址", Mode = UiMode.ButtonShow, Asker = nameof(NoAddr))]
         public async Task addr(ActionContext ac)
         {
             string wx = ac[typeof(UserVarWork)];
             long id = ac[this];
-            string city = null;
-            string distr = null;
-            string addr = null;
-            string tel = null;
-            bool save = true;
+            string buyer;
+            string city;
+            string distr;
+            string addr;
+            string tel;
+            bool save;
             if (ac.GET)
             {
-                using (var dc = ac.NewDbContext())
+                var f = ac.Query;
+                f.Let(out buyer).Let(out city).Let(out distr).Let(out addr).Let(out tel).Let(out save);
+
+                if (city == null)
                 {
-                    if (dc.Query1("SELECT city, distr, addr, tel FROM orders WHERE id = @1", p => p.Set(id)))
+                    using (var dc = ac.NewDbContext())
                     {
-                        dc.Let(out city).Let(out distr).Let(out addr).Let(out tel);
+                        if (dc.Query1("SELECT buyer, city, distr, addr, tel FROM orders WHERE id = @1", p => p.Set(id)))
+                        {
+                            dc.Let(out buyer).Let(out city).Let(out distr).Let(out addr).Let(out tel);
+                        }
                     }
                 }
                 ac.GivePane(200, m =>
                 {
                     m.FORM_();
+                    m.TEXT(nameof(buyer), buyer, label: "买家名称", max: 10, required: true);
                     m.SELECT(nameof(city), city, ((ShopService) Service).CityOpt, label: "城市", refresh: true);
                     m.SELECT(nameof(distr), distr, ((ShopService) Service).GetDistrs(city), label: "区域");
-                    m.TEXT(nameof(addr), addr, label: "地址");
-                    m.TEXT(nameof(tel), tel, label: "电话");
+                    m.TEXT(nameof(addr), addr, label: "地址", pattern: "[\\S]*", max: 20, required: true);
+                    m.TEXT(nameof(tel), tel, label: "电话", max: 11, required: true);
                     m.CHECKBOX(nameof(save), save, label: "存为默认的收货地址");
                     m._FORM();
                 });
@@ -60,14 +69,15 @@ namespace Greatbone.Sample
             else
             {
                 var f = await ac.ReadAsync<Form>();
-                f.Let(out city).Let(out distr).Let(out addr).Let(out tel).Let(out save);
+                f.Let(out buyer).Let(out city).Let(out distr).Let(out addr).Let(out tel).Let(out save);
                 using (var dc = ac.NewDbContext())
                 {
-                    dc.Execute("UPDATE orders SET city = @1, distr = @2, addr = @3, tel = @4 WHERE id = @5", p => p.Set(city).Set(distr).Set(addr).Set(tel).Set(id));
+                    dc.Execute("UPDATE orders SET buyer = @1, city = @2, distr = @3, addr = @4, tel = @5 WHERE id = @6", p => p.Set(buyer).Set(city).Set(distr).Set(addr).Set(tel).Set(id));
                     if (save)
                     {
                         User prin = (User) ac.Principal;
-                        dc.Execute("INSERT INTO users (wx, nickname, city, distr, addr, tel, created) VALUES (@1, @2, @3, @4, @5, @6, @7) ON CONFLICT (wx) DO UPDATE SET nickname = @2, city = @3, distr = @4, addr = @5, tel = @6, created = @7", p => p.Set(wx).Set(prin.nickname).Set(city).Set(distr).Set(addr).Set(tel).Set(DateTime.Now));
+                        dc.Execute("INSERT INTO users (wx, name, city, distr, addr, tel, created) VALUES (@1, @2, @3, @4, @5, @6, @7) ON CONFLICT (wx) DO UPDATE SET name = @2, city = @3, distr = @4, addr = @5, tel = @6, created = @7", p => p.Set(wx).Set(buyer).Set(city).Set(distr).Set(addr).Set(tel).Set(DateTime.Now));
+                        prin.name = buyer;
                         prin.city = city;
                         prin.distr = distr;
                         prin.addr = addr;
@@ -118,9 +128,7 @@ namespace Greatbone.Sample
             }
         }
 
-        static readonly Func<IData, bool> PREPAY = obj => !string.IsNullOrEmpty(((Order) obj).addr);
-
-        [Ui("微信付款", "确定要通过微信付款吗", Mode = UiMode.AnchorScript, Bold = true)]
+        [Ui("微信付款", "确定要通过微信付款吗", Mode = UiMode.AnchorScript, Bold = true, Disabler = nameof(NoAddr))]
         public async Task prepay(ActionContext ac)
         {
             string wx = ac[typeof(UserVarWork)];
@@ -153,7 +161,7 @@ namespace Greatbone.Sample
         public async Task cancel(ActionContext ac)
         {
             long id = ac[this];
-            string abortion = null;
+            string abortion;
             if (ac.GET)
             {
                 using (var dc = ac.NewDbContext())
@@ -289,9 +297,9 @@ namespace Greatbone.Sample
         {
         }
 
-        static readonly Func<IData, bool> ABORT = obj => ((Order) obj).abortion != null;
+        public bool NoAbortion(object obj) => string.IsNullOrEmpty(((Order) obj).abortion);
 
-        [Ui("同意撤销/退款", "同意撤销此单，实收金额退回给买家", Mode = UiMode.ButtonShow)]
+        [Ui("同意撤销/退款", "同意撤销此单，实收金额退回给买家", Mode = UiMode.ButtonShow, Disabler = nameof(NoAbortion))]
         public async Task abort(ActionContext ac)
         {
             long id = ac[this];
@@ -333,9 +341,9 @@ namespace Greatbone.Sample
         {
         }
 
-        static readonly Func<IData, bool> REFUNDQ = obj => ((Order) obj).status == Order.ABORTED;
+        public bool NotAborted(object obj) => ((Order) obj).status != Order.ABORTED;
 
-        [Ui("退款情况核查", "实时核查退款到账情况", Mode = UiMode.AnchorOpen)]
+        [Ui("退款情况核查", "实时核查退款到账情况", Mode = UiMode.AnchorOpen, Disabler = nameof(NotAborted))]
         public async Task refundq(ActionContext ac)
         {
             long id = ac[this];
@@ -355,7 +363,7 @@ namespace Greatbone.Sample
                 ac.GivePane(200, m =>
                 {
                     m.FORM_();
-                    m.CALLOUT(err, false);
+                    m.CALLOUT(err);
                     m.CHECKBOX("ok", false, "重新提交退款请求", true);
                     m.BUTTON("", 1, "确认");
                     m._FORM();

@@ -97,19 +97,6 @@ namespace Greatbone.Core
             }
             uiactions = uias?.ToArray();
             buttons = btns;
-
-            // enablers
-            foreach (FieldInfo fi in typ.GetFields(BindingFlags.Static | BindingFlags.Public | BindingFlags.NonPublic))
-            {
-                if (fi.FieldType == typeof(Func<IData, bool>))
-                {
-                    ActionInfo ai = actions[fi.Name.ToLower()];
-                    if (ai != null && ai.HasUi)
-                    {
-                        ai.Enabler = (Func<IData, bool>) fi.GetValue(null);
-                    }
-                }
-            }
         }
 
         ///
@@ -177,6 +164,12 @@ namespace Greatbone.Core
             W work = (W) ci.Invoke(new object[] {wc});
             varwork = work;
             return work;
+        }
+
+        internal Criteria CreateCriteria(string method)
+        {
+            MethodInfo mi = typeinfo.GetMethod(method);
+            return (Criteria) mi?.CreateDelegate(typeof(Criteria), this);
         }
 
         public Roll<ActionInfo> Actions => actions;

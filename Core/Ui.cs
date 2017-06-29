@@ -34,6 +34,10 @@ namespace Greatbone.Core
         ButtonScript = 0x0210,
     }
 
+    ///
+    ///
+    public delegate bool Criteria(object obj);
+
     /// 
     /// To specify user interaction related attributes and behaviors.
     ///
@@ -66,20 +70,24 @@ namespace Greatbone.Core
 
         public bool Bold { get; set; } = false;
 
-        public bool IsAnchor => ((int)Mode & 0x0100) == 0x0100;
+        public string Disabler { get; set; }
 
-        public bool IsButton => ((int)Mode & 0x0200) == 0x0200;
+        public string Asker { get; set; }
 
-        public bool HasConfirm => ((int)Mode & 0x01) == 0x01;
+        public bool IsAnchor => ((int) Mode & 0x0100) == 0x0100;
 
-        public bool HasPrompt => ((int)Mode & 0x02) == 0x02;
+        public bool IsButton => ((int) Mode & 0x0200) == 0x0200;
 
-        public bool HasShow => ((int)Mode & 0x04) == 0x04;
+        public bool HasConfirm => ((int) Mode & 0x01) == 0x01;
 
-        public bool HasOpen => ((int)Mode & 0x08) == 0x08;
+        public bool HasPrompt => ((int) Mode & 0x02) == 0x02;
 
-        public bool HasScript => ((int)Mode & 0x10) == 0x10;
+        public bool HasShow => ((int) Mode & 0x04) == 0x04;
 
-        public bool HasCrop => ((int)Mode & 0x20) == 0x20;
+        public bool HasOpen => ((int) Mode & 0x08) == 0x08;
+
+        public bool HasScript => ((int) Mode & 0x10) == 0x10;
+
+        public bool HasCrop => ((int) Mode & 0x20) == 0x20;
     }
 }

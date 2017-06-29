@@ -74,8 +74,6 @@ namespace Greatbone.Core
 
         public UiAttribute Ui => ui;
 
-        public Func<IData, bool> Enabler { get; internal set; }
-
         public AuthorizeAttribute Authorize => authorize;
 
         public IBefore Before => before;

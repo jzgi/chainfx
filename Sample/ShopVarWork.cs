@@ -197,21 +197,21 @@ namespace Greatbone.Sample
                     if (dc.Query1("SELECT msgs FROM chats WHERE shopid = @1 AND wx = @2", p => p.Set(shopid).Set(prin.wx)))
                     {
                         dc.Let(out msgs);
-                        msgs = msgs.AddOf(new ChatMsg() {name = prin.nickname, text = text});
+                        msgs = msgs.AddOf(new ChatMsg() {name = prin.name, text = text});
                         dc.Execute("UPDATE chats SET msgs = @1, quested = localtimestamp WHERE shopid = @2 AND wx = @3", p => p.Set(msgs).Set(shopid).Set(prin.wx));
                     }
                     else
                     {
                         msgs = new[]
                         {
-                            new ChatMsg() {name = prin.nickname, text = text}
+                            new ChatMsg() {name = prin.name, text = text}
                         };
-                        dc.Execute("INSERT INTO chats (shopid, wx, nickname, msgs, quested) VALUES (@1, @2, @3, @4, localtimestamp)", p => p.Set(shopid).Set(prin.wx).Set(prin.nickname).Set(msgs));
+                        dc.Execute("INSERT INTO chats (shopid, wx, name, msgs, quested) VALUES (@1, @2, @3, @4, localtimestamp)", p => p.Set(shopid).Set(prin.wx).Set(prin.name).Set(msgs));
                     }
 
                     mgrwx = (string) dc.Scalar("SELECT mgrwx FROM shops WHERE id = @1", p => p.Set(shopid));
                 }
-                await WeiXinUtility.PostSendAsync(mgrwx, "【买家消息】" + prin.nickname + "：" + text);
+                await WeiXinUtility.PostSendAsync(mgrwx, "【买家消息】" + prin.name + "：" + text);
                 ac.GivePane(200);
             }
         }
