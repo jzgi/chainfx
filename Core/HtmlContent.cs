@@ -64,7 +64,7 @@ namespace Greatbone.Core
                     char c = alt[i];
                     if (c >= 'a' && c <= 'z')
                     {
-                        c = (char) (c - 32);
+                        c = (char)(c - 32);
                     }
                     Add(c);
                 }
@@ -425,14 +425,14 @@ namespace Greatbone.Core
             return this;
         }
 
-        public HtmlContent TABLE<D>(ActionContext formed, Work varwork, D[] datas, ushort proj = 0x00ff) where D : IData
+        public HtmlContent TABLE<D>(ActionContext formctx, Work varwork, D[] datas, ushort proj = 0x00ff) where D : IData
         {
             bool checks = false; // to draw selection-checkboxes?
-            if (formed != null)
+            if (formctx != null)
             {
                 Add("<form id=\"tableform\">");
-                TOOLBAR(formed.Work, datas);
-                checks = formed.Work.Buttons > 0;
+                TOOLBAR(formctx.Work, datas);
+                checks = formctx.Work.Buttons > 0;
             }
 
             if (datas != null)
@@ -498,10 +498,10 @@ namespace Greatbone.Core
                 --level;
             }
 
-            if (formed != null)
+            if (formctx != null)
             {
                 // pagination controls if any
-                PAGENATE(formed, datas == null ? 0 : datas.Length);
+                PAGENATE(formctx, datas == null ? 0 : datas.Length);
 
                 Add("</form>");
             }
@@ -763,17 +763,21 @@ namespace Greatbone.Core
             return this;
         }
 
-        public HtmlContent BUTTON(string value)
+        public HtmlContent BUTTON(string value, bool post = true)
         {
-            Add("<button class=\"button primary hollow\">");
+            Add("<button class=\"button primary hollow\" formmethod=\"");
+            Add(post ? "post" : "get");
+            Add("\">");
             AddEsc(value);
             Add("</button>");
             return this;
         }
 
-        public HtmlContent BUTTON(string name, int subcmd, string value)
+        public HtmlContent BUTTON(string name, int subcmd, string value, bool post = true)
         {
-            Add("<button class=\"button primary hollow\" formmethod=\"post\" formaction=\"");
+            Add("<button class=\"button primary hollow\" formmethod=\"");
+            Add(post ? "post" : "get");
+            Add("\" formaction=\"");
             Add(name);
             Add('-');
             Add(subcmd);
@@ -853,6 +857,50 @@ namespace Greatbone.Core
             }
             if (@readonly) Add(" readonly");
             if (required) Add(" required");
+
+            Add(">");
+
+            Add("</label>");
+            return this;
+        }
+
+        public HtmlContent SEARCH(string name, string v, string label = null, string help = null, string pattern = null, sbyte max = 0, sbyte min = 0, bool required = false)
+        {
+            Add("<label>");
+            AddLabel(label, name);
+            Add("<input type=\"search\" name=\"");
+            Add(name);
+            Add("\" value=\"");
+            AddEsc(v);
+            Add("\"");
+
+            if (help != null)
+            {
+                Add(" placeholder=\"");
+                Add(help);
+                Add("\"");
+            }
+            if (pattern != null)
+            {
+                Add(" pattern=\"");
+                AddEsc(pattern);
+                Add("\"");
+            }
+            if (max > 0)
+            {
+                Add(" maxlength=\"");
+                Add(max);
+                Add("\"");
+                Add(" size=\"");
+                Add(max);
+                Add("\"");
+            }
+            if (min > 0)
+            {
+                Add(" minlength=\"");
+                Add(min);
+                Add("\"");
+            }
 
             Add(">");
 
@@ -1489,7 +1537,7 @@ namespace Greatbone.Core
             if (mode > 0)
             {
                 Add(" onclick=\"dialog(this,");
-                Add((int) mode);
+                Add((int)mode);
                 Add("); return false;\"");
             }
 
@@ -1694,7 +1742,6 @@ namespace Greatbone.Core
             switch (chain[level].node)
             {
                 case TABLE_THEAD:
-                    Add("</th>"); // TD closing
                     break;
                 case TABLE_TBODY:
                     Add("</td>");

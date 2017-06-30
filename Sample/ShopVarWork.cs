@@ -406,7 +406,6 @@ namespace Greatbone.Sample
             string name;
             string distr;
             string lic;
-            bool disabled = false;
             if (ac.GET)
             {
                 using (var dc = ac.NewDbContext())
@@ -420,7 +419,6 @@ namespace Greatbone.Sample
                             m.TEXT(nameof(name), name, "商家名称");
                             m.SELECT(nameof(distr), distr, ((ShopService) Service).GetDistrs(city), "区域");
                             m.TEXT(nameof(lic), lic, "工商登记");
-                            m.CHECKBOX(nameof(disabled), disabled, "禁止营业");
                             m._FORM();
                         });
                     }
@@ -444,30 +442,34 @@ namespace Greatbone.Sample
         }
 
         [Ui("设置经理", Mode = UiMode.AnchorShow)]
-        public async Task mgr(ActionContext ac)
+        public async Task setmgr(ActionContext ac)
         {
             string shopid = ac[this];
-            string city = ac[typeof(CityVarWork)];
             if (ac.GET)
             {
+                string forid = ac.Query[nameof(forid)];
                 ac.GivePane(200, m =>
                 {
                     m.FORM_();
-                    using (var dc = ac.NewDbContext())
+                    m.SEARCH(nameof(forid), forid, label: "查询后台帐号（手机号）", min: 11, max: 11, pattern: "[0-9]+");
+                    m.BUTTON("查询", post: false);
+                    if (forid != null)
                     {
-                        if (dc.Query("SELECT id, name, wx FROM users WHERE city = @1 AND NOT id IS NULL AND NOT name IS NULL", p => p.Set(city)))
+                        using (var dc = ac.NewDbContext())
                         {
-                            while (dc.Next())
+                            if (dc.Query1("SELECT id, name, wx FROM users WHERE id = @1", p => p.Set(forid)))
                             {
                                 string id;
                                 string name;
                                 string wx;
                                 dc.Let(out id).Let(out name).Let(out wx);
+                                m.FIELDSET_("确认并选择以下用户");
                                 m.RADIO("id_wx_name", id, wx, name, false, id, name, null);
+                                m._FIELDSET();
                             }
-                            m._FORM();
                         }
                     }
+                    m._FORM();
                 });
             }
             else // post

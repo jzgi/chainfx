@@ -128,7 +128,7 @@ namespace Greatbone.Sample
             }
         }
 
-        [Ui("微信付款", "确定要通过微信付款吗", Mode = UiMode.AnchorScript, Bold = true, Disabler = nameof(NoAddr))]
+        [Ui("付款", "确定要通过微信付款吗", Mode = UiMode.AnchorScript, Bold = true, Disabler = nameof(NoAddr))]
         public async Task prepay(ActionContext ac)
         {
             string wx = ac[typeof(UserVarWork)];
