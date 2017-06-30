@@ -661,7 +661,7 @@ namespace Greatbone.Core
                     Add("\"");
                     if (ai.Asker != null && ai.Asker(chain[level].obj))
                     {
-                        Add(" style=\"text-decoration: underline wavy red;\"");
+                        Add(" style=\"color: red;\"");
                     }
                     if (ai.Disabler != null && ai.Disabler(chain[level].obj))
                     {
@@ -725,7 +725,7 @@ namespace Greatbone.Core
                     Add("\" formmethod=\"post\"");
                     if (ai.Asker != null && ai.Asker(chain[level].obj))
                     {
-                        Add(" style=\"text-decoration: underline wavy red;\"");
+                        Add(" style=\"color: red; \"");
                     }
                     if (ai.Disabler != null && ai.Disabler(chain[level].obj))
                     {

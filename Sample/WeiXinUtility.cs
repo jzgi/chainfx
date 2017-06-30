@@ -222,6 +222,10 @@ namespace Greatbone.Sample
 
             XElem xe = (await WCPay.PostAsync<XElem>(null, "/pay/unifiedorder", x.Dump())).B;
             string prepay_id = xe.Child(nameof(prepay_id));
+            if (prepay_id == null)
+            {
+                prepay_id = xe.Child("err_code");
+            }
 
             return prepay_id;
         }

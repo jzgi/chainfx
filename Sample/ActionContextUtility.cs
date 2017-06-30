@@ -24,8 +24,7 @@ namespace Greatbone.Sample
             h.Add("<title>粗粮达人</title>");
             h.Add("<meta name=\"viewport\" content=\"width=device-width, initial-scale=1.0\">");
             h.Add("<link rel=\"stylesheet\" href=\"//cdn.bootcss.com/croppie/2.4.1/croppie.min.css\">");
-            h.Add("<link rel=\"stylesheet\" href=\"/foundation.min.css\">");
-            h.Add("<link rel=\"stylesheet\" href=\"/app.css\">");
+            h.Add("<link rel=\"stylesheet\" href=\"/app.min.css\">");
             h.Add("</head>");
 
             h.Add("<body style=\"height:100%\">");
@@ -97,7 +96,7 @@ namespace Greatbone.Sample
             h.Add("<script src=\"//cdn.bootcss.com/jquery/3.2.1/jquery.min.js\"></script>");
             h.Add("<script src=\"//cdn.bootcss.com/foundation/6.3.1/js/foundation.min.js\"></script>");
             h.Add("<script src=\"//cdn.bootcss.com/croppie/2.4.1/croppie.min.js\"></script>");
-            h.Add("<script src=\"/app.js\"></script>");
+            h.Add("<script src=\"/app.min.js\"></script>");
             h.Add("<script>");
             h.Add("$(document).foundation();");
             h.Add("$('#frame-tabs').on('change.zf.tabs', function(e){var ifr = $('.tabs-panel.is-active').find('iframe'); if (ifr && !ifr[0].src) ifr[0].src = ifr[0].id;});");
@@ -123,8 +122,7 @@ namespace Greatbone.Sample
             h.Add("<meta name=\"viewport\" content=\"width=device-width, initial-scale=1.0\">");
             h.Add("<link rel=\"stylesheet\" href=\"//cdn.bootcss.com/croppie/2.4.1/croppie.min.css\">");
             h.Add("<link rel=\"stylesheet\" href=\"//cdn.bootcss.com/font-awesome/4.7.0/css/font-awesome.min.css\">");
-            h.Add("<link rel=\"stylesheet\" href=\"/foundation.min.css\">");
-            h.Add("<link rel=\"stylesheet\" href=\"/app.css\">");
+            h.Add("<link rel=\"stylesheet\" href=\"/app.min.css\">");
             h.Add("</head>");
 
             h.Add("<body>");
@@ -135,7 +133,7 @@ namespace Greatbone.Sample
             h.Add("<script src=\"//cdn.bootcss.com/jquery/3.2.1/jquery.min.js\"></script>");
             h.Add("<script src=\"//cdn.bootcss.com/foundation/6.3.1/js/foundation.min.js\"></script>");
             h.Add("<script src=\"//cdn.bootcss.com/croppie/2.4.1/croppie.min.js\"></script>");
-            h.Add("<script src=\"/app.js\"></script>");
+            h.Add("<script src=\"/app.min.js\"></script>");
             h.Add("<script>");
             h.Add("$(document).foundation();");
             h.Add("</script>");
@@ -159,8 +157,7 @@ namespace Greatbone.Sample
             h.Add("<title>粗粮达人</title>");
             h.Add("<meta name=\"viewport\" content=\"width=device-width, initial-scale=1.0\">");
             h.Add("<link rel=\"stylesheet\" href=\"//cdn.bootcss.com/font-awesome/4.7.0/css/font-awesome.min.css\">");
-            h.Add("<link rel=\"stylesheet\" href=\"/foundation.min.css\">");
-            h.Add("<link rel=\"stylesheet\" href=\"/app.css\">");
+            h.Add("<link rel=\"stylesheet\" href=\"/app.min.css\">");
             h.Add("</head>");
 
             h.Add("<body>");
@@ -170,7 +167,7 @@ namespace Greatbone.Sample
             // zurb foundation
             h.Add("<script src=\"//cdn.bootcss.com/jquery/3.2.1/jquery.min.js\"></script>");
             h.Add("<script src=\"//cdn.bootcss.com/foundation/6.3.1/js/foundation.min.js\"></script>");
-            h.Add("<script src=\"/app.js\"></script>");
+            h.Add("<script src=\"/app.min.js\"></script>");
             h.Add("<script>");
 
             h.Add("$(document).ready(function(){");

@@ -128,26 +128,19 @@ namespace Greatbone.Sample
             }
         }
 
-        [Ui("付款", "确定要通过微信付款吗", Mode = UiMode.AnchorScript, Bold = true, Disabler = nameof(NoAddr))]
+        [Ui("付款", "确定要通过微信付款吗?一经确认，该单金额将不能作更改。", Mode = UiMode.AnchorScript, Bold = true, Disabler = nameof(NoAddr))]
         public async Task prepay(ActionContext ac)
         {
             string wx = ac[typeof(UserVarWork)];
             long id = ac[this];
 
+            decimal total = 0;
             using (var dc = ac.NewDbContext())
             {
-                if (dc.Query1("SELECT total FROM orders WHERE id = @1 AND wx = @2", p => p.Set(id).Set(wx)))
-                {
-                    decimal total;
-                    dc.Let(out total);
-                    var prepay_id = await WeiXinUtility.PostUnifiedOrderAsync(id, total, wx, ac.RemoteAddr, "http://shop.144000.tv/notify");
-                    ac.Give(200, WeiXinUtility.BuildPrepayContent(prepay_id));
-                }
-                else
-                {
-                    ac.Give(404, "order not found");
-                }
+                total = (decimal) dc.Scalar("SELECT total FROM orders WHERE id = @1 AND wx = @2", p => p.Set(id).Set(wx));
             }
+            string prepay_id = await WeiXinUtility.PostUnifiedOrderAsync(id, total, wx, ac.RemoteAddr, "http://shop.144000.tv/notify");
+            ac.Give(200, WeiXinUtility.BuildPrepayContent(prepay_id));
         }
     }
 

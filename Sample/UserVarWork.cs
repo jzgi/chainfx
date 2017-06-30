@@ -40,14 +40,15 @@ namespace Greatbone.Sample
             string password = PASS;
             if (ac.GET)
             {
-                ac.GivePane(200, (x) =>
+                ac.GivePane(200, (m) =>
                 {
-                    x.FORM_();
-                    x.FIELDSET_("仅后台操作人员填写");
-                    x.TEXT(nameof(prin.id), prin.id, "用户编号（个人手机号）", max: 11, min: 11, pattern: "[0-9]+", required: true);
-                    x.TEXT(nameof(prin.name), prin.name, "真实姓名（和身份证一致）", max: 4, min: 2, required: true);
-                    x.PASSWORD(nameof(password), password, "登录密码（用于微信以外登录）", min: 3);
-                    x._FORM();
+                    m.FORM_();
+                    m.FIELDSET_("后台操作人员用本人的微信填写");
+                    m.TEXT(nameof(prin.name), prin.name, "真实姓名（和身份证一致）", max: 4, min: 2, required: true);
+                    m.TEXT(nameof(prin.id), prin.id, "用户编号（个人手机号）", max: 11, min: 11, pattern: "[0-9]+", required: true);
+                    m.PASSWORD(nameof(password), password, "登录密码（用于微信以外登录）", min: 3);
+                    m.SELECT(nameof(prin.city), prin.city, ((ShopService)Service).CityOpt, label: "城市");
+                    m._FORM();
                 });
             }
             else
@@ -56,20 +57,19 @@ namespace Greatbone.Sample
                 prin.id = f[nameof(prin.id)];
                 prin.name = f[nameof(prin.name)];
                 password = f[nameof(password)];
-
+                prin.city = f[nameof(prin.city)];
                 using (var dc = ac.NewDbContext())
                 {
                     if (PASS == password)
                     {
-                        dc.Execute("UPDATE users SET id = @1, name = @2 WHERE wx = @3", p => p.Set(prin.id).Set(prin.name).Set(wx));
+                        dc.Execute("INSERT INTO users (wx, id, name, city) VALUES (@1, @2, @3, @4) ON CONFLICT (wx) DO UPDATE SET id = @2, name = @3, city = @4 ", p => p.Set(wx).Set(prin.id).Set(prin.name).Set(prin.city));
                     }
                     else
                     {
                         string credential = StrUtility.MD5(prin.id + ":" + password);
-                        dc.Execute("UPDATE users SET id = @1, name = @2, credential = @3 WHERE wx = @4", p => p.Set(prin.id).Set(prin.name).Set(credential).Set(wx));
+                        dc.Execute("INSERT INTO users (wx, id, name, credential, city) VALUES (@1, @2, @3, @4, @5) ON CONFLICT (wx) DO UPDATE SET id = @2, name = @3, credential = @4, city = @5", p => p.Set(wx).Set(prin.id).Set(prin.name).Set(credential).Set(prin.city));
                     }
                 }
-
                 ac.SetTokenCookie(prin, 0xffff ^ User.CREDENTIAL);
                 ac.GivePane(200); // close dialog
             }
