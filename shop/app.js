@@ -38,7 +38,7 @@ function dialog(trig, mode, siz, title) {
     var bottom = mode == OPEN ? '3.5rem' : '5rem';
 
     var html = '<div id="dyndlg" class="' + sizg + ' reveal' + trigclass + '"  data-reveal data-close-on-click="false">'
-        + '<div class="title-bar"><div clsas="title-bar-title">' + title + '</div><div class="title-bar-right"><a class="close-button" href="#" onclick="$(\'#dyndlg\').foundation(\'close\').foundation(\'destroy\').remove();">&times;</a></div></div>'
+        + '<div class="title-bar"><div clsas="title-bar-title">' + title + '</div><div class="title-bar-right"><a class="close-button" onclick="$(\'#dyndlg\').foundation(\'close\').foundation(\'destroy\').remove(); return false;">&times;</a></div></div>'
         + '<div style="height: -webkit-calc(100% - ' + bottom + '); height: calc(100% - ' + bottom + ')"><iframe src="' + src + '" style="width: 100%; height: 100%; border: 0"></iframe></div>'
         + (mode == OPEN ? '' : ('<button class=\"button primary float-center\" onclick="ok(this,' + mode + ',\'' + formid + '\',\'' + tag + '\',\'' + action + '\',\'' + method + '\');" disabled>确定</botton>'))
         + '</div>';
@@ -133,7 +133,7 @@ function crop(trig, wid, hei, circle, title) {
 
     var html =
         '<div id="dyndlg" class="' + sizg + ' reveal"  data-reveal data-close-on-click="false">'
-        + '<div class="title-bar"><div clsas="title-bar-title">' + title + '</div><div class="title-bar-right"><a class="close-button" href="#" onclick="$(\'#dyndlg\').foundation(\'close\').foundation(\'destroy\').remove();">&times;</a></div></div>'
+        + '<div class="title-bar"><div clsas="title-bar-title">' + title + '</div><div class="title-bar-right"><a class="close-button" onclick="$(\'#dyndlg\').foundation(\'close\').foundation(\'destroy\').remove(); return false;">&times;</a></div></div>'
         + '<div id="demo" style="height: -webkit-calc(100% - 8.5rem); height: calc(100% - 8.5rem); text-align: center;">'
         + '<input type="file" id="fileinput" style="display: none;" onchange="bind(window.URL.createObjectURL(this.files[0]),' + wid + ',' + hei + ',' + circle + ');">'
         + '<div style="text-align: center">'
