@@ -11,7 +11,7 @@ Target Server Type    : PGSQL
 Target Server Version : 90505
 File Encoding         : 65001
 
-Date: 2017-06-13 16:57:20
+Date: 2017-07-01 21:50:20
 */
 
 
@@ -23,9 +23,9 @@ CREATE SEQUENCE "public"."orders_id_seq"
  INCREMENT 1
  MINVALUE 1000
  MAXVALUE 9223372036854775807
- START 1384
+ START 1776
  CACHE 8;
-SELECT setval('"public"."orders_id_seq"', 1384, true);
+SELECT setval('"public"."orders_id_seq"', 1776, true);
 
 -- ----------------------------
 -- Sequence structure for repays_id_seq
@@ -35,9 +35,9 @@ CREATE SEQUENCE "public"."repays_id_seq"
  INCREMENT 1
  MINVALUE 1000
  MAXVALUE 9223372036854775807
- START 1085
+ START 1165
  CACHE 16;
-SELECT setval('"public"."repays_id_seq"', 1085, true);
+SELECT setval('"public"."repays_id_seq"', 1165, true);
 
 -- ----------------------------
 -- Table structure for charges
@@ -65,7 +65,7 @@ CREATE TABLE "public"."chats" (
 "wx" varchar(28) COLLATE "default" NOT NULL,
 "msgs" jsonb,
 "quested" timestamp(6),
-"nickname" varchar(10) COLLATE "default"
+"name" varchar(10) COLLATE "default"
 )
 WITH (OIDS=FALSE)
 
@@ -172,7 +172,7 @@ WITH (OIDS=FALSE)
 DROP TABLE IF EXISTS "public"."users";
 CREATE TABLE "public"."users" (
 "wx" varchar(28) COLLATE "default" NOT NULL,
-"nickname" varchar(10) COLLATE "default",
+"name" varchar(10) COLLATE "default",
 "credential" varchar(32) COLLATE "default",
 "tel" varchar(11) COLLATE "default",
 "city" varchar(4) COLLATE "default",
@@ -183,8 +183,7 @@ CREATE TABLE "public"."users" (
 "sprat" varchar(4) COLLATE "default",
 "adm" bool DEFAULT false,
 "id" varchar(11) COLLATE "default",
-"opr" int2,
-"name" varchar(4) COLLATE "default"
+"opr" int2
 )
 WITH (OIDS=FALSE)
 
@@ -220,6 +219,11 @@ ALTER TABLE "public"."repays" ADD PRIMARY KEY ("id");
 -- Primary Key structure for table shops
 -- ----------------------------
 ALTER TABLE "public"."shops" ADD PRIMARY KEY ("id");
+
+-- ----------------------------
+-- Indexes structure for table users
+-- ----------------------------
+CREATE UNIQUE INDEX "users_id_ukey" ON "public"."users" USING btree ("id");
 
 -- ----------------------------
 -- Primary Key structure for table users
