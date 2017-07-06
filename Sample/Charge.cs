@@ -24,9 +24,6 @@ namespace Greatbone.Sample
         internal string shopid;
         internal string shopname;
         internal string descr;
-        internal string unit;
-        internal int min; // minimal ordered
-        internal int step;
         internal short status;
 
         public void Read(IDataInput i, ushort proj = 0x00ff)

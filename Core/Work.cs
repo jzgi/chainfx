@@ -182,7 +182,7 @@ namespace Greatbone.Core
 
         public Roll<Work> Subworks => subworks;
 
-        public Work Varwork => varwork;
+        public Work VarWork => varwork;
 
         public string Directory => ctx.Directory;
 

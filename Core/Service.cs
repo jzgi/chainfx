@@ -22,7 +22,7 @@ namespace Greatbone.Core
     ///
     public abstract class Service : Work, IHttpApplication<HttpContext>, ILoggerProvider, ILogger
     {
-        protected new readonly ServiceContext ctx;
+        protected readonly ServiceContext ctx;
 
         // the service instance id
         readonly string id;
