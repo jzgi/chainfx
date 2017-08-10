@@ -247,7 +247,7 @@ namespace Greatbone.Core
                 byte[] bytea = await rsp.Content.ReadAsByteArrayAsync();
                 string ctyp = rsp.Content.Headers.GetValue("Content-Type");
                 IDataInput inp = ParseContent(ctyp, bytea, bytea.Length);
-                return inp.ToDatas<D>(proj);
+                return inp.ToArray<D>(proj);
             }
             catch
             {

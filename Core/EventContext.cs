@@ -32,6 +32,8 @@ namespace Greatbone.Core
 
         public Service Service { get; set; }
 
+        public int Subscript { get; internal set; }
+
         public byte[] Content => content;
 
         public M To<M>() where M : class, IDataInput
@@ -46,13 +48,13 @@ namespace Greatbone.Core
             {
                 return default(D);
             }
-            return inp.ToData<D>(proj);
+            return inp.ToObject<D>(proj);
         }
 
         public D[] ToDatas<D>(ushort proj = 0x00ff) where D : IData, new()
         {
             IDataInput inp = entity as IDataInput;
-            return inp?.ToDatas<D>(proj);
+            return inp?.ToArray<D>(proj);
         }
 
 

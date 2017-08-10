@@ -15,7 +15,9 @@ namespace Greatbone.Core
 
         readonly bool async;
 
-        readonly bool arg;
+        readonly bool subscript;
+
+        readonly int limit;
 
         // void event(WebEventContext)
         readonly Action<EventContext> @do;
@@ -29,32 +31,34 @@ namespace Greatbone.Core
         // async Task action(WebActionContext, string)
         readonly Func<EventContext, string, Task> do2async;
 
-        internal EventInfo(Service service, MethodInfo mi, bool async, bool arg)
+        internal EventInfo(Service service, MethodInfo mi, bool async, bool subscript, int limit = 0)
         {
+            this.service = service;
             this.key = mi.Name;
             this.async = async;
-            this.arg = arg;
+            this.subscript = subscript;
+            this.limit = limit;
 
             if (async)
             {
-                if (arg)
+                if (subscript)
                 {
-                    do2async = (Func<EventContext, string, Task>)mi.CreateDelegate(typeof(Func<EventContext, string, Task>), service);
+                    do2async = (Func<EventContext, string, Task>) mi.CreateDelegate(typeof(Func<EventContext, string, Task>), service);
                 }
                 else
                 {
-                    doasync = (Func<EventContext, Task>)mi.CreateDelegate(typeof(Func<EventContext, Task>), service);
+                    doasync = (Func<EventContext, Task>) mi.CreateDelegate(typeof(Func<EventContext, Task>), service);
                 }
             }
             else
             {
-                if (arg)
+                if (subscript)
                 {
-                    do2 = (Action<EventContext, string>)mi.CreateDelegate(typeof(Action<EventContext, string>), service);
+                    do2 = (Action<EventContext, string>) mi.CreateDelegate(typeof(Action<EventContext, string>), service);
                 }
                 else
                 {
-                    @do = (Action<EventContext>)mi.CreateDelegate(typeof(Action<EventContext>), service);
+                    @do = (Action<EventContext>) mi.CreateDelegate(typeof(Action<EventContext>), service);
                 }
             }
         }
@@ -65,7 +69,9 @@ namespace Greatbone.Core
 
         public bool IsAsync => async;
 
-        public bool HasSubscript => arg;
+        public bool HasSubscript => subscript;
+
+        public int Limit => limit;
 
         // invoke the right event method
         internal void Do(EventContext ec, string arg)

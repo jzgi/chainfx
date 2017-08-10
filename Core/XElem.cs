@@ -327,17 +327,17 @@ namespace Greatbone.Core
         }
 
 
-        public D ToData<D>(ushort proj = 0x00ff) where D : IData, new()
+        public D ToObject<D>(ushort proj = 0x00ff) where D : IData, new()
         {
             throw new NotImplementedException();
         }
 
-        public D[] ToDatas<D>(ushort proj = 0x00ff) where D : IData, new()
+        public D[] ToArray<D>(ushort proj = 0x00ff) where D : IData, new()
         {
             throw new NotImplementedException();
         }
 
-        public void WriteData<R>(IDataOutput<R> o) where R : IDataOutput<R>
+        public void Write<R>(IDataOutput<R> o) where R : IDataOutput<R>
         {
             throw new NotImplementedException();
         }

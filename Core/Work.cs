@@ -38,9 +38,9 @@ namespace Greatbone.Core
         readonly int buttons;
 
         // subworks, if any
-        internal Roll<Work> subworks;
+        internal Roll<Work> works;
 
-        // the attached variable-key subwork, if any
+        // variable-key subwork, if any
         internal Work varwork;
 
         // to obtain a string key from a data object.
@@ -99,9 +99,14 @@ namespace Greatbone.Core
             buttons = btns;
         }
 
-        ///
-        /// Create a subwork.
-        ///
+        /// <summary>
+        /// Create a fixed-key subwork.
+        /// </summary>
+        /// <param name="name"></param>
+        /// <param name="attach">an attachment object</param>
+        /// <typeparam name="W"></typeparam>
+        /// <returns>The newly created and subwork instance.</returns>
+        /// <exception cref="ServiceException">Thrown if error</exception>
         public W Create<W>(string name, object attach = null) where W : Work
         {
             if (Level >= MaxNesting)
@@ -109,9 +114,9 @@ namespace Greatbone.Core
                 throw new ServiceException("allowed work nesting " + MaxNesting);
             }
 
-            if (subworks == null)
+            if (works == null)
             {
-                subworks = new Roll<Work>(16);
+                works = new Roll<Work>(16);
             }
             // create instance by reflection
             Type typ = typeof(W);
@@ -129,14 +134,20 @@ namespace Greatbone.Core
                 Service = Service
             };
             W work = (W) ci.Invoke(new object[] {wc});
-            Subworks.Add(work);
+            Works.Add(work);
 
             return work;
         }
 
-        ///
-        /// Create a variable work.
-        ///
+        /// <summary>
+        /// Create a variable-key subwork.
+        /// </summary>
+        /// <param name="keyer"></param>
+        /// <param name="attach">an attachment object</param>
+        /// <typeparam name="W"></typeparam>
+        /// <typeparam name="K"></typeparam>
+        /// <returns>The newly created subwork instance.</returns>
+        /// <exception cref="ServiceException">Thrown if error</exception>
         public W CreateVar<W, K>(Func<IData, K> keyer = null, object attach = null) where W : Work where K : IComparable<K>, IEquatable<K>
         {
             if (Level >= MaxNesting)
@@ -180,7 +191,7 @@ namespace Greatbone.Core
 
         public bool HasDefault => @default != null;
 
-        public Roll<Work> Subworks => subworks;
+        public Roll<Work> Works => works;
 
         public Work VarWork => varwork;
 
@@ -236,12 +247,12 @@ namespace Greatbone.Core
                 },
                 delegate
                 {
-                    if (subworks != null)
+                    if (works != null)
                     {
-                        for (int i = 0; i < subworks.Count; i++)
+                        for (int i = 0; i < works.Count; i++)
                         {
-                            Work work = subworks[i];
-                            work.Describe(cont);
+                            Work wrk = works[i];
+                            wrk.Describe(cont);
                         }
                     }
                     varwork?.Describe(cont);
@@ -272,7 +283,7 @@ namespace Greatbone.Core
             string key = relative.Substring(0, slash);
             relative = relative.Substring(slash + 1); // adjust relative
             Work work;
-            if (subworks != null && subworks.TryGet(key, out work)) // if child
+            if (works != null && works.TryGet(key, out work)) // if child
             {
                 ac.Chain(key, work);
                 return work.Resolve(ref relative, ac);
@@ -295,7 +306,7 @@ namespace Greatbone.Core
         }
 
         /// <summary>
-        /// handles a request/response context. authorize, before/after filters
+        /// To hndle a request/response context. authorize, before/after filters
         /// </summary>
         /// <param name="rsc">the resource path</param>
         /// <param name="ac">ActionContext</param>

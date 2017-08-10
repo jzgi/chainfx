@@ -18,7 +18,7 @@ namespace Greatbone.Core
         {
         }
 
-        public Service Service { get; set; }
+        public Service Service { get; internal set; }
 
         /// Whether this is requested from a cluster member.
         ///
@@ -230,7 +230,7 @@ namespace Greatbone.Core
                 if (clen > 0)
                 {
                     // reading
-                    int len = (int)clen;
+                    int len = (int) clen;
                     buffer = BufferUtility.GetByteBuffer(len); // borrow from the pool
                     while ((count += await Request.Body.ReadAsync(buffer, count, (len - count))) < len)
                     {
@@ -249,7 +249,7 @@ namespace Greatbone.Core
                 int? clen = HeaderInt("Content-Length");
                 if (clen > 0)
                 {
-                    int len = (int)clen;
+                    int len = (int) clen;
                     buffer = BufferUtility.GetByteBuffer(len); // borrow from the pool
                     while ((count += await Request.Body.ReadAsync(buffer, count, (len - count))) < len)
                     {
@@ -262,7 +262,7 @@ namespace Greatbone.Core
             return entity as M;
         }
 
-        public async Task<D> ReadDataAsync<D>(ushort proj = 0x00ff) where D : IData, new()
+        public async Task<D> ReadObjectAsync<D>(ushort proj = 0x00ff) where D : IData, new()
         {
             if (entity == null && count == -1) // if not yet parse and read
             {
@@ -271,7 +271,7 @@ namespace Greatbone.Core
                 int? clen = HeaderInt("Content-Length");
                 if (clen > 0)
                 {
-                    int len = (int)clen;
+                    int len = (int) clen;
                     buffer = BufferUtility.GetByteBuffer(len); // borrow from the pool
                     while ((count += await Request.Body.ReadAsync(buffer, count, (len - count))) < len)
                     {
@@ -286,10 +286,10 @@ namespace Greatbone.Core
             {
                 return default(D);
             }
-            return src.ToData<D>(proj);
+            return src.ToObject<D>(proj);
         }
 
-        public async Task<D[]> ReadDatasAsync<D>(ushort proj = 0x00ff) where D : IData, new()
+        public async Task<D[]> ReadArrayAsync<D>(ushort proj = 0x00ff) where D : IData, new()
         {
             if (entity == null && count == -1) // if not yet parse and read
             {
@@ -298,7 +298,7 @@ namespace Greatbone.Core
                 int? clen = HeaderInt("Content-Length");
                 if (clen > 0)
                 {
-                    int len = (int)clen;
+                    int len = (int) clen;
                     buffer = BufferUtility.GetByteBuffer(len); // borrow from the pool
                     while ((count += await Request.Body.ReadAsync(buffer, count, (len - count))) < len)
                     {
@@ -308,7 +308,7 @@ namespace Greatbone.Core
                 string ctyp = Header("Content-Type");
                 entity = ParseContent(ctyp, buffer, count);
             }
-            return (entity as IDataInput)?.ToDatas<D>(proj);
+            return (entity as IDataInput)?.ToArray<D>(proj);
         }
 
         //
@@ -353,7 +353,7 @@ namespace Greatbone.Core
 
         public void SetTokenCookie<P>(P prin, ushort proj) where P : class, IData, new()
         {
-            ((Service<P>)Service).SetTokenCookie(this, prin, proj);
+            ((Service<P>) Service).SetTokenCookie(this, prin, proj);
         }
 
         public bool InCache { get; internal set; }

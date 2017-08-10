@@ -50,14 +50,14 @@ namespace Greatbone.Sample
                 dc.Sql("SELECT ").columnlst(Shop.Empty, proj)._("FROM shops WHERE id = @1");
                 if (dc.Query1(p => p.Set(shopid)))
                 {
-                    var shop = dc.ToData<Shop>(proj);
+                    var shop = dc.ToObject<Shop>(proj);
 
                     // query for item records of the shop
                     Item[] items = null;
                     dc.Sql("SELECT ").columnlst(Item.Empty, Item.BASIC_SHOPID)._("FROM items WHERE shopid = @1");
                     if (dc.Query(p => p.Set(shopid)))
                     {
-                        items = dc.ToDatas<Item>(Item.BASIC_SHOPID);
+                        items = dc.ToArray<Item>(Item.BASIC_SHOPID);
                     }
 
                     ac.GivePage(200, m =>
@@ -256,7 +256,7 @@ namespace Greatbone.Sample
                     dc.Sql("SELECT ").columnlst(Shop.Empty, proj)._("FROM shops WHERE id = @1");
                     if (dc.Query1(p => p.Set(id)))
                     {
-                        var o = dc.ToData<Shop>(proj);
+                        var o = dc.ToObject<Shop>(proj);
                         ac.GivePane(200, m =>
                         {
                             m.FORM_();
@@ -279,7 +279,7 @@ namespace Greatbone.Sample
             else // post
             {
                 const ushort proj = Shop.BASIC;
-                var o = await ac.ReadDataAsync<Shop>(proj);
+                var o = await ac.ReadObjectAsync<Shop>(proj);
                 o.id = ac[this];
                 using (var dc = ac.NewDbContext())
                 {

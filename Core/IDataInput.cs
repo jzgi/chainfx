@@ -3,9 +3,9 @@ using System.Collections.Generic;
 
 namespace Greatbone.Core
 {
-    ///
-    /// Represents a provider of data entry or entries.
-    ///
+    /// <summary>
+    /// Represents a provider or input source of data record(s).
+    /// </summary>
     public interface IDataInput
     {
         bool Get(string name, ref bool v);
@@ -74,28 +74,32 @@ namespace Greatbone.Core
         IDataInput Let<D>(out D[] v, ushort proj = 0x00ff) where D : IData, new();
 
 
-        D ToData<D>(ushort proj = 0x00ff) where D : IData, new();
+        D ToObject<D>(ushort proj = 0x00ff) where D : IData, new();
 
-        D[] ToDatas<D>(ushort proj = 0x00ff) where D : IData, new();
+        D[] ToArray<D>(ushort proj = 0x00ff) where D : IData, new();
 
-        ///
-        /// Write a single (or current) data entry into the given output object.
-        ///
-        void WriteData<R>(IDataOutput<R> o) where R : IDataOutput<R>;
+        /// <summary>
+        /// Write a single (or current) data record into the given output..
+        /// </summary>
+        /// <param name="o"></param>
+        /// <typeparam name="R"></typeparam>
+        void Write<R>(IDataOutput<R> o) where R : IDataOutput<R>;
 
-        ///
-        /// Dump as sendable content.
-        ///
+        /// <summary>
+        /// Dump as dynamic generated content.
+        /// </summary>
+        /// <returns></returns>
         DynamicContent Dump();
 
-        ///
-        /// If this includes multiple data entries.
-        ///
+        /// <summary>
+        /// If this input source contains multiple data records.
+        /// </summary>
         bool DataSet { get; }
 
-        ///
-        /// Move to next data entry.
-        ///
+        /// <summary>
+        /// Move to next data records.
+        /// </summary>
+        /// <returns>True if sucessfully moved to next data record.</returns>
         bool Next();
     }
 }

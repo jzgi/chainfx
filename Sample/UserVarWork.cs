@@ -84,7 +84,7 @@ namespace Greatbone.Sample
                 const ushort proj = 0xffff ^ User.CREDENTIAL;
                 if (dc.Query1("SELECT * FROM users WHERE wx = @1", (p) => p.Set(wx)))
                 {
-                    var o = dc.ToData<User>(proj);
+                    var o = dc.ToObject<User>(proj);
                     ac.SetTokenCookie(o, proj);
                     ac.GivePane(200);
                 }

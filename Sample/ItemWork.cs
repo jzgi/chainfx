@@ -30,7 +30,7 @@ namespace Greatbone.Sample
                 dc.Sql("SELECT ").columnlst(Item.Empty, proj)._("FROM items WHERE shopid = @1");
                 if (dc.Query(p => p.Set(shopid)))
                 {
-                    ac.GiveGridPage(200, dc.ToDatas<Item>(proj), Item.BASIC);
+                    ac.GiveGridPage(200, dc.ToArray<Item>(proj), Item.BASIC);
                 }
                 else
                 {
@@ -62,7 +62,7 @@ namespace Greatbone.Sample
             }
             else // post
             {
-                var o = await ac.ReadDataAsync<Item>();
+                var o = await ac.ReadObjectAsync<Item>();
                 o.shopid = ac[typeof(ShopVarWork)];
                 using (var dc = Service.NewDbContext())
                 {

@@ -1,7 +1,7 @@
 ﻿namespace Greatbone.Core
 {
     ///
-    /// A data object that follows certain input/ouput paradigm.
+    /// A data record that follows certain input/ouput paradigm.
     ///
     public interface IData
     {

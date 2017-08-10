@@ -26,7 +26,7 @@ namespace Greatbone.Sample
             {
                 if (dc.Query("SELECT * FROM charges WHERE wx = @1 ORDER BY id DESC", p => p.Set(wx)))
                 {
-                    ac.GiveGridPage(200, dc.ToDatas<Charge>(0xffff));
+                    ac.GiveGridPage(200, dc.ToArray<Charge>(0xffff));
                 }
                 else
                 {
@@ -53,7 +53,7 @@ namespace Greatbone.Sample
                 dc.Sql("SELECT ").columnlst(Item.Empty, proj)._("FROM charges WHERE shopid = @1");
                 if (dc.Query(p => p.Set(shopid)))
                 {
-                    ac.GiveGridPage(200, dc.ToDatas<Item>(proj), proj ^ Item.BASIC);
+                    ac.GiveGridPage(200, dc.ToArray<Item>(proj), proj ^ Item.BASIC);
                 }
                 else
                 {

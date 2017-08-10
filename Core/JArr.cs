@@ -239,14 +239,14 @@ namespace Greatbone.Core
         // ENTIRITY
         //
 
-        public D ToData<D>(ushort proj = 0x00ff) where D : IData, new()
+        public D ToObject<D>(ushort proj = 0x00ff) where D : IData, new()
         {
             D obj = new D();
             obj.Read(this, proj);
             return obj;
         }
 
-        public D[] ToDatas<D>(ushort proj = 0x00ff) where D : IData, new()
+        public D[] ToArray<D>(ushort proj = 0x00ff) where D : IData, new()
         {
             D[] arr = new D[count];
             for (int i = 0; i < arr.Length; i++)
@@ -258,7 +258,7 @@ namespace Greatbone.Core
             return arr;
         }
 
-        public void WriteData<R>(IDataOutput<R> o) where R : IDataOutput<R>
+        public void Write<R>(IDataOutput<R> o) where R : IDataOutput<R>
         {
             for (int i = 0; i < count; i++)
             {

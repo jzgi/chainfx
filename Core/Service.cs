@@ -498,7 +498,7 @@ namespace Greatbone.Core
         ///
         public override async Task ProcessRequestAsync(HttpContext context)
         {
-            ActionContext ac = (ActionContext) context;
+            ActionContext ac = NewMethod(context);
             HttpRequest req = ac.Request;
             string path = req.Path.Value;
 
@@ -506,8 +506,8 @@ namespace Greatbone.Core
             try
             {
                 bool norm = true;
-                if (this is IAuthenticateAsync) norm = await ((IAuthenticateAsync) this).AuthenticateAsync(ac, true);
-                else if (this is IAuthenticate) norm = ((IAuthenticate) this).Authenticate(ac, true);
+                if (this is IAuthenticateAsync) norm = await ((IAuthenticateAsync)this).AuthenticateAsync(ac, true);
+                else if (this is IAuthenticate) norm = ((IAuthenticate)this).Authenticate(ac, true);
                 if (!norm)
                 {
                     ac.Give(403); // forbidden
@@ -540,8 +540,8 @@ namespace Greatbone.Core
             }
             catch (Exception e)
             {
-                if (this is ICatchAsync) await ((ICatchAsync) this).CatchAsync(e, ac);
-                else if (this is ICatch) ((ICatch) this).Catch(e, ac);
+                if (this is ICatchAsync) await ((ICatchAsync)this).CatchAsync(e, ac);
+                else if (this is ICatch) ((ICatch)this).Catch(e, ac);
                 else
                 {
                     WAR(e.Message, e);
@@ -558,6 +558,11 @@ namespace Greatbone.Core
                 ERR(e.Message, e);
                 ac.Give(500, e.Message);
             }
+        }
+
+        private static ActionContext NewMethod(HttpContext context)
+        {
+            return (ActionContext)context;
         }
 
         internal void SetTokenCookie(ActionContext ac, P prin, ushort proj, int maxage = 0)

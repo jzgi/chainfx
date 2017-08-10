@@ -77,7 +77,7 @@ namespace Greatbone.Core
                             // load & cache into memory
                             while (dc.Next())
                             {
-                                elements[count++] = dc.ToData<Event>();
+                                elements[count++] = dc.ToObject<Event>();
                             }
                         }
                         else

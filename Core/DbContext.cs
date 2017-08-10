@@ -6,9 +6,9 @@ using Npgsql;
 
 namespace Greatbone.Core
 {
-    ///
+    /// <summary>
     /// An environment for database operations based on current service.
-    ///
+    /// </summary>
     public class DbContext : IDataInput, IDisposable
     {
         readonly Service service;
@@ -319,7 +319,7 @@ namespace Greatbone.Core
         // RESULTSET
         //
 
-        public D ToData<D>(ushort proj = 0x00ff) where D : IData, new()
+        public D ToObject<D>(ushort proj = 0x00ff) where D : IData, new()
         {
             D obj = new D();
             obj.Read(this, proj);
@@ -334,9 +334,9 @@ namespace Greatbone.Core
             return obj;
         }
 
-        public D[] ToDatas<D>(ushort proj = 0x00ff) where D : IData, new()
+        public D[] ToArray<D>(ushort proj = 0x00ff) where D : IData, new()
         {
-            List<D> lst = new List<D>(32);
+            List<D> coll = new List<D>(32);
             while (Next())
             {
                 D obj = new D();
@@ -349,9 +349,52 @@ namespace Greatbone.Core
                     sharded.Shard = service.Shard;
                 }
 
-                lst.Add(obj);
+                coll.Add(obj);
             }
-            return lst.ToArray();
+            return coll.ToArray();
+        }
+
+        public List<D> ToList<D>(ushort proj = 0x00ff) where D : IData, new()
+        {
+            List<D> coll = new List<D>(32);
+            while (Next())
+            {
+                D obj = new D();
+                obj.Read(this, proj);
+
+                // add shard if any
+                IShardable sharded = obj as IShardable;
+                if (sharded != null)
+                {
+                    sharded.Shard = service.Shard;
+                }
+
+                coll.Add(obj);
+            }
+            return coll;
+        }
+
+        public Dictionary<K, D> ToDictionary<K, D>(Func<D, K> keyer, ushort proj = 0x00ff) where D : IData, new()
+        {
+            int initial = doerctx.Doer?.Limit ?? 0;
+            if (initial <= 0) initial = 32;
+            Dictionary<K, D> coll = new Dictionary<K, D>(initial);
+            while (Next())
+            {
+                D obj = new D();
+                obj.Read(this, proj);
+
+                // add shard name if any
+                IShardable sharded = obj as IShardable;
+                if (sharded != null)
+                {
+                    sharded.Shard = service.Shard;
+                }
+
+                K key = keyer(obj);
+                coll.Add(key, obj);
+            }
+            return coll;
         }
 
         // current column ordinal
@@ -1022,7 +1065,7 @@ namespace Greatbone.Core
             });
         }
 
-        public void WriteData<R>(IDataOutput<R> o) where R : IDataOutput<R>
+        public void Write<R>(IDataOutput<R> o) where R : IDataOutput<R>
         {
             int count = reader.FieldCount;
             for (int i = 0; i < count; i++)

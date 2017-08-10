@@ -30,7 +30,7 @@ namespace Greatbone.Sample
             h.Add("<body style=\"height:100%\">");
 
             Work work = ac.Work;
-            Roll<Work> subs = work.Subworks;
+            Roll<Work> subs = work.Works;
             h.Add("<ul class=\"tabs\" data-tabs id=\"frame-tabs\">");
 
             h.Add("<li class=\"tabs-title is-active\">");

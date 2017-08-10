@@ -70,7 +70,7 @@ namespace Greatbone.Sample
                     dc.Sql("SELECT ").columnlst(Shop.Empty, proj)._("FROM shops WHERE city = @1 AND status > 0");
                     if (dc.Query(p => p.Set(city)))
                     {
-                        var shops = dc.ToDatas<Shop>(proj);
+                        var shops = dc.ToArray<Shop>(proj);
                         for (int i = 0; i < shops.Length; i++)
                         {
                             var shop = shops[i];
@@ -126,7 +126,7 @@ namespace Greatbone.Sample
                 dc.Sql("SELECT ").columnlst(Shop.Empty, proj)._("FROM shops WHERE city = @1");
                 if (dc.Query(p => p.Set(city)))
                 {
-                    ac.GiveGridPage(200, dc.ToDatas<Shop>(proj), proj, @public: false, maxage: 3);
+                    ac.GiveGridPage(200, dc.ToArray<Shop>(proj), proj, @public: false, maxage: 3);
                 }
                 else
                 {
@@ -155,7 +155,7 @@ namespace Greatbone.Sample
             }
             else // post
             {
-                var o = await ac.ReadDataAsync<Shop>();
+                var o = await ac.ReadObjectAsync<Shop>();
                 o.city = city;
                 using (var dc = ac.NewDbContext())
                 {

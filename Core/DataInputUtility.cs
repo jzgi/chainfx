@@ -73,13 +73,13 @@ namespace Greatbone.Core
         public static D StringToData<D>(string v, ushort proj = 0x00ff) where D : IData, new()
         {
             JObj jo = (JObj) new JsonParse(v).Parse();
-            return jo.ToData<D>(proj);
+            return jo.ToObject<D>(proj);
         }
 
         public static D[] StringToDatas<D>(string v, ushort proj = 0x00ff) where D : IData, new()
         {
             JArr ja = (JArr) new JsonParse(v).Parse();
-            return ja.ToDatas<D>(proj);
+            return ja.ToArray<D>(proj);
         }
 
         public static string ToString<D>(D v, ushort proj = 0x00ff) where D : IData
@@ -135,7 +135,7 @@ namespace Greatbone.Core
                 JObj jo = (JObj) new JsonParse(bytes, bytes.Length).Parse();
                 if (jo != null)
                 {
-                    return jo.ToData<D>(proj);
+                    return jo.ToObject<D>(proj);
                 }
             }
             catch (Exception ex)
@@ -153,7 +153,7 @@ namespace Greatbone.Core
                 JArr ja = (JArr) new JsonParse(bytes, bytes.Length).Parse();
                 if (ja != null)
                 {
-                    return ja.ToDatas<D>(proj);
+                    return ja.ToArray<D>(proj);
                 }
             }
             catch (Exception ex)

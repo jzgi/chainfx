@@ -63,7 +63,7 @@ namespace Greatbone.Sample
                 {
                     if (dc.Query1("SELECT * FROM users WHERE wx = @1", (p) => p.Set(accessor.openid)))
                     {
-                        prin = dc.ToData<User>(0xffff ^ User.CREDENTIAL);
+                        prin = dc.ToObject<User>(0xffff ^ User.CREDENTIAL);
                     }
                 }
                 if (prin == null) // get userinfo remotely
@@ -89,7 +89,7 @@ namespace Greatbone.Sample
                 {
                     if (dc.Query1("SELECT * FROM users WHERE id = @1", (p) => p.Set(id)))
                     {
-                        prin = dc.ToData<User>(0xffff);
+                        prin = dc.ToObject<User>(0xffff);
                     }
                 }
                 // validate

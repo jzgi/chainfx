@@ -208,7 +208,7 @@ ALTER TABLE "public"."items" ADD PRIMARY KEY ("shopid", "name");
 -- ----------------------------
 -- Primary Key structure for table orders
 -- ----------------------------
-ALTER TABLE "public"."orders" ADD PRIMARY KEY ("id");
+ALTER TABLE "public".trans ADD PRIMARY KEY ("id");
 
 -- ----------------------------
 -- Primary Key structure for table repays
@@ -243,7 +243,7 @@ ALTER TABLE "public"."items" ADD FOREIGN KEY ("shopid") REFERENCES "public"."sho
 -- ----------------------------
 -- Foreign Key structure for table "public"."orders"
 -- ----------------------------
-ALTER TABLE "public"."orders" ADD FOREIGN KEY ("shopid") REFERENCES "public"."shops" ("id") ON DELETE NO ACTION ON UPDATE NO ACTION;
+ALTER TABLE "public".trans ADD FOREIGN KEY ("shopid") REFERENCES "public"."shops" ("id") ON DELETE NO ACTION ON UPDATE NO ACTION;
 
 -- ----------------------------
 -- Foreign Key structure for table "public"."repays"
@@ -256,7 +256,7 @@ CREATE OR REPLACE FUNCTION "public"."reckon"("till" date, "gmax" money, "rmax" m
 
 DECLARE 
 
-  cur CURSOR FOR SELECT id, shopid, shop, cash, status FROM orders WHERE status = 5 AND shipped < till AND cash > 0.00::money ORDER BY shopid FOR UPDATE;
+  cur CURSOR FOR SELECT id, shopid, shop, cash, status FROM trans WHERE status = 5 AND shipped < till AND cash > 0.00::money ORDER BY shopid FOR UPDATE;
 
   rshopid VARCHAR(6) DEFAULT NULL;
   rshop VARCHAR(10) DEFAULT NULL;
@@ -307,7 +307,7 @@ BEGIN
       gtotal := gtotal + ord.cash;
 
       -- set status to reckoned
-      UPDATE orders SET status = 7  WHERE CURRENT OF cur; 
+      UPDATE trans SET status = 7  WHERE CURRENT OF cur; 
 
     END IF;
 

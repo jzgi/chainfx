@@ -178,7 +178,7 @@ namespace Greatbone.Core
                         if (bgn) Add(',');
 
                         Add('{');
-                        v.WriteData(this);
+                        v.Write(this);
                         Add('}');
 
                         level--;
@@ -190,7 +190,7 @@ namespace Greatbone.Core
                 {
                     Add('{');
 
-                    v.WriteData(this);
+                    v.Write(this);
 
                     Add('}');
                 }

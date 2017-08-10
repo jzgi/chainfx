@@ -1,18 +1,23 @@
 namespace Greatbone.Core
 {
-    ///
-    /// A handler method, either an action or an event.
-    ///
+    /// <summary>
+    /// The descriptor of a handler method that is either an action or an event.
+    /// </summary>
     public interface IDoer : IRollable
     {
-        ///
-        /// Whether this handler method is async.
-        ///
+        /// <summary>
+        /// Whether this handler method is an async method.
+        /// </summary>
         bool IsAsync { get; }
 
-        ///
-        /// Whether this handler method has an argument.
-        ///
+        /// <summary>
+        /// Whether this handler method has a subscript parameter, which is the second parameter that must be Int32.
+        /// </summary>
         bool HasSubscript { get; }
+
+        /// <summary>
+        /// A limit of records that this doer may deal with.
+        /// </summary>
+        int Limit { get; }
     }
 }

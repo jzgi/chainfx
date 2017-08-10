@@ -28,7 +28,7 @@ namespace Greatbone.Sample
             {
                 if (dc.Query("SELECT * FROM repays WHERE shopid = @1", p => p.Set(shopid)))
                 {
-                    ac.GiveGridPage(200, dc.ToDatas<Repay>());
+                    ac.GiveGridPage(200, dc.ToArray<Repay>());
                 }
                 else
                 {
