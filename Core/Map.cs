@@ -12,9 +12,15 @@ namespace Greatbone.Core
         {
         }
 
-        public ICollection<K> GetKeys() => Keys;
+        public void ForEach(Action<K, object> handler)
+        {
+            foreach (var pair in this)
+            {
+                handler(pair.Key, pair.Value);
+            }
+        }
 
-        public string GetText(K key)
+        public string Obtain(K key)
         {
             return this[key].ToString();
         }

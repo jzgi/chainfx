@@ -1414,35 +1414,34 @@ namespace Greatbone.Core
             Add("<legend>");
             AddLabel(label, name);
             Add("</legend>");
-            if (opt != null)
+
+            opt?.ForEach((key, item) =>
             {
-                foreach (var key in opt.GetKeys())
-                {
-                    Add("<input type=\"radio\" name=\"");
-                    Add(name);
+                Add("<input type=\"radio\" name=\"");
+                Add(name);
 
-                    Add("\" id=\"");
-                    Add(name);
-                    Add(key);
-                    Add("\"");
+                Add("\" id=\"");
+                Add(name);
+                Add(key);
+                Add("\"");
 
-                    Add("\" value=\"");
-                    Add(key);
-                    Add("\"");
+                Add("\" value=\"");
+                Add(key);
+                Add("\"");
 
-                    if (key.Equals(v)) Add(" checked");
-                    if (required) Add(" required");
-                    Add(">");
+                if (key.Equals(v)) Add(" checked");
+                if (required) Add(" required");
+                Add(">");
 
-                    Add("<label for=\"");
-                    Add(name);
-                    Add(key);
-                    Add("\">");
-                    Add(opt.GetText(key));
-                    Add("</label>");
-                    Add("<br>");
-                }
-            }
+                Add("<label for=\"");
+                Add(name);
+                Add(key);
+                Add("\">");
+                Add(item.ToString());
+                Add("</label>");
+                Add("<br>");
+            });
+
             Add("</fieldset>");
             return this;
         }
@@ -1455,34 +1454,32 @@ namespace Greatbone.Core
             AddLabel(label, name);
             Add("</legend>");
 
-            if (opt != null)
+            opt?.ForEach((key, item) =>
             {
-                foreach (var key in opt.GetKeys())
-                {
-                    Add("<input type=\"radio\" name=\"");
-                    Add(name);
+                Add("<input type=\"radio\" name=\"");
+                Add(name);
 
-                    Add("\" id=\"");
-                    Add(name);
-                    Add(key);
-                    Add("\"");
+                Add("\" id=\"");
+                Add(name);
+                Add(key);
+                Add("\"");
 
-                    Add("\" value=\"");
-                    Add(key);
-                    Add("\"");
+                Add("\" value=\"");
+                Add(key);
+                Add("\"");
 
-                    if (key.Equals(v)) Add(" checked");
-                    if (required) Add(" required");
-                    Add(">");
+                if (key.Equals(v)) Add(" checked");
+                if (required) Add(" required");
+                Add(">");
 
-                    Add("<label for=\"");
-                    Add(name);
-                    Add(key);
-                    Add("\">");
-                    Add(opt.GetText(key));
-                    Add("</label>");
-                }
-            }
+                Add("<label for=\"");
+                Add(name);
+                Add(key);
+                Add("\">");
+                Add(item.ToString());
+                Add("</label>");
+            });
+
             Add("</fieldset>");
             return this;
         }
@@ -1573,20 +1570,17 @@ namespace Greatbone.Core
             }
             Add(">");
 
-            if (opt != null)
+            opt?.ForEach((key, item) =>
             {
-                foreach (var key in opt.GetKeys())
-                {
-                    Add("<option value=\"");
-                    Add(key);
-                    Add("\"");
-                    if (key == v) Add(" selected");
-                    Add(">");
+                Add("<option value=\"");
+                Add(key);
+                Add("\"");
+                if (key == v) Add(" selected");
+                Add(">");
+                Add(item.ToString());
+                Add("</option>");
+            });
 
-                    Add(opt.GetText(key));
-                    Add("</option>");
-                }
-            }
             Add("</select>");
             Add("</label>");
             return this;
@@ -1609,20 +1603,17 @@ namespace Greatbone.Core
             }
             Add(">");
 
-            if (opt != null)
+            opt?.ForEach((key, text) =>
             {
-                foreach (var key in opt.GetKeys())
-                {
-                    Add("<option value=\"");
-                    Add(key);
-                    Add("\"");
-                    if (key == v) Add(" selected");
-                    Add(">");
+                Add("<option value=\"");
+                Add(key);
+                Add("\"");
+                if (key == v) Add(" selected");
+                Add(">");
+                Add(opt.Obtain(key));
+                Add("</option>");
+            });
 
-                    Add(opt.GetText(key));
-                    Add("</option>");
-                }
-            }
             Add("</select>");
             Add("</label>");
             return this;
@@ -1831,13 +1822,13 @@ namespace Greatbone.Core
                     if (!chain[level].group)
                     {
                         Add("<td style=\"text-align: right;\">");
-                        if (opt != null) Add(opt.GetText(v));
+                        if (opt != null) Add(opt.Obtain(v));
                         else Add(v);
                         Add("</td>");
                     }
                     else
                     {
-                        if (opt != null) Add(opt.GetText(v));
+                        if (opt != null) Add(opt.Obtain(v));
                         else Add(v);
                         Add(' ');
                     }
@@ -1850,14 +1841,14 @@ namespace Greatbone.Core
                         AddLabel(label, name);
                         Add("</div>");
                         Add("<div class=\"small-9 columns\">");
-                        if (opt != null) Add(opt.GetText(v));
+                        if (opt != null) Add(opt.Obtain(v));
                         else Add(v);
                         Add("</div>");
                         Add("</div>");
                     }
                     else
                     {
-                        if (opt != null) Add(opt.GetText(v));
+                        if (opt != null) Add(opt.Obtain(v));
                         else Add(v);
                         Add(' ');
                     }
@@ -1884,13 +1875,13 @@ namespace Greatbone.Core
                     if (!chain[level].group)
                     {
                         Add("<td style=\"text-align: right;\">");
-                        if (opt != null) Add(opt.GetText(v));
+                        if (opt != null) Add(opt.Obtain(v));
                         else Add(v);
                         Add("</td>");
                     }
                     else
                     {
-                        if (opt != null) Add(opt.GetText(v));
+                        if (opt != null) Add(opt.Obtain(v));
                         else Add(v);
                         Add(' ');
                     }
@@ -1903,14 +1894,14 @@ namespace Greatbone.Core
                         AddLabel(label, name);
                         Add("</div>");
                         Add("<div class=\"small-9 columns\">");
-                        if (opt != null) Add(opt.GetText(v));
+                        if (opt != null) Add(opt.Obtain(v));
                         else Add(v);
                         Add("</div>");
                         Add("</div>");
                     }
                     else
                     {
-                        if (opt != null) Add(opt.GetText(v));
+                        if (opt != null) Add(opt.Obtain(v));
                         else Add(v);
                         Add(' ');
                     }
@@ -1937,13 +1928,13 @@ namespace Greatbone.Core
                     if (!chain[level].group)
                     {
                         Add("<td style=\"text-align: right;\">");
-                        if (opt != null) Add(opt.GetText(v));
+                        if (opt != null) Add(opt.Obtain(v));
                         else Add(v);
                         Add("</td>");
                     }
                     else
                     {
-                        if (opt != null) Add(opt.GetText(v));
+                        if (opt != null) Add(opt.Obtain(v));
                         else Add(v);
                         Add(' ');
                     }
@@ -1956,14 +1947,14 @@ namespace Greatbone.Core
                         AddLabel(label, name);
                         Add("</div>");
                         Add("<div class=\"small-9 columns\">");
-                        if (opt != null) Add(opt.GetText(v));
+                        if (opt != null) Add(opt.Obtain(v));
                         else Add(v);
                         Add("</div>");
                         Add("</div>");
                     }
                     else
                     {
-                        if (opt != null) Add(opt.GetText(v));
+                        if (opt != null) Add(opt.Obtain(v));
                         else Add(v);
                         Add(' ');
                     }
