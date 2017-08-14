@@ -20,7 +20,7 @@ namespace Greatbone.Sample
         public const short CREATED = 0, ACCEPTED = 1, ABORTED = 3, SHIPPED = 5, RECKONED = 7;
 
         // status
-        static readonly Opt<short> STATUS = new Opt<short>
+        static readonly Map<short, string> STATUS = new Map<short, string>
         {
             [CREATED] = "购物车/待付款",
             [ACCEPTED] = "已接受/在处理",
@@ -148,7 +148,7 @@ namespace Greatbone.Sample
         {
             if (detail == null)
             {
-                detail = new[] { new OrderLine() { name = item, qty = qty, unit = unit, price = price } };
+                detail = new[] {new OrderLine() {name = item, qty = qty, unit = unit, price = price}};
             }
             var orderln = detail.Find(o => o.name.Equals(item));
             if (orderln != null)
@@ -157,7 +157,7 @@ namespace Greatbone.Sample
             }
             else
             {
-                detail = detail.AddOf(new OrderLine() { name = item, qty = qty, unit = unit, price = price });
+                detail = detail.AddOf(new OrderLine() {name = item, qty = qty, unit = unit, price = price});
             }
         }
 

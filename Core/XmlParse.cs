@@ -34,7 +34,7 @@ namespace Greatbone.Core
             this.str = new Str(1024);
         }
 
-        int this[int index] => bytebuf?[index] ?? (int)strbuf[index];
+        int this[int index] => bytebuf?[index] ?? (int) strbuf[index];
 
         public XElem Parse()
         {
@@ -183,7 +183,7 @@ namespace Greatbone.Core
                                 str.Accept(b);
                             }
                             if (!str.Equals(tag)) throw ParseEx;
-                            
+
                             pos = p; // adjust current position
                             return elem;
                         }

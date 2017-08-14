@@ -506,8 +506,8 @@ namespace Greatbone.Core
             try
             {
                 bool norm = true;
-                if (this is IAuthenticateAsync) norm = await ((IAuthenticateAsync)this).AuthenticateAsync(ac, true);
-                else if (this is IAuthenticate) norm = ((IAuthenticate)this).Authenticate(ac, true);
+                if (this is IAuthenticateAsync) norm = await ((IAuthenticateAsync) this).AuthenticateAsync(ac, true);
+                else if (this is IAuthenticate) norm = ((IAuthenticate) this).Authenticate(ac, true);
                 if (!norm)
                 {
                     ac.Give(403); // forbidden
@@ -540,8 +540,8 @@ namespace Greatbone.Core
             }
             catch (Exception e)
             {
-                if (this is ICatchAsync) await ((ICatchAsync)this).CatchAsync(e, ac);
-                else if (this is ICatch) ((ICatch)this).Catch(e, ac);
+                if (this is ICatchAsync) await ((ICatchAsync) this).CatchAsync(e, ac);
+                else if (this is ICatch) ((ICatch) this).Catch(e, ac);
                 else
                 {
                     WAR(e.Message, e);
@@ -562,7 +562,7 @@ namespace Greatbone.Core
 
         private static ActionContext NewMethod(HttpContext context)
         {
-            return (ActionContext)context;
+            return (ActionContext) context;
         }
 
         internal void SetTokenCookie(ActionContext ac, P prin, ushort proj, int maxage = 0)

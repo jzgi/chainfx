@@ -64,7 +64,7 @@ namespace Greatbone.Core
                     char c = alt[i];
                     if (c >= 'a' && c <= 'z')
                     {
-                        c = (char)(c - 32);
+                        c = (char) (c - 32);
                     }
                     Add(c);
                 }
@@ -818,7 +818,7 @@ namespace Greatbone.Core
             return this;
         }
 
-        public HtmlContent TEXT(string name, string v, string label = null, string help = null, string pattern = null, sbyte max = 0, sbyte min = 0, Opt<string> opt = null, bool @readonly = false, bool required = false)
+        public HtmlContent TEXT(string name, string v, string label = null, string help = null, string pattern = null, sbyte max = 0, sbyte min = 0, IOptable<string> opt = null, bool @readonly = false, bool required = false)
         {
             Add("<label>");
             AddLabel(label, name);
@@ -1407,46 +1407,47 @@ namespace Greatbone.Core
             return this;
         }
 
-        public HtmlContent RADIOS(string name, short v, Opt<short> opt = null, string label = null, bool required = false)
+        public HtmlContent RADIOS(string name, short v, IOptable<short> opt = null, string label = null, bool required = false)
         {
             Add("<fieldset>");
 
             Add("<legend>");
             AddLabel(label, name);
             Add("</legend>");
-
-            foreach (var pair in opt)
+            if (opt != null)
             {
-                Add("<input type=\"radio\" name=\"");
-                Add(name);
-                short key = pair.Key;
+                foreach (var key in opt.GetKeys())
+                {
+                    Add("<input type=\"radio\" name=\"");
+                    Add(name);
 
-                Add("\" id=\"");
-                Add(name);
-                Add(key);
-                Add("\"");
+                    Add("\" id=\"");
+                    Add(name);
+                    Add(key);
+                    Add("\"");
 
-                Add("\" value=\"");
-                Add(key);
-                Add("\"");
+                    Add("\" value=\"");
+                    Add(key);
+                    Add("\"");
 
-                if (key.Equals(v)) Add(" checked");
-                if (required) Add(" required");
-                Add(">");
+                    if (key.Equals(v)) Add(" checked");
+                    if (required) Add(" required");
+                    Add(">");
 
-                Add("<label for=\"");
-                Add(name);
-                Add(key);
-                Add("\">");
-                Add(pair.Value);
-                Add("</label>");
-                Add("<br>");
+                    Add("<label for=\"");
+                    Add(name);
+                    Add(key);
+                    Add("\">");
+                    Add(opt.GetText(key));
+                    Add("</label>");
+                    Add("<br>");
+                }
             }
             Add("</fieldset>");
             return this;
         }
 
-        public HtmlContent RADIOS(string name, string v, Opt<string> opt = null, string label = null, bool required = false)
+        public HtmlContent RADIOS(string name, string v, IOptable<string> opt = null, string label = null, bool required = false)
         {
             Add("<fieldset>");
 
@@ -1454,31 +1455,33 @@ namespace Greatbone.Core
             AddLabel(label, name);
             Add("</legend>");
 
-            foreach (var pair in opt)
+            if (opt != null)
             {
-                Add("<input type=\"radio\" name=\"");
-                Add(name);
-                string key = pair.Key;
+                foreach (var key in opt.GetKeys())
+                {
+                    Add("<input type=\"radio\" name=\"");
+                    Add(name);
 
-                Add("\" id=\"");
-                Add(name);
-                Add(key);
-                Add("\"");
+                    Add("\" id=\"");
+                    Add(name);
+                    Add(key);
+                    Add("\"");
 
-                Add("\" value=\"");
-                Add(key);
-                Add("\"");
+                    Add("\" value=\"");
+                    Add(key);
+                    Add("\"");
 
-                if (key.Equals(v)) Add(" checked");
-                if (required) Add(" required");
-                Add(">");
+                    if (key.Equals(v)) Add(" checked");
+                    if (required) Add(" required");
+                    Add(">");
 
-                Add("<label for=\"");
-                Add(name);
-                Add(key);
-                Add("\">");
-                Add(pair.Value);
-                Add("</label>");
+                    Add("<label for=\"");
+                    Add(name);
+                    Add(key);
+                    Add("\">");
+                    Add(opt.GetText(key));
+                    Add("</label>");
+                }
             }
             Add("</fieldset>");
             return this;
@@ -1537,7 +1540,7 @@ namespace Greatbone.Core
             if (mode > 0)
             {
                 Add(" onclick=\"dialog(this,");
-                Add((int)mode);
+                Add((int) mode);
                 Add("); return false;\"");
             }
 
@@ -1553,7 +1556,7 @@ namespace Greatbone.Core
             return this;
         }
 
-        public HtmlContent SELECT(string name, short v, Opt<short> opt, string label = null, bool multiple = false, bool required = false, sbyte size = 0)
+        public HtmlContent SELECT(string name, short v, IOptable<short> opt, string label = null, bool multiple = false, bool required = false, sbyte size = 0)
         {
             Add("<label>");
             AddLabel(label, name);
@@ -1570,24 +1573,26 @@ namespace Greatbone.Core
             }
             Add(">");
 
-            foreach (var pair in opt)
+            if (opt != null)
             {
-                short key = pair.Key;
-                Add("<option value=\"");
-                Add(key);
-                Add("\"");
-                if (key == v) Add(" selected");
-                Add(">");
+                foreach (var key in opt.GetKeys())
+                {
+                    Add("<option value=\"");
+                    Add(key);
+                    Add("\"");
+                    if (key == v) Add(" selected");
+                    Add(">");
 
-                Add(pair.Value);
-                Add("</option>");
+                    Add(opt.GetText(key));
+                    Add("</option>");
+                }
             }
             Add("</select>");
             Add("</label>");
             return this;
         }
 
-        public HtmlContent SELECT(string name, string v, Opt<string> opt, string label = null, bool multiple = false, bool required = false, sbyte size = 0)
+        public HtmlContent SELECT(string name, string v, IOptable<string> opt, string label = null, bool multiple = false, bool required = false, sbyte size = 0)
         {
             Add("<label>");
             AddLabel(label, name);
@@ -1604,17 +1609,19 @@ namespace Greatbone.Core
             }
             Add(">");
 
-            foreach (var pair in opt)
+            if (opt != null)
             {
-                string key = pair.Key;
-                Add("<option value=\"");
-                Add(key);
-                Add("\"");
-                if (key == v) Add(" selected");
-                Add(">");
+                foreach (var key in opt.GetKeys())
+                {
+                    Add("<option value=\"");
+                    Add(key);
+                    Add("\"");
+                    if (key == v) Add(" selected");
+                    Add(">");
 
-                Add(pair.Value);
-                Add("</option>");
+                    Add(opt.GetText(key));
+                    Add("</option>");
+                }
             }
             Add("</select>");
             Add("</label>");
@@ -1808,7 +1815,7 @@ namespace Greatbone.Core
             return this;
         }
 
-        public HtmlContent Put(string name, short v, string label = null, Opt<short> opt = null)
+        public HtmlContent Put(string name, short v, string label = null, IOptable<short> opt = null)
         {
             switch (chain[level].node)
             {
@@ -1824,13 +1831,13 @@ namespace Greatbone.Core
                     if (!chain[level].group)
                     {
                         Add("<td style=\"text-align: right;\">");
-                        if (opt != null) Add(opt[v]);
+                        if (opt != null) Add(opt.GetText(v));
                         else Add(v);
                         Add("</td>");
                     }
                     else
                     {
-                        if (opt != null) Add(opt[v]);
+                        if (opt != null) Add(opt.GetText(v));
                         else Add(v);
                         Add(' ');
                     }
@@ -1843,14 +1850,14 @@ namespace Greatbone.Core
                         AddLabel(label, name);
                         Add("</div>");
                         Add("<div class=\"small-9 columns\">");
-                        if (opt != null) Add(opt[v]);
+                        if (opt != null) Add(opt.GetText(v));
                         else Add(v);
                         Add("</div>");
                         Add("</div>");
                     }
                     else
                     {
-                        if (opt != null) Add(opt[v]);
+                        if (opt != null) Add(opt.GetText(v));
                         else Add(v);
                         Add(' ');
                     }
@@ -1861,7 +1868,7 @@ namespace Greatbone.Core
             return this;
         }
 
-        public HtmlContent Put(string name, int v, string label = null, Opt<int> opt = null)
+        public HtmlContent Put(string name, int v, string label = null, IOptable<int> opt = null)
         {
             switch (chain[level].node)
             {
@@ -1877,13 +1884,13 @@ namespace Greatbone.Core
                     if (!chain[level].group)
                     {
                         Add("<td style=\"text-align: right;\">");
-                        if (opt != null) Add(opt[v]);
+                        if (opt != null) Add(opt.GetText(v));
                         else Add(v);
                         Add("</td>");
                     }
                     else
                     {
-                        if (opt != null) Add(opt[v]);
+                        if (opt != null) Add(opt.GetText(v));
                         else Add(v);
                         Add(' ');
                     }
@@ -1896,14 +1903,14 @@ namespace Greatbone.Core
                         AddLabel(label, name);
                         Add("</div>");
                         Add("<div class=\"small-9 columns\">");
-                        if (opt != null) Add(opt[v]);
+                        if (opt != null) Add(opt.GetText(v));
                         else Add(v);
                         Add("</div>");
                         Add("</div>");
                     }
                     else
                     {
-                        if (opt != null) Add(opt[v]);
+                        if (opt != null) Add(opt.GetText(v));
                         else Add(v);
                         Add(' ');
                     }
@@ -1914,7 +1921,7 @@ namespace Greatbone.Core
             return this;
         }
 
-        public HtmlContent Put(string name, long v, string label = null, Opt<long> opt = null)
+        public HtmlContent Put(string name, long v, string label = null, IOptable<long> opt = null)
         {
             switch (chain[level].node)
             {
@@ -1930,13 +1937,13 @@ namespace Greatbone.Core
                     if (!chain[level].group)
                     {
                         Add("<td style=\"text-align: right;\">");
-                        if (opt != null) Add(opt[v]);
+                        if (opt != null) Add(opt.GetText(v));
                         else Add(v);
                         Add("</td>");
                     }
                     else
                     {
-                        if (opt != null) Add(opt[v]);
+                        if (opt != null) Add(opt.GetText(v));
                         else Add(v);
                         Add(' ');
                     }
@@ -1949,14 +1956,14 @@ namespace Greatbone.Core
                         AddLabel(label, name);
                         Add("</div>");
                         Add("<div class=\"small-9 columns\">");
-                        if (opt != null) Add(opt[v]);
+                        if (opt != null) Add(opt.GetText(v));
                         else Add(v);
                         Add("</div>");
                         Add("</div>");
                     }
                     else
                     {
-                        if (opt != null) Add(opt[v]);
+                        if (opt != null) Add(opt.GetText(v));
                         else Add(v);
                         Add(' ');
                     }
@@ -2149,7 +2156,7 @@ namespace Greatbone.Core
             return this;
         }
 
-        public HtmlContent Put(string name, string v, string label = null, Opt<string> opt = null)
+        public HtmlContent Put(string name, string v, string label = null, IOptable<string> opt = null)
         {
             var ctx = chain[level];
             switch (ctx.node)
@@ -2214,22 +2221,22 @@ namespace Greatbone.Core
             return this;
         }
 
-        public HtmlContent Put(string name, short[] v, string label = null, Opt<short> Opt = null)
+        public HtmlContent Put(string name, short[] v, string label = null, IOptable<short> opt = null)
         {
             return this;
         }
 
-        public HtmlContent Put(string name, int[] v, string label = null, Opt<int> Opt = null)
+        public HtmlContent Put(string name, int[] v, string label = null, IOptable<int> Opt = null)
         {
             return this;
         }
 
-        public HtmlContent Put(string name, long[] v, string label = null, Opt<long> Opt = null)
+        public HtmlContent Put(string name, long[] v, string label = null, IOptable<long> Opt = null)
         {
             return this;
         }
 
-        public HtmlContent Put(string name, string[] v, string label = null, Opt<string> Opt = null)
+        public HtmlContent Put(string name, string[] v, string label = null, IOptable<string> Opt = null)
         {
             return this;
         }

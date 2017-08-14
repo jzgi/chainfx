@@ -10,7 +10,7 @@ namespace Greatbone.Sample
         public const short CREATED = 0, COMMITED = 2, ACCEPTED = 3, SETTLED = 4;
 
         // status
-        static readonly Opt<short> STATUS = new Opt<short>
+        static readonly Map<short, string> STATUS = new Map<short, string>
         {
             [CREATED] = "新建",
             [COMMITED] = "已提交/待受理",

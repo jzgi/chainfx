@@ -53,10 +53,7 @@ namespace Greatbone.Core
                 }
                 return default(E);
             }
-            set
-            {
-                Add(value);
-            }
+            set { Add(value); }
         }
 
         public E Any(string prefix)

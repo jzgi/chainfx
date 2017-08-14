@@ -14,7 +14,7 @@ namespace Greatbone.Sample
             SUPER = 0x0020,
             SUPER_WX = 0x0040;
 
-        public static Opt<short> STATUS = new Opt<short>
+        public static Map<short, string> STATUS = new Map<short, string>
         {
             [0] = "停业",
             [1] = "休假中",

@@ -228,7 +228,7 @@ namespace Greatbone.Core
             return this;
         }
 
-        public XmlContent Put(string name, short v, string Label = null, Opt<short> Opt = null)
+        public XmlContent Put(string name, short v, string Label = null, IOptable<short> opt = null)
         {
             Add(' ');
             Add(name);
@@ -239,7 +239,7 @@ namespace Greatbone.Core
             return this;
         }
 
-        public XmlContent Put(string name, int v, string Label = null, Opt<int> Opt = null)
+        public XmlContent Put(string name, int v, string Label = null, IOptable<int> Opt = null)
         {
             Add(' ');
             Add(name);
@@ -250,7 +250,7 @@ namespace Greatbone.Core
             return this;
         }
 
-        public XmlContent Put(string name, long v, string Label = null, Opt<long> Opt = null)
+        public XmlContent Put(string name, long v, string Label = null, IOptable<long> opt = null)
         {
             Add(' ');
             Add(name);
@@ -294,7 +294,7 @@ namespace Greatbone.Core
             return this;
         }
 
-        public XmlContent Put(string name, string v, string Label = null, Opt<string> Opt = null)
+        public XmlContent Put(string name, string v, string Label = null, IOptable<string> Opt = null)
         {
             Add(' ');
             Add(name);
@@ -310,7 +310,7 @@ namespace Greatbone.Core
             return this;
         }
 
-        public XmlContent Put(string name, short[] v, string Label = null, Opt<short> Opt = null)
+        public XmlContent Put(string name, short[] v, string Label = null, IOptable<short> opt = null)
         {
             Add(' ');
             Add(name);
@@ -327,7 +327,7 @@ namespace Greatbone.Core
             return this;
         }
 
-        public XmlContent Put(string name, int[] v, string Label = null, Opt<int> Opt = null)
+        public XmlContent Put(string name, int[] v, string Label = null, IOptable<int> Opt = null)
         {
             Add(' ');
             Add(name);
@@ -344,7 +344,7 @@ namespace Greatbone.Core
             return this;
         }
 
-        public XmlContent Put(string name, long[] v, string Label = null, Opt<long> Opt = null)
+        public XmlContent Put(string name, long[] v, string Label = null, IOptable<long> Opt = null)
         {
             Add(' ');
             Add(name);
@@ -361,7 +361,7 @@ namespace Greatbone.Core
             return this;
         }
 
-        public XmlContent Put(string name, string[] v, string Label = null, Opt<string> Opt = null)
+        public XmlContent Put(string name, string[] v, string Label = null, IOptable<string> Opt = null)
         {
             Add(' ');
             Add(name);

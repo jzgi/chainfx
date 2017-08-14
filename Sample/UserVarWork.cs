@@ -36,7 +36,7 @@ namespace Greatbone.Sample
         public async Task loginf(ActionContext ac)
         {
             string wx = ac[this];
-            var prin = (User)ac.Principal;
+            var prin = (User) ac.Principal;
             string password = PASS;
             if (ac.GET)
             {
@@ -47,7 +47,7 @@ namespace Greatbone.Sample
                     m.TEXT(nameof(prin.name), prin.name, "真实姓名（和身份证一致）", max: 4, min: 2, required: true);
                     m.TEXT(nameof(prin.id), prin.id, "用户编号（个人手机号）", max: 11, min: 11, pattern: "[0-9]+", required: true);
                     m.PASSWORD(nameof(password), password, "登录密码（用于微信以外登录）", min: 3);
-                    m.SELECT(nameof(prin.city), prin.city, ((ShopService)Service).CityOpt, label: "城市");
+                    m.SELECT(nameof(prin.city), prin.city, ((ShopService) Service).CityOpt, label: "城市");
                     m._FORM();
                 });
             }

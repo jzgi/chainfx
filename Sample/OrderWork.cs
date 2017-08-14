@@ -228,7 +228,7 @@ namespace Greatbone.Sample
     [User(User.AID)]
     public class OprActiveOrderWork : OprOrderWork<OprActiveOrderVarWork>
     {
-        static readonly Opt<short> NOTIFS = new Opt<short>()
+        static readonly Map<short, string> NOTIFS = new Map<short, string>()
         {
             [1] = "正在为您的订单作备货生产",
             [2] = "您的订单的备货生产已完成，准备发货",

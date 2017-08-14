@@ -22,11 +22,11 @@ namespace Greatbone.Core
 
         R Put(string name, bool v, string label = null, Func<bool, string> opt = null);
 
-        R Put(string name, short v, string label = null, Opt<short> opt = null);
+        R Put(string name, short v, string label = null, IOptable<short> opt = null);
 
-        R Put(string name, int v, string label = null, Opt<int> opt = null);
+        R Put(string name, int v, string label = null, IOptable<int> opt = null);
 
-        R Put(string name, long v, string label = null, Opt<long> opt = null);
+        R Put(string name, long v, string label = null, IOptable<long> opt = null);
 
         R Put(string name, double v, string label = null);
 
@@ -34,17 +34,17 @@ namespace Greatbone.Core
 
         R Put(string name, DateTime v, string label = null);
 
-        R Put(string name, string v, string label = null, Opt<string> opt = null);
+        R Put(string name, string v, string label = null, IOptable<string> opt = null);
 
         R Put(string name, ArraySegment<byte> v, string label = null);
 
-        R Put(string name, short[] v, string label = null, Opt<short> opt = null);
+        R Put(string name, short[] v, string label = null, IOptable<short> opt = null);
 
-        R Put(string name, int[] v, string label = null, Opt<int> opt = null);
+        R Put(string name, int[] v, string label = null, IOptable<int> opt = null);
 
-        R Put(string name, long[] v, string label = null, Opt<long> opt = null);
+        R Put(string name, long[] v, string label = null, IOptable<long> opt = null);
 
-        R Put(string name, string[] v, string label = null, Opt<string> opt = null);
+        R Put(string name, string[] v, string label = null, IOptable<string> opt = null);
 
         R Put(string name, Dictionary<string, string> v, string label = null);
 

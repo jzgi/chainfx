@@ -16,7 +16,7 @@ namespace Greatbone.Sample
             PAID = 1;
 
         // status
-        static readonly Opt<short> STATUS = new Opt<short>
+        static readonly Map<short, string> STATUS = new Map<short, string>
         {
             [0] = "新创建/未转款",
             [1] = "已转款"
@@ -73,7 +73,7 @@ namespace Greatbone.Sample
                 o.UnGroup();
                 o.Put(nameof(err), err, "出错提示");
             }
-            o.Put(nameof(status), status, "状态", STATUS);
+            o.Put((string) (string) (string) nameof(status), status, (string) (string) (string) "状态", STATUS);
         }
     }
 }

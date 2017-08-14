@@ -13,7 +13,7 @@ namespace Greatbone.Sample
         public const ushort BASIC = 0x0001, BASIC_SHOPID = 0x0003, BASIC_ICON = 0x0005;
 
         // status
-        public static readonly Opt<short> STATUS = new Opt<short>
+        public static readonly Map<short, string> STATUS = new Map<short, string>
         {
             [0] = "下架",
             [1] = "上架仅展示",
@@ -74,7 +74,7 @@ namespace Greatbone.Sample
                 o.Put(nameof(step), step, label: "递增因子");
                 o.Put(nameof(qty), qty, label: "本批供应量");
             }
-            o.Put(nameof(status), status, label: "状态", opt: STATUS);
+            o.Put((string) nameof(status), status, (string) "状态", STATUS);
         }
     }
 }

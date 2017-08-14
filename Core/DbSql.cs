@@ -225,7 +225,7 @@ namespace Greatbone.Core
             return this;
         }
 
-        public DbSql Put(string name, short v, string Label = null, Opt<short> opt = null)
+        public DbSql Put(string name, short v, string Label = null, IOptable<short> opt = null)
         {
             if (name != null)
             {
@@ -238,7 +238,7 @@ namespace Greatbone.Core
             return this;
         }
 
-        public DbSql Put(string name, int v, string Label = null, Opt<int> Opt = null)
+        public DbSql Put(string name, int v, string Label = null, IOptable<int> Opt = null)
         {
             if (name != null)
             {
@@ -251,7 +251,7 @@ namespace Greatbone.Core
             return this;
         }
 
-        public DbSql Put(string name, long v, string Label = null, Opt<long> Opt = null)
+        public DbSql Put(string name, long v, string Label = null, IOptable<long> opt = null)
         {
             if (name != null)
             {
@@ -303,7 +303,7 @@ namespace Greatbone.Core
             return this;
         }
 
-        public DbSql Put(string name, string v, string Label = null, Opt<string> Opt = null)
+        public DbSql Put(string name, string v, string Label = null, IOptable<string> Opt = null)
         {
             if (name != null)
             {
@@ -324,7 +324,7 @@ namespace Greatbone.Core
             return this;
         }
 
-        public DbSql Put(string name, short[] v, string Label = null, Opt<short> opt = null)
+        public DbSql Put(string name, short[] v, string Label = null, IOptable<short> opt = null)
         {
             if (name != null)
             {
@@ -354,7 +354,7 @@ namespace Greatbone.Core
             return this;
         }
 
-        public DbSql Put(string name, int[] v, string Label = null, Opt<int> Opt = null)
+        public DbSql Put(string name, int[] v, string Label = null, IOptable<int> Opt = null)
         {
             if (name != null)
             {
@@ -384,7 +384,7 @@ namespace Greatbone.Core
             return this;
         }
 
-        public DbSql Put(string name, long[] v, string Label = null, Opt<long> Opt = null)
+        public DbSql Put(string name, long[] v, string Label = null, IOptable<long> Opt = null)
         {
             if (name != null)
             {
@@ -414,7 +414,7 @@ namespace Greatbone.Core
             return this;
         }
 
-        public DbSql Put(string name, string[] v, string Label = null, Opt<string> Opt = null)
+        public DbSql Put(string name, string[] v, string Label = null, IOptable<string> Opt = null)
         {
             if (name != null)
             {

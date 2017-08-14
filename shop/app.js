@@ -37,11 +37,35 @@ function dialog(trig, mode, siz, title) {
 
     var bottom = mode == OPEN ? '3.5rem' : '5rem';
 
-    var html = '<div id="dyndlg" class="' + sizg + ' reveal' + trigclass + '"  data-reveal data-close-on-click="false">'
-        + '<div class="title-bar"><div clsas="title-bar-title">' + title + '</div><div class="title-bar-right"><a class="close-button" onclick="$(\'#dyndlg\').foundation(\'close\').foundation(\'destroy\').remove(); return false;">&times;</a></div></div>'
-        + '<div style="height: -webkit-calc(100% - ' + bottom + '); height: calc(100% - ' + bottom + ')"><iframe src="' + src + '" style="width: 100%; height: 100%; border: 0"></iframe></div>'
-        + (mode == OPEN ? '' : ('<button class=\"button primary float-center\" onclick="ok(this,' + mode + ',\'' + formid + '\',\'' + tag + '\',\'' + action + '\',\'' + method + '\');" disabled>确定</botton>'))
-        + '</div>';
+    var html = '<div id="dyndlg" class="' +
+        sizg +
+        ' reveal' +
+        trigclass +
+        '"  data-reveal data-close-on-click="false">' +
+        '<div class="title-bar"><div clsas="title-bar-title">' +
+        title +
+        '</div><div class="title-bar-right"><a class="close-button" onclick="$(\'#dyndlg\').foundation(\'close\').foundation(\'destroy\').remove(); return false;">&times;</a></div></div>' +
+        '<div style="height: -webkit-calc(100% - ' +
+        bottom +
+        '); height: calc(100% - ' +
+        bottom +
+        ')"><iframe src="' +
+        src +
+        '" style="width: 100%; height: 100%; border: 0"></iframe></div>' +
+        (mode == OPEN
+            ? ''
+            : ('<button class=\"button primary float-center\" onclick="ok(this,' +
+                mode +
+                ',\'' +
+                formid +
+                '\',\'' +
+                tag +
+                '\',\'' +
+                action +
+                '\',\'' +
+                method +
+                '\');" disabled>确定</botton>')) +
+        '</div>';
 
     var dive = $(html);
 
@@ -81,19 +105,23 @@ function ok(okbtn, mode, formid, tag, action, method) {
                     var qstr = $(form[0]).serialize();
                     if (qstr) {
                         // dispose the dialog
-                        dlge.foundation('close'); dlge.foundation('destroy'); dlge.remove();
+                        dlge.foundation('close');
+                        dlge.foundation('destroy');
+                        dlge.remove();
                         // load page
                         location.href = action.split("?")[0] + '?' + qstr;
                     }
                 } else if (method == 'post') {
                     var theform = $('#' + formid);
                     var pairs = $(form[0]).serializeArray();
-                    pairs.forEach(function (e, i) {
+                    pairs.forEach(function(e, i) {
                         $('<input>').attr({ type: 'hidden', name: e.name, value: e.value }).appendTo(theform);
                     });
 
                     // dispose the dialog
-                    dlge.foundation('close'); dlge.foundation('destroy'); dlge.remove();
+                    dlge.foundation('close');
+                    dlge.foundation('destroy');
+                    dlge.remove();
                     // submit
                     theform.attr('action', action);
                     theform.attr('method', method);
@@ -132,15 +160,29 @@ function crop(trig, wid, hei, circle, title) {
     hei = hei ? hei : 120;
 
     var html =
-        '<div id="dyndlg" class="' + sizg + ' reveal"  data-reveal data-close-on-click="false">'
-        + '<div class="title-bar"><div clsas="title-bar-title">' + title + '</div><div class="title-bar-right"><a class="close-button" onclick="$(\'#dyndlg\').foundation(\'close\').foundation(\'destroy\').remove(); return false;">&times;</a></div></div>'
-        + '<div id="demo" style="height: -webkit-calc(100% - 8.5rem); height: calc(100% - 8.5rem); text-align: center;">'
-        + '<input type="file" id="fileinput" style="display: none;" onchange="bind(window.URL.createObjectURL(this.files[0]),' + wid + ',' + hei + ',' + circle + ');">'
-        + '<div style="text-align: center">'
-        + '<a class="button success hollow" onclick="$(\'#fileinput\').click();">选择图片</a>'
-        + '<a class="button success hollow" onclick="upload(\'' + action + '\',' + circle + ');">裁剪并上传</a>'
-        + '</div>'
-        + '</div>';
+        '<div id="dyndlg" class="' +
+            sizg +
+            ' reveal"  data-reveal data-close-on-click="false">' +
+            '<div class="title-bar"><div clsas="title-bar-title">' +
+            title +
+            '</div><div class="title-bar-right"><a class="close-button" onclick="$(\'#dyndlg\').foundation(\'close\').foundation(\'destroy\').remove(); return false;">&times;</a></div></div>' +
+            '<div id="demo" style="height: -webkit-calc(100% - 8.5rem); height: calc(100% - 8.5rem); text-align: center;">' +
+            '<input type="file" id="fileinput" style="display: none;" onchange="bind(window.URL.createObjectURL(this.files[0]),' +
+            wid +
+            ',' +
+            hei +
+            ',' +
+            circle +
+            ');">' +
+            '<div style="text-align: center">' +
+            '<a class="button success hollow" onclick="$(\'#fileinput\').click();">选择图片</a>' +
+            '<a class="button success hollow" onclick="upload(\'' +
+            action +
+            '\',' +
+            circle +
+            ');">裁剪并上传</a>' +
+            '</div>' +
+            '</div>';
 
     var dive = $(html);
 
@@ -178,23 +220,24 @@ function bind(url, wid, height, circle) {
 function upload(url, circle) {
 
     // get blob of cropped image
-    $('#demo').croppie('result', { type: 'blob', size: 'viewport', format: 'jpeg', quality: 0.75, circle: circle }).then(function (blob) {
+    $('#demo').croppie('result', { type: 'blob', size: 'viewport', format: 'jpeg', quality: 0.75, circle: circle })
+        .then(function(blob) {
 
-        var fd = new FormData();
-        fd.append('icon', blob, 'icon.png');
+            var fd = new FormData();
+            fd.append('icon', blob, 'icon.png');
 
-        // post
-        $.ajax({
-            type: 'POST',
-            url: url,
-            data: fd,
-            processData: false,
-            contentType: false,
-            success: function (data) {
-                alert('上传成功!');
-            }
+            // post
+            $.ajax({
+                type: 'POST',
+                url: url,
+                data: fd,
+                processData: false,
+                contentType: false,
+                success: function(data) {
+                    alert('上传成功!');
+                }
+            });
         });
-    });
 
 }
 
@@ -216,18 +259,19 @@ function prepay(trig) {
         url: action,
         type: 'GET',
         dataType: 'json',
-        success: function (data) {
+        success: function(data) {
 
-            WeixinJSBridge.invoke('getBrandWCPayRequest', data, function (res) {
-                if (res.err_msg == "get_brand_wcpay_request:ok") {
-                    location.reload();
-                }
-            });
+            WeixinJSBridge.invoke('getBrandWCPayRequest',
+                data,
+                function(res) {
+                    if (res.err_msg == "get_brand_wcpay_request:ok") {
+                        location.reload();
+                    }
+                });
 
         },
-        error: function (res) {
+        error: function(res) {
             alert('服务器访问失败');
         }
     });
 }
-
