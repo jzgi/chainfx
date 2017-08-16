@@ -33,7 +33,7 @@ namespace Greatbone.Sample
             string wx = ac[-1];
             using (var dc = ac.NewDbContext())
             {
-                const ushort proj = Order.ID | Order.BASIC_DETAIL;
+                const int proj = Order.ID | Order.BASIC_DETAIL;
                 dc.Sql("SELECT ").columnlst(Order.Empty, proj)._("FROM orders WHERE wx = @1 AND status = @2 ORDER BY id DESC");
                 if (dc.Query(p => p.Set(wx).Set(Order.CREATED)))
                 {
@@ -110,7 +110,7 @@ namespace Greatbone.Sample
                     };
                     o.Sum();
 
-                    const ushort proj = 0x00ff ^ Order.ID;
+                    const int proj = 0x00ff ^ Order.ID;
 
                     dc.Sql("INSERT INTO orders ")._(o, proj)._VALUES_(o, proj);
                     dc.Execute(p => o.Write(p, proj));
@@ -132,7 +132,7 @@ namespace Greatbone.Sample
             string wx = ac[-1];
             using (var dc = ac.NewDbContext())
             {
-                const ushort proj = Order.ID | Order.BASIC_DETAIL | Order.CASH | Order.FLOW;
+                const int proj = Order.ID | Order.BASIC_DETAIL | Order.CASH | Order.FLOW;
                 dc.Sql("SELECT ").columnlst(Order.Empty, proj)._("FROM orders WHERE wx = @1 AND status = @2 ORDER BY id DESC");
                 if (dc.Query(p => p.Set(wx).Set(Order.ACCEPTED)))
                 {
@@ -158,7 +158,7 @@ namespace Greatbone.Sample
             string wx = ac[-1];
             using (var dc = ac.NewDbContext())
             {
-                const ushort proj = Order.ID | Order.BASIC_DETAIL | Order.CASH | Order.FLOW;
+                const int proj = Order.ID | Order.BASIC_DETAIL | Order.CASH | Order.FLOW;
                 dc.Sql("SELECT ").columnlst(Order.Empty, proj)._("FROM orders WHERE wx = @1 AND status > @2 ORDER BY id DESC LIMIT 10 OFFSET @3");
                 if (dc.Query(p => p.Set(wx).Set(Order.ACCEPTED).Set(page * 10)))
                 {
@@ -178,7 +178,7 @@ namespace Greatbone.Sample
 
         protected short status2;
 
-        protected ushort proj;
+        protected int proj;
 
         protected OprOrderWork(WorkContext wc) : base(wc)
         {

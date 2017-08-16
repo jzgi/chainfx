@@ -4,9 +4,9 @@ using Greatbone.Core;
 
 namespace Greatbone.Sample
 {
-    public class ChargeVarWork : Work
+    public class KickVarWork : Work
     {
-        public ChargeVarWork(WorkContext wc) : base(wc)
+        public KickVarWork(WorkContext wc) : base(wc)
         {
         }
 
@@ -50,9 +50,9 @@ namespace Greatbone.Sample
         }
     }
 
-    public class MyChargeVarWork : ChargeVarWork
+    public class MyKickVarWork : KickVarWork
     {
-        public MyChargeVarWork(WorkContext wc) : base(wc)
+        public MyKickVarWork(WorkContext wc) : base(wc)
         {
         }
 
@@ -65,7 +65,7 @@ namespace Greatbone.Sample
             {
                 using (var dc = ac.NewDbContext())
                 {
-                    const ushort proj = 0xffff ^ Item.BASIC_ICON ^ Item.BASIC;
+                    const int proj = 0xffff ^ Item.BASIC_ICON ^ Item.BASIC;
                     dc.Sql("SELECT ").columnlst(Item.Empty, proj)._("FROM items WHERE shopid = @1 AND name = @2");
                     if (dc.Query1(p => p.Set(shopid).Set(name)))
                     {
@@ -94,7 +94,7 @@ namespace Greatbone.Sample
             }
             else // post
             {
-                const ushort proj = 0xffff ^ Item.BASIC ^ Item.BASIC_ICON;
+                const int proj = 0xffff ^ Item.BASIC ^ Item.BASIC_ICON;
                 var o = await ac.ReadObjectAsync<Item>(proj);
                 using (var dc = ac.NewDbContext())
                 {
@@ -110,9 +110,9 @@ namespace Greatbone.Sample
         }
     }
 
-    public class SprChargeVarWork : ChargeVarWork
+    public class SprKickVarWork : KickVarWork
     {
-        public SprChargeVarWork(WorkContext wc) : base(wc)
+        public SprKickVarWork(WorkContext wc) : base(wc)
         {
         }
     }

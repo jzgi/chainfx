@@ -27,7 +27,7 @@ namespace Greatbone.Sample
 
             Create<MyPastOrderWork>("past");
 
-            Create<MyChargeWork>("charge");
+            Create<MyKickWork>("kick");
         }
 
         const string PASS = "0z4R4pX7";
@@ -81,7 +81,7 @@ namespace Greatbone.Sample
             string wx = ac[this];
             using (var dc = ac.NewDbContext())
             {
-                const ushort proj = 0xffff ^ User.CREDENTIAL;
+                const int proj = 0xffff ^ User.CREDENTIAL;
                 if (dc.Query1("SELECT * FROM users WHERE wx = @1", (p) => p.Set(wx)))
                 {
                     var o = dc.ToObject<User>(proj);

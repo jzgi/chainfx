@@ -7,7 +7,7 @@ namespace Greatbone.Sample
     {
         public static readonly Shop Empty = new Shop();
 
-        public const ushort
+        public const int
             ID = 0x0001,
             BASIC = 0x0002,
             BASIC_ICON = 0x006,
@@ -37,7 +37,7 @@ namespace Greatbone.Sample
         internal string mgr;
         internal short status;
 
-        public void Read(IDataInput i, ushort proj = 0x00ff)
+        public void Read(IDataInput i, int proj = 0x00ff)
         {
             if ((proj & ID) == ID)
             {
@@ -70,7 +70,7 @@ namespace Greatbone.Sample
             i.Get(nameof(status), ref status);
         }
 
-        public void Write<R>(IDataOutput<R> o, ushort proj = 0x00ff) where R : IDataOutput<R>
+        public void Write<R>(IDataOutput<R> o, int proj = 0x00ff) where R : IDataOutput<R>
         {
             if ((proj & ID) == ID)
             {

@@ -149,7 +149,7 @@ namespace Greatbone.Core
 //            return false;
 //        }
 //
-        public bool Get<D>(string name, ref D v, ushort proj = 0x00ff) where D : IData, new()
+        public bool Get<D>(string name, ref D v, int proj = 0x00ff) where D : IData, new()
         {
             throw new NotImplementedException();
         }
@@ -328,12 +328,12 @@ namespace Greatbone.Core
             throw new NotImplementedException();
         }
 
-        public IDataInput Let<D>(out D v, ushort proj = 0x00ff) where D : IData, new()
+        public IDataInput Let<D>(out D v, int proj = 0x00ff) where D : IData, new()
         {
             throw new NotImplementedException();
         }
 
-        public IDataInput Let<D>(out D[] v, ushort proj = 0x00ff) where D : IData, new()
+        public IDataInput Let<D>(out D[] v, int proj = 0x00ff) where D : IData, new()
         {
             throw new NotImplementedException();
         }
@@ -344,7 +344,7 @@ namespace Greatbone.Core
             throw new NotImplementedException();
         }
 
-        public bool Get<D>(string name, ref D[] v, ushort proj = 0x00ff) where D : IData, new()
+        public bool Get<D>(string name, ref D[] v, int proj = 0x00ff) where D : IData, new()
         {
             throw new NotImplementedException();
         }
@@ -354,14 +354,14 @@ namespace Greatbone.Core
             throw new NotImplementedException();
         }
 
-        public D ToObject<D>(ushort proj = 0x00ff) where D : IData, new()
+        public D ToObject<D>(int proj = 0x00ff) where D : IData, new()
         {
             D obj = new D();
             obj.Read(this, proj);
             return obj;
         }
 
-        public D[] ToArray<D>(ushort proj = 0x00ff) where D : IData, new()
+        public D[] ToArray<D>(int proj = 0x00ff) where D : IData, new()
         {
             throw new NotImplementedException();
         }

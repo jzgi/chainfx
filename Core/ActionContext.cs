@@ -262,7 +262,7 @@ namespace Greatbone.Core
             return entity as M;
         }
 
-        public async Task<D> ReadObjectAsync<D>(ushort proj = 0x00ff) where D : IData, new()
+        public async Task<D> ReadObjectAsync<D>(int proj = 0x00ff) where D : IData, new()
         {
             if (entity == null && count == -1) // if not yet parse and read
             {
@@ -289,7 +289,7 @@ namespace Greatbone.Core
             return src.ToObject<D>(proj);
         }
 
-        public async Task<D[]> ReadArrayAsync<D>(ushort proj = 0x00ff) where D : IData, new()
+        public async Task<D[]> ReadArrayAsync<D>(int proj = 0x00ff) where D : IData, new()
         {
             if (entity == null && count == -1) // if not yet parse and read
             {
@@ -351,7 +351,7 @@ namespace Greatbone.Core
             Response.Headers.Add(name, new StringValues(values));
         }
 
-        public void SetTokenCookie<P>(P prin, ushort proj) where P : class, IData, new()
+        public void SetTokenCookie<P>(P prin, int proj) where P : class, IData, new()
         {
             ((Service<P>) Service).SetTokenCookie(this, prin, proj);
         }
@@ -400,7 +400,7 @@ namespace Greatbone.Core
             MaxAge = maxage;
         }
 
-        public void Give(int status, IData obj, ushort proj = 0x00ff, bool? pub = null, int maxage = 60)
+        public void Give(int status, IData obj, int proj = 0x00ff, bool? pub = null, int maxage = 60)
         {
             JsonContent cont = new JsonContent(true).Put(null, obj, proj);
             Status = status;
@@ -409,7 +409,7 @@ namespace Greatbone.Core
             MaxAge = maxage;
         }
 
-        public void Give<D>(int status, D[] arr, ushort proj = 0x00ff, bool? pub = null, int maxage = 60) where D : IData
+        public void Give<D>(int status, D[] arr, int proj = 0x00ff, bool? pub = null, int maxage = 60) where D : IData
         {
             JsonContent cont = new JsonContent(true).Put(null, arr, proj);
             Status = status;

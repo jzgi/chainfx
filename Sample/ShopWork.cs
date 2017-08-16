@@ -66,7 +66,7 @@ namespace Greatbone.Sample
                     m.T("</div>");
                     m.T("</div>");
 
-                    const ushort proj = Shop.ID | Shop.BASIC;
+                    const int proj = Shop.ID | Shop.BASIC;
                     dc.Sql("SELECT ").columnlst(Shop.Empty, proj)._("FROM shops WHERE city = @1 AND status > 0");
                     if (dc.Query(p => p.Set(city)))
                     {
@@ -122,7 +122,7 @@ namespace Greatbone.Sample
             string city = ac[typeof(CityVarWork)];
             using (var dc = ac.NewDbContext())
             {
-                const ushort proj = Shop.ID | Shop.BASIC | Shop.SUPER;
+                const int proj = Shop.ID | Shop.BASIC | Shop.SUPER;
                 dc.Sql("SELECT ").columnlst(Shop.Empty, proj)._("FROM shops WHERE city = @1");
                 if (dc.Query(p => p.Set(city)))
                 {

@@ -10,7 +10,7 @@ namespace Greatbone.Sample
     {
         public static readonly User Empty = new User();
 
-        public const ushort
+        public const int
             WX = 1,
             CREATTED = 2,
             BACKEND = 0x00f0, // inclusive
@@ -43,7 +43,7 @@ namespace Greatbone.Sample
         internal bool adm; // admininistrator
 
 
-        public void Read(IDataInput i, ushort proj = 0x00ff)
+        public void Read(IDataInput i, int proj = 0x00ff)
         {
             if ((proj & WX) == WX)
             {
@@ -77,7 +77,7 @@ namespace Greatbone.Sample
             }
         }
 
-        public void Write<R>(IDataOutput<R> o, ushort proj = 0x00ff) where R : IDataOutput<R>
+        public void Write<R>(IDataOutput<R> o, int proj = 0x00ff) where R : IDataOutput<R>
         {
             if ((proj & WX) == WX)
             {

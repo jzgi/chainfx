@@ -191,16 +191,16 @@ namespace Greatbone.Sample
             ac.Give(status, h, @public, maxage);
         }
 
-        public static void GiveGridPage<D>(this ActionContext ac, int status, D[] datas, ushort proj = 0x00ff, bool? @public = null, int maxage = 60) where D : IData
+        public static void GiveGridPage<D>(this ActionContext ac, int status, D[] arr, int proj = 0x00ff, bool? @public = null, int maxage = 60) where D : IData
         {
             Work work = ac.Work;
-            ac.GivePage(status, main => { main.GRID(ac, work.varwork, datas, proj); }, @public, maxage);
+            ac.GivePage(status, main => { main.GRID(ac, work.varwork, arr, proj); }, @public, maxage);
         }
 
-        public static void GiveTablePage<D>(this ActionContext ac, int status, D[] datas, ushort proj = 0x00ff, bool? @public = null, int maxage = 60) where D : IData
+        public static void GiveTablePage<D>(this ActionContext ac, int status, D[] arr, int proj = 0x00ff, bool? @public = null, int maxage = 60) where D : IData
         {
             Work work = ac.Work;
-            ac.GivePage(status, main => { main.TABLE(ac, work.varwork, datas, proj); }, @public, maxage);
+            ac.GivePage(status, main => { main.TABLE(ac, work.varwork, arr, proj); }, @public, maxage);
         }
     }
 }

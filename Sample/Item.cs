@@ -10,7 +10,7 @@ namespace Greatbone.Sample
     {
         public static readonly Item Empty = new Item();
 
-        public const ushort BASIC = 0x0001, BASIC_SHOPID = 0x0003, BASIC_ICON = 0x0005;
+        public const int BASIC = 0x0001, BASIC_SHOPID = 0x0003, BASIC_ICON = 0x0005;
 
         // status
         public static readonly Map<short, string> STATUS = new Map<short, string>
@@ -31,7 +31,7 @@ namespace Greatbone.Sample
         internal short qty;
         internal short status;
 
-        public void Read(IDataInput i, ushort proj = 0x00ff)
+        public void Read(IDataInput i, int proj = 0x00ff)
         {
             if ((proj & BASIC) == BASIC)
             {
@@ -54,7 +54,7 @@ namespace Greatbone.Sample
             i.Get(nameof(status), ref status);
         }
 
-        public void Write<R>(IDataOutput<R> o, ushort proj = 0x00ff) where R : IDataOutput<R>
+        public void Write<R>(IDataOutput<R> o, int proj = 0x00ff) where R : IDataOutput<R>
         {
             if ((proj & BASIC) == BASIC)
             {

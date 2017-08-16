@@ -298,12 +298,12 @@ namespace Greatbone.Core
             throw new NotImplementedException();
         }
 
-        public FormContent Put(string name, IData v, ushort proj = 0x00ff, string Label = null)
+        public FormContent Put(string name, IData v, int proj = 0x00ff, string Label = null)
         {
             return this;
         }
 
-        public FormContent Put<D>(string name, D[] v, ushort proj = 0x00ff, string Label = null) where D : IData
+        public FormContent Put<D>(string name, D[] v, int proj = 0x00ff, string Label = null) where D : IData
         {
             return this;
         }

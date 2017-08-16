@@ -24,7 +24,7 @@ namespace Greatbone.Sample
 
             Create<AdmWork>("adm"); // administrator
 
-            cities = DataInputUtility.FileToDatas<City>(sc.GetFilePath("$cities.json"));
+            cities = DataInputUtility.FileToArray<City>(sc.GetFilePath("$cities.json"));
 
             int len = cities.Length;
             cityopt = new string[len];

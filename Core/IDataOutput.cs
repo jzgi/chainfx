@@ -48,8 +48,8 @@ namespace Greatbone.Core
 
         R Put(string name, Dictionary<string, string> v, string label = null);
 
-        R Put(string name, IData v, ushort proj = 0x00ff, string label = null);
+        R Put(string name, IData v, int proj = 0x00ff, string label = null);
 
-        R Put<D>(string name, D[] v, ushort proj = 0x00ff, string label = null) where D : IData;
+        R Put<D>(string name, D[] v, int proj = 0x00ff, string label = null) where D : IData;
     }
 }

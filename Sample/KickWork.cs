@@ -3,19 +3,19 @@
 namespace Greatbone.Sample
 {
     ///
-    public abstract class ChargeWork<V> : Work where V : ChargeVarWork
+    public abstract class KickWork<V> : Work where V : KickVarWork
     {
-        protected ChargeWork(WorkContext wc) : base(wc)
+        protected KickWork(WorkContext wc) : base(wc)
         {
-            CreateVar<V, int>(obj => ((Charge) obj).id);
+            CreateVar<V, int>(obj => ((Kick) obj).id);
         }
     }
 
     [Ui("举报")]
     [User]
-    public class MyChargeWork : ChargeWork<MyChargeVarWork>
+    public class MyKickWork : KickWork<MyKickVarWork>
     {
-        public MyChargeWork(WorkContext wc) : base(wc)
+        public MyKickWork(WorkContext wc) : base(wc)
         {
         }
 
@@ -26,11 +26,11 @@ namespace Greatbone.Sample
             {
                 if (dc.Query("SELECT * FROM charges WHERE wx = @1 ORDER BY id DESC", p => p.Set(wx)))
                 {
-                    ac.GiveGridPage(200, dc.ToArray<Charge>(0xffff));
+                    ac.GiveGridPage(200, dc.ToArray<Kick>(0xffff));
                 }
                 else
                 {
-                    ac.GiveGridPage(200, (Charge[]) null);
+                    ac.GiveGridPage(200, (Kick[]) null);
                 }
             }
         }
@@ -38,9 +38,9 @@ namespace Greatbone.Sample
 
     [Ui("举报管理")]
     [User(spr: true)]
-    public class SprChargeWork : ChargeWork<SprChargeVarWork>
+    public class SprKickWork : KickWork<SprKickVarWork>
     {
-        public SprChargeWork(WorkContext wc) : base(wc)
+        public SprKickWork(WorkContext wc) : base(wc)
         {
         }
 
@@ -49,7 +49,7 @@ namespace Greatbone.Sample
             string shopid = ac[typeof(ShopVarWork)];
             using (var dc = ac.NewDbContext())
             {
-                const ushort proj = 0xffff ^ Item.BASIC_ICON;
+                const int proj = 0xffff ^ Item.BASIC_ICON;
                 dc.Sql("SELECT ").columnlst(Item.Empty, proj)._("FROM charges WHERE shopid = @1");
                 if (dc.Query(p => p.Set(shopid)))
                 {

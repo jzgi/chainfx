@@ -65,7 +65,7 @@ namespace Greatbone.Sample
             {
                 using (var dc = ac.NewDbContext())
                 {
-                    const ushort proj = Item.BASIC;
+                    const int proj = Item.BASIC;
                     dc.Sql("SELECT ").columnlst(Item.Empty, proj)._("FROM items WHERE shopid = @1 AND name = @2");
                     if (dc.Query1(p => p.Set(shopid).Set(name)))
                     {
@@ -92,7 +92,7 @@ namespace Greatbone.Sample
             }
             else // post
             {
-                const ushort proj = Item.BASIC;
+                const int proj = Item.BASIC;
                 var o = await ac.ReadObjectAsync<Item>(proj);
                 using (var dc = ac.NewDbContext())
                 {

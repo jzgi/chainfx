@@ -29,7 +29,7 @@ namespace Greatbone.Sample
             string city = ac[-1];
             using (var dc = ac.NewDbContext())
             {
-                const ushort proj = 0xffff ^ User.CREDENTIAL;
+                const int proj = 0xffff ^ User.CREDENTIAL;
                 dc.Sql("SELECT ").columnlst(User.Empty, proj)._("FROM users WHERE city = @1 AND opr <> 0 ORDER BY id LIMIT 20 OFFSET @2");
                 if (dc.Query(p => p.Set(city).Set(page * 20)))
                 {
@@ -55,7 +55,7 @@ namespace Greatbone.Sample
         {
             using (var dc = ac.NewDbContext())
             {
-                const ushort proj = 0xffff ^ User.CREDENTIAL;
+                const int proj = 0xffff ^ User.CREDENTIAL;
                 dc.Sql("SELECT ").columnlst(User.Empty, proj)._("FROM users WHERE sprat IS NOT NULL ORDER BY city LIMIT 20 OFFSET @1");
                 if (dc.Query(p => p.Set(page * 20)))
                 {

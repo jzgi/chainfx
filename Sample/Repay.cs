@@ -8,7 +8,7 @@ namespace Greatbone.Sample
     ///
     public class Repay : IData
     {
-        public const ushort PAYING = 1;
+        public const int PAYING = 1;
 
         // status
         public const short
@@ -37,7 +37,7 @@ namespace Greatbone.Sample
         internal short status;
         internal string err;
 
-        public void Read(IDataInput i, ushort proj = 0x00ff)
+        public void Read(IDataInput i, int proj = 0x00ff)
         {
             i.Get(nameof(id), ref id);
             i.Get(nameof(shopid), ref shopid);
@@ -55,7 +55,7 @@ namespace Greatbone.Sample
             i.Get(nameof(err), ref err);
         }
 
-        public void Write<R>(IDataOutput<R> o, ushort proj = 0x00ff) where R : IDataOutput<R>
+        public void Write<R>(IDataOutput<R> o, int proj = 0x00ff) where R : IDataOutput<R>
         {
             o.Group("商家");
             o.Put(nameof(shopid), shopid);

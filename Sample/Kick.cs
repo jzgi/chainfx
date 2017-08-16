@@ -3,7 +3,7 @@
 namespace Greatbone.Sample
 {
     ///
-    public class Charge : IData
+    public class Kick : IData
     {
         public static readonly Item Empty = new Item();
 
@@ -26,11 +26,11 @@ namespace Greatbone.Sample
         internal string descr;
         internal short status;
 
-        public void Read(IDataInput i, ushort proj = 0x00ff)
+        public void Read(IDataInput i, int proj = 0x00ff)
         {
         }
 
-        public void Write<R>(IDataOutput<R> o, ushort proj = 0x00ff) where R : IDataOutput<R>
+        public void Write<R>(IDataOutput<R> o, int proj = 0x00ff) where R : IDataOutput<R>
         {
         }
     }

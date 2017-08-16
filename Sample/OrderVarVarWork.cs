@@ -29,7 +29,7 @@ namespace Greatbone.Sample
 
             if (ac.GET)
             {
-                const ushort proj = 0x00ff ^ Order.ID;
+                const int proj = 0x00ff ^ Order.ID;
                 using (var dc = ac.NewDbContext())
                 {
                     if (dc.Query1("SELECT shopid, detail, total FROM orders WHERE id = @1", p => p.Set(id)))
