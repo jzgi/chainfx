@@ -61,7 +61,7 @@ namespace Greatbone.Core
                 for (int i = 0; i < level; i++)
                 {
                     Segment seg = chain[i];
-                    if (seg.Work.IsSubclassOf(workType)) return seg;
+                    if (seg.Work.IsInstanceOf(workType)) return seg;
                 }
                 return default(Segment);
             }
@@ -125,7 +125,7 @@ namespace Greatbone.Core
         // URL query 
         Form query;
 
-        public Form Query => query ?? (query = new FormParse(QueryString).Parse());
+        public Form Query => query ?? (query = new FormParser(QueryString).Parse());
 
         public void AddParam(string name, string value)
         {

@@ -29,7 +29,7 @@ namespace Greatbone.Sample
 
         public const int NUM = 6;
 
-        public void Write<R>(IDataOutput<R> o, ushort proj = 255) where R : IDataOutput<R>
+        public void Write<R>(IDataOutput<R> o, ushort proj = 0x00ff) where R : IDataOutput<R>
         {
             if (msgs != null && msgs.Length > 0)
             {
@@ -56,7 +56,7 @@ namespace Greatbone.Sample
             i.Get(nameof(text), ref text);
         }
 
-        public void Write<R>(IDataOutput<R> o, ushort proj = 255) where R : IDataOutput<R>
+        public void Write<R>(IDataOutput<R> o, ushort proj = 0x00ff) where R : IDataOutput<R>
         {
             o.Put(nameof(name), name);
             o.Put(nameof(text), text);

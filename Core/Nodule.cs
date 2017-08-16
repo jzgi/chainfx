@@ -1,11 +1,10 @@
-using System;
 using System.Reflection;
 
 namespace Greatbone.Core
 {
-    ///
+    /// <summary>
     /// A certain node of resources along the URi path.
-    ///
+    /// </summary>
     public abstract class Nodule : IRollable
     {
         // name as appeared in the uri path

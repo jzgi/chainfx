@@ -3,7 +3,7 @@ namespace Greatbone.Core
     ///
     /// To parse multipart/form-data content, with the part Content-Length extension.
     ///
-    public struct FormMpParse : IParse<Form>
+    public struct FormMpParser : IParser<Form>
     {
         static readonly Form Empty = new Form(true);
 
@@ -15,7 +15,7 @@ namespace Greatbone.Core
 
         readonly byte[] bound;
 
-        public FormMpParse(byte[] buffer, int length, string boundary)
+        public FormMpParser(byte[] buffer, int length, string boundary)
         {
             // init byte array
             int len = boundary.Length;

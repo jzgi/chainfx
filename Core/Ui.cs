@@ -62,6 +62,11 @@ namespace Greatbone.Core
 
         public UiMode Mode { get; set; } = UiMode.Button;
 
+        /// <summary>
+        /// The state bitwise value that enables the action. 
+        /// </summary>
+        public int State { get; set; }
+
         public short Width { get; set; } = 120;
 
         public short Height { get; set; } = 120;

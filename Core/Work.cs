@@ -259,7 +259,7 @@ namespace Greatbone.Core
                 });
         }
 
-        public bool IsSubclassOf(Type typ) => typeinfo.IsSubclassOf(typ);
+        public bool IsInstanceOf(Type typ) => GetType() == typ || typeinfo.IsSubclassOf(typ);
 
         public ActionInfo GetAction(string method)
         {

@@ -15,15 +15,15 @@ namespace Greatbone.Core
 
             if (ctyp.StartsWith("application/x-www-form-urlencoded"))
             {
-                return new FormParse(buffer, length).Parse();
+                return new FormParser(buffer, length).Parse();
             }
             if (ctyp.StartsWith("multipart/form-data; boundary="))
             {
-                return new FormMpParse(buffer, length, ctyp.Substring(30)).Parse();
+                return new FormMpParser(buffer, length, ctyp.Substring(30)).Parse();
             }
             if (ctyp.StartsWith("application/json"))
             {
-                return new JsonParse(buffer, length).Parse();
+                return new JsonParser(buffer, length).Parse();
             }
             if (ctyp.StartsWith("application/xml"))
             {
@@ -33,7 +33,7 @@ namespace Greatbone.Core
             {
                 if (typ == typeof(JObj) || typ == typeof(JArr))
                 {
-                    return new JsonParse(buffer, length).Parse();
+                    return new JsonParser(buffer, length).Parse();
                 }
                 else if (typ == typeof(XElem))
                 {
@@ -57,7 +57,7 @@ namespace Greatbone.Core
             Type t = typeof(M);
             if (t == typeof(JArr) || t == typeof(JObj))
             {
-                return new JsonParse(v).Parse() as M;
+                return new JsonParser(v).Parse() as M;
             }
             else if (t == typeof(XElem))
             {
@@ -65,20 +65,20 @@ namespace Greatbone.Core
             }
             else if (t == typeof(Form))
             {
-                return new FormParse(v).Parse() as M;
+                return new FormParser(v).Parse() as M;
             }
             return null;
         }
 
         public static D StringToData<D>(string v, ushort proj = 0x00ff) where D : IData, new()
         {
-            JObj jo = (JObj) new JsonParse(v).Parse();
+            JObj jo = (JObj) new JsonParser(v).Parse();
             return jo.ToObject<D>(proj);
         }
 
         public static D[] StringToDatas<D>(string v, ushort proj = 0x00ff) where D : IData, new()
         {
-            JArr ja = (JArr) new JsonParse(v).Parse();
+            JArr ja = (JArr) new JsonParser(v).Parse();
             return ja.ToArray<D>(proj);
         }
 
@@ -109,7 +109,7 @@ namespace Greatbone.Core
                 Type t = typeof(T);
                 if (t == typeof(JArr) || t == typeof(JObj))
                 {
-                    return new JsonParse(bytes, bytes.Length).Parse() as T;
+                    return new JsonParser(bytes, bytes.Length).Parse() as T;
                 }
                 else if (t == typeof(XElem))
                 {
@@ -117,7 +117,7 @@ namespace Greatbone.Core
                 }
                 else if (t == typeof(Form))
                 {
-                    return new FormParse(bytes, bytes.Length).Parse() as T;
+                    return new FormParser(bytes, bytes.Length).Parse() as T;
                 }
             }
             catch (Exception ex)
@@ -132,7 +132,7 @@ namespace Greatbone.Core
             try
             {
                 byte[] bytes = File.ReadAllBytes(file);
-                JObj jo = (JObj) new JsonParse(bytes, bytes.Length).Parse();
+                JObj jo = (JObj) new JsonParser(bytes, bytes.Length).Parse();
                 if (jo != null)
                 {
                     return jo.ToObject<D>(proj);
@@ -150,7 +150,7 @@ namespace Greatbone.Core
             try
             {
                 byte[] bytes = File.ReadAllBytes(file);
-                JArr ja = (JArr) new JsonParse(bytes, bytes.Length).Parse();
+                JArr ja = (JArr) new JsonParser(bytes, bytes.Length).Parse();
                 if (ja != null)
                 {
                     return ja.ToArray<D>(proj);
