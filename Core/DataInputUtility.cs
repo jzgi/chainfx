@@ -6,9 +6,9 @@ namespace Greatbone.Core
 {
     public static class DataInputUtility
     {
-        ///
+        /// <summary>
         /// Used in both client and server to parse received content into model.
-        ///
+        /// </summary>
         public static IDataInput ParseContent(string ctyp, byte[] buffer, int length, Type typ = null)
         {
             if (string.IsNullOrEmpty(ctyp)) return null;
@@ -27,7 +27,7 @@ namespace Greatbone.Core
             }
             if (ctyp.StartsWith("application/xml"))
             {
-                return new XmlParse(buffer, length).Parse();
+                return new XmlParser(buffer, length).Parse();
             }
             if (ctyp.StartsWith("text/"))
             {
@@ -37,7 +37,7 @@ namespace Greatbone.Core
                 }
                 else if (typ == typeof(XElem))
                 {
-                    return new XmlParse(buffer, length).Parse();
+                    return new XmlParser(buffer, length).Parse();
                 }
                 else
                 {
@@ -61,7 +61,7 @@ namespace Greatbone.Core
             }
             else if (t == typeof(XElem))
             {
-                return new XmlParse(v).Parse() as M;
+                return new XmlParser(v).Parse() as M;
             }
             else if (t == typeof(Form))
             {
@@ -113,7 +113,7 @@ namespace Greatbone.Core
                 }
                 else if (t == typeof(XElem))
                 {
-                    return new XmlParse(bytes, bytes.Length).Parse() as T;
+                    return new XmlParser(bytes, bytes.Length).Parse() as T;
                 }
                 else if (t == typeof(Form))
                 {

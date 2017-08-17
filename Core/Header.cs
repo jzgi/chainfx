@@ -1,8 +1,8 @@
 namespace Greatbone.Core
 {
-    ///
-    /// To parse HTTP header.
-    ///
+    /// <summary>
+    /// To analyze HTTP header.
+    /// </summary>
     public class Header : Str
     {
         // start index of the value field

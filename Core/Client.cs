@@ -10,9 +10,9 @@ using static Greatbone.Core.DataInputUtility;
 
 namespace Greatbone.Core
 {
-    ///
+    /// <summary>
     /// A client of RPC, service and/or event queue.
-    ///
+    /// </summary>
     public class Client : HttpClient, IRollable
     {
         const int AHEAD = 1000 * 12;
@@ -48,19 +48,16 @@ namespace Greatbone.Core
             this.service = service;
             this.peerid = peerid;
 
-            if (service != null) // build lastevent poll condition
+            Roll<EventInfo> eis = service?.Events;
+            if (eis != null)
             {
-                Roll<EventInfo> eis = service.Events;
-                if (eis != null)
+                StringBuilder sb = new StringBuilder();
+                for (int i = 0; i < eis.Count; i++)
                 {
-                    StringBuilder sb = new StringBuilder();
-                    for (int i = 0; i < eis.Count; i++)
-                    {
-                        if (i > 0) sb.Append(',');
-                        sb.Append(eis[i].Name);
-                    }
-                    x_event = sb.ToString();
+                    if (i > 0) sb.Append(',');
+                    sb.Append(eis[i].Name);
                 }
+                x_event = sb.ToString();
             }
 
             BaseAddress = new Uri(raddr);

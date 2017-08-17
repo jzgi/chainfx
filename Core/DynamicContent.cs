@@ -8,9 +8,9 @@ using System.Threading.Tasks;
 
 namespace Greatbone.Core
 {
-    ///
+    /// <summary>
     /// A dynamically generated content of either bytes or characters.
-    ///
+    /// </summary>
     public abstract class DynamicContent : HttpContent, IContent
     {
         static readonly char[] DIGIT =

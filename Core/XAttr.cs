@@ -2,6 +2,9 @@ using System;
 
 namespace Greatbone.Core
 {
+    /// <summary>
+    /// An XML attribute.
+    /// </summary>
     public struct XAttr : IRollable
     {
         readonly string name;

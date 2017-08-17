@@ -137,7 +137,6 @@ namespace Greatbone.Core
                 }
                 catch (Exception)
                 {
-                    // TODO: LOG
                 }
             }
         }
@@ -153,7 +152,6 @@ namespace Greatbone.Core
             }
             catch (Exception)
             {
-                // TODO: LOG
             }
         }
 
@@ -168,7 +166,6 @@ namespace Greatbone.Core
             }
             catch (Exception)
             {
-                // TODO: LOG
             }
         }
     }

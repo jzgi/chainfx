@@ -3,9 +3,9 @@ using System.Collections.Concurrent;
 
 namespace Greatbone.Core
 {
-    ///
+    /// <summary>
     /// A global byte/char buffer pool.
-    ///
+    /// </summary>
     public static class BufferUtility
     {
         // we use number ocores as a factor

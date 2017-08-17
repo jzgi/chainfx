@@ -1,9 +1,9 @@
 namespace Greatbone.Core
 {
-    ///
-    /// An XML parsing structure that deals with well-formed XML documents.
-    ///
-    public struct XmlParse
+    /// <summary>
+    /// An XML parser structure that deals with well-formed XML documents.
+    /// </summary>
+    public struct XmlParser : IParser<XElem>
     {
         static readonly ParseException ParseEx = new ParseException("error parsing xml");
 
@@ -18,7 +18,7 @@ namespace Greatbone.Core
         // UTF-8 string builder
         readonly Str str;
 
-        public XmlParse(byte[] bytebuf, int length)
+        public XmlParser(byte[] bytebuf, int length)
         {
             this.bytebuf = bytebuf;
             this.strbuf = null;
@@ -26,7 +26,7 @@ namespace Greatbone.Core
             this.str = new Str(1024);
         }
 
-        public XmlParse(string strbuf)
+        public XmlParser(string strbuf)
         {
             this.bytebuf = null;
             this.strbuf = strbuf;

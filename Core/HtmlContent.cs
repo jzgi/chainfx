@@ -3,9 +3,9 @@ using System.Collections.Generic;
 
 namespace Greatbone.Core
 {
-    ///
-    /// For dynamical HTML5 content tooled with Zurb Foundation
-    ///
+    /// <summary>
+    /// For dynamic HTML5 content tooled with Zurb Foundation
+    /// </summary>
     public class HtmlContent : DynamicContent, IDataOutput<HtmlContent>
     {
         internal const sbyte
@@ -2270,7 +2270,7 @@ namespace Greatbone.Core
                     if (v != null)
                     {
                         Add("<div class=\"row column\">");
-                        TABLE(null, chain[level].varwork?.varwork, v, proj);
+                        TABLE(null, chain[level].varwork?.varWork, v, proj);
                         Add("</div>");
                     }
                     break;

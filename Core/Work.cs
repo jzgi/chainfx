@@ -7,10 +7,10 @@ using System.Threading.Tasks;
 
 namespace Greatbone.Core
 {
-    ///
+    /// <summary>
     /// A work is a virtual web folder that contains a single or collection of resources along with operations on it or them.
-    /// A work can contain child/sub works.
-    ///
+    /// </summary>
+    /// <remarks>A work can contain child/sub works.</remarks>
     public abstract class Work : Nodule
     {
         internal static readonly AuthorizeException AuthorizeEx = new AuthorizeException();
@@ -33,7 +33,7 @@ namespace Greatbone.Core
         readonly ActionInfo @default;
 
         // actions with Ui attribute
-        readonly ActionInfo[] uiactions;
+        readonly ActionInfo[] uiActions;
 
         readonly int buttons;
 
@@ -41,7 +41,7 @@ namespace Greatbone.Core
         internal Roll<Work> works;
 
         // variable-key subwork, if any
-        internal Work varwork;
+        internal Work varWork;
 
         // to obtain a string key from a data object.
         protected Work(WorkContext wc) : base(wc.Name, null)
@@ -95,7 +95,7 @@ namespace Greatbone.Core
                     if (ai.Ui.IsButton) btns++;
                 }
             }
-            uiactions = uias?.ToArray();
+            uiActions = uias?.ToArray();
             buttons = btns;
         }
 
@@ -173,7 +173,7 @@ namespace Greatbone.Core
                 Service = Service
             };
             W work = (W) ci.Invoke(new object[] {wc});
-            varwork = work;
+            varWork = work;
             return work;
         }
 
@@ -185,7 +185,7 @@ namespace Greatbone.Core
 
         public Roll<ActionInfo> Actions => actions;
 
-        public ActionInfo[] UiActions => uiactions;
+        public ActionInfo[] UiActions => uiActions;
 
         public int Buttons => buttons;
 
@@ -193,7 +193,7 @@ namespace Greatbone.Core
 
         public Roll<Work> Works => works;
 
-        public Work VarWork => varwork;
+        public Work VarWork => varWork;
 
         public string Directory => ctx.Directory;
 
@@ -255,7 +255,7 @@ namespace Greatbone.Core
                             wrk.Describe(cont);
                         }
                     }
-                    varwork?.Describe(cont);
+                    varWork?.Describe(cont);
                 });
         }
 
@@ -288,19 +288,19 @@ namespace Greatbone.Core
                 ac.Chain(key, work);
                 return work.Resolve(ref relative, ac);
             }
-            if (varwork != null) // if variable-key sub
+            if (varWork != null) // if variable-key sub
             {
                 IData prin = ac.Principal;
-                if (key.Length == 0 && varwork.HasKeyer) // resolve shortcut
+                if (key.Length == 0 && varWork.HasKeyer) // resolve shortcut
                 {
                     if (prin == null) throw AuthorizeEx;
-                    if ((key = varwork.ObtainVarKey(prin)) == null)
+                    if ((key = varWork.ObtainVarKey(prin)) == null)
                     {
                         throw AuthorizeEx;
                     }
                 }
-                ac.Chain(key, varwork);
-                return varwork.Resolve(ref relative, ac);
+                ac.Chain(key, varWork);
+                return varWork.Resolve(ref relative, ac);
             }
             return null;
         }

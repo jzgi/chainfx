@@ -5,9 +5,9 @@ using NpgsqlTypes;
 
 namespace Greatbone.Core
 {
-    ///
+    /// <summary>
     /// A database operation session.
-    ///
+    /// </summary>
     public class DbParameters : IDataOutput<DbParameters>
     {
         static readonly string[] Defaults =

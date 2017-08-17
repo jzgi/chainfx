@@ -17,9 +17,9 @@ using Microsoft.Extensions.Options;
 
 namespace Greatbone.Core
 {
-    ///
+    /// <summary>
     /// A service is a work that implements HTTP endpoint.
-    ///
+    /// </summary>
     public abstract class Service : Work, IHttpApplication<HttpContext>, ILoggerProvider, ILogger
     {
         protected readonly ServiceContext ctx;

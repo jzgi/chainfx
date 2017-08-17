@@ -3,9 +3,9 @@ using System.IO;
 
 namespace Greatbone.Core
 {
-    ///
+    /// <summary>
     /// The creation environment for a particular work instance.
-    ///
+    /// </summary>
     public class WorkContext
     {
         readonly string name;

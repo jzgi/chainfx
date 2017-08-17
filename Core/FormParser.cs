@@ -1,8 +1,8 @@
 namespace Greatbone.Core
 {
-    ///
+    /// <summary>
     /// To parse application/x-www-form-urlencoded octets or a character string.
-    ///
+    /// </summary>
     public struct FormParser : IParser<Form>
     {
         static readonly Form Empty = new Form(false);

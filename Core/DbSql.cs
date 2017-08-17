@@ -3,9 +3,9 @@ using System.Collections.Generic;
 
 namespace Greatbone.Core
 {
-    ///
+    /// <summary>
     /// A specialized string builder for generating SQL commands.
-    ///
+    /// </summary>
     public class DbSql : DynamicContent, IDataOutput<DbSql>
     {
         // contexts

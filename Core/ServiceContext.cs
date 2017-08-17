@@ -2,9 +2,9 @@ using System.Collections.Generic;
 
 namespace Greatbone.Core
 {
-    ///
+    /// <summary>
     /// The configuration and running environment for a service istance. It is easy to be constructed programmatically or loaded from file.
-    ///
+    /// </summary>
     public class ServiceContext : WorkContext, IData
     {
         // the shard id of the service instance, can be null

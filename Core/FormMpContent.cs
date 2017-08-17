@@ -3,9 +3,9 @@ using System.Collections.Generic;
 
 namespace Greatbone.Core
 {
-    /// 
+    /// <summary>
     /// To generate multipart/form-data binary content, with the part Content-Length extension.
-    /// 
+    /// </summary>
     public class FormMpContent : DynamicContent, IDataOutput<FormMpContent>
     {
         public const string BOUNDARY = "~7^E!3#A&W";

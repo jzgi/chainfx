@@ -13,7 +13,7 @@ namespace Greatbone.Core
         // name in uppercase
         readonly string upper;
 
-        // user interface settings
+        // user interface-related settings
         internal UiAttribute ui;
 
         // access check
@@ -22,12 +22,12 @@ namespace Greatbone.Core
         // pre- operation
         readonly IBefore before;
 
-        readonly IBeforeAsync beforeasync;
+        readonly IBeforeAsync beforeAsync;
 
         // post- operation
         readonly IAfter after;
 
-        readonly IAfterAsync afterasync;
+        readonly IAfterAsync afterAsync;
 
         internal Nodule(string name, ICustomAttributeProvider attrprov)
         {
@@ -61,9 +61,9 @@ namespace Greatbone.Core
             {
                 var a = attrs[i];
                 if (a is IBefore) before = (IBefore) a;
-                if (a is IBeforeAsync) beforeasync = (IBeforeAsync) a;
+                if (a is IBeforeAsync) beforeAsync = (IBeforeAsync) a;
                 if (a is IAfter) after = (IAfter) a;
-                if (a is IAfterAsync) afterasync = (IAfterAsync) a;
+                if (a is IAfterAsync) afterAsync = (IAfterAsync) a;
             }
         }
 
@@ -77,11 +77,11 @@ namespace Greatbone.Core
 
         public IBefore Before => before;
 
-        public IBeforeAsync BeforeAsync => beforeasync;
+        public IBeforeAsync BeforeAsync => beforeAsync;
 
         public IAfter After => after;
 
-        public IAfterAsync AfterAsync => afterasync;
+        public IAfterAsync AfterAsync => afterAsync;
 
         public string Label => ui?.Label ?? upper;
 

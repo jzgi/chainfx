@@ -4,9 +4,9 @@ using System.Threading.Tasks;
 
 namespace Greatbone.Core
 {
-    ///
+    /// <summary>
     /// The descriptor for an action method.
-    ///
+    /// </summary>
     public class ActionInfo : Nodule, IDoer
     {
         readonly Work work;
@@ -25,13 +25,13 @@ namespace Greatbone.Core
         readonly Action<ActionContext> @do;
 
         // async Task action(ActionContext)
-        readonly Func<ActionContext, Task> doasync;
+        readonly Func<ActionContext, Task> doAsync;
 
         // void action(ActionContext, int)
         readonly Action<ActionContext, int> do2;
 
         // async Task action(ActionContext, int)
-        readonly Func<ActionContext, int, Task> do2async;
+        readonly Func<ActionContext, int, Task> do2Async;
 
         internal ActionInfo(Work work, MethodInfo mi, bool async, bool subscript, int limit = 0) : base(mi.Name, mi)
         {
@@ -52,11 +52,11 @@ namespace Greatbone.Core
             {
                 if (subscript)
                 {
-                    do2async = (Func<ActionContext, int, Task>) mi.CreateDelegate(typeof(Func<ActionContext, int, Task>), work);
+                    do2Async = (Func<ActionContext, int, Task>) mi.CreateDelegate(typeof(Func<ActionContext, int, Task>), work);
                 }
                 else
                 {
-                    doasync = (Func<ActionContext, Task>) mi.CreateDelegate(typeof(Func<ActionContext, Task>), work);
+                    doAsync = (Func<ActionContext, Task>) mi.CreateDelegate(typeof(Func<ActionContext, Task>), work);
                 }
             }
             else
@@ -103,11 +103,11 @@ namespace Greatbone.Core
             // invoke the right action method
             if (HasSubscript)
             {
-                await do2async(ac, subscpt);
+                await do2Async(ac, subscpt);
             }
             else
             {
-                await doasync(ac);
+                await doAsync(ac);
             }
         }
     }

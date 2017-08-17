@@ -2,6 +2,9 @@
 
 namespace Greatbone.Core
 {
+    /// <summary>
+    /// An entry in the service response cache.
+    /// </summary>
     public class Cachie
     {
         // response status, 0 means cleared, otherwise one of the cacheable status

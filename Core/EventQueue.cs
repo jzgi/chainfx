@@ -2,9 +2,9 @@ using System;
 
 namespace Greatbone.Core
 {
-    /// 
+    /// <summary>
     /// A event queue pertaining to a certain event client.
-    /// 
+    /// </summary>
     public class EventQueue : IRollable
     {
         internal const string

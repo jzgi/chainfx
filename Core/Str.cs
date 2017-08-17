@@ -3,9 +3,9 @@ using System.Collections.Generic;
 
 namespace Greatbone.Core
 {
-    ///
+    /// <summary>
     /// A text/plain model or comma-separate values. It can be used as UTF-8 string builder.
-    ///
+    /// </summary>
     public class Str : IDataInput
     {
         protected char[] charbuf;

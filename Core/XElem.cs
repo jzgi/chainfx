@@ -3,9 +3,9 @@ using System.Collections.Generic;
 
 namespace Greatbone.Core
 {
-    ///
-    /// An XML element tag.
-    ///
+    /// <summary>
+    /// An XML element.
+    /// </summary>
     public class XElem : IDataInput, IComparable<XElem>
     {
         readonly string tag;

@@ -2,29 +2,33 @@
 
 namespace Greatbone.Core
 {
-    /// To filter before action.
-    ///
+    /// <summary>
+    /// To filter before executing an action.
+    /// </summary>
     public interface IBefore
     {
         bool Do(ActionContext ac);
     }
 
-    /// To filter before action.
-    ///
+    /// <summary>
+    /// To filter asynchronously before executing an action.
+    /// </summary>
     public interface IBeforeAsync
     {
         Task DoAsync(ActionContext ac);
     }
 
-    /// To filter after action.
-    ///
+    /// <summary>
+    /// To filter after executing an action.
+    /// </summary>
     public interface IAfter
     {
         bool Do(ActionContext ac);
     }
 
-    /// To filter after action.
-    ///
+    /// <summary>
+    /// To filter asynchronously after executing an action.
+    /// </summary>
     public interface IAfterAsync
     {
         Task DoAsync(ActionContext ac);

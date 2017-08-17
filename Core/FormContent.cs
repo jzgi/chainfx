@@ -3,9 +3,9 @@ using System.Collections.Generic;
 
 namespace Greatbone.Core
 {
-    /// 
+    /// <summary>
     /// To generate a urlencoded byte or char string.
-    /// 
+    /// </summary>
     public class FormContent : DynamicContent, IDataOutput<FormContent>
     {
         // hexidecimal characters

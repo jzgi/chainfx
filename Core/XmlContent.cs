@@ -3,9 +3,9 @@ using System.Collections.Generic;
 
 namespace Greatbone.Core
 {
-    /// 
+    /// <summary>
     /// To generate a UTF-8 encoded XML document. 
-    /// 
+    /// </summary>
     public class XmlContent : DynamicContent, IDataOutput<XmlContent>
     {
         public XmlContent(bool octet, int capacity = 4096) : base(octet, capacity)
