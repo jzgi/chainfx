@@ -15,29 +15,29 @@ namespace Greatbone.Core
 
             if (ctyp.StartsWith("application/x-www-form-urlencoded"))
             {
-                return new FormParser(buffer, length).Parse();
+                return new FormParse(buffer, length).Parse();
             }
             if (ctyp.StartsWith("multipart/form-data; boundary="))
             {
-                return new FormMpParser(buffer, length, ctyp.Substring(30)).Parse();
+                return new FormMpParse(buffer, length, ctyp.Substring(30)).Parse();
             }
             if (ctyp.StartsWith("application/json"))
             {
-                return new JsonParser(buffer, length).Parse();
+                return new JsonParse(buffer, length).Parse();
             }
             if (ctyp.StartsWith("application/xml"))
             {
-                return new XmlParser(buffer, length).Parse();
+                return new XmlParse(buffer, length).Parse();
             }
             if (ctyp.StartsWith("text/"))
             {
                 if (typ == typeof(JObj) || typ == typeof(JArr))
                 {
-                    return new JsonParser(buffer, length).Parse();
+                    return new JsonParse(buffer, length).Parse();
                 }
                 else if (typ == typeof(XElem))
                 {
-                    return new XmlParser(buffer, length).Parse();
+                    return new XmlParse(buffer, length).Parse();
                 }
                 else
                 {
@@ -57,28 +57,28 @@ namespace Greatbone.Core
             Type t = typeof(M);
             if (t == typeof(JArr) || t == typeof(JObj))
             {
-                return new JsonParser(v).Parse() as M;
+                return new JsonParse(v).Parse() as M;
             }
             else if (t == typeof(XElem))
             {
-                return new XmlParser(v).Parse() as M;
+                return new XmlParse(v).Parse() as M;
             }
             else if (t == typeof(Form))
             {
-                return new FormParser(v).Parse() as M;
+                return new FormParse(v).Parse() as M;
             }
             return null;
         }
 
         public static D StringToObject<D>(string v, int proj = 0x00ff) where D : IData, new()
         {
-            JObj jo = (JObj) new JsonParser(v).Parse();
+            JObj jo = (JObj) new JsonParse(v).Parse();
             return jo.ToObject<D>(proj);
         }
 
         public static D[] StringToArray<D>(string v, int proj = 0x00ff) where D : IData, new()
         {
-            JArr ja = (JArr) new JsonParser(v).Parse();
+            JArr ja = (JArr) new JsonParse(v).Parse();
             return ja.ToArray<D>(proj);
         }
 
@@ -109,15 +109,15 @@ namespace Greatbone.Core
                 Type t = typeof(T);
                 if (t == typeof(JArr) || t == typeof(JObj))
                 {
-                    return new JsonParser(bytes, bytes.Length).Parse() as T;
+                    return new JsonParse(bytes, bytes.Length).Parse() as T;
                 }
                 else if (t == typeof(XElem))
                 {
-                    return new XmlParser(bytes, bytes.Length).Parse() as T;
+                    return new XmlParse(bytes, bytes.Length).Parse() as T;
                 }
                 else if (t == typeof(Form))
                 {
-                    return new FormParser(bytes, bytes.Length).Parse() as T;
+                    return new FormParse(bytes, bytes.Length).Parse() as T;
                 }
             }
             catch (Exception ex)
@@ -132,7 +132,7 @@ namespace Greatbone.Core
             try
             {
                 byte[] bytes = File.ReadAllBytes(file);
-                JObj jo = (JObj) new JsonParser(bytes, bytes.Length).Parse();
+                JObj jo = (JObj) new JsonParse(bytes, bytes.Length).Parse();
                 if (jo != null)
                 {
                     return jo.ToObject<D>(proj);
@@ -150,7 +150,7 @@ namespace Greatbone.Core
             try
             {
                 byte[] bytes = File.ReadAllBytes(file);
-                JArr ja = (JArr) new JsonParser(bytes, bytes.Length).Parse();
+                JArr ja = (JArr) new JsonParse(bytes, bytes.Length).Parse();
                 if (ja != null)
                 {
                     return ja.ToArray<D>(proj);

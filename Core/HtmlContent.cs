@@ -23,7 +23,7 @@ namespace Greatbone.Core
             // data control node
             internal sbyte node;
 
-            internal Work varwork;
+            internal Work varWork;
 
             internal IData obj;
 
@@ -32,7 +32,7 @@ namespace Greatbone.Core
 
             internal void OutputVarKey(HtmlContent cont)
             {
-                varwork.OutputVarKey(obj, cont);
+                varWork.OutputVarKey(obj, cont);
             }
         }
 
@@ -278,7 +278,7 @@ namespace Greatbone.Core
             Add("<div class=\"title-bar-left\">");
             if (work.UiActions != null)
             {
-                TRIGGERS(work.UiActions, model: model);
+                TRIGGERS(work.UiActions, obj: model);
             }
             Add("</div>");
 
@@ -425,7 +425,7 @@ namespace Greatbone.Core
             return this;
         }
 
-        public HtmlContent TABLE<D>(ActionContext formctx, Work varwork, D[] arr, int proj = 0x00ff) where D : IData
+        public HtmlContent TABLE<D>(ActionContext formctx, Work varWork, D[] arr, int proj = 0x00ff) where D : IData
         {
             bool checks = false; // to draw selection-checkboxes?
             if (formctx != null)
@@ -438,11 +438,11 @@ namespace Greatbone.Core
             if (arr != null)
             {
                 ++level;
-                chain[level].varwork = varwork;
+                chain[level].varWork = varWork;
 
                 Add("<table class=\"unstriped\">");
 
-                ActionInfo[] ais = varwork?.UiActions;
+                ActionInfo[] ais = varWork?.UiActions;
 
                 chain[level].node = TABLE_THEAD;
 
@@ -477,7 +477,7 @@ namespace Greatbone.Core
                     {
                         Add("<td>");
                         Add("<input name=\"key\" type=\"checkbox\" value=\"");
-                        varwork?.OutputVarKey(obj, this);
+                        varWork?.OutputVarKey(obj, this);
                         Add("</td>");
                     }
 
@@ -532,29 +532,29 @@ namespace Greatbone.Core
             return this;
         }
 
-        public HtmlContent GRID<D>(ActionContext formctx, Work varwork, D[] arr, int proj = 0x00ff) where D : IData
+        public HtmlContent GRID<D>(ActionContext formCtx, Work varWork, D[] arr, int proj = 0x00ff) where D : IData
         {
             bool checks = false; // to render checkboxes?
-            if (formctx != null)
+            if (formCtx != null)
             {
                 Add("<form id=\"gridform\">");
-                TOOLBAR(formctx.Work, arr);
-                checks = formctx.Work.Buttons > 0;
+                TOOLBAR(formCtx.Work, arr);
+                checks = formCtx.Work.Buttons > 0;
             }
 
             if (arr != null) // render grid component
             {
                 ++level;
                 chain[level].node = GRID_DIV;
-                chain[level].varwork = varwork;
+                chain[level].varWork = varWork;
 
                 Add("<div class=\"row expanded small-up-1 medium-up-2 large-up-3 xlarge-up-4\">");
                 for (int i = 0; i < arr.Length; i++)
                 {
                     Add("<div class=\"column\">");
                     Add("<div class=\"card\">");
-                    D data = arr[i];
-                    chain[level].obj = data;
+                    D obj = arr[i];
+                    chain[level].obj = obj;
 
                     if (checks && level == 0)
                     {
@@ -563,20 +563,20 @@ namespace Greatbone.Core
                         Add("</div>");
                         Add("<div class=\"small-9 columns\" style=\"text-align: right\">");
                         Add("<input name=\"key\" type=\"checkbox\" style=\"margin: 0 0.5rem\" value=\"");
-                        varwork?.OutputVarKey(data, this);
+                        varWork?.OutputVarKey(obj, this);
                         Add("\">");
                         Add("</div>");
                         Add("</div>");
                     }
 
-                    data.Write(this, proj);
+                    obj.Write(this, proj);
 
-                    // action trigers
-                    ActionInfo[] ais = varwork?.UiActions;
+                    // output action triggers
+                    ActionInfo[] ais = varWork?.UiActions;
                     if (ais != null)
                     {
                         Add("<div style=\"text-align: right; border-top: 1px solid silver\">");
-                        TRIGGERS(ais, null, data);
+                        TRIGGERS(ais, null, obj);
                         Add("</div>");
                     }
                     Add("</div>");
@@ -591,16 +591,16 @@ namespace Greatbone.Core
                 Add("</div>");
             }
 
-            if (formctx != null)
+            if (formCtx != null)
             {
                 // pagination controls if any
-                PAGENATE(formctx, arr == null ? 0 : arr.Length);
+                PAGENATE(formCtx, arr == null ? 0 : arr.Length);
                 Add("</form>");
             }
             return this;
         }
 
-        public HtmlContent LIST<D>(ActionContext formed, Work varwork, D[] arr, int proj = 0x00ff) where D : IData
+        public HtmlContent LIST<D>(ActionContext formed, Work varWork, D[] arr, int proj = 0x00ff) where D : IData
         {
             if (formed != null)
             {
@@ -612,7 +612,7 @@ namespace Greatbone.Core
             {
                 ++level;
                 chain[level].node = LIST_UL;
-                chain[level].varwork = varwork;
+                chain[level].varWork = varWork;
 
                 Add("<ul>");
                 for (int i = 0; i < arr.Length; i++)
@@ -634,7 +634,7 @@ namespace Greatbone.Core
             return this;
         }
 
-        public HtmlContent TRIGGERS(ActionInfo[] ais, ActionContext ac = null, object model = null)
+        public HtmlContent TRIGGERS(ActionInfo[] ais, ActionContext ac = null, object obj = null)
         {
             if (ais == null) return this;
 
@@ -646,6 +646,14 @@ namespace Greatbone.Core
                 if (ac != null && !ai.DoAuthorize(ac)) continue;
 
                 UiAttribute ui = ai.Ui;
+
+                // check state masking
+                var statable = obj as IStatable;
+                if (statable != null)
+                {
+                    int state = statable.GetState();
+                    if (!ui.HasState(state)) continue;
+                }
 
                 if (ui.IsAnchor)
                 {
@@ -2270,7 +2278,7 @@ namespace Greatbone.Core
                     if (v != null)
                     {
                         Add("<div class=\"row column\">");
-                        TABLE(null, chain[level].varwork?.varWork, v, proj);
+                        TABLE(null, chain[level].varWork?.varWork, v, proj);
                         Add("</div>");
                     }
                     break;

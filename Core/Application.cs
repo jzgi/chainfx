@@ -32,7 +32,7 @@ namespace Greatbone.Core
                 if (File.Exists(file))
                 {
                     byte[] bytes = File.ReadAllBytes(file);
-                    JsonParser p = new JsonParser(bytes, bytes.Length);
+                    JsonParse p = new JsonParse(bytes, bytes.Length);
                     JObj jo = (JObj) p.Parse();
 
                     // this will override values

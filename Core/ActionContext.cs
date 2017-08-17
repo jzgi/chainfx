@@ -125,7 +125,7 @@ namespace Greatbone.Core
         // URL query 
         Form query;
 
-        public Form Query => query ?? (query = new FormParser(QueryString).Parse());
+        public Form Query => query ?? (query = new FormParse(QueryString).Parse());
 
         public void AddParam(string name, string value)
         {

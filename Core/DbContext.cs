@@ -595,7 +595,7 @@ namespace Greatbone.Core
                 if (!reader.IsDBNull(ord))
                 {
                     string str = reader.GetString(ord);
-                    JsonParser p = new JsonParser(str);
+                    JsonParse p = new JsonParse(str);
                     JObj jo = (JObj) p.Parse();
                     v = new D();
                     v.Read(jo, proj);
@@ -623,7 +623,7 @@ namespace Greatbone.Core
                 if (!reader.IsDBNull(ord))
                 {
                     string str = reader.GetString(ord);
-                    JsonParser p = new JsonParser(str);
+                    JsonParse p = new JsonParse(str);
                     v = (JObj) p.Parse();
                     return true;
                 }
@@ -642,8 +642,8 @@ namespace Greatbone.Core
                 if (!reader.IsDBNull(ord))
                 {
                     string str = reader.GetString(ord);
-                    JsonParser parser = new JsonParser(str);
-                    v = (JArr) parser.Parse();
+                    JsonParse parse = new JsonParse(str);
+                    v = (JArr) parse.Parse();
                     return true;
                 }
             }
@@ -734,8 +734,8 @@ namespace Greatbone.Core
                 if (!reader.IsDBNull(ord))
                 {
                     string str = reader.GetString(ord);
-                    JsonParser parser = new JsonParser(str);
-                    JArr ja = (JArr) parser.Parse();
+                    JsonParse parse = new JsonParse(str);
+                    JArr ja = (JArr) parse.Parse();
                     int len = ja.Count;
                     v = new D[len];
                     for (int i = 0; i < len; i++)
@@ -968,7 +968,7 @@ namespace Greatbone.Core
                 if (!reader.IsDBNull(ord))
                 {
                     string str = reader.GetString(ord);
-                    JsonParser p = new JsonParser(str);
+                    JsonParse p = new JsonParse(str);
                     JObj jo = (JObj) p.Parse();
                     v = new D();
                     v.Read(jo, proj);
@@ -997,8 +997,8 @@ namespace Greatbone.Core
                 if (!reader.IsDBNull(ord))
                 {
                     string str = reader.GetString(ord);
-                    JsonParser parser = new JsonParser(str);
-                    JArr ja = (JArr) parser.Parse();
+                    JsonParse parse = new JsonParse(str);
+                    JArr ja = (JArr) parse.Parse();
                     int len = ja.Count;
                     v = new D[len];
                     for (int i = 0; i < len; i++)

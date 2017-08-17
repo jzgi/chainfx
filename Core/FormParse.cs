@@ -3,7 +3,7 @@ namespace Greatbone.Core
     /// <summary>
     /// To parse application/x-www-form-urlencoded octets or a character string.
     /// </summary>
-    public struct FormParser : IParser<Form>
+    public struct FormParse : IParse<Form>
     {
         static readonly Form Empty = new Form(false);
 
@@ -18,7 +18,7 @@ namespace Greatbone.Core
         // UTF-8 string builder
         readonly Str str;
 
-        public FormParser(byte[] bytebuf, int length)
+        public FormParse(byte[] bytebuf, int length)
         {
             this.bytebuf = bytebuf;
             this.strbuf = null;
@@ -26,7 +26,7 @@ namespace Greatbone.Core
             this.str = new Str(256);
         }
 
-        public FormParser(string strbuf)
+        public FormParse(string strbuf)
         {
             this.bytebuf = null;
             this.strbuf = strbuf;

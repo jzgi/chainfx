@@ -1,6 +1,6 @@
 namespace Greatbone.Core
 {
-    public interface IParser<T> where T : IDataInput
+    public interface IParse<out T> where T : IDataInput
     {
         T Parse();
     }
