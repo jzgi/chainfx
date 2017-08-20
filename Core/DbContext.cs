@@ -13,7 +13,7 @@ namespace Greatbone.Core
     {
         readonly Service service;
 
-        readonly IDoerContext<IDoer> doerctx;
+        readonly IDoerContext<IDoer> doerCtx;
 
         readonly NpgsqlConnection connection;
 
@@ -36,10 +36,10 @@ namespace Greatbone.Core
         {
         }
 
-        internal DbContext(Service service, IDoerContext<IDoer> doerctx)
+        internal DbContext(Service service, IDoerContext<IDoer> doerCtx)
         {
             this.service = service;
-            this.doerctx = doerctx;
+            this.doerCtx = doerCtx;
 
             connection = new NpgsqlConnection(service.ConnectionString);
             command = new NpgsqlCommand();
@@ -374,11 +374,10 @@ namespace Greatbone.Core
             return coll;
         }
 
-        public Dictionary<K, D> ToDictionary<K, D>(Func<D, K> keyer, int proj = 0x00ff) where D : IData, new()
+        public Map<K, D> ToMap<K, D>(Func<D, K> keyer, int proj = 0x00ff) where D : IData, new() where K : IEquatable<K>
         {
-            int initial = doerctx.Doer?.Limit ?? 0;
-            if (initial <= 0) initial = 32;
-            Dictionary<K, D> coll = new Dictionary<K, D>(initial);
+            int initial = doerCtx?.Doer?.Limit ?? 32;
+            Map<K, D> coll = new Map<K, D>(initial);
             while (Next())
             {
                 D obj = new D();

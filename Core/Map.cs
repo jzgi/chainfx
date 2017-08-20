@@ -6,7 +6,7 @@ namespace Greatbone.Core
     /// <summary>
     /// A dictionary structure that provides a collection of options to UI elements.
     /// </summary>
-    public class Map<K, V> : Dictionary<K, V>, IOptable<K> where K : IEquatable<K>
+    public class Map<K, V> : Dictionary<K, V>, IOptable<K>
     {
         public Map(int capacity = 8) : base(capacity)
         {

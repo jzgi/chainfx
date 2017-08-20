@@ -67,7 +67,7 @@ namespace Greatbone.Core
         /// </summary>
         public int State { get; set; }
 
-        internal bool HasState(int state) => State == 0 || (State & state) == state;
+        public bool HasState(int state) => State == 0 || (State & state) == state;
 
         public short Width { get; set; } = 120;
 

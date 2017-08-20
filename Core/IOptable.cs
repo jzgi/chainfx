@@ -2,7 +2,7 @@ using System;
 
 namespace Greatbone.Core
 {
-    public interface IOptable<K> where K : IEquatable<K>
+    public interface IOptable<K>
     {
         void ForEach(Action<K, object> handler);
 
