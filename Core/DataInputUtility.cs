@@ -162,5 +162,23 @@ namespace Greatbone.Core
             }
             return null;
         }
+
+        public static Map<K, D> FileToMap<K, D>(string file, Func<D, K> keyer, int proj = 0x00ff) where D : IData, new()
+        {
+            try
+            {
+                byte[] bytes = File.ReadAllBytes(file);
+                JArr ja = (JArr) new JsonParse(bytes, bytes.Length).Parse();
+                if (ja != null)
+                {
+                    return ja.ToMap<K, D>(keyer, proj);
+                }
+            }
+            catch (Exception ex)
+            {
+                Debug.WriteLine(ex.Message);
+            }
+            return null;
+        }
     }
 }

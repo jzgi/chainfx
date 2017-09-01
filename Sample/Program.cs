@@ -21,8 +21,21 @@ namespace Greatbone.Sample
 
             WeiXinUtility.Setup("weixin.json", "apiclient_cert.p12", deploy);
 
-            TryCreate<ShopService>(
-                new ServiceContext("shop")
+            // the public bible service
+            TryCreate<PubService>(
+                new ServiceContext("pub")
+                {
+                    addrs = new[] {"http://localhost:8081"},
+                    cipher = 0x4a78be76,
+                    cache = true,
+                    db = pg
+                },
+                deploy
+            );
+
+            // the health and shopping service
+            TryCreate<BuyService>(
+                new ServiceContext("buy")
                 {
                     addrs = new[] {"http://localhost:8080"},
                     cipher = 0x4a78be76,

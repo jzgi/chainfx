@@ -58,8 +58,8 @@ namespace Greatbone.Sample
                 {
                     m.FORM_();
                     m.TEXT(nameof(buyer), buyer, label: "买家名称", max: 10, required: true);
-                    m.SELECT(nameof(city), city, ((ShopService) Service).CityOpt, label: "城市", refresh: true);
-                    m.SELECT(nameof(distr), distr, ((ShopService) Service).GetDistrs(city), label: "区域");
+                    m.SELECT(nameof(city), city, ((BuyService) Service).Cities, label: "城市", refresh: true);
+                    m.SELECT(nameof(distr), distr, ((BuyService) Service).GetDistrs(city), label: "区域");
                     m.TEXT(nameof(addr), addr, label: "地址", pattern: "[\\S]*", max: 20, required: true);
                     m.TEXT(nameof(tel), tel, label: "电话", max: 11, required: true);
                     m.CHECKBOX(nameof(save), save, label: "存为默认的收货地址");

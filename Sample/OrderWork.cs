@@ -22,9 +22,9 @@ namespace Greatbone.Sample
 
 
     [Ui("购物车")]
-    public class MyCartOrderWork : MyOrderWork<MyCartOrderVarWork>
+    public class MyPreOrderWork : MyOrderWork<MyCartOrderVarWork>
     {
-        public MyCartOrderWork(WorkContext wc) : base(wc)
+        public MyPreOrderWork(WorkContext wc) : base(wc)
         {
         }
 
@@ -121,9 +121,9 @@ namespace Greatbone.Sample
     }
 
     [Ui("当前单")]
-    public class MyActiveOrderWork : MyOrderWork<MyActiveOrderVarWork>
+    public class MyRealOrderWork : MyOrderWork<MyActiveOrderVarWork>
     {
-        public MyActiveOrderWork(WorkContext wc) : base(wc)
+        public MyRealOrderWork(WorkContext wc) : base(wc)
         {
         }
 
@@ -198,28 +198,6 @@ namespace Greatbone.Sample
                 {
                     ac.GiveGridPage(200, (Order[]) null, @public: false, maxage: 3);
                 }
-            }
-        }
-    }
-
-    [Ui("购物车")]
-    [User(User.AID)]
-    public class OprCartOrderWork : OprOrderWork<OprCartOrderVarWork>
-    {
-        public OprCartOrderWork(WorkContext wc) : base(wc)
-        {
-            status = Order.CREATED;
-            proj = Order.ID | Order.BASIC_DETAIL | Order.CASH;
-        }
-
-        [Ui("一周清理", "清理一周以前的旧单", Mode = UiMode.ButtonConfirm)]
-        public void clear(ActionContext ac)
-        {
-            string shopid = ac[-1];
-            using (var dc = ac.NewDbContext())
-            {
-                dc.Execute("DELETE FROM orders WHERE shopid = @1 AND status = 0 AND age(created) > '7 days'", p => p.Set(shopid));
-                ac.GiveRedirect();
             }
         }
     }
@@ -356,32 +334,6 @@ namespace Greatbone.Sample
                 dc.Execute();
             }
             ac.GiveRedirect();
-        }
-    }
-
-
-    [Ui("受托单", "受托办理其他商家的订单")]
-    [User(User.AID)]
-    public class OprCoOrderWork : OrderWork<OprCoOrderVarWork>
-    {
-        public OprCoOrderWork(WorkContext wc) : base(wc)
-        {
-        }
-
-        public void @default(ActionContext ac, int page)
-        {
-            string shopid = ac[-1];
-            using (var dc = ac.NewDbContext())
-            {
-                if (dc.Query("SELECT * FROM orders WHERE coshopid = @1 ORDER BY id DESC LIMIT 20 OFFSET @2", p => p.Set(shopid).Set(page * 20)))
-                {
-                    ac.GiveGridPage(200, dc.ToArray<Order>(), @public: false, maxage: 3);
-                }
-                else
-                {
-                    ac.GiveGridPage(200, (Order[]) null, @public: false, maxage: 3);
-                }
-            }
         }
     }
 }

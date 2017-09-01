@@ -374,7 +374,7 @@ namespace Greatbone.Core
             return coll;
         }
 
-        public Map<K, D> ToMap<K, D>(Func<D, K> keyer, int proj = 0x00ff) where D : IData, new() where K : IEquatable<K>
+        public Map<K, D> ToMap<K, D>(Func<D, K> keyer, int proj = 0x00ff) where D : IData, new()
         {
             int initial = doerCtx?.Doer?.Limit ?? 32;
             Map<K, D> coll = new Map<K, D>(initial);

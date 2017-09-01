@@ -81,12 +81,12 @@ namespace Greatbone.Core
             return this;
         }
 
-        public FormContent Put(string name, JNumber v)
+        public FormContent Put(string name, JNumber value)
         {
             return this;
         }
 
-        public FormContent Put(string name, IDataInput v)
+        public FormContent Put(string name, IDataInput value)
         {
             return this;
         }
@@ -104,7 +104,7 @@ namespace Greatbone.Core
         {
         }
 
-        public FormContent Put(string name, bool v, string Label = null, Func<bool, string> Opt = null)
+        public FormContent Put(string name, bool value, string Label = null, Func<bool, string> Opt = null)
         {
             ordinal++;
 
@@ -114,11 +114,11 @@ namespace Greatbone.Core
             }
             Add(name);
             Add('=');
-            Add(v ? "true" : "false");
+            Add(value ? "true" : "false");
             return this;
         }
 
-        public FormContent Put(string name, short v, string Label = null, IOptable<short> opt = null)
+        public FormContent Put(string name, short value, string Label = null, IOptable<short> opt = null)
         {
             ordinal++;
 
@@ -128,11 +128,11 @@ namespace Greatbone.Core
             }
             Add(name);
             Add('=');
-            Add(v);
+            Add(value);
             return this;
         }
 
-        public FormContent Put(string name, int v, string Label = null, IOptable<int> Opt = null)
+        public FormContent Put(string name, int value, string Label = null, IOptable<int> Opt = null)
         {
             ordinal++;
 
@@ -142,11 +142,11 @@ namespace Greatbone.Core
             }
             Add(name);
             Add('=');
-            Add(v);
+            Add(value);
             return this;
         }
 
-        public FormContent Put(string name, long v, string Label = null, IOptable<long> opt = null)
+        public FormContent Put(string name, long value, string Label = null, IOptable<long> opt = null)
         {
             ordinal++;
 
@@ -156,11 +156,11 @@ namespace Greatbone.Core
             }
             Add(name);
             Add('=');
-            Add(v);
+            Add(value);
             return this;
         }
 
-        public FormContent Put(string name, double v, string Label = null)
+        public FormContent Put(string name, double value, string Label = null)
         {
             ordinal++;
 
@@ -170,11 +170,11 @@ namespace Greatbone.Core
             }
             Add(name);
             Add('=');
-            Add(v);
+            Add(value);
             return this;
         }
 
-        public FormContent Put(string name, decimal v, string Label = null, char format = '\0')
+        public FormContent Put(string name, decimal value, string Label = null, char format = '\0')
         {
             ordinal++;
 
@@ -184,11 +184,11 @@ namespace Greatbone.Core
             }
             Add(name);
             Add('=');
-            Add(v);
+            Add(value);
             return this;
         }
 
-        public FormContent Put(string name, DateTime v, string Label = null)
+        public FormContent Put(string name, DateTime value, string Label = null)
         {
             ordinal++;
 
@@ -198,11 +198,11 @@ namespace Greatbone.Core
             }
             Add(name);
             Add('=');
-            Add(v);
+            Add(value);
             return this;
         }
 
-        public FormContent Put(string name, string v, string Label = null, IOptable<string> Opt = null)
+        public FormContent Put(string name, string value, string Label = null, IOptable<string> Opt = null)
         {
             ordinal++;
 
@@ -212,16 +212,16 @@ namespace Greatbone.Core
             }
             Add(name);
             Add('=');
-            AddEsc(v);
+            AddEsc(value);
             return this;
         }
 
-        public virtual FormContent Put(string name, ArraySegment<byte> v, string Label = null)
+        public virtual FormContent Put(string name, ArraySegment<byte> value, string Label = null)
         {
             return this; // ignore ir
         }
 
-        public FormContent Put(string name, short[] v, string Label = null, IOptable<short> opt = null)
+        public FormContent Put(string name, short[] value, string Label = null, IOptable<short> opt = null)
         {
             ordinal++;
 
@@ -231,15 +231,15 @@ namespace Greatbone.Core
             }
             Add(name);
             Add('=');
-            for (int i = 0; i < v.Length; i++)
+            for (int i = 0; i < value.Length; i++)
             {
                 if (i > 0) Add(',');
-                Add(v[i]);
+                Add(value[i]);
             }
             return this;
         }
 
-        public FormContent Put(string name, int[] v, string Label = null, IOptable<int> Opt = null)
+        public FormContent Put(string name, int[] value, string Label = null, IOptable<int> Opt = null)
         {
             ordinal++;
 
@@ -249,15 +249,15 @@ namespace Greatbone.Core
             }
             Add(name);
             Add('=');
-            for (int i = 0; i < v.Length; i++)
+            for (int i = 0; i < value.Length; i++)
             {
                 if (i > 0) Add(',');
-                Add(v[i]);
+                Add(value[i]);
             }
             return this;
         }
 
-        public FormContent Put(string name, long[] v, string Label = null, IOptable<long> Opt = null)
+        public FormContent Put(string name, long[] value, string Label = null, IOptable<long> Opt = null)
         {
             ordinal++;
 
@@ -267,15 +267,15 @@ namespace Greatbone.Core
             }
             Add(name);
             Add('=');
-            for (int i = 0; i < v.Length; i++)
+            for (int i = 0; i < value.Length; i++)
             {
                 if (i > 0) Add(',');
-                Add(v[i]);
+                Add(value[i]);
             }
             return this;
         }
 
-        public FormContent Put(string name, string[] v, string Label = null, IOptable<string> Opt = null)
+        public FormContent Put(string name, string[] value, string Label = null, IOptable<string> Opt = null)
         {
             ordinal++;
 
@@ -285,25 +285,25 @@ namespace Greatbone.Core
             }
             Add(name);
             Add('=');
-            for (int i = 0; i < v.Length; i++)
+            for (int i = 0; i < value.Length; i++)
             {
                 if (i > 0) Add(',');
-                Add(v[i]);
+                Add(value[i]);
             }
             return this;
         }
 
-        public FormContent Put(string name, Dictionary<string, string> v, string Label = null)
+        public FormContent Put(string name, Dictionary<string, string> value, string Label = null)
         {
             throw new NotImplementedException();
         }
 
-        public FormContent Put(string name, IData v, int proj = 0x00ff, string Label = null)
+        public FormContent Put(string name, IData value, int proj = 0x00ff, string Label = null)
         {
             return this;
         }
 
-        public FormContent Put<D>(string name, D[] v, int proj = 0x00ff, string Label = null) where D : IData
+        public FormContent Put<D>(string name, D[] value, int proj = 0x00ff, string Label = null) where D : IData
         {
             return this;
         }

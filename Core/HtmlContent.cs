@@ -291,8 +291,6 @@ namespace Greatbone.Core
             Add("</div>");
         }
 
-        const int VPAGES = 6;
-
         public void PAGENATE(ActionContext ac, int count)
         {
             // pagination
@@ -501,7 +499,7 @@ namespace Greatbone.Core
             if (formctx != null)
             {
                 // pagination controls if any
-                PAGENATE(formctx, arr == null ? 0 : arr.Length);
+                PAGENATE(formctx, arr?.Length ?? 0);
 
                 Add("</form>");
             }
@@ -594,7 +592,7 @@ namespace Greatbone.Core
             if (formCtx != null)
             {
                 // pagination controls if any
-                PAGENATE(formCtx, arr == null ? 0 : arr.Length);
+                PAGENATE(formCtx, arr?.Length ?? 0);
                 Add("</form>");
             }
             return this;
@@ -628,7 +626,7 @@ namespace Greatbone.Core
             if (formed != null)
             {
                 // pagination controls if any
-                PAGENATE(formed, arr == null ? 0 : arr.Length);
+                PAGENATE(formed, arr?.Length ?? 0);
                 Add("</form>");
             }
             return this;
@@ -1594,7 +1592,7 @@ namespace Greatbone.Core
             return this;
         }
 
-        public HtmlContent SELECT(string name, string v, IOptable<string> opt, string label = null, bool multiple = false, bool required = false, sbyte size = 0)
+        public HtmlContent SELECT(string name, string value, IOptable<string> opt, string label = null, bool multiple = false, bool required = false, sbyte size = 0, bool refresh = false)
         {
             Add("<label>");
             AddLabel(label, name);
@@ -1609,6 +1607,10 @@ namespace Greatbone.Core
                 Add(size);
                 Add("\"");
             }
+            if (refresh)
+            {
+                Add(" onchange=\"location = location.href.split('?')[0] + '?' + $(this.form).serialize();\"");
+            }
             Add(">");
 
             opt?.ForEach((key, text) =>
@@ -1616,18 +1618,17 @@ namespace Greatbone.Core
                 Add("<option value=\"");
                 Add(key);
                 Add("\"");
-                if (key == v) Add(" selected");
+                if (key == value) Add(" selected");
                 Add(">");
                 Add(opt.Obtain(key));
                 Add("</option>");
             });
-
             Add("</select>");
             Add("</label>");
             return this;
         }
 
-        public HtmlContent SELECT(string name, string v, string[] opt, string label = null, bool multiple = false, bool required = false, sbyte size = 0, bool refresh = false)
+        public HtmlContent SELECT(string name, string value, string[] opt, string label = null, bool multiple = false, bool required = false, sbyte size = 0, bool refresh = false)
         {
             Add("<label>");
             AddLabel(label, name);
@@ -1656,7 +1657,7 @@ namespace Greatbone.Core
                     Add("<option value=\"");
                     Add(key);
                     Add("\"");
-                    if (key == v) Add(" selected");
+                    if (key == value) Add(" selected");
                     Add(">");
 
                     Add(key);
@@ -1704,12 +1705,12 @@ namespace Greatbone.Core
             return this;
         }
 
-        public HtmlContent Put(string name, JNumber v)
+        public HtmlContent Put(string name, JNumber value)
         {
             return this;
         }
 
-        public HtmlContent Put(string name, IDataInput v)
+        public HtmlContent Put(string name, IDataInput value)
         {
             return this;
         }
@@ -1761,7 +1762,7 @@ namespace Greatbone.Core
             chain[level].group = false;
         }
 
-        public HtmlContent Put(string name, bool v, string label = null, Func<bool, string> opt = null)
+        public HtmlContent Put(string name, bool value, string label = null, Func<bool, string> opt = null)
         {
             switch (chain[level].node)
             {
@@ -1777,14 +1778,14 @@ namespace Greatbone.Core
                     if (!chain[level].group)
                     {
                         Add("<td style=\"text-align: right;\">");
-                        if (opt != null) Add(opt(v));
-                        else Add(v);
+                        if (opt != null) Add(opt(value));
+                        else Add(value);
                         Add("</td>");
                     }
                     else
                     {
-                        if (opt != null) Add(opt(v));
-                        else Add(v);
+                        if (opt != null) Add(opt(value));
+                        else Add(value);
                         Add(' ');
                     }
                     break;
@@ -1796,15 +1797,15 @@ namespace Greatbone.Core
                         AddLabel(label, name);
                         Add("</div>");
                         Add("<div class=\"small-9 columns\">");
-                        if (opt != null) Add(opt(v));
-                        else Add(v);
+                        if (opt != null) Add(opt(value));
+                        else Add(value);
                         Add("</div>");
                         Add("</div>");
                     }
                     else
                     {
-                        if (opt != null) Add(opt(v));
-                        else Add(v);
+                        if (opt != null) Add(opt(value));
+                        else Add(value);
                         Add(' ');
                     }
                     break;
@@ -1814,7 +1815,7 @@ namespace Greatbone.Core
             return this;
         }
 
-        public HtmlContent Put(string name, short v, string label = null, IOptable<short> opt = null)
+        public HtmlContent Put(string name, short value, string label = null, IOptable<short> opt = null)
         {
             switch (chain[level].node)
             {
@@ -1830,14 +1831,14 @@ namespace Greatbone.Core
                     if (!chain[level].group)
                     {
                         Add("<td style=\"text-align: right;\">");
-                        if (opt != null) Add(opt.Obtain(v));
-                        else Add(v);
+                        if (opt != null) Add(opt.Obtain(value));
+                        else Add(value);
                         Add("</td>");
                     }
                     else
                     {
-                        if (opt != null) Add(opt.Obtain(v));
-                        else Add(v);
+                        if (opt != null) Add(opt.Obtain(value));
+                        else Add(value);
                         Add(' ');
                     }
                     break;
@@ -1849,15 +1850,15 @@ namespace Greatbone.Core
                         AddLabel(label, name);
                         Add("</div>");
                         Add("<div class=\"small-9 columns\">");
-                        if (opt != null) Add(opt.Obtain(v));
-                        else Add(v);
+                        if (opt != null) Add(opt.Obtain(value));
+                        else Add(value);
                         Add("</div>");
                         Add("</div>");
                     }
                     else
                     {
-                        if (opt != null) Add(opt.Obtain(v));
-                        else Add(v);
+                        if (opt != null) Add(opt.Obtain(value));
+                        else Add(value);
                         Add(' ');
                     }
                     break;
@@ -1867,7 +1868,7 @@ namespace Greatbone.Core
             return this;
         }
 
-        public HtmlContent Put(string name, int v, string label = null, IOptable<int> opt = null)
+        public HtmlContent Put(string name, int value, string label = null, IOptable<int> opt = null)
         {
             switch (chain[level].node)
             {
@@ -1883,14 +1884,14 @@ namespace Greatbone.Core
                     if (!chain[level].group)
                     {
                         Add("<td style=\"text-align: right;\">");
-                        if (opt != null) Add(opt.Obtain(v));
-                        else Add(v);
+                        if (opt != null) Add(opt.Obtain(value));
+                        else Add(value);
                         Add("</td>");
                     }
                     else
                     {
-                        if (opt != null) Add(opt.Obtain(v));
-                        else Add(v);
+                        if (opt != null) Add(opt.Obtain(value));
+                        else Add(value);
                         Add(' ');
                     }
                     break;
@@ -1902,15 +1903,15 @@ namespace Greatbone.Core
                         AddLabel(label, name);
                         Add("</div>");
                         Add("<div class=\"small-9 columns\">");
-                        if (opt != null) Add(opt.Obtain(v));
-                        else Add(v);
+                        if (opt != null) Add(opt.Obtain(value));
+                        else Add(value);
                         Add("</div>");
                         Add("</div>");
                     }
                     else
                     {
-                        if (opt != null) Add(opt.Obtain(v));
-                        else Add(v);
+                        if (opt != null) Add(opt.Obtain(value));
+                        else Add(value);
                         Add(' ');
                     }
                     break;
@@ -1920,7 +1921,7 @@ namespace Greatbone.Core
             return this;
         }
 
-        public HtmlContent Put(string name, long v, string label = null, IOptable<long> opt = null)
+        public HtmlContent Put(string name, long value, string label = null, IOptable<long> opt = null)
         {
             switch (chain[level].node)
             {
@@ -1936,14 +1937,14 @@ namespace Greatbone.Core
                     if (!chain[level].group)
                     {
                         Add("<td style=\"text-align: right;\">");
-                        if (opt != null) Add(opt.Obtain(v));
-                        else Add(v);
+                        if (opt != null) Add(opt.Obtain(value));
+                        else Add(value);
                         Add("</td>");
                     }
                     else
                     {
-                        if (opt != null) Add(opt.Obtain(v));
-                        else Add(v);
+                        if (opt != null) Add(opt.Obtain(value));
+                        else Add(value);
                         Add(' ');
                     }
                     break;
@@ -1955,15 +1956,15 @@ namespace Greatbone.Core
                         AddLabel(label, name);
                         Add("</div>");
                         Add("<div class=\"small-9 columns\">");
-                        if (opt != null) Add(opt.Obtain(v));
-                        else Add(v);
+                        if (opt != null) Add(opt.Obtain(value));
+                        else Add(value);
                         Add("</div>");
                         Add("</div>");
                     }
                     else
                     {
-                        if (opt != null) Add(opt.Obtain(v));
-                        else Add(v);
+                        if (opt != null) Add(opt.Obtain(value));
+                        else Add(value);
                         Add(' ');
                     }
                     break;
@@ -1976,7 +1977,7 @@ namespace Greatbone.Core
             return this;
         }
 
-        public HtmlContent Put(string name, double v, string label = null)
+        public HtmlContent Put(string name, double value, string label = null)
         {
             switch (chain[level].node)
             {
@@ -1992,12 +1993,12 @@ namespace Greatbone.Core
                     if (!chain[level].group)
                     {
                         Add("<td style=\"text-align: right;\">");
-                        Add(v);
+                        Add(value);
                         Add("</td>");
                     }
                     else
                     {
-                        Add(v);
+                        Add(value);
                         Add(' ');
                     }
                     break;
@@ -2009,13 +2010,13 @@ namespace Greatbone.Core
                         AddLabel(label, name);
                         Add("</div>");
                         Add("<div class=\"small-9 columns\">");
-                        Add(v);
+                        Add(value);
                         Add("</div>");
                         Add("</div>");
                     }
                     else
                     {
-                        Add(v);
+                        Add(value);
                         Add(' ');
                     }
                     break;
@@ -2025,7 +2026,7 @@ namespace Greatbone.Core
             return this;
         }
 
-        public HtmlContent Put(string name, decimal v, string label = null, char format = '\0')
+        public HtmlContent Put(string name, decimal value, string label = null, char format = '\0')
         {
             switch (chain[level].node)
             {
@@ -2044,18 +2045,18 @@ namespace Greatbone.Core
                         if (format == '¥')
                         {
                             Add("<strong class=\"money\">&yen;");
-                            Add(v);
+                            Add(value);
                             Add("</strong>");
                         }
                         else
                         {
-                            Add(v);
+                            Add(value);
                         }
                         Add("</td>");
                     }
                     else
                     {
-                        Add(v);
+                        Add(value);
                         Add(' ');
                     }
                     break;
@@ -2070,32 +2071,32 @@ namespace Greatbone.Core
                         if (format == '¥')
                         {
                             Add("<strong class=\"money\">&yen;");
-                            Add(v);
+                            Add(value);
                             Add("</strong>");
                         }
                         else
                         {
-                            Add(v);
+                            Add(value);
                         }
                         Add("</div>");
                         Add("</div>");
                     }
                     else
                     {
-                        Add(v);
+                        Add(value);
                         Add(' ');
                     }
                     break;
                 case LIST_UL:
                     Add("<td style=\"text-align: right;\">");
-                    Add(v);
+                    Add(value);
                     Add("</td>");
                     break;
             }
             return this;
         }
 
-        public HtmlContent Put(string name, DateTime v, string label = null)
+        public HtmlContent Put(string name, DateTime value, string label = null)
         {
             switch (chain[level].node)
             {
@@ -2111,17 +2112,17 @@ namespace Greatbone.Core
                     if (!chain[level].group)
                     {
                         Add("<td>");
-                        if (v != default(DateTime))
+                        if (value != default(DateTime))
                         {
-                            Add(v);
+                            Add(value);
                         }
                         Add("</td>");
                     }
                     else
                     {
-                        if (v != default(DateTime))
+                        if (value != default(DateTime))
                         {
-                            Add(v);
+                            Add(value);
                             Add(' ');
                         }
                     }
@@ -2135,9 +2136,9 @@ namespace Greatbone.Core
                         Add("</div>");
                         Add("<div class=\"small-9 columns\">");
                     }
-                    if (v != default(DateTime))
+                    if (value != default(DateTime))
                     {
-                        Add(v);
+                        Add(value);
                         Add(' ');
                     }
                     if (!chain[level].group)
@@ -2148,14 +2149,14 @@ namespace Greatbone.Core
                     break;
                 case LIST_UL:
                     Add("<li>");
-                    Add(v);
+                    Add(value);
                     Add("</li>");
                     break;
             }
             return this;
         }
 
-        public HtmlContent Put(string name, string v, string label = null, IOptable<string> opt = null)
+        public HtmlContent Put(string name, string value, string label = null, IOptable<string> opt = null)
         {
             var ctx = chain[level];
             switch (ctx.node)
@@ -2172,12 +2173,12 @@ namespace Greatbone.Core
                     if (!chain[level].group)
                     {
                         Add("<td>");
-                        Add(v);
+                        Add(value);
                         Add("</td>");
                     }
                     else
                     {
-                        Add(v);
+                        Add(value);
                         Add(' ');
                     }
                     break;
@@ -2190,7 +2191,7 @@ namespace Greatbone.Core
                         Add("</div>");
                         Add("<div class=\"small-9 columns\">");
                     }
-                    Add(v);
+                    Add(value);
                     Add(' ');
                     if (!chain[level].group)
                     {
@@ -2199,58 +2200,92 @@ namespace Greatbone.Core
                     }
                     break;
                 case LIST_UL:
-                    Add(v);
+                    Add(value);
                     break;
             }
             return this;
         }
 
-        public HtmlContent Put(string name, ArraySegment<byte> v, string label = null)
+        public HtmlContent Put(string name, ArraySegment<byte> value, string label = null)
         {
-            switch (chain[level].node)
+            var ctx = chain[level];
+            switch (ctx.node)
             {
                 case TABLE_THEAD:
+                    if (!chain[level].group)
+                    {
+                        Add("<th>");
+                        AddLabel(label, name);
+                        Add("</th>");
+                    }
                     break;
                 case TABLE_TBODY:
+                    if (!chain[level].group)
+                    {
+                        Add("<td>");
+                        Add("<img src\"icon\">");
+                        Add("</td>");
+                    }
+                    else
+                    {
+                        Add("<img src\"icon\">");
+                        Add(' ');
+                    }
                     break;
                 case GRID_DIV:
-                    Add("<img src=\"data:");
+                    if (!chain[level].group)
+                    {
+                        Add("<div class=\"row\">");
+                        Add("<div class=\"small-3 columns labeldiv\">");
+                        AddLabel(label, name);
+                        Add("</div>");
+                        Add("<div class=\"small-9 columns\">");
+                    }
+                    Add("<img src\"icon\">");
+                    Add(' ');
+                    if (!chain[level].group)
+                    {
+                        Add("</div>");
+                        Add("</div>");
+                    }
+                    break;
+                case LIST_UL:
                     break;
             }
             return this;
         }
 
-        public HtmlContent Put(string name, short[] v, string label = null, IOptable<short> opt = null)
+        public HtmlContent Put(string name, short[] value, string label = null, IOptable<short> opt = null)
         {
             return this;
         }
 
-        public HtmlContent Put(string name, int[] v, string label = null, IOptable<int> Opt = null)
+        public HtmlContent Put(string name, int[] value, string label = null, IOptable<int> Opt = null)
         {
             return this;
         }
 
-        public HtmlContent Put(string name, long[] v, string label = null, IOptable<long> Opt = null)
+        public HtmlContent Put(string name, long[] value, string label = null, IOptable<long> Opt = null)
         {
             return this;
         }
 
-        public HtmlContent Put(string name, string[] v, string label = null, IOptable<string> Opt = null)
+        public HtmlContent Put(string name, string[] value, string label = null, IOptable<string> Opt = null)
         {
             return this;
         }
 
-        public HtmlContent Put(string name, Dictionary<string, string> v, string label = null)
+        public HtmlContent Put(string name, Dictionary<string, string> value, string label = null)
         {
             return this;
         }
 
-        public HtmlContent Put(string name, IData v, int proj = 0x00ff, string label = null)
+        public HtmlContent Put(string name, IData value, int proj = 0x00ff, string label = null)
         {
             return this;
         }
 
-        public HtmlContent Put<D>(string name, D[] v, int proj = 0x00ff, string label = null) where D : IData
+        public HtmlContent Put<D>(string name, D[] value, int proj = 0x00ff, string label = null) where D : IData
         {
             switch (chain[level].node)
             {
@@ -2266,19 +2301,19 @@ namespace Greatbone.Core
                     if (!chain[level].group)
                     {
                         Add("<td>");
-                        LIST(null, null, v, proj);
+                        LIST(null, null, value, proj);
                         Add("</td>");
                     }
                     else
                     {
-                        LIST(null, null, v, proj);
+                        LIST(null, null, value, proj);
                     }
                     break;
                 case GRID_DIV:
-                    if (v != null)
+                    if (value != null)
                     {
                         Add("<div class=\"row column\">");
-                        TABLE(null, chain[level].varWork?.varWork, v, proj);
+                        TABLE(null, chain[level].varWork?.varWork, value, proj);
                         Add("</div>");
                     }
                     break;

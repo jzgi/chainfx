@@ -188,18 +188,18 @@ namespace Greatbone.Core
             return this;
         }
 
-        public XmlContent Put(string name, JNumber v)
+        public XmlContent Put(string name, JNumber value)
         {
             Add(' ');
             Add(name);
             Add('=');
             Add('"');
-            Add(v);
+            Add(value);
             Add('"');
             return this;
         }
 
-        public XmlContent Put(string name, IDataInput v)
+        public XmlContent Put(string name, IDataInput value)
         {
             return this;
         }
@@ -217,178 +217,178 @@ namespace Greatbone.Core
         {
         }
 
-        public XmlContent Put(string name, bool v, string Label = null, Func<bool, string> Opt = null)
+        public XmlContent Put(string name, bool value, string Label = null, Func<bool, string> Opt = null)
         {
             Add(' ');
             Add(name);
             Add('=');
             Add('"');
-            Add(v);
+            Add(value);
             Add('"');
             return this;
         }
 
-        public XmlContent Put(string name, short v, string Label = null, IOptable<short> opt = null)
+        public XmlContent Put(string name, short value, string Label = null, IOptable<short> opt = null)
         {
             Add(' ');
             Add(name);
             Add('=');
             Add('"');
-            Add(v);
+            Add(value);
             Add('"');
             return this;
         }
 
-        public XmlContent Put(string name, int v, string Label = null, IOptable<int> Opt = null)
+        public XmlContent Put(string name, int value, string Label = null, IOptable<int> Opt = null)
         {
             Add(' ');
             Add(name);
             Add('=');
             Add('"');
-            Add(v);
+            Add(value);
             Add('"');
             return this;
         }
 
-        public XmlContent Put(string name, long v, string Label = null, IOptable<long> opt = null)
+        public XmlContent Put(string name, long value, string Label = null, IOptable<long> opt = null)
         {
             Add(' ');
             Add(name);
             Add('=');
             Add('"');
-            Add(v);
+            Add(value);
             Add('"');
             return this;
         }
 
-        public XmlContent Put(string name, double v, string Label = null)
+        public XmlContent Put(string name, double value, string Label = null)
         {
             Add(' ');
             Add(name);
             Add('=');
             Add('"');
-            Add(v);
+            Add(value);
             Add('"');
             return this;
         }
 
-        public XmlContent Put(string name, decimal v, string Label = null, char format = '\0')
+        public XmlContent Put(string name, decimal value, string Label = null, char format = '\0')
         {
             Add(' ');
             Add(name);
             Add('=');
             Add('"');
-            Add(v);
+            Add(value);
             Add('"');
             return this;
         }
 
-        public XmlContent Put(string name, DateTime v, string Label = null)
+        public XmlContent Put(string name, DateTime value, string Label = null)
         {
             Add(' ');
             Add(name);
             Add('=');
             Add('"');
-            Add(v);
+            Add(value);
             Add('"');
             return this;
         }
 
-        public XmlContent Put(string name, string v, string Label = null, IOptable<string> Opt = null)
+        public XmlContent Put(string name, string value, string Label = null, IOptable<string> Opt = null)
         {
             Add(' ');
             Add(name);
             Add('=');
             Add('"');
-            Add(v);
+            Add(value);
             Add('"');
             return this;
         }
 
-        public XmlContent Put(string name, ArraySegment<byte> v, string Label = null)
+        public XmlContent Put(string name, ArraySegment<byte> value, string Label = null)
         {
             return this;
         }
 
-        public XmlContent Put(string name, short[] v, string Label = null, IOptable<short> opt = null)
+        public XmlContent Put(string name, short[] value, string Label = null, IOptable<short> opt = null)
         {
             Add(' ');
             Add(name);
             Add('=');
             Add('"');
 
-            for (int i = 0; i < v.Length; i++)
+            for (int i = 0; i < value.Length; i++)
             {
                 if (i > 0) Add(',');
-                Add(v[i]);
+                Add(value[i]);
             }
 
             Add('"');
             return this;
         }
 
-        public XmlContent Put(string name, int[] v, string Label = null, IOptable<int> Opt = null)
+        public XmlContent Put(string name, int[] value, string Label = null, IOptable<int> Opt = null)
         {
             Add(' ');
             Add(name);
             Add('=');
             Add('"');
 
-            for (int i = 0; i < v.Length; i++)
+            for (int i = 0; i < value.Length; i++)
             {
                 if (i > 0) Add(',');
-                Add(v[i]);
+                Add(value[i]);
             }
 
             Add('"');
             return this;
         }
 
-        public XmlContent Put(string name, long[] v, string Label = null, IOptable<long> Opt = null)
+        public XmlContent Put(string name, long[] value, string Label = null, IOptable<long> Opt = null)
         {
             Add(' ');
             Add(name);
             Add('=');
             Add('"');
 
-            for (int i = 0; i < v.Length; i++)
+            for (int i = 0; i < value.Length; i++)
             {
                 if (i > 0) Add(',');
-                Add(v[i]);
+                Add(value[i]);
             }
 
             Add('"');
             return this;
         }
 
-        public XmlContent Put(string name, string[] v, string Label = null, IOptable<string> Opt = null)
+        public XmlContent Put(string name, string[] value, string Label = null, IOptable<string> Opt = null)
         {
             Add(' ');
             Add(name);
             Add('=');
             Add('"');
 
-            for (int i = 0; i < v.Length; i++)
+            for (int i = 0; i < value.Length; i++)
             {
                 if (i > 0) Add(',');
-                Add(v[i]);
+                Add(value[i]);
             }
 
             Add('"');
             return this;
         }
 
-        public XmlContent Put(string name, Dictionary<string, string> v, string Label = null)
+        public XmlContent Put(string name, Dictionary<string, string> value, string Label = null)
         {
             return this;
         }
 
-        public XmlContent Put(string name, IData v, int proj = 0x00ff, string Label = null)
+        public XmlContent Put(string name, IData value, int proj = 0x00ff, string Label = null)
         {
             return this;
         }
 
-        public XmlContent Put<D>(string name, D[] v, int proj = 0x00ff, string Label = null) where D : IData
+        public XmlContent Put<D>(string name, D[] value, int proj = 0x00ff, string Label = null) where D : IData
         {
             return this;
         }

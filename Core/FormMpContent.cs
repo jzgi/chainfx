@@ -39,19 +39,19 @@ namespace Greatbone.Core
             return this;
         }
 
-        public FormMpContent Put(string name, JNumber v)
+        public FormMpContent Put(string name, JNumber value)
         {
             Part(name);
-            Add(v.bigint);
-            if (v.Pt)
+            Add(value.bigint);
+            if (value.Pt)
             {
                 Add('.');
-                Add(v.fract);
+                Add(value.fract);
             }
             return this;
         }
 
-        public FormMpContent Put(string name, IDataInput v)
+        public FormMpContent Put(string name, IDataInput value)
         {
             return this;
         }
@@ -69,88 +69,88 @@ namespace Greatbone.Core
         {
         }
 
-        public FormMpContent Put(string name, bool v, string Label = null, Func<bool, string> Opt = null)
+        public FormMpContent Put(string name, bool value, string Label = null, Func<bool, string> Opt = null)
         {
             Part(name);
-            Add(v ? "true" : "false");
+            Add(value ? "true" : "false");
             return this;
         }
 
-        public FormMpContent Put(string name, short v, string Label = null, IOptable<short> opt = null)
+        public FormMpContent Put(string name, short value, string Label = null, IOptable<short> opt = null)
         {
             Part(name);
-            Add(v);
+            Add(value);
             return this;
         }
 
-        public FormMpContent Put(string name, int v, string Label = null, IOptable<int> Opt = null)
+        public FormMpContent Put(string name, int value, string Label = null, IOptable<int> Opt = null)
         {
             Part(name);
-            Add(v);
+            Add(value);
             return this;
         }
 
-        public FormMpContent Put(string name, long v, string Label = null, IOptable<long> opt = null)
+        public FormMpContent Put(string name, long value, string Label = null, IOptable<long> opt = null)
         {
             Part(name);
-            Add(v);
+            Add(value);
             return this;
         }
 
-        public FormMpContent Put(string name, double v, string label = null)
+        public FormMpContent Put(string name, double value, string label = null)
         {
             Part(name);
-            Add(v);
+            Add(value);
             return this;
         }
 
-        public FormMpContent Put(string name, decimal v, string label = null, char format = '\0')
+        public FormMpContent Put(string name, decimal value, string label = null, char format = '\0')
         {
             Part(name);
-            Add(v);
+            Add(value);
             return this;
         }
 
-        public FormMpContent Put(string name, DateTime v, string label = null)
+        public FormMpContent Put(string name, DateTime value, string label = null)
         {
             Part(name);
-            Add(v);
+            Add(value);
             return this;
         }
 
-        public FormMpContent Put(string name, string v, string Label = null, IOptable<string> Opt = null)
+        public FormMpContent Put(string name, string value, string Label = null, IOptable<string> Opt = null)
         {
             Part(name);
-            if (v == null)
+            if (value == null)
             {
                 Add("null");
             }
             else
             {
-                Add(v);
+                Add(value);
             }
             return this;
         }
 
-        public virtual FormMpContent Put(string name, ArraySegment<byte> v, string label = null)
+        public virtual FormMpContent Put(string name, ArraySegment<byte> value, string label = null)
         {
             return this; // ignore ir
         }
 
-        public FormMpContent Put(string name, short[] v, string Label = null, IOptable<short> opt = null)
+        public FormMpContent Put(string name, short[] value, string Label = null, IOptable<short> opt = null)
         {
             Part(name);
-            if (v == null)
+            if (value == null)
             {
                 Add("null");
             }
             else
             {
                 Add('[');
-                for (int i = 0; i < v.Length; i++)
+                for (int i = 0; i < value.Length; i++)
                 {
                     if (i > 0) Add(',');
-                    Add(v[i]);
+                    Add(value[i]);
                 }
                 Add(']');
             }
@@ -158,59 +158,59 @@ namespace Greatbone.Core
             return this;
         }
 
-        public FormMpContent Put(string name, int[] v, string Label = null, IOptable<int> Opt = null)
+        public FormMpContent Put(string name, int[] value, string Label = null, IOptable<int> Opt = null)
         {
             Part(name);
-            if (v == null)
+            if (value == null)
             {
                 Add("null");
             }
             else
             {
                 Add('[');
-                for (int i = 0; i < v.Length; i++)
+                for (int i = 0; i < value.Length; i++)
                 {
                     if (i > 0) Add(',');
-                    Add(v[i]);
+                    Add(value[i]);
                 }
                 Add(']');
             }
             return this;
         }
 
-        public FormMpContent Put(string name, long[] v, string Label = null, IOptable<long> Opt = null)
+        public FormMpContent Put(string name, long[] value, string Label = null, IOptable<long> Opt = null)
         {
-            if (v == null)
+            if (value == null)
             {
                 Add("null");
             }
             else
             {
                 Add('[');
-                for (int i = 0; i < v.Length; i++)
+                for (int i = 0; i < value.Length; i++)
                 {
                     if (i > 0) Add(',');
-                    Add(v[i]);
+                    Add(value[i]);
                 }
                 Add(']');
             }
             return this;
         }
 
-        public FormMpContent Put(string name, string[] v, string Label = null, IOptable<string> Opt = null)
+        public FormMpContent Put(string name, string[] value, string Label = null, IOptable<string> Opt = null)
         {
             Part(name);
-            if (v == null)
+            if (value == null)
             {
                 Add("null");
             }
             else
             {
                 Add('[');
-                for (int i = 0; i < v.Length; i++)
+                for (int i = 0; i < value.Length; i++)
                 {
                     if (i > 0) Add(',');
-                    string str = v[i];
+                    string str = value[i];
                     if (str == null)
                     {
                         Add("null");
@@ -226,40 +226,40 @@ namespace Greatbone.Core
             return this;
         }
 
-        public FormMpContent Put(string name, Dictionary<string, string> v, string label = null)
+        public FormMpContent Put(string name, Dictionary<string, string> value, string label = null)
         {
             throw new NotImplementedException();
         }
 
-        public FormMpContent Put(string name, IData v, int proj = 0x00ff, string Label = null)
+        public FormMpContent Put(string name, IData value, int proj = 0x00ff, string Label = null)
         {
             Part(name);
-            if (v == null)
+            if (value == null)
             {
                 Add("null");
             }
             else
             {
                 Add('{');
-                v.Write(this, proj);
+                value.Write(this, proj);
                 Add('}');
             }
             return this;
         }
 
-        public FormMpContent Put<D>(string name, D[] v, int proj = 0x00ff, string Label = null) where D : IData
+        public FormMpContent Put<D>(string name, D[] value, int proj = 0x00ff, string Label = null) where D : IData
         {
             Part(name);
-            if (v == null)
+            if (value == null)
             {
                 Add("null");
             }
             else
             {
                 Add('[');
-                for (int i = 0; i < v.Length; i++)
+                for (int i = 0; i < value.Length; i++)
                 {
-                    Put(null, v[i], proj);
+                    Put(null, value[i], proj);
                 }
                 Add(']');
             }

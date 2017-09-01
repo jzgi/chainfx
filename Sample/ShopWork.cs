@@ -47,14 +47,13 @@ namespace Greatbone.Sample
                     m.T("<div class=\"title-bar\">");
                     m.T("<div class=\"title-bar-title\">");
                     m.T("<select name=\"city\" style=\"margin: 0; border: 0; color: #ba55d3; font-size: 1.25rem;\" onchange=\"location = location.href.split('?')[0] + '?city=' + this.value;\">");
-                    string[] vs = ((ShopService) Service).CityOpt;
-                    for (int i = 0; i < vs.Length; i++)
+                    var vs = ((BuyService) Service).Cities;
+                    foreach (var pair in vs)
                     {
-                        string v = vs[i];
-                        m.T("<option value=\"").T(v).T("\"");
-                        if (v == city) m.T(" selected");
+                        m.T("<option value=\"").T(pair.Key).T("\"");
+                        if (pair.Key == city) m.T(" selected");
                         m.T(">");
-                        m.T(v);
+                        m.T(pair.Value.ToString());
                         m.T("</option>");
                     }
                     m.T("</select>");
@@ -97,19 +96,6 @@ namespace Greatbone.Sample
     }
 
 
-    public class OprShopWork : ShopWork<OprShopVarWork>
-    {
-        public OprShopWork(WorkContext wc) : base(wc)
-        {
-            CreateVar<OprShopVarWork, string>((prin) => ((User) prin).oprat);
-        }
-
-        public void @null(ActionContext ac)
-        {
-            ac.GivePage(200, m => { m.CALLOUT("您目前还没有访问权限", false); });
-        }
-    }
-
     [Ui("商家管理")]
     public class SprShopWork : ShopWork<SprShopVarWork>
     {
@@ -119,7 +105,7 @@ namespace Greatbone.Sample
 
         public void @default(ActionContext ac)
         {
-            string city = ac[typeof(CityVarWork)];
+            string city = ac[typeof(Work)];
             using (var dc = ac.NewDbContext())
             {
                 const int proj = Shop.ID | Shop.BASIC | Shop.SUPER;
@@ -138,7 +124,7 @@ namespace Greatbone.Sample
         [Ui("新建", Mode = UiMode.AnchorShow)]
         public async Task @new(ActionContext ac)
         {
-            string city = ac[typeof(CityVarWork)];
+            string city = ac[typeof(Work)];
             if (ac.GET)
             {
                 var o = new Shop {city = city};
@@ -148,7 +134,7 @@ namespace Greatbone.Sample
                     m.TEXT(nameof(o.id), o.id, "商家编号", max: 6, min: 6, required: true);
                     m.TEXT(nameof(o.name), o.name, "商家名称", max: 10, required: true);
                     m.TEXT(nameof(o.city), o.city, "所在城市", @readonly: true);
-                    m.SELECT(nameof(o.distr), o.distr, ((ShopService) Service).GetDistrs(o.city), "区域");
+                    m.SELECT(nameof(o.distr), o.distr, ((BuyService) Service).GetDistrs(o.city), "区域");
                     m.TEXT(nameof(o.lic), o.lic, "工商登记", max: 20, min: 11, required: true);
                     m._FORM();
                 });

@@ -34,7 +34,7 @@ namespace Greatbone.Sample
             }
             if (spr)
             {
-                return prin.sprat == ac[typeof(CityVarWork)];
+                return prin.sprat == ac[typeof(Work)];
             }
             return !adm || prin.adm;
         }

@@ -258,6 +258,19 @@ namespace Greatbone.Core
             return arr;
         }
 
+        public Map<K, D> ToMap<K, D>(Func<D, K> keyer, int proj = 0x00ff) where D : IData, new()
+        {
+            Map<K, D> coll = new Map<K, D>(32);
+            for (int i = 0; i < count; i++)
+            {
+                D obj = new D();
+                obj.Read((JObj) elements[i], proj);
+                K key = keyer(obj);
+                coll.Add(key, obj);
+            }
+            return coll;
+        }
+
         public void Write<R>(IDataOutput<R> o) where R : IDataOutput<R>
         {
             for (int i = 0; i < count; i++)

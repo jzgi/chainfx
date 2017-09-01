@@ -10,13 +10,6 @@ namespace Greatbone.Sample
         }
     }
 
-    public class MyUserWork : UserWork<MyUserVarWork>
-    {
-        public MyUserWork(WorkContext wc) : base(wc)
-        {
-        }
-    }
-
     [Ui("人员管理")]
     public class SprUserWork : UserWork<OprUserVarWork>
     {
