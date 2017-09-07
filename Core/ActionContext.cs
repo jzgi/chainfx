@@ -281,12 +281,12 @@ namespace Greatbone.Core
                 string ctyp = Header("Content-Type");
                 entity = ParseContent(ctyp, buffer, count);
             }
-            IDataInput src = entity as IDataInput;
-            if (src == null)
+            IDataInput inp = entity as IDataInput;
+            if (inp == null)
             {
                 return default(D);
             }
-            return src.ToObject<D>(proj);
+            return inp.ToObject<D>(proj);
         }
 
         public async Task<D[]> ReadArrayAsync<D>(int proj = 0x00ff) where D : IData, new()

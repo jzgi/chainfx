@@ -34,10 +34,6 @@ namespace Greatbone.Core
         ButtonScript = 0x0210,
     }
 
-    ///
-    ///
-    public delegate bool Criteria(object obj);
-
     /// 
     /// To specify user interaction related attributes and behaviors.
     ///
@@ -67,7 +63,17 @@ namespace Greatbone.Core
         /// </summary>
         public int State { get; set; }
 
-        public bool HasState(int state) => State == 0 || (State & state) == state;
+        public int Covers(int objstate)
+        {
+            int state = State;
+            if (state == 0) return 1;
+            if (state < 0)
+            {
+                state = -state;
+                return (state & objstate) == objstate ? 1 : -1;
+            }
+            return (state & objstate) == objstate ? 1 : 0;
+        }
 
         public short Width { get; set; } = 120;
 

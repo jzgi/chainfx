@@ -15,15 +15,16 @@ namespace Greatbone.Sample
             {
                 host = "106.14.45.109",
                 port = 5432,
+                database = "shop",
                 username = "postgres",
                 password = "721004"
             };
 
             WeiXinUtility.Setup("weixin.json", "apiclient_cert.p12", deploy);
 
-            // the public bible service
-            TryCreate<PubService>(
-                new ServiceContext("pub")
+            // the gospel service
+            TryCreate<GospelService>(
+                new ServiceContext("gospel")
                 {
                     addrs = new[] {"http://localhost:8081"},
                     cipher = 0x4a78be76,

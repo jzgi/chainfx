@@ -177,12 +177,6 @@ namespace Greatbone.Core
             return work;
         }
 
-        internal Criteria CreateCriteria(string method)
-        {
-            MethodInfo mi = typeinfo.GetMethod(method);
-            return (Criteria) mi?.CreateDelegate(typeof(Criteria), this);
-        }
-
         public Roll<ActionInfo> Actions => actions;
 
         public ActionInfo[] UiActions => uiActions;

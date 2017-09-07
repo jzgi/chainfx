@@ -273,16 +273,16 @@ namespace Greatbone.Core
         {
             Add("<div data-sticky-container>");
             Add("<div class=\"sticky\" style=\"width: 100%\" data-sticky  data-options=\"anchor: page; marginTop: 0; stickyOn: small;\">");
-            Add("<div class=\"title-bar\">");
+            Add("<div class=\"top-bar\">");
 
-            Add("<div class=\"title-bar-left\">");
+            Add("<div class=\"top-bar-left\">");
             if (work.UiActions != null)
             {
                 TRIGGERS(work.UiActions, obj: model);
             }
             Add("</div>");
 
-            Add("<div class=\"title-bar-title\">");
+            Add("<div class=\"top-bar-right\">");
             Add("<a class=\"button primary hollow\" href=\"javascript: location.reload(false);\">刷新</a>");
             Add("</div>");
 
@@ -438,7 +438,7 @@ namespace Greatbone.Core
                 ++level;
                 chain[level].varWork = varWork;
 
-                Add("<table class=\"unstriped\">");
+                Add("<table class=\"scroll unstriped\">");
 
                 ActionInfo[] ais = varWork?.UiActions;
 
@@ -453,7 +453,6 @@ namespace Greatbone.Core
                 }
 
                 arr[0].Write(this, proj);
-
                 if (ais != null)
                 {
                     Add("<th></th>"); // head for triggers
@@ -476,7 +475,7 @@ namespace Greatbone.Core
                         Add("<td>");
                         Add("<input name=\"key\" type=\"checkbox\" value=\"");
                         varWork?.OutputVarKey(obj, this);
-                        Add("</td>");
+                        Add("\"></td>");
                     }
 
                     arr[i].Write(this, proj);
@@ -639,23 +638,23 @@ namespace Greatbone.Core
             for (int i = 0; i < ais.Length; i++)
             {
                 ActionInfo ai = ais[i];
-
                 // access check if neccessary
                 if (ac != null && !ai.DoAuthorize(ac)) continue;
 
                 UiAttribute ui = ai.Ui;
 
-                // check state masking
+                // check state covering
+                int cover = 1;
                 var statable = obj as IStatable;
                 if (statable != null)
                 {
-                    int state = statable.GetState();
-                    if (!ui.HasState(state)) continue;
+                    cover = ui.Covers(statable.GetState());
                 }
+                if (cover == -1) continue; // skip the ui action
 
                 if (ui.IsAnchor)
                 {
-                    Add("<a class=\"button success");
+                    Add("<a class=\"button primary");
                     if (!ui.Bold) Add(" hollow");
                     Add("\" href=\"");
                     for (int lvl = 0; lvl <= level; lvl++)
@@ -665,15 +664,7 @@ namespace Greatbone.Core
                     }
                     Add(ai.Name);
                     Add("\"");
-                    if (ai.Asker != null && ai.Asker(chain[level].obj))
-                    {
-                        Add(" style=\"color: red;\"");
-                    }
-                    if (ai.Disabler != null && ai.Disabler(chain[level].obj))
-                    {
-                        Add(" disabled onclick=\"return false;\"");
-                    }
-                    else if (ui.HasPrompt)
+                    if (ui.HasPrompt)
                     {
                         Add(" onclick=\"return dialog(this,2,1,'");
                         Add(ui.Tip);
@@ -711,13 +702,17 @@ namespace Greatbone.Core
                         Add(ui.Tip);
                         Add("');\"");
                     }
+                    if (cover == 0)
+                    {
+                        Add(" disabled onclick=\"return false;\"");
+                    }
                     Add(">");
                     Add(ai.Label);
                     Add("</a>");
                 }
                 else if (ui.IsButton)
                 {
-                    Add("<button class=\"button success");
+                    Add("<button class=\"button primary");
                     if (!ui.Bold) Add(" hollow");
                     Add("\" name=\"");
                     Add(ai.Name);
@@ -729,11 +724,8 @@ namespace Greatbone.Core
                     }
                     Add(ai.Name);
                     Add("\" formmethod=\"post\"");
-                    if (ai.Asker != null && ai.Asker(chain[level].obj))
-                    {
-                        Add(" style=\"color: red; \"");
-                    }
-                    if (ai.Disabler != null && ai.Disabler(chain[level].obj))
+                    var st = chain[level].obj as IStatable;
+                    if (cover == 0)
                     {
                         Add(" disabled");
                     }
@@ -1545,12 +1537,6 @@ namespace Greatbone.Core
                 Add(" onclick=\"dialog(this,");
                 Add((int) mode);
                 Add("); return false;\"");
-            }
-
-            if (ai.Disabler != null)
-            {
-                // Add(" data-if=\""); Add(state.If); Add("\"");
-                // Add(" data-unif=\""); Add(state.Unif); Add("\"");
             }
             Add(">");
             AddLabel(ui.Label, ai.Name);
