@@ -2,15 +2,32 @@
     "button": [
         {
             "type": "view",
-            "name": "产品/选购",
-            "url": "http://shop.144000.tv/pub/",
+            "name": "点餐/选购",
+            "url": "http://144000.tv/shop/",
             "sub_button": []
         },
         {
-            "type": "view",
-            "name": "买家功能",
-            "url": "http://shop.144000.tv/my//",
-            "sub_button": []
+            "name": "我的...",
+            "sub_button": [
+                {
+                    "type": "view",
+                    "name": "我的购物车",
+                    "url": "http://144000.tv/my//pre/",
+                    "sub_button": []
+                },
+                {
+                    "type": "view",
+                    "name": "我的订单",
+                    "url": "http://144000.tv/my//real/",
+                    "sub_button": []
+                },
+                {
+                    "type": "view",
+                    "name": "我的投诉",
+                    "url": "http://144000.tv/my//kick/",
+                    "sub_button": []
+                }
+            ]
         },
         {
             "name": "平台...",
@@ -18,19 +35,13 @@
                 {
                     "type": "view",
                     "name": "关于粗粮达人",
-                    "url": "http://shop.144000.tv/about.html",
+                    "url": "http://144000.tv/about.html",
                     "sub_button": []
                 },
                 {
                     "type": "view",
-                    "name": "商家功能（需授权）",
-                    "url": "http://shop.144000.tv/opr//",
-                    "sub_button": []
-                },
-                {
-                    "type": "view",
-                    "name": "监管功能（需授权）",
-                    "url": "http://shop.144000.tv/spr//",
+                    "name": "作坊人员操作（需授权）",
+                    "url": "http://144000.tv/opr//",
                     "sub_button": []
                 }
             ]

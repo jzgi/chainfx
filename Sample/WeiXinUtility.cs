@@ -15,7 +15,7 @@ namespace Greatbone.Sample
 
         public const string BODY_DESC = "粗粮达人-健康产品";
 
-        public const string ADDR = "http://shop.144000.tv";
+        public const string ADDR = "http://144000.tv";
 
 
         static string appid;

@@ -11,9 +11,9 @@ namespace Greatbone.Sample
     }
 
     [Ui("人员管理")]
-    public class SprUserWork : UserWork<OprUserVarWork>
+    public class AdmUserWork : UserWork<OprUserVarWork>
     {
-        public SprUserWork(WorkContext wc) : base(wc)
+        public AdmUserWork(WorkContext wc) : base(wc)
         {
         }
 
@@ -36,29 +36,4 @@ namespace Greatbone.Sample
         }
     }
 
-
-    [Ui("监管员")]
-    public class AdmUserWork : UserWork<AdmUserVarWork>
-    {
-        public AdmUserWork(WorkContext wc) : base(wc)
-        {
-        }
-
-        public void @default(ActionContext ac, int page)
-        {
-            using (var dc = ac.NewDbContext())
-            {
-                const int proj = 0xffff ^ User.CREDENTIAL;
-                dc.Sql("SELECT ").columnlst(User.Empty, proj)._("FROM users WHERE sprat IS NOT NULL ORDER BY city LIMIT 20 OFFSET @1");
-                if (dc.Query(p => p.Set(page * 20)))
-                {
-                    ac.GiveGridPage(200, dc.ToArray<User>()); // ok
-                }
-                else
-                {
-                    ac.Give(204); // no content
-                }
-            }
-        }
-    }
 }

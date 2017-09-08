@@ -16,24 +16,7 @@ namespace Greatbone.Sample
         {
             CreateVar<OprVarWork, string>((prin) => ((User) prin).oprat);
         }
-
-        public void @null(ActionContext ac)
-        {
-            ac.GivePage(200, m => { m.CALLOUT("您目前还没有访问权限", false); });
-        }
     }
-
-    /// <summary>
-    ///
-    /// </summary>
-    public class SprWork : Work
-    {
-        public SprWork(WorkContext wc) : base(wc)
-        {
-            CreateVar<SprVarWork, string>((prin) => ((User) prin).sprat);
-        }
-    }
-
 
     [Ui("维护")]
     [User(adm: true)]
@@ -41,6 +24,12 @@ namespace Greatbone.Sample
     {
         public AdmWork(WorkContext wc) : base(wc)
         {
+            Create<AdmUserWork>("user");
+
+            Create<AdmShopWork>("shop");
+
+            Create<AdmKickWork>("kick");
+
             Create<AdmUserWork>("user"); // users management
 
             Create<AdmRepayWork>("repay"); // repays present

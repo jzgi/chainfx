@@ -110,9 +110,9 @@ namespace Greatbone.Sample
         }
     }
 
-    public class SprKickVarWork : KickVarWork
+    public class AdmKickVarWork : KickVarWork
     {
-        public SprKickVarWork(WorkContext wc) : base(wc)
+        public AdmKickVarWork(WorkContext wc) : base(wc)
         {
         }
     }

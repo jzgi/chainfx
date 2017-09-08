@@ -1082,12 +1082,6 @@ input[type='search'] {
     box-sizing: border-box;
 }
 
-[type='file'],
-[type='checkbox'],
-[type='radio'] {
-    margin: 0 0 1rem;
-}
-
 [type='checkbox'] + label,
 [type='radio'] + label {
     display: inline-block;
@@ -1486,7 +1480,6 @@ select[multiple] {
 .button {
     display: inline-block;
     vertical-align: middle;
-    margin: 0 0 1rem 0;
     font-family: inherit;
     padding: 0.85em 1em;
     -webkit-appearance: none;
@@ -3418,7 +3411,7 @@ input:checked + label > .switch-inactive {
 .tabs-title > a {
     display: block;
     padding: 1.25rem 1.5rem;
-    font-size: 0.75rem;
+    font-size: 0.875rem;
     line-height: 1;
     color: #2ba6cb;
 }
@@ -3439,6 +3432,7 @@ input:checked + label > .switch-inactive {
     background: #fefefe;
     color: #0a0a0a;
     transition: all 0.5s ease;
+    height: calc(100% - 3.75rem);
 }
 
 .tabs-content.vertical {
@@ -3448,7 +3442,6 @@ input:checked + label > .switch-inactive {
 
 .tabs-panel {
     display: none;
-    padding: 1rem;
 }
 
 .tabs-panel.is-active {
@@ -3700,6 +3693,7 @@ html.is-reveal-open body {
     .reveal.tiny {
         width: 30%;
         max-width: 62.5rem;
+        height: 60%;
     }
 }
 
@@ -3707,6 +3701,7 @@ html.is-reveal-open body {
     .reveal.small {
         width: 50%;
         max-width: 62.5rem;
+        height: 70%;
     }
 }
 
@@ -3714,6 +3709,7 @@ html.is-reveal-open body {
     .reveal.large {
         width: 90%;
         max-width: 62.5rem;
+        height: 80%;
     }
 }
 

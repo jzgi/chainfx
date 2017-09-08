@@ -47,7 +47,7 @@ namespace Greatbone.Sample
                     m.T("<div class=\"title-bar\">");
                     m.T("<div class=\"title-bar-title\">");
                     m.T("<select name=\"city\" style=\"margin: 0; border: 0; color: #ba55d3; font-size: 1.25rem;\" onchange=\"location = location.href.split('?')[0] + '?city=' + this.value;\">");
-                    var vs = ((BuyService) Service).Cities;
+                    var vs = ((OneService) Service).Cities;
                     foreach (var pair in vs)
                     {
                         m.T("<option value=\"").T(pair.Key).T("\"");
@@ -97,9 +97,9 @@ namespace Greatbone.Sample
 
 
     [Ui("商家管理")]
-    public class SprShopWork : ShopWork<SprShopVarWork>
+    public class AdmShopWork : ShopWork<AdmShopVarWork>
     {
-        public SprShopWork(WorkContext wc) : base(wc)
+        public AdmShopWork(WorkContext wc) : base(wc)
         {
         }
 
@@ -134,7 +134,7 @@ namespace Greatbone.Sample
                     m.TEXT(nameof(o.id), o.id, "商家编号", max: 6, min: 6, required: true);
                     m.TEXT(nameof(o.name), o.name, "商家名称", max: 10, required: true);
                     m.TEXT(nameof(o.city), o.city, "所在城市", @readonly: true);
-                    m.SELECT(nameof(o.distr), o.distr, ((BuyService) Service).GetDistrs(o.city), "区域");
+                    m.SELECT(nameof(o.distr), o.distr, ((OneService) Service).GetDistrs(o.city), "区域");
                     m.TEXT(nameof(o.lic), o.lic, "工商登记", max: 20, min: 11, required: true);
                     m._FORM();
                 });

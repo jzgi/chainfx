@@ -9,11 +9,6 @@ namespace Greatbone.Sample
         protected UserVarWork(WorkContext wc) : base(wc)
         {
         }
-
-        public void @default(ActionContext ac)
-        {
-            ac.GiveFrame(200);
-        }
     }
 
     public class OprUserVarWork : UserVarWork

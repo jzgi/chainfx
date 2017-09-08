@@ -25,9 +25,7 @@ namespace Greatbone.Sample
             [AID] = "助理"
         };
 
-
         internal string wx; // wexin openid
-
         internal string name;
         internal string city; // default viewing city
         internal string distr;
@@ -39,7 +37,6 @@ namespace Greatbone.Sample
         internal string credential;
         internal string oprat; // operator at shopid
         internal short opr; // 
-        internal string sprat; // supervisor at city
         internal bool adm; // admininistrator
 
 
@@ -72,7 +69,6 @@ namespace Greatbone.Sample
             {
                 i.Get(nameof(oprat), ref oprat);
                 i.Get(nameof(opr), ref opr);
-                i.Get(nameof(sprat), ref sprat);
                 i.Get(nameof(adm), ref adm);
             }
         }
@@ -105,7 +101,6 @@ namespace Greatbone.Sample
             {
                 o.Put(nameof(oprat), oprat, "所在商家");
                 o.Put(nameof(opr), opr, "操作权限", OPR);
-                o.Put(nameof(sprat), sprat, "区域监督");
                 o.Put(nameof(adm), adm, "平台管理");
             }
         }

@@ -6,19 +6,20 @@ using static Greatbone.Sample.WeiXinUtility;
 
 namespace Greatbone.Sample
 {
-    public class BuyService : Service<User>, IAuthenticateAsync, ICatch
+    /// <summary>
+    /// In order to simplify site maintenance and reduce cost, we put the gospel and the health provision together as one single service
+    /// </summary>
+    public class OneService : Service<User>, IAuthenticateAsync, ICatch
     {
         readonly Map<string, City> cities;
 
-        public BuyService(ServiceContext sc) : base(sc)
+        public OneService(ServiceContext sc) : base(sc)
         {
-            Create<PubShopWork>("shop"); // public
+            Create<PubShopWork>("shop"); // shopping
 
             Create<MyWork>("my"); // personal
 
-            Create<OprWork>("opr"); // shop operation
-
-            Create<SprWork>("spr"); // supervisor
+            Create<OprWork>("opr"); // shop operator
 
             Create<AdmWork>("adm"); // administrator
 
@@ -26,7 +27,7 @@ namespace Greatbone.Sample
         }
 
         public Map<string, City> Cities => cities;
-        
+
         public string[] GetDistrs(string city) => cities[city].distrs;
 
         public void @default(ActionContext ac)

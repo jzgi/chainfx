@@ -6,20 +6,15 @@ namespace Greatbone.Sample
     {
         readonly short opr;
 
-        readonly bool spr;
-
         readonly bool adm;
 
-        public UserAttribute(short opr = 0, bool spr = false, bool adm = false)
+        public UserAttribute(short opr = 0, bool adm = false)
         {
             this.opr = opr;
-            this.spr = spr;
             this.adm = adm;
         }
 
         public bool IsOpr => opr > 0;
-
-        public bool IsAdm => spr;
 
         public override bool Check(ActionContext ac)
         {
@@ -31,10 +26,6 @@ namespace Greatbone.Sample
             {
                 if ((prin.opr & opr) != opr) return false; // inclusive check
                 return prin.oprat == ac[typeof(ShopVarWork)];
-            }
-            if (spr)
-            {
-                return prin.sprat == ac[typeof(Work)];
             }
             return !adm || prin.adm;
         }

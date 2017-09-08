@@ -204,7 +204,7 @@ namespace Greatbone.Sample
 
     [Ui("当前单")]
     [User(User.AID)]
-    public class OprActiveOrderWork : OprOrderWork<OprActiveOrderVarWork>
+    public class OprPresentOrderWork : OprOrderWork<OprActiveOrderVarWork>
     {
         static readonly Map<short, string> NOTIFS = new Map<short, string>()
         {
@@ -214,7 +214,7 @@ namespace Greatbone.Sample
             [4] = "您的订单已接收，请您作确认收货操作",
         };
 
-        public OprActiveOrderWork(WorkContext wc) : base(wc)
+        public OprPresentOrderWork(WorkContext wc) : base(wc)
         {
             status = Order.ACCEPTED;
             proj = Order.ID | Order.BASIC_DETAIL | Order.CASH | Order.FLOW;

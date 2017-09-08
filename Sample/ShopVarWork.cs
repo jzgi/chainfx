@@ -217,9 +217,9 @@ namespace Greatbone.Sample
         }
     }
 
-    public class SprShopVarWork : ShopVarWork
+    public class AdmShopVarWork : ShopVarWork
     {
-        public SprShopVarWork(WorkContext wc) : base(wc)
+        public AdmShopVarWork(WorkContext wc) : base(wc)
         {
         }
 
@@ -242,7 +242,7 @@ namespace Greatbone.Sample
                         {
                             m.FORM_();
                             m.TEXT(nameof(name), name, "商家名称");
-                            m.SELECT(nameof(distr), distr, ((BuyService) Service).GetDistrs(city), "区域");
+                            m.SELECT(nameof(distr), distr, ((OneService) Service).GetDistrs(city), "区域");
                             m.TEXT(nameof(lic), lic, "工商登记");
                             m._FORM();
                         });
@@ -309,13 +309,6 @@ namespace Greatbone.Sample
                 }
                 ac.GivePane(200);
             }
-        }
-    }
-
-    public class AdmShopVarWork : ShopVarWork
-    {
-        public AdmShopVarWork(WorkContext wc) : base(wc)
-        {
         }
     }
 }

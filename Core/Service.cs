@@ -64,7 +64,7 @@ namespace Greatbone.Core
 
             // create kestrel instance
             KestrelServerOptions options = new KestrelServerOptions();
-            server = new KestrelServer(Options.Create(options), Application.Lifetime, factory);
+            server = new KestrelServer(Options.Create(options), ServerUtility.Lifetime, factory);
             ICollection<string> addrcoll = server.Features.Get<IServerAddressesFeature>().Addresses;
             if (Addrs == null)
             {

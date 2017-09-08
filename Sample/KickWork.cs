@@ -37,10 +37,10 @@ namespace Greatbone.Sample
     }
 
     [Ui("举报管理")]
-    [User(spr: true)]
-    public class SprKickWork : KickWork<SprKickVarWork>
+    [User(adm: true)]
+    public class AdmKickWork : KickWork<AdmKickVarWork>
     {
-        public SprKickWork(WorkContext wc) : base(wc)
+        public AdmKickWork(WorkContext wc) : base(wc)
         {
         }
 
