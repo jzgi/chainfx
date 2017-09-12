@@ -33,7 +33,7 @@ namespace Greatbone.Sample
                     m.TEXT(nameof(prin.name), prin.name, "真实姓名（和身份证一致）", max: 4, min: 2, required: true);
                     m.TEXT(nameof(prin.id), prin.id, "用户编号（个人手机号）", max: 11, min: 11, pattern: "[0-9]+", required: true);
                     m.PASSWORD(nameof(password), password, "登录密码（用于微信以外登录）", min: 3);
-                    m.SELECT(nameof(prin.city), prin.city, ((OneService) Service).Cities, label: "城市");
+                    m.SELECT(nameof(prin.city), prin.city, ((CareService) Service).Cities, label: "城市");
                     m._FORM();
                 });
             }
@@ -123,10 +123,8 @@ namespace Greatbone.Sample
                         {
                             m.FORM_();
                             m.TEXT(nameof(o.name), o.name, label: "商家名称", max: 10, @readonly: true);
-                            m.TEXT(nameof(o.descr), o.descr, label: "商家描述", max: 20, required: true);
                             m.TEXT(nameof(o.tel), o.tel, label: "电话", max: 11, min: 11, pattern: "[0-9]+", required: true);
                             m.TEXT(nameof(o.city), o.city, label: "城市", @readonly: true);
-                            m.SELECT(nameof(o.distr), o.distr, ((OneService) Service).GetDistrs(o.city), label: "区域");
                             m.TEXT(nameof(o.addr), o.addr, label: "地址");
                             m.SELECT(nameof(o.status), o.status, Shop.STATUS, label: "状态");
                             m._FORM();

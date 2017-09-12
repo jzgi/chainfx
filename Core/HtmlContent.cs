@@ -724,7 +724,6 @@ namespace Greatbone.Core
                     }
                     Add(ai.Name);
                     Add("\" formmethod=\"post\"");
-                    var st = chain[level].obj as IStatable;
                     if (cover == 0)
                     {
                         Add(" disabled");

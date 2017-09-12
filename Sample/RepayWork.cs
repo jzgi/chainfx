@@ -29,11 +29,11 @@ namespace Greatbone.Sample
             {
                 if (dc.Query("SELECT * FROM repays WHERE shopid = @1", p => p.Set(shopid)))
                 {
-                    ac.GiveGridPage(200, dc.ToArray<Repay>());
+                    ac.GiveTablePage(200, dc.ToArray<Repay>());
                 }
                 else
                 {
-                    ac.GiveGridPage(200, (Repay[]) null);
+                    ac.GiveTablePage(200, (Repay[]) null);
                 }
             }
         }
@@ -52,11 +52,11 @@ namespace Greatbone.Sample
             {
                 if (dc.Query("SELECT * FROM repays WHERE status = 0"))
                 {
-                    ac.GiveGridPage(200, dc.ToArray<Repay>());
+                    ac.GiveTablePage(200, dc.ToArray<Repay>());
                 }
                 else
                 {
-                    ac.GiveGridPage(200, (Repay[]) null);
+                    ac.GiveTablePage(200, (Repay[]) null);
                 }
             }
         }
@@ -151,17 +151,17 @@ namespace Greatbone.Sample
         {
         }
 
-        public void @default(ActionContext ac)
+        public void @default(ActionContext ac, int page)
         {
             using (var dc = ac.NewDbContext())
             {
-                if (dc.Query("SELECT * FROM repays WHERE status > 0"))
+                if (dc.Query("SELECT * FROM repays WHERE status > 0 ORDER BY id DESC LIMIT 20 OFFSET @1", p => p.Set(page * 20)))
                 {
-                    ac.GiveGridPage(200, dc.ToArray<Repay>());
+                    ac.GiveTablePage(200, dc.ToArray<Repay>());
                 }
                 else
                 {
-                    ac.GiveGridPage(200, (Repay[]) null);
+                    ac.GiveTablePage(200, (Repay[]) null);
                 }
             }
         }

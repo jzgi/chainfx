@@ -60,11 +60,11 @@ namespace Greatbone.Sample
             h.Add("<div class=\"tabs-content\" data-tabs-content=\"frame-tabs\">");
 
             h.Add("<div class=\"tabs-panel is-active\" id=\"paneltop\">");
-            h.Add("<div class=\"title-bar\">");
-            h.Add("<div class=\"title-bar-left\">");
+            h.Add("<div class=\"top-bar\">");
+            h.Add("<div class=\"top-bar-left\">");
             h.TRIGGERS(work.UiActions, ac);
             h.Add("</div>");
-            h.Add("<div class=\"title-bar-title\">");
+            h.Add("<div class=\"top-bar-right\">");
             h.Add("<span class=\"button primary hollow\">");
             string title = ac[work];
             if (title.Length > 20) title = ((User) ac.Principal).name;

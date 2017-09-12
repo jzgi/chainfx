@@ -23,10 +23,10 @@ namespace Greatbone.Sample
             using (var dc = ac.NewDbContext())
             {
                 const int proj = 0xffff ^ User.CREDENTIAL;
-                dc.Sql("SELECT ").columnlst(User.Empty, proj)._("FROM users WHERE city = @1 AND opr <> 0 ORDER BY id LIMIT 20 OFFSET @2");
+                dc.Sql("SELECT ").columnlst(User.Empty, proj)._("FROM users WHERE opr <> 0 ORDER BY city LIMIT 20 OFFSET @2");
                 if (dc.Query(p => p.Set(city).Set(page * 20)))
                 {
-                    ac.GiveGridPage(200, dc.ToArray<User>()); // ok
+                    ac.GiveTablePage(200, dc.ToArray<User>()); // ok
                 }
                 else
                 {

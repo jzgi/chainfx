@@ -12,18 +12,12 @@ namespace Greatbone.Sample
         }
     }
 
-    public abstract class MyOrderVarWork : OrderVarWork
-    {
-        protected MyOrderVarWork(WorkContext wc) : base(wc)
-        {
-        }
-    }
 
-    public class MyCartOrderVarWork : MyOrderVarWork
+    public class MyPreOrderVarWork : OrderVarWork
     {
-        public MyCartOrderVarWork(WorkContext wc) : base(wc)
+        public MyPreOrderVarWork(WorkContext wc) : base(wc)
         {
-            CreateVar<MyCartOrderVarVarWork, string>(obj => ((OrderLine) obj).name);
+            CreateVar<MyCartOrderVarVarWork, string>(obj => ((Detail) obj).name);
         }
 
         public bool NoAddr(object obj) => string.IsNullOrEmpty(((Order) obj).addr);
@@ -35,14 +29,13 @@ namespace Greatbone.Sample
             long id = ac[this];
             string buyer;
             string city;
-            string distr;
             string addr;
             string tel;
             bool save;
             if (ac.GET)
             {
                 var f = ac.Query;
-                f.Let(out buyer).Let(out city).Let(out distr).Let(out addr).Let(out tel).Let(out save);
+                f.Let(out buyer).Let(out city).Let(out addr).Let(out tel).Let(out save);
 
                 if (city == null)
                 {
@@ -50,7 +43,7 @@ namespace Greatbone.Sample
                     {
                         if (dc.Query1("SELECT buyer, city, distr, addr, tel FROM orders WHERE id = @1", p => p.Set(id)))
                         {
-                            dc.Let(out buyer).Let(out city).Let(out distr).Let(out addr).Let(out tel);
+                            dc.Let(out buyer).Let(out city).Let(out addr).Let(out tel);
                         }
                     }
                 }
@@ -58,8 +51,7 @@ namespace Greatbone.Sample
                 {
                     m.FORM_();
                     m.TEXT(nameof(buyer), buyer, label: "买家名称", max: 10, required: true);
-                    m.SELECT(nameof(city), city, ((OneService) Service).Cities, label: "城市", refresh: true);
-                    m.SELECT(nameof(distr), distr, ((OneService) Service).GetDistrs(city), label: "区域");
+                    m.SELECT(nameof(city), city, ((CareService) Service).Cities, label: "城市", refresh: true);
                     m.TEXT(nameof(addr), addr, label: "地址", pattern: "[\\S]*", max: 20, required: true);
                     m.TEXT(nameof(tel), tel, label: "电话", max: 11, required: true);
                     m.CHECKBOX(nameof(save), save, label: "存为默认的收货地址");
@@ -69,17 +61,16 @@ namespace Greatbone.Sample
             else
             {
                 var f = await ac.ReadAsync<Form>();
-                f.Let(out buyer).Let(out city).Let(out distr).Let(out addr).Let(out tel).Let(out save);
+                f.Let(out buyer).Let(out city).Let(out addr).Let(out tel).Let(out save);
                 using (var dc = ac.NewDbContext())
                 {
-                    dc.Execute("UPDATE orders SET buyer = @1, city = @2, distr = @3, addr = @4, tel = @5 WHERE id = @6", p => p.Set(buyer).Set(city).Set(distr).Set(addr).Set(tel).Set(id));
+                    dc.Execute("UPDATE orders SET buyer = @1, city = @2, distr = @3, addr = @4, tel = @5 WHERE id = @6", p => p.Set(buyer).Set(city).Set(addr).Set(tel).Set(id));
                     if (save)
                     {
                         User prin = (User) ac.Principal;
-                        dc.Execute("INSERT INTO users (wx, name, city, distr, addr, tel, created) VALUES (@1, @2, @3, @4, @5, @6, @7) ON CONFLICT (wx) DO UPDATE SET name = @2, city = @3, distr = @4, addr = @5, tel = @6, created = @7", p => p.Set(wx).Set(buyer).Set(city).Set(distr).Set(addr).Set(tel).Set(DateTime.Now));
+                        dc.Execute("INSERT INTO users (wx, name, city, distr, addr, tel, created) VALUES (@1, @2, @3, @4, @5, @6, @7) ON CONFLICT (wx) DO UPDATE SET name = @2, city = @3, distr = @4, addr = @5, tel = @6, created = @7", p => p.Set(wx).Set(buyer).Set(city).Set(addr).Set(tel).Set(DateTime.Now));
                         prin.name = buyer;
                         prin.city = city;
-                        prin.distr = distr;
                         prin.addr = addr;
                         prin.tel = tel;
                         ac.SetTokenCookie(prin, 0xffff ^ User.CREDENTIAL);
@@ -144,9 +135,9 @@ namespace Greatbone.Sample
         }
     }
 
-    public class MyActiveOrderVarWork : MyOrderVarWork
+    public class MyRealOrderVarWork : OrderVarWork
     {
-        public MyActiveOrderVarWork(WorkContext wc) : base(wc)
+        public MyRealOrderVarWork(WorkContext wc) : base(wc)
         {
         }
 
@@ -181,34 +172,6 @@ namespace Greatbone.Sample
             }
         }
 
-        [Ui("确认收货", "对商品满意并确认收货", Mode = UiMode.ButtonConfirm)]
-        public async Task got(ActionContext ac)
-        {
-            long id = ac[this];
-            string mgrwx = null;
-            using (var dc = ac.NewDbContext())
-            {
-                var shopid = (string) dc.Scalar("UPDATE orders SET shipped = localtimestamp, status = @1 WHERE id = @2  RETURNING shopid", p => p.Set(Order.SHIPPED).Set(id));
-                if (shopid != null)
-                {
-                    mgrwx = (string) dc.Scalar("SELECT mgrwx FROM shops WHERE id = @1", p => p.Set(shopid));
-                }
-            }
-            if (mgrwx != null)
-            {
-                await WeiXinUtility.PostSendAsync(mgrwx, "【买家确收】订单编号：" + id);
-            }
-
-            ac.GiveRedirect("../");
-        }
-    }
-
-    public class MyPastOrderVarWork : MyOrderVarWork
-    {
-        public MyPastOrderVarWork(WorkContext wc) : base(wc)
-        {
-        }
-
         [Ui("举报商家", "向平台举报商家的产品质量问题", Mode = UiMode.AnchorShow)]
         public async Task tipoff(ActionContext ac)
         {
@@ -240,57 +203,37 @@ namespace Greatbone.Sample
                 ac.GivePane(200);
             }
         }
-    }
 
-    public abstract class OprOrderVarWork : OrderVarWork
-    {
-        protected OprOrderVarWork(WorkContext wc) : base(wc)
-        {
-        }
-    }
-
-    public class OprCartOrderVarWork : OprOrderVarWork
-    {
-        public OprCartOrderVarWork(WorkContext wc) : base(wc)
-        {
-        }
-
-        [Ui("强行接受", "此单可能尚未通过平台付款，确定接受吗", Mode = UiMode.ButtonConfirm)]
-        public void accept(ActionContext ac)
+        [Ui("确认收货", "对商品满意并确认收货", Mode = UiMode.ButtonConfirm)]
+        public async Task got(ActionContext ac)
         {
             long id = ac[this];
-
-            using (var dc = Service.NewDbContext())
+            string mgrwx = null;
+            using (var dc = ac.NewDbContext())
             {
-                dc.Execute("UPDATE orders SET accepted = localtimestamp, status = @1 WHERE id = @2", p => p.Set(Order.ACCEPTED).Set(id));
-                ac.GiveRedirect("../");
-            }
-        }
-
-        [Ui("付款情况核查", "实时核查该单的付款情况", Mode = UiMode.ButtonConfirm)]
-        public async Task check(ActionContext ac)
-        {
-            long id = ac[this];
-
-            decimal cash = await WeiXinUtility.PostOrderQueryAsync(id);
-            if (cash > 0)
-            {
-                using (var dc = Service.NewDbContext())
+                var shopid = (string) dc.Scalar("UPDATE orders SET shipped = localtimestamp, status = @1 WHERE id = @2  RETURNING shopid", p => p.Set(Order.SHIPPED).Set(id));
+                if (shopid != null)
                 {
-                    dc.Execute("UPDATE orders SET cash = @1 WHERE id = @2", p => p.Set(cash).Set(id));
+                    mgrwx = (string) dc.Scalar("SELECT mgrwx FROM shops WHERE id = @1", p => p.Set(shopid));
                 }
             }
+            if (mgrwx != null)
+            {
+                await WeiXinUtility.PostSendAsync(mgrwx, "【买家确收】订单编号：" + id);
+            }
+
             ac.GiveRedirect("../");
         }
     }
 
-    public class OprActiveOrderVarWork : OprOrderVarWork
+
+    public class OprPresentOrderVarWork : OrderVarWork
     {
-        public OprActiveOrderVarWork(WorkContext wc) : base(wc)
+        public OprPresentOrderVarWork(WorkContext wc) : base(wc)
         {
         }
 
-        public bool NoAbortion(object obj) => string.IsNullOrEmpty(((Order) obj).abortion);
+        public bool NoAbortion(object obj) => string.IsNullOrEmpty(((Order) obj).abortly);
 
         [Ui("同意撤销/退款", "同意撤销此单，实收金额退回给买家", Mode = UiMode.ButtonShow, Disabler = nameof(NoAbortion))]
         public async Task abort(ActionContext ac)
@@ -328,7 +271,7 @@ namespace Greatbone.Sample
         }
     }
 
-    public class OprPastOrderVarWork : OprOrderVarWork
+    public class OprPastOrderVarWork : OrderVarWork
     {
         public OprPastOrderVarWork(WorkContext wc) : base(wc)
         {
@@ -362,13 +305,6 @@ namespace Greatbone.Sample
                     m._FORM();
                 });
             }
-        }
-    }
-
-    public class OprCoOrderVarWork : OprOrderVarWork
-    {
-        public OprCoOrderVarWork(WorkContext wc) : base(wc)
-        {
         }
     }
 }

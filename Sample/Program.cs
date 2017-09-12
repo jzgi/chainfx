@@ -14,8 +14,8 @@ namespace Greatbone.Sample
             WeiXinUtility.Setup("weixin.json", "apiclient_cert.p12", deploy);
 
             // the only www service
-            TryCreate<OneService>(
-                new ServiceContext("one")
+            TryCreate<CareService>(
+                new ServiceContext("care")
                 {
                     addrs = new[] {"http://localhost:8080"},
                     cipher = 0x4a78be76,

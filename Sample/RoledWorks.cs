@@ -18,7 +18,7 @@ namespace Greatbone.Sample
         }
     }
 
-    [Ui("维护")]
+    [Ui("常规")]
     [User(adm: true)]
     public class AdmWork : Work
     {

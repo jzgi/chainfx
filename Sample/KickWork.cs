@@ -44,20 +44,20 @@ namespace Greatbone.Sample
         {
         }
 
-        public void @default(ActionContext ac)
+        public void @default(ActionContext ac, int page)
         {
             string shopid = ac[typeof(ShopVarWork)];
             using (var dc = ac.NewDbContext())
             {
                 const int proj = 0xffff ^ Item.BASIC_ICON;
-                dc.Sql("SELECT ").columnlst(Item.Empty, proj)._("FROM charges WHERE shopid = @1");
-                if (dc.Query(p => p.Set(shopid)))
+                dc.Sql("SELECT ").columnlst(Item.Empty, proj)._("FROM kicks ORDER BY id DESC LIMIT 20 OFFSET @1");
+                if (dc.Query(p => p.Set(page * 20)))
                 {
-                    ac.GiveGridPage(200, dc.ToArray<Item>(proj), proj ^ Item.BASIC);
+                    ac.GiveTablePage(200, dc.ToArray<Item>(proj), proj ^ Item.BASIC);
                 }
                 else
                 {
-                    ac.GiveGridPage(200, (Item[]) null);
+                    ac.GiveTablePage(200, (Item[]) null);
                 }
             }
         }

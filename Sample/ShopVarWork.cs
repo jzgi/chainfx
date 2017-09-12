@@ -45,14 +45,13 @@ namespace Greatbone.Sample
 
             using (var dc = ac.NewDbContext())
             {
-                // query for the shop record
                 const int proj = Shop.ID | Shop.BASIC;
                 dc.Sql("SELECT ").columnlst(Shop.Empty, proj)._("FROM shops WHERE id = @1");
                 if (dc.Query1(p => p.Set(shopid)))
                 {
                     var shop = dc.ToObject<Shop>(proj);
 
-                    // query for item records of the shop
+                    // items of the shop
                     Item[] items = null;
                     dc.Sql("SELECT ").columnlst(Item.Empty, Item.BASIC_SHOPID)._("FROM items WHERE shopid = @1");
                     if (dc.Query(p => p.Set(shopid)))
@@ -64,11 +63,13 @@ namespace Greatbone.Sample
                     {
                         m.T("<div data-sticky-container>");
                         m.T("<div class=\"sticky\" style=\"width: 100%\" data-sticky  data-options=\"anchor: page; marginTop: 0; stickyOn: small;\">");
-                        m.T("<div class=\"title-bar\">");
-                        m.T("<div class=\"title-bar-left\">");
+                        m.T("<div class=\"top-bar\">");
+                        m.T("<div class=\"top-bar-left\">");
+                        m.T("<a href=\"https://mp.weixin.qq.com/mp/profile_ext?action=home&__biz=MzU4NDAxMTAwOQ==&scene=124#wechat_redirect\">关注公众号</a>");
+                        m.T("<a href=\"../\"><i class=\"fa fa-arrow-left\"></i></a>");
                         m.T("<span style=\"font-size: 1.25rem;\">").T(shop.name).T("</span>");
                         m.T("</div>");
-                        m.T("<div class=\"title-bar-right\">");
+                        m.T("<div class=\"top-bar-right\">");
                         m.T("<a class=\"float-right\" href=\"/my//cart/\"><span class=\"fa-stack fa-lg\"><i class=\"fa fa-circle fa-stack-2x\"></i><i class=\"fa fa-shopping-cart fa-stack-1x fa-inverse\"></i></span></a>");
                         m.T("</div>");
                         m.T("</div>");
@@ -77,7 +78,6 @@ namespace Greatbone.Sample
 
                         m.T("<div class=\"row\" style=\"background-color: white\">");
                         m.T("<div class=\"small-8 column\">");
-                        m.T("<p>").T(shop.descr).T("</p>");
                         m.T("<p>").T(shop.city).T(shop.addr).T("</p>");
                         m.T("</div>");
                         m.T("<div class=\"small-4 column\">");
@@ -93,6 +93,7 @@ namespace Greatbone.Sample
                             m.T("没有上架商品");
                             return;
                         }
+                        m.T("<div class=\"grid-x grid-padding-x small-up-1 medium-up-2\">");
                         for (int i = 0; i < items.Length; i++)
                         {
                             Item item = items[i];
@@ -106,7 +107,7 @@ namespace Greatbone.Sample
                             m.HIDDEN(nameof(item.unit), item.unit);
                             m.HIDDEN(nameof(item.price), item.price);
 
-                            m.T("<div class=\"row card align-middle\">");
+                            m.T("<div class=\"card\">");
 
                             m.T("<div class=\"small-4 column\">");
                             m.T("<img src=\"").T(item.name).T("/icon\" alt=\"\" class=\"thumbnail circle\">");
@@ -146,6 +147,7 @@ namespace Greatbone.Sample
                             m.T("</div>"); // row card
                             m.T("</form>");
                         }
+                        m.T("</div>");
                     }, @public: true, maxage: 60 * 5);
                 }
                 else
@@ -242,7 +244,7 @@ namespace Greatbone.Sample
                         {
                             m.FORM_();
                             m.TEXT(nameof(name), name, "商家名称");
-                            m.SELECT(nameof(distr), distr, ((OneService) Service).GetDistrs(city), "区域");
+                            m.SELECT(nameof(distr), distr, ((CareService) Service).GetDistrs(city), "区域");
                             m.TEXT(nameof(lic), lic, "工商登记");
                             m._FORM();
                         });

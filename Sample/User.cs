@@ -1,5 +1,4 @@
-﻿using System;
-using Greatbone.Core;
+﻿using Greatbone.Core;
 
 namespace Greatbone.Sample
 {
@@ -27,17 +26,15 @@ namespace Greatbone.Sample
 
         internal string wx; // wexin openid
         internal string name;
-        internal string city; // default viewing city
-        internal string distr;
-        internal string addr;
-        internal string tel;
-        internal DateTime created;
-
         internal string id; // optional unique id
         internal string credential;
+        internal string tel;
+        internal string city; // default viewing city
+        internal string addr;
         internal string oprat; // operator at shopid
         internal short opr; // 
         internal bool adm; // admininistrator
+        internal short status;
 
 
         public void Read(IDataInput i, int proj = 0x00ff)
@@ -48,14 +45,8 @@ namespace Greatbone.Sample
             }
             i.Get(nameof(name), ref name);
             i.Get(nameof(city), ref city);
-            i.Get(nameof(distr), ref distr);
             i.Get(nameof(addr), ref addr);
             i.Get(nameof(tel), ref tel);
-
-            if ((proj & CREATTED) == CREATTED)
-            {
-                i.Get(nameof(created), ref created);
-            }
 
             if ((proj & BACKEND) != 0) // inclusive
             {
@@ -81,14 +72,9 @@ namespace Greatbone.Sample
             }
             o.Put(nameof(name), name, "用户名称");
             o.Put(nameof(city), city, "城市");
-            o.Put(nameof(distr), distr, "区划");
-            o.Put(nameof(addr), addr, "街道/地址");
+            o.Put(nameof(addr), addr, "地址");
             o.Put(nameof(tel), tel, "电话");
 
-            if ((proj & CREATTED) == CREATTED)
-            {
-                o.Put(nameof(created), created);
-            }
             if ((proj & BACKEND) != 0)
             {
                 o.Put(nameof(id), id, "后台帐号");

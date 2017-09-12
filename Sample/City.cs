@@ -2,14 +2,13 @@ using Greatbone.Core;
 
 namespace Greatbone.Sample
 {
-    ///
-    ///
+    /// <summary>
+    /// A city data object.
+    /// </summary>
     public class City : IData
     {
         internal string code;
-
         internal string name;
-
         internal string[] distrs;
 
         public void Read(IDataInput i, int proj = 0x00ff)
@@ -24,6 +23,11 @@ namespace Greatbone.Sample
             o.Put(nameof(code), code);
             o.Put(nameof(name), name);
             o.Put(nameof(distrs), distrs);
+        }
+
+        public override string ToString()
+        {
+            return name;
         }
     }
 }

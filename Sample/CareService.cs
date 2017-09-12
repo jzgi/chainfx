@@ -9,11 +9,11 @@ namespace Greatbone.Sample
     /// <summary>
     /// In order to simplify site maintenance and reduce cost, we put the gospel and the health provision together as one single service
     /// </summary>
-    public class OneService : Service<User>, IAuthenticateAsync, ICatch
+    public class CareService : Service<User>, IAuthenticateAsync, ICatch
     {
         readonly Map<string, City> cities;
 
-        public OneService(ServiceContext sc) : base(sc)
+        public CareService(ServiceContext sc) : base(sc)
         {
             Create<PubShopWork>("shop"); // shopping
 
@@ -32,7 +32,27 @@ namespace Greatbone.Sample
 
         public void @default(ActionContext ac)
         {
-            DoFile("default.html", ".html", ac);
+            Lesson[] lessons = null;
+            using (var dc = NewDbContext())
+            {
+                if (dc.Query("SELECT * FROM lessons"))
+                {
+                    lessons = dc.ToArray<Lesson>(0xffff ^ User.CREDENTIAL);
+                }
+            }
+            ac.GivePage(200, m =>
+            {
+                if (lessons != null)
+                {
+                    for (int i = 0; i < lessons.Length; i++)
+                    {
+                        var lesson = lessons[i];
+                        m.T("<div class=\"card\">");
+                        m.T("<embed src=\"http://player.youku.com/player.php/sid/").T(lesson.refid).T("/v.swf\" allowFullScreen=\"true\" quality=\"high\" width=\"480\" height=\"400\" align=\"middle\" allowScriptAccess=\"always\" type=\"application/x-shockwave-flash\"></embed>");
+                        m.T("</div>");
+                    }
+                }
+            });
         }
 
         public async Task<bool> AuthenticateAsync(ActionContext ac, bool e)
