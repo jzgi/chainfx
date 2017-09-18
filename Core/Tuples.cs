@@ -28,45 +28,4 @@
 
         public TC C { get; set; }
     }
-
-    public struct Quad<TA, TB, TC, TD>
-    {
-        public Quad(TA a, TB b, TC c, TD d)
-        {
-            A = a;
-            B = b;
-            C = c;
-            D = d;
-        }
-
-        public TA A { get; set; }
-
-        public TB B { get; set; }
-
-        public TC C { get; set; }
-
-        public TD D { get; set; }
-    }
-
-    public struct Quint<TA, TB, TC, TD, TE>
-    {
-        public Quint(TA a, TB b, TC c, TD d, TE e)
-        {
-            A = a;
-            B = b;
-            C = c;
-            D = d;
-            E = e;
-        }
-
-        public TA A { get; set; }
-
-        public TB B { get; set; }
-
-        public TC C { get; set; }
-
-        public TD D { get; set; }
-
-        public TE E { get; set; }
-    }
 }

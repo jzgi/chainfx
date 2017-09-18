@@ -15,7 +15,7 @@ namespace Greatbone.Sample
     {
         public OprChatWork(WorkContext wc) : base(wc)
         {
-            CreateVar<OprChatVarWork, string>((prin) => ((Chat) prin).wx);
+            CreateVar<OprChatVarWork, string>((prin) => ((User) prin).wx );
         }
 
         public void @default(ActionContext ac)

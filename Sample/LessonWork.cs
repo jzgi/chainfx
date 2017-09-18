@@ -15,7 +15,7 @@ namespace Greatbone.Sample
     {
         public AdmChatWork(WorkContext wc) : base(wc)
         {
-            CreateVar<OprChatVarWork, string>((prin) => ((Chat)prin).wx);
+            CreateVar<OprChatVarWork, string>((prin) => ((Chat) prin).wx);
         }
 
         public void @default(ActionContext ac)
@@ -29,7 +29,7 @@ namespace Greatbone.Sample
                 }
                 else
                 {
-                    ac.GiveGridPage(200, (Chat[])null);
+                    ac.GiveGridPage(200, (Chat[]) null);
                 }
             }
         }

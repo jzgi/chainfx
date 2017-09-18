@@ -74,7 +74,7 @@ namespace Greatbone.Core
             numv = v;
         }
 
-        public string Name => name;
+        public string Key => name;
 
         public bool IsProperty => name != null;
 

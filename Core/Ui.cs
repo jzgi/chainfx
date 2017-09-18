@@ -2,7 +2,7 @@ using System;
 
 namespace Greatbone.Core
 {
-    public enum UiMode : int
+    public enum UiMode
     {
         Anchor = 0x0100,
 
@@ -63,29 +63,18 @@ namespace Greatbone.Core
         /// </summary>
         public int State { get; set; }
 
-        public int Covers(int objstate)
+        public bool Covers(int v)
         {
-            int state = State;
-            if (state == 0) return 1;
-            if (state < 0)
-            {
-                state = -state;
-                return (state & objstate) == objstate ? 1 : -1;
-            }
-            return (state & objstate) == objstate ? 1 : 0;
+            return State == 0 || (State & v) == v;
         }
 
-        public short Width { get; set; } = 120;
+        public short X { get; set; } = 120;
 
-        public short Height { get; set; } = 120;
+        public short Y { get; set; } = 120;
 
         public bool Circle { get; set; } = false;
 
         public bool Bold { get; set; } = false;
-
-        public string Disabler { get; set; }
-
-        public string Asker { get; set; }
 
         public bool IsAnchor => ((int) Mode & 0x0100) == 0x0100;
 

@@ -273,7 +273,7 @@ namespace Greatbone.Core
                     StringBuilder sb = new StringBuilder();
                     sb.Append("Host=").Append(Db.host);
                     sb.Append(";Port=").Append(Db.port);
-                    sb.Append(";Database=").Append(Db.database ?? Name);
+                    sb.Append(";Database=").Append(Db.database ?? Key);
                     sb.Append(";Username=").Append(Db.username);
                     sb.Append(";Password=").Append(Db.password);
                     sb.Append(";Read Buffer Size=").Append(1024 * 32);
@@ -338,7 +338,7 @@ namespace Greatbone.Core
             for (int i = 0; i < clients.Count; i++)
             {
                 Client cli = clients[i];
-                if (cli.Name.Equals(targetid)) return cli;
+                if (cli.Key.Equals(targetid)) return cli;
             }
             return null;
         }
@@ -363,7 +363,7 @@ namespace Greatbone.Core
 
             OnStart();
 
-            DBG(Name + " -> " + Addrs[0] + " started");
+            DBG(Key + " -> " + Addrs[0] + " started");
 
             cleaner.Start();
 
@@ -478,7 +478,7 @@ namespace Greatbone.Core
             logWriter.Flush();
             logWriter.Dispose();
 
-            Console.Write(Name);
+            Console.Write(Key);
             Console.WriteLine(".");
         }
     }

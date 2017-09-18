@@ -11,7 +11,7 @@ namespace Greatbone.Core
 
         readonly string value;
 
-        public string Name => name;
+        public string Key => name;
 
         internal XAttr(string name, string v)
         {

@@ -1559,7 +1559,7 @@ namespace Greatbone.Core
             this.size = size;
         }
 
-        public string Name { get; set; }
+        public string Key { get; set; }
 
         public string Type { get; set; }
 

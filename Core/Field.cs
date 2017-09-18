@@ -40,7 +40,7 @@ namespace Greatbone.Core
             Err = null;
         }
 
-        public string Name => name;
+        public string Key => name;
 
         public string Err { get; set; }
 

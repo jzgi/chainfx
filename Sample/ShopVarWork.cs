@@ -244,7 +244,7 @@ namespace Greatbone.Sample
                         {
                             m.FORM_();
                             m.TEXT(nameof(name), name, "商家名称");
-                            m.SELECT(nameof(distr), distr, ((CareService) Service).GetDistrs(city), "区域");
+                            m.SELECT(nameof(distr), distr, ((CareService) Service).Cities, "区域");
                             m.TEXT(nameof(lic), lic, "工商登记");
                             m._FORM();
                         });

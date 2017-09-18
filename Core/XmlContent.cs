@@ -56,7 +56,7 @@ namespace Greatbone.Core
                 {
                     XAttr attr = attrs[i];
                     Add(' ');
-                    Add(attr.Name);
+                    Add(attr.Key);
                     Add('=');
                     Add('"');
                     AddEsc(attr.Value);

@@ -55,7 +55,7 @@ namespace Greatbone.Core
                 for (int i = 0; i < eis.Count; i++)
                 {
                     if (i > 0) sb.Append(',');
-                    sb.Append(eis[i].Name);
+                    sb.Append(eis[i].Key);
                 }
                 x_event = sb.ToString();
             }
@@ -64,7 +64,7 @@ namespace Greatbone.Core
             Timeout = TimeSpan.FromSeconds(5);
         }
 
-        public string Name => peerid;
+        public string Key => peerid;
 
 
         public void TryPoll(int ticks)

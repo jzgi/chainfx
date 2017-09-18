@@ -17,7 +17,7 @@ namespace Greatbone.Core
         // used when generating a list
         internal int ordinal;
 
-        internal DbSql(string str) : base(false, 1024)
+        public DbSql(string str) : base(false, 1024)
         {
             Add(str);
         }

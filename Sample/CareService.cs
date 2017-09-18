@@ -7,7 +7,7 @@ using static Greatbone.Sample.WeiXinUtility;
 namespace Greatbone.Sample
 {
     /// <summary>
-    /// In order to simplify site maintenance and reduce cost, we put the gospel and the health provision together as one single service
+    /// The care service includes the gospel and the health provision.
     /// </summary>
     public class CareService : Service<User>, IAuthenticateAsync, ICatch
     {
@@ -28,7 +28,15 @@ namespace Greatbone.Sample
 
         public Map<string, City> Cities => cities;
 
-        public string[] GetDistrs(string city) => cities[city].distrs;
+        public City LocateCity(double x, double y)
+        {
+            foreach (var pair in cities)
+            {
+                var city = pair.Value;
+                if (city.Contains(x, y)) return city;
+            }
+            return null;
+        }
 
         public void @default(ActionContext ac)
         {

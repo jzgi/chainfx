@@ -11,6 +11,9 @@ namespace Greatbone.Core
     {
         readonly Work work;
 
+        // relative path
+        readonly string rpath;
+
         readonly bool async;
 
         readonly bool subscript;
@@ -29,9 +32,13 @@ namespace Greatbone.Core
         // async Task action(ActionContext, int)
         readonly Func<ActionContext, int, Task> do2Async;
 
-        internal ActionInfo(Work work, MethodInfo mi, bool async, bool subscript, int limit = 0) : base(mi.Name, mi)
+        internal ActionInfo(Work work, MethodInfo mi, bool async, bool subscript, int limit = 0) : base(
+            mi.Name == "default" ? string.Empty : mi.Name,
+            mi
+        )
         {
             this.work = work;
+            this.rpath = Key == string.Empty ? "./" : Key;
             this.async = async;
             this.subscript = subscript;
             this.limit = limit;
@@ -62,6 +69,8 @@ namespace Greatbone.Core
         }
 
         public Work Work => work;
+
+        public string RPath => rpath;
 
         public bool IsAsync => async;
 

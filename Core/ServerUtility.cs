@@ -17,10 +17,9 @@ namespace Greatbone.Core
 
         public static List<Service> Services => services;
 
-        public static bool TryCreate<S>(ServiceContext sc, bool load, object attach = null) where S : Service
+        public static bool TryCreate<S>(ServiceContext sc, bool load) where S : Service
         {
             // initialize work context
-            sc.Attach = attach;
             sc.Parent = null;
             sc.Level = 0;
             sc.Directory = sc.Name;

@@ -7,8 +7,8 @@ namespace Greatbone.Core
     /// </summary>
     public abstract class Nodule : IRollable
     {
-        // name as appeared in the uri path
-        readonly string name;
+        // name-derived identifier as appeared in URI
+        readonly string key;
 
         // name in uppercase
         readonly string upper;
@@ -22,16 +22,16 @@ namespace Greatbone.Core
         // pre- operation
         readonly IBefore before;
 
-        readonly IBeforeAsync beforeAsync;
+        readonly IBeforeAsync beforeasync;
 
         // post- operation
         readonly IAfter after;
 
-        readonly IAfterAsync afterAsync;
+        readonly IAfterAsync afterasync;
 
         internal Nodule(string name, ICustomAttributeProvider attrprov)
         {
-            this.name = name;
+            this.key = name.ToLower();
             this.upper = name.ToUpper();
 
             // either methodinfo or typeinfo
@@ -61,15 +61,15 @@ namespace Greatbone.Core
             {
                 var a = attrs[i];
                 if (a is IBefore) before = (IBefore) a;
-                if (a is IBeforeAsync) beforeAsync = (IBeforeAsync) a;
+                if (a is IBeforeAsync) beforeasync = (IBeforeAsync) a;
                 if (a is IAfter) after = (IAfter) a;
-                if (a is IAfterAsync) afterAsync = (IAfterAsync) a;
+                if (a is IAfterAsync) afterasync = (IAfterAsync) a;
             }
         }
 
         public abstract Service Service { get; }
 
-        public string Name => name;
+        public string Key => key;
 
         public UiAttribute Ui => ui;
 
@@ -77,11 +77,11 @@ namespace Greatbone.Core
 
         public IBefore Before => before;
 
-        public IBeforeAsync BeforeAsync => beforeAsync;
+        public IBeforeAsync BeforeAsync => beforeasync;
 
         public IAfter After => after;
 
-        public IAfterAsync AfterAsync => afterAsync;
+        public IAfterAsync AfterAsync => afterasync;
 
         public string Label => ui?.Label ?? upper;
 
@@ -105,7 +105,7 @@ namespace Greatbone.Core
 
         public override string ToString()
         {
-            return name;
+            return key;
         }
     }
 }

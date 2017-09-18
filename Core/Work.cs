@@ -19,7 +19,7 @@ namespace Greatbone.Core
         const int MaxNesting = 6;
 
         // underlying file directory name
-        const string _VAR_ = "VAR";
+        const string VAR = "var";
 
         // state-passing
         readonly WorkContext ctx;
@@ -33,7 +33,7 @@ namespace Greatbone.Core
         readonly ActionInfo @default;
 
         // actions with Ui attribute
-        readonly ActionInfo[] uiActions;
+        readonly ActionInfo[] uiactions;
 
         readonly int buttons;
 
@@ -41,7 +41,7 @@ namespace Greatbone.Core
         internal Roll<Work> works;
 
         // variable-key subwork, if any
-        internal Work varWork;
+        internal Work varwork;
 
         // to obtain a string key from a data object.
         protected Work(WorkContext wc) : base(wc.Name, null)
@@ -76,7 +76,7 @@ namespace Greatbone.Core
                 else continue;
 
                 actions.Add(ai);
-                if (ai.Name.Equals("default"))
+                if (ai.Key == string.Empty)
                 {
                     @default = ai;
                 }
@@ -95,7 +95,7 @@ namespace Greatbone.Core
                     if (ai.Ui.IsButton) btns++;
                 }
             }
-            uiActions = uias?.ToArray();
+            uiactions = uias?.ToArray();
             buttons = btns;
         }
 
@@ -107,7 +107,7 @@ namespace Greatbone.Core
         /// <typeparam name="W"></typeparam>
         /// <returns>The newly created and subwork instance.</returns>
         /// <exception cref="ServiceException">Thrown if error</exception>
-        public W Create<W>(string name, object attach = null) where W : Work
+        public W Create<W>(string name) where W : Work
         {
             if (Level >= MaxNesting)
             {
@@ -127,7 +127,6 @@ namespace Greatbone.Core
             }
             WorkContext wc = new WorkContext(name)
             {
-                Attach = attach,
                 Parent = this,
                 Level = Level + 1,
                 Directory = (Parent == null) ? name : Path.Combine(Parent.Directory, name),
@@ -143,12 +142,12 @@ namespace Greatbone.Core
         /// Create a variable-key subwork.
         /// </summary>
         /// <param name="keyer"></param>
-        /// <param name="attach">an attachment object</param>
+        /// <param name="labeller">an attachment object</param>
         /// <typeparam name="W"></typeparam>
         /// <typeparam name="K"></typeparam>
         /// <returns>The newly created subwork instance.</returns>
         /// <exception cref="ServiceException">Thrown if error</exception>
-        public W CreateVar<W, K>(Func<IData, K> keyer = null, object attach = null) where W : Work where K : IComparable<K>, IEquatable<K>
+        public W CreateVar<W, K>(Func<IData, K> keyer = null, Func<IData, string> labeller = null) where W : Work where K : IEquatable<K>
         {
             if (Level >= MaxNesting)
             {
@@ -162,24 +161,24 @@ namespace Greatbone.Core
             {
                 throw new ServiceException(typ + " no valid constructor");
             }
-            WorkContext wc = new WorkContext(_VAR_)
+            WorkContext wc = new WorkContext(VAR)
             {
                 Keyer = keyer,
-                Attach = attach,
+                Labeller = labeller,
                 Parent = this,
                 IsVar = true,
                 Level = Level + 1,
-                Directory = (Parent == null) ? _VAR_ : Path.Combine(Parent.Directory, _VAR_),
+                Directory = (Parent == null) ? VAR : Path.Combine(Parent.Directory, VAR),
                 Service = Service
             };
             W work = (W) ci.Invoke(new object[] {wc});
-            varWork = work;
+            varwork = work;
             return work;
         }
 
         public Roll<ActionInfo> Actions => actions;
 
-        public ActionInfo[] UiActions => uiActions;
+        public ActionInfo[] UiActions => uiactions;
 
         public int Buttons => buttons;
 
@@ -187,7 +186,7 @@ namespace Greatbone.Core
 
         public Roll<Work> Works => works;
 
-        public Work VarWork => varWork;
+        public Work VarWork => varwork;
 
         public string Directory => ctx.Directory;
 
@@ -201,13 +200,17 @@ namespace Greatbone.Core
 
         public bool HasKeyer => ctx.Keyer != null;
 
-        public string ObtainVarKey(IData obj)
+        public bool HasLabeller => ctx.Labeller != null;
+
+        public string ObtainVarKey(IData obj, out string label)
         {
             Delegate keyer = ctx.Keyer;
             if (keyer is Func<IData, string>)
             {
+                label = ctx.Labeller?.Invoke(obj);
                 return ((Func<IData, string>) keyer)(obj);
             }
+            label = null;
             return null;
         }
 
@@ -230,13 +233,13 @@ namespace Greatbone.Core
 
         internal void Describe(XmlContent cont)
         {
-            cont.ELEM(Name,
+            cont.ELEM(Key,
                 delegate
                 {
                     for (int i = 0; i < Actions.Count; i++)
                     {
                         ActionInfo act = Actions[i];
-                        cont.Put(act.Name, "");
+                        cont.Put(act.Key, "");
                     }
                 },
                 delegate
@@ -249,7 +252,7 @@ namespace Greatbone.Core
                             wrk.Describe(cont);
                         }
                     }
-                    varWork?.Describe(cont);
+                    varwork?.Describe(cont);
                 });
         }
 
@@ -279,22 +282,23 @@ namespace Greatbone.Core
             Work work;
             if (works != null && works.TryGet(key, out work)) // if child
             {
-                ac.Chain(key, work);
+                ac.Chain(key, null, work);
                 return work.Resolve(ref relative, ac);
             }
-            if (varWork != null) // if variable-key sub
+            if (varwork != null) // if variable-key sub
             {
                 IData prin = ac.Principal;
-                if (key.Length == 0 && varWork.HasKeyer) // resolve shortcut
+                string name = null;
+                if (key.Length == 0 && varwork.HasKeyer) // resolve shortcut
                 {
                     if (prin == null) throw AuthorizeEx;
-                    if ((key = varWork.ObtainVarKey(prin)) == null)
+                    if ((key = varwork.ObtainVarKey(prin, out name)) == null)
                     {
                         throw AuthorizeEx;
                     }
                 }
-                ac.Chain(key, varWork);
-                return varWork.Resolve(ref relative, ac);
+                ac.Chain(key, name, varwork);
+                return varwork.Resolve(ref relative, ac);
             }
             return null;
         }
@@ -428,7 +432,7 @@ namespace Greatbone.Core
 
             StaticContent cont = new StaticContent(bytes, bytes.Length)
             {
-                Name = filename,
+                Key = filename,
                 Type = ctyp,
                 Modified = modified,
                 GZip = gzip

@@ -5,6 +5,6 @@ namespace Greatbone.Core
     ///
     public interface IRollable
     {
-        string Name { get; }
+        string Key { get; }
     }
 }

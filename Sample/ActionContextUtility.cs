@@ -62,7 +62,7 @@ namespace Greatbone.Sample
             h.Add("<div class=\"tabs-panel is-active\" id=\"paneltop\">");
             h.Add("<div class=\"top-bar\">");
             h.Add("<div class=\"top-bar-left\">");
-            h.TRIGGERS(work.UiActions, ac);
+            h.TRIGGERS(ac, work.UiActions);
             h.Add("</div>");
             h.Add("<div class=\"top-bar-right\">");
             h.Add("<span class=\"button primary hollow\">");
@@ -86,7 +86,7 @@ namespace Greatbone.Sample
                     h.Add(i);
                     h.Add("\">");
                     h.Add("<iframe id=\"");
-                    h.Add(sub.Name);
+                    h.Add(sub.Key);
                     h.Add("/\" frameborder=\"0\" style=\"width:100%; height:100%;\"></iframe>");
                     h.Add(" </div>");
                 }
@@ -197,13 +197,13 @@ namespace Greatbone.Sample
         public static void GiveGridPage<D>(this ActionContext ac, int status, D[] arr, int proj = 0x00ff, bool? @public = null, int maxage = 60) where D : IData
         {
             Work work = ac.Work;
-            ac.GivePage(status, main => { main.GRID(ac, work.varWork, arr, proj); }, @public, maxage);
+            ac.GivePage(status, main => { main.GRID(ac, work.varwork, arr, proj); }, @public, maxage);
         }
 
         public static void GiveTablePage<D>(this ActionContext ac, int status, D[] arr, int proj = 0x00ff, bool? @public = null, int maxage = 60) where D : IData
         {
             Work work = ac.Work;
-            ac.GivePage(status, main => { main.TABLE(ac, work.varWork, arr, proj); }, @public, maxage);
+            ac.GivePage(status, main => { main.TABLE(ac, work.varwork, arr, proj); }, @public, maxage);
         }
     }
 }

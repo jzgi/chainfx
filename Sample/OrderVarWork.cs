@@ -22,7 +22,7 @@ namespace Greatbone.Sample
 
         public bool NoAddr(object obj) => string.IsNullOrEmpty(((Order) obj).addr);
 
-        [Ui("填写收货地址", Mode = UiMode.ButtonShow, Asker = nameof(NoAddr))]
+        [Ui("填写收货地址", Mode = UiMode.ButtonShow)]
         public async Task addr(ActionContext ac)
         {
             string wx = ac[typeof(UserVarWork)];
@@ -119,7 +119,7 @@ namespace Greatbone.Sample
             }
         }
 
-        [Ui("付款", "确定要通过微信付款吗?一经确认，该单金额将不能作更改。", Mode = UiMode.AnchorScript, Bold = true, Disabler = nameof(NoAddr))]
+        [Ui("付款", "确定要通过微信付款吗?一经确认，该单金额将不能作更改。", Mode = UiMode.AnchorScript, Bold = true)]
         public async Task prepay(ActionContext ac)
         {
             string wx = ac[typeof(UserVarWork)];
@@ -235,7 +235,7 @@ namespace Greatbone.Sample
 
         public bool NoAbortion(object obj) => string.IsNullOrEmpty(((Order) obj).abortly);
 
-        [Ui("同意撤销/退款", "同意撤销此单，实收金额退回给买家", Mode = UiMode.ButtonShow, Disabler = nameof(NoAbortion))]
+        [Ui("同意撤销/退款", "同意撤销此单，实收金额退回给买家", Mode = UiMode.ButtonShow)]
         public async Task abort(ActionContext ac)
         {
             long id = ac[this];
@@ -279,7 +279,7 @@ namespace Greatbone.Sample
 
         public bool NotAborted(object obj) => ((Order) obj).status != Order.ABORTED;
 
-        [Ui("退款情况核查", "实时核查退款到账情况", Mode = UiMode.AnchorOpen, Disabler = nameof(NotAborted))]
+        [Ui("退款情况核查", "实时核查退款到账情况", Mode = UiMode.AnchorOpen)]
         public async Task refundq(ActionContext ac)
         {
             long id = ac[this];

@@ -1,4 +1,3 @@
-using System;
 using System.Threading.Tasks;
 using Greatbone.Core;
 
@@ -12,31 +11,26 @@ namespace Greatbone.Sample
         }
     }
 
-    public class ResolveCityAttribute : Attribute, IBefore
-    {
-        public bool Do(ActionContext ac)
-        {
-            string city = ac.Query[nameof(city)];
-            if (city == null)
-            {
-                city = ((User) ac.Principal).city;
-                ac.AddParam(nameof(city), city);
-            }
-            return true;
-        }
-    }
-
-
-    [User]
     public class PubShopWork : ShopWork<PubShopVarWork>
     {
         public PubShopWork(WorkContext wc) : base(wc)
         {
         }
 
-        [ResolveCity]
         public void @default(ActionContext ac)
         {
+            double x = ac.Query[nameof(x)];
+            double y = ac.Query[nameof(y)];
+            if (x == 0 || y == 0)
+            {
+                HtmlContent h = new HtmlContent(true);
+                h.T("<html><head><script>");
+                h.T("navigator.geolocation.getCurrentPosition(function(p) {window.location.href = '/shop/?x=' + p.coords.latitude + '&y=' + p.coords.longitude;});");
+                h.T("</script></head></html>");
+                ac.Give(200, h);
+                return;
+            }
+
             string city = ac.Query[nameof(city)];
             using (var dc = ac.NewDbContext())
             {

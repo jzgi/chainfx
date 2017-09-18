@@ -38,7 +38,7 @@ namespace Greatbone.Core
             elements = new Event[CAPACITY];
         }
 
-        public string Name => name;
+        public string Key => name;
 
         public void Poll(ActionContext ac)
         {
@@ -161,13 +161,13 @@ namespace Greatbone.Core
                 for (int i = 0; i < clients.Count; i++)
                 {
                     Client cli = clients[i];
-                    if (dc.Query1("SELECT evtid FROM evtu WHERE peerid = @1", p => p.Set(cli.Name)))
+                    if (dc.Query1("SELECT evtid FROM evtu WHERE peerid = @1", p => p.Set(cli.Key)))
                     {
                         dc.Let(out cli.evtid);
                     }
                     else
                     {
-                        dc.Execute("INSERT INTO evtu (peerid, evtid) VALUES (@1, @2)", p => p.Set(cli.Name).Set(cli.evtid));
+                        dc.Execute("INSERT INTO evtu (peerid, evtid) VALUES (@1, @2)", p => p.Set(cli.Key).Set(cli.evtid));
                     }
                 }
             }

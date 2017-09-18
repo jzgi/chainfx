@@ -241,7 +241,7 @@ namespace Greatbone.Core
                     for (int i = 0; i < count; i++)
                     {
                         JMbr e = jo[i];
-                        dict.Add(e.Name, e);
+                        dict.Add(e.Key, e);
                     }
                     v = dict;
                     return true;
@@ -390,31 +390,31 @@ namespace Greatbone.Core
                 JType t = mbr.type;
                 if (t == JType.Array)
                 {
-                    o.Put(mbr.Name, (JArr) mbr);
+                    o.Put(mbr.Key, (JArr) mbr);
                 }
                 else if (t == JType.Object)
                 {
-                    o.Put(mbr.Name, (JObj) mbr);
+                    o.Put(mbr.Key, (JObj) mbr);
                 }
                 else if (t == JType.String)
                 {
-                    o.Put(mbr.Name, (string) mbr);
+                    o.Put(mbr.Key, (string) mbr);
                 }
                 else if (t == JType.Number)
                 {
-                    o.Put(mbr.Name, (JNumber) mbr);
+                    o.Put(mbr.Key, (JNumber) mbr);
                 }
                 else if (t == JType.True)
                 {
-                    o.Put(mbr.Name, true);
+                    o.Put(mbr.Key, true);
                 }
                 else if (t == JType.False)
                 {
-                    o.Put(mbr.Name, false);
+                    o.Put(mbr.Key, false);
                 }
                 else if (t == JType.Null)
                 {
-                    o.PutNull(mbr.Name);
+                    o.PutNull(mbr.Key);
                 }
             }
         }

@@ -25,6 +25,11 @@ namespace Greatbone.Sample
             o.Put(nameof(distrs), distrs);
         }
 
+        public bool Contains(double x, double y)
+        {
+            return true;
+        }
+
         public override string ToString()
         {
             return name;
