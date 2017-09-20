@@ -196,7 +196,7 @@ namespace Greatbone.Sample
             {
                 var f = await ac.ReadAsync<Form>();
                 notif = f[nameof(notif)];
-                List<Dual<long, string>> rows = new List<Dual<long, string>>(16);
+                List<(long, string)> rows = new List<(long, string)>(16);
                 using (var dc = ac.NewDbContext())
                 {
                     dc.Sql("SELECT id, wx FROM orders WHERE id")._IN_(key);
@@ -207,15 +207,15 @@ namespace Greatbone.Sample
                             long id;
                             string wx;
                             dc.Let(out id).Let(out wx);
-                            rows.Add(new Dual<long, string>(id, wx));
+                            rows.Add((id, wx));
                         }
                     }
                 }
 
                 for (int i = 0; i < rows.Count; i++)
                 {
-                    Dual<long, string> row = rows[i];
-                    await WeiXinUtility.PostSendAsync(row.B, "【商家通知】" + NOTIFS[notif] + "（订单编号：" + row.A + "）");
+                    (long, string) row = rows[i];
+                    await WeiXinUtility.PostSendAsync(row.Item2, "【商家通知】" + NOTIFS[notif] + "（订单编号：" + row.Item1 + "）");
                 }
 
                 ac.GivePane(200);
@@ -256,7 +256,7 @@ namespace Greatbone.Sample
                 var duo = id_name.ToDual<string, string>();
                 using (var dc = ac.NewDbContext())
                 {
-                    dc.Execute(@"UPDATE shops SET coshopid = @1 WHERE id = @2", p => p.Set(duo.A).Set(shopid));
+                    dc.Execute(@"UPDATE shops SET coshopid = @1 WHERE id = @2", p => p.Set(duo.Item1).Set(shopid));
                 }
                 ac.GivePane(200);
             }

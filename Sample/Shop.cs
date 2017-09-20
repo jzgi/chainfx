@@ -33,6 +33,9 @@ namespace Greatbone.Sample
         internal string mgrid; // set by admin
         internal string mgrwx;
         internal string mgr;
+
+        internal Target[] targets;
+        
         internal short status;
 
         public void Read(IDataInput i, int proj = 0x00ff)
@@ -94,5 +97,13 @@ namespace Greatbone.Sample
             }
             o.Put(nameof(status), status, "状态", STATUS);
         }
+    }
+
+
+    public struct Target
+    {
+        internal string name;
+
+        internal double x0, y0, x1, y1;
     }
 }

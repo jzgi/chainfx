@@ -29,6 +29,7 @@ namespace Greatbone.Sample
         internal short min; // minimal ordered
         internal short step;
         internal short qty;
+        internal Ingre[] ingres;
         internal short status;
 
         public void Read(IDataInput i, int proj = 0x00ff)
@@ -76,5 +77,12 @@ namespace Greatbone.Sample
             }
             o.Put((string) nameof(status), status, (string) "状态", STATUS);
         }
+    }
+
+    public struct Ingre
+    {
+        internal string name;
+
+        internal short grams;
     }
 }

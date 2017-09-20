@@ -382,7 +382,7 @@ namespace Greatbone.Core
         }
 
 
-        public static Dual<A, B> ToDual<A, B>(this string str)
+        public static (A, B) ToDual<A, B>(this string str)
         {
             string a = null;
             string b = null;
@@ -396,10 +396,10 @@ namespace Greatbone.Core
             {
                 a = str;
             }
-            return new Dual<A, B>(a.ToValue<A>(), b.ToValue<B>());
+            return (a.ToValue<A>(), b.ToValue<B>());
         }
 
-        public static Triple<A, B, C> ToTriple<A, B, C>(this string str)
+        public static (A, B, C) ToTriple<A, B, C>(this string str)
         {
             string a = null;
             string b = null;
@@ -423,7 +423,7 @@ namespace Greatbone.Core
             {
                 a = str;
             }
-            return new Triple<A, B, C>(a.ToValue<A>(), b.ToValue<B>(), c.ToValue<C>());
+            return (a.ToValue<A>(), b.ToValue<B>(), c.ToValue<C>());
         }
 
         public static V ToValue<V>(this string str)

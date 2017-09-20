@@ -45,6 +45,21 @@ namespace Greatbone.Core
             return this;
         }
 
+        public DbSql @params(sbyte n)
+        {
+            for (int i = 0; i < n; i++)
+            {
+                if (i > 0)
+                {
+                    Add(',');
+                    Add(' ');
+                }
+                Add('@');
+                Add(i);
+            }
+            return this;
+        }
+
         public DbSql setlst(IData obj, int proj = 0x00ff)
         {
             ctx = CTX_SETLIST;

@@ -307,7 +307,7 @@ namespace Greatbone.Sample
                 using (var dc = ac.NewDbContext())
                 {
                     dc.Execute(@"UPDATE shops SET mgrid = @1, mgrwx = @2, mgr = @3 WHERE id = @4;
-                        UPDATE users SET oprat = @4, opr = @5 WHERE wx = @2;", p => p.Set(tri.A).Set(tri.B).Set(tri.C).Set(shopid).Set(User.MANAGER));
+                        UPDATE users SET oprat = @4, opr = @5 WHERE wx = @2;", p => p.Set(tri.Item1).Set(tri.Item2).Set(tri.Item3).Set(shopid).Set(User.MANAGER));
                 }
                 ac.GivePane(200);
             }
