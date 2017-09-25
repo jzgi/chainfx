@@ -94,33 +94,21 @@ namespace Greatbone.Sample
             ac.Give(303);
         }
 
-        public static async Task<Accessor> GetAccessorAsync(string code)
+        public static async Task<(string access_token, string openid)> GetAccessorAsync(string code)
         {
             string url = "/sns/oauth2/access_token?appid=" + appid + "&secret=" + appsecret + "&code=" + code + "&grant_type=authorization_code";
             JObj jo = await WeiXin.GetAsync<JObj>(null, url);
-            if (jo == null) return default(Accessor);
-
+            if (jo == null)
+            {
+                return default((string, string));
+            }
             string access_token = jo[nameof(access_token)];
             if (access_token == null)
             {
-                return default(Accessor);
+                return default((string, string));
             }
             string openid = jo[nameof(openid)];
-
-            return new Accessor(access_token, openid);
-        }
-
-        public struct Accessor
-        {
-            internal readonly string access_token;
-
-            internal readonly string openid;
-
-            internal Accessor(string access_token, string openid)
-            {
-                this.access_token = access_token;
-                this.openid = openid;
-            }
+            return (access_token, openid);
         }
 
         public static async Task<User> GetUserInfoAsync(string access_token, string openid)
@@ -154,7 +142,6 @@ namespace Greatbone.Sample
         public static async Task PostSendAsync(string openid, string text)
         {
             var cnt = new JsonContent(true);
-
             cnt.OBJ(x =>
             {
                 x.Put("touser", openid);

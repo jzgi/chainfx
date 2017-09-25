@@ -7,7 +7,7 @@ namespace Greatbone.Sample
     {
         protected ShopWork(WorkContext wc) : base(wc)
         {
-            CreateVar<V, string>(obj => ((Shop) obj).id);
+            CreateVar<V, short>(obj => ((Shop) obj).id);
         }
     }
 
@@ -17,21 +17,65 @@ namespace Greatbone.Sample
         {
         }
 
+        /// <summary>
+        /// Returns either the city home page, or the geolocator page.
+        /// </summary>
+        /// <param name="city">name of the located city, or empty</param>
+        /// <param name="area">name of the located area, or empty</param>
         public void @default(ActionContext ac)
         {
-            double x = ac.Query[nameof(x)];
-            double y = ac.Query[nameof(y)];
-            if (x == 0 || y == 0)
+            string city = ac.Query[nameof(city)];
+            string area = ac.Query[nameof(area)];
+            if (city == null)
             {
                 HtmlContent h = new HtmlContent(true);
                 h.T("<html><head><script>");
+
+                h.T("var cities = [");
+                bool bgn = false;
+                foreach (var pair in ((CareService) Service).Cities)
+                {
+                    var c = pair.Value;
+                    if (bgn)
+                    {
+                        h.T(",");
+                    }
+                    h.T("{");
+                    h.T("name:\"").T(c.name).T("\",");
+                    h.T("x1:").T(c.x1).T(",");
+                    h.T("y1:").T(c.y1).T(",");
+                    h.T("x2:").T(c.x2).T(",");
+                    h.T("y2:").T(c.y2).T(",");
+                    h.T("\"areas\":[");
+                    if (c.areas != null)
+                    {
+                        for (int i = 0; i < c.areas.Length; i++)
+                        {
+                            if (i > 0)
+                            {
+                                h.T(",");
+                            }
+                            var a = c.areas[i];
+                            h.T("{");
+                            h.T("name:\"").T(a.name).T("\",");
+                            h.T("x1:").T(a.x1).T(",");
+                            h.T("y1:").T(a.y1).T(",");
+                            h.T("x2:").T(a.x2).T(",");
+                            h.T("y2:").T(a.y2);
+                            h.T("}");
+                        }
+                    }
+                    h.T("]}");
+                    bgn = true;
+                }
+                h.T("];");
+
                 h.T("navigator.geolocation.getCurrentPosition(function(p) {window.location.href = '/shop/?x=' + p.coords.latitude + '&y=' + p.coords.longitude;});");
                 h.T("</script></head></html>");
                 ac.Give(200, h);
-                return;
+                return; // give the geolocating page
             }
 
-            string city = ac.Query[nameof(city)];
             using (var dc = ac.NewDbContext())
             {
                 ac.GivePage(200, m =>
@@ -71,7 +115,7 @@ namespace Greatbone.Sample
 
                             m.T("<div class=\"row card align-middle\">");
                             m.T("<div class=\"small-8 columns\">");
-                            m.T("<h3><a href=\"").T(shop.id).T("/\">").T(shop.name).T("</a></h3>");
+                            m.T("<h3><a href=\"").T(shop.id).T("/?city=").T(city).T("\">").T(shop.name).T("</a></h3>");
                             m.T("<p>").T(shop.city).T(shop.addr).T("</p>");
                             m.T("</div>");
                             m.T("<div class=\"small-4 columns\"><a href=\"").T(shop.id).T("/\"><span></span><img src=\"").T(shop.id).T("/icon\" alt=\"\" class=\"thumbnail circle\"></a></div>");
@@ -84,7 +128,7 @@ namespace Greatbone.Sample
                         m.T("<p>").T(city).T("目前没有商家</p>");
                         m.T("</div>");
                     }
-                }, @public: true, maxage: 60 * 5);
+                }, true, 60 * 5);
             }
         }
     }
@@ -125,11 +169,9 @@ namespace Greatbone.Sample
                 ac.GivePane(200, m =>
                 {
                     m.FORM_();
-                    m.TEXT(nameof(o.id), o.id, "商家编号", max: 6, min: 6, required: true);
                     m.TEXT(nameof(o.name), o.name, "商家名称", max: 10, required: true);
                     m.TEXT(nameof(o.city), o.city, "所在城市", opt: ((CareService) Service).Cities, @readonly: true);
                     m.TEXT(nameof(o.addr), o.addr, label: "营业地址");
-                    m.TEXT(nameof(o.lic), o.lic, "工商登记", max: 20, min: 11, required: true);
                     m._FORM();
                 });
             }
@@ -139,7 +181,7 @@ namespace Greatbone.Sample
                 o.city = city;
                 using (var dc = ac.NewDbContext())
                 {
-                    if (dc.Execute("INSERT INTO shops (id, name, city, distr, lic) VALUES (@1, @2, @3, @4, @5)", p => p.Set(o.id).Set(o.name).Set(city).Set(o.addr).Set(o.lic)) > 0)
+                    if (dc.Execute("INSERT INTO shops (id, name, city, distr, lic) VALUES (@1, @2, @3, @4, @5)", p => p.Set(o.id).Set(o.name).Set(city).Set(o.addr)) > 0)
                     {
                         ac.GivePane(200); // created
                     }

@@ -24,9 +24,9 @@ namespace Greatbone.Sample
         // status
         static readonly Map<short, string> STATUS = new Map<short, string>
         {
-            [CREATED] = "购物车/待付款",
-            [ACCEPTED] = "已接受/在处理",
-            [ABORTED] = "已撤销/关闭",
+            [CREATED] = "购物车",
+            [ACCEPTED] = "已付款",
+            [ABORTED] = "已撤单",
             [SHIPPED] = "买家已确收/未清算",
             [RECKONED] = "平台已清算/完成",
         };
@@ -34,13 +34,13 @@ namespace Greatbone.Sample
 
         internal long id;
         internal string shopid;
-        internal string shopname; // shop name
-        internal string wx; // customer weixin openid
+        internal string shopname;
+        internal string wx; // weixin openid
         internal string name; // customer name
         internal string tel;
         internal string city;
         internal string addr; // address
-        internal Detail[] details;
+        internal OrderItem[] items;
         internal decimal total; // receivable
         internal DateTime created; // time created
 
@@ -72,7 +72,7 @@ namespace Greatbone.Sample
                 i.Get(nameof(tel), ref tel);
                 if ((proj & BASIC_DETAIL) == BASIC_DETAIL)
                 {
-                    i.Get(nameof(details), ref details);
+                    i.Get(nameof(items), ref items);
                 }
                 i.Get(nameof(total), ref total);
                 i.Get(nameof(created), ref created);
@@ -96,7 +96,7 @@ namespace Greatbone.Sample
         {
             if ((proj & ID) == ID)
             {
-                o.Put(nameof(id), id, "订单编号");
+                o.Put(nameof(id), id, "单号");
             }
             if ((proj & BASIC) == BASIC)
             {
@@ -117,14 +117,14 @@ namespace Greatbone.Sample
                 o.Put(nameof(tel), tel, "联系电话");
                 if ((proj & BASIC_DETAIL) == BASIC_DETAIL)
                 {
-                    o.Put(nameof(details), details);
+                    o.Put(nameof(items), items);
                 }
                 o.Put(nameof(note), note, "附加说明");
-                o.Put(nameof(total), total, "应付金额", '¥');
+                o.Put(nameof(total), total, "应付金额", 'y');
             }
             if ((proj & CASH) == CASH)
             {
-                o.Put(nameof(cash), cash, "实收金额", '¥');
+                o.Put(nameof(cash), cash, "实收金额", 'y');
             }
             if ((proj & FLOW) == FLOW)
             {
@@ -140,29 +140,29 @@ namespace Greatbone.Sample
 
         public void AddItem(string item, short qty, string unit, decimal price)
         {
-            if (details == null)
+            if (items == null)
             {
-                details = new[] {new Detail() {name = item, qty = qty, unit = unit, price = price}};
+                items = new[] {new OrderItem() {name = item, qty = qty, unit = unit, price = price}};
             }
-            var orderln = details.Find(o => o.name.Equals(item));
+            var orderln = items.Find(o => o.name.Equals(item));
             if (orderln != null)
             {
                 orderln.qty += qty;
             }
             else
             {
-                details = details.AddOf(new Detail() {name = item, qty = qty, unit = unit, price = price});
+                items = items.AddOf(new OrderItem() {name = item, qty = qty, unit = unit, price = price});
             }
         }
 
         public void Sum()
         {
-            if (details != null)
+            if (items != null)
             {
                 decimal sum = 0;
-                for (int i = 0; i < details.Length; i++)
+                for (int i = 0; i < items.Length; i++)
                 {
-                    sum += details[i].qty * details[i].price;
+                    sum += items[i].qty * items[i].price;
                 }
                 total = sum;
             }
@@ -170,20 +170,20 @@ namespace Greatbone.Sample
 
         public void SetLineQty(string name, short qty)
         {
-            var ln = details.Find(x => x.name == name);
+            var ln = items.Find(x => x.name == name);
             if (ln != null)
             {
                 ln.qty = qty;
             }
         }
 
-        public void RemoveLine(string name)
+        public void RemoveDetail(string name)
         {
-            details = details.RemovedOf(x => x.name == name);
+            items = items.RemovedOf(x => x.name == name);
         }
     }
 
-    public class Detail : IData
+    public class OrderItem : IData
     {
         internal string name;
         internal short qty;

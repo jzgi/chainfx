@@ -8,6 +8,27 @@ namespace Greatbone.Core
     /// </summary>
     public class HtmlContent : DynamicContent, IDataOutput<HtmlContent>
     {
+        static Action<HtmlContent, int, char> intp;
+
+        static Action<HtmlContent, decimal, char> decimalp;
+
+        static Action<HtmlContent, string, char> stringp;
+
+        public static void IntPlug(Action<HtmlContent, int, char> plug)
+        {
+            intp = plug;
+        }
+
+        public static void DecimalPlug(Action<HtmlContent, decimal, char> plug)
+        {
+            decimalp = plug;
+        }
+
+        public static void StringPlug(Action<HtmlContent, string, char> plug)
+        {
+            stringp = plug;
+        }
+
         internal const sbyte
             TABLE_THEAD = 1,
             TABLE_TBODY = 2,
@@ -49,7 +70,6 @@ namespace Greatbone.Core
 
         ///
         public override string Type => "text/html; charset=utf-8";
-
 
         void AddLabel(string label, string alt)
         {
@@ -138,6 +158,12 @@ namespace Greatbone.Core
         }
 
         public HtmlContent T(decimal v)
+        {
+            Add(v);
+            return this;
+        }
+
+        public HtmlContent T(double v)
         {
             Add(v);
             return this;
@@ -529,7 +555,7 @@ namespace Greatbone.Core
             return this;
         }
 
-        public HtmlContent GRID<D>(ActionContext formctx, Work varWork, D[] arr, int proj = 0x00ff) where D : IData
+        public HtmlContent GRID<D>(ActionContext formctx, Work varwork, D[] arr, int proj = 0x00ff) where D : IData
         {
             bool checks = false; // to render checkboxes?
             if (formctx != null)
@@ -543,7 +569,7 @@ namespace Greatbone.Core
             {
                 ++level;
                 chain[level].node = GRID_DIV;
-                chain[level].varwork = varWork;
+                chain[level].varwork = varwork;
 
                 Add("<div class=\"row expanded small-up-1 medium-up-2 large-up-3 xlarge-up-4\">");
                 for (int i = 0; i < arr.Length; i++)
@@ -560,7 +586,7 @@ namespace Greatbone.Core
                         Add("</div>");
                         Add("<div class=\"small-9 columns\" style=\"text-align: right\">");
                         Add("<input name=\"key\" type=\"checkbox\" style=\"margin: 0 0.5rem\" value=\"");
-                        varWork?.OutputVarKey(obj, this);
+                        varwork?.OutputVarKey(obj, this);
                         Add("\">");
                         Add("</div>");
                         Add("</div>");
@@ -569,7 +595,7 @@ namespace Greatbone.Core
                     obj.Write(this, proj);
 
                     // output action triggers
-                    ActionInfo[] ais = varWork?.UiActions;
+                    ActionInfo[] ais = varwork?.UiActions;
                     if (ais != null)
                     {
                         Add("<div style=\"text-align: right; border-top: 1px solid silver\">");
@@ -654,7 +680,7 @@ namespace Greatbone.Core
                 if (ui.IsAnchor)
                 {
                     Add("<a class=\"button");
-                    Add(ac.Doer == ai ? " hollow" : " clear");
+                    Add(ac?.Doer == ai ? " hollow" : " clear");
                     Add(" primary\" href=\"");
                     for (int lvl = 0; lvl <= level; lvl++)
                     {
@@ -1162,6 +1188,48 @@ namespace Greatbone.Core
         }
 
         public HtmlContent NUMBER(string name, decimal v, string label = null, string tip = null, decimal max = 0, decimal min = 0, decimal step = 0, bool @readonly = false, bool required = false)
+        {
+            Add("<label>");
+            AddLabel(label, name);
+            Add("<input type=\"number\" name=\"");
+            Add(name);
+            Add("\" value=\"");
+            Add(v);
+            Add("\"");
+
+            if (tip != null)
+            {
+                Add(" placeholder=\"");
+                Add(tip);
+                Add("\"");
+            }
+            if (max != 0)
+            {
+                Add(" max=\"");
+                Add(max);
+                Add("\"");
+            }
+            if (min != 0)
+            {
+                Add(" min=\"");
+                Add(min);
+                Add("\"");
+            }
+
+            Add(" step=\"");
+            if (step > 0) Add(step);
+            else Add("any");
+            Add("\"");
+
+            if (@readonly) Add(" readonly");
+            if (required) Add(" required");
+
+            Add(">");
+            Add("</label>");
+            return this;
+        }
+
+        public HtmlContent NUMBER(string name, double v, string label = null, string tip = null, double max = 0, double min = 0, double step = 0, bool @readonly = false, bool required = false)
         {
             Add("<label>");
             AddLabel(label, name);
@@ -2010,7 +2078,7 @@ namespace Greatbone.Core
             return this;
         }
 
-        public HtmlContent Put(string name, decimal value, string label = null, char format = '\0')
+        public HtmlContent Put(string name, decimal value, string label = null, char fmt = '\0')
         {
             switch (chain[level].node)
             {
@@ -2026,16 +2094,8 @@ namespace Greatbone.Core
                     if (!chain[level].group)
                     {
                         Add("<td style=\"text-align: right;\">");
-                        if (format == '¥')
-                        {
-                            Add("<strong class=\"money\">&yen;");
-                            Add(value);
-                            Add("</strong>");
-                        }
-                        else
-                        {
-                            Add(value);
-                        }
+                        if (fmt != 0 && decimalp != null) decimalp(this, value, fmt);
+                        else Add(value);
                         Add("</td>");
                     }
                     else
@@ -2052,16 +2112,8 @@ namespace Greatbone.Core
                         AddLabel(label, name);
                         Add("</div>");
                         Add("<div class=\"small-9 columns\">");
-                        if (format == '¥')
-                        {
-                            Add("<strong class=\"money\">&yen;");
-                            Add(value);
-                            Add("</strong>");
-                        }
-                        else
-                        {
-                            Add(value);
-                        }
+                        if (fmt != 0 && decimalp != null) decimalp(this, value, fmt);
+                        else Add(value);
                         Add("</div>");
                         Add("</div>");
                     }

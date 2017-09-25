@@ -8,7 +8,7 @@ using System.Threading.Tasks;
 namespace Greatbone.Core
 {
     /// <summary>
-    /// A binary-only static content of certain mime type.
+    /// A binary static content of certain mime type.
     /// </summary>
     public class StaticContent : HttpContent, IRollable, IContent
     {

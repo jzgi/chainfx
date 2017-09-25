@@ -25,7 +25,7 @@ namespace Greatbone.Sample
 
             bool remove = false;
             string shopid;
-            Detail[] detail;
+            OrderItem[] detail;
 
             if (ac.GET)
             {
@@ -101,12 +101,12 @@ namespace Greatbone.Sample
                     if (dc.Query1("SELECT shopid, detail, total FROM orders WHERE id = @1", p => p.Set(id)))
                     {
                         var o = new Order();
-                        dc.Let(out o.shopid).Let<Detail>(out o.details).Let(out o.total);
+                        dc.Let(out o.shopid).Let<OrderItem>(out o.items).Let(out o.total);
 
                         if (remove)
                         {
-                            o.RemoveLine(name);
-                            if (o.details == null) // delete the whole record if cart is empty
+                            o.RemoveDetail(name);
+                            if (o.items == null) // delete the whole record if cart is empty
                             {
                                 dc.Execute("DELETE FROM orders WHERE id = @1", p => p.Set(id));
                                 goto Redirect;
@@ -117,7 +117,7 @@ namespace Greatbone.Sample
                             o.SetLineQty(name, qty);
                         }
                         o.Sum();
-                        dc.Execute("UPDATE orders SET detail = @1, total = @2 WHERE id = @3", p => p.Set(o.details).Set(o.total).Set(id));
+                        dc.Execute("UPDATE orders SET detail = @1, total = @2 WHERE id = @3", p => p.Set(o.items).Set(o.total).Set(id));
                     }
                 }
                 Redirect:

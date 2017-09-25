@@ -23,14 +23,14 @@ namespace Greatbone.Sample
 
         public void @default(ActionContext ac)
         {
-            string shopid = ac[typeof(ShopVarWork)];
+            short shopid = ac[typeof(ShopVarWork)];
             using (var dc = ac.NewDbContext())
             {
-                const int proj = Item.BASIC_SHOPID;
+                const int proj = Item.SHOPID;
                 dc.Sql("SELECT ").columnlst(Item.Empty, proj)._("FROM items WHERE shopid = @1");
                 if (dc.Query(p => p.Set(shopid)))
                 {
-                    ac.GiveGridPage(200, dc.ToArray<Item>(proj), Item.BASIC);
+                    ac.GiveGridPage(200, dc.ToArray<Item>(proj));
                 }
                 else
                 {
@@ -54,7 +54,7 @@ namespace Greatbone.Sample
                     m.NUMBER(nameof(o.price), o.price, label: "单价", required: true);
                     m.NUMBER(nameof(o.min), o.min, label: "起订数量", min: (short) 1);
                     m.NUMBER(nameof(o.step), o.step, label: "递增因子", min: (short) 1);
-                    m.NUMBER(nameof(o.qty), o.qty, label: "本批供应量");
+                    m.NUMBER(nameof(o.max), o.max, label: "本批供应量");
                     m.SELECT(nameof(o.status), o.status, Item.STATUS);
 
                     m._FORM();
@@ -66,7 +66,7 @@ namespace Greatbone.Sample
                 o.shopid = ac[typeof(ShopVarWork)];
                 using (var dc = Service.NewDbContext())
                 {
-                    const int proj = Item.BASIC_SHOPID;
+                    const int proj = Item.SHOPID;
                     dc.Sql("INSERT INTO items")._(Item.Empty, proj)._VALUES_(Item.Empty, proj);
                     dc.Execute(p => o.Write(p, proj));
                     ac.GivePane(201);

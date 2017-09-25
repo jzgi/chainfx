@@ -13,7 +13,7 @@ namespace Greatbone.Core
     {
         readonly Service service;
 
-        readonly IDoerContext<IDoer> doerCtx;
+        readonly IDoerContext<IDoer> doerctx;
 
         readonly NpgsqlConnection connection;
 
@@ -36,10 +36,10 @@ namespace Greatbone.Core
         {
         }
 
-        internal DbContext(Service service, IDoerContext<IDoer> doerCtx)
+        internal DbContext(Service service, IDoerContext<IDoer> doerctx)
         {
             this.service = service;
-            this.doerCtx = doerCtx;
+            this.doerctx = doerctx;
 
             connection = new NpgsqlConnection(service.ConnectionString);
             command = new NpgsqlCommand();
@@ -376,8 +376,7 @@ namespace Greatbone.Core
 
         public Map<K, D> ToMap<K, D>(Func<D, K> keyer, int proj = 0x00ff) where D : IData, new()
         {
-            int initial = doerCtx?.Doer?.Limit ?? 32;
-            Map<K, D> coll = new Map<K, D>(initial);
+            Map<K, D> coll = new Map<K, D>(32);
             while (Next())
             {
                 D obj = new D();

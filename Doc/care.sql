@@ -11,15 +11,15 @@ Target Server Type    : PGSQL
 Target Server Version : 90505
 File Encoding         : 65001
 
-Date: 2017-09-12 21:10:39
+Date: 2017-09-22 11:11:03
 */
 
 
 -- ----------------------------
--- Sequence structure for orders_id_seq1
+-- Sequence structure for orders_id_seq
 -- ----------------------------
-DROP SEQUENCE IF EXISTS "public"."orders_id_seq1";
-CREATE SEQUENCE "public"."orders_id_seq1"
+DROP SEQUENCE IF EXISTS "public"."orders_id_seq";
+CREATE SEQUENCE "public"."orders_id_seq"
  INCREMENT 1
  MINVALUE 1
  MAXVALUE 9223372036854775807
@@ -39,6 +39,17 @@ CREATE SEQUENCE "public"."repays_id_seq"
 SELECT setval('"public"."repays_id_seq"', 1293, true);
 
 -- ----------------------------
+-- Sequence structure for shops_id_seq
+-- ----------------------------
+DROP SEQUENCE IF EXISTS "public"."shops_id_seq";
+CREATE SEQUENCE "public"."shops_id_seq"
+ INCREMENT 1
+ MINVALUE 1
+ MAXVALUE 9223372036854775807
+ START 1
+ CACHE 1;
+
+-- ----------------------------
 -- Table structure for chats
 -- ----------------------------
 DROP TABLE IF EXISTS "public"."chats";
@@ -54,20 +65,38 @@ WITH (OIDS=FALSE)
 ;
 
 -- ----------------------------
+-- Table structure for cities
+-- ----------------------------
+DROP TABLE IF EXISTS "public"."cities";
+CREATE TABLE "public"."cities" (
+"name" varchar(4) COLLATE "default",
+"x1" float8,
+"y1" float8,
+"x2" float8,
+"y2" float8,
+"areas" jsonb,
+"idx" varchar(3) COLLATE "default"
+)
+WITH (OIDS=FALSE)
+
+;
+
+-- ----------------------------
 -- Table structure for items
 -- ----------------------------
 DROP TABLE IF EXISTS "public"."items";
 CREATE TABLE "public"."items" (
-"shopid" varchar(6) COLLATE "default" NOT NULL,
+"shopid" int2 NOT NULL,
 "name" varchar(10) COLLATE "default" NOT NULL,
 "descr" varchar(30) COLLATE "default",
 "icon" bytea,
-"unit" varchar(8) COLLATE "default",
 "price" money,
 "min" int2,
 "step" int2,
+"max" int2,
+"parts" jsonb,
 "status" int2,
-"qty" int2
+"unit" varchar(4) COLLATE "default"
 )
 WITH (OIDS=FALSE)
 
@@ -109,7 +138,7 @@ WITH (OIDS=FALSE)
 -- ----------------------------
 DROP TABLE IF EXISTS "public"."orders";
 CREATE TABLE "public"."orders" (
-"id" int8 DEFAULT nextval('orders_id_seq1'::regclass) NOT NULL,
+"id" int8 DEFAULT nextval('orders_id_seq'::regclass) NOT NULL,
 "shopid" varchar(6) COLLATE "default",
 "shopname" varchar(10) COLLATE "default",
 "wx" varchar(28) COLLATE "default",
@@ -158,19 +187,20 @@ WITH (OIDS=FALSE)
 -- ----------------------------
 DROP TABLE IF EXISTS "public"."shops";
 CREATE TABLE "public"."shops" (
-"id" varchar(6) COLLATE "default" NOT NULL,
+"id" int2 DEFAULT nextval('shops_id_seq'::regclass) NOT NULL,
 "name" varchar(10) COLLATE "default",
-"tel" varchar(11) COLLATE "default",
 "city" varchar(6) COLLATE "default",
 "addr" varchar(20) COLLATE "default",
 "x" float8,
 "y" float8,
-"created" timestamp(6),
 "icon" bytea,
-"mgrid" varchar(11) COLLATE "default",
+"areas" varchar(10)[] COLLATE "default",
 "mgrwx" varchar(28) COLLATE "default",
-"mgr" varchar(6) COLLATE "default",
-"lic" varchar(20) COLLATE "default",
+"mgrtel" varchar(11) COLLATE "default",
+"mgrname" varchar(10) COLLATE "default",
+"oprwx" varchar(28) COLLATE "default",
+"oprtel" varchar(11) COLLATE "default",
+"oprname" varchar(10) COLLATE "default",
 "status" int2
 )
 WITH (OIDS=FALSE)
@@ -189,7 +219,6 @@ CREATE TABLE "public"."users" (
 "tel" varchar(11) COLLATE "default",
 "city" varchar(4) COLLATE "default",
 "addr" varchar(20) COLLATE "default",
-"note" varchar(50) COLLATE "default",
 "oprat" varchar(6) COLLATE "default",
 "opr" int2 DEFAULT 0,
 "adm" bool DEFAULT false,
@@ -202,8 +231,9 @@ WITH (OIDS=FALSE)
 -- ----------------------------
 -- Alter Sequences Owned By 
 -- ----------------------------
-ALTER SEQUENCE "public"."orders_id_seq1" OWNED BY "orders"."id";
+ALTER SEQUENCE "public"."orders_id_seq" OWNED BY "orders"."id";
 ALTER SEQUENCE "public"."repays_id_seq" OWNED BY "repays"."id";
+ALTER SEQUENCE "public"."shops_id_seq" OWNED BY "shops"."id";
 
 -- ----------------------------
 -- Primary Key structure for table chats
@@ -211,11 +241,70 @@ ALTER SEQUENCE "public"."repays_id_seq" OWNED BY "repays"."id";
 ALTER TABLE "public"."chats" ADD PRIMARY KEY ("shopid", "wx");
 
 -- ----------------------------
--- Primary Key structure for table items
--- ----------------------------
-ALTER TABLE "public"."items" ADD PRIMARY KEY ("shopid", "name");
-
--- ----------------------------
 -- Primary Key structure for table repays
 -- ----------------------------
 ALTER TABLE "public"."repays" ADD PRIMARY KEY ("id");
+
+
+
+
+DECLARE 
+
+  cur CURSOR FOR SELECT id, shopid, shop, cash, status FROM orders WHERE status = 5 AND shipped < till AND cash > 0.00::money ORDER BY shopid FOR UPDATE;
+
+  rshopid VARCHAR(6) DEFAULT NULL;
+  rshop VARCHAR(10) DEFAULT NULL;
+  rorders INT DEFAULT 0;
+  rtotal MONEY DEFAULT 0.00; -- repay total
+  rcash MONEY DEFAULT 0.00; -- repay cash
+  
+  gtotal MONEY DEFAULT 0.00; -- grand total
+  gcash MONEY DEFAULT 0.00; -- grand cash
+  
+  ord RECORD;
+  
+BEGIN
+
+  OPEN cur;
+
+  LOOP
+  
+    FETCH cur INTO ord; -- fetch an order
+
+    IF NOT FOUND OR rshopid <> ord.shopid THEN
+
+      IF rshopid IS NOT NULL AND rtotal > 0.00::money THEN
+        -- insert the accumulated repay
+        INSERT INTO repays (shopid, shop, till, orders, total, cash) VALUES (rshopid, rshop, till, rorders, rtotal, rtotal * 0.994);
+        -- reset repay 
+        rshopid := NULL;
+        rshop := NULL;
+        rorders := 0;
+        rtotal := 0;
+      END IF;
+
+      IF NOT FOUND THEN
+        CLOSE cur;
+        EXIT;
+      END IF;
+    
+    END IF;
+
+    rshopid := ord.shopid;
+
+    -- test against the limitation
+    IF rtotal + ord.cash <= rmax AND gtotal + ord.cash <= gmax THEN
+
+			rshop := ord.shop;
+      rorders := rorders + 1;
+      rtotal := rtotal + ord.cash;
+      gtotal := gtotal + ord.cash;
+
+      -- set status to reckoned
+      UPDATE orders SET status = 7  WHERE CURRENT OF cur; 
+
+    END IF;
+
+  END LOOP;
+
+END

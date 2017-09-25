@@ -1,5 +1,8 @@
 namespace Greatbone.Core
 {
+    /// <summary>
+    /// To generate a plain/text string. 
+    /// </summary>
     public class StrContent : DynamicContent
     {
         public StrContent(bool octet, bool pooled = false, int capacity = 256) : base(octet, capacity)

@@ -23,7 +23,13 @@ namespace Greatbone.Sample
 
             Create<AdmWork>("adm"); // administrator
 
-            cities = DataInputUtility.FileToMap<string, City>(sc.GetFilePath("$cities.json"), x => x.code);
+            using (var dc = NewDbContext())
+            {
+                if (dc.Query("SELECT * FROM cities"))
+                {
+                    cities = dc.ToMap<string, City>(x => x.name);
+                }
+            }
         }
 
         public Map<string, City> Cities => cities;
@@ -71,48 +77,46 @@ namespace Greatbone.Sample
                 ac.Principal = Decrypt(token);
                 return true;
             }
-
             User prin = null;
             string state = ac.Query[nameof(state)];
             if (WXAUTH.Equals(state)) // if weixin auth
             {
                 string code = ac.Query[nameof(code)];
-                if (code == null) return false;
-                var accessor = await GetAccessorAsync(code);
-                if (accessor.access_token == null)
+                if (code == null)
+                {
+                    return false;
+                }
+                (string access_token, string openid) = await GetAccessorAsync(code);
+                if (access_token == null)
                 {
                     return false;
                 }
                 // check in db
                 using (var dc = NewDbContext())
                 {
-                    if (dc.Query1("SELECT * FROM users WHERE wx = @1", (p) => p.Set(accessor.openid)))
+                    if (dc.Query1("SELECT * FROM users WHERE wx = @1", p => p.Set(openid)))
                     {
                         prin = dc.ToObject<User>(0xffff ^ User.CREDENTIAL);
                     }
                 }
-                if (prin == null) // get userinfo remotely
-                {
-                    prin = await GetUserInfoAsync(accessor.access_token, accessor.openid);
-                }
             }
             else if (ac.ByBrowse)
             {
-                string authorization = ac.Header("Authorization");
-                if (authorization == null || !authorization.StartsWith("Basic "))
+                string h_auth = ac.Header("Authorization");
+                if (h_auth == null || !h_auth.StartsWith("Basic "))
                 {
                     return true;
                 }
 
                 // decode basic scheme
-                byte[] bytes = Convert.FromBase64String(authorization.Substring(6));
+                byte[] bytes = Convert.FromBase64String(h_auth.Substring(6));
                 string orig = Encoding.ASCII.GetString(bytes);
                 int colon = orig.IndexOf(':');
                 string id = orig.Substring(0, colon);
                 string credential = StrUtility.MD5(orig);
                 using (var dc = NewDbContext())
                 {
-                    if (dc.Query1("SELECT * FROM users WHERE id = @1", (p) => p.Set(id)))
+                    if (dc.Query1("SELECT * FROM users WHERE id = @1", p => p.Set(id)))
                     {
                         prin = dc.ToObject<User>(0xffff);
                     }
@@ -123,6 +127,7 @@ namespace Greatbone.Sample
                     return true;
                 }
             }
+
             if (prin != null)
             {
                 // set token success

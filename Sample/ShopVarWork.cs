@@ -41,8 +41,7 @@ namespace Greatbone.Sample
 
         public void @default(ActionContext ac)
         {
-            string shopid = ac[this];
-
+            short shopid = ac[this];
             using (var dc = ac.NewDbContext())
             {
                 const int proj = Shop.ID | Shop.BASIC;
@@ -53,10 +52,10 @@ namespace Greatbone.Sample
 
                     // items of the shop
                     Item[] items = null;
-                    dc.Sql("SELECT ").columnlst(Item.Empty, Item.BASIC_SHOPID)._("FROM items WHERE shopid = @1");
+                    dc.Sql("SELECT ").columnlst(Item.Empty, Item.SHOPID)._("FROM items WHERE shopid = @1");
                     if (dc.Query(p => p.Set(shopid)))
                     {
-                        items = dc.ToArray<Item>(Item.BASIC_SHOPID);
+                        items = dc.ToArray<Item>(Item.SHOPID);
                     }
 
                     ac.GivePage(200, m =>
@@ -81,7 +80,7 @@ namespace Greatbone.Sample
                         m.T("<p>").T(shop.city).T(shop.addr).T("</p>");
                         m.T("</div>");
                         m.T("<div class=\"small-4 column\">");
-                        m.T("<p><i class=\"fa fa-phone\"></i>").T(shop.tel).T("</p>");
+                        m.T("<p><i class=\"fa fa-phone\"></i>").T(shop.oprtel).T("</p>");
                         m.T("<a href=\"custsvc\" class=\"button hollow\" onclick=\"return dialog(this,4,2);\">在线客服</a>");
                         m.T("</div>");
                         m.T("</div>");
@@ -93,10 +92,12 @@ namespace Greatbone.Sample
                             m.T("没有上架商品");
                             return;
                         }
+
                         m.T("<div class=\"grid-x grid-padding-x small-up-1 medium-up-2\">");
                         for (int i = 0; i < items.Length; i++)
                         {
-                            Item item = items[i];
+                            m.T("<div =\"cell\">");
+                            var item = items[i];
                             m.T("<form>");
 
                             var shopname = shop.name;
@@ -116,9 +117,9 @@ namespace Greatbone.Sample
                             m.T("<div class=\"small-8 column\">");
                             m.T("<h3>");
                             m.T(item.name);
-                            if (item.qty > 0)
+                            if (item.max > 0)
                             {
-                                m.T("（").T(item.qty).T(item.unit).T("）");
+                                m.T("（").T(item.max).T(item.unit).T("）");
                             }
                             m.T("</h3>");
                             m.T("<div>");
@@ -133,11 +134,11 @@ namespace Greatbone.Sample
                             m.T("<div class=\"row\">");
 
                             m.T("<div class=\"small-7 columns\">");
-                            m.NUMBER(nameof(item.qty), item.min, min: item.min, step: item.step);
+                            m.NUMBER(nameof(item.max), item.min, min: item.min, step: item.step);
                             m.T("</div>");
 
                             m.T("<div class=\"small-5 columns\">");
-                            m.T("<button type=\"button\" class=\"button success hollow\" onclick=\"var frm=this.form; $.post('/my//cart/add', $(frm).serialize(), function(data){alert('成功加入购物车'); frm.reset();});\">加入购物车</button>");
+                            m.T("<button type=\"button\" class=\"button primary\" onclick=\"var frm=this.form; $.post('/my//pre/add', $(frm).serialize(), function(data){alert('成功加入购物车'); frm.reset();});\">加入购物车</button>");
                             m.T("</div>");
 
                             m.T("</div>"); // row
@@ -146,9 +147,10 @@ namespace Greatbone.Sample
 
                             m.T("</div>"); // row card
                             m.T("</form>");
+                            m.T("</div>");
                         }
                         m.T("</div>");
-                    }, @public: true, maxage: 60 * 5);
+                    }, true, 60 * 5);
                 }
                 else
                 {

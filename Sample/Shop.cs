@@ -1,5 +1,4 @@
-﻿using System;
-using Greatbone.Core;
+﻿using Greatbone.Core;
 
 namespace Greatbone.Sample
 {
@@ -21,89 +20,59 @@ namespace Greatbone.Sample
             [2] = "营业中"
         };
 
-        internal string id;
+        internal short id;
         internal string name;
-        internal string tel;
         internal string city;
         internal string addr;
         internal double x;
         internal double y;
-        internal string lic;
-        internal DateTime created;
-        internal string mgrid; // set by admin
+        internal string[] areas;
         internal string mgrwx;
-        internal string mgr;
-
-        internal Target[] targets;
-        
+        internal string mgrtel;
+        internal string mgrname;
+        internal string oprwx;
+        internal string oprtel;
+        internal string oprname;
         internal short status;
 
         public void Read(IDataInput i, int proj = 0x00ff)
         {
-            if ((proj & ID) == ID)
-            {
-                i.Get(nameof(id), ref id);
-            }
-            if ((proj & BASIC) == BASIC)
-            {
-                i.Get(nameof(name), ref name);
-                i.Get(nameof(tel), ref tel);
-                i.Get(nameof(city), ref city);
-                i.Get(nameof(addr), ref addr);
-                i.Get(nameof(x), ref x);
-                i.Get(nameof(y), ref y);
-                i.Get(nameof(lic), ref lic);
-                i.Get(nameof(created), ref created);
-            }
-            if ((proj & ADMIN) == ADMIN)
-            {
-                i.Get(nameof(mgrid), ref mgrid);
-                if ((proj & ADMIN_WX) == ADMIN_WX)
-                {
-                    i.Get(nameof(mgrwx), ref mgrwx);
-                }
-                i.Get(nameof(mgr), ref mgr);
-            }
+            i.Get(nameof(id), ref id);
+            i.Get(nameof(name), ref name);
+            i.Get(nameof(city), ref city);
+            i.Get(nameof(addr), ref addr);
+            i.Get(nameof(x), ref x);
+            i.Get(nameof(y), ref y);
+            i.Get(nameof(areas), ref areas);
+            i.Get(nameof(mgrwx), ref mgrwx);
+            i.Get(nameof(mgrtel), ref mgrtel);
+            i.Get(nameof(mgrname), ref mgrname);
+            i.Get(nameof(oprwx), ref oprwx);
+            i.Get(nameof(oprtel), ref oprtel);
+            i.Get(nameof(oprname), ref oprname);
             i.Get(nameof(status), ref status);
         }
 
         public void Write<R>(IDataOutput<R> o, int proj = 0x00ff) where R : IDataOutput<R>
         {
-            if ((proj & ID) == ID)
-            {
-                o.Put(nameof(id), id, "编号");
-            }
-            if ((proj & BASIC) == BASIC)
-            {
-                o.Put(nameof(name), name, "名称");
-                o.Put(nameof(tel), tel, "电话");
-                o.Put(nameof(city), city, "城市");
-                o.Put(nameof(addr), addr, "地址");
-                o.Put(nameof(x), x, "X");
-                o.Put(nameof(y), y, "Y");
-                o.Put(nameof(lic), lic, "工商登记");
-                o.Put(nameof(created), created, "创建时间");
-            }
-            if ((proj & ADMIN) == ADMIN)
-            {
-                o.Group("经理");
-                o.Put(nameof(mgrid), mgrid);
-                if ((proj & ADMIN_WX) == ADMIN_WX)
-                {
-                    o.Put(nameof(mgrwx), mgrwx);
-                }
-                o.Put(nameof(mgr), mgr);
-                o.UnGroup();
-            }
+            o.Put(nameof(id), id, "编号");
+            o.Put(nameof(name), name, "名称");
+            o.Put(nameof(city), city, "城市");
+            o.Put(nameof(addr), addr, "地址");
+            o.Put(nameof(x), x, "X");
+            o.Put(nameof(y), y, "Y");
+            o.Put(nameof(areas), areas, "创建时间");
+            o.Group("经理");
+            o.Put(nameof(mgrwx), mgrwx);
+            o.Put(nameof(mgrtel), mgrtel);
+            o.Put(nameof(mgrname), mgrname);
+            o.UnGroup();
+            o.Group("值班");
+            o.Put(nameof(oprwx), oprwx);
+            o.Put(nameof(oprtel), oprtel);
+            o.Put(nameof(oprname), oprname);
+            o.UnGroup();
             o.Put(nameof(status), status, "状态", STATUS);
         }
-    }
-
-
-    public struct Target
-    {
-        internal string name;
-
-        internal double x0, y0, x1, y1;
     }
 }

@@ -8,7 +8,7 @@ namespace Greatbone.Core
     /// </summary>
     public class Map<K, V> : Dictionary<K, V>, IOptable<K>
     {
-        public Map(int capacity = 8) : base(capacity)
+        public Map(int capacity = 16) : base(capacity)
         {
         }
 

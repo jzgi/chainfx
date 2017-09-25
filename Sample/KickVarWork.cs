@@ -65,7 +65,7 @@ namespace Greatbone.Sample
             {
                 using (var dc = ac.NewDbContext())
                 {
-                    const int proj = 0xffff ^ Item.BASIC_ICON ^ Item.BASIC;
+                    const int proj = 0x00ff;
                     dc.Sql("SELECT ").columnlst(Item.Empty, proj)._("FROM items WHERE shopid = @1 AND name = @2");
                     if (dc.Query1(p => p.Set(shopid).Set(name)))
                     {
@@ -80,7 +80,7 @@ namespace Greatbone.Sample
                             m.NUMBER(nameof(o.price), o.price, label: "单价");
                             m.NUMBER(nameof(o.min), o.min, label: "起订数量（0表示不限）");
                             m.NUMBER(nameof(o.step), o.step, label: "递增因子");
-                            m.NUMBER(nameof(o.qty), o.qty, label: "本批供应量");
+                            m.NUMBER(nameof(o.max), o.max, label: "本批供应量");
                             m.SELECT(nameof(o.status), o.status, Item.STATUS);
 
                             m._FORM();
@@ -94,7 +94,7 @@ namespace Greatbone.Sample
             }
             else // post
             {
-                const int proj = 0xffff ^ Item.BASIC ^ Item.BASIC_ICON;
+                const int proj = 0x00ff;
                 var o = await ac.ReadObjectAsync<Item>(proj);
                 using (var dc = ac.NewDbContext())
                 {

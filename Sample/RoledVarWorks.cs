@@ -109,7 +109,7 @@ namespace Greatbone.Sample
         [User(User.AID)]
         public async Task profile(ActionContext ac)
         {
-            string id = ac[this];
+            short id = ac[this];
             if (ac.GET)
             {
                 const int proj = Shop.ID | Shop.BASIC;
@@ -123,7 +123,6 @@ namespace Greatbone.Sample
                         {
                             m.FORM_();
                             m.TEXT(nameof(o.name), o.name, label: "商家名称", max: 10, @readonly: true);
-                            m.TEXT(nameof(o.tel), o.tel, label: "电话", max: 11, min: 11, pattern: "[0-9]+", required: true);
                             m.TEXT(nameof(o.city), o.city, label: "城市", @readonly: true);
                             m.TEXT(nameof(o.addr), o.addr, label: "地址");
                             m.SELECT(nameof(o.status), o.status, Shop.STATUS, label: "状态");

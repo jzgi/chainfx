@@ -76,10 +76,10 @@ namespace Greatbone.Sample
                 if (dc.Query1("SELECT id, detail, total FROM orders WHERE shopid = @1 AND wx = @2 AND status = 0", p => p.Set(shopid).Set(wx)))
                 {
                     var o = new Order();
-                    dc.Let(out o.id).Let(out o.details).Let(out o.total);
+                    dc.Let(out o.id).Let(out o.items).Let(out o.total);
                     o.AddItem(name, qty, unit, price);
                     o.Sum();
-                    dc.Execute("UPDATE orders SET detail = @1, total = @2 WHERE id = @3", p => p.Set(o.details).Set(o.total).Set(o.id));
+                    dc.Execute("UPDATE orders SET detail = @1, total = @2 WHERE id = @3", p => p.Set(o.items).Set(o.total).Set(o.id));
                 }
                 else
                 {
@@ -93,9 +93,9 @@ namespace Greatbone.Sample
                         tel = prin.tel,
                         city = prin.city,
                         addr = prin.addr,
-                        details = new[]
+                        items = new[]
                         {
-                            new Detail {name = name, price = price, qty = qty, unit = unit}
+                            new OrderItem {name = name, price = price, qty = qty, unit = unit}
                         },
                         created = DateTime.Now
                     };
