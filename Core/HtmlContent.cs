@@ -531,16 +531,16 @@ namespace Greatbone.Core
             return this;
         }
 
-        public HtmlContent GRID(IDataInput input, Action<IDataInput, HtmlContent> pipe)
+        public HtmlContent GRID(IDataInput inp, Action<IDataInput, HtmlContent> pipe)
         {
             chain[++level].node = GRID_DIV;
-            if (input != null)
+            if (inp != null)
             {
                 Add("<div class=\"expanded row\">");
-                while (input.Next())
+                while (inp.Next())
                 {
                     Add("<div class=\"row small-up-1 medium-up-2 large-up-3 xlarge-up-4\">");
-                    pipe(input, this);
+                    pipe(inp, this);
                     Add("</div>");
                 }
                 Add("</div>");
@@ -571,20 +571,20 @@ namespace Greatbone.Core
                 chain[level].node = GRID_DIV;
                 chain[level].varwork = varwork;
 
-                Add("<div class=\"row expanded small-up-1 medium-up-2 large-up-3 xlarge-up-4\">");
+                Add("<div class=\"grid-x grid-padding-x small-up-1 medium-up-2 large-up-3\">");
                 for (int i = 0; i < arr.Length; i++)
                 {
-                    Add("<div class=\"column\">");
+                    Add("<div class=\"cell\">");
                     Add("<div class=\"card\">");
                     D obj = arr[i];
                     chain[level].obj = obj;
 
                     if (checks && level == 0)
                     {
-                        Add("<div class=\"row\">");
-                        Add("<div class=\"small-3 columns labeldiv\">");
+                        Add("<div class=\"grid-x grid-padding-x\">");
+                        Add("<div class=\"small-3 cell\">");
                         Add("</div>");
-                        Add("<div class=\"small-9 columns\" style=\"text-align: right\">");
+                        Add("<div class=\"small-9 cell\" style=\"text-align: right\">");
                         Add("<input name=\"key\" type=\"checkbox\" style=\"margin: 0 0.5rem\" value=\"");
                         varwork?.OutputVarKey(obj, this);
                         Add("\">");
@@ -610,7 +610,7 @@ namespace Greatbone.Core
             }
             else // empty
             {
-                Add("<div class=\"row\">");
+                Add("<div class=\"grid-x\">");
                 Add("</div>");
             }
 
@@ -1787,11 +1787,11 @@ namespace Greatbone.Core
                     Add("<td>");
                     break;
                 case GRID_DIV:
-                    Add("<div class=\"row\">");
-                    Add("<div class=\"small-3 columns labeldiv\">");
+                    Add("<div class=\"grid-x\">");
+                    Add("<div class=\"small-3 cell\">");
                     AddLabel(label, null);
                     Add("</div>");
-                    Add("<div class=\"small-9 columns\">"); // opening
+                    Add("<div class=\"small-9 cell\">"); // opening
                     break;
             }
         }
@@ -1844,11 +1844,11 @@ namespace Greatbone.Core
                 case GRID_DIV:
                     if (!chain[level].group)
                     {
-                        Add("<div class=\"row\">");
-                        Add("<div class=\"small-3 columns labeldiv\">");
+                        Add("<div class=\"grid-x\">");
+                        Add("<div class=\"small-3 cell\">");
                         AddLabel(label, name);
                         Add("</div>");
-                        Add("<div class=\"small-9 columns\">");
+                        Add("<div class=\"small-9 cell\">");
                         if (opt != null) Add(opt(value));
                         else Add(value);
                         Add("</div>");
@@ -1897,11 +1897,11 @@ namespace Greatbone.Core
                 case GRID_DIV:
                     if (!chain[level].group)
                     {
-                        Add("<div class=\"row\">");
-                        Add("<div class=\"small-3 columns labeldiv\">");
+                        Add("<div class=\"grid-x\">");
+                        Add("<div class=\"small-3 cell\">");
                         AddLabel(label, name);
                         Add("</div>");
-                        Add("<div class=\"small-9 columns\">");
+                        Add("<div class=\"small-9 cell\">");
                         if (opt != null) Add(opt.Obtain(value));
                         else Add(value);
                         Add("</div>");
@@ -1950,11 +1950,11 @@ namespace Greatbone.Core
                 case GRID_DIV:
                     if (!chain[level].group)
                     {
-                        Add("<div class=\"row\">");
-                        Add("<div class=\"small-3 columns labeldiv\">");
+                        Add("<div class=\"grid-x\">");
+                        Add("<div class=\"small-3 cell\">");
                         AddLabel(label, name);
                         Add("</div>");
-                        Add("<div class=\"small-9 columns\">");
+                        Add("<div class=\"small-9 cell\">");
                         if (opt != null) Add(opt.Obtain(value));
                         else Add(value);
                         Add("</div>");
@@ -2003,11 +2003,11 @@ namespace Greatbone.Core
                 case GRID_DIV:
                     if (!chain[level].group)
                     {
-                        Add("<div class=\"row\">");
-                        Add("<div class=\"small-3 columns labeldiv\">");
+                        Add("<div class=\"grid-x\">");
+                        Add("<div class=\"small-3 cell\">");
                         AddLabel(label, name);
                         Add("</div>");
-                        Add("<div class=\"small-9 columns\">");
+                        Add("<div class=\"small-9 cell\">");
                         if (opt != null) Add(opt.Obtain(value));
                         else Add(value);
                         Add("</div>");
@@ -2057,11 +2057,11 @@ namespace Greatbone.Core
                 case GRID_DIV:
                     if (!chain[level].group)
                     {
-                        Add("<div class=\"row\">");
-                        Add("<div class=\"small-3 columns labeldiv\">");
+                        Add("<div class=\"grid-x\">");
+                        Add("<div class=\"small-3 cell\">");
                         AddLabel(label, name);
                         Add("</div>");
-                        Add("<div class=\"small-9 columns\">");
+                        Add("<div class=\"small-9 cell\">");
                         Add(value);
                         Add("</div>");
                         Add("</div>");
@@ -2107,11 +2107,11 @@ namespace Greatbone.Core
                 case GRID_DIV:
                     if (!chain[level].group)
                     {
-                        Add("<div class=\"row\">");
-                        Add("<div class=\"small-3 columns labeldiv\">");
+                        Add("<div class=\"grid-x\">");
+                        Add("<div class=\"small-3 cell\">");
                         AddLabel(label, name);
                         Add("</div>");
-                        Add("<div class=\"small-9 columns\">");
+                        Add("<div class=\"small-9 cell\">");
                         if (fmt != 0 && decimalp != null) decimalp(this, value, fmt);
                         else Add(value);
                         Add("</div>");
@@ -2166,11 +2166,11 @@ namespace Greatbone.Core
                 case GRID_DIV:
                     if (!chain[level].group)
                     {
-                        Add("<div class=\"row\">");
-                        Add("<div class=\"small-3 columns labeldiv\">");
+                        Add("<div class=\"grid-x\">");
+                        Add("<div class=\"small-3 cell\">");
                         AddLabel(label, name);
                         Add("</div>");
-                        Add("<div class=\"small-9 columns\">");
+                        Add("<div class=\"small-9 cell\">");
                     }
                     if (value != default(DateTime))
                     {
@@ -2221,11 +2221,11 @@ namespace Greatbone.Core
                 case GRID_DIV:
                     if (!chain[level].group)
                     {
-                        Add("<div class=\"row\">");
-                        Add("<div class=\"small-3 columns labeldiv\">");
+                        Add("<div class=\"grid-x\">");
+                        Add("<div class=\"small-3 cell\">");
                         AddLabel(label, name);
                         Add("</div>");
-                        Add("<div class=\"small-9 columns\">");
+                        Add("<div class=\"small-9 cell\">");
                     }
                     Add(value);
                     Add(' ');
@@ -2271,11 +2271,11 @@ namespace Greatbone.Core
                 case GRID_DIV:
                     if (!chain[level].group)
                     {
-                        Add("<div class=\"row\">");
-                        Add("<div class=\"small-3 columns labeldiv\">");
+                        Add("<div class=\"grid-x\">");
+                        Add("<div class=\"small-3 cell\">");
                         AddLabel(label, name);
                         Add("</div>");
-                        Add("<div class=\"small-9 columns\">");
+                        Add("<div class=\"small-9 cell\">");
                     }
                     Add("<img src\"icon\">");
                     Add(' ');
@@ -2348,7 +2348,7 @@ namespace Greatbone.Core
                 case GRID_DIV:
                     if (value != null)
                     {
-                        Add("<div class=\"row column\">");
+                        Add("<div class=\"\">");
                         TABLE(null, chain[level].varwork?.varwork, value, proj);
                         Add("</div>");
                     }
