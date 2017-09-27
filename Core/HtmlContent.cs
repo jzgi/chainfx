@@ -15,7 +15,8 @@ namespace Greatbone.Core
         // current level
         int level;
 
-        sbyte kind;
+        // type of outputting
+        sbyte typ;
 
         internal const sbyte JS = 1, UL = 2;
 
@@ -163,13 +164,242 @@ namespace Greatbone.Core
             return this;
         }
 
-        public HtmlContent ROW_()
+        public HtmlContent TH(params string[] labels)
         {
-            Add("<div class=\"row\">");
+            for (int i = 0; i < labels.Length; i++)
+            {
+                Add("<th>");
+                Add(labels[i]);
+                Add("</th>");
+            }
             return this;
         }
 
-        public HtmlContent _ROW()
+        public HtmlContent TD(short v)
+        {
+            Add("<td style=\"text-align: right\">");
+            Add(v);
+            Add("</td>");
+            return this;
+        }
+
+        public HtmlContent TD(int v)
+        {
+            Add("<td style=\"text-align: right\">");
+            Add(v);
+            Add("</td>");
+            return this;
+        }
+
+        public HtmlContent TD(long v)
+        {
+            Add("<td style=\"text-align: right\">");
+            Add(v);
+            Add("</td>");
+            return this;
+        }
+
+        public HtmlContent TD(decimal v)
+        {
+            Add("<td style=\"text-align: right\">");
+            Add(v);
+            Add("</td>");
+            return this;
+        }
+
+        public HtmlContent TD(string v)
+        {
+            Add("<td>");
+            AddEsc(v);
+            Add("</td>");
+            return this;
+        }
+
+        public HtmlContent TD_()
+        {
+            Add("<td>");
+            return this;
+        }
+
+        public HtmlContent _TD()
+        {
+            Add("</td>");
+            return this;
+        }
+
+        public HtmlContent LN(string label, short v)
+        {
+            Add("<div class=\"grid-x grid-padding-x\">");
+            Add("<div class=\"cell small-3\" style=\"padding-right: 0; text-align: right\">");
+            Add(label);
+            Add("：</div>");
+            Add("<div class=\"cell small-9\">");
+            Add(v);
+            Add("</div>");
+            Add("</div>");
+            return this;
+        }
+
+        public HtmlContent LN(string label, int v)
+        {
+            Add("<div class=\"grid-x grid-padding-x\">");
+            Add("<div class=\"cell small-3\" style=\"padding-right: 0; text-align: right\">");
+            Add(label);
+            Add("：</div>");
+            Add("<div class=\"cell small-9\">");
+            Add(v);
+            Add("</div>");
+            Add("</div>");
+            return this;
+        }
+
+        public HtmlContent LN(string label, string v)
+        {
+            Add("<div class=\"grid-x grid-padding-x\">");
+            Add("<div class=\"cell small-3\" style=\"padding-right: 0; text-align: right\">");
+            Add(label);
+            Add("：</div>");
+            Add("<div class=\"cell small-9\">");
+            Add(v);
+            Add("</div>");
+            Add("</div>");
+            return this;
+        }
+
+        public HtmlContent LN(string label, Action<HtmlContent> v)
+        {
+            Add("<div class=\"grid-x grid-padding-x\">");
+            Add("<div class=\"cell small-3\" style=\"padding-right: 0; text-align: right\">");
+            Add(label);
+            Add("：</div>");
+            Add("<div class=\"cell small-9\">");
+            v(this);
+            Add("</div>");
+            Add("</div>");
+            return this;
+        }
+
+        public HtmlContent LN(string label1, string v1, string label2, string v2)
+        {
+            Add("<div class=\"grid-x grid-padding-x\">");
+            Add("<div class=\"cell small-3\" style=\"padding-right: 0; text-align: right\">");
+            Add(label1);
+            Add("：</div>");
+            Add("<div class=\"cell small-3\">");
+            Add(v1);
+            Add("</div>");
+            Add("<div class=\"cell small-3\" style=\"padding-right: 0; text-align: right\">");
+            Add(label2);
+            Add("：</div>");
+            Add("<div class=\"cell small-3\">");
+            Add(v2);
+            Add("</div>");
+            Add("</div>");
+            return this;
+        }
+
+        public HtmlContent LN(string label1, string v1, string label2, int v2)
+        {
+            Add("<div class=\"grid-x grid-padding-x\">");
+            Add("<div class=\"cell small-3\" style=\"padding-right: 0; text-align: right\">");
+            Add(label1);
+            Add("：</div>");
+            Add("<div class=\"cell small-3\">");
+            Add(v1);
+            Add("</div>");
+            Add("<div class=\"cell small-3\" style=\"padding-right: 0; text-align: right\">");
+            Add(label2);
+            Add("：</div>");
+            Add("<div class=\"cell small-3\">");
+            Add(v2);
+            Add("</div>");
+            Add("</div>");
+            return this;
+        }
+
+        public HtmlContent LN(string label1, string v1, string label2, decimal v2)
+        {
+            Add("<div class=\"grid-x grid-padding-x\">");
+            Add("<div class=\"cell small-3\" style=\"padding-right: 0; text-align: right\">");
+            Add(label1);
+            Add("：</div>");
+            Add("<div class=\"cell small-3\">");
+            Add(v1);
+            Add("</div>");
+            Add("<div class=\"cell small-3\" style=\"padding-right: 0; text-align: right\">");
+            Add(label2);
+            Add("：</div>");
+            Add("<div class=\"cell small-3\">");
+            Add(v2);
+            Add("</div>");
+            Add("</div>");
+            return this;
+        }
+
+        public HtmlContent LN(string label1, string v1, string label2, DateTime v2)
+        {
+            Add("<div class=\"grid-x grid-padding-x\">");
+            Add("<div class=\"cell small-3\" style=\"padding-right: 0; text-align: right\">");
+            Add(label1);
+            Add("：</div>");
+            Add("<div class=\"cell small-3\">");
+            Add(v1);
+            Add("</div>");
+            Add("<div class=\"cell small-3\" style=\"padding-right: 0; text-align: right\">");
+            Add(label2);
+            Add("：</div>");
+            Add("<div class=\"cell small-3\">");
+            Add(v2);
+            Add("</div>");
+            Add("</div>");
+            return this;
+        }
+
+        public HtmlContent LN(string label1, Action<HtmlContent> v1, string label2, Action<HtmlContent> v2)
+        {
+            Add("<div class=\"grid-x grid-padding-x\">");
+            Add("<div class=\"cell small-3\" style=\"padding-right: 0; text-align: right\">");
+            Add(label1);
+            Add("：</div>");
+            Add("<div class=\"cell small-3\">");
+            v1(this);
+            Add("</div>");
+            Add("<div class=\"cell small-3\" style=\"padding-right: 0; text-align: right\">");
+            Add(label2);
+            Add("：</div>");
+            Add("<div class=\"cell small-3\">");
+            v2(this);
+            Add("</div>");
+            Add("</div>");
+            return this;
+        }
+
+        public HtmlContent LN_(string label)
+        {
+            Add("<div class=\"grid-x grid-padding-x align-middle\">");
+            Add("<div class=\"cell small-3\" style=\"padding-right: 0; text-align: right\">");
+            Add(label);
+            Add("：</div>");
+            Add("<div class=\"cell small-9\">");
+            return this;
+        }
+
+        public HtmlContent _LN()
+        {
+            Add("</div>");
+            Add("</div>");
+            return this;
+        }
+
+        public HtmlContent COL_(int n)
+        {
+            Add("<div class=\"cell small-");
+            Add(n);
+            Add("\">");
+            return this;
+        }
+
+        public HtmlContent _COL()
         {
             Add("</div>");
             return this;
@@ -353,69 +583,6 @@ namespace Greatbone.Core
             }
         }
 
-        public HtmlContent TH(params string[] labels)
-        {
-            for (int i = 0; i < labels.Length; i++)
-            {
-                Add("<th>");
-                Add(labels[i]);
-                Add("</th>");
-            }
-            return this;
-        }
-
-        public HtmlContent TD(short v)
-        {
-            Add("<td style=\"text-align: right\">");
-            Add(v);
-            Add("</td>");
-            return this;
-        }
-
-        public HtmlContent TD(int v)
-        {
-            Add("<td style=\"text-align: right\">");
-            Add(v);
-            Add("</td>");
-            return this;
-        }
-
-        public HtmlContent TD(long v)
-        {
-            Add("<td style=\"text-align: right\">");
-            Add(v);
-            Add("</td>");
-            return this;
-        }
-
-        public HtmlContent TD(decimal v)
-        {
-            Add("<td style=\"text-align: right\">");
-            Add(v);
-            Add("</td>");
-            return this;
-        }
-
-        public HtmlContent TD(string v)
-        {
-            Add("<td>");
-            AddEsc(v);
-            Add("</td>");
-            return this;
-        }
-
-        public HtmlContent TD_()
-        {
-            Add("<td>");
-            return this;
-        }
-
-        public HtmlContent _TD()
-        {
-            Add("</td>");
-            return this;
-        }
-
         public HtmlContent TABLE(string name, IDataInput inp, Action<IDataInput, HtmlContent, char> putter)
         {
             Add("<table class=\"unstriped\">");
@@ -546,7 +713,7 @@ namespace Greatbone.Core
 
                     if (work.Buttons > 0)
                     {
-                        Add("<div class=\"grid-x grid-padding-x\">");
+                        Add("<div class=\"grid-x grid-padding-x grid-margin-y\">");
                         Add("<div class=\"small-3 cell\">");
                         Add("</div>");
                         Add("<div class=\"small-9 cell\" style=\"text-align: right\">");
@@ -1598,7 +1765,7 @@ namespace Greatbone.Core
             return this;
         }
 
-        public HtmlContent SELECT(string name, string value, IOptable<string> opt, string label = null, bool multiple = false, bool required = false, sbyte size = 0, bool refresh = false)
+        public HtmlContent SELECT(string name, string v, IOptable<string> opt, string label = null, bool multiple = false, bool required = false, sbyte size = 0, bool refresh = false)
         {
             Add("<label>");
             AddLabel(label, name);
@@ -1624,7 +1791,7 @@ namespace Greatbone.Core
                 Add("<option value=\"");
                 Add(key);
                 Add("\"");
-                if (key == value) Add(" selected");
+                if (key == v) Add(" selected");
                 Add(">");
                 Add(opt.Obtain(key));
                 Add("</option>");
@@ -1634,10 +1801,13 @@ namespace Greatbone.Core
             return this;
         }
 
-        public HtmlContent SELECT(string name, string value, string[] opt, string label = null, bool multiple = false, bool required = false, sbyte size = 0, bool refresh = false)
+        public HtmlContent SELECT(string name, string v, string[] opt, string label = null, bool multiple = false, bool required = false, sbyte size = 0, bool refresh = false)
         {
-            Add("<label>");
-            AddLabel(label, name);
+            if (label != null)
+            {
+                Add("<label>");
+                Add(label);
+            }
             Add("<select name=\"");
             Add(name);
             Add("\"");
@@ -1663,7 +1833,7 @@ namespace Greatbone.Core
                     Add("<option value=\"");
                     Add(key);
                     Add("\"");
-                    if (key == value) Add(" selected");
+                    if (key == v) Add(" selected");
                     Add(">");
 
                     Add(key);
@@ -1671,7 +1841,10 @@ namespace Greatbone.Core
                 }
             }
             Add("</select>");
-            Add("</label>");
+            if (label != null)
+            {
+                Add("</label>");
+            }
             return this;
         }
 
@@ -1707,21 +1880,21 @@ namespace Greatbone.Core
         //
         public HtmlContent JSON(IData obj, int proj = 0x00ff)
         {
-            kind = JS;
+            typ = JS;
             Put(null, obj, proj);
             return this;
         }
 
         public HtmlContent JSON<D>(D[] arr, int proj = 0x00ff) where D : IData
         {
-            kind = JS;
+            typ = JS;
             Put(null, arr, proj);
             return this;
         }
 
         public HtmlContent JSON<K, D>(Map<K, D> map, int proj = 0x00ff) where D : IData
         {
-            kind = JS;
+            typ = JS;
             Put(null, map, proj);
             return this;
         }
@@ -1744,7 +1917,7 @@ namespace Greatbone.Core
 
         public HtmlContent Put(string name, bool v)
         {
-            switch (kind)
+            switch (typ)
             {
                 case JS:
                     if (counts[level]++ > 0) Add(',');
@@ -1765,7 +1938,7 @@ namespace Greatbone.Core
 
         public HtmlContent Put(string name, short v)
         {
-            switch (kind)
+            switch (typ)
             {
                 case JS:
                     if (counts[level]++ > 0) Add(',');
@@ -1786,7 +1959,7 @@ namespace Greatbone.Core
 
         public HtmlContent Put(string name, int v)
         {
-            switch (kind)
+            switch (typ)
             {
                 case JS:
                     if (counts[level]++ > 0) Add(',');
@@ -1807,7 +1980,7 @@ namespace Greatbone.Core
 
         public HtmlContent Put(string name, long v)
         {
-            switch (kind)
+            switch (typ)
             {
                 case JS:
                     if (counts[level]++ > 0) Add(',');
@@ -1828,7 +2001,7 @@ namespace Greatbone.Core
 
         public HtmlContent Put(string name, double v)
         {
-            switch (kind)
+            switch (typ)
             {
                 case JS:
                     if (counts[level]++ > 0) Add(',');
@@ -1849,7 +2022,7 @@ namespace Greatbone.Core
 
         public HtmlContent Put(string name, decimal v)
         {
-            switch (kind)
+            switch (typ)
             {
                 case JS:
                     if (counts[level]++ > 0) Add(',');
@@ -1870,7 +2043,7 @@ namespace Greatbone.Core
 
         public HtmlContent Put(string name, DateTime v)
         {
-            switch (kind)
+            switch (typ)
             {
                 case JS:
                     if (counts[level]++ > 0) Add(',');
@@ -1893,7 +2066,7 @@ namespace Greatbone.Core
 
         public HtmlContent Put(string name, string v)
         {
-            switch (kind)
+            switch (typ)
             {
                 case JS:
                     if (counts[level]++ > 0) Add(',');
@@ -1923,7 +2096,7 @@ namespace Greatbone.Core
 
         public HtmlContent Put(string name, ArraySegment<byte> v)
         {
-            switch (kind)
+            switch (typ)
             {
                 case JS:
                     break;
@@ -1935,7 +2108,7 @@ namespace Greatbone.Core
 
         public HtmlContent Put(string name, short[] v)
         {
-            switch (kind)
+            switch (typ)
             {
                 case JS:
                     if (counts[level]++ > 0) Add(',');
@@ -1969,7 +2142,7 @@ namespace Greatbone.Core
 
         public HtmlContent Put(string name, int[] v)
         {
-            switch (kind)
+            switch (typ)
             {
                 case JS:
                     if (counts[level]++ > 0) Add(',');
@@ -2003,7 +2176,7 @@ namespace Greatbone.Core
 
         public HtmlContent Put(string name, long[] v)
         {
-            switch (kind)
+            switch (typ)
             {
                 case JS:
                     if (counts[level]++ > 0) Add(',');
@@ -2037,7 +2210,7 @@ namespace Greatbone.Core
 
         public HtmlContent Put(string name, string[] v)
         {
-            switch (kind)
+            switch (typ)
             {
                 case JS:
                     if (counts[level]++ > 0) Add(',');
@@ -2081,7 +2254,7 @@ namespace Greatbone.Core
 
         public HtmlContent Put(string name, Map<string, string> v)
         {
-            switch (kind)
+            switch (typ)
             {
                 case JS:
                     break;
@@ -2093,7 +2266,7 @@ namespace Greatbone.Core
 
         public HtmlContent Put(string name, IData v, int proj = 0x00ff)
         {
-            switch (kind)
+            switch (typ)
             {
                 case JS:
                     if (counts[level]++ > 0) Add(',');
@@ -2133,7 +2306,7 @@ namespace Greatbone.Core
 
         public HtmlContent Put<D>(string name, D[] v, int proj = 0x00ff) where D : IData
         {
-            switch (kind)
+            switch (typ)
             {
                 case JS:
                     if (counts[level]++ > 0) Add(',');
@@ -2168,7 +2341,7 @@ namespace Greatbone.Core
 
         public HtmlContent Put<K, D>(string name, Map<K, D> v, int proj = 0x00ff) where D : IData
         {
-            switch (kind)
+            switch (typ)
             {
                 case JS:
                     if (counts[level]++ > 0) Add(',');
