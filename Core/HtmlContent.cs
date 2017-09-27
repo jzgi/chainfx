@@ -1,5 +1,4 @@
 using System;
-using System.Collections.Generic;
 
 namespace Greatbone.Core
 {
@@ -10,7 +9,7 @@ namespace Greatbone.Core
     {
         readonly ActionContext ac;
 
-        // starting positions of each level
+        // counts of each level
         readonly int[] counts = new int[8];
 
         // current level
@@ -18,7 +17,7 @@ namespace Greatbone.Core
 
         sbyte kind;
 
-        internal const sbyte VAR = 1, UL = 2;
+        internal const sbyte JS = 1, UL = 2;
 
         public HtmlContent(ActionContext ac, bool octet, int capacity = 32 * 1024) : base(octet, capacity)
         {
@@ -69,6 +68,45 @@ namespace Greatbone.Core
                 else if (c == '"')
                 {
                     Add("&quot;");
+                }
+                else
+                {
+                    Add(c);
+                }
+            }
+        }
+
+        void AddJsonEsc(string v)
+        {
+            if (v == null) return;
+
+            for (int i = 0; i < v.Length; i++)
+            {
+                char c = v[i];
+                if (c == '\"')
+                {
+                    Add('\\');
+                    Add('"');
+                }
+                else if (c == '\\')
+                {
+                    Add('\\');
+                    Add('\\');
+                }
+                else if (c == '\n')
+                {
+                    Add('\\');
+                    Add('n');
+                }
+                else if (c == '\r')
+                {
+                    Add('\\');
+                    Add('r');
+                }
+                else if (c == '\t')
+                {
+                    Add('\\');
+                    Add('t');
                 }
                 else
                 {
@@ -264,7 +302,7 @@ namespace Greatbone.Core
             Add("</div>");
 
             Add("<div class=\"top-bar-right\">");
-            Add("<a class=\"button primary hollow\" href=\"javascript: location.reload(false);\">刷新</a>");
+            Add("<a class=\"primary\" href=\"javascript: location.reload(false);\"><i class=\"fa fa-refresh fa-2x\"></i></a>");
             Add("</div>");
 
             Add("</div>");
@@ -1665,27 +1703,48 @@ namespace Greatbone.Core
         //
         // ISINK
         //
+        public HtmlContent JSON(IData obj, int proj = 0x00ff)
+        {
+            kind = JS;
+            Put(null, obj, proj);
+            return this;
+        }
+
+        public HtmlContent JSON<D>(D[] arr, int proj = 0x00ff) where D : IData
+        {
+            kind = JS;
+            Put(null, arr, proj);
+            return this;
+        }
+
+        public HtmlContent JSON<K, D>(Map<K, D> map, int proj = 0x00ff) where D : IData
+        {
+            kind = JS;
+            Put(null, map, proj);
+            return this;
+        }
+
 
         public HtmlContent PutNull(string name)
         {
             return this;
         }
 
-        public HtmlContent Put(string name, JNumber value)
+        public HtmlContent Put(string name, JNumber v)
         {
             return this;
         }
 
-        public HtmlContent Put(string name, IDataInput value)
+        public HtmlContent Put(string name, IDataInput v)
         {
             return this;
         }
 
-        public HtmlContent Put(string name, bool value)
+        public HtmlContent Put(string name, bool v)
         {
             switch (kind)
             {
-                case VAR:
+                case JS:
                     if (counts[level]++ > 0) Add(',');
                     if (name != null)
                     {
@@ -1694,7 +1753,7 @@ namespace Greatbone.Core
                         Add('"');
                         Add(':');
                     }
-                    Add(value ? "true" : "false");
+                    Add(v ? "true" : "false");
                     break;
                 case UL:
                     break;
@@ -1702,11 +1761,11 @@ namespace Greatbone.Core
             return this;
         }
 
-        public HtmlContent Put(string name, short value)
+        public HtmlContent Put(string name, short v)
         {
             switch (kind)
             {
-                case VAR:
+                case JS:
                     if (counts[level]++ > 0) Add(',');
                     if (name != null)
                     {
@@ -1715,7 +1774,7 @@ namespace Greatbone.Core
                         Add('"');
                         Add(':');
                     }
-                    Add(value);
+                    Add(v);
                     break;
                 case UL:
                     break;
@@ -1723,11 +1782,11 @@ namespace Greatbone.Core
             return this;
         }
 
-        public HtmlContent Put(string name, int value)
+        public HtmlContent Put(string name, int v)
         {
             switch (kind)
             {
-                case VAR:
+                case JS:
                     if (counts[level]++ > 0) Add(',');
                     if (name != null)
                     {
@@ -1736,7 +1795,7 @@ namespace Greatbone.Core
                         Add('"');
                         Add(':');
                     }
-                    Add(value);
+                    Add(v);
                     break;
                 case UL:
                     break;
@@ -1744,11 +1803,11 @@ namespace Greatbone.Core
             return this;
         }
 
-        public HtmlContent Put(string name, long value)
+        public HtmlContent Put(string name, long v)
         {
             switch (kind)
             {
-                case VAR:
+                case JS:
                     if (counts[level]++ > 0) Add(',');
                     if (name != null)
                     {
@@ -1757,7 +1816,7 @@ namespace Greatbone.Core
                         Add('"');
                         Add(':');
                     }
-                    Add(value);
+                    Add(v);
                     break;
                 case UL:
                     break;
@@ -1765,11 +1824,11 @@ namespace Greatbone.Core
             return this;
         }
 
-        public HtmlContent Put(string name, double value)
+        public HtmlContent Put(string name, double v)
         {
             switch (kind)
             {
-                case VAR:
+                case JS:
                     if (counts[level]++ > 0) Add(',');
                     if (name != null)
                     {
@@ -1778,7 +1837,7 @@ namespace Greatbone.Core
                         Add('"');
                         Add(':');
                     }
-                    Add(value);
+                    Add(v);
                     break;
                 case UL:
                     break;
@@ -1786,11 +1845,11 @@ namespace Greatbone.Core
             return this;
         }
 
-        public HtmlContent Put(string name, decimal value)
+        public HtmlContent Put(string name, decimal v)
         {
             switch (kind)
             {
-                case VAR:
+                case JS:
                     if (counts[level]++ > 0) Add(',');
                     if (name != null)
                     {
@@ -1799,7 +1858,7 @@ namespace Greatbone.Core
                         Add('"');
                         Add(':');
                     }
-                    Add(value);
+                    Add(v);
                     break;
                 case UL:
                     break;
@@ -1807,11 +1866,11 @@ namespace Greatbone.Core
             return this;
         }
 
-        public HtmlContent Put(string name, DateTime value)
+        public HtmlContent Put(string name, DateTime v)
         {
             switch (kind)
             {
-                case VAR:
+                case JS:
                     if (counts[level]++ > 0) Add(',');
                     if (name != null)
                     {
@@ -1821,7 +1880,7 @@ namespace Greatbone.Core
                         Add(':');
                     }
                     Add('"');
-                    Add(value);
+                    Add(v);
                     Add('"');
                     break;
                 case UL:
@@ -1830,11 +1889,11 @@ namespace Greatbone.Core
             return this;
         }
 
-        public HtmlContent Put(string name, string value)
+        public HtmlContent Put(string name, string v)
         {
             switch (kind)
             {
-                case VAR:
+                case JS:
                     if (counts[level]++ > 0) Add(',');
                     if (name != null)
                     {
@@ -1843,14 +1902,14 @@ namespace Greatbone.Core
                         Add('"');
                         Add(':');
                     }
-                    if (value == null)
+                    if (v == null)
                     {
                         Add("null");
                     }
                     else
                     {
                         Add('"');
-                        AddEsc(value);
+                        AddJsonEsc(v);
                         Add('"');
                     }
                     break;
@@ -1860,11 +1919,11 @@ namespace Greatbone.Core
             return this;
         }
 
-        public HtmlContent Put(string name, ArraySegment<byte> value)
+        public HtmlContent Put(string name, ArraySegment<byte> v)
         {
             switch (kind)
             {
-                case VAR:
+                case JS:
                     break;
                 case UL:
                     break;
@@ -1872,36 +1931,11 @@ namespace Greatbone.Core
             return this;
         }
 
-        public HtmlContent Put(string name, short[] value)
-        {
-            return this;
-        }
-
-        public HtmlContent Put(string name, int[] value)
-        {
-            return this;
-        }
-
-        public HtmlContent Put(string name, long[] value)
-        {
-            return this;
-        }
-
-        public HtmlContent Put(string name, string[] value)
-        {
-            return this;
-        }
-
-        public HtmlContent Put(string name, Dictionary<string, string> value)
-        {
-            return this;
-        }
-
-        public HtmlContent Put(string name, IData value, int proj = 0x00ff)
+        public HtmlContent Put(string name, short[] v)
         {
             switch (kind)
             {
-                case VAR:
+                case JS:
                     if (counts[level]++ > 0) Add(',');
                     if (name != null)
                     {
@@ -1910,7 +1944,165 @@ namespace Greatbone.Core
                         Add('"');
                         Add(':');
                     }
-                    if (value == null)
+                    if (v == null)
+                    {
+                        Add("null");
+                    }
+                    else
+                    {
+                        Add('[');
+                        for (int i = 0; i < v.Length; i++)
+                        {
+                            if (i > 0) Add(',');
+                            Add(v[i]);
+                        }
+                        Add(']');
+                    }
+                    break;
+                case UL:
+                    break;
+            }
+            return this;
+        }
+
+        public HtmlContent Put(string name, int[] v)
+        {
+            switch (kind)
+            {
+                case JS:
+                    if (counts[level]++ > 0) Add(',');
+                    if (name != null)
+                    {
+                        Add('"');
+                        Add(name);
+                        Add('"');
+                        Add(':');
+                    }
+                    if (v == null)
+                    {
+                        Add("null");
+                    }
+                    else
+                    {
+                        Add('[');
+                        for (int i = 0; i < v.Length; i++)
+                        {
+                            if (i > 0) Add(',');
+                            Add(v[i]);
+                        }
+                        Add(']');
+                    }
+                    break;
+                case UL:
+                    break;
+            }
+            return this;
+        }
+
+        public HtmlContent Put(string name, long[] v)
+        {
+            switch (kind)
+            {
+                case JS:
+                    if (counts[level]++ > 0) Add(',');
+                    if (name != null)
+                    {
+                        Add('"');
+                        Add(name);
+                        Add('"');
+                        Add(':');
+                    }
+                    if (v == null)
+                    {
+                        Add("null");
+                    }
+                    else
+                    {
+                        Add('[');
+                        for (int i = 0; i < v.Length; i++)
+                        {
+                            if (i > 0) Add(',');
+                            Add(v[i]);
+                        }
+                        Add(']');
+                    }
+                    break;
+                case UL:
+                    break;
+            }
+            return this;
+        }
+
+        public HtmlContent Put(string name, string[] v)
+        {
+            switch (kind)
+            {
+                case JS:
+                    if (counts[level]++ > 0) Add(',');
+                    if (name != null)
+                    {
+                        Add('"');
+                        Add(name);
+                        Add('"');
+                        Add(':');
+                    }
+                    if (v == null)
+                    {
+                        Add("null");
+                    }
+                    else
+                    {
+                        Add('[');
+                        for (int i = 0; i < v.Length; i++)
+                        {
+                            if (i > 0) Add(',');
+                            string str = v[i];
+                            if (str == null)
+                            {
+                                Add("null");
+                            }
+                            else
+                            {
+                                Add('"');
+                                AddJsonEsc(str);
+                                Add('"');
+                            }
+                        }
+                        Add(']');
+                    }
+                    break;
+                case UL:
+                    break;
+            }
+            return this;
+        }
+
+        public HtmlContent Put(string name, Map<string, string> v)
+        {
+            switch (kind)
+            {
+                case JS:
+                    break;
+                case UL:
+                    break;
+            }
+            return this;
+        }
+
+        public HtmlContent Put(string name, IData v, int proj = 0x00ff)
+        {
+            switch (kind)
+            {
+                case JS:
+                    if (counts[level]++ > 0) Add(',');
+                    if (name != null)
+                    {
+                        Add('"');
+                        Add(name);
+                        Add('"');
+                        Add(':');
+                    }
+                    if (v == null)
                     {
                         Add("null");
                     }
@@ -1920,13 +2112,13 @@ namespace Greatbone.Core
                         Add('{');
 
                         // put shard property if any
-                        string shard = (value as IShardable)?.Shard;
+                        string shard = (v as IShardable)?.Shard;
                         if (shard != null)
                         {
                             Put("#", shard);
                         }
 
-                        value.Write(this, proj);
+                        v.Write(this, proj);
                         Add('}');
                         level--; // exit
                     }
@@ -1937,11 +2129,11 @@ namespace Greatbone.Core
             return this;
         }
 
-        public HtmlContent Put<D>(string name, D[] value, int proj = 0x00ff) where D : IData
+        public HtmlContent Put<D>(string name, D[] v, int proj = 0x00ff) where D : IData
         {
             switch (kind)
             {
-                case VAR:
+                case JS:
                     if (counts[level]++ > 0) Add(',');
                     if (name != null)
                     {
@@ -1950,7 +2142,7 @@ namespace Greatbone.Core
                         Add('"');
                         Add(':');
                     }
-                    if (value == null)
+                    if (v == null)
                     {
                         Add("null");
                     }
@@ -1958,9 +2150,44 @@ namespace Greatbone.Core
                     {
                         counts[++level] = 0; // enter
                         Add('[');
-                        for (int i = 0; i < value.Length; i++)
+                        for (int i = 0; i < v.Length; i++)
                         {
-                            Put(null, value[i], proj);
+                            Put(null, v[i], proj);
+                        }
+                        Add(']');
+                        level--; // exit
+                    }
+                    break;
+                case UL:
+                    break;
+            }
+            return this;
+        }
+
+        public HtmlContent Put<K, D>(string name, Map<K, D> v, int proj = 0x00ff) where D : IData
+        {
+            switch (kind)
+            {
+                case JS:
+                    if (counts[level]++ > 0) Add(',');
+                    if (name != null)
+                    {
+                        Add('"');
+                        Add(name);
+                        Add('"');
+                        Add(':');
+                    }
+                    if (v == null)
+                    {
+                        Add("null");
+                    }
+                    else
+                    {
+                        counts[++level] = 0; // enter
+                        Add('[');
+                        foreach (var pair in v)
+                        {
+                            Put(null, pair.Value, proj);
                         }
                         Add(']');
                         level--; // exit

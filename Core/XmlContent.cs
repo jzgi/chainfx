@@ -188,194 +188,194 @@ namespace Greatbone.Core
             return this;
         }
 
-        public XmlContent Put(string name, JNumber value)
+        public XmlContent Put(string name, JNumber v)
         {
             Add(' ');
             Add(name);
             Add('=');
             Add('"');
-            Add(value);
+            Add(v);
             Add('"');
             return this;
         }
 
-        public XmlContent Put(string name, IDataInput value)
+        public XmlContent Put(string name, IDataInput v)
         {
             return this;
         }
 
-        public XmlContent Put(string name, bool value)
-        {
-            Add(' ');
-            Add(name);
-            Add('=');
-            Add('"');
-            Add(value);
-            Add('"');
-            return this;
-        }
-
-        public XmlContent Put(string name, short value)
+        public XmlContent Put(string name, bool v)
         {
             Add(' ');
             Add(name);
             Add('=');
             Add('"');
-            Add(value);
+            Add(v);
             Add('"');
             return this;
         }
 
-        public XmlContent Put(string name, int value)
+        public XmlContent Put(string name, short v)
         {
             Add(' ');
             Add(name);
             Add('=');
             Add('"');
-            Add(value);
+            Add(v);
             Add('"');
             return this;
         }
 
-        public XmlContent Put(string name, long value)
+        public XmlContent Put(string name, int v)
         {
             Add(' ');
             Add(name);
             Add('=');
             Add('"');
-            Add(value);
+            Add(v);
             Add('"');
             return this;
         }
 
-        public XmlContent Put(string name, double value)
+        public XmlContent Put(string name, long v)
         {
             Add(' ');
             Add(name);
             Add('=');
             Add('"');
-            Add(value);
+            Add(v);
             Add('"');
             return this;
         }
 
-        public XmlContent Put(string name, decimal value)
+        public XmlContent Put(string name, double v)
         {
             Add(' ');
             Add(name);
             Add('=');
             Add('"');
-            Add(value);
+            Add(v);
             Add('"');
             return this;
         }
 
-        public XmlContent Put(string name, DateTime value)
+        public XmlContent Put(string name, decimal v)
         {
             Add(' ');
             Add(name);
             Add('=');
             Add('"');
-            Add(value);
+            Add(v);
             Add('"');
             return this;
         }
 
-        public XmlContent Put(string name, string value)
+        public XmlContent Put(string name, DateTime v)
         {
             Add(' ');
             Add(name);
             Add('=');
             Add('"');
-            Add(value);
+            Add(v);
             Add('"');
             return this;
         }
 
-        public XmlContent Put(string name, ArraySegment<byte> value)
+        public XmlContent Put(string name, string v)
+        {
+            Add(' ');
+            Add(name);
+            Add('=');
+            Add('"');
+            Add(v);
+            Add('"');
+            return this;
+        }
+
+        public XmlContent Put(string name, ArraySegment<byte> v)
         {
             return this;
         }
 
-        public XmlContent Put(string name, short[] value)
+        public XmlContent Put(string name, short[] v)
         {
             Add(' ');
             Add(name);
             Add('=');
             Add('"');
 
-            for (int i = 0; i < value.Length; i++)
+            for (int i = 0; i < v.Length; i++)
             {
                 if (i > 0) Add(',');
-                Add(value[i]);
+                Add(v[i]);
             }
 
             Add('"');
             return this;
         }
 
-        public XmlContent Put(string name, int[] value)
+        public XmlContent Put(string name, int[] v)
         {
             Add(' ');
             Add(name);
             Add('=');
             Add('"');
 
-            for (int i = 0; i < value.Length; i++)
+            for (int i = 0; i < v.Length; i++)
             {
                 if (i > 0) Add(',');
-                Add(value[i]);
+                Add(v[i]);
             }
 
             Add('"');
             return this;
         }
 
-        public XmlContent Put(string name, long[] value)
+        public XmlContent Put(string name, long[] v)
         {
             Add(' ');
             Add(name);
             Add('=');
             Add('"');
 
-            for (int i = 0; i < value.Length; i++)
+            for (int i = 0; i < v.Length; i++)
             {
                 if (i > 0) Add(',');
-                Add(value[i]);
+                Add(v[i]);
             }
 
             Add('"');
             return this;
         }
 
-        public XmlContent Put(string name, string[] value)
+        public XmlContent Put(string name, string[] v)
         {
             Add(' ');
             Add(name);
             Add('=');
             Add('"');
 
-            for (int i = 0; i < value.Length; i++)
+            for (int i = 0; i < v.Length; i++)
             {
                 if (i > 0) Add(',');
-                Add(value[i]);
+                Add(v[i]);
             }
 
             Add('"');
             return this;
         }
 
-        public XmlContent Put(string name, Dictionary<string, string> value)
+        public XmlContent Put(string name, Map<string, string> v)
         {
             return this;
         }
 
-        public XmlContent Put(string name, IData value, int proj = 0x00ff)
+        public XmlContent Put(string name, IData v, int proj = 0x00ff)
         {
             return this;
         }
 
-        public XmlContent Put<D>(string name, D[] value, int proj = 0x00ff) where D : IData
+        public XmlContent Put<D>(string name, D[] v, int proj = 0x00ff) where D : IData
         {
             return this;
         }

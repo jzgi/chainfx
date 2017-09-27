@@ -81,31 +81,17 @@ namespace Greatbone.Core
             return this;
         }
 
-        public FormContent Put(string name, JNumber value)
+        public FormContent Put(string name, JNumber v)
         {
             return this;
         }
 
-        public FormContent Put(string name, IDataInput value)
+        public FormContent Put(string name, IDataInput v)
         {
             return this;
         }
 
-        public FormContent Put(string name, bool value)
-        {
-            ordinal++;
-
-            if (ordinal > 0)
-            {
-                Add('&');
-            }
-            Add(name);
-            Add('=');
-            Add(value ? "true" : "false");
-            return this;
-        }
-
-        public FormContent Put(string name, short value)
+        public FormContent Put(string name, bool v)
         {
             ordinal++;
 
@@ -115,11 +101,11 @@ namespace Greatbone.Core
             }
             Add(name);
             Add('=');
-            Add(value);
+            Add(v ? "true" : "false");
             return this;
         }
 
-        public FormContent Put(string name, int value)
+        public FormContent Put(string name, short v)
         {
             ordinal++;
 
@@ -129,11 +115,11 @@ namespace Greatbone.Core
             }
             Add(name);
             Add('=');
-            Add(value);
+            Add(v);
             return this;
         }
 
-        public FormContent Put(string name, long value)
+        public FormContent Put(string name, int v)
         {
             ordinal++;
 
@@ -143,11 +129,11 @@ namespace Greatbone.Core
             }
             Add(name);
             Add('=');
-            Add(value);
+            Add(v);
             return this;
         }
 
-        public FormContent Put(string name, double value)
+        public FormContent Put(string name, long v)
         {
             ordinal++;
 
@@ -157,11 +143,11 @@ namespace Greatbone.Core
             }
             Add(name);
             Add('=');
-            Add(value);
+            Add(v);
             return this;
         }
 
-        public FormContent Put(string name, decimal value)
+        public FormContent Put(string name, double v)
         {
             ordinal++;
 
@@ -171,11 +157,11 @@ namespace Greatbone.Core
             }
             Add(name);
             Add('=');
-            Add(value);
+            Add(v);
             return this;
         }
 
-        public FormContent Put(string name, DateTime value)
+        public FormContent Put(string name, decimal v)
         {
             ordinal++;
 
@@ -185,11 +171,11 @@ namespace Greatbone.Core
             }
             Add(name);
             Add('=');
-            Add(value);
+            Add(v);
             return this;
         }
 
-        public FormContent Put(string name, string value)
+        public FormContent Put(string name, DateTime v)
         {
             ordinal++;
 
@@ -199,16 +185,30 @@ namespace Greatbone.Core
             }
             Add(name);
             Add('=');
-            AddEsc(value);
+            Add(v);
             return this;
         }
 
-        public virtual FormContent Put(string name, ArraySegment<byte> value)
+        public FormContent Put(string name, string v)
+        {
+            ordinal++;
+
+            if (ordinal > 0)
+            {
+                Add('&');
+            }
+            Add(name);
+            Add('=');
+            AddEsc(v);
+            return this;
+        }
+
+        public virtual FormContent Put(string name, ArraySegment<byte> v)
         {
             return this; // ignore ir
         }
 
-        public FormContent Put(string name, short[] value)
+        public FormContent Put(string name, short[] v)
         {
             ordinal++;
 
@@ -218,15 +218,15 @@ namespace Greatbone.Core
             }
             Add(name);
             Add('=');
-            for (int i = 0; i < value.Length; i++)
+            for (int i = 0; i < v.Length; i++)
             {
                 if (i > 0) Add(',');
-                Add(value[i]);
+                Add(v[i]);
             }
             return this;
         }
 
-        public FormContent Put(string name, int[] value)
+        public FormContent Put(string name, int[] v)
         {
             ordinal++;
 
@@ -236,15 +236,15 @@ namespace Greatbone.Core
             }
             Add(name);
             Add('=');
-            for (int i = 0; i < value.Length; i++)
+            for (int i = 0; i < v.Length; i++)
             {
                 if (i > 0) Add(',');
-                Add(value[i]);
+                Add(v[i]);
             }
             return this;
         }
 
-        public FormContent Put(string name, long[] value)
+        public FormContent Put(string name, long[] v)
         {
             ordinal++;
 
@@ -254,15 +254,15 @@ namespace Greatbone.Core
             }
             Add(name);
             Add('=');
-            for (int i = 0; i < value.Length; i++)
+            for (int i = 0; i < v.Length; i++)
             {
                 if (i > 0) Add(',');
-                Add(value[i]);
+                Add(v[i]);
             }
             return this;
         }
 
-        public FormContent Put(string name, string[] value)
+        public FormContent Put(string name, string[] v)
         {
             ordinal++;
 
@@ -272,25 +272,25 @@ namespace Greatbone.Core
             }
             Add(name);
             Add('=');
-            for (int i = 0; i < value.Length; i++)
+            for (int i = 0; i < v.Length; i++)
             {
                 if (i > 0) Add(',');
-                Add(value[i]);
+                Add(v[i]);
             }
             return this;
         }
 
-        public FormContent Put(string name, Dictionary<string, string> value)
+        public FormContent Put(string name, Map<string, string> v)
         {
             throw new NotImplementedException();
         }
 
-        public FormContent Put(string name, IData value, int proj = 0x00ff)
+        public FormContent Put(string name, IData v, int proj = 0x00ff)
         {
             return this;
         }
 
-        public FormContent Put<D>(string name, D[] value, int proj = 0x00ff) where D : IData
+        public FormContent Put<D>(string name, D[] v, int proj = 0x00ff) where D : IData
         {
             return this;
         }

@@ -3,9 +3,9 @@ using System.Collections.Generic;
 
 namespace Greatbone.Core
 {
-    ///
+    /// <summary>
     /// A JSON object model.
-    ///
+    /// </summary>
     public class JObj : Roll<JMbr>, IDataInput
     {
         public JObj(int capacity = 16) : base(capacity)

@@ -31,44 +31,7 @@ namespace Greatbone.Sample
                 HtmlContent h = new HtmlContent(ac, true);
                 h.T("<html><head><script>");
 
-                h.T("var cities = [");
-                bool bgn = false;
-                foreach (var pair in ((CareService) Service).Cities)
-                {
-                    var c = pair.Value;
-                    if (bgn)
-                    {
-                        h.T(",");
-                    }
-                    h.T("{");
-                    h.T("name:\"").T(c.name).T("\",");
-                    h.T("x1:").T(c.x1).T(",");
-                    h.T("y1:").T(c.y1).T(",");
-                    h.T("x2:").T(c.x2).T(",");
-                    h.T("y2:").T(c.y2).T(",");
-                    h.T("\"areas\":[");
-                    if (c.areas != null)
-                    {
-                        for (int i = 0; i < c.areas.Length; i++)
-                        {
-                            if (i > 0)
-                            {
-                                h.T(",");
-                            }
-                            var a = c.areas[i];
-                            h.T("{");
-                            h.T("name:\"").T(a.name).T("\",");
-                            h.T("x1:").T(a.x1).T(",");
-                            h.T("y1:").T(a.y1).T(",");
-                            h.T("x2:").T(a.x2).T(",");
-                            h.T("y2:").T(a.y2);
-                            h.T("}");
-                        }
-                    }
-                    h.T("]}");
-                    bgn = true;
-                }
-                h.T("];");
+                h.T("var cities = ").JSON(((CareService) Service).Cities).T(";");
 
                 h.T("navigator.geolocation.getCurrentPosition(function(p) {");
                 h.T("var city=''; var area='';");
