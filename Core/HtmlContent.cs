@@ -8,67 +8,23 @@ namespace Greatbone.Core
     /// </summary>
     public class HtmlContent : DynamicContent, IDataOutput<HtmlContent>
     {
-        static Action<HtmlContent, int, char> intp;
+        readonly ActionContext ac;
 
-        static Action<HtmlContent, decimal, char> decimalp;
+        // starting positions of each level
+        readonly int[] counts = new int[8];
 
-        static Action<HtmlContent, string, char> stringp;
+        // current level
+        int level;
 
-        public static void IntPlug(Action<HtmlContent, int, char> plug)
+        sbyte kind;
+
+        internal const sbyte VAR = 1, UL = 2;
+
+        public HtmlContent(ActionContext ac, bool octet, int capacity = 32 * 1024) : base(octet, capacity)
         {
-            intp = plug;
+            this.ac = ac;
         }
 
-        public static void DecimalPlug(Action<HtmlContent, decimal, char> plug)
-        {
-            decimalp = plug;
-        }
-
-        public static void StringPlug(Action<HtmlContent, string, char> plug)
-        {
-            stringp = plug;
-        }
-
-        internal const sbyte
-            TABLE_THEAD = 1,
-            TABLE_TBODY = 2,
-            GRID_DIV = 3,
-            LIST_UL = 4,
-            PICKER = 5;
-
-        ///
-        /// The outputing context for per data object
-        ///
-        struct Ctx
-        {
-            // data control node
-            internal sbyte node;
-
-            internal Work varwork;
-
-            internal IData obj;
-
-            // within a group boundary
-            internal bool group;
-
-            internal void OutputVarKey(HtmlContent cont)
-            {
-                varwork.OutputVarKey(obj, cont);
-            }
-        }
-
-        // outputing context chain
-        const int DEPTH = 4;
-
-        readonly Ctx[] chain = new Ctx[DEPTH];
-
-        int level = -1; // current level
-
-        public HtmlContent(bool octet, int capacity = 32 * 1024) : base(octet, capacity)
-        {
-        }
-
-        ///
         public override string Type => "text/html; charset=utf-8";
 
         void AddLabel(string label, string alt)
@@ -295,16 +251,15 @@ namespace Greatbone.Core
             return this;
         }
 
-        public void TOOLBAR(ActionContext ac, Work work, object obj)
+        public void TOOLBAR(Work work, object obj)
         {
             Add("<div data-sticky-container>");
             Add("<div class=\"sticky\" style=\"width: 100%\" data-sticky  data-options=\"anchor: page; marginTop: 0; stickyOn: small;\">");
             Add("<div class=\"top-bar\">");
-
             Add("<div class=\"top-bar-left\">");
             if (work.UiActions != null)
             {
-                TRIGGERS(ac, work.UiActions, obj);
+                TRIGGERS(work.UiActions, obj);
             }
             Add("</div>");
 
@@ -317,7 +272,7 @@ namespace Greatbone.Core
             Add("</div>");
         }
 
-        public void PAGENATE(ActionContext ac, int count)
+        public void PAGENATE(int count)
         {
             // pagination
             ActionInfo ai = ac.Doer;
@@ -449,54 +404,37 @@ namespace Greatbone.Core
             return this;
         }
 
-        public HtmlContent TABLE<D>(ActionContext ac, Work varwork, D[] arr, int proj = 0x00ff) where D : IData
+        public HtmlContent SHEET<D>(D[] arr, int proj = 0x00ff) where D : IData
         {
-            bool checks = false; // to draw selection-checkboxes?
-            if (varwork != null)
-            {
-                Add("<form id=\"tableform\">");
-                TOOLBAR(ac, ac.Work, arr);
-                checks = ac.Work.Buttons > 0;
-            }
+            Work work = ac.Work;
+            Work varwork = work.varwork;
+            Add("<form id=\"sheetform\">");
+            TOOLBAR(work, arr);
 
             if (arr != null)
             {
-                ++level;
-                chain[level].varwork = varwork;
-
                 Add("<table class=\"scroll unstriped\">");
-
                 ActionInfo[] ais = varwork?.UiActions;
-
-                chain[level].node = TABLE_THEAD;
-
                 Add("<thead>");
                 Add("<tr>");
 
-                if (checks && level == 0)
+                if (work.Buttons > 0)
                 {
                     Add("<th></th>");
                 }
-
-                arr[0].Write(this, proj);
                 if (ais != null)
                 {
                     Add("<th></th>"); // head for triggers
                 }
                 Add("</tr>");
                 Add("</thead>");
-
-                chain[level].node = TABLE_TBODY;
-
                 Add("<tbody>");
                 for (int i = 0; i < arr.Length; i++)
                 {
                     D obj = arr[i];
-                    chain[level].obj = obj;
-
                     Add("<tr>");
 
-                    if (checks && level == 0)
+                    if (work.Buttons > 0)
                     {
                         Add("<td>");
                         Add("<input name=\"key\" type=\"checkbox\" value=\"");
@@ -504,13 +442,11 @@ namespace Greatbone.Core
                         Add("\"></td>");
                     }
 
-                    arr[i].Write(this, proj);
-
                     // acitons
                     if (ais != null)
                     {
                         Add("<td style=\"width: 1px; white-space: nowrap;\">");
-                        TRIGGERS(ac, ais);
+                        TRIGGERS(ais);
                         Add("</td>");
                     }
 
@@ -524,7 +460,7 @@ namespace Greatbone.Core
             if (ac != null)
             {
                 // pagination controls if any
-                PAGENATE(ac, arr?.Length ?? 0);
+                PAGENATE(arr?.Length ?? 0);
 
                 Add("</form>");
             }
@@ -533,7 +469,6 @@ namespace Greatbone.Core
 
         public HtmlContent GRID(IDataInput inp, Action<IDataInput, HtmlContent> pipe)
         {
-            chain[++level].node = GRID_DIV;
             if (inp != null)
             {
                 Add("<div class=\"expanded row\">");
@@ -555,31 +490,23 @@ namespace Greatbone.Core
             return this;
         }
 
-        public HtmlContent GRID<D>(ActionContext formctx, Work varwork, D[] arr, int proj = 0x00ff) where D : IData
+        public HtmlContent GRID<D>(D[] arr, int proj = 0x00ff) where D : IData
         {
-            bool checks = false; // to render checkboxes?
-            if (formctx != null)
-            {
-                Add("<form id=\"gridform\">");
-                TOOLBAR(formctx, formctx.Work, arr);
-                checks = formctx.Work.Buttons > 0;
-            }
+            Work work = ac.Work;
+            Work varwork = work.varwork;
+            Add("<form id=\"gridform\">");
+            TOOLBAR(work, arr);
 
-            if (arr != null) // render grid component
+            if (arr != null) // render grid cells
             {
-                ++level;
-                chain[level].node = GRID_DIV;
-                chain[level].varwork = varwork;
-
                 Add("<div class=\"grid-x grid-padding-x small-up-1 medium-up-2 large-up-3\">");
                 for (int i = 0; i < arr.Length; i++)
                 {
                     Add("<div class=\"cell\">");
                     Add("<div class=\"card\">");
                     D obj = arr[i];
-                    chain[level].obj = obj;
 
-                    if (checks && level == 0)
+                    if (work.Buttons > 0)
                     {
                         Add("<div class=\"grid-x grid-padding-x\">");
                         Add("<div class=\"small-3 cell\">");
@@ -592,14 +519,12 @@ namespace Greatbone.Core
                         Add("</div>");
                     }
 
-                    obj.Write(this, proj);
-
-                    // output action triggers
+                    // output var triggers
                     ActionInfo[] ais = varwork?.UiActions;
                     if (ais != null)
                     {
                         Add("<div style=\"text-align: right; border-top: 1px solid silver\">");
-                        TRIGGERS(null, ais, obj);
+                        TRIGGERS(ais, obj);
                         Add("</div>");
                     }
                     Add("</div>");
@@ -614,29 +539,18 @@ namespace Greatbone.Core
                 Add("</div>");
             }
 
-            if (formctx != null)
-            {
-                // pagination controls if any
-                PAGENATE(formctx, arr?.Length ?? 0);
-                Add("</form>");
-            }
+            // pagination if any
+            PAGENATE(arr?.Length ?? 0);
+            Add("</form>");
             return this;
         }
 
         public HtmlContent LIST<D>(ActionContext formctx, Work varWork, D[] arr, int proj = 0x00ff) where D : IData
         {
-            if (formctx != null)
-            {
-                Add("<form id=\"listform\">");
-                TOOLBAR(formctx, formctx.Work, arr);
-            }
+            Add("<form id=\"listform\">");
 
             if (arr != null)
             {
-                ++level;
-                chain[level].node = LIST_UL;
-                chain[level].varwork = varWork;
-
                 Add("<ul>");
                 for (int i = 0; i < arr.Length; i++)
                 {
@@ -651,13 +565,13 @@ namespace Greatbone.Core
             if (formctx != null)
             {
                 // pagination controls if any
-                PAGENATE(formctx, arr?.Length ?? 0);
+                PAGENATE(arr?.Length ?? 0);
                 Add("</form>");
             }
             return this;
         }
 
-        public HtmlContent TRIGGERS(ActionContext ac, ActionInfo[] ais, object obj = null)
+        public HtmlContent TRIGGERS(ActionInfo[] ais, object obj = null)
         {
             if (ais == null) return this;
 
@@ -684,7 +598,7 @@ namespace Greatbone.Core
                     Add(" primary\" href=\"");
                     for (int lvl = 0; lvl <= level; lvl++)
                     {
-                        chain[lvl].OutputVarKey(this);
+//                        chain[lvl].OutputVarKey(this);
                         Add('/');
                     }
                     Add(ai.RPath);
@@ -744,7 +658,7 @@ namespace Greatbone.Core
                     Add("\" formaction=\"");
                     for (int lvl = 0; lvl <= level; lvl++)
                     {
-                        chain[lvl].OutputVarKey(this);
+//                        chain[lvl].OutputVarKey(this);
                         Add('/');
                     }
                     Add(ai.Key);
@@ -1767,593 +1681,292 @@ namespace Greatbone.Core
             return this;
         }
 
-        public HtmlContent PutRaw(string name, string raw)
+        public HtmlContent Put(string name, bool value)
         {
-            return this;
-        }
-
-        public void Group(string label)
-        {
-            chain[level].group = true; // set group boundary
-
-            switch (chain[level].node)
+            switch (kind)
             {
-                case TABLE_THEAD:
-                    Add("<th>");
-                    AddLabel(label, null);
-                    Add("</th>");
-                    break;
-                case TABLE_TBODY:
-                    Add("<td>");
-                    break;
-                case GRID_DIV:
-                    Add("<div class=\"grid-x\">");
-                    Add("<div class=\"small-3 cell\">");
-                    AddLabel(label, null);
-                    Add("</div>");
-                    Add("<div class=\"small-9 cell\">"); // opening
-                    break;
-            }
-        }
-
-        public void UnGroup()
-        {
-            switch (chain[level].node)
-            {
-                case TABLE_THEAD:
-                    break;
-                case TABLE_TBODY:
-                    Add("</td>");
-                    break;
-                case GRID_DIV:
-                    Add("</div>"); // closing
-                    Add("</div>");
-                    break;
-            }
-
-            chain[level].group = false;
-        }
-
-        public HtmlContent Put(string name, bool value, string label = null, Func<bool, string> opt = null)
-        {
-            switch (chain[level].node)
-            {
-                case TABLE_THEAD:
-                    if (!chain[level].group)
+                case VAR:
+                    if (counts[level]++ > 0) Add(',');
+                    if (name != null)
                     {
-                        Add("<th>");
-                        AddLabel(label, name);
-                        Add("</th>");
+                        Add('"');
+                        Add(name);
+                        Add('"');
+                        Add(':');
                     }
+                    Add(value ? "true" : "false");
                     break;
-                case TABLE_TBODY:
-                    if (!chain[level].group)
-                    {
-                        Add("<td style=\"text-align: right;\">");
-                        if (opt != null) Add(opt(value));
-                        else Add(value);
-                        Add("</td>");
-                    }
-                    else
-                    {
-                        if (opt != null) Add(opt(value));
-                        else Add(value);
-                        Add(' ');
-                    }
-                    break;
-                case GRID_DIV:
-                    if (!chain[level].group)
-                    {
-                        Add("<div class=\"grid-x\">");
-                        Add("<div class=\"small-3 cell\">");
-                        AddLabel(label, name);
-                        Add("</div>");
-                        Add("<div class=\"small-9 cell\">");
-                        if (opt != null) Add(opt(value));
-                        else Add(value);
-                        Add("</div>");
-                        Add("</div>");
-                    }
-                    else
-                    {
-                        if (opt != null) Add(opt(value));
-                        else Add(value);
-                        Add(' ');
-                    }
-                    break;
-                case LIST_UL:
+                case UL:
                     break;
             }
             return this;
         }
 
-        public HtmlContent Put(string name, short value, string label = null, IOptable<short> opt = null)
+        public HtmlContent Put(string name, short value)
         {
-            switch (chain[level].node)
+            switch (kind)
             {
-                case TABLE_THEAD:
-                    if (!chain[level].group)
+                case VAR:
+                    if (counts[level]++ > 0) Add(',');
+                    if (name != null)
                     {
-                        Add("<th>");
-                        AddLabel(label, name);
-                        Add("</th>");
+                        Add('"');
+                        Add(name);
+                        Add('"');
+                        Add(':');
                     }
-                    break;
-                case TABLE_TBODY:
-                    if (!chain[level].group)
-                    {
-                        Add("<td style=\"text-align: right;\">");
-                        if (opt != null) Add(opt.Obtain(value));
-                        else Add(value);
-                        Add("</td>");
-                    }
-                    else
-                    {
-                        if (opt != null) Add(opt.Obtain(value));
-                        else Add(value);
-                        Add(' ');
-                    }
-                    break;
-                case GRID_DIV:
-                    if (!chain[level].group)
-                    {
-                        Add("<div class=\"grid-x\">");
-                        Add("<div class=\"small-3 cell\">");
-                        AddLabel(label, name);
-                        Add("</div>");
-                        Add("<div class=\"small-9 cell\">");
-                        if (opt != null) Add(opt.Obtain(value));
-                        else Add(value);
-                        Add("</div>");
-                        Add("</div>");
-                    }
-                    else
-                    {
-                        if (opt != null) Add(opt.Obtain(value));
-                        else Add(value);
-                        Add(' ');
-                    }
-                    break;
-                case LIST_UL:
-                    break;
-            }
-            return this;
-        }
-
-        public HtmlContent Put(string name, int value, string label = null, IOptable<int> opt = null)
-        {
-            switch (chain[level].node)
-            {
-                case TABLE_THEAD:
-                    if (!chain[level].group)
-                    {
-                        Add("<th>");
-                        AddLabel(label, name);
-                        Add("</th>");
-                    }
-                    break;
-                case TABLE_TBODY:
-                    if (!chain[level].group)
-                    {
-                        Add("<td style=\"text-align: right;\">");
-                        if (opt != null) Add(opt.Obtain(value));
-                        else Add(value);
-                        Add("</td>");
-                    }
-                    else
-                    {
-                        if (opt != null) Add(opt.Obtain(value));
-                        else Add(value);
-                        Add(' ');
-                    }
-                    break;
-                case GRID_DIV:
-                    if (!chain[level].group)
-                    {
-                        Add("<div class=\"grid-x\">");
-                        Add("<div class=\"small-3 cell\">");
-                        AddLabel(label, name);
-                        Add("</div>");
-                        Add("<div class=\"small-9 cell\">");
-                        if (opt != null) Add(opt.Obtain(value));
-                        else Add(value);
-                        Add("</div>");
-                        Add("</div>");
-                    }
-                    else
-                    {
-                        if (opt != null) Add(opt.Obtain(value));
-                        else Add(value);
-                        Add(' ');
-                    }
-                    break;
-                case LIST_UL:
-                    break;
-            }
-            return this;
-        }
-
-        public HtmlContent Put(string name, long value, string label = null, IOptable<long> opt = null)
-        {
-            switch (chain[level].node)
-            {
-                case TABLE_THEAD:
-                    if (!chain[level].group)
-                    {
-                        Add("<th>");
-                        AddLabel(label, name);
-                        Add("</th>");
-                    }
-                    break;
-                case TABLE_TBODY:
-                    if (!chain[level].group)
-                    {
-                        Add("<td style=\"text-align: right;\">");
-                        if (opt != null) Add(opt.Obtain(value));
-                        else Add(value);
-                        Add("</td>");
-                    }
-                    else
-                    {
-                        if (opt != null) Add(opt.Obtain(value));
-                        else Add(value);
-                        Add(' ');
-                    }
-                    break;
-                case GRID_DIV:
-                    if (!chain[level].group)
-                    {
-                        Add("<div class=\"grid-x\">");
-                        Add("<div class=\"small-3 cell\">");
-                        AddLabel(label, name);
-                        Add("</div>");
-                        Add("<div class=\"small-9 cell\">");
-                        if (opt != null) Add(opt.Obtain(value));
-                        else Add(value);
-                        Add("</div>");
-                        Add("</div>");
-                    }
-                    else
-                    {
-                        if (opt != null) Add(opt.Obtain(value));
-                        else Add(value);
-                        Add(' ');
-                    }
-                    break;
-                case LIST_UL:
-                    Add("<div class=\"pure-u-1 pure-u-md-1-2\">");
-                    // NUMBER(name, v);
-                    Add("</div>");
-                    break;
-            }
-            return this;
-        }
-
-        public HtmlContent Put(string name, double value, string label = null)
-        {
-            switch (chain[level].node)
-            {
-                case TABLE_THEAD:
-                    if (!chain[level].group)
-                    {
-                        Add("<th>");
-                        AddLabel(label, name);
-                        Add("</th>");
-                    }
-                    break;
-                case TABLE_TBODY:
-                    if (!chain[level].group)
-                    {
-                        Add("<td style=\"text-align: right;\">");
-                        Add(value);
-                        Add("</td>");
-                    }
-                    else
-                    {
-                        Add(value);
-                        Add(' ');
-                    }
-                    break;
-                case GRID_DIV:
-                    if (!chain[level].group)
-                    {
-                        Add("<div class=\"grid-x\">");
-                        Add("<div class=\"small-3 cell\">");
-                        AddLabel(label, name);
-                        Add("</div>");
-                        Add("<div class=\"small-9 cell\">");
-                        Add(value);
-                        Add("</div>");
-                        Add("</div>");
-                    }
-                    else
-                    {
-                        Add(value);
-                        Add(' ');
-                    }
-                    break;
-                case LIST_UL:
-                    break;
-            }
-            return this;
-        }
-
-        public HtmlContent Put(string name, decimal value, string label = null, char fmt = '\0')
-        {
-            switch (chain[level].node)
-            {
-                case TABLE_THEAD:
-                    if (!chain[level].group)
-                    {
-                        Add("<th>");
-                        AddLabel(label, name);
-                        Add("</th>");
-                    }
-                    break;
-                case TABLE_TBODY:
-                    if (!chain[level].group)
-                    {
-                        Add("<td style=\"text-align: right;\">");
-                        if (fmt != 0 && decimalp != null) decimalp(this, value, fmt);
-                        else Add(value);
-                        Add("</td>");
-                    }
-                    else
-                    {
-                        Add(value);
-                        Add(' ');
-                    }
-                    break;
-                case GRID_DIV:
-                    if (!chain[level].group)
-                    {
-                        Add("<div class=\"grid-x\">");
-                        Add("<div class=\"small-3 cell\">");
-                        AddLabel(label, name);
-                        Add("</div>");
-                        Add("<div class=\"small-9 cell\">");
-                        if (fmt != 0 && decimalp != null) decimalp(this, value, fmt);
-                        else Add(value);
-                        Add("</div>");
-                        Add("</div>");
-                    }
-                    else
-                    {
-                        Add(value);
-                        Add(' ');
-                    }
-                    break;
-                case LIST_UL:
-                    Add("<td style=\"text-align: right;\">");
                     Add(value);
-                    Add("</td>");
+                    break;
+                case UL:
                     break;
             }
             return this;
         }
 
-        public HtmlContent Put(string name, DateTime value, string label = null)
+        public HtmlContent Put(string name, int value)
         {
-            switch (chain[level].node)
+            switch (kind)
             {
-                case TABLE_THEAD:
-                    if (!chain[level].group)
+                case VAR:
+                    if (counts[level]++ > 0) Add(',');
+                    if (name != null)
                     {
-                        Add("<th>");
-                        AddLabel(label, name);
-                        Add("</th>");
+                        Add('"');
+                        Add(name);
+                        Add('"');
+                        Add(':');
+                    }
+                    Add(value);
+                    break;
+                case UL:
+                    break;
+            }
+            return this;
+        }
+
+        public HtmlContent Put(string name, long value)
+        {
+            switch (kind)
+            {
+                case VAR:
+                    if (counts[level]++ > 0) Add(',');
+                    if (name != null)
+                    {
+                        Add('"');
+                        Add(name);
+                        Add('"');
+                        Add(':');
+                    }
+                    Add(value);
+                    break;
+                case UL:
+                    break;
+            }
+            return this;
+        }
+
+        public HtmlContent Put(string name, double value)
+        {
+            switch (kind)
+            {
+                case VAR:
+                    if (counts[level]++ > 0) Add(',');
+                    if (name != null)
+                    {
+                        Add('"');
+                        Add(name);
+                        Add('"');
+                        Add(':');
+                    }
+                    Add(value);
+                    break;
+                case UL:
+                    break;
+            }
+            return this;
+        }
+
+        public HtmlContent Put(string name, decimal value)
+        {
+            switch (kind)
+            {
+                case VAR:
+                    if (counts[level]++ > 0) Add(',');
+                    if (name != null)
+                    {
+                        Add('"');
+                        Add(name);
+                        Add('"');
+                        Add(':');
+                    }
+                    Add(value);
+                    break;
+                case UL:
+                    break;
+            }
+            return this;
+        }
+
+        public HtmlContent Put(string name, DateTime value)
+        {
+            switch (kind)
+            {
+                case VAR:
+                    if (counts[level]++ > 0) Add(',');
+                    if (name != null)
+                    {
+                        Add('"');
+                        Add(name);
+                        Add('"');
+                        Add(':');
+                    }
+                    Add('"');
+                    Add(value);
+                    Add('"');
+                    break;
+                case UL:
+                    break;
+            }
+            return this;
+        }
+
+        public HtmlContent Put(string name, string value)
+        {
+            switch (kind)
+            {
+                case VAR:
+                    if (counts[level]++ > 0) Add(',');
+                    if (name != null)
+                    {
+                        Add('"');
+                        Add(name);
+                        Add('"');
+                        Add(':');
+                    }
+                    if (value == null)
+                    {
+                        Add("null");
+                    }
+                    else
+                    {
+                        Add('"');
+                        AddEsc(value);
+                        Add('"');
                     }
                     break;
-                case TABLE_TBODY:
-                    if (!chain[level].group)
+                case UL:
+                    break;
+            }
+            return this;
+        }
+
+        public HtmlContent Put(string name, ArraySegment<byte> value)
+        {
+            switch (kind)
+            {
+                case VAR:
+                    break;
+                case UL:
+                    break;
+            }
+            return this;
+        }
+
+        public HtmlContent Put(string name, short[] value)
+        {
+            return this;
+        }
+
+        public HtmlContent Put(string name, int[] value)
+        {
+            return this;
+        }
+
+        public HtmlContent Put(string name, long[] value)
+        {
+            return this;
+        }
+
+        public HtmlContent Put(string name, string[] value)
+        {
+            return this;
+        }
+
+        public HtmlContent Put(string name, Dictionary<string, string> value)
+        {
+            return this;
+        }
+
+        public HtmlContent Put(string name, IData value, int proj = 0x00ff)
+        {
+            switch (kind)
+            {
+                case VAR:
+                    if (counts[level]++ > 0) Add(',');
+                    if (name != null)
                     {
-                        Add("<td>");
-                        if (value != default(DateTime))
+                        Add('"');
+                        Add(name);
+                        Add('"');
+                        Add(':');
+                    }
+                    if (value == null)
+                    {
+                        Add("null");
+                    }
+                    else
+                    {
+                        counts[++level] = 0; // enter
+                        Add('{');
+
+                        // put shard property if any
+                        string shard = (value as IShardable)?.Shard;
+                        if (shard != null)
                         {
-                            Add(value);
+                            Put("#", shard);
                         }
-                        Add("</td>");
+
+                        value.Write(this, proj);
+                        Add('}');
+                        level--; // exit
+                    }
+                    break;
+                case UL:
+                    break;
+            }
+            return this;
+        }
+
+        public HtmlContent Put<D>(string name, D[] value, int proj = 0x00ff) where D : IData
+        {
+            switch (kind)
+            {
+                case VAR:
+                    if (counts[level]++ > 0) Add(',');
+                    if (name != null)
+                    {
+                        Add('"');
+                        Add(name);
+                        Add('"');
+                        Add(':');
+                    }
+                    if (value == null)
+                    {
+                        Add("null");
                     }
                     else
                     {
-                        if (value != default(DateTime))
+                        counts[++level] = 0; // enter
+                        Add('[');
+                        for (int i = 0; i < value.Length; i++)
                         {
-                            Add(value);
-                            Add(' ');
+                            Put(null, value[i], proj);
                         }
+                        Add(']');
+                        level--; // exit
                     }
                     break;
-                case GRID_DIV:
-                    if (!chain[level].group)
-                    {
-                        Add("<div class=\"grid-x\">");
-                        Add("<div class=\"small-3 cell\">");
-                        AddLabel(label, name);
-                        Add("</div>");
-                        Add("<div class=\"small-9 cell\">");
-                    }
-                    if (value != default(DateTime))
-                    {
-                        Add(value);
-                        Add(' ');
-                    }
-                    if (!chain[level].group)
-                    {
-                        Add("</div>");
-                        Add("</div>");
-                    }
-                    break;
-                case LIST_UL:
-                    Add("<li>");
-                    Add(value);
-                    Add("</li>");
-                    break;
-            }
-            return this;
-        }
-
-        public HtmlContent Put(string name, string value, string label = null, IOptable<string> opt = null)
-        {
-            var ctx = chain[level];
-            switch (ctx.node)
-            {
-                case TABLE_THEAD:
-                    if (!chain[level].group)
-                    {
-                        Add("<th>");
-                        AddLabel(label, name);
-                        Add("</th>");
-                    }
-                    break;
-                case TABLE_TBODY:
-                    if (!chain[level].group)
-                    {
-                        Add("<td>");
-                        Add(value);
-                        Add("</td>");
-                    }
-                    else
-                    {
-                        Add(value);
-                        Add(' ');
-                    }
-                    break;
-                case GRID_DIV:
-                    if (!chain[level].group)
-                    {
-                        Add("<div class=\"grid-x\">");
-                        Add("<div class=\"small-3 cell\">");
-                        AddLabel(label, name);
-                        Add("</div>");
-                        Add("<div class=\"small-9 cell\">");
-                    }
-                    Add(value);
-                    Add(' ');
-                    if (!chain[level].group)
-                    {
-                        Add("</div>");
-                        Add("</div>");
-                    }
-                    break;
-                case LIST_UL:
-                    Add(value);
-                    break;
-            }
-            return this;
-        }
-
-        public HtmlContent Put(string name, ArraySegment<byte> value, string label = null)
-        {
-            var ctx = chain[level];
-            switch (ctx.node)
-            {
-                case TABLE_THEAD:
-                    if (!chain[level].group)
-                    {
-                        Add("<th>");
-                        AddLabel(label, name);
-                        Add("</th>");
-                    }
-                    break;
-                case TABLE_TBODY:
-                    if (!chain[level].group)
-                    {
-                        Add("<td>");
-                        Add("<img src\"icon\">");
-                        Add("</td>");
-                    }
-                    else
-                    {
-                        Add("<img src\"icon\">");
-                        Add(' ');
-                    }
-                    break;
-                case GRID_DIV:
-                    if (!chain[level].group)
-                    {
-                        Add("<div class=\"grid-x\">");
-                        Add("<div class=\"small-3 cell\">");
-                        AddLabel(label, name);
-                        Add("</div>");
-                        Add("<div class=\"small-9 cell\">");
-                    }
-                    Add("<img src\"icon\">");
-                    Add(' ');
-                    if (!chain[level].group)
-                    {
-                        Add("</div>");
-                        Add("</div>");
-                    }
-                    break;
-                case LIST_UL:
-                    break;
-            }
-            return this;
-        }
-
-        public HtmlContent Put(string name, short[] value, string label = null, IOptable<short> opt = null)
-        {
-            return this;
-        }
-
-        public HtmlContent Put(string name, int[] value, string label = null, IOptable<int> Opt = null)
-        {
-            return this;
-        }
-
-        public HtmlContent Put(string name, long[] value, string label = null, IOptable<long> Opt = null)
-        {
-            return this;
-        }
-
-        public HtmlContent Put(string name, string[] value, string label = null, IOptable<string> Opt = null)
-        {
-            return this;
-        }
-
-        public HtmlContent Put(string name, Dictionary<string, string> value, string label = null)
-        {
-            return this;
-        }
-
-        public HtmlContent Put(string name, IData value, int proj = 0x00ff, string label = null)
-        {
-            return this;
-        }
-
-        public HtmlContent Put<D>(string name, D[] value, int proj = 0x00ff, string label = null) where D : IData
-        {
-            switch (chain[level].node)
-            {
-                case TABLE_THEAD:
-                    if (!chain[level].group)
-                    {
-                        Add("<th>");
-                        AddLabel(label, name);
-                        Add("</th>");
-                    }
-                    break;
-                case TABLE_TBODY:
-                    if (!chain[level].group)
-                    {
-                        Add("<td>");
-                        LIST(null, null, value, proj);
-                        Add("</td>");
-                    }
-                    else
-                    {
-                        LIST(null, null, value, proj);
-                    }
-                    break;
-                case GRID_DIV:
-                    if (value != null)
-                    {
-                        Add("<div class=\"\">");
-                        TABLE(null, chain[level].varwork?.varwork, value, proj);
-                        Add("</div>");
-                    }
-                    break;
-                case LIST_UL:
+                case UL:
                     break;
             }
             return this;

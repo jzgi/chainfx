@@ -70,14 +70,14 @@ namespace Greatbone.Sample
             {
                 o.Put(nameof(wx), wx);
             }
-            o.Put(nameof(name), name, "用户名称");
-            o.Put(nameof(city), city, "城市");
-            o.Put(nameof(addr), addr, "地址");
-            o.Put(nameof(tel), tel, "电话");
+            o.Put(nameof(name), name);
+            o.Put(nameof(city), city);
+            o.Put(nameof(addr), addr);
+            o.Put(nameof(tel), tel);
 
             if ((proj & BACKEND) != 0)
             {
-                o.Put(nameof(id), id, "后台帐号");
+                o.Put(nameof(id), id);
                 if ((proj & CREDENTIAL) == CREDENTIAL)
                 {
                     o.Put(nameof(credential), credential);
@@ -85,9 +85,9 @@ namespace Greatbone.Sample
             }
             if ((proj & PERM) == PERM)
             {
-                o.Put(nameof(oprat), oprat, "所在商家");
-                o.Put(nameof(opr), opr, "操作权限", OPR);
-                o.Put(nameof(adm), adm, "平台管理");
+                o.Put(nameof(oprat), oprat);
+                o.Put(nameof(opr), opr);
+                o.Put(nameof(adm), adm);
             }
         }
     }

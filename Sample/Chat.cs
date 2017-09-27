@@ -38,7 +38,7 @@ namespace Greatbone.Sample
                 for (int i = start; i < msgs.Length; i++)
                 {
                     ChatMsg msg = msgs[i];
-                    o.Put(nameof(msg.name), msg.text, msg.name);
+                    o.Put(nameof(msg.name), msg.text);
                 }
             }
         }

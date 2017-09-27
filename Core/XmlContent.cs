@@ -204,20 +204,7 @@ namespace Greatbone.Core
             return this;
         }
 
-        public XmlContent PutRaw(string name, string raw)
-        {
-            return this;
-        }
-
-        public void Group(string label)
-        {
-        }
-
-        public void UnGroup()
-        {
-        }
-
-        public XmlContent Put(string name, bool value, string Label = null, Func<bool, string> Opt = null)
+        public XmlContent Put(string name, bool value)
         {
             Add(' ');
             Add(name);
@@ -228,7 +215,7 @@ namespace Greatbone.Core
             return this;
         }
 
-        public XmlContent Put(string name, short value, string Label = null, IOptable<short> opt = null)
+        public XmlContent Put(string name, short value)
         {
             Add(' ');
             Add(name);
@@ -239,7 +226,7 @@ namespace Greatbone.Core
             return this;
         }
 
-        public XmlContent Put(string name, int value, string Label = null, IOptable<int> Opt = null)
+        public XmlContent Put(string name, int value)
         {
             Add(' ');
             Add(name);
@@ -250,7 +237,7 @@ namespace Greatbone.Core
             return this;
         }
 
-        public XmlContent Put(string name, long value, string Label = null, IOptable<long> opt = null)
+        public XmlContent Put(string name, long value)
         {
             Add(' ');
             Add(name);
@@ -261,7 +248,7 @@ namespace Greatbone.Core
             return this;
         }
 
-        public XmlContent Put(string name, double value, string Label = null)
+        public XmlContent Put(string name, double value)
         {
             Add(' ');
             Add(name);
@@ -272,7 +259,7 @@ namespace Greatbone.Core
             return this;
         }
 
-        public XmlContent Put(string name, decimal value, string Label = null, char format = '\0')
+        public XmlContent Put(string name, decimal value)
         {
             Add(' ');
             Add(name);
@@ -283,7 +270,7 @@ namespace Greatbone.Core
             return this;
         }
 
-        public XmlContent Put(string name, DateTime value, string Label = null)
+        public XmlContent Put(string name, DateTime value)
         {
             Add(' ');
             Add(name);
@@ -294,7 +281,7 @@ namespace Greatbone.Core
             return this;
         }
 
-        public XmlContent Put(string name, string value, string Label = null, IOptable<string> Opt = null)
+        public XmlContent Put(string name, string value)
         {
             Add(' ');
             Add(name);
@@ -305,12 +292,12 @@ namespace Greatbone.Core
             return this;
         }
 
-        public XmlContent Put(string name, ArraySegment<byte> value, string Label = null)
+        public XmlContent Put(string name, ArraySegment<byte> value)
         {
             return this;
         }
 
-        public XmlContent Put(string name, short[] value, string Label = null, IOptable<short> opt = null)
+        public XmlContent Put(string name, short[] value)
         {
             Add(' ');
             Add(name);
@@ -327,7 +314,7 @@ namespace Greatbone.Core
             return this;
         }
 
-        public XmlContent Put(string name, int[] value, string Label = null, IOptable<int> Opt = null)
+        public XmlContent Put(string name, int[] value)
         {
             Add(' ');
             Add(name);
@@ -344,7 +331,7 @@ namespace Greatbone.Core
             return this;
         }
 
-        public XmlContent Put(string name, long[] value, string Label = null, IOptable<long> Opt = null)
+        public XmlContent Put(string name, long[] value)
         {
             Add(' ');
             Add(name);
@@ -361,7 +348,7 @@ namespace Greatbone.Core
             return this;
         }
 
-        public XmlContent Put(string name, string[] value, string Label = null, IOptable<string> Opt = null)
+        public XmlContent Put(string name, string[] value)
         {
             Add(' ');
             Add(name);
@@ -378,17 +365,17 @@ namespace Greatbone.Core
             return this;
         }
 
-        public XmlContent Put(string name, Dictionary<string, string> value, string Label = null)
+        public XmlContent Put(string name, Dictionary<string, string> value)
         {
             return this;
         }
 
-        public XmlContent Put(string name, IData value, int proj = 0x00ff, string Label = null)
+        public XmlContent Put(string name, IData value, int proj = 0x00ff)
         {
             return this;
         }
 
-        public XmlContent Put<D>(string name, D[] value, int proj = 0x00ff, string Label = null) where D : IData
+        public XmlContent Put<D>(string name, D[] value, int proj = 0x00ff) where D : IData
         {
             return this;
         }

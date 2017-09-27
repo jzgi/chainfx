@@ -34,7 +34,7 @@ namespace Greatbone.Core
 
         bool Get(string name, ref string[] v);
 
-        bool Get(string name, ref Dictionary<string, string> v);
+        bool Get(string name, ref Map<string, string> v);
 
         bool Get<D>(string name, ref D v, int proj = 0x00ff) where D : IData, new();
 
@@ -72,7 +72,6 @@ namespace Greatbone.Core
         IDataInput Let<D>(out D v, int proj = 0x00ff) where D : IData, new();
 
         IDataInput Let<D>(out D[] v, int proj = 0x00ff) where D : IData, new();
-
 
         D ToObject<D>(int proj = 0x00ff) where D : IData, new();
 

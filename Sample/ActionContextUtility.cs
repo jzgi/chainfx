@@ -15,7 +15,7 @@ namespace Greatbone.Sample
 
         public static void GiveFrame(this ActionContext ac, int status, bool? @public = null, int maxage = 60)
         {
-            HtmlContent h = new HtmlContent(true, 8 * 1024);
+            HtmlContent h = new HtmlContent(ac, true, 8 * 1024);
 
             h.Add("<!DOCTYPE html>");
             h.Add("<html style=\"height:100%\">");
@@ -62,7 +62,7 @@ namespace Greatbone.Sample
             h.Add("<div class=\"tabs-panel is-active\" id=\"paneltop\">");
             h.Add("<div class=\"top-bar\">");
             h.Add("<div class=\"top-bar-left\">");
-            h.TRIGGERS(ac, work.UiActions);
+            h.TRIGGERS(work.UiActions);
             h.Add("</div>");
             h.Add("<div class=\"top-bar-right\">");
             h.Add("<span class=\"button primary hollow\">");
@@ -113,7 +113,7 @@ namespace Greatbone.Sample
         ///
         public static void GivePage(this ActionContext ac, int status, Action<HtmlContent> main, bool? @public = null, int maxage = 60)
         {
-            HtmlContent h = new HtmlContent(true, 32 * 1024);
+            HtmlContent h = new HtmlContent(ac, true, 32 * 1024);
 
             h.Add("<!DOCTYPE html>");
             h.Add("<html>");
@@ -150,7 +150,7 @@ namespace Greatbone.Sample
         ///
         public static void GivePane(this ActionContext ac, int status, Action<HtmlContent> main = null, bool? @public = null, int maxage = 60)
         {
-            HtmlContent h = new HtmlContent(true, 8 * 1024);
+            HtmlContent h = new HtmlContent(ac, true, 8 * 1024);
 
             h.Add("<!DOCTYPE html>");
             h.Add("<html>");
@@ -196,14 +196,12 @@ namespace Greatbone.Sample
 
         public static void GiveGridPage<D>(this ActionContext ac, int status, D[] arr, int proj = 0x00ff, bool? @public = null, int maxage = 60) where D : IData
         {
-            Work work = ac.Work;
-            ac.GivePage(status, main => { main.GRID(ac, work.varwork, arr, proj); }, @public, maxage);
+            ac.GivePage(status, main => { main.GRID(arr, proj); }, @public, maxage);
         }
 
-        public static void GiveTablePage<D>(this ActionContext ac, int status, D[] arr, int proj = 0x00ff, bool? @public = null, int maxage = 60) where D : IData
+        public static void GiveSheetPage<D>(this ActionContext ac, int status, D[] arr, int proj = 0x00ff, bool? @public = null, int maxage = 60) where D : IData
         {
-            Work work = ac.Work;
-            ac.GivePage(status, main => { main.TABLE(ac, work.varwork, arr, proj); }, @public, maxage);
+            ac.GivePage(status, main => { main.SHEET(arr, proj); }, @public, maxage);
         }
     }
 }

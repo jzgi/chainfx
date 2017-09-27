@@ -228,7 +228,7 @@ namespace Greatbone.Core
             return false;
         }
 
-        public bool Get(string name, ref Dictionary<string, string> v)
+        public bool Get(string name, ref Map<string, string> v)
         {
             JMbr mbr;
             if (TryGet(name, out mbr))
@@ -237,13 +237,13 @@ namespace Greatbone.Core
                 {
                     JObj jo = mbr;
                     int count = jo.Count;
-                    Dictionary<string, string> dict = new Dictionary<string, string>(count);
+                    Map<string, string> map = new Map<string, string>(count);
                     for (int i = 0; i < count; i++)
                     {
                         JMbr e = jo[i];
-                        dict.Add(e.Key, e);
+                        map.Add(e.Key, e);
                     }
-                    v = dict;
+                    v = map;
                     return true;
                 }
             }
@@ -390,7 +390,7 @@ namespace Greatbone.Core
                 JType t = mbr.type;
                 if (t == JType.Array)
                 {
-                    o.Put(mbr.Key, (JArr) mbr);
+                    o.Put(mbr.Key, (IDataInput) (JArr) mbr);
                 }
                 else if (t == JType.Object)
                 {

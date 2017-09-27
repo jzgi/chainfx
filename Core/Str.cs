@@ -153,7 +153,7 @@ namespace Greatbone.Core
             throw new NotImplementedException();
         }
 
-        public bool Get(string name, ref Dictionary<string, string> v)
+        public bool Get(string name, ref Map<string, string> v)
         {
             throw new NotImplementedException();
         }

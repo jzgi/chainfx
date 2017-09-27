@@ -56,69 +56,56 @@ namespace Greatbone.Core
             return this;
         }
 
-        public FormMpContent PutRaw(string name, string raw)
-        {
-            return this;
-        }
-
-        public void Group(string label)
-        {
-        }
-
-        public void UnGroup()
-        {
-        }
-
-        public FormMpContent Put(string name, bool value, string Label = null, Func<bool, string> Opt = null)
+        public FormMpContent Put(string name, bool value)
         {
             Part(name);
             Add(value ? "true" : "false");
             return this;
         }
 
-        public FormMpContent Put(string name, short value, string Label = null, IOptable<short> opt = null)
+        public FormMpContent Put(string name, short value)
         {
             Part(name);
             Add(value);
             return this;
         }
 
-        public FormMpContent Put(string name, int value, string Label = null, IOptable<int> Opt = null)
+        public FormMpContent Put(string name, int value)
         {
             Part(name);
             Add(value);
             return this;
         }
 
-        public FormMpContent Put(string name, long value, string Label = null, IOptable<long> opt = null)
+        public FormMpContent Put(string name, long value)
         {
             Part(name);
             Add(value);
             return this;
         }
 
-        public FormMpContent Put(string name, double value, string label = null)
+        public FormMpContent Put(string name, double value)
         {
             Part(name);
             Add(value);
             return this;
         }
 
-        public FormMpContent Put(string name, decimal value, string label = null, char format = '\0')
+        public FormMpContent Put(string name, decimal value)
         {
             Part(name);
             Add(value);
             return this;
         }
 
-        public FormMpContent Put(string name, DateTime value, string label = null)
+        public FormMpContent Put(string name, DateTime value)
         {
             Part(name);
             Add(value);
             return this;
         }
 
-        public FormMpContent Put(string name, string value, string Label = null, IOptable<string> Opt = null)
+        public FormMpContent Put(string name, string value)
         {
             Part(name);
             if (value == null)
@@ -132,12 +119,12 @@ namespace Greatbone.Core
             return this;
         }
 
-        public virtual FormMpContent Put(string name, ArraySegment<byte> value, string label = null)
+        public virtual FormMpContent Put(string name, ArraySegment<byte> value)
         {
             return this; // ignore ir
         }
 
-        public FormMpContent Put(string name, short[] value, string Label = null, IOptable<short> opt = null)
+        public FormMpContent Put(string name, short[] value)
         {
             Part(name);
             if (value == null)
@@ -158,7 +145,7 @@ namespace Greatbone.Core
             return this;
         }
 
-        public FormMpContent Put(string name, int[] value, string Label = null, IOptable<int> Opt = null)
+        public FormMpContent Put(string name, int[] value)
         {
             Part(name);
             if (value == null)
@@ -178,7 +165,7 @@ namespace Greatbone.Core
             return this;
         }
 
-        public FormMpContent Put(string name, long[] value, string Label = null, IOptable<long> Opt = null)
+        public FormMpContent Put(string name, long[] value)
         {
             if (value == null)
             {
@@ -197,7 +184,7 @@ namespace Greatbone.Core
             return this;
         }
 
-        public FormMpContent Put(string name, string[] value, string Label = null, IOptable<string> Opt = null)
+        public FormMpContent Put(string name, string[] value)
         {
             Part(name);
             if (value == null)
@@ -226,12 +213,12 @@ namespace Greatbone.Core
             return this;
         }
 
-        public FormMpContent Put(string name, Dictionary<string, string> value, string label = null)
+        public FormMpContent Put(string name, Dictionary<string, string> value)
         {
             throw new NotImplementedException();
         }
 
-        public FormMpContent Put(string name, IData value, int proj = 0x00ff, string Label = null)
+        public FormMpContent Put(string name, IData value, int proj = 0x00ff)
         {
             Part(name);
             if (value == null)
@@ -247,7 +234,7 @@ namespace Greatbone.Core
             return this;
         }
 
-        public FormMpContent Put<D>(string name, D[] value, int proj = 0x00ff, string Label = null) where D : IData
+        public FormMpContent Put<D>(string name, D[] value, int proj = 0x00ff) where D : IData
         {
             Part(name);
             if (value == null)

@@ -28,7 +28,7 @@ namespace Greatbone.Sample
             string area = ac.Query[nameof(area)];
             if (city == null)
             {
-                HtmlContent h = new HtmlContent(true);
+                HtmlContent h = new HtmlContent(ac, true);
                 h.T("<html><head><script>");
 
                 h.T("var cities = [");
@@ -70,40 +70,55 @@ namespace Greatbone.Sample
                 }
                 h.T("];");
 
-                h.T("navigator.geolocation.getCurrentPosition(function(p) {window.location.href = '/shop/?x=' + p.coords.latitude + '&y=' + p.coords.longitude;});");
+                h.T("navigator.geolocation.getCurrentPosition(function(p) {");
+                h.T("var city=''; var area='';");
+                h.T("var x=p.coords.longitude; var y=p.coords.latitude;");
+                h.T("cities.forEach(function(c) {");
+                h.T("if (c.x1 < x && x < c.x2 && c.y1 < y && y < c.y2) {");
+                h.T("city=c.name;");
+                h.T("c.areas.forEach(function(a) {");
+                h.T("if (a.x1 < x && x < a.x2 && a.y1 < y && y < a.y2) {");
+                h.T("area=a.name;");
+                h.T("}});");
+                h.T("}});");
+                h.T("window.location.href = '/shop/?city=' + city + '&area=' + area;");
+                h.T("},");
+                h.T("function(e) {window.location.href = '/shop/?city=&area=';}, ");
+                h.T("{enableHighAccuracy: true,timeout: 5000,maximumAge: 0}");
+                h.T(")");
                 h.T("</script></head></html>");
-                ac.Give(200, h);
+                ac.Give(200, h, true, 3600);
                 return; // give the geolocating page
             }
 
-            using (var dc = ac.NewDbContext())
+            ac.GivePage(200, m =>
             {
-                ac.GivePage(200, m =>
+                m.T("<div data-sticky-container>");
+                m.T("<div class=\"sticky\" style=\"width: 100%\" data-sticky  data-options=\"anchor: page; marginTop: 0; stickyOn: small;\">");
+                m.T("<div class=\"top-bar\">");
+                m.T("<div class=\"top-bar-left\">");
+                m.T("<select name=\"city\" style=\"margin: 0; border: 0; color: #ba55d3; font-size: 1.25rem;\" onchange=\"location = location.href.split('?')[0] + '?city=' + this.value;\">");
+                var vs = ((CareService) Service).Cities;
+                foreach (var pair in vs)
                 {
-                    m.T("<div data-sticky-container>");
-                    m.T("<div class=\"sticky\" style=\"width: 100%\" data-sticky  data-options=\"anchor: page; marginTop: 0; stickyOn: small;\">");
-                    m.T("<div class=\"top-bar\">");
-                    m.T("<div class=\"top-bar-left\">");
-                    m.T("<select name=\"city\" style=\"margin: 0; border: 0; color: #ba55d3; font-size: 1.25rem;\" onchange=\"location = location.href.split('?')[0] + '?city=' + this.value;\">");
-                    var vs = ((CareService) Service).Cities;
-                    foreach (var pair in vs)
-                    {
-                        string v = pair.Value.ToString();
-                        m.T("<option value=\"").T(v).T("\"");
-                        if (pair.Key == city) m.T(" selected");
-                        m.T(">");
-                        m.T(v);
-                        m.T("</option>");
-                    }
-                    m.T("</select>");
-                    m.T("</div>");
-                    m.T("<div class=\"top-bar-right\">");
-                    m.T("<a class=\"float-right\" href=\"/my//cart/\"><span class=\"fa-stack fa-lg\"><i class=\"fa fa-circle fa-stack-2x\"></i><i class=\"fa fa-shopping-cart fa-stack-1x fa-inverse\"></i></span></a>");
-                    m.T("</div>");
-                    m.T("</div>");
-                    m.T("</div>");
-                    m.T("</div>");
+                    string v = pair.Value.ToString();
+                    m.T("<option value=\"").T(v).T("\"");
+                    if (pair.Key == city) m.T(" selected");
+                    m.T(">");
+                    m.T(v);
+                    m.T("</option>");
+                }
+                m.T("</select>");
+                m.T("</div>");
+                m.T("<div class=\"top-bar-right\">");
+                m.T("<a class=\"float-right\" href=\"/my//cart/\"><span class=\"fa-stack fa-lg\"><i class=\"fa fa-circle fa-stack-2x\"></i><i class=\"fa fa-shopping-cart fa-stack-1x fa-inverse\"></i></span></a>");
+                m.T("</div>");
+                m.T("</div>");
+                m.T("</div>");
+                m.T("</div>");
 
+                using (var dc = ac.NewDbContext())
+                {
                     const int proj = Shop.ID | Shop.BASIC;
                     dc.Sql("SELECT ").columnlst(Shop.Empty, proj)._("FROM shops WHERE city = @1 AND status > 0");
                     if (dc.Query(p => p.Set(city)))
@@ -117,6 +132,12 @@ namespace Greatbone.Sample
                             m.T("<div class=\"small-8 columns\">");
                             m.T("<h3><a href=\"").T(shop.id).T("/?city=").T(city).T("\">").T(shop.name).T("</a></h3>");
                             m.T("<p>").T(shop.city).T(shop.addr).T("</p>");
+                            var areas = shop.areas;
+                            if (areas != null)
+                                for (int k = 0; k < areas.Length; k++)
+                                {
+                                    m.T("<span>").T(areas[k]).T("</span>");
+                                }
                             m.T("</div>");
                             m.T("<div class=\"small-4 columns\"><a href=\"").T(shop.id).T("/\"><span></span><img src=\"").T(shop.id).T("/icon\" alt=\"\" class=\"thumbnail circle\"></a></div>");
                             m.T("</div>");
@@ -128,8 +149,8 @@ namespace Greatbone.Sample
                         m.T("<p>").T(city).T("目前没有商家</p>");
                         m.T("</div>");
                     }
-                }, true, 60 * 5);
-            }
+                }
+            }, true, 60 * 5);
         }
     }
 
@@ -150,11 +171,11 @@ namespace Greatbone.Sample
                 dc.Sql("SELECT ").columnlst(Shop.Empty, proj)._("FROM shops ORDER BY id");
                 if (dc.Query())
                 {
-                    ac.GiveTablePage(200, dc.ToArray<Shop>(proj), proj, @public: false, maxage: 3);
+                    ac.GiveSheetPage(200, dc.ToArray<Shop>(proj), proj, @public: false, maxage: 3);
                 }
                 else
                 {
-                    ac.GiveTablePage(200, (Shop[]) null, @public: false, maxage: 3);
+                    ac.GiveSheetPage(200, (Shop[]) null, @public: false, maxage: 3);
                 }
             }
         }

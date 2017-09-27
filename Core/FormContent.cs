@@ -91,20 +91,7 @@ namespace Greatbone.Core
             return this;
         }
 
-        public FormContent PutRaw(string name, string raw)
-        {
-            return this;
-        }
-
-        public void Group(string label)
-        {
-        }
-
-        public void UnGroup()
-        {
-        }
-
-        public FormContent Put(string name, bool value, string Label = null, Func<bool, string> Opt = null)
+        public FormContent Put(string name, bool value)
         {
             ordinal++;
 
@@ -118,7 +105,7 @@ namespace Greatbone.Core
             return this;
         }
 
-        public FormContent Put(string name, short value, string Label = null, IOptable<short> opt = null)
+        public FormContent Put(string name, short value)
         {
             ordinal++;
 
@@ -132,7 +119,7 @@ namespace Greatbone.Core
             return this;
         }
 
-        public FormContent Put(string name, int value, string Label = null, IOptable<int> Opt = null)
+        public FormContent Put(string name, int value)
         {
             ordinal++;
 
@@ -146,7 +133,7 @@ namespace Greatbone.Core
             return this;
         }
 
-        public FormContent Put(string name, long value, string Label = null, IOptable<long> opt = null)
+        public FormContent Put(string name, long value)
         {
             ordinal++;
 
@@ -160,7 +147,7 @@ namespace Greatbone.Core
             return this;
         }
 
-        public FormContent Put(string name, double value, string Label = null)
+        public FormContent Put(string name, double value)
         {
             ordinal++;
 
@@ -174,7 +161,7 @@ namespace Greatbone.Core
             return this;
         }
 
-        public FormContent Put(string name, decimal value, string Label = null, char format = '\0')
+        public FormContent Put(string name, decimal value)
         {
             ordinal++;
 
@@ -188,7 +175,7 @@ namespace Greatbone.Core
             return this;
         }
 
-        public FormContent Put(string name, DateTime value, string Label = null)
+        public FormContent Put(string name, DateTime value)
         {
             ordinal++;
 
@@ -202,7 +189,7 @@ namespace Greatbone.Core
             return this;
         }
 
-        public FormContent Put(string name, string value, string Label = null, IOptable<string> Opt = null)
+        public FormContent Put(string name, string value)
         {
             ordinal++;
 
@@ -216,12 +203,12 @@ namespace Greatbone.Core
             return this;
         }
 
-        public virtual FormContent Put(string name, ArraySegment<byte> value, string Label = null)
+        public virtual FormContent Put(string name, ArraySegment<byte> value)
         {
             return this; // ignore ir
         }
 
-        public FormContent Put(string name, short[] value, string Label = null, IOptable<short> opt = null)
+        public FormContent Put(string name, short[] value)
         {
             ordinal++;
 
@@ -239,7 +226,7 @@ namespace Greatbone.Core
             return this;
         }
 
-        public FormContent Put(string name, int[] value, string Label = null, IOptable<int> Opt = null)
+        public FormContent Put(string name, int[] value)
         {
             ordinal++;
 
@@ -257,7 +244,7 @@ namespace Greatbone.Core
             return this;
         }
 
-        public FormContent Put(string name, long[] value, string Label = null, IOptable<long> Opt = null)
+        public FormContent Put(string name, long[] value)
         {
             ordinal++;
 
@@ -275,7 +262,7 @@ namespace Greatbone.Core
             return this;
         }
 
-        public FormContent Put(string name, string[] value, string Label = null, IOptable<string> Opt = null)
+        public FormContent Put(string name, string[] value)
         {
             ordinal++;
 
@@ -293,17 +280,17 @@ namespace Greatbone.Core
             return this;
         }
 
-        public FormContent Put(string name, Dictionary<string, string> value, string Label = null)
+        public FormContent Put(string name, Dictionary<string, string> value)
         {
             throw new NotImplementedException();
         }
 
-        public FormContent Put(string name, IData value, int proj = 0x00ff, string Label = null)
+        public FormContent Put(string name, IData value, int proj = 0x00ff)
         {
             return this;
         }
 
-        public FormContent Put<D>(string name, D[] value, int proj = 0x00ff, string Label = null) where D : IData
+        public FormContent Put<D>(string name, D[] value, int proj = 0x00ff) where D : IData
         {
             return this;
         }

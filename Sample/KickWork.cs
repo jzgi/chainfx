@@ -53,11 +53,11 @@ namespace Greatbone.Sample
                 dc.Sql("SELECT ").columnlst(Item.Empty, proj)._("FROM kicks ORDER BY id DESC LIMIT 20 OFFSET @1");
                 if (dc.Query(p => p.Set(page * 20)))
                 {
-                    ac.GiveTablePage(200, dc.ToArray<Item>());
+                    ac.GiveSheetPage(200, dc.ToArray<Item>());
                 }
                 else
                 {
-                    ac.GiveTablePage(200, (Item[]) null);
+                    ac.GiveSheetPage(200, (Item[]) null);
                 }
             }
         }

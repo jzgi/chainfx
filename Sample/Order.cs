@@ -96,46 +96,40 @@ namespace Greatbone.Sample
         {
             if ((proj & ID) == ID)
             {
-                o.Put(nameof(id), id, "单号");
+                o.Put(nameof(id), id);
             }
             if ((proj & BASIC) == BASIC)
             {
-                o.Put(nameof(created), created, "创建时间");
-                o.Group("商家");
+                o.Put(nameof(created), created);
                 o.Put(nameof(shopname), shopname);
                 o.Put(nameof(shopid), shopid);
-                o.UnGroup();
-                o.Put(nameof(name), name, "买家");
+                o.Put(nameof(name), name);
                 if ((proj & BASIC_WX) == BASIC_WX)
                 {
                     o.Put(nameof(wx), wx);
                 }
-                o.Group("收货地址");
                 o.Put(nameof(city), city);
                 o.Put(nameof(addr), addr);
-                o.UnGroup();
-                o.Put(nameof(tel), tel, "联系电话");
+                o.Put(nameof(tel), tel);
                 if ((proj & BASIC_DETAIL) == BASIC_DETAIL)
                 {
                     o.Put(nameof(items), items);
                 }
-                o.Put(nameof(note), note, "附加说明");
-                o.Put(nameof(total), total, "应付金额", 'y');
+                o.Put(nameof(note), note);
+                o.Put(nameof(total), total);
             }
             if ((proj & CASH) == CASH)
             {
-                o.Put(nameof(cash), cash, "实收金额", 'y');
+                o.Put(nameof(cash), cash);
             }
             if ((proj & FLOW) == FLOW)
             {
-                o.Put(nameof(accepted), accepted, "接受时间");
-                o.Group("撤销");
+                o.Put(nameof(accepted), accepted);
                 o.Put(nameof(abortly), abortly);
                 o.Put(nameof(aborted), aborted);
-                o.UnGroup();
-                o.Put(nameof(shipped), shipped, "确收时间");
+                o.Put(nameof(shipped), shipped);
             }
-            o.Put(nameof(status), status, "订单状态", STATUS);
+            o.Put(nameof(status), status);
         }
 
         public void AddItem(string item, short qty, string unit, decimal price)
@@ -202,12 +196,10 @@ namespace Greatbone.Sample
 
         public void Write<R>(IDataOutput<R> o, int proj = 0x00ff) where R : IDataOutput<R>
         {
-            o.Put(nameof(name), name, "品名");
-            o.Group("数量");
+            o.Put(nameof(name), name);
             o.Put(nameof(qty), qty);
             o.Put(nameof(unit), unit);
-            o.UnGroup();
-            o.Put(nameof(price), price, "单价");
+            o.Put(nameof(price), price);
         }
 
         public void AddQty(short qty)

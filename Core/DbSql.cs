@@ -214,20 +214,7 @@ namespace Greatbone.Core
             return this;
         }
 
-        public DbSql PutRaw(string name, string raw)
-        {
-            return this;
-        }
-
-        public void Group(string label)
-        {
-        }
-
-        public void UnGroup()
-        {
-        }
-
-        public DbSql Put(string name, bool value, string Label = null, Func<bool, string> Options = null)
+        public DbSql Put(string name, bool value)
         {
             if (name != null)
             {
@@ -240,7 +227,7 @@ namespace Greatbone.Core
             return this;
         }
 
-        public DbSql Put(string name, short value, string Label = null, IOptable<short> opt = null)
+        public DbSql Put(string name, short value)
         {
             if (name != null)
             {
@@ -253,7 +240,7 @@ namespace Greatbone.Core
             return this;
         }
 
-        public DbSql Put(string name, int value, string Label = null, IOptable<int> Opt = null)
+        public DbSql Put(string name, int value)
         {
             if (name != null)
             {
@@ -266,7 +253,7 @@ namespace Greatbone.Core
             return this;
         }
 
-        public DbSql Put(string name, long value, string Label = null, IOptable<long> opt = null)
+        public DbSql Put(string name, long value)
         {
             if (name != null)
             {
@@ -279,7 +266,7 @@ namespace Greatbone.Core
             return this;
         }
 
-        public DbSql Put(string name, double value, string label = null)
+        public DbSql Put(string name, double value)
         {
             if (name != null)
             {
@@ -292,7 +279,7 @@ namespace Greatbone.Core
             return this;
         }
 
-        public DbSql Put(string name, decimal value, string label = null, char format = '\0')
+        public DbSql Put(string name, decimal value)
         {
             if (name != null)
             {
@@ -305,7 +292,7 @@ namespace Greatbone.Core
             return this;
         }
 
-        public DbSql Put(string name, DateTime value, string label = null)
+        public DbSql Put(string name, DateTime value)
         {
             if (name != null)
             {
@@ -318,7 +305,7 @@ namespace Greatbone.Core
             return this;
         }
 
-        public DbSql Put(string name, string value, string Label = null, IOptable<string> Opt = null)
+        public DbSql Put(string name, string value)
         {
             if (name != null)
             {
@@ -333,13 +320,13 @@ namespace Greatbone.Core
             return this;
         }
 
-        public DbSql Put(string name, ArraySegment<byte> value, string label = null)
+        public DbSql Put(string name, ArraySegment<byte> value)
         {
             Build(name);
             return this;
         }
 
-        public DbSql Put(string name, short[] value, string Label = null, IOptable<short> opt = null)
+        public DbSql Put(string name, short[] value)
         {
             if (name != null)
             {
@@ -369,7 +356,7 @@ namespace Greatbone.Core
             return this;
         }
 
-        public DbSql Put(string name, int[] value, string Label = null, IOptable<int> Opt = null)
+        public DbSql Put(string name, int[] value)
         {
             if (name != null)
             {
@@ -399,7 +386,7 @@ namespace Greatbone.Core
             return this;
         }
 
-        public DbSql Put(string name, long[] value, string Label = null, IOptable<long> Opt = null)
+        public DbSql Put(string name, long[] value)
         {
             if (name != null)
             {
@@ -429,7 +416,7 @@ namespace Greatbone.Core
             return this;
         }
 
-        public DbSql Put(string name, string[] value, string Label = null, IOptable<string> Opt = null)
+        public DbSql Put(string name, string[] value)
         {
             if (name != null)
             {
@@ -461,12 +448,12 @@ namespace Greatbone.Core
             return this;
         }
 
-        public DbSql Put(string name, Dictionary<string, string> value, string label = null)
+        public DbSql Put(string name, Dictionary<string, string> value)
         {
             throw new NotImplementedException();
         }
 
-        public DbSql Put(string name, IData value, int proj = 0x00ff, string Label = null)
+        public DbSql Put(string name, IData value, int proj = 0x00ff)
         {
             if (name != null)
             {
@@ -485,7 +472,7 @@ namespace Greatbone.Core
             return this;
         }
 
-        public DbSql Put<D>(string name, D[] value, int proj = 0x00ff, string Label = null) where D : IData
+        public DbSql Put<D>(string name, D[] value, int proj = 0x00ff) where D : IData
         {
             Build(name);
             return this;

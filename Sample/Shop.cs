@@ -55,24 +55,20 @@ namespace Greatbone.Sample
 
         public void Write<R>(IDataOutput<R> o, int proj = 0x00ff) where R : IDataOutput<R>
         {
-            o.Put(nameof(id), id, "编号");
-            o.Put(nameof(name), name, "名称");
-            o.Put(nameof(city), city, "城市");
-            o.Put(nameof(addr), addr, "地址");
-            o.Put(nameof(x), x, "X");
-            o.Put(nameof(y), y, "Y");
-            o.Put(nameof(areas), areas, "创建时间");
-            o.Group("经理");
+            o.Put(nameof(id), id);
+            o.Put(nameof(name), name);
+            o.Put(nameof(city), city);
+            o.Put(nameof(addr), addr);
+            o.Put(nameof(x), x);
+            o.Put(nameof(y), y);
+            o.Put(nameof(areas), areas);
             o.Put(nameof(mgrwx), mgrwx);
             o.Put(nameof(mgrtel), mgrtel);
             o.Put(nameof(mgrname), mgrname);
-            o.UnGroup();
-            o.Group("值班");
             o.Put(nameof(oprwx), oprwx);
             o.Put(nameof(oprtel), oprtel);
             o.Put(nameof(oprname), oprname);
-            o.UnGroup();
-            o.Put(nameof(status), status, "状态", STATUS);
+            o.Put(nameof(status), status);
         }
     }
 }

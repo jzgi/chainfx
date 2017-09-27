@@ -3,13 +3,13 @@ using System.Collections.Generic;
 
 namespace Greatbone.Core
 {
-    ///
+    /// <summary>
     /// A JSON array model.
-    ///
+    /// </summary>
     public class JArr : IDataInput
     {
         // array elements
-        JMbr[] elements;
+        JMbr[] elems;
 
         int count;
 
@@ -17,7 +17,7 @@ namespace Greatbone.Core
 
         internal JArr(int capacity = 16)
         {
-            elements = new JMbr[capacity];
+            elems = new JMbr[capacity];
             count = 0;
             current = -1;
         }
@@ -38,114 +38,114 @@ namespace Greatbone.Core
             }
         }
 
-        public JMbr this[int index] => elements[index];
+        public JMbr this[int index] => elems[index];
 
         public int Count => count;
 
         internal void Add(JMbr e)
         {
-            int len = elements.Length;
+            int len = elems.Length;
             if (count >= len)
             {
                 JMbr[] alloc = new JMbr[len * 4];
-                Array.Copy(elements, 0, alloc, 0, len);
-                elements = alloc;
+                Array.Copy(elems, 0, alloc, 0, len);
+                elems = alloc;
             }
-            elements[count++] = e;
+            elems[count++] = e;
         }
 
         public bool Get(string name, ref bool v)
         {
-            JObj jo = elements[current];
+            JObj jo = elems[current];
             return jo != null && jo.Get(name, ref v);
         }
 
         public bool Get(string name, ref short v)
         {
-            JObj jo = elements[current];
+            JObj jo = elems[current];
             return jo != null && jo.Get(name, ref v);
         }
 
         public bool Get(string name, ref int v)
         {
-            JObj jo = elements[current];
+            JObj jo = elems[current];
             return jo != null && jo.Get(name, ref v);
         }
 
         public bool Get(string name, ref long v)
         {
-            JObj jo = elements[current];
+            JObj jo = elems[current];
             return jo != null && jo.Get(name, ref v);
         }
 
         public bool Get(string name, ref double v)
         {
-            JObj jo = elements[current];
+            JObj jo = elems[current];
             return jo != null && jo.Get(name, ref v);
         }
 
         public bool Get(string name, ref decimal v)
         {
-            JObj jo = elements[current];
+            JObj jo = elems[current];
             return jo != null && jo.Get(name, ref v);
         }
 
         public bool Get(string name, ref DateTime v)
         {
-            JObj jo = elements[current];
+            JObj jo = elems[current];
             return jo != null && jo.Get(name, ref v);
         }
 
         public bool Get(string name, ref string v)
         {
-            JObj jo = elements[current];
+            JObj jo = elems[current];
             return jo != null && jo.Get(name, ref v);
         }
 
         public bool Get(string name, ref ArraySegment<byte> v)
         {
-            JObj jo = elements[current];
+            JObj jo = elems[current];
             return jo != null && jo.Get(name, ref v);
         }
 
         public bool Get<D>(string name, ref D v, int proj = 0x00ff) where D : IData, new()
         {
-            JObj jo = elements[current];
+            JObj jo = elems[current];
             return jo != null && jo.Get(name, ref v, proj);
         }
 
         public bool Get(string name, ref short[] v)
         {
-            JObj jo = elements[current];
+            JObj jo = elems[current];
             return jo != null && jo.Get(name, ref v);
         }
 
         public bool Get(string name, ref int[] v)
         {
-            JObj jo = elements[current];
+            JObj jo = elems[current];
             return jo != null && jo.Get(name, ref v);
         }
 
         public bool Get(string name, ref long[] v)
         {
-            JObj jo = elements[current];
+            JObj jo = elems[current];
             return jo != null && jo.Get(name, ref v);
         }
 
         public bool Get(string name, ref string[] v)
         {
-            JObj jo = elements[current];
+            JObj jo = elems[current];
             return jo != null && jo.Get(name, ref v);
         }
 
-        public bool Get(string name, ref Dictionary<string, string> v)
+        public bool Get(string name, ref Map<string, string> v)
         {
             throw new NotImplementedException();
         }
 
         public bool Get<D>(string name, ref D[] v, int proj = 0x00ff) where D : IData, new()
         {
-            JObj jo = elements[current];
+            JObj jo = elems[current];
             return jo != null && jo.Get(name, ref v);
         }
 
@@ -252,7 +252,7 @@ namespace Greatbone.Core
             for (int i = 0; i < arr.Length; i++)
             {
                 D obj = new D();
-                obj.Read((JObj) elements[i], proj);
+                obj.Read((JObj) elems[i], proj);
                 arr[i] = obj;
             }
             return arr;
@@ -264,7 +264,7 @@ namespace Greatbone.Core
             for (int i = 0; i < count; i++)
             {
                 D obj = new D();
-                obj.Read((JObj) elements[i], proj);
+                obj.Read((JObj) elems[i], proj);
                 K key = keyer(obj);
                 coll.Add(key, obj);
             }
@@ -275,11 +275,11 @@ namespace Greatbone.Core
         {
             for (int i = 0; i < count; i++)
             {
-                JMbr mbr = elements[i];
+                JMbr mbr = elems[i];
                 JType t = mbr.type;
                 if (t == JType.Array)
                 {
-                    o.Put(null, (JArr) mbr);
+                    o.Put(null, (IDataInput) (JArr) mbr);
                 }
                 else if (t == JType.Object)
                 {
@@ -311,7 +311,7 @@ namespace Greatbone.Core
         public DynamicContent Dump()
         {
             var cont = new JsonContent(true);
-            cont.Put(null, this);
+            cont.Put(null, (IDataInput) this);
             return cont;
         }
 
@@ -325,7 +325,7 @@ namespace Greatbone.Core
         public override string ToString()
         {
             JsonContent cont = new JsonContent(false);
-            cont.Put(null, this);
+            cont.Put(null, (IDataInput) this);
             string str = cont.ToString();
             BufferUtility.Return(cont);
             return str;

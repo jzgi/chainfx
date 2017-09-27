@@ -4,39 +4,6 @@ namespace Greatbone.Sample
 {
     public class Program : ServerUtility
     {
-        static Program()
-        {
-            HtmlContent.DecimalPlug((h, v, fmt) =>
-            {
-                switch (fmt)
-                {
-                    case 'y':
-                        h.Add("<strong class=\"money\">&yen;");
-                        h.Add(v);
-                        h.Add("</strong>");
-                        break;
-                    default:
-                        h.Add(v);
-                        break;
-                }
-            });
-
-            HtmlContent.StringPlug((h, v, fmt) =>
-            {
-                switch (fmt)
-                {
-                    case 'A':
-                        h.Add("<strong class=\"money\">&yen;");
-                        h.Add(v);
-                        h.Add("</strong>");
-                        break;
-                    default:
-                        h.Add(v);
-                        break;
-                }
-            });
-        }
-
         ///
         /// The application entry point.
         ///

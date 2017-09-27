@@ -26,7 +26,7 @@ namespace Greatbone.Sample
                 dc.Sql("SELECT ").columnlst(User.Empty, proj)._("FROM users WHERE opr <> 0 ORDER BY city LIMIT 20 OFFSET @2");
                 if (dc.Query(p => p.Set(city).Set(page * 20)))
                 {
-                    ac.GiveTablePage(200, dc.ToArray<User>()); // ok
+                    ac.GiveSheetPage(200, dc.ToArray<User>()); // ok
                 }
                 else
                 {

@@ -52,14 +52,14 @@ namespace Greatbone.Sample
             {
                 o.Put(nameof(shopid), shopid);
             }
-            o.Put(nameof(name), name, "品名");
-            o.Put(nameof(descr), descr, "描述");
-            o.Put(nameof(unit), unit, "单位");
-            o.Put(nameof(price), price, "单价");
-            o.Put(nameof(min), min, "起订数量");
-            o.Put(nameof(step), step, "递增因子");
-            o.Put(nameof(max), max, "本批供应量");
-            o.Put((string) nameof(status), status, "状态", STATUS);
+            o.Put(nameof(name), name);
+            o.Put(nameof(descr), descr);
+            o.Put(nameof(unit), unit);
+            o.Put(nameof(price), price);
+            o.Put(nameof(min), min);
+            o.Put(nameof(step), step);
+            o.Put(nameof(max), max);
+            o.Put((string) nameof(status), status);
         }
     }
 
