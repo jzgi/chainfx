@@ -30,11 +30,11 @@ namespace Greatbone.Sample
                 dc.Sql("SELECT ").columnlst(Item.Empty, proj)._("FROM items WHERE shopid = @1");
                 if (dc.Query(p => p.Set(shopid)))
                 {
-                    ac.GiveGridPage(200, dc.ToArray<Item>(proj));
+                    ac.GiveGridPage(200, dc.ToArray<Item>(proj), (h, o) => { });
                 }
                 else
                 {
-                    ac.GiveGridPage(200, (Item[]) null);
+                    ac.GiveGridPage(200, (Item[]) null, null);
                 }
             }
         }

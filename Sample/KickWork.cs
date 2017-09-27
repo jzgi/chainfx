@@ -26,11 +26,11 @@ namespace Greatbone.Sample
             {
                 if (dc.Query("SELECT * FROM charges WHERE wx = @1 ORDER BY id DESC", p => p.Set(wx)))
                 {
-                    ac.GiveGridPage(200, dc.ToArray<Kick>(0xffff));
+                    ac.GiveGridPage(200, dc.ToArray<Kick>(0xffff), (h, o) => { });
                 }
                 else
                 {
-                    ac.GiveGridPage(200, (Kick[]) null);
+                    ac.GiveGridPage(200, (Kick[]) null, null);
                 }
             }
         }

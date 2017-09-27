@@ -528,7 +528,7 @@ namespace Greatbone.Core
             return this;
         }
 
-        public HtmlContent GRID<D>(D[] arr, int proj = 0x00ff) where D : IData
+        public HtmlContent GRID<D>(D[] arr, Action<HtmlContent, D> cell) where D : IData
         {
             Work work = ac.Work;
             Work varwork = work.varwork;
@@ -556,6 +556,8 @@ namespace Greatbone.Core
                         Add("</div>");
                         Add("</div>");
                     }
+
+                    cell(this, obj);
 
                     // output var triggers
                     ActionInfo[] ais = varwork?.UiActions;
