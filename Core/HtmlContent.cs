@@ -164,6 +164,62 @@ namespace Greatbone.Core
             return this;
         }
 
+        public HtmlContent SP(string str)
+        {
+            Add("&nbsp;");
+            Add(str);
+            return this;
+        }
+
+        public HtmlContent SP(char v)
+        {
+            Add("&nbsp;");
+            Add(v);
+            return this;
+        }
+
+        public HtmlContent SP(short v)
+        {
+            Add("&nbsp;");
+            Add(v);
+            return this;
+        }
+
+        public HtmlContent SP(int v)
+        {
+            Add("&nbsp;");
+            Add(v);
+            return this;
+        }
+
+        public HtmlContent SP(long v)
+        {
+            Add("&nbsp;");
+            Add(v);
+            return this;
+        }
+
+        public HtmlContent SP(DateTime v)
+        {
+            Add("&nbsp;");
+            Add(v);
+            return this;
+        }
+
+        public HtmlContent SP(decimal v)
+        {
+            Add("&nbsp;");
+            Add(v);
+            return this;
+        }
+
+        public HtmlContent SP(double v)
+        {
+            Add("&nbsp;");
+            Add(v);
+            return this;
+        }
+
         public HtmlContent TH(string label)
         {
             Add("<th>");
@@ -195,10 +251,13 @@ namespace Greatbone.Core
             return this;
         }
 
-        public HtmlContent TD(short v)
+        public HtmlContent TD(short v, bool zero = false)
         {
             Add("<td style=\"text-align: right\">");
-            Add(v);
+            if (v != 0 || zero)
+            {
+                Add(v);
+            }
             Add("</td>");
             return this;
         }
@@ -227,6 +286,14 @@ namespace Greatbone.Core
             return this;
         }
 
+        public HtmlContent TD(DateTime v)
+        {
+            Add("<td>");
+            Add(v);
+            Add("</td>");
+            return this;
+        }
+
         public HtmlContent TD(string v)
         {
             Add("<td>");
@@ -235,9 +302,20 @@ namespace Greatbone.Core
             return this;
         }
 
-        public HtmlContent TD_()
+        public HtmlContent TD_(string v = null)
         {
             Add("<td>");
+            if (v != null)
+            {
+                AddEsc(v);
+            }
+            return this;
+        }
+
+        public HtmlContent TD_(double v)
+        {
+            Add("<td>");
+            Add(v);
             return this;
         }
 
