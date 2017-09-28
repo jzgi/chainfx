@@ -15,7 +15,7 @@ namespace Greatbone.Sample
     }
 
     [Ui("结款")]
-    [User(User.MANAGER)]
+    [User(User.OPRMGR)]
     public class OprRepayWork : RepayWork<OprRepayVarWork>
     {
         public OprRepayWork(WorkContext wc) : base(wc)
@@ -29,11 +29,11 @@ namespace Greatbone.Sample
             {
                 if (dc.Query("SELECT * FROM repays WHERE shopid = @1", p => p.Set(shopid)))
                 {
-                    ac.GiveSheetPage(200, dc.ToArray<Repay>());
+                    ac.GiveTablePage(200, dc.ToArray<Repay>(), null, null);
                 }
                 else
                 {
-                    ac.GiveSheetPage(200, (Repay[]) null);
+                    ac.GiveTablePage(200, (Repay[]) null, null, null);
                 }
             }
         }
@@ -52,11 +52,11 @@ namespace Greatbone.Sample
             {
                 if (dc.Query("SELECT * FROM repays WHERE status = 0"))
                 {
-                    ac.GiveSheetPage(200, dc.ToArray<Repay>());
+                    ac.GiveTablePage(200, dc.ToArray<Repay>(), null, null);
                 }
                 else
                 {
-                    ac.GiveSheetPage(200, (Repay[]) null);
+                    ac.GiveTablePage(200, (Repay[]) null, null, null);
                 }
             }
         }
@@ -157,11 +157,11 @@ namespace Greatbone.Sample
             {
                 if (dc.Query("SELECT * FROM repays WHERE status > 0 ORDER BY id DESC LIMIT 20 OFFSET @1", p => p.Set(page * 20)))
                 {
-                    ac.GiveSheetPage(200, dc.ToArray<Repay>());
+                    ac.GiveTablePage(200, dc.ToArray<Repay>(), null, null);
                 }
                 else
                 {
-                    ac.GiveSheetPage(200, (Repay[]) null);
+                    ac.GiveTablePage(200, (Repay[]) null, null, null);
                 }
             }
         }

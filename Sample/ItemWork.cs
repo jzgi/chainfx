@@ -14,7 +14,7 @@ namespace Greatbone.Sample
 
 
     [Ui("货架")]
-    [User(User.AID)]
+    [User(User.OPRAID)]
     public class OprItemWork : ItemWork<OprItemVarWork>
     {
         public OprItemWork(WorkContext wc) : base(wc)
@@ -85,6 +85,33 @@ namespace Greatbone.Sample
                 dc.Sql("DELETE FROM items WHERE shopid = @1 AND name")._IN_(key);
                 dc.Execute(p => p.Set(shopid));
                 ac.GiveRedirect();
+            }
+        }
+    }
+
+    [Ui("产品")]
+    [User(adm: true)]
+    public class AdmItemWork : ItemWork<OprItemVarWork>
+    {
+        public AdmItemWork(WorkContext wc) : base(wc)
+        {
+        }
+
+        public void @default(ActionContext ac)
+        {
+            short shopid = ac[typeof(ShopVarWork)];
+            using (var dc = ac.NewDbContext())
+            {
+                const int proj = Item.SHOPID;
+                dc.Sql("SELECT ").columnlst(Item.Empty, proj)._("FROM items WHERE shopid = @1");
+                if (dc.Query(p => p.Set(shopid)))
+                {
+                    ac.GiveGridPage(200, dc.ToArray<Item>(proj), (h, o) => { });
+                }
+                else
+                {
+                    ac.GiveGridPage(200, (Item[]) null, null);
+                }
             }
         }
     }

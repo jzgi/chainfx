@@ -164,14 +164,34 @@ namespace Greatbone.Core
             return this;
         }
 
-        public HtmlContent TH(params string[] labels)
+        public HtmlContent TH(string label)
         {
-            for (int i = 0; i < labels.Length; i++)
+            Add("<th>");
+            Add(label);
+            Add("</th>");
+            return this;
+        }
+
+        public HtmlContent TH_()
+        {
+            Add("<th>");
+            return this;
+        }
+
+        public HtmlContent _TH()
+        {
+            Add("</th>");
+            return this;
+        }
+
+        public HtmlContent TD(bool v)
+        {
+            Add("<td style=\"text-align: center\">");
+            if (v)
             {
-                Add("<th>");
-                Add(labels[i]);
-                Add("</th>");
+                Add("&radic;");
             }
+            Add("</td>");
             return this;
         }
 
@@ -609,7 +629,7 @@ namespace Greatbone.Core
             return this;
         }
 
-        public HtmlContent SHEET<D>(D[] arr, int proj = 0x00ff) where D : IData
+        public HtmlContent TABLE<D>(D[] arr, Action<HtmlContent> hd, Action<HtmlContent, D> row) where D : IData
         {
             Work work = ac.Work;
             Work varwork = work.varwork;
@@ -623,13 +643,14 @@ namespace Greatbone.Core
                 Add("<thead>");
                 Add("<tr>");
 
-                if (work.Buttons > 0)
+                if (work.Buttons > 0) // for checkboxes
                 {
                     Add("<th></th>");
                 }
-                if (ais != null)
+                hd(this);
+                if (ais != null) // for triggers
                 {
-                    Add("<th></th>"); // head for triggers
+                    Add("<th></th>");
                 }
                 Add("</tr>");
                 Add("</thead>");
@@ -638,37 +659,30 @@ namespace Greatbone.Core
                 {
                     D obj = arr[i];
                     Add("<tr>");
-
-                    if (work.Buttons > 0)
+                    if (work.Buttons > 0) // checkbox
                     {
                         Add("<td>");
                         Add("<input name=\"key\" type=\"checkbox\" value=\"");
                         varwork?.OutputVarKey(obj, this);
                         Add("\"></td>");
                     }
-
-                    // acitons
-                    if (ais != null)
+                    row(this, obj);
+                    if (ais != null) // triggers
                     {
                         Add("<td style=\"width: 1px; white-space: nowrap;\">");
                         TRIGGERS(ais);
                         Add("</td>");
                     }
-
                     Add("</tr>");
                 }
                 Add("</tbody>");
                 Add("</table>");
-                --level;
             }
 
-            if (ac != null)
-            {
-                // pagination controls if any
-                PAGENATE(arr?.Length ?? 0);
+            // pagination controls if any
+            PAGENATE(arr?.Length ?? 0);
 
-                Add("</form>");
-            }
+            Add("</form>");
             return this;
         }
 

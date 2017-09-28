@@ -246,7 +246,7 @@ namespace Greatbone.Sample
                         {
                             m.FORM_();
                             m.TEXT(nameof(name), name, "商家名称");
-                            m.SELECT(nameof(distr), distr, ((CareService) Service).Cities, "区域");
+                            m.SELECT(nameof(distr), distr, ((SampleService) Service).Cities, "区域");
                             m.TEXT(nameof(lic), lic, "工商登记");
                             m._FORM();
                         });
@@ -309,7 +309,7 @@ namespace Greatbone.Sample
                 using (var dc = ac.NewDbContext())
                 {
                     dc.Execute(@"UPDATE shops SET mgrid = @1, mgrwx = @2, mgr = @3 WHERE id = @4;
-                        UPDATE users SET oprat = @4, opr = @5 WHERE wx = @2;", p => p.Set(tri.Item1).Set(tri.Item2).Set(tri.Item3).Set(shopid).Set(User.MANAGER));
+                        UPDATE users SET oprat = @4, opr = @5 WHERE wx = @2;", p => p.Set(tri.Item1).Set(tri.Item2).Set(tri.Item3).Set(shopid).Set(User.OPRMGR));
                 }
                 ac.GivePane(200);
             }

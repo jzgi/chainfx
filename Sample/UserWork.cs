@@ -22,11 +22,11 @@ namespace Greatbone.Sample
             string city = ac[-1];
             using (var dc = ac.NewDbContext())
             {
-                const int proj = 0xffff ^ User.CREDENTIAL;
+                const int proj = -1;
                 dc.Sql("SELECT ").columnlst(User.Empty, proj)._("FROM users WHERE opr <> 0 ORDER BY city LIMIT 20 OFFSET @2");
                 if (dc.Query(p => p.Set(city).Set(page * 20)))
                 {
-                    ac.GiveSheetPage(200, dc.ToArray<User>()); // ok
+                    ac.GiveTablePage(200, dc.ToArray<User>(proj), h => h.TH("姓名").TH("电话").TH("城市").TH("地址").TH("操作于").TH("操作岗").TH("管理员"), (h, o) => h.TD(o.name).TD(o.tel).TD(o.city).TD(o.addr).TD(o.oprat).TD(User.OPR[o.opr]).TD(o.adm)); // ok
                 }
                 else
                 {

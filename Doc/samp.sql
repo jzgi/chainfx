@@ -4,14 +4,14 @@ Navicat PGSQL Data Transfer
 Source Server         : 106.14.45.109
 Source Server Version : 90505
 Source Host           : 106.14.45.109:5432
-Source Database       : care
+Source Database       : samp
 Source Schema         : public
 
 Target Server Type    : PGSQL
 Target Server Version : 90505
 File Encoding         : 65001
 
-Date: 2017-09-22 11:11:03
+Date: 2017-09-28 13:06:59
 */
 
 
@@ -146,7 +146,7 @@ CREATE TABLE "public"."orders" (
 "tel" varchar(11) COLLATE "default",
 "city" varchar(6) COLLATE "default",
 "addr" varchar(20) COLLATE "default",
-"details" jsonb,
+"items" jsonb,
 "total" money,
 "created" timestamp(6),
 "cash" money DEFAULT 0,
@@ -244,67 +244,3 @@ ALTER TABLE "public"."chats" ADD PRIMARY KEY ("shopid", "wx");
 -- Primary Key structure for table repays
 -- ----------------------------
 ALTER TABLE "public"."repays" ADD PRIMARY KEY ("id");
-
-
-
-
-DECLARE 
-
-  cur CURSOR FOR SELECT id, shopid, shop, cash, status FROM orders WHERE status = 5 AND shipped < till AND cash > 0.00::money ORDER BY shopid FOR UPDATE;
-
-  rshopid VARCHAR(6) DEFAULT NULL;
-  rshop VARCHAR(10) DEFAULT NULL;
-  rorders INT DEFAULT 0;
-  rtotal MONEY DEFAULT 0.00; -- repay total
-  rcash MONEY DEFAULT 0.00; -- repay cash
-  
-  gtotal MONEY DEFAULT 0.00; -- grand total
-  gcash MONEY DEFAULT 0.00; -- grand cash
-  
-  ord RECORD;
-  
-BEGIN
-
-  OPEN cur;
-
-  LOOP
-  
-    FETCH cur INTO ord; -- fetch an order
-
-    IF NOT FOUND OR rshopid <> ord.shopid THEN
-
-      IF rshopid IS NOT NULL AND rtotal > 0.00::money THEN
-        -- insert the accumulated repay
-        INSERT INTO repays (shopid, shop, till, orders, total, cash) VALUES (rshopid, rshop, till, rorders, rtotal, rtotal * 0.994);
-        -- reset repay 
-        rshopid := NULL;
-        rshop := NULL;
-        rorders := 0;
-        rtotal := 0;
-      END IF;
-
-      IF NOT FOUND THEN
-        CLOSE cur;
-        EXIT;
-      END IF;
-    
-    END IF;
-
-    rshopid := ord.shopid;
-
-    -- test against the limitation
-    IF rtotal + ord.cash <= rmax AND gtotal + ord.cash <= gmax THEN
-
-			rshop := ord.shop;
-      rorders := rorders + 1;
-      rtotal := rtotal + ord.cash;
-      gtotal := gtotal + ord.cash;
-
-      -- set status to reckoned
-      UPDATE orders SET status = 7  WHERE CURRENT OF cur; 
-
-    END IF;
-
-  END LOOP;
-
-END

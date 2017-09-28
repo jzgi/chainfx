@@ -138,7 +138,7 @@ namespace Greatbone.Sample
     }
 
     [Ui("当前单")]
-    [User(User.AID)]
+    [User(User.OPRAID)]
     public class OprPresentOrderWork : OrderWork<OprPresentOrderVarWork>
     {
         static readonly Map<short, string> NOTIFS = new Map<short, string>()
@@ -264,7 +264,7 @@ namespace Greatbone.Sample
     }
 
     [Ui("已往单")]
-    [User(User.AID)]
+    [User(User.OPRAID)]
     public class OprPastOrderWork : OrderWork<OprPastOrderVarWork>
     {
         public OprPastOrderWork(WorkContext wc) : base(wc)

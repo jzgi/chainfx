@@ -31,7 +31,7 @@ namespace Greatbone.Sample
                 HtmlContent h = new HtmlContent(ac, true);
                 h.T("<html><head><script>");
 
-                h.T("var cities = ").JSON(((CareService) Service).Cities).T(";");
+                h.T("var cities = ").JSON(((SampleService) Service).Cities).T(";");
 
                 h.T("navigator.geolocation.getCurrentPosition(function(p) {");
                 h.T("var city=''; var area='';");
@@ -61,7 +61,7 @@ namespace Greatbone.Sample
                 m.T("<div class=\"top-bar\">");
                 m.T("<div class=\"top-bar-left\">");
                 m.T("<select name=\"city\" style=\"margin: 0; border: 0; color: #ba55d3; font-size: 1.25rem;\" onchange=\"location = location.href.split('?')[0] + '?city=' + this.value;\">");
-                var vs = ((CareService) Service).Cities;
+                var vs = ((SampleService) Service).Cities;
                 foreach (var pair in vs)
                 {
                     string v = pair.Value.ToString();
@@ -118,7 +118,7 @@ namespace Greatbone.Sample
     }
 
 
-    [Ui("商家管理")]
+    [Ui("作坊")]
     public class AdmShopWork : ShopWork<AdmShopVarWork>
     {
         public AdmShopWork(WorkContext wc) : base(wc)
@@ -134,11 +134,14 @@ namespace Greatbone.Sample
                 dc.Sql("SELECT ").columnlst(Shop.Empty, proj)._("FROM shops ORDER BY id");
                 if (dc.Query())
                 {
-                    ac.GiveSheetPage(200, dc.ToArray<Shop>(proj), proj, @public: false, maxage: 3);
+                    ac.GiveTablePage(200, dc.ToArray<Shop>(proj),
+                        h => h.TH("名称").TH("电话").TH("地址"),
+                        (h, o) => h.TD(o.name).TD(o.mgrtel).TD(o.addr)
+                        , false, 3);
                 }
                 else
                 {
-                    ac.GiveSheetPage(200, (Shop[]) null, @public: false, maxage: 3);
+                    ac.GiveTablePage(200, (Shop[]) null, null, null, false, 3);
                 }
             }
         }
@@ -154,7 +157,7 @@ namespace Greatbone.Sample
                 {
                     m.FORM_();
                     m.TEXT(nameof(o.name), o.name, "商家名称", max: 10, required: true);
-                    m.TEXT(nameof(o.city), o.city, "所在城市", opt: ((CareService) Service).Cities, @readonly: true);
+                    m.TEXT(nameof(o.city), o.city, "所在城市", opt: ((SampleService) Service).Cities, @readonly: true);
                     m.TEXT(nameof(o.addr), o.addr, label: "营业地址");
                     m._FORM();
                 });

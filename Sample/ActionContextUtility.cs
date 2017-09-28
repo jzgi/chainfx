@@ -199,9 +199,9 @@ namespace Greatbone.Sample
             ac.GivePage(status, main => { main.GRID(arr, cell); }, @public, maxage);
         }
 
-        public static void GiveSheetPage<D>(this ActionContext ac, int status, D[] arr, int proj = 0x00ff, bool? @public = null, int maxage = 60) where D : IData
+        public static void GiveTablePage<D>(this ActionContext ac, int status, D[] arr, Action<HtmlContent> hd, Action<HtmlContent, D> row, bool? @public = null, int maxage = 60) where D : IData
         {
-            ac.GivePage(status, main => { main.SHEET(arr, proj); }, @public, maxage);
+            ac.GivePage(status, main => { main.TABLE(arr, hd, row); }, @public, maxage);
         }
     }
 }

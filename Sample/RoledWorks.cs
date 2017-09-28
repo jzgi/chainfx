@@ -6,7 +6,7 @@ namespace Greatbone.Sample
     {
         public MyWork(WorkContext wc) : base(wc)
         {
-            CreateVar<MyVarWork, string>((obj) => ((User) obj).id);
+            CreateVar<MyVarWork, string>((obj) => ((User) obj).wx);
         }
     }
 
@@ -14,7 +14,7 @@ namespace Greatbone.Sample
     {
         public OprWork(WorkContext wc) : base(wc)
         {
-            CreateVar<OprVarWork, string>((prin) => ((User) prin).id);
+            CreateVar<OprVarWork, string>((prin) => ((User) prin).oprat);
         }
     }
 
@@ -27,6 +27,8 @@ namespace Greatbone.Sample
             Create<AdmUserWork>("user");
 
             Create<AdmShopWork>("shop");
+
+            Create<AdmItemWork>("item");
 
             Create<AdmKickWork>("kick");
 
