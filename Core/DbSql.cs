@@ -1,5 +1,4 @@
 using System;
-using System.Collections.Generic;
 
 namespace Greatbone.Core
 {
@@ -17,7 +16,7 @@ namespace Greatbone.Core
         // used when generating a list
         internal int ordinal;
 
-        public DbSql(string str) : base(false, 1024)
+        internal DbSql(string str) : base(false, 1024)
         {
             Add(str);
         }
@@ -42,21 +41,6 @@ namespace Greatbone.Core
         {
             Add(", ");
             Add(str);
-            return this;
-        }
-
-        public DbSql @params(sbyte n)
-        {
-            for (int i = 0; i < n; i++)
-            {
-                if (i > 0)
-                {
-                    Add(',');
-                    Add(' ');
-                }
-                Add('@');
-                Add(i);
-            }
             return this;
         }
 
@@ -92,6 +76,23 @@ namespace Greatbone.Core
             {
                 Add(",");
                 Add(extra);
+            }
+            Add(")");
+            return this;
+        }
+
+        public DbSql _VALUES_(short n)
+        {
+            Add(" VALUES (");
+            for (short i = 1; i <= n; i++)
+            {
+                if (i > 1)
+                {
+                    Add(',');
+                    Add(' ');
+                }
+                Add('@');
+                Add(i);
             }
             Add(")");
             return this;

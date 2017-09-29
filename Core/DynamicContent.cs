@@ -75,7 +75,8 @@ namespace Greatbone.Core
             1000000000000000000L
         };
 
-        protected byte[] bytebuf; // NOTE: HttpResponseStream doesn't have internal buffer
+        // NOTE: HttpResponseStream doesn't have internal buffer
+        protected byte[] bytebuf; 
 
         protected char[] charbuf;
 

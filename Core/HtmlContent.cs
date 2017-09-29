@@ -302,6 +302,30 @@ namespace Greatbone.Core
             return this;
         }
 
+        public HtmlContent TD(string v1, string v2)
+        {
+            Add("<td>");
+            AddEsc(v1);
+            Add("&nbsp;");
+            AddEsc(v2);
+            Add("</td>");
+            return this;
+        }
+
+        public HtmlContent TD_(short v)
+        {
+            Add("<td>");
+            Add(v);
+            return this;
+        }
+
+        public HtmlContent TD_(int v)
+        {
+            Add("<td>");
+            Add(v);
+            return this;
+        }
+
         public HtmlContent TD_(string v = null)
         {
             Add("<td>");
@@ -711,7 +735,7 @@ namespace Greatbone.Core
         {
             Work work = ac.Work;
             Work varwork = work.varwork;
-            Add("<form id=\"sheetform\">");
+            Add("<form id=\"tableform\">");
             TOOLBAR(work, arr);
 
             if (arr != null)
