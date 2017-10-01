@@ -615,16 +615,14 @@ namespace Greatbone.Core
             return this;
         }
 
-        public void TOOLBAR(Work work, object obj)
+        public void TOOLBAR(Work work)
         {
             Add("<div data-sticky-container>");
             Add("<div class=\"sticky\" style=\"width: 100%\" data-sticky  data-options=\"anchor: page; marginTop: 0; stickyOn: small;\">");
             Add("<div class=\"top-bar\">");
+
             Add("<div class=\"top-bar-left\">");
-            if (work.UiActions != null)
-            {
-                TRIGGERS(work.UiActions, obj);
-            }
+            TRIGGERS(work, null);
             Add("</div>");
 
             Add("<div class=\"top-bar-right\">");
@@ -679,7 +677,7 @@ namespace Greatbone.Core
             }
         }
 
-        public HtmlContent TABLE(string name, IDataInput inp, Action<IDataInput, HtmlContent, char> putter)
+        public HtmlContent TableView(string name, IDataInput inp, Action<IDataInput, HtmlContent, char> putter)
         {
             Add("<table class=\"unstriped\">");
 
@@ -705,31 +703,34 @@ namespace Greatbone.Core
             return this;
         }
 
-        public HtmlContent TABLE<D>(D[] arr, Action<HtmlContent> hd, Action<HtmlContent, D> row) where D : IData
+        public HtmlContent TableView<D>(D[] arr, Action<HtmlContent> hd, Action<HtmlContent, D> row) where D : IData
         {
             Work work = ac.Work;
             Work varwork = work.varwork;
-            Add("<form id=\"tableform\">");
-            TOOLBAR(work, arr);
 
-            if (arr != null)
+            Add("<form id=\"viewform\">");
+            TOOLBAR(work);
+            Add("</form>");
+
+            Add("<table class=\"scroll unstriped\">");
+            ActionInfo[] ais = varwork?.UiActions;
+
+            Add("<thead>");
+            Add("<tr>");
+            if (work.Buttons > 0) // for checkboxes
             {
-                Add("<table class=\"scroll unstriped\">");
-                ActionInfo[] ais = varwork?.UiActions;
-                Add("<thead>");
-                Add("<tr>");
+                Add("<th></th>");
+            }
+            hd(this);
+            if (ais != null) // for triggers
+            {
+                Add("<th></th>");
+            }
+            Add("</tr>");
+            Add("</thead>");
 
-                if (work.Buttons > 0) // for checkboxes
-                {
-                    Add("<th></th>");
-                }
-                hd(this);
-                if (ais != null) // for triggers
-                {
-                    Add("<th></th>");
-                }
-                Add("</tr>");
-                Add("</thead>");
+            if (arr != null) // tbody if having data objects
+            {
                 Add("<tbody>");
                 for (int i = 0; i < arr.Length; i++)
                 {
@@ -738,7 +739,7 @@ namespace Greatbone.Core
                     if (work.Buttons > 0) // checkbox
                     {
                         Add("<td>");
-                        Add("<input name=\"key\" type=\"checkbox\" value=\"");
+                        Add("<input name=\"key\" type=\"checkbox\" form=\"viewform\"  value=\"");
                         varwork?.OutputVarKey(obj, this);
                         Add("\"></td>");
                     }
@@ -746,14 +747,16 @@ namespace Greatbone.Core
                     if (ais != null) // triggers
                     {
                         Add("<td style=\"width: 1px; white-space: nowrap;\">");
-                        TRIGGERS(ais);
+                        Add("<form>");
+                        TRIGGERS(varwork, obj);
+                        Add("</form>");
                         Add("</td>");
                     }
                     Add("</tr>");
                 }
                 Add("</tbody>");
-                Add("</table>");
             }
+            Add("</table>");
 
             // pagination controls if any
             PAGENATE(arr?.Length ?? 0);
@@ -762,7 +765,7 @@ namespace Greatbone.Core
             return this;
         }
 
-        public HtmlContent GRID(IDataInput inp, Action<IDataInput, HtmlContent> pipe)
+        public HtmlContent GridView(IDataInput inp, Action<IDataInput, HtmlContent> pipe)
         {
             if (inp != null)
             {
@@ -785,15 +788,18 @@ namespace Greatbone.Core
             return this;
         }
 
-        public HtmlContent GRID<D>(D[] arr, Action<HtmlContent, D> card) where D : IData
+        public HtmlContent GridView<D>(D[] arr, Action<HtmlContent, D> cell) where D : IData
         {
             Work work = ac.Work;
             Work varwork = work.varwork;
-            Add("<form id=\"gridform\">");
-            TOOLBAR(work, arr);
+
+            Add("<form id=\"viewform\">");
+            TOOLBAR(work);
+            Add("</form>");
 
             if (arr != null) // render grid cells
             {
+                Add("<form>");
                 Add("<div class=\"grid-x grid-padding-x small-up-1 medium-up-2 large-up-3\">");
                 for (int i = 0; i < arr.Length; i++)
                 {
@@ -814,21 +820,18 @@ namespace Greatbone.Core
                         Add("</div>");
                     }
 
-                    card(this, obj);
+                    cell(this, obj);
 
                     // output var triggers
-                    ActionInfo[] ais = varwork?.UiActions;
-                    if (ais != null)
-                    {
-                        Add("<div style=\"text-align: right; border-top: 1px solid silver\">");
-                        TRIGGERS(ais, obj);
-                        Add("</div>");
-                    }
+                    Add("<div style=\"text-align: right; border-top: 1px solid silver\">");
+                    TRIGGERS(varwork, obj);
+                    Add("</div>");
+
                     Add("</div>");
                     Add("</div>");
                 }
                 Add("</div>");
-                --level;
+                Add("</form>");
             }
             else // empty
             {
@@ -842,7 +845,7 @@ namespace Greatbone.Core
             return this;
         }
 
-        public HtmlContent LIST<D>(D[] arr, int proj = 0x00ff) where D : IData
+        public HtmlContent ListView<D>(D[] arr, int proj = 0x00ff) where D : IData
         {
             Add("<form id=\"listform\">");
 
@@ -868,10 +871,13 @@ namespace Greatbone.Core
             return this;
         }
 
-        public HtmlContent TRIGGERS(ActionInfo[] ais, object obj = null)
+        public HtmlContent TRIGGERS(Work work, IData obj)
         {
-            if (ais == null) return this;
-
+            var ais = work.UiActions;
+            if (ais == null)
+            {
+                return this;
+            }
             for (int i = 0; i < ais.Length; i++)
             {
                 ActionInfo ai = ais[i];
@@ -893,11 +899,8 @@ namespace Greatbone.Core
                     Add("<a class=\"button");
                     Add(ac?.Doer == ai ? " hollow" : " clear");
                     Add(" primary\" href=\"");
-                    for (int lvl = 0; lvl <= level; lvl++)
-                    {
-//                        chain[lvl].OutputVarKey(this);
-                        Add('/');
-                    }
+                    ai.Work.OutputVarKey(obj, this);
+                    Add('/');
                     Add(ai.RPath);
                     Add("\"");
                     if (ui.HasPrompt)
@@ -953,11 +956,8 @@ namespace Greatbone.Core
                     Add("\" name=\"");
                     Add(ai.Key);
                     Add("\" formaction=\"");
-                    for (int lvl = 0; lvl <= level; lvl++)
-                    {
-//                        chain[lvl].OutputVarKey(this);
-                        Add('/');
-                    }
+                    ai.Work.OutputVarKey(obj, this);
+                    Add('/');
                     Add(ai.Key);
                     Add("\" formmethod=\"post\"");
                     if (!enabled)

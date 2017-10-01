@@ -62,7 +62,7 @@ namespace Greatbone.Sample
             h.Add("<div class=\"tabs-panel is-active\" id=\"paneltop\">");
             h.Add("<div class=\"top-bar\">");
             h.Add("<div class=\"top-bar-left\">");
-            h.TRIGGERS(work.UiActions);
+            h.TRIGGERS(work, null);
             h.Add("</div>");
             h.Add("<div class=\"top-bar-right\">");
             h.Add("<span class=\"button primary hollow\">");
@@ -195,12 +195,12 @@ namespace Greatbone.Sample
 
         public static void GiveGridPage<D>(this ActionContext ac, int status, D[] arr, Action<HtmlContent, D> cell, bool? @public = null, int maxage = 60) where D : IData
         {
-            ac.GivePage(status, main => { main.GRID(arr, cell); }, @public, maxage);
+            ac.GivePage(status, main => { main.GridView(arr, cell); }, @public, maxage);
         }
 
         public static void GiveTablePage<D>(this ActionContext ac, int status, D[] arr, Action<HtmlContent> hd, Action<HtmlContent, D> row, bool? @public = null, int maxage = 60) where D : IData
         {
-            ac.GivePage(status, main => { main.TABLE(arr, hd, row); }, @public, maxage);
+            ac.GivePage(status, main => { main.TableView(arr, hd, row); }, @public, maxage);
         }
     }
 }
