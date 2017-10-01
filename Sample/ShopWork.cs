@@ -74,7 +74,7 @@ namespace Greatbone.Sample
                 m.T("</select>");
                 m.T("</div>");
                 m.T("<div class=\"top-bar-right\">");
-                m.T("<a class=\"float-right\" href=\"/my//cart/\"><span class=\"fa-stack fa-lg\"><i class=\"fa fa-circle fa-stack-2x\"></i><i class=\"fa fa-shopping-cart fa-stack-1x fa-inverse\"></i></span></a>");
+                m.T("<a class=\"float-right\" href=\"/my//cart/\"><i class=\"typcn typcn-shopping-cart\"></i></a>");
                 m.T("</div>");
                 m.T("</div>");
                 m.T("</div>");

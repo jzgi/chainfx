@@ -16,7 +16,7 @@ namespace Greatbone.Core
         int level;
 
         // type of outputting
-        sbyte typ;
+        sbyte kind;
 
         internal const sbyte JS = 1, UL = 2;
 
@@ -349,7 +349,7 @@ namespace Greatbone.Core
             return this;
         }
 
-        public HtmlContent LN(string label, short v)
+        public HtmlContent COL(string label, short v, int n = 0)
         {
             Add("<div class=\"grid-x grid-padding-x\">");
             Add("<div class=\"cell small-3\" style=\"padding-right: 0; text-align: right\">");
@@ -362,7 +362,7 @@ namespace Greatbone.Core
             return this;
         }
 
-        public HtmlContent LN(string label, int v)
+        public HtmlContent COL(string label, int v, int n = 0)
         {
             Add("<div class=\"grid-x grid-padding-x\">");
             Add("<div class=\"cell small-3\" style=\"padding-right: 0; text-align: right\">");
@@ -375,7 +375,7 @@ namespace Greatbone.Core
             return this;
         }
 
-        public HtmlContent LN(string label, string v)
+        public HtmlContent COL(string label, string v, int n = 0)
         {
             Add("<div class=\"grid-x grid-padding-x\">");
             Add("<div class=\"cell small-3\" style=\"padding-right: 0; text-align: right\">");
@@ -388,7 +388,7 @@ namespace Greatbone.Core
             return this;
         }
 
-        public HtmlContent LN(string label, Action<HtmlContent> v)
+        public HtmlContent COL(string label, Action<HtmlContent> v)
         {
             Add("<div class=\"grid-x grid-padding-x\">");
             Add("<div class=\"cell small-3\" style=\"padding-right: 0; text-align: right\">");
@@ -401,7 +401,7 @@ namespace Greatbone.Core
             return this;
         }
 
-        public HtmlContent LN(string label1, string v1, string label2, string v2)
+        public HtmlContent COL(string label1, string v1, string label2, string v2)
         {
             Add("<div class=\"grid-x grid-padding-x\">");
             Add("<div class=\"cell small-3\" style=\"padding-right: 0; text-align: right\">");
@@ -420,7 +420,7 @@ namespace Greatbone.Core
             return this;
         }
 
-        public HtmlContent LN(string label1, string v1, string label2, int v2)
+        public HtmlContent COL(string label1, string v1, string label2, int v2)
         {
             Add("<div class=\"grid-x grid-padding-x\">");
             Add("<div class=\"cell small-3\" style=\"padding-right: 0; text-align: right\">");
@@ -439,7 +439,7 @@ namespace Greatbone.Core
             return this;
         }
 
-        public HtmlContent LN(string label1, string v1, string label2, decimal v2)
+        public HtmlContent COL(string label1, string v1, string label2, decimal v2)
         {
             Add("<div class=\"grid-x grid-padding-x\">");
             Add("<div class=\"cell small-3\" style=\"padding-right: 0; text-align: right\">");
@@ -458,7 +458,7 @@ namespace Greatbone.Core
             return this;
         }
 
-        public HtmlContent LN(string label1, string v1, string label2, DateTime v2)
+        public HtmlContent COL(string label1, string v1, string label2, DateTime v2)
         {
             Add("<div class=\"grid-x grid-padding-x\">");
             Add("<div class=\"cell small-3\" style=\"padding-right: 0; text-align: right\">");
@@ -477,39 +477,13 @@ namespace Greatbone.Core
             return this;
         }
 
-        public HtmlContent LN(string label1, Action<HtmlContent> v1, string label2, Action<HtmlContent> v2)
-        {
-            Add("<div class=\"grid-x grid-padding-x\">");
-            Add("<div class=\"cell small-3\" style=\"padding-right: 0; text-align: right\">");
-            Add(label1);
-            Add("：</div>");
-            Add("<div class=\"cell small-3\">");
-            v1(this);
-            Add("</div>");
-            Add("<div class=\"cell small-3\" style=\"padding-right: 0; text-align: right\">");
-            Add(label2);
-            Add("：</div>");
-            Add("<div class=\"cell small-3\">");
-            v2(this);
-            Add("</div>");
-            Add("</div>");
-            return this;
-        }
-
-        public HtmlContent LN_(string label)
+        public HtmlContent COL_(string label)
         {
             Add("<div class=\"grid-x grid-padding-x align-middle\">");
             Add("<div class=\"cell small-3\" style=\"padding-right: 0; text-align: right\">");
             Add(label);
             Add("：</div>");
             Add("<div class=\"cell small-9\">");
-            return this;
-        }
-
-        public HtmlContent _LN()
-        {
-            Add("</div>");
-            Add("</div>");
             return this;
         }
 
@@ -811,7 +785,7 @@ namespace Greatbone.Core
             return this;
         }
 
-        public HtmlContent GRID<D>(D[] arr, Action<HtmlContent, D> cell) where D : IData
+        public HtmlContent GRID<D>(D[] arr, Action<HtmlContent, D> card) where D : IData
         {
             Work work = ac.Work;
             Work varwork = work.varwork;
@@ -840,7 +814,7 @@ namespace Greatbone.Core
                         Add("</div>");
                     }
 
-                    cell(this, obj);
+                    card(this, obj);
 
                     // output var triggers
                     ActionInfo[] ais = varwork?.UiActions;
@@ -868,7 +842,7 @@ namespace Greatbone.Core
             return this;
         }
 
-        public HtmlContent LIST<D>(ActionContext formctx, Work varWork, D[] arr, int proj = 0x00ff) where D : IData
+        public HtmlContent LIST<D>(D[] arr, int proj = 0x00ff) where D : IData
         {
             Add("<form id=\"listform\">");
 
@@ -885,7 +859,7 @@ namespace Greatbone.Core
                 --level;
             }
 
-            if (formctx != null)
+            if (ac != null)
             {
                 // pagination controls if any
                 PAGENATE(arr?.Length ?? 0);
@@ -1077,8 +1051,10 @@ namespace Greatbone.Core
             return this;
         }
 
-        public HtmlContent TEXT(string name, string v, string label = null, string help = null, string pattern = null, sbyte max = 0, sbyte min = 0, IOptable<string> opt = null, bool @readonly = false, bool required = false)
+        public HtmlContent TEXT(string name, string v, string label = null, string help = null, string pattern = null, sbyte max = 0, sbyte min = 0, IOptable<string> opt = null, bool @readonly = false, bool required = false, int n = 0)
         {
+            int endg = GridStart(n);
+
             Add("<label>");
             AddLabel(label, name);
             Add("<input type=\"text\" name=\"");
@@ -1116,15 +1092,17 @@ namespace Greatbone.Core
             }
             if (@readonly) Add(" readonly");
             if (required) Add(" required");
-
             Add(">");
-
             Add("</label>");
+
+            GridEnd(endg);
             return this;
         }
 
-        public HtmlContent SEARCH(string name, string v, string label = null, string help = null, string pattern = null, sbyte max = 0, sbyte min = 0, bool required = false)
+        public HtmlContent SEARCH(string name, string v, string label = null, string help = null, string pattern = null, sbyte max = 0, sbyte min = 0, bool required = false, int n = 0)
         {
+            int endg = GridStart(n);
+
             Add("<label>");
             AddLabel(label, name);
             Add("<input type=\"search\" name=\"");
@@ -1160,15 +1138,17 @@ namespace Greatbone.Core
                 Add(min);
                 Add("\"");
             }
-
             Add(">");
-
             Add("</label>");
+
+            GridEnd(endg);
             return this;
         }
 
-        public HtmlContent PASSWORD(string name, string v, string label = null, string help = null, string pattern = null, sbyte max = 0, sbyte min = 0, bool @readonly = false, bool required = false)
+        public HtmlContent PASSWORD(string name, string v, string label = null, string help = null, string pattern = null, sbyte max = 0, sbyte min = 0, bool @readonly = false, bool required = false, int n = 0)
         {
+            int endg = GridStart(n);
+
             Add("<label>");
             AddLabel(label, name);
             Add("<input type=\"password\" name=\"");
@@ -1206,15 +1186,17 @@ namespace Greatbone.Core
             }
             if (@readonly) Add(" readonly");
             if (required) Add(" required");
-
             Add(">");
-
             Add("</label>");
+
+            GridEnd(endg);
             return this;
         }
 
-        public HtmlContent DATE(string name, DateTime v, string label = null, DateTime max = default(DateTime), DateTime min = default(DateTime), bool @readonly = false, bool required = false, int step = 0)
+        public HtmlContent DATE(string name, DateTime v, string label = null, DateTime max = default(DateTime), DateTime min = default(DateTime), bool @readonly = false, bool required = false, int step = 0, int n = 0)
         {
+            int endg = GridStart(n);
+
             Add("<label>");
             AddLabel(label, name);
             Add("<input type=\"date\" name=\"");
@@ -1243,9 +1225,10 @@ namespace Greatbone.Core
                 Add(step);
                 Add("\"");
             }
-
             Add(">");
             Add("</label>");
+
+            GridEnd(endg);
             return this;
         }
 
@@ -1255,8 +1238,10 @@ namespace Greatbone.Core
             return this;
         }
 
-        public HtmlContent NUMBER(string name, short v, string label = null, string tip = null, short max = 0, short min = 0, short step = 0, bool opt = false, bool @readonly = false, bool required = false)
+        public HtmlContent NUMBER(string name, short v, string label = null, string tip = null, short max = 0, short min = 0, short step = 0, bool opt = false, bool @readonly = false, bool required = false, int n = 0)
         {
+            int endg = GridStart(n);
+
             if (label != null)
             {
                 Add("<label>");
@@ -1329,11 +1314,15 @@ namespace Greatbone.Core
             {
                 Add("</label>");
             }
+
+            GridEnd(endg);
             return this;
         }
 
-        public HtmlContent NUMBER(string name, int v, string label = null, string tip = null, int max = 0, int min = 0, int step = 0, bool opt = false, bool @readonly = false, bool required = false)
+        public HtmlContent NUMBER(string name, int v, string label = null, string tip = null, int max = 0, int min = 0, int step = 0, bool opt = false, bool @readonly = false, bool required = false, int n = 0)
         {
+            int endg = GridStart(n);
+
             Add("<label>");
             AddLabel(label, name);
             Add("<input type=\"number\" name=\"");
@@ -1375,11 +1364,15 @@ namespace Greatbone.Core
 
             Add(">");
             Add("</label>");
+
+            GridEnd(endg);
             return this;
         }
 
-        public HtmlContent NUMBER(string name, long v, string label = null, string tip = null, long max = 0, long min = 0, long step = 0, bool opt = false, bool @readonly = false, bool required = false)
+        public HtmlContent NUMBER(string name, long v, string label = null, string tip = null, long max = 0, long min = 0, long step = 0, bool opt = false, bool @readonly = false, bool required = false, int n = 0)
         {
+            int endg = GridStart(n);
+
             Add("<label>");
             AddLabel(label, name);
             Add("<input type=\"number\" name=\"");
@@ -1421,11 +1414,15 @@ namespace Greatbone.Core
 
             Add(">");
             Add("</label>");
+
+            GridEnd(endg);
             return this;
         }
 
-        public HtmlContent NUMBER(string name, decimal v, string label = null, string tip = null, decimal max = 0, decimal min = 0, decimal step = 0, bool @readonly = false, bool required = false)
+        public HtmlContent NUMBER(string name, decimal v, string label = null, string tip = null, decimal max = 0, decimal min = 0, decimal step = 0, bool @readonly = false, bool required = false, int n = 0)
         {
+            int endg = GridStart(n);
+
             Add("<label>");
             AddLabel(label, name);
             Add("<input type=\"number\" name=\"");
@@ -1463,11 +1460,15 @@ namespace Greatbone.Core
 
             Add(">");
             Add("</label>");
+
+            GridEnd(endg);
             return this;
         }
 
-        public HtmlContent NUMBER(string name, double v, string label = null, string tip = null, double max = 0, double min = 0, double step = 0, bool @readonly = false, bool required = false)
+        public HtmlContent NUMBER(string name, double v, string label = null, string tip = null, double max = 0, double min = 0, double step = 0, bool @readonly = false, bool required = false, int n = 0)
         {
+            int endg = GridStart(n);
+
             Add("<label>");
             AddLabel(label, name);
             Add("<input type=\"number\" name=\"");
@@ -1505,6 +1506,8 @@ namespace Greatbone.Core
 
             Add(">");
             Add("</label>");
+
+            GridEnd(endg);
             return this;
         }
 
@@ -1536,8 +1539,10 @@ namespace Greatbone.Core
             return this;
         }
 
-        public HtmlContent CHECKBOX(string name, bool v, string label = null, bool required = false)
+        public HtmlContent CHECKBOX(string name, bool v, string label = null, bool required = false, int n = 0)
         {
+            int endg = GridStart(n);
+
             if (label != null)
             {
                 Add("<label>");
@@ -1553,6 +1558,8 @@ namespace Greatbone.Core
                 Add(label);
                 Add(" </label>");
             }
+
+            GridEnd(endg);
             return this;
         }
 
@@ -1785,8 +1792,10 @@ namespace Greatbone.Core
             return this;
         }
 
-        public HtmlContent TEXTAREA(string name, string v, string label = null, string help = null, short max = 0, short min = 0, bool @readonly = false, bool required = false)
+        public HtmlContent TEXTAREA(string name, string v, string label = null, string help = null, short max = 0, short min = 0, bool @readonly = false, bool required = false, int n = 0)
         {
+            int endg = GridStart(n);
+
             Add("<label>");
             AddLabel(label, name);
             Add("<textarea name=\"");
@@ -1822,6 +1831,8 @@ namespace Greatbone.Core
             AddEsc(v);
             Add("</textarea>");
             Add("</label>");
+
+            GridEnd(endg);
             return this;
         }
 
@@ -1848,8 +1859,47 @@ namespace Greatbone.Core
             return this;
         }
 
-        public HtmlContent SELECT(string name, short v, IOptable<short> opt, string label = null, bool multiple = false, bool required = false, sbyte size = 0)
+        int gridx;
+
+        int GridStart(int n)
         {
+            if (gridx > 0)
+            {
+                if (n == 0 || n > gridx) n = gridx;
+                Add("<div class=\"small-");
+                Add(n);
+                Add(" cell\">");
+                gridx -= n;
+                return gridx > 0 ? 2 : 1;
+            }
+            if (n > 0)
+            {
+                Add("<div class=\"grid-x grid-margin-x\">");
+                Add("<div class=\"small-");
+                Add(n);
+                Add(" cell\">");
+                gridx = 12 - n;
+                return gridx > 0 ? 2 : 1;
+            }
+            return 0;
+        }
+
+        void GridEnd(int c)
+        {
+            if (c == 1)
+            {
+                Add("</div>");
+            }
+            else if (c == 2)
+            {
+                Add("</div></div>");
+            }
+        }
+
+        public HtmlContent SELECT(string name, short v, IOptable<short> opt, string label = null, bool multiple = false, bool required = false, int size = 0, int n = 0)
+        {
+            int endg = GridStart(n);
+
             Add("<label>");
             AddLabel(label, name);
             Add("<select name=\"");
@@ -1878,11 +1928,15 @@ namespace Greatbone.Core
 
             Add("</select>");
             Add("</label>");
+
+            GridEnd(endg);
             return this;
         }
 
-        public HtmlContent SELECT(string name, string v, IOptable<string> opt, string label = null, bool multiple = false, bool required = false, sbyte size = 0, bool refresh = false)
+        public HtmlContent SELECT(string name, string v, IOptable<string> opt, string label = null, bool multiple = false, bool required = false, sbyte size = 0, bool refresh = false, int n = 0)
         {
+            int endg = GridStart(n);
+
             Add("<label>");
             AddLabel(label, name);
             Add("<select name=\"");
@@ -1914,11 +1968,15 @@ namespace Greatbone.Core
             });
             Add("</select>");
             Add("</label>");
+
+            GridEnd(endg);
             return this;
         }
 
-        public HtmlContent SELECT(string name, string v, string[] opt, string label = null, bool multiple = false, bool required = false, sbyte size = 0, bool refresh = false)
+        public HtmlContent SELECT(string name, string v, string[] opt, string label = null, bool multiple = false, bool required = false, sbyte size = 0, bool refresh = false, int n = 0)
         {
+            int endg = GridStart(n);
+
             if (label != null)
             {
                 Add("<label>");
@@ -1961,6 +2019,8 @@ namespace Greatbone.Core
             {
                 Add("</label>");
             }
+
+            GridEnd(endg);
             return this;
         }
 
@@ -1996,21 +2056,21 @@ namespace Greatbone.Core
         //
         public HtmlContent JSON(IData obj, int proj = 0x00ff)
         {
-            typ = JS;
+            kind = JS;
             Put(null, obj, proj);
             return this;
         }
 
         public HtmlContent JSON<D>(D[] arr, int proj = 0x00ff) where D : IData
         {
-            typ = JS;
+            kind = JS;
             Put(null, arr, proj);
             return this;
         }
 
         public HtmlContent JSON<K, D>(Map<K, D> map, int proj = 0x00ff) where D : IData
         {
-            typ = JS;
+            kind = JS;
             Put(null, map, proj);
             return this;
         }
@@ -2033,7 +2093,7 @@ namespace Greatbone.Core
 
         public HtmlContent Put(string name, bool v)
         {
-            switch (typ)
+            switch (kind)
             {
                 case JS:
                     if (counts[level]++ > 0) Add(',');
@@ -2054,7 +2114,7 @@ namespace Greatbone.Core
 
         public HtmlContent Put(string name, short v)
         {
-            switch (typ)
+            switch (kind)
             {
                 case JS:
                     if (counts[level]++ > 0) Add(',');
@@ -2075,7 +2135,7 @@ namespace Greatbone.Core
 
         public HtmlContent Put(string name, int v)
         {
-            switch (typ)
+            switch (kind)
             {
                 case JS:
                     if (counts[level]++ > 0) Add(',');
@@ -2096,7 +2156,7 @@ namespace Greatbone.Core
 
         public HtmlContent Put(string name, long v)
         {
-            switch (typ)
+            switch (kind)
             {
                 case JS:
                     if (counts[level]++ > 0) Add(',');
@@ -2117,7 +2177,7 @@ namespace Greatbone.Core
 
         public HtmlContent Put(string name, double v)
         {
-            switch (typ)
+            switch (kind)
             {
                 case JS:
                     if (counts[level]++ > 0) Add(',');
@@ -2138,7 +2198,7 @@ namespace Greatbone.Core
 
         public HtmlContent Put(string name, decimal v)
         {
-            switch (typ)
+            switch (kind)
             {
                 case JS:
                     if (counts[level]++ > 0) Add(',');
@@ -2159,7 +2219,7 @@ namespace Greatbone.Core
 
         public HtmlContent Put(string name, DateTime v)
         {
-            switch (typ)
+            switch (kind)
             {
                 case JS:
                     if (counts[level]++ > 0) Add(',');
@@ -2182,7 +2242,7 @@ namespace Greatbone.Core
 
         public HtmlContent Put(string name, string v)
         {
-            switch (typ)
+            switch (kind)
             {
                 case JS:
                     if (counts[level]++ > 0) Add(',');
@@ -2212,7 +2272,7 @@ namespace Greatbone.Core
 
         public HtmlContent Put(string name, ArraySegment<byte> v)
         {
-            switch (typ)
+            switch (kind)
             {
                 case JS:
                     break;
@@ -2224,7 +2284,7 @@ namespace Greatbone.Core
 
         public HtmlContent Put(string name, short[] v)
         {
-            switch (typ)
+            switch (kind)
             {
                 case JS:
                     if (counts[level]++ > 0) Add(',');
@@ -2258,7 +2318,7 @@ namespace Greatbone.Core
 
         public HtmlContent Put(string name, int[] v)
         {
-            switch (typ)
+            switch (kind)
             {
                 case JS:
                     if (counts[level]++ > 0) Add(',');
@@ -2292,7 +2352,7 @@ namespace Greatbone.Core
 
         public HtmlContent Put(string name, long[] v)
         {
-            switch (typ)
+            switch (kind)
             {
                 case JS:
                     if (counts[level]++ > 0) Add(',');
@@ -2326,7 +2386,7 @@ namespace Greatbone.Core
 
         public HtmlContent Put(string name, string[] v)
         {
-            switch (typ)
+            switch (kind)
             {
                 case JS:
                     if (counts[level]++ > 0) Add(',');
@@ -2370,7 +2430,7 @@ namespace Greatbone.Core
 
         public HtmlContent Put(string name, Map<string, string> v)
         {
-            switch (typ)
+            switch (kind)
             {
                 case JS:
                     break;
@@ -2382,7 +2442,7 @@ namespace Greatbone.Core
 
         public HtmlContent Put(string name, IData v, int proj = 0x00ff)
         {
-            switch (typ)
+            switch (kind)
             {
                 case JS:
                     if (counts[level]++ > 0) Add(',');
@@ -2422,7 +2482,7 @@ namespace Greatbone.Core
 
         public HtmlContent Put<D>(string name, D[] v, int proj = 0x00ff) where D : IData
         {
-            switch (typ)
+            switch (kind)
             {
                 case JS:
                     if (counts[level]++ > 0) Add(',');
@@ -2457,7 +2517,7 @@ namespace Greatbone.Core
 
         public HtmlContent Put<K, D>(string name, Map<K, D> v, int proj = 0x00ff) where D : IData
         {
-            switch (typ)
+            switch (kind)
             {
                 case JS:
                     if (counts[level]++ > 0) Add(',');
