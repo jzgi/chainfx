@@ -59,6 +59,7 @@ namespace Greatbone.Sample
                 m.T("<div data-sticky-container>");
                 m.T("<div class=\"sticky\" style=\"width: 100%\" data-sticky  data-options=\"anchor: page; marginTop: 0; stickyOn: small;\">");
                 m.T("<div class=\"top-bar\">");
+                m.T("<div class=\"top-bar-title\">城市</div>");
                 m.T("<div class=\"top-bar-left\">");
                 m.T("<select name=\"city\" style=\"margin: 0; border: 0; color: #ba55d3; font-size: 1.25rem;\" onchange=\"location = location.href.split('?')[0] + '?city=' + this.value;\">");
                 var vs = ((SampleService) Service).Cities;
@@ -74,7 +75,7 @@ namespace Greatbone.Sample
                 m.T("</select>");
                 m.T("</div>");
                 m.T("<div class=\"top-bar-right\">");
-                m.T("<a class=\"float-right\" href=\"/my//cart/\"><i class=\"typcn typcn-shopping-cart\"></i></a>");
+                m.T("<a class=\"float-right\" href=\"/my//pre/\">购物车<i class=\"typcn typcn-shopping-cart\" style=\"font-size: 1.5rem\"></i></a>");
                 m.T("</div>");
                 m.T("</div>");
                 m.T("</div>");

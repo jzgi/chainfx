@@ -384,6 +384,19 @@ namespace Greatbone.Core
             return this;
         }
 
+        public HtmlContent COL(string label, decimal v, int n = 0)
+        {
+            Add("<div class=\"grid-x grid-padding-x\">");
+            Add("<div class=\"cell small-3\" style=\"padding-right: 0; text-align: right\">");
+            Add(label);
+            Add("：</div>");
+            Add("<div class=\"cell small-9\">");
+            Add(v);
+            Add("</div>");
+            Add("</div>");
+            return this;
+        }
+
         public HtmlContent COL(string label, Action<HtmlContent> v)
         {
             Add("<div class=\"cell small-3\" style=\"padding-right: 0; text-align: right\">");
@@ -614,7 +627,7 @@ namespace Greatbone.Core
             Add("<div class=\"top-bar-right\">");
             Add("<a class=\"primary\" href=\"javascript: location.reload(false);\">");
             Add("<i class=\"typcn typcn-refresh\" style=\"font-size: 1.5rem\"></i>");
-            Add(work.Label ?? work.Default?.Label);
+            Add(work.Label);
             Add("</a>");
             Add("</div>");
 

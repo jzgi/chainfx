@@ -3096,15 +3096,13 @@ input:checked + label > .switch-inactive {
 .top-bar {
     display: -ms-flexbox;
     display: flex;
-    -ms-flex-wrap: nowrap;
-    flex-wrap: nowrap;
     -ms-flex-pack: justify;
     justify-content: space-between;
     -ms-flex-align: center;
     align-items: center;
     padding: 0.5rem;
-    -ms-flex-wrap: wrap;
-    flex-wrap: wrap;
+    -ms-flex-wrap: nowrap;
+    flex-wrap: nowrap;
 }
 
 .top-bar,
@@ -3133,7 +3131,7 @@ input:checked + label > .switch-inactive {
     max-width: 100%;
 }
 
-@media print, screen and (min-width: 40em) {
+@media print, screen and (min-width: 10em) {
     .top-bar {
         -ms-flex-wrap: nowrap;
         flex-wrap: nowrap;
@@ -3149,34 +3147,6 @@ input:checked + label > .switch-inactive {
         -ms-flex: 0 1 auto;
         flex: 0 1 auto;
         margin-left: auto;
-    }
-}
-
-@media screen and (max-width: 63.9375em) {
-    .top-bar.stacked-for-medium {
-        -ms-flex-wrap: wrap;
-        flex-wrap: wrap;
-    }
-
-    .top-bar.stacked-for-medium .top-bar-left,
-    .top-bar.stacked-for-medium .top-bar-right {
-        -ms-flex: 0 0 100%;
-        flex: 0 0 100%;
-        max-width: 100%;
-    }
-}
-
-@media screen and (max-width: 74.9375em) {
-    .top-bar.stacked-for-large {
-        -ms-flex-wrap: wrap;
-        flex-wrap: wrap;
-    }
-
-    .top-bar.stacked-for-large .top-bar-left,
-    .top-bar.stacked-for-large .top-bar-right {
-        -ms-flex: 0 0 100%;
-        flex: 0 0 100%;
-        max-width: 100%;
     }
 }
 

@@ -17,7 +17,6 @@ namespace Greatbone.Sample
     {
         public MyPreVarWork(WorkContext wc) : base(wc)
         {
-            CreateVar<MyCartOrderVarVarWork, string>(obj => ((OrderItem) obj).name);
         }
 
         public bool NoAddr(object obj) => string.IsNullOrEmpty(((Order) obj).addr);
@@ -227,9 +226,9 @@ namespace Greatbone.Sample
     }
 
 
-    public class OprPresentOrderVarWork : OrderVarWork
+    public class OprNowOrderVarWork : OrderVarWork
     {
-        public OprPresentOrderVarWork(WorkContext wc) : base(wc)
+        public OprNowOrderVarWork(WorkContext wc) : base(wc)
         {
         }
 

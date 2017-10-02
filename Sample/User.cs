@@ -29,7 +29,7 @@ namespace Greatbone.Sample
         internal string credential;
         internal string city; // 
         internal string addr;
-        internal string oprat; // operator at
+        internal short oprat; // operator at
         internal short opr; // 
         internal bool adm; // adm
         internal short status;

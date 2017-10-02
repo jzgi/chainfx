@@ -14,7 +14,7 @@ namespace Greatbone.Sample
     {
         public OprWork(WorkContext wc) : base(wc)
         {
-            CreateVar<OprVarWork, string>((prin) => ((User) prin).oprat);
+            CreateVar<OprVarWork, short>((prin) => ((User) prin).oprat);
         }
     }
 

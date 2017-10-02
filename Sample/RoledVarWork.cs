@@ -4,7 +4,7 @@ using Greatbone.Core;
 
 namespace Greatbone.Sample
 {
-    [Ui("常规")]
+    [Ui("常规"), User]
     public class MyVarWork : Work
     {
         public MyVarWork(WorkContext wc) : base(wc)
@@ -89,7 +89,7 @@ namespace Greatbone.Sample
     {
         public OprVarWork(WorkContext wc) : base(wc)
         {
-            Create<OprPresentOrderWork>("present");
+            Create<OprNowOrderWork>("now");
 
             Create<OprPastOrderWork>("past");
 

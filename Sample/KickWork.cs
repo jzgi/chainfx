@@ -11,7 +11,7 @@ namespace Greatbone.Sample
         }
     }
 
-    [Ui("举报")]
+    [Ui("我的投诉")]
     [User]
     public class MyKickWork : KickWork<MyKickVarWork>
     {
@@ -24,9 +24,13 @@ namespace Greatbone.Sample
             string wx = ac[-1];
             using (var dc = ac.NewDbContext())
             {
-                if (dc.Query("SELECT * FROM charges WHERE wx = @1 ORDER BY id DESC", p => p.Set(wx)))
+                if (dc.Query("SELECT * FROM kicks WHERE wx = @1 ORDER BY id DESC", p => p.Set(wx)))
                 {
-                    ac.GiveGridPage(200, dc.ToArray<Kick>(0xffff), (h, o) => { });
+                    ac.GiveGridPage(200, dc.ToArray<Kick>(0xffff), (h, o) =>
+                    {
+                        h.COL("姓名", o.name);
+                        h.COL("内容", o.content);
+                    });
                 }
                 else
                 {

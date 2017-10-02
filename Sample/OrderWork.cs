@@ -26,10 +26,14 @@ namespace Greatbone.Sample
             using (var dc = ac.NewDbContext())
             {
                 const int proj = Order.ID | Order.BASIC_DETAIL;
-                dc.Sql("SELECT ").columnlst(Order.Empty, proj)._("FROM orders WHERE wx = @1 AND status = @2 ORDER BY id DESC");
-                if (dc.Query(p => p.Set(wx).Set(Order.CREATED)))
+                dc.Sql("SELECT ").columnlst(Order.Empty, proj)._("FROM orders WHERE wx = @1 AND status = 0 ORDER BY id DESC");
+                if (dc.Query(p => p.Set(wx)))
                 {
-                    ac.GiveGridPage(200, dc.ToArray<Order>(proj), (h, o) => { }, false, 3);
+                    ac.GiveGridPage(200, dc.ToArray<Order>(proj), (h, o) =>
+                    {
+                        h.COL("单号", o.id, 0);
+                        h.COL("总价", o.total, 0);
+                    }, false, 3);
                 }
                 else
                 {
@@ -111,7 +115,7 @@ namespace Greatbone.Sample
         }
     }
 
-    [Ui("当前单")]
+    [Ui("我的订单")]
     public class MyOrderWork : OrderWork<MyOrderVarWork>
     {
         public MyOrderWork(WorkContext wc) : base(wc)
@@ -124,10 +128,14 @@ namespace Greatbone.Sample
             using (var dc = ac.NewDbContext())
             {
                 const int proj = Order.ID | Order.BASIC_DETAIL | Order.CASH | Order.FLOW;
-                dc.Sql("SELECT ").columnlst(Order.Empty, proj)._("FROM orders WHERE wx = @1 AND status = @2 ORDER BY id DESC");
-                if (dc.Query(p => p.Set(wx).Set(Order.ACCEPTED)))
+                dc.Sql("SELECT ").columnlst(Order.Empty, proj)._("FROM orders WHERE wx = @1 AND status > 0 ORDER BY id DESC");
+                if (dc.Query(p => p.Set(wx)))
                 {
-                    ac.GiveGridPage(200, dc.ToArray<Order>(proj), (h, o) => { }, false, 3);
+                    ac.GiveGridPage(200, dc.ToArray<Order>(proj), (h, o) =>
+                    {
+                        h.COL("单号", o.id, 0);
+                        h.COL("总价", o.total, 0);
+                    }, false, 3);
                 }
                 else
                 {
@@ -139,7 +147,7 @@ namespace Greatbone.Sample
 
     [Ui("当前单")]
     [User(User.OPRAID)]
-    public class OprPresentOrderWork : OrderWork<OprPresentOrderVarWork>
+    public class OprNowOrderWork : OrderWork<OprNowOrderVarWork>
     {
         static readonly Map<short, string> NOTIFS = new Map<short, string>()
         {
@@ -149,7 +157,7 @@ namespace Greatbone.Sample
             [4] = "您的订单已接收，请您作确认收货操作",
         };
 
-        public OprPresentOrderWork(WorkContext wc) : base(wc)
+        public OprNowOrderWork(WorkContext wc) : base(wc)
         {
         }
 
