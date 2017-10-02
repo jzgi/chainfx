@@ -9,9 +9,9 @@ namespace Greatbone.Sample
     {
         public MyVarWork(WorkContext wc) : base(wc)
         {
-            Create<MyPreOrderWork>("pre");
+            Create<MyPreWork>("pre");
 
-            Create<MyRealOrderWork>("real");
+            Create<MyOrderWork>("order");
 
             Create<MyKickWork>("kick");
         }

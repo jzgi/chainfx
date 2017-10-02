@@ -14,9 +14,9 @@ namespace Greatbone.Sample
     }
 
     [Ui("购物车")]
-    public class MyPreOrderWork : OrderWork<MyPreOrderVarWork>
+    public class MyPreWork : OrderWork<MyPreVarWork>
     {
-        public MyPreOrderWork(WorkContext wc) : base(wc)
+        public MyPreWork(WorkContext wc) : base(wc)
         {
         }
 
@@ -112,9 +112,9 @@ namespace Greatbone.Sample
     }
 
     [Ui("当前单")]
-    public class MyRealOrderWork : OrderWork<MyRealOrderVarWork>
+    public class MyOrderWork : OrderWork<MyOrderVarWork>
     {
-        public MyRealOrderWork(WorkContext wc) : base(wc)
+        public MyOrderWork(WorkContext wc) : base(wc)
         {
         }
 

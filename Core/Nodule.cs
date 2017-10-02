@@ -10,8 +10,8 @@ namespace Greatbone.Core
         // name-derived identifier as appeared in URI
         readonly string key;
 
-        // name in uppercase
-        readonly string upper;
+        // ui label or upper key
+        readonly string label;
 
         // user interface-related settings
         internal UiAttribute ui;
@@ -32,7 +32,6 @@ namespace Greatbone.Core
         internal Nodule(string name, ICustomAttributeProvider attrprov)
         {
             this.key = name.ToLower();
-            this.upper = name.ToUpper();
 
             // either methodinfo or typeinfo
             if (attrprov == null)
@@ -45,6 +44,7 @@ namespace Greatbone.Core
             if (uis.Length > 0)
             {
                 ui = uis[0];
+                this.label = ui.Label ?? name.ToUpper();
             }
 
             // authorize
@@ -83,7 +83,7 @@ namespace Greatbone.Core
 
         public IAfterAsync AfterAsync => afterasync;
 
-        public string Label => ui?.Label ?? upper;
+        public string Label => label;
 
         public bool HasUi => ui != null;
 

@@ -364,46 +364,39 @@ namespace Greatbone.Core
 
         public HtmlContent COL(string label, int v, int n = 0)
         {
-            Add("<div class=\"grid-x grid-padding-x\">");
             Add("<div class=\"cell small-3\" style=\"padding-right: 0; text-align: right\">");
             Add(label);
             Add("：</div>");
             Add("<div class=\"cell small-9\">");
             Add(v);
-            Add("</div>");
             Add("</div>");
             return this;
         }
 
         public HtmlContent COL(string label, string v, int n = 0)
         {
-            Add("<div class=\"grid-x grid-padding-x\">");
             Add("<div class=\"cell small-3\" style=\"padding-right: 0; text-align: right\">");
             Add(label);
             Add("：</div>");
             Add("<div class=\"cell small-9\">");
             Add(v);
             Add("</div>");
-            Add("</div>");
             return this;
         }
 
         public HtmlContent COL(string label, Action<HtmlContent> v)
         {
-            Add("<div class=\"grid-x grid-padding-x\">");
             Add("<div class=\"cell small-3\" style=\"padding-right: 0; text-align: right\">");
             Add(label);
             Add("：</div>");
             Add("<div class=\"cell small-9\">");
             v(this);
             Add("</div>");
-            Add("</div>");
             return this;
         }
 
         public HtmlContent COL(string label1, string v1, string label2, string v2)
         {
-            Add("<div class=\"grid-x grid-padding-x\">");
             Add("<div class=\"cell small-3\" style=\"padding-right: 0; text-align: right\">");
             Add(label1);
             Add("：</div>");
@@ -415,14 +408,12 @@ namespace Greatbone.Core
             Add("：</div>");
             Add("<div class=\"cell small-3\">");
             Add(v2);
-            Add("</div>");
             Add("</div>");
             return this;
         }
 
         public HtmlContent COL(string label1, string v1, string label2, int v2)
         {
-            Add("<div class=\"grid-x grid-padding-x\">");
             Add("<div class=\"cell small-3\" style=\"padding-right: 0; text-align: right\">");
             Add(label1);
             Add("：</div>");
@@ -434,14 +425,12 @@ namespace Greatbone.Core
             Add("：</div>");
             Add("<div class=\"cell small-3\">");
             Add(v2);
-            Add("</div>");
             Add("</div>");
             return this;
         }
 
         public HtmlContent COL(string label1, string v1, string label2, decimal v2)
         {
-            Add("<div class=\"grid-x grid-padding-x\">");
             Add("<div class=\"cell small-3\" style=\"padding-right: 0; text-align: right\">");
             Add(label1);
             Add("：</div>");
@@ -453,14 +442,12 @@ namespace Greatbone.Core
             Add("：</div>");
             Add("<div class=\"cell small-3\">");
             Add(v2);
-            Add("</div>");
             Add("</div>");
             return this;
         }
 
         public HtmlContent COL(string label1, string v1, string label2, DateTime v2)
         {
-            Add("<div class=\"grid-x grid-padding-x\">");
             Add("<div class=\"cell small-3\" style=\"padding-right: 0; text-align: right\">");
             Add(label1);
             Add("：</div>");
@@ -472,7 +459,6 @@ namespace Greatbone.Core
             Add("：</div>");
             Add("<div class=\"cell small-3\">");
             Add(v2);
-            Add("</div>");
             Add("</div>");
             return this;
         }
@@ -626,7 +612,10 @@ namespace Greatbone.Core
             Add("</div>");
 
             Add("<div class=\"top-bar-right\">");
-            Add("<a class=\"primary\" href=\"javascript: location.reload(false);\"><i class=\"fa fa-refresh fa-2x\"></i></a>");
+            Add("<a class=\"primary\" href=\"javascript: location.reload(false);\">");
+            Add("<i class=\"typcn typcn-refresh\" style=\"font-size: 1.5rem\"></i>");
+            Add(work.Label ?? work.Default?.Label);
+            Add("</a>");
             Add("</div>");
 
             Add("</div>");
@@ -717,14 +706,12 @@ namespace Greatbone.Core
 
             Add("<thead>");
             Add("<tr>");
-            if (work.Buttons > 0) // for checkboxes
-            {
-                Add("<th></th>");
-            }
+            // for checkboxes
+            Add("<th></th>");
             hd(this);
-            if (ais != null) // for triggers
+            if (ais != null)
             {
-                Add("<th></th>");
+                Add("<th></th>"); // for triggers
             }
             Add("</tr>");
             Add("</thead>");
@@ -736,13 +723,11 @@ namespace Greatbone.Core
                 {
                     D obj = arr[i];
                     Add("<tr>");
-                    if (work.Buttons > 0) // checkbox
-                    {
-                        Add("<td>");
-                        Add("<input name=\"key\" type=\"checkbox\" form=\"viewform\"  value=\"");
-                        varwork?.OutputVarKey(obj, this);
-                        Add("\"></td>");
-                    }
+                    // checkbox
+                    Add("<td>");
+                    Add("<input name=\"key\" type=\"checkbox\" form=\"viewform\"  value=\"");
+                    varwork?.OutputVarKey(obj, this);
+                    Add("\"></td>");
                     row(this, obj);
                     if (ais != null) // triggers
                     {
@@ -761,7 +746,6 @@ namespace Greatbone.Core
             // pagination controls if any
             PAGENATE(arr?.Length ?? 0);
 
-            Add("</form>");
             return this;
         }
 
@@ -799,39 +783,32 @@ namespace Greatbone.Core
 
             if (arr != null) // render grid cells
             {
-                Add("<form>");
-                Add("<div class=\"grid-x grid-padding-x small-up-1 medium-up-2 large-up-3\">");
+                Add("<div class=\"grid-x small-up-1 medium-up-2 large-up-3\">");
                 for (int i = 0; i < arr.Length; i++)
                 {
-                    Add("<div class=\"cell\">");
-                    Add("<div class=\"card\">");
+                    Add("<div class=\"cell\" style=\"padding: 1rem\">");
+                    Add("<form>");
                     D obj = arr[i];
 
-                    if (work.Buttons > 0)
-                    {
-                        Add("<div class=\"grid-x grid-padding-x grid-margin-y\">");
-                        Add("<div class=\"small-3 cell\">");
-                        Add("</div>");
-                        Add("<div class=\"small-9 cell\" style=\"text-align: right\">");
-                        Add("<input name=\"key\" type=\"checkbox\" style=\"margin: 0 0.5rem\" value=\"");
-                        varwork?.OutputVarKey(obj, this);
-                        Add("\">");
-                        Add("</div>");
-                        Add("</div>");
-                    }
+                    Add("<div class=\"card grid-x\">");
+                    Add("<div class=\"cell\">");
+                    Add("<input name=\"key\" type=\"checkbox\" form=\"viewform\" value=\"");
+                    varwork?.OutputVarKey(obj, this);
+                    Add("\">");
+                    Add("</div>");
 
                     cell(this, obj);
 
                     // output var triggers
-                    Add("<div style=\"text-align: right; border-top: 1px solid silver\">");
+                    Add("<div class=\"cell\" style=\"text-align: right\">");
                     TRIGGERS(varwork, obj);
                     Add("</div>");
 
                     Add("</div>");
+                    Add("</form>");
                     Add("</div>");
                 }
                 Add("</div>");
-                Add("</form>");
             }
             else // empty
             {
@@ -841,7 +818,7 @@ namespace Greatbone.Core
 
             // pagination if any
             PAGENATE(arr?.Length ?? 0);
-            Add("</form>");
+
             return this;
         }
 
@@ -899,8 +876,11 @@ namespace Greatbone.Core
                     Add("<a class=\"button");
                     Add(ac?.Doer == ai ? " hollow" : " clear");
                     Add(" primary\" href=\"");
-                    ai.Work.OutputVarKey(obj, this);
-                    Add('/');
+                    if (obj != null)
+                    {
+                        ai.Work.OutputVarKey(obj, this);
+                        Add('/');
+                    }
                     Add(ai.RPath);
                     Add("\"");
                     if (ui.HasPrompt)
@@ -956,8 +936,11 @@ namespace Greatbone.Core
                     Add("\" name=\"");
                     Add(ai.Key);
                     Add("\" formaction=\"");
-                    ai.Work.OutputVarKey(obj, this);
-                    Add('/');
+                    if (obj != null)
+                    {
+                        ai.Work.OutputVarKey(obj, this);
+                        Add('/');
+                    }
                     Add(ai.Key);
                     Add("\" formmethod=\"post\"");
                     if (!enabled)

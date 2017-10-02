@@ -13,9 +13,9 @@ namespace Greatbone.Sample
     }
 
 
-    public class MyPreOrderVarWork : OrderVarWork
+    public class MyPreVarWork : OrderVarWork
     {
-        public MyPreOrderVarWork(WorkContext wc) : base(wc)
+        public MyPreVarWork(WorkContext wc) : base(wc)
         {
             CreateVar<MyCartOrderVarVarWork, string>(obj => ((OrderItem) obj).name);
         }
@@ -135,9 +135,9 @@ namespace Greatbone.Sample
         }
     }
 
-    public class MyRealOrderVarWork : OrderVarWork
+    public class MyOrderVarWork : OrderVarWork
     {
-        public MyRealOrderVarWork(WorkContext wc) : base(wc)
+        public MyOrderVarWork(WorkContext wc) : base(wc)
         {
         }
 
