@@ -15,12 +15,12 @@ namespace Greatbone.Sample
             CREDENTIAL = 0x0010,
             PERM = 0x0100;
 
-        public const short OPRMGR = 7, OPRAID = 3;
+        public const short OPRJOB = 1, OPRMGR = 3;
 
         public static readonly Map<short, string> OPR = new Map<short, string>
         {
+            [OPRJOB] = "日常",
             [OPRMGR] = "经理",
-            [OPRAID] = "助理"
         };
 
         internal string wx; // wexin openid

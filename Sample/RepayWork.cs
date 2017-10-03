@@ -24,12 +24,16 @@ namespace Greatbone.Sample
 
         public void @default(ActionContext ac)
         {
-            string shopid = ac[1];
+            short shopid = ac[1];
             using (var dc = ac.NewDbContext())
             {
                 if (dc.Query("SELECT * FROM repays WHERE shopid = @1", p => p.Set(shopid)))
                 {
-                    ac.GiveTablePage(200, dc.ToArray<Repay>(), null, null);
+                    ac.GiveGridPage(200, dc.ToArray<Repay>(), (h, o) =>
+                    {
+                        h.COL("单号", o.id, 0);
+                        h.COL("总价", o.total, 0);
+                    }, false, 3);
                 }
                 else
                 {

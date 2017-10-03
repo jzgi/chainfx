@@ -226,9 +226,9 @@ namespace Greatbone.Sample
     }
 
 
-    public class OprNowOrderVarWork : OrderVarWork
+    public class OprNewOrderVarWork : OrderVarWork
     {
-        public OprNowOrderVarWork(WorkContext wc) : base(wc)
+        public OprNewOrderVarWork(WorkContext wc) : base(wc)
         {
         }
 
@@ -266,6 +266,43 @@ namespace Greatbone.Sample
                 {
                     ac.GivePane(200, m => { m.FORM_().CALLOUT(err).CALLOUT("确定重复操作吗？")._FORM(); });
                 }
+            }
+        }
+    }
+
+    public class OprOnOrderVarWork : OrderVarWork
+    {
+        public OprOnOrderVarWork(WorkContext wc) : base(wc)
+        {
+        }
+
+        public bool NotAborted(object obj) => ((Order) obj).status != Order.ABORTED;
+
+        [Ui("退款情况核查", "实时核查退款到账情况", Mode = UiMode.AnchorOpen)]
+        public async Task refundq(ActionContext ac)
+        {
+            long id = ac[this];
+
+            string err = await WeiXinUtility.PostRefundQueryAsync(id);
+            if (err == null) // success
+            {
+                ac.GivePane(200, m =>
+                {
+                    m.FORM_();
+                    m.CALLOUT("退款成功", false);
+                    m._FORM();
+                });
+            }
+            else
+            {
+                ac.GivePane(200, m =>
+                {
+                    m.FORM_();
+                    m.CALLOUT(err);
+                    m.CHECKBOX("ok", false, "重新提交退款请求", true);
+                    m.BUTTON("", 1, "确认");
+                    m._FORM();
+                });
             }
         }
     }

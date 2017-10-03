@@ -26,8 +26,8 @@ namespace Greatbone.Sample
         public static readonly Repay Empty = new Repay();
 
         internal int id;
-        internal string shopid;
-        internal string shop;
+        internal short shopid;
+        internal string shopname;
         internal DateTime till;
         internal int orders;
         internal decimal total;
@@ -41,7 +41,7 @@ namespace Greatbone.Sample
         {
             i.Get(nameof(id), ref id);
             i.Get(nameof(shopid), ref shopid);
-            i.Get(nameof(shop), ref shop);
+            i.Get(nameof(shopname), ref shopname);
             i.Get(nameof(orders), ref orders);
             i.Get(nameof(total), ref total);
             i.Get(nameof(cash), ref cash);
@@ -58,7 +58,7 @@ namespace Greatbone.Sample
         public void Write<R>(IDataOutput<R> o, int proj = 0x00ff) where R : IDataOutput<R>
         {
             o.Put(nameof(shopid), shopid);
-            o.Put(nameof(shop), shop);
+            o.Put(nameof(shopname), shopname);
             o.Put(nameof(till), till);
             o.Put(nameof(orders), orders);
             o.Put(nameof(total), total);

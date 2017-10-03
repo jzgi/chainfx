@@ -84,18 +84,18 @@ namespace Greatbone.Sample
 
 
     [Ui("常规")]
-    [User(User.OPRAID)]
+    [User(User.OPRJOB)]
     public class OprVarWork : Work
     {
         public OprVarWork(WorkContext wc) : base(wc)
         {
-            Create<OprNowOrderWork>("now");
+            Create<OprNewOrderWork>("new");
+
+            Create<OprOnOrderWork>("on");
 
             Create<OprPastOrderWork>("past");
 
             Create<OprItemWork>("item");
-
-            Create<OprChatWork>("chat");
 
             Create<OprRepayWork>("repay");
         }
@@ -106,7 +106,6 @@ namespace Greatbone.Sample
         }
 
         [Ui("商家信息", Mode = UiMode.AnchorShow)]
-        [User(User.OPRAID)]
         public async Task profile(ActionContext ac)
         {
             short id = ac[this];
@@ -154,7 +153,6 @@ namespace Greatbone.Sample
         }
 
         [Ui("场地照片", Mode = UiMode.AnchorCrop, Circle = true)]
-        [User(User.OPRAID)]
         public new async Task icon(ActionContext ac)
         {
             string id = ac[this];
@@ -189,7 +187,6 @@ namespace Greatbone.Sample
         }
 
         [Ui("操作授权", Mode = UiMode.AnchorOpen)]
-        [User(User.OPRMGR)]
         public async Task crew(ActionContext ac, int subcmd)
         {
             string shopid = ac[this];

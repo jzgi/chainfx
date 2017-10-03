@@ -10,7 +10,7 @@ namespace Greatbone.Sample
     }
 
     [Ui("客服")]
-    [User(User.OPRAID)]
+    [User(User.OPRJOB)]
     public class AdmChatWork : ChatWork<OprChatVarWork>
     {
         public AdmChatWork(WorkContext wc) : base(wc)

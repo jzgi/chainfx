@@ -197,13 +197,24 @@ namespace Greatbone.Core
 
         public string ObtainVarKey(IData obj, out string label)
         {
+            label = ctx.Labeller?.Invoke(obj);
             Delegate keyer = ctx.Keyer;
             if (keyer is Func<IData, string>)
             {
-                label = ctx.Labeller?.Invoke(obj);
                 return ((Func<IData, string>) keyer)(obj);
             }
-            label = null;
+            else if (keyer is Func<IData, long>)
+            {
+                return ((Func<IData, long>) keyer)(obj).ToString();
+            }
+            else if (keyer is Func<IData, int>)
+            {
+                return ((Func<IData, int>) keyer)(obj).ToString();
+            }
+            else if (keyer is Func<IData, short>)
+            {
+                return ((Func<IData, short>) keyer)(obj).ToString();
+            }
             return null;
         }
 
@@ -221,6 +232,10 @@ namespace Greatbone.Core
             else if (keyer is Func<IData, int>)
             {
                 @out.Add(((Func<IData, int>) keyer)(obj));
+            }
+            else if (keyer is Func<IData, short>)
+            {
+                @out.Add(((Func<IData, short>) keyer)(obj));
             }
         }
 
@@ -281,16 +296,16 @@ namespace Greatbone.Core
             if (varwork != null) // if variable-key sub
             {
                 IData prin = ac.Principal;
-                string name = null;
+                string label = null;
                 if (key.Length == 0 && varwork.HasKeyer) // resolve shortcut
                 {
                     if (prin == null) throw AuthorizeEx;
-                    if ((key = varwork.ObtainVarKey(prin, out name)) == null)
+                    if ((key = varwork.ObtainVarKey(prin, out label)) == null)
                     {
                         throw AuthorizeEx;
                     }
                 }
-                ac.Chain(key, name, varwork);
+                ac.Chain(key, label, varwork);
                 return varwork.Resolve(ref relative, ac);
             }
             return null;

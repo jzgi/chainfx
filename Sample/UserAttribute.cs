@@ -4,13 +4,11 @@ namespace Greatbone.Sample
 {
     public class UserAttribute : AuthorizeAttribute
     {
-        const short NULL = short.MinValue;
-
         readonly short opr;
 
         readonly bool adm;
 
-        public UserAttribute(short opr = NULL, bool adm = false)
+        public UserAttribute(short opr = 0, bool adm = false)
         {
             this.opr = opr;
             this.adm = adm;
@@ -24,11 +22,10 @@ namespace Greatbone.Sample
 
             if (prin == null) return false;
 
-            if (opr != NULL)
+            if (opr > 0)
             {
-                if (opr == 0) return true;
                 if ((prin.opr & opr) != opr) return false; // inclusive check
-                return prin.oprat == ac[typeof(ShopVarWork)];
+                return prin.oprat == ac[typeof(OprVarWork)];
             }
             return !adm || prin.adm;
         }

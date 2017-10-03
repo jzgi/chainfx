@@ -626,8 +626,8 @@ namespace Greatbone.Core
 
             Add("<div class=\"top-bar-right\">");
             Add("<a class=\"primary\" href=\"javascript: location.reload(false);\">");
-            Add("<i class=\"typcn typcn-refresh\" style=\"font-size: 1.5rem\"></i>");
             Add(work.Label);
+            Add("<i class=\"typcn typcn-refresh\" style=\"font-size: 1.5rem\"></i>");
             Add("</a>");
             Add("</div>");
 

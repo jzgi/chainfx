@@ -145,9 +145,9 @@ namespace Greatbone.Sample
         }
     }
 
-    [Ui("当前单")]
-    [User(User.OPRAID)]
-    public class OprNowOrderWork : OrderWork<OprNowOrderVarWork>
+    [Ui("新单")]
+    [User(User.OPRJOB)]
+    public class OprNewOrderWork : OrderWork<OprNewOrderVarWork>
     {
         static readonly Map<short, string> NOTIFS = new Map<short, string>()
         {
@@ -157,20 +157,22 @@ namespace Greatbone.Sample
             [4] = "您的订单已接收，请您作确认收货操作",
         };
 
-        public OprNowOrderWork(WorkContext wc) : base(wc)
+        public OprNewOrderWork(WorkContext wc) : base(wc)
         {
         }
 
         public void @default(ActionContext ac, int page)
         {
-            string shopid = ac[-1];
+            short shopid = ac[-1];
             using (var dc = ac.NewDbContext())
             {
-                bool found = (dc.Query("SELECT * FROM orders WHERE shopid = @1 AND status = @2 ORDER BY id DESC LIMIT 20 OFFSET @3", p => p.Set(shopid).Set(4).Set(page * 20)));
-                //dc.Query("SELECT * FROM orders WHERE shopid = @1 AND status BETWEEN @2 AND @3 ORDER BY id DESC LIMIT 20 OFFSET @4", p => p.Set(shopid).Set(4).Set(5).Set(page * 20));
-                if (found)
+                if (dc.Query("SELECT * FROM orders WHERE shopid = @1 AND status = " + Order.ACCEPTED + " ORDER BY id DESC LIMIT 20 OFFSET @2", p => p.Set(shopid).Set(page * 20)))
                 {
-                    ac.GiveGridPage(200, dc.ToArray<Order>(), (h, o) => { }, false, 3);
+                    ac.GiveGridPage(200, dc.ToArray<Order>(), (h, o) =>
+                    {
+                        h.COL("单号", o.id, 0);
+                        h.COL("总价", o.total, 0);
+                    }, false, 3);
                 }
                 else
                 {
@@ -271,8 +273,50 @@ namespace Greatbone.Sample
         }
     }
 
-    [Ui("已往单")]
-    [User(User.OPRAID)]
+    [Ui("派单")]
+    [User(User.OPRJOB)]
+    public class OprOnOrderWork : OrderWork<OprOnOrderVarWork>
+    {
+        public OprOnOrderWork(WorkContext wc) : base(wc)
+        {
+        }
+
+        public void @default(ActionContext ac, int page)
+        {
+            short shopid = ac[-1];
+            using (var dc = ac.NewDbContext())
+            {
+                if (dc.Query("SELECT * FROM orders WHERE shopid = @1 AND status = " + Order.SHIPPED + " ORDER BY id DESC LIMIT 20 OFFSET @2", p => p.Set(shopid).Set(page * 20)))
+                {
+                    ac.GiveGridPage(200, dc.ToArray<Order>(), (h, o) =>
+                    {
+                        h.COL("单号", o.id, 0);
+                        h.COL("总价", o.total, 0);
+                    }, false, 3);
+                }
+                else
+                {
+                    ac.GiveGridPage(200, (Order[]) null, (h, o) => { }, false, 3);
+                }
+            }
+        }
+
+        [Ui("查询")]
+        public void send(ActionContext ac)
+        {
+            long[] key = ac.Query[nameof(key)];
+
+            using (var dc = ac.NewDbContext())
+            {
+                dc.Sql("UPDATE orders SET status = @1 WHERE id")._IN_(key);
+                dc.Execute();
+            }
+            ac.GiveRedirect();
+        }
+    }
+
+    [Ui("旧单")]
+    [User(User.OPRJOB)]
     public class OprPastOrderWork : OrderWork<OprPastOrderVarWork>
     {
         public OprPastOrderWork(WorkContext wc) : base(wc)
@@ -281,16 +325,21 @@ namespace Greatbone.Sample
 
         public void @default(ActionContext ac, int page)
         {
-            string shopid = ac[-1];
+            short shopid = ac[-1];
             using (var dc = ac.NewDbContext())
             {
-                if (dc.Query("SELECT * FROM orders WHERE shopid = @1 AND status = @2 ORDER BY id DESC LIMIT 20 OFFSET @3", p => p.Set(shopid).Set(Order.ABORTED).Set(page * 20)))
+                if (dc.Query("SELECT * FROM orders WHERE shopid = @1 AND status = " + Order.RECKONED + " ORDER BY id DESC LIMIT 20 OFFSET @2", p => p.Set(shopid).Set(page * 20)))
                 {
+                    ac.GiveGridPage(200, dc.ToArray<Order>(), (h, o) =>
+                    {
+                        h.COL("单号", o.id, 0);
+                        h.COL("总价", o.total, 0);
+                    }, false, 3);
                 }
-
-//                dc.Query("SELECT * FROM orders WHERE shopid = @1 AND status BETWEEN @2 AND @3 ORDER BY id DESC LIMIT 20 OFFSET @4", p => p.Set(shopid).Set(status).Set(status2).Set(page * 20));
-//                    ac.GiveGridPage(200, dc.ToArray<Order>(proj), proj, @public: false, maxage: 3);
-                ac.GiveGridPage(200, (Order[]) null, null, false, 3);
+                else
+                {
+                    ac.GiveGridPage(200, (Order[]) null, (h, o) => { }, false, 3);
+                }
             }
         }
 
