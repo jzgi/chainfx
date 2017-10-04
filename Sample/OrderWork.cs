@@ -146,7 +146,7 @@ namespace Greatbone.Sample
     }
 
     [Ui("新单")]
-    [User(User.OPRJOB)]
+    [User(User.OPRBASE)]
     public class OprNewOrderWork : OrderWork<OprNewOrderVarWork>
     {
         static readonly Map<short, string> NOTIFS = new Map<short, string>()
@@ -274,7 +274,7 @@ namespace Greatbone.Sample
     }
 
     [Ui("派单")]
-    [User(User.OPRJOB)]
+    [User(User.OPRBASE)]
     public class OprOnOrderWork : OrderWork<OprOnOrderVarWork>
     {
         public OprOnOrderWork(WorkContext wc) : base(wc)
@@ -316,7 +316,7 @@ namespace Greatbone.Sample
     }
 
     [Ui("旧单")]
-    [User(User.OPRJOB)]
+    [User(User.OPRBASE)]
     public class OprPastOrderWork : OrderWork<OprPastOrderVarWork>
     {
         public OprPastOrderWork(WorkContext wc) : base(wc)

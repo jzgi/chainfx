@@ -1,4 +1,3 @@
-using System;
 using System.Threading.Tasks;
 using Greatbone.Core;
 
@@ -84,7 +83,7 @@ namespace Greatbone.Sample
 
 
     [Ui("常规")]
-    [User(User.OPRJOB)]
+    [User(User.OPRBASE)]
     public class OprVarWork : Work
     {
         public OprVarWork(WorkContext wc) : base(wc)
@@ -102,74 +101,31 @@ namespace Greatbone.Sample
 
         public void @default(ActionContext ac)
         {
-            ac.GiveFrame(200, @public: false, maxage: 60 * 5);
+            ac.GiveFrame(200, false, 60 * 5);
         }
 
-        [Ui("商家信息", Mode = UiMode.AnchorShow)]
-        public async Task profile(ActionContext ac)
+        [Ui("值班主管", Mode = UiMode.AnchorShow)]
+        public async Task lead(ActionContext ac)
         {
-            short id = ac[this];
+            short shopid = ac[this];
+            bool me = false;
             if (ac.GET)
             {
-                const int proj = Shop.ID | Shop.BASIC;
                 using (var dc = ac.NewDbContext())
                 {
-                    dc.Sql("SELECT ").columnlst(Shop.Empty, proj)._("FROM shops WHERE id = @1");
-                    if (dc.Query1(p => p.Set(id)))
+                    if (dc.Query1("SELECT oprtel, oprname FROM shops WHERE id = @1", p => p.Set(shopid)))
                     {
-                        var o = dc.ToObject<Shop>(proj);
+                        dc.Let(out string oprtel).Let(out string oprname);
                         ac.GivePane(200, m =>
                         {
                             m.FORM_();
-                            m.TEXT(nameof(o.name), o.name, label: "商家名称", max: 10, @readonly: true);
-                            m.TEXT(nameof(o.city), o.city, label: "城市", @readonly: true);
-                            m.TEXT(nameof(o.addr), o.addr, label: "地址");
-                            m.SELECT(nameof(o.status), o.status, Shop.STATUS, label: "状态");
+                            m.FIELDSET_("当前值班主管");
+                            m.COL("电话", oprtel);
+                            m.COL("姓名", oprname);
+                            m._FIELDSET();
+                            m.CHECKBOX(nameof(me), me, "把我设为值班主管");
                             m._FORM();
                         });
-                    }
-                    else
-                    {
-                        ac.Give(404); // not found
-                    }
-                }
-            }
-            else // post
-            {
-                const int proj = Shop.BASIC;
-                var o = await ac.ReadObjectAsync<Shop>(proj);
-                o.id = ac[this];
-                using (var dc = ac.NewDbContext())
-                {
-                    dc.Sql("UPDATE shops")._SET_(Shop.Empty, proj)._("WHERE id = @1");
-                    dc.Execute(p =>
-                    {
-                        o.Write(p, proj);
-                        p.Set(id);
-                    });
-                }
-                ac.GivePane(200);
-            }
-        }
-
-        [Ui("场地照片", Mode = UiMode.AnchorCrop, Circle = true)]
-        public new async Task icon(ActionContext ac)
-        {
-            string id = ac[this];
-            if (ac.GET)
-            {
-                using (var dc = ac.NewDbContext())
-                {
-                    if (dc.Query1("SELECT icon FROM shops WHERE id = @1", p => p.Set(id)))
-                    {
-                        ArraySegment<byte> byteas;
-                        dc.Let(out byteas);
-                        if (byteas.Count == 0) ac.Give(204); // no content
-                        else
-                        {
-                            StaticContent cont = new StaticContent(byteas);
-                            ac.Give(200, cont);
-                        }
                     }
                     else ac.Give(404); // not found
                 }
@@ -177,19 +133,24 @@ namespace Greatbone.Sample
             else // post
             {
                 var f = await ac.ReadAsync<Form>();
-                ArraySegment<byte> icon = f[nameof(icon)];
-                using (var dc = ac.NewDbContext())
+                me = f[nameof(me)];
+                User prin = (User) ac.Principal;
+                if (me)
                 {
-                    dc.Execute("UPDATE shops SET icon = @1 WHERE id = @2", p => p.Set(icon).Set(id));
-                    ac.Give(200); // ok
+                    using (var dc = ac.NewDbContext())
+                    {
+                        dc.Sql("UPDATE shops SET oprwx = @1, oprtel = @2, oprname = @3 WHERE id = @1");
+                        dc.Execute("UPDATE shops SET oprwx = @1, oprtel = @2, oprname = @3 WHERE id = @4", p => p.Set(prin.wx).Set(prin.tel).Set(prin.name).Set(shopid));
+                    }
                 }
+                ac.GivePane(200); // close dialog
             }
         }
 
         [Ui("操作授权", Mode = UiMode.AnchorOpen)]
         public async Task crew(ActionContext ac, int subcmd)
         {
-            string shopid = ac[this];
+            short shopid = ac[this];
 
             // form submitted values
             string id;
@@ -239,8 +200,8 @@ namespace Greatbone.Sample
                 m._FIELDSET();
 
                 m.FIELDSET_("添加操作授权");
-                m.TEXT(nameof(oprid), oprid, label: "个人手机号", max: 11, min: 11, pattern: "[0-9]+");
-                m.SELECT(nameof(opr), opr, User.OPR, label: "操作权限");
+                m.TEXT(nameof(oprid), oprid, "个人手机号", max: 11, min: 11, pattern: "[0-9]+");
+                m.SELECT(nameof(opr), opr, User.OPR, "操作权限");
                 m.BUTTON(nameof(crew), 2, "添加");
                 m._FIELDSET();
                 m._FORM();

@@ -36,7 +36,6 @@ namespace Greatbone.Sample
     {
         public PubShopVarWork(WorkContext wc) : base(wc)
         {
-            CreateVar<ItemVarWork, string>(obj => ((Item) obj).name);
         }
 
         public void @default(ActionContext ac)
@@ -52,10 +51,10 @@ namespace Greatbone.Sample
 
                     // items of the shop
                     Item[] items = null;
-                    dc.Sql("SELECT ").columnlst(Item.Empty, Item.SHOPID)._("FROM items WHERE shopid = @1");
+                    dc.Sql("SELECT ").columnlst(Item.Empty, Item.UNMOD)._("FROM items WHERE shopid = @1");
                     if (dc.Query(p => p.Set(shopid)))
                     {
-                        items = dc.ToArray<Item>(Item.SHOPID);
+                        items = dc.ToArray<Item>(Item.UNMOD);
                     }
 
                     ac.GivePage(200, m =>

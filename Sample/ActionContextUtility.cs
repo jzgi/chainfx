@@ -168,7 +168,7 @@ namespace Greatbone.Sample
 
             // zurb foundation
             h.Add("<script src=\"//cdn.bootcss.com/jquery/3.2.1/jquery.min.js\"></script>");
-            h.Add("<script src=\"//foundation.min.js\"></script>");
+            h.Add("<script src=\"/foundation.min.js\"></script>");
             h.Add("<script src=\"/app.min.js\"></script>");
             h.Add("<script>");
 

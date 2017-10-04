@@ -4,33 +4,15 @@ using Greatbone.Core;
 
 namespace Greatbone.Sample
 {
-    public class ItemVarWork : Work
+    public abstract class ItemVarWork : Work
     {
-        public ItemVarWork(WorkContext wc) : base(wc)
+        protected ItemVarWork(WorkContext wc) : base(wc)
         {
-        }
-
-        public void @default(ActionContext ac)
-        {
-            string shopid = ac[0];
-            int id = ac[this];
-
-            using (var dc = Service.NewDbContext())
-            {
-                dc.Sql("SELECT ").columnlst(Order.Empty)._("FROM orders WHERE id = @1 AND shopid = @2");
-                if (dc.Query(p => p.Set(id).Set(shopid)))
-                {
-                    var order = dc.ToArray<Order>();
-                }
-                else
-                {
-                }
-            }
         }
 
         public void icon(ActionContext ac)
         {
-            string shopid = ac[typeof(ShopVarWork)];
+            short shopid = ac[-2];
             string name = ac[this];
             using (var dc = Service.NewDbContext())
             {
@@ -41,8 +23,7 @@ namespace Greatbone.Sample
                     if (byteas.Count == 0) ac.Give(204); // no content 
                     else
                     {
-                        StaticContent cont = new StaticContent(byteas);
-                        ac.Give(200, cont, pub: true, maxage: 60 * 5);
+                        ac.Give(200, new StaticContent(byteas), true, 60 * 5);
                     }
                 }
                 else ac.Give(404, pub: true, maxage: 60 * 5); // not found
@@ -59,39 +40,35 @@ namespace Greatbone.Sample
         [Ui("修改", Mode = UiMode.ButtonShow)]
         public async Task edit(ActionContext ac)
         {
-            string shopid = ac[typeof(ShopVarWork)];
+            short shopid = ac[-2];
             string name = ac[this];
             if (ac.GET)
             {
                 using (var dc = ac.NewDbContext())
                 {
-                    dc.Sql("SELECT ").columnlst(Item.Empty)._("FROM items WHERE shopid = @1 AND name = @2");
-                    if (dc.Query1(p => p.Set(shopid).Set(name)))
+                    if (dc.Query1("SELECT * FROM items WHERE shopid = @1 AND name = @2", p => p.Set(shopid).Set(name)))
                     {
                         var o = dc.ToObject<Item>();
                         ac.GivePane(200, m =>
                         {
                             m.FORM_();
-                            m.TEXT(nameof(o.name), o.name, label: "品名", max: 30, required: true);
-                            m.TEXT(nameof(o.descr), o.descr, label: "描述", max: 30, required: true);
-                            m.TEXT(nameof(o.unit), o.unit, label: "单位（如：斤，小瓶）", required: true);
-                            m.NUMBER(nameof(o.price), o.price, label: "单价", required: true);
-                            m.NUMBER(nameof(o.min), o.min, label: "起订数量", min: (short) 1);
-                            m.NUMBER(nameof(o.step), o.step, label: "递增因子", min: (short) 1);
-                            m.NUMBER(nameof(o.max), o.max, label: "本批供应量");
-                            m.SELECT(nameof(o.status), o.status, Item.STATUS);
+                            m.COL("名称", o.name);
+                            m.TEXT(nameof(o.descr), o.descr, "简述", max: 30, required: true);
+                            m.TEXT(nameof(o.unit), o.unit, "单位", required: true);
+                            m.NUMBER(nameof(o.price), o.price, "单价", required: true);
+                            m.NUMBER(nameof(o.min), o.min, "起订数量", min: (short) 1);
+                            m.NUMBER(nameof(o.step), o.step, "增减间隔", min: (short) 1);
+                            m.NUMBER(nameof(o.max), o.max, "剩余供给");
+                            m.SELECT(nameof(o.status), o.status, Item.STATUS, "状态");
                             m._FORM();
                         });
                     }
-                    else
-                    {
-                        ac.Give(500); // internal server error
-                    }
+                    else ac.Give(500); // internal server error
                 }
             }
             else // post
             {
-                const int proj = 0x00ff;
+                const int proj = -1 ^ Item.UNMOD;
                 var o = await ac.ReadObjectAsync<Item>(proj);
                 using (var dc = ac.NewDbContext())
                 {
@@ -101,27 +78,15 @@ namespace Greatbone.Sample
                         o.Write(p, proj);
                         p.Set(shopid).Set(name);
                     });
-                    ac.GivePane(200);
                 }
+                ac.GivePane(200); // close dialog
             }
         }
 
-        [Ui("删除", "删除该商品", Mode = UiMode.ButtonConfirm)]
-        public void del(ActionContext ac)
-        {
-            string shopid = ac[typeof(ShopVarWork)];
-            string name = ac[this];
-            using (var dc = ac.NewDbContext())
-            {
-                dc.Execute("DELETE FROM items WHERE shopid = @1 AND name = @2", p => p.Set(shopid).Set(name));
-            }
-            ac.GiveRedirect("../");
-        }
-
-        [Ui("设照片", Mode = UiMode.AnchorCrop, Circle = true)]
+        [Ui("图片", Mode = UiMode.AnchorCrop, Circle = true)]
         public new async Task icon(ActionContext ac)
         {
-            string shopid = ac[typeof(ShopVarWork)];
+            short shopid = ac[-2];
             string name = ac[this];
             if (ac.GET)
             {
@@ -134,8 +99,7 @@ namespace Greatbone.Sample
                         if (byteas.Count == 0) ac.Give(204); // no content 
                         else
                         {
-                            StaticContent cont = new StaticContent(byteas);
-                            ac.Give(200, cont);
+                            ac.Give(200, new StaticContent(byteas));
                         }
                     }
                     else ac.Give(404); // not found           
@@ -151,10 +115,7 @@ namespace Greatbone.Sample
                     {
                         ac.Give(200); // ok
                     }
-                    else
-                    {
-                        ac.Give(500); // internal server error
-                    }
+                    else ac.Give(500); // internal server error
                 }
             }
         }
