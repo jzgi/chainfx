@@ -1,4 +1,5 @@
 using System;
+using System.Linq;
 
 namespace Greatbone.Core
 {
@@ -549,8 +550,8 @@ namespace Greatbone.Core
 
         public HtmlContent _FORM()
         {
-            Add("</form>");
             Add("</div>");
+            Add("</form>");
             return this;
         }
 
@@ -1559,6 +1560,39 @@ namespace Greatbone.Core
             return this;
         }
 
+        public HtmlContent CHECKBOXGROUP(string name, string[] v, string[] opts, string legend = null)
+        {
+            if (legend != null)
+            {
+                Add("<fieldset>");
+                Add("<legend>");
+                Add(legend);
+                Add("</legend>");
+            }
+
+            for (int i = 0; i < opts.Length; i++)
+            {
+                var item = opts[i];
+                Add(" <label>");
+                Add("<input type=\"checkbox\" name=\"");
+                Add(name);
+                Add("\"");
+                if (v != null && v.Contains(item))
+                {
+                    Add(" checked");
+                }
+                Add(">");
+                Add(item);
+                Add(" </label>");
+            }
+
+            if (legend != null)
+            {
+                Add("</fieldset>");
+            }
+            return this;
+        }
+
         public HtmlContent RADIO(string name, int value, bool @checked, string label)
         {
             Add("<label>");
@@ -1721,6 +1755,7 @@ namespace Greatbone.Core
 
             opt?.ForEach((key, item) =>
             {
+                Add("<label>");
                 Add("<input type=\"radio\" name=\"");
                 Add(name);
 
@@ -1736,14 +1771,15 @@ namespace Greatbone.Core
                 if (key.Equals(v)) Add(" checked");
                 if (required) Add(" required");
                 Add(">");
-
-                Add("<label for=\"");
-                Add(name);
-                Add(key);
-                Add("\">");
-                Add(item.ToString());
                 Add("</label>");
-                Add("<br>");
+
+                Add(key);
+//                Add("<label for=\"");
+//                Add(name);
+//                Add(key);
+//                Add("\">");
+//                Add(item.ToString());
+//                Add("</label>");
             });
 
             Add("</fieldset>");
@@ -1785,6 +1821,40 @@ namespace Greatbone.Core
             });
 
             Add("</fieldset>");
+            return this;
+        }
+
+        public HtmlContent RADIOGROUP(string name, string v, string[] opt, string legend = null, bool required = false)
+        {
+            if (legend != null)
+            {
+                Add("<fieldset>");
+                Add("<legend>");
+                Add(legend);
+                Add("</legend>");
+            }
+
+            for (int i = 0; i < opt.Length; i++)
+            {
+                var item = opt[i];
+                Add("<label>");
+                Add("<input type=\"radio\" name=\"");
+                Add(name);
+                Add("\" value=\"");
+                Add(item);
+                Add("\"");
+
+                if (item.Equals(v)) Add(" checked");
+                if (required) Add(" required");
+                Add(">");
+
+                Add(item);
+                Add("</label>");
+            }
+            if (legend != null)
+            {
+                Add("</fieldset>");
+            }
             return this;
         }
 

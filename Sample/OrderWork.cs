@@ -46,6 +46,8 @@ namespace Greatbone.Sample
             string wx = ac[-1];
             short shopid;
             string name;
+            string opt = null;
+            string[] sets = null;
             if (ac.GET)
             {
                 shopid = ac.Query[nameof(shopid)];
@@ -56,11 +58,20 @@ namespace Greatbone.Sample
                     using (var dc = ac.NewDbContext())
                     {
                         dc.Sql("SELECT ").columnlst(Item.Empty)._("FROM items WHERE shopid = @1 AND name = @2");
-                        dc.Query(p => p.Set(shopid).Set(name));
+                        dc.Query1(p => p.Set(shopid).Set(name));
                         var item = dc.ToObject<Item>();
                         h.FORM_();
 
                         h.NUMBER(nameof(item.max), item.min, min: item.min, step: item.step);
+
+                        if (item.opts != null)
+                        {
+                            h.RADIOGROUP(nameof(opt), opt, item.opts,"选择搭配");
+                        }
+                        if (item.sets != null)
+                        {
+                            h.CHECKBOXGROUP(nameof(opt), sets, item.sets,"定制要求");
+                        }
 
                         h._FORM();
                     }
