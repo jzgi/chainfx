@@ -25,11 +25,10 @@ namespace Greatbone.Sample
             string wx = ac[-1];
             using (var dc = ac.NewDbContext())
             {
-                const int proj = Order.ID | Order.BASIC_DETAIL;
-                dc.Sql("SELECT ").columnlst(Order.Empty, proj)._("FROM orders WHERE wx = @1 AND status = 0 ORDER BY id DESC");
+                dc.Sql("SELECT ").columnlst(Order.Empty)._("FROM orders WHERE wx = @1 AND status = 0 ORDER BY id DESC");
                 if (dc.Query(p => p.Set(wx)))
                 {
-                    ac.GiveGridPage(200, dc.ToArray<Order>(proj), (h, o) =>
+                    ac.GiveGridPage(200, dc.ToArray<Order>(), (h, o) =>
                     {
                         h.COL("单号", o.id, 0);
                         h.COL("总价", o.total, 0);
@@ -42,35 +41,37 @@ namespace Greatbone.Sample
             }
         }
 
-        [Ui("清空购物车/删除", "清空购物车或者删除选中的项", Mode = UiMode.ButtonConfirm)]
-        public async Task remove(ActionContext ac)
-        {
-            string wx = ac[typeof(UserVarWork)];
-            var f = await ac.ReadAsync<Form>();
-            long[] key = f[nameof(key)];
-            using (var dc = ac.NewDbContext())
-            {
-                if (key != null)
-                {
-                    dc.Sql("DELETE FROM orders WHERE wx = @1 AND status = @2 AND id")._IN_(key);
-                    dc.Execute(p => p.Set(wx).Set(Order.CREATED));
-                }
-                else
-                {
-                    dc.Execute("DELETE FROM orders WHERE wx = @1 AND status = @2", p => p.Set(wx).Set(Order.CREATED));
-                }
-                ac.GiveRedirect();
-            }
-        }
-
         public async Task add(ActionContext ac)
         {
-            string wx = ac[typeof(UserVarWork)];
+            string wx = ac[-1];
+            short shopid;
+            string name;
+            if (ac.GET)
+            {
+                shopid = ac.Query[nameof(shopid)];
+                name = ac.Query[nameof(name)];
+
+                ac.GivePane(200, h =>
+                {
+                    using (var dc = ac.NewDbContext())
+                    {
+                        dc.Sql("SELECT ").columnlst(Item.Empty)._("FROM items WHERE shopid = @1 AND name = @2");
+                        dc.Query(p => p.Set(shopid).Set(name));
+                        var item = dc.ToObject<Item>();
+                        h.FORM_();
+
+                        h.NUMBER(nameof(item.max), item.min, min: item.min, step: item.step);
+
+                        h._FORM();
+                    }
+                });
+                return;
+            }
 
             var f = await ac.ReadAsync<Form>();
-            string shopid = f[nameof(shopid)];
+            shopid = f[nameof(shopid)];
             string shopname = f[nameof(shopname)];
-            string name = f[nameof(name)];
+            name = f[nameof(name)];
             string unit = f[nameof(unit)];
             decimal price = f[nameof(price)];
             short qty = f[nameof(qty)];
@@ -111,6 +112,27 @@ namespace Greatbone.Sample
                     dc.Execute(p => o.Write(p, proj));
                 }
                 ac.Give(200);
+            }
+        }
+
+        [Ui("清空购物车/删除", "清空购物车或者删除选中的项", Mode = UiMode.ButtonConfirm)]
+        public async Task remove(ActionContext ac)
+        {
+            string wx = ac[typeof(UserVarWork)];
+            var f = await ac.ReadAsync<Form>();
+            long[] key = f[nameof(key)];
+            using (var dc = ac.NewDbContext())
+            {
+                if (key != null)
+                {
+                    dc.Sql("DELETE FROM orders WHERE wx = @1 AND status = @2 AND id")._IN_(key);
+                    dc.Execute(p => p.Set(wx).Set(Order.CREATED));
+                }
+                else
+                {
+                    dc.Execute("DELETE FROM orders WHERE wx = @1 AND status = @2", p => p.Set(wx).Set(Order.CREATED));
+                }
+                ac.GiveRedirect();
             }
         }
     }

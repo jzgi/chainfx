@@ -61,7 +61,7 @@ namespace Greatbone.Sample
         }
     }
 
-    public struct Part
+    public struct Opt
     {
         internal string name;
 

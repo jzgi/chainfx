@@ -40,19 +40,19 @@ namespace Greatbone.Sample
 
         public void @default(ActionContext ac)
         {
-            short id = ac[this];
+            short shopid = ac[this];
             using (var dc = ac.NewDbContext())
             {
                 const int proj = Shop.ID | Shop.INITIAL;
                 dc.Sql("SELECT ").columnlst(Shop.Empty, proj)._("FROM shops WHERE id = @1");
-                if (dc.Query1(p => p.Set(id)))
+                if (dc.Query1(p => p.Set(shopid)))
                 {
                     var shop = dc.ToObject<Shop>(proj);
 
                     // items of the shop
                     Item[] items = null;
                     dc.Sql("SELECT ").columnlst(Item.Empty, Item.UNMOD)._("FROM items WHERE shopid = @1");
-                    if (dc.Query(p => p.Set(id)))
+                    if (dc.Query(p => p.Set(shopid)))
                     {
                         items = dc.ToArray<Item>(Item.UNMOD);
                     }
@@ -87,7 +87,7 @@ namespace Greatbone.Sample
 
                             var shopname = shop.name;
 
-                            m.HIDDEN(nameof(id), id);
+                            m.HIDDEN(nameof(shopid), shopid);
                             m.HIDDEN(nameof(shopname), shopname);
                             m.HIDDEN(nameof(item.name), item.name);
                             m.HIDDEN(nameof(item.unit), item.unit);
@@ -95,11 +95,11 @@ namespace Greatbone.Sample
 
                             m.T("<div class=\"card\">");
 
-                            m.T("<div class=\"small-4 column\">");
+                            m.T("<div class=\"small-4 cell\">");
                             m.T("<img src=\"").T(item.name).T("/icon\" alt=\"\" class=\"thumbnail circle\">");
                             m.T("</div>"); // column
 
-                            m.T("<div class=\"small-8 column\">");
+                            m.T("<div class=\"small-8 cell\">");
                             m.T("<h3>");
                             m.T(item.name);
                             if (item.max > 0)
@@ -118,12 +118,8 @@ namespace Greatbone.Sample
 
                             m.T("<div class=\"row\">");
 
-                            m.T("<div class=\"small-7 columns\">");
-                            m.NUMBER(nameof(item.max), item.min, min: item.min, step: item.step);
-                            m.T("</div>");
-
-                            m.T("<div class=\"small-5 columns\">");
-                            m.T("<button type=\"button\" class=\"button primary\" onclick=\"var frm=this.form; $.post('/my//pre/add', $(frm).serialize(), function(data){alert('成功加入购物车'); frm.reset();});\">加入购物车</button>");
+                            m.T("<div class=\"small-5 cell\">");
+                            m.T("<button type=\"button\" class=\"button primary\" formaction=\"/my//pre/add\" onclick=\"dialog(this, 8);\">加入购物车</button>");
                             m.T("</div>");
 
                             m.T("</div>"); // row
