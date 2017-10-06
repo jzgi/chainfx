@@ -9,10 +9,17 @@ namespace Greatbone.Sample
         protected ItemVarWork(WorkContext wc) : base(wc)
         {
         }
+    }
+
+    public class PubItemVarWork : ItemVarWork
+    {
+        public PubItemVarWork(WorkContext wc) : base(wc)
+        {
+        }
 
         public void icon(ActionContext ac)
         {
-            short shopid = ac[-2];
+            short shopid = ac[-1];
             string name = ac[this];
             using (var dc = Service.NewDbContext())
             {

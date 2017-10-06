@@ -513,7 +513,6 @@ textarea {
 
 select {
     box-sizing: border-box;
-    width: 100%;
     border-radius: 3px;
 }
 
@@ -1219,7 +1218,6 @@ legend {
 
 select {
     height: 2.4375rem;
-    margin: 0 0 1rem;
     padding: 0.5rem;
     -webkit-appearance: none;
     -moz-appearance: none;
@@ -1228,7 +1226,6 @@ select {
     border-radius: 3px;
     background-color: #fefefe;
     font-family: inherit;
-    font-size: 1rem;
     font-weight: normal;
     line-height: 1.5;
     color: #0a0a0a;

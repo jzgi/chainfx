@@ -12,11 +12,10 @@ namespace Greatbone.Sample
 
         public void icon(ActionContext ac)
         {
-            string shopid = ac[this];
-
+            short id = ac[this];
             using (var dc = Service.NewDbContext())
             {
-                if (dc.Query1("SELECT icon FROM shops WHERE id = @1", p => p.Set(shopid)))
+                if (dc.Query1("SELECT icon FROM shops WHERE id = @1", p => p.Set(id)))
                 {
                     ArraySegment<byte> byteas;
                     dc.Let(out byteas);
@@ -36,23 +35,24 @@ namespace Greatbone.Sample
     {
         public PubShopVarWork(WorkContext wc) : base(wc)
         {
+            CreateVar<PubItemVarWork, string>(obj => ((Item) obj).name);
         }
 
         public void @default(ActionContext ac)
         {
-            short shopid = ac[this];
+            short id = ac[this];
             using (var dc = ac.NewDbContext())
             {
                 const int proj = Shop.ID | Shop.INITIAL;
                 dc.Sql("SELECT ").columnlst(Shop.Empty, proj)._("FROM shops WHERE id = @1");
-                if (dc.Query1(p => p.Set(shopid)))
+                if (dc.Query1(p => p.Set(id)))
                 {
                     var shop = dc.ToObject<Shop>(proj);
 
                     // items of the shop
                     Item[] items = null;
                     dc.Sql("SELECT ").columnlst(Item.Empty, Item.UNMOD)._("FROM items WHERE shopid = @1");
-                    if (dc.Query(p => p.Set(shopid)))
+                    if (dc.Query(p => p.Set(id)))
                     {
                         items = dc.ToArray<Item>(Item.UNMOD);
                     }
@@ -62,30 +62,16 @@ namespace Greatbone.Sample
                         m.T("<div data-sticky-container>");
                         m.T("<div class=\"sticky\" style=\"width: 100%\" data-sticky  data-options=\"anchor: page; marginTop: 0; stickyOn: small;\">");
                         m.T("<div class=\"top-bar\">");
-                        m.T("<div class=\"top-bar-left\">");
-                        m.T("<a href=\"https://mp.weixin.qq.com/mp/profile_ext?action=home&__biz=MzU4NDAxMTAwOQ==&scene=124#wechat_redirect\">关注公众号</a>");
-                        m.T("<a href=\"../\"><i class=\"fa fa-arrow-left\"></i></a>");
-                        m.T("<span style=\"font-size: 1.25rem;\">").T(shop.name).T("</span>");
-                        m.T("</div>");
+                        m.T("<div class=\"top-bar-title\">").T(shop.name).T("</div>");
+                        m.T("<div class=\"top-bar-left\">").T("<i class=\"typcn typcn-phone\"></i>").T(shop.oprtel).T("</div>");
                         m.T("<div class=\"top-bar-right\">");
-                        m.T("<a class=\"float-right\" href=\"/my//cart/\"><span class=\"fa-stack fa-lg\"><i class=\"fa fa-circle fa-stack-2x\"></i><i class=\"fa fa-shopping-cart fa-stack-1x fa-inverse\"></i></span></a>");
+                        m.T("<a class=\"float-right\" href=\"/my//pre/\"><i class=\"typcn typcn-shopping-cart\" style=\"font-size: 1.5rem\"></i></a>");
                         m.T("</div>");
                         m.T("</div>");
-                        m.T("</div>");
-                        m.T("</div>");
-
-                        m.T("<div class=\"row\" style=\"background-color: white\">");
-                        m.T("<div class=\"small-8 column\">");
-                        m.T("<p>").T(shop.city).T(shop.addr).T("</p>");
-                        m.T("</div>");
-                        m.T("<div class=\"small-4 column\">");
-                        m.T("<p><i class=\"fa fa-phone\"></i>").T(shop.oprtel).T("</p>");
-                        m.T("<a href=\"custsvc\" class=\"button hollow\" onclick=\"return dialog(this,4,2);\">在线客服</a>");
                         m.T("</div>");
                         m.T("</div>");
 
                         // display items
-
                         if (items == null)
                         {
                             m.T("没有上架商品");
@@ -101,7 +87,7 @@ namespace Greatbone.Sample
 
                             var shopname = shop.name;
 
-                            m.HIDDEN(nameof(shopid), shopid);
+                            m.HIDDEN(nameof(id), id);
                             m.HIDDEN(nameof(shopname), shopname);
                             m.HIDDEN(nameof(item.name), item.name);
                             m.HIDDEN(nameof(item.unit), item.unit);

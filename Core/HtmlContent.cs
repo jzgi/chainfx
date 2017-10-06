@@ -525,15 +525,8 @@ namespace Greatbone.Core
             return this;
         }
 
-        public HtmlContent FORM_(string caption = null, string action = null, bool post = true, bool mp = false)
+        public HtmlContent FORM_(string action = null, bool post = true, bool mp = false)
         {
-            Add("<div class=\"row column align-center small-10 medium-8 large-6 container-padded\">");
-            Add("<h2>");
-            if (caption != null)
-            {
-                AddEsc(caption);
-            }
-            Add("</h2>");
             Add("<form");
             if (action != null)
             {
@@ -550,6 +543,7 @@ namespace Greatbone.Core
                 Add(" enctype=\"multipart/form-data\"");
             }
             Add(">");
+            Add("<div class=\"grid-x\">");
             return this;
         }
 
@@ -1939,8 +1933,11 @@ namespace Greatbone.Core
         {
             int endg = GridStart(n);
 
-            Add("<label>");
-            AddLabel(label, name);
+            if (label != null)
+            {
+                Add("<label>");
+                Add(label);
+            }
             Add("<select name=\"");
             Add(name);
             Add("\"");
@@ -1969,7 +1966,10 @@ namespace Greatbone.Core
                 Add("</option>");
             });
             Add("</select>");
-            Add("</label>");
+            if (label != null)
+            {
+                Add("</label>");
+            }
 
             GridEnd(endg);
             return this;

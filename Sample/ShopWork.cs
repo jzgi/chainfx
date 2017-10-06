@@ -18,21 +18,19 @@ namespace Greatbone.Sample
         }
 
         /// <summary>
-        /// Returns either the city home page, or the geolocator page.
+        /// Returns a home page pertaining to a related city
         /// </summary>
-        /// <param name="city">name of the located city, or empty</param>
-        /// <param name="area">name of the located area, or empty</param>
         public void @default(ActionContext ac)
         {
             string city = ac.Query[nameof(city)];
             string area = ac.Query[nameof(area)];
+            var cities = ((SampleService) Service).Cities;
             if (city == null)
             {
                 HtmlContent h = new HtmlContent(ac, true);
+                // geolocator page
                 h.T("<html><head><script>");
-
-                h.T("var cities = ").JSON(((SampleService) Service).Cities).T(";");
-
+                h.T("var cities = ").JSON(cities).T(";");
                 h.T("navigator.geolocation.getCurrentPosition(function(p) {");
                 h.T("var city=''; var area='';");
                 h.T("var x=p.coords.longitude; var y=p.coords.latitude;");
@@ -51,7 +49,12 @@ namespace Greatbone.Sample
                 h.T(")");
                 h.T("</script></head></html>");
                 ac.Give(200, h, true, 3600);
-                return; // give the geolocating page
+                return;
+            }
+
+            if (city.Length == 0)
+            {
+                city = "南昌";
             }
 
             ac.GivePage(200, m =>
@@ -59,23 +62,15 @@ namespace Greatbone.Sample
                 m.T("<div data-sticky-container>");
                 m.T("<div class=\"sticky\" style=\"width: 100%\" data-sticky  data-options=\"anchor: page; marginTop: 0; stickyOn: small;\">");
                 m.T("<div class=\"top-bar\">");
-                m.T("<div class=\"top-bar-title\">城市</div>");
+                m.T("<div class=\"top-bar-title\">所在城市</div>");
                 m.T("<div class=\"top-bar-left\">");
-                m.T("<select name=\"city\" style=\"margin: 0; border: 0; color: #ba55d3; font-size: 1.25rem;\" onchange=\"location = location.href.split('?')[0] + '?city=' + this.value;\">");
-                var vs = ((SampleService) Service).Cities;
-                foreach (var pair in vs)
-                {
-                    string v = pair.Value.ToString();
-                    m.T("<option value=\"").T(v).T("\"");
-                    if (pair.Key == city) m.T(" selected");
-                    m.T(">");
-                    m.T(v);
-                    m.T("</option>");
-                }
-                m.T("</select>");
+                m.T("<form>");
+                m.SELECT(nameof(city), city, cities, refresh: true);
+                m.HIDDEN(nameof(area), area);
+                m.T("</form>");
                 m.T("</div>");
                 m.T("<div class=\"top-bar-right\">");
-                m.T("<a class=\"float-right\" href=\"/my//pre/\">购物车<i class=\"typcn typcn-shopping-cart\" style=\"font-size: 1.5rem\"></i></a>");
+                m.T("<a class=\"float-right\" href=\"/my//pre/\"><i class=\"typcn typcn-shopping-cart\" style=\"font-size: 1.5rem\"></i></a>");
                 m.T("</div>");
                 m.T("</div>");
                 m.T("</div>");
@@ -92,8 +87,8 @@ namespace Greatbone.Sample
                         {
                             var shop = shops[i];
 
-                            m.T("<div class=\"row card align-middle\">");
-                            m.T("<div class=\"small-8 columns\">");
+                            m.T("<div class=\"grid-x\">");
+                            m.T("<div class=\"small-8 cell\">");
                             m.T("<h3><a href=\"").T(shop.id).T("/?city=").T(city).T("\">").T(shop.name).T("</a></h3>");
                             m.T("<p>").T(shop.city).T(shop.addr).T("</p>");
                             var areas = shop.areas;
@@ -103,7 +98,7 @@ namespace Greatbone.Sample
                                     m.T("<span>").T(areas[k]).T("</span>");
                                 }
                             m.T("</div>");
-                            m.T("<div class=\"small-4 columns\"><a href=\"").T(shop.id).T("/\"><span></span><img src=\"").T(shop.id).T("/icon\" alt=\"\" class=\"thumbnail circle\"></a></div>");
+                            m.T("<div class=\"small-4 cell\"><a href=\"").T(shop.id).T("/\"><img src=\"").T(shop.id).T("/icon\" class=\"thumbnail circle\"></a></div>");
                             m.T("</div>");
                         }
                     }
