@@ -83,7 +83,7 @@ namespace Greatbone.Sample
 
                 using (var dc = ac.NewDbContext())
                 {
-                    const int proj = Shop.ID | Shop.BASIC;
+                    const int proj = Shop.ID | Shop.INITIAL;
                     dc.Sql("SELECT ").columnlst(Shop.Empty, proj)._("FROM shops WHERE city = @1 AND status > 0");
                     if (dc.Query(p => p.Set(city)))
                     {
@@ -131,14 +131,11 @@ namespace Greatbone.Sample
             string city = ac[typeof(Work)];
             using (var dc = ac.NewDbContext())
             {
-                const int proj = Shop.ID | Shop.BASIC | Shop.ADMIN;
+                const int proj = Shop.ID | Shop.INITIAL | Shop.LATE;
                 dc.Sql("SELECT ").columnlst(Shop.Empty, proj)._("FROM shops ORDER BY id");
                 if (dc.Query())
                 {
-                    ac.GiveTablePage(200, dc.ToArray<Shop>(proj),
-                        h => h.TH("名称").TH("电话").TH("地址"),
-                        (h, o) => h.TD(o.name).TD(o.mgrtel).TD(o.addr)
-                        , false, 3);
+                    ac.GiveTablePage(200, dc.ToArray<Shop>(proj), h => h.TH("名称").TH("电话").TH("地址"), (h, o) => h.TD(o.name).TD(o.mgrtel).TD(o.addr), false, 3);
                 }
                 else
                 {
@@ -147,37 +144,33 @@ namespace Greatbone.Sample
             }
         }
 
-        [Ui("新建", Mode = UiMode.AnchorShow)]
+        [Ui("新建", Mode = UiMode.ButtonShow)]
         public async Task @new(ActionContext ac)
         {
-            string city = ac[typeof(Work)];
             if (ac.GET)
             {
-                var o = new Shop {city = city};
+                var o = new Shop();
                 ac.GivePane(200, m =>
                 {
                     m.FORM_();
-                    m.TEXT(nameof(o.name), o.name, "商家名称", max: 10, required: true);
-                    m.TEXT(nameof(o.city), o.city, "所在城市", opt: ((SampleService) Service).Cities, @readonly: true);
-                    m.TEXT(nameof(o.addr), o.addr, label: "营业地址");
+                    m.TEXT(nameof(o.name), o.name, "名称", max: 10, required: true);
+                    m.SELECT(nameof(o.city), o.city, ((SampleService) Service).Cities, "城市");
+                    m.TEXT(nameof(o.addr), o.addr, "地址", max: 20);
+                    m.NUMBER(nameof(o.x), o.x, "经度");
+                    m.NUMBER(nameof(o.y), o.y, "纬度");
                     m._FORM();
                 });
             }
             else // post
             {
+                const int proj = Shop.INITIAL;
                 var o = await ac.ReadObjectAsync<Shop>();
-                o.city = city;
                 using (var dc = ac.NewDbContext())
                 {
-                    if (dc.Execute("INSERT INTO shops (id, name, city, distr, lic) VALUES (@1, @2, @3, @4, @5)", p => p.Set(o.id).Set(o.name).Set(city).Set(o.addr)) > 0)
-                    {
-                        ac.GivePane(200); // created
-                    }
-                    else
-                    {
-                        ac.GivePane(200); // internal server error
-                    }
+                    dc.Sql("INSERT INTO shops")._(Shop.Empty, proj)._VALUES_(Shop.Empty, proj);
+                    dc.Execute(p => o.Write(p, proj));
                 }
+                ac.GivePane(200); // created
             }
         }
     }

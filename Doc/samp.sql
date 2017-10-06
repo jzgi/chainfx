@@ -11,7 +11,7 @@ Target Server Type    : PGSQL
 Target Server Version : 90505
 File Encoding         : 65001
 
-Date: 2017-09-28 13:06:59
+Date: 2017-10-05 23:36:06
 */
 
 
@@ -48,21 +48,6 @@ CREATE SEQUENCE "public"."shops_id_seq"
  MAXVALUE 9223372036854775807
  START 1
  CACHE 1;
-
--- ----------------------------
--- Table structure for chats
--- ----------------------------
-DROP TABLE IF EXISTS "public"."chats";
-CREATE TABLE "public"."chats" (
-"shopid" varchar(6) COLLATE "default" NOT NULL,
-"wx" varchar(28) COLLATE "default" NOT NULL,
-"msgs" jsonb,
-"quested" timestamp(6),
-"name" varchar(10) COLLATE "default"
-)
-WITH (OIDS=FALSE)
-
-;
 
 -- ----------------------------
 -- Table structure for cities
@@ -139,7 +124,7 @@ WITH (OIDS=FALSE)
 DROP TABLE IF EXISTS "public"."orders";
 CREATE TABLE "public"."orders" (
 "id" int8 DEFAULT nextval('orders_id_seq'::regclass) NOT NULL,
-"shopid" varchar(6) COLLATE "default",
+"shopid" int2,
 "shopname" varchar(10) COLLATE "default",
 "wx" varchar(28) COLLATE "default",
 "name" varchar(10) COLLATE "default",
@@ -167,8 +152,8 @@ WITH (OIDS=FALSE)
 DROP TABLE IF EXISTS "public"."repays";
 CREATE TABLE "public"."repays" (
 "id" int4 DEFAULT nextval('repays_id_seq'::regclass) NOT NULL,
-"shopid" varchar(6) COLLATE "default",
-"shop" varchar(10) COLLATE "default",
+"shopid" int2,
+"shopname" varchar(10) COLLATE "default",
 "till" date,
 "orders" int4,
 "total" money,
@@ -219,7 +204,7 @@ CREATE TABLE "public"."users" (
 "tel" varchar(11) COLLATE "default",
 "city" varchar(4) COLLATE "default",
 "addr" varchar(20) COLLATE "default",
-"oprat" varchar(6) COLLATE "default",
+"oprat" int2,
 "opr" int2 DEFAULT 0,
 "adm" bool DEFAULT false,
 "status" int2 DEFAULT 0 NOT NULL
@@ -234,11 +219,6 @@ WITH (OIDS=FALSE)
 ALTER SEQUENCE "public"."orders_id_seq" OWNED BY "orders"."id";
 ALTER SEQUENCE "public"."repays_id_seq" OWNED BY "repays"."id";
 ALTER SEQUENCE "public"."shops_id_seq" OWNED BY "shops"."id";
-
--- ----------------------------
--- Primary Key structure for table chats
--- ----------------------------
-ALTER TABLE "public"."chats" ADD PRIMARY KEY ("shopid", "wx");
 
 -- ----------------------------
 -- Primary Key structure for table repays

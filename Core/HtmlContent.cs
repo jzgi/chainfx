@@ -799,11 +799,11 @@ namespace Greatbone.Core
                 Add("<div class=\"grid-x small-up-1 medium-up-2 large-up-3\">");
                 for (int i = 0; i < arr.Length; i++)
                 {
-                    Add("<div class=\"cell\" style=\"padding: 1rem\">");
+                    Add("<div class=\"cell\" style=\"padding: 0.5rem\">");
                     Add("<form>");
                     D obj = arr[i];
 
-                    Add("<div class=\"card grid-x\">");
+                    Add("<div class=\"grid-x\" style=\"border: 1px solid #e6e6e6; padding: 0.5rem\">");
                     Add("<div class=\"cell\">");
                     Add("<input name=\"key\" type=\"checkbox\" form=\"viewform\" value=\"");
                     varwork?.OutputVarKey(obj, this);
@@ -1099,8 +1099,11 @@ namespace Greatbone.Core
         {
             int endg = GridStart(n);
 
-            Add("<label>");
-            AddLabel(label, name);
+            if (label != null)
+            {
+                Add("<label>");
+                Add(label);
+            }
             Add("<input type=\"search\" name=\"");
             Add(name);
             Add("\" value=\"");
@@ -1135,7 +1138,10 @@ namespace Greatbone.Core
                 Add("\"");
             }
             Add(">");
-            Add("</label>");
+            if (label != null)
+            {
+                Add("</label>");
+            }
 
             GridEnd(endg);
             return this;

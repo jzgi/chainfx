@@ -43,7 +43,7 @@ namespace Greatbone.Sample
             short shopid = ac[this];
             using (var dc = ac.NewDbContext())
             {
-                const int proj = Shop.ID | Shop.BASIC;
+                const int proj = Shop.ID | Shop.INITIAL;
                 dc.Sql("SELECT ").columnlst(Shop.Empty, proj)._("FROM shops WHERE id = @1");
                 if (dc.Query1(p => p.Set(shopid)))
                 {
@@ -157,67 +157,6 @@ namespace Greatbone.Sample
                 }
             }
         }
-
-        public async Task custsvc(ActionContext ac, int subcmd)
-        {
-            string shopid = ac[this];
-
-            User prin = (User) ac.Principal;
-
-            string text = null;
-            if (ac.GET)
-            {
-                ac.GivePane(200, m =>
-                {
-                    using (var dc = ac.NewDbContext())
-                    {
-                        if (dc.Query1("SELECT msgs FROM chats WHERE shopid = @1 AND wx = @2", p => p.Set(shopid).Set(prin.wx)))
-                        {
-                            ChatMsg[] msgs;
-                            dc.Let(out msgs);
-                            m.CARD_();
-                            for (int i = 0; i < msgs.Length; i++)
-                            {
-                                ChatMsg msg = msgs[i];
-                                m.CARDITEM(msg.name, msg.text);
-                            }
-                            m._CARD();
-                        }
-                    }
-                    m.FORM_();
-                    m.TEXT(nameof(text), text, "发送信息", pattern: "[\\S]*", max: 30, required: true);
-                    m._FORM();
-                });
-            }
-            else
-            {
-                var f = await ac.ReadAsync<Form>();
-                text = f[nameof(text)];
-                ChatMsg[] msgs;
-                string mgrwx = null;
-                using (var dc = ac.NewDbContext())
-                {
-                    if (dc.Query1("SELECT msgs FROM chats WHERE shopid = @1 AND wx = @2", p => p.Set(shopid).Set(prin.wx)))
-                    {
-                        dc.Let(out msgs);
-                        msgs = msgs.AddOf(new ChatMsg() {name = prin.name, text = text});
-                        dc.Execute("UPDATE chats SET msgs = @1, quested = localtimestamp WHERE shopid = @2 AND wx = @3", p => p.Set(msgs).Set(shopid).Set(prin.wx));
-                    }
-                    else
-                    {
-                        msgs = new[]
-                        {
-                            new ChatMsg() {name = prin.name, text = text}
-                        };
-                        dc.Execute("INSERT INTO chats (shopid, wx, name, msgs, quested) VALUES (@1, @2, @3, @4, localtimestamp)", p => p.Set(shopid).Set(prin.wx).Set(prin.name).Set(msgs));
-                    }
-
-                    mgrwx = (string) dc.Scalar("SELECT mgrwx FROM shops WHERE id = @1", p => p.Set(shopid));
-                }
-                await WeiXinUtility.PostSendAsync(mgrwx, "【买家消息】" + prin.name + "：" + text);
-                ac.GivePane(200);
-            }
-        }
     }
 
     public class AdmShopVarWork : ShopVarWork
@@ -229,24 +168,24 @@ namespace Greatbone.Sample
         [Ui("修改", Mode = UiMode.ButtonShow)]
         public async Task edit(ActionContext ac)
         {
-            string id = ac[this];
-            string city = ac[typeof(Work)];
-            string name;
-            string distr;
-            string lic;
+            short id = ac[this];
+            const int proj = Shop.INITIAL;
             if (ac.GET)
             {
                 using (var dc = ac.NewDbContext())
                 {
-                    if (dc.Query1("SELECT name, distr, lic FROM shops WHERE id = @1 AND city = @2", p => p.Set(id).Set(city)))
+                    dc.Sql("SELECT ").columnlst(Shop.Empty, proj)._("FROM shops WHERE id = @1");
+                    if (dc.Query1(p => p.Set(id)))
                     {
-                        dc.Let(out name).Let(out distr).Let(out lic);
+                        var o = dc.ToObject<Shop>(proj);
                         ac.GivePane(200, m =>
                         {
                             m.FORM_();
-                            m.TEXT(nameof(name), name, "商家名称");
-                            m.SELECT(nameof(distr), distr, ((SampleService) Service).Cities, "区域");
-                            m.TEXT(nameof(lic), lic, "工商登记");
+                            m.TEXT(nameof(o.name), o.name, "名称");
+                            m.SELECT(nameof(o.city), o.city, ((SampleService) Service).Cities, "城市");
+                            m.TEXT(nameof(o.addr), o.addr, "地址");
+                            m.NUMBER(nameof(o.x), o.x, "经度");
+                            m.NUMBER(nameof(o.y), o.y, "纬度");
                             m._FORM();
                         });
                     }
@@ -258,41 +197,44 @@ namespace Greatbone.Sample
             }
             else // post
             {
-                var f = await ac.ReadAsync<Form>();
-                f.Let(out name).Let(out distr).Let(out lic);
+                var o = await ac.ReadObjectAsync<Shop>(proj);
                 using (var dc = ac.NewDbContext())
                 {
-                    dc.Sql("UPDATE shops SET name = @1, distr = @2, lic = @3")._("WHERE id = @4");
-                    dc.Execute(p => p.Set(name).Set(distr).Set(lic).Set(id));
+                    dc.Sql("UPDATE shops")._SET_(Shop.Empty, proj)._("WHERE id = @1");
+                    dc.Execute(p =>
+                    {
+                        o.Write(p, proj);
+                        p.Set(id);
+                    });
                 }
                 ac.GivePane(200);
             }
         }
 
-        [Ui("设置经理", Mode = UiMode.ButtonShow)]
-        public async Task setmgr(ActionContext ac)
+        [Ui("经理", Mode = UiMode.ButtonShow)]
+        public async Task mgr(ActionContext ac)
         {
-            string shopid = ac[this];
+            short shopid = ac[this];
+            string wx_tel_name;
             if (ac.GET)
             {
                 string forid = ac.Query[nameof(forid)];
                 ac.GivePane(200, m =>
                 {
                     m.FORM_();
-                    m.SEARCH(nameof(forid), forid, label: "查询后台帐号（手机号）", min: 11, max: 11, pattern: "[0-9]+");
-                    m.BUTTON("查询", post: false);
+                    m.FIELDSET_("查询帐号（手机号）");
+                    m.SEARCH(nameof(forid), forid, min: 11, max: 11, pattern: "[0-9]+");
+                    m.BUTTON("查询", false);
+                    m._FIELDSET();
                     if (forid != null)
                     {
                         using (var dc = ac.NewDbContext())
                         {
-                            if (dc.Query1("SELECT id, name, wx FROM users WHERE id = @1", p => p.Set(forid)))
+                            if (dc.Query1("SELECT wx, tel, name FROM users WHERE tel = @1", p => p.Set(forid)))
                             {
-                                string id;
-                                string name;
-                                string wx;
-                                dc.Let(out id).Let(out name).Let(out wx);
-                                m.FIELDSET_("确认并选择以下用户");
-                                m.RADIO("id_wx_name", id, wx, name, false, id, name, null);
+                                dc.Let(out string wx).Let(out string tel).Let(out string name);
+                                m.FIELDSET_("设置经理");
+                                m.RADIO(nameof(wx_tel_name), wx, tel, name, false, null, tel, name);
                                 m._FIELDSET();
                             }
                         }
@@ -303,14 +245,47 @@ namespace Greatbone.Sample
             else // post
             {
                 var f = await ac.ReadAsync<Form>();
-                string id_wx_name = f[nameof(id_wx_name)];
-                var tri = id_wx_name.ToTriple<string, string, string>();
+                wx_tel_name = f[nameof(wx_tel_name)];
+                (string wx, string tel, string name) = wx_tel_name.ToTriple<string, string, string>();
                 using (var dc = ac.NewDbContext())
                 {
-                    dc.Execute(@"UPDATE shops SET mgrid = @1, mgrwx = @2, mgr = @3 WHERE id = @4;
-                        UPDATE users SET oprat = @4, opr = @5 WHERE wx = @2;", p => p.Set(tri.Item1).Set(tri.Item2).Set(tri.Item3).Set(shopid).Set(User.OPRMGR));
+                    dc.Execute(@"UPDATE shops SET mgrwx = @1, mgrtel = @2, mgrname = @3 WHERE id = @4; UPDATE users SET oprat = @4, opr = " + User.OPR_MGR + "  WHERE wx = @2;",
+                        p => p.Set(wx).Set(tel).Set(name).Set(shopid));
                 }
                 ac.GivePane(200);
+            }
+        }
+
+        [Ui("图片", Mode = UiMode.AnchorCrop)]
+        public new async Task icon(ActionContext ac)
+        {
+            short shopid = ac[this];
+            if (ac.GET)
+            {
+                using (var dc = ac.NewDbContext())
+                {
+                    if (dc.Query1("SELECT icon FROM shops WHERE id = @1", p => p.Set(shopid)))
+                    {
+                        ArraySegment<byte> byteas;
+                        dc.Let(out byteas);
+                        if (byteas.Count == 0) ac.Give(204); // no content 
+                        else
+                        {
+                            ac.Give(200, new StaticContent(byteas));
+                        }
+                    }
+                    else ac.Give(404); // not found           
+                }
+            }
+            else // post
+            {
+                var f = await ac.ReadAsync<Form>();
+                ArraySegment<byte> icon = f[nameof(icon)];
+                using (var dc = Service.NewDbContext())
+                {
+                    dc.Execute("UPDATE shops SET icon = @1 WHERE id = @2", p => p.Set(icon).Set(shopid));
+                }
+                ac.Give(200); // ok
             }
         }
     }

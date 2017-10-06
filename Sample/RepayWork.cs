@@ -15,7 +15,7 @@ namespace Greatbone.Sample
     }
 
     [Ui("结款")]
-    [User(User.OPRMGR)]
+    [User(User.OPR_MGR)]
     public class OprRepayWork : RepayWork<OprRepayVarWork>
     {
         public OprRepayWork(WorkContext wc) : base(wc)
@@ -43,7 +43,7 @@ namespace Greatbone.Sample
         }
     }
 
-    [Ui("当前结款")]
+    [Ui("结款")]
     public class AdmRepayWork : RepayWork<AdmRepayVarWork>
     {
         public AdmRepayWork(WorkContext wc) : base(wc)
@@ -54,9 +54,9 @@ namespace Greatbone.Sample
         {
             using (var dc = ac.NewDbContext())
             {
-                if (dc.Query("SELECT * FROM repays WHERE status = 0"))
+                if (dc.Query("SELECT * FROM repays ORDER BY status"))
                 {
-                    ac.GiveTablePage(200, dc.ToArray<Repay>(), null, null);
+                    ac.GiveTablePage(200, dc.ToArray<Repay>(), h => h.TH("名称").TH("金额"), (h, o) => h.TD(o.shopname).TD(o.total));
                 }
                 else
                 {
@@ -145,29 +145,6 @@ namespace Greatbone.Sample
                 }
             }
             ac.GiveRedirect();
-        }
-    }
-
-    [Ui("以往结款")]
-    public class AdmPastRepayWork : RepayWork<AdmRepayVarWork>
-    {
-        public AdmPastRepayWork(WorkContext wc) : base(wc)
-        {
-        }
-
-        public void @default(ActionContext ac, int page)
-        {
-            using (var dc = ac.NewDbContext())
-            {
-                if (dc.Query("SELECT * FROM repays WHERE status > 0 ORDER BY id DESC LIMIT 20 OFFSET @1", p => p.Set(page * 20)))
-                {
-                    ac.GiveTablePage(200, dc.ToArray<Repay>(), null, null);
-                }
-                else
-                {
-                    ac.GiveTablePage(200, (Repay[]) null, null, null);
-                }
-            }
         }
     }
 }

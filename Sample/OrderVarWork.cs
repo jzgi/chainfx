@@ -72,7 +72,7 @@ namespace Greatbone.Sample
                         prin.city = city;
                         prin.addr = addr;
                         prin.tel = tel;
-                        ac.SetTokenCookie(prin, 0xffff ^ User.CREDENTIAL);
+                        ac.SetTokenCookie(prin, -1 ^ User.CREDENTIAL);
                     }
                 }
                 ac.GivePane(200);

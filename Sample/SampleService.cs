@@ -71,12 +71,15 @@ namespace Greatbone.Sample
 
         public async Task<bool> AuthenticateAsync(ActionContext ac, bool e)
         {
+            // if principal already in cookie
             string token;
             if (ac.Cookies.TryGetValue("Token", out token))
             {
                 ac.Principal = Decrypt(token);
                 return true;
             }
+
+            // resolve principal thru OAuth2 or HTTP-basic
             User prin = null;
             string state = ac.Query[nameof(state)];
             if (WXAUTH.Equals(state)) // if weixin auth
@@ -86,8 +89,8 @@ namespace Greatbone.Sample
                 {
                     return false;
                 }
-                (string access_token, string openid) = await GetAccessorAsync(code);
-                if (access_token == null)
+                ( _, string openid) = await GetAccessorAsync(code);
+                if (openid == null)
                 {
                     return false;
                 }
@@ -96,7 +99,11 @@ namespace Greatbone.Sample
                 {
                     if (dc.Query1("SELECT * FROM users WHERE wx = @1", p => p.Set(openid)))
                     {
-                        prin = dc.ToObject<User>(0xffff ^ User.CREDENTIAL);
+                        prin = dc.ToObject<User>(-1 ^ User.CREDENTIAL);
+                    }
+                    else
+                    {
+                        prin = new User {wx = openid}; // create a minimal principal object
                     }
                 }
             }
@@ -112,13 +119,13 @@ namespace Greatbone.Sample
                 byte[] bytes = Convert.FromBase64String(h_auth.Substring(6));
                 string orig = Encoding.ASCII.GetString(bytes);
                 int colon = orig.IndexOf(':');
-                string id = orig.Substring(0, colon);
+                string tel = orig.Substring(0, colon);
                 string credential = StrUtility.MD5(orig);
                 using (var dc = NewDbContext())
                 {
-                    if (dc.Query1("SELECT * FROM users WHERE id = @1", p => p.Set(id)))
+                    if (dc.Query1("SELECT * FROM users WHERE tel = @1", p => p.Set(tel)))
                     {
-                        prin = dc.ToObject<User>(0xffff);
+                        prin = dc.ToObject<User>();
                     }
                 }
                 // validate
@@ -128,11 +135,12 @@ namespace Greatbone.Sample
                 }
             }
 
+            // setup principal and cookie
             if (prin != null)
             {
                 // set token success
                 ac.Principal = prin;
-                ac.SetTokenCookie(prin, 0xffff ^ User.CREDENTIAL);
+                ac.SetTokenCookie(prin, -1 ^ User.CREDENTIAL);
             }
             return true;
         }

@@ -39,7 +39,7 @@ namespace Greatbone.Core
         public string Token { get; internal set; }
 
         // levels of keys along the URI path
-        Segment[] chain;
+        Node[] chain;
 
         int level; // actual number of segments
 
@@ -47,36 +47,36 @@ namespace Greatbone.Core
         {
             if (chain == null)
             {
-                chain = new Segment[8];
+                chain = new Node[8];
             }
-            chain[level++] = new Segment(key, label, work);
+            chain[level++] = new Node(key, label, work);
         }
 
-        public Segment this[int pos] => pos < 0 ? chain[level + pos - 1] : chain[pos];
+        public Node this[int pos] => pos < 0 ? chain[level + pos - 1] : chain[pos];
 
-        public Segment this[Type workType]
+        public Node this[Type workType]
         {
             get
             {
                 for (int i = 0; i < level; i++)
                 {
-                    Segment seg = chain[i];
-                    if (seg.Work.IsInstanceOf(workType)) return seg;
+                    Node node = chain[i];
+                    if (node.Work.IsInstanceOf(workType)) return node;
                 }
-                return default(Segment);
+                return default(Node);
             }
         }
 
-        public Segment this[Work work]
+        public Node this[Work work]
         {
             get
             {
                 for (int i = 0; i < level; i++)
                 {
-                    Segment seg = chain[i];
-                    if (seg.Work == work) return seg;
+                    Node node = chain[i];
+                    if (node.Work == work) return node;
                 }
-                return default(Segment);
+                return default(Node);
             }
         }
 

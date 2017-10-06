@@ -11,16 +11,16 @@ namespace Greatbone.Sample
 
         public const int
             WX = 1,
-            CREATTED = 2,
-            CREDENTIAL = 0x0010,
-            PERM = 0x0100;
+            CREDENTIAL = 2,
+            PERM = 4;
 
-        public const short OPRBASE = 1, OPRMGR = 3;
+        public const short OPR_ = 1, OPR_MEM = 3, OPR_MGR = 7;
 
         public static readonly Map<short, string> OPR = new Map<short, string>
         {
-            [OPRBASE] = "日常",
-            [OPRMGR] = "经理",
+            [OPR_] = "基本",
+            [OPR_MEM] = "成员",
+            [OPR_MGR] = "经理",
         };
 
         internal string wx; // wexin openid

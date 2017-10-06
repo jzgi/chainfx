@@ -2,7 +2,7 @@ using Greatbone.Core;
 
 namespace Greatbone.Sample
 {
-    public abstract class LessonWork<V> : Work where V : ChatVarWork
+    public abstract class LessonWork<V> : Work where V : LessonVarWork
     {
         protected LessonWork(WorkContext wc) : base(wc)
         {
@@ -10,12 +10,12 @@ namespace Greatbone.Sample
     }
 
     [Ui("客服")]
-    [User(User.OPRBASE)]
-    public class AdmChatWork : ChatWork<OprChatVarWork>
+    [User(User.OPR_)]
+    public class AdmLessonWork : LessonWork<AdmLessonVarWork>
     {
-        public AdmChatWork(WorkContext wc) : base(wc)
+        public AdmLessonWork(WorkContext wc) : base(wc)
         {
-            CreateVar<OprChatVarWork, string>((prin) => ((Chat) prin).wx);
+            CreateVar<AdmLessonVarWork, string>((obj) => ((Lesson) obj).id);
         }
 
         public void @default(ActionContext ac)
@@ -25,11 +25,11 @@ namespace Greatbone.Sample
             {
                 if (dc.Query("SELECT * FROM chats WHERE shopid = @1", p => p.Set(shopid)))
                 {
-                    ac.GiveGridPage(200, dc.ToArray<Chat>(), (h, o) => { });
+                    ac.GiveGridPage(200, dc.ToArray<Lesson>(), (h, o) => { });
                 }
                 else
                 {
-                    ac.GiveGridPage(200, (Chat[]) null, null);
+                    ac.GiveGridPage(200, (Lesson[]) null, null);
                 }
             }
         }

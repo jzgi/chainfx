@@ -40,7 +40,7 @@ namespace Greatbone.Sample
         }
     }
 
-    [Ui("举报管理")]
+    [Ui("投诉")]
     [User(adm: true)]
     public class AdmKickWork : KickWork<AdmKickVarWork>
     {
@@ -50,18 +50,16 @@ namespace Greatbone.Sample
 
         public void @default(ActionContext ac, int page)
         {
-            string shopid = ac[typeof(ShopVarWork)];
             using (var dc = ac.NewDbContext())
             {
                 const int proj = 0x00ff;
-                dc.Sql("SELECT ").columnlst(Item.Empty, proj)._("FROM kicks ORDER BY id DESC LIMIT 20 OFFSET @1");
-                if (dc.Query(p => p.Set(page * 20)))
+                if (dc.Query("SELECT * FROM kicks ORDER BY id DESC LIMIT 20 OFFSET @1", p => p.Set(page * 20)))
                 {
-                    ac.GiveTablePage(200, dc.ToArray<Item>(), h => { h.TH(""); }, (h, o) => { });
+                    ac.GiveTablePage(200, dc.ToArray<Kick>(), h => { h.TH("姓名"); }, (h, o) => h.TD(o.name));
                 }
                 else
                 {
-                    ac.GiveTablePage(200, (Item[]) null, null, null);
+                    ac.GiveTablePage(200, (Kick[]) null, null, null);
                 }
             }
         }

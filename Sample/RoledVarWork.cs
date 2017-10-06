@@ -17,6 +17,11 @@ namespace Greatbone.Sample
 
         const string PASS = "0z4R4pX7";
 
+        public void @default(ActionContext ac)
+        {
+            ac.GiveGridPage(200, (Order[]) null, (h, o) => { });
+        }
+
         [Ui("后台操作设置", "后台操作帐号", Mode = UiMode.AnchorShow)]
         public async Task loginf(ActionContext ac)
         {
@@ -55,7 +60,7 @@ namespace Greatbone.Sample
                         dc.Execute("INSERT INTO users (wx, id, name, credential, city) VALUES (@1, @2, @3, @4, @5) ON CONFLICT (wx) DO UPDATE SET id = @2, name = @3, credential = @4, city = @5", p => p.Set(wx).Set(prin.tel).Set(prin.name).Set(credential).Set(prin.city));
                     }
                 }
-                ac.SetTokenCookie(prin, 0xffff ^ User.CREDENTIAL);
+                ac.SetTokenCookie(prin, -1 ^ User.CREDENTIAL);
                 ac.GivePane(200); // close dialog
             }
         }
@@ -83,7 +88,7 @@ namespace Greatbone.Sample
 
 
     [Ui("常规")]
-    [User(User.OPRBASE)]
+    [User(User.OPR_)]
     public class OprVarWork : Work
     {
         public OprVarWork(WorkContext wc) : base(wc)
@@ -104,7 +109,7 @@ namespace Greatbone.Sample
             ac.GiveFrame(200, false, 60 * 5);
         }
 
-        [Ui("值班主管", Mode = UiMode.AnchorShow)]
+        [Ui("值班机", Mode = UiMode.AnchorShow)]
         public async Task lead(ActionContext ac)
         {
             short shopid = ac[this];
@@ -119,11 +124,13 @@ namespace Greatbone.Sample
                         ac.GivePane(200, m =>
                         {
                             m.FORM_();
-                            m.FIELDSET_("当前值班主管");
+                            m.FIELDSET_("当前值班机");
                             m.COL("电话", oprtel);
                             m.COL("姓名", oprname);
                             m._FIELDSET();
-                            m.CHECKBOX(nameof(me), me, "把我设为值班主管");
+                            m.FIELDSET_("设为值班机");
+                            m.CHECKBOX(nameof(me), me, "将本机设为值班机，接收客户电话和微信通知");
+                            m._FIELDSET();
                             m._FORM();
                         });
                     }
@@ -206,6 +213,21 @@ namespace Greatbone.Sample
                 m._FIELDSET();
                 m._FORM();
             });
+        }
+
+        public void poll(ActionContext ac)
+        {
+            short shopid = ac[this];
+
+            using (var dc = ac.NewDbContext())
+            {
+                int c = (int) dc.Scalar("SELECT count(*) FROM orders WHERE shopid = @1 AND status = 1", p => p.Set(shopid));
+                StrContent str = new StrContent(true, false);
+                str.Add("本作坊有");
+                str.Add(c);
+                str.Add("个未处理订单");
+                ac.Give(200, str);
+            }
         }
     }
 }

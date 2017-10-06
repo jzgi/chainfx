@@ -28,15 +28,9 @@ namespace Greatbone.Sample
 
             Create<AdmShopWork>("shop");
 
-            Create<AdmItemWork>("item");
-
             Create<AdmKickWork>("kick");
 
-            Create<AdmUserWork>("user"); // users management
-
-            Create<AdmRepayWork>("repay"); // repays present
-
-            Create<AdmPastRepayWork>("pastrepay"); // repays past
+            Create<AdmRepayWork>("repay"); 
         }
 
         public void @default(ActionContext ac)

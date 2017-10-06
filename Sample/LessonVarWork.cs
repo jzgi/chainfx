@@ -1,4 +1,3 @@
-using System;
 using System.Threading.Tasks;
 using Greatbone.Core;
 
@@ -12,9 +11,9 @@ namespace Greatbone.Sample
         }
     }
 
-    public class AdmChatVarWork : ChatVarWork
+    public class AdmLessonVarWork : LessonVarWork
     {
-        public AdmChatVarWork(WorkContext wc) : base(wc)
+        public AdmLessonVarWork(WorkContext wc) : base(wc)
         {
         }
 
@@ -22,7 +21,7 @@ namespace Greatbone.Sample
         public async Task reply(ActionContext ac)
         {
             string shopid = ac[typeof(ShopVarWork)];
-            User prin = (User)ac.Principal;
+            User prin = (User) ac.Principal;
             string wx = ac[this];
 
             string text = null;
@@ -39,17 +38,6 @@ namespace Greatbone.Sample
             {
                 var f = await ac.ReadAsync<Form>();
                 text = f[nameof(text)];
-                ChatMsg[] msgs;
-                using (var dc = ac.NewDbContext())
-                {
-                    if (dc.Query1("SELECT msgs FROM chats WHERE shopid = @1 AND wx = @2", p => p.Set(shopid).Set(wx)))
-                    {
-                        dc.Let(out msgs);
-                        msgs = msgs.AddOf(new ChatMsg { name = prin.name, text = text });
-                        dc.Execute("UPDATE chats SET msgs = @1 WHERE shopid = @2 AND wx = @3", p => p.Set(msgs).Set(shopid).Set(wx));
-                    }
-                }
-                await WeiXinUtility.PostSendAsync(wx, "【商家消息】" + prin.name + "：" + text + "（http://shop.144000.tv/pub/" + shopid + "/）");
                 ac.GivePane(200);
             }
         }

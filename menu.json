@@ -26,6 +26,12 @@
                     "name": "我的投诉",
                     "url": "http://144000.tv/my//kick/",
                     "sub_button": []
+                },
+                {
+                    "type": "view",
+                    "name": "设置",
+                    "url": "http://144000.tv/my//",
+                    "sub_button": []
                 }
             ]
         },
@@ -41,6 +47,12 @@
                 {
                     "type": "view",
                     "name": "健康宝典",
+                    "url": "http://144000.tv/opr//",
+                    "sub_button": []
+                },
+                {
+                    "type": "view",
+                    "name": "（内部功能）",
                     "url": "http://144000.tv/opr//",
                     "sub_button": []
                 }

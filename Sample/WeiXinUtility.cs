@@ -90,7 +90,7 @@ namespace Greatbone.Sample
         public static void GiveRedirectWeiXinAuthorize(this ActionContext ac)
         {
             string redirect_url = WebUtility.UrlEncode(ADDR + ac.Uri);
-            ac.SetHeader("Location", "https://open.weixin.qq.com/connect/oauth2/authorize?appid=" + appid + "&redirect_uri=" + redirect_url + "&response_type=code&scope=snsapi_userinfo&state=" + WXAUTH + "#wechat_redirect");
+            ac.SetHeader("Location", "https://open.weixin.qq.com/connect/oauth2/authorize?appid=" + appid + "&redirect_uri=" + redirect_url + "&response_type=code&scope=snsapi_base&state=" + WXAUTH + "#wechat_redirect");
             ac.Give(303);
         }
 
