@@ -75,7 +75,7 @@ namespace Greatbone.Sample
             }
             else // post
             {
-                const int proj = -1 ^ Item.UNMOD;
+                const short proj = -1 ^ Item.UNMOD;
                 var o = await ac.ReadObjectAsync<Item>(proj);
                 using (var dc = ac.NewDbContext())
                 {

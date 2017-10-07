@@ -33,7 +33,7 @@ namespace Greatbone.Sample
         internal string oprname;
         internal short status;
 
-        public void Read(IDataInput i, int proj = 0x00ff)
+        public void Read(IDataInput i, short proj = 0x00ff)
         {
             if ((proj & ID) == ID)
             {
@@ -60,7 +60,7 @@ namespace Greatbone.Sample
             }
         }
 
-        public void Write<R>(IDataOutput<R> o, int proj = 0x00ff) where R : IDataOutput<R>
+        public void Write<R>(IDataOutput<R> o, short proj = 0x00ff) where R : IDataOutput<R>
         {
             if ((proj & ID) == ID)
             {

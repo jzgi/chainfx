@@ -26,11 +26,10 @@ namespace Greatbone.Sample
         internal short min;
         internal short step;
         internal short max;
-        internal string[] opts;
-        internal string[] sets;
+        internal string[] customs;
         internal short status;
 
-        public void Read(IDataInput i, int proj = 0x00ff)
+        public void Read(IDataInput i, short proj = 0x00ff)
         {
             if ((proj & UNMOD) == UNMOD)
             {
@@ -43,12 +42,11 @@ namespace Greatbone.Sample
             i.Get(nameof(min), ref min);
             i.Get(nameof(step), ref step);
             i.Get(nameof(max), ref max);
-            i.Get(nameof(opts), ref opts);
-            i.Get(nameof(sets), ref sets);
+            i.Get(nameof(customs), ref customs);
             i.Get(nameof(status), ref status);
         }
 
-        public void Write<R>(IDataOutput<R> o, int proj = 0x00ff) where R : IDataOutput<R>
+        public void Write<R>(IDataOutput<R> o, short proj = 0x00ff) where R : IDataOutput<R>
         {
             if ((proj & UNMOD) == UNMOD)
             {
@@ -61,16 +59,8 @@ namespace Greatbone.Sample
             o.Put(nameof(min), min);
             o.Put(nameof(step), step);
             o.Put(nameof(max), max);
-            o.Put(nameof(opts), opts);
-            o.Put(nameof(sets), sets);
+            o.Put(nameof(customs), customs);
             o.Put(nameof(status), status);
         }
-    }
-
-    public struct Opt
-    {
-        internal string name;
-
-        internal short grams;
     }
 }

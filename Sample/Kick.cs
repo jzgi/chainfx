@@ -30,7 +30,7 @@ namespace Greatbone.Sample
         internal DateTime committed;
         internal short status;
 
-        public void Read(IDataInput i, int proj = 0x00ff)
+        public void Read(IDataInput i, short proj = 0x00ff)
         {
             i.Get(nameof(id), ref id);
             i.Get(nameof(wx), ref wx);
@@ -43,7 +43,7 @@ namespace Greatbone.Sample
             i.Get(nameof(status), ref status);
         }
 
-        public void Write<R>(IDataOutput<R> o, int proj = 0x00ff) where R : IDataOutput<R>
+        public void Write<R>(IDataOutput<R> o, short proj = 0x00ff) where R : IDataOutput<R>
         {
             o.Put(nameof(id), id);
             o.Put(nameof(wx), wx);

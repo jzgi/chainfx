@@ -565,7 +565,7 @@ namespace Greatbone.Core
             return (ActionContext) context;
         }
 
-        internal void SetTokenCookie(ActionContext ac, P prin, int proj, int maxage = 0)
+        internal void SetTokenCookie(ActionContext ac, P prin, short proj, int maxage = 0)
         {
             StringBuilder sb = new StringBuilder("Token=");
             string token = Encrypt(prin, proj);
@@ -595,7 +595,7 @@ namespace Greatbone.Core
             ac.SetHeader("Set-Cookie", sb.ToString());
         }
 
-        public string Encrypt(P prin, int proj)
+        public string Encrypt(P prin, short proj)
         {
             JsonContent cont = new JsonContent(true, 4096);
             cont.Put(null, prin, proj);
@@ -646,7 +646,7 @@ namespace Greatbone.Core
             {
                 JObj jo = (JObj) new JsonParse(str.ToString()).Parse();
                 P prin = new P();
-                prin.Read(jo, 0xffff);
+                prin.Read(jo, -1);
                 return prin;
             }
             catch

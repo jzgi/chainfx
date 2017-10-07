@@ -4,7 +4,6 @@ using Greatbone.Core;
 
 namespace Greatbone.Sample
 {
-    ///
     public abstract class OrderVarWork : Work
     {
         protected OrderVarWork(WorkContext wc) : base(wc)
@@ -12,19 +11,16 @@ namespace Greatbone.Sample
         }
     }
 
-
     public class MyPreVarWork : OrderVarWork
     {
         public MyPreVarWork(WorkContext wc) : base(wc)
         {
         }
 
-        public bool NoAddr(object obj) => string.IsNullOrEmpty(((Order) obj).addr);
-
         [Ui("填写收货地址", Mode = UiMode.ButtonShow)]
         public async Task addr(ActionContext ac)
         {
-            string wx = ac[typeof(UserVarWork)];
+            string wx = ac[-2];
             long id = ac[this];
             string buyer;
             string city;
@@ -80,7 +76,7 @@ namespace Greatbone.Sample
         }
 
         [Ui("附加说明", Mode = UiMode.ButtonShow)]
-        public async Task note(ActionContext ac)
+        public async Task edit(ActionContext ac)
         {
             string wx = ac[typeof(UserVarWork)];
             long id = ac[this];
@@ -118,7 +114,7 @@ namespace Greatbone.Sample
             }
         }
 
-        [Ui("付款", "确定要通过微信付款吗?一经确认，该单金额将不能作更改。", Mode = UiMode.AnchorScript, Bold = true)]
+        [Ui("付款", "确定要通过微信付款吗?", Mode = UiMode.AnchorScript, Bold = true)]
         public async Task prepay(ActionContext ac)
         {
             string wx = ac[typeof(UserVarWork)];

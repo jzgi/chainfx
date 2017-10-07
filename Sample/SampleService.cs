@@ -51,7 +51,7 @@ namespace Greatbone.Sample
             {
                 if (dc.Query("SELECT * FROM lessons"))
                 {
-                    lessons = dc.ToArray<Lesson>(0xffff ^ User.CREDENTIAL);
+                    lessons = dc.ToArray<Lesson>(-1 ^ User.CREDENTIAL);
                 }
             }
             ac.GivePage(200, m =>

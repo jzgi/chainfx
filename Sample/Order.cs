@@ -13,10 +13,7 @@ namespace Greatbone.Sample
         public const int
             ID = 0x0001,
             BASIC = 0x0002,
-            BASIC_WX = 0x006,
-            BASIC_DETAIL = 0x000A,
-            CASH = 0x0100,
-            FLOW = 0x0200;
+            LATER = 0x0200;
 
         // status
         public const short CREATED = 0, ACCEPTED = 1, ABORTED = 3, SHIPPED = 5, RECKONED = 7;
@@ -39,11 +36,11 @@ namespace Greatbone.Sample
         internal string name; // customer name
         internal string tel;
         internal string city;
+        internal string area;
         internal string addr; // address
-        internal OrderItem[] items;
+        internal OrderLine[] lines;
         internal decimal total; // receivable
         internal DateTime created; // time created
-
         internal decimal cash; // amount recieved
         internal DateTime accepted; // when cash received or forcibly accepted
         internal string abortly; // reason
@@ -52,36 +49,24 @@ namespace Greatbone.Sample
         internal string note;
         internal short status;
 
-        public void Read(IDataInput i, int proj = 0x00ff)
+        public void Read(IDataInput i, short proj = 0x00ff)
         {
             if ((proj & ID) == ID)
             {
                 i.Get(nameof(id), ref id);
             }
-            if ((proj & BASIC) == BASIC)
-            {
-                i.Get(nameof(shopid), ref shopid);
-                i.Get(nameof(shopname), ref shopname);
-                i.Get(nameof(name), ref name);
-                if ((proj & BASIC_WX) == BASIC_WX)
-                {
-                    i.Get(nameof(wx), ref wx);
-                }
-                i.Get(nameof(city), ref city);
-                i.Get(nameof(addr), ref addr);
-                i.Get(nameof(tel), ref tel);
-                if ((proj & BASIC_DETAIL) == BASIC_DETAIL)
-                {
-                    i.Get(nameof(items), ref items);
-                }
-                i.Get(nameof(total), ref total);
-                i.Get(nameof(created), ref created);
-            }
-            if ((proj & CASH) == CASH)
-            {
-                i.Get(nameof(cash), ref cash);
-            }
-            if ((proj & FLOW) == FLOW)
+            i.Get(nameof(shopid), ref shopid);
+            i.Get(nameof(shopname), ref shopname);
+            i.Get(nameof(name), ref name);
+            i.Get(nameof(wx), ref wx);
+            i.Get(nameof(city), ref city);
+            i.Get(nameof(addr), ref addr);
+            i.Get(nameof(tel), ref tel);
+            i.Get(nameof(lines), ref lines);
+            i.Get(nameof(total), ref total);
+            i.Get(nameof(created), ref created);
+            i.Get(nameof(cash), ref cash);
+            if ((proj & LATER) == LATER)
             {
                 i.Get(nameof(accepted), ref accepted);
                 i.Get(nameof(abortly), ref abortly);
@@ -92,37 +77,25 @@ namespace Greatbone.Sample
             i.Get(nameof(status), ref status);
         }
 
-        public void Write<R>(IDataOutput<R> o, int proj = 0x00ff) where R : IDataOutput<R>
+        public void Write<R>(IDataOutput<R> o, short proj = 0x00ff) where R : IDataOutput<R>
         {
             if ((proj & ID) == ID)
             {
                 o.Put(nameof(id), id);
             }
-            if ((proj & BASIC) == BASIC)
-            {
-                o.Put(nameof(created), created);
-                o.Put(nameof(shopname), shopname);
-                o.Put(nameof(shopid), shopid);
-                o.Put(nameof(name), name);
-                if ((proj & BASIC_WX) == BASIC_WX)
-                {
-                    o.Put(nameof(wx), wx);
-                }
-                o.Put(nameof(city), city);
-                o.Put(nameof(addr), addr);
-                o.Put(nameof(tel), tel);
-                if ((proj & BASIC_DETAIL) == BASIC_DETAIL)
-                {
-                    o.Put(nameof(items), items);
-                }
-                o.Put(nameof(note), note);
-                o.Put(nameof(total), total);
-            }
-            if ((proj & CASH) == CASH)
-            {
-                o.Put(nameof(cash), cash);
-            }
-            if ((proj & FLOW) == FLOW)
+            o.Put(nameof(created), created);
+            o.Put(nameof(shopname), shopname);
+            o.Put(nameof(shopid), shopid);
+            o.Put(nameof(name), name);
+            o.Put(nameof(wx), wx);
+            o.Put(nameof(city), city);
+            o.Put(nameof(addr), addr);
+            o.Put(nameof(tel), tel);
+            o.Put(nameof(lines), lines);
+            o.Put(nameof(note), note);
+            o.Put(nameof(total), total);
+            o.Put(nameof(cash), cash);
+            if ((proj & LATER) == LATER)
             {
                 o.Put(nameof(accepted), accepted);
                 o.Put(nameof(abortly), abortly);
@@ -134,29 +107,29 @@ namespace Greatbone.Sample
 
         public void AddItem(string item, short qty, string unit, decimal price)
         {
-            if (items == null)
+            if (lines == null)
             {
-                items = new[] {new OrderItem() {name = item, qty = qty, unit = unit, price = price}};
+                lines = new[] {new OrderLine() {name = item, qty = qty, unit = unit, price = price}};
             }
-            var orderln = items.Find(o => o.name.Equals(item));
+            var orderln = lines.Find(o => o.name.Equals(item));
             if (orderln != null)
             {
                 orderln.qty += qty;
             }
             else
             {
-                items = items.AddOf(new OrderItem() {name = item, qty = qty, unit = unit, price = price});
+                lines = lines.AddOf(new OrderLine() {name = item, qty = qty, unit = unit, price = price});
             }
         }
 
         public void Sum()
         {
-            if (items != null)
+            if (lines != null)
             {
                 decimal sum = 0;
-                for (int i = 0; i < items.Length; i++)
+                for (int i = 0; i < lines.Length; i++)
                 {
-                    sum += items[i].qty * items[i].price;
+                    sum += lines[i].qty * lines[i].price;
                 }
                 total = sum;
             }
@@ -164,7 +137,7 @@ namespace Greatbone.Sample
 
         public void SetLineQty(string name, short qty)
         {
-            var ln = items.Find(x => x.name == name);
+            var ln = lines.Find(x => x.name == name);
             if (ln != null)
             {
                 ln.qty = qty;
@@ -173,11 +146,11 @@ namespace Greatbone.Sample
 
         public void RemoveDetail(string name)
         {
-            items = items.RemovedOf(x => x.name == name);
+            lines = lines.RemovedOf(x => x.name == name);
         }
     }
 
-    public class OrderItem : IData
+    public class OrderLine : IData
     {
         internal string name;
         internal short qty;
@@ -186,7 +159,7 @@ namespace Greatbone.Sample
 
         public decimal Subtotal => price * qty;
 
-        public void Read(IDataInput i, int proj = 0x00ff)
+        public void Read(IDataInput i, short proj = 0x00ff)
         {
             i.Get(nameof(name), ref name);
             i.Get(nameof(qty), ref qty);
@@ -194,7 +167,7 @@ namespace Greatbone.Sample
             i.Get(nameof(price), ref price);
         }
 
-        public void Write<R>(IDataOutput<R> o, int proj = 0x00ff) where R : IDataOutput<R>
+        public void Write<R>(IDataOutput<R> o, short proj = 0x00ff) where R : IDataOutput<R>
         {
             o.Put(nameof(name), name);
             o.Put(nameof(qty), qty);

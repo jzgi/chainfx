@@ -370,12 +370,12 @@ namespace Greatbone.Core
             return this;
         }
 
-        public XmlContent Put(string name, IData v, int proj = 0x00ff)
+        public XmlContent Put(string name, IData v, short proj = 0x00ff)
         {
             return this;
         }
 
-        public XmlContent Put<D>(string name, D[] v, int proj = 0x00ff) where D : IData
+        public XmlContent Put<D>(string name, D[] v, short proj = 0x00ff) where D : IData
         {
             return this;
         }

@@ -158,12 +158,12 @@ namespace Greatbone.Core
             throw new NotImplementedException();
         }
 
-        public bool Get<D>(string name, ref D v, int proj = 0x00ff) where D : IData, new()
+        public bool Get<D>(string name, ref D v, short proj = 0x00ff) where D : IData, new()
         {
             throw new NotImplementedException();
         }
 
-        public bool Get<D>(string name, ref D[] v, int proj = 0x00ff) where D : IData, new()
+        public bool Get<D>(string name, ref D[] v, short proj = 0x00ff) where D : IData, new()
         {
             throw new NotImplementedException();
         }
@@ -242,12 +242,12 @@ namespace Greatbone.Core
             throw new NotImplementedException();
         }
 
-        public IDataInput Let<D>(out D v, int proj = 0x00ff) where D : IData, new()
+        public IDataInput Let<D>(out D v, short proj = 0x00ff) where D : IData, new()
         {
             throw new NotImplementedException();
         }
 
-        public IDataInput Let<D>(out D[] v, int proj = 0x00ff) where D : IData, new()
+        public IDataInput Let<D>(out D[] v, short proj = 0x00ff) where D : IData, new()
         {
             throw new NotImplementedException();
         }
@@ -257,12 +257,12 @@ namespace Greatbone.Core
         // ENTIRITY
         //
 
-        public D ToObject<D>(int proj = 0x00ff) where D : IData, new()
+        public D ToObject<D>(short proj = 0x00ff) where D : IData, new()
         {
             throw new NotImplementedException();
         }
 
-        public D[] ToArray<D>(int proj = 0x00ff) where D : IData, new()
+        public D[] ToArray<D>(short proj = 0x00ff) where D : IData, new()
         {
             throw new NotImplementedException();
         }

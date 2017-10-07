@@ -43,7 +43,7 @@ namespace Greatbone.Sample
             short shopid = ac[this];
             using (var dc = ac.NewDbContext())
             {
-                const int proj = Shop.ID | Shop.INITIAL;
+                const short proj = Shop.ID | Shop.INITIAL;
                 dc.Sql("SELECT ").columnlst(Shop.Empty, proj)._("FROM shops WHERE id = @1");
                 if (dc.Query1(p => p.Set(shopid)))
                 {
@@ -81,7 +81,7 @@ namespace Greatbone.Sample
                         m.T("<div class=\"grid-x grid-padding-x small-up-1 medium-up-2\">");
                         for (int i = 0; i < items.Length; i++)
                         {
-                            m.T("<div =\"cell\">");
+                            m.T("<div class=\"cell\">");
                             var item = items[i];
                             m.T("<form>");
 
@@ -119,7 +119,7 @@ namespace Greatbone.Sample
                             m.T("<div class=\"row\">");
 
                             m.T("<div class=\"small-5 cell\">");
-                            m.T("<button type=\"button\" class=\"button primary\" formaction=\"/my//pre/add\" onclick=\"dialog(this, 8);\">加入购物车</button>");
+                            m.T("<button type=\"button\" class=\"button primary\" formaction=\"/my//pre/add\" onclick=\"dialog(this, 4);\">加入购物车</button>");
                             m.T("</div>");
 
                             m.T("</div>"); // row
@@ -151,7 +151,7 @@ namespace Greatbone.Sample
         public async Task edit(ActionContext ac)
         {
             short id = ac[this];
-            const int proj = Shop.INITIAL;
+            const short proj = Shop.INITIAL;
             if (ac.GET)
             {
                 using (var dc = ac.NewDbContext())

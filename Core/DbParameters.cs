@@ -1,5 +1,4 @@
 ﻿using System;
-using System.Collections.Generic;
 using Npgsql;
 using NpgsqlTypes;
 
@@ -283,7 +282,7 @@ namespace Greatbone.Core
             throw new NotImplementedException();
         }
 
-        public DbParameters Put(string name, IData v, int proj = 0x00ff)
+        public DbParameters Put(string name, IData v, short proj = 0x00ff)
         {
             if (name == null)
             {
@@ -303,7 +302,7 @@ namespace Greatbone.Core
             return this;
         }
 
-        public DbParameters Put<D>(string name, D[] v, int proj = 0x00ff) where D : IData
+        public DbParameters Put<D>(string name, D[] v, short proj = 0x00ff) where D : IData
         {
             if (name == null)
             {
@@ -410,12 +409,12 @@ namespace Greatbone.Core
             return Put(null, v);
         }
 
-        public DbParameters Set(IData v, int proj = 0x00ff)
+        public DbParameters Set(IData v, short proj = 0x00ff)
         {
             return Put(null, v);
         }
 
-        public DbParameters Set<D>(D[] v, int proj = 0x00ff) where D : IData
+        public DbParameters Set<D>(D[] v, short proj = 0x00ff) where D : IData
         {
             return Put(null, v);
         }

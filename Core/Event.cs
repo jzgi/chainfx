@@ -12,7 +12,7 @@ namespace Greatbone.Core
         internal ArraySegment<byte> body;
         internal DateTime time;
 
-        public void Read(IDataInput i, int proj = 0x00ff)
+        public void Read(IDataInput i, short proj = 0x00ff)
         {
             i.Get(nameof(id), ref id);
             i.Get(nameof(name), ref name);
@@ -23,7 +23,7 @@ namespace Greatbone.Core
             i.Get(nameof(time), ref time);
         }
 
-        public void Write<R>(IDataOutput<R> o, int proj = 0x00ff) where R : IDataOutput<R>
+        public void Write<R>(IDataOutput<R> o, short proj = 0x00ff) where R : IDataOutput<R>
         {
             o.Put(nameof(id), id);
             o.Put(nameof(name), name);

@@ -5,8 +5,8 @@
     /// </summary>
     public interface IData
     {
-        void Read(IDataInput i, int proj = 0x00ff);
+        void Read(IDataInput i, short proj = 0x00ff);
 
-        void Write<R>(IDataOutput<R> o, int proj = 0x00ff) where R : IDataOutput<R>;
+        void Write<R>(IDataOutput<R> o, short proj = 0x00ff) where R : IDataOutput<R>;
     }
 }

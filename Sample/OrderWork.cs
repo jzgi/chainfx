@@ -62,15 +62,17 @@ namespace Greatbone.Sample
                         var item = dc.ToObject<Item>();
                         h.FORM_();
 
+                        h.T("<img src=\"/shop/").T(shopid).T("/").T(item.name).T("/icon\">");
+
+                        h.T("<div>").T(item.name).T("</div>");
+
+                        h.T("<div>&yen;").T(item.price).T("</div>");
+
                         h.NUMBER(nameof(item.max), item.min, min: item.min, step: item.step);
 
-                        if (item.opts != null)
+                        if (item.customs != null)
                         {
-                            h.RADIOGROUP(nameof(opt), opt, item.opts,"选择搭配");
-                        }
-                        if (item.sets != null)
-                        {
-                            h.CHECKBOXGROUP(nameof(opt), sets, item.sets,"定制要求");
+                            h.CHECKBOXGROUP(nameof(opt), sets, item.customs, "定制要求");
                         }
 
                         h._FORM();
@@ -92,10 +94,10 @@ namespace Greatbone.Sample
                 if (dc.Query1("SELECT id, detail, total FROM orders WHERE shopid = @1 AND wx = @2 AND status = 0", p => p.Set(shopid).Set(wx)))
                 {
                     var o = new Order();
-                    dc.Let(out o.id).Let(out o.items).Let(out o.total);
+                    dc.Let(out o.id).Let(out o.lines).Let(out o.total);
                     o.AddItem(name, qty, unit, price);
                     o.Sum();
-                    dc.Execute("UPDATE orders SET detail = @1, total = @2 WHERE id = @3", p => p.Set(o.items).Set(o.total).Set(o.id));
+                    dc.Execute("UPDATE orders SET detail = @1, total = @2 WHERE id = @3", p => p.Set(o.lines).Set(o.total).Set(o.id));
                 }
                 else
                 {
@@ -109,15 +111,15 @@ namespace Greatbone.Sample
                         tel = prin.tel,
                         city = prin.city,
                         addr = prin.addr,
-                        items = new[]
+                        lines = new[]
                         {
-                            new OrderItem {name = name, price = price, qty = qty, unit = unit}
+                            new OrderLine {name = name, price = price, qty = qty, unit = unit}
                         },
                         created = DateTime.Now
                     };
                     o.Sum();
 
-                    const int proj = 0x00ff ^ Order.ID;
+                    const short proj = 0x00ff ^ Order.ID;
 
                     dc.Sql("INSERT INTO orders ")._(o, proj)._VALUES_(o, proj);
                     dc.Execute(p => o.Write(p, proj));
@@ -160,11 +162,10 @@ namespace Greatbone.Sample
             string wx = ac[-1];
             using (var dc = ac.NewDbContext())
             {
-                const int proj = Order.ID | Order.BASIC_DETAIL | Order.CASH | Order.FLOW;
-                dc.Sql("SELECT ").columnlst(Order.Empty, proj)._("FROM orders WHERE wx = @1 AND status > 0 ORDER BY id DESC");
+                dc.Sql("SELECT ").columnlst(Order.Empty)._("FROM orders WHERE wx = @1 AND status > 0 ORDER BY id DESC");
                 if (dc.Query(p => p.Set(wx)))
                 {
-                    ac.GiveGridPage(200, dc.ToArray<Order>(proj), (h, o) =>
+                    ac.GiveGridPage(200, dc.ToArray<Order>(), (h, o) =>
                     {
                         h.COL("单号", o.id, 0);
                         h.COL("总价", o.total, 0);

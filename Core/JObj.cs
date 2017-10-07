@@ -250,7 +250,7 @@ namespace Greatbone.Core
             return false;
         }
 
-        public bool Get<D>(string name, ref D v, int proj = 0x00ff) where D : IData, new()
+        public bool Get<D>(string name, ref D v, short proj = 0x00ff) where D : IData, new()
         {
             JMbr mbr;
             if (TryGet(name, out mbr))
@@ -266,7 +266,7 @@ namespace Greatbone.Core
             return false;
         }
 
-        public bool Get<D>(string name, ref D[] v, int proj = 0x00ff) where D : IData, new()
+        public bool Get<D>(string name, ref D[] v, short proj = 0x00ff) where D : IData, new()
         {
             JMbr mbr;
             if (TryGet(name, out mbr))
@@ -359,25 +359,25 @@ namespace Greatbone.Core
             throw new NotImplementedException();
         }
 
-        public IDataInput Let<D>(out D v, int proj = 0x00ff) where D : IData, new()
+        public IDataInput Let<D>(out D v, short proj = 0x00ff) where D : IData, new()
         {
             throw new NotImplementedException();
         }
 
-        public IDataInput Let<D>(out D[] v, int proj = 0x00ff) where D : IData, new()
+        public IDataInput Let<D>(out D[] v, short proj = 0x00ff) where D : IData, new()
         {
             throw new NotImplementedException();
         }
 
 
-        public D ToObject<D>(int proj = 0x00ff) where D : IData, new()
+        public D ToObject<D>(short proj = 0x00ff) where D : IData, new()
         {
             D obj = new D();
             obj.Read(this, proj);
             return obj;
         }
 
-        public D[] ToArray<D>(int proj = 0x00ff) where D : IData, new()
+        public D[] ToArray<D>(short proj = 0x00ff) where D : IData, new()
         {
             throw new NotImplementedException();
         }

@@ -830,7 +830,7 @@ namespace Greatbone.Core
             return this;
         }
 
-        public HtmlContent ListView<D>(D[] arr, int proj = 0x00ff) where D : IData
+        public HtmlContent ListView<D>(D[] arr, short proj = 0x00ff) where D : IData
         {
             Add("<form id=\"listform\">");
 
@@ -2126,21 +2126,21 @@ namespace Greatbone.Core
         //
         // ISINK
         //
-        public HtmlContent JSON(IData obj, int proj = 0x00ff)
+        public HtmlContent JSON(IData obj, short proj = 0x00ff)
         {
             kind = JS;
             Put(null, obj, proj);
             return this;
         }
 
-        public HtmlContent JSON<D>(D[] arr, int proj = 0x00ff) where D : IData
+        public HtmlContent JSON<D>(D[] arr, short proj = 0x00ff) where D : IData
         {
             kind = JS;
             Put(null, arr, proj);
             return this;
         }
 
-        public HtmlContent JSON<K, D>(Map<K, D> map, int proj = 0x00ff) where D : IData
+        public HtmlContent JSON<K, D>(Map<K, D> map, short proj = 0x00ff) where D : IData
         {
             kind = JS;
             Put(null, map, proj);
@@ -2512,7 +2512,7 @@ namespace Greatbone.Core
             return this;
         }
 
-        public HtmlContent Put(string name, IData v, int proj = 0x00ff)
+        public HtmlContent Put(string name, IData v, short proj = 0x00ff)
         {
             switch (kind)
             {
@@ -2552,7 +2552,7 @@ namespace Greatbone.Core
             return this;
         }
 
-        public HtmlContent Put<D>(string name, D[] v, int proj = 0x00ff) where D : IData
+        public HtmlContent Put<D>(string name, D[] v, short proj = 0x00ff) where D : IData
         {
             switch (kind)
             {
@@ -2587,7 +2587,7 @@ namespace Greatbone.Core
             return this;
         }
 
-        public HtmlContent Put<K, D>(string name, Map<K, D> v, int proj = 0x00ff) where D : IData
+        public HtmlContent Put<K, D>(string name, Map<K, D> v, short proj = 0x00ff) where D : IData
         {
             switch (kind)
             {

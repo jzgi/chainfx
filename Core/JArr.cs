@@ -108,7 +108,7 @@ namespace Greatbone.Core
             return jo != null && jo.Get(name, ref v);
         }
 
-        public bool Get<D>(string name, ref D v, int proj = 0x00ff) where D : IData, new()
+        public bool Get<D>(string name, ref D v, short proj = 0x00ff) where D : IData, new()
         {
             JObj jo = elems[current];
             return jo != null && jo.Get(name, ref v, proj);
@@ -143,7 +143,7 @@ namespace Greatbone.Core
             throw new NotImplementedException();
         }
 
-        public bool Get<D>(string name, ref D[] v, int proj = 0x00ff) where D : IData, new()
+        public bool Get<D>(string name, ref D[] v, short proj = 0x00ff) where D : IData, new()
         {
             JObj jo = elems[current];
             return jo != null && jo.Get(name, ref v);
@@ -224,12 +224,12 @@ namespace Greatbone.Core
             throw new NotImplementedException();
         }
 
-        public IDataInput Let<D>(out D v, int proj = 0x00ff) where D : IData, new()
+        public IDataInput Let<D>(out D v, short proj = 0x00ff) where D : IData, new()
         {
             throw new NotImplementedException();
         }
 
-        public IDataInput Let<D>(out D[] v, int proj = 0x00ff) where D : IData, new()
+        public IDataInput Let<D>(out D[] v, short proj = 0x00ff) where D : IData, new()
         {
             throw new NotImplementedException();
         }
@@ -239,14 +239,14 @@ namespace Greatbone.Core
         // ENTIRITY
         //
 
-        public D ToObject<D>(int proj = 0x00ff) where D : IData, new()
+        public D ToObject<D>(short proj = 0x00ff) where D : IData, new()
         {
             D obj = new D();
             obj.Read(this, proj);
             return obj;
         }
 
-        public D[] ToArray<D>(int proj = 0x00ff) where D : IData, new()
+        public D[] ToArray<D>(short proj = 0x00ff) where D : IData, new()
         {
             D[] arr = new D[count];
             for (int i = 0; i < arr.Length; i++)
@@ -258,7 +258,7 @@ namespace Greatbone.Core
             return arr;
         }
 
-        public Map<K, D> ToMap<K, D>(Func<D, K> keyer, int proj = 0x00ff) where D : IData, new()
+        public Map<K, D> ToMap<K, D>(Func<D, K> keyer, short proj = 0x00ff) where D : IData, new()
         {
             Map<K, D> coll = new Map<K, D>(32);
             for (int i = 0; i < count; i++)

@@ -11,7 +11,7 @@ namespace Greatbone.Sample
         internal double x1, y1, x2, y2;
         internal Area[] areas;
 
-        public void Read(IDataInput i, int proj = 0x00ff)
+        public void Read(IDataInput i, short proj = 0x00ff)
         {
             i.Get(nameof(name), ref name);
             i.Get(nameof(x1), ref x1);
@@ -21,7 +21,7 @@ namespace Greatbone.Sample
             i.Get(nameof(areas), ref areas);
         }
 
-        public void Write<R>(IDataOutput<R> o, int proj = 0x00ff) where R : IDataOutput<R>
+        public void Write<R>(IDataOutput<R> o, short proj = 0x00ff) where R : IDataOutput<R>
         {
             o.Put(nameof(name), name);
             o.Put(nameof(x1), x1);
@@ -55,7 +55,7 @@ namespace Greatbone.Sample
         internal double x1, y1, x2, y2;
         internal string @char;
 
-        public void Read(IDataInput i, int proj = 255)
+        public void Read(IDataInput i, short proj = 0x00ff)
         {
             i.Get(nameof(name), ref name);
             i.Get(nameof(x1), ref x1);
@@ -65,7 +65,7 @@ namespace Greatbone.Sample
             i.Get(nameof(@char), ref @char);
         }
 
-        public void Write<R>(IDataOutput<R> o, int proj = 255) where R : IDataOutput<R>
+        public void Write<R>(IDataOutput<R> o, short proj = 0x00ff) where R : IDataOutput<R>
         {
             o.Put(nameof(name), name);
             o.Put(nameof(x1), x1);

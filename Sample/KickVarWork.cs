@@ -65,11 +65,10 @@ namespace Greatbone.Sample
             {
                 using (var dc = ac.NewDbContext())
                 {
-                    const int proj = 0x00ff;
-                    dc.Sql("SELECT ").columnlst(Item.Empty, proj)._("FROM items WHERE shopid = @1 AND name = @2");
+                    dc.Sql("SELECT ").columnlst(Item.Empty)._("FROM items WHERE shopid = @1 AND name = @2");
                     if (dc.Query1(p => p.Set(shopid).Set(name)))
                     {
-                        var o = dc.ToObject<Item>(proj);
+                        var o = dc.ToObject<Item>();
                         ac.GivePane(200, m =>
                         {
                             m.FORM_();
@@ -94,7 +93,7 @@ namespace Greatbone.Sample
             }
             else // post
             {
-                const int proj = 0x00ff;
+                const short proj = 0x00ff;
                 var o = await ac.ReadObjectAsync<Item>(proj);
                 using (var dc = ac.NewDbContext())
                 {

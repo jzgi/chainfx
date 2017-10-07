@@ -15,7 +15,7 @@ namespace Greatbone.Sample
         internal string refid; // such as youku reference id
         internal DateTime modified;
 
-        public void Read(IDataInput i, int proj = 0x00ff)
+        public void Read(IDataInput i, short proj = 0x00ff)
         {
             i.Get(nameof(id), ref id);
             i.Get(nameof(name), ref name);
@@ -23,7 +23,7 @@ namespace Greatbone.Sample
             i.Get(nameof(modified), ref modified);
         }
 
-        public void Write<R>(IDataOutput<R> o, int proj = 0x00ff) where R : IDataOutput<R>
+        public void Write<R>(IDataOutput<R> o, short proj = 0x00ff) where R : IDataOutput<R>
         {
             o.Put(nameof(id), id);
             o.Put(nameof(name), name);

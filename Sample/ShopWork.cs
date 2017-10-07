@@ -78,7 +78,7 @@ namespace Greatbone.Sample
 
                 using (var dc = ac.NewDbContext())
                 {
-                    const int proj = Shop.ID | Shop.INITIAL;
+                    const short proj = Shop.ID | Shop.INITIAL;
                     dc.Sql("SELECT ").columnlst(Shop.Empty, proj)._("FROM shops WHERE city = @1 AND status > 0");
                     if (dc.Query(p => p.Set(city)))
                     {
@@ -126,7 +126,7 @@ namespace Greatbone.Sample
             string city = ac[typeof(Work)];
             using (var dc = ac.NewDbContext())
             {
-                const int proj = Shop.ID | Shop.INITIAL | Shop.LATE;
+                const short proj = Shop.ID | Shop.INITIAL | Shop.LATE;
                 dc.Sql("SELECT ").columnlst(Shop.Empty, proj)._("FROM shops ORDER BY id");
                 if (dc.Query())
                 {
@@ -158,7 +158,7 @@ namespace Greatbone.Sample
             }
             else // post
             {
-                const int proj = Shop.INITIAL;
+                const short proj = Shop.INITIAL;
                 var o = await ac.ReadObjectAsync<Shop>();
                 using (var dc = ac.NewDbContext())
                 {

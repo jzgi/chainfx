@@ -71,7 +71,7 @@ namespace Greatbone.Sample
             string wx = ac[this];
             using (var dc = ac.NewDbContext())
             {
-                const int proj = 0xffff ^ User.CREDENTIAL;
+                const short proj = -1 ^ User.CREDENTIAL;
                 if (dc.Query1("SELECT * FROM users WHERE wx = @1", (p) => p.Set(wx)))
                 {
                     var o = dc.ToObject<User>(proj);

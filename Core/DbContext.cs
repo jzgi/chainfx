@@ -319,7 +319,7 @@ namespace Greatbone.Core
         // RESULTSET
         //
 
-        public D ToObject<D>(int proj = 0x00ff) where D : IData, new()
+        public D ToObject<D>(short proj = 0x00ff) where D : IData, new()
         {
             D obj = new D();
             obj.Read(this, proj);
@@ -334,7 +334,7 @@ namespace Greatbone.Core
             return obj;
         }
 
-        public D[] ToArray<D>(int proj = 0x00ff) where D : IData, new()
+        public D[] ToArray<D>(short proj = 0x00ff) where D : IData, new()
         {
             List<D> coll = new List<D>(32);
             while (Next())
@@ -354,7 +354,7 @@ namespace Greatbone.Core
             return coll.ToArray();
         }
 
-        public List<D> ToList<D>(int proj = 0x00ff) where D : IData, new()
+        public List<D> ToList<D>(short proj = 0x00ff) where D : IData, new()
         {
             List<D> coll = new List<D>(32);
             while (Next())
@@ -374,7 +374,7 @@ namespace Greatbone.Core
             return coll;
         }
 
-        public Map<K, D> ToMap<K, D>(Func<D, K> keyer, int proj = 0x00ff) where D : IData, new()
+        public Map<K, D> ToMap<K, D>(Func<D, K> keyer, short proj = 0x00ff) where D : IData, new()
         {
             Map<K, D> coll = new Map<K, D>(32);
             while (Next())
@@ -585,7 +585,7 @@ namespace Greatbone.Core
             throw new NotImplementedException();
         }
 
-        public bool Get<D>(string name, ref D v, int proj = 0x00ff) where D : IData, new()
+        public bool Get<D>(string name, ref D v, short proj = 0x00ff) where D : IData, new()
         {
             try
             {
@@ -724,7 +724,7 @@ namespace Greatbone.Core
             return false;
         }
 
-        public bool Get<D>(string name, ref D[] v, int proj = 0x00ff) where D : IData, new()
+        public bool Get<D>(string name, ref D[] v, short proj = 0x00ff) where D : IData, new()
         {
             try
             {
@@ -958,7 +958,7 @@ namespace Greatbone.Core
             throw new NotImplementedException();
         }
 
-        public IDataInput Let<D>(out D v, int proj = 0x00ff) where D : IData, new()
+        public IDataInput Let<D>(out D v, short proj = 0x00ff) where D : IData, new()
         {
             try
             {
@@ -987,7 +987,7 @@ namespace Greatbone.Core
             return this;
         }
 
-        public IDataInput Let<D>(out D[] v, int proj = 0x00ff) where D : IData, new()
+        public IDataInput Let<D>(out D[] v, short proj = 0x00ff) where D : IData, new()
         {
             try
             {
@@ -1036,14 +1036,14 @@ namespace Greatbone.Core
             BufferUtility.Return(dcont); // back to pool
         }
 
-        public void Publish(string name, string shard, int arg, IData obj, int proj = 0x00ff)
+        public void Publish(string name, string shard, int arg, IData obj, short proj = 0x00ff)
         {
             JsonContent cont = new JsonContent(true).Put(null, obj, proj);
             Publish(name, shard, arg, cont);
             BufferUtility.Return(cont); // back to pool
         }
 
-        public void Publish<D>(string name, string shard, int arg, D[] arr, int proj = 0x00ff) where D : IData
+        public void Publish<D>(string name, string shard, int arg, D[] arr, short proj = 0x00ff) where D : IData
         {
             JsonContent cont = new JsonContent(true).Put(null, arr, proj);
             Publish(name, shard, arg, cont);
