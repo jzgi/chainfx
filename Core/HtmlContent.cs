@@ -621,7 +621,7 @@ namespace Greatbone.Core
 
             Add("<div class=\"top-bar-right\">");
             Add("<a class=\"primary\" href=\"javascript: location.reload(false);\">");
-            Add("<i class=\"typcn typcn-refresh\" style=\"font-size: 1.5rem\"></i>");
+            Add("<i class=\"fi-refresh\" style=\"font-size: 1.5rem; line-height: 2rem\"></i>");
             Add("</a>");
             Add("</div>");
 
@@ -880,8 +880,8 @@ namespace Greatbone.Core
 
                 if (ui.IsA)
                 {
-                    Add("<a class=\"button");
-                    Add(ac?.Doer == ai ? " hollow" : " clear");
+                    Add("<a class=\"button hollow");
+//                    Add(ac?.Doer == ai ? " hollow" : " clear");
                     Add(" primary\" href=\"");
                     if (obj != null)
                     {

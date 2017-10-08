@@ -23,7 +23,7 @@
      *    IE on Windows Phone and in iOS.
      */
 html {
-    font-family: sans-serif;
+    font-family: "Microsoft YaHei", sans-serif;
     /* 1 */
     line-height: 1.15;
     /* 2 */
@@ -262,7 +262,7 @@ input,
 optgroup,
 select,
 textarea {
-    font-family: sans-serif;
+    font-family: "Microsoft YaHei", sans-serif;
     /* 1 */
     font-size: 100%;
     /* 1 */
@@ -488,7 +488,7 @@ body {
     margin: 0;
     padding: 0;
     background: #fefefe;
-    font-family: "Helvetica Neue", Helvetica, Roboto, Arial, sans-serif;
+    font-family: "Microsoft YaHei", Arial, sans-serif;
     font-weight: normal;
     font-size: 0.875rem;
     line-height: 1.5;
@@ -614,7 +614,7 @@ h3, .h3,
 h4, .h4,
 h5, .h5,
 h6, .h6 {
-    font-family: "Helvetica Neue", Helvetica, Roboto, Arial, sans-serif;
+    font-family: "Microsoft YaHei", Arial, sans-serif;
     font-style: normal;
     font-weight: normal;
     color: inherit;

@@ -222,9 +222,9 @@ namespace Greatbone.Sample
     }
 
 
-    public class OprNewOrderVarWork : OrderVarWork
+    public class OprNewVarWork : OrderVarWork
     {
-        public OprNewOrderVarWork(WorkContext wc) : base(wc)
+        public OprNewVarWork(WorkContext wc) : base(wc)
         {
         }
 
@@ -266,9 +266,9 @@ namespace Greatbone.Sample
         }
     }
 
-    public class OprOnOrderVarWork : OrderVarWork
+    public class OprGoVarWork : OrderVarWork
     {
-        public OprOnOrderVarWork(WorkContext wc) : base(wc)
+        public OprGoVarWork(WorkContext wc) : base(wc)
         {
         }
 
@@ -303,9 +303,9 @@ namespace Greatbone.Sample
         }
     }
 
-    public class OprPastOrderVarWork : OrderVarWork
+    public class OprPastVarWork : OrderVarWork
     {
-        public OprPastOrderVarWork(WorkContext wc) : base(wc)
+        public OprPastVarWork(WorkContext wc) : base(wc)
         {
         }
 

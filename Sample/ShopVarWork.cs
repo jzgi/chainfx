@@ -66,7 +66,7 @@ namespace Greatbone.Sample
                         h.T("<div class=\"top-bar-title\">").T(shop.name).T("</div>");
                         h.T("<div class=\"top-bar-left\">").T("<i class=\"typcn typcn-phone\"></i>").T(shop.oprtel).T("</div>");
                         h.T("<div class=\"top-bar-right\">");
-                        h.T("<a class=\"float-right\" href=\"/my//pre/\"><i class=\"typcn typcn-shopping-cart\" style=\"font-size: 1.5rem\"></i></a>");
+                        h.T("<a class=\"float-right\" href=\"/my//pre/\"><i class=\"fi-shopping-cart\" style=\"font-size: 1.5rem; line-height: 2rem\"></i></a>");
                         h.T("</div>");
                         h.T("</div>");
                         h.T("</div>");

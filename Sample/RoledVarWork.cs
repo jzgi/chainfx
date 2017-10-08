@@ -93,11 +93,11 @@ namespace Greatbone.Sample
     {
         public OprVarWork(WorkContext wc) : base(wc)
         {
-            Create<OprNewOrderWork>("new");
+            Create<OprNewWork>("new");
 
-            Create<OprOnOrderWork>("on");
+            Create<OprGoWork>("on");
 
-            Create<OprPastOrderWork>("past");
+            Create<OprPastWork>("past");
 
             Create<OprItemWork>("item");
 
@@ -180,7 +180,7 @@ namespace Greatbone.Sample
                 {
                     using (var dc = ac.NewDbContext())
                     {
-                        dc.Execute("UPDATE users SET oprat = NULL, opr = 0 WHERE id = @1", p => p.Set(id));
+                        dc.Execute("UPDATE users SET oprat = NULL, opr = 0 WHERE tel = @1", p => p.Set(id));
                     }
                 }
                 else if (subcmd == 2) // add

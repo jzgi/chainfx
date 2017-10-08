@@ -23,7 +23,7 @@ namespace Greatbone.Sample
             h.Add("<head>");
             h.Add("<title>粗粮达人</title>");
             h.Add("<meta name=\"viewport\" content=\"width=device-width, initial-scale=1.0\">");
-            h.Add("<link rel=\"stylesheet\" href=\"//cdn.bootcss.com/typicons/2.0.9/typicons.min.css\">");
+            h.Add("<link rel=\"stylesheet\" href=\"//cdn.bootcss.com/foundicons/3.0.0/foundation-icons.min.css\">");
             h.Add("<link rel=\"stylesheet\" href=\"/foundation.min.css\">");
             h.Add("<link rel=\"stylesheet\" href=\"/app.min.css\">");
             h.Add("</head>");
@@ -62,11 +62,8 @@ namespace Greatbone.Sample
             h.TRIGGERS(work, null);
             h.Add("</div>");
             h.Add("<div class=\"top-bar-right\">");
-            h.Add("<span class=\"button primary hollow\">");
-            string title = ac[work];
-            if (title.Length > 20) title = ((User) ac.Principal).name;
-            h.Add(title);
-            h.Add("</span>");
+            Node node = ac[work];
+            h.Add(node.Label ?? node.Key); // label
             h.Add("</div>");
             h.Add("</div>");
             if (work.Goto != null)
@@ -120,7 +117,7 @@ namespace Greatbone.Sample
             h.Add("<head>");
             h.Add("<title>粗粮达人</title>");
             h.Add("<meta name=\"viewport\" content=\"width=device-width, initial-scale=1.0\">");
-            h.Add("<link rel=\"stylesheet\" href=\"//cdn.bootcss.com/typicons/2.0.9/typicons.min.css\">");
+            h.Add("<link rel=\"stylesheet\" href=\"//cdn.bootcss.com/foundicons/3.0.0/foundation-icons.min.css\">");
             h.Add("<link rel=\"stylesheet\" href=\"/foundation.min.css\">");
             h.Add("<link rel=\"stylesheet\" href=\"/app.min.css\">");
             h.Add("</head>");
@@ -156,7 +153,7 @@ namespace Greatbone.Sample
             h.Add("<head>");
             h.Add("<title>粗粮达人</title>");
             h.Add("<meta name=\"viewport\" content=\"width=device-width, initial-scale=1.0\">");
-            h.Add("<link rel=\"stylesheet\" href=\"//cdn.bootcss.com/typicons/2.0.9/typicons.min.css\">");
+            h.Add("<link rel=\"stylesheet\" href=\"//cdn.bootcss.com/foundicons/3.0.0/foundation-icons.min.css\">");
             h.Add("<link rel=\"stylesheet\" href=\"/foundation.min.css\">");
             h.Add("<link rel=\"stylesheet\" href=\"/app.min.css\">");
             h.Add("</head>");

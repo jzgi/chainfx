@@ -181,7 +181,7 @@ namespace Greatbone.Sample
 
     [Ui("新单")]
     [User(User.OPR_)]
-    public class OprNewOrderWork : OrderWork<OprNewOrderVarWork>
+    public class OprNewWork : OrderWork<OprNewVarWork>
     {
         static readonly Map<short, string> NOTIFS = new Map<short, string>()
         {
@@ -191,7 +191,7 @@ namespace Greatbone.Sample
             [4] = "您的订单已接收，请您作确认收货操作",
         };
 
-        public OprNewOrderWork(WorkContext wc) : base(wc)
+        public OprNewWork(WorkContext wc) : base(wc)
         {
         }
 
@@ -309,9 +309,9 @@ namespace Greatbone.Sample
 
     [Ui("派单")]
     [User(User.OPR_)]
-    public class OprOnOrderWork : OrderWork<OprOnOrderVarWork>
+    public class OprGoWork : OrderWork<OprGoVarWork>
     {
-        public OprOnOrderWork(WorkContext wc) : base(wc)
+        public OprGoWork(WorkContext wc) : base(wc)
         {
         }
 
@@ -351,9 +351,9 @@ namespace Greatbone.Sample
 
     [Ui("旧单")]
     [User(User.OPR_)]
-    public class OprPastOrderWork : OrderWork<OprPastOrderVarWork>
+    public class OprPastWork : OrderWork<OprPastVarWork>
     {
-        public OprPastOrderWork(WorkContext wc) : base(wc)
+        public OprPastWork(WorkContext wc) : base(wc)
         {
         }
 

@@ -70,7 +70,7 @@ namespace Greatbone.Sample
                 m.T("</form>");
                 m.T("</div>");
                 m.T("<div class=\"top-bar-right\">");
-                m.T("<a class=\"float-right\" href=\"/my//pre/\"><i class=\"typcn typcn-shopping-cart\" style=\"font-size: 1.5rem\"></i></a>");
+                m.T("<a class=\"float-right\" href=\"/my//pre/\"><i class=\"fi-shopping-cart\" style=\"font-size: 1.5rem; line-height: 2rem\"></i></a>");
                 m.T("</div>");
                 m.T("</div>");
                 m.T("</div>");

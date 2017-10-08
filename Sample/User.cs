@@ -29,8 +29,9 @@ namespace Greatbone.Sample
         internal string credential;
         internal string city; // 
         internal string addr;
-        internal short oprat; // operator at
         internal short opr; // 
+        internal short oprat; // operator at
+        internal string oprname;
         internal bool adm; // adm
         internal short status;
 
@@ -48,8 +49,9 @@ namespace Greatbone.Sample
             i.Get(nameof(addr), ref addr);
             if ((proj & PERM) == PERM)
             {
-                i.Get(nameof(oprat), ref oprat);
                 i.Get(nameof(opr), ref opr);
+                i.Get(nameof(oprat), ref oprat);
+                i.Get(nameof(oprname), ref oprname);
                 i.Get(nameof(adm), ref adm);
             }
         }
@@ -67,8 +69,9 @@ namespace Greatbone.Sample
             o.Put(nameof(addr), addr);
             if ((proj & PERM) == PERM)
             {
-                o.Put(nameof(oprat), oprat);
                 o.Put(nameof(opr), opr);
+                o.Put(nameof(oprat), oprat);
+                o.Put(nameof(oprname), oprname);
                 o.Put(nameof(adm), adm);
             }
         }
