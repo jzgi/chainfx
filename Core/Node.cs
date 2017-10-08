@@ -2,9 +2,9 @@
 
 namespace Greatbone.Core
 {
-    ///
-    /// A resolved node or segment in the URI path.
-    ///
+    /// <summary>
+    /// A resolved node of the controller hierarchy corresponding to a segment in URI path.
+    /// </summary>
     public struct Node
     {
         readonly string key;

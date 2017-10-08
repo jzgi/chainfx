@@ -4,9 +4,9 @@ using System.Collections.Generic;
 
 namespace Greatbone.Core
 {
-    ///
-    /// An addition-only and -ordered dictionary.
-    ///
+    /// <summary>
+    /// An add-only and ordered dictionary.
+    /// </summary>
     public class Roll<E> : IEnumerable where E : IRollable
     {
         int[] buckets;
@@ -14,7 +14,6 @@ namespace Greatbone.Core
         Entry[] entries;
 
         int count;
-
 
         public Roll(int capacity)
         {
@@ -53,7 +52,7 @@ namespace Greatbone.Core
                 }
                 return default(E);
             }
-            set { Add(value); }
+            set => Add(value);
         }
 
         public E Any(string prefix)

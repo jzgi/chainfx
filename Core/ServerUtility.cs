@@ -9,7 +9,7 @@ namespace Greatbone.Core
 {
     public class ServerUtility
     {
-        const string CONFIG_FILE = "$service.json";
+        const string CONFIG = "$service.json";
 
         internal static readonly Lifetime Lifetime = new Lifetime();
 
@@ -26,7 +26,7 @@ namespace Greatbone.Core
 
             if (load) // need to load configuration file
             {
-                string file = sc.GetFilePath(CONFIG_FILE);
+                string file = sc.GetFilePath(CONFIG);
                 if (File.Exists(file))
                 {
                     byte[] bytes = File.ReadAllBytes(file);
