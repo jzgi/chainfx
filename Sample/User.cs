@@ -9,7 +9,7 @@ namespace Greatbone.Sample
     {
         public static readonly User Empty = new User();
 
-        public const int
+        public const short
             WX = 1,
             CREDENTIAL = 2,
             PERM = 4;

@@ -11,15 +11,15 @@ Target Server Type    : PGSQL
 Target Server Version : 90505
 File Encoding         : 65001
 
-Date: 2017-10-05 23:36:06
+Date: 2017-10-08 10:38:08
 */
 
 
 -- ----------------------------
--- Sequence structure for orders_id_seq
+-- Sequence structure for orders_id_seq1
 -- ----------------------------
-DROP SEQUENCE IF EXISTS "public"."orders_id_seq";
-CREATE SEQUENCE "public"."orders_id_seq"
+DROP SEQUENCE IF EXISTS "public"."orders_id_seq1";
+CREATE SEQUENCE "public"."orders_id_seq1"
  INCREMENT 1
  MINVALUE 1
  MAXVALUE 9223372036854775807
@@ -48,23 +48,7 @@ CREATE SEQUENCE "public"."shops_id_seq"
  MAXVALUE 9223372036854775807
  START 1
  CACHE 1;
-
--- ----------------------------
--- Table structure for cities
--- ----------------------------
-DROP TABLE IF EXISTS "public"."cities";
-CREATE TABLE "public"."cities" (
-"name" varchar(4) COLLATE "default",
-"x1" float8,
-"y1" float8,
-"x2" float8,
-"y2" float8,
-"areas" jsonb,
-"idx" varchar(3) COLLATE "default"
-)
-WITH (OIDS=FALSE)
-
-;
+SELECT setval('"public"."shops_id_seq"', 1, true);
 
 -- ----------------------------
 -- Table structure for items
@@ -72,16 +56,16 @@ WITH (OIDS=FALSE)
 DROP TABLE IF EXISTS "public"."items";
 CREATE TABLE "public"."items" (
 "shopid" int2 NOT NULL,
-"name" varchar(10) COLLATE "default" NOT NULL,
+"name" varchar(20) COLLATE "default" NOT NULL,
 "descr" varchar(30) COLLATE "default",
 "icon" bytea,
+"unit" varchar(4) COLLATE "default",
 "price" money,
 "min" int2,
 "step" int2,
 "max" int2,
-"parts" jsonb,
-"status" int2,
-"unit" varchar(4) COLLATE "default"
+"customs" varchar(30)[] COLLATE "default",
+"status" int2
 )
 WITH (OIDS=FALSE)
 
@@ -123,13 +107,14 @@ WITH (OIDS=FALSE)
 -- ----------------------------
 DROP TABLE IF EXISTS "public"."orders";
 CREATE TABLE "public"."orders" (
-"id" int8 DEFAULT nextval('orders_id_seq'::regclass) NOT NULL,
+"id" int8 DEFAULT nextval('orders_id_seq1'::regclass) NOT NULL,
 "shopid" int2,
 "shopname" varchar(10) COLLATE "default",
 "wx" varchar(28) COLLATE "default",
 "name" varchar(10) COLLATE "default",
 "tel" varchar(11) COLLATE "default",
 "city" varchar(6) COLLATE "default",
+"area" varchar(10) COLLATE "default",
 "addr" varchar(20) COLLATE "default",
 "items" jsonb,
 "total" money,
@@ -199,9 +184,8 @@ DROP TABLE IF EXISTS "public"."users";
 CREATE TABLE "public"."users" (
 "wx" varchar(28) COLLATE "default" NOT NULL,
 "name" varchar(10) COLLATE "default",
-"id" varchar(11) COLLATE "default",
-"credential" varchar(32) COLLATE "default",
 "tel" varchar(11) COLLATE "default",
+"credential" varchar(32) COLLATE "default",
 "city" varchar(4) COLLATE "default",
 "addr" varchar(20) COLLATE "default",
 "oprat" int2,
@@ -216,11 +200,21 @@ WITH (OIDS=FALSE)
 -- ----------------------------
 -- Alter Sequences Owned By 
 -- ----------------------------
-ALTER SEQUENCE "public"."orders_id_seq" OWNED BY "orders"."id";
+ALTER SEQUENCE "public"."orders_id_seq1" OWNED BY "orders"."id";
 ALTER SEQUENCE "public"."repays_id_seq" OWNED BY "repays"."id";
 ALTER SEQUENCE "public"."shops_id_seq" OWNED BY "shops"."id";
+
+-- ----------------------------
+-- Primary Key structure for table items
+-- ----------------------------
+ALTER TABLE "public"."items" ADD PRIMARY KEY ("shopid", "name");
 
 -- ----------------------------
 -- Primary Key structure for table repays
 -- ----------------------------
 ALTER TABLE "public"."repays" ADD PRIMARY KEY ("id");
+
+-- ----------------------------
+-- Primary Key structure for table shops
+-- ----------------------------
+ALTER TABLE "public"."shops" ADD PRIMARY KEY ("id");

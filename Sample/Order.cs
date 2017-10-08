@@ -10,7 +10,7 @@ namespace Greatbone.Sample
     {
         public static readonly Order Empty = new Order();
 
-        public const int
+        public const short
             ID = 0x0001,
             BASIC = 0x0002,
             LATER = 0x0200;

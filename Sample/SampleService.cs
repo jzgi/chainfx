@@ -23,13 +23,7 @@ namespace Greatbone.Sample
 
             Create<AdmWork>("adm"); // administrator
 
-            using (var dc = NewDbContext())
-            {
-                if (dc.Query("SELECT * FROM cities"))
-                {
-                    cities = dc.ToMap<string, City>(x => x.name);
-                }
-            }
+            cities = DataInputUtility.FileToMap<string, City>(sc.GetFilePath("$map.json"), o => o.name);
         }
 
         public Map<string, City> Cities => cities;
@@ -179,34 +173,30 @@ namespace Greatbone.Sample
         public async Task notify(ActionContext ac)
         {
             XElem xe = await ac.ReadAsync<XElem>();
-
             long orderid;
             decimal cash;
             if (Notified(xe, out orderid, out cash))
             {
-                string mgrwx = null;
                 using (var dc = NewDbContext())
                 {
-                    var shopid = (string) dc.Scalar("UPDATE orders SET cash = @1, accepted = localtimestamp, status = @2 WHERE id = @3 AND status <= @2 RETURNING shopid", (p) => p.Set(cash).Set(Order.ACCEPTED).Set(orderid));
-                    if (shopid != null)
+                    var shopid = (string) dc.Scalar("UPDATE orders SET cash = @1, accepted = localtimestamp, status = " + Order.ACCEPTED + " WHERE id = @2 AND status < " + Order.ACCEPTED + " RETURNING shopid", (p) => p.Set(cash).Set(orderid));
+                    if (shopid != null) // try to send a notification to the operator
                     {
-                        mgrwx = (string) dc.Scalar("SELECT mgrwx FROM shops WHERE id = @1", p => p.Set(shopid));
+                        var oprwx = (string) dc.Scalar("SELECT oprwx FROM shops WHERE id = @1", p => p.Set(shopid));
+                        if (oprwx != null)
+                        {
+                            await PostSendAsync(oprwx, "【买家付款】订单编号：" + orderid + "，金额：" + cash + "元");
+                        }
                     }
                 }
-                // return xml
-                XmlContent cont = new XmlContent(true, 1024);
-                cont.ELEM("xml", null, () =>
+                // return xml to WCPay server
+                XmlContent x = new XmlContent(true, 1024);
+                x.ELEM("xml", null, () =>
                 {
-                    cont.ELEM("return_code", "SUCCESS");
-                    cont.ELEM("return_msg", "OK");
+                    x.ELEM("return_code", "SUCCESS");
+                    x.ELEM("return_msg", "OK");
                 });
-
-                if (mgrwx != null)
-                {
-                    await PostSendAsync(mgrwx, "【买家付款】订单编号：" + orderid + "，金额：" + cash + "元");
-                }
-
-                ac.Give(200, cont);
+                ac.Give(200, x);
             }
             else
             {

@@ -9,7 +9,7 @@ namespace Greatbone.Sample
     {
         public static readonly Item Empty = new Item();
 
-        public const int UNMOD = 1;
+        public const short UNMOD = 1;
 
         // status
         public static readonly Map<short, string> STATUS = new Map<short, string>

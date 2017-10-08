@@ -8,12 +8,10 @@ namespace Greatbone.Sample
     ///
     public class Repay : IData
     {
-        public const int PAYING = 1;
+        public const short PAY = 1;
 
         // status
-        public const short
-            CREATED = 0,
-            PAID = 1;
+        public const short CREATED = 0, PAID = 1;
 
         // status
         static readonly Map<short, string> STATUS = new Map<short, string>
@@ -46,7 +44,7 @@ namespace Greatbone.Sample
             i.Get(nameof(total), ref total);
             i.Get(nameof(cash), ref cash);
             i.Get(nameof(till), ref till);
-            if ((proj & PAYING) == PAYING)
+            if ((proj & PAY) == PAY)
             {
                 i.Get(nameof(paid), ref paid);
                 i.Get(nameof(payer), ref payer);
@@ -63,13 +61,13 @@ namespace Greatbone.Sample
             o.Put(nameof(orders), orders);
             o.Put(nameof(total), total);
             o.Put(nameof(cash), cash);
-            if ((proj & PAYING) == PAYING)
+            if ((proj & PAY) == PAY)
             {
                 o.Put(nameof(paid), paid);
                 o.Put(nameof(payer), payer);
                 o.Put(nameof(err), err);
             }
-            o.Put((string) (string) (string) nameof(status), status);
+            o.Put(nameof(status), status);
         }
     }
 }

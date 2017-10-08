@@ -6,7 +6,7 @@ namespace Greatbone.Sample
     {
         public static readonly Shop Empty = new Shop();
 
-        public const int
+        public const short
             ID = 1,
             INITIAL = 2,
             LATE = 4;
