@@ -708,7 +708,8 @@ namespace Greatbone.Core
             TOOLBAR(work);
             Add("</form>");
 
-            Add("<table class=\"scroll unstriped\">");
+            Add("<div class=\"table-scroll\" style=\"padding: 0.5rem\">");
+            Add("<table class=\"unstriped\">");
             ActionInfo[] ais = varwork?.UiActions;
 
             Add("<thead>");
@@ -749,6 +750,7 @@ namespace Greatbone.Core
                 Add("</tbody>");
             }
             Add("</table>");
+            Add("</div>");
 
             // pagination controls if any
             PAGENATE(arr?.Length ?? 0);

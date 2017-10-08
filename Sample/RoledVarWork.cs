@@ -106,7 +106,7 @@ namespace Greatbone.Sample
 
         public void @default(ActionContext ac)
         {
-            ac.GiveFrame(200, false, 60 * 5);
+            ac.GiveFrame(200, false, 60 * 15, "日常操作");
         }
 
         public void @goto(ActionContext ac)

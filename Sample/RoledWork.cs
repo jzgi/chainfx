@@ -35,7 +35,7 @@ namespace Greatbone.Sample
 
         public void @default(ActionContext ac)
         {
-            ac.GiveFrame(200);
+            ac.GiveFrame(200, false, 60 * 15, "平台管理");
         }
 
         [Ui("订单存档")]
