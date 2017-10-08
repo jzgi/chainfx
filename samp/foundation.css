@@ -1217,8 +1217,7 @@ legend {
 }
 
 select {
-    height: 2.4375rem;
-    padding: 0.5rem;
+    padding: 0.25rem 1.5rem 0.25rem 0.5rem;
     -webkit-appearance: none;
     -moz-appearance: none;
     appearance: none;
@@ -1234,7 +1233,6 @@ select {
     background-position: right -1rem center;
     background-repeat: no-repeat;
     background-size: 9px 6px;
-    padding-right: 1.5rem;
     transition: box-shadow 0.5s, border-color 0.25s ease-in-out;
 }
 
@@ -3088,6 +3086,7 @@ input:checked + label > .switch-inactive {
     padding: 0.5rem;
     -ms-flex-wrap: nowrap;
     flex-wrap: nowrap;
+    font-size: 1rem;
 }
 
 .top-bar,
@@ -3138,7 +3137,7 @@ input:checked + label > .switch-inactive {
 .top-bar-title {
     -ms-flex: 0 0 auto;
     flex: 0 0 auto;
-    margin: 0.5rem 1rem 0.5rem 0;
+    margin: 0 0.5rem;
 }
 
 .top-bar-left,

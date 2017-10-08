@@ -43,11 +43,10 @@ namespace Greatbone.Sample
             short shopid = ac[this];
             using (var dc = ac.NewDbContext())
             {
-                const short proj = Shop.ID | Shop.INITIAL;
-                dc.Sql("SELECT ").columnlst(Shop.Empty, proj)._("FROM shops WHERE id = @1");
+                dc.Sql("SELECT ").columnlst(Shop.Empty)._("FROM shops WHERE id = @1");
                 if (dc.Query1(p => p.Set(shopid)))
                 {
-                    var shop = dc.ToObject<Shop>(proj);
+                    var shop = dc.ToObject<Shop>();
 
                     // items of the shop
 
@@ -64,9 +63,9 @@ namespace Greatbone.Sample
                         h.T("<div class=\"sticky\" style=\"width: 100%\" data-sticky  data-options=\"anchor: page; marginTop: 0; stickyOn: small;\">");
                         h.T("<div class=\"top-bar\">");
                         h.T("<div class=\"top-bar-title\">").T(shop.name).T("</div>");
-                        h.T("<div class=\"top-bar-left\">").T("<i class=\"typcn typcn-phone\"></i>").T(shop.oprtel).T("</div>");
+                        h.T("<div class=\"top-bar-left\">").T("<a href=\"tel:").T(shop.oprtel).T("#mp.weixin.qq.com\">电话&nbsp;").T(shop.oprtel).T("</a></div>");
                         h.T("<div class=\"top-bar-right\">");
-                        h.T("<a class=\"float-right\" href=\"/my//pre/\"><i class=\"fi-shopping-cart\" style=\"font-size: 1.5rem; line-height: 2rem\"></i></a>");
+                        h.T("<a class=\"float-right\" href=\"/my//pre/\"><i class=\"fi-shopping-cart\" style=\"font-size: 1.75rem; line-height: 2rem\"></i></a>");
                         h.T("</div>");
                         h.T("</div>");
                         h.T("</div>");

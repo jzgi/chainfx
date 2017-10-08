@@ -621,7 +621,7 @@ namespace Greatbone.Core
 
             Add("<div class=\"top-bar-right\">");
             Add("<a class=\"primary\" href=\"javascript: location.reload(false);\">");
-            Add("<i class=\"fi-refresh\" style=\"font-size: 1.5rem; line-height: 2rem\"></i>");
+            Add("<i class=\"fi-refresh\" style=\"font-size: 1.75rem; line-height: 2rem\"></i>");
             Add("</a>");
             Add("</div>");
 
