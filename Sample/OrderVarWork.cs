@@ -17,7 +17,7 @@ namespace Greatbone.Sample
         {
         }
 
-        [Ui("填写收货地址", Mode = UiMode.ButtonShow)]
+        [Ui("填写收货地址", Modal = Modal.ButtonShow)]
         public async Task addr(ActionContext ac)
         {
             string wx = ac[-2];
@@ -75,7 +75,7 @@ namespace Greatbone.Sample
             }
         }
 
-        [Ui("附加说明", Mode = UiMode.ButtonShow)]
+        [Ui("附加说明", Modal = Modal.ButtonShow)]
         public async Task edit(ActionContext ac)
         {
             string wx = ac[typeof(UserVarWork)];
@@ -114,7 +114,7 @@ namespace Greatbone.Sample
             }
         }
 
-        [Ui("付款", "确定要通过微信付款吗?", Mode = UiMode.AnchorScript, Bold = true)]
+        [Ui("付款", "确定要通过微信付款吗?", Modal = Modal.AScript, Em = true)]
         public async Task prepay(ActionContext ac)
         {
             string wx = ac[typeof(UserVarWork)];
@@ -136,7 +136,7 @@ namespace Greatbone.Sample
         {
         }
 
-        [Ui("申请撤销", "向商家申请撤销此单", Mode = UiMode.ButtonPrompt)]
+        [Ui("申请撤销", "向商家申请撤销此单", Modal = Modal.ButtonPrompt)]
         public async Task cancel(ActionContext ac)
         {
             long id = ac[this];
@@ -167,7 +167,7 @@ namespace Greatbone.Sample
             }
         }
 
-        [Ui("举报商家", "向平台举报商家的产品质量问题", Mode = UiMode.AnchorShow)]
+        [Ui("举报商家", "向平台举报商家的产品质量问题", Modal = Modal.AShow)]
         public async Task tipoff(ActionContext ac)
         {
             long id = ac[this];
@@ -199,7 +199,7 @@ namespace Greatbone.Sample
             }
         }
 
-        [Ui("确认收货", "对商品满意并确认收货", Mode = UiMode.ButtonConfirm)]
+        [Ui("确认收货", "对商品满意并确认收货", Modal = Modal.ButtonConfirm)]
         public async Task got(ActionContext ac)
         {
             long id = ac[this];
@@ -230,7 +230,7 @@ namespace Greatbone.Sample
 
         public bool NoAbortion(object obj) => string.IsNullOrEmpty(((Order) obj).abortly);
 
-        [Ui("同意撤销/退款", "同意撤销此单，实收金额退回给买家", Mode = UiMode.ButtonShow)]
+        [Ui("同意撤销/退款", "同意撤销此单，实收金额退回给买家", Modal = Modal.ButtonShow)]
         public async Task abort(ActionContext ac)
         {
             long id = ac[this];
@@ -274,7 +274,7 @@ namespace Greatbone.Sample
 
         public bool NotAborted(object obj) => ((Order) obj).status != Order.ABORTED;
 
-        [Ui("退款情况核查", "实时核查退款到账情况", Mode = UiMode.AnchorOpen)]
+        [Ui("退款情况核查", "实时核查退款到账情况", Modal = Modal.AOpen)]
         public async Task refundq(ActionContext ac)
         {
             long id = ac[this];
@@ -311,7 +311,7 @@ namespace Greatbone.Sample
 
         public bool NotAborted(object obj) => ((Order) obj).status != Order.ABORTED;
 
-        [Ui("退款情况核查", "实时核查退款到账情况", Mode = UiMode.AnchorOpen)]
+        [Ui("退款情况核查", "实时核查退款到账情况", Modal = Modal.AOpen)]
         public async Task refundq(ActionContext ac)
         {
             long id = ac[this];

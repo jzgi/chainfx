@@ -5,13 +5,13 @@ namespace Greatbone.Core
     /// <summary>
     /// An XML attribute.
     /// </summary>
-    public struct XAttr : IRollable
+    public struct XAttr : INamable
     {
         readonly string name;
 
         readonly string value;
 
-        public string Key => name;
+        public string Name => name;
 
         internal XAttr(string name, string v)
         {

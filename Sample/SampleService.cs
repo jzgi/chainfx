@@ -185,7 +185,7 @@ namespace Greatbone.Sample
                         var oprwx = (string) dc.Scalar("SELECT oprwx FROM shops WHERE id = @1", p => p.Set(shopid));
                         if (oprwx != null)
                         {
-                            await PostSendAsync(oprwx, "【买家付款】订单编号：" + orderid + "，金额：" + cash + "元");
+                            await PostSendAsync(oprwx, "【收款通知】单号：" + orderid + "，金额：" + cash + "元");
                         }
                     }
                 }

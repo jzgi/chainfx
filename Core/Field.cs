@@ -2,7 +2,7 @@ using System;
 
 namespace Greatbone.Core
 {
-    public struct Field : IRollable
+    public struct Field : INamable
     {
         readonly string name;
 
@@ -40,7 +40,7 @@ namespace Greatbone.Core
             Err = null;
         }
 
-        public string Key => name;
+        public string Name => name;
 
         public string Err { get; set; }
 

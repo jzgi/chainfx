@@ -44,7 +44,7 @@ namespace Greatbone.Sample
         {
         }
 
-        [Ui("修改", Mode = UiMode.ButtonShow)]
+        [Ui("修改", Modal = Modal.ButtonShow)]
         public async Task edit(ActionContext ac)
         {
             short shopid = ac[-2];
@@ -90,7 +90,7 @@ namespace Greatbone.Sample
             }
         }
 
-        [Ui("图片", Mode = UiMode.AnchorCrop, Circle = true)]
+        [Ui("图片", Modal = Modal.ACrop, Circle = true)]
         public new async Task icon(ActionContext ac)
         {
             short shopid = ac[-2];

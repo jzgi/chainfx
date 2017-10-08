@@ -65,7 +65,7 @@ namespace Greatbone.Sample
             }
         }
 
-        [Ui("结算", "为商家结算已完成的订单", Mode = UiMode.ButtonShow)]
+        [Ui("结算", "为商家结算已完成的订单", Modal = Modal.ButtonShow)]
         public async Task reckon(ActionContext ac)
         {
             DateTime till; // till/before date
@@ -107,7 +107,7 @@ namespace Greatbone.Sample
             internal decimal cash;
         }
 
-        [Ui("转款", "按照结算单转款给商家", Mode = UiMode.ButtonConfirm)]
+        [Ui("转款", "按照结算单转款给商家", Modal = Modal.ButtonConfirm)]
         public async Task pay(ActionContext ac)
         {
             List<Transfer> lst = new List<Transfer>(16);

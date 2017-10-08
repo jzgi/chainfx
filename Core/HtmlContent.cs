@@ -621,7 +621,6 @@ namespace Greatbone.Core
 
             Add("<div class=\"top-bar-right\">");
             Add("<a class=\"primary\" href=\"javascript: location.reload(false);\">");
-            Add(work.Label);
             Add("<i class=\"typcn typcn-refresh\" style=\"font-size: 1.5rem\"></i>");
             Add("</a>");
             Add("</div>");
@@ -650,7 +649,7 @@ namespace Greatbone.Core
                     else
                     {
                         Add("<li><a href=\"");
-                        Add(ai.Key);
+                        Add(ai.Name);
                         Add('-');
                         Add(i);
                         Add(ac.QueryString);
@@ -662,7 +661,7 @@ namespace Greatbone.Core
                 if (count == ai.Limit)
                 {
                     Add("<li class=\"pagination-next\"><a href=\"");
-                    Add(ai.Key);
+                    Add(ai.Name);
                     Add('-');
                     Add(subscpt + 1);
                     Add(ac.QueryString);
@@ -879,7 +878,7 @@ namespace Greatbone.Core
                     enabled = ui.Covers(stateobj.GetState());
                 }
 
-                if (ui.IsAnchor)
+                if (ui.IsA)
                 {
                     Add("<a class=\"button");
                     Add(ac?.Doer == ai ? " hollow" : " clear");
@@ -914,7 +913,7 @@ namespace Greatbone.Core
                         Add(" onclick=\"if(!confirm('");
                         Add(ui.Tip ?? ui.Label);
                         Add("')) return false;");
-                        Add(ai.Key);
+                        Add(ai.Name);
                         Add("(this);return false;\"");
                     }
                     else if (ui.HasCrop)
@@ -940,16 +939,16 @@ namespace Greatbone.Core
                 else if (ui.IsButton)
                 {
                     Add("<button class=\"button primary");
-                    if (!ui.Bold) Add(" hollow");
+                    if (!ui.Em) Add(" hollow");
                     Add("\" name=\"");
-                    Add(ai.Key);
+                    Add(ai.Name);
                     Add("\" formaction=\"");
                     if (obj != null)
                     {
                         ai.Work.OutputVarKey(obj, this);
                         Add('/');
                     }
-                    Add(ai.Key);
+                    Add(ai.Name);
                     Add("\" formmethod=\"post\"");
                     if (!enabled)
                     {
@@ -1906,12 +1905,12 @@ namespace Greatbone.Core
         {
             Add("<button class=\"button primary\" style=\"margin-right: 5px; border-radius: 15%\"");
             Add(" formaction=\"");
-            Add(ai.Key);
+            Add(ai.Name);
             Add("\" formmethod=\"post\"");
 
             UiAttribute ui = ai.Ui;
 
-            UiMode mode = ui.Mode;
+            Modal mode = ui.Modal;
             if (mode > 0)
             {
                 Add(" onclick=\"dialog(this,");
@@ -1919,7 +1918,7 @@ namespace Greatbone.Core
                 Add("); return false;\"");
             }
             Add(">");
-            AddLabel(ui.Label, ai.Key);
+            AddLabel(ui.Label, ai.Name);
 
             Add("</button>");
             return this;

@@ -2,22 +2,24 @@ using System;
 
 namespace Greatbone.Core
 {
-    public enum UiMode
+    public enum Modal
     {
-        Anchor = 0x0100,
+        A = 0x0100,
+
+        AConfirm = 0x0101,
 
         /// To prompt with a dialog for gathering additional data to continue the location switch.
-        AnchorPrompt = 0x0102,
+        APrompt = 0x0102,
 
         /// To show a dialog with the OK button for execution of standalone activity
-        AnchorShow = 0x0104,
+        AShow = 0x0104,
 
         /// To open a free-style dialog
-        AnchorOpen = 0x0108,
+        AOpen = 0x0108,
 
-        AnchorScript = 0x0110,
+        AScript = 0x0110,
 
-        AnchorCrop = 0x0120,
+        ACrop = 0x0120,
 
         Button = 0x0200,
 
@@ -32,6 +34,8 @@ namespace Greatbone.Core
         ButtonOpen = 0x0208,
 
         ButtonScript = 0x0210,
+
+        ButtonCrop = 0x0220,
     }
 
     /// 
@@ -44,19 +48,22 @@ namespace Greatbone.Core
 
         readonly string tip;
 
-        public UiAttribute(string label = null, string tip = null)
+        readonly string icon;
+
+        public UiAttribute(string label = null, string tip = null, string icon = null)
         {
             this.label = label;
-            this.tip = tip;
+            this.tip = tip ?? label;
+            this.icon = icon;
         }
 
         public string Label => label;
 
         public string Tip => tip;
 
-        public string TipOrLabel => tip ?? label;
+        public string Icon => icon;
 
-        public UiMode Mode { get; set; } = UiMode.Button;
+        public Modal Modal { get; set; }
 
         /// <summary>
         /// The state bitwise value that enables the action. 
@@ -74,22 +81,25 @@ namespace Greatbone.Core
 
         public bool Circle { get; set; } = false;
 
-        public bool Bold { get; set; } = false;
+        /// <summary>
+        /// Is empohsized or not.
+        /// </summary>
+        public bool Em { get; set; } = false;
 
-        public bool IsAnchor => ((int) Mode & 0x0100) == 0x0100;
+        public bool IsA => ((int) Modal & 0x0100) == 0x0100;
 
-        public bool IsButton => ((int) Mode & 0x0200) == 0x0200;
+        public bool IsButton => ((int) Modal & 0x0200) == 0x0200;
 
-        public bool HasConfirm => ((int) Mode & 0x01) == 0x01;
+        public bool HasConfirm => ((int) Modal & 0x01) == 0x01;
 
-        public bool HasPrompt => ((int) Mode & 0x02) == 0x02;
+        public bool HasPrompt => ((int) Modal & 0x02) == 0x02;
 
-        public bool HasShow => ((int) Mode & 0x04) == 0x04;
+        public bool HasShow => ((int) Modal & 0x04) == 0x04;
 
-        public bool HasOpen => ((int) Mode & 0x08) == 0x08;
+        public bool HasOpen => ((int) Modal & 0x08) == 0x08;
 
-        public bool HasScript => ((int) Mode & 0x10) == 0x10;
+        public bool HasScript => ((int) Modal & 0x10) == 0x10;
 
-        public bool HasCrop => ((int) Mode & 0x20) == 0x20;
+        public bool HasCrop => ((int) Modal & 0x20) == 0x20;
     }
 }

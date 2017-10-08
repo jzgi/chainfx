@@ -30,7 +30,7 @@ namespace Greatbone.Sample
 
             Create<AdmKickWork>("kick");
 
-            Create<AdmRepayWork>("repay"); 
+            Create<AdmRepayWork>("repay");
         }
 
         public void @default(ActionContext ac)

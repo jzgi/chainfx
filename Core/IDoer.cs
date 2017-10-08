@@ -3,7 +3,7 @@ namespace Greatbone.Core
     /// <summary>
     /// The descriptor of a handler method that is either an action or an event.
     /// </summary>
-    public interface IDoer : IRollable
+    public interface IDoer : INamable
     {
         /// <summary>
         /// Whether this handler method is an async method.

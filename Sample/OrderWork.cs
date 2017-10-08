@@ -128,7 +128,7 @@ namespace Greatbone.Sample
             }
         }
 
-        [Ui("清空购物车/删除", "清空购物车或者删除选中的项", Mode = UiMode.ButtonConfirm)]
+        [Ui("清空购物车/删除", "清空购物车或者删除选中的项", Modal = Modal.ButtonConfirm)]
         public async Task remove(ActionContext ac)
         {
             string wx = ac[typeof(UserVarWork)];
@@ -215,7 +215,7 @@ namespace Greatbone.Sample
             }
         }
 
-        [Ui("通知买家", Mode = UiMode.ButtonShow)]
+        [Ui("通知买家", Modal = Modal.ButtonShow)]
         public async Task sendnotif(ActionContext ac)
         {
             long[] key = ac.Query[nameof(key)];
@@ -266,7 +266,7 @@ namespace Greatbone.Sample
             }
         }
 
-        [Ui("委托办理", Mode = UiMode.ButtonShow)]
+        [Ui("委托办理", Modal = Modal.ButtonShow)]
         public async Task passon(ActionContext ac)
         {
             var prin = (User) ac.Principal;

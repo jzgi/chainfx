@@ -5,7 +5,7 @@ namespace Greatbone.Core
     ///
     /// A JSON member that is either a value, or a property if with the name.
     ///
-    public struct JMbr : IRollable
+    public struct JMbr : INamable
     {
         // property name, if not null
         readonly string name;
@@ -74,7 +74,7 @@ namespace Greatbone.Core
             numv = v;
         }
 
-        public string Key => name;
+        public string Name => name;
 
         public bool IsProperty => name != null;
 

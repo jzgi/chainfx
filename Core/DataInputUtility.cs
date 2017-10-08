@@ -171,7 +171,7 @@ namespace Greatbone.Core
                 JArr ja = (JArr) new JsonParse(bytes, bytes.Length).Parse();
                 if (ja != null)
                 {
-                    return ja.ToMap<K, D>(keyer, proj);
+                    return ja.ToMap(keyer, proj);
                 }
             }
             catch (Exception ex)

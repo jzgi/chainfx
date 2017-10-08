@@ -22,7 +22,7 @@ namespace Greatbone.Sample
             ac.GiveGridPage(200, (Order[]) null, (h, o) => { });
         }
 
-        [Ui("后台操作设置", "后台操作帐号", Mode = UiMode.AnchorShow)]
+        [Ui("后台操作设置", "后台操作帐号", Modal = Modal.AShow)]
         public async Task loginf(ActionContext ac)
         {
             string wx = ac[this];
@@ -65,7 +65,7 @@ namespace Greatbone.Sample
             }
         }
 
-        [Ui("调试刷新", Mode = UiMode.AnchorShow)]
+        [Ui("调试刷新", Modal = Modal.AShow)]
         public void token(ActionContext ac)
         {
             string wx = ac[this];
@@ -109,7 +109,12 @@ namespace Greatbone.Sample
             ac.GiveFrame(200, false, 60 * 5);
         }
 
-        [Ui("值班机", Mode = UiMode.AnchorShow)]
+        public void @goto(ActionContext ac)
+        {
+            ac.GivePage(200, h => { h.T("GOTO"); });
+        }
+
+        [Ui("值班机", Modal = Modal.AShow)]
         public async Task lead(ActionContext ac)
         {
             short shopid = ac[this];
@@ -154,7 +159,7 @@ namespace Greatbone.Sample
             }
         }
 
-        [Ui("操作授权", Mode = UiMode.AnchorOpen)]
+        [Ui("操作授权", Modal = Modal.AOpen)]
         public async Task crew(ActionContext ac, int subcmd)
         {
             short shopid = ac[this];

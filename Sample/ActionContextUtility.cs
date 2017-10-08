@@ -32,34 +32,31 @@ namespace Greatbone.Sample
 
             Work work = ac.Work;
             Roll<Work> subs = work.Works;
-            h.Add("<ul class=\"tabs\" data-tabs id=\"frame-tabs\">");
-
+            // tabs
+            h.Add("<ul class=\"tabs\" data-tabs data-deep-link=\"true\" id=\"frametabs\">");
             h.Add("<li class=\"tabs-title is-active\">");
-            h.Add("<a href=\"#paneltop\">");
+            h.Add("<a href=\"#_\">");
             h.Add(work.Label);
             h.Add("</a>");
             h.Add("</li>");
-
             if (subs != null)
             {
                 for (int i = 0; i < subs.Count; i++)
                 {
                     Work sub = subs[i];
-
                     if (!sub.DoAuthorize(ac)) continue;
-
-                    h.Add("<li class=\"tabs-title\"><a href=\"#panel");
-                    h.Add(i);
+                    h.Add("<li class=\"tabs-title\"><a href=\"#_");
+                    h.Add(sub.Name);
                     h.Add("\">");
                     h.Add(sub.Label);
                     h.Add("</a></li>");
                 }
             }
             h.Add("</ul>");
-
-            h.Add("<div class=\"tabs-content\" data-tabs-content=\"frame-tabs\">");
-
-            h.Add("<div class=\"tabs-panel is-active\" id=\"paneltop\">");
+            // tabs content
+            h.Add("<div class=\"tabs-content\" data-tabs-content=\"frametabs\">");
+            // the first panel
+            h.Add("<div class=\"tabs-panel is-active\" id=\"_\">");
             h.Add("<div class=\"top-bar\">");
             h.Add("<div class=\"top-bar-left\">");
             h.TRIGGERS(work, null);
@@ -72,23 +69,25 @@ namespace Greatbone.Sample
             h.Add("</span>");
             h.Add("</div>");
             h.Add("</div>");
+            if (work.Goto != null)
+            {
+                h.Add("<iframe id=\"goto\" src=\"goto\" frameborder=\"0\" style=\"width:100%; height:100%;\"></iframe>");
+            }
             h.Add("</div>");
-
             if (subs != null)
             {
+                // the sub-level panels
                 for (int i = 0; i < subs.Count; i++)
                 {
                     Work sub = subs[i];
-
                     if (!sub.DoAuthorize(ac)) continue;
-
-                    h.Add("<div class=\"tabs-panel\" style=\"height: 100%\" id=\"panel");
-                    h.Add(i);
+                    h.Add("<div class=\"tabs-panel\" style=\"height: 100%\" id=\"_");
+                    h.Add(sub.Name);
                     h.Add("\">");
                     h.Add("<iframe id=\"");
-                    h.Add(sub.Key);
+                    h.Add(sub.Name);
                     h.Add("/\" frameborder=\"0\" style=\"width:100%; height:100%;\"></iframe>");
-                    h.Add(" </div>");
+                    h.Add("</div>");
                 }
             }
             h.Add(" </div>");
@@ -98,8 +97,8 @@ namespace Greatbone.Sample
             h.Add("<script src=\"/foundation.min.js\"></script>");
             h.Add("<script src=\"/app.min.js\"></script>");
             h.Add("<script>");
-            h.Add("$(document).foundation();");
-            h.Add("$('#frame-tabs').on('change.zf.tabs', function(e){var ifr = $('.tabs-panel.is-active').find('iframe'); if (ifr && !ifr[0].src) ifr[0].src = ifr[0].id;});");
+            h.Add("$(document).foundation();\n");
+            h.Add("$('#frametabs').on('deeplink.zf.tabs change.zf.tabs', function(e){\nvar ifr = $('.tabs-panel.is-active').find('iframe'); \nif (ifr && !ifr[0].src) ifr[0].src = ifr[0].id;});");
             h.Add("</script>");
 
             h.Add("</body>");

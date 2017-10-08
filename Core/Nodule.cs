@@ -5,10 +5,10 @@ namespace Greatbone.Core
     /// <summary>
     /// A certain node of resources along the URi path.
     /// </summary>
-    public abstract class Nodule : IRollable
+    public abstract class Nodule : INamable
     {
-        // name-derived identifier as appeared in URI
-        readonly string key;
+        // identifier as appeared in URI
+        readonly string name;
 
         // ui label or upper key
         readonly string label;
@@ -31,7 +31,7 @@ namespace Greatbone.Core
 
         internal Nodule(string name, ICustomAttributeProvider attrprov)
         {
-            this.key = name.ToLower();
+            this.name = name;
 
             // either methodinfo or typeinfo
             if (attrprov == null)
@@ -39,7 +39,7 @@ namespace Greatbone.Core
                 attrprov = GetType().GetTypeInfo();
             }
 
-            // ui
+            // ui 
             var uis = (UiAttribute[]) attrprov.GetCustomAttributes(typeof(UiAttribute), false);
             if (uis.Length > 0)
             {
@@ -69,7 +69,7 @@ namespace Greatbone.Core
 
         public abstract Service Service { get; }
 
-        public string Key => key;
+        public string Name => name;
 
         public UiAttribute Ui => ui;
 
@@ -105,7 +105,7 @@ namespace Greatbone.Core
 
         public override string ToString()
         {
-            return key;
+            return name;
         }
     }
 }

@@ -13,7 +13,7 @@ namespace Greatbone.Core
     /// <summary>
     /// A client of RPC, service and/or event queue.
     /// </summary>
-    public class Client : HttpClient, IRollable
+    public class Client : HttpClient, INamable
     {
         const int AHEAD = 1000 * 12;
 
@@ -55,7 +55,7 @@ namespace Greatbone.Core
                 for (int i = 0; i < eis.Count; i++)
                 {
                     if (i > 0) sb.Append(',');
-                    sb.Append(eis[i].Key);
+                    sb.Append(eis[i].Name);
                 }
                 x_event = sb.ToString();
             }
@@ -64,7 +64,7 @@ namespace Greatbone.Core
             Timeout = TimeSpan.FromSeconds(5);
         }
 
-        public string Key => peerid;
+        public string Name => peerid;
 
 
         public void TryPoll(int ticks)

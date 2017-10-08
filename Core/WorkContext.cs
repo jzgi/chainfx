@@ -8,6 +8,7 @@ namespace Greatbone.Core
     /// </summary>
     public class WorkContext
     {
+        // either the identifying name for a fixed work or the constant var for a variable work
         readonly string name;
 
         public WorkContext(string name)

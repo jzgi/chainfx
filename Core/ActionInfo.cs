@@ -38,7 +38,7 @@ namespace Greatbone.Core
         )
         {
             this.work = work;
-            this.rpath = Key == string.Empty ? "./" : Key;
+            this.rpath = Name == string.Empty ? "./" : Name;
             this.async = async;
             this.subscript = subscript;
             this.limit = limit;

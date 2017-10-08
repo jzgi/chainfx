@@ -10,7 +10,7 @@ namespace Greatbone.Core
     /// <summary>
     /// A binary static content of certain mime type.
     /// </summary>
-    public class StaticContent : HttpContent, IRollable, IContent
+    public class StaticContent : HttpContent, INamable, IContent
     {
         static readonly Dictionary<string, string> Types = new Dictionary<string, string>
         {
@@ -1559,7 +1559,7 @@ namespace Greatbone.Core
             this.size = size;
         }
 
-        public string Key { get; set; }
+        public string Name { get; set; }
 
         public string Type { get; set; }
 

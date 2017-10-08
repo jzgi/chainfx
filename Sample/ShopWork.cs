@@ -139,7 +139,7 @@ namespace Greatbone.Sample
             }
         }
 
-        [Ui("新建", Mode = UiMode.ButtonShow)]
+        [Ui("新建", Modal = Modal.ButtonShow)]
         public async Task @new(ActionContext ac)
         {
             if (ac.GET)

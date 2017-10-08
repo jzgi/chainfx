@@ -50,87 +50,100 @@ namespace Greatbone.Sample
                     var shop = dc.ToObject<Shop>(proj);
 
                     // items of the shop
+
                     Item[] items = null;
-                    dc.Sql("SELECT ").columnlst(Item.Empty, Item.UNMOD)._("FROM items WHERE shopid = @1");
+                    dc.Sql("SELECT ").columnlst(Item.Empty)._("FROM items WHERE shopid = @1");
                     if (dc.Query(p => p.Set(shopid)))
                     {
-                        items = dc.ToArray<Item>(Item.UNMOD);
+                        items = dc.ToArray<Item>();
                     }
 
-                    ac.GivePage(200, m =>
+                    ac.GivePage(200, h =>
                     {
-                        m.T("<div data-sticky-container>");
-                        m.T("<div class=\"sticky\" style=\"width: 100%\" data-sticky  data-options=\"anchor: page; marginTop: 0; stickyOn: small;\">");
-                        m.T("<div class=\"top-bar\">");
-                        m.T("<div class=\"top-bar-title\">").T(shop.name).T("</div>");
-                        m.T("<div class=\"top-bar-left\">").T("<i class=\"typcn typcn-phone\"></i>").T(shop.oprtel).T("</div>");
-                        m.T("<div class=\"top-bar-right\">");
-                        m.T("<a class=\"float-right\" href=\"/my//pre/\"><i class=\"typcn typcn-shopping-cart\" style=\"font-size: 1.5rem\"></i></a>");
-                        m.T("</div>");
-                        m.T("</div>");
-                        m.T("</div>");
-                        m.T("</div>");
+                        h.T("<div data-sticky-container>");
+                        h.T("<div class=\"sticky\" style=\"width: 100%\" data-sticky  data-options=\"anchor: page; marginTop: 0; stickyOn: small;\">");
+                        h.T("<div class=\"top-bar\">");
+                        h.T("<div class=\"top-bar-title\">").T(shop.name).T("</div>");
+                        h.T("<div class=\"top-bar-left\">").T("<i class=\"typcn typcn-phone\"></i>").T(shop.oprtel).T("</div>");
+                        h.T("<div class=\"top-bar-right\">");
+                        h.T("<a class=\"float-right\" href=\"/my//pre/\"><i class=\"typcn typcn-shopping-cart\" style=\"font-size: 1.5rem\"></i></a>");
+                        h.T("</div>");
+                        h.T("</div>");
+                        h.T("</div>");
+                        h.T("</div>");
 
                         // display items
                         if (items == null)
                         {
-                            m.T("没有上架商品");
+                            h.T("没有上架商品");
                             return;
                         }
 
-                        m.T("<div class=\"grid-x grid-padding-x small-up-1 medium-up-2\">");
+                        h.T("<div class=\"grid-x grid-padding-x small-up-1 medium-up-2\">");
                         for (int i = 0; i < items.Length; i++)
                         {
-                            m.T("<div class=\"cell\">");
+                            h.T("<div class=\"cell\">");
                             var item = items[i];
-                            m.T("<form>");
 
                             var shopname = shop.name;
 
-                            m.HIDDEN(nameof(shopid), shopid);
-                            m.HIDDEN(nameof(shopname), shopname);
-                            m.HIDDEN(nameof(item.name), item.name);
-                            m.HIDDEN(nameof(item.unit), item.unit);
-                            m.HIDDEN(nameof(item.price), item.price);
+                            h.T("<div class=\"card\">");
 
-                            m.T("<div class=\"card\">");
+                            h.T("<div class=\"small-4 cell\">");
+                            h.T("<img src=\"").T(item.name).T("/icon\" alt=\"\" class=\"thumbnail circle\">");
+                            h.T("</div>"); // column
 
-                            m.T("<div class=\"small-4 cell\">");
-                            m.T("<img src=\"").T(item.name).T("/icon\" alt=\"\" class=\"thumbnail circle\">");
-                            m.T("</div>"); // column
-
-                            m.T("<div class=\"small-8 cell\">");
-                            m.T("<h3>");
-                            m.T(item.name);
+                            h.T("<div class=\"small-8 cell\">");
+                            h.T("<h3>");
+                            h.T(item.name);
                             if (item.max > 0)
                             {
-                                m.T("（").T(item.max).T(item.unit).T("）");
+                                h.T("（").T(item.max).T(item.unit).T("）");
                             }
-                            m.T("</h3>");
-                            m.T("<div>");
-                            m.T(item.descr);
-                            m.T("</div>");
+                            h.T("</h3>");
+                            h.T("<div>");
+                            h.T(item.descr);
+                            h.T("</div>");
 
-                            m.T("<p>");
-                            m.T("<strong class=\"money\">&yen;").T(item.price).T("</strong> ");
-                            m.T(item.unit);
-                            m.T("</p>");
+                            h.T("<p>");
+                            h.T("<strong class=\"money\">&yen;").T(item.price).T("</strong> ");
+                            h.T(item.unit);
+                            h.T("</p>");
 
-                            m.T("<div class=\"row\">");
+                            h.T("<div class=\"row\">");
 
-                            m.T("<div class=\"small-5 cell\">");
-                            m.T("<button type=\"button\" class=\"button primary\" formaction=\"/my//pre/add\" onclick=\"dialog(this, 4);\">加入购物车</button>");
-                            m.T("</div>");
+                            h.T("<div class=\"small-5 cell\">");
 
-                            m.T("</div>"); // row
+                            h.HIDDEN(nameof(shopid), shopid);
+                            h.HIDDEN(nameof(shopname), shopname);
+                            h.HIDDEN(nameof(item.name), item.name);
+                            h.HIDDEN(nameof(item.unit), item.unit);
+                            h.HIDDEN(nameof(item.price), item.price);
 
-                            m.T("</div>"); // column
+                            h.T("<button type=\"button\" class=\"button primary\"  data-toggle=\"dropdown").T(i).T("\">我要购买</button>");
+                            h.T("<div class=\"dropdown-pane\" id=\"dropdown").T(i).T("\" data-position=\"top\" data-alignment=\"right\" style=\"box-shadow:0px 0px 10px #0a0a0a;\" data-dropdown>");
+                            h.T("<form>");
 
-                            m.T("</div>"); // row card
-                            m.T("</form>");
-                            m.T("</div>");
+                            h.NUMBER(nameof(item.max), item.min, min: item.min, step: item.step);
+
+                            if (item.customs != null)
+                            {
+                                h.CHECKBOXGROUP(nameof(item.customs), null, item.customs, "定制要求");
+                            }
+
+                            h.T("<button type=\"button\" class=\"button primary\" >加入购物车</button>");
+                            h.T("</form>");
+                            h.T("</div>");
+
+                            h.T("</div>");
+                            h.T("</div>"); // row
+
+                            h.T("</div>"); // column
+
+                            h.T("</div>"); // row card
+                            h.T("</div>");
                         }
-                        m.T("</div>");
+                        h.T("</div>");
                     }, true, 60 * 5);
                 }
                 else
@@ -147,7 +160,7 @@ namespace Greatbone.Sample
         {
         }
 
-        [Ui("修改", Mode = UiMode.ButtonShow)]
+        [Ui("修改", Modal = Modal.ButtonShow)]
         public async Task edit(ActionContext ac)
         {
             short id = ac[this];
@@ -193,7 +206,7 @@ namespace Greatbone.Sample
             }
         }
 
-        [Ui("经理", Mode = UiMode.ButtonShow)]
+        [Ui("经理", Modal = Modal.ButtonShow)]
         public async Task mgr(ActionContext ac)
         {
             short shopid = ac[this];
@@ -238,7 +251,7 @@ namespace Greatbone.Sample
             }
         }
 
-        [Ui("图片", Mode = UiMode.AnchorCrop)]
+        [Ui("图片", Modal = Modal.ACrop)]
         public new async Task icon(ActionContext ac)
         {
             short shopid = ac[this];

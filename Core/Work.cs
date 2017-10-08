@@ -16,10 +16,9 @@ namespace Greatbone.Core
         internal static readonly AuthorizeException AuthorizeEx = new AuthorizeException();
 
         // max nesting levels
-        const int MaxNesting = 6;
+        const int MaxNesting = 8;
 
-        // underlying file directory name
-        const string VAR = "var";
+        const string Var = "var";
 
         // state-passing
         readonly WorkContext ctx;
@@ -31,6 +30,9 @@ namespace Greatbone.Core
 
         // the default action, can be null
         readonly ActionInfo @default;
+
+        // the goto action, can be null
+        readonly ActionInfo @goto;
 
         // actions with Ui attribute
         readonly ActionInfo[] uiactions;
@@ -74,32 +76,29 @@ namespace Greatbone.Core
                 else continue;
 
                 actions.Add(ai);
-                if (ai.Key == string.Empty)
-                {
-                    @default = ai;
-                }
+                if (ai.Name == string.Empty) @default = ai;
+                else if (ai.Name == "goto") @goto = ai;
             }
 
             // gather ui actions
-            List<ActionInfo> uias = null;
+            List<ActionInfo> lst = null;
             for (int i = 0; i < actions.Count; i++)
             {
                 ActionInfo ai = actions[i];
                 if (ai.HasUi)
                 {
-                    if (uias == null) uias = new List<ActionInfo>();
-                    uias.Add(ai);
+                    if (lst == null) lst = new List<ActionInfo>();
+                    lst.Add(ai);
                 }
             }
-            uiactions = uias?.ToArray();
+            uiactions = lst?.ToArray();
         }
 
         /// <summary>
         /// Create a fixed-key subwork.
         /// </summary>
-        /// <param name="name"></param>
-        /// <param name="attach">an attachment object</param>
-        /// <typeparam name="W"></typeparam>
+        /// <param name="name">the identifying name for the work</param>
+        /// <typeparam name="W">the type of work to create</typeparam>
         /// <returns>The newly created and subwork instance.</returns>
         /// <exception cref="ServiceException">Thrown if error</exception>
         public W Create<W>(string name) where W : Work
@@ -108,7 +107,6 @@ namespace Greatbone.Core
             {
                 throw new ServiceException("allowed work nesting " + MaxNesting);
             }
-
             if (works == null)
             {
                 works = new Roll<Work>(16);
@@ -156,14 +154,14 @@ namespace Greatbone.Core
             {
                 throw new ServiceException(typ + " no valid constructor");
             }
-            WorkContext wc = new WorkContext(VAR)
+            WorkContext wc = new WorkContext(Var)
             {
                 Keyer = keyer,
                 Labeller = labeller,
                 Parent = this,
                 IsVar = true,
                 Level = Level + 1,
-                Directory = (Parent == null) ? VAR : Path.Combine(Parent.Directory, VAR),
+                Directory = (Parent == null) ? Var : Path.Combine(Parent.Directory, Var),
                 Service = Service
             };
             W work = (W) ci.Invoke(new object[] {wc});
@@ -176,6 +174,8 @@ namespace Greatbone.Core
         public ActionInfo[] UiActions => uiactions;
 
         public ActionInfo Default => @default;
+
+        public ActionInfo Goto => @goto;
 
         public Roll<Work> Works => works;
 
@@ -241,13 +241,13 @@ namespace Greatbone.Core
 
         internal void Describe(XmlContent cont)
         {
-            cont.ELEM(Key,
+            cont.ELEM(Name,
                 delegate
                 {
                     for (int i = 0; i < Actions.Count; i++)
                     {
                         ActionInfo act = Actions[i];
-                        cont.Put(act.Key, "");
+                        cont.Put(act.Name, "");
                     }
                 },
                 delegate
@@ -440,7 +440,7 @@ namespace Greatbone.Core
 
             StaticContent cont = new StaticContent(bytes, bytes.Length)
             {
-                Key = filename,
+                Name = filename,
                 Type = ctyp,
                 Modified = modified,
                 GZip = gzip

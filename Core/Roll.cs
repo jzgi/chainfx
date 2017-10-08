@@ -7,7 +7,7 @@ namespace Greatbone.Core
     /// <summary>
     /// An add-only and ordered dictionary.
     /// </summary>
-    public class Roll<E> : IEnumerable where E : IRollable
+    public class Roll<E> : IEnumerable where E : INamable
     {
         int[] buckets;
 
@@ -60,7 +60,7 @@ namespace Greatbone.Core
             for (int i = 0; i < count; i++)
             {
                 E elem = entries[i].element;
-                if (elem.Key.StartsWith(prefix)) return elem;
+                if (elem.Name.StartsWith(prefix)) return elem;
             }
             return default(E);
         }
@@ -81,7 +81,7 @@ namespace Greatbone.Core
             for (int i = 0; i < count; i++)
             {
                 E elem = entries[i].element;
-                if (elem.Key.StartsWith(prefix))
+                if (elem.Name.StartsWith(prefix))
                 {
                     if (lst == null) lst = new List<E>(8);
                     lst.Add(elem);
@@ -119,7 +119,7 @@ namespace Greatbone.Core
             for (int i = 0; i < count; i++)
             {
                 E elem = entries[i].element;
-                if (elem.Key.StartsWith(prefix))
+                if (elem.Name.StartsWith(prefix))
                 {
                     a(elem);
                 }
@@ -187,7 +187,7 @@ namespace Greatbone.Core
                 }
             }
 
-            string key = elem.Key;
+            string key = elem.Name;
             int code = key.GetHashCode() & 0x7fffffff;
             int buck = code % buckets.Length; // target bucket
             int idx = buckets[buck];

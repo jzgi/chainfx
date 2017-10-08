@@ -3048,14 +3048,14 @@ input:checked + label > .switch-inactive {
 
 .title-bar {
     padding: 0.5rem;
-    background: #0a0a0a;
-    color: #fefefe;
+    color: #0a0a0a;
     display: -ms-flexbox;
     display: flex;
     -ms-flex-pack: start;
     justify-content: flex-start;
     -ms-flex-align: center;
     align-items: center;
+    border-bottom: 1px solid #0a0a0a;
 }
 
 .title-bar .menu-icon {
@@ -3076,7 +3076,6 @@ input:checked + label > .switch-inactive {
 .title-bar-title {
     display: inline-block;
     vertical-align: middle;
-    font-weight: bold;
 }
 
 .top-bar {
