@@ -350,178 +350,68 @@ namespace Greatbone.Core
             return this;
         }
 
-        public HtmlContent COL(string label, short v, int n = 0)
+        public HtmlContent CELL(short v, string label = null, sbyte grid = 0)
         {
-            Add("<div class=\"grid-x grid-padding-x\">");
-            Add("<div class=\"cell small-3\" style=\"padding-right: 0; text-align: right\">");
-            Add(label);
-            Add("：</div>");
-            Add("<div class=\"cell small-9\">");
+            CELL_(label, grid);
             Add(v);
-            Add("</div>");
-            Add("</div>");
+            _CELL();
             return this;
         }
 
-        public HtmlContent COL(string label, int v, int n = 0)
+        public HtmlContent CELL(int v, string label = null, sbyte grid = 0)
         {
-            Add("<div class=\"cell small-3\" style=\"padding-right: 0; text-align: right\">");
-            Add(label);
-            Add("：</div>");
-            Add("<div class=\"cell small-9\">");
+            CELL_(label, grid);
             Add(v);
-            Add("</div>");
+            _CELL();
             return this;
         }
 
-        public HtmlContent COL(string label, string v, int n = 0)
+        public HtmlContent CELL(decimal v, string label = null, sbyte grid = 0)
         {
-            Add("<div class=\"cell small-3\" style=\"padding-right: 0; text-align: right\">");
-            Add(label);
-            Add("：</div>");
-            Add("<div class=\"cell small-9\">");
+            CELL_(label, grid);
             Add(v);
-            Add("</div>");
+            _CELL();
             return this;
         }
 
-        public HtmlContent COL(string label, decimal v, int n = 0)
+        public HtmlContent CELL(DateTime v, string label = null, sbyte grid = 0)
         {
-            Add("<div class=\"grid-x grid-padding-x\">");
-            Add("<div class=\"cell small-3\" style=\"padding-right: 0; text-align: right\">");
-            Add(label);
-            Add("：</div>");
-            Add("<div class=\"cell small-9\">");
+            CELL_(label, grid);
             Add(v);
-            Add("</div>");
-            Add("</div>");
+            _CELL();
             return this;
         }
 
-        public HtmlContent COL(string label, Action<HtmlContent> v)
+        public HtmlContent CELL(string v, string label = null, sbyte grid = 0)
         {
-            Add("<div class=\"cell small-3\" style=\"padding-right: 0; text-align: right\">");
-            Add(label);
-            Add("：</div>");
-            Add("<div class=\"cell small-9\">");
-            v(this);
-            Add("</div>");
-            return this;
-        }
-
-        public HtmlContent COL(string label1, string v1, string label2, string v2)
-        {
-            Add("<div class=\"cell small-3\" style=\"padding-right: 0; text-align: right\">");
-            Add(label1);
-            Add("：</div>");
-            Add("<div class=\"cell small-3\">");
-            Add(v1);
-            Add("</div>");
-            Add("<div class=\"cell small-3\" style=\"padding-right: 0; text-align: right\">");
-            Add(label2);
-            Add("：</div>");
-            Add("<div class=\"cell small-3\">");
-            Add(v2);
-            Add("</div>");
-            return this;
-        }
-
-        public HtmlContent COL(string label1, string v1, string label2, int v2)
-        {
-            Add("<div class=\"cell small-3\" style=\"padding-right: 0; text-align: right\">");
-            Add(label1);
-            Add("：</div>");
-            Add("<div class=\"cell small-3\">");
-            Add(v1);
-            Add("</div>");
-            Add("<div class=\"cell small-3\" style=\"padding-right: 0; text-align: right\">");
-            Add(label2);
-            Add("：</div>");
-            Add("<div class=\"cell small-3\">");
-            Add(v2);
-            Add("</div>");
-            return this;
-        }
-
-        public HtmlContent COL(string label1, string v1, string label2, decimal v2)
-        {
-            Add("<div class=\"cell small-3\" style=\"padding-right: 0; text-align: right\">");
-            Add(label1);
-            Add("：</div>");
-            Add("<div class=\"cell small-3\">");
-            Add(v1);
-            Add("</div>");
-            Add("<div class=\"cell small-3\" style=\"padding-right: 0; text-align: right\">");
-            Add(label2);
-            Add("：</div>");
-            Add("<div class=\"cell small-3\">");
-            Add(v2);
-            Add("</div>");
-            return this;
-        }
-
-        public HtmlContent COL(string label1, string v1, string label2, DateTime v2)
-        {
-            Add("<div class=\"cell small-3\" style=\"padding-right: 0; text-align: right\">");
-            Add(label1);
-            Add("：</div>");
-            Add("<div class=\"cell small-3\">");
-            Add(v1);
-            Add("</div>");
-            Add("<div class=\"cell small-3\" style=\"padding-right: 0; text-align: right\">");
-            Add(label2);
-            Add("：</div>");
-            Add("<div class=\"cell small-3\">");
-            Add(v2);
-            Add("</div>");
-            return this;
-        }
-
-        public HtmlContent COL_(string label)
-        {
-            Add("<div class=\"grid-x grid-padding-x align-middle\">");
-            Add("<div class=\"cell small-3\" style=\"padding-right: 0; text-align: right\">");
-            Add(label);
-            Add("：</div>");
-            Add("<div class=\"cell small-9\">");
-            return this;
-        }
-
-        public HtmlContent COL_(int n)
-        {
-            Add("<div class=\"cell small-");
-            Add(n);
-            Add("\">");
-            return this;
-        }
-
-        public HtmlContent _COL()
-        {
-            Add("</div>");
-            return this;
-        }
-
-        public HtmlContent CARD_()
-        {
-            Add("<div class=\"card\" style=\"margin: 0.25rem\">");
-            return this;
-        }
-
-        public HtmlContent _CARD()
-        {
-            Add("</div>");
-            return this;
-        }
-
-        public HtmlContent CARDITEM(string label, string v)
-        {
-            Add("<div class=\"row\" style=\"margin: 0;\">");
-            Add("<div class=\"small-3 columns labeldiv\">");
-            Add(label);
-            Add("</div>");
-            Add("<div class=\"small-9 columns\">");
+            CELL_(label, grid);
             Add(v);
-            Add("</div>");
+            _CELL();
+            return this;
+        }
+
+        public HtmlContent CELL_(string label = null, int grid = 0)
+        {
+            if (label != null)
+            {
+                Add("<div class=\"cell cell-label small-2\">");
+                Add(label);
+                Add("</div>");
+                Add("<div class=\"cell cell-v small-");
+                Add(grid > 0 ? grid - 2 : 10);
+                Add("\">");
+            }
+            else
+            {
+                Add("<div class=\"cell cell-v small-");
+                Add(grid > 0 ? grid : 12);
+                Add("\">");
+            }
+            return this;
+        }
+
+        public HtmlContent _CELL()
+        {
             Add("</div>");
             return this;
         }
@@ -799,9 +689,9 @@ namespace Greatbone.Core
                     Add("<form>");
                     D obj = arr[i];
 
-                    Add("<div class=\"grid-x\" style=\"border: 1px solid #e6e6e6; padding: 0.5rem\">");
+                    Add("<div class=\"grid-x\" style=\"border: 1px solid #e6e6e6; \">");
                     Add("<div class=\"cell\">");
-                    Add("<input name=\"key\" type=\"checkbox\" form=\"viewform\" value=\"");
+                    Add("<input name=\"key\" style=\"margin-left: 0.25rem\" type=\"checkbox\" form=\"viewform\" value=\"");
                     varwork?.OutputVarKey(obj, this);
                     Add("\">");
                     Add("</div>");
@@ -1043,18 +933,15 @@ namespace Greatbone.Core
             return this;
         }
 
-        public HtmlContent TEXT(string name, string v, string label = null, string help = null, string pattern = null, sbyte max = 0, sbyte min = 0, IOptable<string> opt = null, bool @readonly = false, bool required = false, int n = 0)
+        public HtmlContent TEXT(string name, string v, string label = null, string help = null, string pattern = null, sbyte max = 0, sbyte min = 0, bool @readonly = false, bool required = false, sbyte grid = 0)
         {
-            int endg = GridStart(n);
+            CELL_(label, grid);
 
-            Add("<label>");
-            AddLabel(label, name);
             Add("<input type=\"text\" name=\"");
             Add(name);
             Add("\" value=\"");
             AddEsc(v);
             Add("\"");
-
             if (help != null)
             {
                 Add(" placeholder=\"");
@@ -1085,21 +972,15 @@ namespace Greatbone.Core
             if (@readonly) Add(" readonly");
             if (required) Add(" required");
             Add(">");
-            Add("</label>");
 
-            GridEnd(endg);
+            _CELL();
             return this;
         }
 
-        public HtmlContent SEARCH(string name, string v, string label = null, string help = null, string pattern = null, sbyte max = 0, sbyte min = 0, bool required = false, int n = 0)
+        public HtmlContent SEARCH(string name, string v, string label = null, string help = null, string pattern = null, sbyte max = 0, sbyte min = 0, bool required = false, sbyte grid = 0)
         {
-            int endg = GridStart(n);
+            CELL_(label, grid);
 
-            if (label != null)
-            {
-                Add("<label>");
-                Add(label);
-            }
             Add("<input type=\"search\" name=\"");
             Add(name);
             Add("\" value=\"");
@@ -1134,21 +1015,15 @@ namespace Greatbone.Core
                 Add("\"");
             }
             Add(">");
-            if (label != null)
-            {
-                Add("</label>");
-            }
 
-            GridEnd(endg);
+            _CELL();
             return this;
         }
 
-        public HtmlContent PASSWORD(string name, string v, string label = null, string help = null, string pattern = null, sbyte max = 0, sbyte min = 0, bool @readonly = false, bool required = false, int n = 0)
+        public HtmlContent PASSWORD(string name, string v, string label = null, string help = null, string pattern = null, sbyte max = 0, sbyte min = 0, bool @readonly = false, bool required = false, sbyte grid = 0)
         {
-            int endg = GridStart(n);
+            CELL_(label, grid);
 
-            Add("<label>");
-            AddLabel(label, name);
             Add("<input type=\"password\" name=\"");
             Add(name);
             Add("\" value=\"");
@@ -1185,18 +1060,15 @@ namespace Greatbone.Core
             if (@readonly) Add(" readonly");
             if (required) Add(" required");
             Add(">");
-            Add("</label>");
 
-            GridEnd(endg);
+            _CELL();
             return this;
         }
 
-        public HtmlContent DATE(string name, DateTime v, string label = null, DateTime max = default(DateTime), DateTime min = default(DateTime), bool @readonly = false, bool required = false, int step = 0, int n = 0)
+        public HtmlContent DATE(string name, DateTime v, string label = null, DateTime max = default(DateTime), DateTime min = default(DateTime), bool @readonly = false, bool required = false, int step = 0, sbyte grid = 0)
         {
-            int endg = GridStart(n);
+            CELL_(label, grid);
 
-            Add("<label>");
-            AddLabel(label, name);
             Add("<input type=\"date\" name=\"");
             Add(name);
             Add("\" value=\"");
@@ -1224,9 +1096,8 @@ namespace Greatbone.Core
                 Add("\"");
             }
             Add(">");
-            Add("</label>");
 
-            GridEnd(endg);
+            _CELL();
             return this;
         }
 
@@ -1236,18 +1107,11 @@ namespace Greatbone.Core
             return this;
         }
 
-        public HtmlContent NUMBER(string name, short v, string label = null, string tip = null, short max = 0, short min = 0, short step = 0, bool opt = false, bool @readonly = false, bool required = false, int n = 0)
+        public HtmlContent NUMBER(string name, short v, string label = null, string tip = null, short max = 0, short min = 0, short step = 0, bool @readonly = false, bool required = false, sbyte grid = 0)
         {
-            int endg = GridStart(n);
-
-            if (label != null)
-            {
-                Add("<label>");
-                AddLabel(label, name);
-            }
+            CELL_(label, grid);
 
             bool group = step > 0; // input group with up up and down
-
             if (group)
             {
                 Add("<div class=\"input-group\">");
@@ -1291,10 +1155,6 @@ namespace Greatbone.Core
                 Add(step);
                 Add("\"");
             }
-            if (opt)
-            {
-                Add("<input type=\"button\" value=\"...\" onclick=\"dialog(this, 1, 1)\"> ");
-            }
             if (@readonly) Add(" readonly");
             if (required) Add(" required");
 
@@ -1308,21 +1168,14 @@ namespace Greatbone.Core
                 Add("</div>");
             }
 
-            if (label != null)
-            {
-                Add("</label>");
-            }
-
-            GridEnd(endg);
+            _CELL();
             return this;
         }
 
-        public HtmlContent NUMBER(string name, int v, string label = null, string tip = null, int max = 0, int min = 0, int step = 0, bool opt = false, bool @readonly = false, bool required = false, int n = 0)
+        public HtmlContent NUMBER(string name, int v, string label = null, string tip = null, int max = 0, int min = 0, int step = 0, bool @readonly = false, bool required = false, sbyte grid = 0)
         {
-            int endg = GridStart(n);
+            CELL_(label, grid);
 
-            Add("<label>");
-            AddLabel(label, name);
             Add("<input type=\"number\" name=\"");
             Add(name);
             Add("\" value=\"");
@@ -1353,26 +1206,18 @@ namespace Greatbone.Core
                 Add(step);
                 Add("\"");
             }
-            if (opt)
-            {
-                Add("<input type=\"button\" value=\"...\" onclick=\"dialog(this, 1, 1)\"> ");
-            }
             if (@readonly) Add(" readonly");
             if (required) Add(" required");
-
             Add(">");
-            Add("</label>");
 
-            GridEnd(endg);
+            _CELL();
             return this;
         }
 
-        public HtmlContent NUMBER(string name, long v, string label = null, string tip = null, long max = 0, long min = 0, long step = 0, bool opt = false, bool @readonly = false, bool required = false, int n = 0)
+        public HtmlContent NUMBER(string name, long v, string label = null, string tip = null, long max = 0, long min = 0, long step = 0, bool @readonly = false, bool required = false, sbyte grid = 0)
         {
-            int endg = GridStart(n);
+            CELL_(label, grid);
 
-            Add("<label>");
-            AddLabel(label, name);
             Add("<input type=\"number\" name=\"");
             Add(name);
             Add("\" value=\"");
@@ -1403,26 +1248,18 @@ namespace Greatbone.Core
                 Add(step);
                 Add("\"");
             }
-            if (opt)
-            {
-                Add("<input type=\"button\" value=\"...\" onclick=\"dialog(this, 1, 1)\"> ");
-            }
             if (@readonly) Add(" readonly");
             if (required) Add(" required");
-
             Add(">");
-            Add("</label>");
 
-            GridEnd(endg);
+            _CELL();
             return this;
         }
 
-        public HtmlContent NUMBER(string name, decimal v, string label = null, string tip = null, decimal max = 0, decimal min = 0, decimal step = 0, bool @readonly = false, bool required = false, int n = 0)
+        public HtmlContent NUMBER(string name, decimal v, string label = null, string tip = null, decimal max = 0, decimal min = 0, decimal step = 0, bool @readonly = false, bool required = false, sbyte grid = 0)
         {
-            int endg = GridStart(n);
+            CELL_(label, grid);
 
-            Add("<label>");
-            AddLabel(label, name);
             Add("<input type=\"number\" name=\"");
             Add(name);
             Add("\" value=\"");
@@ -1452,23 +1289,18 @@ namespace Greatbone.Core
             if (step > 0) Add(step);
             else Add("any");
             Add("\"");
-
             if (@readonly) Add(" readonly");
             if (required) Add(" required");
-
             Add(">");
-            Add("</label>");
 
-            GridEnd(endg);
+            _CELL();
             return this;
         }
 
-        public HtmlContent NUMBER(string name, double v, string label = null, string tip = null, double max = 0, double min = 0, double step = 0, bool @readonly = false, bool required = false, int n = 0)
+        public HtmlContent NUMBER(string name, double v, string label = null, string tip = null, double max = 0, double min = 0, double step = 0, bool @readonly = false, bool required = false, sbyte grid = 0)
         {
-            int endg = GridStart(n);
+            CELL_(label, grid);
 
-            Add("<label>");
-            AddLabel(label, name);
             Add("<input type=\"number\" name=\"");
             Add(name);
             Add("\" value=\"");
@@ -1498,26 +1330,21 @@ namespace Greatbone.Core
             if (step > 0) Add(step);
             else Add("any");
             Add("\"");
-
             if (@readonly) Add(" readonly");
             if (required) Add(" required");
-
             Add(">");
-            Add("</label>");
 
-            GridEnd(endg);
+            _CELL();
             return this;
         }
 
         public HtmlContent RANGE()
         {
-            T("</tbody>");
             return this;
         }
 
         public HtmlContent COLOR()
         {
-            T("</tbody>");
             return this;
         }
 
@@ -1537,27 +1364,18 @@ namespace Greatbone.Core
             return this;
         }
 
-        public HtmlContent CHECKBOX(string name, bool v, string label = null, bool required = false, int n = 0)
+        public HtmlContent CHECKBOX(string name, bool v, string label = null, bool required = false, sbyte grid = 0)
         {
-            int endg = GridStart(n);
+            CELL_(label, grid);
 
-            if (label != null)
-            {
-                Add("<label>");
-            }
             Add("<input type=\"checkbox\" name=\"");
             Add(name);
             Add("\"");
             if (v) Add(" checked");
             if (required) Add(" required");
             Add(">");
-            if (label != null)
-            {
-                Add(label);
-                Add(" </label>");
-            }
 
-            GridEnd(endg);
+            _CELL();
             return this;
         }
 
@@ -1859,9 +1677,9 @@ namespace Greatbone.Core
             return this;
         }
 
-        public HtmlContent TEXTAREA(string name, string v, string label = null, string help = null, short max = 0, short min = 0, bool @readonly = false, bool required = false, int n = 0)
+        public HtmlContent TEXTAREA(string name, string v, string label = null, string help = null, short max = 0, short min = 0, bool @readonly = false, bool required = false, sbyte grid = 0)
         {
-            int endg = GridStart(n);
+            CELL_(label, grid);
 
             Add("<label>");
             AddLabel(label, name);
@@ -1899,7 +1717,7 @@ namespace Greatbone.Core
             Add("</textarea>");
             Add("</label>");
 
-            GridEnd(endg);
+            _CELL();
             return this;
         }
 
@@ -1912,7 +1730,7 @@ namespace Greatbone.Core
 
             UiAttribute ui = ai.Ui;
 
-            Modal mode = ui.Modal;
+            UiMode mode = ui.Mode;
             if (mode > 0)
             {
                 Add(" onclick=\"dialog(this,");
@@ -1926,49 +1744,10 @@ namespace Greatbone.Core
             return this;
         }
 
-        int gridx;
-
-        int GridStart(int n)
+        public HtmlContent SELECT(string name, short v, IOptable<short> opt, string label = null, bool multiple = false, bool required = false, int size = 0, sbyte grid = 0)
         {
-            if (gridx > 0)
-            {
-                if (n == 0 || n > gridx) n = gridx;
-                Add("<div class=\"small-");
-                Add(n);
-                Add(" cell\">");
-                gridx -= n;
-                return gridx > 0 ? 2 : 1;
-            }
-            if (n > 0)
-            {
-                Add("<div class=\"grid-x grid-margin-x\">");
-                Add("<div class=\"small-");
-                Add(n);
-                Add(" cell\">");
-                gridx = 12 - n;
-                return gridx > 0 ? 2 : 1;
-            }
-            return 0;
-        }
+            CELL_(label, grid);
 
-        void GridEnd(int c)
-        {
-            if (c == 1)
-            {
-                Add("</div>");
-            }
-            else if (c == 2)
-            {
-                Add("</div></div>");
-            }
-        }
-
-        public HtmlContent SELECT(string name, short v, IOptable<short> opt, string label = null, bool multiple = false, bool required = false, int size = 0, int n = 0)
-        {
-            int endg = GridStart(n);
-
-            Add("<label>");
-            AddLabel(label, name);
             Add("<select name=\"");
             Add(name);
             Add("\"");
@@ -1992,23 +1771,16 @@ namespace Greatbone.Core
                 Add(item.ToString());
                 Add("</option>");
             });
-
             Add("</select>");
-            Add("</label>");
 
-            GridEnd(endg);
+            _CELL();
             return this;
         }
 
-        public HtmlContent SELECT(string name, string v, IOptable<string> opt, string label = null, bool multiple = false, bool required = false, sbyte size = 0, bool refresh = false, int n = 0)
+        public HtmlContent SELECT(string name, string v, IOptable<string> opt, string label = null, bool multiple = false, bool required = false, sbyte size = 0, bool refresh = false, sbyte grid = 0)
         {
-            int endg = GridStart(n);
+            CELL_(label, grid);
 
-            if (label != null)
-            {
-                Add("<label>");
-                Add(label);
-            }
             Add("<select name=\"");
             Add(name);
             Add("\"");
@@ -2037,24 +1809,15 @@ namespace Greatbone.Core
                 Add("</option>");
             });
             Add("</select>");
-            if (label != null)
-            {
-                Add("</label>");
-            }
 
-            GridEnd(endg);
+            _CELL();
             return this;
         }
 
-        public HtmlContent SELECT(string name, string v, string[] opt, string label = null, bool multiple = false, bool required = false, sbyte size = 0, bool refresh = false, int n = 0)
+        public HtmlContent SELECT(string name, string v, string[] opt, string label = null, bool multiple = false, bool required = false, sbyte size = 0, bool refresh = false, sbyte grid = 0)
         {
-            int endg = GridStart(n);
+            CELL_(label, grid);
 
-            if (label != null)
-            {
-                Add("<label>");
-                Add(label);
-            }
             Add("<select name=\"");
             Add(name);
             Add("\"");
@@ -2088,12 +1851,8 @@ namespace Greatbone.Core
                 }
             }
             Add("</select>");
-            if (label != null)
-            {
-                Add("</label>");
-            }
 
-            GridEnd(endg);
+            _CELL();
             return this;
         }
 

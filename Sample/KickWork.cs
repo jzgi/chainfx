@@ -28,8 +28,8 @@ namespace Greatbone.Sample
                 {
                     ac.GiveGridPage(200, dc.ToArray<Kick>(), (h, o) =>
                     {
-                        h.COL("姓名", o.name);
-                        h.COL("内容", o.content);
+                        h.CELL(o.name, "姓名");
+                        h.CELL(o.content, "内容");
                     });
                 }
                 else

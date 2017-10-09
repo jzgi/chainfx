@@ -56,7 +56,7 @@ namespace Greatbone.Sample
         {
         }
 
-        [Ui("修改", Modal = Modal.AShow)]
+        [Ui("修改", Mode = UiMode.AShow)]
         public async Task edit(ActionContext ac)
         {
             string shopid = ac[typeof(ShopVarWork)];

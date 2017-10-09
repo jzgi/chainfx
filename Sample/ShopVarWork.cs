@@ -93,13 +93,13 @@ namespace Greatbone.Sample
                             h.T("</div>"); // column
 
                             h.T("<div class=\"small-8 cell\">");
-                            h.T("<h3>");
+                            h.T("<h4>");
                             h.T(item.name);
                             if (item.max > 0)
                             {
                                 h.T("（").T(item.max).T(item.unit).T("）");
                             }
-                            h.T("</h3>");
+                            h.T("</h4>");
                             h.T("<div>");
                             h.T(item.descr);
                             h.T("</div>");
@@ -159,7 +159,7 @@ namespace Greatbone.Sample
         {
         }
 
-        [Ui("修改", Modal = Modal.ButtonShow)]
+        [Ui("修改", Mode = UiMode.ButtonShow)]
         public async Task edit(ActionContext ac)
         {
             short id = ac[this];
@@ -205,7 +205,7 @@ namespace Greatbone.Sample
             }
         }
 
-        [Ui("经理", Modal = Modal.ButtonShow)]
+        [Ui("经理", Mode = UiMode.ButtonShow)]
         public async Task mgr(ActionContext ac)
         {
             short shopid = ac[this];
@@ -250,7 +250,7 @@ namespace Greatbone.Sample
             }
         }
 
-        [Ui("图片", Modal = Modal.ACrop)]
+        [Ui("图片", Mode = UiMode.ACrop)]
         public new async Task icon(ActionContext ac)
         {
             short shopid = ac[this];

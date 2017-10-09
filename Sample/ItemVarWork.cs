@@ -44,7 +44,7 @@ namespace Greatbone.Sample
         {
         }
 
-        [Ui("修改", Modal = Modal.ButtonShow)]
+        [Ui("修改", Mode = UiMode.ButtonShow)]
         public async Task edit(ActionContext ac)
         {
             short shopid = ac[-2];
@@ -59,7 +59,7 @@ namespace Greatbone.Sample
                         ac.GivePane(200, m =>
                         {
                             m.FORM_();
-                            m.COL("名称", o.name);
+                            m.CELL(o.name, "名称");
                             m.TEXT(nameof(o.descr), o.descr, "简述", max: 30, required: true);
                             m.TEXT(nameof(o.unit), o.unit, "单位", required: true);
                             m.NUMBER(nameof(o.price), o.price, "单价", required: true);
@@ -90,7 +90,7 @@ namespace Greatbone.Sample
             }
         }
 
-        [Ui("图片", Modal = Modal.ACrop, Circle = true)]
+        [Ui("图片", Mode = UiMode.ACrop, Circle = true)]
         public new async Task icon(ActionContext ac)
         {
             short shopid = ac[-2];

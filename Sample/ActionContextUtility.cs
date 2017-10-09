@@ -3,7 +3,6 @@ using Greatbone.Core;
 
 namespace Greatbone.Sample
 {
-    ///
     public static class ActionContextUtility
     {
         ///
@@ -63,10 +62,13 @@ namespace Greatbone.Sample
             h.Add("<div class=\"top-bar-left\">");
             h.TRIGGERS(work, null);
             h.Add("</div>");
-            h.Add("<div class=\"top-bar-right\">");
             Node node = ac[work];
-            h.Add(node.Label ?? node.Key); // label
-            h.Add("</div>");
+            if (node.Label != null)
+            {
+                h.Add("<div class=\"top-bar-right\">");
+                h.Add(node.Label); // label
+                h.Add("</div>");
+            }
             h.Add("</div>");
             if (work.Goto != null)
             {

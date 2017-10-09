@@ -1,3 +1,4 @@
+using System;
 using System.Threading.Tasks;
 using Greatbone.Core;
 
@@ -11,22 +12,28 @@ namespace Greatbone.Sample
         }
     }
 
-    public class PubShopWork : ShopWork<PubShopVarWork>
+    /// <summary>
+    /// A before filter that ensures city & area are resolved and given in the URL.
+    /// </summary>
+    [AttributeUsage(AttributeTargets.Method, Inherited = false)]
+    public class CityAreaAttribute : Attribute, IBefore
     {
-        public PubShopWork(WorkContext wc) : base(wc)
-        {
-        }
-
-        /// <summary>
-        /// Returns a home page pertaining to a related city
-        /// </summary>
-        public void @default(ActionContext ac)
+        public bool Do(ActionContext ac)
         {
             string city = ac.Query[nameof(city)];
-            string area = ac.Query[nameof(area)];
-            var cities = ((SampleService) Service).Cities;
-            if (city == null)
+            if (city == null) // absent
             {
+                User prin = (User) ac.Principal;
+                if (prin?.city != null) // use those in principal
+                {
+                    ac.AddParam(nameof(prin.city), prin.city);
+                    ac.AddParam(nameof(prin.area), prin.area);
+                    return true;
+                }
+
+                // give out a geolocation page
+                //
+                var cities = ((SampleService) ac.Service).Cities;
                 HtmlContent h = new HtmlContent(ac, true);
                 // geolocator page
                 h.T("<html><head><script>");
@@ -48,15 +55,31 @@ namespace Greatbone.Sample
                 h.T("{enableHighAccuracy: true,timeout: 5000,maximumAge: 0}");
                 h.T(")");
                 h.T("</script></head></html>");
-                ac.Give(200, h, true, 3600);
-                return;
+                ac.Give(200, h);
+                return false;
             }
+            return true;
+        }
+    }
 
+    public class PubShopWork : ShopWork<PubShopVarWork>
+    {
+        public PubShopWork(WorkContext wc) : base(wc)
+        {
+        }
+
+        /// <summary>
+        /// Returns a home page pertaining to a related city
+        /// </summary>
+        [CityArea]
+        public void @default(ActionContext ac)
+        {
+            string city = ac.Query[nameof(city)];
+            string area = ac.Query[nameof(area)];
             if (city.Length == 0)
             {
                 city = "南昌";
             }
-
             ac.GivePage(200, m =>
             {
                 m.T("<div data-sticky-container>");
@@ -65,6 +88,7 @@ namespace Greatbone.Sample
                 m.T("<div class=\"top-bar-title\">所在城市</div>");
                 m.T("<div class=\"top-bar-left\">");
                 m.T("<form>");
+                var cities = ((SampleService) ac.Service).Cities;
                 m.SELECT(nameof(city), city, cities, refresh: true);
                 m.HIDDEN(nameof(area), area);
                 m.T("</form>");
@@ -78,11 +102,10 @@ namespace Greatbone.Sample
 
                 using (var dc = ac.NewDbContext())
                 {
-                    const short proj = Shop.ID | Shop.INITIAL;
-                    dc.Sql("SELECT ").columnlst(Shop.Empty, proj)._("FROM shops WHERE city = @1 AND status > 0");
+                    dc.Sql("SELECT ").columnlst(Shop.Empty)._("FROM shops WHERE city = @1 AND status > 0");
                     if (dc.Query(p => p.Set(city)))
                     {
-                        var shops = dc.ToArray<Shop>(proj);
+                        var shops = dc.ToArray<Shop>();
                         for (int i = 0; i < shops.Length; i++)
                         {
                             var shop = shops[i];
@@ -139,7 +162,7 @@ namespace Greatbone.Sample
             }
         }
 
-        [Ui("新建", Modal = Modal.ButtonShow)]
+        [Ui("新建", Mode = UiMode.ButtonShow)]
         public async Task @new(ActionContext ac)
         {
             if (ac.GET)

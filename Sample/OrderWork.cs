@@ -2,6 +2,8 @@
 using System.Collections.Generic;
 using System.Threading.Tasks;
 using Greatbone.Core;
+using static Greatbone.Core.UiMode;
+using static Greatbone.Sample.User;
 
 namespace Greatbone.Sample
 {
@@ -30,8 +32,8 @@ namespace Greatbone.Sample
                 {
                     ac.GiveGridPage(200, dc.ToArray<Order>(), (h, o) =>
                     {
-                        h.COL("单号", o.id, 0);
-                        h.COL("总价", o.total, 0);
+                        h.CELL(o.id, "单号", 0);
+                        h.CELL(o.total, "总价", 0);
                     }, false, 3);
                 }
                 else
@@ -128,7 +130,7 @@ namespace Greatbone.Sample
             }
         }
 
-        [Ui("清空购物车/删除", "清空购物车或者删除选中的项", Modal = Modal.ButtonConfirm)]
+        [Ui("清空购物车", Mode = ButtonConfirm)]
         public async Task remove(ActionContext ac)
         {
             string wx = ac[typeof(UserVarWork)];
@@ -167,8 +169,8 @@ namespace Greatbone.Sample
                 {
                     ac.GiveGridPage(200, dc.ToArray<Order>(), (h, o) =>
                     {
-                        h.COL("单号", o.id, 0);
-                        h.COL("总价", o.total, 0);
+                        h.CELL(o.id, "单号", 0);
+                        h.CELL(o.total, "总价", 0);
                     }, false, 3);
                 }
                 else
@@ -180,15 +182,15 @@ namespace Greatbone.Sample
     }
 
     [Ui("新单")]
-    [User(User.OPR_)]
+    [User(OPR_)]
     public class OprNewWork : OrderWork<OprNewVarWork>
     {
         static readonly Map<short, string> NOTIFS = new Map<short, string>()
         {
-            [1] = "正在为您的订单作备货生产",
-            [2] = "您的订单的备货生产已完成，准备发货",
-            [3] = "您的订单已发货，请您准备接收",
-            [4] = "您的订单已接收，请您作确认收货操作",
+            [1] = "您的订单已收到。",
+            [2] = "您的订单已开始备货生产。",
+            [3] = "您的订单备货生产已完成，准备派送。",
+            [4] = "您的订单已派送完成，如有疑问请与我们联系。",
         };
 
         public OprNewWork(WorkContext wc) : base(wc)
@@ -204,8 +206,8 @@ namespace Greatbone.Sample
                 {
                     ac.GiveGridPage(200, dc.ToArray<Order>(), (h, o) =>
                     {
-                        h.COL("单号", o.id, 0);
-                        h.COL("总价", o.total, 0);
+                        h.CELL(o.id, "单号", 0);
+                        h.CELL(o.total, "总价", 0);
                     }, false, 3);
                 }
                 else
@@ -215,7 +217,7 @@ namespace Greatbone.Sample
             }
         }
 
-        [Ui("通知买家", Modal = Modal.ButtonShow)]
+        [Ui("通知买家", Mode = ButtonShow)]
         public async Task sendnotif(ActionContext ac)
         {
             long[] key = ac.Query[nameof(key)];
@@ -266,7 +268,7 @@ namespace Greatbone.Sample
             }
         }
 
-        [Ui("委托办理", Modal = Modal.ButtonShow)]
+        [Ui("委托办理", Mode = ButtonShow)]
         public async Task passon(ActionContext ac)
         {
             var prin = (User) ac.Principal;
@@ -308,7 +310,7 @@ namespace Greatbone.Sample
     }
 
     [Ui("派单")]
-    [User(User.OPR_)]
+    [User(OPR_)]
     public class OprGoWork : OrderWork<OprGoVarWork>
     {
         public OprGoWork(WorkContext wc) : base(wc)
@@ -324,8 +326,8 @@ namespace Greatbone.Sample
                 {
                     ac.GiveGridPage(200, dc.ToArray<Order>(), (h, o) =>
                     {
-                        h.COL("单号", o.id, 0);
-                        h.COL("总价", o.total, 0);
+                        h.CELL(o.id, "单号", 0);
+                        h.CELL(o.total, "总价", 0);
                     }, false, 3);
                 }
                 else
@@ -350,7 +352,7 @@ namespace Greatbone.Sample
     }
 
     [Ui("旧单")]
-    [User(User.OPR_)]
+    [User(OPR_)]
     public class OprPastWork : OrderWork<OprPastVarWork>
     {
         public OprPastWork(WorkContext wc) : base(wc)
@@ -366,8 +368,8 @@ namespace Greatbone.Sample
                 {
                     ac.GiveGridPage(200, dc.ToArray<Order>(), (h, o) =>
                     {
-                        h.COL("单号", o.id, 0);
-                        h.COL("总价", o.total, 0);
+                        h.CELL(o.id, "单号", 0);
+                        h.CELL(o.total, "总价", 0);
                     }, false, 3);
                 }
                 else

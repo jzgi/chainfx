@@ -321,11 +321,11 @@ namespace Greatbone.Core
         internal async Task HandleAsync(string rsc, ActionContext ac)
         {
             ac.Work = this;
-
-            // authorize and filters
             if (!DoAuthorize(ac)) throw AuthorizeEx;
-            Before?.Do(ac);
-            if (BeforeAsync != null) await BeforeAsync.DoAsync(ac);
+
+            // any before filterings
+            if (Before?.Do(ac) == false) goto WorkExit;
+            if (BeforeAsync != null && !(await BeforeAsync.DoAsync(ac))) goto WorkExit;
 
             int dot = rsc.LastIndexOf('.');
             if (dot != -1) // file
@@ -355,13 +355,11 @@ namespace Greatbone.Core
                 }
 
                 ac.Doer = ai;
-
-                // action's authorization check
                 if (!ai.DoAuthorize(ac)) throw AuthorizeEx;
 
-                // action's before filtering
-                ai.Before?.Do(ac);
-                if (ai.BeforeAsync != null) await ai.BeforeAsync.DoAsync(ac);
+                // any before filterings
+                if (ai.Before?.Do(ac) == false) goto ActionExit;
+                if (ai.BeforeAsync != null && !(await ai.BeforeAsync.DoAsync(ac))) goto ActionExit;
 
                 // try in cache
                 if (!Service.TryGiveFromCache(ac))
@@ -378,16 +376,16 @@ namespace Greatbone.Core
                     Service.Cache(ac); // try cache it
                 }
 
+                ActionExit:
                 // action's after filtering
                 ai.After?.Do(ac);
                 if (ai.AfterAsync != null) await ai.AfterAsync.DoAsync(ac);
-
                 ac.Doer = null;
             }
 
+            WorkExit:
             After?.Do(ac);
             if (AfterAsync != null) await AfterAsync.DoAsync(ac);
-
             ac.Work = null;
         }
 

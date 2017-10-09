@@ -22,7 +22,7 @@ namespace Greatbone.Sample
             ac.GiveGridPage(200, (Order[]) null, (h, o) => { });
         }
 
-        [Ui("后台操作设置", "后台操作帐号", Modal = Modal.AShow)]
+        [Ui("后台操作设置", "后台操作帐号", Mode = UiMode.AShow)]
         public async Task loginf(ActionContext ac)
         {
             string wx = ac[this];
@@ -35,7 +35,7 @@ namespace Greatbone.Sample
                     m.FORM_();
                     m.FIELDSET_("后台操作人员用本人的微信填写");
                     m.TEXT(nameof(prin.name), prin.name, "真实姓名（和身份证一致）", max: 4, min: 2, required: true);
-                    m.TEXT(nameof(prin.tel), prin.tel, "用户编号（个人手机号）", max: 11, min: 11, pattern: "[0-9]+", required: true);
+                    m.TEXT(nameof(prin.tel), prin.tel, "用户编号（个人手机号）", pattern: "[0-9]+", max: 11, min: 11, required: true);
                     m.PASSWORD(nameof(password), password, "登录密码（用于微信以外登录）", min: 3);
                     m.SELECT(nameof(prin.city), prin.city, ((SampleService) Service).Cities, label: "城市");
                     m._FORM();
@@ -65,7 +65,7 @@ namespace Greatbone.Sample
             }
         }
 
-        [Ui("调试刷新", Modal = Modal.AShow)]
+        [Ui("调试刷新", Mode = UiMode.AShow)]
         public void token(ActionContext ac)
         {
             string wx = ac[this];
@@ -114,7 +114,7 @@ namespace Greatbone.Sample
             ac.GivePage(200, h => { h.T("GOTO"); });
         }
 
-        [Ui("值班机", Modal = Modal.AShow)]
+        [Ui("值班机", Mode = UiMode.AShow)]
         public async Task lead(ActionContext ac)
         {
             short shopid = ac[this];
@@ -130,8 +130,8 @@ namespace Greatbone.Sample
                         {
                             m.FORM_();
                             m.FIELDSET_("当前值班机");
-                            m.COL("电话", oprtel);
-                            m.COL("姓名", oprname);
+                            m.CELL(oprtel, "电话");
+                            m.CELL(oprname, "姓名");
                             m._FIELDSET();
                             m.FIELDSET_("设为值班机");
                             m.CHECKBOX(nameof(me), me, "将本机设为值班机，接收客户电话和微信通知");
@@ -159,7 +159,7 @@ namespace Greatbone.Sample
             }
         }
 
-        [Ui("操作授权", Modal = Modal.AOpen)]
+        [Ui("操作授权", Mode = UiMode.AOpen)]
         public async Task crew(ActionContext ac, int subcmd)
         {
             short shopid = ac[this];
@@ -212,7 +212,7 @@ namespace Greatbone.Sample
                 m._FIELDSET();
 
                 m.FIELDSET_("添加操作授权");
-                m.TEXT(nameof(oprid), oprid, "个人手机号", max: 11, min: 11, pattern: "[0-9]+");
+                m.TEXT(nameof(oprid), oprid, "个人手机号", pattern: "[0-9]+", max: 11, min: 11);
                 m.SELECT(nameof(opr), opr, User.OPR, "操作权限");
                 m.BUTTON(nameof(crew), 2, "添加");
                 m._FIELDSET();

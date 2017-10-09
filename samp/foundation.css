@@ -701,13 +701,13 @@ h6, .h6 {
 
 a {
     line-height: inherit;
-    color: #2ba6cb;
+    color: mediumblue;
     text-decoration: none;
     cursor: pointer;
 }
 
 a:hover, a:focus {
-    color: #258faf;
+    color: navy;
 }
 
 a img {
@@ -1474,7 +1474,7 @@ select[multiple] {
     line-height: 1;
     text-align: center;
     cursor: pointer;
-    background-color: #2ba6cb;
+    background-color: mediumblue;
     color: #fefefe;
 }
 
@@ -1483,7 +1483,7 @@ select[multiple] {
 }
 
 .button:hover, .button:focus {
-    background-color: #258dad;
+    background-color: navy;
     color: #fefefe;
 }
 
@@ -1507,12 +1507,12 @@ select[multiple] {
 }
 
 .button.primary {
-    background-color: #2ba6cb;
+    background-color: mediumblue;
     color: #0a0a0a;
 }
 
 .button.primary:hover, .button.primary:focus {
-    background-color: #2285a2;
+    background-color: navy;
     color: #0a0a0a;
 }
 
@@ -1582,7 +1582,7 @@ select[multiple] {
 }
 
 .button.disabled, .button.disabled:hover, .button.disabled:focus, .button[disabled], .button[disabled]:hover, .button[disabled]:focus {
-    background-color: #2ba6cb;
+    background-color: mediumblue;
     color: #fefefe;
 }
 
@@ -1592,7 +1592,7 @@ select[multiple] {
 }
 
 .button.disabled.primary, .button.disabled.primary:hover, .button.disabled.primary:focus, .button[disabled].primary, .button[disabled].primary:hover, .button[disabled].primary:focus {
-    background-color: #2ba6cb;
+    background-color: mediumblue;
     color: #0a0a0a;
 }
 
@@ -1657,8 +1657,8 @@ select[multiple] {
 }
 
 .button.hollow {
-    border: 1px solid #2ba6cb;
-    color: #2ba6cb;
+    border: 1px solid mediumblue;
+    color: mediumblue;
 }
 
 .button.hollow, .button.hollow:hover, .button.hollow:focus {
@@ -1670,28 +1670,28 @@ select[multiple] {
 }
 
 .button.hollow:hover, .button.hollow:focus {
-    border-color: #165366;
-    color: #165366;
+    border-color: navy;
+    color: navy;
 }
 
 .button.hollow:hover.disabled, .button.hollow:hover[disabled], .button.hollow:focus.disabled, .button.hollow:focus[disabled] {
-    border: 1px solid #2ba6cb;
-    color: #2ba6cb;
+    border: 1px solid mediumblue;
+    color: mediumblue;
 }
 
 .button.hollow.primary {
-    border: 1px solid #2ba6cb;
-    color: #2ba6cb;
+    border: 1px solid mediumblue;
+    color: mediumblue;
 }
 
 .button.hollow.primary:hover, .button.hollow.primary:focus {
-    border-color: #165366;
-    color: #165366;
+    border-color: navy;
+    color: navy;
 }
 
 .button.hollow.primary:hover.disabled, .button.hollow.primary:hover[disabled], .button.hollow.primary:focus.disabled, .button.hollow.primary:focus[disabled] {
-    border: 1px solid #2ba6cb;
-    color: #2ba6cb;
+    border: 1px solid mediumblue;
+    color: mediumblue;
 }
 
 .button.hollow.secondary {
@@ -1785,8 +1785,8 @@ select[multiple] {
 }
 
 .button.clear {
-    border: 1px solid #2ba6cb;
-    color: #2ba6cb;
+    border: 1px solid mediumblue;
+    color: mediumblue;
 }
 
 .button.clear, .button.clear:hover, .button.clear:focus {
@@ -1798,13 +1798,13 @@ select[multiple] {
 }
 
 .button.clear:hover, .button.clear:focus {
-    border-color: #165366;
-    color: #165366;
+    border-color: navy;
+    color: navy;
 }
 
 .button.clear:hover.disabled, .button.clear:hover[disabled], .button.clear:focus.disabled, .button.clear:focus[disabled] {
-    border: 1px solid #2ba6cb;
-    color: #2ba6cb;
+    border: 1px solid mediumblue;
+    color: mediumblue;
 }
 
 .button.clear, .button.clear.disabled, .button.clear[disabled], .button.clear:hover, .button.clear:hover.disabled, .button.clear:hover[disabled], .button.clear:focus, .button.clear:focus.disabled, .button.clear:focus[disabled] {
@@ -1812,18 +1812,18 @@ select[multiple] {
 }
 
 .button.clear.primary {
-    border: 1px solid #2ba6cb;
-    color: #2ba6cb;
+    border: 1px solid mediumblue;
+    color: mediumblue;
 }
 
 .button.clear.primary:hover, .button.clear.primary:focus {
-    border-color: #165366;
-    color: #165366;
+    border-color: navy;
+    color: navy;
 }
 
 .button.clear.primary:hover.disabled, .button.clear.primary:hover[disabled], .button.clear.primary:focus.disabled, .button.clear.primary:focus[disabled] {
-    border: 1px solid #2ba6cb;
-    color: #2ba6cb;
+    border: 1px solid mediumblue;
+    color: mediumblue;
 }
 
 .button.clear.primary, .button.clear.primary.disabled, .button.clear.primary[disabled], .button.clear.primary:hover, .button.clear.primary:hover.disabled, .button.clear.primary:hover[disabled], .button.clear.primary:focus, .button.clear.primary:focus.disabled, .button.clear.primary:focus[disabled] {
@@ -1961,11 +1961,11 @@ select[multiple] {
 }
 
 .button.dropdown.hollow::after {
-    border-top-color: #2ba6cb;
+    border-top-color: mediumblue;
 }
 
 .button.dropdown.hollow.primary::after {
-    border-top-color: #2ba6cb;
+    border-top-color: mediumblue;
 }
 
 .button.dropdown.hollow.secondary::after {
@@ -2084,7 +2084,7 @@ a.button:hover, a.button:focus {
 }
 
 .button-group.primary .button {
-    background-color: #2ba6cb;
+    background-color: mediumblue;
     color: #0a0a0a;
 }
 
@@ -2235,7 +2235,7 @@ a.button:hover, a.button:focus {
     width: 1.4rem;
     height: 1.4rem;
     border-radius: 3px;
-    background-color: #2ba6cb;
+    background-color: mediumblue;
     transition: all 0.2s ease-in-out;
     -ms-touch-action: manipulation;
     touch-action: manipulation;
@@ -2246,7 +2246,7 @@ a.button:hover, a.button:focus {
 }
 
 .slider-handle:hover {
-    background-color: #258dad;
+    background-color: #042f70;
 }
 
 .slider-handle.is-dragging {
@@ -2336,7 +2336,7 @@ input + .switch-paddle {
 }
 
 input:checked ~ .switch-paddle {
-    background: #2ba6cb;
+    background: mediumblue;
 }
 
 input:checked ~ .switch-paddle::after {
@@ -2620,12 +2620,12 @@ input:checked + label > .switch-inactive {
 }
 
 .menu .is-active > a {
-    background: #2ba6cb;
+    background: mediumblue;
     color: #fefefe;
 }
 
 .menu .active > a {
-    background: #2ba6cb;
+    background: mediumblue;
     color: #fefefe;
 }
 
@@ -2725,7 +2725,7 @@ input:checked + label > .switch-inactive {
     content: '';
     border-bottom-width: 0;
     border-top-style: solid;
-    border-color: #2ba6cb transparent transparent;
+    border-color: mediumblue transparent transparent;
     right: 5px;
     left: auto;
     margin-top: -3px;
@@ -2741,7 +2741,7 @@ input:checked + label > .switch-inactive {
 
 .dropdown.menu .is-active > a {
     background: transparent;
-    color: #2ba6cb;
+    color: mediumblue;
 }
 
 .no-js .dropdown.menu ul {
@@ -2782,7 +2782,7 @@ input:checked + label > .switch-inactive {
     content: '';
     border-left-width: 0;
     border-right-style: solid;
-    border-color: transparent #2ba6cb transparent transparent;
+    border-color: transparent mediumblue transparent transparent;
 }
 
 .dropdown.menu.vertical > li.opens-right > a::after {
@@ -2793,7 +2793,7 @@ input:checked + label > .switch-inactive {
     content: '';
     border-right-width: 0;
     border-left-style: solid;
-    border-color: transparent transparent transparent #2ba6cb;
+    border-color: transparent transparent transparent mediumblue;
 }
 
 @media print, screen and (min-width: 40em) {
@@ -2822,7 +2822,7 @@ input:checked + label > .switch-inactive {
         content: '';
         border-bottom-width: 0;
         border-top-style: solid;
-        border-color: #2ba6cb transparent transparent;
+        border-color: mediumblue transparent transparent;
         right: 5px;
         left: auto;
         margin-top: -3px;
@@ -2857,7 +2857,7 @@ input:checked + label > .switch-inactive {
         content: '';
         border-left-width: 0;
         border-right-style: solid;
-        border-color: transparent #2ba6cb transparent transparent;
+        border-color: transparent mediumblue transparent transparent;
     }
 
     .dropdown.menu.medium-vertical > li.opens-right > a::after {
@@ -2868,7 +2868,7 @@ input:checked + label > .switch-inactive {
         content: '';
         border-right-width: 0;
         border-left-style: solid;
-        border-color: transparent transparent transparent #2ba6cb;
+        border-color: transparent transparent transparent mediumblue;
     }
 }
 
@@ -2898,7 +2898,7 @@ input:checked + label > .switch-inactive {
         content: '';
         border-bottom-width: 0;
         border-top-style: solid;
-        border-color: #2ba6cb transparent transparent;
+        border-color: mediumblue transparent transparent;
         right: 5px;
         left: auto;
         margin-top: -3px;
@@ -2933,7 +2933,7 @@ input:checked + label > .switch-inactive {
         content: '';
         border-left-width: 0;
         border-right-style: solid;
-        border-color: transparent #2ba6cb transparent transparent;
+        border-color: transparent mediumblue transparent transparent;
     }
 
     .dropdown.menu.large-vertical > li.opens-right > a::after {
@@ -2944,7 +2944,7 @@ input:checked + label > .switch-inactive {
         content: '';
         border-right-width: 0;
         border-left-style: solid;
-        border-color: transparent transparent transparent #2ba6cb;
+        border-color: transparent transparent transparent mediumblue;
     }
 }
 
@@ -3018,7 +3018,7 @@ input:checked + label > .switch-inactive {
     content: '';
     border-left-width: 0;
     border-right-style: solid;
-    border-color: transparent #2ba6cb transparent transparent;
+    border-color: transparent mediumblue transparent transparent;
 }
 
 .is-dropdown-submenu .is-dropdown-submenu-parent.opens-right > a::after {
@@ -3029,7 +3029,7 @@ input:checked + label > .switch-inactive {
     content: '';
     border-right-width: 0;
     border-left-style: solid;
-    border-color: transparent transparent transparent #2ba6cb;
+    border-color: transparent transparent transparent mediumblue;
 }
 
 .is-dropdown-submenu .is-dropdown-submenu {
@@ -3087,6 +3087,7 @@ input:checked + label > .switch-inactive {
     -ms-flex-wrap: nowrap;
     flex-wrap: nowrap;
     font-size: 1rem;
+    height: 3rem;
 }
 
 .top-bar,
@@ -3181,7 +3182,7 @@ input:checked + label > .switch-inactive {
 }
 
 .breadcrumbs a {
-    color: #2ba6cb;
+    color: mediumblue;
 }
 
 .breadcrumbs a:hover {
@@ -3243,7 +3244,7 @@ input:checked + label > .switch-inactive {
 
 .pagination .current {
     padding: 0.1875rem 0.625rem;
-    background: #2ba6cb;
+    background: mediumblue;
     color: #fefefe;
     cursor: default;
 }
@@ -3347,7 +3348,7 @@ input:checked + label > .switch-inactive {
 }
 
 .tabs.primary {
-    background: #2ba6cb;
+    background: mediumblue;
 }
 
 .tabs.primary > li > a {
@@ -3355,7 +3356,7 @@ input:checked + label > .switch-inactive {
 }
 
 .tabs.primary > li > a:hover, .tabs.primary > li > a:focus {
-    background: #299ec1;
+    background: navy;
 }
 
 .tabs-title {
@@ -3367,17 +3368,17 @@ input:checked + label > .switch-inactive {
     padding: 1rem 1rem;
     font-size: 0.875rem;
     line-height: 1;
-    color: #2ba6cb;
+    color: mediumblue;
 }
 
 .tabs-title > a:hover {
     background: #fefefe;
-    color: #258faf;
+    color: navy;
 }
 
 .tabs-title > a:focus, .tabs-title > a[aria-selected='true'] {
     background: #e6e6e6;
-    color: #2ba6cb;
+    color: mediumblue;
 }
 
 .tabs-content {
@@ -3819,12 +3820,12 @@ table.hover:not(.unstriped) tr:nth-of-type(even):hover {
     border-radius: 50%;
     font-size: 0.6rem;
     text-align: center;
-    background: #2ba6cb;
+    background: mediumblue;
     color: #fefefe;
 }
 
 .badge.primary {
-    background: #2ba6cb;
+    background: mediumblue;
     color: #0a0a0a;
 }
 
@@ -3866,12 +3867,12 @@ table.hover:not(.unstriped) tr:nth-of-type(even):hover {
     line-height: 1;
     white-space: nowrap;
     cursor: default;
-    background: #2ba6cb;
+    background: mediumblue;
     color: #fefefe;
 }
 
 .label.primary {
-    background: #2ba6cb;
+    background: mediumblue;
     color: #0a0a0a;
 }
 
@@ -3913,7 +3914,7 @@ table.hover:not(.unstriped) tr:nth-of-type(even):hover {
 }
 
 .progress.primary .progress-meter {
-    background-color: #2ba6cb;
+    background-color: mediumblue;
 }
 
 .progress.secondary .progress-meter {
@@ -3945,7 +3946,7 @@ table.hover:not(.unstriped) tr:nth-of-type(even):hover {
     display: block;
     width: 0%;
     height: 100%;
-    background-color: #2ba6cb;
+    background-color: mediumblue;
     border-radius: 3px;
 }
 
@@ -4262,6 +4263,17 @@ a.thumbnail image {
 
 .sticky.is-anchored.is-at-bottom {
     bottom: 0;
+}
+
+.cell-label {
+    padding: 0.125rem; 
+    border-bottom: 1px solid #f1f1f1;
+    background-color: #f1f1f1;
+    text-align: right;
+}
+.cell-v {
+    padding: 0.125rem 0.125rem 0.125rem 0.25rem;
+    border-bottom: 1px solid #f1f1f1
 }
 
 .grid-container {

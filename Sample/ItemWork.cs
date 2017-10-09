@@ -29,10 +29,10 @@ namespace Greatbone.Sample
                 {
                     ac.GiveGridPage(200, dc.ToArray<Item>(), (h, o) =>
                     {
-                        h.COL("名称", o.name);
-                        h.COL("简述", o.descr);
-                        h.COL("价格", o.price);
-                        h.COL("成分", o.name);
+                        h.CELL(o.name, "名称", 6).CELL(o.name, "名称", 6);
+                        h.CELL(o.descr, "简述");
+                        h.CELL(o.price, "价格");
+                        h.CELL(o.name, "成分");
                     });
                 }
                 else
@@ -42,7 +42,7 @@ namespace Greatbone.Sample
             }
         }
 
-        [Ui("新建", Modal = Modal.ButtonShow)]
+        [Ui("新建", Mode = UiMode.ButtonShow)]
         public async Task @new(ActionContext ac)
         {
             if (ac.GET)
@@ -75,7 +75,7 @@ namespace Greatbone.Sample
             }
         }
 
-        [Ui("删除", Modal = Modal.ButtonConfirm)]
+        [Ui("删除", Mode = UiMode.ButtonConfirm)]
         public async Task del(ActionContext ac)
         {
             short shopid = ac[-1];
