@@ -20,7 +20,7 @@ namespace Greatbone.Sample
             h.Add("<html style=\"height:100%\">");
 
             h.Add("<head>");
-            h.Add("<title>粗粮达人");
+            h.Add("<title>");
             h.Add(title);
             h.Add("</title>");
             h.Add("<meta name=\"viewport\" content=\"width=device-width, initial-scale=1.0\">");
@@ -57,23 +57,8 @@ namespace Greatbone.Sample
             // tabs content
             h.Add("<div class=\"tabs-content\" data-tabs-content=\"frametabs\">");
             // the first panel
-            h.Add("<div class=\"tabs-panel is-active\" id=\"_\">");
-            h.Add("<div class=\"top-bar\">");
-            h.Add("<div class=\"top-bar-left\">");
-            h.TRIGGERS(work, null);
-            h.Add("</div>");
-            Node node = ac[work];
-            if (node.Label != null)
-            {
-                h.Add("<div class=\"top-bar-right\">");
-                h.Add(node.Label); // label
-                h.Add("</div>");
-            }
-            h.Add("</div>");
-            if (work.Goto != null)
-            {
-                h.Add("<iframe id=\"goto\" src=\"goto\" frameborder=\"0\" style=\"width:100%; height:100%;\"></iframe>");
-            }
+            h.Add("<div class=\"tabs-panel is-active\" style=\"height: 100%\" id=\"_\">");
+            h.Add("<iframe src=\"?inner=true\" frameborder=\"0\" style=\"width: 100%; height: 100%;\"></iframe>");
             h.Add("</div>");
             if (subs != null)
             {

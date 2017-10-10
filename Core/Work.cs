@@ -31,9 +31,6 @@ namespace Greatbone.Core
         // the default action, can be null
         readonly ActionInfo @default;
 
-        // the goto action, can be null
-        readonly ActionInfo @goto;
-
         // actions with Ui attribute
         readonly ActionInfo[] uiactions;
 
@@ -77,7 +74,6 @@ namespace Greatbone.Core
 
                 actions.Add(ai);
                 if (ai.Name == string.Empty) @default = ai;
-                else if (ai.Name == "goto") @goto = ai;
             }
 
             // gather ui actions
@@ -174,8 +170,6 @@ namespace Greatbone.Core
         public ActionInfo[] UiActions => uiactions;
 
         public ActionInfo Default => @default;
-
-        public ActionInfo Goto => @goto;
 
         public Roll<Work> Works => works;
 

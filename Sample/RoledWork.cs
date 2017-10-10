@@ -35,7 +35,15 @@ namespace Greatbone.Sample
 
         public void @default(ActionContext ac)
         {
-            ac.GiveFrame(200, false, 60 * 15, "平台管理");
+            bool inner = ac.Query[nameof(inner)];
+            if (inner)
+            {
+                ac.GivePage(200, h => { h.GridView((Order[]) null, null); });
+            }
+            else
+            {
+                ac.GiveFrame(200, false, 60 * 15, "粗粮达人平台管理");
+            }
         }
 
         [Ui("订单存档")]

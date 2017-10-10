@@ -106,12 +106,16 @@ namespace Greatbone.Sample
 
         public void @default(ActionContext ac)
         {
-            ac.GiveFrame(200, false, 60 * 15, "日常操作");
-        }
-
-        public void @goto(ActionContext ac)
-        {
-            ac.GivePage(200, h => { h.T("GOTO"); });
+            bool inner = ac.Query[nameof(inner)];
+            if (inner)
+            {
+                ac.GivePage(200, h => { h.GridView((Order[]) null, null); });
+            }
+            else
+            {
+                Node node = ac[this];
+                ac.GiveFrame(200, false, 60 * 15, node.Label);
+            }
         }
 
         [Ui("值班机", Mode = UiMode.AShow)]
