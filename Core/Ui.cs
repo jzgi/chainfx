@@ -71,6 +71,8 @@ namespace Greatbone.Core
 
         public UiMode Mode { get; set; }
 
+        public sbyte Size { get; set; } = 2;
+
         /// <summary>
         /// The state bitwise value that enables the action. 
         /// </summary>
@@ -80,10 +82,6 @@ namespace Greatbone.Core
         {
             return State == 0 || (State & v) == v;
         }
-
-        public short X { get; set; } = 120;
-
-        public short Y { get; set; } = 120;
 
         public bool Circle { get; set; } = false;
 

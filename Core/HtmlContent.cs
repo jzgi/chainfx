@@ -747,6 +747,17 @@ namespace Greatbone.Core
             return this;
         }
 
+        void dialog(sbyte mode, sbyte size, string tip)
+        {
+            Add(" onclick=\"return dialog(this,");
+            Add(mode);
+            Add(",");
+            Add(size);
+            Add(",'");
+            Add(tip);
+            Add("');\"");
+        }
+
         public HtmlContent TRIGGERS(Work work, IData obj)
         {
             var ais = work.UiActions;
@@ -773,7 +784,6 @@ namespace Greatbone.Core
                 if (ui.IsA)
                 {
                     Add("<a class=\"button hollow");
-//                    Add(ac?.Doer == ai ? " hollow" : " clear");
                     Add(" primary\" href=\"");
                     if (obj != null)
                     {
@@ -784,21 +794,15 @@ namespace Greatbone.Core
                     Add("\"");
                     if (ui.HasPrompt)
                     {
-                        Add(" onclick=\"return dialog(this,2,1,'");
-                        Add(ui.Tip);
-                        Add("');\"");
+                        dialog(2, ui.Size, ui.Tip);
                     }
                     else if (ui.HasShow)
                     {
-                        Add(" onclick=\"return dialog(this,4,2,'");
-                        Add(ui.Tip);
-                        Add("');\"");
+                        dialog(4, ui.Size, ui.Tip);
                     }
                     else if (ui.HasOpen)
                     {
-                        Add(" onclick=\"return dialog(this,8,3,'");
-                        Add(ui.Tip);
-                        Add("');\"");
+                        dialog(8, ui.Size, ui.Tip);
                     }
                     else if (ui.HasScript)
                     {
@@ -811,9 +815,7 @@ namespace Greatbone.Core
                     else if (ui.HasCrop)
                     {
                         Add(" onclick=\"return crop(this,");
-                        Add(ui.X);
-                        Add(',');
-                        Add(ui.Y);
+                        Add(ui.Size);
                         Add(',');
                         Add(ui.Circle);
                         Add(",'");
@@ -854,21 +856,15 @@ namespace Greatbone.Core
                     }
                     else if (ui.HasPrompt)
                     {
-                        Add(" onclick=\"return dialog(this,2,1,'");
-                        Add(ui.Tip);
-                        Add("');\"");
+                        dialog(2, ui.Size, ui.Tip);
                     }
                     else if (ui.HasShow)
                     {
-                        Add(" onclick=\"return dialog(this,4,2,'");
-                        Add(ui.Tip);
-                        Add("');\"");
+                        dialog(4, ui.Size, ui.Tip);
                     }
                     else if (ui.HasOpen)
                     {
-                        Add(" onclick=\"return dialog(this,8,3,'");
-                        Add(ui.Tip);
-                        Add("');\"");
+                        dialog(8, ui.Size, ui.Tip);
                     }
                     Add(">");
                     Add(ai.Label);

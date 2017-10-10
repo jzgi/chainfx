@@ -6,7 +6,7 @@ const PROMPT = 2, SHOW = 4, OPEN = 8;
 
 function dialog(trig, mode, siz, title) {
 
-    var sizg = siz == 1 ? 'small' : siz == 2 ? 'large' : 'full';
+    var sizg = siz == 1 ? 'tiny' : siz == 2 ? 'small' : siz == 3 ? 'large' : 'full';
 
     // keep the trigger info
     var formid = trig.form ? trig.form.id : '';
@@ -42,10 +42,8 @@ function dialog(trig, mode, siz, title) {
 
     // initialize
     $(dive).foundation();
-
     // open
     $(dive).foundation('open');
-
     // abort the onclick
     return false;
 }
@@ -120,27 +118,43 @@ function ok(okbtn, mode, formid, tag, action, method) {
 }
 
 
-function crop(trig, wid, hei, circle, title) {
+function crop(trig, siz, circle, title) {
 
-    var sizg = 'large';
+    var wid, hei, sizg;
     title = title || trig.innerHTML;
     var action = trig.href;
-    wid = wid ? wid : 120;
-    hei = hei ? hei : 120;
+    switch (siz) {
+        case 1:
+            wid = 120;
+            hei = 120;
+            sizg = 'tiny';
+            break;
+        case 2:
+            wid = 120;
+            hei = 120;
+            sizg = 'small';
+            break;
+        case 3:
+            wid = 120;
+            hei = 120;
+            sizg = 'large';
+            break;
+        default:
+            wid = 120;
+            hei = 120;
+            sizg = 'full';
+            break;
+    }
 
-    var html = '<div id="dyndlg" class="' + sizg + ' reveal"  data-reveal data-close-on-click="false">' + '<div class="title-bar"><div clsas="title-bar-title">' + title + '</div><div class="title-bar-right"><a class="close-button" onclick="$(\'#dyndlg\').foundation(\'close\').foundation(\'destroy\').remove(); return false;">&times;</a></div></div>' + '<div id="demo" style="height: -webkit-calc(100% - 8.5rem); height: calc(100% - 8.5rem); text-align: center;">' + '<input type="file" id="fileinput" style="display: none;" onchange="bind(window.URL.createObjectURL(this.files[0]),' + wid + ',' + hei + ',' + circle + ');">' + '<div style="text-align: center">' + '<a class="button success hollow" onclick="$(\'#fileinput\').click();">选择图片</a>' + '<a class="button success hollow" onclick="upload(\'' + action + '\',' + circle + ');">裁剪并上传</a>' + '</div>' + '</div>';
+    var html = '<div id="dyndlg" class="' + sizg + ' reveal"  data-reveal data-close-on-click="false">' + '<div class="title-bar"><div clsas="title-bar-title">' + title + '</div><div class="title-bar-right"><a class="close-button" onclick="$(\'#dyndlg\').foundation(\'close\').foundation(\'destroy\').remove(); return false;">&times;</a></div></div>' + '<div id="demo" style="height: -webkit-calc(100% - 8.5rem); height: calc(100% - 8.5rem); text-align: center;">' + '<input type="file" id="fileinput" style="display: none;" onchange="bind(window.URL.createObjectURL(this.files[0]),' + wid + ',' + hei + ',' + circle + ');">' + '<div style="text-align: center">' + '<a class="button hollow" onclick="$(\'#fileinput\').click();">选择图片</a>' + '<a class="button hollow" onclick="upload(\'' + action + '\',' + circle + ');">裁剪并上传</a>' + '</div>' + '</div>';
     var dive = $(html);
 
     $('body').append(dive);
-
     // initialize
     $(dive).foundation();
-
     bind(action, wid, hei, circle);
-
     // open
     $(dive).foundation('open');
-
     // abort the onclick
     return false;
 }
