@@ -16,16 +16,17 @@ namespace Greatbone.Sample
             LATER = 0x0200;
 
         // status
-        public const short CREATED = 0, ACCEPTED = 1, ABORTED = 3, SHIPPED = 5, RECKONED = 7;
+        public const short CREATED = 0, PAID = 1, ABORTED = 2, READY = 3, RECEIVED = 4, RECKONED = 5;
 
         // status
-        static readonly Map<short, string> STATUS = new Map<short, string>
+        public static readonly Map<short, string> STATUS = new Map<short, string>
         {
             [CREATED] = "购物车",
-            [ACCEPTED] = "已付款",
+            [PAID] = "已付款",
             [ABORTED] = "已撤单",
-            [SHIPPED] = "买家已确收/未清算",
-            [RECKONED] = "平台已清算/完成",
+            [READY] = "已备货",
+            [RECEIVED] = "已确收",
+            [RECKONED] = "已清算",
         };
 
 
@@ -38,14 +39,13 @@ namespace Greatbone.Sample
         internal string city;
         internal string area;
         internal string addr; // address
-        internal OrderLine[] lines;
+        internal OrderItem[] items;
         internal decimal total; // receivable
         internal DateTime created; // time created
         internal decimal cash; // amount recieved
-        internal DateTime accepted; // when cash received or forcibly accepted
-        internal string abortly; // reason
+        internal DateTime paid; // when cash received or forcibly accepted
         internal DateTime aborted; // time aborted
-        internal DateTime shipped; // time shipped
+        internal DateTime received; // time shipped
         internal string note;
         internal short status;
 
@@ -57,21 +57,21 @@ namespace Greatbone.Sample
             }
             i.Get(nameof(shopid), ref shopid);
             i.Get(nameof(shopname), ref shopname);
-            i.Get(nameof(name), ref name);
             i.Get(nameof(wx), ref wx);
-            i.Get(nameof(city), ref city);
-            i.Get(nameof(addr), ref addr);
+            i.Get(nameof(name), ref name);
             i.Get(nameof(tel), ref tel);
-            i.Get(nameof(lines), ref lines);
+            i.Get(nameof(city), ref city);
+            i.Get(nameof(area), ref area);
+            i.Get(nameof(addr), ref addr);
+            i.Get(nameof(items), ref items);
             i.Get(nameof(total), ref total);
             i.Get(nameof(created), ref created);
-            i.Get(nameof(cash), ref cash);
             if ((proj & LATER) == LATER)
             {
-                i.Get(nameof(accepted), ref accepted);
-                i.Get(nameof(abortly), ref abortly);
+                i.Get(nameof(cash), ref cash);
+                i.Get(nameof(paid), ref paid);
                 i.Get(nameof(aborted), ref aborted);
-                i.Get(nameof(shipped), ref shipped);
+                i.Get(nameof(received), ref received);
                 i.Get(nameof(note), ref note);
             }
             i.Get(nameof(status), ref status);
@@ -83,96 +83,96 @@ namespace Greatbone.Sample
             {
                 o.Put(nameof(id), id);
             }
-            o.Put(nameof(created), created);
-            o.Put(nameof(shopname), shopname);
             o.Put(nameof(shopid), shopid);
-            o.Put(nameof(name), name);
+            o.Put(nameof(shopname), shopname);
             o.Put(nameof(wx), wx);
-            o.Put(nameof(city), city);
-            o.Put(nameof(addr), addr);
+            o.Put(nameof(name), name);
             o.Put(nameof(tel), tel);
-            o.Put(nameof(lines), lines);
-            o.Put(nameof(note), note);
+            o.Put(nameof(city), city);
+            o.Put(nameof(area), area);
+            o.Put(nameof(addr), addr);
+            o.Put(nameof(items), items);
             o.Put(nameof(total), total);
-            o.Put(nameof(cash), cash);
+            o.Put(nameof(created), created);
             if ((proj & LATER) == LATER)
             {
-                o.Put(nameof(accepted), accepted);
-                o.Put(nameof(abortly), abortly);
+                o.Put(nameof(cash), cash);
+                o.Put(nameof(paid), paid);
                 o.Put(nameof(aborted), aborted);
-                o.Put(nameof(shipped), shipped);
+                o.Put(nameof(received), received);
+                o.Put(nameof(note), note);
             }
             o.Put(nameof(status), status);
         }
 
-        public void AddItem(string item, short qty, string unit, decimal price)
+        public void AddItem(string name, decimal price, short qty, string unit, string[] customs)
         {
-            if (lines == null)
+            if (items == null)
             {
-                lines = new[] {new OrderLine() {name = item, qty = qty, unit = unit, price = price}};
+                items = new[] {new OrderItem {name = name, price = price, qty = qty, unit = unit, customs = customs}};
             }
-            var orderln = lines.Find(o => o.name.Equals(item));
-            if (orderln != null)
+            var orderitem = items.Find(o => o.name.Equals(name) && o.customs.SameAs(customs));
+            if (orderitem.name != null)
             {
-                orderln.qty += qty;
+                orderitem.qty += qty;
             }
             else
             {
-                lines = lines.AddOf(new OrderLine() {name = item, qty = qty, unit = unit, price = price});
+                items = items.AddOf(new OrderItem() {name = name, qty = qty, unit = unit, price = price, customs = customs});
             }
         }
 
-        public void Sum()
+        public void SetTotal()
         {
-            if (lines != null)
+            if (items != null)
             {
                 decimal sum = 0;
-                for (int i = 0; i < lines.Length; i++)
+                for (int i = 0; i < items.Length; i++)
                 {
-                    sum += lines[i].qty * lines[i].price;
+                    sum += items[i].qty * items[i].price;
                 }
                 total = sum;
             }
         }
 
-        public void SetLineQty(string name, short qty)
+        public void SetItemQty(int idx, short qty)
         {
-            var ln = lines.Find(x => x.name == name);
-            if (ln != null)
-            {
-                ln.qty = qty;
-            }
+            var orderitem = items[idx];
+            orderitem.qty = qty;
         }
 
         public void RemoveDetail(string name)
         {
-            lines = lines.RemovedOf(x => x.name == name);
+            items = items.RemovedOf(x => x.name == name);
         }
     }
 
-    public class OrderLine : IData
+    public struct OrderItem : IData
     {
         internal string name;
+        internal decimal price;
         internal short qty;
         internal string unit;
-        internal decimal price;
+        internal string[] customs;
 
         public decimal Subtotal => price * qty;
 
         public void Read(IDataInput i, short proj = 0x00ff)
         {
             i.Get(nameof(name), ref name);
+            i.Get(nameof(price), ref price);
             i.Get(nameof(qty), ref qty);
             i.Get(nameof(unit), ref unit);
-            i.Get(nameof(price), ref price);
+            i.Get(nameof(customs), ref customs);
         }
 
         public void Write<R>(IDataOutput<R> o, short proj = 0x00ff) where R : IDataOutput<R>
         {
             o.Put(nameof(name), name);
+            o.Put(nameof(price), price);
             o.Put(nameof(qty), qty);
             o.Put(nameof(unit), unit);
-            o.Put(nameof(price), price);
+            o.Put(nameof(customs), customs);
         }
 
         public void AddQty(short qty)

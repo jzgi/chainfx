@@ -52,7 +52,6 @@ namespace Greatbone.Sample
         {
             using (var dc = ac.NewDbContext())
             {
-                const short proj = 0x00ff;
                 if (dc.Query("SELECT * FROM kicks ORDER BY id DESC LIMIT 20 OFFSET @1", p => p.Set(page * 20)))
                 {
                     ac.GiveTablePage(200, dc.ToArray<Kick>(), h => { h.TH("姓名"); }, (h, o) => h.TD(o.name));

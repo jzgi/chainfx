@@ -34,8 +34,6 @@ namespace Greatbone.Sample
         internal short oprat; // operator at
         internal string oprname;
         internal bool adm; // adm
-        internal short status;
-
 
         public void Read(IDataInput i, short proj = 0x00ff)
         {

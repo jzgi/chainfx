@@ -91,7 +91,7 @@ namespace Greatbone.Sample
         }
 
         [Ui("图片", Mode = UiMode.ACrop, Circle = true)]
-        public new async Task icon(ActionContext ac)
+        public async Task icon(ActionContext ac)
         {
             short shopid = ac[-2];
             string name = ac[this];

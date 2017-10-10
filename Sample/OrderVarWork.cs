@@ -104,7 +104,7 @@ namespace Greatbone.Sample
             string mgrwx = null;
             using (var dc = ac.NewDbContext())
             {
-                var shopid = (string) dc.Scalar("UPDATE orders SET shipped = localtimestamp, status = @1 WHERE id = @2  RETURNING shopid", p => p.Set(Order.SHIPPED).Set(id));
+                var shopid = (string) dc.Scalar("UPDATE orders SET shipped = localtimestamp, status = @1 WHERE id = @2  RETURNING shopid", p => p.Set(Order.RECEIVED).Set(id));
                 if (shopid != null)
                 {
                     mgrwx = (string) dc.Scalar("SELECT mgrwx FROM shops WHERE id = @1", p => p.Set(shopid));

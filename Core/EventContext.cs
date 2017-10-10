@@ -12,7 +12,7 @@ namespace Greatbone.Core
 
         internal long id;
 
-        internal DateTime time;
+//        internal DateTime time;
 
         byte[] content;
 

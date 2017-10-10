@@ -46,60 +46,26 @@ namespace Greatbone.Sample
         public async Task add(ActionContext ac)
         {
             string wx = ac[-1];
-            short shopid;
-            string name;
-            string opt = null;
-            string[] sets = null;
-            if (ac.GET)
-            {
-                shopid = ac.Query[nameof(shopid)];
-                name = ac.Query[nameof(name)];
-
-                ac.GivePane(200, h =>
-                {
-                    using (var dc = ac.NewDbContext())
-                    {
-                        dc.Sql("SELECT ").columnlst(Item.Empty)._("FROM items WHERE shopid = @1 AND name = @2");
-                        dc.Query1(p => p.Set(shopid).Set(name));
-                        var item = dc.ToObject<Item>();
-                        h.FORM_();
-
-                        h.T("<img src=\"/shop/").T(shopid).T("/").T(item.name).T("/icon\">");
-
-                        h.T("<div>").T(item.name).T("</div>");
-
-                        h.T("<div>&yen;").T(item.price).T("</div>");
-
-                        h.NUMBER(nameof(item.max), item.min, min: item.min, step: item.step);
-
-                        if (item.customs != null)
-                        {
-                            h.CHECKBOXGROUP(nameof(opt), sets, item.customs, "定制要求");
-                        }
-
-                        h._FORM();
-                    }
-                });
-                return;
-            }
-
             var f = await ac.ReadAsync<Form>();
-            shopid = f[nameof(shopid)];
+            string city = f[nameof(city)];
+            string area = f[nameof(area)];
+            short shopid = f[nameof(shopid)];
             string shopname = f[nameof(shopname)];
-            name = f[nameof(name)];
-            string unit = f[nameof(unit)];
+            string name = f[nameof(name)];
             decimal price = f[nameof(price)];
             short qty = f[nameof(qty)];
+            string unit = f[nameof(unit)];
+            string[] customs = f[nameof(customs)];
 
             using (var dc = ac.NewDbContext())
             {
-                if (dc.Query1("SELECT id, detail, total FROM orders WHERE shopid = @1 AND wx = @2 AND status = 0", p => p.Set(shopid).Set(wx)))
+                if (dc.Query1("SELECT id, items, total FROM orders WHERE shopid = @1 AND wx = @2 AND status = 0", p => p.Set(shopid).Set(wx)))
                 {
                     var o = new Order();
-                    dc.Let(out o.id).Let(out o.lines).Let(out o.total);
-                    o.AddItem(name, qty, unit, price);
-                    o.Sum();
-                    dc.Execute("UPDATE orders SET detail = @1, total = @2 WHERE id = @3", p => p.Set(o.lines).Set(o.total).Set(o.id));
+                    dc.Let(out o.id).Let(out o.items).Let(out o.total);
+                    o.AddItem(name, price, qty, unit, customs);
+                    o.SetTotal();
+                    dc.Execute("UPDATE orders SET items = @1, total = @2 WHERE id = @3", p => p.Set(o.items).Set(o.total).Set(o.id));
                 }
                 else
                 {
@@ -108,21 +74,17 @@ namespace Greatbone.Sample
                     {
                         shopid = shopid,
                         shopname = shopname,
-                        name = prin.name,
                         wx = prin.wx,
+                        name = prin.name,
                         tel = prin.tel,
-                        city = prin.city,
+                        city = city ?? prin.city,
+                        area = area ?? prin.area,
                         addr = prin.addr,
-                        lines = new[]
-                        {
-                            new OrderLine {name = name, price = price, qty = qty, unit = unit}
-                        },
+                        items = new[] {new OrderItem {name = name, price = price, qty = qty, unit = unit, customs = customs}},
                         created = DateTime.Now
                     };
-                    o.Sum();
-
-                    const short proj = 0x00ff ^ Order.ID;
-
+                    o.SetTotal();
+                    const short proj = -1 ^ Order.ID ^ Order.LATER;
                     dc.Sql("INSERT INTO orders ")._(o, proj)._VALUES_(o, proj);
                     dc.Execute(p => o.Write(p, proj));
                 }
@@ -202,7 +164,7 @@ namespace Greatbone.Sample
             short shopid = ac[-1];
             using (var dc = ac.NewDbContext())
             {
-                if (dc.Query("SELECT * FROM orders WHERE shopid = @1 AND status = " + Order.ACCEPTED + " ORDER BY id DESC LIMIT 20 OFFSET @2", p => p.Set(shopid).Set(page * 20)))
+                if (dc.Query("SELECT * FROM orders WHERE shopid = @1 AND status = " + Order.PAID + " ORDER BY id DESC LIMIT 20 OFFSET @2", p => p.Set(shopid).Set(page * 20)))
                 {
                     ac.GiveGridPage(200, dc.ToArray<Order>(), (h, o) =>
                     {
@@ -322,7 +284,7 @@ namespace Greatbone.Sample
             short shopid = ac[-1];
             using (var dc = ac.NewDbContext())
             {
-                if (dc.Query("SELECT * FROM orders WHERE shopid = @1 AND status = " + Order.SHIPPED + " ORDER BY id DESC LIMIT 20 OFFSET @2", p => p.Set(shopid).Set(page * 20)))
+                if (dc.Query("SELECT * FROM orders WHERE shopid = @1 AND status = " + Order.RECEIVED + " ORDER BY id DESC LIMIT 20 OFFSET @2", p => p.Set(shopid).Set(page * 20)))
                 {
                     ac.GiveGridPage(200, dc.ToArray<Order>(), (h, o) =>
                     {

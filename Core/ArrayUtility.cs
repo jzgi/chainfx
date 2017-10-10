@@ -82,5 +82,28 @@ namespace Greatbone.Core
             }
             return default(E);
         }
+
+        public static bool IsNullOrEmpty<E>(this E[] arr)
+        {
+            return arr == null || arr.Length == 0;
+        }
+
+        public static bool SameAs<E>(this E[] arr, E[] another)
+        {
+            if (arr == null && another == null)
+            {
+                return true;
+            }
+            if (arr != null && another != null && arr.Length == another.Length)
+            {
+                int len = arr.Length;
+                for (int i = 0; i < len; i++)
+                {
+                    if (!arr[i].Equals(another[i])) return false;
+                }
+                return true;
+            }
+            return false;
+        }
     }
 }

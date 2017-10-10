@@ -130,23 +130,23 @@ function crop(trig, siz, circle, title) {
             sizg = 'tiny';
             break;
         case 2:
-            wid = 120;
-            hei = 120;
+            wid = 240;
+            hei = 240;
             sizg = 'small';
             break;
         case 3:
-            wid = 120;
-            hei = 120;
+            wid = 320;
+            hei = 320;
             sizg = 'large';
             break;
         default:
-            wid = 120;
-            hei = 120;
+            wid = 640;
+            hei = 640;
             sizg = 'full';
             break;
     }
 
-    var html = '<div id="dyndlg" class="' + sizg + ' reveal"  data-reveal data-close-on-click="false">' + '<div class="title-bar"><div clsas="title-bar-title">' + title + '</div><div class="title-bar-right"><a class="close-button" onclick="$(\'#dyndlg\').foundation(\'close\').foundation(\'destroy\').remove(); return false;">&times;</a></div></div>' + '<div id="demo" style="height: -webkit-calc(100% - 8.5rem); height: calc(100% - 8.5rem); text-align: center;">' + '<input type="file" id="fileinput" style="display: none;" onchange="bind(window.URL.createObjectURL(this.files[0]),' + wid + ',' + hei + ',' + circle + ');">' + '<div style="text-align: center">' + '<a class="button hollow" onclick="$(\'#fileinput\').click();">选择图片</a>' + '<a class="button hollow" onclick="upload(\'' + action + '\',' + circle + ');">裁剪并上传</a>' + '</div>' + '</div>';
+    var html = '<div id="dyndlg" class="' + sizg + ' reveal"  data-reveal data-close-on-click="false"><div class="title-bar"><div class="title-bar-title">' + title + '</div><div class="title-bar-right"><a class="close-button" onclick="$(\'#dyndlg\').foundation(\'close\').foundation(\'destroy\').remove(); return false;">&times;</a></div></div><div id="crop" style="height: -webkit-calc(100% - 8.5rem); height: calc(100% - 8.5rem); text-align: center;"><input type="file" id="fileinput" style="display: none;" onchange="bind(window.URL.createObjectURL(this.files[0]),' + wid + ',' + hei + ',' + circle + ');"></div><div style="text-align: center; margin-top: 3rem"><a class="button hollow" onclick="$(\'#fileinput\').click();">选择图片</a><a class="button hollow" onclick="upload(\'' + action + '\',' + circle + ');">裁剪并上传</a></div></div>';
     var dive = $(html);
 
     $('body').append(dive);
@@ -160,7 +160,7 @@ function crop(trig, siz, circle, title) {
 }
 
 function bind(url, wid, height, circle) {
-    var mc = $('#demo');
+    var mc = $('#crop');
     mc.croppie('destroy');
     mc.croppie({
         url: url, viewport: {
