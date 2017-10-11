@@ -38,6 +38,7 @@ namespace Greatbone.Sample
                     m.TEXT(nameof(prin.tel), prin.tel, "用户编号（个人手机号）", pattern: "[0-9]+", max: 11, min: 11, required: true);
                     m.PASSWORD(nameof(password), password, "登录密码（用于微信以外登录）", min: 3);
                     m.SELECT(nameof(prin.city), prin.city, ((SampleService) Service).Cities, label: "城市");
+                    m._FIELDSET();
                     m._FORM();
                 });
             }

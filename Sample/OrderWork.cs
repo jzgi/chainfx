@@ -30,9 +30,17 @@ namespace Greatbone.Sample
                 dc.Sql("SELECT ").columnlst(Order.Empty)._("FROM orders WHERE wx = @1 AND status = 0 ORDER BY id DESC");
                 if (dc.Query(p => p.Set(wx)))
                 {
+//                    var areas = ((SampleService)Service).Cities[""] 
                     ac.GiveGridPage(200, dc.ToArray<Order>(), (h, o) =>
                     {
-                        h.CELL(o.id, "单号", 0);
+                        h.CELL(o.shopname, "店名", 0);
+                        h.CELL(o.tel, "电话", 0);
+                        h.CELL(o.area, "区域", 6).CELL(o.addr, "地址", 6);
+                        for (int i = 0; i < o.items.Length; i++)
+                        {
+                            var item = o.items[i];
+                            h.CELL_(6).T("<img src=\"\">")._CELL().CELL_(6).T(item.qty)._CELL();
+                        }
                         h.CELL(o.total, "总价", 0);
                     }, false, 3);
                 }

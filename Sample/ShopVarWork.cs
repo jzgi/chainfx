@@ -120,7 +120,7 @@ namespace Greatbone.Sample
                             h.HIDDEN(nameof(item.price), item.price);
 
                             h.T("<button type=\"button\" class=\"button primary\"  data-toggle=\"dropdown").T(i).T("\">我要购买</button>");
-                            h.T("<div class=\"dropdown-pane\" id=\"dropdown").T(i).T("\" data-position=\"top\" data-alignment=\"right\" style=\"box-shadow:0px 0px 10px #0a0a0a;\" data-dropdown>");
+                            h.T("<div class=\"dropdown-pane\" id=\"dropdown").T(i).T("\" data-position=\"top\" data-alignment=\"right\" style=\"box-shadow:0 0 2px #0a0a0a;\" data-dropdown>");
                             h.T("<form>");
 
                             h.NUMBER(nameof(item.max), item.min, min: item.min, step: item.step);

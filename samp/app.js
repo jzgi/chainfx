@@ -35,8 +35,8 @@ function dialog(trig, mode, siz, title) {
 
     title = title || trig.innerHTML;
 
-    var bottom = mode == OPEN ? '3.5rem' : '5rem';
-    var html = '<div id="dyndlg" class="' + sizg + ' reveal' + trigclass + '"  data-reveal data-close-on-click="false">' + '<div class="title-bar"><div class="title-bar-title">' + title + '</div><div class="title-bar-right"><a onclick="$(\'#dyndlg\').foundation(\'close\').foundation(\'destroy\').remove(); return false;">&times;</a></div></div>' + '<div style="height: -webkit-calc(100% - ' + bottom + '); height: calc(100% - ' + bottom + ')"><iframe src="' + src + '" style="width: 100%; height: 100%; border: 0"></iframe></div>' + (mode == OPEN ? '' : ('<button class=\"button primary float-center\" onclick="ok(this,' + mode + ',\'' + formid + '\',\'' + tag + '\',\'' + action + '\',\'' + method + '\');" disabled>确定</botton>')) + '</div>';
+    var bottom = mode == OPEN ? '4rem' : '6rem';
+    var html = '<div id="dyndlg" class="' + sizg + ' reveal' + trigclass + '"  data-reveal data-close-on-click="false">' + '<div class="title-bar"><div class="title-bar-title">' + title + '</div><div class="title-bar-right"><a onclick="$(\'#dyndlg\').foundation(\'close\').foundation(\'destroy\').remove(); return false;"><i class="fi-x" style="font-size: 1.75rem; line-height: 2rem"></i></a></div></div>' + '<div style="height: -webkit-calc(100% - ' + bottom + '); height: calc(100% - ' + bottom + ')"><iframe src="' + src + '" style="width: 100%; height: 100%; border: 0"></iframe></div>' + (mode == OPEN ? '' : ('<div style="text-align: center; padding: 0.5rem; background-color: #e6e6e6;"><button class=\"button primary\" onclick="ok(this,' + mode + ',\'' + formid + '\',\'' + tag + '\',\'' + action + '\',\'' + method + '\');" disabled>确定</botton><div>')) + '</div>';
     var dive = $(html);
     $('body').append(dive);
 
@@ -146,7 +146,7 @@ function crop(trig, siz, circle, title) {
             break;
     }
 
-    var html = '<div id="dyndlg" class="' + sizg + ' reveal"  data-reveal data-close-on-click="false"><div class="title-bar"><div class="title-bar-title">' + title + '</div><div class="title-bar-right"><a class="close-button" onclick="$(\'#dyndlg\').foundation(\'close\').foundation(\'destroy\').remove(); return false;">&times;</a></div></div><div id="crop" style="height: -webkit-calc(100% - 8.5rem); height: calc(100% - 8.5rem); text-align: center;"><input type="file" id="fileinput" style="display: none;" onchange="bind(window.URL.createObjectURL(this.files[0]),' + wid + ',' + hei + ',' + circle + ');"></div><div style="text-align: center; margin-top: 3rem"><a class="button hollow" onclick="$(\'#fileinput\').click();">选择图片</a><a class="button hollow" onclick="upload(\'' + action + '\',' + circle + ');">裁剪并上传</a></div></div>';
+    var html = '<div id="dyndlg" class="' + sizg + ' reveal"  data-reveal data-close-on-click="false"><div class="title-bar"><div class="title-bar-title">' + title + '</div><div class="title-bar-right"><a onclick="$(\'#dyndlg\').foundation(\'close\').foundation(\'destroy\').remove(); return false;"><i class="fi-x" style="font-size: 1.75rem; line-height: 2rem"></i></a></div></div><div id="crop" style="height: -webkit-calc(100% - 8rem); height: calc(100% - 8rem); text-align: center;"><input type="file" id="fileinput" style="display: none;" onchange="bind(window.URL.createObjectURL(this.files[0]),' + wid + ',' + hei + ',' + circle + ');"></div><div style="text-align: center; margin-top: 3rem"><a class="button hollow" onclick="$(\'#fileinput\').click();">选择图片</a><a class="button hollow" onclick="upload(\'' + action + '\',' + circle + ');">裁剪并上传</a></div></div>';
     var dive = $(html);
 
     $('body').append(dive);
@@ -225,7 +225,7 @@ function inline(uri) {
         container.empty();
         $('html').attr('style', 'height: 100%');
         $('body').attr('style', 'height: 100%');
-        container.attr('style', 'height: -webkit-calc(100% - 8.5rem); height: calc(100% - 8.5rem)');
+        container.attr('style', 'height: -webkit-calc(100% - 8rem); height: calc(100% - 8rem)');
         container.append('<iframe id="inline" style="width: 100%; height: 100%; border:  0"></iframe>');
     }
     $('#inline').attr('src', uri);

@@ -390,7 +390,7 @@ namespace Greatbone.Core
             return this;
         }
 
-        public HtmlContent CELL_(string label = null, int grid = 0)
+        public HtmlContent CELL_(string label, int grid = 0)
         {
             if (label != null)
             {
@@ -407,6 +407,14 @@ namespace Greatbone.Core
                 Add(grid > 0 ? grid : 12);
                 Add("\">");
             }
+            return this;
+        }
+
+        public HtmlContent CELL_(int grid = 0)
+        {
+            Add("<div class=\"cell cell-v small-");
+            Add(grid > 0 ? grid : 12);
+            Add("\">");
             return this;
         }
 
@@ -685,11 +693,11 @@ namespace Greatbone.Core
                 Add("<div class=\"grid-x small-up-1 medium-up-2 large-up-3\">");
                 for (int i = 0; i < arr.Length; i++)
                 {
-                    Add("<div class=\"cell\" style=\"padding: 0.5rem\">");
+                    Add("<div class=\"cell\" style=\"padding: 0.5rem;\">");
                     Add("<form>");
                     D obj = arr[i];
 
-                    Add("<div class=\"grid-x\" style=\"border: 1px solid #e6e6e6; \">");
+                    Add("<div class=\"grid-x\" style=\"border: 1px solid #0a0a0a;\">");
                     Add("<div class=\"cell\">");
                     Add("<input name=\"key\" style=\"margin-left: 0.25rem\" type=\"checkbox\" form=\"viewform\" value=\"");
                     varwork?.OutputVarKey(obj, this);
