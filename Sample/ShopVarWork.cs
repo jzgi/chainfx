@@ -1,6 +1,7 @@
 using System;
 using System.Threading.Tasks;
 using Greatbone.Core;
+using static Greatbone.Core.UiMode;
 
 namespace Greatbone.Sample
 {
@@ -159,7 +160,7 @@ namespace Greatbone.Sample
         {
         }
 
-        [Ui("修改", Mode = UiMode.ButtonShow)]
+        [Ui("修改", Mode = ButtonShow)]
         public async Task edit(ActionContext ac)
         {
             short id = ac[this];
@@ -205,7 +206,7 @@ namespace Greatbone.Sample
             }
         }
 
-        [Ui("经理", Mode = UiMode.ButtonShow)]
+        [Ui("经理", Mode = ButtonShow)]
         public async Task mgr(ActionContext ac)
         {
             short shopid = ac[this];
@@ -243,14 +244,14 @@ namespace Greatbone.Sample
                 (string wx, string tel, string name) = wx_tel_name.ToTriple<string, string, string>();
                 using (var dc = ac.NewDbContext())
                 {
-                    dc.Execute(@"UPDATE shops SET mgrwx = @1, mgrtel = @2, mgrname = @3 WHERE id = @4; UPDATE users SET oprat = @4, opr = " + User.OPR_MGR + "  WHERE wx = @2;",
+                    dc.Execute(@"UPDATE shops SET mgrwx = @1, mgrtel = @2, mgrname = @3 WHERE id = @4; UPDATE users SET oprat = @4, opr = " + User.OPRMGR + "  WHERE wx = @2;",
                         p => p.Set(wx).Set(tel).Set(name).Set(shopid));
                 }
                 ac.GivePane(200);
             }
         }
 
-        [Ui("图片", Mode = UiMode.ACrop)]
+        [Ui("图片", Mode = ACrop)]
         public new async Task icon(ActionContext ac)
         {
             short shopid = ac[this];

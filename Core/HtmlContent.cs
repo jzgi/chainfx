@@ -453,8 +453,9 @@ namespace Greatbone.Core
             return this;
         }
 
-        public HtmlContent FIELDSET_(string legend = null)
+        public HtmlContent FIELDSET_(string legend = null, sbyte grid = 0)
         {
+            CELL_(null, grid);
             Add("<fieldset class=\"fieldset\">");
             if (legend != null)
             {
@@ -462,12 +463,15 @@ namespace Greatbone.Core
                 AddEsc(legend);
                 Add("</legend>");
             }
+            Add("<div class=\"grid-x\">");
             return this;
         }
 
         public HtmlContent _FIELDSET()
         {
+            Add("</div>");
             Add("</fieldset>");
+            _CELL();
             return this;
         }
 
@@ -792,7 +796,8 @@ namespace Greatbone.Core
                 if (ui.IsA)
                 {
                     Add("<a class=\"button hollow");
-                    Add(" primary\" href=\"");
+                    Add(ui.Em ? " warning" : " primary");
+                    Add("\" href=\"");
                     if (obj != null)
                     {
                         ai.Work.OutputVarKey(obj, this);
@@ -840,8 +845,8 @@ namespace Greatbone.Core
                 }
                 else if (ui.IsButton)
                 {
-                    Add("<button class=\"button primary");
-                    if (!ui.Em) Add(" hollow");
+                    Add("<button class=\"button hollow");
+                    Add(ui.Em ? " warning" : " primary");
                     Add("\" name=\"");
                     Add(ai.Name);
                     Add("\" formaction=\"");
@@ -1370,14 +1375,23 @@ namespace Greatbone.Core
 
         public HtmlContent CHECKBOX(string name, bool v, string label = null, bool required = false, sbyte grid = 0)
         {
-            CELL_(label, grid);
+            CELL_(null, grid);
 
+            if (label != null)
+            {
+                Add("<label>");
+            }
             Add("<input type=\"checkbox\" name=\"");
             Add(name);
             Add("\"");
             if (v) Add(" checked");
             if (required) Add(" required");
             Add(">");
+            if (label != null)
+            {
+                Add(label);
+                Add("</label>");
+            }
 
             _CELL();
             return this;

@@ -147,7 +147,7 @@ namespace Greatbone.Sample
             h.Add("<link rel=\"stylesheet\" href=\"/app.min.css\">");
             h.Add("</head>");
 
-            h.Add("<body style=\"padding: 1rem\">");
+            h.Add("<body style=\"padding: 0.5rem\">");
 
             main?.Invoke(h);
 

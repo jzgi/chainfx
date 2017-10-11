@@ -15,7 +15,7 @@ namespace Greatbone.Sample
     }
 
     [Ui("结款")]
-    [User(User.OPR_MGR)]
+    [User(User.OPRMGR)]
     public class OprRepayWork : RepayWork<OprRepayVarWork>
     {
         public OprRepayWork(WorkContext wc) : base(wc)

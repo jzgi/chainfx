@@ -37,7 +37,7 @@ namespace Greatbone.Sample
         internal string name; // customer name
         internal string tel;
         internal string city;
-        internal string area;
+        internal string region; // distr or area
         internal string addr; // address
         internal OrderItem[] items;
         internal decimal total; // receivable
@@ -61,7 +61,7 @@ namespace Greatbone.Sample
             i.Get(nameof(name), ref name);
             i.Get(nameof(tel), ref tel);
             i.Get(nameof(city), ref city);
-            i.Get(nameof(area), ref area);
+            i.Get(nameof(region), ref region);
             i.Get(nameof(addr), ref addr);
             i.Get(nameof(items), ref items);
             i.Get(nameof(total), ref total);
@@ -89,7 +89,7 @@ namespace Greatbone.Sample
             o.Put(nameof(name), name);
             o.Put(nameof(tel), tel);
             o.Put(nameof(city), city);
-            o.Put(nameof(area), area);
+            o.Put(nameof(region), region);
             o.Put(nameof(addr), addr);
             o.Put(nameof(items), items);
             o.Put(nameof(total), total);

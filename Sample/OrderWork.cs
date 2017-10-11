@@ -35,7 +35,7 @@ namespace Greatbone.Sample
                     {
                         h.CELL(o.shopname, "店名", 0);
                         h.CELL(o.tel, "电话", 0);
-                        h.CELL(o.area, "区域", 6).CELL(o.addr, "地址", 6);
+                        h.CELL(o.region, "区域", 6).CELL(o.addr, "地址", 6);
                         for (int i = 0; i < o.items.Length; i++)
                         {
                             var item = o.items[i];
@@ -86,7 +86,7 @@ namespace Greatbone.Sample
                         name = prin.name,
                         tel = prin.tel,
                         city = city ?? prin.city,
-                        area = area ?? prin.area,
+                        region = area ?? prin.area,
                         addr = prin.addr,
                         items = new[] {new OrderItem {name = name, price = price, qty = qty, unit = unit, customs = customs}},
                         created = DateTime.Now

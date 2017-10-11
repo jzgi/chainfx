@@ -3215,7 +3215,7 @@ input:checked + label > .switch-inactive {
 
 .pagination li {
     margin-right: 0.0625rem;
-    border-radius: 3px;
+    border-radius: 30%;
     font-size: 0.875rem;
     display: none;
 }

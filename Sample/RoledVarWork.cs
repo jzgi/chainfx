@@ -1,5 +1,7 @@
 using System.Threading.Tasks;
 using Greatbone.Core;
+using static Greatbone.Core.UiMode;
+using static Greatbone.Sample.User;
 
 namespace Greatbone.Sample
 {
@@ -22,7 +24,7 @@ namespace Greatbone.Sample
             ac.GiveGridPage(200, (Order[]) null, (h, o) => { });
         }
 
-        [Ui("后台操作设置", "后台操作帐号", Mode = UiMode.AShow)]
+        [Ui("后台操作设置", "后台操作帐号", Mode = AShow)]
         public async Task loginf(ActionContext ac)
         {
             string wx = ac[this];
@@ -61,18 +63,18 @@ namespace Greatbone.Sample
                         dc.Execute("INSERT INTO users (wx, id, name, credential, city) VALUES (@1, @2, @3, @4, @5) ON CONFLICT (wx) DO UPDATE SET id = @2, name = @3, credential = @4, city = @5", p => p.Set(wx).Set(prin.tel).Set(prin.name).Set(credential).Set(prin.city));
                     }
                 }
-                ac.SetTokenCookie(prin, -1 ^ User.CREDENTIAL);
+                ac.SetTokenCookie(prin, -1 ^ CREDENTIAL);
                 ac.GivePane(200); // close dialog
             }
         }
 
-        [Ui("调试刷新", Mode = UiMode.AShow)]
+        [Ui("调试刷新", Mode = AShow)]
         public void token(ActionContext ac)
         {
             string wx = ac[this];
             using (var dc = ac.NewDbContext())
             {
-                const short proj = -1 ^ User.CREDENTIAL;
+                const short proj = -1 ^ CREDENTIAL;
                 if (dc.Query1("SELECT * FROM users WHERE wx = @1", (p) => p.Set(wx)))
                 {
                     var o = dc.ToObject<User>(proj);
@@ -89,7 +91,7 @@ namespace Greatbone.Sample
 
 
     [Ui("常规")]
-    [User(User.OPR_)]
+    [User(OPR_)]
     public class OprVarWork : Work
     {
         public OprVarWork(WorkContext wc) : base(wc)
@@ -119,8 +121,8 @@ namespace Greatbone.Sample
             }
         }
 
-        [Ui("值班机", Mode = UiMode.AShow)]
-        public async Task lead(ActionContext ac)
+        [Ui("值班机", Mode = AShow)]
+        public async Task duty(ActionContext ac)
         {
             short shopid = ac[this];
             bool me = false;
@@ -139,7 +141,7 @@ namespace Greatbone.Sample
                             m.CELL(oprname, "姓名");
                             m._FIELDSET();
                             m.FIELDSET_("设为值班机");
-                            m.CHECKBOX(nameof(me), me, "将本机设为值班机，接收客户电话和微信通知");
+                            m.CHECKBOX(nameof(me), me, "将本机设为值班机，接收客户电话和微信通知", required: true);
                             m._FIELDSET();
                             m._FORM();
                         });
@@ -156,7 +158,6 @@ namespace Greatbone.Sample
                 {
                     using (var dc = ac.NewDbContext())
                     {
-                        dc.Sql("UPDATE shops SET oprwx = @1, oprtel = @2, oprname = @3 WHERE id = @1");
                         dc.Execute("UPDATE shops SET oprwx = @1, oprtel = @2, oprname = @3 WHERE id = @4", p => p.Set(prin.wx).Set(prin.tel).Set(prin.name).Set(shopid));
                     }
                 }
@@ -164,62 +165,54 @@ namespace Greatbone.Sample
             }
         }
 
-        [Ui("操作授权", Mode = UiMode.AOpen)]
-        public async Task crew(ActionContext ac, int subcmd)
+        [Ui("操作授权", Mode = AOpen), User(OPRMEM)]
+        public async Task grant(ActionContext ac, int cmd)
         {
             short shopid = ac[this];
-
-            // form submitted values
-            string id;
-            string name;
-            string oprid = null;
+            string tel = null;
             short opr = 0;
-
             var f = await ac.ReadAsync<Form>();
             if (f != null)
             {
-                id = f[nameof(id)];
-                oprid = f[nameof(oprid)];
+                tel = f[nameof(tel)];
                 opr = f[nameof(opr)];
-                if (subcmd == 1) // remove
+                if (cmd == 1) // remove
                 {
                     using (var dc = ac.NewDbContext())
                     {
-                        dc.Execute("UPDATE users SET oprat = NULL, opr = 0 WHERE tel = @1", p => p.Set(id));
+                        dc.Execute("UPDATE users SET oprat = NULL, opr = 0 WHERE tel = @1", p => p.Set(tel));
                     }
                 }
-                else if (subcmd == 2) // add
+                else if (cmd == 2) // add
                 {
                     using (var dc = ac.NewDbContext())
                     {
-                        dc.Execute("UPDATE users SET oprat = @1, opr = @2 WHERE id = @3", p => p.Set(shopid).Set(opr).Set(oprid));
+                        dc.Execute("UPDATE users SET oprat = @1, opr = @2 WHERE tel = @3", p => p.Set(shopid).Set(opr).Set(tel));
                     }
                 }
             }
-
             ac.GivePane(200, m =>
             {
                 m.FORM_();
-
-                m.FIELDSET_("现有操作授权");
+                m.FIELDSET_("现有操作人员");
                 using (var dc = ac.NewDbContext())
                 {
-                    if (dc.Query("SELECT id, name, opr FROM users WHERE oprat = @1", p => p.Set(shopid)))
+                    if (dc.Query("SELECT name, tel, opr FROM users WHERE oprat = @1", p => p.Set(shopid)))
                     {
                         while (dc.Next())
                         {
-                            dc.Let(out id).Let(out name).Let(out opr);
-                            m.RADIO(nameof(id), id, null, null, false, id, name, User.OPR[opr]);
+                            dc.Let(out string name).Let(out tel).Let(out opr);
+                            m.RADIO(nameof(tel), tel, null, null, false, tel, name, OPRS[opr]);
                         }
-                        m.BUTTON(nameof(crew), 1, "删除");
+                        m.BUTTON(nameof(grant), 1, "删除");
                     }
                 }
                 m._FIELDSET();
 
-                m.FIELDSET_("添加操作授权");
-                m.TEXT(nameof(oprid), oprid, "个人手机号", pattern: "[0-9]+", max: 11, min: 11);
-                m.SELECT(nameof(opr), opr, User.OPR, "操作权限");
-                m.BUTTON(nameof(crew), 2, "添加");
+                m.FIELDSET_("添加操作人员");
+                m.TEXT(nameof(tel), tel, "手机号", pattern: "[0-9]+", max: 11, min: 11);
+                m.SELECT(nameof(opr), opr, OPRS, "权限");
+                m.BUTTON(nameof(grant), 2, "添加");
                 m._FIELDSET();
                 m._FORM();
             });
