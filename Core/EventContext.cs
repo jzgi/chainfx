@@ -3,9 +3,9 @@ using System.Data;
 
 namespace Greatbone.Core
 {
-    ///
-    /// The processing of an received web event. A single object is reused.
-    ///
+    /// <summary>
+    /// The processing of an received distributed event. A single instance can be reused.
+    /// </summary>
     public class EventContext : IDoerContext<EventInfo>, IDisposable
     {
         readonly Client client;

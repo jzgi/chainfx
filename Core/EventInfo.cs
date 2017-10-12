@@ -4,9 +4,9 @@ using System.Threading.Tasks;
 
 namespace Greatbone.Core
 {
-    /// 
+    /// <summary>
     /// The descriptor of an event handler method.
-    /// 
+    ///  </summary>
     public class EventInfo : IDoer
     {
         readonly Service service;

@@ -2,6 +2,9 @@
 
 namespace Greatbone.Core
 {
+    /// <summary>
+    /// The data object of an event in the event queue.
+    /// </summary>
     public struct Event : IData
     {
         internal long id;

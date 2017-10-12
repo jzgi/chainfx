@@ -3,10 +3,11 @@ using System;
 namespace Greatbone.Core
 {
     /// <summary>
-    /// A event queue pertaining to a certain event client.
+    /// A event queue that corresponds to a particular event client.
     /// </summary>
     public class EventQueue : INamable
     {
+        // custm HTTP headers
         internal const string
             X_EVENT = "X-Event",
             X_SHARD = "X-Shard",

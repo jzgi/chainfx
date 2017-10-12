@@ -2,6 +2,9 @@ using System;
 
 namespace Greatbone.Core
 {
+    /// <summary>
+    /// A field in the form model.
+    /// </summary>
     public struct Field : INamable
     {
         readonly string name;
