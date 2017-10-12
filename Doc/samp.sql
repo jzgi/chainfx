@@ -11,7 +11,7 @@ Target Server Type    : PGSQL
 Target Server Version : 90505
 File Encoding         : 65001
 
-Date: 2017-10-08 10:38:08
+Date: 2017-10-11 23:04:09
 */
 
 
@@ -39,16 +39,15 @@ CREATE SEQUENCE "public"."repays_id_seq"
 SELECT setval('"public"."repays_id_seq"', 1293, true);
 
 -- ----------------------------
--- Sequence structure for shops_id_seq
+-- Sequence structure for shops_id_seq1
 -- ----------------------------
-DROP SEQUENCE IF EXISTS "public"."shops_id_seq";
-CREATE SEQUENCE "public"."shops_id_seq"
+DROP SEQUENCE IF EXISTS "public"."shops_id_seq1";
+CREATE SEQUENCE "public"."shops_id_seq1"
  INCREMENT 1
  MINVALUE 1
  MAXVALUE 9223372036854775807
  START 1
  CACHE 1;
-SELECT setval('"public"."shops_id_seq"', 1, true);
 
 -- ----------------------------
 -- Table structure for items
@@ -114,16 +113,15 @@ CREATE TABLE "public"."orders" (
 "name" varchar(10) COLLATE "default",
 "tel" varchar(11) COLLATE "default",
 "city" varchar(6) COLLATE "default",
-"area" varchar(10) COLLATE "default",
+"region" varchar(10) COLLATE "default",
 "addr" varchar(20) COLLATE "default",
 "items" jsonb,
 "total" money,
 "created" timestamp(6),
 "cash" money DEFAULT 0,
-"accepted" timestamp(6),
-"abortly" varchar(20) COLLATE "default",
+"paid" timestamp(6),
 "aborted" timestamp(6),
-"shipped" timestamp(6),
+"received" timestamp(6),
 "note" varchar(20) COLLATE "default",
 "status" int2
 )
@@ -157,7 +155,7 @@ WITH (OIDS=FALSE)
 -- ----------------------------
 DROP TABLE IF EXISTS "public"."shops";
 CREATE TABLE "public"."shops" (
-"id" int2 DEFAULT nextval('shops_id_seq'::regclass) NOT NULL,
+"id" int2 DEFAULT nextval('shops_id_seq1'::regclass) NOT NULL,
 "name" varchar(10) COLLATE "default",
 "city" varchar(6) COLLATE "default",
 "addr" varchar(20) COLLATE "default",
@@ -165,6 +163,9 @@ CREATE TABLE "public"."shops" (
 "y" float8,
 "icon" bytea,
 "areas" varchar(10)[] COLLATE "default",
+"minimum" money,
+"every" money,
+"cut" money,
 "mgrwx" varchar(28) COLLATE "default",
 "mgrtel" varchar(11) COLLATE "default",
 "mgrname" varchar(10) COLLATE "default",
@@ -187,11 +188,13 @@ CREATE TABLE "public"."users" (
 "tel" varchar(11) COLLATE "default",
 "credential" varchar(32) COLLATE "default",
 "city" varchar(4) COLLATE "default",
+"area" varchar(10) COLLATE "default",
 "addr" varchar(20) COLLATE "default",
 "oprat" int2,
 "opr" int2 DEFAULT 0,
 "adm" bool DEFAULT false,
-"status" int2 DEFAULT 0 NOT NULL
+"status" int2 DEFAULT 0 NOT NULL,
+"oprname" varchar(10) COLLATE "default"
 )
 WITH (OIDS=FALSE)
 
@@ -202,7 +205,7 @@ WITH (OIDS=FALSE)
 -- ----------------------------
 ALTER SEQUENCE "public"."orders_id_seq1" OWNED BY "orders"."id";
 ALTER SEQUENCE "public"."repays_id_seq" OWNED BY "repays"."id";
-ALTER SEQUENCE "public"."shops_id_seq" OWNED BY "shops"."id";
+ALTER SEQUENCE "public"."shops_id_seq1" OWNED BY "shops"."id";
 
 -- ----------------------------
 -- Primary Key structure for table items

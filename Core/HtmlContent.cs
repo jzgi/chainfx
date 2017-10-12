@@ -636,7 +636,7 @@ namespace Greatbone.Core
                     // checkbox
                     Add("<td>");
                     Add("<input name=\"key\" type=\"checkbox\" form=\"viewform\"  value=\"");
-                    varwork?.OutputVarKey(obj, this);
+                    varwork?.PutVarKey(obj, this);
                     Add("\"></td>");
                     row(this, obj);
                     if (ais != null) // triggers
@@ -704,7 +704,7 @@ namespace Greatbone.Core
                     Add("<div class=\"grid-x\" style=\"border: 1px solid #0a0a0a;\">");
                     Add("<div class=\"cell\">");
                     Add("<input name=\"key\" style=\"margin-left: 0.25rem\" type=\"checkbox\" form=\"viewform\" value=\"");
-                    varwork?.OutputVarKey(obj, this);
+                    varwork?.PutVarKey(obj, this);
                     Add("\">");
                     Add("</div>");
 
@@ -800,7 +800,7 @@ namespace Greatbone.Core
                     Add("\" href=\"");
                     if (obj != null)
                     {
-                        ai.Work.OutputVarKey(obj, this);
+                        ai.Work.PutVarKey(obj, this);
                         Add('/');
                     }
                     Add(ai.RPath);
@@ -852,7 +852,7 @@ namespace Greatbone.Core
                     Add("\" formaction=\"");
                     if (obj != null)
                     {
-                        ai.Work.OutputVarKey(obj, this);
+                        ai.Work.PutVarKey(obj, this);
                         Add('/');
                     }
                     Add(ai.Name);
@@ -1322,13 +1322,13 @@ namespace Greatbone.Core
                 Add(tip);
                 Add("\"");
             }
-            if (max != 0)
+            if (!max.Equals(0))
             {
                 Add(" max=\"");
                 Add(max);
                 Add("\"");
             }
-            if (min != 0)
+            if (!min.Equals(0))
             {
                 Add(" min=\"");
                 Add(min);
@@ -1437,14 +1437,7 @@ namespace Greatbone.Core
             Add(name);
             Add("\" value=\"");
             Add(value);
-            if (@checked)
-            {
-                Add("\" checked>");
-            }
-            else
-            {
-                Add("\">");
-            }
+            Add(@checked ? "\" checked>" : "\">");
             Add(label);
             Add("</label>");
             return this;
@@ -1457,14 +1450,7 @@ namespace Greatbone.Core
             Add(name);
             Add("\" value=\"");
             Add(value);
-            if (check)
-            {
-                Add("\" checked>");
-            }
-            else
-            {
-                Add("\">");
-            }
+            Add(check ? "\" checked>" : "\">");
             Add(label);
             Add("</label>");
             return this;
@@ -1477,14 +1463,7 @@ namespace Greatbone.Core
             Add(name);
             Add("\" value=\"");
             Add(value);
-            if (check)
-            {
-                Add("\" checked>");
-            }
-            else
-            {
-                Add("\">");
-            }
+            Add(check ? "\" checked>" : "\">");
             Add(label);
             Add("</label>");
             return this;
@@ -1497,14 +1476,7 @@ namespace Greatbone.Core
             Add(name);
             Add("\" value=\"");
             value(this);
-            if (@checked)
-            {
-                Add("\" checked>");
-            }
-            else
-            {
-                Add("\">");
-            }
+            Add(@checked ? "\" checked>" : "\">");
             label(this);
             Add("</label>");
             return this;
@@ -1527,14 +1499,7 @@ namespace Greatbone.Core
                 Add('~');
                 Add(v3);
             }
-            if (@checked)
-            {
-                Add("\" checked>");
-            }
-            else
-            {
-                Add("\">");
-            }
+            Add(@checked ? "\" checked>" : "\">");
             Add(l1);
             if (l2 != null)
             {
@@ -1562,14 +1527,7 @@ namespace Greatbone.Core
                 Add('-');
                 Add(v2);
             }
-            if (@checked)
-            {
-                Add("\" checked>");
-            }
-            else
-            {
-                Add("\">");
-            }
+            Add(@checked ? "\" checked>" : "\">");
             Add(l1);
             Add(' ');
             Add(l2);

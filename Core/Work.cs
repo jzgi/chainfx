@@ -189,47 +189,48 @@ namespace Greatbone.Core
 
         public bool HasLabeller => ctx.Labeller != null;
 
-        public string ObtainVarKey(IData obj, out string label)
+        public string GetVarKey(IData obj, out string label)
         {
             label = ctx.Labeller?.Invoke(obj);
+
             Delegate keyer = ctx.Keyer;
             if (keyer is Func<IData, string>)
             {
                 return ((Func<IData, string>) keyer)(obj);
             }
-            else if (keyer is Func<IData, long>)
+            if (keyer is Func<IData, long>)
             {
                 return ((Func<IData, long>) keyer)(obj).ToString();
             }
-            else if (keyer is Func<IData, int>)
+            if (keyer is Func<IData, int>)
             {
                 return ((Func<IData, int>) keyer)(obj).ToString();
             }
-            else if (keyer is Func<IData, short>)
+            if (keyer is Func<IData, short>)
             {
                 return ((Func<IData, short>) keyer)(obj).ToString();
             }
             return null;
         }
 
-        public void OutputVarKey(IData obj, DynamicContent @out)
+        public void PutVarKey(IData obj, DynamicContent cont)
         {
             Delegate keyer = ctx.Keyer;
             if (keyer is Func<IData, string>)
             {
-                @out.Add(((Func<IData, string>) keyer)(obj));
+                cont.Add(((Func<IData, string>) keyer)(obj));
             }
             else if (keyer is Func<IData, long>)
             {
-                @out.Add(((Func<IData, long>) keyer)(obj));
+                cont.Add(((Func<IData, long>) keyer)(obj));
             }
             else if (keyer is Func<IData, int>)
             {
-                @out.Add(((Func<IData, int>) keyer)(obj));
+                cont.Add(((Func<IData, int>) keyer)(obj));
             }
             else if (keyer is Func<IData, short>)
             {
-                @out.Add(((Func<IData, short>) keyer)(obj));
+                cont.Add(((Func<IData, short>) keyer)(obj));
             }
         }
 
@@ -294,7 +295,7 @@ namespace Greatbone.Core
                 if (key.Length == 0 && varwork.HasKeyer) // resolve shortcut
                 {
                     if (prin == null) throw AuthorizeEx;
-                    if ((key = varwork.ObtainVarKey(prin, out label)) == null)
+                    if ((key = varwork.GetVarKey(prin, out label)) == null)
                     {
                         throw AuthorizeEx;
                     }

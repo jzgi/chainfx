@@ -2,6 +2,6 @@
 {
     public interface IStatable
     {
-        int GetState();
+        short GetState();
     }
 }

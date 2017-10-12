@@ -13,7 +13,7 @@ namespace Greatbone.Sample
         public const short CREATED = 0, COMMITED = 2, RESOLVED = 4;
 
         // status
-        static readonly Map<short, string> STATUS = new Map<short, string>
+        public static readonly Map<short, string> STATUS = new Map<short, string>
         {
             [CREATED] = "新建",
             [COMMITED] = "已提交",
