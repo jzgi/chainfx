@@ -137,8 +137,8 @@ namespace Greatbone.Sample
                         {
                             m.FORM_();
                             m.FIELDSET_("当前值班机");
-                            m.CELL(oprtel, "电话");
-                            m.CELL(oprname, "姓名");
+                            m.FIELD(oprtel, "电话");
+                            m.FIELD(oprname, "姓名");
                             m._FIELDSET();
                             m.FIELDSET_("设为值班机");
                             m.CHECKBOX(nameof(me), me, "将本机设为值班机，接收客户电话和微信通知", required: true);

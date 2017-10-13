@@ -79,15 +79,17 @@ namespace Greatbone.Sample
                             return;
                         }
 
-                        h.T("<div class=\"grid-x grid-padding-x small-up-1 medium-up-2\">");
+                        h.T("<div class=\"grid-x small-up-1 medium-up-2\">");
                         for (int i = 0; i < items.Length; i++)
                         {
-                            h.T("<div class=\"cell\">");
+                            h.T("<div class=\"cell\" style=\"padding: 0.5rem\">");
                             var item = items[i];
 
                             var shopname = shop.name;
 
-                            h.T("<div class=\"card\">");
+                            h.T("<div class=\"grid-x card\">");
+
+                            h.T("<div class=\"small-12 card-cap\"><h3>").T(item.name).T("</h3></div>");
 
                             h.T("<div class=\"small-4 cell\">");
                             h.T("<img src=\"").T(item.name).T("/icon\" alt=\"\" class=\"thumbnail circle\">");
@@ -120,7 +122,7 @@ namespace Greatbone.Sample
                             h.HIDDEN(nameof(item.unit), item.unit);
                             h.HIDDEN(nameof(item.price), item.price);
 
-                            h.T("<button type=\"button\" class=\"button primary\"  data-toggle=\"dropdown").T(i).T("\">我要购买</button>");
+                            h.T("<button type=\"button\" class=\"button hollow primary float-right\"  data-toggle=\"dropdown").T(i).T("\">我要购买</button>");
                             h.T("<div class=\"dropdown-pane\" id=\"dropdown").T(i).T("\" data-position=\"top\" data-alignment=\"right\" style=\"box-shadow:0 0 2px #0a0a0a;\" data-dropdown>");
                             h.T("<form>");
 

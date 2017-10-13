@@ -80,25 +80,25 @@ namespace Greatbone.Sample
             {
                 city = "南昌";
             }
-            ac.GivePage(200, m =>
+            ac.GivePage(200, h =>
             {
-                m.T("<div data-sticky-container>");
-                m.T("<div class=\"sticky\" style=\"width: 100%\" data-sticky  data-options=\"anchor: page; marginTop: 0; stickyOn: small;\">");
-                m.T("<div class=\"top-bar\">");
-                m.T("<div class=\"top-bar-title\">所在城市</div>");
-                m.T("<div class=\"top-bar-left\">");
-                m.T("<form>");
+                h.T("<div data-sticky-container>");
+                h.T("<div class=\"sticky\" style=\"width: 100%\" data-sticky  data-options=\"anchor: page; marginTop: 0; stickyOn: small;\">");
+                h.T("<div class=\"top-bar\">");
+                h.T("<div class=\"top-bar-title\">所在城市</div>");
+                h.T("<div class=\"top-bar-left\">");
+                h.T("<form>");
                 var cities = ((SampleService) ac.Service).Cities;
-                m.SELECT(nameof(city), city, cities, refresh: true);
-                m.HIDDEN(nameof(area), area);
-                m.T("</form>");
-                m.T("</div>");
-                m.T("<div class=\"top-bar-right\">");
-                m.T("<a class=\"float-right\" href=\"/my//pre/\"><i class=\"fi-shopping-cart\" style=\"font-size: 1.75rem; line-height: 2rem\"></i></a>");
-                m.T("</div>");
-                m.T("</div>");
-                m.T("</div>");
-                m.T("</div>");
+                h.SELECT(nameof(city), city, cities, refresh: true);
+                h.HIDDEN(nameof(area), area);
+                h.T("</form>");
+                h.T("</div>");
+                h.T("<div class=\"top-bar-right\">");
+                h.T("<a class=\"float-right\" href=\"/my//pre/\"><i class=\"fi-shopping-cart\" style=\"font-size: 1.75rem; line-height: 2rem\"></i></a>");
+                h.T("</div>");
+                h.T("</div>");
+                h.T("</div>");
+                h.T("</div>");
 
                 using (var dc = ac.NewDbContext())
                 {
@@ -106,30 +106,38 @@ namespace Greatbone.Sample
                     if (dc.Query(p => p.Set(city)))
                     {
                         var shops = dc.ToArray<Shop>();
+                        h.T("<div class=\"grid-x small-up-1 medium-up-2\">");
                         for (int i = 0; i < shops.Length; i++)
                         {
+                            h.T("<div class=\"cell\" style=\"padding: 0.5rem\">");
                             var shop = shops[i];
 
-                            m.T("<div class=\"grid-x\">");
-                            m.T("<div class=\"small-8 cell\">");
-                            m.T("<h3><a href=\"").T(shop.id).T("/?city=").T(city).T("\">").T(shop.name).T("</a></h3>");
-                            m.T("<p>").T(shop.city).T(shop.addr).T("</p>");
+                            h.T("<div class=\"grid-x card\">");
+                            
+                            h.T("<div class=\"small-12 card-cap\">");
+                            h.T("<h3><a href=\"").T(shop.id).T("/?city=").T(city).T("\">").T(shop.name).T("</a></h3>");
+                            h.T("</div>");
+                            
+                            h.T("<div class=\"small-8 cell\">");
+                            h.T("<p>").T(shop.city).T(shop.addr).T("</p>");
                             var areas = shop.areas;
                             if (areas != null)
                                 for (int k = 0; k < areas.Length; k++)
                                 {
-                                    m.T("<span>").T(areas[k]).T("</span>");
+                                    h.T("<span>").T(areas[k]).T("</span>");
                                 }
-                            m.T("</div>");
-                            m.T("<div class=\"small-4 cell\"><a href=\"").T(shop.id).T("/\"><img src=\"").T(shop.id).T("/icon\" class=\"thumbnail circle\"></a></div>");
-                            m.T("</div>");
+                            h.T("</div>");
+                            h.T("<div class=\"small-4 cell\"><a href=\"").T(shop.id).T("/\"><img src=\"").T(shop.id).T("/icon\" class=\"thumbnail circle\"></a></div>");
+                            h.T("</div>");
+                            h.T("</div>");
                         }
+                        h.T("</div>");
                     }
                     else
                     {
-                        m.T("<div style=\"text-align: center\">");
-                        m.T("<p>").T(city).T("目前没有商家</p>");
-                        m.T("</div>");
+                        h.T("<div style=\"text-align: center\">");
+                        h.T("<p>").T(city).T("目前没有商家</p>");
+                        h.T("</div>");
                     }
                 }
             }, true, 60 * 5);

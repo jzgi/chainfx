@@ -40,24 +40,33 @@ namespace Greatbone.Sample
 
         public void @default(ActionContext ac)
         {
+            string lang = ac.Query[nameof(lang)];
             Lesson[] lessons = null;
             using (var dc = NewDbContext())
             {
                 if (dc.Query("SELECT * FROM lessons"))
                 {
-                    lessons = dc.ToArray<Lesson>(-1 ^ User.CREDENTIAL);
+                    lessons = dc.ToArray<Lesson>();
                 }
             }
-            ac.GivePage(200, m =>
+            ac.GivePage(200, h =>
             {
+                h.T("<header class=\"top-bar\">");
+                h.T("<div class=\"top-bar-title\">");
+                h.T(lang == "en" ? "The Grandest Truth" : "最宏大的真相");
+                h.T("</div>");
+                h.T("<div class=\"top-bar-right\">");
+                h.T("</div>");
+                h.T("</header>");
+
                 if (lessons != null)
                 {
                     for (int i = 0; i < lessons.Length; i++)
                     {
                         var lesson = lessons[i];
-                        m.T("<div class=\"card\">");
-                        m.T("<embed src=\"http://player.youku.com/player.php/sid/").T(lesson.refid).T("/v.swf\" allowFullScreen=\"true\" quality=\"high\" width=\"480\" height=\"400\" align=\"middle\" allowScriptAccess=\"always\" type=\"application/x-shockwave-flash\"></embed>");
-                        m.T("</div>");
+                        h.T("<div class=\"card\">");
+                        h.T("<embed src=\"http://player.youku.com/player.php/sid/").T(lesson.refid).T("/v.swf\" allowFullScreen=\"true\" quality=\"high\" width=\"480\" height=\"400\" align=\"middle\" allowScriptAccess=\"always\" type=\"application/x-shockwave-flash\"></embed>");
+                        h.T("</div>");
                     }
                 }
             });

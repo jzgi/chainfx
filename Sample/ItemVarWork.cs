@@ -59,7 +59,7 @@ namespace Greatbone.Sample
                         ac.GivePane(200, m =>
                         {
                             m.FORM_();
-                            m.CELL(o.name, "名称");
+                            m.FIELD(o.name, "名称");
                             m.TEXT(nameof(o.descr), o.descr, "简述", max: 30, required: true);
                             m.TEXT(nameof(o.unit), o.unit, "单位", required: true);
                             m.NUMBER(nameof(o.price), o.price, "单价", required: true);

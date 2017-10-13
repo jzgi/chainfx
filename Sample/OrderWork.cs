@@ -33,15 +33,16 @@ namespace Greatbone.Sample
 //                    var areas = ((SampleService)Service).Cities[""] 
                     ac.GiveGridPage(200, dc.ToArray<Order>(), (h, o) =>
                     {
-                        h.CELL(o.shopname, "店名", 0);
-                        h.CELL(o.tel, "电话", 0);
-                        h.CELL(o.region, "区域", 6).CELL(o.addr, "地址", 6);
+                        h.CAPTION(o.shopname, "商家");
+                        h.FIELD(o.shopname, "店名", 0);
+                        h.FIELD(o.tel, "电话", 0);
+                        h.FIELD(o.region, "区域", 6).FIELD(o.addr, "地址", 6);
                         for (int i = 0; i < o.items.Length; i++)
                         {
                             var item = o.items[i];
-                            h.CELL_(6).T("<img src=\"\">")._CELL().CELL_(6).T(item.qty)._CELL();
+                            h.FIELD_(6).T("<img src=\"\">")._FIELD().FIELD_(6).T(item.qty)._FIELD();
                         }
-                        h.CELL(o.total, "总价", 0);
+                        h.FIELD(o.total, "总价", 0);
                     }, false, 3);
                 }
                 else
@@ -139,8 +140,8 @@ namespace Greatbone.Sample
                 {
                     ac.GiveGridPage(200, dc.ToArray<Order>(), (h, o) =>
                     {
-                        h.CELL(o.id, "单号", 0);
-                        h.CELL(o.total, "总价", 0);
+                        h.FIELD(o.id, "单号", 0);
+                        h.FIELD(o.total, "总价", 0);
                     }, false, 3);
                 }
                 else
@@ -176,8 +177,8 @@ namespace Greatbone.Sample
                 {
                     ac.GiveGridPage(200, dc.ToArray<Order>(), (h, o) =>
                     {
-                        h.CELL(o.id, "单号", 0);
-                        h.CELL(o.total, "总价", 0);
+                        h.FIELD(o.id, "单号", 0);
+                        h.FIELD(o.total, "总价", 0);
                     }, false, 3);
                 }
                 else
@@ -296,8 +297,8 @@ namespace Greatbone.Sample
                 {
                     ac.GiveGridPage(200, dc.ToArray<Order>(), (h, o) =>
                     {
-                        h.CELL(o.id, "单号", 0);
-                        h.CELL(o.total, "总价", 0);
+                        h.FIELD(o.id, "单号", 0);
+                        h.FIELD(o.total, "总价", 0);
                     }, false, 3);
                 }
                 else
@@ -338,8 +339,8 @@ namespace Greatbone.Sample
                 {
                     ac.GiveGridPage(200, dc.ToArray<Order>(), (h, o) =>
                     {
-                        h.CELL(o.id, "单号", 0);
-                        h.CELL(o.total, "总价", 0);
+                        h.FIELD(o.id, "单号", 0);
+                        h.FIELD(o.total, "总价", 0);
                     }, false, 3);
                 }
                 else

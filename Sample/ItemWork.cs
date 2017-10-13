@@ -29,10 +29,11 @@ namespace Greatbone.Sample
                 {
                     ac.GiveGridPage(200, dc.ToArray<Item>(), (h, o) =>
                     {
-                        h.CELL(o.name, "名称", 6).CELL(o.name, "名称", 6);
-                        h.CELL(o.descr, "简述");
-                        h.CELL(o.price, "价格");
-                        h.CELL(o.name, "成分");
+                        h.CAPTION(o.name, "名称", true);
+                        h.FIELD(o.name, "名称", 6).FIELD(o.name, "名称", 6);
+                        h.FIELD(o.descr, "简述");
+                        h.FIELD(o.price, "价格");
+                        h.FIELD(o.name, "成分");
                     });
                 }
                 else

@@ -6,7 +6,7 @@ namespace Greatbone.Sample
     /// <summary>
     /// An order data object.
     /// </summary>
-    public class Order : IData
+    public class Order : IData, IStatable
     {
         public static readonly Order Empty = new Order();
 
@@ -44,6 +44,7 @@ namespace Greatbone.Sample
         internal DateTime created; // time created
         internal decimal cash; // amount recieved
         internal DateTime paid; // when cash received or forcibly accepted
+        internal bool mark;
         internal DateTime aborted; // time aborted
         internal DateTime received; // time shipped
         internal string note;
@@ -144,6 +145,16 @@ namespace Greatbone.Sample
         public void RemoveDetail(string name)
         {
             items = items.RemovedOf(x => x.name == name);
+        }
+
+        public short GetState()
+        {
+            short sum = 0;
+            if (tel != null || city != null || addr != null)
+            {
+                sum |= 20;
+            }
+            return sum;
         }
     }
 
