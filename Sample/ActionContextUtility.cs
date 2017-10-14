@@ -17,7 +17,7 @@ namespace Greatbone.Sample
             HtmlContent h = new HtmlContent(ac, true, 8 * 1024);
 
             h.Add("<!DOCTYPE html>");
-            h.Add("<html style=\"height:100%\">");
+            h.Add("<html style=\"height:100%; overflow: hidden\">");
 
             h.Add("<head>");
             h.Add("<title>");
@@ -29,14 +29,14 @@ namespace Greatbone.Sample
             h.Add("<link rel=\"stylesheet\" href=\"/app.min.css\">");
             h.Add("</head>");
 
-            h.Add("<body style=\"height:100%\">");
+            h.Add("<body style=\"height:100%; overflow: hidden\">");
 
             Work work = ac.Work;
             Roll<Work> subs = work.Works;
             // tabs
-            h.Add("<ul class=\"tabs\" data-tabs data-deep-link=\"true\" id=\"frametabs\">");
+            h.Add("<ul class=\"tabs\" data-tabs id=\"frametabs\">");
             h.Add("<li class=\"tabs-title is-active\">");
-            h.Add("<a href=\"#_\">");
+            h.Add("<a href=\"#tabs_\">");
             h.Add(work.Label);
             h.Add("</a>");
             h.Add("</li>");
@@ -46,7 +46,7 @@ namespace Greatbone.Sample
                 {
                     Work sub = subs[i];
                     if (!sub.DoAuthorize(ac)) continue;
-                    h.Add("<li class=\"tabs-title\"><a href=\"#_");
+                    h.Add("<li class=\"tabs-title\"><a href=\"#tabs_");
                     h.Add(sub.Name);
                     h.Add("\">");
                     h.Add(sub.Label);
@@ -57,7 +57,7 @@ namespace Greatbone.Sample
             // tabs content
             h.Add("<div class=\"tabs-content\" data-tabs-content=\"frametabs\">");
             // the first panel
-            h.Add("<div class=\"tabs-panel is-active\" style=\"height: 100%\" id=\"_\">");
+            h.Add("<div class=\"tabs-panel is-active\" style=\"height: 100%\" id=\"tabs_\">");
             h.Add("<iframe src=\"?inner=true\" frameborder=\"0\" style=\"width: 100%; height: 100%;\"></iframe>");
             h.Add("</div>");
             if (subs != null)
@@ -67,7 +67,7 @@ namespace Greatbone.Sample
                 {
                     Work sub = subs[i];
                     if (!sub.DoAuthorize(ac)) continue;
-                    h.Add("<div class=\"tabs-panel\" style=\"height: 100%\" id=\"_");
+                    h.Add("<div class=\"tabs-panel\" style=\"height: 100%\" id=\"tabs_");
                     h.Add(sub.Name);
                     h.Add("\">");
                     h.Add("<iframe id=\"");
@@ -84,7 +84,7 @@ namespace Greatbone.Sample
             h.Add("<script src=\"/app.min.js\"></script>");
             h.Add("<script>");
             h.Add("$(document).foundation();\n");
-            h.Add("$('#frametabs').on('deeplink.zf.tabs change.zf.tabs', function(e){\nvar ifr = $('.tabs-panel.is-active').find('iframe'); \nif (ifr && !ifr[0].src) ifr[0].src = ifr[0].id;});");
+            h.Add("$('#frametabs').on('change.zf.tabs', function(e){\nvar ifr = $('.tabs-panel.is-active').find('iframe'); \nif (ifr && !ifr[0].src) ifr[0].src = ifr[0].id;});");
             h.Add("</script>");
 
             h.Add("</body>");

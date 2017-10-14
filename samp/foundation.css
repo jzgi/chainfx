@@ -1462,7 +1462,6 @@ select[multiple] {
     vertical-align: middle;
     font-family: inherit;
     padding: 0.5rem 0.5rem;
-    margin: 1px;
     -webkit-appearance: none;
     border: 1px solid transparent;
     border-radius: 8px;
@@ -3385,8 +3384,8 @@ input:checked + label > .switch-inactive {
     background: gainsboro;
     color: #0a0a0a;
     transition: all 0.5s ease;
-    height: calc(100% - 3.175rem);
-    height: -webkit-calc(100% - 3.175rem);
+    height: calc(100% - 3rem);
+    height: -webkit-calc(100% - 3rem);
 }
 
 .tabs-content.vertical {
