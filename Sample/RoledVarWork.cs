@@ -15,33 +15,76 @@ namespace Greatbone.Sample
             Create<MyOrderWork>("order");
 
             Create<MyKickWork>("kick");
-        }
 
-        const string PASS = "0z4R4pX7";
+            CreateVar<MyVarVarWork, int>();
+        }
 
         public void @default(ActionContext ac)
         {
-            ac.GiveGridPage(200, (Order[]) null, (h, o) => { });
+            string wx = ac[this];
+            var prin = (User) ac.Principal;
+            ac.GivePage(200, main =>
+            {
+                main.GridView(h =>
+                {
+                    h.CAPTION("个人资料");
+                    h.FIELD("姓名", prin.name);
+                    h.FIELD("密码", null);
+                    h.FIELD("城市", prin.city);
+                    h.FIELDSET_("默认收货地址");
+                    h.FIELD("地址", prin.addr);
+                    h._FIELDSET();
+                });
+            });
         }
 
-        [Ui("后台操作设置", "后台操作帐号", Mode = AShow)]
-        public async Task loginf(ActionContext ac)
+        [Ui("刷新", Mode = AShow)]
+        public void token(ActionContext ac)
+        {
+            string wx = ac[this];
+            using (var dc = ac.NewDbContext())
+            {
+                const short proj = -1 ^ CREDENTIAL;
+                if (dc.Query1("SELECT * FROM users WHERE wx = @1", (p) => p.Set(wx)))
+                {
+                    var o = dc.ToObject<User>(proj);
+                    ac.SetTokenCookie(o, proj);
+                    ac.GivePane(200);
+                }
+                else
+                {
+                    ac.GivePane(404);
+                }
+            }
+        }
+    }
+
+    public class MyVarVarWork : Work
+    {
+        const string PASS = "0z4R4pX7";
+
+        public MyVarVarWork(WorkContext wc) : base(wc)
+        {
+        }
+
+        [Ui("修改", Mode = ButtonShow)]
+        public async Task profile(ActionContext ac)
         {
             string wx = ac[this];
             var prin = (User) ac.Principal;
             string password = PASS;
             if (ac.GET)
             {
-                ac.GivePane(200, (m) =>
+                ac.GivePage(200, h =>
                 {
-                    m.FORM_();
-                    m.FIELDSET_("后台操作人员用本人的微信填写");
-                    m.TEXT(nameof(prin.name), prin.name, "真实姓名（和身份证一致）", max: 4, min: 2, required: true);
-                    m.TEXT(nameof(prin.tel), prin.tel, "用户编号（个人手机号）", pattern: "[0-9]+", max: 11, min: 11, required: true);
-                    m.PASSWORD(nameof(password), password, "登录密码（用于微信以外登录）", min: 3);
-                    m.SELECT(nameof(prin.city), prin.city, ((SampleService) Service).Cities, label: "城市");
-                    m._FIELDSET();
-                    m._FORM();
+                    h.FORM_();
+                    h.FIELDSET_("后台操作人员用本人的微信填写");
+                    h.TEXT(nameof(prin.name), prin.name, "真实姓名（和身份证一致）", max: 4, min: 2, required: true);
+                    h.TEXT(nameof(prin.tel), prin.tel, "用户编号（个人手机号）", pattern: "[0-9]+", max: 11, min: 11, required: true);
+                    h.PASSWORD(nameof(password), password, "登录密码（用于微信以外登录）", min: 3);
+                    h.SELECT(nameof(prin.city), prin.city, ((SampleService) Service).Cities, label: "城市");
+                    h._FIELDSET();
+                    h._FORM();
                 });
             }
             else
@@ -68,8 +111,8 @@ namespace Greatbone.Sample
             }
         }
 
-        [Ui("调试刷新", Mode = AShow)]
-        public void token(ActionContext ac)
+        [Ui("设密码", Mode = AShow)]
+        public void password(ActionContext ac)
         {
             string wx = ac[this];
             using (var dc = ac.NewDbContext())

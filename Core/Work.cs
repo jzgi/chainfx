@@ -34,6 +34,8 @@ namespace Greatbone.Core
         // actions with Ui attribute
         readonly ActionInfo[] uiactions;
 
+        readonly bool buttonly;
+
         // subworks, if any
         internal Roll<Work> works;
 
@@ -78,6 +80,7 @@ namespace Greatbone.Core
 
             // gather ui actions
             List<ActionInfo> lst = null;
+            int btns = 0;
             for (int i = 0; i < actions.Count; i++)
             {
                 ActionInfo ai = actions[i];
@@ -85,9 +88,11 @@ namespace Greatbone.Core
                 {
                     if (lst == null) lst = new List<ActionInfo>();
                     lst.Add(ai);
+                    if (ai.Ui.IsButton) btns++;
                 }
             }
             uiactions = lst?.ToArray();
+            buttonly = btns > 0;
         }
 
         /// <summary>
@@ -168,6 +173,8 @@ namespace Greatbone.Core
         public Roll<ActionInfo> Actions => actions;
 
         public ActionInfo[] UiActions => uiactions;
+
+        public bool Buttonly => buttonly;
 
         public ActionInfo Default => @default;
 

@@ -350,14 +350,14 @@ namespace Greatbone.Core
             return this;
         }
 
-        public HtmlContent CAPTION(string label, string prefix = null, bool flag = false)
+        public HtmlContent CAPTION(string v, string prefix = null, bool flag = false)
         {
+            Add("<div class=\"cell small-11 card-cap\">");
             if (prefix != null)
             {
                 Add(prefix);
             }
-            Add(label);
-            Add("</label>");
+            Add(v);
             if (flag)
             {
                 Add("<i class=\"fi-flag float-right\"></i>");
@@ -366,15 +366,19 @@ namespace Greatbone.Core
             return this;
         }
 
-        public HtmlContent CAPTION(int label, string prefix = null, bool flag = false)
+        public HtmlContent CAPTION(int v, string prefix = null, bool flag = false)
         {
+            Add("<div class=\"cell small-11 card-cap\">");
             if (prefix != null)
             {
                 Add(prefix);
             }
-            Add(label);
-            Add("</label>");
-            Add("<i class=\"fi-flag float-right\"></i>");
+            Add(v);
+            if (flag)
+            {
+                Add("<i class=\"fi-flag float-right\"></i>");
+            }
+            Add("</div>");
             return this;
         }
 
@@ -643,7 +647,10 @@ namespace Greatbone.Core
             Add("<thead>");
             Add("<tr>");
             // for checkboxes
-            Add("<th></th>");
+            if (work.Buttonly)
+            {
+                Add("<th></th>");
+            }
             hd(this);
             if (ais != null)
             {
@@ -660,10 +667,13 @@ namespace Greatbone.Core
                     D obj = arr[i];
                     Add("<tr>");
                     // checkbox
-                    Add("<td>");
-                    Add("<input name=\"key\" type=\"checkbox\" form=\"viewform\"  value=\"");
-                    varwork?.PutVarKey(obj, this);
-                    Add("\"></td>");
+                    if (work.Buttonly)
+                    {
+                        Add("<td>");
+                        Add("<input name=\"key\" type=\"checkbox\" form=\"viewform\"  value=\"");
+                        varwork?.PutVarKey(obj, this);
+                        Add("\"></td>");
+                    }
                     row(this, obj);
                     if (ais != null) // triggers
                     {
@@ -686,28 +696,46 @@ namespace Greatbone.Core
             return this;
         }
 
-        public HtmlContent GridView(IDataInput inp, Action<IDataInput, HtmlContent> pipe)
+        public HtmlContent GridView(params Action<HtmlContent>[] cells)
         {
-            if (inp != null)
+            Work work = ac.Work;
+            Work varwork = work.varwork;
+
+            TOOLBAR(work);
+
+            Add("<div class=\"grid-x small-up-1 medium-up-2 large-up-3\">");
+            for (int i = 0; i < cells.Length; i++)
             {
-                Add("<div class=\"expanded row\">");
-                while (inp.Next())
+                Add("<div class=\"cell\" style=\"padding: 0.5rem;\">");
+                Add("<form>");
+                var cell = cells[i];
+
+                Add("<div class=\"grid-x card\">");
+                Add("<div class=\"cell small-1 card-check\">");
+                if (work.Buttonly)
                 {
-                    Add("<div class=\"row small-up-1 medium-up-2 large-up-3 xlarge-up-4\">");
-                    pipe(inp, this);
-                    Add("</div>");
+                    Add("<input name=\"key\" style=\"margin-left: 0.25rem\" type=\"checkbox\" form=\"viewform\" value=\"");
+                    Add(i + 1); // put the ordinal as key
+                    Add("\">");
                 }
                 Add("</div>");
-            }
-            else
-            {
-                Add("<div class=\"row\">");
-                Add("<span>没有记录</span>");
+
+                cell(this);
+
+                // output var triggers
+                Add("<div class=\"cell\" style=\"text-align: right\">");
+                TRIGGERS(varwork, null, i + 1);
+                Add("</div>");
+
+                Add("</div>");
+                Add("</form>");
                 Add("</div>");
             }
-            --level;
+            Add("</div>");
+
             return this;
         }
+
 
         public HtmlContent GridView<D>(D[] arr, Action<HtmlContent, D> cell) where D : IData
         {
@@ -726,13 +754,15 @@ namespace Greatbone.Core
                     D obj = arr[i];
 
                     Add("<div class=\"grid-x card\">");
-                    Add("<div class=\"cell card-cap\">");
-                    Add("<label>");
-                    Add("<input name=\"key\" style=\"margin-left: 0.25rem\" type=\"checkbox\" form=\"viewform\" value=\"");
-                    varwork?.PutVarKey(obj, this);
-                    Add("\">");
+                    Add("<div class=\"cell small-1 card-check\">");
+                    if (work.Buttonly)
+                    {
+                        Add("<input name=\"key\" style=\"margin-left: 0.25rem\" type=\"checkbox\" form=\"viewform\" value=\"");
+                        varwork?.PutVarKey(obj, this);
+                        Add("\">");
+                    }
+                    Add("</div>");
 
-                    // NOTE leave closings to CELLCAP()
                     cell(this, obj);
 
                     // output var triggers
@@ -795,7 +825,7 @@ namespace Greatbone.Core
             Add("');\"");
         }
 
-        public HtmlContent TRIGGERS(Work work, IData obj)
+        public HtmlContent TRIGGERS(Work work, IData obj, int ordinal = 0)
         {
             var ais = work.UiActions;
             if (ais == null)
@@ -815,7 +845,12 @@ namespace Greatbone.Core
                 var stateobj = obj as IStatable;
                 if (stateobj != null)
                 {
-                    enabled = ui.Covers(stateobj.GetState());
+                    short v = stateobj.GetState();
+                    enabled = ui.State == 0 || (ui.State & v) == v;
+                }
+                else if (ordinal > 0)
+                {
+                    enabled = ui.State == 0 || ui.State == ordinal;
                 }
 
                 if (ui.IsA)
@@ -826,6 +861,11 @@ namespace Greatbone.Core
                     if (obj != null)
                     {
                         ai.Work.PutVarKey(obj, this);
+                        Add('/');
+                    }
+                    else if (ordinal > 0)
+                    {
+                        Add(ordinal);
                         Add('/');
                     }
                     Add(ai.RPath);
@@ -878,6 +918,11 @@ namespace Greatbone.Core
                     if (obj != null)
                     {
                         ai.Work.PutVarKey(obj, this);
+                        Add('/');
+                    }
+                    else if (ordinal > 0)
+                    {
+                        Add(ordinal);
                         Add('/');
                     }
                     Add(ai.Name);
