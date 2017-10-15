@@ -3531,7 +3531,6 @@ body.is-reveal-open {
 html.is-reveal-open,
 html.is-reveal-open body {
     min-height: 100%;
-    overflow: hidden;
     position: fixed;
     -webkit-user-select: none;
     -moz-user-select: none;

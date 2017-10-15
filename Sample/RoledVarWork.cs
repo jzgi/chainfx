@@ -121,7 +121,7 @@ namespace Greatbone.Sample
             }
         }
 
-        [Ui("值班机", Mode = AShow)]
+        [Ui("值班机", "阿俄俄俄俄俄俄俄俄俄俄俄俄好吧ksdfasdfasdfasd", Mode = ButtonShow)]
         public async Task duty(ActionContext ac)
         {
             short shopid = ac[this];

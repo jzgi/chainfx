@@ -544,19 +544,18 @@ namespace Greatbone.Core
         {
             Add("<div data-sticky-container>");
             Add("<div class=\"sticky\" style=\"width: 100%\" data-sticky  data-options=\"anchor: page; marginTop: 0; stickyOn: small;\">");
+            Add("<form id=\"viewform\">");
             Add("<div class=\"top-bar\">");
-
             Add("<div class=\"top-bar-left\">");
             TRIGGERS(work, null);
             Add("</div>");
-
             Add("<div class=\"top-bar-right\">");
             Add("<a class=\"primary\" href=\"javascript: location.reload(false);\">");
             Add("<i class=\"fi-refresh\" style=\"font-size: 1.75rem; line-height: 2rem\"></i>");
             Add("</a>");
             Add("</div>");
-
             Add("</div>");
+            Add("</form>");
             Add("</div>");
             Add("</div>");
         }
@@ -635,9 +634,7 @@ namespace Greatbone.Core
             Work work = ac.Work;
             Work varwork = work.varwork;
 
-            Add("<form id=\"viewform\">");
             TOOLBAR(work);
-            Add("</form>");
 
             Add("<div class=\"table-scroll\" style=\"padding: 0.5rem\">");
             Add("<table class=\"unstriped\">");
@@ -717,9 +714,7 @@ namespace Greatbone.Core
             Work work = ac.Work;
             Work varwork = work.varwork;
 
-            Add("<form id=\"viewform\">");
             TOOLBAR(work);
-            Add("</form>");
 
             if (arr != null) // render grid cells
             {

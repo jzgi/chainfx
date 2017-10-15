@@ -23,13 +23,7 @@
                 },
                 {
                     "type": "view",
-                    "name": "我的投诉",
-                    "url": "http://144000.tv/my//kick/",
-                    "sub_button": []
-                },
-                {
-                    "type": "view",
-                    "name": "设置",
+                    "name": "我的设置",
                     "url": "http://144000.tv/my//",
                     "sub_button": []
                 }

@@ -17,7 +17,7 @@ namespace Greatbone.Sample
             HtmlContent h = new HtmlContent(ac, true, 8 * 1024);
 
             h.Add("<!DOCTYPE html>");
-            h.Add("<html style=\"height:100%; overflow: hidden\">");
+            h.Add("<html style=\"height:100%;\">");
 
             h.Add("<head>");
             h.Add("<title>");
@@ -29,7 +29,7 @@ namespace Greatbone.Sample
             h.Add("<link rel=\"stylesheet\" href=\"/app.min.css\">");
             h.Add("</head>");
 
-            h.Add("<body style=\"height:100%; overflow: hidden\">");
+            h.Add("<body style=\"height:100%; overflow-y: hidden\">");
 
             Work work = ac.Work;
             Roll<Work> subs = work.Works;
