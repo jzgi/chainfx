@@ -382,10 +382,17 @@ namespace Greatbone.Core
             return this;
         }
 
-        public HtmlContent FIELD(short v, string label = null, sbyte grid = 0)
+        public HtmlContent FIELD(short v, string label = null, sbyte grid = 0, IOptable<short> opt = null)
         {
             FIELD_(label, grid);
-            Add(v);
+            if (opt != null)
+            {
+                Add(opt.Obtain(v));
+            }
+            else
+            {
+                Add(v);
+            }
             _FIELD();
             return this;
         }
@@ -421,7 +428,6 @@ namespace Greatbone.Core
             _FIELD();
             return this;
         }
-
 
         public HtmlContent FIELD_(string label, int grid = 0)
         {

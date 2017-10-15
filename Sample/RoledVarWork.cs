@@ -148,6 +148,8 @@ namespace Greatbone.Sample
             Create<OprItemWork>("item");
 
             Create<OprRepayWork>("repay");
+
+            CreateVar<OprVarVarWork, int>();
         }
 
         public void @default(ActionContext ac)
@@ -155,56 +157,30 @@ namespace Greatbone.Sample
             bool inner = ac.Query[nameof(inner)];
             if (inner)
             {
-                ac.GivePage(200, h => { h.GridView((Order[]) null, null); });
+                short shopid = ac[this];
+                ac.GivePage(200, main =>
+                {
+                    main.GridView(h =>
+                    {
+                        using (var dc = ac.NewDbContext())
+                        {
+                            dc.Query1("SELECT oprwx, oprtel, oprname, status FROM shops WHERE id = @1", p => p.Set(shopid));
+                            dc.Let(out string oprwx).Let(out string oprtel).Let(out string oprname).Let(out short status);
+                            h.CAPTION("营业状态设置");
+                            h.FIELD(status, "状态", opt: Shop.STATUS);
+                            h.FIELDSET_("值班员");
+                            h.FIELD(oprname, "姓名");
+                            h.FIELD(oprwx, "微信");
+                            h.FIELD(oprtel, "电话");
+                            h._FIELDSET();
+                        }
+                    });
+                });
             }
             else
             {
                 Node node = ac[this];
                 ac.GiveFrame(200, false, 60 * 15, node.Label);
-            }
-        }
-
-        [Ui("值班机", "阿俄俄俄俄俄俄俄俄俄俄俄俄好吧ksdfasdfasdfasd", Mode = ButtonShow)]
-        public async Task duty(ActionContext ac)
-        {
-            short shopid = ac[this];
-            bool me = false;
-            if (ac.GET)
-            {
-                using (var dc = ac.NewDbContext())
-                {
-                    if (dc.Query1("SELECT oprtel, oprname FROM shops WHERE id = @1", p => p.Set(shopid)))
-                    {
-                        dc.Let(out string oprtel).Let(out string oprname);
-                        ac.GivePane(200, m =>
-                        {
-                            m.FORM_();
-                            m.FIELDSET_("当前值班机");
-                            m.FIELD(oprtel, "电话");
-                            m.FIELD(oprname, "姓名");
-                            m._FIELDSET();
-                            m.FIELDSET_("设为值班机");
-                            m.CHECKBOX(nameof(me), me, "将本机设为值班机，接收客户电话和微信通知", required: true);
-                            m._FIELDSET();
-                            m._FORM();
-                        });
-                    }
-                    else ac.Give(404); // not found
-                }
-            }
-            else // post
-            {
-                var f = await ac.ReadAsync<Form>();
-                me = f[nameof(me)];
-                User prin = (User) ac.Principal;
-                if (me)
-                {
-                    using (var dc = ac.NewDbContext())
-                    {
-                        dc.Execute("UPDATE shops SET oprwx = @1, oprtel = @2, oprname = @3 WHERE id = @4", p => p.Set(prin.wx).Set(prin.tel).Set(prin.name).Set(shopid));
-                    }
-                }
-                ac.GivePane(200); // close dialog
             }
         }
 
@@ -273,6 +249,63 @@ namespace Greatbone.Sample
                 str.Add(c);
                 str.Add("个未处理订单");
                 ac.Give(200, str);
+            }
+        }
+    }
+
+    public class OprVarVarWork : Work
+    {
+        public OprVarVarWork(WorkContext wc) : base(wc)
+        {
+        }
+
+        [Ui("设下班", Mode = ButtonShow)]
+        public void setoff(ActionContext ac)
+        {
+            short shopid = ac[-1];
+            bool yes = false;
+            User prin = (User) ac.Principal;
+            if (ac.GET)
+            {
+                ac.GivePane(200, h =>
+                {
+                    h.FORM_();
+                    h.CHECKBOX(nameof(yes), yes, "确认下班吗？系统将停止接单", required: true);
+                    h._FORM();
+                });
+            }
+            else
+            {
+                using (var dc = ac.NewDbContext())
+                {
+                    dc.Execute("UPDATE shops SET oprwx = NULL, oprtel = NULL, oprname = NULL, status = " + Shop.OFF + " WHERE id = @1", p => p.Set(shopid));
+                }
+                ac.GivePane(200);
+            }
+        }
+
+        [Ui("我值班", Mode = ButtonShow)]
+        public void seton(ActionContext ac)
+        {
+            short shopid = ac[-1];
+            bool yes = false;
+            User prin = (User) ac.Principal;
+            if (ac.GET)
+            {
+                ac.GivePane(200, h =>
+                {
+                    h.FORM_();
+                    h.CHECKBOX(nameof(yes), yes, "确认将本用户设为值班员", required: true);
+                    h._FORM();
+                });
+            }
+            else
+            {
+                using (var dc = ac.NewDbContext())
+                {
+                    dc.Execute("UPDATE shops SET oprwx = @1, oprtel = @2, oprname = @3, status = " + Shop.ON + " WHERE id = @4", p => p.Set(prin.wx).Set(prin.tel).Set(prin.name).Set(shopid));
+                }
+                ac.GivePane(200);
             }
         }
     }
