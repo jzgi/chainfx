@@ -363,4 +363,17 @@ namespace Greatbone.Sample
             ac.GiveRedirect();
         }
     }
+
+    [Ui("投诉")]
+    [User(adm: true)]
+    public class AdmKickWork : OrderWork<AdmKickVarWork>
+    {
+        public AdmKickWork(WorkContext wc) : base(wc)
+        {
+        }
+
+        public void @default(ActionContext ac, int page)
+        {
+        }
+    }
 }

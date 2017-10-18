@@ -14,9 +14,7 @@ namespace Greatbone.Sample
 
             Create<MyOrderWork>("order");
 
-            Create<MyKickWork>("kick");
-
-            CreateVar<MyVarVarWork, int>();
+            CreateVar<MyVarVarWork, int>(); // dataless
         }
 
         public void @default(ActionContext ac)
@@ -68,7 +66,7 @@ namespace Greatbone.Sample
         }
 
         [Ui("修改", Mode = ButtonShow)]
-        public async Task profile(ActionContext ac)
+        public async Task edit(ActionContext ac)
         {
             string wx = ac[this];
             var prin = (User) ac.Principal;
@@ -111,7 +109,7 @@ namespace Greatbone.Sample
             }
         }
 
-        [Ui("设密码", Mode = AShow)]
+        [Ui("设密码", Mode = ButtonShow)]
         public void password(ActionContext ac)
         {
             string wx = ac[this];
@@ -141,7 +139,7 @@ namespace Greatbone.Sample
         {
             Create<OprNewWork>("new");
 
-            Create<OprGoWork>("on");
+            Create<OprGoWork>("go");
 
             Create<OprPastWork>("past");
 

@@ -995,8 +995,7 @@ ul.no-bullet, ol.no-bullet {
 textarea {
     display: inline-block;
     box-sizing: border-box;
-    width: 100%;
-    height: 2.4375rem;
+    height: 2.125rem;
     padding: 0.5rem;
     border: 1px solid #cacaca;
     border-radius: 3px;
@@ -1016,7 +1015,6 @@ textarea {
 textarea:focus {
     outline: none;
     border: 1px solid #8a8a8a;
-    background-color: gainsboro;
     box-shadow: 0 0 5px #cacaca;
     transition: box-shadow 0.5s, border-color 0.25s ease-in-out;
 }
@@ -4232,11 +4230,16 @@ a.thumbnail image {
 }
 
 .card-label {
+    display: flex;
     padding: 0.125rem; 
-    text-align: right;
+    align-items: center;
+    justify-content: flex-end;
 }
+
 .card-v {
-    padding: 0.125rem 0.125rem 0.125rem 0.25rem;
+    display: flex;
+    padding: 0.125rem; 
+    align-items: center;
 }
 
 

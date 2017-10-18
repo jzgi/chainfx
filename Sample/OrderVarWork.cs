@@ -203,4 +203,11 @@ namespace Greatbone.Sample
             }
         }
     }
+
+    public class AdmKickVarWork : OrderVarWork
+    {
+        public AdmKickVarWork(WorkContext wc) : base(wc)
+        {
+        }
+    }
 }

@@ -28,9 +28,9 @@ namespace Greatbone.Sample
 
             Create<AdmShopWork>("shop");
 
-            Create<AdmKickWork>("kick");
-
             Create<AdmRepayWork>("repay");
+
+            Create<AdmKickWork>("kick");
         }
 
         public void @default(ActionContext ac)
