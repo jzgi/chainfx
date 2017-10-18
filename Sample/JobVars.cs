@@ -26,11 +26,11 @@ namespace Greatbone.Sample
                 main.GridView(h =>
                 {
                     h.CAPTION("个人资料");
-                    h.FIELD("姓名", prin.name);
-                    h.FIELD("密码", null);
-                    h.FIELD("城市", prin.city);
+                    h.FIELD(prin.name, "姓名");
+                    h.FIELD(null, "密码");
+                    h.FIELD(prin.city, "城市");
                     h.FIELDSET_("默认收货地址");
-                    h.FIELD("地址", prin.addr);
+                    h.FIELD(prin.addr, "地址");
                     h._FIELDSET();
                 });
             });

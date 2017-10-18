@@ -340,7 +340,7 @@ namespace Greatbone.Core
             return this;
         }
 
-        public HtmlContent CAPTION(string v, string prefix = null, bool? light = false)
+        public HtmlContent CAPTION(string v, string prefix = null, bool? bulb = false)
         {
             Add("<div class=\"cell small-11 card-cap\">");
             if (prefix != null)
@@ -348,17 +348,17 @@ namespace Greatbone.Core
                 Add(prefix);
             }
             Add(v);
-            if (light.HasValue)
+            if (bulb.HasValue)
             {
-                Add("<span class=\"float-right\" style=\"");
-                Add(light.Value ? "green" : "red");
+                Add("<span class=\"bulb");
+                Add(bulb.Value ? " green" : " red");
                 Add("\">●</span>");
             }
             Add("</div>");
             return this;
         }
 
-        public HtmlContent CAPTION(int v, string prefix = null, bool? light = false)
+        public HtmlContent CAPTION(int v, string prefix = null, bool? bulb = false)
         {
             Add("<div class=\"cell small-11 card-cap\">");
             if (prefix != null)
@@ -366,10 +366,10 @@ namespace Greatbone.Core
                 Add(prefix);
             }
             Add(v);
-            if (light.HasValue)
+            if (bulb.HasValue)
             {
-                Add("<span class=\"float-right\" style=\"");
-                Add(light.Value ? "green" : "red");
+                Add("<span class=\"bulb");
+                Add(bulb.Value ? " green" : " red");
                 Add("\">●</span>");
             }
             Add("</div>");
@@ -427,11 +427,11 @@ namespace Greatbone.Core
         {
             if (label != null)
             {
-                Add("<div class=\"cell card-label small-3\">");
+                Add("<div class=\"cell card-label small-2\">");
                 Add(label);
-                Add("</div>");
+                Add(":</div>");
                 Add("<div class=\"cell card-v small-");
-                Add(grid > 0 ? grid - 3 : 9);
+                Add(grid > 0 ? grid - 2 : 10);
                 Add("\">");
             }
             else
@@ -708,7 +708,7 @@ namespace Greatbone.Core
                 Add("<form>");
                 var cell = cells[i];
                 Add("<article class=\"grid-x card\">");
-                Add("<div class=\"cell small-1 card-check\">");
+                Add("<div class=\"cell small-1 card-lead\">");
                 if (work.Buttonly)
                 {
                     Add("<input name=\"key\" style=\"margin-left: 0.25rem\" type=\"checkbox\" form=\"viewform\" value=\"");
@@ -750,7 +750,7 @@ namespace Greatbone.Core
                     Add("<form>");
                     D obj = arr[i];
                     Add("<article class=\"grid-x card\">");
-                    Add("<div class=\"cell small-1 card-check\">");
+                    Add("<div class=\"cell small-1 card-lead\">");
                     if (work.Buttonly)
                     {
                         Add("<input name=\"key\" style=\"margin-left: 0.25rem\" type=\"checkbox\" form=\"viewform\" value=\"");

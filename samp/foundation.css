@@ -377,9 +377,9 @@ input {
      * Change the border, margin, and padding in all browsers (opinionated).
      */
 fieldset {
-    border: 1px solid #c0c0c0;
-    margin: 0 2px;
-    padding: 0.35em 0.625em 0.75em;
+    border: 1px solid gainsboro;
+    padding: 0.25em;
+    width: 100%;
 }
 
 /**
@@ -490,7 +490,7 @@ body {
     background:white;
     font-family: "Microsoft YaHei", Arial, sans-serif;
     font-weight: normal;
-    font-size: 1rem;
+    font-size: 0.875rem;
     line-height: 1.5;
     color: #0a0a0a;
     -webkit-font-smoothing: antialiased;
@@ -995,6 +995,7 @@ ul.no-bullet, ol.no-bullet {
 textarea {
     display: inline-block;
     box-sizing: border-box;
+    width: 100%;
     height: 2.125rem;
     padding: 0.5rem;
     border: 1px solid #cacaca;
@@ -1189,28 +1190,6 @@ label.middle {
     font-size: 1rem;
 }
 
-fieldset {
-    margin: 0;
-    padding: 0;
-    border: 0;
-}
-
-legend {
-    max-width: 100%;
-    margin-bottom: 0.5rem;
-}
-
-.fieldset {
-    margin: 1.125rem 0;
-    padding: 1.25rem;
-    border: 1px solid #cacaca;
-}
-
-.fieldset legend {
-    margin: 0;
-    margin-left: -0.1875rem;
-    padding: 0 0.1875rem;
-}
 
 select {
     padding: 0.25rem 1.5rem 0.25rem 0.5rem;
@@ -4220,26 +4199,48 @@ a.thumbnail image {
 
 
 .card {
-    border: 1px solid AntiqueWhite; 
-    background-color: linen;
+    border: 1px solid gainsboro; 
+    background-color: whitesmoke;
+}
+
+.card-lead {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background-color: gainsboro;
 }
 
 .card-cap {
+    display: flex;
+    align-items: center;
     padding: 0.25rem; 
-    border-bottom: 1px solid gainsboro;
+    font-size: 1rem;
+    background-color: gainsboro;
+}
+
+.bulb.green {
+    color:green; font-size: 1.25rem; line-height: 0.5;
+    margin-left: auto;
+}
+
+.bulb.red {
+    color:crimson; font-size: 1.25rem; line-height: 0.5;
+    margin-left: auto;
 }
 
 .card-label {
     display: flex;
-    padding: 0.125rem; 
+    padding: 0.25rem; 
     align-items: center;
     justify-content: flex-end;
+    border-bottom: 1px solid gainsboro;
 }
 
 .card-v {
     display: flex;
-    padding: 0.125rem; 
+    padding: 0.25rem; 
     align-items: center;
+    border-bottom: 1px solid gainsboro;
 }
 
 

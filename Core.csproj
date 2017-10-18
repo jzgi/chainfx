@@ -9,6 +9,7 @@
     <DebugType>portable</DebugType>
     <PackageId>Core</PackageId>
     <RuntimeFrameworkVersion>1.1.2</RuntimeFrameworkVersion>
+    <Version>2.5</Version>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|AnyCPU'">
     <PlatformTarget>x64</PlatformTarget>
