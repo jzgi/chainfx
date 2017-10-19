@@ -87,7 +87,7 @@ namespace Greatbone.Sample
 
                             var shopname = shop.name;
 
-                            h.T("<div class=\"grid-x card\">");
+                            h.T("<div class=\"grid-x card linen\">");
 
                             h.T("<div class=\"small-12 card-cap\"><h3>").T(item.name).T("</h3></div>");
 

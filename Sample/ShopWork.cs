@@ -112,7 +112,7 @@ namespace Greatbone.Sample
                             h.T("<div class=\"cell\" style=\"padding: 0.5rem\">");
                             var shop = shops[i];
 
-                            h.T("<div class=\"grid-x card\">");
+                            h.T("<div class=\"grid-x card linen\">");
                             
                             h.T("<div class=\"small-12 card-cap\">");
                             h.T("<h3><a href=\"").T(shop.id).T("/?city=").T(city).T("\">").T(shop.name).T("</a></h3>");

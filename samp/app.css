@@ -1,4 +1,17 @@
 
+.card.linen {
+    background-color: linen;
+    border: 1px solid AntiqueWhite;
+}
+
+.card.linen > .card-lead, .card-cap {
+    background-color: linen;
+    border-bottom: 1px solid AntiqueWhite;
+}
+
+
+/* CROPPIE */
+
 .croppie-container {
     width: 100%;
     height: 100%

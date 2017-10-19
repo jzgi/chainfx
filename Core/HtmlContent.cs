@@ -165,6 +165,41 @@ namespace Greatbone.Core
             return this;
         }
 
+        public HtmlContent BR()
+        {
+            Add("<br>");
+            return this;
+        }
+
+        public HtmlContent T(string v1, string v2, string v3, string v4)
+        {
+            bool bgn = false;
+            if (v1 != null)
+            {
+                Add(v1);
+                bgn = true;
+            }
+            if (v2 != null)
+            {
+                if (bgn) Add("&nbsp;");
+                Add(v2);
+                bgn = true;
+            }
+            if (v3 != null)
+            {
+                if (bgn) Add("&nbsp;");
+                Add(v3);
+                bgn = true;
+            }
+            if (v4 != null)
+            {
+                if (bgn) Add("&nbsp;");
+                Add(v4);
+                bgn = true;
+            }
+            return this;
+        }
+
         public HtmlContent _(char v)
         {
             Add("&nbsp;");
@@ -720,9 +755,12 @@ namespace Greatbone.Core
                 cell(this);
 
                 // output var triggers
-                Add("<nav class=\"cell\" style=\"text-align: right\">");
-                TRIGGERS(varwork, null, i + 1);
-                Add("</nav>");
+                if (varwork != null)
+                {
+                    Add("<nav class=\"cell\" style=\"text-align: right\">");
+                    TRIGGERS(varwork, null, i + 1);
+                    Add("</nav>");
+                }
 
                 Add("</article>");
                 Add("</form>");

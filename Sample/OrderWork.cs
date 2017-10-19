@@ -33,10 +33,8 @@ namespace Greatbone.Sample
 //                    var areas = ((SampleService)Service).Cities[""] 
                     ac.GiveGridPage(200, dc.ToArray<Order>(), (h, o) =>
                     {
-                        h.CAPTION(o.shopname, "商家");
-                        h.FIELD(o.shopname, "店名", 0);
-                        h.FIELD(o.tel, "电话", 0);
-                        h.FIELD(o.region, "区域", 6).FIELD(o.addr, "地址", 6);
+                        h.CAPTION(o.shopname, "[商家]");
+                        h.FIELD_("收货地址").T(o.name, o.tel, o.addr, null).BR().BUTTON("设置收货地址")._FIELD();
                         for (int i = 0; i < o.items.Length; i++)
                         {
                             var item = o.items[i];

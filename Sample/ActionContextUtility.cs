@@ -5,7 +5,6 @@ namespace Greatbone.Sample
 {
     public static class ActionContextUtility
     {
-        ///
         public static void GiveRedirect(this ActionContext ac, string uri = null, bool? @public = null, int maxage = 60)
         {
             ac.SetHeader("Location", uri ?? "./");
