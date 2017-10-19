@@ -375,7 +375,7 @@ namespace Greatbone.Core
             return this;
         }
 
-        public HtmlContent CAPTION(string v, string prefix = null, bool? bulb = false)
+        public HtmlContent CAPTION(string v, string prefix = null, bool? bulb = null)
         {
             Add("<div class=\"cell small-11 card-cap\">");
             if (prefix != null)
@@ -393,7 +393,7 @@ namespace Greatbone.Core
             return this;
         }
 
-        public HtmlContent CAPTION(int v, string prefix = null, bool? bulb = false)
+        public HtmlContent CAPTION(int v, string prefix = null, bool? bulb = null)
         {
             Add("<div class=\"cell small-11 card-cap\">");
             if (prefix != null)
@@ -462,16 +462,16 @@ namespace Greatbone.Core
         {
             if (label != null)
             {
-                Add("<div class=\"cell card-label small-2\">");
+                Add("<div class=\"cell field-label small-2\">");
                 Add(label);
                 Add(":</div>");
-                Add("<div class=\"cell card-v small-");
+                Add("<div class=\"cell field-v small-");
                 Add(grid > 0 ? grid - 2 : 10);
                 Add("\">");
             }
             else
             {
-                Add("<div class=\"cell card-v small-");
+                Add("<div class=\"cell field-v small-");
                 Add(grid > 0 ? grid : 12);
                 Add("\">");
             }
@@ -480,7 +480,7 @@ namespace Greatbone.Core
 
         public HtmlContent FIELD_(int grid = 0)
         {
-            Add("<div class=\"cell card-v small-");
+            Add("<div class=\"cell field-v small-");
             Add(grid > 0 ? grid : 12);
             Add("\">");
             return this;
@@ -540,6 +540,30 @@ namespace Greatbone.Core
             Add("</div>");
             Add("</fieldset>");
             _FIELD();
+            return this;
+        }
+
+        public HtmlContent BUTTON(string value, bool post = true)
+        {
+            Add("<button class=\"button primary hollow\" formmethod=\"");
+            Add(post ? "post" : "get");
+            Add("\">");
+            AddEsc(value);
+            Add("</button>");
+            return this;
+        }
+
+        public HtmlContent BUTTON(string name, int subcmd, string value, bool post = true)
+        {
+            Add("<button class=\"button primary hollow\" formmethod=\"");
+            Add(post ? "post" : "get");
+            Add("\" formaction=\"");
+            Add(name);
+            Add('-');
+            Add(subcmd);
+            Add("\">");
+            AddEsc(value);
+            Add("</button>");
             return this;
         }
 
@@ -739,7 +763,7 @@ namespace Greatbone.Core
             Add("<main class=\"grid-x small-up-1 medium-up-2 large-up-3 xlarge-up-4\">");
             for (int i = 0; i < cells.Length; i++)
             {
-                Add("<div class=\"cell\" style=\"padding: 0.5rem;\">");
+                Add("<div class=\"cell\" style=\"padding: 0.375rem;\">");
                 Add("<form>");
                 var cell = cells[i];
                 Add("<article class=\"grid-x card\">");
@@ -784,7 +808,7 @@ namespace Greatbone.Core
                 Add("<main class=\"grid-x small-up-1 medium-up-2 large-up-3 xlarge-up-4\">");
                 for (int i = 0; i < arr.Length; i++)
                 {
-                    Add("<div class=\"cell\" style=\"padding: 0.5rem;\">");
+                    Add("<div class=\"cell\" style=\"padding: 0.375rem;\">");
                     Add("<form>");
                     D obj = arr[i];
                     Add("<article class=\"grid-x card\">");
@@ -841,146 +865,128 @@ namespace Greatbone.Core
                 // access check if neccessary
                 if (ac != null && !ai.DoAuthorize(ac)) continue;
 
-                UiAttribute ui = ai.Ui;
-
-                // check state covering
-                bool enabled = true;
-                var stateobj = obj as IStatable;
-                if (stateobj != null)
-                {
-                    short v = stateobj.GetState();
-                    enabled = ui.State == 0 || (ui.State & v) == v;
-                }
-                else if (ordinal > 0)
-                {
-                    enabled = ui.State == 0 || ui.State == ordinal;
-                }
-
-                if (ui.IsA)
-                {
-                    Add("<a class=\"button primary");
-                    if (!ui.Em) Add(" hollow");
-                    Add("\" href=\"");
-                    if (obj != null)
-                    {
-                        ai.Work.PutVarKey(obj, this);
-                        Add('/');
-                    }
-                    else if (ordinal > 0)
-                    {
-                        Add(ordinal);
-                        Add('/');
-                    }
-                    Add(ai.RPath);
-                    Add("\"");
-                    if (ui.HasPrompt)
-                    {
-                        Dialog(2, ui.Size, ui.Tip);
-                    }
-                    else if (ui.HasShow)
-                    {
-                        Dialog(4, ui.Size, ui.Tip);
-                    }
-                    else if (ui.HasOpen)
-                    {
-                        Dialog(8, ui.Size, ui.Tip);
-                    }
-                    else if (ui.HasScript)
-                    {
-                        Add(" onclick=\"if(!confirm('");
-                        Add(ui.Tip ?? ui.Label);
-                        Add("')) return false;");
-                        Add(ai.Name);
-                        Add("(this);return false;\"");
-                    }
-                    else if (ui.HasCrop)
-                    {
-                        Add(" onclick=\"return crop(this,");
-                        Add(ui.Size);
-                        Add(',');
-                        Add(ui.Circle);
-                        Add(",'");
-                        Add(ui.Tip);
-                        Add("');\"");
-                    }
-                    if (!enabled)
-                    {
-                        Add(" disabled onclick=\"return false;\"");
-                    }
-                    Add(">");
-                    Add(ai.Label);
-                    Add("</a>");
-                }
-                else if (ui.IsButton)
-                {
-                    Add("<button class=\"button primary");
-                    if (!ui.Em) Add(" hollow");
-                    Add("\" name=\"");
-                    Add(ai.Name);
-                    Add("\" formaction=\"");
-                    if (obj != null)
-                    {
-                        ai.Work.PutVarKey(obj, this);
-                        Add('/');
-                    }
-                    else if (ordinal > 0)
-                    {
-                        Add(ordinal);
-                        Add('/');
-                    }
-                    Add(ai.Name);
-                    Add("\" formmethod=\"post\"");
-                    if (!enabled)
-                    {
-                        Add(" disabled");
-                    }
-                    else if (ui.HasConfirm)
-                    {
-                        Add(" onclick=\"return confirm('");
-                        Add(ui.Tip ?? ui.Label);
-                        Add("?');\"");
-                    }
-                    else if (ui.HasPrompt)
-                    {
-                        Dialog(2, ui.Size, ui.Tip);
-                    }
-                    else if (ui.HasShow)
-                    {
-                        Dialog(4, ui.Size, ui.Tip);
-                    }
-                    else if (ui.HasOpen)
-                    {
-                        Dialog(8, ui.Size, ui.Tip);
-                    }
-                    Add(">");
-                    Add(ai.Label);
-                    Add("</button>");
-                }
+                TRIGGER(ai, obj, ordinal);
             }
             return this;
         }
 
-        public HtmlContent BUTTON(string value, bool post = true)
+        public HtmlContent TRIGGER(ActionInfo ai, IData obj, int ordinal = 0)
         {
-            Add("<button class=\"button primary hollow\" formmethod=\"");
-            Add(post ? "post" : "get");
-            Add("\">");
-            AddEsc(value);
-            Add("</button>");
-            return this;
-        }
+            UiAttribute ui = ai.Ui;
 
-        public HtmlContent BUTTON(string name, int subcmd, string value, bool post = true)
-        {
-            Add("<button class=\"button primary hollow\" formmethod=\"");
-            Add(post ? "post" : "get");
-            Add("\" formaction=\"");
-            Add(name);
-            Add('-');
-            Add(subcmd);
-            Add("\">");
-            AddEsc(value);
-            Add("</button>");
+            // check state covering
+            bool enabled = true;
+            var stateobj = obj as IStatable;
+            if (stateobj != null)
+            {
+                short v = stateobj.GetState();
+                enabled = ui.State == 0 || (ui.State & v) == v;
+            }
+            else if (ordinal > 0)
+            {
+                enabled = ui.State == 0 || ui.State == ordinal;
+            }
+
+            if (ui.IsA)
+            {
+                Add("<a class=\"button primary");
+                if (!ui.Em) Add(" hollow");
+                Add("\" href=\"");
+                if (obj != null)
+                {
+                    ai.Work.PutVarKey(obj, this);
+                    Add('/');
+                }
+                else if (ordinal > 0)
+                {
+                    Add(ordinal);
+                    Add('/');
+                }
+                Add(ai.RPath);
+                Add("\"");
+                if (ui.HasPrompt)
+                {
+                    Dialog(2, ui.Size, ui.Tip);
+                }
+                else if (ui.HasShow)
+                {
+                    Dialog(4, ui.Size, ui.Tip);
+                }
+                else if (ui.HasOpen)
+                {
+                    Dialog(8, ui.Size, ui.Tip);
+                }
+                else if (ui.HasScript)
+                {
+                    Add(" onclick=\"if(!confirm('");
+                    Add(ui.Tip ?? ui.Label);
+                    Add("')) return false;");
+                    Add(ai.Name);
+                    Add("(this);return false;\"");
+                }
+                else if (ui.HasCrop)
+                {
+                    Add(" onclick=\"return crop(this,");
+                    Add(ui.Size);
+                    Add(',');
+                    Add(ui.Circle);
+                    Add(",'");
+                    Add(ui.Tip);
+                    Add("');\"");
+                }
+                if (!enabled)
+                {
+                    Add(" disabled onclick=\"return false;\"");
+                }
+                Add(">");
+                Add(ai.Label);
+                Add("</a>");
+            }
+            else if (ui.IsButton)
+            {
+                Add("<button class=\"button primary");
+                if (!ui.Em) Add(" hollow");
+                Add("\" name=\"");
+                Add(ai.Name);
+                Add("\" formaction=\"");
+                if (obj != null)
+                {
+                    ai.Work.PutVarKey(obj, this);
+                    Add('/');
+                }
+                else if (ordinal > 0)
+                {
+                    Add(ordinal);
+                    Add('/');
+                }
+                Add(ai.Name);
+                Add("\" formmethod=\"post\"");
+                if (!enabled)
+                {
+                    Add(" disabled");
+                }
+                else if (ui.HasConfirm)
+                {
+                    Add(" onclick=\"return confirm('");
+                    Add(ui.Tip ?? ui.Label);
+                    Add("?');\"");
+                }
+                else if (ui.HasPrompt)
+                {
+                    Dialog(2, ui.Size, ui.Tip);
+                }
+                else if (ui.HasShow)
+                {
+                    Dialog(4, ui.Size, ui.Tip);
+                }
+                else if (ui.HasOpen)
+                {
+                    Dialog(8, ui.Size, ui.Tip);
+                }
+                Add(">");
+                Add(ai.Label);
+                Add("</button>");
+            }
             return this;
         }
 

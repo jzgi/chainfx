@@ -1,3 +1,4 @@
+using System.Linq;
 using System.Threading.Tasks;
 using Greatbone.Core;
 using static Greatbone.Core.UiMode;
@@ -25,13 +26,11 @@ namespace Greatbone.Sample
             {
                 main.GridView(h =>
                 {
-                    h.CAPTION("个人资料");
+                    h.CAPTION("我的个人资料");
                     h.FIELD(prin.name, "姓名");
-                    h.FIELD(null, "密码");
+                    h.FIELD(prin.tel, "电话");
                     h.FIELD(prin.city, "城市");
-                    h.FIELDSET_("默认收货地址");
-                    h.FIELD(prin.addr, "地址");
-                    h._FIELDSET();
+                    h.FIELD_("地址").T(prin.area, prin.addr, null, null)._FIELD();
                 });
             });
         }
@@ -59,8 +58,6 @@ namespace Greatbone.Sample
 
     public class MyVarVarWork : Work
     {
-        const string PASS = "0z4R4pX7";
-
         public MyVarVarWork(WorkContext wc) : base(wc)
         {
         }
@@ -70,63 +67,80 @@ namespace Greatbone.Sample
         {
             string wx = ac[this];
             var prin = (User) ac.Principal;
-            string password = PASS;
             if (ac.GET)
             {
-                ac.GivePage(200, h =>
+                if (ac.Query.Count > 0)
                 {
+                    ac.Query.Let(out prin.name).Let(out prin.tel).Let(out prin.city).Let(out prin.area);
+                }
+
+                ac.GivePane(200, h =>
+                {
+                    var cities = ((SampleService) Service).Cities;
+
                     h.FORM_();
-                    h.FIELDSET_("后台操作人员用本人的微信填写");
-                    h.TEXT(nameof(prin.name), prin.name, "真实姓名（和身份证一致）", max: 4, min: 2, required: true);
-                    h.TEXT(nameof(prin.tel), prin.tel, "用户编号（个人手机号）", pattern: "[0-9]+", max: 11, min: 11, required: true);
-                    h.PASSWORD(nameof(password), password, "登录密码（用于微信以外登录）", min: 3);
-                    h.SELECT(nameof(prin.city), prin.city, ((SampleService) Service).Cities, label: "城市");
-                    h._FIELDSET();
+                    h.TEXT(nameof(prin.name), prin.name, "姓名", max: 4, min: 2, required: true);
+                    h.TEXT(nameof(prin.tel), prin.tel, "手机", pattern: "[0-9]+", max: 11, min: 11, required: true);
+                    h.SELECT(nameof(prin.city), prin.city, cities, "城市", refresh: true);
+                    h.SELECT(nameof(prin.area), prin.area, prin.city == null ? cities.First().Value.Distrs : cities[prin.city].Distrs, "区域");
                     h._FORM();
                 });
             }
             else
             {
-                var f = await ac.ReadAsync<Form>();
-                prin.tel = f[nameof(prin.tel)];
-                prin.name = f[nameof(prin.name)];
-                password = f[nameof(password)];
-                prin.city = f[nameof(prin.city)];
+                const short proj = -1 ^ CREDENTIAL ^ LATER;
+                var o = await ac.ReadObjectAsync(obj: prin);
+                o.wx = wx;
                 using (var dc = ac.NewDbContext())
                 {
-                    if (PASS == password)
-                    {
-                        dc.Execute("INSERT INTO users (wx, id, name, city) VALUES (@1, @2, @3, @4) ON CONFLICT (wx) DO UPDATE SET id = @2, name = @3, city = @4 ", p => p.Set(wx).Set(prin.tel).Set(prin.name).Set(prin.city));
-                    }
-                    else
-                    {
-                        string credential = StrUtility.MD5(prin.tel + ":" + password);
-                        dc.Execute("INSERT INTO users (wx, id, name, credential, city) VALUES (@1, @2, @3, @4, @5) ON CONFLICT (wx) DO UPDATE SET id = @2, name = @3, credential = @4, city = @5", p => p.Set(wx).Set(prin.tel).Set(prin.name).Set(credential).Set(prin.city));
-                    }
+                    dc.Sql("INSERT INTO users")._(o, proj)._VALUES_(o, proj)._("ON CONFLICT (wx) DO UPDATE")._SET_(o, proj ^ WX);
+                    dc.Execute(p => o.Write(p, proj));
                 }
-                ac.SetTokenCookie(prin, -1 ^ CREDENTIAL);
+                ac.SetTokenCookie(o, -1 ^ CREDENTIAL);
                 ac.GivePane(200); // close dialog
             }
         }
 
+        const string PASS = "0z4R4pX7";
+
         [Ui("设密码", Mode = ButtonShow)]
-        public void password(ActionContext ac)
+        public async Task setpass(ActionContext ac)
         {
-            string wx = ac[this];
-            using (var dc = ac.NewDbContext())
+            User prin = (User) ac.Principal;
+            string wx = ac[-1];
+            string credential = null;
+            string password = null;
+            if (ac.GET)
             {
-                const short proj = -1 ^ CREDENTIAL;
-                if (dc.Query1("SELECT * FROM users WHERE wx = @1", (p) => p.Set(wx)))
+                using (var dc = ac.NewDbContext())
                 {
-                    var o = dc.ToObject<User>(proj);
-                    ac.SetTokenCookie(o, proj);
-                    ac.GivePane(200);
+                    credential = (string) dc.Scalar("SELECT credential FROM users WHERE wx = @1", (p) => p.Set(wx));
+                    if (credential != null)
+                    {
+                        password = PASS;
+                    }
+                    ac.GivePane(200, h =>
+                    {
+                        h.FORM_();
+                        h.FIELD_().T("用于微信以外登录")._FIELD();
+                        h.PASSWORD(nameof(password), password, "密码", min: 3);
+                        h._FORM();
+                    });
                 }
-                else
+                return;
+            }
+
+            var f = await ac.ReadAsync<Form>();
+            password = f[nameof(password)];
+            if (password != PASS)
+            {
+                credential = StrUtility.MD5(prin.tel + ":" + password);
+                using (var dc = ac.NewDbContext())
                 {
-                    ac.GivePane(404);
+                    dc.Execute("UPDATE users SET credential = @1 WHERE wx = @1", (p) => p.Set(credential).Set(wx));
                 }
             }
+            ac.GivePane(200);
         }
     }
 
@@ -164,9 +178,9 @@ namespace Greatbone.Sample
                         {
                             dc.Query1("SELECT oprwx, oprtel, oprname, status FROM shops WHERE id = @1", p => p.Set(shopid));
                             dc.Let(out string oprwx).Let(out string oprtel).Let(out string oprname).Let(out short status);
-                            h.CAPTION("营业状态设置");
+                            h.CAPTION("本店营业状态设置", null, status == 0 ? null : (bool?) (status == Shop.ON));
                             h.FIELD(status, "状态", opt: Shop.STATUS);
-                            h.FIELDSET_("值班员");
+                            h.FIELDSET_("值班员信息");
                             h.FIELD(oprname, "姓名");
                             h.FIELD(oprwx, "微信");
                             h.FIELD(oprtel, "电话");

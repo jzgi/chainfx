@@ -237,7 +237,7 @@ namespace Greatbone.Core
                 {
                     JObj jo = mbr;
                     int count = jo.Count;
-                    Map<string, string> map = new Map<string, string>(count);
+                    Map<string, string> map = new Map<string, string>();
                     for (int i = 0; i < count; i++)
                     {
                         JMbr e = jo[i];

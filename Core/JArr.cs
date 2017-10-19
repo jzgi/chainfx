@@ -260,7 +260,7 @@ namespace Greatbone.Core
 
         public Map<K, D> ToMap<K, D>(Func<D, K> keyer, short proj = 0x00ff) where D : IData, new()
         {
-            Map<K, D> coll = new Map<K, D>(32);
+            Map<K, D> coll = new Map<K, D>();
             for (int i = 0; i < count; i++)
             {
                 D obj = new D();

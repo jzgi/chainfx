@@ -6,12 +6,8 @@ namespace Greatbone.Core
     /// <summary>
     /// A dictionary structure that provides a collection of options to UI elements.
     /// </summary>
-    public class Map<K, V> : Dictionary<K, V>, IOptable<K>
+    public class Map<K, V> : SortedDictionary<K, V>, IOptable<K>
     {
-        public Map(int capacity = 16) : base(capacity)
-        {
-        }
-
         public void ForEach(Action<K, object> handler)
         {
             foreach (var pair in this)

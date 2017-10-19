@@ -262,7 +262,7 @@ namespace Greatbone.Core
             return entity as M;
         }
 
-        public async Task<D> ReadObjectAsync<D>(short proj = 0x00ff) where D : IData, new()
+        public async Task<D> ReadObjectAsync<D>(short proj = 0x00ff, D obj = default(D)) where D : IData, new()
         {
             if (entity == null && count == -1) // if not yet parse and read
             {
@@ -286,7 +286,12 @@ namespace Greatbone.Core
             {
                 return default(D);
             }
-            return inp.ToObject<D>(proj);
+            if (obj == null)
+            {
+                obj = new D();
+            }
+            obj.Read(inp, proj);
+            return obj;
         }
 
         public async Task<D[]> ReadArrayAsync<D>(short proj = 0x00ff) where D : IData, new()

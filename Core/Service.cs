@@ -151,7 +151,7 @@ namespace Greatbone.Core
 
         public Db Db => ctx.db;
 
-        public Dictionary<string, string> Cluster => ctx.cluster;
+        public Map<string, string> Cluster => ctx.cluster;
 
         public int Logging => ctx.logging;
 

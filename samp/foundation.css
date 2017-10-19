@@ -377,10 +377,15 @@ input {
      * Change the border, margin, and padding in all browsers (opinionated).
      */
 fieldset {
-    border: 1px solid gainsboro;
+    /* border: 1px solid silver; */
     padding: 0.25em;
     width: 100%;
+    border: 0;
 }
+
+.card > fieldset {
+    border: 1px solid wheat;
+} 
 
 /**
      * 1. Correct the text wrapping in Edge and IE.
@@ -990,8 +995,6 @@ textarea {
     border-radius: 3px;
     box-shadow: inset 0 1px 2px rgba(10, 10, 10, 0.1);
     font-family: inherit;
-    font-size: 1rem;
-    font-weight: normal;
     line-height: 1.5;
     color: #0a0a0a;
     transition: box-shadow 0.5s, border-color 0.25s ease-in-out;
@@ -4186,15 +4189,15 @@ a.thumbnail image {
 
 
 .card {
-    border: 1px solid gainsboro; 
-    background-color: whitesmoke;
+    border: 1px solid Wheat; 
+    background-color: Cornsilk;
 }
 
 .card-lead {
     display: flex;
     align-items: center;
     justify-content: center;
-    background-color: gainsboro;
+    border-bottom: 1px solid Wheat; 
 }
 
 .card-cap {
@@ -4202,7 +4205,28 @@ a.thumbnail image {
     align-items: center;
     padding: 0.25rem; 
     font-size: 1rem;
-    background-color: gainsboro;
+    border-bottom: 1px solid Wheat; 
+}
+
+.field-label {
+    display: flex;
+    padding: 0.25rem; 
+    align-items: center;
+    justify-content: flex-end;
+}
+
+.card > .field-label {
+    border-bottom: 1px solid Wheat;
+}
+
+.field-v {
+    display: flex;
+    padding: 0.25rem; 
+    align-items: center;
+}
+
+.card > .field-v {
+    border-bottom: 1px solid Wheat;
 }
 
 .bulb.green {
@@ -4213,21 +4237,6 @@ a.thumbnail image {
 .bulb.red {
     color:crimson; font-size: 1.25rem; line-height: 0.5;
     margin-left: auto;
-}
-
-.card-label {
-    display: flex;
-    padding: 0.25rem; 
-    align-items: center;
-    justify-content: flex-end;
-    border-bottom: 1px solid gainsboro;
-}
-
-.card-v {
-    display: flex;
-    padding: 0.25rem; 
-    align-items: center;
-    border-bottom: 1px solid gainsboro;
 }
 
 

@@ -12,7 +12,7 @@ namespace Greatbone.Sample
         public const short
             WX = 1,
             CREDENTIAL = 2,
-            PERM = 4;
+            LATER = 4;
 
         public const short OPR_ = 1, OPRMEM = 3, OPRMGR = 7;
 
@@ -43,11 +43,14 @@ namespace Greatbone.Sample
             }
             i.Get(nameof(name), ref name);
             i.Get(nameof(tel), ref tel);
-            i.Get(nameof(credential), ref credential);
+            if ((proj & CREDENTIAL) == CREDENTIAL)
+            {
+                i.Get(nameof(credential), ref credential);
+            }
             i.Get(nameof(city), ref city);
             i.Get(nameof(area), ref area);
             i.Get(nameof(addr), ref addr);
-            if ((proj & PERM) == PERM)
+            if ((proj & LATER) == LATER)
             {
                 i.Get(nameof(opr), ref opr);
                 i.Get(nameof(oprat), ref oprat);
@@ -64,11 +67,14 @@ namespace Greatbone.Sample
             }
             o.Put(nameof(name), name);
             o.Put(nameof(tel), tel);
-            o.Put(nameof(credential), credential);
+            if ((proj & CREDENTIAL) == CREDENTIAL)
+            {
+                o.Put(nameof(credential), credential);
+            }
             o.Put(nameof(city), city);
             o.Put(nameof(area), area);
             o.Put(nameof(addr), addr);
-            if ((proj & PERM) == PERM)
+            if ((proj & LATER) == LATER)
             {
                 o.Put(nameof(opr), opr);
                 o.Put(nameof(oprat), oprat);

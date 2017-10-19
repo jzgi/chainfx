@@ -4,11 +4,15 @@
     border: 1px solid AntiqueWhite;
 }
 
-.card.linen > .card-lead, .card-cap {
+.card.linen > .card-lead {
     background-color: linen;
     border-bottom: 1px solid AntiqueWhite;
 }
 
+.card.linen > .card-cap {
+    background-color: linen;
+    border-bottom: 1px solid AntiqueWhite;
+}
 
 /* CROPPIE */
 
