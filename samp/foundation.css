@@ -380,12 +380,9 @@ fieldset {
     /* border: 1px solid silver; */
     padding: 0.25em;
     width: 100%;
-    border: 0;
+    border: 1px solid #f1f1f1;
+    border-radius: 8px;
 }
-
-.card > fieldset {
-    border: 1px solid wheat;
-} 
 
 /**
      * 1. Correct the text wrapping in Edge and IE.
@@ -1429,7 +1426,8 @@ select[multiple] {
     display: inline-block;
     vertical-align: middle;
     font-family: inherit;
-    padding: 0.5rem 0.5rem;
+    padding: 0.375rem;
+    margin: 0.125rem;
     -webkit-appearance: none;
     border: 1px solid transparent;
     border-radius: 8px;
@@ -4185,58 +4183,6 @@ a.thumbnail image {
 
 .sticky.is-anchored.is-at-bottom {
     bottom: 0;
-}
-
-
-.card {
-    border: 1px solid Wheat; 
-    background-color: Cornsilk;
-}
-
-.card-lead {
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    border-bottom: 1px solid Wheat; 
-}
-
-.card-cap {
-    display: flex;
-    align-items: center;
-    padding: 0.25rem; 
-    font-size: 1rem;
-    border-bottom: 1px solid Wheat; 
-}
-
-.field-label {
-    display: flex;
-    padding: 0.25rem; 
-    align-items: center;
-    justify-content: flex-end;
-}
-
-.card > .field-label {
-    border-bottom: 1px solid Wheat;
-}
-
-.field-v {
-    display: flex;
-    padding: 0.25rem; 
-    align-items: center;
-}
-
-.card > .field-v {
-    border-bottom: 1px solid Wheat;
-}
-
-.bulb.green {
-    color:green; font-size: 1.25rem; line-height: 0.5;
-    margin-left: auto;
-}
-
-.bulb.red {
-    color:crimson; font-size: 1.25rem; line-height: 0.5;
-    margin-left: auto;
 }
 
 

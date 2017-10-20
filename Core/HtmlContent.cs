@@ -377,7 +377,9 @@ namespace Greatbone.Core
 
         public HtmlContent CAPTION(string v, string prefix = null, bool? bulb = null)
         {
-            Add("<div class=\"cell small-11 card-cap\">");
+            Add("<div class=\"cell card-cap small-");
+            Add(ac.Work.Buttonly ? 11 : 12);
+            Add("\">");
             if (prefix != null)
             {
                 Add(prefix);
@@ -442,6 +444,36 @@ namespace Greatbone.Core
             return this;
         }
 
+        public HtmlContent U(decimal v, string label = null, string ext = null)
+        {
+            Add("<div class=\"cell field-v\">");
+            if (label != null)
+            {
+                Add(label);
+                Add(": ");
+            }
+            Add(v);
+            if (ext != null)
+            {
+                Add(ext);
+            }
+            Add("</div>");
+            return this;
+        }
+
+        public HtmlContent U(string v, string label = null)
+        {
+            Add("<div class=\"cell field-v\">");
+            if (label != null)
+            {
+                Add(label);
+                Add(": ");
+            }
+            Add(v);
+            Add("</div>");
+            return this;
+        }
+
         public HtmlContent FIELD(DateTime v, string label = null, sbyte grid = 0)
         {
             FIELD_(label, grid);
@@ -458,7 +490,7 @@ namespace Greatbone.Core
             return this;
         }
 
-        public HtmlContent FIELD_(string label, int grid = 0)
+        public HtmlContent FIELD_(string label, int grid = 0, string css = null)
         {
             if (label != null)
             {
@@ -467,12 +499,22 @@ namespace Greatbone.Core
                 Add(":</div>");
                 Add("<div class=\"cell field-v small-");
                 Add(grid > 0 ? grid - 2 : 10);
+                if (css != null)
+                {
+                    Add("\" style=\"");
+                    Add(css);
+                }
                 Add("\">");
             }
             else
             {
                 Add("<div class=\"cell field-v small-");
                 Add(grid > 0 ? grid : 12);
+                if (css != null)
+                {
+                    Add("\" style=\"");
+                    Add(css);
+                }
                 Add("\">");
             }
             return this;
@@ -487,6 +529,18 @@ namespace Greatbone.Core
         }
 
         public HtmlContent _FIELD()
+        {
+            Add("</div>");
+            return this;
+        }
+
+        public HtmlContent GRID_()
+        {
+            Add("<div class=\"grid-x\">");
+            return this;
+        }
+
+        public HtmlContent _GRID()
         {
             Add("</div>");
             return this;
@@ -613,7 +667,7 @@ namespace Greatbone.Core
             TRIGGERS(work, null);
             Add("</div>");
             Add("<div class=\"top-bar-right\">");
-            Add("<a class=\"primary\" href=\"javascript: location.reload(false);\"><i class=\"fi-refresh\" style=\"font-size: 1.75rem; line-height: 2rem\"></i></a>");
+            Add("<a class=\"primary\" href=\"javascript: location.reload(false);\"><i class=\"fi-refresh\" style=\"font-size: 1.5rem; line-height: 2rem\"></i></a>");
             Add("</div>");
             Add("</nav>");
             Add("</form>");
@@ -763,7 +817,7 @@ namespace Greatbone.Core
             Add("<main class=\"grid-x small-up-1 medium-up-2 large-up-3 xlarge-up-4\">");
             for (int i = 0; i < cells.Length; i++)
             {
-                Add("<div class=\"cell\" style=\"padding: 0.375rem;\">");
+                Add("<div class=\"cell card-board\">");
                 Add("<form>");
                 var cell = cells[i];
                 Add("<article class=\"grid-x card\">");
@@ -808,18 +862,18 @@ namespace Greatbone.Core
                 Add("<main class=\"grid-x small-up-1 medium-up-2 large-up-3 xlarge-up-4\">");
                 for (int i = 0; i < arr.Length; i++)
                 {
-                    Add("<div class=\"cell\" style=\"padding: 0.375rem;\">");
+                    Add("<div class=\"cell card-board\">");
                     Add("<form>");
                     D obj = arr[i];
                     Add("<article class=\"grid-x card\">");
-                    Add("<div class=\"cell small-1 card-lead\">");
                     if (work.Buttonly)
                     {
+                        Add("<div class=\"cell small-1 card-lead\">");
                         Add("<input name=\"key\" style=\"margin-left: 0.25rem\" type=\"checkbox\" form=\"viewform\" value=\"");
                         varwork?.PutVarKey(obj, this);
                         Add("\">");
+                        Add("</div>");
                     }
-                    Add("</div>");
 
                     cell(this, obj);
 

@@ -36,7 +36,7 @@ function dialog(trig, mode, siz, title) {
     title = title || trig.innerHTML;
 
     var bottom = mode == OPEN ? '4.125rem' : '6rem';
-    var html = '<div id="dyndlg" class="' + sizg + ' reveal' + trigclass + '"  data-reveal data-close-on-click="false">' + '<div class="title-bar"><div class="title-bar-title">' + title + '</div><div class="title-bar-right"><a onclick="$(\'#dyndlg\').foundation(\'close\').foundation(\'destroy\').remove(); return false;"><i class="fi-x" style="font-size: 1.75rem; line-height: 2rem"></i></a></div></div>' + '<div style="height: -webkit-calc(100% - ' + bottom + '); height: calc(100% - ' + bottom + ')"><iframe src="' + src + '" style="width: 100%; height: 100%; border: 0"></iframe></div>' + (mode == OPEN ? '' : ('<button class=\"button primary float-center\" style="display: block; margin-top: 0.5rem" onclick="ok(this,' + mode + ',\'' + formid + '\',\'' + tag + '\',\'' + action + '\',\'' + method + '\');" disabled>确定</botton>')) + '</div>';
+    var html = '<div id="dyndlg" class="' + sizg + ' reveal' + trigclass + '"  data-reveal data-close-on-click="false">' + '<div class="title-bar"><div class="title-bar-title">' + title + '</div><div class="title-bar-right"><a onclick="$(\'#dyndlg\').foundation(\'close\').foundation(\'destroy\').remove(); return false;"><i class="fi-x" style="font-size: 1.5rem; line-height: 2rem"></i></a></div></div>' + '<div style="height: -webkit-calc(100% - ' + bottom + '); height: calc(100% - ' + bottom + ')"><iframe src="' + src + '" style="width: 100%; height: 100%; border: 0"></iframe></div>' + (mode == OPEN ? '' : ('<button class=\"button primary float-center\" style="display: block; margin-top: 0.5rem" onclick="ok(this,' + mode + ',\'' + formid + '\',\'' + tag + '\',\'' + action + '\',\'' + method + '\');" disabled>确定</botton>')) + '</div>';
     var dive = $(html);
     $('body').prepend(dive);
     // initialize
@@ -224,7 +224,7 @@ function inline(uri) {
         container.empty();
         $('html').attr('style', 'height: 100%');
         $('body').attr('style', 'height: 100%');
-        container.attr('style', 'height: -webkit-calc(100% - 8rem); height: calc(100% - 8rem)');
+        container.attr('style', 'height: -webkit-calc(100% - 8rem); height: calc(100% - 3rem)');
         container.append('<iframe id="inline" style="width: 100%; height: 100%; border:  0"></iframe>');
     }
     $('#inline').attr('src', uri);

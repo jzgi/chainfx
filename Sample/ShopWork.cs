@@ -109,7 +109,7 @@ namespace Greatbone.Sample
                         h.T("<div class=\"grid-x small-up-1 medium-up-2\">");
                         for (int i = 0; i < shops.Length; i++)
                         {
-                            h.T("<div class=\"cell\" style=\"padding: 0.5rem\">");
+                            h.T("<div class=\"cell card-board\">");
                             var shop = shops[i];
 
                             h.T("<div class=\"grid-x card\">");

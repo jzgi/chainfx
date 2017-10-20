@@ -93,7 +93,7 @@ namespace Greatbone.Sample
         }
 
         ///
-        /// Gives a browser window page.
+        /// Gives a frame page.
         ///
         public static void GivePage(this ActionContext ac, int status, Action<HtmlContent> main, bool? @public = null, int maxage = 60)
         {
@@ -110,7 +110,7 @@ namespace Greatbone.Sample
             h.Add("<link rel=\"stylesheet\" href=\"/app.min.css\">");
             h.Add("</head>");
 
-            h.Add("<body>");
+            h.Add("<body class=\"frame-page\">");
 
             main(h);
 
@@ -128,8 +128,8 @@ namespace Greatbone.Sample
             ac.Give(status, h, @public, maxage);
         }
 
-        ///
-        /// Gives an iframe pane.
+        /// 
+        /// dialog pane
         ///
         public static void GivePane(this ActionContext ac, int status, Action<HtmlContent> main = null, bool? @public = null, int maxage = 60)
         {

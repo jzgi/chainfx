@@ -145,12 +145,13 @@ namespace Greatbone.Sample
     }
 
 
-    [Ui("常规")]
-    [User(OPR_)]
+    [Ui("常规"), User(OPR_)]
     public class OprVarWork : Work
     {
         public OprVarWork(WorkContext wc) : base(wc)
         {
+            CreateVar<OprVarVarWork, int>();
+
             Create<OprNewWork>("new");
 
             Create<OprGoWork>("go");
@@ -160,8 +161,6 @@ namespace Greatbone.Sample
             Create<OprItemWork>("item");
 
             Create<OprRepayWork>("repay");
-
-            CreateVar<OprVarVarWork, int>();
         }
 
         public void @default(ActionContext ac)
