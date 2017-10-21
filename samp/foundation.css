@@ -1430,7 +1430,7 @@ select[multiple] {
     margin: 0.125rem;
     -webkit-appearance: none;
     border: 1px solid transparent;
-    border-radius: 8px;
+    border-radius: 4px;
     transition: background-color 0.25s ease-out, color 0.25s ease-out;
     font-size: 0.875rem;
     line-height: 1;
@@ -3158,8 +3158,7 @@ input:checked + label > .switch-inactive {
 }
 
 .pagination {
-    margin-left: 0;
-    margin-bottom: 1rem;
+    margin: 1rem;
 }
 
 .pagination::before, .pagination::after {
@@ -3177,7 +3176,7 @@ input:checked + label > .switch-inactive {
 
 .pagination li {
     margin-right: 0.0625rem;
-    border-radius: 30%;
+    border-radius: 50%;
     font-size: 0.875rem;
     display: none;
 }
@@ -3669,39 +3668,14 @@ table tbody td {
     padding: 0.5rem 0.625rem 0.625rem;
 }
 
-table tbody tr:nth-child(even) {
-    border-bottom: 0;
-    background-color: #f1f1f1;
-}
-
-table.unstriped tbody {
+table tbody {
     background-color: gainsboro;
 }
 
-table.unstriped tbody tr {
+table tbody tr {
     border-bottom: 0;
     border-bottom: 1px solid #f1f1f1;
     background-color: #fefefe;
-}
-
-@media screen and (max-width: 63.9375em) {
-    table.stack thead {
-        display: none;
-    }
-
-    table.stack tfoot {
-        display: none;
-    }
-
-    table.stack tr,
-    table.stack th,
-    table.stack td {
-        display: block;
-    }
-
-    table.stack td {
-        border-top: 0;
-    }
 }
 
 table.scroll {
@@ -3720,10 +3694,6 @@ table.hover tfoot tr:hover {
 
 table.hover tbody tr:hover {
     background-color: #f9f9f9;
-}
-
-table.hover:not(.unstriped) tr:nth-of-type(even):hover {
-    background-color: #ececec;
 }
 
 .table-scroll {

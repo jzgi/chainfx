@@ -752,7 +752,7 @@ namespace Greatbone.Core
             TOOLBAR(work);
 
             Add("<main class=\"table-scroll\" style=\"padding: 0.5rem\">");
-            Add("<table class=\"unstriped\">");
+            Add("<table>");
             ActionInfo[] ais = varwork?.UiActions;
 
             Add("<thead>");
@@ -783,7 +783,7 @@ namespace Greatbone.Core
                         Add("<td>");
                         Add("<input name=\"key\" type=\"checkbox\" form=\"viewform\"  value=\"");
                         varwork?.PutVarKey(obj, this);
-                        Add("\"></td>");
+                        Add("\" onchange=\"checkit(this);\"></td>");
                     }
                     row(this, obj);
                     if (ais != null) // triggers
@@ -820,15 +820,20 @@ namespace Greatbone.Core
                 Add("<div class=\"cell card-board\">");
                 Add("<form>");
                 var cell = cells[i];
-                Add("<article class=\"grid-x card\">");
-                Add("<div class=\"cell small-1 card-lead\">");
+                Add("<article class=\"grid-x card");
+                if (i == 0)
+                {
+                    Add(" first");
+                }
+                Add("\">");
                 if (work.Buttonly)
                 {
-                    Add("<input name=\"key\" style=\"margin-left: 0.25rem\" type=\"checkbox\" form=\"viewform\" value=\"");
+                    Add("<div class=\"cell small-1 card-lead\">");
+                    Add("<input name=\"key\" type=\"checkbox\" form=\"viewform\" value=\"");
                     Add(i + 1); // put the ordinal as key
-                    Add("\">");
+                    Add("\" onchange=\"checkit(this);\">");
+                    Add("</div>");
                 }
-                Add("</div>");
 
                 cell(this);
 
@@ -865,13 +870,18 @@ namespace Greatbone.Core
                     Add("<div class=\"cell card-board\">");
                     Add("<form>");
                     D obj = arr[i];
-                    Add("<article class=\"grid-x card\">");
+                    Add("<article class=\"grid-x card");
+                    if (i == 0)
+                    {
+                        Add(" first");
+                    }
+                    Add("\">");
                     if (work.Buttonly)
                     {
                         Add("<div class=\"cell small-1 card-lead\">");
-                        Add("<input name=\"key\" style=\"margin-left: 0.25rem\" type=\"checkbox\" form=\"viewform\" value=\"");
+                        Add("<input name=\"key\" type=\"checkbox\" form=\"viewform\" value=\"");
                         varwork?.PutVarKey(obj, this);
-                        Add("\">");
+                        Add("\" onchange=\"checkit(this);\">");
                         Add("</div>");
                     }
 
