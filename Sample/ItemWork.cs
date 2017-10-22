@@ -29,7 +29,7 @@ namespace Greatbone.Sample
                 {
                     ac.GiveGridPage(200, dc.ToArray<Item>(), (h, o) =>
                     {
-                        h.CAPTION(o.name, "名称", true);
+                        h.CAPTION(o.name);
                         h.FIELD(o.name, "名称", 6).FIELD(o.name, "名称", 6);
                         h.FIELD(o.descr, "简述");
                         h.FIELD(o.price, "价格");

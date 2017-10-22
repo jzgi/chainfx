@@ -29,7 +29,7 @@ namespace Greatbone.Core
             "50", "51", "52", "53", "54", "55", "56", "57", "58", "59"
         };
 
-        static readonly short[] SHORT =
+        protected static readonly short[] SHORT =
         {
             1,
             10,
@@ -38,7 +38,7 @@ namespace Greatbone.Core
             10000
         };
 
-        static readonly int[] INT =
+        protected static readonly int[] INT =
         {
             1,
             10,
@@ -52,7 +52,7 @@ namespace Greatbone.Core
             1000000000
         };
 
-        static readonly long[] LONG =
+        protected static readonly long[] LONG =
         {
             1L,
             10L,

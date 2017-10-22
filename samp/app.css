@@ -3,8 +3,12 @@
     background-color: gainsboro;
 }
 
-.card-board {
-    padding: 0 0.375rem 0.375rem 0.375rem;
+.card-cell {
+    padding: 0.75rem 0.375rem 0 0.375rem;
+}
+
+.card-cell:last-of-type {
+    margin-bottom: 0.375rem;
 }
 
 .card {
@@ -19,9 +23,6 @@
 tr.checked {
     background-color:Lavender;
 }
-.card.first {
-    margin-top: 0.375rem;
-}
 
 .card-lead {
     display: flex;
@@ -35,19 +36,27 @@ tr.checked {
 }
 
 .card-cap {
-    display: flex;
-    align-items: center;
+    vertical-align: middle;
     padding: 0.25rem; 
     font-size: 1rem;
     font-weight: bold;
     border-bottom: 1px solid gainsboro; 
 }
 
+.card-tail {
+    vertical-align: middle;
+    padding: 0.25rem;
+    color: green;
+}
+
+.card .img {
+    margin: 0.25rem;
+}
+
 .field-label {
-    display: flex;
     padding: 0.25rem; 
-    align-items: center;
-    justify-content: flex-end;
+    text-align: right;
+    vertical-align: middle;
 }
 
 .card > .field-label {
@@ -55,23 +64,12 @@ tr.checked {
 }
 
 .field-v {
-    display: flex;
     padding: 0.25rem; 
-    align-items: center;
+    vertical-align: middle;
 }
 
 .card > .field-v {
     border-bottom: 1px solid gainsboro; 
-}
-
-.bulb.green {
-    color:green; font-size: 1.25rem; line-height: 0.5;
-    margin-left: auto;
-}
-
-.bulb.red {
-    color:crimson; font-size: 1.25rem; line-height: 0.5;
-    margin-left: auto;
 }
 
 
