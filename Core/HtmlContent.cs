@@ -861,6 +861,7 @@ namespace Greatbone.Core
             TOOLBAR(work);
 
             Add("<main class=\"grid-x small-up-1 medium-up-2 large-up-3 xlarge-up-4\">");
+            short pow = 1;
             for (int i = 0; i < cells.Length; i++)
             {
                 Add("<div class=\"cell card-board\">");
@@ -872,7 +873,7 @@ namespace Greatbone.Core
                 {
                     Add("<div class=\"cell small-1 card-lead\">");
                     Add("<input name=\"key\" type=\"checkbox\" form=\"viewform\" value=\"");
-                    Add(i + 1); // put the ordinal as key
+                    Add(pow); // the power as key
                     Add("\" onchange=\"checkit(this);\">");
                     Add("</div>");
                 }
@@ -882,14 +883,16 @@ namespace Greatbone.Core
                 // output var triggers
                 if (varwork != null)
                 {
-                    Add("<nav class=\"cell\" style=\"text-align: right\">");
-                    TRIGGERS(varwork, null, i + 1);
+                    Add("<nav class=\"cell shrink\" style=\"margin-left: auto\">");
+                    TRIGGERS(varwork, null, pow);
                     Add("</nav>");
                 }
 
                 Add("</article>");
                 Add("</form>");
                 Add("</div>");
+
+                pow = (short) (pow * 2);
             }
             Add("</main>");
 
@@ -925,7 +928,7 @@ namespace Greatbone.Core
                     cell(this, obj);
 
                     // output var triggers
-                    Add("<nav class=\"cell auto\" style=\"text-align: right\">");
+                    Add("<nav class=\"cell shrink\" style=\"margin-left: auto\">");
                     TRIGGERS(varwork, obj);
                     Add("</nav>");
 
@@ -953,7 +956,7 @@ namespace Greatbone.Core
             Add("');\"");
         }
 
-        public HtmlContent TRIGGERS(Work work, IData obj, int ordinal = 0)
+        public HtmlContent TRIGGERS(Work work, IData obj, short pow = 0)
         {
             var ais = work.UiActions;
             if (ais == null)
@@ -966,27 +969,18 @@ namespace Greatbone.Core
                 // access check if neccessary
                 if (ac != null && !ai.DoAuthorize(ac)) continue;
 
-                TRIGGER(ai, obj, ordinal);
+                TRIGGER(ai, obj, pow);
             }
             return this;
         }
 
-        public HtmlContent TRIGGER(ActionInfo ai, IData obj, int ordinal = 0)
+        public HtmlContent TRIGGER(ActionInfo ai, IData obj, short pow = 0)
         {
             UiAttribute ui = ai.Ui;
 
             // check state covering
-            bool enabled = true;
-            var stateobj = obj as IStatable;
-            if (stateobj != null)
-            {
-                short v = stateobj.GetState();
-                enabled = ui.State == 0 || (ui.State & v) == v;
-            }
-            else if (ordinal > 0)
-            {
-                enabled = ui.State == 0 || ui.State == ordinal;
-            }
+            short state = (obj as IStatable)?.GetState() ?? pow;
+            bool enabled = ui.State == 0 || (ui.State & state) == state;
 
             if (ui.IsA)
             {
@@ -998,9 +992,9 @@ namespace Greatbone.Core
                     ai.Work.PutVarKey(obj, this);
                     Add('/');
                 }
-                else if (ordinal > 0)
+                else if (pow > 0)
                 {
-                    Add(ordinal);
+                    Add(pow);
                     Add('/');
                 }
                 Add(ai.RPath);
@@ -1055,9 +1049,9 @@ namespace Greatbone.Core
                     ai.Work.PutVarKey(obj, this);
                     Add('/');
                 }
-                else if (ordinal > 0)
+                else if (pow > 0)
                 {
-                    Add(ordinal);
+                    Add(pow);
                     Add('/');
                 }
                 Add(ai.Name);
