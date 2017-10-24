@@ -147,6 +147,41 @@ namespace Greatbone.Core
             return this;
         }
 
+        public HtmlContent _T(short v)
+        {
+            Add("&nbsp;");
+            Add(v);
+            return this;
+        }
+
+        public HtmlContent _T(int v)
+        {
+            Add("&nbsp;");
+            Add(v);
+            return this;
+        }
+
+        public HtmlContent _T(DateTime v)
+        {
+            Add("&nbsp;");
+            Add(v);
+            return this;
+        }
+
+        public HtmlContent _T(decimal v)
+        {
+            Add("&nbsp;");
+            Add(v);
+            return this;
+        }
+
+        public HtmlContent _T(string str)
+        {
+            Add("&nbsp;");
+            Add(str);
+            return this;
+        }
+
         public HtmlContent PAD(int v, sbyte n)
         {
             for (int i = 0; i < INT.Length; i++)
@@ -393,12 +428,16 @@ namespace Greatbone.Core
             return this;
         }
 
-        public HtmlContent CAPTION(string v)
+        public HtmlContent CAPTION(string v, bool flag = false)
         {
             Add("<div class=\"cell card-cap small-");
             Add(ac.Work.Buttonly ? 11 : 12);
             Add("\">");
             Add(v);
+            if (flag)
+            {
+                Add("<span class=\"flag\">&#9872;</span>");
+            }
             Add("</div>");
             return this;
         }
@@ -411,8 +450,12 @@ namespace Greatbone.Core
             return this;
         }
 
-        public HtmlContent _CAPTION()
+        public HtmlContent _CAPTION(bool flag = false)
         {
+            if (flag)
+            {
+                Add("<span class=\"flag\">&#9872;</span>");
+            }
             Add("</div>");
             return this;
         }
@@ -437,49 +480,62 @@ namespace Greatbone.Core
             return this;
         }
 
-        public HtmlContent FIELD(short v, string label = null, sbyte grid = 0, IOptable<short> opt = null)
+        public HtmlContent FIELD(short v, string label = null, sbyte grid = 0, string ext = null)
         {
             FIELD_(label, grid);
-            if (opt != null)
+            Add(v);
+            if (ext != null)
             {
-                Add(opt.Obtain(v));
-            }
-            else
-            {
-                Add(v);
+                Add(ext);
             }
             _FIELD();
             return this;
         }
 
-        public HtmlContent FIELD(int v, string label = null, sbyte grid = 0)
+        public HtmlContent FIELD(int v, string label = null, sbyte grid = 0, string ext = null)
         {
             FIELD_(label, grid);
             Add(v);
+            if (ext != null)
+            {
+                Add(ext);
+            }
             _FIELD();
             return this;
         }
 
-        public HtmlContent FIELD(decimal v, string label = null, sbyte grid = 0)
+        public HtmlContent FIELD(decimal v, string label = null, sbyte grid = 0, string ext = null)
         {
             FIELD_(label, grid);
             Add(v);
+            if (ext != null)
+            {
+                Add(ext);
+            }
             _FIELD();
             return this;
         }
 
-        public HtmlContent FIELD(DateTime v, string label = null, sbyte grid = 0)
+        public HtmlContent FIELD(DateTime v, string label = null, sbyte grid = 0, string ext = null)
         {
             FIELD_(label, grid);
             Add(v);
+            if (ext != null)
+            {
+                Add(ext);
+            }
             _FIELD();
             return this;
         }
 
-        public HtmlContent FIELD(string v, string label = null, sbyte grid = 0)
+        public HtmlContent FIELD(string v, string label = null, sbyte grid = 0, string ext = null)
         {
             FIELD_(label, grid);
             Add(v);
+            if (ext != null)
+            {
+                Add(ext);
+            }
             _FIELD();
             return this;
         }
@@ -586,7 +642,7 @@ namespace Greatbone.Core
             return this;
         }
 
-        public HtmlContent SLASH()
+        public HtmlContent SEP()
         {
             Add("&nbsp;/&nbsp;");
             return this;
@@ -864,11 +920,10 @@ namespace Greatbone.Core
             short pow = 1;
             for (int i = 0; i < cells.Length; i++)
             {
-                Add("<div class=\"cell card-board\">");
+                Add("<div class=\"cell card-cell\">");
                 Add("<form>");
                 var cell = cells[i];
                 Add("<article class=\"grid-x card\">");
-                Add("\">");
                 if (work.Buttonly)
                 {
                     Add("<div class=\"cell small-1 card-lead\">");

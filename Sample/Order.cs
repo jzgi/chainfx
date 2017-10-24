@@ -11,9 +11,8 @@ namespace Greatbone.Sample
         public static readonly Order Empty = new Order();
 
         public const short
-            ID = 0x0001,
-            BASIC = 0x0002,
-            LATER = 0x0200;
+            ID = 1,
+            LATER = 4;
 
         // status
         public const short CREATED = 0, PAID = 1, ABORTED = 2, READY = 3, RECEIVED = 4, RECKONED = 5;
@@ -44,6 +43,7 @@ namespace Greatbone.Sample
         internal DateTime created; // time created
         internal decimal cash; // amount recieved
         internal DateTime paid; // when cash received or forcibly accepted
+        internal bool prepare;
         internal bool mark;
         internal DateTime aborted; // time aborted
         internal DateTime received; // time shipped
@@ -71,6 +71,7 @@ namespace Greatbone.Sample
             {
                 i.Get(nameof(cash), ref cash);
                 i.Get(nameof(paid), ref paid);
+                i.Get(nameof(prepare), ref prepare);
                 i.Get(nameof(aborted), ref aborted);
                 i.Get(nameof(received), ref received);
                 i.Get(nameof(note), ref note);
@@ -99,6 +100,7 @@ namespace Greatbone.Sample
             {
                 o.Put(nameof(cash), cash);
                 o.Put(nameof(paid), paid);
+                o.Put(nameof(prepare), prepare);
                 o.Put(nameof(aborted), aborted);
                 o.Put(nameof(received), received);
                 o.Put(nameof(note), note);

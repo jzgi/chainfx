@@ -178,7 +178,7 @@ namespace Greatbone.Sample
                             dc.Query1("SELECT oprwx, oprtel, oprname, status FROM shops WHERE id = @1", p => p.Set(shopid));
                             dc.Let(out string oprwx).Let(out string oprtel).Let(out string oprname).Let(out short status);
                             h.CAPTION("本店营业状态设置");
-                            h.FIELD(status, "状态", opt: Shop.STATUS);
+                            h.FIELD(Shop.STATUS[status].ToString(), "状态");
                             h.FIELDSET_("值班员信息");
                             h.FIELD(oprname, "姓名");
                             h.FIELD(oprwx, "微信");

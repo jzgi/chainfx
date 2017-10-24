@@ -63,9 +63,9 @@ namespace Greatbone.Sample
                             m.TEXT(nameof(o.descr), o.descr, "简述", max: 30, required: true);
                             m.TEXT(nameof(o.unit), o.unit, "单位", required: true);
                             m.NUMBER(nameof(o.price), o.price, "单价", required: true);
-                            m.NUMBER(nameof(o.min), o.min, "起订数量", min: (short) 1);
-                            m.NUMBER(nameof(o.step), o.step, "增减间隔", min: (short) 1);
-                            m.NUMBER(nameof(o.max), o.max, "剩余供给");
+                            m.NUMBER(nameof(o.min), o.min, "起订", min: (short) 1);
+                            m.NUMBER(nameof(o.step), o.step, "间隔", min: (short) 1);
+                            m.NUMBER(nameof(o.max), o.max, "剩余");
                             m.SELECT(nameof(o.status), o.status, Item.STATUS, "状态");
                             m._FORM();
                         });

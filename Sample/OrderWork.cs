@@ -175,8 +175,18 @@ namespace Greatbone.Sample
                 {
                     ac.GiveGridPage(200, dc.ToArray<Order>(), (h, o) =>
                     {
-                        h.FIELD(o.id, "单号", 0);
-                        h.FIELD(o.total, "总价", 0);
+                        h.CAPTION_().T("单号")._T(o.id).SEP().T(o.paid)._CAPTION(o.prepare);
+                        if (o.name != null)
+                        {
+                            h.FIELD(o.name, "姓名", 6).FIELD(o.city, "城市", 6);
+                        }
+                        h.FIELD_("联系").T(o.tel)._T(o.region)._T(o.addr)._FIELD();
+                        for (int i = 0; i < o.items.Length; i++)
+                        {
+                            var item = o.items[i];
+                            h.FIELD(item.name, grid: 4).FIELD(item.price, grid: 4).FIELD(item.qty, grid: 4, ext: item.unit);
+                        }
+                        h.FIELD(o.total, "总价");
                     }, false, 3);
                 }
                 else
@@ -186,95 +196,28 @@ namespace Greatbone.Sample
             }
         }
 
-        [Ui("通知买家", Mode = ButtonShow)]
-        public async Task sendnotif(ActionContext ac)
+        [Ui("备货状态", Mode = ButtonConfirm)]
+        public async Task prepare(ActionContext ac)
         {
-            long[] key = ac.Query[nameof(key)];
-            short notif = 0;
-            if (ac.GET)
+            short shopid = ac[-1];
+            var f = await ac.ReadAsync<Form>();
+            int[] key = f[nameof(key)];
+            if (key != null)
             {
-                ac.GivePane(200, m =>
-                {
-                    if (key == null)
-                    {
-                        m.CALLOUT("请先选择目标订单");
-                    }
-                    else
-                    {
-                        m.FORM_();
-                        m.RADIOS(nameof(notif), notif, NOTIFS, label: "通知内容", required: true);
-                        m._FORM();
-                    }
-                });
-            }
-            else
-            {
-                var f = await ac.ReadAsync<Form>();
-                notif = f[nameof(notif)];
-                List<(long, string)> rows = new List<(long, string)>(16);
                 using (var dc = ac.NewDbContext())
                 {
-                    dc.Sql("SELECT id, wx FROM orders WHERE id")._IN_(key);
-                    if (dc.Query())
+                    dc.Sql("UPDATE orders SET prepare = TRUE WHERE shopid = @1 AND id")._IN_(key)._("RETURNING wx, total");
+                    if (dc.Query(p => p.Set(shopid)))
                     {
                         while (dc.Next())
                         {
-                            long id;
-                            string wx;
-                            dc.Let(out id).Let(out wx);
-                            rows.Add((id, wx));
+                            dc.Let(out string wx).Let(out decimal total);
+                            await WeiXinUtility.PostSendAsync(wx, "【通知】正在为您的订单备货生产（金额" + total + "）");
                         }
                     }
                 }
-
-                for (int i = 0; i < rows.Count; i++)
-                {
-                    (long, string) row = rows[i];
-                    await WeiXinUtility.PostSendAsync(row.Item2, "【商家通知】" + NOTIFS[notif] + "（订单编号：" + row.Item1 + "）");
-                }
-
-                ac.GivePane(200);
             }
-        }
-
-        [Ui("委托办理", Mode = ButtonShow)]
-        public async Task passon(ActionContext ac)
-        {
-            var prin = (User) ac.Principal;
-            string shopid = ac[-1];
-            string city = prin.city;
-            if (ac.GET)
-            {
-                ac.GivePane(200, m =>
-                {
-                    m.FORM_();
-                    using (var dc = ac.NewDbContext())
-                    {
-                        if (dc.Query("SELECT id, name FROM shops WHERE city = @1", p => p.Set(city)))
-                        {
-                            while (dc.Next())
-                            {
-                                string id;
-                                string name;
-                                dc.Let(out id).Let(out name);
-                                m.RADIO("id_name", id, name, null, false, id, name, null);
-                            }
-                            m._FORM();
-                        }
-                    }
-                });
-            }
-            else // post
-            {
-                var f = await ac.ReadAsync<Form>();
-                string id_name = f[nameof(id_name)];
-                var duo = id_name.ToDual<string, string>();
-                using (var dc = ac.NewDbContext())
-                {
-                    dc.Execute(@"UPDATE shops SET coshopid = @1 WHERE id = @2", p => p.Set(duo.Item1).Set(shopid));
-                }
-                ac.GivePane(200);
-            }
+            ac.GiveRedirect();
         }
     }
 
@@ -291,12 +234,22 @@ namespace Greatbone.Sample
             short shopid = ac[-1];
             using (var dc = ac.NewDbContext())
             {
-                if (dc.Query("SELECT * FROM orders WHERE shopid = @1 AND status = " + Order.RECEIVED + " ORDER BY id DESC LIMIT 20 OFFSET @2", p => p.Set(shopid).Set(page * 20)))
+                if (dc.Query("SELECT * FROM orders WHERE shopid = @1 AND status = " + Order.READY + " ORDER BY id DESC LIMIT 20 OFFSET @2", p => p.Set(shopid).Set(page * 20)))
                 {
                     ac.GiveGridPage(200, dc.ToArray<Order>(), (h, o) =>
                     {
-                        h.FIELD(o.id, "单号", 0);
-                        h.FIELD(o.total, "总价", 0);
+                        h.CAPTION_().T("单号")._T(o.id).SEP().T(o.paid)._CAPTION();
+                        if (o.name != null)
+                        {
+                            h.FIELD(o.name, "姓名", 6).FIELD(o.city, "城市", 6);
+                        }
+                        h.FIELD_("联系").T(o.tel)._T(o.region)._T(o.addr)._FIELD();
+                        for (int i = 0; i < o.items.Length; i++)
+                        {
+                            var item = o.items[i];
+                            h.FIELD(item.name, grid: 4).FIELD(item.price, grid: 4).FIELD(item.qty, grid: 4, ext: item.unit);
+                        }
+                        h.FIELD(o.total, "总价");
                     }, false, 3);
                 }
                 else
@@ -337,8 +290,18 @@ namespace Greatbone.Sample
                 {
                     ac.GiveGridPage(200, dc.ToArray<Order>(), (h, o) =>
                     {
-                        h.FIELD(o.id, "单号", 0);
-                        h.FIELD(o.total, "总价", 0);
+                        h.CAPTION_().T("单号")._T(o.id).SEP().T(o.paid)._CAPTION();
+                        if (o.name != null)
+                        {
+                            h.FIELD(o.name, "姓名", 6).FIELD(o.city, "城市", 6);
+                        }
+                        h.FIELD_("联系").T(o.tel)._T(o.region)._T(o.addr)._FIELD();
+                        for (int i = 0; i < o.items.Length; i++)
+                        {
+                            var item = o.items[i];
+                            h.FIELD(item.name, grid: 4).FIELD(item.price, grid: 4).FIELD(item.qty, grid: 4, ext: item.unit);
+                        }
+                        h.FIELD(o.total, "总价");
                     }, false, 3);
                 }
                 else
