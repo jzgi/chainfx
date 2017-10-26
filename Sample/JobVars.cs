@@ -20,7 +20,7 @@ namespace Greatbone.Sample
 
         public void @default(ActionContext ac)
         {
-            string wx = ac[this];
+            string wx = ac[-1];
             var prin = (User) ac.Principal;
             ac.GivePage(200, main =>
             {
@@ -38,21 +38,8 @@ namespace Greatbone.Sample
         [Ui("刷新", Mode = AShow)]
         public void token(ActionContext ac)
         {
-            string wx = ac[this];
-            using (var dc = ac.NewDbContext())
-            {
-                const short proj = -1 ^ CREDENTIAL;
-                if (dc.Query1("SELECT * FROM users WHERE wx = @1", (p) => p.Set(wx)))
-                {
-                    var o = dc.ToObject<User>(proj);
-                    ac.SetTokenCookie(o, proj);
-                    ac.GivePane(200);
-                }
-                else
-                {
-                    ac.GivePane(404);
-                }
-            }
+            ac.SetHeader("Set-Cookie", "Token=deleted; path=/; expires=Thu, 01 Jan 1970 00:00:00 GMT");
+            ac.Give(200);
         }
     }
 
@@ -65,7 +52,7 @@ namespace Greatbone.Sample
         [Ui("修改", Mode = ButtonShow)]
         public async Task edit(ActionContext ac)
         {
-            string wx = ac[this];
+            string wx = ac[-1];
             var prin = (User) ac.Principal;
             if (ac.GET)
             {
@@ -93,7 +80,7 @@ namespace Greatbone.Sample
                 o.wx = wx;
                 using (var dc = ac.NewDbContext())
                 {
-                    dc.Sql("INSERT INTO users")._(o, proj)._VALUES_(o, proj)._("ON CONFLICT (wx) DO UPDATE")._SET_(o, proj ^ WX);
+                    dc.Sql("INSERT INTO users")._(o, proj)._VALUES_(o, proj)._T("ON CONFLICT (wx) DO UPDATE")._SET_(o, proj ^ WX);
                     dc.Execute(p => o.Write(p, proj));
                 }
                 ac.SetTokenCookie(o, -1 ^ CREDENTIAL);

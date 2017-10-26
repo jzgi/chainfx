@@ -18,8 +18,29 @@ namespace Greatbone.Sample
         {
         }
 
-        [Ui("保存", Mode = ButtonScript)]
-        public async Task save(ActionContext ac)
+        [Ui("删除", Mode = ButtonConfirm)]
+        public async Task rm(ActionContext ac)
+        {
+            string wx = ac[typeof(UserVarWork)];
+            var f = await ac.ReadAsync<Form>();
+            long[] key = f[nameof(key)];
+            using (var dc = ac.NewDbContext())
+            {
+                if (key != null)
+                {
+                    dc.Sql("DELETE FROM orders WHERE wx = @1 AND status = @2 AND id")._IN_(key);
+                    dc.Execute(p => p.Set(wx).Set(Order.CREATED));
+                }
+                else
+                {
+                    dc.Execute("DELETE FROM orders WHERE wx = @1 AND status = @2", p => p.Set(wx).Set(Order.CREATED));
+                }
+                ac.GiveRedirect();
+            }
+        }
+
+        [Ui("收货地址", Mode = ButtonShow, State = 3)]
+        public async Task addr(ActionContext ac)
         {
             string wx = ac[-2];
             int id = ac[this];

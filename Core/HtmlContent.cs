@@ -182,6 +182,22 @@ namespace Greatbone.Core
             return this;
         }
 
+        public HtmlContent P(params string[] v)
+        {
+            if (v == null) return this;
+            Add("<p>");
+            for (int i = 0; i < v.Length; i++)
+            {
+                if (i > 0)
+                {
+                    Add("&nbsp;");
+                }
+                Add(v[i]);
+            }
+            Add("</p>");
+            return this;
+        }
+
         public HtmlContent PAD(int v, sbyte n)
         {
             for (int i = 0; i < INT.Length; i++)
@@ -598,6 +614,23 @@ namespace Greatbone.Core
             return this;
         }
 
+        public HtmlContent P(int v, string label = null, string extra = null)
+        {
+            Add("<p>");
+            if (label != null)
+            {
+                Add(label);
+                Add(": ");
+            }
+            Add(v);
+            if (extra != null)
+            {
+                Add(extra);
+            }
+            Add("</p>");
+            return this;
+        }
+
         public HtmlContent P(decimal v, string label = null, string extra = null)
         {
             Add("<p>");
@@ -765,9 +798,18 @@ namespace Greatbone.Core
             Add("<div class=\"sticky\" style=\"width: 100%\" data-sticky  data-options=\"anchor: page; marginTop: 0; stickyOn: small;\">");
             Add("<form id=\"viewform\">");
             Add("<nav class=\"top-bar\">");
-            Add("<div class=\"top-bar-left\">");
-            TRIGGERS(work, null);
-            Add("</div>");
+            if (work.UiActions == null)
+            {
+                Add("<div class=\"top-bar-title\">");
+                Add(work.Label);
+                Add("</div>");
+            }
+            else
+            {
+                Add("<div class=\"top-bar-left\">");
+                TRIGGERS(work, null);
+                Add("</div>");
+            }
             Add("<div class=\"top-bar-right\">");
             Add("<a class=\"primary\" href=\"javascript: location.reload(false);\"><i class=\"fi-refresh\" style=\"font-size: 1.5rem; line-height: 2rem\"></i></a>");
             Add("</div>");
@@ -1923,29 +1965,6 @@ namespace Greatbone.Core
             Add("</label>");
 
             _FIELD();
-            return this;
-        }
-
-        public HtmlContent BUTTON(ActionInfo ai)
-        {
-            Add("<button class=\"button primary\" style=\"margin-right: 5px; border-radius: 15%\"");
-            Add(" formaction=\"");
-            Add(ai.Name);
-            Add("\" formmethod=\"post\"");
-
-            UiAttribute ui = ai.Ui;
-
-            UiMode mode = ui.Mode;
-            if (mode > 0)
-            {
-                Add(" onclick=\"dialog(this,");
-                Add((int) mode);
-                Add("); return false;\"");
-            }
-            Add(">");
-            AddLabel(ui.Label, ai.Name);
-
-            Add("</button>");
             return this;
         }
 

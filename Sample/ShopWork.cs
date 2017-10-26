@@ -102,32 +102,36 @@ namespace Greatbone.Sample
 
                 using (var dc = ac.NewDbContext())
                 {
-                    dc.Sql("SELECT ").columnlst(Shop.Empty)._("FROM shops WHERE city = @1 AND status > 0");
+                    dc.Sql("SELECT ").columnlst(Shop.Empty)._T("FROM shops WHERE city = @1 AND status > 0");
                     if (dc.Query(p => p.Set(city)))
                     {
                         var shops = dc.ToArray<Shop>();
                         h.T("<div class=\"grid-x small-up-1 medium-up-2\">");
                         for (int i = 0; i < shops.Length; i++)
                         {
-                            h.T("<div class=\"cell card-board\">");
+                            h.T("<div class=\"cell card-cell\">");
                             var shop = shops[i];
 
                             h.T("<div class=\"grid-x card\">");
-                            
+
                             h.T("<div class=\"small-12 card-cap\">");
-                            h.T("<h3><a href=\"").T(shop.id).T("/?city=").T(city).T("\">").T(shop.name).T("</a></h3>");
+                            h.T("<h3><a href=\"").T(shop.id).T("/?city=").T(city).T("\">").T(shop.name).SEP().T(Shop.STATUS[shop.status]).T("</a></h3>");
                             h.T("</div>");
-                            
+
                             h.T("<div class=\"small-8 cell\">");
-                            h.T("<p>").T(shop.city).T(shop.addr).T("</p>");
+                            h.T("<p>场所：").T(shop.city).T(shop.addr).T("</p>");
                             var areas = shop.areas;
                             if (areas != null)
+                            {
+                                h.T("<p>派送：");
                                 for (int k = 0; k < areas.Length; k++)
                                 {
                                     h.T("<span>").T(areas[k]).T("</span>");
                                 }
+                                h.T("</p>");
+                            }
                             h.T("</div>");
-                            h.T("<div class=\"small-4 cell\"><a href=\"").T(shop.id).T("/\"><img src=\"").T(shop.id).T("/icon\" class=\"thumbnail circle\"></a></div>");
+                            h.T("<div class=\"small-4 cell\"><a href=\"").T(shop.id).T("/\"><img src=\"").T(shop.id).T("/icon\" class=\"circle\"></a></div>");
                             h.T("</div>");
                             h.T("</div>");
                         }
@@ -158,7 +162,7 @@ namespace Greatbone.Sample
             using (var dc = ac.NewDbContext())
             {
                 const short proj = Shop.ID | Shop.INITIAL | Shop.LATE;
-                dc.Sql("SELECT ").columnlst(Shop.Empty, proj)._("FROM shops ORDER BY id");
+                dc.Sql("SELECT ").columnlst(Shop.Empty, proj)._T("FROM shops ORDER BY id");
                 if (dc.Query())
                 {
                     ac.GiveTablePage(200, dc.ToArray<Shop>(proj), h => h.TH("名称").TH("电话").TH("地址"), (h, o) => h.TD(o.name).TD(o.mgrtel).TD(o.addr), false, 3);

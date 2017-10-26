@@ -44,7 +44,7 @@ namespace Greatbone.Sample
             short shopid = ac[this];
             using (var dc = ac.NewDbContext())
             {
-                dc.Sql("SELECT ").columnlst(Shop.Empty)._("FROM shops WHERE id = @1");
+                dc.Sql("SELECT ").columnlst(Shop.Empty)._T("FROM shops WHERE id = @1");
                 if (dc.Query1(p => p.Set(shopid)))
                 {
                     var shop = dc.ToObject<Shop>();
@@ -52,7 +52,7 @@ namespace Greatbone.Sample
                     // items of the shop
 
                     Item[] items = null;
-                    dc.Sql("SELECT ").columnlst(Item.Empty)._("FROM items WHERE shopid = @1");
+                    dc.Sql("SELECT ").columnlst(Item.Empty)._T("FROM items WHERE shopid = @1");
                     if (dc.Query(p => p.Set(shopid)))
                     {
                         items = dc.ToArray<Item>();
@@ -82,7 +82,7 @@ namespace Greatbone.Sample
                         h.T("<div class=\"grid-x small-up-1 medium-up-2\">");
                         for (int i = 0; i < items.Length; i++)
                         {
-                            h.T("<div class=\"cell card-board\">");
+                            h.T("<div class=\"cell card-cell\">");
                             var item = items[i];
 
                             var shopname = shop.name;
@@ -112,7 +112,7 @@ namespace Greatbone.Sample
                             h.T(item.unit);
                             h.T("</p>");
 
-                            h.T("<div class=\"row\">");
+                            h.T("<div class=\"grid-x\">");
 
                             h.T("<div class=\"small-5 cell\">");
 
@@ -122,7 +122,7 @@ namespace Greatbone.Sample
                             h.HIDDEN(nameof(item.unit), item.unit);
                             h.HIDDEN(nameof(item.price), item.price);
 
-                            h.T("<button type=\"button\" class=\"button hollow primary float-right\"  data-toggle=\"dropdown").T(i).T("\">+</button>");
+                            h.T("<a type=\"button\" class=\"button circle primary float-right\"  data-toggle=\"dropdown").T(i).T("\">购买</a>");
                             h.T("<div class=\"dropdown-pane\" id=\"dropdown").T(i).T("\" data-position=\"top\" data-alignment=\"right\" style=\"box-shadow:0 0 2px #0a0a0a;\" data-dropdown>");
                             h.T("<form>");
 
@@ -171,7 +171,7 @@ namespace Greatbone.Sample
             {
                 using (var dc = ac.NewDbContext())
                 {
-                    dc.Sql("SELECT ").columnlst(Shop.Empty, proj)._("FROM shops WHERE id = @1");
+                    dc.Sql("SELECT ").columnlst(Shop.Empty, proj)._T("FROM shops WHERE id = @1");
                     if (dc.Query1(p => p.Set(id)))
                     {
                         var o = dc.ToObject<Shop>(proj);
@@ -197,7 +197,7 @@ namespace Greatbone.Sample
                 var o = await ac.ReadObjectAsync<Shop>(proj);
                 using (var dc = ac.NewDbContext())
                 {
-                    dc.Sql("UPDATE shops")._SET_(Shop.Empty, proj)._("WHERE id = @1");
+                    dc.Sql("UPDATE shops")._SET_(Shop.Empty, proj)._T("WHERE id = @1");
                     dc.Execute(p =>
                     {
                         o.Write(p, proj);

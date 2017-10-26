@@ -1,5 +1,4 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.Threading.Tasks;
 using Greatbone.Core;
 using static Greatbone.Core.UiMode;
@@ -25,20 +24,23 @@ namespace Greatbone.Sample
         public void @default(ActionContext ac)
         {
             string wx = ac[-1];
+
             using (var dc = ac.NewDbContext())
             {
-                dc.Sql("SELECT ").columnlst(Order.Empty)._("FROM orders WHERE wx = @1 AND status = 0 ORDER BY id DESC");
+                dc.Sql("SELECT ").columnlst(Order.Empty)._T("FROM orders WHERE wx = @1 AND status = 0 ORDER BY id DESC");
                 if (dc.Query(p => p.Set(wx)))
                 {
 //                    var areas = ((SampleService)Service).Cities[""] 
                     ac.GiveGridPage(200, dc.ToArray<Order>(), (h, o) =>
                     {
                         h.CAPTION(o.shopname);
-                        h.FIELD_("收货地址").T(o.name, o.tel, o.addr, null).BR().BUTTON("设置收货地址")._FIELD();
+                        h.FIELD_("收货人").T(o.name, o.tel, o.addr, null).TRIGGER(VarWork.GetAction(nameof(MyPreVarWork.addr)), o)._FIELD();
                         for (int i = 0; i < o.items.Length; i++)
                         {
                             var item = o.items[i];
-                            h.FIELD_(6).T("<img src=\"\">")._FIELD().FIELD_(6).T(item.qty)._FIELD();
+                            h.IMG("/shop/" + o.shopid + "/" + item.name + "/icon", 2);
+                            h.FIELD_(5).P(item.name).P(item.price)._FIELD();
+                            h.FIELD_(5).P(item.qty, extra: item.unit).P(item.customs)._FIELD();
                         }
                         h.FIELD(o.total, "总价", 0);
                     }, false, 3);
@@ -98,27 +100,6 @@ namespace Greatbone.Sample
                 ac.Give(200);
             }
         }
-
-        [Ui("清空购物车", Mode = ButtonConfirm)]
-        public async Task remove(ActionContext ac)
-        {
-            string wx = ac[typeof(UserVarWork)];
-            var f = await ac.ReadAsync<Form>();
-            long[] key = f[nameof(key)];
-            using (var dc = ac.NewDbContext())
-            {
-                if (key != null)
-                {
-                    dc.Sql("DELETE FROM orders WHERE wx = @1 AND status = @2 AND id")._IN_(key);
-                    dc.Execute(p => p.Set(wx).Set(Order.CREATED));
-                }
-                else
-                {
-                    dc.Execute("DELETE FROM orders WHERE wx = @1 AND status = @2", p => p.Set(wx).Set(Order.CREATED));
-                }
-                ac.GiveRedirect();
-            }
-        }
     }
 
     [Ui("我的订单")]
@@ -133,13 +114,23 @@ namespace Greatbone.Sample
             string wx = ac[-1];
             using (var dc = ac.NewDbContext())
             {
-                dc.Sql("SELECT ").columnlst(Order.Empty)._("FROM orders WHERE wx = @1 AND status > 0 ORDER BY id DESC");
+                dc.Sql("SELECT ").columnlst(Order.Empty)._T("FROM orders WHERE wx = @1 AND status > 0 ORDER BY id DESC");
                 if (dc.Query(p => p.Set(wx)))
                 {
                     ac.GiveGridPage(200, dc.ToArray<Order>(), (h, o) =>
                     {
-                        h.FIELD(o.id, "单号", 0);
-                        h.FIELD(o.total, "总价", 0);
+                        h.CAPTION_().T("单号")._T(o.id).SEP().T(o.paid)._CAPTION();
+                        if (o.name != null)
+                        {
+                            h.FIELD(o.name, "姓名", 6).FIELD(o.city, "城市", 6);
+                        }
+                        h.FIELD_("联系").T(o.tel)._T(o.region)._T(o.addr)._FIELD();
+                        for (int i = 0; i < o.items.Length; i++)
+                        {
+                            var item = o.items[i];
+                            h.FIELD(item.name, grid: 4).FIELD(item.price, grid: 4).FIELD(item.qty, grid: 4, ext: item.unit);
+                        }
+                        h.FIELD(o.total, "总价");
                     }, false, 3);
                 }
                 else
@@ -206,7 +197,7 @@ namespace Greatbone.Sample
             {
                 using (var dc = ac.NewDbContext())
                 {
-                    dc.Sql("UPDATE orders SET prepare = TRUE WHERE shopid = @1 AND id")._IN_(key)._("RETURNING wx, total");
+                    dc.Sql("UPDATE orders SET prepare = TRUE WHERE shopid = @1 AND id")._IN_(key)._T("RETURNING wx, total");
                     if (dc.Query(p => p.Set(shopid)))
                     {
                         while (dc.Next())

@@ -79,7 +79,7 @@ namespace Greatbone.Sample
                 var o = await ac.ReadObjectAsync<Item>(proj);
                 using (var dc = ac.NewDbContext())
                 {
-                    dc.Sql("UPDATE items")._SET_(Item.Empty, proj)._("WHERE shopid = @1 AND name = @2");
+                    dc.Sql("UPDATE items")._SET_(Item.Empty, proj)._T("WHERE shopid = @1 AND name = @2");
                     dc.Execute(p =>
                     {
                         o.Write(p, proj);
