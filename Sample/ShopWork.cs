@@ -105,22 +105,22 @@ namespace Greatbone.Sample
                     dc.Sql("SELECT ").columnlst(Shop.Empty)._T("FROM shops WHERE city = @1 AND status > 0");
                     if (dc.Query(p => p.Set(city)))
                     {
-                        var shops = dc.ToArray<Shop>();
+                        var arr = dc.ToArray<Shop>();
                         h.T("<div class=\"grid-x small-up-1 medium-up-2\">");
-                        for (int i = 0; i < shops.Length; i++)
+                        for (int i = 0; i < arr.Length; i++)
                         {
                             h.T("<div class=\"cell card-cell\">");
-                            var shop = shops[i];
+                            var o = arr[i];
 
                             h.T("<div class=\"grid-x card\">");
 
                             h.T("<div class=\"small-12 card-cap\">");
-                            h.T("<h3><a href=\"").T(shop.id).T("/?city=").T(city).T("\">").T(shop.name).SEP().T(Shop.STATUS[shop.status]).T("</a></h3>");
+                            h.T("<h3><a href=\"").T(o.id).T("/?city=").T(city).T("\">").T(o.name).SEP().T(Shop.Status[o.status]).T("</a></h3>");
                             h.T("</div>");
 
                             h.T("<div class=\"small-8 cell\">");
-                            h.T("<p>场所：").T(shop.city).T(shop.addr).T("</p>");
-                            var areas = shop.areas;
+                            h.T("<p>场所：").T(o.city).T(o.addr).T("</p>");
+                            var areas = o.areas;
                             if (areas != null)
                             {
                                 h.T("<p>派送：");
@@ -131,7 +131,7 @@ namespace Greatbone.Sample
                                 h.T("</p>");
                             }
                             h.T("</div>");
-                            h.T("<div class=\"small-4 cell\"><a href=\"").T(shop.id).T("/\"><img src=\"").T(shop.id).T("/icon\" class=\"circle\"></a></div>");
+                            h.T("<div class=\"small-4 cell\"><a href=\"").T(o.id).T("/\"><img src=\"").T(o.id).T("/icon\" class=\"circle\"></a></div>");
                             h.T("</div>");
                             h.T("</div>");
                         }

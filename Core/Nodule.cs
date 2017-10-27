@@ -5,7 +5,7 @@ namespace Greatbone.Core
     /// <summary>
     /// A certain node of resources along the URi path.
     /// </summary>
-    public abstract class Nodule : INamable
+    public abstract class Nodule : IRollable
     {
         // identifier as appeared in URI
         readonly string name;

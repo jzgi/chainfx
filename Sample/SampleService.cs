@@ -28,16 +28,6 @@ namespace Greatbone.Sample
 
         public Map<string, City> Cities => cities;
 
-        public City LocateCity(double x, double y)
-        {
-            foreach (var pair in cities)
-            {
-                var city = pair.Value;
-                if (city.Contains(x, y)) return city;
-            }
-            return null;
-        }
-
         public void @default(ActionContext ac)
         {
             string lang = ac.Query[nameof(lang)];

@@ -13,7 +13,7 @@ namespace Greatbone.Core
     /// <summary>
     /// A client of RPC, service and/or event queue.
     /// </summary>
-    public class Client : HttpClient, INamable
+    public class Client : HttpClient, IRollable
     {
         const int AHEAD = 1000 * 12;
 

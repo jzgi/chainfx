@@ -18,9 +18,9 @@ namespace Greatbone.Sample
 
         public static readonly Map<short, string> OPRS = new Map<short, string>
         {
-            [OPR_] = "基本",
-            [OPRMEM] = "成员",
-            [OPRMGR] = "经理",
+            {OPR_, "基本"},
+            {OPRMEM, "成员"},
+            {OPRMGR, "经理"},
         };
 
         internal string wx; // wexin openid

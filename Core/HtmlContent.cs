@@ -1811,7 +1811,7 @@ namespace Greatbone.Core
             return this;
         }
 
-        public HtmlContent RADIOS(string name, short v, IOptable<short> opt = null, string label = null, bool required = false)
+        public HtmlContent RADIOS<O>(string name, short v, Map<short, O> opt = null, string label = null, bool required = false)
         {
             Add("<fieldset>");
 
@@ -1852,7 +1852,7 @@ namespace Greatbone.Core
             return this;
         }
 
-        public HtmlContent RADIOS(string name, string v, IOptable<string> opt = null, string label = null, bool required = false)
+        public HtmlContent RADIOS<O>(string name, string v, Map<string, O> opt = null, string label = null, bool required = false)
         {
             Add("<fieldset>");
 
@@ -1968,7 +1968,7 @@ namespace Greatbone.Core
             return this;
         }
 
-        public HtmlContent SELECT(string name, short v, IOptable<short> opt, string label = null, bool multiple = false, bool required = false, int size = 0, sbyte grid = 0)
+        public HtmlContent SELECT<O>(string name, short v, Map<short, O> opt, string label = null, bool multiple = false, bool required = false, int size = 0, sbyte grid = 0)
         {
             FIELD_(label, grid);
 
@@ -1985,23 +1985,24 @@ namespace Greatbone.Core
             }
             Add(">");
 
-            opt?.ForEach((key, item) =>
+            for (int i = 0; i < opt.Count; i++)
             {
+                var e = opt[i];
                 Add("<option value=\"");
-                Add(key);
+                Add(e.key);
                 Add("\"");
-                if (key == v) Add(" selected");
+                if (e.key == v) Add(" selected");
                 Add(">");
-                Add(item.ToString());
+                Add(e.value.ToString());
                 Add("</option>");
-            });
+            }
             Add("</select>");
 
             _FIELD();
             return this;
         }
 
-        public HtmlContent SELECT(string name, string v, IOptable<string> opt, string label = null, bool multiple = false, bool required = false, sbyte size = 0, bool refresh = false, sbyte grid = 0)
+        public HtmlContent SELECT<O>(string name, string v, Map<string, O> opt, string label = null, bool multiple = false, bool required = false, sbyte size = 0, bool refresh = false, sbyte grid = 0)
         {
             FIELD_(label, grid);
 
@@ -2022,16 +2023,17 @@ namespace Greatbone.Core
             }
             Add(">");
 
-            opt?.ForEach((key, text) =>
+            for (int i = 0; i < opt.Count; i++)
             {
+                var e = opt[i];
                 Add("<option value=\"");
-                Add(key);
+                Add(e.key);
                 Add("\"");
-                if (key == v) Add(" selected");
+                if (e.key == v) Add(" selected");
                 Add(">");
-                Add(opt.Obtain(key));
+                Add(e.value.ToString());
                 Add("</option>");
-            });
+            }
             Add("</select>");
 
             _FIELD();
@@ -2612,9 +2614,10 @@ namespace Greatbone.Core
                     {
                         counts[++level] = 0; // enter
                         Add('[');
-                        foreach (var pair in v)
+                        for (int i = 0; i < v.Count; i++)
                         {
-                            Put(null, pair.Value, proj);
+                            var e = v[i];
+                            Put(null, e.value, proj);
                         }
                         Add(']');
                         level--; // exit

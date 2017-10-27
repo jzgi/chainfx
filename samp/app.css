@@ -13,6 +13,7 @@
 
 .card {
     background-color:#fefefe;
+    border-radius: 4px;
 }
 
 .card.checked {
@@ -59,9 +60,10 @@ tr.checked {
 }
 
 .field-label {
+    display: flex;
+    align-items: center;
+    justify-content: flex-end;
     padding: 0.25rem; 
-    text-align: right;
-    vertical-align: middle;
 }
 
 .card > .field-label {

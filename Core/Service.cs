@@ -108,19 +108,20 @@ namespace Greatbone.Core
             // cluster connectivity
             if (Cluster != null)
             {
-                foreach (KeyValuePair<string, string> entry in Cluster)
+                for (int i = 0; i < Cluster.Count; i++)
                 {
+                    var e = Cluster[i];
                     if (clients == null)
                     {
                         clients = new Roll<Client>(Cluster.Count * 2);
                     }
-                    clients.Add(new Client(this, entry.Key, entry.Value));
+                    clients.Add(new Client(this, e.Key, e.Value));
 
                     if (queues == null)
                     {
                         queues = new Roll<EventQueue>(Cluster.Count * 2);
                     }
-                    queues.Add(new EventQueue(entry.Key));
+                    queues.Add(new EventQueue(e.Key));
                 }
             }
 

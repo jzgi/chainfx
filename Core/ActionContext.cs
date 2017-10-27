@@ -358,7 +358,7 @@ namespace Greatbone.Core
 
         public void SetTokenCookie<P>(P prin, short proj) where P : class, IData, new()
         {
-            ((Service<P>) Service).SetTokenCookie(this, prin, proj);
+            ((Service<P>) Service).SetTokenCookie(this, prin, proj, 1800);
         }
 
         public bool InCache { get; internal set; }

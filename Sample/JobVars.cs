@@ -38,8 +38,21 @@ namespace Greatbone.Sample
         [Ui("刷新", Mode = AShow)]
         public void token(ActionContext ac)
         {
-            ac.SetHeader("Set-Cookie", "Token=deleted; path=/; expires=Thu, 01 Jan 1970 00:00:00 GMT");
-            ac.Give(200);
+            string wx = ac[this];
+            using (var dc = ac.NewDbContext())
+            {
+                const short proj = -1 ^ CREDENTIAL;
+                if (dc.Query1("SELECT * FROM users WHERE wx = @1", (p) => p.Set(wx)))
+                {
+                    var o = dc.ToObject<User>(proj);
+                    ac.SetTokenCookie(o, proj);
+                    ac.GivePane(200);
+                }
+                else
+                {
+                    ac.GivePane(404);
+                }
+            }
         }
     }
 
@@ -69,7 +82,7 @@ namespace Greatbone.Sample
                     h.TEXT(nameof(prin.name), prin.name, "姓名", max: 4, min: 2, required: true);
                     h.TEXT(nameof(prin.tel), prin.tel, "手机", pattern: "[0-9]+", max: 11, min: 11, required: true);
                     h.SELECT(nameof(prin.city), prin.city, cities, "城市", refresh: true);
-                    h.SELECT(nameof(prin.area), prin.area, prin.city == null ? cities.First().Value.Distrs : cities[prin.city].Distrs, "区域");
+                    h.SELECT(nameof(prin.area), prin.area, prin.city == null ? cities[0].Value.Distrs : cities[prin.city].Distrs, "区域");
                     h._FORM();
                 });
             }
@@ -165,7 +178,7 @@ namespace Greatbone.Sample
                             dc.Query1("SELECT oprwx, oprtel, oprname, status FROM shops WHERE id = @1", p => p.Set(shopid));
                             dc.Let(out string oprwx).Let(out string oprtel).Let(out string oprname).Let(out short status);
                             h.CAPTION("本店营业状态设置");
-                            h.FIELD(Shop.STATUS[status].ToString(), "状态");
+                            h.FIELD(Shop.Status[status].ToString(), "状态");
                             h.FIELDSET_("值班员信息");
                             h.FIELD(oprname, "姓名");
                             h.FIELD(oprwx, "微信");

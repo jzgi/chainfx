@@ -7,7 +7,7 @@ namespace Greatbone.Core
     /// <summary>
     /// An add-only and ordered dictionary.
     /// </summary>
-    public class Roll<E> : IEnumerable where E : INamable
+    public class Roll<E> : IEnumerable<E> where E : IRollable
     {
         int[] buckets;
 
@@ -209,8 +209,15 @@ namespace Greatbone.Core
             count++;
         }
 
-        public IEnumerator GetEnumerator() => null;
+        IEnumerator IEnumerable.GetEnumerator()
+        {
+            return GetEnumerator();
+        }
 
+        public IEnumerator<E> GetEnumerator()
+        {
+            throw new NotImplementedException();
+        }
 
         struct Entry
         {

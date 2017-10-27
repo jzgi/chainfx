@@ -13,11 +13,11 @@ namespace Greatbone.Sample
 
         public const short VOID = 0, OFF = 1, ON = 2;
 
-        public static Map<short, string> STATUS = new Map<short, string>
+        public static Map<short, string> Status = new Map<short, string>
         {
-            [VOID] = "未定义",
-            [OFF] = "已下班",
-            [ON] = "营业中"
+            {VOID, "未定义"},
+            {OFF, "已下班"},
+            {ON, "营业中"}
         };
 
         internal short id;

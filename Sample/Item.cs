@@ -14,8 +14,8 @@ namespace Greatbone.Sample
         // status
         public static readonly Map<short, string> STATUS = new Map<short, string>
         {
-            [0] = "下架",
-            [1] = "上架",
+            {0, "下架"},
+            {1, "上架"},
         };
 
         internal short shopid;

@@ -20,12 +20,12 @@ namespace Greatbone.Sample
         // status
         public static readonly Map<short, string> STATUS = new Map<short, string>
         {
-            [CREATED] = "购物车",
-            [PAID] = "已付款",
-            [ABORTED] = "已撤单",
-            [READY] = "已备货",
-            [RECEIVED] = "已确收",
-            [RECKONED] = "已清算",
+            {CREATED, "购物车"},
+            {PAID, "已付款"},
+            {ABORTED, "已撤单"},
+            {READY, "已备货"},
+            {RECEIVED, "已确收"},
+            {RECKONED, "已清算"},
         };
 
 

@@ -147,10 +147,10 @@ namespace Greatbone.Sample
     {
         static readonly Map<short, string> NOTIFS = new Map<short, string>()
         {
-            [1] = "您的订单已收到。",
-            [2] = "您的订单已开始备货生产。",
-            [3] = "您的订单备货生产已完成，准备派送。",
-            [4] = "您的订单已派送完成，如有疑问请与我们联系。",
+            {1, "您的订单已收到。"},
+            {2, "您的订单已开始备货生产。"},
+            {3, "您的订单备货生产已完成，准备派送。"},
+            {4, "您的订单已派送完成，如有疑问请与我们联系。"},
         };
 
         public OprNewWork(WorkContext wc) : base(wc)

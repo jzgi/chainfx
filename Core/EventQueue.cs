@@ -5,7 +5,7 @@ namespace Greatbone.Core
     /// <summary>
     /// A event queue that corresponds to a particular event client.
     /// </summary>
-    public class EventQueue : INamable
+    public class EventQueue : IRollable
     {
         // custm HTTP headers
         internal const string

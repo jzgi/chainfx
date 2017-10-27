@@ -16,8 +16,8 @@ namespace Greatbone.Sample
         // status
         static readonly Map<short, string> STATUS = new Map<short, string>
         {
-            [0] = "新创建/未转款",
-            [1] = "已转款"
+            {0, "新创建/未转款"},
+            {1, "已转款"}
         };
 
 
