@@ -264,7 +264,6 @@ namespace Greatbone.Core
             {
                 if (bgn) Add("&nbsp;");
                 Add(v4);
-                bgn = true;
             }
             return this;
         }
@@ -614,7 +613,7 @@ namespace Greatbone.Core
             return this;
         }
 
-        public HtmlContent P(int v, string label = null, string extra = null)
+        public HtmlContent P(int v, string label = null, string ext = null)
         {
             Add("<p>");
             if (label != null)
@@ -623,15 +622,15 @@ namespace Greatbone.Core
                 Add(": ");
             }
             Add(v);
-            if (extra != null)
+            if (ext != null)
             {
-                Add(extra);
+                Add(ext);
             }
             Add("</p>");
             return this;
         }
 
-        public HtmlContent P(decimal v, string label = null, string extra = null)
+        public HtmlContent P(decimal v, string label = null, string ext = null)
         {
             Add("<p>");
             if (label != null)
@@ -640,15 +639,15 @@ namespace Greatbone.Core
                 Add(": ");
             }
             Add(v);
-            if (extra != null)
+            if (ext != null)
             {
-                Add(extra);
+                Add(ext);
             }
             Add("</p>");
             return this;
         }
 
-        public HtmlContent P(string v, string label = null, string extra = null)
+        public HtmlContent P(string v, string label = null, string ext = null)
         {
             Add("<p>");
             if (label != null)
@@ -657,9 +656,9 @@ namespace Greatbone.Core
                 Add(": ");
             }
             Add(v);
-            if (extra != null)
+            if (ext != null)
             {
-                Add(extra);
+                Add(ext);
             }
             Add("</p>");
             return this;
@@ -678,6 +677,30 @@ namespace Greatbone.Core
         public HtmlContent SEP()
         {
             Add("&nbsp;/&nbsp;");
+            return this;
+        }
+
+        public HtmlContent STRONG(decimal v, char cur = (char) 0)
+        {
+            Add("<strong>");
+            if (cur != 0)
+            {
+                Add(cur);
+            }
+            Add(v);
+            Add("</strong>");
+            return this;
+        }
+
+        public HtmlContent STRONG_()
+        {
+            Add("<strong>");
+            return this;
+        }
+
+        public HtmlContent _STRONG()
+        {
+            Add("</strong>");
             return this;
         }
 
@@ -862,9 +885,10 @@ namespace Greatbone.Core
             }
         }
 
-        public HtmlContent TableView(string name, IDataInput inp, Action<IDataInput, HtmlContent, char> putter)
+        public void TableView(string name, IDataInput inp, Action<IDataInput, HtmlContent, char> putter)
         {
-            Add("<table class=\"unstriped\">");
+            Add("<main class=\"table-scroll\" style=\"padding: 0.5rem\">");
+            Add("<table>");
 
             Add("<thead>");
             Add("<tr>");
@@ -885,10 +909,9 @@ namespace Greatbone.Core
             }
             Add("</tbody>");
             Add("</table>");
-            return this;
         }
 
-        public HtmlContent TableView<D>(D[] arr, Action<HtmlContent> hd, Action<HtmlContent, D> row) where D : IData
+        public void TableView<D>(D[] arr, Action<HtmlContent> hd, Action<HtmlContent, D> row) where D : IData
         {
             Work work = ac.Work;
             Work varwork = work.varwork;
@@ -943,15 +966,12 @@ namespace Greatbone.Core
                 Add("</tbody>");
             }
             Add("</table>");
-            Add("</main>");
-
             // pagination controls if any
             PAGENATE(arr?.Length ?? 0);
-
-            return this;
+            Add("</main>");
         }
 
-        public HtmlContent GridView(params Action<HtmlContent>[] cells)
+        public void GridView(params Action<HtmlContent>[] cells)
         {
             Work work = ac.Work;
             Work varwork = work.varwork;
@@ -992,12 +1012,10 @@ namespace Greatbone.Core
                 pow = (short) (pow * 2);
             }
             Add("</main>");
-
-            return this;
         }
 
 
-        public HtmlContent GridView<D>(D[] arr, Action<HtmlContent, D> cell) where D : IData
+        public void GridView<D>(D[] arr, Action<HtmlContent, D> cell) where D : IData
         {
             Work work = ac.Work;
             Work varwork = work.varwork;
@@ -1035,11 +1053,8 @@ namespace Greatbone.Core
                 }
                 Add("</main>");
             }
-
             // pagination if any
             PAGENATE(arr?.Length ?? 0);
-
-            return this;
         }
 
         void Dialog(sbyte mode, sbyte size, string tip)
@@ -1182,6 +1197,30 @@ namespace Greatbone.Core
             return this;
         }
 
+        public void ListView<D>(D[] arr, Action<HtmlContent, D> item) where D : IData
+        {
+            if (arr != null) // render grid cells
+            {
+                Add("<main class=\"grid-x small-up-1 medium-up-2 large-up-3 xlarge-up-4\">");
+                for (int i = 0; i < arr.Length; i++)
+                {
+                    Add("<div class=\"cell panel-cell\">");
+                    Add("<form>");
+                    D obj = arr[i];
+                    Add("<article class=\"grid-x panel\">");
+
+                    item(this, obj);
+
+                    Add("</article>");
+                    Add("</form>");
+                    Add("</div>");
+                }
+                Add("</main>");
+            }
+
+            // pagination if any
+            PAGENATE(arr?.Length ?? 0);
+        }
 
         public HtmlContent HIDDEN(string name, string value)
         {

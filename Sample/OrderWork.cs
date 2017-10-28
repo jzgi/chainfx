@@ -40,7 +40,7 @@ namespace Greatbone.Sample
                             var item = o.items[i];
                             h.IMG("/shop/" + o.shopid + "/" + item.name + "/icon", 2);
                             h.FIELD_(5).P(item.name).P(item.price)._FIELD();
-                            h.FIELD_(5).P(item.qty, extra: item.unit).P(item.customs)._FIELD();
+                            h.FIELD_(5).P(item.qty, ext: item.unit).P(item.customs)._FIELD();
                         }
                         h.FIELD(o.total, "总价", 0);
                     }, false, 3);

@@ -48,8 +48,7 @@ namespace Greatbone.Sample
                 if (dc.Query1(p => p.Set(shopid)))
                 {
                     var shop = dc.ToObject<Shop>();
-
-                    // items of the shop
+                    var shopname = shop.name;
 
                     Item[] items = null;
                     dc.Sql("SELECT ").columnlst(Item.Empty)._T("FROM items WHERE shopid = @1");
@@ -58,95 +57,43 @@ namespace Greatbone.Sample
                         items = dc.ToArray<Item>();
                     }
 
-                    ac.GivePage(200, h =>
+                    ac.GivePage(200, main =>
                     {
-                        h.T("<div data-sticky-container>");
-                        h.T("<div class=\"sticky\" style=\"width: 100%\" data-sticky  data-options=\"anchor: page; marginTop: 0; stickyOn: small;\">");
-                        h.T("<div class=\"top-bar\">");
-                        h.T("<div class=\"top-bar-title\">").T(shop.name).T("</div>");
-                        h.T("<div class=\"top-bar-left\">").T("<a href=\"tel:").T(shop.oprtel).T("#mp.weixin.qq.com\">电话&nbsp;").T(shop.oprtel).T("</a></div>");
-                        h.T("<div class=\"top-bar-right\">");
-                        h.T("<a class=\"float-right\" href=\"/my//pre/\"><i class=\"fi-shopping-cart\" style=\"font-size: 1.75rem; line-height: 2rem\"></i></a>");
-                        h.T("</div>");
-                        h.T("</div>");
-                        h.T("</div>");
-                        h.T("</div>");
+                        main.TOPBAR_(shop.name).LEFT_().T("<a href=\"tel:").T(shop.oprtel).T("#mp.weixin.qq.com\">电话&nbsp;").T(shop.oprtel).T("</a>")._LEFT()._TOPBAR();
 
                         // display items
                         if (items == null)
                         {
-                            h.T("没有上架商品");
+                            main.T("没有上架商品");
                             return;
                         }
 
-                        h.T("<div class=\"grid-x small-up-1 medium-up-2\">");
-                        for (int i = 0; i < items.Length; i++)
+                        main.ListView(items, (h, o) =>
                         {
-                            h.T("<div class=\"cell card-cell\">");
-                            var item = items[i];
-
-                            var shopname = shop.name;
-
-                            h.T("<div class=\"grid-x card\">");
-
-                            h.T("<div class=\"small-12 card-cap\"><h3>").T(item.name).T("</h3></div>");
-
-                            h.T("<div class=\"small-4 cell\">");
-                            h.T("<img src=\"").T(item.name).T("/icon\" alt=\"\" class=\"thumbnail circle\">");
-                            h.T("</div>"); // column
-
-                            h.T("<div class=\"small-8 cell\">");
-                            h.T("<h4>");
-                            h.T(item.name);
-                            if (item.max > 0)
-                            {
-                                h.T("（").T(item.max).T(item.unit).T("）");
-                            }
-                            h.T("</h4>");
-                            h.T("<div>");
-                            h.T(item.descr);
-                            h.T("</div>");
-
-                            h.T("<p>");
-                            h.T("<strong class=\"money\">&yen;").T(item.price).T("</strong> ");
-                            h.T(item.unit);
-                            h.T("</p>");
-
-                            h.T("<div class=\"grid-x\">");
-
-                            h.T("<div class=\"small-5 cell\">");
-
                             h.HIDDEN(nameof(shopid), shopid);
                             h.HIDDEN(nameof(shopname), shopname);
-                            h.HIDDEN(nameof(item.name), item.name);
-                            h.HIDDEN(nameof(item.unit), item.unit);
-                            h.HIDDEN(nameof(item.price), item.price);
+                            h.HIDDEN(nameof(o.name), o.name);
+                            h.HIDDEN(nameof(o.unit), o.unit);
+                            h.HIDDEN(nameof(o.price), o.price);
 
-                            h.T("<a type=\"button\" class=\"button circle primary float-right\"  data-toggle=\"dropdown").T(i).T("\">购买</a>");
-                            h.T("<div class=\"dropdown-pane\" id=\"dropdown").T(i).T("\" data-position=\"top\" data-alignment=\"right\" style=\"box-shadow:0 0 2px #0a0a0a;\" data-dropdown>");
+                            h.CAPTION(o.name);
+                            h.IMG((o.name) + "/icon", 4).FIELD_(8).P(o.descr).STRONG(o.price, '¥')._FIELD();
+                            h.FIELD_().T("<a type=\"button hollow\" class=\"button circle primary float-right\"  data-toggle=\"dropdown").T(o.name).T("\">购买</a>")._FIELD();
+                            h.T("<div class=\"dropdown-pane\" id=\"dropdown").T(o.name).T("\" data-position=\"top\" data-alignment=\"right\" style=\"box-shadow:0 0 2px #0a0a0a;\" data-dropdown>");
                             h.T("<form>");
 
-                            h.NUMBER(nameof(item.max), item.min, min: item.min, step: item.step);
+                            h.NUMBER(nameof(o.max), o.min, min: o.min, step: o.step);
 
-                            if (item.customs != null)
+                            if (o.customs != null)
                             {
-                                h.CHECKBOXGROUP(nameof(item.customs), null, item.customs, "定制要求");
+                                h.CHECKBOXGROUP(nameof(o.customs), null, o.customs, "定制要求");
                             }
 
                             h.T("<button type=\"button\" class=\"button primary\" >加入购物车</button>");
                             h.T("</form>");
                             h.T("</div>");
-
-                            h.T("</div>");
-                            h.T("</div>"); // row
-
-                            h.T("</div>"); // column
-
-                            h.T("</div>"); // row card
-                            h.T("</div>");
-                        }
-                        h.T("</div>");
-                    }, true, 60 * 5);
+                        });
+                    });
                 }
                 else
                 {
@@ -179,7 +126,7 @@ namespace Greatbone.Sample
                         {
                             m.FORM_();
                             m.TEXT(nameof(o.name), o.name, "名称");
-                            m.SELECT(nameof(o.city), o.city, ((SampleService) Service).Cities, "城市");
+                            m.SELECT(nameof(o.city), o.city, City.All, "城市");
                             m.TEXT(nameof(o.addr), o.addr, "地址");
                             m.NUMBER(nameof(o.x), o.x, "经度");
                             m.NUMBER(nameof(o.y), o.y, "纬度");

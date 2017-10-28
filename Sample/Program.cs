@@ -4,9 +4,9 @@ namespace Greatbone.Sample
 {
     public class Program : ServerUtility
     {
-        ///
+        /// <summary>
         /// The application entry point.
-        ///
+        /// </summary>
         public static void Main(string[] args)
         {
             bool deploy = args.Length > 0;

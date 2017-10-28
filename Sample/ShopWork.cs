@@ -33,11 +33,10 @@ namespace Greatbone.Sample
 
                 // give out a geolocation page
                 //
-                var cities = ((SampleService) ac.Service).Cities;
                 HtmlContent h = new HtmlContent(ac, true);
                 // geolocator page
                 h.T("<html><head><script>");
-                h.T("var cities = ").JSON(cities).T(";");
+                h.T("var cities = ").JSON(City.All).T(";");
                 h.T("navigator.geolocation.getCurrentPosition(function(p) {");
                 h.T("var city=''; var area='';");
                 h.T("var x=p.coords.longitude; var y=p.coords.latitude;");
@@ -80,25 +79,9 @@ namespace Greatbone.Sample
             {
                 city = "南昌";
             }
-            ac.GivePage(200, h =>
+            ac.GivePage(200, main =>
             {
-                h.T("<div data-sticky-container>");
-                h.T("<div class=\"sticky\" style=\"width: 100%\" data-sticky  data-options=\"anchor: page; marginTop: 0; stickyOn: small;\">");
-                h.T("<div class=\"top-bar\">");
-                h.T("<div class=\"top-bar-title\">所在城市</div>");
-                h.T("<div class=\"top-bar-left\">");
-                h.T("<form>");
-                var cities = ((SampleService) ac.Service).Cities;
-                h.SELECT(nameof(city), city, cities, refresh: true);
-                h.HIDDEN(nameof(area), area);
-                h.T("</form>");
-                h.T("</div>");
-                h.T("<div class=\"top-bar-right\">");
-                h.T("<a class=\"float-right\" href=\"/my//pre/\"><i class=\"fi-shopping-cart\" style=\"font-size: 1.75rem; line-height: 2rem\"></i></a>");
-                h.T("</div>");
-                h.T("</div>");
-                h.T("</div>");
-                h.T("</div>");
+                main.TOPBAR_("所在城市").LEFT_().SELECT(nameof(city), city, City.All, refresh: true).HIDDEN(nameof(area), area)._LEFT()._TOPBAR();
 
                 using (var dc = ac.NewDbContext())
                 {
@@ -106,42 +89,18 @@ namespace Greatbone.Sample
                     if (dc.Query(p => p.Set(city)))
                     {
                         var arr = dc.ToArray<Shop>();
-                        h.T("<div class=\"grid-x small-up-1 medium-up-2\">");
-                        for (int i = 0; i < arr.Length; i++)
+                        main.ListView(arr, (h, o) =>
                         {
-                            h.T("<div class=\"cell card-cell\">");
-                            var o = arr[i];
-
-                            h.T("<div class=\"grid-x card\">");
-
-                            h.T("<div class=\"small-12 card-cap\">");
-                            h.T("<h3><a href=\"").T(o.id).T("/?city=").T(city).T("\">").T(o.name).SEP().T(Shop.Status[o.status]).T("</a></h3>");
-                            h.T("</div>");
-
-                            h.T("<div class=\"small-8 cell\">");
-                            h.T("<p>场所：").T(o.city).T(o.addr).T("</p>");
-                            var areas = o.areas;
-                            if (areas != null)
-                            {
-                                h.T("<p>派送：");
-                                for (int k = 0; k < areas.Length; k++)
-                                {
-                                    h.T("<span>").T(areas[k]).T("</span>");
-                                }
-                                h.T("</p>");
-                            }
-                            h.T("</div>");
-                            h.T("<div class=\"small-4 cell\"><a href=\"").T(o.id).T("/\"><img src=\"").T(o.id).T("/icon\" class=\"circle\"></a></div>");
-                            h.T("</div>");
-                            h.T("</div>");
-                        }
-                        h.T("</div>");
+                            h.CAPTION(o.name);
+                            h.FIELD_(8)._FIELD().IMG(o.id + "/icon", 4);
+                            h.FIELD(o.addr);
+                        });
                     }
                     else
                     {
-                        h.T("<div style=\"text-align: center\">");
-                        h.T("<p>").T(city).T("目前没有商家</p>");
-                        h.T("</div>");
+                        main.T("<div style=\"text-align: center\">");
+                        main.T("<p>").T(city).T("目前没有商家</p>");
+                        main.T("</div>");
                     }
                 }
             }, true, 60 * 5);
@@ -184,7 +143,7 @@ namespace Greatbone.Sample
                 {
                     m.FORM_();
                     m.TEXT(nameof(o.name), o.name, "名称", max: 10, required: true);
-                    m.SELECT(nameof(o.city), o.city, ((SampleService) Service).Cities, "城市");
+                    m.SELECT(nameof(o.city), o.city, City.All, "城市");
                     m.TEXT(nameof(o.addr), o.addr, "地址", max: 20);
                     m.NUMBER(nameof(o.x), o.x, "经度");
                     m.NUMBER(nameof(o.y), o.y, "纬度");

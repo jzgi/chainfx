@@ -7,6 +7,8 @@ namespace Greatbone.Sample
     /// </summary>
     public class City : IData
     {
+        public static Map<string, City> All;
+
         internal string name;
         internal double x1, y1, x2, y2;
         internal string[] distrs;

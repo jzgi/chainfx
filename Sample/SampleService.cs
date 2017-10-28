@@ -11,8 +11,6 @@ namespace Greatbone.Sample
     /// </summary>
     public class SampleService : Service<User>, IAuthenticateAsync, ICatch
     {
-        readonly Map<string, City> cities;
-
         public SampleService(ServiceContext sc) : base(sc)
         {
             Create<PubShopWork>("shop"); // shopping
@@ -23,10 +21,8 @@ namespace Greatbone.Sample
 
             Create<AdmWork>("adm"); // administrator
 
-            cities = DataInputUtility.FileToMap<string, City>(sc.GetFilePath("$map.json"), o => o.name);
+            City.All = DataInputUtility.FileToMap<string, City>(sc.GetFilePath("$map.json"), o => o.name);
         }
-
-        public Map<string, City> Cities => cities;
 
         public void @default(ActionContext ac)
         {
