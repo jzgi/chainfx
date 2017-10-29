@@ -30,7 +30,7 @@ namespace Greatbone.Sample
 
 
         internal int id;
-        internal short shopid;
+        internal string shopid;
         internal string shopname;
         internal string wx; // weixin openid
         internal string name; // customer name

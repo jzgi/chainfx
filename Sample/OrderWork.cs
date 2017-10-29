@@ -58,7 +58,7 @@ namespace Greatbone.Sample
             var f = await ac.ReadAsync<Form>();
             string city = f[nameof(city)];
             string area = f[nameof(area)];
-            short shopid = f[nameof(shopid)];
+            string shopid = f[nameof(shopid)];
             string shopname = f[nameof(shopname)];
             string name = f[nameof(name)];
             decimal price = f[nameof(price)];
@@ -159,7 +159,7 @@ namespace Greatbone.Sample
 
         public void @default(ActionContext ac, int page)
         {
-            short shopid = ac[-1];
+            string shopid = ac[-1];
             using (var dc = ac.NewDbContext())
             {
                 if (dc.Query("SELECT * FROM orders WHERE shopid = @1 AND status = " + Order.PAID + " ORDER BY id DESC LIMIT 20 OFFSET @2", p => p.Set(shopid).Set(page * 20)))
@@ -190,7 +190,7 @@ namespace Greatbone.Sample
         [Ui("备货状态", Mode = ButtonConfirm)]
         public async Task prepare(ActionContext ac)
         {
-            short shopid = ac[-1];
+            string shopid = ac[-1];
             var f = await ac.ReadAsync<Form>();
             int[] key = f[nameof(key)];
             if (key != null)
@@ -222,7 +222,7 @@ namespace Greatbone.Sample
 
         public void @default(ActionContext ac, int page)
         {
-            short shopid = ac[-1];
+            string shopid = ac[-1];
             using (var dc = ac.NewDbContext())
             {
                 if (dc.Query("SELECT * FROM orders WHERE shopid = @1 AND status = " + Order.READY + " ORDER BY id DESC LIMIT 20 OFFSET @2", p => p.Set(shopid).Set(page * 20)))
@@ -274,7 +274,7 @@ namespace Greatbone.Sample
 
         public void @default(ActionContext ac, int page)
         {
-            short shopid = ac[-1];
+            string shopid = ac[-1];
             using (var dc = ac.NewDbContext())
             {
                 if (dc.Query("SELECT * FROM orders WHERE shopid = @1 AND status = " + Order.RECKONED + " ORDER BY id DESC LIMIT 20 OFFSET @2", p => p.Set(shopid).Set(page * 20)))

@@ -18,7 +18,7 @@ namespace Greatbone.Sample
             {1, "上架"},
         };
 
-        internal short shopid;
+        internal string shopid;
         internal string name;
         internal string descr;
         internal string unit;

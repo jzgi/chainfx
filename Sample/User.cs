@@ -31,7 +31,7 @@ namespace Greatbone.Sample
         internal string area; // 
         internal string addr;
         internal short opr; // 
-        internal short oprat; // operator at
+        internal string oprat; // operator at
         internal string oprname;
         internal bool adm; // adm
 

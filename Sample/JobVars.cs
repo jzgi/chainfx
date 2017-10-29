@@ -165,7 +165,7 @@ namespace Greatbone.Sample
             bool inner = ac.Query[nameof(inner)];
             if (inner)
             {
-                short shopid = ac[this];
+                string shopid = ac[this];
                 ac.GivePage(200, main =>
                 {
                     main.GridView(h =>
@@ -195,7 +195,7 @@ namespace Greatbone.Sample
         [Ui("操作授权", Mode = AOpen), User(OPRMEM)]
         public async Task grant(ActionContext ac, int cmd)
         {
-            short shopid = ac[this];
+            string shopid = ac[this];
             string tel = null;
             short opr = 0;
             var f = await ac.ReadAsync<Form>();
@@ -247,7 +247,7 @@ namespace Greatbone.Sample
 
         public void poll(ActionContext ac)
         {
-            short shopid = ac[this];
+            string shopid = ac[this];
 
             using (var dc = ac.NewDbContext())
             {
@@ -270,7 +270,7 @@ namespace Greatbone.Sample
         [Ui("设下班", Mode = ButtonShow)]
         public void setoff(ActionContext ac)
         {
-            short shopid = ac[-1];
+            string shopid = ac[-1];
             bool yes = false;
             User prin = (User) ac.Principal;
             if (ac.GET)
@@ -295,7 +295,7 @@ namespace Greatbone.Sample
         [Ui("我值班", Mode = ButtonShow)]
         public void seton(ActionContext ac)
         {
-            short shopid = ac[-1];
+            string shopid = ac[-1];
             bool yes = false;
             User prin = (User) ac.Principal;
             if (ac.GET)

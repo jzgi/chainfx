@@ -24,7 +24,7 @@ namespace Greatbone.Sample
         public static readonly Repay Empty = new Repay();
 
         internal int id;
-        internal short shopid;
+        internal string shopid;
         internal string shopname;
         internal DateTime till;
         internal int orders;

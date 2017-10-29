@@ -13,10 +13,10 @@ namespace Greatbone.Sample
 
         public void icon(ActionContext ac)
         {
-            short id = ac[this];
+            string shopid = ac[this];
             using (var dc = Service.NewDbContext())
             {
-                if (dc.Query1("SELECT icon FROM shops WHERE id = @1", p => p.Set(id)))
+                if (dc.Query1("SELECT icon FROM shops WHERE id = @1", p => p.Set(shopid)))
                 {
                     ArraySegment<byte> byteas;
                     dc.Let(out byteas);
@@ -41,7 +41,7 @@ namespace Greatbone.Sample
 
         public void @default(ActionContext ac)
         {
-            short shopid = ac[this];
+            string shopid = ac[this];
             using (var dc = ac.NewDbContext())
             {
                 dc.Sql("SELECT ").columnlst(Shop.Empty)._T("FROM shops WHERE id = @1");
@@ -112,14 +112,14 @@ namespace Greatbone.Sample
         [Ui("修改", Mode = ButtonShow)]
         public async Task edit(ActionContext ac)
         {
-            short id = ac[this];
+            string shopid = ac[this];
             const short proj = Shop.INITIAL;
             if (ac.GET)
             {
                 using (var dc = ac.NewDbContext())
                 {
                     dc.Sql("SELECT ").columnlst(Shop.Empty, proj)._T("FROM shops WHERE id = @1");
-                    if (dc.Query1(p => p.Set(id)))
+                    if (dc.Query1(p => p.Set(shopid)))
                     {
                         var o = dc.ToObject<Shop>(proj);
                         ac.GivePane(200, m =>
@@ -148,7 +148,7 @@ namespace Greatbone.Sample
                     dc.Execute(p =>
                     {
                         o.Write(p, proj);
-                        p.Set(id);
+                        p.Set(shopid);
                     });
                 }
                 ac.GivePane(200);
@@ -158,7 +158,7 @@ namespace Greatbone.Sample
         [Ui("经理", Mode = ButtonShow)]
         public async Task mgr(ActionContext ac)
         {
-            short shopid = ac[this];
+            string shopid = ac[this];
             string wx_tel_name;
             if (ac.GET)
             {
@@ -203,7 +203,7 @@ namespace Greatbone.Sample
         [Ui("图片", Mode = ACrop)]
         public new async Task icon(ActionContext ac)
         {
-            short shopid = ac[this];
+            string shopid = ac[this];
             if (ac.GET)
             {
                 using (var dc = ac.NewDbContext())

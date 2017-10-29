@@ -76,7 +76,7 @@ namespace Greatbone.Core
         /// <summary>
         /// The state bitwise value that enables the action. 
         /// </summary>
-        public int State { get; set; }
+        public short State { get; set; }
 
         public bool Covers(int v)
         {

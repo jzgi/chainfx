@@ -20,7 +20,7 @@ namespace Greatbone.Sample
             {ON, "营业中"}
         };
 
-        internal short id;
+        internal string id;
         internal string name;
         internal string city;
         internal string addr;

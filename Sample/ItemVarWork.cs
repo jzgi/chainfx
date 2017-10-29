@@ -19,7 +19,7 @@ namespace Greatbone.Sample
 
         public void icon(ActionContext ac)
         {
-            short shopid = ac[-1];
+            string shopid = ac[-1];
             string name = ac[this];
             using (var dc = Service.NewDbContext())
             {
@@ -93,7 +93,7 @@ namespace Greatbone.Sample
         [Ui("图片", Mode = UiMode.ACrop, Circle = true)]
         public async Task icon(ActionContext ac)
         {
-            short shopid = ac[-2];
+            string shopid = ac[-2];
             string name = ac[this];
             if (ac.GET)
             {

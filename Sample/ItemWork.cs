@@ -22,7 +22,7 @@ namespace Greatbone.Sample
 
         public void @default(ActionContext ac)
         {
-            short shopid = ac[-1];
+            string shopid = ac[-1];
             using (var dc = ac.NewDbContext())
             {
                 if (dc.Query("SELECT * FROM items WHERE shopid = @1", p => p.Set(shopid)))

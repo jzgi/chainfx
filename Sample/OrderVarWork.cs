@@ -39,7 +39,7 @@ namespace Greatbone.Sample
             }
         }
 
-        [Ui("收货地址", Mode = ButtonShow, State = 3)]
+        [Ui("收货地址", Mode = ButtonShow, State = -3)]
         public async Task addr(ActionContext ac)
         {
             string wx = ac[-2];
@@ -68,7 +68,7 @@ namespace Greatbone.Sample
         public async Task prepay(ActionContext ac)
         {
             string wx = ac[typeof(UserVarWork)];
-            long id = ac[this];
+            int id = ac[this];
 
             decimal total = 0;
             using (var dc = ac.NewDbContext())
@@ -89,7 +89,7 @@ namespace Greatbone.Sample
         [Ui("投诉", "向平台投诉该作坊的产品质量问题", Mode = AShow)]
         public async Task kick(ActionContext ac)
         {
-            long id = ac[this];
+            int id = ac[this];
 
             bool yes = false;
             string report = null;
@@ -121,11 +121,11 @@ namespace Greatbone.Sample
         [Ui("确认收货", "对商品满意并确认收货", Mode = ButtonConfirm)]
         public async Task got(ActionContext ac)
         {
-            long id = ac[this];
+            int orderid = ac[this];
             string mgrwx = null;
             using (var dc = ac.NewDbContext())
             {
-                var shopid = (string) dc.Scalar("UPDATE orders SET shipped = localtimestamp, status = @1 WHERE id = @2  RETURNING shopid", p => p.Set(Order.RECEIVED).Set(id));
+                var shopid = (string) dc.Scalar("UPDATE orders SET shipped = localtimestamp, status = @1 WHERE id = @2  RETURNING shopid", p => p.Set(Order.RECEIVED).Set(orderid));
                 if (shopid != null)
                 {
                     mgrwx = (string) dc.Scalar("SELECT mgrwx FROM shops WHERE id = @1", p => p.Set(shopid));
@@ -133,7 +133,7 @@ namespace Greatbone.Sample
             }
             if (mgrwx != null)
             {
-                await WeiXinUtility.PostSendAsync(mgrwx, "【买家确收】订单编号：" + id);
+                await WeiXinUtility.PostSendAsync(mgrwx, "【买家确收】订单编号：" + orderid);
             }
 
             ac.GiveRedirect("../");
@@ -150,7 +150,7 @@ namespace Greatbone.Sample
         [Ui("撤单", "撤销此单，实收金额退回给买家", Mode = ButtonShow)]
         public async Task abort(ActionContext ac)
         {
-            long id = ac[this];
+            int orderid = ac[this];
 
             if (ac.GET)
             {
@@ -161,17 +161,17 @@ namespace Greatbone.Sample
                 decimal total = 0, cash = 0;
                 using (var dc = ac.NewDbContext())
                 {
-                    if (dc.Query1("SELECT total, cash FROM orders WHERE id = @1", p => p.Set(id)))
+                    if (dc.Query1("SELECT total, cash FROM orders WHERE id = @1", p => p.Set(orderid)))
                     {
                         dc.Let(out total).Let(out cash);
                     }
                 }
-                string err = await WeiXinUtility.PostRefundAsync(id, total, cash);
+                string err = await WeiXinUtility.PostRefundAsync(orderid, total, cash);
                 if (err == null) // success
                 {
                     using (var dc = ac.NewDbContext())
                     {
-                        dc.Execute("UPDATE orders SET status = @1 WHERE id = @2", p => p.Set(Order.ABORTED).Set(id));
+                        dc.Execute("UPDATE orders SET status = @1 WHERE id = @2", p => p.Set(Order.ABORTED).Set(orderid));
                     }
                     ac.GivePane(200);
                 }
@@ -199,9 +199,9 @@ namespace Greatbone.Sample
         [Ui("退款核查", "实时核查退款到账情况", Mode = AOpen)]
         public async Task refundq(ActionContext ac)
         {
-            long id = ac[this];
+            int orderid = ac[this];
 
-            string err = await WeiXinUtility.PostRefundQueryAsync(id);
+            string err = await WeiXinUtility.PostRefundQueryAsync(orderid);
             if (err == null) // success
             {
                 ac.GivePane(200, m =>

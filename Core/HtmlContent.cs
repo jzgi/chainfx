@@ -664,12 +664,22 @@ namespace Greatbone.Core
             return this;
         }
 
-        public HtmlContent IMG(string src, sbyte grid = 0)
+        public HtmlContent IMG(string src, sbyte grid = 0, string href = null)
         {
             FIELD_(grid);
+            if (href != null)
+            {
+                Add("<a href=\"");
+                Add(href);
+                Add("\">");
+            }
             Add("<img class=\"img\" src=\"");
             Add(src);
             Add("\">");
+            if (href != null)
+            {
+                Add("</a>");
+            }
             _FIELD();
             return this;
         }
@@ -1079,21 +1089,29 @@ namespace Greatbone.Core
             {
                 ActionInfo ai = ais[i];
                 // access check if neccessary
-                if (ac != null && !ai.DoAuthorize(ac)) continue;
-
-                TRIGGER(ai, obj, pow);
+                if (ac != null && !ai.DoAuthorize(ac))
+                {
+                    continue;
+                }
+                short uistate = ai.Ui.State;
+                if (uistate < 0)
+                {
+                    continue;
+                }
+                bool enabled = uistate == 0;
+                if (!enabled)
+                {
+                    short state = (obj as IStatable)?.GetState() ?? pow;
+                    enabled = (uistate & state) == state;
+                }
+                TRIGGER(ai, obj, pow, enabled);
             }
             return this;
         }
 
-        public HtmlContent TRIGGER(ActionInfo ai, IData obj, short pow = 0)
+        public HtmlContent TRIGGER(ActionInfo ai, IData obj, short pow = 0, bool enabled = true)
         {
             UiAttribute ui = ai.Ui;
-
-            // check state covering
-            short state = (obj as IStatable)?.GetState() ?? pow;
-            bool enabled = ui.State == 0 || (ui.State & state) == state;
-
             if (ui.IsA)
             {
                 Add("<a class=\"button primary");

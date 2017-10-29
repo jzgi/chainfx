@@ -8,7 +8,7 @@ namespace Greatbone.Sample
     {
         protected ShopWork(WorkContext wc) : base(wc)
         {
-            CreateVar<V, short>(obj => ((Shop) obj).id);
+            CreateVar<V, string>(obj => ((Shop) obj).id);
         }
     }
 
@@ -85,14 +85,14 @@ namespace Greatbone.Sample
 
                 using (var dc = ac.NewDbContext())
                 {
-                    dc.Sql("SELECT ").columnlst(Shop.Empty)._T("FROM shops WHERE city = @1 AND status > 0");
+                    dc.Sql("SELECT ").columnlst(Shop.Empty)._T("FROM shops WHERE city = @1 AND status > 0 ORDER BY id");
                     if (dc.Query(p => p.Set(city)))
                     {
                         var arr = dc.ToArray<Shop>();
                         main.ListView(arr, (h, o) =>
                         {
                             h.CAPTION(o.name);
-                            h.FIELD_(8)._FIELD().IMG(o.id + "/icon", 4);
+                            h.FIELD_(8).P(o.addr)._FIELD().IMG(o.id + "/icon", 4, href:o.id + "/");
                             h.FIELD(o.addr);
                         });
                     }
