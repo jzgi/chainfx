@@ -85,14 +85,14 @@ namespace Greatbone.Sample
 
                 using (var dc = ac.NewDbContext())
                 {
-                    dc.Sql("SELECT ").columnlst(Shop.Empty)._T("FROM shops WHERE city = @1 AND status > 0 ORDER BY id");
+                    dc.Sql("SELECT ").columnlst(Shop.Empty).T(" FROM shops WHERE city = @1 AND status > 0 ORDER BY id");
                     if (dc.Query(p => p.Set(city)))
                     {
                         var arr = dc.ToArray<Shop>();
                         main.ListView(arr, (h, o) =>
                         {
                             h.CAPTION(o.name);
-                            h.FIELD_(8).P(o.addr)._FIELD().IMG(o.id + "/icon", 4, href:o.id + "/");
+                            h.FIELD_(7).P(o.addr)._FIELD().IMG(o.id + "/icon", 5, href: o.id + "/");
                             h.FIELD(o.addr);
                         });
                     }
@@ -121,7 +121,7 @@ namespace Greatbone.Sample
             using (var dc = ac.NewDbContext())
             {
                 const short proj = Shop.ID | Shop.INITIAL | Shop.LATE;
-                dc.Sql("SELECT ").columnlst(Shop.Empty, proj)._T("FROM shops ORDER BY id");
+                dc.Sql("SELECT ").columnlst(Shop.Empty, proj).T(" FROM shops ORDER BY id");
                 if (dc.Query())
                 {
                     ac.GiveTablePage(200, dc.ToArray<Shop>(proj), h => h.TH("名称").TH("电话").TH("地址"), (h, o) => h.TD(o.name).TD(o.mgrtel).TD(o.addr), false, 3);

@@ -27,12 +27,12 @@ namespace Greatbone.Sample
         public void @default(ActionContext ac)
         {
             string lang = ac.Query[nameof(lang)];
-            Lesson[] lessons = null;
+            Slide[] slides = null;
             using (var dc = NewDbContext())
             {
-                if (dc.Query("SELECT * FROM lessons"))
+                if (dc.Query("SELECT * FROM slides"))
                 {
-                    lessons = dc.ToArray<Lesson>();
+                    slides = dc.ToArray<Slide>();
                 }
             }
             ac.GivePage(200, h =>
@@ -45,13 +45,13 @@ namespace Greatbone.Sample
                 h.T("</div>");
                 h.T("</header>");
 
-                if (lessons != null)
+                if (slides != null)
                 {
-                    for (int i = 0; i < lessons.Length; i++)
+                    for (int i = 0; i < slides.Length; i++)
                     {
-                        var lesson = lessons[i];
+                        var o = slides[i];
                         h.T("<div class=\"card\">");
-                        h.T("<embed src=\"http://player.youku.com/player.php/sid/").T(lesson.refid).T("/v.swf\" allowFullScreen=\"true\" quality=\"high\" width=\"480\" height=\"400\" align=\"middle\" allowScriptAccess=\"always\" type=\"application/x-shockwave-flash\"></embed>");
+                        h.T(o.text);
                         h.T("</div>");
                     }
                 }

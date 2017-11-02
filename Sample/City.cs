@@ -61,7 +61,7 @@ namespace Greatbone.Sample
         internal string name;
         internal double x1, y1, x2, y2;
         internal string code;
-        internal string[] sites;
+        internal string[] spots;
 
         public void Read(IDataInput i, short proj = 0x00ff)
         {
@@ -71,7 +71,7 @@ namespace Greatbone.Sample
             i.Get(nameof(x2), ref x2);
             i.Get(nameof(y2), ref y2);
             i.Get(nameof(code), ref code);
-            i.Get(nameof(sites), ref sites);
+            i.Get(nameof(spots), ref spots);
         }
 
         public void Write<R>(IDataOutput<R> o, short proj = 0x00ff) where R : IDataOutput<R>
@@ -82,7 +82,7 @@ namespace Greatbone.Sample
             o.Put(nameof(x2), x2);
             o.Put(nameof(y2), y2);
             o.Put(nameof(code), code);
-            o.Put(nameof(sites), sites);
+            o.Put(nameof(spots), spots);
         }
 
         public override string ToString()

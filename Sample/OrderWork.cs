@@ -27,7 +27,7 @@ namespace Greatbone.Sample
 
             using (var dc = ac.NewDbContext())
             {
-                dc.Sql("SELECT ").columnlst(Order.Empty)._T("FROM orders WHERE wx = @1 AND status = 0 ORDER BY id DESC");
+                dc.Sql("SELECT ").columnlst(Order.Empty).T(" FROM orders WHERE wx = @1 AND status = 0 ORDER BY id DESC");
                 if (dc.Query(p => p.Set(wx)))
                 {
 //                    var areas = ((SampleService)Service).Cities[""] 
@@ -114,7 +114,7 @@ namespace Greatbone.Sample
             string wx = ac[-1];
             using (var dc = ac.NewDbContext())
             {
-                dc.Sql("SELECT ").columnlst(Order.Empty)._T("FROM orders WHERE wx = @1 AND status > 0 ORDER BY id DESC");
+                dc.Sql("SELECT ").columnlst(Order.Empty).T(" FROM orders WHERE wx = @1 AND status > 0 ORDER BY id DESC");
                 if (dc.Query(p => p.Set(wx)))
                 {
                     ac.GiveGridPage(200, dc.ToArray<Order>(), (h, o) =>
@@ -197,7 +197,7 @@ namespace Greatbone.Sample
             {
                 using (var dc = ac.NewDbContext())
                 {
-                    dc.Sql("UPDATE orders SET prepare = TRUE WHERE shopid = @1 AND id")._IN_(key)._T("RETURNING wx, total");
+                    dc.Sql("UPDATE orders SET prepare = TRUE WHERE shopid = @1 AND id")._IN_(key).T(" RETURNING wx, total");
                     if (dc.Query(p => p.Set(shopid)))
                     {
                         while (dc.Next())

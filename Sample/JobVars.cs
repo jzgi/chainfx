@@ -90,7 +90,7 @@ namespace Greatbone.Sample
                 o.wx = wx;
                 using (var dc = ac.NewDbContext())
                 {
-                    dc.Sql("INSERT INTO users")._(o, proj)._VALUES_(o, proj)._T("ON CONFLICT (wx) DO UPDATE")._SET_(o, proj ^ WX);
+                    dc.Sql("INSERT INTO users")._(o, proj)._VALUES_(o, proj).T(" ON CONFLICT (wx) DO UPDATE")._SET_(o, proj ^ WX);
                     dc.Execute(p => o.Write(p, proj));
                 }
                 ac.SetTokenCookie(o, -1 ^ CREDENTIAL);

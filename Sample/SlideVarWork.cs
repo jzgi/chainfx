@@ -4,16 +4,16 @@ using Greatbone.Core;
 namespace Greatbone.Sample
 {
     [User]
-    public abstract class LessonVarWork : Work
+    public abstract class SlideVarWork : Work
     {
-        protected LessonVarWork(WorkContext wc) : base(wc)
+        protected SlideVarWork(WorkContext wc) : base(wc)
         {
         }
     }
 
-    public class AdmLessonVarWork : LessonVarWork
+    public class AdmSlideVarWork : SlideVarWork
     {
-        public AdmLessonVarWork(WorkContext wc) : base(wc)
+        public AdmSlideVarWork(WorkContext wc) : base(wc)
         {
         }
 

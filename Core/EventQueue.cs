@@ -69,9 +69,9 @@ namespace Greatbone.Core
                         sql.Add(')');
                         if (shard != null)
                         {
-                            sql._T("AND (shard IS NULL OR shard =").Put(null, shard)._T(")");
+                            sql.T(" AND (shard IS NULL OR shard =").Put(null, shard).T(")");
                         }
-                        sql._T("LIMIT @2");
+                        sql.T(" LIMIT @2");
 
                         if (dc.Query(p => p.Set(id.Value).Set(CAPACITY)))
                         {

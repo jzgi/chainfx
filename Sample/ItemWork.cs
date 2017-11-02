@@ -59,7 +59,7 @@ namespace Greatbone.Sample
                     m.NUMBER(nameof(o.min), o.min, "起订", min: (short) 1);
                     m.NUMBER(nameof(o.step), o.step, "增减", min: (short) 1);
                     m.NUMBER(nameof(o.max), o.max, "剩余");
-                    m.SELECT(nameof(o.status), o.status, Item.STATUS, "状态");
+                    m.SELECT(nameof(o.status), o.status, Item.Statuses, "状态");
                     m._FORM();
                 });
             }

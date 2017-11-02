@@ -44,14 +44,14 @@ namespace Greatbone.Sample
             string shopid = ac[this];
             using (var dc = ac.NewDbContext())
             {
-                dc.Sql("SELECT ").columnlst(Shop.Empty)._T("FROM shops WHERE id = @1");
+                dc.Sql("SELECT ").columnlst(Shop.Empty).T(" FROM shops WHERE id = @1");
                 if (dc.Query1(p => p.Set(shopid)))
                 {
                     var shop = dc.ToObject<Shop>();
                     var shopname = shop.name;
 
                     Item[] items = null;
-                    dc.Sql("SELECT ").columnlst(Item.Empty)._T("FROM items WHERE shopid = @1");
+                    dc.Sql("SELECT ").columnlst(Item.Empty).T(" FROM items WHERE shopid = @1");
                     if (dc.Query(p => p.Set(shopid)))
                     {
                         items = dc.ToArray<Item>();
@@ -118,7 +118,7 @@ namespace Greatbone.Sample
             {
                 using (var dc = ac.NewDbContext())
                 {
-                    dc.Sql("SELECT ").columnlst(Shop.Empty, proj)._T("FROM shops WHERE id = @1");
+                    dc.Sql("SELECT ").columnlst(Shop.Empty, proj).T(" FROM shops WHERE id = @1");
                     if (dc.Query1(p => p.Set(shopid)))
                     {
                         var o = dc.ToObject<Shop>(proj);
@@ -144,7 +144,7 @@ namespace Greatbone.Sample
                 var o = await ac.ReadObjectAsync<Shop>(proj);
                 using (var dc = ac.NewDbContext())
                 {
-                    dc.Sql("UPDATE shops")._SET_(Shop.Empty, proj)._T("WHERE id = @1");
+                    dc.Sql("UPDATE shops")._SET_(Shop.Empty, proj).T(" WHERE id = @1");
                     dc.Execute(p =>
                     {
                         o.Write(p, proj);

@@ -12,7 +12,7 @@ namespace Greatbone.Sample
         public const short UNMOD = 1;
 
         // status
-        public static readonly Map<short, string> STATUS = new Map<short, string>
+        public static readonly Map<short, string> Statuses = new Map<short, string>
         {
             {0, "下架"},
             {1, "上架"},

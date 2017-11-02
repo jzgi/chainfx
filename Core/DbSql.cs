@@ -36,20 +36,6 @@ namespace Greatbone.Core
             return this;
         }
 
-        public DbSql _T(string str)
-        {
-            Add(' ');
-            Add(str);
-            return this;
-        }
-
-        public DbSql comma_(string str)
-        {
-            Add(", ");
-            Add(str);
-            return this;
-        }
-
         public DbSql setlst(IData obj, short proj = 0x00ff)
         {
             ctx = CTX_SETLIST;
@@ -66,7 +52,7 @@ namespace Greatbone.Core
             return this;
         }
 
-        public DbSql parameterlst(IData obj, short proj = 0x00ff)
+        public DbSql paramlst(IData obj, short proj = 0x00ff)
         {
             ctx = CTX_PARAMLIST;
             ordinal = 1;
@@ -107,7 +93,7 @@ namespace Greatbone.Core
         public DbSql _VALUES_(IData obj, short proj = 0x00ff, string extra = null)
         {
             Add(" VALUES (");
-            parameterlst(obj, proj);
+            paramlst(obj, proj);
             if (extra != null)
             {
                 Add(",");

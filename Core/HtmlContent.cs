@@ -117,6 +117,12 @@ namespace Greatbone.Core
             }
         }
 
+        public HtmlContent TT(string str)
+        {
+            Add(str);
+            return this;
+        }
+
         public HtmlContent T(string str)
         {
             Add(str);
@@ -1215,7 +1221,7 @@ namespace Greatbone.Core
             return this;
         }
 
-        public void ListView<D>(D[] arr, Action<HtmlContent, D> item) where D : IData
+        public void ListView<D>(D[] arr, Action<HtmlContent, D> panel) where D : IData
         {
             if (arr != null) // render grid cells
             {
@@ -1227,7 +1233,7 @@ namespace Greatbone.Core
                     D obj = arr[i];
                     Add("<article class=\"grid-x panel\">");
 
-                    item(this, obj);
+                    panel(this, obj);
 
                     Add("</article>");
                     Add("</form>");

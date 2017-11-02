@@ -11,15 +11,15 @@ Target Server Type    : PGSQL
 Target Server Version : 90505
 File Encoding         : 65001
 
-Date: 2017-10-11 23:04:09
+Date: 2017-11-02 22:11:05
 */
 
 
 -- ----------------------------
--- Sequence structure for orders_id_seq1
+-- Sequence structure for orders_id_seq
 -- ----------------------------
-DROP SEQUENCE IF EXISTS "public"."orders_id_seq1";
-CREATE SEQUENCE "public"."orders_id_seq1"
+DROP SEQUENCE IF EXISTS "public"."orders_id_seq";
+CREATE SEQUENCE "public"."orders_id_seq"
  INCREMENT 1
  MINVALUE 1
  MAXVALUE 9223372036854775807
@@ -54,8 +54,8 @@ CREATE SEQUENCE "public"."shops_id_seq1"
 -- ----------------------------
 DROP TABLE IF EXISTS "public"."items";
 CREATE TABLE "public"."items" (
-"shopid" int2 NOT NULL,
-"name" varchar(20) COLLATE "default" NOT NULL,
+"shopid" varchar(4) COLLATE "default" NOT NULL,
+"name" varchar(10) COLLATE "default" NOT NULL,
 "descr" varchar(30) COLLATE "default",
 "icon" bytea,
 "unit" varchar(4) COLLATE "default",
@@ -71,43 +71,12 @@ WITH (OIDS=FALSE)
 ;
 
 -- ----------------------------
--- Table structure for kicks
--- ----------------------------
-DROP TABLE IF EXISTS "public"."kicks";
-CREATE TABLE "public"."kicks" (
-"id" int4,
-"wx" varchar(28) COLLATE "default",
-"city" varchar(6) COLLATE "default",
-"report" varchar(50) COLLATE "default",
-"creator" varchar(6) COLLATE "default",
-"created" timestamp(6),
-"status" int2
-)
-WITH (OIDS=FALSE)
-
-;
-
--- ----------------------------
--- Table structure for lessons
--- ----------------------------
-DROP TABLE IF EXISTS "public"."lessons";
-CREATE TABLE "public"."lessons" (
-"id" varchar(2) COLLATE "default" NOT NULL,
-"name" varchar(20) COLLATE "default",
-"refid" varchar(20) COLLATE "default",
-"modified" timestamp(6)
-)
-WITH (OIDS=FALSE)
-
-;
-
--- ----------------------------
 -- Table structure for orders
 -- ----------------------------
 DROP TABLE IF EXISTS "public"."orders";
 CREATE TABLE "public"."orders" (
-"id" int8 DEFAULT nextval('orders_id_seq1'::regclass) NOT NULL,
-"shopid" int2,
+"id" int8 DEFAULT nextval('orders_id_seq'::regclass) NOT NULL,
+"shopid" varchar(4) COLLATE "default",
 "shopname" varchar(10) COLLATE "default",
 "wx" varchar(28) COLLATE "default",
 "name" varchar(10) COLLATE "default",
@@ -120,9 +89,11 @@ CREATE TABLE "public"."orders" (
 "created" timestamp(6),
 "cash" money DEFAULT 0,
 "paid" timestamp(6),
+"prepare" bool,
 "aborted" timestamp(6),
 "received" timestamp(6),
 "note" varchar(20) COLLATE "default",
+"kick" varchar(40) COLLATE "default",
 "status" int2
 )
 WITH (OIDS=FALSE)
@@ -135,7 +106,7 @@ WITH (OIDS=FALSE)
 DROP TABLE IF EXISTS "public"."repays";
 CREATE TABLE "public"."repays" (
 "id" int4 DEFAULT nextval('repays_id_seq'::regclass) NOT NULL,
-"shopid" int2,
+"shopid" varchar(4) COLLATE "default",
 "shopname" varchar(10) COLLATE "default",
 "till" date,
 "orders" int4,
@@ -155,7 +126,7 @@ WITH (OIDS=FALSE)
 -- ----------------------------
 DROP TABLE IF EXISTS "public"."shops";
 CREATE TABLE "public"."shops" (
-"id" int2 DEFAULT nextval('shops_id_seq1'::regclass) NOT NULL,
+"id" varchar(4) COLLATE "default" DEFAULT nextval('shops_id_seq1'::regclass) NOT NULL,
 "name" varchar(10) COLLATE "default",
 "city" varchar(6) COLLATE "default",
 "addr" varchar(20) COLLATE "default",
@@ -179,6 +150,23 @@ WITH (OIDS=FALSE)
 ;
 
 -- ----------------------------
+-- Table structure for slides
+-- ----------------------------
+DROP TABLE IF EXISTS "public"."slides";
+CREATE TABLE "public"."slides" (
+"no" varchar(4) COLLATE "default",
+"lesson" varchar(10) COLLATE "default",
+"title" varchar(30) COLLATE "default",
+"figure" varchar(254) COLLATE "default",
+"text" varchar(254) COLLATE "default",
+"mp3" bytea,
+"modified" date
+)
+WITH (OIDS=FALSE)
+
+;
+
+-- ----------------------------
 -- Table structure for users
 -- ----------------------------
 DROP TABLE IF EXISTS "public"."users";
@@ -190,11 +178,10 @@ CREATE TABLE "public"."users" (
 "city" varchar(4) COLLATE "default",
 "area" varchar(10) COLLATE "default",
 "addr" varchar(20) COLLATE "default",
-"oprat" int2,
 "opr" int2 DEFAULT 0,
-"adm" bool DEFAULT false,
-"status" int2 DEFAULT 0 NOT NULL,
-"oprname" varchar(10) COLLATE "default"
+"oprat" varchar(4) COLLATE "default",
+"oprname" varchar(10) COLLATE "default",
+"adm" bool DEFAULT false
 )
 WITH (OIDS=FALSE)
 
@@ -203,7 +190,7 @@ WITH (OIDS=FALSE)
 -- ----------------------------
 -- Alter Sequences Owned By 
 -- ----------------------------
-ALTER SEQUENCE "public"."orders_id_seq1" OWNED BY "orders"."id";
+ALTER SEQUENCE "public"."orders_id_seq" OWNED BY "orders"."id";
 ALTER SEQUENCE "public"."repays_id_seq" OWNED BY "repays"."id";
 ALTER SEQUENCE "public"."shops_id_seq1" OWNED BY "shops"."id";
 
@@ -211,6 +198,11 @@ ALTER SEQUENCE "public"."shops_id_seq1" OWNED BY "shops"."id";
 -- Primary Key structure for table items
 -- ----------------------------
 ALTER TABLE "public"."items" ADD PRIMARY KEY ("shopid", "name");
+
+-- ----------------------------
+-- Primary Key structure for table orders
+-- ----------------------------
+ALTER TABLE "public"."orders" ADD PRIMARY KEY ("id");
 
 -- ----------------------------
 -- Primary Key structure for table repays
@@ -221,3 +213,8 @@ ALTER TABLE "public"."repays" ADD PRIMARY KEY ("id");
 -- Primary Key structure for table shops
 -- ----------------------------
 ALTER TABLE "public"."shops" ADD PRIMARY KEY ("id");
+
+-- ----------------------------
+-- Primary Key structure for table users
+-- ----------------------------
+ALTER TABLE "public"."users" ADD PRIMARY KEY ("wx");
