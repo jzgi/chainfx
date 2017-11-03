@@ -44,12 +44,11 @@ namespace Greatbone.Core
         {
             get
             {
-                V val;
-                if (TryGet(key, out val))
+                if (TryGet(key, out var val))
                 {
                     return val;
                 }
-                return default(V);
+                return default;
             }
             set => Add(key, value);
         }
@@ -77,8 +76,7 @@ namespace Greatbone.Core
 
         public bool Contains(K key)
         {
-            V elem;
-            if (TryGet(key, out elem))
+            if (TryGet(key, out _))
             {
                 return true;
             }
@@ -100,7 +98,7 @@ namespace Greatbone.Core
                 }
                 idx = entries[idx].next; // adjust for next index
             }
-            value = default(V);
+            value = default;
             return false;
         }
 
@@ -158,7 +156,7 @@ namespace Greatbone.Core
 
             internal V value; // entry value
 
-            internal int next; // index of next entry, -1 if last
+            internal readonly int next; // index of next entry, -1 if last
 
             internal Entry(int code, int next, K key, V value)
             {

@@ -17,7 +17,7 @@ namespace Greatbone.Core
 
         public static List<Service> Services => services;
 
-        public static bool TryCreate<S>(ServiceContext sc, bool load) where S : Service
+        public static S TryCreate<S>(ServiceContext sc, bool load) where S : Service
         {
             // initialize work context
             sc.Parent = null;
@@ -38,7 +38,7 @@ namespace Greatbone.Core
                 }
                 else
                 {
-                    return false;
+                    return null;
                 }
             }
 
@@ -50,9 +50,9 @@ namespace Greatbone.Core
                 throw new ServiceException(typ + " missing ServiceContext");
             }
 
-            S service = (S) ci.Invoke(new object[] {sc});
-            services.Add(service);
-            return true;
+            S svc = (S) ci.Invoke(new object[] {sc});
+            services.Add(svc);
+            return svc;
         }
 
         /// 

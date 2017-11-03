@@ -165,9 +165,9 @@ namespace Greatbone.Core
         {
         }
 
-        ///
+        /// <summary>
         /// To asynchronously process the request.
-        ///
+        /// </summary>
         public virtual async Task ProcessRequestAsync(HttpContext context)
         {
             ActionContext ac = (ActionContext) context;
@@ -195,8 +195,8 @@ namespace Greatbone.Core
             }
             catch (Exception e)
             {
-                if (this is ICatchAsync) await ((ICatchAsync) this).CatchAsync(e, ac);
-                else if (this is ICatch) ((ICatch) this).Catch(e, ac);
+                if (this is ICatchAsync catsync) await catsync.CatchAsync(e, ac);
+                else if (this is ICatch cat) cat.Catch(e, ac);
                 else
                 {
                     WAR(e.Message, e);
@@ -322,9 +322,7 @@ namespace Greatbone.Core
 
         internal bool TryGiveFromCache(ActionContext ac)
         {
-            string target = ac.Uri;
-            Cachie ca;
-            if (cachies.TryGetValue(target, out ca))
+            if (cachies.TryGetValue(ac.Uri, out var ca))
             {
                 return ca.TryGive(ac, Environment.TickCount);
             }
@@ -494,9 +492,9 @@ namespace Greatbone.Core
         {
         }
 
-        ///
+        /// <summary>
         /// To asynchronously process the request with authentication support.
-        ///
+        /// </summary>
         public override async Task ProcessRequestAsync(HttpContext context)
         {
             ActionContext ac = NewMethod(context);
@@ -507,8 +505,8 @@ namespace Greatbone.Core
             try
             {
                 bool norm = true;
-                if (this is IAuthenticateAsync) norm = await ((IAuthenticateAsync) this).AuthenticateAsync(ac, true);
-                else if (this is IAuthenticate) norm = ((IAuthenticate) this).Authenticate(ac, true);
+                if (this is IAuthenticateAsync aasync) norm = await aasync.AuthenticateAsync(ac, true);
+                else if (this is IAuthenticate a) norm = a.Authenticate(ac, true);
                 if (!norm)
                 {
                     ac.Give(403); // forbidden
@@ -541,8 +539,8 @@ namespace Greatbone.Core
             }
             catch (Exception e)
             {
-                if (this is ICatchAsync) await ((ICatchAsync) this).CatchAsync(e, ac);
-                else if (this is ICatch) ((ICatch) this).Catch(e, ac);
+                if (this is ICatchAsync casync) await casync.CatchAsync(e, ac);
+                else if (this is ICatch c) c.Catch(e, ac);
                 else
                 {
                     WAR(e.Message, e);

@@ -45,12 +45,11 @@ namespace Greatbone.Core
         {
             get
             {
-                E elem;
-                if (TryGet(key, out elem))
+                if (TryGet(key, out var elem))
                 {
                     return elem;
                 }
-                return default(E);
+                return default;
             }
             set => Add(value);
         }
@@ -62,7 +61,7 @@ namespace Greatbone.Core
                 E elem = entries[i].element;
                 if (elem.Name.StartsWith(prefix)) return elem;
             }
-            return default(E);
+            return default;
         }
 
         public E Any(Predicate<E> match)
@@ -72,7 +71,7 @@ namespace Greatbone.Core
                 E elem = entries[i].element;
                 if (match(elem)) return elem;
             }
-            return default(E);
+            return default;
         }
 
         public E[] All(string prefix)
@@ -140,8 +139,7 @@ namespace Greatbone.Core
 
         public bool Contains(string key)
         {
-            E elem;
-            if (TryGet(key, out elem))
+            if (TryGet(key, out var _))
             {
                 return true;
             }
@@ -163,7 +161,7 @@ namespace Greatbone.Core
                 }
                 idx = entries[idx].next; // adjust for next index
             }
-            elem = default(E);
+            elem = default;
             return false;
         }
 
@@ -227,7 +225,7 @@ namespace Greatbone.Core
 
             internal E element; // entry value
 
-            internal int next; // index of next entry, -1 if last
+            internal readonly int next; // index of next entry, -1 if last
 
             internal Entry(int code, int next, string key, E elem)
             {

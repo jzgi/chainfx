@@ -201,21 +201,21 @@ namespace Greatbone.Core
             label = ctx.Labeller?.Invoke(obj);
 
             Delegate keyer = ctx.Keyer;
-            if (keyer is Func<IData, string>)
+            if (keyer is Func<IData, string> fstr)
             {
-                return ((Func<IData, string>) keyer)(obj);
+                return fstr(obj);
             }
-            if (keyer is Func<IData, long>)
+            if (keyer is Func<IData, long> flong)
             {
-                return ((Func<IData, long>) keyer)(obj).ToString();
+                return flong(obj).ToString();
             }
-            if (keyer is Func<IData, int>)
+            if (keyer is Func<IData, int> fint)
             {
-                return ((Func<IData, int>) keyer)(obj).ToString();
+                return fint(obj).ToString();
             }
-            if (keyer is Func<IData, short>)
+            if (keyer is Func<IData, short> fshort)
             {
-                return ((Func<IData, short>) keyer)(obj).ToString();
+                return fshort(obj).ToString();
             }
             return null;
         }
@@ -223,21 +223,21 @@ namespace Greatbone.Core
         public void PutVarKey(IData obj, DynamicContent cont)
         {
             Delegate keyer = ctx.Keyer;
-            if (keyer is Func<IData, string>)
+            if (keyer is Func<IData, string> fstr)
             {
-                cont.Add(((Func<IData, string>) keyer)(obj));
+                cont.Add(fstr(obj));
             }
-            else if (keyer is Func<IData, long>)
+            else if (keyer is Func<IData, long> flong)
             {
-                cont.Add(((Func<IData, long>) keyer)(obj));
+                cont.Add(flong(obj));
             }
-            else if (keyer is Func<IData, int>)
+            else if (keyer is Func<IData, int> fint)
             {
-                cont.Add(((Func<IData, int>) keyer)(obj));
+                cont.Add(fint(obj));
             }
-            else if (keyer is Func<IData, short>)
+            else if (keyer is Func<IData, short> fshort)
             {
-                cont.Add(((Func<IData, short>) keyer)(obj));
+                cont.Add(fshort(obj));
             }
         }
 
@@ -289,8 +289,7 @@ namespace Greatbone.Core
             //
             string key = relative.Substring(0, slash);
             relative = relative.Substring(slash + 1); // adjust relative
-            Work work;
-            if (works != null && works.TryGet(key, out work)) // if child
+            if (works != null && works.TryGet(key, out var work)) // if child
             {
                 ac.Chain(key, null, work);
                 return work.Resolve(ref relative, ac);
@@ -399,8 +398,7 @@ namespace Greatbone.Core
                 return;
             }
 
-            string ctyp;
-            if (!StaticContent.TryGetType(ext, out ctyp))
+            if (!StaticContent.TryGetType(ext, out var ctyp))
             {
                 ac.Give(415); // unsupported media type
                 return;

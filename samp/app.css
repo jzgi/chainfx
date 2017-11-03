@@ -51,7 +51,7 @@ tr.checked { background-color: Lavender; }
     display: flex;
     align-items: center;
     justify-content: center;
-    border-bottom: 1px solid rgba(215, 185, 150, 0.3);
+    border-bottom: 1px solid wheat;
 }
 
 .card-lead > input {
@@ -64,7 +64,7 @@ tr.checked { background-color: Lavender; }
     align-items: center;
     padding: 0.25rem;
     font-size: 1rem;
-    border-bottom: 1px solid rgba(215, 185, 150, 0.3);
+    border-bottom: 1px solid wheat;
 }
 
 .card-cap .flag {
@@ -93,9 +93,8 @@ tr.checked { background-color: Lavender; }
 }
 
 .card > .field-label {
-    background-color: rgba(224, 217, 211, 0.6);
-    ;
-    border-bottom: 1px solid rgba(215, 185, 150, 0.3);
+    background-color: cornsilk;
+    border-bottom: 1px solid wheat;
 }
 
 .field-v {
@@ -104,9 +103,8 @@ tr.checked { background-color: Lavender; }
 }
 
 .card > .field-v {
-    background-color: rgba(224, 217, 211, 0.6);
-    ;
-    border-bottom: 1px solid rgba(215, 185, 150, 0.3);
+    background-color: cornsilk;
+    border-bottom: 1px solid wheat;
 }
 
 

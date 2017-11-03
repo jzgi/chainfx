@@ -21,7 +21,7 @@ namespace Greatbone.Sample
         [Ui("删除", Mode = ButtonConfirm)]
         public async Task rm(ActionContext ac)
         {
-            string wx = ac[typeof(UserVarWork)];
+            string wx = ac[-2];
             var f = await ac.ReadAsync<Form>();
             long[] key = f[nameof(key)];
             using (var dc = ac.NewDbContext())
