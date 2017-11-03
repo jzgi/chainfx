@@ -32,11 +32,7 @@ namespace Greatbone.Core
 
         bool disposed;
 
-        internal DbContext(Service service) : this(service, null)
-        {
-        }
-
-        internal DbContext(Service service, IDoerContext<IDoer> doerctx)
+        internal DbContext(Service service, IDoerContext<IDoer> doerctx = null)
         {
             this.service = service;
             this.doerctx = doerctx;
@@ -325,8 +321,7 @@ namespace Greatbone.Core
             obj.Read(this, proj);
 
             // add shard if any
-            IShardable sharded = obj as IShardable;
-            if (sharded != null)
+            if (obj is IShardable sharded)
             {
                 sharded.Shard = service.Shard;
             }
@@ -343,8 +338,7 @@ namespace Greatbone.Core
                 obj.Read(this, proj);
 
                 // add shard if any
-                IShardable sharded = obj as IShardable;
-                if (sharded != null)
+                if (obj is IShardable sharded)
                 {
                     sharded.Shard = service.Shard;
                 }
@@ -363,8 +357,7 @@ namespace Greatbone.Core
                 obj.Read(this, proj);
 
                 // add shard if any
-                IShardable sharded = obj as IShardable;
-                if (sharded != null)
+                if (obj is IShardable sharded)
                 {
                     sharded.Shard = service.Shard;
                 }
@@ -383,8 +376,7 @@ namespace Greatbone.Core
                 obj.Read(this, proj);
 
                 // add shard name if any
-                IShardable sharded = obj as IShardable;
-                if (sharded != null)
+                if (obj is IShardable sharded)
                 {
                     sharded.Shard = service.Shard;
                 }
@@ -599,8 +591,7 @@ namespace Greatbone.Core
                     v.Read(jo, proj);
 
                     // add shard if any
-                    IShardable sharded = v as IShardable;
-                    if (sharded != null)
+                    if (v is IShardable sharded)
                     {
                         sharded.Shard = service.Shard;
                     }
@@ -743,8 +734,7 @@ namespace Greatbone.Core
                         obj.Read(jo, proj);
 
                         // add shard if any
-                        IShardable sharded = obj as IShardable;
-                        if (sharded != null)
+                        if (obj is IShardable sharded)
                         {
                             sharded.Shard = service.Shard;
                         }
@@ -887,7 +877,7 @@ namespace Greatbone.Core
             catch
             {
             }
-            v = default(DateTime);
+            v = default;
             return this;
         }
 
@@ -929,7 +919,7 @@ namespace Greatbone.Core
             catch
             {
             }
-            v = default(ArraySegment<byte>);
+            v = default;
             return this;
         }
 
@@ -972,8 +962,7 @@ namespace Greatbone.Core
                     v.Read(jo, proj);
 
                     // add shard if any
-                    IShardable sharded = v as IShardable;
-                    if (sharded != null)
+                    if (v is IShardable sharded)
                     {
                         sharded.Shard = service.Shard;
                     }
@@ -983,7 +972,7 @@ namespace Greatbone.Core
             catch
             {
             }
-            v = default(D);
+            v = default;
             return this;
         }
 
@@ -1006,8 +995,7 @@ namespace Greatbone.Core
                         obj.Read(jo, proj);
 
                         // add shard if any
-                        IShardable sharded = obj as IShardable;
-                        if (sharded != null)
+                        if (obj is IShardable sharded)
                         {
                             sharded.Shard = service.Shard;
                         }

@@ -23,7 +23,7 @@ namespace Greatbone.Core
             this.name = name;
             type = JType.Null;
             refv = null;
-            numv = default(JNumber);
+            numv = default;
         }
 
         public JMbr(string name, JObj v)
@@ -31,7 +31,7 @@ namespace Greatbone.Core
             this.name = name;
             type = JType.Object;
             refv = v;
-            numv = default(JNumber);
+            numv = default;
         }
 
         public JMbr(string name, JArr v)
@@ -39,7 +39,7 @@ namespace Greatbone.Core
             this.name = name;
             type = JType.Array;
             refv = v;
-            numv = default(JNumber);
+            numv = default;
         }
 
         public JMbr(string name, string v)
@@ -47,7 +47,7 @@ namespace Greatbone.Core
             this.name = name;
             type = JType.String;
             refv = v;
-            numv = default(JNumber);
+            numv = default;
         }
 
         public JMbr(string name, byte[] v)
@@ -55,7 +55,7 @@ namespace Greatbone.Core
             this.name = name;
             type = JType.Bytes;
             refv = v;
-            numv = default(JNumber);
+            numv = default;
         }
 
         public JMbr(string name, bool v)
@@ -63,7 +63,7 @@ namespace Greatbone.Core
             this.name = name;
             type = v ? JType.True : JType.False;
             refv = null;
-            numv = default(JNumber);
+            numv = default;
         }
 
         public JMbr(string name, JNumber v)
@@ -152,7 +152,7 @@ namespace Greatbone.Core
             {
                 return v.numv;
             }
-            return default(JNumber);
+            return default;
         }
 
         public static implicit operator DateTime(JMbr v)
@@ -160,10 +160,9 @@ namespace Greatbone.Core
             if (v.type == JType.String)
             {
                 string str = (string) v.refv;
-                DateTime dt;
-                if (StrUtility.TryParseDate(str, out dt)) return dt;
+                if (StrUtility.TryParseDate(str, out var dt)) return dt;
             }
-            return default(DateTime);
+            return default;
         }
 
         public static implicit operator string(JMbr v)

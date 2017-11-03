@@ -62,8 +62,7 @@ namespace Greatbone.Core
 
         public void AddChild(string tag, string text)
         {
-            var e = new XElem(tag);
-            e.Text = text;
+            var e = new XElem(tag) {Text = text};
             AddChild(e);
         }
 
@@ -114,8 +113,7 @@ namespace Greatbone.Core
         public bool Get(string name, ref bool v)
         {
             // try attribute
-            XAttr attr;
-            if (attrs != null && attrs.TryGet(name, out attr))
+            if (attrs != null && attrs.TryGet(name, out var attr))
             {
                 v = attr;
                 return true;
@@ -126,8 +124,7 @@ namespace Greatbone.Core
 
         public bool Get(string name, ref short v)
         {
-            XAttr attr;
-            if (attrs.TryGet(name, out attr))
+            if (attrs.TryGet(name, out var attr))
             {
                 v = attr;
                 return true;
@@ -137,8 +134,7 @@ namespace Greatbone.Core
 
         public bool Get(string name, ref int v)
         {
-            XAttr attr;
-            if (attrs.TryGet(name, out attr))
+            if (attrs.TryGet(name, out var attr))
             {
                 v = attr;
                 return true;
@@ -148,8 +144,7 @@ namespace Greatbone.Core
 
         public bool Get(string name, ref long v)
         {
-            XAttr attr;
-            if (attrs.TryGet(name, out attr))
+            if (attrs.TryGet(name, out var attr))
             {
                 v = attr;
                 return true;
@@ -159,8 +154,7 @@ namespace Greatbone.Core
 
         public bool Get(string name, ref double v)
         {
-            XAttr attr;
-            if (attrs.TryGet(name, out attr))
+            if (attrs.TryGet(name, out var attr))
             {
                 v = attr;
                 return true;
@@ -170,8 +164,7 @@ namespace Greatbone.Core
 
         public bool Get(string name, ref decimal v)
         {
-            XAttr attr;
-            if (attrs.TryGet(name, out attr))
+            if (attrs.TryGet(name, out var attr))
             {
                 v = attr;
                 return true;
@@ -181,8 +174,7 @@ namespace Greatbone.Core
 
         public bool Get(string name, ref DateTime v)
         {
-            XAttr attr;
-            if (attrs.TryGet(name, out attr))
+            if (attrs.TryGet(name, out var attr))
             {
                 v = attr;
                 return true;
@@ -192,8 +184,7 @@ namespace Greatbone.Core
 
         public bool Get(string name, ref string v)
         {
-            XAttr attr;
-            if (attrs.TryGet(name, out attr))
+            if (attrs.TryGet(name, out var attr))
             {
                 v = attr;
                 return true;

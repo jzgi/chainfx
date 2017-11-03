@@ -72,7 +72,8 @@ namespace Greatbone.Core
             }
         }
 
-        string First => (items == 0) ? null : (items == 1) ? (string) value : ((string[]) value)[0];
+        string First => (items == 0) ? null :
+            (items == 1) ? (string) value : ((string[]) value)[0];
 
         //
         // CONVERSION
@@ -93,8 +94,7 @@ namespace Greatbone.Core
             string str = v.First;
             if (str != null)
             {
-                short n;
-                if (short.TryParse(str, out n))
+                if (short.TryParse(str, out var n))
                 {
                     return n;
                 }
@@ -107,8 +107,7 @@ namespace Greatbone.Core
             string str = v.First;
             if (str != null)
             {
-                int n;
-                if (int.TryParse(str, out n))
+                if (int.TryParse(str, out var n))
                 {
                     return n;
                 }
@@ -121,8 +120,7 @@ namespace Greatbone.Core
             string str = v.First;
             if (str != null)
             {
-                long n;
-                if (long.TryParse(str, out n))
+                if (long.TryParse(str, out var n))
                 {
                     return n;
                 }
@@ -135,8 +133,7 @@ namespace Greatbone.Core
             string str = v.First;
             if (str != null)
             {
-                double n;
-                if (double.TryParse(str, out n))
+                if (double.TryParse(str, out var n))
                 {
                     return n;
                 }
@@ -149,8 +146,7 @@ namespace Greatbone.Core
             string str = v.First;
             if (str != null)
             {
-                decimal n;
-                if (decimal.TryParse(str, out n))
+                if (decimal.TryParse(str, out var n))
                 {
                     return n;
                 }
@@ -161,12 +157,11 @@ namespace Greatbone.Core
         public static implicit operator DateTime(Field v)
         {
             string str = v.First;
-            DateTime dt;
-            if (StrUtility.TryParseDate(str, out dt))
+            if (StrUtility.TryParseDate(str, out var dt))
             {
                 return dt;
             }
-            return default(DateTime);
+            return default;
         }
 
         public static implicit operator string(Field v)
@@ -191,7 +186,7 @@ namespace Greatbone.Core
         {
             if (v.count == 0)
             {
-                return default(ArraySegment<byte>);
+                return default;
             }
             return new ArraySegment<byte>(v.contentbuf, v.offset, v.count);
         }
@@ -203,16 +198,14 @@ namespace Greatbone.Core
             if (len == 1)
             {
                 string str = (string) v.value;
-                short n;
-                return new[] {short.TryParse(str, out n) ? n : (short) 0};
+                return new[] {short.TryParse(str, out var n) ? n : (short) 0};
             }
 
             string[] strs = (string[]) v.value;
             short[] arr = new short[len];
             for (int i = 0; i < len; i++)
             {
-                short n;
-                arr[i] = short.TryParse(strs[i], out n) ? n : (short) 0;
+                arr[i] = short.TryParse(strs[i], out var n) ? n : (short) 0;
             }
             return arr;
         }
@@ -224,16 +217,14 @@ namespace Greatbone.Core
             if (len == 1)
             {
                 string str = (string) v.value;
-                int n;
-                return new[] {int.TryParse(str, out n) ? n : 0};
+                return new[] {int.TryParse(str, out var n) ? n : 0};
             }
 
             string[] strs = (string[]) v.value;
             int[] arr = new int[len];
             for (int i = 0; i < len; i++)
             {
-                int n;
-                arr[i] = int.TryParse(strs[i], out n) ? n : 0;
+                arr[i] = int.TryParse(strs[i], out var n) ? n : 0;
             }
             return arr;
         }
@@ -245,15 +236,13 @@ namespace Greatbone.Core
             if (len == 1)
             {
                 string str = (string) v.value;
-                long n;
-                return new[] {long.TryParse(str, out n) ? n : 0};
+                return new[] {long.TryParse(str, out var n) ? n : 0};
             }
             string[] strs = (string[]) v.value;
             long[] arr = new long[len];
             for (int i = 0; i < len; i++)
             {
-                long n;
-                arr[i] = long.TryParse(strs[i], out n) ? n : 0;
+                arr[i] = long.TryParse(strs[i], out var n) ? n : 0;
             }
             return arr;
         }

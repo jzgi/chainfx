@@ -49,7 +49,7 @@ namespace Greatbone.Core
 
         internal bool Pt
         {
-            get { return pt >= 0; }
+            get => pt >= 0;
             set
             {
                 if (value) pt = 0;

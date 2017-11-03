@@ -927,7 +927,7 @@ namespace Greatbone.Core
             Add("</table>");
         }
 
-        public void TableView<D>(D[] arr, Action<HtmlContent> hd, Action<HtmlContent, D> row) where D : IData
+        public void SHEET<D>(D[] arr, Action<HtmlContent> hd, Action<HtmlContent, D> row) where D : IData
         {
             Work work = ac.Work;
             Work varwork = work.varwork;
@@ -987,7 +987,7 @@ namespace Greatbone.Core
             Add("</main>");
         }
 
-        public void GridView(params Action<HtmlContent>[] cells)
+        public void BOARD(params Action<HtmlContent>[] cards)
         {
             Work work = ac.Work;
             Work varwork = work.varwork;
@@ -996,11 +996,11 @@ namespace Greatbone.Core
 
             Add("<main class=\"grid-x small-up-1 medium-up-2 large-up-3 xlarge-up-4\">");
             short pow = 1;
-            for (int i = 0; i < cells.Length; i++)
+            for (int i = 0; i < cards.Length; i++)
             {
                 Add("<div class=\"cell card-cell\">");
                 Add("<form>");
-                var cell = cells[i];
+                var cell = cards[i];
                 Add("<article class=\"grid-x card\">");
                 if (work.Buttonly)
                 {
@@ -1031,7 +1031,7 @@ namespace Greatbone.Core
         }
 
 
-        public void GridView<D>(D[] arr, Action<HtmlContent, D> cell) where D : IData
+        public void BOARD<D>(D[] arr, Action<HtmlContent, D> card) where D : IData
         {
             Work work = ac.Work;
             Work varwork = work.varwork;
@@ -1056,7 +1056,7 @@ namespace Greatbone.Core
                         Add("</div>");
                     }
 
-                    cell(this, obj);
+                    card(this, obj);
 
                     // output var triggers
                     Add("<nav class=\"cell shrink\" style=\"margin-left: auto\">");
@@ -1221,7 +1221,7 @@ namespace Greatbone.Core
             return this;
         }
 
-        public void ListView<D>(D[] arr, Action<HtmlContent, D> panel) where D : IData
+        public void LIST<D>(D[] arr, Action<HtmlContent, D> panel) where D : IData
         {
             if (arr != null) // render grid cells
             {
@@ -2010,7 +2010,8 @@ namespace Greatbone.Core
                 Add("\"");
 
                 Add(" rows=\"");
-                Add(max < 200 ? 3 : max < 400 ? 4 : 5);
+                Add(max < 200 ? 3 :
+                    max < 400 ? 4 : 5);
                 Add("\"");
             }
             if (min > 0)

@@ -299,7 +299,7 @@ namespace Greatbone.Core
             return this;
         }
 
-        public virtual JsonContent Put(string name, ArraySegment<byte> v)
+        public JsonContent Put(string name, ArraySegment<byte> v)
         {
             return this; // ignore ir
         }

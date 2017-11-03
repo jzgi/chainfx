@@ -9,7 +9,8 @@ namespace Greatbone.Core
     public static class BufferUtility
     {
         // we use number ocores as a factor
-        static readonly int Factor = Environment.ProcessorCount <= 2 ? 1 : Environment.ProcessorCount <= 8 ? 2 : 4;
+        static readonly int Factor = Environment.ProcessorCount <= 2 ? 1 :
+            Environment.ProcessorCount <= 8 ? 2 : 4;
 
         // for byte buffers, remember that caching may exclusively hold some byte buffers
         static readonly Que<byte[]>[] BPool =
@@ -43,8 +44,7 @@ namespace Greatbone.Core
             {
                 Que<byte[]> que = BPool[i];
                 if (que.Spec < demand) continue;
-                byte[] buf;
-                if (!que.TryDequeue(out buf))
+                if (!que.TryDequeue(out var buf))
                 {
                     buf = new byte[que.Spec];
                 }
@@ -81,8 +81,7 @@ namespace Greatbone.Core
             {
                 Que<char[]> que = CPool[i];
                 if (que.Spec < demand) continue;
-                char[] buf;
-                if (!que.TryDequeue(out buf))
+                if (!que.TryDequeue(out var buf))
                 {
                     buf = new char[que.Spec];
                 }

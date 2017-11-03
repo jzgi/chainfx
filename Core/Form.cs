@@ -41,8 +41,7 @@ namespace Greatbone.Core
 
         public bool Get(string name, ref bool v)
         {
-            Field fld;
-            if (TryGet(name, out fld))
+            if (TryGet(name, out var fld))
             {
                 v = fld;
                 return true;
@@ -52,8 +51,7 @@ namespace Greatbone.Core
 
         public bool Get(string name, ref short v)
         {
-            Field fld;
-            if (TryGet(name, out fld))
+            if (TryGet(name, out var fld))
             {
                 v = fld;
                 return true;
@@ -63,8 +61,7 @@ namespace Greatbone.Core
 
         public bool Get(string name, ref int v)
         {
-            Field fld;
-            if (TryGet(name, out fld))
+            if (TryGet(name, out var fld))
             {
                 v = fld;
                 return true;
@@ -74,8 +71,7 @@ namespace Greatbone.Core
 
         public bool Get(string name, ref long v)
         {
-            Field fld;
-            if (TryGet(name, out fld))
+            if (TryGet(name, out var fld))
             {
                 v = fld;
                 return true;
@@ -85,8 +81,7 @@ namespace Greatbone.Core
 
         public bool Get(string name, ref double v)
         {
-            Field fld;
-            if (TryGet(name, out fld))
+            if (TryGet(name, out var fld))
             {
                 v = fld;
                 return true;
@@ -96,8 +91,7 @@ namespace Greatbone.Core
 
         public bool Get(string name, ref decimal v)
         {
-            Field fld;
-            if (TryGet(name, out fld))
+            if (TryGet(name, out var fld))
             {
                 v = fld;
                 return true;
@@ -107,8 +101,7 @@ namespace Greatbone.Core
 
         public bool Get(string name, ref DateTime v)
         {
-            Field fld;
-            if (TryGet(name, out fld))
+            if (TryGet(name, out var fld))
             {
                 v = fld;
                 return true;
@@ -118,8 +111,7 @@ namespace Greatbone.Core
 
         public bool Get(string name, ref string v)
         {
-            Field fld;
-            if (TryGet(name, out fld))
+            if (TryGet(name, out var fld))
             {
                 v = fld;
                 return true;
@@ -129,8 +121,7 @@ namespace Greatbone.Core
 
         public bool Get(string name, ref ArraySegment<byte> v)
         {
-            Field fld;
-            if (TryGet(name, out fld))
+            if (TryGet(name, out var fld))
             {
                 v = fld;
                 return true;
@@ -156,8 +147,7 @@ namespace Greatbone.Core
 
         public bool Get(string name, ref short[] v)
         {
-            Field fld;
-            if (TryGet(name, out fld))
+            if (TryGet(name, out var fld))
             {
                 v = fld;
                 return true;
@@ -167,8 +157,7 @@ namespace Greatbone.Core
 
         public bool Get(string name, ref int[] v)
         {
-            Field fld;
-            if (TryGet(name, out fld))
+            if (TryGet(name, out var fld))
             {
                 v = fld;
                 return true;
@@ -178,8 +167,7 @@ namespace Greatbone.Core
 
         public bool Get(string name, ref long[] v)
         {
-            Field fld;
-            if (TryGet(name, out fld))
+            if (TryGet(name, out var fld))
             {
                 v = fld;
                 return true;
@@ -189,8 +177,7 @@ namespace Greatbone.Core
 
         public bool Get(string name, ref string[] v)
         {
-            Field fld;
-            if (TryGet(name, out fld))
+            if (TryGet(name, out var fld))
             {
                 v = fld;
                 return true;
@@ -282,7 +269,7 @@ namespace Greatbone.Core
                 v = this[ord];
                 return this;
             }
-            v = default(DateTime);
+            v = default;
             return this;
         }
 

@@ -59,11 +59,11 @@ namespace Greatbone.Core
             var attrs = attrprov.GetCustomAttributes(false);
             for (int i = 0; i < attrs.Length; i++)
             {
-                var a = attrs[i];
-                if (a is IBefore) before = (IBefore) a;
-                if (a is IBeforeAsync) beforeasync = (IBeforeAsync) a;
-                if (a is IAfter) after = (IAfter) a;
-                if (a is IAfterAsync) afterasync = (IAfterAsync) a;
+                var attr = attrs[i];
+                if (attr is IBefore b) before = b;
+                if (attr is IBeforeAsync basync) beforeasync = basync;
+                if (attr is IAfter a) after = a;
+                if (attr is IAfterAsync aasync) afterasync = aasync;
             }
         }
 

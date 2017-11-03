@@ -47,8 +47,7 @@ namespace Greatbone.Core
             string str = v.key;
             if (!string.IsNullOrEmpty(str))
             {
-                short n;
-                if (short.TryParse(str, out n))
+                if (short.TryParse(str, out var n))
                 {
                     return n;
                 }
@@ -61,8 +60,7 @@ namespace Greatbone.Core
             string str = v.key;
             if (!string.IsNullOrEmpty(str))
             {
-                int n;
-                if (int.TryParse(str, out n))
+                if (int.TryParse(str, out var n))
                 {
                     return n;
                 }
@@ -75,8 +73,7 @@ namespace Greatbone.Core
             string str = v.key;
             if (!string.IsNullOrEmpty(str))
             {
-                long n;
-                if (long.TryParse(str, out n))
+                if (long.TryParse(str, out var n))
                 {
                     return n;
                 }
@@ -89,8 +86,7 @@ namespace Greatbone.Core
             string str = v.key;
             if (!string.IsNullOrEmpty(str))
             {
-                decimal n;
-                if (decimal.TryParse(str, out n))
+                if (decimal.TryParse(str, out var n))
                 {
                     return n;
                 }
@@ -100,7 +96,7 @@ namespace Greatbone.Core
 
         public static implicit operator DateTime(Node v)
         {
-            return default(DateTime);
+            return default;
         }
 
         public static implicit operator char[](Node v)

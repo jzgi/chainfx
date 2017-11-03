@@ -36,8 +36,7 @@ namespace Greatbone.Core
             string str = v.value;
             if (v.value != null)
             {
-                short n;
-                if (short.TryParse(str, out n))
+                if (short.TryParse(str, out var n))
                 {
                     return n;
                 }
@@ -50,8 +49,7 @@ namespace Greatbone.Core
             string str = v.value;
             if (str != null)
             {
-                int n;
-                if (int.TryParse(str, out n))
+                if (int.TryParse(str, out var n))
                 {
                     return n;
                 }
@@ -64,8 +62,7 @@ namespace Greatbone.Core
             string str = v.value;
             if (str != null)
             {
-                long n;
-                if (long.TryParse(str, out n))
+                if (long.TryParse(str, out var n))
                 {
                     return n;
                 }
@@ -78,8 +75,7 @@ namespace Greatbone.Core
             string str = v.value;
             if (str != null)
             {
-                double n;
-                if (double.TryParse(str, out n))
+                if (double.TryParse(str, out var n))
                 {
                     return n;
                 }
@@ -92,8 +88,7 @@ namespace Greatbone.Core
             string str = v.value;
             if (str != null)
             {
-                decimal n;
-                if (decimal.TryParse(str, out n))
+                if (decimal.TryParse(str, out var n))
                 {
                     return n;
                 }
@@ -103,7 +98,7 @@ namespace Greatbone.Core
 
         public static implicit operator DateTime(XAttr v)
         {
-            return default(DateTime);
+            return default;
         }
 
         public static implicit operator char[](XAttr v)

@@ -89,7 +89,7 @@ namespace Greatbone.Sample
                     if (dc.Query(p => p.Set(city)))
                     {
                         var arr = dc.ToArray<Shop>();
-                        main.ListView(arr, (h, o) =>
+                        main.LIST(arr, (h, o) =>
                         {
                             h.CAPTION(o.name);
                             h.FIELD_(7).P(o.addr)._FIELD().IMG(o.id + "/icon", 5, href: o.id + "/");

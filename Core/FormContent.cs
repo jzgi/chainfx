@@ -1,5 +1,4 @@
 ﻿using System;
-using System.Collections.Generic;
 
 namespace Greatbone.Core
 {
@@ -203,7 +202,7 @@ namespace Greatbone.Core
             return this;
         }
 
-        public virtual FormContent Put(string name, ArraySegment<byte> v)
+        public FormContent Put(string name, ArraySegment<byte> v)
         {
             return this; // ignore ir
         }

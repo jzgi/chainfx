@@ -10,8 +10,7 @@ namespace Greatbone.Core
     {
         public static string GetValue(this HttpHeaders headers, string name)
         {
-            IEnumerable<string> values;
-            if (headers.TryGetValues(name, out values))
+            if (headers.TryGetValues(name, out var values))
             {
                 string[] strs = values as string[];
                 return strs?[0];

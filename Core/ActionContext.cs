@@ -63,7 +63,7 @@ namespace Greatbone.Core
                     Node node = chain[i];
                     if (node.Work.IsInstanceOf(workType)) return node;
                 }
-                return default(Node);
+                return default;
             }
         }
 
@@ -76,7 +76,7 @@ namespace Greatbone.Core
                     Node node = chain[i];
                     if (node.Work == work) return node;
                 }
-                return default(Node);
+                return default;
             }
         }
 
@@ -148,8 +148,7 @@ namespace Greatbone.Core
 
         public string Header(string name)
         {
-            StringValues vs;
-            if (Request.Headers.TryGetValue(name, out vs))
+            if (Request.Headers.TryGetValue(name, out var vs))
             {
                 return vs;
             }
@@ -158,12 +157,10 @@ namespace Greatbone.Core
 
         public int? HeaderInt(string name)
         {
-            StringValues vs;
-            if (Request.Headers.TryGetValue(name, out vs))
+            if (Request.Headers.TryGetValue(name, out var vs))
             {
                 string str = vs;
-                int v;
-                if (int.TryParse(str, out v))
+                if (int.TryParse(str, out var v))
                 {
                     return v;
                 }
@@ -173,12 +170,10 @@ namespace Greatbone.Core
 
         public long? HeaderLong(string name)
         {
-            StringValues vs;
-            if (Request.Headers.TryGetValue(name, out vs))
+            if (Request.Headers.TryGetValue(name, out var vs))
             {
                 string str = vs;
-                long v;
-                if (long.TryParse(str, out v))
+                if (long.TryParse(str, out var v))
                 {
                     return v;
                 }
@@ -188,12 +183,10 @@ namespace Greatbone.Core
 
         public DateTime? HeaderDateTime(string name)
         {
-            StringValues vs;
-            if (Request.Headers.TryGetValue(name, out vs))
+            if (Request.Headers.TryGetValue(name, out var vs))
             {
                 string str = vs;
-                DateTime v;
-                if (StrUtility.TryParseUtcDate(str, out v))
+                if (StrUtility.TryParseUtcDate(str, out var v))
                 {
                     return v;
                 }
@@ -203,8 +196,7 @@ namespace Greatbone.Core
 
         public string[] Headers(string name)
         {
-            StringValues vs;
-            if (Request.Headers.TryGetValue(name, out vs))
+            if (Request.Headers.TryGetValue(name, out var vs))
             {
                 return vs;
             }
@@ -262,7 +254,7 @@ namespace Greatbone.Core
             return entity as M;
         }
 
-        public async Task<D> ReadObjectAsync<D>(short proj = 0x00ff, D obj = default(D)) where D : IData, new()
+        public async Task<D> ReadObjectAsync<D>(short proj = 0x00ff, D obj = default) where D : IData, new()
         {
             if (entity == null && count == -1) // if not yet parse and read
             {
@@ -281,10 +273,9 @@ namespace Greatbone.Core
                 string ctyp = Header("Content-Type");
                 entity = ParseContent(ctyp, buffer, count);
             }
-            IDataInput inp = entity as IDataInput;
-            if (inp == null)
+            if (!(entity is IDataInput inp))
             {
-                return default(D);
+                return default;
             }
             if (obj == null)
             {
@@ -337,9 +328,8 @@ namespace Greatbone.Core
 
         public void SetHeaderAbsent(string name, string v)
         {
-            StringValues strvs;
             IHeaderDictionary headers = Response.Headers;
-            if (!headers.TryGetValue(name, out strvs))
+            if (!headers.TryGetValue(name, out _))
             {
                 headers.Add(name, new StringValues(v));
             }
@@ -452,8 +442,7 @@ namespace Greatbone.Core
             }
 
             // static content special deal
-            var sta = Content as StaticContent;
-            if (sta != null)
+            if (Content is StaticContent sta)
             {
                 DateTime? since = HeaderDateTime("If-Modified-Since");
                 Debug.Assert(sta != null);
@@ -495,8 +484,7 @@ namespace Greatbone.Core
             // pool returning
             if (!InCache)
             {
-                var dcont = Content as DynamicContent;
-                if (dcont != null)
+                if (Content is DynamicContent dcont)
                 {
                     BufferUtility.Return(dcont.ByteBuffer);
                 }
