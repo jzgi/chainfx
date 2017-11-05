@@ -89,7 +89,7 @@ namespace Greatbone.Sample
                     if (dc.Query(p => p.Set(city)))
                     {
                         var arr = dc.ToArray<Shop>();
-                        main.LIST(arr, (h, o) =>
+                        main.FORMLIST(arr, (h, o) =>
                         {
                             h.CAPTION(o.name);
                             h.FIELD_(7).P(o.addr)._FIELD().IMG(o.id + "/icon", 5, href: o.id + "/");
@@ -133,7 +133,7 @@ namespace Greatbone.Sample
             }
         }
 
-        [Ui("新建", Mode = UiMode.ButtonShow)]
+        [Ui("新建", Style = UiStyle.ButtonShow)]
         public async Task @new(ActionContext ac)
         {
             if (ac.GET)

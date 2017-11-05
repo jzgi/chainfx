@@ -1,7 +1,7 @@
 using System;
 using System.Threading.Tasks;
 using Greatbone.Core;
-using static Greatbone.Core.UiMode;
+using static Greatbone.Core.UiStyle;
 
 namespace Greatbone.Sample
 {
@@ -68,7 +68,7 @@ namespace Greatbone.Sample
                             return;
                         }
 
-                        main.LIST(items, (h, o) =>
+                        main.FORMLIST(items, (h, o) =>
                         {
                             h.HIDDEN(nameof(shopid), shopid);
                             h.HIDDEN(nameof(shopname), shopname);
@@ -109,7 +109,7 @@ namespace Greatbone.Sample
         {
         }
 
-        [Ui("修改", Mode = ButtonShow)]
+        [Ui("修改", Style = ButtonShow)]
         public async Task edit(ActionContext ac)
         {
             string shopid = ac[this];
@@ -155,7 +155,7 @@ namespace Greatbone.Sample
             }
         }
 
-        [Ui("经理", Mode = ButtonShow)]
+        [Ui("经理", Style = ButtonShow)]
         public async Task mgr(ActionContext ac)
         {
             string shopid = ac[this];
@@ -200,7 +200,7 @@ namespace Greatbone.Sample
             }
         }
 
-        [Ui("图片", Mode = ACrop)]
+        [Ui("图片", Style = ACrop)]
         public new async Task icon(ActionContext ac)
         {
             string shopid = ac[this];

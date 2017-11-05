@@ -1,6 +1,7 @@
 using System;
 using System.Threading.Tasks;
 using Greatbone.Core;
+using static Greatbone.Core.UiStyle;
 
 namespace Greatbone.Sample
 {
@@ -44,7 +45,7 @@ namespace Greatbone.Sample
         {
         }
 
-        [Ui("修改", Mode = UiMode.ButtonShow)]
+        [Ui("修改", Style = ButtonShow)]
         public async Task edit(ActionContext ac)
         {
             short shopid = ac[-2];
@@ -90,7 +91,7 @@ namespace Greatbone.Sample
             }
         }
 
-        [Ui("图片", Mode = UiMode.ACrop, Circle = true)]
+        [Ui("图片", Style = ACrop, Circle = true)]
         public async Task icon(ActionContext ac)
         {
             string shopid = ac[-2];

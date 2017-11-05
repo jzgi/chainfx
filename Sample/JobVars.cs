@@ -1,6 +1,6 @@
 using System.Threading.Tasks;
 using Greatbone.Core;
-using static Greatbone.Core.UiMode;
+using static Greatbone.Core.UiStyle;
 using static Greatbone.Sample.User;
 
 namespace Greatbone.Sample
@@ -23,7 +23,7 @@ namespace Greatbone.Sample
             var prin = (User) ac.Principal;
             ac.GivePage(200, main =>
             {
-                main.BOARD(h =>
+                main.GRIDFORM(h =>
                 {
                     h.CAPTION("我的个人资料");
                     h.FIELD(prin.name, "姓名");
@@ -34,7 +34,7 @@ namespace Greatbone.Sample
             });
         }
 
-        [Ui("刷新", Mode = AShow)]
+        [Ui("刷新", Style = AShow)]
         public void token(ActionContext ac)
         {
             string wx = ac[this];
@@ -61,7 +61,7 @@ namespace Greatbone.Sample
         {
         }
 
-        [Ui("修改", Mode = ButtonShow)]
+        [Ui("修改", Style = ButtonShow)]
         public async Task edit(ActionContext ac)
         {
             string wx = ac[-1];
@@ -100,7 +100,7 @@ namespace Greatbone.Sample
 
         const string PASS = "0z4R4pX7";
 
-        [Ui("设密码", Mode = ButtonShow)]
+        [Ui("设密码", Style = ButtonShow)]
         public async Task setpass(ActionContext ac)
         {
             User prin = (User) ac.Principal;
@@ -168,7 +168,7 @@ namespace Greatbone.Sample
                 string shopid = ac[this];
                 ac.GivePage(200, main =>
                 {
-                    main.BOARD(h =>
+                    main.GRIDFORM(h =>
                     {
                         using (var dc = ac.NewDbContext())
                         {
@@ -192,7 +192,7 @@ namespace Greatbone.Sample
             }
         }
 
-        [Ui("操作授权", Mode = AOpen), User(OPRMEM)]
+        [Ui("操作授权", Style = AOpen), User(OPRMEM)]
         public async Task grant(ActionContext ac, int cmd)
         {
             string shopid = ac[this];
@@ -267,7 +267,7 @@ namespace Greatbone.Sample
         {
         }
 
-        [Ui("设下班", Mode = ButtonShow)]
+        [Ui("设下班", Style = ButtonShow)]
         public void setoff(ActionContext ac)
         {
             string shopid = ac[-1];
@@ -292,7 +292,7 @@ namespace Greatbone.Sample
             }
         }
 
-        [Ui("我值班", Mode = ButtonShow)]
+        [Ui("我值班", Style = ButtonShow)]
         public void seton(ActionContext ac)
         {
             string shopid = ac[-1];

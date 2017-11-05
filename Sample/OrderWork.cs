@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Threading.Tasks;
 using Greatbone.Core;
-using static Greatbone.Core.UiMode;
+using static Greatbone.Core.UiStyle;
 using static Greatbone.Sample.User;
 
 namespace Greatbone.Sample
@@ -30,17 +30,16 @@ namespace Greatbone.Sample
                 dc.Sql("SELECT ").columnlst(Order.Empty).T(" FROM orders WHERE wx = @1 AND status = 0 ORDER BY id DESC");
                 if (dc.Query(p => p.Set(wx)))
                 {
-//                    var areas = ((SampleService)Service).Cities[""] 
                     ac.GiveGridPage(200, dc.ToArray<Order>(), (h, o) =>
                     {
                         h.CAPTION(o.shopname);
-                        h.FIELD_("收货人").T(o.name, o.tel, o.addr, null).TRIGGER(VarWork.GetAction(nameof(MyPreVarWork.addr)), o)._FIELD();
+                        h.FIELD_("收货人").T(o.name, o.tel, o.addr, null).BUTTON("addr", true, ButtonShow)._FIELD();
                         for (int i = 0; i < o.items.Length; i++)
                         {
-                            var item = o.items[i];
-                            h.IMG("/shop/" + o.shopid + "/" + item.name + "/icon", 2);
-                            h.FIELD_(5).P(item.name).P(item.price)._FIELD();
-                            h.FIELD_(5).P(item.qty, ext: item.unit).P(item.customs)._FIELD();
+                            var oi = o.items[i];
+                            h.IMG("/shop/" + o.shopid + "/" + oi.name + "/icon", 2);
+                            h.FIELD_(5).P(oi.name).P(oi.price)._FIELD();
+                            h.FIELD_(5).P(oi.qty, ext: oi.unit).P(oi.customs).BUTTON("", true, 0)._FIELD();
                         }
                         h.FIELD(o.total, "总价", 0);
                     }, false, 3);
@@ -145,14 +144,6 @@ namespace Greatbone.Sample
     [User(OPR_)]
     public class OprNewWork : OrderWork<OprNewVarWork>
     {
-        static readonly Map<short, string> NOTIFS = new Map<short, string>()
-        {
-            {1, "您的订单已收到。"},
-            {2, "您的订单已开始备货生产。"},
-            {3, "您的订单备货生产已完成，准备派送。"},
-            {4, "您的订单已派送完成，如有疑问请与我们联系。"},
-        };
-
         public OprNewWork(WorkContext wc) : base(wc)
         {
         }
@@ -187,7 +178,7 @@ namespace Greatbone.Sample
             }
         }
 
-        [Ui("备货状态", Mode = ButtonConfirm)]
+        [Ui("备货状态", Style = ButtonConfirm)]
         public async Task prepare(ActionContext ac)
         {
             string shopid = ac[-1];

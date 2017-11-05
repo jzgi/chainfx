@@ -1,7 +1,7 @@
 using System;
 using System.Threading.Tasks;
 using Greatbone.Core;
-using static Greatbone.Core.UiMode;
+using static Greatbone.Core.UiStyle;
 
 namespace Greatbone.Sample
 {
@@ -18,7 +18,63 @@ namespace Greatbone.Sample
         {
         }
 
-        [Ui("删除", Mode = ButtonConfirm)]
+        public async Task addr(ActionContext ac)
+        {
+            string wx = ac[-2];
+            int orderid = ac[this];
+
+            if (ac.GET)
+            {
+                ac.GivePane(200, h =>
+                {
+                    h.FORM_();
+//                    h.SELECT(nameof(area), area, "区域")
+
+                    h._FORM();
+                });
+            }
+
+            var f = await ac.ReadAsync<Form>();
+            f.Let(out string area).Let(out string addr).Let(out string tel);
+            using (var dc = ac.NewDbContext())
+            {
+                dc.Execute("UPDATE orders SET area = @1, addr = @2, tel = @3 WHERE id = @4", p => p.Set(area).Set(addr).Set(tel).Set(orderid));
+
+                User prin = (User) ac.Principal;
+                if (prin.city == null)
+                {
+                    dc.Execute("INSERT INTO users (wx, name, city, area, addr, tel, created) VALUES (@1, @2, @3, @4, @5, @6, @7) ON CONFLICT (wx) DO UPDATE SET name = @2, city = @3, distr = @4, addr = @5, tel = @6, created = @7", p => p.Set(wx).Set(area).Set(addr).Set(tel).Set(DateTime.Now));
+                    prin.city = area;
+                    prin.addr = addr;
+                    prin.tel = tel;
+                    // refresh the client cookie
+                    ac.SetTokenCookie(prin, -1 ^ User.CREDENTIAL);
+                }
+            }
+            ac.GivePane(200);
+        }
+
+        public async Task item(ActionContext ac)
+        {
+            string wx = ac[-2];
+            var f = await ac.ReadAsync<Form>();
+            long[] key = f[nameof(key)];
+            using (var dc = ac.NewDbContext())
+            {
+                if (key != null)
+                {
+                    dc.Sql("DELETE FROM orders WHERE wx = @1 AND status = @2 AND id")._IN_(key);
+                    dc.Execute(p => p.Set(wx).Set(Order.CREATED));
+                }
+                else
+                {
+                    dc.Execute("DELETE FROM orders WHERE wx = @1 AND status = @2", p => p.Set(wx).Set(Order.CREATED));
+                }
+                ac.GiveRedirect();
+            }
+        }
+
+        [Ui("删除", Style = ButtonConfirm)]
         public async Task rm(ActionContext ac)
         {
             string wx = ac[-2];
@@ -39,32 +95,7 @@ namespace Greatbone.Sample
             }
         }
 
-        [Ui("收货地址", Mode = ButtonShow, State = -3)]
-        public async Task addr(ActionContext ac)
-        {
-            string wx = ac[-2];
-            int id = ac[this];
-            var f = await ac.ReadAsync<Form>();
-            f.Let(out string area).Let(out string addr).Let(out string tel);
-            using (var dc = ac.NewDbContext())
-            {
-                dc.Execute("UPDATE orders SET area = @1, addr = @2, tel = @3 WHERE id = @4", p => p.Set(area).Set(addr).Set(tel).Set(id));
-
-                User prin = (User) ac.Principal;
-                if (prin.city == null)
-                {
-                    dc.Execute("INSERT INTO users (wx, name, city, area, addr, tel, created) VALUES (@1, @2, @3, @4, @5, @6, @7) ON CONFLICT (wx) DO UPDATE SET name = @2, city = @3, distr = @4, addr = @5, tel = @6, created = @7", p => p.Set(wx).Set(area).Set(addr).Set(tel).Set(DateTime.Now));
-                    prin.city = area;
-                    prin.addr = addr;
-                    prin.tel = tel;
-                    // refresh the client cookie
-                    ac.SetTokenCookie(prin, -1 ^ User.CREDENTIAL);
-                }
-            }
-            ac.GivePane(200);
-        }
-
-        [Ui("付款", Mode = AScript, Em = true)]
+        [Ui("付款", Style = AScript, Em = true)]
         public async Task prepay(ActionContext ac)
         {
             string wx = ac[typeof(UserVarWork)];
@@ -86,7 +117,7 @@ namespace Greatbone.Sample
         {
         }
 
-        [Ui("投诉", "向平台投诉该作坊的产品质量问题", Mode = AShow)]
+        [Ui("投诉", "向平台投诉该作坊的产品质量问题", Style = AShow)]
         public async Task kick(ActionContext ac)
         {
             int id = ac[this];
@@ -118,7 +149,7 @@ namespace Greatbone.Sample
             }
         }
 
-        [Ui("确认收货", "对商品满意并确认收货", Mode = ButtonConfirm)]
+        [Ui("确认收货", "对商品满意并确认收货", Style = ButtonConfirm)]
         public async Task got(ActionContext ac)
         {
             int orderid = ac[this];
@@ -147,7 +178,7 @@ namespace Greatbone.Sample
         {
         }
 
-        [Ui("撤单", "撤销此单，实收金额退回给买家", Mode = ButtonShow)]
+        [Ui("撤单", "撤销此单，实收金额退回给买家", Style = ButtonShow)]
         public async Task abort(ActionContext ac)
         {
             int orderid = ac[this];
@@ -196,7 +227,7 @@ namespace Greatbone.Sample
         {
         }
 
-        [Ui("退款核查", "实时核查退款到账情况", Mode = AOpen)]
+        [Ui("退款核查", "实时核查退款到账情况", Style = AOpen)]
         public async Task refundq(ActionContext ac)
         {
             int orderid = ac[this];

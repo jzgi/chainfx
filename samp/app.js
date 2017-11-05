@@ -35,36 +35,10 @@ function dialog(trig, mode, siz, title) {
     title = title || trig.innerHTML;
 
     var bottom = mode == OPEN ? '4.125rem' : '6rem';
-    var html = '<div id="dyndlg" class="' +
-        sizg +
-        ' reveal' +
-        trigclass +
-        '"  data-reveal data-close-on-click="false">' +
-        '<div class="title-bar"><div class="title-bar-title">' +
-        title +
-        '</div><div class="title-bar-right"><a onclick="$(\'#dyndlg\').foundation(\'close\').foundation(\'destroy\').remove(); return false;"><i class="fi-x" style="font-size: 1.5rem; line-height: 2rem"></i></a></div></div>' +
-        '<div style="height: -webkit-calc(100% - ' +
-        bottom +
-        '); height: calc(100% - ' +
-        bottom +
-        ')"><iframe src="' +
-        src +
-        '" style="width: 100%; height: 100%; border: 0"></iframe></div>' +
-        (mode == OPEN
-            ? ''
-            : (
-                '<button class=\"button primary\" style="display: block; margin-top: 0.5rem; margin-left: auto; margin-right: auto" onclick="ok(this,' +
-                    mode +
-                    ',\'' +
-                    formid +
-                    '\',\'' +
-                    tag +
-                    '\',\'' +
-                    action +
-                    '\',\'' +
-                    method +
-                    '\');" disabled>确定</botton>')) +
-        '</div>';
+    var html =
+        '<div id="dyndlg" class="' + sizg + ' reveal' + trigclass + '"  data-reveal data-close-on-click="false">' +
+        '<div class="title-bar"><div class="title-bar-title">' + title + '</div><div class="title-bar-right"><a onclick="$(\'#dyndlg\').foundation(\'close\').foundation(\'destroy\').remove(); return false;"><i class="fi-x" style="font-size: 1.5rem; line-height: 2rem"></i></a></div></div>' +
+        '<div style="height: -webkit-calc(100% - ' + bottom + '); height: calc(100% - ' + bottom + ')"><iframe src="' + src + '" style="width: 100%; height: 100%; border: 0"></iframe></div>' + (mode == OPEN ? '' : ('<button class=\"button primary\" style="display: block; margin-top: 0.5rem; margin-left: auto; margin-right: auto" onclick="ok(this,' + mode + ',\'' + formid + '\',\'' + tag + '\',\'' + action + '\',\'' + method + '\');" disabled>确定</botton>')) + '</div>';
     var dive = $(html);
     $('body').prepend(dive);
     // initialize
@@ -108,7 +82,7 @@ function ok(okbtn, mode, formid, tag, action, method) {
                 } else if (method == 'post') {
                     var theform = $('#' + formid);
                     var pairs = $(form[0]).serializeArray();
-                    pairs.forEach(function(e, i) {
+                    pairs.forEach(function (e, i) {
                         $('<input>').attr({ type: 'hidden', name: e.name, value: e.value }).appendTo(theform);
                     });
 
@@ -148,43 +122,32 @@ function crop(trig, siz, circle, title) {
     title = title || trig.innerHTML;
     var action = trig.href;
     switch (siz) {
-    case 1:
-        wid = 120;
-        hei = 120;
-        sizg = 'tiny';
-        break;
-    case 2:
-        wid = 240;
-        hei = 240;
-        sizg = 'small';
-        break;
-    case 3:
-        wid = 320;
-        hei = 320;
-        sizg = 'large';
-        break;
-    default:
-        wid = 640;
-        hei = 640;
-        sizg = 'full';
-        break;
+        case 1:
+            wid = 120;
+            hei = 120;
+            sizg = 'tiny';
+            break;
+        case 2:
+            wid = 240;
+            hei = 240;
+            sizg = 'small';
+            break;
+        case 3:
+            wid = 320;
+            hei = 320;
+            sizg = 'large';
+            break;
+        default:
+            wid = 640;
+            hei = 640;
+            sizg = 'full';
+            break;
     }
 
-    var html = '<div id="dyndlg" class="' +
-        sizg +
-        ' reveal"  data-reveal data-close-on-click="false"><div class="title-bar"><div class="title-bar-title">' +
-        title +
-        '</div><div class="title-bar-right"><a onclick="$(\'#dyndlg\').foundation(\'close\').foundation(\'destroy\').remove(); return false;"><i class="fi-x" style="font-size: 1.75rem; line-height: 2rem"></i></a></div></div><div id="crop" style="height: -webkit-calc(100% - 8rem); height: calc(100% - 8rem); text-align: center;"><input type="file" id="fileinput" style="display: none;" onchange="bind(window.URL.createObjectURL(this.files[0]),' +
-        wid +
-        ',' +
-        hei +
-        ',' +
-        circle +
-        ');"></div><div style="text-align: center; margin-top: 2.875rem"><a class="button hollow" onclick="$(\'#fileinput\').click();">选择图片</a><a class="button hollow" onclick="upload(\'' +
-        action +
-        '\',' +
-        circle +
-        ');">裁剪并上传</a></div></div>';
+    var html =
+        '<div id="dyndlg" class="' + sizg + ' reveal"  data-reveal data-close-on-click="false">' +
+        '<div class="title-bar"><div class="title-bar-title">' + title + '</div><div class="title-bar-right"><a onclick="$(\'#dyndlg\').foundation(\'close\').foundation(\'destroy\').remove(); return false;"><i class="fi-x" style="font-size: 1.75rem; line-height: 2rem"></i></a></div></div>' +
+        '<div id="crop" style="height: -webkit-calc(100% - 8rem); height: calc(100% - 8rem); text-align: center;"><input type="file" id="fileinput" style="display: none;" onchange="bind(window.URL.createObjectURL(this.files[0]),' + wid + ',' + hei + ',' + circle + ');"></div>' + '<div style="text-align: center; margin-top: 2.875rem"><a class="button hollow" onclick="$(\'#fileinput\').click();">选择图片</a><a class="button hollow" onclick="upload(\'' + action + '\',' + circle + ');">裁剪并上传</a></div></div>';
     var dive = $(html);
 
     $('body').prepend(dive);
@@ -221,23 +184,23 @@ function upload(url, circle) {
             format: 'jpeg',
             quality: 0.75,
             circle: circle
-        }).then(function(blob) {
+        }).then(function (blob) {
 
-        var fd = new FormData();
-        fd.append('icon', blob, 'icon.png');
+            var fd = new FormData();
+            fd.append('icon', blob, 'icon.png');
 
-        // post
-        $.ajax({
-            type: 'POST',
-            url: url,
-            data: fd,
-            processData: false,
-            contentType: false,
-            success: function(data) {
-                alert('上传成功!');
-            }
+            // post
+            $.ajax({
+                type: 'POST',
+                url: url,
+                data: fd,
+                processData: false,
+                contentType: false,
+                success: function (data) {
+                    alert('上传成功!');
+                }
+            });
         });
-    });
 
 }
 
@@ -259,18 +222,18 @@ function prepay(trig) {
         url: action,
         type: 'GET',
         dataType: 'json',
-        success: function(data) {
+        success: function (data) {
 
             WeixinJSBridge.invoke('getBrandWCPayRequest',
                 data,
-                function(res) {
+                function (res) {
                     if (res.err_msg == "get_brand_wcpay_request:ok") {
                         location.reload();
                     }
                 });
 
         },
-        error: function(res) {
+        error: function (res) {
             alert('服务器访问失败');
         }
     });
@@ -307,7 +270,7 @@ function checkit(el) {
  * Foliotek
  * Version: 2.5.0
  *************************/
-(function(root, factory) {
+(function (root, factory) {
     if (typeof define === 'function' && define.amd) {
         // AMD. Register as an anonymous module.
         define(['exports'], factory);
@@ -319,14 +282,14 @@ function checkit(el) {
         factory((root.commonJsStrict = {}));
     }
 }(this,
-    function(exports) {
+    function (exports) {
 
         /* Polyfills */
         if (typeof Promise !== 'function') {
             /*! promise-polyfill 3.1.0 */
-            !function(a) {
+            !function (a) {
                 function b(a, b) {
-                    return function() {
+                    return function () {
                         a.apply(b, arguments)
                     }
                 }
@@ -341,9 +304,9 @@ function checkit(el) {
                     var b = this;
                     return null === this._state
                         ? void this._deferreds.push(a)
-                        : void k(function() {
+                        : void k(function () {
                             var c = b._state ? a.onFulfilled : a.onRejected;
-                            if (null === c) return void(b._state ? a.resolve : a.reject)(b._value);
+                            if (null === c) return void (b._state ? a.resolve : a.reject)(b._value);
                             var d;
                             try {
                                 d = c(b._value)
@@ -384,10 +347,10 @@ function checkit(el) {
                 function i(a, b, c) {
                     var d = !1;
                     try {
-                        a(function(a) {
-                                d || (d = !0, b(a))
-                            },
-                            function(a) {
+                        a(function (a) {
+                            d || (d = !0, b(a))
+                        },
+                            function (a) {
                                 d || (d = !0, c(a))
                             })
                     } catch (e) {
@@ -398,32 +361,32 @@ function checkit(el) {
 
                 var j = setTimeout,
                     k = "function" == typeof setImmediate && setImmediate ||
-                        function(a) {
+                        function (a) {
                             j(a, 1)
                         },
                     l = Array.isArray ||
-                        function(a) {
+                        function (a) {
                             return "[object Array]" === Object.prototype.toString.call(a)
                         };
-                c.prototype["catch"] = function(a) {
+                c.prototype["catch"] = function (a) {
                     return this.then(null, a)
-                }, c.prototype.then = function(a, b) {
+                }, c.prototype.then = function (a, b) {
                     var e = this;
-                    return new c(function(c, f) {
+                    return new c(function (c, f) {
                         d.call(e, new h(a, b, c, f))
                     })
-                }, c.all = function() {
+                }, c.all = function () {
                     var a = Array.prototype.slice.call(1 === arguments.length && l(arguments[0])
                         ? arguments[0]
                         : arguments);
-                    return new c(function(b, c) {
+                    return new c(function (b, c) {
                         function d(f, g) {
                             try {
                                 if (g && ("object" == typeof g || "function" == typeof g)) {
                                     var h = g.then;
                                     if ("function" == typeof h)
                                         return void h.call(g,
-                                            function(a) {
+                                            function (a) {
                                                 d(f, a)
                                             },
                                             c)
@@ -437,28 +400,28 @@ function checkit(el) {
                         if (0 === a.length) return b([]);
                         for (var e = a.length, f = 0; f < a.length; f++) d(f, a[f])
                     })
-                }, c.resolve = function(a) {
+                }, c.resolve = function (a) {
                     return a && "object" == typeof a && a.constructor === c
                         ? a
-                        : new c(function(b) {
+                        : new c(function (b) {
                             b(a)
                         })
-                }, c.reject = function(a) {
-                    return new c(function(b, c) {
+                }, c.reject = function (a) {
+                    return new c(function (b, c) {
                         c(a)
                     })
-                }, c.race = function(a) {
-                    return new c(function(b, c) {
+                }, c.race = function (a) {
+                    return new c(function (b, c) {
                         for (var d = 0, e = a.length; e > d; d++) a[d].then(b, c)
                     })
-                }, c._setImmediateFn = function(a) {
+                }, c._setImmediateFn = function (a) {
                     k = a
                 }, "undefined" != typeof module && module.exports ? module.exports = c : a.Promise || (a.Promise = c)
             }(this);
         }
 
         if (typeof window.CustomEvent !== "function") {
-            (function() {
+            (function () {
                 function CustomEvent(event, params) {
                     params = params || { bubbles: false, cancelable: false, detail: undefined };
                     var evt = document.createEvent('CustomEvent');
@@ -475,7 +438,7 @@ function checkit(el) {
             Object.defineProperty(HTMLCanvasElement.prototype,
                 'toBlob',
                 {
-                    value: function(callback, type, quality) {
+                    value: function (callback, type, quality) {
                         var binStr = atob(this.toDataURL(type, quality).split(',')[1]),
                             len = binStr.length,
                             arr = new Uint8Array(len);
@@ -531,9 +494,9 @@ function checkit(el) {
 
         function debounce(func, wait, immediate) {
             var timeout;
-            return function() {
+            return function () {
                 var context = this, args = arguments;
-                var later = function() {
+                var later = function () {
                     timeout = null;
                     if (!immediate) func.apply(context, args);
                 };
@@ -592,11 +555,11 @@ function checkit(el) {
             var img = imageEl || new Image();
             img.style.opacity = 0;
 
-            return new Promise(function(resolve) {
+            return new Promise(function (resolve) {
                 function _resolve() {
-                    setTimeout(function() {
-                            resolve(img);
-                        },
+                    setTimeout(function () {
+                        resolve(img);
+                    },
                         1);
                 }
 
@@ -610,10 +573,10 @@ function checkit(el) {
                 if (src.match(/^https?:\/\/|^\/\//)) {
                     img.setAttribute('crossOrigin', 'anonymous');
                 }
-                img.onload = function() {
+                img.onload = function () {
                     if (doExif) {
                         EXIF.getData(img,
-                            function() {
+                            function () {
                                 _resolve();
                             });
                     } else {
@@ -644,13 +607,13 @@ function checkit(el) {
                 suffix: ''
             }
         };
-        var Transform = function(x, y, scale) {
+        var Transform = function (x, y, scale) {
             this.x = parseFloat(x);
             this.y = parseFloat(y);
             this.scale = parseFloat(scale);
         };
 
-        Transform.parse = function(v) {
+        Transform.parse = function (v) {
             if (v.style) {
                 return Transform.parse(v.style[CSS_TRANSFORM]);
             } else if (v.indexOf('matrix') > -1 || v.indexOf('none') > -1) {
@@ -660,7 +623,7 @@ function checkit(el) {
             }
         };
 
-        Transform.fromMatrix = function(v) {
+        Transform.fromMatrix = function (v) {
             var vals = v.substring(7).split(',');
             if (!vals.length || v === 'none') {
                 vals = [1, 0, 0, 1, 0, 0];
@@ -669,7 +632,7 @@ function checkit(el) {
             return new Transform(num(vals[4]), num(vals[5]), parseFloat(vals[0]));
         };
 
-        Transform.fromString = function(v) {
+        Transform.fromString = function (v) {
             var values = v.split(') '),
                 translate = values[0].substring(Croppie.globals.translate.length + 1).split(','),
                 scale = values.length > 1 ? values[1].substring(6) : 1,
@@ -679,7 +642,7 @@ function checkit(el) {
             return new Transform(x, y, scale);
         };
 
-        Transform.prototype.toString = function() {
+        Transform.prototype.toString = function () {
             var suffix = TRANSLATE_OPTS[Croppie.globals.translate].suffix || '';
             return Croppie.globals.translate +
                 '(' +
@@ -693,7 +656,7 @@ function checkit(el) {
                 ')';
         };
 
-        var TransformOrigin = function(el) {
+        var TransformOrigin = function (el) {
             if (!el || !el.style[CSS_TRANS_ORG]) {
                 this.x = 0;
                 this.y = 0;
@@ -704,7 +667,7 @@ function checkit(el) {
             this.y = parseFloat(css[1]);
         };
 
-        TransformOrigin.prototype.toString = function() {
+        TransformOrigin.prototype.toString = function () {
             return this.x + 'px ' + this.y + 'px';
         };
 
@@ -720,49 +683,49 @@ function checkit(el) {
 
             ctx.save();
             switch (orientation) {
-            case 2:
-                ctx.translate(width, 0);
-                ctx.scale(-1, 1);
-                break;
+                case 2:
+                    ctx.translate(width, 0);
+                    ctx.scale(-1, 1);
+                    break;
 
-            case 3:
-                ctx.translate(width, height);
-                ctx.rotate(180 * Math.PI / 180);
-                break;
+                case 3:
+                    ctx.translate(width, height);
+                    ctx.rotate(180 * Math.PI / 180);
+                    break;
 
-            case 4:
-                ctx.translate(0, height);
-                ctx.scale(1, -1);
-                break;
+                case 4:
+                    ctx.translate(0, height);
+                    ctx.scale(1, -1);
+                    break;
 
-            case 5:
-                canvas.width = height;
-                canvas.height = width;
-                ctx.rotate(90 * Math.PI / 180);
-                ctx.scale(1, -1);
-                break;
+                case 5:
+                    canvas.width = height;
+                    canvas.height = width;
+                    ctx.rotate(90 * Math.PI / 180);
+                    ctx.scale(1, -1);
+                    break;
 
-            case 6:
-                canvas.width = height;
-                canvas.height = width;
-                ctx.rotate(90 * Math.PI / 180);
-                ctx.translate(0, -height);
-                break;
+                case 6:
+                    canvas.width = height;
+                    canvas.height = width;
+                    ctx.rotate(90 * Math.PI / 180);
+                    ctx.translate(0, -height);
+                    break;
 
-            case 7:
-                canvas.width = height;
-                canvas.height = width;
-                ctx.rotate(-90 * Math.PI / 180);
-                ctx.translate(-width, height);
-                ctx.scale(1, -1);
-                break;
+                case 7:
+                    canvas.width = height;
+                    canvas.height = width;
+                    ctx.rotate(-90 * Math.PI / 180);
+                    ctx.translate(-width, height);
+                    ctx.scale(1, -1);
+                    break;
 
-            case 8:
-                canvas.width = height;
-                canvas.height = width;
-                ctx.translate(0, width);
-                ctx.rotate(-90 * Math.PI / 180);
-                break;
+                case 8:
+                    canvas.width = height;
+                    canvas.height = width;
+                    ctx.translate(0, width);
+                    ctx.rotate(-90 * Math.PI / 180);
+                    break;
             }
             ctx.drawImage(img, 0, 0, width, height);
             ctx.restore();
@@ -1246,14 +1209,14 @@ function checkit(el) {
 
                 function parseKeyDown(key) {
                     switch (key) {
-                    case LEFT_ARROW:
-                        return [1, 0];
-                    case UP_ARROW:
-                        return [0, 1];
-                    case RIGHT_ARROW:
-                        return [-1, 0];
-                    case DOWN_ARROW:
-                        return [0, -1];
+                        case LEFT_ARROW:
+                            return [1, 0];
+                        case UP_ARROW:
+                            return [0, 1];
+                        case RIGHT_ARROW:
+                            return [-1, 0];
+                        case DOWN_ARROW:
+                            return [0, -1];
                     };
                 };
             }
@@ -1650,10 +1613,10 @@ function checkit(el) {
 
         function _getBlobResult(data) {
             var self = this;
-            return new Promise(function(resolve, reject) {
-                _getCanvas.call(self, data).toBlob(function(blob) {
-                        resolve(blob);
-                    },
+            return new Promise(function (resolve, reject) {
+                _getCanvas.call(self, data).toBlob(function (blob) {
+                    resolve(blob);
+                },
                     data.format,
                     data.quality);
             });
@@ -1674,14 +1637,14 @@ function checkit(el) {
             } else {
                 url = options.url;
                 points = options.points || [];
-                zoom = typeof(options.zoom) === 'undefined' ? null : options.zoom;
+                zoom = typeof (options.zoom) === 'undefined' ? null : options.zoom;
             }
 
             self.data.bound = false;
             self.data.url = url || self.data.url;
             self.data.boundZoom = zoom;
 
-            return loadImage(url, self.elements.img, hasExif).then(function(img) {
+            return loadImage(url, self.elements.img, hasExif).then(function (img) {
                 if (!points.length) {
                     var natDim = naturalImageDimensions(img);
                     var rect = self.elements.viewport.getBoundingClientRect();
@@ -1710,7 +1673,7 @@ function checkit(el) {
                     ];
                 }
 
-                self.data.points = points.map(function(p) {
+                self.data.points = points.map(function (p) {
                     return parseFloat(p);
                 });
                 if (self.options.useCanvas) {
@@ -1755,10 +1718,10 @@ function checkit(el) {
         }
 
         var RESULT_DEFAULTS = {
-                type: 'canvas',
-                format: 'png',
-                quality: 1
-            },
+            type: 'canvas',
+            format: 'png',
+            quality: 1
+        },
             RESULT_FORMATS = ['jpeg', 'webp', 'png'];
 
         function _result(options) {
@@ -1800,21 +1763,21 @@ function checkit(el) {
             data.url = self.data.url;
             data.backgroundColor = backgroundColor;
 
-            prom = new Promise(function(resolve, reject) {
+            prom = new Promise(function (resolve, reject) {
                 switch (resultType.toLowerCase()) {
-                case 'rawcanvas':
-                    resolve(_getCanvas.call(self, data));
-                    break;
-                case 'canvas':
-                case 'base64':
-                    resolve(_getBase64Result.call(self, data));
-                    break;
-                case 'blob':
-                    _getBlobResult.call(self, data).then(resolve);
-                    break;
-                default:
-                    resolve(_getHtmlResult.call(self, data));
-                    break;
+                    case 'rawcanvas':
+                        resolve(_getCanvas.call(self, data));
+                        break;
+                    case 'canvas':
+                    case 'base64':
+                        resolve(_getBase64Result.call(self, data));
+                        break;
+                    case 'blob':
+                        _getBlobResult.call(self, data).then(resolve);
+                        break;
+                    default:
+                        resolve(_getHtmlResult.call(self, data));
+                        break;
                 }
             });
             return prom;
@@ -1857,7 +1820,7 @@ function checkit(el) {
 
         if (window.jQuery) {
             var $ = window.jQuery;
-            $.fn.croppie = function(opts) {
+            $.fn.croppie = function (opts) {
                 var ot = typeof opts;
 
                 if (ot === 'string') {
@@ -1872,7 +1835,7 @@ function checkit(el) {
                         return singleInst.bind.apply(singleInst, args);
                     }
 
-                    return this.each(function() {
+                    return this.each(function () {
                         var i = $(this).data('croppie');
                         if (!i) return;
 
@@ -1887,7 +1850,7 @@ function checkit(el) {
                         }
                     });
                 } else {
-                    return this.each(function() {
+                    return this.each(function () {
                         var i = new Croppie(this, opts);
                         i.$ = $;
                         $(this).data('croppie', i);
@@ -1947,7 +1910,7 @@ function checkit(el) {
             enforceBoundary: true,
             enableOrientation: false,
             enableKeyMovement: true,
-            update: function() {
+            update: function () {
             }
         };
 
@@ -1957,10 +1920,10 @@ function checkit(el) {
 
         deepExtend(Croppie.prototype,
             {
-                bind: function(options, cb) {
+                bind: function (options, cb) {
                     return _bind.call(this, options, cb);
                 },
-                get: function() {
+                get: function () {
                     var data = _get.call(this);
                     var points = data.points;
                     if (this.options.relative) {
@@ -1971,20 +1934,20 @@ function checkit(el) {
                     }
                     return data;
                 },
-                result: function(type) {
+                result: function (type) {
                     return _result.call(this, type);
                 },
-                refresh: function() {
+                refresh: function () {
                     return _refresh.call(this);
                 },
-                setZoom: function(v) {
+                setZoom: function (v) {
                     _setZoomerVal.call(this, v);
                     dispatchChange(this.elements.zoomer);
                 },
-                rotate: function(deg) {
+                rotate: function (deg) {
                     _rotate.call(this, deg);
                 },
-                destroy: function() {
+                destroy: function () {
                     return _destroy.call(this);
                 }
             });

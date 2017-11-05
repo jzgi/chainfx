@@ -2,7 +2,7 @@ using System;
 
 namespace Greatbone.Core
 {
-    public enum UiMode
+    public enum UiStyle
     {
         A = 0x0100,
 
@@ -49,6 +49,7 @@ namespace Greatbone.Core
         ButtonCrop = 0x0220,
     }
 
+
     /// 
     /// To specify user interaction related attributes and behaviors.
     ///
@@ -69,7 +70,7 @@ namespace Greatbone.Core
 
         public string Tip => tip;
 
-        public UiMode Mode { get; set; }
+        public UiStyle Style { get; set; }
 
         public sbyte Size { get; set; } = 2;
 
@@ -78,32 +79,27 @@ namespace Greatbone.Core
         /// </summary>
         public short State { get; set; }
 
-        public bool Covers(int v)
-        {
-            return State == 0 || (State & v) == v;
-        }
-
-        public bool Circle { get; set; } = false;
+        public bool Circle { get; set; }
 
         /// <summary>
         /// Is empohsized or not.
         /// </summary>
-        public bool Em { get; set; } = false;
+        public bool Em { get; set; }
 
-        public bool IsA => ((int) Mode & 0x0100) == 0x0100;
+        public bool IsA => ((int) Style & 0x0100) == 0x0100;
 
-        public bool IsButton => ((int) Mode & 0x0200) == 0x0200;
+        public bool IsButton => ((int) Style & 0x0200) == 0x0200;
 
-        public bool HasConfirm => ((int) Mode & 0x01) == 0x01;
+        public bool HasConfirm => ((int) Style & 0x01) == 0x01;
 
-        public bool HasPrompt => ((int) Mode & 0x02) == 0x02;
+        public bool HasPrompt => ((int) Style & 0x02) == 0x02;
 
-        public bool HasShow => ((int) Mode & 0x04) == 0x04;
+        public bool HasShow => ((int) Style & 0x04) == 0x04;
 
-        public bool HasOpen => ((int) Mode & 0x08) == 0x08;
+        public bool HasOpen => ((int) Style & 0x08) == 0x08;
 
-        public bool HasScript => ((int) Mode & 0x10) == 0x10;
+        public bool HasScript => ((int) Style & 0x10) == 0x10;
 
-        public bool HasCrop => ((int) Mode & 0x20) == 0x20;
+        public bool HasCrop => ((int) Style & 0x20) == 0x20;
     }
 }

@@ -204,18 +204,6 @@ namespace Greatbone.Core
             return this;
         }
 
-        public HtmlContent PAD(int v, sbyte n)
-        {
-            for (int i = 0; i < INT.Length; i++)
-            {
-                if (v > INT[i])
-                {
-                }
-            }
-            Add(v);
-            return this;
-        }
-
         public HtmlContent T(long v)
         {
             Add(v);
@@ -795,6 +783,30 @@ namespace Greatbone.Core
             return this;
         }
 
+        public HtmlContent BUTTON(string value, bool post = true, UiStyle mode = 0)
+        {
+            Add("<button class=\"button primary hollow\" formmethod=\"");
+            Add(post ? "post" : "get");
+            Add("\">");
+            AddEsc(value);
+            Add("</button>");
+            return this;
+        }
+
+        public HtmlContent BUTTON_(bool post = true, UiStyle mode = 0)
+        {
+            Add("<button class=\"button primary hollow\" formmethod=\"");
+            Add(post ? "post" : "get");
+            Add("\">");
+            return this;
+        }
+
+        public HtmlContent _BUTTON()
+        {
+            Add("</button>");
+            return this;
+        }
+
         public HtmlContent CALLOUT(string v, bool closable = false)
         {
             Add("<div class=\"callout primary\"");
@@ -901,7 +913,7 @@ namespace Greatbone.Core
             }
         }
 
-        public void TableView(string name, IDataInput inp, Action<IDataInput, HtmlContent, char> putter)
+        public void TABLE(string name, IDataInput inp, Action<IDataInput, HtmlContent, char> putter)
         {
             Add("<main class=\"table-scroll\" style=\"padding: 0.5rem\">");
             Add("<table>");
@@ -927,7 +939,7 @@ namespace Greatbone.Core
             Add("</table>");
         }
 
-        public void SHEET<D>(D[] arr, Action<HtmlContent> hd, Action<HtmlContent, D> row) where D : IData
+        public void TABLEFORM<D>(D[] arr, Action<HtmlContent> hd, Action<HtmlContent, D> row) where D : IData
         {
             Work work = ac.Work;
             Work varwork = work.varwork;
@@ -987,7 +999,7 @@ namespace Greatbone.Core
             Add("</main>");
         }
 
-        public void BOARD(params Action<HtmlContent>[] cards)
+        public void GRIDFORM(params Action<HtmlContent>[] cards)
         {
             Work work = ac.Work;
             Work varwork = work.varwork;
@@ -1031,7 +1043,7 @@ namespace Greatbone.Core
         }
 
 
-        public void BOARD<D>(D[] arr, Action<HtmlContent, D> card) where D : IData
+        public void GRIDFORM<D>(D[] arr, Action<HtmlContent, D> card) where D : IData
         {
             Work work = ac.Work;
             Work varwork = work.varwork;
@@ -1099,129 +1111,118 @@ namespace Greatbone.Core
                 {
                     continue;
                 }
-                short uistate = ai.Ui.State;
-                if (uistate < 0)
-                {
-                    continue;
-                }
-                bool enabled = uistate == 0;
+                UiAttribute ui = ai.Ui;
+                bool enabled = ui.State == 0;
                 if (!enabled)
                 {
                     short state = (obj as IStatable)?.GetState() ?? pow;
-                    enabled = (uistate & state) == state;
+                    enabled = (ui.State & state) == state;
                 }
-                TRIGGER(ai, obj, pow, enabled);
-            }
-            return this;
-        }
-
-        public HtmlContent TRIGGER(ActionInfo ai, IData obj, short pow = 0, bool enabled = true)
-        {
-            UiAttribute ui = ai.Ui;
-            if (ui.IsA)
-            {
-                Add("<a class=\"button primary");
-                if (!ui.Em) Add(" hollow");
-                Add("\" href=\"");
-                if (obj != null)
+                if (ui.IsA)
                 {
-                    ai.Work.PutVarKey(obj, this);
-                    Add('/');
+                    Add("<a class=\"button primary");
+                    Add(ai == ac.Doer ? " hollow" : " clear");
+                    Add("\" href=\"");
+                    if (obj != null)
+                    {
+                        ai.Work.PutVarKey(obj, this);
+                        Add('/');
+                    }
+                    else if (pow > 0)
+                    {
+                        Add(pow);
+                        Add('/');
+                    }
+                    Add(ai.RPath);
+                    Add("\"");
+                    if (ui.HasPrompt)
+                    {
+                        Dialog(2, ui.Size, ui.Tip);
+                    }
+                    else if (ui.HasShow)
+                    {
+                        Dialog(4, ui.Size, ui.Tip);
+                    }
+                    else if (ui.HasOpen)
+                    {
+                        Dialog(8, ui.Size, ui.Tip);
+                    }
+                    else if (ui.HasScript)
+                    {
+                        Add(" onclick=\"if(!confirm('");
+                        Add(ui.Tip ?? ui.Label);
+                        Add("')) return false;");
+                        Add(ai.Name);
+                        Add("(this);return false;\"");
+                    }
+                    else if (ui.HasCrop)
+                    {
+                        Add(" onclick=\"return crop(this,");
+                        Add(ui.Size);
+                        Add(',');
+                        Add(ui.Circle);
+                        Add(",'");
+                        Add(ui.Tip);
+                        Add("');\"");
+                    }
+                    if (!enabled)
+                    {
+                        Add(" disabled onclick=\"return false;\"");
+                    }
+                    Add(">");
+                    Add(ai.Label);
+                    Add("</a>");
                 }
-                else if (pow > 0)
+                else if (ui.IsButton)
                 {
-                    Add(pow);
-                    Add('/');
-                }
-                Add(ai.RPath);
-                Add("\"");
-                if (ui.HasPrompt)
-                {
-                    Dialog(2, ui.Size, ui.Tip);
-                }
-                else if (ui.HasShow)
-                {
-                    Dialog(4, ui.Size, ui.Tip);
-                }
-                else if (ui.HasOpen)
-                {
-                    Dialog(8, ui.Size, ui.Tip);
-                }
-                else if (ui.HasScript)
-                {
-                    Add(" onclick=\"if(!confirm('");
-                    Add(ui.Tip ?? ui.Label);
-                    Add("')) return false;");
+                    Add("<button class=\"button primary");
+                    if (!ui.Em) Add(" hollow");
+                    Add("\" name=\"");
                     Add(ai.Name);
-                    Add("(this);return false;\"");
+                    Add("\" formaction=\"");
+                    if (obj != null)
+                    {
+                        ai.Work.PutVarKey(obj, this);
+                        Add('/');
+                    }
+                    else if (pow > 0)
+                    {
+                        Add(pow);
+                        Add('/');
+                    }
+                    Add(ai.Name);
+                    Add("\" formmethod=\"post\"");
+                    if (!enabled)
+                    {
+                        Add(" disabled");
+                    }
+                    else if (ui.HasConfirm)
+                    {
+                        Add(" onclick=\"return confirm('");
+                        Add(ui.Tip ?? ui.Label);
+                        Add("?');\"");
+                    }
+                    else if (ui.HasPrompt)
+                    {
+                        Dialog(2, ui.Size, ui.Tip);
+                    }
+                    else if (ui.HasShow)
+                    {
+                        Dialog(4, ui.Size, ui.Tip);
+                    }
+                    else if (ui.HasOpen)
+                    {
+                        Dialog(8, ui.Size, ui.Tip);
+                    }
+                    Add(">");
+                    Add(ai.Label);
+                    Add("</button>");
                 }
-                else if (ui.HasCrop)
-                {
-                    Add(" onclick=\"return crop(this,");
-                    Add(ui.Size);
-                    Add(',');
-                    Add(ui.Circle);
-                    Add(",'");
-                    Add(ui.Tip);
-                    Add("');\"");
-                }
-                if (!enabled)
-                {
-                    Add(" disabled onclick=\"return false;\"");
-                }
-                Add(">");
-                Add(ai.Label);
-                Add("</a>");
-            }
-            else if (ui.IsButton)
-            {
-                Add("<button class=\"button primary");
-                if (!ui.Em) Add(" hollow");
-                Add("\" name=\"");
-                Add(ai.Name);
-                Add("\" formaction=\"");
-                if (obj != null)
-                {
-                    ai.Work.PutVarKey(obj, this);
-                    Add('/');
-                }
-                else if (pow > 0)
-                {
-                    Add(pow);
-                    Add('/');
-                }
-                Add(ai.Name);
-                Add("\" formmethod=\"post\"");
-                if (!enabled)
-                {
-                    Add(" disabled");
-                }
-                else if (ui.HasConfirm)
-                {
-                    Add(" onclick=\"return confirm('");
-                    Add(ui.Tip ?? ui.Label);
-                    Add("?');\"");
-                }
-                else if (ui.HasPrompt)
-                {
-                    Dialog(2, ui.Size, ui.Tip);
-                }
-                else if (ui.HasShow)
-                {
-                    Dialog(4, ui.Size, ui.Tip);
-                }
-                else if (ui.HasOpen)
-                {
-                    Dialog(8, ui.Size, ui.Tip);
-                }
-                Add(">");
-                Add(ai.Label);
-                Add("</button>");
             }
             return this;
         }
 
-        public void LIST<D>(D[] arr, Action<HtmlContent, D> panel) where D : IData
+        public void FORMLIST<D>(D[] arr, Action<HtmlContent, D> panel) where D : IData
         {
             if (arr != null) // render grid cells
             {
@@ -1408,7 +1409,7 @@ namespace Greatbone.Core
             return this;
         }
 
-        public HtmlContent DATE(string name, DateTime v, string label = null, DateTime max = default(DateTime), DateTime min = default(DateTime), bool @readonly = false, bool required = false, int step = 0, sbyte grid = 0)
+        public HtmlContent DATE(string name, DateTime v, string label = null, DateTime max = default, DateTime min = default, bool @readonly = false, bool required = false, int step = 0, sbyte grid = 0)
         {
             FIELD_(label, grid);
 
@@ -1418,13 +1419,13 @@ namespace Greatbone.Core
             Add(v);
             Add("\"");
 
-            if (max != default(DateTime))
+            if (max != default)
             {
                 Add(" max=\"");
                 Add(max);
                 Add("\"");
             }
-            if (min != default(DateTime))
+            if (min != default)
             {
                 Add(" min=\"");
                 Add(min);

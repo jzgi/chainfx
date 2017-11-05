@@ -17,7 +17,7 @@ namespace Greatbone.Sample
         {
         }
 
-        [Ui("回复", Mode = UiMode.ButtonShow)]
+        [Ui("回复", Style = UiStyle.ButtonShow)]
         public async Task reply(ActionContext ac)
         {
             string shopid = ac[typeof(ShopVarWork)];
