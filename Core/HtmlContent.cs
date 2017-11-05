@@ -939,7 +939,7 @@ namespace Greatbone.Core
             Add("</table>");
         }
 
-        public void TABLEFORM<D>(D[] arr, Action<HtmlContent> hd, Action<HtmlContent, D> row) where D : IData
+        public void SHEET<D>(D[] arr, Action<HtmlContent> hd, Action<HtmlContent, D> row) where D : IData
         {
             Work work = ac.Work;
             Work varwork = work.varwork;
@@ -999,7 +999,7 @@ namespace Greatbone.Core
             Add("</main>");
         }
 
-        public void GRIDFORM(params Action<HtmlContent>[] cards)
+        public void BOARD(params Action<HtmlContent>[] cards)
         {
             Work work = ac.Work;
             Work varwork = work.varwork;
@@ -1043,7 +1043,7 @@ namespace Greatbone.Core
         }
 
 
-        public void GRIDFORM<D>(D[] arr, Action<HtmlContent, D> card) where D : IData
+        public void BOARD<D>(D[] arr, Action<HtmlContent, D> card) where D : IData
         {
             Work work = ac.Work;
             Work varwork = work.varwork;

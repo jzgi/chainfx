@@ -23,7 +23,7 @@ namespace Greatbone.Sample
             var prin = (User) ac.Principal;
             ac.GivePage(200, main =>
             {
-                main.GRIDFORM(h =>
+                main.BOARD(h =>
                 {
                     h.CAPTION("我的个人资料");
                     h.FIELD(prin.name, "姓名");
@@ -34,7 +34,7 @@ namespace Greatbone.Sample
             });
         }
 
-        [Ui("刷新", Style = AShow)]
+        [Ui("刷新", Style = AnchorShow)]
         public void token(ActionContext ac)
         {
             string wx = ac[this];
@@ -168,7 +168,7 @@ namespace Greatbone.Sample
                 string shopid = ac[this];
                 ac.GivePage(200, main =>
                 {
-                    main.GRIDFORM(h =>
+                    main.BOARD(h =>
                     {
                         using (var dc = ac.NewDbContext())
                         {
@@ -192,7 +192,7 @@ namespace Greatbone.Sample
             }
         }
 
-        [Ui("操作授权", Style = AOpen), User(OPRMEM)]
+        [Ui("操作授权", Style = AnchorOpen), User(OPRMEM)]
         public async Task grant(ActionContext ac, int cmd)
         {
             string shopid = ac[this];

@@ -95,7 +95,7 @@ namespace Greatbone.Sample
             }
         }
 
-        [Ui("付款", Style = AScript, Em = true)]
+        [Ui("付款", Style = AnchorScript, Em = true)]
         public async Task prepay(ActionContext ac)
         {
             string wx = ac[typeof(UserVarWork)];
@@ -117,7 +117,7 @@ namespace Greatbone.Sample
         {
         }
 
-        [Ui("投诉", "向平台投诉该作坊的产品质量问题", Style = AShow)]
+        [Ui("投诉", "向平台投诉该作坊的产品质量问题", Style = AnchorShow)]
         public async Task kick(ActionContext ac)
         {
             int id = ac[this];
@@ -227,7 +227,7 @@ namespace Greatbone.Sample
         {
         }
 
-        [Ui("退款核查", "实时核查退款到账情况", Style = AOpen)]
+        [Ui("退款核查", "实时核查退款到账情况", Style = AnchorOpen)]
         public async Task refundq(ActionContext ac)
         {
             int orderid = ac[this];

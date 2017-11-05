@@ -1,6 +1,7 @@
 using System;
 using System.Threading.Tasks;
 using Greatbone.Core;
+using static Greatbone.Core.UiStyle;
 
 namespace Greatbone.Sample
 {
@@ -133,7 +134,7 @@ namespace Greatbone.Sample
             }
         }
 
-        [Ui("新建", Style = UiStyle.ButtonShow)]
+        [Ui("新建", Style = ButtonShow)]
         public async Task @new(ActionContext ac)
         {
             if (ac.GET)
