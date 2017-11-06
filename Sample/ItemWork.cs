@@ -8,7 +8,7 @@ namespace Greatbone.Sample
     {
         protected ItemWork(WorkContext wc) : base(wc)
         {
-            CreateVar<V, string>(obj => ((Item) obj).name);
+            CreateVar<V, string>(obj => ((Item)obj).name);
         }
     }
 
@@ -39,7 +39,7 @@ namespace Greatbone.Sample
                 }
                 else
                 {
-                    ac.GiveGridPage(200, (Item[]) null, null);
+                    ac.GiveGridPage(200, (Item[])null, null);
                 }
             }
         }
@@ -49,7 +49,7 @@ namespace Greatbone.Sample
         {
             if (ac.GET)
             {
-                var o = new Item {min = 1, step = 1};
+                var o = new Item { min = 1, step = 1 };
                 ac.GivePane(200, m =>
                 {
                     m.FORM_();
@@ -57,8 +57,8 @@ namespace Greatbone.Sample
                     m.TEXTAREA(nameof(o.descr), o.descr, "简述", max: 30, required: true);
                     m.TEXT(nameof(o.unit), o.unit, "单位", required: true);
                     m.NUMBER(nameof(o.price), o.price, "单价", required: true);
-                    m.NUMBER(nameof(o.min), o.min, "起订", min: (short) 1);
-                    m.NUMBER(nameof(o.step), o.step, "增减", min: (short) 1);
+                    m.NUMBER(nameof(o.min), o.min, "起订", min: (short)1);
+                    m.NUMBER(nameof(o.step), o.step, "增减", min: (short)1);
                     m.NUMBER(nameof(o.max), o.max, "剩余");
                     m.SELECT(nameof(o.status), o.status, Item.Statuses, "状态");
                     m._FORM();

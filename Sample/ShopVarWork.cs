@@ -68,7 +68,7 @@ namespace Greatbone.Sample
                             return;
                         }
 
-                        main.FORMLIST(items, (h, o) =>
+                        main.LISTER(items, (h, o) =>
                         {
                             h.HIDDEN(nameof(shopid), shopid);
                             h.HIDDEN(nameof(shopname), shopname);
@@ -77,7 +77,7 @@ namespace Greatbone.Sample
                             h.HIDDEN(nameof(o.price), o.price);
 
                             h.CAPTION(o.name);
-                            h.IMG((o.name) + "/icon", 4).FIELD_(8).P(o.descr).STRONG(o.price, '¥')._FIELD();
+                            h.IMG((o.name) + "/icon", 4).FIELD_(8).P(o.descr).EM(o.price, '¥')._FIELD();
                             h.FIELD_().T("<a type=\"button hollow\" class=\"button circle primary float-right\"  data-toggle=\"dropdown").T(o.name).T("\">购买</a>")._FIELD();
                             h.T("<div class=\"dropdown-pane\" id=\"dropdown").T(o.name).T("\" data-position=\"top\" data-alignment=\"right\" style=\"box-shadow:0 0 2px #0a0a0a;\" data-dropdown>");
                             h.T("<form>");

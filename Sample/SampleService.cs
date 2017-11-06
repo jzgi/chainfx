@@ -21,7 +21,7 @@ namespace Greatbone.Sample
 
             Create<AdmWork>("adm"); // administrator
 
-            City.All = DataInputUtility.FileToMap<string, City>(sc.GetFilePath("$map.json"), o => o.name);
+            City.All = DataInputUtility.FileToMap<string, City>(sc.GetFilePath("$cities.json"), o => o.name);
         }
 
         public void @default(ActionContext ac)

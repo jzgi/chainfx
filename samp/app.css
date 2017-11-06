@@ -1,26 +1,50 @@
-.frame-page { background-color: gainsboro; }
+/*  TOOLBAR */
 
-/* LIST PANEL */
+.toolbar {
+    display: flex;
+    background-color: silver;
+    align-items: center;
+    height: 3rem;
+    padding: 0.375rem;
+}
 
-.panel-cell { padding: 0.75rem 0.375rem 0 0.375rem; }
+.toolbar-right {
+    margin-left: auto;
+}
 
-.panel-cell:last-of-type { margin-bottom: 0.375rem; }
+body .pane {
+    padding: 0.5rem; 
+    background-color: gainsboro;
+}
+
+/* LIST  */
+
+.lister {
+    background-color: gainsboro;
+}
+
+.lister-cell {
+    padding: 0.75rem 0.375rem 0 0.375rem;
+}
+
+.lister-cell:last-of-type {
+    margin-bottom: 0.75rem;
+}
 
 .panel {
-    background-color: #fefefe;
+    background-color:#fefefe;
     border-radius: 4px;
 }
 
-.panel-cap {
+.panel .caption {
     display: flex;
     align-items: center;
     padding: 0.25rem;
-    font-size: 1.25rem;
-    border-bottom: 1px solid rgba(196, 190, 185, 0.5);
-    ;
+    font-size: 1rem;
+    border-bottom: 1px solid rgba(196, 190, 185, 0.5);;
 }
 
-.panel-tail {
+.panel .tail {
     vertical-align: middle;
     padding: 0.25rem;
     color: green;
@@ -28,30 +52,45 @@
 
 .panel .img {
     margin: 0.25rem;
-    border-radius: 50%;
 }
 
 
-/* GRID CARD */
+/* BOARD */
 
-.card-cell { padding: 0.75rem 0.375rem 0 0.375rem; }
+.board {
+    background-color: gainsboro;
+}
 
-.card-cell:last-of-type { margin-bottom: 0.375rem; }
+.board-cell {
+    padding: 0.75rem 0.375rem 0 0.375rem;
+}
+
+.board-cell:last-of-type {
+    margin-bottom: 0.75rem;
+}
 
 .card {
     background-color: #fefefe;
     border-radius: 4px;
 }
 
-.card.checked { background-color: Lavender; }
+.card.checked {
+    background-color: Lavender;
+}
 
-tr.checked { background-color: Lavender; }
+tr.checked {
+    background-color: Lavender;
+}
+
+.sheet {
+    padding: 0.375rem;
+}
 
 .card-lead {
     display: flex;
     align-items: center;
     justify-content: center;
-    border-bottom: 1px solid wheat;
+    border-bottom: 1px solid gainsboro;
 }
 
 .card-lead > input {
@@ -59,22 +98,15 @@ tr.checked { background-color: Lavender; }
     height: 1.125rem;
 }
 
-.card-cap {
-    display: flex;
-    align-items: center;
+.card .caption {
+    vertical-align: middle;
     padding: 0.25rem;
     font-size: 1rem;
-    border-bottom: 1px solid wheat;
+    font-weight: bold;
+    border-bottom: 1px solid gainsboro;
 }
 
-.card-cap .flag {
-    color: Salmon;
-    font-size: 1.25rem;
-    line-height: 0.5;
-    margin-left: auto;
-}
-
-.card-tail {
+.card .tail {
     vertical-align: middle;
     padding: 0.25rem;
     color: green;
@@ -82,14 +114,12 @@ tr.checked { background-color: Lavender; }
 
 .card .img {
     margin: 0.25rem;
-    border-radius: 50%;
 }
 
 .field-label {
-    display: flex;
-    align-items: center;
-    justify-content: flex-end;
     padding: 0.25rem;
+    text-align: right;
+    vertical-align: middle;
 }
 
 .card > .field-label {

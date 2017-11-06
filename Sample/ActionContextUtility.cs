@@ -110,7 +110,7 @@ namespace Greatbone.Sample
             h.Add("<link rel=\"stylesheet\" href=\"/app.min.css\">");
             h.Add("</head>");
 
-            h.Add("<body class=\"frame-page\">");
+            h.Add("<body>");
 
             main(h);
 
@@ -146,7 +146,7 @@ namespace Greatbone.Sample
             h.Add("<link rel=\"stylesheet\" href=\"/app.min.css\">");
             h.Add("</head>");
 
-            h.Add("<body style=\"padding: 0.5rem; background-color: gainsboro\">");
+            h.Add("<body class=\"pane\">");
 
             main?.Invoke(h);
 

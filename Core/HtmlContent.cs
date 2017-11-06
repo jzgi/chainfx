@@ -439,7 +439,7 @@ namespace Greatbone.Core
 
         public HtmlContent CAPTION(string v, bool flag = false)
         {
-            Add("<div class=\"cell card-cap small-");
+            Add("<div class=\"cell caption small-");
             Add(ac.Work.Buttonly ? 11 : 12);
             Add("\">");
             Add(v);
@@ -453,7 +453,7 @@ namespace Greatbone.Core
 
         public HtmlContent CAPTION_()
         {
-            Add("<div class=\"cell card-cap small-");
+            Add("<div class=\"cell caption small-");
             Add(ac.Work.Buttonly ? 11 : 12);
             Add("\">");
             return this;
@@ -471,7 +471,7 @@ namespace Greatbone.Core
 
         public HtmlContent TAIL(string v)
         {
-            Add("<div class=\"cell shrink card-tail\">");
+            Add("<div class=\"cell shrink tail\">");
             Add(v);
             Add("</div>");
             return this;
@@ -479,7 +479,7 @@ namespace Greatbone.Core
 
         public HtmlContent TAIL_()
         {
-            Add("<div class=\"cell shrink card-tail\">");
+            Add("<div class=\"cell shrink tail\">");
             return this;
         }
 
@@ -593,20 +593,6 @@ namespace Greatbone.Core
             return this;
         }
 
-        public HtmlContent GRID_(sbyte grid = 0)
-        {
-            Add("<div class=\"cell grid-x small-");
-            Add(grid > 0 ? grid : 12);
-            Add("\">");
-            return this;
-        }
-
-        public HtmlContent _GRID()
-        {
-            Add("</div>");
-            return this;
-        }
-
         public HtmlContent P(int v, string label = null, string ext = null)
         {
             Add("<p>");
@@ -684,27 +670,27 @@ namespace Greatbone.Core
             return this;
         }
 
-        public HtmlContent STRONG(decimal v, char cur = (char) 0)
+        public HtmlContent EM(decimal v, char cur = (char) 0)
         {
-            Add("<strong>");
+            Add("<em class=\"em\">");
             if (cur != 0)
             {
                 Add(cur);
             }
             Add(v);
-            Add("</strong>");
+            Add("</em>");
             return this;
         }
 
-        public HtmlContent STRONG_()
+        public HtmlContent EM_()
         {
-            Add("<strong>");
+            Add("<em class=\"em\">");
             return this;
         }
 
-        public HtmlContent _STRONG()
+        public HtmlContent _EM()
         {
-            Add("</strong>");
+            Add("</em>");
             return this;
         }
 
@@ -847,21 +833,17 @@ namespace Greatbone.Core
         {
             Add("<header data-sticky-container>");
             Add("<div class=\"sticky\" style=\"width: 100%\" data-sticky  data-options=\"anchor: page; marginTop: 0; stickyOn: small;\">");
-            Add("<form id=\"viewform\">");
-            Add("<nav class=\"top-bar\">");
+            Add("<form id=\"toolbarform\">");
+            Add("<nav class=\"toolbar\">");
             if (work.UiActions == null)
             {
-                Add("<div class=\"top-bar-title\">");
                 Add(work.Label);
-                Add("</div>");
             }
             else
             {
-                Add("<div class=\"top-bar-left\">");
                 TRIGGERS(work, null);
-                Add("</div>");
             }
-            Add("<div class=\"top-bar-right\">");
+            Add("<div class=\"toolbar-right\">");
             Add("<a class=\"primary\" href=\"javascript: location.reload(false);\"><i class=\"fi-refresh\" style=\"font-size: 1.5rem; line-height: 2rem\"></i></a>");
             Add("</div>");
             Add("</nav>");
@@ -946,26 +928,29 @@ namespace Greatbone.Core
 
             TOOLBAR(work);
 
-            Add("<main class=\"table-scroll\" style=\"padding: 0.5rem\">");
+            Add("<main class=\"sheet table-scroll\">");
             Add("<table>");
             ActionInfo[] ais = varwork?.UiActions;
 
-            Add("<thead>");
-            Add("<tr>");
-            // for checkboxes
-            if (work.Buttonly)
+            if (hd != null)
             {
-                Add("<th></th>");
+                Add("<thead>");
+                Add("<tr>");
+                // for checkboxes
+                if (work.Buttonly)
+                {
+                    Add("<th></th>");
+                }
+                hd(this);
+                if (ais != null)
+                {
+                    Add("<th></th>"); // for triggers
+                }
+                Add("</tr>");
+                Add("</thead>");
             }
-            hd(this);
-            if (ais != null)
-            {
-                Add("<th></th>"); // for triggers
-            }
-            Add("</tr>");
-            Add("</thead>");
 
-            if (arr != null) // tbody if having data objects
+            if (arr != null && row != null) // tbody if having data objects
             {
                 Add("<tbody>");
                 for (int i = 0; i < arr.Length; i++)
@@ -976,7 +961,7 @@ namespace Greatbone.Core
                     if (work.Buttonly)
                     {
                         Add("<td>");
-                        Add("<input name=\"key\" type=\"checkbox\" form=\"viewform\"  value=\"");
+                        Add("<input name=\"key\" type=\"checkbox\" form=\"toolbarform\"  value=\"");
                         varwork?.PutVarKey(obj, this);
                         Add("\" onchange=\"checkit(this);\"></td>");
                     }
@@ -1006,18 +991,18 @@ namespace Greatbone.Core
 
             TOOLBAR(work);
 
-            Add("<main class=\"grid-x small-up-1 medium-up-2 large-up-3 xlarge-up-4\">");
+            Add("<main class=\"board grid-x small-up-1 medium-up-2 large-up-3 xlarge-up-4\">");
             short pow = 1;
             for (int i = 0; i < cards.Length; i++)
             {
-                Add("<div class=\"cell card-cell\">");
+                Add("<div class=\"cell board-cell\">");
                 Add("<form>");
                 var cell = cards[i];
                 Add("<article class=\"grid-x card\">");
                 if (work.Buttonly)
                 {
                     Add("<div class=\"cell small-1 card-lead\">");
-                    Add("<input name=\"key\" type=\"checkbox\" form=\"viewform\" value=\"");
+                    Add("<input name=\"key\" type=\"checkbox\" form=\"toolbarform\" value=\"");
                     Add(pow); // the power as key
                     Add("\" onchange=\"checkit(this);\">");
                     Add("</div>");
@@ -1052,17 +1037,17 @@ namespace Greatbone.Core
 
             if (arr != null) // render grid cells
             {
-                Add("<main class=\"grid-x small-up-1 medium-up-2 large-up-3 xlarge-up-4\">");
+                Add("<main class=\"board grid-x small-up-1 medium-up-2 large-up-3 xlarge-up-4\">");
                 for (int i = 0; i < arr.Length; i++)
                 {
-                    Add("<div class=\"cell card-cell\">");
+                    Add("<div class=\"cell board-cell\">");
                     Add("<form>");
                     D obj = arr[i];
                     Add("<article class=\"grid-x card\">");
                     if (work.Buttonly)
                     {
                         Add("<div class=\"cell small-1 card-lead\">");
-                        Add("<input name=\"key\" type=\"checkbox\" form=\"viewform\" value=\"");
+                        Add("<input name=\"key\" type=\"checkbox\" form=\"toolbarform\" value=\"");
                         varwork?.PutVarKey(obj, this);
                         Add("\" onchange=\"checkit(this);\">");
                         Add("</div>");
@@ -1085,10 +1070,10 @@ namespace Greatbone.Core
             PAGENATE(arr?.Length ?? 0);
         }
 
-        void Dialog(sbyte mode, sbyte size, string tip)
+        void Dialog(sbyte style, sbyte size, string tip)
         {
             Add(" onclick=\"return dialog(this,");
-            Add(mode);
+            Add(style);
             Add(",");
             Add(size);
             Add(",'");
@@ -1222,14 +1207,14 @@ namespace Greatbone.Core
             return this;
         }
 
-        public void FORMLIST<D>(D[] arr, Action<HtmlContent, D> panel) where D : IData
+        public void LISTER<D>(D[] arr, Action<HtmlContent, D> panel) where D : IData
         {
             if (arr != null) // render grid cells
             {
-                Add("<main class=\"grid-x small-up-1 medium-up-2 large-up-3 xlarge-up-4\">");
+                Add("<main class=\"lister grid-x small-up-1 medium-up-2 large-up-3 xlarge-up-4\">");
                 for (int i = 0; i < arr.Length; i++)
                 {
-                    Add("<div class=\"cell panel-cell\">");
+                    Add("<div class=\"cell lister-cell\">");
                     Add("<form>");
                     D obj = arr[i];
                     Add("<article class=\"grid-x panel\">");
@@ -1245,6 +1230,22 @@ namespace Greatbone.Core
 
             // pagination if any
             PAGENATE(arr?.Length ?? 0);
+        }
+
+        public HtmlContent PANEL_()
+        {
+            Add("<div class=\"cell lister-cell\">");
+            Add("<form>");
+            Add("<article class=\"grid-x panel\">");
+            return this;
+        }
+
+        public HtmlContent _PANEL()
+        {
+            Add("</article>");
+            Add("</form>");
+            Add("</div>");
+            return this;
         }
 
         public HtmlContent HIDDEN(string name, string value)
