@@ -23,7 +23,7 @@ namespace Greatbone.Sample
             var prin = (User) ac.Principal;
             ac.GivePage(200, main =>
             {
-                main.BOARD(h =>
+                main.CARDSET(h =>
                 {
                     h.CAPTION("我的个人资料");
                     h.FIELD(prin.name, "姓名");
@@ -119,7 +119,7 @@ namespace Greatbone.Sample
                     ac.GivePane(200, h =>
                     {
                         h.FORM_();
-                        h.FIELD_().T("用于微信以外登录")._FIELD();
+                        h.FIELD_(null).T("用于微信以外登录")._FIELD();
                         h.PASSWORD(nameof(password), password, "密码", min: 3);
                         h._FORM();
                     });
@@ -168,7 +168,7 @@ namespace Greatbone.Sample
                 string shopid = ac[this];
                 ac.GivePage(200, main =>
                 {
-                    main.BOARD(h =>
+                    main.CARDSET(h =>
                     {
                         using (var dc = ac.NewDbContext())
                         {

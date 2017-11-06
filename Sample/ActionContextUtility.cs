@@ -179,12 +179,12 @@ namespace Greatbone.Sample
 
         public static void GiveGridPage<D>(this ActionContext ac, int status, D[] arr, Action<HtmlContent, D> cell, bool? @public = null, int maxage = 60) where D : IData
         {
-            ac.GivePage(status, main => { main.BOARD(arr, cell); }, @public, maxage);
+            ac.GivePage(status, main => { main.CARDSET(arr, cell); }, @public, maxage);
         }
 
         public static void GiveTablePage<D>(this ActionContext ac, int status, D[] arr, Action<HtmlContent> hd, Action<HtmlContent, D> row, bool? @public = null, int maxage = 60) where D : IData
         {
-            ac.GivePage(status, main => { main.SHEET(arr, hd, row); }, @public, maxage);
+            ac.GivePage(status, main => { main.ROWSET(arr, hd, row); }, @public, maxage);
         }
     }
 }

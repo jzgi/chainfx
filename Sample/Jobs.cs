@@ -38,7 +38,7 @@ namespace Greatbone.Sample
             bool inner = ac.Query[nameof(inner)];
             if (inner)
             {
-                ac.GivePage(200, h => { h.BOARD((Order[]) null, null); });
+                ac.GivePage(200, h => { h.CARDSET((Order[]) null, null); });
             }
             else
             {

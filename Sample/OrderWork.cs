@@ -38,8 +38,8 @@ namespace Greatbone.Sample
                         {
                             var oi = o.items[i];
                             h.IMG("/shop/" + o.shopid + "/" + oi.name + "/icon", 2);
-                            h.FIELD_(5).P(oi.name).P(oi.price)._FIELD();
-                            h.FIELD_(5).P(oi.qty, ext: oi.unit).P(oi.customs).BUTTON("", true, 0)._FIELD();
+                            h.FIELD_(null, 5).P(oi.name).P(oi.price)._FIELD();
+                            h.FIELD_(null, 5).P(oi.qty, ext: oi.unit).P(oi.customs).BUTTON("", true, 0)._FIELD();
                         }
                         h.FIELD(o.total, "总价", 0);
                     }, false, 3);

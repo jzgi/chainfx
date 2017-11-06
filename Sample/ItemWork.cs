@@ -32,7 +32,7 @@ namespace Greatbone.Sample
                     {
                         h.CAPTION(o.name);
                         h.IMG(o.name + "/icon", 4);
-                        h.FIELD_(8).P(o.descr, "简述").P(o.price, "价格")._FIELD();
+                        h.FIELD_(null,8).P(o.descr, "简述").P(o.price, "价格")._FIELD();
                         h.FIELD(o.unit, "单位", 6).FIELD(o.min, "起订", 6);
                         h.FIELD(o.step, "步进", 6).FIELD(o.max, "剩余", 6);
                     });

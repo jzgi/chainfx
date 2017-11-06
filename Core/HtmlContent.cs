@@ -549,7 +549,7 @@ namespace Greatbone.Core
             return this;
         }
 
-        public HtmlContent FIELD_(string label, sbyte grid = 0, string css = null)
+        public HtmlContent FIELD_(string label, sbyte grid = 0)
         {
             if (label != null)
             {
@@ -558,32 +558,14 @@ namespace Greatbone.Core
                 Add(":</div>");
                 Add("<div class=\"cell field-v small-");
                 Add(grid > 0 ? grid - 2 : 10);
-                if (css != null)
-                {
-                    Add("\" style=\"");
-                    Add(css);
-                }
                 Add("\">");
             }
             else
             {
                 Add("<div class=\"cell field-v small-");
                 Add(grid > 0 ? grid : 12);
-                if (css != null)
-                {
-                    Add("\" style=\"");
-                    Add(css);
-                }
                 Add("\">");
             }
-            return this;
-        }
-
-        public HtmlContent FIELD_(sbyte grid = 0)
-        {
-            Add("<div class=\"cell field-v small-");
-            Add(grid > 0 ? grid : 12);
-            Add("\">");
             return this;
         }
 
@@ -646,7 +628,7 @@ namespace Greatbone.Core
 
         public HtmlContent IMG(string src, sbyte grid = 0, string href = null)
         {
-            FIELD_(grid);
+            FIELD_(null, grid);
             if (href != null)
             {
                 Add("<a href=\"");
@@ -833,8 +815,8 @@ namespace Greatbone.Core
         {
             Add("<header data-sticky-container>");
             Add("<div class=\"sticky\" style=\"width: 100%\" data-sticky  data-options=\"anchor: page; marginTop: 0; stickyOn: small;\">");
-            Add("<form id=\"toolbarform\">");
-            Add("<nav class=\"toolbar\">");
+            Add("<form id=\"tool-bar-form\">");
+            Add("<nav class=\"tool-bar\">");
             if (work.UiActions == null)
             {
                 Add(work.Label);
@@ -843,13 +825,61 @@ namespace Greatbone.Core
             {
                 TRIGGERS(work, null);
             }
-            Add("<div class=\"toolbar-right\">");
+            Add("<div class=\"right\">");
             Add("<a class=\"primary\" href=\"javascript: location.reload(false);\"><i class=\"fi-refresh\" style=\"font-size: 1.5rem; line-height: 2rem\"></i></a>");
             Add("</div>");
             Add("</nav>");
             Add("</form>");
             Add("</div>");
             Add("</header>");
+        }
+
+        public HtmlContent TOOLBAR_(string title = null)
+        {
+            Add("<div data-sticky-container>");
+            Add("<div class=\"sticky\" style=\"width: 100%\" data-sticky  data-options=\"anchor: page; marginTop: 0; stickyOn: small;\">");
+            Add("<form>");
+            Add("<div class=\"tool-bar\">");
+            if (title != null)
+            {
+                Add("<div class=\"title\">");
+                Add(title);
+                Add("</div>");
+            }
+            return this;
+        }
+
+        public HtmlContent LEFT_()
+        {
+            Add("<div class=\"left\">");
+            return this;
+        }
+
+        public HtmlContent _LEFT()
+        {
+            Add("</div>");
+            return this;
+        }
+
+        public HtmlContent RIGHT_()
+        {
+            Add("<div class=\"right\">");
+            return this;
+        }
+
+        public HtmlContent _RIGHT()
+        {
+            Add("</div>");
+            return this;
+        }
+
+        public HtmlContent _TOOLBAR()
+        {
+            Add("</div>");
+            Add("</form>");
+            Add("</div>");
+            Add("</div>");
+            return this;
         }
 
         public void PAGENATE(int count)
@@ -895,44 +925,18 @@ namespace Greatbone.Core
             }
         }
 
-        public void TABLE(string name, IDataInput inp, Action<IDataInput, HtmlContent, char> putter)
-        {
-            Add("<main class=\"table-scroll\" style=\"padding: 0.5rem\">");
-            Add("<table>");
-
-            Add("<thead>");
-            Add("<tr>");
-            if (name != null)
-            {
-                Add("<th></th>");
-            }
-            putter(inp, this, 'L'); // putting value
-            Add("</tr>");
-            Add("</thead>");
-
-            Add("<tbody>");
-            while (inp.Next())
-            {
-                Add("<tr>");
-                putter(inp, this, 'B'); // putting label
-                Add("</tr>");
-            }
-            Add("</tbody>");
-            Add("</table>");
-        }
-
-        public void SHEET<D>(D[] arr, Action<HtmlContent> hd, Action<HtmlContent, D> row) where D : IData
+        public void ROWSET<D>(D[] arr, Action<HtmlContent> head, Action<HtmlContent, D> row) where D : IData
         {
             Work work = ac.Work;
             Work varwork = work.varwork;
 
             TOOLBAR(work);
 
-            Add("<main class=\"sheet table-scroll\">");
+            Add("<main class=\"rowset table-scroll\">");
             Add("<table>");
             ActionInfo[] ais = varwork?.UiActions;
 
-            if (hd != null)
+            if (head != null)
             {
                 Add("<thead>");
                 Add("<tr>");
@@ -941,7 +945,7 @@ namespace Greatbone.Core
                 {
                     Add("<th></th>");
                 }
-                hd(this);
+                head(this);
                 if (ais != null)
                 {
                     Add("<th></th>"); // for triggers
@@ -961,7 +965,7 @@ namespace Greatbone.Core
                     if (work.Buttonly)
                     {
                         Add("<td>");
-                        Add("<input name=\"key\" type=\"checkbox\" form=\"toolbarform\"  value=\"");
+                        Add("<input name=\"key\" type=\"checkbox\" form=\"tool-bar-form\"  value=\"");
                         varwork?.PutVarKey(obj, this);
                         Add("\" onchange=\"checkit(this);\"></td>");
                     }
@@ -984,25 +988,25 @@ namespace Greatbone.Core
             Add("</main>");
         }
 
-        public void BOARD(params Action<HtmlContent>[] cards)
+        public void CARDSET(params Action<HtmlContent>[] cards)
         {
             Work work = ac.Work;
             Work varwork = work.varwork;
 
             TOOLBAR(work);
 
-            Add("<main class=\"board grid-x small-up-1 medium-up-2 large-up-3 xlarge-up-4\">");
+            Add("<main class=\"cardset grid-x small-up-1 medium-up-2 large-up-3 xlarge-up-4\">");
             short pow = 1;
             for (int i = 0; i < cards.Length; i++)
             {
-                Add("<div class=\"cell board-cell\">");
+                Add("<div class=\"cell cardset-cell\">");
                 Add("<form>");
                 var cell = cards[i];
                 Add("<article class=\"grid-x card\">");
                 if (work.Buttonly)
                 {
                     Add("<div class=\"cell small-1 card-lead\">");
-                    Add("<input name=\"key\" type=\"checkbox\" form=\"toolbarform\" value=\"");
+                    Add("<input name=\"key\" type=\"checkbox\" form=\"tool-bar-form\" value=\"");
                     Add(pow); // the power as key
                     Add("\" onchange=\"checkit(this);\">");
                     Add("</div>");
@@ -1028,7 +1032,7 @@ namespace Greatbone.Core
         }
 
 
-        public void BOARD<D>(D[] arr, Action<HtmlContent, D> card) where D : IData
+        public void CARDSET<D>(D[] arr, Action<HtmlContent, D> card) where D : IData
         {
             Work work = ac.Work;
             Work varwork = work.varwork;
@@ -1037,17 +1041,17 @@ namespace Greatbone.Core
 
             if (arr != null) // render grid cells
             {
-                Add("<main class=\"board grid-x small-up-1 medium-up-2 large-up-3 xlarge-up-4\">");
+                Add("<main class=\"cardset grid-x small-up-1 medium-up-2 large-up-3 xlarge-up-4\">");
                 for (int i = 0; i < arr.Length; i++)
                 {
-                    Add("<div class=\"cell board-cell\">");
+                    Add("<div class=\"cell cardset-cell\">");
                     Add("<form>");
                     D obj = arr[i];
                     Add("<article class=\"grid-x card\">");
                     if (work.Buttonly)
                     {
                         Add("<div class=\"cell small-1 card-lead\">");
-                        Add("<input name=\"key\" type=\"checkbox\" form=\"toolbarform\" value=\"");
+                        Add("<input name=\"key\" type=\"checkbox\" form=\"tool-bar-form\" value=\"");
                         varwork?.PutVarKey(obj, this);
                         Add("\" onchange=\"checkit(this);\">");
                         Add("</div>");
@@ -1103,7 +1107,7 @@ namespace Greatbone.Core
                     short state = (obj as IStatable)?.GetState() ?? pow;
                     enabled = (ui.State & state) == state;
                 }
-                if (ui.IsA)
+                if (ui.IsAnchor)
                 {
                     Add("<a class=\"button primary");
                     Add(ai == ac.Doer ? " hollow" : " clear");
@@ -1120,48 +1124,15 @@ namespace Greatbone.Core
                     }
                     Add(ai.RPath);
                     Add("\"");
-                    if (ui.HasPrompt)
-                    {
-                        Dialog(2, ui.Size, ui.Tip);
-                    }
-                    else if (ui.HasShow)
-                    {
-                        Dialog(4, ui.Size, ui.Tip);
-                    }
-                    else if (ui.HasOpen)
-                    {
-                        Dialog(8, ui.Size, ui.Tip);
-                    }
-                    else if (ui.HasScript)
-                    {
-                        Add(" onclick=\"if(!confirm('");
-                        Add(ui.Tip ?? ui.Label);
-                        Add("')) return false;");
-                        Add(ai.Name);
-                        Add("(this);return false;\"");
-                    }
-                    else if (ui.HasCrop)
-                    {
-                        Add(" onclick=\"return crop(this,");
-                        Add(ui.Size);
-                        Add(',');
-                        Add(ui.Circle);
-                        Add(",'");
-                        Add(ui.Tip);
-                        Add("');\"");
-                    }
                     if (!enabled)
                     {
                         Add(" disabled onclick=\"return false;\"");
                     }
-                    Add(">");
-                    Add(ai.Label);
-                    Add("</a>");
                 }
                 else if (ui.IsButton)
                 {
                     Add("<button class=\"button primary");
-                    if (!ui.Em) Add(" hollow");
+                    if (!ui.HasScript) Add(" hollow");
                     Add("\" name=\"");
                     Add(ai.Name);
                     Add("\" formaction=\"");
@@ -1181,40 +1152,66 @@ namespace Greatbone.Core
                     {
                         Add(" disabled");
                     }
-                    else if (ui.HasConfirm)
-                    {
-                        Add(" onclick=\"return confirm('");
-                        Add(ui.Tip ?? ui.Label);
-                        Add("?');\"");
-                    }
-                    else if (ui.HasPrompt)
-                    {
-                        Dialog(2, ui.Size, ui.Tip);
-                    }
-                    else if (ui.HasShow)
-                    {
-                        Dialog(4, ui.Size, ui.Tip);
-                    }
-                    else if (ui.HasOpen)
-                    {
-                        Dialog(8, ui.Size, ui.Tip);
-                    }
-                    Add(">");
-                    Add(ai.Label);
+                }
+                if (ui.HasConfirm)
+                {
+                    Add(" onclick=\"return confirm('");
+                    Add(ui.Tip ?? ui.Label);
+                    Add("?');\"");
+                }
+                else if (ui.HasPrompt)
+                {
+                    Dialog(2, ui.Size, ui.Tip);
+                }
+                else if (ui.HasShow)
+                {
+                    Dialog(4, ui.Size, ui.Tip);
+                }
+                else if (ui.HasOpen)
+                {
+                    Dialog(8, ui.Size, ui.Tip);
+                }
+                else if (ui.HasScript)
+                {
+                    Add(" onclick=\"if(!confirm('");
+                    Add(ui.Tip ?? ui.Label);
+                    Add("')) return false;");
+                    Add(ai.Name);
+                    Add("(this);return false;\"");
+                }
+                else if (ui.HasCrop)
+                {
+                    Add(" onclick=\"return crop(this,");
+                    Add(ui.Size);
+                    Add(',');
+                    Add(ui.Circle);
+                    Add(",'");
+                    Add(ui.Tip);
+                    Add("');\"");
+                }
+                Add(">");
+                Add(ai.Label);
+
+                if (ui.IsAnchor)
+                {
+                    Add("</a>");
+                }
+                else if (ui.IsButton)
+                {
                     Add("</button>");
                 }
             }
             return this;
         }
 
-        public void LISTER<D>(D[] arr, Action<HtmlContent, D> panel) where D : IData
+        public void PANELSET<D>(D[] arr, Action<HtmlContent, D> panel) where D : IData
         {
             if (arr != null) // render grid cells
             {
-                Add("<main class=\"lister grid-x small-up-1 medium-up-2 large-up-3 xlarge-up-4\">");
+                Add("<main class=\"panelset grid-x small-up-1 medium-up-2 large-up-3 xlarge-up-4\">");
                 for (int i = 0; i < arr.Length; i++)
                 {
-                    Add("<div class=\"cell lister-cell\">");
+                    Add("<div class=\"cell panelset-cell\">");
                     Add("<form>");
                     D obj = arr[i];
                     Add("<article class=\"grid-x panel\">");
@@ -1234,7 +1231,7 @@ namespace Greatbone.Core
 
         public HtmlContent PANEL_()
         {
-            Add("<div class=\"cell lister-cell\">");
+            Add("<div class=\"cell panelset-cell\">");
             Add("<form>");
             Add("<article class=\"grid-x panel\">");
             return this;

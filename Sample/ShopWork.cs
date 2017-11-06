@@ -80,9 +80,9 @@ namespace Greatbone.Sample
             {
                 city = "南昌";
             }
-            ac.GivePage(200, main =>
+            ac.GivePage(200, m =>
             {
-                main.TOPBAR_("所在城市").LEFT_().SELECT(nameof(city), city, City.All, refresh: true).HIDDEN(nameof(area), area)._LEFT()._TOPBAR();
+                m.TOPBAR_("所在城市").LEFT_().SELECT(nameof(city), city, City.All, refresh: true).HIDDEN(nameof(area), area)._LEFT()._TOPBAR();
 
                 using (var dc = ac.NewDbContext())
                 {
@@ -90,18 +90,18 @@ namespace Greatbone.Sample
                     if (dc.Query(p => p.Set(city)))
                     {
                         var arr = dc.ToArray<Shop>();
-                        main.LISTER(arr, (h, o) =>
+                        m.PANELSET(arr, (h, o) =>
                         {
                             h.CAPTION(o.name);
-                            h.FIELD_(7).P(o.addr)._FIELD().IMG(o.id + "/icon", 5, href: o.id + "/");
+                            h.FIELD_(null, 7).P(o.addr)._FIELD().IMG(o.id + "/icon", 5, href: o.id + "/");
                             h.FIELD(o.addr);
                         });
                     }
                     else
                     {
-                        main.T("<div style=\"text-align: center\">");
-                        main.T("<p>").T(city).T("目前没有商家</p>");
-                        main.T("</div>");
+                        m.T("<div style=\"text-align: center\">");
+                        m.T("<p>").T(city).T("目前没有商家</p>");
+                        m.T("</div>");
                     }
                 }
             }, true, 60 * 5);

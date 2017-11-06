@@ -573,10 +573,15 @@ p {
     text-rendering: optimizeLegibility;
 }
 
-em,
 i {
     font-style: italic;
     line-height: inherit;
+}
+
+em {
+    font-style: normal;
+    font-weight: bolder;
+    font-size: 1rem;
 }
 
 strong,
@@ -2607,6 +2612,7 @@ input:checked + label > .switch-inactive { display: none; }
     -ms-flex-wrap: nowrap;
     flex-wrap: nowrap;
     font-size: 1rem;
+    background-color: silver;
     height: 3rem;
 }
 

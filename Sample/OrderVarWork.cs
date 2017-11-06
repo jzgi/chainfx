@@ -95,7 +95,7 @@ namespace Greatbone.Sample
             }
         }
 
-        [Ui("付款", Style = AnchorScript, Em = true)]
+        [Ui("付款", Style = ButtonScript)]
         public async Task prepay(ActionContext ac)
         {
             string wx = ac[typeof(UserVarWork)];

@@ -83,12 +83,7 @@ namespace Greatbone.Core
 
         public bool Circle { get; set; }
 
-        /// <summary>
-        /// Is empohsized or not.
-        /// </summary>
-        public bool Em { get; set; }
-
-        public bool IsA => ((int) Style & 0x0100) == 0x0100;
+        public bool IsAnchor => ((int) Style & 0x0100) == 0x0100;
 
         public bool IsButton => ((int) Style & 0x0200) == 0x0200;
 
