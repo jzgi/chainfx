@@ -61,8 +61,7 @@ namespace Greatbone.Sample
         public async Task<bool> AuthenticateAsync(ActionContext ac, bool e)
         {
             // if principal already in cookie
-            string token;
-            if (ac.Cookies.TryGetValue("Token", out token))
+            if (ac.Cookies.TryGetValue("Token", out var token))
             {
                 ac.Principal = Decrypt(token);
                 return true;
@@ -168,9 +167,7 @@ namespace Greatbone.Sample
         public async Task notify(ActionContext ac)
         {
             XElem xe = await ac.ReadAsync<XElem>();
-            long orderid;
-            decimal cash;
-            if (Notified(xe, out orderid, out cash))
+            if (Notified(xe, out var orderid, out var cash))
             {
                 using (var dc = NewDbContext())
                 {

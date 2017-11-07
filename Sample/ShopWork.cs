@@ -90,12 +90,12 @@ namespace Greatbone.Sample
                     if (dc.Query(p => p.Set(city)))
                     {
                         var arr = dc.ToArray<Shop>();
-                        m.LISTER(arr, (h, o) =>
+                        m.GridView(arr, (h, o) =>
                         {
                             h.CAPTION(o.name);
                             h.FIELD_(null, 7).P(o.addr)._FIELD().IMG(o.id + "/icon", 5, href: o.id + "/");
                             h.FIELD(o.addr);
-                        });
+                        }, "frontview");
                     }
                     else
                     {
@@ -125,11 +125,11 @@ namespace Greatbone.Sample
                 dc.Sql("SELECT ").columnlst(Shop.Empty, proj).T(" FROM shops ORDER BY id");
                 if (dc.Query())
                 {
-                    ac.GiveTablerPage(200, dc.ToArray<Shop>(proj), h => h.TH("名称").TH("电话").TH("地址"), (h, o) => h.TD(o.name).TD(o.mgrtel).TD(o.addr), false, 3);
+                    ac.GiveTablePage(200, dc.ToArray<Shop>(proj), h => h.TH("名称").TH("电话").TH("地址"), (h, o) => h.TD(o.name).TD(o.mgrtel).TD(o.addr), false, 3);
                 }
                 else
                 {
-                    ac.GiveTablerPage(200, (Shop[]) null, null, null, false, 3);
+                    ac.GiveTablePage(200, (Shop[]) null, null, null, false, 3);
                 }
             }
         }

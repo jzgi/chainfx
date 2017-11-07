@@ -177,14 +177,32 @@ namespace Greatbone.Sample
             ac.Give(status, h, @public, maxage);
         }
 
-        public static void GiveGriderPage<D>(this ActionContext ac, int status, D[] arr, Action<HtmlContent, D> cell, bool? @public = null, int maxage = 60) where D : IData
+        public static void GiveGridPage<D>(this ActionContext ac, int status, D[] arr, Action<HtmlContent, D> cell, bool? @public = null, int maxage = 60) where D : IData
         {
-            ac.GivePage(status, main => { main.GRIDER(arr, cell); }, @public, maxage);
+            ac.GivePage(
+                status,
+                main =>
+                {
+                    main.TOOLBAR();
+                    main.GridView(arr, cell, "gridview");
+                },
+                @public,
+                maxage
+            );
         }
 
-        public static void GiveTablerPage<D>(this ActionContext ac, int status, D[] arr, Action<HtmlContent> hd, Action<HtmlContent, D> row, bool? @public = null, int maxage = 60) where D : IData
+        public static void GiveTablePage<D>(this ActionContext ac, int status, D[] arr, Action<HtmlContent> head, Action<HtmlContent, D> row, bool? @public = null, int maxage = 60) where D : IData
         {
-            ac.GivePage(status, main => { main.TABLER(arr, hd, row); }, @public, maxage);
+            ac.GivePage(
+                status,
+                main =>
+                {
+                    main.TOOLBAR();
+                    main.TableView(arr, head, row, "tableview");
+                },
+                @public,
+                maxage
+            );
         }
     }
 }

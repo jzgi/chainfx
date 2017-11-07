@@ -804,19 +804,23 @@ namespace Greatbone.Core
             return this;
         }
 
-        public void TOOLBAR(Work work)
+        public void TOOLBAR(Work work = null)
         {
             Add("<header data-sticky-container>");
             Add("<div class=\"sticky\" style=\"width: 100%\" data-sticky  data-options=\"anchor: page; marginTop: 0; stickyOn: small;\">");
             Add("<form id=\"tool-bar-form\">");
             Add("<nav class=\"tool-bar\">");
+            if (work == null)
+            {
+                work = ac.Work;
+            }
             if (work.UiActions == null)
             {
                 Add(work.Label);
             }
             else
             {
-                TRIGGERS(work, null);
+                Triggers(work, null);
             }
             Add("<div class=\"right\">");
             Add("<a class=\"primary\" href=\"javascript: location.reload(false);\"><i class=\"fi-refresh\" style=\"font-size: 1.5rem; line-height: 2rem\"></i></a>");
@@ -918,14 +922,13 @@ namespace Greatbone.Core
             }
         }
 
-        public void TABLER<D>(D[] arr, Action<HtmlContent> head, Action<HtmlContent, D> row) where D : IData
+        public void TableView<D>(D[] arr, Action<HtmlContent> head, Action<HtmlContent, D> row, string @class = null) where D : IData
         {
             Work work = ac.Work;
             Work varwork = work.varwork;
-
-            TOOLBAR(work);
-
-            Add("<main class=\"tabler table-scroll\">");
+            Add("<main class=\"");
+            Add(@class);
+            Add(" table-scroll);\">");
             Add("<table>");
             ActionInfo[] ais = varwork?.UiActions;
 
@@ -967,7 +970,7 @@ namespace Greatbone.Core
                     {
                         Add("<td style=\"width: 1px; white-space: nowrap;\">");
                         Add("<form>");
-                        TRIGGERS(varwork, obj);
+                        Triggers(varwork, obj);
                         Add("</form>");
                         Add("</td>");
                     }
@@ -981,21 +984,20 @@ namespace Greatbone.Core
             Add("</main>");
         }
 
-        public void GRIDER(params Action<HtmlContent>[] cards)
+        public void GridView(Action<HtmlContent>[] cards, string @class = null)
         {
             Work work = ac.Work;
             Work varwork = work.varwork;
-
-            TOOLBAR(work);
-
-            Add("<main class=\"grid-x small-up-1 medium-up-2 large-up-3 xlarge-up-4\">");
+            Add("<main class=\"");
+            Add(@class);
+            Add(" grid-x small-up-1 medium-up-2 large-up-3 xlarge-up-4\">");
             short pow = 1;
             for (int i = 0; i < cards.Length; i++)
             {
-                Add("<div class=\"cell grider-cell\">");
+                Add("<div class=\"cell gridview-cell\">");
                 Add("<form>");
                 var cell = cards[i];
-                Add("<article class=\"grid-x\">");
+                Add("<article class=\"grid-x card\">");
                 if (work.Buttonly)
                 {
                     Add("<div class=\"cell small-1 lead\">");
@@ -1011,7 +1013,7 @@ namespace Greatbone.Core
                 if (varwork != null)
                 {
                     Add("<nav class=\"cell shrink\" style=\"margin-left: auto\">");
-                    TRIGGERS(varwork, null, pow);
+                    Triggers(varwork, null, pow);
                     Add("</nav>");
                 }
 
@@ -1025,22 +1027,21 @@ namespace Greatbone.Core
         }
 
 
-        public void GRIDER<D>(D[] arr, Action<HtmlContent, D> card) where D : IData
+        public void GridView<D>(D[] arr, Action<HtmlContent, D> card, string @class = null) where D : IData
         {
             Work work = ac.Work;
             Work varwork = work.varwork;
-
-            TOOLBAR(work);
-
-            if (arr != null) // render grid cells
+            if (arr != null)
             {
-                Add("<main class=\"grid-x small-up-1 medium-up-2 large-up-3 xlarge-up-4\">");
+                Add("<main class=\"");
+                Add(@class);
+                Add(" grid-x small-up-1 medium-up-2 large-up-3 xlarge-up-4\">");
                 for (int i = 0; i < arr.Length; i++)
                 {
-                    Add("<div class=\"cell grider-cell\">");
+                    Add("<div class=\"cell gridview-cell\">");
                     Add("<form>");
                     D obj = arr[i];
-                    Add("<article class=\"grid-x\">");
+                    Add("<article class=\"grid-x card\">");
                     if (work.Buttonly)
                     {
                         Add("<div class=\"cell small-1 lead\">");
@@ -1049,14 +1050,11 @@ namespace Greatbone.Core
                         Add("\" onchange=\"checkit(this);\">");
                         Add("</div>");
                     }
-
                     card(this, obj);
-
-                    // output var triggers
+                    // output var tools
                     Add("<nav class=\"cell shrink\" style=\"margin-left: auto\">");
-                    TRIGGERS(varwork, obj);
+                    Triggers(varwork, obj);
                     Add("</nav>");
-
                     Add("</article>");
                     Add("</form>");
                     Add("</div>");
@@ -1078,12 +1076,12 @@ namespace Greatbone.Core
             Add("');\"");
         }
 
-        public HtmlContent TRIGGERS(Work work, IData obj, short pow = 0)
+        public void Triggers(Work work, IData obj, short pow = 0)
         {
             var ais = work.UiActions;
             if (ais == null)
             {
-                return this;
+                return;
             }
             for (int i = 0; i < ais.Length; i++)
             {
@@ -1194,49 +1192,27 @@ namespace Greatbone.Core
                     Add("</button>");
                 }
             }
-            return this;
         }
 
-        public void LISTER<D>(D[] arr, Action<HtmlContent, D> panel) where D : IData
+        public HtmlContent CARD_()
         {
-            if (arr != null) // render grid cells
-            {
-                Add("<main class=\"grid-x small-up-1 medium-up-2 large-up-3 xlarge-up-4\">");
-                for (int i = 0; i < arr.Length; i++)
-                {
-                    Add("<div class=\"cell lister-cell\">");
-                    Add("<form>");
-                    D obj = arr[i];
-                    Add("<article class=\"grid-x\">");
-
-                    panel(this, obj);
-
-                    Add("</article>");
-                    Add("</form>");
-                    Add("</div>");
-                }
-                Add("</main>");
-            }
-
-            // pagination if any
-            PAGENATE(arr?.Length ?? 0);
-        }
-
-        public HtmlContent PANEL_()
-        {
-            Add("<div class=\"cell panelset-cell\">");
+            Add("<div class=\"cell gridview-cell\">");
             Add("<form>");
-            Add("<article class=\"grid-x panel\">");
+            Add("<article class=\"grid-x card\">");
             return this;
         }
 
-        public HtmlContent _PANEL()
+        public HtmlContent _CARD()
         {
             Add("</article>");
             Add("</form>");
             Add("</div>");
             return this;
         }
+
+        //
+        // CONTROLS
+        //
 
         public HtmlContent HIDDEN(string name, string value)
         {

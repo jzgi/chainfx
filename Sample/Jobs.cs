@@ -38,7 +38,7 @@ namespace Greatbone.Sample
             bool inner = ac.Query[nameof(inner)];
             if (inner)
             {
-                ac.GivePage(200, h => { h.GRIDER((Order[]) null, null); });
+                ac.GivePage(200, h => { h.GridView((Order[]) null, null); });
             }
             else
             {
@@ -54,11 +54,11 @@ namespace Greatbone.Sample
             {
                 if (dc.Query("SELECT * FROM repays WHERE shopid = @1", p => p.Set(shopid)))
                 {
-                    ac.GiveGriderPage(200, dc.ToArray<Repay>(), (h, o) => { });
+                    ac.GiveGridPage(200, dc.ToArray<Repay>(), (h, o) => { });
                 }
                 else
                 {
-                    ac.GiveGriderPage(200, (Repay[]) null, null);
+                    ac.GiveGridPage(200, (Repay[]) null, null);
                 }
             }
         }

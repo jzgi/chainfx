@@ -30,7 +30,7 @@ namespace Greatbone.Sample
                 dc.Sql("SELECT ").columnlst(Order.Empty).T(" FROM orders WHERE wx = @1 AND status = 0 ORDER BY id DESC");
                 if (dc.Query(p => p.Set(wx)))
                 {
-                    ac.GiveGriderPage(200, dc.ToArray<Order>(), (h, o) =>
+                    ac.GiveGridPage(200, dc.ToArray<Order>(), (h, o) =>
                     {
                         h.CAPTION(o.shopname);
                         h.FIELD_("收货人").T(o.name, o.tel, o.addr, null).BUTTON("addr", true, ButtonShow)._FIELD();
@@ -41,15 +41,13 @@ namespace Greatbone.Sample
                             h.FIELD_(null, 5).P(oi.name).P(oi.price)._FIELD();
                             h.FIELD_(null, 5).P(oi.qty, ext: oi.unit).P(oi.customs).BUTTON("修改", true, 0)._FIELD();
                         }
-                        h.FIELD_(null, 7);
-                        h.T(o.min).T("元起送，满").T(o.every).T("元减").T(o.cut).T("元");
-                        h._FIELD();
+                        h.FIELD_(null, 7).T("<p>").T(o.min).T("元起送，满").T(o.every).T("元减").T(o.cut).T("元").T("</p>")._FIELD();
                         h.FIELD_(null, 5).P(o.total, "总计")._FIELD();
                     }, false, 3);
                 }
                 else
                 {
-                    ac.GiveGriderPage(200, (Order[]) null, null, false, 3);
+                    ac.GiveGridPage(200, (Order[]) null, null, false, 3);
                 }
             }
         }
@@ -119,7 +117,7 @@ namespace Greatbone.Sample
                 dc.Sql("SELECT ").columnlst(Order.Empty).T(" FROM orders WHERE wx = @1 AND status > 0 ORDER BY id DESC");
                 if (dc.Query(p => p.Set(wx)))
                 {
-                    ac.GiveGriderPage(200, dc.ToArray<Order>(), (h, o) =>
+                    ac.GiveGridPage(200, dc.ToArray<Order>(), (h, o) =>
                     {
                         h.CAPTION_().T("单号")._T(o.id).SEP().T(o.paid)._CAPTION();
                         if (o.name != null)
@@ -137,7 +135,7 @@ namespace Greatbone.Sample
                 }
                 else
                 {
-                    ac.GiveGriderPage(200, (Order[]) null, null, false, 3);
+                    ac.GiveGridPage(200, (Order[]) null, null, false, 3);
                 }
             }
         }
@@ -158,7 +156,7 @@ namespace Greatbone.Sample
             {
                 if (dc.Query("SELECT * FROM orders WHERE shopid = @1 AND status = " + Order.PAID + " ORDER BY id DESC LIMIT 20 OFFSET @2", p => p.Set(shopid).Set(page * 20)))
                 {
-                    ac.GiveGriderPage(200, dc.ToArray<Order>(), (h, o) =>
+                    ac.GiveGridPage(200, dc.ToArray<Order>(), (h, o) =>
                     {
                         h.CAPTION_().T("单号")._T(o.id).SEP().T(o.paid)._CAPTION(o.prepare);
                         if (o.name != null)
@@ -176,7 +174,7 @@ namespace Greatbone.Sample
                 }
                 else
                 {
-                    ac.GiveGriderPage(200, (Order[]) null, (h, o) => { }, false, 3);
+                    ac.GiveGridPage(200, (Order[]) null, (h, o) => { }, false, 3);
                 }
             }
         }
@@ -221,7 +219,7 @@ namespace Greatbone.Sample
             {
                 if (dc.Query("SELECT * FROM orders WHERE shopid = @1 AND status = " + Order.READY + " ORDER BY id DESC LIMIT 20 OFFSET @2", p => p.Set(shopid).Set(page * 20)))
                 {
-                    ac.GiveGriderPage(200, dc.ToArray<Order>(), (h, o) =>
+                    ac.GiveGridPage(200, dc.ToArray<Order>(), (h, o) =>
                     {
                         h.CAPTION_().T("单号")._T(o.id).SEP().T(o.paid)._CAPTION();
                         if (o.name != null)
@@ -239,7 +237,7 @@ namespace Greatbone.Sample
                 }
                 else
                 {
-                    ac.GiveGriderPage(200, (Order[]) null, (h, o) => { }, false, 3);
+                    ac.GiveGridPage(200, (Order[]) null, (h, o) => { }, false, 3);
                 }
             }
         }
@@ -273,7 +271,7 @@ namespace Greatbone.Sample
             {
                 if (dc.Query("SELECT * FROM orders WHERE shopid = @1 AND status = " + Order.RECKONED + " ORDER BY id DESC LIMIT 20 OFFSET @2", p => p.Set(shopid).Set(page * 20)))
                 {
-                    ac.GiveGriderPage(200, dc.ToArray<Order>(), (h, o) =>
+                    ac.GiveGridPage(200, dc.ToArray<Order>(), (h, o) =>
                     {
                         h.CAPTION_().T("单号")._T(o.id).SEP().T(o.paid)._CAPTION();
                         if (o.name != null)
@@ -291,7 +289,7 @@ namespace Greatbone.Sample
                 }
                 else
                 {
-                    ac.GiveGriderPage(200, (Order[]) null, (h, o) => { }, false, 3);
+                    ac.GiveGridPage(200, (Order[]) null, (h, o) => { }, false, 3);
                 }
             }
         }

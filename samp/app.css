@@ -21,57 +21,23 @@
     background-color: gainsboro;
 }
 
-/* lister  */
 
-.lister-cell {
+/* gridview */
+
+.gridview-cell {
     padding: 0.75rem 0.375rem 0 0.375rem;
 }
 
-.lister-cell:last-of-type {
+.gridview-cell:last-of-type {
     margin-bottom: 0.75rem;
 }
 
-.lister-cell article {
-    background-color:#fefefe;
-    border-radius: 4px;
-}
-
-.lister-cell .caption {
-    display: flex;
-    align-items: center;
-    padding: 0.25rem;
-    font-size: 1rem;
-    border-bottom: 1px solid rgba(196, 190, 185, 0.5);;
-}
-
-.lister-cell .tail {
-    vertical-align: middle;
-    padding: 0.25rem;
-    color: green;
-}
-
-.lister-cell .img {
-    margin: 0.25rem;
-    border-radius: 50%;
-}
-
-
-/* cardset */
-
-.grider-cell {
-    padding: 0.75rem 0.375rem 0 0.375rem;
-}
-
-.grider-cell:last-of-type {
-    margin-bottom: 0.75rem;
-}
-
-.grider-cell article {
+.card {
     background-color: #fefefe;
     border-radius: 4px;
 }
 
-.grider-cell article.checked {
+.card .checked {
     background-color: Lavender;
 }
 
@@ -79,48 +45,44 @@ tr.checked {
     background-color: Lavender;
 }
 
-.tabler {
+.tableview {
     padding: 0.375rem;
 }
 
-.grider-cell .lead {
+.card .lead {
     display: flex;
     align-items: center;
     justify-content: center;
-    border-bottom: 1px solid wheat;
 }
 
-.grider-cell .lead > input {
+.card .lead > input {
     width: 1.125rem;
     height: 1.125rem;
 }
 
-.grider-cell .caption {
+.card .caption {
     vertical-align: middle;
     padding: 0.25rem;
-    font-size: 1rem;
-    font-weight: bold;
-    border-bottom: 1px solid wheat;
+    font-size: 1.125rem;
 }
 
-.grider-cell .tail {
+.card .tail {
     vertical-align: middle;
     padding: 0.25rem;
     color: green;
 }
 
-.grider-cell .img {
+.card .img {
     border-radius: 50%;
     margin: 0.25rem;
 }
 
-.field {
+.card .field {
     padding: 0.25rem;
 }
 
-.grider-cell .field {
-    background-color: cornsilk;
-    border-bottom: 1px solid wheat;
+.gridview .lead, .gridview .caption, .gridview .field {
+    border-bottom: 1px solid cornsilk;
 }
 
 

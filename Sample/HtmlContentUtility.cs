@@ -6,7 +6,7 @@ namespace Greatbone.Sample
     {
         public static HtmlContent TOPBAR_(this HtmlContent h, string title)
         {
-            h.T("<div data-sticky-container>");
+            h.T("<header data-sticky-container>");
             h.T("<div class=\"sticky\" style=\"width: 100%\" data-sticky  data-options=\"anchor: page; marginTop: 0; stickyOn: small;\">");
             h.T("<form>");
             h.T("<div class=\"top-bar\">");
@@ -38,7 +38,7 @@ namespace Greatbone.Sample
             h.T("</div>");
             h.T("</form>");
             h.T("</div>");
-            h.T("</div>");
+            h.T("</header>");
             return h;
         }
     }

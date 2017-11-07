@@ -1,3 +1,4 @@
+using System;
 using System.Threading.Tasks;
 using Greatbone.Core;
 using static Greatbone.Core.UiStyle;
@@ -23,13 +24,16 @@ namespace Greatbone.Sample
             var prin = (User) ac.Principal;
             ac.GivePage(200, main =>
             {
-                main.GRIDER(h =>
+                main.GridView(new Action<HtmlContent>[]
                 {
-                    h.CAPTION("我的个人资料");
-                    h.FIELD(prin.name, "姓名");
-                    h.FIELD(prin.tel, "电话");
-                    h.FIELD(prin.city, "城市");
-                    h.FIELD_("地址").T(prin.area, prin.addr, null, null)._FIELD();
+                    h =>
+                    {
+                        h.CAPTION("我的个人资料");
+                        h.FIELD(prin.name, "姓名");
+                        h.FIELD(prin.tel, "电话");
+                        h.FIELD(prin.city, "城市");
+                        h.FIELD_("地址").T(prin.area, prin.addr, null, null)._FIELD();
+                    }
                 });
             });
         }
@@ -168,19 +172,22 @@ namespace Greatbone.Sample
                 string shopid = ac[this];
                 ac.GivePage(200, main =>
                 {
-                    main.GRIDER(h =>
+                    main.GridView(new Action<HtmlContent>[]
                     {
-                        using (var dc = ac.NewDbContext())
+                        h =>
                         {
-                            dc.Query1("SELECT oprwx, oprtel, oprname, status FROM shops WHERE id = @1", p => p.Set(shopid));
-                            dc.Let(out string oprwx).Let(out string oprtel).Let(out string oprname).Let(out short status);
-                            h.CAPTION("本店营业状态设置");
-                            h.FIELD(Shop.Status[status].ToString(), "状态");
-                            h.FIELDSET_("值班员信息");
-                            h.FIELD(oprname, "姓名");
-                            h.FIELD(oprwx, "微信");
-                            h.FIELD(oprtel, "电话");
-                            h._FIELDSET();
+                            using (var dc = ac.NewDbContext())
+                            {
+                                dc.Query1("SELECT oprwx, oprtel, oprname, status FROM shops WHERE id = @1", p => p.Set(shopid));
+                                dc.Let(out string oprwx).Let(out string oprtel).Let(out string oprname).Let(out short status);
+                                h.CAPTION("本店营业状态设置");
+                                h.FIELD(Shop.Status[status].ToString(), "状态");
+                                h.FIELDSET_("值班员信息");
+                                h.FIELD(oprname, "姓名");
+                                h.FIELD(oprwx, "微信");
+                                h.FIELD(oprtel, "电话");
+                                h._FIELDSET();
+                            }
                         }
                     });
                 });

@@ -25,11 +25,11 @@ namespace Greatbone.Sample
             {
                 if (dc.Query("SELECT * FROM slides WHERE shopid = @1", p => p.Set(shopid)))
                 {
-                    ac.GiveGriderPage(200, dc.ToArray<Slide>(), (h, o) => { });
+                    ac.GiveGridPage(200, dc.ToArray<Slide>(), (h, o) => { });
                 }
                 else
                 {
-                    ac.GiveGriderPage(200, (Slide[]) null, null);
+                    ac.GiveGridPage(200, (Slide[]) null, null);
                 }
             }
         }

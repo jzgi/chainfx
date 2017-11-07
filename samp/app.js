@@ -240,7 +240,7 @@ function prepay(trig) {
 }
 
 function checkit(el) {
-    var rec = $(el).closest('.grider-cell article')
+    var rec = $(el).closest('.card-cell article')
     if (!rec.length) {
         rec = $(el).closest('tr')
     }

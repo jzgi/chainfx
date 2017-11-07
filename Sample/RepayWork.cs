@@ -30,7 +30,7 @@ namespace Greatbone.Sample
             {
                 if (dc.Query("SELECT * FROM repays WHERE shopid = @1", p => p.Set(shopid)))
                 {
-                    ac.GiveGriderPage(200, dc.ToArray<Repay>(), (h, o) =>
+                    ac.GiveGridPage(200, dc.ToArray<Repay>(), (h, o) =>
                     {
                         h.FIELD(o.id, "单号", 0);
                         h.FIELD(o.total, "总价", 0);
@@ -38,7 +38,7 @@ namespace Greatbone.Sample
                 }
                 else
                 {
-                    ac.GiveTablerPage(200, (Repay[]) null, null, null);
+                    ac.GiveTablePage(200, (Repay[]) null, null, null);
                 }
             }
         }
@@ -57,11 +57,11 @@ namespace Greatbone.Sample
             {
                 if (dc.Query("SELECT * FROM repays ORDER BY status"))
                 {
-                    ac.GiveTablerPage(200, dc.ToArray<Repay>(), h => h.TH("名称").TH("金额"), (h, o) => h.TD(o.shopname).TD(o.total));
+                    ac.GiveTablePage(200, dc.ToArray<Repay>(), h => h.TH("名称").TH("金额"), (h, o) => h.TD(o.shopname).TD(o.total));
                 }
                 else
                 {
-                    ac.GiveTablerPage(200, (Repay[]) null, null, null);
+                    ac.GiveTablePage(200, (Repay[]) null, null, null);
                 }
             }
         }

@@ -68,7 +68,7 @@ namespace Greatbone.Sample
                             return;
                         }
 
-                        main.LISTER(items, (h, o) =>
+                        main.GridView(items, (h, o) =>
                         {
                             h.HIDDEN(nameof(shopid), shopid);
                             h.HIDDEN(nameof(shopname), shopname);
