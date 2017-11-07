@@ -39,6 +39,9 @@ namespace Greatbone.Sample
         internal string region; // distr or area
         internal string addr; // address
         internal OrderItem[] items;
+        internal decimal min;
+        internal decimal every;
+        internal decimal cut;
         internal decimal total; // receivable
         internal DateTime created; // time created
         internal decimal cash; // amount recieved

@@ -68,7 +68,7 @@ namespace Greatbone.Sample
                             return;
                         }
 
-                        main.PANELSET(items, (h, o) =>
+                        main.LISTER(items, (h, o) =>
                         {
                             h.HIDDEN(nameof(shopid), shopid);
                             h.HIDDEN(nameof(shopname), shopname);

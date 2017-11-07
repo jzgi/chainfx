@@ -23,7 +23,7 @@ namespace Greatbone.Sample
             var prin = (User) ac.Principal;
             ac.GivePage(200, main =>
             {
-                main.CARDSET(h =>
+                main.GRIDER(h =>
                 {
                     h.CAPTION("我的个人资料");
                     h.FIELD(prin.name, "姓名");
@@ -168,7 +168,7 @@ namespace Greatbone.Sample
                 string shopid = ac[this];
                 ac.GivePage(200, main =>
                 {
-                    main.CARDSET(h =>
+                    main.GRIDER(h =>
                     {
                         using (var dc = ac.NewDbContext())
                         {

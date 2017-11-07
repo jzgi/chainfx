@@ -239,21 +239,8 @@ function prepay(trig) {
     });
 }
 
-function inline(uri) {
-    var container = $('#container');
-    if (!container.children('inline').length) {
-        container.empty();
-        $('html').attr('style', 'height: 100%');
-        $('body').attr('style', 'height: 100%');
-        container.attr('style', 'height: -webkit-calc(100% - 8rem); height: calc(100% - 3rem)');
-        container.append('<iframe id="inline" style="width: 100%; height: 100%; border:  0"></iframe>');
-    }
-    $('#inline').attr('src', uri);
-    return false;
-}
-
 function checkit(el) {
-    var rec = $(el).closest('.card')
+    var rec = $(el).closest('.grider-cell article')
     if (!rec.length) {
         rec = $(el).closest('tr')
     }

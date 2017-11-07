@@ -12,31 +12,31 @@
     margin-left: auto;
 }
 
-body .pane {
+.page {
+    background-color: gainsboro;
+}
+
+.pane {
     padding: 0.5rem; 
     background-color: gainsboro;
 }
 
-/* panelset  */
+/* lister  */
 
-.panelset {
-    background-color: gainsboro;
-}
-
-.panelset-cell {
+.lister-cell {
     padding: 0.75rem 0.375rem 0 0.375rem;
 }
 
-.panelset-cell:last-of-type {
+.lister-cell:last-of-type {
     margin-bottom: 0.75rem;
 }
 
-.panel {
+.lister-cell article {
     background-color:#fefefe;
     border-radius: 4px;
 }
 
-.panel .caption {
+.lister-cell .caption {
     display: flex;
     align-items: center;
     padding: 0.25rem;
@@ -44,13 +44,13 @@ body .pane {
     border-bottom: 1px solid rgba(196, 190, 185, 0.5);;
 }
 
-.panel .tail {
+.lister-cell .tail {
     vertical-align: middle;
     padding: 0.25rem;
     color: green;
 }
 
-.panel .img {
+.lister-cell .img {
     margin: 0.25rem;
     border-radius: 50%;
 }
@@ -58,24 +58,20 @@ body .pane {
 
 /* cardset */
 
-.cardset {
-    background-color: gainsboro;
-}
-
-.cardset-cell {
+.grider-cell {
     padding: 0.75rem 0.375rem 0 0.375rem;
 }
 
-.cardset-cell:last-of-type {
+.grider-cell:last-of-type {
     margin-bottom: 0.75rem;
 }
 
-.card {
+.grider-cell article {
     background-color: #fefefe;
     border-radius: 4px;
 }
 
-.card.checked {
+.grider-cell article.checked {
     background-color: Lavender;
 }
 
@@ -83,57 +79,46 @@ tr.checked {
     background-color: Lavender;
 }
 
-.rowset {
+.tabler {
     padding: 0.375rem;
 }
 
-.card-lead {
+.grider-cell .lead {
     display: flex;
     align-items: center;
     justify-content: center;
-    border-bottom: 1px solid gainsboro;
+    border-bottom: 1px solid wheat;
 }
 
-.card-lead > input {
+.grider-cell .lead > input {
     width: 1.125rem;
     height: 1.125rem;
 }
 
-.card .caption {
+.grider-cell .caption {
     vertical-align: middle;
     padding: 0.25rem;
     font-size: 1rem;
     font-weight: bold;
-    border-bottom: 1px solid gainsboro;
+    border-bottom: 1px solid wheat;
 }
 
-.card .tail {
+.grider-cell .tail {
     vertical-align: middle;
     padding: 0.25rem;
     color: green;
 }
 
-.card .img {
+.grider-cell .img {
+    border-radius: 50%;
     margin: 0.25rem;
 }
 
-.field-label {
+.field {
     padding: 0.25rem;
-    text-align: right;
-    vertical-align: middle;
 }
 
-.card > .field-label {
-    background-color: cornsilk;
-    border-bottom: 1px solid wheat;
-}
-
-.field-v {
-    padding: 0.25rem;
-    vertical-align: middle;
-}
-
-.card > .field-v {
+.grider-cell .field {
     background-color: cornsilk;
     border-bottom: 1px solid wheat;
 }

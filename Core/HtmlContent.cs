@@ -549,22 +549,15 @@ namespace Greatbone.Core
             return this;
         }
 
-        public HtmlContent FIELD_(string label, sbyte grid = 0)
+        public HtmlContent FIELD_(string label, sbyte grid = 12)
         {
+            Add("<div class=\"cell field small-");
+            Add(grid);
+            Add("\">");
             if (label != null)
             {
-                Add("<div class=\"cell field-label small-2\">");
                 Add(label);
-                Add(":</div>");
-                Add("<div class=\"cell field-v small-");
-                Add(grid > 0 ? grid - 2 : 10);
-                Add("\">");
-            }
-            else
-            {
-                Add("<div class=\"cell field-v small-");
-                Add(grid > 0 ? grid : 12);
-                Add("\">");
+                Add("：");
             }
             return this;
         }
@@ -925,14 +918,14 @@ namespace Greatbone.Core
             }
         }
 
-        public void ROWSET<D>(D[] arr, Action<HtmlContent> head, Action<HtmlContent, D> row) where D : IData
+        public void TABLER<D>(D[] arr, Action<HtmlContent> head, Action<HtmlContent, D> row) where D : IData
         {
             Work work = ac.Work;
             Work varwork = work.varwork;
 
             TOOLBAR(work);
 
-            Add("<main class=\"rowset table-scroll\">");
+            Add("<main class=\"tabler table-scroll\">");
             Add("<table>");
             ActionInfo[] ais = varwork?.UiActions;
 
@@ -988,24 +981,24 @@ namespace Greatbone.Core
             Add("</main>");
         }
 
-        public void CARDSET(params Action<HtmlContent>[] cards)
+        public void GRIDER(params Action<HtmlContent>[] cards)
         {
             Work work = ac.Work;
             Work varwork = work.varwork;
 
             TOOLBAR(work);
 
-            Add("<main class=\"cardset grid-x small-up-1 medium-up-2 large-up-3 xlarge-up-4\">");
+            Add("<main class=\"grid-x small-up-1 medium-up-2 large-up-3 xlarge-up-4\">");
             short pow = 1;
             for (int i = 0; i < cards.Length; i++)
             {
-                Add("<div class=\"cell cardset-cell\">");
+                Add("<div class=\"cell grider-cell\">");
                 Add("<form>");
                 var cell = cards[i];
-                Add("<article class=\"grid-x card\">");
+                Add("<article class=\"grid-x\">");
                 if (work.Buttonly)
                 {
-                    Add("<div class=\"cell small-1 card-lead\">");
+                    Add("<div class=\"cell small-1 lead\">");
                     Add("<input name=\"key\" type=\"checkbox\" form=\"tool-bar-form\" value=\"");
                     Add(pow); // the power as key
                     Add("\" onchange=\"checkit(this);\">");
@@ -1032,7 +1025,7 @@ namespace Greatbone.Core
         }
 
 
-        public void CARDSET<D>(D[] arr, Action<HtmlContent, D> card) where D : IData
+        public void GRIDER<D>(D[] arr, Action<HtmlContent, D> card) where D : IData
         {
             Work work = ac.Work;
             Work varwork = work.varwork;
@@ -1041,16 +1034,16 @@ namespace Greatbone.Core
 
             if (arr != null) // render grid cells
             {
-                Add("<main class=\"cardset grid-x small-up-1 medium-up-2 large-up-3 xlarge-up-4\">");
+                Add("<main class=\"grid-x small-up-1 medium-up-2 large-up-3 xlarge-up-4\">");
                 for (int i = 0; i < arr.Length; i++)
                 {
-                    Add("<div class=\"cell cardset-cell\">");
+                    Add("<div class=\"cell grider-cell\">");
                     Add("<form>");
                     D obj = arr[i];
-                    Add("<article class=\"grid-x card\">");
+                    Add("<article class=\"grid-x\">");
                     if (work.Buttonly)
                     {
-                        Add("<div class=\"cell small-1 card-lead\">");
+                        Add("<div class=\"cell small-1 lead\">");
                         Add("<input name=\"key\" type=\"checkbox\" form=\"tool-bar-form\" value=\"");
                         varwork?.PutVarKey(obj, this);
                         Add("\" onchange=\"checkit(this);\">");
@@ -1204,17 +1197,17 @@ namespace Greatbone.Core
             return this;
         }
 
-        public void PANELSET<D>(D[] arr, Action<HtmlContent, D> panel) where D : IData
+        public void LISTER<D>(D[] arr, Action<HtmlContent, D> panel) where D : IData
         {
             if (arr != null) // render grid cells
             {
-                Add("<main class=\"panelset grid-x small-up-1 medium-up-2 large-up-3 xlarge-up-4\">");
+                Add("<main class=\"grid-x small-up-1 medium-up-2 large-up-3 xlarge-up-4\">");
                 for (int i = 0; i < arr.Length; i++)
                 {
-                    Add("<div class=\"cell panelset-cell\">");
+                    Add("<div class=\"cell lister-cell\">");
                     Add("<form>");
                     D obj = arr[i];
-                    Add("<article class=\"grid-x panel\">");
+                    Add("<article class=\"grid-x\">");
 
                     panel(this, obj);
 

@@ -28,7 +28,7 @@ namespace Greatbone.Sample
             {
                 if (dc.Query("SELECT * FROM items WHERE shopid = @1", p => p.Set(shopid)))
                 {
-                    ac.GiveGridPage(200, dc.ToArray<Item>(), (h, o) =>
+                    ac.GiveGriderPage(200, dc.ToArray<Item>(), (h, o) =>
                     {
                         h.CAPTION(o.name);
                         h.IMG(o.name + "/icon", 4);
@@ -39,7 +39,7 @@ namespace Greatbone.Sample
                 }
                 else
                 {
-                    ac.GiveGridPage(200, (Item[])null, null);
+                    ac.GiveGriderPage(200, (Item[])null, null);
                 }
             }
         }
