@@ -167,6 +167,13 @@ namespace Greatbone.Core
             return this;
         }
 
+        public HtmlContent _T(double v)
+        {
+            Add("&nbsp;");
+            Add(v);
+            return this;
+        }
+
         public HtmlContent _T(DateTime v)
         {
             Add("&nbsp;");
@@ -259,62 +266,6 @@ namespace Greatbone.Core
                 if (bgn) Add("&nbsp;");
                 Add(v4);
             }
-            return this;
-        }
-
-        public HtmlContent _(char v)
-        {
-            Add("&nbsp;");
-            Add(v);
-            return this;
-        }
-
-        public HtmlContent _(short v)
-        {
-            Add("&nbsp;");
-            Add(v);
-            return this;
-        }
-
-        public HtmlContent _(int v)
-        {
-            Add("&nbsp;");
-            Add(v);
-            return this;
-        }
-
-        public HtmlContent _(long v)
-        {
-            Add("&nbsp;");
-            Add(v);
-            return this;
-        }
-
-        public HtmlContent _(DateTime v)
-        {
-            Add("&nbsp;");
-            Add(v);
-            return this;
-        }
-
-        public HtmlContent _(decimal v)
-        {
-            Add("&nbsp;");
-            Add(v);
-            return this;
-        }
-
-        public HtmlContent _(double v)
-        {
-            Add("&nbsp;");
-            Add(v);
-            return this;
-        }
-
-        public HtmlContent _(string str)
-        {
-            Add("&nbsp;");
-            Add(str);
             return this;
         }
 
@@ -806,43 +757,45 @@ namespace Greatbone.Core
 
         public void TOOLBAR(Work work = null)
         {
-            Add("<header data-sticky-container>");
-            Add("<div class=\"sticky\" style=\"width: 100%\" data-sticky  data-options=\"anchor: page; marginTop: 0; stickyOn: small;\">");
-            Add("<form id=\"tool-bar-form\">");
-            Add("<nav class=\"tool-bar\">");
-            if (work == null)
-            {
-                work = ac.Work;
-            }
+            if (work == null) work = ac.Work;
             if (work.UiActions == null)
             {
-                Add(work.Label);
+                TOOLBAR_(work.Label);
             }
             else
             {
+                TOOLBAR_();
                 Triggers(work, null);
             }
+            // refresh
             Add("<div class=\"right\">");
             Add("<a class=\"primary\" href=\"javascript: location.reload(false);\"><i class=\"fi-refresh\" style=\"font-size: 1.5rem; line-height: 2rem\"></i></a>");
             Add("</div>");
-            Add("</nav>");
-            Add("</form>");
-            Add("</div>");
-            Add("</header>");
+
+            _TOOLBAR();
         }
 
         public HtmlContent TOOLBAR_(string title = null)
         {
-            Add("<div data-sticky-container>");
+            Add("<header data-sticky-container>");
             Add("<div class=\"sticky\" style=\"width: 100%\" data-sticky  data-options=\"anchor: page; marginTop: 0; stickyOn: small;\">");
-            Add("<form>");
-            Add("<div class=\"tool-bar\">");
+            Add("<form id=\"tool-bar-form\">");
+            Add("<nav class=\"tool-bar\">");
             if (title != null)
             {
                 Add("<div class=\"title\">");
                 Add(title);
                 Add("</div>");
             }
+            return this;
+        }
+
+        public HtmlContent _TOOLBAR()
+        {
+            Add("</nav>");
+            Add("</form>");
+            Add("</div>");
+            Add("</header>");
             return this;
         }
 
@@ -866,15 +819,6 @@ namespace Greatbone.Core
 
         public HtmlContent _RIGHT()
         {
-            Add("</div>");
-            return this;
-        }
-
-        public HtmlContent _TOOLBAR()
-        {
-            Add("</div>");
-            Add("</form>");
-            Add("</div>");
             Add("</div>");
             return this;
         }
@@ -922,13 +866,11 @@ namespace Greatbone.Core
             }
         }
 
-        public void TableView<D>(D[] arr, Action<HtmlContent> head, Action<HtmlContent, D> row, string @class = null) where D : IData
+        public void TABLEVIEW<D>(D[] arr, Action<HtmlContent> head, Action<HtmlContent, D> row) where D : IData
         {
             Work work = ac.Work;
             Work varwork = work.varwork;
-            Add("<main class=\"");
-            Add(@class);
-            Add(" table-scroll);\">");
+            Add("<main class=\"tableview table-scroll);\">");
             Add("<table>");
             ActionInfo[] ais = varwork?.UiActions;
 
@@ -984,21 +926,17 @@ namespace Greatbone.Core
             Add("</main>");
         }
 
-        public void GridView(Action<HtmlContent>[] cards, string @class = null)
+        public void GRIDVIEW(params Action<HtmlContent>[] cards)
         {
             Work work = ac.Work;
             Work varwork = work.varwork;
-            Add("<main class=\"");
-            Add(@class);
-            Add(" grid-x small-up-1 medium-up-2 large-up-3 xlarge-up-4\">");
+
+            GRIDVIEW_();
             short pow = 1;
             for (int i = 0; i < cards.Length; i++)
             {
-                Add("<div class=\"cell gridview-cell\">");
-                Add("<form>");
-                var cell = cards[i];
-                Add("<article class=\"grid-x card\">");
-                if (work.Buttonly)
+                CARD_();
+                if (work.Buttonly) // if having a card lead
                 {
                     Add("<div class=\"cell small-1 lead\">");
                     Add("<input name=\"key\" type=\"checkbox\" form=\"tool-bar-form\" value=\"");
@@ -1006,9 +944,7 @@ namespace Greatbone.Core
                     Add("\" onchange=\"checkit(this);\">");
                     Add("</div>");
                 }
-
-                cell(this);
-
+                cards[i](this);
                 // output var triggers
                 if (varwork != null)
                 {
@@ -1016,33 +952,25 @@ namespace Greatbone.Core
                     Triggers(varwork, null, pow);
                     Add("</nav>");
                 }
-
-                Add("</article>");
-                Add("</form>");
-                Add("</div>");
-
                 pow = (short) (pow * 2);
+                _CARD();
             }
-            Add("</main>");
+            _GRIDVIEW();
         }
 
-
-        public void GridView<D>(D[] arr, Action<HtmlContent, D> card, string @class = null) where D : IData
+        public void GRIDVIEW<D>(D[] arr, Action<HtmlContent, D> card) where D : IData
         {
             Work work = ac.Work;
             Work varwork = work.varwork;
+            GRIDVIEW_();
             if (arr != null)
             {
-                Add("<main class=\"");
-                Add(@class);
-                Add(" grid-x small-up-1 medium-up-2 large-up-3 xlarge-up-4\">");
                 for (int i = 0; i < arr.Length; i++)
                 {
-                    Add("<div class=\"cell gridview-cell\">");
-                    Add("<form>");
+                    CARD_();
+
                     D obj = arr[i];
-                    Add("<article class=\"grid-x card\">");
-                    if (work.Buttonly)
+                    if (work.Buttonly) // if having a card lead
                     {
                         Add("<div class=\"cell small-1 lead\">");
                         Add("<input name=\"key\" type=\"checkbox\" form=\"tool-bar-form\" value=\"");
@@ -1055,14 +983,41 @@ namespace Greatbone.Core
                     Add("<nav class=\"cell shrink\" style=\"margin-left: auto\">");
                     Triggers(varwork, obj);
                     Add("</nav>");
-                    Add("</article>");
-                    Add("</form>");
-                    Add("</div>");
+
+                    _CARD();
                 }
-                Add("</main>");
             }
+            _GRIDVIEW();
             // pagination if any
             PAGENATE(arr?.Length ?? 0);
+        }
+
+        public HtmlContent GRIDVIEW_()
+        {
+            Add("<main class=\"gridview grid-x small-up-1 medium-up-2 large-up-3 xlarge-up-4\">");
+            return this;
+        }
+
+        public HtmlContent _GRIDVIEW()
+        {
+            Add("</main>");
+            return this;
+        }
+
+        public HtmlContent CARD_()
+        {
+            Add("<div class=\"gridview-cell cell\">");
+            Add("<form>");
+            Add("<article class=\"card grid-x\">");
+            return this;
+        }
+
+        public HtmlContent _CARD()
+        {
+            Add("</article>");
+            Add("</form>");
+            Add("</div>");
+            return this;
         }
 
         void Dialog(sbyte style, sbyte size, string tip)
@@ -1076,7 +1031,7 @@ namespace Greatbone.Core
             Add("');\"");
         }
 
-        public void Triggers(Work work, IData obj, short pow = 0)
+        void Triggers(Work work, IData obj, short pow = 0)
         {
             var ais = work.UiActions;
             if (ais == null)
@@ -1192,22 +1147,6 @@ namespace Greatbone.Core
                     Add("</button>");
                 }
             }
-        }
-
-        public HtmlContent CARD_()
-        {
-            Add("<div class=\"cell gridview-cell\">");
-            Add("<form>");
-            Add("<article class=\"grid-x card\">");
-            return this;
-        }
-
-        public HtmlContent _CARD()
-        {
-            Add("</article>");
-            Add("</form>");
-            Add("</div>");
-            return this;
         }
 
         //

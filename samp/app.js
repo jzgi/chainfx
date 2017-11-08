@@ -201,7 +201,6 @@ function upload(url, circle) {
                 }
             });
         });
-
 }
 
 
@@ -240,7 +239,7 @@ function prepay(trig) {
 }
 
 function checkit(el) {
-    var rec = $(el).closest('.card-cell article')
+    var rec = $(el).closest('.card')
     if (!rec.length) {
         rec = $(el).closest('tr')
     }

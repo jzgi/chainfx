@@ -1,4 +1,3 @@
-using System;
 using System.Threading.Tasks;
 using Greatbone.Core;
 using static Greatbone.Core.UiStyle;
@@ -22,10 +21,10 @@ namespace Greatbone.Sample
         {
             string wx = ac[-1];
             var prin = (User) ac.Principal;
-            ac.GivePage(200, main =>
+            ac.GivePage(200, m =>
             {
-                main.GridView(new Action<HtmlContent>[]
-                {
+                m.TOOLBAR();
+                m.GRIDVIEW(
                     h =>
                     {
                         h.CAPTION("我的个人资料");
@@ -33,8 +32,7 @@ namespace Greatbone.Sample
                         h.FIELD(prin.tel, "电话");
                         h.FIELD(prin.city, "城市");
                         h.FIELD_("地址").T(prin.area, prin.addr, null, null)._FIELD();
-                    }
-                });
+                    });
             });
         }
 
@@ -172,8 +170,7 @@ namespace Greatbone.Sample
                 string shopid = ac[this];
                 ac.GivePage(200, main =>
                 {
-                    main.GridView(new Action<HtmlContent>[]
-                    {
+                    main.GRIDVIEW(
                         h =>
                         {
                             using (var dc = ac.NewDbContext())
@@ -188,8 +185,7 @@ namespace Greatbone.Sample
                                 h.FIELD(oprtel, "电话");
                                 h._FIELDSET();
                             }
-                        }
-                    });
+                        });
                 });
             }
             else

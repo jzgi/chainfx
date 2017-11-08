@@ -11,6 +11,42 @@ namespace Greatbone.Sample
             ac.Give(303);
         }
 
+        /// <summary>
+        /// Gives a frame page.
+        /// </summary>
+        public static void GiveDoc(this ActionContext ac, int status, Action<HtmlContent> main, bool? @public = null, int maxage = 60)
+        {
+            HtmlContent h = new HtmlContent(ac, true, 32 * 1024);
+
+            h.Add("<!DOCTYPE html>");
+            h.Add("<html>");
+
+            h.Add("<head>");
+            h.Add("<title>粗粮达人</title>");
+            h.Add("<meta name=\"viewport\" content=\"width=device-width, initial-scale=1.0\">");
+            h.Add("<link rel=\"stylesheet\" href=\"//cdn.bootcss.com/foundicons/3.0.0/foundation-icons.min.css\">");
+            h.Add("<link rel=\"stylesheet\" href=\"/foundation.min.css\">");
+            h.Add("<link rel=\"stylesheet\" href=\"/app.min.css\">");
+            h.Add("</head>");
+
+            h.Add("<body class=\"doc\">");
+
+            main(h);
+
+            // zurb foundation
+            h.Add("<script src=\"//cdn.bootcss.com/jquery/3.2.1/jquery.min.js\"></script>");
+            h.Add("<script src=\"/foundation.min.js\"></script>");
+            h.Add("<script src=\"/app.min.js\"></script>");
+            h.Add("<script>");
+            h.Add("$(document).foundation();");
+            h.Add("</script>");
+
+            h.Add("</body>");
+            h.Add("</html>");
+
+            ac.Give(status, h, @public, maxage);
+        }
+
         public static void GiveFrame(this ActionContext ac, int status, bool? @public = null, int maxage = 60, string title = null)
         {
             HtmlContent h = new HtmlContent(ac, true, 8 * 1024);
@@ -92,9 +128,9 @@ namespace Greatbone.Sample
             ac.Give(status, h, @public, maxage);
         }
 
-        ///
+        /// <summary>
         /// Gives a frame page.
-        ///
+        /// </summary>
         public static void GivePage(this ActionContext ac, int status, Action<HtmlContent> main, bool? @public = null, int maxage = 60)
         {
             HtmlContent h = new HtmlContent(ac, true, 32 * 1024);
@@ -128,9 +164,9 @@ namespace Greatbone.Sample
             ac.Give(status, h, @public, maxage);
         }
 
-        /// 
-        /// dialog pane
-        ///
+        /// <summary>
+        /// Gives out adialog pane
+        /// </summary>
         public static void GivePane(this ActionContext ac, int status, Action<HtmlContent> main = null, bool? @public = null, int maxage = 60)
         {
             HtmlContent h = new HtmlContent(ac, true, 8 * 1024);
@@ -177,6 +213,20 @@ namespace Greatbone.Sample
             ac.Give(status, h, @public, maxage);
         }
 
+        public static void GiveGridDoc<D>(this ActionContext ac, int status, D[] arr, Action<HtmlContent, D> cell, bool? @public = null, int maxage = 60) where D : IData
+        {
+            ac.GiveDoc(
+                status,
+                main =>
+                {
+                    main.TOOLBAR();
+                    main.GRIDVIEW(arr, cell);
+                },
+                @public,
+                maxage
+            );
+        }
+
         public static void GiveGridPage<D>(this ActionContext ac, int status, D[] arr, Action<HtmlContent, D> cell, bool? @public = null, int maxage = 60) where D : IData
         {
             ac.GivePage(
@@ -184,7 +234,7 @@ namespace Greatbone.Sample
                 main =>
                 {
                     main.TOOLBAR();
-                    main.GridView(arr, cell, "gridview");
+                    main.GRIDVIEW(arr, cell);
                 },
                 @public,
                 maxage
@@ -198,7 +248,7 @@ namespace Greatbone.Sample
                 main =>
                 {
                     main.TOOLBAR();
-                    main.TableView(arr, head, row, "tableview");
+                    main.TABLEVIEW(arr, head, row);
                 },
                 @public,
                 maxage

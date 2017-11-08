@@ -38,7 +38,11 @@ namespace Greatbone.Sample
             bool inner = ac.Query[nameof(inner)];
             if (inner)
             {
-                ac.GivePage(200, h => { h.GridView((Order[]) null, null); });
+                ac.GivePage(200, h =>
+                {
+                    h.TOOLBAR();
+                    h.GRIDVIEW((Order[]) null, null);
+                });
             }
             else
             {

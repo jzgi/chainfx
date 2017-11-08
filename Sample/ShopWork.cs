@@ -80,9 +80,9 @@ namespace Greatbone.Sample
             {
                 city = "南昌";
             }
-            ac.GivePage(200, m =>
+            ac.GiveDoc(200, m =>
             {
-                m.TOPBAR_("所在城市").LEFT_().SELECT(nameof(city), city, City.All, refresh: true).HIDDEN(nameof(area), area)._LEFT()._TOPBAR();
+                m.TOPBAR_("所在城市").SELECT(nameof(city), city, City.All, refresh: true).HIDDEN(nameof(area), area)._TOPBAR();
 
                 using (var dc = ac.NewDbContext())
                 {
@@ -90,12 +90,12 @@ namespace Greatbone.Sample
                     if (dc.Query(p => p.Set(city)))
                     {
                         var arr = dc.ToArray<Shop>();
-                        m.GridView(arr, (h, o) =>
+                        m.GRIDVIEW(arr, (h, o) =>
                         {
                             h.CAPTION(o.name);
                             h.FIELD_(null, 7).P(o.addr)._FIELD().IMG(o.id + "/icon", 5, href: o.id + "/");
                             h.FIELD(o.addr);
-                        }, "frontview");
+                        });
                     }
                     else
                     {

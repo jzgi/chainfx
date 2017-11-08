@@ -14,23 +14,14 @@ namespace Greatbone.Sample
             {
                 h.T("<div class=\"top-bar-title\">").T(title).T("</div>");
             }
-            return h;
-        }
-
-        public static HtmlContent LEFT_(this HtmlContent h)
-        {
             h.T("<div class=\"top-bar-left\">");
-            return h;
-        }
-
-        public static HtmlContent _LEFT(this HtmlContent h)
-        {
-            h.T("</div>");
             return h;
         }
 
         public static HtmlContent _TOPBAR(this HtmlContent h)
         {
+            h.T("</div>"); // closing of top-bar-left
+
             h.T("<div class=\"top-bar-right\">");
             h.T("<a class=\"float-right\" href=\"/my//pre/\"><i class=\"fi-shopping-cart\" style=\"font-size: 1.5rem; \"></i></a>");
             h.T("</div>");

@@ -57,9 +57,9 @@ namespace Greatbone.Sample
                         items = dc.ToArray<Item>();
                     }
 
-                    ac.GivePage(200, main =>
+                    ac.GiveDoc(200, main =>
                     {
-                        main.TOPBAR_(shop.name).LEFT_().T("<a href=\"tel:").T(shop.oprtel).T("#mp.weixin.qq.com\">电话&nbsp;").T(shop.oprtel).T("</a>")._LEFT()._TOPBAR();
+                        main.TOPBAR_(shop.name).T("<a href=\"tel:").T(shop.oprtel).T("#mp.weixin.qq.com\">电话：").T(shop.oprtel).T("</a>")._TOPBAR();
 
                         // display items
                         if (items == null)
@@ -68,7 +68,7 @@ namespace Greatbone.Sample
                             return;
                         }
 
-                        main.GridView(items, (h, o) =>
+                        main.GRIDVIEW(items, (h, o) =>
                         {
                             h.HIDDEN(nameof(shopid), shopid);
                             h.HIDDEN(nameof(shopname), shopname);

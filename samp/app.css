@@ -1,4 +1,19 @@
-/*  tool-bar */
+/* samp app.cs */
+
+/*  GLOBALS */
+
+.doc {
+    background-color: gainsboro;
+}
+
+.page {
+    background-color: gainsboro;
+}
+
+.pane {
+    padding: 0.5rem; 
+    background-color: gainsboro;
+}
 
 .tool-bar {
     display: flex;
@@ -11,18 +26,6 @@
 .tool-bar .right {
     margin-left: auto;
 }
-
-.page {
-    background-color: gainsboro;
-}
-
-.pane {
-    padding: 0.5rem; 
-    background-color: gainsboro;
-}
-
-
-/* gridview */
 
 .gridview-cell {
     padding: 0.75rem 0.375rem 0 0.375rem;
@@ -37,16 +40,8 @@
     border-radius: 4px;
 }
 
-.card .checked {
+.card.checked {
     background-color: Lavender;
-}
-
-tr.checked {
-    background-color: Lavender;
-}
-
-.tableview {
-    padding: 0.375rem;
 }
 
 .card .lead {
@@ -74,15 +69,31 @@ tr.checked {
 
 .card .img {
     border-radius: 50%;
-    margin: 0.25rem;
 }
 
 .card .field {
     padding: 0.25rem;
 }
 
-.gridview .lead, .gridview .caption, .gridview .field {
-    border-bottom: 1px solid cornsilk;
+.gridview {
+    background-color: gainsboro;
+}
+
+.page .lead, .page .caption {
+    border-bottom: 1px solid wheat;
+}
+
+.page .field {
+    background-color: rgba(245, 222, 179, 0.50);
+    border-bottom: 1px solid wheat;
+}
+
+.tableview {
+    padding: 0.375rem;
+}
+
+tr.checked {
+    background-color: Lavender;
 }
 
 
