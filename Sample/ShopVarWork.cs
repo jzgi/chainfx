@@ -39,6 +39,7 @@ namespace Greatbone.Sample
             CreateVar<PubItemVarWork, string>(obj => ((Item) obj).name);
         }
 
+        [Ui("进入", Style = Anchor)]
         public void @default(ActionContext ac)
         {
             string shopid = ac[this];
@@ -57,18 +58,17 @@ namespace Greatbone.Sample
                         items = dc.ToArray<Item>();
                     }
 
-                    ac.GiveDoc(200, main =>
+                    ac.GiveDoc(200, m =>
                     {
-                        main.TOPBAR_(shop.name).T("<a href=\"tel:").T(shop.oprtel).T("#mp.weixin.qq.com\">电话：").T(shop.oprtel).T("</a>")._TOPBAR();
+                        m.TOPBAR_(shop.name).T("<a href=\"tel:").T(shop.oprtel).T("#mp.weixin.qq.com\">电话：").T(shop.oprtel).T("</a>")._TOPBAR();
 
-                        // display items
                         if (items == null)
                         {
-                            main.T("没有上架商品");
+                            m.T("没有上架商品");
                             return;
                         }
 
-                        main.GRIDVIEW(items, (h, o) =>
+                        m.GRIDVIEW(items, (h, o) =>
                         {
                             h.HIDDEN(nameof(shopid), shopid);
                             h.HIDDEN(nameof(shopname), shopname);
@@ -80,7 +80,6 @@ namespace Greatbone.Sample
                             h.IMG((o.name) + "/icon", 4).FIELD_(null, 8).P(o.descr).EM(o.price, '¥')._FIELD();
                             h.FIELD_(null).T("<a type=\"button hollow\" class=\"button circle primary float-right\"  data-toggle=\"dropdown").T(o.name).T("\">购买</a>")._FIELD();
                             h.T("<div class=\"dropdown-pane\" id=\"dropdown").T(o.name).T("\" data-position=\"top\" data-alignment=\"right\" style=\"box-shadow:0 0 2px #0a0a0a;\" data-dropdown>");
-                            h.T("<form>");
 
                             h.NUMBER(nameof(o.max), o.min, min: o.min, step: o.step);
 
@@ -90,7 +89,6 @@ namespace Greatbone.Sample
                             }
 
                             h.T("<button type=\"button\" class=\"button primary\" >加入购物车</button>");
-                            h.T("</form>");
                             h.T("</div>");
                         });
                     });

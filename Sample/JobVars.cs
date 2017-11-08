@@ -31,7 +31,7 @@ namespace Greatbone.Sample
                         h.FIELD(prin.name, "姓名");
                         h.FIELD(prin.tel, "电话");
                         h.FIELD(prin.city, "城市");
-                        h.FIELD_("地址").T(prin.area, prin.addr, null, null)._FIELD();
+                        h.FIELD_("地址").T(prin.area)._T(prin.addr)._FIELD();
                     });
             });
         }

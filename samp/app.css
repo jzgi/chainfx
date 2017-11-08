@@ -61,6 +61,14 @@
     font-size: 1.125rem;
 }
 
+.card .flag.on {
+    color: green;
+}
+
+.card .flag.off {
+    color: gray;
+}
+
 .card .tail {
     vertical-align: middle;
     padding: 0.25rem;
@@ -77,6 +85,14 @@
 
 .gridview {
     background-color: gainsboro;
+}
+
+.doc .lead, .doc .caption {
+    border-bottom: 2px solid wheat;
+}
+
+.doc .card p {
+    border-bottom: 1px solid wheat;
 }
 
 .page .lead, .page .caption {

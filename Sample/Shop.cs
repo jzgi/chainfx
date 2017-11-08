@@ -24,6 +24,7 @@ namespace Greatbone.Sample
         internal string name;
         internal string city;
         internal string addr;
+        internal string schedule;
         internal double x;
         internal double y;
         internal string[] areas;
@@ -46,6 +47,7 @@ namespace Greatbone.Sample
                 i.Get(nameof(name), ref name);
                 i.Get(nameof(city), ref city);
                 i.Get(nameof(addr), ref addr);
+                i.Get(nameof(schedule), ref schedule);
                 i.Get(nameof(x), ref x);
                 i.Get(nameof(y), ref y);
             }
@@ -73,6 +75,7 @@ namespace Greatbone.Sample
                 o.Put(nameof(name), name);
                 o.Put(nameof(city), city);
                 o.Put(nameof(addr), addr);
+                o.Put(nameof(schedule), schedule);
                 o.Put(nameof(x), x);
                 o.Put(nameof(y), y);
             }

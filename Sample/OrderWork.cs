@@ -33,7 +33,7 @@ namespace Greatbone.Sample
                     ac.GiveGridPage(200, dc.ToArray<Order>(), (h, o) =>
                     {
                         h.CAPTION(o.shopname);
-                        h.FIELD_("收货人").T(o.name, o.tel, o.addr, null).BUTTON("addr", true, ButtonShow)._FIELD();
+                        h.FIELD_("收货人").T(o.name)._T(o.tel)._T(o.addr).BUTTON("addr", true, ButtonShow)._FIELD();
                         for (int i = 0; i < o.items.Length; i++)
                         {
                             var oi = o.items[i];
@@ -158,7 +158,7 @@ namespace Greatbone.Sample
                 {
                     ac.GiveGridPage(200, dc.ToArray<Order>(), (h, o) =>
                     {
-                        h.CAPTION_().T("单号")._T(o.id).SEP().T(o.paid)._CAPTION(o.prepare);
+                        h.CAPTION_().T("单号")._T(o.id).SEP().T(o.paid)._CAPTION("备货", o.prepare);
                         if (o.name != null)
                         {
                             h.FIELD(o.name, "姓名", 6).FIELD(o.city, "城市", 6);

@@ -92,9 +92,14 @@ namespace Greatbone.Sample
                         var arr = dc.ToArray<Shop>();
                         m.GRIDVIEW(arr, (h, o) =>
                         {
-                            h.CAPTION(o.name);
-                            h.FIELD_(null, 7).P(o.addr)._FIELD().IMG(o.id + "/icon", 5, href: o.id + "/");
-                            h.FIELD(o.addr);
+                            h.CAPTION_().T(o.name)._CAPTION(Shop.Status[o.status], o.status == 2);
+                            h.IMG(o.id + "/icon", 4, href: o.id + "/");
+                            h.FIELD_(null, 8).P(o.addr, "店址").P(o.schedule, "营业");
+                            if (o.areas != null)
+                            {
+                                h.P(o.areas, "限送");
+                            }
+                            h._FIELD();
                         });
                     }
                     else
