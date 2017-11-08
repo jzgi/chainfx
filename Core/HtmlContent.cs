@@ -979,15 +979,19 @@ namespace Greatbone.Core
                         Add("</div>");
                     }
                     card(this, obj);
-                    // output var tools
-                    Add("<nav class=\"cell shrink\" style=\"margin-left: auto\">");
-                    Triggers(varwork, obj);
-                    Add("</nav>");
+                    
+                    if (varwork != null) // output var tools
+                    {
+                        Add("<nav class=\"cell shrink\" style=\"margin-left: auto\">");
+                        Triggers(varwork, obj);
+                        Add("</nav>");
+                    }
 
                     _CARD();
                 }
             }
             _GRIDVIEW();
+
             // pagination if any
             PAGENATE(arr?.Length ?? 0);
         }

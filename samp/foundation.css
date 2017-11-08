@@ -2710,8 +2710,6 @@ input:checked + label > .switch-inactive { display: none; }
     cursor: not-allowed;
 }
 
-.pagination { margin: 1rem; }
-
 .pagination::before, .pagination::after {
     display: table;
     content: ' ';
