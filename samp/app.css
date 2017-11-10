@@ -79,7 +79,7 @@
     border-radius: 50%;
 }
 
-.card .field {
+.card .box {
     padding: 0.25rem;
 }
 
@@ -99,7 +99,7 @@
     border-bottom: 1px solid wheat;
 }
 
-.page .field {
+.page .box {
     background-color: rgba(245, 222, 179, 0.50);
     border-bottom: 1px solid wheat;
 }

@@ -419,109 +419,73 @@ namespace Greatbone.Core
 
         public HtmlContent FIELD(short v, string label = null, string suffix = null, sbyte grid = 12)
         {
-            Add("<div class=\"cell field small-");
-            Add(grid);
-            Add("\">");
-            if (label != null)
-            {
-                Add(label);
-            }
+            BOX_(label, grid);
             Add(v);
             if (suffix != null)
             {
                 Add(suffix);
             }
-            Add("</div>");
+            _BOX();
             return this;
         }
 
         public HtmlContent FIELD(int v, string label = null, string suffix = null, sbyte grid = 12)
         {
-            Add("<div class=\"cell field small-");
-            Add(grid);
-            Add("\">");
-            if (label != null)
-            {
-                Add(label);
-            }
+            BOX_(label, grid);
             Add(v);
             if (suffix != null)
             {
                 Add(suffix);
             }
-            Add("</div>");
+            _BOX();
             return this;
         }
 
         public HtmlContent FIELD(long v, string label = null, string suffix = null, sbyte grid = 12)
         {
-            Add("<div class=\"cell field small-");
-            Add(grid);
-            Add("\">");
-            if (label != null)
-            {
-                Add(label);
-            }
+            BOX_(label, grid);
             Add(v);
             if (suffix != null)
             {
                 Add(suffix);
             }
-            Add("</div>");
+            _BOX();
             return this;
         }
 
         public HtmlContent FIELD(decimal v, string label = null, string suffix = null, sbyte grid = 12)
         {
-            Add("<div class=\"cell box small-");
-            Add(grid);
-            Add("\">");
-            if (label != null)
-            {
-                Add(label);
-            }
+            BOX_(label, grid);
             Add(v);
             if (suffix != null)
             {
                 Add(suffix);
             }
-            Add("</div>");
+            _BOX();
             return this;
         }
 
         public HtmlContent FIELD(DateTime v, string label = null, string suffix = null, sbyte grid = 12)
         {
-            Add("<div class=\"cell field small-");
-            Add(grid);
-            Add("\">");
-            if (label != null)
-            {
-                Add(label);
-            }
+            BOX_(label, grid);
             Add(v);
             if (suffix != null)
             {
                 Add(suffix);
             }
-            Add("</div>");
+            _BOX();
             return this;
         }
 
         public HtmlContent FIELD(string v, string label = null, string suffix = null, sbyte grid = 12)
         {
-            Add("<div class=\"cell field small-");
-            Add(grid);
-            Add("\">");
-            if (label != null)
-            {
-                Add(label);
-            }
+            BOX_(label, grid);
             Add(v);
             if (suffix != null)
             {
                 Add(suffix);
             }
-            Add("</div>");
+            _BOX();
             return this;
         }
 
