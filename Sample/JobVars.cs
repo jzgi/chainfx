@@ -28,10 +28,10 @@ namespace Greatbone.Sample
                     h =>
                     {
                         h.CAPTION("我的个人资料");
-                        h.STATIC(prin.name, "姓名");
-                        h.STATIC(prin.tel, "电话");
-                        h.STATIC(prin.city, "城市");
-                        h.FIELD_().T(prin.area)._T(prin.addr)._FIELD();
+                        h.FIELD(prin.name, "姓名");
+                        h.FIELD(prin.tel, "电话");
+                        h.FIELD(prin.city, "城市");
+                        h.BOX_().T(prin.area)._T(prin.addr)._BOX();
                     });
             });
         }
@@ -121,7 +121,7 @@ namespace Greatbone.Sample
                     ac.GivePane(200, h =>
                     {
                         h.FORM_();
-                        h.FIELD_().T("用于微信以外登录")._FIELD();
+                        h.BOX_().T("用于微信以外登录")._BOX();
                         h.PASSWORD(nameof(password), password, label: "密码", min: 3);
                         h._FORM();
                     });
@@ -178,11 +178,11 @@ namespace Greatbone.Sample
                                 dc.Query1("SELECT oprwx, oprtel, oprname, status FROM shops WHERE id = @1", p => p.Set(shopid));
                                 dc.Let(out string oprwx).Let(out string oprtel).Let(out string oprname).Let(out short status);
                                 h.CAPTION("本店营业状态设置");
-                                h.STATIC(Shop.Status[status].ToString(), "状态");
+                                h.FIELD(Shop.Status[status].ToString(), "状态");
                                 h.FIELDSET_("值班员信息");
-                                h.STATIC(oprname, "姓名");
-                                h.STATIC(oprwx, "微信");
-                                h.STATIC(oprtel, "电话");
+                                h.FIELD(oprname, "姓名");
+                                h.FIELD(oprwx, "微信");
+                                h.FIELD(oprtel, "电话");
                                 h._FIELDSET();
                             }
                         });

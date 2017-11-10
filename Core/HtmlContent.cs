@@ -417,14 +417,14 @@ namespace Greatbone.Core
             return this;
         }
 
-        public HtmlContent STATIC(short v, string prefix = null, sbyte grid = 12, string suffix = null)
+        public HtmlContent FIELD(short v, string label = null, string suffix = null, sbyte grid = 12)
         {
             Add("<div class=\"cell field small-");
             Add(grid);
             Add("\">");
-            if (prefix != null)
+            if (label != null)
             {
-                Add(prefix);
+                Add(label);
             }
             Add(v);
             if (suffix != null)
@@ -435,14 +435,14 @@ namespace Greatbone.Core
             return this;
         }
 
-        public HtmlContent STATIC(int v, string prefix = null, sbyte grid = 12, string suffix = null)
+        public HtmlContent FIELD(int v, string label = null, string suffix = null, sbyte grid = 12)
         {
             Add("<div class=\"cell field small-");
             Add(grid);
             Add("\">");
-            if (prefix != null)
+            if (label != null)
             {
-                Add(prefix);
+                Add(label);
             }
             Add(v);
             if (suffix != null)
@@ -453,14 +453,14 @@ namespace Greatbone.Core
             return this;
         }
 
-        public HtmlContent STATIC(long v, string prefix = null, sbyte grid = 12, string suffix = null)
+        public HtmlContent FIELD(long v, string label = null, string suffix = null, sbyte grid = 12)
         {
             Add("<div class=\"cell field small-");
             Add(grid);
             Add("\">");
-            if (prefix != null)
+            if (label != null)
             {
-                Add(prefix);
+                Add(label);
             }
             Add(v);
             if (suffix != null)
@@ -471,14 +471,14 @@ namespace Greatbone.Core
             return this;
         }
 
-        public HtmlContent STATIC(decimal v, string prefix = null, sbyte grid = 12, string suffix = null)
+        public HtmlContent FIELD(decimal v, string label = null, string suffix = null, sbyte grid = 12)
         {
-            Add("<div class=\"cell field small-");
+            Add("<div class=\"cell box small-");
             Add(grid);
             Add("\">");
-            if (prefix != null)
+            if (label != null)
             {
-                Add(prefix);
+                Add(label);
             }
             Add(v);
             if (suffix != null)
@@ -489,14 +489,14 @@ namespace Greatbone.Core
             return this;
         }
 
-        public HtmlContent STATIC(DateTime v, string prefix = null, sbyte grid = 12, string suffix = null)
+        public HtmlContent FIELD(DateTime v, string label = null, string suffix = null, sbyte grid = 12)
         {
             Add("<div class=\"cell field small-");
             Add(grid);
             Add("\">");
-            if (prefix != null)
+            if (label != null)
             {
-                Add(prefix);
+                Add(label);
             }
             Add(v);
             if (suffix != null)
@@ -507,14 +507,14 @@ namespace Greatbone.Core
             return this;
         }
 
-        public HtmlContent STATIC(string v, string prefix = null, sbyte grid = 12, string suffix = null)
+        public HtmlContent FIELD(string v, string label = null, string suffix = null, sbyte grid = 12)
         {
             Add("<div class=\"cell field small-");
             Add(grid);
             Add("\">");
-            if (prefix != null)
+            if (label != null)
             {
-                Add(prefix);
+                Add(label);
             }
             Add(v);
             if (suffix != null)
@@ -525,46 +525,31 @@ namespace Greatbone.Core
             return this;
         }
 
-        public HtmlContent FIELD_(sbyte grid = 12)
+        public HtmlContent BOX_(string label = null, sbyte grid = 12)
         {
-            Add("<div class=\"cell field small-");
+            Add("<div class=\"cell box small-");
             Add(grid);
-            Add("\">");
-            return this;
-        }
-
-        public HtmlContent _FIELD()
-        {
-            Add("</div>");
-            return this;
-        }
-
-        void BeginCellIf(string label, sbyte grid)
-        {
-            if (label == null && grid <= 0) return;
-
-            Add("<div class=\"cell field small-");
-            Add(grid > 0 ? grid : 12);
             Add("\">");
             if (label != null)
             {
                 Add(label);
                 Add("：");
             }
+            return this;
         }
 
-        void EndCellIf(string label, sbyte grid)
+        public HtmlContent _BOX()
         {
-            if (label == null && grid <= 0) return;
             Add("</div>");
+            return this;
         }
 
-        public HtmlContent P(short v, string prefix = null, string suffix = null)
+        public HtmlContent P(short v, string label = null, string suffix = null)
         {
             Add("<p>");
-            if (prefix != null)
+            if (label != null)
             {
-                Add(prefix);
+                Add(label);
                 Add("：");
             }
             Add(v);
@@ -576,12 +561,12 @@ namespace Greatbone.Core
             return this;
         }
 
-        public HtmlContent P(int v, string prefix = null, string suffix = null)
+        public HtmlContent P(int v, string label = null, string suffix = null)
         {
             Add("<p>");
-            if (prefix != null)
+            if (label != null)
             {
-                Add(prefix);
+                Add(label);
                 Add("：");
             }
             Add(v);
@@ -593,17 +578,21 @@ namespace Greatbone.Core
             return this;
         }
 
-        public HtmlContent P(decimal v, string prefix = null, string suffix = null, bool em = false)
+        public HtmlContent P(decimal v, string label = null, string suffix = null, char symbol = (char) 0)
         {
             Add("<p>");
-            if (prefix != null)
+            if (label != null)
             {
-                Add(prefix);
+                Add(label);
                 Add("：");
             }
-            if (em) Add("<em>");
+            if (symbol != 0)
+            {
+                Add("<em>");
+                Add(symbol);
+            }
             Add(v);
-            if (em) Add("</em>");
+            if (symbol != 0) Add("</em>");
             if (suffix != null)
             {
                 Add(suffix);
@@ -612,29 +601,12 @@ namespace Greatbone.Core
             return this;
         }
 
-        public HtmlContent P(DateTime v, string prefix = null, string suffix = null)
+        public HtmlContent P(DateTime v, string label = null, string suffix = null)
         {
             Add("<p>");
-            if (prefix != null)
+            if (label != null)
             {
-                Add(prefix);
-                Add("：");
-            }
-            Add(v);
-            if (suffix != null)
-            {
-                Add(suffix);
-            }
-            Add("</p>");
-            return this;
-        }
-
-        public HtmlContent P(string v, string prefix = null, string suffix = null)
-        {
-            Add("<p>");
-            if (prefix != null)
-            {
-                Add(prefix);
+                Add(label);
                 Add("：");
             }
             Add(v);
@@ -646,13 +618,30 @@ namespace Greatbone.Core
             return this;
         }
 
-        public HtmlContent P(string[] v, string prefix = null)
+        public HtmlContent P(string v, string label = null, string suffix = null)
+        {
+            Add("<p>");
+            if (label != null)
+            {
+                Add(label);
+                Add("：");
+            }
+            Add(v);
+            if (suffix != null)
+            {
+                Add(suffix);
+            }
+            Add("</p>");
+            return this;
+        }
+
+        public HtmlContent P(string[] v, string label = null)
         {
             if (v == null) return this;
             Add("<p>");
-            if (prefix != null)
+            if (label != null)
             {
-                Add(prefix);
+                Add(label);
                 Add("：");
             }
             for (int i = 0; i < v.Length; i++)
@@ -667,9 +656,9 @@ namespace Greatbone.Core
             return this;
         }
 
-        public HtmlContent IMG(string src, sbyte grid = 0, string href = null)
+        public HtmlContent IMG(string src, string href = null, sbyte grid = 12)
         {
-            BeginCellIf(null, grid);
+            BOX_(null, grid);
             if (href != null)
             {
                 Add("<a href=\"");
@@ -683,13 +672,13 @@ namespace Greatbone.Core
             {
                 Add("</a>");
             }
-            EndCellIf(null, grid);
+            _BOX();
             return this;
         }
 
-        public HtmlContent IMGM(string src, sbyte grid = 0, string href = null)
+        public HtmlContent IMGM(string src, string href = null, sbyte grid = 12)
         {
-            BeginCellIf(null, grid);
+            BOX_(null, grid);
             if (href != null)
             {
                 Add("<a href=\"");
@@ -703,7 +692,7 @@ namespace Greatbone.Core
             {
                 Add("</a>");
             }
-            EndCellIf(null, grid);
+            _BOX();
             return this;
         }
 
@@ -713,37 +702,6 @@ namespace Greatbone.Core
             return this;
         }
 
-        public HtmlContent EM(decimal v, char cur = (char) 0)
-        {
-            Add("<em class=\"em\">");
-            if (cur != 0)
-            {
-                Add(cur);
-            }
-            Add(v);
-            Add("</em>");
-            return this;
-        }
-
-        public HtmlContent EM(string v)
-        {
-            Add("<em class=\"em\">");
-            Add(v);
-            Add("</em>");
-            return this;
-        }
-
-        public HtmlContent EM_()
-        {
-            Add("<em class=\"em\">");
-            return this;
-        }
-
-        public HtmlContent _EM()
-        {
-            Add("</em>");
-            return this;
-        }
 
         public HtmlContent FORM_(string action = null, bool post = true, bool mp = false)
         {
@@ -774,10 +732,11 @@ namespace Greatbone.Core
             return this;
         }
 
-        public HtmlContent FIELDSET_(string legend = null)
+        public HtmlContent FIELDSET_(string legend = null, sbyte grid = 12)
         {
             Add("<div class=\"cell field small-");
-            Add("<fieldset class=\"fieldset\">");
+            Add(grid);
+            Add("\"><fieldset class=\"fieldset\">");
             if (legend != null)
             {
                 Add("<legend>");
@@ -1312,9 +1271,9 @@ namespace Greatbone.Core
             return this;
         }
 
-        public HtmlContent TEXT(string name, string v, string label = null, sbyte grid = 0, string help = null, string pattern = null, sbyte max = 0, sbyte min = 0, bool @readonly = false, bool required = false)
+        public HtmlContent TEXT(string name, string v, string label = null, string help = null, string pattern = null, sbyte max = 0, sbyte min = 0, bool @readonly = false, bool required = false, sbyte grid = 12)
         {
-            BeginCellIf(label, grid);
+            BOX_(label, grid);
 
             Add("<input type=\"text\" name=\"");
             Add(name);
@@ -1352,13 +1311,13 @@ namespace Greatbone.Core
             if (required) Add(" required");
             Add(">");
 
-            EndCellIf(label, grid);
+            _BOX();
             return this;
         }
 
-        public HtmlContent SEARCH(string name, string v, string label = null, sbyte grid = 0, string help = null, string pattern = null, sbyte max = 0, sbyte min = 0, bool required = false)
+        public HtmlContent SEARCH(string name, string v, string label = null, string help = null, string pattern = null, sbyte max = 0, sbyte min = 0, bool required = false, sbyte grid = 12)
         {
-            BeginCellIf(label, grid);
+            BOX_(label, grid);
 
             Add("<input type=\"search\" name=\"");
             Add(name);
@@ -1395,13 +1354,13 @@ namespace Greatbone.Core
             }
             Add(">");
 
-            EndCellIf(label, grid);
+            _BOX();
             return this;
         }
 
-        public HtmlContent PASSWORD(string name, string v, string label = null, sbyte grid = 0, string help = null, string pattern = null, sbyte max = 0, sbyte min = 0, bool @readonly = false, bool required = false)
+        public HtmlContent PASSWORD(string name, string v, string label = null, string help = null, string pattern = null, sbyte max = 0, sbyte min = 0, bool @readonly = false, bool required = false, sbyte grid = 12)
         {
-            BeginCellIf(label, grid);
+            BOX_(label, grid);
 
             Add("<input type=\"password\" name=\"");
             Add(name);
@@ -1440,13 +1399,13 @@ namespace Greatbone.Core
             if (required) Add(" required");
             Add(">");
 
-            EndCellIf(label, grid);
+            _BOX();
             return this;
         }
 
-        public HtmlContent DATE(string name, DateTime v, string label = null, sbyte grid = 0, DateTime max = default, DateTime min = default, bool @readonly = false, bool required = false, int step = 0)
+        public HtmlContent DATE(string name, DateTime v, string label = null, DateTime max = default, DateTime min = default, bool @readonly = false, bool required = false, int step = 0, sbyte grid = 12)
         {
-            BeginCellIf(label, grid);
+            BOX_(label, grid);
 
             Add("<input type=\"date\" name=\"");
             Add(name);
@@ -1476,7 +1435,7 @@ namespace Greatbone.Core
             }
             Add(">");
 
-            EndCellIf(label, grid);
+            _BOX();
             return this;
         }
 
@@ -1486,9 +1445,9 @@ namespace Greatbone.Core
             return this;
         }
 
-        public HtmlContent NUMBER(string name, short v, string label = null, sbyte grid = 0, string tip = null, short max = 0, short min = 0, short step = 0, bool @readonly = false, bool required = false)
+        public HtmlContent NUMBER(string name, short v, string label = null, string tip = null, short max = 0, short min = 0, short step = 0, bool @readonly = false, bool required = false, sbyte grid = 12)
         {
-            BeginCellIf(label, grid);
+            BOX_(label, grid);
 
             bool group = step > 0; // input group with up up and down
             if (group)
@@ -1547,13 +1506,13 @@ namespace Greatbone.Core
                 Add("</div>");
             }
 
-            EndCellIf(label, grid);
+            _BOX();
             return this;
         }
 
-        public HtmlContent NUMBER(string name, int v, string label = null, sbyte grid = 0, string tip = null, int max = 0, int min = 0, int step = 0, bool @readonly = false, bool required = false)
+        public HtmlContent NUMBER(string name, int v, string label = null, string tip = null, int max = 0, int min = 0, int step = 0, bool @readonly = false, bool required = false, sbyte grid = 12)
         {
-            BeginCellIf(label, grid);
+            BOX_(label, grid);
 
             Add("<input type=\"number\" name=\"");
             Add(name);
@@ -1589,13 +1548,13 @@ namespace Greatbone.Core
             if (required) Add(" required");
             Add(">");
 
-            EndCellIf(label, grid);
+            _BOX();
             return this;
         }
 
-        public HtmlContent NUMBER(string name, long v, string label = null, sbyte grid = 0, string tip = null, long max = 0, long min = 0, long step = 0, bool @readonly = false, bool required = false)
+        public HtmlContent NUMBER(string name, long v, string label = null, string tip = null, long max = 0, long min = 0, long step = 0, bool @readonly = false, bool required = false, sbyte grid = 12)
         {
-            BeginCellIf(label, grid);
+            BOX_(label, grid);
 
             Add("<input type=\"number\" name=\"");
             Add(name);
@@ -1631,13 +1590,13 @@ namespace Greatbone.Core
             if (required) Add(" required");
             Add(">");
 
-            EndCellIf(label, grid);
+            _BOX();
             return this;
         }
 
-        public HtmlContent NUMBER(string name, decimal v, string label = null, sbyte grid = 0, string tip = null, decimal max = 0, decimal min = 0, decimal step = 0, bool @readonly = false, bool required = false)
+        public HtmlContent NUMBER(string name, decimal v, string label = null, string tip = null, decimal max = 0, decimal min = 0, decimal step = 0, bool @readonly = false, bool required = false, sbyte grid = 12)
         {
-            BeginCellIf(label, grid);
+            BOX_(label, grid);
 
             Add("<input type=\"number\" name=\"");
             Add(name);
@@ -1672,13 +1631,13 @@ namespace Greatbone.Core
             if (required) Add(" required");
             Add(">");
 
-            EndCellIf(label, grid);
+            _BOX();
             return this;
         }
 
-        public HtmlContent NUMBER(string name, double v, string label = null, sbyte grid = 0, string tip = null, double max = 0, double min = 0, double step = 0, bool @readonly = false, bool required = false)
+        public HtmlContent NUMBER(string name, double v, string label = null, string tip = null, double max = 0, double min = 0, double step = 0, bool @readonly = false, bool required = false, sbyte grid = 12)
         {
-            BeginCellIf(label, grid);
+            BOX_(label, grid);
 
             Add("<input type=\"number\" name=\"");
             Add(name);
@@ -1713,7 +1672,7 @@ namespace Greatbone.Core
             if (required) Add(" required");
             Add(">");
 
-            EndCellIf(label, grid);
+            _BOX();
             return this;
         }
 
@@ -1743,9 +1702,9 @@ namespace Greatbone.Core
             return this;
         }
 
-        public HtmlContent CHECKBOX(string name, bool v, string label = null, sbyte grid = 0, bool required = false)
+        public HtmlContent CHECKBOX(string name, bool v, string label = null, bool required = false, sbyte grid = 12)
         {
-            BeginCellIf(null, grid);
+            BOX_(null, grid);
 
             if (label != null)
             {
@@ -1763,7 +1722,7 @@ namespace Greatbone.Core
                 Add("</label>");
             }
 
-            EndCellIf(label, grid);
+            _BOX();
             return this;
         }
 
@@ -2023,9 +1982,9 @@ namespace Greatbone.Core
             return this;
         }
 
-        public HtmlContent TEXTAREA(string name, string v, string label = null, string help = null, short max = 0, short min = 0, bool @readonly = false, bool required = false, sbyte grid = 0)
+        public HtmlContent TEXTAREA(string name, string v, string label = null, string help = null, short max = 0, short min = 0, bool @readonly = false, bool required = false, sbyte grid = 12)
         {
-            BeginCellIf(label, grid);
+            BOX_(label, grid);
 
             Add("<label>");
             AddLabel(label, name);
@@ -2064,13 +2023,13 @@ namespace Greatbone.Core
             Add("</textarea>");
             Add("</label>");
 
-            EndCellIf(label, grid);
+            _BOX();
             return this;
         }
 
-        public HtmlContent SELECT<O>(string name, short v, Map<short, O> opt, string label = null, bool multiple = false, bool required = false, int size = 0, sbyte grid = 0)
+        public HtmlContent SELECT<O>(string name, short v, Map<short, O> opt, string label = null, bool multiple = false, bool required = false, int size = 0, sbyte grid = 12)
         {
-            BeginCellIf(label, grid);
+            BOX_(label, grid);
 
             Add("<select name=\"");
             Add(name);
@@ -2098,13 +2057,13 @@ namespace Greatbone.Core
             }
             Add("</select>");
 
-            EndCellIf(label, grid);
+            _BOX();
             return this;
         }
 
-        public HtmlContent SELECT<O>(string name, string v, Map<string, O> opt, string label = null, bool multiple = false, bool required = false, sbyte size = 0, bool refresh = false, sbyte grid = 0)
+        public HtmlContent SELECT<O>(string name, string v, Map<string, O> opt, string label = null, bool multiple = false, bool required = false, sbyte size = 0, bool refresh = false, sbyte grid = 12)
         {
-            BeginCellIf(label, grid);
+            BOX_(label, grid);
 
             Add("<select name=\"");
             Add(name);
@@ -2136,13 +2095,13 @@ namespace Greatbone.Core
             }
             Add("</select>");
 
-            EndCellIf(label, grid);
+            _BOX();
             return this;
         }
 
-        public HtmlContent SELECT(string name, string v, string[] opt, string label = null, bool multiple = false, bool required = false, sbyte size = 0, bool refresh = false, sbyte grid = 0)
+        public HtmlContent SELECT(string name, string v, string[] opt, string label = null, bool multiple = false, bool required = false, sbyte size = 0, bool refresh = false, sbyte grid = 12)
         {
-            BeginCellIf(label, grid);
+            BOX_(label, grid);
 
             Add("<select name=\"");
             Add(name);
@@ -2178,7 +2137,7 @@ namespace Greatbone.Core
             }
             Add("</select>");
 
-            EndCellIf(label, grid);
+            _BOX();
             return this;
         }
 

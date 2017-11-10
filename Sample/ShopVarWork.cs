@@ -77,8 +77,9 @@ namespace Greatbone.Sample
                             h.HIDDEN(nameof(o.price), o.price);
 
                             h.CAPTION(o.name);
-                            h.IMG((o.name) + "/icon", 4).FIELD_(8).P(o.descr,"特点").P(o.process,"制作").EM(o.price, '¥')._FIELD();
-                            h.FIELD_().T("<a type=\"button hollow\" class=\"button circle primary float-right\"  data-toggle=\"dropdown").T(o.name).T("\">购买</a>")._FIELD();
+                            h.IMG((o.name) + "/icon", grid: 4).BOX_(grid: 8)
+                                .P(o.descr, "特点").P(o.process, "制作").P(o.price, symbol: '¥')._BOX();
+                            h.BOX_().T("<a type=\"button hollow\" class=\"button circle primary float-right\"  data-toggle=\"dropdown").T(o.name).T("\">购买</a>")._BOX();
                             h.T("<div class=\"dropdown-pane\" id=\"dropdown").T(o.name).T("\" data-position=\"top\" data-alignment=\"right\" style=\"box-shadow:0 0 2px #0a0a0a;\" data-dropdown>");
 
                             h.NUMBER(nameof(o.max), o.min, min: o.min, step: o.step);

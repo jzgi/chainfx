@@ -33,16 +33,16 @@ namespace Greatbone.Sample
                     ac.GiveGridPage(200, dc.ToArray<Order>(), (h, o) =>
                     {
                         h.CAPTION(o.shopname);
-                        h.FIELD_().T(o.name)._T(o.tel)._T(o.addr).BUTTON("addr", true, ButtonShow)._FIELD();
+                        h.BOX_().T(o.name)._T(o.tel)._T(o.addr).BUTTON("addr", true, ButtonShow)._BOX();
                         for (int i = 0; i < o.items.Length; i++)
                         {
                             var oi = o.items[i];
-                            h.IMG("/shop/" + o.shopid + "/" + oi.name + "/icon", 2);
-                            h.FIELD_(5).P(oi.name).P(oi.price)._FIELD();
-                            h.FIELD_(5).P(oi.qty, suffix: oi.unit).P(oi.customs).BUTTON("修改", true, 0)._FIELD();
+                            h.IMG("/shop/" + o.shopid + "/" + oi.name + "/icon", grid: 2);
+                            h.BOX_(grid: 5).P(oi.name).P(oi.price)._BOX();
+                            h.BOX_(grid: 5).P(oi.qty, suffix: oi.unit).P(oi.customs).BUTTON("修改", true, 0)._BOX();
                         }
-                        h.FIELD_(7).T("<p>").T(o.min).T("元起送，满").T(o.every).T("元减").T(o.cut).T("元").T("</p>")._FIELD();
-                        h.FIELD_(5).P(o.total, "总计")._FIELD();
+                        h.BOX_(grid: 7).T("<p>").T(o.min).T("元起送，满").T(o.every).T("元减").T(o.cut).T("元").T("</p>")._BOX();
+                        h.BOX_(grid: 5).P(o.total, "总计")._BOX();
                     }, false, 3);
                 }
                 else
@@ -122,15 +122,15 @@ namespace Greatbone.Sample
                         h.CAPTION_().T("单号")._T(o.id).SEP().T(o.paid)._CAPTION();
                         if (o.name != null)
                         {
-                            h.STATIC(o.name, "姓名", 6).STATIC(o.city, "城市", 6);
+                            h.FIELD(o.name, "姓名", grid: 6).FIELD(o.city, "城市", grid: 6);
                         }
-                        h.FIELD_().T(o.tel)._T(o.region)._T(o.addr)._FIELD();
+                        h.BOX_().T(o.tel)._T(o.region)._T(o.addr)._BOX();
                         for (int i = 0; i < o.items.Length; i++)
                         {
                             var item = o.items[i];
-                            h.STATIC(item.name, grid: 4).STATIC(item.price, grid: 4).STATIC(item.qty, grid: 4, suffix: item.unit);
+                            h.FIELD(item.name, grid: 4).FIELD(item.price, grid: 4).FIELD(item.qty, suffix: item.unit, grid: 4);
                         }
-                        h.STATIC(o.total, "总价");
+                        h.FIELD(o.total, "总价");
                     }, false, 3);
                 }
                 else
@@ -161,15 +161,15 @@ namespace Greatbone.Sample
                         h.CAPTION_().T("单号")._T(o.id).SEP().T(o.paid)._CAPTION("备货", o.prepare);
                         if (o.name != null)
                         {
-                            h.STATIC(o.name, "姓名", 6).STATIC(o.city, "城市", 6);
+                            h.FIELD(o.name, "姓名", grid: 6).FIELD(o.city, "城市", grid: 6);
                         }
-                        h.FIELD_().T(o.tel)._T(o.region)._T(o.addr)._FIELD();
+                        h.BOX_().T(o.tel)._T(o.region)._T(o.addr)._BOX();
                         for (int i = 0; i < o.items.Length; i++)
                         {
                             var item = o.items[i];
-                            h.STATIC(item.name, grid: 4).STATIC(item.price, grid: 4).STATIC(item.qty, grid: 4, suffix: item.unit);
+                            h.FIELD(item.name, grid: 4).FIELD(item.price, grid: 4).FIELD(item.qty, suffix: item.unit, grid: 4);
                         }
-                        h.STATIC(o.total, "总价");
+                        h.FIELD(o.total, "总价");
                     }, false, 3);
                 }
                 else
@@ -224,15 +224,15 @@ namespace Greatbone.Sample
                         h.CAPTION_().T("单号")._T(o.id).SEP().T(o.paid)._CAPTION();
                         if (o.name != null)
                         {
-                            h.STATIC(o.name, "姓名", 6).STATIC(o.city, "城市", 6);
+                            h.FIELD(o.name, "姓名", grid: 6).FIELD(o.city, "城市", grid: 6);
                         }
-                        h.FIELD_().T(o.tel)._T(o.region)._T(o.addr)._FIELD();
+                        h.BOX_().T(o.tel)._T(o.region)._T(o.addr)._BOX();
                         for (int i = 0; i < o.items.Length; i++)
                         {
                             var item = o.items[i];
-                            h.STATIC(item.name, grid: 4).STATIC(item.price, grid: 4).STATIC(item.qty, grid: 4, suffix: item.unit);
+                            h.FIELD(item.name, grid: 4).FIELD(item.price, grid: 4).FIELD(item.qty, suffix: item.unit, grid: 4);
                         }
-                        h.STATIC(o.total, "总价");
+                        h.FIELD(o.total, "总价");
                     }, false, 3);
                 }
                 else
@@ -276,15 +276,15 @@ namespace Greatbone.Sample
                         h.CAPTION_().T("单号")._T(o.id).SEP().T(o.paid)._CAPTION();
                         if (o.name != null)
                         {
-                            h.STATIC(o.name, "姓名", 6).STATIC(o.city, "城市", 6);
+                            h.FIELD(o.name, "姓名", grid: 6).FIELD(o.city, "城市", grid: 6);
                         }
-                        h.FIELD_().T(o.tel)._T(o.region)._T(o.addr)._FIELD();
+                        h.BOX_().T(o.tel)._T(o.region)._T(o.addr)._BOX();
                         for (int i = 0; i < o.items.Length; i++)
                         {
                             var item = o.items[i];
-                            h.STATIC(item.name, grid: 4).STATIC(item.price, grid: 4).STATIC(item.qty, grid: 4, suffix: item.unit);
+                            h.FIELD(item.name, grid: 4).FIELD(item.price, grid: 4).FIELD(item.qty, suffix: item.unit, grid: 4);
                         }
-                        h.STATIC(o.total, "总价");
+                        h.FIELD(o.total, "总价");
                     }, false, 3);
                 }
                 else
