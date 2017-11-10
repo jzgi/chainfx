@@ -32,8 +32,8 @@ namespace Greatbone.Sample
                 {
                     ac.GiveGridPage(200, dc.ToArray<Repay>(), (h, o) =>
                     {
-                        h.FIELD(o.id, "单号", grid: 0);
-                        h.FIELD(o.total, "总价", grid: 0);
+                        h.FIELD(o.id, "单号", box: 0);
+                        h.FIELD(o.total, "总价", box: 0);
                     }, false, 3);
                 }
                 else

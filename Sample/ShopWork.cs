@@ -93,15 +93,15 @@ namespace Greatbone.Sample
                         m.GRIDVIEW(arr, (h, o) =>
                         {
                             h.CAPTION_().T(o.name)._CAPTION(Shop.Status[o.status], o.status == 2);
-                            h.IMGM(o.id + "/icon", href: o.id + "/", grid: 4);
-                            h.BOX_(grid: 8).P(o.addr, "店址").P(o.schedule, "营业");
+                            h.IMGM(o.id + "/icon", href: o.id + "/", box: 4);
+                            h.BOX_(8).P(o.addr, "店址").P(o.schedule, "营业");
                             if (o.areas != null)
                             {
                                 h.P(o.areas, "限送");
                             }
                             h._BOX();
                             h.BOX_().T("<p>特色：<a href=\"mark\">").T(o.marks).T("</a></p>")._BOX();
-                            h.IMG(o.id + "/荞麦红枣粥/icon", grid: 3).IMG(o.id + "/荞麦红枣粥/icon", grid: 3).IMG(o.id + "/荞麦红枣粥/icon", grid: 3).IMG(o.id + "/荞麦红枣粥/icon", grid: 3);
+                            h.IMG(o.id + "/荞麦红枣粥/icon", box: 3).IMG(o.id + "/荞麦红枣粥/icon", box: 3).IMG(o.id + "/荞麦红枣粥/icon", box: 3).IMG(o.id + "/荞麦红枣粥/icon", box: 3);
                         });
                     }
                     else

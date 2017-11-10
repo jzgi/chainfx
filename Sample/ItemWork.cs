@@ -31,10 +31,10 @@ namespace Greatbone.Sample
                     ac.GiveGridPage(200, dc.ToArray<Item>(), (h, o) =>
                     {
                         h.CAPTION(o.name);
-                        h.IMG(o.name + "/icon", grid: 4);
-                        h.BOX_(grid: 8).P(o.descr, "简述").P(o.price, "价格")._BOX();
-                        h.FIELD(o.unit, "单位", grid: 6).FIELD(o.min, "起订", grid: 6);
-                        h.FIELD(o.step, "步进", grid: 6).FIELD(o.max, "剩余", grid: 6);
+                        h.IMG(o.name + "/icon", box: 4);
+                        h.BOX_(8).P(o.descr, "简述").P(o.price, "价格")._BOX();
+                        h.FIELD(o.unit, "单位", box: 6).FIELD(o.min, "起订", box: 6);
+                        h.FIELD(o.step, "步进", box: 6).FIELD(o.max, "剩余", box: 6);
                     });
                 }
                 else

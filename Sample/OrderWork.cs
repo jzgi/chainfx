@@ -37,12 +37,12 @@ namespace Greatbone.Sample
                         for (int i = 0; i < o.items.Length; i++)
                         {
                             var oi = o.items[i];
-                            h.IMG("/shop/" + o.shopid + "/" + oi.name + "/icon", grid: 2);
-                            h.BOX_(grid: 5).P(oi.name).P(oi.price)._BOX();
-                            h.BOX_(grid: 5).P(oi.qty, suffix: oi.unit).P(oi.customs).BUTTON("修改", true, 0)._BOX();
+                            h.IMG("/shop/" + o.shopid + "/" + oi.name + "/icon", box: 2);
+                            h.BOX_(5).P(oi.name).P(oi.price)._BOX();
+                            h.BOX_(5).P(oi.qty, suffix: oi.unit).P(oi.customs).BUTTON("修改", true, 0)._BOX();
                         }
-                        h.BOX_(grid: 7).T("<p>").T(o.min).T("元起送，满").T(o.every).T("元减").T(o.cut).T("元").T("</p>")._BOX();
-                        h.BOX_(grid: 5).P(o.total, "总计")._BOX();
+                        h.BOX_(7).T("<p>").T(o.min).T("元起送，满").T(o.every).T("元减").T(o.cut).T("元").T("</p>")._BOX();
+                        h.BOX_(5).P(o.total, "总计")._BOX();
                     }, false, 3);
                 }
                 else
@@ -122,13 +122,13 @@ namespace Greatbone.Sample
                         h.CAPTION_().T("单号")._T(o.id).SEP().T(o.paid)._CAPTION();
                         if (o.name != null)
                         {
-                            h.FIELD(o.name, "姓名", grid: 6).FIELD(o.city, "城市", grid: 6);
+                            h.FIELD(o.name, "姓名", box: 6).FIELD(o.city, "城市", box: 6);
                         }
                         h.BOX_().T(o.tel)._T(o.region)._T(o.addr)._BOX();
                         for (int i = 0; i < o.items.Length; i++)
                         {
                             var item = o.items[i];
-                            h.FIELD(item.name, grid: 4).FIELD(item.price, grid: 4).FIELD(item.qty, suffix: item.unit, grid: 4);
+                            h.FIELD(item.name, box: 4).FIELD(item.price, box: 4).FIELD(item.qty, suffix: item.unit, box: 4);
                         }
                         h.FIELD(o.total, "总价");
                     }, false, 3);
@@ -161,13 +161,13 @@ namespace Greatbone.Sample
                         h.CAPTION_().T("单号")._T(o.id).SEP().T(o.paid)._CAPTION("备货", o.prepare);
                         if (o.name != null)
                         {
-                            h.FIELD(o.name, "姓名", grid: 6).FIELD(o.city, "城市", grid: 6);
+                            h.FIELD(o.name, "姓名", box: 6).FIELD(o.city, "城市", box: 6);
                         }
                         h.BOX_().T(o.tel)._T(o.region)._T(o.addr)._BOX();
                         for (int i = 0; i < o.items.Length; i++)
                         {
                             var item = o.items[i];
-                            h.FIELD(item.name, grid: 4).FIELD(item.price, grid: 4).FIELD(item.qty, suffix: item.unit, grid: 4);
+                            h.FIELD(item.name, box: 4).FIELD(item.price, box: 4).FIELD(item.qty, suffix: item.unit, box: 4);
                         }
                         h.FIELD(o.total, "总价");
                     }, false, 3);
@@ -224,13 +224,13 @@ namespace Greatbone.Sample
                         h.CAPTION_().T("单号")._T(o.id).SEP().T(o.paid)._CAPTION();
                         if (o.name != null)
                         {
-                            h.FIELD(o.name, "姓名", grid: 6).FIELD(o.city, "城市", grid: 6);
+                            h.FIELD(o.name, "姓名", box: 6).FIELD(o.city, "城市", box: 6);
                         }
                         h.BOX_().T(o.tel)._T(o.region)._T(o.addr)._BOX();
                         for (int i = 0; i < o.items.Length; i++)
                         {
                             var item = o.items[i];
-                            h.FIELD(item.name, grid: 4).FIELD(item.price, grid: 4).FIELD(item.qty, suffix: item.unit, grid: 4);
+                            h.FIELD(item.name, box: 4).FIELD(item.price, box: 4).FIELD(item.qty, suffix: item.unit, box: 4);
                         }
                         h.FIELD(o.total, "总价");
                     }, false, 3);
@@ -276,13 +276,13 @@ namespace Greatbone.Sample
                         h.CAPTION_().T("单号")._T(o.id).SEP().T(o.paid)._CAPTION();
                         if (o.name != null)
                         {
-                            h.FIELD(o.name, "姓名", grid: 6).FIELD(o.city, "城市", grid: 6);
+                            h.FIELD(o.name, "姓名", box: 6).FIELD(o.city, "城市", box: 6);
                         }
                         h.BOX_().T(o.tel)._T(o.region)._T(o.addr)._BOX();
                         for (int i = 0; i < o.items.Length; i++)
                         {
                             var item = o.items[i];
-                            h.FIELD(item.name, grid: 4).FIELD(item.price, grid: 4).FIELD(item.qty, suffix: item.unit, grid: 4);
+                            h.FIELD(item.name, box: 4).FIELD(item.price, box: 4).FIELD(item.qty, suffix: item.unit, box: 4);
                         }
                         h.FIELD(o.total, "总价");
                     }, false, 3);
