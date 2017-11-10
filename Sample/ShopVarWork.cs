@@ -39,7 +39,7 @@ namespace Greatbone.Sample
             CreateVar<PubItemVarWork, string>(obj => ((Item) obj).name);
         }
 
-        [Ui("进入", Style = Anchor)]
+        [Ui("进入店铺", Style = Anchor)]
         public void @default(ActionContext ac)
         {
             string shopid = ac[this];
@@ -77,8 +77,8 @@ namespace Greatbone.Sample
                             h.HIDDEN(nameof(o.price), o.price);
 
                             h.CAPTION(o.name);
-                            h.IMG((o.name) + "/icon", 4).FIELD_(null, 8).P(o.descr).EM(o.price, '¥')._FIELD();
-                            h.FIELD_(null).T("<a type=\"button hollow\" class=\"button circle primary float-right\"  data-toggle=\"dropdown").T(o.name).T("\">购买</a>")._FIELD();
+                            h.IMG((o.name) + "/icon", 4).FIELD_(8).P(o.descr,"特点").P(o.process,"制作").EM(o.price, '¥')._FIELD();
+                            h.FIELD_().T("<a type=\"button hollow\" class=\"button circle primary float-right\"  data-toggle=\"dropdown").T(o.name).T("\">购买</a>")._FIELD();
                             h.T("<div class=\"dropdown-pane\" id=\"dropdown").T(o.name).T("\" data-position=\"top\" data-alignment=\"right\" style=\"box-shadow:0 0 2px #0a0a0a;\" data-dropdown>");
 
                             h.NUMBER(nameof(o.max), o.min, min: o.min, step: o.step);
@@ -98,6 +98,10 @@ namespace Greatbone.Sample
                     ac.Give(404, pub: true, maxage: 60 * 5); // not found
                 }
             }
+        }
+
+        public void marks(ActionContext ac)
+        {
         }
     }
 
@@ -123,9 +127,9 @@ namespace Greatbone.Sample
                         ac.GivePane(200, m =>
                         {
                             m.FORM_();
-                            m.TEXT(nameof(o.name), o.name, "名称");
+                            m.TEXT(nameof(o.name), o.name, label: "名称");
                             m.SELECT(nameof(o.city), o.city, City.All, "城市");
-                            m.TEXT(nameof(o.addr), o.addr, "地址");
+                            m.TEXT(nameof(o.addr), o.addr, label: "地址");
                             m.NUMBER(nameof(o.x), o.x, "经度");
                             m.NUMBER(nameof(o.y), o.y, "纬度");
                             m._FORM();
@@ -165,7 +169,7 @@ namespace Greatbone.Sample
                 {
                     m.FORM_();
                     m.FIELDSET_("查询帐号（手机号）");
-                    m.SEARCH(nameof(forid), forid, min: 11, max: 11, pattern: "[0-9]+");
+                    m.SEARCH(nameof(forid), forid, pattern: "[0-9]+", max: 11, min: 11);
                     m.BUTTON("查询", false);
                     m._FIELDSET();
                     if (forid != null)

@@ -248,7 +248,7 @@ namespace Greatbone.Sample
                 {
                     m.FORM_();
                     m.CALLOUT(err);
-                    m.CHECKBOX("ok", false, "重新提交退款请求", true);
+                    m.CHECKBOX("ok", false, "重新提交退款请求", required: true);
                     m.BUTTON("", 1, "确认");
                     m._FORM();
                 });

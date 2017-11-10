@@ -60,9 +60,9 @@ namespace Greatbone.Sample
                         ac.GivePane(200, m =>
                         {
                             m.FORM_();
-                            m.FIELD(o.name, "名称");
-                            m.TEXT(nameof(o.descr), o.descr, "简述", max: 30, required: true);
-                            m.TEXT(nameof(o.unit), o.unit, "单位", required: true);
+                            m.STATIC(o.name, "名称");
+                            m.TEXT(nameof(o.descr), o.descr, label: "简述", max: 30, required: true);
+                            m.TEXT(nameof(o.unit), o.unit, label: "单位", required: true);
                             m.NUMBER(nameof(o.price), o.price, "单价", required: true);
                             m.NUMBER(nameof(o.min), o.min, "起订", min: (short) 1);
                             m.NUMBER(nameof(o.step), o.step, "间隔", min: (short) 1);

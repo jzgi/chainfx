@@ -955,7 +955,6 @@ label > [type='radio'] { margin-right: 0.5rem; }
 label {
     display: inline-block;
     margin: 0;
-    font-size: 1rem;
     font-weight: normal;
     line-height: 1.8;
     color: #0a0a0a;

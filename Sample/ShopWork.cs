@@ -93,13 +93,15 @@ namespace Greatbone.Sample
                         m.GRIDVIEW(arr, (h, o) =>
                         {
                             h.CAPTION_().T(o.name)._CAPTION(Shop.Status[o.status], o.status == 2);
-                            h.IMG(o.id + "/icon", 4, href: o.id + "/");
-                            h.FIELD_(null, 8).P(o.addr, "店址").P(o.schedule, "营业");
+                            h.IMGM(o.id + "/icon", 4, href: o.id + "/");
+                            h.FIELD_(8).P(o.addr, "店址").P(o.schedule, "营业");
                             if (o.areas != null)
                             {
                                 h.P(o.areas, "限送");
                             }
                             h._FIELD();
+                            h.FIELD_().T("<p>特色：<a href=\"mark\">").T(o.marks).T("</a></p>")._FIELD();
+                            h.IMG(o.id + "/荞麦红枣粥/icon", 3).IMG(o.id + "/荞麦红枣粥/icon", 3).IMG(o.id + "/荞麦红枣粥/icon", 3).IMG(o.id + "/荞麦红枣粥/icon", 3);
                         });
                     }
                     else
@@ -148,9 +150,9 @@ namespace Greatbone.Sample
                 ac.GivePane(200, m =>
                 {
                     m.FORM_();
-                    m.TEXT(nameof(o.name), o.name, "名称", max: 10, required: true);
+                    m.TEXT(nameof(o.name), o.name, label: "名称", max: 10, required: true);
                     m.SELECT(nameof(o.city), o.city, City.All, "城市");
-                    m.TEXT(nameof(o.addr), o.addr, "地址", max: 20);
+                    m.TEXT(nameof(o.addr), o.addr, label: "地址", max: 20);
                     m.NUMBER(nameof(o.x), o.x, "经度");
                     m.NUMBER(nameof(o.y), o.y, "纬度");
                     m._FORM();

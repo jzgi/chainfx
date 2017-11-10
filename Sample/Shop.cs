@@ -22,6 +22,7 @@ namespace Greatbone.Sample
 
         internal string id;
         internal string name;
+        internal string[] marks;
         internal string city;
         internal string addr;
         internal string schedule;
@@ -45,6 +46,7 @@ namespace Greatbone.Sample
             if ((proj & INITIAL) == INITIAL)
             {
                 i.Get(nameof(name), ref name);
+                i.Get(nameof(marks), ref marks);
                 i.Get(nameof(city), ref city);
                 i.Get(nameof(addr), ref addr);
                 i.Get(nameof(schedule), ref schedule);
@@ -73,6 +75,7 @@ namespace Greatbone.Sample
             if ((proj & INITIAL) == INITIAL)
             {
                 o.Put(nameof(name), name);
+                o.Put(nameof(marks), marks);
                 o.Put(nameof(city), city);
                 o.Put(nameof(addr), addr);
                 o.Put(nameof(schedule), schedule);

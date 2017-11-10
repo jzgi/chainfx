@@ -32,9 +32,9 @@ namespace Greatbone.Sample
                     {
                         h.CAPTION(o.name);
                         h.IMG(o.name + "/icon", 4);
-                        h.FIELD_(null,8).P(o.descr, "简述").P(o.price, "价格")._FIELD();
-                        h.FIELD(o.unit, "单位", 6).FIELD(o.min, "起订", 6);
-                        h.FIELD(o.step, "步进", 6).FIELD(o.max, "剩余", 6);
+                        h.FIELD_(8).P(o.descr, "简述").P(o.price, "价格")._FIELD();
+                        h.STATIC(o.unit, "单位", 6).STATIC(o.min, "起订", 6);
+                        h.STATIC(o.step, "步进", 6).STATIC(o.max, "剩余", 6);
                     });
                 }
                 else
@@ -53,9 +53,9 @@ namespace Greatbone.Sample
                 ac.GivePane(200, m =>
                 {
                     m.FORM_();
-                    m.TEXT(nameof(o.name), o.name, "名称", max: 10, required: true);
+                    m.TEXT(nameof(o.name), o.name, label: "名称", max: 10, required: true);
                     m.TEXTAREA(nameof(o.descr), o.descr, "简述", max: 30, required: true);
-                    m.TEXT(nameof(o.unit), o.unit, "单位", required: true);
+                    m.TEXT(nameof(o.unit), o.unit, label: "单位", required: true);
                     m.NUMBER(nameof(o.price), o.price, "单价", required: true);
                     m.NUMBER(nameof(o.min), o.min, "起订", min: (short)1);
                     m.NUMBER(nameof(o.step), o.step, "增减", min: (short)1);

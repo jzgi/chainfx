@@ -75,7 +75,7 @@
     color: green;
 }
 
-.card .img {
+.card .img.major {
     border-radius: 50%;
 }
 

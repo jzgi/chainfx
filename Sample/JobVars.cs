@@ -28,10 +28,10 @@ namespace Greatbone.Sample
                     h =>
                     {
                         h.CAPTION("我的个人资料");
-                        h.FIELD(prin.name, "姓名");
-                        h.FIELD(prin.tel, "电话");
-                        h.FIELD(prin.city, "城市");
-                        h.FIELD_("地址").T(prin.area)._T(prin.addr)._FIELD();
+                        h.STATIC(prin.name, "姓名");
+                        h.STATIC(prin.tel, "电话");
+                        h.STATIC(prin.city, "城市");
+                        h.FIELD_().T(prin.area)._T(prin.addr)._FIELD();
                     });
             });
         }
@@ -78,8 +78,8 @@ namespace Greatbone.Sample
                 ac.GivePane(200, h =>
                 {
                     h.FORM_();
-                    h.TEXT(nameof(prin.name), prin.name, "姓名", max: 4, min: 2, required: true);
-                    h.TEXT(nameof(prin.tel), prin.tel, "手机", pattern: "[0-9]+", max: 11, min: 11, required: true);
+                    h.TEXT(nameof(prin.name), prin.name, label: "姓名", max: 4, min: 2, required: true);
+                    h.TEXT(nameof(prin.tel), prin.tel, label: "手机", pattern: "[0-9]+", max: 11, min: 11, required: true);
                     h.SELECT(nameof(prin.city), prin.city, City.All, "城市", refresh: true);
                     h.SELECT(nameof(prin.area), prin.area, prin.city == null ? City.All[0].Value.Distrs : City.All[prin.city].Distrs, "区域");
                     h._FORM();
@@ -121,8 +121,8 @@ namespace Greatbone.Sample
                     ac.GivePane(200, h =>
                     {
                         h.FORM_();
-                        h.FIELD_(null).T("用于微信以外登录")._FIELD();
-                        h.PASSWORD(nameof(password), password, "密码", min: 3);
+                        h.FIELD_().T("用于微信以外登录")._FIELD();
+                        h.PASSWORD(nameof(password), password, label: "密码", min: 3);
                         h._FORM();
                     });
                 }
@@ -178,11 +178,11 @@ namespace Greatbone.Sample
                                 dc.Query1("SELECT oprwx, oprtel, oprname, status FROM shops WHERE id = @1", p => p.Set(shopid));
                                 dc.Let(out string oprwx).Let(out string oprtel).Let(out string oprname).Let(out short status);
                                 h.CAPTION("本店营业状态设置");
-                                h.FIELD(Shop.Status[status].ToString(), "状态");
+                                h.STATIC(Shop.Status[status].ToString(), "状态");
                                 h.FIELDSET_("值班员信息");
-                                h.FIELD(oprname, "姓名");
-                                h.FIELD(oprwx, "微信");
-                                h.FIELD(oprtel, "电话");
+                                h.STATIC(oprname, "姓名");
+                                h.STATIC(oprwx, "微信");
+                                h.STATIC(oprtel, "电话");
                                 h._FIELDSET();
                             }
                         });
@@ -240,7 +240,7 @@ namespace Greatbone.Sample
                 m._FIELDSET();
 
                 m.FIELDSET_("添加操作人员");
-                m.TEXT(nameof(tel), tel, "手机号", pattern: "[0-9]+", max: 11, min: 11);
+                m.TEXT(nameof(tel), tel, label: "手机号", pattern: "[0-9]+", max: 11, min: 11);
                 m.SELECT(nameof(opr), opr, OPRS, "权限");
                 m.BUTTON(nameof(grant), 2, "添加");
                 m._FIELDSET();
