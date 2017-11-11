@@ -23,7 +23,7 @@ namespace Greatbone.Sample
             h.T("</div>"); // closing of top-bar-left
 
             h.T("<div class=\"top-bar-right\">");
-            h.T("<a class=\"float-right\" href=\"/my//pre/\"><img src=\"/cart.svg\" style=\"width: 1.5rem\"></a>");
+            h.T("<a class=\"float-right\" href=\"/my//pre/\"><div style=\"padding: 2px; border: 2px solid darkblue; border-radius: 50%\"><img src=\"/cart.svg\" style=\"width: 1.5rem\"></div></a>");
             h.T("</div>");
 
             h.T("</div>");

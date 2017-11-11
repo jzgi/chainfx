@@ -750,7 +750,7 @@ namespace Greatbone.Core
             return this;
         }
 
-        public HtmlContent BUTTON(string value, bool post = true, UiStyle mode = 0)
+        public HtmlContent BUTTON(string value, bool post = true, UiMode style = 0)
         {
             Add("<button class=\"button primary hollow\" formmethod=\"");
             Add(post ? "post" : "get");
@@ -760,7 +760,7 @@ namespace Greatbone.Core
             return this;
         }
 
-        public HtmlContent BUTTON_(bool post = true, UiStyle mode = 0)
+        public HtmlContent BUTTON_(bool post = true, UiMode style = 0)
         {
             Add("<button class=\"button primary hollow\" formmethod=\"");
             Add(post ? "post" : "get");

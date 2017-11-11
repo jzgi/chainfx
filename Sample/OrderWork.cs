@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Threading.Tasks;
 using Greatbone.Core;
-using static Greatbone.Core.UiStyle;
+using static Greatbone.Core.UiMode;
 using static Greatbone.Sample.User;
 
 namespace Greatbone.Sample

@@ -31,7 +31,7 @@ namespace Greatbone.Core
         // the default action, can be null
         readonly ActionInfo @default;
 
-        // actions with style attribute
+        // actions with the style attribute
         readonly ActionInfo[] styled;
 
         readonly bool buttonly;
@@ -78,7 +78,7 @@ namespace Greatbone.Core
                 if (ai.Name == string.Empty) @default = ai;
             }
 
-            // gather ui actions
+            // gather styled actions
             List<ActionInfo> lst = null;
             int btns = 0;
             for (int i = 0; i < actions.Count; i++)

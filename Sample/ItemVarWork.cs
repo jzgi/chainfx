@@ -1,15 +1,15 @@
 using System;
 using System.Threading.Tasks;
 using Greatbone.Core;
-using static Greatbone.Core.UiStyle;
+using static Greatbone.Core.UiMode;
 
 namespace Greatbone.Sample
 {
-    public class ItemStateAttribute : StateAttribute
+    public class ItemCheckAttribute : CheckAttribute
     {
         char state;
 
-        public ItemStateAttribute(char state)
+        public ItemCheckAttribute(char state)
         {
             this.state = state;
         }
@@ -63,8 +63,8 @@ namespace Greatbone.Sample
         {
         }
 
-        [Ui("购物车&nbsp;&#10010;"), Style(ButtonShow, 1)]
-        [ItemState('A')]
+        [Ui("购物车&nbsp;&#10010;", "加入购物车"), Style(ButtonShow, 1)]
+        [ItemCheck('A')]
         public void Add(ActionContext ac)
         {
             string shopid = ac[-1];
@@ -80,7 +80,7 @@ namespace Greatbone.Sample
                         h.NUMBER(nameof(o.max), o.min, min: o.min, step: o.step);
                         if (o.customs != null)
                         {
-                            h.CHECKBOXGROUP(nameof(o.customs), null, o.customs, "定制要求");
+                            h.CHECKBOXGROUP(nameof(o.customs), null, o.customs, "附加要求");
                         }
                     });
                 }

@@ -1,7 +1,7 @@
 using System;
 using System.Threading.Tasks;
 using Greatbone.Core;
-using static Greatbone.Core.UiStyle;
+using static Greatbone.Core.UiMode;
 
 namespace Greatbone.Sample
 {
@@ -51,7 +51,7 @@ namespace Greatbone.Sample
                     var shopname = shop.name;
 
                     Item[] items = null;
-                    dc.Sql("SELECT ").columnlst(Item.Empty).T(" FROM items WHERE shopid = @1");
+                    dc.Sql("SELECT ").columnlst(Item.Empty).T(" FROM items WHERE shopid = @1 ORDER BY idx");
                     if (dc.Query(p => p.Set(shopid)))
                     {
                         items = dc.ToArray<Item>();
@@ -76,20 +76,8 @@ namespace Greatbone.Sample
                             h.HIDDEN(nameof(o.price), o.price);
 
                             h.CAPTION(o.name, Item.Statuses[o.status], o.status == 2);
-                            h.IMG((o.name) + "/icon", box: 4).BOX_(box: 8)
-                                .P(o.descr, "特点").P(o.process, "制作").P(o.price, symbol: '¥')._BOX();
-//                            h.BOX_().T("<a type=\"button hollow\" class=\"button circle primary float-right\"  data-toggle=\"dropdown").T(o.name).T("\">购买</a>")._BOX();
-//                            h.T("<div class=\"dropdown-pane\" id=\"dropdown").T(o.name).T("\" data-position=\"top\" data-alignment=\"right\" style=\"box-shadow:0 0 2px #0a0a0a;\" data-dropdown>");
-//
-//                            h.NUMBER(nameof(o.max), o.min, min: o.min, step: o.step);
-//
-//                            if (o.customs != null)
-//                            {
-//                                h.CHECKBOXGROUP(nameof(o.customs), null, o.customs, "定制要求");
-//                            }
-//
-//                            h.T("<button type=\"button\" class=\"button primary\" >加入购物车</button>");
-//                            h.T("</div>");
+                            h.IMG((o.name) + "/icon", box: 4);
+                            h.BOX_(8).P(o.price, symbol: '¥').P(o.descr, "特色").P(o.mains, "主料")._BOX();
                         });
                     });
                 }
@@ -212,8 +200,7 @@ namespace Greatbone.Sample
                 {
                     if (dc.Query1("SELECT icon FROM shops WHERE id = @1", p => p.Set(shopid)))
                     {
-                        ArraySegment<byte> byteas;
-                        dc.Let(out byteas);
+                        dc.Let(out ArraySegment<byte> byteas);
                         if (byteas.Count == 0) ac.Give(204); // no content 
                         else
                         {

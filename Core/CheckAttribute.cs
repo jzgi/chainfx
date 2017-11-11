@@ -3,10 +3,10 @@
 namespace Greatbone.Core
 {
     /// <summary>
-    /// An access check filter before the target nodule is invoked.
+    /// A constraint check annotation to determine the availability of an action.
     /// </summary>
     [AttributeUsage(AttributeTargets.Method, Inherited = false)]
-    public abstract class StateAttribute : Attribute
+    public abstract class CheckAttribute : Attribute
     {
         public abstract bool Check(object obj);
     }

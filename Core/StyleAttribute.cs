@@ -8,13 +8,19 @@ namespace Greatbone.Core
     [AttributeUsage(AttributeTargets.Method, Inherited = false)]
     public class StyleAttribute : Attribute
     {
-        readonly UiStyle style;
+        readonly UiMode mode;
+
+        readonly int elem; // ui element
+
+        readonly int feature; // ui feature
 
         readonly sbyte size;
 
-        public StyleAttribute(UiStyle style, sbyte size = 2)
+        public StyleAttribute(UiMode mode, sbyte size = 2)
         {
-            this.style = style;
+            this.mode = mode;
+            this.elem = (int) mode & 0xff00;
+            this.feature = (int) mode & 0x00ff;
             this.size = size;
         }
 
@@ -22,24 +28,24 @@ namespace Greatbone.Core
 
         public bool Circle { get; set; }
 
-        public bool IsAnchor => ((int) style & 0x0100) == 0x0100;
+        public bool IsAnchor => elem == 0x0100;
 
-        public bool IsButton => ((int) style & 0x0200) == 0x0200;
+        public bool IsButton => elem == 0x0200;
 
-        public bool HasConfirm => ((int) style & 0x01) == 0x01;
+        public bool HasConfirm => feature == 0x01;
 
-        public bool HasPrompt => ((int) style & 0x02) == 0x02;
+        public bool HasPrompt => feature == 0x02;
 
-        public bool HasShow => ((int) style & 0x04) == 0x04;
+        public bool HasShow => feature == 0x04;
 
-        public bool HasOpen => ((int) style & 0x08) == 0x08;
+        public bool HasOpen => feature == 0x08;
 
-        public bool HasScript => ((int) style & 0x10) == 0x10;
+        public bool HasScript => feature == 0x10;
 
-        public bool HasCrop => ((int) style & 0x20) == 0x20;
+        public bool HasCrop => feature == 0x20;
     }
 
-    public enum UiStyle
+    public enum UiMode
     {
         Anchor = 0x0100,
 
