@@ -31,8 +31,8 @@ namespace Greatbone.Core
         // the default action, can be null
         readonly ActionInfo @default;
 
-        // actions with Ui attribute
-        readonly ActionInfo[] uiactions;
+        // actions with style attribute
+        readonly ActionInfo[] styled;
 
         readonly bool buttonly;
 
@@ -84,14 +84,14 @@ namespace Greatbone.Core
             for (int i = 0; i < actions.Count; i++)
             {
                 ActionInfo ai = actions[i];
-                if (ai.HasUi)
+                if (ai.HasStyle)
                 {
                     if (lst == null) lst = new List<ActionInfo>();
                     lst.Add(ai);
-                    if (ai.Ui.IsButton) btns++;
+                    if (ai.Style.IsButton) btns++;
                 }
             }
-            uiactions = lst?.ToArray();
+            styled = lst?.ToArray();
             buttonly = btns > 0;
         }
 
@@ -172,7 +172,7 @@ namespace Greatbone.Core
 
         public Roll<ActionInfo> Actions => actions;
 
-        public ActionInfo[] UiActions => uiactions;
+        public ActionInfo[] Styled => styled;
 
         public bool Buttonly => buttonly;
 

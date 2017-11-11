@@ -2,7 +2,7 @@
 
 namespace Greatbone.Sample
 {
-    public class Program : ServerUtility
+    public class Program : ServiceUtility
     {
         /// <summary>
         /// The application entry point.

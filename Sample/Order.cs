@@ -6,7 +6,7 @@ namespace Greatbone.Sample
     /// <summary>
     /// An order data object.
     /// </summary>
-    public class Order : IData, IStatable
+    public class Order : IData
     {
         public static readonly Order Empty = new Order();
 
@@ -150,16 +150,6 @@ namespace Greatbone.Sample
         public void RemoveDetail(string name)
         {
             items = items.RemovedOf(x => x.name == name);
-        }
-
-        public short GetState()
-        {
-            short sum = 0;
-            if (tel != null || city != null || addr != null)
-            {
-                sum |= 20;
-            }
-            return sum;
         }
     }
 

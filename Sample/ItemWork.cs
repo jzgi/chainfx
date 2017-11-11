@@ -44,7 +44,7 @@ namespace Greatbone.Sample
             }
         }
 
-        [Ui("新建", Style = ButtonShow)]
+        [Ui("新建"), Style(ButtonShow)]
         public async Task @new(ActionContext ac)
         {
             if (ac.GET)
@@ -77,7 +77,7 @@ namespace Greatbone.Sample
             }
         }
 
-        [Ui("删除", Style = ButtonConfirm)]
+        [Ui("删除"), Style(ButtonConfirm)]
         public async Task del(ActionContext ac)
         {
             short shopid = ac[-1];

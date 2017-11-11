@@ -813,7 +813,7 @@ namespace Greatbone.Core
         public void TOOLBAR(Work work = null)
         {
             if (work == null) work = ac.Work;
-            if (work.UiActions == null)
+            if (work.Styled == null)
             {
                 TOOLBAR_(work.Label);
             }
@@ -927,7 +927,7 @@ namespace Greatbone.Core
             Work varwork = work.varwork;
             Add("<main class=\"tableview table-scroll);\">");
             Add("<table>");
-            ActionInfo[] ais = varwork?.UiActions;
+            ActionInfo[] ais = varwork?.Styled;
 
             if (head != null)
             {
@@ -1092,7 +1092,7 @@ namespace Greatbone.Core
 
         void Triggers(Work work, IData obj, short pow = 0)
         {
-            var ais = work.UiActions;
+            var ais = work.Styled;
             if (ais == null)
             {
                 return;
@@ -1101,18 +1101,13 @@ namespace Greatbone.Core
             {
                 ActionInfo ai = ais[i];
                 // access check if neccessary
-                if (ac != null && !ai.DoAuthorize(ac))
-                {
-                    continue;
-                }
+                if (ac != null && !ai.DoAuthorize(ac)) continue;
+                
                 UiAttribute ui = ai.Ui;
-                bool enabled = ui.State == 0;
-                if (!enabled)
-                {
-                    short state = (obj as IStatable)?.GetState() ?? pow;
-                    enabled = (ui.State & state) == state;
-                }
-                if (ui.IsAnchor)
+                StyleAttribute style = ai.Style;
+                bool state = ai.StateCheck(obj);
+
+                if (style.IsAnchor)
                 {
                     Add("<a class=\"button primary");
                     Add(ai == ac.Doer ? " hollow" : " clear");
@@ -1129,12 +1124,12 @@ namespace Greatbone.Core
                     }
                     Add(ai.RPath);
                     Add("\"");
-                    if (!enabled)
+                    if (!state)
                     {
                         Add(" disabled onclick=\"return false;\"");
                     }
                 }
-                else if (ui.IsButton)
+                else if (style.IsButton)
                 {
                     Add("<button class=\"button primary");
                     if (!ai.IsCap) Add(" hollow");
@@ -1153,30 +1148,30 @@ namespace Greatbone.Core
                     }
                     Add(ai.Name);
                     Add("\" formmethod=\"post\"");
-                    if (!enabled)
+                    if (!state)
                     {
                         Add(" disabled");
                     }
                 }
-                if (ui.HasConfirm)
+                if (style.HasConfirm)
                 {
                     Add(" onclick=\"return confirm('");
                     Add(ui.Tip ?? ui.Label);
                     Add("?');\"");
                 }
-                else if (ui.HasPrompt)
+                else if (style.HasPrompt)
                 {
-                    Dialog(2, ui.Size, ui.Tip);
+                    Dialog(2, style.Size, ui.Tip);
                 }
-                else if (ui.HasShow)
+                else if (style.HasShow)
                 {
-                    Dialog(4, ui.Size, ui.Tip);
+                    Dialog(4, style.Size, ui.Tip);
                 }
-                else if (ui.HasOpen)
+                else if (style.HasOpen)
                 {
-                    Dialog(8, ui.Size, ui.Tip);
+                    Dialog(8, style.Size, ui.Tip);
                 }
-                else if (ui.HasScript)
+                else if (style.HasScript)
                 {
                     Add(" onclick=\"if(!confirm('");
                     Add(ui.Tip ?? ui.Label);
@@ -1184,12 +1179,12 @@ namespace Greatbone.Core
                     Add(ai.Name);
                     Add("(this);return false;\"");
                 }
-                else if (ui.HasCrop)
+                else if (style.HasCrop)
                 {
                     Add(" onclick=\"return crop(this,");
-                    Add(ui.Size);
+                    Add(style.Size);
                     Add(',');
-                    Add(ui.Circle);
+                    Add(style.Circle);
                     Add(",'");
                     Add(ui.Tip);
                     Add("');\"");
@@ -1197,11 +1192,11 @@ namespace Greatbone.Core
                 Add(">");
                 Add(ai.Label);
 
-                if (ui.IsAnchor)
+                if (style.IsAnchor)
                 {
                     Add("</a>");
                 }
-                else if (ui.IsButton)
+                else if (style.IsButton)
                 {
                     Add("</button>");
                 }

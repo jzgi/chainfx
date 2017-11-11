@@ -74,7 +74,7 @@ namespace Greatbone.Sample
             }
         }
 
-        [Ui("删除", Style = ButtonConfirm)]
+        [Ui("删除"), Style(ButtonConfirm)]
         public async Task rm(ActionContext ac)
         {
             string wx = ac[-2];
@@ -95,7 +95,7 @@ namespace Greatbone.Sample
             }
         }
 
-        [Ui("付款", Style = ButtonScript)]
+        [Ui("付款"), Style(ButtonScript)]
         public async Task Prepay(ActionContext ac)
         {
             string wx = ac[typeof(UserVarWork)];
@@ -117,7 +117,7 @@ namespace Greatbone.Sample
         {
         }
 
-        [Ui("投诉", "向平台投诉该作坊的产品质量问题", Style = AnchorShow)]
+        [Ui("投诉", "向平台投诉该作坊的产品质量问题"), Style(AnchorShow)]
         public async Task kick(ActionContext ac)
         {
             int id = ac[this];
@@ -149,7 +149,7 @@ namespace Greatbone.Sample
             }
         }
 
-        [Ui("确认收货", "对商品满意并确认收货", Style = ButtonConfirm)]
+        [Ui("确认收货", "对商品满意并确认收货"), Style(ButtonConfirm)]
         public async Task got(ActionContext ac)
         {
             int orderid = ac[this];
@@ -178,7 +178,7 @@ namespace Greatbone.Sample
         {
         }
 
-        [Ui("撤单", "撤销此单，实收金额退回给买家", Style = ButtonShow)]
+        [Ui("撤单", "撤销此单，实收金额退回给买家"), Style(ButtonShow)]
         public async Task abort(ActionContext ac)
         {
             int orderid = ac[this];
@@ -227,7 +227,7 @@ namespace Greatbone.Sample
         {
         }
 
-        [Ui("退款核查", "实时核查退款到账情况", Style = AnchorOpen)]
+        [Ui("退款核查", "实时核查退款到账情况"), Style(AnchorOpen)]
         public async Task refundq(ActionContext ac)
         {
             int orderid = ac[this];

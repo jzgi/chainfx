@@ -1230,7 +1230,7 @@ select[multiple] {
     margin: 0.125rem;
     -webkit-appearance: none;
     border: 1px solid transparent;
-    border-radius: 4px;
+    border-radius: 8px;
     transition: background-color 0.25s ease-out, color 0.25s ease-out;
     font-size: 0.875rem;
     line-height: 1;
@@ -1347,7 +1347,7 @@ select[multiple] {
 
 .button.disabled.primary, .button.disabled.primary:hover, .button.disabled.primary:focus, .button[disabled].primary, .button[disabled].primary:hover, .button[disabled].primary:focus {
     background-color: darkblue;
-    color: #0a0a0a;
+    color: gainsboro;
 }
 
 .button.disabled.secondary, .button[disabled].secondary {

@@ -7,7 +7,7 @@ using Microsoft.AspNetCore.Hosting;
 
 namespace Greatbone.Core
 {
-    public class ServerUtility
+    public class ServiceUtility
     {
         const string CONFIG = "$service.json";
 

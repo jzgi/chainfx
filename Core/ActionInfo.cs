@@ -20,6 +20,12 @@ namespace Greatbone.Core
 
         readonly int limit;
 
+        // style annotation
+        internal StyleAttribute style;
+
+        // state check annotation
+        internal StateAttribute state;
+
         // void action(ActionContext)
         readonly Action<ActionContext> @do;
 
@@ -42,6 +48,9 @@ namespace Greatbone.Core
             this.async = async;
             this.subscript = subscript;
             this.limit = limit;
+
+            this.style = (StyleAttribute) mi.GetCustomAttribute(typeof(StyleAttribute), false);
+            this.state = (StateAttribute) mi.GetCustomAttribute(typeof(StateAttribute), false);
 
             // create a doer delegate
             if (async)
@@ -74,9 +83,18 @@ namespace Greatbone.Core
 
         public bool IsAsync => async;
 
+        public bool HasStyle => style != null;
+
         public bool HasSubscript => subscript;
 
         public int Limit => limit;
+
+        public StyleAttribute Style => style;
+
+        public bool StateCheck(object obj)
+        {
+            return state == null || obj == null || state.Check(obj);
+        }
 
         public override Service Service => work.Service;
 

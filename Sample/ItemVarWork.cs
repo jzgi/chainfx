@@ -5,12 +5,33 @@ using static Greatbone.Core.UiStyle;
 
 namespace Greatbone.Sample
 {
+    public class ItemStateAttribute : StateAttribute
+    {
+        char state;
+
+        public ItemStateAttribute(char state)
+        {
+            this.state = state;
+        }
+
+        public override bool Check(object obj)
+        {
+            var o = obj as Item;
+            switch (state)
+            {
+                case 'A': return o.status == 2;
+            }
+            return false;
+        }
+    }
+
     public abstract class ItemVarWork : Work
     {
         protected ItemVarWork(WorkContext wc) : base(wc)
         {
         }
     }
+
 
     public class PubItemVarWork : ItemVarWork
     {
@@ -26,8 +47,7 @@ namespace Greatbone.Sample
             {
                 if (dc.Query1("SELECT icon FROM items WHERE shopid = @1 AND name = @2", p => p.Set(shopid).Set(name)))
                 {
-                    ArraySegment<byte> byteas;
-                    dc.Let(out byteas);
+                    dc.Let(out ArraySegment<byte> byteas);
                     if (byteas.Count == 0) ac.Give(204); // no content 
                     else
                     {
@@ -38,12 +58,13 @@ namespace Greatbone.Sample
             }
         }
 
-        [Ui("产品详情", Style = AnchorOpen)]
+        [Ui("产品详情"), Style(AnchorOpen)]
         public void detail(ActionContext ac)
         {
         }
 
-        [Ui("加入购物车", Style = ButtonShow, Size = 1)]
+        [Ui("购物车&nbsp;&#10010;"), Style(ButtonShow, 1)]
+        [ItemState('A')]
         public void Add(ActionContext ac)
         {
             string shopid = ac[-1];
@@ -73,7 +94,7 @@ namespace Greatbone.Sample
         {
         }
 
-        [Ui("修改", Style = ButtonShow)]
+        [Ui("修改"), Style(ButtonShow)]
         public async Task edit(ActionContext ac)
         {
             short shopid = ac[-2];
@@ -119,7 +140,7 @@ namespace Greatbone.Sample
             }
         }
 
-        [Ui("图片", Style = AnchorCrop, Circle = true)]
+        [Ui("图片"), Style(AnchorCrop, Circle = true)]
         public async Task icon(ActionContext ac)
         {
             string shopid = ac[-2];

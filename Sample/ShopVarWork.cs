@@ -18,8 +18,7 @@ namespace Greatbone.Sample
             {
                 if (dc.Query1("SELECT icon FROM shops WHERE id = @1", p => p.Set(shopid)))
                 {
-                    ArraySegment<byte> byteas;
-                    dc.Let(out byteas);
+                    dc.Let(out ArraySegment<byte> byteas);
                     if (byteas.Count == 0) ac.Give(204); // no content 
                     else
                     {
@@ -39,7 +38,7 @@ namespace Greatbone.Sample
             CreateVar<PubItemVarWork, string>(obj => ((Item) obj).name);
         }
 
-        [Ui("进入店铺", Style = Anchor)]
+        [Ui("进入店铺"), Style(Anchor)]
         public void @default(ActionContext ac)
         {
             string shopid = ac[this];
@@ -112,7 +111,7 @@ namespace Greatbone.Sample
         {
         }
 
-        [Ui("修改", Style = ButtonShow)]
+        [Ui("修改"), Style(ButtonShow)]
         public async Task edit(ActionContext ac)
         {
             string shopid = ac[this];
@@ -158,7 +157,7 @@ namespace Greatbone.Sample
             }
         }
 
-        [Ui("经理", Style = ButtonShow)]
+        [Ui("经理"), Style(ButtonShow)]
         public async Task mgr(ActionContext ac)
         {
             string shopid = ac[this];
@@ -203,7 +202,7 @@ namespace Greatbone.Sample
             }
         }
 
-        [Ui("图片", Style = AnchorCrop)]
+        [Ui("图片"), Style(AnchorCrop)]
         public new async Task icon(ActionContext ac)
         {
             string shopid = ac[this];

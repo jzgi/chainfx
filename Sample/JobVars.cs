@@ -36,7 +36,7 @@ namespace Greatbone.Sample
             });
         }
 
-        [Ui("刷新", Style = AnchorShow)]
+        [Ui("刷新"), Style(AnchorShow)]
         public void token(ActionContext ac)
         {
             string wx = ac[this];
@@ -63,7 +63,7 @@ namespace Greatbone.Sample
         {
         }
 
-        [Ui("修改", Style = ButtonShow)]
+        [Ui("修改"), Style(ButtonShow)]
         public async Task edit(ActionContext ac)
         {
             string wx = ac[-1];
@@ -102,7 +102,7 @@ namespace Greatbone.Sample
 
         const string PASS = "0z4R4pX7";
 
-        [Ui("设密码", Style = ButtonShow)]
+        [Ui("设密码"), Style(ButtonShow)]
         public async Task setpass(ActionContext ac)
         {
             User prin = (User) ac.Principal;
@@ -195,7 +195,7 @@ namespace Greatbone.Sample
             }
         }
 
-        [Ui("操作授权", Style = AnchorOpen), User(OPRMEM)]
+        [Ui("操作授权"), Style(AnchorOpen), User(OPRMEM)]
         public async Task grant(ActionContext ac, int cmd)
         {
             string shopid = ac[this];
@@ -270,7 +270,7 @@ namespace Greatbone.Sample
         {
         }
 
-        [Ui("设下班", Style = ButtonShow)]
+        [Ui("设下班"), Style(ButtonShow)]
         public void setoff(ActionContext ac)
         {
             string shopid = ac[-1];
@@ -295,7 +295,7 @@ namespace Greatbone.Sample
             }
         }
 
-        [Ui("我值班", Style = ButtonShow)]
+        [Ui("我值班"), Style(ButtonShow)]
         public void seton(ActionContext ac)
         {
             string shopid = ac[-1];

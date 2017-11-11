@@ -141,7 +141,7 @@ namespace Greatbone.Sample
             }
         }
 
-        [Ui("新建", Style = ButtonShow)]
+        [Ui("新建"), Style(ButtonShow)]
         public async Task @new(ActionContext ac)
         {
             if (ac.GET)

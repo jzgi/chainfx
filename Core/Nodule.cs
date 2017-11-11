@@ -47,7 +47,7 @@ namespace Greatbone.Core
             if (uis.Length > 0)
             {
                 ui = uis[0];
-                this.label = ui.Label ?? name.ToUpper();
+                this.label = ui.Label ?? name?.ToUpper();
             }
 
             // authorize

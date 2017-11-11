@@ -64,7 +64,7 @@ namespace Greatbone.Core
 
             // create kestrel instance
             KestrelServerOptions options = new KestrelServerOptions();
-            server = new KestrelServer(Options.Create(options), ServerUtility.Lifetime, factory);
+            server = new KestrelServer(Options.Create(options), ServiceUtility.Lifetime, factory);
             ICollection<string> addrcoll = server.Features.Get<IServerAddressesFeature>().Addresses;
             if (Addrs == null)
             {
@@ -165,6 +165,12 @@ namespace Greatbone.Core
         {
         }
 
+        public virtual void Catch(Exception e, ActionContext ac)
+        {
+            WAR(e.Message, e);
+            ac.Give(500, e.Message);
+        }
+
         /// <summary>
         /// To asynchronously process the request.
         /// </summary>
@@ -195,13 +201,7 @@ namespace Greatbone.Core
             }
             catch (Exception e)
             {
-                if (this is ICatchAsync catsync) await catsync.CatchAsync(e, ac);
-                else if (this is ICatch cat) cat.Catch(e, ac);
-                else
-                {
-                    WAR(e.Message, e);
-                    ac.Give(500, e.Message);
-                }
+                Catch(e, ac);
             }
             // sending
             try
@@ -539,13 +539,7 @@ namespace Greatbone.Core
             }
             catch (Exception e)
             {
-                if (this is ICatchAsync casync) await casync.CatchAsync(e, ac);
-                else if (this is ICatch c) c.Catch(e, ac);
-                else
-                {
-                    WAR(e.Message, e);
-                    ac.Give(500, e.Message);
-                }
+                Catch(e, ac);
             }
             // sending
             try

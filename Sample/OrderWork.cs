@@ -179,7 +179,7 @@ namespace Greatbone.Sample
             }
         }
 
-        [Ui("备货状态", Style = ButtonConfirm)]
+        [Ui("备货状态"), Style(ButtonConfirm)]
         public async Task prepare(ActionContext ac)
         {
             string shopid = ac[-1];

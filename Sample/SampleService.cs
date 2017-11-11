@@ -9,7 +9,7 @@ namespace Greatbone.Sample
     /// <summary>
     /// The care service includes the gospel and the health provision.
     /// </summary>
-    public class SampleService : Service<User>, IAuthenticateAsync, ICatch
+    public class SampleService : Service<User>, IAuthenticateAsync
     {
         public SampleService(ServiceContext sc) : base(sc)
         {
@@ -133,7 +133,7 @@ namespace Greatbone.Sample
             return true;
         }
 
-        public virtual void Catch(Exception e, ActionContext ac)
+        public override void Catch(Exception e, ActionContext ac)
         {
             if (e is AuthorizeException)
             {
