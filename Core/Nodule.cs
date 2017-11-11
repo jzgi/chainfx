@@ -10,6 +10,8 @@ namespace Greatbone.Core
         // identifier as appeared in URI
         readonly string name;
 
+        readonly bool cap;
+
         // ui label or upper key
         readonly string label;
 
@@ -32,6 +34,7 @@ namespace Greatbone.Core
         internal Nodule(string name, ICustomAttributeProvider attrprov)
         {
             this.name = name;
+            this.cap = !string.IsNullOrEmpty(name) && char.IsUpper(name[0]);
 
             // either methodinfo or typeinfo
             if (attrprov == null)
@@ -70,6 +73,8 @@ namespace Greatbone.Core
         public abstract Service Service { get; }
 
         public string Name => name;
+
+        public bool IsCap => cap;
 
         public UiAttribute Ui => ui;
 

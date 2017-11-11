@@ -24,7 +24,6 @@ namespace Greatbone.Sample
             h.Add("<head>");
             h.Add("<title>粗粮达人</title>");
             h.Add("<meta name=\"viewport\" content=\"width=device-width, initial-scale=1.0\">");
-            h.Add("<link rel=\"stylesheet\" href=\"//cdn.bootcss.com/foundicons/3.0.0/foundation-icons.min.css\">");
             h.Add("<link rel=\"stylesheet\" href=\"/foundation.min.css\">");
             h.Add("<link rel=\"stylesheet\" href=\"/app.min.css\">");
             h.Add("</head>");
@@ -59,7 +58,6 @@ namespace Greatbone.Sample
             h.Add(title);
             h.Add("</title>");
             h.Add("<meta name=\"viewport\" content=\"width=device-width, initial-scale=1.0\">");
-            h.Add("<link rel=\"stylesheet\" href=\"//cdn.bootcss.com/foundicons/3.0.0/foundation-icons.min.css\">");
             h.Add("<link rel=\"stylesheet\" href=\"/foundation.min.css\">");
             h.Add("<link rel=\"stylesheet\" href=\"/app.min.css\">");
             h.Add("</head>");
@@ -141,7 +139,6 @@ namespace Greatbone.Sample
             h.Add("<head>");
             h.Add("<title>粗粮达人</title>");
             h.Add("<meta name=\"viewport\" content=\"width=device-width, initial-scale=1.0\">");
-            h.Add("<link rel=\"stylesheet\" href=\"//cdn.bootcss.com/foundicons/3.0.0/foundation-icons.min.css\">");
             h.Add("<link rel=\"stylesheet\" href=\"/foundation.min.css\">");
             h.Add("<link rel=\"stylesheet\" href=\"/app.min.css\">");
             h.Add("</head>");
@@ -177,7 +174,6 @@ namespace Greatbone.Sample
             h.Add("<head>");
             h.Add("<title>粗粮达人</title>");
             h.Add("<meta name=\"viewport\" content=\"width=device-width, initial-scale=1.0\">");
-            h.Add("<link rel=\"stylesheet\" href=\"//cdn.bootcss.com/foundicons/3.0.0/foundation-icons.min.css\">");
             h.Add("<link rel=\"stylesheet\" href=\"/foundation.min.css\">");
             h.Add("<link rel=\"stylesheet\" href=\"/app.min.css\">");
             h.Add("</head>");

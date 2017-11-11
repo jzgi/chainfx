@@ -96,7 +96,7 @@ namespace Greatbone.Sample
         }
 
         [Ui("付款", Style = ButtonScript)]
-        public async Task prepay(ActionContext ac)
+        public async Task Prepay(ActionContext ac)
         {
             string wx = ac[typeof(UserVarWork)];
             int id = ac[this];

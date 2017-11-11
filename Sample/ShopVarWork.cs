@@ -60,7 +60,7 @@ namespace Greatbone.Sample
 
                     ac.GiveDoc(200, m =>
                     {
-                        m.TOPBAR_(shop.name).T("<a href=\"tel:").T(shop.oprtel).T("#mp.weixin.qq.com\">电话：").T(shop.oprtel).T("</a>")._TOPBAR();
+                        m.TOPBAR_(shop.name).T("&nbsp;<a href=\"tel:").T(shop.oprtel).T("#mp.weixin.qq.com\">&#128222;").T(shop.oprtel).T("</a>")._TOPBAR();
 
                         if (items == null)
                         {
@@ -76,21 +76,21 @@ namespace Greatbone.Sample
                             h.HIDDEN(nameof(o.unit), o.unit);
                             h.HIDDEN(nameof(o.price), o.price);
 
-                            h.CAPTION(o.name);
+                            h.CAPTION(o.name, Item.Statuses[o.status], o.status == 2);
                             h.IMG((o.name) + "/icon", box: 4).BOX_(box: 8)
                                 .P(o.descr, "特点").P(o.process, "制作").P(o.price, symbol: '¥')._BOX();
-                            h.BOX_().T("<a type=\"button hollow\" class=\"button circle primary float-right\"  data-toggle=\"dropdown").T(o.name).T("\">购买</a>")._BOX();
-                            h.T("<div class=\"dropdown-pane\" id=\"dropdown").T(o.name).T("\" data-position=\"top\" data-alignment=\"right\" style=\"box-shadow:0 0 2px #0a0a0a;\" data-dropdown>");
-
-                            h.NUMBER(nameof(o.max), o.min, min: o.min, step: o.step);
-
-                            if (o.customs != null)
-                            {
-                                h.CHECKBOXGROUP(nameof(o.customs), null, o.customs, "定制要求");
-                            }
-
-                            h.T("<button type=\"button\" class=\"button primary\" >加入购物车</button>");
-                            h.T("</div>");
+//                            h.BOX_().T("<a type=\"button hollow\" class=\"button circle primary float-right\"  data-toggle=\"dropdown").T(o.name).T("\">购买</a>")._BOX();
+//                            h.T("<div class=\"dropdown-pane\" id=\"dropdown").T(o.name).T("\" data-position=\"top\" data-alignment=\"right\" style=\"box-shadow:0 0 2px #0a0a0a;\" data-dropdown>");
+//
+//                            h.NUMBER(nameof(o.max), o.min, min: o.min, step: o.step);
+//
+//                            if (o.customs != null)
+//                            {
+//                                h.CHECKBOXGROUP(nameof(o.customs), null, o.customs, "定制要求");
+//                            }
+//
+//                            h.T("<button type=\"button\" class=\"button primary\" >加入购物车</button>");
+//                            h.T("</div>");
                         });
                     });
                 }

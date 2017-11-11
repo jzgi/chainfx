@@ -37,6 +37,34 @@ namespace Greatbone.Sample
                 else ac.Give(404, pub: true, maxage: 60 * 5); // not found
             }
         }
+
+        [Ui("产品详情", Style = AnchorOpen)]
+        public void detail(ActionContext ac)
+        {
+        }
+
+        [Ui("加入购物车", Style = ButtonShow, Size = 1)]
+        public void Add(ActionContext ac)
+        {
+            string shopid = ac[-1];
+            string name = ac[this];
+            using (var dc = ac.NewDbContext())
+            {
+                dc.Sql("SELECT ").columnlst(Item.Empty).T(" FROM items WHERE shopid = @1 AND name = @2");
+                if (dc.Query1(p => p.Set(shopid).Set(name)))
+                {
+                    var o = dc.ToObject<Item>();
+                    ac.GivePane(200, h =>
+                    {
+                        h.NUMBER(nameof(o.max), o.min, min: o.min, step: o.step);
+                        if (o.customs != null)
+                        {
+                            h.CHECKBOXGROUP(nameof(o.customs), null, o.customs, "定制要求");
+                        }
+                    });
+                }
+            }
+        }
     }
 
     public class OprItemVarWork : ItemVarWork

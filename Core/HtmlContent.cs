@@ -358,17 +358,11 @@ namespace Greatbone.Core
             return this;
         }
 
-        public HtmlContent CAPTION(string v, bool flag = false)
+        public HtmlContent CAPTION(string v, string flag = null, bool? on = null)
         {
-            Add("<div class=\"cell caption small-");
-            Add(ac.Work.Buttonly ? 11 : 12);
-            Add("\">");
+            CAPTION_();
             Add(v);
-            if (flag)
-            {
-                Add("<span class=\"flag\">&#9872;</span>");
-            }
-            Add("</div>");
+            _CAPTION(flag, on);
             return this;
         }
 
@@ -712,9 +706,9 @@ namespace Greatbone.Core
 
         public HtmlContent FIELDSET_(string legend = null, sbyte box = 12)
         {
-            Add("<div class=\"cell field small-");
+            Add("<fieldset class=\"cell box small-");
             Add(box);
-            Add("\"><fieldset class=\"fieldset\">");
+            Add("\">");
             if (legend != null)
             {
                 Add("<legend>");
@@ -729,7 +723,6 @@ namespace Greatbone.Core
         {
             Add("</div>");
             Add("</fieldset>");
-            Add("</div>");
             return this;
         }
 
@@ -831,7 +824,7 @@ namespace Greatbone.Core
             }
             // refresh
             Add("<div class=\"right\">");
-            Add("<a class=\"primary\" href=\"javascript: location.reload(false);\"><i class=\"fi-refresh\" style=\"font-size: 1.5rem; line-height: 2rem\"></i></a>");
+            Add("<a class=\"primary\" href=\"javascript: location.reload(false);\" style=\"font-size: 1.5rem;\">&#128259;</a>");
             Add("</div>");
 
             _TOOLBAR();
@@ -1144,7 +1137,7 @@ namespace Greatbone.Core
                 else if (ui.IsButton)
                 {
                     Add("<button class=\"button primary");
-                    if (!ui.HasScript) Add(" hollow");
+                    if (!ai.IsCap) Add(" hollow");
                     Add("\" name=\"");
                     Add(ai.Name);
                     Add("\" formaction=\"");

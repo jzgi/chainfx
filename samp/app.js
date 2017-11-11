@@ -37,7 +37,7 @@ function dialog(trig, mode, siz, title) {
     var bottom = mode == OPEN ? '4.125rem' : '6rem';
     var html =
         '<div id="dyndlg" class="' + sizg + ' reveal' + trigclass + '"  data-reveal data-close-on-click="false">' +
-        '<div class="title-bar"><div class="title-bar-title">' + title + '</div><div class="title-bar-right"><a onclick="$(\'#dyndlg\').foundation(\'close\').foundation(\'destroy\').remove(); return false;"><i class="fi-x" style="font-size: 1.5rem; line-height: 2rem"></i></a></div></div>' +
+        '<div class="title-bar"><div class="title-bar-title">' + title + '</div><div class="title-bar-right"><a onclick="$(\'#dyndlg\').foundation(\'close\').foundation(\'destroy\').remove(); return false;" style="font-size: 1.5rem">&#10060;</a></div></div>' +
         '<div style="height: -webkit-calc(100% - ' + bottom + '); height: calc(100% - ' + bottom + ')"><iframe src="' + src + '" style="width: 100%; height: 100%; border: 0"></iframe></div>' + (mode == OPEN ? '' : ('<button class=\"button primary\" style="display: block; margin-top: 0.5rem; margin-left: auto; margin-right: auto" onclick="ok(this,' + mode + ',\'' + formid + '\',\'' + tag + '\',\'' + action + '\',\'' + method + '\');" disabled>确定</botton>')) + '</div>';
     var dive = $(html);
     $('body').prepend(dive);
@@ -146,7 +146,7 @@ function crop(trig, siz, circle, title) {
 
     var html =
         '<div id="dyndlg" class="' + sizg + ' reveal"  data-reveal data-close-on-click="false">' +
-        '<div class="title-bar"><div class="title-bar-title">' + title + '</div><div class="title-bar-right"><a onclick="$(\'#dyndlg\').foundation(\'close\').foundation(\'destroy\').remove(); return false;"><i class="fi-x" style="font-size: 1.75rem; line-height: 2rem"></i></a></div></div>' +
+        '<div class="title-bar"><div class="title-bar-title">' + title + '</div><div class="title-bar-right"><a onclick="$(\'#dyndlg\').foundation(\'close\').foundation(\'destroy\').remove(); return false;" style="font-size: 1.5rem">&#10060;</a></div></div>' +
         '<div id="crop" style="height: -webkit-calc(100% - 8rem); height: calc(100% - 8rem); text-align: center;"><input type="file" id="fileinput" style="display: none;" onchange="bind(window.URL.createObjectURL(this.files[0]),' + wid + ',' + hei + ',' + circle + ');"></div>' + '<div style="text-align: center; margin-top: 2.875rem"><a class="button hollow" onclick="$(\'#fileinput\').click();">选择图片</a><a class="button hollow" onclick="upload(\'' + action + '\',' + circle + ');">裁剪并上传</a></div></div>';
     var dive = $(html);
 

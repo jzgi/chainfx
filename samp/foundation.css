@@ -383,8 +383,7 @@ fieldset {
     /* border: 1px solid silver; */
     padding: 0.25em;
     width: 100%;
-    border: 1px solid #f1f1f1;
-    border-radius: 8px;
+    border: none;
 }
 
 /**
@@ -2664,6 +2663,7 @@ input:checked + label > .switch-inactive { display: none; }
 
 .top-bar-left,
 .top-bar-right {
+    padding: 0 4px;
     -ms-flex: 0 0 auto;
     flex: 0 0 auto;
 }
@@ -3017,7 +3017,7 @@ html.is-reveal-open body {
     border-right: 4px solid silver;
     background-color: silver;
     position: relative;
-    top: 100px;
+    /* top: 100px; */
     margin-right: auto;
     margin-left: auto;
     overflow-y: auto;
@@ -3044,7 +3044,7 @@ html.is-reveal-open body {
 
 @media print, screen and (min-width: 40em) {
     .reveal.tiny {
-        width: 30%;
+        width: 60%;
         max-width: 62.5rem;
         height: 60%;
     }
@@ -3052,9 +3052,9 @@ html.is-reveal-open body {
 
 @media print, screen and (min-width: 40em) {
     .reveal.small {
-        width: 50%;
+        width: 75%;
         max-width: 62.5rem;
-        height: 70%;
+        height: 75%;
     }
 }
 
@@ -3062,7 +3062,7 @@ html.is-reveal-open body {
     .reveal.large {
         width: 90%;
         max-width: 62.5rem;
-        height: 80%;
+        height: 90%;
     }
 }
 
@@ -3081,7 +3081,7 @@ html.is-reveal-open body {
 }
 
 @media screen and (max-width: 39.9375em) {
-    .reveal {
+    .reveal.small, .reveal.large {
         top: 0;
         left: 0;
         width: 100%;
@@ -3093,6 +3093,22 @@ html.is-reveal-open body {
         border-left: 4px solid silver;
         border-right: 4px solid silver;
         background-color: silver;
+    }
+}
+
+@media screen and (max-width: 39.9375em) {
+    .reveal.tiny {
+        border-left: 4px solid silver;
+        border-right: 4px solid silver;
+        background-color: silver;
+        position: relative;
+        width: 80%;
+        max-width: none;
+        height: 50%;
+        height: 50vh;
+        min-height: 50vh;
+        margin-right: auto;
+        margin-left: auto;
     }
 }
 
@@ -3522,7 +3538,7 @@ table.hover tbody tr:hover { background-color: #f9f9f9; }
 .thumbnail {
     display: inline-block;
     max-width: 100%;
-    margin-bottom: 1rem;
+    margin: 0.25rem;
     box-shadow: 0 0 0 1px rgba(10, 10, 10, 0.2);
     line-height: 0;
 }
